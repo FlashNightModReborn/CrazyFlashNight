@@ -180,6 +180,7 @@ window.__minigameOverlayRoot = "../../../../";
                         var ws = getComputedStyle(white);
                         api.assert(bs.outlineWidth !== "0px", "black anchor needs visible outline");
                         api.assert(bs.boxShadow !== "none", "black anchor needs glow/shadow separation");
+                        api.assert(bs.clipPath !== "none", "black anchor must have hex clip-path (not reverted to circle)");
                         api.assert(bs.clipPath !== ws.clipPath, "black and white silhouettes should differ");
                         return "blackOutline=" + bs.outlineWidth + ", blackShadow=" + bs.boxShadow.slice(0, 32);
                     });
@@ -187,7 +188,7 @@ window.__minigameOverlayRoot = "../../../../";
             },
             {
                 id: "gb-ui6",
-                title: "internal manual exposes rules, books and AI guidance",
+                title: "internal manual exposes rules, books, terms and AI guidance",
                 run: function() {
                     return openSession(api).then(function() {
                         var button = document.querySelector('[data-action="manual"]');
@@ -197,15 +198,34 @@ window.__minigameOverlayRoot = "../../../../";
                         var body = document.querySelector("[data-gb-manual-body]");
                         api.assert(manual && manual.getAttribute("data-open") === "1", "manual did not open");
                         api.assert(body && body.textContent.indexOf("先看目标") >= 0, "rules content missing");
-                        api.assert(document.querySelectorAll(".gobang-book-board").length >= 1, "rules diagram missing");
+                        api.assert(body.textContent.indexOf("长连 · 过载") >= 0, "forbid demo missing");
+                        api.assert(document.querySelectorAll(".gobang-forbid-card").length >= 3, "forbid diagrams missing");
+                        api.assert(document.querySelectorAll(".gobang-book-cell.mark").length >= 1, "forbid star marker missing on rules tab");
                         document.querySelector('[data-gb-manual-tab="books"]').click();
                         api.assert(body.textContent.indexOf("星月应手") >= 0, "book content missing");
                         api.assert(document.querySelectorAll(".gobang-book-card .gobang-book-board").length >= 4, "book diagrams missing");
                         api.assert(document.querySelectorAll(".gobang-book-axis.col").length >= 9, "book coordinate axis missing");
                         var bookRect = document.querySelector(".gobang-book-card .gobang-book-board").getBoundingClientRect();
                         api.assert(bookRect.width >= 300, "book diagram too small: " + Math.round(bookRect.width));
+                        // step-through: 复位到第 1 手
+                        var firstCard = document.querySelector(".gobang-book-card");
+                        var resetBtn = firstCard.querySelector('[data-gb-step-mode="reset"]');
+                        api.assert(!!resetBtn, "step-through reset button missing");
+                        resetBtn.click();
+                        var stones = document.querySelectorAll(".gobang-book-card .gobang-book-cell.black, .gobang-book-card .gobang-book-cell.white");
+                        api.assert(stones.length >= 4, "expected stones from other cards after reset on first");
+                        // 点下一手
+                        var nextBtn = document.querySelector(".gobang-book-card [data-gb-step-delta='1']:not([disabled])");
+                        api.assert(!!nextBtn, "step next button missing");
+                        nextBtn.click();
+                        // 术语 tab
+                        document.querySelector('[data-gb-manual-tab="terms"]').click();
+                        api.assert(body.textContent.indexOf("活三") >= 0, "term 活三 missing");
+                        api.assert(body.textContent.indexOf("冲四") >= 0, "term 冲四 missing");
+                        api.assert(document.querySelectorAll(".gobang-term-card").length >= 5, "term cards missing");
                         document.querySelector('[data-gb-manual-tab="ai"]').click();
                         api.assert(body.textContent.indexOf("不会下时怎么用引擎") >= 0, "AI guidance content missing");
+                        api.assert(body.textContent.indexOf("深度") >= 0, "engine column explanation missing");
                         document.querySelector('[data-action="manual-close"]').click();
                         api.assert(manual.getAttribute("data-open") === "0", "manual did not close");
                         return "manual tabs ok";

@@ -5,7 +5,7 @@
  * 网格 = 天网节点拓扑；1.3s 回响周期 = θ-域呼吸
  */
 .minigame-panel.gobang-panel {
-    --gb-board-max: min(62vh, calc(100vw - 430px), 640px);
+    --gb-board-max: max(320px, min(62vh, calc(100vw - 430px), 640px));
     --gb-cell-pct: calc(100% / 15);
     --gb-abyss-0: #05070d;
     --gb-abyss-1: #0a1020;
@@ -1068,6 +1068,159 @@
     color: rgba(205, 218, 234, 0.78);
 }
 
+/* 棋谱单步控件 */
+.gobang-book-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    border: 1px solid rgba(120, 200, 255, 0.18);
+    background: rgba(6, 10, 18, 0.55);
+}
+
+.gobang-book-controls button {
+    min-width: 36px;
+    height: 26px;
+    padding: 0 8px;
+    border: 1px solid rgba(120, 200, 255, 0.28);
+    background: rgba(10, 18, 30, 0.92);
+    color: #cfe4ff;
+    font: 11px/1 "Consolas", "Cascadia Mono", monospace;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.gobang-book-controls button:hover:not([disabled]) {
+    border-color: rgba(180, 220, 255, 0.55);
+    box-shadow: 0 0 6px rgba(120, 200, 255, 0.22);
+}
+
+.gobang-book-controls button[disabled] {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.gobang-book-step-readout {
+    min-width: 52px;
+    text-align: center;
+    color: var(--gb-signal);
+    font: 11px/1 "Consolas", "Cascadia Mono", monospace;
+    letter-spacing: 0.5px;
+}
+
+.gobang-book-step-item {
+    transition: opacity 0.15s ease;
+}
+
+.gobang-book-step-item.dim {
+    opacity: 0.38;
+}
+
+.gobang-book-step-item.current {
+    color: var(--gb-amber);
+}
+
+.gobang-book-step-item.current b {
+    color: var(--gb-amber);
+    text-shadow: 0 0 4px rgba(255, 176, 74, 0.45);
+}
+
+.gobang-book-step-note {
+    display: block;
+    margin-top: 2px;
+    padding-left: 4px;
+    color: rgba(178, 198, 222, 0.62);
+    font-size: 11px;
+    line-height: 1.4;
+    border-left: 1px solid rgba(120, 200, 255, 0.22);
+}
+
+/* 禁手示例 */
+.gobang-forbid-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.gobang-forbid-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    border: 1px solid rgba(255, 106, 42, 0.24);
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(255, 106, 42, 0.10), transparent 60%),
+        rgba(5, 10, 18, 0.55);
+}
+
+.gobang-forbid-title {
+    color: var(--gb-reticle);
+    font: 600 12px/1 "Consolas", "Cascadia Mono", monospace;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.gobang-forbid-note {
+    color: rgba(205, 218, 234, 0.78);
+    font-size: 11.5px;
+    line-height: 1.5;
+}
+
+.gobang-forbid-card .gobang-book-board {
+    --gb-book-cell: 24px;
+}
+
+/* 术语卡 */
+.gobang-term-card {
+    padding: 10px;
+    border: 1px solid rgba(120, 200, 255, 0.14);
+    background: rgba(5, 10, 18, 0.45);
+}
+
+.gobang-term-head h3 {
+    margin: 0 0 6px;
+    color: var(--gb-signal);
+    letter-spacing: 1.5px;
+}
+
+.gobang-term-body {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+}
+
+.gobang-term-body p {
+    margin: 0;
+    color: rgba(205, 218, 234, 0.88);
+    line-height: 1.65;
+}
+
+.gobang-term-body .gobang-book-board {
+    --gb-book-cell: 22px;
+}
+
+/* ★ 关键点标记 */
+.gobang-book-cell.mark .gobang-book-mark {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--gb-reticle);
+    font-size: 18px;
+    line-height: 1;
+    text-shadow: 0 0 8px var(--gb-reticle-glow);
+    animation: gb-reticle-pulse 1.3s ease-in-out infinite;
+    width: auto;
+    height: auto;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    clip-path: none;
+}
+
 /* ================== 音频开关按钮 ================== */
 
 .gobang-audio-toggle {
@@ -1130,7 +1283,8 @@
     }
 
     .gobang-rule-demo,
-    .gobang-book-visual {
+    .gobang-book-visual,
+    .gobang-term-body {
         grid-template-columns: 1fr;
     }
 

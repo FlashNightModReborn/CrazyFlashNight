@@ -100,6 +100,47 @@
         return ok("occupied rejected and undo restored empty board");
     }
 
+    function g8_inspectThreatsAt(Core) {
+        if (typeof Core.inspectThreatsAt !== "function") return fail("inspectThreatsAt not exported");
+
+        // 场景 A：三颗相连两端皆空 => openThree
+        var a = Core.createState({ ruleset: "casual", aiEnabled: false });
+        Core.applyMove(a, 7, 6, 1, "qa");
+        Core.applyMove(a, 0, 0, -1, "qa");
+        Core.applyMove(a, 7, 7, 1, "qa");
+        Core.applyMove(a, 0, 1, -1, "qa");
+        Core.applyMove(a, 7, 8, 1, "qa");
+        var openThree = Core.inspectThreatsAt(a.board, 7, 8, 1);
+        if (openThree.openThree < 1) return fail("expected openThree >= 1, got " + JSON.stringify(openThree));
+
+        // 场景 B：三颗一端堵 => halfThree，非 openThree
+        var b = Core.createState({ ruleset: "casual", aiEnabled: false });
+        Core.applyMove(b, 7, 5, -1, "qa"); // 左端白堵
+        Core.applyMove(b, 0, 0, 1, "qa");
+        Core.applyMove(b, 7, 6, 1, "qa");
+        Core.applyMove(b, 0, 1, -1, "qa");
+        Core.applyMove(b, 7, 7, 1, "qa");
+        Core.applyMove(b, 0, 2, -1, "qa");
+        Core.applyMove(b, 7, 8, 1, "qa");
+        var blocked = Core.inspectThreatsAt(b.board, 7, 8, 1);
+        if (blocked.openThree !== 0) return fail("blocked three should not be openThree: " + JSON.stringify(blocked));
+        if (blocked.halfThree < 1) return fail("blocked three should be halfThree: " + JSON.stringify(blocked));
+
+        // 场景 C：四颗至少一端空 => four
+        var c = Core.createState({ ruleset: "casual", aiEnabled: false });
+        Core.applyMove(c, 7, 5, 1, "qa");
+        Core.applyMove(c, 0, 0, -1, "qa");
+        Core.applyMove(c, 7, 6, 1, "qa");
+        Core.applyMove(c, 0, 1, -1, "qa");
+        Core.applyMove(c, 7, 7, 1, "qa");
+        Core.applyMove(c, 0, 2, -1, "qa");
+        Core.applyMove(c, 7, 8, 1, "qa");
+        var fourThreat = Core.inspectThreatsAt(c.board, 7, 8, 1);
+        if (fourThreat.four < 1) return fail("expected four >= 1, got " + JSON.stringify(fourThreat));
+
+        return ok("openThree/halfThree/four 区分正确");
+    }
+
     function g7_serializationAndDifficulty(Core) {
         var s = Core.createState({ difficulty: "hard", ruleset: "renju", playerRole: -1 });
         Core.applyMove(s, 7, 7, 1, "ai");
@@ -119,7 +160,8 @@
         { id: "g4", title: "竞技规则双三禁手", run: g4_renjuDoubleThreeForbidden },
         { id: "g5", title: "竞技规则双四禁手", run: g5_renjuDoubleFourForbidden },
         { id: "g6", title: "非法落子与悔棋", run: g6_undoAndIllegalMove },
-        { id: "g7", title: "序列化与难度时间", run: g7_serializationAndDifficulty }
+        { id: "g7", title: "序列化与难度时间", run: g7_serializationAndDifficulty },
+        { id: "g8", title: "威胁识别 inspectThreatsAt", run: g8_inspectThreatsAt }
     ];
 
     function runOne(Core, id) {

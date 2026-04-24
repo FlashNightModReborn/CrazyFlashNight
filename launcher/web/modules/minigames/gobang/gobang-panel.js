@@ -13,6 +13,7 @@ var GobangPanel = (function() {
     var _aiStub = null;
     var _manualOpen = false;
     var _manualTab = "rules";
+    var _bookStep = {};
 
     var DEFAULT_INIT = {
         mode: "dev",
@@ -122,6 +123,7 @@ var GobangPanel = (function() {
                     '<div class="gobang-manual-tabs">',
                         '<button type="button" data-action="manual-tab" data-gb-manual-tab="rules">规则</button>',
                         '<button type="button" data-action="manual-tab" data-gb-manual-tab="books">棋谱</button>',
+                        '<button type="button" data-action="manual-tab" data-gb-manual-tab="terms">术语</button>',
                         '<button type="button" data-action="manual-tab" data-gb-manual-tab="ai">AI 指引</button>',
                     "</div>",
                     '<div class="gobang-manual-body" data-gb-manual-body></div>',
@@ -309,6 +311,13 @@ var GobangPanel = (function() {
             if (a) a.controlChange();
             switchManualTab(actionEl ? actionEl.getAttribute("data-gb-manual-tab") : "");
         }
+        else if (action === "book-step") {
+            if (!actionEl) return;
+            var bookId = actionEl.getAttribute("data-gb-book");
+            var delta = parseInt(actionEl.getAttribute("data-gb-step-delta"), 10);
+            stepBook(bookId, isNaN(delta) ? 0 : delta, actionEl.getAttribute("data-gb-step-mode"));
+            if (a) a.uiTick();
+        }
         else if (action === "export") { if (a) a.exportLog(); exportSession(); }
         else if (action === "audio") {
             if (a) { a.unlock(); a.toggleMuted(); if (!a.isMuted()) a.uiTick(); }
@@ -426,9 +435,10 @@ var GobangPanel = (function() {
         if (!a || !_state) return;
         if (role === 1) a.playerPlace();
         else a.aiPlace();
-        if (a.threat) {
-            var line = GobangCore.maxLineLength(_state.board, row, col, role);
-            if (line >= 3 && _state.status === "playing") a.threat(role, line);
+        if (a.threat && _state.status === "playing" && GobangCore.inspectThreatsAt) {
+            var t = GobangCore.inspectThreatsAt(_state.board, row, col, role);
+            if (t.four > 0) a.threat(role, 4);
+            else if (t.openThree > 0) a.threat(role, 3);
         }
     }
 
@@ -542,6 +552,21 @@ var GobangPanel = (function() {
                 "<p>如果刚开始学，建议先用侦查协议。等你能看出“快要连五”的形状，再切到绞杀协议。</p>",
             "</section>",
             '<section class="gobang-manual-section">',
+                "<h3>绞杀协议 · 三种黑棋禁手</h3>",
+                "<p>以下三张图里的 <code>★</code> 就是黑棋如果落下就会被判 <b>模因过载</b> 的点。白棋不受这些限制。</p>",
+                '<div class="gobang-forbid-grid">',
+                    buildForbidDemo("长连 · 过载", [
+                        [7, 3, 1], [7, 4, 1], [7, 5, 1], [7, 7, 1], [7, 8, 1]
+                    ], [7, 6], "黑棋一旦落 ★，横向连成 6 颗，超过 5 即判长连禁手。"),
+                    buildForbidDemo("双三 · 两活三", [
+                        [7, 6, 1], [7, 8, 1], [6, 7, 1], [8, 7, 1]
+                    ], [7, 7], "★ 同时让横向和纵向各形成两端都开放的三——两条活三同出即禁。"),
+                    buildForbidDemo("双四 · 两冲四", [
+                        [7, 5, 1], [7, 6, 1], [7, 8, 1], [5, 7, 1], [6, 7, 1], [8, 7, 1]
+                    ], [7, 7], "★ 落下之后横向和纵向各形成一个四——两个四同出即禁。"),
+                "</div>",
+            "</section>",
+            '<section class="gobang-manual-section">',
                 "<h3>三个入门动作</h3>",
                 '<ul>',
                     "<li><b>先挡四：</b>对方已经有四颗连着时，先堵住它。</li>",
@@ -553,9 +578,9 @@ var GobangPanel = (function() {
         if (tab === "books") return [
             '<section class="gobang-manual-section">',
                 "<h3>先看图，再看坐标</h3>",
-                "<p>下面每张都是中心局部放大图，不再压成整张小棋盘。读谱时按四步看：黑1在哪里；黑3往哪边伸；白4堵住哪条路；最后一手之后谁更容易连三或连四。</p>",
+                "<p>每张都是中心局部放大图。用下面的 <code>◀ ▶</code> 按钮单手推进，可以看到每一步棋从空到局势的完整变化；点【全貌】直接看到最后态；点【复位】回到第 1 手。</p>",
             "</section>",
-            bookCard("星月应手 · 先学封延伸", [
+            bookCard("book-star-moon", "星月应手 · 先学封延伸", [
                 [7, 7, 1],
                 [8, 8, -1],
                 [6, 8, 1],
@@ -564,8 +589,13 @@ var GobangPanel = (function() {
                 "看黑1和黑3：它们正在中心附近做第二个支点。",
                 "看白4：不是随便贴，而是挡住黑3继续向左连的路线。",
                 "下一眼：如果黑棋继续在中心附近补点，先检查它会不会形成两头都能走的三。"
+            ], [
+                "黑1 天元：开局默认落在正中心，占住所有方向的主干。",
+                "白2 斜靠：不走远点，从斜下方贴黑1，限制黑棋向右下的扩张。",
+                "黑3 换向：绕到上方展开第二个支点，准备横向与斜向同时发力。",
+                "白4 截断：站到黑3左邻，把黑3想继续往左延的路线先堵上。"
             ]),
-            bookCard("花月 / 浦月先导 · 贴身切断", [
+            bookCard("book-huayue", "花月 / 浦月先导 · 贴身切断", [
                 [7, 7, 1],
                 [8, 8, -1],
                 [9, 8, 1],
@@ -576,8 +606,15 @@ var GobangPanel = (function() {
                 "黑3把战场拉到中心下侧，黑5再回到右侧补连接。",
                 "白4和白6都在贴身干扰，不追远点，先拆黑棋最近的结构。",
                 "下一眼：黑棋如果能同时威胁两边，白棋就会很难只用一手挡住。"
+            ], [
+                "黑1 天元。",
+                "白2 斜下贴身。",
+                "黑3 拉到下侧扩张。",
+                "白4 插到黑1上方破坏纵向连接。",
+                "黑5 回到右侧，尝试把黑3和右边合起来。",
+                "白6 再次贴身，不让黑棋两条线凑成威胁。"
             ]),
-            bookCard("中心横向二连 · 马上堵端点", [
+            bookCard("book-two-connect", "中心横向二连 · 马上堵端点", [
                 [7, 7, 1],
                 [8, 8, -1],
                 [7, 8, 1],
@@ -586,8 +623,13 @@ var GobangPanel = (function() {
                 "入门口诀：看到贴身二连，先问两端还能不能继续伸。",
                 "这里白4堵的是右端；如果黑棋换到另一侧伸，防守点也要跟着对称移动。",
                 "下一眼：如果黑棋再从左端补一手，白棋要立刻重新判断有没有活三。"
+            ], [
+                "黑1 天元。",
+                "白2 斜靠。",
+                "黑3 横向紧贴，形成两子相连。",
+                "白4 堵右端，防止黑棋从右继续延伸。"
             ]),
-            bookCard("中心对角扩展 · 看远一格", [
+            bookCard("book-diag-expand", "中心对角扩展 · 看远一格", [
                 [7, 7, 1],
                 [8, 8, -1],
                 [6, 6, 1],
@@ -597,7 +639,44 @@ var GobangPanel = (function() {
                 "黑1和黑3形成斜向骨架，黑5再往左压出第二条路。",
                 "白4站在下方切断，目标是让黑棋不能舒服地连续扩张。",
                 "下一眼：检查黑棋在左侧和中心是否同时有下一手。"
+            ], [
+                "黑1 天元。",
+                "白2 斜下贴身。",
+                "黑3 反向斜上，把斜线铺开。",
+                "白4 占到黑3下方要点，切断斜向继续扩张的机会。",
+                "黑5 往左一格，让黑1和黑3的连接多出一条路径。"
             ])
+        ].join("");
+        if (tab === "terms") return [
+            '<section class="gobang-manual-section">',
+                "<h3>看懂别人/引擎的术语</h3>",
+                "<p>下面每一项都配了一张中心放大的示意，★ 表示关键点。名字先记功能，别纠结字面。</p>",
+            "</section>",
+            termCard("活三", "两头都没被堵的三颗连子。对方下一手如果不管，你就能变成活四，接着直接连五。", [
+                [7, 6, 1], [7, 7, 1], [7, 8, 1]
+            ], null),
+            termCard("眠三", "只有一头能继续延伸的三颗。只要堵住那一端就无法继续变四，不急。", [
+                [7, 6, 1], [7, 7, 1], [7, 8, 1], [7, 5, -1]
+            ], null),
+            termCard("冲四", "只剩一个点就能连五的四，必须马上挡——忽视一手就会直接被连五。", [
+                [7, 5, 1], [7, 6, 1], [7, 7, 1], [7, 8, 1]
+            ], [7, 9]),
+            termCard("活四", "两头都能连五的四。无论挡哪一头，下一手还能从另一头连五，几乎等于赢。", [
+                [7, 5, 1], [7, 6, 1], [7, 7, 1], [7, 8, 1]
+            ], null),
+            termCard("连五", "五颗同色棋子连成一条线，胜负判定。", [
+                [7, 4, 1], [7, 5, 1], [7, 6, 1], [7, 7, 1], [7, 8, 1]
+            ], null),
+            '<section class="gobang-manual-section">',
+                "<h3>对局中会听到的叫法</h3>",
+                '<table><tbody>',
+                    "<tr><th>双四</th><td>两个方向各出一个四。绞杀协议里黑棋被禁。</td></tr>",
+                    "<tr><th>双三</th><td>两个方向各出一个活三。绞杀协议里黑棋被禁。</td></tr>",
+                    "<tr><th>长连</th><td>超过 5 颗的连子。绞杀协议里黑棋被禁；白棋算赢。</td></tr>",
+                    "<tr><th>VCF</th><td>一路靠冲四把对方逼到不得不挡的连续进攻。</td></tr>",
+                    "<tr><th>VCT</th><td>一路靠活三 / 活四把对方逼到不得不挡的连续进攻。</td></tr>",
+                "</tbody></table>",
+            "</section>"
         ].join("");
         if (tab === "ai") return [
             '<section class="gobang-manual-section">',
@@ -611,6 +690,16 @@ var GobangPanel = (function() {
                 "</ul>",
             "</section>",
             '<section class="gobang-manual-section">',
+                "<h3>看懂引擎栏的几行数字</h3>",
+                "<p>每次 AI 落子后，右侧【黑铁剑引擎】区块会写出三行数据：</p>",
+                '<ul>',
+                    "<li><b>反制落点：</b>AI 刚落在哪个坐标。对照棋盘能看清它的意图。</li>",
+                    "<li><b>深度：</b>AI 往后算了几手。数字越大越深思熟虑；<code>烈度</code>越高深度上限越大。</li>",
+                    "<li><b>评估：</b>AI 视角的局面分值。正数对 AI 有利，负数对你有利；0 附近意味着双方势均力敌。",
+                    "<li><b>PV：</b>引擎预想的最佳后续走法序列。看不懂没关系，主要看它预估了多远。</li>",
+                "</ul>",
+            "</section>",
+            '<section class="gobang-manual-section">',
                 "<h3>一眼判断</h3>",
                 "<p>每一步先问：对方有没有四颗快赢？有没有两边都能延伸的三颗？我的下一手能不能同时进攻和防守？</p>",
             "</section>"
@@ -618,18 +707,55 @@ var GobangPanel = (function() {
         return "";
     }
 
-    function bookCard(title, moves, caption, notes) {
+    function buildForbidDemo(title, moves, star, note) {
         return [
-            '<section class="gobang-manual-section gobang-book-card">',
+            '<div class="gobang-forbid-card">',
+                '<div class="gobang-forbid-title">' + escapeHtml(title) + "</div>",
+                buildBookBoard(moves, title, { star: star }),
+                '<div class="gobang-forbid-note">' + escapeHtml(note) + "</div>",
+            "</div>"
+        ].join("");
+    }
+
+    function termCard(title, body, moves, star) {
+        return [
+            '<section class="gobang-manual-section gobang-term-card">',
+                '<div class="gobang-term-head"><h3>' + escapeHtml(title) + "</h3></div>",
+                '<div class="gobang-term-body">',
+                    buildBookBoard(moves, title, { star: star }),
+                    "<p>" + escapeHtml(body) + "</p>",
+                "</div>",
+            "</section>"
+        ].join("");
+    }
+
+    function bookCard(bookId, title, moves, caption, notes, moveCommentary) {
+        if (typeof _bookStep[bookId] !== "number") {
+            _bookStep[bookId] = moves.length;
+        }
+        var step = Math.max(0, Math.min(moves.length, _bookStep[bookId]));
+        var visibleMoves = moves.slice(0, step);
+        var canPrev = step > 1;
+        var canNext = step < moves.length;
+        var isFull = step === moves.length;
+        return [
+            '<section class="gobang-manual-section gobang-book-card" data-gb-book-card="' + escapeAttr(bookId) + '">',
                 '<div class="gobang-book-head">',
                     "<h3>" + escapeHtml(title) + "</h3>",
-                    '<span>中心局部放大 · 数字 = 落子顺序</span>',
+                    '<span>中心局部放大 · 第 ' + step + " / " + moves.length + " 手</span>",
                 "</div>",
                 '<div class="gobang-book-visual">',
-                    buildBookBoard(moves, title),
+                    buildBookBoard(visibleMoves, title),
                     '<div class="gobang-book-side">',
+                        '<div class="gobang-book-controls" role="group" aria-label="单步控制">',
+                            '<button type="button" data-action="book-step" data-gb-book="' + escapeAttr(bookId) + '" data-gb-step-mode="reset" data-gb-step-delta="0" aria-label="复位到第 1 手">复位</button>',
+                            '<button type="button" data-action="book-step" data-gb-book="' + escapeAttr(bookId) + '" data-gb-step-delta="-1"' + (canPrev ? "" : " disabled") + ' aria-label="上一手">◀</button>',
+                            '<span class="gobang-book-step-readout">' + step + " / " + moves.length + "</span>",
+                            '<button type="button" data-action="book-step" data-gb-book="' + escapeAttr(bookId) + '" data-gb-step-delta="1"' + (canNext ? "" : " disabled") + ' aria-label="下一手">▶</button>',
+                            '<button type="button" data-action="book-step" data-gb-book="' + escapeAttr(bookId) + '" data-gb-step-mode="full" data-gb-step-delta="0"' + (isFull ? " disabled" : "") + ' aria-label="显示全貌">全貌</button>',
+                        "</div>",
                         '<ol class="gobang-book-steps">',
-                            buildBookSteps(moves),
+                            buildBookSteps(moves, step, moveCommentary),
                         "</ol>",
                         buildBookNotes(notes),
                     "</div>",
@@ -637,6 +763,15 @@ var GobangPanel = (function() {
                 '<p class="gobang-book-caption">' + escapeHtml(caption) + "</p>",
             "</section>"
         ].join("");
+    }
+
+    function stepBook(bookId, delta, mode) {
+        if (!bookId) return;
+        if (typeof _bookStep[bookId] !== "number") _bookStep[bookId] = 0;
+        if (mode === "reset") _bookStep[bookId] = 1;
+        else if (mode === "full") _bookStep[bookId] = 99;
+        else _bookStep[bookId] = _bookStep[bookId] + delta;
+        renderManual();
     }
 
     function buildBookNotes(notes) {
@@ -650,28 +785,38 @@ var GobangPanel = (function() {
         return out.join("");
     }
 
-    function buildBookSteps(moves) {
+    function buildBookSteps(moves, step, commentary) {
         var out = [];
         var i;
+        var cutoff = typeof step === "number" ? step : moves.length;
         for (i = 0; i < moves.length; i += 1) {
+            var cls = "gobang-book-step-item";
+            if (i + 1 > cutoff) cls += " dim";
+            if (i + 1 === cutoff) cls += " current";
+            var comment = commentary && commentary[i] ? ' <span class="gobang-book-step-note">' + escapeHtml(commentary[i]) + "</span>" : "";
             out.push(
-                "<li><b>" + (moves[i][2] === 1 ? "黑" : "白") + (i + 1) + "</b> <code>" +
-                formatCoord(moves[i][0], moves[i][1]) + "</code></li>"
+                '<li class="' + cls + '"><b>' + (moves[i][2] === 1 ? "黑" : "白") + (i + 1) + '</b> <code>' +
+                formatCoord(moves[i][0], moves[i][1]) + "</code>" + comment + "</li>"
             );
         }
         return out.join("");
     }
 
-    function buildBookBoard(moves, label) {
+    function buildBookBoard(moves, label, options) {
         var moveByKey = {};
         var i;
-        var view = bookViewForMoves(moves);
+        var opts = options || {};
+        // 计算视图时同时考虑 star，避免只 1 子或 star 在外围时被裁掉
+        var framingPoints = moves.slice();
+        if (opts.star && opts.star.length === 2) framingPoints.push([opts.star[0], opts.star[1], 0]);
+        var view = bookViewForMoves(framingPoints);
         for (i = 0; i < moves.length; i += 1) {
             moveByKey[moves[i][0] + ":" + moves[i][1]] = {
                 role: moves[i][2],
                 order: i + 1
             };
         }
+        var starKey = opts.star ? opts.star[0] + ":" + opts.star[1] : null;
         var cells = [];
         cells.push('<span class="gobang-book-corner">局部</span>');
         for (i = view.colMin; i <= view.colMax; i += 1) {
@@ -681,12 +826,16 @@ var GobangPanel = (function() {
             cells.push('<span class="gobang-book-axis row" title="' + rowLabel(row) + '">' + rowLabel(row) + "</span>");
             for (var col = view.colMin; col <= view.colMax; col += 1) {
                 var move = moveByKey[row + ":" + col];
+                var key = row + ":" + col;
                 var cls = "gobang-book-cell" + (isBookStar(row, col) ? " star" : "");
                 var body = "";
                 if (move) {
                     cls += move.role === 1 ? " black" : " white";
                     if (move.order === moves.length) cls += " last";
                     body = "<span>" + move.order + "</span>";
+                } else if (starKey && key === starKey) {
+                    cls += " mark";
+                    body = '<span class="gobang-book-mark">★</span>';
                 }
                 cells.push('<span class="' + cls + '" title="' + formatCoord(row, col) + '">' + body + "</span>");
             }
@@ -694,17 +843,23 @@ var GobangPanel = (function() {
         return '<div class="gobang-book-board" aria-label="' + escapeHtml(label || "棋谱图示") + '">' + cells.join("") + "</div>";
     }
 
-    function bookViewForMoves(moves) {
+    function bookViewForMoves(points) {
         var minRow = 7;
         var maxRow = 7;
         var minCol = 7;
         var maxCol = 7;
         var i;
-        for (i = 0; i < moves.length; i += 1) {
-            minRow = Math.min(minRow, moves[i][0]);
-            maxRow = Math.max(maxRow, moves[i][0]);
-            minCol = Math.min(minCol, moves[i][1]);
-            maxCol = Math.max(maxCol, moves[i][1]);
+        if (points && points.length) {
+            minRow = points[0][0];
+            maxRow = points[0][0];
+            minCol = points[0][1];
+            maxCol = points[0][1];
+            for (i = 1; i < points.length; i += 1) {
+                minRow = Math.min(minRow, points[i][0]);
+                maxRow = Math.max(maxRow, points[i][0]);
+                minCol = Math.min(minCol, points[i][1]);
+                maxCol = Math.max(maxCol, points[i][1]);
+            }
         }
         var span = 9;
         var centerRow = Math.round((minRow + maxRow) / 2);
@@ -718,6 +873,10 @@ var GobangPanel = (function() {
             colMax: centerCol + 4,
             span: span
         };
+    }
+
+    function escapeAttr(text) {
+        return String(text).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     }
 
     function shortColumnLabel(col) {

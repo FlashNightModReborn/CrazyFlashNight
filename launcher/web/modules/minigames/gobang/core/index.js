@@ -152,6 +152,33 @@
         return best;
     }
 
+    function lineOpenEnds(board, row, col, role, dir) {
+        var forwardCount = countInDirection(board, row, col, role, dir.dr, dir.dc);
+        var backwardCount = countInDirection(board, row, col, role, -dir.dr, -dir.dc);
+        var fr = row + dir.dr * (forwardCount + 1);
+        var fc = col + dir.dc * (forwardCount + 1);
+        var br = row - dir.dr * (backwardCount + 1);
+        var bc = col - dir.dc * (backwardCount + 1);
+        var forwardOpen = inBounds(fr, fc) && getCell(board, fr, fc) === EMPTY;
+        var backwardOpen = inBounds(br, bc) && getCell(board, br, bc) === EMPTY;
+        return (forwardOpen ? 1 : 0) + (backwardOpen ? 1 : 0);
+    }
+
+    function inspectThreatsAt(board, row, col, role) {
+        var result = { five: 0, four: 0, openThree: 0, halfThree: 0 };
+        var i;
+        for (i = 0; i < DIRECTIONS.length; i += 1) {
+            var dir = DIRECTIONS[i];
+            var len = lineLength(board, row, col, role, dir);
+            var openEnds = lineOpenEnds(board, row, col, role, dir);
+            if (len >= 5) result.five += 1;
+            else if (len === 4 && openEnds >= 1) result.four += 1;
+            else if (len === 3 && openEnds === 2) result.openThree += 1;
+            else if (len === 3 && openEnds === 1) result.halfThree += 1;
+        }
+        return result;
+    }
+
     function hasAnyFive(board, row, col, role, rulesetId) {
         var rules = RULESETS[normalizeRuleset(rulesetId)];
         var i;
@@ -427,6 +454,7 @@
         buildSessionExport: buildSessionExport,
         forbiddenLabel: forbiddenLabel,
         inspectForbiddenAfterMove: inspectForbiddenAfterMove,
+        inspectThreatsAt: inspectThreatsAt,
         maxLineLength: maxLineLength
     };
 });
