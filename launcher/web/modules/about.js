@@ -37,7 +37,7 @@
     _container.innerHTML =
       '<div class="modal-header">' +
         '<h2>ABOUT · 说明 / 版权</h2>' +
-        '<button class="modal-close" id="about-close">\u00d7</button>' +
+        '<button class="modal-close" id="about-close">×</button>' +
       '</div>' +
       '<div class="about-modal">' +
         '<h3>DOCUMENT</h3>' +

@@ -198,6 +198,7 @@ $requiredWebPaths = @(
     "modules\map-panel-data.js",
     "modules\map-fit-presets.js",
     "modules\map-panel.js",
+    "modules\map-hud.js",
     "modules\overlay-audio-bindings.js",
     "modules\minigames\shared\host-bridge.js",
     "modules\minigames\shared\minigame-shell.css",

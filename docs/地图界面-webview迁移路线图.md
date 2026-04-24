@@ -175,7 +175,8 @@ Phase 1 的实现细化、协议草案、文件落点与验收清单统一看：
 
 当前实现状态：
 
-- `TASK_MAP` 已切到 Web 地图 panel
+- 小地图 HUD 点击（map-hud `TASK_MAP`）已切到 Web 地图 panel
+- 任务条「可交付」态现由 `TASK_DELIVER` 直传到 NPC 所在地图，`MapPanelService.resolveDeliverableState`（聚合 `collectDeliverableHotspotIds` + `canNavigateToHotspot`）+ `navigateToHotspot` 为 AS2 侧入口，`td / tdh / tdn` 三字段驱动 UI
 - `snapshot / navigate / close / force_close` 链路已通
 - 静态底图已扩到 `基地 / A兵团 / 废城禁区 / 学校` 四个页面
 - 四个页面的运行时舞台现已统一切到 `assembled` 模式：场景块按 `sceneVisuals` 拼接渲染，右侧层级按钮缺失原素材时允许直接使用 Web/CSS 复刻旧视觉语言
@@ -302,7 +303,7 @@ Phase 1 的实现细化、协议草案、文件落点与验收清单统一看：
 
 当前状态：
 
-- `TASK_MAP` 已是 Launcher 唯一正式地图入口
+- 小地图 HUD `TASK_MAP` + 车库 `openWebMap(pageId)` + 任务条 `TASK_DELIVER` 三入口统一汇入 Launcher 的 Web 地图 panel
 - 开发期临时 `MAP_TEST` 子菜单入口已移除，不再维持运行时双轨按钮
 - fallback 复核已转为 `browser harness + preview + audit-map-layout.js` 这组工具链
 

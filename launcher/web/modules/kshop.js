@@ -35,7 +35,7 @@ var KShop = (function() {
 
     // ── Helpers ──
     function isStackable(item) {
-        return item.majorType === '\u6d88\u8017\u54c1' || item.majorType === '\u6536\u96c6\u54c1';
+        return item.majorType === '消耗品' || item.majorType === '收集品';
     }
     function isLocked(item) {
         return Number(item.level) > _playerLevel + _reverseLevel;
@@ -108,24 +108,24 @@ var KShop = (function() {
         _el.className = 'kshop-panel';
         _el.innerHTML =
             '<div class="kshop-header">' +
-                '<span class="kshop-title">K\u70b9\u5546\u57ce</span>' +
-                '<span class="kshop-balance">K\u70b9: <b id="kshop-kpoints">0</b></span>' +
-                '<button class="kshop-close-btn">\u00d7</button>' +
+                '<span class="kshop-title">K点商城</span>' +
+                '<span class="kshop-balance">K点: <b id="kshop-kpoints">0</b></span>' +
+                '<button class="kshop-close-btn">×</button>' +
             '</div>' +
             '<div class="kshop-categories" id="kshop-cat-bar"></div>' +
             '<div class="kshop-body">' +
                 '<div class="kshop-grid-wrap">' +
-                    '<div class="kshop-loading" id="kshop-loading">\u52a0\u8f7d\u4e2d\u2026</div>' +
+                    '<div class="kshop-loading" id="kshop-loading">加载中…</div>' +
                     '<div class="kshop-grid" id="kshop-grid"></div>' +
                 '</div>' +
                 '<div class="kshop-sidebar">' +
-                    '<div class="kshop-cart-header">// \u8d2d\u7269\u8f66</div>' +
+                    '<div class="kshop-cart-header">// 购物车</div>' +
                     '<div class="kshop-cart-list" id="kshop-cart-list"></div>' +
                     '<div class="kshop-cart-footer">' +
-                        '<span>\u5408\u8ba1: <b id="kshop-cart-total">0</b></span>' +
-                        '<button class="kshop-checkout-btn" id="kshop-checkout">\u7ed3\u8d26</button>' +
+                        '<span>合计: <b id="kshop-cart-total">0</b></span>' +
+                        '<button class="kshop-checkout-btn" id="kshop-checkout">结账</button>' +
                     '</div>' +
-                    '<div class="kshop-claim-header">// \u5df2\u8d2d\u4e70</div>' +
+                    '<div class="kshop-claim-header">// 已购买</div>' +
                     '<div class="kshop-claim-list" id="kshop-claim-list"></div>' +
                 '</div>' +
             '</div>' +
@@ -232,7 +232,7 @@ var KShop = (function() {
             if (item.type !== _activeCategory) continue;
 
             var locked = isLocked(item);
-            var nosale = item.type === '\u975e\u5356\u54c1';
+            var nosale = item.type === '非卖品';
             var stackable = isStackable(item);
 
             var card = document.createElement('div');
@@ -246,15 +246,15 @@ var KShop = (function() {
             var actionHtml = '';
             if (!nosale && !locked) {
                 if (stackable) {
-                    actionHtml = '<button class="kshop-add-btn" data-idx="' + item.idx + '" title="\u52a0\u5165\u8d2d\u7269\u8f66">+</button>';
+                    actionHtml = '<button class="kshop-add-btn" data-idx="' + item.idx + '" title="加入购物车">+</button>';
                 } else {
-                    actionHtml = '<button class="kshop-add-btn kshop-add-single" data-idx="' + item.idx + '" title="\u52a0\u5165\u8d2d\u7269\u8f66">\u2713</button>';
+                    actionHtml = '<button class="kshop-add-btn kshop-add-single" data-idx="' + item.idx + '" title="加入购物车">✓</button>';
                 }
             }
 
             // 锁定标志
             var lockHtml = locked
-                ? '<div class="kshop-lock" title="Lv.' + item.level + ' \u89e3\u9501">\u26bf Lv.' + item.level + '</div>'
+                ? '<div class="kshop-lock" title="Lv.' + item.level + ' 解锁">⚿ Lv.' + item.level + '</div>'
                 : '';
 
             card.innerHTML = iconEl +
@@ -312,11 +312,11 @@ var KShop = (function() {
         var locked = isLocked(item);
         return '<div class="kshop-tt-header"><b>' + escHtml(item.displayname) + '</b></div>' +
             '<div class="kshop-tt-divider"></div>' +
-            '<span class="kshop-tt-dim">\u7c7b\u578b</span> ' + escHtml(item.majorType) + ' / ' + escHtml(item.subType) + '<br>' +
-            '<span class="kshop-tt-dim">\u7b49\u7ea7</span> ' + item.level +
-            (locked ? ' <span class="kshop-tt-locked">\u26bf \u9501\u5b9a</span>' : '') + '<br>' +
+            '<span class="kshop-tt-dim">类型</span> ' + escHtml(item.majorType) + ' / ' + escHtml(item.subType) + '<br>' +
+            '<span class="kshop-tt-dim">等级</span> ' + item.level +
+            (locked ? ' <span class="kshop-tt-locked">⚿ 锁定</span>' : '') + '<br>' +
             '<span class="kshop-tt-price">K ' + item.price + '</span>' +
-            '<div class="kshop-tt-loading">\u52a0\u8f7d\u4e2d\u2026</div>';
+            '<div class="kshop-tt-loading">加载中…</div>';
     }
 
     function buildRichHtml(item, data) {
@@ -325,7 +325,7 @@ var KShop = (function() {
         var descHtml = data.descHTML ? PanelTooltip.convertAS2Html(data.descHTML) : '';
 
         var lockBanner = locked
-            ? '<div class="kshop-tt-lock-banner">\u26bf \u9501\u5b9a \u2014 \u9700\u8981 Lv.' + item.level + '</div>'
+            ? '<div class="kshop-tt-lock-banner">⚿ 锁定 — 需要 Lv.' + item.level + '</div>'
             : '';
 
         var iconUrl = (typeof Icons !== 'undefined') ? Icons.resolve(item.icon) : null;
@@ -367,7 +367,7 @@ var KShop = (function() {
         if (!item) return;
 
         if (isLocked(item)) {
-            toast('\u7b49\u7ea7\u4e0d\u8db3\uff0c\u65e0\u6cd5\u8d2d\u4e70\uff01');
+            toast('等级不足，无法购买！');
             return;
         }
 
@@ -377,7 +377,7 @@ var KShop = (function() {
             // 装备：直接加1，重复提示
             for (var i = 0; i < _cart.length; i++) {
                 if (_cart[i].idx === idx) {
-                    toast('\u8be5\u88c5\u5907\u5df2\u5728\u8d2d\u7269\u8f66\u4e2d');
+                    toast('该装备已在购物车中');
                     return;
                 }
             }
@@ -401,15 +401,15 @@ var KShop = (function() {
         _qtyPopup.innerHTML =
             '<div class="kshop-qty-popup-title">' + escHtml(item.displayname) + '</div>' +
             '<div class="kshop-qty-popup-row">' +
-                '<button class="kshop-qty-pop-btn" data-v="-10">\u2212\u2212</button>' +
-                '<button class="kshop-qty-pop-btn" data-v="-1">\u2212</button>' +
+                '<button class="kshop-qty-pop-btn" data-v="-10">−−</button>' +
+                '<button class="kshop-qty-pop-btn" data-v="-1">−</button>' +
                 '<input class="kshop-qty-input" type="number" value="1" min="1" max="999">' +
                 '<button class="kshop-qty-pop-btn" data-v="1">+</button>' +
                 '<button class="kshop-qty-pop-btn" data-v="10">++</button>' +
             '</div>' +
             '<div class="kshop-qty-popup-foot">' +
                 '<span class="kshop-qty-subtotal">K ' + item.price + '</span>' +
-                '<button class="kshop-qty-confirm">\u52a0\u8d2d</button>' +
+                '<button class="kshop-qty-confirm">加购</button>' +
             '</div>';
 
         // 定位到按钮附近
@@ -509,14 +509,14 @@ var KShop = (function() {
             if (stackable) {
                 qtyHtml =
                     '<span class="kshop-cart-qty">' +
-                        '<button class="kshop-qty-btn" data-idx="' + c.idx + '" data-delta="-1">\u2212</button>' +
+                        '<button class="kshop-qty-btn" data-idx="' + c.idx + '" data-delta="-1">−</button>' +
                         ' ' + c.qty + ' ' +
                         '<button class="kshop-qty-btn" data-idx="' + c.idx + '" data-delta="1">+</button>' +
                     '</span>';
             } else {
                 qtyHtml =
-                    '<span class="kshop-cart-qty">\u00d71</span>' +
-                    '<button class="kshop-qty-btn kshop-remove-btn" data-idx="' + c.idx + '" data-delta="-1" title="\u79fb\u9664">\u2715</button>';
+                    '<span class="kshop-cart-qty">×1</span>' +
+                    '<button class="kshop-qty-btn kshop-remove-btn" data-idx="' + c.idx + '" data-delta="-1" title="移除">✕</button>';
             }
 
             row.innerHTML =
@@ -607,11 +607,11 @@ var KShop = (function() {
                 _cart = [];
                 renderCart();
                 renderClaimed();
-                toast('\u8d2d\u4e70\u6210\u529f\uff01');
+                toast('购买成功！');
             } else if (resp.error === 'insufficient_kpoints') {
-                toast('K\u70b9\u4e0d\u8db3');
+                toast('K点不足');
             } else {
-                toast('\u8d2d\u4e70\u5931\u8d25: ' + (resp.error || 'unknown'));
+                toast('购买失败: ' + (resp.error || 'unknown'));
             }
         };
         Bridge.send({type:'panel', cmd:'checkout', callId: reqId, cart: payload});
@@ -644,8 +644,8 @@ var KShop = (function() {
             if (catItem) row.setAttribute('data-idx', catItem.idx);
             row.innerHTML =
                 '<span class="kshop-cart-thumb">' + iconHtml(iconName, 'kshop-row-icon') + '</span>' +
-                '<span class="kshop-claim-name">' + escHtml(displayName) + ' \u00d7' + qty + '</span>' +
-                '<button class="kshop-claim-btn" data-pidx="' + i + '">\u9886\u53d6</button>';
+                '<span class="kshop-claim-name">' + escHtml(displayName) + ' ×' + qty + '</span>' +
+                '<button class="kshop-claim-btn" data-pidx="' + i + '">领取</button>';
             row.querySelector('.kshop-claim-btn').addEventListener('click', onClaim);
             if (catItem) row.addEventListener('click', onClaimRowClick);
             _claimList.appendChild(row);
@@ -669,9 +669,9 @@ var KShop = (function() {
             if (resp.success) {
                 _purchased = resp.purchased || [];
                 renderClaimed();
-                toast('\u9886\u53d6\u6210\u529f\uff01');
+                toast('领取成功！');
             } else {
-                toast('\u9886\u53d6\u5931\u8d25: ' + (resp.error || 'unknown'));
+                toast('领取失败: ' + (resp.error || 'unknown'));
                 e.target.disabled = false;
             }
         };
@@ -694,10 +694,10 @@ var KShop = (function() {
                 doClose();
             } else if (resp.error === 'timeout') {
                 _closing = false;
-                showSaveFailedDialog('\u4fdd\u5b58\u8d85\u65f6\uff0c\u72b6\u6001\u672a\u77e5', true);
+                showSaveFailedDialog('保存超时，状态未知', true);
             } else {
                 _closing = false;
-                showSaveFailedDialog(resp.error || '\u4fdd\u5b58\u5931\u8d25', false);
+                showSaveFailedDialog(resp.error || '保存失败', false);
             }
         };
         Bridge.send({type:'panel', cmd:'saveCart', callId: reqId, cart: cartPayload});
@@ -722,15 +722,15 @@ var KShop = (function() {
     function showSaveFailedDialog(msg, timeoutMode) {
         var dlg = _el.querySelector('#kshop-dialog');
         if (!dlg) return;
-        var btns = '<button class="kshop-dlg-btn" data-action="retry">\u91cd\u8bd5</button>';
-        if (!timeoutMode) btns += '<button class="kshop-dlg-btn" data-action="cancel">\u7ee7\u7eed\u8d2d\u7269</button>';
-        btns += '<button class="kshop-dlg-btn kshop-dlg-danger" data-action="force">\u5f3a\u5236\u5173\u95ed</button>';
+        var btns = '<button class="kshop-dlg-btn" data-action="retry">重试</button>';
+        if (!timeoutMode) btns += '<button class="kshop-dlg-btn" data-action="cancel">继续购物</button>';
+        btns += '<button class="kshop-dlg-btn kshop-dlg-danger" data-action="force">强制关闭</button>';
 
         dlg.innerHTML =
             '<div class="kshop-dlg-inner">' +
-                '<div class="kshop-dlg-title">\u26a0 ' + escHtml(msg) + '</div>' +
+                '<div class="kshop-dlg-title">⚠ ' + escHtml(msg) + '</div>' +
                 '<div class="kshop-dlg-hint">' +
-                    (timeoutMode ? '\u8d2d\u7269\u8f66\u72b6\u6001\u672a\u77e5\uff0c\u5f3a\u5236\u5173\u95ed\u53ef\u80fd\u4e22\u5931\u8d2d\u7269\u8f66' : '\u53ef\u91cd\u8bd5\u6216\u7ee7\u7eed\u8d2d\u7269') +
+                    (timeoutMode ? '购物车状态未知，强制关闭可能丢失购物车' : '可重试或继续购物') +
                 '</div>' +
                 '<div class="kshop-dlg-btns">' + btns + '</div>' +
             '</div>';
@@ -764,7 +764,7 @@ var KShop = (function() {
         dismissQtyInput();
         hideTooltip();
         UiData.off('k', _kHandler);
-        toast('\u8fde\u63a5\u65ad\u5f00\uff0c\u5546\u57ce\u5df2\u5173\u95ed');
+        toast('连接断开，商城已关闭');
     }
 
     return {};

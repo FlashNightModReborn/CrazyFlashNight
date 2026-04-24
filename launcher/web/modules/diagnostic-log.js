@@ -16,7 +16,7 @@
     _container.innerHTML =
       '<div class="modal-header">' +
         '<h2>诊断日志</h2>' +
-        '<button class="modal-close" id="diag-close">\u00d7</button>' +
+        '<button class="modal-close" id="diag-close">×</button>' +
       '</div>' +
       '<div class="diag-log-toolbar">' +
         '<button id="diag-refresh">刷新</button>' +

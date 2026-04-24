@@ -28,9 +28,9 @@
 	_root.注释(150,_root.获得翻译("有任务已达成，请尽快交付！"));
 }
 on (press) {
-	if (_root.地图界面._x != undefined)
+	if (_root.gameCommands != undefined && _root.gameCommands["openTaskUI"] != undefined)
 	{
-		_root.地图界面.gotoAndStop(2);
+		_root.gameCommands["openTaskUI"]();
 	}
 	_root.注释结束();
 }

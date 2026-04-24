@@ -66,7 +66,7 @@
             <button data-key="WAREHOUSE" title="后勤战备箱">📦 战备箱</button>
             <button data-key="SHOP" title="商城">🛒 商城</button>
         </div>
-        <!-- (quest row moved to #quest-row between top-right-tools and jukebox) -->
+        <!-- (right-top context UI lives in #context-panel beneath the tool row) -->
     </div>
     <div id="notch-info"></div>
     <div id="combo-status"></div>
@@ -85,24 +85,51 @@
     <button data-key="SAFEEXIT" title="安全退出">&#10005;</button>
 </div>
 
+<div id="context-panel" style="display:none">
+    <div id="map-hud" style="display:none">
+        <button id="map-hud-button" type="button" title="打开地图">
+            <div id="map-hud-stage">
+                <div id="map-hud-outline"></div>
+                <div id="map-hud-label">
+                    <span id="map-hud-mode" aria-hidden="true"></span>
+                    <span id="map-hud-label-text"></span>
+                </div>
+            </div>
+        </button>
+    </div>
+    <div id="context-sidebar">
+        <div id="quest-row" style="display:none">
+            <button id="map-hud-toggle" type="button" title="收起小地图">
+                <span class="quest-row-icon" id="map-hud-toggle-icon">&#9662;</span>
+                <span class="quest-row-label" id="map-hud-toggle-label">地图</span>
+            </button>
+            <button data-key="EQUIP_UI" title="装备栏">
+                <span class="quest-row-icon">&#9776;</span>
+                <span class="quest-row-label">装备</span>
+            </button>
+            <button data-key="TASK_UI" title="任务栏">
+                <span class="quest-row-icon">&#9776;</span>
+                <span class="quest-row-label">任务</span>
+            </button>
+        </div>
+        <div id="quest-notice-bar" style="display:none">
+            <button id="quest-notice-main" type="button" title="打开任务栏">
+                <div id="quest-notice-icon">&#10069;</div>
+                <div id="quest-notice-text-wrap">
+                    <span id="quest-notice-text"></span>
+                </div>
+                <span id="quest-notice-arrow" aria-hidden="true">&#8680;</span>
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- 安全退出面板：✕ 按钮下方展开 -->
 <div id="safe-exit-panel">
     <div id="safe-exit-status">存盘中…</div>
     <div id="safe-exit-buttons" style="display:none">
         <button data-key="EXIT_CANCEL">取消</button>
         <button data-key="EXIT_CONFIRM">退出游戏</button>
-    </div>
-</div>
-
-<!-- 任务 + 装备行：右上角工具条与点歌面板之间 -->
-<div id="quest-row" style="display:none">
-    <button data-key="EQUIP_UI" title="装备栏">&#9776; 装备</button>
-    <button data-key="TASK_UI" title="任务栏">&#9776; 任务</button>
-</div>
-<div id="quest-notice-bar" style="display:none">
-    <div id="quest-notice-icon">&#10069;</div>
-    <div id="quest-notice-text-wrap">
-        <span id="quest-notice-text"></span>
     </div>
 </div>
 
@@ -218,6 +245,7 @@
 <script src="modules/map-panel-data.js"></script>
 <script src="modules/map-fit-presets.js"></script>
 <script src="modules/map-panel.js"></script>
+<script src="modules/map-hud.js"></script>
 <script src="modules/minigames/shared/host-bridge.js"></script>
 <script src="modules/minigames/lockbox/core/index.js"></script>
 <script src="modules/minigames/lockbox/core/solver.js"></script>

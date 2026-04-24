@@ -38,8 +38,78 @@ class org.flashNight.arki.map.MapPanelService {
         _root.gameCommands["openWebMap"] = function(params) {
             org.flashNight.arki.map.MapPanelService.handleOpenWebMap(params);
         };
+        _root.gameCommands["navigateToHotspot"] = function(params) {
+            org.flashNight.arki.map.MapPanelService.navigateToHotspot(String(params.targetId));
+        };
 
         _inited = true;
+    }
+
+    // ─────────────────────────────────────────────
+    // 对外：任务交付直传入口（供 launcher 侧 TASK_DELIVER 点击调用）
+    // ─────────────────────────────────────────────
+
+    /**
+     * hotspotId 是否可直接跳转：非战斗地图 + NAVIGATE_TARGETS 命中 + 所在组已解锁（base 永解锁）
+     */
+    public static function canNavigateToHotspot(hotspotId:String):Boolean {
+        if (_root.当前为战斗地图) return false;
+        if (hotspotId == undefined || hotspotId == "") return false;
+        if (MapPanelCatalog.NAVIGATE_TARGETS[hotspotId] == undefined) return false;
+
+        var groupName:String = resolveHotspotGroup(hotspotId);
+        if (groupName == "") return false;
+        if (groupName == "base") return true;
+        return isUnlocked(groupName);
+    }
+
+    /**
+     * 聚合 HUD 交付按钮所需状态：扫描全部已达成任务，优先挑选首个可导航的 hotspot；
+     * 若无可导航但存在已达成任务，回落为首个 hotspot（用于告知「传送尚未解锁」）。
+     * @return { hotspotId:String, navigable:Boolean }
+     */
+    public static function resolveDeliverableState():Object {
+        var ids:Array = MapTaskNpcRegistry.collectDeliverableHotspotIds();
+        if (ids.length == 0) return { hotspotId: "", navigable: false };
+
+        for (var i:Number = 0; i < ids.length; i++) {
+            if (canNavigateToHotspot(ids[i])) {
+                return { hotspotId: ids[i], navigable: true };
+            }
+        }
+        return { hotspotId: ids[0], navigable: false };
+    }
+
+    /**
+     * 直接跳转到指定 hotspot。调用方需自行保证 canNavigateToHotspot == true。
+     * 无 callId/无响应，副作用与 handleNavigate 一致。
+     * @return Boolean 是否发起了跳转
+     */
+    public static function navigateToHotspot(hotspotId:String):Boolean {
+        if (!canNavigateToHotspot(hotspotId)) {
+            log("navigateToHotspot rejected hotspotId=" + hotspotId);
+            return false;
+        }
+        var targetFrame:String = MapPanelCatalog.NAVIGATE_TARGETS[hotspotId];
+        log("navigateToHotspot hotspotId=" + hotspotId + " frame=" + targetFrame);
+        MapHotspotResolver.beginPending(hotspotId);
+        performNavigate(targetFrame);
+        return true;
+    }
+
+    /** 反查 hotspotId 所属组名；未命中返回空串 */
+    private static function resolveHotspotGroup(hotspotId:String):String {
+        var i:Number;
+        for (i = 0; i < MapPanelCatalog.BASE_HOTSPOT_IDS.length; i++) {
+            if (MapPanelCatalog.BASE_HOTSPOT_IDS[i] == hotspotId) return "base";
+        }
+        for (var g:String in MapPanelCatalog.GROUPED_HOTSPOT_IDS) {
+            var list:Array = MapPanelCatalog.GROUPED_HOTSPOT_IDS[g];
+            for (i = 0; i < list.length; i++) {
+                if (list[i] == hotspotId) return g;
+            }
+        }
+        return "";
     }
 
     // ─────────────────────────────────────────────
@@ -89,28 +159,27 @@ class org.flashNight.arki.map.MapPanelService {
     }
 
     /**
-     * 旧版 Flash 地图界面（flashswf/UI/地图界面/LIBRARY/地图界面.xml 内
-     * gotoAndStop(2) 的按钮）统一走此入口，接入 WebView 新地图面板。
-     * 绕过旧 frame 跳转，避免双 UI。
+     * 所有旧地图入口统一走此入口，接入 WebView 新地图面板。
+     * params.pageId 可选（base/faction/defense/school），指定面板打开时默认页。
      */
     public static function handleOpenWebMap(params:Object):Void {
         var source:String = (params != undefined && params.source != undefined)
             ? String(params.source)
             : "as2_legacy_button";
-        log("openWebMap request source=" + source);
+        var pageId:String = (params != undefined && params.pageId != undefined)
+            ? String(params.pageId)
+            : "";
+        log("openWebMap request source=" + source + " pageId=" + pageId);
 
-        // 旧 Flash 地图如果已经跳到 frame 2，先收回避免双叠
-        if (_root.地图界面 != undefined && _root.地图界面.gotoAndStop != undefined) {
-            _root.地图界面.gotoAndStop(1);
-        }
-
-        // 交给 Launcher 打开 WebView 面板，不再隐藏 gameworld（WebView overlay 自己会盖住）
-        if (_root.server != undefined && _root.server.sendSocketMessage != undefined) {
-            _root.server.sendSocketMessage(
-                '{"task":"panel_request","panel":"map","source":"' + source + '"}');
-        } else {
+        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) {
             log("openWebMap failed: server/sendSocketMessage unavailable");
+            return;
         }
+
+        var payload:String = '{"task":"panel_request","panel":"map","source":"' + source + '"';
+        if (pageId != "") payload += ',"pageId":"' + pageId + '"';
+        payload += '}';
+        _root.server.sendSocketMessage(payload);
     }
 
     // ─────────────────────────────────────────────
@@ -303,8 +372,5 @@ class org.flashNight.arki.map.MapPanelService {
         _root.关卡结束界面._visible = 0;
         _root.场景进入位置名 = "出生地";
         _root.淡出动画.淡出跳转帧(targetFrame);
-        if (_root.地图界面 != undefined && _root.地图界面.gotoAndStop != undefined) {
-            _root.地图界面.gotoAndStop(1);
-        }
     }
 }

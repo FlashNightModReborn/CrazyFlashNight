@@ -274,7 +274,7 @@ namespace CF7Launcher.Guardian
                         {
                             float shPt = 18f * combinedScale * pixPerFlash;
                             shPt = Math.Max(4f, Math.Min(shPt, 36f));
-                            segments.Add(new TextSegment(" \uD83D\uDEE1" + ((int)shieldAbsorb).ToString(),
+                            segments.Add(new TextSegment(" 🛡" + ((int)shieldAbsorb).ToString(),
                                 Color.FromArgb(0x00, 0xCE, 0xD1), shPt, true));
                         }
 

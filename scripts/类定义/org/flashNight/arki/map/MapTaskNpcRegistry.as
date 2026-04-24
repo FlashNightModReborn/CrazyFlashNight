@@ -125,6 +125,37 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
     }
 
     /**
+     * 扫描 _root.tasks_to_do，按任务顺序收集所有已达成任务 finish_npc 对应的 hotspotId。
+     * 去重、保持任务顺序；无命中返回空数组。
+     * 上层（MapPanelService.resolveDeliverableState）负责挑选首个可导航的作为直传目标。
+     */
+    public static function collectDeliverableHotspotIds():Array {
+        var result:Array = [];
+        var tasks:Array = _root.tasks_to_do;
+        if (tasks == undefined) return result;
+
+        var seen:Object = {};
+        for (var i:Number = 0; i < tasks.length; i++) {
+            if (!_root.taskCompleteCheck(i)) continue;
+
+            var taskData:Object = _root.getTaskData(tasks[i].id);
+            if (taskData == undefined || taskData.finish_npc == undefined) continue;
+
+            var finishNpc:String = resolveAliasKey(String(taskData.finish_npc));
+            if (finishNpc == "") continue;
+
+            var markerDef:Object = findMarker(finishNpc);
+            if (markerDef == undefined) continue;
+
+            var hid:String = String(markerDef.hotspotId);
+            if (seen[hid]) continue;
+            seen[hid] = true;
+            result.push(hid);
+        }
+        return result;
+    }
+
+    /**
      * 从 XML parse 结果填表。任一校验失败 → trace + 回退空字典 + 返回 false。
      * 前置：调用者必须确保 MapPanelCatalog.applyFromXml 已先行成功（本方法读 Catalog.HOTSPOT_PAGES
      * 派生 npc.pageId）。

@@ -197,7 +197,7 @@ def extract_avatar_instance_map(map_xml_path: Path) -> dict[str, dict]:
 
 
 def write_metadata_js(path: Path, entries: dict[str, dict]) -> None:
-    payload = json.dumps(entries, ensure_ascii=True, indent=2)
+    payload = json.dumps(entries, ensure_ascii=False, indent=2)
     content = (
         "var MapAvatarSourceData = (function() {\n"
         "    'use strict';\n\n"

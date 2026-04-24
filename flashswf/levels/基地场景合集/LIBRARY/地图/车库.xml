@@ -275,7 +275,7 @@ onClipEvent(load){
 		};
 		_root.确认通用面板.启动();
 	}else{
-		_root.地图界面.gotoAndStop(6);
+		_root.gameCommands["openWebMap"]({ source: "as2_garage_bike", pageId: "defense" });
 	}
 }
 on(rollOver){
@@ -330,7 +330,7 @@ onClipEvent (load) {
 	}
 	else
 	{
-		_root.地图界面.gotoAndStop(4);
+		_root.gameCommands["openWebMap"]({ source: "as2_garage_motorcycle", pageId: "faction" });
 	}
 }
 on (rollOver) {
@@ -384,7 +384,7 @@ onClipEvent (load) {
 	}
 	else
 	{
-		_root.地图界面.gotoAndStop(4);
+		_root.gameCommands["openWebMap"]({ source: "as2_garage_offroad", pageId: "faction" });
 	}
 }
 on (rollOver) {

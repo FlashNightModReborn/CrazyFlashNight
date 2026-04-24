@@ -13,10 +13,15 @@
  *   _pendingStaleTicks       — pending 连续多少次解析仍未被 source 追上
  *   _pendingMaxStaleTicks    — 超过这个阈值强制清空 pending, fallback 到 source
  *
- * 三源定义：
- *   _root._currentlabel   — Flash 内置当前帧标签
+ * 四源定义（按权威度排列）：
+ *   _root.关卡标志        — 当前场景标识（外部地图/基地部分地图的权威源，场景切换前即更新）
+ *   _root._currentlabel   — Flash 内置当前帧标签（时间轴异步，跨一级菜单跳转时会滞后）
  *   _root.场景进入位置名  — 场景进入位置名
  *   _root.关卡地图帧值    — 关卡地图帧值
+ *
+ * 排序原因：跳转地图 → gotoAndPlay("基地地图"|"外部地图") 前，关卡标志已写入新值，
+ * 但 _currentlabel 要等时间轴跑到目标帧才更新；先取 _currentlabel 会在 gap 窗口
+ * 内解析出旧 hotspot 造成 HUD 高亮错误房间。
  */
 
 import org.flashNight.arki.map.MapPanelCatalog;
@@ -29,21 +34,57 @@ class org.flashNight.arki.map.MapHotspotResolver {
     private static var _pendingMaxStaleTicks:Number = 6;
 
     /**
-     * 从三源解析当前 hotspotId（不考虑 pending）。
-     * 命中顺序：_currentlabel → 场景进入位置名 → 关卡地图帧值。
+     * 从四源解析当前 hotspotId（不考虑 pending）。
+     * 命中顺序：关卡标志 → _currentlabel → 场景进入位置名 → 关卡地图帧值。
+     * 对 _currentlabel 命中的结果额外用 isHotspotCompatibleWithRuntime 过滤，
+     * 避免跳图中 label 残留旧值时返回上一 scene kind 的 hotspot。
      */
     public static function resolveCurrentFromSources():String {
         var hotspotId:String = MapPanelCatalog.resolveHotspotIdByFrameName(
-            String(_root._currentlabel || ""));
+            String(_root.关卡标志 || ""));
         if (hotspotId != "") return hotspotId;
+
+        hotspotId = MapPanelCatalog.resolveHotspotIdByFrameName(
+            String(_root._currentlabel || ""));
+        if (hotspotId != "" && isHotspotCompatibleWithRuntime(hotspotId)) return hotspotId;
 
         hotspotId = MapPanelCatalog.resolveHotspotIdByFrameName(
             String(_root.场景进入位置名 || ""));
-        if (hotspotId != "") return hotspotId;
+        if (hotspotId != "" && isHotspotCompatibleWithRuntime(hotspotId)) return hotspotId;
 
         hotspotId = MapPanelCatalog.resolveHotspotIdByFrameName(
             String(_root.关卡地图帧值 || ""));
-        return hotspotId;
+        if (hotspotId != "" && isHotspotCompatibleWithRuntime(hotspotId)) return hotspotId;
+        return "";
+    }
+
+    private static function resolveRuntimeSceneKind():String {
+        if (_root.当前为战斗地图 == true) return "combat";
+
+        var stageFlagHotspotId:String = MapPanelCatalog.resolveHotspotIdByFrameName(
+            String(_root.关卡标志 || ""));
+        if (stageFlagHotspotId != "") {
+            var pageId:String = String(MapPanelCatalog.resolvePageId(stageFlagHotspotId) || "base");
+            return pageId == "base" ? "base" : "outdoor";
+        }
+
+        var currentLabel:String = String(_root._currentlabel || "");
+        if (currentLabel == "基地地图") return "base";
+        if (currentLabel == "外部地图") return "outdoor";
+        return "";
+    }
+
+    private static function isHotspotCompatibleWithRuntime(hotspotId:String):Boolean {
+        var sceneKind:String = resolveRuntimeSceneKind();
+        var pageId:String;
+        if (hotspotId == undefined || hotspotId == "") return false;
+        if (sceneKind == "") return true;
+        if (sceneKind == "combat") return false;
+
+        pageId = String(MapPanelCatalog.resolvePageId(hotspotId) || "base");
+        if (sceneKind == "base") return pageId == "base";
+        if (sceneKind == "outdoor") return pageId != "base";
+        return true;
     }
 
     /**
@@ -82,7 +123,10 @@ class org.flashNight.arki.map.MapHotspotResolver {
                         _lastResolvedHotspotId = sourceHotspotId;
                         return sourceHotspotId;
                     }
-                    return String(_lastResolvedHotspotId || "");
+                    if (isHotspotCompatibleWithRuntime(String(_lastResolvedHotspotId || ""))) {
+                        return String(_lastResolvedHotspotId || "");
+                    }
+                    return "";
                 }
                 _lastResolvedHotspotId = pendingHotspotId;
                 return pendingHotspotId;
@@ -99,7 +143,10 @@ class org.flashNight.arki.map.MapHotspotResolver {
             return sourceHotspotId;
         }
 
-        return String(_lastResolvedHotspotId || "");
+        if (isHotspotCompatibleWithRuntime(String(_lastResolvedHotspotId || ""))) {
+            return String(_lastResolvedHotspotId || "");
+        }
+        return "";
     }
 
     /**

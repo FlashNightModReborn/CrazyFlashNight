@@ -60,7 +60,7 @@
     _container.innerHTML =
       '<div class="modal-header">' +
         '<h2>存档编辑: ' + escHtml(displayName) + ' <small style="color:#666">(' + escHtml(_slot) + ')</small></h2>' +
-        '<button class="modal-close" id="ed-close">\u00d7</button>' +
+        '<button class="modal-close" id="ed-close">×</button>' +
       '</div>' +
       '<div id="ed-banner"></div>' +
       '<div id="ed-mode-tabs" class="mode-tabs"></div>' +
@@ -434,7 +434,7 @@
   function validateRaw(text, statusDiv) {
     try {
       JSON.parse(text);
-      statusDiv.textContent = 'JSON 有效 \u2713';
+      statusDiv.textContent = 'JSON 有效 ✓';
       statusDiv.className = 'raw-status ok';
       return true;
     } catch (e) {

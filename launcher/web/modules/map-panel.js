@@ -20,6 +20,7 @@ var MapPanel = (function() {
     var _snapshotMarkers = [];
     var _snapshotTips = [];
     var _currentHotspotId = '';
+    var _requestedInitialPageId = '';
     var _hoverHotspotId = '';
     var _busyLookup = {};
     var _closing = false;
@@ -217,7 +218,9 @@ var MapPanel = (function() {
         initLayoutWatcher();
         hideError();
         setLoading(true);
-        applyPage((initData && (initData.page || initData.region)) || 'base');
+        var requestedPageId = (initData && (initData.page || initData.region)) || '';
+        _requestedInitialPageId = requestedPageId;
+        applyPage(requestedPageId || 'base');
         requestSnapshot('snapshot');
         scheduleSettledLayoutSync();
         playCue('modalOpen');
@@ -235,6 +238,7 @@ var MapPanel = (function() {
         _snapshotMarkers = [];
         _snapshotTips = [];
         _currentHotspotId = '';
+        _requestedInitialPageId = '';
         _hoverHotspotId = '';
         _busyLookup = {};
         _debugTelemetryEnabled = false;
@@ -571,7 +575,9 @@ var MapPanel = (function() {
             rebuildEnabledLookupFromStates(true);
         }
 
-        var targetPageId = snapshot.defaultPageId || resolvePageIdForHotspot(_currentHotspotId) || (_activePage ? _activePage.id : '');
+        var requestedPageId = _requestedInitialPageId;
+        _requestedInitialPageId = '';
+        var targetPageId = requestedPageId || snapshot.defaultPageId || resolvePageIdForHotspot(_currentHotspotId) || (_activePage ? _activePage.id : '');
         if (targetPageId) {
             applyPage(targetPageId);
             return;

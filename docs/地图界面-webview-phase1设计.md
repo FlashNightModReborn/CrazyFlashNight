@@ -56,18 +56,17 @@ Phase 1 只解决两件事：
 
 ### 2.4 当前地图打开路径
 
-当前 `TASK_MAP` 已切到 Web 地图正式入口：
+Launcher 侧 Web 地图 panel 的正式打开路径已收敛为以下三条：
 
-- `WebOverlayForm.cs` 在 `TASK_MAP` 按钮上直接打开 `panel:"map"`
-- 打开参数固定为 `{"source":"task_map","dev":false}`
-- 旧 `openTaskMap` 仍保留在 AS2 侧，作为未清理的旧链路，不再承担 launcher 默认入口
+- `TASK_MAP`（小地图 HUD 点击）：`WebOverlayForm.cs` 直接打开 `panel:"map"`，参数固定为 `{"source":"task_map","dev":false}`
+- `panel_request` + `source="as2_garage_*"`（AS2 `openWebMap(params)` → `MapPanelService.handleOpenWebMap`）：AS2 侧车库等旧入口通过 `gameCommands["openWebMap"]` 统一转发，payload 可携带 `pageId` 指定初始页
+- `TASK_DELIVER`（任务条可交付态）：不进 `panel` 面板，直接调用 `MapPanelService.navigateToHotspot(hotspotId)` 做跳转。状态聚合由 `MapPanelService.resolveDeliverableState()` 负责——它读 `MapTaskNpcRegistry.collectDeliverableHotspotIds()` 拿到所有已达成任务的 hotspot，再用 `canNavigateToHotspot()` 挑首个可导航的作为 `tdh`，全部不可导航时回落到首个并置 `tdn=0` 让 UI 告知「传送尚未解锁」
 
-开发期临时 `MAP_TEST` 入口已完成使命并移除：
+任务条的状态由 AS2 `是否达成任务检测` 推送的 `td / tdh / tdn` KV 驱动：`td=1` 时显示「任务已达成」，若 `tdh` 非空且 `tdn=1`，整条 notice 点击会触发 `TASK_DELIVER`；否则退化为打开任务栏。
 
-- 当前 Launcher 侧只保留 `TASK_MAP` 这一条正式打开路径
-- 地图调试入口统一转到 browser harness / preview / CLI 复核，而不是长期保留运行时子菜单按钮
+开发期临时 `MAP_TEST` 入口已完成使命并移除：地图调试入口统一转到 browser harness / preview / CLI 复核，而不是长期保留运行时子菜单按钮。
 
-也就是说，Phase 1 已经完成“Web 地图面板立起来 + `TASK_MAP` 默认切换”，当前剩余的是后续维护与清理工作。
+也就是说，Phase 1 已经完成“Web 地图面板立起来 + 正式入口全部切换”，当前剩余的是后续维护与清理工作。
 
 ## 3. Phase 1 的核心决策
 
@@ -366,7 +365,7 @@ Phase 1 必须明确区分：
 
 职责：
 
-- 为 `TASK_MAP` 提供统一的 `map` panel 打开逻辑
+- 为 `TASK_MAP` / `panel_request` / `TASK_DELIVER` 三条入口提供统一分发（前两者打开 `map` panel，后者直走 `navigateToHotspot` gameCommand）
 - 处理 Web 发来的 `close / snapshot / navigate / refresh`
 - 做 web `callId` 与 flash `callId` 的转发
 - 将 Flash 的 `map_response` 改写为 `panel_resp`

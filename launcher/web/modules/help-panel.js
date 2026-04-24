@@ -13,9 +13,9 @@ var HelpPanel = (function() {
         'easter-eggs': 'help/easter-eggs.md'
     };
     var TAB_LABELS = {
-        'controls':    '\u57fa\u672c\u64cd\u4f5c',
-        'worldview':   '\u4e16\u754c\u89c2',
-        'easter-eggs': '\u5f69\u86cb\u5185\u5bb9'
+        'controls':    '基本操作',
+        'worldview':   '世界观',
+        'easter-eggs': '彩蛋内容'
     };
     var TAB_ORDER = ['controls', 'worldview', 'easter-eggs'];
 
@@ -34,8 +34,8 @@ var HelpPanel = (function() {
         _el.className = 'help-panel';
         _el.innerHTML =
             '<div class="help-header">' +
-                '<span class="help-title">\u6e38\u620f\u5e2e\u52a9</span>' +
-                '<button class="help-close-btn">\u00d7</button>' +
+                '<span class="help-title">游戏帮助</span>' +
+                '<button class="help-close-btn">×</button>' +
             '</div>' +
             '<div class="help-tabs" id="help-tab-bar"></div>' +
             '<div class="help-content" id="help-content"></div>';
@@ -86,7 +86,7 @@ var HelpPanel = (function() {
             _content.innerHTML = _cache[tabId];
             _content.scrollTop = 0;
         } else {
-            _content.innerHTML = '<p class="help-loading">\u52a0\u8f7d\u4e2d\u2026</p>';
+            _content.innerHTML = '<p class="help-loading">加载中…</p>';
             fetchMd(TAB_FILES[tabId], function(html) {
                 _cache[tabId] = html;
                 if (_currentTab === tabId) {
@@ -108,7 +108,7 @@ var HelpPanel = (function() {
                         : '<pre>' + xhr.responseText + '</pre>';
                     cb(html);
                 } else {
-                    cb('<p class="help-error">\u52a0\u8f7d\u5931\u8d25</p>');
+                    cb('<p class="help-error">加载失败</p>');
                 }
             }
         };
