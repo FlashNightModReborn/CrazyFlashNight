@@ -209,6 +209,7 @@ $requiredWebPaths = @(
     "modules\minigames\pinalign\pinalign-panel.js",
     "modules\minigames\gobang\gobang.css",
     "modules\minigames\gobang\gobang-panel.js",
+    "modules\minigames\gobang\gobang-audio.js",
     "modules\minigames\gobang\core\index.js"
 )
 $missingWebPaths = @()

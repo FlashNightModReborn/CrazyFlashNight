@@ -19,6 +19,7 @@ namespace CF7Launcher.Tasks
         private readonly string _enginePath;
         private readonly object _queueLock = new object();
         private bool _engineReady;
+        private int _currentRuleCode = -1;
 
         public GomokuTask(string projectRoot)
         {
@@ -89,6 +90,15 @@ namespace CF7Launcher.Tasks
             {
                 EnsureEngine();
 
+                // 规则变化或首次使用时先下发 INFO rule，保证 START 时的持久规则与当前会话一致
+                int ruleCode = RuleCodeFor(ruleset);
+                if (ruleCode != _currentRuleCode)
+                {
+                    _engine.StandardInput.WriteLine("INFO rule " + ruleCode);
+                    _engine.StandardInput.Flush();
+                    _currentRuleCode = ruleCode;
+                }
+
                 // 发送 BOARD 命令
                 StringBuilder board = new StringBuilder();
                 board.AppendLine("BOARD");
@@ -108,7 +118,6 @@ namespace CF7Launcher.Tasks
                 board.AppendLine("DONE");
 
                 // 设置时间限制
-                _engine.StandardInput.WriteLine("INFO rule " + RuleCodeFor(ruleset));
                 _engine.StandardInput.WriteLine("INFO timeout_turn " + timeLimit);
                 _engine.StandardInput.Write(board.ToString());
                 _engine.StandardInput.Flush();
@@ -237,6 +246,8 @@ namespace CF7Launcher.Tasks
             psi.WorkingDirectory = Path.GetDirectoryName(_enginePath);
 
             _engine = Process.Start(psi);
+            _engine.ErrorDataReceived += OnEngineStderr;
+            _engine.BeginErrorReadLine();
             _engine.StandardInput.WriteLine("START 15");
             _engine.StandardInput.Flush();
 
@@ -250,6 +261,12 @@ namespace CF7Launcher.Tasks
                 LogManager.Log("[Gomoku] Engine start response: " + okLine);
         }
 
+        private static void OnEngineStderr(object sender, DataReceivedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(e.Data)) return;
+            LogManager.Log("[Gomoku][stderr] " + e.Data);
+        }
+
         private void KillEngine()
         {
             if (_engine != null)
@@ -261,13 +278,17 @@ namespace CF7Launcher.Tasks
                         _engine.StandardInput.WriteLine("END");
                         _engine.StandardInput.Flush();
                         if (!_engine.WaitForExit(1000))
+                        {
                             _engine.Kill();
+                            _engine.WaitForExit(1000);
+                        }
                     }
                 }
                 catch { }
                 try { _engine.Dispose(); } catch { }
                 _engine = null;
                 _engineReady = false;
+                _currentRuleCode = -1;
             }
         }
 

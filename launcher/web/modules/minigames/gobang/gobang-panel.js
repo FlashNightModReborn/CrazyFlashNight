@@ -43,28 +43,31 @@ var GobangPanel = (function() {
         _el.className = "minigame-panel gobang-panel";
         _el.innerHTML = [
             '<div class="minigame-header">',
-                '<div>',
-                    '<div class="minigame-kicker">// GOBANG ENGINE BOARD //</div>',
-                    '<div class="minigame-title">五子棋对弈台</div>',
+                '<div class="gobang-title-block">',
+                    buildEmblemSvg(),
+                    '<div>',
+                        '<div class="minigame-kicker">// 旧世遗线 · 铁枪会入侵协议 //</div>',
+                        '<div class="minigame-title">虚渊隔离节点接入台</div>',
+                    "</div>",
                 "</div>",
                 '<div class="minigame-header-right">',
-                    '<label class="gobang-select-label">规则<select data-gb-control="ruleset">',
-                        '<option value="casual">休闲</option>',
-                        '<option value="renju">竞技</option>',
+                    '<label class="gobang-select-label">协议<select data-gb-control="ruleset">',
+                        '<option value="casual">侦查</option>',
+                        '<option value="renju">绞杀</option>',
                     "</select></label>",
-                    '<label class="gobang-select-label">难度<select data-gb-control="difficulty">',
-                        '<option value="fast">快速</option>',
-                        '<option value="normal">普通</option>',
-                        '<option value="hard">困难</option>',
-                        '<option value="master">大师</option>',
+                    '<label class="gobang-select-label">烈度<select data-gb-control="difficulty">',
+                        '<option value="fast">速击</option>',
+                        '<option value="normal">标准</option>',
+                        '<option value="hard">深渗</option>',
+                        '<option value="master">铁枪</option>',
                     "</select></label>",
-                    '<label class="gobang-select-label">执棋<select data-gb-control="playerRole">',
-                        '<option value="1">黑</option>',
-                        '<option value="-1">白</option>',
+                    '<label class="gobang-select-label">阵营<select data-gb-control="playerRole">',
+                        '<option value="1">铁枪</option>',
+                        '<option value="-1">尸解仙</option>',
                     "</select></label>",
-                    '<label class="gobang-select-label">对手<select data-gb-control="opponent">',
-                        '<option value="ai">AI</option>',
-                        '<option value="local">双人</option>',
+                    '<label class="gobang-select-label">对局<select data-gb-control="opponent">',
+                        '<option value="ai">引擎</option>',
+                        '<option value="local">双侧</option>',
                     "</select></label>",
                     '<div class="minigame-phase-badge" data-gb-phase>INIT</div>',
                     '<button class="minigame-close-btn" type="button" data-action="close">×</button>',
@@ -73,32 +76,33 @@ var GobangPanel = (function() {
             '<div class="minigame-main gobang-main">',
                 '<div class="minigame-grid-pane gobang-board-pane">',
                     '<div class="gobang-toolbar">',
-                        '<button class="minigame-chrome-btn" type="button" data-action="new">新局</button>',
-                        '<button class="minigame-chrome-btn" type="button" data-action="undo">悔棋</button>',
-                        '<button class="minigame-chrome-btn" type="button" data-action="retry-ai">重试AI</button>',
-                        '<button class="minigame-chrome-btn" type="button" data-action="export">导出</button>',
+                        '<button class="minigame-chrome-btn" type="button" data-action="new">启动遗线</button>',
+                        '<button class="minigame-chrome-btn" type="button" data-action="undo">信号回溯</button>',
+                        '<button class="minigame-chrome-btn" type="button" data-action="retry-ai">重载引擎</button>',
+                        '<button class="minigame-chrome-btn" type="button" data-action="export">作战日志</button>',
+                        '<button class="gobang-audio-toggle" type="button" data-action="audio" data-gb-audio title="信号音轨开关">♪ 音轨</button>',
                         '<span class="gobang-readout" data-gb-readout></span>',
                     "</div>",
                     '<div class="gobang-board-shell">',
                         '<div class="gobang-coordinate-row" data-gb-col-labels></div>',
-                        '<div class="gobang-board-frame">',
-                            '<div class="gobang-coordinate-col" data-gb-row-labels></div>',
-                            '<div class="gobang-board" data-gb-board></div>',
-                        "</div>",
+                        '<div class="gobang-coordinate-col" data-gb-row-labels></div>',
+                        '<div class="gobang-board" data-gb-board></div>',
+                        '<div class="gobang-scanlines" aria-hidden="true"></div>',
+                        '<div class="gobang-sweep" aria-hidden="true"></div>',
                     "</div>",
                 "</div>",
                 '<div class="minigame-side-pane gobang-side-pane">',
                     '<section class="minigame-side-section gobang-status-card">',
-                        '<div class="minigame-side-title">局面</div>',
+                        '<div class="minigame-side-title">局面 · Tactical</div>',
                         '<div class="gobang-status-line" data-gb-status></div>',
                         '<div class="gobang-kv" data-gb-kv></div>',
                     "</section>",
                     '<section class="minigame-side-section">',
-                        '<div class="minigame-side-title">引擎</div>',
+                        '<div class="minigame-side-title">黑铁剑引擎 · Rapfi</div>',
                         '<div class="gobang-engine" data-gb-engine></div>',
                     "</section>",
                     '<section class="minigame-side-section gobang-export-wrap">',
-                        '<div class="minigame-side-title">导出</div>',
+                        '<div class="minigame-side-title">作战日志</div>',
                         '<pre class="gobang-export" data-gb-export></pre>',
                     "</section>",
                 "</div>",
@@ -124,6 +128,20 @@ var GobangPanel = (function() {
         _refs.opponent = _el.querySelector('[data-gb-control="opponent"]');
         _refs.colLabels = _el.querySelector("[data-gb-col-labels]");
         _refs.rowLabels = _el.querySelector("[data-gb-row-labels]");
+        _refs.audioToggle = _el.querySelector("[data-gb-audio]");
+        syncAudioToggle();
+    }
+
+    function audio() {
+        return (typeof GobangAudio !== "undefined") ? GobangAudio : null;
+    }
+
+    function syncAudioToggle() {
+        if (!_refs.audioToggle) return;
+        var a = audio();
+        var muted = a ? a.isMuted() : true;
+        _refs.audioToggle.setAttribute("data-muted", muted ? "1" : "0");
+        _refs.audioToggle.textContent = muted ? "♪ 静音" : "♪ 音轨";
     }
 
     function bindEvents() {
@@ -155,14 +173,14 @@ var GobangPanel = (function() {
         var i;
         for (i = 0; i < GobangCore.SIZE; i += 1) {
             cols.push('<span>' + columnLabel(i) + "</span>");
-            rows.push('<span>' + (i + 1) + "</span>");
+            rows.push('<span>' + rowLabel(i) + "</span>");
         }
         for (i = 0; i < GobangCore.SIZE * GobangCore.SIZE; i += 1) {
             var row = Math.floor(i / GobangCore.SIZE);
             var col = i % GobangCore.SIZE;
             cells.push(
                 '<button type="button" class="gobang-cell" data-row="' + row + '" data-col="' + col + '" title="' +
-                columnLabel(col) + (row + 1) + '"><span class="gobang-stone"></span><span class="gobang-order"></span></button>'
+                formatCoord(row, col) + '"><span class="gobang-stone"></span><span class="gobang-order"></span></button>'
             );
         }
         _refs.colLabels.innerHTML = cols.join("");
@@ -170,10 +188,46 @@ var GobangPanel = (function() {
         _refs.board.innerHTML = cells.join("");
     }
 
+    function buildEmblemSvg() {
+        // 铁枪会图腾简化版：菱形底 + 中央橙红准星 + 交叉枪管 + 电蓝弧 + 上下矛尖
+        return [
+            '<svg class="gobang-emblem" viewBox="0 0 64 72" role="img" aria-label="铁枪会图腾">',
+                '<defs>',
+                    '<linearGradient id="gb-emb-frame" x1="0" y1="0" x2="0" y2="1">',
+                        '<stop offset="0%" stop-color="#b9bad4"/>',
+                        '<stop offset="100%" stop-color="#8b8fae"/>',
+                    '</linearGradient>',
+                '</defs>',
+                // 菱形底
+                '<path d="M32 6 L56 36 L32 66 L8 36 Z" fill="url(#gb-emb-frame)" stroke="#2b3144" stroke-width="1.4"/>',
+                // 电蓝弧（左右对称）
+                '<path d="M22 22 Q28 30 20 38 Q16 44 24 50" fill="none" stroke="#78d6ff" stroke-width="1.6" stroke-linecap="round" opacity="0.85"/>',
+                '<path d="M42 22 Q36 30 44 38 Q48 44 40 50" fill="none" stroke="#78d6ff" stroke-width="1.6" stroke-linecap="round" opacity="0.85"/>',
+                // 上矛尖
+                '<path d="M32 2 L36 12 L32 10 L28 12 Z" fill="#1f2738" stroke="#78d6ff" stroke-width="0.8"/>',
+                // 下矛尖
+                '<path d="M32 70 L36 60 L32 62 L28 60 Z" fill="#1f2738" stroke="#78d6ff" stroke-width="0.8"/>',
+                // 交叉枪管
+                '<path d="M14 52 L30 38 M50 52 L34 38" stroke="#1a2130" stroke-width="5" stroke-linecap="round"/>',
+                '<path d="M14 52 L30 38 M50 52 L34 38" stroke="#3a4864" stroke-width="2.2" stroke-linecap="round"/>',
+                // 中央准星
+                '<circle cx="32" cy="34" r="10" fill="#141a28" stroke="#ff6a2a" stroke-width="1.4"/>',
+                '<circle cx="32" cy="34" r="6.5" fill="none" stroke="#ff6a2a" stroke-width="1.1"/>',
+                '<circle cx="32" cy="34" r="1.6" fill="#ffd2a6"/>',
+                '<line x1="32" y1="23" x2="32" y2="28" stroke="#ff6a2a" stroke-width="1.2"/>',
+                '<line x1="32" y1="40" x2="32" y2="45" stroke="#ff6a2a" stroke-width="1.2"/>',
+                '<line x1="21" y1="34" x2="26" y2="34" stroke="#ff6a2a" stroke-width="1.2"/>',
+                '<line x1="38" y1="34" x2="43" y2="34" stroke="#ff6a2a" stroke-width="1.2"/>',
+            '</svg>'
+        ].join("");
+    }
+
     function onOpen(el, initData) {
         _panelOpen = true;
         _sessionSequence += 1;
         _sessionId = "gobang-" + _sessionSequence + "-" + (Date.now() >>> 0);
+        var a = audio();
+        if (a) { a.unlock(); a.sessionOpen(); }
         startNewGame(merge(DEFAULT_INIT, initData || {}), true);
     }
 
@@ -218,21 +272,35 @@ var GobangPanel = (function() {
     }
 
     function handleAction(action) {
+        var a = audio();
+        if (a) a.unlock();
         if (action === "close") closePanel();
-        else if (action === "new") startNewGame(readControls());
-        else if (action === "undo") undoMove();
-        else if (action === "retry-ai") startAiTurn();
-        else if (action === "export") exportSession();
+        else if (action === "new") { if (a) a.uiTick(); startNewGame(readControls()); }
+        else if (action === "undo") { if (a) a.uiTick(); undoMove(); }
+        else if (action === "retry-ai") { if (a) a.uiTick(); startAiTurn(); }
+        else if (action === "export") { if (a) a.uiTick(); exportSession(); }
+        else if (action === "audio") {
+            if (a) { a.unlock(); a.toggleMuted(); if (!a.isMuted()) a.uiTick(); }
+            syncAudioToggle();
+        }
     }
 
     function handleCellClick(row, col) {
         if (!_state || _pendingAi || _state.status !== "playing") return;
         if (_state.aiEnabled && _state.currentRole !== _state.playerRole) return;
-        var result = GobangCore.applyMove(_state, row, col, _state.currentRole, _state.aiEnabled ? "player" : "local");
+        var a = audio();
+        if (a) a.unlock();
+        var placingRole = _state.currentRole;
+        var result = GobangCore.applyMove(_state, row, col, placingRole, _state.aiEnabled ? "player" : "local");
         if (!result.valid) {
             _state.forbidden = result;
+            if (a) a.illegal();
             render();
             return;
+        }
+        if (a) {
+            if (placingRole === 1) a.playerPlace();
+            else a.aiPlace();
         }
         notifyHost("turn", buildSessionPayload({ move: result.move }));
         render();
@@ -258,6 +326,8 @@ var GobangPanel = (function() {
             payload: payload
         };
         _state.aiError = "";
+        var aStart = audio();
+        if (aStart) aStart.aiStart();
         render();
 
         var stub = _aiStub || window.GobangAiStub;
@@ -294,9 +364,16 @@ var GobangPanel = (function() {
         var y = parseInt(response.result.y, 10);
         var result = GobangCore.applyMove(_state, x, y, _state.aiRole, "ai");
         if (!result.valid) {
-            _state.aiError = "AI 返回非法点 " + formatCoord(x, y) + "：" + GobangCore.forbiddenLabel(result.reason);
+            _state.aiError = "AI 返回非法点 " + formatCoord(x, y) + "：" + forbiddenLabelThematic(result.reason);
+            var aErr = audio();
+            if (aErr) aErr.illegal();
             render();
             return;
+        }
+        var aAi = audio();
+        if (aAi) {
+            if (_state.aiRole === 1) aAi.playerPlace();
+            else aAi.aiPlace();
         }
         _state.aiError = "";
         _state.lastEngine = {
@@ -330,6 +407,14 @@ var GobangPanel = (function() {
     }
 
     function finishGame() {
+        var a = audio();
+        if (a) {
+            if (_state.status === "win") {
+                var humanWon = !_state.aiEnabled || _state.winner === _state.playerRole;
+                if (humanWon) a.win();
+                else a.lose();
+            }
+        }
         render();
         notifyHost("result", buildSessionPayload({ result: buildResultPayload() }));
     }
@@ -369,57 +454,88 @@ var GobangPanel = (function() {
         _refs.engine.innerHTML = renderEngine();
     }
 
+    function actorName(role) {
+        if (role === 1) return "铁枪会锚点";
+        if (role === -1) return "尸解仙模因";
+        return "未识别";
+    }
+
+    function actorShort(role) {
+        if (role === 1) return "铁枪";
+        if (role === -1) return "尸解仙";
+        return "--";
+    }
+
     function phaseText() {
         if (!_state) return "INIT";
-        if (_pendingAi) return "AI";
-        if (_state.status === "win") return "胜负";
-        if (_state.status === "draw") return "平局";
-        return GobangCore.roleName(_state.currentRole);
+        if (_pendingAi) return "模因反制";
+        if (_state.status === "win") return _state.winner === 1 ? "信号贯穿" : "虚渊封闭";
+        if (_state.status === "draw") return "僵持";
+        return actorShort(_state.currentRole) + " · 部署";
     }
 
     function readoutText() {
         if (!_state) return "";
-        return "第 " + (_state.moves.length + 1) + " 手 · " + GobangCore.roleName(_state.currentRole);
+        return "第 " + (_state.moves.length + 1) + " 手 · " + actorName(_state.currentRole);
+    }
+
+    function forbiddenLabelThematic(reason) {
+        if (reason === "overline") return "模因过载 · 长连失控";
+        if (reason === "double_four") return "防护超限 · 双四退相干";
+        if (reason === "double_three") return "防护超限 · 双三退相干";
+        if (reason === "occupied") return "节点已占用";
+        if (reason === "bounds") return "坐标越界";
+        if (reason === "status") return "会话已结束";
+        return "非法部署";
     }
 
     function statusText() {
         if (!_state) return "";
         if (_state.aiError) return _state.aiError;
-        if (_state.forbidden && !_state.forbidden.valid) return GobangCore.forbiddenLabel(_state.forbidden.reason);
-        if (_pendingAi) return "AI 思考中 " + _state.timeLimit + "ms";
-        if (_state.status === "win") return GobangCore.roleName(_state.winner) + "获胜";
-        if (_state.status === "draw") return "平局";
-        if (_state.aiEnabled && _state.currentRole === _state.playerRole) return "轮到你落子";
-        if (_state.aiEnabled) return "等待 AI";
-        return GobangCore.roleName(_state.currentRole) + "落子";
+        if (_state.forbidden && !_state.forbidden.valid) return forbiddenLabelThematic(_state.forbidden.reason);
+        if (_pendingAi) return "尸解仙模因反制中 · 超时 " + _state.timeLimit + "ms";
+        if (_state.status === "win") {
+            if (_state.winner === 1) return "信号链路贯穿 · 虚渊隔离突破";
+            return "防护模因完全化 · 虚渊重新封闭";
+        }
+        if (_state.status === "draw") return "信号僵持 · 双方拓扑锁死";
+        if (_state.aiEnabled && _state.currentRole === _state.playerRole) {
+            return "待你部署 " + actorName(_state.playerRole);
+        }
+        if (_state.aiEnabled) return "等待模因反制";
+        return actorName(_state.currentRole) + " · 部署中";
     }
 
     function renderKv() {
         var rules = GobangCore.RULESETS[_state.ruleset];
         var diff = GobangCore.DIFFICULTIES[_state.difficulty];
+        var rulesLabel = _state.ruleset === "renju" ? "绞杀 · 禁手判定" : "侦查 · 无禁手";
+        var diffLabel = diff ? diff.title + " / " + diff.timeLimit + "ms" : _state.difficulty;
+        var sideLabel = _state.aiEnabled ? actorName(_state.playerRole) : "本地双侧";
         return [
-            kv("规则", rules ? rules.title : _state.ruleset),
-            kv("难度", diff ? diff.title + " / " + diff.timeLimit + "ms" : _state.difficulty),
-            kv("执棋", _state.aiEnabled ? GobangCore.roleName(_state.playerRole) : "本地双人"),
-            kv("手数", String(_state.moves.length))
+            kv("协议", rulesLabel),
+            kv("烈度", diffLabel),
+            kv("阵营", sideLabel),
+            kv("手数", String(_state.moves.length)),
+            kv("最近落点", _state.lastMove ? formatCoord(_state.lastMove.row, _state.lastMove.col) : "--")
         ].join("");
     }
 
     function renderEngine() {
         if (_pendingAi) {
-            return '<div class="gobang-engine-line active">call ' + escapeHtml(_pendingAi.callId) + " · " + _pendingAi.payload.timeLimit + "ms</div>";
+            return '<div class="gobang-engine-line active">call ' + escapeHtml(_pendingAi.callId) + " · " + _pendingAi.payload.timeLimit + "ms · 模因反制中</div>";
         }
         if (_state.aiError) {
             return '<div class="gobang-engine-line error">' + escapeHtml(_state.aiError) + "</div>";
         }
         if (_state.lastEngine) {
             return [
-                '<div class="gobang-engine-line">落点 ' + escapeHtml(formatCoord(_state.lastEngine.x, _state.lastEngine.y)) + "</div>",
-                '<div class="gobang-engine-line">深度 ' + escapeHtml(String(_state.lastEngine.depth)) + " · 分值 " + escapeHtml(String(_state.lastEngine.score)) + "</div>",
-                '<div class="gobang-engine-line dim">' + escapeHtml(_state.lastEngine.pv || "PV --") + "</div>"
+                '<div class="gobang-engine-line">反制落点 ' + escapeHtml(formatCoord(_state.lastEngine.x, _state.lastEngine.y)) + "</div>",
+                '<div class="gobang-engine-line">深度 ' + escapeHtml(String(_state.lastEngine.depth)) + " · 评估 " + escapeHtml(String(_state.lastEngine.score)) + "</div>",
+                '<div class="gobang-engine-line dim">PV ' + escapeHtml(_state.lastEngine.pv || "--") + "</div>"
             ].join("");
         }
-        return '<div class="gobang-engine-line dim">等待首个引擎回合</div>';
+        return '<div class="gobang-engine-line dim">等待首次模因应激</div>';
     }
 
     function kv(key, value) {
@@ -488,12 +604,17 @@ var GobangPanel = (function() {
     }
 
     function columnLabel(col) {
-        return String.fromCharCode(65 + col);
+        return "CH-" + String.fromCharCode(65 + col);
+    }
+
+    function rowLabel(row) {
+        var n = row + 1;
+        return n < 10 ? "00" + n : "0" + n;
     }
 
     function formatCoord(row, col) {
         if (isNaN(row) || isNaN(col)) return "--";
-        return columnLabel(col) + String(row + 1);
+        return columnLabel(col) + "·" + rowLabel(row);
     }
 
     function merge(base, extra) {
