@@ -55,6 +55,7 @@
     <Compile Include="Guardian\FlashSnapshotLetterboxTests.cs" />
     <Compile Include="Guardian\FlashSnapshotDpiTests.cs" />
     <Compile Include="Guardian\FlashSnapshotBlackFrameTests.cs" />
+    <Compile Include="Guardian\FlashSnapshotComposeBackdropTests.cs" />
     <Compile Include="Guardian\PanelLayoutCatalogTests.cs" />
     <Compile Include="Guardian\LauncherCommandRouterTests.cs" />
     <Compile Include="Guardian\DpiAwarenessGetEffectiveTests.cs" />

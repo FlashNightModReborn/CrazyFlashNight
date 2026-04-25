@@ -2444,6 +2444,9 @@ namespace CF7Launcher.Guardian
         {
             if (this.InvokeRequired) { try { this.BeginInvoke(new Action(OnSocketDisconnected)); } catch {} return; }
 
+            // 旧路径（_activePanel != null）仅追踪 web fallback 模式打开的 panel。
+            // PanelHostController 接管的 panel 状态在 PanelHost 内（_panelHost.IsPanelOpen），
+            // 必须独立联动——否则 backdrop / NativeHud Suspend / InputShield telemetry 会残留。
             if (_activePanel != null)
             {
                 PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"force_close\",\"reason\":\"disconnected\"}");
@@ -2452,6 +2455,13 @@ namespace CF7Launcher.Guardian
                     _pauseNeedsRestore = true;
                 _activePanel = null;
                 if (_onPanelStateChanged != null) _onPanelStateChanged(false);
+            }
+            // PanelHost 接管路径：联动关闭，确保 backdrop/HUD/Shield 都拨回 idle
+            if (_panelHost != null && _panelHost.IsPanelOpen)
+            {
+                if (_panelHost.ActivePanelName == "kshop") _pauseNeedsRestore = true;
+                PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"force_close\",\"reason\":\"disconnected\"}");
+                _panelHost.ClosePanel();
             }
             if (_shopTask != null) _shopTask.ClearPending();
             if (_mapTask != null) _mapTask.ClearPending();

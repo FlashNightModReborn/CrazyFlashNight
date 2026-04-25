@@ -241,19 +241,35 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// Backdrop 合成：full snapshot + dim 仅作用于 contentRect。
+        /// Backdrop 合成：从 fullSnapshot 中按 contentRect 裁切出 16:9 内容区，
+        /// 输出尺寸 = contentRect 尺寸（与 backdrop 显示区域 = WebOverlay.Bounds = 扣 letterbox 后的 viewport 一致）。
+        ///
+        /// 修复 letterbox 错位：
+        /// - WebOverlay.Bounds 来自 CalcViewport()，是已扣掉 letterbox 黑边的 16:9 区
+        /// - FlashSnapshot.Capture 返回 flash HWND 全 client（含 letterbox 黑边）
+        /// - 用户手动拉成非 16:9 时，旧实现 DrawImageUnscaled 会把 (0,0) 对齐 backdrop 左上 →
+        ///   背景图带着 letterbox 黑边原点画进 16:9 backdrop → 错位 + 裁切
+        /// 现在裁出 contentRect 与 backdrop 同尺寸；letterbox 黑边在 backdrop 之外（被 NativePanelBackdrop 自身的 BackColor=Black 覆盖）。
         /// </summary>
         public static Bitmap ComposeBackdrop(Bitmap fullSnapshot, Rectangle contentRect, byte dimAlpha)
         {
             if (fullSnapshot == null) throw new ArgumentNullException("fullSnapshot");
-            Bitmap result = new Bitmap(fullSnapshot.Width, fullSnapshot.Height, PixelFormat.Format32bppArgb);
+            // 防御：contentRect 退化时退回 full size
+            int outW = contentRect.Width > 0 ? contentRect.Width : fullSnapshot.Width;
+            int outH = contentRect.Height > 0 ? contentRect.Height : fullSnapshot.Height;
+            Rectangle src = (contentRect.Width > 0 && contentRect.Height > 0)
+                ? contentRect
+                : new Rectangle(0, 0, fullSnapshot.Width, fullSnapshot.Height);
+
+            Bitmap result = new Bitmap(outW, outH, PixelFormat.Format32bppArgb);
             using (Graphics g = Graphics.FromImage(result))
             {
-                g.DrawImageUnscaled(fullSnapshot, 0, 0);
-                if (dimAlpha > 0 && contentRect.Width > 0 && contentRect.Height > 0)
+                Rectangle dst = new Rectangle(0, 0, outW, outH);
+                g.DrawImage(fullSnapshot, dst, src, GraphicsUnit.Pixel);
+                if (dimAlpha > 0)
                 {
                     using (SolidBrush brush = new SolidBrush(Color.FromArgb(dimAlpha, 0, 0, 0)))
-                        g.FillRectangle(brush, contentRect);
+                        g.FillRectangle(brush, dst);
                 }
             }
             return result;

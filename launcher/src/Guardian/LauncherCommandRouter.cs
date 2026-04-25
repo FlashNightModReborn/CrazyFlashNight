@@ -192,13 +192,10 @@ namespace CF7Launcher.Guardian
 
         private bool TrySendGameCommand(string action)
         {
-            if (_socketServer == null) return false;
-            try
-            {
-                _socketServer.Send("{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0");
-                return true;
-            }
-            catch { return false; }
+            // 与 WebOverlayForm.TrySendGameCommand 一致：先校验 IsClientReady，再走 TrySend 真实回传 false。
+            // 不能依赖 Send() —— Send 在无连接时只是 return（不抛），会让 router 误判 panel 打开成功。
+            if (_socketServer == null || !_socketServer.IsClientReady) return false;
+            return _socketServer.TrySend("{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0");
         }
 
         private static string EscapeJsonString(string s)
