@@ -80,6 +80,14 @@ namespace CF7Launcher.Guardian
             _screenX = screen.X;
             _screenY = screen.Y;
             _visible = true;
+            // 直接 SW_SHOWNOACTIVATE 强制 show，绕过 OverlayBase.ShowOverlay 的 _ownerVisible guard。
+            // 场景：panel 操作期间 owner 短暂 deactivate → OverlayBase.HideOverlay (SW_HIDE) + _ownerVisible=false；
+            // 若 owner Activated 事件没及时回触，后续 ShowOverlay() 因 guard early return → cursor 永远 SW_HIDE。
+            // 用底层 ShowWindow 绕过这个 state 假设。
+            if (!this.Visible)
+            {
+                try { ShowWindow(this.Handle, SW_SHOWNOACTIVATE); } catch { }
+            }
             PresentCursor();
         }
 

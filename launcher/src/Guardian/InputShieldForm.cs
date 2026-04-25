@@ -25,7 +25,7 @@ namespace CF7Launcher.Guardian
     /// </summary>
     public class InputShieldForm : OverlayBase
     {
-        #region Win32 (TrackMouseEvent)
+        #region Win32 (TrackMouseEvent + GlobalHook)
 
         [DllImport("user32.dll")]
         private static extern bool TrackMouseEvent(ref TRACKMOUSEEVENT lpEventTrack);
@@ -36,6 +36,26 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         private static extern bool ReleaseCapture();
 
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        private static extern bool IsChild(IntPtr hWndParent, IntPtr hWnd);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+        private static extern IntPtr GetModuleHandle(string lpModuleName);
+
+        private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
+
         [StructLayout(LayoutKind.Sequential)]
         private struct TRACKMOUSEEVENT
         {
@@ -45,6 +65,25 @@ namespace CF7Launcher.Guardian
             public int dwHoverTime;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT_LL
+        {
+            public int X;
+            public int Y;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MSLLHOOKSTRUCT
+        {
+            public POINT_LL pt;
+            public uint mouseData;
+            public uint flags;
+            public uint time;
+            public IntPtr dwExtraInfo;
+        }
+
+        private const int WH_MOUSE_LL = 14;
+        private const int HC_ACTION_LL = 0;
         private const uint TME_LEAVE = 0x00000002;
 
         #endregion
@@ -127,23 +166,130 @@ namespace CF7Launcher.Guardian
             _cursorSampleSink = sink;
         }
 
-        #region Telemetry-only 模式（Phase 1 stub）
-        // Phase 1：no-op + log；Phase 2 实化为 telemetry-only（α 蒙版全 0、HTTRANSPARENT、过滤 panel 矩形外 click）。
-        // PanelHostController 在 panel 打开/关闭时调用这两个方法。
+        #region Telemetry-only 模式（Phase 2 实化）
+        // Phase 2：α 蒙版清空（全 0 → HTTRANSPARENT），同时全局 mouse hook 过滤计数 panel 矩形外 click。
+        // 过滤条件（必须全部满足才计数到 _clicksOutsidePanel）：
+        //   1) 前台窗口 = guardianHwnd 或其子窗口（排除桌面/其他窗口的无关 click）
+        //   2) click 屏幕坐标在 anchorScreenRect 内（排除 Flash 区域外的 click）
+        //   3) click 屏幕坐标 NOT 在 panelRect 内
+        // 满足 1 但不满足 3 → 玩家正常点 panel 内部，不计数（避免噪声）。
+        // 不满足 1 → 玩家点桌面/其他应用，记 _filteredExternal。
+        // 用途：Phase 6 Soak 期收集"clicks_outside_panel 是否有异常聚集"作为 InputShield 删除前的安全证据。
 
         private bool _telemetryActive;
         public bool TelemetryActive { get { return _telemetryActive; } }
 
+        private Rectangle _telemetryPanelRect;
+        private Rectangle _telemetryAnchorRect;
+        private IntPtr _telemetryGuardianHwnd;
+        private IntPtr _telemetryHookHandle = IntPtr.Zero;
+        private LowLevelMouseProc _telemetryHookProc; // 必须长生命周期引用，防 GC 回收委托
+        private int _clicksOutsidePanel;
+        private int _sessionTotalClicks;
+        private int _filteredExternalClicks;
+
         public void EnterTelemetryMode(Rectangle panelRect, IntPtr guardianHwnd, Rectangle anchorScreenRect)
         {
+            if (_telemetryActive)
+            {
+                // 同 panel A → B 切换：刷新缓存的矩形与 anchor，hook 沿用
+                _telemetryPanelRect = panelRect;
+                _telemetryAnchorRect = anchorScreenRect;
+                _telemetryGuardianHwnd = guardianHwnd;
+                LogManager.Log("[InputShield] telemetry refresh panel=" + panelRect.Width + "x" + panelRect.Height);
+                return;
+            }
             _telemetryActive = true;
-            LogManager.Log("[InputShield] EnterTelemetryMode (Phase 1 stub) panel=" + panelRect.Width + "x" + panelRect.Height);
+            _telemetryPanelRect = panelRect;
+            _telemetryAnchorRect = anchorScreenRect;
+            _telemetryGuardianHwnd = guardianHwnd;
+            _clicksOutsidePanel = 0;
+            _sessionTotalClicks = 0;
+            _filteredExternalClicks = 0;
+
+            // 清 hit rects 让 mask 全 0：所有原 click 路径自动 HTTRANSPARENT 给 Flash
+            _hitRects.Clear();
+            RebuildMask();
+
+            // 安装 WH_MOUSE_LL 全局钩子（仅观测，不修改事件）
+            try
+            {
+                _telemetryHookProc = new LowLevelMouseProc(TelemetryHookCallback);
+                IntPtr hMod = GetModuleHandle(null);
+                _telemetryHookHandle = SetWindowsHookEx(WH_MOUSE_LL, _telemetryHookProc, hMod, 0);
+                if (_telemetryHookHandle == IntPtr.Zero)
+                    LogManager.Log("[InputShield] SetWindowsHookEx failed err=" + Marshal.GetLastWin32Error());
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[InputShield] EnterTelemetryMode hook install throw: " + ex.Message);
+            }
+
+            LogManager.Log("[InputShield] EnterTelemetryMode panel=" + panelRect.Width + "x" + panelRect.Height
+                + " anchor=" + anchorScreenRect.Width + "x" + anchorScreenRect.Height);
         }
 
         public void ExitTelemetryMode()
         {
+            if (!_telemetryActive) return;
             _telemetryActive = false;
-            LogManager.Log("[InputShield] ExitTelemetryMode (Phase 1 stub)");
+            if (_telemetryHookHandle != IntPtr.Zero)
+            {
+                try { UnhookWindowsHookEx(_telemetryHookHandle); } catch { }
+                _telemetryHookHandle = IntPtr.Zero;
+            }
+            _telemetryHookProc = null;
+
+            LogManager.Log("[InputShield] ExitTelemetryMode session_total=" + _sessionTotalClicks
+                + " clicks_outside_panel=" + _clicksOutsidePanel
+                + " filtered_external=" + _filteredExternalClicks);
+        }
+
+        /// <summary>
+        /// Decide if a click at given screen pt should be counted as clicks_outside_panel.
+        /// Pure function for unit tests. internal static so InternalsVisibleTo can reach it.
+        /// 返回 1 = clicks_outside_panel; 0 = inside panel (no count); -1 = filtered (external/foreground).
+        /// </summary>
+        internal static int ClassifyTelemetryClick(Point screenPt, Rectangle panelRect, Rectangle anchorRect,
+                                                   bool foregroundIsGuardian)
+        {
+            if (!foregroundIsGuardian) return -1;
+            if (!anchorRect.Contains(screenPt)) return -1;
+            if (panelRect.Contains(screenPt)) return 0;
+            return 1;
+        }
+
+        private IntPtr TelemetryHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        {
+            if (nCode == HC_ACTION_LL && _telemetryActive)
+            {
+                int msg = wParam.ToInt32();
+                // 只采样 button-down 事件（mouseMoved 太频繁，无意义；按下足够采样）
+                bool isButtonDown = (msg == 0x0201 /*WM_LBUTTONDOWN*/) || (msg == 0x0204 /*WM_RBUTTONDOWN*/) ||
+                                    (msg == 0x0207 /*WM_MBUTTONDOWN*/) || (msg == 0x020B /*WM_XBUTTONDOWN*/);
+                if (isButtonDown)
+                {
+                    try
+                    {
+                        MSLLHOOKSTRUCT data = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+                        Point pt = new Point(data.pt.X, data.pt.Y);
+                        bool fgIsGuardian = false;
+                        try
+                        {
+                            IntPtr fg = GetForegroundWindow();
+                            fgIsGuardian = (fg == _telemetryGuardianHwnd) ||
+                                           (fg != IntPtr.Zero && IsChild(_telemetryGuardianHwnd, fg));
+                        }
+                        catch { }
+                        int kind = ClassifyTelemetryClick(pt, _telemetryPanelRect, _telemetryAnchorRect, fgIsGuardian);
+                        _sessionTotalClicks++;
+                        if (kind == 1) _clicksOutsidePanel++;
+                        else if (kind == -1) _filteredExternalClicks++;
+                    }
+                    catch { }
+                }
+            }
+            return CallNextHookEx(_telemetryHookHandle, nCode, wParam, lParam);
         }
 
         #endregion

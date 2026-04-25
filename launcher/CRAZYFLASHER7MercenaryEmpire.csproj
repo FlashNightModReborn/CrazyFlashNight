@@ -119,6 +119,9 @@
     <Compile Include="src\Guardian\NativeHudOverlay.cs" />
     <Compile Include="src\Guardian\NativePanelBackdrop.cs" />
     <Compile Include="src\Guardian\PanelHostController.cs" />
+    <Compile Include="src\Guardian\FlashSnapshot.cs" />
+    <Compile Include="src\Guardian\PanelLayoutCatalog.cs" />
+    <Compile Include="src\Guardian\LauncherCommandRouter.cs" />
     <Compile Include="src\Guardian\CursorOverlayForm.cs" />
     <Compile Include="src\Guardian\WebOverlayForm.cs" />
     <Compile Include="src\Guardian\BootstrapPanel.cs" />

@@ -648,8 +648,14 @@ gpuPreference = "off"
 devGpuProbeHotkey = false
 
 # 开关 Native HUD + PanelHostController 装配（overlay 架构纯化迁移，详见 plans/expressive-leaping-galaxy.md）。
-# Phase 1（当前）：默认 false。设 true 仅装配骨架，行为无变化（NativeHud 无 widget → SW_HIDE，PanelHost 不接管 panel 路由）。
-# Phase 2 起逐步接管 panel 路由 + WebView2 idle SW_HIDE，验证 ~15pp iGPU 降幅。
+# Phase 3（当前）：默认 false。设 true 启用 Panel-Only + NotchOverlay/ToastOverlay 接管 notch+toast：
+#   - panel 打开走 PanelHostController.OpenPanel：FlashSnapshot → backdrop → NativeHud/NotchOverlay/ToastOverlay 全 Suspend
+#     → WebOverlay 缩到 panel 矩形 + opaque + 去 LAYERED|TRANSPARENT
+#   - panel 关闭：WebOverlay 回 anchor + 透明 + click-through；NotchOverlay/ToastOverlay 重新 SetReady 显示
+#   - WebOverlay SetReady 时不再 SuspendFallback——NotchOverlay/ToastOverlay 一直作为常驻 HUD（含 LOG/EXIT/全屏按钮）
+#   - 注入 CSS 隐藏 web 端 #notch / #toast-container 避免双重 UI
+# 性能收益（Phase 3 范围）：仅 panel 打开期 α blend 下降；idle 仍是 Phase 0 baseline。
+# 完整 idle SW_HIDE WebView2 推迟到 Phase 4+（map-hud/currency/combo/quest 等 widget 也迁完后）。
 useNativeHud = false
 ```
 
@@ -657,7 +663,16 @@ useNativeHud = false
 
 `devGpuProbeHotkey=true`（或 `CF7_DEV_GPU_PROBE=1`）启用 Ctrl+G 切换 WebView2 `DefaultBackgroundColor=Black` + Flash 子窗口隐藏的 GPU 合成探针，用于实测 alpha blend 占 iGPU 的比重。日志写 `[GpuProbe] ON/OFF tick=...` 可对照任务管理器曲线。**玩家版必须保持 false**：误触会让游戏画面消失，再按一次才能恢复。
 
-`useNativeHud=true`（或 `CF7_NATIVE_HUD=1`）开启 Native HUD 装配。Phase 1 范围仅装配骨架（[NativeHudOverlay.cs](src/Guardian/NativeHudOverlay.cs) + [NativePanelBackdrop.cs](src/Guardian/NativePanelBackdrop.cs) + [PanelHostController.cs](src/Guardian/PanelHostController.cs)），不接管任何 panel 路由——`HandleButtonClick` 仍走旧 `PostToWeb panel_cmd`。Spy++ 应能看到 NativeHud / Backdrop 这两个 hwnd 处于 hidden 状态；Ctrl+G 探针读数与 Flag OFF 应当无显著差异（< 1pp）。Phase 2 起逐步接管 panel 路由 + WebView2 idle SW_HIDE，目标消除 ~15pp DWM α blend floor。
+`useNativeHud=true`（或 `CF7_NATIVE_HUD=1`）开启 Panel-Only 架构 + NotchOverlay 接管 HUD。Phase 3 范围（当前）：
+- `HandleButtonClick` 与 `RequestOpenPanel` 路由到 [LauncherCommandRouter.cs](src/Guardian/LauncherCommandRouter.cs)（按钮命令唯一中枢）
+- 所有 panel 打开统一进 [PanelHostController.cs](src/Guardian/PanelHostController.cs) 的 command queue：[FlashSnapshot.cs](src/Guardian/FlashSnapshot.cs).Capture → ComposeBackdrop → [NativePanelBackdrop.cs](src/Guardian/NativePanelBackdrop.cs) 显示 → [NativeHudOverlay.cs](src/Guardian/NativeHudOverlay.cs)+NotchOverlay+ToastOverlay 全 Suspend → WebOverlayForm.ResumeForPanel（去 `WS_EX_LAYERED|WS_EX_TRANSPARENT`、`TransparencyKey=Empty`、`DefaultBackgroundColor=Black`、SetWindowPos `HWND_TOP|SWP_FRAMECHANGED` 至 [PanelLayoutCatalog.cs](src/Guardian/PanelLayoutCatalog.cs) 决定的矩形）→ PostToWeb `panel_viewport_set` → InputShield 进 telemetry → 顶置 HitNumber/Cursor → 启用 ESC
+- panel 关闭：WebOverlayForm.ForceIdleState 走 `DoSoftIdleRestore` 恢复 `WS_EX_LAYERED|WS_EX_TRANSPARENT` + `TransparencyKey` + transparent BG + `ScheduleSyncPosition` 拉回 anchor 矩形；NotchOverlay/ToastOverlay 重新 SetReady 显示
+- WebOverlay SetReady 时不再 SuspendFallback ([WebOverlayForm.SuspendFallback](src/Guardian/WebOverlayForm.cs))——NotchOverlay/ToastOverlay 一直显示作为常驻 HUD，含 LOG/EXIT/全屏等按钮
+- WebOverlay 注入 CSS 隐藏 web 端 `#notch` / `#toast-container` 避免与 NotchOverlay/ToastOverlay 视觉重叠；notch/toast 消息（AddNotice/SetStatusItem/AddMessage）始终走 fallback (NotchOverlay/ToastOverlay) 而不是 web ExecScript
+- 异常恢复：任何 step 抛异常 → `ResetToClosedState()` 强制 `ForceIdleState`，保证回到一致基线；连续 5 次失败熔断清空队列
+- 关键不变量：`_panelMode==true ⇔ WebView 在 panelRect+opaque+direct-hit + NotchOverlay 隐藏`；`_panelMode==false ⇔ WebView 在 anchor+transparent+click-through + NotchOverlay 显示`
+- 性能收益：仅 panel 打开期 α blend 成本下降（panel 矩形小 + opaque），idle 期回到 Phase 0 baseline
+- 完整 idle SW_HIDE 推迟到 Phase 4+：当前 web 端仍承载 map-hud / currency / combo / quest-notice / jukebox 等常驻 HUD，无法整体 SW_HIDE。`DoFullIdleSuspend` 代码已就位，等剩余 widget 都迁完后启用
 
 `webOverlayLowEffects` 是运行态 overlay 聚合诊断开关，等价于同时启用 `webOverlayDisableCssAnimations` 与 `webOverlayDisableVisualizers`，并对 map panel 额外关闭全屏 scanline / radar / pulse、移除大图与场景节点的 CSS filter/drop-shadow、降低 full-surface overlay 透明覆膜成本。`webOverlayDisableCssAnimations` 只注入 `perf-no-css-animations`，关闭 CSS animation / transition；`webOverlayDisableVisualizers` 只隐藏 BGM/FPS canvas，并把 BGM 可视化推送从 60ms 降为 250ms 的 track-end 轮询。`webOverlayFrameRateLimit` 默认 `60`，通过 Web 端 requestAnimationFrame 限帧器把 overlay 的 JS/canvas 刷新链路限制到 60fps；`0`、`off` 或 `unlimited` 表示跟随当前显示器刷新率跑满。`webView2DisableGpu` 会同时给 BootstrapPanel 与运行态 WebOverlayForm 追加 `--disable-gpu --disable-gpu-rasterization --disable-accelerated-2d-canvas`，用于验证核显占满是否来自 WebView2 合成；它可能把负载转移到 CPU，不建议作为默认运行配置。`nativeCursorOverlay=false` 或环境变量 `CF7_NATIVE_CURSOR_OVERLAY=0` 会关闭 C# 原生 cursor layered window，恢复系统鼠标，用于 A/B 排除 cursor 迁移对 GPU 满载的影响。`webView2AdditionalArgs` 和环境变量 `CF7_WEBVIEW2_ARGS` 用于一次性追加 Chromium 参数；环境变量 `CF7_WEB_LOW_EFFECTS`、`CF7_WEB_DISABLE_CSS_ANIMATIONS`、`CF7_WEB_DISABLE_VISUALIZERS`、`CF7_WEB_FRAME_RATE_LIMIT`、`CF7_WEBVIEW2_DISABLE_GPU` 可覆盖对应配置。
 

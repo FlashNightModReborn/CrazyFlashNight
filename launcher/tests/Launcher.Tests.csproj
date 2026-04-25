@@ -52,6 +52,13 @@
     <Compile Include="Guardian\NativeHudBoundsUnionTests.cs" />
     <Compile Include="Guardian\UiDataPacketParserTests.cs" />
     <Compile Include="Guardian\NativePanelBackdropClickRoutingTests.cs" />
+    <Compile Include="Guardian\FlashSnapshotLetterboxTests.cs" />
+    <Compile Include="Guardian\FlashSnapshotDpiTests.cs" />
+    <Compile Include="Guardian\FlashSnapshotBlackFrameTests.cs" />
+    <Compile Include="Guardian\PanelLayoutCatalogTests.cs" />
+    <Compile Include="Guardian\LauncherCommandRouterTests.cs" />
+    <Compile Include="Guardian\DpiAwarenessGetEffectiveTests.cs" />
+    <Compile Include="Guardian\InputShieldTelemetryFilterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

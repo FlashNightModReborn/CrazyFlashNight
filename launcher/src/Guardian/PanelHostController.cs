@@ -18,11 +18,12 @@ namespace CF7Launcher.Guardian
     /// 异常恢复：任何 DoOpen/DoClose 路径中途抛 → catch → ResetToClosedState 强制走 close 序列回到一致基线。
     /// 连续 N 次失败 → 熔断清空队列防级联失败。
     ///
-    /// Phase 1 范围：
-    /// - 队列串行化、handle-created guard、ResetToClosedState 骨架、z-order 顶置 HitNumber/Cursor
-    /// - DoOpen/DoClose 调用 stub API（WebOverlay.ResumeForPanel/SuspendAfterPanel 是 Phase 1 stub）
-    /// - 不做 FlashSnapshot/ComposeBackdrop（Phase 2 引入）—— Phase 1 backdrop 仅显示纯黑底
-    /// - 不调用 SetPanelEscapeEnabled（Phase 1 仍走 GuardianForm.HandlePanelStateChanged 旧路径）
+    /// Phase 2 完整序列：
+    /// - FlashSnapshot.Capture → ComposeBackdrop → backdrop 显示
+    /// - WebOverlay.ResumeForPanel 完整去 LAYERED+TRANSPARENT/timer 恢复/PostToWeb
+    /// - panelRect 经 PanelLayoutCatalog 决定
+    /// - SetPanelEscapeEnabled 由 PanelHost 接管（_escSource）
+    /// - InputShield 进 telemetry 模式（filter 为前台=Guardian + anchor 内 + panelRect 外）
     /// </summary>
     public class PanelHostController
     {
@@ -62,6 +63,11 @@ namespace CF7Launcher.Guardian
         private readonly HitNumberOverlay _hitNumber;
         private readonly CursorOverlayForm _cursor;
         private readonly IPanelEscapeSource _escSource;
+        private readonly Func<IntPtr> _flashHwndProvider; // 可空：null 时降级走 placeholder backdrop
+        // Phase 3: NotchOverlay/ToastOverlay 作为常驻 HUD（web 端 #notch/#toast 已被 CSS 隐藏）
+        // panel 打开时 Suspend 让 backdrop 干净遮住；panel 关闭时 SetReady 恢复
+        private readonly NotchOverlay _notchOverlay;
+        private readonly ToastOverlay _toastOverlay;
 
         private readonly Queue<PanelCommand> _queue = new Queue<PanelCommand>();
         private readonly object _queueLock = new object();
@@ -83,7 +89,10 @@ namespace CF7Launcher.Guardian
             InputShieldForm shield,
             HitNumberOverlay hitNumber,
             CursorOverlayForm cursor,
-            IPanelEscapeSource escSource)
+            IPanelEscapeSource escSource,
+            Func<IntPtr> flashHwndProvider,
+            NotchOverlay notchOverlay,
+            ToastOverlay toastOverlay)
         {
             if (ownerForm == null) throw new ArgumentNullException("ownerForm");
             if (web == null) throw new ArgumentNullException("web");
@@ -94,10 +103,13 @@ namespace CF7Launcher.Guardian
             _web = web;
             _hud = hud;
             _backdrop = backdrop;
-            _shield = shield;     // 可空（Phase 1 允许）
+            _shield = shield;     // 可空
             _hitNumber = hitNumber; // 可空
             _cursor = cursor;       // 可空（Program.cs 某些配置下不创建）
             _escSource = escSource; // 可空（fallback hotkey 模式下没有）
+            _flashHwndProvider = flashHwndProvider; // 可空（snapshot 不可用时降级 placeholder）
+            _notchOverlay = notchOverlay; // 可空（Phase 3 引入）
+            _toastOverlay = toastOverlay; // 可空（Phase 3 引入）
 
             // Backdrop 点击外侧 → web panel_esc（等价 web 端 panels.js 的 backdrop click）
             _backdrop.BackdropClickedOutsidePanel += OnBackdropClickOutsidePanel;
@@ -219,9 +231,18 @@ namespace CF7Launcher.Guardian
 
         #region DoOpen / DoClose
 
-        // anchorScreenRect 在 Phase 2 由 OverlayCoordinateContext 提供；Phase 1 暂用 owner 的 bounds 作占位
+        /// <summary>
+        /// anchor 屏幕矩形 = WebOverlay 上一次 SyncPosition 计算的 viewport（Flash 可见区，扣除 letterbox）。
+        /// 退路：WebOverlay.Bounds 为空 → owner client。
+        /// </summary>
         private Rectangle ComputeAnchorScreenRect()
         {
+            try
+            {
+                Rectangle b = _web.Bounds;
+                if (b.Width > 0 && b.Height > 0) return b;
+            }
+            catch { }
             try
             {
                 Point origin = _ownerForm.PointToScreen(Point.Empty);
@@ -233,19 +254,40 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        private Rectangle ComputePanelRect(string name, Rectangle anchor)
+        /// <summary>
+        /// FlashSnapshot.Capture + ComposeBackdrop。失败/无 flashHwnd 时降级纯暗 dim 占位。
+        /// 黑帧检测命中 → 提高 dim 强度兜底，避免玩家看到全黑无对比。
+        /// </summary>
+        private Bitmap CaptureBackdrop(Rectangle anchor)
         {
-            // Phase 1 固定居中 800x600；Phase 2 起接入 PanelLayoutCatalog
-            int w = Math.Min(800, anchor.Width);
-            int h = Math.Min(600, anchor.Height);
-            int x = anchor.X + (anchor.Width - w) / 2;
-            int y = anchor.Y + (anchor.Height - h) / 2;
-            return new Rectangle(x, y, w, h);
+            IntPtr flashHwnd = (_flashHwndProvider != null) ? _flashHwndProvider() : IntPtr.Zero;
+            if (flashHwnd == IntPtr.Zero)
+                return ComposePlaceholderBackdrop(anchor);
+            FlashSnapshot.SnapshotResult snap = null;
+            try
+            {
+                snap = FlashSnapshot.Capture(flashHwnd);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[PanelHost] FlashSnapshot.Capture failed: " + ex.Message);
+                return ComposePlaceholderBackdrop(anchor);
+            }
+            try
+            {
+                bool isBlack = FlashSnapshot.IsLikelyBlackFrame(snap.FullSnapshot, snap.ContentRect);
+                byte dimAlpha = isBlack ? (byte)220 : (byte)160;
+                return FlashSnapshot.ComposeBackdrop(snap.FullSnapshot, snap.ContentRect, dimAlpha);
+            }
+            finally
+            {
+                if (snap.FullSnapshot != null) snap.FullSnapshot.Dispose();
+            }
         }
 
         private Bitmap ComposePlaceholderBackdrop(Rectangle anchor)
         {
-            // Phase 1：纯黑兜底（无 FlashSnapshot capture）
+            // 兜底：无 flashHwnd / snapshot 失败时用纯暗色（不黑透至游戏世界）
             Bitmap bmp = new Bitmap(Math.Max(1, anchor.Width), Math.Max(1, anchor.Height),
                 System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             using (Graphics g = Graphics.FromImage(bmp))
@@ -259,27 +301,29 @@ namespace CF7Launcher.Guardian
         private void DoOpen(string name, string initDataJson)
         {
             Rectangle anchor = ComputeAnchorScreenRect();
-            Rectangle panelRect = ComputePanelRect(name, anchor);
+            Rectangle panelRect = PanelLayoutCatalog.GetRect(name, anchor);
 
-            // Step 1-2: snapshot + compose（Phase 2 真实化；Phase 1 用占位黑底）
-            Bitmap composed = ComposePlaceholderBackdrop(anchor);
-            // Step 3: backdrop show + 设 panel rect
+            // Step 1-2: snapshot + compose（带 dim + letterbox 黑边保留 + 黑帧兜底）
+            Bitmap composed = CaptureBackdrop(anchor);
+            // Step 3: backdrop show + 设 panel rect（屏幕坐标，backdrop 内自转 client）
             _backdrop.SetComposedAndShow(composed, anchor);
             _backdrop.SetPanelRect(panelRect);
-            // Step 4: HUD 暂停
+            // Step 4: HUD 暂停（NativeHud 容器 + Phase 3 NotchOverlay/ToastOverlay 一并隐藏，让 backdrop 干净遮住）
             _hud.Suspend();
-            // Step 5: WebOverlay 切 panel-rect（Phase 1 stub：仅 SetWindowPos + ShowWindow）
+            if (_notchOverlay != null) try { _notchOverlay.Suspend(); } catch (Exception ex) { LogManager.Log("[PanelHost] notch.Suspend failed: " + ex.Message); }
+            if (_toastOverlay != null) try { _toastOverlay.Suspend(); } catch (Exception ex) { LogManager.Log("[PanelHost] toast.Suspend failed: " + ex.Message); }
+            // Step 5: WebOverlay 切 panel-rect（去 LAYERED+TRANSPARENT、opaque、SetWindowPos HWND_TOP+SWP_FRAMECHANGED、PostToWeb panel_viewport_set）
             _web.ResumeForPanel(panelRect);
-            // Step 6: InputShield 进 telemetry（Phase 1 stub）
+            // Step 6: InputShield 进 telemetry（仅记录 panelRect 外 click，不拦截）
             if (_shield != null) _shield.EnterTelemetryMode(panelRect, _ownerForm.Handle, anchor);
-            // Step 7: 通知 web 打开 panel
+            // Step 7: 通知 web 打开 panel（panel_viewport_set 已在 ResumeForPanel 内 PostToWeb）
             string payload = "{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"" + EscapeJson(name) + "\"";
             if (!string.IsNullOrEmpty(initDataJson))
                 payload += ",\"initData\":" + initDataJson;
             payload += "}";
             try { _web.PostToWeb(payload); }
             catch (Exception ex) { LogManager.Log("[PanelHost] PostToWeb open failed: " + ex.Message); }
-            // Step 8: 把 HitNumber/Cursor 重新顶置（Backdrop/WebOverlay 的 SetWindowPos 把它们压下去了）
+            // Step 8: 把 HitNumber/Cursor 重新顶置（Backdrop/WebOverlay 的 SetWindowPos HWND_TOP 把它们压下去了）
             ReTopOverlay(_hitNumber);
             ReTopOverlay(_cursor);
             // Step 9: ESC 拦截启用
@@ -304,11 +348,19 @@ namespace CF7Launcher.Guardian
             // Step 3: backdrop 隐藏
             try { _backdrop.Hide(); }
             catch (Exception ex) { LogManager.Log("[PanelHost] backdrop.Hide failed: " + ex.Message); }
-            // Step 4: HUD 复活
+            // Step 4: HUD 复活（NativeHud + Phase 3 NotchOverlay/ToastOverlay 一并复显）
             try { _hud.Resume(); }
             catch (Exception ex) { LogManager.Log("[PanelHost] hud.Resume failed: " + ex.Message); }
+            if (_notchOverlay != null) try { _notchOverlay.SetReady(); } catch (Exception ex) { LogManager.Log("[PanelHost] notch.SetReady failed: " + ex.Message); }
+            if (_toastOverlay != null) try { _toastOverlay.SetReady(); } catch (Exception ex) { LogManager.Log("[PanelHost] toast.SetReady failed: " + ex.Message); }
             // Step 5: ESC 禁用
             if (_escSource != null) _escSource.SetPanelEscapeEnabled(false);
+            // Step 6: cursor 重新顶置 + 强制刷一次位置（Notch/Toast 的 SetReady HWND_TOP 会把 cursor 压下；
+            //   且 cursor 上次坐标可能在 panel 矩形内，关闭后该区域无 mouse hook 触发更新——直到玩家动鼠标
+            //   才刷新 → 视觉上 cursor "消失，移动后突然出现"。这里主动 ReTop + 用当前真实鼠标位置刷一次）
+            ReTopOverlay(_cursor);
+            try { _web.UpdateCursorFromScreenPoint(System.Windows.Forms.Cursor.Position); }
+            catch (Exception ex) { LogManager.Log("[PanelHost] cursor refresh failed: " + ex.Message); }
 
             _activePanel = null;
             LogManager.Log("[PanelHost] closed: " + (closingName ?? "<null>"));
@@ -342,6 +394,8 @@ namespace CF7Launcher.Guardian
             catch (Exception ex) { LogManager.Log("[PanelHost] Web ForceIdleState partial failure: " + ex.Message); }
             try { _backdrop.Hide(); } catch { }
             try { _hud.Resume(); } catch { }
+            if (_notchOverlay != null) { try { _notchOverlay.SetReady(); } catch { } }
+            if (_toastOverlay != null) { try { _toastOverlay.SetReady(); } catch { } }
             if (_shield != null) { try { _shield.ExitTelemetryMode(); } catch { } }
             if (_escSource != null) { try { _escSource.SetPanelEscapeEnabled(false); } catch { } }
             _activePanel = null;

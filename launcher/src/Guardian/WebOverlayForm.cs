@@ -33,6 +33,12 @@ namespace CF7Launcher.Guardian
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
             int X, int Y, int cx, int cy, uint uFlags);
 
+        [DllImport("user32.dll")]
+        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll")]
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
 
@@ -75,6 +81,11 @@ namespace CF7Launcher.Guardian
         private const int WS_EX_TOOLWINDOW = 0x00000080;
         private const int WS_EX_NOACTIVATE = 0x08000000;
         private const int WS_EX_TRANSPARENT = 0x00000020;
+        private const int WS_EX_LAYERED = 0x00080000;
+        private const int GWL_EXSTYLE = -20;
+        private const uint SWP_FRAMECHANGED = 0x0020;
+        private const uint SWP_SHOWWINDOW = 0x0040;
+        private static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
         private const int WM_DPICHANGED = 0x02E0;
         private const int WH_MOUSE_LL = 14;
         private const int HC_ACTION = 0;
@@ -117,6 +128,8 @@ namespace CF7Launcher.Guardian
         private IToastSink _toastFallback;
         private INotchSink _notchFallback;
         private bool _webFailed; // 初始化永久失败，所有后续消息走 fallback
+        // Phase 3: useNativeHud=true 时让 NotchOverlay/ToastOverlay 一直当常驻 HUD，不再调 SuspendFallback
+        private volatile bool _useNativeHud;
 
         // IToastSink: 早期消息缓冲（WebView2 初始化前）
         private readonly List<string> _toastEarlyBuffer = new List<string>();
@@ -457,10 +470,38 @@ namespace CF7Launcher.Guardian
         /// <summary>Web 通道恢复后，挂起 GDI+ fallback（隐藏 + 停 timer），避免双重 UI。</summary>
         private void SuspendFallback()
         {
+            // Phase 3: useNativeHud=true 时不挂起——让 NotchOverlay/ToastOverlay 一直作为常驻 HUD
+            // panel 打开/关闭由 PanelHostController 显式 Suspend/Resume
+            if (_useNativeHud)
+            {
+                LogManager.Log("[WebOverlay] SuspendFallback skipped (useNativeHud active; companions stay live)");
+                return;
+            }
             var notch = _notchFallback as NotchOverlay;
             if (notch != null) notch.Suspend();
             var toast = _toastFallback as ToastOverlay;
             if (toast != null) toast.Suspend();
+        }
+
+        /// <summary>Phase 3: 由 Program.cs 在 useNativeHud=true 时调用。</summary>
+        public void SetUseNativeHud(bool active)
+        {
+            _useNativeHud = active;
+        }
+
+        /// <summary>useNativeHud 模式下隐藏 web 端 #notch / #toast-container DOM，避免与 NotchOverlay/ToastOverlay 重叠。</summary>
+        private void HideWebHudDomForNativeHud()
+        {
+            if (!_useNativeHud) return;
+            // 注入 CSS 让 #notch、#toast-container 隐藏；保留其他 web UI（cursor 反馈、tooltip、panel 容器等）
+            // 用 CSS 而不删 DOM，便于切回 useNativeHud=false 时不需重建
+            const string css =
+                "(function(){var s=document.getElementById('cf7-native-hud-css');if(s)return;" +
+                "s=document.createElement('style');s.id='cf7-native-hud-css';" +
+                "s.textContent='#notch,#toast-container{display:none!important;}';" +
+                "document.head.appendChild(s);})();";
+            try { ExecScript(css); }
+            catch (Exception ex) { LogManager.Log("[WebOverlay] HideWebHudDomForNativeHud failed: " + ex.Message); }
         }
 
         #endregion
@@ -576,6 +617,10 @@ namespace CF7Launcher.Guardian
 
         private void SyncPosition(string reason)
         {
+            // Phase 2 panel-mode/idle 不变量：
+            // - panel 态：窗口位置/大小由 PanelHostController 锁定为 panelRect，禁止 owner-resize 拉回 anchor
+            // - idle 态：窗口已 SW_HIDE+suspend，任何 SetWindowPos/ExecScript 都可能唤醒 WebView2，破坏 DWM α traversal 撤除
+            if (_panelMode || _frozenForIdle) return;
             try
             {
                 float vpX, vpY, vpW, vpH;
@@ -792,8 +837,26 @@ namespace CF7Launcher.Guardian
                     if (_musicCatalog != null)
                         PostToWeb(_musicCatalog.GetFullCatalogJson());
 
-                    // Web 通道恢复，挂起 GDI+ fallback 避免双重 UI
-                    SuspendFallback();
+                    // Web 通道恢复：useNativeHud=true 时让 NotchOverlay/ToastOverlay 一直显示作为常驻 HUD；
+                    // 否则挂起 GDI+ fallback 避免双重 UI
+                    if (_useNativeHud)
+                    {
+                        // 让 NotchOverlay/ToastOverlay 显示（与 ActivateFallback 等价但语义清晰）
+                        if (_notchFallback != null) _notchFallback.SetReady();
+                        if (_toastFallback != null)
+                        {
+                            _toastFallback.SetReady();
+                            foreach (string msg in _toastEarlyBuffer)
+                                _toastFallback.AddMessage(msg);
+                            _toastEarlyBuffer.Clear();
+                        }
+                        // 隐藏 web 端 #notch / #toast-container DOM 避免视觉重叠
+                        HideWebHudDomForNativeHud();
+                    }
+                    else
+                    {
+                        SuspendFallback();
+                    }
                     RequestViewportMetrics("ready");
                     ExecScript("if(window.Notch&&Notch.reportRect){Notch.reportRect();}");
                     EnsureCursorTimer();
@@ -1128,6 +1191,7 @@ namespace CF7Launcher.Guardian
         private void EnsureCursorTimer()
         {
             if (_disposed) return;
+            if (_frozenForIdle) return; // idle 态不重新 start，避免 unsuspend WebView2
             EnsureCursorHook();
             if (_cursorTimer == null)
             {
@@ -1593,6 +1657,7 @@ namespace CF7Launcher.Guardian
 
         private void OnFpsTick(object sender, EventArgs e)
         {
+            if (_frozenForIdle) return;
             if (!_webReady || _disposed || _fpsBuffer == null) return;
             if (!_fpsBuffer.HasData) return;
 
@@ -1618,6 +1683,7 @@ namespace CF7Launcher.Guardian
 
         private void OnAudioTick(object sender, EventArgs e)
         {
+            if (_frozenForIdle) return;
             if (!_webReady || _disposed) return;
 
             try
@@ -1721,9 +1787,11 @@ namespace CF7Launcher.Guardian
                 }
             }
 
-            if (_webFailed || !_webReady)
+            if (_webFailed || !_webReady || _frozenForIdle)
             {
-                // WebView2 未就绪或降级中，缓冲等待恢复（上限 200 条防止内存泄漏）
+                // WebView2 未就绪/降级/idle SW_HIDE+suspend：仅维护快照，不 ExecScript
+                // 关键：idle 态调用 ExecScript 会唤醒已 TrySuspendAsync 的 WebView2，破坏 DWM α traversal 撤除
+                // 快照已在 _uiDataSnapshot 上方更新，FlushUiDataBuffer 在 Resume 时一次性补回
                 if (_uiDataEarlyBuffer.Count < 200)
                     _uiDataEarlyBuffer.Add(payload);
                 return;
@@ -1780,7 +1848,8 @@ namespace CF7Launcher.Guardian
                     category, text, accentColor);
                 return;
             }
-            if (_webFailed || !_webReady || _disposed) { if (_notchFallback != null) _notchFallback.AddNotice(category, text, accentColor); return; }
+            // useNativeHud=true 时始终走 NotchOverlay（web 端 #notch DOM 已隐藏）
+            if (_useNativeHud || _webFailed || !_webReady || _disposed) { if (_notchFallback != null) _notchFallback.AddNotice(category, text, accentColor); return; }
             string hex = accentColor.R.ToString("x2") + accentColor.G.ToString("x2") + accentColor.B.ToString("x2");
             string escaped = text.Replace("\\", "\\\\").Replace("'", "\\'");
             ExecScript("typeof Notch!=='undefined'&&Notch.addNotice('" + category + "','" + escaped + "','#" + hex + "')");
@@ -1794,7 +1863,7 @@ namespace CF7Launcher.Guardian
                     id, label, subLabel, accentColor);
                 return;
             }
-            if (_webFailed || !_webReady || _disposed) { if (_notchFallback != null) _notchFallback.SetStatusItem(id, label, subLabel, accentColor); return; }
+            if (_useNativeHud || _webFailed || !_webReady || _disposed) { if (_notchFallback != null) _notchFallback.SetStatusItem(id, label, subLabel, accentColor); return; }
             string text = label;
             if (!string.IsNullOrEmpty(subLabel)) text += "  " + subLabel;
             string hex = accentColor.R.ToString("x2") + accentColor.G.ToString("x2") + accentColor.B.ToString("x2");
@@ -1809,7 +1878,7 @@ namespace CF7Launcher.Guardian
                 this.BeginInvoke(new Action<string>(ClearStatusItem), id);
                 return;
             }
-            if (_webFailed || !_webReady || _disposed) { if (_notchFallback != null) _notchFallback.ClearStatusItem(id); return; }
+            if (_useNativeHud || _webFailed || !_webReady || _disposed) { if (_notchFallback != null) _notchFallback.ClearStatusItem(id); return; }
             ExecScript("typeof Notch!=='undefined'&&Notch.clearStatus('" + id + "')");
         }
 
@@ -1824,8 +1893,8 @@ namespace CF7Launcher.Guardian
                 this.BeginInvoke(new Action<string>(AddMessage), text);
                 return;
             }
-            // WebView2 初始化失败 → 永久走 GDI+ fallback
-            if (_webFailed)
+            // useNativeHud=true 或 WebView2 失败 → 永久走 GDI+ fallback（ToastOverlay）
+            if (_useNativeHud || _webFailed)
             {
                 if (_toastFallback != null) _toastFallback.AddMessage(text);
                 return;
@@ -2034,13 +2103,25 @@ namespace CF7Launcher.Guardian
 
         public void SetPanelStateCallback(Action<bool> cb) { _onPanelStateChanged = cb; }
 
-        #region PanelHost 集成（Phase 1 stub）
-        // Phase 1：仅提供最小可见性级 API + setter，让 PanelHostController 可装配但不真接管 panel。
-        // Phase 2 把 stub 实化为完整序列（EX_STYLE/TransparencyKey/timer freeze/TrySuspendAsync）。
-        // Flag OFF 路径完全不调用这些 API，行为与本 PR 之前等价。
+        #region PanelHost 集成（Phase 2 应急版）
+        // ⚠️ 设计修正（2026-04-26）：原计划"panel 关闭后 SW_HIDE+TrySuspend WebView2"假设 NativeHud
+        // 能接管 HUD 渲染，但 Phase 3 NotchWidget 还没上线。实测 panel 关闭后 web 端 UI 全消失
+        // （cursor / close 按钮 / notch 浮层 / 触发 panel 的按钮）→ 系统不可用 + TrySuspendAsync 失败
+        // 时 WebView2 后台继续跑 → 核显满载。
+        //
+        // 应急方案：
+        // - 不变量（panel 态）：WebView 在 panelRect、opaque、direct-hit（去 LAYERED+TRANSPARENT）
+        // - 不变量（idle 态）：WebView 回到 anchor、transparent、click-through（同 Phase 0 行为）
+        //   * 不 SW_HIDE、不冻结 timer、不 TrySuspendAsync —— Web HUD 完整可见
+        //   * Phase 2 收益：仅 panel 打开期 α blend 成本下降（panelRect 小 + opaque）
+        //   * 完整 idle SW_HIDE 留给 Phase 3+：NotchWidget 等 widget 上线接管 HUD 后再做
+        // - _frozenForIdle 字段保留（DoForceIdleSequence 内不再设 true），让 SyncPosition / OnFpsTick
+        //   等 guard 形成"防御性 dead code"，未来 Phase 3 重新启用时直接打开开关即可
+        // - SuspendWebTimers 同理保留代码路径但 DoForceIdleSequence 不再调用
 
         private PanelHostController _panelHost;
         private volatile bool _panelMode;
+        private volatile bool _frozenForIdle; // 始终 false（Phase 3 启用）；保留 guard 路径
 
         public bool IsPanelMode { get { return _panelMode; } }
 
@@ -2051,41 +2132,183 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// Phase 1 stub：仅 SetWindowPos + ShowWindow(SW_SHOWNOACTIVATE)。
-        /// Phase 2 实化为：EX_STYLE 去 LAYERED+TRANSPARENT、TransparencyKey=Empty、DefaultBackgroundColor=Black、ResumeWebTimers、PostToWeb panel_viewport_set + snapshot flush。
+        /// idle → panel 切换。
+        /// Step：解冻 → ResumeWebTimers → 去 EX_LAYERED+TRANSPARENT → TransparencyKey/Empty → opaque BG →
+        ///       SetWindowPos HWND_TOP+SWP_FRAMECHANGED → PostToWeb panel_viewport_set → flush snapshot
+        /// 注：用 HWND_TOP 而非 backdropHwnd（MSDN: hWndInsertAfter 是 "precede"，反而把 web 放到 backdrop 之下）。
         /// </summary>
         public void ResumeForPanel(Rectangle panelRectScreen)
         {
             if (_disposed) return;
             _panelMode = true;
+            _frozenForIdle = false;
+
+            ResumeWebTimers();
+
+            // EX_STYLE：去 WS_EX_LAYERED 与 WS_EX_TRANSPARENT；DWM 不再做 α traversal
+            try
+            {
+                int ex = GetWindowLong(this.Handle, GWL_EXSTYLE);
+                int newEx = ex & ~(WS_EX_TRANSPARENT | WS_EX_LAYERED);
+                SetWindowLong(this.Handle, GWL_EXSTYLE, newEx);
+            }
+            catch (Exception ex) { LogManager.Log("[Panel] ResumeForPanel SetWindowLong failed: " + ex.Message); }
+
+            // TransparencyKey 复位（设为 Empty 同时也会让 WinForms 移除 LAYERED——已经手动移除，幂等）
+            try { this.TransparencyKey = Color.Empty; } catch { }
+            try { if (_webView != null) _webView.DefaultBackgroundColor = Color.Black; } catch { }
+
             SetWindowPos(this.Handle, HWND_TOP,
                 panelRectScreen.X, panelRectScreen.Y,
                 panelRectScreen.Width, panelRectScreen.Height,
-                SWP_NOACTIVATE);
-            ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
+                SWP_NOACTIVATE | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+
+            // 通知 web 端 panel viewport（CSS 用 var(--panel-w/-h) 自适应）
+            // 必须在 TrySuspendAsync 之前；ResumeForPanel 不 suspend，时序天然成立
+            try
+            {
+                PostToWeb("{\"type\":\"panel_viewport_set\",\"w\":"
+                    + panelRectScreen.Width + ",\"h\":" + panelRectScreen.Height + "}");
+            }
+            catch (Exception ex) { LogManager.Log("[Panel] panel_viewport_set post failed: " + ex.Message); }
+
+            // idle 期间累积的 UiData 一次性补回（FlushUiDataBuffer 已合并 snapshot + buffer）
+            try { FlushUiDataBuffer(); } catch (Exception ex) { LogManager.Log("[Panel] FlushUiDataBuffer failed: " + ex.Message); }
         }
 
         /// <summary>
-        /// Phase 1 stub：仅 SW_HIDE。
-        /// Phase 2 实化为：SuspendWebTimers + 冻结 HandleUiData + EX_STYLE 恢复 LAYERED+TRANSPARENT + TransparencyKey 复原 + TrySuspendAsync 后台。
+        /// panel → idle 切换（正常路径，幂等：非 panel 态直接 return）。
+        /// Step：SuspendWebTimers → 冻结 HandleUiData → SW_HIDE → 恢复 EX_LAYERED+TRANSPARENT →
+        ///       HWND_NOTOPMOST → TransparencyKey 复原 → DefaultBackgroundColor=Transparent → TrySuspendAsync fire-and-forget
         /// </summary>
         public void SuspendAfterPanel()
         {
             if (_disposed) return;
             if (!_panelMode) return; // 幂等
-            _panelMode = false;
-            ShowWindow(this.Handle, SW_HIDE);
+            DoForceIdleSequence();
         }
 
         /// <summary>
         /// 异常恢复路径专用：不查 _panelMode，强制把窗口拨回 idle 不变量。
-        /// Phase 1 stub 与 SuspendAfterPanel 等价（仅 SW_HIDE）；Phase 2 走完整序列。
+        /// 即便是从未 ResumeForPanel 的中间状态也走完整序列，确保 ResetToClosedState 生效。
         /// </summary>
         public void ForceIdleState()
         {
             if (_disposed) return;
+            DoForceIdleSequence();
+        }
+
+        private void DoForceIdleSequence()
+        {
             _panelMode = false;
+
+            // Phase 3 注释：仅 notch+toast 迁出 web；map-hud/currency/combo/quest-notice/jukebox 仍在 web，
+            // 不能整个 SW_HIDE 整个 WebView2，否则上述常驻 HUD 全消失。
+            // DoFullIdleSuspend 留代码不调用——等 Phase 4+ 把剩余常驻 HUD widget 都迁出后再启用，
+            // 届时把这里改为 if (_useNativeHud) DoFullIdleSuspend(); else DoSoftIdleRestore();
+            DoSoftIdleRestore();
+        }
+
+        /// <summary>
+        /// 完整 idle 冻结：SW_HIDE + 恢复 EX_STYLE + 停 timer + 冻结 HandleUiData + TrySuspendAsync。
+        /// 仅 useNativeHud=true 时启用——前提是 NotchOverlay/ToastOverlay 接管 HUD 渲染，
+        /// 玩家在 panel 关闭期间仍能看到 notch/toolbar/退出按钮。
+        /// </summary>
+        private void DoFullIdleSuspend()
+        {
+            // 1) 停所有 web-side timer（_cursorTimer 例外，见 SuspendWebTimers 注释）
+            try { SuspendWebTimers(); } catch (Exception ex) { LogManager.Log("[Panel] SuspendWebTimers failed: " + ex.Message); }
+
+            // 2) HandleUiData 进入冻结模式（仅缓存到 snapshot，不 ExecScript）
+            _frozenForIdle = true;
+
+            // 3) SW_HIDE
             try { ShowWindow(this.Handle, SW_HIDE); } catch { }
+
+            // 4) 恢复 EX_STYLE：加回 WS_EX_LAYERED + WS_EX_TRANSPARENT
+            try
+            {
+                int ex = GetWindowLong(this.Handle, GWL_EXSTYLE);
+                int newEx = ex | WS_EX_TRANSPARENT | WS_EX_LAYERED;
+                SetWindowLong(this.Handle, GWL_EXSTYLE, newEx);
+            }
+            catch (Exception ex) { LogManager.Log("[Panel] DoFullIdleSuspend SetWindowLong failed: " + ex.Message); }
+
+            // 5) HWND_NOTOPMOST 防御：意外被唤醒也不浮到 NotchOverlay/HitNumber 之上
+            try
+            {
+                SetWindowPos(this.Handle, HWND_NOTOPMOST, 0, 0, 0, 0,
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+            }
+            catch { }
+
+            // 6) 恢复 TransparencyKey + transparent BG
+            try { this.TransparencyKey = TRANSPARENT_COLOR; } catch { }
+            try { if (_webView != null) _webView.DefaultBackgroundColor = Color.Transparent; } catch { }
+
+            // 7) TrySuspendAsync fire-and-forget（C# 5 不支持 _ = ... discard）
+            try
+            {
+                if (_webView != null && _webView.CoreWebView2 != null)
+                {
+                    System.Threading.Tasks.Task<bool> ignored = _webView.CoreWebView2.TrySuspendAsync();
+                    if (ignored == null) { /* compiler suppress unused */ }
+                }
+            }
+            catch (Exception ex) { LogManager.Log("[Panel] TrySuspendAsync throw: " + ex.Message); }
+        }
+
+        /// <summary>
+        /// 应急 idle restore：仅恢复样式拉回 anchor 矩形，保持 web 可见 + 不冻结。
+        /// useNativeHud=false 时使用（无 NotchOverlay 接管，必须保留 web HUD）。
+        /// </summary>
+        private void DoSoftIdleRestore()
+        {
+            // 恢复 EX_STYLE：加回 WS_EX_LAYERED + WS_EX_TRANSPARENT
+            try
+            {
+                int ex = GetWindowLong(this.Handle, GWL_EXSTYLE);
+                int newEx = ex | WS_EX_TRANSPARENT | WS_EX_LAYERED;
+                SetWindowLong(this.Handle, GWL_EXSTYLE, newEx);
+            }
+            catch (Exception ex) { LogManager.Log("[Panel] DoSoftIdleRestore SetWindowLong failed: " + ex.Message); }
+
+            try { this.TransparencyKey = TRANSPARENT_COLOR; } catch { }
+            try { if (_webView != null) _webView.DefaultBackgroundColor = Color.Transparent; } catch { }
+
+            try
+            {
+                SetWindowPos(this.Handle, HWND_TOP, 0, 0, 0, 0,
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+            }
+            catch { }
+
+            try { ScheduleSyncPosition("panel_close"); } catch { }
+        }
+
+        /// <summary>停所有 web-side timer。新增 timer 字段必须加入此方法 + WebOverlayTimerFreezeAuditTests 清单。
+        /// 例外：_cursorTimer 不停——cursor 数据流是纯 C# 鼠标 hook → CursorOverlayForm，与 web frozen 状态无关，
+        /// 玩家在 panel 关闭/web SW_HIDE 时仍需要看到 cursor 移动。</summary>
+        private void SuspendWebTimers()
+        {
+            if (_fpsTimer != null) _fpsTimer.Stop();
+            if (_audioTimer != null) _audioTimer.Stop();
+            // _cursorTimer 不停（cursor 渲染独立于 web）
+            if (_positionSettleTimer != null) _positionSettleTimer.Stop();
+            if (_positionLongSettleTimer != null) _positionLongSettleTimer.Stop();
+            // System.Threading.Timer 用 Change(Timeout.Infinite, ...) 暂停
+            if (_reloadDebounce != null)
+                try { _reloadDebounce.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite); } catch { }
+            if (_reloadTimeout != null)
+                try { _reloadTimeout.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite); } catch { }
+        }
+
+        /// <summary>恢复 web-side timer（panel 态）。仅启 fps/audio；cursor/reload 按需 start 由各自 EnsureXxx 入口。</summary>
+        private void ResumeWebTimers()
+        {
+            if (!_panelMode) return;
+            if (_fpsTimer != null) _fpsTimer.Start();
+            if (_audioTimer != null) _audioTimer.Start();
         }
 
         #endregion
@@ -2249,119 +2472,40 @@ namespace CF7Launcher.Guardian
 
         #region 辅助方法
 
+        private LauncherCommandRouter _commandRouter;
+
+        /// <summary>
+        /// 二阶段注入：Program.cs 装配后调本方法绑定 router。
+        /// 未注入时 HandleButtonClick 走旧 inline switch（仅过渡期；Phase 2 装配完成后所有路径都进 router）。
+        /// </summary>
+        public void SetCommandRouter(LauncherCommandRouter router) { _commandRouter = router; }
+
+        /// <summary>Router fallback 路径（Flag OFF）专用：把 _activePanel 状态从 router 注回 WebOverlay。</summary>
+        public void SetActivePanel(string panelName) { _activePanel = panelName; }
+
         private void HandleButtonClick(string key)
         {
             HandleButtonClick(key, null);
         }
 
+        /// <summary>
+        /// 按钮点击入口（薄包装）。Phase 2 起所有命令分发交给 LauncherCommandRouter。
+        /// </summary>
         private void HandleButtonClick(string key, string rawJson)
         {
-            switch (key)
+            if (_commandRouter != null)
             {
-                case "Q": if (_onSendKey != null) _onSendKey(Keys.Q); break;
-                case "W": if (_onSendKey != null) _onSendKey(Keys.W); break;
-                case "R": if (_onSendKey != null) _onSendKey(Keys.R); break;
-                case "F": if (_onToggleFullscreen != null) _onToggleFullscreen(); break;
-                case "P": if (_onSendKey != null) _onSendKey(Keys.P); break;
-                case "O": if (_onSendKey != null) _onSendKey(Keys.O); break;
-                case "LOG": if (_onToggleLog != null) _onToggleLog(); break;
-                case "EXIT": if (_onForceExit != null) _onForceExit(); break;
-                case "PAUSE": SendGameCommand("togglePause"); break;
-                case "WAREHOUSE": SendGameCommand("warehouse"); break;
-                case "SETTINGS": SendGameCommand("toggleSettings"); break;
-                case "SHOP":
-                    LogManager.Log("[Panel] SHOP clicked, _webFailed=" + _webFailed);
-                    if (_webFailed)
-                    {
-                        LogManager.Log("[Panel] SHOP → fallback openShop");
-                        SendGameCommand("openShop");
-                    }
-                    else if (!TrySendGameCommand("shopPanelOpen"))
-                    {
-                        LogManager.Log("[Panel] SHOP → TrySend failed");
-                        PostToWeb("{\"type\":\"toast\",\"text\":\"商城暂时不可用\"}");
-                    }
-                    else
-                    {
-                        LogManager.Log("[Panel] SHOP → opening panel via PostToWeb");
-                        PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"kshop\"}");
-                        _activePanel = "kshop";
-                        if (_onPanelStateChanged != null) _onPanelStateChanged(true);
-                        LogManager.Log("[Panel] SHOP → _activePanel=kshop, state callback fired");
-                    }
-                    break;
-                case "HELP":
-                    PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"help\"}");
-                    _activePanel = "help";
-                    if (_onPanelStateChanged != null) _onPanelStateChanged(true);
-                    break;
-                case "SAFEEXIT": SendGameCommand("safeExit"); break;
-                case "PETS": SendGameCommand("togglePets"); break;
-                case "MERCS": SendGameCommand("toggleMercs"); break;
-                case "TABLET": SendGameCommand("toggleTablet"); break;
-                case "GAMESETTINGS": SendGameCommand("openSettings"); break;
-                case "JUKEBOX": SendGameCommand("openJukebox"); break;
-                case "TASK_MAP":
-                    OpenMapPanel("task_map", false);
-                    break;
-                case "TASK_DELIVER":
-                    {
-                        string hotspotId = rawJson != null ? ExtractString(rawJson, "\"hotspotId\":\"") : null;
-                        if (string.IsNullOrEmpty(hotspotId))
-                        {
-                            LogManager.Log("[Panel] TASK_DELIVER missing hotspotId");
-                            break;
-                        }
-                        SendGameCommand("navigateToHotspot",
-                            "\"targetId\":\"" + EscapeJsonString(hotspotId) + "\"");
-                    }
-                    break;
-                case "TASK_UI": SendGameCommand("openTaskUI"); break;
-                case "EQUIP_UI": SendGameCommand("openEquipUI"); break;
-                case "BAKE": SendGameCommand("bakeIcons"); break;
-                case "BAKE10": SendGameCommand("bakeIcons", "\"maxCount\":10"); break;
-                case "LOCKBOX_TEST":
-                    {
-                        uint familySeed = unchecked((uint)Environment.TickCount);
-                        PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"lockbox\",\"initData\":{\"mode\":\"dev\",\"profile\":\"standard\",\"source\":\"runtime\",\"familySeed\":" + familySeed + ",\"variantIndex\":0,\"debug\":true}}");
-                        _activePanel = "lockbox";
-                        if (_onPanelStateChanged != null) _onPanelStateChanged(true);
-                    }
-                    break;
-                case "PINALIGN_TEST":
-                    PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"pinalign\",\"initData\":{\"mode\":\"dev\",\"specId\":\"mvp-3pin-v1\",\"masterSeed\":\"dev-default\",\"debug\":true}}");
-                    _activePanel = "pinalign";
-                    if (_onPanelStateChanged != null) _onPanelStateChanged(true);
-                    break;
-                case "GOBANG_TEST":
-                    PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"gobang\",\"initData\":{\"mode\":\"dev\",\"source\":\"runtime\",\"ruleset\":\"casual\",\"difficulty\":\"normal\",\"playerRole\":1,\"aiEnabled\":true,\"debug\":true}}");
-                    _activePanel = "gobang";
-                    if (_onPanelStateChanged != null) _onPanelStateChanged(true);
-                    break;
-                case "EXIT_CONFIRM": if (_onForceExit != null) _onForceExit(); break;
+                _commandRouter.Dispatch(key, rawJson);
+                return;
             }
-        }
-
-        private void OpenMapPanel(string source, bool dev)
-        {
-            OpenMapPanel(source, dev, null);
-        }
-
-        private void OpenMapPanel(string source, bool dev, string pageId)
-        {
-            string initData = "{\"source\":\"" + EscapeJsonString(source) + "\",\"dev\":" + (dev ? "true" : "false");
-            if (!string.IsNullOrEmpty(pageId))
-                initData += ",\"page\":\"" + EscapeJsonString(pageId) + "\"";
-            initData += "}";
-            PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"map\",\"initData\":" + initData + "}");
-            _activePanel = "map";
-            if (_onPanelStateChanged != null) _onPanelStateChanged(true);
+            // Fallback：router 未注入（启动早期/单测）→ 不处理，写日志便于排查
+            LogManager.Log("[Panel] HandleButtonClick before router wired, key=" + key);
         }
 
         /// <summary>
-        /// AS2 → C# 面板打开请求 (旧版 Flash UI 按钮接入 WebView 面板).
-        /// 通过 TaskRegistry 注册的 "panel_request" task 驱动.
-        /// 当前仅支持 panel=="map"; 其它 panel 留待后续 (help / shop 已有各自入口).
+        /// AS2 → C# 面板打开请求 (旧版 Flash UI 按钮接入 WebView 面板)。
+        /// 通过 TaskRegistry 注册的 "panel_request" task 驱动。
+        /// 路由到 LauncherCommandRouter 走统一 panel 打开通道（Flag ON → PanelHostController；Flag OFF → PostToWeb 旧路径）。
         /// </summary>
         public void RequestOpenPanel(string panelName, string source)
         {
@@ -2384,16 +2528,12 @@ namespace CF7Launcher.Guardian
                 return;
             }
 
-            string safeSource = string.IsNullOrEmpty(source) ? "as2_request" : source;
-            if (string.Equals(panelName, "map", StringComparison.OrdinalIgnoreCase))
+            if (_commandRouter != null)
             {
-                LogManager.Log("[Panel] RequestOpenPanel map source=" + safeSource + " pageId=" + (pageId ?? ""));
-                OpenMapPanel(safeSource, false, pageId);
+                _commandRouter.RequestOpenPanel(panelName, source, pageId);
+                return;
             }
-            else
-            {
-                LogManager.Log("[Panel] RequestOpenPanel unsupported panel=" + (panelName ?? "<null>"));
-            }
+            LogManager.Log("[Panel] RequestOpenPanel before router wired, panel=" + (panelName ?? "<null>"));
         }
 
         /// <summary>通过 XmlSocket 向 AS2 发送游戏命令。</summary>

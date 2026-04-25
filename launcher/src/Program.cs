@@ -311,23 +311,45 @@ class Program
             webOverlay.SetCursorOverlay(cursorOverlay);
         }
 
-        // === Phase 1: Native HUD + PanelHostController 装配（config.useNativeHud）===
-        // Flag OFF：完全跳过，行为与本 PR 之前等价
-        // Flag ON：装配骨架，但不接管 panel 路由（Phase 2 才接）。NativeHud 无 widget → SW_HIDE；
-        //         Backdrop 默认 hidden；PanelHostController 在内但 OpenPanel 永不被调用
+        // === LauncherCommandRouter 装配（始终装配，Flag OFF 时也用，避免 HandleButtonClick 走两套路径）===
+        // Router 是按钮命令的唯一中枢；Flag OFF 时 OpenPanel 走旧 PostToWeb panel_cmd open 兜底。
+        LauncherCommandRouter commandRouter = new LauncherCommandRouter(
+            socketServer,
+            new Action<Keys>(form.HandleButtonClick),
+            new Action(form.ToggleFullscreen),
+            new Action(form.ToggleLog),
+            new Action(form.ForceExit),
+            new Action<string>(webOverlay.PostToWeb),
+            new Action<bool>(form.HandlePanelStateChanged),
+            new Action<string>(webOverlay.SetActivePanel));
+        webOverlay.SetCommandRouter(commandRouter);
+
+        // === Phase 2: Native HUD + PanelHostController 完整装配（config.useNativeHud）===
+        // Flag OFF：跳过 NativeHud/Backdrop/PanelHost；router 走 PostToWeb 旧路径
+        // Flag ON：完整装配；所有 panel 打开走 PanelHost.OpenPanel → snapshot/backdrop/EX_STYLE/HUD-suspend 序列
         NativeHudOverlay nativeHud = null;
         NativePanelBackdrop backdrop = null;
         PanelHostController panelHost = null;
         if (config.UseNativeHud)
         {
+            // Phase 3: 通知 WebOverlay 进入 NativeHud 模式：
+            //   - SetReady 时不调 SuspendFallback，让 NotchOverlay/ToastOverlay 一直作为常驻 HUD
+            //   - 注入 CSS 隐藏 web 端 #notch / #toast-container 避免双重 UI
+            //   - notch/toast 消息走 fallback (NotchOverlay/ToastOverlay) 而不是 web ExecScript
+            webOverlay.SetUseNativeHud(true);
             nativeHud = new NativeHudOverlay(form, form.FlashHostPanel);
             backdrop = new NativePanelBackdrop(form);
+            // Flash hwnd 动态查询（SA 进程重启后 hwnd 变）
+            Func<IntPtr> flashHwndProvider = delegate { return form.GetFlashHwnd(); };
+            // Phase 3: 注入 NotchOverlay/ToastOverlay，让 PanelHost 在 panel open/close 时显式 Suspend/Resume
             panelHost = new PanelHostController(form, webOverlay, nativeHud, backdrop,
-                inputShield, hnOverlay, cursorOverlay, form.GetPanelEscapeSource());
+                inputShield, hnOverlay, cursorOverlay, form.GetPanelEscapeSource(), flashHwndProvider,
+                notchOverlay, toastOverlay);
             webOverlay.SetPanelHost(panelHost);
+            commandRouter.SetPanelHost(panelHost);
 
             // tee UiData：socket worker 既送 webOverlay 也送 nativeHud
-            // Phase 3+ widget 实化为 IUiDataConsumer 后才有意义；Phase 1 nativeHud.HandleUiData 仅维护 snapshot
+            // Phase 3+ widget 实化为 IUiDataConsumer 后才有意义；当前 nativeHud.HandleUiData 有 fast-path 直接 return（无 IUiDataConsumer）
             Action<string> uiDataTee = delegate(string raw)
             {
                 try { webOverlay.HandleUiData(raw); }
@@ -337,11 +359,11 @@ class Program
             };
             socketServer.SetUiDataHandler(uiDataTee);
             frameTask.SetUiDataHandler(uiDataTee);
-            LogManager.Log("[NativeHud] enabled (Phase 1 skeleton; panel routing not yet hijacked)");
+            LogManager.Log("[NativeHud] enabled (Phase 2: panel routing hijacked)");
         }
         else
         {
-            LogManager.Log("[NativeHud] disabled (config useNativeHud=false)");
+            LogManager.Log("[NativeHud] disabled (config useNativeHud=false; router goes through PostToWeb fallback)");
         }
 
         // Phase 1 (11c): WebView2 硬依赖 — webOverlay 必有, 直接用

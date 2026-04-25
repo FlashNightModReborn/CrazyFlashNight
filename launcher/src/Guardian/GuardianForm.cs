@@ -165,6 +165,12 @@ namespace CF7Launcher.Guardian
 
         public void BindWindowManager(WindowManager wm) { _windowManager = wm; }
 
+        /// <summary>Phase 2 PanelHostController FlashSnapshot.Capture 用。SA 进程重启时返回 IntPtr.Zero。</summary>
+        public IntPtr GetFlashHwnd()
+        {
+            return (_windowManager != null) ? _windowManager.FlashHwnd : IntPtr.Zero;
+        }
+
         /// <summary>
         /// Phase A Step A2: 两段式初始化第二步。
         /// GameLaunchFlow ctor 依赖 GuardianForm + BootstrapPanel，因此 launchFlow 必须在 GuardianForm 之后构造；
