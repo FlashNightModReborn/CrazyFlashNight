@@ -1172,6 +1172,7 @@
           <Include href="5武器特效和子弹/爆炸狙击子弹/小火焰爆炸素材.xml" itemIcon="1" loadImmediate="false" itemID="69732d7a-00000747" lastModified="1769156228"/>
           <Include href="5武器特效和子弹/冰流爆发特效/冰流爆发.xml" itemID="69721fc4-000001dc" lastModified="1776916666"/>
           <Include href="5武器特效和子弹/冰流爆发特效/冰流爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="69721fc1-000001db" lastModified="1769086913"/>
+          <Include href="5武器特效和子弹/冰流爆发特效/冰流爆发引信.xml" itemID="69ec75cf-00000d76" lastModified="1777104342"/>
           <Include href="5武器特效和子弹/冰流爆发特效/寒冰爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="69721f34-000001c9" lastModified="1769086959"/>
           <Include href="5武器特效和子弹/冰流爆发特效/图片/area40X40.xml" loadImmediate="false" itemID="697221f2-0000045b" lastModified="1762772154"/>
           <Include href="5武器特效和子弹/高爆子弹/Symbol 256.xml" loadImmediate="false" itemID="662f2bea-0000155b" lastModified="1714367440"/>
@@ -1184,9 +1185,9 @@
           <Include href="5武器特效和子弹/高爆子弹/爆炸/Symbol 1231.xml" loadImmediate="false" itemID="662f2a77-00000011" lastModified="1714395009"/>
           <Include href="5武器特效和子弹/高爆子弹/爆炸/Symbol 1234.xml" loadImmediate="false" itemID="662f2a77-00000012" lastModified="1714367025"/>
           <Include href="5武器特效和子弹/高爆子弹/爆炸/Symbol 1236.xml" loadImmediate="false" itemID="662f2a77-00000013" lastModified="1714367025"/>
-          <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发.xml" itemID="6971c15c-000008f1" lastModified="1776934366"/>
+          <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发.xml" itemID="6971c15c-000008f1" lastModified="1777103182"/>
           <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="6971c148-000008ef" lastModified="1769064265"/>
-          <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发引子.xml" itemID="69e9dc62-00000500" lastModified="1776936203"/>
+          <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发引信.xml" itemID="69ec75d6-00000d77" lastModified="1777104342"/>
           <Include href="6消耗品/罐头/白米饭罐头.xml" loadImmediate="false" itemID="66a92613-0000001b" lastModified="1722405828"/>
           <Include href="6消耗品/罐头/番茄炒鸡蛋罐头.xml" loadImmediate="false" itemID="66a92607-0000001a" lastModified="1722361351"/>
           <Include href="6消耗品/罐头/图标-白米饭罐头.xml" itemID="66a9d3dc-000002cd" lastModified="1763134765"/>
@@ -1240,6 +1241,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1886764" publishTime="1777104073"/>
+          <PublishItem publishSize="1886050" publishTime="1777103602"/>
+          <PublishItem publishSize="1886050" publishTime="1777103445"/>
           <PublishItem publishSize="1886173" publishTime="1776935565"/>
           <PublishItem publishSize="1886170" publishTime="1776935261"/>
           <PublishItem publishSize="1886173" publishTime="1776935087"/>
@@ -1257,8 +1261,5 @@
           <PublishItem publishSize="1885870" publishTime="1776919262"/>
           <PublishItem publishSize="1885893" publishTime="1776919208"/>
           <PublishItem publishSize="1885888" publishTime="1776919187"/>
-          <PublishItem publishSize="1885888" publishTime="1776919152"/>
-          <PublishItem publishSize="1885871" publishTime="1776919051"/>
-          <PublishItem publishSize="1885863" publishTime="1776918854"/>
      </publishHistory>
 </DOMDocument>

@@ -312,10 +312,11 @@
       <icon>狱之流火铳</icon>
       <type>武器</type>
       <use>手枪</use>
-      <price>300000</price>
-      <description>此武器以「加持的密制突击步枪」为原型改造而来，实际上是武器设计者认为弹药专家的「交叉射击」火力凶悍却仅能一次性使用，实属可惜，遂以此为灵感打造此枪，让这份强劲火力得以连续施展。</description>
+      <price>416750</price>
+      <description>此武器以「加持的密制突击步枪」为原型改造而来，实际上是某个武器设计者认为弹药专家的「交叉射击」火力凶悍却仅能一次性使用，实属可惜，遂以此为灵感打造此枪，让这份强劲火力得以连续施展。并且还附带一定的特殊效果
+      特效效果：“热暴击”，有40%的概率可以触发热属性攻击</description>
       <data>
-        <level>45</level>
+        <level>33</level>
         <weight>8</weight>
         <dressup>枪-手枪-狱之流火铳</dressup>
         <capacity>7</capacity>
@@ -324,7 +325,7 @@
         <interval>600</interval>
         <singleshoot>true</singleshoot>
         <velocity>1</velocity>
-        <bullet>火焰爆发引子</bullet>
+        <bullet>火焰爆发引信</bullet>
         <bulletrename>烈焰集束爆炸</bulletrename>
         <sound>火流.wav</sound>
         <muzzle>高爆枪火</muzzle>
@@ -342,10 +343,10 @@
       <icon>霜之流冰铳</icon>
       <type>武器</type>
       <use>手枪</use>
-      <price>380000</price>
-      <description>狱之流火铳的冰属性改造版本</description>
+      <price>868800</price>
+      <description>狱之流火铳的冰属性改造版本，是彻底的冰冷伤！哪怕只是没靠近都能让人“不寒而栗”！</description>
       <data>
-        <level>55</level>
+        <level>43</level>
         <weight>8</weight>
         <dressup>枪-手枪-霜之流冰铳</dressup>
         <capacity>7</capacity>
@@ -354,14 +355,14 @@
         <interval>600</interval>
         <singleshoot>true</singleshoot>
         <velocity>1</velocity>
-        <bullet>冰流爆发</bullet>
+        <bullet>冰流爆发引信</bullet>
         <bulletrename> </bulletrename>
         <sound>冰流.wav</sound>
         <muzzle> </muzzle>
         <bullethit>火花</bullethit>
         <clipname>00号鹿弹</clipname>
         <bulletsize>80</bulletsize>
-        <power>500</power>
+        <power>700</power>
         <impact>15</impact>
         <reloadPenalty>0</reloadPenalty>
       </data>
