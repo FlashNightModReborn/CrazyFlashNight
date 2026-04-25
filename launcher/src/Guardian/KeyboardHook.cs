@@ -10,7 +10,7 @@ namespace CF7Launcher.Guardian
     /// 拦截 Ctrl+W/R/P/O（Flash SA 原生快捷键）和 Ctrl+F/Q（Guardian 动作键）。
     /// 仅当 Guardian 进程在前台时拦截，不影响其他应用程序。
     /// </summary>
-    public class KeyboardHook : IDisposable
+    public class KeyboardHook : IDisposable, IPanelEscapeSource
     {
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);

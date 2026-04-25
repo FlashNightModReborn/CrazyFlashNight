@@ -665,6 +665,16 @@ namespace CF7Launcher.Guardian
         public void SetWebOverlay(WebOverlayForm overlay) { _webOverlay = overlay; }
 
         /// <summary>
+        /// 暴露 IPanelEscapeSource 给 PanelHostController 使用。
+        /// fallback 模式（_kbHook==null，RegisterHotKey 兜底）下 panel ESC 不支持，返回 null；
+        /// PanelHostController 已对 null escSource 做 null-check（panel ESC 不可用，但其它路径不阻塞）。
+        /// </summary>
+        public IPanelEscapeSource GetPanelEscapeSource()
+        {
+            return _kbHook;
+        }
+
+        /// <summary>
         /// 面板状态变化回调（由 WebOverlayForm 调用，可能来自任意线程）。
         /// 仅切换 _panelEscEnabled 标志，不动态改绑 ESC 回调。
         /// </summary>

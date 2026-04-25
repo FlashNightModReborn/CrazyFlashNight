@@ -49,6 +49,9 @@
     <Compile Include="Save\SolFileLocatorTests.cs" />
     <Compile Include="Save\LegacyPresetSlotSeederTests.cs" />
     <Compile Include="Guardian\OverlayCoordinateContextTests.cs" />
+    <Compile Include="Guardian\NativeHudBoundsUnionTests.cs" />
+    <Compile Include="Guardian\UiDataPacketParserTests.cs" />
+    <Compile Include="Guardian\NativePanelBackdropClickRoutingTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

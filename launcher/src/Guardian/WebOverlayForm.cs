@@ -2034,6 +2034,62 @@ namespace CF7Launcher.Guardian
 
         public void SetPanelStateCallback(Action<bool> cb) { _onPanelStateChanged = cb; }
 
+        #region PanelHost 集成（Phase 1 stub）
+        // Phase 1：仅提供最小可见性级 API + setter，让 PanelHostController 可装配但不真接管 panel。
+        // Phase 2 把 stub 实化为完整序列（EX_STYLE/TransparencyKey/timer freeze/TrySuspendAsync）。
+        // Flag OFF 路径完全不调用这些 API，行为与本 PR 之前等价。
+
+        private PanelHostController _panelHost;
+        private volatile bool _panelMode;
+
+        public bool IsPanelMode { get { return _panelMode; } }
+
+        /// <summary>二阶段注入：Program.cs 先 new WebOverlayForm，再 new PanelHostController(this,...)，最后调本方法回注。</summary>
+        public void SetPanelHost(PanelHostController host)
+        {
+            _panelHost = host;
+        }
+
+        /// <summary>
+        /// Phase 1 stub：仅 SetWindowPos + ShowWindow(SW_SHOWNOACTIVATE)。
+        /// Phase 2 实化为：EX_STYLE 去 LAYERED+TRANSPARENT、TransparencyKey=Empty、DefaultBackgroundColor=Black、ResumeWebTimers、PostToWeb panel_viewport_set + snapshot flush。
+        /// </summary>
+        public void ResumeForPanel(Rectangle panelRectScreen)
+        {
+            if (_disposed) return;
+            _panelMode = true;
+            SetWindowPos(this.Handle, HWND_TOP,
+                panelRectScreen.X, panelRectScreen.Y,
+                panelRectScreen.Width, panelRectScreen.Height,
+                SWP_NOACTIVATE);
+            ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
+        }
+
+        /// <summary>
+        /// Phase 1 stub：仅 SW_HIDE。
+        /// Phase 2 实化为：SuspendWebTimers + 冻结 HandleUiData + EX_STYLE 恢复 LAYERED+TRANSPARENT + TransparencyKey 复原 + TrySuspendAsync 后台。
+        /// </summary>
+        public void SuspendAfterPanel()
+        {
+            if (_disposed) return;
+            if (!_panelMode) return; // 幂等
+            _panelMode = false;
+            ShowWindow(this.Handle, SW_HIDE);
+        }
+
+        /// <summary>
+        /// 异常恢复路径专用：不查 _panelMode，强制把窗口拨回 idle 不变量。
+        /// Phase 1 stub 与 SuspendAfterPanel 等价（仅 SW_HIDE）；Phase 2 走完整序列。
+        /// </summary>
+        public void ForceIdleState()
+        {
+            if (_disposed) return;
+            _panelMode = false;
+            try { ShowWindow(this.Handle, SW_HIDE); } catch { }
+        }
+
+        #endregion
+
         private void HandlePanelMessage(string json)
         {
             LogManager.Log("[Panel] HandlePanelMessage: " + json);

@@ -311,6 +311,39 @@ class Program
             webOverlay.SetCursorOverlay(cursorOverlay);
         }
 
+        // === Phase 1: Native HUD + PanelHostController 装配（config.useNativeHud）===
+        // Flag OFF：完全跳过，行为与本 PR 之前等价
+        // Flag ON：装配骨架，但不接管 panel 路由（Phase 2 才接）。NativeHud 无 widget → SW_HIDE；
+        //         Backdrop 默认 hidden；PanelHostController 在内但 OpenPanel 永不被调用
+        NativeHudOverlay nativeHud = null;
+        NativePanelBackdrop backdrop = null;
+        PanelHostController panelHost = null;
+        if (config.UseNativeHud)
+        {
+            nativeHud = new NativeHudOverlay(form, form.FlashHostPanel);
+            backdrop = new NativePanelBackdrop(form);
+            panelHost = new PanelHostController(form, webOverlay, nativeHud, backdrop,
+                inputShield, hnOverlay, cursorOverlay, form.GetPanelEscapeSource());
+            webOverlay.SetPanelHost(panelHost);
+
+            // tee UiData：socket worker 既送 webOverlay 也送 nativeHud
+            // Phase 3+ widget 实化为 IUiDataConsumer 后才有意义；Phase 1 nativeHud.HandleUiData 仅维护 snapshot
+            Action<string> uiDataTee = delegate(string raw)
+            {
+                try { webOverlay.HandleUiData(raw); }
+                catch (Exception ex) { LogManager.Log("[Tee] web UiData throw: " + ex.Message); }
+                try { nativeHud.HandleUiData(raw); }
+                catch (Exception ex) { LogManager.Log("[Tee] hud UiData throw: " + ex.Message); }
+            };
+            socketServer.SetUiDataHandler(uiDataTee);
+            frameTask.SetUiDataHandler(uiDataTee);
+            LogManager.Log("[NativeHud] enabled (Phase 1 skeleton; panel routing not yet hijacked)");
+        }
+        else
+        {
+            LogManager.Log("[NativeHud] disabled (config useNativeHud=false)");
+        }
+
         // Phase 1 (11c): WebView2 硬依赖 — webOverlay 必有, 直接用
         IToastSink toastSink = webOverlay;
         INotchSink notchSink = webOverlay;
@@ -398,6 +431,8 @@ class Program
             try { httpServer.Dispose(); } catch { }
             try { if (inputShield != null) inputShield.Dispose(); } catch { }
             try { if (webOverlay != null) webOverlay.Dispose(); } catch { }
+            try { if (backdrop != null) backdrop.Dispose(); } catch { }
+            try { if (nativeHud != null) nativeHud.Dispose(); } catch { }
             try { notchOverlay.Dispose(); } catch { }
             try { hnOverlay.Dispose(); } catch { }
             try { v8Runtime.Dispose(); } catch { }
@@ -488,6 +523,7 @@ class Program
                 webOverlay.SetReady();
                 if (inputShield != null) inputShield.SetReady();
                 hnOverlay.SetReady();
+                if (nativeHud != null) nativeHud.SetReady();
                 // 11b-β: Ready 才让托盘可见
                 form.ShowTrayIcon();
             },
@@ -547,6 +583,8 @@ class Program
         try { httpServer.Dispose(); } catch { }
         try { if (inputShield != null) inputShield.Dispose(); } catch { }
         try { if (webOverlay != null) webOverlay.Dispose(); } catch { }
+        try { if (backdrop != null) backdrop.Dispose(); } catch { }
+        try { if (nativeHud != null) nativeHud.Dispose(); } catch { }
         try { notchOverlay.Dispose(); } catch { }
         try { hnOverlay.Dispose(); } catch { }
         try { v8Runtime.Dispose(); } catch { }

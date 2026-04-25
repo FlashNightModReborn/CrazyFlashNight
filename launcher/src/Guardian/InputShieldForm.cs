@@ -127,6 +127,27 @@ namespace CF7Launcher.Guardian
             _cursorSampleSink = sink;
         }
 
+        #region Telemetry-only 模式（Phase 1 stub）
+        // Phase 1：no-op + log；Phase 2 实化为 telemetry-only（α 蒙版全 0、HTTRANSPARENT、过滤 panel 矩形外 click）。
+        // PanelHostController 在 panel 打开/关闭时调用这两个方法。
+
+        private bool _telemetryActive;
+        public bool TelemetryActive { get { return _telemetryActive; } }
+
+        public void EnterTelemetryMode(Rectangle panelRect, IntPtr guardianHwnd, Rectangle anchorScreenRect)
+        {
+            _telemetryActive = true;
+            LogManager.Log("[InputShield] EnterTelemetryMode (Phase 1 stub) panel=" + panelRect.Width + "x" + panelRect.Height);
+        }
+
+        public void ExitTelemetryMode()
+        {
+            _telemetryActive = false;
+            LogManager.Log("[InputShield] ExitTelemetryMode (Phase 1 stub)");
+        }
+
+        #endregion
+
         #region 命中区域管理
 
         /// <summary>

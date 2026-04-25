@@ -25,6 +25,8 @@ namespace CF7Launcher.Config
         public string GpuPreference { get; private set; }
         /// <summary>开发用：Ctrl+G 切换 WebView2 opaque + Flash 隐藏的合成成本探针。玩家版必须 false。</summary>
         public bool DevGpuProbeHotkey { get; private set; }
+        /// <summary>开关 Native HUD + PanelHostController 装配。Phase 1 默认 false（仅装配骨架，不接管 panel 路由）。</summary>
+        public bool UseNativeHud { get; private set; }
 
         private static readonly string DefaultFlashPlayer = "Adobe Flash Player 20.exe";
         private static readonly string DefaultSwf = "CRAZYFLASHER7MercenaryEmpire.swf";
@@ -44,6 +46,7 @@ namespace CF7Launcher.Config
             NativeCursorOverlayEnabled = true;
             GpuPreference = "off";
             DevGpuProbeHotkey = false;
+            UseNativeHud = false;
 
             string configPath = Path.Combine(projectRoot, "config.toml");
             if (File.Exists(configPath))
@@ -85,6 +88,8 @@ namespace CF7Launcher.Config
                         GpuPreference = NormalizeGpuPreference(val, "off");
                     else if (string.Equals(key, "devGpuProbeHotkey", StringComparison.OrdinalIgnoreCase))
                         DevGpuProbeHotkey = ParseBool(val, false);
+                    else if (string.Equals(key, "useNativeHud", StringComparison.OrdinalIgnoreCase))
+                        UseNativeHud = ParseBool(val, false);
                 }
             }
 
@@ -149,6 +154,10 @@ namespace CF7Launcher.Config
             string gpuProbe = Environment.GetEnvironmentVariable("CF7_DEV_GPU_PROBE");
             if (!string.IsNullOrEmpty(gpuProbe))
                 DevGpuProbeHotkey = ParseBoolLike(gpuProbe, DevGpuProbeHotkey);
+
+            string nativeHud = Environment.GetEnvironmentVariable("CF7_NATIVE_HUD");
+            if (!string.IsNullOrEmpty(nativeHud))
+                UseNativeHud = ParseBoolLike(nativeHud, UseNativeHud);
         }
 
         private static string NormalizeGpuPreference(string val, string fallback)

@@ -199,6 +199,23 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
+        /// 显示 overlay 但插在 insertAfter 之上（即位于其他特定窗口之下）。
+        /// 用于 NativeHudOverlay 等需要显式分层、不能浮到 HitNumber/Cursor 之上的场景。
+        /// MSDN: hWndInsertAfter 是"the positioned window 将放在该窗口之上"——
+        /// 即 insertAfter 在 z-order 中位于 this 之下。HWND_TOP 是 (IntPtr)0，HWND_BOTTOM 是 (IntPtr)1。
+        /// </summary>
+        protected void ShowOverlayBelow(IntPtr insertAfter)
+        {
+            _shown = true;
+            if (_ownerVisible)
+            {
+                ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
+                SetWindowPos(this.Handle, insertAfter, 0, 0, 0, 0,
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+            }
+        }
+
+        /// <summary>
         /// 临时隐藏：仅隐藏窗口，保留 _shown。
         /// 用于 owner 失焦时临时隐藏，回焦后可通过 _shown 恢复。
         /// </summary>

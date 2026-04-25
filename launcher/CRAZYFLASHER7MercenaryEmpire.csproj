@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Program.cs" />
+    <Compile Include="src\AssemblyInfo.cs" />
     <Compile Include="src\Config\AppConfig.cs" />
     <Compile Include="src\Config\GpuPreferenceManager.cs" />
     <Compile Include="src\Config\UserPrefs.cs" />
@@ -112,6 +113,12 @@
     <Compile Include="src\Tasks\ArchiveTask.cs" />
     <Compile Include="src\Guardian\IToastSink.cs" />
     <Compile Include="src\Guardian\INotchSink.cs" />
+    <Compile Include="src\Guardian\IPanelEscapeSource.cs" />
+    <Compile Include="src\Guardian\Hud\INativeHudWidget.cs" />
+    <Compile Include="src\Guardian\Hud\UiDataPacketParser.cs" />
+    <Compile Include="src\Guardian\NativeHudOverlay.cs" />
+    <Compile Include="src\Guardian\NativePanelBackdrop.cs" />
+    <Compile Include="src\Guardian\PanelHostController.cs" />
     <Compile Include="src\Guardian\CursorOverlayForm.cs" />
     <Compile Include="src\Guardian\WebOverlayForm.cs" />
     <Compile Include="src\Guardian\BootstrapPanel.cs" />
