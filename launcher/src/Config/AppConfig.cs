@@ -22,6 +22,8 @@ namespace CF7Launcher.Config
         public bool NativeCursorOverlayEnabled { get; private set; }
         /// <summary>"off" | "auto" | "on"。控制是否把 launcher 与 WebView2 标记为高性能 GPU。见 GpuPreferenceManager。</summary>
         public string GpuPreference { get; private set; }
+        /// <summary>开发用：Ctrl+G 切换 WebView2 opaque + Flash 隐藏的合成成本探针。玩家版必须 false。</summary>
+        public bool DevGpuProbeHotkey { get; private set; }
 
         private static readonly string DefaultFlashPlayer = "Adobe Flash Player 20.exe";
         private static readonly string DefaultSwf = "CRAZYFLASHER7MercenaryEmpire.swf";
@@ -39,6 +41,7 @@ namespace CF7Launcher.Config
             WebView2AdditionalArgs = "";
             NativeCursorOverlayEnabled = true;
             GpuPreference = "off";
+            DevGpuProbeHotkey = false;
 
             string configPath = Path.Combine(projectRoot, "config.toml");
             if (File.Exists(configPath))
@@ -76,6 +79,8 @@ namespace CF7Launcher.Config
                         NativeCursorOverlayEnabled = ParseBool(val, true);
                     else if (string.Equals(key, "gpuPreference", StringComparison.OrdinalIgnoreCase))
                         GpuPreference = NormalizeGpuPreference(val, "off");
+                    else if (string.Equals(key, "devGpuProbeHotkey", StringComparison.OrdinalIgnoreCase))
+                        DevGpuProbeHotkey = ParseBool(val, false);
                 }
             }
 
@@ -132,6 +137,10 @@ namespace CF7Launcher.Config
             string gpuPref = Environment.GetEnvironmentVariable("CF7_GPU_PREFERENCE");
             if (!string.IsNullOrEmpty(gpuPref))
                 GpuPreference = NormalizeGpuPreference(gpuPref, GpuPreference);
+
+            string gpuProbe = Environment.GetEnvironmentVariable("CF7_DEV_GPU_PROBE");
+            if (!string.IsNullOrEmpty(gpuProbe))
+                DevGpuProbeHotkey = ParseBoolLike(gpuProbe, DevGpuProbeHotkey);
         }
 
         private static string NormalizeGpuPreference(string val, string fallback)

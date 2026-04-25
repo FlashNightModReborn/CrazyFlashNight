@@ -315,7 +315,6 @@
     justify-content:center;
     padding:18px;
     background:rgba(3,7,11,0.78);
-    backdrop-filter:blur(3px);
 }
 .lockbox-help-panel.visible { display:flex; }
 .lockbox-help-card {
@@ -1062,7 +1061,7 @@
     position:absolute; inset:0;
     pointer-events:none;
     background:linear-gradient(180deg, transparent 0%, rgba(0,240,255,0.06) 50%, transparent 100%);
-    height:18%; opacity:0.45; mix-blend-mode:screen;
+    height:18%; opacity:0.55; /* was: opacity:0.45; mix-blend-mode:screen — A档施工 2026-04-25 */
     animation:lb-scan 6s linear infinite;
 }
 .lockbox-panel::after {
@@ -1143,7 +1142,7 @@
         linear-gradient(90deg, transparent 0, rgba(0,240,255,0.12) 14%, transparent 36%, rgba(252,238,9,0.08) 70%, transparent 100%),
         repeating-linear-gradient(0deg, rgba(0,240,255,0.12) 0 1px, transparent 1px 34px),
         repeating-linear-gradient(90deg, rgba(0,240,255,0.08) 0 1px, transparent 1px 34px);
-    mix-blend-mode:screen;
+    /* mix-blend-mode:screen — disabled for iGPU perf 2026-04-25 */
     opacity:0.16;
     animation:lb-holo-drift 11s linear infinite;
 }
@@ -1151,7 +1150,7 @@
     inset:6px;
     background:
         repeating-linear-gradient(-62deg, rgba(255,0,60,0.0) 0 14px, rgba(255,0,60,0.26) 14px 18px, rgba(252,238,9,0.18) 18px 21px, transparent 21px 34px);
-    mix-blend-mode:screen;
+    /* mix-blend-mode:screen — disabled for iGPU perf 2026-04-25 */
     opacity:0;
 }
 .lockbox-grid-pane,
@@ -1277,7 +1276,7 @@
     inset:0;
     pointer-events:none;
     background:linear-gradient(90deg, transparent 0, rgba(252,238,9,0.55) 45%, rgba(0,240,255,0.55) 55%, transparent 100%);
-    mix-blend-mode:screen;
+    /* mix-blend-mode:screen — disabled for iGPU perf 2026-04-25 */
     animation:lb-seq-sweep 0.7s ease-out 1;
     opacity:0;
 }
@@ -3690,7 +3689,7 @@
         rgba(200, 255, 76, 0) 18%,
         rgba(200, 255, 76, 0) 100%
     );
-    mix-blend-mode:screen;
+    /* mix-blend-mode:screen — disabled for iGPU perf 2026-04-25 */
     opacity:0.55;
     animation:mapStageScan 6.8s linear infinite;
     will-change:transform;
@@ -3796,7 +3795,7 @@
     );
     animation:mapRadarSweep 2.4s linear infinite;
     pointer-events:none;
-    mix-blend-mode:screen;
+    /* mix-blend-mode:screen — disabled for iGPU perf 2026-04-25 */
     opacity:0.82;
 }
 @keyframes mapRadarSweep {

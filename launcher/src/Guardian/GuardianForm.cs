@@ -462,6 +462,7 @@ namespace CF7Launcher.Guardian
             });
             // Ctrl+Q → 退出（bootstrap / Ready 均硬退出，不经协调器）
             _kbHook.RegisterAction(0x51, delegate { ForceExit(); });
+            // Ctrl+G GPU 探针在 EnableDevGpuProbeHotkey() 中按 config 启用，玩家版不注入
             // Escape：固定回调，按 volatile 标志分支（避免 Dictionary 并发竞态）
             _kbHook.RegisterAction(0x1B, delegate {
                 if (_kbHook.PanelEscEnabled)
@@ -501,6 +502,25 @@ namespace CF7Launcher.Guardian
             if (_launchFlow == null) return false;
             try { return _launchFlow.CurrentState == "Ready"; }
             catch { return false; }
+        }
+
+        /// <summary>
+        /// 启用开发用 Ctrl+G GPU 合成探针（toggle WebView2 opaque + Flash 隐藏）。
+        /// 由 Program.cs 在 config.devGpuProbeHotkey=true 时调用；玩家版默认不开。
+        /// 必须在 SetupHotkeys 之后调用（_kbHook 已就绪），重复调用安全。
+        /// </summary>
+        public void EnableDevGpuProbeHotkey()
+        {
+            if (_kbHook == null) { LogManager.Log("[GpuProbe] hotkey unavailable: kb hook not installed"); return; }
+            _kbHook.EnableBlockedVk(0x47); // G
+            _kbHook.RegisterAction(0x47, delegate {
+                if (!IsReadyForHotkey()) return;
+                try { this.BeginInvoke(new Action(delegate {
+                    if (_webOverlay == null || _windowManager == null) return;
+                    _webOverlay.ToggleCompositionProbe(_windowManager.FlashHwnd);
+                })); } catch {}
+            });
+            LogManager.Log("[GpuProbe] Ctrl+G enabled (dev-only)");
         }
 
         /// <summary>Fallback：KeyboardHook 安装失败时退化为 RegisterHotKey</summary>

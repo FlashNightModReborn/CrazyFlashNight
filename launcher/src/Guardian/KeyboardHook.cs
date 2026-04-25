@@ -106,6 +106,7 @@ namespace CF7Launcher.Guardian
             _blockedVks.Add(0x4F); // O
             _blockedVks.Add(0x46); // F — 原 RegisterHotKey，现迁入此处
             _blockedVks.Add(0x51); // Q — 原 RegisterHotKey，现迁入此处
+            // 0x47 (G) 由 GuardianForm 按 config.devGpuProbeHotkey 动态启用，玩家版不注入
 
             _actionVks = new Dictionary<uint, Action>();
         }
@@ -116,6 +117,15 @@ namespace CF7Launcher.Guardian
         public void RegisterAction(uint vk, Action callback)
         {
             _actionVks[vk] = callback;
+        }
+
+        /// <summary>
+        /// 运行时把 vk 加入 Ctrl+&lt;vk&gt; 拦截列表。
+        /// 用于按 config 决定是否启用某些开发用快捷键（如 Ctrl+G GPU probe）。
+        /// </summary>
+        public void EnableBlockedVk(uint vk)
+        {
+            _blockedVks.Add(vk);
         }
 
         /// <summary>
@@ -166,7 +176,7 @@ namespace CF7Launcher.Guardian
             ready.WaitOne(2000);
             bool ok = _hookId != IntPtr.Zero;
             Guardian.LogManager.Log("[KeyboardHook] Install " + (ok ? "OK" : "FAILED")
-                + " (dedicated thread, blocks: W/R/P/O/F/Q)");
+                + " (dedicated thread, blocks: W/R/P/O/F/Q [+G if dev])");
             return ok;
         }
 

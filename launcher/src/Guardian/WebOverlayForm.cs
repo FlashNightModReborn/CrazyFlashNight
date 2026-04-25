@@ -64,6 +64,8 @@ namespace CF7Launcher.Guardian
             public IntPtr dwExtraInfo;
         }
 
+        private const int SW_HIDE = 0;
+        private const int SW_SHOWNA = 8;
         private const int SW_SHOWNOACTIVATE = 4;
         private static readonly IntPtr HWND_TOP = new IntPtr(0);
         private const uint SWP_NOMOVE = 0x0002;
@@ -206,6 +208,11 @@ namespace CF7Launcher.Guardian
         private IntPtr _lastLoggedMonitor = IntPtr.Zero;
         private double _lastLoggedScaleX = -1.0;
         private double _lastLoggedScaleY = -1.0;
+
+        // 探针：合成成本 toggle。Ctrl+G 切换 opaque WebView2 + 隐藏 Flash 子窗口，
+        // 观察任务管理器 GPU 占用变化。结果决定是否推进"panel 态切 opaque + 隐 Flash"方案。
+        private bool _compositionProbeActive;
+        private Color _probeOriginalWebBackColor = Color.Transparent;
 
         public WebOverlayForm(Form owner, Control anchor, string webDir,
             bool lowEffectsMode, bool disableCssAnimations, bool disableVisualizers,
@@ -1396,10 +1403,13 @@ namespace CF7Launcher.Guardian
             {
                 RestoreSystemCursorForMissingNativeOverlay();
             }
-            LogManager.Log("[Cursor] visible=" + visible
-                + " state=" + _cursorState
-                + " dragging=" + _cursorDragging
-                + " reason=" + _cursorDiagReason);
+            if (CursorDiagEnabled)
+            {
+                LogManager.Log("[Cursor] visible=" + visible
+                    + " state=" + _cursorState
+                    + " dragging=" + _cursorDragging
+                    + " reason=" + _cursorDiagReason);
+            }
         }
 
         private void ForceCursorSample(string reason)
@@ -1414,9 +1424,14 @@ namespace CF7Launcher.Guardian
                 SendCursorPosition(true);
         }
 
+        // Cursor 采样日志默认关闭，避免污染调试。需要时把 CursorDiagEnabled 临时改 true。
+        private static readonly bool CursorDiagEnabled = false;
+
         private void LogCursorSample(string kind, Point screen, Rectangle bounds, Point local,
             Point css, bool visible, bool force)
         {
+            if (!CursorDiagEnabled) { _cursorDiagForce = false; return; }
+
             long now = Environment.TickCount;
             bool shouldLog = _cursorDiagForce || force || now - _lastCursorDiagTick > 1000;
             if (!shouldLog) return;
@@ -1849,6 +1864,55 @@ namespace CF7Launcher.Guardian
                 RequestViewportMetrics("set_ready");
                 ExecScript("if(window.Notch&&Notch.reportRect){Notch.reportRect();}");
                 EnsureCursorTimer();
+            }
+        }
+
+        /// <summary>
+        /// 探针：toggle 合成成本快路径。
+        /// ON: WebView2 背景切 opaque（消除逐像素 alpha blend）+ 隐藏 Flash hwnd（底层不出图）
+        /// OFF: 恢复 transparent + 显示 Flash。
+        /// 对比 toggle 前后任务管理器 iGPU 占用，验证"panel 态切 opaque"是否值得推进。
+        /// </summary>
+        public void ToggleCompositionProbe(IntPtr flashHwnd)
+        {
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action<IntPtr>(ToggleCompositionProbe), flashHwnd); }
+                catch { }
+                return;
+            }
+
+            if (_disposed || _webView == null) return;
+
+            long tick = Environment.TickCount;
+            bool nextActive = !_compositionProbeActive;
+
+            try
+            {
+                if (nextActive)
+                {
+                    _probeOriginalWebBackColor = _webView.DefaultBackgroundColor;
+                    _webView.DefaultBackgroundColor = Color.Black;
+                    if (flashHwnd != IntPtr.Zero)
+                        ShowWindow(flashHwnd, SW_HIDE);
+                    LogManager.Log("[GpuProbe] ON  tick=" + tick
+                        + " flashHwnd=" + flashHwnd.ToInt64().ToString("X")
+                        + " (WebView2 opaque + Flash hidden)");
+                }
+                else
+                {
+                    _webView.DefaultBackgroundColor = _probeOriginalWebBackColor;
+                    if (flashHwnd != IntPtr.Zero)
+                        ShowWindow(flashHwnd, SW_SHOWNA);
+                    LogManager.Log("[GpuProbe] OFF tick=" + tick
+                        + " flashHwnd=" + flashHwnd.ToInt64().ToString("X")
+                        + " (restored transparent + Flash visible)");
+                }
+                _compositionProbeActive = nextActive;
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[GpuProbe] toggle threw: " + ex.Message);
             }
         }
 
