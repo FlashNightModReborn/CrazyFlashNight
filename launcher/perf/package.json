@@ -7,7 +7,7 @@
     "baseline": "node harness.js --mode baseline",
     "ablate": "node harness.js --mode ablate",
     "all": "node harness.js --mode all",
-    "report": "node harness.js --mode report",
+    "report": "node recover.js",
     "watch": "node harness.js --mode watch"
   },
   "dependencies": {

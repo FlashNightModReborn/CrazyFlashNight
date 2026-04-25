@@ -636,6 +636,7 @@ sharpness = 0.5
 webOverlayLowEffects = false
 webOverlayDisableCssAnimations = false
 webOverlayDisableVisualizers = false
+webOverlayFrameRateLimit = 60
 webView2DisableGpu = false
 webView2AdditionalArgs = ""
 nativeCursorOverlay = true
@@ -651,7 +652,7 @@ devGpuProbeHotkey = false
 
 `devGpuProbeHotkey=true`（或 `CF7_DEV_GPU_PROBE=1`）启用 Ctrl+G 切换 WebView2 `DefaultBackgroundColor=Black` + Flash 子窗口隐藏的 GPU 合成探针，用于实测 alpha blend 占 iGPU 的比重。日志写 `[GpuProbe] ON/OFF tick=...` 可对照任务管理器曲线。**玩家版必须保持 false**：误触会让游戏画面消失，再按一次才能恢复。
 
-`webOverlayLowEffects` 是运行态 overlay 聚合诊断开关，等价于同时启用 `webOverlayDisableCssAnimations` 与 `webOverlayDisableVisualizers`，并对 map panel 额外关闭全屏 scanline / radar / pulse、移除大图与场景节点的 CSS filter/drop-shadow、降低 full-surface overlay 透明覆膜成本。`webOverlayDisableCssAnimations` 只注入 `perf-no-css-animations`，关闭 CSS animation / transition；`webOverlayDisableVisualizers` 只隐藏 BGM/FPS canvas，并把 BGM 可视化推送从 60ms 降为 250ms 的 track-end 轮询。`webView2DisableGpu` 会同时给 BootstrapPanel 与运行态 WebOverlayForm 追加 `--disable-gpu --disable-gpu-rasterization --disable-accelerated-2d-canvas`，用于验证核显占满是否来自 WebView2 合成；它可能把负载转移到 CPU，不建议作为默认运行配置。`nativeCursorOverlay=false` 或环境变量 `CF7_NATIVE_CURSOR_OVERLAY=0` 会关闭 C# 原生 cursor layered window，恢复系统鼠标，用于 A/B 排除 cursor 迁移对 GPU 满载的影响。`webView2AdditionalArgs` 和环境变量 `CF7_WEBVIEW2_ARGS` 用于一次性追加 Chromium 参数；环境变量 `CF7_WEB_LOW_EFFECTS`、`CF7_WEB_DISABLE_CSS_ANIMATIONS`、`CF7_WEB_DISABLE_VISUALIZERS`、`CF7_WEBVIEW2_DISABLE_GPU` 可覆盖对应布尔配置。
+`webOverlayLowEffects` 是运行态 overlay 聚合诊断开关，等价于同时启用 `webOverlayDisableCssAnimations` 与 `webOverlayDisableVisualizers`，并对 map panel 额外关闭全屏 scanline / radar / pulse、移除大图与场景节点的 CSS filter/drop-shadow、降低 full-surface overlay 透明覆膜成本。`webOverlayDisableCssAnimations` 只注入 `perf-no-css-animations`，关闭 CSS animation / transition；`webOverlayDisableVisualizers` 只隐藏 BGM/FPS canvas，并把 BGM 可视化推送从 60ms 降为 250ms 的 track-end 轮询。`webOverlayFrameRateLimit` 默认 `60`，通过 Web 端 requestAnimationFrame 限帧器把 overlay 的 JS/canvas 刷新链路限制到 60fps；`0`、`off` 或 `unlimited` 表示跟随当前显示器刷新率跑满。`webView2DisableGpu` 会同时给 BootstrapPanel 与运行态 WebOverlayForm 追加 `--disable-gpu --disable-gpu-rasterization --disable-accelerated-2d-canvas`，用于验证核显占满是否来自 WebView2 合成；它可能把负载转移到 CPU，不建议作为默认运行配置。`nativeCursorOverlay=false` 或环境变量 `CF7_NATIVE_CURSOR_OVERLAY=0` 会关闭 C# 原生 cursor layered window，恢复系统鼠标，用于 A/B 排除 cursor 迁移对 GPU 满载的影响。`webView2AdditionalArgs` 和环境变量 `CF7_WEBVIEW2_ARGS` 用于一次性追加 Chromium 参数；环境变量 `CF7_WEB_LOW_EFFECTS`、`CF7_WEB_DISABLE_CSS_ANIMATIONS`、`CF7_WEB_DISABLE_VISUALIZERS`、`CF7_WEB_FRAME_RATE_LIMIT`、`CF7_WEBVIEW2_DISABLE_GPU` 可覆盖对应配置。
 
 BootstrapPanel 使用 `launcher/webview2_userdata`；运行态 WebOverlayForm 使用独立的 `launcher/webview2_overlay_userdata`。两者不能共用目录，因为 WebView2 同一个 user-data 目录下的 browser process group 要求启动参数一致，诊断参数（如禁 GPU）会导致启动阶段和运行阶段互相冲突。BootstrapPanel 在 reveal 后隐藏时会调用 WebView2 `TrySuspendAsync()`，避免启动页在游戏运行中继续参与 GPU 合成。
 

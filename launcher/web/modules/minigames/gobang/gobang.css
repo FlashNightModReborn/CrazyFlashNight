@@ -195,8 +195,7 @@
         linear-gradient(90deg, transparent 48%, rgba(255, 106, 42, 0.22) 49.5%, transparent 51%) center / 100% 100% no-repeat,
         linear-gradient(0deg, transparent 48%, rgba(255, 106, 42, 0.18) 49.5%, transparent 51%) center / 100% 100% no-repeat,
         radial-gradient(circle at 50% 50%, transparent 0 10%, rgba(120, 214, 255, 0.18) 10.5% 11%, transparent 11.5% 100%);
-    opacity: 0.34;
-    mix-blend-mode: screen;
+    opacity: 0.44;
 }
 
 .gobang-coordinate-row {
@@ -295,7 +294,7 @@
     inset: 0;
     pointer-events: none;
     background: radial-gradient(circle at 50% 50%, rgba(120, 200, 255, 0.06), transparent 60%);
-    animation: gb-breath 1.3s ease-in-out infinite;
+    opacity: 0.48;
 }
 
 /* 四角 L 形信号锚定（虚渊四基础支点） */
@@ -327,7 +326,7 @@
         rgba(120, 200, 255, 0.04) 0 1px,
         transparent 1px 3px
     );
-    mix-blend-mode: screen;
+    opacity: 0.72;
     z-index: 3;
 }
 
@@ -354,11 +353,11 @@
         rgba(180, 220, 255, 0.16) 50%,
         rgba(120, 200, 255, 0.08) 60%,
         transparent);
-    animation: gb-sweep 6.5s linear infinite;
+    animation: gb-sweep 18s linear infinite;
 }
 
 .gobang-panel[data-pending-ai="1"] .gobang-sweep::before {
-    animation-duration: 2.1s;
+    animation-duration: 3.5s;
     background: linear-gradient(90deg,
         transparent,
         rgba(200, 140, 255, 0.10) 40%,
@@ -769,7 +768,7 @@
         radial-gradient(ellipse at 72% 82%, rgba(180, 116, 255, 0.14), transparent 58%),
         rgba(3, 6, 12, 0.78);
     z-index: 20;
-    backdrop-filter: blur(4px);
+    /* Full-panel backdrop blur is expensive in WebView2; the opaque overlay keeps the same readability. */
 }
 
 .gobang-manual[data-open="1"] {

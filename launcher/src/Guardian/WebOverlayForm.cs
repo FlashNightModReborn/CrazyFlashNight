@@ -109,6 +109,7 @@ namespace CF7Launcher.Guardian
         private readonly bool _lowEffectsMode;
         private readonly bool _disableCssAnimations;
         private readonly bool _disableVisualizers;
+        private readonly int _frameRateLimit;
         private readonly bool _webView2DisableGpu;
         private readonly string _webView2AdditionalArgs;
 
@@ -216,6 +217,7 @@ namespace CF7Launcher.Guardian
 
         public WebOverlayForm(Form owner, Control anchor, string webDir,
             bool lowEffectsMode, bool disableCssAnimations, bool disableVisualizers,
+            int frameRateLimit,
             bool webView2DisableGpu, string webView2AdditionalArgs)
         {
             _owner = owner;
@@ -226,6 +228,7 @@ namespace CF7Launcher.Guardian
             _lowEffectsMode = lowEffectsMode;
             _disableCssAnimations = disableCssAnimations || lowEffectsMode;
             _disableVisualizers = disableVisualizers || lowEffectsMode;
+            _frameRateLimit = NormalizeFrameRateLimit(frameRateLimit);
             _webView2DisableGpu = webView2DisableGpu;
             _webView2AdditionalArgs = webView2AdditionalArgs ?? "";
 
@@ -343,6 +346,8 @@ namespace CF7Launcher.Guardian
 
                 // JS→C# 消息
                 _webView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
+                await _webView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(
+                    "window.CF7_FRAME_RATE_LIMIT=" + _frameRateLimit.ToString(CultureInfo.InvariantCulture) + ";");
 
                 // 调试阶段保留开发者工具
                 _webView.CoreWebView2.Settings.AreDevToolsEnabled = true;
@@ -667,17 +672,24 @@ namespace CF7Launcher.Guardian
             string lowEffects = _lowEffectsMode ? "true" : "false";
             string noCssAnimations = _disableCssAnimations ? "true" : "false";
             string noVisualizers = _disableVisualizers ? "true" : "false";
+            string frameRateLimit = _frameRateLimit.ToString(CultureInfo.InvariantCulture);
+            string frameRateCapped = _frameRateLimit > 0 ? "true" : "false";
             ExecScript("document.documentElement.classList.toggle('perf-low-effects'," + lowEffects + ");"
                 + "document.documentElement.classList.toggle('perf-no-css-animations'," + noCssAnimations + ");"
+                + "document.documentElement.classList.toggle('perf-frame-capped'," + frameRateCapped + ");"
                 + "document.documentElement.classList.toggle('perf-no-visualizers'," + noVisualizers + ");"
                 + "window.CF7_LOW_EFFECTS=" + lowEffects + ";"
                 + "window.CF7_DISABLE_CSS_ANIMATIONS=" + noCssAnimations + ";"
-                + "window.CF7_DISABLE_VISUALIZERS=" + noVisualizers + ";");
-            if (_lowEffectsMode || _disableCssAnimations || _disableVisualizers)
+                + "window.CF7_DISABLE_VISUALIZERS=" + noVisualizers + ";"
+                + "window.CF7_FRAME_RATE_LIMIT=" + frameRateLimit + ";"
+                + "document.documentElement.style.setProperty('--overlay-frame-rate-limit','" + frameRateLimit + "');"
+                + "if(window.CF7FrameLimiter&&window.CF7FrameLimiter.setLimit){window.CF7FrameLimiter.setLimit(" + frameRateLimit + ");}");
+            if (_lowEffectsMode || _disableCssAnimations || _disableVisualizers || _frameRateLimit > 0)
                 LogManager.Log("[WebOverlay] perf mode applied: " + reason
                     + " lowEffects=" + _lowEffectsMode
                     + " noCssAnimations=" + _disableCssAnimations
-                    + " noVisualizers=" + _disableVisualizers);
+                    + " noVisualizers=" + _disableVisualizers
+                    + " frameRateLimit=" + _frameRateLimit);
         }
 
         #endregion
@@ -840,6 +852,7 @@ namespace CF7Launcher.Guardian
                     + _lowEffectsMode
                     + " noCssAnimations=" + _disableCssAnimations
                     + " noVisualizers=" + _disableVisualizers
+                    + " frameRateLimit=" + _frameRateLimit
                     + " disableGpu=false");
                 return null;
             }
@@ -849,12 +862,21 @@ namespace CF7Launcher.Guardian
                 + _lowEffectsMode
                 + " noCssAnimations=" + _disableCssAnimations
                 + " noVisualizers=" + _disableVisualizers
+                + " frameRateLimit=" + _frameRateLimit
                 + " disableGpu=" + _webView2DisableGpu
                 + " args=" + joined);
 
             CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions();
             options.AdditionalBrowserArguments = joined;
             return options;
+        }
+
+        private static int NormalizeFrameRateLimit(int value)
+        {
+            if (value <= 0) return 0;
+            if (value < 15) return 15;
+            if (value > 240) return 240;
+            return value;
         }
 
         public void SetCursorOverlay(CursorOverlayForm cursorOverlay)

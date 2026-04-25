@@ -4,6 +4,8 @@ var CursorFeedback = (function() {
     var hoverTarget = null;
     var pressed = false;
     var stateCache = (typeof WeakMap === "function") ? new WeakMap() : null;
+    var pendingMoveTarget = null;
+    var moveRaf = 0;
 
     function closestInteractive(node) {
         while (node && node !== document && node.nodeType === 1) {
@@ -60,7 +62,11 @@ var CursorFeedback = (function() {
     }
 
     function updateFromEvent(event, reason) {
-        hoverTarget = closestInteractive(event ? event.target : null);
+        updateFromTarget(event ? event.target : null, reason);
+    }
+
+    function updateFromTarget(target, reason) {
+        hoverTarget = closestInteractive(target);
         if (!hoverTarget) {
             pressed = false;
             send("normal", false, reason);
@@ -83,8 +89,13 @@ var CursorFeedback = (function() {
     }, true);
 
     document.addEventListener("mousemove", function(event) {
-        var next = closestInteractive(event.target);
-        if (next !== hoverTarget) updateFromEvent(event, "mousemove_target");
+        pendingMoveTarget = event.target;
+        if (moveRaf) return;
+        moveRaf = requestAnimationFrame(function() {
+            moveRaf = 0;
+            var next = closestInteractive(pendingMoveTarget);
+            if (next !== hoverTarget) updateFromTarget(pendingMoveTarget, "mousemove_target");
+        });
     }, true);
 
     document.addEventListener("mouseout", function(event) {

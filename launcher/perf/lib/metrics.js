@@ -3,8 +3,7 @@
 
 'use strict';
 
-async function attachInPageProbe(page) {
-    await page.addInitScript(() => {
+function installPerfProbe() {
         if (window.__cf7Perf) return;
         const probe = {
             frames: [],
@@ -53,7 +52,11 @@ async function attachInPageProbe(page) {
                 paints: probe.paints.slice(),
             };
         };
-    });
+}
+
+async function attachInPageProbe(page) {
+    await page.addInitScript(installPerfProbe);
+    await page.evaluate(installPerfProbe);
 }
 
 function summarizeFrames(frames) {

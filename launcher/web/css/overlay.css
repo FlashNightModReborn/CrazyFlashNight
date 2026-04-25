@@ -48,9 +48,11 @@ html.perf-no-visualizers #notch-expanded-canvas {
     opacity:0;
     transform:translate3d(-100px,-100px,0);
     transition:opacity 70ms linear;
+}
+#cursor-overlay.is-visible {
+    opacity:1;
     will-change:transform,opacity;
 }
-#cursor-overlay.is-visible { opacity:1; }
 #cursor-overlay::before,
 #cursor-overlay::after {
     content:"";

@@ -70,7 +70,7 @@ async function clearAblation(page) {
 async function main() {
     const opts = parseArgs();
     fs.mkdirSync(REPORT_ROOT, { recursive: true });
-    const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
     const reportDir = path.join(REPORT_ROOT, stamp);
     const screenshotDir = path.join(reportDir, 'screenshots');
     fs.mkdirSync(screenshotDir, { recursive: true });

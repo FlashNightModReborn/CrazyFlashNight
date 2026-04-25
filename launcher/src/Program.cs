@@ -258,6 +258,7 @@ class Program
             config.WebOverlayLowEffects,
             config.WebOverlayDisableCssAnimations,
             config.WebOverlayDisableVisualizers,
+            config.WebOverlayFrameRateLimit,
             config.WebView2DisableGpu,
             config.WebView2AdditionalArgs);
         CursorOverlayForm cursorOverlay = null;

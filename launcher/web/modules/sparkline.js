@@ -19,7 +19,7 @@ var SparklineRenderer = (function() {
     var TARGET_FPS = 26;
     var MIN_DIFF   = 5;
     var MAX_LIGHT  = 9;
-    var ANIM_FRAMES = 3; // 过渡动画帧数
+    var ANIM_FRAMES = 1; // 高频 FPS 推送下只做 1 帧过渡，避免 rAF 常驻
 
     // ── DPR-aware canvas 工具 ──
     function currentDpr() { return window.devicePixelRatio || 1; }

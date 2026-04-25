@@ -58,15 +58,36 @@ function parseArgs() {
     return out;
 }
 
+function applyModeDefaults(opts) {
+    if (opts.mode === 'all') return;
+    if (opts.mode === 'baseline') {
+        opts.onlyAblation = 'baseline';
+        return;
+    }
+    if (opts.mode === 'ablate') {
+        opts.mode = 'all';
+        return;
+    }
+    if (opts.mode === 'watch') {
+        opts.repeats = 1;
+        opts.dryRun = false;
+        opts.videos = false;
+        opts.headless = false;
+        return;
+    }
+    throw new Error('unsupported --mode "' + opts.mode + '". Use all, baseline, ablate, or watch. For report recovery use node recover.js.');
+}
+
 function printHelp() {
     console.log(fs.readFileSync(__filename, 'utf8').split('\n').filter(l => l.startsWith('//')).slice(0, 12).join('\n'));
 }
 
 async function main() {
     const opts = parseArgs();
+    applyModeDefaults(opts);
 
     fs.mkdirSync(REPORT_ROOT, { recursive: true });
-    const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
     const reportDir = path.join(REPORT_ROOT, stamp);
     const screenshotDir = path.join(reportDir, 'screenshots');
     const videoDir = path.join(reportDir, 'videos');

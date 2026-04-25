@@ -10,6 +10,8 @@ sharpness = 0.5
 webOverlayLowEffects = false
 webOverlayDisableCssAnimations = false
 webOverlayDisableVisualizers = false
+# 60 caps overlay JS/canvas rAF loops; 0/off/unlimited lets WebView2 follow display refresh.
+webOverlayFrameRateLimit = 60
 webView2DisableGpu = false
 webView2AdditionalArgs = ""
 nativeCursorOverlay = true
