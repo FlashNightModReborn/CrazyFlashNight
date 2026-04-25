@@ -1,4 +1,4 @@
-// CF7:ME Guardian Process — 入口
+﻿// CF7:ME Guardian Process — 入口
 // C# 5 语法
 
 using System;
@@ -31,6 +31,8 @@ class Program
     [STAThread]
     static int Main(string[] args)
     {
+        DpiAwarenessBootstrap.Initialize();
+
         // 单例检查
         bool createdNew;
         Mutex mutex = new Mutex(true, "Global\\CF7ME_Guardian", out createdNew);
@@ -95,21 +97,31 @@ class Program
 
         // Phase A: single-Form 模型。GuardianForm 承载 BootstrapPanel（正常模式）。
         // bus-only 模式 bootstrapWebDir=null，不创建 BootstrapPanel，FlashHostPanel 直接可见。
+        AppConfig config = new AppConfig(projectRoot);
+
         string bootstrapWebDir = busOnly ? null : Path.Combine(projectRoot, "launcher", "web");
-        GuardianForm form = new GuardianForm(bootstrapWebDir);
+        GuardianForm form = new GuardianForm(
+            bootstrapWebDir,
+            config.WebView2DisableGpu,
+            config.WebView2AdditionalArgs);
 
         // 启用文件日志（GuardianForm 构造函数中已初始化 UI 日志，这里补充文件通道）
         LogManager.InitFileLog(projectRoot);
 
         LogManager.Log("[Guardian] Project root: " + projectRoot);
-        if (busOnly)
-            LogManager.Log("[Guardian] --bus-only mode: skipping Flash Player startup");
 
-        // 读配置（bus-only 跳过文件验证）
-        AppConfig config = new AppConfig(projectRoot);
-
+        // UserGpuPreferences 在子进程创建时被 Windows 读取。WebView2 真正 spawn 发生在 Application.Run
+        // 触发 BootstrapPanel.Load 之后，所以这里写入仍然赶得上；放在日志通道就绪之后可以把诊断完整写进 launcher.log。
+        GpuPreferenceManager.ApplyIfNeeded(projectRoot, config.GpuPreference);
         // Phase 2b: 用户级偏好 (lastPlayedSlot / introEnabled), 落盘到 launcher_user_prefs.json
         CF7Launcher.Config.UserPrefs userPrefs = new CF7Launcher.Config.UserPrefs(projectRoot);
+
+        HighDpiCompatibilityResult dpiCompat = HighDpiCompatibilityDetector.Detect(exePath);
+        DpiDiagnostics.LogProcessStartup(DpiAwarenessBootstrap.Result, dpiCompat);
+        DpiDiagnostics.LogWindow("GuardianForm", form.Handle);
+        HighDpiCompatibilityDetector.ScheduleRiskWarning(form, dpiCompat, userPrefs);
+        if (busOnly)
+            LogManager.Log("[Guardian] --bus-only mode: skipping Flash Player startup");
 
         // Steam 正版所有权校验（不通过则不写信任文件，Flash 无法联网）
         if (!SteamOwnershipCheck.Check(projectRoot))
@@ -238,7 +250,23 @@ class Program
         string wv2ver = CoreWebView2Environment.GetAvailableBrowserVersionString();
         LogManager.Log("[WebView2] Runtime found: " + wv2ver);
         string webDir = Path.Combine(projectRoot, "launcher", "web");
-        WebOverlayForm webOverlay = new WebOverlayForm(form, form.FlashHostPanel, webDir);
+        WebOverlayForm webOverlay = new WebOverlayForm(form, form.FlashHostPanel, webDir,
+            config.WebOverlayLowEffects,
+            config.WebOverlayDisableCssAnimations,
+            config.WebOverlayDisableVisualizers,
+            config.WebView2DisableGpu,
+            config.WebView2AdditionalArgs);
+        CursorOverlayForm cursorOverlay = null;
+        if (config.NativeCursorOverlayEnabled)
+        {
+            cursorOverlay = new CursorOverlayForm(form, form.FlashHostPanel,
+                Path.Combine(webDir, "assets", "cursor", "native"));
+            LogManager.Log("[Cursor] native overlay enabled");
+        }
+        else
+        {
+            LogManager.Log("[Cursor] native overlay disabled by config; using system cursor for A/B diagnostics");
+        }
 
         // Notch 依赖 + InputShieldForm
         InputShieldForm inputShield = null;
@@ -275,6 +303,7 @@ class Program
             // 幽灵输入层：GDI+ 命中测试 + CDP 注入
             inputShield = new InputShieldForm(form, form.FlashHostPanel);
             webOverlay.SetInputShield(inputShield);
+            webOverlay.SetCursorOverlay(cursorOverlay);
         }
 
         // Phase 1 (11c): WebView2 硬依赖 — webOverlay 必有, 直接用
@@ -301,6 +330,7 @@ class Program
 
         // 面板系统接线 (11c: webOverlay 必有)
         webOverlay.SetShopTask(shopTask);
+        webOverlay.SetGomokuTask(gomokuTask);
         webOverlay.SetMapTask(mapTask);
         webOverlay.SetPanelStateCallback(form.HandlePanelStateChanged);
         form.SetWebOverlay(webOverlay);
@@ -528,6 +558,9 @@ class Program
             // 都确保清理本次写入的信任条目，不留残留
             if (trustAcquired)
                 FlashTrustManager.RevokeTrust();
+
+            // UserGpuPreferences 注册表条目一律在退出时清理，避免玩家卸载后残留。
+            try { GpuPreferenceManager.Revert(projectRoot); } catch { }
         }
     }
 }

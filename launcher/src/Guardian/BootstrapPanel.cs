@@ -6,6 +6,7 @@
 // - 文件对话框：ShowDialog(this.FindForm())
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
@@ -16,8 +17,11 @@ namespace CF7Launcher.Guardian
     public class BootstrapPanel : UserControl
     {
         private readonly string _webDir;
+        private readonly bool _webView2DisableGpu;
+        private readonly string _webView2AdditionalArgs;
         private WebView2 _webView;
         private bool _disposed;
+        private bool _webViewSuspended;
 
         public event Action<string> OnJsMessage;
 
@@ -28,9 +32,17 @@ namespace CF7Launcher.Guardian
         public event Action<string> BootstrapInitFailed;
 
         public BootstrapPanel(string webDir)
+            : this(webDir, false, "")
+        {
+        }
+
+        public BootstrapPanel(string webDir, bool webView2DisableGpu, string webView2AdditionalArgs)
         {
             _webDir = webDir;
+            _webView2DisableGpu = webView2DisableGpu;
+            _webView2AdditionalArgs = webView2AdditionalArgs ?? "";
 
+            this.AutoScaleMode = AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(24, 24, 26);
 
             _webView = new WebView2();
@@ -61,7 +73,7 @@ namespace CF7Launcher.Guardian
                     Path.GetDirectoryName(_webDir), "webview2_userdata");
 
                 CoreWebView2Environment env =
-                    await CoreWebView2Environment.CreateAsync(null, userDataDir);
+                    await CoreWebView2Environment.CreateAsync(null, userDataDir, CreateWebView2EnvironmentOptions());
                 await _webView.EnsureCoreWebView2Async(env);
 
                 _webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
@@ -116,6 +128,32 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        private CoreWebView2EnvironmentOptions CreateWebView2EnvironmentOptions()
+        {
+            List<string> args = new List<string>();
+            if (_webView2DisableGpu)
+            {
+                args.Add("--disable-gpu");
+                args.Add("--disable-gpu-rasterization");
+                args.Add("--disable-accelerated-2d-canvas");
+            }
+
+            if (!string.IsNullOrWhiteSpace(_webView2AdditionalArgs))
+                args.Add(_webView2AdditionalArgs.Trim());
+
+            if (args.Count == 0)
+            {
+                LogManager.Log("[Bootstrap] WebView2 perf options: disableGpu=false");
+                return null;
+            }
+
+            CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions();
+            options.AdditionalBrowserArguments = string.Join(" ", args.ToArray());
+            LogManager.Log("[Bootstrap] WebView2 perf options: disableGpu=" + _webView2DisableGpu
+                + " args=" + options.AdditionalBrowserArguments);
+            return options;
+        }
+
         private void OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
             string raw;
@@ -145,8 +183,9 @@ namespace CF7Launcher.Guardian
 
         private void PostToWebCore(string json)
         {
-            if (_webView == null || _webView.CoreWebView2 == null) return;
-            try { _webView.CoreWebView2.PostWebMessageAsJson(json); }
+            CoreWebView2 core = TryGetCoreWebView2();
+            if (core == null) return;
+            try { core.PostWebMessageAsJson(json); }
             catch (Exception ex) { LogManager.Log("[Bootstrap] PostToWeb failed: " + ex.Message); }
         }
 
@@ -160,7 +199,63 @@ namespace CF7Launcher.Guardian
                 try { this.BeginInvoke(new Action<bool>(SetPanelVisible), visible); } catch { }
                 return;
             }
-            this.Visible = visible;
+
+            if (visible)
+            {
+                ResumeWebViewIfNeeded();
+                this.Visible = true;
+            }
+            else
+            {
+                this.Visible = false;
+                SuspendWebViewIfPossible();
+            }
+        }
+
+        private async void SuspendWebViewIfPossible()
+        {
+            CoreWebView2 core = TryGetCoreWebView2();
+            if (core == null || _webViewSuspended)
+                return;
+
+            try
+            {
+                bool ok = await core.TrySuspendAsync();
+                _webViewSuspended = ok;
+                LogManager.Log("[Bootstrap] WebView2 suspend requested, ok=" + ok);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Bootstrap] WebView2 suspend failed: " + ex.Message);
+            }
+        }
+
+        private void ResumeWebViewIfNeeded()
+        {
+            CoreWebView2 core = TryGetCoreWebView2();
+            if (core == null || !_webViewSuspended)
+                return;
+
+            try
+            {
+                core.Resume();
+                _webViewSuspended = false;
+                LogManager.Log("[Bootstrap] WebView2 resumed");
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Bootstrap] WebView2 resume failed: " + ex.Message);
+            }
+        }
+
+        private CoreWebView2 TryGetCoreWebView2()
+        {
+            if (_disposed || _webView == null || _webView.IsDisposed)
+                return null;
+
+            try { return _webView.CoreWebView2; }
+            catch (ObjectDisposedException) { return null; }
+            catch (InvalidOperationException) { return null; }
         }
 
         // ==================== 文件对话框 helper ====================

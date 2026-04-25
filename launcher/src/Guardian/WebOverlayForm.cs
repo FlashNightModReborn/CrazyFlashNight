@@ -33,6 +33,37 @@ namespace CF7Launcher.Guardian
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
             int X, int Y, int cx, int cy, uint uFlags);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+        private static extern IntPtr GetModuleHandle(string lpModuleName);
+
+        private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT
+        {
+            public int X;
+            public int Y;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MSLLHOOKSTRUCT
+        {
+            public POINT pt;
+            public uint mouseData;
+            public uint flags;
+            public uint time;
+            public IntPtr dwExtraInfo;
+        }
+
         private const int SW_SHOWNOACTIVATE = 4;
         private static readonly IntPtr HWND_TOP = new IntPtr(0);
         private const uint SWP_NOMOVE = 0x0002;
@@ -42,6 +73,19 @@ namespace CF7Launcher.Guardian
         private const int WS_EX_TOOLWINDOW = 0x00000080;
         private const int WS_EX_NOACTIVATE = 0x08000000;
         private const int WS_EX_TRANSPARENT = 0x00000020;
+        private const int WM_DPICHANGED = 0x02E0;
+        private const int WH_MOUSE_LL = 14;
+        private const int HC_ACTION = 0;
+        private const int WM_MOUSEMOVE = 0x0200;
+        private const int WM_LBUTTONDOWN = 0x0201;
+        private const int WM_LBUTTONUP = 0x0202;
+        private const int WM_RBUTTONDOWN = 0x0204;
+        private const int WM_RBUTTONUP = 0x0205;
+        private const int WM_MBUTTONDOWN = 0x0207;
+        private const int WM_MBUTTONUP = 0x0208;
+        private const int WM_MOUSEWHEEL = 0x020A;
+        private const int WM_XBUTTONDOWN = 0x020B;
+        private const int WM_XBUTTONUP = 0x020C;
 
         #endregion
 
@@ -60,6 +104,11 @@ namespace CF7Launcher.Guardian
         private bool _shown;
         private bool _disposed;
         private bool _devMode;
+        private readonly bool _lowEffectsMode;
+        private readonly bool _disableCssAnimations;
+        private readonly bool _disableVisualizers;
+        private readonly bool _webView2DisableGpu;
+        private readonly string _webView2AdditionalArgs;
 
         // GDI+ fallback：WebView2 未就绪或初始化失败时，消息转发到 GDI+ overlay
         private IToastSink _toastFallback;
@@ -77,10 +126,12 @@ namespace CF7Launcher.Guardian
 
         // InputShieldForm 引用（CDP 输入注入 + hitRects 转发）
         private InputShieldForm _inputShield;
+        private CursorOverlayForm _cursorOverlay;
 
         // 面板系统
         private ShopTask _shopTask;
         private MapTask _mapTask;
+        private GomokuTask _gomokuTask;
         private Action<bool> _onPanelStateChanged;
         private string _activePanel;  // null = 无面板, "kshop"/"help"/...
         private bool _pauseNeedsRestore;
@@ -101,12 +152,36 @@ namespace CF7Launcher.Guardian
 
         // BGM 音频可视化轮询
         private System.Windows.Forms.Timer _audioTimer;
+        private System.Windows.Forms.Timer _cursorTimer;
         private System.Windows.Forms.Timer _positionSettleTimer;
+        private System.Windows.Forms.Timer _positionLongSettleTimer;
         private bool _syncPositionDeferredPending;
         private int _lastViewportWidth;
         private int _lastViewportHeight;
         private double _lastViewportZoom = -1.0;
         private string _pendingSyncReason = "unspecified";
+        private string _cursorState = "normal";
+        private bool _cursorDragging;
+        private string _webCursorState = "normal";
+        private bool _webCursorActive;
+        private bool _cursorLastVisible;
+        private bool _systemCursorHidden;
+        private int _cursorLastX = Int32.MinValue;
+        private int _cursorLastY = Int32.MinValue;
+        private int _cursorLastScreenX = Int32.MinValue;
+        private int _cursorLastScreenY = Int32.MinValue;
+        private long _lastCursorDiagTick;
+        private bool _cursorDiagForce;
+        private string _cursorDiagReason = "init";
+        private bool _nativeCursorMissingLogged;
+        private IntPtr _cursorHook = IntPtr.Zero;
+        private LowLevelMouseProc _cursorHookProc;
+        private bool _cursorHookPostPending;
+        private int _cursorHookPendingX;
+        private int _cursorHookPendingY;
+        private int _cursorHookLastX = Int32.MinValue;
+        private int _cursorHookLastY = Int32.MinValue;
+        private long _lastCursorHookPostTick;
         private string _bgmTitle = ""; // 当前曲目标题（由 UiData bgm: 设置）
         private bool _wasPlaying;       // 上一 tick 的 playing 状态（trackEnd 检测）
         private bool _manualStop;       // 手动 stop 标记（防 trackEnd 误判）
@@ -120,17 +195,37 @@ namespace CF7Launcher.Guardian
         private System.Threading.Timer _reloadDebounce;
         private System.Threading.Timer _reloadTimeout;
 
-        public WebOverlayForm(Form owner, Control anchor, string webDir)
+        private readonly OverlayCoordinateContext _coordinateContext = new OverlayCoordinateContext();
+        private bool _missingMetricsWarned;
+        private bool _dpiResolveWarned;
+        private bool _interactiveRectShapeWarned;
+        private long _lastHitRectLogTick;
+        private long _lastOverlayContextLogTick;
+        private int _lastLoggedDpiX = -1;
+        private int _lastLoggedDpiY = -1;
+        private IntPtr _lastLoggedMonitor = IntPtr.Zero;
+        private double _lastLoggedScaleX = -1.0;
+        private double _lastLoggedScaleY = -1.0;
+
+        public WebOverlayForm(Form owner, Control anchor, string webDir,
+            bool lowEffectsMode, bool disableCssAnimations, bool disableVisualizers,
+            bool webView2DisableGpu, string webView2AdditionalArgs)
         {
             _owner = owner;
             _anchor = anchor;
             _mapper = new FlashCoordinateMapper(anchor, 1024f, 576f);
             _webReady = false;
             _shown = false;
+            _lowEffectsMode = lowEffectsMode;
+            _disableCssAnimations = disableCssAnimations || lowEffectsMode;
+            _disableVisualizers = disableVisualizers || lowEffectsMode;
+            _webView2DisableGpu = webView2DisableGpu;
+            _webView2AdditionalArgs = webView2AdditionalArgs ?? "";
 
             this.FormBorderStyle = FormBorderStyle.None;
             this.ShowInTaskbar = false;
             this.StartPosition = FormStartPosition.Manual;
+            this.AutoScaleMode = AutoScaleMode.None;
 
             // 像素级透明：BackColor = TransparencyKey → 匹配像素视觉透明 + 点击穿透
             this.BackColor = TRANSPARENT_COLOR;
@@ -174,6 +269,12 @@ namespace CF7Launcher.Guardian
         public void SetInputShield(InputShieldForm shield)
         {
             _inputShield = shield;
+            if (_inputShield != null)
+            {
+                _inputShield.SetCoordinateContext(_coordinateContext);
+                _inputShield.SetZoomFactor(_zoomFactor);
+                _inputShield.SetCursorSampleSink(UpdateCursorFromOverlayPoint);
+            }
             // 防时序漏洞：如果 WebView2 已经 ready（先于 shield 注入），补调
             if (_webReady && _inputShield != null && _webView != null && _webView.CoreWebView2 != null)
                 _inputShield.SetTargetWebView(_webView.CoreWebView2);
@@ -199,6 +300,17 @@ namespace CF7Launcher.Guardian
             get { return true; }
         }
 
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WM_DPICHANGED)
+            {
+                ScheduleSyncPosition("web_overlay_dpi_changed");
+                RequestViewportMetrics("web_overlay_dpi_changed");
+                DpiDiagnostics.LogWindow("WebOverlay.WM_DPICHANGED", this.Handle);
+            }
+            base.WndProc(ref m);
+        }
+
         #region WebView2 初始化
 
         private async void InitWebView2Async(string webDir)
@@ -207,10 +319,11 @@ namespace CF7Launcher.Guardian
             {
                 // UserData 目录放在 webDir 旁边，避免污染项目目录
                 string userDataDir = Path.Combine(
-                    Path.GetDirectoryName(webDir), "webview2_userdata");
+                    Path.GetDirectoryName(webDir), "webview2_overlay_userdata");
 
+                CoreWebView2EnvironmentOptions options = CreateWebView2EnvironmentOptions();
                 CoreWebView2Environment env =
-                    await CoreWebView2Environment.CreateAsync(null, userDataDir);
+                    await CoreWebView2Environment.CreateAsync(null, userDataDir, options);
                 await _webView.EnsureCoreWebView2Async(env);
 
                 // 透明背景：WebView2 透明区域显示 Form BackColor (=TransparencyKey) → 视觉穿透
@@ -342,8 +455,14 @@ namespace CF7Launcher.Guardian
 
         #region Owner 跟随
 
-        /// <summary>当前缩放比（viewport 实际高度 / Flash 设计高度 576）。</summary>
+        private const double FlashDesignHeight = 576.0;
+
+        /// <summary>
+        /// 当前 CSS → 物理像素兜底缩放比（viewport 物理高度 / Flash 设计高度 576）。
+        /// 注意：这不是直接写入 WebView2 的 ZoomFactor；高 DPI 下 WebView2 还会乘 DPR。
+        /// </summary>
         private double _zoomFactor = 1.0;
+        private double _webViewZoomFactor = 1.0;
 
         private void ScheduleSyncPosition()
         {
@@ -384,12 +503,35 @@ namespace CF7Launcher.Guardian
                     if (_positionSettleTimer != null)
                         _positionSettleTimer.Stop();
                     if (_disposed) return;
-                    SyncPosition(_pendingSyncReason + ":settled");
+                    SyncPosition(_pendingSyncReason + ":settled_120ms");
                 };
             }
 
             _positionSettleTimer.Stop();
             _positionSettleTimer.Start();
+
+            if (!IsDpiRelatedReason(reason))
+            {
+                if (_positionLongSettleTimer != null)
+                    _positionLongSettleTimer.Stop();
+                return;
+            }
+
+            if (_positionLongSettleTimer == null)
+            {
+                _positionLongSettleTimer = new System.Windows.Forms.Timer();
+                _positionLongSettleTimer.Interval = 500;
+                _positionLongSettleTimer.Tick += delegate
+                {
+                    if (_positionLongSettleTimer != null)
+                        _positionLongSettleTimer.Stop();
+                    if (_disposed) return;
+                    SyncPosition(_pendingSyncReason + ":settled_500ms");
+                };
+            }
+
+            _positionLongSettleTimer.Stop();
+            _positionLongSettleTimer.Start();
         }
 
         public void RequestLayoutSync()
@@ -435,27 +577,63 @@ namespace CF7Launcher.Guardian
 
                 bool viewportChanged = (w != _lastViewportWidth) ||
                     (h != _lastViewportHeight);
+                IntPtr previousMonitor = _coordinateContext.MonitorHandle;
+                int previousDpiX = _coordinateContext.WindowDpiX;
+                int previousDpiY = _coordinateContext.WindowDpiY;
 
                 SetWindowPos(this.Handle, HWND_TOP, x, y, w, h, SWP_NOACTIVATE);
 
-                // WebView2 缩放：viewport 实际高度 / Flash 设计高度
-                double newZoom = Math.Max(0.25, vpH / 576.0);
-                bool zoomChanged = Math.Abs(newZoom - _lastViewportZoom) > 0.001;
-                if (_webReady && _webView != null && Math.Abs(newZoom - _zoomFactor) > 0.001)
+                // CSS→物理命中比例仍按 Flash 设计高度计算。
+                double cssPhysicalScale = CalculateCssPhysicalScale(vpH);
+                _zoomFactor = cssPhysicalScale;
+
+                _coordinateContext.UpdateOverlay(new Rectangle(x, y, w, h),
+                    vpX, vpY, vpW, vpH, this.Handle, _zoomFactor, reason);
+
+                if (_cursorOverlay != null)
+                    _cursorOverlay.SetDpiScale(_coordinateContext.WindowDpiX, _coordinateContext.WindowDpiY);
+
+                // WebView2 视觉 ZoomFactor 需要除以当前 DPI scale，避免 125%/150%
+                // 系统缩放下视觉层被 DPR 二次放大。DPI 统一使用 UpdateOverlay 已采样
+                // 并带 monitor fallback 的值，避免 handle 初建/跨屏时首帧读到 96。
+                double newWebViewZoom = CalculateWebViewZoomFactor(vpH, _coordinateContext.WindowDpiY);
+                bool zoomChanged = Math.Abs(newWebViewZoom - _lastViewportZoom) > 0.001;
+                _webViewZoomFactor = newWebViewZoom;
+                if (!_coordinateContext.LastDpiResolved && !_dpiResolveWarned)
                 {
-                    _zoomFactor = newZoom;
-                    _webView.ZoomFactor = _zoomFactor;
-                    if (_inputShield != null)
-                        _inputShield.SetZoomFactor(_zoomFactor);
+                    _dpiResolveWarned = true;
+                    LogManager.Log("[DPI] WebOverlay DPI query failed; using cached/default dpi="
+                        + _coordinateContext.WindowDpiY + " for WebView2 zoom normalization");
+                }
+
+                bool monitorChanged = previousMonitor != _coordinateContext.MonitorHandle;
+                bool dpiChanged = previousDpiX != _coordinateContext.WindowDpiX ||
+                    previousDpiY != _coordinateContext.WindowDpiY;
+
+                if (_inputShield != null)
+                {
+                    _inputShield.SetCoordinateContext(_coordinateContext);
+                    _inputShield.SetZoomFactor(_zoomFactor);
+                    _inputShield.RequestPositionSync();
+                }
+
+                if (_webReady && _webView != null && Math.Abs(newWebViewZoom - _webView.ZoomFactor) > 0.001)
+                {
+                    _webView.ZoomFactor = _webViewZoomFactor;
                 }
 
                 _lastViewportWidth = w;
                 _lastViewportHeight = h;
-                _lastViewportZoom = newZoom;
+                _lastViewportZoom = newWebViewZoom;
 
-                if (_webReady && (viewportChanged || zoomChanged))
+                if (_webReady && (viewportChanged || zoomChanged || monitorChanged || dpiChanged))
                 {
                     ExecScript("window.dispatchEvent(new Event('resize'));");
+                    RequestViewportMetrics(reason);
+                    ExecScript("if(window.Notch&&Notch.reportRect){Notch.reportRect();}");
+                    ForceCursorSample("sync:" + reason);
+                    if (ShouldLogOverlayContext(dpiChanged || monitorChanged))
+                        DpiDiagnostics.LogOverlayContext("WebOverlay.SyncPosition", _coordinateContext);
                 }
 
             }
@@ -463,6 +641,36 @@ namespace CF7Launcher.Guardian
             {
                 // anchor 可能已 disposed
             }
+        }
+
+        private void RequestViewportMetrics(string reason)
+        {
+            if (!_webReady || _disposed)
+                return;
+            string safeReason = EscapeForJs(string.IsNullOrEmpty(reason) ? "csharp_request" : reason);
+            ExecScript("if(window.OverlayViewportMetrics&&OverlayViewportMetrics.report){"
+                + "OverlayViewportMetrics.report('" + safeReason + "');}");
+        }
+
+        private void ApplyWebPerfMode(string reason)
+        {
+            if (!_webReady || _disposed)
+                return;
+
+            string lowEffects = _lowEffectsMode ? "true" : "false";
+            string noCssAnimations = _disableCssAnimations ? "true" : "false";
+            string noVisualizers = _disableVisualizers ? "true" : "false";
+            ExecScript("document.documentElement.classList.toggle('perf-low-effects'," + lowEffects + ");"
+                + "document.documentElement.classList.toggle('perf-no-css-animations'," + noCssAnimations + ");"
+                + "document.documentElement.classList.toggle('perf-no-visualizers'," + noVisualizers + ");"
+                + "window.CF7_LOW_EFFECTS=" + lowEffects + ";"
+                + "window.CF7_DISABLE_CSS_ANIMATIONS=" + noCssAnimations + ";"
+                + "window.CF7_DISABLE_VISUALIZERS=" + noVisualizers + ";");
+            if (_lowEffectsMode || _disableCssAnimations || _disableVisualizers)
+                LogManager.Log("[WebOverlay] perf mode applied: " + reason
+                    + " lowEffects=" + _lowEffectsMode
+                    + " noCssAnimations=" + _disableCssAnimations
+                    + " noVisualizers=" + _disableVisualizers);
         }
 
         #endregion
@@ -475,58 +683,60 @@ namespace CF7Launcher.Guardian
             try
             {
                 string json = args.WebMessageAsJson;
-                if (json.Contains("\"interactiveRect\""))
+                JObject parsed = null;
+                string type = null;
+                try
                 {
-                    // JS 上报多矩形交互区域（CSS 像素 flat array）→ 缩放为物理像素 → 转发
-                    double z = _zoomFactor;
-                    List<Rectangle> rects = new List<Rectangle>();
-                    int arrStart = json.IndexOf('[');
-                    int arrEnd = json.IndexOf(']');
-                    if (arrStart >= 0 && arrEnd > arrStart)
-                    {
-                        string nums = json.Substring(arrStart + 1, arrEnd - arrStart - 1);
-                        string[] parts = nums.Split(',');
-                        for (int pi = 0; pi + 3 < parts.Length; pi += 4)
-                        {
-                            int rx, ry, rw, rh;
-                            if (int.TryParse(parts[pi].Trim(), out rx) &&
-                                int.TryParse(parts[pi + 1].Trim(), out ry) &&
-                                int.TryParse(parts[pi + 2].Trim(), out rw) &&
-                                int.TryParse(parts[pi + 3].Trim(), out rh))
-                            {
-                                rx = (int)(rx * z); ry = (int)(ry * z);
-                                rw = (int)(rw * z); rh = (int)(rh * z);
-                                if (rw > 0 && rh > 0)
-                                    rects.Add(new Rectangle(rx, ry, rw, rh));
-                            }
-                        }
-                    }
-                    if (_inputShield != null && rects.Count > 0)
-                        _inputShield.UpdateHitRects(rects);
+                    parsed = JObject.Parse(json);
+                    type = parsed.Value<string>("type");
                 }
-                else if (json.Contains("\"jukebox\""))
+                catch { }
+
+                if (type == "viewportMetrics")
+                {
+                    HandleViewportMetrics(parsed);
+                }
+                else if (type == "cursorFeedback" || json.Contains("\"cursorFeedback\""))
+                {
+                    HandleWebCursorFeedback(parsed);
+                }
+                else if (type == "interactiveRect" || json.Contains("\"interactiveRect\""))
+                {
+                    HandleInteractiveRects(parsed, json);
+                }
+                else if (type == "jukebox" || json.Contains("\"jukebox\""))
                 {
                     HandleJukeboxMessage(json);
                 }
-                else if (json.Contains("\"panel\""))
+                else if (type == "panel" || json.Contains("\"panel\""))
                 {
                     HandlePanelMessage(json);
                 }
-                else if (json.Contains("\"type\":\"debug\""))
+                else if (type == "debug" || json.Contains("\"type\":\"debug\""))
                 {
                     HandleDebugMessage(json);
                 }
-                else if (json.Contains("\"click\""))
+                else if (type == "gpuInfo")
+                {
+                    // overlay 启动探针：从 WebGL renderer 字符串判断 WebView2 实际落在哪块 GPU 上，
+                    // 用于事后验证 gpuPreference=auto/on 是否真的生效（写 reg 不等于 Windows 一定遵从）。
+                    string vendor = parsed != null ? parsed.Value<string>("vendor") : null;
+                    string renderer = parsed != null ? parsed.Value<string>("renderer") : null;
+                    LogManager.Log("[GpuPref] WebView2 WebGL renderer: " + (renderer ?? "(null)")
+                        + " | vendor: " + (vendor ?? "(null)"));
+                }
+                else if (type == "click" || json.Contains("\"click\""))
                 {
                     string key = ExtractString(json, "\"key\":\"");
                     if (key != null)
                         HandleButtonClick(key, json);
                 }
-                else if (json.Contains("\"ready\""))
+                else if (type == "ready" || json.Contains("\"ready\""))
                 {
                     LogManager.Log("[WebOverlay] JS side ready → activating web channel");
                     _webReady = true;
                     _webFailed = false; // 热重载恢复时清除降级标记
+                    ApplyWebPerfMode("ready");
 
                     // 取消热重载超时 Timer
                     var oldTimeout = System.Threading.Interlocked.Exchange(ref _reloadTimeout, null);
@@ -544,6 +754,12 @@ namespace CF7Launcher.Guardian
                         ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
                         SetWindowPos(this.Handle, HWND_TOP, 0, 0, 0, 0,
                             SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+                        if (_cursorOverlay != null)
+                            _cursorOverlay.SetReady();
+                    }
+                    else
+                    {
+                        SyncPosition("ready_hidden");
                     }
 
                     // 非开发环境：隐藏"其他"菜单中的开发工具
@@ -559,12 +775,238 @@ namespace CF7Launcher.Guardian
 
                     // Web 通道恢复，挂起 GDI+ fallback 避免双重 UI
                     SuspendFallback();
+                    RequestViewportMetrics("ready");
+                    ExecScript("if(window.Notch&&Notch.reportRect){Notch.reportRect();}");
+                    EnsureCursorTimer();
                 }
             }
             catch (Exception ex)
             {
                 LogManager.Log("[WebOverlay] WebMessage error: " + ex.Message);
             }
+        }
+
+        private void HandleViewportMetrics(JObject parsed)
+        {
+            if (parsed == null)
+                return;
+
+            _coordinateContext.UpdateWebMetrics(
+                ReadDouble(parsed, "innerWidth"),
+                ReadDouble(parsed, "innerHeight"),
+                ReadDouble(parsed, "clientWidth"),
+                ReadDouble(parsed, "clientHeight"),
+                ReadDouble(parsed, "devicePixelRatio"),
+                ReadDouble(parsed, "visualViewportWidth"),
+                ReadDouble(parsed, "visualViewportHeight"),
+                parsed.Value<string>("reason") ?? "web_metrics");
+
+            _missingMetricsWarned = false;
+            if (_inputShield != null)
+            {
+                _inputShield.SetCoordinateContext(_coordinateContext);
+                _inputShield.RequestPositionSync();
+            }
+            if (_cursorOverlay != null)
+                _cursorOverlay.SetDpiScale(_coordinateContext.WindowDpiX, _coordinateContext.WindowDpiY);
+
+            if (ShouldLogOverlayContext(false))
+                DpiDiagnostics.LogOverlayContext("WebOverlay.viewportMetrics", _coordinateContext);
+            ForceCursorSample("metrics:" + (parsed.Value<string>("reason") ?? "web_metrics"));
+        }
+
+        private CoreWebView2EnvironmentOptions CreateWebView2EnvironmentOptions()
+        {
+            List<string> args = new List<string>();
+            if (_webView2DisableGpu)
+            {
+                args.Add("--disable-gpu");
+                args.Add("--disable-gpu-rasterization");
+                args.Add("--disable-accelerated-2d-canvas");
+            }
+            if (!string.IsNullOrEmpty(_webView2AdditionalArgs))
+                args.Add(_webView2AdditionalArgs);
+
+            if (args.Count == 0)
+            {
+                LogManager.Log("[WebOverlay] WebView2 perf options: lowEffects="
+                    + _lowEffectsMode
+                    + " noCssAnimations=" + _disableCssAnimations
+                    + " noVisualizers=" + _disableVisualizers
+                    + " disableGpu=false");
+                return null;
+            }
+
+            string joined = string.Join(" ", args.ToArray());
+            LogManager.Log("[WebOverlay] WebView2 perf options: lowEffects="
+                + _lowEffectsMode
+                + " noCssAnimations=" + _disableCssAnimations
+                + " noVisualizers=" + _disableVisualizers
+                + " disableGpu=" + _webView2DisableGpu
+                + " args=" + joined);
+
+            CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions();
+            options.AdditionalBrowserArguments = joined;
+            return options;
+        }
+
+        public void SetCursorOverlay(CursorOverlayForm cursorOverlay)
+        {
+            _cursorOverlay = cursorOverlay;
+            if (_cursorOverlay != null)
+            {
+                _nativeCursorMissingLogged = false;
+                _cursorOverlay.SetDpiScale(_coordinateContext.WindowDpiX, _coordinateContext.WindowDpiY);
+            }
+            else
+            {
+                RestoreSystemCursorForMissingNativeOverlay();
+            }
+            if (_shown && _cursorOverlay != null)
+                _cursorOverlay.SetReady();
+        }
+
+        private void HandleInteractiveRects(JObject parsed, string rawJson)
+        {
+            if (!_coordinateContext.HasWebMetrics && !_missingMetricsWarned)
+            {
+                _missingMetricsWarned = true;
+                LogManager.Log("[DPI] interactiveRect arrived before viewportMetrics; using fallback physicalScale=" + _zoomFactor.ToString("0.###"));
+            }
+
+            List<Rectangle> rects = new List<Rectangle>();
+            if (parsed != null)
+            {
+                JArray arr = parsed["r"] as JArray;
+                if (arr != null)
+                {
+                    for (int i = 0; i + 3 < arr.Count; i += 4)
+                    {
+                        double rx = ToDouble(arr[i]);
+                        double ry = ToDouble(arr[i + 1]);
+                        double rw = ToDouble(arr[i + 2]);
+                        double rh = ToDouble(arr[i + 3]);
+                        Rectangle r = _coordinateContext.CssRectToPhysical(rx, ry, rw, rh);
+                        if (r.Width > 0 && r.Height > 0)
+                            rects.Add(r);
+                    }
+                }
+                else
+                {
+                    ReadInteractiveRectsFallback(rawJson, rects);
+                    if (rects.Count == 0)
+                    {
+                        if (!_interactiveRectShapeWarned)
+                        {
+                            _interactiveRectShapeWarned = true;
+                            LogManager.Log("[DPI] interactiveRect JSON missing r array; preserving previous hitRects");
+                        }
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                ReadInteractiveRectsFallback(rawJson, rects);
+            }
+
+            if (_inputShield != null)
+                _inputShield.UpdateHitRects(rects);
+
+            long now = Environment.TickCount;
+            if (rects.Count > 0 && (now - _lastHitRectLogTick > 2000 || _lastHitRectLogTick == 0))
+            {
+                _lastHitRectLogTick = now;
+                LogManager.Log("[DPI] interactiveRect sample count=" + rects.Count
+                    + " first=" + rects[0] + " " + _coordinateContext.Describe());
+            }
+        }
+
+        private void ReadInteractiveRectsFallback(string json, List<Rectangle> rects)
+        {
+            int arrStart = json.IndexOf('[');
+            int arrEnd = json.IndexOf(']');
+            if (arrStart < 0 || arrEnd <= arrStart)
+                return;
+
+            string nums = json.Substring(arrStart + 1, arrEnd - arrStart - 1);
+            string[] parts = nums.Split(',');
+            for (int pi = 0; pi + 3 < parts.Length; pi += 4)
+            {
+                double rx, ry, rw, rh;
+                if (double.TryParse(parts[pi].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out rx) &&
+                    double.TryParse(parts[pi + 1].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out ry) &&
+                    double.TryParse(parts[pi + 2].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out rw) &&
+                    double.TryParse(parts[pi + 3].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out rh))
+                {
+                    Rectangle r = _coordinateContext.CssRectToPhysical(rx, ry, rw, rh);
+                    if (r.Width > 0 && r.Height > 0)
+                        rects.Add(r);
+                }
+            }
+        }
+
+        private static double ReadDouble(JObject obj, string key)
+        {
+            JToken token = obj[key];
+            if (token == null)
+                return 0;
+            return ToDouble(token);
+        }
+
+        private static double ToDouble(JToken token)
+        {
+            if (token == null)
+                return 0;
+            try { return token.Value<double>(); }
+            catch { return 0; }
+        }
+
+        public static double CalculateCssPhysicalScale(double viewportPhysicalHeight)
+        {
+            if (double.IsNaN(viewportPhysicalHeight) || double.IsInfinity(viewportPhysicalHeight))
+                return 1.0;
+            return Math.Max(0.25, viewportPhysicalHeight / FlashDesignHeight);
+        }
+
+        public static double CalculateWebViewZoomFactor(double viewportPhysicalHeight, double dpiY)
+        {
+            double dpiScale = (dpiY > 0 && !double.IsNaN(dpiY) && !double.IsInfinity(dpiY))
+                ? dpiY / 96.0
+                : 1.0;
+            if (dpiScale <= 0)
+                dpiScale = 1.0;
+            return Math.Max(0.25, CalculateCssPhysicalScale(viewportPhysicalHeight) / dpiScale);
+        }
+
+        private static bool IsDpiRelatedReason(string reason)
+        {
+            return !string.IsNullOrEmpty(reason)
+                && reason.IndexOf("dpi", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private bool ShouldLogOverlayContext(bool force)
+        {
+            double sx = _coordinateContext.CssToPhysicalX;
+            double sy = _coordinateContext.CssToPhysicalY;
+            bool changed = _lastOverlayContextLogTick == 0
+                || force
+                || _lastLoggedDpiX != _coordinateContext.WindowDpiX
+                || _lastLoggedDpiY != _coordinateContext.WindowDpiY
+                || _lastLoggedMonitor != _coordinateContext.MonitorHandle
+                || Math.Abs(sx - _lastLoggedScaleX) > 0.05
+                || Math.Abs(sy - _lastLoggedScaleY) > 0.05;
+
+            if (!changed)
+                return false;
+
+            _lastOverlayContextLogTick = Environment.TickCount;
+            _lastLoggedDpiX = _coordinateContext.WindowDpiX;
+            _lastLoggedDpiY = _coordinateContext.WindowDpiY;
+            _lastLoggedMonitor = _coordinateContext.MonitorHandle;
+            _lastLoggedScaleX = sx;
+            _lastLoggedScaleY = sy;
+            return true;
         }
 
         /// <summary>向 JS 发送结构化消息。</summary>
@@ -587,6 +1029,445 @@ namespace CF7Launcher.Guardian
                 _webView.CoreWebView2.ExecuteScriptAsync(js);
             }
             catch { }
+        }
+
+        #endregion
+
+        #region Cursor overlay
+
+        public string HandleCursorControl(JObject msg)
+        {
+            JObject payload = msg["payload"] as JObject;
+            string state = (payload != null ? payload.Value<string>("state") : null) ?? msg.Value<string>("state") ?? "normal";
+            bool dragging = (payload != null ? payload.Value<bool?>("dragging") : null) ?? msg.Value<bool?>("dragging") ?? false;
+
+            bool wasDragging = _cursorDragging;
+            _cursorState = NormalizeCursorState(state);
+            _cursorDragging = dragging;
+            bool draggingChanged = wasDragging != _cursorDragging;
+
+            ApplyCursorVisualState();
+            EnsureCursorTimer();
+            if (draggingChanged || !_cursorLastVisible)
+                SendCursorPosition(true);
+
+            return "{\"success\":true}";
+        }
+
+        private void HandleWebCursorFeedback(JObject parsed)
+        {
+            if (parsed == null)
+                return;
+
+            _webCursorState = NormalizeCursorState(parsed.Value<string>("state") ?? "normal");
+            _webCursorActive = parsed.Value<bool?>("active") ?? (_webCursorState != "normal");
+            ApplyCursorVisualState();
+        }
+
+        private void ApplyCursorVisualState()
+        {
+            if (_cursorOverlay == null)
+                return;
+
+            string visualState = _cursorState;
+            bool visualDragging = _cursorDragging;
+            if (!_cursorDragging && _webCursorActive)
+            {
+                visualState = _webCursorState;
+                visualDragging = false;
+            }
+
+            _cursorOverlay.SetCursorState(visualState, visualDragging);
+        }
+
+        private static string NormalizeCursorState(string state)
+        {
+            if (string.IsNullOrEmpty(state)) return "normal";
+            switch (state)
+            {
+                case "click":
+                case "hoverGrab":
+                case "grab":
+                case "attack":
+                case "openDoor":
+                    return state;
+                default:
+                    return "normal";
+            }
+        }
+
+        private void EnsureCursorTimer()
+        {
+            if (_disposed) return;
+            EnsureCursorHook();
+            if (_cursorTimer == null)
+            {
+                _cursorTimer = new System.Windows.Forms.Timer();
+                _cursorTimer.Tick += delegate { SendCursorPosition(false); };
+            }
+
+            int interval = 16;
+            if (_cursorTimer.Interval != interval)
+                _cursorTimer.Interval = interval;
+            if (!_cursorTimer.Enabled)
+                _cursorTimer.Start();
+        }
+
+        private void EnsureCursorHook()
+        {
+            if (_cursorHook != IntPtr.Zero || _disposed)
+                return;
+
+            _cursorHookProc = CursorHookCallback;
+            _cursorHook = SetWindowsHookEx(WH_MOUSE_LL, _cursorHookProc, GetModuleHandle(null), 0);
+            if (_cursorHook == IntPtr.Zero)
+                LogManager.Log("[Cursor] WH_MOUSE_LL hook install failed: " + Marshal.GetLastWin32Error());
+            else
+                LogManager.Log("[Cursor] WH_MOUSE_LL hook installed");
+        }
+
+        private void ReleaseCursorHook()
+        {
+            if (_cursorHook == IntPtr.Zero)
+                return;
+
+            try { UnhookWindowsHookEx(_cursorHook); }
+            catch { }
+            _cursorHook = IntPtr.Zero;
+            _cursorHookProc = null;
+            _cursorHookPostPending = false;
+        }
+
+        private IntPtr CursorHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        {
+            if (nCode == HC_ACTION)
+            {
+                int message = wParam.ToInt32();
+                if (IsCursorHookMessage(message))
+                {
+                    MSLLHOOKSTRUCT info = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+                    QueueHookCursorSample(info.pt.X, info.pt.Y);
+                    if (message == WM_LBUTTONUP)
+                        QueuePhysicalCursorRelease();
+                }
+            }
+
+            return CallNextHookEx(_cursorHook, nCode, wParam, lParam);
+        }
+
+        private static bool IsCursorHookMessage(int message)
+        {
+            return message == WM_MOUSEMOVE
+                || message == WM_LBUTTONDOWN
+                || message == WM_LBUTTONUP
+                || message == WM_RBUTTONDOWN
+                || message == WM_RBUTTONUP
+                || message == WM_MBUTTONDOWN
+                || message == WM_MBUTTONUP
+                || message == WM_MOUSEWHEEL
+                || message == WM_XBUTTONDOWN
+                || message == WM_XBUTTONUP;
+        }
+
+        private void QueueHookCursorSample(int screenX, int screenY)
+        {
+            if (_disposed || !_shown || !_webReady)
+                return;
+
+            if (screenX == _cursorHookLastX && screenY == _cursorHookLastY)
+                return;
+
+            Rectangle bounds = _coordinateContext.OverlayPhysicalBounds;
+            if (bounds.Width <= 0 || bounds.Height <= 0)
+                bounds = this.Bounds;
+
+            bool inside = bounds.Contains(screenX, screenY);
+            if (!inside && !_cursorLastVisible)
+                return;
+
+            long now = Environment.TickCount;
+            int minInterval = 8;
+            if (inside && now - _lastCursorHookPostTick >= 0 && now - _lastCursorHookPostTick < minInterval)
+            {
+                _cursorHookPendingX = screenX;
+                _cursorHookPendingY = screenY;
+                return;
+            }
+
+            _lastCursorHookPostTick = now;
+            _cursorHookLastX = screenX;
+            _cursorHookLastY = screenY;
+            _cursorHookPendingX = screenX;
+            _cursorHookPendingY = screenY;
+            if (!_cursorHookPostPending)
+            {
+                try
+                {
+                    if (IsHandleCreated)
+                    {
+                        _cursorHookPostPending = true;
+                        BeginInvoke(new Action(FlushHookCursorSample));
+                    }
+                }
+                catch { _cursorHookPostPending = false; }
+            }
+        }
+
+        private void FlushHookCursorSample()
+        {
+            _cursorHookPostPending = false;
+            if (_disposed)
+                return;
+
+            Point screen = new Point(_cursorHookPendingX, _cursorHookPendingY);
+            Rectangle bounds = _coordinateContext.OverlayPhysicalBounds;
+            if (bounds.Width <= 0 || bounds.Height <= 0)
+                bounds = this.Bounds;
+
+            if (!bounds.Contains(screen))
+            {
+                PostCursorVisibility(false);
+                return;
+            }
+
+            UpdateCursorFromScreenPoint(screen, "hook");
+        }
+
+        private void QueuePhysicalCursorRelease()
+        {
+            if (!_cursorDragging && _cursorState != "grab")
+                return;
+
+            try
+            {
+                if (IsHandleCreated)
+                    BeginInvoke(new Action(HandlePhysicalCursorRelease));
+            }
+            catch { }
+        }
+
+        private void HandlePhysicalCursorRelease()
+        {
+            if (_disposed)
+                return;
+
+            _cursorDragging = false;
+            if (_cursorState == "grab")
+                _cursorState = "hoverGrab";
+
+            ApplyCursorVisualState();
+            EnsureCursorTimer();
+        }
+
+        private void StopCursorTimer()
+        {
+            if (_cursorTimer != null)
+                _cursorTimer.Stop();
+            if (_cursorLastVisible)
+                PostCursorVisibility(false);
+        }
+
+        private void SendCursorPosition(bool force)
+        {
+            if (_disposed || !_shown || !_webReady || !_owner.Visible || _owner.WindowState == FormWindowState.Minimized)
+            {
+                PostCursorVisibility(false);
+                return;
+            }
+
+            Point screen = Control.MousePosition;
+            Rectangle bounds = _coordinateContext.OverlayPhysicalBounds;
+            if (bounds.Width <= 0 || bounds.Height <= 0)
+                bounds = this.Bounds;
+
+            bool visible = bounds.Contains(screen);
+            if (!visible)
+            {
+                LogCursorSample("outside", screen, bounds, new Point(Int32.MinValue, Int32.MinValue),
+                    new Point(Int32.MinValue, Int32.MinValue), false, force);
+                PostCursorVisibility(false);
+                if (_cursorTimer != null && _cursorTimer.Interval != 150)
+                    _cursorTimer.Interval = 150;
+                return;
+            }
+
+            int px = screen.X - bounds.Left;
+            int py = screen.Y - bounds.Top;
+            Point css = _coordinateContext.PhysicalPointToCss(px, py);
+
+            if (!force && _cursorLastVisible && _cursorOverlay != null &&
+                screen.X == _cursorLastScreenX && screen.Y == _cursorLastScreenY)
+                return;
+            if (!force && _cursorLastVisible && _cursorOverlay == null &&
+                css.X == _cursorLastX && css.Y == _cursorLastY)
+                return;
+
+            _cursorLastVisible = true;
+            HideSystemCursor();
+            _cursorLastX = css.X;
+            _cursorLastY = css.Y;
+            _cursorLastScreenX = screen.X;
+            _cursorLastScreenY = screen.Y;
+
+            if (_cursorOverlay != null)
+            {
+                _cursorOverlay.UpdateCursorPosition(screen);
+            }
+            else
+            {
+                RestoreSystemCursorForMissingNativeOverlay();
+            }
+            LogCursorSample("send", screen, bounds, new Point(px, py), css, true, force);
+            EnsureCursorTimer();
+        }
+
+        private void UpdateCursorFromOverlayPoint(int px, int py)
+        {
+            UpdateCursorFromOverlayPoint(px, py, "input");
+        }
+
+        private void UpdateCursorFromOverlayPoint(int px, int py, string kind)
+        {
+            if (_disposed || !_shown || !_webReady || px < 0 || py < 0)
+                return;
+
+            Rectangle bounds = _coordinateContext.OverlayPhysicalBounds;
+            if (bounds.Width <= 0 || bounds.Height <= 0)
+                bounds = this.Bounds;
+            if (px > bounds.Width || py > bounds.Height)
+                return;
+
+            Point screen = new Point(bounds.Left + px, bounds.Top + py);
+            Point css = _coordinateContext.PhysicalPointToCss(px, py);
+
+            _cursorLastVisible = true;
+            HideSystemCursor();
+            _cursorLastX = css.X;
+            _cursorLastY = css.Y;
+            _cursorLastScreenX = screen.X;
+            _cursorLastScreenY = screen.Y;
+
+            if (_cursorOverlay != null)
+            {
+                _cursorOverlay.UpdateCursorPosition(screen);
+            }
+            else
+            {
+                RestoreSystemCursorForMissingNativeOverlay();
+            }
+            LogCursorSample(kind, screen, bounds, new Point(px, py), css, true, false);
+            EnsureCursorTimer();
+        }
+
+        public void UpdateCursorFromScreenPoint(Point screen)
+        {
+            UpdateCursorFromScreenPoint(screen, "screen");
+        }
+
+        private void UpdateCursorFromScreenPoint(Point screen, string kind)
+        {
+            if (_disposed || !_shown || !_webReady)
+                return;
+
+            Rectangle bounds = _coordinateContext.OverlayPhysicalBounds;
+            if (bounds.Width <= 0 || bounds.Height <= 0)
+                bounds = this.Bounds;
+            if (!bounds.Contains(screen))
+                return;
+
+            UpdateCursorFromOverlayPoint(screen.X - bounds.Left, screen.Y - bounds.Top, kind);
+        }
+
+        private void PostCursorVisibility(bool visible)
+        {
+            if (_cursorLastVisible == visible) return;
+            _cursorLastVisible = visible;
+            _cursorLastX = Int32.MinValue;
+            _cursorLastY = Int32.MinValue;
+            _cursorLastScreenX = Int32.MinValue;
+            _cursorLastScreenY = Int32.MinValue;
+            if (visible) HideSystemCursor();
+            else ShowSystemCursor();
+            if (_cursorOverlay != null)
+            {
+                _cursorOverlay.SetCursorVisible(visible);
+            }
+            else
+            {
+                RestoreSystemCursorForMissingNativeOverlay();
+            }
+            LogManager.Log("[Cursor] visible=" + visible
+                + " state=" + _cursorState
+                + " dragging=" + _cursorDragging
+                + " reason=" + _cursorDiagReason);
+        }
+
+        private void ForceCursorSample(string reason)
+        {
+            _cursorDiagForce = true;
+            _cursorDiagReason = reason ?? "force";
+            _cursorLastX = Int32.MinValue;
+            _cursorLastY = Int32.MinValue;
+            _cursorLastScreenX = Int32.MinValue;
+            _cursorLastScreenY = Int32.MinValue;
+            if (_webReady && !_disposed)
+                SendCursorPosition(true);
+        }
+
+        private void LogCursorSample(string kind, Point screen, Rectangle bounds, Point local,
+            Point css, bool visible, bool force)
+        {
+            long now = Environment.TickCount;
+            bool shouldLog = _cursorDiagForce || force || now - _lastCursorDiagTick > 1000;
+            if (!shouldLog) return;
+
+            _lastCursorDiagTick = now;
+            _cursorDiagForce = false;
+            LogManager.Log("[Cursor] " + kind
+                + " visible=" + visible
+                + " state=" + _cursorState
+                + " dragging=" + _cursorDragging
+                + " force=" + force
+                + " interval=" + (_cursorTimer != null ? _cursorTimer.Interval.ToString(CultureInfo.InvariantCulture) : "none")
+                + " screen=" + screen.X + "," + screen.Y
+                + " local=" + local.X + "," + local.Y
+                + " css=" + css.X + "," + css.Y
+                + " bounds=" + bounds
+                + " scale=" + _coordinateContext.CssToPhysicalX.ToString("0.###", CultureInfo.InvariantCulture)
+                + "x" + _coordinateContext.CssToPhysicalY.ToString("0.###", CultureInfo.InvariantCulture)
+                + " webCss=" + _coordinateContext.WebCssWidth.ToString("0.##", CultureInfo.InvariantCulture)
+                + "x" + _coordinateContext.WebCssHeight.ToString("0.##", CultureInfo.InvariantCulture)
+                + " dpr=" + _coordinateContext.DevicePixelRatio.ToString("0.###", CultureInfo.InvariantCulture)
+                + " reason=" + _cursorDiagReason);
+        }
+
+        private void HideSystemCursor()
+        {
+            if (_cursorOverlay == null)
+            {
+                RestoreSystemCursorForMissingNativeOverlay();
+                return;
+            }
+            if (_systemCursorHidden) return;
+            Cursor.Hide();
+            _systemCursorHidden = true;
+        }
+
+        private void ShowSystemCursor()
+        {
+            if (!_systemCursorHidden) return;
+            Cursor.Show();
+            _systemCursorHidden = false;
+        }
+
+        private void RestoreSystemCursorForMissingNativeOverlay()
+        {
+            ShowSystemCursor();
+            if (_nativeCursorMissingLogged)
+                return;
+
+            _nativeCursorMissingLogged = true;
+            LogManager.Log("[Cursor] native overlay unavailable; web visual fallback is disabled; using system cursor");
         }
 
         #endregion
@@ -669,7 +1550,7 @@ namespace CF7Launcher.Guardian
 
             // BGM 音频可视化 timer (60ms ≈ 16.7Hz)
             _audioTimer = new System.Windows.Forms.Timer();
-            _audioTimer.Interval = 60;
+            _audioTimer.Interval = _disableVisualizers ? 250 : 60;
             _audioTimer.Tick += OnAudioTick;
         }
 
@@ -704,6 +1585,13 @@ namespace CF7Launcher.Guardian
 
             try
             {
+                if (_disableVisualizers)
+                {
+                    int lowEffectsPlaying = Audio.AudioEngine.ma_bridge_bgm_is_playing();
+                    HandleAudioTrackState(lowEffectsPlaying);
+                    return;
+                }
+
                 float peakL, peakR;
                 Audio.AudioEngine.ma_bridge_bgm_get_peak(out peakL, out peakR);
                 int playing = Audio.AudioEngine.ma_bridge_bgm_is_playing();
@@ -744,6 +1632,22 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>设置当前 BGM 标题（由 UiData bgm: 推送）。</summary>
+        private void HandleAudioTrackState(int playing)
+        {
+            bool isPlaying = playing == 1;
+            if (CF7Launcher.Tasks.AudioTask.FlashBgmChange)
+            {
+                _manualStop = true;
+                CF7Launcher.Tasks.AudioTask.FlashBgmChange = false;
+            }
+            if (_wasPlaying && !isPlaying && !_manualStop && !_bgmPaused)
+            {
+                SendGameCommand("jukeboxTrackEnd");
+            }
+            _wasPlaying = isPlaying;
+            if (isPlaying) { _manualStop = false; _bgmPaused = false; }
+        }
+
         public void SetBgmTitle(string title)
         {
             _bgmTitle = title ?? "";
@@ -940,6 +1844,11 @@ namespace CF7Launcher.Guardian
                 ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
                 SetWindowPos(this.Handle, HWND_TOP, 0, 0, 0, 0,
                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+                if (_cursorOverlay != null)
+                    _cursorOverlay.SetReady();
+                RequestViewportMetrics("set_ready");
+                ExecScript("if(window.Notch&&Notch.reportRect){Notch.reportRect();}");
+                EnsureCursorTimer();
             }
         }
 
@@ -950,6 +1859,7 @@ namespace CF7Launcher.Guardian
 
             if (disposing)
             {
+                ShowSystemCursor();
                 if (_fpsTimer != null)
                 {
                     _fpsTimer.Stop();
@@ -962,11 +1872,29 @@ namespace CF7Launcher.Guardian
                     _audioTimer.Dispose();
                     _audioTimer = null;
                 }
+                if (_cursorTimer != null)
+                {
+                    _cursorTimer.Stop();
+                    _cursorTimer.Dispose();
+                    _cursorTimer = null;
+                }
+                if (_cursorOverlay != null)
+                {
+                    _cursorOverlay.Dispose();
+                    _cursorOverlay = null;
+                }
+                ReleaseCursorHook();
                 if (_positionSettleTimer != null)
                 {
                     _positionSettleTimer.Stop();
                     _positionSettleTimer.Dispose();
                     _positionSettleTimer = null;
+                }
+                if (_positionLongSettleTimer != null)
+                {
+                    _positionLongSettleTimer.Stop();
+                    _positionLongSettleTimer.Dispose();
+                    _positionLongSettleTimer = null;
                 }
                 if (_webWatcher != null)
                 {
@@ -1004,6 +1932,11 @@ namespace CF7Launcher.Guardian
             _shopTask = task;
             task.SetPostToWeb(PostToWeb);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
+        public void SetGomokuTask(GomokuTask task)
+        {
+            _gomokuTask = task;
         }
 
         public void SetMapTask(MapTask task)
@@ -1055,6 +1988,10 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[Panel] Routing cmd=" + cmd + " to MapTask, _mapTask=" + (_mapTask != null ? "ok" : "NULL"));
                     if (_mapTask != null) _mapTask.HandleWebRequest(cmd, parsed);
                     break;
+                case "gomoku_eval":
+                    LogManager.Log("[Panel] Routing cmd=gomoku_eval to GomokuTask, _gomokuTask=" + (_gomokuTask != null ? "ok" : "NULL"));
+                    HandleGobangEvalRequest(parsed);
+                    break;
                 case "minigame_session":
                     {
                         JToken payload = parsed["payload"];
@@ -1065,12 +2002,66 @@ namespace CF7Launcher.Guardian
                         string prefix;
                         if (string.Equals(game, "lockbox", StringComparison.OrdinalIgnoreCase)) prefix = "Lockbox";
                         else if (string.Equals(game, "pinalign", StringComparison.OrdinalIgnoreCase)) prefix = "PinAlign";
+                        else if (string.Equals(game, "gobang", StringComparison.OrdinalIgnoreCase)) prefix = "Gobang";
                         else prefix = "Minigame";
 
                         LogManager.Log("[" + prefix + "] " + payload.ToString(Newtonsoft.Json.Formatting.None));
                     }
                     break;
             }
+        }
+
+        private void HandleGobangEvalRequest(JObject parsed)
+        {
+            string webCallId = parsed.Value<string>("callId");
+            if (string.IsNullOrEmpty(webCallId))
+            {
+                LogManager.Log("[Gobang] webCallId is empty");
+                return;
+            }
+
+            if (_gomokuTask == null)
+            {
+                PostGobangEvalResponse(webCallId, "{\"success\":false,\"error\":\"gomoku_task_unavailable\"}");
+                return;
+            }
+
+            _gomokuTask.HandleAsync(parsed, delegate(string response)
+            {
+                if (_disposed) return;
+                Action post = delegate { PostGobangEvalResponse(webCallId, response); };
+                try
+                {
+                    if (this.IsHandleCreated && this.InvokeRequired) this.BeginInvoke(post);
+                    else post();
+                }
+                catch { }
+            });
+        }
+
+        private void PostGobangEvalResponse(string webCallId, string response)
+        {
+            JObject msg;
+            try
+            {
+                msg = string.IsNullOrEmpty(response)
+                    ? new JObject()
+                    : JObject.Parse(response);
+            }
+            catch
+            {
+                msg = new JObject();
+                msg["success"] = false;
+                msg["error"] = "invalid_gomoku_response";
+            }
+
+            if (msg["success"] == null) msg["success"] = false;
+            msg.Remove("task");
+            msg["type"] = "panel_resp";
+            msg["panel"] = "gobang";
+            msg["cmd"] = "gomoku_eval";
+            msg["callId"] = webCallId;
+            PostToWeb(msg.ToString(Newtonsoft.Json.Formatting.None));
         }
 
         private bool TrySendGameCommand(string action)
@@ -1193,6 +2184,11 @@ namespace CF7Launcher.Guardian
                 case "PINALIGN_TEST":
                     PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"pinalign\",\"initData\":{\"mode\":\"dev\",\"specId\":\"mvp-3pin-v1\",\"masterSeed\":\"dev-default\",\"debug\":true}}");
                     _activePanel = "pinalign";
+                    if (_onPanelStateChanged != null) _onPanelStateChanged(true);
+                    break;
+                case "GOBANG_TEST":
+                    PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"gobang\",\"initData\":{\"mode\":\"dev\",\"source\":\"runtime\",\"ruleset\":\"casual\",\"difficulty\":\"normal\",\"playerRole\":1,\"aiEnabled\":true,\"debug\":true}}");
+                    _activePanel = "gobang";
                     if (_onPanelStateChanged != null) _onPanelStateChanged(true);
                     break;
                 case "EXIT_CONFIRM": if (_onForceExit != null) _onForceExit(); break;

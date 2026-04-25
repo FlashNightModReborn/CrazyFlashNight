@@ -2121,7 +2121,7 @@
 
 /* Tabs */
 .help-tabs {
-    display:flex; gap:2px; padding:6px 14px;
+    display:flex; flex-wrap:wrap; gap:2px; padding:6px 14px;
     border-bottom:1px solid var(--cp-border);
     background:rgba(0,0,0,0.2);
 }
@@ -3816,4 +3816,91 @@
 @keyframes mapCloseBtnPulse {
     0%, 100% { box-shadow:0 0 8px rgba(255,0,60,0.25); }
     50%      { box-shadow:0 0 14px rgba(255,0,60,0.48); }
+}
+
+/* Map panel low-effects mode.
+ * The map view is the largest WebView2 surface in normal play. In low-effects
+ * mode keep the interaction geometry intact, but remove the full-surface blend,
+ * filter and pulse work that can saturate integrated GPUs.
+ */
+html.perf-low-effects .map-panel,
+html.perf-low-effects .map-stage-frame {
+    clip-path:none !important;
+    box-shadow:none !important;
+}
+
+html.perf-low-effects .map-panel::before,
+html.perf-low-effects .map-stage-scanline,
+html.perf-low-effects .map-stage-anomaly,
+html.perf-low-effects .map-scene-node-glow,
+html.perf-low-effects .map-hotspot-sheen,
+html.perf-low-effects .map-feedback-marker::after,
+html.perf-low-effects .map-feedback-marker--currentLocation::before,
+html.perf-low-effects .map-avatar-task-ring::after {
+    display:none !important;
+}
+
+html.perf-low-effects .map-stage-content-fit {
+    will-change:auto !important;
+}
+
+html.perf-low-effects .map-stage-image,
+html.perf-low-effects .map-scene-node-image,
+html.perf-low-effects .map-scene-node.is-hover .map-scene-node-image,
+html.perf-low-effects .map-scene-node.is-busy .map-scene-node-image,
+html.perf-low-effects .map-scene-node.is-current .map-scene-node-image,
+html.perf-low-effects .map-scene-node.is-disabled .map-scene-node-image,
+html.perf-low-effects .map-stage-frame.is-layer-relation .map-scene-node .map-scene-node-image,
+html.perf-low-effects .map-scene-node.is-relationship.is-emphasis .map-scene-node-image,
+html.perf-low-effects .map-scene-node.is-relationship.is-current .map-scene-node-image,
+html.perf-low-effects .map-scene-node.is-relationship.is-hover .map-scene-node-image,
+html.perf-low-effects .map-scene-node.is-relationship.is-busy .map-scene-node-image,
+html.perf-low-effects .map-scene-node.is-muted .map-scene-node-image,
+html.perf-low-effects .map-hotspot::before,
+html.perf-low-effects .map-hotspot.is-busy::before,
+html.perf-low-effects .map-hotspot.is-current::before,
+html.perf-low-effects .map-hotspot-overlay-label.is-muted,
+html.perf-low-effects .map-avatar.is-muted,
+html.perf-low-effects .map-dynamic-avatar.is-muted {
+    filter:none !important;
+}
+
+html.perf-low-effects .map-panel-header::after,
+html.perf-low-effects .map-page-tab.is-active,
+html.perf-low-effects .map-stage-corner::before,
+html.perf-low-effects .map-stage-corner::after,
+html.perf-low-effects .map-scene-node::before,
+html.perf-low-effects .map-hotspot,
+html.perf-low-effects .map-hotspot:hover,
+html.perf-low-effects .map-hotspot.is-hover,
+html.perf-low-effects .map-hotspot:focus,
+html.perf-low-effects .map-hotspot.is-busy,
+html.perf-low-effects .map-hotspot.is-current,
+html.perf-low-effects .map-hotspot.is-busy::after,
+html.perf-low-effects .map-hotspot-overlay-label.is-current,
+html.perf-low-effects .map-avatar,
+html.perf-low-effects .map-dynamic-avatar,
+html.perf-low-effects .map-avatar-task-ring,
+html.perf-low-effects .map-filter-hotspot,
+html.perf-low-effects .map-filter-hotspot:hover,
+html.perf-low-effects .map-filter-hotspot:focus,
+html.perf-low-effects .map-filter-hotspot.is-active,
+html.perf-low-effects .map-rail-scene-item.is-current,
+html.perf-low-effects .map-rail-scene-dot,
+html.perf-low-effects .map-feedback-marker,
+html.perf-low-effects .map-feedback-marker--currentLocation,
+html.perf-low-effects .map-feedback-marker--taskNpc,
+html.perf-low-effects .map-feedback-tip,
+html.perf-low-effects .map-feedback-tip.is-accent,
+html.perf-low-effects .map-feedback-hint,
+html.perf-low-effects .map-panel-close-btn:hover {
+    box-shadow:none !important;
+}
+
+html.perf-low-effects .map-stage-filter-overlay {
+    opacity:0.42 !important;
+}
+
+html.perf-low-effects .map-stage-backdrop::before {
+    opacity:0.34 !important;
 }

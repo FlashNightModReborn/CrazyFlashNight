@@ -484,7 +484,9 @@ _root.清除游戏世界组件 = function(){
 	_root.场景转换函数.场景切换时补充玩家弹药();
 
 	// 清理鼠标拖拽状态，防止物品图标卡在鼠标上
-	if (_root.鼠标.物品图标容器.物品图标) {
+	if (_root.鼠标代理 != undefined) {
+		_root.鼠标代理.清理拖拽图标();
+	} else if (_root.鼠标.物品图标容器.物品图标) {
 		_root.鼠标.物品图标容器.物品图标.removeMovieClip();
 	}
 	_root.鼠标.gotoAndStop(1); // 恢复鼠标默认状态

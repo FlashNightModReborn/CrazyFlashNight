@@ -77,6 +77,7 @@ namespace CF7Launcher.Guardian
         protected const int WS_EX_LAYERED = 0x00080000;
         protected const int WS_EX_TRANSPARENT = 0x00000020;
         protected const int WM_NCHITTEST = 0x0084;
+        protected const int WM_DPICHANGED = 0x02E0;
         protected const int HTTRANSPARENT = -1;
 
         #endregion
@@ -104,6 +105,7 @@ namespace CF7Launcher.Guardian
             this.FormBorderStyle = FormBorderStyle.None;
             this.ShowInTaskbar = false;
             this.StartPosition = FormStartPosition.Manual;
+            this.AutoScaleMode = AutoScaleMode.None;
             this.Owner = owner;
 
             CreateHandle();
@@ -139,6 +141,11 @@ namespace CF7Launcher.Guardian
 
         protected override void WndProc(ref Message m)
         {
+            if (m.Msg == WM_DPICHANGED)
+            {
+                OnPositionChanged();
+            }
+
             if (IsClickThrough && m.Msg == WM_NCHITTEST)
             {
                 m.Result = (IntPtr)HTTRANSPARENT;
@@ -272,5 +279,10 @@ namespace CF7Launcher.Guardian
         /// Owner 移动/缩放或 anchor 缩放时调用。子类应 override 以重新定位和重绘。
         /// </summary>
         protected virtual void OnPositionChanged() { }
+
+        public void RequestPositionSync()
+        {
+            OnPositionChanged();
+        }
     }
 }

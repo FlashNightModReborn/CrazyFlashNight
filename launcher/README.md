@@ -21,6 +21,24 @@ C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView
 | 测试框架 | xUnit 2.4.2（legacy packages.config + net462，见 [tests/](#测试基建)） |
 | GPU (实验, 当前休眠) | SharpDX 4.2.0 (D3D11, 管线待完善，`gpuSharpening` 配置当前无消费者) |
 
+## 高 DPI 与多显示器支持
+
+Launcher 现在显式声明并初始化 **PerMonitorV2 / PerMonitor DPI-aware**。运行态 WebView2 overlay 的物理视觉尺寸仍跟随 Flash 视口高度，但写入 `WebView2.ZoomFactor` 前会按当前 monitor DPI 归一化，避免 125% / 150% 系统缩放把右侧 HUD 与顶部资源条二次放大；输入命中则由 Web 端 `viewportMetrics`（CSS viewport / DPR / visualViewport）和 C# `OverlayCoordinateContext` 共同换算，不再把 `WebView2.ZoomFactor` 直接当作鼠标坐标比例。
+
+运行态鼠标手型视觉只由 C# `CursorOverlayForm` 原生 layered window 接管，避免 WebView2 特效或 JS 队列影响 cursor 延迟。AS2 侧保留 `_root.鼠标` 兼容代理，只把 `gotoAndStop` 状态通过 `cursor_control` task 低频推送到 Launcher；`WebOverlayForm` 负责状态调度、低级鼠标 hook 与坐标泵。Web DOM 交互通过 `cursorFeedback` 只回传 hover/press 状态变化，不回传坐标，也不再提供 Web 视觉 fallback；native cursor 不可用时恢复系统鼠标并写入诊断日志。native cursor 贴图按当前 monitor DPI 缩放并同步缩放热点。物品拖拽图标第一阶段仍留在 AS2 空容器内，仅拖拽期间同步位置，不进入 Flash 每帧 UI 状态管线。
+
+| Windows 兼容性设置 | 支持口径 |
+|------------------|----------|
+| 不勾选“替代高 DPI 缩放行为” | 正式支持 |
+| 勾选后“缩放执行：应用程序” | 正式支持 |
+| “系统” / “系统(增强)” | 仅检测并提示；不承诺 Web overlay 像素级交互正确 |
+
+诊断日志以 `[DPI]` 前缀写入 Guardian 日志，包含进程 DPI 初始化结果、AppCompatFlags 原始值、窗口 / monitor DPI、overlay bounds、Web CSS viewport、输入换算比例与 hitRect 样本。若测试员反馈地图、商城、帮助或小游戏点击错位，先核对兼容性值是否为 `DPIUNAWARE` / `GDIDPISCALING`；正式建议是关闭覆盖或改为“应用程序”。
+
+检测到“系统 / 系统(增强)”风险态时会弹出非阻塞提示；用户可勾选“不再提示当前兼容性设置”，Launcher 会把当前 AppCompatFlags raw value 记入 UserPrefs。raw value 变化后仍会再次提示。
+
+引导器默认窗口现在按当前屏幕工作区选择 16:9 client size（目标 1600×900，过小屏幕自动收敛），欢迎页在窄宽 / 低高视口下会压缩侧栏宽度和卡片间距；极端手动缩小时改为垂直滚动兜底，避免启动说明、存档行、右侧版本 / 阵营信息被直接裁掉。字号入口独立放在顶栏“显示”按钮内，用户选择的 1.15 / 1.35 / 1.55 / 1.75 会直接作为启动器字号倍率生效并持久化，不再被小视口偷偷钳制。
+
 ## 架构概览
 
 ### 单窗体模型
@@ -214,7 +232,7 @@ launcher/
 │   ├── Program.cs                         入口：正常模式先做 WebView2 预检，再尽早构造 GuardianForm；随后初始化 Steam/Trust/总线并接 GameLaunchFlow
 │   │
 │   ├── Config/
-│   │   ├── AppConfig.cs                   config.toml 解析（flashPlayerPath/swfPath/gpuSharpening/sharpness）
+│   │   ├── AppConfig.cs                   config.toml 解析（Flash/SWF 路径、GPU/overlay 诊断开关）
 │   │   ├── UserPrefs.cs                   用户级偏好持久化（优先 LocalAppData，不可用时回退项目根）
 │   │   ├── SteamOwnershipCheck.cs         Steam 进程 + SteamAPI AppID 正版校验（开发仓库 fail-open，发行环境 fail-closed）
 │   │   └── FlashTrustManager.cs           `cf7me.cfg` trust 租约（用户级/系统级多目录尝试，退出按租约清理）
@@ -234,6 +252,7 @@ launcher/
 │   │   ├── ToastOverlay.cs                GDI+ toast 消息（WS_EX_TRANSPARENT）
 │   │   ├── NotchOverlay.cs                GDI+ 刘海栏（选择性穿透, 状态机）
 │   │   ├── HitNumberOverlay.cs            GDI+ 伤害数字
+│   │   ├── CursorOverlayForm.cs           原生 cursor 视觉层（Layered Window，高频低延迟）
 │   │   ├── WebOverlayForm.cs              WebView2 视觉层（WS_EX_TRANSPARENT）
 │   │   ├── InputShieldForm.cs             幽灵输入层（GDI+ α 命中 + CDP 注入）
 │   │   ├── IToastSink.cs / INotchSink.cs  Toast / Notch 抽象接口
@@ -375,7 +394,8 @@ launcher/
 │       └── minigames/
 │           ├── shared/                    小游戏共享层（host-bridge + minigame-shell + shared/dev QA 基础层）
 │           ├── lockbox/                   开锁小游戏（core/dev + lockbox-audio/panel/css/README）
-│           └── pinalign/                  定位小游戏（core/adapter/app/dev/reference + audio/panel/css/README）
+│           ├── pinalign/                  定位小游戏（core/adapter/app/dev/reference + audio/panel/css/README）
+│           └── gobang/                    五子棋小游戏（core/dev + panel/css/README，AI 走 GomokuTask/Rapfi）
 │
 ├── tests/                                 【xUnit 2.4.2 C# 单测，见测试基建节】
 │   ├── Launcher.Tests.csproj              legacy csproj + packages.config（net462 对齐主工程）
@@ -390,7 +410,7 @@ launcher/
 │
 └── tools/
     ├── lockbox-bake.js                    Lockbox 变体池离线生成工具（写入 web/data/lockbox-variants.json）
-    ├── run-minigame-qa.js                 小游戏 Node QA 入口（lockbox / pinalign / all）
+    ├── run-minigame-qa.js                 小游戏 Node QA 入口（lockbox / pinalign / gobang / all）
     ├── validate-minigame-final-state.js   小游戏最终态静态校验（旧路径 / 旧协议 / 旧共享类名）
     └── nuget.exe                          NuGet CLI
 ```
@@ -531,13 +551,14 @@ powershell -File run_tests.ps1
 
 小游戏测试不走 `launcher/tests/`，地图 panel 的 DOM / 布局 / 交互回归也不走 C# 单测；统一按各模块自带的 QA 入口执行：
 
-- **Node QA**：`node tools/run-minigame-qa.js --game lockbox|pinalign|all`
+- **Node QA**：`node tools/run-minigame-qa.js --game lockbox|pinalign|gobang|all`
   - 实际入口文件：`tools/run-minigame-qa.js`
   - 共享 runner：`web/modules/minigames/shared/dev/node-qa-runner.js`
   - 适用场景：纯逻辑、确定性、导出结构、回归脚本
 - **Browser harness**：直接打开各自 `dev/harness.html`
   - `web/modules/minigames/lockbox/dev/harness.html`
   - `web/modules/minigames/pinalign/dev/harness.html`
+  - `web/modules/minigames/gobang/dev/harness.html`
   - `web/modules/map/dev/harness.html`
   - 共享 QA 基础层：`web/modules/minigames/shared/dev/harness-base.js` + `harness-base.css`
   - 支持 query 驱动的 `?qa=1` / `?case=` / `?scenario=` / `?dump=1`
@@ -563,7 +584,7 @@ powershell -File run_tests.ps1
   - 读取本地审计图与 audit JSON，让外部视觉模型辅助判断热点框/头像是否仍有肉眼可见偏差
   - 仅作视觉意见补充，不替代本地 audit / harness / 游戏内联调
 - **静态收口校验**：`node tools/validate-minigame-final-state.js`
-  - 用于阻止旧 `modules/lockbox-*.js`、旧 `lockbox_session/pinalign_session`、旧共享结构 class 名回流
+  - 用于阻止旧 `modules/lockbox-*.js`、旧版分游戏 session 命令名、旧共享结构 class 名回流
 
 ### LogManager 测试 hook
 
@@ -599,7 +620,7 @@ Launcher 的配置被**显式拆成两份**，避免互相污染：
 
 #### config.toml（项目根目录，机器级，只读）
 
-只 4 个 key 会被识别，缺失即落代码默认：
+只 8 个 key 会被识别，缺失即落代码默认：
 
 ```toml
 flashPlayerPath = "Adobe Flash Player 20.exe"
@@ -609,9 +630,61 @@ swfPath = "CRAZYFLASHER7MercenaryEmpire.swf"
 # 保留为未来 feature flag；写什么都不影响当前运行行为。
 gpuSharpening = false
 sharpness = 0.5
+
+# WebView2 / overlay performance diagnostics.
+# Keep defaults false while investigating; toggle one at a time or use env vars.
+webOverlayLowEffects = false
+webOverlayDisableCssAnimations = false
+webOverlayDisableVisualizers = false
+webView2DisableGpu = false
+webView2AdditionalArgs = ""
+nativeCursorOverlay = true
+
+# off | auto | on — 管理 HKCU UserGpuPreferences；见下方"每应用 GPU 偏好"一节。
+gpuPreference = "off"
 ```
 
 代码默认（[AppConfig.cs:23-26](src/Config/AppConfig.cs#L23)）：`GpuSharpeningEnabled = true`, `Sharpness = 0.5`。示例显式写 `false` 是遵循正文「当前禁用」语义，等 pipeline 接上以后再统一默认。
+
+`webOverlayLowEffects` 是运行态 overlay 聚合诊断开关，等价于同时启用 `webOverlayDisableCssAnimations` 与 `webOverlayDisableVisualizers`，并对 map panel 额外关闭全屏 scanline / radar / pulse、移除大图与场景节点的 CSS filter/drop-shadow、降低 full-surface overlay 透明覆膜成本。`webOverlayDisableCssAnimations` 只注入 `perf-no-css-animations`，关闭 CSS animation / transition；`webOverlayDisableVisualizers` 只隐藏 BGM/FPS canvas，并把 BGM 可视化推送从 60ms 降为 250ms 的 track-end 轮询。`webView2DisableGpu` 会同时给 BootstrapPanel 与运行态 WebOverlayForm 追加 `--disable-gpu --disable-gpu-rasterization --disable-accelerated-2d-canvas`，用于验证核显占满是否来自 WebView2 合成；它可能把负载转移到 CPU，不建议作为默认运行配置。`nativeCursorOverlay=false` 或环境变量 `CF7_NATIVE_CURSOR_OVERLAY=0` 会关闭 C# 原生 cursor layered window，恢复系统鼠标，用于 A/B 排除 cursor 迁移对 GPU 满载的影响。`webView2AdditionalArgs` 和环境变量 `CF7_WEBVIEW2_ARGS` 用于一次性追加 Chromium 参数；环境变量 `CF7_WEB_LOW_EFFECTS`、`CF7_WEB_DISABLE_CSS_ANIMATIONS`、`CF7_WEB_DISABLE_VISUALIZERS`、`CF7_WEBVIEW2_DISABLE_GPU` 可覆盖对应布尔配置。
+
+BootstrapPanel 使用 `launcher/webview2_userdata`；运行态 WebOverlayForm 使用独立的 `launcher/webview2_overlay_userdata`。两者不能共用目录，因为 WebView2 同一个 user-data 目录下的 browser process group 要求启动参数一致，诊断参数（如禁 GPU）会导致启动阶段和运行阶段互相冲突。BootstrapPanel 在 reveal 后隐藏时会调用 WebView2 `TrySuspendAsync()`，避免启动页在游戏运行中继续参与 GPU 合成。
+
+#### 每应用 GPU 偏好 (`gpuPreference`)
+
+`config.toml` 的 `gpuPreference` 字段让 launcher 自己维护 `HKCU\Software\Microsoft\DirectX\UserGpuPreferences` 下 launcher exe 与 `msedgewebview2.exe` 的条目：
+
+| 模式 | 行为 |
+|------|------|
+| `off`（默认） | 启动时清理遗留条目，不写入新条目 |
+| `auto` | DXGI 探测到非 Intel / 非软件适配器的独显 **且** `GetSystemPowerStatus` 回 AC Online 时才写入；否则 revert |
+| `on`  | 无条件写入（副作用自担） |
+
+退出时**始终** revert 写入的条目，保证卸载 / 升级后注册表干净。环境变量 `CF7_GPU_PREFERENCE=off|auto|on` 覆盖配置。诊断日志以 `[GpuPref]` 前缀进 `logs/launcher.log`，记录探测到的独显名 / VendorId / ACLineStatus。
+
+**Flash Player 刻意不纳入**：Flash SA 的 Stage3D 走 DX9 老路径，在部分独显驱动组合下稳定性反而不如核显；保持跟随系统默认。
+
+**适用性**：仅在独显直连 / MUX 直连 / 桌面机独显场景下建议开 `auto`。Optimus 混合输出 (dGPU 渲染 → iGPU 扫描输出) 的游戏本 / 笔记本**不建议开启**；实测表现为核显占用不归零（DWM + Flash 仍在核显上）、独显回传引入 1-2 帧延迟、鼠标跟手感下降，峰值 FPS 可能相近但输入延迟明显变差。判断依据是 BIOS 是否有独显直连 / MUX Switch 开关；没有则保持 `off`。
+
+**副作用警告**（`auto` 会自动规避一部分）：
+- Optimus 笔记本 dGPU 渲染 → iGPU 输出的合成结果要经 PCIe 回传，PCIe 流量反而上升；PCIe 链路本身有信号完整性问题的机器可能因此更不稳。
+- dGPU 陪跑 WebView2 合成会额外抽电；电池模式续航明显下降。
+- 断续的 WebView2 合成负载（hover / menu / radar pulse）让独显频繁 P-state 抖动，对"鼠标跟手感"这种延迟敏感路径反而不如核显稳态。
+- Optimus 模式下桌面合成与最终扫描输出仍经核显，任务管理器里核显 3D 不会归零；务必用 `sample-launcher-gpu.ps1` A/B 验证，`phys_0` 是否真有可观的 3D 负载下降。
+
+双显卡机器上可用 `tools/set-launcher-gpu-preference.ps1` 查看或手动写入 Windows 每应用 GPU 偏好（仅诊断用途；launcher 启动时会按 `gpuPreference` 自动覆盖本脚本的写入）：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\set-launcher-gpu-preference.ps1 -List
+powershell -ExecutionPolicy Bypass -File tools\set-launcher-gpu-preference.ps1 -Apply
+powershell -ExecutionPolicy Bypass -File tools\set-launcher-gpu-preference.ps1 -Revert
+powershell -ExecutionPolicy Bypass -File tools\sample-launcher-gpu.ps1 -DurationSeconds 6
+node tools\audit-web-overlay-complexity.js
+```
+
+`-Apply` 写入当前用户注册表后必须完整关闭并重启 launcher / game。WebView2 Evergreen runtime 升级后 `msedgewebview2.exe` 路径可能变更，需要重新运行 `-Apply`。`sample-launcher-gpu.ps1` 只读采样 Windows GPU engine 计数器，并按 `launcher` / `flash` / `bootstrap` / `web_overlay` 分组输出平均与峰值，用于复核负载是否仍集中在运行态 WebOverlayForm。`audit-web-overlay-complexity.js` 不启动浏览器，只静态统计 overlay CSS / JS 中 animation、filter、drop-shadow、box-shadow、blend、clip-path、layout measurement、RAF 等高风险点，用于在机器不稳定时优先做低风险定位。在无独显直连 / MUX 的笔记本上，即使渲染进程被调度到独显，桌面合成与最终扫描输出仍可能经过核显，因此任务管理器中核显 3D 不一定归零；若重启后 WebOverlayForm 仍完全落在 `phys_0`，下一步应继续削减 map overlay 的 WebView2 渲染成本。
+
+2026-04-25 地图界面排查记录见 [Web Overlay 性能排查记录](../docs/web-overlay-performance-audit-2026-04-25.md)。
 
 #### launcher_user_prefs.json（用户级，频繁读写）
 
@@ -625,8 +698,9 @@ sharpness = 0.5
 | `sfxEnabled`     | bool   | true  | UI 音效（hover/click/confirm/error） |
 | `ambientEnabled` | bool   | false | Idle 态环境 hum（θ-FLOOD 背景低频） |
 | `uiFontScale`    | number | 1.35  | 引导页 `:root --fs-scale` 倍率，clamp 到 [0.7, 1.9] |
+| `suppressedHighDpiWarningRaw` | string &#124; null | null | 内部字段：用户选择不再提示的高 DPI 兼容性 raw value |
 
-前端（[web/modules/about.js](web/modules/about.js), [web/bootstrap-main.js](web/bootstrap-main.js)）通过 **`config_set` 协议**读写这些字段（见 Bootstrap 前端与协议节）。`list_resp` 每次都会附带 `introEnabled` / `sfxEnabled` / `ambientEnabled` / `uiFontScale`，而 `lastPlayedSlot` 只在非空时下发；前端缺失该字段时按 `null` 处理。
+前端（[web/modules/display.js](web/modules/display.js), [web/modules/about.js](web/modules/about.js), [web/bootstrap-main.js](web/bootstrap-main.js)）通过 **`config_set` 协议**读写公开字段（见 Bootstrap 前端与协议节）。`suppressedHighDpiWarningRaw` 只由 C# 兼容性提示对话框读写，不下发给 Web。`list_resp` 每次都会附带 `introEnabled` / `sfxEnabled` / `ambientEnabled` / `uiFontScale`，而 `lastPlayedSlot` 只在非空时下发；前端缺失该字段时按 `null` 处理。
 
 ### 命令行参数
 
@@ -741,7 +815,7 @@ currentValue (Plan A+):
 
 关键不变式：
 
-1. **写入原子性**：C# 侧在 switch 前快照 UserPrefs **所有 5 个字段**；`Save()` 或异常时一次性回滚，保证"内存 == 磁盘"
+1. **写入原子性**：C# 侧在 switch 前快照 `config_set` 白名单字段；`Save()` 或异常时一次性回滚，保证公开偏好"内存 == 磁盘"
 2. **前端权威对齐**：`bootstrap-main.js` 收到 `config_set_resp` **无条件** `applyFn(currentValue)` 对齐 UI + BootstrapAudio + 本地状态，不再依赖 optimistic prior 快照
 3. **相关 id**：`requestId` 解决连点/乱序场景下 apply 对错请求的问题；监听 map 是 `Map<requestId, applyFn>`，响应按 id 查 apply，用完即删
 4. **list 回退**：仅三种异常路径才退到 `list` 刷新（applyFn throw / 没带 requestId / `!ok && currentValue` 缺失）
@@ -758,7 +832,7 @@ currentValue (Plan A+):
 
 ### 与运行态生命周期的关系
 
-**reveal 成功 = panel swap，不是 Form 切换**：BootstrapPanel.SetPanelVisible(false) + FlashHostPanel.Visible=true + readyWiring。BootstrapPanel 不会 Dispose，仍在同一 GuardianForm 里，只是不可见。**代码库没有任何让它在 Ready 之后重新显形的路径**。
+**reveal 成功 = panel swap，不是 Form 切换**：BootstrapPanel.SetPanelVisible(false) + FlashHostPanel.Visible=true + readyWiring。BootstrapPanel 不会 Dispose，仍在同一 GuardianForm 里；隐藏后会请求 WebView2 suspend，避免启动页继续占用 GPU 合成资源。**代码库没有任何让它在 Ready 之后重新显形的路径**。
 
 **Ready 后的退出路径**：
 
@@ -1035,6 +1109,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → 按面板 
 - **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-panel-data.js` + `web/modules/map-fit-presets.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面均已切到 `assembled` 场景拼接模式，右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、filter-fit 离线调优 `tools/tune-map-filter-fit.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`，并在紧凑视口下自动缩放舞台、按 page/filter preset 做二次 content-fit；右上角常驻 HUD 由 `web/modules/map-hud.js` 消费同一份 `MapPanelData` + UiData `mm/mh`，只显示当前区块高亮与固定 beacon，点击后打开 map panel
 - **lockbox**（开锁小游戏）: `web/modules/minigames/lockbox/` 下的正式小游戏模块；支持运行时参数、browser harness、Node QA
 - **pinalign**（定位小游戏）: `web/modules/minigames/pinalign/` 下的正式小游戏模块；和 Lockbox 共用小游戏壳层与 QA 平台
+- **gobang**（五子棋小游戏）: `web/modules/minigames/gobang/` 下的正式小游戏模块；Web core 负责规则裁判，AI 经 Web→C# `gomoku_eval` 调用 `GomokuTask` / Rapfi
 
 **通用模块**：
 - `panels.js`: 面板注册/生命周期管理 (register/open/close/force_close)
@@ -1044,15 +1119,16 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → 按面板 
 - `web/modules/minigames/shared/minigame-shell.css`: 小游戏共享结构样式
 
 **小游戏宿主协议**：
-- Lockbox / Pinalign 不再各自发 `lockbox_session` / `pinalign_session`
+- Lockbox / Pinalign / Gobang 统一使用共享 session envelope，不再维护分游戏 session 命令名
 - 统一发 `Bridge.send({ type:'panel', cmd:'minigame_session', payload:{ game, kind, data } })`
 - 生命周期约定：
   - `open`: 面板已打开，只保证 `data.requested`
   - `ready`: 状态已建立，`data.requested` / `data.resolved` / `data.metrics` 都必须存在
   - `close`: 带最后一次已知 `phase` / `metrics`
   - `turn` / `result` / `export`: 沿用各游戏语义，但都走同一 envelope
+- Gobang AI 额外走 Web panel → C# `gomoku_eval`：`{ type:'panel', panel:'gobang', cmd:'gomoku_eval', callId, payload:{ moves, timeLimit, ruleset } }`；响应为同 `callId` 的 `panel_resp`，`moves` 为 `[[x,y,role],...]`，`role` 使用 `1` 黑 / `-1` 白
 
-**状态机 (_activePanel)**：`null` → `"kshop" / "help" / "lockbox" / "pinalign" / ...` → `null`。当前只有 `kshop` 会在断连或强制关闭路径里设置 `_pauseNeedsRestore`；其余纯 Web / dev panel 只做面板生命周期管理，不触发 Flash 暂停恢复。
+**状态机 (_activePanel)**：`null` → `"kshop" / "help" / "lockbox" / "pinalign" / "gobang" / ...` → `null`。当前只有 `kshop` 会在断连或强制关闭路径里设置 `_pauseNeedsRestore`；其余纯 Web / dev panel 只做面板生命周期管理，不触发 Flash 暂停恢复。
 
 **热重载恢复**：`_uiDataSnapshot` 按 KV key 维护最新值快照，WebView2 热重载后 `FlushUiDataBuffer` 先回放完整快照，确保 game-ready 等关键状态不丢失。
 

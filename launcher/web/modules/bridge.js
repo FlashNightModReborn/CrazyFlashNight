@@ -22,3 +22,80 @@
     }
     return { on: on, send: send };
 })();
+
+var OverlayViewportMetrics = (function() {
+    var scheduled = false;
+
+    function readRootSize() {
+        var root = document.documentElement || document.body;
+        return {
+            w: root ? root.clientWidth : 0,
+            h: root ? root.clientHeight : 0
+        };
+    }
+
+    function report(reason) {
+        if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') return;
+        var root = readRootSize();
+        var vv = window.visualViewport || null;
+        Bridge.send({
+            type: 'viewportMetrics',
+            reason: reason || 'unspecified',
+            innerWidth: window.innerWidth || 0,
+            innerHeight: window.innerHeight || 0,
+            clientWidth: root.w || 0,
+            clientHeight: root.h || 0,
+            devicePixelRatio: window.devicePixelRatio || 1,
+            visualViewportWidth: vv ? vv.width : 0,
+            visualViewportHeight: vv ? vv.height : 0
+        });
+    }
+
+    function schedule(reason) {
+        if (scheduled) return;
+        scheduled = true;
+        var raf = window.requestAnimationFrame || function(cb) { return setTimeout(cb, 16); };
+        raf(function() {
+            scheduled = false;
+            report(reason || 'scheduled');
+        });
+    }
+
+    window.addEventListener('resize', function() { schedule('window_resize'); });
+    if (window.visualViewport && window.visualViewport.addEventListener) {
+        window.visualViewport.addEventListener('resize', function() { schedule('visual_viewport_resize'); });
+        window.visualViewport.addEventListener('scroll', function() { schedule('visual_viewport_scroll'); });
+    }
+    window.addEventListener('load', function() { schedule('load'); });
+
+    return {
+        report: report,
+        schedule: schedule
+    };
+})();
+
+// 启动期一次性探针：把 WebGL renderer 回报给 launcher，验证 gpuPreference 是否真的把 WebView2 调度到独显。
+// 写 reg 不等于 Windows 一定遵从（Optimus / MUX / 驱动策略可能覆盖），事后验证比静态推理可靠。
+(function reportGpuInfoOnce() {
+    if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') return;
+    function probe() {
+        var vendor = null, renderer = null;
+        try {
+            var canvas = document.createElement('canvas');
+            var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            if (gl) {
+                var ext = gl.getExtension('WEBGL_debug_renderer_info');
+                if (ext) {
+                    vendor = gl.getParameter(ext.UNMASKED_VENDOR_WEBGL) || null;
+                    renderer = gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) || null;
+                } else {
+                    vendor = gl.getParameter(gl.VENDOR) || null;
+                    renderer = gl.getParameter(gl.RENDERER) || null;
+                }
+            }
+        } catch (e) {}
+        Bridge.send({ type: 'gpuInfo', vendor: vendor, renderer: renderer });
+    }
+    if (document.readyState === 'complete' || document.readyState === 'interactive') probe();
+    else window.addEventListener('DOMContentLoaded', probe);
+})();

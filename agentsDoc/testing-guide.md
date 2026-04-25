@@ -23,7 +23,8 @@ chcp.com 65001 | Out-Null
 | XML / 数据 / 游戏数值 | 受影响路径运行时 smoke | `compile_test`、游戏内人工验证 |
 | 导弹运动 / 追踪参数离线调优 | `python tools/missile-tuning-sim/run_sim.py compare --configs ...` | `scan --objective loiter|pressure|hit` / `audit`、`compile_test`、游戏内人工验证 |
 | Launcher C# / Host / Bus | `launcher/build.ps1` | `launcher/tests/run_tests.ps1`、`tools/cfn-cli`、`--bus-only` |
-| Launcher Web / Minigame | `node launcher/tools/run-minigame-qa.js --game ...` | browser harness、`node launcher/tools/validate-minigame-final-state.js` |
+| Launcher WebView2 / GPU 诊断 | `powershell -ExecutionPolicy Bypass -File tools/set-launcher-gpu-preference.ps1 -List` + `powershell -ExecutionPolicy Bypass -File tools/sample-launcher-gpu.ps1 -DurationSeconds 6` + `node tools/audit-web-overlay-complexity.js` | `-Apply` / `-Revert` 后完整重启 launcher / game，再复核 WebView2 GPU engine；机器不稳定时优先用静态复杂度审计 |
+| Launcher Web / Minigame | `node launcher/tools/run-minigame-qa.js --game lockbox\|pinalign\|gobang\|all` | browser harness、`node launcher/tools/validate-minigame-final-state.js` |
 | Launcher Web / Map Panel | `powershell -ExecutionPolicy Bypass -File launcher/build.ps1` + `node tools/audit-map-taskmarkers.js`（契约守门，必须 0 error / 0 warn） | browser harness `map-ui1`~`map-ui23` 全绿（`launcher/web/modules/map/dev/harness.html` → 面板"Run suite"）、`node tools/audit-map-layout.js`；重算 filter-fit preset 时跑 `node tools/tune-map-filter-fit.js --write` |
 | 文档与治理 | `node tools/validate-doc-governance.js` | 交叉 grep / 链接检查 / 基线复核 |
 
@@ -59,16 +60,16 @@ chcp.com 65001 | Out-Null
 
 当前 `launcher/build.ps1` 除编译外，还会 fail-fast 校验 `launcher/web` 的必需运行时资源（bootstrap/overlay/config/assets/help/icons/data 与关键 modules / minigame 入口），不再是只看 `overlay.html` 的弱检查。
 
+DPI 相关 smoke：改 DPI manifest / overlay 坐标 / Web viewport metrics 时，除 build + xUnit 外人工覆盖单屏 100/125/150/175%、Windows 未勾选与“应用程序”覆盖、双屏混合 DPI 启动/跨屏/全屏切换；“系统/系统(增强)”只要求 `[DPI]` 日志和提示，不把点击正确性列为通过标准。
 ## 4. Launcher Web / Minigame 验证
 
 | 用途 | 命令 |
 |------|------|
-| Node QA(单局) | `node launcher/tools/run-minigame-qa.js --game lockbox` |
-| Node QA(单局) | `node launcher/tools/run-minigame-qa.js --game pinalign` |
+| Node QA(单局) | `node launcher/tools/run-minigame-qa.js --game lockbox\|pinalign\|gobang` |
 | Node QA(全套) | `node launcher/tools/run-minigame-qa.js --game all` |
 | 静态校验 | `node launcher/tools/validate-minigame-final-state.js` |
 
-**Browser harness**(直接打开)：`launcher/web/modules/minigames/lockbox/dev/harness.html` / `launcher/web/modules/minigames/pinalign/dev/harness.html` / `launcher/web/modules/map/dev/harness.html`。
+**Browser harness**(直接打开)：`launcher/web/modules/minigames/lockbox/dev/harness.html` / `launcher/web/modules/minigames/pinalign/dev/harness.html` / `launcher/web/modules/minigames/gobang/dev/harness.html` / `launcher/web/modules/map/dev/harness.html`。
 
 **默认顺序**：纯逻辑 / 确定性问题先跑 Node QA；协议 / DOM / 布局 / 交互问题进 browser harness；目录 / 协议 / 旧入口回流问题再补静态校验。
 
@@ -85,7 +86,7 @@ URL 参数:`?qa=1` 自动断言 / `?case=` 单条 / `?scenario=` 脚本场景 / 
 
 若改动后的行为无法被现有 harness 或 QA 覆盖，同轮补测试入口，不把“靠人工记得点开”当作默认收尾。
 
-静态校验拦截:旧平铺 Lockbox 入口、旧 `lockbox_session` / `pinalign_session`、旧共享结构 class 名。
+静态校验拦截:旧平铺 Lockbox 入口、旧版分游戏 session 命令名、旧共享结构 class 名。
 
 ## 5. 自动化与文档治理
 

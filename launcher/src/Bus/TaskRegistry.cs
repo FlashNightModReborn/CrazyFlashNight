@@ -83,6 +83,8 @@ namespace CF7Launcher.Bus
             // AS2 → C# 面板打开请求 (旧 Flash 地图界面按钮 / openTaskMap 命令接入 WebView)
             if (webOverlay != null)
             {
+                router.RegisterSync("cursor_control", webOverlay.HandleCursorControl);
+
                 router.RegisterSync("panel_request", delegate(JObject msg)
                 {
                     string panel = msg.Value<string>("panel") ?? "";
@@ -154,6 +156,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "icon_bake",      "json_sync", "AS2<->C#",false, first);
             first = AppendTask(sb, "shop_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "map_response",   "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "cursor_control", "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "archive",        "json_async","AS2<->C#",true,  first);
             first = AppendTask(sb, "bench_sync",     "json_sync", "AS2<->C#",false, first);

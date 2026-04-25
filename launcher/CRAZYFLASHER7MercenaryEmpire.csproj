@@ -8,7 +8,7 @@
     <AssemblyName>CRAZYFLASHER7MercenaryEmpire</AssemblyName>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <RootNamespace>CF7Launcher</RootNamespace>
-    <NoWin32Manifest>true</NoWin32Manifest>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="src\Program.cs" />
     <Compile Include="src\Config\AppConfig.cs" />
+    <Compile Include="src\Config\GpuPreferenceManager.cs" />
     <Compile Include="src\Config\UserPrefs.cs" />
     <Compile Include="src\Config\FlashTrustManager.cs" />
     <Compile Include="src\Config\SteamOwnershipCheck.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="src\Guardian\GuardianForm.cs" />
     <Compile Include="src\Guardian\GameLaunchFlow.cs" />
     <Compile Include="src\Guardian\BootstrapMessageHandler.cs" />
+    <Compile Include="src\Guardian\DpiAwarenessBootstrap.cs" />
     <Compile Include="src\Guardian\Handlers\BootstrapCommandHelpers.cs" />
     <Compile Include="src\Guardian\Handlers\LifecycleCommandHandler.cs" />
     <Compile Include="src\Guardian\Handlers\GameStateCommandHandler.cs" />
@@ -94,6 +96,9 @@
     <Compile Include="src\Guardian\ToastOverlay.cs" />
     <Compile Include="src\Guardian\FlashCoordinateMapper.cs" />
     <Compile Include="src\Guardian\FlashHtmlParser.cs" />
+    <Compile Include="src\Guardian\DpiDiagnostics.cs" />
+    <Compile Include="src\Guardian\HighDpiCompatibilityDetector.cs" />
+    <Compile Include="src\Guardian\OverlayCoordinateContext.cs" />
     <Compile Include="src\V8\V8Runtime.cs" />
     <Compile Include="src\Tasks\FrameTask.cs" />
     <Compile Include="src\Guardian\HitNumberOverlay.cs" />
@@ -107,6 +112,7 @@
     <Compile Include="src\Tasks\ArchiveTask.cs" />
     <Compile Include="src\Guardian\IToastSink.cs" />
     <Compile Include="src\Guardian\INotchSink.cs" />
+    <Compile Include="src\Guardian\CursorOverlayForm.cs" />
     <Compile Include="src\Guardian\WebOverlayForm.cs" />
     <Compile Include="src\Guardian\BootstrapPanel.cs" />
     <Compile Include="src\Guardian\InputShieldForm.cs" />
@@ -122,6 +128,9 @@
     <Compile Include="src\Save\IArchiveStateProbe.cs" />
     <Compile Include="src\Save\IArchiveShadowWriter.cs" />
     <Compile Include="src\Save\LegacyPresetSlotSeeder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.manifest" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

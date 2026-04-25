@@ -29,6 +29,12 @@ function getSuites() {
                 require("../web/modules/minigames/pinalign/core/index.js"),
                 require("../web/modules/minigames/pinalign/app/level-specs.js")
             ]
+        },
+        gobang: {
+            suite: require("../web/modules/minigames/gobang/dev/qa-suite.js"),
+            args: [
+                require("../web/modules/minigames/gobang/core/index.js")
+            ]
         }
     };
 }

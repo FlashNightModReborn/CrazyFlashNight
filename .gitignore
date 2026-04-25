@@ -50,6 +50,7 @@ scripts/screenshot.png
 
 # Claude Code local settings (machine-specific)
 .claude/settings.local.json
+.claude/scheduled_tasks.lock
 scripts/TestLoader.as
 scripts/testloader_options.txt
 scripts/compile_output.txt
@@ -85,6 +86,7 @@ launcher/native/sol_parser/target/
 
 # WebView2 runtime cache (machine-specific)
 launcher/webview2_userdata/
+launcher/webview2_overlay_userdata/
 weboverlay_debug.log
 
 # Launcher runtime logs

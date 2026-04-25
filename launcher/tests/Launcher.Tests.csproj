@@ -15,6 +15,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -42,9 +44,11 @@
     <Compile Include="SanityTests.cs" />
     <Compile Include="Save\SaveMigratorTests.cs" />
     <Compile Include="Bus\MessageRouterTests.cs" />
+    <Compile Include="Tasks\IconBakeTaskTests.cs" />
     <Compile Include="Save\SolResolverTests.cs" />
     <Compile Include="Save\SolFileLocatorTests.cs" />
     <Compile Include="Save\LegacyPresetSlotSeederTests.cs" />
+    <Compile Include="Guardian\OverlayCoordinateContextTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

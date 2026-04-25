@@ -1472,12 +1472,11 @@ function resolveFeedbackAnchor(item) {
 
         for (i = 0; i < nodes.length; i++) {
             var node = nodes[i];
-            var style = (typeof window !== 'undefined' && window.getComputedStyle) ? window.getComputedStyle(node) : null;
-            var rect;
             if (!node || !node.getBoundingClientRect) continue;
-            if (style && (style.display === 'none' || style.visibility === 'hidden')) continue;
+            // 过滤 display:none；map-* 节点当前 CSS 不使用 visibility:hidden，若将来引入需改用 getComputedStyle。
+            if (node.offsetParent === null) continue;
 
-            rect = node.getBoundingClientRect();
+            var rect = node.getBoundingClientRect();
             if (!rect || (rect.width <= 0 && rect.height <= 0)) continue;
 
             minX = Math.min(minX, rect.left - stageRect.left);

@@ -73,8 +73,8 @@
   function applyFontScale(v) {
     v = clampFontScale(v);
     _prefsUiFontScale = v;
-    // 写到 :root 上, 让 bootstrap.css 的 --fs-* calc(... * var(--fs-scale)) 全局更新
-    document.documentElement.style.setProperty('--fs-scale', String(v));
+    // 写到 :root 上；bootstrap.css 直接以用户选择作为 --fs-scale。
+    document.documentElement.style.setProperty('--user-fs-scale', String(v));
   }
 
   // config_set 的"服务端权威对齐"机制 (Plan A+).
@@ -255,7 +255,7 @@
       applyConfirmLabel('normal', null);
       return;
     }
-    welcomeSlotNameEl.textContent = s.__preset ? presetDisplayName(s.slot) : s.slot;
+    welcomeSlotNameEl.textContent = presetDisplayName(s.slot);
 
     var mode = effectiveMode(s);
     var modeHint = '';
@@ -453,7 +453,7 @@
       if (s.lastModified) meta += ' · ' + s.lastModified.slice(0, 16).replace('T', ' ');
     }
 
-    var displayName = s.__preset ? presetDisplayName(s.slot) : s.slot;
+    var displayName = presetDisplayName(s.slot);
     var progressText = s.__empty ? '—' : (s.mainProgress || '—');
 
     var actions = '';
@@ -473,7 +473,7 @@
               + '<button class="btn-delete danger">删除</button>'
               + '<button class="btn-reset danger">清理副本</button>';
     } else {
-      actions = '<button class="btn-start primary">选 择</button>'
+      actions = '<button class="btn-start primary">选择</button>'
               + '<button class="btn-edit">编辑</button>'
               + '<button class="btn-export">导出</button>'
               + '<button class="btn-delete danger">删除</button>';
@@ -895,6 +895,7 @@
   document.getElementById('briefing-about').onclick = function() { openModal('about', {}); };
 
   // Topbar 按钮
+  document.getElementById('btn-display').onclick = function() { openModal('display', {}); };
   document.getElementById('btn-about').onclick = function() { openModal('about', {}); };
   document.getElementById('btn-fullscreen').onclick = function() {
     if (!document.fullscreenElement) { try { document.documentElement.requestFullscreen(); } catch (e) {} }
