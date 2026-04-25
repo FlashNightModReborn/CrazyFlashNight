@@ -1079,7 +1079,7 @@
 
 @keyframes lb-title-chroma {
     0%,92%,100% { text-shadow:1px 0 0 rgba(255,0,60,0.55), -1px 0 0 rgba(0,240,255,0.55); }
-    93%         { text-shadow:3px 0 0 rgba(255,0,60,0.8), -3px 0 0 rgba(0,240,255,0.8), 0 0 12px rgba(252,238,9,0.5); filter:brightness(1.2); }
+    93%         { text-shadow:3px 0 0 rgba(255,0,60,0.8), -3px 0 0 rgba(0,240,255,0.8), 0 0 12px rgba(252,238,9,0.5); }
     95%         { text-shadow:-2px 0 0 rgba(255,0,60,0.8), 2px 0 0 rgba(0,240,255,0.8); transform:translateX(1px); }
     97%         { text-shadow:1px 0 0 rgba(255,0,60,0.55), -1px 0 0 rgba(0,240,255,0.55); }
 }
@@ -1638,8 +1638,9 @@
     box-shadow:inset 0 0 10px rgba(252,238,9,0.22);
 }
 @keyframes lb-sweet-pulse {
-    0%,100% { box-shadow:inset 0 0 16px rgba(0,240,255,0.65), 0 0 14px rgba(0,240,255,0.25); filter:brightness(1); }
-    50%     { box-shadow:inset 0 0 22px rgba(0,240,255,0.95), 0 0 28px rgba(0,240,255,0.55); filter:brightness(1.25); }
+    /* filter:brightness 在 1.25 ⇄ 1 跳变本就被过曝青色掩盖；删掉省一层 filter graph，保留 box-shadow 脉冲。*/
+    0%,100% { box-shadow:inset 0 0 16px rgba(0,240,255,0.65), 0 0 14px rgba(0,240,255,0.25); }
+    50%     { box-shadow:inset 0 0 22px rgba(0,240,255,0.95), 0 0 28px rgba(0,240,255,0.55); }
 }
 
 /* Sweet-spot guide line at exact 900/1200 = 75% */

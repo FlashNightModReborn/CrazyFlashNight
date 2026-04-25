@@ -312,7 +312,9 @@ var SparklineRenderer = (function() {
                 t = 1 - (1 - t) * (1 - t);
                 renderPts = lerpArrays(prevPts, pts, t);
                 if (animFrame < ANIM_FRAMES) {
+                    if (animRafId) cancelAnimationFrame(animRafId);
                     animRafId = requestAnimationFrame(function() {
+                        animRafId = null;
                         render(pts, perfLevel, gameHour, lightLevels);
                     });
                 } else {

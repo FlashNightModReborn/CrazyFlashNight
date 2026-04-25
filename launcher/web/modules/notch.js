@@ -233,7 +233,9 @@ var Notch = (function() {
         Bridge.on('lightLevels', function(data) {
             if (data.levels) lightLevels = data.levels;
         });
-        window.addEventListener('resize', reportRect);
+        // resize storm（拖窗 / Alt-Tab / 多显示器切换）一秒可触发数十次；
+        // scheduleContextLayoutSync 已用 rAF 去重，且内部会调 reportRect()，避免裸 resize → 8 次 getBoundingClientRect 直接命中布局。
+        window.addEventListener('resize', scheduleContextLayoutSync);
         reportRect();
 
         // 初始渲染

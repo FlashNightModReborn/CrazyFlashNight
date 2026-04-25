@@ -566,24 +566,27 @@
     // ██  进度条拖拽 seek
     // ══════════════════════════════════════════════
 
-    var seeking = false;
+    // mousemove/mouseup 只在拖拽期间挂到 document，结束即摘除——
+    // 避免常驻 listener 在每次全局 mousemove 都跑一次条件判断。
+    var seekRect = null;
     if (progBar) {
         progBar.addEventListener('mousedown', function(e) {
-            seeking = true;
-            doSeek(e);
+            if (currentDuration <= 0) return;
+            seekRect = progBar.getBoundingClientRect();
+            sendSeek(e);
+            document.addEventListener('mousemove', onSeekMove);
+            document.addEventListener('mouseup', onSeekEnd);
         });
     }
-    document.addEventListener('mousemove', function(e) {
-        if (seeking) doSeek(e);
-    });
-    document.addEventListener('mouseup', function() {
-        seeking = false;
-    });
-
-    function doSeek(e) {
-        if (currentDuration <= 0 || !progBar) return;
-        var rect = progBar.getBoundingClientRect();
-        var pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    function onSeekMove(e) { sendSeek(e); }
+    function onSeekEnd() {
+        seekRect = null;
+        document.removeEventListener('mousemove', onSeekMove);
+        document.removeEventListener('mouseup', onSeekEnd);
+    }
+    function sendSeek(e) {
+        if (!seekRect || seekRect.width <= 0) return;
+        var pct = Math.max(0, Math.min(1, (e.clientX - seekRect.left) / seekRect.width));
         Bridge.send({type: 'jukebox', cmd: 'seek', sec: pct * currentDuration});
     }
 

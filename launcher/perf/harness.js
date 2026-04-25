@@ -59,13 +59,14 @@ function parseArgs() {
 }
 
 function applyModeDefaults(opts) {
-    if (opts.mode === 'all') return;
-    if (opts.mode === 'baseline') {
-        opts.onlyAblation = 'baseline';
+    // 'all' / 'ablate' 都跑全集；保留 ablate 是 npm script 历史别名。
+    // 想要对比就跑 'all'；只想看 baseline 单点跑 'baseline'。
+    if (opts.mode === 'all' || opts.mode === 'ablate') {
+        opts.mode = 'all';
         return;
     }
-    if (opts.mode === 'ablate') {
-        opts.mode = 'all';
+    if (opts.mode === 'baseline') {
+        opts.onlyAblation = 'baseline';
         return;
     }
     if (opts.mode === 'watch') {
@@ -75,7 +76,7 @@ function applyModeDefaults(opts) {
         opts.headless = false;
         return;
     }
-    throw new Error('unsupported --mode "' + opts.mode + '". Use all, baseline, ablate, or watch. For report recovery use node recover.js.');
+    throw new Error('unsupported --mode "' + opts.mode + '". Use all, baseline, or watch. For report recovery use node recover.js.');
 }
 
 function printHelp() {
