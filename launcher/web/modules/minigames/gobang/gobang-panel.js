@@ -30,6 +30,7 @@ var GobangPanel = (function() {
             create: createDOM,
             onOpen: onOpen,
             onRequestClose: function() { closePanel(); },
+            onClose: cleanup,
             onForceClose: cleanup
         });
     }

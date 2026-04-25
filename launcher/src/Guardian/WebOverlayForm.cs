@@ -64,6 +64,8 @@ namespace CF7Launcher.Guardian
             public IntPtr dwExtraInfo;
         }
 
+        private const int SW_HIDE = 0;
+        private const int SW_SHOWNA = 8;
         private const int SW_SHOWNOACTIVATE = 4;
         private static readonly IntPtr HWND_TOP = new IntPtr(0);
         private const uint SWP_NOMOVE = 0x0002;
@@ -107,6 +109,7 @@ namespace CF7Launcher.Guardian
         private readonly bool _lowEffectsMode;
         private readonly bool _disableCssAnimations;
         private readonly bool _disableVisualizers;
+        private readonly int _frameRateLimit;
         private readonly bool _webView2DisableGpu;
         private readonly string _webView2AdditionalArgs;
 
@@ -207,8 +210,14 @@ namespace CF7Launcher.Guardian
         private double _lastLoggedScaleX = -1.0;
         private double _lastLoggedScaleY = -1.0;
 
+        // 探针：合成成本 toggle。Ctrl+G 切换 opaque WebView2 + 隐藏 Flash 子窗口，
+        // 观察任务管理器 GPU 占用变化。结果决定是否推进"panel 态切 opaque + 隐 Flash"方案。
+        private bool _compositionProbeActive;
+        private Color _probeOriginalWebBackColor = Color.Transparent;
+
         public WebOverlayForm(Form owner, Control anchor, string webDir,
             bool lowEffectsMode, bool disableCssAnimations, bool disableVisualizers,
+            int frameRateLimit,
             bool webView2DisableGpu, string webView2AdditionalArgs)
         {
             _owner = owner;
@@ -219,6 +228,7 @@ namespace CF7Launcher.Guardian
             _lowEffectsMode = lowEffectsMode;
             _disableCssAnimations = disableCssAnimations || lowEffectsMode;
             _disableVisualizers = disableVisualizers || lowEffectsMode;
+            _frameRateLimit = NormalizeFrameRateLimit(frameRateLimit);
             _webView2DisableGpu = webView2DisableGpu;
             _webView2AdditionalArgs = webView2AdditionalArgs ?? "";
 
@@ -336,6 +346,8 @@ namespace CF7Launcher.Guardian
 
                 // JS→C# 消息
                 _webView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
+                await _webView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(
+                    "window.CF7_FRAME_RATE_LIMIT=" + _frameRateLimit.ToString(CultureInfo.InvariantCulture) + ";");
 
                 // 调试阶段保留开发者工具
                 _webView.CoreWebView2.Settings.AreDevToolsEnabled = true;
@@ -660,17 +672,24 @@ namespace CF7Launcher.Guardian
             string lowEffects = _lowEffectsMode ? "true" : "false";
             string noCssAnimations = _disableCssAnimations ? "true" : "false";
             string noVisualizers = _disableVisualizers ? "true" : "false";
+            string frameRateLimit = _frameRateLimit.ToString(CultureInfo.InvariantCulture);
+            string frameRateCapped = _frameRateLimit > 0 ? "true" : "false";
             ExecScript("document.documentElement.classList.toggle('perf-low-effects'," + lowEffects + ");"
                 + "document.documentElement.classList.toggle('perf-no-css-animations'," + noCssAnimations + ");"
+                + "document.documentElement.classList.toggle('perf-frame-capped'," + frameRateCapped + ");"
                 + "document.documentElement.classList.toggle('perf-no-visualizers'," + noVisualizers + ");"
                 + "window.CF7_LOW_EFFECTS=" + lowEffects + ";"
                 + "window.CF7_DISABLE_CSS_ANIMATIONS=" + noCssAnimations + ";"
-                + "window.CF7_DISABLE_VISUALIZERS=" + noVisualizers + ";");
-            if (_lowEffectsMode || _disableCssAnimations || _disableVisualizers)
+                + "window.CF7_DISABLE_VISUALIZERS=" + noVisualizers + ";"
+                + "window.CF7_FRAME_RATE_LIMIT=" + frameRateLimit + ";"
+                + "document.documentElement.style.setProperty('--overlay-frame-rate-limit','" + frameRateLimit + "');"
+                + "if(window.CF7FrameLimiter&&window.CF7FrameLimiter.setLimit){window.CF7FrameLimiter.setLimit(" + frameRateLimit + ");}");
+            if (_lowEffectsMode || _disableCssAnimations || _disableVisualizers || _frameRateLimit > 0)
                 LogManager.Log("[WebOverlay] perf mode applied: " + reason
                     + " lowEffects=" + _lowEffectsMode
                     + " noCssAnimations=" + _disableCssAnimations
-                    + " noVisualizers=" + _disableVisualizers);
+                    + " noVisualizers=" + _disableVisualizers
+                    + " frameRateLimit=" + _frameRateLimit);
         }
 
         #endregion
@@ -833,6 +852,7 @@ namespace CF7Launcher.Guardian
                     + _lowEffectsMode
                     + " noCssAnimations=" + _disableCssAnimations
                     + " noVisualizers=" + _disableVisualizers
+                    + " frameRateLimit=" + _frameRateLimit
                     + " disableGpu=false");
                 return null;
             }
@@ -842,12 +862,21 @@ namespace CF7Launcher.Guardian
                 + _lowEffectsMode
                 + " noCssAnimations=" + _disableCssAnimations
                 + " noVisualizers=" + _disableVisualizers
+                + " frameRateLimit=" + _frameRateLimit
                 + " disableGpu=" + _webView2DisableGpu
                 + " args=" + joined);
 
             CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions();
             options.AdditionalBrowserArguments = joined;
             return options;
+        }
+
+        private static int NormalizeFrameRateLimit(int value)
+        {
+            if (value <= 0) return 0;
+            if (value < 15) return 15;
+            if (value > 240) return 240;
+            return value;
         }
 
         public void SetCursorOverlay(CursorOverlayForm cursorOverlay)
@@ -1396,10 +1425,13 @@ namespace CF7Launcher.Guardian
             {
                 RestoreSystemCursorForMissingNativeOverlay();
             }
-            LogManager.Log("[Cursor] visible=" + visible
-                + " state=" + _cursorState
-                + " dragging=" + _cursorDragging
-                + " reason=" + _cursorDiagReason);
+            if (CursorDiagEnabled)
+            {
+                LogManager.Log("[Cursor] visible=" + visible
+                    + " state=" + _cursorState
+                    + " dragging=" + _cursorDragging
+                    + " reason=" + _cursorDiagReason);
+            }
         }
 
         private void ForceCursorSample(string reason)
@@ -1414,9 +1446,14 @@ namespace CF7Launcher.Guardian
                 SendCursorPosition(true);
         }
 
+        // Cursor 采样日志默认关闭，避免污染调试。需要时把 CursorDiagEnabled 临时改 true。
+        private static readonly bool CursorDiagEnabled = false;
+
         private void LogCursorSample(string kind, Point screen, Rectangle bounds, Point local,
             Point css, bool visible, bool force)
         {
+            if (!CursorDiagEnabled) { _cursorDiagForce = false; return; }
+
             long now = Environment.TickCount;
             bool shouldLog = _cursorDiagForce || force || now - _lastCursorDiagTick > 1000;
             if (!shouldLog) return;
@@ -1849,6 +1886,55 @@ namespace CF7Launcher.Guardian
                 RequestViewportMetrics("set_ready");
                 ExecScript("if(window.Notch&&Notch.reportRect){Notch.reportRect();}");
                 EnsureCursorTimer();
+            }
+        }
+
+        /// <summary>
+        /// 探针：toggle 合成成本快路径。
+        /// ON: WebView2 背景切 opaque（消除逐像素 alpha blend）+ 隐藏 Flash hwnd（底层不出图）
+        /// OFF: 恢复 transparent + 显示 Flash。
+        /// 对比 toggle 前后任务管理器 iGPU 占用，验证"panel 态切 opaque"是否值得推进。
+        /// </summary>
+        public void ToggleCompositionProbe(IntPtr flashHwnd)
+        {
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action<IntPtr>(ToggleCompositionProbe), flashHwnd); }
+                catch { }
+                return;
+            }
+
+            if (_disposed || _webView == null) return;
+
+            long tick = Environment.TickCount;
+            bool nextActive = !_compositionProbeActive;
+
+            try
+            {
+                if (nextActive)
+                {
+                    _probeOriginalWebBackColor = _webView.DefaultBackgroundColor;
+                    _webView.DefaultBackgroundColor = Color.Black;
+                    if (flashHwnd != IntPtr.Zero)
+                        ShowWindow(flashHwnd, SW_HIDE);
+                    LogManager.Log("[GpuProbe] ON  tick=" + tick
+                        + " flashHwnd=" + flashHwnd.ToInt64().ToString("X")
+                        + " (WebView2 opaque + Flash hidden)");
+                }
+                else
+                {
+                    _webView.DefaultBackgroundColor = _probeOriginalWebBackColor;
+                    if (flashHwnd != IntPtr.Zero)
+                        ShowWindow(flashHwnd, SW_SHOWNA);
+                    LogManager.Log("[GpuProbe] OFF tick=" + tick
+                        + " flashHwnd=" + flashHwnd.ToInt64().ToString("X")
+                        + " (restored transparent + Flash visible)");
+                }
+                _compositionProbeActive = nextActive;
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[GpuProbe] toggle threw: " + ex.Message);
             }
         }
 

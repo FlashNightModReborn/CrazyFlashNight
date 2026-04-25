@@ -10,6 +10,8 @@ sharpness = 0.5
 webOverlayLowEffects = false
 webOverlayDisableCssAnimations = false
 webOverlayDisableVisualizers = false
+# 60 caps overlay JS/canvas rAF loops; 0/off/unlimited lets WebView2 follow display refresh.
+webOverlayFrameRateLimit = 60
 webView2DisableGpu = false
 webView2AdditionalArgs = ""
 nativeCursorOverlay = true
@@ -28,3 +30,9 @@ nativeCursorOverlay = true
 # 判断方法：BIOS 里若有"独显直连 / MUX Switch / Discrete Graphics Mode"可切换硬连接独显，即适用；
 #          否则保持 off，等上游削减 WebView2 合成复杂度后再评估。
 gpuPreference = "off"
+
+# 开发专用：Ctrl+G 切换 WebView2 opaque + Flash 隐藏的 GPU 合成成本探针。
+# 用于实测 alpha blend + Flash 出图占 iGPU 的比重（任务管理器对照曲线）。
+# 玩家版**必须保持 false** —— 否则误触可能导致游戏画面消失。
+# 也可用环境变量 CF7_DEV_GPU_PROBE=1 临时启用，不入仓库。
+devGpuProbeHotkey = false

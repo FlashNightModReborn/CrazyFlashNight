@@ -110,6 +110,10 @@ class Program
 
         LogManager.Log("[Guardian] Project root: " + projectRoot);
 
+        // 开发用 Ctrl+G GPU 探针：仅 config.devGpuProbeHotkey=true 时启用。玩家版默认不注入。
+        if (config.DevGpuProbeHotkey)
+            form.EnableDevGpuProbeHotkey();
+
         // UserGpuPreferences 在子进程创建时被 Windows 读取。WebView2 真正 spawn 发生在 Application.Run
         // 触发 BootstrapPanel.Load 之后，所以这里写入仍然赶得上；放在日志通道就绪之后可以把诊断完整写进 launcher.log。
         GpuPreferenceManager.ApplyIfNeeded(projectRoot, config.GpuPreference);
@@ -254,6 +258,7 @@ class Program
             config.WebOverlayLowEffects,
             config.WebOverlayDisableCssAnimations,
             config.WebOverlayDisableVisualizers,
+            config.WebOverlayFrameRateLimit,
             config.WebView2DisableGpu,
             config.WebView2AdditionalArgs);
         CursorOverlayForm cursorOverlay = null;

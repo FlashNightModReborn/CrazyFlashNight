@@ -33,9 +33,8 @@
     pointer-events: none;
     background: linear-gradient(180deg, transparent 0%, rgba(0,240,255,0.06) 50%, transparent 100%);
     height: 18%;
-    opacity: 0.45;
-    mix-blend-mode: screen;
-    animation: lb-scan 6s linear infinite;
+    opacity: 0.55;
+    animation: lb-scan 12s linear infinite;
 }
 
 .lockbox-panel::after {
@@ -137,7 +136,7 @@
     z-index: 20;
     pointer-events: none;
     box-shadow: inset 0 0 120px rgba(0,0,0,0.55);
-    mix-blend-mode: multiply;
+    opacity: 0.9;
 }
 
 .lockbox-panel .minigame-side-pane {

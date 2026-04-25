@@ -51,6 +51,10 @@
     var bgmSource      = '';   // 'scene' | 'stage' | 'jukebox' | ''
     var isExpanded     = false;
     var currentDuration = 0;
+    var lastMiniRenderAt = 0;
+    var lastWaveRenderAt = 0;
+    var MINI_RENDER_MS = 100;
+    var WAVE_RENDER_MS = 50;
 
     // 目录数据
     var albums    = {};      // albumName -> [{title, weight}, ...]
@@ -178,9 +182,25 @@
             timeEl.textContent = '';
         }
 
-        // mini 波形始终渲染（header 底色），主波形仅展开时
-        renderMini();
-        if (isExpanded) render();
+        var now = performance.now ? performance.now() : Date.now();
+        if (!visualizersDisabled() && playing && now - lastMiniRenderAt >= MINI_RENDER_MS) {
+            lastMiniRenderAt = now;
+            renderMini();
+        }
+        if (!visualizersDisabled() && isExpanded && now - lastWaveRenderAt >= WAVE_RENDER_MS) {
+            lastWaveRenderAt = now;
+            render();
+        }
+    }
+
+    function visualizersDisabled() {
+        var root = document.documentElement;
+        return document.hidden || root.classList.contains('perf-low-effects') || root.classList.contains('perf-no-visualizers');
+    }
+
+    function clearVisualizers() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (miniCtx) miniCtx.clearRect(0, 0, miniCanvas.width, miniCanvas.height);
     }
 
     // ── 设置标题（含 marquee 溢出检测）──
@@ -213,6 +233,7 @@
         if (!bgmTitle) {
             timeEl.textContent = '';
             progFill.style.width = '0%';
+            clearVisualizers();
             // 不再自动折叠：无 BGM 时仍允许浏览和选曲
         }
 
@@ -545,24 +566,27 @@
     // ██  进度条拖拽 seek
     // ══════════════════════════════════════════════
 
-    var seeking = false;
+    // mousemove/mouseup 只在拖拽期间挂到 document，结束即摘除——
+    // 避免常驻 listener 在每次全局 mousemove 都跑一次条件判断。
+    var seekRect = null;
     if (progBar) {
         progBar.addEventListener('mousedown', function(e) {
-            seeking = true;
-            doSeek(e);
+            if (currentDuration <= 0) return;
+            seekRect = progBar.getBoundingClientRect();
+            sendSeek(e);
+            document.addEventListener('mousemove', onSeekMove);
+            document.addEventListener('mouseup', onSeekEnd);
         });
     }
-    document.addEventListener('mousemove', function(e) {
-        if (seeking) doSeek(e);
-    });
-    document.addEventListener('mouseup', function() {
-        seeking = false;
-    });
-
-    function doSeek(e) {
-        if (currentDuration <= 0 || !progBar) return;
-        var rect = progBar.getBoundingClientRect();
-        var pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    function onSeekMove(e) { sendSeek(e); }
+    function onSeekEnd() {
+        seekRect = null;
+        document.removeEventListener('mousemove', onSeekMove);
+        document.removeEventListener('mouseup', onSeekEnd);
+    }
+    function sendSeek(e) {
+        if (!seekRect || seekRect.width <= 0) return;
+        var pct = Math.max(0, Math.min(1, (e.clientX - seekRect.left) / seekRect.width));
         Bridge.send({type: 'jukebox', cmd: 'seek', sec: pct * currentDuration});
     }
 

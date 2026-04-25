@@ -1,0 +1,19 @@
+{
+  "name": "cf7-perf-harness",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Web overlay 性能测试与回归基准平台。Playwright headless + CDP 量化测量 CSS/JS ablation 收益。",
+  "scripts": {
+    "baseline": "node harness.js --mode baseline",
+    "ablate": "node harness.js --mode ablate",
+    "all": "node harness.js --mode all",
+    "report": "node recover.js",
+    "watch": "node harness.js --mode watch"
+  },
+  "dependencies": {
+    "playwright": "^1.49.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
