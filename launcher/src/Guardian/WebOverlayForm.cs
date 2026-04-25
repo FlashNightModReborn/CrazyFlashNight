@@ -2114,6 +2114,11 @@ namespace CF7Launcher.Guardian
                         // help 等纯 web 面板无需通知 Flash
                         _activePanel = null;
                         if (_onPanelStateChanged != null) _onPanelStateChanged(false);
+                        // panel close 回流：让 PanelHostController 把 backdrop/HUD/shield 拨回 idle 不变量
+                        // Phase 1 _panelHost._activePanel 始终为 null（PanelHost 未接管打开路径）→ ClosePanel 走 ExecuteCommand 内
+                        // "if (_activePanel == null) return;" 早 return，无副作用
+                        // Phase 2+ PanelHost 真接管打开后，此回流防止 backdrop/HUD 残留半状态
+                        if (_panelHost != null) _panelHost.ClosePanel();
                     }
                     break;
                 case "bulkQuery":

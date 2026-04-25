@@ -199,10 +199,17 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// 显示 overlay 但插在 insertAfter 之上（即位于其他特定窗口之下）。
-        /// 用于 NativeHudOverlay 等需要显式分层、不能浮到 HitNumber/Cursor 之上的场景。
-        /// MSDN: hWndInsertAfter 是"the positioned window 将放在该窗口之上"——
-        /// 即 insertAfter 在 z-order 中位于 this 之下。HWND_TOP 是 (IntPtr)0，HWND_BOTTOM 是 (IntPtr)1。
+        /// 显示 overlay 并插在 insertAfter 之**后**（视觉上即 insertAfter 在本窗口之上）。
+        ///
+        /// MSDN SetWindowPos: hWndInsertAfter 是 "A handle to the window to precede the positioned window
+        /// in the Z order."——即调用后 z-order 上 [insertAfter] 在前/在上、[本窗口] 紧跟其后。
+        /// 名字 "Below" 指的就是本窗口被放在 insertAfter 之下。
+        ///
+        /// 用例：NativeHud 需要位于 HitNumber/Cursor 之下，不能用 HWND_TOP（会浮到这两层之上）。
+        ///   ShowOverlayBelow(hitNumberOverlay.Handle)
+        /// 之后 z-order：HitNumber → NativeHud → ...
+        ///
+        /// 特殊取值：HWND_TOP=(IntPtr)0 → 等同 ShowOverlay；HWND_BOTTOM=(IntPtr)1 → 沉到底。
         /// </summary>
         protected void ShowOverlayBelow(IntPtr insertAfter)
         {

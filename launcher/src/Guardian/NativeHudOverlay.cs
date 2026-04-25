@@ -27,6 +27,9 @@ namespace CF7Launcher.Guardian
 
         private readonly List<INativeHudWidget> _widgets = new List<INativeHudWidget>();
         private readonly object _widgetsLock = new object();
+        // IUiDataConsumer widget 计数：HandleUiData fast path 检查，无 consumer 直接早 return
+        // 避免 Phase 1 无 widget 时 socket 高频 UiData 流污染 perf baseline（解析 + lock + BeginInvoke 全部跳过）
+        private volatile int _uiDataConsumerCount;
 
         private readonly Dictionary<string, string> _uiDataSnapshot = new Dictionary<string, string>();
         private readonly object _uiDataLock = new object();
@@ -86,7 +89,11 @@ namespace CF7Launcher.Guardian
         public void AddWidget(INativeHudWidget widget)
         {
             if (widget == null) return;
-            lock (_widgetsLock) { _widgets.Add(widget); }
+            lock (_widgetsLock)
+            {
+                _widgets.Add(widget);
+                if (widget is IUiDataConsumer) _uiDataConsumerCount++;
+            }
             widget.BoundsOrVisibilityChanged += OnWidgetBoundsChanged;
             widget.RepaintRequested += OnWidgetRepaintRequested;
             widget.AnimationStateChanged += OnWidgetAnimationStateChanged;
@@ -96,7 +103,11 @@ namespace CF7Launcher.Guardian
         public void RemoveWidget(INativeHudWidget widget)
         {
             if (widget == null) return;
-            lock (_widgetsLock) { _widgets.Remove(widget); }
+            lock (_widgetsLock)
+            {
+                if (_widgets.Remove(widget) && widget is IUiDataConsumer)
+                    _uiDataConsumerCount--;
+            }
             widget.BoundsOrVisibilityChanged -= OnWidgetBoundsChanged;
             widget.RepaintRequested -= OnWidgetRepaintRequested;
             widget.AnimationStateChanged -= OnWidgetAnimationStateChanged;
@@ -191,8 +202,14 @@ namespace CF7Launcher.Guardian
             _hudSize = new Size(hudRect.Width, hudRect.Height);
 
             EnsureComposedBitmap(hudRect.Width, hudRect.Height);
-            // 重新定位窗口；ShowOverlayBelow 让 NativeHud 不浮到 HitNumber/Cursor 之上
-            // Phase 1 暂用普通 ShowOverlay（HWND_TOP）—— Phase 3 NotchWidget 上线引入 z-order manager 时改用 below
+            // === Phase 1: HWND_TOP（无 widget 时此分支不可达；Phase 3 NotchWidget 上线后必须改造）===
+            // Phase 3 改造点（接 NotchWidget 时一并做）：
+            //   1. 把 SetWindowPos 的 hWndInsertAfter 从 HWND_TOP 改为 hitNumberOverlay.Handle
+            //      （或抽 OverlayZOrderManager 统一调度）
+            //   2. ShowOverlay() 改为 ShowOverlayBelow(hitNumberOverlay.Handle)
+            //   3. 否则 NativeHud 会浮到 HitNumber/Cursor 之上，破坏 z-order 链：
+            //      Cursor → HitNumber → NativeHud → (Backdrop → WebOverlay) → Flash
+            //   架构约束见 plans/expressive-leaping-galaxy.md §硬约束 #5
             SetWindowPos(this.Handle, HWND_TOP, hudRect.X, hudRect.Y, hudRect.Width, hudRect.Height,
                 SWP_NOACTIVATE);
             ShowOverlay();
@@ -282,6 +299,11 @@ namespace CF7Launcher.Guardian
         public void HandleUiData(string rawData)
         {
             if (string.IsNullOrEmpty(rawData)) return;
+            // Fast path：无 IUiDataConsumer widget 时整条路径都没意义（snapshot 无消费者，Phase 3+ widget
+            // 注册时会一次性接到当时的 UiData 流，不需要 backfill 历史）。
+            // 这是 Phase 1 的 perf baseline 保护：tee 路径在 useNativeHud=true 时被 socket worker 高频调用，
+            // 不能因解析 + lock + BeginInvoke 污染 GPU/CPU 对比数据。
+            if (_uiDataConsumerCount == 0) return;
 
             HashSet<string> changedKeys = new HashSet<string>();
             Dictionary<string, string> snapshotCopy;
