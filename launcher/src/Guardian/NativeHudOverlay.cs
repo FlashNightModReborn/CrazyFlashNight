@@ -637,6 +637,17 @@ namespace CF7Launcher.Guardian
         // Phase 3 由 NotchWidget / ToastWidget 接管这些方法（widget 持状态、NativeHud 仅做调度）。
         // Phase 1 silent no-op，避免 socket worker 调用时抛异常。
 
+        /// <summary>
+        /// 已有 native consumer 订阅此 category？供 CompositeNotchSink 路由：native 处理的 category
+        /// 不再 forward 给 webOverlay/NotchOverlay，避免双重显示（如 N combo|... 同时弹 ComboWidget 命中条 + NotchOverlay 通知行）。
+        /// </summary>
+        public bool HasNoticeConsumerFor(string category)
+        {
+            if (_notchNoticeConsumerCount == 0) return false;
+            if (string.IsNullOrEmpty(category)) return false;
+            lock (_widgetsLock) { return _registeredNoticeCategories.Contains(category); }
+        }
+
         public void AddNotice(string category, string text, Color accentColor)
         {
             // Phase 4: fan out 到 INotchNoticeConsumer widget（如 ComboWidget 处理 N combo|...）。

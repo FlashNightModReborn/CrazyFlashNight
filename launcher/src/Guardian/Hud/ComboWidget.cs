@@ -512,7 +512,9 @@ namespace CF7Launcher.Guardian.Hud
                             if (!string.IsNullOrEmpty(h.Name)) w += g.MeasureString(h.Name, nameFont, int.MaxValue, fmt).Width + 8f;
                         }
                     }
-                    _measuredWidthBase = (int)Math.Ceiling(w / Math.Max(0.01f, Scale)) + BAR_PADDING_X_BASE * 2;
+                    // 上面用基准字体测量（base px），结果直接落在设计坐标系，无需再除 Scale。
+                    // ScreenBounds 取 _measuredWidthBase 后乘 Scale 得到实际像素；保持 base→scaled 单向转换。
+                    _measuredWidthBase = (int)Math.Ceiling(w) + BAR_PADDING_X_BASE * 2;
                 }
             }
             catch
@@ -537,6 +539,12 @@ namespace CF7Launcher.Guardian.Hud
         internal void AdvanceHitMs(int ms) { Tick(ms); }
         internal bool TryGetKnownPattern(string name, out string seq) { return _knownPatterns.TryGetValue(name, out seq); }
         internal BarModeForTest TestMode { get { return (BarModeForTest)CurrentMode; } }
+        /// <summary>测试钩子：直接拿 RecomputeMeasuredWidthBase 的结果（设计坐标系，不含 Scale）。</summary>
+        internal int MeasureWidthBase()
+        {
+            RecomputeMeasuredWidthBase();
+            return _measuredWidthBase;
+        }
 
         internal enum BarModeForTest { Idle = 0, Input = 1, Hit = 2 }
 

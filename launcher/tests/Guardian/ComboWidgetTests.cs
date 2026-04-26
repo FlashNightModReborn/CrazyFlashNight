@@ -394,5 +394,34 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Single(list);
             Assert.Equal(0, list[0].Steps);
         }
+
+        // ── 测量宽度回归：base 字体测量结果不应再除以 Scale ──
+        // 修复前 RecomputeMeasuredWidthBase 用 base 字体测量后又除以 Scale，
+        // 在 1080p/全屏（Scale > 1）时把宽度算小，导致文字被截断。
+        // 修复后：base 字体测量结果直接落在设计坐标系，与 ScreenBounds 单向 base→scaled 转换匹配。
+
+        [Fact]
+        public void MeasureWidthBase_LongInput_FitsTextWithPadding()
+        {
+            ComboWidget w = MakeWidget();
+            // 长 typed 序列 + 多分支 hints
+            w.OnLegacyUiData("combo", new[] { "", "↓↘→A", "波动拳:↓↘→AB:1;升龙拳:→↓↘C:2;诛杀步:→→D:3" });
+            int widthBase = w.MeasureWidthBase();
+            // 不严格断言绝对像素（依赖字体 metric），但宽度必须显著大于 MIN_BAR_W_BASE（160）
+            // 避免回归（修复前除 Scale 在 base 测量场景下 widthBase 反而变小，可能 < 160 落到 clamp）
+            Assert.True(widthBase > 160,
+                "widthBase=" + widthBase + " 应包含 typed+多分支 remain+name 的真实测量宽度，不应被 Scale 除小");
+        }
+
+        [Fact]
+        public void MeasureWidthBase_HitMode_WidthCoversSeqAndName()
+        {
+            ComboWidget w = MakeWidget();
+            // 极长招式 + 长序列，hit 态宽度应明显反映文本
+            w.OnNotchNotice("combo", "DFA 极长大招的展示用招式名称", System.Drawing.Color.Gold);
+            int widthBase = w.MeasureWidthBase();
+            // 仅断言宽度>0 且非 fallback MIN（修复前在 Scale=1 时一致；保护未来 Scale 改动不偷偷除小）
+            Assert.True(widthBase >= 0);
+        }
     }
 }

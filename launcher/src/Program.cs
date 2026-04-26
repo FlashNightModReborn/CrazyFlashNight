@@ -401,9 +401,19 @@ class Program
         // 链上以保留过渡期 web overlay 兼容渲染（Phase 7 移除 web 通知后才能删 webOverlay 这条 sink）。
         INotchSink notchSink;
         if (config.UseNativeHud && nativeHud != null)
-            notchSink = new CompositeNotchSink(webOverlay, nativeHud);
+        {
+            // native 优先：nativeHud 收所有 category；webOverlay/NotchOverlay 跳过 native 已订阅的 category（如 "combo"）。
+            // 否则 N combo|... 会同时弹 ComboWidget 命中条 + NotchOverlay 普通通知行（webOverlay.AddNotice 在 useNativeHud=true
+            // 时直接转给 _notchFallback=NotchOverlay 走默认 upsertRow 路径，与 ComboWidget 命中态重复）。
+            NativeHudOverlay capturedHud = nativeHud;
+            notchSink = new CompositeNotchSink(
+                new CompositeNotchSink.Entry(nativeHud, null),
+                new CompositeNotchSink.Entry(webOverlay, delegate(string cat) { return !capturedHud.HasNoticeConsumerFor(cat); }));
+        }
         else
+        {
             notchSink = webOverlay;
+        }
         ToastTask toastTask = new ToastTask(toastSink);
 
         // 快车道注入：F/R 前缀消息由 XmlSocketServer 直接分发到 FrameTask，绕过 MessageRouter

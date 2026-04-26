@@ -125,5 +125,71 @@ namespace CF7Launcher.Tests.Guardian
             composite.AddNotice("anything", "anything", Color.Red);
             composite.SetReady();
         }
+
+        // ── category 路由：native 处理的 category 不该再 forward 给 web/NotchOverlay（防双重通知）──
+
+        [Fact]
+        public void EntryCtor_AcceptCategoryFalse_SkipsThatSink()
+        {
+            RecordingSink primary = new RecordingSink();
+            RecordingSink secondary = new RecordingSink();
+            // primary 接收所有；secondary 只接收非 "combo"
+            CompositeNotchSink composite = new CompositeNotchSink(
+                new CompositeNotchSink.Entry(primary, null),
+                new CompositeNotchSink.Entry(secondary, delegate(string cat) { return cat != "combo"; }));
+
+            composite.AddNotice("combo", "DFA 波动拳", Color.Gold);
+            Assert.Single(primary.Events);
+            Assert.Empty(secondary.Events); // combo 被路由过滤
+
+            composite.AddNotice("perf", "tick", Color.White);
+            Assert.Equal(2, primary.Events.Count);
+            Assert.Single(secondary.Events); // perf 没被过滤
+        }
+
+        [Fact]
+        public void EntryCtor_NullPredicate_AcceptsAll()
+        {
+            RecordingSink a = new RecordingSink();
+            RecordingSink b = new RecordingSink();
+            CompositeNotchSink composite = new CompositeNotchSink(
+                new CompositeNotchSink.Entry(a, null),
+                new CompositeNotchSink.Entry(b, null));
+            composite.AddNotice("combo", "x", Color.White);
+            composite.AddNotice("perf", "y", Color.White);
+            Assert.Equal(2, a.Events.Count);
+            Assert.Equal(2, b.Events.Count);
+        }
+
+        [Fact]
+        public void EntryCtor_PredicateThrows_TreatedAsRejection()
+        {
+            RecordingSink primary = new RecordingSink();
+            RecordingSink secondary = new RecordingSink();
+            CompositeNotchSink composite = new CompositeNotchSink(
+                new CompositeNotchSink.Entry(primary, null),
+                new CompositeNotchSink.Entry(secondary, delegate(string cat) { throw new System.InvalidOperationException("explode"); }));
+            // 不应冒泡
+            composite.AddNotice("combo", "x", Color.White);
+            Assert.Single(primary.Events);
+            Assert.Empty(secondary.Events); // 谓词抛 → 保守视为拒绝
+        }
+
+        [Fact]
+        public void EntryCtor_StatusItemAndSetReady_BypassPredicate()
+        {
+            // SetStatusItem / ClearStatusItem / SetReady 不走 category 路由，所有 sink 都收
+            RecordingSink primary = new RecordingSink();
+            RecordingSink secondary = new RecordingSink();
+            CompositeNotchSink composite = new CompositeNotchSink(
+                new CompositeNotchSink.Entry(primary, null),
+                new CompositeNotchSink.Entry(secondary, delegate(string cat) { return false; })); // 永远拒绝 AddNotice
+
+            composite.SetStatusItem("id", "label", "sub", Color.White);
+            composite.ClearStatusItem("id");
+            composite.SetReady();
+            Assert.Equal(3, primary.Events.Count);
+            Assert.Equal(3, secondary.Events.Count); // 不受 predicate 影响
+        }
     }
 }
