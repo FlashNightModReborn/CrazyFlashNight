@@ -908,11 +908,12 @@
     <icon>众神之力</icon>
     <type>武器</type>
     <use>长枪</use>
-    <price>397600</price>
-    <description>众神之力</description>
+    <price>800000</price>
+    <description>原型源自游戏《CODOL》中的传说武器 “众神之力”，某个执着于重武器的人被其外观与概念吸引，以游戏设定为蓝本自主设计仿制，造出这把强劲的能量霰弹枪，近距离清场、中距离爆发皆可，稀有且极具收藏价值。</description>
      <skill>
       <skillname>发射榴弹</skillname>
-      <description>持枪瞄准时可以充能，可发射一发威力强大的冲击炮，每弹夹消耗1发能量电池，换弹后可再次发射。</description>
+      <description>
+        奥丁之眼冲击炮：持枪瞄准时可以充能，可发射一发威力强大的冲击炮，每弹夹消耗1发能量电池，换弹后可再次发射。</description>
       <cd>1000</cd>
       <mp>0</mp>
       <power>1000</power>
@@ -928,7 +929,7 @@
       <impact>20</impact>
     </skill>
     <data>
-      <level>45</level>
+      <level>60</level>
       <weight>4</weight>
       <dressup>枪-长枪-众神之力</dressup>
       <capacity>8</capacity>
@@ -943,7 +944,7 @@
       <bullethit>火花</bullethit>
       <clipname>能量电池</clipname>
       <bulletsize>25</bulletsize>
-      <power>495</power>
+      <power>500</power>
       <impact>12</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
