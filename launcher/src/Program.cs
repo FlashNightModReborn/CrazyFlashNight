@@ -348,8 +348,8 @@ class Program
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
 
-            // Phase 4: 注册常驻 widget。已迁：TopRightTools / NotchToolbar / Currency / SafeExitPanel / QuestNotice / Combo。
-            // 待迁（下轮）：JukeboxTitlebar / MapHud。
+            // Phase 4: 注册常驻 widget。已迁：TopRightTools / NotchToolbar / Currency / SafeExitPanel / QuestNotice / Combo / JukeboxTitlebar。
+            // 待迁（下轮）：MapHud（Phase 4.7）。
             // 无 widget 时 NativeHud SW_HIDE，不影响 Phase 3 行为。
             CF7Launcher.Guardian.Hud.TopRightToolsWidget topRightTools =
                 new CF7Launcher.Guardian.Hud.TopRightToolsWidget(form.FlashHostPanel, commandRouter);
@@ -372,6 +372,17 @@ class Program
             CF7Launcher.Guardian.Hud.ComboWidget comboWidget =
                 new CF7Launcher.Guardian.Hud.ComboWidget(form.FlashHostPanel);
             nativeHud.AddWidget(comboWidget);
+            // pause/expand 走两条独立路径：
+            //   pause → webOverlay.ToggleBgmPause（与 HandleJukeboxMessage 共享 _bgmPaused 镜像，避免双权威源）
+            //   expand → router JUKEBOX_EXPAND → OpenPanel("jukebox")（Phase 5 启用，目前无注册 panel 时静默）
+            WebOverlayForm capturedWebForJukebox = webOverlay;
+            LauncherCommandRouter capturedRouterForJukebox = commandRouter;
+            CF7Launcher.Guardian.Hud.JukeboxTitlebarWidget jukeboxTitlebar =
+                new CF7Launcher.Guardian.Hud.JukeboxTitlebarWidget(
+                    form.FlashHostPanel,
+                    delegate { capturedWebForJukebox.ToggleBgmPause(); },
+                    delegate { capturedRouterForJukebox.Dispatch("JUKEBOX_EXPAND"); });
+            nativeHud.AddWidget(jukeboxTitlebar);
             // z-order 锚点：把 NativeHud 沉到 HitNumber 之下（Cursor 在 HitNumber 之上 → 自动也在 NativeHud 之上）
             // 这样 widget 区域不会遮挡伤害数字与鼠标。
             if (hnOverlay != null) nativeHud.SetZOrderInsertAfter(hnOverlay.Handle);

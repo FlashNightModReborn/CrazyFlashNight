@@ -498,11 +498,12 @@ namespace CF7Launcher.Guardian
             const string css =
                 "(function(){var s=document.getElementById('cf7-native-hud-css');if(s)return;" +
                 "s=document.createElement('style');s.id='cf7-native-hud-css';" +
-                "s.textContent='#notch,#toast-container,#top-right-tools,#safe-exit-panel,#quest-notice-bar,#combo-status{display:none!important;}';" +
+                "s.textContent='#notch,#toast-container,#top-right-tools,#safe-exit-panel,#quest-notice-bar,#combo-status,#jukebox-panel{display:none!important;}';" +
                 // 注：currency-gold/kpoint 与 notch-toolbar 当前都在 #notch 内，
                 // 隐藏 #notch 已自动隐藏；C# CurrencyWidget / NotchToolbarWidget / SafeExitPanelWidget 接管显示。
                 // #quest-notice-bar 由 C# QuestNoticeWidget 接管 td/tdh/tdn/mm 持久态 + task/announce 一次性事件。
                 // #combo-status 由 C# ComboWidget 接管 combo|... 输入态 + N combo|... 命中态。
+                // #jukebox-panel 由 C# JukeboxTitlebarWidget 接管标题栏 + mini wave + pause；展开 panel 待 Phase 5 注册到 PanelManager 后启用。
                 "document.head.appendChild(s);})();";
             try { ExecScript(css); }
             catch (Exception ex) { LogManager.Log("[WebOverlay] HideWebHudDomForNativeHud failed: " + ex.Message); }
@@ -1758,6 +1759,29 @@ namespace CF7Launcher.Guardian
         public void SetBgmTitle(string title)
         {
             _bgmTitle = title ?? "";
+        }
+
+        /// <summary>
+        /// JukeboxTitlebarWidget 暂停按钮入口：翻转 _bgmPaused 镜像（HandleAudioTrackState 用它抑制 jukeboxTrackEnd）
+        /// 并直接调 AudioEngine pause/resume。返回最新 paused 状态。
+        ///
+        /// 与 HandleJukeboxMessage 的 "pause"/"resume" 分支等价（两条入口共享同一权威源）。
+        /// </summary>
+        public bool ToggleBgmPause()
+        {
+            if (_bgmPaused)
+            {
+                _bgmPaused = false;
+                try { Audio.AudioEngine.ma_bridge_bgm_resume(); }
+                catch (Exception ex) { LogManager.Log("[Jukebox] ToggleBgmPause resume failed: " + ex.Message); }
+            }
+            else
+            {
+                _bgmPaused = true;
+                try { Audio.AudioEngine.ma_bridge_bgm_pause(); }
+                catch (Exception ex) { LogManager.Log("[Jukebox] ToggleBgmPause pause failed: " + ex.Message); }
+            }
+            return _bgmPaused;
         }
 
         #endregion
