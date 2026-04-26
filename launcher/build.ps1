@@ -228,6 +228,29 @@ if ($missingWebPaths.Count -gt 0) {
 }
 Write-Host "  OK: launcher\\web runtime assets present ($($requiredWebPaths.Count) checks)" -ForegroundColor Green
 
+# Step 6b: Verify launcher\data runtime assets (NativeHud widget catalog 等)
+Write-Host "[Step 6b/6] Verify launcher\data runtime assets..." -ForegroundColor Yellow
+$dataDir = Join-Path $launcherDir "data"
+$requiredDataPaths = @(
+    "map_hud_data.json"   # MapHudWidget catalog；缺失会让 useNativeHud=true 下 MapHud 静默不可见
+)
+$missingDataPaths = @()
+foreach ($relativePath in $requiredDataPaths) {
+    $fullPath = Join-Path $dataDir $relativePath
+    if (-not (Test-Path $fullPath)) {
+        $missingDataPaths += $relativePath
+    }
+}
+if ($missingDataPaths.Count -gt 0) {
+    Write-Host "[FAIL] Required launcher\\data runtime assets missing:" -ForegroundColor Red
+    foreach ($missingPath in $missingDataPaths) {
+        Write-Host "  - $missingPath" -ForegroundColor Red
+    }
+    Write-Host "  Hint: 运行 'node tools/export-maphud-data.js' 重新生成 map_hud_data.json" -ForegroundColor Yellow
+    exit 1
+}
+Write-Host "  OK: launcher\\data runtime assets present ($($requiredDataPaths.Count) checks)" -ForegroundColor Green
+
 Write-Host ""
 Write-Host "=== Build Complete ===" -ForegroundColor Green
 Write-Host "  Output: $projectRoot\CRAZYFLASHER7MercenaryEmpire.exe"

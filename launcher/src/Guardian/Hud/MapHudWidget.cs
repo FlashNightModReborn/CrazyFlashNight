@@ -42,6 +42,10 @@ namespace CF7Launcher.Guardian.Hud
         private const int BEACON_R_BASE = 5;
         private const float FONT_BASE_PX = 11.5f;
         private const float MIN_BLOCK_PX = 4f;
+        // 折叠态：tiny pin badge，作为常驻"展开"入口（与 web map-hud.js toggleCollapsed 对齐）
+        private const int PIN_W_BASE = 28;
+        private const int PIN_H_BASE = 28;
+        private const int CLOSE_BTN_W_BASE = 16;
 
         private readonly Control _anchor;
         private readonly LauncherCommandRouter _router;
@@ -53,6 +57,10 @@ namespace CF7Launcher.Guardian.Hud
         private string _hotspotId = "";
         private MapHudHotspotEntry _entry;
         private bool _hover;
+        // collapsed：与 web map-hud.js _state.collapsed 同义。true → 仅渲染 pin badge，仍可见 + 可点击展开。
+        // 不影响 _gameReady/mode/catalog 门控；折叠后玩家仍能用左下角 pin 重新展开。
+        private bool _collapsed;
+        private bool _hoverCloseBtn;
 
         public event EventHandler BoundsOrVisibilityChanged;
         public event EventHandler RepaintRequested;
@@ -105,16 +113,38 @@ namespace CF7Launcher.Guardian.Hud
                     Point origin = _anchor.PointToScreen(Point.Empty);
                     float vpX, vpY, vpW, vpH;
                     _mapper.CalcViewport(out vpX, out vpY, out vpW, out vpH);
-                    int cardW = CardW;
-                    int cardH = CardH;
+                    int w = _collapsed ? WidgetScaler.Px(PIN_W_BASE, Scale) : CardW;
+                    int h = _collapsed ? WidgetScaler.Px(PIN_H_BASE, Scale) : CardH;
                     int margin = WidgetScaler.Px(8, Scale);
                     // 贴 viewport 左下：避开 NotchOverlay 顶部 + QuestNotice 底部居中
                     int x = origin.X + (int)vpX + margin;
-                    int y = origin.Y + (int)vpY + Math.Max(0, (int)vpH - cardH - margin);
-                    return new Rectangle(x, y, cardW, cardH);
+                    int y = origin.Y + (int)vpY + Math.Max(0, (int)vpH - h - margin);
+                    return new Rectangle(x, y, w, h);
                 }
                 catch { return Rectangle.Empty; }
             }
+        }
+
+        // ── 折叠 API（与 web MapHud.toggleCollapsed / setCollapsed / isCollapsed 镜像）──
+
+        public bool IsCollapsed { get { return _collapsed; } }
+
+        public void SetCollapsed(bool collapsed)
+        {
+            if (_collapsed == collapsed) return;
+            _collapsed = collapsed;
+            _hoverCloseBtn = false;
+            FireBounds();  // ScreenBounds 大小变 → NativeHud 重算 union
+        }
+
+        public void ToggleCollapsed() { SetCollapsed(!_collapsed); }
+
+        // close × button 的局部矩形（相对 card 左上）。仅在展开态有效。
+        private Rectangle ComputeCloseBtnLocal(Rectangle card)
+        {
+            int sz = WidgetScaler.Px(CLOSE_BTN_W_BASE, Scale);
+            int pad = WidgetScaler.Px(4, Scale);
+            return new Rectangle(card.Right - sz - pad, card.Y + pad, sz, sz);
         }
 
         public void Paint(Graphics g, float dpr, Point hudOrigin)
@@ -126,8 +156,6 @@ namespace CF7Launcher.Guardian.Hud
             int localX = r.X - hudOrigin.X;
             int localY = r.Y - hudOrigin.Y;
             Rectangle card = new Rectangle(localX, localY, r.Width, r.Height);
-            int radius = WidgetScaler.Px(CARD_RADIUS_BASE, Scale);
-
             ThemeColors theme = ResolveTheme(_entry.Meta != null ? _entry.Meta.Group : null);
 
             SmoothingMode prevSmooth = g.SmoothingMode;
@@ -137,33 +165,78 @@ namespace CF7Launcher.Guardian.Hud
 
             try
             {
-                // 1. 圆角卡片背景 + 边框
-                using (GraphicsPath cardPath = MakeRoundedRect(card, radius))
-                using (LinearGradientBrush bgBrush = new LinearGradientBrush(
-                    new Rectangle(card.X, card.Y, card.Width, card.Height + 1),
-                    Color.FromArgb(_hover ? 250 : 240, theme.StageA),
-                    Color.FromArgb(_hover ? 250 : 250, theme.StageB),
-                    LinearGradientMode.Vertical))
-                using (Pen border = new Pen(Color.FromArgb(_hover ? 96 : 56, theme.Accent)))
-                {
-                    g.FillPath(bgBrush, cardPath);
-                    g.DrawPath(border, cardPath);
-                }
-
-                // 2. body：把 viewportRect 等比映射到内框
-                Rectangle body = Rectangle.Inflate(card, -WidgetScaler.Px(BODY_INSET_BASE, Scale), -WidgetScaler.Px(BODY_INSET_BASE, Scale));
-                if (body.Width > 0 && body.Height > 0)
-                {
-                    PaintBody(g, body, theme);
-                }
-
-                // 3. label pill（左上角，pageLabel · label）
-                PaintLabel(g, card, theme);
+                if (_collapsed) PaintCollapsedPin(g, card, theme);
+                else PaintExpandedCard(g, card, theme);
             }
             finally
             {
                 g.SmoothingMode = prevSmooth;
                 g.TextRenderingHint = prevHint;
+            }
+        }
+
+        private void PaintExpandedCard(Graphics g, Rectangle card, ThemeColors theme)
+        {
+            int radius = WidgetScaler.Px(CARD_RADIUS_BASE, Scale);
+
+            // 1. 圆角卡片背景 + 边框
+            using (GraphicsPath cardPath = MakeRoundedRect(card, radius))
+            using (LinearGradientBrush bgBrush = new LinearGradientBrush(
+                new Rectangle(card.X, card.Y, card.Width, card.Height + 1),
+                Color.FromArgb(_hover ? 250 : 240, theme.StageA),
+                Color.FromArgb(_hover ? 250 : 250, theme.StageB),
+                LinearGradientMode.Vertical))
+            using (Pen border = new Pen(Color.FromArgb(_hover ? 96 : 56, theme.Accent)))
+            {
+                g.FillPath(bgBrush, cardPath);
+                g.DrawPath(border, cardPath);
+            }
+
+            // 2. body：把 viewportRect 等比映射到内框
+            Rectangle body = Rectangle.Inflate(card, -WidgetScaler.Px(BODY_INSET_BASE, Scale), -WidgetScaler.Px(BODY_INSET_BASE, Scale));
+            if (body.Width > 0 && body.Height > 0)
+            {
+                PaintBody(g, body, theme);
+            }
+
+            // 3. label pill（左上角，pageLabel · label）
+            PaintLabel(g, card, theme);
+
+            // 4. close × button（右上角，hover 时高亮）。click → ToggleCollapsed
+            PaintCloseButton(g, card, theme);
+        }
+
+        private void PaintCollapsedPin(Graphics g, Rectangle card, ThemeColors theme)
+        {
+            // 圆形 pin badge：group 主题色环 + 中心填充。click → 展开（与 web map-hud.js toggleCollapsed 对齐）
+            // 折叠态不显示文字（28px 圆里挤），仅靠主题色 dot 区分。
+            using (SolidBrush bg  = new SolidBrush(Color.FromArgb(_hover ? 240 : 220, theme.StageA)))
+            using (Pen ring       = new Pen(Color.FromArgb(_hover ? 200 : 130, theme.Accent), 1.6f))
+            using (SolidBrush dot = new SolidBrush(Color.FromArgb(232, theme.Current)))
+            {
+                g.FillEllipse(bg, card);
+                g.DrawEllipse(ring, card);
+                int dotSz = Math.Max(3, card.Width / 4);
+                Rectangle dotRect = new Rectangle(
+                    card.X + (card.Width - dotSz) / 2,
+                    card.Y + (card.Height - dotSz) / 2,
+                    dotSz, dotSz);
+                g.FillEllipse(dot, dotRect);
+            }
+        }
+
+        private void PaintCloseButton(Graphics g, Rectangle card, ThemeColors theme)
+        {
+            Rectangle btn = ComputeCloseBtnLocal(card);
+            using (SolidBrush bg = new SolidBrush(Color.FromArgb(_hoverCloseBtn ? 200 : 80, theme.StageA)))
+            using (Pen ring     = new Pen(Color.FromArgb(_hoverCloseBtn ? 200 : 110, theme.Accent)))
+            using (Pen xPen     = new Pen(Color.FromArgb(_hoverCloseBtn ? 248 : 200, 246, 248, 250), 1.4f))
+            {
+                g.FillEllipse(bg, btn);
+                g.DrawEllipse(ring, btn);
+                int pad = Math.Max(2, btn.Width / 4);
+                g.DrawLine(xPen, btn.X + pad, btn.Y + pad, btn.Right - pad, btn.Bottom - pad);
+                g.DrawLine(xPen, btn.Right - pad, btn.Y + pad, btn.X + pad, btn.Bottom - pad);
             }
         }
 
@@ -270,20 +343,56 @@ namespace CF7Launcher.Guardian.Hud
 
         public bool TryHitTest(Point screenPt) { return ScreenBounds.Contains(screenPt); }
 
+        // 把 screen point 转回 card 局部坐标做 close-btn 命中
+        private bool IsPointInCloseBtn(Point screenPt)
+        {
+            if (_collapsed) return false;
+            Rectangle r = ScreenBounds;
+            if (r.Width <= 0) return false;
+            // ScreenBounds == card 屏幕矩形；ComputeCloseBtnLocal 输入用 0 偏移版本然后再加屏幕原点
+            Rectangle cardLocalAtZero = new Rectangle(0, 0, r.Width, r.Height);
+            Rectangle btnLocal = ComputeCloseBtnLocal(cardLocalAtZero);
+            Rectangle btnScreen = new Rectangle(r.X + btnLocal.X, r.Y + btnLocal.Y, btnLocal.Width, btnLocal.Height);
+            return btnScreen.Contains(screenPt);
+        }
+
         public void OnMouseEvent(MouseEventArgs e, MouseEventKind kind)
         {
             switch (kind)
             {
                 case MouseEventKind.Enter:
                 case MouseEventKind.Move:
-                    if (!_hover) { _hover = true; FireRepaint(); }
+                {
+                    bool hover = true;
+                    bool overClose = IsPointInCloseBtn(new Point(e.X, e.Y));
+                    if (hover != _hover || overClose != _hoverCloseBtn)
+                    {
+                        _hover = hover;
+                        _hoverCloseBtn = overClose;
+                        FireRepaint();
+                    }
                     break;
+                }
                 case MouseEventKind.Leave:
-                    if (_hover) { _hover = false; FireRepaint(); }
+                    if (_hover || _hoverCloseBtn) { _hover = false; _hoverCloseBtn = false; FireRepaint(); }
                     break;
                 case MouseEventKind.Click:
-                    try { _router.Dispatch("TASK_MAP"); }
-                    catch (Exception ex) { LogManager.Log("[MapHud] TASK_MAP dispatch failed: " + ex.Message); }
+                    if (_collapsed)
+                    {
+                        // pin badge → 展开（不开 panel）
+                        SetCollapsed(false);
+                    }
+                    else if (IsPointInCloseBtn(new Point(e.X, e.Y)))
+                    {
+                        // × → 折叠
+                        SetCollapsed(true);
+                    }
+                    else
+                    {
+                        // card 主体 → 打开地图 panel
+                        try { _router.Dispatch("TASK_MAP"); }
+                        catch (Exception ex) { LogManager.Log("[MapHud] TASK_MAP dispatch failed: " + ex.Message); }
+                    }
                     break;
             }
         }
@@ -449,6 +558,13 @@ namespace CF7Launcher.Guardian.Hud
         internal bool VisibleForTest { get { return Visible; } }
         internal MapHudHotspotEntry EntryForTest { get { return _entry; } }
         internal bool HoverForTest { get { return _hover; } }
+        internal bool HoverCloseBtnForTest { get { return _hoverCloseBtn; } }
         internal void SimulateClick() { OnMouseEvent(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0), MouseEventKind.Click); }
+        /// <summary>测试用：模拟 close-btn click。直接打到 close-btn 屏幕坐标，避免依赖 ScreenBounds（anchor 未在屏幕上时 ScreenBounds=Empty）。</summary>
+        internal void SimulateCloseBtnClick()
+        {
+            // 走 ToggleCollapsed 路径：直接调 API（OnMouseEvent 命中需要 anchor 在屏幕坐标系，单测里不一定可达）
+            if (!_collapsed) SetCollapsed(true);
+        }
     }
 }

@@ -192,6 +192,80 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains("\"cmd\":\"open\"", r.Posts[0]);
         }
 
+        // ── collapse API（与 web map-hud.js toggleCollapsed/setCollapsed/isCollapsed 镜像）──
+
+        [Fact]
+        public void Collapse_DefaultExpanded()
+        {
+            RouterStub r; MapHudDataCatalog cat;
+            MapHudWidget w = MakeWidget(out r, out cat);
+            Assert.False(w.IsCollapsed);
+        }
+
+        [Fact]
+        public void Collapse_ToggleFlipsState()
+        {
+            RouterStub r; MapHudDataCatalog cat;
+            MapHudWidget w = MakeWidget(out r, out cat);
+            w.ToggleCollapsed();
+            Assert.True(w.IsCollapsed);
+            w.ToggleCollapsed();
+            Assert.False(w.IsCollapsed);
+        }
+
+        [Fact]
+        public void Collapse_SetIdempotent()
+        {
+            RouterStub r; MapHudDataCatalog cat;
+            MapHudWidget w = MakeWidget(out r, out cat);
+            int boundsFires = 0;
+            w.BoundsOrVisibilityChanged += delegate { boundsFires++; };
+            w.SetCollapsed(false);  // 已经 false → no-op
+            Assert.Equal(0, boundsFires);
+            w.SetCollapsed(true);
+            Assert.Equal(1, boundsFires);
+            w.SetCollapsed(true);   // 重复 → no-op
+            Assert.Equal(1, boundsFires);
+        }
+
+        [Fact]
+        public void Collapse_StillVisibleWhenCollapsed()
+        {
+            // 折叠后 widget 仍 Visible（只是 ScreenBounds 缩成 pin），保留展开入口
+            RouterStub r; MapHudDataCatalog cat;
+            MapHudWidget w = MakeWidget(out r, out cat);
+            w.ForceGameReady(true);
+            w.ForceMode("1");
+            w.ForceHotspot("warlord_base");
+            Assert.True(w.VisibleForTest);
+            w.SetCollapsed(true);
+            Assert.True(w.VisibleForTest);  // 关键：collapsed != hidden，pin 入口仍渲染
+        }
+
+        [Fact]
+        public void Collapse_ClickWhenCollapsedExpands_NotOpenPanel()
+        {
+            // 折叠态下 click → 展开（不开 panel，与 web map-hud.js 同语义）
+            RouterStub r; MapHudDataCatalog cat;
+            MapHudWidget w = MakeWidget(out r, out cat);
+            w.SetCollapsed(true);
+            w.SimulateClick();
+            Assert.False(w.IsCollapsed);     // 已展开
+            Assert.Empty(r.Posts);           // 没打开 panel
+        }
+
+        [Fact]
+        public void Collapse_ClickWhenExpandedOpensPanel()
+        {
+            RouterStub r; MapHudDataCatalog cat;
+            MapHudWidget w = MakeWidget(out r, out cat);
+            // 展开态 click（非 close-btn 区域，单测无 anchor 屏幕坐标 → IsPointInCloseBtn=false）→ TASK_MAP
+            w.SimulateClick();
+            Assert.False(w.IsCollapsed);
+            Assert.Single(r.Posts);
+            Assert.Contains("\"panel\":\"map\"", r.Posts[0]);
+        }
+
         // ── animation ──
 
         [Fact]
