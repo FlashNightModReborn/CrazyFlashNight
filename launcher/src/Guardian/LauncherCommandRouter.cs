@@ -59,6 +59,12 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public Action OnSafeExitArm { get; set; }
 
+        /// <summary>
+        /// 来自 web `#quest-row > #map-hud-toggle` 的 click → 切 C# MapHudWidget 折叠态。
+        /// Program.cs 在 widget 实例化后注入 `() => mapHudWidget.ToggleCollapsed()`。
+        /// </summary>
+        public Action OnMapHudToggle { get; set; }
+
         public void Dispatch(string key) { Dispatch(key, null); }
 
         public void Dispatch(string key, string rawJson)
@@ -105,6 +111,9 @@ namespace CF7Launcher.Guardian
                     OpenPanel("jukebox", null);
                     break;
                 case "TASK_MAP": OpenMapPanel("task_map", null); break;
+                case "MAPHUD_TOGGLE":
+                    { Action h = OnMapHudToggle; if (h != null) h(); }
+                    break;
                 case "TASK_DELIVER":
                     {
                         string hotspotId = rawJson != null ? ExtractString(rawJson, "\"hotspotId\":\"") : null;

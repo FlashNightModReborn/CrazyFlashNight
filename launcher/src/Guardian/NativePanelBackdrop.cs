@@ -34,6 +34,7 @@ namespace CF7Launcher.Guardian
         private const uint SWP_NOACTIVATE = 0x0010;
         private const uint SWP_SHOWWINDOW = 0x0040;
         private const uint SWP_FRAMECHANGED = 0x0020;
+        private const uint SWP_NOZORDER = 0x0004;
 
         private const int WS_EX_TOOLWINDOW = 0x00000080;
         private const int WS_EX_NOACTIVATE = 0x08000000;
@@ -102,6 +103,19 @@ namespace CF7Launcher.Guardian
                 panelRectScreen.Y - this.Bounds.Y,
                 panelRectScreen.Width,
                 panelRectScreen.Height);
+        }
+
+        /// <summary>
+        /// owner 移动/大小变化时仅重定位 backdrop 自身（不重绘 _composed）。
+        /// 由 PanelHostController.OnOwnerLayoutChanged 调用。
+        /// SWP_NOZORDER 避免拖窗时高频 z-order 重排抢焦点；不加 SWP_FRAMECHANGED 跳过 NCPAINT。
+        /// </summary>
+        public void RepositionTo(Rectangle anchorScreen)
+        {
+            SetWindowPos(this.Handle, IntPtr.Zero,
+                anchorScreen.X, anchorScreen.Y,
+                anchorScreen.Width, anchorScreen.Height,
+                SWP_NOACTIVATE | SWP_NOZORDER);
         }
 
         public new void Hide()

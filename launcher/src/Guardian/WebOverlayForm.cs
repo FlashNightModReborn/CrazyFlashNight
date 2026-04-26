@@ -85,6 +85,7 @@ namespace CF7Launcher.Guardian
         private const int GWL_EXSTYLE = -20;
         private const uint SWP_FRAMECHANGED = 0x0020;
         private const uint SWP_SHOWWINDOW = 0x0040;
+        private const uint SWP_NOZORDER = 0x0004;
         private static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
         private const int WM_DPICHANGED = 0x02E0;
         private const int WH_MOUSE_LL = 14;
@@ -270,7 +271,12 @@ namespace CF7Launcher.Guardian
                 ScheduleSyncPosition("owner_resize");
                 // 从最小化恢复时重新显示（Win32 owned 窗口最小化时自动隐藏，
                 // 但 ShowWindow(SW_SHOWNOACTIVATE) 创建的窗口可能不自动恢复）
-                if (owner.WindowState != FormWindowState.Minimized && _shown && _webReady)
+                // 关键守卫：panel 态 / idle 冻结态不能重显——会把 SW_HIDE 的 WebView 拉回
+                // 上次 panelRect 位置，导致 web HUD（#quest-row 等）漂浮在过时坐标。
+                // Panel 态由 PanelHostController.ApplyOwnerLayoutChange 接管，全屏切换的真实
+                // viewport 跟随走 FlashHostPanel.SizeChanged 路径。
+                if (owner.WindowState != FormWindowState.Minimized && _shown && _webReady
+                    && !_panelMode && !_frozenForIdle)
                 {
                     ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
                 }
@@ -498,7 +504,7 @@ namespace CF7Launcher.Guardian
             const string css =
                 "(function(){var s=document.getElementById('cf7-native-hud-css');if(s)return;" +
                 "s=document.createElement('style');s.id='cf7-native-hud-css';" +
-                "s.textContent='#notch,#toast-container,#top-right-tools,#safe-exit-panel,#quest-notice-bar,#combo-status,#jukebox-panel,#map-hud{display:none!important;}';" +
+                "s.textContent='#notch,#toast-container,#top-right-tools,#safe-exit-panel,#quest-notice-bar,#combo-status,#jukebox-panel,#map-hud,#context-panel{display:none!important;}';" +
                 // 注：currency-gold/kpoint 与 notch-toolbar 当前都在 #notch 内，
                 // 隐藏 #notch 已自动隐藏；C# CurrencyWidget / NotchToolbarWidget / SafeExitPanelWidget 接管显示。
                 // #quest-notice-bar 由 C# QuestNoticeWidget 接管 td/tdh/tdn/mm 持久态 + task/announce 一次性事件。
@@ -2173,6 +2179,15 @@ namespace CF7Launcher.Guardian
 
             ResumeWebTimers();
 
+            // 唤醒 CoreWebView2（如果之前 DoFullIdleSuspend 调过 TrySuspendAsync）
+            // SDK 1.0.3856.49 有 Resume()；suspend 状态下未 Resume 调 ExecScript 可能丢弃
+            try
+            {
+                if (_webView != null && _webView.CoreWebView2 != null)
+                    _webView.CoreWebView2.Resume();
+            }
+            catch (Exception ex) { LogManager.Log("[Panel] CoreWebView2.Resume failed: " + ex.Message); }
+
             // EX_STYLE：去 WS_EX_LAYERED 与 WS_EX_TRANSPARENT；DWM 不再做 α traversal
             try
             {
@@ -2205,6 +2220,42 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
+        /// owner 移动/大小变化时由 PanelHostController 调用——仅重定位 webview 至新 panelRect，不动 EX_STYLE/timer 等。
+        /// SWP_NOZORDER 避免拖窗时 z-order 重排闪烁；不加 SWP_FRAMECHANGED 跳过 NCPAINT。
+        /// </summary>
+        public void RepositionForPanel(Rectangle panelRectScreen)
+        {
+            if (_disposed) return;
+            if (!_panelMode) return;
+            try
+            {
+                SetWindowPos(this.Handle, IntPtr.Zero,
+                    panelRectScreen.X, panelRectScreen.Y,
+                    panelRectScreen.Width, panelRectScreen.Height,
+                    SWP_NOACTIVATE | SWP_NOZORDER);
+            }
+            catch (Exception ex) { LogManager.Log("[Panel] RepositionForPanel SetWindowPos failed: " + ex.Message); }
+        }
+
+        /// <summary>
+        /// 计算当前 viewport 屏幕矩形（与 SyncPosition 同算法），不应用、不受 _panelMode 早 return 限制。
+        /// PanelHostController 在 owner 移动时用此重算 anchor + panelRect。失败返回 Rectangle.Empty。
+        /// </summary>
+        public Rectangle GetCurrentAnchorScreenRect()
+        {
+            try
+            {
+                if (_mapper == null || _anchor == null) return Rectangle.Empty;
+                float vpX, vpY, vpW, vpH;
+                _mapper.CalcViewport(out vpX, out vpY, out vpW, out vpH);
+                Point origin = _anchor.PointToScreen(Point.Empty);
+                return new Rectangle(origin.X + (int)vpX, origin.Y + (int)vpY,
+                    Math.Max(1, (int)vpW), Math.Max(1, (int)vpH));
+            }
+            catch { return Rectangle.Empty; }
+        }
+
+        /// <summary>
         /// panel → idle 切换（正常路径，幂等：非 panel 态直接 return）。
         /// Step：SuspendWebTimers → 冻结 HandleUiData → SW_HIDE → 恢复 EX_LAYERED+TRANSPARENT →
         ///       HWND_NOTOPMOST → TransparencyKey 复原 → DefaultBackgroundColor=Transparent → TrySuspendAsync fire-and-forget
@@ -2230,11 +2281,14 @@ namespace CF7Launcher.Guardian
         {
             _panelMode = false;
 
-            // Phase 3 注释：仅 notch+toast 迁出 web；map-hud/currency/combo/quest-notice/jukebox 仍在 web，
-            // 不能整个 SW_HIDE 整个 WebView2，否则上述常驻 HUD 全消失。
-            // DoFullIdleSuspend 留代码不调用——等 Phase 4+ 把剩余常驻 HUD widget 都迁出后再启用，
-            // 届时把这里改为 if (_useNativeHud) DoFullIdleSuspend(); else DoSoftIdleRestore();
-            DoSoftIdleRestore();
+            // Phase 4 收尾：useNativeHud=true 时所有常驻 HUD 已迁到 C# widget
+            // (Notch/Toast/Currency/Combo/QuestNotice/SafeExitPanel/TopRightTools/JukeboxTitlebar/MapHud)，
+            // 整个 SW_HIDE WebView2 + TrySuspendAsync 安全 → 拿回 ~15pp DWM α 地板成本。
+            // useNativeHud=false 仍走 SoftIdleRestore（保留 web HUD 显示）。
+            if (_useNativeHud)
+                DoFullIdleSuspend();
+            else
+                DoSoftIdleRestore();
         }
 
         /// <summary>

@@ -824,6 +824,9 @@ var Notch = (function() {
         if (mapToggleBtn) {
             mapToggleBtn.addEventListener('click', function() {
                 if (!isMapHudToggleAvailable()) return;
+                // useNativeHud=true：路由到 C# MapHudWidget.ToggleCollapsed（web `#map-hud` DOM 已隐藏）
+                Bridge.send({ type: 'click', key: 'MAPHUD_TOGGLE' });
+                // 兼容 useNativeHud=false 路径：仍调本地 web MapHud
                 if (typeof MapHud !== 'undefined' && MapHud && typeof MapHud.toggleCollapsed === 'function') {
                     MapHud.toggleCollapsed();
                 }

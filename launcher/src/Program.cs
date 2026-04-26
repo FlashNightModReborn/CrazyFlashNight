@@ -391,6 +391,8 @@ class Program
             CF7Launcher.Guardian.Hud.MapHudWidget mapHudWidget =
                 new CF7Launcher.Guardian.Hud.MapHudWidget(form.FlashHostPanel, commandRouter, mapCatalog);
             nativeHud.AddWidget(mapHudWidget);
+            // web `#quest-row > #map-hud-toggle` click → router MAPHUD_TOGGLE → C# 折叠态切换
+            commandRouter.OnMapHudToggle = delegate { mapHudWidget.ToggleCollapsed(); };
             // z-order 锚点：把 NativeHud 沉到 HitNumber 之下（Cursor 在 HitNumber 之上 → 自动也在 NativeHud 之上）
             // 这样 widget 区域不会遮挡伤害数字与鼠标。
             if (hnOverlay != null) nativeHud.SetZOrderInsertAfter(hnOverlay.Handle);

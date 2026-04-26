@@ -81,6 +81,11 @@ namespace CF7Launcher.Guardian
         private int _consecutiveFailures;
         private const int FAILURE_CIRCUIT_BREAKER = 5;
 
+        // owner 移动/大小变化时跟随：DoOpen 订阅，DoClose 与 ResetToClosedState 反订阅
+        private bool _ownerLayoutSubscribed;
+        // 节流：LocationChanged 拖窗时高频触发；用 BeginInvoke 合并到下一个消息泵循环
+        private bool _ownerLayoutPending;
+
         public PanelHostController(
             Form ownerForm,
             WebOverlayForm web,
@@ -328,14 +333,108 @@ namespace CF7Launcher.Guardian
             ReTopOverlay(_cursor);
             // Step 9: ESC 拦截启用
             if (_escSource != null) _escSource.SetPanelEscapeEnabled(true);
+            // Step 10: 跟随 owner 拖窗/大小变化，重定位 backdrop+web 到新 anchor
+            SubscribeOwnerLayout();
 
             _activePanel = name;
             LogManager.Log("[PanelHost] opened: " + name + " rect=" + panelRect.Width + "x" + panelRect.Height);
         }
 
+        private Control GetFlashPanelOrNull()
+        {
+            // _ownerForm 在生产环境总是 GuardianForm；做防御 cast 让单测注入纯 Form 不抛
+            GuardianForm gf = _ownerForm as GuardianForm;
+            return (gf != null) ? (Control)gf.FlashHostPanel : null;
+        }
+
+        private void SubscribeOwnerLayout()
+        {
+            if (_ownerLayoutSubscribed) return;
+            try
+            {
+                _ownerForm.LocationChanged += OnOwnerLayoutChanged;
+                // FlashHostPanel.SizeChanged：viewport 变化的真实源头（全屏切换时 owner SizeChanged
+                // 早于 ResizeFlashToPanel，订阅 owner.SizeChanged 会拿到旧 viewport；订阅 panel
+                // 自身 SizeChanged 才能等到 layout settle 后的正确 size）
+                Control fp = GetFlashPanelOrNull();
+                if (fp != null) fp.SizeChanged += OnOwnerLayoutChanged;
+                _ownerLayoutSubscribed = true;
+            }
+            catch (Exception ex) { LogManager.Log("[PanelHost] subscribe owner layout failed: " + ex.Message); }
+        }
+
+        private void UnsubscribeOwnerLayout()
+        {
+            if (!_ownerLayoutSubscribed) return;
+            try
+            {
+                _ownerForm.LocationChanged -= OnOwnerLayoutChanged;
+                Control fp = GetFlashPanelOrNull();
+                if (fp != null) fp.SizeChanged -= OnOwnerLayoutChanged;
+            }
+            catch { }
+            _ownerLayoutSubscribed = false;
+            _ownerLayoutPending = false;
+        }
+
+        private void OnOwnerLayoutChanged(object sender, EventArgs e)
+        {
+            if (_activePanel == null) return;
+            // 节流：拖窗 LocationChanged 高频触发；BeginInvoke 合并到下一个消息泵循环只跑一次
+            if (_ownerLayoutPending) return;
+            _ownerLayoutPending = true;
+            try
+            {
+                _ownerForm.BeginInvoke(new Action(ApplyOwnerLayoutChange));
+            }
+            catch (Exception ex)
+            {
+                _ownerLayoutPending = false;
+                LogManager.Log("[PanelHost] owner layout BeginInvoke failed: " + ex.Message);
+            }
+        }
+
+        private void ApplyOwnerLayoutChange()
+        {
+            _ownerLayoutPending = false;
+            if (_activePanel == null) return;
+            try
+            {
+                Rectangle newAnchor = _web.GetCurrentAnchorScreenRect();
+                if (newAnchor.Width <= 0 || newAnchor.Height <= 0) return;
+                Rectangle newPanelRect = PanelLayoutCatalog.GetRect(_activePanel, newAnchor);
+
+                _backdrop.RepositionTo(newAnchor);
+                _backdrop.SetPanelRect(newPanelRect);
+                _web.RepositionForPanel(newPanelRect);
+
+                // PostToWeb 让 CSS var(--panel-w/-h) 自适应（仅在尺寸真变化时；拖窗只动位置时跳过）
+                try
+                {
+                    _web.PostToWeb("{\"type\":\"panel_viewport_set\",\"w\":"
+                        + newPanelRect.Width + ",\"h\":" + newPanelRect.Height + "}");
+                }
+                catch { }
+
+                if (_shield != null)
+                {
+                    try { _shield.EnterTelemetryMode(newPanelRect, _ownerForm.Handle, newAnchor); }
+                    catch (Exception ex) { LogManager.Log("[PanelHost] shield reposition failed: " + ex.Message); }
+                }
+                // ★ 拖动期间不 ReTopOverlay：backdrop/web 用 SWP_NOZORDER 不破坏 z-order，
+                //   主动 ReTop 反而触发 z-order 重排导致闪烁 + 抢焦点
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[PanelHost] ApplyOwnerLayoutChange failed: " + ex.Message);
+            }
+        }
+
         private void DoClose()
         {
             string closingName = _activePanel;
+            // Step 0: 取消 owner 跟随订阅（先于 SuspendAfterPanel，防止 SW_HIDE 触发的 LocationChanged 误触发 reposition）
+            UnsubscribeOwnerLayout();
             // Step 1: WebOverlay 收尾（Phase 1 stub：SW_HIDE）
             try { _web.SuspendAfterPanel(); }
             catch (Exception ex) { LogManager.Log("[PanelHost] SuspendAfterPanel failed: " + ex.Message); }
@@ -390,6 +489,7 @@ namespace CF7Launcher.Guardian
         /// </summary>
         private void ResetToClosedState()
         {
+            UnsubscribeOwnerLayout();
             try { _web.ForceIdleState(); }
             catch (Exception ex) { LogManager.Log("[PanelHost] Web ForceIdleState partial failure: " + ex.Message); }
             try { _backdrop.Hide(); } catch { }
