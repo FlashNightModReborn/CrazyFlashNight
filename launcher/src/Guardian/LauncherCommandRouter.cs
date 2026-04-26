@@ -83,9 +83,8 @@ namespace CF7Launcher.Guardian
                     break;
                 case "HELP": OpenPanel("help", null); break;
                 case "SAFEEXIT":
-                    // 与 web 按钮等价行为：先弹出二次确认面板（web 端 #safe-exit-panel 渲染），再发 safeExit 触发存盘。
-                    // 存盘完成后 web 收 UiData "sv:2" 自动展示 取消/退出游戏 按钮（仍走 web，未隐藏）。
-                    PostToWeb("{\"type\":\"safe_exit_show\"}");
+                    // Phase 4.2：C# SafeExitPanelWidget 接管 UI，纯靠 UiData "sv:1"/"sv:2" 驱动状态。
+                    // 这里只触发 AS2 存盘，widget 收到 sv:1 后自动展示状态条，sv:2 后展示 取消/退出 按钮。
                     SendGameCommand("safeExit");
                     break;
                 case "PETS": SendGameCommand("togglePets"); break;
