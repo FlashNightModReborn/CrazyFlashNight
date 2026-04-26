@@ -99,4 +99,25 @@ namespace CF7Launcher.Guardian.Hud
         /// <param name="fields">type 之后的 fields 数组（可能为空数组，但非 null）</param>
         void OnLegacyUiData(string type, string[] fields);
     }
+
+    /// <summary>
+    /// Widget 实现此接口表示需要接收 N 前缀 notch 通知（XmlSocketServer 解析后的 AddNotice）。
+    ///
+    /// 数据通路：socket "N{category}|{colorHex}|{text}" → INotchSink.AddNotice(category, text, color)
+    /// → NativeHudOverlay 将其 fan-out 到所有 INotchNoticeConsumer widget。
+    ///
+    /// 与 IUiDataLegacyConsumer 区别：legacy UiData 是 FrameTask/socket 推的高频流（含 combo|...，每帧可能数十次），
+    /// 而 N 前缀 notice 是 AS2 业务确认事件（如 N combo|ffd700|DFA 波动拳，命中招式时一次性触发）。
+    /// ComboWidget 同时实现两者：每帧 combo|... 走 LegacyConsumer 更新 input/typed 缓存；N combo|... 走本接口触发 hit 动画。
+    ///
+    /// **类别门控**：consumer 必须声明 NoticeCategories 集合（不可变），NativeHud 据此过滤。
+    /// </summary>
+    public interface INotchNoticeConsumer
+    {
+        /// <summary>本 consumer 关心的 notice category 集合（不可变）。NativeHud 用 union 过滤无人订阅的 category。</summary>
+        IEnumerable<string> NoticeCategories { get; }
+
+        /// <summary>NativeHud 在 UI 线程派发的 notice。已通过 NoticeCategories 门控。</summary>
+        void OnNotchNotice(string category, string text, System.Drawing.Color accentColor);
+    }
 }

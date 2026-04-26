@@ -37,6 +37,10 @@ namespace CF7Launcher.Guardian
         // 写时 lock _widgetsLock；读 HandleUiData 仅用于 Contains 命中检测，DCAS 风险可接受
         // （wait-and-go：若 widget 注册期间错过几帧 legacy 包，下一帧补到，不影响 task/announce 这种瞬时通知语义）
         private readonly HashSet<string> _registeredLegacyTypes = new HashSet<string>(StringComparer.Ordinal);
+        // INotchNoticeConsumer 计数 + category 门控，与 legacy 同形式。
+        // socket worker 每次 N 前缀都会调 AddNotice；无 widget 订阅时整条早 return，不污染 UI 线程。
+        private volatile int _notchNoticeConsumerCount;
+        private readonly HashSet<string> _registeredNoticeCategories = new HashSet<string>(StringComparer.Ordinal);
 
         private readonly Dictionary<string, string> _uiDataSnapshot = new Dictionary<string, string>();
         private readonly object _uiDataLock = new object();
@@ -127,6 +131,19 @@ namespace CF7Launcher.Guardian
                         }
                     }
                 }
+                INotchNoticeConsumer notice = widget as INotchNoticeConsumer;
+                if (notice != null)
+                {
+                    _notchNoticeConsumerCount++;
+                    IEnumerable<string> cats = notice.NoticeCategories;
+                    if (cats != null)
+                    {
+                        foreach (string c in cats)
+                        {
+                            if (!string.IsNullOrEmpty(c)) _registeredNoticeCategories.Add(c);
+                        }
+                    }
+                }
             }
             widget.BoundsOrVisibilityChanged += OnWidgetBoundsChanged;
             widget.RepaintRequested += OnWidgetRepaintRequested;
@@ -156,6 +173,23 @@ namespace CF7Launcher.Guardian
                             foreach (string t in types)
                             {
                                 if (!string.IsNullOrEmpty(t)) _registeredLegacyTypes.Add(t);
+                            }
+                        }
+                    }
+                    if (widget is INotchNoticeConsumer)
+                    {
+                        _notchNoticeConsumerCount--;
+                        // 同样按需重建：Remove 不频繁，简单 union 重算比维护 per-category ref count 更稳
+                        _registeredNoticeCategories.Clear();
+                        for (int i = 0; i < _widgets.Count; i++)
+                        {
+                            INotchNoticeConsumer remain = _widgets[i] as INotchNoticeConsumer;
+                            if (remain == null) continue;
+                            IEnumerable<string> cats = remain.NoticeCategories;
+                            if (cats == null) continue;
+                            foreach (string c in cats)
+                            {
+                                if (!string.IsNullOrEmpty(c)) _registeredNoticeCategories.Add(c);
                             }
                         }
                     }
@@ -605,7 +639,68 @@ namespace CF7Launcher.Guardian
 
         public void AddNotice(string category, string text, Color accentColor)
         {
-            // Phase 3 → notchWidget.AddNotice(...)
+            // Phase 4: fan out 到 INotchNoticeConsumer widget（如 ComboWidget 处理 N combo|...）。
+            // Fast path：无 consumer / category 未订阅 → 整条早 return，不污染 UI 线程预算。
+            if (_notchNoticeConsumerCount == 0) return;
+            if (string.IsNullOrEmpty(category)) return;
+            bool registered;
+            lock (_widgetsLock) { registered = _registeredNoticeCategories.Contains(category); }
+            if (!registered) return;
+            if (!this.IsHandleCreated) return;
+            string capCategory = category;
+            string capText = text ?? "";
+            Color capColor = accentColor;
+            try
+            {
+                this.BeginInvoke(new Action(delegate
+                {
+                    DispatchNotchNoticeToWidgets(capCategory, capText, capColor);
+                }));
+            }
+            catch { }
+        }
+
+        private void DispatchNotchNoticeToWidgets(string category, string text, Color accentColor)
+        {
+            INativeHudWidget[] widgetSnapshot;
+            lock (_widgetsLock) { widgetSnapshot = _widgets.ToArray(); }
+            for (int i = 0; i < widgetSnapshot.Length; i++)
+            {
+                INotchNoticeConsumer consumer = widgetSnapshot[i] as INotchNoticeConsumer;
+                if (consumer == null) continue;
+                IEnumerable<string> cats = consumer.NoticeCategories;
+                if (cats == null) continue;
+                bool match = false;
+                foreach (string c in cats)
+                {
+                    if (string.Equals(c, category, StringComparison.Ordinal)) { match = true; break; }
+                }
+                if (!match) continue;
+                try { consumer.OnNotchNotice(category, text, accentColor); }
+                catch (Exception ex) { LogManager.Log("[NativeHud] widget Notice throw: " + ex.Message); }
+            }
+        }
+
+        /// <summary>
+        /// 测试钩子（InternalsVisibleTo("Launcher.Tests")）：从 widget 集合构造 category union；
+        /// 与 Add/RemoveWidget 内重建逻辑共享语义，独立可测。
+        /// </summary>
+        internal static HashSet<string> BuildNoticeCategorySet(IEnumerable<INativeHudWidget> widgets)
+        {
+            HashSet<string> result = new HashSet<string>(StringComparer.Ordinal);
+            if (widgets == null) return result;
+            foreach (INativeHudWidget w in widgets)
+            {
+                INotchNoticeConsumer notice = w as INotchNoticeConsumer;
+                if (notice == null) continue;
+                IEnumerable<string> cats = notice.NoticeCategories;
+                if (cats == null) continue;
+                foreach (string c in cats)
+                {
+                    if (!string.IsNullOrEmpty(c)) result.Add(c);
+                }
+            }
+            return result;
         }
 
         public void SetStatusItem(string id, string label, string subLabel, Color accentColor)

@@ -60,6 +60,8 @@
     <Compile Include="Guardian\LauncherCommandRouterTests.cs" />
     <Compile Include="Guardian\DpiAwarenessGetEffectiveTests.cs" />
     <Compile Include="Guardian\InputShieldTelemetryFilterTests.cs" />
+    <Compile Include="Guardian\ComboWidgetTests.cs" />
+    <Compile Include="Guardian\CompositeNotchSinkTests.cs" />
     <Compile Include="Guardian\QuestNoticeWidgetTests.cs" />
     <Compile Include="Guardian\SafeExitPanelWidgetTests.cs" />
     <Compile Include="Guardian\TopRightToolsWidgetTests.cs" />

@@ -348,8 +348,8 @@ class Program
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
 
-            // Phase 4: 注册常驻 widget。已迁：TopRightTools / NotchToolbar / Currency / SafeExitPanel / QuestNotice。
-            // 待迁（下轮）：Combo / JukeboxTitlebar / MapHud。
+            // Phase 4: 注册常驻 widget。已迁：TopRightTools / NotchToolbar / Currency / SafeExitPanel / QuestNotice / Combo。
+            // 待迁（下轮）：JukeboxTitlebar / MapHud。
             // 无 widget 时 NativeHud SW_HIDE，不影响 Phase 3 行为。
             CF7Launcher.Guardian.Hud.TopRightToolsWidget topRightTools =
                 new CF7Launcher.Guardian.Hud.TopRightToolsWidget(form.FlashHostPanel, commandRouter);
@@ -369,6 +369,9 @@ class Program
             CF7Launcher.Guardian.Hud.QuestNoticeWidget questNotice =
                 new CF7Launcher.Guardian.Hud.QuestNoticeWidget(form.FlashHostPanel, commandRouter);
             nativeHud.AddWidget(questNotice);
+            CF7Launcher.Guardian.Hud.ComboWidget comboWidget =
+                new CF7Launcher.Guardian.Hud.ComboWidget(form.FlashHostPanel);
+            nativeHud.AddWidget(comboWidget);
             // z-order 锚点：把 NativeHud 沉到 HitNumber 之下（Cursor 在 HitNumber 之上 → 自动也在 NativeHud 之上）
             // 这样 widget 区域不会遮挡伤害数字与鼠标。
             if (hnOverlay != null) nativeHud.SetZOrderInsertAfter(hnOverlay.Handle);
@@ -393,7 +396,14 @@ class Program
 
         // Phase 1 (11c): WebView2 硬依赖 — webOverlay 必有, 直接用
         IToastSink toastSink = webOverlay;
-        INotchSink notchSink = webOverlay;
+        // Phase 4: useNativeHud=true 时把 N 前缀 notice fan-out 到 NativeHudOverlay，让 ComboWidget 等
+        // INotchNoticeConsumer 收到 category="combo" 通知（web combo.js 的迁移路径）。webOverlay 仍在
+        // 链上以保留过渡期 web overlay 兼容渲染（Phase 7 移除 web 通知后才能删 webOverlay 这条 sink）。
+        INotchSink notchSink;
+        if (config.UseNativeHud && nativeHud != null)
+            notchSink = new CompositeNotchSink(webOverlay, nativeHud);
+        else
+            notchSink = webOverlay;
         ToastTask toastTask = new ToastTask(toastSink);
 
         // 快车道注入：F/R 前缀消息由 XmlSocketServer 直接分发到 FrameTask，绕过 MessageRouter

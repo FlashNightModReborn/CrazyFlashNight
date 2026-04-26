@@ -112,8 +112,10 @@
     <Compile Include="src\Tasks\MapTask.cs" />
     <Compile Include="src\Tasks\ArchiveTask.cs" />
     <Compile Include="src\Guardian\IToastSink.cs" />
+    <Compile Include="src\Guardian\CompositeNotchSink.cs" />
     <Compile Include="src\Guardian\INotchSink.cs" />
     <Compile Include="src\Guardian\IPanelEscapeSource.cs" />
+    <Compile Include="src\Guardian\Hud\ComboWidget.cs" />
     <Compile Include="src\Guardian\Hud\CurrencyWidget.cs" />
     <Compile Include="src\Guardian\Hud\INativeHudWidget.cs" />
     <Compile Include="src\Guardian\Hud\NotchToolbarWidget.cs" />

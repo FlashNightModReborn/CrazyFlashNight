@@ -195,6 +195,82 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Empty(NativeHudOverlay.BuildLegacyTypeSet(widgets));
         }
 
+        // ── BuildNoticeCategorySet：N 前缀 notice 门控不变量 ──
+        // socket worker 每次 N 前缀（perf / icon_bake / wave / combo / ...）都会调 INotchSink.AddNotice；
+        // 没人订阅的 category 必须早 return，不污染 UI 线程派发预算。
+
+        [Fact]
+        public void BuildNoticeCategorySet_NullOrEmpty_ReturnsEmpty()
+        {
+            Assert.Empty(NativeHudOverlay.BuildNoticeCategorySet(null));
+            Assert.Empty(NativeHudOverlay.BuildNoticeCategorySet(new List<INativeHudWidget>()));
+        }
+
+        [Fact]
+        public void BuildNoticeCategorySet_NoNoticeConsumers_ReturnsEmpty()
+        {
+            var widgets = new List<INativeHudWidget>
+            {
+                new FakeWidget(new Rectangle(0, 0, 10, 10), visible: true),
+                new FakeLegacyWidget(new[] { "task" }), // legacy 但非 notice consumer
+            };
+            Assert.Empty(NativeHudOverlay.BuildNoticeCategorySet(widgets));
+        }
+
+        [Fact]
+        public void BuildNoticeCategorySet_ComboOnly_ContainsCombo_NotPerf()
+        {
+            // 关键回归：ComboWidget 注册 → set={combo}；perf/icon_bake/wave 不在 set 中 → 整包早 return
+            var widgets = new List<INativeHudWidget>
+            {
+                new FakeNoticeWidget(new[] { "combo" }),
+            };
+            HashSet<string> set = NativeHudOverlay.BuildNoticeCategorySet(widgets);
+            Assert.Contains("combo", set);
+            Assert.DoesNotContain("perf", set);
+            Assert.DoesNotContain("icon_bake", set);
+            Assert.DoesNotContain("game", set);
+            Assert.Equal(1, set.Count);
+        }
+
+        [Fact]
+        public void BuildNoticeCategorySet_MultipleConsumers_UnionsCategories()
+        {
+            var widgets = new List<INativeHudWidget>
+            {
+                new FakeNoticeWidget(new[] { "combo" }),
+                new FakeNoticeWidget(new[] { "perf", "wave" }),
+            };
+            HashSet<string> set = NativeHudOverlay.BuildNoticeCategorySet(widgets);
+            Assert.Equal(3, set.Count);
+            Assert.Contains("combo", set);
+            Assert.Contains("perf", set);
+            Assert.Contains("wave", set);
+        }
+
+        [Fact]
+        public void BuildNoticeCategorySet_NullOrEmptyCategories_Skipped()
+        {
+            var widgets = new List<INativeHudWidget>
+            {
+                new FakeNoticeWidget(new[] { "combo", null, "", "perf" }),
+            };
+            HashSet<string> set = NativeHudOverlay.BuildNoticeCategorySet(widgets);
+            Assert.Equal(2, set.Count);
+            Assert.Contains("combo", set);
+            Assert.Contains("perf", set);
+        }
+
+        [Fact]
+        public void BuildNoticeCategorySet_ConsumerWithNullCategories_HandledSafely()
+        {
+            var widgets = new List<INativeHudWidget>
+            {
+                new FakeNoticeWidget(null),
+            };
+            Assert.Empty(NativeHudOverlay.BuildNoticeCategorySet(widgets));
+        }
+
         // Test fixture
         private sealed class FakeWidget : INativeHudWidget
         {
@@ -226,6 +302,25 @@ namespace CF7Launcher.Tests.Guardian
             public FakeLegacyWidget(string[] types) { _types = types; }
             public IEnumerable<string> LegacyTypes { get { return _types; } }
             public void OnLegacyUiData(string type, string[] fields) { }
+            public Rectangle ScreenBounds { get { return Rectangle.Empty; } }
+            public bool Visible { get { return false; } }
+            public void Paint(Graphics g, float dpr, Point hudOrigin) { }
+            public bool TryHitTest(Point screenPt) { return false; }
+            public void OnMouseEvent(MouseEventArgs e, MouseEventKind kind) { }
+            public bool WantsAnimationTick { get { return false; } }
+            public void Tick(int deltaMs) { }
+            public event EventHandler BoundsOrVisibilityChanged { add { } remove { } }
+            public event EventHandler RepaintRequested { add { } remove { } }
+            public event EventHandler AnimationStateChanged { add { } remove { } }
+        }
+
+        /// <summary>实现 INotchNoticeConsumer 的最小 widget；用 BuildNoticeCategorySet 验证 category union。</summary>
+        private sealed class FakeNoticeWidget : INativeHudWidget, INotchNoticeConsumer
+        {
+            private readonly string[] _cats;
+            public FakeNoticeWidget(string[] cats) { _cats = cats; }
+            public IEnumerable<string> NoticeCategories { get { return _cats; } }
+            public void OnNotchNotice(string category, string text, Color accentColor) { }
             public Rectangle ScreenBounds { get { return Rectangle.Empty; } }
             public bool Visible { get { return false; } }
             public void Paint(Graphics g, float dpr, Point hudOrigin) { }
