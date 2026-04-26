@@ -32,6 +32,11 @@ namespace CF7Launcher.Guardian
         private volatile int _uiDataConsumerCount;
         // IUiDataLegacyConsumer widget 计数：legacy（task/announce/...）入口同样走 fast path
         private volatile int _uiDataLegacyConsumerCount;
+        // 已订阅的 legacy type 名集合（小写）。HandleUiData 用其门控：FrameTask 每帧推 combo|...，
+        // 但 NotchToolbar/Currency/QuestNotice 都不订阅 combo → 整包早 return，不再 BeginInvoke。
+        // 写时 lock _widgetsLock；读 HandleUiData 仅用于 Contains 命中检测，DCAS 风险可接受
+        // （wait-and-go：若 widget 注册期间错过几帧 legacy 包，下一帧补到，不影响 task/announce 这种瞬时通知语义）
+        private readonly HashSet<string> _registeredLegacyTypes = new HashSet<string>(StringComparer.Ordinal);
 
         private readonly Dictionary<string, string> _uiDataSnapshot = new Dictionary<string, string>();
         private readonly object _uiDataLock = new object();
@@ -109,7 +114,19 @@ namespace CF7Launcher.Guardian
             {
                 _widgets.Add(widget);
                 if (widget is IUiDataConsumer) _uiDataConsumerCount++;
-                if (widget is IUiDataLegacyConsumer) _uiDataLegacyConsumerCount++;
+                IUiDataLegacyConsumer legacy = widget as IUiDataLegacyConsumer;
+                if (legacy != null)
+                {
+                    _uiDataLegacyConsumerCount++;
+                    IEnumerable<string> types = legacy.LegacyTypes;
+                    if (types != null)
+                    {
+                        foreach (string t in types)
+                        {
+                            if (!string.IsNullOrEmpty(t)) _registeredLegacyTypes.Add(t);
+                        }
+                    }
+                }
             }
             widget.BoundsOrVisibilityChanged += OnWidgetBoundsChanged;
             widget.RepaintRequested += OnWidgetRepaintRequested;
@@ -125,7 +142,23 @@ namespace CF7Launcher.Guardian
                 if (_widgets.Remove(widget))
                 {
                     if (widget is IUiDataConsumer) _uiDataConsumerCount--;
-                    if (widget is IUiDataLegacyConsumer) _uiDataLegacyConsumerCount--;
+                    if (widget is IUiDataLegacyConsumer)
+                    {
+                        _uiDataLegacyConsumerCount--;
+                        // 重建 _registeredLegacyTypes（依赖 widget 集合的 union，按需而不是每次 Add 维护单独 ref count）
+                        _registeredLegacyTypes.Clear();
+                        for (int i = 0; i < _widgets.Count; i++)
+                        {
+                            IUiDataLegacyConsumer remain = _widgets[i] as IUiDataLegacyConsumer;
+                            if (remain == null) continue;
+                            IEnumerable<string> types = remain.LegacyTypes;
+                            if (types == null) continue;
+                            foreach (string t in types)
+                            {
+                                if (!string.IsNullOrEmpty(t)) _registeredLegacyTypes.Add(t);
+                            }
+                        }
+                    }
                 }
             }
             widget.BoundsOrVisibilityChanged -= OnWidgetBoundsChanged;
@@ -186,6 +219,28 @@ namespace CF7Launcher.Guardian
             }
             if (!union.HasValue) return null;
             return Rectangle.Inflate(union.Value, padding, padding);
+        }
+
+        /// <summary>
+        /// 计算 widget 集合声明的 legacy type union。internal static 便于单测覆盖
+        /// "QuestNotice 注册 → 含 task/announce 不含 combo" 这种关键门控不变量。
+        /// </summary>
+        internal static HashSet<string> BuildLegacyTypeSet(IEnumerable<INativeHudWidget> widgets)
+        {
+            HashSet<string> result = new HashSet<string>(StringComparer.Ordinal);
+            if (widgets == null) return result;
+            foreach (INativeHudWidget w in widgets)
+            {
+                IUiDataLegacyConsumer legacy = w as IUiDataLegacyConsumer;
+                if (legacy == null) continue;
+                IEnumerable<string> types = legacy.LegacyTypes;
+                if (types == null) continue;
+                foreach (string t in types)
+                {
+                    if (!string.IsNullOrEmpty(t)) result.Add(t);
+                }
+            }
+            return result;
         }
 
         /// <summary>
@@ -332,6 +387,12 @@ namespace CF7Launcher.Guardian
             if (UiDataPacketParser.TryParseLegacy(rawData, out legacyType, out legacyFields))
             {
                 if (_uiDataLegacyConsumerCount == 0) return;
+                // 类型门控：仅有 widget 声明 LegacyTypes 包含此 type 时才 BeginInvoke。
+                // FrameTask 每帧推 combo|...，但 QuestNotice 只关心 task/announce → combo 包整段早 return，
+                // 不污染 UI 线程派发预算。
+                bool typeRegistered;
+                lock (_widgetsLock) { typeRegistered = _registeredLegacyTypes.Contains(legacyType); }
+                if (!typeRegistered) return;
                 if (!this.IsHandleCreated) return;
                 string capturedType = legacyType;
                 string[] capturedFields = legacyFields;

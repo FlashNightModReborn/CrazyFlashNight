@@ -86,6 +86,28 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(w.IsDoneState);
         }
 
+        [Fact]
+        public void PriorUnarmedSv2_ThenArm_StartsFreshSaving()
+        {
+            // 高优先级回归：普通存盘（自动存盘/商店关闭/升级）先把 unarmed widget 推到 Done。
+            // 玩家随后点 SAFEEXIT，Arm() 必须强制复位到 Saving，
+            // 否则 Visible 立刻显示「取消/退出」按钮，早于本次 safeExit 真正的 sv:1/2，存在数据丢失风险。
+            LauncherCommandRouter router; Capture cap;
+            SafeExitPanelWidget w = MakeWidget(out router, out cap);
+            // 模拟普通商店关闭存盘：unarmed 状态下 sv:1 → sv:2 推达
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
+            w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
+            Assert.False(w.Visible);
+            Assert.True(w.IsDoneState); // 内部状态污染到 Done
+
+            // 玩家点 SAFEEXIT
+            w.Arm();
+            Assert.True(w.Visible);
+            Assert.True(w.IsArmed);
+            Assert.True(w.IsSavingState); // 必须强制复位到 Saving
+            Assert.False(w.IsDoneState);  // 不能保留旧 Done
+        }
+
         // ── Arm 路径正常显示 ──
         [Fact]
         public void Arm_ThenSv1_ShowsSavingPanel()

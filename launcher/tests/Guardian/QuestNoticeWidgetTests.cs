@@ -282,5 +282,21 @@ namespace CF7Launcher.Tests.Guardian
             w.OnLegacyUiData("combo", new[] { "ignored" }); // combo 不属于本 widget
             Assert.False(w.HasActiveFlash);
         }
+
+        [Fact]
+        public void LegacyTypes_OnlyTaskAndAnnounce()
+        {
+            // 类型门控契约：QuestNoticeWidget 只声明 task / announce。
+            // 不能加 combo / currency 等 — 否则 NativeHud 会把每帧 combo|... 也派发到本 widget，
+            // OnLegacyUiData 默认 return 但已经 BeginInvoke 一次，污染 UI 线程预算（FrameTask 每帧推送）。
+            LauncherCommandRouter r; Capture c;
+            QuestNoticeWidget w = MakeWidget(out r, out c);
+            var types = new HashSet<string>(w.LegacyTypes);
+            Assert.Equal(2, types.Count);
+            Assert.Contains("task", types);
+            Assert.Contains("announce", types);
+            Assert.DoesNotContain("combo", types);
+            Assert.DoesNotContain("currency", types);
+        }
     }
 }

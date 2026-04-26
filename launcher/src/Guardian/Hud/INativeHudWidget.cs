@@ -85,10 +85,17 @@ namespace CF7Launcher.Guardian.Hud
     ///
     /// 与 IUiDataConsumer 互补：snapshot KV 走 IUiDataConsumer，瞬时事件走本接口。
     /// QuestNoticeWidget 同时实现两者：td/tdh/tdn/mm 走 snapshot；task/announce 走 legacy 通知。
+    ///
+    /// **类型门控**：consumer 必须声明关心的 type 集合（LegacyTypes），NativeHudOverlay 据此
+    /// 过滤掉无人订阅的 legacy 包（如 FrameTask 每帧推 combo|...，QuestNotice 不关心，整条 BeginInvoke
+    /// 派发都跳过）。集合不可变；构造期固定下来。
     /// </summary>
     public interface IUiDataLegacyConsumer
     {
-        /// <param name="type">第一段 type 名（如 "task" / "announce"）</param>
+        /// <summary>本 consumer 关心的 legacy type 名集合（不可变）。NativeHud 用 union 决定整包是否派发。</summary>
+        IEnumerable<string> LegacyTypes { get; }
+
+        /// <param name="type">第一段 type 名（如 "task" / "announce"）；保证已在 LegacyTypes 内</param>
         /// <param name="fields">type 之后的 fields 数组（可能为空数组，但非 null）</param>
         void OnLegacyUiData(string type, string[] fields);
     }

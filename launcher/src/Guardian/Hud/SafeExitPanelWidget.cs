@@ -82,8 +82,11 @@ namespace CF7Launcher.Guardian.Hud
             _dismissed = false;
             _hoverIndex = -1;
             _downIndex = -1;
-            // 立刻进 Saving 显示存盘条；若 sv:1 还没到（race），UI 至少不空白
-            if (_state == SaveState.Idle) _state = SaveState.Saving;
+            // 无条件强制 Saving：sv 是通用存盘事件，普通自动存盘/商店关闭/升级会先把 unarmed widget 推到 Done。
+            // 若不复位，玩家随后点 SAFEEXIT 时 Visible 看到旧 Done → 直接显示「取消/退出」按钮，
+            // 早于本次 safeExit 真正的 sv:1/2，玩家可能在存盘还没完成时点退出（数据丢失风险）。
+            // 每次 Arm 都视作开新 session，重新等本轮 sv:1 → sv:2 推达。
+            _state = SaveState.Saving;
             FireBounds();
         }
 

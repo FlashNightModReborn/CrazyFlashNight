@@ -459,6 +459,10 @@ namespace CF7Launcher.Guardian.Hud
             else if (repaintDirty) FireRepaint();
         }
 
+        // 与 LegacyTypes 一致；NativeHud 已按 type 集合做门控，这里仍 defensive switch
+        private static readonly string[] LEGACY_TYPES = { "task", "announce" };
+        public IEnumerable<string> LegacyTypes { get { return LEGACY_TYPES; } }
+
         public void OnLegacyUiData(string type, string[] fields)
         {
             if (string.IsNullOrEmpty(type)) return;

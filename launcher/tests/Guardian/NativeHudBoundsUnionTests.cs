@@ -118,6 +118,83 @@ namespace CF7Launcher.Tests.Guardian
             Assert.False(NativeHudOverlay.ShouldRunAnimationTick(null));
         }
 
+        // ── BuildLegacyTypeSet：legacy type 门控不变量 ──
+        // FrameTask 每帧推 combo|...，QuestNotice 不订阅 combo → 整包必须早 return；
+        // 否则每帧 BeginInvoke + DispatchLegacy 即便 widget 内 switch 默认 return，仍污染 UI 线程预算。
+
+        [Fact]
+        public void BuildLegacyTypeSet_NullOrEmpty_ReturnsEmpty()
+        {
+            Assert.Empty(NativeHudOverlay.BuildLegacyTypeSet(null));
+            Assert.Empty(NativeHudOverlay.BuildLegacyTypeSet(new List<INativeHudWidget>()));
+        }
+
+        [Fact]
+        public void BuildLegacyTypeSet_NoLegacyConsumers_ReturnsEmpty()
+        {
+            // 普通 INativeHudWidget 不实现 IUiDataLegacyConsumer
+            var widgets = new List<INativeHudWidget>
+            {
+                new FakeWidget(new Rectangle(0, 0, 10, 10), visible: true),
+            };
+            Assert.Empty(NativeHudOverlay.BuildLegacyTypeSet(widgets));
+        }
+
+        [Fact]
+        public void BuildLegacyTypeSet_QuestNoticeOnly_ContainsTaskAnnounce_NotCombo()
+        {
+            // 关键回归：注册 QuestNotice → set 含 task/announce；不含 combo / currency
+            var widgets = new List<INativeHudWidget>
+            {
+                new FakeLegacyWidget(new[] { "task", "announce" }),
+            };
+            HashSet<string> set = NativeHudOverlay.BuildLegacyTypeSet(widgets);
+            Assert.Contains("task", set);
+            Assert.Contains("announce", set);
+            Assert.DoesNotContain("combo", set);
+            Assert.DoesNotContain("currency", set);
+            Assert.Equal(2, set.Count);
+        }
+
+        [Fact]
+        public void BuildLegacyTypeSet_MultipleConsumers_UnionsAllTypes()
+        {
+            // 未来 ComboWidget 加入后，set 应是 union
+            var widgets = new List<INativeHudWidget>
+            {
+                new FakeLegacyWidget(new[] { "task", "announce" }),
+                new FakeLegacyWidget(new[] { "combo" }),
+            };
+            HashSet<string> set = NativeHudOverlay.BuildLegacyTypeSet(widgets);
+            Assert.Equal(3, set.Count);
+            Assert.Contains("task", set);
+            Assert.Contains("announce", set);
+            Assert.Contains("combo", set);
+        }
+
+        [Fact]
+        public void BuildLegacyTypeSet_NullOrEmptyTypeNames_Skipped()
+        {
+            var widgets = new List<INativeHudWidget>
+            {
+                new FakeLegacyWidget(new[] { "task", null, "", "announce" }),
+            };
+            HashSet<string> set = NativeHudOverlay.BuildLegacyTypeSet(widgets);
+            Assert.Equal(2, set.Count);
+            Assert.Contains("task", set);
+            Assert.Contains("announce", set);
+        }
+
+        [Fact]
+        public void BuildLegacyTypeSet_ConsumerWithNullTypes_HandledSafely()
+        {
+            var widgets = new List<INativeHudWidget>
+            {
+                new FakeLegacyWidget(null),
+            };
+            Assert.Empty(NativeHudOverlay.BuildLegacyTypeSet(widgets));
+        }
+
         // Test fixture
         private sealed class FakeWidget : INativeHudWidget
         {
@@ -136,6 +213,25 @@ namespace CF7Launcher.Tests.Guardian
             public bool TryHitTest(Point screenPt) { return false; }
             public void OnMouseEvent(MouseEventArgs e, MouseEventKind kind) { }
             public bool WantsAnimationTick { get { return _wantsTick; } }
+            public void Tick(int deltaMs) { }
+            public event EventHandler BoundsOrVisibilityChanged { add { } remove { } }
+            public event EventHandler RepaintRequested { add { } remove { } }
+            public event EventHandler AnimationStateChanged { add { } remove { } }
+        }
+
+        /// <summary>实现 IUiDataLegacyConsumer 的最小 widget；用 BuildLegacyTypeSet 验证 type union。</summary>
+        private sealed class FakeLegacyWidget : INativeHudWidget, IUiDataLegacyConsumer
+        {
+            private readonly string[] _types;
+            public FakeLegacyWidget(string[] types) { _types = types; }
+            public IEnumerable<string> LegacyTypes { get { return _types; } }
+            public void OnLegacyUiData(string type, string[] fields) { }
+            public Rectangle ScreenBounds { get { return Rectangle.Empty; } }
+            public bool Visible { get { return false; } }
+            public void Paint(Graphics g, float dpr, Point hudOrigin) { }
+            public bool TryHitTest(Point screenPt) { return false; }
+            public void OnMouseEvent(MouseEventArgs e, MouseEventKind kind) { }
+            public bool WantsAnimationTick { get { return false; } }
             public void Tick(int deltaMs) { }
             public event EventHandler BoundsOrVisibilityChanged { add { } remove { } }
             public event EventHandler RepaintRequested { add { } remove { } }
