@@ -126,7 +126,11 @@ namespace CF7Launcher.Guardian.Hud
             {
                 if (!Visible) return false;
                 if (_marqueeActive) return true;
-                if (_isPlaying && !_isPaused && !_disableVisualizers) return true;
+                // 关键：has-bgm 时即便 _isPlaying 仍是 false 也要 enroll tick——
+                // _isPlaying 只在 Tick 内从 AudioEngine 拉，初始永远 false；不 enroll 就永远不知道开始播放（bootstrap 死锁）。
+                // _isPaused 是用户态镜像（点暂停后才置位），所以 hasBgm && !paused 已经足够判定是否需要轮询。
+                bool hasBgm = !string.IsNullOrEmpty(_bgmTitle);
+                if (hasBgm && !_isPaused && !_disableVisualizers) return true;
                 return false;
             }
         }
@@ -473,6 +477,8 @@ namespace CF7Launcher.Guardian.Hud
                 string next = StripPrefix(piece, "bgm");
                 if (!string.Equals(next, _bgmTitle, StringComparison.Ordinal))
                 {
+                    bool wasEmpty = string.IsNullOrEmpty(_bgmTitle);
+                    bool nowEmpty = string.IsNullOrEmpty(next);
                     _bgmTitle = next ?? "";
                     // 切歌：清 ring buffer + 重启 marquee dwell
                     _peakLen = 0;
@@ -481,6 +487,9 @@ namespace CF7Launcher.Guardian.Hud
                     _marqueeDwellMs = MARQUEE_DWELL_MS;
                     _measuredTitleW = -1f;
                     repaintDirty = true;
+                    // hasBgm 翻转 → WantsAnimationTick 翻转，必须 fire 让 NativeHud 启停轮询；
+                    // 同 has-bgm → 同 has-bgm 切歌也启 tick 防 stop→play 重启场景静默
+                    if (wasEmpty != nowEmpty || !nowEmpty) tickDirty = true;
                 }
             }
 

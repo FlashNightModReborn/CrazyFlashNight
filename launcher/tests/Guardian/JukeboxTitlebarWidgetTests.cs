@@ -140,14 +140,28 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         // ── WantsAnimationTick 推导 ──
+        // 关键：_isPlaying 只在 Tick() 内从 AudioEngine 拉，初始永远 false；如果只在 _isPlaying=true
+        // 时 enroll tick，bgm 推达后没人会启动 tick，永远进不到第一次 AudioEngine 调用——bootstrap 死锁。
+        // 因此 hasBgm && !paused && !disableVisualizers 即可申请 tick（实际播放与否由 Tick 内 poll 决定）。
+
         [Fact]
-        public void WantsTick_RequiresPlayingAndNotPaused()
+        public void WantsTick_HasBgm_EnrollsEvenBeforePlayingDetected()
+        {
+            Capture c;
+            JukeboxTitlebarWidget w = MakeWidget(out c);
+            // 无 BGM → 无需 tick（Idle 占位 widget）
+            Assert.False(w.WantsAnimationTick);
+            // 有 BGM → 立即 enroll tick 让 Tick 内 ma_bridge_bgm_is_playing poll 启动
+            w.ForceBgmTitle("Track");
+            Assert.True(w.WantsAnimationTick);
+        }
+
+        [Fact]
+        public void WantsTick_PausedOrDisabled_NoTick()
         {
             Capture c;
             JukeboxTitlebarWidget w = MakeWidget(out c);
             w.ForceBgmTitle("Track");
-            // 默认 not playing → 不需要 tick
-            Assert.False(w.WantsAnimationTick);
             w.ForceIsPlaying(true);
             Assert.True(w.WantsAnimationTick);
             w.ForceIsPaused(true);
@@ -165,8 +179,21 @@ namespace CF7Launcher.Tests.Guardian
             Capture c;
             JukeboxTitlebarWidget w = MakeWidget(out c);
             w.ForceGameReady(false);
+            w.ForceBgmTitle("Track");   // even with bgm, gameReady=false → invisible → no tick
             w.ForceIsPlaying(true);
             Assert.False(w.WantsAnimationTick);
+        }
+
+        [Fact]
+        public void Bgm_EmptyToNonEmpty_FiresAnimationStateChanged()
+        {
+            // 回归：bgm 推达后必须 fire AnimationStateChanged，否则 NativeHud 不会重新评估 WantsAnimationTick → tick 永远不启
+            Capture c;
+            JukeboxTitlebarWidget w = MakeWidget(out c);
+            int animStateFires = 0;
+            w.AnimationStateChanged += delegate { animStateFires++; };
+            w.OnUiDataChanged(Snapshot("bgm:Track"), new HashSet<string> { "bgm" });
+            Assert.True(animStateFires >= 1);
         }
 
         // ── pause click ──
