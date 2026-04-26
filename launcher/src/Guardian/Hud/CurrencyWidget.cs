@@ -55,7 +55,7 @@ namespace CF7Launcher.Guardian.Hud
             _anchor.Resize += delegate { FireBounds(); };
         }
 
-        private float Scale { get { return WidgetScaler.GetScale(_anchor); } }
+        private float Scale { get { return WidgetScaler.GetScale(_mapper); } }
         private int PanelW { get { return WidgetScaler.Px(PANEL_W_BASE, Scale); } }
         private int PanelH { get { return WidgetScaler.Px(PANEL_H_BASE, Scale); } }
 

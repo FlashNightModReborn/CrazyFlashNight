@@ -360,6 +360,9 @@ class Program
             CF7Launcher.Guardian.Hud.CurrencyWidget currencyWidget =
                 new CF7Launcher.Guardian.Hud.CurrencyWidget(form.FlashHostPanel);
             nativeHud.AddWidget(currencyWidget);
+            // z-order 锚点：把 NativeHud 沉到 HitNumber 之下（Cursor 在 HitNumber 之上 → 自动也在 NativeHud 之上）
+            // 这样 widget 区域不会遮挡伤害数字与鼠标。
+            if (hnOverlay != null) nativeHud.SetZOrderInsertAfter(hnOverlay.Handle);
 
             // tee UiData：socket worker 既送 webOverlay 也送 nativeHud
             // Phase 3+ widget 实化为 IUiDataConsumer 后才有意义；当前 nativeHud.HandleUiData 有 fast-path 直接 return（无 IUiDataConsumer）

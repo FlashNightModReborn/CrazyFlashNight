@@ -47,6 +47,10 @@ namespace CF7Launcher.Guardian
         private Point _hudOrigin;
         private Size _hudSize;
 
+        // z-order 锚点：NativeHud 必须沉到 HitNumber/Cursor 之下，否则 widget 区域会遮挡伤害数字与鼠标
+        // 默认 IntPtr.Zero → 退回 HWND_TOP（仅 widget 未注册前的过渡态使用）
+        private IntPtr _zOrderInsertAfter;
+
         public NativeHudOverlay(Form owner, Control anchor)
             : base(owner, anchor, 1024f, 576f)
         {
@@ -63,6 +67,16 @@ namespace CF7Launcher.Guardian
         {
             _ready = true;
             RecomputeBounds();
+        }
+
+        /// <summary>
+        /// Program.cs 在 HitNumberOverlay 实例化后调用，把 NativeHud 沉到 HitNumber 之下。
+        /// 不调则退回 HWND_TOP（widget 区域会遮挡伤害数字 + Cursor）。
+        /// </summary>
+        public void SetZOrderInsertAfter(IntPtr insertAfter)
+        {
+            _zOrderInsertAfter = insertAfter;
+            if (_ready) RecomputeBounds();
         }
 
         /// <summary>Panel 态调用：SW_HIDE + 停 tick。</summary>
@@ -202,20 +216,18 @@ namespace CF7Launcher.Guardian
             _hudSize = new Size(hudRect.Width, hudRect.Height);
 
             EnsureComposedBitmap(hudRect.Width, hudRect.Height);
-            // === Phase 1: HWND_TOP（无 widget 时此分支不可达；Phase 3 NotchWidget 上线后必须改造）===
-            // Phase 3 改造点（接 NotchWidget 时一并做）：
-            //   1. 把 SetWindowPos 的 hWndInsertAfter 从 HWND_TOP 改为 hitNumberOverlay.Handle
-            //      （或抽 OverlayZOrderManager 统一调度）
-            //   2. ShowOverlay() 改为 ShowOverlayBelow(hitNumberOverlay.Handle)
-            //   3. 否则 NativeHud 会浮到 HitNumber/Cursor 之上，破坏 z-order 链：
-            //      Cursor → HitNumber → NativeHud → (Backdrop → WebOverlay) → Flash
-            //   架构约束见 plans/expressive-leaping-galaxy.md §硬约束 #5
-            SetWindowPos(this.Handle, HWND_TOP, hudRect.X, hudRect.Y, hudRect.Width, hudRect.Height,
+            // z-order：插在 _zOrderInsertAfter（HitNumber.Handle）之后，让 NativeHud 沉到
+            // HitNumber/Cursor 之下，保持架构链 Cursor → HitNumber → NativeHud → (Backdrop → WebOverlay) → Flash。
+            // 未注册（_zOrderInsertAfter == Zero）时退回 HWND_TOP 仅作过渡态兜底。
+            // 架构约束见 plans/expressive-leaping-galaxy.md §硬约束 #5
+            IntPtr insertAfter = _zOrderInsertAfter == IntPtr.Zero ? HWND_TOP : _zOrderInsertAfter;
+            SetWindowPos(this.Handle, insertAfter, hudRect.X, hudRect.Y, hudRect.Width, hudRect.Height,
                 SWP_NOACTIVATE);
-            ShowOverlay();
-            // 兜底：OverlayBase.ShowOverlay 受 _ownerVisible 闸门控制，
+            // 用 ShowOverlayBelow 而非 ShowOverlay：后者会把 z-order 拉到 HWND_TOP，覆盖上面的 insertAfter。
+            ShowOverlayBelow(insertAfter);
+            // 兜底：ShowOverlayBelow 受 _ownerVisible 闸门控制，
             // panel 关闭时焦点常在 Flash 子窗口 → owner 仍 deactivated → ShowWindow 被跳过。
-            // 这里直接 SW_SHOWNOACTIVATE 强制显示，与 CursorOverlayForm 同款绕过策略。
+            // 直接 SW_SHOWNOACTIVATE 强制显示；ShowWindow 不改 z-order，上面 insertAfter 排序保留。
             try { ShowWindow(this.Handle, SW_SHOWNOACTIVATE); } catch { }
             RenderToBitmapAndCommit();
             MaybeStartTick();
