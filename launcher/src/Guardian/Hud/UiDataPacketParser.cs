@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace CF7Launcher.Guardian.Hud
@@ -25,6 +26,26 @@ namespace CF7Launcher.Guardian.Hud
                 if (colon > 0)
                     yield return new KeyValuePair<string, string>(seg.Substring(0, colon), seg);
             }
+        }
+
+        /// <summary>
+        /// 旧版（非 KV）格式探测：与 web UiData.dispatch 同源——第一段不含 ":" 且总段数 ≥ 2 视为
+        /// "type|field1|field2|..." 一次性事件。当前在用 type：combo / currency / task / announce。
+        ///
+        /// 命中时 type 取首段，fields 取其余段（保留空字符串，不裁剪）。返回 false 时 type/fields 输出 null。
+        /// </summary>
+        public static bool TryParseLegacy(string payload, out string type, out string[] fields)
+        {
+            type = null;
+            fields = null;
+            if (string.IsNullOrEmpty(payload)) return false;
+            string[] pairs = payload.Split('|');
+            if (pairs.Length < 2) return false;
+            if (pairs[0] == null || pairs[0].IndexOf(':') >= 0) return false;
+            type = pairs[0];
+            fields = new string[pairs.Length - 1];
+            Array.Copy(pairs, 1, fields, 0, fields.Length);
+            return true;
         }
     }
 }

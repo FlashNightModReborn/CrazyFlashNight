@@ -348,8 +348,8 @@ class Program
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
 
-            // Phase 4: 注册常驻 widget。已迁：TopRightTools / NotchToolbar / Currency / SafeExitPanel。
-            // 待迁（下轮）：Combo / QuestNotice / JukeboxTitlebar / MapHud。
+            // Phase 4: 注册常驻 widget。已迁：TopRightTools / NotchToolbar / Currency / SafeExitPanel / QuestNotice。
+            // 待迁（下轮）：Combo / JukeboxTitlebar / MapHud。
             // 无 widget 时 NativeHud SW_HIDE，不影响 Phase 3 行为。
             CF7Launcher.Guardian.Hud.TopRightToolsWidget topRightTools =
                 new CF7Launcher.Guardian.Hud.TopRightToolsWidget(form.FlashHostPanel, commandRouter);
@@ -366,6 +366,9 @@ class Program
             // 必须在 widget 实例化后注入：router SAFEEXIT click → widget.Arm() → 进 Saving 显示状态条。
             // 否则 widget 仅靠 sv 推送决定可见，会被普通自动存盘（商店关闭/升级/saveAll）误触发。
             commandRouter.OnSafeExitArm = delegate { safeExitPanel.Arm(); };
+            CF7Launcher.Guardian.Hud.QuestNoticeWidget questNotice =
+                new CF7Launcher.Guardian.Hud.QuestNoticeWidget(form.FlashHostPanel, commandRouter);
+            nativeHud.AddWidget(questNotice);
             // z-order 锚点：把 NativeHud 沉到 HitNumber 之下（Cursor 在 HitNumber 之上 → 自动也在 NativeHud 之上）
             // 这样 widget 区域不会遮挡伤害数字与鼠标。
             if (hnOverlay != null) nativeHud.SetZOrderInsertAfter(hnOverlay.Handle);

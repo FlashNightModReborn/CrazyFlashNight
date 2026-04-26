@@ -77,4 +77,19 @@ namespace CF7Launcher.Guardian.Hud
         /// <param name="changedKeys">本次变化的 key 集合（性能 hint，可忽略）</param>
         void OnUiDataChanged(IReadOnlyDictionary<string, string> snapshot, ISet<string> changedKeys);
     }
+
+    /// <summary>
+    /// Widget 实现此接口表示需要接收旧版（非 KV）UiData 推送。
+    /// 旧格式：第一段无 ":" 时整包视为 "type|field1|field2|..." 一次性事件
+    /// （如 "task|TaskName"、"announce|Text"），不写入 snapshot，只触发一次回调。
+    ///
+    /// 与 IUiDataConsumer 互补：snapshot KV 走 IUiDataConsumer，瞬时事件走本接口。
+    /// QuestNoticeWidget 同时实现两者：td/tdh/tdn/mm 走 snapshot；task/announce 走 legacy 通知。
+    /// </summary>
+    public interface IUiDataLegacyConsumer
+    {
+        /// <param name="type">第一段 type 名（如 "task" / "announce"）</param>
+        /// <param name="fields">type 之后的 fields 数组（可能为空数组，但非 null）</param>
+        void OnLegacyUiData(string type, string[] fields);
+    }
 }

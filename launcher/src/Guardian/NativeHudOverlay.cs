@@ -30,6 +30,8 @@ namespace CF7Launcher.Guardian
         // IUiDataConsumer widget 计数：HandleUiData fast path 检查，无 consumer 直接早 return
         // 避免 Phase 1 无 widget 时 socket 高频 UiData 流污染 perf baseline（解析 + lock + BeginInvoke 全部跳过）
         private volatile int _uiDataConsumerCount;
+        // IUiDataLegacyConsumer widget 计数：legacy（task/announce/...）入口同样走 fast path
+        private volatile int _uiDataLegacyConsumerCount;
 
         private readonly Dictionary<string, string> _uiDataSnapshot = new Dictionary<string, string>();
         private readonly object _uiDataLock = new object();
@@ -107,6 +109,7 @@ namespace CF7Launcher.Guardian
             {
                 _widgets.Add(widget);
                 if (widget is IUiDataConsumer) _uiDataConsumerCount++;
+                if (widget is IUiDataLegacyConsumer) _uiDataLegacyConsumerCount++;
             }
             widget.BoundsOrVisibilityChanged += OnWidgetBoundsChanged;
             widget.RepaintRequested += OnWidgetRepaintRequested;
@@ -119,8 +122,11 @@ namespace CF7Launcher.Guardian
             if (widget == null) return;
             lock (_widgetsLock)
             {
-                if (_widgets.Remove(widget) && widget is IUiDataConsumer)
-                    _uiDataConsumerCount--;
+                if (_widgets.Remove(widget))
+                {
+                    if (widget is IUiDataConsumer) _uiDataConsumerCount--;
+                    if (widget is IUiDataLegacyConsumer) _uiDataLegacyConsumerCount--;
+                }
             }
             widget.BoundsOrVisibilityChanged -= OnWidgetBoundsChanged;
             widget.RepaintRequested -= OnWidgetRepaintRequested;
@@ -315,10 +321,31 @@ namespace CF7Launcher.Guardian
         public void HandleUiData(string rawData)
         {
             if (string.IsNullOrEmpty(rawData)) return;
-            // Fast path：无 IUiDataConsumer widget 时整条路径都没意义（snapshot 无消费者，Phase 3+ widget
-            // 注册时会一次性接到当时的 UiData 流，不需要 backfill 历史）。
+            // Fast path：无任何 UiData 消费者（KV / legacy）时整条路径都没意义。
             // 这是 Phase 1 的 perf baseline 保护：tee 路径在 useNativeHud=true 时被 socket worker 高频调用，
             // 不能因解析 + lock + BeginInvoke 污染 GPU/CPU 对比数据。
+            if (_uiDataConsumerCount == 0 && _uiDataLegacyConsumerCount == 0) return;
+
+            // 旧版 (type|f1|f2) 格式优先探测：第一段无 ":" 且总段数 ≥ 2 → 走 legacy 路径，不写 snapshot
+            string legacyType;
+            string[] legacyFields;
+            if (UiDataPacketParser.TryParseLegacy(rawData, out legacyType, out legacyFields))
+            {
+                if (_uiDataLegacyConsumerCount == 0) return;
+                if (!this.IsHandleCreated) return;
+                string capturedType = legacyType;
+                string[] capturedFields = legacyFields;
+                try
+                {
+                    this.BeginInvoke(new Action(delegate
+                    {
+                        DispatchLegacyUiDataToWidgets(capturedType, capturedFields);
+                    }));
+                }
+                catch { }
+                return;
+            }
+
             if (_uiDataConsumerCount == 0) return;
 
             HashSet<string> changedKeys = new HashSet<string>();
@@ -363,6 +390,20 @@ namespace CF7Launcher.Guardian
                 if (consumer == null) continue;
                 try { consumer.OnUiDataChanged(snapshot, changedKeys); }
                 catch (Exception ex) { LogManager.Log("[NativeHud] widget UiData throw: " + ex.Message); }
+            }
+        }
+
+        private void DispatchLegacyUiDataToWidgets(string type, string[] fields)
+        {
+            INativeHudWidget[] widgetSnapshot;
+            lock (_widgetsLock) { widgetSnapshot = _widgets.ToArray(); }
+
+            for (int i = 0; i < widgetSnapshot.Length; i++)
+            {
+                IUiDataLegacyConsumer consumer = widgetSnapshot[i] as IUiDataLegacyConsumer;
+                if (consumer == null) continue;
+                try { consumer.OnLegacyUiData(type, fields); }
+                catch (Exception ex) { LogManager.Log("[NativeHud] widget LegacyUiData throw: " + ex.Message); }
             }
         }
 

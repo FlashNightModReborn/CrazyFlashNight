@@ -65,5 +65,69 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Single(pairs);
             Assert.Equal("g", pairs[0].Key);
         }
+
+        // ── TryParseLegacy：旧版 (type|f1|f2) 格式探测 ──
+
+        [Fact]
+        public void TryParseLegacy_NullOrEmpty_False()
+        {
+            string type; string[] fields;
+            Assert.False(UiDataPacketParser.TryParseLegacy(null, out type, out fields));
+            Assert.Null(type); Assert.Null(fields);
+            Assert.False(UiDataPacketParser.TryParseLegacy("", out type, out fields));
+            Assert.Null(type); Assert.Null(fields);
+        }
+
+        [Fact]
+        public void TryParseLegacy_KvFormat_NotLegacy()
+        {
+            string type; string[] fields;
+            Assert.False(UiDataPacketParser.TryParseLegacy("g:1234", out type, out fields));
+            Assert.False(UiDataPacketParser.TryParseLegacy("g:1234|k:5", out type, out fields));
+        }
+
+        [Fact]
+        public void TryParseLegacy_SingleSegmentWithoutColon_NotLegacy()
+        {
+            // 第一段无 ":" 但只有一段不视为 legacy（pairs.Length < 2）
+            string type; string[] fields;
+            Assert.False(UiDataPacketParser.TryParseLegacy("orphan", out type, out fields));
+        }
+
+        [Fact]
+        public void TryParseLegacy_TaskName_TypeAndFields()
+        {
+            string type; string[] fields;
+            Assert.True(UiDataPacketParser.TryParseLegacy("task|拯救公主", out type, out fields));
+            Assert.Equal("task", type);
+            Assert.Equal(new[] { "拯救公主" }, fields);
+        }
+
+        [Fact]
+        public void TryParseLegacy_AnnounceMultiField_AllFieldsPreserved()
+        {
+            string type; string[] fields;
+            Assert.True(UiDataPacketParser.TryParseLegacy("announce|系统公告|额外字段", out type, out fields));
+            Assert.Equal("announce", type);
+            Assert.Equal(new[] { "系统公告", "额外字段" }, fields);
+        }
+
+        [Fact]
+        public void TryParseLegacy_TypeWithColon_NotLegacy()
+        {
+            // 第一段含 ":" 即视为 KV 格式不走 legacy
+            string type; string[] fields;
+            Assert.False(UiDataPacketParser.TryParseLegacy("g:1|x|y", out type, out fields));
+        }
+
+        [Fact]
+        public void TryParseLegacy_EmptyFields_PreservedAsEmpty()
+        {
+            // "task|" → fields = [""]
+            string type; string[] fields;
+            Assert.True(UiDataPacketParser.TryParseLegacy("task|", out type, out fields));
+            Assert.Equal("task", type);
+            Assert.Equal(new[] { "" }, fields);
+        }
     }
 }
