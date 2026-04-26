@@ -237,15 +237,27 @@ namespace CF7Launcher.Guardian
         #region DoOpen / DoClose
 
         /// <summary>
-        /// anchor 屏幕矩形 = WebOverlay 上一次 SyncPosition 计算的 viewport（Flash 可见区，扣除 letterbox）。
-        /// 退路：WebOverlay.Bounds 为空 → owner client。
+        /// anchor 屏幕矩形 = mapper.CalcViewport 实时算的 Flash 可见区（扣除 letterbox）。
+        /// **不能用 _web.Bounds**：DoFullIdleSuspend 只 SW_HIDE 不复位窗口位置/大小，
+        /// 下一次 DoOpen 取到的会是上一次的 panelRect，导致新 panel 嵌在过时小矩形里。
+        /// 退路：GetCurrentAnchorScreenRect 失败 → FlashHostPanel 屏幕矩形 → owner client。
         /// </summary>
         private Rectangle ComputeAnchorScreenRect()
         {
             try
             {
-                Rectangle b = _web.Bounds;
-                if (b.Width > 0 && b.Height > 0) return b;
+                Rectangle vp = _web.GetCurrentAnchorScreenRect();
+                if (vp.Width > 0 && vp.Height > 0) return vp;
+            }
+            catch { }
+            try
+            {
+                Control fp = GetFlashPanelOrNull();
+                if (fp != null && fp.Width > 0 && fp.Height > 0)
+                {
+                    Point origin = fp.PointToScreen(Point.Empty);
+                    return new Rectangle(origin.X, origin.Y, fp.Width, fp.Height);
+                }
             }
             catch { }
             try
