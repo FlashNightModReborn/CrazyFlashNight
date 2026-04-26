@@ -9,10 +9,16 @@ using CF7Launcher.Guardian;
 namespace CF7Launcher.Guardian.Hud
 {
     /// <summary>
-    /// 替代 web overlay.html #safe-exit-panel + notch.js UiData "sv" 状态机。
-    /// 路径：玩家点 SAFEEXIT → router 发 safe_exit_show + safeExit → AS2 存盘 →
-    /// UiData "sv:1"（存盘中，仅显示状态文本）→ "sv:2"（存盘完成，显示 取消/退出 按钮）。
-    /// 取消按钮纯本地隐藏（_dismissed=true），下次 sv:1 时复位；退出按钮调 router EXIT_CONFIRM。
+    /// 替代 web overlay.html #safe-exit-panel。
+    ///
+    /// 关键约束：sv 是通用存盘事件（SaveManager.saveAll 在商店关闭、升级、自动存盘等场景都会推 sv:1/2），
+    /// **不能**单凭 sv 决定面板可见性，否则普通自动存盘也会弹"取消/退出"——这是 web 老路径的隐式正确行为
+    /// （web openSafeExitPanel 仅在 SAFEEXIT 按钮 click 路径里 display:block；UiData 'sv' 只更新状态文本）。
+    ///
+    /// 此 widget 模仿该语义：必须由 SAFEEXIT click 显式 Arm() 才允许显示；sv:1/2 仅更新内部状态机。
+    /// 路径：玩家点 SAFEEXIT → router.SAFEEXIT case → widget.Arm() + SendGameCommand("safeExit") →
+    ///       AS2 存盘 → UiData "sv:1" → "sv:2"（显示 取消/退出 按钮）→ 取消（本地 disarm）/ 退出（EXIT_CONFIRM）。
+    ///
     /// 位置：贴 TopRightToolsWidget 正下方（viewport 右上），letterbox 黑边内。
     /// </summary>
     public class SafeExitPanelWidget : INativeHudWidget, IUiDataConsumer
@@ -35,8 +41,10 @@ namespace CF7Launcher.Guardian.Hud
         private readonly FlashCoordinateMapper _mapper;
         private volatile bool _gameReady;
         private volatile SaveState _state = SaveState.Idle;
+        private volatile bool _armed;        // 仅由 SAFEEXIT click 路径置 true；通用 sv 推送不会显示面板
         private volatile bool _dismissed;
         private int _hoverIndex = -1;
+        private int _downIndex = -1;         // Down 命中按钮 idx；Click 时若 idx 不匹配则忽略（destructive 操作必需）
 
         public event EventHandler BoundsOrVisibilityChanged;
         public event EventHandler RepaintRequested;
@@ -60,8 +68,68 @@ namespace CF7Launcher.Guardian.Hud
 
         public bool Visible
         {
-            get { return _gameReady && !_dismissed && _state != SaveState.Idle; }
+            // 必须 _armed：通用 sv:1/2 推送（自动存盘 / 商店关闭 / 升级）不会拉起面板
+            get { return _gameReady && _armed && !_dismissed; }
         }
+
+        /// <summary>
+        /// 由 LauncherCommandRouter SAFEEXIT case 调用：玩家显式点 SAFEEXIT 时进入"待存盘+待确认"状态。
+        /// 此后 sv:1 显示状态条，sv:2 显示按钮。复位条件：取消按钮 / s:0（游戏未就绪） / EXIT_CONFIRM 后。
+        /// </summary>
+        public void Arm()
+        {
+            _armed = true;
+            _dismissed = false;
+            _hoverIndex = -1;
+            _downIndex = -1;
+            // 立刻进 Saving 显示存盘条；若 sv:1 还没到（race），UI 至少不空白
+            if (_state == SaveState.Idle) _state = SaveState.Saving;
+            FireBounds();
+        }
+
+        private void Disarm()
+        {
+            _armed = false;
+            _dismissed = false;
+            _state = SaveState.Idle;
+            _hoverIndex = -1;
+            _downIndex = -1;
+        }
+
+        // ── 测试钩子（InternalsVisibleTo("Launcher.Tests")） ──
+        internal bool IsArmed { get { return _armed; } }
+        internal bool IsDismissed { get { return _dismissed; } }
+        internal bool IsDoneState { get { return _state == SaveState.Done; } }
+        internal bool IsSavingState { get { return _state == SaveState.Saving; } }
+        internal int  InternalDownIndex { get { return _downIndex; } set { _downIndex = value; } }
+        internal void ForceGameReady(bool ready) { _gameReady = ready; }
+
+        /// <summary>
+        /// 提取 Click 分支供测试（绕过 ScreenBounds 依赖）。返回是否真正触发了 dispatch（true=EXIT_CONFIRM 或 dismiss 路径执行了）。
+        /// 与 OnMouseEvent.Click 分支语义同步——任何修改都要两边一起改。
+        /// </summary>
+        internal ClickOutcome TryFireButtonClick(int upIdx)
+        {
+            int down = _downIndex;
+            _downIndex = -1;
+            if (upIdx < 0 || upIdx >= DONE_KEYS.Length) return ClickOutcome.OutOfRange;
+            if (upIdx != down) return ClickOutcome.MismatchedDownUp;
+            string key = DONE_KEYS[upIdx];
+            if (key == "EXIT_CANCEL")
+            {
+                _armed = false;
+                _dismissed = true;
+                _hoverIndex = -1;
+                FireBounds();
+                return ClickOutcome.Cancelled;
+            }
+            _armed = false;
+            try { _router.Dispatch(key); }
+            catch (Exception ex) { LogManager.Log("[SafeExitPanel] dispatch failed key=" + key + " ex=" + ex.Message); }
+            return ClickOutcome.Confirmed;
+        }
+
+        internal enum ClickOutcome { OutOfRange, MismatchedDownUp, Cancelled, Confirmed }
 
         public bool WantsAnimationTick { get { return false; } }
         public void Tick(int deltaMs) { }
@@ -156,20 +224,20 @@ namespace CF7Launcher.Guardian.Hud
                 case MouseEventKind.Leave:
                     SetHover(-1);
                     break;
+                case MouseEventKind.Down:
+                    // 只在左键 down 命中按钮才记录 anchor；其他情况 reset 防 stale 状态。
+                    _downIndex = (e.Button == MouseButtons.Left) ? idx : -1;
+                    break;
+                case MouseEventKind.Up:
+                    // Up 不触发动作；逻辑发生在 Click。这里只在左键 up 时清除 down anchor。
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        // 不要在这里清 _downIndex——下面 Click 还要用；改在 Click 末尾清。
+                    }
+                    break;
                 case MouseEventKind.Click:
-                    if (idx < 0) break;
-                    string key = DONE_KEYS[idx];
-                    if (key == "EXIT_CANCEL")
-                    {
-                        _dismissed = true;
-                        _hoverIndex = -1;
-                        FireBounds();
-                    }
-                    else
-                    {
-                        try { _router.Dispatch(key); }
-                        catch (Exception ex) { LogManager.Log("[SafeExitPanel] dispatch failed key=" + key + " ex=" + ex.Message); }
-                    }
+                    // button-level Down/Up 匹配 + 取消/退出分发，全部走 TryFireButtonClick 这一份逻辑（测试覆盖）
+                    TryFireButtonClick(idx);
                     break;
             }
         }
@@ -199,6 +267,7 @@ namespace CF7Launcher.Guardian.Hud
         public void OnUiDataChanged(IReadOnlyDictionary<string, string> snapshot, ISet<string> changedKeys)
         {
             bool boundsDirty = false;
+            bool repaintDirty = false;
             string piece;
             if (changedKeys.Contains("s") && snapshot.TryGetValue("s", out piece))
             {
@@ -206,25 +275,29 @@ namespace CF7Launcher.Guardian.Hud
                 if (ready != _gameReady)
                 {
                     _gameReady = ready;
-                    if (!ready)
-                    {
-                        _state = SaveState.Idle;
-                        _dismissed = false;
-                        _hoverIndex = -1;
-                    }
+                    if (!ready) Disarm(); // 游戏未就绪：彻底复位
                     boundsDirty = true;
                 }
             }
             if (changedKeys.Contains("sv") && snapshot.TryGetValue("sv", out piece))
             {
+                // sv 是通用存盘事件（自动存盘 / 商店关闭 / 升级），仅更新内部状态。
+                // 不在这里自动 _armed=true，否则普通存盘也会拉起面板（见 class doc）。
                 int sv = NotchToolbarWidget.ParseUiIntValue(piece);
                 SaveState next = _state;
-                if (sv == 1) { next = SaveState.Saving; _dismissed = false; _hoverIndex = -1; }
+                if (sv == 1) next = SaveState.Saving;
                 else if (sv == 2) next = SaveState.Done;
                 else next = SaveState.Idle;
-                if (next != _state) { _state = next; boundsDirty = true; }
+                if (next != _state)
+                {
+                    _state = next;
+                    // 已 armed 时状态推进影响显示内容（状态条 vs 按钮行 → 高度变化）
+                    if (_armed) boundsDirty = true;
+                    else repaintDirty = false; // 未 armed：不可见，无需 repaint
+                }
             }
             if (boundsDirty) FireBounds();
+            else if (repaintDirty) FireRepaint();
         }
 
         private void FireBounds() { EventHandler h = BoundsOrVisibilityChanged; if (h != null) h(this, EventArgs.Empty); }

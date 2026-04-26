@@ -53,6 +53,12 @@ namespace CF7Launcher.Guardian
         /// <summary>二阶段注入：Program.cs 先 new Router，再 new PanelHostController(...)，最后 SetPanelHost 回注。</summary>
         public void SetPanelHost(PanelHostController host) { _panelHost = host; }
 
+        /// <summary>
+        /// SAFEEXIT click → 触发 SafeExitPanelWidget.Arm()。Program.cs 在 widget 实例化后注入。
+        /// 必须在 SendGameCommand("safeExit") 之前调，否则 widget 收到 sv:1 时还没 armed，会忽略。
+        /// </summary>
+        public Action OnSafeExitArm { get; set; }
+
         public void Dispatch(string key) { Dispatch(key, null); }
 
         public void Dispatch(string key, string rawJson)
@@ -83,8 +89,9 @@ namespace CF7Launcher.Guardian
                     break;
                 case "HELP": OpenPanel("help", null); break;
                 case "SAFEEXIT":
-                    // Phase 4.2：C# SafeExitPanelWidget 接管 UI，纯靠 UiData "sv:1"/"sv:2" 驱动状态。
-                    // 这里只触发 AS2 存盘，widget 收到 sv:1 后自动展示状态条，sv:2 后展示 取消/退出 按钮。
+                    // Phase 4.2：必须先 Arm widget（否则普通自动存盘也会拉起面板——sv 是通用事件）；再触发 AS2 存盘。
+                    // widget Arm 后立即进 Saving 显示状态条；sv:1 推达后保持 Saving；sv:2 切到 Done 显示 取消/退出 按钮。
+                    { Action arm = OnSafeExitArm; if (arm != null) arm(); }
                     SendGameCommand("safeExit");
                     break;
                 case "PETS": SendGameCommand("togglePets"); break;

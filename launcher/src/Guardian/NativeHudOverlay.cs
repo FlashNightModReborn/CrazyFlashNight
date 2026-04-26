@@ -458,11 +458,17 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        // 跟踪 left-button down 命中的 widget，只在 Up 命中同 widget 时合成 Click。
+        // 这样防止"按下 widget A 拖到 widget B 松开 → A 或 B 误触发 Click"——
+        // 尤其是退出确认这种 destructive 操作必须按下/松开匹配。
+        private INativeHudWidget _leftDownWidget;
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
             Point screenPt = this.PointToScreen(e.Location);
             INativeHudWidget hit = HitTestScreen(screenPt);
+            if (e.Button == MouseButtons.Left) _leftDownWidget = hit;
             if (hit == null) return;
             try { hit.OnMouseEvent(new MouseEventArgs(e.Button, e.Clicks, screenPt.X, screenPt.Y, e.Delta), MouseEventKind.Down); }
             catch (Exception ex) { LogManager.Log("[NativeHud] widget Down throw: " + ex.Message); }
@@ -473,12 +479,15 @@ namespace CF7Launcher.Guardian
             base.OnMouseUp(e);
             Point screenPt = this.PointToScreen(e.Location);
             INativeHudWidget hit = HitTestScreen(screenPt);
+            INativeHudWidget downWidget = _leftDownWidget;
+            if (e.Button == MouseButtons.Left) _leftDownWidget = null;
             if (hit == null) return;
             MouseEventArgs sArgs = new MouseEventArgs(e.Button, e.Clicks, screenPt.X, screenPt.Y, e.Delta);
             try { hit.OnMouseEvent(sArgs, MouseEventKind.Up); }
             catch (Exception ex) { LogManager.Log("[NativeHud] widget Up throw: " + ex.Message); }
-            // Form 的 OnMouseClick 在 Down/Up 同一控件时也会 fire；为简化路由直接在 Up 内派发 Click。
-            if (e.Button == MouseButtons.Left)
+            // Form 的 OnMouseClick 在 Down/Up 同一控件时才 fire。仿此语义：仅当 Up widget == Down widget 才派发 Click。
+            // widget 内部如需 button-level 匹配（e.g. SafeExitPanel 的取消/退出），自行用 Down/Up 跟踪 _downIndex。
+            if (e.Button == MouseButtons.Left && hit == downWidget)
             {
                 try { hit.OnMouseEvent(sArgs, MouseEventKind.Click); }
                 catch (Exception ex) { LogManager.Log("[NativeHud] widget Click throw: " + ex.Message); }

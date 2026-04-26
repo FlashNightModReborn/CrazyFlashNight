@@ -363,6 +363,9 @@ class Program
             CF7Launcher.Guardian.Hud.SafeExitPanelWidget safeExitPanel =
                 new CF7Launcher.Guardian.Hud.SafeExitPanelWidget(form.FlashHostPanel, commandRouter);
             nativeHud.AddWidget(safeExitPanel);
+            // 必须在 widget 实例化后注入：router SAFEEXIT click → widget.Arm() → 进 Saving 显示状态条。
+            // 否则 widget 仅靠 sv 推送决定可见，会被普通自动存盘（商店关闭/升级/saveAll）误触发。
+            commandRouter.OnSafeExitArm = delegate { safeExitPanel.Arm(); };
             // z-order 锚点：把 NativeHud 沉到 HitNumber 之下（Cursor 在 HitNumber 之上 → 自动也在 NativeHud 之上）
             // 这样 widget 区域不会遮挡伤害数字与鼠标。
             if (hnOverlay != null) nativeHud.SetZOrderInsertAfter(hnOverlay.Handle);
