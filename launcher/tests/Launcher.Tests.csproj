@@ -60,6 +60,8 @@
     <Compile Include="Guardian\LauncherCommandRouterTests.cs" />
     <Compile Include="Guardian\DpiAwarenessGetEffectiveTests.cs" />
     <Compile Include="Guardian\InputShieldTelemetryFilterTests.cs" />
+    <Compile Include="Guardian\TopRightToolsWidgetTests.cs" />
+    <Compile Include="Guardian\WidgetScalerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

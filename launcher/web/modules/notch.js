@@ -233,6 +233,22 @@ var Notch = (function() {
         Bridge.on('lightLevels', function(data) {
             if (data.levels) lightLevels = data.levels;
         });
+        // C# TopRightToolsWidget 的 SAFEEXIT 触发器。仅做面板展示，不触发 Bridge.send 'SAFEEXIT'，
+        // 否则与 router.SAFEEXIT case 会形成 PostToWeb ↔ Bridge.send 循环（router 已直接 SendGameCommand safeExit）。
+        Bridge.on('safe_exit_show', function() {
+            try {
+                var panel = document.getElementById('safe-exit-panel');
+                var status = document.getElementById('safe-exit-status');
+                var btns = document.getElementById('safe-exit-buttons');
+                if (!panel) return;
+                if (status) { status.textContent = '存盘中…'; status.className = 'saving'; }
+                if (btns) btns.style.display = 'none';
+                panel.style.display = 'block';
+            } catch (e) {}
+        });
+        Bridge.on('safe_exit_close', function() {
+            try { closeSafeExitPanel(); } catch (e) {}
+        });
         // resize storm（拖窗 / Alt-Tab / 多显示器切换）一秒可触发数十次；
         // scheduleContextLayoutSync 已用 rAF 去重，且内部会调 reportRect()，避免裸 resize → 8 次 getBoundingClientRect 直接命中布局。
         window.addEventListener('resize', scheduleContextLayoutSync);

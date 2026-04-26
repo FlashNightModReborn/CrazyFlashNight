@@ -348,6 +348,19 @@ class Program
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
 
+            // Phase 4: 注册常驻 widget。已迁：TopRightTools / NotchToolbar / Currency。
+            // 待迁（下轮）：SafeExitPanel / Combo / QuestNotice / JukeboxTitlebar / MapHud。
+            // 无 widget 时 NativeHud SW_HIDE，不影响 Phase 3 行为。
+            CF7Launcher.Guardian.Hud.TopRightToolsWidget topRightTools =
+                new CF7Launcher.Guardian.Hud.TopRightToolsWidget(form.FlashHostPanel, commandRouter);
+            nativeHud.AddWidget(topRightTools);
+            CF7Launcher.Guardian.Hud.NotchToolbarWidget notchToolbar =
+                new CF7Launcher.Guardian.Hud.NotchToolbarWidget(form.FlashHostPanel, commandRouter);
+            nativeHud.AddWidget(notchToolbar);
+            CF7Launcher.Guardian.Hud.CurrencyWidget currencyWidget =
+                new CF7Launcher.Guardian.Hud.CurrencyWidget(form.FlashHostPanel);
+            nativeHud.AddWidget(currencyWidget);
+
             // tee UiData：socket worker 既送 webOverlay 也送 nativeHud
             // Phase 3+ widget 实化为 IUiDataConsumer 后才有意义；当前 nativeHud.HandleUiData 有 fast-path 直接 return（无 IUiDataConsumer）
             Action<string> uiDataTee = delegate(string raw)

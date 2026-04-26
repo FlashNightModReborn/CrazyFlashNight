@@ -213,6 +213,10 @@ namespace CF7Launcher.Guardian
             SetWindowPos(this.Handle, HWND_TOP, hudRect.X, hudRect.Y, hudRect.Width, hudRect.Height,
                 SWP_NOACTIVATE);
             ShowOverlay();
+            // 兜底：OverlayBase.ShowOverlay 受 _ownerVisible 闸门控制，
+            // panel 关闭时焦点常在 Flash 子窗口 → owner 仍 deactivated → ShowWindow 被跳过。
+            // 这里直接 SW_SHOWNOACTIVATE 强制显示，与 CursorOverlayForm 同款绕过策略。
+            try { ShowWindow(this.Handle, SW_SHOWNOACTIVATE); } catch { }
             RenderToBitmapAndCommit();
             MaybeStartTick();
         }
@@ -354,8 +358,20 @@ namespace CF7Launcher.Guardian
 
         #region 命中测试 + 鼠标路由
 
+        // Win32: 防止点击 NativeHud 转移激活状态（否则 GuardianForm.Deactivate → OverlayBase.HideOverlay → SW_HIDE）
+        private const int WM_MOUSEACTIVATE = 0x0021;
+        private const int MA_NOACTIVATE = 3;
+
         protected override void WndProc(ref Message m)
         {
+            if (m.Msg == WM_MOUSEACTIVATE)
+            {
+                // 关键：返回 MA_NOACTIVATE 让点击不抢前台。
+                // WS_EX_NOACTIVATE 只阻止"自动"激活（show/click），不阻止系统在某些路径下重排 z-order；
+                // 显式拦 WM_MOUSEACTIVATE 才能保证 GuardianForm 永远不 Deactivate，widget 可被反复点击。
+                m.Result = (IntPtr)MA_NOACTIVATE;
+                return;
+            }
             if (m.Msg == WM_NCHITTEST)
             {
                 long lp = m.LParam.ToInt64();
@@ -381,8 +397,81 @@ namespace CF7Launcher.Guardian
             base.WndProc(ref m);
         }
 
-        // Phase 1：鼠标事件 stub。Phase 3 NotchWidget 上线后接入 Mouse{Down/Up/Move/Leave}。
-        // 现阶段命中区不存在（无 widget），不会被触发。
+        // Phase 4：鼠标事件路由。命中 widget → 转屏幕坐标 → OnMouseEvent。
+        // 仅向当前命中 widget 派发；hover 切换通过 Move 事件 + widget 自身 idx 比对处理。
+        private INativeHudWidget _lastHoverWidget;
+
+        private INativeHudWidget HitTestScreen(Point screenPt)
+        {
+            INativeHudWidget[] snapshot;
+            lock (_widgetsLock) { snapshot = _widgets.ToArray(); }
+            for (int i = snapshot.Length - 1; i >= 0; i--)
+            {
+                INativeHudWidget w = snapshot[i];
+                if (w == null || !w.Visible) continue;
+                if (w.TryHitTest(screenPt)) return w;
+            }
+            return null;
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            Point screenPt = this.PointToScreen(e.Location);
+            INativeHudWidget hit = HitTestScreen(screenPt);
+            MouseEventArgs screenArgs = new MouseEventArgs(e.Button, e.Clicks, screenPt.X, screenPt.Y, e.Delta);
+            if (hit != _lastHoverWidget)
+            {
+                if (_lastHoverWidget != null)
+                    try { _lastHoverWidget.OnMouseEvent(screenArgs, MouseEventKind.Leave); }
+                    catch (Exception ex) { LogManager.Log("[NativeHud] widget Leave throw: " + ex.Message); }
+                if (hit != null)
+                    try { hit.OnMouseEvent(screenArgs, MouseEventKind.Enter); }
+                    catch (Exception ex) { LogManager.Log("[NativeHud] widget Enter throw: " + ex.Message); }
+                _lastHoverWidget = hit;
+            }
+            if (hit != null)
+                try { hit.OnMouseEvent(screenArgs, MouseEventKind.Move); }
+                catch (Exception ex) { LogManager.Log("[NativeHud] widget Move throw: " + ex.Message); }
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            if (_lastHoverWidget != null)
+            {
+                try { _lastHoverWidget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0), MouseEventKind.Leave); }
+                catch (Exception ex) { LogManager.Log("[NativeHud] widget Leave throw: " + ex.Message); }
+                _lastHoverWidget = null;
+            }
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            Point screenPt = this.PointToScreen(e.Location);
+            INativeHudWidget hit = HitTestScreen(screenPt);
+            if (hit == null) return;
+            try { hit.OnMouseEvent(new MouseEventArgs(e.Button, e.Clicks, screenPt.X, screenPt.Y, e.Delta), MouseEventKind.Down); }
+            catch (Exception ex) { LogManager.Log("[NativeHud] widget Down throw: " + ex.Message); }
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            Point screenPt = this.PointToScreen(e.Location);
+            INativeHudWidget hit = HitTestScreen(screenPt);
+            if (hit == null) return;
+            MouseEventArgs sArgs = new MouseEventArgs(e.Button, e.Clicks, screenPt.X, screenPt.Y, e.Delta);
+            try { hit.OnMouseEvent(sArgs, MouseEventKind.Up); }
+            catch (Exception ex) { LogManager.Log("[NativeHud] widget Up throw: " + ex.Message); }
+            // Form 的 OnMouseClick 在 Down/Up 同一控件时也会 fire；为简化路由直接在 Up 内派发 Click。
+            if (e.Button == MouseButtons.Left)
+            {
+                try { hit.OnMouseEvent(sArgs, MouseEventKind.Click); }
+                catch (Exception ex) { LogManager.Log("[NativeHud] widget Click throw: " + ex.Message); }
+            }
+        }
 
         #endregion
 

@@ -498,7 +498,9 @@ namespace CF7Launcher.Guardian
             const string css =
                 "(function(){var s=document.getElementById('cf7-native-hud-css');if(s)return;" +
                 "s=document.createElement('style');s.id='cf7-native-hud-css';" +
-                "s.textContent='#notch,#toast-container{display:none!important;}';" +
+                "s.textContent='#notch,#toast-container,#top-right-tools{display:none!important;}';" +
+                // 注：currency-gold/kpoint 与 notch-toolbar 当前都在 #notch 内，
+                // 隐藏 #notch 已自动隐藏；C# CurrencyWidget / NotchToolbarWidget 接管显示。
                 "document.head.appendChild(s);})();";
             try { ExecScript(css); }
             catch (Exception ex) { LogManager.Log("[WebOverlay] HideWebHudDomForNativeHud failed: " + ex.Message); }
