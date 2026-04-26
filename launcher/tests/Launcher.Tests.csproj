@@ -63,6 +63,9 @@
     <Compile Include="Guardian\ComboWidgetTests.cs" />
     <Compile Include="Guardian\CompositeNotchSinkTests.cs" />
     <Compile Include="Guardian\JukeboxTitlebarWidgetTests.cs" />
+    <Compile Include="Guardian\MapHudAssetPathSecurityTests.cs" />
+    <Compile Include="Guardian\MapHudPayloadParseTests.cs" />
+    <Compile Include="Guardian\MapHudWidgetTests.cs" />
     <Compile Include="Guardian\QuestNoticeWidgetTests.cs" />
     <Compile Include="Guardian\SafeExitPanelWidgetTests.cs" />
     <Compile Include="Guardian\TopRightToolsWidgetTests.cs" />
@@ -70,6 +73,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Fixtures\MapHud\payload-v1-basic.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Fixtures\MapHud\payload-v1-fallback-blocks.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Fixtures\MapHud\payload-v1-missing-meta-group.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Fixtures\MapHud\payload-v1-empty-hotspots.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Fixtures\MapHud\payload-v0-legacy.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

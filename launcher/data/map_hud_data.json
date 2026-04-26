@@ -1,0 +1,6247 @@
+{
+  "protocolVersion": 1,
+  "generatedAt": "2026-04-26T10:11:44.024Z",
+  "sourceFile": "launcher/web/modules/map-panel-data.js",
+  "hotspots": {
+    "base_roof": {
+      "meta": {
+        "pageId": "base",
+        "pageLabel": "基地",
+        "hotspotId": "base_roof",
+        "label": "基地屋顶",
+        "sceneName": "基地房顶",
+        "group": ""
+      },
+      "outline": {
+        "focusFilterId": "roof",
+        "focusFilterLabel": "基地屋顶",
+        "viewportRect": {
+          "x": 200.72,
+          "y": 90.48,
+          "w": 492.81,
+          "h": 188.79
+        },
+        "currentRect": {
+          "x": 211.6,
+          "y": 95.25,
+          "w": 471.05,
+          "h": 179.25
+        },
+        "blocks": [
+          {
+            "hotspotId": "base_roof",
+            "label": "基地屋顶",
+            "sourceRect": {
+              "x": 211.6,
+              "y": 95.25,
+              "w": 471.05,
+              "h": 179.25
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "base_roof_visual",
+            "label": "基地屋顶",
+            "assetUrl": "assets/map/composite/base/base-roof.png",
+            "hotspotIds": [
+              "base_roof"
+            ],
+            "sourceRect": {
+              "x": 211.6,
+              "y": 95.25,
+              "w": 471.05,
+              "h": 179.25
+            },
+            "isCurrent": true
+          }
+        ]
+      }
+    },
+    "base_lobby": {
+      "meta": {
+        "pageId": "base",
+        "pageLabel": "基地",
+        "hotspotId": "base_lobby",
+        "label": "基地大厅",
+        "sceneName": "基地1层",
+        "group": ""
+      },
+      "outline": {
+        "focusFilterId": "first_floor",
+        "focusFilterLabel": "基地一层",
+        "viewportRect": {
+          "x": 20.34,
+          "y": 49.95,
+          "w": 904.81,
+          "h": 247.42
+        },
+        "currentRect": {
+          "x": 223.35,
+          "y": 146.7,
+          "w": 441.94,
+          "h": 142.76
+        },
+        "blocks": [
+          {
+            "hotspotId": "base_lobby",
+            "label": "基地大厅",
+            "sourceRect": {
+              "x": 223.35,
+              "y": 146.7,
+              "w": 441.94,
+              "h": 142.76
+            }
+          },
+          {
+            "hotspotId": "base_entrance",
+            "label": "基地门口",
+            "sourceRect": {
+              "x": 622.65,
+              "y": 151.3,
+              "w": 289.54,
+              "h": 137.49
+            }
+          },
+          {
+            "hotspotId": "base_garage",
+            "label": "基地车库",
+            "sourceRect": {
+              "x": 33.3,
+              "y": 134.25,
+              "w": 290,
+              "h": 156.87
+            }
+          },
+          {
+            "hotspotId": "merc_bar",
+            "label": "佣兵酒吧",
+            "sourceRect": {
+              "x": 295.1,
+              "y": 65.9,
+              "w": 216.25,
+              "h": 125.44
+            }
+          },
+          {
+            "hotspotId": "infirmary",
+            "label": "医务室",
+            "sourceRect": {
+              "x": 496.55,
+              "y": 95.2,
+              "w": 156.52,
+              "h": 123.5
+            }
+          },
+          {
+            "hotspotId": "dormitory",
+            "label": "宿舍",
+            "sourceRect": {
+              "x": 475.85,
+              "y": 56.2,
+              "w": 133.93,
+              "h": 100.91
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "merc_bar_visual",
+            "label": "佣兵酒吧",
+            "assetUrl": "assets/map/composite/base/merc-bar.png",
+            "hotspotIds": [
+              "merc_bar"
+            ],
+            "sourceRect": {
+              "x": 295.1,
+              "y": 65.9,
+              "w": 216.25,
+              "h": 125.44
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "infirmary_visual",
+            "label": "医务室",
+            "assetUrl": "assets/map/composite/base/infirmary.png",
+            "hotspotIds": [
+              "infirmary"
+            ],
+            "sourceRect": {
+              "x": 496.55,
+              "y": 95.2,
+              "w": 156.52,
+              "h": 123.5
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "dormitory_visual",
+            "label": "宿舍",
+            "assetUrl": "assets/map/composite/base/dormitory.png",
+            "hotspotIds": [
+              "dormitory"
+            ],
+            "sourceRect": {
+              "x": 475.85,
+              "y": 56.2,
+              "w": 133.93,
+              "h": 100.91
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "base_garage_visual",
+            "label": "基地车库",
+            "assetUrl": "assets/map/composite/base/base-garage.png",
+            "hotspotIds": [
+              "base_garage"
+            ],
+            "sourceRect": {
+              "x": 33.3,
+              "y": 134.25,
+              "w": 290,
+              "h": 156.87
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "base_lobby_visual",
+            "label": "基地大厅",
+            "assetUrl": "assets/map/composite/base/base-lobby.png",
+            "hotspotIds": [
+              "base_lobby"
+            ],
+            "sourceRect": {
+              "x": 223.35,
+              "y": 146.7,
+              "w": 441.94,
+              "h": 142.76
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "base_entrance_visual",
+            "label": "基地门口",
+            "assetUrl": "assets/map/composite/base/base-entrance.png",
+            "hotspotIds": [
+              "base_entrance"
+            ],
+            "sourceRect": {
+              "x": 622.65,
+              "y": 151.3,
+              "w": 289.54,
+              "h": 137.49
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "base_entrance": {
+      "meta": {
+        "pageId": "base",
+        "pageLabel": "基地",
+        "hotspotId": "base_entrance",
+        "label": "基地门口",
+        "sceneName": "基地门口",
+        "group": ""
+      },
+      "outline": {
+        "focusFilterId": "first_floor",
+        "focusFilterLabel": "基地一层",
+        "viewportRect": {
+          "x": 20.34,
+          "y": 49.95,
+          "w": 904.81,
+          "h": 247.42
+        },
+        "currentRect": {
+          "x": 622.65,
+          "y": 151.3,
+          "w": 289.54,
+          "h": 137.49
+        },
+        "blocks": [
+          {
+            "hotspotId": "base_lobby",
+            "label": "基地大厅",
+            "sourceRect": {
+              "x": 223.35,
+              "y": 146.7,
+              "w": 441.94,
+              "h": 142.76
+            }
+          },
+          {
+            "hotspotId": "base_entrance",
+            "label": "基地门口",
+            "sourceRect": {
+              "x": 622.65,
+              "y": 151.3,
+              "w": 289.54,
+              "h": 137.49
+            }
+          },
+          {
+            "hotspotId": "base_garage",
+            "label": "基地车库",
+            "sourceRect": {
+              "x": 33.3,
+              "y": 134.25,
+              "w": 290,
+              "h": 156.87
+            }
+          },
+          {
+            "hotspotId": "merc_bar",
+            "label": "佣兵酒吧",
+            "sourceRect": {
+              "x": 295.1,
+              "y": 65.9,
+              "w": 216.25,
+              "h": 125.44
+            }
+          },
+          {
+            "hotspotId": "infirmary",
+            "label": "医务室",
+            "sourceRect": {
+              "x": 496.55,
+              "y": 95.2,
+              "w": 156.52,
+              "h": 123.5
+            }
+          },
+          {
+            "hotspotId": "dormitory",
+            "label": "宿舍",
+            "sourceRect": {
+              "x": 475.85,
+              "y": 56.2,
+              "w": 133.93,
+              "h": 100.91
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "merc_bar_visual",
+            "label": "佣兵酒吧",
+            "assetUrl": "assets/map/composite/base/merc-bar.png",
+            "hotspotIds": [
+              "merc_bar"
+            ],
+            "sourceRect": {
+              "x": 295.1,
+              "y": 65.9,
+              "w": 216.25,
+              "h": 125.44
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "infirmary_visual",
+            "label": "医务室",
+            "assetUrl": "assets/map/composite/base/infirmary.png",
+            "hotspotIds": [
+              "infirmary"
+            ],
+            "sourceRect": {
+              "x": 496.55,
+              "y": 95.2,
+              "w": 156.52,
+              "h": 123.5
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "dormitory_visual",
+            "label": "宿舍",
+            "assetUrl": "assets/map/composite/base/dormitory.png",
+            "hotspotIds": [
+              "dormitory"
+            ],
+            "sourceRect": {
+              "x": 475.85,
+              "y": 56.2,
+              "w": 133.93,
+              "h": 100.91
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "base_garage_visual",
+            "label": "基地车库",
+            "assetUrl": "assets/map/composite/base/base-garage.png",
+            "hotspotIds": [
+              "base_garage"
+            ],
+            "sourceRect": {
+              "x": 33.3,
+              "y": 134.25,
+              "w": 290,
+              "h": 156.87
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "base_lobby_visual",
+            "label": "基地大厅",
+            "assetUrl": "assets/map/composite/base/base-lobby.png",
+            "hotspotIds": [
+              "base_lobby"
+            ],
+            "sourceRect": {
+              "x": 223.35,
+              "y": 146.7,
+              "w": 441.94,
+              "h": 142.76
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "base_entrance_visual",
+            "label": "基地门口",
+            "assetUrl": "assets/map/composite/base/base-entrance.png",
+            "hotspotIds": [
+              "base_entrance"
+            ],
+            "sourceRect": {
+              "x": 622.65,
+              "y": 151.3,
+              "w": 289.54,
+              "h": 137.49
+            },
+            "isCurrent": true
+          }
+        ]
+      }
+    },
+    "base_garage": {
+      "meta": {
+        "pageId": "base",
+        "pageLabel": "基地",
+        "hotspotId": "base_garage",
+        "label": "基地车库",
+        "sceneName": "基地车库",
+        "group": ""
+      },
+      "outline": {
+        "focusFilterId": "first_floor",
+        "focusFilterLabel": "基地一层",
+        "viewportRect": {
+          "x": 20.34,
+          "y": 49.95,
+          "w": 904.81,
+          "h": 247.42
+        },
+        "currentRect": {
+          "x": 33.3,
+          "y": 134.25,
+          "w": 290,
+          "h": 156.87
+        },
+        "blocks": [
+          {
+            "hotspotId": "base_lobby",
+            "label": "基地大厅",
+            "sourceRect": {
+              "x": 223.35,
+              "y": 146.7,
+              "w": 441.94,
+              "h": 142.76
+            }
+          },
+          {
+            "hotspotId": "base_entrance",
+            "label": "基地门口",
+            "sourceRect": {
+              "x": 622.65,
+              "y": 151.3,
+              "w": 289.54,
+              "h": 137.49
+            }
+          },
+          {
+            "hotspotId": "base_garage",
+            "label": "基地车库",
+            "sourceRect": {
+              "x": 33.3,
+              "y": 134.25,
+              "w": 290,
+              "h": 156.87
+            }
+          },
+          {
+            "hotspotId": "merc_bar",
+            "label": "佣兵酒吧",
+            "sourceRect": {
+              "x": 295.1,
+              "y": 65.9,
+              "w": 216.25,
+              "h": 125.44
+            }
+          },
+          {
+            "hotspotId": "infirmary",
+            "label": "医务室",
+            "sourceRect": {
+              "x": 496.55,
+              "y": 95.2,
+              "w": 156.52,
+              "h": 123.5
+            }
+          },
+          {
+            "hotspotId": "dormitory",
+            "label": "宿舍",
+            "sourceRect": {
+              "x": 475.85,
+              "y": 56.2,
+              "w": 133.93,
+              "h": 100.91
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "merc_bar_visual",
+            "label": "佣兵酒吧",
+            "assetUrl": "assets/map/composite/base/merc-bar.png",
+            "hotspotIds": [
+              "merc_bar"
+            ],
+            "sourceRect": {
+              "x": 295.1,
+              "y": 65.9,
+              "w": 216.25,
+              "h": 125.44
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "infirmary_visual",
+            "label": "医务室",
+            "assetUrl": "assets/map/composite/base/infirmary.png",
+            "hotspotIds": [
+              "infirmary"
+            ],
+            "sourceRect": {
+              "x": 496.55,
+              "y": 95.2,
+              "w": 156.52,
+              "h": 123.5
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "dormitory_visual",
+            "label": "宿舍",
+            "assetUrl": "assets/map/composite/base/dormitory.png",
+            "hotspotIds": [
+              "dormitory"
+            ],
+            "sourceRect": {
+              "x": 475.85,
+              "y": 56.2,
+              "w": 133.93,
+              "h": 100.91
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "base_garage_visual",
+            "label": "基地车库",
+            "assetUrl": "assets/map/composite/base/base-garage.png",
+            "hotspotIds": [
+              "base_garage"
+            ],
+            "sourceRect": {
+              "x": 33.3,
+              "y": 134.25,
+              "w": 290,
+              "h": 156.87
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "base_lobby_visual",
+            "label": "基地大厅",
+            "assetUrl": "assets/map/composite/base/base-lobby.png",
+            "hotspotIds": [
+              "base_lobby"
+            ],
+            "sourceRect": {
+              "x": 223.35,
+              "y": 146.7,
+              "w": 441.94,
+              "h": 142.76
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "base_entrance_visual",
+            "label": "基地门口",
+            "assetUrl": "assets/map/composite/base/base-entrance.png",
+            "hotspotIds": [
+              "base_entrance"
+            ],
+            "sourceRect": {
+              "x": 622.65,
+              "y": 151.3,
+              "w": 289.54,
+              "h": 137.49
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "merc_bar": {
+      "meta": {
+        "pageId": "base",
+        "pageLabel": "基地",
+        "hotspotId": "merc_bar",
+        "label": "佣兵酒吧",
+        "sceneName": "佣兵酒吧",
+        "group": ""
+      },
+      "outline": {
+        "focusFilterId": "first_floor",
+        "focusFilterLabel": "基地一层",
+        "viewportRect": {
+          "x": 20.34,
+          "y": 49.95,
+          "w": 904.81,
+          "h": 247.42
+        },
+        "currentRect": {
+          "x": 295.1,
+          "y": 65.9,
+          "w": 216.25,
+          "h": 125.44
+        },
+        "blocks": [
+          {
+            "hotspotId": "base_lobby",
+            "label": "基地大厅",
+            "sourceRect": {
+              "x": 223.35,
+              "y": 146.7,
+              "w": 441.94,
+              "h": 142.76
+            }
+          },
+          {
+            "hotspotId": "base_entrance",
+            "label": "基地门口",
+            "sourceRect": {
+              "x": 622.65,
+              "y": 151.3,
+              "w": 289.54,
+              "h": 137.49
+            }
+          },
+          {
+            "hotspotId": "base_garage",
+            "label": "基地车库",
+            "sourceRect": {
+              "x": 33.3,
+              "y": 134.25,
+              "w": 290,
+              "h": 156.87
+            }
+          },
+          {
+            "hotspotId": "merc_bar",
+            "label": "佣兵酒吧",
+            "sourceRect": {
+              "x": 295.1,
+              "y": 65.9,
+              "w": 216.25,
+              "h": 125.44
+            }
+          },
+          {
+            "hotspotId": "infirmary",
+            "label": "医务室",
+            "sourceRect": {
+              "x": 496.55,
+              "y": 95.2,
+              "w": 156.52,
+              "h": 123.5
+            }
+          },
+          {
+            "hotspotId": "dormitory",
+            "label": "宿舍",
+            "sourceRect": {
+              "x": 475.85,
+              "y": 56.2,
+              "w": 133.93,
+              "h": 100.91
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "merc_bar_visual",
+            "label": "佣兵酒吧",
+            "assetUrl": "assets/map/composite/base/merc-bar.png",
+            "hotspotIds": [
+              "merc_bar"
+            ],
+            "sourceRect": {
+              "x": 295.1,
+              "y": 65.9,
+              "w": 216.25,
+              "h": 125.44
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "infirmary_visual",
+            "label": "医务室",
+            "assetUrl": "assets/map/composite/base/infirmary.png",
+            "hotspotIds": [
+              "infirmary"
+            ],
+            "sourceRect": {
+              "x": 496.55,
+              "y": 95.2,
+              "w": 156.52,
+              "h": 123.5
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "dormitory_visual",
+            "label": "宿舍",
+            "assetUrl": "assets/map/composite/base/dormitory.png",
+            "hotspotIds": [
+              "dormitory"
+            ],
+            "sourceRect": {
+              "x": 475.85,
+              "y": 56.2,
+              "w": 133.93,
+              "h": 100.91
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "base_garage_visual",
+            "label": "基地车库",
+            "assetUrl": "assets/map/composite/base/base-garage.png",
+            "hotspotIds": [
+              "base_garage"
+            ],
+            "sourceRect": {
+              "x": 33.3,
+              "y": 134.25,
+              "w": 290,
+              "h": 156.87
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "base_lobby_visual",
+            "label": "基地大厅",
+            "assetUrl": "assets/map/composite/base/base-lobby.png",
+            "hotspotIds": [
+              "base_lobby"
+            ],
+            "sourceRect": {
+              "x": 223.35,
+              "y": 146.7,
+              "w": 441.94,
+              "h": 142.76
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "base_entrance_visual",
+            "label": "基地门口",
+            "assetUrl": "assets/map/composite/base/base-entrance.png",
+            "hotspotIds": [
+              "base_entrance"
+            ],
+            "sourceRect": {
+              "x": 622.65,
+              "y": 151.3,
+              "w": 289.54,
+              "h": 137.49
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "infirmary": {
+      "meta": {
+        "pageId": "base",
+        "pageLabel": "基地",
+        "hotspotId": "infirmary",
+        "label": "医务室",
+        "sceneName": "医务室",
+        "group": ""
+      },
+      "outline": {
+        "focusFilterId": "first_floor",
+        "focusFilterLabel": "基地一层",
+        "viewportRect": {
+          "x": 20.34,
+          "y": 49.95,
+          "w": 904.81,
+          "h": 247.42
+        },
+        "currentRect": {
+          "x": 496.55,
+          "y": 95.2,
+          "w": 156.52,
+          "h": 123.5
+        },
+        "blocks": [
+          {
+            "hotspotId": "base_lobby",
+            "label": "基地大厅",
+            "sourceRect": {
+              "x": 223.35,
+              "y": 146.7,
+              "w": 441.94,
+              "h": 142.76
+            }
+          },
+          {
+            "hotspotId": "base_entrance",
+            "label": "基地门口",
+            "sourceRect": {
+              "x": 622.65,
+              "y": 151.3,
+              "w": 289.54,
+              "h": 137.49
+            }
+          },
+          {
+            "hotspotId": "base_garage",
+            "label": "基地车库",
+            "sourceRect": {
+              "x": 33.3,
+              "y": 134.25,
+              "w": 290,
+              "h": 156.87
+            }
+          },
+          {
+            "hotspotId": "merc_bar",
+            "label": "佣兵酒吧",
+            "sourceRect": {
+              "x": 295.1,
+              "y": 65.9,
+              "w": 216.25,
+              "h": 125.44
+            }
+          },
+          {
+            "hotspotId": "infirmary",
+            "label": "医务室",
+            "sourceRect": {
+              "x": 496.55,
+              "y": 95.2,
+              "w": 156.52,
+              "h": 123.5
+            }
+          },
+          {
+            "hotspotId": "dormitory",
+            "label": "宿舍",
+            "sourceRect": {
+              "x": 475.85,
+              "y": 56.2,
+              "w": 133.93,
+              "h": 100.91
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "merc_bar_visual",
+            "label": "佣兵酒吧",
+            "assetUrl": "assets/map/composite/base/merc-bar.png",
+            "hotspotIds": [
+              "merc_bar"
+            ],
+            "sourceRect": {
+              "x": 295.1,
+              "y": 65.9,
+              "w": 216.25,
+              "h": 125.44
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "infirmary_visual",
+            "label": "医务室",
+            "assetUrl": "assets/map/composite/base/infirmary.png",
+            "hotspotIds": [
+              "infirmary"
+            ],
+            "sourceRect": {
+              "x": 496.55,
+              "y": 95.2,
+              "w": 156.52,
+              "h": 123.5
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "dormitory_visual",
+            "label": "宿舍",
+            "assetUrl": "assets/map/composite/base/dormitory.png",
+            "hotspotIds": [
+              "dormitory"
+            ],
+            "sourceRect": {
+              "x": 475.85,
+              "y": 56.2,
+              "w": 133.93,
+              "h": 100.91
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "base_garage_visual",
+            "label": "基地车库",
+            "assetUrl": "assets/map/composite/base/base-garage.png",
+            "hotspotIds": [
+              "base_garage"
+            ],
+            "sourceRect": {
+              "x": 33.3,
+              "y": 134.25,
+              "w": 290,
+              "h": 156.87
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "base_lobby_visual",
+            "label": "基地大厅",
+            "assetUrl": "assets/map/composite/base/base-lobby.png",
+            "hotspotIds": [
+              "base_lobby"
+            ],
+            "sourceRect": {
+              "x": 223.35,
+              "y": 146.7,
+              "w": 441.94,
+              "h": 142.76
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "base_entrance_visual",
+            "label": "基地门口",
+            "assetUrl": "assets/map/composite/base/base-entrance.png",
+            "hotspotIds": [
+              "base_entrance"
+            ],
+            "sourceRect": {
+              "x": 622.65,
+              "y": 151.3,
+              "w": 289.54,
+              "h": 137.49
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "dormitory": {
+      "meta": {
+        "pageId": "base",
+        "pageLabel": "基地",
+        "hotspotId": "dormitory",
+        "label": "宿舍",
+        "sceneName": "房间",
+        "group": ""
+      },
+      "outline": {
+        "focusFilterId": "first_floor",
+        "focusFilterLabel": "基地一层",
+        "viewportRect": {
+          "x": 20.34,
+          "y": 49.95,
+          "w": 904.81,
+          "h": 247.42
+        },
+        "currentRect": {
+          "x": 475.85,
+          "y": 56.2,
+          "w": 133.93,
+          "h": 100.91
+        },
+        "blocks": [
+          {
+            "hotspotId": "base_lobby",
+            "label": "基地大厅",
+            "sourceRect": {
+              "x": 223.35,
+              "y": 146.7,
+              "w": 441.94,
+              "h": 142.76
+            }
+          },
+          {
+            "hotspotId": "base_entrance",
+            "label": "基地门口",
+            "sourceRect": {
+              "x": 622.65,
+              "y": 151.3,
+              "w": 289.54,
+              "h": 137.49
+            }
+          },
+          {
+            "hotspotId": "base_garage",
+            "label": "基地车库",
+            "sourceRect": {
+              "x": 33.3,
+              "y": 134.25,
+              "w": 290,
+              "h": 156.87
+            }
+          },
+          {
+            "hotspotId": "merc_bar",
+            "label": "佣兵酒吧",
+            "sourceRect": {
+              "x": 295.1,
+              "y": 65.9,
+              "w": 216.25,
+              "h": 125.44
+            }
+          },
+          {
+            "hotspotId": "infirmary",
+            "label": "医务室",
+            "sourceRect": {
+              "x": 496.55,
+              "y": 95.2,
+              "w": 156.52,
+              "h": 123.5
+            }
+          },
+          {
+            "hotspotId": "dormitory",
+            "label": "宿舍",
+            "sourceRect": {
+              "x": 475.85,
+              "y": 56.2,
+              "w": 133.93,
+              "h": 100.91
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "merc_bar_visual",
+            "label": "佣兵酒吧",
+            "assetUrl": "assets/map/composite/base/merc-bar.png",
+            "hotspotIds": [
+              "merc_bar"
+            ],
+            "sourceRect": {
+              "x": 295.1,
+              "y": 65.9,
+              "w": 216.25,
+              "h": 125.44
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "infirmary_visual",
+            "label": "医务室",
+            "assetUrl": "assets/map/composite/base/infirmary.png",
+            "hotspotIds": [
+              "infirmary"
+            ],
+            "sourceRect": {
+              "x": 496.55,
+              "y": 95.2,
+              "w": 156.52,
+              "h": 123.5
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "dormitory_visual",
+            "label": "宿舍",
+            "assetUrl": "assets/map/composite/base/dormitory.png",
+            "hotspotIds": [
+              "dormitory"
+            ],
+            "sourceRect": {
+              "x": 475.85,
+              "y": 56.2,
+              "w": 133.93,
+              "h": 100.91
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "base_garage_visual",
+            "label": "基地车库",
+            "assetUrl": "assets/map/composite/base/base-garage.png",
+            "hotspotIds": [
+              "base_garage"
+            ],
+            "sourceRect": {
+              "x": 33.3,
+              "y": 134.25,
+              "w": 290,
+              "h": 156.87
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "base_lobby_visual",
+            "label": "基地大厅",
+            "assetUrl": "assets/map/composite/base/base-lobby.png",
+            "hotspotIds": [
+              "base_lobby"
+            ],
+            "sourceRect": {
+              "x": 223.35,
+              "y": 146.7,
+              "w": 441.94,
+              "h": 142.76
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "base_entrance_visual",
+            "label": "基地门口",
+            "assetUrl": "assets/map/composite/base/base-entrance.png",
+            "hotspotIds": [
+              "base_entrance"
+            ],
+            "sourceRect": {
+              "x": 622.65,
+              "y": 151.3,
+              "w": 289.54,
+              "h": 137.49
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "basement1": {
+      "meta": {
+        "pageId": "base",
+        "pageLabel": "基地",
+        "hotspotId": "basement1",
+        "label": "地下一层",
+        "sceneName": "地下室1层",
+        "group": ""
+      },
+      "outline": {
+        "focusFilterId": "basement1",
+        "focusFilterLabel": "地下一层",
+        "viewportRect": {
+          "x": 210.87,
+          "y": 213.6,
+          "w": 470.27,
+          "h": 170.07
+        },
+        "currentRect": {
+          "x": 337.55,
+          "y": 257.4,
+          "w": 333.2,
+          "h": 121.98
+        },
+        "blocks": [
+          {
+            "hotspotId": "basement1",
+            "label": "地下一层",
+            "sourceRect": {
+              "x": 337.55,
+              "y": 257.4,
+              "w": 333.2,
+              "h": 121.98
+            }
+          },
+          {
+            "hotspotId": "gym",
+            "label": "健身房",
+            "sourceRect": {
+              "x": 221.25,
+              "y": 257.4,
+              "w": 199.87,
+              "h": 120.98
+            }
+          },
+          {
+            "hotspotId": "armory",
+            "label": "武器库",
+            "sourceRect": {
+              "x": 459.65,
+              "y": 217.9,
+              "w": 198.61,
+              "h": 120.98
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "basement1_visual",
+            "label": "地下一层",
+            "assetUrl": "assets/map/composite/base/basement1.png",
+            "hotspotIds": [
+              "basement1"
+            ],
+            "sourceRect": {
+              "x": 337.55,
+              "y": 257.4,
+              "w": 333.2,
+              "h": 121.98
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "gym_visual",
+            "label": "健身房",
+            "assetUrl": "assets/map/composite/base/gym.png",
+            "hotspotIds": [
+              "gym"
+            ],
+            "sourceRect": {
+              "x": 221.25,
+              "y": 257.4,
+              "w": 199.87,
+              "h": 120.98
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "armory_visual",
+            "label": "武器库",
+            "assetUrl": "assets/map/composite/base/armory.png",
+            "hotspotIds": [
+              "armory"
+            ],
+            "sourceRect": {
+              "x": 459.65,
+              "y": 217.9,
+              "w": 198.61,
+              "h": 120.98
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "gym": {
+      "meta": {
+        "pageId": "base",
+        "pageLabel": "基地",
+        "hotspotId": "gym",
+        "label": "健身房",
+        "sceneName": "健身房",
+        "group": ""
+      },
+      "outline": {
+        "focusFilterId": "basement1",
+        "focusFilterLabel": "地下一层",
+        "viewportRect": {
+          "x": 210.87,
+          "y": 213.6,
+          "w": 470.27,
+          "h": 170.07
+        },
+        "currentRect": {
+          "x": 221.25,
+          "y": 257.4,
+          "w": 199.87,
+          "h": 120.98
+        },
+        "blocks": [
+          {
+            "hotspotId": "basement1",
+            "label": "地下一层",
+            "sourceRect": {
+              "x": 337.55,
+              "y": 257.4,
+              "w": 333.2,
+              "h": 121.98
+            }
+          },
+          {
+            "hotspotId": "gym",
+            "label": "健身房",
+            "sourceRect": {
+              "x": 221.25,
+              "y": 257.4,
+              "w": 199.87,
+              "h": 120.98
+            }
+          },
+          {
+            "hotspotId": "armory",
+            "label": "武器库",
+            "sourceRect": {
+              "x": 459.65,
+              "y": 217.9,
+              "w": 198.61,
+              "h": 120.98
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "basement1_visual",
+            "label": "地下一层",
+            "assetUrl": "assets/map/composite/base/basement1.png",
+            "hotspotIds": [
+              "basement1"
+            ],
+            "sourceRect": {
+              "x": 337.55,
+              "y": 257.4,
+              "w": 333.2,
+              "h": 121.98
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "gym_visual",
+            "label": "健身房",
+            "assetUrl": "assets/map/composite/base/gym.png",
+            "hotspotIds": [
+              "gym"
+            ],
+            "sourceRect": {
+              "x": 221.25,
+              "y": 257.4,
+              "w": 199.87,
+              "h": 120.98
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "armory_visual",
+            "label": "武器库",
+            "assetUrl": "assets/map/composite/base/armory.png",
+            "hotspotIds": [
+              "armory"
+            ],
+            "sourceRect": {
+              "x": 459.65,
+              "y": 217.9,
+              "w": 198.61,
+              "h": 120.98
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "armory": {
+      "meta": {
+        "pageId": "base",
+        "pageLabel": "基地",
+        "hotspotId": "armory",
+        "label": "武器库",
+        "sceneName": "武器库",
+        "group": ""
+      },
+      "outline": {
+        "focusFilterId": "basement1",
+        "focusFilterLabel": "地下一层",
+        "viewportRect": {
+          "x": 210.87,
+          "y": 213.6,
+          "w": 470.27,
+          "h": 170.07
+        },
+        "currentRect": {
+          "x": 459.65,
+          "y": 217.9,
+          "w": 198.61,
+          "h": 120.98
+        },
+        "blocks": [
+          {
+            "hotspotId": "basement1",
+            "label": "地下一层",
+            "sourceRect": {
+              "x": 337.55,
+              "y": 257.4,
+              "w": 333.2,
+              "h": 121.98
+            }
+          },
+          {
+            "hotspotId": "gym",
+            "label": "健身房",
+            "sourceRect": {
+              "x": 221.25,
+              "y": 257.4,
+              "w": 199.87,
+              "h": 120.98
+            }
+          },
+          {
+            "hotspotId": "armory",
+            "label": "武器库",
+            "sourceRect": {
+              "x": 459.65,
+              "y": 217.9,
+              "w": 198.61,
+              "h": 120.98
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "basement1_visual",
+            "label": "地下一层",
+            "assetUrl": "assets/map/composite/base/basement1.png",
+            "hotspotIds": [
+              "basement1"
+            ],
+            "sourceRect": {
+              "x": 337.55,
+              "y": 257.4,
+              "w": 333.2,
+              "h": 121.98
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "gym_visual",
+            "label": "健身房",
+            "assetUrl": "assets/map/composite/base/gym.png",
+            "hotspotIds": [
+              "gym"
+            ],
+            "sourceRect": {
+              "x": 221.25,
+              "y": 257.4,
+              "w": 199.87,
+              "h": 120.98
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "armory_visual",
+            "label": "武器库",
+            "assetUrl": "assets/map/composite/base/armory.png",
+            "hotspotIds": [
+              "armory"
+            ],
+            "sourceRect": {
+              "x": 459.65,
+              "y": 217.9,
+              "w": 198.61,
+              "h": 120.98
+            },
+            "isCurrent": true
+          }
+        ]
+      }
+    },
+    "cafeteria": {
+      "meta": {
+        "pageId": "base",
+        "pageLabel": "基地",
+        "hotspotId": "cafeteria",
+        "label": "食堂",
+        "sceneName": "地图-食堂",
+        "group": ""
+      },
+      "outline": {
+        "focusFilterId": "basement2",
+        "focusFilterLabel": "地下二层",
+        "viewportRect": {
+          "x": 31.64,
+          "y": 309.81,
+          "w": 697.41,
+          "h": 167.87
+        },
+        "currentRect": {
+          "x": 44.6,
+          "y": 314.05,
+          "w": 399.62,
+          "h": 159.39
+        },
+        "blocks": [
+          {
+            "hotspotId": "cafeteria",
+            "label": "食堂",
+            "sourceRect": {
+              "x": 44.6,
+              "y": 314.05,
+              "w": 399.62,
+              "h": 159.39
+            }
+          },
+          {
+            "hotspotId": "corridor",
+            "label": "走廊",
+            "sourceRect": {
+              "x": 329,
+              "y": 348.55,
+              "w": 197.46,
+              "h": 121.66
+            }
+          },
+          {
+            "hotspotId": "lab",
+            "label": "实验室",
+            "sourceRect": {
+              "x": 496.1,
+              "y": 317.35,
+              "w": 219.99,
+              "h": 153.01
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "cafeteria_visual",
+            "label": "食堂",
+            "assetUrl": "assets/map/composite/base/cafeteria.png",
+            "hotspotIds": [
+              "cafeteria"
+            ],
+            "sourceRect": {
+              "x": 44.6,
+              "y": 314.05,
+              "w": 399.62,
+              "h": 159.39
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "corridor_visual",
+            "label": "走廊",
+            "assetUrl": "assets/map/composite/base/corridor.png",
+            "hotspotIds": [
+              "corridor"
+            ],
+            "sourceRect": {
+              "x": 329,
+              "y": 348.55,
+              "w": 197.46,
+              "h": 121.66
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "lab_visual",
+            "label": "实验室",
+            "assetUrl": "assets/map/composite/base/lab.png",
+            "hotspotIds": [
+              "lab"
+            ],
+            "sourceRect": {
+              "x": 496.1,
+              "y": 317.35,
+              "w": 219.99,
+              "h": 153.01
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "corridor": {
+      "meta": {
+        "pageId": "base",
+        "pageLabel": "基地",
+        "hotspotId": "corridor",
+        "label": "走廊",
+        "sceneName": "地图-走廊",
+        "group": ""
+      },
+      "outline": {
+        "focusFilterId": "basement2",
+        "focusFilterLabel": "地下二层",
+        "viewportRect": {
+          "x": 31.64,
+          "y": 309.81,
+          "w": 697.41,
+          "h": 167.87
+        },
+        "currentRect": {
+          "x": 329,
+          "y": 348.55,
+          "w": 197.46,
+          "h": 121.66
+        },
+        "blocks": [
+          {
+            "hotspotId": "cafeteria",
+            "label": "食堂",
+            "sourceRect": {
+              "x": 44.6,
+              "y": 314.05,
+              "w": 399.62,
+              "h": 159.39
+            }
+          },
+          {
+            "hotspotId": "corridor",
+            "label": "走廊",
+            "sourceRect": {
+              "x": 329,
+              "y": 348.55,
+              "w": 197.46,
+              "h": 121.66
+            }
+          },
+          {
+            "hotspotId": "lab",
+            "label": "实验室",
+            "sourceRect": {
+              "x": 496.1,
+              "y": 317.35,
+              "w": 219.99,
+              "h": 153.01
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "cafeteria_visual",
+            "label": "食堂",
+            "assetUrl": "assets/map/composite/base/cafeteria.png",
+            "hotspotIds": [
+              "cafeteria"
+            ],
+            "sourceRect": {
+              "x": 44.6,
+              "y": 314.05,
+              "w": 399.62,
+              "h": 159.39
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "corridor_visual",
+            "label": "走廊",
+            "assetUrl": "assets/map/composite/base/corridor.png",
+            "hotspotIds": [
+              "corridor"
+            ],
+            "sourceRect": {
+              "x": 329,
+              "y": 348.55,
+              "w": 197.46,
+              "h": 121.66
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "lab_visual",
+            "label": "实验室",
+            "assetUrl": "assets/map/composite/base/lab.png",
+            "hotspotIds": [
+              "lab"
+            ],
+            "sourceRect": {
+              "x": 496.1,
+              "y": 317.35,
+              "w": 219.99,
+              "h": 153.01
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "lab": {
+      "meta": {
+        "pageId": "base",
+        "pageLabel": "基地",
+        "hotspotId": "lab",
+        "label": "实验室",
+        "sceneName": "地图-实验室",
+        "group": ""
+      },
+      "outline": {
+        "focusFilterId": "basement2",
+        "focusFilterLabel": "地下二层",
+        "viewportRect": {
+          "x": 31.64,
+          "y": 309.81,
+          "w": 697.41,
+          "h": 167.87
+        },
+        "currentRect": {
+          "x": 496.1,
+          "y": 317.35,
+          "w": 219.99,
+          "h": 153.01
+        },
+        "blocks": [
+          {
+            "hotspotId": "cafeteria",
+            "label": "食堂",
+            "sourceRect": {
+              "x": 44.6,
+              "y": 314.05,
+              "w": 399.62,
+              "h": 159.39
+            }
+          },
+          {
+            "hotspotId": "corridor",
+            "label": "走廊",
+            "sourceRect": {
+              "x": 329,
+              "y": 348.55,
+              "w": 197.46,
+              "h": 121.66
+            }
+          },
+          {
+            "hotspotId": "lab",
+            "label": "实验室",
+            "sourceRect": {
+              "x": 496.1,
+              "y": 317.35,
+              "w": 219.99,
+              "h": 153.01
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "cafeteria_visual",
+            "label": "食堂",
+            "assetUrl": "assets/map/composite/base/cafeteria.png",
+            "hotspotIds": [
+              "cafeteria"
+            ],
+            "sourceRect": {
+              "x": 44.6,
+              "y": 314.05,
+              "w": 399.62,
+              "h": 159.39
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "corridor_visual",
+            "label": "走廊",
+            "assetUrl": "assets/map/composite/base/corridor.png",
+            "hotspotIds": [
+              "corridor"
+            ],
+            "sourceRect": {
+              "x": 329,
+              "y": 348.55,
+              "w": 197.46,
+              "h": 121.66
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "lab_visual",
+            "label": "实验室",
+            "assetUrl": "assets/map/composite/base/lab.png",
+            "hotspotIds": [
+              "lab"
+            ],
+            "sourceRect": {
+              "x": 496.1,
+              "y": 317.35,
+              "w": 219.99,
+              "h": 153.01
+            },
+            "isCurrent": true
+          }
+        ]
+      }
+    },
+    "underground_water": {
+      "meta": {
+        "pageId": "base",
+        "pageLabel": "基地",
+        "hotspotId": "underground_water",
+        "label": "地下水",
+        "sceneName": "地下2层",
+        "group": ""
+      },
+      "outline": {
+        "focusFilterId": "water",
+        "focusFilterLabel": "地下水",
+        "viewportRect": {
+          "x": 323.41,
+          "y": 415.05,
+          "w": 179.85,
+          "h": 120.61
+        },
+        "currentRect": {
+          "x": 328.25,
+          "y": 418.65,
+          "w": 170.17,
+          "h": 113.41
+        },
+        "blocks": [
+          {
+            "hotspotId": "underground_water",
+            "label": "地下水",
+            "sourceRect": {
+              "x": 328.25,
+              "y": 418.65,
+              "w": 170.17,
+              "h": 113.41
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "underground_water_visual",
+            "label": "地下水",
+            "assetUrl": "assets/map/composite/base/underground-water.png",
+            "hotspotIds": [
+              "underground_water"
+            ],
+            "sourceRect": {
+              "x": 328.25,
+              "y": 418.65,
+              "w": 170.17,
+              "h": 113.41
+            },
+            "isCurrent": true
+          }
+        ]
+      }
+    },
+    "warlord_base": {
+      "meta": {
+        "pageId": "faction",
+        "pageLabel": "A兵团",
+        "hotspotId": "warlord_base",
+        "label": "军阀基地",
+        "sceneName": "地图-军阀基地",
+        "group": "warlord"
+      },
+      "outline": {
+        "focusFilterId": "warlord",
+        "focusFilterLabel": "军阀",
+        "viewportRect": {
+          "x": 35.01,
+          "y": 25.56,
+          "w": 259.77,
+          "h": 300.33
+        },
+        "currentRect": {
+          "x": 46.35,
+          "y": 85.4,
+          "w": 240.25,
+          "h": 125.08
+        },
+        "blocks": [
+          {
+            "hotspotId": "warlord_base",
+            "label": "军阀基地",
+            "sourceRect": {
+              "x": 46.35,
+              "y": 85.4,
+              "w": 240.25,
+              "h": 125.08
+            }
+          },
+          {
+            "hotspotId": "warlord_tent",
+            "label": "军阀帐篷",
+            "sourceRect": {
+              "x": 60.6,
+              "y": 33.15,
+              "w": 193.16,
+              "h": 115.48
+            }
+          },
+          {
+            "hotspotId": "firing_range",
+            "label": "靶场",
+            "sourceRect": {
+              "x": 40.75,
+              "y": 170.05,
+              "w": 248.3,
+              "h": 148.26
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "warlord_base_visual",
+            "label": "军阀基地",
+            "assetUrl": "assets/map/composite/faction/warlord-base.png",
+            "hotspotIds": [
+              "warlord_base"
+            ],
+            "sourceRect": {
+              "x": 46.35,
+              "y": 85.4,
+              "w": 240.25,
+              "h": 125.08
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "warlord_tent_visual",
+            "label": "军阀帐篷",
+            "assetUrl": "assets/map/composite/faction/warlord-tent.png",
+            "hotspotIds": [
+              "warlord_tent"
+            ],
+            "sourceRect": {
+              "x": 60.6,
+              "y": 33.15,
+              "w": 193.16,
+              "h": 115.48
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "firing_range_visual",
+            "label": "靶场",
+            "assetUrl": "assets/map/composite/faction/firing-range.png",
+            "hotspotIds": [
+              "firing_range"
+            ],
+            "sourceRect": {
+              "x": 40.75,
+              "y": 170.05,
+              "w": 248.3,
+              "h": 148.26
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "warlord_tent": {
+      "meta": {
+        "pageId": "faction",
+        "pageLabel": "A兵团",
+        "hotspotId": "warlord_tent",
+        "label": "军阀帐篷",
+        "sceneName": "地图-军阀帐篷",
+        "group": "warlord"
+      },
+      "outline": {
+        "focusFilterId": "warlord",
+        "focusFilterLabel": "军阀",
+        "viewportRect": {
+          "x": 35.01,
+          "y": 25.56,
+          "w": 259.77,
+          "h": 300.33
+        },
+        "currentRect": {
+          "x": 60.6,
+          "y": 33.15,
+          "w": 193.16,
+          "h": 115.48
+        },
+        "blocks": [
+          {
+            "hotspotId": "warlord_base",
+            "label": "军阀基地",
+            "sourceRect": {
+              "x": 46.35,
+              "y": 85.4,
+              "w": 240.25,
+              "h": 125.08
+            }
+          },
+          {
+            "hotspotId": "warlord_tent",
+            "label": "军阀帐篷",
+            "sourceRect": {
+              "x": 60.6,
+              "y": 33.15,
+              "w": 193.16,
+              "h": 115.48
+            }
+          },
+          {
+            "hotspotId": "firing_range",
+            "label": "靶场",
+            "sourceRect": {
+              "x": 40.75,
+              "y": 170.05,
+              "w": 248.3,
+              "h": 148.26
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "warlord_base_visual",
+            "label": "军阀基地",
+            "assetUrl": "assets/map/composite/faction/warlord-base.png",
+            "hotspotIds": [
+              "warlord_base"
+            ],
+            "sourceRect": {
+              "x": 46.35,
+              "y": 85.4,
+              "w": 240.25,
+              "h": 125.08
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "warlord_tent_visual",
+            "label": "军阀帐篷",
+            "assetUrl": "assets/map/composite/faction/warlord-tent.png",
+            "hotspotIds": [
+              "warlord_tent"
+            ],
+            "sourceRect": {
+              "x": 60.6,
+              "y": 33.15,
+              "w": 193.16,
+              "h": 115.48
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "firing_range_visual",
+            "label": "靶场",
+            "assetUrl": "assets/map/composite/faction/firing-range.png",
+            "hotspotIds": [
+              "firing_range"
+            ],
+            "sourceRect": {
+              "x": 40.75,
+              "y": 170.05,
+              "w": 248.3,
+              "h": 148.26
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "firing_range": {
+      "meta": {
+        "pageId": "faction",
+        "pageLabel": "A兵团",
+        "hotspotId": "firing_range",
+        "label": "靶场",
+        "sceneName": "地图-靶场",
+        "group": "warlord"
+      },
+      "outline": {
+        "focusFilterId": "warlord",
+        "focusFilterLabel": "军阀",
+        "viewportRect": {
+          "x": 35.01,
+          "y": 25.56,
+          "w": 259.77,
+          "h": 300.33
+        },
+        "currentRect": {
+          "x": 40.75,
+          "y": 170.05,
+          "w": 248.3,
+          "h": 148.26
+        },
+        "blocks": [
+          {
+            "hotspotId": "warlord_base",
+            "label": "军阀基地",
+            "sourceRect": {
+              "x": 46.35,
+              "y": 85.4,
+              "w": 240.25,
+              "h": 125.08
+            }
+          },
+          {
+            "hotspotId": "warlord_tent",
+            "label": "军阀帐篷",
+            "sourceRect": {
+              "x": 60.6,
+              "y": 33.15,
+              "w": 193.16,
+              "h": 115.48
+            }
+          },
+          {
+            "hotspotId": "firing_range",
+            "label": "靶场",
+            "sourceRect": {
+              "x": 40.75,
+              "y": 170.05,
+              "w": 248.3,
+              "h": 148.26
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "warlord_base_visual",
+            "label": "军阀基地",
+            "assetUrl": "assets/map/composite/faction/warlord-base.png",
+            "hotspotIds": [
+              "warlord_base"
+            ],
+            "sourceRect": {
+              "x": 46.35,
+              "y": 85.4,
+              "w": 240.25,
+              "h": 125.08
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "warlord_tent_visual",
+            "label": "军阀帐篷",
+            "assetUrl": "assets/map/composite/faction/warlord-tent.png",
+            "hotspotIds": [
+              "warlord_tent"
+            ],
+            "sourceRect": {
+              "x": 60.6,
+              "y": 33.15,
+              "w": 193.16,
+              "h": 115.48
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "firing_range_visual",
+            "label": "靶场",
+            "assetUrl": "assets/map/composite/faction/firing-range.png",
+            "hotspotIds": [
+              "firing_range"
+            ],
+            "sourceRect": {
+              "x": 40.75,
+              "y": 170.05,
+              "w": 248.3,
+              "h": 148.26
+            },
+            "isCurrent": true
+          }
+        ]
+      }
+    },
+    "rock_park": {
+      "meta": {
+        "pageId": "faction",
+        "pageLabel": "A兵团",
+        "hotspotId": "rock_park",
+        "label": "摇滚公园",
+        "sceneName": "地图-摇滚公园",
+        "group": "rock"
+      },
+      "outline": {
+        "focusFilterId": "rock",
+        "focusFilterLabel": "摇滚",
+        "viewportRect": {
+          "x": 370.49,
+          "y": 47.93,
+          "w": 297.12,
+          "h": 279.84
+        },
+        "currentRect": {
+          "x": 377.05,
+          "y": 55,
+          "w": 284,
+          "h": 145
+        },
+        "blocks": [
+          {
+            "hotspotId": "rock_park",
+            "label": "摇滚公园",
+            "sourceRect": {
+              "x": 377.05,
+              "y": 55,
+              "w": 284,
+              "h": 145
+            }
+          },
+          {
+            "hotspotId": "rock_rehearsal",
+            "label": "摇滚排练室",
+            "sourceRect": {
+              "x": 390.3,
+              "y": 193.7,
+              "w": 262,
+              "h": 127
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "rock_park_visual",
+            "label": "摇滚公园",
+            "assetUrl": "assets/map/composite/faction/rock-park.png",
+            "hotspotIds": [
+              "rock_park"
+            ],
+            "sourceRect": {
+              "x": 377.05,
+              "y": 55,
+              "w": 284,
+              "h": 145
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "rock_rehearsal_visual",
+            "label": "摇滚排练室",
+            "assetUrl": "assets/map/composite/faction/rock-rehearsal.png",
+            "hotspotIds": [
+              "rock_rehearsal"
+            ],
+            "sourceRect": {
+              "x": 390.3,
+              "y": 193.7,
+              "w": 262,
+              "h": 127
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "rock_rehearsal": {
+      "meta": {
+        "pageId": "faction",
+        "pageLabel": "A兵团",
+        "hotspotId": "rock_rehearsal",
+        "label": "摇滚排练室",
+        "sceneName": "地图-摇滚排练室",
+        "group": "rock"
+      },
+      "outline": {
+        "focusFilterId": "rock",
+        "focusFilterLabel": "摇滚",
+        "viewportRect": {
+          "x": 370.49,
+          "y": 47.93,
+          "w": 297.12,
+          "h": 279.84
+        },
+        "currentRect": {
+          "x": 390.3,
+          "y": 193.7,
+          "w": 262,
+          "h": 127
+        },
+        "blocks": [
+          {
+            "hotspotId": "rock_park",
+            "label": "摇滚公园",
+            "sourceRect": {
+              "x": 377.05,
+              "y": 55,
+              "w": 284,
+              "h": 145
+            }
+          },
+          {
+            "hotspotId": "rock_rehearsal",
+            "label": "摇滚排练室",
+            "sourceRect": {
+              "x": 390.3,
+              "y": 193.7,
+              "w": 262,
+              "h": 127
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "rock_park_visual",
+            "label": "摇滚公园",
+            "assetUrl": "assets/map/composite/faction/rock-park.png",
+            "hotspotIds": [
+              "rock_park"
+            ],
+            "sourceRect": {
+              "x": 377.05,
+              "y": 55,
+              "w": 284,
+              "h": 145
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "rock_rehearsal_visual",
+            "label": "摇滚排练室",
+            "assetUrl": "assets/map/composite/faction/rock-rehearsal.png",
+            "hotspotIds": [
+              "rock_rehearsal"
+            ],
+            "sourceRect": {
+              "x": 390.3,
+              "y": 193.7,
+              "w": 262,
+              "h": 127
+            },
+            "isCurrent": true
+          }
+        ]
+      }
+    },
+    "blackiron_training": {
+      "meta": {
+        "pageId": "faction",
+        "pageLabel": "A兵团",
+        "hotspotId": "blackiron_training",
+        "label": "黑铁会修炼场",
+        "sceneName": "地图-黑铁会修炼场",
+        "group": "blackiron"
+      },
+      "outline": {
+        "focusFilterId": "blackiron",
+        "focusFilterLabel": "黑铁会",
+        "viewportRect": {
+          "x": 0,
+          "y": 347.14,
+          "w": 351.91,
+          "h": 230.07
+        },
+        "currentRect": {
+          "x": 8.1,
+          "y": 352.95,
+          "w": 292,
+          "h": 98
+        },
+        "blocks": [
+          {
+            "hotspotId": "blackiron_training",
+            "label": "黑铁会修炼场",
+            "sourceRect": {
+              "x": 8.1,
+              "y": 352.95,
+              "w": 292,
+              "h": 98
+            }
+          },
+          {
+            "hotspotId": "blackiron_pavilion",
+            "label": "黑铁阁",
+            "sourceRect": {
+              "x": 6.1,
+              "y": 418.4,
+              "w": 338,
+              "h": 153
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "blackiron_training_visual",
+            "label": "黑铁会修炼场",
+            "assetUrl": "assets/map/composite/faction/blackiron-training.png",
+            "hotspotIds": [
+              "blackiron_training"
+            ],
+            "sourceRect": {
+              "x": 8.1,
+              "y": 352.95,
+              "w": 292,
+              "h": 98
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "blackiron_pavilion_visual",
+            "label": "黑铁阁",
+            "assetUrl": "assets/map/composite/faction/blackiron-pavilion.png",
+            "hotspotIds": [
+              "blackiron_pavilion"
+            ],
+            "sourceRect": {
+              "x": 6.1,
+              "y": 418.4,
+              "w": 338,
+              "h": 153
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "blackiron_pavilion": {
+      "meta": {
+        "pageId": "faction",
+        "pageLabel": "A兵团",
+        "hotspotId": "blackiron_pavilion",
+        "label": "黑铁阁",
+        "sceneName": "地图-黑铁阁",
+        "group": "blackiron"
+      },
+      "outline": {
+        "focusFilterId": "blackiron",
+        "focusFilterLabel": "黑铁会",
+        "viewportRect": {
+          "x": 0,
+          "y": 347.14,
+          "w": 351.91,
+          "h": 230.07
+        },
+        "currentRect": {
+          "x": 6.1,
+          "y": 418.4,
+          "w": 338,
+          "h": 153
+        },
+        "blocks": [
+          {
+            "hotspotId": "blackiron_training",
+            "label": "黑铁会修炼场",
+            "sourceRect": {
+              "x": 8.1,
+              "y": 352.95,
+              "w": 292,
+              "h": 98
+            }
+          },
+          {
+            "hotspotId": "blackiron_pavilion",
+            "label": "黑铁阁",
+            "sourceRect": {
+              "x": 6.1,
+              "y": 418.4,
+              "w": 338,
+              "h": 153
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "blackiron_training_visual",
+            "label": "黑铁会修炼场",
+            "assetUrl": "assets/map/composite/faction/blackiron-training.png",
+            "hotspotIds": [
+              "blackiron_training"
+            ],
+            "sourceRect": {
+              "x": 8.1,
+              "y": 352.95,
+              "w": 292,
+              "h": 98
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "blackiron_pavilion_visual",
+            "label": "黑铁阁",
+            "assetUrl": "assets/map/composite/faction/blackiron-pavilion.png",
+            "hotspotIds": [
+              "blackiron_pavilion"
+            ],
+            "sourceRect": {
+              "x": 6.1,
+              "y": 418.4,
+              "w": 338,
+              "h": 153
+            },
+            "isCurrent": true
+          }
+        ]
+      }
+    },
+    "fallen_bar": {
+      "meta": {
+        "pageId": "faction",
+        "pageLabel": "A兵团",
+        "hotspotId": "fallen_bar",
+        "label": "堕落城酒吧",
+        "sceneName": "地图-堕落城酒吧",
+        "group": "fallen"
+      },
+      "outline": {
+        "focusFilterId": "fallen",
+        "focusFilterLabel": "堕落城",
+        "viewportRect": {
+          "x": 350.27,
+          "y": 385.37,
+          "w": 470.01,
+          "h": 149.55
+        },
+        "currentRect": {
+          "x": 360.65,
+          "y": 389.15,
+          "w": 252,
+          "h": 138
+        },
+        "blocks": [
+          {
+            "hotspotId": "fallen_bar",
+            "label": "堕落城酒吧",
+            "sourceRect": {
+              "x": 360.65,
+              "y": 389.15,
+              "w": 252,
+              "h": 138
+            }
+          },
+          {
+            "hotspotId": "fallen_street",
+            "label": "堕落城商业街",
+            "sourceRect": {
+              "x": 597.9,
+              "y": 392.15,
+              "w": 212,
+              "h": 139
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "fallen_bar_visual",
+            "label": "堕落城酒吧",
+            "assetUrl": "assets/map/composite/faction/fallen-bar.png",
+            "hotspotIds": [
+              "fallen_bar"
+            ],
+            "sourceRect": {
+              "x": 360.65,
+              "y": 389.15,
+              "w": 252,
+              "h": 138
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "fallen_street_visual",
+            "label": "堕落城商业街",
+            "assetUrl": "assets/map/composite/faction/fallen-street.png",
+            "hotspotIds": [
+              "fallen_street"
+            ],
+            "sourceRect": {
+              "x": 597.9,
+              "y": 392.15,
+              "w": 212,
+              "h": 139
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "fallen_street": {
+      "meta": {
+        "pageId": "faction",
+        "pageLabel": "A兵团",
+        "hotspotId": "fallen_street",
+        "label": "堕落城商业街",
+        "sceneName": "地图-堕落城商业街",
+        "group": "fallen"
+      },
+      "outline": {
+        "focusFilterId": "fallen",
+        "focusFilterLabel": "堕落城",
+        "viewportRect": {
+          "x": 350.27,
+          "y": 385.37,
+          "w": 470.01,
+          "h": 149.55
+        },
+        "currentRect": {
+          "x": 597.9,
+          "y": 392.15,
+          "w": 212,
+          "h": 139
+        },
+        "blocks": [
+          {
+            "hotspotId": "fallen_bar",
+            "label": "堕落城酒吧",
+            "sourceRect": {
+              "x": 360.65,
+              "y": 389.15,
+              "w": 252,
+              "h": 138
+            }
+          },
+          {
+            "hotspotId": "fallen_street",
+            "label": "堕落城商业街",
+            "sourceRect": {
+              "x": 597.9,
+              "y": 392.15,
+              "w": 212,
+              "h": 139
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "fallen_bar_visual",
+            "label": "堕落城酒吧",
+            "assetUrl": "assets/map/composite/faction/fallen-bar.png",
+            "hotspotIds": [
+              "fallen_bar"
+            ],
+            "sourceRect": {
+              "x": 360.65,
+              "y": 389.15,
+              "w": 252,
+              "h": 138
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "fallen_street_visual",
+            "label": "堕落城商业街",
+            "assetUrl": "assets/map/composite/faction/fallen-street.png",
+            "hotspotIds": [
+              "fallen_street"
+            ],
+            "sourceRect": {
+              "x": 597.9,
+              "y": 392.15,
+              "w": 212,
+              "h": 139
+            },
+            "isCurrent": true
+          }
+        ]
+      }
+    },
+    "first_defense": {
+      "meta": {
+        "pageId": "defense",
+        "pageLabel": "废城/禁区",
+        "hotspotId": "first_defense",
+        "label": "第一防线",
+        "sceneName": "地图-第一防线防区",
+        "group": "defense"
+      },
+      "outline": {
+        "focusFilterId": "first_line",
+        "focusFilterLabel": "第一防线",
+        "viewportRect": {
+          "x": 53.42,
+          "y": 91.1,
+          "w": 298.17,
+          "h": 123.2
+        },
+        "currentRect": {
+          "x": 60,
+          "y": 94.7,
+          "w": 285,
+          "h": 116
+        },
+        "blocks": [
+          {
+            "hotspotId": "first_defense",
+            "label": "第一防线",
+            "sourceRect": {
+              "x": 60,
+              "y": 94.7,
+              "w": 285,
+              "h": 116
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "first_defense_visual",
+            "label": "第一防线",
+            "assetUrl": "assets/map/composite/defense/first-defense.png",
+            "hotspotIds": [
+              "first_defense"
+            ],
+            "sourceRect": {
+              "x": 60,
+              "y": 94.7,
+              "w": 285,
+              "h": 116
+            },
+            "isCurrent": true
+          }
+        ]
+      }
+    },
+    "alliance_dock": {
+      "meta": {
+        "pageId": "defense",
+        "pageLabel": "废城/禁区",
+        "hotspotId": "alliance_dock",
+        "label": "同盟卸货站",
+        "sceneName": "地图-同盟卸货站",
+        "group": "restricted"
+      },
+      "outline": {
+        "focusFilterId": "restricted",
+        "focusFilterLabel": "禁区",
+        "viewportRect": {
+          "x": 32.17,
+          "y": 254,
+          "w": 297.8,
+          "h": 253.51
+        },
+        "currentRect": {
+          "x": 38.75,
+          "y": 260.4,
+          "w": 270,
+          "h": 128
+        },
+        "blocks": [
+          {
+            "hotspotId": "alliance_dock",
+            "label": "同盟卸货站",
+            "sourceRect": {
+              "x": 38.75,
+              "y": 260.4,
+              "w": 270,
+              "h": 128
+            }
+          },
+          {
+            "hotspotId": "alliance_corridor",
+            "label": "同盟通路",
+            "sourceRect": {
+              "x": 46.4,
+              "y": 299.1,
+              "w": 277,
+              "h": 202
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "alliance_dock_visual",
+            "label": "同盟卸货站",
+            "assetUrl": "assets/map/composite/defense/alliance-dock.png",
+            "hotspotIds": [
+              "alliance_dock"
+            ],
+            "sourceRect": {
+              "x": 38.75,
+              "y": 260.4,
+              "w": 270,
+              "h": 128
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "alliance_corridor_visual",
+            "label": "同盟通路",
+            "assetUrl": "assets/map/composite/defense/alliance-corridor.png",
+            "hotspotIds": [
+              "alliance_corridor"
+            ],
+            "sourceRect": {
+              "x": 46.4,
+              "y": 299.1,
+              "w": 277,
+              "h": 202
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "alliance_corridor": {
+      "meta": {
+        "pageId": "defense",
+        "pageLabel": "废城/禁区",
+        "hotspotId": "alliance_corridor",
+        "label": "同盟通路",
+        "sceneName": "地图-同盟通路",
+        "group": "restricted"
+      },
+      "outline": {
+        "focusFilterId": "restricted",
+        "focusFilterLabel": "禁区",
+        "viewportRect": {
+          "x": 32.17,
+          "y": 254,
+          "w": 297.8,
+          "h": 253.51
+        },
+        "currentRect": {
+          "x": 46.4,
+          "y": 299.1,
+          "w": 277,
+          "h": 202
+        },
+        "blocks": [
+          {
+            "hotspotId": "alliance_dock",
+            "label": "同盟卸货站",
+            "sourceRect": {
+              "x": 38.75,
+              "y": 260.4,
+              "w": 270,
+              "h": 128
+            }
+          },
+          {
+            "hotspotId": "alliance_corridor",
+            "label": "同盟通路",
+            "sourceRect": {
+              "x": 46.4,
+              "y": 299.1,
+              "w": 277,
+              "h": 202
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "alliance_dock_visual",
+            "label": "同盟卸货站",
+            "assetUrl": "assets/map/composite/defense/alliance-dock.png",
+            "hotspotIds": [
+              "alliance_dock"
+            ],
+            "sourceRect": {
+              "x": 38.75,
+              "y": 260.4,
+              "w": 270,
+              "h": 128
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "alliance_corridor_visual",
+            "label": "同盟通路",
+            "assetUrl": "assets/map/composite/defense/alliance-corridor.png",
+            "hotspotIds": [
+              "alliance_corridor"
+            ],
+            "sourceRect": {
+              "x": 46.4,
+              "y": 299.1,
+              "w": 277,
+              "h": 202
+            },
+            "isCurrent": true
+          }
+        ]
+      }
+    },
+    "workshop": {
+      "meta": {
+        "pageId": "school",
+        "pageLabel": "学校",
+        "hotspotId": "workshop",
+        "label": "大学地下工坊",
+        "sceneName": "地图-大学地下工坊",
+        "group": "schoolInside"
+      },
+      "outline": {
+        "focusFilterId": "inside",
+        "focusFilterLabel": "学校内部",
+        "viewportRect": {
+          "x": 44.34,
+          "y": 38,
+          "w": 784.47,
+          "h": 439.2
+        },
+        "currentRect": {
+          "x": 423.05,
+          "y": 259.2,
+          "w": 147,
+          "h": 73
+        },
+        "blocks": [
+          {
+            "hotspotId": "workshop",
+            "label": "大学地下工坊",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            }
+          },
+          {
+            "hotspotId": "university_interior",
+            "label": "大学内部",
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            }
+          },
+          {
+            "hotspotId": "university_playground",
+            "label": "大学操场",
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            }
+          },
+          {
+            "hotspotId": "dorm_downstairs",
+            "label": "大学宿舍楼下",
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            }
+          },
+          {
+            "hotspotId": "school_dormitory",
+            "label": "大学宿舍",
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            }
+          },
+          {
+            "hotspotId": "office",
+            "label": "教学楼办公室",
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            }
+          },
+          {
+            "hotspotId": "kendo_club",
+            "label": "剑道社",
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            }
+          },
+          {
+            "hotspotId": "science_class",
+            "label": "理科教室",
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "arts_class",
+            "label": "文科教室",
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "teaching_interior",
+            "label": "教学楼内部",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            }
+          },
+          {
+            "hotspotId": "teaching_right",
+            "label": "教学楼内部右侧",
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "workshop_visual",
+            "label": "大学地下工坊",
+            "assetUrl": "assets/map/composite/school/workshop.png",
+            "hotspotIds": [
+              "workshop"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "university_interior_visual",
+            "label": "大学内部",
+            "assetUrl": "assets/map/composite/school/university-interior.png",
+            "hotspotIds": [
+              "university_interior"
+            ],
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_playground_visual",
+            "label": "大学操场",
+            "assetUrl": "assets/map/composite/school/university-playground.png",
+            "hotspotIds": [
+              "university_playground"
+            ],
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "dorm_downstairs_visual",
+            "label": "大学宿舍楼下",
+            "assetUrl": "assets/map/composite/school/dorm-downstairs.png",
+            "hotspotIds": [
+              "dorm_downstairs"
+            ],
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "school_dormitory_visual",
+            "label": "大学宿舍",
+            "assetUrl": "assets/map/composite/school/school-dormitory.png",
+            "hotspotIds": [
+              "school_dormitory"
+            ],
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "office_visual",
+            "label": "教学楼办公室",
+            "assetUrl": "assets/map/composite/school/office.png",
+            "hotspotIds": [
+              "office"
+            ],
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "kendo_club_visual",
+            "label": "剑道社",
+            "assetUrl": "assets/map/composite/school/kendo-club.png",
+            "hotspotIds": [
+              "kendo_club"
+            ],
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "science_class_visual",
+            "label": "理科教室",
+            "assetUrl": "assets/map/composite/school/science-class.png",
+            "hotspotIds": [
+              "science_class"
+            ],
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "arts_class_visual",
+            "label": "文科教室",
+            "assetUrl": "assets/map/composite/school/arts-class.png",
+            "hotspotIds": [
+              "arts_class"
+            ],
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_interior_visual",
+            "label": "教学楼内部",
+            "assetUrl": "assets/map/composite/school/teaching-interior.png",
+            "hotspotIds": [
+              "teaching_interior"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_right_visual",
+            "label": "教学楼内部右侧",
+            "assetUrl": "assets/map/composite/school/teaching-right.png",
+            "hotspotIds": [
+              "teaching_right"
+            ],
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "union_university": {
+      "meta": {
+        "pageId": "school",
+        "pageLabel": "学校",
+        "hotspotId": "union_university",
+        "label": "联合大学",
+        "sceneName": "地图-联合大学",
+        "group": "schoolOutside"
+      },
+      "outline": {
+        "focusFilterId": "outside",
+        "focusFilterLabel": "学校外部",
+        "viewportRect": {
+          "x": 369.51,
+          "y": 439.6,
+          "w": 257.49,
+          "h": 114.1
+        },
+        "currentRect": {
+          "x": 375.2,
+          "y": 443.2,
+          "w": 246.12,
+          "h": 106.9
+        },
+        "blocks": [
+          {
+            "hotspotId": "union_university",
+            "label": "联合大学",
+            "sourceRect": {
+              "x": 375.2,
+              "y": 443.2,
+              "w": 246.12,
+              "h": 106.9
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "union_university_visual",
+            "label": "联合大学",
+            "assetUrl": "assets/map/composite/school/union-university.png",
+            "hotspotIds": [
+              "union_university"
+            ],
+            "sourceRect": {
+              "x": 375.2,
+              "y": 443.2,
+              "w": 246.12,
+              "h": 106.9
+            },
+            "isCurrent": true
+          }
+        ]
+      }
+    },
+    "university_interior": {
+      "meta": {
+        "pageId": "school",
+        "pageLabel": "学校",
+        "hotspotId": "university_interior",
+        "label": "大学内部",
+        "sceneName": "地图-大学内部",
+        "group": "schoolInside"
+      },
+      "outline": {
+        "focusFilterId": "inside",
+        "focusFilterLabel": "学校内部",
+        "viewportRect": {
+          "x": 44.34,
+          "y": 38,
+          "w": 784.47,
+          "h": 439.2
+        },
+        "currentRect": {
+          "x": 364.15,
+          "y": 350.6,
+          "w": 189,
+          "h": 117
+        },
+        "blocks": [
+          {
+            "hotspotId": "workshop",
+            "label": "大学地下工坊",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            }
+          },
+          {
+            "hotspotId": "university_interior",
+            "label": "大学内部",
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            }
+          },
+          {
+            "hotspotId": "university_playground",
+            "label": "大学操场",
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            }
+          },
+          {
+            "hotspotId": "dorm_downstairs",
+            "label": "大学宿舍楼下",
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            }
+          },
+          {
+            "hotspotId": "school_dormitory",
+            "label": "大学宿舍",
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            }
+          },
+          {
+            "hotspotId": "office",
+            "label": "教学楼办公室",
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            }
+          },
+          {
+            "hotspotId": "kendo_club",
+            "label": "剑道社",
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            }
+          },
+          {
+            "hotspotId": "science_class",
+            "label": "理科教室",
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "arts_class",
+            "label": "文科教室",
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "teaching_interior",
+            "label": "教学楼内部",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            }
+          },
+          {
+            "hotspotId": "teaching_right",
+            "label": "教学楼内部右侧",
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "workshop_visual",
+            "label": "大学地下工坊",
+            "assetUrl": "assets/map/composite/school/workshop.png",
+            "hotspotIds": [
+              "workshop"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_interior_visual",
+            "label": "大学内部",
+            "assetUrl": "assets/map/composite/school/university-interior.png",
+            "hotspotIds": [
+              "university_interior"
+            ],
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "university_playground_visual",
+            "label": "大学操场",
+            "assetUrl": "assets/map/composite/school/university-playground.png",
+            "hotspotIds": [
+              "university_playground"
+            ],
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "dorm_downstairs_visual",
+            "label": "大学宿舍楼下",
+            "assetUrl": "assets/map/composite/school/dorm-downstairs.png",
+            "hotspotIds": [
+              "dorm_downstairs"
+            ],
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "school_dormitory_visual",
+            "label": "大学宿舍",
+            "assetUrl": "assets/map/composite/school/school-dormitory.png",
+            "hotspotIds": [
+              "school_dormitory"
+            ],
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "office_visual",
+            "label": "教学楼办公室",
+            "assetUrl": "assets/map/composite/school/office.png",
+            "hotspotIds": [
+              "office"
+            ],
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "kendo_club_visual",
+            "label": "剑道社",
+            "assetUrl": "assets/map/composite/school/kendo-club.png",
+            "hotspotIds": [
+              "kendo_club"
+            ],
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "science_class_visual",
+            "label": "理科教室",
+            "assetUrl": "assets/map/composite/school/science-class.png",
+            "hotspotIds": [
+              "science_class"
+            ],
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "arts_class_visual",
+            "label": "文科教室",
+            "assetUrl": "assets/map/composite/school/arts-class.png",
+            "hotspotIds": [
+              "arts_class"
+            ],
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_interior_visual",
+            "label": "教学楼内部",
+            "assetUrl": "assets/map/composite/school/teaching-interior.png",
+            "hotspotIds": [
+              "teaching_interior"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_right_visual",
+            "label": "教学楼内部右侧",
+            "assetUrl": "assets/map/composite/school/teaching-right.png",
+            "hotspotIds": [
+              "teaching_right"
+            ],
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "university_playground": {
+      "meta": {
+        "pageId": "school",
+        "pageLabel": "学校",
+        "hotspotId": "university_playground",
+        "label": "大学操场",
+        "sceneName": "地图-大学操场",
+        "group": "schoolInside"
+      },
+      "outline": {
+        "focusFilterId": "inside",
+        "focusFilterLabel": "学校内部",
+        "viewportRect": {
+          "x": 44.34,
+          "y": 38,
+          "w": 784.47,
+          "h": 439.2
+        },
+        "currentRect": {
+          "x": 591.85,
+          "y": 378.3,
+          "w": 193,
+          "h": 65
+        },
+        "blocks": [
+          {
+            "hotspotId": "workshop",
+            "label": "大学地下工坊",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            }
+          },
+          {
+            "hotspotId": "university_interior",
+            "label": "大学内部",
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            }
+          },
+          {
+            "hotspotId": "university_playground",
+            "label": "大学操场",
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            }
+          },
+          {
+            "hotspotId": "dorm_downstairs",
+            "label": "大学宿舍楼下",
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            }
+          },
+          {
+            "hotspotId": "school_dormitory",
+            "label": "大学宿舍",
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            }
+          },
+          {
+            "hotspotId": "office",
+            "label": "教学楼办公室",
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            }
+          },
+          {
+            "hotspotId": "kendo_club",
+            "label": "剑道社",
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            }
+          },
+          {
+            "hotspotId": "science_class",
+            "label": "理科教室",
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "arts_class",
+            "label": "文科教室",
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "teaching_interior",
+            "label": "教学楼内部",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            }
+          },
+          {
+            "hotspotId": "teaching_right",
+            "label": "教学楼内部右侧",
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "workshop_visual",
+            "label": "大学地下工坊",
+            "assetUrl": "assets/map/composite/school/workshop.png",
+            "hotspotIds": [
+              "workshop"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_interior_visual",
+            "label": "大学内部",
+            "assetUrl": "assets/map/composite/school/university-interior.png",
+            "hotspotIds": [
+              "university_interior"
+            ],
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_playground_visual",
+            "label": "大学操场",
+            "assetUrl": "assets/map/composite/school/university-playground.png",
+            "hotspotIds": [
+              "university_playground"
+            ],
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "dorm_downstairs_visual",
+            "label": "大学宿舍楼下",
+            "assetUrl": "assets/map/composite/school/dorm-downstairs.png",
+            "hotspotIds": [
+              "dorm_downstairs"
+            ],
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "school_dormitory_visual",
+            "label": "大学宿舍",
+            "assetUrl": "assets/map/composite/school/school-dormitory.png",
+            "hotspotIds": [
+              "school_dormitory"
+            ],
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "office_visual",
+            "label": "教学楼办公室",
+            "assetUrl": "assets/map/composite/school/office.png",
+            "hotspotIds": [
+              "office"
+            ],
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "kendo_club_visual",
+            "label": "剑道社",
+            "assetUrl": "assets/map/composite/school/kendo-club.png",
+            "hotspotIds": [
+              "kendo_club"
+            ],
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "science_class_visual",
+            "label": "理科教室",
+            "assetUrl": "assets/map/composite/school/science-class.png",
+            "hotspotIds": [
+              "science_class"
+            ],
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "arts_class_visual",
+            "label": "文科教室",
+            "assetUrl": "assets/map/composite/school/arts-class.png",
+            "hotspotIds": [
+              "arts_class"
+            ],
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_interior_visual",
+            "label": "教学楼内部",
+            "assetUrl": "assets/map/composite/school/teaching-interior.png",
+            "hotspotIds": [
+              "teaching_interior"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_right_visual",
+            "label": "教学楼内部右侧",
+            "assetUrl": "assets/map/composite/school/teaching-right.png",
+            "hotspotIds": [
+              "teaching_right"
+            ],
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "dorm_downstairs": {
+      "meta": {
+        "pageId": "school",
+        "pageLabel": "学校",
+        "hotspotId": "dorm_downstairs",
+        "label": "大学宿舍楼下",
+        "sceneName": "地图-大学宿舍楼下",
+        "group": "schoolInside"
+      },
+      "outline": {
+        "focusFilterId": "inside",
+        "focusFilterLabel": "学校内部",
+        "viewportRect": {
+          "x": 44.34,
+          "y": 38,
+          "w": 784.47,
+          "h": 439.2
+        },
+        "currentRect": {
+          "x": 195.75,
+          "y": 340.25,
+          "w": 185,
+          "h": 105
+        },
+        "blocks": [
+          {
+            "hotspotId": "workshop",
+            "label": "大学地下工坊",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            }
+          },
+          {
+            "hotspotId": "university_interior",
+            "label": "大学内部",
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            }
+          },
+          {
+            "hotspotId": "university_playground",
+            "label": "大学操场",
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            }
+          },
+          {
+            "hotspotId": "dorm_downstairs",
+            "label": "大学宿舍楼下",
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            }
+          },
+          {
+            "hotspotId": "school_dormitory",
+            "label": "大学宿舍",
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            }
+          },
+          {
+            "hotspotId": "office",
+            "label": "教学楼办公室",
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            }
+          },
+          {
+            "hotspotId": "kendo_club",
+            "label": "剑道社",
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            }
+          },
+          {
+            "hotspotId": "science_class",
+            "label": "理科教室",
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "arts_class",
+            "label": "文科教室",
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "teaching_interior",
+            "label": "教学楼内部",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            }
+          },
+          {
+            "hotspotId": "teaching_right",
+            "label": "教学楼内部右侧",
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "workshop_visual",
+            "label": "大学地下工坊",
+            "assetUrl": "assets/map/composite/school/workshop.png",
+            "hotspotIds": [
+              "workshop"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_interior_visual",
+            "label": "大学内部",
+            "assetUrl": "assets/map/composite/school/university-interior.png",
+            "hotspotIds": [
+              "university_interior"
+            ],
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_playground_visual",
+            "label": "大学操场",
+            "assetUrl": "assets/map/composite/school/university-playground.png",
+            "hotspotIds": [
+              "university_playground"
+            ],
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "dorm_downstairs_visual",
+            "label": "大学宿舍楼下",
+            "assetUrl": "assets/map/composite/school/dorm-downstairs.png",
+            "hotspotIds": [
+              "dorm_downstairs"
+            ],
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "school_dormitory_visual",
+            "label": "大学宿舍",
+            "assetUrl": "assets/map/composite/school/school-dormitory.png",
+            "hotspotIds": [
+              "school_dormitory"
+            ],
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "office_visual",
+            "label": "教学楼办公室",
+            "assetUrl": "assets/map/composite/school/office.png",
+            "hotspotIds": [
+              "office"
+            ],
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "kendo_club_visual",
+            "label": "剑道社",
+            "assetUrl": "assets/map/composite/school/kendo-club.png",
+            "hotspotIds": [
+              "kendo_club"
+            ],
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "science_class_visual",
+            "label": "理科教室",
+            "assetUrl": "assets/map/composite/school/science-class.png",
+            "hotspotIds": [
+              "science_class"
+            ],
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "arts_class_visual",
+            "label": "文科教室",
+            "assetUrl": "assets/map/composite/school/arts-class.png",
+            "hotspotIds": [
+              "arts_class"
+            ],
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_interior_visual",
+            "label": "教学楼内部",
+            "assetUrl": "assets/map/composite/school/teaching-interior.png",
+            "hotspotIds": [
+              "teaching_interior"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_right_visual",
+            "label": "教学楼内部右侧",
+            "assetUrl": "assets/map/composite/school/teaching-right.png",
+            "hotspotIds": [
+              "teaching_right"
+            ],
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "school_dormitory": {
+      "meta": {
+        "pageId": "school",
+        "pageLabel": "学校",
+        "hotspotId": "school_dormitory",
+        "label": "大学宿舍",
+        "sceneName": "地图-大学宿舍",
+        "group": "schoolInside"
+      },
+      "outline": {
+        "focusFilterId": "inside",
+        "focusFilterLabel": "学校内部",
+        "viewportRect": {
+          "x": 44.34,
+          "y": 38,
+          "w": 784.47,
+          "h": 439.2
+        },
+        "currentRect": {
+          "x": 57.3,
+          "y": 276.35,
+          "w": 148,
+          "h": 85
+        },
+        "blocks": [
+          {
+            "hotspotId": "workshop",
+            "label": "大学地下工坊",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            }
+          },
+          {
+            "hotspotId": "university_interior",
+            "label": "大学内部",
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            }
+          },
+          {
+            "hotspotId": "university_playground",
+            "label": "大学操场",
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            }
+          },
+          {
+            "hotspotId": "dorm_downstairs",
+            "label": "大学宿舍楼下",
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            }
+          },
+          {
+            "hotspotId": "school_dormitory",
+            "label": "大学宿舍",
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            }
+          },
+          {
+            "hotspotId": "office",
+            "label": "教学楼办公室",
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            }
+          },
+          {
+            "hotspotId": "kendo_club",
+            "label": "剑道社",
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            }
+          },
+          {
+            "hotspotId": "science_class",
+            "label": "理科教室",
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "arts_class",
+            "label": "文科教室",
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "teaching_interior",
+            "label": "教学楼内部",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            }
+          },
+          {
+            "hotspotId": "teaching_right",
+            "label": "教学楼内部右侧",
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "workshop_visual",
+            "label": "大学地下工坊",
+            "assetUrl": "assets/map/composite/school/workshop.png",
+            "hotspotIds": [
+              "workshop"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_interior_visual",
+            "label": "大学内部",
+            "assetUrl": "assets/map/composite/school/university-interior.png",
+            "hotspotIds": [
+              "university_interior"
+            ],
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_playground_visual",
+            "label": "大学操场",
+            "assetUrl": "assets/map/composite/school/university-playground.png",
+            "hotspotIds": [
+              "university_playground"
+            ],
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "dorm_downstairs_visual",
+            "label": "大学宿舍楼下",
+            "assetUrl": "assets/map/composite/school/dorm-downstairs.png",
+            "hotspotIds": [
+              "dorm_downstairs"
+            ],
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "school_dormitory_visual",
+            "label": "大学宿舍",
+            "assetUrl": "assets/map/composite/school/school-dormitory.png",
+            "hotspotIds": [
+              "school_dormitory"
+            ],
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "office_visual",
+            "label": "教学楼办公室",
+            "assetUrl": "assets/map/composite/school/office.png",
+            "hotspotIds": [
+              "office"
+            ],
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "kendo_club_visual",
+            "label": "剑道社",
+            "assetUrl": "assets/map/composite/school/kendo-club.png",
+            "hotspotIds": [
+              "kendo_club"
+            ],
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "science_class_visual",
+            "label": "理科教室",
+            "assetUrl": "assets/map/composite/school/science-class.png",
+            "hotspotIds": [
+              "science_class"
+            ],
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "arts_class_visual",
+            "label": "文科教室",
+            "assetUrl": "assets/map/composite/school/arts-class.png",
+            "hotspotIds": [
+              "arts_class"
+            ],
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_interior_visual",
+            "label": "教学楼内部",
+            "assetUrl": "assets/map/composite/school/teaching-interior.png",
+            "hotspotIds": [
+              "teaching_interior"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_right_visual",
+            "label": "教学楼内部右侧",
+            "assetUrl": "assets/map/composite/school/teaching-right.png",
+            "hotspotIds": [
+              "teaching_right"
+            ],
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "office": {
+      "meta": {
+        "pageId": "school",
+        "pageLabel": "学校",
+        "hotspotId": "office",
+        "label": "教学楼办公室",
+        "sceneName": "地图-教学楼办公室",
+        "group": "schoolInside"
+      },
+      "outline": {
+        "focusFilterId": "inside",
+        "focusFilterLabel": "学校内部",
+        "viewportRect": {
+          "x": 44.34,
+          "y": 38,
+          "w": 784.47,
+          "h": 439.2
+        },
+        "currentRect": {
+          "x": 412.15,
+          "y": 47.6,
+          "w": 132,
+          "h": 66
+        },
+        "blocks": [
+          {
+            "hotspotId": "workshop",
+            "label": "大学地下工坊",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            }
+          },
+          {
+            "hotspotId": "university_interior",
+            "label": "大学内部",
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            }
+          },
+          {
+            "hotspotId": "university_playground",
+            "label": "大学操场",
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            }
+          },
+          {
+            "hotspotId": "dorm_downstairs",
+            "label": "大学宿舍楼下",
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            }
+          },
+          {
+            "hotspotId": "school_dormitory",
+            "label": "大学宿舍",
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            }
+          },
+          {
+            "hotspotId": "office",
+            "label": "教学楼办公室",
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            }
+          },
+          {
+            "hotspotId": "kendo_club",
+            "label": "剑道社",
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            }
+          },
+          {
+            "hotspotId": "science_class",
+            "label": "理科教室",
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "arts_class",
+            "label": "文科教室",
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "teaching_interior",
+            "label": "教学楼内部",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            }
+          },
+          {
+            "hotspotId": "teaching_right",
+            "label": "教学楼内部右侧",
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "workshop_visual",
+            "label": "大学地下工坊",
+            "assetUrl": "assets/map/composite/school/workshop.png",
+            "hotspotIds": [
+              "workshop"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_interior_visual",
+            "label": "大学内部",
+            "assetUrl": "assets/map/composite/school/university-interior.png",
+            "hotspotIds": [
+              "university_interior"
+            ],
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_playground_visual",
+            "label": "大学操场",
+            "assetUrl": "assets/map/composite/school/university-playground.png",
+            "hotspotIds": [
+              "university_playground"
+            ],
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "dorm_downstairs_visual",
+            "label": "大学宿舍楼下",
+            "assetUrl": "assets/map/composite/school/dorm-downstairs.png",
+            "hotspotIds": [
+              "dorm_downstairs"
+            ],
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "school_dormitory_visual",
+            "label": "大学宿舍",
+            "assetUrl": "assets/map/composite/school/school-dormitory.png",
+            "hotspotIds": [
+              "school_dormitory"
+            ],
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "office_visual",
+            "label": "教学楼办公室",
+            "assetUrl": "assets/map/composite/school/office.png",
+            "hotspotIds": [
+              "office"
+            ],
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "kendo_club_visual",
+            "label": "剑道社",
+            "assetUrl": "assets/map/composite/school/kendo-club.png",
+            "hotspotIds": [
+              "kendo_club"
+            ],
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "science_class_visual",
+            "label": "理科教室",
+            "assetUrl": "assets/map/composite/school/science-class.png",
+            "hotspotIds": [
+              "science_class"
+            ],
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "arts_class_visual",
+            "label": "文科教室",
+            "assetUrl": "assets/map/composite/school/arts-class.png",
+            "hotspotIds": [
+              "arts_class"
+            ],
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_interior_visual",
+            "label": "教学楼内部",
+            "assetUrl": "assets/map/composite/school/teaching-interior.png",
+            "hotspotIds": [
+              "teaching_interior"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_right_visual",
+            "label": "教学楼内部右侧",
+            "assetUrl": "assets/map/composite/school/teaching-right.png",
+            "hotspotIds": [
+              "teaching_right"
+            ],
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "kendo_club": {
+      "meta": {
+        "pageId": "school",
+        "pageLabel": "学校",
+        "hotspotId": "kendo_club",
+        "label": "剑道社",
+        "sceneName": "地图-剑道社",
+        "group": "schoolInside"
+      },
+      "outline": {
+        "focusFilterId": "inside",
+        "focusFilterLabel": "学校内部",
+        "viewportRect": {
+          "x": 44.34,
+          "y": 38,
+          "w": 784.47,
+          "h": 439.2
+        },
+        "currentRect": {
+          "x": 534.95,
+          "y": 160.5,
+          "w": 134,
+          "h": 68
+        },
+        "blocks": [
+          {
+            "hotspotId": "workshop",
+            "label": "大学地下工坊",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            }
+          },
+          {
+            "hotspotId": "university_interior",
+            "label": "大学内部",
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            }
+          },
+          {
+            "hotspotId": "university_playground",
+            "label": "大学操场",
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            }
+          },
+          {
+            "hotspotId": "dorm_downstairs",
+            "label": "大学宿舍楼下",
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            }
+          },
+          {
+            "hotspotId": "school_dormitory",
+            "label": "大学宿舍",
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            }
+          },
+          {
+            "hotspotId": "office",
+            "label": "教学楼办公室",
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            }
+          },
+          {
+            "hotspotId": "kendo_club",
+            "label": "剑道社",
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            }
+          },
+          {
+            "hotspotId": "science_class",
+            "label": "理科教室",
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "arts_class",
+            "label": "文科教室",
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "teaching_interior",
+            "label": "教学楼内部",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            }
+          },
+          {
+            "hotspotId": "teaching_right",
+            "label": "教学楼内部右侧",
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "workshop_visual",
+            "label": "大学地下工坊",
+            "assetUrl": "assets/map/composite/school/workshop.png",
+            "hotspotIds": [
+              "workshop"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_interior_visual",
+            "label": "大学内部",
+            "assetUrl": "assets/map/composite/school/university-interior.png",
+            "hotspotIds": [
+              "university_interior"
+            ],
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_playground_visual",
+            "label": "大学操场",
+            "assetUrl": "assets/map/composite/school/university-playground.png",
+            "hotspotIds": [
+              "university_playground"
+            ],
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "dorm_downstairs_visual",
+            "label": "大学宿舍楼下",
+            "assetUrl": "assets/map/composite/school/dorm-downstairs.png",
+            "hotspotIds": [
+              "dorm_downstairs"
+            ],
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "school_dormitory_visual",
+            "label": "大学宿舍",
+            "assetUrl": "assets/map/composite/school/school-dormitory.png",
+            "hotspotIds": [
+              "school_dormitory"
+            ],
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "office_visual",
+            "label": "教学楼办公室",
+            "assetUrl": "assets/map/composite/school/office.png",
+            "hotspotIds": [
+              "office"
+            ],
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "kendo_club_visual",
+            "label": "剑道社",
+            "assetUrl": "assets/map/composite/school/kendo-club.png",
+            "hotspotIds": [
+              "kendo_club"
+            ],
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "science_class_visual",
+            "label": "理科教室",
+            "assetUrl": "assets/map/composite/school/science-class.png",
+            "hotspotIds": [
+              "science_class"
+            ],
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "arts_class_visual",
+            "label": "文科教室",
+            "assetUrl": "assets/map/composite/school/arts-class.png",
+            "hotspotIds": [
+              "arts_class"
+            ],
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_interior_visual",
+            "label": "教学楼内部",
+            "assetUrl": "assets/map/composite/school/teaching-interior.png",
+            "hotspotIds": [
+              "teaching_interior"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_right_visual",
+            "label": "教学楼内部右侧",
+            "assetUrl": "assets/map/composite/school/teaching-right.png",
+            "hotspotIds": [
+              "teaching_right"
+            ],
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "science_class": {
+      "meta": {
+        "pageId": "school",
+        "pageLabel": "学校",
+        "hotspotId": "science_class",
+        "label": "理科教室",
+        "sceneName": "地图-理科教室",
+        "group": "schoolInside"
+      },
+      "outline": {
+        "focusFilterId": "inside",
+        "focusFilterLabel": "学校内部",
+        "viewportRect": {
+          "x": 44.34,
+          "y": 38,
+          "w": 784.47,
+          "h": 439.2
+        },
+        "currentRect": {
+          "x": 681.75,
+          "y": 164.45,
+          "w": 67,
+          "h": 45
+        },
+        "blocks": [
+          {
+            "hotspotId": "workshop",
+            "label": "大学地下工坊",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            }
+          },
+          {
+            "hotspotId": "university_interior",
+            "label": "大学内部",
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            }
+          },
+          {
+            "hotspotId": "university_playground",
+            "label": "大学操场",
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            }
+          },
+          {
+            "hotspotId": "dorm_downstairs",
+            "label": "大学宿舍楼下",
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            }
+          },
+          {
+            "hotspotId": "school_dormitory",
+            "label": "大学宿舍",
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            }
+          },
+          {
+            "hotspotId": "office",
+            "label": "教学楼办公室",
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            }
+          },
+          {
+            "hotspotId": "kendo_club",
+            "label": "剑道社",
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            }
+          },
+          {
+            "hotspotId": "science_class",
+            "label": "理科教室",
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "arts_class",
+            "label": "文科教室",
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "teaching_interior",
+            "label": "教学楼内部",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            }
+          },
+          {
+            "hotspotId": "teaching_right",
+            "label": "教学楼内部右侧",
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "workshop_visual",
+            "label": "大学地下工坊",
+            "assetUrl": "assets/map/composite/school/workshop.png",
+            "hotspotIds": [
+              "workshop"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_interior_visual",
+            "label": "大学内部",
+            "assetUrl": "assets/map/composite/school/university-interior.png",
+            "hotspotIds": [
+              "university_interior"
+            ],
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_playground_visual",
+            "label": "大学操场",
+            "assetUrl": "assets/map/composite/school/university-playground.png",
+            "hotspotIds": [
+              "university_playground"
+            ],
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "dorm_downstairs_visual",
+            "label": "大学宿舍楼下",
+            "assetUrl": "assets/map/composite/school/dorm-downstairs.png",
+            "hotspotIds": [
+              "dorm_downstairs"
+            ],
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "school_dormitory_visual",
+            "label": "大学宿舍",
+            "assetUrl": "assets/map/composite/school/school-dormitory.png",
+            "hotspotIds": [
+              "school_dormitory"
+            ],
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "office_visual",
+            "label": "教学楼办公室",
+            "assetUrl": "assets/map/composite/school/office.png",
+            "hotspotIds": [
+              "office"
+            ],
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "kendo_club_visual",
+            "label": "剑道社",
+            "assetUrl": "assets/map/composite/school/kendo-club.png",
+            "hotspotIds": [
+              "kendo_club"
+            ],
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "science_class_visual",
+            "label": "理科教室",
+            "assetUrl": "assets/map/composite/school/science-class.png",
+            "hotspotIds": [
+              "science_class"
+            ],
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "arts_class_visual",
+            "label": "文科教室",
+            "assetUrl": "assets/map/composite/school/arts-class.png",
+            "hotspotIds": [
+              "arts_class"
+            ],
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_interior_visual",
+            "label": "教学楼内部",
+            "assetUrl": "assets/map/composite/school/teaching-interior.png",
+            "hotspotIds": [
+              "teaching_interior"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_right_visual",
+            "label": "教学楼内部右侧",
+            "assetUrl": "assets/map/composite/school/teaching-right.png",
+            "hotspotIds": [
+              "teaching_right"
+            ],
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "arts_class": {
+      "meta": {
+        "pageId": "school",
+        "pageLabel": "学校",
+        "hotspotId": "arts_class",
+        "label": "文科教室",
+        "sceneName": "地图-文科教室",
+        "group": "schoolInside"
+      },
+      "outline": {
+        "focusFilterId": "inside",
+        "focusFilterLabel": "学校内部",
+        "viewportRect": {
+          "x": 44.34,
+          "y": 38,
+          "w": 784.47,
+          "h": 439.2
+        },
+        "currentRect": {
+          "x": 748.85,
+          "y": 164.45,
+          "w": 67,
+          "h": 45
+        },
+        "blocks": [
+          {
+            "hotspotId": "workshop",
+            "label": "大学地下工坊",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            }
+          },
+          {
+            "hotspotId": "university_interior",
+            "label": "大学内部",
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            }
+          },
+          {
+            "hotspotId": "university_playground",
+            "label": "大学操场",
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            }
+          },
+          {
+            "hotspotId": "dorm_downstairs",
+            "label": "大学宿舍楼下",
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            }
+          },
+          {
+            "hotspotId": "school_dormitory",
+            "label": "大学宿舍",
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            }
+          },
+          {
+            "hotspotId": "office",
+            "label": "教学楼办公室",
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            }
+          },
+          {
+            "hotspotId": "kendo_club",
+            "label": "剑道社",
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            }
+          },
+          {
+            "hotspotId": "science_class",
+            "label": "理科教室",
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "arts_class",
+            "label": "文科教室",
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "teaching_interior",
+            "label": "教学楼内部",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            }
+          },
+          {
+            "hotspotId": "teaching_right",
+            "label": "教学楼内部右侧",
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "workshop_visual",
+            "label": "大学地下工坊",
+            "assetUrl": "assets/map/composite/school/workshop.png",
+            "hotspotIds": [
+              "workshop"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_interior_visual",
+            "label": "大学内部",
+            "assetUrl": "assets/map/composite/school/university-interior.png",
+            "hotspotIds": [
+              "university_interior"
+            ],
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_playground_visual",
+            "label": "大学操场",
+            "assetUrl": "assets/map/composite/school/university-playground.png",
+            "hotspotIds": [
+              "university_playground"
+            ],
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "dorm_downstairs_visual",
+            "label": "大学宿舍楼下",
+            "assetUrl": "assets/map/composite/school/dorm-downstairs.png",
+            "hotspotIds": [
+              "dorm_downstairs"
+            ],
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "school_dormitory_visual",
+            "label": "大学宿舍",
+            "assetUrl": "assets/map/composite/school/school-dormitory.png",
+            "hotspotIds": [
+              "school_dormitory"
+            ],
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "office_visual",
+            "label": "教学楼办公室",
+            "assetUrl": "assets/map/composite/school/office.png",
+            "hotspotIds": [
+              "office"
+            ],
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "kendo_club_visual",
+            "label": "剑道社",
+            "assetUrl": "assets/map/composite/school/kendo-club.png",
+            "hotspotIds": [
+              "kendo_club"
+            ],
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "science_class_visual",
+            "label": "理科教室",
+            "assetUrl": "assets/map/composite/school/science-class.png",
+            "hotspotIds": [
+              "science_class"
+            ],
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "arts_class_visual",
+            "label": "文科教室",
+            "assetUrl": "assets/map/composite/school/arts-class.png",
+            "hotspotIds": [
+              "arts_class"
+            ],
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "teaching_interior_visual",
+            "label": "教学楼内部",
+            "assetUrl": "assets/map/composite/school/teaching-interior.png",
+            "hotspotIds": [
+              "teaching_interior"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_right_visual",
+            "label": "教学楼内部右侧",
+            "assetUrl": "assets/map/composite/school/teaching-right.png",
+            "hotspotIds": [
+              "teaching_right"
+            ],
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "teaching_interior": {
+      "meta": {
+        "pageId": "school",
+        "pageLabel": "学校",
+        "hotspotId": "teaching_interior",
+        "label": "教学楼内部",
+        "sceneName": "地图-教学楼内部",
+        "group": "schoolInside"
+      },
+      "outline": {
+        "focusFilterId": "inside",
+        "focusFilterLabel": "学校内部",
+        "viewportRect": {
+          "x": 44.34,
+          "y": 38,
+          "w": 784.47,
+          "h": 439.2
+        },
+        "currentRect": {
+          "x": 423.05,
+          "y": 201.75,
+          "w": 230.4,
+          "h": 76.4
+        },
+        "blocks": [
+          {
+            "hotspotId": "workshop",
+            "label": "大学地下工坊",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            }
+          },
+          {
+            "hotspotId": "university_interior",
+            "label": "大学内部",
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            }
+          },
+          {
+            "hotspotId": "university_playground",
+            "label": "大学操场",
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            }
+          },
+          {
+            "hotspotId": "dorm_downstairs",
+            "label": "大学宿舍楼下",
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            }
+          },
+          {
+            "hotspotId": "school_dormitory",
+            "label": "大学宿舍",
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            }
+          },
+          {
+            "hotspotId": "office",
+            "label": "教学楼办公室",
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            }
+          },
+          {
+            "hotspotId": "kendo_club",
+            "label": "剑道社",
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            }
+          },
+          {
+            "hotspotId": "science_class",
+            "label": "理科教室",
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "arts_class",
+            "label": "文科教室",
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "teaching_interior",
+            "label": "教学楼内部",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            }
+          },
+          {
+            "hotspotId": "teaching_right",
+            "label": "教学楼内部右侧",
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "workshop_visual",
+            "label": "大学地下工坊",
+            "assetUrl": "assets/map/composite/school/workshop.png",
+            "hotspotIds": [
+              "workshop"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_interior_visual",
+            "label": "大学内部",
+            "assetUrl": "assets/map/composite/school/university-interior.png",
+            "hotspotIds": [
+              "university_interior"
+            ],
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_playground_visual",
+            "label": "大学操场",
+            "assetUrl": "assets/map/composite/school/university-playground.png",
+            "hotspotIds": [
+              "university_playground"
+            ],
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "dorm_downstairs_visual",
+            "label": "大学宿舍楼下",
+            "assetUrl": "assets/map/composite/school/dorm-downstairs.png",
+            "hotspotIds": [
+              "dorm_downstairs"
+            ],
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "school_dormitory_visual",
+            "label": "大学宿舍",
+            "assetUrl": "assets/map/composite/school/school-dormitory.png",
+            "hotspotIds": [
+              "school_dormitory"
+            ],
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "office_visual",
+            "label": "教学楼办公室",
+            "assetUrl": "assets/map/composite/school/office.png",
+            "hotspotIds": [
+              "office"
+            ],
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "kendo_club_visual",
+            "label": "剑道社",
+            "assetUrl": "assets/map/composite/school/kendo-club.png",
+            "hotspotIds": [
+              "kendo_club"
+            ],
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "science_class_visual",
+            "label": "理科教室",
+            "assetUrl": "assets/map/composite/school/science-class.png",
+            "hotspotIds": [
+              "science_class"
+            ],
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "arts_class_visual",
+            "label": "文科教室",
+            "assetUrl": "assets/map/composite/school/arts-class.png",
+            "hotspotIds": [
+              "arts_class"
+            ],
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_interior_visual",
+            "label": "教学楼内部",
+            "assetUrl": "assets/map/composite/school/teaching-interior.png",
+            "hotspotIds": [
+              "teaching_interior"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "teaching_right_visual",
+            "label": "教学楼内部右侧",
+            "assetUrl": "assets/map/composite/school/teaching-right.png",
+            "hotspotIds": [
+              "teaching_right"
+            ],
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "teaching_right": {
+      "meta": {
+        "pageId": "school",
+        "pageLabel": "学校",
+        "hotspotId": "teaching_right",
+        "label": "教学楼内部右侧",
+        "sceneName": "地图-教学楼内部右侧",
+        "group": "schoolInside"
+      },
+      "outline": {
+        "focusFilterId": "inside",
+        "focusFilterLabel": "学校内部",
+        "viewportRect": {
+          "x": 44.34,
+          "y": 38,
+          "w": 784.47,
+          "h": 439.2
+        },
+        "currentRect": {
+          "x": 652.95,
+          "y": 200.1,
+          "w": 162.49,
+          "h": 81.25
+        },
+        "blocks": [
+          {
+            "hotspotId": "workshop",
+            "label": "大学地下工坊",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            }
+          },
+          {
+            "hotspotId": "university_interior",
+            "label": "大学内部",
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            }
+          },
+          {
+            "hotspotId": "university_playground",
+            "label": "大学操场",
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            }
+          },
+          {
+            "hotspotId": "dorm_downstairs",
+            "label": "大学宿舍楼下",
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            }
+          },
+          {
+            "hotspotId": "school_dormitory",
+            "label": "大学宿舍",
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            }
+          },
+          {
+            "hotspotId": "office",
+            "label": "教学楼办公室",
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            }
+          },
+          {
+            "hotspotId": "kendo_club",
+            "label": "剑道社",
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            }
+          },
+          {
+            "hotspotId": "science_class",
+            "label": "理科教室",
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "arts_class",
+            "label": "文科教室",
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            }
+          },
+          {
+            "hotspotId": "teaching_interior",
+            "label": "教学楼内部",
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            }
+          },
+          {
+            "hotspotId": "teaching_right",
+            "label": "教学楼内部右侧",
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "workshop_visual",
+            "label": "大学地下工坊",
+            "assetUrl": "assets/map/composite/school/workshop.png",
+            "hotspotIds": [
+              "workshop"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 259.2,
+              "w": 147,
+              "h": 73
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_interior_visual",
+            "label": "大学内部",
+            "assetUrl": "assets/map/composite/school/university-interior.png",
+            "hotspotIds": [
+              "university_interior"
+            ],
+            "sourceRect": {
+              "x": 364.15,
+              "y": 350.6,
+              "w": 189,
+              "h": 117
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "university_playground_visual",
+            "label": "大学操场",
+            "assetUrl": "assets/map/composite/school/university-playground.png",
+            "hotspotIds": [
+              "university_playground"
+            ],
+            "sourceRect": {
+              "x": 591.85,
+              "y": 378.3,
+              "w": 193,
+              "h": 65
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "dorm_downstairs_visual",
+            "label": "大学宿舍楼下",
+            "assetUrl": "assets/map/composite/school/dorm-downstairs.png",
+            "hotspotIds": [
+              "dorm_downstairs"
+            ],
+            "sourceRect": {
+              "x": 195.75,
+              "y": 340.25,
+              "w": 185,
+              "h": 105
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "school_dormitory_visual",
+            "label": "大学宿舍",
+            "assetUrl": "assets/map/composite/school/school-dormitory.png",
+            "hotspotIds": [
+              "school_dormitory"
+            ],
+            "sourceRect": {
+              "x": 57.3,
+              "y": 276.35,
+              "w": 148,
+              "h": 85
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "office_visual",
+            "label": "教学楼办公室",
+            "assetUrl": "assets/map/composite/school/office.png",
+            "hotspotIds": [
+              "office"
+            ],
+            "sourceRect": {
+              "x": 412.15,
+              "y": 47.6,
+              "w": 132,
+              "h": 66
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "kendo_club_visual",
+            "label": "剑道社",
+            "assetUrl": "assets/map/composite/school/kendo-club.png",
+            "hotspotIds": [
+              "kendo_club"
+            ],
+            "sourceRect": {
+              "x": 534.95,
+              "y": 160.5,
+              "w": 134,
+              "h": 68
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "science_class_visual",
+            "label": "理科教室",
+            "assetUrl": "assets/map/composite/school/science-class.png",
+            "hotspotIds": [
+              "science_class"
+            ],
+            "sourceRect": {
+              "x": 681.75,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "arts_class_visual",
+            "label": "文科教室",
+            "assetUrl": "assets/map/composite/school/arts-class.png",
+            "hotspotIds": [
+              "arts_class"
+            ],
+            "sourceRect": {
+              "x": 748.85,
+              "y": 164.45,
+              "w": 67,
+              "h": 45
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_interior_visual",
+            "label": "教学楼内部",
+            "assetUrl": "assets/map/composite/school/teaching-interior.png",
+            "hotspotIds": [
+              "teaching_interior"
+            ],
+            "sourceRect": {
+              "x": 423.05,
+              "y": 201.75,
+              "w": 230.4,
+              "h": 76.4
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "teaching_right_visual",
+            "label": "教学楼内部右侧",
+            "assetUrl": "assets/map/composite/school/teaching-right.png",
+            "hotspotIds": [
+              "teaching_right"
+            ],
+            "sourceRect": {
+              "x": 652.95,
+              "y": 200.1,
+              "w": 162.49,
+              "h": 81.25
+            },
+            "isCurrent": true
+          }
+        ]
+      }
+    }
+  }
+}

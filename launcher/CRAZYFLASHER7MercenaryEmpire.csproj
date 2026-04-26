@@ -119,6 +119,9 @@
     <Compile Include="src\Guardian\Hud\CurrencyWidget.cs" />
     <Compile Include="src\Guardian\Hud\INativeHudWidget.cs" />
     <Compile Include="src\Guardian\Hud\JukeboxTitlebarWidget.cs" />
+    <Compile Include="src\Guardian\Hud\MapHudDataCatalog.cs" />
+    <Compile Include="src\Guardian\Hud\MapHudPayload.cs" />
+    <Compile Include="src\Guardian\Hud\MapHudWidget.cs" />
     <Compile Include="src\Guardian\Hud\NotchToolbarWidget.cs" />
     <Compile Include="src\Guardian\Hud\QuestNoticeWidget.cs" />
     <Compile Include="src\Guardian\Hud\SafeExitPanelWidget.cs" />

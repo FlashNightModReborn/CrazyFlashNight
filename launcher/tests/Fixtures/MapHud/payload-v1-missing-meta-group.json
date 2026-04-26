@@ -1,0 +1,25 @@
+{
+  "protocolVersion": 1,
+  "generatedAt": "2026-04-26T00:00:00.000Z",
+  "sourceFile": "launcher/web/modules/map-panel-data.js",
+  "hotspots": {
+    "unknown_spot": {
+      "meta": {
+        "pageId": "faction",
+        "pageLabel": "A兵团",
+        "hotspotId": "unknown_spot",
+        "label": "未知地点",
+        "sceneName": ""
+      },
+      "outline": {
+        "focusFilterId": "",
+        "focusFilterLabel": "",
+        "viewportRect": { "x": 0, "y": 0, "w": 800, "h": 600 },
+        "currentRect": null,
+        "blocks": [
+          { "hotspotId": "unknown_spot", "label": "未知地点", "sourceRect": { "x": 100, "y": 100, "w": 80, "h": 60 } }
+        ]
+      }
+    }
+  }
+}

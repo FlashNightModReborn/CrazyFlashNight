@@ -1,0 +1,40 @@
+{
+  "protocolVersion": 1,
+  "generatedAt": "2026-04-26T00:00:00.000Z",
+  "sourceFile": "launcher/web/modules/map-panel-data.js",
+  "hotspots": {
+    "warlord_base": {
+      "meta": {
+        "pageId": "faction",
+        "pageLabel": "A兵团",
+        "hotspotId": "warlord_base",
+        "label": "军阀基地",
+        "sceneName": "地图-军阀基地",
+        "group": "warlord"
+      },
+      "outline": {
+        "focusFilterId": "warlord",
+        "focusFilterLabel": "军阀线路",
+        "viewportRect": { "x": 35.01, "y": 25.56, "w": 259.77, "h": 300.33 },
+        "currentRect":  { "x": 46.35, "y": 85.4,  "w": 240.25, "h": 125.08 },
+        "blocks": [
+          {
+            "hotspotId": "warlord_base",
+            "label": "军阀基地",
+            "sourceRect": { "x": 46.35, "y": 85.4, "w": 240.25, "h": 125.08 }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "warlord_base_visual",
+            "label": "军阀基地",
+            "assetUrl": "assets/map/composite/faction/warlord-base.png",
+            "hotspotIds": ["warlord_base"],
+            "sourceRect": { "x": 46.35, "y": 85.4, "w": 240.25, "h": 125.08 },
+            "isCurrent": true
+          }
+        ]
+      }
+    }
+  }
+}

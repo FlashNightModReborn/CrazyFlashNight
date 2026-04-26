@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-04-26T00:00:00.000Z",
+  "sourceFile": "launcher/web/modules/map-panel-data.js",
+  "hotspots": {
+    "school_dorm": {
+      "meta": {
+        "pageId": "school",
+        "pageLabel": "学校",
+        "hotspotId": "school_dorm",
+        "label": "宿舍",
+        "sceneName": "学校-宿舍",
+        "group": "schoolInside"
+      },
+      "outline": {
+        "focusFilterId": "inside",
+        "focusFilterLabel": "学校内部",
+        "viewportRect": { "x": 0, "y": 0, "w": 600, "h": 400 },
+        "currentRect": { "x": 50, "y": 80, "w": 120, "h": 90 },
+        "blocks": [],
+        "visuals": []
+      }
+    }
+  }
+}

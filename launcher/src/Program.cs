@@ -348,8 +348,8 @@ class Program
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
 
-            // Phase 4: 注册常驻 widget。已迁：TopRightTools / NotchToolbar / Currency / SafeExitPanel / QuestNotice / Combo / JukeboxTitlebar。
-            // 待迁（下轮）：MapHud（Phase 4.7）。
+            // Phase 4: 注册常驻 widget。已迁：TopRightTools / NotchToolbar / Currency / SafeExitPanel / QuestNotice / Combo / JukeboxTitlebar / MapHud。
+            // Phase 4 收尾：DoFullIdleSuspend 启用 → 进入 ~15pp DWM α 地板回收阶段。
             // 无 widget 时 NativeHud SW_HIDE，不影响 Phase 3 行为。
             CF7Launcher.Guardian.Hud.TopRightToolsWidget topRightTools =
                 new CF7Launcher.Guardian.Hud.TopRightToolsWidget(form.FlashHostPanel, commandRouter);
@@ -383,6 +383,14 @@ class Program
                     delegate { capturedWebForJukebox.ToggleBgmPause(); },
                     delegate { capturedRouterForJukebox.Dispatch("JUKEBOX_EXPAND"); });
             nativeHud.AddWidget(jukeboxTitlebar);
+            // MapHud：build-time export 出的 launcher/data/map_hud_data.json → MapHudDataCatalog → MapHudWidget。
+            // catalog 加载失败（文件缺失/parse 失败）时 IsAvailable=false，widget Visible 永远 false（不报错）。
+            string mapHudJsonPath = Path.Combine(projectRoot, "launcher", "data", "map_hud_data.json");
+            CF7Launcher.Guardian.Hud.MapHudDataCatalog mapCatalog =
+                CF7Launcher.Guardian.Hud.MapHudDataCatalog.LoadFromFile(mapHudJsonPath);
+            CF7Launcher.Guardian.Hud.MapHudWidget mapHudWidget =
+                new CF7Launcher.Guardian.Hud.MapHudWidget(form.FlashHostPanel, commandRouter, mapCatalog);
+            nativeHud.AddWidget(mapHudWidget);
             // z-order 锚点：把 NativeHud 沉到 HitNumber 之下（Cursor 在 HitNumber 之上 → 自动也在 NativeHud 之上）
             // 这样 widget 区域不会遮挡伤害数字与鼠标。
             if (hnOverlay != null) nativeHud.SetZOrderInsertAfter(hnOverlay.Handle);
