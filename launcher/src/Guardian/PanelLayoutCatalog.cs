@@ -14,14 +14,18 @@ namespace CF7Launcher.Guardian
     {
         public static Rectangle GetRect(string panelName, Rectangle anchorScreenRect)
         {
-            // ⚠️ Phase 3 临时：所有 panel 都用全 anchor。
-            // 原因：web 端 panels.js 还没 handle panel_viewport_set 消息，CSS 仍按全 anchor 假设
-            // 渲染；缩到小矩形会导致 panel 内容被物理裁切（实测 help 720x540 显示错位）。
-            // 后续 web 端 CSS 接 panel_viewport_set 后再恢复下方 switch 的小矩形分配。
+            // Phase 3 遗留：除 jukebox 外其他 panel 仍按全 anchor 打开——
+            // 它们的 web CSS 假设全 anchor viewport（kshop/help 等缩到小矩形会物理裁切）。
+            // 待 panels.js 接 panel_viewport_set 后再逐个开启下方 switch 中的小矩形分配。
+            //
+            // Phase 5：jukebox 已是新 panel（jukebox-panel.js 用 inset:6% 12% 百分比布局，
+            // 与 panelRect 大小解耦），可以直接使用 880×620 小矩形——
+            // 这是 Phase 4 收尾后真正缩小 panel 态 α blend 表面的第一个例子。
+            string name = panelName != null ? panelName.ToLowerInvariant() : "";
+            if (name == "jukebox") return Centered(anchorScreenRect, 880, 620);
             return anchorScreenRect;
 
-            #pragma warning disable 0162 // unreachable code（保留小矩形配置作为 Phase 3+ web CSS 适配后的目标值）
-            string name = panelName != null ? panelName.ToLowerInvariant() : "";
+            #pragma warning disable 0162 // unreachable（保留小矩形配置作为其他 panel 适配 panel_viewport_set 后的目标值）
             switch (name)
             {
                 case "kshop":    return Centered(anchorScreenRect, 1024, 720);
@@ -30,7 +34,6 @@ namespace CF7Launcher.Guardian
                 case "lockbox":  return Centered(anchorScreenRect, 720, 600);
                 case "pinalign": return Centered(anchorScreenRect, 600, 480);
                 case "gobang":   return Centered(anchorScreenRect, 720, 720);
-                case "jukebox":  return Centered(anchorScreenRect, 880, 620);
                 default:         return Centered(anchorScreenRect, 800, 600);
             }
             #pragma warning restore 0162

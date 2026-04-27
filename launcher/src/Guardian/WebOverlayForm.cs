@@ -2682,36 +2682,54 @@ namespace CF7Launcher.Guardian
 
         private void HandleJukeboxMessage(string json)
         {
-            string cmd = ExtractString(json, "\"cmd\":\"");
-            if (cmd == null) return;
+            // 用 JObject 结构化解析，避免曲名 / 设置 value 含 " 或 \ 时 ExtractString 截断错发。
+            JObject parsed;
+            try { parsed = JObject.Parse(json); }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Jukebox] JSON parse failed: " + ex.Message + " json=" + json);
+                return;
+            }
+            string cmd = parsed.Value<string>("cmd");
+            if (string.IsNullOrEmpty(cmd)) return;
 
             switch (cmd)
             {
                 case "play":
-                    string title = ExtractString(json, "\"title\":\"");
-                    if (title != null)
-                        SendGameCommandWithData("jukeboxPlay",
-                            "\"title\":\"" + EscapeJsonString(title) + "\"");
+                    {
+                        string title = parsed.Value<string>("title");
+                        if (!string.IsNullOrEmpty(title))
+                            SendGameCommandWithData("jukeboxPlay",
+                                "\"title\":\"" + EscapeJsonString(title) + "\"");
+                    }
                     break;
                 case "override":
-                    bool over = json.Contains("\"value\":true");
-                    SendGameCommandWithData("jukeboxOverride",
-                        "\"value\":" + (over ? "true" : "false"));
+                    {
+                        bool over = parsed.Value<bool?>("value") ?? false;
+                        SendGameCommandWithData("jukeboxOverride",
+                            "\"value\":" + (over ? "true" : "false"));
+                    }
                     break;
                 case "trueRandom":
-                    bool tr = json.Contains("\"value\":true");
-                    SendGameCommandWithData("jukeboxTrueRandom",
-                        "\"value\":" + (tr ? "true" : "false"));
+                    {
+                        bool tr = parsed.Value<bool?>("value") ?? false;
+                        SendGameCommandWithData("jukeboxTrueRandom",
+                            "\"value\":" + (tr ? "true" : "false"));
+                    }
                     break;
                 case "playMode":
-                    string mode = ExtractString(json, "\"value\":\"");
-                    if (mode != null)
-                        SendGameCommandWithData("jukeboxPlayMode",
-                            "\"value\":\"" + EscapeJsonString(mode) + "\"");
+                    {
+                        string mode = parsed.Value<string>("value");
+                        if (!string.IsNullOrEmpty(mode))
+                            SendGameCommandWithData("jukeboxPlayMode",
+                                "\"value\":\"" + EscapeJsonString(mode) + "\"");
+                    }
                     break;
                 case "seek":
-                    float sec = ExtractFloat(json, "\"sec\":");
-                    Audio.AudioEngine.ma_bridge_bgm_seek(sec);
+                    {
+                        float sec = parsed.Value<float?>("sec") ?? 0f;
+                        Audio.AudioEngine.ma_bridge_bgm_seek(sec);
+                    }
                     break;
                 case "pause":
                     _bgmPaused = true;
@@ -2729,12 +2747,16 @@ namespace CF7Launcher.Guardian
                     SendGameCommand("jukeboxStop");
                     break;
                 case "volGlobal":
-                    int vg = ExtractInt(json, "\"value\":");
-                    SendGameCommandWithData("setGlobalVolume", "\"value\":" + vg);
+                    {
+                        int vg = parsed.Value<int?>("value") ?? 0;
+                        SendGameCommandWithData("setGlobalVolume", "\"value\":" + vg);
+                    }
                     break;
                 case "volBgm":
-                    int vb = ExtractInt(json, "\"value\":");
-                    SendGameCommandWithData("setBGMVolume", "\"value\":" + vb);
+                    {
+                        int vb = parsed.Value<int?>("value") ?? 0;
+                        SendGameCommandWithData("setBGMVolume", "\"value\":" + vb);
+                    }
                     break;
                 case "loadHelp":
                     LoadAndPushHelp();

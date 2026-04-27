@@ -280,6 +280,24 @@
             seekRect = null;
         }
         if (_refs.helpModal) _refs.helpModal.classList.remove('visible');
+        // 清理瞬态状态：下次 onOpen 重新 seed UiData 当前值
+        // （否则关闭期间 BGM 切空 / 进度推进 / 设置改动后，重开会先闪一帧旧数据）
+        bgmTitle = '';
+        currentDuration = 0;
+        playing = false;
+        isPaused = false;
+        histIdx = 0;
+        histLen = 0;
+        if (_refs.title) _refs.title.textContent = '未播放';
+        if (_refs.time) _refs.time.textContent = '';
+        if (_refs.progFill) _refs.progFill.style.width = '0%';
+        if (_refs.pauseBtn) {
+            _refs.pauseBtn.classList.remove('paused');
+            _refs.pauseBtn.textContent = '‖';
+        }
+        if (_refs.ctx && _refs.canvas) {
+            _refs.ctx.clearRect(0, 0, _refs.canvas.width, _refs.canvas.height);
+        }
     }
 
     function setTitle(title) {

@@ -236,7 +236,10 @@
 <script src="modules/notch.js"></script>
 <script src="modules/cursor-feedback.js"></script>
 <script src="modules/currency.js"></script>
-<script src="modules/jukebox.js"></script>
+<!-- Phase 5：modules/jukebox.js 旧脚本已被 modules/panels/jukebox-panel.js 取代；
+     其 audio/catalog/UiData 订阅会在隐藏 DOM 上跑波形逻辑、污染性能基线，故注释脚本入口。
+     旧 #jukebox-panel DOM 仍在 overlay.html 中作 Phase 7 物理删除前的过渡，但因脚本不再注入，行为消极无害。 -->
+<!-- <script src="modules/jukebox.js"></script> -->
 <script src="modules/combo.js"></script>
 <script src="modules/panels.js"></script>
 <script src="modules/audio.js"></script>

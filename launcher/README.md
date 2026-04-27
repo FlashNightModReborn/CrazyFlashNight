@@ -379,8 +379,10 @@ launcher/
 │       ├── notch.js                       Notch UI（FPS/clock/工具条/通知）
 │       ├── currency.js                    经济面板动画
 │       ├── combo.js                       搓招连击飞出动效
-│       ├── jukebox.js                     BGM 点歌器（波形/seek/专辑）
+│       ├── jukebox.js                     [Phase 5 退役] 旧 BGM 点歌器（已注释脚本入口；Phase 7 删除）。展开 UI 已迁 panels/jukebox-panel.js
 │       ├── panels.js                      通用面板生命周期（register/open/close/ESC）
+│       ├── panels/
+│       │   └── jukebox-panel.js           BGM 点歌器（Panels.register('jukebox')；展开后内容由此承载）
 │       ├── tooltip.js                     Tooltip（hover/anchored）
 │       ├── icons.js                       图标 manifest 加载与解析
 │       ├── kshop.js                       K 点商城面板（ShopTask 双层 callId）
@@ -945,7 +947,7 @@ Guardian 通过 Win32 `SetParent` 将 Flash Player SA 窗口嵌入 `_flashPanel`
 
 **BGM**：双 `ma_sound` 实例 ping-pong crossfade。切换时旧曲淡出与新曲淡入重叠进行，基于 `ma_engine_get_time_in_milliseconds` 全局时钟调度。`stopBGM` 使用 `ma_sound_stop_with_fade_in_milliseconds`，操作两个槽位确保无残留。注意 miniaudio 的 base volume 与 fader 是相乘关系，crossfade 路径中 `ma_sound_set_volume` 必须设为 1.0（由 fader 独立控制 0→1 淡入）。Seek 使用 `ma_sound_seek_to_second()`（基于声源自身采样率换算，不依赖 engine sample rate）。
 
-**BGM 可视化 + 点歌器**：`PeakDetector` 自定义节点（`ma_node_vtable` passthrough）插入 bgmGroup → engine endpoint 之间，实时采样 L/R peak。C# 60ms 轮询 `ma_bridge_bgm_get_peak/cursor/length/is_playing` → WebView2 `PostWebMessageAsJson` → `jukebox.js` 渲染滚动波形 + 进度条（可拖拽 seek）。点歌器面板含专辑浏览、选曲播放、设置菜单（覆盖关卡BGM / 真随机）和帮助按钮。曲目标题由 AS2 `pushUiState("bgm:title")` 经 UiData 通道推送，设置状态由 `jbo:/jbr:` 通道同步。
+**BGM 可视化 + 点歌器**：`PeakDetector` 自定义节点（`ma_node_vtable` passthrough）插入 bgmGroup → engine endpoint 之间，实时采样 L/R peak。C# 60ms 轮询 `ma_bridge_bgm_get_peak/cursor/length/is_playing` → WebView2 `PostWebMessageAsJson` 推 `audio` 消息。Phase 5 起折叠态由 C# `JukeboxTitlebarWidget` GDI+ 接管（mini wave + 标题 marquee + pause/expand）；展开 UI 升格为正式 panel：[panels/jukebox-panel.js](web/modules/panels/jukebox-panel.js) 注册 `Panels.register('jukebox')`，由 `JUKEBOX_EXPAND` → `LauncherCommandRouter.OpenPanel("jukebox")` → `PanelHostController` 走完整 backdrop / EX_STYLE / HUD-suspend 序列后渲染大波形 + 进度条 + 专辑浏览 + 选曲 + 设置（音量 / 覆盖关卡BGM / 真随机 / 播放模式）+ 帮助 markdown。曲目标题由 AS2 `pushUiState("bgm:title")` 经 UiData 推送（jukebox-panel.js onOpen 通过 `UiData.get('bgm')` seed 当前值，避免 panel 晚于启动期打开错过历史推送），设置状态由 `jbo:/jbr:/jbm:/vg:/vb:` 通道同步。catalog 由 `MusicCatalog` 在启动期 + 文件变更时增量推 `catalog`/`catalogUpdate`；后开 panel 缺失时主动 `cmd:'requestCatalog'` 拉全量。Web 旧 [modules/jukebox.js](web/modules/jukebox.js) 已注释脚本入口（DOM 暂留 Phase 7 删除），不再参与运行时音频/UiData 订阅。
 
 **SFX**：启动时扫描 `sounds/export/{武器,特效,人物}/` 目录，文件名即 linkageId，覆盖顺序武器→特效→人物（后覆盖前）。Flash 侧帧内累积，帧末由 FrameBroadcaster 合批发送 `S{id1}|{id2}|{id3}` 快车道消息。native 层 90ms 去重。
 
@@ -1158,6 +1160,26 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → 按面板 
 - **lockbox**（开锁小游戏）: `web/modules/minigames/lockbox/` 下的正式小游戏模块；支持运行时参数、browser harness、Node QA
 - **pinalign**（定位小游戏）: `web/modules/minigames/pinalign/` 下的正式小游戏模块；和 Lockbox 共用小游戏壳层与 QA 平台
 - **gobang**（五子棋小游戏）: `web/modules/minigames/gobang/` 下的正式小游戏模块；Web core 负责规则裁判，AI 经 Web→C# `gomoku_eval` 调用 `GomokuTask` / Rapfi
+- **jukebox**（BGM 点歌台）: Phase 5 新增；`web/modules/panels/jukebox-panel.js` 注册 `Panels.register('jukebox')`，由 NotchHud `JukeboxTitlebarWidget` 展开按钮 → `JUKEBOX_EXPAND` → `LauncherCommandRouter.OpenPanel("jukebox")` 触发；与 kshop/help 等通用 panel 同走完整 backdrop / EX_STYLE / HUD-suspend 序列，PanelLayoutCatalog 给 880×620 小矩形（`jukebox-panel.js` 用 inset 百分比布局，缩放无遮罩裁切）。曲库 / UiData 状态在 onOpen 时通过 `cmd:'requestCatalog'` + `UiData.get` seed 当前值，避免晚注册错过历史推送
+
+#### Phase 5 Jukebox panel 手测
+
+`useNativeHud=true` 启动游戏，进到游戏就绪后逐项验证：
+
+1. **Titlebar 入口**：notch `JukeboxTitlebarWidget` 可见、mini wave 流动、当前曲名 marquee；点 expand → panel 出现
+2. **panel 矩形化**：panel 居中以 880×620 显示（不是全 anchor）、周围有 backdrop dim；Spy++ 验证 WebOverlay hwnd bounds 缩到 880×620、EX_STYLE 既无 `WS_EX_LAYERED` 也无 `WS_EX_TRANSPARENT`
+3. **打开 seed 状态**：当前正在播放的曲目标题立刻显示在 panel 标题区（不是 `未播放`）；音量滑条显示当前实际值；覆盖关卡BGM / 真随机 / 播放模式 选中态正确
+4. **曲库列表**：专辑下拉显示所有专辑 + 计数；切换专辑过滤；当前播放曲目高亮 active
+5. **选曲**：点击曲目立即切歌；标题更新；进度条归零；含特殊字符（`"` / `\` / 中英混排）的曲名正确发到 AS2（`HandleJukeboxMessage` 已用 JObject 解析）
+6. **播放控制**：暂停 ↔ 继续按钮翻转；停止回到默认 BGM；进度条拖拽 seek 立即生效
+7. **设置**：覆盖关卡BGM / 真随机切换；播放模式三选一切换；AS2 端通过 `setGlobalVolume`/`setBGMVolume`/`jukeboxOverride` 等收到对应命令
+8. **帮助 markdown**：点 `?` 弹模态加载 `sounds/README.md` 渲染；关闭模态正常
+9. **关闭面板**：右上 × 立即隐藏 panel（DOM 即刻消失）+ WebView2 SW_HIDE 回到 idle；ESC 触发 onRequestClose 同样路径
+10. **重开干净**：关 panel 后再开，**不**显示上一次曲名/进度/音量瞬态（cleanup 已重置 `bgmTitle/currentDuration/progress/wave`；onOpen 重新 seed）
+11. **不漏 listener**：30 次 open/close 循环后 launcher.log 无累积；`Bridge.off` 正确解绑（uidata 走 `UiData.off`）
+12. **legacy 不污染**：[overlay.html](web/overlay.html) 的 `modules/jukebox.js` 脚本入口已注释；DevTools console 无 `audio` / `catalog` 双重处理日志
+
+无法通过手测验证的回归（如 idle iGPU 下降）走 `Ctrl+G` 探针 + Task Manager GPU 标签人工对照。
 
 **通用模块**：
 - `panels.js`: 面板注册/生命周期管理 (register/open/close/force_close)
