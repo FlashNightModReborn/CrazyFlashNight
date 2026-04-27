@@ -49,10 +49,20 @@
     Panels.register('jukebox', {
         create: createDOM,
         onOpen: onOpen,
-        onRequestClose: function() { Bridge.send({type: 'panel', cmd: 'close', panel: 'jukebox'}); },
+        // ESC / backdrop 走此入口；必须先 Panels.close() 让 panels.js _active 复位为 null，
+        // 否则 C# SuspendAfterPanel 不会回发 panel_cmd close（PanelHostController 走 SW_HIDE 不是 force_close 通知 web），
+        // _active 滞留 'jukebox' 导致下次 open() 早 return（panels.js: if (_active === id) return）。
+        onRequestClose: closeLocally,
         onClose: cleanup,
         onForceClose: cleanup
     });
+
+    /// <summary>本地立即隐藏 panel + 通知 C# 走 backdrop/HUD-resume 序列。
+    ///         三条入口（× 按钮 / ESC / backdrop click）共用，避免单边漏 Panels.close 让 _active 滞留。</summary>
+    function closeLocally() {
+        try { Panels.close(); } catch (e) {}
+        Bridge.send({type: 'panel', cmd: 'close', panel: 'jukebox'});
+    }
 
     function createDOM() {
         _el = document.createElement('div');
@@ -147,12 +157,7 @@
         _refs.canvas.height = 64 * dpr;
         _refs.ctx = _refs.canvas.getContext('2d');
 
-        _refs.closeBtn.addEventListener('click', function() {
-            // 与 help-panel.js 模式一致：本地立即 Panels.close() 让 DOM 隐藏，再通知 C# 走完整 close 序列。
-            // 不依赖单一路径——即便 C# 路由出错（含 "jukebox" 子串误匹配等），玩家也已看到面板消失。
-            try { Panels.close(); } catch (e) {}
-            Bridge.send({type: 'panel', cmd: 'close', panel: 'jukebox'});
-        });
+        _refs.closeBtn.addEventListener('click', closeLocally);
         _refs.albumTrig.addEventListener('click', function(e) {
             e.stopPropagation();
             _refs.albumWrap.classList.toggle('open');
