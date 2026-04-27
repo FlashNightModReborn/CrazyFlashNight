@@ -779,11 +779,17 @@ namespace CF7Launcher.Guardian
                 {
                     HandleInteractiveRects(parsed, json);
                 }
+                else if (type == "panel")
+                {
+                    // 先匹配 type=="panel"——避免下面 jukebox 子串 fallback 把含 "panel":"jukebox" 字段的
+                    // panel-close 消息错路由进 HandleJukeboxMessage。
+                    HandlePanelMessage(json);
+                }
                 else if (type == "jukebox" || json.Contains("\"jukebox\""))
                 {
                     HandleJukeboxMessage(json);
                 }
-                else if (type == "panel" || json.Contains("\"panel\""))
+                else if (json.Contains("\"panel\""))
                 {
                     HandlePanelMessage(json);
                 }
@@ -2732,6 +2738,16 @@ namespace CF7Launcher.Guardian
                     break;
                 case "loadHelp":
                     LoadAndPushHelp();
+                    break;
+                case "requestCatalog":
+                    // Phase 5 jukebox panel 在 onOpen 时请求当前 catalog——
+                    // 因 MusicCatalog.CatalogChanged 是一次性增量推送（启动期 / 文件变更），
+                    // 后续打开的 panel 错过推送，需主动 pull。
+                    if (_musicCatalog != null && _webReady)
+                    {
+                        try { PostToWeb(_musicCatalog.GetFullCatalogJson()); }
+                        catch (Exception ex) { LogManager.Log("[Jukebox] requestCatalog failed: " + ex.Message); }
+                    }
                     break;
             }
         }

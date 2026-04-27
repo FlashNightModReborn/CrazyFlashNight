@@ -92,5 +92,10 @@ var UiData = (function() {
         legacyHandlers[type].push(handler);
     }
 
-    return { on: on, off: off, onLegacy: onLegacy, dispatch: dispatch };
+    /** 读取 key 当前已知值；未推送过返回 undefined。
+     *  用于晚注册的订阅者（如 panel 打开时）补 seed 当前状态——
+     *  UiData.on() 仅在值变化时 fire，对启动期已设过的 key 不会重放。 */
+    function get(key) { return lastState[key]; }
+
+    return { on: on, off: off, onLegacy: onLegacy, dispatch: dispatch, get: get };
 })();

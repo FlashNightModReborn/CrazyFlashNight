@@ -9,10 +9,10 @@ using CF7Launcher.Guardian;
 namespace CF7Launcher.Guardian.Hud
 {
     /// <summary>
-    /// 替代 web overlay.html #notch-toolbar：5 键 PETS/MERCS/TABLET/WAREHOUSE/SHOP。
+    /// 替代 web overlay.html #notch-toolbar：7 键 PETS/MERCS/TABLET/WAREHOUSE/SHOP/EQUIP_UI/TASK_UI。
     /// 位置：anchor 顶部居中靠右（避开 NotchOverlay 居中 pill）。
     /// WAREHOUSE 仅在 UiData "q" > 13 时可见（与 web 同步）。
-    /// 解决 useNativeHud=true 下 SHOP 入口不可达。
+    /// EQUIP_UI/TASK_UI 替代被 CSS hide 的 web #context-panel 入口（装备/任务）。
     /// </summary>
     public class NotchToolbarWidget : INativeHudWidget, IUiDataConsumer
     {
@@ -24,8 +24,8 @@ namespace CF7Launcher.Guardian.Hud
         private const int CARD_PAD_Y_BASE = 4;
         private const float FONT_BASE_PX = 13f;
 
-        private static readonly string[] KEYS    = { "PETS", "MERCS", "TABLET", "WAREHOUSE", "SHOP" };
-        private static readonly string[] LABELS  = { "🐾 战宠", "⚔ 佣兵", "💻 平板", "📦 战备箱", "🛒 商城" };
+        private static readonly string[] KEYS    = { "PETS", "MERCS", "TABLET", "WAREHOUSE", "SHOP", "EQUIP_UI", "TASK_UI" };
+        private static readonly string[] LABELS  = { "🐾 战宠", "⚔ 佣兵", "💻 平板", "📦 战备箱", "🛒 商城", "🎒 装备", "📋 任务" };
         private const int IDX_WAREHOUSE = 3;
 
         private readonly Control _anchor;

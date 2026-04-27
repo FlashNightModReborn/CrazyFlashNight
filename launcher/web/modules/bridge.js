@@ -4,6 +4,16 @@
         if (!handlers[type]) handlers[type] = [];
         handlers[type].push(handler);
     }
+    /** 移除已注册的 handler（按引用匹配，仅移除第一个匹配项） */
+    function off(type, handler) {
+        if (!handlers[type]) return;
+        for (var i = handlers[type].length - 1; i >= 0; i--) {
+            if (handlers[type][i] === handler) {
+                handlers[type].splice(i, 1);
+                break;
+            }
+        }
+    }
     function send(msg) {
         if (window.chrome && window.chrome.webview) {
             window.chrome.webview.postMessage(msg);
@@ -20,7 +30,7 @@
             }
         });
     }
-    return { on: on, send: send };
+    return { on: on, off: off, send: send };
 })();
 
 var OverlayViewportMetrics = (function() {

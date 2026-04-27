@@ -374,7 +374,7 @@ class Program
             nativeHud.AddWidget(comboWidget);
             // pause/expand 走两条独立路径：
             //   pause → webOverlay.ToggleBgmPause（与 HandleJukeboxMessage 共享 _bgmPaused 镜像，避免双权威源）
-            //   expand → router JUKEBOX_EXPAND → OpenPanel("jukebox")（Phase 5 启用，目前无注册 panel 时静默）
+            //   expand → router JUKEBOX_EXPAND → OpenPanel("jukebox") (Phase 5：jukebox-panel.js 已注册 Panels.register)
             WebOverlayForm capturedWebForJukebox = webOverlay;
             LauncherCommandRouter capturedRouterForJukebox = commandRouter;
             CF7Launcher.Guardian.Hud.JukeboxTitlebarWidget jukeboxTitlebar =
