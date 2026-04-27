@@ -19,10 +19,19 @@ namespace CF7Launcher.Guardian
             // 待 panels.js 接 panel_viewport_set 后再逐个开启下方 switch 中的小矩形分配。
             //
             // Phase 5：jukebox 已是新 panel（jukebox-panel.js 用 inset:6% 12% 百分比布局，
-            // 与 panelRect 大小解耦），可以直接使用 880×620 小矩形——
+            // 与 panelRect 大小解耦），可以直接使用基准 880×620 小矩形——
             // 这是 Phase 4 收尾后真正缩小 panel 态 α blend 表面的第一个例子。
+            //
+            // 基准尺寸按 anchorScreenRect.Height / DESIGN_HEIGHT 缩放，与 WidgetScaler 同源
+            // （anchor 已是 letterbox-stripped viewport），保证大窗口下 panel 跟 widgets 比例一致放大、
+            // 4:3 / 16:10 / 紧凑窗口下整体小一档但布局不裁切。
             string name = panelName != null ? panelName.ToLowerInvariant() : "";
-            if (name == "jukebox") return Centered(anchorScreenRect, 880, 620);
+            if (name == "jukebox")
+            {
+                int w, h;
+                ScalePanelSize(880, 620, anchorScreenRect, out w, out h);
+                return Centered(anchorScreenRect, w, h);
+            }
             return anchorScreenRect;
 
             #pragma warning disable 0162 // unreachable（保留小矩形配置作为其他 panel 适配 panel_viewport_set 后的目标值）
@@ -37,6 +46,21 @@ namespace CF7Launcher.Guardian
                 default:         return Centered(anchorScreenRect, 800, 600);
             }
             #pragma warning restore 0162
+        }
+
+        /// <summary>
+        /// 把基准尺寸按 anchor.Height / 576 缩放（与 Hud.WidgetScaler.DESIGN_HEIGHT 同源）。
+        /// 不直接 ref WidgetScaler 是因为 PanelLayoutCatalog 在 Guardian namespace、Hud 是子 namespace，
+        /// 反向 ref 会引入循环依赖；常量 576 重复一次可接受。最低 0.5x 防极端窗口下退化为 0。
+        /// </summary>
+        private static void ScalePanelSize(int baseW, int baseH, Rectangle anchor, out int w, out int h)
+        {
+            const float DESIGN_HEIGHT = 576f;
+            const float MIN_SCALE = 0.5f;
+            float scale = anchor.Height > 0 ? anchor.Height / DESIGN_HEIGHT : 1f;
+            if (scale < MIN_SCALE) scale = MIN_SCALE;
+            w = Math.Max(1, (int)Math.Round(baseW * scale));
+            h = Math.Max(1, (int)Math.Round(baseH * scale));
         }
 
         /// <summary>取 anchor 中央居中；若请求尺寸超过 anchor 则 clamp 到 anchor。</summary>

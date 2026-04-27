@@ -27,21 +27,44 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void Phase5_Jukebox_Returns880x620CenteredInAnchor()
+        public void Phase5_Jukebox_AtDesignAnchor_Returns880xClampedHeight()
         {
-            Rectangle r = PanelLayoutCatalog.GetRect("jukebox", Anchor1080p);
+            // anchor 1024×576（design viewport，scale=1）→ 请求 880×620，高度被 Centered clamp 到 576
+            Rectangle design = new Rectangle(0, 0, 1024, 576);
+            Rectangle r = PanelLayoutCatalog.GetRect("jukebox", design);
             Assert.Equal(880, r.Width);
-            Assert.Equal(620, r.Height);
-            Assert.Equal(100 + (1920 - 880) / 2, r.X);
-            Assert.Equal(50 + (1080 - 620) / 2, r.Y);
+            Assert.Equal(576, r.Height);
+        }
+
+        [Fact]
+        public void Phase5_Jukebox_AtLargeAnchor_ScalesByViewportHeight()
+        {
+            // anchor 1920×1080 → scale=1080/576=1.875；请求 1650×1163；高度 Centered clamp 到 1080
+            Rectangle r = PanelLayoutCatalog.GetRect("jukebox", Anchor1080p);
+            Assert.Equal(1650, r.Width);
+            Assert.Equal(1080, r.Height);
+            Assert.Equal(100 + (1920 - 1650) / 2, r.X);
+            Assert.Equal(50, r.Y);
+        }
+
+        [Fact]
+        public void Phase5_Jukebox_AtTinyAnchor_FloorAtMinScale()
+        {
+            // 极小 anchor 触发 MIN_SCALE=0.5 floor，保证按钮仍可点击
+            Rectangle tiny = new Rectangle(0, 0, 200, 100);
+            Rectangle r = PanelLayoutCatalog.GetRect("jukebox", tiny);
+            // scale = max(0.5, 100/576) = 0.5；请求 440×310；Centered clamp 到 200×100
+            Assert.Equal(200, r.Width);
+            Assert.Equal(100, r.Height);
         }
 
         [Fact]
         public void Phase5_Jukebox_CaseInsensitive()
         {
             Rectangle r = PanelLayoutCatalog.GetRect("JUKEBOX", Anchor1080p);
-            Assert.Equal(880, r.Width);
-            Assert.Equal(620, r.Height);
+            // 仅断言走了 jukebox 分支（被缩放），不是 default 全 anchor
+            Assert.NotEqual(Anchor1080p, r);
+            Assert.Equal(1650, r.Width);
         }
 
         [Fact]
