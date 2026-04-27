@@ -170,6 +170,13 @@ $requiredWebPaths = @(
     "icons\manifest.json",
     "data\lockbox-variants.json",
     "assets\bg\manifest.json",
+    "assets\cursor\native\manifest.json",
+    "assets\cursor\native\normal.png",
+    "assets\cursor\native\click.png",
+    "assets\cursor\native\hoverGrab.png",
+    "assets\cursor\native\grab.png",
+    "assets\cursor\native\attack.png",
+    "assets\cursor\native\openDoor.png",
     "assets\logos\cf7me-title.png",
     "assets\logos\steam.svg",
     "assets\intro.mp4",
@@ -227,6 +234,19 @@ if ($missingWebPaths.Count -gt 0) {
     exit 1
 }
 Write-Host "  OK: launcher\\web runtime assets present ($($requiredWebPaths.Count) checks)" -ForegroundColor Green
+
+# Step 6a: Verify native cursor canvas/hotspot contract
+Write-Host "[Step 6a/6] Verify native cursor canvas contract..." -ForegroundColor Yellow
+$cursorAudit = Join-Path $projectRoot "tools\audit-native-cursor-assets.js"
+if (-not (Test-Path $cursorAudit)) {
+    Write-Host "[FAIL] Native cursor audit missing: $cursorAudit" -ForegroundColor Red
+    exit 1
+}
+node $cursorAudit
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] Native cursor canvas audit failed." -ForegroundColor Red
+    exit 1
+}
 
 # Step 6b: Verify launcher\data runtime assets (NativeHud widget catalog 等)
 Write-Host "[Step 6b/6] Verify launcher\data runtime assets..." -ForegroundColor Yellow

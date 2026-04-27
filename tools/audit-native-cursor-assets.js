@@ -8,6 +8,7 @@ const zlib = require('zlib');
 const projectRoot = path.resolve(__dirname, '..');
 const assetDir = path.join(projectRoot, 'launcher', 'web', 'assets', 'cursor', 'native');
 const manifestPath = path.join(assetDir, 'manifest.json');
+const MIN_HOTSPOT_ALPHA = 16;
 
 function parseArgs(argv) {
     const args = { json: false };
@@ -91,8 +92,18 @@ function pngInfo(file) {
 
     const channelsByType = { 0: 1, 2: 3, 4: 2, 6: 4 };
     const channels = channelsByType[colorType];
+    const hasAlphaChannel = colorType === 4 || colorType === 6;
     if (!channels || bitDepth !== 8) {
-        return { width, height, bitDepth, colorType, hotspotAlpha: null, alphaBounds: null };
+        return {
+            width,
+            height,
+            bitDepth,
+            colorType,
+            hasAlphaChannel,
+            hotspotAlpha: null,
+            cornerAlpha: null,
+            alphaBounds: null
+        };
     }
 
     const bpp = channels;
@@ -139,7 +150,14 @@ function pngInfo(file) {
         height,
         bitDepth,
         colorType,
+        hasAlphaChannel,
         alphaAt,
+        cornerAlpha: {
+            topLeft: alphaAt(0, 0),
+            topRight: alphaAt(width - 1, 0),
+            bottomLeft: alphaAt(0, height - 1),
+            bottomRight: alphaAt(width - 1, height - 1)
+        },
         alphaBounds: alphaPixels > 0 ? { minX, minY, maxX, maxY, alphaPixels } : null
     };
 }
@@ -183,11 +201,22 @@ function main() {
             errors.push(state + '.png size ' + info.width + 'x' + info.height
                 + ' does not match canvas ' + canvas.width + 'x' + canvas.height);
         }
+        if (!info.hasAlphaChannel) {
+            errors.push(state + '.png must use a PNG alpha channel, not an opaque RGB canvas');
+        }
         if (!info.alphaBounds) {
             errors.push(state + '.png has no visible pixels');
         }
-        if (typeof info.alphaAt === 'function' && info.alphaAt(hotspot.x, hotspot.y) <= 0) {
-            errors.push(state + '.png hotspot pixel (' + hotspot.x + ',' + hotspot.y + ') is transparent');
+        if (typeof info.alphaAt === 'function' && info.alphaAt(hotspot.x, hotspot.y) < MIN_HOTSPOT_ALPHA) {
+            errors.push(state + '.png hotspot pixel (' + hotspot.x + ',' + hotspot.y
+                + ') alpha must be at least ' + MIN_HOTSPOT_ALPHA);
+        }
+        if (info.cornerAlpha) {
+            for (const key of Object.keys(info.cornerAlpha)) {
+                if (info.cornerAlpha[key] !== 0) {
+                    errors.push(state + '.png ' + key + ' corner must be transparent');
+                }
+            }
         }
 
         results.push({
@@ -196,7 +225,9 @@ function main() {
             height: info.height,
             bitDepth: info.bitDepth,
             colorType: info.colorType,
+            hasAlphaChannel: info.hasAlphaChannel,
             hotspotAlpha: typeof info.alphaAt === 'function' ? info.alphaAt(hotspot.x, hotspot.y) : null,
+            cornerAlpha: info.cornerAlpha,
             alphaBounds: info.alphaBounds
         });
     }
