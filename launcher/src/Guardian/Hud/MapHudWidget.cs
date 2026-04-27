@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
 using System.Windows.Forms;
@@ -21,14 +22,13 @@ namespace CF7Launcher.Guardian.Hud
     ///
     /// 渲染层级（自底向上）：
     ///   1. 圆角卡片背景（按 group 主题色染）
-    ///   2. body：fallback 圆角矩形 blocks（mvp）+ beacon 高亮 currentRect
+    ///   2. body：visuals PNG alpha 剪影（优先）或 fallback 圆角矩形 blocks + beacon 高亮 currentRect
     ///   3. label pill（左上角，pageLabel + label）
     ///
     /// click → LauncherCommandRouter.Dispatch("TASK_MAP")（与 web button 同入口）
     ///
-    /// 不渲染 PNG silhouette mask（web map-hud-svg-silhouette via SVG mask）：
-    /// PNG alpha-mask + tint 在 GDI+ 下成本与维护代价大；fallback 圆角矩形已能传递"有几个区域、哪个是当前"的核心信息。
-    /// 后续若需要可加 LRU 缓存版本（plan 4.7.4）。
+    /// PNG silhouette mask 与 web map-hud-svg-silhouette 对齐：assetUrl 以 webDir 为安全根解析，
+    /// 使用 PNG alpha 作为 mask 并按 HUD theme tint。visuals 缺失或加载失败时回退 blocks。
     /// </summary>
     public class MapHudWidget : INativeHudWidget, IUiDataConsumer
     {
@@ -61,6 +61,12 @@ namespace CF7Launcher.Guardian.Hud
         // 不影响 _gameReady/mode/catalog 门控；折叠后玩家仍能用左下角 pin 重新展开。
         private bool _collapsed;
         private bool _hoverCloseBtn;
+
+        private static readonly object AssetCacheLock = new object();
+        private static readonly Dictionary<string, Image> AssetCache = new Dictionary<string, Image>(StringComparer.OrdinalIgnoreCase);
+        private static readonly Dictionary<string, Bitmap> TintedAssetCache = new Dictionary<string, Bitmap>(StringComparer.OrdinalIgnoreCase);
+        private static readonly HashSet<string> MissingAssetWarnings = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private const int MAX_TINTED_CACHE = 128;
 
         public event EventHandler BoundsOrVisibilityChanged;
         public event EventHandler RepaintRequested;
@@ -243,62 +249,7 @@ namespace CF7Launcher.Guardian.Hud
         private void PaintBody(Graphics g, Rectangle body, ThemeColors theme)
         {
             MapHudOutline outline = _entry.Outline;
-            RectF vp = outline.ViewportRect.Value;
-            if (vp.W <= 0 || vp.H <= 0) return;
-
-            // 等比缩放：HUD body 内适配 viewport 矩形（preserveAspectRatio xMidYMid meet）
-            float sx = body.Width / vp.W;
-            float sy = body.Height / vp.H;
-            float s = Math.Min(sx, sy);
-            float drawW = vp.W * s;
-            float drawH = vp.H * s;
-            float originX = body.X + (body.Width - drawW) / 2f;
-            float originY = body.Y + (body.Height - drawH) / 2f;
-
-            // fallback 矩形 blocks（与 web buildFallbackRectLayer 等效；不渲染 PNG silhouette mask）
-            string currentId = _entry.Meta != null ? _entry.Meta.HotspotId : "";
-            using (SolidBrush blockFill    = new SolidBrush(Color.FromArgb(36, theme.Silhouette)))
-            using (SolidBrush blockFillCur = new SolidBrush(Color.FromArgb(76, theme.Current)))
-            using (Pen blockEdge           = new Pen(Color.FromArgb(72, theme.Accent)))
-            using (Pen blockEdgeCur        = new Pen(Color.FromArgb(168, theme.Current), 1.4f))
-            {
-                if (outline.Blocks != null)
-                {
-                    for (int i = 0; i < outline.Blocks.Count; i++)
-                    {
-                        MapHudBlock blk = outline.Blocks[i];
-                        if (blk == null || !blk.SourceRect.HasValue) continue;
-                        RectF src = blk.SourceRect.Value;
-                        float bx = originX + (src.X - vp.X) * s;
-                        float by = originY + (src.Y - vp.Y) * s;
-                        float bw = Math.Max(MIN_BLOCK_PX, src.W * s);
-                        float bh = Math.Max(MIN_BLOCK_PX, src.H * s);
-                        bool isCurrent = !string.IsNullOrEmpty(blk.HotspotId) && blk.HotspotId == currentId;
-                        float br = Math.Max(2f, Math.Min(6f, Math.Min(bw, bh) * 0.18f));
-                        using (GraphicsPath bp = MakeRoundedRectF(bx, by, bw, bh, br))
-                        {
-                            g.FillPath(isCurrent ? blockFillCur : blockFill, bp);
-                            g.DrawPath(isCurrent ? blockEdgeCur : blockEdge, bp);
-                        }
-                    }
-                }
-
-                // beacon on currentRect（与 web map-hud-svg-beacon 等效）
-                if (outline.CurrentRect.HasValue)
-                {
-                    RectF cr = outline.CurrentRect.Value;
-                    float cx = originX + (cr.X + cr.W / 2f - vp.X) * s;
-                    float cy = originY + (cr.Y + cr.H / 2f - vp.Y) * s;
-                    float br = WidgetScaler.Pxf(BEACON_R_BASE, Scale);
-                    using (SolidBrush ringBrush = new SolidBrush(Color.FromArgb(120, theme.Current)))
-                    using (SolidBrush coreBrush = new SolidBrush(Color.FromArgb(232, theme.Current)))
-                    {
-                        g.FillEllipse(ringBrush, cx - br, cy - br, br * 2, br * 2);
-                        float cr2 = br * 0.55f;
-                        g.FillEllipse(coreBrush, cx - cr2, cy - cr2, cr2 * 2, cr2 * 2);
-                    }
-                }
-            }
+            PaintHudOutline(g, body, outline, _entry.Meta, theme, Scale, MIN_BLOCK_PX, WidgetScaler.Pxf(BEACON_R_BASE, Scale));
         }
 
         private void PaintLabel(Graphics g, Rectangle card, ThemeColors theme)
@@ -426,6 +377,264 @@ namespace CF7Launcher.Guardian.Hud
                 }
             }
             if (dirty) FireBounds();
+        }
+
+        // ── shared renderer (MapHudWidget + RightContextWidget) ──
+
+        internal static void PaintHudOutline(Graphics g, Rectangle body, MapHudOutline outline, MapHudMeta meta,
+            ThemeColors theme, float scale, float minBlockPx, float beaconRadius)
+        {
+            if (g == null || body.Width <= 0 || body.Height <= 0) return;
+            if (outline == null || !outline.ViewportRect.HasValue) return;
+            RectF vp = outline.ViewportRect.Value;
+            if (vp.W <= 0 || vp.H <= 0) return;
+
+            float s = Math.Min(body.Width / vp.W, body.Height / vp.H);
+            float drawW = vp.W * s;
+            float drawH = vp.H * s;
+            float originX = body.X + (body.Width - drawW) / 2f;
+            float originY = body.Y + (body.Height - drawH) / 2f;
+            string currentId = meta != null ? (meta.HotspotId ?? "") : "";
+
+            GraphicsState state = g.Save();
+            try
+            {
+                g.SetClip(body);
+                bool paintedVisuals = PaintVisuals(g, outline, currentId, theme, vp, originX, originY, s, scale);
+                if (!paintedVisuals)
+                    PaintFallbackBlocks(g, outline, currentId, theme, vp, originX, originY, s, minBlockPx);
+                PaintBeacon(g, outline, theme, vp, originX, originY, s, beaconRadius);
+            }
+            finally
+            {
+                g.Restore(state);
+            }
+        }
+
+        private static bool PaintVisuals(Graphics g, MapHudOutline outline, string currentId, ThemeColors theme,
+            RectF vp, float originX, float originY, float s, float scale)
+        {
+            if (outline.Visuals == null || outline.Visuals.Count == 0) return false;
+
+            bool painted = false;
+            for (int i = 0; i < outline.Visuals.Count; i++)
+            {
+                MapHudVisual visual = outline.Visuals[i];
+                if (visual == null || !visual.SourceRect.HasValue || string.IsNullOrEmpty(visual.AssetUrl)) continue;
+                Image img = GetAssetImage(visual.AssetUrl);
+                if (img == null) continue;
+                RectangleF dest = MapSourceRect(visual.SourceRect.Value, vp, originX, originY, s, 1f);
+                DrawTintedImage(g, img, visual.AssetUrl, dest, theme.Silhouette, 47);
+                painted = true;
+            }
+
+            for (int i = 0; i < outline.Visuals.Count; i++)
+            {
+                MapHudVisual visual = outline.Visuals[i];
+                if (visual == null || !visual.SourceRect.HasValue || string.IsNullOrEmpty(visual.AssetUrl)) continue;
+                if (!IsCurrentVisual(visual, currentId)) continue;
+                Image img = GetAssetImage(visual.AssetUrl);
+                if (img == null) continue;
+                RectangleF dest = MapSourceRect(visual.SourceRect.Value, vp, originX, originY, s, 1f);
+                RectangleF glow = dest;
+                float inflate = Math.Max(1.5f, 2.2f * scale);
+                glow.Inflate(inflate, inflate);
+                DrawTintedImage(g, img, visual.AssetUrl, glow, theme.Current, 82);
+                DrawTintedImage(g, img, visual.AssetUrl, dest, theme.Current, 245);
+            }
+
+            return painted;
+        }
+
+        private static void PaintFallbackBlocks(Graphics g, MapHudOutline outline, string currentId, ThemeColors theme,
+            RectF vp, float originX, float originY, float s, float minBlockPx)
+        {
+            using (SolidBrush blockFill = new SolidBrush(Color.FromArgb(36, theme.Silhouette)))
+            using (SolidBrush blockFillCur = new SolidBrush(Color.FromArgb(76, theme.Current)))
+            using (Pen blockEdge = new Pen(Color.FromArgb(72, theme.Accent)))
+            using (Pen blockEdgeCur = new Pen(Color.FromArgb(168, theme.Current), 1.4f))
+            {
+                if (outline.Blocks == null) return;
+                for (int i = 0; i < outline.Blocks.Count; i++)
+                {
+                    MapHudBlock blk = outline.Blocks[i];
+                    if (blk == null || !blk.SourceRect.HasValue) continue;
+                    RectangleF r = MapSourceRect(blk.SourceRect.Value, vp, originX, originY, s, minBlockPx);
+                    bool isCurrent = !string.IsNullOrEmpty(blk.HotspotId) && blk.HotspotId == currentId;
+                    float br = Math.Max(2f, Math.Min(6f, Math.Min(r.Width, r.Height) * 0.18f));
+                    using (GraphicsPath bp = MakeRoundedRectF(r.X, r.Y, r.Width, r.Height, br))
+                    {
+                        g.FillPath(isCurrent ? blockFillCur : blockFill, bp);
+                        g.DrawPath(isCurrent ? blockEdgeCur : blockEdge, bp);
+                    }
+                }
+            }
+        }
+
+        private static void PaintBeacon(Graphics g, MapHudOutline outline, ThemeColors theme,
+            RectF vp, float originX, float originY, float s, float beaconRadius)
+        {
+            if (!outline.CurrentRect.HasValue) return;
+            RectF cr = outline.CurrentRect.Value;
+            float cx = originX + (cr.X + cr.W / 2f - vp.X) * s;
+            float cy = originY + (cr.Y + cr.H / 2f - vp.Y) * s;
+            float br = Math.Max(2f, beaconRadius);
+            using (Pen ringPen = new Pen(Color.FromArgb(198, theme.Current), Math.Max(1f, s * 0.035f)))
+            using (SolidBrush coreBrush = new SolidBrush(Color.FromArgb(255, theme.Current)))
+            {
+                g.DrawEllipse(ringPen, cx - br, cy - br, br * 2, br * 2);
+                float cr2 = br * 0.46f;
+                g.FillEllipse(coreBrush, cx - cr2, cy - cr2, cr2 * 2, cr2 * 2);
+            }
+        }
+
+        private static RectangleF MapSourceRect(RectF src, RectF vp, float originX, float originY, float s, float minPx)
+        {
+            float x = originX + (src.X - vp.X) * s;
+            float y = originY + (src.Y - vp.Y) * s;
+            float w = Math.Max(minPx, src.W * s);
+            float h = Math.Max(minPx, src.H * s);
+            return new RectangleF(x, y, w, h);
+        }
+
+        private static bool IsCurrentVisual(MapHudVisual visual, string currentId)
+        {
+            if (visual == null) return false;
+            if (visual.IsCurrent) return true;
+            if (string.IsNullOrEmpty(currentId) || visual.HotspotIds == null) return false;
+            for (int i = 0; i < visual.HotspotIds.Count; i++)
+                if (visual.HotspotIds[i] == currentId) return true;
+            return false;
+        }
+
+        private static Image GetAssetImage(string assetUrl)
+        {
+            string webDir;
+            if (!TryFindDefaultWebDir(out webDir)) return null;
+            string path;
+            if (!TryResolveAssetPath(webDir, assetUrl, out path)) return null;
+
+            lock (AssetCacheLock)
+            {
+                Image cached;
+                if (AssetCache.TryGetValue(path, out cached)) return cached;
+                if (!File.Exists(path))
+                {
+                    WarnMissingAsset(path, "[MapHud] silhouette asset not found: " + path);
+                    return null;
+                }
+                try
+                {
+                    using (Image src = Image.FromFile(path))
+                    {
+                        Bitmap copy = new Bitmap(src);
+                        AssetCache[path] = copy;
+                        return copy;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    WarnMissingAsset(path, "[MapHud] silhouette asset load failed: " + path + " ex=" + ex.Message);
+                    return null;
+                }
+            }
+        }
+
+        private static void WarnMissingAsset(string key, string message)
+        {
+            if (MissingAssetWarnings.Contains(key)) return;
+            MissingAssetWarnings.Add(key);
+            LogManager.Log(message);
+        }
+
+        private static bool TryFindDefaultWebDir(out string webDir)
+        {
+            webDir = null;
+            string cwd = Environment.CurrentDirectory;
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string[] candidates = {
+                Path.Combine(cwd ?? "", "launcher", "web"),
+                Path.Combine(cwd ?? "", "web"),
+                Path.Combine(baseDir ?? "", "launcher", "web"),
+                Path.Combine(baseDir ?? "", "web"),
+                Path.Combine(baseDir ?? "", "..", "..", "web"),
+                Path.Combine(baseDir ?? "", "..", "..", "..", "web")
+            };
+            for (int i = 0; i < candidates.Length; i++)
+            {
+                try
+                {
+                    string full = Path.GetFullPath(candidates[i]);
+                    if (Directory.Exists(full))
+                    {
+                        webDir = full;
+                        return true;
+                    }
+                }
+                catch { }
+            }
+            return false;
+        }
+
+        private static void DrawTintedImage(Graphics g, Image img, string assetKey, RectangleF dest, Color color, int alpha)
+        {
+            if (img == null || dest.Width <= 0 || dest.Height <= 0 || alpha <= 0) return;
+            int dw = Math.Max(1, (int)Math.Round(dest.Width));
+            int dh = Math.Max(1, (int)Math.Round(dest.Height));
+            Bitmap tinted = GetTintedBitmap(img, assetKey, dw, dh, color, alpha);
+            if (tinted == null) return;
+            Rectangle destRect = new Rectangle((int)Math.Round(dest.X), (int)Math.Round(dest.Y), dw, dh);
+            g.DrawImageUnscaled(tinted, destRect);
+        }
+
+        private static Bitmap GetTintedBitmap(Image img, string assetKey, int width, int height, Color color, int alpha)
+        {
+            string key = (assetKey ?? "") + "|" + width + "x" + height + "|" + color.ToArgb().ToString("X8") + "|" + alpha.ToString();
+            lock (AssetCacheLock)
+            {
+                Bitmap cached;
+                if (TintedAssetCache.TryGetValue(key, out cached)) return cached;
+                if (TintedAssetCache.Count >= MAX_TINTED_CACHE)
+                {
+                    foreach (Bitmap b in TintedAssetCache.Values)
+                    {
+                        try { b.Dispose(); } catch { }
+                    }
+                    TintedAssetCache.Clear();
+                }
+
+                Bitmap bmp = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.Clear(Color.Transparent);
+                    g.InterpolationMode = InterpolationMode.HighQualityBilinear;
+                    g.PixelOffsetMode = PixelOffsetMode.Half;
+                    DrawTintedImageUncached(g, img, new Rectangle(0, 0, width, height), color, alpha);
+                }
+                TintedAssetCache[key] = bmp;
+                return bmp;
+            }
+        }
+
+        private static void DrawTintedImageUncached(Graphics g, Image img, Rectangle dest, Color color, int alpha)
+        {
+            float r = color.R / 255f;
+            float gg = color.G / 255f;
+            float b = color.B / 255f;
+            float a = Math.Max(0f, Math.Min(1f, alpha / 255f));
+            ColorMatrix matrix = new ColorMatrix(new float[][]
+            {
+                new float[] { 0f, 0f, 0f, 0f, 0f },
+                new float[] { 0f, 0f, 0f, 0f, 0f },
+                new float[] { 0f, 0f, 0f, 0f, 0f },
+                new float[] { 0f, 0f, 0f, a,  0f },
+                new float[] { r,  gg, b,  0f, 1f }
+            });
+            using (ImageAttributes attrs = new ImageAttributes())
+            {
+                attrs.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                g.DrawImage(img, dest, 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, attrs);
+            }
         }
 
         // ── theme ──

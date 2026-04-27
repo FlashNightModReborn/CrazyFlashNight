@@ -30,12 +30,10 @@ namespace CF7Launcher.Guardian.Hud
     /// </summary>
     public class ComboWidget : INativeHudWidget, IUiDataConsumer, IUiDataLegacyConsumer, INotchNoticeConsumer
     {
-        // 设计基准 (1024x576):
-        //   notch pill 高 28；NotchToolbarWidget 高 ≈ 26+8=34；本 widget 紧贴其下。
-        //   若 NotchToolbar 因 _gameReady=false 不可见，本 widget Visible 依 ComboWidget 自身门控（_gameReady）。
+        // 设计基准 (1024x576)：Web #combo-status 是 #notch-pill 的兄弟节点，收起态紧贴 pill 下沿。
         private const int BAR_H_BASE = 28;
         private const int NOTCH_PILL_H_BASE = 28;
-        private const int NOTCH_TOOLBAR_GAP_BASE = 34;   // 与 NotchToolbarWidget 高度一致
+        private const int COMBO_STATUS_PAD_TOP_BASE = 2;
         private const int BAR_PADDING_X_BASE = 10;
         private const int MIN_BAR_W_BASE = 160;
         private const int MAX_BAR_W_BASE = 480;
@@ -44,6 +42,15 @@ namespace CF7Launcher.Guardian.Hud
         private const float NAME_FONT_BASE_PX = 10f;
         private const float HIT_FONT_BASE_PX = 16f;
         private const float HIT_TAG_FONT_BASE_PX = 10f;
+        private const int HIT_SWEEP_DELAY_MS = 60;
+        private const int HIT_SWEEP_MS = 500;
+        private const int HIT_CHAR_MS = 700;
+        private const int HIT_TAG_DELAY_MS = 300;
+        private const int HIT_TAG_FADE_MS = 200;
+        private const int HIT_COLLAPSE_DELAY_MS = 700;
+        private const int HIT_COLLAPSE_MS = 400;
+        private const float INPUT_LETTER_SPACING_BASE = 1f;
+        private const float HIT_LETTER_SPACING_BASE = 2f;
 
         private const int HIT_MS = 1200;                 // showHit 持续；与 web combo.js hitTimer=35 帧 ≈ 1.2s 对齐
         private const int PENDING_MAX_AGE_FRAMES = 10;   // V8 命中后等 AS2 确认的最大帧数
@@ -51,13 +58,14 @@ namespace CF7Launcher.Guardian.Hud
         // 显示文本的视觉常量
         private static readonly Color COLOR_TYPED   = Color.FromArgb(255, 215, 0);   // gold
         private static readonly Color COLOR_REMAIN  = Color.FromArgb(150, 128, 208, 255); // dim cyan
-        private static readonly Color COLOR_NAME    = Color.FromArgb(180, 255, 255, 255);
+        private static readonly Color COLOR_NAME    = Color.FromArgb(128, 255, 255, 255);
+        private static readonly Color COLOR_NAME_BG = Color.FromArgb(15, 255, 255, 255);
         private static readonly Color COLOR_DIVIDER = Color.FromArgb(60, 255, 255, 255);
         private static readonly Color COLOR_HIT_DFA = Color.FromArgb(255, 215, 0);
         private static readonly Color COLOR_HIT_SYNC = Color.FromArgb(102, 204, 255);
-        private static readonly Color COLOR_BG_INPUT = Color.FromArgb(229, 24, 24, 26);
+        private static readonly Color COLOR_BG_INPUT = Color.FromArgb(199, 24, 24, 26);
         private static readonly Color COLOR_BG_HIT   = Color.FromArgb(229, 24, 24, 26);
-        private static readonly Color COLOR_BORDER_INPUT = Color.FromArgb(64, 255, 255, 255);
+        private static readonly Color COLOR_BORDER_INPUT = Color.FromArgb(26, 255, 255, 255);
         private static readonly Color COLOR_BORDER_HIT_DFA = Color.FromArgb(140, 255, 215, 0);
         private static readonly Color COLOR_BORDER_HIT_SYNC = Color.FromArgb(140, 102, 204, 255);
 
@@ -91,6 +99,7 @@ namespace CF7Launcher.Guardian.Hud
         private string _hitTyped = "";
         private bool _hitIsDFA;
         private int _hitRemainingMs;
+        private int _hitElapsedMs;
 
         // 渲染缓存
         private int _measuredWidthBase;       // 设计像素（基准坐标系），ScreenBounds 由其乘 Scale
@@ -142,7 +151,7 @@ namespace CF7Launcher.Guardian.Hud
                     int x = origin.X + (int)vpX + Math.Max(0, ((int)vpW - wScaled) / 2);
                     int y = origin.Y + (int)vpY
                           + WidgetScaler.Px(NOTCH_PILL_H_BASE, Scale)
-                          + WidgetScaler.Px(NOTCH_TOOLBAR_GAP_BASE, Scale);
+                          + WidgetScaler.Px(COMBO_STATUS_PAD_TOP_BASE, Scale);
                     return new Rectangle(x, y, wScaled, hScaled);
                 }
                 catch { return Rectangle.Empty; }
@@ -154,16 +163,18 @@ namespace CF7Launcher.Guardian.Hud
         public void Tick(int deltaMs)
         {
             if (_hitRemainingMs <= 0) return;
+            _hitElapsedMs += Math.Max(1, deltaMs);
             _hitRemainingMs -= deltaMs;
             if (_hitRemainingMs <= 0)
             {
                 _hitRemainingMs = 0;
+                _hitElapsedMs = 0;
                 _hitName = "";
                 _hitTyped = "";
                 FireAnimationStateChanged();
                 FireBounds(); // hit 退出 → 可能回落 Input/Idle，bounds 与 visibility 都可能变
             }
-            // 注：HIT 期间静态显示，不需要每帧 repaint；NativeHud 的 OnAnimTick 仍会调 RenderToBitmapAndCommit，但成本可控。
+            FireRepaint();
         }
 
         public void Paint(Graphics g, float dpr, Point hudOrigin)
@@ -187,8 +198,6 @@ namespace CF7Launcher.Guardian.Hud
             if (mode == BarMode.Hit) borderColor = _hitIsDFA ? COLOR_BORDER_HIT_DFA : COLOR_BORDER_HIT_SYNC;
             else borderColor = COLOR_BORDER_INPUT;
 
-            using (SolidBrush bg = new SolidBrush(bgColor))
-            using (Pen border = new Pen(borderColor))
             using (Font typedFont  = new Font("Microsoft YaHei", typedFontPx, FontStyle.Bold, GraphicsUnit.Pixel))
             using (Font remainFont = new Font("Microsoft YaHei", remainFontPx, FontStyle.Regular, GraphicsUnit.Pixel))
             using (Font nameFont   = new Font("Microsoft YaHei", nameFontPx, FontStyle.Regular, GraphicsUnit.Pixel))
@@ -197,16 +206,31 @@ namespace CF7Launcher.Guardian.Hud
             using (StringFormat fmt = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center })
             {
                 Rectangle barRect = new Rectangle(localX, localY, r.Width, r.Height);
-                g.FillRectangle(bg, barRect);
-                g.DrawRectangle(border, barRect.X, barRect.Y, barRect.Width - 1, barRect.Height - 1);
+                float alpha = 1f;
+                if (mode == BarMode.Hit)
+                {
+                    float collapse = Clamp01((_hitElapsedMs - HIT_COLLAPSE_DELAY_MS) / (float)HIT_COLLAPSE_MS);
+                    if (collapse > 0f)
+                    {
+                        float eased = collapse * collapse;
+                        alpha = 1f - eased;
+                        int nextH = Math.Max(1, (int)Math.Round(barRect.Height * (1f - 0.9f * eased)));
+                        barRect = new Rectangle(barRect.X, barRect.Y + (barRect.Height - nextH) / 2, barRect.Width, nextH);
+                    }
+                }
 
-                if (mode == BarMode.Hit) PaintHit(g, barRect, padX, hitFont, hitTagFont, fmt);
-                else if (mode == BarMode.Input) PaintInput(g, barRect, padX, typedFont, remainFont, nameFont, fmt);
+                DrawBottomRoundedBar(g, barRect, WidgetScaler.Px(mode == BarMode.Hit ? 6 : 5, scale), bgColor, borderColor, alpha);
+                if (mode == BarMode.Hit)
+                {
+                    PaintHitSweep(g, barRect, _hitIsDFA ? COLOR_HIT_DFA : COLOR_HIT_SYNC, alpha);
+                    PaintHit(g, barRect, padX, hitFont, hitTagFont, fmt, scale, alpha);
+                }
+                else if (mode == BarMode.Input) PaintInput(g, barRect, padX, typedFont, remainFont, nameFont, fmt, scale);
             }
         }
 
         private void PaintInput(Graphics g, Rectangle barRect, int padX,
-                                Font typedFont, Font remainFont, Font nameFont, StringFormat fmt)
+                                Font typedFont, Font remainFont, Font nameFont, StringFormat fmt, float scale)
         {
             // 渲染顺序：typed | (remain name) | divider | (remain name) | ...
             float cursorX = barRect.X + padX;
@@ -215,12 +239,14 @@ namespace CF7Launcher.Guardian.Hud
             using (SolidBrush typedBrush  = new SolidBrush(COLOR_TYPED))
             using (SolidBrush remainBrush = new SolidBrush(COLOR_REMAIN))
             using (SolidBrush nameBrush   = new SolidBrush(COLOR_NAME))
+            using (SolidBrush nameBgBrush = new SolidBrush(COLOR_NAME_BG))
             using (SolidBrush dividerBrush = new SolidBrush(COLOR_DIVIDER))
             {
                 if (_typed.Length > 0)
                 {
-                    SizeF s = g.MeasureString(_typed, typedFont, int.MaxValue, fmt);
-                    g.DrawString(_typed, typedFont, typedBrush, cursorX, midY - s.Height / 2f, fmt);
+                    SizeF s = MeasureSpacedString(g, _typed, typedFont, WidgetScaler.Pxf(INPUT_LETTER_SPACING_BASE, scale), fmt);
+                    DrawSpacedString(g, _typed, typedFont, typedBrush, cursorX, midY - s.Height / 2f,
+                        WidgetScaler.Pxf(INPUT_LETTER_SPACING_BASE, scale), fmt);
                     cursorX += s.Width + 4f;
                 }
 
@@ -237,15 +263,23 @@ namespace CF7Launcher.Guardian.Hud
                     string remain = SafeStripPrefix(h.FullSeq, _typed);
                     if (remain.Length > 0)
                     {
-                        SizeF rs = g.MeasureString(remain, remainFont, int.MaxValue, fmt);
-                        g.DrawString(remain, remainFont, remainBrush, cursorX, midY - rs.Height / 2f, fmt);
+                        SizeF rs = MeasureSpacedString(g, remain, remainFont, WidgetScaler.Pxf(INPUT_LETTER_SPACING_BASE, scale), fmt);
+                        DrawSpacedString(g, remain, remainFont, remainBrush, cursorX, midY - rs.Height / 2f,
+                            WidgetScaler.Pxf(INPUT_LETTER_SPACING_BASE, scale), fmt);
                         cursorX += rs.Width + 4f;
                     }
                     if (!string.IsNullOrEmpty(h.Name))
                     {
-                        SizeF ns = g.MeasureString(h.Name, nameFont, int.MaxValue, fmt);
-                        g.DrawString(h.Name, nameFont, nameBrush, cursorX, midY - ns.Height / 2f, fmt);
-                        cursorX += ns.Width + 8f;
+                        SizeF ns = MeasureTypographicText(g, h.Name, nameFont);
+                        float pillPadX = WidgetScaler.Pxf(4f, scale);
+                        float pillPadY = WidgetScaler.Pxf(1f, scale);
+                        RectangleF pill = new RectangleF(cursorX + WidgetScaler.Pxf(4f, scale),
+                            midY - ns.Height / 2f - pillPadY,
+                            ns.Width + pillPadX * 2f,
+                            ns.Height + pillPadY * 2f);
+                        FillRoundedRect(g, pill, WidgetScaler.Pxf(2f, scale), nameBgBrush);
+                        g.DrawString(h.Name, nameFont, nameBrush, pill.X + pillPadX, midY - ns.Height / 2f, fmt);
+                        cursorX = pill.Right + 4f;
                     }
                     if (cursorX > barRect.Right - padX) break; // 超宽截断（设计宽度上限是 480 base）
                 }
@@ -253,32 +287,226 @@ namespace CF7Launcher.Guardian.Hud
         }
 
         private void PaintHit(Graphics g, Rectangle barRect, int padX,
-                              Font hitFont, Font hitTagFont, StringFormat fmt)
+                              Font hitFont, Font hitTagFont, StringFormat fmt, float scale, float alpha)
+        {
+            PaintHitAnimated(g, barRect, hitFont, hitTagFont, fmt, scale, alpha);
+        }
+
+        public bool TryHitTest(Point screenPt) { return false; } // 不可点击
+        private void PaintHitAnimated(Graphics g, Rectangle barRect, Font hitFont, Font hitTagFont,
+                                      StringFormat fmt, float scale, float alpha)
         {
             Color seqColor = _hitIsDFA ? COLOR_HIT_DFA : COLOR_HIT_SYNC;
             string seq = _hitTyped ?? "";
             string name = _hitName ?? "";
+            float letterSpacing = WidgetScaler.Pxf(HIT_LETTER_SPACING_BASE, scale);
+            SizeF seqSize = MeasureSpacedString(g, seq, hitFont, letterSpacing, fmt);
+            SizeF tagSize = string.IsNullOrEmpty(name) ? SizeF.Empty : MeasureTypographicText(g, name, hitTagFont);
+            float gap = string.IsNullOrEmpty(name) ? 0f : WidgetScaler.Pxf(6f, scale);
+            float total = seqSize.Width + gap + tagSize.Width;
+            float startX = barRect.X + (barRect.Width - total) / 2f;
+            float midY = barRect.Y + barRect.Height / 2f;
+            float x = startX;
 
-            using (SolidBrush seqBrush = new SolidBrush(seqColor))
-            using (SolidBrush tagBrush = new SolidBrush(COLOR_NAME))
+            for (int i = 0; i < seq.Length; i++)
             {
-                // 居中布局：[seq]  [tag]
-                SizeF seqSize = g.MeasureString(seq, hitFont, int.MaxValue, fmt);
-                SizeF tagSize = string.IsNullOrEmpty(name) ? SizeF.Empty : g.MeasureString(name, hitTagFont, int.MaxValue, fmt);
-                float gap = string.IsNullOrEmpty(name) ? 0f : 8f;
-                float total = seqSize.Width + gap + tagSize.Width;
-                float startX = barRect.X + (barRect.Width - total) / 2f;
-                float midY = barRect.Y + barRect.Height / 2f;
-                if (seq.Length > 0)
-                    g.DrawString(seq, hitFont, seqBrush, startX, midY - seqSize.Height / 2f, fmt);
-                if (!string.IsNullOrEmpty(name))
+                string ch = seq.Substring(i, 1);
+                SizeF chSize = MeasureTypographicText(g, ch, hitFont);
+                int delay = 50 + i * 25;
+                float p = Clamp01((_hitElapsedMs - delay) / (float)HIT_CHAR_MS);
+                if (p > 0f)
+                {
+                    float charAlpha = alpha * (p < 0.3f ? p / 0.3f : 1f);
+                    float mid = seq.Length / 2f;
+                    float offset = (float)Math.Round((i - mid) * -3f) * scale * EaseOutCubic(p);
+                    float charScale = 1f;
+                    DrawScaledText(g, ch, hitFont, seqColor, charAlpha, x + offset,
+                        midY - chSize.Height / 2f, charScale, fmt);
+                }
+                x += chSize.Width + letterSpacing;
+            }
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                float tagAlpha = alpha * Clamp01((_hitElapsedMs - HIT_TAG_DELAY_MS) / (float)HIT_TAG_FADE_MS) * 0.45f;
+                using (SolidBrush tagBrush = new SolidBrush(WithAlpha(Color.White, tagAlpha)))
+                {
                     g.DrawString(name, hitTagFont, tagBrush,
-                                 startX + seqSize.Width + gap,
-                                 midY - tagSize.Height / 2f + 1f, fmt);
+                        startX + seqSize.Width + gap,
+                        midY - tagSize.Height / 2f + WidgetScaler.Pxf(1f, scale), fmt);
+                }
             }
         }
 
-        public bool TryHitTest(Point screenPt) { return false; } // 不可点击
+        private void PaintHitSweep(Graphics g, Rectangle barRect, Color accent, float alpha)
+        {
+            float t = Clamp01((_hitElapsedMs - HIT_SWEEP_DELAY_MS) / (float)HIT_SWEEP_MS);
+            if (t <= 0f || t >= 1f || alpha <= 0f) return;
+            Rectangle sweep = new Rectangle(
+                barRect.X - barRect.Width + (int)Math.Round(barRect.Width * 2f * t),
+                barRect.Y,
+                barRect.Width,
+                barRect.Height);
+            using (LinearGradientBrush brush = new LinearGradientBrush(sweep, Color.Transparent, Color.Transparent, LinearGradientMode.Horizontal))
+            {
+                ColorBlend blend = new ColorBlend();
+                blend.Positions = new[] { 0f, 0.35f, 0.5f, 0.65f, 1f };
+                blend.Colors = new[]
+                {
+                    Color.Transparent,
+                    WithAlpha(accent, 0.12f * alpha),
+                    WithAlpha(accent, 0.35f * alpha),
+                    WithAlpha(accent, 0.12f * alpha),
+                    Color.Transparent
+                };
+                brush.InterpolationColors = blend;
+                g.FillRectangle(brush, sweep);
+            }
+        }
+
+        private static void DrawBottomRoundedBar(Graphics g, Rectangle r, int radius, Color bg, Color border, float alpha)
+        {
+            using (GraphicsPath path = CreateBottomRoundedPath(r, radius))
+            using (SolidBrush bgBrush = new SolidBrush(WithAlpha(bg, alpha)))
+            using (Pen borderPen = new Pen(WithAlpha(border, alpha)))
+            {
+                g.FillPath(bgBrush, path);
+                g.DrawPath(borderPen, path);
+            }
+        }
+
+        private static GraphicsPath CreateBottomRoundedPath(Rectangle r, int radius)
+        {
+            GraphicsPath path = new GraphicsPath();
+            int rr = Math.Max(0, Math.Min(radius, Math.Min(r.Width, r.Height) / 2));
+            if (rr <= 0)
+            {
+                path.AddRectangle(r);
+                return path;
+            }
+            int d = rr * 2;
+            path.StartFigure();
+            path.AddLine(r.Left, r.Top, r.Right, r.Top);
+            path.AddLine(r.Right, r.Top, r.Right, r.Bottom - rr);
+            path.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90);
+            path.AddLine(r.Right - rr, r.Bottom, r.Left + rr, r.Bottom);
+            path.AddArc(r.Left, r.Bottom - d, d, d, 90, 90);
+            path.AddLine(r.Left, r.Bottom - rr, r.Left, r.Top);
+            path.CloseFigure();
+            return path;
+        }
+
+        private static void FillRoundedRect(Graphics g, RectangleF r, float radius, Brush brush)
+        {
+            float rr = Math.Max(0f, Math.Min(radius, Math.Min(r.Width, r.Height) / 2f));
+            if (rr <= 0f)
+            {
+                g.FillRectangle(brush, r);
+                return;
+            }
+            float d = rr * 2f;
+            using (GraphicsPath path = new GraphicsPath())
+            {
+                path.AddArc(r.Left, r.Top, d, d, 180, 90);
+                path.AddArc(r.Right - d, r.Top, d, d, 270, 90);
+                path.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90);
+                path.AddArc(r.Left, r.Bottom - d, d, d, 90, 90);
+                path.CloseFigure();
+                g.FillPath(brush, path);
+            }
+        }
+
+        private static SizeF MeasureSpacedString(Graphics g, string text, Font font, float spacing, StringFormat fmt)
+        {
+            if (string.IsNullOrEmpty(text)) return SizeF.Empty;
+            float w = 0f;
+            float h = 0f;
+            using (StringFormat typographic = CreateTypographicFormat())
+            {
+                for (int i = 0; i < text.Length; i++)
+                {
+                    SizeF s = g.MeasureString(text.Substring(i, 1), font, PointF.Empty, typographic);
+                    w += s.Width;
+                    if (i < text.Length - 1) w += spacing;
+                    if (s.Height > h) h = s.Height;
+                }
+            }
+            return new SizeF(w, h);
+        }
+
+        private static SizeF MeasureTypographicText(Graphics g, string text, Font font)
+        {
+            if (string.IsNullOrEmpty(text)) return SizeF.Empty;
+            using (StringFormat typographic = CreateTypographicFormat())
+            {
+                return g.MeasureString(text, font, PointF.Empty, typographic);
+            }
+        }
+
+        private static void DrawSpacedString(Graphics g, string text, Font font, Brush brush, float x, float y, float spacing, StringFormat fmt)
+        {
+            if (string.IsNullOrEmpty(text)) return;
+            using (StringFormat typographic = CreateTypographicFormat())
+            {
+                for (int i = 0; i < text.Length; i++)
+                {
+                    string ch = text.Substring(i, 1);
+                    SizeF s = g.MeasureString(ch, font, PointF.Empty, typographic);
+                    g.DrawString(ch, font, brush, x, y, typographic);
+                    x += s.Width + spacing;
+                }
+            }
+        }
+
+        private static void DrawScaledText(Graphics g, string text, Font font, Color color, float alpha, float x, float y, float scale, StringFormat fmt)
+        {
+            if (alpha <= 0f) return;
+            GraphicsState state = g.Save();
+            try
+            {
+                g.TranslateTransform(x, y);
+                g.ScaleTransform(scale, scale);
+                using (SolidBrush brush = new SolidBrush(WithAlpha(color, alpha)))
+                using (StringFormat typographic = CreateTypographicFormat())
+                {
+                    g.DrawString(text, font, brush, 0f, 0f, typographic);
+                }
+            }
+            finally
+            {
+                g.Restore(state);
+            }
+        }
+
+        private static StringFormat CreateTypographicFormat()
+        {
+            StringFormat fmt = (StringFormat)StringFormat.GenericTypographic.Clone();
+            fmt.FormatFlags = fmt.FormatFlags | StringFormatFlags.MeasureTrailingSpaces;
+            fmt.Alignment = StringAlignment.Near;
+            fmt.LineAlignment = StringAlignment.Near;
+            return fmt;
+        }
+
+        private static Color WithAlpha(Color color, float alpha)
+        {
+            int a = (int)Math.Round(color.A * Clamp01(alpha));
+            return Color.FromArgb(a, color.R, color.G, color.B);
+        }
+
+        private static float Clamp01(float v)
+        {
+            if (v < 0f) return 0f;
+            if (v > 1f) return 1f;
+            return v;
+        }
+
+        private static float EaseOutCubic(float v)
+        {
+            v = Clamp01(v);
+            float inv = 1f - v;
+            return 1f - inv * inv * inv;
+        }
+
         public void OnMouseEvent(MouseEventArgs e, MouseEventKind kind) { }
 
         // ── IUiDataConsumer (snapshot KV) ──
@@ -390,12 +618,14 @@ namespace CF7Launcher.Guardian.Hud
             _hitIsDFA = isDFA;
             bool wasTicking = _hitRemainingMs > 0;
             _hitRemainingMs = HIT_MS;
+            _hitElapsedMs = 0;
             _pendingTyped = "";
             _pendingName = "";
             _pendingAge = 0;
             _widthDirty = true;
             if (!wasTicking) FireAnimationStateChanged();
             FireBounds();
+            FireRepaint();
         }
 
         private string ResolveHitTyped(string name)
@@ -421,6 +651,7 @@ namespace CF7Launcher.Guardian.Hud
             _hitName = "";
             _hitTyped = "";
             _hitRemainingMs = 0;
+            _hitElapsedMs = 0;
             _widthDirty = true;
             if (wasTicking) FireAnimationStateChanged();
         }
@@ -494,22 +725,22 @@ namespace CF7Launcher.Guardian.Hud
                     BarMode mode = CurrentMode;
                     if (mode == BarMode.Hit)
                     {
-                        SizeF seqSize = g.MeasureString(_hitTyped ?? "", hitFont, int.MaxValue, fmt);
+                        SizeF seqSize = MeasureSpacedString(g, _hitTyped ?? "", hitFont, HIT_LETTER_SPACING_BASE, fmt);
                         SizeF tagSize = string.IsNullOrEmpty(_hitName) ? SizeF.Empty
-                            : g.MeasureString(_hitName, hitTagFont, int.MaxValue, fmt);
-                        w = seqSize.Width + (string.IsNullOrEmpty(_hitName) ? 0f : 8f) + tagSize.Width;
+                            : MeasureTypographicText(g, _hitName, hitTagFont);
+                        w = seqSize.Width + (string.IsNullOrEmpty(_hitName) ? 0f : 6f) + tagSize.Width;
                     }
                     else if (mode == BarMode.Input)
                     {
-                        if (_typed.Length > 0) w += g.MeasureString(_typed, typedFont, int.MaxValue, fmt).Width + 4f;
+                        if (_typed.Length > 0) w += MeasureSpacedString(g, _typed, typedFont, INPUT_LETTER_SPACING_BASE, fmt).Width + 4f;
                         for (int i = 0; i < _parsedHints.Count; i++)
                         {
                             HintEntry h = _parsedHints[i];
                             if (h == null) continue;
                             if (i > 0) w += g.MeasureString("|", remainFont, int.MaxValue, fmt).Width + 12f;
                             string remain = SafeStripPrefix(h.FullSeq, _typed);
-                            if (remain.Length > 0) w += g.MeasureString(remain, remainFont, int.MaxValue, fmt).Width + 4f;
-                            if (!string.IsNullOrEmpty(h.Name)) w += g.MeasureString(h.Name, nameFont, int.MaxValue, fmt).Width + 8f;
+                            if (remain.Length > 0) w += MeasureSpacedString(g, remain, remainFont, INPUT_LETTER_SPACING_BASE, fmt).Width + 4f;
+                            if (!string.IsNullOrEmpty(h.Name)) w += MeasureTypographicText(g, h.Name, nameFont).Width + 12f;
                         }
                     }
                     // 上面用基准字体测量（base px），结果直接落在设计坐标系，无需再除 Scale。
@@ -551,6 +782,11 @@ namespace CF7Launcher.Guardian.Hud
         private void FireBounds()
         {
             EventHandler h = BoundsOrVisibilityChanged;
+            if (h != null) h(this, EventArgs.Empty);
+        }
+        private void FireRepaint()
+        {
+            EventHandler h = RepaintRequested;
             if (h != null) h(this, EventArgs.Empty);
         }
         private void FireAnimationStateChanged()

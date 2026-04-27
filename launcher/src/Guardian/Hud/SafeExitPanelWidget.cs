@@ -19,15 +19,12 @@ namespace CF7Launcher.Guardian.Hud
     /// 路径：玩家点 SAFEEXIT → router.SAFEEXIT case → widget.Arm() + SendGameCommand("safeExit") →
     ///       AS2 存盘 → UiData "sv:1" → "sv:2"（显示 取消/退出 按钮）→ 取消（本地 disarm）/ 退出（EXIT_CONFIRM）。
     ///
-    /// 位置：贴 TopRightToolsWidget 正下方（viewport 右上），letterbox 黑边内。
+    /// 位置：贴 RightHudLayout 定义的右侧 cluster 正下方（viewport 右上 right:80px），letterbox 黑边内。
     /// </summary>
     public class SafeExitPanelWidget : INativeHudWidget, IUiDataConsumer
     {
-        // 与 TopRightToolsWidget 同基准 letterbox + 同 design 1024x576。
-        private const int PANEL_W_BASE = 200;
         private const int STATUS_H_BASE = 28;
         private const int BUTTON_H_BASE = 30;
-        private const int TOP_RIGHT_TOOL_H_BASE = 32; // = TopRightToolsWidget.BTN_H_BASE
         private const float STATUS_FONT_BASE_PX = 13f;
         private const float BUTTON_FONT_BASE_PX = 13f;
 
@@ -61,10 +58,8 @@ namespace CF7Launcher.Guardian.Hud
         }
 
         private float Scale { get { return WidgetScaler.GetScale(_mapper); } }
-        private int PanelW { get { return WidgetScaler.Px(PANEL_W_BASE, Scale); } }
         private int StatusH { get { return WidgetScaler.Px(STATUS_H_BASE, Scale); } }
         private int ButtonH { get { return WidgetScaler.Px(BUTTON_H_BASE, Scale); } }
-        private int TopRightToolH { get { return WidgetScaler.Px(TOP_RIGHT_TOOL_H_BASE, Scale); } }
 
         public bool Visible
         {
@@ -145,14 +140,9 @@ namespace CF7Launcher.Guardian.Hud
                 if (_anchor == null || !_anchor.IsHandleCreated) return Rectangle.Empty;
                 try
                 {
-                    Point origin = _anchor.PointToScreen(Point.Empty);
-                    float vpX, vpY, vpW, vpH;
-                    _mapper.CalcViewport(out vpX, out vpY, out vpW, out vpH);
-                    int panelW = PanelW;
                     int totalH = StatusH + (_state == SaveState.Done ? ButtonH : 0);
-                    int x = origin.X + (int)vpX + Math.Max(0, (int)vpW - panelW);
-                    int y = origin.Y + (int)vpY + TopRightToolH;
-                    return new Rectangle(x, y, panelW, totalH);
+                    Rectangle viewport = RightHudLayout.GetViewportRect(_anchor, _mapper);
+                    return RightHudLayout.SafeExitRectFromViewport(viewport, RightHudLayout.ScaleForViewport(viewport), totalH);
                 }
                 catch { return Rectangle.Empty; }
             }

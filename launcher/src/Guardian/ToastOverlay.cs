@@ -19,14 +19,14 @@ namespace CF7Launcher.Guardian
         // 消息窗在 Flash 舞台上的坐标
         private const float FlashX = 5f;
         private const float FlashY = 50f;
-        private const float FlashMsgW = 205f;
-        private const float FlashMaxH = 120f;
+        private const float FlashMsgW = 285f;
 
         // 配置
         private const int TickIntervalMs = 16;
         private const int DisplayLifetimeMs = 8000;
         private const int FadeInMs = 200;
         private const int FadeOutMs = 1200;
+        private const int MaxLines = 8;
         private const int PaddingX = 2;
         private const int PaddingY = 1;
 
@@ -137,7 +137,7 @@ namespace CF7Launcher.Guardian
             line.Age = 0;
             _lines.Add(line);
 
-            TrimByHeight();
+            TrimToMaxLines();
 
             _remainingMs = DisplayLifetimeMs;
             _globalAlpha = 1f;
@@ -150,22 +150,10 @@ namespace CF7Launcher.Guardian
             PaintLayered();
         }
 
-        private void TrimByHeight()
+        private void TrimToMaxLines()
         {
-            EnsureFont();
-            int maxH = _mapper.ScaleH(FlashMaxH);
-            int textW = _mapper.ScaleW(FlashMsgW) - PaddingX * 2;
-
-            while (_lines.Count > 1)
-            {
-                int totalH = PaddingY;
-                for (int i = 0; i < _lines.Count; i++)
-                    totalH += MeasureLineHeight(_lines[i].PlainText, textW) + 1;
-                totalH += PaddingY;
-
-                if (totalH <= maxH) break;
+            while (_lines.Count > MaxLines)
                 _lines.RemoveAt(0);
-            }
         }
 
         private void OnTick(object sender, EventArgs e)

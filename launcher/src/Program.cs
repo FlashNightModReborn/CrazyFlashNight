@@ -323,6 +323,7 @@ class Program
             new Action<bool>(form.HandlePanelStateChanged),
             new Action<string>(webOverlay.SetActivePanel));
         webOverlay.SetCommandRouter(commandRouter);
+        notchOverlay.SetCommandRouter(commandRouter);
 
         // === Phase 2: Native HUD + PanelHostController 完整装配（config.useNativeHud）===
         // Flag OFF：跳过 NativeHud/Backdrop/PanelHost；router 走 PostToWeb 旧路径
@@ -348,51 +349,38 @@ class Program
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
 
-            // Phase 4: 注册常驻 widget。已迁：TopRightTools / NotchToolbar / Currency / SafeExitPanel / QuestNotice / Combo / JukeboxTitlebar / MapHud。
+            // Phase 5.7: 注册常驻 widget。右侧 HUD 收敛为 RightContextWidget：
+            //   TopRightTools + context panel(map/装备/任务/notice) + Jukebox titlebar 共用一套 Web 常量布局。
+            //   Currency / NotchToolbar / TopRightTools / MapHud / QuestNotice / JukeboxTitlebar 旧独立 widget 保留但默认不注册。
             // Phase 4 收尾：DoFullIdleSuspend 启用 → 进入 ~15pp DWM α 地板回收阶段。
             // 无 widget 时 NativeHud SW_HIDE，不影响 Phase 3 行为。
-            CF7Launcher.Guardian.Hud.TopRightToolsWidget topRightTools =
-                new CF7Launcher.Guardian.Hud.TopRightToolsWidget(form.FlashHostPanel, commandRouter);
-            nativeHud.AddWidget(topRightTools);
-            CF7Launcher.Guardian.Hud.NotchToolbarWidget notchToolbar =
-                new CF7Launcher.Guardian.Hud.NotchToolbarWidget(form.FlashHostPanel, commandRouter);
-            nativeHud.AddWidget(notchToolbar);
-            CF7Launcher.Guardian.Hud.CurrencyWidget currencyWidget =
-                new CF7Launcher.Guardian.Hud.CurrencyWidget(form.FlashHostPanel);
-            nativeHud.AddWidget(currencyWidget);
+            string mapHudJsonPath = Path.Combine(projectRoot, "launcher", "data", "map_hud_data.json");
+            CF7Launcher.Guardian.Hud.MapHudDataCatalog mapCatalog =
+                CF7Launcher.Guardian.Hud.MapHudDataCatalog.LoadFromFile(mapHudJsonPath);
+            // pause/expand 走两条独立路径：
+            //   pause → webOverlay.ToggleBgmPause（与 HandleJukeboxMessage 共享 _bgmPaused 镜像，避免双权威源）
+            //   expand → router JUKEBOX_EXPAND → OpenPanel("jukebox") (Phase 5：jukebox-panel.js 已注册 Panels.register)
+            WebOverlayForm capturedWebForJukebox = webOverlay;
+            LauncherCommandRouter capturedRouterForJukebox = commandRouter;
+            CF7Launcher.Guardian.Hud.RightContextWidget rightContext =
+                new CF7Launcher.Guardian.Hud.RightContextWidget(
+                    form.FlashHostPanel,
+                    commandRouter,
+                    mapCatalog,
+                    delegate { capturedWebForJukebox.ToggleBgmPause(); },
+                    delegate { capturedRouterForJukebox.Dispatch("JUKEBOX_EXPAND"); });
+            nativeHud.AddWidget(rightContext);
             CF7Launcher.Guardian.Hud.SafeExitPanelWidget safeExitPanel =
                 new CF7Launcher.Guardian.Hud.SafeExitPanelWidget(form.FlashHostPanel, commandRouter);
             nativeHud.AddWidget(safeExitPanel);
             // 必须在 widget 实例化后注入：router SAFEEXIT click → widget.Arm() → 进 Saving 显示状态条。
             // 否则 widget 仅靠 sv 推送决定可见，会被普通自动存盘（商店关闭/升级/saveAll）误触发。
             commandRouter.OnSafeExitArm = delegate { safeExitPanel.Arm(); };
-            CF7Launcher.Guardian.Hud.QuestNoticeWidget questNotice =
-                new CF7Launcher.Guardian.Hud.QuestNoticeWidget(form.FlashHostPanel, commandRouter);
-            nativeHud.AddWidget(questNotice);
             CF7Launcher.Guardian.Hud.ComboWidget comboWidget =
                 new CF7Launcher.Guardian.Hud.ComboWidget(form.FlashHostPanel);
             nativeHud.AddWidget(comboWidget);
-            // pause/expand 走两条独立路径：
-            //   pause → webOverlay.ToggleBgmPause（与 HandleJukeboxMessage 共享 _bgmPaused 镜像，避免双权威源）
-            //   expand → router JUKEBOX_EXPAND → OpenPanel("jukebox") (Phase 5：jukebox-panel.js 已注册 Panels.register)
-            WebOverlayForm capturedWebForJukebox = webOverlay;
-            LauncherCommandRouter capturedRouterForJukebox = commandRouter;
-            CF7Launcher.Guardian.Hud.JukeboxTitlebarWidget jukeboxTitlebar =
-                new CF7Launcher.Guardian.Hud.JukeboxTitlebarWidget(
-                    form.FlashHostPanel,
-                    delegate { capturedWebForJukebox.ToggleBgmPause(); },
-                    delegate { capturedRouterForJukebox.Dispatch("JUKEBOX_EXPAND"); });
-            nativeHud.AddWidget(jukeboxTitlebar);
-            // MapHud：build-time export 出的 launcher/data/map_hud_data.json → MapHudDataCatalog → MapHudWidget。
-            // catalog 加载失败（文件缺失/parse 失败）时 IsAvailable=false，widget Visible 永远 false（不报错）。
-            string mapHudJsonPath = Path.Combine(projectRoot, "launcher", "data", "map_hud_data.json");
-            CF7Launcher.Guardian.Hud.MapHudDataCatalog mapCatalog =
-                CF7Launcher.Guardian.Hud.MapHudDataCatalog.LoadFromFile(mapHudJsonPath);
-            CF7Launcher.Guardian.Hud.MapHudWidget mapHudWidget =
-                new CF7Launcher.Guardian.Hud.MapHudWidget(form.FlashHostPanel, commandRouter, mapCatalog);
-            nativeHud.AddWidget(mapHudWidget);
             // web `#quest-row > #map-hud-toggle` click → router MAPHUD_TOGGLE → C# 折叠态切换
-            commandRouter.OnMapHudToggle = delegate { mapHudWidget.ToggleCollapsed(); };
+            commandRouter.OnMapHudToggle = delegate { rightContext.ToggleMapCollapsed(); };
             // z-order 锚点：把 NativeHud 沉到 HitNumber 之下（Cursor 在 HitNumber 之上 → 自动也在 NativeHud 之上）
             // 这样 widget 区域不会遮挡伤害数字与鼠标。
             if (hnOverlay != null) nativeHud.SetZOrderInsertAfter(hnOverlay.Handle);
@@ -403,12 +391,14 @@ class Program
             {
                 try { webOverlay.HandleUiData(raw); }
                 catch (Exception ex) { LogManager.Log("[Tee] web UiData throw: " + ex.Message); }
+                try { notchOverlay.HandleUiData(raw); }
+                catch (Exception ex) { LogManager.Log("[Tee] notch UiData throw: " + ex.Message); }
                 try { nativeHud.HandleUiData(raw); }
                 catch (Exception ex) { LogManager.Log("[Tee] hud UiData throw: " + ex.Message); }
             };
             socketServer.SetUiDataHandler(uiDataTee);
             frameTask.SetUiDataHandler(uiDataTee);
-            LogManager.Log("[NativeHud] enabled (Phase 2: panel routing hijacked)");
+            LogManager.Log("[NativeHud] enabled (Phase 5.7: native notch + right context parity)");
         }
         else
         {

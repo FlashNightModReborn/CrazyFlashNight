@@ -506,10 +506,10 @@ namespace CF7Launcher.Guardian
                 "s=document.createElement('style');s.id='cf7-native-hud-css';" +
                 "s.textContent='#notch,#toast-container,#top-right-tools,#safe-exit-panel,#quest-notice-bar,#combo-status,#jukebox-panel,#map-hud,#context-panel{display:none!important;}';" +
                 // 注：currency-gold/kpoint 与 notch-toolbar 当前都在 #notch 内，
-                // 隐藏 #notch 已自动隐藏；C# CurrencyWidget / NotchToolbarWidget / SafeExitPanelWidget 接管显示。
-                // #quest-notice-bar 由 C# QuestNoticeWidget 接管 td/tdh/tdn/mm 持久态 + task/announce 一次性事件。
+                // 隐藏 #notch 已自动隐藏；C# NotchOverlay 接管刘海栏货币、FPS、row1-right 与 hover toolbar。
+                // #quest-notice-bar 由 C# RightContextWidget 接管 td/tdh/tdn/mm 持久态 + task/announce 一次性事件。
                 // #combo-status 由 C# ComboWidget 接管 combo|... 输入态 + N combo|... 命中态。
-                // #jukebox-panel 由 C# JukeboxTitlebarWidget 接管标题栏 + mini wave + pause；展开 panel 待 Phase 5 注册到 PanelManager 后启用。
+                // #jukebox-panel 折叠标题栏由 C# RightContextWidget 接管；展开 panel 走 JUKEBOX_EXPAND -> PanelHost。
                 "document.head.appendChild(s);})();";
             try { ExecScript(css); }
             catch (Exception ex) { LogManager.Log("[WebOverlay] HideWebHudDomForNativeHud failed: " + ex.Message); }

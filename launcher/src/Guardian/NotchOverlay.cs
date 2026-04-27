@@ -8,6 +8,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Xml;
+using CF7Launcher.Guardian.Hud;
 
 namespace CF7Launcher.Guardian
 {
@@ -38,6 +39,8 @@ namespace CF7Launcher.Guardian
         private const int WM_MOUSEMOVE = 0x0200;
         private const int WM_MOUSELEAVE = 0x02A3;
         private const int WM_LBUTTONUP = 0x0202;
+        private const int WM_MOUSEACTIVATE = 0x0021;
+        private const int MA_NOACTIVATE = 3;
 
         #endregion
 
@@ -50,17 +53,32 @@ namespace CF7Launcher.Guardian
 
         #region 常量
 
-        // 尺寸（屏幕像素，非 Flash 舞台坐标）
-        // 8(pad) + ~32(fps@13pt) + 3 + 70(sparkline) + 4 + 16(clock) + 4 + 14(▼) + 8(pad) ≈ 160
-        private const int CollapsedW = 160;
+        // 尺寸基准（Web CSS px，运行时按 Flash viewport height / 576 缩放）。
+        // Web #notch-row1: height 28, padding 0 6, center=FPS + sparkline(70x16) + clock(16) + ▼。
         private const int CollapsedH = 28;
-        // 展开宽度在渲染时动态计算（跟随视口宽度）
+        private const int RowPadX = 6;
+        private const int CurrencyIconW = 20;
+        private const int CurrencyMinValueW = 48;
+        private const int CurrencyGap = 2;
+        private const int CenterFpsMinW = 28;
+        private const int CenterGap = 3;
+        private const int ArrowW = 14;
+        private const int DividerW = 1;
+        private const int DividerMarginX = 3;
+        private const int Row1RightGap = 2;
+        private const int ToolbarPadX = 8;
+        private const int ToolbarPadTop = 2;
+        private const int ToolbarPadBottom = 4;
+        private const int ToolbarButtonH = 22;
+        private const int ToolbarButtonGap = 2;
+        private const int ButtonPadX = 8;
 
         // 定时器
         private const int TickMs = 16;
         private const int AutoHideDelayMs = 500;
         private const int ExpandAnimMs = 150;
         private const int CollapseAnimMs = 200;
+        private const int StableRefreshMs = 250;
 
         // FPS 曲线
         private const int SparklinePoints = 30;
@@ -78,11 +96,48 @@ namespace CF7Launcher.Guardian
         private readonly FpsRingBuffer _fpsBuffer;
         private readonly System.Windows.Forms.Timer _timer;
 
+        private class CurrencySlot
+        {
+            public int Current;
+            public int Target;
+            public int From;
+            public int AnimElapsedMs;
+            public bool Animating;
+            public int LastDelta;
+            public int DeltaElapsedMs = 1200;
+        }
+
+        private class GameNoticeQueueItem
+        {
+            public string Text;
+            public Color Color;
+            public int Count;
+        }
+
+        private class NotchButtonDef
+        {
+            public string Label;
+            public string CommandKey;
+            public Keys KeyCode;
+            public bool RequiresGameReady;
+            public bool RequiresWarehouse;
+
+            public NotchButtonDef(string label, string commandKey, Keys keyCode, bool requiresGameReady, bool requiresWarehouse)
+            {
+                Label = label;
+                CommandKey = commandKey;
+                KeyCode = keyCode;
+                RequiresGameReady = requiresGameReady;
+                RequiresWarehouse = requiresWarehouse;
+            }
+        }
+
         // 工具栏按钮回调
         private readonly Action _onToggleFullscreen;
         private readonly Action _onToggleLog;
         private readonly Action _onForceExit;
         private readonly Action<Keys> _onSendKey;
+        private LauncherCommandRouter _router;
 
         // 状态
         private bool _ready;
@@ -90,15 +145,41 @@ namespace CF7Launcher.Guardian
         private float _expandProgress; // 0.0 = collapsed, 1.0 = expanded
         private int _autoHideCountdown;
         private int _hoverButtonIndex; // -1 = none
+        private bool _gameReady;
+        private int _questProgress;
+        private int _stableRefreshElapsedMs;
 
         // 按钮定义
-        private static readonly string[] ButtonLabels = {
-            "Q 退出", "W 关闭", "R 重置", "F 全屏", "P 截图", "O 打开", "日志"
+        private static readonly NotchButtonDef[] Row1Buttons = {
+            new NotchButtonDef("全屏", "F", Keys.F, false, false),
+            new NotchButtonDef("日志", "LOG", Keys.None, false, false),
+            new NotchButtonDef("其他 ▸", null, Keys.None, false, false)
         };
-        private static readonly Keys[] ButtonKeys = {
-            Keys.Q, Keys.W, Keys.R, Keys.F, Keys.P, Keys.O, Keys.None
+        private static readonly NotchButtonDef[] ToolbarButtons = {
+            new NotchButtonDef("战宠", "PETS", Keys.None, true, false),
+            new NotchButtonDef("佣兵", "MERCS", Keys.None, true, false),
+            new NotchButtonDef("平板", "TABLET", Keys.None, true, false),
+            new NotchButtonDef("战备箱", "WAREHOUSE", Keys.None, true, true),
+            new NotchButtonDef("商城", "SHOP", Keys.None, true, false)
+        };
+        private static readonly NotchButtonDef[] OtherButtons = {
+            new NotchButtonDef("Q 强退", "Q", Keys.Q, false, false),
+            new NotchButtonDef("W 关闭", "W", Keys.W, false, false),
+            new NotchButtonDef("R 重置", "R", Keys.R, false, false),
+            new NotchButtonDef("P 截图", "P", Keys.P, false, false),
+            new NotchButtonDef("O 打开", "O", Keys.O, false, false),
+            new NotchButtonDef("高安箱测试", "LOCKBOX_TEST", Keys.None, false, false),
+            new NotchButtonDef("锁芯校准测试", "PINALIGN_TEST", Keys.None, false, false),
+            new NotchButtonDef("铁枪会入侵测试", "GOBANG_TEST", Keys.None, false, false),
+            new NotchButtonDef("烘焙图标", "BAKE", Keys.None, false, false),
+            new NotchButtonDef("烘焙测试(10)", "BAKE10", Keys.None, false, false)
         };
         private Rectangle[] _buttonRects; // 在 PaintLayered 时计算
+        private NotchButtonDef[] _buttonDefs;
+        private bool _otherMenuOpen;
+
+        private readonly CurrencySlot _gold;
+        private readonly CurrencySlot _kp;
 
         // 渲染
         private Font _fpsFont;
@@ -114,10 +195,16 @@ namespace CF7Launcher.Guardian
         private const int RowGap = 2;
         private const int MaxRows = 4;
         private const int TransientLifetimeMs = 4000;
+        private const int GameTransientLifetimeMs = 3000;
+        private const int GameThrottleMs = 350;
+        private const int MaxGameRows = 4;
         private const int FadeInMs = 300;
         private const int FadeOutMs = 800;
 
         private readonly List<NotchInfoRow> _infoRows;
+        private readonly List<GameNoticeQueueItem> _gameQueue;
+        private int _gameThrottleRemainingMs;
+        private int _gameNoticeSerial;
 
         #endregion
 
@@ -143,8 +230,17 @@ namespace CF7Launcher.Guardian
             _autoHideCountdown = 0;
             _hoverButtonIndex = -1;
             _buttonRects = new Rectangle[0];
+            _buttonDefs = new NotchButtonDef[0];
+            _otherMenuOpen = false;
             _currentExpandedW = 800;
             _infoRows = new List<NotchInfoRow>();
+            _gameQueue = new List<GameNoticeQueueItem>();
+            _gameThrottleRemainingMs = 0;
+            _gameNoticeSerial = 0;
+            _gameReady = false;
+            _questProgress = 0;
+            _gold = new CurrencySlot();
+            _kp = new CurrencySlot();
 
             _fpsFont = new Font("Consolas", 13f, FontStyle.Bold);
             _buttonFont = new Font("Microsoft YaHei", 8f, FontStyle.Regular);
@@ -167,6 +263,77 @@ namespace CF7Launcher.Guardian
             ShowOverlay();
             _timer.Start();
             PaintLayered();
+        }
+
+        public void SetCommandRouter(LauncherCommandRouter router)
+        {
+            _router = router;
+        }
+
+        /// <summary>
+        /// useNativeHud=true 时 Web #notch 被隐藏，金币/K点/s/q 等 UiData 由 native notch 自己消费。
+        /// </summary>
+        public void HandleUiData(string payload)
+        {
+            if (this.IsHandleCreated && this.InvokeRequired)
+            {
+                try { this.BeginInvoke(new Action<string>(HandleUiData), payload); } catch { }
+                return;
+            }
+
+            bool repaint = false;
+            string legacyType;
+            string[] legacyFields;
+            if (UiDataPacketParser.TryParseLegacy(payload, out legacyType, out legacyFields))
+            {
+                if (legacyType == "currency" && legacyFields != null && legacyFields.Length >= 2)
+                {
+                    string id = legacyFields[0];
+                    int value = ParseInt(legacyFields[1], 0);
+                    int delta = legacyFields.Length >= 3 ? ParseInt(legacyFields[2], 0) : 0;
+                    if (id == "gold") { StartCurrencyUpdate(_gold, value, delta); repaint = true; }
+                    else if (id == "kpoint") { StartCurrencyUpdate(_kp, value, delta); repaint = true; }
+                }
+            }
+            else
+            {
+                foreach (KeyValuePair<string, string> kv in UiDataPacketParser.Parse(payload))
+                {
+                    string key = kv.Key;
+                    string value = StripPrefix(kv.Value, key);
+                    if (key == "s")
+                    {
+                        bool ready = value == "1";
+                        if (ready != _gameReady)
+                        {
+                            _gameReady = ready;
+                            if (!ready)
+                            {
+                                _otherMenuOpen = false;
+                                _hoverButtonIndex = -1;
+                            }
+                            repaint = true;
+                        }
+                    }
+                    else if (key == "q")
+                    {
+                        int next = ParseInt(value, 0);
+                        if (next != _questProgress) { _questProgress = next; repaint = true; }
+                    }
+                    else if (key == "g")
+                    {
+                        StartCurrencyUpdate(_gold, ParseInt(value, 0), int.MinValue);
+                        repaint = true;
+                    }
+                    else if (key == "k")
+                    {
+                        StartCurrencyUpdate(_kp, ParseInt(value, 0), int.MinValue);
+                        repaint = true;
+                    }
+                }
+            }
+
+            if (repaint && _ready) PaintLayered();
         }
 
         /// <summary>挂起：隐藏窗口 + 停止 timer。WebView2 恢复后调用，避免双重 UI。</summary>
@@ -223,7 +390,88 @@ namespace CF7Launcher.Guardian
                     category, text, accentColor);
                 return;
             }
+            if (string.Equals(category, "game", StringComparison.Ordinal))
+            {
+                AddGameNotice(text, accentColor);
+                return;
+            }
             UpsertRow(category, text, accentColor, false, TransientLifetimeMs);
+        }
+
+        private void AddGameNotice(string text, Color color)
+        {
+            string safeText = text ?? "";
+            for (int i = 0; i < _gameQueue.Count; i++)
+            {
+                if (_gameQueue[i].Text == safeText)
+                {
+                    _gameQueue[i].Count++;
+                    return;
+                }
+            }
+            for (int i = 0; i < _infoRows.Count; i++)
+            {
+                NotchInfoRow row = _infoRows[i];
+                if (row != null && row.IsGame && row.BaseText == safeText)
+                {
+                    row.Count = Math.Max(1, row.Count) + 1;
+                    row.Text = safeText + " x" + row.Count.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    row.AccentColor = color;
+                    row.RemainingMs = GameTransientLifetimeMs;
+                    row.PulseMs = 350;
+                    if (_ready) PaintLayered();
+                    return;
+                }
+            }
+            GameNoticeQueueItem item = new GameNoticeQueueItem();
+            item.Text = safeText;
+            item.Color = color;
+            item.Count = 1;
+            _gameQueue.Add(item);
+            DrainGameQueue();
+        }
+
+        private void DrainGameQueue()
+        {
+            if (_gameThrottleRemainingMs > 0 || _gameQueue.Count == 0) return;
+            GameNoticeQueueItem item = _gameQueue[0];
+            _gameQueue.RemoveAt(0);
+            string display = item.Count > 1
+                ? item.Text + " x" + item.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                : item.Text;
+            NotchInfoRow row = new NotchInfoRow();
+            row.Category = "game_" + (++_gameNoticeSerial).ToString(System.Globalization.CultureInfo.InvariantCulture);
+            row.Text = display;
+            row.BaseText = item.Text;
+            row.AccentColor = item.Color;
+            row.Persistent = false;
+            row.RemainingMs = GameTransientLifetimeMs;
+            row.AgeMs = 0;
+            row.IsGame = true;
+            row.Count = item.Count;
+            _infoRows.Add(row);
+            TrimGameRows();
+            if (_gameQueue.Count > 0) _gameThrottleRemainingMs = GameThrottleMs;
+            if (_ready) PaintLayered();
+        }
+
+        private void TrimGameRows()
+        {
+            int gameRows = 0;
+            for (int i = 0; i < _infoRows.Count; i++)
+                if (_infoRows[i].IsGame) gameRows++;
+            while (gameRows > MaxGameRows)
+            {
+                for (int i = 0; i < _infoRows.Count; i++)
+                {
+                    if (_infoRows[i].IsGame)
+                    {
+                        _infoRows.RemoveAt(i);
+                        gameRows--;
+                        break;
+                    }
+                }
+            }
         }
 
         private void UpsertRow(string category, string text, Color color, bool persistent, int lifetimeMs)
@@ -298,6 +546,14 @@ namespace CF7Launcher.Guardian
 
         protected override void WndProc(ref Message m)
         {
+            if (m.Msg == WM_MOUSEACTIVATE)
+            {
+                // 与 NativeHudOverlay 一致：点击刘海栏不抢前台，避免 GuardianForm.Deactivate
+                // 触发 OverlayBase.HideOverlay 后所有 C# HUD 暂时 SW_HIDE。
+                m.Result = (IntPtr)MA_NOACTIVATE;
+                return;
+            }
+
             if (m.Msg == WM_NCHITTEST)
             {
                 int sx = (short)(m.LParam.ToInt32() & 0xFFFF);
@@ -378,7 +634,6 @@ namespace CF7Launcher.Guardian
         private void UpdateHoverButton(int localX, int localY)
         {
             _hoverButtonIndex = -1;
-            if (_expandProgress < 0.5f) return;
             for (int i = 0; i < _buttonRects.Length; i++)
             {
                 if (_buttonRects[i].Contains(localX, localY))
@@ -391,7 +646,6 @@ namespace CF7Launcher.Guardian
 
         private void HandleClick(int localX, int localY)
         {
-            if (_expandProgress < 0.5f) return;
             for (int i = 0; i < _buttonRects.Length; i++)
             {
                 if (_buttonRects[i].Contains(localX, localY))
@@ -404,25 +658,39 @@ namespace CF7Launcher.Guardian
 
         private void ExecuteButton(int index)
         {
-            if (index < 0 || index >= ButtonKeys.Length) return;
-
-            Keys key = ButtonKeys[index];
-            if (key == Keys.None)
+            if (index < 0 || index >= _buttonDefs.Length) return;
+            NotchButtonDef def = _buttonDefs[index];
+            if (def == null) return;
+            if (def.Label == "其他 ▸")
             {
-                // 日志按钮
+                _otherMenuOpen = !_otherMenuOpen;
+                PaintLayered();
+                return;
+            }
+            if (def.CommandKey == "LOG")
+            {
                 if (_onToggleLog != null) _onToggleLog();
             }
-            else if (key == Keys.F)
+            else if (def.CommandKey == "F")
             {
                 if (_onToggleFullscreen != null) _onToggleFullscreen();
             }
-            else if (key == Keys.Q)
+            else if (!string.IsNullOrEmpty(def.CommandKey) && _router != null)
+            {
+                try { _router.Dispatch(def.CommandKey); }
+                catch (Exception ex) { LogManager.Log("[NotchOverlay] dispatch failed key=" + def.CommandKey + " ex=" + ex.Message); }
+            }
+            else if (def.CommandKey == "Q")
             {
                 if (_onForceExit != null) _onForceExit();
             }
+            else if (def.KeyCode != Keys.None)
+            {
+                if (_onSendKey != null) _onSendKey(def.KeyCode);
+            }
             else
             {
-                if (_onSendKey != null) _onSendKey(key);
+                _otherMenuOpen = false;
             }
         }
 
@@ -448,6 +716,7 @@ namespace CF7Launcher.Guardian
         private void OnTick(object sender, EventArgs e)
         {
             if (!_ready || !_ownerVisible) return;
+            bool needsPaint = false;
 
             switch (_state)
             {
@@ -458,6 +727,7 @@ namespace CF7Launcher.Guardian
                         _expandProgress = 1f;
                         _state = NotchState.Expanded;
                     }
+                    needsPaint = true;
                     break;
 
                 case NotchState.Expanded:
@@ -468,6 +738,7 @@ namespace CF7Launcher.Guardian
                         {
                             _autoHideCountdown = 0;
                             _state = NotchState.Collapsing;
+                            needsPaint = true;
                         }
                     }
                     break;
@@ -479,34 +750,69 @@ namespace CF7Launcher.Guardian
                         _expandProgress = 0f;
                         _state = NotchState.Collapsed;
                     }
+                    needsPaint = true;
                     break;
 
                 case NotchState.Collapsed:
-                    // 定期刷新 FPS 显示
                     break;
             }
 
+            if (TickCurrencySlot(_gold, TickMs)) needsPaint = true;
+            if (TickCurrencySlot(_kp, TickMs)) needsPaint = true;
+            if (_gameThrottleRemainingMs > 0)
+            {
+                _gameThrottleRemainingMs -= TickMs;
+                if (_gameThrottleRemainingMs <= 0)
+                {
+                    _gameThrottleRemainingMs = 0;
+                    DrainGameQueue();
+                    needsPaint = true;
+                }
+            }
+
             // 老化信息行
+            bool hadInfoRows = _infoRows.Count > 0;
             for (int i = _infoRows.Count - 1; i >= 0; i--)
             {
                 _infoRows[i].AgeMs += TickMs;
+                if (_infoRows[i].PulseMs > 0)
+                {
+                    _infoRows[i].PulseMs -= TickMs;
+                    if (_infoRows[i].PulseMs < 0) _infoRows[i].PulseMs = 0;
+                    needsPaint = true;
+                }
                 // 推进交叉淡变
                 if (_infoRows[i].PrevText != null)
                 {
                     _infoRows[i].TransitionMs += TickMs;
                     if (_infoRows[i].TransitionMs >= NotchInfoRow.TransitionDuration)
                         _infoRows[i].PrevText = null; // 过渡完成
+                    needsPaint = true;
                 }
                 if (!_infoRows[i].Persistent)
                 {
                     _infoRows[i].RemainingMs -= TickMs;
                     if (_infoRows[i].RemainingMs <= 0)
+                    {
                         _infoRows.RemoveAt(i);
+                        needsPaint = true;
+                    }
+                    else
+                    {
+                        needsPaint = true;
+                    }
                 }
             }
+            if (hadInfoRows && _infoRows.Count > 0) needsPaint = true;
 
-            // 每 16ms 刷新一次（FPS 数字更新 + 曲线滚动）
-            PaintLayered();
+            _stableRefreshElapsedMs += TickMs;
+            if (_stableRefreshElapsedMs >= StableRefreshMs)
+            {
+                _stableRefreshElapsedMs = 0;
+                needsPaint = true;
+            }
+
+            if (needsPaint) PaintLayered();
         }
 
         #endregion
@@ -517,18 +823,25 @@ namespace CF7Launcher.Guardian
         {
             float vpX, vpY, vpW, vpH;
             _mapper.CalcViewport(out vpX, out vpY, out vpW, out vpH);
-            _currentExpandedW = Math.Max(CollapsedW, (int)vpW);
+            float scale = GetScale(vpH);
+            int collapsedW = ComputeCollapsedWidth(scale);
+            int expandedW = ComputeExpandedWidth(scale, (int)vpW);
+            _currentExpandedW = expandedW;
 
             // ease-out: t*(2-t)
             float t = _expandProgress;
             float eased = t * (2f - t);
 
-            w = CollapsedW + (int)((_currentExpandedW - CollapsedW) * eased);
-            h = CollapsedH;
+            w = collapsedW + (int)((expandedW - collapsedW) * eased);
+            int row1H = Px(CollapsedH, scale);
+            int toolbarH = _gameReady ? Px(ToolbarPadTop + ToolbarButtonH + ToolbarPadBottom, scale) : 0;
+            h = row1H + (int)(toolbarH * eased);
             // 每行信息 +RowGap+RowH
             int rowCount = _infoRows.Count;
             if (rowCount > 0)
-                h += rowCount * (RowGap + RowH);
+                h += rowCount * (Px(RowGap, scale) + Px(RowH, scale));
+            if (_otherMenuOpen)
+                h += OtherButtons.Length * (Px(ToolbarButtonH, scale) + Px(1, scale)) + Px(8, scale);
         }
 
         private void PaintLayered()
@@ -537,7 +850,7 @@ namespace CF7Launcher.Guardian
 
             float vpX, vpY, vpW, vpH;
             _mapper.CalcViewport(out vpX, out vpY, out vpW, out vpH);
-            _currentExpandedW = Math.Max(CollapsedW, (int)vpW);
+            float scale = GetScale(vpH);
 
             int w, h;
             GetCurrentSize(out w, out h);
@@ -557,64 +870,38 @@ namespace CF7Launcher.Guardian
                     g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
                     g.Clear(Color.Transparent);
 
-                    // 背景圆角矩形
-                    // 主栏背景（仅 CollapsedH 高度）
-                    DrawRoundedRect(g, 0, 0, w, CollapsedH, 6,
-                        Color.FromArgb(200, 24, 24, 26));
+                    float t = _expandProgress;
+                    float eased = t * (2f - t);
+                    int row1H = Px(CollapsedH, scale);
+                    int toolbarH = _gameReady ? (int)(Px(ToolbarPadTop + ToolbarButtonH + ToolbarPadBottom, scale) * eased) : 0;
+                    int pillH = row1H + toolbarH;
 
-                    int contentX = 8;
+                    DrawRoundedRect(g, 0, 0, w, pillH, Px(8, scale), ResolvePillColor());
 
-                    // FPS 数值（垂直居中）
-                    string fpsText = _fpsBuffer.HasData
-                        ? ((int)_fpsBuffer.Latest).ToString()
-                        : "--";
-                    Color fpsColor = GetFpsColor(_fpsBuffer.HasData ? _fpsBuffer.Latest : 0f);
-                    SizeF fpsSize = g.MeasureString(fpsText, _fpsFont);
-                    float fpsY = (CollapsedH - fpsSize.Height) / 2f;
-                    using (SolidBrush fpsBrush = new SolidBrush(fpsColor))
+                    using (Font fpsFont = new Font("Consolas", Pxf(13f, scale), FontStyle.Bold, GraphicsUnit.Pixel))
+                    using (Font textFont = new Font("Microsoft YaHei", Pxf(11f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
+                    using (Font monoFont = new Font("Consolas", Pxf(12f, scale), FontStyle.Bold, GraphicsUnit.Pixel))
                     {
-                        g.DrawString(fpsText, _fpsFont, fpsBrush, contentX, fpsY);
-                    }
-                    contentX += (int)fpsSize.Width + 3;
-
-                    // 迷你曲线区域
-                    // 光照等级背景（填充区域图，在曲线下方）
-                    DrawLightBackground(g, contentX, 6, SparklineW, SparklineH);
-                    // FPS 曲线（叠在光照背景之上）
-                    DrawSparkline(g, contentX, 6, SparklineW, SparklineH, fpsColor);
-                    contentX += SparklineW + 4;
-
-                    // 矢量钟表（曲线右侧，▼之前）
-                    float gameHour = _fpsBuffer.GameHour;
-                    int clockSize = 16;
-                    int clockCY = CollapsedH / 2;
-                    int clockCX = contentX + clockSize / 2;
-                    DrawClock(g, clockCX, clockCY, clockSize / 2, gameHour);
-                    contentX += clockSize + 4;
-
-                    // 展开指示（收起状态，紧跟内容）
-                    if (_expandProgress < 0.5f)
-                    {
-                        using (SolidBrush arrowBrush = new SolidBrush(Color.FromArgb(120, 255, 255, 255)))
+                        PaintRow1(g, w, row1H, scale, fpsFont, textFont, monoFont, eased);
+                        if (_gameReady && toolbarH > 2)
                         {
-                            g.DrawString("▼", _buttonFont, arrowBrush, contentX, 7);
+                            byte buttonAlpha = (byte)(255 * Math.Min(1f, Math.Max(0f, (eased - 0.15f) / 0.85f)));
+                            DrawToolbarButtons(g, w, row1H, scale, textFont, buttonAlpha);
                         }
-                    }
-
-                    // 展开时：工具栏按钮（仅在主栏内）
-                    if (_expandProgress >= 0.3f)
-                    {
-                        byte buttonAlpha = (byte)(255 * Math.Min(1f, (_expandProgress - 0.3f) / 0.7f));
-                        DrawToolbarButtons(g, w, CollapsedH, buttonAlpha);
+                        if (_otherMenuOpen)
+                            DrawOtherMenu(g, w, pillH, scale, textFont);
                     }
 
                     // 通知栈：每行独立绘制
-                    int rowPadX = 6;
+                    int rowPadX = Px(6, scale);
                     int rowInnerW = w - rowPadX * 2;
+                    int scaledRowH = Px(RowH, scale);
+                    int scaledRowGap = Px(RowGap, scale);
+                    int rowsStartY = pillH + (_otherMenuOpen ? OtherButtons.Length * (Px(ToolbarButtonH, scale) + Px(1, scale)) + Px(8, scale) : 0);
                     for (int ri = 0; ri < _infoRows.Count; ri++)
                     {
                         NotchInfoRow row = _infoRows[ri];
-                        int rowY = CollapsedH + ri * (RowGap + RowH) + RowGap;
+                        int rowY = rowsStartY + ri * (scaledRowGap + scaledRowH) + scaledRowGap;
 
                         // 行透明度（淡入 + 淡出）
                         float rowAlpha = 1f;
@@ -623,61 +910,82 @@ namespace CF7Launcher.Guardian
                         if (!row.Persistent && row.RemainingMs < FadeOutMs)
                             rowAlpha = Math.Min(rowAlpha, (float)row.RemainingMs / FadeOutMs);
                         byte ra = (byte)(255 * Math.Max(0f, Math.Min(1f, rowAlpha)));
+                        int textPadX = row.Persistent ? rowPadX + Px(10, scale) : rowPadX;
+                        int textInnerW = w - textPadX - rowPadX;
+                        if (textInnerW < Px(20, scale)) textInnerW = Px(20, scale);
+                        float pulse = row.PulseMs > 0 ? (float)row.PulseMs / 350f : 0f;
+                        Color rowBg = row.IsGame
+                            ? Color.FromArgb((byte)(ra * (0.10f + 0.10f * pulse)), 255, 255, 255)
+                            : Color.FromArgb((byte)(ra * (row.Persistent ? 0.82f : 0.70f)), 20, 20, 22);
 
                         // 行背景
-                        DrawRoundedRect(g, 0, rowY, w, RowH, 4,
-                            Color.FromArgb((byte)(ra * 0.7f), 20, 20, 22));
+                        DrawRoundedRect(g, 0, rowY, w, scaledRowH, Px(4, scale),
+                            rowBg);
+                        if (row.Persistent)
+                        {
+                            using (SolidBrush accent = new SolidBrush(Color.FromArgb(ra, row.AccentColor)))
+                            {
+                                g.FillRectangle(accent, 0, rowY, Px(3, scale), scaledRowH);
+                            }
+                        }
+                        if (row.IsGame)
+                        {
+                            using (Pen border = new Pen(Color.FromArgb((byte)(ra * 0.2f), 255, 215, 0)))
+                            {
+                                g.DrawRectangle(border, 0, rowY, w - 1, scaledRowH - 1);
+                            }
+                        }
 
                         // 设置裁剪区域防止文字溢出
-                        g.SetClip(new Rectangle(rowPadX, rowY, rowInnerW, RowH));
+                        g.SetClip(new Rectangle(textPadX, rowY, textInnerW, scaledRowH));
 
                         // 当前文字测量
                         SizeF textSize = g.MeasureString(row.Text, _buttonFont);
                         float textW = textSize.Width;
                         float textX;
 
-                        if (textW <= rowInnerW)
+                        if (textW <= textInnerW)
                         {
                             // 短文本：居中
-                            textX = rowPadX + (rowInnerW - textW) / 2f;
+                            textX = row.Persistent ? textPadX : textPadX + (textInnerW - textW) / 2f;
                         }
                         else
                         {
                             // 长文本：滚动（来回 ping-pong）
-                            float overflow = textW - rowInnerW;
+                            float overflow = textW - textInnerW;
                             float scrollCycle = 4000f; // 一个来回 4 秒
                             float phase = (row.AgeMs % scrollCycle) / scrollCycle;
                             // 0→0.5 向左滚，0.5→1 向右滚
                             float scrollT = phase < 0.5f ? phase * 2f : (1f - phase) * 2f;
                             // ease in-out
                             scrollT = scrollT * scrollT * (3f - 2f * scrollT);
-                            textX = rowPadX - overflow * scrollT;
+                            textX = textPadX - overflow * scrollT;
                         }
 
                         // 交叉淡变渲染
                         if (row.PrevText != null)
                         {
-                            float t = (float)row.TransitionMs / NotchInfoRow.TransitionDuration;
-                            t = Math.Max(0f, Math.Min(1f, t));
+                            float transT = (float)row.TransitionMs / NotchInfoRow.TransitionDuration;
+                            transT = Math.Max(0f, Math.Min(1f, transT));
 
                             // 旧文字（淡出）
-                            byte oldA = (byte)(ra * (1f - t));
+                            byte oldA = (byte)(ra * (1f - transT));
                             Color oldC = Color.FromArgb(oldA, row.PrevColor.R, row.PrevColor.G, row.PrevColor.B);
                             SizeF oldSize = g.MeasureString(row.PrevText, _buttonFont);
-                            float oldX = (oldSize.Width <= rowInnerW)
-                                ? rowPadX + (rowInnerW - oldSize.Width) / 2f
-                                : rowPadX;
+                            float oldX = (oldSize.Width <= textInnerW)
+                                ? (row.Persistent ? textPadX : textPadX + (textInnerW - oldSize.Width) / 2f)
+                                : textPadX;
                             using (SolidBrush ob = new SolidBrush(oldC))
                             {
-                                g.DrawString(row.PrevText, _buttonFont, ob, oldX, rowY + 2);
+                                g.DrawString(row.PrevText, _buttonFont, ob, oldX, rowY + Px(2, scale));
                             }
 
                             // 新文字（淡入）
-                            byte newA = (byte)(ra * t);
+                            byte newA = (byte)(ra * transT);
                             Color newC = Color.FromArgb(newA, row.AccentColor.R, row.AccentColor.G, row.AccentColor.B);
                             using (SolidBrush nb = new SolidBrush(newC))
                             {
-                                g.DrawString(row.Text, _buttonFont, nb, textX, rowY + 2);
+                                g.DrawString(row.Text, _buttonFont, nb, textX, rowY + Px(2, scale));
                             }
                         }
                         else
@@ -686,7 +994,7 @@ namespace CF7Launcher.Guardian
                             Color rc = Color.FromArgb(ra, row.AccentColor.R, row.AccentColor.G, row.AccentColor.B);
                             using (SolidBrush rb = new SolidBrush(rc))
                             {
-                                g.DrawString(row.Text, _buttonFont, rb, textX, rowY + 2);
+                                g.DrawString(row.Text, _buttonFont, rb, textX, rowY + Px(2, scale));
                             }
                         }
 
@@ -702,50 +1010,441 @@ namespace CF7Launcher.Guardian
                 SWP_NOACTIVATE);
         }
 
-        private void DrawToolbarButtons(Graphics g, int totalW, int totalH, byte alpha)
+        private void DrawToolbarButtons(Graphics g, int totalW, int row1H, float scale, Font font, byte alpha)
         {
-            int btnW = 56;
-            int btnH = 20;
-            int btnY = (totalH - btnH) / 2;
-            int spacing = 2;
+            List<Rectangle> rects = new List<Rectangle>();
+            List<NotchButtonDef> defs = new List<NotchButtonDef>();
+            int btnH = Px(ToolbarButtonH, scale);
+            int gap = Px(ToolbarButtonGap, scale);
+            int x = Px(ToolbarPadX, scale);
+            int y = row1H + Px(ToolbarPadTop, scale);
 
-            // 从右侧开始布局
-            int rightX = totalW - 8;
-
-            _buttonRects = new Rectangle[ButtonLabels.Length];
-
-            for (int i = ButtonLabels.Length - 1; i >= 0; i--)
+            for (int i = 0; i < ToolbarButtons.Length; i++)
             {
-                SizeF textSize = g.MeasureString(ButtonLabels[i], _buttonFont);
-                int thisBtnW = Math.Max(btnW, (int)textSize.Width + 12);
-                int btnX = rightX - thisBtnW;
-
-                _buttonRects[i] = new Rectangle(btnX, btnY, thisBtnW, btnH);
-
-                // 背景
-                Color bgColor = (i == _hoverButtonIndex)
-                    ? Color.FromArgb(alpha, 55, 55, 60)
-                    : Color.FromArgb((byte)(alpha * 0.4f), 40, 40, 44);
-                using (SolidBrush bgBrush = new SolidBrush(bgColor))
-                {
-                    DrawRoundedRectFill(g, btnX, btnY, thisBtnW, btnH, 3, bgBrush);
-                }
-
-                // 文字
-                Color textColor = Color.FromArgb(alpha, 200, 200, 200);
-                using (SolidBrush textBrush = new SolidBrush(textColor))
-                {
-                    using (StringFormat sf = new StringFormat())
-                    {
-                        sf.Alignment = StringAlignment.Center;
-                        sf.LineAlignment = StringAlignment.Center;
-                        g.DrawString(ButtonLabels[i], _buttonFont, textBrush,
-                            new RectangleF(btnX, btnY, thisBtnW, btnH), sf);
-                    }
-                }
-
-                rightX = btnX - spacing;
+                NotchButtonDef def = ToolbarButtons[i];
+                if (!ShouldShowButton(def)) continue;
+                int btnW = MeasureButtonWidth(g, font, def.Label, scale);
+                Rectangle r = new Rectangle(x, y, btnW, btnH);
+                int idx = _buttonDefs.Length + defs.Count;
+                PaintButton(g, r, font, def.Label, alpha, idx == _hoverButtonIndex, scale);
+                rects.Add(r);
+                defs.Add(def);
+                x += btnW + gap;
             }
+
+            AppendButtonRects(rects, defs);
+        }
+
+        private void PaintRow1(Graphics g, int totalW, int row1H, float scale, Font fpsFont, Font textFont, Font monoFont, float expandedEase)
+        {
+            List<Rectangle> rects = new List<Rectangle>();
+            List<NotchButtonDef> defs = new List<NotchButtonDef>();
+            _buttonRects = new Rectangle[0];
+            _buttonDefs = new NotchButtonDef[0];
+
+            int x = Px(RowPadX, scale);
+            int centerY = row1H / 2;
+            if (!_gameReady)
+            {
+                int bx = x;
+                int gap = Px(Row1RightGap, scale);
+                for (int i = 0; i < Row1Buttons.Length; i++)
+                {
+                    NotchButtonDef def = Row1Buttons[i];
+                    if (!ShouldShowButton(def)) continue;
+                    int btnW = MeasureButtonWidth(g, textFont, def.Label, scale);
+                    Rectangle r = new Rectangle(bx, (row1H - Px(ToolbarButtonH, scale)) / 2, btnW, Px(ToolbarButtonH, scale));
+                    int idx = defs.Count;
+                    PaintButton(g, r, textFont, def.Label, (byte)220, idx == _hoverButtonIndex, scale);
+                    rects.Add(r);
+                    defs.Add(def);
+                    bx += btnW + gap;
+                }
+                _buttonRects = rects.ToArray();
+                _buttonDefs = defs.ToArray();
+                return;
+            }
+            if (_gameReady)
+            {
+                int goldW = ComputeCurrencyWidth(_gold.Current, scale);
+                Rectangle goldRect = new Rectangle(x, 0, goldW, row1H);
+                DrawCurrencyPanel(g, goldRect, "$", _gold, Color.FromArgb(255, 215, 0), monoFont, true, scale);
+                x += goldW;
+                DrawDivider(g, x, row1H, scale);
+                x += Px(DividerW + DividerMarginX * 2, scale);
+            }
+
+            string fpsText = _fpsBuffer.HasData ? ((int)_fpsBuffer.Latest).ToString() : "--";
+            Color fpsColor = GetFpsColor(_fpsBuffer.HasData ? _fpsBuffer.Latest : 0f);
+            int fpsW = Px(CenterFpsMinW, scale);
+            Rectangle fpsRect = new Rectangle(x, 0, fpsW, row1H);
+            using (SolidBrush fpsBrush = new SolidBrush(fpsColor))
+            using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+                g.DrawString(fpsText, fpsFont, fpsBrush, fpsRect, sf);
+            x += fpsW + Px(CenterGap, scale);
+
+            if (expandedEase > 0.65f)
+            {
+                string badge = "L" + _fpsBuffer.PerfLevel;
+                int badgeW = Px(24, scale);
+                Rectangle badgeRect = new Rectangle(x, (row1H - Px(14, scale)) / 2, badgeW, Px(14, scale));
+                Color badgeColor = GetPerfColor(_fpsBuffer.PerfLevel);
+                using (SolidBrush bg = new SolidBrush(Color.FromArgb(38, badgeColor)))
+                using (SolidBrush fg = new SolidBrush(badgeColor))
+                using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+                {
+                    g.FillRectangle(bg, badgeRect);
+                    g.DrawString(badge, textFont, fg, badgeRect, sf);
+                }
+                x += badgeW + Px(CenterGap, scale);
+            }
+
+            int sparkW = Px(SparklineW, scale);
+            int sparkH = Px(SparklineH, scale);
+            int sparkY = (row1H - sparkH) / 2;
+            DrawLightBackground(g, x, sparkY, sparkW, sparkH);
+            DrawSparkline(g, x, sparkY, sparkW, sparkH, fpsColor);
+            x += sparkW + Px(CenterGap + 1, scale);
+
+            int clockSize = Px(16, scale);
+            DrawClock(g, x + clockSize / 2, centerY, clockSize / 2, _fpsBuffer.GameHour);
+            x += clockSize + Px(CenterGap, scale);
+
+            if (expandedEase > 0.65f)
+            {
+                string time = FormatGameTime(_fpsBuffer.GameHour);
+                int statsW = Px(44, scale);
+                Rectangle statsRect = new Rectangle(x, 0, statsW, row1H);
+                using (SolidBrush b = new SolidBrush(Color.FromArgb(128, 255, 255, 255)))
+                using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center })
+                    g.DrawString(time, textFont, b, statsRect, sf);
+                x += statsW;
+            }
+
+            using (SolidBrush arrowBrush = new SolidBrush(Color.FromArgb(128, 255, 255, 255)))
+            using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+            {
+                Rectangle arrowRect = new Rectangle(x, 0, Px(ArrowW, scale), row1H);
+                g.DrawString("▼", textFont, arrowBrush, arrowRect, sf);
+            }
+            x += Px(ArrowW, scale);
+
+            if (_gameReady)
+            {
+                DrawDivider(g, x, row1H, scale);
+                x += Px(DividerW + DividerMarginX * 2, scale);
+                int kpW = ComputeCurrencyWidth(_kp.Current, scale);
+                Rectangle kpRect = new Rectangle(x, 0, kpW, row1H);
+                DrawCurrencyPanel(g, kpRect, "K", _kp, Color.FromArgb(102, 204, 255), monoFont, false, scale);
+                x += kpW;
+            }
+
+            if (expandedEase > 0.55f)
+            {
+                int gap = Px(Row1RightGap, scale);
+                int totalButtonsW = 0;
+                int visibleCount = 0;
+                for (int i = 0; i < Row1Buttons.Length; i++)
+                {
+                    if (!ShouldShowButton(Row1Buttons[i])) continue;
+                    totalButtonsW += MeasureButtonWidth(g, textFont, Row1Buttons[i].Label, scale);
+                    visibleCount++;
+                }
+                if (visibleCount > 1) totalButtonsW += gap * (visibleCount - 1);
+                int bx = Math.Max(totalW - Px(RowPadX, scale) - totalButtonsW, x + gap);
+                for (int i = 0; i < Row1Buttons.Length; i++)
+                {
+                    NotchButtonDef def = Row1Buttons[i];
+                    if (!ShouldShowButton(def)) continue;
+                    int btnW = MeasureButtonWidth(g, textFont, def.Label, scale);
+                    Rectangle r = new Rectangle(bx, (row1H - Px(ToolbarButtonH, scale)) / 2, btnW, Px(ToolbarButtonH, scale));
+                    int idx = defs.Count;
+                    PaintButton(g, r, textFont, def.Label, (byte)220, idx == _hoverButtonIndex, scale);
+                    rects.Add(r);
+                    defs.Add(def);
+                    bx += btnW + gap;
+                }
+            }
+
+            _buttonRects = rects.ToArray();
+            _buttonDefs = defs.ToArray();
+        }
+
+        private void DrawOtherMenu(Graphics g, int totalW, int y, float scale, Font font)
+        {
+            int btnH = Px(ToolbarButtonH, scale);
+            int gap = Px(1, scale);
+            int menuW = 0;
+            for (int i = 0; i < OtherButtons.Length; i++)
+                menuW = Math.Max(menuW, MeasureButtonWidth(g, font, OtherButtons[i].Label, scale));
+            menuW = Math.Max(menuW, Px(108, scale));
+            int x = totalW - Px(RowPadX, scale) - menuW;
+            int menuH = OtherButtons.Length * (btnH + gap) + Px(8, scale);
+            using (SolidBrush bg = new SolidBrush(Color.FromArgb(225, 24, 24, 26)))
+            using (Pen border = new Pen(Color.FromArgb(31, 255, 255, 255)))
+            {
+                DrawRoundedRectFill(g, x, y, menuW, menuH, Px(4, scale), bg);
+                g.DrawRectangle(border, x, y, menuW - 1, menuH - 1);
+            }
+
+            List<Rectangle> rects = new List<Rectangle>();
+            List<NotchButtonDef> defs = new List<NotchButtonDef>();
+            int itemY = y + Px(4, scale);
+            for (int i = 0; i < OtherButtons.Length; i++)
+            {
+                Rectangle r = new Rectangle(x, itemY, menuW, btnH);
+                int idx = _buttonDefs.Length + defs.Count;
+                PaintButton(g, r, font, OtherButtons[i].Label, 230, idx == _hoverButtonIndex, scale);
+                rects.Add(r);
+                defs.Add(OtherButtons[i]);
+                itemY += btnH + gap;
+            }
+            AppendButtonRects(rects, defs);
+        }
+
+        private void AppendButtonRects(List<Rectangle> rects, List<NotchButtonDef> defs)
+        {
+            if (rects == null || defs == null || rects.Count == 0) return;
+            int oldLen = _buttonRects != null ? _buttonRects.Length : 0;
+            Rectangle[] nextRects = new Rectangle[oldLen + rects.Count];
+            NotchButtonDef[] nextDefs = new NotchButtonDef[oldLen + defs.Count];
+            if (oldLen > 0)
+            {
+                Array.Copy(_buttonRects, nextRects, oldLen);
+                Array.Copy(_buttonDefs, nextDefs, oldLen);
+            }
+            for (int i = 0; i < rects.Count; i++)
+            {
+                nextRects[oldLen + i] = rects[i];
+                nextDefs[oldLen + i] = defs[i];
+            }
+            _buttonRects = nextRects;
+            _buttonDefs = nextDefs;
+        }
+
+        private void PaintButton(Graphics g, Rectangle r, Font font, string text, byte alpha, bool hover, float scale)
+        {
+            using (SolidBrush bg = new SolidBrush(hover
+                ? Color.FromArgb(alpha, 60, 60, 64)
+                : Color.FromArgb((byte)(alpha * 0.34f), 255, 255, 255)))
+            using (SolidBrush fg = new SolidBrush(hover
+                ? Color.FromArgb(alpha, 255, 255, 255)
+                : Color.FromArgb((byte)(alpha * 0.82f), 255, 255, 255)))
+            using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter })
+            {
+                DrawRoundedRectFill(g, r.X, r.Y, r.Width, r.Height, Px(3, scale), bg);
+                g.DrawString(text, font, fg, r, sf);
+            }
+        }
+
+        private void DrawDivider(Graphics g, int x, int rowH, float scale)
+        {
+            using (SolidBrush b = new SolidBrush(Color.FromArgb(38, 255, 255, 255)))
+            {
+                int h = Px(14, scale);
+                g.FillRectangle(b, x + Px(DividerMarginX, scale), (rowH - h) / 2, Px(DividerW, scale), h);
+            }
+        }
+
+        private void DrawCurrencyPanel(Graphics g, Rectangle rect, string icon, CurrencySlot slot, Color accent, Font font, bool leftAlign, float scale)
+        {
+            int iconW = Px(CurrencyIconW, scale);
+            Rectangle iconR = leftAlign
+                ? new Rectangle(rect.X, (rect.Height - Px(18, scale)) / 2, iconW, Px(18, scale))
+                : new Rectangle(rect.Right - iconW, (rect.Height - Px(18, scale)) / 2, iconW, Px(18, scale));
+            Rectangle valR = leftAlign
+                ? new Rectangle(iconR.Right + Px(CurrencyGap, scale), 0, rect.Right - iconR.Right - Px(CurrencyGap, scale), rect.Height)
+                : new Rectangle(rect.X, 0, iconR.X - rect.X - Px(CurrencyGap, scale), rect.Height);
+            using (SolidBrush iconBg = new SolidBrush(Color.FromArgb(38, accent)))
+            using (SolidBrush iconFg = new SolidBrush(accent))
+            using (SolidBrush valFg = new SolidBrush(Color.FromArgb(230, 255, 255, 255)))
+            using (StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+            using (StringFormat valueFmt = new StringFormat { Alignment = leftAlign ? StringAlignment.Near : StringAlignment.Far, LineAlignment = StringAlignment.Center })
+            {
+                g.FillRectangle(iconBg, iconR);
+                g.DrawString(icon, font, iconFg, iconR, center);
+                g.DrawString(FormatNumber(slot.Current), font, valFg, valR, valueFmt);
+            }
+        }
+
+        private static float GetScale(float viewportH)
+        {
+            if (viewportH <= 0) return 1f;
+            return Math.Max(0.5f, viewportH / 576f);
+        }
+
+        private static int Px(int basePx, float scale)
+        {
+            return Math.Max(1, (int)Math.Round(basePx * scale));
+        }
+
+        private static float Pxf(float basePx, float scale)
+        {
+            return Math.Max(1f, basePx * scale);
+        }
+
+        private int ComputeCollapsedWidth(float scale)
+        {
+            int center = Px(CenterFpsMinW + CenterGap + SparklineW + CenterGap + 1 + 16 + CenterGap + ArrowW, scale);
+            int w = Px(RowPadX * 2, scale) + center;
+            if (_gameReady)
+            {
+                w += ComputeCurrencyWidth(_gold.Current, scale);
+                w += ComputeCurrencyWidth(_kp.Current, scale);
+                w += Px((DividerW + DividerMarginX * 2) * 2, scale);
+            }
+            else
+            {
+                // 未进游戏时 Web #notch 只保留全屏/日志/其他入口。
+                w = Px(RowPadX * 2, scale) + MeasureButtonsApprox(Row1Buttons, scale);
+            }
+            return w;
+        }
+
+        private int ComputeExpandedWidth(float scale, int viewportW)
+        {
+            int collapsed = ComputeCollapsedWidth(scale);
+            int row1Right = MeasureButtonsApprox(Row1Buttons, scale) + Px(Row1RightGap * (CountVisibleButtons(Row1Buttons) + 1), scale);
+            int toolbar = _gameReady
+                ? Px(ToolbarPadX * 2, scale) + MeasureButtonsApprox(ToolbarButtons, scale) + Px(ToolbarButtonGap * Math.Max(0, CountVisibleButtons(ToolbarButtons) - 1), scale)
+                : 0;
+            int desired = Math.Max(collapsed + row1Right, toolbar);
+            desired = Math.Max(desired, collapsed);
+            int max = Math.Min(viewportW, Px(600, scale));
+            return Math.Min(Math.Max(desired, collapsed), Math.Max(collapsed, max));
+        }
+
+        private int ComputeCurrencyWidth(int value, float scale)
+        {
+            string text = FormatNumber(value);
+            int chars = Math.Max(6, text.Length);
+            int valueW = Math.Max(Px(CurrencyMinValueW, scale), Px(chars * 8, scale));
+            return Px(CurrencyIconW + CurrencyGap, scale) + valueW;
+        }
+
+        private int MeasureButtonsApprox(NotchButtonDef[] defs, float scale)
+        {
+            if (defs == null) return 0;
+            int w = 0;
+            for (int i = 0; i < defs.Length; i++)
+            {
+                if (!ShouldShowButton(defs[i])) continue;
+                w += Px(ButtonPadX * 2 + Math.Max(28, defs[i].Label.Length * 14 + 4), scale);
+            }
+            return w;
+        }
+
+        private int CountVisibleButtons(NotchButtonDef[] defs)
+        {
+            if (defs == null) return 0;
+            int count = 0;
+            for (int i = 0; i < defs.Length; i++)
+                if (ShouldShowButton(defs[i])) count++;
+            return count;
+        }
+
+        private int MeasureButtonWidth(Graphics g, Font font, string text, float scale)
+        {
+            SizeF size = g.MeasureString(text, font);
+            return Math.Max(Px(36, scale), (int)Math.Ceiling(size.Width) + Px(ButtonPadX * 2, scale));
+        }
+
+        private bool ShouldShowButton(NotchButtonDef def)
+        {
+            if (def == null) return false;
+            if (def.RequiresGameReady && !_gameReady) return false;
+            if (def.RequiresWarehouse && _questProgress <= 13) return false;
+            return true;
+        }
+
+        private Color ResolvePillColor()
+        {
+            int hour = ((int)Math.Floor(_fpsBuffer.GameHour)) % 24;
+            int level = (_lightLevels != null && _lightLevels.Length >= 24) ? _lightLevels[hour] : 7;
+            if (level >= 7) return Color.FromArgb(174, 30, 30, 32);
+            if (level >= 4) return Color.FromArgb(199, 28, 26, 24);
+            return Color.FromArgb(224, 18, 20, 28);
+        }
+
+        private static Color GetPerfColor(int level)
+        {
+            if (level <= 0) return Color.FromArgb(102, 255, 102);
+            if (level == 1) return Color.FromArgb(255, 170, 0);
+            if (level == 2) return Color.FromArgb(255, 102, 51);
+            return Color.FromArgb(255, 68, 68);
+        }
+
+        private static string FormatGameTime(float hour)
+        {
+            int h = ((int)Math.Floor(hour)) % 24;
+            int m = (int)Math.Floor((hour - (float)Math.Floor(hour)) * 60f);
+            if (m < 0) m = 0;
+            if (m > 59) m = 59;
+            return (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m;
+        }
+
+        private void StartCurrencyUpdate(CurrencySlot slot, int value, int deltaOverride)
+        {
+            if (slot == null) return;
+            int old = slot.Target;
+            if (value == old && !slot.Animating) return;
+            slot.From = slot.Animating ? slot.Current : old;
+            slot.Target = value;
+            slot.AnimElapsedMs = 0;
+            slot.Animating = true;
+            int delta = deltaOverride == int.MinValue ? value - old : deltaOverride;
+            if (delta != 0)
+            {
+                slot.LastDelta = delta;
+                slot.DeltaElapsedMs = 0;
+            }
+        }
+
+        private static bool TickCurrencySlot(CurrencySlot slot, int deltaMs)
+        {
+            if (slot == null) return false;
+            bool changed = false;
+            if (slot.Animating)
+            {
+                slot.AnimElapsedMs += deltaMs;
+                float t = Math.Min(1f, slot.AnimElapsedMs / 600f);
+                float eased = 1f - (float)Math.Pow(1 - t, 3);
+                int next = slot.From + (int)Math.Round((slot.Target - slot.From) * eased);
+                if (next != slot.Current) { slot.Current = next; changed = true; }
+                if (t >= 1f)
+                {
+                    slot.Animating = false;
+                    slot.Current = slot.Target;
+                    changed = true;
+                }
+            }
+            if (slot.DeltaElapsedMs < 1200)
+            {
+                slot.DeltaElapsedMs += deltaMs;
+                changed = true;
+            }
+            return changed;
+        }
+
+        private static string StripPrefix(string fullPiece, string key)
+        {
+            if (string.IsNullOrEmpty(fullPiece)) return "";
+            string prefix = key + ":";
+            if (fullPiece.StartsWith(prefix, StringComparison.Ordinal)) return fullPiece.Substring(prefix.Length);
+            return fullPiece;
+        }
+
+        private static int ParseInt(string raw, int fallback)
+        {
+            int n;
+            if (int.TryParse(raw, out n)) return n;
+            return fallback;
+        }
+
+        private static string FormatNumber(int n)
+        {
+            string s = Math.Abs(n).ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
+            return n < 0 ? "-" + s : s;
         }
 
         /// <summary>
@@ -1003,6 +1702,10 @@ namespace CF7Launcher.Guardian
     /// </summary>
     public class NotchInfoRow
     {
+        public string BaseText;
+        public bool IsGame;
+        public int Count;
+        public int PulseMs;
         public string Category;    // 去重键
         public string Text;        // 当前显示文字
         public Color AccentColor;  // 当前文字颜色

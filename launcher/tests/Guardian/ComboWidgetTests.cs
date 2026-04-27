@@ -160,6 +160,20 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void Hit_TickRequestsRepaint_WhileAnimationActive()
+        {
+            ComboWidget w = MakeWidget();
+            int repaintCount = 0;
+            w.RepaintRequested += delegate { repaintCount++; };
+            w.OnNotchNotice("combo", "DFA 波动拳", Color.Gold);
+
+            w.AdvanceHitMs(16);
+
+            Assert.True(w.IsHitState);
+            Assert.True(repaintCount > 0);
+        }
+
+        [Fact]
         public void NotchCombo_Sync_TriggersHitWithCyanPath()
         {
             ComboWidget w = MakeWidget();

@@ -13,8 +13,8 @@ namespace CF7Launcher.Guardian
     ///
     /// 关键设计（与 WebView2 layered overlay 对比）：
     /// - 动态 bounds：窗口大小 = 所有 Visible widget 的 ScreenBounds union（+padding）；空 → SW_HIDE
-    /// - request-frame：仅在有 widget WantsAnimationTick 时启 16ms timer；池为空 → Stop
-    /// - 单帧重绘：RepaintRequested 触发单次 invalidate，不强行启 tick
+    /// - request-frame：仅在有 widget WantsAnimationTick 时启 16ms timer；tick 只推进状态，不无条件重绘
+    /// - 单帧重绘：RepaintRequested / BoundsOrVisibilityChanged 触发提交，避免动画 timer 空转全量 Commit
     /// - DWM α 成本：只占被 widget 实际覆盖的矩形，避免全屏 layered window 的 per-pixel α traversal
     ///
     /// Phase 1 范围：
@@ -396,7 +396,10 @@ namespace CF7Launcher.Guardian
                 try { w.Tick(delta); }
                 catch (Exception ex) { LogManager.Log("[NativeHud] widget Tick throw: " + ex.Message); }
             }
-            RenderToBitmapAndCommit();
+            // Tick 本身不等于需要重绘。需要视觉更新的 widget 会在 Tick 内发 RepaintRequested
+            // 或 BoundsOrVisibilityChanged；这里无条件 Commit 会在 BGM mini wave / combo hit 期间
+            // 以 60fps 重绘整个 HUD union，连同小地图 PNG 剪影一起占用 UI 线程和 GDI CPU。
+            MaybeStartTick();
         }
 
         #endregion
