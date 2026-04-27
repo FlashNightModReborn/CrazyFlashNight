@@ -1,10 +1,25 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="5武器特效和子弹/火焰爆发特效/火焰爆发" itemID="6971c15c-000008f1" linkageExportForAS="true" linkageIdentifier="火焰爆发" lastModified="1777103182" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="5武器特效和子弹/火焰爆发特效/火焰爆发" itemID="6971c15c-000008f1" linkageExportForAS="true" linkageIdentifier="火焰爆发" lastModified="1777252481" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="火焰爆发">
       <layers>
-        <DOMLayer name="Script Layer" color="#CA8E4F" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Script Layer" color="#CA8E4F" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// 40% 热魔法伤害（带击退），60% 物理伤害
+if (random(100) < 40) {
+	this.伤害类型 = "魔法";
+	this.魔法伤害属性 = "热";
+	this.水平击退速度 = 15;
+	this.垂直击退速度 = 3;
+} else {
+	this.伤害类型 = "物理";
+	// 如果你不想用物理，就把上面这句改成：this.伤害类型 = "魔法";
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="4" duration="6" keyMode="9728">
@@ -20,7 +35,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="判定" color="#33FFFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="判定" color="#33FFFF" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>

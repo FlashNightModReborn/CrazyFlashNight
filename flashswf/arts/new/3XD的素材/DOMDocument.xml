@@ -12,7 +12,7 @@
           <DOMFolderItem name="1主武器/AWM狙击步枪/长枪" itemID="672cc992-00000111"/>
           <DOMFolderItem name="1主武器/FM92刺弹炮" itemID="69e73737-000003dc"/>
           <DOMFolderItem name="1主武器/FSC7" itemID="69e737ef-00000407"/>
-          <DOMFolderItem name="1主武器/FSC7/fsc7素材" itemID="69e737a8-000003fa"/>
+          <DOMFolderItem name="1主武器/FSC7/fsc7素材" itemID="69e737a8-000003fa" isExpanded="true"/>
           <DOMFolderItem name="1主武器/m4a1科技白" itemID="672b7adb-000000f1"/>
           <DOMFolderItem name="1主武器/m4a1科技白/部分1" itemID="6705ddd9-000002cf"/>
           <DOMFolderItem name="1主武器/m4a1科技白/部分2" itemID="6705dddd-000002d0"/>
@@ -281,8 +281,8 @@
           <DOMFolderItem name="7手雷/量子爆弹信标文件/无AS链接" itemID="69e8a9a0-0000089f"/>
           <DOMFolderItem name="7手雷/量子爆弹信标文件/消耗道具相关" itemID="69e8a875-00000108" isExpanded="true"/>
           <DOMFolderItem name="非JohnWcik内容" itemID="69e8d5a4-000005c2"/>
-          <DOMFolderItem name="非JohnWcik内容/手雷" itemID="69e8d5a4-000005c3"/>
-          <DOMFolderItem name="非JohnWcik内容/手雷/无AS链接" itemID="69e8d5a4-000005c4"/>
+          <DOMFolderItem name="非JohnWcik内容/手雷" itemID="69e8d5a4-000005c3" isExpanded="true"/>
+          <DOMFolderItem name="非JohnWcik内容/手雷/无AS链接" itemID="69e8d5a4-000005c4" isExpanded="true"/>
           <DOMFolderItem name="杂项" itemID="65bdfbf3-00000798"/>
           <DOMFolderItem name="杂项/教程图片" itemID="65518c34-0000075e"/>
           <DOMFolderItem name="杂项/谜之胶囊（和其图标）" itemID="65518c34-0000075f"/>
@@ -362,12 +362,12 @@
           <Include href="1主武器/FM92刺弹炮/枪-长枪-FM92刺弹炮.xml" itemID="69e7372c-000003da" lastModified="1776765820"/>
           <Include href="1主武器/FM92刺弹炮/图标-FM92刺弹炮.xml" itemID="69e73730-000003db" lastModified="1776915072"/>
           <Include href="1主武器/FSC7/fsc7素材/fsc7本体.xml" itemIcon="1" loadImmediate="false" itemID="698308aa-00000178" lastModified="1770195114"/>
-          <Include href="1主武器/FSC7/fsc7素材/fsc7炮弹.xml" itemIcon="1" loadImmediate="false" itemID="692aeef1-0000019d" lastModified="1764421414"/>
+          <Include href="1主武器/FSC7/fsc7素材/fsc7炮弹.xml" loadImmediate="false" itemID="692aeef1-0000019d" lastModified="1777251193"/>
           <Include href="1主武器/FSC7/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="69e73781-000003f2" lastModified="1720533000"/>
           <Include href="1主武器/FSC7/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="69e73781-000003f1" lastModified="1720533000"/>
           <Include href="1主武器/FSC7/Symbol 13.xml" loadImmediate="false" itemID="69e73781-000003f0" lastModified="1720533000"/>
           <Include href="1主武器/FSC7/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="69e73781-000003f3" lastModified="1776915037"/>
-          <Include href="1主武器/FSC7/枪-长枪-FSC7.xml" itemID="69e737d3-00000403" lastModified="1776765966"/>
+          <Include href="1主武器/FSC7/枪-长枪-FSC7.xml" itemID="69e737d3-00000403" lastModified="1777251235"/>
           <Include href="1主武器/FSC7/图标-FSC7.xml" itemID="69e737dc-00000404" lastModified="1776915019"/>
           <Include href="1主武器/m4a1科技白/部分1/Symbol 3726.xml" loadImmediate="false" itemID="668e7c1e-00000f2f" lastModified="1728405736"/>
           <Include href="1主武器/m4a1科技白/部分1/Symbol 3727.xml" loadImmediate="false" itemID="668e7c1e-00000f30" lastModified="1720533000"/>
@@ -1170,9 +1170,8 @@
           <Include href="5武器特效和子弹/爆炸狙击子弹/无AS链接/Symbol 429.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006bd" lastModified="1720533000"/>
           <Include href="5武器特效和子弹/爆炸狙击子弹/小火焰爆炸.xml" itemID="69732f4b-00000781" lastModified="1769157201"/>
           <Include href="5武器特效和子弹/爆炸狙击子弹/小火焰爆炸素材.xml" itemIcon="1" loadImmediate="false" itemID="69732d7a-00000747" lastModified="1769156228"/>
-          <Include href="5武器特效和子弹/冰流爆发特效/冰流爆发.xml" itemID="69721fc4-000001dc" lastModified="1776916666"/>
+          <Include href="5武器特效和子弹/冰流爆发特效/冰流爆发.xml" itemID="69721fc4-000001dc" lastModified="1777252517"/>
           <Include href="5武器特效和子弹/冰流爆发特效/冰流爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="69721fc1-000001db" lastModified="1769086913"/>
-          <Include href="5武器特效和子弹/冰流爆发特效/冰流爆发引信.xml" itemID="69ec75cf-00000d76" lastModified="1777104342"/>
           <Include href="5武器特效和子弹/冰流爆发特效/寒冰爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="69721f34-000001c9" lastModified="1769086959"/>
           <Include href="5武器特效和子弹/冰流爆发特效/图片/area40X40.xml" loadImmediate="false" itemID="697221f2-0000045b" lastModified="1762772154"/>
           <Include href="5武器特效和子弹/高爆子弹/Symbol 256.xml" loadImmediate="false" itemID="662f2bea-0000155b" lastModified="1714367440"/>
@@ -1185,9 +1184,8 @@
           <Include href="5武器特效和子弹/高爆子弹/爆炸/Symbol 1231.xml" loadImmediate="false" itemID="662f2a77-00000011" lastModified="1714395009"/>
           <Include href="5武器特效和子弹/高爆子弹/爆炸/Symbol 1234.xml" loadImmediate="false" itemID="662f2a77-00000012" lastModified="1714367025"/>
           <Include href="5武器特效和子弹/高爆子弹/爆炸/Symbol 1236.xml" loadImmediate="false" itemID="662f2a77-00000013" lastModified="1714367025"/>
-          <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发.xml" itemID="6971c15c-000008f1" lastModified="1777103182"/>
+          <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发.xml" itemID="6971c15c-000008f1" lastModified="1777252481"/>
           <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="6971c148-000008ef" lastModified="1769064265"/>
-          <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发引信.xml" itemID="69ec75d6-00000d77" lastModified="1777104342"/>
           <Include href="6消耗品/罐头/白米饭罐头.xml" loadImmediate="false" itemID="66a92613-0000001b" lastModified="1722405828"/>
           <Include href="6消耗品/罐头/番茄炒鸡蛋罐头.xml" loadImmediate="false" itemID="66a92607-0000001a" lastModified="1722361351"/>
           <Include href="6消耗品/罐头/图标-白米饭罐头.xml" itemID="66a9d3dc-000002cd" lastModified="1763134765"/>
@@ -1241,25 +1239,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="1886764" publishTime="1777104073"/>
-          <PublishItem publishSize="1886050" publishTime="1777103602"/>
-          <PublishItem publishSize="1886050" publishTime="1777103445"/>
-          <PublishItem publishSize="1886173" publishTime="1776935565"/>
-          <PublishItem publishSize="1886170" publishTime="1776935261"/>
-          <PublishItem publishSize="1886173" publishTime="1776935087"/>
-          <PublishItem publishSize="1886173" publishTime="1776934986"/>
-          <PublishItem publishSize="1886170" publishTime="1776934965"/>
-          <PublishItem publishSize="1886170" publishTime="1776934560"/>
-          <PublishItem publishSize="1886156" publishTime="1776934470"/>
-          <PublishItem publishSize="1886378" publishTime="1776934228"/>
-          <PublishItem publishSize="1885890" publishTime="1776919775"/>
-          <PublishItem publishSize="1885907" publishTime="1776919746"/>
-          <PublishItem publishSize="1885293" publishTime="1776919617"/>
-          <PublishItem publishSize="1885311" publishTime="1776919573"/>
-          <PublishItem publishSize="1885876" publishTime="1776919429"/>
-          <PublishItem publishSize="1885898" publishTime="1776919411"/>
-          <PublishItem publishSize="1885870" publishTime="1776919262"/>
-          <PublishItem publishSize="1885893" publishTime="1776919208"/>
-          <PublishItem publishSize="1885888" publishTime="1776919187"/>
+          <PublishItem publishSize="1886929" publishTime="1777252273"/>
+          <PublishItem publishSize="1887029" publishTime="1777252037"/>
+          <PublishItem publishSize="1886807" publishTime="1777251205"/>
+          <PublishItem publishSize="1886927" publishTime="1777218053"/>
+          <PublishItem publishSize="1886790" publishTime="1777217973"/>
+          <PublishItem publishSize="1886888" publishTime="1777217815"/>
+          <PublishItem publishSize="1886960" publishTime="1777217741"/>
+          <PublishItem publishSize="1886944" publishTime="1777217676"/>
+          <PublishItem publishSize="1887033" publishTime="1777217190"/>
+          <PublishItem publishSize="1887191" publishTime="1777216906"/>
+          <PublishItem publishSize="1886322" publishTime="1777216865"/>
+          <PublishItem publishSize="1886987" publishTime="1777216776"/>
+          <PublishItem publishSize="1886326" publishTime="1777216705"/>
+          <PublishItem publishSize="1886964" publishTime="1777216220"/>
+          <PublishItem publishSize="1886999" publishTime="1777216035"/>
+          <PublishItem publishSize="1886980" publishTime="1777215950"/>
+          <PublishItem publishSize="1886882" publishTime="1777215628"/>
+          <PublishItem publishSize="1886779" publishTime="1777215569"/>
+          <PublishItem publishSize="1887986" publishTime="1777215341"/>
+          <PublishItem publishSize="1886884" publishTime="1777215092"/>
      </publishHistory>
 </DOMDocument>

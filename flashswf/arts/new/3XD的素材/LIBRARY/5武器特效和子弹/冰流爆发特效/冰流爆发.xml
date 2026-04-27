@@ -1,8 +1,36 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="5武器特效和子弹/冰流爆发特效/冰流爆发" itemID="69721fc4-000001dc" linkageExportForAS="true" linkageIdentifier="冰流爆发" lastModified="1776916666" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="5武器特效和子弹/冰流爆发特效/冰流爆发" itemID="69721fc4-000001dc" linkageExportForAS="true" linkageIdentifier="冰流爆发" lastModified="1777252517" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="冰流爆发">
       <layers>
-        <DOMLayer name="判定" color="#33FFFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="Script Layer" color="#CA8E4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.伤害类型 = "魔法";
+this.魔法伤害属性 = "冷";
+this.水平击退速度 = 15;
+this.垂直击退速度 = 3;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="判定" color="#33FFFF" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
