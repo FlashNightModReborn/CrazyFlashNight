@@ -25,7 +25,7 @@ C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView
 
 Launcher 现在显式声明并初始化 **PerMonitorV2 / PerMonitor DPI-aware**。运行态 WebView2 overlay 的物理视觉尺寸仍跟随 Flash 视口高度，但写入 `WebView2.ZoomFactor` 前会按当前 monitor DPI 归一化，避免 125% / 150% 系统缩放把右侧 HUD 与顶部资源条二次放大；输入命中则由 Web 端 `viewportMetrics`（CSS viewport / DPR / visualViewport）和 C# `OverlayCoordinateContext` 共同换算，不再把 `WebView2.ZoomFactor` 直接当作鼠标坐标比例。
 
-运行态鼠标手型视觉只由 C# `CursorOverlayForm` 原生 layered window 接管，避免 WebView2 特效或 JS 队列影响 cursor 延迟。AS2 侧保留 `_root.鼠标` 兼容代理，只把 `gotoAndStop` 状态通过 `cursor_control` task 低频推送到 Launcher；`WebOverlayForm` 负责状态调度、低级鼠标 hook 与坐标泵。Web DOM 交互通过 `cursorFeedback` 只回传 hover/press 状态变化，不回传坐标，也不再提供 Web 视觉 fallback；native cursor 不可用时恢复系统鼠标并写入诊断日志。native cursor 贴图按当前 monitor DPI 缩放并同步缩放热点。物品拖拽图标第一阶段仍留在 AS2 空容器内，仅拖拽期间同步位置，不进入 Flash 每帧 UI 状态管线。
+运行态鼠标手型视觉只由 C# `CursorOverlayForm` 原生 layered window 接管，避免 WebView2 特效或 JS 队列影响 cursor 延迟。AS2 侧保留 `_root.鼠标` 兼容代理，只把 `gotoAndStop` 状态通过 `cursor_control` task 低频推送到 Launcher；`WebOverlayForm` 负责状态调度、低级鼠标 hook 与坐标泵。Web DOM 交互通过 `cursorFeedback` 只回传 hover/press 状态变化，不回传坐标，也不再提供 Web 视觉 fallback；native cursor 不可用时恢复系统鼠标并写入诊断日志。native cursor 贴图采用 `64x64` 源画布、固定热点 `(16,16)` 的资源契约，运行时只按当前 monitor DPI 整体缩放画布与热点，不再为单张贴图维护偏移。物品拖拽图标第一阶段仍留在 AS2 空容器内，仅拖拽期间同步位置，不进入 Flash 每帧 UI 状态管线。
 
 | Windows 兼容性设置 | 支持口径 |
 |------------------|----------|
@@ -459,7 +459,7 @@ powershell -File build.ps1
 | 3.5  | 硬断言 `sol_parser.dll` 已落盘到项目根（防止"编过但运行时 DllNotFoundException"） |
 | 4    | 复制 V8 原生 DLL（ClearScriptV8.win-x64.dll）到项目根 |
 | 5    | 复制 WebView2 原生 loader（WebView2Loader.dll）到项目根 |
-| 6    | fail-fast 校验 `launcher/web` 运行时必需集：`bootstrap.html` / `bootstrap-main.js` / `overlay.html` / `config/version.js` / `assets/bg/manifest.json` / `assets/intro.mp4` / `help/*.md` / `icons/manifest.json` / `data/lockbox-variants.json` / 关键 `modules/*` 与 minigame 入口文件；缺失直接 exit 1 |
+| 6    | fail-fast 校验 `launcher/web` 运行时必需集：`bootstrap.html` / `bootstrap-main.js` / `overlay.html` / `config/version.js` / `assets/bg/manifest.json` / `assets/cursor/native/*` / `assets/intro.mp4` / `help/*.md` / `icons/manifest.json` / `data/lockbox-variants.json` / 关键 `modules/*` 与 minigame 入口文件；随后运行 `node tools/audit-native-cursor-assets.js` 校验 native cursor `64x64` 画布与 `(16,16)` 热点契约，缺失或不合规直接 exit 1 |
 
 > build.ps1 **不跑** `launcher/tests/`；测试走独立 `launcher/tests/run_tests.ps1`，见[测试基建](#测试基建)节。
 

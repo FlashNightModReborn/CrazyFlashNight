@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "canvas": {
+    "width": 64,
+    "height": 64
+  },
+  "hotspot": {
+    "x": 16,
+    "y": 16
+  },
+  "states": [
+    "normal",
+    "click",
+    "hoverGrab",
+    "grab",
+    "attack",
+    "openDoor"
+  ]
+}

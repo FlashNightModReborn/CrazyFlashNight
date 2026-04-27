@@ -12,12 +12,13 @@ namespace CF7Launcher.Guardian
     /// </summary>
     public class CursorOverlayForm : OverlayBase
     {
-        private const int CursorSize = 40;
+        // Matches launcher/web/assets/cursor/native/manifest.json.
+        private const int CursorSize = 64;
         private const double CursorScaleBoost = 1.20;
         private const double MinCursorScale = 1.0;
         private const double MaxCursorScale = 2.5;
-        private const int HotspotX = 4;
-        private const int HotspotY = 3;
+        private const int HotspotX = 16;
+        private const int HotspotY = 16;
 
         private readonly string _assetDir;
         private readonly Dictionary<string, Bitmap> _assetFrames = new Dictionary<string, Bitmap>();
