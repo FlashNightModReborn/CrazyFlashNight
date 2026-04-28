@@ -78,12 +78,22 @@ namespace CF7Launcher.Guardian
         private const int AutoHideDelayMs = 500;
         private const int ExpandAnimMs = 150;
         private const int CollapseAnimMs = 200;
+        private const int ExpandClickCooldownMs = 600;
         private const int StableRefreshMs = 250;
 
         // FPS 曲线
         private const int SparklinePoints = 30;
         private const int SparklineW = 70;
         private const int SparklineH = 16;
+        private const int ExpandedChartW = 400;
+        private const int ExpandedChartCanvasH = 120;
+        private const int ExpandedChartPad = 6;
+        private const int ExpandedChartHintGap = 3;
+        private const int ExpandedChartHintH = 9;
+        private const int ExpandedChartMaxHistory = 300;
+        private const int ExpandedChartDangerFps = 18;
+        private const int ExpandedChartTargetFps = 26;
+        private const int ExpandedChartMinDiff = 5;
 
         // FPS 颜色阈值
         private const float FpsGreenThreshold = 25f;
@@ -144,6 +154,7 @@ namespace CF7Launcher.Guardian
         private bool _trackingMouse;
         private float _expandProgress; // 0.0 = collapsed, 1.0 = expanded
         private int _autoHideCountdown;
+        private int _expandClickCooldown;
         private int _hoverButtonIndex; // -1 = none
         private bool _gameReady;
         private int _questProgress;
@@ -178,6 +189,10 @@ namespace CF7Launcher.Guardian
         private Rectangle[] _buttonRects; // 在 PaintLayered 时计算
         private NotchButtonDef[] _buttonDefs;
         private bool _otherMenuOpen;
+        private Rectangle _sparklineRect;
+        private Rectangle _expandButtonRect;
+        private Rectangle _expandedChartRect;
+        private bool _chartVisible;
 
         private readonly CurrencySlot _gold;
         private readonly CurrencySlot _kp;
@@ -228,10 +243,15 @@ namespace CF7Launcher.Guardian
             _state = NotchState.Collapsed;
             _expandProgress = 0f;
             _autoHideCountdown = 0;
+            _expandClickCooldown = 0;
             _hoverButtonIndex = -1;
             _buttonRects = new Rectangle[0];
             _buttonDefs = new NotchButtonDef[0];
             _otherMenuOpen = false;
+            _sparklineRect = Rectangle.Empty;
+            _expandButtonRect = Rectangle.Empty;
+            _expandedChartRect = Rectangle.Empty;
+            _chartVisible = false;
             _currentExpandedW = 800;
             _infoRows = new List<NotchInfoRow>();
             _gameQueue = new List<GameNoticeQueueItem>();
@@ -309,6 +329,10 @@ namespace CF7Launcher.Guardian
                             if (!ready)
                             {
                                 _otherMenuOpen = false;
+                                _chartVisible = false;
+                                _sparklineRect = Rectangle.Empty;
+                                _expandButtonRect = Rectangle.Empty;
+                                _expandedChartRect = Rectangle.Empty;
                                 _hoverButtonIndex = -1;
                             }
                             repaint = true;
@@ -344,6 +368,10 @@ namespace CF7Launcher.Guardian
                 return;
             }
             _ready = false;
+            _chartVisible = false;
+            _sparklineRect = Rectangle.Empty;
+            _expandButtonRect = Rectangle.Empty;
+            _expandedChartRect = Rectangle.Empty;
             _timer.Stop();
             DismissOverlay();
         }
@@ -580,7 +608,8 @@ namespace CF7Launcher.Guardian
                 }
 
                 // 展开触发
-                if (_state == NotchState.Collapsed || _state == NotchState.Collapsing)
+                bool canHoverExpand = _state == NotchState.Collapsed || _state == NotchState.Collapsing;
+                if (ShouldStartHoverExpand(canHoverExpand, _expandClickCooldown))
                 {
                     _state = NotchState.Expanding;
                 }
@@ -645,6 +674,26 @@ namespace CF7Launcher.Guardian
 
         private void HandleClick(int localX, int localY)
         {
+            if (_chartVisible && _expandedChartRect.Contains(localX, localY))
+            {
+                _chartVisible = false;
+                _expandedChartRect = Rectangle.Empty;
+                PaintLayered();
+                return;
+            }
+
+            if (_sparklineRect.Contains(localX, localY))
+            {
+                ToggleExpandedChart();
+                return;
+            }
+
+            if (_expandButtonRect.Contains(localX, localY))
+            {
+                ToggleNotchFromExpandButton();
+                return;
+            }
+
             for (int i = 0; i < _buttonRects.Length; i++)
             {
                 if (_buttonRects[i].Contains(localX, localY))
@@ -653,6 +702,48 @@ namespace CF7Launcher.Guardian
                     break;
                 }
             }
+        }
+
+        private void ToggleExpandedChart()
+        {
+            if (!_gameReady) return;
+            _chartVisible = !_chartVisible;
+            if (_chartVisible)
+            {
+                _state = NotchState.Expanded;
+                _expandProgress = 1f;
+                _autoHideCountdown = 0;
+            }
+            else
+            {
+                _expandedChartRect = Rectangle.Empty;
+            }
+            PaintLayered();
+        }
+
+        private void ToggleNotchFromExpandButton()
+        {
+            if (!_gameReady) return;
+
+            bool expandedLike = _state == NotchState.Expanded
+                || _state == NotchState.Expanding
+                || _expandProgress > 0.01f;
+            if (expandedLike)
+            {
+                _chartVisible = false;
+                _expandedChartRect = Rectangle.Empty;
+                _otherMenuOpen = false;
+                _autoHideCountdown = 0;
+                _expandClickCooldown = ExpandClickCooldownMs;
+                _state = _expandProgress <= 0f ? NotchState.Collapsed : NotchState.Collapsing;
+            }
+            else
+            {
+                _expandClickCooldown = 0;
+                _autoHideCountdown = 0;
+                _state = NotchState.Expanding;
+            }
+            PaintLayered();
         }
 
         private void ExecuteButton(int index)
@@ -717,6 +808,12 @@ namespace CF7Launcher.Guardian
             if (!_ready || !_ownerVisible) return;
             bool needsPaint = false;
 
+            if (_expandClickCooldown > 0)
+            {
+                _expandClickCooldown -= TickMs;
+                if (_expandClickCooldown < 0) _expandClickCooldown = 0;
+            }
+
             switch (_state)
             {
                 case NotchState.Expanding:
@@ -737,6 +834,8 @@ namespace CF7Launcher.Guardian
                         {
                             _autoHideCountdown = 0;
                             _state = NotchState.Collapsing;
+                            _chartVisible = false;
+                            _expandedChartRect = Rectangle.Empty;
                             needsPaint = true;
                         }
                     }
@@ -841,6 +940,8 @@ namespace CF7Launcher.Guardian
                 h += rowCount * (Px(RowGap, scale) + Px(RowH, scale));
             if (_otherMenuOpen)
                 h += OtherButtons.Length * (Px(ToolbarButtonH, scale) + Px(1, scale)) + Px(8, scale);
+            if (_chartVisible)
+                h += ExpandedChartHeight(scale);
         }
 
         private void PaintLayered()
@@ -868,6 +969,9 @@ namespace CF7Launcher.Guardian
                     g.SmoothingMode = SmoothingMode.AntiAlias;
                     g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
                     g.Clear(Color.Transparent);
+                    _sparklineRect = Rectangle.Empty;
+                    _expandButtonRect = Rectangle.Empty;
+                    if (!_chartVisible) _expandedChartRect = Rectangle.Empty;
 
                     float t = _expandProgress;
                     float eased = t * (2f - t);
@@ -1005,6 +1109,17 @@ namespace CF7Launcher.Guardian
                             g.ResetClip();
                         }
                     }
+
+                    if (_chartVisible)
+                    {
+                        int chartH = ExpandedChartHeight(scale);
+                        Rectangle chartRect = new Rectangle(0, h - chartH, w, chartH);
+                        using (Font chartLabelFont = new Font("Consolas", Pxf(9f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
+                        using (Font chartHintFont = new Font("Consolas", Pxf(9f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
+                        {
+                            DrawExpandedChart(g, chartRect, scale, chartLabelFont, chartHintFont);
+                        }
+                    }
                 }
 
                 CommitBitmap(bmp, scrX, scrY, 255);
@@ -1051,6 +1166,8 @@ namespace CF7Launcher.Guardian
             int centerY = row1H / 2;
             if (!_gameReady)
             {
+                _sparklineRect = Rectangle.Empty;
+                _expandButtonRect = Rectangle.Empty;
                 int bx = x;
                 int gap = Px(Row1RightGap, scale);
                 for (int i = 0; i < Row1Buttons.Length; i++)
@@ -1107,6 +1224,7 @@ namespace CF7Launcher.Guardian
             int sparkW = Px(SparklineW, scale);
             int sparkH = Px(SparklineH, scale);
             int sparkY = (row1H - sparkH) / 2;
+            _sparklineRect = new Rectangle(x, sparkY, sparkW, sparkH);
             DrawLightBackground(g, x, sparkY, sparkW, sparkH);
             DrawSparkline(g, x, sparkY, sparkW, sparkH, fpsColor);
             x += sparkW + Px(CenterGap + 1, scale);
@@ -1130,6 +1248,7 @@ namespace CF7Launcher.Guardian
             using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
             {
                 Rectangle arrowRect = new Rectangle(x, 0, Px(ArrowW, scale), row1H);
+                _expandButtonRect = arrowRect;
                 g.DrawString("▼", textFont, arrowBrush, arrowRect, sf);
             }
             x += Px(ArrowW, scale);
@@ -1300,6 +1419,21 @@ namespace CF7Launcher.Guardian
             return Pxf(isGame ? 13f : 12f, scale);
         }
 
+        private static bool ShouldStartHoverExpand(bool canHoverExpand, int expandCooldownMs)
+        {
+            return canHoverExpand && expandCooldownMs <= 0;
+        }
+
+        internal static bool ShouldStartHoverExpandForTest(bool canHoverExpand, int expandCooldownMs)
+        {
+            return ShouldStartHoverExpand(canHoverExpand, expandCooldownMs);
+        }
+
+        internal static int ExpandClickCooldownMsForTest()
+        {
+            return ExpandClickCooldownMs;
+        }
+
         private int ComputeCollapsedWidth(float scale)
         {
             int center = Px(CenterFpsMinW + CenterGap + SparklineW + CenterGap + 1 + 16 + CenterGap + ArrowW, scale);
@@ -1326,9 +1460,16 @@ namespace CF7Launcher.Guardian
                 ? Px(ToolbarPadX * 2, scale) + MeasureButtonsApprox(ToolbarButtons, scale) + Px(ToolbarButtonGap * Math.Max(0, CountVisibleButtons(ToolbarButtons) - 1), scale)
                 : 0;
             int desired = Math.Max(collapsed + row1Right, toolbar);
+            if (_chartVisible)
+                desired = Math.Max(desired, Px(ExpandedChartW, scale));
             desired = Math.Max(desired, collapsed);
             int max = Math.Min(viewportW, Px(600, scale));
             return Math.Min(Math.Max(desired, collapsed), Math.Max(collapsed, max));
+        }
+
+        private static int ExpandedChartHeight(float scale)
+        {
+            return Px(ExpandedChartPad * 2 + ExpandedChartCanvasH + ExpandedChartHintGap + ExpandedChartHintH, scale);
         }
 
         private int ComputeCurrencyWidth(int value, float scale)
@@ -1548,6 +1689,298 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        internal struct FpsChartScale
+        {
+            internal float MinV;
+            internal float MaxV;
+            internal float Range;
+        }
+
+        internal struct FpsChartStats
+        {
+            internal float Lo;
+            internal float Hi;
+            internal float Avg;
+            internal float P1Low;
+            internal float P5Low;
+        }
+
+        private void DrawExpandedChart(Graphics g, Rectangle panel, float scale, Font labelFont, Font hintFont)
+        {
+            _expandedChartRect = panel;
+
+            using (SolidBrush bg = new SolidBrush(Color.FromArgb(224, 24, 24, 26)))
+            using (Pen border = new Pen(Color.FromArgb(31, 255, 255, 255)))
+            {
+                DrawBottomRoundedRectFill(g, panel.X, panel.Y, panel.Width, panel.Height, Px(8, scale), bg);
+                DrawBottomRoundedRectBorder(g, panel.X, panel.Y, panel.Width, panel.Height, Px(8, scale), border);
+            }
+
+            int pad = Px(ExpandedChartPad, scale);
+            int hintGap = Px(ExpandedChartHintGap, scale);
+            int hintH = Px(ExpandedChartHintH, scale);
+            Rectangle canvas = new Rectangle(
+                panel.X + pad,
+                panel.Y + pad,
+                Math.Max(1, panel.Width - pad * 2),
+                Math.Max(1, panel.Height - pad * 2 - hintGap - hintH));
+
+            using (SolidBrush canvasBg = new SolidBrush(Color.FromArgb(76, 0, 0, 0)))
+            {
+                DrawRoundedRectFill(g, canvas.X, canvas.Y, canvas.Width, canvas.Height, Px(4, scale), canvasBg);
+            }
+
+            DrawLightBackground(g, canvas.X, canvas.Y, canvas.Width, canvas.Height);
+
+            float[] history = GetExpandedHistory();
+            if (history.Length < 2)
+            {
+                using (SolidBrush waitBrush = new SolidBrush(Color.FromArgb(90, 255, 255, 255)))
+                using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+                {
+                    g.DrawString("等待数据...", labelFont, waitBrush, canvas, sf);
+                }
+            }
+            else
+            {
+                FpsChartScale chartScale = ComputeFpsChartScale(history);
+                FpsChartStats stats = ComputeFpsStats(history);
+                PointF[] points = BuildChartPoints(history, canvas, chartScale);
+
+                DrawExpandedZones(g, canvas, chartScale);
+                DrawExpandedArea(g, points, canvas);
+                DrawExpandedSegments(g, points, history, scale);
+                DrawEndGlow(g, points[points.Length - 1], history[history.Length - 1], scale);
+
+                DrawAnnotation(g, canvas, chartScale, stats.Avg, "avg " + stats.Avg.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture),
+                    Color.FromArgb(150, 180, 180, 180), new float[] { 4f, 4f }, labelFont);
+                DrawAnnotation(g, canvas, chartScale, stats.P5Low, "5% low " + stats.P5Low.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture),
+                    Color.FromArgb(140, 255, 180, 0), new float[] { 3f, 3f }, labelFont);
+                DrawAnnotation(g, canvas, chartScale, stats.P1Low, "1% low " + stats.P1Low.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture),
+                    Color.FromArgb(140, 255, 80, 80), new float[] { 2f, 2f }, labelFont);
+
+                string statText = history.Length.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                    + " samples | lo:" + stats.Lo.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)
+                    + " hi:" + stats.Hi.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+                Rectangle statRect = new Rectangle(canvas.X + Px(4, scale), canvas.Bottom - Px(14, scale), canvas.Width - Px(8, scale), Px(12, scale));
+                using (SolidBrush statBrush = new SolidBrush(Color.FromArgb(128, 255, 255, 255)))
+                using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Far })
+                {
+                    g.DrawString(statText, labelFont, statBrush, statRect, sf);
+                }
+            }
+
+            Rectangle hintRect = new Rectangle(panel.X, canvas.Bottom + hintGap, panel.Width, hintH);
+            using (SolidBrush hintBrush = new SolidBrush(Color.FromArgb(90, 255, 255, 255)))
+            using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+            {
+                g.DrawString("点击关闭", hintFont, hintBrush, hintRect, sf);
+            }
+        }
+
+        private float[] GetExpandedHistory()
+        {
+            if (_fpsBuffer == null || !_fpsBuffer.HasData) return new float[0];
+            int count = _fpsBuffer.Count;
+            int points = Math.Min(ExpandedChartMaxHistory, count);
+            if (points <= 0) return new float[0];
+            int start = count - points;
+            float[] history = new float[points];
+            for (int i = 0; i < points; i++)
+                history[i] = _fpsBuffer.GetAt(start + i);
+            return history;
+        }
+
+        private static PointF[] BuildChartPoints(float[] history, Rectangle canvas, FpsChartScale chartScale)
+        {
+            PointF[] points = new PointF[history.Length];
+            float stepX = history.Length > 1 ? (float)canvas.Width / (history.Length - 1) : 0f;
+            for (int i = 0; i < history.Length; i++)
+            {
+                points[i] = new PointF(canvas.X + i * stepX, FpsChartY(history[i], canvas, chartScale));
+            }
+            return points;
+        }
+
+        private static FpsChartScale ComputeFpsChartScale(float[] points)
+        {
+            FpsChartScale chartScale = new FpsChartScale();
+            if (points == null || points.Length == 0)
+            {
+                chartScale.MinV = 0f;
+                chartScale.MaxV = ExpandedChartMinDiff;
+                chartScale.Range = ExpandedChartMinDiff;
+                return chartScale;
+            }
+
+            float minV = points[0];
+            float maxV = points[0];
+            for (int i = 1; i < points.Length; i++)
+            {
+                if (points[i] < minV) minV = points[i];
+                if (points[i] > maxV) maxV = points[i];
+            }
+            if (maxV - minV < ExpandedChartMinDiff)
+            {
+                float delta = (ExpandedChartMinDiff - (maxV - minV)) / 2f;
+                minV -= delta;
+                maxV += delta;
+            }
+            float range = maxV - minV;
+            if (range < 1f) range = 1f;
+            chartScale.MinV = minV;
+            chartScale.MaxV = maxV;
+            chartScale.Range = range;
+            return chartScale;
+        }
+
+        private static FpsChartStats ComputeFpsStats(float[] points)
+        {
+            FpsChartStats stats = new FpsChartStats();
+            if (points == null || points.Length == 0) return stats;
+
+            float sum = 0f;
+            float lo = points[0];
+            float hi = points[0];
+            for (int i = 0; i < points.Length; i++)
+            {
+                float v = points[i];
+                sum += v;
+                if (v < lo) lo = v;
+                if (v > hi) hi = v;
+            }
+
+            float[] sorted = new float[points.Length];
+            Array.Copy(points, sorted, points.Length);
+            Array.Sort(sorted);
+            int p1Count = Math.Max(1, (int)Math.Floor(points.Length * 0.01f));
+            int p5Count = Math.Max(1, (int)Math.Floor(points.Length * 0.05f));
+            float p1Sum = 0f;
+            float p5Sum = 0f;
+            for (int i = 0; i < p5Count; i++)
+            {
+                p5Sum += sorted[i];
+                if (i < p1Count) p1Sum += sorted[i];
+            }
+
+            stats.Lo = lo;
+            stats.Hi = hi;
+            stats.Avg = sum / points.Length;
+            stats.P1Low = p1Sum / p1Count;
+            stats.P5Low = p5Sum / p5Count;
+            return stats;
+        }
+
+        private static float FpsChartY(float fps, Rectangle canvas, FpsChartScale chartScale)
+        {
+            return canvas.Bottom - ((fps - chartScale.MinV) / chartScale.Range) * canvas.Height;
+        }
+
+        private static void DrawExpandedZones(Graphics g, Rectangle canvas, FpsChartScale chartScale)
+        {
+            float dangerY = FpsChartY(ExpandedChartDangerFps, canvas, chartScale);
+            if (dangerY < canvas.Bottom)
+            {
+                int y = (int)Math.Max(canvas.Top, Math.Round(dangerY));
+                using (SolidBrush dangerFill = new SolidBrush(Color.FromArgb(26, 255, 50, 50)))
+                {
+                    g.FillRectangle(dangerFill, canvas.X, y, canvas.Width, canvas.Bottom - y);
+                }
+                DrawDashedHLine(g, canvas, dangerY, Color.FromArgb(64, 255, 80, 80), new float[] { 2f, 3f });
+            }
+
+            float targetY = FpsChartY(ExpandedChartTargetFps, canvas, chartScale);
+            if (targetY > canvas.Top && targetY < canvas.Bottom)
+                DrawDashedHLine(g, canvas, targetY, Color.FromArgb(46, 102, 255, 102), new float[] { 3f, 4f });
+        }
+
+        private static void DrawDashedHLine(Graphics g, Rectangle canvas, float y, Color color, float[] dash)
+        {
+            using (Pen pen = new Pen(color, 1f))
+            {
+                pen.DashPattern = dash;
+                g.DrawLine(pen, canvas.X, y, canvas.Right, y);
+            }
+        }
+
+        private static void DrawExpandedArea(Graphics g, PointF[] points, Rectangle canvas)
+        {
+            if (points == null || points.Length < 2) return;
+            using (GraphicsPath path = new GraphicsPath())
+            {
+                path.AddLines(points);
+                path.AddLine(points[points.Length - 1].X, points[points.Length - 1].Y, points[points.Length - 1].X, canvas.Bottom);
+                path.AddLine(points[points.Length - 1].X, canvas.Bottom, points[0].X, canvas.Bottom);
+                path.CloseFigure();
+                using (LinearGradientBrush grad = new LinearGradientBrush(canvas,
+                    Color.FromArgb(60, 100, 255, 100),
+                    Color.FromArgb(8, 255, 50, 50),
+                    LinearGradientMode.Vertical))
+                {
+                    g.FillPath(grad, path);
+                }
+            }
+        }
+
+        private static void DrawExpandedSegments(Graphics g, PointF[] points, float[] history, float scale)
+        {
+            if (points == null || history == null || points.Length < 2) return;
+            for (int i = 1; i < points.Length; i++)
+            {
+                float fps = (history[i - 1] + history[i]) / 2f;
+                Color c = GetFpsColor(fps);
+                using (Pen pen = new Pen(Color.FromArgb(220, c.R, c.G, c.B), Pxf(1.5f, scale)))
+                {
+                    pen.StartCap = LineCap.Round;
+                    pen.EndCap = LineCap.Round;
+                    g.DrawLine(pen, points[i - 1], points[i]);
+                }
+            }
+        }
+
+        private static void DrawEndGlow(Graphics g, PointF point, float fps, float scale)
+        {
+            Color c = GetFpsColor(fps);
+            float r = Pxf(2.5f, scale);
+            using (SolidBrush glow = new SolidBrush(Color.FromArgb(120, c.R, c.G, c.B)))
+            {
+                g.FillEllipse(glow, point.X - r, point.Y - r, r * 2f, r * 2f);
+            }
+        }
+
+        private static void DrawAnnotation(Graphics g, Rectangle canvas, FpsChartScale chartScale, float fps,
+            string label, Color color, float[] dash, Font font)
+        {
+            float y = FpsChartY(fps, canvas, chartScale);
+            if (y < canvas.Top + 2 || y > canvas.Bottom - 2) return;
+            using (Pen pen = new Pen(color, 1f))
+            using (SolidBrush brush = new SolidBrush(color))
+            {
+                pen.DashPattern = dash;
+                g.DrawLine(pen, canvas.X, y, canvas.Right, y);
+                RectangleF labelRect = new RectangleF(canvas.X + 3f, y - font.GetHeight(g) - 2f, canvas.Width - 6f, font.GetHeight(g) + 2f);
+                using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Far })
+                {
+                    g.DrawString(label, font, brush, labelRect, sf);
+                }
+            }
+        }
+
+        internal static int ExpandedChartHeightForTest(float scale)
+        {
+            return ExpandedChartHeight(scale);
+        }
+
+        internal static FpsChartScale ComputeFpsChartScaleForTest(float[] points)
+        {
+            return ComputeFpsChartScale(points);
+        }
+
+        internal static FpsChartStats ComputeFpsStatsForTest(float[] points)
+        {
+            return ComputeFpsStats(points);
+        }
+
         /// <summary>
         /// 矢量绘制小钟表。gameHour 0-24 映射到 12 小时表盘。
         /// 时针：gameHour 映射角度；分针：小数部分映射角度。
@@ -1657,6 +2090,51 @@ namespace CF7Launcher.Guardian
                 path.CloseFigure();
                 g.FillPath(brush, path);
             }
+        }
+
+        private static void DrawBottomRoundedRectFill(Graphics g, int x, int y, int w, int h, int r, Brush brush)
+        {
+            if (r <= 0)
+            {
+                g.FillRectangle(brush, x, y, w, h);
+                return;
+            }
+            using (GraphicsPath path = CreateBottomRoundedRectPath(x, y, w, h, r))
+            {
+                g.FillPath(brush, path);
+            }
+        }
+
+        private static void DrawBottomRoundedRectBorder(Graphics g, int x, int y, int w, int h, int r, Pen pen)
+        {
+            if (r <= 0)
+            {
+                g.DrawRectangle(pen, x, y, w - 1, h - 1);
+                return;
+            }
+            using (GraphicsPath path = CreateBottomRoundedRectPath(x, y, w - 1, h - 1, r))
+            {
+                g.DrawPath(pen, path);
+            }
+        }
+
+        private static GraphicsPath CreateBottomRoundedRectPath(int x, int y, int w, int h, int r)
+        {
+            int maxR = Math.Min(r, Math.Min(w, h) / 2);
+            int d = maxR * 2;
+            GraphicsPath path = new GraphicsPath();
+            if (maxR <= 0)
+            {
+                path.AddRectangle(new Rectangle(x, y, w, h));
+                return path;
+            }
+            path.AddLine(x, y, x + w, y);
+            path.AddLine(x + w, y, x + w, y + h - maxR);
+            path.AddArc(x + w - d, y + h - d, d, d, 0, 90);
+            path.AddArc(x, y + h - d, d, d, 90, 90);
+            path.AddLine(x, y + h - maxR, x, y);
+            path.CloseFigure();
+            return path;
         }
 
         #endregion
