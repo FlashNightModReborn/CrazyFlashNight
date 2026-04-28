@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑" itemID="690ce8f2-00000725" lastModified="1777339579" lastUniqueIdentifier="83">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑" itemID="690ce8f2-00000725" lastModified="1777353000" lastUniqueIdentifier="83">
   <timeline>
-    <DOMTimeline name="兵器跑" currentFrame="87" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;239&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器跑" currentFrame="73" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;239&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="动作跳转代码" color="#9933CC" autoNamed="false">
           <frames>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="21" keyMode="9728">
               <Actionscript>
@@ -1656,7 +1656,7 @@ else if(_parent.兵器动作类型=="疾影"){
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="111.15" centerPoint3DY="-200.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="111.15" centerPoint3DY="-200.25">
                   <matrix>
                     <Matrix a="-0.784881591796875" b="0.505035400390625" c="-0.505081176757813" d="-0.784805297851563" tx="221.9" ty="-31.1"/>
                   </matrix>
@@ -1874,7 +1874,7 @@ else if(_parent.兵器动作类型=="疾影"){
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="110.05" centerPoint3DY="-188.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="110.05" centerPoint3DY="-188.9">
                   <matrix>
                     <Matrix a="-0.764175415039063" b="0.53594970703125" c="-0.5360107421875" d="-0.76409912109375" tx="227.45" ty="-24.45"/>
                   </matrix>
@@ -3400,7 +3400,7 @@ else if(_parent.兵器动作类型=="疾影"){
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="105.1" centerPoint3DY="-215.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="105.1" centerPoint3DY="-215.5">
                   <matrix>
                     <Matrix a="-0.585311889648438" b="0.727828979492188" c="-0.7279052734375" d="-0.58526611328125" tx="263.85" ty="-90"/>
                   </matrix>
@@ -4272,7 +4272,7 @@ else if(_parent.兵器动作类型=="疾影"){
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="107.1" centerPoint3DY="-156.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="107.1" centerPoint3DY="-156.8">
                   <matrix>
                     <Matrix a="-0.68450927734375" b="0.635086059570313" c="-0.635147094726563" d="-0.6844482421875" tx="246" ty="-9.85"/>
                   </matrix>
@@ -4490,7 +4490,7 @@ else if(_parent.兵器动作类型=="疾影"){
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="107.9" centerPoint3DY="-149.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="107.9" centerPoint3DY="-149.6">
                   <matrix>
                     <Matrix a="-0.708663940429688" b="0.607955932617188" c="-0.608016967773438" d="-0.708602905273438" tx="240.9" ty="2.75"/>
                   </matrix>
@@ -13787,7 +13787,7 @@ else if(_parent.兵器动作类型=="疾影"){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="Sound Layer 0" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -13810,13 +13810,7 @@ else if(_parent.兵器动作类型=="疾影"){
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="40" duration="4" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_parent.跑步音效(1);]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="44" duration="7" keyMode="9728">
+            <DOMFrame index="40" duration="11" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.跑步音效(1);]]></script>
               </Actionscript>
@@ -13828,7 +13822,19 @@ else if(_parent.兵器动作类型=="疾影"){
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="62" duration="4" keyMode="9728">
+            <DOMFrame index="62" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.跑步音效(1);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="73" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.跑步音效(0);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="83" duration="5" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.跑步音效(1);]]></script>
               </Actionscript>
