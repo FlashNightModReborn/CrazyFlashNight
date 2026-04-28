@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/刀剑/图标-黑金古刀" itemID="69f08bd9-000004b2" linkageExportForAS="true" linkageIdentifier="图标-黑金古刀" lastModified="1777372197" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="图标-黑金古刀" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#B08A75">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#03F9C1" locked="true" visible="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/刀剑/阴影所用" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#8AC92F" parentLayerIndex="1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/刀剑/刀-黑金古刀" centerPoint3DX="0.35" centerPoint3DY="60.3">
+                  <matrix>
+                    <Matrix a="0.337326049804688" d="0.337326049804688" tx="-0.15" ty="-5.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.05" y="196.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/刀剑/刀-黑金古刀" centerPoint3DX="-0.85" centerPoint3DY="-0.75">
+                  <matrix>
+                    <Matrix a="0" b="-0.337326049804688" c="0.337326049804688" d="0" tx="-66.9" ty="-0.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.05" y="196.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#5DD9C8">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防具/末日铁拳/末日铁拳拳套/素材/图标阴影" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
