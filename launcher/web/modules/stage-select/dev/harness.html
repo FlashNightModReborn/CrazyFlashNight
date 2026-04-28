@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Stage Select Panel Harness</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../../css/panels.css">
+<link rel="stylesheet" href="../../minigames/shared/dev/harness-base.css">
+<style>
+    #viewport-shell {
+        width: 1366px;
+        height: 768px;
+        margin: 52px auto 16px;
+        border: 1px solid #334155;
+        background: #020617;
+        position: relative;
+    }
+    #panel-container {
+        display: block;
+        position: absolute;
+        inset: 0;
+    }
+    #panel-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.58);
+    }
+    #panel-content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    body.stage-select-qa {
+        overflow: hidden;
+    }
+    body.stage-select-qa #harness-toolbar,
+    body.stage-select-qa #harness-status {
+        display: none;
+    }
+    body.stage-select-qa #viewport-shell {
+        margin: 0;
+        border: 0;
+    }
+    body.stage-select-qa #qa-panel,
+    body.stage-select-qa #debug-log {
+        pointer-events: none;
+    }
+</style>
+</head>
+<body>
+<div id="harness-toolbar">
+    <div class="harness-group">
+        <label for="stage-frame-select">frame</label>
+        <select id="stage-frame-select"></select>
+    </div>
+    <div class="harness-group">
+        <label for="stage-fixture-select">fixture</label>
+        <select id="stage-fixture-select">
+            <option value="mixed">mixed</option>
+            <option value="allUnlocked">allUnlocked</option>
+            <option value="challenge">challenge</option>
+        </select>
+    </div>
+    <div class="harness-group">
+        <label for="stage-viewport-select">viewport</label>
+        <select id="stage-viewport-select">
+            <option value="1024x576">1024x576</option>
+            <option value="1366x768" selected>1366x768</option>
+            <option value="1920x1080">1920x1080</option>
+        </select>
+    </div>
+    <div class="harness-group">
+        <button type="button" id="stage-open-btn">open</button>
+        <button type="button" id="stage-close-btn">force close</button>
+    </div>
+</div>
+
+<div id="harness-status">Stage select harness ready.</div>
+
+<div id="viewport-shell">
+    <div id="panel-container" data-panel="stage-select">
+        <div id="panel-backdrop"></div>
+        <div id="panel-content"></div>
+    </div>
+</div>
+
+<script>
+(function() {
+    var listeners = [];
+    window.chrome = window.chrome || {};
+    window.chrome.webview = {
+        addEventListener: function(type, handler) {
+            if (type === 'message') listeners.push(handler);
+        },
+        postMessage: function(message) {
+            if (window.StageSelectHarnessHost) window.StageSelectHarnessHost.sentMessages.push(message);
+        },
+        __dispatch: function(data) {
+            var event = { data: data };
+            listeners.forEach(function(listener) { listener(event); });
+        }
+    };
+})();
+</script>
+<script src="../../bridge.js"></script>
+<script src="../../panels.js"></script>
+<script src="../../minigames/shared/dev/harness-base.js"></script>
+<script src="../../stage-select-data.js"></script>
+<script src="../../stage-select-panel.js"></script>
+<script src="./qa-suite.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    var query = MinigameHarness.parseQuery(location.search);
+    var shell = document.getElementById('viewport-shell');
+    var statusEl = document.getElementById('harness-status');
+    var frameSelect = document.getElementById('stage-frame-select');
+    var fixtureSelect = document.getElementById('stage-fixture-select');
+    var viewportSelect = document.getElementById('stage-viewport-select');
+    var manifest = StageSelectData.getManifest();
+
+    if (query.qa === '1' || query.case) {
+        document.body.classList.add('stage-select-qa');
+    }
+
+    manifest.frameOrder.forEach(function(label) {
+        var option = document.createElement('option');
+        option.value = label;
+        option.textContent = label;
+        frameSelect.appendChild(option);
+    });
+
+    var host = window.StageSelectHarnessHost = {
+        sentMessages: [],
+        setViewport: function(value) {
+            var parts = String(value || '1366x768').split('x');
+            var width = Math.max(800, parseInt(parts[0] || '1366', 10) || 1366);
+            var height = Math.max(560, parseInt(parts[1] || '768', 10) || 768);
+            shell.style.width = width + 'px';
+            shell.style.height = height + 'px';
+            viewportSelect.value = width + 'x' + height;
+        },
+        open: function() {
+            Panels.open('stage-select', {
+                mode: 'dev',
+                fixture: fixtureSelect.value,
+                frameLabel: frameSelect.value,
+                debug: true
+            });
+            statusEl.textContent = 'Opened ' + frameSelect.value + ' / ' + fixtureSelect.value;
+        },
+        close: function() {
+            Panels.close();
+            statusEl.textContent = 'Closed.';
+        }
+    };
+
+    document.getElementById('stage-open-btn').addEventListener('click', function() { host.open(); });
+    document.getElementById('stage-close-btn').addEventListener('click', function() { host.close(); });
+    frameSelect.addEventListener('change', function() { host.open(); });
+    fixtureSelect.addEventListener('change', function() { host.open(); });
+    viewportSelect.addEventListener('change', function() {
+        host.setViewport(viewportSelect.value);
+        host.open();
+    });
+
+    var api = MinigameHarness.create({
+        panelId: 'stage-select',
+        title: 'Stage Select QA',
+        openPanel: function() {
+            host.setViewport(query.viewport || '1366x768');
+            frameSelect.value = query.frame || manifest.frameOrder[0];
+            fixtureSelect.value = query.fixture || 'mixed';
+            host.open();
+        },
+        runSuite: function(api, onlyCase) {
+            return StageSelectHarnessQA.runSuite(api, host, onlyCase);
+        },
+        collectDump: function() {
+            return StageSelectPanel._debugGetState();
+        }
+    });
+    api.boot();
+})();
+</script>
+</body>
+</html>

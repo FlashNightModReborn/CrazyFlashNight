@@ -143,6 +143,9 @@ namespace CF7Launcher.Guardian
                 case "GOBANG_TEST":
                     OpenPanel("gobang", "{\"mode\":\"dev\",\"source\":\"runtime\",\"ruleset\":\"casual\",\"difficulty\":\"normal\",\"playerRole\":1,\"aiEnabled\":true,\"debug\":true}");
                     break;
+                case "STAGE_SELECT_TEST":
+                    OpenPanel("stage-select", "{\"mode\":\"dev\",\"fixture\":\"mixed\",\"frameLabel\":\"基地门口\",\"debug\":true}");
+                    break;
                 case "EXIT_CONFIRM": ForceExit(); break;
                 default:
                     LogManager.Log("[Router] unknown key=" + key);

@@ -171,6 +171,7 @@ namespace CF7Launcher.Guardian
             new NotchButtonDef("高安箱测试", "LOCKBOX_TEST", Keys.None, false, false),
             new NotchButtonDef("锁芯校准测试", "PINALIGN_TEST", Keys.None, false, false),
             new NotchButtonDef("铁枪会入侵测试", "GOBANG_TEST", Keys.None, false, false),
+            new NotchButtonDef("选关测试", "STAGE_SELECT_TEST", Keys.None, false, false),
             new NotchButtonDef("烘焙图标", "BAKE", Keys.None, false, false),
             new NotchButtonDef("烘焙测试(10)", "BAKE10", Keys.None, false, false)
         };

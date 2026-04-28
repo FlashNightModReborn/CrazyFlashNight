@@ -106,10 +106,12 @@ tools/combat-movement-sim/results/
 tools/combat-movement-sim/__pycache__/
 
 # 调试探针/临时 DOM 快照等 ad-hoc 产物, 禁止入库
+/tmp/
 /tmp-*
 /tmp-*.html
 /tmp-*.json
 /tmp-*.txt
+/tmp_ffdec_*/
 
 # Native cursor image-generation review sheets (generated, not source)
 launcher/web/assets/cursor/native/review/

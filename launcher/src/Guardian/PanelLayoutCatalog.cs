@@ -40,6 +40,7 @@ namespace CF7Launcher.Guardian
                 case "kshop":    return Centered(anchorScreenRect, 1024, 720);
                 case "help":     return Centered(anchorScreenRect, 720, 540);
                 case "map":      return anchorScreenRect;
+                case "stage-select": return anchorScreenRect;
                 case "lockbox":  return Centered(anchorScreenRect, 720, 600);
                 case "pinalign": return Centered(anchorScreenRect, 600, 480);
                 case "gobang":   return Centered(anchorScreenRect, 720, 720);
