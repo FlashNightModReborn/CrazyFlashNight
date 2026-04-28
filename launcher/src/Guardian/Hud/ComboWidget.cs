@@ -146,7 +146,10 @@ namespace CF7Launcher.Guardian.Hud
                     _mapper.CalcViewport(out vpX, out vpY, out vpW, out vpH);
 
                     if (_widthDirty) RecomputeMeasuredWidthBase();
-                    int wScaled = WidgetScaler.Px(Clamp(_measuredWidthBase, MIN_BAR_W_BASE, MAX_BAR_W_BASE), Scale);
+                    // Combo 帧流会随输入逐字变化；若按测量宽度调整 NativeHud 窗口，
+                    // 每帧 SetWindowPos/UpdateLayeredWindow 会让整层 HUD 闪烁。可见期间固定到
+                    // web 侧同等 max 宽度，只让内部内容变化。
+                    int wScaled = WidgetScaler.Px(MAX_BAR_W_BASE, Scale);
                     int hScaled = BarH;
                     int x = origin.X + (int)vpX + Math.Max(0, ((int)vpW - wScaled) / 2);
                     int y = origin.Y + (int)vpY

@@ -307,23 +307,30 @@ namespace CF7Launcher.Guardian
                 return;
             }
             Rectangle hudRect = padded.Value;
+            bool windowPlacementChanged = !_shown
+                || _hudOrigin.X != hudRect.X
+                || _hudOrigin.Y != hudRect.Y
+                || _hudSize.Width != hudRect.Width
+                || _hudSize.Height != hudRect.Height;
+
+            EnsureComposedBitmap(hudRect.Width, hudRect.Height);
+            IntPtr insertAfter = _zOrderInsertAfter == IntPtr.Zero ? HWND_TOP : _zOrderInsertAfter;
             _hudOrigin = new Point(hudRect.X, hudRect.Y);
             _hudSize = new Size(hudRect.Width, hudRect.Height);
 
-            EnsureComposedBitmap(hudRect.Width, hudRect.Height);
-            // z-order：插在 _zOrderInsertAfter（HitNumber.Handle）之后，让 NativeHud 沉到
-            // HitNumber/Cursor 之下，保持架构链 Cursor → HitNumber → NativeHud → (Backdrop → WebOverlay) → Flash。
-            // 未注册（_zOrderInsertAfter == Zero）时退回 HWND_TOP 仅作过渡态兜底。
-            // 架构约束见 plans/expressive-leaping-galaxy.md §硬约束 #5
-            IntPtr insertAfter = _zOrderInsertAfter == IntPtr.Zero ? HWND_TOP : _zOrderInsertAfter;
-            SetWindowPos(this.Handle, insertAfter, hudRect.X, hudRect.Y, hudRect.Width, hudRect.Height,
-                SWP_NOACTIVATE);
-            // 用 ShowOverlayBelow 而非 ShowOverlay：后者会把 z-order 拉到 HWND_TOP，覆盖上面的 insertAfter。
-            ShowOverlayBelow(insertAfter);
-            // 兜底：ShowOverlayBelow 受 _ownerVisible 闸门控制，
-            // panel 关闭时焦点常在 Flash 子窗口 → owner 仍 deactivated → ShowWindow 被跳过。
-            // 直接 SW_SHOWNOACTIVATE 强制显示；ShowWindow 不改 z-order，上面 insertAfter 排序保留。
-            try { ShowWindow(this.Handle, SW_SHOWNOACTIVATE); } catch { }
+            if (windowPlacementChanged)
+            {
+                // z-order：插在 _zOrderInsertAfter（HitNumber.Handle）之后，让 NativeHud 沉到
+                // HitNumber/Cursor 之下。高频 repaint 不重复 SetWindowPos/ShowWindow，避免 combo 输入期整层闪烁。
+                SetWindowPos(this.Handle, insertAfter, hudRect.X, hudRect.Y, hudRect.Width, hudRect.Height,
+                    SWP_NOACTIVATE);
+                // 用 ShowOverlayBelow 而非 ShowOverlay：后者会把 z-order 拉到 HWND_TOP，覆盖上面的 insertAfter。
+                ShowOverlayBelow(insertAfter);
+                // 兜底：ShowOverlayBelow 受 _ownerVisible 闸门控制，
+                // panel 关闭时焦点常在 Flash 子窗口 → owner 仍 deactivated → ShowWindow 被跳过。
+                // 直接 SW_SHOWNOACTIVATE 强制显示；ShowWindow 不改 z-order，上面 insertAfter 排序保留。
+                try { ShowWindow(this.Handle, SW_SHOWNOACTIVATE); } catch { }
+            }
             RenderToBitmapAndCommit();
             MaybeStartTick();
         }

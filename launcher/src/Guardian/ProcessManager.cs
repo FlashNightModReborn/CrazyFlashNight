@@ -98,20 +98,25 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void KillFlash()
         {
+            Process target;
             lock (_lock)
             {
-                if (_flashProcess == null) return;
-                try
+                target = _flashProcess;
+            }
+            if (target == null) return;
+            try
+            {
+                if (!target.HasExited)
                 {
-                    if (!_flashProcess.HasExited)
+                    target.CloseMainWindow();
+                    if (!target.WaitForExit(500))
                     {
-                        _flashProcess.CloseMainWindow();
-                        if (!_flashProcess.WaitForExit(3000))
-                            _flashProcess.Kill();
+                        target.Kill();
+                        try { target.WaitForExit(1000); } catch { }
                     }
                 }
-                catch { }
             }
+            catch { }
         }
 
         public void Dispose()

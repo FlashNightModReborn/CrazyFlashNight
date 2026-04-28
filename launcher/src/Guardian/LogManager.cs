@@ -124,6 +124,18 @@ namespace CF7Launcher.Guardian
                 return;
             }
 
+            if (_form.IsDisposed || _form.Disposing || _logBox.IsDisposed || _logBox.Disposing)
+            {
+                System.Diagnostics.Debug.Write(line);
+                return;
+            }
+
+            if (!_form.IsHandleCreated || !_logBox.IsHandleCreated)
+            {
+                System.Diagnostics.Debug.Write(line);
+                return;
+            }
+
             if (_logBox.InvokeRequired)
             {
                 try
@@ -142,14 +154,23 @@ namespace CF7Launcher.Guardian
         {
             lock (_uiLock)
             {
-                if (_logBox == null || _logBox.IsDisposed) return;
+                if (_logBox == null || _form == null) return;
+                if (_form.IsDisposed || _form.Disposing || _logBox.IsDisposed || _logBox.Disposing) return;
+                if (!_form.IsHandleCreated || !_logBox.IsHandleCreated) return;
 
-                if (_logBox.TextLength > 100000)
+                try
                 {
-                    _logBox.Text = _logBox.Text.Substring(_logBox.TextLength - 50000);
-                }
+                    if (_logBox.TextLength > 100000)
+                    {
+                        _logBox.Text = _logBox.Text.Substring(_logBox.TextLength - 50000);
+                    }
 
-                _logBox.AppendText(line);
+                    _logBox.AppendText(line);
+                }
+                catch
+                {
+                    System.Diagnostics.Debug.Write(line);
+                }
             }
         }
 

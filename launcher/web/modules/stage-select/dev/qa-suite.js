@@ -17,7 +17,10 @@ var StageSelectHarnessQA = (function() {
                     Panels.close();
                     api.assertEqual(Panels.getActive(), null, 'panel closed');
                     host.open();
-                    return waitReady(api).then(function() { return 'lifecycle ok'; });
+                    return waitReady(api).then(function(state) {
+                        api.assert(state.layoutWatcherActive, 'layout watcher active after reopen');
+                        return 'lifecycle ok';
+                    });
                 });
             }],
             ['frame-tabs', 'all frame labels route', function() {

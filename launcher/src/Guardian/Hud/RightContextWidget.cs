@@ -33,8 +33,8 @@ namespace CF7Launcher.Guardian.Hud
         private const int MAP_BEACON_R_BASE = 5;
         private const float MIN_BLOCK_PX = 4f;
 
-        private const string ICON_TASK_DONE = "!";
-        private const string ICON_PLACEHOLDER = "*";
+        private const string ICON_TASK_DONE = "❗";
+        private const string ICON_PLACEHOLDER = "◆";
 
         private static readonly string[] TOOL_KEYS = { "GAMESETTINGS", "SETTINGS", "PAUSE", "HELP", "SAFEEXIT" };
         private static readonly string[] TOOL_LABELS_DEFAULT = { "⚙", "\U0001F527", "Ⅱ", "?", "×" };

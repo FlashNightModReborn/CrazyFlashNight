@@ -45,7 +45,7 @@ namespace CF7Launcher.Guardian
         private float _globalAlpha;
 
         private Font _textFont;
-        private int _lastVpW;
+        private float _lastScale;
 
         public ToastOverlay(Form owner, Control anchor)
             : base(owner, anchor, 1024f, 576f)
@@ -55,8 +55,8 @@ namespace CF7Launcher.Guardian
             _ready = false;
             _remainingMs = 0;
             _globalAlpha = 0f;
-            _lastVpW = 0;
-            _textFont = new Font("Microsoft YaHei", 8f, FontStyle.Regular);
+            _lastScale = 0f;
+            _textFont = new Font("Microsoft YaHei", ToastFontPxForScale(1f), FontStyle.Regular, GraphicsUnit.Pixel);
 
             _timer = new System.Windows.Forms.Timer();
             _timer.Interval = TickIntervalMs;
@@ -114,16 +114,12 @@ namespace CF7Launcher.Guardian
 
         private void EnsureFont()
         {
-            int vpW = (int)_mapper.ViewportWidth;
-            if (vpW == _lastVpW) return;
-            _lastVpW = vpW;
-
-            float scale = _mapper.ViewportWidth / _mapper.StageWidth;
-            float pt = 8f * scale;
-            pt = Math.Max(6.5f, Math.Min(pt, 12f));
+            float scale = GetViewportScale();
+            if (Math.Abs(scale - _lastScale) < 0.01f) return;
+            _lastScale = scale;
 
             if (_textFont != null) _textFont.Dispose();
-            _textFont = new Font("Microsoft YaHei", pt, FontStyle.Regular);
+            _textFont = new Font("Microsoft YaHei", ToastFontPxForScale(scale), FontStyle.Regular, GraphicsUnit.Pixel);
         }
 
         private void AppendMessage(string text)
@@ -204,18 +200,24 @@ namespace CF7Launcher.Guardian
             if (_lines.Count == 0) return;
 
             EnsureFont();
+            float scale = GetViewportScale();
+            int padX = Px(PaddingX, scale);
+            int padY = Px(PaddingY, scale);
+            int lineGap = Px(1, scale);
+            float shadowOffset = Pxf(1f, scale);
+            float segmentMeasureAdjust = Pxf(6f, scale);
 
             int toastW = _mapper.ScaleW(FlashMsgW);
-            int textW = toastW - PaddingX * 2;
+            int textW = toastW - padX * 2;
 
-            int totalH = PaddingY;
+            int totalH = padY;
             int[] lineHeights = new int[_lines.Count];
             for (int i = 0; i < _lines.Count; i++)
             {
                 lineHeights[i] = MeasureLineHeight(_lines[i].PlainText, textW);
-                totalH += lineHeights[i] + 1;
+                totalH += lineHeights[i] + lineGap;
             }
-            totalH += PaddingY;
+            totalH += padY;
 
             int w = toastW;
             int h = Math.Max(4, totalH);
@@ -231,7 +233,7 @@ namespace CF7Launcher.Guardian
                     g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
                     g.Clear(Color.Transparent);
 
-                    float y = PaddingY;
+                    float y = padY;
                     for (int i = 0; i < _lines.Count; i++)
                     {
                         MessageLine line = _lines[i];
@@ -241,7 +243,7 @@ namespace CF7Launcher.Guardian
                         if (line.Age < FadeInMs)
                             lineAlpha = (float)line.Age / FadeInMs;
 
-                        RectangleF textRect = new RectangleF(PaddingX, y, textW, lh);
+                        RectangleF textRect = new RectangleF(padX, y, textW, lh);
 
                         if (line.Segments.Count == 1)
                         {
@@ -253,7 +255,7 @@ namespace CF7Launcher.Guardian
                                 sf.Trimming = StringTrimming.EllipsisWord;
 
                                 RectangleF shadowRect = new RectangleF(
-                                    textRect.X + 1, textRect.Y + 1,
+                                    textRect.X + shadowOffset, textRect.Y + shadowOffset,
                                     textRect.Width, textRect.Height);
                                 using (SolidBrush shadow = new SolidBrush(
                                     Color.FromArgb((byte)(200 * lineAlpha), 0, 0, 0)))
@@ -270,7 +272,7 @@ namespace CF7Launcher.Guardian
                         }
                         else
                         {
-                            float x = PaddingX;
+                            float x = padX;
                             for (int s = 0; s < line.Segments.Count; s++)
                             {
                                 FlashHtmlParser.TextSegment seg = line.Segments[s];
@@ -281,7 +283,7 @@ namespace CF7Launcher.Guardian
                                 using (SolidBrush shadow = new SolidBrush(
                                     Color.FromArgb((byte)(200 * lineAlpha), 0, 0, 0)))
                                 {
-                                    g.DrawString(seg.Text, _textFont, shadow, x + 1, y + 1);
+                                    g.DrawString(seg.Text, _textFont, shadow, x + shadowOffset, y + shadowOffset);
                                 }
 
                                 using (SolidBrush brush = new SolidBrush(
@@ -292,17 +294,40 @@ namespace CF7Launcher.Guardian
 
                                 Size ts = TextRenderer.MeasureText(seg.Text, _textFont,
                                     new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding);
-                                x += ts.Width - 6;
+                                x += ts.Width - segmentMeasureAdjust;
                             }
                         }
 
-                        y += lh + 1;
+                        y += lh + lineGap;
                     }
                 }
 
                 byte windowAlpha = (byte)(255 * _globalAlpha);
                 CommitBitmap(bmp, scrX, scrY, windowAlpha);
             }
+        }
+
+        private float GetViewportScale()
+        {
+            float vpX, vpY, vpW, vpH;
+            _mapper.CalcViewport(out vpX, out vpY, out vpW, out vpH);
+            if (vpH <= 0) return 1f;
+            return Math.Max(0.5f, vpH / _mapper.StageHeight);
+        }
+
+        private static int Px(int basePx, float scale)
+        {
+            return Math.Max(1, (int)Math.Round(basePx * scale));
+        }
+
+        private static float Pxf(float basePx, float scale)
+        {
+            return Math.Max(1f, basePx * scale);
+        }
+
+        internal static float ToastFontPxForScale(float scale)
+        {
+            return Math.Max(1f, 11f * scale);
         }
 
         protected override void Dispose(bool disposing)

@@ -34,6 +34,9 @@ namespace CF7Launcher.Guardian
             int X, int Y, int cx, int cy, uint uFlags);
 
         [DllImport("user32.dll")]
+        private static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+
+        [DllImport("user32.dll")]
         private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
         [DllImport("user32.dll")]
@@ -114,6 +117,9 @@ namespace CF7Launcher.Guardian
         private readonly Control _anchor;
         private readonly FlashCoordinateMapper _mapper;
         private WebView2 _webView;
+        private static readonly System.Reflection.FieldInfo WebViewControllerField =
+            typeof(WebView2).GetField("_coreWebView2Controller",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
         private bool _webReady;
         private bool _shown;
         private bool _disposed;
@@ -144,6 +150,9 @@ namespace CF7Launcher.Guardian
         // InputShieldForm 引用（CDP 输入注入 + hitRects 转发）
         private InputShieldForm _inputShield;
         private CursorOverlayForm _cursorOverlay;
+        private bool _nativeHudIdleSuspendPending;
+        private bool _webViewControllerReflectionWarned;
+        private int _panelViewportRepairAttempts;
 
         // 面板系统
         private ShopTask _shopTask;
@@ -258,11 +267,13 @@ namespace CF7Launcher.Guardian
             this.Owner = owner;
 
             CreateHandle();
+            ApplyHiddenWarmupBounds("ctor_warmup");
 
             // WebView2 控件
             _webView = new WebView2();
             _webView.Dock = DockStyle.Fill;
             this.Controls.Add(_webView);
+            SyncWebViewViewportBounds(this.ClientSize.Width, this.ClientSize.Height, 1.0, "ctor_warmup", false);
 
             // Owner 跟随：Move/Resize → 同步位置
             owner.Move += delegate { ScheduleSyncPosition("owner_move"); };
@@ -354,6 +365,8 @@ namespace CF7Launcher.Guardian
                 CoreWebView2Environment env =
                     await CoreWebView2Environment.CreateAsync(null, userDataDir, options);
                 await _webView.EnsureCoreWebView2Async(env);
+                SyncWebViewViewportBounds(this.ClientSize.Width, this.ClientSize.Height,
+                    1.0, "core_ready_pre_nav", true);
 
                 // 透明背景：WebView2 透明区域显示 Form BackColor (=TransparencyKey) → 视觉穿透
                 _webView.DefaultBackgroundColor = Color.Transparent;
@@ -626,6 +639,176 @@ namespace CF7Launcher.Guardian
             SyncPosition("direct");
         }
 
+        private Rectangle GetHiddenWarmupScreenRect()
+        {
+            try
+            {
+                if (_owner != null && !_owner.IsDisposed)
+                {
+                    Size ownerSize = _owner.ClientSize;
+                    if (ownerSize.Width >= 320 && ownerSize.Height >= 180)
+                    {
+                        Point ownerOrigin = _owner.PointToScreen(Point.Empty);
+                        return new Rectangle(ownerOrigin, ownerSize);
+                    }
+                }
+            }
+            catch { }
+
+            try
+            {
+                if (_anchor != null && !_anchor.IsDisposed)
+                {
+                    Size anchorSize = _anchor.Size;
+                    if (anchorSize.Width >= 320 && anchorSize.Height >= 180)
+                    {
+                        Point anchorOrigin = _anchor.PointToScreen(Point.Empty);
+                        return new Rectangle(anchorOrigin, anchorSize);
+                    }
+                }
+            }
+            catch { }
+
+            try
+            {
+                Control screenControl = _owner as Control;
+                if (screenControl == null) screenControl = _anchor;
+                Rectangle screen = Screen.FromControl(screenControl).Bounds;
+                int width = Math.Max(320, Math.Min(1600, screen.Width));
+                int height = Math.Max(180, Math.Min(900, screen.Height));
+                return new Rectangle(screen.X, screen.Y, width, height);
+            }
+            catch
+            {
+                return new Rectangle(0, 0, 1600, 900);
+            }
+        }
+
+        private void ApplyHiddenWarmupBounds(string reason)
+        {
+            Rectangle rect = GetHiddenWarmupScreenRect();
+            try
+            {
+                this.Bounds = rect;
+                this.ClientSize = new Size(rect.Width, rect.Height);
+                SetWindowPos(this.Handle, HWND_TOP, rect.X, rect.Y, rect.Width, rect.Height,
+                    SWP_NOACTIVATE | SWP_NOZORDER);
+                _coordinateContext.UpdateOverlay(rect, 0, 0, rect.Width, rect.Height,
+                    this.Handle, 1.0, reason);
+                SyncWebViewViewportBounds(rect.Width, rect.Height, 1.0, reason, true);
+                LogManager.Log("[WebOverlay] hidden warmup bounds applied: reason=" + reason
+                    + " form=" + this.Bounds
+                    + " client=" + this.ClientSize.Width + "x" + this.ClientSize.Height);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[WebOverlay] hidden warmup bounds failed: " + ex.Message);
+            }
+        }
+
+        private CoreWebView2Controller TryGetWebViewController()
+        {
+            if (_webView == null)
+                return null;
+            try
+            {
+                if (WebViewControllerField == null)
+                {
+                    if (!_webViewControllerReflectionWarned)
+                    {
+                        _webViewControllerReflectionWarned = true;
+                        LogManager.Log("[WebOverlay] WebView2 controller field unavailable; falling back to WinForms bounds only");
+                    }
+                    return null;
+                }
+                return WebViewControllerField.GetValue(_webView) as CoreWebView2Controller;
+            }
+            catch (Exception ex)
+            {
+                if (!_webViewControllerReflectionWarned)
+                {
+                    _webViewControllerReflectionWarned = true;
+                    LogManager.Log("[WebOverlay] WebView2 controller reflection failed: " + ex.Message);
+                }
+                return null;
+            }
+        }
+
+        private string DescribeWebViewController()
+        {
+            CoreWebView2Controller controller = TryGetWebViewController();
+            if (controller == null)
+                return "controller=<null>";
+            try
+            {
+                return "controller=" + controller.Bounds
+                    + " zoom=" + controller.ZoomFactor.ToString("0.###", CultureInfo.InvariantCulture)
+                    + " raster=" + controller.RasterizationScale.ToString("0.###", CultureInfo.InvariantCulture)
+                    + " mode=" + controller.BoundsMode
+                    + " visible=" + controller.IsVisible;
+            }
+            catch (Exception ex)
+            {
+                return "controller=<error:" + ex.Message + ">";
+            }
+        }
+
+        private void SyncWebViewViewportBounds(int width, int height, double zoom, string reason, bool forceLog)
+        {
+            if (_webView == null)
+                return;
+
+            int w = Math.Max(1, width);
+            int h = Math.Max(1, height);
+            if (double.IsNaN(zoom) || double.IsInfinity(zoom) || zoom <= 0)
+                zoom = 1.0;
+
+            Rectangle localBounds = new Rectangle(0, 0, w, h);
+            try
+            {
+                _webView.Dock = DockStyle.None;
+                _webView.Location = Point.Empty;
+                _webView.Size = new Size(w, h);
+                _webView.Bounds = localBounds;
+                _webView.Dock = DockStyle.Fill;
+                if (_webView.CoreWebView2 != null && Math.Abs(_webView.ZoomFactor - zoom) > 0.001)
+                    _webView.ZoomFactor = zoom;
+                if (_webView.IsHandleCreated)
+                {
+                    MoveWindow(_webView.Handle, 0, 0, w, h, true);
+                    SetWindowPos(_webView.Handle, IntPtr.Zero, 0, 0, w, h,
+                        SWP_NOACTIVATE | SWP_NOZORDER);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[WebOverlay] WebView2 WinForms bounds sync failed: reason="
+                    + reason + " error=" + ex.Message);
+            }
+
+            CoreWebView2Controller controller = TryGetWebViewController();
+            if (controller == null)
+                return;
+            try
+            {
+                controller.BoundsMode = CoreWebView2BoundsMode.UseRawPixels;
+                controller.SetBoundsAndZoomFactor(localBounds, zoom);
+                controller.NotifyParentWindowPositionChanged();
+                if (_panelMode)
+                    controller.IsVisible = true;
+                if (forceLog || IsPanelMetricsReason(reason))
+                    LogManager.Log("[WebOverlay] controller bounds sync: reason=" + reason
+                        + " bounds=" + localBounds
+                        + " zoom=" + zoom.ToString("0.###", CultureInfo.InvariantCulture)
+                        + " " + DescribeWebViewController());
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[WebOverlay] WebView2 controller bounds sync failed: reason="
+                    + reason + " error=" + ex.Message);
+            }
+        }
+
         private void SyncPosition(string reason)
         {
             // Phase 2 panel-mode/idle 不变量：
@@ -689,6 +872,8 @@ namespace CF7Launcher.Guardian
                 {
                     _webView.ZoomFactor = _webViewZoomFactor;
                 }
+                if (_webReady)
+                    SyncWebViewViewportBounds(w, h, newWebViewZoom, reason, false);
 
                 _lastViewportWidth = w;
                 _lastViewportHeight = h;
@@ -823,13 +1008,14 @@ namespace CF7Launcher.Guardian
                     var oldTimeout = System.Threading.Interlocked.Exchange(ref _reloadTimeout, null);
                     if (oldTimeout != null) oldTimeout.Dispose();
 
-                    // flush 早期缓冲
-                    if (_toastReady)
+                    // flush 早期缓冲；native HUD idle 下不把消息推给隐藏 Web HUD
+                    if (_toastReady && !_useNativeHud)
                         FlushToastBuffer();
-                    FlushUiDataBuffer();
+                    if (!_useNativeHud || _panelMode)
+                        FlushUiDataBuffer();
 
                     // 显示 overlay（如果 SetReady 已先调用）
-                    if (_shown)
+                    if (_shown && (!_useNativeHud || _panelMode))
                     {
                         SyncPosition();
                         ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
@@ -840,7 +1026,12 @@ namespace CF7Launcher.Guardian
                     }
                     else
                     {
-                        SyncPosition("ready_hidden");
+                        if (_useNativeHud && !_shown && !_panelMode)
+                            ApplyHiddenWarmupBounds("ready_hidden_native");
+                        else
+                            SyncPosition("ready_hidden");
+                        if (_shown && _cursorOverlay != null)
+                            _cursorOverlay.SetReady();
                     }
 
                     // 非开发环境：隐藏"其他"菜单中的开发工具
@@ -848,10 +1039,11 @@ namespace CF7Launcher.Guardian
                         ExecScript("document.getElementById('notch').classList.add('hide-other')");
 
                     // 一次性推送光照等级静态数据
-                    PushLightLevels();
+                    if (!_useNativeHud || _panelMode)
+                        PushLightLevels();
 
                     // 推送音乐目录到 WebView
-                    if (_musicCatalog != null)
+                    if (_musicCatalog != null && (!_useNativeHud || _panelMode))
                         PostToWeb(_musicCatalog.GetFullCatalogJson());
 
                     // Web 通道恢复：useNativeHud=true 时让 NotchOverlay/ToastOverlay 一直显示作为常驻 HUD；
@@ -859,24 +1051,19 @@ namespace CF7Launcher.Guardian
                     if (_useNativeHud)
                     {
                         // 让 NotchOverlay/ToastOverlay 显示（与 ActivateFallback 等价但语义清晰）
-                        if (_notchFallback != null) _notchFallback.SetReady();
-                        if (_toastFallback != null)
-                        {
-                            _toastFallback.SetReady();
-                            foreach (string msg in _toastEarlyBuffer)
-                                _toastFallback.AddMessage(msg);
-                            _toastEarlyBuffer.Clear();
-                        }
+                        ActivateFallback();
                         // 隐藏 web 端 #notch / #toast-container DOM 避免视觉重叠
                         HideWebHudDomForNativeHud();
+                        EnsureCursorTimer();
+                        ScheduleNativeHudIdleSuspend("web_ready");
                     }
                     else
                     {
                         SuspendFallback();
+                        RequestViewportMetrics("ready");
+                        ExecScript("if(window.Notch&&Notch.reportRect){Notch.reportRect();}");
+                        EnsureCursorTimer();
                     }
-                    RequestViewportMetrics("ready");
-                    ExecScript("if(window.Notch&&Notch.reportRect){Notch.reportRect();}");
-                    EnsureCursorTimer();
                 }
             }
             catch (Exception ex)
@@ -889,16 +1076,24 @@ namespace CF7Launcher.Guardian
         {
             if (parsed == null)
                 return;
+            string reason = parsed.Value<string>("reason") ?? "web_metrics";
+            double innerWidth = ReadDouble(parsed, "innerWidth");
+            double innerHeight = ReadDouble(parsed, "innerHeight");
+            double clientWidth = ReadDouble(parsed, "clientWidth");
+            double clientHeight = ReadDouble(parsed, "clientHeight");
+            double devicePixelRatio = ReadDouble(parsed, "devicePixelRatio");
+            double visualViewportWidth = ReadDouble(parsed, "visualViewportWidth");
+            double visualViewportHeight = ReadDouble(parsed, "visualViewportHeight");
 
             _coordinateContext.UpdateWebMetrics(
-                ReadDouble(parsed, "innerWidth"),
-                ReadDouble(parsed, "innerHeight"),
-                ReadDouble(parsed, "clientWidth"),
-                ReadDouble(parsed, "clientHeight"),
-                ReadDouble(parsed, "devicePixelRatio"),
-                ReadDouble(parsed, "visualViewportWidth"),
-                ReadDouble(parsed, "visualViewportHeight"),
-                parsed.Value<string>("reason") ?? "web_metrics");
+                innerWidth,
+                innerHeight,
+                clientWidth,
+                clientHeight,
+                devicePixelRatio,
+                visualViewportWidth,
+                visualViewportHeight,
+                reason);
 
             _missingMetricsWarned = false;
             if (_inputShield != null)
@@ -909,9 +1104,73 @@ namespace CF7Launcher.Guardian
             if (_cursorOverlay != null)
                 _cursorOverlay.SetDpiScale(_coordinateContext.WindowDpiX, _coordinateContext.WindowDpiY);
 
-            if (ShouldLogOverlayContext(false))
+            bool panelMetrics = IsPanelMetricsReason(reason);
+            if (panelMetrics)
+            {
+                LogManager.Log("[Panel] viewport raw: reason=" + reason
+                    + " inner=" + innerWidth.ToString("0.##", CultureInfo.InvariantCulture)
+                    + "x" + innerHeight.ToString("0.##", CultureInfo.InvariantCulture)
+                    + " client=" + clientWidth.ToString("0.##", CultureInfo.InvariantCulture)
+                    + "x" + clientHeight.ToString("0.##", CultureInfo.InvariantCulture)
+                    + " visual=" + visualViewportWidth.ToString("0.##", CultureInfo.InvariantCulture)
+                    + "x" + visualViewportHeight.ToString("0.##", CultureInfo.InvariantCulture)
+                    + " dpr=" + devicePixelRatio.ToString("0.###", CultureInfo.InvariantCulture)
+                    + " web=" + (_webView != null ? _webView.Bounds.ToString() : "<null>")
+                    + " zoom=" + (_webView != null ? _webView.ZoomFactor.ToString("0.###", CultureInfo.InvariantCulture) : "<null>")
+                    + " " + DescribeWebViewController());
+            }
+
+            if (ShouldLogOverlayContext(false) || panelMetrics)
                 DpiDiagnostics.LogOverlayContext("WebOverlay.viewportMetrics", _coordinateContext);
-            ForceCursorSample("metrics:" + (parsed.Value<string>("reason") ?? "web_metrics"));
+            if (ShouldRepairPanelViewport(reason))
+                SchedulePanelViewportRepair(reason);
+            ForceCursorSample("metrics:" + reason);
+        }
+
+        private bool ShouldRepairPanelViewport(string reason)
+        {
+            if (!_panelMode || _disposed || _webView == null)
+                return false;
+            if (_panelViewportRepairAttempts >= 3)
+                return false;
+            if (_coordinateContext.OverlayPhysicalBounds.Width < 800 ||
+                _coordinateContext.OverlayPhysicalBounds.Height < 450)
+                return false;
+            if (_coordinateContext.WebCssWidth <= 0 || _coordinateContext.WebCssHeight <= 0)
+                return false;
+            if (_coordinateContext.WebCssWidth < 400 || _coordinateContext.WebCssHeight < 225)
+                return true;
+            if (IsPanelMetricsReason(reason) &&
+                (_coordinateContext.CssToPhysicalX > 4.0 || _coordinateContext.CssToPhysicalY > 4.0))
+                return true;
+            return false;
+        }
+
+        private void SchedulePanelViewportRepair(string reason)
+        {
+            _panelViewportRepairAttempts++;
+            int attempt = _panelViewportRepairAttempts;
+            try
+            {
+                BeginInvoke(new Action(delegate()
+                {
+                    if (_disposed || !_panelMode || _webView == null)
+                        return;
+                    SyncWebViewViewportBounds(this.ClientSize.Width, this.ClientSize.Height,
+                        1.0, "panel_viewport_repair:" + reason + ":" + attempt, true);
+                    try
+                    {
+                        ExecScript("window.dispatchEvent(new Event('resize'));"
+                            + "if(window.OverlayViewportMetrics&&window.OverlayViewportMetrics.report){"
+                            + "window.OverlayViewportMetrics.report('panel_viewport_repair');}");
+                    }
+                    catch (Exception ex) { LogManager.Log("[Panel] viewport repair metrics request failed: " + ex.Message); }
+                }));
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Panel] viewport repair schedule failed: " + ex.Message);
+            }
         }
 
         private CoreWebView2EnvironmentOptions CreateWebView2EnvironmentOptions()
@@ -1092,6 +1351,12 @@ namespace CF7Launcher.Guardian
         {
             return !string.IsNullOrEmpty(reason)
                 && reason.IndexOf("dpi", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private static bool IsPanelMetricsReason(string reason)
+        {
+            return !string.IsNullOrEmpty(reason)
+                && reason.IndexOf("panel", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private bool ShouldLogOverlayContext(bool force)
@@ -1644,7 +1909,7 @@ namespace CF7Launcher.Guardian
         {
             _musicCatalog = catalog;
             catalog.CatalogChanged += delegate(string updateJson) {
-                if (_webReady) PostToWeb(updateJson);
+                if (_webReady && (!_useNativeHud || _panelMode)) PostToWeb(updateJson);
             };
         }
 
@@ -1827,9 +2092,10 @@ namespace CF7Launcher.Guardian
                 }
             }
 
-            if (_webFailed || !_webReady || _frozenForIdle)
+            bool nativeHudIdle = _useNativeHud && !_panelMode;
+            if (_webFailed || !_webReady || _frozenForIdle || nativeHudIdle)
             {
-                // WebView2 未就绪/降级/idle SW_HIDE+suspend：仅维护快照，不 ExecScript
+                // WebView2 未就绪/降级/native idle SW_HIDE+suspend：仅维护快照，不 ExecScript
                 // 关键：idle 态调用 ExecScript 会唤醒已 TrySuspendAsync 的 WebView2，破坏 DWM α traversal 撤除
                 // 快照已在 _uiDataSnapshot 上方更新，FlushUiDataBuffer 在 Resume 时一次性补回
                 if (_uiDataEarlyBuffer.Count < 200)
@@ -1978,6 +2244,21 @@ namespace CF7Launcher.Guardian
             if (_disposed) return;
             _shown = true;
             _toastReady = true;
+            if (_useNativeHud)
+            {
+                ActivateFallback();
+                if (_cursorOverlay != null)
+                    _cursorOverlay.SetReady();
+                if (_webReady)
+                {
+                    SyncPosition("set_ready_native");
+                    HideWebHudDomForNativeHud();
+                    EnsureCursorTimer();
+                    RequestViewportMetrics("set_ready_native");
+                    ScheduleNativeHudIdleSuspend("set_ready");
+                }
+                return;
+            }
             if (_webReady)
                 FlushToastBuffer();
             if (_fpsTimer != null)
@@ -2155,13 +2436,12 @@ namespace CF7Launcher.Guardian
         //   * 不 SW_HIDE、不冻结 timer、不 TrySuspendAsync —— Web HUD 完整可见
         //   * Phase 2 收益：仅 panel 打开期 α blend 成本下降（panelRect 小 + opaque）
         //   * 完整 idle SW_HIDE 留给 Phase 3+：NotchWidget 等 widget 上线接管 HUD 后再做
-        // - _frozenForIdle 字段保留（DoForceIdleSequence 内不再设 true），让 SyncPosition / OnFpsTick
-        //   等 guard 形成"防御性 dead code"，未来 Phase 3 重新启用时直接打开开关即可
-        // - SuspendWebTimers 同理保留代码路径但 DoForceIdleSequence 不再调用
+        // Native HUD idle 会在 panel 关闭或启动 ready 后 SW_HIDE/suspend WebView2。
+        // _frozenForIdle 负责拦截 UIData JS dispatch、timer 与位置同步，ResumeForPanel 再解冻。
 
         private PanelHostController _panelHost;
         private volatile bool _panelMode;
-        private volatile bool _frozenForIdle; // 始终 false（Phase 3 启用）；保留 guard 路径
+        private volatile bool _frozenForIdle;
 
         public bool IsPanelMode { get { return _panelMode; } }
 
@@ -2182,6 +2462,8 @@ namespace CF7Launcher.Guardian
             if (_disposed) return;
             _panelMode = true;
             _frozenForIdle = false;
+            _nativeHudIdleSuspendPending = false;
+            _panelViewportRepairAttempts = 0;
 
             ResumeWebTimers();
 
@@ -2207,10 +2489,48 @@ namespace CF7Launcher.Guardian
             try { this.TransparencyKey = Color.Empty; } catch { }
             try { if (_webView != null) _webView.DefaultBackgroundColor = Color.Black; } catch { }
 
+            // Panel 是普通 Web app 视口，不应沿用 Flash HUD 的 576 设计缩放。
+            // 从 SW_HIDE/TrySuspendAsync 恢复时 WebView2 子窗口可能保留 idle 小尺寸；
+            // 显式同步 Form/child bounds，避免出现 bounds=1600x900 但 CSS viewport 仍是 118x67 的黑屏。
+            try
+            {
+                this.Bounds = panelRectScreen;
+                this.ClientSize = new Size(panelRectScreen.Width, panelRectScreen.Height);
+                if (_webView != null)
+                {
+                    _webView.Visible = true;
+                    SyncWebViewViewportBounds(this.ClientSize.Width, this.ClientSize.Height,
+                        1.0, "panel_resume_pre_show", true);
+                }
+                _webViewZoomFactor = 1.0;
+                _lastViewportZoom = -1.0;
+                this.PerformLayout();
+            }
+            catch (Exception ex) { LogManager.Log("[Panel] ResumeForPanel bounds/zoom sync failed: " + ex.Message); }
+
             SetWindowPos(this.Handle, HWND_TOP,
                 panelRectScreen.X, panelRectScreen.Y,
                 panelRectScreen.Width, panelRectScreen.Height,
                 SWP_NOACTIVATE | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+
+            try
+            {
+                if (_webView != null && _webView.IsHandleCreated)
+                {
+                    SyncWebViewViewportBounds(this.ClientSize.Width, this.ClientSize.Height,
+                        1.0, "panel_resume_post_show", true);
+                    SetWindowPos(_webView.Handle, HWND_TOP, 0, 0,
+                        Math.Max(1, this.ClientSize.Width),
+                        Math.Max(1, this.ClientSize.Height),
+                        SWP_NOACTIVATE | SWP_SHOWWINDOW);
+                }
+                LogManager.Log("[Panel] ResumeForPanel applied form=" + this.Bounds
+                    + " client=" + this.ClientSize.Width + "x" + this.ClientSize.Height
+                    + " web=" + (_webView != null ? _webView.Bounds.ToString() : "<null>")
+                    + " zoom=" + (_webView != null ? _webView.ZoomFactor.ToString("0.###", CultureInfo.InvariantCulture) : "<null>")
+                    + " " + DescribeWebViewController());
+            }
+            catch (Exception ex) { LogManager.Log("[Panel] ResumeForPanel post-show child sync failed: " + ex.Message); }
 
             // 通知 web 端 panel viewport（CSS 用 var(--panel-w/-h) 自适应）
             // 必须在 TrySuspendAsync 之前；ResumeForPanel 不 suspend，时序天然成立
@@ -2220,6 +2540,16 @@ namespace CF7Launcher.Guardian
                     + panelRectScreen.Width + ",\"h\":" + panelRectScreen.Height + "}");
             }
             catch (Exception ex) { LogManager.Log("[Panel] panel_viewport_set post failed: " + ex.Message); }
+
+            try
+            {
+                ExecScript("window.dispatchEvent(new Event('resize'));"
+                    + "if(window.OverlayViewportMetrics&&OverlayViewportMetrics.schedule){"
+                    + "OverlayViewportMetrics.schedule('panel_resume');"
+                    + "}else if(window.OverlayViewportMetrics&&OverlayViewportMetrics.report){"
+                    + "OverlayViewportMetrics.report('panel_resume');}");
+            }
+            catch (Exception ex) { LogManager.Log("[Panel] panel resume resize post failed: " + ex.Message); }
 
             // idle 期间累积的 UiData 一次性补回（FlushUiDataBuffer 已合并 snapshot + buffer）
             try { FlushUiDataBuffer(); } catch (Exception ex) { LogManager.Log("[Panel] FlushUiDataBuffer failed: " + ex.Message); }
@@ -2235,10 +2565,17 @@ namespace CF7Launcher.Guardian
             if (!_panelMode) return;
             try
             {
+                this.Bounds = panelRectScreen;
+                this.ClientSize = new Size(panelRectScreen.Width, panelRectScreen.Height);
                 SetWindowPos(this.Handle, IntPtr.Zero,
                     panelRectScreen.X, panelRectScreen.Y,
                     panelRectScreen.Width, panelRectScreen.Height,
                     SWP_NOACTIVATE | SWP_NOZORDER);
+                if (_webView != null)
+                {
+                    SyncWebViewViewportBounds(this.ClientSize.Width, this.ClientSize.Height,
+                        1.0, "panel_reposition", false);
+                }
             }
             catch (Exception ex) { LogManager.Log("[Panel] RepositionForPanel SetWindowPos failed: " + ex.Message); }
         }
@@ -2281,6 +2618,33 @@ namespace CF7Launcher.Guardian
         {
             if (_disposed) return;
             DoForceIdleSequence();
+        }
+
+        private void ScheduleNativeHudIdleSuspend(string reason)
+        {
+            if (!_useNativeHud || !_webReady || !_shown || _disposed || _panelMode || _frozenForIdle)
+                return;
+            if (_nativeHudIdleSuspendPending)
+                return;
+
+            _nativeHudIdleSuspendPending = true;
+            try
+            {
+                BeginInvoke(new Action(delegate()
+                {
+                    _nativeHudIdleSuspendPending = false;
+                    if (_disposed || !_useNativeHud || !_webReady || !_shown || _panelMode || _frozenForIdle)
+                        return;
+
+                    ForceIdleState();
+                    LogManager.Log("[WebOverlay] NativeHud idle suspend applied: " + (reason ?? "unspecified"));
+                }));
+            }
+            catch (Exception ex)
+            {
+                _nativeHudIdleSuspendPending = false;
+                LogManager.Log("[WebOverlay] NativeHud idle suspend schedule failed: " + ex.Message);
+            }
         }
 
         private void DoForceIdleSequence()
@@ -2334,16 +2698,8 @@ namespace CF7Launcher.Guardian
             try { this.TransparencyKey = TRANSPARENT_COLOR; } catch { }
             try { if (_webView != null) _webView.DefaultBackgroundColor = Color.Transparent; } catch { }
 
-            // 7) TrySuspendAsync fire-and-forget（C# 5 不支持 _ = ... discard）
-            try
-            {
-                if (_webView != null && _webView.CoreWebView2 != null)
-                {
-                    System.Threading.Tasks.Task<bool> ignored = _webView.CoreWebView2.TrySuspendAsync();
-                    if (ignored == null) { /* compiler suppress unused */ }
-                }
-            }
-            catch (Exception ex) { LogManager.Log("[Panel] TrySuspendAsync throw: " + ex.Message); }
+            // 7) 不再调用 TrySuspendAsync：实测 WebView2 从 suspend 恢复后可能保留 hidden
+            // 小视口，导致 panel 只剩黑底。SW_HIDE + timer freeze 已足够移除 idle 合成成本。
         }
 
         /// <summary>

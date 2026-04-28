@@ -95,6 +95,7 @@ var StageSelectPanel = (function() {
         if (_fixtureSelectEl) _fixtureSelectEl.value = _fixtureName;
         _lastDifficultyClick = null;
         renderTabs();
+        initLayoutWatcher();
         renderCurrentFrame();
         syncStageLayout();
         root.classList.remove('is-entered');
@@ -421,6 +422,7 @@ var StageSelectPanel = (function() {
                 challenge: !!(_fixture && _fixture.challenge),
                 stageButtonCount: _buttonLayerEl ? _buttonLayerEl.querySelectorAll('.stage-select-stage-button').length : 0,
                 navButtonCount: _navLayerEl ? _navLayerEl.querySelectorAll('.stage-select-nav-button').length : 0,
+                layoutWatcherActive: !!(_layoutObserver || _resizeHandler),
                 lastDifficultyClick: _lastDifficultyClick
             };
         },

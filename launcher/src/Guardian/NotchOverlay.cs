@@ -184,7 +184,6 @@ namespace CF7Launcher.Guardian
 
         // 渲染
         private Font _fpsFont;
-        private Font _buttonFont;
         private int _currentExpandedW; // 当前展开宽度（视口宽度）
 
         // 光照等级（24 小时，从 WeatherSystemConfig.xml 读取）
@@ -244,7 +243,6 @@ namespace CF7Launcher.Guardian
             _kp = new CurrencySlot();
 
             _fpsFont = new Font("Consolas", 13f, FontStyle.Bold);
-            _buttonFont = new Font("Microsoft YaHei", 8f, FontStyle.Regular);
 
             _timer = new System.Windows.Forms.Timer();
             _timer.Interval = TickMs;
@@ -899,10 +897,15 @@ namespace CF7Launcher.Guardian
                     int scaledRowH = Px(RowH, scale);
                     int scaledRowGap = Px(RowGap, scale);
                     int rowsStartY = pillH + (_otherMenuOpen ? OtherButtons.Length * (Px(ToolbarButtonH, scale) + Px(1, scale)) + Px(8, scale) : 0);
-                    for (int ri = 0; ri < _infoRows.Count; ri++)
+                    using (Font infoFont = CreateInfoRowFont(false, scale))
+                    using (Font gameInfoFont = CreateInfoRowFont(true, scale))
                     {
-                        NotchInfoRow row = _infoRows[ri];
-                        int rowY = rowsStartY + ri * (scaledRowGap + scaledRowH) + scaledRowGap;
+                        for (int ri = 0; ri < _infoRows.Count; ri++)
+                        {
+                            NotchInfoRow row = _infoRows[ri];
+                            Font rowFont = row.IsGame ? gameInfoFont : infoFont;
+                            int rowY = rowsStartY + ri * (scaledRowGap + scaledRowH) + scaledRowGap;
+                            float textY = rowY + Math.Max(0f, (scaledRowH - rowFont.GetHeight(g)) / 2f);
 
                         // 行透明度（淡入 + 淡出）
                         float rowAlpha = 1f;
@@ -941,7 +944,7 @@ namespace CF7Launcher.Guardian
                         g.SetClip(new Rectangle(textPadX, rowY, textInnerW, scaledRowH));
 
                         // 当前文字测量
-                        SizeF textSize = g.MeasureString(row.Text, _buttonFont);
+                        SizeF textSize = g.MeasureString(row.Text, rowFont);
                         float textW = textSize.Width;
                         float textX;
 
@@ -972,13 +975,13 @@ namespace CF7Launcher.Guardian
                             // 旧文字（淡出）
                             byte oldA = (byte)(ra * (1f - transT));
                             Color oldC = Color.FromArgb(oldA, row.PrevColor.R, row.PrevColor.G, row.PrevColor.B);
-                            SizeF oldSize = g.MeasureString(row.PrevText, _buttonFont);
+                            SizeF oldSize = g.MeasureString(row.PrevText, rowFont);
                             float oldX = (oldSize.Width <= textInnerW)
                                 ? (row.Persistent ? textPadX : textPadX + (textInnerW - oldSize.Width) / 2f)
                                 : textPadX;
                             using (SolidBrush ob = new SolidBrush(oldC))
                             {
-                                g.DrawString(row.PrevText, _buttonFont, ob, oldX, rowY + Px(2, scale));
+                                g.DrawString(row.PrevText, rowFont, ob, oldX, textY);
                             }
 
                             // 新文字（淡入）
@@ -986,7 +989,7 @@ namespace CF7Launcher.Guardian
                             Color newC = Color.FromArgb(newA, row.AccentColor.R, row.AccentColor.G, row.AccentColor.B);
                             using (SolidBrush nb = new SolidBrush(newC))
                             {
-                                g.DrawString(row.Text, _buttonFont, nb, textX, rowY + Px(2, scale));
+                                g.DrawString(row.Text, rowFont, nb, textX, textY);
                             }
                         }
                         else
@@ -995,11 +998,12 @@ namespace CF7Launcher.Guardian
                             Color rc = Color.FromArgb(ra, row.AccentColor.R, row.AccentColor.G, row.AccentColor.B);
                             using (SolidBrush rb = new SolidBrush(rc))
                             {
-                                g.DrawString(row.Text, _buttonFont, rb, textX, rowY + Px(2, scale));
+                                g.DrawString(row.Text, rowFont, rb, textX, textY);
                             }
                         }
 
-                        g.ResetClip();
+                            g.ResetClip();
+                        }
                     }
                 }
 
@@ -1282,6 +1286,18 @@ namespace CF7Launcher.Guardian
         private static float Pxf(float basePx, float scale)
         {
             return Math.Max(1f, basePx * scale);
+        }
+
+        private static Font CreateInfoRowFont(bool isGame, float scale)
+        {
+            float basePx = isGame ? 13f : 12f;
+            FontStyle style = isGame ? FontStyle.Bold : FontStyle.Regular;
+            return new Font("Microsoft YaHei", Pxf(basePx, scale), style, GraphicsUnit.Pixel);
+        }
+
+        internal static float InfoRowFontPxForTest(bool isGame, float scale)
+        {
+            return Pxf(isGame ? 13f : 12f, scale);
         }
 
         private int ComputeCollapsedWidth(float scale)
@@ -1691,7 +1707,6 @@ namespace CF7Launcher.Guardian
                 _timer.Stop();
                 _timer.Dispose();
                 if (_fpsFont != null) _fpsFont.Dispose();
-                if (_buttonFont != null) _buttonFont.Dispose();
             }
             base.Dispose(disposing);
         }

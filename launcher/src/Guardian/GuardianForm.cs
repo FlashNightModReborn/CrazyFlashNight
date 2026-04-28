@@ -1319,6 +1319,8 @@ namespace CF7Launcher.Guardian
         // - 启动中 / Resetting → 异步 Reset(null) + 订阅 OnStateChanged；Idle/Error 终态或 8s 超时 → ForceExit
         // - 三条终态路径共用 _closeTerminated 门闩，只有第一条命中的路径真正调 ForceExit
         private int _closeTerminated;
+        private int _exitStarted;
+        private bool _closeAlreadyInProgress;
         // Phase D Step D11: OnStateChanged 扩三元 (silentAtEmit), close watcher 签名同步.
         private Action<string, string, bool> _closeStateWatcher;
         private System.Windows.Forms.Timer _closeTimeoutTimer;
@@ -1334,8 +1336,10 @@ namespace CF7Launcher.Guardian
             // Ready / Idle / Error → legacy 硬退出路径
             if (state == "Ready" || state == "Idle" || state == "Error")
             {
-                e.Cancel = true;
-                ForceExit();
+                _closeAlreadyInProgress = true;
+                System.Threading.Interlocked.Exchange(ref _closeTerminated, 1);
+                e.Cancel = false;
+                DoExit();
                 return;
             }
 
@@ -1437,6 +1441,8 @@ namespace CF7Launcher.Guardian
 
         private void DoExit()
         {
+            if (System.Threading.Interlocked.Exchange(ref _exitStarted, 1) != 0) return;
+
             // 最先启动绝对保底线程：独立前台线程，不依赖 ThreadPool/消息循环/任何锁
             // 无论后续清理如何卡死，8 秒后强制终结进程
             Thread exitGuard = new Thread(delegate()
@@ -1464,6 +1470,16 @@ namespace CF7Launcher.Guardian
             {
                 try { OnKillFlash(); } catch { }
                 OnKillFlash = null;
+            }
+
+            if (!_closeAlreadyInProgress)
+            {
+                try
+                {
+                    if (!this.IsDisposed && this.IsHandleCreated)
+                        this.Close();
+                }
+                catch { }
             }
 
             Application.ExitThread();

@@ -66,11 +66,13 @@
     <Compile Include="Guardian\MapHudAssetPathSecurityTests.cs" />
     <Compile Include="Guardian\MapHudPayloadParseTests.cs" />
     <Compile Include="Guardian\MapHudWidgetTests.cs" />
+    <Compile Include="Guardian\NotchOverlayTests.cs" />
     <Compile Include="Guardian\QuestNoticeWidgetTests.cs" />
     <Compile Include="Guardian\RightContextWidgetTests.cs" />
     <Compile Include="Guardian\RightHudLayoutTests.cs" />
     <Compile Include="Guardian\SafeExitPanelWidgetTests.cs" />
     <Compile Include="Guardian\TopRightToolsWidgetTests.cs" />
+    <Compile Include="Guardian\ToastOverlayTests.cs" />
     <Compile Include="Guardian\WidgetScalerTests.cs" />
   </ItemGroup>
   <ItemGroup>

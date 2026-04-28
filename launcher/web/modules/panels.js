@@ -74,6 +74,16 @@ var Panels = (function() {
             if (panel && panel.onForceClose) panel.onForceClose();
         }
     });
+    Bridge.on('panel_viewport_set', function(data) {
+        var w = Number(data && data.w) || 0;
+        var h = Number(data && data.h) || 0;
+        if (w > 0) document.documentElement.style.setProperty('--panel-w', w + 'px');
+        if (h > 0) document.documentElement.style.setProperty('--panel-h', h + 'px');
+        if (typeof OverlayViewportMetrics !== 'undefined' && OverlayViewportMetrics) {
+            if (OverlayViewportMetrics.report) OverlayViewportMetrics.report('panel_viewport_set');
+            if (OverlayViewportMetrics.schedule) OverlayViewportMetrics.schedule('panel_viewport_set');
+        }
+    });
     Bridge.on('panel_esc', triggerRequestClose);
 
     return {

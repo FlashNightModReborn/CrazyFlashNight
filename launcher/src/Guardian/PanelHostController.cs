@@ -333,6 +333,7 @@ namespace CF7Launcher.Guardian
             _web.ResumeForPanel(panelRect);
             // Step 6: InputShield 进 telemetry（仅记录 panelRect 外 click，不拦截）
             if (_shield != null) _shield.EnterTelemetryMode(panelRect, _ownerForm.Handle, anchor);
+            EnsurePanelZOrder();
             // Step 7: 通知 web 打开 panel（panel_viewport_set 已在 ResumeForPanel 内 PostToWeb）
             string payload = "{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"" + EscapeJson(name) + "\"";
             if (!string.IsNullOrEmpty(initDataJson))
@@ -487,6 +488,24 @@ namespace CF7Launcher.Guardian
                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
             }
             catch { }
+        }
+
+        private void EnsurePanelZOrder()
+        {
+            try
+            {
+                if (_backdrop == null || _web == null) return;
+                if (!_backdrop.IsHandleCreated || !_web.IsHandleCreated) return;
+                SetWindowPos(_backdrop.Handle, _web.Handle, 0, 0, 0, 0,
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+                SetWindowPos(_web.Handle, HWND_TOP, 0, 0, 0, 0,
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+                LogManager.Log("[PanelHost] z-order applied: backdrop below web");
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[PanelHost] z-order apply failed: " + ex.Message);
+            }
         }
 
         #endregion
