@@ -107,12 +107,49 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(w.Visible);
             // ROOT 回落
             w.OnLegacyUiData("combo", new[] { "", "", "" });
-            Assert.False(w.Visible);
+            Assert.True(w.Visible);
+            Assert.False(w.VisualVisibleForTest);
             Assert.Equal(ComboWidget.BarModeForTest.Idle, w.TestMode);
             Assert.Equal("", w.TypedSnapshot);
         }
 
         // ── V8 命中缓冲 ──
+        [Fact]
+        public void LegacyInput_UpdateWhileVisible_RepaintsWithoutBounds()
+        {
+            ComboWidget w = MakeWidget();
+            int boundsCount = 0;
+            int repaintCount = 0;
+            w.BoundsOrVisibilityChanged += delegate { boundsCount++; };
+            w.RepaintRequested += delegate { repaintCount++; };
+
+            w.OnLegacyUiData("combo", new[] { "", "A", "Move:AB:1" });
+            Assert.Equal(1, boundsCount);
+            Assert.Equal(0, repaintCount);
+
+            w.OnLegacyUiData("combo", new[] { "", "AB", "Move:ABC:1" });
+            Assert.Equal(1, boundsCount);
+            Assert.Equal(1, repaintCount);
+        }
+
+        [Fact]
+        public void LegacyInput_ClearToIdle_RepaintsWithoutBounds()
+        {
+            ComboWidget w = MakeWidget();
+            w.OnLegacyUiData("combo", new[] { "", "A", "Move:AB:1" });
+            int boundsCount = 0;
+            int repaintCount = 0;
+            w.BoundsOrVisibilityChanged += delegate { boundsCount++; };
+            w.RepaintRequested += delegate { repaintCount++; };
+
+            w.OnLegacyUiData("combo", new[] { "", "", "" });
+
+            Assert.Equal(0, boundsCount);
+            Assert.Equal(1, repaintCount);
+            Assert.True(w.Visible);
+            Assert.False(w.VisualVisibleForTest);
+        }
+
         [Fact]
         public void LegacyCmdNameNonEmpty_CachesPending_DoesNotShowInput()
         {
@@ -171,6 +208,58 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.True(w.IsHitState);
             Assert.True(repaintCount > 0);
+        }
+
+        [Fact]
+        public void NotchCombo_FromInput_RepaintsWithoutBounds()
+        {
+            ComboWidget w = MakeWidget();
+            w.OnLegacyUiData("combo", new[] { "", "A", "Move:AB:1" });
+            int boundsCount = 0;
+            int repaintCount = 0;
+            int animationCount = 0;
+            w.BoundsOrVisibilityChanged += delegate { boundsCount++; };
+            w.RepaintRequested += delegate { repaintCount++; };
+            w.AnimationStateChanged += delegate { animationCount++; };
+
+            w.OnNotchNotice("combo", "DFA Move", Color.Gold);
+
+            Assert.True(w.IsHitState);
+            Assert.Equal(0, boundsCount);
+            Assert.Equal(1, repaintCount);
+            Assert.Equal(1, animationCount);
+        }
+
+        [Fact]
+        public void NotchCombo_FromIdle_FiresBounds()
+        {
+            ComboWidget w = MakeWidget();
+            int boundsCount = 0;
+            int repaintCount = 0;
+            w.BoundsOrVisibilityChanged += delegate { boundsCount++; };
+            w.RepaintRequested += delegate { repaintCount++; };
+
+            w.OnNotchNotice("combo", "DFA Move", Color.Gold);
+
+            Assert.True(w.IsHitState);
+            Assert.Equal(1, boundsCount);
+            Assert.Equal(0, repaintCount);
+        }
+
+        [Fact]
+        public void NotchCombo_RepeatedHit_RestartsAnimation()
+        {
+            ComboWidget w = MakeWidget();
+            int animationCount = 0;
+            w.AnimationStateChanged += delegate { animationCount++; };
+
+            w.OnNotchNotice("combo", "DFA Move", Color.Gold);
+            w.AdvanceHitMs(100);
+            w.OnNotchNotice("combo", "DFA Move", Color.Gold);
+
+            Assert.True(w.IsHitState);
+            Assert.Equal(2, animationCount);
+            Assert.Equal(1200, w.HitRemainingMs);
         }
 
         [Fact]
@@ -248,6 +337,28 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void Hit_AdvancesToInput_RepaintsWithoutBounds()
+        {
+            ComboWidget w = MakeWidget();
+            w.OnLegacyUiData("combo", new[] { "", "A", "Move:AB:1" });
+            w.OnNotchNotice("combo", "DFA Move", Color.Gold);
+            int boundsCount = 0;
+            int repaintCount = 0;
+            int animationCount = 0;
+            w.BoundsOrVisibilityChanged += delegate { boundsCount++; };
+            w.RepaintRequested += delegate { repaintCount++; };
+            w.AnimationStateChanged += delegate { animationCount++; };
+
+            w.AdvanceHitMs(2000);
+
+            Assert.False(w.IsHitState);
+            Assert.Equal(ComboWidget.BarModeForTest.Input, w.TestMode);
+            Assert.Equal(0, boundsCount);
+            Assert.Equal(1, repaintCount);
+            Assert.Equal(1, animationCount);
+        }
+
+        [Fact]
         public void Hit_AdvancesToZero_WithoutInput_FallsBackToIdle()
         {
             ComboWidget w = MakeWidget();
@@ -256,7 +367,8 @@ namespace CF7Launcher.Tests.Guardian
             w.AdvanceHitMs(2000);
             Assert.False(w.IsHitState);
             Assert.Equal(ComboWidget.BarModeForTest.Idle, w.TestMode);
-            Assert.False(w.Visible);
+            Assert.True(w.Visible);
+            Assert.False(w.VisualVisibleForTest);
         }
 
         [Fact]
@@ -436,6 +548,98 @@ namespace CF7Launcher.Tests.Guardian
             int widthBase = w.MeasureWidthBase();
             // 仅断言宽度>0 且非 fallback MIN（修复前在 Scale=1 时一致；保护未来 Scale 改动不偷偷除小）
             Assert.True(widthBase >= 0);
+        }
+
+        [Fact]
+        public void PaintWidthBase_ShortInput_UsesNaturalWidth()
+        {
+            ComboWidget w = MakeWidget();
+            w.OnLegacyUiData("combo", new[] { "", "A", "" });
+
+            int widthBase = w.PaintWidthBaseForTest();
+
+            Assert.True(widthBase > 0);
+            Assert.True(widthBase < 160, "widthBase=" + widthBase + " should follow web natural content width, not the old 160/480 fixed bar");
+        }
+
+        [Fact]
+        public void PaintWidthBase_InputPreview_UsesCompactNativeSpacing()
+        {
+            ComboWidget w = MakeWidget();
+            w.OnLegacyUiData("combo", new[] { "", "→", "燃烧指节:→B:1" });
+
+            int widthBase = w.PaintWidthBaseForTest();
+
+            Assert.True(widthBase > 0);
+            Assert.True(widthBase < 100,
+                "widthBase=" + widthBase + " should keep native input previews tighter than the CSS-fidelity layout");
+        }
+
+        [Fact]
+        public void InputPreviewHarness_BurningKnuckle_JoinsTypedAndRemain()
+        {
+            ComboWidget w = MakeWidget();
+            w.OnLegacyUiData("combo", new[] { "", "→", "燃烧指节:→B:1" });
+
+            ComboWidget.InputLayoutProbe probe = w.InputPreviewProbeForTest();
+
+            Assert.False(float.IsNaN(probe.SequenceJoinGapBase));
+            Assert.False(float.IsNaN(probe.RemainToNameGapBase));
+            Assert.True(probe.SequenceJoinGapBase >= 1.5f && probe.SequenceJoinGapBase <= 2.5f,
+                "sequence gap=" + probe.SequenceJoinGapBase + " should keep typed and remain readable without looking detached");
+            Assert.True(probe.RemainToNameGapBase <= 2f,
+                "name gap=" + probe.RemainToNameGapBase + " should keep the name pill close without the old loose flex offset");
+            Assert.True(probe.BarWidthBase < 94,
+                "barWidth=" + probe.BarWidthBase + " should reproduce the screenshot case as a compact native preview");
+        }
+
+        [Fact]
+        public void InputPreviewHarness_BurningKnuckle_RenderedPixelsDoNotLeaveSequenceGap()
+        {
+            ComboWidget w = MakeWidget();
+            w.OnLegacyUiData("combo", new[] { "", "→", "燃烧指节:→B:1" });
+
+            ComboWidget.InputRenderProbe probe = w.InputPreviewRenderProbeForTest(2.5f);
+
+            Assert.True(probe.TypedInkRight >= 0, "typed ink should be visible in the render harness");
+            Assert.True(probe.RemainInkLeft >= 0, "remain ink should be visible in the render harness");
+            Assert.True(probe.SequenceInkGap >= 2 && probe.SequenceInkGap <= 8,
+                "rendered ink gap=" + probe.SequenceInkGap
+                + " typedRight=" + probe.TypedInkRight
+                + " remainLeft=" + probe.RemainInkLeft
+                + " typedLeft=" + probe.TypedInkLeft
+                + " remainRight=" + probe.RemainInkRight
+                + " size=" + probe.Width + "x" + probe.Height
+                + " should keep →B visually joined at fullscreen scale");
+        }
+
+        [Fact]
+        public void PaintWidthBase_HitPreview_UsesVisualPathMetrics()
+        {
+            ComboWidget w = MakeWidget();
+            w.OnLegacyUiData("combo", new[] { "", "→", "燃烧指节:→B:1" });
+            w.OnNotchNotice("combo", "DFA 燃烧指节", Color.Gold);
+
+            int widthBase = w.PaintWidthBaseForTest();
+            ComboWidget.HitLayoutProbe probe = w.HitPreviewProbeForTest();
+
+            Assert.Equal("→B", w.HitTyped);
+            Assert.True(widthBase > 0);
+            Assert.True(probe.SeqToNameGapBase <= 6f);
+            Assert.True(probe.SeqWidthBase > 28f,
+                "seqWidth=" + probe.SeqWidthBase + " should include readable hit-state spacing between → and B");
+            Assert.True(widthBase < 112,
+                "widthBase=" + widthBase + " should keep hit previews on the same visual path metrics as input");
+        }
+
+        [Fact]
+        public void PaintWidthBase_LongInput_ClampsToReservedSlot()
+        {
+            ComboWidget w = MakeWidget();
+            string longSeq = new string('A', 120);
+            w.OnLegacyUiData("combo", new[] { "", longSeq, "Move:" + longSeq + "B:1" });
+
+            Assert.Equal(480, w.PaintWidthBaseForTest());
         }
     }
 }

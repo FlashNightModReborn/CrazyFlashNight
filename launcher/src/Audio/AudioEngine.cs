@@ -103,9 +103,11 @@ namespace CF7Launcher.Audio
             if (result != 0)
             {
                 LogManager.Log("[Audio] ma_bridge_init failed: " + result);
+                PerfTrace.Mark("audio.init_failed", "rc=" + result);
                 return false;
             }
             LogManager.Log("[Audio] Engine initialized (basePath: " + projectRoot + ")");
+            PerfTrace.Mark("audio.init_done");
             return true;
         }
 
@@ -165,6 +167,8 @@ namespace CF7Launcher.Audio
 
             LogManager.Log("[Audio] SFX preload: " + loaded + " loaded, " + failed + " failed, "
                 + overridden + " overridden (scanned " + SFX_PACK_ORDER.Length + " packs)");
+            PerfTrace.Mark("audio.sfx_preload_done",
+                "loaded=" + loaded + " failed=" + failed + " overridden=" + overridden);
             return loaded;
         }
 

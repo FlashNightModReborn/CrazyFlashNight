@@ -240,6 +240,10 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void StartGame(string slot, bool deferJsReveal, bool requireFlashReveal)
         {
+            PerfTrace.Mark("launch.start_game",
+                "slot=" + slot
+                + " deferJsReveal=" + deferJsReveal
+                + " requireFlashReveal=" + requireFlashReveal);
             // Phase C protocol v2: 锁外解析存档决议。避免在握手状态锁里做文件 I/O。
             // SolResolver 自身线程安全（使用 ArchiveTask 的 _lock）。
             CF7Launcher.Save.SolResolveResult resolved = null;
@@ -371,6 +375,7 @@ namespace CF7Launcher.Guardian
                 CancelWaitTimerLocked();
                 CancelZombieTimerLocked();
                 LogManager.Log("[Prewarm] triggered attemptId=" + _currentAttemptId);
+                PerfTrace.Mark("launch.prewarm_triggered", "attemptId=" + _currentAttemptId);
                 TransitionToSpawning();
                 ArmPrewarmDeadlineLocked(_currentAttemptId);
             }
@@ -815,6 +820,7 @@ namespace CF7Launcher.Guardian
             if (_revealWaitingFlash) return;
             _revealPerformed = true;
             CancelFlashRevealWatchdogLocked();
+            PerfTrace.Mark("launch.reveal_start", "attemptId=" + _currentAttemptId);
             LogManager.Log("[LaunchFlow] performing reveal (panel swap)");
             RunOnUi(delegate { DoPerformReveal(); });
         }
@@ -839,6 +845,7 @@ namespace CF7Launcher.Guardian
             catch (Exception ex) { LogManager.Log("[LaunchFlow] release bootstrap BGM gate error: " + ex.Message); }
             try { if (_hotkeyGuardSpawn != null) _hotkeyGuardSpawn(); }
             catch (Exception ex) { LogManager.Log("[LaunchFlow] hotkeyGuardSpawn error: " + ex.Message); }
+            PerfTrace.Mark("launch.reveal_done");
         }
 
         // ==================== Phase 2b-ext: Reveal signal receivers ====================
@@ -854,6 +861,7 @@ namespace CF7Launcher.Guardian
                     return;
                 }
                 _revealWaitingJs = false;
+                PerfTrace.Mark("launch.js_reveal_ready", "attemptId=" + _currentAttemptId);
                 LogManager.Log("[LaunchFlow] OnJsRevealOk: JS reveal cleared");
                 TryPerformRevealLocked();
             }
@@ -883,6 +891,7 @@ namespace CF7Launcher.Guardian
                 }
                 _revealWaitingFlash = false;
                 shouldNotifyFrontend = true;
+                PerfTrace.Mark("launch.flash_reveal_ready", "attemptId=" + attemptId);
                 LogManager.Log("[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared");
                 TryPerformRevealLocked();
             }
@@ -924,6 +933,7 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[LaunchFlow] Flash reveal watchdog fired after "
                     + FLASH_REVEAL_WATCHDOG_MS + "ms, force-revealing (SWF 可能未部署 sendRevealReady)");
                 _revealWaitingFlash = false;
+                PerfTrace.Mark("launch.flash_reveal_watchdog", "attemptId=" + attemptIdSnap);
                 TryPerformRevealLocked();
             }
         }
@@ -1060,6 +1070,7 @@ namespace CF7Launcher.Guardian
                         + (attemptId ?? "null") + " expected=" + _currentAttemptId);
                     return null;
                 }
+                PerfTrace.Mark("launch.bootstrap_ready", "attemptId=" + attemptId);
                 if (_state != State.WaitingGameReady)
                 {
                     // 提前到达，按 attemptId 缓存（不变式 #8）
@@ -1076,6 +1087,7 @@ namespace CF7Launcher.Guardian
         private void OnEmbedResult(bool success)
         {
             LogManager.Log("[LaunchFlow] OnEmbedResult=" + success);
+            PerfTrace.Mark("launch.embed_result", "success=" + success);
             lock (_stateLock)
             {
                 if (_state != State.Embedding) return;  // 旧事件 / 状态已变
@@ -1328,6 +1340,10 @@ namespace CF7Launcher.Guardian
             _timerGen++;
             LogManager.Log("[LaunchFlow] " + prev + " -> " + next
                 + (string.IsNullOrEmpty(msg) ? "" : " (" + msg + ")"));
+            PerfTrace.Counter("launch.state." + next.ToString());
+            PerfTrace.Mark("launch.state",
+                prev.ToString() + "->" + next.ToString()
+                + (string.IsNullOrEmpty(msg) ? "" : " " + msg));
             Action<string, string, bool> handler = OnStateChanged;
             if (handler != null)
             {

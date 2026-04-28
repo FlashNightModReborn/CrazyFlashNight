@@ -123,6 +123,18 @@ namespace CF7Launcher.Tests.Guardian
         // 否则每帧 BeginInvoke + DispatchLegacy 即便 widget 内 switch 默认 return，仍污染 UI 线程预算。
 
         [Fact]
+        public void ComputeAnimationDelta_FirstTick_UsesFrameDelta()
+        {
+            Assert.Equal(16, NativeHudOverlay.ComputeAnimationDeltaForTest(0, 1000));
+        }
+
+        [Fact]
+        public void ComputeAnimationDelta_LongUiGap_IsCapped()
+        {
+            Assert.Equal(50, NativeHudOverlay.ComputeAnimationDeltaForTest(1000, 5000));
+        }
+
+        [Fact]
         public void BuildLegacyTypeSet_NullOrEmpty_ReturnsEmpty()
         {
             Assert.Empty(NativeHudOverlay.BuildLegacyTypeSet(null));

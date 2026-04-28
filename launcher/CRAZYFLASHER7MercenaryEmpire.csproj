@@ -76,6 +76,7 @@
     <Compile Include="src\Guardian\Handlers\ConfigCommandHandler.cs" />
     <Compile Include="src\Guardian\GuardianContext.cs" />
     <Compile Include="src\Guardian\LogManager.cs" />
+    <Compile Include="src\Guardian\PerfTrace.cs" />
     <Compile Include="src\Bus\PortAllocator.cs" />
     <Compile Include="src\Bus\FlashPolicyHandler.cs" />
     <Compile Include="src\Bus\MessageRouter.cs" />

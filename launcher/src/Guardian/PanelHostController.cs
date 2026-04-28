@@ -317,6 +317,8 @@ namespace CF7Launcher.Guardian
 
         private void DoOpen(string name, string initDataJson)
         {
+            long perfStart = System.Diagnostics.Stopwatch.GetTimestamp();
+            PerfTrace.Mark("panel.open_start", name);
             Rectangle anchor = ComputeAnchorScreenRect();
             Rectangle panelRect = PanelLayoutCatalog.GetRect(name, anchor);
 
@@ -351,6 +353,9 @@ namespace CF7Launcher.Guardian
 
             _activePanel = name;
             LogManager.Log("[PanelHost] opened: " + name + " rect=" + panelRect.Width + "x" + panelRect.Height);
+            PerfTrace.Duration("panel.open", perfStart,
+                name + " rect=" + panelRect.Width + "x" + panelRect.Height);
+            PerfTrace.FlushCounters("panel_open:" + name);
         }
 
         private Control GetFlashPanelOrNull()
@@ -445,7 +450,9 @@ namespace CF7Launcher.Guardian
 
         private void DoClose()
         {
+            long perfStart = System.Diagnostics.Stopwatch.GetTimestamp();
             string closingName = _activePanel;
+            PerfTrace.Mark("panel.close_start", closingName ?? "<null>");
             // Step 0: 取消 owner 跟随订阅（先于 SuspendAfterPanel，防止 SW_HIDE 触发的 LocationChanged 误触发 reposition）
             UnsubscribeOwnerLayout();
             // Step 1: WebOverlay 收尾（Phase 1 stub：SW_HIDE）
@@ -476,6 +483,8 @@ namespace CF7Launcher.Guardian
 
             _activePanel = null;
             LogManager.Log("[PanelHost] closed: " + (closingName ?? "<null>"));
+            PerfTrace.Duration("panel.close", perfStart, closingName ?? "<null>");
+            PerfTrace.FlushCounters("panel_close:" + (closingName ?? "<null>"));
         }
 
         private void ReTopOverlay(Form f)

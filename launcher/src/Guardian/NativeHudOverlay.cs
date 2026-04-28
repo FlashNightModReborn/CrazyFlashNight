@@ -50,6 +50,11 @@ namespace CF7Launcher.Guardian
         private int _composedH;
 
         private Timer _animTick;
+        private Timer _renderCoalesceTimer;
+        private bool _renderPending;
+        private int _lastCommitTick;
+        private const int RENDER_MIN_INTERVAL_MS = 33;
+        private const int ANIM_TICK_MAX_DELTA_MS = 50;
         private int _padding = 6;
         private bool _suspendedForPanel;
         private bool _ready;
@@ -68,6 +73,9 @@ namespace CF7Launcher.Guardian
             _animTick = new Timer();
             _animTick.Interval = 16;
             _animTick.Tick += OnAnimTick;
+            _renderCoalesceTimer = new Timer();
+            _renderCoalesceTimer.Interval = RENDER_MIN_INTERVAL_MS;
+            _renderCoalesceTimer.Tick += OnRenderCoalesceTick;
             // 默认 stopped；MaybeStartTick 在 widget enroll 时启
         }
 
@@ -95,6 +103,9 @@ namespace CF7Launcher.Guardian
         {
             _suspendedForPanel = true;
             if (_animTick != null) _animTick.Stop();
+            _lastTickMs = 0;
+            if (_renderCoalesceTimer != null) _renderCoalesceTimer.Stop();
+            _renderPending = false;
             DismissOverlay();
         }
 
@@ -203,6 +214,8 @@ namespace CF7Launcher.Guardian
 
         private void OnWidgetBoundsChanged(object sender, EventArgs e)
         {
+            PerfTrace.Counter("nativeHud.boundsChanged");
+            CounterByWidget("nativeHud.boundsSource", sender);
             if (this.IsHandleCreated && this.InvokeRequired)
             {
                 try { this.BeginInvoke(new Action(RecomputeBounds)); } catch { }
@@ -213,16 +226,20 @@ namespace CF7Launcher.Guardian
 
         private void OnWidgetRepaintRequested(object sender, EventArgs e)
         {
+            PerfTrace.Counter("nativeHud.repaintRequested");
+            CounterByWidget("nativeHud.repaintSource", sender);
+            string source = GetWidgetCounterName(sender);
             if (this.IsHandleCreated && this.InvokeRequired)
             {
-                try { this.BeginInvoke(new Action(RenderToBitmapAndCommit)); } catch { }
+                try { this.BeginInvoke(new Action(delegate { RequestRenderFromUi(source); })); } catch { }
                 return;
             }
-            RenderToBitmapAndCommit();
+            RequestRenderFromUi(source);
         }
 
         private void OnWidgetAnimationStateChanged(object sender, EventArgs e)
         {
+            CounterByWidget("nativeHud.animStateSource", sender);
             if (this.IsHandleCreated && this.InvokeRequired)
             {
                 try { this.BeginInvoke(new Action(MaybeStartTick)); } catch { }
@@ -331,6 +348,8 @@ namespace CF7Launcher.Guardian
                 // 直接 SW_SHOWNOACTIVATE 强制显示；ShowWindow 不改 z-order，上面 insertAfter 排序保留。
                 try { ShowWindow(this.Handle, SW_SHOWNOACTIVATE); } catch { }
             }
+            _renderPending = false;
+            if (_renderCoalesceTimer != null) _renderCoalesceTimer.Stop();
             RenderToBitmapAndCommit();
             MaybeStartTick();
         }
@@ -353,6 +372,7 @@ namespace CF7Launcher.Guardian
             INativeHudWidget[] snapshot;
             lock (_widgetsLock) { snapshot = _widgets.ToArray(); }
 
+            int painted = 0;
             using (Graphics g = Graphics.FromImage(_composedBitmap))
             {
                 g.CompositingMode = CompositingMode.SourceCopy;
@@ -365,12 +385,78 @@ namespace CF7Launcher.Guardian
                 {
                     INativeHudWidget w = snapshot[i];
                     if (!w.Visible) continue;
+                    painted++;
+                    CounterByWidget("nativeHud.paintSource", w);
                     try { w.Paint(g, 1.0f, _hudOrigin); }
                     catch (Exception ex) { LogManager.Log("[NativeHud] widget Paint throw: " + ex.Message); }
                 }
             }
 
             CommitBitmap(_composedBitmap, _hudOrigin.X, _hudOrigin.Y, 255);
+            _lastCommitTick = Environment.TickCount;
+            PerfTrace.Counter("nativeHud.commit");
+            if (painted > 0)
+                PerfTrace.Counter("nativeHud.paintWidget", painted);
+        }
+
+        private void RequestRenderFromUi(string source)
+        {
+            if (!_ready || _suspendedForPanel) return;
+            if (_composedBitmap == null) return;
+            if (!string.IsNullOrEmpty(source))
+                PerfTrace.Counter("nativeHud.renderQueued." + source);
+
+            _renderPending = true;
+            int now = Environment.TickCount;
+            int elapsed = _lastCommitTick == 0 ? RENDER_MIN_INTERVAL_MS : unchecked(now - _lastCommitTick);
+            int delay = elapsed >= RENDER_MIN_INTERVAL_MS ? 1 : RENDER_MIN_INTERVAL_MS - elapsed;
+            delay = Math.Max(1, Math.Min(RENDER_MIN_INTERVAL_MS, delay));
+            if (_renderCoalesceTimer != null)
+            {
+                _renderCoalesceTimer.Interval = delay;
+                if (!_renderCoalesceTimer.Enabled)
+                    _renderCoalesceTimer.Start();
+            }
+        }
+
+        private void OnRenderCoalesceTick(object sender, EventArgs e)
+        {
+            if (_renderCoalesceTimer != null)
+                _renderCoalesceTimer.Stop();
+            if (!_renderPending) return;
+            if (!_ready || _suspendedForPanel || _composedBitmap == null)
+            {
+                _renderPending = false;
+                return;
+            }
+
+            int elapsed = _lastCommitTick == 0
+                ? RENDER_MIN_INTERVAL_MS
+                : unchecked(Environment.TickCount - _lastCommitTick);
+            if (elapsed < RENDER_MIN_INTERVAL_MS)
+            {
+                if (_renderCoalesceTimer != null)
+                {
+                    _renderCoalesceTimer.Interval = Math.Max(1, RENDER_MIN_INTERVAL_MS - elapsed);
+                    _renderCoalesceTimer.Start();
+                }
+                return;
+            }
+
+            _renderPending = false;
+            RenderToBitmapAndCommit();
+        }
+
+        private static string GetWidgetCounterName(object widget)
+        {
+            if (widget == null) return "unknown";
+            string name = widget.GetType().Name;
+            return string.IsNullOrEmpty(name) ? "unknown" : name;
+        }
+
+        private static void CounterByWidget(string prefix, object widget)
+        {
+            PerfTrace.Counter(prefix + "." + GetWidgetCounterName(widget));
         }
 
         private void MaybeStartTick()
@@ -382,15 +468,24 @@ namespace CF7Launcher.Guardian
             lock (_widgetsLock) { snapshot = _widgets.ToArray(); }
 
             bool wantsTick = ShouldRunAnimationTick(snapshot);
-            if (wantsTick && !_animTick.Enabled) _animTick.Start();
-            else if (!wantsTick && _animTick.Enabled) _animTick.Stop();
+            if (wantsTick && !_animTick.Enabled)
+            {
+                _lastTickMs = 0;
+                _animTick.Start();
+            }
+            else if (!wantsTick && _animTick.Enabled)
+            {
+                _animTick.Stop();
+                _lastTickMs = 0;
+            }
         }
 
         private int _lastTickMs;
         private void OnAnimTick(object sender, EventArgs e)
         {
+            PerfTrace.Counter("nativeHud.animTick");
             int now = Environment.TickCount;
-            int delta = _lastTickMs == 0 ? 16 : Math.Max(1, now - _lastTickMs);
+            int delta = ComputeAnimationDeltaForTest(_lastTickMs, now);
             _lastTickMs = now;
 
             INativeHudWidget[] snapshot;
@@ -400,6 +495,7 @@ namespace CF7Launcher.Guardian
             {
                 INativeHudWidget w = snapshot[i];
                 if (!w.Visible || !w.WantsAnimationTick) continue;
+                CounterByWidget("nativeHud.tickSource", w);
                 try { w.Tick(delta); }
                 catch (Exception ex) { LogManager.Log("[NativeHud] widget Tick throw: " + ex.Message); }
             }
@@ -407,6 +503,13 @@ namespace CF7Launcher.Guardian
             // 或 BoundsOrVisibilityChanged；这里无条件 Commit 会在 BGM mini wave / combo hit 期间
             // 以 60fps 重绘整个 HUD union，连同小地图 PNG 剪影一起占用 UI 线程和 GDI CPU。
             MaybeStartTick();
+        }
+
+        internal static int ComputeAnimationDeltaForTest(int lastTickMs, int now)
+        {
+            if (lastTickMs == 0) return 16;
+            int delta = Math.Max(1, unchecked(now - lastTickMs));
+            return Math.Min(delta, ANIM_TICK_MAX_DELTA_MS);
         }
 
         #endregion
@@ -438,6 +541,7 @@ namespace CF7Launcher.Guardian
                 lock (_widgetsLock) { typeRegistered = _registeredLegacyTypes.Contains(legacyType); }
                 if (!typeRegistered) return;
                 if (!this.IsHandleCreated) return;
+                PerfTrace.Counter("nativeHud.uiLegacy");
                 string capturedType = legacyType;
                 string[] capturedFields = legacyFields;
                 try
@@ -472,6 +576,8 @@ namespace CF7Launcher.Guardian
                 // 拷贝快照传给 UI 线程，避免 socket 线程后续修改时 widget 读到并发状态
                 snapshotCopy = new Dictionary<string, string>(_uiDataSnapshot);
             }
+            PerfTrace.Counter("nativeHud.uiPacket");
+            PerfTrace.Counter("nativeHud.uiChangedKeys", changedKeys.Count);
 
             if (!this.IsHandleCreated) return;
             try
@@ -489,13 +595,17 @@ namespace CF7Launcher.Guardian
             INativeHudWidget[] widgetSnapshot;
             lock (_widgetsLock) { widgetSnapshot = _widgets.ToArray(); }
 
+            int dispatched = 0;
             for (int i = 0; i < widgetSnapshot.Length; i++)
             {
                 IUiDataConsumer consumer = widgetSnapshot[i] as IUiDataConsumer;
                 if (consumer == null) continue;
+                dispatched++;
                 try { consumer.OnUiDataChanged(snapshot, changedKeys); }
                 catch (Exception ex) { LogManager.Log("[NativeHud] widget UiData throw: " + ex.Message); }
             }
+            if (dispatched > 0)
+                PerfTrace.Counter("nativeHud.dispatchUi", dispatched);
         }
 
         private void DispatchLegacyUiDataToWidgets(string type, string[] fields)
@@ -503,13 +613,17 @@ namespace CF7Launcher.Guardian
             INativeHudWidget[] widgetSnapshot;
             lock (_widgetsLock) { widgetSnapshot = _widgets.ToArray(); }
 
+            int dispatched = 0;
             for (int i = 0; i < widgetSnapshot.Length; i++)
             {
                 IUiDataLegacyConsumer consumer = widgetSnapshot[i] as IUiDataLegacyConsumer;
                 if (consumer == null) continue;
+                dispatched++;
                 try { consumer.OnLegacyUiData(type, fields); }
                 catch (Exception ex) { LogManager.Log("[NativeHud] widget LegacyUiData throw: " + ex.Message); }
             }
+            if (dispatched > 0)
+                PerfTrace.Counter("nativeHud.dispatchLegacy", dispatched);
         }
 
         #endregion
@@ -765,6 +879,7 @@ namespace CF7Launcher.Guardian
             if (disposing)
             {
                 if (_animTick != null) { _animTick.Stop(); _animTick.Dispose(); _animTick = null; }
+                if (_renderCoalesceTimer != null) { _renderCoalesceTimer.Stop(); _renderCoalesceTimer.Dispose(); _renderCoalesceTimer = null; }
                 if (_composedBitmap != null) { _composedBitmap.Dispose(); _composedBitmap = null; }
             }
             base.Dispose(disposing);

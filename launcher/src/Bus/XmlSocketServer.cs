@@ -40,6 +40,10 @@ namespace CF7Launcher.Bus
         // 业务就绪标记：policy 握手完成后的首条业务消息时触发
         private volatile bool _clientReady;
 
+        private int _frameUiLogCount;
+        private int _frameUiLastLogTick;
+        private const int FRAME_UI_LOG_INTERVAL_MS = 5000;
+
         /// <summary>业务就绪事件：Flash policy 握手完成后、首条业务消息到达时触发。</summary>
         public event Action OnClientReady;
 
@@ -107,6 +111,7 @@ namespace CF7Launcher.Bus
                     TcpClient client = _listener.AcceptTcpClient();
                     client.NoDelay = true; // 禁用 Nagle：frame 消息需要低延迟
                     LogManager.Log("[XmlSocket] Client connected (NoDelay=true)");
+                    PerfTrace.Mark("socket.client_connected");
 
                     int gen;
                     lock (_clientLock)
@@ -226,6 +231,7 @@ namespace CF7Launcher.Bus
             if (!_clientReady && message.Length > 0 && !FlashPolicyHandler.IsPolicyRequest(message))
             {
                 _clientReady = true;
+                PerfTrace.Mark("socket.client_ready");
                 if (OnClientReady != null)
                 {
                     try { OnClientReady(); }
@@ -240,6 +246,7 @@ namespace CF7Launcher.Bus
 
                 if (prefix == 'F')
                 {
+                    PerfTrace.Counter("socket.fastlane.F");
                     // Frame 快车道：F{cam}\x01{hn}[\x02{fps}][\x03{uiState}][\x04{inputPayload}]
                     if (_frameTask == null) return;
 
@@ -291,7 +298,8 @@ namespace CF7Launcher.Bus
                     // UI 状态段透传到 WebView2（与帧渲染同步）
                     if (uiState != null && uiState.Length > 0)
                     {
-                        LogManager.Log("[Frame:UI] " + uiState);
+                        PerfTrace.Counter("socket.frame_ui");
+                        LogFrameUiSample(uiState);
                         if (_uiDataHandler != null)
                             _uiDataHandler(uiState);
                         if (uiState.StartsWith("bench:"))
@@ -309,6 +317,7 @@ namespace CF7Launcher.Bus
 
                 if (prefix == 'R')
                 {
+                    PerfTrace.Counter("socket.fastlane.R");
                     // hn_reset 快车道
                     if (_frameTask == null) return;
                     _frameTask.HandleReset();
@@ -317,6 +326,7 @@ namespace CF7Launcher.Bus
 
                 if (prefix == 'S')
                 {
+                    PerfTrace.Counter("socket.fastlane.S");
                     // SFX 快车道：同步分发（单线程，与 ReadLoop 串行）。
                     // Flash 侧已将 S 消息调序到 F 之前发送，确保同批次内音效优先处理。
                     CF7Launcher.Tasks.AudioTask.HandleSfxFastLane(message);
@@ -325,6 +335,7 @@ namespace CF7Launcher.Bus
 
                 if (prefix == 'B')
                 {
+                    PerfTrace.Counter("socket.fastlane.B");
                     // Benchmark fast-lane echo. Returns via existing K prefix so
                     // AS2 smoke tests can observe the ack without production code
                     // changes. Payload is mirrored into K.hints.
@@ -339,6 +350,7 @@ namespace CF7Launcher.Bus
 
                 if (prefix == 'N')
                 {
+                    PerfTrace.Counter("socket.fastlane.N");
                     // Notice 快车道：N{category}|{colorHex}|{text}
                     // 例如 Nperf|ffcc00|⚡ 性能等级: [2] 26 FPS
                     if (_notchOverlay == null) return;
@@ -366,6 +378,7 @@ namespace CF7Launcher.Bus
 
                 if (prefix == 'W')
                 {
+                    PerfTrace.Counter("socket.fastlane.W");
                     // Wave timer 快车道：W{wave}|{total}|{mmss}|{state} 或 W隐藏
                     if (_notchOverlay == null) return;
                     string payload = message.Substring(1);
@@ -409,6 +422,7 @@ namespace CF7Launcher.Bus
 
                 if (prefix == 'U')
                 {
+                    PerfTrace.Counter("socket.fastlane.U");
                     // UI 数据快车道：U{type}|{payload...}
                     // 零解析，整条 payload 转发给 WebView2 层
                     if (_uiDataHandler != null)
@@ -418,6 +432,7 @@ namespace CF7Launcher.Bus
 
                 if (prefix == 'D')
                 {
+                    PerfTrace.Counter("socket.fastlane.D");
                     // DFA 数据同步：D{moduleId}\x01{json}
                     if (_frameTask == null) return;
                     string dPayload = message.Substring(1);
@@ -438,6 +453,7 @@ namespace CF7Launcher.Bus
             }
 
             // === 通用路由：JSON 消息 ===
+            PerfTrace.Counter("socket.json");
             if (message.Length < 500)
                 LogManager.Log("[XmlSocket:JSON] " + message);
             else
@@ -462,6 +478,18 @@ namespace CF7Launcher.Bus
 
             if (response != null)
                 TrySendIfGen(response + "\0", respGen);
+        }
+
+        private void LogFrameUiSample(string uiState)
+        {
+            int count = Interlocked.Increment(ref _frameUiLogCount);
+            int now = Environment.TickCount;
+            int last = _frameUiLastLogTick;
+            if (count <= 3 || unchecked(now - last) >= FRAME_UI_LOG_INTERVAL_MS)
+            {
+                _frameUiLastLogTick = now;
+                LogManager.Log("[Frame:UI] sample count=" + count + " " + uiState);
+            }
         }
 
         /// <summary>

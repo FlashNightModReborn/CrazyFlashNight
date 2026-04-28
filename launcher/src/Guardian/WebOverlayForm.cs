@@ -794,6 +794,7 @@ namespace CF7Launcher.Guardian
                 controller.BoundsMode = CoreWebView2BoundsMode.UseRawPixels;
                 controller.SetBoundsAndZoomFactor(localBounds, zoom);
                 controller.NotifyParentWindowPositionChanged();
+                PerfTrace.Counter("webOverlay.controllerBoundsSync");
                 if (_panelMode)
                     controller.IsVisible = true;
                 if (forceLog || IsPanelMetricsReason(reason))
@@ -1148,6 +1149,7 @@ namespace CF7Launcher.Guardian
 
         private void SchedulePanelViewportRepair(string reason)
         {
+            PerfTrace.Counter("webOverlay.panelViewportRepair");
             _panelViewportRepairAttempts++;
             int attempt = _panelViewportRepairAttempts;
             try
@@ -2246,15 +2248,14 @@ namespace CF7Launcher.Guardian
             _toastReady = true;
             if (_useNativeHud)
             {
+                PerfTrace.Mark("webOverlay.set_ready_native");
                 ActivateFallback();
                 if (_cursorOverlay != null)
                     _cursorOverlay.SetReady();
                 if (_webReady)
                 {
-                    SyncPosition("set_ready_native");
                     HideWebHudDomForNativeHud();
                     EnsureCursorTimer();
-                    RequestViewportMetrics("set_ready_native");
                     ScheduleNativeHudIdleSuspend("set_ready");
                 }
                 return;
@@ -2460,6 +2461,8 @@ namespace CF7Launcher.Guardian
         public void ResumeForPanel(Rectangle panelRectScreen)
         {
             if (_disposed) return;
+            PerfTrace.Mark("webOverlay.panel_resume",
+                panelRectScreen.Width + "x" + panelRectScreen.Height);
             _panelMode = true;
             _frozenForIdle = false;
             _nativeHudIdleSuspendPending = false;
@@ -2649,6 +2652,7 @@ namespace CF7Launcher.Guardian
 
         private void DoForceIdleSequence()
         {
+            PerfTrace.Mark("webOverlay.idle_sequence", _useNativeHud ? "full" : "soft");
             _panelMode = false;
 
             // Phase 4 收尾：useNativeHud=true 时所有常驻 HUD 已迁到 C# widget

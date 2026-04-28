@@ -31,6 +31,8 @@ class Program
     [STAThread]
     static int Main(string[] args)
     {
+        long processStart = Stopwatch.GetTimestamp();
+        PerfTrace.SetProcessStart(processStart);
         DpiAwarenessBootstrap.Initialize();
 
         // 单例检查
@@ -67,11 +69,14 @@ class Program
         // 定位项目根目录（EXE 所在目录）
         string exePath = typeof(Program).Assembly.Location;
         string projectRoot = Path.GetDirectoryName(exePath);
+        PerfTrace.Init(projectRoot);
+        PerfTrace.Mark("guardian.run_start");
 
         // Phase 1 (11b-β): WebView2 全局硬依赖 fail-closed 预检.
         // 正常模式必须 WebView2 Runtime 可用才能创建 BootstrapForm; bus-only 跳过.
         if (!busOnly)
         {
+            long wv2CheckStart = Stopwatch.GetTimestamp();
             string wv2Error = null;
             if (forceWebViewFail)
             {
@@ -82,6 +87,8 @@ class Program
                 try { CoreWebView2Environment.GetAvailableBrowserVersionString(); }
                 catch (Exception ex) { wv2Error = ex.Message; }
             }
+            PerfTrace.Duration("webview2.runtime_precheck", wv2CheckStart,
+                wv2Error == null ? "ok" : wv2Error);
             if (wv2Error != null)
             {
                 MessageBox.Show(
@@ -91,22 +98,31 @@ class Program
                     + "详情: " + wv2Error,
                     "CF7:ME - WebView2 缺失",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+                PerfTrace.Mark("guardian.exit", "webview2_missing");
+                PerfTrace.Shutdown();
                 return 1;
             }
         }
 
         // Phase A: single-Form 模型。GuardianForm 承载 BootstrapPanel（正常模式）。
         // bus-only 模式 bootstrapWebDir=null，不创建 BootstrapPanel，FlashHostPanel 直接可见。
+        long configStart = Stopwatch.GetTimestamp();
         AppConfig config = new AppConfig(projectRoot);
+        PerfTrace.Duration("config.load", configStart);
 
         string bootstrapWebDir = busOnly ? null : Path.Combine(projectRoot, "launcher", "web");
+        long formStart = Stopwatch.GetTimestamp();
         GuardianForm form = new GuardianForm(
             bootstrapWebDir,
             config.WebView2DisableGpu,
             config.WebView2AdditionalArgs);
+        PerfTrace.Duration("guardian.form_construct", formStart);
+        PerfTrace.Mark("guardian.form_constructed");
 
         // 启用文件日志（GuardianForm 构造函数中已初始化 UI 日志，这里补充文件通道）
         LogManager.InitFileLog(projectRoot);
+        if (!string.IsNullOrEmpty(PerfTrace.TracePath))
+            LogManager.Log("[PerfTrace] writing " + PerfTrace.TracePath);
 
         LogManager.Log("[Guardian] Project root: " + projectRoot);
 
@@ -140,6 +156,8 @@ class Program
                 ShowError("Steam runtime files are missing or corrupted.\nPlease verify game files through Steam.");
             else
                 ShowError("Steam ownership verification failed.\nPlease launch the game from Steam.");
+            PerfTrace.Mark("guardian.exit", "steam_ownership_failed");
+            PerfTrace.Shutdown();
             return 1;
         }
 
@@ -170,15 +188,25 @@ class Program
         }
 
         // === 音频引擎（在所有网络服务之前初始化）===
-        CF7Launcher.Audio.AudioEngine.Init(projectRoot);
-        CF7Launcher.Audio.AudioEngine.PreloadFromDirectories(projectRoot);
+        using (PerfTrace.Scope("audio.init"))
+        {
+            CF7Launcher.Audio.AudioEngine.Init(projectRoot);
+        }
+        using (PerfTrace.Scope("audio.sfx_preload"))
+        {
+            CF7Launcher.Audio.AudioEngine.PreloadFromDirectories(projectRoot);
+        }
 
         // 默认音量（直接 P/Invoke，不依赖 Flash socket）
         // Flash 存档加载后会通过 setGlobalVolume/setBGMVolume 覆盖
         CF7Launcher.Audio.AudioEngine.ma_bridge_set_master_volume(0.5f);  // 50%
 
         // === 音乐目录（扫描 + 热加载监听）===
-        var musicCatalog = new CF7Launcher.Audio.MusicCatalog(projectRoot);
+        CF7Launcher.Audio.MusicCatalog musicCatalog;
+        using (PerfTrace.Scope("music.catalog_init"))
+        {
+            musicCatalog = new CF7Launcher.Audio.MusicCatalog(projectRoot);
+        }
 
         // === V8 总线（两种模式都启动）===
 
@@ -189,7 +217,15 @@ class Program
 
         XmlSocketServer socketServer = new XmlSocketServer(router);
         int socketPort = portAlloc.ClaimPort();
-        if (socketPort < 0 || !socketServer.Start(socketPort))
+        bool socketStarted = false;
+        if (socketPort >= 0)
+        {
+            using (PerfTrace.Scope("socket.start"))
+            {
+                socketStarted = socketServer.Start(socketPort);
+            }
+        }
+        if (socketPort < 0 || !socketStarted)
         {
             ShowError("XMLSocket server failed to start.\nNo available port found.");
             socketServer.Dispose();
@@ -197,7 +233,15 @@ class Program
         }
 
         HttpApiServer httpServer = new HttpApiServer(socketPort, projectRoot, socketServer);
-        if (httpPort < 0 || !httpServer.Start(httpPort))
+        bool httpStarted = false;
+        if (httpPort >= 0)
+        {
+            using (PerfTrace.Scope("http.start"))
+            {
+                httpStarted = httpServer.Start(httpPort);
+            }
+        }
+        if (httpPort < 0 || !httpStarted)
         {
             ShowError("HTTP server failed to start on port " + httpPort + ".\nAnother instance may be running.");
             socketServer.Dispose();
@@ -228,7 +272,11 @@ class Program
 
         // V8 持久化 Runtime + 打击伤害数字 overlay
         string scriptsDir = Path.Combine(projectRoot, "launcher", "scripts");
-        V8Runtime v8Runtime = new V8Runtime(scriptsDir);
+        V8Runtime v8Runtime;
+        using (PerfTrace.Scope("v8.construct"))
+        {
+            v8Runtime = new V8Runtime(scriptsDir);
+        }
         HitNumberOverlay hnOverlay = new HitNumberOverlay(form, form.FlashHostPanel);
         FrameTask frameTask = new FrameTask(v8Runtime, hnOverlay);
 
@@ -239,7 +287,10 @@ class Program
 
         // 搓招输入处理：注入 socket 引用用于 K 前缀推送，初始化 V8 GameInput
         frameTask.SetSocket(socketServer);
-        v8Runtime.InitGameInput();
+        using (PerfTrace.Scope("v8.game_input_init"))
+        {
+            v8Runtime.InitGameInput();
+        }
 
         // 刘海 Notch overlay（FPS 显示 + 可展开工具栏）
         NotchOverlay notchOverlay = new NotchOverlay(
@@ -251,16 +302,24 @@ class Program
             new Action<Keys>(form.HandleButtonClick));
 
         // Phase 1 (11c): WebView2 全局硬依赖; 入口已预检, 这里 WebOverlayForm 构造异常直接 throw 到上游
-        string wv2ver = CoreWebView2Environment.GetAvailableBrowserVersionString();
+        string wv2ver;
+        using (PerfTrace.Scope("webview2.runtime_check"))
+        {
+            wv2ver = CoreWebView2Environment.GetAvailableBrowserVersionString();
+        }
         LogManager.Log("[WebView2] Runtime found: " + wv2ver);
         string webDir = Path.Combine(projectRoot, "launcher", "web");
-        WebOverlayForm webOverlay = new WebOverlayForm(form, form.FlashHostPanel, webDir,
-            config.WebOverlayLowEffects,
-            config.WebOverlayDisableCssAnimations,
-            config.WebOverlayDisableVisualizers,
-            config.WebOverlayFrameRateLimit,
-            config.WebView2DisableGpu,
-            config.WebView2AdditionalArgs);
+        WebOverlayForm webOverlay;
+        using (PerfTrace.Scope("web_overlay.construct"))
+        {
+            webOverlay = new WebOverlayForm(form, form.FlashHostPanel, webDir,
+                config.WebOverlayLowEffects,
+                config.WebOverlayDisableCssAnimations,
+                config.WebOverlayDisableVisualizers,
+                config.WebOverlayFrameRateLimit,
+                config.WebView2DisableGpu,
+                config.WebView2AdditionalArgs);
+        }
         CursorOverlayForm cursorOverlay = null;
         if (config.NativeCursorOverlayEnabled)
         {
@@ -399,10 +458,12 @@ class Program
             socketServer.SetUiDataHandler(uiDataTee);
             frameTask.SetUiDataHandler(uiDataTee);
             LogManager.Log("[NativeHud] enabled (Phase 5.7: native notch + right context parity)");
+            PerfTrace.Mark("native_hud.enabled");
         }
         else
         {
             LogManager.Log("[NativeHud] disabled (config useNativeHud=false; router goes through PostToWeb fallback)");
+            PerfTrace.Mark("native_hud.disabled");
         }
 
         // Phase 1 (11c): WebView2 硬依赖 — webOverlay 必有, 直接用
@@ -436,16 +497,35 @@ class Program
         socketServer.SetNotchHandler(notchSink);
 
         // Task 注册（TaskRegistry = single source of truth）
-        GomokuTask gomokuTask = new GomokuTask(projectRoot);
-        DataCache dataCache = new DataCache(projectRoot);
+        GomokuTask gomokuTask;
+        using (PerfTrace.Scope("task.gomoku_init"))
+        {
+            gomokuTask = new GomokuTask(projectRoot);
+        }
+        DataCache dataCache;
+        using (PerfTrace.Scope("data.cache_init"))
+        {
+            dataCache = new DataCache(projectRoot);
+        }
         DataQueryTask dataQueryTask = new DataQueryTask(dataCache);
         CF7Launcher.Tasks.AudioTask audioTask = new CF7Launcher.Tasks.AudioTask();
-        IconBakeTask iconBakeTask = new IconBakeTask(projectRoot, notchSink);
+        IconBakeTask iconBakeTask;
+        using (PerfTrace.Scope("task.icon_bake_init"))
+        {
+            iconBakeTask = new IconBakeTask(projectRoot, notchSink);
+        }
         ShopTask shopTask = new ShopTask(socketServer);
         MapTask mapTask = new MapTask(socketServer);
-        ArchiveTask archiveTask = new ArchiveTask(projectRoot);
+        ArchiveTask archiveTask;
+        using (PerfTrace.Scope("task.archive_init"))
+        {
+            archiveTask = new ArchiveTask(projectRoot);
+        }
         BenchTask benchTask = new BenchTask(socketServer);
-        TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, archiveTask, benchTask, webOverlay);
+        using (PerfTrace.Scope("task.registry_register_all"))
+        {
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, archiveTask, benchTask, webOverlay);
+        }
 
         // 面板系统接线 (11c: webOverlay 必有)
         webOverlay.SetShopTask(shopTask);
@@ -649,12 +729,16 @@ class Program
         CF7Launcher.Guardian.GuardianContext ctx = new CF7Launcher.Guardian.GuardianContext(form);
 
         LogManager.Log("[Guardian] Bootstrap ready. Waiting for user to select slot...");
+        PerfTrace.Mark("guardian.bootstrap_ready");
+        PerfTrace.FlushCounters("bootstrap_ready");
 
         // 消息循环: ctx (GuardianForm MainForm, BootstrapPanel 作为其子控件，Ready 时 panel swap)
         Application.Run(ctx);
 
         // 清理：每步 try-catch 保护，防止单点异常跳过后续步骤
         LogManager.Log("[Guardian] Shutting down...");
+        PerfTrace.Mark("guardian.shutdown_start");
+        PerfTrace.FlushCounters("shutdown_start");
         try { frameTask.Stop(); } catch { }
         try { socketServer.SetFrameHandler(null); } catch { }
         try { socketServer.SetNotchHandler(null); } catch { }
@@ -688,6 +772,7 @@ class Program
 
             // UserGpuPreferences 注册表条目一律在退出时清理，避免玩家卸载后残留。
             try { GpuPreferenceManager.Revert(projectRoot); } catch { }
+            try { PerfTrace.Shutdown(); } catch { }
         }
     }
 }
