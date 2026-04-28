@@ -15,7 +15,7 @@
           <DOMFolderItem name="防具/黑光刀锋/素材" itemID="6839e7f4-00000ba8"/>
           <DOMFolderItem name="防具/黑光重锤" itemID="6839df72-00000854"/>
           <DOMFolderItem name="防具/黑光重锤/素材" itemID="6839e00e-00000869"/>
-          <DOMFolderItem name="防具/虎妙套装" itemID="6980dcac-00003874" isExpanded="true"/>
+          <DOMFolderItem name="防具/虎妙套装" itemID="6980dcac-00003874"/>
           <DOMFolderItem name="防具/虎妙套装/男变装" itemID="698131e9-000055d6" isExpanded="true"/>
           <DOMFolderItem name="防具/虎妙套装/女变装" itemID="69813274-00005659" isExpanded="true"/>
           <DOMFolderItem name="防具/虎妙套装/素材" itemID="6980ecd9-00004262" isExpanded="true"/>
@@ -48,11 +48,11 @@
           <DOMFolderItem name="特效与子弹/一瞬千击多次" itemID="66e6ff40-00000d70"/>
           <DOMFolderItem name="特效与子弹/一瞬千击多次/素材" itemID="66e6ff53-00000d73"/>
           <DOMFolderItem name="特效与子弹/自瞄准星特效" itemID="66e6ffdb-00000da8"/>
-          <DOMFolderItem name="武器" itemID="65df528e-00000447"/>
-          <DOMFolderItem name="武器/3D打印：炎" itemID="66e6fe54-00000d6d"/>
+          <DOMFolderItem name="武器" itemID="65df528e-00000447" isExpanded="true"/>
+          <DOMFolderItem name="武器/3D打印：炎" itemID="66e6fe54-00000d6d" isExpanded="true"/>
           <DOMFolderItem name="武器/dominator" itemID="65e71ef4-00000627"/>
           <DOMFolderItem name="武器/dominator/素材" itemID="65e71f00-0000062f"/>
-          <DOMFolderItem name="武器/刀剑" itemID="697b4291-00000e25"/>
+          <DOMFolderItem name="武器/刀剑" itemID="697b4291-00000e25" isExpanded="true"/>
           <DOMFolderItem name="音效" itemID="65e0710b-0000077e"/>
      </folders>
      <media>
@@ -697,19 +697,21 @@
           <Include href="武器/dominator/图标-dominator.xml" itemID="65df52c3-00000454" lastModified="1720791104"/>
           <Include href="武器/刀剑/超硬质钢刀.xml" itemIcon="1" loadImmediate="false" itemID="697b3c34-0000046e" lastModified="1769685976"/>
           <Include href="武器/刀剑/刀-超硬质钢刀.xml" itemID="697b3cb7-0000047a" lastModified="1769685994"/>
-          <Include href="武器/刀剑/刀-黑金古刀.xml" itemID="6973e4aa-00002106" lastModified="1769454630"/>
+          <Include href="武器/刀剑/刀-黑金古刀.xml" itemID="6973e4aa-00002106" lastModified="1777370979"/>
+          <Include href="武器/刀剑/刀-黑金古刀配鞘.xml" itemID="69f0851b-000004b2" lastModified="1777371074"/>
+          <Include href="武器/刀剑/刀-黑金古刀鞘.xml" itemID="69f083f8-000004a3" lastModified="1777371068"/>
           <Include href="武器/刀剑/刀-輪.xml" itemID="6973bccc-000006c8" lastModified="1769201006"/>
           <Include href="武器/刀剑/刀-輪舞.xml" itemID="6974b07c-00004014" lastModified="1769255091"/>
           <Include href="武器/刀剑/刀-斯帕德隆剑.xml" itemID="6973d332-00001621" lastModified="1769202101"/>
           <Include href="武器/刀剑/刀-舞.xml" itemID="6973bd68-000006d3" lastModified="1769255057"/>
           <Include href="武器/刀剑/黑金古刀.xml" itemIcon="1" loadImmediate="false" itemID="6973e419-000020f9" lastModified="1769685958"/>
-          <Include href="武器/刀剑/黑金古刀刀鞘.xml" itemIcon="1" loadImmediate="false" itemID="6973e5ad-00002823" lastModified="1769455447"/>
+          <Include href="武器/刀剑/黑金古刀刀鞘.xml" itemIcon="1" loadImmediate="false" itemID="6973e5ad-00002823" lastModified="1777370137"/>
           <Include href="武器/刀剑/輪.xml" itemIcon="1" loadImmediate="false" itemID="6973bc94-000006bd" lastModified="1769193679"/>
           <Include href="武器/刀剑/判定使用.xml" loadImmediate="false" itemID="668d55c7-000024ba" lastModified="1769189379"/>
           <Include href="武器/刀剑/斯帕德隆剑.xml" itemIcon="1" loadImmediate="false" itemID="6973d345-0000162a" lastModified="1769684022"/>
           <Include href="武器/刀剑/图标-超硬质钢刀.xml" itemID="697b3c24-00000466" lastModified="1769686019"/>
           <Include href="武器/刀剑/图标-超硬质双刀.xml" itemID="697b3e29-00000e24" lastModified="1769686078"/>
-          <Include href="武器/刀剑/图标-黑金古刀.xml" itemID="6973e4f8-0000237d" lastModified="1769203021"/>
+          <Include href="武器/刀剑/图标-黑金古刀配鞘.xml" itemID="69f08587-000004c4" lastModified="1777370878"/>
           <Include href="武器/刀剑/图标-輪.xml" itemID="6973bcd3-000006c9" lastModified="1769203001"/>
           <Include href="武器/刀剑/图标-輪舞.xml" itemID="6973cb6f-00001609" lastModified="1769684373"/>
           <Include href="武器/刀剑/图标-斯帕德隆剑.xml" itemID="6973d419-00001881" lastModified="1769202715"/>
@@ -1079,6 +1081,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2763132" publishTime="1777370986"/>
+          <PublishItem publishSize="2763128" publishTime="1777370888"/>
+          <PublishItem publishSize="2763110" publishTime="1777370623"/>
           <PublishItem publishSize="2757818" publishTime="1770589987"/>
           <PublishItem publishSize="2757814" publishTime="1770589739"/>
           <PublishItem publishSize="2757813" publishTime="1770589564"/>
@@ -1096,8 +1101,5 @@
           <PublishItem publishSize="2729382" publishTime="1770115324"/>
           <PublishItem publishSize="2729188" publishTime="1770115232"/>
           <PublishItem publishSize="2729152" publishTime="1770115158"/>
-          <PublishItem publishSize="2728812" publishTime="1770115083"/>
-          <PublishItem publishSize="2728816" publishTime="1770114845"/>
-          <PublishItem publishSize="2732814" publishTime="1770075279"/>
      </publishHistory>
 </DOMDocument>

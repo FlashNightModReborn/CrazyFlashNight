@@ -12,7 +12,9 @@
       <price>1300000</price>
       <description>一把锋利无比的魔剑，其刀锋甚至能切开空间。
       阎魔刀和叛逆之刃一样原为斯巴达的武器。
-      后来，斯巴达将叛逆之刃与阎魔刀作为礼物送给了他的两个儿子。</description>
+      后来，斯巴达将叛逆之刃与阎魔刀作为礼物送给了他的两个儿子。
+      这是阎魔刀的带鞘版本。
+      </description>
       <skill>
         <skillname>居合次元斩</skillname>
         <description>收拢入鞘，气沉丹田，感知魔力，一瞬之间挥刀斩出二连次元斩。</description>
@@ -56,6 +58,40 @@
         <mp>0</mp>
         <defence>0</defence>
         <bladeCount>3</bladeCount>
+      </data>
+    </item>
+       <item>
+      <name>黑金古刀配鞘</name>
+      <displayname>黑金古刀配鞘</displayname>
+      <icon>黑金古刀配鞘</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>疾影</actiontype>
+      <price>257000</price>
+      <description>由陨铁打造的黑金古刀，剑身异常沉重，常人无法使用。</description>
+      <skill>
+        <skillname>黑刀斩术</skillname>
+        <description>手持该武器时可释放漆黑斩术。</description>
+        <cd>3000</cd>
+        <hp>0</hp>
+        <mp>50</mp>
+      </skill>
+      <data>
+        <level>33</level>
+        <weight>55</weight>
+        <dressup>刀-黑金古刀</dressup>
+        <dressup2>刀-黑金古刀鞘</dressup2>
+        <power>500</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <criticalhit>20</criticalhit>
+        <skillmultipliers>
+          <凶斩>3</凶斩>
+        </skillmultipliers>
+        <bladeCount>3</bladeCount>
+        <damagetype>破击</damagetype>
+        <magictype>生化</magictype>
       </data>
     </item>
 </root>
