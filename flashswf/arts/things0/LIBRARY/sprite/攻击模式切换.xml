@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/攻击模式切换" itemID="691b470f-00002ecf" lastModified="1769694922" lastUniqueIdentifier="251">
   <timeline>
-    <DOMTimeline name="攻击模式切换" currentFrame="54">
+    <DOMTimeline name="攻击模式切换" currentFrame="40">
       <layers>
         <DOMLayer name="Labels Layer" color="#EF706D" locked="true">
           <frames>
@@ -33,7 +33,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#A28BA8" locked="true">
+        <DOMLayer name="Script Layer" color="#A28BA8" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -279,7 +279,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器攻击检测" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="兵器攻击检测" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -3184,7 +3184,7 @@
                     <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="213.05" centerPoint3DY="11.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="213.05" centerPoint3DY="11.55">
                   <matrix>
                     <Matrix a="0.427398681640625" b="-0.8604736328125" c="0.8604736328125" d="0.427398681640625" tx="58.95" ty="138.95"/>
                   </matrix>

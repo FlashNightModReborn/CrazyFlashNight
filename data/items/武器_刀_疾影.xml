@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+物品ID已自动生成，无需手动维护-->
+<root>
+     <item>
+      <name>阎魔刀带鞘版</name>
+      <displayname>阎魔刀带鞘版</displayname>
+      <icon>阎魔刀带鞘版</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>疾影</actiontype>
+      <price>1300000</price>
+      <description>一把锋利无比的魔剑，其刀锋甚至能切开空间。
+      阎魔刀和叛逆之刃一样原为斯巴达的武器。
+      后来，斯巴达将叛逆之刃与阎魔刀作为礼物送给了他的两个儿子。</description>
+      <skill>
+        <skillname>居合次元斩</skillname>
+        <description>收拢入鞘，气沉丹田，感知魔力，一瞬之间挥刀斩出二连次元斩。</description>
+        <cd>6000</cd>
+        <mp>60</mp>
+      </skill>
+      <data>
+        <level>60</level>
+        <weight>0</weight>
+        <dressup>刀-阎魔刀</dressup>
+        <dressup2>刀-阎魔刀刀鞘</dressup2>
+        <power>600</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+</root>
