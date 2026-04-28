@@ -21,7 +21,7 @@
 
 /*this.onMouseDown = function()
 {
-if (this.hitTest(_root.鼠标))
+if (_root.鼠标代理.命中目标(this))
 {
 被点击 = true;
 }

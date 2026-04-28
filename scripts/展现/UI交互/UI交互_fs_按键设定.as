@@ -75,6 +75,19 @@ KeyManager.onKeyUp("互动键", function() {
     _root.帧计时器.eventBus.publish("interactionKeyUp");
 });
 
+if (_root.交互鼠标监听器 != undefined) {
+    Mouse.removeListener(_root.交互鼠标监听器);
+}
+
+_root.交互鼠标监听器 = {};
+_root.交互鼠标监听器.onMouseDown = function():Void {
+    _root.帧计时器.eventBus.publish("interactionMouseDown");
+};
+_root.交互鼠标监听器.onMouseUp = function():Void {
+    _root.帧计时器.eventBus.publish("interactionMouseUp");
+};
+Mouse.addListener(_root.交互鼠标监听器);
+
 _root.当前玩家总数 = 1;
 _root.playerCurrent = 0;
 

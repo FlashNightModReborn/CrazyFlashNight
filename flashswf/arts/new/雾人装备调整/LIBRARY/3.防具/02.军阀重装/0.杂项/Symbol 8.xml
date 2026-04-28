@@ -31,7 +31,7 @@
       {
          条件满足 = true;
       }
-      if(this.hitTest(_root.gameworld[_root.控制目标].area) and _root.全鼠标控制 == true and this.hitTest(_root.鼠标) == true and 被点击 == true and _root.gameworld[_root.控制目标].hp > 0)
+      if(this.hitTest(_root.gameworld[_root.控制目标].area) and _root.全鼠标控制 == true and _root.鼠标代理.命中目标(this) == true and 被点击 == true and _root.gameworld[_root.控制目标].hp > 0)
       {
          条件满足 = true;
       }
@@ -57,7 +57,7 @@
             }
          }
       }
-      if(_root.全鼠标控制 == true and this.hitTest(_loc3_.x,_loc3_.y,true) == true and this.hitTest(_root.鼠标) == true)
+      if(_root.全鼠标控制 == true and this.hitTest(_loc3_.x,_loc3_.y,true) == true and _root.鼠标代理.命中目标(this) == true)
       {
          _root.鼠标.gotoAndPlay("开门");
       }
@@ -80,7 +80,7 @@ function 是否从门加载角色()
 }
 this.onMouseDown = function()
 {
-   if(this.hitTest(_root.鼠标))
+   if(_root.鼠标代理.命中目标(this))
    {
       被点击 = true;
    }

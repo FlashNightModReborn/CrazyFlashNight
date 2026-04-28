@@ -206,16 +206,7 @@ stop();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (mouseDown) {
-	if (this.hitTest(_root.鼠标))
-	{
-		_root.pickupItemManager.pickup(_parent, null, false);
-		//_root.鼠标.gotoAndStop("手型抓取");
-	}
-}
-/*onClipEvent (mouseUp) {
-	_root.鼠标.gotoAndStop("手型普通");
-}*/]]></script>
+                    <script><![CDATA[// 鼠标拾取由 PickUpManager 订阅 interactionMouseDown 统一处理。]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

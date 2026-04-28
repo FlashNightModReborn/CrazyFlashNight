@@ -220,6 +220,21 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
                 self.pickup(this, null, true);
             }
         };
+
+        var mousePickUpFunc:Function = function():Void {
+            if (this.area == undefined) return;
+
+            var hit:Boolean = false;
+            if (_root.鼠标代理 != undefined && _root.鼠标代理.命中目标 != undefined) {
+                hit = _root.鼠标代理.命中目标(this.area, false);
+            } else {
+                hit = this.area.hitTest(_root._xmouse, _root._ymouse, false);
+            }
+
+            if (hit) {
+                self.pickup(this, null, false);
+            }
+        };
         
         var resetFunc:Function = function():Void {
             var mc:MovieClip = this.焦点高亮框;
@@ -229,6 +244,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
         
         this.dispatcher.subscribeGlobal("interactionKeyDown", pickUpFunc, pickupItem);
         this.dispatcher.subscribeGlobal("interactionKeyUp", resetFunc, pickupItem);
+        this.dispatcher.subscribeGlobal("interactionMouseDown", mousePickUpFunc, pickupItem);
 
         // 可拾取物内部函数
         pickupItem.itemData = _root.getItemData(物品名 === "金钱" ? "金币" : 物品名);

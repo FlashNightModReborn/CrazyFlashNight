@@ -3,7 +3,7 @@
 // 主时间轴旧鼠标 MovieClip 移除后，旧 UI 仍会调用：
 //   _root.鼠标.gotoAndStop(...)
 //   _root.鼠标.物品图标容器.attachMovie(...)
-// 本代理只保留兼容接口。手型视觉交给 Launcher WebView overlay；
+// 本代理只保留脚本兼容接口。手型视觉交给 Launcher C# CursorOverlayForm；
 // 物品拖拽图标暂留 AS2 端，并且只在拖拽期间同步位置。
 
 if (_root.鼠标代理 == undefined) _root.鼠标代理 = {};
@@ -29,6 +29,11 @@ _root.鼠标代理.确保容器 = function():MovieClip {
 
     if (_root.鼠标图标层 == undefined) {
         _root.createEmptyMovieClip("鼠标图标层", depth);
+    }
+    _root.鼠标图标层._visible = true;
+
+    if (_root.鼠标图标层.命中锚点 != undefined) {
+        _root.鼠标图标层.命中锚点.removeMovieClip();
     }
 
     if (_root.鼠标图标层.物品图标容器 == undefined) {
@@ -75,6 +80,12 @@ _root.鼠标代理.发送状态 = function(state:String):Void {
         state: state,
         dragging: _root.鼠标代理.拖拽中
     });
+};
+
+_root.鼠标代理.命中目标 = function(target:MovieClip, shapeFlag:Boolean):Boolean {
+    if (target == undefined) return false;
+    if (shapeFlag == undefined) shapeFlag = false;
+    return target.hitTest(_root._xmouse, _root._ymouse, shapeFlag);
 };
 
 _root.鼠标代理.同步拖拽位置 = function():Void {
@@ -127,10 +138,6 @@ _root.鼠标代理.安装 = function():Void {
     var proxy:Object = {};
 
     proxy.物品图标容器 = container;
-    proxy._visible = false;
-    proxy._x = _root._xmouse;
-    proxy._y = _root._ymouse;
-    proxy._currentframe = 1;
     proxy.gotoAndStop = function(state):Void {
         _root.鼠标代理.设置状态(state);
     };
@@ -142,6 +149,9 @@ _root.鼠标代理.安装 = function():Void {
     };
 
     _root.鼠标 = proxy;
+    if (_root.鼠标图标层 != undefined) {
+        delete _root.鼠标图标层.onEnterFrame;
+    }
     _root.鼠标代理.发送状态(_root.鼠标代理.普通状态);
 };
 

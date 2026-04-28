@@ -25,7 +25,7 @@ C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView
 
 Launcher 现在显式声明并初始化 **PerMonitorV2 / PerMonitor DPI-aware**。运行态 WebView2 overlay 的物理视觉尺寸仍跟随 Flash 视口高度，但写入 `WebView2.ZoomFactor` 前会按当前 monitor DPI 归一化，避免 125% / 150% 系统缩放把右侧 HUD 与顶部资源条二次放大；输入命中则由 Web 端 `viewportMetrics`（CSS viewport / DPR / visualViewport）和 C# `OverlayCoordinateContext` 共同换算，不再把 `WebView2.ZoomFactor` 直接当作鼠标坐标比例。
 
-运行态鼠标手型视觉只由 C# `CursorOverlayForm` 原生 layered window 接管，避免 WebView2 特效或 JS 队列影响 cursor 延迟。AS2 侧保留 `_root.鼠标` 兼容代理，只把 `gotoAndStop` 状态通过 `cursor_control` task 低频推送到 Launcher；`WebOverlayForm` 负责状态调度、低级鼠标 hook 与坐标泵。Web DOM 交互通过 `cursorFeedback` 只回传 hover/press 状态变化，不回传坐标，也不再提供 Web 视觉 fallback；native cursor 不可用时恢复系统鼠标并写入诊断日志。native cursor 贴图采用 `64x64` 源画布、固定热点 `(16,16)` 的资源契约，运行时只按当前 monitor DPI 整体缩放画布与热点，不再为单张贴图维护偏移。物品拖拽图标第一阶段仍留在 AS2 空容器内，仅拖拽期间同步位置，不进入 Flash 每帧 UI 状态管线。
+运行态鼠标手型视觉只由 C# `CursorOverlayForm` 原生 layered window 接管，避免 WebView2 特效或 JS 队列影响 cursor 延迟。AS2 侧保留 `_root.鼠标` 纯脚本兼容代理，只承载 `gotoAndStop` / `gotoAndPlay` 状态接口与 `物品图标容器` 拖拽图标容器；几何命中统一走 AS2 `_root._xmouse/_ymouse` 点命中和 `interactionMouseDown` / `interactionMouseUp` 事件，不再让 `_root.鼠标` 作为 `hitTest` 目标。`cursor_control` task 只低频推送状态到 Launcher；`WebOverlayForm` 负责状态调度、低级鼠标 hook 与坐标泵。Web DOM 交互通过 `cursorFeedback` 只回传 hover/press 状态变化，不回传坐标，也不再提供 Web 视觉 fallback；native cursor 不可用时恢复系统鼠标并写入诊断日志。native cursor 贴图采用 `64x64` 源画布、固定热点 `(16,16)` 的资源契约，运行时只按当前 monitor DPI 整体缩放画布与热点，不再为单张贴图维护偏移。物品拖拽图标第一阶段仍留在 AS2 空容器内，仅拖拽期间同步位置，不进入 Flash 每帧 UI 状态管线。
 
 | Windows 兼容性设置 | 支持口径 |
 |------------------|----------|
