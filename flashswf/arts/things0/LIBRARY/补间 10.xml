@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 10" itemID="69f0ae3c-00000aa3" symbolType="graphic" lastModified="1777380924">
+  <timeline>
+    <DOMTimeline name="补间 10">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-222.85" ty="-21"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.82582092285156" b="-0.103515625" d="0.585174560546875" tx="594.1" ty="74"/>
+                        </matrix>
+                        <GradientEntry alpha="0" ratio="0.552941176470588"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!18181 -357S2[18181 1465 14161 2980!14161 2980[10142 4497 4456 4818!4456 4818[-1227 5141 -5247 4081!-5247 4081[-9266 3021 -9266 1200!-9266 1200[-9266 -623 -5247 -2139!-5247 -2139[-1227 -3655 4456 -3977!4456 -3977[10142 -4300 14161 -3240
+!14161 -3240[18181 -2180 18181 -357"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

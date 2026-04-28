@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招" itemID="6974a6b3-00001f9d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双刀1连招" lastModified="1776009291" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招" itemID="6974a6b3-00001f9d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双刀1连招" lastModified="1777382545" lastUniqueIdentifier="7">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-双刀1连招">
+    <DOMTimeline name="兵器攻击容器-双刀1连招" currentFrame="83">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -19,7 +19,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <Actionscript>
@@ -622,7 +622,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="80" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -749,7 +749,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手-2" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -841,15 +841,15 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.417327880859375" b="-0.660797119140625" c="0.268341064453125" d="0.16943359375" tx="216.4" ty="159.55"/>
+                          <Matrix a="0.757949829101563" b="-0.292129516601563" c="0.210311889648438" d="0.545669555664063" tx="65.15" ty="35.8"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.619607843137255"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.780392156862745"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!11091 -6831[15484 -827 3845 8000!3845 8000[9188 1562 6638 -2251!6638 -2251|11091 -6831"/>
+                    <Edge fillStyle1="1" edges="!12187 -1105[12187 1555 10306 3436!10306 3436[8425 5317 5765 5317!5765 5317[3133 5317 1264 3476!1264 3476|11405 -4211!11405 -4211[12187 -2820 12187 -1105"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1191,7 +1191,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左下臂-2" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="左下臂-2" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -1283,15 +1283,15 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.5010986328125" b="0.524871826171875" c="0.240692138671875" d="-0.229782104492188" tx="192.3" ty="-79.3"/>
+                          <Matrix a="0.778228759765625" b="0.10736083984375" c="-0.167572021484375" d="-0.633514404296875" tx="-4.05" ty="-24"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.619607843137255"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.780392156862745"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!11250 5180[13980 108 3483 -5805!3483 -5805[6932 69 5903 3431!5903 3431|11250 5180"/>
+                    <Edge fillStyle0="1" edges="!1608 -6939[-474 -6238 -825 -3792!-825 -3792[#11E5.B1 #A68.B3 11476 1871!11476 1871[11667 -38 10617 -1853!10617 -1853[8989 -4668 6350 -6158!6350 -6158[3711 -7647 1608 -6939"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1807,7 +1807,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="刀" color="#4F80FF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

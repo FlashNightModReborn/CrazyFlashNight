@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-千山破晓钟" itemID="696533ff-00003120" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-千山破晓钟" lastModified="1776699615">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-千山破晓钟" itemID="696533ff-00003120" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-千山破晓钟" lastModified="1777378540">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-千山破晓钟" currentFrame="24">
+    <DOMTimeline name="兵器攻击容器-千山破晓钟" currentFrame="33">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -128,7 +128,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="7" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix tx="-12.1" ty="231.7"/>
                   </matrix>
@@ -610,7 +610,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="25" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="688" centerPoint3DY="137.95">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="688" centerPoint3DY="137.95">
                   <matrix>
                     <Matrix a="25.2748260498047" d="28.2392578125" tx="634.35" ty="3.15"/>
                   </matrix>
@@ -678,7 +678,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -890,7 +890,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀_复制" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -902,15 +902,15 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.0604705810546875" b="-0.629806518554688" c="0.462371826171875" d="0.20489501953125" tx="163.15" ty="-109.65"/>
+                          <Matrix a="1.04902648925781" b="0.05169677734375" d="0.895095825195313" tx="222.05" ty="-36"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
-                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                        <GradientEntry alpha="0" ratio="0.509803921568627"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.650980392156863"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-2804 -7052[-2586 -9309 -1388 -10523!-1388 -10523|5640 -754!5640 -754[5209 135 4492 719!4492 719[2996 1934 1124 1105!1124 1105[-749 277 -1899 -2112!-1899 -2112[-3048 -4503 -2804 -7052"/>
+                    <Edge fillStyle1="1" edges="!3063 5118[-1057 4915 -3971 2287!-3971 2287[-6883 -342 -6883 -3857!-6883 -3857[-6883 -7373 -3971 -9715!-3971 -9715[#FFF3CE.88 #FFD762.3A -2169.5 -10864!-2169.5 -10864|8803.5 3860!8803.5 3860[#18A3.6E #149D.E6 3063 5118"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -918,13 +918,14 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             <DOMFrame index="8" duration="11" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
-                  <MorphSegment startPointA="#5.53, -8.640625" startPointB="#FFFFFE.9B, -10.359375" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
-                    <MorphCurves controlPointA="#5.32, -23.6875" anchorPointA="#D.EB, #FFFFE2.FE" controlPointB="-1.5390625, #FFFFE3.DD" anchorPointB="#8.65, #FFFFDD.93"/>
-                    <MorphCurves controlPointA="#16.A7, -34.3125" anchorPointA="#23.1E, #FFFFE5.3A" controlPointB="#12.58, #FFFFD7.4E" anchorPointB="#20.8D, #FFFFE0.37"/>
-                    <MorphCurves controlPointA="#2F.98, #FFFFEC.CB" anchorPointA="#38.84, #FFFFFC.C7" controlPointB="#2E.C4, -22.84375" anchorPointB="#38.ED, #FFFFFC.0B"/>
-                    <MorphCurves controlPointA="#40.67, #A.F2" anchorPointA="#41.6A, #18.61" controlPointB="#41.EB, #C.C7" anchorPointB="#43.12, #1C.A8"/>
-                    <MorphCurves controlPointA="#24.73, #F.34" anchorPointA="#7.7B, #6.06" controlPointB="#22.11, #11.D" anchorPointB="#1.1, #6.F7" isLine="true"/>
-                    <MorphCurves controlPointA="#5.66, -1.4140625" anchorPointA="#5.53, -8.640625" controlPointB="-1.3125, #FFFFFE.2D" anchorPointB="#FFFFFE.9B, -10.359375"/>
+                  <MorphSegment startPointA="#FFFFE9.05, #FFFFEE.A2" startPointB="#FFFFE7.ED, #FFFFE9.FD" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFE9.05, #FFFFDE.72" anchorPointA="-9.5703125, #FFFFD6.22" controlPointB="#FFFFE7.ED, #FFFFD5.96" anchorPointB="-7.171875, -52.890625"/>
+                    <MorphCurves controlPointA="#3.D9, #FFFFCD.D2" anchorPointA="#16.D1, -45.75" controlPointB="#9.BE, #FFFFC0.A2" anchorPointB="#21.A6, #FFFFC6.37"/>
+                    <MorphCurves controlPointA="#29.C9, #FFFFD6.AF" anchorPointA="#37.33, #FFFFE5.43" controlPointB="#39.8F, #FFFFCB.CE" anchorPointB="#4A.77, #FFFFDE.2D"/>
+                    <MorphCurves controlPointA="#44.9C, #FFFFF3.D7" anchorPointA="#44.9C, #4.07" controlPointB="#5B.5E, #FFFFF0.8D" anchorPointB="#5B.5E, #4.F4"/>
+                    <MorphCurves controlPointA="#44.9C, #F.E3" anchorPointA="#3D.69, #17.86" controlPointB="#5B.5E, #13.E7" anchorPointB="#52.4B, #1D.87"/>
+                    <MorphCurves controlPointA="#15.1, #B.5A" anchorPointA="#FFFFEC.B7, -0.8203125" controlPointB="#1F.7, #E.3" anchorPointB="#FFFFEC.95, -1.15625" isLine="true"/>
+                    <MorphCurves controlPointA="#FFFFE9.05, #FFFFF7.21" anchorPointA="#FFFFE9.05, #FFFFEE.A2" controlPointB="#FFFFE7.ED, #FFFFF4.B3" anchorPointB="#FFFFE7.ED, #FFFFE9.FD"/>
                   </MorphSegment>
                 </morphSegments>
                 <morphHintsList/>
@@ -935,15 +936,16 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.563796997070313" b="1.01115417480469" c="-0.551788330078125" d="0.335723876953125" tx="256.1" ty="19.3"/>
+                          <Matrix a="1.10269165039063" b="0.257537841796875" d="0.940872192382813" tx="59.95" ty="-106.05"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
-                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                        <GradientEntry alpha="0" ratio="0.462745098039216"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!3563 -7426[5799 -8784 8990 -6854!8990 -6854[12184 -4917 14468 -825!14468 -825[16487 2802 16746 6241!16746 6241|1915 1542!1915 1542[1382 -362 1363 -2212!1363 -2212[1330 -6064 3563 -7426"/>
+                    <Edge fillStyle1="1" edges="!15721 6021.5|-4937.5 -210!-4937.5 -210[-5883 #FFF720.D1 -5883 -4446!-5883 -4446[-5883 -8590 -2450 -10718!-2450 -10718[985 -12846 5841 -11712!5841 -11712[10697 -10577 14131 -6845!14131 -6845[17564 -3113 17564 1031!17564 1031[17564 #FE3.6C
+ 15721 6021.5"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -955,15 +957,17 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.05760192871094" b="1.96701049804688" c="-1.03507995605469" d="0.653060913085938" tx="196.2" ty="20.85"/>
+                          <Matrix a="1.98890686035156" b="0.464508056640625" d="1.69703674316406" tx="322.05" ty="-124.25"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
-                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                        <GradientEntry alpha="0" ratio="0.462745098039216"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!8333 -8137[11972 -5848 14573 -1013!14573 -1013[16875 3271 17170 7336!17170 7336|272 1783!272 1783[-336 -467 -357 -2652!-357 -2652[-394 -7203 2149 -8813!2149 -8813[4696 -10418 8333 -8137"/>
+                    <Edge fillStyle1="1" edges="
+!19063 -8659S2[23390 -3955 23390 1268!23390 1268[23390 5095 21067 7559!21067 7559|-4971 -296!-4971 -296[-6163 -2893 -6163 -5635!-6163 -5635[-6163 -10858 -1836 -13540!-1836 -13540[2494 -16222 8614 -14793!8614 -14793[14735 -13362 19063
+ -8659"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -973,12 +977,9 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
-            <DOMFrame index="0" duration="8" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="8" duration="8" keyMode="9728">
+            <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="16" keyMode="9728">
@@ -988,15 +989,16 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="-0.72882080078125" b="-0.67919921875" c="0.4354248046875" d="-0.5286865234375" tx="119.15" ty="-102.95"/>
+                          <Matrix a="0.47698974609375" b="-0.935684204101563" c="0.816497802734375" d="0.366790771484375" tx="252.05" ty="-104"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
-                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                        <GradientEntry alpha="0" ratio="0.509803921568627"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.650980392156863"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!6377 -1262[7218 2192 5456 4336!5456 4336[3692 6476 359 6047!359 6047[-2975 5611 -5923 2864!-5923 2864[-8536 430 -9494 -2564!-9494 -2564|5483 -5390!5483 -5390[5975 -2918 6377 -1262"/>
+                    <Edge fillStyle1="1" edges="
+!-7279 -2886|10650 -6849!10650 -6849[10919 -3990 9441 -1099!9441 -1099[7566 2576 3974 4155!3974 4155[381 5732 -2824 4290!-2824 4290[-6031 2846 -6971 -770!-6971 -770[-7246 -1826 -7279 -2886"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1004,13 +1006,14 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             <DOMFrame index="17" duration="10" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
-                  <MorphSegment startPointA="-8.078125, #FFFFF6.67" startPointB="#FFFFF5.EB, #FFFFFD.91" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
-                    <MorphCurves controlPointA="#FFFFF7.37, -27.59375" anchorPointA="#1.14, #FFFFDD.BB" controlPointB="-13.5625, #FFFFEA.AB" anchorPointB="-4.1640625, #FFFFE2.1E"/>
-                    <MorphCurves controlPointA="#A.F3, #FFFFD7.11" anchorPointA="#19.9D, #FFFFDF.A2" controlPointB="#5.43, #FFFFD9.95" anchorPointB="#16.0C, #FFFFE0.69"/>
-                    <MorphCurves controlPointA="#28.4A, #FFFFE8.3D" anchorPointA="#33.2D, -4.9609375" controlPointB="#26.DA, #FFFFE7.46" anchorPointB="#35.35, #FFFFF9.7B"/>
-                    <MorphCurves controlPointA="#3C.CE, #B.B4" anchorPointA="#3E.7A, #1B.BD" controlPointB="#41.E7, #9.9D" anchorPointB="#46.1A, #1A.4E"/>
-                    <MorphCurves controlPointA="#1C.B8, #11.CE" anchorPointA="#FFFFFA.F5, #7.DE" controlPointB="#20.F, #14.EE" anchorPointB="-4.2265625, #F.8D" isLine="true"/>
-                    <MorphCurves controlPointA="-7.7265625, -0.953125" anchorPointA="-8.078125, #FFFFF6.67" controlPointB="#FFFFF7.99, #6.A4" anchorPointB="#FFFFF5.EB, #FFFFFD.91"/>
+                  <MorphSegment startPointA="#FFFFE5.13, #FFFFF0.AA" startPointB="#FFFFE7.ED, #FFFFEC.CD" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFE5.13, #FFFFE0.7A" anchorPointA="-13.515625, #FFFFD8.2A" controlPointB="#FFFFE7.ED, #FFFFD8.66" anchorPointB="-7.171875, -50.078125"/>
+                    <MorphCurves controlPointA="#FFFFFF.E7, #FFFFCF.DA" anchorPointA="#12.DF, -43.71875" controlPointB="#9.BE, #FFFFC3.72" anchorPointB="#21.A6, #FFFFC9.07"/>
+                    <MorphCurves controlPointA="#25.D7, #FFFFD8.B7" anchorPointA="#33.41, #FFFFE7.4B" controlPointB="#39.8F, #FFFFCE.9E" anchorPointB="#4A.77, #FFFFE0.FD"/>
+                    <MorphCurves controlPointA="#40.AA, #FFFFF5.DF" anchorPointA="#40.AA, #6.0F" controlPointB="#5B.5E, #FFFFF3.5D" anchorPointB="#5B.5E, #7.C4"/>
+                    <MorphCurves controlPointA="#40.AA, #11.EB" anchorPointA="#39.77, #19.8E" controlPointB="#5B.5E, #16.B7" anchorPointB="#52.4B, #20.57"/>
+                    <MorphCurves controlPointA="#11.1E, #D.62" anchorPointA="#FFFFE8.C5, #1.36" controlPointB="#1F.7, 17" anchorPointB="#FFFFEC.95, #1.A8" isLine="true"/>
+                    <MorphCurves controlPointA="#FFFFE5.13, #FFFFF9.29" anchorPointA="#FFFFE5.13, #FFFFF0.AA" controlPointB="#FFFFE7.ED, #FFFFF7.83" anchorPointB="#FFFFE7.ED, #FFFFEC.CD"/>
                   </MorphSegment>
                 </morphSegments>
                 <morphHintsList/>
@@ -1021,15 +1024,16 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.68817138671875" b="1.18925476074219" c="-0.62396240234375" d="0.421478271484375" tx="118.25" ty="25.75"/>
+                          <Matrix a="1.10269165039063" b="0.257537841796875" d="0.940872192382813" tx="9.45" ty="-80.05"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
-                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                        <GradientEntry alpha="0" ratio="0.462745098039216"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!6557 -8286[10314 -6083 13101 -1270!13101 -1270[15566 2996 15994 7101!15994 7101|-1291 2014!-1291 2014[-1978 -244 -2068 -2457!-2068 -2457[-2249 -7064 276 -8773!276 -8773[2803 -10479 6557 -8286"/>
+                    <Edge fillStyle1="1" edges="
+!14711 6542|-5947 310!-5947 310[-6893 -1751 -6893 -3926!-6893 -3926[-6893 -8070 -3460 -10198!-3460 -10198[-25 -12326 4831 -11192!4831 -11192[9687 -10057 13121 -6325!13121 -6325[16554 -2593 16554 1551!16554 1551[16554 4587 14711 6542"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1041,65 +1045,44 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.49365234375" b="1.89630126953125" c="-0.97979736328125" d="0.888748168945313" tx="127.5" ty="92.15"/>
+                          <Matrix a="1.9888916015625" b="0.464508056640625" d="1.697021484375" tx="322.05" ty="-88.25"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
-                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                        <GradientEntry alpha="0" ratio="0.462745098039216"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!17946 6734|-1082 3981!-1082 3981[-2151 1700 -2581 -623!-2581 -623[-3472 -5461 -1066 -7650!-1066 -7650[1347 -9835 5644 -8087!5644 -8087[9946 -6330 13621 -1669!13621 -1669[16871 2461 17946 6734"/>
+                    <Edge fillStyle1="1" edges="
+!21067 8279|-4971 424!-4971 424[-6163 -2173 -6163 -4915!-6163 -4915[-6163 -10138 -1836 -12820!-1836 -12820[2494 -15502 8614 -14073!8614 -14073[14735 -12642 19063 -7939!19063 -7939[23390 -3235 23390 1988!23390 1988[23390 5815 21067 8279"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="28" duration="6" keyMode="9728">
+            <DOMFrame index="28" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
-            <DOMFrame index="0" duration="8" keyMode="9728">
+            <DOMFrame index="0" duration="24" keyMode="9728">
               <elements/>
-            </DOMFrame>
-            <DOMFrame index="8" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="17" duration="6" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="23" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="-1.05667114257813" b="-0.100372314453125" c="0.20172119140625" d="-0.762374877929688" tx="117.35" ty="-134.55"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
-                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle1="1" edges="!6791 -4714[9237 -2246 8421 841!8421 841[7605 3928 4004 5823!4004 5823[399 7716 -3877 7310!-3877 7310[-7665 6950 -10019 4972!-10019 4972|1769 -8729!1769 -8729[5618 -5897 6791 -4714"/>
-                  </edges>
-                </DOMShape>
-              </elements>
             </DOMFrame>
             <DOMFrame index="24" duration="9" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
-                  <MorphSegment startPointA="#FFFFF5.9D, #FFFFEB.9B" startPointB="#FFFFEA.03, #FFFFF5.35" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
-                    <MorphCurves controlPointA="#FFFFF5.61, #FFFFD5.9F" anchorPointA="#1.A5, #FFFFCD.D1" controlPointB="#FFFFE5.C1, #FFFFDE.27" anchorPointB="#FFFFF1.36, #FFFFD3.B7"/>
-                    <MorphCurves controlPointA="#D.EE, -57.96875" anchorPointA="#1F.85, #FFFFD1.02" controlPointB="-3.3046875, #FFFFC9.4B" anchorPointB="#11.2F, #FFFFD1.9D"/>
-                    <MorphCurves controlPointA="#31.22, -35.984375" anchorPointA="#3D.C4, #FFFFF3.57" controlPointB="#25.B1, -38.03125" anchorPointB="#37.35, #FFFFF0.2A"/>
-                    <MorphCurves controlPointA="#48.EE, #8.03" anchorPointA="#4A.68, #1B.A4" controlPointB="#46.B8, #3.D7" anchorPointB="#4B.D9, #18.33"/>
-                    <MorphCurves controlPointA="#21.8F, #E.56" anchorPointA="#FFFFF8.B5, #1.07" controlPointB="#1E.82, #11.AB" anchorPointB="#FFFFF1.2B, #B.23" isLine="true"/>
-                    <MorphCurves controlPointA="#FFFFF5.BE, #FFFFF6.2B" anchorPointA="#FFFFF5.9D, #FFFFEB.9B" controlPointB="#FFFFEC.13, #0.44" anchorPointB="#FFFFEA.03, #FFFFF5.35"/>
+                  <MorphSegment startPointA="#FFFFE5.13, #FFFFF0.AA" startPointB="#FFFFE7.ED, #FFFFEC.CD" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFE5.13, #FFFFE0.7A" anchorPointA="-13.515625, #FFFFD8.2A" controlPointB="#FFFFE7.ED, #FFFFD8.66" anchorPointB="-7.171875, -50.078125"/>
+                    <MorphCurves controlPointA="#FFFFFF.E7, #FFFFCF.DA" anchorPointA="#12.DF, -43.71875" controlPointB="#9.BE, #FFFFC3.72" anchorPointB="#21.A6, #FFFFC9.07"/>
+                    <MorphCurves controlPointA="#25.D7, #FFFFD8.B7" anchorPointA="#33.41, #FFFFE7.4B" controlPointB="#39.8F, #FFFFCE.9E" anchorPointB="#4A.77, #FFFFE0.FD"/>
+                    <MorphCurves controlPointA="#40.AA, #FFFFF5.DF" anchorPointA="#40.AA, #6.0F" controlPointB="#5B.5E, #FFFFF3.5D" anchorPointB="#5B.5E, #7.C4"/>
+                    <MorphCurves controlPointA="#40.AA, #11.EB" anchorPointA="#39.77, #19.8E" controlPointB="#5B.5E, #16.B7" anchorPointB="#52.4B, #20.57"/>
+                    <MorphCurves controlPointA="#11.1E, #D.62" anchorPointA="#FFFFE8.C5, #1.36" controlPointB="#1F.7, 17" anchorPointB="#FFFFEC.95, #1.A8" isLine="true"/>
+                    <MorphCurves controlPointA="#FFFFE5.13, #FFFFF9.29" anchorPointA="#FFFFE5.13, #FFFFF0.AA" controlPointB="#FFFFE7.ED, #FFFFF7.83" anchorPointB="#FFFFE7.ED, #FFFFEC.CD"/>
                   </MorphSegment>
                 </morphSegments>
                 <morphHintsList/>
@@ -1110,15 +1093,16 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.798171997070313" b="1.47540283203125" c="-0.776214599609375" d="0.492523193359375" tx="132.3" ty="-71.95"/>
+                          <Matrix a="1.10269165039063" b="0.257537841796875" d="0.940872192382813" tx="9.45" ty="-80.05"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
-                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                        <GradientEntry alpha="0" ratio="0.462745098039216"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!8069 -12030[12578 -9212 15812 -3241!15812 -3241[18670 2051 19048 7076!19048 7076|-1867 263!-1867 263[-2626 -2517 -2659 -5221!-2659 -5221[-2719 -10849 421 -12847!421 -12847[3566 -14840 8069 -12030"/>
+                    <Edge fillStyle1="1" edges="
+!-3460 -10198[-25 -12326 4831 -11192!4831 -11192[9687 -10057 13121 -6325!13121 -6325[16554 -2593 16554 1551!16554 1551[16554 4587 14711 6542!14711 6542|-5947 310!-5947 310[-6893 -1751 -6893 -3926!-6893 -3926[-6893 -8070 -3460 -10198"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1130,22 +1114,23 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.8236083984375" b="2.31204223632813" c="-1.19451904296875" d="1.08494567871094" tx="31.6" ty="12.05"/>
+                          <Matrix a="1.9888916015625" b="0.464508056640625" d="1.697021484375" tx="322.05" ty="-88.25"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
-                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                        <GradientEntry alpha="0" ratio="0.462745098039216"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!19417 6195|-3797 2851!-3797 2851[-5101 68 -5629 -2763!-5629 -2763[-6719 -8665 -3786 -11337!-3786 -11337[-846 -14005 4399 -11875!4399 -11875[9649 -9736 14133 -4054!14133 -4054[18104 983 19417 6195"/>
+                    <Edge fillStyle1="1" edges="
+!21067 8279|-4971 424!-4971 424[-6163 -2173 -6163 -4915!-6163 -4915[-6163 -10138 -1836 -12820!-1836 -12820[2494 -15502 8614 -14073!8614 -14073[14735 -12642 19063 -7939!19063 -7939[23390 -3235 23390 1988!23390 1988[23390 5815 21067 8279"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -7047,7 +7032,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                     <Point x="0.85" y="-0.15"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="126.6" centerPoint3DY="370.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="126.6" centerPoint3DY="370.25">
                   <matrix>
                     <Matrix a="0.146331787109375" b="-0.956527709960938" c="0.956527709960938" d="0.146331787109375" tx="250.65" ty="211.45"/>
                   </matrix>

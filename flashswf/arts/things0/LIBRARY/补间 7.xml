@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 7" itemID="69f0a708-00000a9d" symbolType="graphic" lastModified="1777379080">
+  <timeline>
+    <DOMTimeline name="补间 7">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-147.05" ty="12.05"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.989730834960938" b="0.987442016601563" c="-0.8348388671875" d="0.836807250976563" tx="318.05" ty="22"/>
+                        </matrix>
+                        <GradientEntry alpha="0" ratio="0.552941176470588"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!10339 -7640S2[13404 -4575 13404 -241!13404 -241[13404 4093 10339 7157!10339 7157[7275 10222 2941 10222!2941 10222[-1393 10222 -4458 7157!-4458 7157[-7522 4093 -7522 -241!-7522 -241[-7522 -4575 -4458 -7640!-4458 -7640[-1393 -10704 2941
+ -10704!2941 -10704[7275 -10704 10339 -7640"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
