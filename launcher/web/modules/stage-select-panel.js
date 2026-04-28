@@ -24,7 +24,7 @@ var StageSelectPanel = (function() {
         create: createDOM,
         onOpen: onOpen,
         onRequestClose: requestClose,
-        onClose: teardownLayoutWatcher
+        onClose: onClose
     });
 
     function createDOM() {
@@ -78,6 +78,7 @@ var StageSelectPanel = (function() {
             setFixture(_fixtureSelectEl.value);
             renderCurrentFrame();
         });
+        _buttonLayerEl.addEventListener('click', handleDifficultyClick);
 
         initLayoutWatcher();
         renderTabs();
@@ -280,7 +281,6 @@ var StageSelectPanel = (function() {
             node.setAttribute('data-nav-id', nav.id);
             node.setAttribute('data-action-kind', nav.actionKind || '');
             node.setAttribute('data-library-item', nav.libraryItemName || '');
-            node.textContent = nav.targetFrameLabel || '返回';
             node.textContent = getNavDisplayLabel(nav, visualKind);
             node.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -313,7 +313,7 @@ var StageSelectPanel = (function() {
         return target || nav.label || '返回';
     }
 
-    document.addEventListener('click', function(e) {
+    function handleDifficultyClick(e) {
         var target = e.target;
         if (!target || !target.classList || !target.classList.contains('stage-select-difficulty')) return;
         e.preventDefault();
@@ -327,7 +327,7 @@ var StageSelectPanel = (function() {
         setTimeout(function() {
             target.classList.remove('is-pressed');
         }, 180);
-    });
+    }
 
     function getStageState(stageName) {
         var stages = _fixture && _fixture.stages || {};
@@ -366,6 +366,10 @@ var StageSelectPanel = (function() {
             window.removeEventListener('resize', _resizeHandler);
             _resizeHandler = null;
         }
+    }
+
+    function onClose() {
+        teardownLayoutWatcher();
     }
 
     function syncStageLayout() {

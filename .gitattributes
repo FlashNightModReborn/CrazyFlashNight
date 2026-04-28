@@ -4,3 +4,6 @@
 
 # 自动处理其他文件类型（跨平台推荐）
 * text=auto
+
+# Generated artifacts — exclude from PR diff noise and language stats.
+launcher/web/modules/stage-select-data.js linguist-generated=true
