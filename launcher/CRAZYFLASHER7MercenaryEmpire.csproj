@@ -17,6 +17,8 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="ClearScript.Core">
       <HintPath>packages\Microsoft.ClearScript.Core.7.4.5\lib\net45\ClearScript.Core.dll</HintPath>
@@ -152,6 +154,7 @@
     <Compile Include="src\Save\IArchiveStateProbe.cs" />
     <Compile Include="src\Save\IArchiveShadowWriter.cs" />
     <Compile Include="src\Save\LegacyPresetSlotSeeder.cs" />
+    <Compile Include="src\Diagnostic\DiagnosticPackager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.manifest" />

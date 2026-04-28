@@ -24,6 +24,45 @@ namespace CF7Launcher.Tasks
         /// </summary>
         public static volatile bool FlashBgmChange;
 
+        // === 音量 sanity toast（迁移期临时兜底） ===
+        // 档持久化的 setGlobalVolume / setBGMVolume 一旦被存为 0 (或近 0)，
+        // 启动后会把整套音频静默掐死且无可见入口可恢复。这里在收到首次
+        // master_vol==0 或 bgm_vol<0.02 时弹一次 toast，提示用户存档编辑器临时入口。
+        // 进程级单次抑制：每次 launcher 启动只触发一次（再静默就重启 launcher 才会再提示）。
+        private static IToastSink _toastSink;
+        private static volatile bool _volumeWarningEmitted;
+        private const float SUSPICIOUS_MASTER_THRESHOLD = 0.001f;  // master_vol==0 视为可疑
+        private const float SUSPICIOUS_BGM_THRESHOLD = 0.02f;       // bgm_vol<0.02 视为可疑（≈Flash 侧 bgmVolume<2/100）
+
+        /// <summary>
+        /// 由 Program.cs 在 audioTask 创建后调用，注入 toast 通道。
+        /// 注入失败（null）时不会崩，仅静默不发 toast。
+        /// </summary>
+        public static void SetToastSink(IToastSink sink)
+        {
+            _toastSink = sink;
+        }
+
+        private static void MaybeEmitVolumeToast(string trigger)
+        {
+            if (_volumeWarningEmitted) return;
+            IToastSink sink = _toastSink;
+            if (sink == null) return;
+            _volumeWarningEmitted = true;
+            try
+            {
+                sink.AddMessage(
+                    "<font color=\"#FFD27F\">音量被设为 0，所有音效将静默。</font><BR>"
+                    + "音频设置 UI 迁移中，可在「存档编辑→简易模式→系统」临时调整。"
+                    + "<BR><font color=\"#888888\">[" + trigger + "]</font>");
+                LogManager.Log("[Audio] volume sanity toast emitted (" + trigger + ")");
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Audio] volume sanity toast FAILED: " + ex.Message);
+            }
+        }
+
         private sealed class DeferredBgmPlay
         {
             public string Path;
@@ -211,6 +250,8 @@ namespace CF7Launcher.Tasks
         private void HandleBgmVol(JObject msg)
         {
             float vol = msg.Value<float?>("vol") ?? 1.0f;
+            if (vol < SUSPICIOUS_BGM_THRESHOLD)
+                MaybeEmitVolumeToast("bgm_vol=" + vol.ToString("F3"));
             lock (_bootstrapGateLock)
             {
                 if (_bootstrapBgmGateActive)
@@ -233,6 +274,8 @@ namespace CF7Launcher.Tasks
         private void HandleMasterVol(JObject msg)
         {
             float vol = msg.Value<float?>("vol") ?? 1.0f;
+            if (vol <= SUSPICIOUS_MASTER_THRESHOLD)
+                MaybeEmitVolumeToast("master_vol=" + vol.ToString("F3"));
             AudioEngine.ma_bridge_set_master_volume(vol);
         }
 

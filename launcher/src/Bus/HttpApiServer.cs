@@ -37,6 +37,10 @@ namespace CF7Launcher.Bus
         private MessageRouter _router;
         private Action _shutdownAction;
 
+        // 诊断包打包器依赖：在 launcher 完整初始化后注入
+        private string _swfPathForDiagnostic;
+        private CF7Launcher.Save.ISolFileLocator _solLocatorForDiagnostic;
+
         private class ConsoleEntry
         {
             public ManualResetEvent Done;
@@ -68,6 +72,17 @@ namespace CF7Launcher.Bus
         public void SetShutdownAction(Action action)
         {
             _shutdownAction = action;
+        }
+
+        /// <summary>
+        /// 注入诊断打包依赖（swfPath 用于 SOL 路径解析）。
+        /// 在 AppConfig + SolFileLocator 都就绪后调用。两者缺失时 /diagnostic 仍可工作，
+        /// 只是不会包含 SOL 文件。
+        /// </summary>
+        public void SetDiagnosticDeps(string swfPath, CF7Launcher.Save.ISolFileLocator solLocator)
+        {
+            _swfPathForDiagnostic = swfPath;
+            _solLocatorForDiagnostic = solLocator;
         }
 
         public bool Start(int port)
@@ -153,6 +168,8 @@ namespace CF7Launcher.Bus
                     HandleSavePush(ctx);
                 else if (path == "/logs" && method == "GET")
                     HandleLogs(ctx);
+                else if (path == "/diagnostic" && method == "POST")
+                    HandleDiagnostic(ctx);
                 else
                 {
                     ctx.Response.StatusCode = 404;
@@ -526,6 +543,69 @@ namespace CF7Launcher.Bus
             {
                 WriteResponse(ctx, "{\"success\":false,\"error\":\"" + EscapeJsonString(ex.Message) + "\"}");
             }
+        }
+
+        // ==================== /diagnostic ====================
+
+        /// <summary>
+        /// POST /diagnostic
+        /// Body: {"slot":"crazyflasher7_saves"}  (slot 可选；不传则只打 logs/config/meta)
+        /// 响应: { ok, zipPath, zipName, zipSize, warnings:[] }
+        ///
+        /// 打包 zip 到 &lt;projectRoot&gt;/logs/diagnostic-{slot}-{ts}.zip。
+        /// SOL 二进制原件复制（迁移期需要原始字节做对比）。
+        /// </summary>
+        private void HandleDiagnostic(HttpListenerContext ctx)
+        {
+            ctx.Response.ContentType = "application/json";
+            string slot = null;
+            try
+            {
+                string body = ReadBody(ctx);
+                if (!string.IsNullOrEmpty(body))
+                {
+                    string trimmed = body.Trim();
+                    if (trimmed.StartsWith("{"))
+                    {
+                        Newtonsoft.Json.Linq.JObject obj = Newtonsoft.Json.Linq.JObject.Parse(trimmed);
+                        slot = obj.Value<string>("slot");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ctx.Response.StatusCode = 400;
+                WriteResponse(ctx, "{\"ok\":false,\"error\":\"invalid body: " + EscapeJsonString(ex.Message) + "\"}");
+                return;
+            }
+
+            CF7Launcher.Diagnostic.DiagnosticResult result =
+                CF7Launcher.Diagnostic.DiagnosticPackager.Pack(
+                    _projectRoot, slot, _swfPathForDiagnostic, _solLocatorForDiagnostic);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("{\"ok\":").Append(result.Ok ? "true" : "false");
+            if (result.Ok)
+            {
+                sb.Append(",\"zipPath\":\"").Append(EscapeJsonString(result.ZipPath)).Append("\"");
+                sb.Append(",\"zipName\":\"").Append(EscapeJsonString(result.ZipName)).Append("\"");
+                sb.Append(",\"zipSize\":").Append(result.ZipSize);
+            }
+            else
+            {
+                sb.Append(",\"error\":\"").Append(EscapeJsonString(result.Error ?? "unknown")).Append("\"");
+            }
+            sb.Append(",\"warnings\":[");
+            if (result.Warnings != null)
+            {
+                for (int i = 0; i < result.Warnings.Count; i++)
+                {
+                    if (i > 0) sb.Append(",");
+                    sb.Append("\"").Append(EscapeJsonString(result.Warnings[i])).Append("\"");
+                }
+            }
+            sb.Append("]}");
+            WriteResponse(ctx, sb.ToString());
         }
 
         private void HandleCrossDomain(HttpListenerContext ctx)

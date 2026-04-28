@@ -426,6 +426,9 @@ class Program
             notchSink = webOverlay;
         }
         ToastTask toastTask = new ToastTask(toastSink);
+        // 音量 sanity toast（迁移期临时兜底）：master_vol==0 / bgm_vol<0.02 时进程级首次提示。
+        // 设置入口在 Flash 侧迁移完成前，存档编辑器简易模式系统卡片为唯一恢复路径。
+        CF7Launcher.Tasks.AudioTask.SetToastSink(toastSink);
 
         // 快车道注入：F/R 前缀消息由 XmlSocketServer 直接分发到 FrameTask，绕过 MessageRouter
         socketServer.SetFrameHandler(frameTask);
@@ -587,7 +590,10 @@ class Program
         CF7Launcher.Save.SolResolver solResolver = new CF7Launcher.Save.SolResolver(
             solLocator, archiveTask, new CF7Launcher.Save.NativeSolParser(), archiveTask);
         CF7Launcher.Save.SaveResolutionContext saveCtx = new CF7Launcher.Save.SaveResolutionContext(
-            solLocator, solResolver, archiveTask, config.SwfPath);
+            solLocator, solResolver, archiveTask, config.SwfPath, projectRoot);
+
+        // 注入诊断打包依赖：HttpApiServer 的 /diagnostic 端点需要 SOL 解析器复制原件
+        httpServer.SetDiagnosticDeps(config.SwfPath, solLocator);
 
         // Phase A 两段式初始化：GuardianForm 已建（line 97），BootstrapPanel 已作为其子控件构造。
         // 此处构造 GameLaunchFlow（依赖 form + form.BootstrapPanel）→ 调 InitializeLaunchFlow 补 wire.

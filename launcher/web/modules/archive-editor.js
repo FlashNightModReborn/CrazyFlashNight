@@ -13,13 +13,33 @@
   var _rawText = '';         // 原始 JSON 字符串
   var _isDirty = false;      // 模型有合法修改
 
-  var _mode = 'simple';     // 'simple' | 'advanced' | 'tree'
+  var _mode = 'simple';     // 'simple' | 'advanced' | 'tree' | 'modified'
   var _rawOnly = false;      // true = 仅高级模式可用
   var _saveDisabled = false; // inconsistent slot 永久禁用保存
   var _idleOk = true;        // 当前是否 Idle
   var _unsubs = [];
 
+  // 危险字段已解锁集合（key = pathToString），unmount 时清空
+  var _dangerUnlocked = {};
+
+  // 搜索浮层状态
+  var _searchVisible = false;
+  var _searchHits = [];
+  var _searchHitIdx = -1;
+  var _searchKeyHandler = null;
+  // advanced 模式当前匹配行的覆盖标尺（用 absolute div 绕过 textarea 失焦后选区不可见的问题）
+  var _searchLineMarker = null;
+  // 像素级位置（由 textarea 镜像 div 测得，绕过 line-height 估算误差）：
+  //   _searchMarkerOffsetTop  = 匹配在 textarea 内容坐标下的 top（不含 scrollTop）
+  //   _searchMarkerHeight     = 匹配 sentinel 字符的 boundingClientRect 高度
+  var _searchMarkerOffsetTop = -1;
+  var _searchMarkerHeight = 0;
+  var _searchMarkerScrollHandler = null;
+
   // DOM 引用
+  var _topbarEl = null;
+  var _diagBtn = null;
+  var _diagStatusEl = null;
   var _bannerEl = null;
   var _modeTabsEl = null;
   var _panelEl = null;
@@ -62,9 +82,15 @@
         '<h2>存档编辑: ' + escHtml(displayName) + ' <small style="color:#666">(' + escHtml(_slot) + ')</small></h2>' +
         '<button class="modal-close" id="ed-close">×</button>' +
       '</div>' +
+      '<div id="ed-topbar" class="editor-topbar">' +
+        '<span class="topbar-spacer"></span>' +
+        '<span id="ed-diag-status" class="topbar-status"></span>' +
+        '<button id="ed-search-toggle" title="搜索 key/value（仅高级/树/已修改 模式可用）">搜索</button>' +
+        '<button id="ed-diag-export" title="把当前档 + 日志 + 配置打成 zip 发给开发者">导出诊断包</button>' +
+      '</div>' +
       '<div id="ed-banner"></div>' +
       '<div id="ed-mode-tabs" class="mode-tabs"></div>' +
-      '<div id="ed-panel"></div>' +
+      '<div id="ed-panel" style="position:relative"></div>' +
       '<div id="ed-status" style="font-size:11px;color:#888;margin-top:8px"></div>' +
       '<div class="modal-actions">' +
         '<button id="ed-save" class="primary">保存</button>' +
@@ -72,12 +98,37 @@
         '<button id="ed-cancel">取消</button>' +
       '</div>';
 
+    _topbarEl = document.getElementById('ed-topbar');
+    _diagBtn = document.getElementById('ed-diag-export');
+    _diagStatusEl = document.getElementById('ed-diag-status');
     _bannerEl = document.getElementById('ed-banner');
     _modeTabsEl = document.getElementById('ed-mode-tabs');
     _panelEl = document.getElementById('ed-panel');
     _saveBtn = document.getElementById('ed-save');
     _resetBtn = document.getElementById('ed-reset-slot');
     _statusEl = document.getElementById('ed-status');
+
+    _diagBtn.onclick = onExportDiagnostic;
+    // 搜索按钮：显式触发（Ctrl+F 会被 launcher KeyboardHook/HotkeyGuard 全屏热键拦截，到不了 web）
+    var searchBtn = document.getElementById('ed-search-toggle');
+    if (searchBtn) {
+      searchBtn.onclick = function() {
+        if (_mode !== 'advanced' && _mode !== 'tree' && _mode !== 'modified') {
+          _statusEl.textContent = '搜索仅在 高级/树视图/已修改 模式可用';
+          return;
+        }
+        if (_searchVisible) hideSearchOverlay();
+        else showSearchOverlay();
+      };
+    }
+    // Esc 仍保留作为关闭浮层的快捷键（document 级；浮层可见时才生效，不会与 panel 路由冲突）
+    _searchKeyHandler = function(e) {
+      if (e.key === 'Escape' && _searchVisible) {
+        e.preventDefault();
+        hideSearchOverlay();
+      }
+    };
+    document.addEventListener('keydown', _searchKeyHandler);
 
     document.getElementById('ed-close').onclick = function() { window.BootstrapApp.tryCloseModal(); };
     document.getElementById('ed-cancel').onclick = function() { window.BootstrapApp.tryCloseModal(); };
@@ -111,9 +162,20 @@
   }
 
   function unmount() {
+    if (_searchKeyHandler) {
+      document.removeEventListener('keydown', _searchKeyHandler);
+      _searchKeyHandler = null;
+    }
+    _searchVisible = false;
+    _searchHits = [];
+    _searchHitIdx = -1;
+    _dangerUnlocked = {};
     for (var i = 0; i < _unsubs.length; i++) _unsubs[i]();
     _unsubs = [];
     _container = null;
+    _topbarEl = null;
+    _diagBtn = null;
+    _diagStatusEl = null;
     _bannerEl = null;
     _modeTabsEl = null;
     _panelEl = null;
@@ -240,14 +302,18 @@
     _modeTabsEl.innerHTML =
       '<button id="tab-simple">简易模式</button>' +
       '<button id="tab-advanced">高级模式</button>' +
-      '<button id="tab-tree">树视图</button>';
+      '<button id="tab-tree">树视图</button>' +
+      '<button id="tab-modified">已修改</button>';
     document.getElementById('tab-simple').onclick = function() { switchMode('simple'); };
     document.getElementById('tab-advanced').onclick = function() { switchMode('advanced'); };
     document.getElementById('tab-tree').onclick = function() { switchMode('tree'); };
+    document.getElementById('tab-modified').onclick = function() { switchMode('modified'); };
 
     if (_mode === 'simple') renderSimple();
     else if (_mode === 'advanced') renderAdvanced();
-    else renderTree();
+    else if (_mode === 'tree') renderTree();
+    else if (_mode === 'modified') renderModified();
+    else renderSimple();
 
     updateTabHighlight();
   }
@@ -280,10 +346,14 @@
     if ((_mode === 'simple' || _mode === 'tree') && _currentData) {
       _rawText = JSON.stringify(_currentData, null, 2);
     }
+    // 切换模式时关闭搜索浮层
+    if (_searchVisible) hideSearchOverlay();
     _mode = mode;
     if (mode === 'simple') renderSimple();
     else if (mode === 'advanced') renderAdvanced();
-    else renderTree();
+    else if (mode === 'tree') renderTree();
+    else if (mode === 'modified') renderModified();
+    else renderSimple();
     updateTabHighlight();
   }
 
@@ -292,55 +362,268 @@
     for (var i = 0; i < btns.length; i++) {
       btns[i].className = btns[i].id === ('tab-' + _mode) ? 'active' : '';
     }
+    // 搜索按钮在 simple 模式禁用（卡片化已分组，搜索意义低）
+    var searchBtn = document.getElementById('ed-search-toggle');
+    if (searchBtn) {
+      searchBtn.disabled = (_mode === 'simple');
+      searchBtn.title = (_mode === 'simple')
+        ? '简易模式不支持搜索（已按分类分卡片）'
+        : '搜索 key/value';
+    }
   }
 
   // ==================== 简易模式 ====================
 
+  // 类别 → 提示文案（卡片顶部斜体灰字；可选）
+  var CATEGORY_HINTS = {
+    system: '音频设置 UI 迁移中，此处为临时入口。',
+    danger: '改动会影响存档兼容性，需双击解锁后才能编辑。'
+  };
+
   function renderSimple() {
     if (!_currentData) { renderAdvanced(); return; }
-    var fields = window.ArchiveSchema.fields;
-    var html = '<div class="schema-form">';
-    for (var i = 0; i < fields.length; i++) {
-      var f = fields[i];
-      var val = window.ArchiveSchema.getByPath(_currentData, f.path);
-      var pathStr = window.ArchiveSchema.pathToString(f.path);
-      html += '<label title="' + escHtml(pathStr) + '">' + escHtml(f.label) + '</label>';
+    var groups = window.ArchiveSchema.groupByCategory();
+    var orderedKeys = window.ArchiveSchema.orderedCategoryKeys();
+    var html = '';
 
-      if (f.readonly) {
-        html += '<span class="readonly-val">' + escHtml(val != null ? String(val) : '—') + '</span>';
-      } else if (f.type === 'enum') {
-        html += '<select data-idx="' + i + '">';
-        for (var j = 0; j < f.options.length; j++) {
-          var sel = (String(val) === f.options[j]) ? ' selected' : '';
-          html += '<option value="' + escHtml(f.options[j]) + '"' + sel + '>' + escHtml(f.options[j]) + '</option>';
-        }
-        html += '</select>';
-      } else if (f.type === 'number') {
-        var minAttr = (f.min != null) ? ' min="' + f.min + '"' : '';
-        var maxAttr = (f.max != null) ? ' max="' + f.max + '"' : '';
-        html += '<input type="number" data-idx="' + i + '" value="' + (val != null ? val : 0) + '"' + minAttr + maxAttr + '>';
-        var hint = '';
-        if (f.min != null) hint += '最小: ' + f.min;
-        if (f.max != null) hint += (hint ? ', ' : '') + '最大: ' + f.max;
-        if (hint) html += '<span class="hint">' + hint + '</span>';
-      } else if (f.type === 'string') {
-        var mlAttr = f.maxLength ? ' maxlength="' + f.maxLength + '"' : '';
-        html += '<input type="text" data-idx="' + i + '" value="' + escHtml(val != null ? String(val) : '') + '"' + mlAttr + '>';
+    for (var ci = 0; ci < orderedKeys.length; ci++) {
+      var cat = orderedKeys[ci];
+      var fields = groups[cat];
+      if (!fields || fields.length === 0) continue;
+
+      var catMeta = window.ArchiveSchema.categories[cat] || { label: cat };
+      var tagHtml = '';
+      if (cat === 'system') tagHtml = '<span class="schema-card-tag system">迁移期临时入口</span>';
+      else if (cat === 'danger') tagHtml = '<span class="schema-card-tag danger">危险字段</span>';
+
+      html += '<div class="schema-card cat-' + escHtml(cat) + '">';
+      html += '<div class="schema-card-header"><h3>' + escHtml(catMeta.label) + '</h3>' + tagHtml + '</div>';
+      if (CATEGORY_HINTS[cat])
+        html += '<div class="card-temporary-hint">' + escHtml(CATEGORY_HINTS[cat]) + '</div>';
+
+      html += '<div class="schema-form">';
+      for (var i = 0; i < fields.length; i++) {
+        html += renderSimpleField(fields[i]);
       }
+      html += '</div></div>';
     }
-    html += '</div>';
 
     // 非白名单字段提示
     html += '<div style="margin-top:16px;color:#666;font-size:11px">' +
             '以上为常用字段。其他字段请切换到"树视图"或"高级模式"编辑。</div>';
 
     _panelEl.innerHTML = html;
+    bindSimpleFieldEvents();
+  }
 
-    // 绑定事件
-    var inputs = _panelEl.querySelectorAll('input, select');
+  // 单个字段 HTML（按 type / preview / danger 分支）
+  function renderSimpleField(f) {
+    var idx = window.ArchiveSchema.fields.indexOf(f);  // schema 全局索引（事件回查）
+    var val = window.ArchiveSchema.getByPath(_currentData, f.path);
+    var pathStr = window.ArchiveSchema.pathToString(f.path);
+    var labelHtml = '<label title="' + escHtml(pathStr) + '">' + escHtml(f.label) + '</label>';
+    var unlocked = !f.danger || _dangerUnlocked[pathStr];
+
+    // literal: 仅显示常量，不可编辑
+    if (f.type === 'literal') {
+      return labelHtml + '<span class="readonly-val">' + escHtml(String(f.value)) + '</span>';
+    }
+
+    // 系统类：滑杆 + 数字 + 预设 + 试听
+    if (f.preview && f.type === 'number') {
+      var min = f.min != null ? f.min : 0;
+      var max = f.max != null ? f.max : 100;
+      var n = (val != null && !isNaN(Number(val))) ? Number(val) : (f.default != null ? f.default : min);
+      var html = labelHtml +
+        '<div class="audio-row">' +
+          '<input type="range" data-idx="' + idx + '" data-role="range" min="' + min + '" max="' + max + '" value="' + n + '">' +
+          '<input type="number" data-idx="' + idx + '" data-role="num" class="audio-num" value="' + n + '" min="' + min + '" max="' + max + '">' +
+          '<span class="audio-presets">' +
+            '<button type="button" class="audio-preset" data-idx="' + idx + '" data-preset="0">静音</button>' +
+            '<button type="button" class="audio-preset" data-idx="' + idx + '" data-preset="' + (f.default != null ? f.default : 50) + '">默认</button>' +
+            '<button type="button" class="audio-preset" data-idx="' + idx + '" data-preset="' + max + '">最大</button>' +
+          '</span>' +
+          '<button type="button" class="audio-preview" data-idx="' + idx + '">试听</button>' +
+        '</div>';
+      if (f.hint) html += '<span class="hint' + (f.hintWarn ? ' warn' : '') + '">' + escHtml(f.hint) + '</span>';
+      return html;
+    }
+
+    // 危险字段（非系统类）：双击解锁
+    if (f.danger) {
+      var disabledAttr = unlocked ? '' : ' disabled';
+      var lockClass = unlocked ? 'danger-lock unlocked' : 'danger-lock';
+      var lockText = unlocked ? '已解锁' : '锁定（双击解锁）';
+      var inputHtml = '';
+      if (f.type === 'number') {
+        var minA = (f.min != null) ? ' min="' + f.min + '"' : '';
+        var maxA = (f.max != null) ? ' max="' + f.max + '"' : '';
+        inputHtml = '<input type="number" data-idx="' + idx + '" value="' + (val != null ? val : 0) + '"' + minA + maxA + disabledAttr + '>';
+      } else if (f.type === 'string') {
+        var mlA = f.maxLength ? ' maxlength="' + f.maxLength + '"' : '';
+        inputHtml = '<input type="text" data-idx="' + idx + '" value="' + escHtml(val != null ? String(val) : '') + '"' + mlA + disabledAttr + '>';
+      } else {
+        inputHtml = '<input type="text" data-idx="' + idx + '" value="' + escHtml(val != null ? String(val) : '') + '"' + disabledAttr + '>';
+      }
+      var html = labelHtml + '<div class="danger-field">' + inputHtml +
+        '<button type="button" class="' + lockClass + '" data-danger-path="' + escHtml(pathStr) + '">' + escHtml(lockText) + '</button>' +
+        '</div>';
+      if (f.hint) html += '<span class="hint warn">' + escHtml(f.hint) + '</span>';
+      return html;
+    }
+
+    // 其余类型（与 v2 行为一致）
+    if (f.readonly) {
+      return labelHtml + '<span class="readonly-val">' + escHtml(val != null ? String(val) : '—') + '</span>';
+    }
+    if (f.type === 'enum') {
+      var html2 = labelHtml + '<select data-idx="' + idx + '">';
+      for (var j = 0; j < f.options.length; j++) {
+        var sel = (String(val) === f.options[j]) ? ' selected' : '';
+        html2 += '<option value="' + escHtml(f.options[j]) + '"' + sel + '>' + escHtml(f.options[j]) + '</option>';
+      }
+      html2 += '</select>';
+      return html2;
+    }
+    if (f.type === 'number') {
+      var minA2 = (f.min != null) ? ' min="' + f.min + '"' : '';
+      var maxA2 = (f.max != null) ? ' max="' + f.max + '"' : '';
+      var html3 = labelHtml + '<input type="number" data-idx="' + idx + '" value="' + (val != null ? val : 0) + '"' + minA2 + maxA2 + '>';
+      var hint = '';
+      if (f.min != null) hint += '最小: ' + f.min;
+      if (f.max != null) hint += (hint ? ', ' : '') + '最大: ' + f.max;
+      if (hint) html3 += '<span class="hint">' + hint + '</span>';
+      return html3;
+    }
+    if (f.type === 'string') {
+      var mlA2 = f.maxLength ? ' maxlength="' + f.maxLength + '"' : '';
+      return labelHtml + '<input type="text" data-idx="' + idx + '" value="' + escHtml(val != null ? String(val) : '') + '"' + mlA2 + '>';
+    }
+    return labelHtml + '<span class="readonly-val">(unsupported type)</span>';
+  }
+
+  function bindSimpleFieldEvents() {
+    if (!_panelEl) return;
+    // 普通输入
+    var inputs = _panelEl.querySelectorAll('input[data-idx], select[data-idx]');
     for (var k = 0; k < inputs.length; k++) {
-      inputs[k].addEventListener('input', onSimpleFieldChange);
-      inputs[k].addEventListener('change', onSimpleFieldChange);
+      var role = inputs[k].getAttribute('data-role');
+      if (role === 'range' || role === 'num') {
+        inputs[k].addEventListener('input', onAudioRowChange);
+      } else {
+        inputs[k].addEventListener('input', onSimpleFieldChange);
+        inputs[k].addEventListener('change', onSimpleFieldChange);
+      }
+    }
+    // 音频预设按钮
+    var presets = _panelEl.querySelectorAll('button.audio-preset');
+    for (var p = 0; p < presets.length; p++) {
+      presets[p].addEventListener('click', onAudioPresetClick);
+    }
+    // 音频试听按钮
+    var previews = _panelEl.querySelectorAll('button.audio-preview');
+    for (var q = 0; q < previews.length; q++) {
+      previews[q].addEventListener('click', onAudioPreviewClick);
+    }
+    // 危险字段解锁
+    var locks = _panelEl.querySelectorAll('button.danger-lock');
+    for (var r = 0; r < locks.length; r++) {
+      locks[r].addEventListener('dblclick', onDangerUnlock);
+      // 单击只提示
+      locks[r].addEventListener('click', function(e) {
+        if (!_dangerUnlocked[e.target.getAttribute('data-danger-path')])
+          _statusEl.textContent = '危险字段需双击解锁';
+      });
+    }
+  }
+
+  function onDangerUnlock(e) {
+    var pathStr = e.target.getAttribute('data-danger-path');
+    if (!pathStr) return;
+    if (_dangerUnlocked[pathStr]) {
+      delete _dangerUnlocked[pathStr];
+    } else {
+      if (!confirm('解锁后改动 "' + pathStr + '" 可能让档无法被启动器识别。确定继续？')) return;
+      _dangerUnlocked[pathStr] = true;
+    }
+    renderSimple();
+  }
+
+  // 音频行：滑杆 / 数字输入 双向同步
+  function onAudioRowChange(e) {
+    var idx = parseInt(e.target.getAttribute('data-idx'), 10);
+    var field = window.ArchiveSchema.fields[idx];
+    if (!field) return;
+
+    var val = Number(e.target.value);
+    if (isNaN(val)) return;
+    if (field.min != null && val < field.min) val = field.min;
+    if (field.max != null && val > field.max) val = field.max;
+
+    // 同步另一个 input
+    var pair = _panelEl.querySelectorAll('input[data-idx="' + idx + '"]');
+    for (var i = 0; i < pair.length; i++) {
+      if (pair[i] !== e.target && Number(pair[i].value) !== val) {
+        pair[i].value = val;
+      }
+    }
+
+    window.ArchiveSchema.setByPath(_currentData, field.path, val);
+    _isDirty = true;
+    updateButtons();
+  }
+
+  function onAudioPresetClick(e) {
+    var idx = parseInt(e.target.getAttribute('data-idx'), 10);
+    var preset = parseInt(e.target.getAttribute('data-preset'), 10);
+    var field = window.ArchiveSchema.fields[idx];
+    if (!field) return;
+
+    var pair = _panelEl.querySelectorAll('input[data-idx="' + idx + '"]');
+    for (var i = 0; i < pair.length; i++) pair[i].value = preset;
+    window.ArchiveSchema.setByPath(_currentData, field.path, preset);
+    _isDirty = true;
+    updateButtons();
+  }
+
+  // 试听：走 bootstrap channel "audio_preview" 命令直调 launcher 的 AudioEngine（ma_bridge_*）
+  // launcher 一启动就已 init audio engine 并 preload SFX，因此即使 _idleOk（游戏未运行）也能播。
+  // SFX 通道额外触发硬编码常驻 SFX (Button9.wav) 播放。
+  function onAudioPreviewClick(e) {
+    var idx = parseInt(e.target.getAttribute('data-idx'), 10);
+    var field = window.ArchiveSchema.fields[idx];
+    if (!field || !field.preview) return;
+
+    var val = Number(window.ArchiveSchema.getByPath(_currentData, field.path));
+    if (isNaN(val)) val = 0;
+
+    var channel = null;
+    if (field.preview === 'audio.master') channel = 'master';
+    else if (field.preview === 'audio.bgm') channel = 'bgm';
+    else if (field.preview === 'audio.sfx') channel = 'sfx';
+    if (!channel) return;
+
+    // 单次性 ack；监听 audio_preview_resp 给状态提示
+    var unsub = window.BootstrapApp.onMessage('audio_preview_resp', function(resp) {
+      unsub();
+      if (resp.channel !== channel) return;  // 防误捕（理论上不会）
+      if (resp.ok) {
+        if (channel === 'sfx') {
+          _statusEl.textContent = '已试听 SFX（音量 ' + val + '）' + (resp.played ? '' : '（preload 未就绪，仅应用音量）');
+        } else {
+          _statusEl.textContent = '已应用 ' + field.label + '=' + val;
+        }
+      } else {
+        _statusEl.textContent = '试听失败: ' + (resp.error || 'unknown');
+      }
+    });
+    _unsubs.push(unsub);
+
+    try {
+      window.BootstrapApp.send({ cmd: 'audio_preview', channel: channel, value: val });
+    } catch (ex) {
+      unsub();
+      _statusEl.textContent = '试听失败: ' + ex.message;
     }
   }
 
@@ -577,6 +860,356 @@
     }
     // string / undefined / 其他
     return { valid: true, value: str };
+  }
+
+  // ==================== "已修改" 差异视图 ====================
+
+  // 与 schema field.default 对比；只列出当前值≠default 的字段（含 readonly/literal）
+  // 没有 default 的字段忽略（不可恢复）。version literal 也忽略。
+  function renderModified() {
+    if (!_currentData) { renderAdvanced(); return; }
+    var fields = window.ArchiveSchema.fields;
+    var rows = [];
+    for (var i = 0; i < fields.length; i++) {
+      var f = fields[i];
+      if (f.default == null) continue;  // 没有默认值无法对比
+      if (f.type === 'literal') continue;
+      var cur = window.ArchiveSchema.getByPath(_currentData, f.path);
+      if (cur === undefined || cur === null) continue;
+      // 数字按数值比较；其它按字符串
+      var same;
+      if (f.type === 'number') same = Number(cur) === Number(f.default);
+      else same = String(cur) === String(f.default);
+      if (same) continue;
+      rows.push({ idx: i, field: f, cur: cur });
+    }
+
+    if (rows.length === 0) {
+      _panelEl.innerHTML = '<div class="diff-empty">档与白名单字段默认值完全一致。</div>';
+      return;
+    }
+
+    var html = '<div class="diff-list">';
+    html += '<div class="diff-row" style="font-weight:600;color:#bbb;border-bottom:1px solid #444">' +
+              '<div>字段</div><div>当前值</div><div>默认值</div><div></div>' +
+            '</div>';
+    for (var r = 0; r < rows.length; r++) {
+      var f2 = rows[r].field;
+      var pathStr = window.ArchiveSchema.pathToString(f2.path);
+      html += '<div class="diff-row">' +
+                '<div><span class="diff-label">' + escHtml(f2.label) + '</span><br>' +
+                  '<span class="diff-path">' + escHtml(pathStr) + '</span></div>' +
+                '<div class="diff-current">' + escHtml(String(rows[r].cur)) + '</div>' +
+                '<div class="diff-default">' + escHtml(String(f2.default)) + '</div>' +
+                '<div><button class="diff-restore" data-idx="' + rows[r].idx + '">恢复默认</button></div>' +
+              '</div>';
+    }
+    html += '</div>';
+    _panelEl.innerHTML = html;
+
+    var btns = _panelEl.querySelectorAll('button.diff-restore');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', function(e) {
+        var idx = parseInt(e.target.getAttribute('data-idx'), 10);
+        var f3 = window.ArchiveSchema.fields[idx];
+        if (!f3 || f3.default == null) return;
+        if (f3.danger && !_dangerUnlocked[window.ArchiveSchema.pathToString(f3.path)]) {
+          alert('该字段为危险字段，请先回到简易模式双击解锁后再恢复。');
+          return;
+        }
+        window.ArchiveSchema.setByPath(_currentData, f3.path, f3.default);
+        _isDirty = true;
+        renderModified();  // 重渲染（恢复后该行会消失）
+        updateButtons();
+      });
+    }
+  }
+
+  // ==================== Ctrl+F 搜索浮层 ====================
+
+  function showSearchOverlay() {
+    if (_searchVisible || !_panelEl) return;
+    _searchVisible = true;
+    var ov = document.createElement('div');
+    ov.className = 'editor-search-overlay';
+    ov.id = 'ed-search';
+    ov.innerHTML =
+      '<input type="text" id="ed-search-input" placeholder="搜索 key / value...">' +
+      '<span class="search-count" id="ed-search-count">0 / 0</span>' +
+      '<button id="ed-search-prev" title="上一处">‹</button>' +
+      '<button id="ed-search-next" title="下一处">›</button>' +
+      '<button id="ed-search-close" title="关闭 (Esc)">×</button>';
+    _panelEl.appendChild(ov);
+
+    var input = document.getElementById('ed-search-input');
+    var count = document.getElementById('ed-search-count');
+
+    var debounceTimer = null;
+    input.addEventListener('input', function() {
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(function() { runSearch(input.value, count); }, 200);
+    });
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (e.shiftKey) jumpSearch(-1, count);
+        else jumpSearch(1, count);
+      }
+    });
+    document.getElementById('ed-search-prev').onclick = function() { jumpSearch(-1, count); };
+    document.getElementById('ed-search-next').onclick = function() { jumpSearch(1, count); };
+    document.getElementById('ed-search-close').onclick = hideSearchOverlay;
+
+    input.focus();
+  }
+
+  function hideSearchOverlay() {
+    _searchVisible = false;
+    var ov = document.getElementById('ed-search');
+    if (ov && ov.parentNode) ov.parentNode.removeChild(ov);
+    clearSearchHighlights();
+    clearSearchLineMarker();
+    _searchHits = [];
+    _searchHitIdx = -1;
+  }
+
+  function clearSearchLineMarker() {
+    if (_searchLineMarker && _searchLineMarker.parentNode)
+      _searchLineMarker.parentNode.removeChild(_searchLineMarker);
+    _searchLineMarker = null;
+    _searchMarkerOffsetTop = -1;
+    _searchMarkerHeight = 0;
+    if (_searchMarkerScrollHandler) {
+      var tas = _panelEl ? _panelEl.querySelectorAll('textarea.raw-editor') : null;
+      if (tas) for (var i = 0; i < tas.length; i++) tas[i].removeEventListener('scroll', _searchMarkerScrollHandler);
+      _searchMarkerScrollHandler = null;
+    }
+  }
+
+  // 像素级测量 textarea 内某 offset 的位置 + 高度。
+  // 用 hidden div 镜像 textarea 的字体/换行/padding，把"匹配前的文本"灌进去，
+  // 用一个 <span> 在匹配字符位置当 sentinel 取 getBoundingClientRect。
+  // 这绕过了 line-height: normal 的不确定性，对 Consolas / 字号缩放也准。
+  function measureTextareaMatch(ta, matchOffset, matchLen) {
+    var cs = window.getComputedStyle(ta);
+    var padLeft = parseFloat(cs.paddingLeft) || 0;
+    var padRight = parseFloat(cs.paddingRight) || 0;
+
+    var probe = document.createElement('div');
+    probe.style.position = 'absolute';
+    probe.style.visibility = 'hidden';
+    probe.style.left = '-99999px';
+    probe.style.top = '0';
+    probe.style.width = (ta.clientWidth - padLeft - padRight) + 'px';
+    probe.style.padding = '0';
+    probe.style.margin = '0';
+    probe.style.border = '0';
+    probe.style.boxSizing = 'content-box';
+    // 文本渲染相关全部对齐 textarea
+    var copyProps = ['fontFamily', 'fontSize', 'fontWeight', 'fontStyle',
+      'lineHeight', 'letterSpacing', 'tabSize', 'textTransform',
+      'wordBreak', 'wordSpacing', 'overflowWrap'];
+    for (var i = 0; i < copyProps.length; i++) {
+      probe.style[copyProps[i]] = cs[copyProps[i]];
+    }
+    probe.style.whiteSpace = 'pre-wrap';
+    probe.style.overflowWrap = cs.overflowWrap || 'break-word';
+
+    var beforeMatch = ta.value.substring(0, matchOffset);
+    // 把 beforeMatch 直接塞 textContent，再追加一个 sentinel span 包裹 1 个匹配字符
+    probe.textContent = beforeMatch;
+    var sentinel = document.createElement('span');
+    var sentinelChar = ta.value.substring(matchOffset, matchOffset + 1) || '​';
+    sentinel.textContent = sentinelChar;
+    probe.appendChild(sentinel);
+
+    document.body.appendChild(probe);
+    var sentinelRect = sentinel.getBoundingClientRect();
+    var probeRect = probe.getBoundingClientRect();
+    var top = sentinelRect.top - probeRect.top;
+    var height = sentinelRect.height;
+    document.body.removeChild(probe);
+
+    return { top: top, height: height };
+  }
+
+  function setSearchLineMarker(ta, matchOffset, matchLen) {
+    if (!_panelEl || !ta) return;
+    var m = measureTextareaMatch(ta, matchOffset, matchLen);
+    _searchMarkerOffsetTop = m.top;
+    _searchMarkerHeight = m.height;
+
+    if (!_searchLineMarker) {
+      _searchLineMarker = document.createElement('div');
+      _searchLineMarker.className = 'search-line-marker';
+      _panelEl.appendChild(_searchLineMarker);
+    }
+    if (!_searchMarkerScrollHandler) {
+      _searchMarkerScrollHandler = function() { repositionSearchLineMarker(ta); };
+      ta.addEventListener('scroll', _searchMarkerScrollHandler);
+    }
+    repositionSearchLineMarker(ta);
+  }
+
+  function repositionSearchLineMarker(ta) {
+    if (!_searchLineMarker || _searchMarkerOffsetTop < 0) return;
+    var taRect = ta.getBoundingClientRect();
+    var panelRect = _panelEl.getBoundingClientRect();
+    var cs = window.getComputedStyle(ta);
+    var padTop = parseFloat(cs.paddingTop) || 0;
+    var padBottom = parseFloat(cs.paddingBottom) || 0;
+    var padLeft = parseFloat(cs.paddingLeft) || 0;
+    var padRight = parseFloat(cs.paddingRight) || 0;
+    var borderTop = parseFloat(cs.borderTopWidth) || 0;
+    var borderLeft = parseFloat(cs.borderLeftWidth) || 0;
+
+    var contentTopInPanel = (taRect.top - panelRect.top) + borderTop + padTop;
+    var top = contentTopInPanel + _searchMarkerOffsetTop - ta.scrollTop;
+    var left = (taRect.left - panelRect.left) + borderLeft + padLeft;
+    var width = ta.clientWidth - padLeft - padRight;
+    var height = _searchMarkerHeight;
+
+    // 超出 textarea 内容视口则隐藏（避免覆盖到 textarea 之外的 UI）
+    var contentBottomInPanel = contentTopInPanel + ta.clientHeight - padTop - padBottom;
+    if (top + height < contentTopInPanel || top > contentBottomInPanel) {
+      _searchLineMarker.style.opacity = '0';
+    } else {
+      _searchLineMarker.style.opacity = '1';
+      _searchLineMarker.style.left = left + 'px';
+      _searchLineMarker.style.top = top + 'px';
+      _searchLineMarker.style.width = width + 'px';
+      _searchLineMarker.style.height = height + 'px';
+    }
+  }
+
+  function clearSearchHighlights() {
+    if (!_panelEl) return;
+    var hits = _panelEl.querySelectorAll('.editor-search-hit, .editor-search-hit-current');
+    for (var i = 0; i < hits.length; i++) {
+      hits[i].classList.remove('editor-search-hit');
+      hits[i].classList.remove('editor-search-hit-current');
+    }
+  }
+
+  // 在当前面板的可搜索元素里找匹配；advanced 模式 textarea 走文本搜索；tree/modified 走 DOM 节点搜索
+  // 注意: advanced 模式输入框打字时只统计 hits, 不主动 focus textarea / 不 setSelectionRange,
+  // 否则后续按键会覆盖被选中的 JSON 文本损坏档结构 (issue: 输入"se" 时焦点跳到 JSON 第一处 "se" 并选中, 第三个字符直接覆写选中文本)。
+  // 跳转 (focus + 选中 + 滚动到行) 只在用户显式点 ‹ / › 或按 Enter 时发生 (jumpSearch)。
+  function runSearch(query, countEl) {
+    clearSearchHighlights();
+    clearSearchLineMarker();
+    _searchHits = [];
+    _searchHitIdx = -1;
+    if (!query || query.length === 0) {
+      countEl.textContent = '0 / 0';
+      return;
+    }
+
+    if (_mode === 'advanced') {
+      var ta = _panelEl.querySelector('textarea.raw-editor');
+      if (!ta) return;
+      var text = ta.value;
+      var lower = query.toLowerCase();
+      var pos = 0;
+      while (true) {
+        var hit = text.toLowerCase().indexOf(lower, pos);
+        if (hit < 0) break;
+        _searchHits.push({ start: hit, len: query.length });
+        pos = hit + Math.max(1, query.length);
+      }
+      countEl.textContent = _searchHits.length === 0 ? '0 / 0' : ('0 / ' + _searchHits.length);
+      // 不抢焦点; 用户点 ‹/› 或按 Enter 才跳转
+      return;
+    }
+
+    // tree / modified：DOM 节点文本扫描（只看 leaf 文本与 input value）
+    var lower2 = query.toLowerCase();
+    // tree 模式：自动展开匹配节点
+    if (_mode === 'tree') {
+      var allDetails = _panelEl.querySelectorAll('details.tree-node');
+      for (var d = 0; d < allDetails.length; d++) allDetails[d].open = true;
+    }
+    var leaves = _panelEl.querySelectorAll('.tree-leaf, .diff-row');
+    for (var i2 = 0; i2 < leaves.length; i2++) {
+      var leaf = leaves[i2];
+      var keyText = (leaf.textContent || '').toLowerCase();
+      var inp = leaf.querySelector('input');
+      var inpVal = inp ? (inp.value || '').toLowerCase() : '';
+      if (keyText.indexOf(lower2) >= 0 || inpVal.indexOf(lower2) >= 0) {
+        leaf.classList.add('editor-search-hit');
+        _searchHits.push(leaf);
+      }
+    }
+    if (_searchHits.length === 0) {
+      countEl.textContent = '0 / 0';
+      return;
+    }
+    _searchHitIdx = 0;
+    _searchHits[0].classList.add('editor-search-hit-current');
+    _searchHits[0].scrollIntoView({ block: 'nearest' });
+    countEl.textContent = '1 / ' + _searchHits.length;
+  }
+
+  function jumpSearch(dir, countEl) {
+    if (_searchHits.length === 0) return;
+    if (_mode === 'advanced') {
+      var ta = _panelEl.querySelector('textarea.raw-editor');
+      if (!ta) return;
+      // 第一次 jump 时 _searchHitIdx==-1, 进位到 0; 之后正常环绕
+      if (_searchHitIdx < 0) _searchHitIdx = (dir > 0 ? -1 : 0);
+      _searchHitIdx = (_searchHitIdx + dir + _searchHits.length) % _searchHits.length;
+      var h = _searchHits[_searchHitIdx];
+      ta.focus();
+      ta.setSelectionRange(h.start, h.start + h.len);
+      // 用镜像 div 像素级测量匹配位置 + 行高（绕过 line-height: normal 估算误差）
+      var measure = measureTextareaMatch(ta, h.start, h.len);
+      // 让匹配落在视口靠上 1/3 处（浏览器 Find-on-Page 习惯）
+      var target = measure.top - (ta.clientHeight / 3);
+      ta.scrollTop = Math.max(0, target);
+      // 标尺与 setSelectionRange 双保险：textarea 失焦后选区颜色变灰几乎不可见（深色主题尤其），
+      // 标尺是 absolute div 叠加，与焦点状态无关，跟随 textarea 内部滚动同步移动。
+      // setSearchLineMarker 内会复测一次（保证标尺位置和 scrollTop 后的视口对齐）
+      setSearchLineMarker(ta, h.start, h.len);
+      countEl.textContent = (_searchHitIdx + 1) + ' / ' + _searchHits.length;
+      return;
+    }
+    // tree / modified
+    var prev = _searchHits[_searchHitIdx];
+    if (prev) prev.classList.remove('editor-search-hit-current');
+    _searchHitIdx = (_searchHitIdx + dir + _searchHits.length) % _searchHits.length;
+    var cur = _searchHits[_searchHitIdx];
+    cur.classList.add('editor-search-hit-current');
+    cur.scrollIntoView({ block: 'nearest' });
+    countEl.textContent = (_searchHitIdx + 1) + ' / ' + _searchHits.length;
+  }
+
+  // ==================== 诊断包导出 ====================
+
+  function onExportDiagnostic() {
+    if (!_diagBtn) return;
+    _diagBtn.disabled = true;
+    _diagStatusEl.className = 'topbar-status';
+    _diagStatusEl.textContent = '打包中...';
+
+    var unsub = window.BootstrapApp.onMessage('diagnostic_resp', function(j) {
+      unsub();
+      _diagBtn.disabled = false;
+      if (j.ok) {
+        _diagStatusEl.className = 'topbar-status ok';
+        var sizeKB = Math.round((j.zipSize || 0) / 1024);
+        var msg = '已生成 ' + (j.zipName || '') + ' (' + sizeKB + ' KB)';
+        if (j.warnings && j.warnings.length > 0) msg += ' [' + j.warnings.length + ' 个警告]';
+        _diagStatusEl.textContent = msg;
+        _diagStatusEl.title = (j.zipPath || '') + (j.warnings && j.warnings.length ? '\n\n警告:\n' + j.warnings.join('\n') : '');
+        playUiCue('playSuccess');
+      } else {
+        _diagStatusEl.className = 'topbar-status err';
+        _diagStatusEl.textContent = '导出失败: ' + (j.error || 'unknown');
+        playUiCue('playError');
+      }
+    });
+    _unsubs.push(unsub);
+    window.BootstrapApp.send({ cmd: 'diagnostic', slot: _slot });
   }
 
   // ==================== 操作 ====================

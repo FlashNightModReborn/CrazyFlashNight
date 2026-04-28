@@ -107,6 +107,12 @@ namespace CF7Launcher.Guardian
                 case "open_saves_dir":
                     UiCommandHandler.HandleOpenSavesDir(archiveTask);
                     return;
+                case "diagnostic":
+                    UiCommandHandler.HandleDiagnostic(msg, bootForm, saveCtx);
+                    return;
+                case "audio_preview":
+                    UiCommandHandler.HandleAudioPreview(msg, bootForm);
+                    return;
 
                 // ─────── Config ───────
                 case "config_set":

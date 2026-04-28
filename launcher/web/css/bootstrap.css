@@ -230,3 +230,115 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: calc(22px * var(--fs-scale));
 .diag-log-pre .log-tag { color: #4da6ff; }
 .diag-log-pre .log-warn { color: #f0a860; }
 .diag-log-pre .log-err { color: #e06e6e; }
+
+/* Phase 5.8: 编辑器顶部工具条（诊断包导出按钮） */
+.editor-topbar { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+.editor-topbar .topbar-spacer { flex: 1; }
+.editor-topbar button {
+  padding: 4px 10px; font-size: var(--fs-sm); border: 1px solid #444;
+  background: transparent; color: #888; border-radius: 3px; cursor: pointer;
+}
+.editor-topbar button:hover { border-color: #4da6ff; color: #4da6ff; }
+.editor-topbar button:disabled { color: #555; border-color: #333; cursor: not-allowed; }
+.editor-topbar .topbar-status { font-size: var(--fs-xs); color: #888; margin-left: 6px; }
+.editor-topbar .topbar-status.err { color: #e06e6e; }
+.editor-topbar .topbar-status.ok { color: #7ed07e; }
+
+/* Phase 5.8: 简易模式分卡片 */
+.schema-card { margin-bottom: 16px; padding: 10px 12px; border: 1px solid #2a2a30; border-radius: 4px; background: #1c1c20; }
+.schema-card.cat-system { border-color: #4a3a20; background: #1f1c14; }
+.schema-card.cat-danger { border-color: #4a2020; background: #1f1414; }
+.schema-card-header { display: flex; align-items: center; margin-bottom: 8px; }
+.schema-card-header h3 { margin: 0; font-size: var(--fs-md); color: #bbb; flex: 1; }
+.schema-card-header .schema-card-tag { font-size: var(--fs-xs); padding: 1px 6px; border-radius: 2px; margin-left: 8px; }
+.schema-card-header .schema-card-tag.system { background: #3a2810; color: #f0a860; }
+.schema-card-header .schema-card-tag.danger { background: #3a1010; color: #e06e6e; }
+.schema-card .card-temporary-hint { font-size: var(--fs-xs); color: #888; font-style: italic; margin-bottom: 8px; }
+.schema-form .hint.warn { color: #f0a860; }
+
+/* 危险字段 */
+.schema-form .danger-field { display: flex; align-items: center; gap: 6px; }
+.schema-form .danger-field input,
+.schema-form .danger-field select { flex: 1; }
+.schema-form .danger-field input:disabled { background: #181818; color: #666; border-color: #333; cursor: not-allowed; }
+.schema-form .danger-field .danger-lock {
+  font-size: var(--fs-xs); color: #e06e6e; padding: 2px 6px; border: 1px solid #4a2020; background: #2a1010;
+  border-radius: 2px; cursor: pointer;
+}
+.schema-form .danger-field .danger-lock.unlocked { color: #f0a860; border-color: #4a3a20; background: #2a2010; }
+.schema-form .danger-field .danger-lock:hover { border-color: #e06e6e; }
+
+/* 系统卡片：滑杆 + 数值 + 预设 */
+.audio-row { display: flex; align-items: center; gap: 8px; }
+.audio-row input[type=range] { flex: 1; min-width: 100px; max-width: 220px; }
+.audio-row .audio-num {
+  width: 56px; padding: 3px 6px; font-size: var(--fs-sm); background: #181818;
+  border: 1px solid #444; color: #e0e0e0; border-radius: 2px; text-align: right;
+}
+.audio-row .audio-presets { display: flex; gap: 4px; margin-left: 4px; }
+.audio-row .audio-preset {
+  font-size: var(--fs-xs); padding: 2px 6px; background: transparent;
+  border: 1px solid #444; color: #888; border-radius: 2px; cursor: pointer;
+}
+.audio-row .audio-preset:hover { border-color: #4da6ff; color: #4da6ff; }
+.audio-row .audio-preview {
+  font-size: var(--fs-xs); padding: 2px 8px; background: #2a3a50; color: #4da6ff;
+  border: 1px solid #4da6ff; border-radius: 2px; cursor: pointer; margin-left: 6px;
+}
+.audio-row .audio-preview:hover { background: #3a4a60; }
+.audio-row .audio-preview:disabled { background: #222; color: #555; border-color: #333; cursor: not-allowed; }
+
+/* "已修改"差异视图 */
+.diff-empty { color: #888; font-style: italic; padding: 24px; text-align: center; }
+.diff-list { font-size: var(--fs-base); }
+.diff-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; align-items: center;
+  padding: 6px 8px; border-bottom: 1px solid #2a2a30;
+}
+.diff-row:hover { background: #1f1f25; }
+.diff-row .diff-label { color: #bbb; }
+.diff-row .diff-path { color: #555; font-size: var(--fs-xs); font-family: Consolas, monospace; }
+.diff-row .diff-current { color: #f0a860; font-family: Consolas, monospace; }
+.diff-row .diff-default { color: #888; font-family: Consolas, monospace; font-size: var(--fs-sm); }
+.diff-row .diff-restore {
+  font-size: var(--fs-xs); padding: 2px 8px; background: transparent;
+  border: 1px solid #444; color: #888; border-radius: 2px; cursor: pointer;
+}
+.diff-row .diff-restore:hover { border-color: #4da6ff; color: #4da6ff; }
+
+/* Ctrl+F 搜索浮层 */
+.editor-search-overlay {
+  position: absolute; top: 8px; right: 12px;
+  background: #1c1c20; border: 1px solid #4da6ff;
+  padding: 6px 8px; border-radius: 3px; display: flex; align-items: center; gap: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 100;
+}
+.editor-search-overlay input {
+  background: #181818; border: 1px solid #444; color: #e0e0e0;
+  padding: 3px 6px; font-size: var(--fs-base); border-radius: 2px; width: 180px;
+}
+.editor-search-overlay input:focus { border-color: #4da6ff; outline: none; }
+.editor-search-overlay .search-count { font-size: var(--fs-xs); color: #888; min-width: 50px; text-align: right; }
+.editor-search-overlay button {
+  background: transparent; border: 1px solid #444; color: #888; padding: 2px 6px;
+  font-size: var(--fs-xs); border-radius: 2px; cursor: pointer;
+}
+.editor-search-overlay button:hover { border-color: #4da6ff; color: #4da6ff; }
+.editor-search-hit { background: rgba(240, 168, 96, 0.25); }
+.editor-search-hit-current { background: rgba(240, 168, 96, 0.55); outline: 1px solid #f0a860; }
+
+/* advanced 模式 textarea 的 ::selection 用亮色，焦点在选区时清晰可见 */
+.raw-editor::selection { background: #f0a860; color: #1a1a1a; }
+.raw-editor::-moz-selection { background: #f0a860; color: #1a1a1a; }
+
+/* advanced 模式当前匹配行的覆盖标尺：textarea 本身不支持 DOM 高亮，
+   失焦后 setSelectionRange 的高亮在深色主题里几乎不可见，所以叠一条
+   绝对定位的横条做视觉锚点；pointer-events:none 不影响滚动/编辑。 */
+.search-line-marker {
+  position: absolute; pointer-events: none;
+  background: rgba(240, 168, 96, 0.18);
+  border-top: 1px solid rgba(240, 168, 96, 0.7);
+  border-bottom: 1px solid rgba(240, 168, 96, 0.7);
+  z-index: 50;
+  transition: opacity 120ms;
+}

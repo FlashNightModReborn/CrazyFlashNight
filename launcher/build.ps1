@@ -253,7 +253,8 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "[Step 6b/6] Verify launcher\data runtime assets..." -ForegroundColor Yellow
 $dataDir = Join-Path $launcherDir "data"
 $requiredDataPaths = @(
-    "map_hud_data.json"   # MapHudWidget catalog；缺失会让 useNativeHud=true 下 MapHud 静默不可见
+    "map_hud_data.json",  # MapHudWidget catalog；缺失会让 useNativeHud=true 下 MapHud 静默不可见
+    "save_schema.json"    # 存档编辑器 diff 视图基线；缺失则"已修改"tab 退化为只用 schema 内的 default 值
 )
 $missingDataPaths = @()
 foreach ($relativePath in $requiredDataPaths) {
@@ -267,7 +268,9 @@ if ($missingDataPaths.Count -gt 0) {
     foreach ($missingPath in $missingDataPaths) {
         Write-Host "  - $missingPath" -ForegroundColor Red
     }
-    Write-Host "  Hint: 运行 'node tools/export-maphud-data.js' 重新生成 map_hud_data.json" -ForegroundColor Yellow
+    Write-Host "  Hint:" -ForegroundColor Yellow
+    Write-Host "    map_hud_data.json   → node tools/export-maphud-data.js" -ForegroundColor Yellow
+    Write-Host "    save_schema.json    → node tools/extract-save-schema.js" -ForegroundColor Yellow
     exit 1
 }
 Write-Host "  OK: launcher\\data runtime assets present ($($requiredDataPaths.Count) checks)" -ForegroundColor Green
