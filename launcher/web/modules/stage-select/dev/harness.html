@@ -95,7 +95,10 @@
             if (type === 'message') listeners.push(handler);
         },
         postMessage: function(message) {
-            if (window.StageSelectHarnessHost) window.StageSelectHarnessHost.sentMessages.push(message);
+            if (window.StageSelectHarnessHost) {
+                window.StageSelectHarnessHost.sentMessages.push(message);
+                if (window.StageSelectHarnessHost.handleMessage) window.StageSelectHarnessHost.handleMessage(message);
+            }
         },
         __dispatch: function(data) {
             var event = { data: data };
@@ -135,6 +138,8 @@
 
     var host = window.StageSelectHarnessHost = {
         sentMessages: [],
+        enterMessages: [],
+        nextEnterError: '',
         setViewport: function(value) {
             var parts = String(value || '1366x768').split('x');
             var width = Math.max(800, parseInt(parts[0] || '1366', 10) || 1366);
@@ -144,6 +149,7 @@
             viewportSelect.value = width + 'x' + height;
         },
         open: function() {
+            if (Panels.getActive && Panels.getActive() === 'stage-select') Panels.close();
             Panels.open('stage-select', {
                 mode: 'dev',
                 fixture: fixtureSelect.value,
@@ -155,8 +161,71 @@
         close: function() {
             Panels.close();
             statusEl.textContent = 'Closed.';
+        },
+        handleMessage: function(message) {
+            if (!message || message.panel !== 'stage-select') return;
+            if (message.cmd === 'snapshot') {
+                var snapshot = buildSnapshot(fixtureSelect.value, message.stageNames || []);
+                setTimeout(function() {
+                    window.chrome.webview.__dispatch({
+                        type: 'panel_resp',
+                        panel: 'stage-select',
+                        cmd: 'snapshot',
+                        callId: message.callId,
+                        success: true,
+                        snapshot: snapshot
+                    });
+                }, 15);
+            } else if (message.cmd === 'enter') {
+                host.enterMessages.push(message);
+                var error = host.nextEnterError;
+                host.nextEnterError = '';
+                var snapshot = buildSnapshot(fixtureSelect.value, [message.stageName]);
+                var unlocked = !!(snapshot.unlockedStages && snapshot.unlockedStages[message.stageName]);
+                setTimeout(function() {
+                    window.chrome.webview.__dispatch({
+                        type: 'panel_resp',
+                        panel: 'stage-select',
+                        cmd: 'enter',
+                        callId: message.callId,
+                        success: !error && unlocked,
+                        error: error || (unlocked ? '' : 'locked'),
+                        closePanel: !error && unlocked
+                    });
+                }, 15);
+            }
         }
     };
+
+    function buildSnapshot(fixtureName, stageNames) {
+        var fixture = StageSelectData.getFixture(fixtureName || 'mixed') || {};
+        var stages = fixture.stages || {};
+        var unlocked = {};
+        var names = stageNames && stageNames.length ? stageNames : collectStageNames();
+        names.forEach(function(name) {
+            if (!name) return;
+            unlocked[name] = stages[name] ? !!stages[name].unlocked : true;
+        });
+        return {
+            unlockedStages: unlocked,
+            isChallengeMode: !!fixture.challenge,
+            currentFrameLabel: frameSelect.value || manifest.frameOrder[0]
+        };
+    }
+
+    function collectStageNames() {
+        var lookup = {};
+        var names = [];
+        manifest.frames.forEach(function(frame) {
+            (frame.stageButtons || []).forEach(function(button) {
+                var name = button.stageName || '';
+                if (!name || lookup[name]) return;
+                lookup[name] = true;
+                names.push(name);
+            });
+        });
+        return names;
+    }
 
     document.getElementById('stage-open-btn').addEventListener('click', function() { host.open(); });
     document.getElementById('stage-close-btn').addEventListener('click', function() { host.close(); });

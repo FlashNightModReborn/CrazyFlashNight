@@ -157,6 +157,7 @@ namespace CF7Launcher.Guardian
         // 面板系统
         private ShopTask _shopTask;
         private MapTask _mapTask;
+        private StageSelectTask _stageSelectTask;
         private GomokuTask _gomokuTask;
         private Action<bool> _onPanelStateChanged;
         private string _activePanel;  // null = 无面板, "kshop"/"help"/...
@@ -2423,6 +2424,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetStageSelectTask(StageSelectTask task)
+        {
+            _stageSelectTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetPanelStateCallback(Action<bool> cb) { _onPanelStateChanged = cb; }
 
         #region PanelHost 集成（Phase 2 应急版）
@@ -2803,8 +2811,20 @@ namespace CF7Launcher.Guardian
                 case "snapshot":
                 case "navigate":
                 case "refresh":
-                    LogManager.Log("[Panel] Routing cmd=" + cmd + " to MapTask, _mapTask=" + (_mapTask != null ? "ok" : "NULL"));
-                    if (_mapTask != null) _mapTask.HandleWebRequest(cmd, parsed);
+                case "enter":
+                    {
+                        string panel = parsed.Value<string>("panel") ?? "";
+                        if (panel == "stage-select")
+                        {
+                            LogManager.Log("[Panel] Routing cmd=" + cmd + " to StageSelectTask, _stageSelectTask=" + (_stageSelectTask != null ? "ok" : "NULL"));
+                            if (_stageSelectTask != null) _stageSelectTask.HandleWebRequest(cmd, parsed);
+                        }
+                        else
+                        {
+                            LogManager.Log("[Panel] Routing cmd=" + cmd + " to MapTask, _mapTask=" + (_mapTask != null ? "ok" : "NULL"));
+                            if (_mapTask != null) _mapTask.HandleWebRequest(cmd, parsed);
+                        }
+                    }
                     break;
                 case "gomoku_eval":
                     LogManager.Log("[Panel] Routing cmd=gomoku_eval to GomokuTask, _gomokuTask=" + (_gomokuTask != null ? "ok" : "NULL"));
@@ -2913,6 +2933,7 @@ namespace CF7Launcher.Guardian
             }
             if (_shopTask != null) _shopTask.ClearPending();
             if (_mapTask != null) _mapTask.ClearPending();
+            if (_stageSelectTask != null) _stageSelectTask.ClearPending();
         }
 
         public void OnSocketReconnected()

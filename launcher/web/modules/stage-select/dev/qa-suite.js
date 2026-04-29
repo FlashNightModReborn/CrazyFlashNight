@@ -8,6 +8,13 @@ var StageSelectHarnessQA = (function() {
         }, 2000, 'stage-select ready');
     }
 
+    function waitRuntime(api) {
+        return api.waitFor(function() {
+            var state = StageSelectPanel && StageSelectPanel._debugGetState ? StageSelectPanel._debugGetState() : null;
+            return state && state.isOpen && state.runtimeSnapshot ? state : null;
+        }, 2000, 'stage-select runtime snapshot');
+    }
+
     function runSuite(api, host, onlyCase) {
         var cases = [
             ['open-close', 'open and close lifecycle', function() {
@@ -53,6 +60,11 @@ var StageSelectHarnessQA = (function() {
                     api.assert(locked > 0, 'mixed fixture has locked buttons');
                     api.assert(task > 0, 'mixed fixture has task buttons');
                     StageSelectPanel._debugSetFixture('challenge');
+                    StageSelectPanel._debugApplySnapshot({
+                        unlockedStages: {},
+                        isChallengeMode: true,
+                        currentFrameLabel: StageSelectPanel._debugGetState().frameLabel
+                    });
                     var state = StageSelectPanel._debugGetState();
                     var difficulties = document.querySelectorAll('.stage-select-difficulty');
                     api.assert(state.challenge, 'challenge flag set');
@@ -76,17 +88,94 @@ var StageSelectHarnessQA = (function() {
                     return 'preview card ok';
                 });
             }],
-            ['difficulty-static', 'difficulty click does not send Bridge command', function() {
+            ['snapshot-live', 'snapshot overrides fixture at runtime', function() {
                 host.open();
-                return waitReady(api).then(function() {
+                return waitRuntime(api).then(function(state) {
+                    api.assert(!!state.runtimeSnapshot.unlockedStages, 'runtime unlocked map exists');
+                    api.assertEqual(state.frameLabel, document.getElementById('stage-frame-select').value, 'snapshot frame applied');
+                    return 'live snapshot ok';
+                });
+            }],
+            ['locked-no-enter', 'locked stage does not send enter', function() {
+                document.getElementById('stage-fixture-select').value = 'mixed';
+                host.open();
+                return waitRuntime(api).then(function() {
                     api.events.length = 0;
-                    var difficulty = document.querySelector('.stage-select-difficulty');
+                    host.sentMessages.length = 0;
+                    var difficulty = null;
+                    var manifest = StageSelectData.getManifest();
+                    manifest.frameOrder.some(function(label) {
+                        StageSelectPanel._debugSetFrame(label, 'qa-locked');
+                        var locked = document.querySelector('.stage-select-stage-button.is-locked .stage-select-difficulty');
+                        if (locked) {
+                            difficulty = locked;
+                            return true;
+                        }
+                        return false;
+                    });
                     api.assert(!!difficulty, 'difficulty button exists');
                     difficulty.click();
                     var state = StageSelectPanel._debugGetState();
                     api.assert(!!state.lastDifficultyClick, 'difficulty click recorded locally');
-                    api.assertEqual(api.events.length, 0, 'no Bridge.send on difficulty');
-                    return 'static difficulty click ok';
+                    api.assertEqual(state.lastDifficultyClick.blocked, 'locked', 'locked click blocked');
+                    api.assertEqual(host.sentMessages.filter(function(msg) { return msg && msg.cmd === 'enter'; }).length, 0, 'no enter Bridge.send for locked');
+                    return 'locked click blocked';
+                });
+            }],
+            ['difficulty-enter', 'unlocked difficulty sends enter and closes', function() {
+                document.getElementById('stage-fixture-select').value = 'allUnlocked';
+                host.open();
+                return waitRuntime(api).then(function() {
+                    api.events.length = 0;
+                    host.enterMessages.length = 0;
+                    var difficulty = document.querySelector('.stage-select-difficulty');
+                    api.assert(!!difficulty, 'difficulty button exists');
+                    difficulty.click();
+                    return api.waitFor(function() {
+                        return Panels.getActive && Panels.getActive() === null && host.enterMessages.length ? true : null;
+                    }, 2000, 'enter success close').then(function() {
+                        api.assertEqual(host.enterMessages[0].panel, 'stage-select', 'enter panel');
+                        api.assertEqual(host.enterMessages[0].cmd, 'enter', 'enter cmd');
+                        return 'enter sent and panel closed';
+                    });
+                });
+            }],
+            ['enter-error', 'enter error keeps panel open', function() {
+                document.getElementById('stage-fixture-select').value = 'allUnlocked';
+                host.open();
+                return waitRuntime(api).then(function() {
+                    host.nextEnterError = 'invalid_stage';
+                    var difficulty = document.querySelector('.stage-select-difficulty');
+                    api.assert(!!difficulty, 'difficulty button exists');
+                    difficulty.click();
+                    return api.waitFor(function() {
+                        var state = StageSelectPanel._debugGetState();
+                        return state && state.lastError === 'invalid_stage' ? state : null;
+                    }, 2000, 'enter error').then(function(state) {
+                        api.assertEqual(Panels.getActive(), 'stage-select', 'panel remains open');
+                        api.assertEqual(state.busyStageName, '', 'busy cleared');
+                        return 'enter error visible';
+                    });
+                });
+            }],
+            ['challenge-enter', 'challenge mode only sends hell difficulty', function() {
+                document.getElementById('stage-fixture-select').value = 'challenge';
+                host.open();
+                return waitRuntime(api).then(function(state) {
+                    api.assert(state.challenge, 'challenge flag set from snapshot');
+                    var difficulties = document.querySelectorAll('.stage-select-difficulty');
+                    api.assert(difficulties.length > 0, 'challenge difficulty exists');
+                    api.assert([].every.call(difficulties, function(btn) {
+                        return btn.getAttribute('data-difficulty') === '地狱';
+                    }), 'challenge only renders hell difficulty');
+                    host.enterMessages.length = 0;
+                    difficulties[0].click();
+                    return api.waitFor(function() {
+                        return host.enterMessages.length ? host.enterMessages[0] : null;
+                    }, 2000, 'challenge enter').then(function(msg) {
+                        api.assertEqual(msg.difficulty, '地狱', 'hell difficulty sent');
+                        return 'challenge enter ok';
+                    });
                 });
             }],
             ['viewports', 'supported viewports keep stage visible', function() {
@@ -168,9 +257,16 @@ var StageSelectHarnessQA = (function() {
         if (onlyCase) {
             cases = cases.filter(function(item) { return item[0] === onlyCase; });
         }
-        return Promise.all(cases.map(function(item) {
-            return api.runCase(item[0], item[1], item[2]);
-        })).then(function(results) {
+        var chain = Promise.resolve([]);
+        cases.forEach(function(item) {
+            chain = chain.then(function(results) {
+                return api.runCase(item[0], item[1], item[2]).then(function(result) {
+                    results.push(result);
+                    return results;
+                });
+            });
+        });
+        return chain.then(function(results) {
             return MinigameHarness.normalizeBundle(results);
         });
     }

@@ -17,6 +17,12 @@ var StageSelectPanel = (function() {
     var _fixtureName = 'mixed';
     var _fixture = null;
     var _lastDifficultyClick = null;
+    var _runtimeSnapshot = null;
+    var _pendingReq = {};
+    var _reqSeq = 0;
+    var _session = 0;
+    var _busyStageName = '';
+    var _lastError = '';
     var _layoutObserver = null;
     var _resizeHandler = null;
 
@@ -87,6 +93,11 @@ var StageSelectPanel = (function() {
 
     function onOpen(root, initData) {
         var manifest = StageSelectData.getManifest();
+        _session += 1;
+        _pendingReq = {};
+        _runtimeSnapshot = null;
+        _busyStageName = '';
+        _lastError = '';
         DESIGN_W = manifest.designSize && manifest.designSize.width || 1024;
         DESIGN_H = manifest.designSize && manifest.designSize.height || 576;
         _fixtureName = initData && initData.fixture || 'mixed';
@@ -97,6 +108,7 @@ var StageSelectPanel = (function() {
         renderTabs();
         initLayoutWatcher();
         renderCurrentFrame();
+        requestSnapshot();
         syncStageLayout();
         root.classList.remove('is-entered');
         setTimeout(function() { if (root) root.classList.add('is-entered'); }, 20);
@@ -157,7 +169,9 @@ var StageSelectPanel = (function() {
                 '<div>stage buttons: <b>' + (frame.stageButtons || []).length + '</b></div>' +
                 '<div>nav buttons: <b>' + (frame.navButtons || []).length + '</b></div>' +
                 '<div>background: <b>' + escapeHtml(frame.background && frame.background.mode || 'missing') + '</b></div>' +
-                '<div>fixture: <b>' + escapeHtml(_fixtureName) + '</b></div>';
+                '<div>fixture: <b>' + escapeHtml(_fixtureName) + '</b></div>' +
+                '<div>runtime: <b>' + (_runtimeSnapshot ? 'live' : 'fixture') + '</b></div>' +
+                (_lastError ? '<div class="stage-select-error-line">error: <b>' + escapeHtml(_lastError) + '</b></div>' : '');
         }
     }
 
@@ -201,6 +215,7 @@ var StageSelectPanel = (function() {
         if (button.x > 790) node.classList.add('is-edge-right');
         if (!state.unlocked) node.classList.add('is-locked');
         if (state.task) node.classList.add('is-task');
+        if (_busyStageName && _busyStageName === button.stageName) node.classList.add('is-busy');
         node.innerHTML =
             '<span class="stage-select-hit-zone" aria-hidden="true"></span>' +
             renderStageMarkerSvg() +
@@ -216,7 +231,8 @@ var StageSelectPanel = (function() {
                 '<span class="stage-select-card-detail">' + escapeHtml(button.detail || state.detail || '暂无资料') + '</span>' +
                 '<span class="stage-select-difficulties">' + renderDifficulties(button, state) + '</span>' +
             '</span>';
-        node.addEventListener('click', function() {
+        node.addEventListener('click', function(e) {
+            if (e.target && e.target.classList && e.target.classList.contains('stage-select-difficulty')) return;
             logDev('select stage: ' + button.stageName + (state.unlocked ? '' : ' (locked fixture)'));
         });
         node.addEventListener('keydown', function(e) {
@@ -255,7 +271,7 @@ var StageSelectPanel = (function() {
     }
 
     function renderDifficulties(button, state) {
-        var difficulties = _fixture && _fixture.challenge ? ['地狱'] : ['简单', '冒险', '修罗', '地狱'];
+        var difficulties = isChallengeMode() ? ['地狱'] : ['简单', '冒险', '修罗', '地狱'];
         return difficulties.map(function(name) {
             var active = state.task && state.highestDifficulty === name ? ' is-recommended' : '';
             return '<button type="button" class="stage-select-difficulty is-' + difficultyClass(name) + active + '" data-stage-name="' + escapeAttr(button.stageName) + '" data-difficulty="' + escapeAttr(name) + '">' + escapeHtml(name) + '</button>';
@@ -319,28 +335,168 @@ var StageSelectPanel = (function() {
         if (!target || !target.classList || !target.classList.contains('stage-select-difficulty')) return;
         e.preventDefault();
         e.stopPropagation();
+        var stageName = target.getAttribute('data-stage-name') || '';
+        var difficulty = target.getAttribute('data-difficulty') || '';
+        var state = getStageState(stageName);
+        if (!stageName) {
+            showError('invalid_stage');
+            return;
+        }
+        if (!state.unlocked) {
+            _lastDifficultyClick = {
+                stageName: stageName,
+                difficulty: difficulty,
+                blocked: 'locked'
+            };
+            showError('locked');
+            logDev('difficulty blocked: ' + stageName + ' / locked');
+            return;
+        }
+        if (_busyStageName) {
+            logDev('difficulty busy: ' + _busyStageName);
+            return;
+        }
         _lastDifficultyClick = {
-            stageName: target.getAttribute('data-stage-name') || '',
-            difficulty: target.getAttribute('data-difficulty') || ''
+            stageName: stageName,
+            difficulty: difficulty
         };
-        logDev('difficulty fixture click: ' + _lastDifficultyClick.stageName + ' / ' + _lastDifficultyClick.difficulty);
+        logDev('difficulty enter request: ' + stageName + ' / ' + difficulty);
         target.classList.add('is-pressed');
         setTimeout(function() {
             target.classList.remove('is-pressed');
         }, 180);
+        requestEnter(stageName, difficulty);
     }
 
     function getStageState(stageName) {
         var stages = _fixture && _fixture.stages || {};
-        return stages[stageName] || {
+        var state = stages[stageName] || {
             unlocked: true,
             task: false,
             highestDifficulty: '简单',
             detail: ''
         };
+        if (_runtimeSnapshot && _runtimeSnapshot.unlockedStages && Object.prototype.hasOwnProperty.call(_runtimeSnapshot.unlockedStages, stageName)) {
+            state = {
+                unlocked: !!_runtimeSnapshot.unlockedStages[stageName],
+                task: !!state.task,
+                highestDifficulty: state.highestDifficulty || '简单',
+                detail: state.detail || ''
+            };
+        }
+        return state;
+    }
+
+    function isChallengeMode() {
+        if (_runtimeSnapshot && typeof _runtimeSnapshot.isChallengeMode !== 'undefined') return !!_runtimeSnapshot.isChallengeMode;
+        return !!(_fixture && _fixture.challenge);
+    }
+
+    function requestSnapshot() {
+        if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') {
+            logDev('snapshot skipped: bridge unavailable');
+            return;
+        }
+        var reqId = 'stage-select-snapshot-' + (++_reqSeq);
+        var currentSession = _session;
+        _pendingReq[reqId] = function(resp) {
+            delete _pendingReq[reqId];
+            if (currentSession !== _session || !Panels.isOpen() || Panels.getActive() !== 'stage-select') return;
+            if (!resp.success) {
+                showError(resp.error || 'snapshot_failed');
+                return;
+            }
+            applyRuntimeSnapshot(resp.snapshot || {});
+        };
+        Bridge.send({
+            type: 'panel',
+            panel: 'stage-select',
+            cmd: 'snapshot',
+            callId: reqId,
+            stageNames: getManifestStageNames()
+        });
+    }
+
+    function requestEnter(stageName, difficulty) {
+        if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') {
+            showError('bridge_unavailable');
+            return;
+        }
+        var reqId = 'stage-select-enter-' + (++_reqSeq);
+        var currentSession = _session;
+        _busyStageName = stageName;
+        _lastError = '';
+        renderCurrentFrame();
+        _pendingReq[reqId] = function(resp) {
+            delete _pendingReq[reqId];
+            if (currentSession !== _session) return;
+            _busyStageName = '';
+            if (!resp.success) {
+                showError(resp.error || 'enter_failed');
+                renderCurrentFrame();
+                return;
+            }
+            logDev('enter accepted: ' + stageName + ' / ' + difficulty);
+            if (resp.closePanel) {
+                requestClose();
+                return;
+            }
+            renderCurrentFrame();
+        };
+        Bridge.send({
+            type: 'panel',
+            panel: 'stage-select',
+            cmd: 'enter',
+            callId: reqId,
+            stageName: stageName,
+            difficulty: difficulty
+        });
+    }
+
+    function applyRuntimeSnapshot(snapshot) {
+        _runtimeSnapshot = snapshot || {};
+        _lastError = '';
+        if (_runtimeSnapshot.currentFrameLabel && StageSelectData.getFrame(_runtimeSnapshot.currentFrameLabel)) {
+            _currentFrameLabel = _runtimeSnapshot.currentFrameLabel;
+        }
+        renderCurrentFrame();
+        logDev('snapshot live: ' + countUnlocked(_runtimeSnapshot.unlockedStages) + ' unlocked');
+    }
+
+    function getManifestStageNames() {
+        var manifest = StageSelectData.getManifest();
+        var lookup = {};
+        var names = [];
+        (manifest.frames || []).forEach(function(frame) {
+            (frame.stageButtons || []).forEach(function(button) {
+                var name = button.stageName || '';
+                if (!name || lookup[name]) return;
+                lookup[name] = true;
+                names.push(name);
+            });
+        });
+        return names;
+    }
+
+    function countUnlocked(unlockedStages) {
+        var count = 0;
+        var key;
+        for (key in (unlockedStages || {})) {
+            if (unlockedStages[key]) count += 1;
+        }
+        return count;
+    }
+
+    function showError(error) {
+        _lastError = error || 'unknown_error';
+        if (_logEl) {
+            _logEl.classList.add('is-error');
+            _logEl.textContent = _lastError;
+        }
     }
 
     function requestClose() {
+        _pendingReq = {};
         Panels.close();
         if (typeof Bridge !== 'undefined' && Bridge && Bridge.send) {
             Bridge.send({ type: 'panel', panel: 'stage-select', cmd: 'close' });
@@ -387,7 +543,10 @@ var StageSelectPanel = (function() {
     }
 
     function logDev(message) {
-        if (_logEl) _logEl.textContent = message;
+        if (_logEl) {
+            _logEl.classList.remove('is-error');
+            _logEl.textContent = message;
+        }
         if (window.console && console.log) console.log('[stage-select] ' + message);
     }
 
@@ -413,20 +572,32 @@ var StageSelectPanel = (function() {
         return escapeHtml(text).replace(/'/g, '&#39;');
     }
 
+    Bridge.on('panel_resp', function(data) {
+        if (!data || data.panel !== 'stage-select') return;
+        var cb = _pendingReq[data.callId];
+        if (cb) cb(data);
+    });
+
     return {
         _debugGetState: function() {
             return {
                 isOpen: Panels.getActive && Panels.getActive() === 'stage-select',
                 frameLabel: _currentFrameLabel,
                 fixture: _fixtureName,
-                challenge: !!(_fixture && _fixture.challenge),
+                challenge: isChallengeMode(),
                 stageButtonCount: _buttonLayerEl ? _buttonLayerEl.querySelectorAll('.stage-select-stage-button').length : 0,
                 navButtonCount: _navLayerEl ? _navLayerEl.querySelectorAll('.stage-select-nav-button').length : 0,
                 layoutWatcherActive: !!(_layoutObserver || _resizeHandler),
+                runtimeSnapshot: _runtimeSnapshot,
+                pendingCount: Object.keys(_pendingReq).length,
+                busyStageName: _busyStageName,
+                lastError: _lastError,
                 lastDifficultyClick: _lastDifficultyClick
             };
         },
         _debugSetFrame: setFrame,
+        _debugApplySnapshot: applyRuntimeSnapshot,
+        _debugRequestSnapshot: requestSnapshot,
         _debugSetFixture: function(name) {
             setFixture(name);
             if (_fixtureSelectEl) _fixtureSelectEl.value = _fixtureName;

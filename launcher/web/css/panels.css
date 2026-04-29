@@ -4360,6 +4360,11 @@ html.perf-low-effects .map-stage-backdrop::before {
     color: #94a3b8;
 }
 
+.stage-select-stage-button.is-busy {
+    cursor: wait;
+    filter: brightness(1.15);
+}
+
 .stage-select-lock {
     display: none;
     position: absolute;
@@ -4606,6 +4611,10 @@ html.perf-low-effects .map-stage-backdrop::before {
     background: rgba(180, 83, 9, 0.88);
 }
 
+.stage-select-stage-button.is-busy .stage-select-difficulty {
+    pointer-events: none;
+}
+
 .stage-select-nav-button {
     position: absolute;
     transform: translate(-39px, -12px);
@@ -4753,6 +4762,11 @@ html.perf-low-effects .map-stage-backdrop::before {
     padding: 8px;
     background: rgba(15, 23, 42, 0.82);
     border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.stage-select-dev-log.is-error,
+.stage-select-error-line {
+    color: #fecaca;
 }
 
 @keyframes stageSelectBoot {

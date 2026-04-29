@@ -26,6 +26,7 @@ namespace CF7Launcher.Bus
     ///   icon_bake       JSON sync   AS2↔C#  (图标烘焙：begin/chunk/end/complete)
     ///   archive         JSON async  AS2↔C#  httpCallable=true  (存档shadow备份/读取)
     ///   panel_request   JSON sync   AS2→C#  (旧 Flash UI 请求 WebView 打开面板: 目前仅 map)
+    ///   stage_select_response JSON async AS2↔C# (选关 Web panel 测试入口)
     /// </summary>
     public static class TaskRegistry
     {
@@ -55,6 +56,7 @@ namespace CF7Launcher.Bus
             IconBakeTask iconBake,
             ShopTask shopTask,
             MapTask mapTask,
+            StageSelectTask stageSelectTask,
             ArchiveTask archiveTask,
             BenchTask benchTask,
             WebOverlayForm webOverlay)
@@ -79,6 +81,10 @@ namespace CF7Launcher.Bus
             // 地图面板回包路由
             if (mapTask != null)
                 router.RegisterAsync("map_response", mapTask.HandleFlashResponse);
+
+            // 选关面板回包路由
+            if (stageSelectTask != null)
+                router.RegisterAsync("stage_select_response", stageSelectTask.HandleFlashResponse);
 
             // AS2 → C# 面板打开请求 (旧 Flash 地图界面按钮 / openTaskMap 命令接入 WebView)
             if (webOverlay != null)
@@ -156,6 +162,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "icon_bake",      "json_sync", "AS2<->C#",false, first);
             first = AppendTask(sb, "shop_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "map_response",   "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "stage_select_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "cursor_control", "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "archive",        "json_async","AS2<->C#",true,  first);

@@ -388,7 +388,7 @@ launcher/
 │       ├── kshop.js                       K 点商城面板（ShopTask 双层 callId）
 │       ├── help.js / help-panel.js        帮助系统（顶层入口 + 面板骨架）
 │       ├── map-panel.js / map-panel-data.js / map-fit-presets.js / map-hud.js 地图系统（正式 map panel + 静态页面/热点数据 + filter fit preset 表 + 右上角常驻 HUD）
-│       ├── stage-select-data.js / stage-select-panel.js 选关界面 Stage 1 静态复刻 panel（Panels.register('stage-select')）
+│       ├── stage-select-data.js / stage-select-panel.js 选关界面 Stage 2 Step 1 测试入口 live-enter panel（Panels.register('stage-select')）
 │       ├── map/
 │       │   └── dev/
 │       │       ├── harness.html           地图 panel browser harness + QA suite
@@ -396,7 +396,7 @@ launcher/
 │       │       └── preview.html           地图 manifest 预览 / 校准页
 │       ├── stage-select/
 │       │   └── dev/
-│       │       └── harness.html           选关界面 Stage 1 browser harness + QA suite
+│       │       └── harness.html           选关界面 browser harness + QA suite
 │       └── minigames/
 │           ├── shared/                    小游戏共享层（host-bridge + minigame-shell + shared/dev QA 基础层）
 │           ├── lockbox/                   开锁小游戏（core/dev + lockbox-audio/panel/css/README）
@@ -582,7 +582,7 @@ powershell -File run_tests.ps1
   - 用于把 preview / panel 当前数据结构交给后续 XFL / FFDec 校准链，不替代最终 authoring tool
 - **Map layout fallback audit**：`node tools/audit-map-layout.js [--page school] [--json]`
 - **Stage Select manifest / audit / harness**：`node tools/export-stage-select-manifest.js --summary`、`node tools/audit-stage-select-layout.js --json`、`node tools/run-stage-select-harness.js --browser edge`
-  - 从 `flashswf/UI/选关界面/LIBRARY/选关界面UI/选关界面 1024&#042576.xml` 导出 `StageSelectData` 所用 manifest；Stage 1 只做静态复刻，不接 AS2 snapshot / 真实进关。关卡预览按原版链路导入：外部 PNG → `Symbol 3274` 内部命名帧 → 默认预览帧，layout audit 要求 `previewMissing=0`
+  - 从 `flashswf/UI/选关界面/LIBRARY/选关界面UI/选关界面 1024&#042576.xml` 导出 `StageSelectData` 所用 manifest；Stage 2 Step 1 通过 `StageSelectTask` / `StageSelectPanelService` 接入测试入口真实解锁 snapshot 与真实进关。关卡预览按原版链路导入：外部 PNG → `Symbol 3274` 内部命名帧 → 默认预览帧，layout audit 要求 `previewMissing=0`
 - **Stage Select FFDec visual audit**：`powershell -ExecutionPolicy Bypass -File tools/run-stage-select-visual-audit.ps1`
   - 通过 `tools/ffdec/ffdec.jar` 导出 `DefineSprite 330`，按 FFDec SVG 舞台原点裁成 1024×576 原帧，再用无头 Edge 抓 Web 舞台截图，输出 `tmp/stage-select-visual-audit/sheets/*-compare.png` 三联图和 `visual-audit-index.json`
   - 首次运行前先 `npm --prefix launcher/perf ci --ignore-scripts`；工具会优先使用 Adobe Animate 2024 / Flash CS6 自带 JRE，坐标参照 `ffdecFrameIndex` 字段（首帧特殊为 1，其余为 `sourceFrameIndex + 1`）
@@ -1244,7 +1244,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → 按面板 
 - **kshop**（K 点商城）: 需要 Flash 交互；打开/关闭会走 `shopPanelOpen/shopPanelClose`，并参与 `_pauseNeedsRestore`
 - **help**（游戏帮助）: 纯 Web 侧 Markdown 帮助面板，不触发 Flash 暂停恢复
 - **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-panel-data.js` + `web/modules/map-fit-presets.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面均已切到 `assembled` 场景拼接模式，右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、filter-fit 离线调优 `tools/tune-map-filter-fit.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`，并在紧凑视口下自动缩放舞台、按 page/filter preset 做二次 content-fit；右上角常驻 HUD 由 `web/modules/map-hud.js` 消费同一份 `MapPanelData` + UiData `mm/mh`，只显示当前区块高亮与固定 beacon，点击后打开 map panel
-- **stage-select**（选关界面 Stage 1）: `web/modules/stage-select-panel.js` + generated `web/modules/stage-select-data.js`；纯 Web 静态复刻 panel，通过 Native HUD “其他 → 选关测试” 的 `STAGE_SELECT_TEST` 打开；支持 16 个 frame label、167 个源 XML 选关按钮实例、152 个 Web 运行时去重渲染实例、fixture 锁定/任务/挑战模式、按外部 PNG / 内部命名帧 / 默认帧回退的 hover 预览、browser harness 和 FFDec/Web 视觉对照审计，不发送真实进关命令
+- **stage-select**（选关界面 Stage 2 Step 1）: `web/modules/stage-select-panel.js` + generated `web/modules/stage-select-data.js`；通过 Native HUD “其他 → 选关测试” 的 `STAGE_SELECT_TEST` 打开；支持 16 个 frame label、167 个源 XML 选关按钮实例、152 个 Web 运行时去重渲染实例、fixture 锁定/任务/挑战模式、按外部 PNG / 内部命名帧 / 默认帧回退的 hover 预览、browser harness 和 FFDec/Web 视觉对照审计；runtime 下使用 `stageSelectSnapshot` 读取真实解锁/挑战状态，难度按钮通过 `stageSelectEnter` 进入已解锁关卡。它暂不替换原 Flash 选关界面，不接管页内跳转按钮，不迁委托任务界面
 - **lockbox**（开锁小游戏）: `web/modules/minigames/lockbox/` 下的正式小游戏模块；支持运行时参数、browser harness、Node QA
 - **pinalign**（定位小游戏）: `web/modules/minigames/pinalign/` 下的正式小游戏模块；和 Lockbox 共用小游戏壳层与 QA 平台
 - **gobang**（五子棋小游戏）: `web/modules/minigames/gobang/` 下的正式小游戏模块；Web core 负责规则裁判，AI 经 Web→C# `gomoku_eval` 调用 `GomokuTask` / Rapfi

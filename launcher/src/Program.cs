@@ -516,6 +516,7 @@ class Program
         }
         ShopTask shopTask = new ShopTask(socketServer);
         MapTask mapTask = new MapTask(socketServer);
+        StageSelectTask stageSelectTask = new StageSelectTask(socketServer);
         ArchiveTask archiveTask;
         using (PerfTrace.Scope("task.archive_init"))
         {
@@ -524,13 +525,14 @@ class Program
         BenchTask benchTask = new BenchTask(socketServer);
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, archiveTask, benchTask, webOverlay);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, stageSelectTask, archiveTask, benchTask, webOverlay);
         }
 
         // 面板系统接线 (11c: webOverlay 必有)
         webOverlay.SetShopTask(shopTask);
         webOverlay.SetGomokuTask(gomokuTask);
         webOverlay.SetMapTask(mapTask);
+        webOverlay.SetStageSelectTask(stageSelectTask);
         webOverlay.SetPanelStateCallback(form.HandlePanelStateChanged);
         form.SetWebOverlay(webOverlay);
         socketServer.OnClientDisconnected += webOverlay.OnSocketDisconnected;
@@ -549,6 +551,7 @@ class Program
             frameTask.Stop();
             shopTask.Dispose();
             mapTask.Dispose();
+            stageSelectTask.Dispose();
             socketServer.SetFrameHandler(null);
             socketServer.SetNotchHandler(null);
         };
@@ -588,6 +591,7 @@ class Program
             try { gomokuTask.Dispose(); } catch { }
             try { shopTask.Dispose(); } catch { }
             try { mapTask.Dispose(); } catch { }
+            try { stageSelectTask.Dispose(); } catch { }
             try { socketServer.Dispose(); } catch { }
             try { httpServer.Dispose(); } catch { }
             try { if (inputShield != null) inputShield.Dispose(); } catch { }
@@ -747,6 +751,7 @@ class Program
         try { gomokuTask.Dispose(); } catch { }
         try { shopTask.Dispose(); } catch { }
         try { mapTask.Dispose(); } catch { }
+        try { stageSelectTask.Dispose(); } catch { }
         try { socketServer.Dispose(); } catch { }
         try { httpServer.Dispose(); } catch { }
         try { if (inputShield != null) inputShield.Dispose(); } catch { }
