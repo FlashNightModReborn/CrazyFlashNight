@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招" itemID="698642fe-00000b06" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-棍棒1连招" lastModified="1777343108" lastUniqueIdentifier="426">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招" itemID="698642fe-00000b06" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-棍棒1连招" lastModified="1777471697" lastUniqueIdentifier="426">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-棍棒1连招" currentFrame="91">
+    <DOMTimeline name="兵器攻击容器-棍棒1连招" currentFrame="95">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -693,7 +693,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="50" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -817,7 +817,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -1546,9 +1546,29 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="特效1" color="#00FFFF" locked="true" autoNamed="false">
+        <DOMLayer name="图层 3" color="#FF800A" locked="true">
           <frames>
-            <DOMFrame index="0" duration="58" keyMode="9728">
+            <DOMFrame index="0" duration="90" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="76" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="76" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="特效1" color="#00FFFF" locked="true" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="51" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="58" keyMode="9728">
@@ -1558,15 +1578,23 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.31402587890625" b="-0.40838623046875" c="0.199920654296875" d="0.153732299804688" tx="-42.4" ty="-115.6"/>
+                          <Matrix a="0.9620361328125" b="-0.008544921875" c="0.0072784423828125" d="0.819442749023438" tx="96.2" ty="23.15"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.835294117647059"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-1527 -8485|2160 -4475!2160 -4475[-2703 -5292 -5553 -511!-5553 -511[-5041 -5631 -1527 -8485"/>
+                    <Edge fillStyle1="1" edges="!-2053 -8902.5|4400 -1417.5!4400 -1417.5|-1632 5527!-1632 5527[-2256 5133 -2838 4647!-2838 4647[-5985 2015 -6018 -1747!-6018 -1747[-6051 -5511 -2952 -8198!-2952 -8198[#FFF62C.75 #FFDE7F.91 -2053 -8902.5"/>
+                    <Edge cubics="!4564 -10924(;7035,-10946 9208,-10342 11081,-9109q4564 -10924Q8270 -10958q11081 -9109);"/>
+                    <Edge cubics="!-6018 -1747(;-6040,-4256 -5017,-6406 -2952,-8198q-6018 -1747Q-6051 -5511q-2952 -8198);"/>
+                    <Edge cubics="!-1632 5527(;-2049,5265 -2449,4971 -2838,4647q-1632 5527Q-2256 5133q-2838 4647);"/>
+                    <Edge cubics="!-2838 4647(;-4935,2892 -5995,761 -6018,-1747q-2838 4647Q-5985 2015q-6018 -1747);"/>
+                    <Edge cubics="!11081 -9109(;11081,-9109 4400,-1417 4400,-1417q11081 -9109 4400 -1417);"/>
+                    <Edge cubics="!4400 -1417(;4400,-1417 -1632,5527 -1632,5527q4400 -1417 -1632 5527);"/>
+                    <Edge cubics="!-2952 -8198(;-2662,-8450 -2363,-8685 -2053,-8902q-2952 -8198Q-2516 -8576q-2053 -8902);"/>
+                    <Edge cubics="!-2053 -8902(;-173,-10228 2033,-10902 4564,-10924q-2053 -8902Q769 -10890q4564 -10924);"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1578,26 +1606,59 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.98663330078125" b="0.0921173095703125" c="-0.0552520751953125" d="0.59149169921875" tx="-264.05" ty="60.05"/>
+                          <Matrix a="0.912567138671875" b="0.304672241210938" c="-0.259506225585938" d="0.777297973632813" tx="33.6" ty="-4.45"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.835294117647059"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!2393 -651[-271 -3016 -8322 -6995!-8322 -6995[#D32.37 #FFDDC5.F9 8802 -3772!8802 -3772|2393 -651"/>
+                    <Edge fillStyle1="1" edges="!12443 -6164|-4338 3545!-4338 3545[-4800 2969 -5192 2320!-5192 2320[-7312 -1192 -6121 -4761!-6121 -4761[-4929 -8330 -1124 -9864!-1124 -9864[2680 -11398 6870 -9999!6870 -9999[10385 -8826 12443 -6164"/>
+                    <Edge cubics="!6870 -9999(;9213,-9217 11072,-7939 12443,-6164q6870 -9999Q10385 -8826q12443 -6164);"/>
+                    <Edge cubics="!-6121 -4761(;-5326,-7140 -3660,-8841 -1124,-9864q-6121 -4761Q-4929 -8330q-1124 -9864);"/>
+                    <Edge cubics="!-4338 3545(;-4647,3161 -4930,2752 -5192,2320q-4338 3545Q-4800 2969q-5192 2320);"/>
+                    <Edge cubics="!-5192 2320(;-6605,-21 -6915,-2381 -6121,-4761q-5192 2320Q-7312 -1192q-6121 -4761);"/>
+                    <Edge cubics="!12443 -6164(;12443,-6164 -4338,3545 -4338,3545q12443 -6164 -4338 3545);"/>
+                    <Edge cubics="!-1124 -9864(;1412,-10887 4076,-10932 6870,-9999q-1124 -9864Q2680 -11398q6870 -9999);"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="60" duration="10" tweenType="shape" keyMode="17922">
+            <DOMFrame index="60" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.929306030273438" b="0.248992919921875" c="-0.212081909179688" d="0.791549682617188" tx="-43.15" ty="-65.55"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!11786 -4777[14115 -1400 13141 2234!13141 2234[12981 2830 12748 3376!12748 3376|-7739 -1473!-7739 -1473[-7704 -2371 -7459 -3285!-7459 -3285[-6485 -6919 -2780 -8680!-2780 -8680[926 -10441 5192 -9297!5192 -9297[9459 -8154 11786 -4777"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="5" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
-                  <MorphSegment startPointA="-9.921875, -38.953125" startPointB="#1.9F, #FFFFD8.CB" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
-                    <MorphCurves controlPointA="#21.3B, #FFFFE0.23" anchorPointA="#3C.2B, 20" controlPointB="#2C.C6, #FFFFDF.E2" anchorPointB="#47.B6, #13.BF"/>
-                    <MorphCurves controlPointA="#22.B6, #14.56" anchorPointA="#9.41, #14.AB" controlPointB="#2E.41, #14.15" anchorPointB="#14.CC, #14.6A" isLine="true"/>
-                    <MorphCurves controlPointA="#9.F, #0.A6" anchorPointA="-9.921875, -38.953125" controlPointB="#15.7B, #0.65" anchorPointB="#1.9F, #FFFFD8.CB"/>
+                  <MorphSegment startPointA="#FFFFEB.C3, #FFFFF6.DB" startPointB="#FFFFF9.A9, #FFFFFA.73" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFE9.E1, #FFFFEE.06" anchorPointA="#FFFFEE.16, #FFFFE6.F5" controlPointB="#FFFFF7.C7, #FFFFF1.9E" anchorPointB="-4.015625, #FFFFEA.8D"/>
+                    <MorphCurves controlPointA="#FFFFF0.06, #FFFFE3.B1" anchorPointA="#FFFFF3.43, #FFFFE0.CF" controlPointB="-2.078125, #FFFFE7.49" anchorPointB="#1.29, #FFFFE4.67"/>
+                    <MorphCurves controlPointA="-2.484375, #FFFFD7.AD" anchorPointA="#E.C5, #FFFFD7.AD" controlPointB="#B.6A, #FFFFDB.45" anchorPointB="#1C.AB, #FFFFDB.45"/>
+                    <MorphCurves controlPointA="#20.06, #FFFFD7.AD" anchorPointA="#2E.2B, #FFFFE0.CF" controlPointB="#2D.EC, #FFFFDB.45" anchorPointB="#3C.11, #FFFFE4.67"/>
+                    <MorphCurves controlPointA="#3C.5, #FFFFE9.F1" anchorPointA="#3F.11, #FFFFF6.DB" controlPointB="#4A.36, #FFFFED.89" anchorPointB="#4C.F7, #FFFFFA.73"/>
+                    <MorphCurves controlPointA="#41.D1, #3.C7" anchorPointA="#37.9, #C.E8" controlPointB="#4F.B7, #7.5F" anchorPointB="#45.76, 16.5"/>
+                    <MorphCurves controlPointA="#35.25, #F.1" anchorPointA="#32.55, #10.B5" controlPointB="#43.0B, #12.A8" anchorPointB="#40.3B, #14.4D"/>
+                    <MorphCurves controlPointA="#29.3D, #16.0A" anchorPointA="#1C.0E, #16.0A" controlPointB="#37.23, #19.A2" anchorPointB="#29.F4, #19.A2"/>
+                    <MorphCurves controlPointA="#A.CD, #16.0A" anchorPointA="-3.34375, #C.E8" controlPointB="#18.B3, #19.A2" anchorPointB="#A.8E, 16.5"/>
+                    <MorphCurves controlPointA="#FFFFEE.83, #3.C7" anchorPointA="#FFFFEB.C3, #FFFFF6.DB" controlPointB="#FFFFFC.69, #7.5F" anchorPointB="#FFFFF9.A9, #FFFFFA.73"/>
                   </MorphSegment>
                 </morphSegments>
                 <morphHintsList/>
@@ -1608,40 +1669,43 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.1361083984375" b="0.571533203125" c="0.0134735107421875" d="0.610015869140625" tx="-376.05" ty="-236.05"/>
+                          <Matrix a="1.27801513671875" c="0.203811645507813" d="0.956741333007813" tx="-55.75" ty="-204.9"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.835294117647059"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-2540 -9972[#213A.E7 #FFE022.CE 15403 5120!15403 5120|2369 5291!2369 5291[2544 166 -2540 -9972"/>
+                    <Edge fillStyle1="1" edges="!11819 -7985[15440 -5647 16145 -2341!16145 -2341[16849 967 14224 3304!14224 3304[13605 3856 12885 4277!12885 4277[10557 5642 7182 5642!7182 5642[2765 5642 -856 3304!-856 3304[-4477 967 -5181 -2341!-5181 -2341[-5663 -4602 -4586 -6411!-4586
+ -6411[-4090 -7247 -3261 -7985!-3261 -7985[-636 -10323 3781 -10323!3781 -10323[8198 -10323 11819 -7985"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="70" keyMode="9728">
+            <DOMFrame index="66" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.1361083984375" b="0.571533203125" c="0.0134735107421875" d="0.610015869140625" tx="20.75" ty="-233.3"/>
+                          <Matrix a="1.37371826171875" c="0.219070434570313" d="1.02838134765625" tx="289.9" ty="-136.05"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.835294117647059"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!5324 5226[5499 101 415 -10037!415 -10037[11462 -8222 18358 5055!18358 5055|5324 5226"/>
+                    <Edge fillStyle1="1" edges="
+!19703 -1421[20407 1887 17782 4224!17782 4224[17163 4776 16443 5197!16443 5197[14115 6562 10740 6562!10740 6562[6323 6562 2702 4224!2702 4224[-919 1887 -1623 -1421!-1623 -1421[-2105 -3682 -1028 -5491!-1028 -5491[-532 -6327 297 -7065!297
+ -7065[2922 -9403 7339 -9403!7339 -9403[11756 -9403 15377 -7065!15377 -7065[18998 -4727 19703 -1421"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="71" duration="24" keyMode="9728">
+            <DOMFrame index="67" duration="28" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1681,7 +1745,8 @@ Z轴攻击范围 = 30;
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!6975 -1041[9483 -162 9483 1081!9483 1081[9483 2324 6975 3203!6975 3203[4468 4082 921 4082!921 4082[-2626 4082 -5134 3203!-5134 3203[-7641 2324 -7641 1081!-7641 1081[-7641 -162 -5134 -1041!-5134 -1041[-2626 -1920 921 -1920!921 -1920[4468
+                    <Edge fillStyle1="1" edges="
+!6975 -1041[9483 -162 9483 1081!9483 1081[9483 2324 6975 3203!6975 3203[4468 4082 921 4082!921 4082[-2626 4082 -5134 3203!-5134 3203[-7641 2324 -7641 1081!-7641 1081[-7641 -162 -5134 -1041!-5134 -1041[-2626 -1920 921 -1920!921 -1920[4468
  -1920 6975 -1041"/>
                   </edges>
                 </DOMShape>
@@ -1899,8 +1964,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-2550 -1520[742 -2746 5399 -2746!5399 -2746[10057 -2746 13350 -1520!13350 -1520[16641 -294 16641 1442!16641 1442[16641 3176 13350 4402!13350 4402[12619 4675 11820 4887!11820 4887[9023 5629 5399 5629!5399 5629[742 5629 -2550 4402!-2550
- 4402[-5843 3176 -5843 1442!-5843 1442[-5843 155 -4033 -851!-4033 -851[-3402 -1203 -2550 -1520"/>
+!13350 4402[12619 4675 11820 4887!11820 4887[9023 5629 5399 5629!5399 5629[742 5629 -2550 4402!-2550 4402[-5843 3176 -5843 1442!-5843 1442[-5843 155 -4033 -851!-4033 -851[-3402 -1203 -2550 -1520!-2550 -1520[742 -2746 5399 -2746!5399 -2746
+[10057 -2746 13350 -1520!13350 -1520[16641 -294 16641 1442!16641 1442[16641 3176 13350 4402"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2063,8 +2128,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!14082 -1889[17373 -663 17373 1073!17373 1073[17373 2807 14082 4033!14082 4033[10789 5260 6131 5260!6131 5260[1474 5260 -1818 4033!-1818 4033[-5111 2807 -5111 1073!-5111 1073[-5111 -663 -1818 -1889!-1818 -1889[1474 -3115 6131 -3115!6131
- -3115[10789 -3115 14082 -1889"/>
+!14082 4033[10789 5260 6131 5260!6131 5260[1474 5260 -1818 4033!-1818 4033[-5111 2807 -5111 1073!-5111 1073[-5111 -663 -1818 -1889!-1818 -1889[1474 -3115 6131 -3115!6131 -3115[10789 -3115 14082 -1889!14082 -1889[17373 -663 17373 1073
+!17373 1073[17373 2807 14082 4033"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2085,8 +2150,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!14082 -1889S2[17373 -663 17373 1073!17373 1073[17373 2807 14082 4033!14082 4033[10789 5260 6131 5260!6131 5260[1474 5260 -1818 4033!-1818 4033[-5111 2807 -5111 1073!-5111 1073[-5111 -663 -1818 -1889!-1818 -1889[1474 -3115 6131 -3115
-!6131 -3115[10789 -3115 14082 -1889"/>
+!14082 4033S2[10789 5260 6131 5260!6131 5260[1474 5260 -1818 4033!-1818 4033[-5111 2807 -5111 1073!-5111 1073[-5111 -663 -1818 -1889!-1818 -1889[1474 -3115 6131 -3115!6131 -3115[10789 -3115 14082 -1889!14082 -1889[17373 -663 17373 1073
+!17373 1073[17373 2807 14082 4033"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2269,7 +2334,10 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="48" duration="4" keyMode="9728">
+            <DOMFrame index="48" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="52" keyMode="9728">
@@ -2279,16 +2347,29 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.898040771484375" b="0.119186401367188" c="-0.058349609375" d="0.43963623046875" tx="22.05" ty="-1"/>
+                          <Matrix a="0.962081909179688" d="0.819473266601563" tx="52" ty="52"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.835294117647059"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!5234 -2138[#D13.09 #FFEAA6.92 -6441 -5601!-6441 -5601[#710.0D #FFDB93.DF 9243 -6481!9243 -6481|5234 -2138"/>
+!10281.5 -8450.5|-2561.5 6074!-2561.5 6074[#FFF391.BF #1629.3E -3759 5182!-3759 5182[-6882 2522 -6882 -1241!-6882 -1241[-6882 -5003 -3759 -7663!-3759 -7663[-636 -10323 3781 -10323!3781 -10323[7486.75 -10323 10281.5 -8450.5"/>
+                    <Edge cubics="!10282 -8450(;10639,-8211 10986,-7948 11321,-7663q10282 -8450Q10818 -8091q11321 -7663);"/>
+                    <Edge cubics="!3781 -10323(;6252,-10323 8419,-9699 10282,-8450q3781 -10323Q7487 -10323q10282 -8450);"/>
+                    <Edge cubics="!11321 5182(;9239,6955 6726,7842 3781,7842q11321 5182Q8198 7842q3781 7842);"/>
+                    <Edge cubics="!12963 -11483(;12963,-11483 10282,-8450 10282,-8450q12963 -11483 10282 -8450);"/>
+                    <Edge cubics="!14444 -1241(;14444,1268 13403,3409 11321,5182q14444 -1241Q14444 2522q11321 5182);"/>
+                    <Edge cubics="!11321 -7663(;13403,-5890 14444,-3749 14444,-1241q11321 -7663Q14444 -5003q14444 -1241);"/>
+                    <Edge cubics="!-6882 -1241(;-6882,-3749 -5841,-5890 -3759,-7663q-6882 -1241Q-6882 -5003q-3759 -7663);"/>
+                    <Edge cubics="!-2561 6074(;-2975,5807 -3374,5509 -3759,5182q-2561 6074Q-3182 5673q-3759 5182);"/>
+                    <Edge cubics="!-2561 6074(;-2561,6074 -7202,11322 -7202,11322q-2561 6074 -7202 11322);"/>
+                    <Edge cubics="!-3759 5182(;-5841,3409 -6882,1268 -6882,-1241q-3759 5182Q-6882 2522q-6882 -1241);"/>
+                    <Edge cubics="!10282 -8450(;10282,-8450 -2561,6074 -2561,6074q10282 -8450 -2561 6074);"/>
+                    <Edge cubics="!3781 7842(;1380,7842 -734,7253 -2561,6074q3781 7842Q180 7842q-2561 6074);"/>
+                    <Edge cubics="!-3759 -7663(;-1677,-9436 836,-10323 3781,-10323q-3759 -7663Q-636 -10323q3781 -10323);"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2300,27 +2381,35 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.815841674804688" b="0.24676513671875" c="-0.178573608398438" d="0.59033203125" tx="-58" ty="104.05"/>
+                          <Matrix a="0.962081909179688" d="0.819473266601563" ty="-52.05"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.835294117647059"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-5481 -6442[#2125.B8 #FFDCE9.24 13604 -98!13604 -98|5234 -98!5234 -98[#A0A.15 #FFF660.EF -5481 -6442"/>
+!14360 -36|-6684.5 581.5!-6684.5 581.5[-6882 #FFFED9.17 -6882 -1241!-6882 -1241[-6882 -5003 -3759 -7663!-3759 -7663[-636 -10323 3781 -10323!3781 -10323[8198 -10323 11321 -7663!11321 -7663[14444 -5003 14444 -1241!14444 -1241[14444 #FFFD90.6D
+ 14360 -36"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="54" duration="9" tweenType="shape" keyMode="17922">
+            <DOMFrame index="54" duration="5" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
-                  <MorphSegment startPointA="-11.515625, #FFFFD0.ED" startPointB="#3.29, #FFFFD1.16" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
-                    <MorphCurves controlPointA="#C.03, #2.32" anchorPointA="#B.6F, #14.5D" controlPointB="#1A.B, #2.5B" anchorPointB="#1A.1C, #14.86"/>
-                    <MorphCurves controlPointA="#26.19, #14.75" anchorPointA="#40.C3, #14.8C" controlPointB="#34.C6, #14.9E" anchorPointB="#4F.7, #14.B5" isLine="true"/>
-                    <MorphCurves controlPointA="#30.DA, #FFFFE5.AB" anchorPointA="-11.515625, #FFFFD0.ED" controlPointB="#3F.87, -26.171875" anchorPointB="#3.29, #FFFFD1.16"/>
+                  <MorphSegment startPointA="#FFFFEB.C3, #FFFFF6.DB" startPointB="#FFFFF9.A9, #FFFFFA.73" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFE9.E1, #FFFFEE.06" anchorPointA="#FFFFEE.16, #FFFFE6.F5" controlPointB="#FFFFF7.C7, #FFFFF1.9E" anchorPointB="-4.015625, #FFFFEA.8D"/>
+                    <MorphCurves controlPointA="#FFFFF0.06, #FFFFE3.B1" anchorPointA="#FFFFF3.43, #FFFFE0.CF" controlPointB="-2.078125, #FFFFE7.49" anchorPointB="#1.29, #FFFFE4.67"/>
+                    <MorphCurves controlPointA="-2.484375, #FFFFD7.AD" anchorPointA="#E.C5, #FFFFD7.AD" controlPointB="#B.6A, #FFFFDB.45" anchorPointB="#1C.AB, #FFFFDB.45"/>
+                    <MorphCurves controlPointA="#20.06, #FFFFD7.AD" anchorPointA="#2E.2B, #FFFFE0.CF" controlPointB="#2D.EC, #FFFFDB.45" anchorPointB="#3C.11, #FFFFE4.67"/>
+                    <MorphCurves controlPointA="#3C.5, #FFFFE9.F1" anchorPointA="#3F.11, #FFFFF6.DB" controlPointB="#4A.36, #FFFFED.89" anchorPointB="#4C.F7, #FFFFFA.73"/>
+                    <MorphCurves controlPointA="#41.D1, #3.C7" anchorPointA="#37.9, #C.E8" controlPointB="#4F.B7, #7.5F" anchorPointB="#45.76, 16.5"/>
+                    <MorphCurves controlPointA="#35.25, #F.1" anchorPointA="#32.55, #10.B5" controlPointB="#43.0B, #12.A8" anchorPointB="#40.3B, #14.4D"/>
+                    <MorphCurves controlPointA="#29.3D, #16.0A" anchorPointA="#1C.0E, #16.0A" controlPointB="#37.23, #19.A2" anchorPointB="#29.F4, #19.A2"/>
+                    <MorphCurves controlPointA="#A.CD, #16.0A" anchorPointA="-3.34375, #C.E8" controlPointB="#18.B3, #19.A2" anchorPointB="#A.8E, 16.5"/>
+                    <MorphCurves controlPointA="#FFFFEE.83, #3.C7" anchorPointA="#FFFFEB.C3, #FFFFF6.DB" controlPointB="#FFFFFC.69, #7.5F" anchorPointB="#FFFFF9.A9, #FFFFFA.73"/>
                   </MorphSegment>
                 </morphSegments>
                 <morphHintsList/>
@@ -2331,42 +2420,44 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.0166015625" b="0.626190185546875" c="-0.0499420166015625" d="0.49554443359375" tx="-179" ty="-270.05"/>
+                          <Matrix a="1.27801513671875" c="0.203811645507813" d="0.956741333007813" tx="-55.75" ty="-204.9"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.835294117647059"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-2948 -12051[#30D9.93 #FFE5AB.5E 16579 5260!16579 5260|2927 5213!2927 5213[3075 562 -2948 -12051"/>
+!11819 -7985S2[15440 -5647 16145 -2341!16145 -2341[16849 967 14224 3304!14224 3304[13605 3856 12885 4277!12885 4277[10557 5642 7182 5642!7182 5642[2765 5642 -856 3304!-856 3304[-4477 967 -5181 -2341!-5181 -2341[-5663 -4602 -4586 -6411
+!-4586 -6411[-4090 -7247 -3261 -7985!-3261 -7985[-636 -10323 3781 -10323!3781 -10323[8198 -10323 11819 -7985"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="63" keyMode="9728">
+            <DOMFrame index="59" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.27490234375" b="0.85693359375" c="-0.0956878662109375" d="0.678390502929688" tx="108" ty="-298.05"/>
+                          <Matrix a="1.37371826171875" c="0.219070434570313" d="1.02838134765625" tx="289.9" ty="-136.05"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.835294117647059"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!6684 5254[6832 603 809 -12010!809 -12010[16263 -6700 20336 5301!20336 5301|6684 5254"/>
+!19703 -1421[20407 1887 17782 4224!17782 4224[17163 4776 16443 5197!16443 5197[14115 6562 10740 6562!10740 6562[6323 6562 2702 4224!2702 4224[-919 1887 -1623 -1421!-1623 -1421[-2105 -3682 -1028 -5491!-1028 -5491[-532 -6327 297 -7065!297
+ -7065[2922 -9403 7339 -9403!7339 -9403[11756 -9403 15377 -7065!15377 -7065[18998 -4727 19703 -1421"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="64" duration="2" keyMode="9728">
+            <DOMFrame index="60" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="66" keyMode="9728">
@@ -2376,16 +2467,16 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.1976318359375" b="-0.068572998046875" c="0.0266571044921875" d="0.465927124023438" tx="-256.05" ty="96.05"/>
+                          <Matrix a="0.953872680664063" b="-0.1253662109375" c="0.106781005859375" d="0.812484741210938" tx="134" ty="78"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.835294117647059"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-12043 -2827S2[#E1D.17 #FFD6A9.AE 14050 -1220!14050 -1220|1191 416!1191 416[1106 -2931 -12043 -2827"/>
+!15746 -2071|-5038 1285!-5038 1285[-5349 441 -5472 -496!-5472 -496[-5962 -4227 -3213 -7271!-3213 -7271[-461 -10315 3917 -10890!3917 -10890[8297 -11466 11739 -9236!11739 -9236[15183 -7006 15672 -3276!15672 -3276[15752 -2664 15746 -2071"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2393,10 +2484,17 @@ Z轴攻击范围 = 30;
             <DOMFrame index="67" duration="5" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
-                  <MorphSegment startPointA="-9.921875, -25.53125" startPointB="#2.95, #FFFFE6.8E" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
-                    <MorphCurves controlPointA="#F.16, #2.04" anchorPointA="#E.82, #14.2F" controlPointB="#1B.97, #2.1A" anchorPointB="#1B.03, #14.45"/>
-                    <MorphCurves controlPointA="#2D.5, #14.5E" anchorPointA="#4C.1D, #14.8C" controlPointB="#39.D1, #14.74" anchorPointB="#58.9E, #14.A2" isLine="true"/>
-                    <MorphCurves controlPointA="#2D.C7, -29.265625" anchorPointA="-9.921875, -25.53125" controlPointB="#3A.48, #FFFFE2.D2" anchorPointB="#2.95, #FFFFE6.8E"/>
+                  <MorphSegment startPointA="#FFFFEB.C3, #FFFFF6.DB" startPointB="#FFFFF9.A9, #FFFFFA.73" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFE9.E1, #FFFFEE.06" anchorPointA="#FFFFEE.16, #FFFFE6.F5" controlPointB="#FFFFF7.C7, #FFFFF1.9E" anchorPointB="-4.015625, #FFFFEA.8D"/>
+                    <MorphCurves controlPointA="#FFFFF0.06, #FFFFE3.B1" anchorPointA="#FFFFF3.43, #FFFFE0.CF" controlPointB="-2.078125, #FFFFE7.49" anchorPointB="#1.29, #FFFFE4.67"/>
+                    <MorphCurves controlPointA="-2.484375, #FFFFD7.AD" anchorPointA="#E.C5, #FFFFD7.AD" controlPointB="#B.6A, #FFFFDB.45" anchorPointB="#1C.AB, #FFFFDB.45"/>
+                    <MorphCurves controlPointA="#20.06, #FFFFD7.AD" anchorPointA="#2E.2B, #FFFFE0.CF" controlPointB="#2D.EC, #FFFFDB.45" anchorPointB="#3C.11, #FFFFE4.67"/>
+                    <MorphCurves controlPointA="#3C.5, #FFFFE9.F1" anchorPointA="#3F.11, #FFFFF6.DB" controlPointB="#4A.36, #FFFFED.89" anchorPointB="#4C.F7, #FFFFFA.73"/>
+                    <MorphCurves controlPointA="#41.D1, #3.C7" anchorPointA="#37.9, #C.E8" controlPointB="#4F.B7, #7.5F" anchorPointB="#45.76, 16.5"/>
+                    <MorphCurves controlPointA="#35.25, #F.1" anchorPointA="#32.55, #10.B5" controlPointB="#43.0B, #12.A8" anchorPointB="#40.3B, #14.4D"/>
+                    <MorphCurves controlPointA="#29.3D, #16.0A" anchorPointA="#1C.0E, #16.0A" controlPointB="#37.23, #19.A2" anchorPointB="#29.F4, #19.A2"/>
+                    <MorphCurves controlPointA="#A.CD, #16.0A" anchorPointA="-3.34375, #C.E8" controlPointB="#18.B3, #19.A2" anchorPointB="#A.8E, 16.5"/>
+                    <MorphCurves controlPointA="#FFFFEE.83, #3.C7" anchorPointA="#FFFFEB.C3, #FFFFF6.DB" controlPointB="#FFFFFC.69, #7.5F" anchorPointB="#FFFFF9.A9, #FFFFFA.73"/>
                   </MorphSegment>
                 </morphSegments>
                 <morphHintsList/>
@@ -2407,16 +2505,17 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.922271728515625" b="0.20648193359375" c="0.102890014648438" d="0.437042236328125" tx="-51.95" ty="-30"/>
+                          <Matrix a="1.27801513671875" c="0.203811645507813" d="0.956741333007813" tx="-55.75" ty="-204.9"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.835294117647059"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-2540 -6536S2[#2DC7.7 #FFE2BB.A1 19485 5260!19485 5260|3714 5167!3714 5167[3862 516 -2540 -6536"/>
+!11819 -7985[15440 -5647 16145 -2341!16145 -2341[16849 967 14224 3304!14224 3304[13605 3856 12885 4277!12885 4277[10557 5642 7182 5642!7182 5642[2765 5642 -856 3304!-856 3304[-4477 967 -5181 -2341!-5181 -2341[-5663 -4602 -4586 -6411!-4586
+ -6411[-4090 -7247 -3261 -7985!-3261 -7985[-636 -10323 3781 -10323!3781 -10323[8198 -10323 11819 -7985"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2428,16 +2527,17 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.9864501953125" b="0.442916870117188" c="0.0143280029296875" d="0.48809814453125" tx="418.15" ty="-42.9"/>
+                          <Matrix a="1.37371826171875" c="0.219070434570313" d="1.02838134765625" tx="289.9" ty="-136.05"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.835294117647059"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!6915 5189[7063 538 661 -6514!661 -6514[14920 -7470 22686 5282!22686 5282|6915 5189"/>
+!19703 -1421[20407 1887 17782 4224!17782 4224[17163 4776 16443 5197!16443 5197[14115 6562 10740 6562!10740 6562[6323 6562 2702 4224!2702 4224[-919 1887 -1623 -1421!-1623 -1421[-2105 -3682 -1028 -5491!-1028 -5491[-532 -6327 297 -7065!297
+ -7065[2922 -9403 7339 -9403!7339 -9403[11756 -9403 15377 -7065!15377 -7065[18998 -4727 19703 -1421"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -2657,7 +2757,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动画层" color="#F95194" locked="true" autoNamed="false">
+        <DOMLayer name="动画层" color="#F95194" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -17979,8 +18079,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13679 -1124S2[17263 -245 17263 999!17263 999[17263 2242 13679 3121!13679 3121[10093 4001 5021 4001!5021 4001[-50 4001 -3635 3121!-3635 3121[-7221 2242 -7221 999!-7221 999[-7221 -245 -3635 -1124!-3635 -1124[-50 -2003 5021 -2003!5021 -2003
-[10093 -2003 13679 -1124"/>
+!13679 3121S2[10093 4001 5021 4001!5021 4001[-50 4001 -3635 3121!-3635 3121[-7221 2242 -7221 999!-7221 999[-7221 -245 -3635 -1124!-3635 -1124[-50 -2003 5021 -2003!5021 -2003[10093 -2003 13679 -1124!13679 -1124[17263 -245 17263 999!17263
+ 999[17263 2242 13679 3121"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -18001,8 +18101,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13679 -1124[17263 -245 17263 999!17263 999[17263 2242 13679 3121!13679 3121[10093 4001 5021 4001!5021 4001[-50 4001 -3635 3121!-3635 3121[-7221 2242 -7221 999!-7221 999[-7221 -245 -3635 -1124!-3635 -1124[-50 -2003 5021 -2003!5021 -2003
-[10093 -2003 13679 -1124"/>
+!13679 3121[10093 4001 5021 4001!5021 4001[-50 4001 -3635 3121!-3635 3121[-7221 2242 -7221 999!-7221 999[-7221 -245 -3635 -1124!-3635 -1124[-50 -2003 5021 -2003!5021 -2003[10093 -2003 13679 -1124!13679 -1124[17263 -245 17263 999!17263
+ 999[17263 2242 13679 3121"/>
                   </edges>
                 </DOMShape>
               </elements>

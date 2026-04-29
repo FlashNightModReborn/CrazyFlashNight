@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招" itemID="6974a6b3-00001f9d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双刀1连招" lastModified="1777382545" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招" itemID="6974a6b3-00001f9d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双刀1连招" lastModified="1777469210" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="兵器攻击容器-双刀1连招" currentFrame="83">
       <layers>
@@ -749,7 +749,21 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手-2" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="83" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="84" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左手-2" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -761,15 +775,16 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.5445556640625" b="0.047882080078125" c="-0.028594970703125" d="0.32513427734375" tx="-7.95" ty="72.05"/>
+                          <Matrix a="0.894241333007813" b="0.058074951171875" d="0.599441528320313" tx="-90.05" ty="34"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!-4699 1301S2[#FFFB1C.9B #AF3.1E 2220 1981!2220 1981|-632 6689!-632 6689[#FFEE2D.DD #17AE.FA -4699 1301"/>
+                    <Edge fillStyle1="1" edges="!-5225 -4674[#FFF5F7.63 #FFE776.12 1068.5 -6237.5!1068.5 -6237.5|5201 1240!5201 1240|-3122.5 6197!-3122.5 6197[#FFEF6E.F6 #1633.2E -5225 4960!-5225 4960[-5958 4421 -6511 3843!-6511 3843[-8201 2075 -8201 -51!-8201 -51[-8201 -2872 -5225
+ -4674"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -781,15 +796,17 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.78839111328125" b="-0.135238647460938" c="0.110565185546875" d="0.343780517578125" tx="-12.8" ty="122.05"/>
+                          <Matrix a="0.894241333007813" b="0.058074951171875" d="0.599441528320313" tx="-90.05" ty="34"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!1515 7995[-5532 8176 -7240 2363!-7240 2363[-1159 4210 3344 2190!3344 2190|1515 7995"/>
+                    <Edge fillStyle1="1" edges="
+!2570.5 -6152.5|4801 920!4801 920|-3287.5 6120!-3287.5 6120[#FFEF26.0D #15FD.98 -5225 4960!-5225 4960[-5958 4421 -6511 3843!-6511 3843[-8201 2075 -8201 -51!-8201 -51[-8201 -2872 -5225 -4674!-5225 -4674[-2248 -6476 1961 -6203!1961 -6203
+[#8DD.15 #FFE7D9.0E 2570.5 -6152.5"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -801,15 +818,16 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.624191284179688" b="-0.328094482421875" c="0.13323974609375" d="0.25347900390625" tx="64.4" ty="117.85"/>
+                          <Matrix a="0.894241333007813" b="0.058074951171875" d="0.599441528320313" tx="-90.05" ty="48"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!11093 -2425[#2E29.23 #1097.08 -1259 5894!-1259 5894[#16BC.82 #CCA.B5 6486 393!6486 393|11093 -2425"/>
+                    <Edge fillStyle1="1" edges="
+!10867 -1850|-6257 4377!-6257 4377[-6389 4251 -6511 4123!-6511 4123[-8201 2355 -8201 229!-8201 229[-8201 -2592 -5225 -4394!-5225 -4394[-2248 -6196 1961 -5923!1961 -5923[6170 -5649 9147 -3461!9147 -3461[10190 -2694 10867 -1850"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -821,15 +839,16 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.624191284179688" b="-0.328094482421875" c="0.13323974609375" d="0.25347900390625" tx="132.45" ty="117.85"/>
+                          <Matrix a="0.894241333007813" b="0.058074951171875" d="0.599441528320313" tx="-88.05" ty="-78.05"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!7847 393|12454 -2425!12454 -2425[13178 4247 102 5894!102 5894[7182 3275 7847 393"/>
+                    <Edge fillStyle1="1" edges="
+!9147 -3741[12124 -1552 12124 1269!12124 1269[12124 #6BA.0D 12047.5 2149!12047.5 2149|-7918.5 -1692.5!-7918.5 -1692.5[#FFE38B.BE #FFF29C.E7 -5225 -4674!-5225 -4674[-2248 -6476 1961 -6203!1961 -6203[6170 -5929 9147 -3741"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -841,20 +860,88 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.757949829101563" b="-0.292129516601563" c="0.210311889648438" d="0.545669555664063" tx="65.15" ty="35.8"/>
+                          <Matrix a="0.894241333007813" b="0.058074951171875" d="0.599441528320313" tx="-98.05" ty="-82.05"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.619607843137255"/>
-                        <GradientEntry color="#FFFFFF" ratio="0.780392156862745"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!12187 -1105[12187 1555 10306 3436!10306 3436[8425 5317 5765 5317!5765 5317[3133 5317 1264 3476!1264 3476|11405 -4211!11405 -4211[12187 -2820 12187 -1105"/>
+                    <Edge fillStyle1="1" edges="
+!9147 -3741[12124 -1552 12124 1269!12124 1269[12124 #5E7.4C 12102 1746!12102 1746|-4962 2560!-4962 2560|-7935.5 1578!-7935.5 1578[-8201 #317.B3 -8201 -51!-8201 -51[-8201 -2872 -5225 -4674!-5225 -4674[-2248 -6476 1961 -6203!1961 -6203
+[6170 -5929 9147 -3741"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="10" duration="10" keyMode="9728">
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.894241333007813" b="0.058074951171875" d="0.599441528320313" tx="96" ty="-106.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!9147 -3741[12124 -1552 12124 1269!12124 1269[12124 2780 11271 3999!11271 3999[10530 5056 9147 5893!9147 5893[#1EFC.82 #19E4.24 6513 7018!6513 7018|-4786.5 -4924.5!-4786.5 -4924.5[#FFF869.42 #FFE6C7.CD 1961 -6203!1961 -6203[6170 -5929
+ 9147 -3741"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.894241333007813" b="0.058074951171875" d="0.599441528320313" tx="248.05" ty="-40"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!11271 3999[10530 5056 9147 5893!9147 5893[6170 7695 1961 7421!1961 7421[-2248 7148 -5225 4960!-5225 4960[-5958 4421 -6511 3843!-6511 3843[#FFE056.84 #87E.ED -8195.5 188!-8195.5 188|10746.5 -2276.5!10746.5 -2276.5[12124 #FFFD76.23 12124
+ 1269!12124 1269[12124 2780 11271 3999"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.03494262695313" b="0.0672149658203125" d="0.693756103515625" tx="170" ty="14"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!-8198 -232|11008 -1948.5!11008 -1948.5[12124 #FFFE35.E7 12124 1269!12124 1269[12124 2780 11271 3999!11271 3999[10530 5056 9147 5893!9147 5893[6170 7695 1961 7421!1961 7421[-2248 7148 -5225 4960!-5225 4960[-5958 4421 -6511 3843!-6511
+ 3843[-8201 2075 -8201 -51!-8201 -51[-8201 #FFFF71.EB -8198 -232"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="20" keyMode="9728">
@@ -864,15 +951,17 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.4091796875" b="-0.0359649658203125" c="-0.021484375" d="-0.244293212890625" tx="3.9" ty="-196.9"/>
+                          <Matrix a="1.06732177734375" b="0.071929931640625" d="0.742385864257813" tx="-52.05" ty="102"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!-3332 -3833S1[-742 -4962 1867 -4344!1867 -4344|-276 -7882!-276 -7882[-3230 -7411 -3332 -3833"/>
+                    <Edge fillStyle1="1" edges="
+!-3474 -7025|4561 -2361!4561 -2361|6177.5 7309.5!6177.5 7309.5[#1209.AB #1D6F.7E 2861 7417!2861 7417[-1721 7109 -4962 4637!-4962 4637[-5760 4029 -6362 3375!-6362 3375[-8201 1379 -8201 -1023!-8201 -1023[-8201 -4209 -4962 -6244!-4962 -6244
+[#FFEF65.A4 #FFE5DC.F3 -3474 -7025"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -884,15 +973,16 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.655303955078125" b="0.199935913085938" c="0.071380615234375" d="-0.233993530273438" tx="82.05" ty="-180.95"/>
+                          <Matrix a="1.06732177734375" b="0.071929931640625" d="0.742385864257813" tx="-134.05" ty="66"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!10477 -1891[#3168.89 #FFE760.69 -2694 -6461!-2694 -6461[6717 -2781 5407 -442!5407 -442|10477 -1891"/>
+                    <Edge fillStyle1="1" edges="
+!10683 -5190[#2FFB.C5 #FFF07F.72 13094 -2573.5!13094 -2573.5|-6575 3135!-6575 3135[-8201 #4D3.8C -8201 -1023!-8201 -1023[-8201 -4209 -4962 -6244!-4962 -6244[-1721 -8280 2861 -7971!2861 -7971[7442 -7662 10683 -5190"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -904,15 +994,17 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.03715515136719" b="0.598434448242188" c="0.213592529296875" d="-0.370285034179688" tx="-222.3" ty="-98.15"/>
+                          <Matrix a="1.06732177734375" b="0.071929931640625" d="0.742385864257813" tx="-120.05" ty="-38"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!-969 3967|11000 -749!11000 -749[7141 -6989 -10119 -7763!-10119 -7763[4387 -2315 -969 3967"/>
+                    <Edge fillStyle1="1" edges="
+!10683 -5190[13924 -2717 13924 468!13924 468[13924 #24F.A5 13919 713.5!13919 713.5|-7556 1679.5!-7556 1679.5[-8201 #18F.73 -8201 -1023!-8201 -1023[-8201 -4209 -4962 -6244!-4962 -6244[-1721 -8280 2861 -7971!2861 -7971[7442 -7662 10683
+ -5190"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -924,15 +1016,17 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="-0.15679931640625" b="0.709823608398438" c="0.48895263671875" d="0.107955932617188" tx="198.1" ty="-66"/>
+                          <Matrix a="1.06732177734375" b="0.071929931640625" d="0.742385864257813" tx="-26.05" ty="-142.05"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!6101 9412[17060 -92 5299 -7450!5299 -7450[6256 5556 1692 3009!1692 3009|6101 9412"/>
+                    <Edge fillStyle1="1" edges="
+!10683 -5190[13924 -2717 13924 468!13924 468[13924 2175 12995 3552!12995 3552[12189 4746 10683 5691!10683 5691[#1EE3.1 #1D09.FE 4148 7457.5!4148 7457.5|-4346.5 -6603!-4346.5 -6603[#FFFAF1.B2 #FFDFC4.C7 2861 -7971!2861 -7971[7442 -7662
+ 10683 -5190"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -944,23 +1038,91 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="-0.17462158203125" b="0.790618896484375" c="0.48895263671875" d="0.107955932617188" tx="330.6" ty="-147.55"/>
+                          <Matrix a="0.00628662109375" d="0.00628662109375" tx="-286" ty="40"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.06732177734375" b="0.071929931640625" d="0.742385864257813" tx="106" ty="-164.95"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!6090 -9201[6248 1981 4123 2859!4123 2859|6892 7661!6892 7661[9044 5795 10320 4011!10320 4011[13526 -471 11200 -4431!11200 -4431[9737 -6919 6090 -9201"/>
+                    <Edge fillStyle1="2" edges="
+!10403 -4648[13644 -2175 13644 1010!13644 1010[13644 2717 12715 4094!12715 4094[11909 5288 10403 6233!10403 6233[7162 8268 2581 7959!2581 7959[-1425 7690 -4406 5767!-4406 5767|4107 -7260!4107 -7260[7715 -6698 10403 -4648"/>
+                    <Edge fillStyle1="1" edges="
+!-5644 840[-5672 880 -5720 900!-5720 900|-5754 886!-5754 886[-5791 869 -5810 850!-5810 850|-5820 790!-5820 790[-5820 768 -5785 738!-5785 738[-5751 708 -5720 700!-5720 700[-5656 725 -5620 780!-5620 780[-5620 807 -5644 840"/>
+                    <Edge cubics="!-5720 700(;-5670,720 -5640,750 -5620,780q-5720 700Q-5656 725q-5620 780);"/>
+                    <Edge cubics="!-5620 780(;-5620,810 -5650,870 -5720,900q-5620 780Q-5620 807q-5644 840Q-5672 880q-5720 900);"/>
+                    <Edge cubics="!-5720 900(;-5720,900 -5780,880 -5810,850q-5720 900Q-5720 900q-5754 886Q-5791 869q-5810 850);"/>
+                    <Edge cubics="!-5810 850(;-5810,850 -5820,790 -5820,790q-5810 850 -5820 790);"/>
+                    <Edge cubics="!-5820 790(;-5820,760 -5760,710 -5720,700q-5820 790Q-5820 768q-5785 738Q-5751 708q-5720 700);"/>
+                    <Edge cubics="!4107 -7260(;6512,-6885 8611,-6015 10403,-4648q4107 -7260Q7715 -6698q10403 -4648);"/>
+                    <Edge cubics="!10403 6233(;8242,7590 5635,8165 2581,7959q10403 6233Q7162 8268q2581 7959);"/>
+                    <Edge cubics="!13644 1010(;13644,2148 13334,3176 12715,4094q13644 1010Q13644 2717q12715 4094);"/>
+                    <Edge cubics="!12715 4094(;12178,4890 11407,5603 10403,6233q12715 4094Q11909 5288q10403 6233);"/>
+                    <Edge cubics="!10403 -4648(;12564,-2999 13644,-1113 13644,1010q10403 -4648Q13644 -2175q13644 1010);"/>
+                    <Edge cubics="!4107 -7260(;4107,-7260 -4406,5767 -4406,5767q4107 -7260 -4406 5767);"/>
+                    <Edge cubics="!2581 7959(;-90,7780 -2419,7049 -4406,5767q2581 7959Q-1425 7690q-4406 5767);"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="25" duration="8" keyMode="9728">
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.06732177734375" b="0.071929931640625" d="0.742385864257813" tx="238.05" ty="-128.95"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!2661 -7429[7242 -7120 10483 -4648!10483 -4648[13724 -2175 13724 1010!13724 1010[13724 2717 12795 4094!12795 4094[11989 5288 10483 6233!10483 6233[7242 8268 2661 7959!2661 7959[-1504 7679 -4561 5611!-4561 5611|1998 -7461!1998 -7461[2326
+ -7452 2661 -7429"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.36582946777344" b="0.092041015625" d="0.95001220703125" tx="234.05" ty="-124.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!2581 -7331[7162 -7022 10403 -4550!10403 -4550[13644 -2077 13644 1108!13644 1108[13644 2815 12715 4192!12715 4192[11909 5386 10403 6331!10403 6331[7162 8366 2581 8057!2581 8057[-1758 7765 -4895 5533!-4895 5533|1546 -7371!1546 -7371[2054
+ -7367 2581 -7331"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="33" duration="4" keyMode="9728">
+            <DOMFrame index="28" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="37" keyMode="9728">
@@ -970,15 +1132,16 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.402374267578125" b="-0.2703857421875" c="-0.1168212890625" d="-0.173858642578125" tx="-22.55" ty="-224.6"/>
+                          <Matrix a="1.04034423828125" d="0.79168701171875" tx="90" ty="16"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!599 -9911[-1425 -7827 -3876 -3311!-3876 -3311[-1460 -6321 2047 -6377!2047 -6377|599 -9911"/>
+                    <Edge fillStyle1="1" edges="
+!3894.5 -946|4245 6867!4245 6867[#BEB.DF 7202 1720 7202!1720 7202[-2026 7202 -4675 4553!-4675 4553[-7323 1905 -7323 -1841!-7323 -1841[-7323 -5587 -4675 -8236!-4675 -8236[#FFF5FB.46 #FFD796.86 241.5 -10774.5!241.5 -10774.5|3894.5 -946"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -990,15 +1153,17 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.0185546875" b="0.0562744140625" c="0.0213165283203125" d="-0.386703491210938" tx="-272.05" ty="-178"/>
+                          <Matrix a="1.04034423828125" d="0.79168701171875" tx="-180.05" ty="-46"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!8614 -5276[5257 -10895 -12145 -6441!-12145 -6441[#411.EA #FFEE1F.9D 3760 -3162!3760 -3162|8614 -5276"/>
+                    <Edge fillStyle1="1" edges="
+!477.5 -1208|-6809 1247.5!-6809 1247.5[-7323 #FFFF41.C4 -7323 -1841!-7323 -1841[-7323 -5587 -4675 -8236!-4675 -8236[-2026 -10884 1720 -10884!1720 -10884[5466 -10884 8114 -8236!8114 -8236[#243F.22 #FFE461.22 9932 -5693.5!9932 -5693.5|477.5
+ -1208"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1010,15 +1175,16 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.92572021484375" b="0.424072265625" c="0.16094970703125" d="-0.351470947265625" tx="-282.05" ty="-302.05"/>
+                          <Matrix a="1.04034423828125" d="0.79168701171875" tx="-192.05" ty="-180.05"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!8708 -112S1[8948 -6653 -7277 -10262!-7277 -10262[1973 -3644 3485 -979!3485 -979|8708 -112"/>
+                    <Edge fillStyle1="1" edges="
+!10763 -464|-7299 -304!-7299 -304[-7323 -648 -7323 -1001!-7323 -1001[-7323 -4747 -4675 -7396!-4675 -7396[-2026 -10044 1720 -10044!1720 -10044[5466 -10044 8114 -7396!8114 -7396[10755 -4755 10763 -464"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1030,15 +1196,16 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.31243896484375" b="1.07476806640625" c="0.4925537109375" d="-0.143310546875" tx="52.6" ty="-344.15"/>
+                          <Matrix a="0.943649291992188" b="0.437973022460938" c="-0.333297729492188" d="0.718109130859375" tx="-149.3" ty="-293.3"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!8511 6187S1[13575 -2501 1721 -14277!1721 -14277[7121 -1638 2483 1099!2483 1099|8511 6187"/>
+                    <Edge fillStyle1="1" edges="
+!9345 -3753[10633 -235 9056 3163!9056 3163[8517 4325 7749 5241!7749 5241|-6781 -5508!-6781 -5508[-5196 -8059 -2255 -9137!-2255 -9137[1262 -10423 4660 -8846!4660 -8846[8058 -7269 9345 -3753"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1050,463 +1217,29 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.3466796875" b="1.1925048828125" c="0.5465087890625" d="-0.15899658203125" tx="170.1" ty="-326.05"/>
+                          <Matrix a="1.04034423828125" d="0.79168701171875" tx="-80.05" ty="-266.1"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!9568 7308[15187 -2332 2035 -15398!2035 -15398[8026 -1374 2880 1662!2880 1662|9568 7308"/>
+                    <Edge fillStyle1="1" edges="
+!10763 -1841[10763 1905 8114 4553!8114 4553[#1AA4.43 #16D7.3A 5264.5 6509!5264.5 6509|-4214 -8669.5!-4214 -8669.5[#FFF956.26 -10884 1720 -10884!1720 -10884[5466 -10884 8114 -8236!8114 -8236[10763 -5587 10763 -1841"/>
+                    <Edge cubics="!8114 -8236(;9880,-6470 10763,-4338 10763,-1841q8114 -8236Q10763 -5587q10763 -1841);"/>
+                    <Edge cubics="!1720 -10884(;4217,-10884 6349,-10001 8114,-8236q1720 -10884Q5466 -10884q8114 -8236);"/>
+                    <Edge cubics="!8114 4553(;7252,5415 6303,6067 5265,6509q8114 4553Q6820 5847q5265 6509);"/>
+                    <Edge cubics="!5265 6509(;4180,6971 2998,7202 1720,7202q5265 6509Q3636 7202q1720 7202);"/>
+                    <Edge cubics="!10763 -1841(;10763,656 9880,2788 8114,4553q10763 -1841Q10763 1905q8114 4553);"/>
+                    <Edge cubics="!-7323 -1841(;-7323,-4338 -6440,-6470 -4675,-8236q-7323 -1841Q-7323 -5587q-4675 -8236);"/>
+                    <Edge cubics="!-4675 4553(;-6440,2788 -7323,656 -7323,-1841q-4675 4553Q-7323 1905q-7323 -1841);"/>
+                    <Edge cubics="!1720 7202(;-777,7202 -2909,6319 -4675,4553q1720 7202Q-2026 7202q-4675 4553);"/>
+                    <Edge cubics="!-4675 -8236(;-4523,-8388 -4369,-8533 -4214,-8669q-4675 -8236Q-4449 -8462q-4214 -8669);"/>
+                    <Edge cubics="!-4214 -8669(;-2540,-10146 -562,-10884 1720,-10884q-4214 -8669Q-1706 -10884q1720 -10884);"/>
                   </edges>
                 </DOMShape>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="42" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="47" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="-0.160873413085938" b="-0.457321166992188" c="-0.197601318359375" d="0.0695037841796875" tx="13.2" ty="-77.2"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!-4716 -3921[-3208 -1438 550 2066!550 2066[-1759 -1027 -932 -4436!-932 -4436|-4716 -3921"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="48" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.26629638671875" b="-0.52264404296875" c="-0.28656005859375" d="-0.14593505859375" tx="-52.6" ty="-65.9"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!1612 -5142|-2486 -8078!-2486 -8078[#FFEB54.7D #FFE9A5.47 -4390 1096!-4390 1096[-2198 -2912 1612 -5142"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="49" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.402557373046875" b="-0.474227905273438" c="-0.227294921875" d="-0.192901611328125" tx="-2" ty="-124.95"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!3685 -9490[#FFF2DA.BC #FFE180.13 -3799 -804!-3799 -804[1167 -7098 3102 -4987!3102 -4987|3685 -9490"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="50" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.69989013671875" b="-0.023345947265625" c="-0.0107421875" d="-0.321640014648438" tx="-44.15" ty="-136.95"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!8450 -4973[2099 -8932 -5842 -4415!-5842 -4415[#5FE.E5 #FFE972.AD 3655 -2917!3655 -2917|8450 -4973"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="51" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.25042724609375" b="0.9410400390625" c="0.45361328125" d="-0.1207275390625" tx="150.05" ty="-72"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!6663 8618[15201 -1059 2331 -9190!2331 -9190[8656 1585 1948 2625!1948 2625|6663 8618"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="52" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="-0.0814056396484375" b="0.970367431640625" c="0.467758178710938" d="0.039215087890625" tx="250.3" ty="-79"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!5064 9124[16364 2891 6989 -9102!6989 -9102[9311 3174 2645 1892!2645 1892|5064 9124"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="53" duration="31" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="左下臂-2" color="#808080" current="true" isSelected="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="5" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="5" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.219970703125" b="-0.01666259765625" c="-0.00994873046875" d="-0.131332397460938" tx="47.3" ty="-189.5"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!782 -5910[-807 -5676 -886 -3756!-886 -3756[513 -4345 1910 -3997!1910 -3997|782 -5910"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="6" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.574951171875" b="0.0819549560546875" c="0.048919677734375" d="-0.34326171875" tx="71" ty="-62.15"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!2201 -6786S1[-2017 -7087 -3309 -2196!-3309 -2196[622 -2916 4016 -1228!4016 -1228|2201 -6786"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="7" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.73809814453125" b="0.155181884765625" c="0.0711669921875" d="-0.338470458984375" tx="33.8" ty="-164.95"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!11000 -1850[10355 -7803 -2117 -6698!-2117 -6698[6494 -3360 5389 -207!5389 -207|11000 -1850"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="8" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.73809814453125" b="0.155181884765625" c="0.0711669921875" d="-0.338470458984375" tx="106.5" ty="-150.95"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!12454 -1570[11809 -7523 -663 -6418!-663 -6418[7948 -3080 6843 73!6843 73|12454 -1570"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="9" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.778228759765625" b="0.10736083984375" c="-0.167572021484375" d="-0.633514404296875" tx="-4.05" ty="-24"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.619607843137255"/>
-                        <GradientEntry color="#FFFFFF" ratio="0.780392156862745"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!1608 -6939[-474 -6238 -825 -3792!-825 -3792[#11E5.B1 #A68.B3 11476 1871!11476 1871[11667 -38 10617 -1853!10617 -1853[8989 -4668 6350 -6158!6350 -6158[3711 -7647 1608 -6939"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="10" duration="10" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="20" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.32025146484375" b="-0.2047119140625" c="-0.1221923828125" d="-0.191207885742188" tx="-44.1" ty="-191.7"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!-3637 -2289S1[-1994 -4324 411 -4936!411 -4936|-2863 -6919!-2863 -6919[-5083 -5267 -3637 -2289"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="21" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.656051635742188" b="-0.05712890625" c="-0.024688720703125" d="-0.28350830078125" tx="12" ty="-99.95"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!10087 -4830[#11E3.CA #FFE537.14 -3318 -3746!-3318 -3746[6107 -3949 5766 -1291!5766 -1291|10087 -4830"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="22" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="1.3057861328125" b="0.294921875" c="0.10748291015625" d="-0.475936889648438" tx="-384.05" ty="-226.05"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!12017 932[11550 -7864 -11648 -9425!-11648 -9425[6110 -1730 3148 1331!3148 1331|12017 932"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="23" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="-0.15679931640625" b="0.709823608398438" c="0.48895263671875" d="0.107955932617188" tx="271.3" ty="-27.05"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!9046 9751[18524 687 6763 -6671!6763 -6671[6565 4269 3155 3948!3155 3948|9046 9751"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="24" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="-0.0305023193359375" b="0.806137084960938" c="0.50006103515625" d="0.0188751220703125" tx="390.6" ty="-63.55"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!7012 -248[6516 3050 5587 3638!5587 3638|9837 8000!9837 8000[11968 5962 13025 4011!13025 4011[15433 -434 12274 -4431!12274 -4431[10649 -6486 7554 -8422!7554 -8422[7514 -6229 7412 -4431!7412 -4431[7271 -1970 7012 -248"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="25" duration="8" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="33" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.474853515625" b="-0.09771728515625" c="-0.0422210693359375" d="-0.205184936523438" tx="30.05" ty="-247.95"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!3627 -9574[#3C3.D #FFDF21.F5 -3016 -5163!-3016 -5163[#168.E2 #FFE487.6E 3627 -5755!3627 -5755|3627 -9574"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="34" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.71087646484375" b="0.15985107421875" c="0.0732421875" d="-0.325897216796875" tx="12" ty="-222.95"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!10034 -4596[#1A15.55 #FFD819.31 -3764 -7161!-3764 -7161[5137 -6266 5240 -2761!5240 -2761|10034 -4596"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.849716186523438" b="0.340866088867188" c="0.14990234375" d="-0.373764038085938" tx="-170" ty="-224.05"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!10447 -1982[#1E48.73 #FFD6B7.94 -8107 -8716!-8107 -8716[#F75.8A #FFF135.F6 5320 -1647!5320 -1647|10447 -1982"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="0.5889892578125" b="0.60760498046875" c="0.278472900390625" d="-0.27001953125" tx="-35.35" ty="-227.45"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!10887 801S1[7601 -7097 -4641 -10445!-4641 -10445[#1094.1F -3690.25 5060 -467!5060 -467|10887 801"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="37" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <RadialGradient>
-                        <matrix>
-                          <Matrix a="-0.127059936523438" b="0.83660888671875" c="0.38348388671875" d="0.0581817626953125" tx="238.1" ty="-174.05"/>
-                        </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
-                      </RadialGradient>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="!5163 7021[#41A0.6D #FFFF58.AF 4716 -12146!4716 -12146[4717 -985 2646 1615!2646 1615|5163 7021"/>
-                  </edges>
-                </DOMShape>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="38" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="41" keyMode="9728">
-              <elements/>
             </DOMFrame>
             <DOMFrame index="42" keyMode="9728">
               <elements>
@@ -1515,15 +1248,16 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.02850341796875" b="-0.48394775390625" c="-0.2091064453125" d="-0.0123138427734375" tx="-26.3" ty="12.65"/>
+                          <Matrix a="-0.107711791992188" b="1.03349304199219" c="-0.786468505859375" d="-0.0819549560546875" tx="184.05" ty="-384.1"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!240 -4176|-4201 -3864!-4201 -3864[-3769 -992 -1660 3694!-1660 3694[-2592 -52 240 -4176"/>
+                    <Edge fillStyle1="1" edges="
+!8114 -8236[10763 -5587 10763 -1841!10763 -1841[10763 1905 8114 4553!8114 4553[#17F8.7C #1983.43 3546.5 7032!3546.5 7032|-533 709!-533 709|4219 -10556.5!4219 -10556.5[#18FD.38 #FFD91F.38 8114 -8236"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1535,15 +1269,730 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.650009155273438" b="-0.323089599609375" c="-0.14813232421875" d="-0.297958374023438" tx="-124.95" ty="-92.95"/>
+                          <Matrix a="-0.45587158203125" b="1.19071960449219" c="-0.9061279296875" d="-0.346878051757813" tx="220.05" ty="-286.1"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!1969 -9791S1[-3995 -7094 -6949 -1794!-6949 -1794[#FFFCFF.EA #FFE91D.04 3246 -4819!3246 -4819|1969 -9791"/>
+                    <Edge fillStyle1="1" edges="
+!10574 -82[9605 3536 6362 5408!6362 5408[3118 7282 -501 6312!-501 6312[-2908 5667 -4542 4016!-4542 4016|6509 -10194!6509 -10194[8457 -9048 9672 -6945!9672 -6945[11544 -3701 10574 -82"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.0048828125" b="-0.269241333007813" c="0.20489501953125" d="0.76470947265625" tx="-259.3" ty="46.85"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!-4456 -9373.5|2948 -4027!2948 -4027|-1320 -397!-1320 -397|-7723 3861!-7723 3861[-8592 2605 -9019 1010!-9019 1010[-9989 -2608 -8116 -5852!-8116 -5852[#FFE5A1.E9 #FFDFE6.45 -4456 -9373.5"/>
+                    <Edge cubics="!6651 -7176(;6651,-7176 2948,-4027 2948,-4027q6651 -7176 2948 -4027);"/>
+                    <Edge cubics="!4237 -9162(;5188,-8613 5992,-7951 6651,-7176q4237 -9162Q5663 -8338q6651 -7176);"/>
+                    <Edge cubics="!-4456 -9373(;-3889,-9660 -3278,-9890 -2625,-10065q-4456 -9373Q-3605 -9803q-2625 -10065);"/>
+                    <Edge cubics="!-7322 -11443(;-7322,-11443 -4456,-9373 -4456,-9373q-7322 -11443 -4456 -9373);"/>
+                    <Edge cubics="!-8116 -5852(;-7205,-7429 -5985,-8603 -4456,-9373q-8116 -5852Q-6750 -8218q-4456 -9373);"/>
+                    <Edge cubics="!-7723 3861(;-8302,3024 -8734,2073 -9019,1010q-7723 3861Q-8592 2605q-9019 1010);"/>
+                    <Edge cubics="!2948 -4027(;2948,-4027 11682,2280 11682,2280q2948 -4027 11682 2280);"/>
+                    <Edge cubics="!-4456 -9373(;-4456,-9373 2948,-4027 2948,-4027q-4456 -9373 2948 -4027);"/>
+                    <Edge cubics="!2948 -4027(;2948,-4027 -1320,-397 -1320,-397q2948 -4027 -1320 -397);"/>
+                    <Edge cubics="!-2625 -10065(;-213,-10712 2074,-10411 4237,-9162q-2625 -10065Q993 -11035q4237 -9162);"/>
+                    <Edge cubics="!-9019 1010(;-9666,-1402 -9365,-3689 -8116,-5852q-9019 1010Q-9989 -2608q-8116 -5852);"/>
+                    <Edge cubics="!-1320 -397(;-1320,-397 -7723,3861 -7723,3861q-1320 -397 -7723 3861);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.70660400390625" b="-0.763565063476563" c="0.5810546875" d="0.5377197265625" tx="-223.2" ty="10.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!3478.5 -10846.5|2943.5 -3076.5!2943.5 -3076.5|-4392 4993!-4392 4993[-4662 4777 -4921 4537!-4921 4537[-7670 1993 -7815 -1750!-7815 -1750[-7960 -5493 -5416 -8242!-5416 -8242[-2871 -10992 871 -11136!871 -11136[#8A4.21 #FFD44B.89 3478.5
+ -10846.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.84552001953125" b="-0.60614013671875" c="0.461273193359375" d="0.643417358398438" tx="-195.15" ty="-107.1"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!9882 -8186[10627 -7144 11048 -6025!11048 -6025|-5458 1338!-5458 1338[-6900 -1297 -6391 -4389!-6391 -4389[-5781 -8084 -2736 -10266!-2736 -10266[309 -12448 4003 -11840!4003 -11840[7699 -11230 9882 -8186"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.04034423828125" d="0.79168701171875" tx="-80.05" ty="-266.1"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!10763 -1841[10763 #3F0.2B 9230.5 3222!9230.5 3222|1268 109.5!1268 109.5|-4214 -8669.5!-4214 -8669.5[#FFF956.26 -10884 1720 -10884!1720 -10884[5466 -10884 8114 -8236!8114 -8236[10763 -5587 10763 -1841"/>
+                    <Edge cubics="!8114 -8236(;9880,-6470 10763,-4338 10763,-1841q8114 -8236Q10763 -5587q10763 -1841);"/>
+                    <Edge cubics="!1720 -10884(;4217,-10884 6349,-10001 8114,-8236q1720 -10884Q5466 -10884q8114 -8236);"/>
+                    <Edge cubics="!8114 4553(;7252,5415 6303,6067 5265,6509q8114 4553Q6820 5847q5265 6509);"/>
+                    <Edge cubics="!10763 -1841(;10763,57 10253,1745 9231,3222q10763 -1841Q10763 1008q9231 3222);"/>
+                    <Edge cubics="!9231 3222(;8910,3686 8537,4130 8114,4553q9231 3222Q8748 3919q8114 4553);"/>
+                    <Edge cubics="!-4214 -8669(;-2540,-10146 -562,-10884 1720,-10884q-4214 -8669Q-1706 -10884q1720 -10884);"/>
+                    <Edge cubics="!5265 6509(;5265,6509 1268,110 1268,110q5265 6509 1268 110);"/>
+                    <Edge cubics="!1268 110(;1268,110 -4214,-8669 -4214,-8669q1268 110 -4214 -8669);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.107711791992188" b="1.03349304199219" c="-0.786468505859375" d="-0.0819549560546875" tx="128" ty="-346.1"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!8114 -8236[10763 -5587 10763 -1841!10763 -1841[10763 1905 8114 4553!8114 4553[#17F8.7C #1983.43 1066 7952!1066 7952|-533 709!-533 709|4219 -10556.5!4219 -10556.5[#18FD.38 #FFD91F.38 8114 -8236"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="53" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.45587158203125" b="1.19071960449219" c="-0.9061279296875" d="-0.346878051757813" tx="220.05" ty="-286.1"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!10574 -82[9605 3536 6362 5408!6362 5408[3118 7282 -501 6312!-501 6312[-2908 5667 -4542 4016!-4542 4016|6509 -10194!6509 -10194[8457 -9048 9672 -6945!9672 -6945[11544 -3701 10574 -82"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="55" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左下臂-2" color="#808080" locked="true" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.889419555664063" b="0.057769775390625" d="0.596206665039063" tx="-156.05" ty="-92.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!-5384.5 -4575.5|3279.5 212!3279.5 212|-508 7073!-508 7073[#FFF3A5.D #194C.1A -5225 4960!-5225 4960[-5958 4421 -6511 3843!-6511 3843[-8201 2075 -8201 -51!-8201 -51[-8201 #FFF514.AA -5384.5 -4575.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.889419555664063" b="0.057769775390625" d="0.596206665039063" tx="-94.05" ty="-38"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!-3997.5 -5306.5|3506 -125!3506 -125|1795.5 7409.5!1795.5 7409.5[#FFF6FD.38 #1BC0.CC -5225 4960!-5225 4960[-5958 4421 -6511 3843!-6511 3843[-8201 2075 -8201 -51!-8201 -51[-8201 -2872 -5225 -4674!-5225 -4674[#FFEDE4.94 -5030.875 -3997.5
+ -5306.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.889419555664063" b="0.057769775390625" d="0.596206665039063" tx="-122.7" ty="9.2"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!11271 3999[10530 5056 9147 5893!9147 5893[6170 7695 1961 7421!1961 7421[-2248 7148 -5225 4960!-5225 4960[#FFE9CD.D9 #120F.D7 -6069.5 4272.5!-6069.5 4272.5|920 3241!920 3241|10806.5 -2204.5!10806.5 -2204.5[12124 #FFFDA0.69 12124 1269
+!12124 1269[12124 2780 11271 3999"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.889419555664063" b="0.057769775390625" d="0.596206665039063" tx="-92.05" ty="94"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!11271 3999[10530 5056 9147 5893!9147 5893[6170 7695 1961 7421!1961 7421[#FFFBE0.53 #1C39.56 -3439.5 6046!-3439.5 6046|10826 -2181!10826 -2181[12124 #FFFDAE.24 12124 1269!12124 1269[12124 2780 11271 3999"/>
+                    <Edge cubics="!1961 -6203(;4767,-6020 7162,-5200 9147,-3741q1961 -6203Q6170 -5929q9147 -3741);"/>
+                    <Edge cubics="!12124 1269(;12124,2276 11840,3186 11271,3999q12124 1269Q12124 2780q11271 3999);"/>
+                    <Edge cubics="!11271 3999(;10777,4704 10069,5335 9147,5893q11271 3999Q10530 5056q9147 5893);"/>
+                    <Edge cubics="!9147 5893(;7162,7094 4767,7604 1961,7421q9147 5893Q6170 7695q1961 7421);"/>
+                    <Edge cubics="!9147 -3741(;9824,-3243 10386,-2721 10826,-2181q9147 -3741Q10158 -2998q10826 -2181);"/>
+                    <Edge cubics="!10826 -2181(;11694,-1117 12124,30 12124,1269q10826 -2181Q12124 -594q12124 1269);"/>
+                    <Edge cubics="!-8201 -51(;-8201,-1932 -7209,-3473 -5225,-4674q-8201 -51Q-8201 -2872q-5225 -4674);"/>
+                    <Edge cubics="!-5225 4960(;-5714,4601 -6142,4228 -6511,3843q-5225 4960Q-5958 4421q-6511 3843);"/>
+                    <Edge cubics="!-6511 3843(;-7638,2664 -8201,1366 -8201,-51q-6511 3843Q-8201 2075q-8201 -51);"/>
+                    <Edge cubics="!1961 7421(;-48,7291 -1846,6834 -3439,6046q1961 7421Q-1056 7225q-3439 6046);"/>
+                    <Edge cubics="!-3439 6046(;-4064,5738 -4661,5375 -5225,4960q-3439 6046Q-4382 5580q-5225 4960);"/>
+                    <Edge cubics="!-5225 -4674(;-3240,-5875 -845,-6385 1961,-6203q-5225 -4674Q-2248 -6476q1961 -6203);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.889419555664063" b="0.057769775390625" d="0.596206665039063" tx="-32.75" ty="68"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!10013 5373[7036 7175 2827 6901!2827 6901[1203 6796 -237 6405!-237 6405|10386 -3975!10386 -3975[12990 -1890 12990 749!12990 749[12990 2260 12137 3479!12137 3479[11396 4536 10013 5373"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.889419555664063" b="0.057769775390625" d="0.596206665039063" tx="10.5" ty="63.8"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!9147 -5381[12124 -3192 12124 -371!12124 -371[12124 1140 11271 2359!11271 2359[10530 3416 9147 4253!9147 4253[#18CC.EE #173A.B1 2462.5 5806.5!2462.5 5806.5|6976.5 -6649.5!6976.5 -6649.5[#1FC5.1B #FFE811.D2 9147 -5381"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.889419555664063" b="0.057769775390625" d="0.596206665039063" tx="100" ty="140"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!9147 -3741[12124 -1552 12124 1269!12124 1269[12124 2780 11271 3999!11271 3999[10530 5056 9147 5893!9147 5893[#2232.D8 #17F2.6 8341.5 6331.5!8341.5 6331.5|6841 1760!6841 1760|-4433.5 -5106!-4433.5 -5106[#FFF958.F1 #FFE6D7.58 1961 -6203
+!1961 -6203[6170 -5929 9147 -3741"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.43112182617188" b="0.0929412841796875" d="0.959320068359375" tx="190" ty="226.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!9147 -3741[12124 -1552 12124 1269!12124 1269[12124 2780 11271 3999!11271 3999[#2B36.7B #10C8.71 10803 4576.5!10803 4576.5|-4335 -5153.5!-4335 -5153.5[#FFF99A.F7 #FFE6DB.A1 1961 -6203!1961 -6203[6170 -5929 9147 -3741"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.06732177734375" b="0.071929931640625" d="0.742385864257813" tx="-112.05" ty="35.35"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!-1705 -8923|6081 1387!6081 1387|4211 6296!4211 6296[3176 6359 2061 6284!2061 6284[-2521 5976 -5762 3504!-5762 3504[-6560 2896 -7162 2242!-7162 2242[-9001 246 -9001 -2156!-9001 -2156[-9001 -5342 -5762 -7377!-5762 -7377[-3945 -8519 -1705
+ -8923"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.06732177734375" b="0.071929931640625" d="0.742385864257813" tx="-132" ty="-42.1"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!11621 -6228|-1437 5129!-1437 5129[-2833 4508 -4042 3586!-4042 3586[-4840 2978 -5442 2324!-5442 2324[-7281 328 -7281 -2074!-7281 -2074[-7281 -5260 -4042 -7295!-4042 -7295[-801 -9331 3781 -9022!3781 -9022[8362 -8713 11603 -6241!11603 -6241
+[11612 -6234 11621 -6228"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.06732177734375" b="0.071929931640625" d="0.742385864257813" tx="-2" ty="-99.65"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!12684 -5702[14534 -4290 15328 -2647!15328 -2647|-2451 4495!-2451 4495[-2710 4316 -2961 4125!-2961 4125[-3759 3517 -4361 2863!-4361 2863[-6200 867 -6200 -1535!-6200 -1535[-6200 -4721 -2961 -6756!-2961 -6756[280 -8792 4862 -8483!4862 -8483
+[9443 -8174 12684 -5702"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.06732177734375" b="0.071929931640625" d="0.742385864257813" tx="76.05" ty="-106.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!11724 -4150[14965 -1677 14965 1508!14965 1508[14965 3215 14036 4592!14036 4592[13230 5786 11724 6731!11724 6731[9779 7952 7353 8329!7353 8329|-4727 -4640!-4727 -4640[-4353 -4932 -3921 -5204!-3921 -5204[-680 -7240 3902 -6931!3902 -6931
+[8483 -6622 11724 -4150"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.06732177734375" b="0.071929931640625" d="0.742385864257813" tx="120.7" ty="-60.6"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!10017 -3281[13258 -808 13258 2377!13258 2377[13258 4084 12329 5461!12329 5461[11523 6655 10017 7600!10017 7600[6776 9635 2195 9326!2195 9326[-756 9128 -3151 8032!-3151 8032|2937 -5997!2937 -5997[7042 -5550 10017 -3281"/>
+                    <Edge cubics="!2937 -5997(;5678,-5697 8035,-4793 10017,-3281q2937 -5997Q7042 -5550q10017 -3281);"/>
+                    <Edge cubics="!12329 5461(;11792,6257 11021,6970 10017,7600q12329 5461Q11523 6655q10017 7600);"/>
+                    <Edge cubics="!10017 7600(;7856,8957 5249,9532 2195,9326q10017 7600Q6776 9635q2195 9326);"/>
+                    <Edge cubics="!10017 -3281(;12178,-1632 13258,254 13258,2377q10017 -3281Q13258 -808q13258 2377);"/>
+                    <Edge cubics="!13258 2377(;13258,3515 12948,4543 12329,5461q13258 2377Q13258 4084q12329 5461);"/>
+                    <Edge cubics="!2195 9326(;230,9194 -1549,8764 -3151,8032q2195 9326Q-756 9128q-3151 8032);"/>
+                    <Edge cubics="!2937 -5997(;2937,-5997 -3151,8032 -3151,8032q2937 -5997 -3151 8032);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.06732177734375" b="0.071929931640625" d="0.742385864257813" tx="250.05" ty="-30.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!9603 -3190[12844 -717 12844 2468!12844 2468[12844 4175 11915 5552!11915 5552[11109 6746 9603 7691!9603 7691[6362 9726 1781 9417!1781 9417[-1132 9221 -3502 8151!-3502 8151|2737 -5881!2737 -5881[6705 -5400 9603 -3190"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix tx="-25.9" ty="78"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.36582946777344" b="0.092041015625" d="0.95001220703125" tx="282.05" ty="-74.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!2501 -7291S2[7082 -6982 10323 -4510!10323 -4510[13564 -2037 13564 1148!13564 1148[13564 2855 12635 4232!12635 4232[11829 5426 10323 6371!10323 6371[7082 8406 2501 8097!2501 8097[#FFFF6E.21 #1EEF.14 -2345 7019!-2345 7019|2472.5 -7293
+!2472.5 -7293[#9B6.CF #FFE384.0B 2501 -7291"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.04034423828125" d="0.79168701171875" tx="90" ty="16"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!3455 -10731.5|4245 6867!4245 6867[#BEB.DF 7202 1720 7202!1720 7202[-2026 7202 -4675 4553!-4675 4553[-7323 1905 -7323 -1841!-7323 -1841[-7323 -5587 -4675 -8236!-4675 -8236[-2026 -10884 1720 -10884!1720 -10884[#A3B.1 -10884 3455 -10731.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.04034423828125" d="0.79168701171875" tx="-180.05" ty="-46"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!10376 -4544|-6809 1247.5!-6809 1247.5[-7323 #FFFF41.C4 -7323 -1841!-7323 -1841[-7323 -5587 -4675 -8236!-4675 -8236[-2026 -10884 1720 -10884!1720 -10884[5466 -10884 8114 -8236!8114 -8236[#2616.96 #FFE638.96 10376 -4544"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.04034423828125" d="0.79168701171875" tx="-192.05" ty="-222.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!10763 -1864.5|-7299.5 -1144!-7299.5 -1144[-7323 #FFFA30.6B -7323 -1841!-7323 -1841[-7323 -5587 -4675 -8236!-4675 -8236[-2026 -10884 1720 -10884!1720 -10884[5466 -10884 8114 -8236!8114 -8236[#2A02.B7 #FFEA24.B7 10763 -1864.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.04034423828125" d="0.79168701171875" tx="-198.05" ty="-248.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!8114 -8236[10763 -5587 10763 -1841!10763 -1841[10763 #FFFDD0.0F 10453 592.5!10453 592.5|-7252 -3039!-7252 -3039[-6889.25 #FFE87B.16 -4675 -8236!-4675 -8236[-2026 -10884 1720 -10884!1720 -10884[5466 -10884 8114 -8236"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.04034423828125" d="0.79168701171875" tx="-80.05" ty="-266.1"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!10763 -1841[10763 1905 8114 4553!8114 4553[#1AA4.43 #16D7.3A 5264.5 6509!5264.5 6509|-4214 -8669.5!-4214 -8669.5[#FFF956.26 -10884 1720 -10884!1720 -10884[5466 -10884 8114 -8236!8114 -8236[10763 -5587 10763 -1841"/>
+                    <Edge cubics="!8114 -8236(;9880,-6470 10763,-4338 10763,-1841q8114 -8236Q10763 -5587q10763 -1841);"/>
+                    <Edge cubics="!1720 -10884(;4217,-10884 6349,-10001 8114,-8236q1720 -10884Q5466 -10884q8114 -8236);"/>
+                    <Edge cubics="!8114 4553(;7252,5415 6303,6067 5265,6509q8114 4553Q6820 5847q5265 6509);"/>
+                    <Edge cubics="!5265 6509(;4180,6971 2998,7202 1720,7202q5265 6509Q3636 7202q1720 7202);"/>
+                    <Edge cubics="!10763 -1841(;10763,656 9880,2788 8114,4553q10763 -1841Q10763 1905q8114 4553);"/>
+                    <Edge cubics="!-7323 -1841(;-7323,-4338 -6440,-6470 -4675,-8236q-7323 -1841Q-7323 -5587q-4675 -8236);"/>
+                    <Edge cubics="!-4675 4553(;-6440,2788 -7323,656 -7323,-1841q-4675 4553Q-7323 1905q-7323 -1841);"/>
+                    <Edge cubics="!1720 7202(;-777,7202 -2909,6319 -4675,4553q1720 7202Q-2026 7202q-4675 4553);"/>
+                    <Edge cubics="!-4675 -8236(;-4523,-8388 -4369,-8533 -4214,-8669q-4675 -8236Q-4449 -8462q-4214 -8669);"/>
+                    <Edge cubics="!-4214 -8669(;-2540,-10146 -562,-10884 1720,-10884q-4214 -8669Q-1706 -10884q1720 -10884);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.107711791992188" b="1.03349304199219" c="-0.786468505859375" d="-0.0819549560546875" tx="184.05" ty="-384.1"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!8114 -8236S2[10763 -5587 10763 -1841!10763 -1841[10763 1905 8114 4553!8114 4553[5466 7202 1720 7202!1720 7202[#FFFCFC.6C 7202 -2778 6030!-2778 6030|4219 -10556.5!4219 -10556.5[#18FD.38 #FFD91F.38 8114 -8236"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.45587158203125" b="1.19071960449219" c="-0.9061279296875" d="-0.346878051757813" tx="274.45" ty="-322.85"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!10574 -82[9605 3536 6362 5408!6362 5408[3118 7282 -501 6312!-501 6312[-2908 5667 -4542 4016!-4542 4016|6509 -10194!6509 -10194[8457 -9048 9672 -6945!9672 -6945[11544 -3701 10574 -82"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.04034423828125" d="0.79168701171875" tx="90" ty="16"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!1746.5 -10884|3813.5 -2743!3813.5 -2743|4245 6867!4245 6867[#BEB.DF 7202 1720 7202!1720 7202[-2026 7202 -4675 4553!-4675 4553[-7323 1905 -7323 -1841!-7323 -1841[-7323 -5587 -4675 -8236!-4675 -8236[-2026 -10884 1720 -10884!1720 -10884
+[#6C5.4B -10884 1746.5 -10884"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1555,15 +2004,16 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.768463134765625" b="0.100677490234375" c="0.0431060791015625" d="-0.329391479492188" tx="-77.95" ty="-206.95"/>
+                          <Matrix a="1.04034423828125" d="0.79168701171875" tx="-180.05" ty="-46"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!9779 -4859[5570 -10182 -6253 -6643!-6253 -6643[5212 -6745 5247 -2599!5247 -2599|9779 -4859"/>
+                    <Edge fillStyle1="1" edges="
+!10376 -4544|-6809 1247.5!-6809 1247.5[-7323 #FFFF41.C4 -7323 -1841!-7323 -1841[-7323 -5587 -4675 -8236!-4675 -8236[-2026 -10884 1720 -10884!1720 -10884[5466 -10884 8114 -8236!8114 -8236[#2616.96 #FFE638.96 10376 -4544"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1575,15 +2025,16 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.721923828125" b="0.2747802734375" c="0.108154296875" d="-0.2371826171875" tx="-50.7" ty="-222.1"/>
+                          <Matrix a="1.04034423828125" d="0.79168701171875" tx="-192.05" ty="-222.05"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!10082 -2050S1[7092 -7153 -5043 -7545!-5043 -7545[6051 -4654 5248 -1520!5248 -1520|10082 -2050"/>
+                    <Edge fillStyle1="1" edges="
+!10763 -1864.5|-7299.5 -1144!-7299.5 -1144[-7323 #FFFA30.6B -7323 -1841!-7323 -1841[-7323 -5587 -4675 -8236!-4675 -8236[-2026 -10884 1720 -10884!1720 -10884[5466 -10884 8114 -8236!8114 -8236[#2A02.B7 #FFEA24.B7 10763 -1864.5"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1595,15 +2046,16 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.617950439453125" b="0.968063354492188" c="0.354843139648438" d="-0.25885009765625" tx="-50.25" ty="-383.35"/>
+                          <Matrix a="1.04034423828125" d="0.79168701171875" tx="-198.05" ty="-248.05"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!8737 6555[11394 -5209 -2975 -15348!-2975 -15348[7775 -2403 3847 1511!3847 1511|8737 6555"/>
+                    <Edge fillStyle1="1" edges="
+!8114 -8236[10763 -5587 10763 -1841!10763 -1841[10763 #FFFDD0.0F 10453 592.5!10453 592.5|-7252 -3039!-7252 -3039[-6889.25 #FFE87B.16 -4675 -8236!-4675 -8236[-2026 -10884 1720 -10884!1720 -10884[5466 -10884 8114 -8236"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1615,20 +2067,78 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.617950439453125" b="0.968063354492188" c="0.354843139648438" d="-0.25885009765625" tx="108.05" ty="-302.05"/>
+                          <Matrix a="1.04034423828125" d="0.79168701171875" tx="-80.05" ty="-266.1"/>
                         </matrix>
-                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.533333333333333"/>
-                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
                       </RadialGradient>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!9657 7035[16069 -4527 -2415 -14908!-2415 -14908[8335 -1963 4407 1951!4407 1951|9657 7035"/>
+                    <Edge fillStyle1="1" edges="
+!10763 -1841[10763 1905 8114 4553!8114 4553[#1DF0.E #138A.4B 7184 5375.5!7184 5375.5|-2717.5 -6273!-2717.5 -6273|-4214 -8669.5!-4214 -8669.5[#FFF956.26 -10884 1720 -10884!1720 -10884[5466 -10884 8114 -8236!8114 -8236[10763 -5587 10763
+ -1841"/>
+                    <Edge cubics="!8114 -8236(;9880,-6470 10763,-4338 10763,-1841q8114 -8236Q10763 -5587q10763 -1841);"/>
+                    <Edge cubics="!1720 -10884(;4217,-10884 6349,-10001 8114,-8236q1720 -10884Q5466 -10884q8114 -8236);"/>
+                    <Edge cubics="!8114 4553(;7814,4853 7504,5127 7184,5376q8114 4553Q7665 5002q7184 5376);"/>
+                    <Edge cubics="!7184 5376(;6581,5843 5942,6221 5265,6509q7184 5376Q6280 6077q5265 6509);"/>
+                    <Edge cubics="!5265 6509(;4180,6971 2998,7202 1720,7202q5265 6509Q3636 7202q1720 7202);"/>
+                    <Edge cubics="!10763 -1841(;10763,656 9880,2788 8114,4553q10763 -1841Q10763 1905q8114 4553);"/>
+                    <Edge cubics="!-7323 -1841(;-7323,-4338 -6440,-6470 -4675,-8236q-7323 -1841Q-7323 -5587q-4675 -8236);"/>
+                    <Edge cubics="!-4675 4553(;-6440,2788 -7323,656 -7323,-1841q-4675 4553Q-7323 1905q-7323 -1841);"/>
+                    <Edge cubics="!1720 7202(;-777,7202 -2909,6319 -4675,4553q1720 7202Q-2026 7202q-4675 4553);"/>
+                    <Edge cubics="!-4675 -8236(;-4523,-8388 -4369,-8533 -4214,-8669q-4675 -8236Q-4449 -8462q-4214 -8669);"/>
+                    <Edge cubics="!-4214 -8669(;-2540,-10146 -562,-10884 1720,-10884q-4214 -8669Q-1706 -10884q1720 -10884);"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="48" duration="16" keyMode="9728">
+            <DOMFrame index="48" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.107711791992188" b="1.03349304199219" c="-0.786468505859375" d="-0.0819549560546875" tx="184.05" ty="-384.1"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!4219 -10556.5[#18FD.38 #FFD91F.38 8114 -8236!8114 -8236[10763 -5587 10763 -1841!10763 -1841[10763 1905 8114 4553!8114 4553[#160E.3F #1B6D.AF 2225 7189.5!2225 7189.5|269 -1193!269 -1193|4219 -10556.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.45587158203125" b="1.19071960449219" c="-0.9061279296875" d="-0.346878051757813" tx="274.45" ty="-322.85"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.588235294117647"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.752941176470588"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!10574 -82[9605 3536 6362 5408!6362 5408[#CE4.68 #1C08.A1 -95 6412!-95 6412|2178.5 -4625.5!2178.5 -4625.5|6509 -10194!6509 -10194[8457 -9048 9672 -6945!9672 -6945[11544 -3701 10574 -82"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="64" duration="3" tweenType="shape" keyMode="17922">
@@ -1656,7 +2166,8 @@ Z轴攻击范围 = 30;
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!11573 156[4517 -717 -1115 -849!-1115 -849|-934 977!-934 977[5131 977 11573 156"/>
+                    <Edge fillStyle0="1" edges="
+!11573 156[4517 -717 -1115 -849!-1115 -849|-934 977!-934 977[5131 977 11573 156"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1680,7 +2191,8 @@ Z轴攻击范围 = 30;
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!14785 550[7099 -401 962 -546!962 -546|1160 1442!1160 1442[7767 1444 14785 550"/>
+                    <Edge fillStyle0="1" edges="
+!14785 550[7099 -401 962 -546!962 -546|1160 1442!1160 1442[7767 1444 14785 550"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1713,7 +2225,8 @@ Z轴攻击范围 = 30;
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!1658 2791[7692 2184 14020 723!14020 723[6911 560 1294 992!1294 992|1658 2791"/>
+                    <Edge fillStyle0="1" edges="
+!1658 2791[7692 2184 14020 723!14020 723[6911 560 1294 992!1294 992|1658 2791"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1737,7 +2250,8 @@ Z轴攻击范围 = 30;
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!3757 2075[10309 1215 17150 -586!17150 -586[9406 -526 3302 130!3302 130|3757 2075"/>
+                    <Edge fillStyle0="1" edges="
+!3757 2075[10309 1215 17150 -586!17150 -586[9406 -526 3302 130!3302 130|3757 2075"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1773,7 +2287,8 @@ Z轴攻击范围 = 30;
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!13676 158[6591 -463 959 -393!959 -393|1206 1425!1206 1425[7267 1209 13676 158"/>
+                    <Edge fillStyle0="1" edges="
+!13676 158[6591 -463 959 -393!959 -393|1206 1425!1206 1425[7267 1209 13676 158"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1797,7 +2312,8 @@ Z轴攻击范围 = 30;
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!17330 215[9605 -329 3468 -152!3468 -152|3770 1823!3770 1823[10370 1476 17330 215"/>
+                    <Edge fillStyle0="1" edges="
+!17330 215[9605 -329 3468 -152!3468 -152|3770 1823!3770 1823[10370 1476 17330 215"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1807,7 +2323,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="刀" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -2837,7 +3353,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" selected="true" centerPoint3DX="-25.55" centerPoint3DY="-135.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" centerPoint3DX="-25.55" centerPoint3DY="-135.55">
                   <matrix>
                     <Matrix a="0.948486328125" b="-0.2421875" c="-0.2421875" d="-0.948486328125" tx="24.45" ty="70.9"/>
                   </matrix>
@@ -4449,7 +4965,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-50.1" centerPoint3DY="-155.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-50.1" centerPoint3DY="-155.2">
                   <matrix>
                     <Matrix a="-0.502548217773438" b="0.820846557617188" c="-0.820846557617188" d="-0.502548217773438" tx="129.5" ty="-48.3"/>
                   </matrix>
@@ -5321,7 +5837,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-19.25" centerPoint3DY="-189.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-19.25" centerPoint3DY="-189.85">
                   <matrix>
                     <Matrix a="0.015777587890625" b="0.956756591796875" c="-0.956756591796875" d="0.015777587890625" tx="188.5" ty="-195.85"/>
                   </matrix>
@@ -5757,7 +6273,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-148.2" centerPoint3DY="-188.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-148.2" centerPoint3DY="-188.55">
                   <matrix>
                     <Matrix a="0.50836181640625" b="0.808090209960938" c="-0.808090209960938" d="0.50836181640625" tx="25.9" ty="-301.1"/>
                   </matrix>
@@ -6629,7 +7145,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="212.35" centerPoint3DY="251.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="212.35" centerPoint3DY="251.8">
                   <matrix>
                     <Matrix a="0.664840698242188" b="-0.663864135742188" c="0.663864135742188" d="0.664840698242188" tx="66.35" ty="109.2"/>
                   </matrix>
@@ -6847,7 +7363,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-73.1" centerPoint3DY="174.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-73.1" centerPoint3DY="174.7">
                   <matrix>
                     <Matrix a="0.876251220703125" b="0.335052490234375" c="-0.335052490234375" d="0.876251220703125" tx="-2.65" ty="-16.45"/>
                   </matrix>
@@ -7065,7 +7581,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-78.6" centerPoint3DY="151.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-78.6" centerPoint3DY="151.1">
                   <matrix>
                     <Matrix a="0.9127197265625" b="0.20819091796875" c="-0.20819091796875" d="0.9127197265625" tx="-35.8" ty="-47.7"/>
                   </matrix>
@@ -7501,7 +8017,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-83.95" centerPoint3DY="126.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-83.95" centerPoint3DY="126.1">
                   <matrix>
                     <Matrix a="0.931320190429688" b="0.0712890625" c="-0.0712890625" d="0.931320190429688" tx="-70.95" ty="-76.3"/>
                   </matrix>
@@ -7719,7 +8235,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-83.95" centerPoint3DY="126.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-83.95" centerPoint3DY="126.1">
                   <matrix>
                     <Matrix a="0.931320190429688" b="0.0712890625" c="-0.0712890625" d="0.931320190429688" tx="-70.95" ty="-76.3"/>
                   </matrix>
@@ -7937,7 +8453,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-83.95" centerPoint3DY="126.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-83.95" centerPoint3DY="126.1">
                   <matrix>
                     <Matrix a="0.931320190429688" b="0.0712890625" c="-0.0712890625" d="0.931320190429688" tx="-70.95" ty="-76.3"/>
                   </matrix>
@@ -8546,7 +9062,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-27.05" centerPoint3DY="-216.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-27.05" centerPoint3DY="-216.4">
                   <matrix>
                     <Matrix a="0.184967041015625" b="0.8873291015625" c="-0.8873291015625" d="0.184967041015625" tx="165" ty="-258.8"/>
                   </matrix>
@@ -8982,7 +9498,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="187.6" centerPoint3DY="-304.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="187.6" centerPoint3DY="-304.4">
                   <matrix>
                     <Matrix a="-0.897872924804688" b="0.029876708984375" c="-0.029876708984375" d="-0.897872924804688" tx="196.4" ty="-109.6"/>
                   </matrix>
@@ -9418,7 +9934,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="334.9" centerPoint3DY="-88">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="334.9" centerPoint3DY="-88">
                   <matrix>
                     <Matrix a="-0.0608062744140625" b="-0.89532470703125" c="0.89532470703125" d="-0.0608062744140625" tx="140.7" ty="-72.5"/>
                   </matrix>
@@ -9636,7 +10152,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="319.45" centerPoint3DY="-13">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="319.45" centerPoint3DY="-13">
                   <matrix>
                     <Matrix a="0.19830322265625" b="-0.875" c="0.875" d="0.19830322265625" tx="129.05" ty="-53.8"/>
                   </matrix>
@@ -10726,7 +11242,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-84.95" centerPoint3DY="-150.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-84.95" centerPoint3DY="-150.55">
                   <matrix>
                     <Matrix a="0.434295654296875" b="0.780075073242188" c="-0.780075073242188" d="0.434295654296875" tx="83.2" ty="-246.7"/>
                   </matrix>
@@ -11598,7 +12114,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="329.55" centerPoint3DY="-90.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="329.55" centerPoint3DY="-90.35">
                   <matrix>
                     <Matrix a="-0.13958740234375" b="-0.87847900390625" c="0.87847900390625" d="-0.13958740234375" tx="139.25" ty="-57.85"/>
                   </matrix>
@@ -12034,7 +12550,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="214.45" centerPoint3DY="100.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="214.45" centerPoint3DY="100.2">
                   <matrix>
                     <Matrix a="0.612457275390625" b="-0.64349365234375" c="0.64349365234375" d="0.612457275390625" tx="73.25" ty="-31.05"/>
                   </matrix>

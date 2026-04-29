@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招" itemID="696a8b8f-00001638" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-直剑1连招" lastModified="1777381527">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招" itemID="696a8b8f-00001638" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-直剑1连招" lastModified="1777471699">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-直剑1连招" currentFrame="70">
+    <DOMTimeline name="兵器攻击容器-直剑1连招">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -606,7 +606,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -772,7 +772,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="64" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -863,7 +863,7 @@ Z轴攻击范围 = 30;
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!6521 3200|-5258 6271.5!-5258 6271.5[-7522 #D9C.86 -7522 -241!-7522 -241[-7522 -4575 -4458 -7640!-4458 -7640[#FFF84D.52 #FFD871.7E 1352.5 -10595!1352.5 -10595|6521 3200"/>
+                    <Edge fillStyle1="1" edges="!-4458 -7640[#FFF84D.52 #FFD871.7E 1352.5 -10595!1352.5 -10595|6521 3200!6521 3200|-5258 6271.5!-5258 6271.5[-7522 #D9C.86 -7522 -241!-7522 -241[-7522 -4575 -4458 -7640"/>
                     <Edge cubics="!1353 -10595(;1867,-10668 2396,-10704 2941,-10704q1353 -10595Q2124 -10704q2941 -10704);"/>
                     <Edge cubics="!720 -12283(;720,-12283 1353,-10595 1353,-10595q720 -12283 1353 -10595);"/>
                     <Edge cubics="!2941 -10704(;5830,-10704 8296,-9683 10339,-7640q2941 -10704Q7275 -10704q10339 -7640);"/>
@@ -964,7 +964,7 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="-0.331954956054688" b="1.33442687988281" c="-1.12818908691406" d="-0.280624389648438" tx="392.05" ty="-312.1"/>
+                          <Matrix a="-0.331954956054688" b="1.33441162109375" c="-1.128173828125" d="-0.280624389648438" tx="392.05" ty="-312.1"/>
                         </matrix>
                         <GradientEntry alpha="0" ratio="0.552941176470588"/>
                         <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
@@ -1122,7 +1122,7 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.82582092285156" b="-0.103515625" d="0.585174560546875" tx="894.2" ty="-4.05"/>
+                          <Matrix a="1.8258056640625" b="-0.103515625" d="0.585174560546875" tx="894.2" ty="-4.05"/>
                         </matrix>
                         <GradientEntry alpha="0" ratio="0.552941176470588"/>
                         <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
@@ -1157,7 +1157,7 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.82582092285156" b="-0.103515625" d="0.585174560546875" tx="686.15" ty="-86.05"/>
+                          <Matrix a="1.8258056640625" b="-0.103515625" d="0.585174560546875" tx="686.15" ty="-86.05"/>
                         </matrix>
                         <GradientEntry alpha="0" ratio="0.552941176470588"/>
                         <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
@@ -1199,7 +1199,7 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.82582092285156" b="-0.103515625" d="0.585174560546875" tx="437.1" ty="-122.05"/>
+                          <Matrix a="1.8258056640625" b="-0.103515625" d="0.585174560546875" tx="437.1" ty="-122.05"/>
                         </matrix>
                         <GradientEntry alpha="0" ratio="0.552941176470588"/>
                         <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
@@ -1234,7 +1234,7 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.82582092285156" b="-0.103515625" d="0.585174560546875" tx="188" ty="-158.05"/>
+                          <Matrix a="1.8258056640625" b="-0.103515625" d="0.585174560546875" tx="188" ty="-158.05"/>
                         </matrix>
                         <GradientEntry alpha="0" ratio="0.552941176470588"/>
                         <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
@@ -1268,7 +1268,7 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.82582092285156" b="-0.103515625" d="0.585174560546875" tx="-37.65" ty="-75"/>
+                          <Matrix a="1.8258056640625" b="-0.103515625" d="0.585174560546875" tx="-37.65" ty="-75"/>
                         </matrix>
                         <GradientEntry alpha="0" ratio="0.552941176470588"/>
                         <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
@@ -1302,7 +1302,7 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.82582092285156" b="-0.103515625" d="0.585174560546875" tx="-263.3" ty="8"/>
+                          <Matrix a="1.8258056640625" b="-0.103515625" d="0.585174560546875" tx="-263.3" ty="8"/>
                         </matrix>
                         <GradientEntry alpha="0" ratio="0.552941176470588"/>
                         <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
@@ -1343,7 +1343,7 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.82582092285156" b="-0.103515625" d="0.585174560546875" tx="-172.05" ty="124"/>
+                          <Matrix a="1.8258056640625" b="-0.103515625" d="0.585174560546875" tx="-172.05" ty="124"/>
                         </matrix>
                         <GradientEntry alpha="0" ratio="0.552941176470588"/>
                         <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
@@ -1379,7 +1379,7 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.82582092285156" b="-0.103515625" d="0.585174560546875" tx="472.1" ty="156"/>
+                          <Matrix a="1.8258056640625" b="-0.103515625" d="0.585174560546875" tx="472.1" ty="156"/>
                         </matrix>
                         <GradientEntry alpha="0" ratio="0.552941176470588"/>
                         <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
@@ -1416,7 +1416,7 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.82582092285156" b="-0.103515625" d="0.585174560546875" tx="542.1" ty="80"/>
+                          <Matrix a="1.8258056640625" b="-0.103515625" d="0.585174560546875" tx="542.1" ty="80"/>
                         </matrix>
                         <GradientEntry alpha="0" ratio="0.552941176470588"/>
                         <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
@@ -1438,7 +1438,7 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.82582092285156" b="-0.103515625" d="0.585174560546875" tx="456.1" ty="22"/>
+                          <Matrix a="1.8258056640625" b="-0.103515625" d="0.585174560546875" tx="456.1" ty="22"/>
                         </matrix>
                         <GradientEntry alpha="0" ratio="0.552941176470588"/>
                         <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
@@ -1625,7 +1625,7 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.567214965820313" b="1.19544982910156" c="1.01072692871094" d="-0.479568481445313" tx="18" ty="8"/>
+                          <Matrix a="0.567214965820313" b="1.1954345703125" c="1.01072692871094" d="-0.479568481445313" tx="18" ty="8"/>
                         </matrix>
                         <GradientEntry alpha="0" ratio="0.552941176470588"/>
                         <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
@@ -1646,7 +1646,7 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="0.643768310546875" b="1.24102783203125" c="1.04927062988281" d="-0.544265747070313" tx="144.05" ty="196"/>
+                          <Matrix a="0.643768310546875" b="1.24102783203125" c="1.04925537109375" d="-0.544265747070313" tx="144.05" ty="196"/>
                         </matrix>
                         <GradientEntry alpha="0" ratio="0.552941176470588"/>
                         <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
@@ -1679,7 +1679,7 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!2809 -9194|7977 4601!7977 4601|-3802 7673!-3802 7673[-6066 4886 -6066 1160!-6066 1160[-6066 -3174 -3002 -6239!-3002 -6239[-515 -8726 2809 -9194"/>
+!7977 4601|-3802 7673!-3802 7673[-6066 4886 -6066 1160!-6066 1160[-6066 -3174 -3002 -6239!-3002 -6239[-515 -8726 2809 -9194!2809 -9194|7977 4601"/>
                     <Edge cubics="!2809 -9194(;2809,-9194 7977,4601 7977,4601q2809 -9194 7977 4601);"/>
                     <Edge cubics="!-6066 1160(;-6066,-1729 -5045,-4196 -3002,-6239q-6066 1160Q-6066 -3174q-3002 -6239);"/>
                     <Edge cubics="!-3802 7673(;-5311,5815 -6066,3644 -6066,1160q-3802 7673Q-6066 4886q-6066 1160);"/>
@@ -1872,7 +1872,7 @@ Z轴攻击范围 = 30;
                     <FillStyle index="1">
                       <RadialGradient>
                         <matrix>
-                          <Matrix a="1.27629089355469" b="-0.349197387695313" c="0.295242309570313" d="1.07905578613281" tx="233.7" ty="-206.45"/>
+                          <Matrix a="1.27629089355469" b="-0.349197387695313" c="0.295242309570313" d="1.07904052734375" tx="233.7" ty="-206.45"/>
                         </matrix>
                         <GradientEntry alpha="0" ratio="0.552941176470588"/>
                         <GradientEntry color="#FFFFFF" ratio="0.670588235294118"/>
@@ -4595,7 +4595,7 @@ Z轴攻击范围 = 30;
                     <Matrix a="-0.506072998046875" b="1.7047119140625" c="0.690902709960938" d="-0.62127685546875" tx="-46.3" ty="93.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.9" y="112.75"/>
+                    <Point x="2.9" y="112.8"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="0" blurY="0"/>
