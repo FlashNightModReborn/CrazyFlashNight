@@ -168,6 +168,127 @@ namespace CF7Launcher.Guardian.Hud
         private string _lastLayoutTraceKey = "";
         private int _layoutTraceCount;
 
+        // ── P0 perf：GDI+ 资源静态/实例缓存 ──
+        // 之前每次 Paint() 都 new 5 个 Font + 5 个 SolidBrush + 多个 StringFormat，
+        // 30Hz coalesce 下 ~30 × 30 = 900 个 GDI+ 对象/秒，触发 GC + GDI handle 抖动。
+        // 缓存策略：
+        //   - 静态非透明 brush：颜色 const，进程级共享，不 dispose
+        //   - 静态 StringFormat：MeasureTrailingSpaces typographic + 居中 fmt 各一份
+        //   - 静态 base-px Font 组（scale=1 测量用）：RecomputeMeasuredWidthBase / Probe 复用
+        //   - 实例 scaled Font 组：缓存当前 scale 的 5 字体；scale 变化时 dispose 重建
+        private static readonly SolidBrush BR_TYPED   = new SolidBrush(COLOR_TYPED);
+        private static readonly SolidBrush BR_REMAIN  = new SolidBrush(COLOR_REMAIN);
+        private static readonly SolidBrush BR_NAME    = new SolidBrush(COLOR_NAME);
+        private static readonly SolidBrush BR_NAME_BG = new SolidBrush(COLOR_NAME_BG);
+        private static readonly SolidBrush BR_DIVIDER = new SolidBrush(COLOR_DIVIDER);
+
+        private static readonly StringFormat FMT_TYPOGRAPHIC = BuildTypographicFormat();
+        private static readonly StringFormat FMT_INPUT_ALIGN = BuildInputAlignFormat();
+
+        // base-px 字体组（scale=1 测量；线程安全：静态读取，PaintLayered 路径都在 UI 线程）
+        private static Font _baseTypedFont;
+        private static Font _baseRemainFont;
+        private static Font _baseNameFont;
+        private static Font _baseHitFont;
+        private static Font _baseHitTagFont;
+        private static readonly object _baseFontLock = new object();
+
+        // scaled 字体组（实例：scale 取决于 viewport 缩放）
+        private float _cachedScale = -1f;
+        private Font _scaledTypedFont;
+        private Font _scaledRemainFont;
+        private Font _scaledNameFont;
+        private Font _scaledHitFont;
+        private Font _scaledHitTagFont;
+
+        private static StringFormat BuildTypographicFormat()
+        {
+            StringFormat fmt = (StringFormat)StringFormat.GenericTypographic.Clone();
+            fmt.FormatFlags = fmt.FormatFlags | StringFormatFlags.MeasureTrailingSpaces;
+            fmt.Alignment = StringAlignment.Near;
+            fmt.LineAlignment = StringAlignment.Near;
+            return fmt;
+        }
+
+        private static StringFormat BuildInputAlignFormat()
+        {
+            StringFormat fmt = new StringFormat();
+            fmt.Alignment = StringAlignment.Near;
+            fmt.LineAlignment = StringAlignment.Center;
+            return fmt;
+        }
+
+        /// <summary>
+        /// P2-1 prewarm 入口：在玩家看到 UI 之前触发所有 GDI+ 资源 + 字体冷启动 + 字形栅格化。
+        /// 包含：base/scaled font 创建、static brush/format cctor、ClearType glyph cache 预热（DrawString 一次）。
+        /// 必须在主线程或专门的 Bitmap-UI 线程调用（GDI+ Graphics 不跨线程）。
+        /// </summary>
+        public void PrewarmGdi()
+        {
+            try
+            {
+                // 触发静态 cctor：访问 BR_TYPED 让 5 brush + 2 StringFormat 即时构造
+                System.Drawing.Brush touch = BR_TYPED;
+                if (touch == null) return;
+                EnsureBaseFonts();
+                EnsureScaledFonts(1.0f);
+                using (System.Drawing.Bitmap warm = new System.Drawing.Bitmap(64, 32, System.Drawing.Imaging.PixelFormat.Format32bppPArgb))
+                using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(warm))
+                {
+                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+                    // 触发汉字 + ASCII 字形栅格化（招式名常见字符 + 数字）
+                    string sample = "波动拳诛杀步招式DFA Sync 0123456789";
+                    g.DrawString(sample, _baseTypedFont, BR_TYPED, 0f, 0f);
+                    g.DrawString(sample, _baseRemainFont, BR_REMAIN, 0f, 12f);
+                    g.DrawString(sample, _baseHitFont, BR_NAME, 0f, 20f);
+                }
+            }
+            catch (Exception ex) { LogManager.Log("[ComboWidget] PrewarmGdi failed: " + ex.Message); }
+        }
+
+        private static void EnsureBaseFonts()
+        {
+            if (_baseTypedFont != null) return;
+            lock (_baseFontLock)
+            {
+                if (_baseTypedFont != null) return;
+                _baseTypedFont   = new Font("Microsoft YaHei", TYPED_FONT_BASE_PX, FontStyle.Bold, GraphicsUnit.Pixel);
+                _baseRemainFont  = new Font("Microsoft YaHei", REMAIN_FONT_BASE_PX, FontStyle.Regular, GraphicsUnit.Pixel);
+                _baseNameFont    = new Font("Microsoft YaHei", NAME_FONT_BASE_PX, FontStyle.Regular, GraphicsUnit.Pixel);
+                _baseHitFont     = new Font("Microsoft YaHei", HIT_FONT_BASE_PX, FontStyle.Bold, GraphicsUnit.Pixel);
+                _baseHitTagFont  = new Font("Microsoft YaHei", HIT_TAG_FONT_BASE_PX, FontStyle.Regular, GraphicsUnit.Pixel);
+            }
+        }
+
+        private void EnsureScaledFonts(float scale)
+        {
+            // scale 量化到 0.001 比较：避免 float 抖动反复 dispose/重建
+            if (Math.Abs(scale - _cachedScale) < 0.001f && _scaledTypedFont != null) return;
+            DisposeScaledFonts();
+            float typedPx  = WidgetScaler.Pxf(TYPED_FONT_BASE_PX, scale);
+            float remainPx = WidgetScaler.Pxf(REMAIN_FONT_BASE_PX, scale);
+            float namePx   = WidgetScaler.Pxf(NAME_FONT_BASE_PX, scale);
+            float hitPx    = WidgetScaler.Pxf(HIT_FONT_BASE_PX, scale);
+            float hitTagPx = WidgetScaler.Pxf(HIT_TAG_FONT_BASE_PX, scale);
+            _scaledTypedFont  = new Font("Microsoft YaHei", typedPx, FontStyle.Bold, GraphicsUnit.Pixel);
+            _scaledRemainFont = new Font("Microsoft YaHei", remainPx, FontStyle.Regular, GraphicsUnit.Pixel);
+            _scaledNameFont   = new Font("Microsoft YaHei", namePx, FontStyle.Regular, GraphicsUnit.Pixel);
+            _scaledHitFont    = new Font("Microsoft YaHei", hitPx, FontStyle.Bold, GraphicsUnit.Pixel);
+            _scaledHitTagFont = new Font("Microsoft YaHei", hitTagPx, FontStyle.Regular, GraphicsUnit.Pixel);
+            _cachedScale = scale;
+        }
+
+        private void DisposeScaledFonts()
+        {
+            if (_scaledTypedFont != null)  { _scaledTypedFont.Dispose();  _scaledTypedFont = null; }
+            if (_scaledRemainFont != null) { _scaledRemainFont.Dispose(); _scaledRemainFont = null; }
+            if (_scaledNameFont != null)   { _scaledNameFont.Dispose();   _scaledNameFont = null; }
+            if (_scaledHitFont != null)    { _scaledHitFont.Dispose();    _scaledHitFont = null; }
+            if (_scaledHitTagFont != null) { _scaledHitTagFont.Dispose(); _scaledHitTagFont = null; }
+            _cachedScale = -1f;
+        }
+
         public event EventHandler BoundsOrVisibilityChanged;
         public event EventHandler RepaintRequested;
         public event EventHandler AnimationStateChanged;
@@ -252,11 +373,7 @@ namespace CF7Launcher.Guardian.Hud
 
             float scale = Scale;
             if (_widthDirty) RecomputeMeasuredWidthBase();
-            float typedFontPx  = WidgetScaler.Pxf(TYPED_FONT_BASE_PX, scale);
-            float remainFontPx = WidgetScaler.Pxf(REMAIN_FONT_BASE_PX, scale);
-            float nameFontPx   = WidgetScaler.Pxf(NAME_FONT_BASE_PX, scale);
-            float hitFontPx    = WidgetScaler.Pxf(HIT_FONT_BASE_PX, scale);
-            float hitTagFontPx = WidgetScaler.Pxf(HIT_TAG_FONT_BASE_PX, scale);
+            EnsureScaledFonts(scale);
             int inputPadX = WidgetScaler.Px(BAR_PADDING_X_BASE, scale);
             int hitPadX = WidgetScaler.Px(HIT_PADDING_X_BASE, scale);
             int borderPx = WidgetScaler.Px(BORDER_W_BASE, scale);
@@ -266,55 +383,53 @@ namespace CF7Launcher.Guardian.Hud
             if (mode == BarMode.Hit) borderColor = _hitIsDFA ? COLOR_BORDER_HIT_DFA : COLOR_BORDER_HIT_SYNC;
             else borderColor = COLOR_BORDER_INPUT;
 
-            using (Font typedFont  = new Font("Microsoft YaHei", typedFontPx, FontStyle.Bold, GraphicsUnit.Pixel))
-            using (Font remainFont = new Font("Microsoft YaHei", remainFontPx, FontStyle.Regular, GraphicsUnit.Pixel))
-            using (Font nameFont   = new Font("Microsoft YaHei", nameFontPx, FontStyle.Regular, GraphicsUnit.Pixel))
-            using (Font hitFont    = new Font("Microsoft YaHei", hitFontPx, FontStyle.Bold, GraphicsUnit.Pixel))
-            using (Font hitTagFont = new Font("Microsoft YaHei", hitTagFontPx, FontStyle.Regular, GraphicsUnit.Pixel))
-            using (StringFormat fmt = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center })
+            Font typedFont  = _scaledTypedFont;
+            Font remainFont = _scaledRemainFont;
+            Font nameFont   = _scaledNameFont;
+            Font hitFont    = _scaledHitFont;
+            Font hitTagFont = _scaledHitTagFont;
+            StringFormat fmt = FMT_INPUT_ALIGN;
+            float contentW = mode == BarMode.Hit
+                ? MeasureHitContentWidth(g, hitFont, hitTagFont, scale)
+                : MeasureInputContentWidth(g, typedFont, remainFont, nameFont, scale);
+            int padForMode = mode == BarMode.Hit ? hitPadX : inputPadX;
+            int barW = Math.Min(r.Width, Math.Max(1, (int)Math.Ceiling(contentW + padForMode * 2f + borderPx * 2f)));
+            int barH = WidgetScaler.Px(mode == BarMode.Hit ? HIT_BAR_H_BASE : INPUT_BAR_H_BASE, scale);
+            Rectangle barRect = new Rectangle(localX + Math.Max(0, (r.Width - barW) / 2), localY, barW, Math.Min(r.Height, barH));
+            float alpha = 1f;
+            if (mode == BarMode.Hit)
             {
-                float contentW = mode == BarMode.Hit
-                    ? MeasureHitContentWidth(g, hitFont, hitTagFont, scale)
-                    : MeasureInputContentWidth(g, typedFont, remainFont, nameFont, scale);
-                int padForMode = mode == BarMode.Hit ? hitPadX : inputPadX;
-                int barW = Math.Min(r.Width, Math.Max(1, (int)Math.Ceiling(contentW + padForMode * 2f + borderPx * 2f)));
-                int barH = WidgetScaler.Px(mode == BarMode.Hit ? HIT_BAR_H_BASE : INPUT_BAR_H_BASE, scale);
-                Rectangle barRect = new Rectangle(localX + Math.Max(0, (r.Width - barW) / 2), localY, barW, Math.Min(r.Height, barH));
-                float alpha = 1f;
+                float collapse = Clamp01((_hitElapsedMs - HIT_COLLAPSE_DELAY_MS) / (float)HIT_COLLAPSE_MS);
+                if (collapse > 0f)
+                {
+                    float eased = collapse * collapse;
+                    alpha = 1f - eased;
+                    int nextH = Math.Max(1, (int)Math.Round(barRect.Height * (1f - 0.9f * eased)));
+                    barRect = new Rectangle(barRect.X, barRect.Y + (barRect.Height - nextH) / 2, barRect.Width, nextH);
+                }
+            }
+            Rectangle contentRect = new Rectangle(
+                barRect.X + borderPx,
+                barRect.Y,
+                Math.Max(1, barRect.Width - borderPx * 2),
+                barRect.Height);
+            TraceLayoutIfChanged(mode, scale, r, barRect, contentRect, contentW, padForMode, borderPx);
+
+            DrawBottomRoundedBar(g, barRect, WidgetScaler.Px(mode == BarMode.Hit ? 6 : 5, scale), bgColor, borderColor, alpha);
+            GraphicsState clipState = g.Save();
+            try
+            {
+                g.SetClip(barRect);
                 if (mode == BarMode.Hit)
                 {
-                    float collapse = Clamp01((_hitElapsedMs - HIT_COLLAPSE_DELAY_MS) / (float)HIT_COLLAPSE_MS);
-                    if (collapse > 0f)
-                    {
-                        float eased = collapse * collapse;
-                        alpha = 1f - eased;
-                        int nextH = Math.Max(1, (int)Math.Round(barRect.Height * (1f - 0.9f * eased)));
-                        barRect = new Rectangle(barRect.X, barRect.Y + (barRect.Height - nextH) / 2, barRect.Width, nextH);
-                    }
+                    PaintHitSweep(g, barRect, _hitIsDFA ? COLOR_HIT_DFA : COLOR_HIT_SYNC, alpha);
+                    PaintHit(g, contentRect, hitPadX, hitFont, hitTagFont, fmt, scale, alpha);
                 }
-                Rectangle contentRect = new Rectangle(
-                    barRect.X + borderPx,
-                    barRect.Y,
-                    Math.Max(1, barRect.Width - borderPx * 2),
-                    barRect.Height);
-                TraceLayoutIfChanged(mode, scale, r, barRect, contentRect, contentW, padForMode, borderPx);
-
-                DrawBottomRoundedBar(g, barRect, WidgetScaler.Px(mode == BarMode.Hit ? 6 : 5, scale), bgColor, borderColor, alpha);
-                GraphicsState clipState = g.Save();
-                try
-                {
-                    g.SetClip(barRect);
-                    if (mode == BarMode.Hit)
-                    {
-                        PaintHitSweep(g, barRect, _hitIsDFA ? COLOR_HIT_DFA : COLOR_HIT_SYNC, alpha);
-                        PaintHit(g, contentRect, hitPadX, hitFont, hitTagFont, fmt, scale, alpha);
-                    }
-                    else if (mode == BarMode.Input) PaintInput(g, contentRect, inputPadX, typedFont, remainFont, nameFont, fmt, scale);
-                }
-                finally
-                {
-                    g.Restore(clipState);
-                }
+                else if (mode == BarMode.Input) PaintInput(g, contentRect, inputPadX, typedFont, remainFont, nameFont, fmt, scale);
+            }
+            finally
+            {
+                g.Restore(clipState);
             }
         }
 
@@ -476,11 +591,12 @@ namespace CF7Launcher.Guardian.Hud
             float cursorX = barRect.X + padX;
             float midY = barRect.Y + barRect.Height / 2f;
 
-            using (SolidBrush typedBrush  = new SolidBrush(COLOR_TYPED))
-            using (SolidBrush remainBrush = new SolidBrush(COLOR_REMAIN))
-            using (SolidBrush nameBrush   = new SolidBrush(COLOR_NAME))
-            using (SolidBrush nameBgBrush = new SolidBrush(COLOR_NAME_BG))
-            using (SolidBrush dividerBrush = new SolidBrush(COLOR_DIVIDER))
+            // P0 perf：复用静态 SolidBrush（colors 都是 const，无 alpha 动态调整需求）
+            SolidBrush typedBrush   = BR_TYPED;
+            SolidBrush remainBrush  = BR_REMAIN;
+            SolidBrush nameBrush    = BR_NAME;
+            SolidBrush nameBgBrush  = BR_NAME_BG;
+            SolidBrush dividerBrush = BR_DIVIDER;
             {
                 float flexGap = WidgetScaler.Pxf(FLEX_GAP_BASE, scale);
                 float nameMarginLeft = PxfAllowZero(NAME_MARGIN_LEFT_BASE, scale);
@@ -675,7 +791,8 @@ namespace CF7Launcher.Guardian.Hud
             VisualTextMetrics result = new VisualTextMetrics();
             if (string.IsNullOrEmpty(text)) return result;
 
-            using (StringFormat typographic = CreateTypographicFormat())
+            // P0 perf：复用静态 typographic format（线程安全：所有调用在 UI 线程）
+            StringFormat typographic = FMT_TYPOGRAPHIC;
             using (GraphicsPath path = new GraphicsPath())
             {
                 path.AddString(text, font.FontFamily, (int)font.Style, font.Size, PointF.Empty, typographic);
@@ -706,7 +823,8 @@ namespace CF7Launcher.Guardian.Hud
         private static void DrawPathText(Graphics g, string text, Font font, Brush brush, float visualLeft, float centerY)
         {
             if (string.IsNullOrEmpty(text)) return;
-            using (StringFormat typographic = CreateTypographicFormat())
+            // P0 perf：复用静态 typographic format（线程安全：所有调用在 UI 线程）
+            StringFormat typographic = FMT_TYPOGRAPHIC;
             using (GraphicsPath path = new GraphicsPath())
             {
                 path.AddString(text, font.FontFamily, (int)font.Style, font.Size, PointF.Empty, typographic);
@@ -744,7 +862,8 @@ namespace CF7Launcher.Guardian.Hud
             if (string.IsNullOrEmpty(text)) return SizeF.Empty;
             float w = 0f;
             float h = 0f;
-            using (StringFormat typographic = CreateTypographicFormat())
+            // P0 perf：复用静态 typographic format（线程安全：所有调用在 UI 线程）
+            StringFormat typographic = FMT_TYPOGRAPHIC;
             {
                 for (int i = 0; i < text.Length; i++)
                 {
@@ -766,7 +885,8 @@ namespace CF7Launcher.Guardian.Hud
         private static SizeF MeasureTypographicText(Graphics g, string text, Font font)
         {
             if (string.IsNullOrEmpty(text)) return SizeF.Empty;
-            using (StringFormat typographic = CreateTypographicFormat())
+            // P0 perf：复用静态 typographic format（线程安全：所有调用在 UI 线程）
+            StringFormat typographic = FMT_TYPOGRAPHIC;
             {
                 return g.MeasureString(text, font, PointF.Empty, typographic);
             }
@@ -775,7 +895,8 @@ namespace CF7Launcher.Guardian.Hud
         private static void DrawSpacedString(Graphics g, string text, Font font, Brush brush, float x, float y, float spacing, StringFormat fmt)
         {
             if (string.IsNullOrEmpty(text)) return;
-            using (StringFormat typographic = CreateTypographicFormat())
+            // P0 perf：复用静态 typographic format（线程安全：所有调用在 UI 线程）
+            StringFormat typographic = FMT_TYPOGRAPHIC;
             {
                 for (int i = 0; i < text.Length; i++)
                 {
@@ -796,8 +917,9 @@ namespace CF7Launcher.Guardian.Hud
                 g.TranslateTransform(x, y);
                 g.ScaleTransform(scale, scale);
                 using (SolidBrush brush = new SolidBrush(WithAlpha(color, alpha)))
-                using (StringFormat typographic = CreateTypographicFormat())
                 {
+                    // P0 perf：复用静态 typographic format（线程安全：所有调用在 UI 线程）
+                    StringFormat typographic = FMT_TYPOGRAPHIC;
                     g.DrawString(text, font, brush, 0f, 0f, typographic);
                 }
             }
@@ -805,15 +927,6 @@ namespace CF7Launcher.Guardian.Hud
             {
                 g.Restore(state);
             }
-        }
-
-        private static StringFormat CreateTypographicFormat()
-        {
-            StringFormat fmt = (StringFormat)StringFormat.GenericTypographic.Clone();
-            fmt.FormatFlags = fmt.FormatFlags | StringFormatFlags.MeasureTrailingSpaces;
-            fmt.Alignment = StringAlignment.Near;
-            fmt.LineAlignment = StringAlignment.Near;
-            return fmt;
         }
 
         private static Color WithAlpha(Color color, float alpha)
@@ -844,7 +957,7 @@ namespace CF7Launcher.Guardian.Hud
             string piece;
             if (changedKeys.Contains("s") && snapshot.TryGetValue("s", out piece))
             {
-                bool ready = TopRightToolsWidget.ParseUiBoolValue(piece);
+                bool ready = UiValueParser.ParseUiBoolValue(piece);
                 if (ready != _gameReady)
                 {
                     bool wasMounted = Visible;
@@ -1046,23 +1159,19 @@ namespace CF7Launcher.Guardian.Hud
             // 估算用一次性临时 Bitmap+Graphics（仅在文本变化时调用，频率低）
             try
             {
+                EnsureBaseFonts();
                 using (Bitmap b = new Bitmap(1, 1))
                 using (Graphics g = Graphics.FromImage(b))
-                using (Font typedFont  = new Font("Microsoft YaHei", TYPED_FONT_BASE_PX, FontStyle.Bold, GraphicsUnit.Pixel))
-                using (Font remainFont = new Font("Microsoft YaHei", REMAIN_FONT_BASE_PX, FontStyle.Regular, GraphicsUnit.Pixel))
-                using (Font nameFont   = new Font("Microsoft YaHei", NAME_FONT_BASE_PX, FontStyle.Regular, GraphicsUnit.Pixel))
-                using (Font hitFont    = new Font("Microsoft YaHei", HIT_FONT_BASE_PX, FontStyle.Bold, GraphicsUnit.Pixel))
-                using (Font hitTagFont = new Font("Microsoft YaHei", HIT_TAG_FONT_BASE_PX, FontStyle.Regular, GraphicsUnit.Pixel))
                 {
                     float w = 0f;
                     BarMode mode = CurrentMode;
                     if (mode == BarMode.Hit)
                     {
-                        w = MeasureHitContentWidth(g, hitFont, hitTagFont, 1f);
+                        w = MeasureHitContentWidth(g, _baseHitFont, _baseHitTagFont, 1f);
                     }
                     else if (mode == BarMode.Input)
                     {
-                        w = MeasureInputContentWidth(g, typedFont, remainFont, nameFont, 1f);
+                        w = MeasureInputContentWidth(g, _baseTypedFont, _baseRemainFont, _baseNameFont, 1f);
                     }
                     // 上面用基准字体测量（base px），结果直接落在设计坐标系，无需再除 Scale。
                     // ScreenBounds 取 _measuredWidthBase 后乘 Scale 得到实际像素；保持 base→scaled 单向转换。
@@ -1105,11 +1214,12 @@ namespace CF7Launcher.Guardian.Hud
 
             try
             {
+                EnsureBaseFonts();
+                Font typedFont = _baseTypedFont;
+                Font remainFont = _baseRemainFont;
+                Font nameFont = _baseNameFont;
                 using (Bitmap b = new Bitmap(1, 1))
                 using (Graphics g = Graphics.FromImage(b))
-                using (Font typedFont = new Font("Microsoft YaHei", TYPED_FONT_BASE_PX, FontStyle.Bold, GraphicsUnit.Pixel))
-                using (Font remainFont = new Font("Microsoft YaHei", REMAIN_FONT_BASE_PX, FontStyle.Regular, GraphicsUnit.Pixel))
-                using (Font nameFont = new Font("Microsoft YaHei", NAME_FONT_BASE_PX, FontStyle.Regular, GraphicsUnit.Pixel))
                 {
                     float scale = 1f;
                     float flexGap = WidgetScaler.Pxf(FLEX_GAP_BASE, scale);
@@ -1195,13 +1305,15 @@ namespace CF7Launcher.Guardian.Hud
 
             try
             {
+                // 测试探针：scale 可能与实例当前 _cachedScale 不同，使用临时局部 Font 集合而非 EnsureScaledFonts
+                // （后者会破坏实例 cache，下一次 Paint 还要重建）
                 using (Bitmap measureBitmap = new Bitmap(1, 1))
                 using (Graphics measureG = Graphics.FromImage(measureBitmap))
                 using (Font typedFont = new Font("Microsoft YaHei", WidgetScaler.Pxf(TYPED_FONT_BASE_PX, scale), FontStyle.Bold, GraphicsUnit.Pixel))
                 using (Font remainFont = new Font("Microsoft YaHei", WidgetScaler.Pxf(REMAIN_FONT_BASE_PX, scale), FontStyle.Regular, GraphicsUnit.Pixel))
                 using (Font nameFont = new Font("Microsoft YaHei", WidgetScaler.Pxf(NAME_FONT_BASE_PX, scale), FontStyle.Regular, GraphicsUnit.Pixel))
-                using (StringFormat fmt = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center })
                 {
+                    StringFormat fmt = FMT_INPUT_ALIGN;
                     float contentW = MeasureInputContentWidth(measureG, typedFont, remainFont, nameFont, scale);
                     int padX = WidgetScaler.Px(BAR_PADDING_X_BASE, scale);
                     int borderPx = WidgetScaler.Px(BORDER_W_BASE, scale);
@@ -1253,8 +1365,9 @@ namespace CF7Launcher.Guardian.Hud
 
             try
             {
-                using (Font hitFont = new Font("Microsoft YaHei", HIT_FONT_BASE_PX, FontStyle.Bold, GraphicsUnit.Pixel))
-                using (Font hitTagFont = new Font("Microsoft YaHei", HIT_TAG_FONT_BASE_PX, FontStyle.Regular, GraphicsUnit.Pixel))
+                EnsureBaseFonts();
+                Font hitFont = _baseHitFont;
+                Font hitTagFont = _baseHitTagFont;
                 {
                     string seq = _hitTyped ?? "";
                     string name = _hitName ?? "";

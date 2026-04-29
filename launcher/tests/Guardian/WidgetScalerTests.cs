@@ -40,13 +40,14 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void NotchToolbarWidget_ParseUiIntValue_HandlesAllForms()
+        public void UiValueParser_ParseUiIntValue_HandlesAllForms()
         {
-            Assert.Equal(0, NotchToolbarWidget.ParseUiIntValue(null));
-            Assert.Equal(0, NotchToolbarWidget.ParseUiIntValue(""));
-            Assert.Equal(14, NotchToolbarWidget.ParseUiIntValue("q:14"));
-            Assert.Equal(14, NotchToolbarWidget.ParseUiIntValue("14"));
-            Assert.Equal(0, NotchToolbarWidget.ParseUiIntValue("q:foo"));
+            // P2-5：原 NotchToolbarWidget.ParseUiIntValue 抽至 UiValueParser；fallback=0 行为等价
+            Assert.Equal(0, UiValueParser.ParseUiIntValue(null, 0));
+            Assert.Equal(0, UiValueParser.ParseUiIntValue("", 0));
+            Assert.Equal(14, UiValueParser.ParseUiIntValue("q:14", 0));
+            Assert.Equal(14, UiValueParser.ParseUiIntValue("14", 0));
+            Assert.Equal(0, UiValueParser.ParseUiIntValue("q:foo", 0));
         }
     }
 }

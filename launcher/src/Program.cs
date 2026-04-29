@@ -192,10 +192,12 @@ class Program
         {
             CF7Launcher.Audio.AudioEngine.Init(projectRoot);
         }
-        using (PerfTrace.Scope("audio.sfx_preload"))
-        {
-            CF7Launcher.Audio.AudioEngine.PreloadFromDirectories(projectRoot);
-        }
+        // P0 perf：SFX preload 异步化。主线程不再为 ~1.2s 文件 I/O 阻塞；
+        // preload 在后台 ThreadPool 跑（与 PerfTrace.Scope 不兼容，自带 audio.sfx_preload_done mark），
+        // socket 线程通过 ResolveSfxHandle 拿 handle，未完成期间返回 -1 = "id 不存在"行为，不会错位播音。
+        // Flash 在 t≈6s 才连接、reveal 在 t≈15s，1.2s 后台加载完全藏在等待窗口内。
+        CF7Launcher.Audio.AudioEngine.PreloadFromDirectoriesAsync(projectRoot);
+        PerfTrace.Mark("audio.sfx_preload_dispatched_async");
 
         // 默认音量（直接 P/Invoke，不依赖 Flash socket）
         // Flash 存档加载后会通过 setGlobalVolume/setBGMVolume 覆盖
@@ -413,9 +415,12 @@ class Program
             //   Currency / NotchToolbar / TopRightTools / MapHud / QuestNotice / JukeboxTitlebar 旧独立 widget 保留但默认不注册。
             // Phase 4 收尾：DoFullIdleSuspend 启用 → 进入 ~15pp DWM α 地板回收阶段。
             // 无 widget 时 NativeHud SW_HIDE，不影响 Phase 3 行为。
+            // P2-2 perf：catalog 异步加载（162 KB JSON 反序列化挪到后台）。
+            // 加载完成前 GetEntry 返回 null，widget 静默不渲染地图，无错位；
+            // ~30-80ms 的 JSON parse 全藏在 Flash 启动等待里。
             string mapHudJsonPath = Path.Combine(projectRoot, "launcher", "data", "map_hud_data.json");
             CF7Launcher.Guardian.Hud.MapHudDataCatalog mapCatalog =
-                CF7Launcher.Guardian.Hud.MapHudDataCatalog.LoadFromFile(mapHudJsonPath);
+                CF7Launcher.Guardian.Hud.MapHudDataCatalog.LoadFromFileAsync(mapHudJsonPath);
             // pause/expand 走两条独立路径：
             //   pause → webOverlay.ToggleBgmPause（与 HandleJukeboxMessage 共享 _bgmPaused 镜像，避免双权威源）
             //   expand → router JUKEBOX_EXPAND → OpenPanel("jukebox") (Phase 5：jukebox-panel.js 已注册 Panels.register)
@@ -444,19 +449,37 @@ class Program
             // 这样 widget 区域不会遮挡伤害数字与鼠标。
             if (hnOverlay != null) nativeHud.SetZOrderInsertAfter(hnOverlay.Handle);
 
-            // tee UiData：socket worker 既送 webOverlay 也送 nativeHud
-            // Phase 3+ widget 实化为 IUiDataConsumer 后才有意义；当前 nativeHud.HandleUiData 有 fast-path 直接 return（无 IUiDataConsumer）
+            // P1 perf：tee 路径单次 parse 后分发给 3 消费者。
+            // 旧版每条 raw 被三方各自 Split('|')；高频 socket / FrameTask 流下 ~3x 字符串数组分配。
+            // 共享 UiDataPacket 后只 split 一次。
+            WebOverlayForm capturedWeb = webOverlay;
+            NotchOverlay capturedNotch = notchOverlay;
+            NativeHudOverlay capturedHud2 = nativeHud;
             Action<string> uiDataTee = delegate(string raw)
             {
-                try { webOverlay.HandleUiData(raw); }
+                if (string.IsNullOrEmpty(raw)) return;
+                CF7Launcher.Guardian.Hud.UiDataPacket pkt = new CF7Launcher.Guardian.Hud.UiDataPacket(raw);
+                try { capturedWeb.HandleUiData(pkt); }
                 catch (Exception ex) { LogManager.Log("[Tee] web UiData throw: " + ex.Message); }
-                try { notchOverlay.HandleUiData(raw); }
+                try { capturedNotch.HandleUiData(pkt); }
                 catch (Exception ex) { LogManager.Log("[Tee] notch UiData throw: " + ex.Message); }
-                try { nativeHud.HandleUiData(raw); }
+                try { capturedHud2.HandleUiData(pkt); }
                 catch (Exception ex) { LogManager.Log("[Tee] hud UiData throw: " + ex.Message); }
             };
             socketServer.SetUiDataHandler(uiDataTee);
             frameTask.SetUiDataHandler(uiDataTee);
+
+            // P2-1 perf：后台预热 GDI+ 字体 / 字形栅格化 / silhouette PNG。
+            // 与 SFX preload / catalog async 并行，全部藏在 Flash 启动等待窗口（~4-5s）。
+            // 玩家首次看到 native UI 时所有冷启动开销已被吸收。
+            CF7Launcher.Guardian.Hud.NativeHudPrewarm.RunAsync(rightContext, comboWidget, mapCatalog);
+
+            // P2-3 perf：ULW 首帧预提交（1×1 透明）。让 DWM 把 NativeHud / HitNumber / Cursor
+            // 加入合成树 + per-pixel α 路径建立；玩家可见的第一次 commit 不再触发"新 layered window 合成"冷路径。
+            try { nativeHud.PreCommitTransparent(); } catch (Exception ex) { LogManager.Log("[NativeHud] PreCommit failed: " + ex.Message); }
+            try { if (hnOverlay != null) hnOverlay.PreCommitTransparent(); } catch (Exception ex) { LogManager.Log("[HitNumber] PreCommit failed: " + ex.Message); }
+            try { if (cursorOverlay != null) cursorOverlay.PreCommitTransparent(); } catch (Exception ex) { LogManager.Log("[Cursor] PreCommit failed: " + ex.Message); }
+
             LogManager.Log("[NativeHud] enabled (Phase 5.7: native notch + right context parity)");
             PerfTrace.Mark("native_hud.enabled");
         }

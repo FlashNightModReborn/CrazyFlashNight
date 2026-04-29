@@ -523,27 +523,30 @@ namespace CF7Launcher.Guardian
         public void HandleUiData(string rawData)
         {
             if (string.IsNullOrEmpty(rawData)) return;
+            HandleUiData(new UiDataPacket(rawData));
+        }
+
+        /// <summary>
+        /// P1 perf：tee 路径已解析的 packet 入口；与 string 入口语义等价。
+        /// 三方共享同一份 Pairs/LegacyType，避免 NotchOverlay/WebOverlay/NativeHud 各自再 Split('|')。
+        /// </summary>
+        public void HandleUiData(UiDataPacket pkt)
+        {
+            if (pkt == null || pkt.Pairs.Length == 0) return;
             // Fast path：无任何 UiData 消费者（KV / legacy）时整条路径都没意义。
-            // 这是 Phase 1 的 perf baseline 保护：tee 路径在 useNativeHud=true 时被 socket worker 高频调用，
-            // 不能因解析 + lock + BeginInvoke 污染 GPU/CPU 对比数据。
             if (_uiDataConsumerCount == 0 && _uiDataLegacyConsumerCount == 0) return;
 
-            // 旧版 (type|f1|f2) 格式优先探测：第一段无 ":" 且总段数 ≥ 2 → 走 legacy 路径，不写 snapshot
-            string legacyType;
-            string[] legacyFields;
-            if (UiDataPacketParser.TryParseLegacy(rawData, out legacyType, out legacyFields))
+            // 旧版 (type|f1|f2) 格式优先探测
+            if (pkt.IsLegacy)
             {
                 if (_uiDataLegacyConsumerCount == 0) return;
-                // 类型门控：仅有 widget 声明 LegacyTypes 包含此 type 时才 BeginInvoke。
-                // FrameTask 每帧推 combo|...，但 QuestNotice 只关心 task/announce → combo 包整段早 return，
-                // 不污染 UI 线程派发预算。
                 bool typeRegistered;
-                lock (_widgetsLock) { typeRegistered = _registeredLegacyTypes.Contains(legacyType); }
+                lock (_widgetsLock) { typeRegistered = _registeredLegacyTypes.Contains(pkt.LegacyType); }
                 if (!typeRegistered) return;
                 if (!this.IsHandleCreated) return;
                 PerfTrace.Counter("nativeHud.uiLegacy");
-                string capturedType = legacyType;
-                string[] capturedFields = legacyFields;
+                string capturedType = pkt.LegacyType;
+                string[] capturedFields = pkt.LegacyFields;
                 try
                 {
                     this.BeginInvoke(new Action(delegate
@@ -561,7 +564,7 @@ namespace CF7Launcher.Guardian
             Dictionary<string, string> snapshotCopy;
             lock (_uiDataLock)
             {
-                foreach (KeyValuePair<string, string> kv in UiDataPacketParser.Parse(rawData))
+                foreach (KeyValuePair<string, string> kv in UiDataPacketParser.ParseFrom(pkt))
                 {
                     string key = kv.Key;
                     string fullPiece = kv.Value;

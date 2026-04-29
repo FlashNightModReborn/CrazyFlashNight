@@ -81,16 +81,27 @@ namespace CF7Launcher.Audio
         private static volatile bool _shutdown;
 
         // === SFX handle cache ===
+        // 异步 preload 后 socket 线程会调 ResolveSfxHandle；preload 写、resolve 读，需要 lock
+        // （Dictionary 写入期间 reader 触发 hash bucket rehash 会读到坏指针）。
         private static readonly Dictionary<string, int> _sfxHandles = new Dictionary<string, int>();
+        private static readonly object _sfxHandlesLock = new object();
+        // preload 完成信号：sfx_play 在 preload 未完成时 fallback 到 ResolveSfxHandle = -1（行为与"id 不存在"一致），
+        // 玩家不会听到错位音效，preload 完成后自然恢复。
+        private static volatile bool _sfxPreloadComplete;
+
+        public static bool IsSfxPreloadComplete { get { return _sfxPreloadComplete; } }
 
         /// <summary>
         /// Resolve a SFX id (filename) to its native handle.
-        /// Returns -1 if not found.
+        /// Returns -1 if not found (含 preload 未完成期间).
         /// </summary>
         public static int ResolveSfxHandle(string id)
         {
-            int handle;
-            return _sfxHandles.TryGetValue(id, out handle) ? handle : -1;
+            lock (_sfxHandlesLock)
+            {
+                int handle;
+                return _sfxHandles.TryGetValue(id, out handle) ? handle : -1;
+            }
         }
 
         /// <summary>
@@ -146,12 +157,17 @@ namespace CF7Launcher.Audio
                     {
                         // If same id was already loaded from an earlier pack, unload it
                         int oldHandle;
-                        if (_sfxHandles.TryGetValue(filename, out oldHandle))
+                        bool wasOverride;
+                        lock (_sfxHandlesLock)
+                        {
+                            wasOverride = _sfxHandles.TryGetValue(filename, out oldHandle);
+                            _sfxHandles[filename] = handle;
+                        }
+                        if (wasOverride)
                         {
                             ma_bridge_sfx_unload(oldHandle);
                             overridden++;
                         }
-                        _sfxHandles[filename] = handle;
                         loaded++;
                     }
                     else
@@ -165,11 +181,33 @@ namespace CF7Launcher.Audio
                 }
             }
 
+            _sfxPreloadComplete = true;
             LogManager.Log("[Audio] SFX preload: " + loaded + " loaded, " + failed + " failed, "
                 + overridden + " overridden (scanned " + SFX_PACK_ORDER.Length + " packs)");
             PerfTrace.Mark("audio.sfx_preload_done",
                 "loaded=" + loaded + " failed=" + failed + " overridden=" + overridden);
             return loaded;
+        }
+
+        /// <summary>
+        /// 异步 preload 入口：fire-and-forget 后台线程加载 SFX。
+        /// 主线程不阻塞，UI 立即可见；preload 期间 sfx_play 走 ResolveSfxHandle = -1 fallback（与"id 不存在"等价，
+        /// 不会播错音效）。preload 完成 ~1.2s 后自然就绪。
+        /// </summary>
+        public static void PreloadFromDirectoriesAsync(string projectRoot)
+        {
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate(object state)
+            {
+                try
+                {
+                    PreloadFromDirectories((string)state);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[Audio] async preload threw: " + ex.Message);
+                    PerfTrace.Mark("audio.sfx_preload_failed", ex.Message);
+                }
+            }, projectRoot);
         }
 
         /// <summary>
@@ -179,7 +217,7 @@ namespace CF7Launcher.Audio
         {
             if (_shutdown) return;
             _shutdown = true;
-            _sfxHandles.Clear();
+            lock (_sfxHandlesLock) { _sfxHandles.Clear(); }
             ma_bridge_shutdown();
             LogManager.Log("[Audio] Engine shutdown");
         }

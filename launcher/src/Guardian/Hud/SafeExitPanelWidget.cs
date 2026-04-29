@@ -264,7 +264,7 @@ namespace CF7Launcher.Guardian.Hud
             string piece;
             if (changedKeys.Contains("s") && snapshot.TryGetValue("s", out piece))
             {
-                bool ready = TopRightToolsWidget.ParseUiBoolValue(piece);
+                bool ready = UiValueParser.ParseUiBoolValue(piece);
                 if (ready != _gameReady)
                 {
                     _gameReady = ready;
@@ -276,7 +276,7 @@ namespace CF7Launcher.Guardian.Hud
             {
                 // sv 是通用存盘事件（自动存盘 / 商店关闭 / 升级），仅更新内部状态。
                 // 不在这里自动 _armed=true，否则普通存盘也会拉起面板（见 class doc）。
-                int sv = NotchToolbarWidget.ParseUiIntValue(piece);
+                int sv = UiValueParser.ParseUiIntValue(piece, 0);
                 SaveState next = _state;
                 if (sv == 1) next = SaveState.Saving;
                 else if (sv == 2) next = SaveState.Done;

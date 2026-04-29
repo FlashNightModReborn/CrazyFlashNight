@@ -354,7 +354,7 @@ namespace CF7Launcher.Guardian.Hud
             string piece;
             if (changedKeys.Contains("s") && snapshot.TryGetValue("s", out piece))
             {
-                bool ready = TopRightToolsWidget.ParseUiBoolValue(piece);
+                bool ready = UiValueParser.ParseUiBoolValue(piece);
                 if (ready != _gameReady) { _gameReady = ready; dirty = true; }
             }
             if (changedKeys.Contains("mm") && snapshot.TryGetValue("mm", out piece))
@@ -505,6 +505,16 @@ namespace CF7Launcher.Guardian.Hud
             for (int i = 0; i < visual.HotspotIds.Count; i++)
                 if (visual.HotspotIds[i] == currentId) return true;
             return false;
+        }
+
+        /// <summary>
+        /// P2-1 prewarm 入口：后台线程预加载 silhouette PNG 进 AssetCache。
+        /// 同步路径 GetAssetImage 走相同 lock；预加载后玩家首次打开 map 时直接命中。
+        /// </summary>
+        public static void PrewarmAsset(string assetUrl)
+        {
+            try { GetAssetImage(assetUrl); }
+            catch (Exception ex) { LogManager.Log("[MapHud] PrewarmAsset failed: " + (assetUrl ?? "<null>") + " ex=" + ex.Message); }
         }
 
         private static Image GetAssetImage(string assetUrl)

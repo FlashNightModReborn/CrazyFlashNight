@@ -243,7 +243,7 @@ namespace CF7Launcher.Tests.Guardian
         [InlineData(null, 0)]
         public void ParseSv_PrefixedAndBare(string input, int expected)
         {
-            Assert.Equal(expected, NotchToolbarWidget.ParseUiIntValue(input));
+            Assert.Equal(expected, UiValueParser.ParseUiIntValue(input, 0));
         }
     }
 }

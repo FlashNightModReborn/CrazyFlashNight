@@ -110,6 +110,145 @@ namespace CF7Launcher.Guardian.Hud
         private HitInfo _hover;
         private HitInfo _down;
 
+        // ── P0 perf：GDI+ 资源静态/实例缓存 ──
+        // 旧版 PaintTools / PaintMapLabel / PaintQuestRow / PaintNotice / PaintJukebox 各自 new 5+ 个
+        // SolidBrush + Pen + Font + StringFormat 每帧；30Hz 下整 widget 触发数百个 GDI+ 对象创建。
+        // 静态化后：
+        //   - 颜色 const 的 SolidBrush / Pen 进程级共享（不 dispose）
+        //   - StringFormat 4 种 shape 静态共享
+        //   - Font 实例缓存按 (family,size,style) 三元组复用，scale 变化时整体重建
+        //
+        // hover/theme-color 分支的 brush 仍按需分配（频率低且需要 alpha/color 注入）。
+
+        // 颜色常量
+        private static readonly Color C_TOOLS_BG          = Color.FromArgb(209, 24, 24, 26);
+        private static readonly Color C_TOOLS_BG_HOVER    = Color.FromArgb(229, 60, 60, 64);
+        private static readonly Color C_TOOLS_BG_PAUSED   = Color.FromArgb(229, 80, 20, 20);
+        private static readonly Color C_TOOLS_FG          = Color.FromArgb(178, 255, 255, 255);
+        private static readonly Color C_TOOLS_FG_HOVER    = Color.White;
+        private static readonly Color C_TOOLS_FG_PAUSED   = Color.FromArgb(255, 255, 102, 102);
+        private static readonly Color C_BORDER_FAINT      = Color.FromArgb(31, 255, 255, 255);
+        private static readonly Color C_BORDER_NOTICE     = Color.FromArgb(36, 255, 255, 255);
+        private static readonly Color C_CTX_BG            = Color.FromArgb(196, 20, 22, 24);
+        private static readonly Color C_QUEST_BG          = Color.FromArgb(214, 24, 24, 26);
+        private static readonly Color C_QUEST_BG_HOVER    = Color.FromArgb(232, 44, 48, 52);
+        private static readonly Color C_QUEST_FG          = Color.FromArgb(205, 235, 238, 240);
+        private static readonly Color C_QUEST_FG_DISABLED = Color.FromArgb(105, 235, 238, 240);
+        private static readonly Color C_JUKE_BG           = Color.FromArgb(209, 24, 24, 26);
+        private static readonly Color C_JUKE_BTN_HOVER    = Color.FromArgb(229, 60, 60, 64);
+        private static readonly Color C_JUKE_BTN_IDLE     = Color.FromArgb(209, 16, 16, 18);
+        private static readonly Color C_JUKE_FG_HOVER     = Color.White;
+        private static readonly Color C_JUKE_FG_BGM       = Color.FromArgb(229, 102, 204, 255);
+        private static readonly Color C_JUKE_FG_NOBGM     = Color.FromArgb(102, 255, 255, 255);
+        private static readonly Color C_JUKE_FG_DEFAULT   = Color.FromArgb(178, 255, 255, 255);
+        private static readonly Color C_JUKE_TITLE_NOBGM  = Color.FromArgb(76, 255, 255, 255);
+        private static readonly Color C_JUKE_TITLE_BGM    = Color.FromArgb(178, 255, 255, 255);
+        private static readonly Color C_LABEL_TEXT        = Color.FromArgb(238, 246, 248, 250);
+
+        // 静态 SolidBrush（非动态 alpha/color；进程级共享）
+        private static readonly SolidBrush BR_TOOLS_BG          = new SolidBrush(C_TOOLS_BG);
+        private static readonly SolidBrush BR_TOOLS_BG_HOVER    = new SolidBrush(C_TOOLS_BG_HOVER);
+        private static readonly SolidBrush BR_TOOLS_BG_PAUSED   = new SolidBrush(C_TOOLS_BG_PAUSED);
+        private static readonly SolidBrush BR_TOOLS_FG          = new SolidBrush(C_TOOLS_FG);
+        private static readonly SolidBrush BR_TOOLS_FG_HOVER    = new SolidBrush(C_TOOLS_FG_HOVER);
+        private static readonly SolidBrush BR_TOOLS_FG_PAUSED   = new SolidBrush(C_TOOLS_FG_PAUSED);
+        private static readonly SolidBrush BR_CTX_BG            = new SolidBrush(C_CTX_BG);
+        private static readonly SolidBrush BR_QUEST_BG          = new SolidBrush(C_QUEST_BG);
+        private static readonly SolidBrush BR_QUEST_BG_HOVER    = new SolidBrush(C_QUEST_BG_HOVER);
+        private static readonly SolidBrush BR_QUEST_FG          = new SolidBrush(C_QUEST_FG);
+        private static readonly SolidBrush BR_QUEST_FG_DISABLED = new SolidBrush(C_QUEST_FG_DISABLED);
+        private static readonly SolidBrush BR_JUKE_BG           = new SolidBrush(C_JUKE_BG);
+        private static readonly SolidBrush BR_JUKE_BTN_HOVER    = new SolidBrush(C_JUKE_BTN_HOVER);
+        private static readonly SolidBrush BR_JUKE_BTN_IDLE     = new SolidBrush(C_JUKE_BTN_IDLE);
+        private static readonly SolidBrush BR_JUKE_FG_HOVER     = new SolidBrush(C_JUKE_FG_HOVER);
+        private static readonly SolidBrush BR_JUKE_FG_BGM       = new SolidBrush(C_JUKE_FG_BGM);
+        private static readonly SolidBrush BR_JUKE_FG_NOBGM     = new SolidBrush(C_JUKE_FG_NOBGM);
+        private static readonly SolidBrush BR_JUKE_FG_DEFAULT   = new SolidBrush(C_JUKE_FG_DEFAULT);
+        private static readonly SolidBrush BR_JUKE_TITLE_NOBGM  = new SolidBrush(C_JUKE_TITLE_NOBGM);
+        private static readonly SolidBrush BR_JUKE_TITLE_BGM    = new SolidBrush(C_JUKE_TITLE_BGM);
+        private static readonly SolidBrush BR_LABEL_TEXT        = new SolidBrush(C_LABEL_TEXT);
+
+        // 静态 Pen（线宽默认 1px；不动态色彩）
+        private static readonly Pen PEN_BORDER_FAINT  = new Pen(C_BORDER_FAINT);
+        private static readonly Pen PEN_BORDER_NOTICE = new Pen(C_BORDER_NOTICE);
+
+        // 静态 StringFormat（共享；GDI+ 文档允许多线程读，但本项目 paint 都是 UI 线程）
+        private static readonly StringFormat FMT_CENTER       = MakeFmt(StringAlignment.Center, StringAlignment.Center, StringFormatFlags.NoClip, StringTrimming.None);
+        private static readonly StringFormat FMT_CENTER_ELLIPSIS = MakeFmt(StringAlignment.Center, StringAlignment.Center, StringFormatFlags.NoClip, StringTrimming.EllipsisCharacter);
+        private static readonly StringFormat FMT_NEAR_NOWRAP_ELLIPSIS = MakeFmt(StringAlignment.Near, StringAlignment.Center, StringFormatFlags.NoWrap, StringTrimming.EllipsisCharacter);
+
+        private static StringFormat MakeFmt(StringAlignment h, StringAlignment v, StringFormatFlags flags, StringTrimming trim)
+        {
+            StringFormat f = new StringFormat(flags);
+            f.Alignment = h;
+            f.LineAlignment = v;
+            f.Trimming = trim;
+            return f;
+        }
+
+        // 实例 Font 缓存：scale 变化时整体重建（5 个不同 family/size/style）
+        private float _cachedFontScale = -1f;
+        private Font _fontTools15Bold;        // PaintTools "Segoe UI Symbol" 15 Bold
+        private Font _fontJukeIcon12;         // DrawJukeboxPause/Expand "Segoe UI Symbol" 12 Regular
+        private Font _fontMapLabel115Bold;    // PaintMapLabel "Microsoft YaHei" 11.5 Bold
+        private Font _fontQuest12;            // PaintQuestRow "Microsoft YaHei" 12 Regular
+        private Font _fontNoticeJuke11;       // PaintNotice & DrawJukeboxTitle "Microsoft YaHei" 11 Regular
+
+        /// <summary>
+        /// P2-1 prewarm 入口：在玩家看到 UI 之前触发 GDI+ 资源 + 字体 + 字形 cache。
+        /// 与 Paint 路径共用 EnsureFonts；外加一次 DrawString 让 ClearType glyph cache 命中常见字符。
+        /// </summary>
+        public void PrewarmGdi()
+        {
+            try
+            {
+                // 触发静态 cctor：访问 BR_TOOLS_BG 让 21 brush + 2 pen + 3 StringFormat 即时构造
+                System.Drawing.Brush touch = BR_TOOLS_BG;
+                if (touch == null) return;
+                EnsureFonts(1.0f);
+                using (System.Drawing.Bitmap warm = new System.Drawing.Bitmap(128, 64, System.Drawing.Imaging.PixelFormat.Format32bppPArgb))
+                using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(warm))
+                {
+                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+                    // 覆盖 RightContext 全部已知字符：toolbar 图标 + 任务行 + jukebox + notice
+                    string[] samples = {
+                        "⚙ \U0001F527 Ⅱ ▶ ? × ▾ ▸ ☰ ▼ ➤",
+                        "地图 装备 任务 未播放 存盘中 存盘成功 取消 退出",
+                        "0123456789"
+                    };
+                    g.DrawString(samples[0], _fontTools15Bold, BR_TOOLS_FG, 0f, 0f);
+                    g.DrawString(samples[1], _fontQuest12, BR_QUEST_FG, 0f, 16f);
+                    g.DrawString(samples[1], _fontNoticeJuke11, BR_JUKE_TITLE_BGM, 0f, 32f);
+                    g.DrawString(samples[1], _fontMapLabel115Bold, BR_LABEL_TEXT, 0f, 48f);
+                    g.DrawString(samples[2], _fontJukeIcon12, BR_JUKE_FG_DEFAULT, 0f, 60f);
+                }
+            }
+            catch (Exception ex) { LogManager.Log("[RightContextWidget] PrewarmGdi failed: " + ex.Message); }
+        }
+
+        private void EnsureFonts(float scale)
+        {
+            if (Math.Abs(scale - _cachedFontScale) < 0.001f && _fontTools15Bold != null) return;
+            DisposeFonts();
+            _fontTools15Bold     = new Font("Segoe UI Symbol", WidgetScaler.Pxf(15f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
+            _fontJukeIcon12      = new Font("Segoe UI Symbol", WidgetScaler.Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
+            _fontMapLabel115Bold = new Font("Microsoft YaHei", WidgetScaler.Pxf(11.5f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
+            _fontQuest12         = new Font("Microsoft YaHei", WidgetScaler.Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
+            _fontNoticeJuke11    = new Font("Microsoft YaHei", WidgetScaler.Pxf(11f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
+            _cachedFontScale = scale;
+        }
+
+        private void DisposeFonts()
+        {
+            if (_fontTools15Bold != null)     { _fontTools15Bold.Dispose();     _fontTools15Bold = null; }
+            if (_fontJukeIcon12 != null)      { _fontJukeIcon12.Dispose();      _fontJukeIcon12 = null; }
+            if (_fontMapLabel115Bold != null) { _fontMapLabel115Bold.Dispose(); _fontMapLabel115Bold = null; }
+            if (_fontQuest12 != null)         { _fontQuest12.Dispose();         _fontQuest12 = null; }
+            if (_fontNoticeJuke11 != null)    { _fontNoticeJuke11.Dispose();    _fontNoticeJuke11 = null; }
+            _cachedFontScale = -1f;
+        }
+
         public event EventHandler BoundsOrVisibilityChanged;
         public event EventHandler RepaintRequested;
         public event EventHandler AnimationStateChanged;
@@ -279,6 +418,8 @@ namespace CF7Launcher.Guardian.Hud
             notice.Offset(-hudOrigin.X, -hudOrigin.Y);
             jukebox.Offset(-hudOrigin.X, -hudOrigin.Y);
 
+            EnsureFonts(scale);
+
             SmoothingMode prevSmooth = g.SmoothingMode;
             TextRenderingHint prevHint = g.TextRenderingHint;
             g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -304,43 +445,33 @@ namespace CF7Launcher.Guardian.Hud
             if (r.Width <= 0 || r.Height <= 0) return;
             int btnW = WidgetScaler.Px(RightHudLayout.ToolButtonWidthBase, scale);
             string[] labels = _paused ? TOOL_LABELS_PAUSED : TOOL_LABELS_DEFAULT;
-            using (SolidBrush bg = new SolidBrush(Color.FromArgb(209, 24, 24, 26)))
-            using (SolidBrush bgHover = new SolidBrush(Color.FromArgb(229, 60, 60, 64)))
-            using (SolidBrush bgPaused = new SolidBrush(Color.FromArgb(229, 80, 20, 20)))
-            using (SolidBrush fg = new SolidBrush(Color.FromArgb(178, 255, 255, 255)))
-            using (SolidBrush fgHover = new SolidBrush(Color.White))
-            using (SolidBrush fgPaused = new SolidBrush(Color.FromArgb(255, 255, 102, 102)))
-            using (Pen border = new Pen(Color.FromArgb(31, 255, 255, 255)))
-            using (Font font = new Font("Segoe UI Symbol", WidgetScaler.Pxf(15f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
-            using (StringFormat fmt = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+            // P0 perf：复用静态 brush/pen/font/fmt
+            Font font = _fontTools15Bold;
+            StringFormat fmt = FMT_CENTER;
+            Pen border = PEN_BORDER_FAINT;
+            for (int i = 0; i < TOOL_KEYS.Length; i++)
             {
-                for (int i = 0; i < TOOL_KEYS.Length; i++)
-                {
-                    int x = r.X + i * btnW;
-                    int w = (i == TOOL_KEYS.Length - 1) ? r.Right - x : btnW;
-                    Rectangle btn = new Rectangle(x, r.Y, w, r.Height);
-                    bool hover = _hover.Kind == HitKind.Tool && _hover.Index == i;
-                    bool paused = _paused && i == IDX_PAUSE;
-                    Brush bgBrush = paused ? bgPaused : (hover ? bgHover : (Brush)bg);
-                    Brush fgBrush = paused ? fgPaused : (hover ? fgHover : (Brush)fg);
-                    g.FillRectangle(bgBrush, btn);
-                    g.DrawLine(border, btn.X, btn.Bottom - 1, btn.Right - 1, btn.Bottom - 1);
-                    if (i == 0) g.DrawLine(border, btn.X, btn.Y, btn.X, btn.Bottom - 1);
-                    if (i == TOOL_KEYS.Length - 1) g.DrawLine(border, btn.Right - 1, btn.Y, btn.Right - 1, btn.Bottom - 1);
-                    g.DrawString(labels[i], font, fgBrush, btn, fmt);
-                }
+                int x = r.X + i * btnW;
+                int w = (i == TOOL_KEYS.Length - 1) ? r.Right - x : btnW;
+                Rectangle btn = new Rectangle(x, r.Y, w, r.Height);
+                bool hover = _hover.Kind == HitKind.Tool && _hover.Index == i;
+                bool paused = _paused && i == IDX_PAUSE;
+                Brush bgBrush = paused ? BR_TOOLS_BG_PAUSED : (hover ? BR_TOOLS_BG_HOVER : (Brush)BR_TOOLS_BG);
+                Brush fgBrush = paused ? BR_TOOLS_FG_PAUSED : (hover ? BR_TOOLS_FG_HOVER : (Brush)BR_TOOLS_FG);
+                g.FillRectangle(bgBrush, btn);
+                g.DrawLine(border, btn.X, btn.Bottom - 1, btn.Right - 1, btn.Bottom - 1);
+                if (i == 0) g.DrawLine(border, btn.X, btn.Y, btn.X, btn.Bottom - 1);
+                if (i == TOOL_KEYS.Length - 1) g.DrawLine(border, btn.Right - 1, btn.Y, btn.Right - 1, btn.Bottom - 1);
+                g.DrawString(labels[i], font, fgBrush, btn, fmt);
             }
         }
 
         private void PaintContextBackground(Graphics g, Rectangle r)
         {
             if (r.Width <= 0 || r.Height <= 0) return;
-            using (SolidBrush bg = new SolidBrush(Color.FromArgb(196, 20, 22, 24)))
-            using (Pen border = new Pen(Color.FromArgb(36, 255, 255, 255)))
-            {
-                g.FillRectangle(bg, r);
-                g.DrawRectangle(border, r.X, r.Y, r.Width - 1, r.Height - 1);
-            }
+            // P0 perf：静态 brush + pen
+            g.FillRectangle(BR_CTX_BG, r);
+            g.DrawRectangle(PEN_BORDER_NOTICE, r.X, r.Y, r.Width - 1, r.Height - 1);
         }
 
         private void PaintMapCard(Graphics g, Rectangle card, float scale)
@@ -388,25 +519,23 @@ namespace CF7Launcher.Guardian.Hud
             int padY = WidgetScaler.Px(MAP_LABEL_PAD_Y_BASE, scale);
             int margin = WidgetScaler.Px(6, scale);
             int maxW = Math.Max(1, card.Width - margin * 2);
-            using (Font font = new Font("Microsoft YaHei", WidgetScaler.Pxf(11.5f, scale), FontStyle.Bold, GraphicsUnit.Pixel))
-            using (StringFormat fmt = new StringFormat(StringFormatFlags.NoWrap)
-                   { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter })
+            // P0 perf：font + fmt + textBrush 复用静态/缓存；
+            // pb/pe 仍按需 new（依赖 theme.StageA/StageB/Accent，theme 可能因 hotspot 改变而切换）
+            Font font = _fontMapLabel115Bold;
+            StringFormat fmt = FMT_NEAR_NOWRAP_ELLIPSIS;
+            SizeF measured = g.MeasureString(text, font, maxW, fmt);
+            int pillW = Math.Min(maxW, (int)Math.Ceiling(measured.Width) + padX * 2);
+            int pillH = (int)Math.Ceiling(measured.Height) + padY * 2;
+            Rectangle pill = new Rectangle(card.X + margin, card.Y + margin, pillW, pillH);
+            using (GraphicsPath pp = MakeRoundedRect(pill, pillH / 2))
+            using (LinearGradientBrush pb = new LinearGradientBrush(pill,
+                Color.FromArgb(196, theme.StageA), Color.FromArgb(232, theme.StageB), LinearGradientMode.Vertical))
+            using (Pen pe = new Pen(Color.FromArgb(96, theme.Accent)))
             {
-                SizeF measured = g.MeasureString(text, font, maxW, fmt);
-                int pillW = Math.Min(maxW, (int)Math.Ceiling(measured.Width) + padX * 2);
-                int pillH = (int)Math.Ceiling(measured.Height) + padY * 2;
-                Rectangle pill = new Rectangle(card.X + margin, card.Y + margin, pillW, pillH);
-                using (GraphicsPath pp = MakeRoundedRect(pill, pillH / 2))
-                using (LinearGradientBrush pb = new LinearGradientBrush(pill,
-                    Color.FromArgb(196, theme.StageA), Color.FromArgb(232, theme.StageB), LinearGradientMode.Vertical))
-                using (Pen pe = new Pen(Color.FromArgb(96, theme.Accent)))
-                using (SolidBrush textBrush = new SolidBrush(Color.FromArgb(238, 246, 248, 250)))
-                {
-                    g.FillPath(pb, pp);
-                    g.DrawPath(pe, pp);
-                    Rectangle textRect = new Rectangle(pill.X + padX, pill.Y, Math.Max(1, pill.Width - padX * 2), pill.Height);
-                    g.DrawString(text, font, textBrush, textRect, fmt);
-                }
+                g.FillPath(pb, pp);
+                g.DrawPath(pe, pp);
+                Rectangle textRect = new Rectangle(pill.X + padX, pill.Y, Math.Max(1, pill.Width - padX * 2), pill.Height);
+                g.DrawString(text, font, BR_LABEL_TEXT, textRect, fmt);
             }
         }
 
@@ -416,28 +545,23 @@ namespace CF7Launcher.Guardian.Hud
             string[] labels = { (_mapCollapsed ? "▸ 地图" : "▾ 地图"), "☰ 装备", "☰ 任务" };
             HitKind[] kinds = { HitKind.QuestMap, HitKind.QuestEquip, HitKind.QuestTask };
             int colW = r.Width / 3;
-            using (SolidBrush bg = new SolidBrush(Color.FromArgb(214, 24, 24, 26)))
-            using (SolidBrush bgHover = new SolidBrush(Color.FromArgb(232, 44, 48, 52)))
-            using (SolidBrush fg = new SolidBrush(Color.FromArgb(205, 235, 238, 240)))
-            using (SolidBrush fgDisabled = new SolidBrush(Color.FromArgb(105, 235, 238, 240)))
-            using (Pen border = new Pen(Color.FromArgb(31, 255, 255, 255)))
-            using (Font font = new Font("Microsoft YaHei", WidgetScaler.Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
-            using (StringFormat fmt = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter })
+            // P0 perf：全部复用静态 brush/pen + 缓存 font + 静态 fmt
+            Font font = _fontQuest12;
+            StringFormat fmt = FMT_CENTER_ELLIPSIS;
+            Pen border = PEN_BORDER_FAINT;
+            for (int i = 0; i < labels.Length; i++)
             {
-                for (int i = 0; i < labels.Length; i++)
-                {
-                    int x = r.X + i * colW;
-                    int w = (i == labels.Length - 1) ? r.Right - x : colW;
-                    Rectangle cell = new Rectangle(x, r.Y, w, r.Height);
-                    bool hover = _hover.Kind == kinds[i];
-                    g.FillRectangle(hover ? bgHover : bg, cell);
-                    if (i > 0) g.DrawLine(border, cell.X, cell.Y + 3, cell.X, cell.Bottom - 4);
-                    bool dimMap = i == 0 && !MapAvailable;
-                    g.DrawString(labels[i], font, dimMap ? fgDisabled : (Brush)fg, cell, fmt);
-                }
-                g.DrawLine(border, r.X, r.Y, r.Right - 1, r.Y);
-                g.DrawLine(border, r.X, r.Bottom - 1, r.Right - 1, r.Bottom - 1);
+                int x = r.X + i * colW;
+                int w = (i == labels.Length - 1) ? r.Right - x : colW;
+                Rectangle cell = new Rectangle(x, r.Y, w, r.Height);
+                bool hover = _hover.Kind == kinds[i];
+                g.FillRectangle(hover ? BR_QUEST_BG_HOVER : (Brush)BR_QUEST_BG, cell);
+                if (i > 0) g.DrawLine(border, cell.X, cell.Y + 3, cell.X, cell.Bottom - 4);
+                bool dimMap = i == 0 && !MapAvailable;
+                g.DrawString(labels[i], font, dimMap ? BR_QUEST_FG_DISABLED : (Brush)BR_QUEST_FG, cell, fmt);
             }
+            g.DrawLine(border, r.X, r.Y, r.Right - 1, r.Y);
+            g.DrawLine(border, r.X, r.Bottom - 1, r.Right - 1, r.Bottom - 1);
         }
 
         private void PaintNotice(Graphics g, Rectangle r, float scale)
@@ -475,13 +599,13 @@ namespace CF7Launcher.Guardian.Hud
                 ? Color.FromArgb(229, 255, 220, 150)
                 : (hover ? Color.FromArgb(255, 255, 215, 110) : Color.FromArgb(229, 255, 200, 80));
 
-            using (Pen sep = new Pen(Color.FromArgb(31, 255, 255, 255)))
-            using (Font font = new Font("Microsoft YaHei", WidgetScaler.Pxf(11f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
+            // P0 perf：font/sep/center/textFmt 复用；iconBrush/textBrush 颜色按 hover/mode 动态选，仍按需 new
+            Font font = _fontNoticeJuke11;
+            Pen sep = PEN_BORDER_FAINT;
+            StringFormat center = FMT_CENTER;
+            StringFormat textFmt = FMT_NEAR_NOWRAP_ELLIPSIS;
             using (SolidBrush iconBrush = new SolidBrush(iconColor))
             using (SolidBrush textBrush = new SolidBrush(textColor))
-            using (StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-            using (StringFormat textFmt = new StringFormat(StringFormatFlags.NoWrap)
-                   { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter })
             {
                 g.DrawLine(sep, iconRect.Right, r.Y + 2, iconRect.Right, r.Bottom - 3);
                 g.DrawString(_noticeIcon, font, iconBrush, iconRect, center);
@@ -510,19 +634,17 @@ namespace CF7Launcher.Guardian.Hud
             Rectangle expand = new Rectangle(r.Right - expandW, r.Y, expandW, r.Height);
             Rectangle title = new Rectangle(pause.Right, r.Y, Math.Max(1, r.Width - pauseW - expandW), r.Height);
 
-            using (SolidBrush bg = new SolidBrush(Color.FromArgb(209, 24, 24, 26)))
-                g.FillRectangle(bg, r);
+            // P0 perf：复用静态 brush + pen
+            g.FillRectangle(BR_JUKE_BG, r);
             if (!string.IsNullOrEmpty(_bgmTitle) && _peakLen > 0 && !_disableVisualizers)
                 DrawMiniWave(g, title);
             DrawJukeboxPause(g, pause, scale);
             DrawJukeboxTitle(g, title, titlePad, scale);
             DrawJukeboxExpand(g, expand, scale);
-            using (Pen border = new Pen(Color.FromArgb(31, 255, 255, 255)))
-            {
-                g.DrawLine(border, pause.Right, r.Y + 2, pause.Right, r.Bottom - 3);
-                g.DrawLine(border, expand.X, r.Y + 2, expand.X, r.Bottom - 3);
-                g.DrawLine(border, r.X, r.Bottom - 1, r.Right - 1, r.Bottom - 1);
-            }
+            Pen border = PEN_BORDER_FAINT;
+            g.DrawLine(border, pause.Right, r.Y + 2, pause.Right, r.Bottom - 3);
+            g.DrawLine(border, expand.X, r.Y + 2, expand.X, r.Bottom - 3);
+            g.DrawLine(border, r.X, r.Bottom - 1, r.Right - 1, r.Bottom - 1);
         }
 
         private void DrawMiniWave(Graphics g, Rectangle area)
@@ -556,44 +678,35 @@ namespace CF7Launcher.Guardian.Hud
         {
             bool hover = _hover.Kind == HitKind.JukeboxPause;
             bool hasBgm = !string.IsNullOrEmpty(_bgmTitle);
-            Color bg = hover && hasBgm ? Color.FromArgb(229, 60, 60, 64) : Color.FromArgb(209, 16, 16, 18);
-            Color fg = hasBgm ? (hover ? Color.White : Color.FromArgb(229, 102, 204, 255)) : Color.FromArgb(102, 255, 255, 255);
+            // P0 perf：4 种 (hover, hasBgm) 状态对应 4 个静态 brush 组合
+            SolidBrush bgBrush = (hover && hasBgm) ? BR_JUKE_BTN_HOVER : BR_JUKE_BTN_IDLE;
+            SolidBrush fgBrush = hasBgm ? (hover ? BR_JUKE_FG_HOVER : BR_JUKE_FG_BGM) : BR_JUKE_FG_NOBGM;
             string icon = (_isPlaying && !_isPaused) ? "Ⅱ" : "▶";
-            using (SolidBrush bgBrush = new SolidBrush(bg))
-            using (SolidBrush fgBrush = new SolidBrush(fg))
-            using (Font font = new Font("Segoe UI Symbol", WidgetScaler.Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
-            using (StringFormat fmt = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-            {
-                g.FillRectangle(bgBrush, r);
-                g.DrawString(icon, font, fgBrush, r, fmt);
-            }
+            Font font = _fontJukeIcon12;
+            StringFormat fmt = FMT_CENTER;
+            g.FillRectangle(bgBrush, r);
+            g.DrawString(icon, font, fgBrush, r, fmt);
         }
 
         private void DrawJukeboxTitle(Graphics g, Rectangle r, int pad, float scale)
         {
             string text = string.IsNullOrEmpty(_bgmTitle) ? "未播放" : _bgmTitle;
-            Color color = string.IsNullOrEmpty(_bgmTitle) ? Color.FromArgb(76, 255, 255, 255) : Color.FromArgb(178, 255, 255, 255);
+            SolidBrush brush = string.IsNullOrEmpty(_bgmTitle) ? BR_JUKE_TITLE_NOBGM : BR_JUKE_TITLE_BGM;
             Rectangle textRect = new Rectangle(r.X + pad, r.Y, Math.Max(1, r.Width - pad * 2), r.Height);
-            using (SolidBrush brush = new SolidBrush(color))
-            using (Font font = new Font("Microsoft YaHei", WidgetScaler.Pxf(11f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
-            using (StringFormat fmt = new StringFormat(StringFormatFlags.NoWrap)
-                   { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter })
-            {
-                g.DrawString(text, font, brush, textRect, fmt);
-            }
+            Font font = _fontNoticeJuke11;
+            StringFormat fmt = FMT_NEAR_NOWRAP_ELLIPSIS;
+            g.DrawString(text, font, brush, textRect, fmt);
         }
 
         private void DrawJukeboxExpand(Graphics g, Rectangle r, float scale)
         {
             bool hover = _hover.Kind == HitKind.JukeboxExpand;
-            using (SolidBrush bg = new SolidBrush(hover ? Color.FromArgb(229, 60, 60, 64) : Color.FromArgb(209, 16, 16, 18)))
-            using (SolidBrush fg = new SolidBrush(hover ? Color.White : Color.FromArgb(178, 255, 255, 255)))
-            using (Font font = new Font("Segoe UI Symbol", WidgetScaler.Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel))
-            using (StringFormat fmt = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-            {
-                g.FillRectangle(bg, r);
-                g.DrawString("▼", font, fg, r, fmt);
-            }
+            SolidBrush bg = hover ? BR_JUKE_BTN_HOVER : BR_JUKE_BTN_IDLE;
+            SolidBrush fg = hover ? BR_JUKE_FG_HOVER : BR_JUKE_FG_DEFAULT;
+            Font font = _fontJukeIcon12;
+            StringFormat fmt = FMT_CENTER;
+            g.FillRectangle(bg, r);
+            g.DrawString("▼", font, fg, r, fmt);
         }
 
         public bool TryHitTest(Point screenPt)
@@ -752,7 +865,7 @@ namespace CF7Launcher.Guardian.Hud
 
             if (changedKeys.Contains("s") && snapshot.TryGetValue("s", out piece))
             {
-                bool ready = TopRightToolsWidget.ParseUiBoolValue(piece);
+                bool ready = UiValueParser.ParseUiBoolValue(piece);
                 if (ready != _gameReady)
                 {
                     _gameReady = ready;
@@ -764,7 +877,7 @@ namespace CF7Launcher.Guardian.Hud
             }
             if (changedKeys.Contains("p") && snapshot.TryGetValue("p", out piece))
             {
-                bool paused = TopRightToolsWidget.ParseUiBoolValue(piece);
+                bool paused = UiValueParser.ParseUiBoolValue(piece);
                 if (paused != _paused) { _paused = paused; repaintDirty = true; }
             }
             if (changedKeys.Contains("mm") && snapshot.TryGetValue("mm", out piece))
@@ -791,7 +904,7 @@ namespace CF7Launcher.Guardian.Hud
             }
             if (changedKeys.Contains("td") && snapshot.TryGetValue("td", out piece))
             {
-                bool nextDone = TopRightToolsWidget.ParseUiBoolValue(piece);
+                bool nextDone = UiValueParser.ParseUiBoolValue(piece);
                 if (nextDone != _taskDone)
                 {
                     _taskDone = nextDone;
@@ -811,7 +924,7 @@ namespace CF7Launcher.Guardian.Hud
             }
             if (changedKeys.Contains("tdn") && snapshot.TryGetValue("tdn", out piece))
             {
-                bool nextNav = TopRightToolsWidget.ParseUiBoolValue(piece);
+                bool nextNav = UiValueParser.ParseUiBoolValue(piece);
                 if (nextNav != _navigable)
                 {
                     _navigable = nextNav;

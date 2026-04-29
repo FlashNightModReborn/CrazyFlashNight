@@ -294,17 +294,26 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void HandleUiData(string payload)
         {
+            HandleUiData(new UiDataPacket(payload));
+        }
+
+        /// <summary>
+        /// P1 perf：tee 路径已解析的 packet 入口；与 string 入口语义等价，复用 packet 的 Pairs / LegacyType。
+        /// </summary>
+        public void HandleUiData(UiDataPacket pkt)
+        {
+            if (pkt == null) return;
             if (this.IsHandleCreated && this.InvokeRequired)
             {
-                try { this.BeginInvoke(new Action<string>(HandleUiData), payload); } catch { }
+                try { this.BeginInvoke(new Action<UiDataPacket>(HandleUiData), pkt); } catch { }
                 return;
             }
 
             bool repaint = false;
-            string legacyType;
-            string[] legacyFields;
-            if (UiDataPacketParser.TryParseLegacy(payload, out legacyType, out legacyFields))
+            if (pkt.IsLegacy)
             {
+                string legacyType = pkt.LegacyType;
+                string[] legacyFields = pkt.LegacyFields;
                 if (legacyType == "currency" && legacyFields != null && legacyFields.Length >= 2)
                 {
                     string id = legacyFields[0];
@@ -316,7 +325,7 @@ namespace CF7Launcher.Guardian
             }
             else
             {
-                foreach (KeyValuePair<string, string> kv in UiDataPacketParser.Parse(payload))
+                foreach (KeyValuePair<string, string> kv in UiDataPacketParser.ParseFrom(pkt))
                 {
                     string key = kv.Key;
                     string value = StripPrefix(kv.Value, key);

@@ -2075,37 +2075,43 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void HandleUiData(string payload)
         {
+            HandleUiData(new CF7Launcher.Guardian.Hud.UiDataPacket(payload));
+        }
+
+        /// <summary>
+        /// P1 perf：tee 路径已解析的 packet 入口；webOverlay / notchOverlay / nativeHud 三方共享同一份 Pairs。
+        /// 与 string 入口语义等价（snapshot 更新 + ExecScript / buffer），仅省一次 Split('|')。
+        /// </summary>
+        public void HandleUiData(CF7Launcher.Guardian.Hud.UiDataPacket pkt)
+        {
+            if (pkt == null) return;
             if (this.InvokeRequired)
             {
-                this.BeginInvoke(new Action<string>(HandleUiData), payload);
+                this.BeginInvoke(new Action<CF7Launcher.Guardian.Hud.UiDataPacket>(HandleUiData), pkt);
                 return;
             }
             if (_disposed) return;
 
             // 维护最新值快照：payload 是 "key:val|key:val|..." 合批 KV 格式
-            // 按每个 KV 对的 key 独立存储最新值，热重载后可恢复完整状态
+            string[] pairs = pkt.Pairs;
+            for (int i = 0; i < pairs.Length; i++)
             {
-                string[] pairs = payload.Split('|');
-                for (int i = 0; i < pairs.Length; i++)
-                {
-                    int colon = pairs[i].IndexOf(':');
-                    if (colon > 0)
-                        _uiDataSnapshot[pairs[i].Substring(0, colon)] = pairs[i];
-                    // 无冒号的段（旧格式）不进快照，由 buffer 兜底
-                }
+                if (pairs[i] == null) continue;
+                int colon = pairs[i].IndexOf(':');
+                if (colon > 0)
+                    _uiDataSnapshot[pairs[i].Substring(0, colon)] = pairs[i];
+                // 无冒号的段（旧格式）不进快照，由 buffer 兜底
             }
 
             bool nativeHudIdle = _useNativeHud && !_panelMode;
             if (_webFailed || !_webReady || _frozenForIdle || nativeHudIdle)
             {
                 // WebView2 未就绪/降级/native idle SW_HIDE+suspend：仅维护快照，不 ExecScript
-                // 关键：idle 态调用 ExecScript 会唤醒已 TrySuspendAsync 的 WebView2，破坏 DWM α traversal 撤除
-                // 快照已在 _uiDataSnapshot 上方更新，FlushUiDataBuffer 在 Resume 时一次性补回
                 if (_uiDataEarlyBuffer.Count < 200)
-                    _uiDataEarlyBuffer.Add(payload);
+                    _uiDataEarlyBuffer.Add(pkt.Raw);
                 return;
             }
-            string escaped = payload.Replace("\\", "\\\\").Replace("'", "\\'");
+            string escaped = pkt.Raw.Replace("\\", "\\\\").Replace("'", "\\'");
             ExecScript("typeof UiData!=='undefined'&&UiData.dispatch('" + escaped + "')");
         }
 

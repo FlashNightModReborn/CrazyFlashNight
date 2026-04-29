@@ -264,6 +264,25 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
+        /// P2-3 perf：ULW 首帧预提交。在玩家可见之前提交一次 1×1 透明位图，让 DWM 把窗口
+        /// 加入合成树 + per-pixel α 路径建立，避免第一次真实 commit 时叠加冷启动开销。
+        /// 调用时机：handle 已创建即可，无需 ready 状态。1×1 位图不会闪烁。
+        /// </summary>
+        public void PreCommitTransparent()
+        {
+            if (!this.IsHandleCreated) return;
+            try
+            {
+                using (Bitmap warm = new Bitmap(1, 1, PixelFormat.Format32bppPArgb))
+                {
+                    warm.SetPixel(0, 0, Color.FromArgb(0, 0, 0, 0));
+                    CommitBitmap(warm, 0, 0, 0);
+                }
+            }
+            catch (Exception ex) { LogManager.Log("[OverlayBase] PreCommitTransparent failed: " + ex.Message); }
+        }
+
+        /// <summary>
         /// 将 GDI+ Bitmap 提交到屏幕（UpdateLayeredWindow）。
         /// </summary>
         protected void CommitBitmap(Bitmap bmp, int screenX, int screenY, byte globalAlpha)
