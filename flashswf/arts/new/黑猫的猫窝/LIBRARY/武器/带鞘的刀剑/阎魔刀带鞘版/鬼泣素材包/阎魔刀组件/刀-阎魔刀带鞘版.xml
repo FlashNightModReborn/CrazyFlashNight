@@ -1,0 +1,282 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/阎魔刀组件/刀-阎魔刀带鞘版" itemID="69eff7db-0000155c" linkageExportForAS="true" linkageIdentifier="刀-阎魔刀带鞘版" lastModified="1777336660" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="刀-阎魔刀带鞘版">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/鬼泣素材包/area" name="刀口位置1" centerPoint3DX="14.8" centerPoint3DY="388.95">
+                  <matrix>
+                    <Matrix a="0.422531127929688" b="-0.0276641845703125" c="0.226821899414063" d="3.46484375" tx="-0.25" ty="293.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.95" y="40"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_parent._parent._parent._parent._parent.状态 == "兵器攻击")
+   {
+      if(_parent._parent._parent._parent._parent.getSmallState() == "兵器一段中")
+      {
+         if(_root.成功率(50))
+         {
+            var range = 4;
+            var xOffset = (Math.random() - 0.5) * 2 * range;
+            var yOffset = (Math.random() - 0.5) * 2 * range;
+            var shooter = _parent._parent._parent._parent._parent;
+            var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "线条次元斩3";
+            子弹威力 = 240;
+            子弹速度 = 0;
+            击中地图效果 = "";
+            Z轴攻击范围 = 60;
+            击倒率 = 50;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = _parent._parent._parent._parent._parent._name;
+            if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+            {
+               子弹敌我属性值 = false;
+            }
+            else
+            {
+               子弹敌我属性值 = true;
+            }
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+      }
+   if(_parent._parent._parent._parent._parent.getSmallState() == "兵器二段中")
+      {
+         if(_root.成功率(50))
+         {
+            var range = 4;
+            var xOffset = (Math.random() - 0.5) * 2 * range;
+            var yOffset = (Math.random() - 0.5) * 2 * range;
+            var shooter = _parent._parent._parent._parent._parent;
+            var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "次元斩1";
+            子弹威力 = 250;
+            子弹速度 = 0;
+            击中地图效果 = "";
+            Z轴攻击范围 = 60;
+            击倒率 = 50;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = _parent._parent._parent._parent._parent._name;
+            if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+            {
+               子弹敌我属性值 = false;
+            }
+            else
+            {
+               子弹敌我属性值 = true;
+            }
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+      }
+      if(_parent._parent._parent._parent._parent.getSmallState() == "兵器三段中")
+      {
+         if(_root.成功率(50))
+         {
+            var range = 4;
+            var xOffset = (Math.random() - 0.5) * 2 * range;
+            var yOffset = (Math.random() - 0.5) * 2 * range;
+            var shooter = _parent._parent._parent._parent._parent;
+            var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "次元斩2";
+            子弹威力 = 260;
+            子弹速度 = 0;
+            击中地图效果 = "";
+            Z轴攻击范围 = 60;
+            击倒率 = 1;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = _parent._parent._parent._parent._parent._name;
+            if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+            {
+               子弹敌我属性值 = false;
+            }
+            else
+            {
+               子弹敌我属性值 = true;
+            }
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+      }
+      if(_parent._parent._parent._parent._parent.getSmallState() == "兵器四段中")
+      {
+         if(_root.成功率(50))
+         {
+            var range = 4;
+            var xOffset = (Math.random() - 0.5) * 2 * range;
+            var yOffset = (Math.random() - 0.5) * 2 * range;
+            var shooter = _parent._parent._parent._parent._parent;
+            var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "线条次元斩3";
+            子弹威力 = 270;
+            子弹速度 = 0;
+            击中地图效果 = "";
+            Z轴攻击范围 = 60;
+            击倒率 = 1;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = _parent._parent._parent._parent._parent._name;
+            if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+            {
+               子弹敌我属性值 = false;
+            }
+            else
+            {
+               子弹敌我属性值 = true;
+            }
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+      }
+      if(_parent._parent._parent._parent._parent.getSmallState() == "兵器五段中")
+      {
+         if(_root.成功率(50))
+         {
+            var range = 4;
+            var xOffset = (Math.random() - 0.5) * 2 * range;
+            var yOffset = (Math.random() - 0.5) * 2 * range;
+            var shooter = _parent._parent._parent._parent._parent;
+            var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "次元斩3";
+            子弹威力 = 280;
+            子弹速度 = 0;
+            击中地图效果 = "";
+            Z轴攻击范围 = 60;
+            击倒率 = 1;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = _parent._parent._parent._parent._parent._name;
+            if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+            {
+               子弹敌我属性值 = false;
+            }
+            else
+            {
+               子弹敌我属性值 = true;
+            }
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+      }
+   }
+   if(_parent._parent._parent._parent._parent.状态 == "兵器冲击")
+   {
+      if(_root.成功率(50) || _parent._parent._parent._parent._parent.getSmallState() == "兵器跑攻一段前")
+      {
+         var range = 4;
+         var xOffset = (Math.random() - 0.5) * 2 * range;
+         var yOffset = (Math.random() - 0.5) * 2 * range;
+         var shooter = _parent._parent._parent._parent._parent;
+         var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+         声音 = "";
+         霰弹值 = 1;
+         子弹散射度 = 0;
+         发射效果 = "";
+         子弹种类 = "线条次元斩1";
+         子弹威力 = 210;
+         子弹速度 = 0;
+         击中地图效果 = "";
+         Z轴攻击范围 = 60;
+         击倒率 = 1;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = _parent._parent._parent._parent._parent._name;
+         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/鬼泣素材包/area" name="刀口位置2" centerPoint3DX="3.3" centerPoint3DY="250.75">
+                  <matrix>
+                    <Matrix a="0.464202880859375" d="2.82806396484375" tx="-6" ty="180.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="40.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/鬼泣素材包/area" name="刀口位置3" centerPoint3DX="1.3" centerPoint3DY="129.3">
+                  <matrix>
+                    <Matrix a="0.352020263671875" d="3.06993103027344" tx="-5.75" ty="59.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.05" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/阎魔刀组件/阎魔刀决定版" centerPoint3DX="363.8" centerPoint3DY="761.35">
+                  <matrix>
+                    <Matrix a="0.3948974609375" d="0.3948974609375" tx="3.25" ty="195.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-10.15" y="-26.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/阎魔刀带鞘版/刀-阎魔刀刀鞘" centerPoint3DX="19.05" centerPoint3DY="124.8">
+                  <matrix>
+                    <Matrix a="0.99725341796875" b="-0.0704803466796875" c="0.0705413818359375" d="0.997268676757813" tx="-0.1" ty="111.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

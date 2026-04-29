@@ -1,0 +1,104 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/冷兵器/双刀系武器/烬灭裁决/刀-烬灭裁决长柄" itemID="69cb6d6c-00000e89" linkageExportForAS="true" linkageIdentifier="刀-烬灭裁决长柄" lastModified="1774945522" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="刀-烬灭裁决长柄">
+      <layers>
+        <DOMLayer name="刀口位置4" color="#5583E6" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" centerPoint3DX="-1.05" centerPoint3DY="-356">
+                  <matrix>
+                    <Matrix a="1.40000915527344" d="6.04368591308594" tx="-18.8" ty="-375.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀口位置3" color="#5583E6" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" centerPoint3DX="-2.9" centerPoint3DY="-23.25">
+                  <matrix>
+                    <Matrix a="-4" d="-8.69216918945313" tx="47.95" ty="-5.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="0.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀口位置2" color="#AD1CE3" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" centerPoint3DX="1.65" centerPoint3DY="5">
+                  <matrix>
+                    <Matrix a="0.907012939453125" d="6.141845703125" tx="-9.55" ty="-7.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀口位置5" color="#7C92DD" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" centerPoint3DX="3.65" centerPoint3DY="376.05">
+                  <matrix>
+                    <Matrix a="1.45901489257813" d="5.7529296875" tx="-14.5" ty="363.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀口位置1" color="#7C92DD" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" centerPoint3DX="5.15" centerPoint3DY="158.5">
+                  <matrix>
+                    <Matrix a="4.03855895996094" d="8.69839477539063" tx="-45.25" ty="146"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="武器" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/冷兵器/双刀系武器/烬灭裁决/烬灭裁决-双头戟形态" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="1.7" ty="66.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.95" y="-1.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

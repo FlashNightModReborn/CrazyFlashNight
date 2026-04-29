@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/冷兵器/双刀系武器/烬灭裁决/刀-烬灭裁决双刀" itemID="69cb6b55-00000dbf" linkageExportForAS="true" linkageIdentifier="刀-烬灭裁决双刀" lastModified="1775996360" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="刀-烬灭裁决双刀">
+      <layers>
+        <DOMLayer name="刀口位置3" color="#5583E6" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀口位置2" color="#AD1CE3" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀口位置1" color="#7C92DD" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="武器" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/冷兵器/双刀系武器/烬灭裁决/烬灭裁决-双剑右" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.965621948242188" b="-0.259918212890625" c="0.259918212890625" d="-0.965621948242188" tx="-16.45" ty="114.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.5" y="-2.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="武器/冷兵器/双刀系武器/烬灭裁决/烬灭裁决-双剑左" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" b="-0.0005340576171875" c="0.0005340576171875" d="-1" tx="6.5" ty="129.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.95" y="-1.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

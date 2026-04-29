@@ -1,0 +1,89 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/冷兵器/双刀系武器/烬灭裁决/刀-烬灭裁决副剑" itemID="69cb8108-0000119b" linkageExportForAS="true" linkageIdentifier="刀-烬灭裁决副剑" lastModified="1775996374" lastUniqueIdentifier="9">
+  <timeline>
+    <DOMTimeline name="刀-烬灭裁决副剑">
+      <layers>
+        <DOMLayer name="刀口" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="-7.15" centerPoint3DY="242">
+                  <matrix>
+                    <Matrix a="2.27713012695313" d="6.76773071289063" tx="-29.85" ty="222.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置1" centerPoint3DX="-14.4" centerPoint3DY="-36.8">
+                  <matrix>
+                    <Matrix a="1.85821533203125" d="6.2716064453125" tx="-29.25" ty="-55.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.55"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[/*
+onClipEvent (enterFrame) {
+	自机 = _root.获得父节点(this, 5);
+	if (Key.isDown(_root.武器技能键) == true and 自机 == _root.gameworld[_root.控制目标])
+	{
+		if (!自机.主动战技cd中 and (自机.攻击模式 == "兵器"))
+		{
+			if (自机.mp >= 40)
+			{
+				//_parent.触发特效();//
+				_root.gameworld[_root.控制目标].主动战技cd中 = true;
+				setTimeout(function ()
+				{
+				_root.gameworld[_root.控制目标].主动战技cd中 = false;
+				},5000);
+				
+				自机.mp -= 40;
+				_root.主角mp显示界面.刷新显示();
+				
+				自机.技能名 = "黑刀斩术";
+				自机.状态改变("战技");
+				自机.man.gotoAndPlay("黑刀斩术");
+			}
+			else
+			{
+				_root.发布消息("精力不足，无法使用战技！");
+			}
+		}
+	}
+}
+*/]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置2" centerPoint3DX="-8.4" centerPoint3DY="119.9">
+                  <matrix>
+                    <Matrix a="4.02951049804688" d="4.87451171875" tx="-53" ty="100.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="武器" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/冷兵器/双刀系武器/烬灭裁决/烬灭裁决-双剑右" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="-3.6" ty="165.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.55" y="-2.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

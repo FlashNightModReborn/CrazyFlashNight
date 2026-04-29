@@ -94,5 +94,53 @@
         <damagetype>破击</damagetype>
         <magictype>生化</magictype>
       </data>
+      </item>
+    <item>
+    <name>黑铁剑配鞘</name>
+    <displayname>黑铁剑配鞘</displayname>
+    <icon>黑铁剑配鞘</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>疾影</actiontype>
+    <price>100000</price>
+    <description>黑铁会老大的佩剑，此款式复刻了剑鞘，使用方式也随之改变了。铁胎寒铸，出剑裹挟凛然剑气。握柄处隐有极细的脉络纹路，年深日久也未曾磨灭。据说此剑从不离身，偶有人见持剑者独处时微微侧耳，似在倾听什么。</description>
+    <skill>
+      <skillname>黑铁剑意</skillname>
+      <description>手持该武器攻击或冲击时可以使用黑铁剑意，额外释放剑气。
+      不处于攻击或冲击时则可以使用追踪五连刺，对中距离内的敌人进行追踪攻击，优先锁定最近敌人，启动时按奔跑键取消追踪，按互动键优先追踪血量最高敌人。</description>
+      <cd>7000</cd>
+      <mp>60</mp>
+    </skill>
+    <data>
+      <level>34</level>
+      <weight>3</weight>
+      <dressup>刀-黑铁的剑</dressup>
+      <dressup2>刀-黑铁剑鞘</dressup2>
+      <power>340</power>
+      <hp>20</hp>
+      <mp>100</mp>
+      <defence>0</defence>
+      <skillmultipliers>
+        <龙斩>2</龙斩>
+      </skillmultipliers>
+      <bladeCount>3</bladeCount>
+    </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>黑铁的剑初始化</initRoutines>
+          <initParam>
+            <position>刀口位置2</position>
+            <func>_root.刀口触发特效.黑铁的剑特效</func>
+            <states>
+              <兵器攻击>true</兵器攻击>
+            </states>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>通用特效刀口周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
     </item>
 </root>

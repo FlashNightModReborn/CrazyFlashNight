@@ -1,0 +1,95 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/冷兵器/双刀系武器/双持中国战刀/图标-双持中国战刀" itemID="698ac25d-0000113e" linkageExportForAS="true" linkageIdentifier="图标-双持中国战刀" lastModified="1770701738" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="图标-双持中国战刀">
+      <layers>
+        <DOMLayer name="代码层" color="#DB71DD" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩层" color="#77B4C3" locked="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.02069091796875" d="0.02069091796875"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry alpha="0" ratio="0.815686274509804"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!240 240S2|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="武器模型" color="#C2D596" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/冷兵器/双刀系武器/双持中国战刀/中国战刀" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.192398071289063" b="0.0373382568359375" c="-0.0373382568359375" d="0.192398071289063" tx="0.95" ty="-30.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.45" y="238.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="武器/冷兵器/双刀系武器/双持中国战刀/中国战刀" symbolType="graphic" centerPoint3DX="3.45" centerPoint3DY="18.25" loop="loop">
+                  <matrix>
+                    <Matrix a="0.191650390625" b="-0.0395050048828125" c="0.0395050048828125" d="0.191650390625" tx="-12.8" ty="-24.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.3" y="238.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/冷兵器/双刀系武器/双持中国战刀/刀-双持中国战刀" centerPoint3DX="-72.2" centerPoint3DY="206.4">
+                  <matrix>
+                    <Matrix a="0.0576019287109375" b="-0.271331787109375" c="0.26409912109375" d="0.0560760498046875" tx="-65.05" ty="0.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="阴影" color="#D169DD" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标阴影" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

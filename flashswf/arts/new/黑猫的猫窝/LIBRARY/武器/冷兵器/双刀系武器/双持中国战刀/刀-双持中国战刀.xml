@@ -1,0 +1,61 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/冷兵器/双刀系武器/双持中国战刀/刀-双持中国战刀" itemID="698ac24c-00001128" linkageExportForAS="true" linkageIdentifier="刀-双持中国战刀" lastModified="1770703412" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="刀-双持中国战刀">
+      <layers>
+        <DOMLayer name="刀口位置3" color="#5583E6" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀口位置2" color="#AD1CE3" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀口位置1" color="#7C92DD" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="武器2" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/冷兵器/双刀系武器/双持中国战刀/中国战刀" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.934844970703125" b="-0.355010986328125" c="0.355010986328125" d="0.934844970703125" tx="-100.9" ty="-61.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.45" y="238.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="武器" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/冷兵器/双刀系武器/双持中国战刀/中国战刀" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-37.45" ty="-82.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.5" y="238.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

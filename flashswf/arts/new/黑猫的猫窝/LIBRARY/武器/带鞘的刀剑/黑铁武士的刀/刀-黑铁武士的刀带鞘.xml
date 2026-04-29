@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/带鞘的刀剑/黑铁武士的刀/刀-黑铁武士的刀带鞘" itemID="69f02edf-000008ce" linkageExportForAS="true" linkageIdentifier="刀-黑铁武士的刀带鞘" lastModified="1777350166" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="刀-黑铁武士的刀带鞘">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#8966AF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/黑铁武士的刀/刀-黑铁武士的刀" centerPoint3DX="-4.95" centerPoint3DY="163.9">
+                  <matrix>
+                    <Matrix a="0.999908447265625" b="-0.0135498046875" c="0.0135498046875" d="0.999908447265625" tx="-2.15" ty="-46.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-5.7" y="209.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/黑铁武士的刀/刀-黑铁武士的刀鞘" centerPoint3DX="-10.4" centerPoint3DY="286.35">
+                  <matrix>
+                    <Matrix a="0.995651245117188" b="-0.0931549072265625" c="0.0931549072265625" d="0.995651245117188" tx="-6.35" ty="76.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
