@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/带鞘的刀剑/虎彻配鞘版/刀-虎彻的鞘" itemID="69f25c29-00000483" linkageExportForAS="true" linkageIdentifier="刀-虎彻的鞘" lastModified="1777491904" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="刀-虎彻的鞘">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="-10" centerPoint3DY="-16.55">
+                  <matrix>
+                    <Matrix a="1.40261840820313" b="-0.01617431640625" c="0.0774688720703125" d="6.76693725585938" tx="-19.15" ty="-36.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.45" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="-7.8" centerPoint3DY="155.55">
+                  <matrix>
+                    <Matrix a="1.39808654785156" b="-0.11346435546875" c="0.387649536132813" d="4.78123474121094" tx="-18.55" ty="135.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="1.05" centerPoint3DY="277.8">
+                  <matrix>
+                    <Matrix a="1.38603210449219" b="-0.215560913085938" c="0.634429931640625" d="4.0819091796875" tx="-12.1" ty="256.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.6" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/虎彻配鞘版/虎彻的鞘图片" symbolType="graphic" centerPoint3DX="7" centerPoint3DY="157.45" loop="loop">
+                  <matrix>
+                    <Matrix a="0.84539794921875" b="-0.046539306640625" c="0.0549774169921875" d="0.998489379882813" tx="6.2" ty="157.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

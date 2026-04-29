@@ -3,9 +3,10 @@
           <DOMFolderItem name="图标" itemID="654ce53c-000027e4" isExpanded="true"/>
           <DOMFolderItem name="武器" itemID="698a89d1-00000cdb" isExpanded="true"/>
           <DOMFolderItem name="武器/带鞘的刀剑" itemID="69eff81a-0000155e" isExpanded="true"/>
-          <DOMFolderItem name="武器/带鞘的刀剑/黑铁旧剑带鞘" itemID="69f1cded-00001f20" isExpanded="true"/>
+          <DOMFolderItem name="武器/带鞘的刀剑/黑铁旧剑带鞘" itemID="69f1cded-00001f20"/>
           <DOMFolderItem name="武器/带鞘的刀剑/黑铁旧剑带鞘/无AS链接" itemID="6690f257-00002761" isExpanded="true"/>
           <DOMFolderItem name="武器/带鞘的刀剑/黑铁武士的刀" itemID="69f02d53-0000086a" isExpanded="true"/>
+          <DOMFolderItem name="武器/带鞘的刀剑/虎彻配鞘版" itemID="69f258c6-00000466" isExpanded="true"/>
           <DOMFolderItem name="武器/带鞘的刀剑/阎魔刀带鞘版" itemID="69f02cc7-00000848" isExpanded="true"/>
           <DOMFolderItem name="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包" itemID="6561bb37-00000481"/>
           <DOMFolderItem name="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/鬼泣素材包" itemID="657594b6-0000079d" isExpanded="true"/>
@@ -22,16 +23,17 @@
      </folders>
      <media>
           <DOMBitmapItem name="24488a970d28b28609d2d38d05d15483.jpg" itemID="698a95c7-00000d29" sourceExternalFilepath="./LIBRARY/24488a970d28b28609d2d38d05d15483.jpg" sourceLastImported="1770689937" externalFileCRC32="784672173" externalFileSize="86205" quality="50" href="24488a970d28b28609d2d38d05d15483.jpg" bitmapDataHRef="M 2 1770689991.dat" frameRight="26660" frameBottom="15000" isJPEG="true"/>
+          <DOMBitmapItem name="设计日式太刀刀鞘.png" itemID="69f25acf-00000478" sourceExternalFilepath="./LIBRARY/设计日式太刀刀鞘.png" sourceLastImported="1777489990" externalFileCRC32="3895881118" externalFileSize="3785904" originalCompressionType="lossless" quality="50" href="设计日式太刀刀鞘.png" bitmapDataHRef="M 2 1777490163.dat" frameRight="31180" frameBottom="53800"/>
      </media>
      <symbols>
           <Include href="黑猫的猫窝.xml" itemID="698aaa59-000001e8" lastModified="1770695261"/>
-          <Include href="黑铁的旧剑鞘.xml" itemIcon="1" loadImmediate="false" itemID="69f1cf4e-000028a8" lastModified="1777454926"/>
           <Include href="枪口&amp;刀口判定框.xml" loadImmediate="false" itemID="666e7cc4-00000d3b" lastModified="1718516932"/>
           <Include href="图标/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000644" lastModified="1710653981"/>
           <Include href="图标/Symbol 13.xml" loadImmediate="false" itemID="65f68a66-00000645" lastModified="1710653981"/>
           <Include href="图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="666e7c83-00000d39" lastModified="1774943990"/>
           <Include href="武器/带鞘的刀剑/黑铁旧剑带鞘/刀-黑铁的剑配鞘.xml" itemID="69f1d0d1-000028d9" lastModified="1777485511"/>
           <Include href="武器/带鞘的刀剑/黑铁旧剑带鞘/刀-黑铁剑鞘.xml" itemID="69f1d021-000028c5" lastModified="1777485536"/>
+          <Include href="武器/带鞘的刀剑/黑铁旧剑带鞘/黑铁的旧剑鞘.xml" itemIcon="1" loadImmediate="false" itemID="69f1cf4e-000028a8" lastModified="1777454926"/>
           <Include href="武器/带鞘的刀剑/黑铁旧剑带鞘/图标-黑铁剑配鞘.xml" itemID="69f1d0c4-000028d8" lastModified="1777485524"/>
           <Include href="武器/带鞘的刀剑/黑铁旧剑带鞘/无AS链接/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005be" lastModified="1720533000"/>
           <Include href="武器/带鞘的刀剑/黑铁旧剑带鞘/无AS链接/Symbol 13.xml" loadImmediate="false" itemID="668e7c1e-000005bf" lastModified="1720533000"/>
@@ -39,12 +41,16 @@
           <Include href="武器/带鞘的刀剑/黑铁旧剑带鞘/无AS链接/Symbol 4751.xml" loadImmediate="false" itemID="668e7c1e-0000117a" lastModified="1777455401"/>
           <Include href="武器/带鞘的刀剑/黑铁武士的刀/刀-黑铁武士的刀.xml" itemID="69f02df5-00000884" lastModified="1777349929"/>
           <Include href="武器/带鞘的刀剑/黑铁武士的刀/刀-黑铁武士的刀带鞘.xml" itemID="69f02edf-000008ce" lastModified="1777485450"/>
-          <Include href="武器/带鞘的刀剑/黑铁武士的刀/刀-黑铁武士的刀鞘.xml" itemID="69f02dfe-00000885" lastModified="1777485479"/>
+          <Include href="武器/带鞘的刀剑/黑铁武士的刀/刀-黑铁武士的刀鞘.xml" itemID="69f02dfe-00000885" lastModified="1777491011"/>
           <Include href="武器/带鞘的刀剑/黑铁武士的刀/黑铁武士的刀鞘图形.xml" itemIcon="1" loadImmediate="false" itemID="69f02d29-00000863" lastModified="1777347881"/>
           <Include href="武器/带鞘的刀剑/黑铁武士的刀/图标-黑铁武士的刀带鞘.xml" itemID="69f02f46-000008f4" lastModified="1777486935"/>
+          <Include href="武器/带鞘的刀剑/虎彻配鞘版/刀-虎彻的鞘.xml" itemID="69f25c29-00000483" lastModified="1777491904"/>
+          <Include href="武器/带鞘的刀剑/虎彻配鞘版/刀-虎彻配鞘版.xml" itemID="69f25c1e-00000482" lastModified="1777492023"/>
+          <Include href="武器/带鞘的刀剑/虎彻配鞘版/虎彻的鞘图片.xml" itemIcon="1" loadImmediate="false" itemID="69f25bfd-0000047f" lastModified="1777490941"/>
+          <Include href="武器/带鞘的刀剑/虎彻配鞘版/图标-虎彻配鞘版.xml" itemID="69f25e37-000004b1" lastModified="1777491661"/>
           <Include href="武器/带鞘的刀剑/阎魔刀带鞘版/刀-阎魔刀刀鞘.xml" itemID="69eff776-000011f2" lastModified="1777487024"/>
           <Include href="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/鬼泣素材包/area.xml" loadImmediate="false" itemID="657594b6-000007af" lastModified="1701877840"/>
-          <Include href="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/阎魔刀组件/刀-阎魔刀带鞘版.xml" itemID="69eff7db-0000155c" lastModified="1777336660"/>
+          <Include href="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/阎魔刀组件/刀-阎魔刀带鞘版.xml" itemID="69eff7db-0000155c" lastModified="1777491462"/>
           <Include href="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/阎魔刀组件/刀刃.xml" loadImmediate="false" itemID="657585c3-00000e5b" lastModified="1702204197"/>
           <Include href="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/阎魔刀组件/阎魔刀刀柄.xml" loadImmediate="false" itemID="657577b7-00000ad6" lastModified="1702203385"/>
           <Include href="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/阎魔刀组件/阎魔刀刀口.xml" loadImmediate="false" itemID="65757cf1-00000b08" lastModified="1702203837"/>
@@ -81,6 +87,7 @@
           <Include href="武器/冷兵器/双刀系武器/战术双刀/狗腿刀.xml" itemIcon="1" loadImmediate="false" itemID="698a9423-00000d15" lastModified="1770689653"/>
           <Include href="武器/冷兵器/双刀系武器/战术双刀/破旧军刀.xml" itemIcon="1" loadImmediate="false" itemID="66099e9c-00004084" lastModified="1711906460"/>
           <Include href="武器/冷兵器/双刀系武器/战术双刀/图标-战术双刀.xml" itemID="698a97a9-00000d2f" lastModified="1770701603"/>
+          <Include href="元件 1.xml" loadImmediate="false" itemID="69f2593c-00000472" lastModified="1777490236"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -96,7 +103,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="黑猫的猫窝" selected="true" centerPoint3DX="456" centerPoint3DY="294.95">
+                                        <DOMSymbolInstance libraryItemName="黑猫的猫窝" centerPoint3DX="456" centerPoint3DY="294.95">
                                              <matrix>
                                                   <Matrix tx="454" ty="296.95"/>
                                              </matrix>
@@ -369,6 +376,22 @@
                     <SolidSwatchItem color="#EDEDED" brightness="223"/>
                     <SolidSwatchItem color="#E7B599" hue="14" saturation="147" brightness="181"/>
                     <SolidSwatchItem color="#E7B599" hue="14" saturation="147" brightness="181"/>
+                    <SolidSwatchItem color="#313967" hue="154" saturation="86" brightness="72"/>
+                    <SolidSwatchItem color="#5C6C99" hue="150" saturation="59" brightness="116"/>
+                    <SolidSwatchItem color="#35436A" hue="150" saturation="80" brightness="75"/>
+                    <SolidSwatchItem color="#1A2342" hue="151" saturation="106" brightness="43"/>
+                    <SolidSwatchItem color="#31385B" hue="153" saturation="73" brightness="66"/>
+                    <SolidSwatchItem color="#919192" hue="160" saturation="1" brightness="137"/>
+                    <SolidSwatchItem color="#EFEFEC" hue="40" saturation="22" brightness="224"/>
+                    <SolidSwatchItem color="#B1ADAE" hue="230" saturation="6" brightness="165"/>
+                    <SolidSwatchItem color="#696868" saturation="1" brightness="99"/>
+                    <SolidSwatchItem color="#BDBCC0" hue="170" saturation="8" brightness="179"/>
+                    <SolidSwatchItem color="#C8C8D0" hue="160" saturation="20" brightness="192"/>
+                    <SolidSwatchItem color="#B0ACAA" hue="13" saturation="9" brightness="163"/>
+                    <SolidSwatchItem color="#999596" hue="230" saturation="5" brightness="142"/>
+                    <SolidSwatchItem color="#6D6C74" hue="166" saturation="8" brightness="106"/>
+                    <SolidSwatchItem color="#B1B1BC" hue="160" saturation="18" brightness="172"/>
+                    <SolidSwatchItem color="#F1EFF2" hue="187" saturation="27" brightness="227"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -378,6 +401,12 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="175445" publishTime="1777491954"/>
+          <PublishItem publishSize="175445" publishTime="1777491851"/>
+          <PublishItem publishSize="175445" publishTime="1777491783"/>
+          <PublishItem publishSize="175447" publishTime="1777491666"/>
+          <PublishItem publishSize="175359" publishTime="1777491470"/>
+          <PublishItem publishSize="175360" publishTime="1777491102"/>
           <PublishItem publishSize="173584" publishTime="1777486951"/>
           <PublishItem publishSize="173573" publishTime="1777485349"/>
           <PublishItem publishSize="173650" publishTime="1777456589"/>
@@ -392,11 +421,5 @@
           <PublishItem publishSize="142666" publishTime="1774944794"/>
           <PublishItem publishSize="142663" publishTime="1774944781"/>
           <PublishItem publishSize="142629" publishTime="1774944044"/>
-          <PublishItem publishSize="142611" publishTime="1774943693"/>
-          <PublishItem publishSize="142637" publishTime="1774943081"/>
-          <PublishItem publishSize="142619" publishTime="1774940121"/>
-          <PublishItem publishSize="92397" publishTime="1770702432"/>
-          <PublishItem publishSize="90989" publishTime="1770698976"/>
-          <PublishItem publishSize="88271" publishTime="1770695280"/>
      </publishHistory>
 </DOMDocument>

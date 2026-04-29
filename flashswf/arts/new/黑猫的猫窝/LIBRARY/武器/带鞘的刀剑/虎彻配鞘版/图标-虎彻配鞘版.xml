@@ -1,0 +1,90 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/带鞘的刀剑/虎彻配鞘版/图标-虎彻配鞘版" itemID="69f25e37-000004b1" linkageExportForAS="true" linkageIdentifier="图标-虎彻配鞘版" lastModified="1777491661" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="图标-虎彻配鞘版">
+      <layers>
+        <DOMLayer name="代码层" color="#DB71DD" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩层" color="#77B4C3" locked="true" autoNamed="false" visible="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.02069091796875" d="0.02069091796875"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry alpha="0" ratio="0.815686274509804"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!240 -240S2|240 240!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="武器模型" color="#C2D596" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/虎彻配鞘版/刀-虎彻配鞘版" selected="true" centerPoint3DX="-17.6" centerPoint3DY="17.8">
+                  <matrix>
+                    <Matrix a="0.123794555664063" b="0.157073974609375" c="-0.157073974609375" d="0.123794555664063" tx="10.4" ty="-7.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.3" y="187.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/虎彻配鞘版/刀-虎彻配鞘版" selected="true" centerPoint3DX="-8.15" centerPoint3DY="2.45">
+                  <matrix>
+                    <Matrix a="9.1552734375e-005" b="0.199996948242188" c="-0.199996948242188" d="9.1552734375e-005" tx="29.55" ty="-0.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.15" y="187"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="阴影" color="#D169DD" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标阴影" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="1" tintColor="#33FFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

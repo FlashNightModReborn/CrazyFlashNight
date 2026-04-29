@@ -1,22 +1,22 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/带鞘的刀剑/黑铁武士的刀/刀-黑铁武士的刀鞘" itemID="69f02dfe-00000885" linkageExportForAS="true" linkageIdentifier="刀-黑铁武士的刀鞘" lastModified="1777485479" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/带鞘的刀剑/黑铁武士的刀/刀-黑铁武士的刀鞘" itemID="69f02dfe-00000885" linkageExportForAS="true" linkageIdentifier="刀-黑铁武士的刀鞘" lastModified="1777491011" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="刀-黑铁武士的刀鞘" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="15.45" centerPoint3DY="-15.6">
                   <matrix>
-                    <Matrix a="-1.95558166503906" b="-0.103042602539063" c="-0.356094360351563" d="6.75831604003906" tx="34" ty="-32.8"/>
+                    <Matrix a="-1.95556640625" b="-0.103042602539063" c="-0.356094360351563" d="6.75830078125" tx="34" ty="-32.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="8.2" centerPoint3DY="156.05">
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" selected="true" centerPoint3DX="8.2" centerPoint3DY="156.05">
                   <matrix>
-                    <Matrix a="-1.40223693847656" b="0.0360107421875" c="0.173797607421875" d="6.76544189453125" tx="18.15" ty="134.2"/>
+                    <Matrix a="-1.4022216796875" b="0.0360107421875" c="0.173797607421875" d="6.76544189453125" tx="18.15" ty="134.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.5" y="0.05"/>
@@ -34,7 +34,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#B5A8DA" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#B5A8DA">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

@@ -30,7 +30,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!240 -240S2|240 240!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240"/>
+                    <Edge fillStyle1="1" edges="!240 240S2|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -41,7 +41,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/阎魔刀组件/刀-阎魔刀带鞘版" centerPoint3DX="-18.7" centerPoint3DY="17.45">
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/阎魔刀组件/刀-阎魔刀带鞘版" selected="true" centerPoint3DX="-18.7" centerPoint3DY="17.45">
                   <matrix>
                     <Matrix a="0.132247924804688" b="0.175323486328125" c="-0.175323486328125" d="0.132247924804688" tx="13.95" ty="-10.25"/>
                   </matrix>
