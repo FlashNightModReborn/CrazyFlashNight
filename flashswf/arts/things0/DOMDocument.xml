@@ -10,7 +10,7 @@
           <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a"/>
-          <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
+          <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
           <DOMFolderItem name="个人编辑单位" itemID="695d3442-00003dd6"/>
           <DOMFolderItem name="个人编辑单位/浮士德的一堆相关或是不相关" itemID="695d3442-00003dd7"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
@@ -1120,14 +1120,14 @@
           <Include href="sprite/Symbol 2017.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000080b" lastModified="1702098593"/>
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/被击飞击倒.xml" loadImmediate="false" itemID="690f5883-00001c3b" lastModified="1771501751"/>
-          <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1777340993"/>
+          <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1777484789"/>
           <Include href="sprite/兵器攻击标志.xml" loadImmediate="false" itemID="697b1094-00002018" lastModified="1719241660"/>
-          <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1777353000"/>
+          <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1777484864"/>
           <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1769694922"/>
           <Include href="sprite/兵器使用标签.xml" loadImmediate="false" itemID="697b1094-00002017" lastModified="1719241655"/>
           <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1771510315"/>
           <Include href="sprite/兵器跳跃旧动作备份.xml" loadImmediate="false" itemID="690cd8d3-0000117f" lastModified="1769694922"/>
-          <Include href="sprite/兵器走路.xml" loadImmediate="false" itemID="690ce360-00000724" lastModified="1777339693"/>
+          <Include href="sprite/兵器走路.xml" loadImmediate="false" itemID="690ce360-00000724" lastModified="1777486663"/>
           <Include href="sprite/兵器走路旧版备份.xml" loadImmediate="false" itemID="690ce373-00000766" lastModified="1769694922"/>
           <Include href="sprite/丑陋无比的连按方向奔跑键控.xml" loadImmediate="false" itemID="66587e46-00000645" lastModified="1742889188"/>
           <Include href="sprite/弹壳.xml" loadImmediate="false" itemID="64d9ee41-00000a13" lastModified="1756118723"/>
@@ -1325,7 +1325,7 @@
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml" itemID="697b6555-00003229" lastModified="1777470478"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短柄1连招.xml" itemID="699e0c20-00001dff" lastModified="1777470439"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招.xml" itemID="698642fe-00000b06" lastModified="1777471697"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml" itemID="69eff1b8-00000ac4" lastModified="1777470499"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml" itemID="69eff1b8-00000ac4" lastModified="1777484685"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1777471753"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml" itemID="696493ce-00000e0e" lastModified="1770225044"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招.xml" itemID="6974a6b3-00001f9d" lastModified="1777469210"/>
@@ -2203,7 +2203,7 @@
           <Include href="主角肢体素材/脚.xml" loadImmediate="false" itemID="697b650b-00002c94" lastModified="1757948596"/>
           <Include href="主角肢体素材/屁股.xml" loadImmediate="false" itemID="697b6508-000028be" lastModified="1757948600"/>
           <Include href="主角肢体素材/上臂.xml" loadImmediate="false" itemID="697b650d-0000304e" lastModified="1757948637"/>
-          <Include href="主角肢体素材/身体.xml" loadImmediate="false" itemID="697b650a-00002b2a" lastModified="1769262096"/>
+          <Include href="主角肢体素材/身体.xml" loadImmediate="false" itemID="697b650a-00002b2a" lastModified="1777486639"/>
           <Include href="主角肢体素材/手枪.xml" loadImmediate="false" itemID="697b650c-00002e6b" lastModified="1718943834"/>
           <Include href="主角肢体素材/手枪2.xml" loadImmediate="false" itemID="697b650c-00002e89" lastModified="1718943872"/>
           <Include href="主角肢体素材/头.xml" loadImmediate="false" itemID="697b6508-00002815" lastModified="1757948607"/>
@@ -2724,6 +2724,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4324235" publishTime="1777485037"/>
           <PublishItem publishSize="4322489" publishTime="1777352865"/>
           <PublishItem publishSize="4322495" publishTime="1777351860"/>
           <PublishItem publishSize="4322600" publishTime="1777351648"/>
@@ -2743,6 +2744,5 @@
           <PublishItem publishSize="4286778" publishTime="1776698620"/>
           <PublishItem publishSize="4286689" publishTime="1776544145"/>
           <PublishItem publishSize="4286687" publishTime="1776543548"/>
-          <PublishItem publishSize="4286986" publishTime="1776542688"/>
      </publishHistory>
 </DOMDocument>

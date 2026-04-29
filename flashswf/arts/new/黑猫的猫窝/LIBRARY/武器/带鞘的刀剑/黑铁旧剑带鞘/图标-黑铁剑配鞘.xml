@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/带鞘的刀剑/黑铁旧剑带鞘/图标-黑铁剑配鞘" itemID="69f1d0c4-000028d8" linkageExportForAS="true" linkageIdentifier="图标-黑铁剑配鞘" lastModified="1777455483" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/带鞘的刀剑/黑铁旧剑带鞘/图标-黑铁剑配鞘" itemID="69f1d0c4-000028d8" linkageExportForAS="true" linkageIdentifier="图标-黑铁剑配鞘" lastModified="1777485524" lastUniqueIdentifier="9">
   <timeline>
-    <DOMTimeline name="图标-黑铁剑配鞘" currentFrame="1">
+    <DOMTimeline name="图标-黑铁剑配鞘">
       <layers>
         <DOMLayer name="代码层" color="#DB71DD" autoNamed="false">
           <frames>
@@ -30,7 +30,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!240 -240S2|240 240!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240"/>
+                    <Edge fillStyle1="1" edges="!240 240S2|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -41,7 +41,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/黑铁旧剑带鞘/刀-黑铁的剑配鞘" centerPoint3DX="-16.75" centerPoint3DY="17.7">
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/黑铁旧剑带鞘/刀-黑铁的剑配鞘" selected="true" centerPoint3DX="-16.75" centerPoint3DY="17.7">
                   <matrix>
                     <Matrix a="0.14141845703125" b="0.14141845703125" c="-0.14141845703125" d="0.14141845703125" tx="19.6" ty="-19.45"/>
                   </matrix>

@@ -923,7 +923,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
             </DOMFrame>
             <DOMFrame index="21" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -7580,7 +7580,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-187.15" centerPoint3DY="-6.65">
                   <matrix>
-                    <Matrix a="-0.964981079101563" b="-0.242645263671875" c="0.24267578125" d="-0.964981079101563" tx="-36.65" ty="132.5"/>
+                    <Matrix a="-0.964981079101563" b="-0.242645263671875" c="0.242660522460938" d="-0.964981079101563" tx="-36.65" ty="132.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

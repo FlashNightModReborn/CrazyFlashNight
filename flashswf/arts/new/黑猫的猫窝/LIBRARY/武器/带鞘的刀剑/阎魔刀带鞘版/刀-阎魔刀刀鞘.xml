@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/带鞘的刀剑/阎魔刀带鞘版/刀-阎魔刀刀鞘" itemID="69eff776-000011f2" linkageExportForAS="true" linkageIdentifier="刀-阎魔刀刀鞘" lastModified="1777342551" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/带鞘的刀剑/阎魔刀带鞘版/刀-阎魔刀刀鞘" itemID="69eff776-000011f2" linkageExportForAS="true" linkageIdentifier="刀-阎魔刀刀鞘" lastModified="1777487024" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="刀-阎魔刀刀鞘">
       <layers>
@@ -6,25 +6,25 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/鬼泣素材包/area" name="刀口位置3" centerPoint3DX="-8" centerPoint3DY="61.2">
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/鬼泣素材包/area" name="刀口位置3" centerPoint3DX="-4.4" centerPoint3DY="66.6">
                   <matrix>
-                    <Matrix a="-0.59600830078125" b="-0.070037841796875" c="-0.408920288085938" d="3.47959899902344" tx="14.45" ty="-23.95"/>
+                    <Matrix a="-0.621200561523438" b="-0.0261688232421875" c="-0.152786254882813" d="3.62652587890625" tx="14.2" ty="-24.85"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="20" y="40.05"/>
+                    <Point x="19.9" y="40.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/鬼泣素材包/area" name="刀口位置3" centerPoint3DX="-12.55" centerPoint3DY="202.75">
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/鬼泣素材包/area" name="刀口位置3" centerPoint3DX="4.85" centerPoint3DY="210.2">
                   <matrix>
-                    <Matrix a="-0.60009765625" b="-0.005126953125" c="-0.0299224853515625" d="3.50340270996094" tx="0.1" ty="115.25"/>
+                    <Matrix a="-0.620376586914063" b="0.041229248046875" c="0.240646362304688" d="3.62171936035156" tx="10.15" ty="120.25"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="20" y="40.05"/>
+                    <Point x="20.1" y="40"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/鬼泣素材包/area" name="刀口位置3" centerPoint3DX="-9.95" centerPoint3DY="315.95">
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/鬼泣素材包/area" name="刀口位置3" centerPoint3DX="15.95" centerPoint3DY="329.55">
                   <matrix>
-                    <Matrix a="-0.59954833984375" b="0.0259552001953125" c="0.122573852539063" d="2.83001708984375" tx="-0.3" ty="254.9"/>
+                    <Matrix a="-0.617401123046875" b="0.073272705078125" c="0.345977783203125" d="2.91426086425781" tx="20.5" ty="264.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="20" y="40"/>
@@ -34,13 +34,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/阎魔刀带鞘版/阎魔刀图形" symbolType="graphic" centerPoint3DX="-2.65" centerPoint3DY="169.35" loop="loop">
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/阎魔刀带鞘版/阎魔刀图形" symbolType="graphic" centerPoint3DX="12.95" centerPoint3DY="176.85" loop="loop">
                   <matrix>
-                    <Matrix a="0.0142059326171875" b="0.999893188476563" c="0.999893188476563" d="-0.0142059326171875" tx="-16.4" ty="181.2"/>
+                    <Matrix a="0.0921630859375" b="1.03189086914063" c="1.03189086914063" d="-0.0921630859375" tx="-1.8" ty="189.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
