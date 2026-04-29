@@ -45,6 +45,7 @@
     <Compile Include="Tasks\StageSelectTaskTests.cs" />
     <Compile Include="Save\SaveMigratorTests.cs" />
     <Compile Include="Bus\MessageRouterTests.cs" />
+    <Compile Include="Bus\XmlSocketReadLoopTests.cs" />
     <Compile Include="Tasks\IconBakeTaskTests.cs" />
     <Compile Include="Save\SolResolverTests.cs" />
     <Compile Include="Save\SolFileLocatorTests.cs" />

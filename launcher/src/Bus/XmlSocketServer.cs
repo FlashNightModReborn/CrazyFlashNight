@@ -151,7 +151,18 @@ namespace CF7Launcher.Bus
 
         private void ReadLoop(TcpClient localClient, NetworkStream localStream, int gen)
         {
-            StringBuilder buffer = new StringBuilder();
+            // 字节层缓冲：按 \0 切消息边界，再对每条完整消息整体 UTF-8 解码。
+            //
+            // 历史 bug：原实现对每个 read chunk 单独 Encoding.UTF8.GetString，
+            // 跨 chunk 边界的多字节 UTF-8 字符（中文 3 字节）会被切断 → 替换为 U+FFFD，
+            // 累积污染玩家 mydata。详见存档乱码工程 plan (prancy-weaving-treasure.md) 与
+            // XmlSocketReadLoopTests.cs 的回归测试。
+            //
+            // 修复点不变式：
+            //   - \0 (0x00) 不会出现在合法 UTF-8 多字节序列中（多字节首字节/续字节都 ≥ 0x80），
+            //     所以可在字节层定位边界，无需关心字符。
+            //   - 快车道前缀 (F/R/K/P/U/B/N/W/D 等) 全是 ASCII，字节切割后再整体解码不变形。
+            MemoryStream byteBuffer = new MemoryStream();
             byte[] readBuf = new byte[8192];
 
             try
@@ -162,24 +173,28 @@ namespace CF7Launcher.Bus
                     if (bytesRead == 0)
                         break;
 
-                    string chunk = Encoding.UTF8.GetString(readBuf, 0, bytesRead);
-                    buffer.Append(chunk);
-
-                    // 按 \0 分割消息
-                    string data = buffer.ToString();
-                    int nullIdx;
-                    while ((nullIdx = data.IndexOf('\0')) >= 0)
+                    int start = 0;
+                    for (int i = 0; i < bytesRead; i++)
                     {
-                        string message = data.Substring(0, nullIdx);
-                        data = data.Substring(nullIdx + 1);
+                        if (readBuf[i] != 0) continue;
+                        // 命中消息边界：把 [start, i) 段拼到 byteBuffer，整体解码并分发
+                        if (i > start)
+                            byteBuffer.Write(readBuf, start, i - start);
 
-                        if (message.Length > 0)
-                            HandleMessage(message, gen);
+                        if (byteBuffer.Length > 0)
+                        {
+                            string message = Encoding.UTF8.GetString(
+                                byteBuffer.GetBuffer(), 0, (int)byteBuffer.Length);
+                            byteBuffer.SetLength(0);
+                            if (message.Length > 0)
+                                HandleMessage(message, gen);
+                        }
+                        start = i + 1;
                     }
 
-                    buffer.Clear();
-                    if (data.Length > 0)
-                        buffer.Append(data);
+                    // chunk 末尾的残余字节（消息未结束）累积到 byteBuffer 等下一次 read 拼接
+                    if (start < bytesRead)
+                        byteBuffer.Write(readBuf, start, bytesRead - start);
                 }
             }
             catch (IOException)

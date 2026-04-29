@@ -1,0 +1,20 @@
+{
+  "name": "cf7-save-repair-dict-build",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Generate launcher/data/save_repair_dict.json from CF7 game data XMLs and AS2 constants. Single source for both launcher (C#) and tools/cf7-save-repair (TS).",
+  "scripts": {
+    "build": "tsx src/build.ts",
+    "verify": "tsx src/build.ts --verify",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "fast-xml-parser": "^4.5.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.8"
+  }
+}

@@ -36,6 +36,56 @@ class org.flashNight.neur.Server.SaveManager {
     public static var LATEST_VERSION:String = "3.0";
     public static var SAVE_KEY:String = "test";
 
+    // ==================== 修复字典常量 ====================
+    // 这些常量是 launcher/data/save_repair_dict.json 的同源权威。
+    // tools/cf7-save-repair-dict-build/ 在生成 dict 时直接 dump 这些数组字面量。
+    // 维护者新增技能/任务链/关卡时，必须同步加到对应数组并 regenerate dict (npm run build)；
+    // CI gate 会在 dict 与 AS2 常量不一致时拒绝合入。
+    //
+    // 解析规则（见 tools/.../as2-constants.ts）：
+    //   - 必须是 `public static var <名字>:Array = [` 起始
+    //   - 字符串字面量用双引号或单引号；支持 `//` 行注释
+    //   - 以 `];` 结束
+    //
+    // 字段对应：
+    //   REPAIR_DICT_SKILLS      → mydata[5][N][0] 技能名
+    //   REPAIR_DICT_TASK_CHAINS → mydata.tasks.task_chains_progress 的 key
+    //   REPAIR_DICT_STAGES      → mydata.others.物品来源缓存.discoveredStages[N]
+    public static var REPAIR_DICT_SKILLS:Array = [
+        // 空手 / 武术 / 内力
+        "拳脚攻击", "升龙拳", "裂地拳", "拳脚空中连招", "内力爆发", "小跳",
+        "聚气", "铁布衫", "兴奋剂", "能量盾",
+        "兽王崩拳", "虎拳", "组合拳", "日字冲拳", "寸劲", "径庭拳/黑闪",
+        "觉醒霸体", "觉醒震地", "地震", "一瞬千击", "龟派气功",
+        // 刀剑
+        "刀剑攻击", "上挑", "下劈", "刀剑空中连招",
+        // 枪械
+        "枪械攻击", "移动射击", "枪械师", "轰炸专家", "冲击连携",
+        "追猎射击", "翻滚换弹", "战术目镜", "死亡绽放",
+        // 通用
+        "独行者", "口才", "铁匠", "逆向", "炼金", "驾驶"
+    ];
+
+    public static var REPAIR_DICT_TASK_CHAINS:Array = [
+        "主线", "引导", "支线", "挑战", "废城",
+        "彩蛋", "异形", "大学", "后勤", "预览"
+    ];
+
+    public static var REPAIR_DICT_STAGES:Array = [
+        // 训练 / 主线
+        "A兵团试炼场", "深入禁区", "大学城周边", "废城环线", "贫民窟",
+        "地铁站", "郊区", "超市废墟", "第三集结点", "夺取材料",
+        // 摇滚公园 / 堕落城
+        "摇滚公园", "压制摇滚公园", "摇滚内战", "堕落城下水道入口", "堕落城深处",
+        // BOSS / 通缉
+        "通缉任务之李小龙coser", "通缉任务之魔女", "通缉任务之尾上世莉架",
+        "通缉任务之硬化僵尸", "通缉任务之异形", "挑战Andylaw",
+        "铁血乱舞", "菲尼克斯Lv16", "锡蒙利Lv16",
+        // 后期
+        "密林深处", "密林中央", "AVP", "机器游荡区",
+        "黑铁会", "黑铁会总堂", "军阀前线基地", "试验场", "决战之地"
+    ];
+
     // ==================== 状态 ====================
     private var _dirtyMark:Boolean;
     private var _lastSaveHash:String;
