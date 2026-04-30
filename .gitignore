@@ -98,6 +98,18 @@ launcher_user_prefs.json
 # Save shadow backups (player-specific, not source)
 saves/*.json
 saves/*.json.tmp
+# 玩家本地修复备份与 audit log（C1b/C2-α 自动写入，含真实存档数据，不入库）
+saves/.repair-backups/
+# launcher 版本 gate marker（机器本地状态）
+saves/.launcher-version-marker.json
+saves/.launcher-version-marker.json.tmp
+
+# cf7-save-repair TS 工具产物（dist 由 tsc 生成；coverage 由 vitest 生成）
+tools/cf7-save-repair/dist/
+tools/cf7-save-repair/coverage/
+# 同源 dict-build 工具
+tools/cf7-save-repair-dict-build/dist/
+tools/cf7-save-repair-dict-build/coverage/
 
 # AI sim (generated results + Python bytecode cache)
 tools/mercenary-ai-sim/results/
