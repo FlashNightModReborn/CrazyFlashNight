@@ -37,10 +37,12 @@ namespace CF7Launcher.Guardian
                 psi.FileName = _flashPlayerPath;
                 psi.Arguments = "\"" + _swfPath + "\"";
                 psi.UseShellExecute = false;
-                // 试探：透传 STARTF_USESHOWWINDOW + SW_HIDE 给 Flash SA。
-                // 若 SA 首次 ShowWindow 走 SW_SHOWDEFAULT 即吃此 hint，窗口从未上 DWM；
-                // 若 SA 硬编码 SW_SHOW 则无效，回退到 ArmEarlyReparent 路径。
-                psi.WindowStyle = ProcessWindowStyle.Hidden;
+                // 注意：不要在这里设 psi.WindowStyle = ProcessWindowStyle.Hidden.
+                // 实测当前 Flash SA 直接用 WS_VISIBLE 创窗，忽略 STARTF_USESHOWWINDOW，hint 零收益；
+                // 而 WindowManager.PollMainWindowHandle 走 .NET MainWindowHandle (= IsWindowVisible
+                // 启发式)，假设主窗口最终会 visible. 一旦未来某 Flash SA 变体尊重了这个 hint，
+                // 主窗口永远不 visible，ArmEarlyReparent 与 EmbedFlashWindow 双双 timeout，整条嵌入
+                // 链路静默失败. 不要为了一个零收益 hint 留这颗雷.
 
                 lock (_lock)
                 {
