@@ -3,6 +3,7 @@
 C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView2 预检，再尽早构造 `GuardianForm`，随后完成 Steam 校验、Flash trust 租约、音频与总线初始化，最后由 BootstrapPanel 的 `list → ready → prewarm → reveal` 链路切入 Flash Player SA 运行态；同时承载 V8 脚本总线、HTTP / XMLSocket 通信和启动前存档决议（Protocol 2）。
 
 > **文档角色**：Guardian Launcher 子系统的 canonical deep doc。项目总览见 [../README.md](../README.md)，顶层任务路由见 [../AGENTS.md](../AGENTS.md)。高变动章节按各自 commit 基线维护。
+> **最后核对代码基线**：commit `cc25c357d`（2026-04-30）。
 > **新接手阅读顺序**：本节 → [架构概览](#架构概览)（启动时序 + 运行态面板栈）→ [Bootstrap 前端与协议](#bootstrap-前端与协议)（cmd 表 + reveal gate + config_set）→ [存档权威迁移 (Protocol 2)](#存档权威迁移-protocol-2)。其余章节继续展开音频 / 性能调度 / GPU / UI 迁移 / 面板系统等运行时细节。
 
 ## 技术栈
@@ -218,21 +219,28 @@ Program.Run(args)
 
 ## 目录结构
 
-按 commit `9f8f0c225`（2026-04-20）时的源码树整理。只列追踪目录；`bin/` / `packages/` / `target/` / `node_modules/` / `obj/` 等构建产物和缓存均由 .gitignore 管理。后续若需复核本节，优先看 `git diff 9f8f0c225..HEAD -- launcher/`。
+按 commit `cc25c357d`（2026-04-30）时的源码树复核。只列追踪目录；`bin/` / `packages/` / `target/` / `node_modules/` / `obj/` 等构建产物和缓存均由 .gitignore 管理。后续若需复核本节，优先看 `git diff cc25c357d..HEAD -- launcher/`。C# 文件级权威以 [CRAZYFLASHER7MercenaryEmpire.csproj](CRAZYFLASHER7MercenaryEmpire.csproj) / [tests/Launcher.Tests.csproj](tests/Launcher.Tests.csproj) 的 `Compile Include` 为准，README 仅保留职责树。
 
 ```
 launcher/
 ├── CRAZYFLASHER7MercenaryEmpire.csproj   C# 项目文件
 ├── packages.config                        NuGet 包清单
-├── build.ps1                              总构建脚本（10 阶段，见下文）
+├── build.ps1                              总构建脚本（NuGet/TS/native/Rust/MSBuild/资产 gate，见下文）
 ├── setup-check.ps1                        构建/运行前依赖自检（Targeting Pack / MSBuild / nuget / WebView2）
+├── app.manifest                           DPI awareness / Windows 兼容声明
 ├── app.ico                                应用图标
+│
+├── data/
+│   ├── save_schema.json                   存档编辑器 diff/默认值基线
+│   ├── save_repair_dict.json              存档自动修复字典
+│   └── map_hud_data.json                  Native HUD 小地图 catalog（build.ps1 会 fail-fast 校验）
 │
 ├── src/
 │   ├── Program.cs                         入口：正常模式先做 WebView2 预检，再尽早构造 GuardianForm；随后初始化 Steam/Trust/总线并接 GameLaunchFlow
 │   │
 │   ├── Config/
-│   │   ├── AppConfig.cs                   config.toml 解析（Flash/SWF 路径、GPU/overlay 诊断开关）
+│   │   ├── AppConfig.cs                   config.toml 解析（Flash/SWF 路径、GPU/overlay/native HUD 诊断开关）
+│   │   ├── GpuPreferenceManager.cs        HKCU UserGpuPreferences 写入/退出清理
 │   │   ├── UserPrefs.cs                   用户级偏好持久化（优先 LocalAppData，不可用时回退项目根）
 │   │   ├── SteamOwnershipCheck.cs         Steam 进程 + SteamAPI AppID 正版校验（开发仓库 fail-open，发行环境 fail-closed）
 │   │   └── FlashTrustManager.cs           `cf7me.cfg` trust 租约（用户级/系统级多目录尝试，退出按租约清理）
@@ -255,12 +263,24 @@ launcher/
 │   │   ├── CursorOverlayForm.cs           原生 cursor 视觉层（Layered Window，高频低延迟）
 │   │   ├── WebOverlayForm.cs              WebView2 视觉层（WS_EX_TRANSPARENT）
 │   │   ├── InputShieldForm.cs             幽灵输入层（GDI+ α 命中 + CDP 注入）
+│   │   ├── NativeHudOverlay.cs            C# Native HUD 容器（按 widget union 动态 bounds）
+│   │   ├── NativePanelBackdrop.cs         panel 打开期 Flash snapshot 背景层
+│   │   ├── PanelHostController.cs         panel 打开/关闭队列：snapshot/backdrop/EX_STYLE/HUD suspend
+│   │   ├── LauncherCommandRouter.cs       按钮命令与 panel 打开的唯一中枢
+│   │   ├── PanelLayoutCatalog.cs          panel 尺寸/锚点计算
 │   │   ├── IToastSink.cs / INotchSink.cs  Toast / Notch 抽象接口
 │   │   ├── FlashCoordinateMapper.cs       Flash 舞台坐标 ↔ 屏幕坐标
 │   │   ├── FpsRingBuffer.cs               FPS 环形缓冲 + 场景重置
 │   │   ├── PerfDecisionEngine.cs          性能决策（滑动窗口 + 迟滞，替代 AS2 Kalman/PID）
 │   │   ├── HotkeyGuard.cs                 独立进程源码（csc 单独编译为 hotkey_guard.exe）
 │   │   ├── KeyboardHook.cs                进程内 WH_KEYBOARD_LL（ESC 路由 + Ctrl+F 兜底；失败 fallback RegisterHotKey）
+│   │   │
+│   │   ├── Hud/                           Native HUD widget 与解析工具
+│   │   │   ├── RightContextWidget.cs       右侧 5 键 + 小地图卡片 + 装备/任务行 + jukebox titlebar
+│   │   │   ├── SafeExitPanelWidget.cs      安全退出二次确认
+│   │   │   ├── ComboWidget.cs              搓招输入态与命中通知
+│   │   │   ├── MapHudWidget.cs             小地图 shared renderer / blocks fallback
+│   │   │   └── WidgetScaler.cs / UiDataPacketParser.cs / MapHudDataCatalog.cs 等支撑类
 │   │   │
 │   │   └── Handlers/                      【BootstrapMessageHandler 拆分后的 cmd handler 集】
 │   │       ├── BootstrapCommandHelpers.cs  共享工具：PostResp / PostError / DispatchArchive / RequireIdleOrTearDown 等
@@ -270,11 +290,12 @@ launcher/
 │   │       ├── DataEditCommandHandler.cs   save / reset / export（共享 RequireIdleOrTearDown 守卫）
 │   │       ├── ImportCommandHandler.cs     import_start / import_commit
 │   │       ├── UiCommandHandler.cs         logs / open_saves_dir
-│   │       └── ConfigCommandHandler.cs     config_set（Plan A+：currentValue 权威下发 + requestId 相关 id）
+│   │       ├── ConfigCommandHandler.cs     config_set（Plan A+：currentValue 权威下发 + requestId 相关 id）
+│   │       └── RepairCommandHandler.cs     C2-β 存档修复检测 / 手动应用 / 强制继续
 │   │
 │   ├── Bus/
 │   │   ├── XmlSocketServer.cs             TCP 服务器（8 入站前缀 + 1 出站前缀 + JSON 双通道）
-│   │   ├── HttpApiServer.cs               HTTP REST（10 端点，详见 HTTP API 节）
+│   │   ├── HttpApiServer.cs               HTTP REST（11 个 path，详见 HTTP API 节）
 │   │   ├── MessageRouter.cs               JSON task 路由：RegisterSync / RegisterAsync
 │   │   ├── TaskRegistry.cs                Task 注册表 — single source of truth
 │   │   ├── PortAllocator.cs               种子 "1192433993" 确定性端口分配
@@ -288,8 +309,14 @@ launcher/
 │   │   ├── SolFileLocator.cs              SOL 路径定位（仅当前运行根；`.swf/.exe` 双兼容 + root-scoped fallback）
 │   │   ├── SaveMigrator.cs                2.7→3.0 迁移（含 legacy `mydata[3]` 缺失补 0）+ MergeTopLevelKeys + ValidateResolvedSnapshot
 │   │   ├── LegacyPresetSlotSeeder.cs      标准 10 槽 authority 预热：`list/load/load_raw` 前探测 legacy SOL 并补种 shadow
+│   │   ├── SaveAutoRepairService.cs       启动期 silent 自动修复高置信度存档问题
+│   │   ├── RepairPolicy.cs / RepairDictionary.cs / RepairMatcher.cs / RepairBackupStore.cs
+│   │   ├── SaveCorruptionScanner.cs / SaveFieldLayering.cs / LauncherVersionGate.cs
 │   │   ├── ISolParser.cs / ISolFileLocator.cs / IArchiveStateProbe.cs / IArchiveShadowWriter.cs
 │   │   └── SaveResolutionContext.cs       DI 聚合（resolver + archive + swfPath + legacy seeder）
+│   │
+│   ├── Diagnostic/
+│   │   └── DiagnosticPackager.cs          bootstrap/HTTP 诊断包导出
 │   │
 │   ├── Audio/
 │   │   ├── AudioEngine.cs                 miniaudio P/Invoke（play/stop/seek/peak）
@@ -309,6 +336,8 @@ launcher/
 │   │   ├── DataQueryTask.cs               NPC/佣兵数据查询（Data/ 支撑）
 │   │   ├── ToastTask.cs                   UI toast 通知（fire-and-forget）
 │   │   ├── ShopTask.cs                    K 点商城双层 callId 桥接（10s 超时）
+│   │   ├── MapTask.cs                     Web 地图 panel snapshot / refresh / navigate
+│   │   ├── StageSelectTask.cs             Web 选关 panel snapshot / enter
 │   │   ├── ArchiveTask.cs                 存档 shadow 读写 + editor/import + 启动期候选快照
 │   │   ├── IconBakeTask.cs                物品图标批量烘焙（begin/chunk/end 协议）
 │   │   └── BenchTask.cs                   性能基准 task（条件编译）
@@ -355,8 +384,11 @@ launcher/
 │   │   ├── welcome.css                    欢迎页样式（Cyberpunk 卡片 + 阵营侧栏 + 字号预设按钮）
 │   │   ├── overlay.css                    Notch/Toast/Jukebox 等样式 + 动效
 │   │   └── panels.css                     面板系统样式（Cyberpunk 2077 风格）
-│   ├── assets/                            引导页图片与媒体
+│   ├── assets/                            引导页 / cursor / map / stage-select 图片与媒体
 │   │   ├── bg/                            背景图层资源
+│   │   ├── cursor/native/                 C# CursorOverlayForm 贴图契约（64x64, hotspot 16,16）
+│   │   ├── map/                           地图 panel/HUD 页面图
+│   │   ├── stage-select/                  选关背景与 hover 预览
 │   │   ├── logos/                         标题 / Steam 等品牌图标
 │   │   └── intro.mp4                      片头视频（deferReveal 路径播放期）
 │   ├── lib/
@@ -379,7 +411,7 @@ launcher/
 │       ├── notch.js                       Notch UI（FPS/clock/工具条/通知）
 │       ├── currency.js                    经济面板动画
 │       ├── combo.js                       搓招连击飞出动效
-│       ├── jukebox.js                     [Phase 5 退役] 旧 BGM 点歌器（已注释脚本入口；Phase 7 删除）。展开 UI 已迁 panels/jukebox-panel.js
+│       ├── jukebox.js                     旧 BGM 点歌器入口（脚本入口已注释；展开 UI 已迁 panels/jukebox-panel.js）
 │       ├── panels.js                      通用面板生命周期（register/open/close/ESC）
 │       ├── panels/
 │       │   └── jukebox-panel.js           BGM 点歌器（Panels.register('jukebox')；展开后内容由此承载）
@@ -404,12 +436,15 @@ launcher/
 │           └── gobang/                    五子棋小游戏（core/dev + panel/css/README，AI 走 GomokuTask/Rapfi）
 │
 ├── tests/                                 【xUnit 2.4.2 C# 单测，见测试基建节】
-│   ├── Launcher.Tests.csproj              legacy csproj + packages.config（net462 对齐主工程）
+│   ├── Launcher.Tests.csproj              legacy csproj + packages.config（net462 对齐主工程；38 个测试源码入口）
 │   ├── packages.config                    xunit / xunit.runner.console / xunit.runner.visualstudio
 │   ├── run_tests.ps1                      双段 nuget restore + msbuild + xunit.console
 │   ├── SanityTests.cs                     基建冒烟
-│   ├── Save/                              SaveMigratorTests.cs / SolResolverTests.cs
-│   └── Bus/                               MessageRouterTests.cs（锁定当前观察行为）
+│   ├── Bus/ / Tasks/ / Save/              总线、task、Protocol 2、修复策略与自动修复
+│   ├── Guardian/                          DPI/坐标/panel/native HUD/widget 相关单测
+│   └── Fixtures/MapHud/                   Native Map HUD payload fixtures
+│
+├── perf/                                  WebView2 overlay / panel 性能 harness、场景、ablation 与报告工具
 │
 ├── docs/
 │   └── phase1-owner-matrix.md             （Phase 1 所有权/职责矩阵归档）
@@ -450,9 +485,9 @@ powershell -File setup-check.ps1
 powershell -File build.ps1
 ```
 
-### build.ps1 实际 10 阶段流程
+### build.ps1 实际执行链
 
-脚本代码里的阶段编号是"历史叠加式"（原始 4 步之上 insert 1.5/1.8/1.9/3.5，后又扩到 6），文字头写的 `[Step N/4]` 与 `[Step N/6]` 并非分母变化、而是遗留。**实际执行阶段如下**：
+脚本代码里的阶段编号是"历史叠加式"（原始 4 步之上 insert 1.5/1.8/1.9/3.5，后又扩到 6/6a/6b），文字头写的 `[Step N/4]`、`[Step N/6]` 并非分母变化，而是遗留。**实际执行动作如下**：
 
 | 阶段 | 动作 |
 |------|------|
@@ -465,7 +500,9 @@ powershell -File build.ps1
 | 3.5  | 硬断言 `sol_parser.dll` 已落盘到项目根（防止"编过但运行时 DllNotFoundException"） |
 | 4    | 复制 V8 原生 DLL（ClearScriptV8.win-x64.dll）到项目根 |
 | 5    | 复制 WebView2 原生 loader（WebView2Loader.dll）到项目根 |
-| 6    | fail-fast 校验 `launcher/web` 运行时必需集：`bootstrap.html` / `bootstrap-main.js` / `overlay.html` / `config/version.js` / `assets/bg/manifest.json` / `assets/cursor/native/*` / `assets/intro.mp4` / `help/*.md` / `icons/manifest.json` / `data/lockbox-variants.json` / 关键 `modules/*` 与 minigame 入口文件；随后运行 `node tools/audit-native-cursor-assets.js` 校验 native cursor `64x64` 画布与 `(16,16)` 热点契约，缺失或不合规直接 exit 1 |
+| 6    | fail-fast 校验 `launcher/web` 运行时必需集：`bootstrap.html` / `bootstrap-main.js` / `overlay.html` / `config/version.js` / `assets/bg/manifest.json` / `assets/cursor/native/*` / `assets/intro.mp4` / `assets/map/*` / `assets/stage-select/*` / `help/*.md` / `icons/manifest.json` / `data/lockbox-variants.json` / 关键 `modules/*` 与 minigame 入口文件 |
+| 6a   | 运行 `node tools/audit-native-cursor-assets.js` 校验 native cursor `64x64` 画布与 `(16,16)` 热点契约，缺失或不合规直接 exit 1 |
+| 6b   | fail-fast 校验 `launcher/data/map_hud_data.json` 与 `launcher/data/save_schema.json`；缺失时分别提示 `node tools/export-maphud-data.js` / `node tools/extract-save-schema.js` |
 
 > build.ps1 **不跑** `launcher/tests/`；测试走独立 `launcher/tests/run_tests.ps1`，见[测试基建](#测试基建)节。
 
@@ -540,20 +577,19 @@ powershell -File run_tests.ps1
 
 ### 测试覆盖
 
-当前 `Launcher.Tests.csproj` 直接编译 6 个测试源码文件；`SaveMigratorTests` 继续使用代码内 helper 数据，没有额外的 `Fixtures/SaveMigrator/` 外部 fixture 目录。
+当前 `Launcher.Tests.csproj` 直接编译 38 个测试源码文件（`<root>` 1 / `Bus` 2 / `Tasks` 3 / `Save` 8 / `Guardian` 24），截至 commit `cc25c357d` 可静态检出 387 个 `[Fact]` / `[Theory]` 标记。`SaveMigratorTests` 继续使用代码内 helper 数据；外部 fixture 目前主要集中在 `Fixtures/MapHud/`。
 
-| 文件 | 覆盖面 | `[Fact]` 数量 |
-|------|--------|---------------|
-| `Save/SaveMigratorTests.cs` | undefined→2.6→2.7→3.0 迁移链 + MergeTopLevelKeys + ValidateResolvedSnapshot 结构校验 | 29 |
-| `Save/SolResolverTests.cs` | tombstone / shadow / v3.0 / v2.7 / pre-2.7 / parse 失败等决议矩阵，外加首导入 authority / seed 失败边界 | 21 |
-| `Save/SolFileLocatorTests.cs` | 当前运行根 `.swf/.exe` 解析顺序、root-scoped fallback、跨根隔离、删除范围 | 4 |
-| `Save/LegacyPresetSlotSeederTests.cs` | 标准 10 槽预热、已有 authority 跳过、批量预热只探测缺失槽 | 3 |
-| `Bus/MessageRouterTests.cs` | 协议分发 + callId wrap + error 构造，**锁定当前观察行为**（异常冒泡 / respond 无去重） | 15 |
-| `SanityTests.cs` | 基建冒烟 | 2 |
+| 分组 | 覆盖面 |
+|------|--------|
+| `Bus/` | MessageRouter 当前观察行为、XMLSocket read loop 边界 |
+| `Tasks/` | StageSelectTask、IconBakeTask、ArchiveTask list/filter 行为 |
+| `Save/` | Protocol 2 决议、SOL 定位、legacy 首导入、版本 gate、repair policy / backup / auto-repair |
+| `Guardian/` | overlay 坐标、DPI、FlashSnapshot、PanelHost/Router、InputShield telemetry、Native HUD bounds、UiData parsing、RightContext/MapHud/SafeExit/Combo/Toast/Notch/widget scaling |
+| `<root>` | 基建冒烟 |
 
 ### Web QA 与开发 harness
 
-本节最后核对代码基线：commit `9f8f0c225`。
+本节最后核对代码基线：commit `cc25c357d`。
 
 小游戏测试不走 `launcher/tests/`，地图 panel 的 DOM / 布局 / 交互回归也不走 C# 单测；统一按各模块自带的 QA 入口执行：
 
@@ -661,39 +697,33 @@ gpuPreference = "off"
 # 开发用：Ctrl+G 触发 GPU 合成成本探针。玩家版必须 false。
 devGpuProbeHotkey = false
 
-# 开关 Native HUD + PanelHostController 装配（overlay 架构纯化迁移，详见 plans/expressive-leaping-galaxy.md）。
-# Phase 5.7 部分（当前）：默认 false。设 true 启用 Panel-Only + NotchOverlay/ToastOverlay + 已迁 widget：
+# 开关 Native HUD + PanelHostController 装配（overlay 架构纯化迁移态；默认 false）。
+# 设 true 启用 Panel-Only + NotchOverlay/ToastOverlay + 当前已注册 NativeHud widget：
 #   - panel 打开走 PanelHostController.OpenPanel：FlashSnapshot → backdrop → NativeHud/NotchOverlay/ToastOverlay 全 Suspend
 #     → WebOverlay 缩到 panel 矩形 + opaque + 去 LAYERED|TRANSPARENT
 #   - panel 关闭：WebOverlay 回 anchor + 透明 + click-through；NotchOverlay/ToastOverlay 重新 SetReady 显示
 #   - WebOverlay SetReady 时不再 SuspendFallback——NotchOverlay/ToastOverlay 一直作为常驻 HUD（含 LOG/EXIT/全屏按钮）
 #   - 注入 CSS 隐藏 web 端 #notch / #toast-container / #top-right-tools / #context-panel / #safe-exit-panel /
 #     #quest-notice-bar / #combo-status / #jukebox-panel / #map-hud 避免双重 UI
-#   - 已迁 widget（NativeHudOverlay 容器内）：RightContextWidget（右上 5 键 + 小地图卡片 + 地图/装备/任务行
-#     + 任务通知 + jukebox 标题栏，统一复刻 web right:80px / width:170px / 32px 行高常量），
-#     NotchOverlay 接管 #notch 刘海栏（金币/KP + FPS/光照/时钟 + row1-right + hover toolbar），
-#     SafeExitPanelWidget（SAFEEXIT click → router → Arm 后才显示，沿用同一 right:80px / 170px cluster 对齐规则），
-#     ComboWidget（combo|cmdName|typed|hints 输入态 + N combo 命中态：DFA 金/Sync 青；HIT_MS=1200ms 后回落）。
-#     CurrencyWidget / TopRightToolsWidget / NotchToolbarWidget / QuestNoticeWidget / JukeboxTitlebarWidget / MapHudWidget 类仍保留，
-#     但 Phase 5.7 默认不独立注册，避免多个右侧 widget 各自定位造成错位
-#   - notch 通知 fan-out（CompositeNotchSink）：N 前缀 notice 同时送 webOverlay 与 NativeHudOverlay，
-#     让 INotchNoticeConsumer widget（如 ComboWidget category="combo"）收到，过渡期保留 web 渲染
-# 性能收益（当前）：仅 panel 打开期 α blend 下降；idle 仍是 Phase 0 baseline。
-# Phase 4.7 已完成全部常驻 widget 迁移；Phase 4 收尾会启用完整 idle SW_HIDE WebView2 进入 ~15pp DWM α 地板回收阶段。
+#   - NativeHudOverlay 当前注册 RightContextWidget / SafeExitPanelWidget / ComboWidget；
+#     RightContextWidget 内部复用 MapHudWidget renderer，旧拆分 widget 类已移除。
+#   - notch 通知 fan-out（CompositeNotchSink）：NativeHud 优先消费已订阅 category（如 combo），
+#     未订阅 category 继续流向 webOverlay/NotchOverlay 过渡渲染
+# 性能收益：panel 打开期 α blend 成本下降；panel 关闭后 DoFullIdleSuspend 会 SW_HIDE + TrySuspendAsync 运行态 WebView2。
 useNativeHud = false
 ```
 
-代码默认（[AppConfig.cs:23-26](src/Config/AppConfig.cs#L23)）：`GpuSharpeningEnabled = true`, `Sharpness = 0.5`。示例显式写 `false` 是遵循正文「当前禁用」语义，等 pipeline 接上以后再统一默认。
+代码默认（[AppConfig.cs](src/Config/AppConfig.cs) 构造函数）：`GpuSharpeningEnabled = true`, `Sharpness = 0.5`。示例显式写 `false` 是遵循正文「当前禁用」语义，等 pipeline 接上以后再统一默认。
 
 `devGpuProbeHotkey=true`（或 `CF7_DEV_GPU_PROBE=1`）启用 Ctrl+G 切换 WebView2 `DefaultBackgroundColor=Black` + Flash 子窗口隐藏的 GPU 合成探针，用于实测 alpha blend 占 iGPU 的比重。日志写 `[GpuProbe] ON/OFF tick=...` 可对照任务管理器曲线。**玩家版必须保持 false**：误触会让游戏画面消失，再按一次才能恢复。
 
-`useNativeHud=true`（或 `CF7_NATIVE_HUD=1`）开启 Panel-Only 架构 + NotchOverlay 接管 HUD + 已迁 NativeHud widget。Phase 5.7 范围（当前）：
+`useNativeHud=true`（或 `CF7_NATIVE_HUD=1`）开启 Panel-Only 架构 + NotchOverlay 接管 HUD + 当前 NativeHud widget：
 - `HandleButtonClick` 与 `RequestOpenPanel` 路由到 [LauncherCommandRouter.cs](src/Guardian/LauncherCommandRouter.cs)（按钮命令唯一中枢）
 - 所有 panel 打开统一进 [PanelHostController.cs](src/Guardian/PanelHostController.cs) 的 command queue：[FlashSnapshot.cs](src/Guardian/FlashSnapshot.cs).Capture → ComposeBackdrop → [NativePanelBackdrop.cs](src/Guardian/NativePanelBackdrop.cs) 显示 → [NativeHudOverlay.cs](src/Guardian/NativeHudOverlay.cs)+NotchOverlay+ToastOverlay 全 Suspend → WebOverlayForm.ResumeForPanel（去 `WS_EX_LAYERED|WS_EX_TRANSPARENT`、`TransparencyKey=Empty`、`DefaultBackgroundColor=Black`、SetWindowPos `HWND_TOP|SWP_FRAMECHANGED` 至 [PanelLayoutCatalog.cs](src/Guardian/PanelLayoutCatalog.cs) 决定的矩形）→ PostToWeb `panel_viewport_set` → InputShield 进 telemetry → 顶置 HitNumber/Cursor → 启用 ESC
 - panel 关闭（useNativeHud=true 路径）：WebOverlayForm.ForceIdleState 走 `DoFullIdleSuspend` —— `SuspendWebTimers` 停 fps/audio/position-settle/reload timer + `_frozenForIdle=true` 冻结 HandleUiData 仅缓存不 ExecScript + `ShowWindow SW_HIDE` + 恢复 `WS_EX_LAYERED|WS_EX_TRANSPARENT` + `HWND_NOTOPMOST` 防御 + `TransparencyKey/transparent BG` 复位 + `CoreWebView2.TrySuspendAsync` fire-and-forget；NotchOverlay/ToastOverlay 重新 SetReady 显示。下次 `ResumeForPanel` 先调 `CoreWebView2.Resume()` 唤醒。useNativeHud=false 仍走 `DoSoftIdleRestore` 仅恢复样式拉回 anchor 矩形（保留 web HUD 显示）
 - WebOverlay SetReady 时不再 SuspendFallback ([WebOverlayForm.SuspendFallback](src/Guardian/WebOverlayForm.cs))——NotchOverlay/ToastOverlay 一直显示作为常驻 HUD，含 LOG/EXIT/全屏等按钮
 - WebOverlay 注入 CSS 隐藏 web 端 `#notch` / `#toast-container` / `#top-right-tools` / `#safe-exit-panel` / `#quest-notice-bar` / `#combo-status` / `#jukebox-panel` / `#map-hud` / **`#context-panel`**（整个容器，含 `#quest-row > #map-hud-toggle / EQUIP_UI / TASK_UI` 按钮）避免与 C# 渲染重叠；notch/toast 消息（AddNotice/SetStatusItem/AddMessage）始终走 fallback (NotchOverlay/ToastOverlay) 而不是 web ExecScript。装备/任务入口由 [RightContextWidget](src/Guardian/Hud/RightContextWidget.cs) 的右侧 `装备/任务` 行接管，通过 [LauncherCommandRouter.cs](src/Guardian/LauncherCommandRouter.cs) 直接 `SendGameCommand("openEquipUI"/"openTaskUI")`，与原 web 路径等价
-- **Native HUD 默认组成**：[NotchOverlay](src/Guardian/NotchOverlay.cs) 接管 web `#notch`（金币/KP、FPS、光照 sparkline、时钟、row1-right、hover toolbar，UiData `g/k/s/q` 直接喂入；`game` notice 复刻 Web 的队列、去重计数、3 秒退场和 4 条上限），[ToastOverlay](src/Guardian/ToastOverlay.cs) 复刻 web `#toast-container` 的 `285px` 宽度、8 秒显示 + 1.2 秒淡出、最多 8 条队列，[RightContextWidget](src/Guardian/Hud/RightContextWidget.cs) 接管右侧 5 键 + context panel + jukebox titlebar（布局统一走 [RightHudLayout](src/Guardian/Hud/RightHudLayout.cs)，小地图 card 复用 [MapHudWidget](src/Guardian/Hud/MapHudWidget.cs) shared renderer：优先按 `visuals.assetUrl` PNG alpha 绘制 web `map-hud-svg-silhouette` 等价剪影，失败才回退 blocks），[SafeExitPanelWidget](src/Guardian/Hud/SafeExitPanelWidget.cs)（**必须由 SAFEEXIT click → router → widget.Arm() 显式开启**才显示；同样走 `right:80px` 对齐规则；Arm 后 sv:1 显示「存盘中…」状态条，sv:2 切到 取消/退出 按钮），[ComboWidget](src/Guardian/Hud/ComboWidget.cs)（搓招进度 + DFA/Sync 命中扫光、字符收束、收起动画）。旧 [CurrencyWidget](src/Guardian/Hud/CurrencyWidget.cs) / [TopRightToolsWidget](src/Guardian/Hud/TopRightToolsWidget.cs) / [NotchToolbarWidget](src/Guardian/Hud/NotchToolbarWidget.cs) / [QuestNoticeWidget](src/Guardian/Hud/QuestNoticeWidget.cs) / [JukeboxTitlebarWidget](src/Guardian/Hud/JukeboxTitlebarWidget.cs) 类仍保留供回滚与单元测试，但 Phase 5.7 默认不独立注册
+- **Native HUD 默认组成**：[NotchOverlay](src/Guardian/NotchOverlay.cs) 接管 web `#notch`（金币/KP、FPS、光照 sparkline、时钟、row1-right、hover toolbar，UiData `g/k/s/q` 直接喂入；`game` notice 复刻 Web 的队列、去重计数、3 秒退场和 4 条上限），[ToastOverlay](src/Guardian/ToastOverlay.cs) 复刻 web `#toast-container` 的 `285px` 宽度、8 秒显示 + 1.2 秒淡出、最多 8 条队列，[RightContextWidget](src/Guardian/Hud/RightContextWidget.cs) 接管右侧 5 键 + context panel + jukebox titlebar（布局统一走 [RightHudLayout](src/Guardian/Hud/RightHudLayout.cs)，小地图 card 复用 [MapHudWidget](src/Guardian/Hud/MapHudWidget.cs) shared renderer：优先按 `visuals.assetUrl` PNG alpha 绘制 web `map-hud-svg-silhouette` 等价剪影，失败才回退 blocks），[SafeExitPanelWidget](src/Guardian/Hud/SafeExitPanelWidget.cs)（**必须由 SAFEEXIT click → router → widget.Arm() 显式开启**才显示；同样走 `right:80px` 对齐规则；Arm 后 sv:1 显示「存盘中…」状态条，sv:2 切到 取消/退出 按钮），[ComboWidget](src/Guardian/Hud/ComboWidget.cs)（搓招进度 + DFA/Sync 命中扫光、字符收束、收起动画）。旧的拆分 widget 类已收敛进 `RightContextWidget` 或移除，不再在源码树中作为独立类维护
 - NativeHud 鼠标 Click 合成必须 Down/Up 命中**同 widget**（[NativeHudOverlay.cs](src/Guardian/NativeHudOverlay.cs) `_leftDownWidget` 跟踪）；widget 内部如需 button-level 匹配（如 SafeExitPanel 的取消/退出），自行用 `_downIndex` 守门（见 SafeExitPanelWidget.TryFireButtonClick）
 - NativeHud UiData 派发分两路：snapshot KV (`g:1234|k:5`) 走 [IUiDataConsumer](src/Guardian/Hud/INativeHudWidget.cs)；旧版 (`task|拯救公主` / `combo|波动拳|↓↘|...`) 走 [IUiDataLegacyConsumer](src/Guardian/Hud/INativeHudWidget.cs)。检测：[UiDataPacketParser.TryParseLegacy](src/Guardian/Hud/UiDataPacketParser.cs)——首段无 `:` 且总段数 ≥ 2 视为 legacy。NativeHudOverlay.HandleUiData 优先 legacy 探测，命中则一次性事件不入 snapshot；不命中再走 KV 路径。两套消费者计数 + LegacyTypes 集合 fast-path 独立守门（无消费者或 type 未订阅时整包早 return）
 - N 前缀 notice 派发走 [INotchNoticeConsumer](src/Guardian/Hud/INativeHudWidget.cs)：socket "N{category}|color|text" → INotchSink.AddNotice → [CompositeNotchSink](src/Guardian/CompositeNotchSink.cs) fan-out 到 webOverlay + nativeHud。NativeHud 用 `_registeredNoticeCategories` 集合门控未订阅 category（如 perf/icon_bake/wave 不进 native 派发预算）；ComboWidget 订阅 category="combo" 处理 DFA/Sync 命中通知
@@ -706,9 +736,9 @@ useNativeHud = false
 - 性能收益：panel 打开期 α blend 成本下降（panel 矩形小 + opaque）；idle 期 `DoFullIdleSuspend` 整个 SW_HIDE WebView2 + TrySuspendAsync → 拿回 ~15pp DWM α 地板（所有常驻 HUD 已迁到 C# widget，玩家在 panel 关闭期间仍能看到 notch / toast / 货币 / combo / RightContext 右侧 cluster）
 - panel 态跟随：PanelHost.DoOpen 订阅 `ownerForm.LocationChanged`（拖窗）+ `FlashHostPanel.SizeChanged`（全屏/最大化/还原 → ResizeFlashToPanel 完成后才触发，比 owner SizeChanged 时序晚但读到的 viewport 正确）。BeginInvoke 节流合并多次事件 → 调 `WebOverlayForm.GetCurrentAnchorScreenRect`（与 SyncPosition 同算法）→ `PanelLayoutCatalog.GetRect` 重算 panelRect → `NativePanelBackdrop.RepositionTo` + `WebOverlayForm.RepositionForPanel`（两者均 `SWP_NOZORDER` 不重排避免拖动闪烁，不 `SWP_FRAMECHANGED` 跳过 NCPAINT）+ `InputShield.EnterTelemetryMode` 重设。**不**主动 ReTop HitNumber/Cursor——SWP_NOZORDER 已保证 z-order 不变。DoClose / ResetToClosedState 反订阅
 
-#### Phase 5.7 Native HUD parity gate
+#### Native HUD parity gate
 
-进入 Phase 6 soak 前，`useNativeHud=true` 必须先过刘海栏 + 右侧 HUD 视觉/功能等价 gate：刘海栏由 [NotchOverlay](src/Guardian/NotchOverlay.cs) 复刻 web `#notch` 居中 pill、`28px` row1、hover 展开 toolbar、未 game-ready 仅显示 row1-right；combo 由 [ComboWidget](src/Guardian/Hud/ComboWidget.cs) 复刻 web `#combo-status` 输入提示、DFA/Sync 命中扫光、字符收束与收起；toast 和 `game` notice 也必须保持 Web 队列/去重/生命周期语义。右侧 cluster 由 [RightHudLayout](src/Guardian/Hud/RightHudLayout.cs) 固定复刻旧 Web 常量（`right:80px`、`width:170px`、5×`34px` 顶部工具、地图 `86px`、任务行/通知行 `32px`、jukebox `24px`），小地图需显示与 web `map-hud-svg-silhouette` 等价的 PNG alpha 剪影 + current/beacon。人工截图对比旧 Web 与 native：基地场景、任务完成可交付、小地图展开/折叠、未播放/播放中 jukebox、combo 输入/命中、toast/notice 堆叠、暂停态、安全退出弹出、7 个 panel 开关后 idle；通过标准是位置、宽度、纵向顺序、点击区域、文案和主要颜色层级等价，允许 GDI+/CSS 字体抗锯齿差异。性能回归仍要确认 idle WebView2 `SW_HIDE`，Ctrl+G / Task Manager 采样不比 Phase 5 native 当前版本明显退化。
+`useNativeHud=true` 扩散或改默认前，必须先过刘海栏 + 右侧 HUD 视觉/功能等价 gate：刘海栏由 [NotchOverlay](src/Guardian/NotchOverlay.cs) 复刻 web `#notch` 居中 pill、`28px` row1、hover 展开 toolbar、未 game-ready 仅显示 row1-right；combo 由 [ComboWidget](src/Guardian/Hud/ComboWidget.cs) 复刻 web `#combo-status` 输入提示、DFA/Sync 命中扫光、字符收束与收起；toast 和 `game` notice 也必须保持 Web 队列/去重/生命周期语义。右侧 cluster 由 [RightHudLayout](src/Guardian/Hud/RightHudLayout.cs) 固定复刻旧 Web 常量（`right:80px`、`width:170px`、5×`34px` 顶部工具、地图 `86px`、任务行/通知行 `32px`、jukebox `24px`），小地图需显示与 web `map-hud-svg-silhouette` 等价的 PNG alpha 剪影 + current/beacon。人工截图对比旧 Web 与 native：基地场景、任务完成可交付、小地图展开/折叠、未播放/播放中 jukebox、combo 输入/命中、toast/notice 堆叠、暂停态、安全退出弹出、7 个 panel 开关后 idle；通过标准是位置、宽度、纵向顺序、点击区域、文案和主要颜色层级等价，允许 GDI+/CSS 字体抗锯齿差异。性能回归仍要确认 idle WebView2 `SW_HIDE`，Ctrl+G / Task Manager 采样不比当前 native HUD 基线明显退化。
 
 `webOverlayLowEffects` 是运行态 overlay 聚合诊断开关，等价于同时启用 `webOverlayDisableCssAnimations` 与 `webOverlayDisableVisualizers`，并对 map panel 额外关闭全屏 scanline / radar / pulse、移除大图与场景节点的 CSS filter/drop-shadow、降低 full-surface overlay 透明覆膜成本。`webOverlayDisableCssAnimations` 只注入 `perf-no-css-animations`，关闭 CSS animation / transition；`webOverlayDisableVisualizers` 只隐藏 BGM/FPS canvas，并把 BGM 可视化推送从 60ms 降为 250ms 的 track-end 轮询。`webOverlayFrameRateLimit` 默认 `60`，通过 Web 端 requestAnimationFrame 限帧器把 overlay 的 JS/canvas 刷新链路限制到 60fps；`0`、`off` 或 `unlimited` 表示跟随当前显示器刷新率跑满。`webView2DisableGpu` 会同时给 BootstrapPanel 与运行态 WebOverlayForm 追加 `--disable-gpu --disable-gpu-rasterization --disable-accelerated-2d-canvas`，用于验证核显占满是否来自 WebView2 合成；它可能把负载转移到 CPU，不建议作为默认运行配置。`nativeCursorOverlay=false` 或环境变量 `CF7_NATIVE_CURSOR_OVERLAY=0` 会关闭 C# 原生 cursor layered window，恢复系统鼠标，用于 A/B 排除 cursor 迁移对 GPU 满载的影响。`webView2AdditionalArgs` 和环境变量 `CF7_WEBVIEW2_ARGS` 用于一次性追加 Chromium 参数；环境变量 `CF7_WEB_LOW_EFFECTS`、`CF7_WEB_DISABLE_CSS_ANIMATIONS`、`CF7_WEB_DISABLE_VISUALIZERS`、`CF7_WEB_FRAME_RATE_LIMIT`、`CF7_WEBVIEW2_DISABLE_GPU` 可覆盖对应配置。
 
@@ -991,7 +1021,7 @@ Guardian 通过 Win32 `SetParent` 将 Flash Player SA 窗口嵌入 `_flashPanel`
 
 **XMLSocket**（TCP，`\0` 分隔 JSON）：Flash 原生支持，承载 IPC 主流量。除了 JSON 路由还有 8 个入站快车道前缀（见架构概览节）+ 1 个出站前缀（`P`，C#→AS2）。
 
-**HTTP API**（REST，10 个端点）：
+**HTTP API**（REST，11 个 path）：
 
 | 端点 | 方法 | 作用 |
 |------|------|------|
@@ -1035,7 +1065,7 @@ Guardian 通过 Win32 `SetParent` 将 Flash Player SA 窗口嵌入 `_flashPanel`
 
 **BGM**：双 `ma_sound` 实例 ping-pong crossfade。切换时旧曲淡出与新曲淡入重叠进行，基于 `ma_engine_get_time_in_milliseconds` 全局时钟调度。`stopBGM` 使用 `ma_sound_stop_with_fade_in_milliseconds`，操作两个槽位确保无残留。注意 miniaudio 的 base volume 与 fader 是相乘关系，crossfade 路径中 `ma_sound_set_volume` 必须设为 1.0（由 fader 独立控制 0→1 淡入）。Seek 使用 `ma_sound_seek_to_second()`（基于声源自身采样率换算，不依赖 engine sample rate）。
 
-**BGM 可视化 + 点歌器**：`PeakDetector` 自定义节点（`ma_node_vtable` passthrough）插入 bgmGroup → engine endpoint 之间，实时采样 L/R peak。C# 60ms 轮询 `ma_bridge_bgm_get_peak/cursor/length/is_playing` → WebView2 `PostWebMessageAsJson` 推 `audio` 消息。Phase 5.7 起折叠态由 C# `RightContextWidget` 的 jukebox titlebar 接管（mini wave + 标题 + pause/expand），旧 `JukeboxTitlebarWidget` 保留但不默认注册；展开 UI 升格为正式 panel：[panels/jukebox-panel.js](web/modules/panels/jukebox-panel.js) 注册 `Panels.register('jukebox')`，由 `JUKEBOX_EXPAND` → `LauncherCommandRouter.OpenPanel("jukebox")` → `PanelHostController` 走完整 backdrop / EX_STYLE / HUD-suspend 序列后渲染大波形 + 进度条 + 专辑浏览 + 选曲 + 设置（音量 / 覆盖关卡BGM / 真随机 / 播放模式）+ 帮助 markdown。曲目标题由 AS2 `pushUiState("bgm:title")` 经 UiData 推送（jukebox-panel.js onOpen 通过 `UiData.get('bgm')` seed 当前值，避免 panel 晚于启动期打开错过历史推送），设置状态由 `jbo:/jbr:/jbm:/vg:/vb:` 通道同步。catalog 由 `MusicCatalog` 在启动期 + 文件变更时增量推 `catalog`/`catalogUpdate`；后开 panel 缺失时主动 `cmd:'requestCatalog'` 拉全量。Web 旧 [modules/jukebox.js](web/modules/jukebox.js) 已注释脚本入口（DOM 暂留 Phase 7 删除），不再参与运行时音频/UiData 订阅。
+**BGM 可视化 + 点歌器**：`PeakDetector` 自定义节点（`ma_node_vtable` passthrough）插入 bgmGroup → engine endpoint 之间，实时采样 L/R peak。C# 60ms 轮询 `ma_bridge_bgm_get_peak/cursor/length/is_playing` → WebView2 `PostWebMessageAsJson` 推 `audio` 消息。折叠态由 C# `RightContextWidget` 的 jukebox titlebar 接管（mini wave + 标题 + pause/expand）；展开 UI 是正式 panel：[panels/jukebox-panel.js](web/modules/panels/jukebox-panel.js) 注册 `Panels.register('jukebox')`，由 `JUKEBOX_EXPAND` → `LauncherCommandRouter.OpenPanel("jukebox")` → `PanelHostController` 走完整 backdrop / EX_STYLE / HUD-suspend 序列后渲染大波形 + 进度条 + 专辑浏览 + 选曲 + 设置（音量 / 覆盖关卡BGM / 真随机 / 播放模式）+ 帮助 markdown。曲目标题由 AS2 `pushUiState("bgm:title")` 经 UiData 推送（jukebox-panel.js onOpen 通过 `UiData.get('bgm')` seed 当前值，避免 panel 晚于启动期打开错过历史推送），设置状态由 `jbo:/jbr:/jbm:/vg:/vb:` 通道同步。catalog 由 `MusicCatalog` 在启动期 + 文件变更时增量推 `catalog`/`catalogUpdate`；后开 panel 缺失时主动 `cmd:'requestCatalog'` 拉全量。Web 旧 [modules/jukebox.js](web/modules/jukebox.js) 已注释脚本入口（DOM 暂留 Phase 7 删除），不再参与运行时音频/UiData 订阅。
 
 **SFX**：启动时扫描 `sounds/export/{武器,特效,人物}/` 目录，文件名即 linkageId，覆盖顺序武器→特效→人物（后覆盖前）。Flash 侧帧内累积，帧末由 FrameBroadcaster 合批发送 `S{id1}|{id2}|{id3}` 快车道消息。native 层 90ms 去重。
 
@@ -1224,7 +1254,7 @@ shadow 链不仅是运行中存盘的 JSON 冗余副本，也是启动期 Resolv
 
 ### 面板系统（Panel System）
 
-本节最后核对代码基线：commit `9f8f0c225`。
+本节最后核对代码基线：commit `cc25c357d`。
 
 全屏遮罩面板框架，用于承载需要独占交互的复杂 UI（商城、帮助、调试小游戏等），取代 Flash MovieClip 弹窗。
 
@@ -1232,13 +1262,17 @@ shadow 链不仅是运行中存盘的 JSON 冗余副本，也是启动期 Resolv
 ```
 按钮点击 (SHOP/HELP/DEV PANEL)
     ↓
-C# HandleButtonClick → 设置 _activePanel → PostToWeb panel_cmd open
+C# LauncherCommandRouter.Dispatch / RequestOpenPanel
+    ↓
+useNativeHud=true: PanelHostController.OpenPanel
+    FlashSnapshot → backdrop → HUD suspend → WebOverlay panelRect opaque
+useNativeHud=false: PostToWeb panel_cmd open + _activePanel fallback
     ↓
 JS Panels.open(id) → 创建/显示面板 DOM → 遮罩 + ESC 支持
     ↓ (ESC)
-C# KeyboardHook._panelEscEnabled → PostToWeb panel_esc → Panels.triggerRequestClose
+C# KeyboardHook / PanelHost ESC source → panel close / panel_esc
     ↓ (关闭)
-JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → 按面板 ID 路由
+JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/WebOverlay 回 idle
 ```
 
 **面板类型**：
@@ -1249,9 +1283,9 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → 按面板 
 - **lockbox**（开锁小游戏）: `web/modules/minigames/lockbox/` 下的正式小游戏模块；支持运行时参数、browser harness、Node QA
 - **pinalign**（定位小游戏）: `web/modules/minigames/pinalign/` 下的正式小游戏模块；和 Lockbox 共用小游戏壳层与 QA 平台
 - **gobang**（五子棋小游戏）: `web/modules/minigames/gobang/` 下的正式小游戏模块；Web core 负责规则裁判，AI 经 Web→C# `gomoku_eval` 调用 `GomokuTask` / Rapfi
-- **jukebox**（BGM 点歌台）: Phase 5 新增；`web/modules/panels/jukebox-panel.js` 注册 `Panels.register('jukebox')`，由 `RightContextWidget` 的 jukebox titlebar 展开按钮 → `JUKEBOX_EXPAND` → `LauncherCommandRouter.OpenPanel("jukebox")` 触发；与 kshop/help 等通用 panel 同走完整 backdrop / EX_STYLE / HUD-suspend 序列。PanelLayoutCatalog 用基准 880×620 设计尺寸 + `anchor.Height / 576` 等比缩放（与 `Hud.WidgetScaler.DESIGN_HEIGHT` 同源）：1024×576 design viewport 下宽 880 / 高被 Centered clamp 到 576；1920×1080 anchor 下宽 1650（占比 86%）/ 高 clamp 到 1080。`jukebox-panel.js` 用 inset 百分比布局对 panelRect 任意尺寸鲁棒。曲库 / UiData 状态在 onOpen 时通过 `cmd:'requestCatalog'` + `UiData.get` seed 当前值，避免晚注册错过历史推送。close 路径收敛：× 按钮 / ESC / backdrop click 三入口共用 `closeLocally`（先 `Panels.close()` 让 `_active` 复位再 `Bridge.send panel close`）——避免 ESC/backdrop 单独走 onRequestClose 时 `_active` 滞留导致下次 open 早 return
+- **jukebox**（BGM 点歌台）: `web/modules/panels/jukebox-panel.js` 注册 `Panels.register('jukebox')`，由 `RightContextWidget` 的 jukebox titlebar 展开按钮 → `JUKEBOX_EXPAND` → `LauncherCommandRouter.OpenPanel("jukebox")` 触发；与 kshop/help 等通用 panel 同走完整 backdrop / EX_STYLE / HUD-suspend 序列。PanelLayoutCatalog 用基准 880×620 设计尺寸 + `anchor.Height / 576` 等比缩放（与 `Hud.WidgetScaler.DESIGN_HEIGHT` 同源）：1024×576 design viewport 下宽 880 / 高被 Centered clamp 到 576；1920×1080 anchor 下宽 1650（占比 86%）/ 高 clamp 到 1080。`jukebox-panel.js` 用 inset 百分比布局对 panelRect 任意尺寸鲁棒。曲库 / UiData 状态在 onOpen 时通过 `cmd:'requestCatalog'` + `UiData.get` seed 当前值，避免晚注册错过历史推送。close 路径收敛：× 按钮 / ESC / backdrop click 三入口共用 `closeLocally`（先 `Panels.close()` 让 `_active` 复位再 `Bridge.send panel close`）——避免 ESC/backdrop 单独走 onRequestClose 时 `_active` 滞留导致下次 open 早 return
 
-#### Phase 5 Jukebox panel 手测
+#### Jukebox panel 手测
 
 `useNativeHud=true` 启动游戏，进到游戏就绪后逐项验证：
 
@@ -1287,8 +1321,8 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → 按面板 
   - `turn` / `result` / `export`: 沿用各游戏语义，但都走同一 envelope
 - Gobang AI 额外走 Web panel → C# `gomoku_eval`：`{ type:'panel', panel:'gobang', cmd:'gomoku_eval', callId, payload:{ moves, timeLimit, ruleset } }`；响应为同 `callId` 的 `panel_resp`，`moves` 为 `[[x,y,role],...]`，`role` 使用 `1` 黑 / `-1` 白
 
-**状态机 (_activePanel)**：`null` → `"kshop" / "help" / "lockbox" / "pinalign" / "gobang" / ...` → `null`。当前只有 `kshop` 会在断连或强制关闭路径里设置 `_pauseNeedsRestore`；其余纯 Web / dev panel 只做面板生命周期管理，不触发 Flash 暂停恢复。
+**状态机**：`useNativeHud=true` 时 panel 打开状态以 `PanelHostController.ActivePanelName` 为主；`useNativeHud=false` 仍保留 WebOverlayForm `_activePanel` fallback（`null` → `"kshop" / "help" / "lockbox" / "pinalign" / "gobang" / ...` → `null`）。当前只有 `kshop` 会在断连或强制关闭路径里设置 `_pauseNeedsRestore`；其余纯 Web / dev panel 只做面板生命周期管理，不触发 Flash 暂停恢复。
 
 **热重载恢复**：`_uiDataSnapshot` 按 KV key 维护最新值快照，WebView2 热重载后 `FlushUiDataBuffer` 先回放完整快照，确保 game-ready 等关键状态不丢失。
 
-**维护约束**：凡是小游戏或地图 panel 的目录迁移、宿主协议变更、QA 入口变化，必须同步更新本 README 的目录树、测试入口和本节协议说明；模块内细节留在各自模块 README / 设计文档。
+**维护约束**：凡是小游戏、地图 panel、stage-select panel、Native HUD/PanelHost 的目录迁移、宿主协议变更、QA 入口变化，必须同步更新本 README 的目录树、测试入口和本节协议说明；模块内细节留在各自模块 README / 设计文档。

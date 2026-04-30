@@ -1,7 +1,7 @@
 # 测试约定与验证矩阵
 
 **文档角色**：验证矩阵 canonical doc。  
-**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
+**最后核对代码基线**：commit `cc25c357d`（2026-04-30）。
 
 按子栈选验证；不要用「编译一下」「跑一下 build」笼统覆盖跨栈任务。
 
@@ -57,10 +57,10 @@ chcp.com 65001 | Out-Null
 
 `--bus-only` 适用：Flash CS6 testMovie ↔ Launcher 通信链验证;AI / 模拟实验需外部 Flash 自连总线;排查启动链路 vs 总线本身。
 
-当前 `launcher/build.ps1` 除编译外还会 fail-fast 校验 `launcher/web` 必需资源（bootstrap/overlay/config/assets/help/icons/data/cursor 与关键 modules / minigame 入口）+ 运行 `node tools/audit-native-cursor-assets.js` 校验 native cursor `64x64` 画布与 `(16,16)` 热点契约。
+当前 `launcher/build.ps1` 除编译外还会 fail-fast 校验 `launcher/web` 必需资源（bootstrap/overlay/config/assets/help/icons/data/cursor/map/stage-select 与关键 modules / minigame 入口）、运行 `node tools/audit-native-cursor-assets.js` 校验 native cursor `64x64` 画布与 `(16,16)` 热点契约，并校验 `launcher/data/map_hud_data.json` / `save_schema.json` 存在。
 
 DPI 相关 smoke：改 DPI manifest / overlay 坐标 / Web viewport metrics 时，除 build + xUnit 外人工覆盖单屏 100/125/150/175%、Windows 未勾选与“应用程序”覆盖、双屏混合 DPI 启动/跨屏/全屏切换；“系统/系统(增强)”只要求 `[DPI]` 日志和提示，不把点击正确性列为通过标准。
-Native HUD parity（Phase 6 前置 gate）：改 [NotchOverlay](../launcher/src/Guardian/NotchOverlay.cs)、[RightContextWidget](../launcher/src/Guardian/Hud/RightContextWidget.cs)、[RightHudLayout](../launcher/src/Guardian/Hud/RightHudLayout.cs)、[MapHudWidget](../launcher/src/Guardian/Hud/MapHudWidget.cs)、[SafeExitPanelWidget](../launcher/src/Guardian/Hud/SafeExitPanelWidget.cs)、[ComboWidget](../launcher/src/Guardian/Hud/ComboWidget.cs)、`Program.cs` native widget 注册顺序时，必跑 `launcher/build.ps1` + `launcher/tests/run_tests.ps1`。人工截图对比旧 Web 与 native：刘海栏居中 pill/hover toolbar/未 ready 行为、combo 输入提示 + DFA/Sync 命中扫光/收起、toast 最多 8 条队列、`game` notice 去重计数/3 秒退场、基地场景、任务完成可交付、小地图 PNG 剪影/current/beacon + 展开/折叠、未播放/播放中 jukebox、暂停态、安全退出弹出、7 个 panel 开关后 idle。通过标准：刘海栏与右侧 cluster 的位置、宽度、纵向顺序、点击区域、文案和主要颜色层级等价；允许字体抗锯齿差异。性能回归需确认 idle WebView2 仍 `SW_HIDE`，Ctrl+G / Task Manager 采样不比 Phase 5 native 当前版本明显退化。
+Native HUD parity gate：改 [NotchOverlay](../launcher/src/Guardian/NotchOverlay.cs)、[RightContextWidget](../launcher/src/Guardian/Hud/RightContextWidget.cs)、[RightHudLayout](../launcher/src/Guardian/Hud/RightHudLayout.cs)、[MapHudWidget](../launcher/src/Guardian/Hud/MapHudWidget.cs)、[SafeExitPanelWidget](../launcher/src/Guardian/Hud/SafeExitPanelWidget.cs)、[ComboWidget](../launcher/src/Guardian/Hud/ComboWidget.cs)、`Program.cs` native widget 注册顺序时，必跑 `launcher/build.ps1` + `launcher/tests/run_tests.ps1`。人工截图对比旧 Web 与 native：刘海栏居中 pill/hover toolbar/未 ready 行为、combo 输入提示 + DFA/Sync 命中扫光/收起、toast 最多 8 条队列、`game` notice 去重计数/3 秒退场、基地场景、任务完成可交付、小地图 PNG 剪影/current/beacon + 展开/折叠、未播放/播放中 jukebox、暂停态、安全退出弹出、7 个 panel 开关后 idle。通过标准：刘海栏与右侧 cluster 的位置、宽度、纵向顺序、点击区域、文案和主要颜色层级等价；允许字体抗锯齿差异。性能回归需确认 idle WebView2 仍 `SW_HIDE`，Ctrl+G / Task Manager 采样不比当前 native HUD 基线明显退化。
 ## 4. Launcher Web 验证（Minigame / Map / Jukebox）
 | 用途 | 命令 |
 |------|------|
@@ -85,7 +85,7 @@ URL 参数:`?qa=1` 自动断言 / `?case=` 单条 / `?scenario=` 脚本场景 / 
 
 若改动后的行为无法被现有 harness 或 QA 覆盖，同轮补测试入口，不把“靠人工记得点开”当作默认收尾。
 
-静态校验拦截:旧平铺 Lockbox 入口、旧版分游戏 session 命令名、旧共享结构 class 名。Jukebox panel（Phase 5）暂无自动 harness：改 `web/modules/panels/jukebox-panel.js` / `WebOverlayForm.HandleJukeboxMessage` / `MusicCatalog` / `RightContextWidget` jukebox titlebar 时人工走 [launcher/README.md](../launcher/README.md) "Phase 5 Jukebox panel 手测" 12 步。
+静态校验拦截:旧平铺 Lockbox 入口、旧版分游戏 session 命令名、旧共享结构 class 名。Jukebox panel 暂无自动 harness：改 `web/modules/panels/jukebox-panel.js` / `WebOverlayForm.HandleJukeboxMessage` / `MusicCatalog` / `RightContextWidget` jukebox titlebar 时人工走 [launcher/README.md](../launcher/README.md) "Jukebox panel 手测" 12 步。
 
 ## 5. 自动化与文档治理
 
