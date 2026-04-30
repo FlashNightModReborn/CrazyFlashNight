@@ -42,10 +42,9 @@
         noop);
 
     // ── map ──
-    // map-panel-data.js 已 boot 加载（map-hud 依赖），不在此列
+    // map-panel-data.js / map-fit-presets.js 已 boot 加载（map-hud 依赖），不在此列
     Panels.registerLazy('map',
         ['modules/map-avatar-source-data.js',
-         'modules/map-fit-presets.js',
          'modules/map-panel.js'],
         noop);
 

@@ -18,6 +18,21 @@ var Panels = (function() {
     //   完成时按当前值决定是否真正打开。避免乱序导致已关闭的面板又被拉起。
     var _pendingOpen = null;
 
+    function cancelPendingOpen(notifyHost, reason) {
+        if (!_pendingOpen) return null;
+        var pending = _pendingOpen;
+        _pendingOpen = null;
+        if (notifyHost && typeof Bridge !== 'undefined' && Bridge && Bridge.send) {
+            Bridge.send({
+                type: 'panel',
+                cmd: 'close',
+                panel: pending.id,
+                reason: reason || 'lazy_cancel'
+            });
+        }
+        return pending;
+    }
+
     function init() {
         _container = document.getElementById('panel-container');
         _backdrop  = document.getElementById('panel-backdrop');
@@ -59,13 +74,14 @@ var Panels = (function() {
                     panel._registerFn();
                 } catch (e) {
                     console.error('[Panels] lazy registerFn threw for ' + id + ':', e);
-                    if (_pendingOpen && _pendingOpen.id === id) _pendingOpen = null;
+                    if (_pendingOpen && _pendingOpen.id === id) cancelPendingOpen(true, 'lazy_register_failed');
                     return;
                 }
                 // registerFn 应当已调用 Panels.register(id, {...})，覆盖了 _registry[id]
                 var resolved = _registry[id];
                 if (!resolved || resolved._lazy) {
                     console.error('[Panels] lazy registerFn did not register panel: ' + id);
+                    if (_pendingOpen && _pendingOpen.id === id) cancelPendingOpen(true, 'lazy_register_missing');
                     return;
                 }
                 // 检查 pending：可能在加载期间被 close 或切到别的 panel
@@ -78,7 +94,7 @@ var Panels = (function() {
                 }
             }).catch(function(err) {
                 console.error('[Panels] lazy load failed for ' + id + ':', err);
-                if (_pendingOpen && _pendingOpen.id === id) _pendingOpen = null;
+                if (_pendingOpen && _pendingOpen.id === id) cancelPendingOpen(true, 'lazy_load_failed');
             });
             return;
         }
@@ -88,7 +104,7 @@ var Panels = (function() {
 
     function close() {
         // 若 lazy panel 仍在加载，取消挂起的打开
-        if (_pendingOpen) _pendingOpen = null;
+        if (_pendingOpen) cancelPendingOpen(false, 'panel_close');
         if (!_active) return;
         var panel = _registry[_active];
         if (panel && panel._el) panel._el.style.display = 'none';
@@ -111,7 +127,7 @@ var Panels = (function() {
         } else if (_pendingOpen) {
             // 加载期间被 ESC/backdrop 触发关闭：直接取消挂起
             console.log('[Panels] cancel pending lazy open: ' + _pendingOpen.id);
-            _pendingOpen = null;
+            cancelPendingOpen(true, 'lazy_user_cancel');
         }
     }
 
