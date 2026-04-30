@@ -13,6 +13,10 @@ bin-release/
 *.lib
 *.pdb
 
+# Repair dict atomic-write intermediate (tools/cf7-save-repair-dict-build 产物的临时文件,
+# 写完后会 rename 成 save_repair_dict.json; 误 commit 会污染包并破坏 JSON 校验工具).
+launcher/data/save_repair_dict.json.tmp
+
 # Executables
 # *.swf
 *.air

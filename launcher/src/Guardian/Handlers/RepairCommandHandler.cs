@@ -155,6 +155,32 @@ namespace CF7Launcher.Guardian.Handlers
                 return;
             }
 
+            // 重扫: 应用后 cleanedSnapshot 仍有 fffd → 用户的 patch 决策不完整 (常见于
+            //   ManualRequired 默认走候选 [0] 但目标 key 已存在, ApplyPatches 把这条 RenameKey
+            //   skip 了, 残留键仍在). 此时不写盘 / 不 push, 让 web 卡片继续展示问题, 用户重选
+            //   drop_key 或换值. backup 已写但保留 (audit 记录已应用了什么, 没修干净也算事件).
+            SaveCorruptionReport postReport = SaveCorruptionScanner.Scan(snapshot);
+            if (postReport.Total > 0)
+            {
+                LogManager.Log("[RepairHandler] apply slot=" + slot
+                    + " applied=" + applied
+                    + " still_corrupt=" + postReport.Total
+                    + " (manual decisions left fffd; not writing back, not pushing)");
+                JObject resp = new JObject();
+                resp["type"] = "bootstrap";
+                resp["cmd"] = "repair_apply_manual_resp";
+                resp["ok"] = false;
+                resp["slot"] = slot;
+                resp["error"] = "still_corrupt";
+                resp["msg"] = "已应用 " + applied + " 项, 但仍有 " + postReport.Total
+                    + " 处 fffd 未消除 (常见于自动选项与现有 key 冲突). "
+                    + "请把这些项改成 drop_key / 手动输入后重试.";
+                resp["applied"] = applied;
+                resp["remaining"] = postReport.Total;
+                bootForm.PostToWeb(resp.ToString(Formatting.None));
+                return;
+            }
+
             // bump lastSaved (INV-1) — 仅当确实有 patch 应用. 无应用时不动 (与 C2-α 语义一致).
             string newTs = null;
             if (applied > 0)
@@ -206,6 +232,19 @@ namespace CF7Launcher.Guardian.Handlers
                 + " backup=" + backupPath
                 + " pushed=" + pushed);
 
+            // pushed=false 路径: state 已不在 RepairPending (例如用户已 cancel_launch / launchFlow
+            //   被重置). 写盘已成功但 AS2 不会收到 repair_resolved → 不能让 web 进 awaiting-flash 态
+            //   等一个永远不会到的 Ready, 否则 30s 后才超时关卡, 用户体感是"假成功".
+            //   返回 ok=false 让 web 继续展示卡片, 不切 awaiting 态.
+            if (!pushed)
+            {
+                PostApplyResp(bootForm, slot, false, "push_failed",
+                    "存档已修复并写回, 但 launcher 未能向游戏端投递 repair_resolved "
+                    + "(状态机已不在 RepairPending). 请返回引导器重新启动, 此时 SOL 将走干净的 shadow.",
+                    applied);
+                return;
+            }
+
             PostApplyResp(bootForm, slot, true, null, null, applied);
         }
 
@@ -242,6 +281,14 @@ namespace CF7Launcher.Guardian.Handlers
             bool pushed = launchFlow != null && launchFlow.PushRepairResolved(taskJson);
 
             LogManager.Log("[RepairHandler] force_continue slot=" + slot + " pushed=" + pushed);
+            // pushed=false: 同 apply 路径, 不能假装 ok 让 web 进 awaiting (永远等不到 Ready).
+            if (!pushed)
+            {
+                PostForceResp(bootForm, slot, false, "push_failed",
+                    "launcher 未能向游戏端投递 repair_resolved (状态机已不在 RepairPending). "
+                    + "请返回引导器重新启动.");
+                return;
+            }
             PostForceResp(bootForm, slot, true, null, null);
         }
 
