@@ -37,6 +37,10 @@ namespace CF7Launcher.Guardian
                 psi.FileName = _flashPlayerPath;
                 psi.Arguments = "\"" + _swfPath + "\"";
                 psi.UseShellExecute = false;
+                // 试探：透传 STARTF_USESHOWWINDOW + SW_HIDE 给 Flash SA。
+                // 若 SA 首次 ShowWindow 走 SW_SHOWDEFAULT 即吃此 hint，窗口从未上 DWM；
+                // 若 SA 硬编码 SW_SHOW 则无效，回退到 ArmEarlyReparent 路径。
+                psi.WindowStyle = ProcessWindowStyle.Hidden;
 
                 lock (_lock)
                 {

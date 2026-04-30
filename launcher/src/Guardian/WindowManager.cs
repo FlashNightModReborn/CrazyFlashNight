@@ -55,6 +55,14 @@ namespace CF7Launcher.Guardian
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
+        // DWMWA_CLOAK：合成器层把 hwnd 从 DWM 合成树挪掉，比 SW_HIDE 走 WM_SHOWWINDOW 那条路快一拍。
+        // 仅对顶层窗口生效；SetParent 成 child 之后此状态不再起作用，所以 reveal 时 uncloak 是兜底操作。
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, uint dwAttribute,
+            ref int pvAttribute, int cbAttribute);
+
+        private const uint DWMWA_CLOAK = 13;
+
         private const int SW_HIDE = 0;
         private const int SW_SHOW = 5;
 
@@ -152,25 +160,29 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// Phase C: 10s poll Flash 主窗口句柄（100ms × 100 轮），复用 EmbedFlashWindow 现有逻辑.
+        /// Phase C: poll Flash 主窗口句柄.
+        /// 关键：MainWindowHandle 走 .NET IsMainWindow 启发式（owner==0 + IsWindowVisible），
+        /// Flash SA spawn 早期建的辅助/loader 窗口会被自动过滤；只在真主窗口出现后返回非零.
+        /// 不要换成 EnumWindows 自己挑（splash 窗口同样满足 WS_CAPTION + 非空标题，会选错）.
+        ///
+        /// 调度：WaitForInputIdle 仅在外层调一次（process 进入消息循环空闲就结束阻塞），
+        /// 之后 5ms 紧凑轮询直到 hwnd 出现或超时. 原版 100ms 轮询的"flash 200ms"主因是这.
         /// </summary>
         private static IntPtr PollMainWindowHandle(Process flashProcess, int timeoutMs)
         {
-            int maxIter = timeoutMs / 100;
-            if (maxIter < 1) maxIter = 1;
-            IntPtr hwnd = IntPtr.Zero;
-            for (int i = 0; i < maxIter; i++)
+            try { flashProcess.WaitForInputIdle(2000); } catch { }
+
+            long deadline = DateTime.UtcNow.Ticks + TimeSpan.FromMilliseconds(timeoutMs).Ticks;
+            while (DateTime.UtcNow.Ticks < deadline)
             {
                 try
                 {
-                    flashProcess.WaitForInputIdle(100);
                     flashProcess.Refresh();
-                    hwnd = flashProcess.MainWindowHandle;
+                    IntPtr hwnd = flashProcess.MainWindowHandle;
+                    if (hwnd != IntPtr.Zero) return hwnd;
                 }
                 catch { }
-
-                if (hwnd != IntPtr.Zero) return hwnd;
-                Thread.Sleep(100);
+                Thread.Sleep(5);
             }
             return IntPtr.Zero;
         }
@@ -182,6 +194,11 @@ namespace CF7Launcher.Guardian
         /// </summary>
         private void ReparentToHidden(IntPtr hwnd, Panel hiddenHost)
         {
+            // 0) DWM cloak — 合成器层先把 hwnd 摘出去，争取在下一次 vsync 之前生效，
+            //    与 SW_HIDE 配合压低"被合成 1 帧"的概率. 失败/不支持安静吞掉.
+            int cloakOn = 1;
+            try { DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, ref cloakOn, sizeof(int)); } catch { }
+
             // 1) 立即 SW_HIDE 减少首帧 top-level 可见窗口时间
             ShowWindow(hwnd, SW_HIDE);
 
@@ -222,6 +239,12 @@ namespace CF7Launcher.Guardian
         /// 10s 内找到 Flash 主窗口 → SW_HIDE + SetParent 到 hiddenHost（不 Show，不 Fire）.
         /// 若 EmbedFlashWindow 抢先 claim（None→RevealedOrFullEmbedded），本 poller 降级放弃.
         /// 内部 ThreadPool.QueueUserWorkItem 派发 — 调用方直接调，不阻塞 UI.
+        ///
+        /// 历史教训：尝试过 SetWinEventHook 事件驱动 + WS_CAPTION/title 过滤替代轮询，
+        /// 实测 hook 在 spawn 后 ~57ms 命中，但 Flash SA 早期会先建一个带标题的辅助/loader 窗口
+        /// （短命；满足 owner==0+WS_CAPTION+非空标题），hook 在它上面命中后真主窗口反而漏处理.
+        /// MainWindowHandle 走的是 .NET IsMainWindow 启发式（owner==0+IsWindowVisible），
+        /// 自带"等真主窗口"的隐式时序，唯一可靠源.
         /// </summary>
         public void ArmEarlyReparent(Process flashProc, Panel hiddenHost)
         {
@@ -431,7 +454,10 @@ namespace CF7Launcher.Guardian
                 SetParent(hwnd, _hostPanel.Handle);
             }
 
-            // 两路径公用：Show + MoveWindow(repaint=true) + resize binding + watchdog
+            // 两路径公用：先 uncloak（早 path 在 ReparentToHidden 时打过 DWMWA_CLOAK；child 化后理论无效，
+            // 但有些路径下 cloak 状态会被 DWM 留存，uncloak 是兜底），再 SW_SHOW.
+            int cloakOff = 0;
+            try { DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, ref cloakOff, sizeof(int)); } catch { }
             ShowWindow(hwnd, SW_SHOW);
             ResizeFlashToPanel();
 
