@@ -55,7 +55,27 @@ namespace CF7Launcher.Guardian
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         private static extern IntPtr GetModuleHandle(string lpModuleName);
 
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
         private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+        private static readonly uint _ourPid = (uint)System.Diagnostics.Process.GetCurrentProcess().Id;
+
+        // Foreground 属于本进程 = 游戏窗口（含 panel/web overlay/native HUD/cursor 自身）激活中。
+        // alt-tab 到资源管理器/记事本时返 false，是 desktop cursor 守卫的真正信号。
+        // _owner.Visible/Minimized 太松：alt-tab 后窗口仍 visible 且未 minimized。
+        private static bool IsOurForeground()
+        {
+            IntPtr fg = GetForegroundWindow();
+            if (fg == IntPtr.Zero) return false;
+            uint pid;
+            GetWindowThreadProcessId(fg, out pid);
+            return pid == _ourPid;
+        }
 
         [StructLayout(LayoutKind.Sequential)]
         private struct POINT
@@ -846,10 +866,11 @@ namespace CF7Launcher.Guardian
 
                 if (_cursorOverlay != null)
                 {
-                    LogManager.Log("[Cursor] callsite=UpdateOverlay reason=" + (reason ?? "")
-                        + " vpW=" + vpW + " vpH=" + vpH + " physBoundsH=" + h
-                        + " ctxFlashVpH=" + _coordinateContext.FlashViewportHeight
-                        + " ctxViewportScale=" + _coordinateContext.ViewportScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture));
+                    if (CursorDiagEnabled)
+                        LogManager.Log("[Cursor] callsite=UpdateOverlay reason=" + (reason ?? "")
+                            + " vpW=" + vpW + " vpH=" + vpH + " physBoundsH=" + h
+                            + " ctxFlashVpH=" + _coordinateContext.FlashViewportHeight
+                            + " ctxViewportScale=" + _coordinateContext.ViewportScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture));
                     _cursorOverlay.SetScale(_coordinateContext.ViewportScale, _coordinateContext.WindowDpiX, _coordinateContext.WindowDpiY);
                 }
 
@@ -1112,10 +1133,11 @@ namespace CF7Launcher.Guardian
             }
             if (_cursorOverlay != null)
             {
-                LogManager.Log("[Cursor] callsite=UpdateWebMetrics reason=" + (reason ?? "")
-                    + " ctxFlashVpH=" + _coordinateContext.FlashViewportHeight
-                    + " ctxPhysicalBoundsH=" + _coordinateContext.OverlayPhysicalBounds.Height
-                    + " ctxViewportScale=" + _coordinateContext.ViewportScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture));
+                if (CursorDiagEnabled)
+                    LogManager.Log("[Cursor] callsite=UpdateWebMetrics reason=" + (reason ?? "")
+                        + " ctxFlashVpH=" + _coordinateContext.FlashViewportHeight
+                        + " ctxPhysicalBoundsH=" + _coordinateContext.OverlayPhysicalBounds.Height
+                        + " ctxViewportScale=" + _coordinateContext.ViewportScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture));
                 _cursorOverlay.SetScale(_coordinateContext.ViewportScale, _coordinateContext.WindowDpiX, _coordinateContext.WindowDpiY);
             }
 
@@ -1240,8 +1262,9 @@ namespace CF7Launcher.Guardian
             if (_cursorOverlay != null)
             {
                 _nativeCursorMissingLogged = false;
-                LogManager.Log("[Cursor] callsite=SetCursorOverlay ctxFlashVpH=" + _coordinateContext.FlashViewportHeight
-                    + " ctxViewportScale=" + _coordinateContext.ViewportScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture));
+                if (CursorDiagEnabled)
+                    LogManager.Log("[Cursor] callsite=SetCursorOverlay ctxFlashVpH=" + _coordinateContext.FlashViewportHeight
+                        + " ctxViewportScale=" + _coordinateContext.ViewportScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture));
                 _cursorOverlay.SetScale(_coordinateContext.ViewportScale, _coordinateContext.WindowDpiX, _coordinateContext.WindowDpiY);
             }
             else
@@ -1812,6 +1835,22 @@ namespace CF7Launcher.Guardian
             if (_cursorOverlay == null)
             {
                 RestoreSystemCursorForMissingNativeOverlay();
+                return;
+            }
+
+            // Desktop cursor 不再受 anchor bounds 裁剪，但仍必须随主窗口生命周期。
+            // WH_MOUSE_LL 是全局 hook，alt-tab 到资源管理器/记事本后仍在跑，不挡住会让 topmost
+            // 自定义光标在桌面跟着玩家鼠标到处跑。
+            // 三道守卫：
+            //   - _owner null / !Visible / Minimized：常规生命周期门
+            //   - !IsOurForeground()：foreground HWND 不属于本进程 = 用户切走了 → cursor 退场
+            //     （_owner.Visible 在 alt-tab 时仍为 true，单看 Visible/Minimized 不够紧）
+            if (_owner == null || !_owner.Visible
+                || _owner.WindowState == FormWindowState.Minimized
+                || !IsOurForeground())
+            {
+                if (_cursorLastVisible)
+                    PostCursorVisibility(false);
                 return;
             }
 

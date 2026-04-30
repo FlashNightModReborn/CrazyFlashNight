@@ -42,6 +42,11 @@ namespace CF7Launcher.Guardian
         private double _cursorScale = CursorScaleBoost;
         private bool _contentDirty = true;
 
+        // 诊断日志总开关：默认 false。开启会让每次 PresentCursor / RenderAndCommit / SetScale 调
+        // LogManager.Log（同步落盘 AutoFlush + UI 队列 marshalled），落在鼠标移动热路径上 = 直接拖低
+        // cursor 延迟。仅在定位 scale/visibility 异常时短暂改 true 重编出 diag build。
+        private const bool CursorDiag = false;
+
         // ── Idle-hide：业界标准（YouTube/Steam OS）3s 静止后 SW_HIDE，鼠标移动立即唤醒 ──
         // 触发源：UpdateCursorPosition 每次调用 = 真实鼠标移动（WebOverlayForm 已做位置去重）。
         // 键盘事件不触发 UpdateCursorPosition → 自动满足"键盘不唤醒"业界惯例。
@@ -197,18 +202,19 @@ namespace CF7Launcher.Guardian
             double effective = ComputeEffectiveScale(viewportScale, dpiScale);
             double rawNext = effective * CursorScaleBoost;
             double next = ClampScale(rawNext);
-            // 诊断日志：每次调用都记录（入参 + 计算 + 是否 noop），方便定位"切全屏后 SetScale 没被刷新"vs
-            // "SetScale 被调但算出同一 final 早 return"两种不同路径。
             bool noop = Math.Abs(_cursorScale - next) < 0.01;
-            int renderedPx = (int)System.Math.Round(CursorSize * next);
-            LogManager.Log("[Cursor] SetScale vp=" + viewportScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                + " dpi=" + dpi + " (=" + dpiScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + ")"
-                + " effective=" + effective.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                + " boost=" + CursorScaleBoost.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)
-                + " raw=" + rawNext.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                + " final=" + next.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                + " rendered=" + renderedPx + "px"
-                + (noop ? " (noop)" : ""));
+            if (CursorDiag)
+            {
+                int renderedPx = (int)System.Math.Round(CursorSize * next);
+                LogManager.Log("[Cursor] SetScale vp=" + viewportScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                    + " dpi=" + dpi + " (=" + dpiScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + ")"
+                    + " effective=" + effective.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                    + " boost=" + CursorScaleBoost.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)
+                    + " raw=" + rawNext.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                    + " final=" + next.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                    + " rendered=" + renderedPx + "px"
+                    + (noop ? " (noop)" : ""));
+            }
             if (noop)
                 return;
 
@@ -284,9 +290,10 @@ namespace CF7Launcher.Guardian
         {
             if (!_visible || _screenX == Int32.MinValue || _screenY == Int32.MinValue)
             {
-                LogManager.Log("[Cursor] PresentCursor SKIP visible=" + _visible
-                    + " screenX=" + (_screenX == Int32.MinValue ? "MIN" : _screenX.ToString())
-                    + " idleHidden=" + _idleHidden);
+                if (CursorDiag)
+                    LogManager.Log("[Cursor] PresentCursor SKIP visible=" + _visible
+                        + " screenX=" + (_screenX == Int32.MinValue ? "MIN" : _screenX.ToString())
+                        + " idleHidden=" + _idleHidden);
                 return;
             }
 
@@ -304,16 +311,18 @@ namespace CF7Launcher.Guardian
             bool sizeChanged = _frame == null || _frame.Width != width || _frame.Height != height;
             if (!_contentDirty && !sizeChanged && _shown)
             {
-                LogManager.Log("[Cursor] PresentCursor PATH=move-only scale=" + scale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                    + " sz=" + width + "x" + height + " frameSz=" + (_frame == null ? "null" : _frame.Width + "x" + _frame.Height)
-                    + " contentDirty=" + _contentDirty + " shown=" + _shown);
+                if (CursorDiag)
+                    LogManager.Log("[Cursor] PresentCursor PATH=move-only scale=" + scale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                        + " sz=" + width + "x" + height + " frameSz=" + (_frame == null ? "null" : _frame.Width + "x" + _frame.Height)
+                        + " contentDirty=" + _contentDirty + " shown=" + _shown);
                 MoveCommittedWindow(windowX, windowY);
                 return;
             }
 
-            LogManager.Log("[Cursor] PresentCursor PATH=render scale=" + scale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                + " sz=" + width + "x" + height + " frameSz=" + (_frame == null ? "null" : _frame.Width + "x" + _frame.Height)
-                + " contentDirty=" + _contentDirty + " sizeChanged=" + sizeChanged + " shown=" + _shown);
+            if (CursorDiag)
+                LogManager.Log("[Cursor] PresentCursor PATH=render scale=" + scale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                    + " sz=" + width + "x" + height + " frameSz=" + (_frame == null ? "null" : _frame.Width + "x" + _frame.Height)
+                    + " contentDirty=" + _contentDirty + " sizeChanged=" + sizeChanged + " shown=" + _shown);
             RenderAndCommit(asset, scale, width, height, windowX, windowY);
         }
 
@@ -350,13 +359,15 @@ namespace CF7Launcher.Guardian
             ShowOverlay();
             SetWindowPos(this.Handle, HWND_TOP, 0, 0, 0, 0,
                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-            // 诊断：取窗口实际物理大小，验证 ULW commit 是否真生效
-            Rectangle realBounds;
-            try { realBounds = GetWindowRectSafe(); }
-            catch { realBounds = Rectangle.Empty; }
-            LogManager.Log("[Cursor] RenderAndCommit committed sz=" + width + "x" + height
-                + " realWindowRect=" + realBounds.Width + "x" + realBounds.Height
-                + " @ (" + realBounds.X + "," + realBounds.Y + ")");
+            if (CursorDiag)
+            {
+                Rectangle realBounds;
+                try { realBounds = GetWindowRectSafe(); }
+                catch { realBounds = Rectangle.Empty; }
+                LogManager.Log("[Cursor] RenderAndCommit committed sz=" + width + "x" + height
+                    + " realWindowRect=" + realBounds.Width + "x" + realBounds.Height
+                    + " @ (" + realBounds.X + "," + realBounds.Y + ")");
+            }
         }
 
         [System.Runtime.InteropServices.DllImport("user32.dll")]

@@ -28,9 +28,12 @@ namespace CF7Launcher.Config
         /// <summary>开关 Native HUD + PanelHostController 装配。Phase 1 默认 false（仅装配骨架，不接管 panel 路由）。</summary>
         public bool UseNativeHud { get; private set; }
         /// <summary>
-        /// Cursor 解耦 Phase 1 flag。OFF（默认）= 旧 CursorOverlayForm（OverlayBase 体系）；
-        /// ON = 新 DesktopCursorOverlay（desktop 顶层 ULW，跨 anchor 自由 + 单一 visibility 状态机）。
-        /// 见 plans/cursor-overlay-decoupling.md。env: CF7_DESKTOP_CURSOR=1
+        /// Desktop 顶层 ULW cursor（默认 ON，2026-05 推 default-on）。
+        /// ON = DesktopCursorOverlay：desktop 顶层 ULW + 跨 anchor 自由 + 单一 visibility 状态机
+        ///      + scale 跟 GuardianForm.ClientSize（窗口级）。
+        /// OFF = 旧 CursorOverlayForm：OverlayBase 子类 + anchor-bound + scale 跟 FlashHostPanel-based
+        ///      viewport（内容级，letterbox 黑边不计入）。仅作回滚兜底。
+        /// 见 plans/cursor-overlay-decoupling.md。env: CF7_DESKTOP_CURSOR=0 一键回滚。
         /// </summary>
         public bool UseDesktopCursorOverlay { get; private set; }
 
@@ -53,7 +56,7 @@ namespace CF7Launcher.Config
             GpuPreference = "off";
             DevGpuProbeHotkey = false;
             UseNativeHud = false;
-            UseDesktopCursorOverlay = false;
+            UseDesktopCursorOverlay = true;
 
             string configPath = Path.Combine(projectRoot, "config.toml");
             if (File.Exists(configPath))
@@ -98,7 +101,7 @@ namespace CF7Launcher.Config
                     else if (string.Equals(key, "useNativeHud", StringComparison.OrdinalIgnoreCase))
                         UseNativeHud = ParseBool(val, false);
                     else if (string.Equals(key, "useDesktopCursorOverlay", StringComparison.OrdinalIgnoreCase))
-                        UseDesktopCursorOverlay = ParseBool(val, false);
+                        UseDesktopCursorOverlay = ParseBool(val, true);
                 }
             }
 

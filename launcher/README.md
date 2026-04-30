@@ -670,7 +670,7 @@ Launcher 的配置被**显式拆成两份**，避免互相污染：
 
 #### config.toml（项目根目录，机器级，只读）
 
-只 8 个 key 会被识别，缺失即落代码默认：
+下面示例已枚举所有当前识别的 key，缺失即落代码默认：
 
 ```toml
 flashPlayerPath = "Adobe Flash Player 20.exe"
@@ -711,6 +711,14 @@ devGpuProbeHotkey = false
 #     未订阅 category 继续流向 webOverlay/NotchOverlay 过渡渲染
 # 性能收益：panel 打开期 α blend 成本下降；panel 关闭后 DoFullIdleSuspend 会 SW_HIDE + TrySuspendAsync 运行态 WebView2。
 useNativeHud = false
+
+# Desktop 顶层 ULW cursor（默认 ON，2026-05 推 default-on 后保留为回滚开关）。
+# ON（默认）= DesktopCursorOverlay：desktop 顶层 ULW，跨 anchor 自由 + 单一 visibility 状态机
+#   + scale 跟 GuardianForm.ClientSize（窗口级；panel 打开/关闭不再缩 cursor，全屏切换不抖动）
+# OFF = 旧 CursorOverlayForm：OverlayBase 子类 + anchor-bound + scale 跟 FlashHostPanel-based
+#   viewport（letterbox 黑边不计入；保留作为回滚兜底，无新功能）
+# 见 plans/cursor-overlay-decoupling.md。环境变量 CF7_DESKTOP_CURSOR=0 一键回滚旧路径。
+useDesktopCursorOverlay = true
 ```
 
 代码默认（[AppConfig.cs](src/Config/AppConfig.cs) 构造函数）：`GpuSharpeningEnabled = true`, `Sharpness = 0.5`。示例显式写 `false` 是遵循正文「当前禁用」语义，等 pipeline 接上以后再统一默认。
@@ -740,7 +748,7 @@ useNativeHud = false
 
 `useNativeHud=true` 扩散或改默认前，必须先过刘海栏 + 右侧 HUD 视觉/功能等价 gate：刘海栏由 [NotchOverlay](src/Guardian/NotchOverlay.cs) 复刻 web `#notch` 居中 pill、`28px` row1、hover 展开 toolbar、未 game-ready 仅显示 row1-right；combo 由 [ComboWidget](src/Guardian/Hud/ComboWidget.cs) 复刻 web `#combo-status` 输入提示、DFA/Sync 命中扫光、字符收束与收起；toast 和 `game` notice 也必须保持 Web 队列/去重/生命周期语义。右侧 cluster 由 [RightHudLayout](src/Guardian/Hud/RightHudLayout.cs) 固定复刻旧 Web 常量（`right:80px`、`width:170px`、5×`34px` 顶部工具、地图 `86px`、任务行/通知行 `32px`、jukebox `24px`），小地图需显示与 web `map-hud-svg-silhouette` 等价的 PNG alpha 剪影 + current/beacon。人工截图对比旧 Web 与 native：基地场景、任务完成可交付、小地图展开/折叠、未播放/播放中 jukebox、combo 输入/命中、toast/notice 堆叠、暂停态、安全退出弹出、7 个 panel 开关后 idle；通过标准是位置、宽度、纵向顺序、点击区域、文案和主要颜色层级等价，允许 GDI+/CSS 字体抗锯齿差异。性能回归仍要确认 idle WebView2 `SW_HIDE`，Ctrl+G / Task Manager 采样不比当前 native HUD 基线明显退化。
 
-`webOverlayLowEffects` 是运行态 overlay 聚合诊断开关，等价于同时启用 `webOverlayDisableCssAnimations` 与 `webOverlayDisableVisualizers`，并对 map panel 额外关闭全屏 scanline / radar / pulse、移除大图与场景节点的 CSS filter/drop-shadow、降低 full-surface overlay 透明覆膜成本。`webOverlayDisableCssAnimations` 只注入 `perf-no-css-animations`，关闭 CSS animation / transition；`webOverlayDisableVisualizers` 只隐藏 BGM/FPS canvas，并把 BGM 可视化推送从 60ms 降为 250ms 的 track-end 轮询。`webOverlayFrameRateLimit` 默认 `60`，通过 Web 端 requestAnimationFrame 限帧器把 overlay 的 JS/canvas 刷新链路限制到 60fps；`0`、`off` 或 `unlimited` 表示跟随当前显示器刷新率跑满。`webView2DisableGpu` 会同时给 BootstrapPanel 与运行态 WebOverlayForm 追加 `--disable-gpu --disable-gpu-rasterization --disable-accelerated-2d-canvas`，用于验证核显占满是否来自 WebView2 合成；它可能把负载转移到 CPU，不建议作为默认运行配置。`nativeCursorOverlay=false` 或环境变量 `CF7_NATIVE_CURSOR_OVERLAY=0` 会关闭 C# 原生 cursor layered window，恢复系统鼠标，用于 A/B 排除 cursor 迁移对 GPU 满载的影响。`webView2AdditionalArgs` 和环境变量 `CF7_WEBVIEW2_ARGS` 用于一次性追加 Chromium 参数；环境变量 `CF7_WEB_LOW_EFFECTS`、`CF7_WEB_DISABLE_CSS_ANIMATIONS`、`CF7_WEB_DISABLE_VISUALIZERS`、`CF7_WEB_FRAME_RATE_LIMIT`、`CF7_WEBVIEW2_DISABLE_GPU` 可覆盖对应配置。
+`webOverlayLowEffects` 是运行态 overlay 聚合诊断开关，等价于同时启用 `webOverlayDisableCssAnimations` 与 `webOverlayDisableVisualizers`，并对 map panel 额外关闭全屏 scanline / radar / pulse、移除大图与场景节点的 CSS filter/drop-shadow、降低 full-surface overlay 透明覆膜成本。`webOverlayDisableCssAnimations` 只注入 `perf-no-css-animations`，关闭 CSS animation / transition；`webOverlayDisableVisualizers` 只隐藏 BGM/FPS canvas，并把 BGM 可视化推送从 60ms 降为 250ms 的 track-end 轮询。`webOverlayFrameRateLimit` 默认 `60`，通过 Web 端 requestAnimationFrame 限帧器把 overlay 的 JS/canvas 刷新链路限制到 60fps；`0`、`off` 或 `unlimited` 表示跟随当前显示器刷新率跑满。`webView2DisableGpu` 会同时给 BootstrapPanel 与运行态 WebOverlayForm 追加 `--disable-gpu --disable-gpu-rasterization --disable-accelerated-2d-canvas`，用于验证核显占满是否来自 WebView2 合成；它可能把负载转移到 CPU，不建议作为默认运行配置。`nativeCursorOverlay=false` 或环境变量 `CF7_NATIVE_CURSOR_OVERLAY=0` 会关闭 C# 原生 cursor layered window，恢复系统鼠标，用于 A/B 排除 cursor 迁移对 GPU 满载的影响。`useDesktopCursorOverlay`（默认 `true`，2026-05 推 default-on）：DesktopCursorOverlay 是 desktop 顶层 ULW，scale 跟 `GuardianForm.ClientSize`（窗口级，panel 开关/全屏切换都跟随；ctor 即 seed，外部 SetScale 推送只在 GuardianForm 还没 sample 过时作 fallback）。`useDesktopCursorOverlay=false` 或环境变量 `CF7_DESKTOP_CURSOR=0` 一键回滚到旧 CursorOverlayForm（OverlayBase 子类，anchor-bound，scale 跟 FlashHostPanel-based viewport，仅作回滚兜底）。详见 toml 示例注释。`useNativeHud=true` 或环境变量 `CF7_NATIVE_HUD=1` 启用 Panel-Only 架构 + Native HUD widget（详见上方 useNativeHud 段落与 Native HUD parity gate）。`webView2AdditionalArgs` 和环境变量 `CF7_WEBVIEW2_ARGS` 用于一次性追加 Chromium 参数；环境变量 `CF7_WEB_LOW_EFFECTS`、`CF7_WEB_DISABLE_CSS_ANIMATIONS`、`CF7_WEB_DISABLE_VISUALIZERS`、`CF7_WEB_FRAME_RATE_LIMIT`、`CF7_WEBVIEW2_DISABLE_GPU` 可覆盖对应配置。
 
 BootstrapPanel 使用 `launcher/webview2_userdata`；运行态 WebOverlayForm 使用独立的 `launcher/webview2_overlay_userdata`。两者不能共用目录，因为 WebView2 同一个 user-data 目录下的 browser process group 要求启动参数一致，诊断参数（如禁 GPU）会导致启动阶段和运行阶段互相冲突。BootstrapPanel 在 reveal 后隐藏时会调用 WebView2 `TrySuspendAsync()`，避免启动页在游戏运行中继续参与 GPU 合成。
 

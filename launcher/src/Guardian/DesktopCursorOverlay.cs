@@ -111,6 +111,11 @@ namespace CF7Launcher.Guardian
         private const int IDLE_HIDE_MS = 3000;
         private const int IDLE_CHECK_INTERVAL_MS = 500;
 
+        // 诊断日志总开关：默认 false。开启会让每次 PresentCursor / RenderAndCommit / SetScale 调
+        // LogManager.Log（同步落盘 AutoFlush + UI 队列 marshalled），落在鼠标移动热路径上 = 直接拖低
+        // cursor 延迟。仅在定位 scale/visibility 异常时短暂改 true 重编出 diag build。
+        private const bool CursorDiag = false;
+
         // 设计基准（与 OverlayCoordinateContext.DesignHeight 一致）
         private const float DesignHeight = 576f;
 
@@ -148,6 +153,13 @@ namespace CF7Launcher.Guardian
         private long _lastActivityTick;
         private System.Windows.Forms.Timer _idleCheckTimer;
 
+        // Scale 自治：以 GuardianForm.ClientSize 为权威源（OnGuardianResize 推送）。
+        // WebOverlayForm.SetScale 推送的是 FlashHostPanel-based viewport（letterbox-stripped），
+        // 比 GuardianForm 小；desktop 顶层 ULW 是窗口级而非内容级实体，应跟随 GuardianForm 尺寸，
+        // 否则 panel 打开（无 form resize 但有 web vp 推送）会让 cursor 缩到「窗口模式」尺寸。
+        // 一旦 OnGuardianResize 跑过一次，SetScale 推送沦为 fallback：仅当尚未 seed 时才接受。
+        private bool _scaleSeededByOwner;
+
         #endregion
 
         public DesktopCursorOverlay(Form guardianForm, string assetDir)
@@ -170,6 +182,10 @@ namespace CF7Launcher.Guardian
             {
                 _guardianForm.Resize += OnGuardianResize;
                 _guardianForm.SizeChanged += OnGuardianResize;
+                // 立即 seed：构造时如 GuardianForm 已在最终尺寸（session restore / 启动直接 maximize），
+                // Resize 事件不会再触发，必须主动 sample 一次，否则 SetCursorOverlay 的初次 SetScale
+                // 推送会用 FlashHostPanel-based 值占位（小），后续也不会被 OnGuardianResize 纠正。
+                OnGuardianResize(null, EventArgs.Empty);
             }
 
             LogManager.Log("[DesktopCursor] ctor handle=0x" + this.Handle.ToString("X")
@@ -288,6 +304,13 @@ namespace CF7Launcher.Guardian
             ApplyVisibility(target, "SetForceHidden(" + forceHidden + ")");
         }
 
+        /// <summary>
+        /// INativeCursor 推送入口（来自 WebOverlayForm.UpdateOverlay/UpdateWebMetrics）。
+        /// **OnGuardianResize 一旦 seed 过就忽略**：WebOverlayForm 推送的是 FlashHostPanel-based
+        /// viewport（letterbox-stripped），与 desktop ULW 应跟的「整窗口尺寸」语义冲突；
+        /// panel 打开时只有此路径会推送（无 form resize），按 FlashHostPanel 算会让 cursor 缩到
+        /// 「窗口模式」尺寸。详见 _scaleSeededByOwner 注释。
+        /// </summary>
         public void SetScale(double viewportScale, int dpiX, int dpiY)
         {
             if (InvokeRequired)
@@ -295,23 +318,32 @@ namespace CF7Launcher.Guardian
                 BeginInvoke(new Action<double, int, int>(SetScale), viewportScale, dpiX, dpiY);
                 return;
             }
+            if (_scaleSeededByOwner) return;
+            ApplyScale(viewportScale, dpiX, dpiY, "external_push");
+        }
 
+        private void ApplyScale(double viewportScale, int dpiX, int dpiY, string source)
+        {
             int dpi = Math.Max(dpiX, dpiY);
             double dpiScale = dpi > 0 ? dpi / 96.0 : 1.0;
             double effective = ComputeEffectiveScale(viewportScale, dpiScale);
             double rawNext = effective * CursorScaleBoost;
             double next = ClampScale(rawNext);
             bool noop = Math.Abs(_cursorScale - next) < 0.01;
-            int renderedPx = (int)System.Math.Round(CursorSize * next);
-            LogManager.Log("[Cursor] SetScale vp=" + viewportScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                + " dpi=" + dpi + " (=" + dpiScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + ")"
-                + " effective=" + effective.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                + " boost=" + CursorScaleBoost.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)
-                + " raw=" + rawNext.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                + " final=" + next.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                + " rendered=" + renderedPx + "px"
-                + (noop ? " (noop)" : "")
-                + " [DesktopCursor]");
+            if (CursorDiag)
+            {
+                int renderedPx = (int)System.Math.Round(CursorSize * next);
+                LogManager.Log("[Cursor] SetScale src=" + source
+                    + " vp=" + viewportScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                    + " dpi=" + dpi + " (=" + dpiScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + ")"
+                    + " effective=" + effective.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                    + " boost=" + CursorScaleBoost.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)
+                    + " raw=" + rawNext.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                    + " final=" + next.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                    + " rendered=" + renderedPx + "px"
+                    + (noop ? " (noop)" : "")
+                    + " [DesktopCursor]");
+            }
             if (noop) return;
 
             _cursorScale = next;
@@ -448,19 +480,24 @@ namespace CF7Launcher.Guardian
 
         #endregion
 
-        #region GuardianForm 自订阅 — scale 冗余路径
+        #region GuardianForm 自订阅 — scale 权威源
 
+        /// <summary>
+        /// Desktop ULW 是窗口级实体，scale 跟 GuardianForm.ClientSize（含 letterbox 黑边）才合直觉：
+        /// 用户感受「鼠标随窗口大小变」，而 FlashHostPanel-based viewport 在内容是 4:3 / 16:9
+        /// 而 GuardianForm 是 16:9 / 21:9 时会显著偏小（letterbox 黑边不计入），结果是 panel 打开
+        /// （无 form resize，但有 web vp 推送）时 cursor 突然缩到「窗口模式」大小。
+        /// </summary>
         private void OnGuardianResize(object sender, EventArgs e)
         {
             if (_guardianForm == null) return;
-            // 注意：ClientSize 包含 letterbox 黑边；与 OverlayCoordinateContext.FlashViewportHeight 不完全等价。
-            // 这是冗余 fallback，主路径仍是 WebOverlayForm.SetScale 推送（精确 viewport，不含黑边）。
             try
             {
                 int h = _guardianForm.ClientSize.Height;
                 if (h <= 0) return;
                 double vp = h / DesignHeight;
-                SetScale(vp, 0, 0);
+                _scaleSeededByOwner = true;
+                ApplyScale(vp, 0, 0, "guardian_resize");
             }
             catch (Exception ex)
             {
@@ -530,10 +567,11 @@ namespace CF7Launcher.Guardian
             if (_visibility != CursorVisibility.Active
                 || _screenX == Int32.MinValue || _screenY == Int32.MinValue)
             {
-                LogManager.Log("[Cursor] PresentCursor SKIP visible=" + (_visibility == CursorVisibility.Active)
-                    + " screenX=" + (_screenX == Int32.MinValue ? "MIN" : _screenX.ToString())
-                    + " state=" + _visibility
-                    + " [DesktopCursor]");
+                if (CursorDiag)
+                    LogManager.Log("[Cursor] PresentCursor SKIP visible=" + (_visibility == CursorVisibility.Active)
+                        + " screenX=" + (_screenX == Int32.MinValue ? "MIN" : _screenX.ToString())
+                        + " state=" + _visibility
+                        + " [DesktopCursor]");
                 return;
             }
 
@@ -551,19 +589,21 @@ namespace CF7Launcher.Guardian
             bool sizeChanged = _frame == null || _frame.Width != width || _frame.Height != height;
             if (!_contentDirty && !sizeChanged)
             {
-                LogManager.Log("[Cursor] PresentCursor PATH=move-only scale="
-                    + scale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                    + " sz=" + width + "x" + height
-                    + " [DesktopCursor]");
+                if (CursorDiag)
+                    LogManager.Log("[Cursor] PresentCursor PATH=move-only scale="
+                        + scale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                        + " sz=" + width + "x" + height
+                        + " [DesktopCursor]");
                 MoveCommittedWindow(windowX, windowY);
                 return;
             }
 
-            LogManager.Log("[Cursor] PresentCursor PATH=render scale="
-                + scale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                + " sz=" + width + "x" + height
-                + " sizeChanged=" + sizeChanged + " contentDirty=" + _contentDirty
-                + " [DesktopCursor]");
+            if (CursorDiag)
+                LogManager.Log("[Cursor] PresentCursor PATH=render scale="
+                    + scale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                    + " sz=" + width + "x" + height
+                    + " sizeChanged=" + sizeChanged + " contentDirty=" + _contentDirty
+                    + " [DesktopCursor]");
             RenderAndCommit(asset, scale, width, height, windowX, windowY);
         }
 
@@ -601,13 +641,16 @@ namespace CF7Launcher.Guardian
             SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0,
                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 
-            Rectangle realBounds;
-            try { realBounds = GetWindowRectSafe(); }
-            catch { realBounds = Rectangle.Empty; }
-            LogManager.Log("[Cursor] RenderAndCommit committed sz=" + width + "x" + height
-                + " realWindowRect=" + realBounds.Width + "x" + realBounds.Height
-                + " @ (" + realBounds.X + "," + realBounds.Y + ")"
-                + " [DesktopCursor]");
+            if (CursorDiag)
+            {
+                Rectangle realBounds;
+                try { realBounds = GetWindowRectSafe(); }
+                catch { realBounds = Rectangle.Empty; }
+                LogManager.Log("[Cursor] RenderAndCommit committed sz=" + width + "x" + height
+                    + " realWindowRect=" + realBounds.Width + "x" + realBounds.Height
+                    + " @ (" + realBounds.X + "," + realBounds.Y + ")"
+                    + " [DesktopCursor]");
+            }
         }
 
         private void MoveCommittedWindow(int windowX, int windowY)
