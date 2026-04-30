@@ -24,6 +24,23 @@ namespace CF7Launcher.Guardian
         public bool HasWebMetrics { get; private set; }
         public bool LastDpiResolved { get; private set; }
 
+        // Flash 设计基准高度（与 ComboWidget / RightContextWidget 等 widget 用的 stageH 一致）。
+        // viewport scale = 实际内容区物理高度 / 576。
+        public const float DesignHeight = 576f;
+
+        /// <summary>
+        /// Flash 内容区物理像素 / 设计高度的比值；letterbox 黑边不计入（用 FlashViewportHeight 而非 OverlayPhysicalBounds.Height）。
+        /// 全屏 1920×1080 → ~1.875；窗口化 1024×576 → ~1.0；尚未 update 时退回 1.0。
+        /// </summary>
+        public double ViewportScale
+        {
+            get
+            {
+                if (FlashViewportHeight > 0f) return FlashViewportHeight / DesignHeight;
+                return 1.0;
+            }
+        }
+
         private double _fallbackZoom;
 
         public OverlayCoordinateContext()

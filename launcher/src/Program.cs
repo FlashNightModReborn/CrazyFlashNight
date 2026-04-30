@@ -322,12 +322,20 @@ class Program
                 config.WebView2DisableGpu,
                 config.WebView2AdditionalArgs);
         }
-        CursorOverlayForm cursorOverlay = null;
+        CF7Launcher.Guardian.Hud.INativeCursor cursorOverlay = null;
         if (config.NativeCursorOverlayEnabled)
         {
-            cursorOverlay = new CursorOverlayForm(form, form.FlashHostPanel,
-                Path.Combine(webDir, "assets", "cursor", "native"));
-            LogManager.Log("[Cursor] native overlay enabled");
+            string cursorAssetDir = Path.Combine(webDir, "assets", "cursor", "native");
+            if (config.UseDesktopCursorOverlay)
+            {
+                cursorOverlay = new DesktopCursorOverlay(form, cursorAssetDir);
+                LogManager.Log("[Cursor] native overlay enabled (DesktopCursorOverlay — Phase 1 desktop ULW)");
+            }
+            else
+            {
+                cursorOverlay = new CursorOverlayForm(form, form.FlashHostPanel, cursorAssetDir);
+                LogManager.Log("[Cursor] native overlay enabled (CursorOverlayForm — legacy OverlayBase)");
+            }
         }
         else
         {
@@ -472,7 +480,7 @@ class Program
             // P2-1 perf：后台预热 GDI+ 字体 / 字形栅格化 / silhouette PNG。
             // 与 SFX preload / catalog async 并行，全部藏在 Flash 启动等待窗口（~4-5s）。
             // 玩家首次看到 native UI 时所有冷启动开销已被吸收。
-            CF7Launcher.Guardian.Hud.NativeHudPrewarm.RunAsync(rightContext, comboWidget, mapCatalog);
+            CF7Launcher.Guardian.Hud.NativeHudPrewarm.RunAsync(mapCatalog);
 
             // P2-3 perf：ULW 首帧预提交（1×1 透明）。让 DWM 把 NativeHud / HitNumber / Cursor
             // 加入合成树 + per-pixel α 路径建立；玩家可见的第一次 commit 不再触发"新 layered window 合成"冷路径。

@@ -33,11 +33,10 @@ namespace CF7Launcher.Guardian.Hud
     {
         /// <summary>
         /// 后台异步预热。立即返回，不阻塞主线程。
+        /// PrewarmGdi 是静态方法（只接静态资源），不需要 widget 实例参数。
         /// </summary>
-        /// <param name="rightContext">已实例化的 RightContextWidget；null 时跳过</param>
-        /// <param name="combo">已实例化的 ComboWidget；null 时跳过</param>
         /// <param name="mapCatalog">异步加载中的 MapHudDataCatalog；null 时跳过 PNG 预加载</param>
-        public static void RunAsync(RightContextWidget rightContext, ComboWidget combo, MapHudDataCatalog mapCatalog)
+        public static void RunAsync(MapHudDataCatalog mapCatalog)
         {
             ThreadPool.QueueUserWorkItem(delegate(object state)
             {
@@ -53,9 +52,9 @@ namespace CF7Launcher.Guardian.Hud
                         g.Clear(Color.Transparent);
                     }
 
-                    // 2) widget 静态资源 + 字体 + 字形栅格化 cache
-                    if (rightContext != null) rightContext.PrewarmGdi();
-                    if (combo != null) combo.PrewarmGdi();
+                    // 2) widget 静态资源 + base font + 字形栅格化 cache（不触碰 widget 实例字段）
+                    RightContextWidget.PrewarmGdi();
+                    ComboWidget.PrewarmGdi();
 
                     PerfTrace.Mark("nativeHud.prewarm_gdi_done");
 

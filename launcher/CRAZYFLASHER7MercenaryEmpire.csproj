@@ -128,6 +128,7 @@
     <Compile Include="src\Guardian\Hud\NativeHudPrewarm.cs" />
     <Compile Include="src\Guardian\Hud\RightContextWidget.cs" />
     <Compile Include="src\Guardian\Hud\RightHudLayout.cs" />
+    <Compile Include="src\Guardian\Hud\INativeCursor.cs" />
     <Compile Include="src\Guardian\Hud\SafeExitPanelWidget.cs" />
     <Compile Include="src\Guardian\Hud\UiDataPacketParser.cs" />
     <Compile Include="src\Guardian\Hud\UiValueParser.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="src\Guardian\PanelLayoutCatalog.cs" />
     <Compile Include="src\Guardian\LauncherCommandRouter.cs" />
     <Compile Include="src\Guardian\CursorOverlayForm.cs" />
+    <Compile Include="src\Guardian\DesktopCursorOverlay.cs" />
     <Compile Include="src\Guardian\WebOverlayForm.cs" />
     <Compile Include="src\Guardian\BootstrapPanel.cs" />
     <Compile Include="src\Guardian\InputShieldForm.cs" />

@@ -884,6 +884,15 @@ namespace CF7Launcher.Guardian
                 if (_animTick != null) { _animTick.Stop(); _animTick.Dispose(); _animTick = null; }
                 if (_renderCoalesceTimer != null) { _renderCoalesceTimer.Stop(); _renderCoalesceTimer.Dispose(); _renderCoalesceTimer = null; }
                 if (_composedBitmap != null) { _composedBitmap.Dispose(); _composedBitmap = null; }
+                // widget 持有的实例 GDI handle（如 RightContextWidget._fontX / ComboWidget._scaledX）
+                // 走 IDisposable 主动释放；不依赖 finalizer 延迟回收。
+                INativeHudWidget[] widgetSnapshot;
+                lock (_widgetsLock) { widgetSnapshot = _widgets.ToArray(); }
+                for (int i = 0; i < widgetSnapshot.Length; i++)
+                {
+                    IDisposable d = widgetSnapshot[i] as IDisposable;
+                    if (d != null) { try { d.Dispose(); } catch { } }
+                }
             }
             base.Dispose(disposing);
         }

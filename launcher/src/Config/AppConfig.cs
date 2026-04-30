@@ -27,6 +27,12 @@ namespace CF7Launcher.Config
         public bool DevGpuProbeHotkey { get; private set; }
         /// <summary>开关 Native HUD + PanelHostController 装配。Phase 1 默认 false（仅装配骨架，不接管 panel 路由）。</summary>
         public bool UseNativeHud { get; private set; }
+        /// <summary>
+        /// Cursor 解耦 Phase 1 flag。OFF（默认）= 旧 CursorOverlayForm（OverlayBase 体系）；
+        /// ON = 新 DesktopCursorOverlay（desktop 顶层 ULW，跨 anchor 自由 + 单一 visibility 状态机）。
+        /// 见 plans/cursor-overlay-decoupling.md。env: CF7_DESKTOP_CURSOR=1
+        /// </summary>
+        public bool UseDesktopCursorOverlay { get; private set; }
 
         private static readonly string DefaultFlashPlayer = "Adobe Flash Player 20.exe";
         private static readonly string DefaultSwf = "CRAZYFLASHER7MercenaryEmpire.swf";
@@ -47,6 +53,7 @@ namespace CF7Launcher.Config
             GpuPreference = "off";
             DevGpuProbeHotkey = false;
             UseNativeHud = false;
+            UseDesktopCursorOverlay = false;
 
             string configPath = Path.Combine(projectRoot, "config.toml");
             if (File.Exists(configPath))
@@ -90,6 +97,8 @@ namespace CF7Launcher.Config
                         DevGpuProbeHotkey = ParseBool(val, false);
                     else if (string.Equals(key, "useNativeHud", StringComparison.OrdinalIgnoreCase))
                         UseNativeHud = ParseBool(val, false);
+                    else if (string.Equals(key, "useDesktopCursorOverlay", StringComparison.OrdinalIgnoreCase))
+                        UseDesktopCursorOverlay = ParseBool(val, false);
                 }
             }
 
@@ -158,6 +167,10 @@ namespace CF7Launcher.Config
             string nativeHud = Environment.GetEnvironmentVariable("CF7_NATIVE_HUD");
             if (!string.IsNullOrEmpty(nativeHud))
                 UseNativeHud = ParseBoolLike(nativeHud, UseNativeHud);
+
+            string desktopCursor = Environment.GetEnvironmentVariable("CF7_DESKTOP_CURSOR");
+            if (!string.IsNullOrEmpty(desktopCursor))
+                UseDesktopCursorOverlay = ParseBoolLike(desktopCursor, UseDesktopCursorOverlay);
         }
 
         private static string NormalizeGpuPreference(string val, string fallback)

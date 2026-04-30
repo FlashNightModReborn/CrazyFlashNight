@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using CF7Launcher.Guardian.Hud;
 
 namespace CF7Launcher.Guardian
 {
@@ -61,7 +62,7 @@ namespace CF7Launcher.Guardian
         private readonly NativePanelBackdrop _backdrop;
         private readonly InputShieldForm _shield;
         private readonly HitNumberOverlay _hitNumber;
-        private readonly CursorOverlayForm _cursor;
+        private readonly INativeCursor _cursor;
         private readonly IPanelEscapeSource _escSource;
         private readonly Func<IntPtr> _flashHwndProvider; // 可空：null 时降级走 placeholder backdrop
         // Phase 3: NotchOverlay/ToastOverlay 作为常驻 HUD（web 端 #notch/#toast 已被 CSS 隐藏）
@@ -93,7 +94,7 @@ namespace CF7Launcher.Guardian
             NativePanelBackdrop backdrop,
             InputShieldForm shield,
             HitNumberOverlay hitNumber,
-            CursorOverlayForm cursor,
+            INativeCursor cursor,
             IPanelEscapeSource escSource,
             Func<IntPtr> flashHwndProvider,
             NotchOverlay notchOverlay,
@@ -345,7 +346,9 @@ namespace CF7Launcher.Guardian
             catch (Exception ex) { LogManager.Log("[PanelHost] PostToWeb open failed: " + ex.Message); }
             // Step 8: 把 HitNumber/Cursor 重新顶置（Backdrop/WebOverlay 的 SetWindowPos HWND_TOP 把它们压下去了）
             ReTopOverlay(_hitNumber);
-            ReTopOverlay(_cursor);
+            // INativeCursor 抽象后 cursor 实现仍是 Form（CursorOverlayForm / DesktopCursorOverlay 都是）。
+            // ReTopOverlay 需要 Handle，所以走 as Form 投影；非 Form 实现（不存在）会被静默跳过。
+            ReTopOverlay(_cursor as Form);
             // Step 9: ESC 拦截启用
             if (_escSource != null) _escSource.SetPanelEscapeEnabled(true);
             // Step 10: 跟随 owner 拖窗/大小变化，重定位 backdrop+web 到新 anchor
@@ -477,7 +480,7 @@ namespace CF7Launcher.Guardian
             // Step 6: cursor 重新顶置 + 强制刷一次位置（Notch/Toast 的 SetReady HWND_TOP 会把 cursor 压下；
             //   且 cursor 上次坐标可能在 panel 矩形内，关闭后该区域无 mouse hook 触发更新——直到玩家动鼠标
             //   才刷新 → 视觉上 cursor "消失，移动后突然出现"。这里主动 ReTop + 用当前真实鼠标位置刷一次）
-            ReTopOverlay(_cursor);
+            ReTopOverlay(_cursor as Form);
             try { _web.UpdateCursorFromScreenPoint(System.Windows.Forms.Cursor.Position); }
             catch (Exception ex) { LogManager.Log("[PanelHost] cursor refresh failed: " + ex.Message); }
 

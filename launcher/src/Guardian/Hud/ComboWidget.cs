@@ -28,7 +28,7 @@ namespace CF7Launcher.Guardian.Hud
     /// 位置：紧贴 NotchToolbarWidget 下方（viewport 顶部居中），随 letterbox 同源缩放。
     /// width 动态：MeasureString 拿真实像素，min=160 base，max=480 base，超长截断。
     /// </summary>
-    public class ComboWidget : INativeHudWidget, IUiDataConsumer, IUiDataLegacyConsumer, INotchNoticeConsumer
+    public class ComboWidget : INativeHudWidget, IUiDataConsumer, IUiDataLegacyConsumer, INotchNoticeConsumer, IDisposable
     {
         // 设计基准 (1024x576)：Web #combo-status 是 #notch-pill 的兄弟节点，收起态紧贴 pill 下沿。
         private const int INPUT_BAR_H_BASE = 26;
@@ -223,15 +223,16 @@ namespace CF7Launcher.Guardian.Hud
         /// 包含：base/scaled font 创建、static brush/format cctor、ClearType glyph cache 预热（DrawString 一次）。
         /// 必须在主线程或专门的 Bitmap-UI 线程调用（GDI+ Graphics 不跨线程）。
         /// </summary>
-        public void PrewarmGdi()
+        public static void PrewarmGdi()
         {
             try
             {
-                // 触发静态 cctor：访问 BR_TYPED 让 5 brush + 2 StringFormat 即时构造
-                System.Drawing.Brush touch = BR_TYPED;
-                if (touch == null) return;
+                // 触发静态 cctor：BR_TYPED 是 static readonly + cctor 内 new SolidBrush(...) 赋值，
+                // cctor 完成后不可能为 null。GC.KeepAlive 表达"touch to force cctor"意图。
+                // **不调 EnsureScaledFonts**：实例 _scaled* 字段属于 widget 实例，由 UI 线程 Paint
+                // 路径独占；Prewarm 跑在 ThreadPool 线程，只接静态 base font，避免 Font 跨线程争用。
+                System.GC.KeepAlive(BR_TYPED);
                 EnsureBaseFonts();
-                EnsureScaledFonts(1.0f);
                 using (System.Drawing.Bitmap warm = new System.Drawing.Bitmap(64, 32, System.Drawing.Imaging.PixelFormat.Format32bppPArgb))
                 using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(warm))
                 {
@@ -239,12 +240,21 @@ namespace CF7Launcher.Guardian.Hud
                     g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
                     // 触发汉字 + ASCII 字形栅格化（招式名常见字符 + 数字）
                     string sample = "波动拳诛杀步招式DFA Sync 0123456789";
-                    g.DrawString(sample, _baseTypedFont, BR_TYPED, 0f, 0f);
+                    g.DrawString(sample, _baseTypedFont,  BR_TYPED,  0f,  0f);
                     g.DrawString(sample, _baseRemainFont, BR_REMAIN, 0f, 12f);
-                    g.DrawString(sample, _baseHitFont, BR_NAME, 0f, 20f);
+                    g.DrawString(sample, _baseHitFont,    BR_NAME,   0f, 20f);
                 }
             }
             catch (Exception ex) { LogManager.Log("[ComboWidget] PrewarmGdi failed: " + ex.Message); }
+        }
+
+        /// <summary>
+        /// 释放实例 scaled Font GDI handle。NativeHudOverlay teardown 时调用。
+        /// 静态 base font / brush / fmt 是进程级共享资源，不在此释放。
+        /// </summary>
+        public void Dispose()
+        {
+            DisposeScaledFonts();
         }
 
         private static void EnsureBaseFonts()

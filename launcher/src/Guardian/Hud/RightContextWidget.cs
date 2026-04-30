@@ -15,7 +15,7 @@ namespace CF7Launcher.Guardian.Hud
     /// 复刻旧 Web 右上 cluster：top-right-tools + context-panel + jukebox collapsed titlebar。
     /// 业务命令仍全部通过 LauncherCommandRouter.Dispatch，不在 widget 内复制业务分支。
     /// </summary>
-    public class RightContextWidget : INativeHudWidget, IUiDataConsumer, IUiDataLegacyConsumer
+    public class RightContextWidget : INativeHudWidget, IUiDataConsumer, IUiDataLegacyConsumer, IDisposable
     {
         private const int NOTICE_MS = 5000;
         private const int MINI_RENDER_MS = 100;
@@ -187,6 +187,8 @@ namespace CF7Launcher.Guardian.Hud
         }
 
         // 实例 Font 缓存：scale 变化时整体重建（5 个不同 family/size/style）
+        // 实例字段不能跨线程：Prewarm 走静态 base font，Paint 走实例 scaled font，二者互不触碰
+        // —— 避免 PrewarmGdi (ThreadPool) 与 Paint (UI) 之间 EnsureFonts 重建期的 Font 竞争。
         private float _cachedFontScale = -1f;
         private Font _fontTools15Bold;        // PaintTools "Segoe UI Symbol" 15 Bold
         private Font _fontJukeIcon12;         // DrawJukeboxPause/Expand "Segoe UI Symbol" 12 Regular
@@ -194,18 +196,43 @@ namespace CF7Launcher.Guardian.Hud
         private Font _fontQuest12;            // PaintQuestRow "Microsoft YaHei" 12 Regular
         private Font _fontNoticeJuke11;       // PaintNotice & DrawJukeboxTitle "Microsoft YaHei" 11 Regular
 
+        // 静态 base font（scale=1）：Prewarm + 测试探针专用，避免与实例 _font* 跨线程共用。
+        // 进程级共享 + 不 dispose（与 ComboWidget._baseTypedFont 等同形）；double-checked lock 懒初始化。
+        private static Font _baseTools15Bold;
+        private static Font _baseJukeIcon12;
+        private static Font _baseMapLabel115Bold;
+        private static Font _baseQuest12;
+        private static Font _baseNoticeJuke11;
+        private static readonly object _baseFontLock = new object();
+
+        private static void EnsureBaseFonts()
+        {
+            if (_baseTools15Bold != null) return;
+            lock (_baseFontLock)
+            {
+                if (_baseTools15Bold != null) return;
+                _baseTools15Bold     = new Font("Segoe UI Symbol", 15f,   FontStyle.Regular, GraphicsUnit.Pixel);
+                _baseJukeIcon12      = new Font("Segoe UI Symbol", 12f,   FontStyle.Regular, GraphicsUnit.Pixel);
+                _baseMapLabel115Bold = new Font("Microsoft YaHei", 11.5f, FontStyle.Bold,    GraphicsUnit.Pixel);
+                _baseQuest12         = new Font("Microsoft YaHei", 12f,   FontStyle.Regular, GraphicsUnit.Pixel);
+                _baseNoticeJuke11    = new Font("Microsoft YaHei", 11f,   FontStyle.Regular, GraphicsUnit.Pixel);
+            }
+        }
+
         /// <summary>
         /// P2-1 prewarm 入口：在玩家看到 UI 之前触发 GDI+ 资源 + 字体 + 字形 cache。
         /// 与 Paint 路径共用 EnsureFonts；外加一次 DrawString 让 ClearType glyph cache 命中常见字符。
         /// </summary>
-        public void PrewarmGdi()
+        public static void PrewarmGdi()
         {
             try
             {
-                // 触发静态 cctor：访问 BR_TOOLS_BG 让 21 brush + 2 pen + 3 StringFormat 即时构造
-                System.Drawing.Brush touch = BR_TOOLS_BG;
-                if (touch == null) return;
-                EnsureFonts(1.0f);
+                // 触发静态 cctor：21 brush + 2 pen + 3 StringFormat 进程级常量。
+                // BR_TOOLS_BG 是 static readonly + 在 cctor 内 new SolidBrush(...) 赋值；
+                // 只要 cctor 没抛异常就不可能为 null —— 不需要 null 守卫。
+                // 用 GC.KeepAlive 表达"touch to force cctor 执行"的意图，比 if(null)return 清晰。
+                System.GC.KeepAlive(BR_TOOLS_BG);
+                EnsureBaseFonts();
                 using (System.Drawing.Bitmap warm = new System.Drawing.Bitmap(128, 64, System.Drawing.Imaging.PixelFormat.Format32bppPArgb))
                 using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(warm))
                 {
@@ -217,11 +244,12 @@ namespace CF7Launcher.Guardian.Hud
                         "地图 装备 任务 未播放 存盘中 存盘成功 取消 退出",
                         "0123456789"
                     };
-                    g.DrawString(samples[0], _fontTools15Bold, BR_TOOLS_FG, 0f, 0f);
-                    g.DrawString(samples[1], _fontQuest12, BR_QUEST_FG, 0f, 16f);
-                    g.DrawString(samples[1], _fontNoticeJuke11, BR_JUKE_TITLE_BGM, 0f, 32f);
-                    g.DrawString(samples[1], _fontMapLabel115Bold, BR_LABEL_TEXT, 0f, 48f);
-                    g.DrawString(samples[2], _fontJukeIcon12, BR_JUKE_FG_DEFAULT, 0f, 60f);
+                    // 只接静态 base font，不触碰任何实例 _font*；与 UI 线程 Paint 路径完全无共享状态
+                    g.DrawString(samples[0], _baseTools15Bold,     BR_TOOLS_FG,         0f,  0f);
+                    g.DrawString(samples[1], _baseQuest12,         BR_QUEST_FG,         0f, 16f);
+                    g.DrawString(samples[1], _baseNoticeJuke11,    BR_JUKE_TITLE_BGM,   0f, 32f);
+                    g.DrawString(samples[1], _baseMapLabel115Bold, BR_LABEL_TEXT,       0f, 48f);
+                    g.DrawString(samples[2], _baseJukeIcon12,      BR_JUKE_FG_DEFAULT,  0f, 60f);
                 }
             }
             catch (Exception ex) { LogManager.Log("[RightContextWidget] PrewarmGdi failed: " + ex.Message); }
@@ -247,6 +275,15 @@ namespace CF7Launcher.Guardian.Hud
             if (_fontQuest12 != null)         { _fontQuest12.Dispose();         _fontQuest12 = null; }
             if (_fontNoticeJuke11 != null)    { _fontNoticeJuke11.Dispose();    _fontNoticeJuke11 = null; }
             _cachedFontScale = -1f;
+        }
+
+        /// <summary>
+        /// 释放实例 Font GDI handle。NativeHudOverlay teardown 时调用，避免依赖 finalizer 延迟回收。
+        /// 静态 base font / brush / pen / fmt 是进程级共享资源，不在此释放。
+        /// </summary>
+        public void Dispose()
+        {
+            DisposeFonts();
         }
 
         public event EventHandler BoundsOrVisibilityChanged;

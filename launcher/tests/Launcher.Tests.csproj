@@ -77,6 +77,10 @@
     <Compile Include="Guardian\RightContextWidgetTests.cs" />
     <Compile Include="Guardian\RightHudLayoutTests.cs" />
     <Compile Include="Guardian\SafeExitPanelWidgetTests.cs" />
+    <Compile Include="Guardian\CursorScaleTests.cs" />
+    <Compile Include="Guardian\DesktopCursorScaleTests.cs" />
+    <Compile Include="Guardian\DesktopCursorVisibilityStateMachineTests.cs" />
+    <Compile Include="Guardian\UiDataPacketTests.cs" />
     <Compile Include="Guardian\ToastOverlayTests.cs" />
     <Compile Include="Guardian\WidgetScalerTests.cs" />
   </ItemGroup>

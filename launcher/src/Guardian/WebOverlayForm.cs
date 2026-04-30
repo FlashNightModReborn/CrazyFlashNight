@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using CF7Launcher.Bus;
+using CF7Launcher.Guardian.Hud;
 using CF7Launcher.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -149,7 +150,7 @@ namespace CF7Launcher.Guardian
 
         // InputShieldForm 引用（CDP 输入注入 + hitRects 转发）
         private InputShieldForm _inputShield;
-        private CursorOverlayForm _cursorOverlay;
+        private INativeCursor _cursorOverlay;
         private bool _nativeHudIdleSuspendPending;
         private bool _webViewControllerReflectionWarned;
         private int _panelViewportRepairAttempts;
@@ -844,7 +845,13 @@ namespace CF7Launcher.Guardian
                     vpX, vpY, vpW, vpH, this.Handle, _zoomFactor, reason);
 
                 if (_cursorOverlay != null)
-                    _cursorOverlay.SetDpiScale(_coordinateContext.WindowDpiX, _coordinateContext.WindowDpiY);
+                {
+                    LogManager.Log("[Cursor] callsite=UpdateOverlay reason=" + (reason ?? "")
+                        + " vpW=" + vpW + " vpH=" + vpH + " physBoundsH=" + h
+                        + " ctxFlashVpH=" + _coordinateContext.FlashViewportHeight
+                        + " ctxViewportScale=" + _coordinateContext.ViewportScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture));
+                    _cursorOverlay.SetScale(_coordinateContext.ViewportScale, _coordinateContext.WindowDpiX, _coordinateContext.WindowDpiY);
+                }
 
                 // WebView2 视觉 ZoomFactor 需要除以当前 DPI scale，避免 125%/150%
                 // 系统缩放下视觉层被 DPR 二次放大。DPI 统一使用 UpdateOverlay 已采样
@@ -1104,7 +1111,13 @@ namespace CF7Launcher.Guardian
                 _inputShield.RequestPositionSync();
             }
             if (_cursorOverlay != null)
-                _cursorOverlay.SetDpiScale(_coordinateContext.WindowDpiX, _coordinateContext.WindowDpiY);
+            {
+                LogManager.Log("[Cursor] callsite=UpdateWebMetrics reason=" + (reason ?? "")
+                    + " ctxFlashVpH=" + _coordinateContext.FlashViewportHeight
+                    + " ctxPhysicalBoundsH=" + _coordinateContext.OverlayPhysicalBounds.Height
+                    + " ctxViewportScale=" + _coordinateContext.ViewportScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture));
+                _cursorOverlay.SetScale(_coordinateContext.ViewportScale, _coordinateContext.WindowDpiX, _coordinateContext.WindowDpiY);
+            }
 
             bool panelMetrics = IsPanelMetricsReason(reason);
             if (panelMetrics)
@@ -1221,13 +1234,15 @@ namespace CF7Launcher.Guardian
             return value;
         }
 
-        public void SetCursorOverlay(CursorOverlayForm cursorOverlay)
+        public void SetCursorOverlay(INativeCursor cursorOverlay)
         {
             _cursorOverlay = cursorOverlay;
             if (_cursorOverlay != null)
             {
                 _nativeCursorMissingLogged = false;
-                _cursorOverlay.SetDpiScale(_coordinateContext.WindowDpiX, _coordinateContext.WindowDpiY);
+                LogManager.Log("[Cursor] callsite=SetCursorOverlay ctxFlashVpH=" + _coordinateContext.FlashViewportHeight
+                    + " ctxViewportScale=" + _coordinateContext.ViewportScale.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture));
+                _cursorOverlay.SetScale(_coordinateContext.ViewportScale, _coordinateContext.WindowDpiX, _coordinateContext.WindowDpiY);
             }
             else
             {
@@ -1457,6 +1472,11 @@ namespace CF7Launcher.Guardian
             _cursorOverlay.SetCursorState(visualState, visualDragging);
         }
 
+        private bool CursorUsesDesktopCoordinates()
+        {
+            return _cursorOverlay != null && _cursorOverlay.UsesDesktopCoordinates;
+        }
+
         private static string NormalizeCursorState(string state)
         {
             if (string.IsNullOrEmpty(state)) return "normal";
@@ -1555,17 +1575,18 @@ namespace CF7Launcher.Guardian
             if (screenX == _cursorHookLastX && screenY == _cursorHookLastY)
                 return;
 
+            bool desktopCursor = CursorUsesDesktopCoordinates();
             Rectangle bounds = _coordinateContext.OverlayPhysicalBounds;
             if (bounds.Width <= 0 || bounds.Height <= 0)
                 bounds = this.Bounds;
 
             bool inside = bounds.Contains(screenX, screenY);
-            if (!inside && !_cursorLastVisible)
+            if (!desktopCursor && !inside && !_cursorLastVisible)
                 return;
 
             long now = Environment.TickCount;
             int minInterval = 8;
-            if (inside && now - _lastCursorHookPostTick >= 0 && now - _lastCursorHookPostTick < minInterval)
+            if ((desktopCursor || inside) && now - _lastCursorHookPostTick >= 0 && now - _lastCursorHookPostTick < minInterval)
             {
                 _cursorHookPendingX = screenX;
                 _cursorHookPendingY = screenY;
@@ -1598,6 +1619,12 @@ namespace CF7Launcher.Guardian
                 return;
 
             Point screen = new Point(_cursorHookPendingX, _cursorHookPendingY);
+            if (CursorUsesDesktopCoordinates())
+            {
+                UpdateCursorFromScreenPoint(screen, "hook");
+                return;
+            }
+
             Rectangle bounds = _coordinateContext.OverlayPhysicalBounds;
             if (bounds.Width <= 0 || bounds.Height <= 0)
                 bounds = this.Bounds;
@@ -1654,6 +1681,12 @@ namespace CF7Launcher.Guardian
             }
 
             Point screen = Control.MousePosition;
+            if (CursorUsesDesktopCoordinates())
+            {
+                SendDesktopCursorPosition(screen, "send", force);
+                return;
+            }
+
             Rectangle bounds = _coordinateContext.OverlayPhysicalBounds;
             if (bounds.Width <= 0 || bounds.Height <= 0)
                 bounds = this.Bounds;
@@ -1680,6 +1713,7 @@ namespace CF7Launcher.Guardian
                 css.X == _cursorLastX && css.Y == _cursorLastY)
                 return;
 
+            bool wasVisible = _cursorLastVisible;
             _cursorLastVisible = true;
             HideSystemCursor();
             _cursorLastX = css.X;
@@ -1689,6 +1723,8 @@ namespace CF7Launcher.Guardian
 
             if (_cursorOverlay != null)
             {
+                if (!wasVisible)
+                    _cursorOverlay.SetCursorVisible(true);
                 _cursorOverlay.UpdateCursorPosition(screen);
             }
             else
@@ -1716,8 +1752,15 @@ namespace CF7Launcher.Guardian
                 return;
 
             Point screen = new Point(bounds.Left + px, bounds.Top + py);
+            if (CursorUsesDesktopCoordinates())
+            {
+                SendDesktopCursorPosition(screen, kind, false);
+                return;
+            }
+
             Point css = _coordinateContext.PhysicalPointToCss(px, py);
 
+            bool wasVisible = _cursorLastVisible;
             _cursorLastVisible = true;
             HideSystemCursor();
             _cursorLastX = css.X;
@@ -1727,6 +1770,8 @@ namespace CF7Launcher.Guardian
 
             if (_cursorOverlay != null)
             {
+                if (!wasVisible)
+                    _cursorOverlay.SetCursorVisible(true);
                 _cursorOverlay.UpdateCursorPosition(screen);
             }
             else
@@ -1747,6 +1792,12 @@ namespace CF7Launcher.Guardian
             if (_disposed || !_shown || !_webReady)
                 return;
 
+            if (CursorUsesDesktopCoordinates())
+            {
+                SendDesktopCursorPosition(screen, kind, true);
+                return;
+            }
+
             Rectangle bounds = _coordinateContext.OverlayPhysicalBounds;
             if (bounds.Width <= 0 || bounds.Height <= 0)
                 bounds = this.Bounds;
@@ -1756,16 +1807,52 @@ namespace CF7Launcher.Guardian
             UpdateCursorFromOverlayPoint(screen.X - bounds.Left, screen.Y - bounds.Top, kind);
         }
 
+        private void SendDesktopCursorPosition(Point screen, string kind, bool force)
+        {
+            if (_cursorOverlay == null)
+            {
+                RestoreSystemCursorForMissingNativeOverlay();
+                return;
+            }
+
+            if (!force && _cursorLastVisible
+                && screen.X == _cursorLastScreenX && screen.Y == _cursorLastScreenY)
+                return;
+
+            bool wasVisible = _cursorLastVisible;
+            _cursorLastVisible = true;
+            _cursorLastX = Int32.MinValue;
+            _cursorLastY = Int32.MinValue;
+            _cursorLastScreenX = screen.X;
+            _cursorLastScreenY = screen.Y;
+
+            if (!wasVisible)
+                _cursorOverlay.SetCursorVisible(true);
+            _cursorOverlay.UpdateCursorPosition(screen);
+
+            Rectangle bounds = _coordinateContext.OverlayPhysicalBounds;
+            if (bounds.Width <= 0 || bounds.Height <= 0)
+                bounds = this.Bounds;
+            LogCursorSample(kind, screen, bounds,
+                new Point(Int32.MinValue, Int32.MinValue),
+                new Point(Int32.MinValue, Int32.MinValue), true, force);
+            EnsureCursorTimer();
+        }
+
         private void PostCursorVisibility(bool visible)
         {
-            if (_cursorLastVisible == visible) return;
+            bool desktopCursor = CursorUsesDesktopCoordinates();
+            if (_cursorLastVisible == visible && !(desktopCursor && !visible)) return;
             _cursorLastVisible = visible;
             _cursorLastX = Int32.MinValue;
             _cursorLastY = Int32.MinValue;
             _cursorLastScreenX = Int32.MinValue;
             _cursorLastScreenY = Int32.MinValue;
-            if (visible) HideSystemCursor();
-            else ShowSystemCursor();
+            if (!desktopCursor)
+            {
+                if (visible) HideSystemCursor();
+                else ShowSystemCursor();
+            }
             if (_cursorOverlay != null)
             {
                 _cursorOverlay.SetCursorVisible(visible);
@@ -1832,6 +1919,11 @@ namespace CF7Launcher.Guardian
             if (_cursorOverlay == null)
             {
                 RestoreSystemCursorForMissingNativeOverlay();
+                return;
+            }
+            if (CursorUsesDesktopCoordinates())
+            {
+                ShowSystemCursor();
                 return;
             }
             if (_systemCursorHidden) return;
