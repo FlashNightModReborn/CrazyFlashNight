@@ -55,6 +55,7 @@
     <Compile Include="Save\RepairPolicyTests.cs" />
     <Compile Include="Save\SaveAutoRepairServiceTests.cs" />
     <Compile Include="Tasks\ArchiveTaskListFilterTests.cs" />
+    <Compile Include="Guardian\Handlers\RepairCommandHandlerTests.cs" />
     <Compile Include="Guardian\OverlayCoordinateContextTests.cs" />
     <Compile Include="Guardian\NativeHudBoundsUnionTests.cs" />
     <Compile Include="Guardian\UiDataPacketParserTests.cs" />

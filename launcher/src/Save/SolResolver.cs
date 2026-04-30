@@ -16,7 +16,12 @@ namespace CF7Launcher.Save
         Empty,
         NeedsMigration,     // pre-2.7 / 2.7 C# migration failed → defer to AS2
         DeferToFlash,       // Rust parse failed → wire reuses NeedsMigration
-        Corrupt
+        Corrupt,
+        // C2-β: snapshot 已 normalize/validate 通过, 但仍残留 U+FFFD 字符 (C2-α 的高置信度
+        // 自动修复未能闭环, 剩 manual_required / preserve_placeholder 类). 走 bootstrap 修复
+        // 卡片协议 (saveDecision="repairable"), 由用户在卡片上做决策后 launcher push
+        // task=repair_resolved 给 AS2.
+        Repairable
     }
 
     /// <summary>
@@ -27,10 +32,13 @@ namespace CF7Launcher.Save
     public sealed class SolResolveResult
     {
         public DecisionKind Kind;
-        public string WireDecision;     // "snapshot" / "deleted" / "empty" / "needs_migration" / "corrupt"
-        public JObject Snapshot;        // normalizedMydata; non-null when Kind == Snapshot
-        public string Source;           // "sol" / "json_shadow" — non-null when Kind == Snapshot
+        public string WireDecision;     // "snapshot" / "deleted" / "empty" / "needs_migration" / "corrupt" / "repairable"
+        public JObject Snapshot;        // normalizedMydata; non-null when Kind == Snapshot 或 Repairable
+        public string Source;           // "sol" / "json_shadow" — non-null when Kind == Snapshot 或 Repairable
         public string CorruptDetail;    // only for Kind == Corrupt
+        // Repairable 时携带的 wire 报告: { totalFffd, byLayer:{L0,L1,L2,L3}, items:[{path,broken,layer,kind,spot}] }.
+        // 用于 BootstrapPanel 修复卡片初始展示; 卡片打开后会再发 cmd=repair_detect 拉一次完整 plan (含候选).
+        public JObject CorruptionReport;
 
         public static SolResolveResult NewSnapshot(JObject snap, string source)
         {
@@ -39,6 +47,17 @@ namespace CF7Launcher.Save
             r.WireDecision = "snapshot";
             r.Snapshot = snap;
             r.Source = source;
+            return r;
+        }
+
+        public static SolResolveResult NewRepairable(JObject snap, string source, JObject corruptionReport)
+        {
+            SolResolveResult r = new SolResolveResult();
+            r.Kind = DecisionKind.Repairable;
+            r.WireDecision = "repairable";
+            r.Snapshot = snap;
+            r.Source = source;
+            r.CorruptionReport = corruptionReport;
             return r;
         }
 
@@ -301,7 +320,70 @@ namespace CF7Launcher.Save
                     + " slot=" + slot + " seedAuthority=false");
             }
 
+            // C2-β: C2-α 已在 launcher 启动期对 saves/{slot}.json inline 自动修复过高置信度 fffd
+            // (fix_value/clear_value/drop_value/rename_key); 这里 snapshot 是 SolResolver 选出来的
+            // 权威拷贝 (json_shadow 或 sol). 再扫一次, 如果还有残留 fffd 必为 manual_required /
+            // preserve_placeholder 类, 必须由 bootstrap 卡片 + 用户决策才能闭环.
+            //   注意: 即便 source=sol 也扫 — 自动修复只动 shadow, 这里的 sol 路径表示
+            //         shadow 缺失或更旧, snapshot 来自 SOL 反序列化, 仍可能携带历史 fffd.
+            JObject report = null;
+            try
+            {
+                SaveCorruptionReport scan = SaveCorruptionScanner.Scan(snapshot);
+                if (scan.Total > 0)
+                {
+                    report = BuildCorruptionReportJson(scan);
+                    LogManager.Log("[SolResolver] repairable slot=" + slot
+                        + " source=" + source
+                        + " fffd=" + scan.Total
+                        + " byLayer=L0:" + scan.L0 + ",L1:" + scan.L1 + ",L2:" + scan.L2 + ",L3:" + scan.L3);
+                    return SolResolveResult.NewRepairable(snapshot, source, report);
+                }
+            }
+            catch (Exception ex)
+            {
+                // 扫描异常 → 退化为普通 Snapshot, 让 AS2 兜底 (C4) 处理. 不阻断启动.
+                LogManager.Log("[SolResolver] corruption scan failed slot=" + slot
+                    + " ex=" + ex.GetType().Name + ": " + ex.Message);
+            }
+
             return SolResolveResult.NewSnapshot(snapshot, source);
+        }
+
+        /// <summary>
+        /// 把 SaveCorruptionReport 序列化为 wire JSON. 字段稳定:
+        ///   { totalFffd, byLayer:{L0,L1,L2,L3},
+        ///     items:[ { path:["a","b"], broken:"...", layer:"L1", kind:"Item", spot:"value"|"key" } ] }
+        /// 不携带候选 — 候选由后续 cmd=repair_detect 拉取 (依赖 RepairDictionary, SolResolver 不持有).
+        /// </summary>
+        internal static JObject BuildCorruptionReportJson(SaveCorruptionReport scan)
+        {
+            JObject root = new JObject();
+            root["totalFffd"] = scan.Total;
+
+            JObject byLayer = new JObject();
+            byLayer["L0"] = scan.L0;
+            byLayer["L1"] = scan.L1;
+            byLayer["L2"] = scan.L2;
+            byLayer["L3"] = scan.L3;
+            root["byLayer"] = byLayer;
+
+            JArray items = new JArray();
+            for (int i = 0; i < scan.Items.Count; i++)
+            {
+                SaveCorruptionItem it = scan.Items[i];
+                JObject obj = new JObject();
+                JArray pathArr = new JArray();
+                for (int p = 0; p < it.PathSegments.Length; p++) pathArr.Add(it.PathSegments[p]);
+                obj["path"] = pathArr;
+                obj["broken"] = it.BrokenString;
+                obj["layer"] = it.Rule.Layer.ToString();
+                obj["kind"] = it.Rule.Kind.ToString();
+                obj["spot"] = (it.Spot == SaveCorruptionSpot.Key) ? "key" : "value";
+                items.Add(obj);
+            }
+            root["items"] = items;
+            return root;
         }
     }
 }

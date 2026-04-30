@@ -44,6 +44,7 @@ chcp.com 65001 | Out-Null
 - 可以说：`已完成 Flash CS6 自动化 smoke 验证` / `已触发编译并拿到新鲜 trace`
 - **不要**在缺少新鲜 trace、编译器错误面板或 IDE 复核时说「已编译通过」
 
+**主 SWF / asLoader class 边界审计**：改 `scripts/类定义/org/flashNight/neur/Server/*` 或部署前追加 `node tools/audit-as2-class-embedding.js --policy child-only`；临时双 SWF 重打兜底用 `--policy dual-build --marker _repairPending --marker applyRepairResolved`。若主 SWF 仍嵌入 `__Packages.org.flashNight.neur.Server.SaveManager` / `ServerManager`，asLoader 新 class 不会覆盖。
 详见 [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md)。
 ## 3. Launcher Host 验证
 | 用途 | 命令 |

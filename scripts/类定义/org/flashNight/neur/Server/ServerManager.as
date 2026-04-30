@@ -535,6 +535,14 @@ class org.flashNight.neur.Server.ServerManager {
             return;
         }
 
+        // C2-β: BootstrapPanel 修复卡片走完后 launcher push task=repair_resolved.
+        // 载荷: {success, forced?, slot, cleanedSnapshot?}. SaveManager 落地清洁 snapshot
+        // (或 forced 路径用原坏档) + 清 _repairPending → asLoader 帧循环放行 sendReady.
+        if (response.task == "repair_resolved") {
+            org.flashNight.neur.Server.SaveManager.getInstance().applyRepairResolved(response);
+            return;
+        }
+
         // Callback 路由：有 callId 的响应分发到注册的回调
         if (response.callId !== undefined) {
             var cbKey:String = String(response.callId);

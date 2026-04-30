@@ -212,10 +212,11 @@ namespace CF7Launcher.Tests.Save
         }
 
         [Fact]
-        public void InventoryEquipSlotKey_Manual_DoesNotDestroy()
+        public void InventoryEquipSlotKey_DictUnique_AutoRenameKey()
         {
+            // EquipmentSlot kind: 硬编码 11 个槽位字典命中即自动 RenameKey, 不再 ManualRequired.
+            // anchor=[上,装,备] 在 EquipmentSlots 字典里 unique 命中 '上装装备'.
             JObject s = FreshSnapshot();
-            // 把 '上装装备' key 破坏成 '上�装备'
             JObject equip = (JObject)s["inventory"]["装备栏"];
             JToken val = equip["上装装备"];
             equip.Remove("上装装备");
@@ -223,10 +224,76 @@ namespace CF7Launcher.Tests.Save
 
             RepairPlan plan = RepairPolicy.BuildPlan(s, BaseDict());
             Assert.Equal(1, plan.Scan.Total);
-            // 装备槽位 key fffd → fallback Manual（保留装备不丢）
+            Assert.Equal(RepairActionKind.RenameKey, plan.Decisions[0].Action.Kind);
+            Assert.Equal("上装装备", plan.Decisions[0].Action.NewValue);
+
+            RepairApplyResult r = RepairPolicy.ApplyHighConfidenceOnly(s, plan, NowUtc);
+            Assert.Equal(1, r.Applied);
+            Assert.NotNull(s["inventory"]["装备栏"]["上装装备"]);
+            Assert.Null(s["inventory"]["装备栏"]["上�装备"]);
+        }
+
+        [Fact]
+        public void InventoryEquipSlotKey_AnchorAmbiguous_FallbackManual()
+        {
+            // anchor 全 fffd → 0 候选 → fallback Manual (装备保留, 不丢).
+            JObject s = FreshSnapshot();
+            JObject equip = (JObject)s["inventory"]["装备栏"];
+            JToken val = equip["上装装备"];
+            equip.Remove("上装装备");
+            equip["����"] = val;
+
+            RepairPlan plan = RepairPolicy.BuildPlan(s, BaseDict());
+            Assert.Equal(1, plan.Scan.Total);
             Assert.Equal(RepairActionKind.ManualRequired, plan.Decisions[0].Action.Kind);
             RepairPolicy.ApplyHighConfidenceOnly(s, plan, NowUtc);
-            Assert.NotNull(s["inventory"]["装备栏"]["上�装备"]);
+            Assert.NotNull(s["inventory"]["装备栏"]["����"]);
+        }
+
+        [Fact]
+        public void InventoryEquipSlotKey_TargetAlreadyExists_DemotedToManual()
+        {
+            // collision guard: 父 obj 已有合法 '颈部装备' 同时存在损坏 '颈部���备' (anchor 命中
+            // 同一 target). 自动 RenameKey 会让 ApplyPatches 撞键失败 → 整批回滚.
+            // plan 阶段必须 demote 到 Manual, 让用户决定丢弃 / 改成另一个槽位名.
+            JObject s = FreshSnapshot();
+            JObject equip = new JObject();
+            equip["颈部装备"] = JObject.Parse(@"{""name"":""x"",""value"":{""mods"":[],""level"":1}}"); // 合法 key
+            equip["颈部�备"] = JObject.Parse(@"{""name"":""y"",""value"":{""mods"":[],""level"":1}}"); // 损坏 key
+            s["inventory"]["装备栏"] = equip;
+
+            RepairPlan plan = RepairPolicy.BuildPlan(s, BaseDict());
+            Assert.Equal(1, plan.Scan.Total);
+            Assert.Equal(RepairActionKind.ManualRequired, plan.Decisions[0].Action.Kind);
+
+            // 跑 ApplyHighConfidenceOnly 不会动它 (manual 不自动跑)
+            RepairPolicy.ApplyHighConfidenceOnly(s, plan, NowUtc);
+            Assert.NotNull(s["inventory"]["装备栏"]["颈部装备"]);
+            Assert.NotNull(s["inventory"]["装备栏"]["颈部�备"]);
+        }
+
+        [Fact]
+        public void DuplicateRenameKey_SecondDemotedToManual()
+        {
+            // 同 parent 上两条 RenameKey 都要把不同 broken key 改成 '黑铁会大叔' (字典 unique 命中).
+            // 第一条 RenameKey 保留, 第二条降级 Manual, 防止 ApplyPatches 撞键失败.
+            JObject s = FreshSnapshot();
+            JObject byType = new JObject();
+            byType["黑铁会�叔"] = 5;
+            byType["�铁会大叔"] = 3;
+            s["others"]["击杀统计"]["byType"] = byType;
+
+            RepairPlan plan = RepairPolicy.BuildPlan(s, BaseDict());
+            Assert.Equal(2, plan.Scan.Total);
+
+            int renameCount = 0, manualCount = 0;
+            for (int i = 0; i < plan.Decisions.Count; i++)
+            {
+                if (plan.Decisions[i].Action.Kind == RepairActionKind.RenameKey) renameCount++;
+                if (plan.Decisions[i].Action.Kind == RepairActionKind.ManualRequired) manualCount++;
+            }
+            Assert.Equal(1, renameCount);
+            Assert.Equal(1, manualCount);
         }
 
         [Fact]

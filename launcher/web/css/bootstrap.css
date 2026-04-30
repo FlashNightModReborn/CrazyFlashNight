@@ -342,3 +342,86 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: calc(22px * var(--fs-scale));
   z-index: 50;
   transition: opacity 120ms;
 }
+
+/* C2-β: 存档损坏修复卡片 */
+.rc-body { font-size: var(--fs-base); color: #ddd; }
+.rc-summary { background: #2a2018; border-left: 3px solid #d08040; padding: 10px 14px; border-radius: 3px; margin-bottom: 14px; }
+.rc-summary p { margin: 0 0 8px 0; }
+.rc-summary b { color: #f0a860; }
+.rc-bylayer { margin: 4px 0 0; padding-left: 20px; color: #bbb; }
+.rc-bylayer li { margin: 2px 0; }
+.rc-loading { color: #888; font-style: italic; }
+.rc-error { color: #e06e6e; }
+.rc-good { color: #6ed070; }
+
+.rc-decisions { max-height: 50vh; overflow-y: auto; }
+.rc-group { margin-bottom: 16px; }
+.rc-group h3 { margin: 0 0 6px; font-size: var(--fs-md); color: #4da6ff; border-bottom: 1px solid #2a3a50; padding-bottom: 3px; }
+.rc-group-l0 h3 { color: #e06e6e; border-bottom-color: #4a2020; }
+.rc-group-l1 h3 { color: #f0a860; border-bottom-color: #4a3a20; }
+.rc-group-l2 h3 { color: #4da6ff; }
+.rc-group-l3 h3 { color: #888; }
+
+.rc-decision-list { list-style: none; padding: 0; margin: 0; }
+.rc-row {
+  border: 1px solid #333; border-radius: 4px; padding: 8px 10px; margin: 6px 0;
+  background: #1e1e22; font-size: var(--fs-sm);
+}
+.rc-row-manual { border-color: #4a3a20; background: #2a2418; }
+.rc-row-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+.rc-spot { color: #888; font-size: var(--fs-xs); }
+.rc-path { color: #4da6ff; font-family: Consolas, monospace; font-size: var(--fs-xs); word-break: break-all; }
+.rc-broken { color: #aaa; font-size: var(--fs-xs); }
+.rc-broken code { color: #e06e6e; }
+.rc-action-tag { margin-left: auto; }
+.rc-tag { padding: 1px 6px; border-radius: 2px; font-size: var(--fs-xs); }
+.rc-tag-fix { background: #1a3a1a; color: #6ed070; }
+.rc-tag-drop { background: #2a2a2a; color: #aaa; }
+.rc-tag-manual { background: #4a3a20; color: #f0a860; }
+
+.rc-row-body { padding-left: 8px; padding-top: 4px; }
+.rc-auto { color: #aaa; }
+.rc-auto code { color: #6ed070; }
+.rc-checkbox-label { margin-left: 12px; color: #888; cursor: pointer; }
+.rc-checkbox-label input { margin-right: 4px; }
+.rc-manual { display: flex; flex-direction: column; gap: 4px; }
+.rc-radio-line { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.rc-radio-line input[type="radio"] { margin: 0; }
+.rc-cand-select, .rc-manual-input {
+  background: #15151a; color: #e0e0e0; border: 1px solid #444; border-radius: 2px;
+  padding: 2px 6px; font-size: var(--fs-sm); min-width: 200px;
+}
+.rc-manual-input { width: 260px; }
+
+.rc-footer {
+  display: flex; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid #333;
+  justify-content: flex-end;
+}
+.rc-footer button {
+  padding: 6px 16px; font-size: var(--fs-md); border-radius: 3px; cursor: pointer;
+  border: 1px solid #555; background: #2a2a30; color: #e0e0e0;
+}
+.rc-footer button:hover { background: #3a3a45; border-color: #4da6ff; }
+.rc-footer button:disabled { border-color: #444; color: #555; cursor: not-allowed; background: #222; }
+.rc-btn-primary { background: #2a3a50 !important; border-color: #4da6ff !important; color: #4da6ff !important; }
+.rc-btn-primary:hover { background: #3a4a60 !important; }
+.rc-btn-danger { border-color: #d08040 !important; color: #d08040 !important; }
+.rc-btn-danger:hover { background: #3a2818 !important; }
+.rc-await-text {
+  flex: 1; align-self: center; color: #6ed070; font-size: var(--fs-base);
+  padding-right: 12px;
+}
+
+/* C3: archive-editor fffd 高亮 */
+.ed-fffd-mark {
+  display: inline-block;
+  background: #d08040;
+  color: #1e1e22;
+  font-weight: bold;
+  padding: 0 3px;
+  margin: 0 1px;
+  border-radius: 2px;
+  cursor: help;
+}
+.tree-leaf.has-fffd { background: rgba(208, 128, 64, 0.12); border-left: 2px solid #d08040; padding-left: 4px; }
+.tree-leaf.has-fffd input { border-color: #d08040; }

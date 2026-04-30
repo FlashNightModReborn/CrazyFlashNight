@@ -105,6 +105,34 @@ namespace CF7Launcher.Bus
             if (archiveTask != null)
                 router.RegisterAsync("archive", archiveTask.HandleAsync);
 
+            // C4: AS2 兜底 fffd 扫描结果上报 (loadAll 末尾扫一次).
+            //   载荷: { slot, fffdCount, keyHits, sampled, elapsedMs, paths }.
+            //   仅记日志, 不阻断游戏 (fire-and-forget).
+            router.RegisterSync("save_corrupt_late", delegate(JObject msg)
+            {
+                try
+                {
+                    string slot = msg.Value<string>("slot") ?? "?";
+                    int fffd = msg.Value<int?>("fffdCount") ?? 0;
+                    int keys = msg.Value<int?>("keyHits") ?? 0;
+                    bool sampled = msg.Value<bool?>("sampled") ?? false;
+                    int elapsed = msg.Value<int?>("elapsedMs") ?? -1;
+                    JArray paths = msg.Value<JArray>("paths");
+                    string pathsStr = (paths != null && paths.Count > 0)
+                        ? string.Join(", ", paths.ToObject<string[]>())
+                        : "(none)";
+                    LogManager.Log("[SaveCorruptLate] slot=" + slot
+                        + " fffd=" + fffd + " keyHits=" + keys
+                        + " sampled=" + sampled + " elapsedMs=" + elapsed
+                        + " paths=[" + pathsStr + "]");
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[SaveCorruptLate] handler exception: " + ex.Message);
+                }
+                return null;
+            });
+
             // JSON 回退路径：frame/hn_reset 的 JSON 格式兼容入口
             // 正常流量走快车道（XmlSocketServer 前缀检测），此处仅作防御性保留
             router.RegisterSync("frame", frame.Handle);

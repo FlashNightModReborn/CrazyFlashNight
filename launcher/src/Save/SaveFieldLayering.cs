@@ -43,6 +43,12 @@ namespace CF7Launcher.Save
         TaskChain,
         QuestId,
         FreeText,
+        /// <summary>
+        /// inventory.装备栏 下的槽位 key (头部装备 / 上装装备 / 颈部装备 / 长枪 / 手枪 / 手枪2 /
+        /// 手部装备 / 下装装备 / 脚部装备 / 刀 / 手雷). AS2 内部强约定 11 个名称, 字典硬编码,
+        /// 损坏 key 走 anchor subsequence 命中即自动 RenameKey (不再走 ManualRequired).
+        /// </summary>
+        EquipmentSlot,
         Unknown,
     }
 
@@ -102,9 +108,10 @@ namespace CF7Launcher.Save
             if (path.Length >= 6 && path[0] == "inventory" && IsInventorySubcat(path[1]) && path[3] == "value" && path[4] == "mods")
                 return new SaveFieldRule(SaveFieldLayer.L1, SaveFieldKind.Mod, SaveFieldFallback.Preserve, SaveFieldDropMode.Splice);
 
-            // L1: 装备栏槽位 key（如 '颈部装备' fffd 化）
+            // L1: 装备栏槽位 key（如 '颈部装备' fffd 化）—— EquipmentSlot kind 走硬编码字典,
+            // 高置信度命中即自动 RenameKey, 命中不到 (0/多候选) 才退回 Manual 让用户挑.
             if (path.Length == 3 && path[0] == "inventory" && path[1] == "装备栏")
-                return new SaveFieldRule(SaveFieldLayer.L1, SaveFieldKind.Unknown, SaveFieldFallback.Manual, SaveFieldDropMode.Key);
+                return new SaveFieldRule(SaveFieldLayer.L1, SaveFieldKind.EquipmentSlot, SaveFieldFallback.Manual, SaveFieldDropMode.Key);
 
             // L2: tasks_finished[key]
             if (path.Length >= 2 && path[0] == "tasks" && path[1] == "tasks_finished")

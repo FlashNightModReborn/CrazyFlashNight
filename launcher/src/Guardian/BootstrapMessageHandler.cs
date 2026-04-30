@@ -119,6 +119,20 @@ namespace CF7Launcher.Guardian
                     ConfigCommandHandler.HandleConfigSet(msg, bootForm, userPrefs);
                     return;
 
+                // ─────── C2-β: 存档修复卡片 (Repairable saveDecision 路径) ───────
+                case "repair_detect":
+                    RepairCommandHandler.HandleDetect(msg, bootForm, archiveTask,
+                        saveCtx != null ? saveCtx.ProjectRoot : null);
+                    return;
+                case "repair_apply_manual":
+                    RepairCommandHandler.HandleApplyManual(msg, bootForm, archiveTask,
+                        saveCtx != null ? saveCtx.ProjectRoot : null, launchFlow);
+                    return;
+                case "repair_force_continue":
+                    RepairCommandHandler.HandleForceContinue(msg, bootForm, archiveTask,
+                        saveCtx != null ? saveCtx.ProjectRoot : null, launchFlow);
+                    return;
+
                 default:
                     BootstrapCommandHelpers.PostError(bootForm, "unknown_cmd", cmd);
                     return;

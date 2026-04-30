@@ -1,6 +1,4 @@
-﻿ import org.flashNight.neur.Server.ServerManager;  
- 
-class JSON implements IJSON{
+﻿class JSON implements IJSON{
     public var text;
     public var ch = "";
     public var at = 0;
@@ -606,8 +604,13 @@ class JSON implements IJSON{
             // 捕获异常并继续执行
             this.recordError(e.message); 
             
-            // 使用 ServerManager 记录异常信息
-            ServerManager.getInstance().sendServerMessage("Error during JSON parsing: " + e.message);
+            // 避免静态依赖通信栈；主 SWF 也会使用 JSON 解析多语言文本。
+            if (_root != undefined && _root.server != undefined &&
+                typeof _root.server.sendServerMessage == "function") {
+                _root.server.sendServerMessage("Error during JSON parsing: " + e.message);
+            } else {
+                trace("Error during JSON parsing: " + e.message);
+            }
 
             // 尝试返回部分已解析的内容
             if (!result) {

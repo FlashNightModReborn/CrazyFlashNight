@@ -74,6 +74,7 @@
     <Compile Include="src\Guardian\Handlers\ImportCommandHandler.cs" />
     <Compile Include="src\Guardian\Handlers\UiCommandHandler.cs" />
     <Compile Include="src\Guardian\Handlers\ConfigCommandHandler.cs" />
+    <Compile Include="src\Guardian\Handlers\RepairCommandHandler.cs" />
     <Compile Include="src\Guardian\GuardianContext.cs" />
     <Compile Include="src\Guardian\LogManager.cs" />
     <Compile Include="src\Guardian\PerfTrace.cs" />

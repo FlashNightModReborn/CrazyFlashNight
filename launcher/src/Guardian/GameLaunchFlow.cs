@@ -29,6 +29,14 @@ namespace CF7Launcher.Guardian
             // Phase D: prewarm 模式下 handshake 已到达但 user 未选槽, held callback 等 StartGame 消费.
             PrewarmHandshakeHeld,
             Embedding,
+            // C2-β: SolResolver 决议 Repairable 时 OnEmbedResult 进入此态. 不武装 timer,
+            // bootstrap_ready 提前到达只 cache 不 transition. 用户在 BootstrapPanel 修复卡片
+            // 上点 apply / force 后, RepairCommandHandler 调 PushRepairResolved → 锁内
+            // SetState(WaitingGameReady) + 如果 _cachedReady 命中立即 TransitionToReady,
+            // 锁外推 task=repair_resolved 给 AS2.
+            //   即便 AS2 端 (旧 asLoader) 不识别 saveDecision="repairable" 即刻 send
+            //   bootstrap_ready, launcher 端这层 gate 也确保用户决策完成前游戏不会进 Ready.
+            RepairPending,
             WaitingGameReady,
             Ready,
             Error,
@@ -267,6 +275,9 @@ namespace CF7Launcher.Guardian
 
             Action<string> heldCbToInvoke = null;
             string heldJsonToSend = null;
+            // C2-β: prewarm consume 路径下若 saveDecision="repairable", 锁外通知 JS 打开修复卡片.
+            JObject repairNotifyForJs = null;
+            string repairNotifySlotPrewarm = null;
 
             lock (_stateLock)
             {
@@ -322,6 +333,13 @@ namespace CF7Launcher.Guardian
                     heldCbToInvoke = _heldHandshakeCallback;
                     _heldHandshakeCallback = null;  // 单一 owner: 先 null 再发
                     heldJsonToSend = BuildHandshakeResponseJsonLocked();
+                    if (_resolvedSave != null
+                        && _resolvedSave.Kind == CF7Launcher.Save.DecisionKind.Repairable
+                        && _resolvedSave.CorruptionReport != null)
+                    {
+                        repairNotifyForJs = (JObject)_resolvedSave.CorruptionReport.DeepClone();
+                        repairNotifySlotPrewarm = _pendingSlot;
+                    }
                     int heldMs = Environment.TickCount - _heldHandshakeReceivedMs;
                     configureAudioGate = true;
                     armAudioGate = deferJsReveal;
@@ -343,6 +361,9 @@ namespace CF7Launcher.Guardian
                 if (armAudioGate) CF7Launcher.Tasks.AudioTask.ArmBootstrapBgmGate();
                 else CF7Launcher.Tasks.AudioTask.CancelBootstrapBgmGate();
             }
+            // C2-β: prewarm consume 路径下若 saveDecision="repairable", 通知 JS 打开修复卡片.
+            if (repairNotifyForJs != null && _bootstrapPanel != null)
+                NotifyRepairRequiredToJs(repairNotifySlotPrewarm, repairNotifyForJs);
         }
 
         /// <summary>
@@ -997,6 +1018,10 @@ namespace CF7Launcher.Guardian
         private void HandleBootstrapHandshakeAsync(JObject msg, Action<string> respond)
         {
             string syncJsonToSend = null;
+            // C2-β: 同步快路径下若 saveDecision="repairable", 锁外 push repair_required 给 BootstrapPanel JS,
+            // 让前端打开修复卡片. 锁内 snapshot 字段, 锁外 PostToWeb (避免 reentrancy).
+            JObject repairNotifyForJs = null;
+            string repairNotifySlot = null;
             lock (_stateLock)
             {
                 if (_state != State.WaitingConnect && _state != State.WaitingHandshake)
@@ -1009,6 +1034,13 @@ namespace CF7Launcher.Guardian
                     // legacy / prewarm-fast-path: StartGame 已发生 (或 slot 在 handshake 前到达).
                     // 锁内构造 JSON + TransitionToEmbedding, 锁外 respond.
                     syncJsonToSend = BuildHandshakeResponseJsonLocked();
+                    if (_resolvedSave != null
+                        && _resolvedSave.Kind == CF7Launcher.Save.DecisionKind.Repairable
+                        && _resolvedSave.CorruptionReport != null)
+                    {
+                        repairNotifyForJs = (JObject)_resolvedSave.CorruptionReport.DeepClone();
+                        repairNotifySlot = _pendingSlot;
+                    }
                     TransitionToEmbedding();
                 }
                 else
@@ -1027,6 +1059,30 @@ namespace CF7Launcher.Guardian
             // 两种状态下 WAIT_HANDSHAKE timer 都已 cancel, 不会有 stale timer fire.
             if (syncJsonToSend != null && respond != null)
                 respond(syncJsonToSend);
+            if (repairNotifyForJs != null && _bootstrapPanel != null)
+                NotifyRepairRequiredToJs(repairNotifySlot, repairNotifyForJs);
+        }
+
+        /// <summary>
+        /// C2-β: 把 SolResolver 的 corruptionReport 通过 BootstrapPanel.PostToWeb 推给 JS,
+        /// JS 收到 repair_required 后打开修复卡片 modal, modal 自身再发 cmd=repair_detect 拉完整 plan.
+        /// </summary>
+        private void NotifyRepairRequiredToJs(string slot, JObject report)
+        {
+            try
+            {
+                JObject msg = new JObject();
+                msg["type"] = "bootstrap";
+                msg["cmd"] = "repair_required";
+                msg["slot"] = slot;
+                msg["summary"] = report;
+                _bootstrapPanel.PostToWeb(msg.ToString(Newtonsoft.Json.Formatting.None));
+                LogManager.Log("[LaunchFlow] repair_required posted to JS slot=" + slot);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[LaunchFlow] NotifyRepairRequiredToJs threw: " + ex.Message);
+            }
         }
 
         /// <summary>
@@ -1052,6 +1108,13 @@ namespace CF7Launcher.Guardian
                     resp["snapshotSource"] = _resolvedSave.Source;
                 if (_resolvedSave.CorruptDetail != null)
                     resp["corruptDetail"] = _resolvedSave.CorruptDetail;
+                // C2-β: saveDecision="repairable" 时携带 corruption 报告.
+                //   AS2 据此进 RepairPending 挂起态, 不走 loadAll, 等 launcher 后续 push
+                //   task=repair_resolved (载荷 {success, cleanedSnapshot?, forced?}) 再进游戏.
+                //   报告字段稳定: { totalFffd, byLayer:{L0,L1,L2,L3},
+                //                  items:[{path:[],broken,layer,kind,spot}] }.
+                if (_resolvedSave.CorruptionReport != null)
+                    resp["corruptionReport"] = _resolvedSave.CorruptionReport;
             }
             return resp.ToString(Newtonsoft.Json.Formatting.None);
         }
@@ -1092,6 +1155,18 @@ namespace CF7Launcher.Guardian
             {
                 if (_state != State.Embedding) return;  // 旧事件 / 状态已变
                 if (!success) { TransitionToError("embed_timeout"); return; }
+
+                // C2-β: 存档残留 fffd → 进 RepairPending 显式 gate.
+                //   即便 AS2 端 (旧 asLoader 不识别 saveDecision="repairable") 抢先发 bootstrap_ready,
+                //   HandleBootstrapReady 在 RepairPending 态下只缓存到 _cachedReady, 不 transition.
+                //   PushRepairResolved (用户决策完成) 才把 state 升到 WaitingGameReady → 检 cache 命中即 Ready.
+                if (_resolvedSave != null && _resolvedSave.Kind == CF7Launcher.Save.DecisionKind.Repairable)
+                {
+                    SetState(State.RepairPending, "");
+                    LogManager.Log("[LaunchFlow] repair pending: gate armed, awaiting user repair decision");
+                    return;
+                }
+
                 // embed 成功 → WaitingGameReady；若 bootstrap_ready 已提前缓存则立即进 Ready
                 SetState(State.WaitingGameReady, "");
                 bool cached;
@@ -1104,6 +1179,59 @@ namespace CF7Launcher.Guardian
                     ArmWaitTimeoutLocked(WAIT_GAME_READY_MS, "game_ready_timeout");
                 }
             }
+        }
+
+        /// <summary>
+        /// C2-β: BootstrapPanel 修复卡片走完后, RepairCommandHandler 调本方法 push
+        /// task=repair_resolved 给 AS2 (载荷 {success, cleanedSnapshot?, forced?}).
+        /// AS2 收到后退出 RepairPending 挂起态, 走 loadFromMydata 进游戏 → 自然发 bootstrap_ready
+        /// → 状态机自然过 Ready. 本方法不改 launchFlow 状态.
+        ///
+        /// 调用约束: 需在 RepairPending 等价态 (state=WaitingGameReady, _resolvedSave.Kind=Repairable)
+        ///          下调用; 其他 state 下被忽略 (返回 false).
+        /// 网络写在锁外完成 (XmlSocketServer.PushToClient 自带 _clientLock).
+        /// </summary>
+        public bool PushRepairResolved(string taskJson)
+        {
+            if (string.IsNullOrEmpty(taskJson)) return false;
+            // 状态合法性检查 (snapshot, 锁外 write 容忍 _state 在两步之间 race; ReadLoop disconnect
+            // 时 PushToClient 内部自检 client 已断 → 静默 false).
+            //
+            // 状态机转移: RepairPending → WaitingGameReady. 如果 bootstrap_ready 在 RepairPending
+            // 期间已被 AS2 抢先发出 (旧 asLoader 不认 saveDecision="repairable") → cache 命中 → 立刻
+            // TransitionToReady. 否则武装 WAIT_GAME_READY_MS 超时等 AS2 加载完成.
+            bool transitionToReadyImmediately = false;
+            lock (_stateLock)
+            {
+                bool legal = (_state == State.RepairPending)
+                    && _resolvedSave != null
+                    && _resolvedSave.Kind == CF7Launcher.Save.DecisionKind.Repairable;
+                if (!legal)
+                {
+                    LogManager.Log("[LaunchFlow] PushRepairResolved rejected: state=" + _state
+                        + " saveKind=" + (_resolvedSave != null ? _resolvedSave.Kind.ToString() : "null"));
+                    return false;
+                }
+                SetState(State.WaitingGameReady, "");
+                bool cached;
+                if (_cachedReady.TryGetValue(_currentAttemptId, out cached) && cached)
+                {
+                    transitionToReadyImmediately = true;
+                }
+                else
+                {
+                    ArmWaitTimeoutLocked(WAIT_GAME_READY_MS, "game_ready_timeout_after_repair");
+                }
+            }
+            if (_socketServer != null) _socketServer.PushToClient(taskJson);
+            if (transitionToReadyImmediately)
+            {
+                lock (_stateLock)
+                {
+                    if (_state == State.WaitingGameReady) TransitionToReady();
+                }
+            }
+            return true;
         }
 
         /// <summary>

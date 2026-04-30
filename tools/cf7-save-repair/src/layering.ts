@@ -31,6 +31,7 @@ export type FieldKind =
   | 'taskChain'
   | 'questId'
   | 'free_text'    // 角色名等无字典字段
+  | 'equipmentSlot'  // inventory.装备栏 槽位 key — 硬编码 11 项, 不进 save_repair_dict.json
   | 'unknown';
 
 export interface FieldRule {
@@ -71,11 +72,11 @@ const RULES: Array<{ test: (path: string[]) => boolean; rule: FieldRule }> = [
       p[4] === 'mods',
     rule: { layer: 'L1', kind: 'mod', fallbackWhenDictMiss: 'preserve' } },
 
-  // L1: 装备栏槽位 key（如 '颈部装备', '上装装备' 等）。slot 名 fffd 化时不能静默 drop_key,
-  // 否则会丢掉玩家身上的装备 → 必须人工确认（dict 暂未含 slot 名集）
+  // L1: 装备栏槽位 key（如 '颈部装备', '上装装备' 等）。AS2 强约定 11 个名称, 硬编码字典命中即
+  // 自动 RenameKey（spot=key + dict_unique → policy.ts 走 RenameKey 路径）；命中不到才退 manual.
   { test: (p) =>
       p.length === 3 && p[0] === 'inventory' && p[1] === '装备栏',
-    rule: { layer: 'L1', kind: 'unknown', fallbackWhenDictMiss: 'manual' } },
+    rule: { layer: 'L1', kind: 'equipmentSlot', fallbackWhenDictMiss: 'manual' } },
 
   // L2: tasks_finished[key]（key 即玩家完成的任务名/状态串；命中 questIds 才能确认，否则丢）
   { test: (p) => p.length >= 2 && p[0] === 'tasks' && p[1] === 'tasks_finished',

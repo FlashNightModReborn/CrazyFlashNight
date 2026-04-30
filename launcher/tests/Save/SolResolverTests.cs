@@ -1,4 +1,4 @@
-// SolResolver 决议树矩阵测试。
+﻿// SolResolver 决议树矩阵测试。
 // 矩阵对齐 SolResolver.Resolve（SolResolver.cs:107-245）真实语义，不预设"应然"行为。
 // 关键事实：
 //  - Rust parse 失败 → 直接 DeferToFlash（不 fallback shadow、不比时间戳）
@@ -540,6 +540,111 @@ namespace CF7Launcher.Tests.Save
             var r = MakeResolver(loc, arch, parser).Resolve(SLOT, SWF);
 
             Assert.Equal(DecisionKind.DeferToFlash, r.Kind);
+        }
+
+        // ─────────────── C2-β: Repairable 决议 ───────────────
+        // 前提: C2-α 已在 launcher 启动期 inline 跑过自动修复 (高置信度 fix/clear/drop/rename),
+        // 这里的扫描是兜底, 检测残留 manual_required / preserve_placeholder 类 fffd.
+
+        [Fact]
+        public void Repairable_ShadowWithL0Fffd_ReturnsRepairableWithReport()
+        {
+            // 角色名 L0 fffd: C2-α 不会动 → 必须由 bootstrap 卡片人工处理.
+            JObject shadow = ValidMydata("2026-02-02 12:00:00");
+            shadow["0"][0] = "玩家�";  // L0 manual
+
+            var loc = new StubLocator { Result = null };
+            var arch = new StubArchive { Shadow = shadow };
+            var parser = new StubParser();
+
+            var r = MakeResolver(loc, arch, parser).Resolve(SLOT, SWF);
+
+            Assert.Equal(DecisionKind.Repairable, r.Kind);
+            Assert.Equal("repairable", r.WireDecision);
+            Assert.Equal("json_shadow", r.Source);
+            Assert.NotNull(r.Snapshot);
+            Assert.NotNull(r.CorruptionReport);
+            Assert.Equal(1, (int)r.CorruptionReport["totalFffd"]);
+            Assert.Equal(1, (int)r.CorruptionReport["byLayer"]["L0"]);
+            Assert.Equal(0, (int)r.CorruptionReport["byLayer"]["L1"]);
+
+            JArray items = (JArray)r.CorruptionReport["items"];
+            Assert.Single(items);
+            JObject it0 = (JObject)items[0];
+            Assert.Equal("L0", (string)it0["layer"]);
+            Assert.Equal("value", (string)it0["spot"]);
+            JArray path = (JArray)it0["path"];
+            Assert.Equal(2, path.Count);
+            Assert.Equal("0", (string)path[0]);
+            Assert.Equal("0", (string)path[1]);
+        }
+
+        [Fact]
+        public void Repairable_ShadowMixedLayers_ReportCountsByLayer()
+        {
+            // 同一 snapshot 含多种残留 fffd, 校验 byLayer 累加.
+            JObject shadow = ValidMydata("2026-02-02 12:00:00");
+            shadow["0"][0] = "玩家�";                              // L0 自由文本
+
+            JObject equip = new JObject();
+            equip["上装装备"] = new JObject();
+            equip["上装装备"]["name"] = "黑色�夫装";              // L1 mod / item
+            equip["上装装备"]["value"] = new JObject();
+            equip["上装装备"]["value"]["mods"] = new JArray();
+            equip["上装装备"]["value"]["level"] = 1;
+            shadow["inventory"]["装备栏"] = equip;
+
+            var loc = new StubLocator { Result = null };
+            var arch = new StubArchive { Shadow = shadow };
+            var parser = new StubParser();
+
+            var r = MakeResolver(loc, arch, parser).Resolve(SLOT, SWF);
+
+            Assert.Equal(DecisionKind.Repairable, r.Kind);
+            Assert.Equal(2, (int)r.CorruptionReport["totalFffd"]);
+            Assert.Equal(1, (int)r.CorruptionReport["byLayer"]["L0"]);
+            Assert.Equal(1, (int)r.CorruptionReport["byLayer"]["L1"]);
+        }
+
+        [Fact]
+        public void Repairable_CleanShadow_StaysSnapshot()
+        {
+            // 干净 shadow → 不应被误判为 Repairable.
+            var loc = new StubLocator { Result = null };
+            var arch = new StubArchive { Shadow = ValidMydata("2026-02-02 12:00:00") };
+            var parser = new StubParser();
+
+            var r = MakeResolver(loc, arch, parser).Resolve(SLOT, SWF);
+
+            Assert.Equal(DecisionKind.Snapshot, r.Kind);
+            Assert.Null(r.CorruptionReport);
+        }
+
+        [Fact]
+        public void Repairable_ObjectKeyFffd_SpotIsKey()
+        {
+            // 装备槽位 key 损坏 (e.g. '上装装备' → '上�装备') C2-α 走 Manual fallback,
+            // SolResolver 应识别为 Repairable + items[0].spot=="key".
+            JObject shadow = ValidMydata("2026-02-02 12:00:00");
+            JObject equip = new JObject();
+            JObject slotVal = new JObject();
+            slotVal["name"] = "黑色功夫装";
+            slotVal["value"] = new JObject();
+            slotVal["value"]["mods"] = new JArray();
+            slotVal["value"]["level"] = 1;
+            equip["上�装备"] = slotVal;
+            shadow["inventory"]["装备栏"] = equip;
+
+            var loc = new StubLocator { Result = null };
+            var arch = new StubArchive { Shadow = shadow };
+            var parser = new StubParser();
+
+            var r = MakeResolver(loc, arch, parser).Resolve(SLOT, SWF);
+
+            Assert.Equal(DecisionKind.Repairable, r.Kind);
+            JArray items = (JArray)r.CorruptionReport["items"];
+            Assert.Single(items);
+            Assert.Equal("key", (string)((JObject)items[0])["spot"]);
         }
     }
 }

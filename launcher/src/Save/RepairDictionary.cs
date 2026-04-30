@@ -21,6 +21,16 @@ namespace CF7Launcher.Save
 
         private static readonly string[] Empty = new string[0];
 
+        /// <summary>
+        /// inventory.装备栏 下的固定 11 个槽位 key. AS2 强约定 (DressupInitializer.equipmentKeys),
+        /// 不会随 dict-build 工具变动, 直接硬编码. 顺序无业务意义.
+        /// </summary>
+        public static readonly string[] EquipmentSlots = new string[]
+        {
+            "头部装备", "上装装备", "手部装备", "下装装备", "脚部装备", "颈部装备",
+            "长枪", "手枪", "手枪2", "刀", "手雷"
+        };
+
         public RepairDictionary(JObject obj)
         {
             SchemaVersion = obj.Value<int?>("schemaVersion") ?? 0;
@@ -50,16 +60,18 @@ namespace CF7Launcher.Save
         {
             switch (kind)
             {
-                case SaveFieldKind.Item:      return Items;
-                case SaveFieldKind.Mod:       return Mods;
-                case SaveFieldKind.Enemy:     return Enemies;
-                case SaveFieldKind.Skill:     return Skills;
-                case SaveFieldKind.Hairstyle: return Hairstyles;
-                case SaveFieldKind.Stage:     return Stages;
-                case SaveFieldKind.TaskChain: return TaskChains;
+                case SaveFieldKind.Item:          return Items;
+                case SaveFieldKind.Mod:           return Mods;
+                case SaveFieldKind.Enemy:         return Enemies;
+                case SaveFieldKind.Skill:         return Skills;
+                case SaveFieldKind.Hairstyle:     return Hairstyles;
+                case SaveFieldKind.Stage:         return Stages;
+                case SaveFieldKind.TaskChain:     return TaskChains;
                 // QuestId 暂未独立桶；plan 中回退到 stages（与 TS 端一致）
-                case SaveFieldKind.QuestId:   return Stages;
-                default:                      return Empty;
+                case SaveFieldKind.QuestId:       return Stages;
+                // 装备槽位 key: 硬编码字典, 不依赖 save_repair_dict.json
+                case SaveFieldKind.EquipmentSlot: return EquipmentSlots;
+                default:                          return Empty;
             }
         }
 

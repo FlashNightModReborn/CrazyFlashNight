@@ -711,6 +711,15 @@
       }
     }
     else if (msg.cmd === 'import_target') handleImportTarget(msg);
+    else if (msg.cmd === 'repair_required') {
+      // C2-β: launcher 决议 saveDecision="repairable" 时主动推; 立即打开修复卡片让用户处理.
+      // 卡片自身会发 repair_detect 拉完整 plan; 这里只负责 modal 入口.
+      logLine('tag-in', 'repair_required slot=' + (msg.slot || '?')
+        + ' totalFffd=' + (msg.summary && msg.summary.totalFffd) || '?');
+      // 隐藏 launch overlay (intro 视频 / loading 圈) — 否则修复卡片会被压在底下.
+      hideLaunchOverlay();
+      openModal('repair-card', { slot: msg.slot, summary: msg.summary });
+    }
 
     dispatchMessage(msg);
   });

@@ -218,6 +218,7 @@
         if (_currentData.version !== window.ArchiveSchema.SCHEMA_VERSION) {
           showBanner('warn', '存档版本 ' + (_currentData.version || '?') + ' 与预期 ' + window.ArchiveSchema.SCHEMA_VERSION + ' 不匹配，白名单可能不准确');
         }
+        showFffdBannerIfAny();
       } catch (e) {
         // 降级 raw-only (TOCTOU 防御)
         showBanner('warn', 'JSON 解析失败，降级到高级模式: ' + e.message);
@@ -262,6 +263,7 @@
           showBanner('warn', 'JSON 数据可能有问题（被标记为损坏），请检查后保存');
           _rawOnly = false; // corrupt 但 parse 成功 → 可用简易/树
         }
+        showFffdBannerIfAny();
       } catch (e) {
         showBanner('error', 'JSON 解析失败: ' + e.message);
         playUiCue('playError');
@@ -796,9 +798,13 @@
     var div = document.createElement('div');
     div.className = 'tree-leaf';
     var keyStr = path.length > 0 ? String(path[path.length - 1]) : '';
+    var valStr = value != null ? String(value) : 'null';
+    // C3: key / value 含 fffd 时整行打 'has-fffd' 标记 (CSS 给警示色); span 内字符渲染为红色 █.
+    var rowHasFffd = (keyStr.indexOf('�') >= 0) || (typeof value === 'string' && valStr.indexOf('�') >= 0);
+    if (rowHasFffd) div.className += ' has-fffd';
     div.innerHTML =
-      '<span class="tree-key">' + escHtml(keyStr) + '</span>' +
-      '<input type="text" value="' + escHtml(value != null ? String(value) : 'null') + '">' +
+      '<span class="tree-key">' + escHtmlMarkFffd(keyStr) + '</span>' +
+      '<input type="text" value="' + escHtml(valStr) + '">' +
       '<span class="tree-type">' + escHtml(type) + '</span>';
 
     appendPathHint(div, path);
@@ -1347,6 +1353,69 @@
     return String(s).replace(/[&<>"']/g, function(c) {
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
     });
+  }
+
+  // C3: HTML 转义 + 把 U+FFFD 字符包成红色 mark span (用于树视图 / summary).
+  // 仅 innerHTML 走这里; <input value="..."> 仍用 escHtml 保持原字面 (用户编辑时能看见 fffd).
+  function escHtmlMarkFffd(s) {
+    if (s == null) return '';
+    return escHtml(s).replace(/�/g, '<span class="ed-fffd-mark" title="损坏字符 U+FFFD">█</span>');
+  }
+
+  // C3: parse 成功后扫一遍 _currentData, 命中即提示用户存档残留乱码.
+  // 不阻断编辑 — 用户可以手动改, 也可点 banner 链接回引导器走 cf7-save-repair / 重启走修复卡片.
+  function showFffdBannerIfAny() {
+    if (!_currentData) return;
+    var ctx = scanFffdInData(_currentData);
+    if (ctx.count + ctx.keyHits === 0) return;
+    var sampleHint = ctx.samplePaths.length > 0 ? '：' + ctx.samplePaths.slice(0, 3).join(', ') : '';
+    var more = ctx.samplePaths.length > 3 ? ' ...' : '';
+    showBanner('warn',
+      '存档含 ' + ctx.count + ' 处乱码字符'
+        + (ctx.keyHits > 0 ? '（含 ' + ctx.keyHits + ' 处 key）' : '')
+        + sampleHint + more
+        + '。建议返回引导器走自动修复（重启 launcher 后选择该槽位会弹修复卡片），或在树视图手动编辑。',
+      /*priority*/ 2);
+  }
+
+  // C3: 扫描整个 _currentData 找 fffd, 返回 {count, keyHits, samplePaths}.
+  // 给 banner 用. 限制深度避免病态结构卡 UI; 实际存档体量很小 (10-30KB), 无需时间预算.
+  function scanFffdInData(root) {
+    var ctx = { count: 0, keyHits: 0, samplePaths: [], maxSample: 8 };
+    if (root != null) walkFffd(root, [], ctx);
+    return ctx;
+  }
+  function walkFffd(node, path, ctx) {
+    if (ctx.count + ctx.keyHits > 5000) return;
+    if (node == null) return;
+    if (typeof node === 'string') {
+      if (node.indexOf('�') >= 0) {
+        ctx.count++;
+        if (ctx.samplePaths.length < ctx.maxSample) ctx.samplePaths.push(path.join('.'));
+      }
+      return;
+    }
+    if (Array.isArray(node)) {
+      for (var i = 0; i < node.length; i++) {
+        path.push(i);
+        walkFffd(node[i], path, ctx);
+        path.pop();
+      }
+      return;
+    }
+    if (typeof node === 'object') {
+      for (var k in node) {
+        if (typeof k === 'string' && k.indexOf('�') >= 0) {
+          ctx.keyHits++;
+          if (ctx.samplePaths.length < ctx.maxSample) {
+            ctx.samplePaths.push(path.concat([k]).join('.') + ' (key)');
+          }
+        }
+        path.push(k);
+        walkFffd(node[k], path, ctx);
+        path.pop();
+      }
+    }
   }
 
   // ==================== 注册模块 ====================

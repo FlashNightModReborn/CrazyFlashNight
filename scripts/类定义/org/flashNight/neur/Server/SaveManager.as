@@ -51,19 +51,27 @@ class org.flashNight.neur.Server.SaveManager {
     //   REPAIR_DICT_SKILLS      → mydata[5][N][0] 技能名
     //   REPAIR_DICT_TASK_CHAINS → mydata.tasks.task_chains_progress 的 key
     //   REPAIR_DICT_STAGES      → mydata.others.物品来源缓存.discoveredStages[N]
+    // 与 data/skills/skills.xml <Name> 字段权威同步 (66 项).
+    // 修这个数组时同步改 launcher/data/save_repair_dict.json 的 skills 字段.
     public static var REPAIR_DICT_SKILLS:Array = [
         // 空手 / 武术 / 内力
-        "拳脚攻击", "升龙拳", "裂地拳", "拳脚空中连招", "内力爆发", "小跳",
+        "拳脚攻击", "拳脚空中连招", "升龙拳", "裂地拳", "内力爆发", "小跳",
         "聚气", "铁布衫", "兴奋剂", "能量盾",
-        "兽王崩拳", "虎拳", "组合拳", "日字冲拳", "寸劲", "径庭拳/黑闪",
-        "觉醒霸体", "觉醒震地", "地震", "一瞬千击", "龟派气功",
+        "兽王崩拳", "虎拳", "组合拳", "日字冲拳", "寸拳", "径庭拳/黑闪",
+        "觉醒霸体", "觉醒震地", "觉醒不坏金身", "地震", "震地", "霸体",
+        "一瞬千击", "龟派气功", "不卸之力", "旋风腿", "火舞旋风", "踩人",
+        "抱腿摔", "背摔",
         // 刀剑
-        "刀剑攻击", "上挑", "下劈", "刀剑空中连招",
+        "刀剑攻击", "刀剑空中连招", "上挑", "下劈",
+        "拔刀术", "凶斩", "龙斩", "瞬步斩", "迅斩", "空间斩",
         // 枪械
         "枪械攻击", "移动射击", "枪械师", "轰炸专家", "冲击连携",
         "追猎射击", "翻滚换弹", "战术目镜", "死亡绽放",
-        // 通用
-        "独行者", "口才", "铁匠", "逆向", "炼金", "驾驶"
+        // 特殊 / 主动
+        "上帝之杖", "重力井", "重力场", "火力支援", "闪现", "时间停止",
+        "气动波", "六连", "扭转乾坤",
+        // 通用 (生活技能)
+        "独行者", "口才", "铁匠", "逆向", "炼金", "驾驶", "烹饪", "解密"
     ];
 
     public static var REPAIR_DICT_TASK_CHAINS:Array = [
@@ -106,6 +114,23 @@ class org.flashNight.neur.Server.SaveManager {
     private var _deferredResolutionAttempted:Boolean = false;
     private var _deferredDecisionSource:String = undefined;
 
+    // ── C2-β: 修复挂起态 ──
+    // saveDecision="repairable" 时, preload() 不立即把 snapshot 喂给 _root.mydata,
+    // 而是 stash 起来 (作为 forced=true 的兜底), 拉起 _repairPending 让 _root.存档恢复等待中
+    // 返回 true, asLoader 在 sendReady 前的 gate (asLoader.xml line 198) 会一直 yield.
+    // BootstrapPanel 修复卡片走完后 launcher 推 task=repair_resolved, applyRepairResolved
+    // 落地清洁 snapshot + 清 _repairPending, 帧循环下一个 tick 即放行 sendReady → 正常进游戏.
+    private var _repairPending:Boolean = false;
+
+    // ── C4: AS2 兜底 fffd 扫描 (loadAll 末尾) ──
+    //   - C1a/C2-α 是「漏洞修了 + 启动时自动洗存档」的双保险, C4 是再加一层 paranoid:
+    //     若仍因任何残留路径让 mydata 进游戏时还含 fffd, 至少给玩家 toast + launcher 留 log.
+    //   - 单 session 最多跑一次 (避免每次 loadAll 都扫); 单次最多 20ms 时间预算, 超了退化为采样.
+    private static var C4_SCAN_BUDGET_MS:Number = 20;
+    private static var C4_MAX_PATHS_REPORTED:Number = 16;
+    private var _c4Scanned:Boolean = false;
+    private var _c4WarnedOnce:Boolean = false;
+
     // ==================== 构造 ====================
     private function SaveManager() {
         _dirtyMark = false;
@@ -132,6 +157,9 @@ class org.flashNight.neur.Server.SaveManager {
         _prefetchedSlot = undefined;
         _prefetchGen++;
         _prefetchInFlight = false;
+        _repairPending = false;
+        _c4Scanned = false;
+        _c4WarnedOnce = false;
     }
 
     // ==================== 预取管理 ====================
@@ -289,6 +317,17 @@ class org.flashNight.neur.Server.SaveManager {
                 _bootstrapSnapshotSource = (src != undefined) ? src : "unknown";
                 return;
             }
+            // C2-β: 存档残留 fffd, 进 RepairPending 挂起态等用户在 BootstrapPanel 卡片上做决策.
+            // _root.mydata 暂不喂 snapshot — 等 applyRepairResolved 拿到 cleanedSnapshot 再喂.
+            // forced=true 路径下没有 cleanedSnapshot, 用本次 stash 的原坏档 (_bootstrapSnapshot).
+            if (decision == "repairable") {
+                _bootstrapSnapshot = snap;  // 原 (含 fffd) 快照, 留给 forced 路径兜底
+                _bootstrapSnapshotSource = (src != undefined) ? src : "unknown";
+                _repairPending = true;
+                _skipPrefetch = true;       // 不走 launcher 预取 — 避免覆盖 launcher 即将推过来的 cleanedSnapshot
+                sm.sendServerMessage("[SaveManager.preload] repairable: pending user decision (source=" + _bootstrapSnapshotSource + ")");
+                return;
+            }
             if (decision == "deleted") {
                 var soDel:SharedObject = getSO();
                 soDel.clear();
@@ -403,6 +442,7 @@ class org.flashNight.neur.Server.SaveManager {
                 _deferredResolutionAttempted = false;
                 _deferredDecisionSource = undefined;
                 _prefetchGen++;
+                runC4LateScanIfApplicable();  // C4: 兜底扫一次, 残留 fffd 时通知玩家 + launcher
                 return true;
             }
             // apply 失败 — source-aware 分流
@@ -565,6 +605,7 @@ class org.flashNight.neur.Server.SaveManager {
         _deferredResolutionAttempted = false;
         _deferredDecisionSource = undefined;
         _prefetchGen++;
+        runC4LateScanIfApplicable();  // C4: 兜底扫一次, 残留 fffd 时通知玩家 + launcher
         return true;
     }
 
@@ -663,14 +704,173 @@ class org.flashNight.neur.Server.SaveManager {
      * Launcher 异步预取是否正在进行中（SOL 缺失时帧脚本可轮询此状态）
      * true = 预取请求已发出且尚未返回（_prefetchInFlight），SOL 缺失，且未被主动删除
      * Protocol 2 下 snapshot 已就绪, 无需异步等待, 立即返回 false.
+     *
+     * C2-β: _repairPending 拉起后无条件返回 true — asLoader.xml 的 sendReady gate
+     * (line 198) 据此 yield, 让用户在 BootstrapPanel 修复卡片上做决策, 期间 Flash 帧
+     * 不进入主时间线、不 sendReady、保持加载画面挂起. applyRepairResolved 落地后清 flag.
      */
     public function isRecoveryPending():Boolean {
+        if (_repairPending) return true;
         if (_bootstrapSnapshot != undefined) return false;
         if (_root.mydata != undefined) return false;
         if (_prefetchedData != undefined) return false;
         if (getSO().data._deleted == true) return false;
         return _prefetchInFlight;
     }
+
+    /**
+     * C2-β: launcher 推送 task=repair_resolved 时由 ServerManager 调本方法.
+     *   resp = { success:Boolean, forced:Boolean, slot:String, cleanedSnapshot?:Object }
+     *   - success && cleanedSnapshot 存在 → 用清洁版快照, validate 通过即喂 _root.mydata
+     *   - success && forced=true → 用原坏档 (_bootstrapSnapshot, 已在 preload 阶段 stash).
+     *     用户已在 UI 做过二次确认, 这里不再拦截.
+     *   - success=false → 不动 mydata, 留 _repairPending=true (用户可在卡片上重试).
+     */
+    public function applyRepairResolved(resp:Object):Void {
+        var sm:ServerManager = ServerManager.getInstance();
+        if (resp == undefined) {
+            sm.sendServerMessage("[SaveManager.applyRepairResolved] resp undefined");
+            return;
+        }
+        if (!_repairPending) {
+            sm.sendServerMessage("[SaveManager.applyRepairResolved] not pending, drop (repair already resolved or not initiated)");
+            return;
+        }
+        if (resp.success != true) {
+            sm.sendServerMessage("[SaveManager.applyRepairResolved] failed, stay pending: error="
+                + (resp.error != undefined ? resp.error : "unknown"));
+            return;
+        }
+        var forced:Boolean = (resp.forced == true);
+        if (forced) {
+            // forced 路径: 用 stash 的原坏档. _bootstrapSnapshot 在 preload "repairable" 分支已存好.
+            if (_bootstrapSnapshot == undefined) {
+                sm.sendServerMessage("[SaveManager.applyRepairResolved] forced but no stashed snapshot, abort");
+                return;
+            }
+            _root.mydata = _bootstrapSnapshot;
+            _repairPending = false;
+            sm.sendServerMessage("[SaveManager.applyRepairResolved] forced=true: using original (fffd-tainted) snapshot");
+            return;
+        }
+        // 正常路径: 用 launcher 修过的清洁快照.
+        var cleaned:Object = resp.cleanedSnapshot;
+        if (cleaned == undefined) {
+            sm.sendServerMessage("[SaveManager.applyRepairResolved] success but no cleanedSnapshot, abort");
+            return;
+        }
+        if (!validateMydata(cleaned)) {
+            sm.sendServerMessage("[SaveManager.applyRepairResolved] cleanedSnapshot validate failed, abort");
+            return;
+        }
+        _bootstrapSnapshot = cleaned;
+        _root.mydata = cleaned;
+        _repairPending = false;
+        sm.sendServerMessage("[SaveManager.applyRepairResolved] applied cleanedSnapshot, pending cleared");
+    }
+
+    /** C2-β: 给外部（测试 / 帧脚本）查 RepairPending 状态. */
+    public function isRepairPending():Boolean {
+        return _repairPending;
+    }
+
+    // ──────────────────────── C4: 末尾兜底扫描 ────────────────────────
+    // C1a 修了 socket 漏洞、C2-α 启动期 inline 修过、C2-β 用户决策修过, 这层只是 paranoid:
+    // mydata 进游戏前最后扫一次, 残留 fffd → toast (一次性) + launcher save_corrupt_late log.
+    // 单 session 最多跑一次. 时间预算 20ms, 超了立刻 bail (sampled=true), 不阻塞游戏启动.
+
+    private function runC4LateScanIfApplicable():Void {
+        if (_c4Scanned) return;
+        _c4Scanned = true;
+        if (_root.mydata == undefined) return;
+
+        var sm:ServerManager = ServerManager.getInstance();
+        var startMs:Number = getTimer();
+        var ctx:Object = {
+            startMs: startMs,
+            budgetMs: C4_SCAN_BUDGET_MS,
+            sampled: false,
+            fffdCount: 0,
+            keyHits: 0,
+            paths: []
+        };
+        scanFffdRecursive(_root.mydata, [], ctx);
+        var elapsedMs:Number = getTimer() - startMs;
+        sm.sendServerMessage("[SaveManager.c4] scan done elapsed=" + elapsedMs
+            + "ms sampled=" + ctx.sampled + " fffd=" + ctx.fffdCount + " keyHits=" + ctx.keyHits);
+        if (ctx.fffdCount == 0) return;
+
+        // 上报 launcher (fire-and-forget). C# 端 SaveCorruptLateHandler 仅记日志, 不阻断游戏.
+        if (sm.isSocketConnected) {
+            sm.sendTaskToNode("save_corrupt_late", {
+                slot: _root.savePath,
+                fffdCount: ctx.fffdCount,
+                keyHits: ctx.keyHits,
+                sampled: ctx.sampled,
+                elapsedMs: elapsedMs,
+                paths: ctx.paths
+            }, null);
+        }
+
+        // 玩家提示 (一次性). 没有专用 _root.UI系统.状态栏 挂点, 降级到 _root.发布消息.
+        if (!_c4WarnedOnce) {
+            _c4WarnedOnce = true;
+            if (typeof _root.发布消息 == "function") {
+                _root.发布消息("[档异常] 检测到存档残留乱码字符 (" + ctx.fffdCount + " 处), 建议返回引导器修复。");
+            }
+        }
+    }
+
+    private function scanFffdRecursive(node:Object, path:Array, ctx:Object):Void {
+        // 安全闸: 不能因为单个槽位的复杂度让全局耗时失控.
+        if (ctx.sampled) return;
+        if (ctx.fffdCount + ctx.keyHits >= 10000) return;
+        if ((getTimer() - ctx.startMs) > ctx.budgetMs) {
+            ctx.sampled = true;
+            return;
+        }
+
+        if (typeof node == "string") {
+            if (String(node).indexOf(SaveManager.FFFD_CHAR) >= 0) {
+                ctx.fffdCount++;
+                if (ctx.paths.length < SaveManager.C4_MAX_PATHS_REPORTED) {
+                    ctx.paths.push(path.join("."));
+                }
+            }
+            return;
+        }
+        if (node instanceof Array) {
+            for (var i:Number = 0; i < node.length; i++) {
+                path.push(String(i));
+                scanFffdRecursive(node[i], path, ctx);
+                path.pop();
+                if (ctx.sampled) return;
+            }
+            return;
+        }
+        if (typeof node == "object" && node != null) {
+            for (var k:String in node) {
+                // object key 也可能含 fffd (e.g. byType / 装备栏 槽位 key)
+                if (typeof k == "string" && k.indexOf(SaveManager.FFFD_CHAR) >= 0) {
+                    ctx.keyHits++;
+                    if (ctx.paths.length < SaveManager.C4_MAX_PATHS_REPORTED) {
+                        path.push(k);
+                        ctx.paths.push(path.join(".") + " (key)");
+                        path.pop();
+                    }
+                }
+                path.push(k);
+                scanFffdRecursive(node[k], path, ctx);
+                path.pop();
+                if (ctx.sampled) return;
+            }
+            return;
+        }
+        // number / boolean / null / undefined: skip
+    }
+
+    // 单字符常量, 避免每次重新构造 String.fromCharCode (AS2 类静态字段在 ASO 缓存里复用)
+    private static var FFFD_CHAR:String = String.fromCharCode(0xFFFD);
 
     public function newCharacter():Boolean {
         // deleteSlot() 禁用了存档，新建角色时恢复

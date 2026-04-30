@@ -108,7 +108,45 @@ namespace CF7Launcher.Save
             {
                 decisions.Add(DecideOne(report.Items[i], dict, selfRef));
             }
+            // C2-β collision guard 第二轮: 同 parent obj 上多条 RenameKey 指向同一 newKey (e.g. 两个
+            // 不同 broken key 都 anchor-唯一 命中 '颈部装备') → 第二条及之后转 Manual, 否则 ApplyPatches
+            // 跑到第二条时 RenameKeySafe 报 collision → 整批回滚.
+            DemoteDuplicateRenameKeys(decisions);
             return new RepairPlan(report, decisions);
+        }
+
+        /// <summary>
+        /// 把同 parent + 同 newKey 的 RenameKey decisions 里, 除第一条外全部降级为 ManualRequired.
+        /// 用 (Parent reference identity, newKey) 作 dedup 键, 命中第二条即 demote.
+        /// </summary>
+        private static void DemoteDuplicateRenameKeys(List<RepairDecision> decisions)
+        {
+            Dictionary<JToken, HashSet<string>> claimed = new Dictionary<JToken, HashSet<string>>();
+            for (int i = 0; i < decisions.Count; i++)
+            {
+                RepairDecision d = decisions[i];
+                if (d.Action.Kind != RepairActionKind.RenameKey) continue;
+                string newKey = d.Action.NewValue;
+                if (newKey == null) continue;
+                JToken parent = d.Item.Parent;
+                if (parent == null) continue;
+
+                HashSet<string> set;
+                if (!claimed.TryGetValue(parent, out set))
+                {
+                    set = new HashSet<string>(StringComparer.Ordinal);
+                    claimed[parent] = set;
+                }
+                if (set.Contains(newKey))
+                {
+                    // duplicate target — 降级为 Manual, 候选保留供 UI 展示
+                    decisions[i] = new RepairDecision(d.Item, RepairAction.Manual, d.Candidates);
+                }
+                else
+                {
+                    set.Add(newKey);
+                }
+            }
         }
 
         private static RepairDecision DecideOne(SaveCorruptionItem item, RepairDictionary dict, SelfRefPool selfRef)
@@ -132,9 +170,20 @@ namespace CF7Launcher.Save
             if (highConf)
             {
                 if (item.Spot == SaveCorruptionSpot.Key)
+                {
+                    // C2-β collision guard: 父 obj 上已存在同名合法 key (e.g. '颈部装备' 已合法存在,
+                    // broken '颈部���备' 想 rename 到同一 key) → 不能自动 rename, 否则 ApplyPatches
+                    // 在 RenameKeySafe 里 fail, 导致整批 patch 回滚 + 修复失败.
+                    // 转 Manual 让用户决定: 保留 broken 不动 / 改成另一个候选 / 丢弃该 key.
+                    JObject parentObj = item.Parent as JObject;
+                    if (parentObj != null && parentObj[top.Value] != null)
+                    {
+                        return new RepairDecision(item, RepairAction.Manual, candidates);
+                    }
                     return new RepairDecision(item,
                         new RepairAction(RepairActionKind.RenameKey, top.Value, top),
                         candidates);
+                }
                 return new RepairDecision(item,
                     new RepairAction(RepairActionKind.FixValue, top.Value, top),
                     candidates);
