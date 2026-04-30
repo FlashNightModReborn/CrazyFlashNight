@@ -61,20 +61,37 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool IsChild(IntPtr hWndParent, IntPtr hWnd);
+
         private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         private static readonly uint _ourPid = (uint)System.Diagnostics.Process.GetCurrentProcess().Id;
 
-        // Foreground 属于本进程 = 游戏窗口（含 panel/web overlay/native HUD/cursor 自身）激活中。
-        // alt-tab 到资源管理器/记事本时返 false，是 desktop cursor 守卫的真正信号。
-        // _owner.Visible/Minimized 太松：alt-tab 后窗口仍 visible 且未 minimized。
-        private static bool IsOurForeground()
+        // Desktop cursor 的前台判定要覆盖两种同一游戏会话状态：
+        // 1. Guardian/overlay/native cursor 等同进程窗口成为 foreground。
+        // 2. 嵌入后的 Flash 子窗口仍短暂保留 foreground，PID 可能仍是 Flash 进程。
+        // alt-tab 到外部程序时，PID 和 owner 子窗口树都会不匹配，cursor 应退场。
+        private static bool IsDesktopCursorSessionForeground(IntPtr ownerHwnd)
         {
             IntPtr fg = GetForegroundWindow();
             if (fg == IntPtr.Zero) return false;
             uint pid;
             GetWindowThreadProcessId(fg, out pid);
-            return pid == _ourPid;
+
+            bool foregroundInOwnerTree = ownerHwnd != IntPtr.Zero
+                && (fg == ownerHwnd || IsChild(ownerHwnd, fg));
+
+            return IsDesktopCursorForegroundAccepted(pid, _ourPid, foregroundInOwnerTree);
+        }
+
+        internal static bool IsDesktopCursorForegroundAccepted(uint foregroundPid, uint ourPid, bool foregroundInOwnerTree)
+        {
+            if (foregroundPid != 0 && foregroundPid == ourPid)
+                return true;
+
+            return foregroundInOwnerTree;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -1843,11 +1860,18 @@ namespace CF7Launcher.Guardian
             // 自定义光标在桌面跟着玩家鼠标到处跑。
             // 三道守卫：
             //   - _owner null / !Visible / Minimized：常规生命周期门
-            //   - !IsOurForeground()：foreground HWND 不属于本进程 = 用户切走了 → cursor 退场
-            //     （_owner.Visible 在 alt-tab 时仍为 true，单看 Visible/Minimized 不够紧）
+            //   - foreground 既非 launcher 进程，也不在 owner 子窗口树内 = 用户切走了 → cursor 退场
+            //     （嵌入 Flash HWND 曾成为 foreground 时，owner 子窗口树才是更准确的会话边界）
             if (_owner == null || !_owner.Visible
-                || _owner.WindowState == FormWindowState.Minimized
-                || !IsOurForeground())
+                || _owner.WindowState == FormWindowState.Minimized)
+            {
+                if (_cursorLastVisible)
+                    PostCursorVisibility(false);
+                return;
+            }
+
+            IntPtr ownerHwnd = _owner.IsHandleCreated ? _owner.Handle : IntPtr.Zero;
+            if (!IsDesktopCursorSessionForeground(ownerHwnd))
             {
                 if (_cursorLastVisible)
                     PostCursorVisibility(false);

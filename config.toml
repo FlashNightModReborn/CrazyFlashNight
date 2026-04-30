@@ -36,3 +36,14 @@ gpuPreference = "off"
 # 玩家版**必须保持 false** —— 否则误触可能导致游戏画面消失。
 # 也可用环境变量 CF7_DEV_GPU_PROBE=1 临时启用，不入仓库。
 devGpuProbeHotkey = false
+
+# Native HUD（Panel-Only 架构 + NotchOverlay/ToastOverlay/RightContextWidget/ComboWidget 接管 web HUD）。
+# 默认 false（仍以 web 渲染为主路径）；true = 启用 C# native HUD + panel host controller。
+# 详见 launcher/README.md「useNativeHud=true」段；env: CF7_NATIVE_HUD=1 一次性覆盖。
+useNativeHud = false
+
+# Desktop 顶层 ULW cursor（默认 true，2026-05 推 default-on）。
+# true  = DesktopCursorOverlay：scale 跟 GuardianForm.ClientSize（窗口级），跨 anchor 自由
+# false = 旧 CursorOverlayForm（OverlayBase 子类，anchor-bound，scale 跟 FlashHostPanel-based viewport）
+# 注释掉 / 缺失此 key 即落代码默认 true。env: CF7_DESKTOP_CURSOR=0 一键回滚。
+# useDesktopCursorOverlay = true
