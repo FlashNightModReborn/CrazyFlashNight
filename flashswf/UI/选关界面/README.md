@@ -21,7 +21,7 @@
 ## 注意事项
 
 - 不要手动编辑 SWF。
-- Stage 2 Step 1 新增 AS2 bridge，只服务刘海屏“选关测试”真实进关闭环；不替换原 Flash 选关入口，不手动编辑 SWF。
+- Stage 2 Step 1 新增 AS2 bridge，只服务刘海屏“选关测试”真实进关闭环，并从 `StageInfoDict` / `tasks_to_do` 同步 hover 卡片所需的简介、限制词条与任务推荐难度；不替换原 Flash 选关入口，不手动编辑 SWF。
 - 0 帧内容归入第一个 label `基地门口`；这是原 XFL 中 label 从 1 帧开始但内容从 0 帧开始导致的兼容规则。
 - 部分背景来自 SWF 内嵌 bitmap/shape。导出器优先使用 Adobe Animate 2024 / Flash CS6 自带 JRE 运行 `tools/ffdec/ffdec.jar`，并将派生图写入 `launcher/web/assets/stage-select/backgrounds/`。
 - 关卡 hover 预览分三类：外部 PNG、`Symbol 3274` 内部命名帧、默认预览帧。大部分内部预览可直接从 XFL `bin/M *.dat` 复制 JPEG；少量 lossless 图由导出器用 FFDec 补出。审计口径中 `previewMissing` 应为 0，`previewFallbacks` 表示内部/默认回退数量。

@@ -201,13 +201,26 @@
         var fixture = StageSelectData.getFixture(fixtureName || 'mixed') || {};
         var stages = fixture.stages || {};
         var unlocked = {};
+        var stageDetails = {};
         var names = stageNames && stageNames.length ? stageNames : collectStageNames();
         names.forEach(function(name) {
             if (!name) return;
-            unlocked[name] = stages[name] ? !!stages[name].unlocked : true;
+            var state = stages[name] || {};
+            unlocked[name] = stages[name] ? !!state.unlocked : true;
+            stageDetails[name] = {
+                exists: true,
+                stageType: '无限过图',
+                detail: 'live detail: ' + name + '&amp;lt;BR&amp;gt;live second line',
+                materialDetail: 'live material: ' + name,
+                limitDetail: state.task ? '<FONT COLOR="#FFCC00">live limit: ' + name + '</FONT>' : '',
+                limitLevel: '',
+                task: !!state.task,
+                highestDifficulty: state.highestDifficulty || '简单'
+            };
         });
         return {
             unlockedStages: unlocked,
+            stageDetails: stageDetails,
             isChallengeMode: !!fixture.challenge,
             currentFrameLabel: frameSelect.value || manifest.frameOrder[0]
         };

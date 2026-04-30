@@ -92,7 +92,12 @@ var StageSelectHarnessQA = (function() {
                 host.open();
                 return waitRuntime(api).then(function(state) {
                     api.assert(!!state.runtimeSnapshot.unlockedStages, 'runtime unlocked map exists');
+                    api.assert(!!state.runtimeSnapshot.stageDetails, 'runtime stage details map exists');
                     api.assertEqual(state.frameLabel, document.getElementById('stage-frame-select').value, 'snapshot frame applied');
+                    var detail = document.querySelector('.stage-select-card-detail');
+                    api.assert(!!detail && detail.textContent.indexOf('live detail:') >= 0, 'live detail rendered');
+                    api.assert(detail.textContent.indexOf('live second line') >= 0, 'encoded BR converted to line text');
+                    api.assert(detail.textContent.indexOf('<BR>') < 0, 'flash html tag stripped');
                     return 'live snapshot ok';
                 });
             }],
@@ -103,16 +108,21 @@ var StageSelectHarnessQA = (function() {
                     api.events.length = 0;
                     host.sentMessages.length = 0;
                     var difficulty = null;
+                    var lockedButton = null;
                     var manifest = StageSelectData.getManifest();
                     manifest.frameOrder.some(function(label) {
                         StageSelectPanel._debugSetFrame(label, 'qa-locked');
-                        var locked = document.querySelector('.stage-select-stage-button.is-locked .stage-select-difficulty');
-                        if (locked) {
-                            difficulty = locked;
+                        lockedButton = document.querySelector('.stage-select-stage-button.is-locked');
+                        if (lockedButton) {
+                            difficulty = lockedButton.querySelector('.stage-select-difficulty');
                             return true;
                         }
                         return false;
                     });
+                    api.assert(!!lockedButton, 'locked button exists');
+                    lockedButton.focus();
+                    api.assert(getComputedStyle(lockedButton.querySelector('.stage-select-marker')).display !== 'none', 'locked marker remains visible on focus');
+                    api.assert(getComputedStyle(lockedButton.querySelector('.stage-select-stage-name')).visibility !== 'hidden', 'locked label remains visible on focus');
                     api.assert(!!difficulty, 'difficulty button exists');
                     difficulty.click();
                     var state = StageSelectPanel._debugGetState();

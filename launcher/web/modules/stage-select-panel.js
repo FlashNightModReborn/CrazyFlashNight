@@ -202,6 +202,7 @@ var StageSelectPanel = (function() {
 
     function createStageButton(button) {
         var state = getStageState(button.stageName);
+        var detail = buildStageDetail(button, state);
         var node = document.createElement('div');
         node.className = 'stage-select-stage-button';
         node.tabIndex = 0;
@@ -210,6 +211,7 @@ var StageSelectPanel = (function() {
         node.setAttribute('data-stage-id', button.id);
         node.style.left = button.x + 'px';
         node.style.top = button.y + 'px';
+        node.style.setProperty('--stage-card-height', detail.cardHeight + 'px');
         if (button.y < 60) node.classList.add('is-edge-top');
         if (button.x < 40) node.classList.add('is-edge-left');
         if (button.x > 790) node.classList.add('is-edge-right');
@@ -228,7 +230,7 @@ var StageSelectPanel = (function() {
                 '<span class="stage-select-preview-wrap">' +
                     '<img class="stage-select-preview" src="' + escapeAttr(resolveAssetUrl(button.previewUrl)) + '" alt="' + escapeAttr(button.stageName) + ' 预览" data-preview-source="' + escapeAttr(button.previewSource || '') + '">' +
                 '</span>' +
-                '<span class="stage-select-card-detail">' + escapeHtml(button.detail || state.detail || '暂无资料') + '</span>' +
+                '<span class="stage-select-card-detail">' + detail.html + '</span>' +
                 '<span class="stage-select-difficulties">' + renderDifficulties(button, state) + '</span>' +
             '</span>';
         node.addEventListener('click', function(e) {
@@ -370,21 +372,99 @@ var StageSelectPanel = (function() {
 
     function getStageState(stageName) {
         var stages = _fixture && _fixture.stages || {};
-        var state = stages[stageName] || {
-            unlocked: true,
-            task: false,
-            highestDifficulty: '简单',
-            detail: ''
+        var base = stages[stageName] || {};
+        var state = {
+            unlocked: typeof base.unlocked === 'undefined' ? true : !!base.unlocked,
+            task: !!base.task,
+            highestDifficulty: base.highestDifficulty || '简单',
+            detail: base.detail || '',
+            materialDetail: base.materialDetail || '',
+            limitDetail: base.limitDetail || '',
+            stageType: base.stageType || ''
         };
+        var live = _runtimeSnapshot && _runtimeSnapshot.stageDetails && _runtimeSnapshot.stageDetails[stageName] || null;
+        if (live) {
+            if (typeof live.task !== 'undefined') state.task = !!live.task;
+            state.highestDifficulty = live.highestDifficulty || state.highestDifficulty;
+            state.detail = typeof live.detail === 'string' ? live.detail : state.detail;
+            state.materialDetail = typeof live.materialDetail === 'string' ? live.materialDetail : state.materialDetail;
+            state.limitDetail = typeof live.limitDetail === 'string' ? live.limitDetail : state.limitDetail;
+            state.stageType = live.stageType || state.stageType;
+        }
         if (_runtimeSnapshot && _runtimeSnapshot.unlockedStages && Object.prototype.hasOwnProperty.call(_runtimeSnapshot.unlockedStages, stageName)) {
-            state = {
-                unlocked: !!_runtimeSnapshot.unlockedStages[stageName],
-                task: !!state.task,
-                highestDifficulty: state.highestDifficulty || '简单',
-                detail: state.detail || ''
-            };
+            state.unlocked = !!_runtimeSnapshot.unlockedStages[stageName];
         }
         return state;
+    }
+
+    function buildStageDetail(button, state) {
+        var parts = [];
+        var detail = flashHtmlToText(state.detail || button.detail || '');
+        var limit = flashHtmlToText(state.limitDetail || '');
+        var material = flashHtmlToText(state.materialDetail || '');
+        if (detail) parts.push(detail);
+        if (limit) parts.push(limit);
+        if (!parts.length && material) parts.push(material);
+        if (!parts.length) parts.push('暂无资料');
+        var text = parts.join('\n');
+        return {
+            html: escapeHtml(text).replace(/\r?\n/g, '<br>'),
+            cardHeight: estimateStageCardHeight(text)
+        };
+    }
+
+    function cleanStageText(text) {
+        return String(text || '')
+            .replace(/\r\n/g, '\n')
+            .replace(/[ \t]+\n/g, '\n')
+            .replace(/\n{3,}/g, '\n\n')
+            .replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
+    }
+
+    function flashHtmlToText(text) {
+        var value = String(text || '');
+        if (!value) return '';
+        value = decodeHtmlEntities(value);
+        value = value.replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>/gi, '\n');
+        if (typeof document !== 'undefined' && document.createElement) {
+            var div = document.createElement('div');
+            div.innerHTML = value;
+            return cleanStageText(div.textContent || div.innerText || '');
+        }
+        return cleanStageText(value.replace(/<[^>]+>/g, ''));
+    }
+
+    function decodeHtmlEntities(text) {
+        var value = String(text || '');
+        if (typeof document === 'undefined' || !document.createElement) {
+            return value
+                .replace(/&amp;/g, '&')
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                .replace(/&quot;/g, '"')
+                .replace(/&#39;/g, "'");
+        }
+        var textarea = document.createElement('textarea');
+        for (var i = 0; i < 2; i++) {
+            textarea.innerHTML = value;
+            var decoded = textarea.value;
+            if (decoded === value) break;
+            value = decoded;
+        }
+        return value;
+    }
+
+    function estimateStageCardHeight(text) {
+        var lines = cleanStageText(text).split('\n');
+        var estimated = 0;
+        lines.forEach(function(line) {
+            var weight = 0;
+            for (var i = 0; i < line.length; i++) {
+                weight += line.charCodeAt(i) < 128 ? 0.58 : 1;
+            }
+            estimated += Math.max(1, Math.ceil(weight / 10.8));
+        });
+        return Math.max(232, Math.min(430, 124 + estimated * 20));
     }
 
     function isChallengeMode() {

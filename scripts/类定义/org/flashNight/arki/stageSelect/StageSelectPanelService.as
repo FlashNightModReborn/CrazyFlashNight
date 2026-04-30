@@ -25,10 +25,12 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         var callId = params.callId;
         var names:Array = normalizeStageNames(params.stageNames);
         var unlocked:Object = {};
+        var details:Object = {};
         var i:Number;
 
         for (i = 0; i < names.length; i++) {
             unlocked[names[i]] = canEnterStage(names[i]);
+            details[names[i]] = buildStageDetail(names[i]);
         }
 
         sendResponse({
@@ -37,6 +39,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             success: true,
             snapshot: {
                 unlockedStages: unlocked,
+                stageDetails: details,
                 isChallengeMode: isChallengeMode(),
                 currentFrameLabel: String(_root.关卡地图帧值 || "")
             }
@@ -131,12 +134,82 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         return _root.isStageUnlocked(stageName) == true;
     }
 
+    private static function buildStageDetail(stageName:String):Object {
+        var taskInfo:Object = getTaskInfo(stageName);
+        if (_root.StageInfoDict == undefined || _root.StageInfoDict[stageName] == undefined) {
+            return {
+                exists: false,
+                stageType: "",
+                detail: "",
+                materialDetail: "",
+                limitDetail: "",
+                limitLevel: "",
+                task: taskInfo.task,
+                highestDifficulty: taskInfo.highestDifficulty
+            };
+        }
+
+        var stageInfo:Object = _root.StageInfoDict[stageName];
+        return {
+            exists: true,
+            stageType: String(stageInfo.Type || ""),
+            detail: String(stageInfo.Description || ""),
+            materialDetail: String(stageInfo.MaterialDetail || ""),
+            limitDetail: buildLimitDetail(stageInfo),
+            limitLevel: String(stageInfo.LimitLevel || ""),
+            task: taskInfo.task,
+            highestDifficulty: taskInfo.highestDifficulty
+        };
+    }
+
+    private static function buildLimitDetail(stageInfo:Object):String {
+        if (stageInfo == undefined || stageInfo.Limitation == undefined || stageInfo.Limitation == "") return "";
+        if (typeof _root.配置数据为数组 != "function") return "";
+        if (_root.任务栏UI函数 == undefined || typeof _root.任务栏UI函数.打印限制词条明细 != "function") return "";
+
+        var entries:Array = _root.配置数据为数组(stageInfo.Limitation);
+        if (entries == undefined || entries == null || entries.length <= 0) return "";
+        return String(_root.任务栏UI函数.打印限制词条明细(entries, stageInfo.LimitLevel));
+    }
+
+    private static function getTaskInfo(stageName:String):Object {
+        var info:Object = {
+            task: false,
+            highestDifficulty: "简单"
+        };
+        var tasks:Array = _root.tasks_to_do;
+        if (tasks == undefined || tasks == null) return info;
+
+        for (var i:Number = 0; i < tasks.length; i++) {
+            var requirements:Object = tasks[i].requirements;
+            if (requirements == undefined || requirements.stages == undefined) continue;
+            for (var j in requirements.stages) {
+                var taskStage:Object = requirements.stages[j];
+                if (taskStage != undefined && stageName === taskStage.name) {
+                    info.task = true;
+                    if (difficultyRank(taskStage.difficulty) > difficultyRank(info.highestDifficulty)) {
+                        info.highestDifficulty = taskStage.difficulty;
+                    }
+                }
+            }
+        }
+        return info;
+    }
+
     private static function isSupportedStageType(stageType:String):Boolean {
         return stageType == "无限过图" || stageType == "初期关卡";
     }
 
     private static function isValidDifficulty(difficulty:String):Boolean {
         return difficulty == "简单" || difficulty == "冒险" || difficulty == "修罗" || difficulty == "地狱";
+    }
+
+    private static function difficultyRank(difficulty:String):Number {
+        if (typeof _root.计算难度等级 == "function") return _root.计算难度等级(difficulty);
+        if (difficulty == "冒险") return 2;
+        if (difficulty == "修罗") return 3;
+        if (difficulty == "地狱") return 4;
+        return 1;
     }
 
     private static function isChallengeMode():Boolean {

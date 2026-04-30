@@ -582,7 +582,8 @@ powershell -File run_tests.ps1
   - 用于把 preview / panel 当前数据结构交给后续 XFL / FFDec 校准链，不替代最终 authoring tool
 - **Map layout fallback audit**：`node tools/audit-map-layout.js [--page school] [--json]`
 - **Stage Select manifest / audit / harness**：`node tools/export-stage-select-manifest.js --summary`、`node tools/audit-stage-select-layout.js --json`、`node tools/run-stage-select-harness.js --browser edge`
-  - 从 `flashswf/UI/选关界面/LIBRARY/选关界面UI/选关界面 1024&#042576.xml` 导出 `StageSelectData` 所用 manifest；Stage 2 Step 1 通过 `StageSelectTask` / `StageSelectPanelService` 接入测试入口真实解锁 snapshot 与真实进关。关卡预览按原版链路导入：外部 PNG → `Symbol 3274` 内部命名帧 → 默认预览帧，layout audit 要求 `previewMissing=0`
+  - 从 `flashswf/UI/选关界面/LIBRARY/选关界面UI/选关界面 1024&#042576.xml` 导出 `StageSelectData` 所用 manifest；Stage 2 Step 1 通过 `StageSelectTask` / `StageSelectPanelService` 接入测试入口真实解锁 snapshot、`StageInfoDict` 关卡简介/限制词条/任务提示数据与真实进关。关卡预览按原版链路导入：外部 PNG → `Symbol 3274` 内部命名帧 → 默认预览帧，layout audit 要求 `previewMissing=0`
+  - Stage 2 Step 2 的 AS2 正式入口替换交接见 `docs/选关界面-AS2入口替换交接.md`，当前策略是先通过 `openWebStageSelect` / `panel_request stage-select` 替换单个场景门，再扩展到其他入口并保留 Flash fallback
 - **Stage Select FFDec visual audit**：`powershell -ExecutionPolicy Bypass -File tools/run-stage-select-visual-audit.ps1`
   - 通过 `tools/ffdec/ffdec.jar` 导出 `DefineSprite 330`，按 FFDec SVG 舞台原点裁成 1024×576 原帧，再用无头 Edge 抓 Web 舞台截图，输出 `tmp/stage-select-visual-audit/sheets/*-compare.png` 三联图和 `visual-audit-index.json`
   - 首次运行前先 `npm --prefix launcher/perf ci --ignore-scripts`；工具会优先使用 Adobe Animate 2024 / Flash CS6 自带 JRE，坐标参照 `ffdecFrameIndex` 字段（首帧特殊为 1，其余为 `sourceFrameIndex + 1`）

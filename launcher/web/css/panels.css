@@ -4318,12 +4318,12 @@ html.perf-low-effects .map-stage-backdrop::before {
     cursor: pointer;
 }
 
-.stage-select-stage-button:hover > .stage-select-marker,
-.stage-select-stage-button:focus > .stage-select-marker,
-.stage-select-stage-button:hover > .stage-select-lock,
-.stage-select-stage-button:focus > .stage-select-lock,
-.stage-select-stage-button:hover > .stage-select-task-pulse,
-.stage-select-stage-button:focus > .stage-select-task-pulse {
+.stage-select-stage-button:not(.is-locked):hover > .stage-select-marker,
+.stage-select-stage-button:not(.is-locked):focus > .stage-select-marker,
+.stage-select-stage-button:not(.is-locked):hover > .stage-select-lock,
+.stage-select-stage-button:not(.is-locked):focus > .stage-select-lock,
+.stage-select-stage-button:not(.is-locked):hover > .stage-select-task-pulse,
+.stage-select-stage-button:not(.is-locked):focus > .stage-select-task-pulse {
     display: none;
 }
 
@@ -4351,8 +4351,8 @@ html.perf-low-effects .map-stage-backdrop::before {
     box-shadow: none;
 }
 
-.stage-select-stage-button:hover .stage-select-stage-name,
-.stage-select-stage-button:focus .stage-select-stage-name {
+.stage-select-stage-button:not(.is-locked):hover .stage-select-stage-name,
+.stage-select-stage-button:not(.is-locked):focus .stage-select-stage-name {
     visibility: hidden;
 }
 
@@ -4426,7 +4426,7 @@ html.perf-low-effects .map-stage-backdrop::before {
     left: -12px;
     top: -190px;
     width: 167px;
-    height: 232px;
+    height: var(--stage-card-height, 232px);
     display: none;
     padding: 0;
     box-sizing: border-box;
@@ -4516,11 +4516,14 @@ html.perf-low-effects .map-stage-backdrop::before {
     top: 118px;
     display: block;
     width: 150px;
-    height: 108px;
+    height: calc(var(--stage-card-height, 232px) - 124px);
     overflow: hidden;
     color: #ffffff;
     font-size: 14px;
     line-height: 20px;
+    white-space: normal;
+    word-break: break-all;
+    overflow-wrap: anywhere;
     text-shadow:
         0 0 2px #000000,
         0 0 4px #000000,
