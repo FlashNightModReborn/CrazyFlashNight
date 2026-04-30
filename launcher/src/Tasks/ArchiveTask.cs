@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -175,6 +176,14 @@ namespace CF7Launcher.Tasks
 
         // 一致性校验：每个 slot 的上一次 shadow 快照
         private readonly Dictionary<string, JObject> _prevSnapshots = new Dictionary<string, JObject>();
+
+        // INV-4：saves 目录槽位枚举严格过滤，排除隐藏文件 (.broken-*.json / .repair-*.log /
+        // .launcher-version-marker.json) 和任何含内部 '.' 的路径。SanitizeSlotName 已把
+        // slot 内的 '.' 全替换为 '_'，所以合法槽位文件名形如 "<safeName>.json"，无内部点。
+        private static readonly Regex SlotJsonRegex =
+            new Regex(@"^[^.][^.]*\.json$", RegexOptions.Compiled);
+        private static readonly Regex SlotTombstoneRegex =
+            new Regex(@"^[^.][^.]*\.tombstone$", RegexOptions.Compiled);
 
         public ArchiveTask(string projectRoot)
         {
@@ -494,9 +503,17 @@ namespace CF7Launcher.Tasks
                 // 合并 *.json 与 *.tombstone 的槽位名：tombstone-only 槽位也要列出
                 var slotNames = new HashSet<string>(StringComparer.Ordinal);
                 foreach (string f in Directory.GetFiles(_savesDir, "*.json"))
+                {
+                    string name = Path.GetFileName(f);
+                    if (!SlotJsonRegex.IsMatch(name)) continue;
                     slotNames.Add(Path.GetFileNameWithoutExtension(f));
+                }
                 foreach (string f in Directory.GetFiles(_savesDir, "*.tombstone"))
+                {
+                    string name = Path.GetFileName(f);
+                    if (!SlotTombstoneRegex.IsMatch(name)) continue;
                     slotNames.Add(Path.GetFileNameWithoutExtension(f));
+                }
 
                 foreach (string slot in slotNames)
                 {

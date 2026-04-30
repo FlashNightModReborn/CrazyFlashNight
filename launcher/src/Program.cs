@@ -545,6 +545,48 @@ class Program
         {
             archiveTask = new ArchiveTask(projectRoot);
         }
+
+        // INV-2: 旧版反污染 gate. 检测玩家是否曾在 launcher 修复版之前用过本机.
+        // 命中提示后立刻写回 marker, 让二次启动沉默. 不阻塞启动 (gate 失败仅丢日志).
+        CF7Launcher.Save.LauncherVersionGate.GateResult versionGate = null;
+        try
+        {
+            versionGate = CF7Launcher.Save.LauncherVersionGate.Check(archiveTask.SavesDir);
+            CF7Launcher.Save.LauncherVersionGate.WriteMarker(archiveTask.SavesDir);
+            if (versionGate.ShouldShowToast)
+            {
+                LogManager.Log("[VersionGate] WARN reason=" + versionGate.Reason
+                    + " prev=" + versionGate.PreviousVersion
+                    + " current=" + CF7Launcher.Save.LauncherVersionGate.CurrentSchemaVersion
+                    + " — 若曾用过老版本 launcher, 建议跑 tools/cf7-save-repair 检查存档");
+            }
+            else
+            {
+                LogManager.Log("[VersionGate] OK reason=" + versionGate.Reason);
+            }
+        }
+        catch (Exception ex)
+        {
+            LogManager.Log("[VersionGate] check/write failed: " + ex.Message);
+        }
+
+        // C2-α: 启动期 silent 自动修复. 扫描 saves/{slot}.json，对高置信度命中
+        // (self_ref / dict_unique) 自动应用 fix_value/rename_key/clear/drop，备份
+        // 原档到 .repair-backups/，bump lastSaved（INV-1）。
+        // L0 / L1 多候选 / L1 装备槽位 key / L1 0 候选不动，留给 C2-β 卡片。
+        // 失败不阻塞启动。
+        try
+        {
+            using (PerfTrace.Scope("save.auto_repair"))
+            {
+                CF7Launcher.Save.SaveAutoRepairService.RunAll(projectRoot, archiveTask);
+            }
+        }
+        catch (Exception ex)
+        {
+            LogManager.Log("[AutoRepair] top-level exception: " + ex.Message);
+        }
+
         BenchTask benchTask = new BenchTask(socketServer);
         using (PerfTrace.Scope("task.registry_register_all"))
         {

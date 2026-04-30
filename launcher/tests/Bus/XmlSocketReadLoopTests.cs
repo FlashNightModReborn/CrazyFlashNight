@@ -10,6 +10,7 @@
 // These tests pin the behavior so the bug cannot regress.
 
 using System;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -25,17 +26,18 @@ namespace CF7Launcher.Tests.Bus
         private readonly XmlSocketServer _server;
         private readonly MessageRouter _router;
         private TcpClient _client;
-        private string _receivedPayload;
-        private readonly ManualResetEventSlim _messageReceived = new ManualResetEventSlim(false);
+        // Queue + semaphore: ReadLoop 可能在测试线程读出第一条之前就连发两条；
+        // 用集合而非单字段, 避免 second-overwrites-first 的竞争.
+        private readonly ConcurrentQueue<string> _payloads = new ConcurrentQueue<string>();
+        private readonly SemaphoreSlim _payloadAvailable = new SemaphoreSlim(0);
 
         public XmlSocketReadLoopTests()
         {
             _router = new MessageRouter();
-            // Echo-style handler: store the payload field so the test thread observes it.
             _router.RegisterSync("utf8_round_trip", delegate(JObject msg)
             {
-                _receivedPayload = msg.Value<string>("payload");
-                _messageReceived.Set();
+                _payloads.Enqueue(msg.Value<string>("payload"));
+                _payloadAvailable.Release();
                 return "{\"ok\":true}";
             });
 
@@ -57,6 +59,7 @@ namespace CF7Launcher.Tests.Bus
         {
             try { if (_client != null) _client.Close(); } catch { }
             try { _server.Dispose(); } catch { }
+            try { _payloadAvailable.Dispose(); } catch { }
         }
 
         // ───────────── Tests ─────────────
@@ -66,9 +69,9 @@ namespace CF7Launcher.Tests.Bus
         {
             // Sanity baseline — non-multibyte payload survives a clean send/recv.
             SendJsonMessage("hello");
-            WaitForMessage();
-            Assert.Equal("hello", _receivedPayload);
-            AssertNoFffd(_receivedPayload);
+            string got = WaitForNextPayload();
+            Assert.Equal("hello", got);
+            AssertNoFffd(got);
         }
 
         [Fact]
@@ -79,10 +82,10 @@ namespace CF7Launcher.Tests.Bus
             // triggered U+FFFD pre-fix.
             string body = BuildCjkPayload(8000);  // 8000 chars × 3 bytes ≈ 24KB
             SendJsonMessageInChunks(body, 8192);
-            WaitForMessage();
+            string got = WaitForNextPayload();
 
-            AssertNoFffd(_receivedPayload);
-            Assert.Equal(body, _receivedPayload);
+            AssertNoFffd(got);
+            Assert.Equal(body, got);
         }
 
         [Fact]
@@ -91,10 +94,10 @@ namespace CF7Launcher.Tests.Bus
             // 1-byte chunk guarantees every multibyte CJK sequence is split.
             string body = "中文测试";
             SendJsonMessageInChunks(body, 1);
-            WaitForMessage();
+            string got = WaitForNextPayload();
 
-            AssertNoFffd(_receivedPayload);
-            Assert.Equal(body, _receivedPayload);
+            AssertNoFffd(got);
+            Assert.Equal(body, got);
         }
 
         [Fact]
@@ -107,12 +110,8 @@ namespace CF7Launcher.Tests.Bus
             byte[] combined = Encoding.UTF8.GetBytes(m1 + "\0" + m2 + "\0");
             SendBytes(combined);
 
-            WaitForMessage();
-            string first = _receivedPayload;
-            _messageReceived.Reset();
-            _receivedPayload = null;
-            WaitForMessage();
-            string second = _receivedPayload;
+            string first = WaitForNextPayload();
+            string second = WaitForNextPayload();
 
             Assert.Equal("第一条消息", first);
             Assert.Equal("第二条消息", second);
@@ -137,10 +136,10 @@ namespace CF7Launcher.Tests.Bus
             byte[] bytes = Encoding.UTF8.GetBytes(template + body + suffix + "\0");
             Assert.True(bytes.Length <= targetTotal, "Payload overshoots target boundary");
             SendBytes(bytes);
-            WaitForMessage();
+            string got = WaitForNextPayload();
 
-            AssertNoFffd(_receivedPayload);
-            Assert.Equal(body, _receivedPayload);
+            AssertNoFffd(got);
+            Assert.Equal(body, got);
         }
 
         // ───────────── Helpers ─────────────
@@ -203,11 +202,13 @@ namespace CF7Launcher.Tests.Bus
             return obj.ToString(Newtonsoft.Json.Formatting.None);
         }
 
-        private void WaitForMessage()
+        private string WaitForNextPayload()
         {
-            bool got = _messageReceived.Wait(TimeSpan.FromSeconds(5));
+            bool got = _payloadAvailable.Wait(TimeSpan.FromSeconds(5));
             Assert.True(got, "Timed out waiting for router to receive message");
-            _messageReceived.Reset();
+            string p;
+            Assert.True(_payloads.TryDequeue(out p), "Payload queue empty after semaphore release");
+            return p;
         }
 
         // U+FFFD via Unicode escape — independent of source file encoding so the

@@ -1,0 +1,21 @@
+{
+  "name": "cf7-save-repair",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "One-shot CLI to scan and repair saves/{slot}.json files corrupted by U+FFFD (UTF-8 chunk-boundary truncation). Consumes launcher/data/save_repair_dict.json (single source). Bumps lastSaved per INV-1 so Launcher's SolResolver picks the cleaned shadow.",
+  "bin": {
+    "cf7-save-repair": "src/index.ts"
+  },
+  "scripts": {
+    "scan": "tsx src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.8"
+  }
+}

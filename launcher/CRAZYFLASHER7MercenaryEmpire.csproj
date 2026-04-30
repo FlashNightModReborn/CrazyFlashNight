@@ -153,6 +153,14 @@
     <Compile Include="src\Save\IArchiveStateProbe.cs" />
     <Compile Include="src\Save\IArchiveShadowWriter.cs" />
     <Compile Include="src\Save\LegacyPresetSlotSeeder.cs" />
+    <Compile Include="src\Save\RepairBackupStore.cs" />
+    <Compile Include="src\Save\LauncherVersionGate.cs" />
+    <Compile Include="src\Save\SaveFieldLayering.cs" />
+    <Compile Include="src\Save\RepairDictionary.cs" />
+    <Compile Include="src\Save\SaveCorruptionScanner.cs" />
+    <Compile Include="src\Save\RepairMatcher.cs" />
+    <Compile Include="src\Save\RepairPolicy.cs" />
+    <Compile Include="src\Save\SaveAutoRepairService.cs" />
     <Compile Include="src\Diagnostic\DiagnosticPackager.cs" />
   </ItemGroup>
   <ItemGroup>
