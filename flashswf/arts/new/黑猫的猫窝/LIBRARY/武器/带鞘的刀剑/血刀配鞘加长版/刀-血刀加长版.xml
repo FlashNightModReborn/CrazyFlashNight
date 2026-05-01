@@ -1,0 +1,89 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/带鞘的刀剑/血刀配鞘加长版/刀-血刀加长版" itemID="69f4f902-00001519" linkageExportForAS="true" linkageIdentifier="刀-血刀加长版" lastModified="1777670871" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="刀-血刀加长版">
+      <layers>
+        <DOMLayer name="Layer 3" color="#56F756" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="-2.35" centerPoint3DY="276.8">
+                  <matrix>
+                    <Matrix a="1.64599609375" d="7.28973388671875" tx="-17.15" ty="257.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置1" centerPoint3DX="-9.2" centerPoint3DY="-49.2">
+                  <matrix>
+                    <Matrix a="1.56832885742188" d="6.70953369140625" tx="-20.45" ty="-67.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[/*
+onClipEvent (enterFrame) {
+	自机 = _root.获得父节点(this, 5);
+	if (Key.isDown(_root.武器技能键) == true and 自机 == _root.gameworld[_root.控制目标])
+	{
+		if (!自机.主动战技cd中 and (自机.攻击模式 == "兵器"))
+		{
+			if (自机.mp >= 40)
+			{
+				//_parent.触发特效();//
+				_root.gameworld[_root.控制目标].主动战技cd中 = true;
+				setTimeout(function ()
+				{
+				_root.gameworld[_root.控制目标].主动战技cd中 = false;
+				},5000);
+				
+				自机.mp -= 40;
+				_root.主角mp显示界面.刷新显示();
+				
+				自机.技能名 = "黑刀斩术";
+				自机.状态改变("战技");
+				自机.man.gotoAndPlay("黑刀斩术");
+			}
+			else
+			{
+				_root.发布消息("精力不足，无法使用战技！");
+			}
+		}
+	}
+}
+*/]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置2" centerPoint3DX="-5.8" centerPoint3DY="118.75">
+                  <matrix>
+                    <Matrix a="1.37002563476563" d="6.29806518554688" tx="-17.15" ty="99.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#AF34EA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/血刀配鞘加长版/血刀加长版图片" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.19999694824219" d="1.20956420898438" ty="11.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

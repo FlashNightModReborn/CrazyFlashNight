@@ -1,0 +1,89 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/带鞘的刀剑/血能源刃配鞘版/刀-血能源刃刀鞘" itemID="69f5184b-000019c3" linkageExportForAS="true" linkageIdentifier="刀-血能源刃刀鞘" lastModified="1777670683" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="刀-血能源刃刀鞘">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="-6.9" centerPoint3DY="234.35">
+                  <matrix>
+                    <Matrix a="1.63954162597656" d="4.96746826171875" tx="-21.65" ty="215.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置1" centerPoint3DX="-0.95" centerPoint3DY="-10.55">
+                  <matrix>
+                    <Matrix a="2.53732299804688" d="4.90438842773438" tx="-24.35" ty="-29.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.55"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[/*
+onClipEvent (enterFrame) {
+	自机 = _root.获得父节点(this, 5);
+	if (Key.isDown(_root.武器技能键) == true and 自机 == _root.gameworld[_root.控制目标])
+	{
+		if (!自机.主动战技cd中 and (自机.攻击模式 == "兵器"))
+		{
+			if (自机.mp >= 40)
+			{
+				//_parent.触发特效();//
+				_root.gameworld[_root.控制目标].主动战技cd中 = true;
+				setTimeout(function ()
+				{
+				_root.gameworld[_root.控制目标].主动战技cd中 = false;
+				},5000);
+				
+				自机.mp -= 40;
+				_root.主角mp显示界面.刷新显示();
+				
+				自机.技能名 = "黑刀斩术";
+				自机.状态改变("战技");
+				自机.man.gotoAndPlay("黑刀斩术");
+			}
+			else
+			{
+				_root.发布消息("精力不足，无法使用战技！");
+			}
+		}
+	}
+}
+*/]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置2" centerPoint3DX="-7.75" centerPoint3DY="112.3">
+                  <matrix>
+                    <Matrix a="1.45062255859375" d="4.87451171875" tx="-20.1" ty="93.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/血能源刃配鞘版/血能源刃鞘" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-1.45" ty="153.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

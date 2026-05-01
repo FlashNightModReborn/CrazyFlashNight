@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/冷兵器/双刀系武器/烬灭裁决/刀-烬灭裁决副剑" itemID="69cb8108-0000119b" linkageExportForAS="true" linkageIdentifier="刀-烬灭裁决副剑" lastModified="1775996374" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/冷兵器/双刀系武器/烬灭裁决/刀-烬灭裁决副剑" itemID="69cb8108-0000119b" linkageExportForAS="true" linkageIdentifier="刀-烬灭裁决副剑" lastModified="1777670334" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="刀-烬灭裁决副剑">
       <layers>
@@ -6,7 +6,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="-7.15" centerPoint3DY="242">
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" selected="true" centerPoint3DX="-7.15" centerPoint3DY="242">
                   <matrix>
                     <Matrix a="2.27713012695313" d="6.76773071289063" tx="-29.85" ty="222.85"/>
                   </matrix>
@@ -14,7 +14,7 @@
                     <Point x="12.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置1" centerPoint3DX="-14.4" centerPoint3DY="-36.8">
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置1" selected="true" centerPoint3DX="-14.4" centerPoint3DY="-36.8">
                   <matrix>
                     <Matrix a="1.85821533203125" d="6.2716064453125" tx="-29.25" ty="-55.5"/>
                   </matrix>
@@ -55,7 +55,7 @@ onClipEvent (enterFrame) {
 */]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置2" centerPoint3DX="-8.4" centerPoint3DY="119.9">
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置2" selected="true" centerPoint3DX="-8.4" centerPoint3DY="119.9">
                   <matrix>
                     <Matrix a="4.02951049804688" d="4.87451171875" tx="-53" ty="100.95"/>
                   </matrix>

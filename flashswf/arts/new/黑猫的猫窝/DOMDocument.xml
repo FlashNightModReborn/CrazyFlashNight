@@ -1,13 +1,19 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#666666" width="900" height="600" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" objectsSnapTo="false" viewAngle3D="80.8511702896415" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#666666" width="900" height="600" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" viewAngle3D="80.8511702896415" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
      <folders>
+          <DOMFolderItem name="NPC" itemID="69f4f2f2-00000552" isExpanded="true"/>
           <DOMFolderItem name="图标" itemID="654ce53c-000027e4" isExpanded="true"/>
           <DOMFolderItem name="武器" itemID="698a89d1-00000cdb" isExpanded="true"/>
           <DOMFolderItem name="武器/带鞘的刀剑" itemID="69eff81a-0000155e" isExpanded="true"/>
+          <DOMFolderItem name="武器/带鞘的刀剑/！NPC-冯佑权的武器" itemID="69f4f493-0000057f"/>
+          <DOMFolderItem name="武器/带鞘的刀剑/！NPC-冯佑权的武器/云吞魔芋" itemID="69f4f46a-0000057b" isExpanded="true"/>
+          <DOMFolderItem name="武器/带鞘的刀剑/！剑道社长的刀" itemID="69f4f498-00000580"/>
           <DOMFolderItem name="武器/带鞘的刀剑/黑铁旧剑带鞘" itemID="69f1cded-00001f20"/>
           <DOMFolderItem name="武器/带鞘的刀剑/黑铁旧剑带鞘/无AS链接" itemID="6690f257-00002761" isExpanded="true"/>
-          <DOMFolderItem name="武器/带鞘的刀剑/黑铁武士的刀" itemID="69f02d53-0000086a" isExpanded="true"/>
-          <DOMFolderItem name="武器/带鞘的刀剑/虎彻配鞘版" itemID="69f258c6-00000466" isExpanded="true"/>
-          <DOMFolderItem name="武器/带鞘的刀剑/阎魔刀带鞘版" itemID="69f02cc7-00000848" isExpanded="true"/>
+          <DOMFolderItem name="武器/带鞘的刀剑/黑铁武士的刀" itemID="69f02d53-0000086a"/>
+          <DOMFolderItem name="武器/带鞘的刀剑/虎彻配鞘版" itemID="69f258c6-00000466"/>
+          <DOMFolderItem name="武器/带鞘的刀剑/血刀配鞘加长版" itemID="69f4f7b2-00000d2b" isExpanded="true"/>
+          <DOMFolderItem name="武器/带鞘的刀剑/血能源刃配鞘版" itemID="69f5066a-000015be" isExpanded="true"/>
+          <DOMFolderItem name="武器/带鞘的刀剑/阎魔刀带鞘版" itemID="69f02cc7-00000848"/>
           <DOMFolderItem name="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包" itemID="6561bb37-00000481"/>
           <DOMFolderItem name="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/鬼泣素材包" itemID="657594b6-0000079d" isExpanded="true"/>
           <DOMFolderItem name="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/阎魔刀组件" itemID="69eff79f-00001550" isExpanded="true"/>
@@ -23,7 +29,6 @@
      </folders>
      <media>
           <DOMBitmapItem name="24488a970d28b28609d2d38d05d15483.jpg" itemID="698a95c7-00000d29" sourceExternalFilepath="./LIBRARY/24488a970d28b28609d2d38d05d15483.jpg" sourceLastImported="1770689937" externalFileCRC32="784672173" externalFileSize="86205" quality="50" href="24488a970d28b28609d2d38d05d15483.jpg" bitmapDataHRef="M 2 1770689991.dat" frameRight="26660" frameBottom="15000" isJPEG="true"/>
-          <DOMBitmapItem name="设计日式太刀刀鞘.png" itemID="69f25acf-00000478" sourceExternalFilepath="./LIBRARY/设计日式太刀刀鞘.png" sourceLastImported="1777489990" externalFileCRC32="3895881118" externalFileSize="3785904" originalCompressionType="lossless" quality="50" href="设计日式太刀刀鞘.png" bitmapDataHRef="M 2 1777490163.dat" frameRight="31180" frameBottom="53800"/>
      </media>
      <symbols>
           <Include href="黑猫的猫窝.xml" itemID="698aaa59-000001e8" lastModified="1770695261"/>
@@ -31,6 +36,10 @@
           <Include href="图标/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000644" lastModified="1710653981"/>
           <Include href="图标/Symbol 13.xml" loadImmediate="false" itemID="65f68a66-00000645" lastModified="1710653981"/>
           <Include href="图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="666e7c83-00000d39" lastModified="1774943990"/>
+          <Include href="武器/带鞘的刀剑/！NPC-冯佑权的武器/云吞魔芋/云吞魔芋打刀.xml" loadImmediate="false" itemID="69f4f487-0000057e" lastModified="1777661063"/>
+          <Include href="武器/带鞘的刀剑/！NPC-冯佑权的武器/云吞魔芋/云吞魔芋刀鞘.xml" loadImmediate="false" itemID="69f4f478-0000057d" lastModified="1777661048"/>
+          <Include href="武器/带鞘的刀剑/！剑道社长的刀/剑道社长的刀.xml" itemIcon="1" loadImmediate="false" itemID="69f4f3e4-0000056b" lastModified="1777660901"/>
+          <Include href="武器/带鞘的刀剑/！剑道社长的刀/剑道社长的刀鞘.xml" itemIcon="1" loadImmediate="false" itemID="69f4f367-00000567" lastModified="1777660775"/>
           <Include href="武器/带鞘的刀剑/黑铁旧剑带鞘/刀-黑铁的剑配鞘.xml" itemID="69f1d0d1-000028d9" lastModified="1777485511"/>
           <Include href="武器/带鞘的刀剑/黑铁旧剑带鞘/刀-黑铁剑鞘.xml" itemID="69f1d021-000028c5" lastModified="1777485536"/>
           <Include href="武器/带鞘的刀剑/黑铁旧剑带鞘/黑铁的旧剑鞘.xml" itemIcon="1" loadImmediate="false" itemID="69f1cf4e-000028a8" lastModified="1777454926"/>
@@ -48,6 +57,16 @@
           <Include href="武器/带鞘的刀剑/虎彻配鞘版/刀-虎彻配鞘版.xml" itemID="69f25c1e-00000482" lastModified="1777492023"/>
           <Include href="武器/带鞘的刀剑/虎彻配鞘版/虎彻的鞘图片.xml" itemIcon="1" loadImmediate="false" itemID="69f25bfd-0000047f" lastModified="1777490941"/>
           <Include href="武器/带鞘的刀剑/虎彻配鞘版/图标-虎彻配鞘版.xml" itemID="69f25e37-000004b1" lastModified="1777491661"/>
+          <Include href="武器/带鞘的刀剑/血刀配鞘加长版/刀-血刀刀鞘.xml" itemID="69f502e8-00001547" lastModified="1777670873"/>
+          <Include href="武器/带鞘的刀剑/血刀配鞘加长版/刀-血刀加长版.xml" itemID="69f4f902-00001519" lastModified="1777670871"/>
+          <Include href="武器/带鞘的刀剑/血刀配鞘加长版/刀-血刀配鞘版.xml" itemID="69f503a8-0000156d" lastModified="1777670470"/>
+          <Include href="武器/带鞘的刀剑/血刀配鞘加长版/图标-血刀配鞘版.xml" itemID="69f504ed-00001598" lastModified="1777671653"/>
+          <Include href="武器/带鞘的刀剑/血刀配鞘加长版/血刀刀鞘.xml" itemIcon="1" loadImmediate="false" itemID="69f502bd-00001541" lastModified="1777664701"/>
+          <Include href="武器/带鞘的刀剑/血刀配鞘加长版/血刀加长版图片.xml" itemIcon="1" loadImmediate="false" itemID="69f4f8f1-00001518" lastModified="1777662193"/>
+          <Include href="武器/带鞘的刀剑/血能源刃配鞘版/刀-血能源刃刀鞘.xml" itemID="69f5184b-000019c3" lastModified="1777670683"/>
+          <Include href="武器/带鞘的刀剑/血能源刃配鞘版/刀-血能源刃配鞘版.xml" itemID="69f51801-000019c0" lastModified="1777671636"/>
+          <Include href="武器/带鞘的刀剑/血能源刃配鞘版/图标-血能源刃配鞘版.xml" itemID="69f51806-000019c1" lastModified="1777671651"/>
+          <Include href="武器/带鞘的刀剑/血能源刃配鞘版/血能源刃鞘.xml" itemIcon="1" loadImmediate="false" itemID="69f51661-0000198f" lastModified="1777671263"/>
           <Include href="武器/带鞘的刀剑/阎魔刀带鞘版/刀-阎魔刀刀鞘.xml" itemID="69eff776-000011f2" lastModified="1777487024"/>
           <Include href="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/鬼泣素材包/area.xml" loadImmediate="false" itemID="657594b6-000007af" lastModified="1701877840"/>
           <Include href="武器/带鞘的刀剑/阎魔刀带鞘版/鬼泣素材包/阎魔刀组件/刀-阎魔刀带鞘版.xml" itemID="69eff7db-0000155c" lastModified="1777491462"/>
@@ -61,7 +80,7 @@
           <Include href="武器/冷兵器/黑煞/光玉的剑相关/光玉剑柄1.xml" itemIcon="1" loadImmediate="false" itemID="68668bba-000033c8" lastModified="1751550906"/>
           <Include href="武器/冷兵器/黑煞/光玉的剑相关/光玉剑身.xml" itemIcon="1" loadImmediate="false" itemID="68668bbe-000033cc" lastModified="1751550910"/>
           <Include href="武器/冷兵器/黑煞/图标-黑煞.xml" itemID="69bdcdfe-0000024f" lastModified="1774047080"/>
-          <Include href="武器/冷兵器/双刀系武器/烬灭裁决/刀-烬灭裁决副剑.xml" itemID="69cb8108-0000119b" lastModified="1775996374"/>
+          <Include href="武器/冷兵器/双刀系武器/烬灭裁决/刀-烬灭裁决副剑.xml" itemID="69cb8108-0000119b" lastModified="1777670334"/>
           <Include href="武器/冷兵器/双刀系武器/烬灭裁决/刀-烬灭裁决双刀.xml" itemID="69cb6b55-00000dbf" lastModified="1775996360"/>
           <Include href="武器/冷兵器/双刀系武器/烬灭裁决/刀-烬灭裁决长柄.xml" itemID="69cb6d6c-00000e89" lastModified="1774945522"/>
           <Include href="武器/冷兵器/双刀系武器/烬灭裁决/刀-烬灭裁决主剑.xml" itemID="69cb7e51-0000115b" lastModified="1777348162"/>
@@ -87,11 +106,24 @@
           <Include href="武器/冷兵器/双刀系武器/战术双刀/狗腿刀.xml" itemIcon="1" loadImmediate="false" itemID="698a9423-00000d15" lastModified="1770689653"/>
           <Include href="武器/冷兵器/双刀系武器/战术双刀/破旧军刀.xml" itemIcon="1" loadImmediate="false" itemID="66099e9c-00004084" lastModified="1711906460"/>
           <Include href="武器/冷兵器/双刀系武器/战术双刀/图标-战术双刀.xml" itemID="698a97a9-00000d2f" lastModified="1770701603"/>
-          <Include href="元件 1.xml" loadImmediate="false" itemID="69f2593c-00000472" lastModified="1777490236"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
                <layers>
+                    <DOMLayer name="图层 4" color="#FF4FFF">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="图层 5" color="#4FFFFF">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
                     <DOMLayer name="图层 2" color="#9933CC">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
@@ -99,7 +131,7 @@
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                    <DOMLayer name="图层 1" color="#4FFF4F" locked="true" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
@@ -392,6 +424,117 @@
                     <SolidSwatchItem color="#6D6C74" hue="166" saturation="8" brightness="106"/>
                     <SolidSwatchItem color="#B1B1BC" hue="160" saturation="18" brightness="172"/>
                     <SolidSwatchItem color="#F1EFF2" hue="187" saturation="27" brightness="227"/>
+                    <SolidSwatchItem color="#E4963F" hue="21" saturation="182" brightness="137"/>
+                    <SolidSwatchItem color="#E59640" hue="21" saturation="184" brightness="138"/>
+                    <SolidSwatchItem color="#C7782F" hue="19" saturation="149" brightness="116"/>
+                    <SolidSwatchItem color="#FAE9B4" hue="30" saturation="208" brightness="202"/>
+                    <SolidSwatchItem color="#F4B34C" hue="24" saturation="213" brightness="151"/>
+                    <SolidSwatchItem color="#EBAC45" hue="25" saturation="193" brightness="143"/>
+                    <SolidSwatchItem color="#581909" hue="9" saturation="198" brightness="46"/>
+                    <SolidSwatchItem color="#5D190D" hue="6" saturation="182" brightness="50"/>
+                    <SolidSwatchItem color="#812D10" hue="10" saturation="187" brightness="68"/>
+                    <SolidSwatchItem color="#D96E40" hue="12" saturation="160" brightness="132"/>
+                    <SolidSwatchItem color="#FBD4A2" hue="23" saturation="219" brightness="194"/>
+                    <SolidSwatchItem color="#DF9144" hue="20" saturation="170" brightness="137"/>
+                    <SolidSwatchItem color="#841C10" hue="4" saturation="188" brightness="70"/>
+                    <SolidSwatchItem color="#701B08" hue="7" saturation="206" brightness="57"/>
+                    <SolidSwatchItem color="#611811" hue="4" saturation="168" brightness="54"/>
+                    <SolidSwatchItem color="#B73920" hue="7" saturation="169" brightness="101"/>
+                    <SolidSwatchItem color="#A6341D" hue="7" saturation="169" brightness="92"/>
+                    <SolidSwatchItem color="#6B190F" hue="5" saturation="182" brightness="58"/>
+                    <SolidSwatchItem color="#D74E2D" hue="8" saturation="163" brightness="122"/>
+                    <SolidSwatchItem color="#962013" hue="4" saturation="186" brightness="80"/>
+                    <SolidSwatchItem color="#D94C2A" hue="8" saturation="167" brightness="122"/>
+                    <SolidSwatchItem color="#CF431F" hue="8" saturation="178" brightness="112"/>
+                    <SolidSwatchItem color="#C93324" hue="4" saturation="167" brightness="112"/>
+                    <SolidSwatchItem color="#691914" hue="3" saturation="163" brightness="59"/>
+                    <SolidSwatchItem color="#6D100A" hue="3" saturation="201" brightness="56"/>
+                    <SolidSwatchItem color="#440703" hue="3" saturation="219" brightness="34"/>
+                    <SolidSwatchItem color="#822114" hue="5" saturation="175" brightness="71"/>
+                    <SolidSwatchItem color="#CC4D2C" hue="8" saturation="156" brightness="117"/>
+                    <SolidSwatchItem color="#D2553A" hue="7" saturation="151" brightness="127"/>
+                    <SolidSwatchItem color="#7F1E0E" hue="6" saturation="193" brightness="67"/>
+                    <SolidSwatchItem color="#A02619" hue="4" saturation="174" brightness="88"/>
+                    <SolidSwatchItem color="#892B1E" hue="5" saturation="154" brightness="79"/>
+                    <SolidSwatchItem color="#B62C14" hue="6" saturation="192" brightness="95"/>
+                    <SolidSwatchItem color="#811F0E" hue="6" saturation="193" brightness="67"/>
+                    <SolidSwatchItem color="#69110F" hue="1" saturation="181" brightness="57"/>
+                    <SolidSwatchItem color="#A4612D" hue="18" saturation="137" brightness="98"/>
+                    <SolidSwatchItem color="#FDCD99" hue="21" saturation="230" brightness="191"/>
+                    <SolidSwatchItem color="#DC8C3D" hue="20" saturation="167" brightness="132"/>
+                    <SolidSwatchItem color="#CF7835" hue="17" saturation="148" brightness="123"/>
+                    <SolidSwatchItem color="#FDC686" hue="22" saturation="232" brightness="182"/>
+                    <SolidSwatchItem color="#C0743F" hue="16" saturation="122" brightness="120"/>
+                    <SolidSwatchItem color="#873719" hue="11" saturation="164" brightness="76"/>
+                    <SolidSwatchItem color="#430604" hue="1" saturation="211" brightness="34"/>
+                    <SolidSwatchItem color="#6F120B" hue="3" saturation="198" brightness="57"/>
+                    <SolidSwatchItem color="#9A2C1B" hue="5" saturation="169" brightness="85"/>
+                    <SolidSwatchItem color="#BF3E27" hue="6" saturation="158" brightness="109"/>
+                    <SolidSwatchItem color="#701409" hue="5" saturation="206" brightness="57"/>
+                    <SolidSwatchItem color="#F1D895" hue="29" saturation="185" brightness="184"/>
+                    <SolidSwatchItem color="#C37834" hue="19" saturation="139" brightness="117"/>
+                    <SolidSwatchItem color="#EDB66B" hue="23" saturation="188" brightness="162"/>
+                    <SolidSwatchItem color="#964B21" hue="15" saturation="153" brightness="86"/>
+                    <SolidSwatchItem color="#8F291C" hue="5" saturation="162" brightness="81"/>
+                    <SolidSwatchItem color="#AD3424" hue="5" saturation="157" brightness="99"/>
+                    <SolidSwatchItem color="#5B1407" hue="6" saturation="204" brightness="47"/>
+                    <SolidSwatchItem color="#703221" hue="9" saturation="131" brightness="68"/>
+                    <SolidSwatchItem color="#8B311A" hue="8" saturation="166" brightness="78"/>
+                    <SolidSwatchItem color="#6E1806" hue="7" saturation="214" brightness="55"/>
+                    <SolidSwatchItem color="#0F0303" saturation="155" brightness="9"/>
+                    <SolidSwatchItem color="#020300" hue="53" saturation="239" brightness="2"/>
+                    <SolidSwatchItem color="#313131" brightness="46"/>
+                    <SolidSwatchItem color="#0D0B06" hue="27" saturation="80" brightness="9"/>
+                    <SolidSwatchItem color="#363630" hue="40" saturation="15" brightness="48"/>
+                    <SolidSwatchItem color="#3E3C3F" hue="187" saturation="6" brightness="58"/>
+                    <SolidSwatchItem color="#0F0F0D" hue="40" saturation="18" brightness="13"/>
+                    <SolidSwatchItem color="#3A3936" hue="30" saturation="9" brightness="53"/>
+                    <SolidSwatchItem color="#93908B" hue="29" saturation="8" brightness="135"/>
+                    <SolidSwatchItem color="#010300" hue="67" saturation="239" brightness="2"/>
+                    <SolidSwatchItem color="#3C3B38" hue="40" saturation="7" brightness="55"/>
+                    <SolidSwatchItem color="#EE0604" saturation="232" brightness="114"/>
+                    <SolidSwatchItem color="#807F7A" hue="40" saturation="5" brightness="118"/>
+                    <SolidSwatchItem color="#494748" hue="220" saturation="4" brightness="68"/>
+                    <SolidSwatchItem color="#131216" hue="170" saturation="25" brightness="19"/>
+                    <SolidSwatchItem color="#393835" hue="30" saturation="9" brightness="52"/>
+                    <SolidSwatchItem color="#040503" hue="60" saturation="60" brightness="4"/>
+                    <SolidSwatchItem color="#4E4946" hue="17" saturation="12" brightness="70"/>
+                    <SolidSwatchItem color="#8E0003" hue="239" saturation="239" brightness="67"/>
+                    <SolidSwatchItem color="#F20602" hue="1" saturation="236" brightness="115"/>
+                    <SolidSwatchItem color="#232321" hue="40" saturation="8" brightness="32"/>
+                    <SolidSwatchItem color="#020200" hue="40" saturation="239" brightness="1"/>
+                    <SolidSwatchItem color="#E80005" hue="239" saturation="239" brightness="109"/>
+                    <SolidSwatchItem color="#373330" hue="17" saturation="17" brightness="49"/>
+                    <SolidSwatchItem color="#22231D" hue="47" saturation="24" brightness="30"/>
+                    <SolidSwatchItem color="#1C1C1A" hue="40" saturation="10" brightness="25"/>
+                    <SolidSwatchItem color="#242422" hue="40" saturation="7" brightness="33"/>
+                    <SolidSwatchItem color="#E00003" saturation="239" brightness="106"/>
+                    <SolidSwatchItem color="#8B0000" saturation="239" brightness="66"/>
+                    <SolidSwatchItem color="#40403E" hue="40" saturation="4" brightness="59"/>
+                    <SolidSwatchItem color="#4B4C46" hue="47" saturation="10" brightness="69"/>
+                    <SolidSwatchItem color="#5C5954" hue="25" saturation="12" brightness="83"/>
+                    <SolidSwatchItem color="#D0CECE" saturation="5" brightness="195"/>
+                    <SolidSwatchItem color="#030303" brightness="3"/>
+                    <SolidSwatchItem color="#444039" hue="24" saturation="20" brightness="59"/>
+                    <SolidSwatchItem color="#373635" hue="20" saturation="5" brightness="51"/>
+                    <SolidSwatchItem color="#625D61" hue="210" saturation="5" brightness="90"/>
+                    <SolidSwatchItem color="#4E2D2A" hue="3" saturation="70" brightness="57"/>
+                    <SolidSwatchItem color="#363636" brightness="51"/>
+                    <SolidSwatchItem color="#373735" hue="40" saturation="5" brightness="51"/>
+                    <SolidSwatchItem color="#0E0E0C" hue="40" saturation="20" brightness="12"/>
+                    <SolidSwatchItem color="#272725" hue="40" saturation="7" brightness="36"/>
+                    <SolidSwatchItem color="#373535" saturation="5" brightness="51"/>
+                    <SolidSwatchItem color="#46413B" hue="20" saturation="20" brightness="61"/>
+                    <SolidSwatchItem color="#040404" brightness="4"/>
+                    <SolidSwatchItem color="#20211B" hue="47" saturation="26" brightness="28"/>
+                    <SolidSwatchItem color="#1A1A1A" brightness="24"/>
+                    <SolidSwatchItem color="#0C0B09" hue="27" saturation="38" brightness="10"/>
+                    <SolidSwatchItem color="#010200" hue="60" saturation="239" brightness="1"/>
+                    <SolidSwatchItem color="#990203" saturation="233" brightness="73"/>
+                    <SolidSwatchItem color="#353537" hue="160" saturation="5" brightness="51"/>
+                    <SolidSwatchItem color="#353533" hue="40" saturation="5" brightness="49"/>
+                    <SolidSwatchItem color="#010100" hue="40" saturation="239" brightness="1"/>
+                    <SolidSwatchItem color="#EE0507" saturation="230" brightness="115"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -401,6 +544,15 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="207082" publishTime="1777671301"/>
+          <PublishItem publishSize="207084" publishTime="1777670879"/>
+          <PublishItem publishSize="207080" publishTime="1777670788"/>
+          <PublishItem publishSize="207083" publishTime="1777670759"/>
+          <PublishItem publishSize="207084" publishTime="1777670690"/>
+          <PublishItem publishSize="207084" publishTime="1777670622"/>
+          <PublishItem publishSize="207084" publishTime="1777670529"/>
+          <PublishItem publishSize="207044" publishTime="1777670258"/>
+          <PublishItem publishSize="207023" publishTime="1777670171"/>
           <PublishItem publishSize="175445" publishTime="1777491954"/>
           <PublishItem publishSize="175445" publishTime="1777491851"/>
           <PublishItem publishSize="175445" publishTime="1777491783"/>
@@ -412,14 +564,5 @@
           <PublishItem publishSize="173650" publishTime="1777456589"/>
           <PublishItem publishSize="173622" publishTime="1777456199"/>
           <PublishItem publishSize="160483" publishTime="1777350172"/>
-          <PublishItem publishSize="160482" publishTime="1777350156"/>
-          <PublishItem publishSize="160489" publishTime="1777350073"/>
-          <PublishItem publishSize="160476" publishTime="1777349984"/>
-          <PublishItem publishSize="160213" publishTime="1777349395"/>
-          <PublishItem publishSize="148577" publishTime="1777334784"/>
-          <PublishItem publishSize="144782" publishTime="1774945290"/>
-          <PublishItem publishSize="142666" publishTime="1774944794"/>
-          <PublishItem publishSize="142663" publishTime="1774944781"/>
-          <PublishItem publishSize="142629" publishTime="1774944044"/>
      </publishHistory>
 </DOMDocument>
