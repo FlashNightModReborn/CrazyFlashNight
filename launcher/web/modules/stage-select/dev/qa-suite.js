@@ -231,6 +231,23 @@ var StageSelectHarnessQA = (function() {
                     return 'nav buttons breathe';
                 });
             }],
+            ['runtime-scene-entry-anchor', 'runtime scene-entry ring keeps original map anchor', function() {
+                host.setViewport('1366x768');
+                host.open({ mode: 'dev' });
+                return waitReady(api).then(function() {
+                    var target = findFirstSceneEntryNav(api);
+                    StageSelectPanel._debugSetFrame(target.frameLabel, 'qa-scene-anchor-dev');
+                    var dev = measureSceneEntryMarker(api, target.id);
+                    host.open({ mode: 'runtime', debug: false });
+                    return waitRuntime(api).then(function() {
+                        StageSelectPanel._debugSetFrame(target.frameLabel, 'qa-scene-anchor-runtime');
+                        var runtime = measureSceneEntryMarker(api, target.id);
+                        assertNear(api, runtime.x, dev.x, 0.75, 'scene-entry marker x');
+                        assertNear(api, runtime.y, dev.y, 0.75, 'scene-entry marker y');
+                        return target.frameLabel + ' scene-entry anchor stable';
+                    });
+                });
+            }],
             ['runtime-card-height-measured', 'runtime card height comes from real DOM measurement, fits all text', function() {
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function() {
@@ -266,9 +283,9 @@ var StageSelectHarnessQA = (function() {
                     btn.focus();
                     var detail = btn.querySelector('.stage-select-card-detail');
                     var detailScroll = detail.scrollHeight;
-                    var detailRect = detail.getBoundingClientRect();
+                    var detailCssHeight = parseFloat(getComputedStyle(detail).height) || (detail.getBoundingClientRect().height / getStageScale());
                     // declared height = baseline + measured detail. detail rendered height should fit inside card box.
-                    api.assert(detailScroll <= detailRect.height + 4, 'rendered detail fits inside box (scroll=' + detailScroll + ', box=' + Math.round(detailRect.height) + ')');
+                    api.assert(detailScroll <= detailCssHeight + 4, 'rendered detail fits inside box (scroll=' + detailScroll + ', box=' + Math.round(detailCssHeight) + ')');
                     return 'measured height fits text';
                 });
             }],
@@ -314,13 +331,14 @@ var StageSelectHarnessQA = (function() {
                 });
             }],
             ['runtime-panel-centered', 'runtime panel centers symmetrically in viewport', function() {
+                host.setViewport(getHitTestViewport());
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function() {
                     var panel = document.querySelector('.stage-select-panel');
                     var rect = panel.getBoundingClientRect();
-                    var vw = window.innerWidth;
-                    var leftMargin = rect.left;
-                    var rightMargin = vw - rect.right;
+                    var shell = document.getElementById('viewport-shell').getBoundingClientRect();
+                    var leftMargin = rect.left - shell.left;
+                    var rightMargin = shell.right - rect.right;
                     api.assert(Math.abs(leftMargin - rightMargin) <= 4, 'left/right margins symmetric (L=' + leftMargin + ', R=' + rightMargin + ')');
                     return 'panel centered';
                 });
@@ -566,7 +584,7 @@ var StageSelectHarnessQA = (function() {
                 });
             }],
             ['hit-test', 'top controls and sample stage buttons are usable', function() {
-                host.setViewport('1366x768');
+                host.setViewport(getHitTestViewport());
                 host.open();
                 return waitReady(api).then(function() {
                     assertHit(api, document.querySelector('.stage-select-close-btn'), 'close button');
@@ -606,6 +624,60 @@ var StageSelectHarnessQA = (function() {
         return chain.then(function(results) {
             return MinigameHarness.normalizeBundle(results);
         });
+    }
+
+    function findFirstSceneEntryNav(api) {
+        var manifest = StageSelectData.getManifest();
+        for (var i = 0; i < manifest.frameOrder.length; i += 1) {
+            var label = manifest.frameOrder[i];
+            var frame = StageSelectData.getFrame(label);
+            var navs = frame && frame.navButtons || [];
+            for (var j = 0; j < navs.length; j += 1) {
+                var item = navs[j].libraryItemName || '';
+                if (item.indexOf('选关界面UI/Symbol ') === 0 && item !== '选关界面UI/Symbol 3308') {
+                    return { frameLabel: label, id: navs[j].id };
+                }
+            }
+        }
+        api.assert(false, 'scene-entry nav exists');
+        return null;
+    }
+
+    function measureSceneEntryMarker(api, navId) {
+        var el = document.querySelector('.stage-select-nav-button.is-scene-entry[data-nav-id="' + navId + '"]');
+        api.assert(!!el, 'scene-entry nav node exists: ' + navId);
+        var stage = document.getElementById('stage-select-stage');
+        api.assert(!!stage, 'stage node exists');
+        var scale = getStageScale();
+        var stageRect = stage.getBoundingClientRect();
+        var rect = el.getBoundingClientRect();
+        var before = getComputedStyle(el, '::before');
+        var markerWidth = cssNumber(before.width) + cssNumber(before.borderLeftWidth) + cssNumber(before.borderRightWidth);
+        var markerHeight = cssNumber(before.height) + cssNumber(before.borderTopWidth) + cssNumber(before.borderBottomWidth);
+        return {
+            x: (rect.left + (cssNumber(before.left) + markerWidth / 2) * scale - stageRect.left) / scale,
+            y: (rect.top + (cssNumber(before.top) + markerHeight / 2) * scale - stageRect.top) / scale
+        };
+    }
+
+    function getStageScale() {
+        var stage = document.getElementById('stage-select-stage');
+        if (!stage) return 1;
+        var fromVar = parseFloat(getComputedStyle(stage).getPropertyValue('--stage-select-scale'));
+        if (fromVar > 0) return fromVar;
+        var rect = stage.getBoundingClientRect();
+        return rect.width > 0 ? rect.width / 1024 : 1;
+    }
+
+    function getHitTestViewport() {
+        var width = Math.min(1366, Math.max(800, window.innerWidth || 1366));
+        var height = Math.min(768, Math.max(560, window.innerHeight || 768));
+        return width + 'x' + height;
+    }
+
+    function cssNumber(value) {
+        var n = parseFloat(value);
+        return isNaN(n) ? 0 : n;
     }
 
     function assertHit(api, el, label) {

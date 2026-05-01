@@ -5004,7 +5004,7 @@ html.perf-low-effects .map-stage-backdrop::before {
     color: #fef3c7;
 }
 
-/* Runtime: give every nav button breathing room (auto width via translate(-50%,-50%)),
+/* Runtime: give rectangular nav buttons breathing room,
    softer corners + better hover feedback. Dev/FFDec geometry preserved. */
 .stage-select-panel.is-runtime .stage-select-nav-button {
     transform: translate(-50%, -50%);
@@ -5067,6 +5067,7 @@ html.perf-low-effects .map-stage-backdrop::before {
 
 .stage-select-panel.is-runtime .stage-select-nav-button.is-scene-entry {
     /* 保留原版圆形 + 标签布局，仅扩展点击命中区 */
+    transform: translate(-42px, -42px);
     padding-bottom: 4px;
 }
 
