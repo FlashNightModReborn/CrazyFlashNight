@@ -21,7 +21,10 @@ var IntelligencePanel = (function() {
     var _pcName = '测试玩家';
     var _debugMode = false;
     var _drawerCollapsed = false;
+    var _pagePopupOpen = false;
     var _resizeObserver = null;
+    var _keyHandler = null;
+    var _outsideClickHandler = null;
 
     var DESIGN_WIDTH = 1180;
     var DESIGN_HEIGHT = 790;
@@ -58,15 +61,6 @@ var IntelligencePanel = (function() {
                     '</div>' +
                     '<button class="intel-close-btn" type="button" title="关闭" aria-label="关闭"></button>' +
                 '</header>' +
-                '<section class="intel-devbar">' +
-                    '<div class="intel-dev-label">测试参数</div>' +
-                    '<div class="intel-field-row">' +
-                        '<label class="intel-field">收集值<input class="intel-value-input" type="number" min="0"></label>' +
-                        '<label class="intel-field">解密等级<input class="intel-decrypt-input" type="number" min="0"></label>' +
-                    '</div>' +
-                    '<button class="intel-refresh-btn" type="button">刷新</button>' +
-                    '<div class="intel-page-list"></div>' +
-                '</section>' +
                 '<main class="intel-reader">' +
                     '<div class="intel-status"></div>' +
                     '<article class="intel-content"></article>' +
@@ -84,17 +78,44 @@ var IntelligencePanel = (function() {
                 '<footer class="intel-footer">' +
                     '<button class="intel-prev-btn" type="button" title="上一页" aria-label="上一页"><span class="intel-arrow-left"></span></button>' +
                     '<button class="intel-next-btn" type="button" title="下一页" aria-label="下一页"><span class="intel-arrow-right"></span></button>' +
-                    '<div class="intel-page-indicator"></div>' +
+                    '<div class="intel-page-jumper">' +
+                        '<button class="intel-page-indicator" type="button" title="点击展开页码列表" aria-haspopup="listbox" aria-expanded="false">' +
+                            '<span class="intel-page-current">1</span>' +
+                            '<span class="intel-page-sep">/</span>' +
+                            '<span class="intel-page-total">0</span>' +
+                            '<span class="intel-page-unit">页</span>' +
+                            '<span class="intel-page-chevron" aria-hidden="true"></span>' +
+                        '</button>' +
+                        '<div class="intel-page-strip" hidden role="listbox" aria-label="页码列表">' +
+                            '<div class="intel-page-list"></div>' +
+                        '</div>' +
+                    '</div>' +
                     '<button class="intel-toggle-btn" type="button">密文视图</button>' +
                 '</footer>' +
+                // ── DEV-ONLY 浮窗：absolute 定位，作为 .intel-shell 的子节点跟随 shell 的
+                //    transform:scale，这样所有视口下相对 catalog/footer 的位置都稳定。
+                //    脱离 grid 流，dev/prod 模式下 reader/header/footer 几何完全一致。
+                //    正式版只需在 createDOM 阶段不挂载该 aside（或 _debugMode=false 时）即可，
+                //    无需移除任何 CSS 规则、无需重排 .intel-shell 的 grid template。
+                '<aside class="intel-devbar" hidden role="complementary" aria-label="开发参数">' +
+                    '<div class="intel-dev-label">DEV · 测试参数</div>' +
+                    '<div class="intel-field-row">' +
+                        '<label class="intel-field">收集值<input class="intel-value-input" type="number" min="0"></label>' +
+                        '<label class="intel-field">解密等级<input class="intel-decrypt-input" type="number" min="0"></label>' +
+                    '</div>' +
+                    '<button class="intel-refresh-btn" type="button">刷新</button>' +
+                '</aside>' +
             '</div>';
 
         _refs = {
-            itemSelect: _el.querySelector('.intel-item-select'),
+            devbar: _el.querySelector('.intel-devbar'),
             valueInput: _el.querySelector('.intel-value-input'),
             decryptInput: _el.querySelector('.intel-decrypt-input'),
             refreshBtn: _el.querySelector('.intel-refresh-btn'),
             pageList: _el.querySelector('.intel-page-list'),
+            pageStrip: _el.querySelector('.intel-page-strip'),
+            pageCurrent: _el.querySelector('.intel-page-current'),
+            pageTotal: _el.querySelector('.intel-page-total'),
             icon: _el.querySelector('.intel-icon'),
             iconPlaceholder: _el.querySelector('.intel-icon-placeholder'),
             name: _el.querySelector('.intel-name'),
@@ -113,19 +134,11 @@ var IntelligencePanel = (function() {
             catalogCount: _el.querySelector('.intel-catalog-count')
         };
 
-        if (_refs.itemSelect) {
-            _refs.itemSelect.addEventListener('change', function() {
-                _currentItemName = _refs.itemSelect.value || _currentItemName;
-                var entry = _catalogByName[_currentItemName];
-                if (entry) {
-                    _currentValue = entry.maxValue || 0;
-                    _refs.valueInput.value = String(_currentValue);
-                }
-                _selectedPage = 0;
-                if (_bundleByName[_currentItemName]) applyCurrentItemFromBundle();
-                else requestSnapshot();
-            });
-        }
+        _refs.icon.addEventListener('error', function() {
+            _refs.icon.removeAttribute('src');
+            _refs.icon.style.display = 'none';
+            _refs.iconPlaceholder.style.display = '';
+        });
         _refs.valueInput.addEventListener('change', readInputsAndRefresh);
         _refs.decryptInput.addEventListener('change', readInputsAndRefresh);
         _refs.refreshBtn.addEventListener('click', readInputsAndRefresh);
@@ -137,6 +150,14 @@ var IntelligencePanel = (function() {
         });
         _refs.closeBtn.addEventListener('click', doClose);
         _refs.catalogToggle.addEventListener('click', toggleCatalogDrawer);
+
+        // 显式 click toggle —— 不挂 hover，避免「只想点 prev/next」的玩家被误触发。
+        // 不依赖 input 输入路径（WebView2 + ghost-input 架构下 input typing 不可靠）。
+        _refs.pageIndicator.addEventListener('click', function(e) {
+            e.stopPropagation();
+            togglePageStrip();
+        });
+        _refs.pageStrip.addEventListener('click', function(e) { e.stopPropagation(); });
 
         return _el;
     }
@@ -157,6 +178,7 @@ var IntelligencePanel = (function() {
         _debugMode = initData.debug === true || initData.mode === 'dev';
         if (_debugMode) _el.classList.add('is-debug');
         else _el.classList.remove('is-debug');
+        _refs.devbar.hidden = !_debugMode;
 
         _refs.valueInput.value = String(_currentValue);
         _refs.decryptInput.value = String(_decryptLevel);
@@ -171,11 +193,15 @@ var IntelligencePanel = (function() {
             applyCurrentItemFromBundle();
         });
         bindScaleWatcher();
+        bindKeyboardAndOutsideClick();
         scheduleScaleUpdate();
     }
 
     function onClose() {
         unbindScaleWatcher();
+        unbindKeyboardAndOutsideClick();
+        _pagePopupOpen = false;
+        _pending = {};
     }
 
     function readInputsAndRefresh() {
@@ -265,26 +291,9 @@ var IntelligencePanel = (function() {
     }
 
     function populateCatalog() {
-        var select = _refs.itemSelect;
-        if (!select) {
-            if (!_catalogByName[_currentItemName] && _catalog.length) {
-                _currentItemName = _catalog[0].name;
-            }
-            renderCatalogPanel();
-            return;
-        }
-        select.innerHTML = '';
-        for (var i = 0; i < _catalog.length; i++) {
-            var item = _catalog[i];
-            var opt = document.createElement('option');
-            opt.value = item.name;
-            opt.textContent = item.index + ' · ' + item.name + ' (' + item.pageCount + ')';
-            select.appendChild(opt);
-        }
         if (!_catalogByName[_currentItemName] && _catalog.length) {
             _currentItemName = _catalog[0].name;
         }
-        select.value = _currentItemName;
         renderCatalogPanel();
     }
 
@@ -435,7 +444,6 @@ var IntelligencePanel = (function() {
             _currentItemName = nextName;
             _selectedPage = 0;
             _showPlain = true;
-            if (_refs.itemSelect) _refs.itemSelect.value = _currentItemName;
             if (_bundleByName[_currentItemName]) applyCurrentItemFromBundle();
             else requestSnapshot();
         });
@@ -479,6 +487,7 @@ var IntelligencePanel = (function() {
             btn.addEventListener('click', function(e) {
                 _selectedPage = Number(e.currentTarget.getAttribute('data-index')) || 0;
                 _showPlain = true;
+                closePageStrip();
                 renderPageList();
                 renderPage();
             });
@@ -493,14 +502,18 @@ var IntelligencePanel = (function() {
 
         if (!page) {
             _refs.status.textContent = '没有可显示的情报页';
-            _refs.pageIndicator.textContent = '0 / 0';
+            _refs.pageCurrent.textContent = '0';
+            _refs.pageTotal.textContent = '0';
+            _refs.pageIndicator.disabled = true;
             _refs.toggleBtn.disabled = true;
             _refs.prevBtn.disabled = true;
             _refs.nextBtn.disabled = true;
             return;
         }
 
-        _refs.pageIndicator.textContent = (_selectedPage + 1) + ' / ' + pages.length + ' 页';
+        _refs.pageIndicator.disabled = pages.length <= 1;
+        _refs.pageCurrent.textContent = String(_selectedPage + 1);
+        _refs.pageTotal.textContent = String(pages.length);
         _refs.prevBtn.disabled = _selectedPage <= 0;
         _refs.nextBtn.disabled = _selectedPage >= pages.length - 1;
 
@@ -551,6 +564,19 @@ var IntelligencePanel = (function() {
         if (next < 0 || next >= pages.length) return;
         _selectedPage = next;
         _showPlain = true;
+        closePageStrip();
+        renderPageList();
+        renderPage();
+    }
+
+    function jumpPage(targetIndex) {
+        var pages = getPages();
+        if (!pages.length) return;
+        var clamped = Math.max(0, Math.min(pages.length - 1, targetIndex));
+        if (clamped === _selectedPage) return;
+        _selectedPage = clamped;
+        _showPlain = true;
+        closePageStrip();
         renderPageList();
         renderPage();
     }
@@ -658,6 +684,72 @@ var IntelligencePanel = (function() {
         Bridge.send({ type: 'panel', cmd: 'close', panel: 'intelligence' });
     }
 
+    function togglePageStrip() {
+        if (_pagePopupOpen) closePageStrip();
+        else openPageStrip();
+    }
+
+    function openPageStrip() {
+        if (!getPages().length) return;
+        if (_pagePopupOpen) return;
+        _pagePopupOpen = true;
+        _refs.pageStrip.hidden = false;
+        _refs.pageIndicator.setAttribute('aria-expanded', 'true');
+        // 把三角顶点对准 indicator 几何中心。strip 锚到 jumper 左边沿，所以
+        // 三角的 X 坐标就是 indicator 中心相对 jumper 左边沿的偏移。
+        var indicatorRect = _refs.pageIndicator.getBoundingClientRect();
+        var jumperRect = _refs.pageIndicator.parentElement.getBoundingClientRect();
+        var triangleX = indicatorRect.left + indicatorRect.width / 2 - jumperRect.left;
+        _refs.pageStrip.style.setProperty('--triangle-x', triangleX.toFixed(1) + 'px');
+        // 自动把 active 页号横向滚到中央
+        var active = _refs.pageList.querySelector('.intel-page-btn.active');
+        if (active && active.scrollIntoView) {
+            active.scrollIntoView({ block: 'nearest', inline: 'center' });
+        }
+    }
+
+    function closePageStrip() {
+        if (!_pagePopupOpen) return;
+        _pagePopupOpen = false;
+        _refs.pageStrip.hidden = true;
+        _refs.pageIndicator.setAttribute('aria-expanded', 'false');
+    }
+
+    function bindKeyboardAndOutsideClick() {
+        unbindKeyboardAndOutsideClick();
+        _keyHandler = function(e) {
+            if (!_el || !document.contains(_el)) return;
+            var target = e.target;
+            // 任何 input/textarea/contenteditable 内不拦截（虽然当前 panel 没有这类，
+            // 但保留通用兜底以防未来加搜索框等）
+            if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return;
+            var pages = getPages();
+            if (e.key === 'ArrowLeft') { e.preventDefault(); movePage(-1); }
+            else if (e.key === 'ArrowRight') { e.preventDefault(); movePage(1); }
+            else if (e.key === 'Home' && pages.length) { e.preventDefault(); jumpPage(0); }
+            else if (e.key === 'End' && pages.length) { e.preventDefault(); jumpPage(pages.length - 1); }
+            else if (e.key === 'PageUp' && pages.length) { e.preventDefault(); jumpPage(_selectedPage - 5); }
+            else if (e.key === 'PageDown' && pages.length) { e.preventDefault(); jumpPage(_selectedPage + 5); }
+            else if (e.key === 'Escape') {
+                if (_pagePopupOpen) { e.preventDefault(); closePageStrip(); }
+            }
+        };
+        _outsideClickHandler = function(e) {
+            if (!_pagePopupOpen) return;
+            if (_refs.pageIndicator.contains(e.target) || _refs.pageStrip.contains(e.target)) return;
+            closePageStrip();
+        };
+        document.addEventListener('keydown', _keyHandler);
+        document.addEventListener('mousedown', _outsideClickHandler, true);
+    }
+
+    function unbindKeyboardAndOutsideClick() {
+        if (_keyHandler) document.removeEventListener('keydown', _keyHandler);
+        if (_outsideClickHandler) document.removeEventListener('mousedown', _outsideClickHandler, true);
+        _keyHandler = null;
+        _outsideClickHandler = null;
+    }
+
     function bindScaleWatcher() {
         unbindScaleWatcher();
         window.addEventListener('resize', scheduleScaleUpdate);
@@ -729,6 +821,8 @@ var IntelligencePanel = (function() {
                 hasSnapshot: !!_snapshot,
                 catalogCount: _catalog.length,
                 catalogCollapsed: _drawerCollapsed,
+                pagePopupOpen: _pagePopupOpen,
+                devbarVisible: _refs && _refs.devbar ? !_refs.devbar.hidden : false,
                 scale: _el ? Number(_el.style.getPropertyValue('--intel-scale')) || 1 : 1
             };
         },

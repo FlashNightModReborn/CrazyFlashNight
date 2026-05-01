@@ -111,16 +111,10 @@ namespace CF7Launcher.Tasks
             int value = ParseInt(parsed["value"], 0);
             int decryptLevel = ParseInt(parsed["decryptLevel"], 0);
             string pcName = parsed.Value<string>("pcName") ?? "";
-            JObject valuesByName = parsed["values"] as JObject;
 
             var items = new JArray();
             foreach (IntelligenceItem item in _catalog)
-            {
-                int itemValue = valuesByName != null && valuesByName[item.Name] != null
-                    ? ParseInt(valuesByName[item.Name], value)
-                    : value;
-                items.Add(BuildItemSnapshot(item, itemValue, decryptLevel, pcName, true, true));
-            }
+                items.Add(BuildItemSnapshot(item, value, decryptLevel, pcName, true));
 
             var resp = BaseResponse("bundle", webCallId, true);
             resp["value"] = value;
@@ -142,9 +136,9 @@ namespace CF7Launcher.Tasks
                 return;
             }
 
-            Dictionary<string, string> textMap;
+            Dictionary<string, string> probeMap;
             string textError;
-            if (!TryLoadTextMap(item, out textMap, out textError))
+            if (!TryLoadTextMap(item, out probeMap, out textError))
             {
                 RespondError(webCallId, "snapshot", textError);
                 return;
@@ -154,7 +148,7 @@ namespace CF7Launcher.Tasks
             int decryptLevel = ParseInt(parsed["decryptLevel"], 0);
             string pcName = parsed.Value<string>("pcName") ?? "";
 
-            JObject payload = BuildItemSnapshot(item, value, decryptLevel, pcName, false, false);
+            JObject payload = BuildItemSnapshot(item, value, decryptLevel, pcName, false);
 
             var resp = BaseResponse("snapshot", webCallId, true);
             resp["item"] = BuildCatalogEntry(item);
@@ -174,17 +168,12 @@ namespace CF7Launcher.Tasks
             int value,
             int decryptLevel,
             string pcName,
-            bool includeLockedText,
-            bool tolerateMissingText)
+            bool includeLockedText)
         {
+            // bundle 路径会容忍 text_missing；snapshot 已在外层提前拒了，所以这里直接消费缓存即可。
             Dictionary<string, string> textMap;
             string textError;
-            if (!TryLoadTextMap(item, out textMap, out textError))
-            {
-                if (!tolerateMissingText)
-                    throw new InvalidOperationException(textError);
-                textMap = null;
-            }
+            TryLoadTextMap(item, out textMap, out textError);
 
             JObject obj = BuildCatalogEntry(item);
             obj["value"] = value;

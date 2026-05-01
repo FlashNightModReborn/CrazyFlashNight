@@ -5491,6 +5491,7 @@ html.perf-low-effects .map-stage-backdrop::before {
 }
 
 .intel-shell {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 276px;
     grid-template-rows: 104px auto minmax(0, 1fr) 58px;
@@ -5601,43 +5602,62 @@ html.perf-low-effects .map-stage-backdrop::before {
     transform: rotate(-45deg);
 }
 
+/* DEV-ONLY 浮窗：position:absolute，作为 .intel-shell 的子节点，跟随 shell 的
+   transform:scale，所有视口下相对 catalog/footer 的位置稳定。
+   定位在 catalog 面板底部、footer 上方。选这块区域的原因：
+   (1) 不与 close-btn / catalog-toggle / footer 控件碰撞；
+   (2) 牺牲的是 catalog list 底部，dev 用户可以滚动看；
+   (3) 任意视口都不需要 fallback。
+   正式版上线时 _debugMode=false 时 createDOM 跳过该 aside DOM 挂载，
+   无需移除任何 CSS 规则，无需重排 .intel-shell 的 grid template，零迁移成本。 */
 .intel-devbar {
-    display: none;
-    grid-column: 1 / 3;
-    grid-template-columns: 74px 178px 64px minmax(0, 1fr);
-    gap: 7px;
-    align-items: center;
-    min-width: 0;
-    padding: 6px 14px;
-    background: #1b1b1b;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    border-bottom: 1px solid rgba(0,0,0,0.65);
+    position: absolute;
+    right: 18px;
+    bottom: 74px;
+    z-index: 6;
+    display: grid;
+    grid-template-columns: auto;
+    justify-items: stretch;
+    gap: 6px;
+    width: 240px;
+    padding: 8px 10px 10px;
+    background: rgba(20,20,22,0.94);
+    border: 1px solid rgba(216,182,86,0.45);
+    border-radius: 6px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.55);
+    pointer-events: auto;
 }
 
-.intelligence-panel.is-debug .intel-devbar {
-    display: grid;
+.intel-devbar[hidden] {
+    display: none;
 }
 
 .intel-dev-label {
-    color: #bfbfbf;
-    font-size: 12px;
+    color: #d8b656;
+    font-size: 11px;
     font-weight: 700;
+    letter-spacing: 0.06em;
     white-space: nowrap;
+    text-transform: uppercase;
 }
 
 .intel-field {
+    display: grid;
     gap: 4px;
     color: #cfcfcf;
     font-size: 11px;
 }
 
 .intel-field-row {
+    display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 8px;
 }
 
 .intel-field select,
 .intel-field input {
     height: 28px;
+    min-width: 0;
     color: #f4f4f4;
     background: #0f0f0f;
     border: 1px solid #3a3a3a;
@@ -5686,6 +5706,7 @@ html.perf-low-effects .map-stage-backdrop::before {
 }
 
 .intel-reader {
+    position: relative;
     display: grid;
     grid-column: 1;
     grid-row: 3;
@@ -5695,10 +5716,23 @@ html.perf-low-effects .map-stage-backdrop::before {
     margin: 16px 10px 14px 18px;
     background:
         radial-gradient(circle, rgba(0,0,0,0.11) 0 2px, transparent 2.5px) 0 0 / 25px 25px,
-        #eeeeee;
+        radial-gradient(rgba(80,55,20,0.05) 1px, transparent 1.2px) 0 0 / 3px 3px,
+        radial-gradient(ellipse at 50% 50%, #f1ece0 0%, #e6dcc6 100%);
     border-radius: 9px;
-    box-shadow: 0 1px 0 rgba(255,255,255,0.88) inset;
+    box-shadow:
+        0 1px 0 rgba(255,255,255,0.88) inset,
+        inset 0 0 48px rgba(80,55,20,0.20);
     overflow: hidden;
+}
+
+.intel-reader::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(180deg, rgba(80,55,20,0.10), transparent 18%, transparent 82%, rgba(80,55,20,0.10));
+    border-radius: inherit;
 }
 
 .intel-catalog-panel {
@@ -5940,6 +5974,7 @@ html.perf-low-effects .map-stage-backdrop::before {
 }
 
 .intel-footer {
+    position: relative;
     display: grid;
     grid-column: 1;
     grid-row: 4;
@@ -6008,10 +6043,157 @@ html.perf-low-effects .map-stage-backdrop::before {
     background: #1e1e1e;
 }
 
+/* jumper：包裹 indicator + strip，作为 strip 的定位上下文（保证 strip 锚在 indicator 中心）。 */
+.intel-page-jumper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-self: start;
+}
+
+/* indicator 是显式 click toggle 按钮，不挂 hover-open（避免 prev/next 旁边误触发）。
+   外观仿 PDF reader「1 / 5 页 ▾」，chevron 提示「可点击展开」。 */
 .intel-page-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 38px;
+    padding: 0 14px;
     color: #fff;
-    text-align: left;
-    font-size: 25px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    font-size: 20px;
     font-weight: 500;
-    text-shadow: 2px 2px 0 rgba(0,0,0,0.82);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.78);
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.intel-page-indicator:hover:not(:disabled) {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.22);
+}
+
+.intel-page-indicator[aria-expanded="true"] {
+    background: rgba(216,182,86,0.14);
+    border-color: rgba(216,182,86,0.55);
+}
+
+.intel-page-indicator:disabled {
+    color: #888;
+    cursor: default;
+}
+
+.intel-page-current {
+    min-width: 1.6em;
+    text-align: right;
+    color: #fff;
+    font-weight: 700;
+}
+
+.intel-page-sep,
+.intel-page-total {
+    color: #cfcfcf;
+    font-weight: 500;
+    opacity: 0.78;
+}
+
+.intel-page-sep {
+    margin: 0 1px;
+    opacity: 0.55;
+}
+
+.intel-page-total {
+    min-width: 1.6em;
+    text-align: left;
+}
+
+.intel-page-unit {
+    margin-left: 4px;
+    color: #b8b8b8;
+    font-weight: 400;
+    opacity: 0.85;
+}
+
+.intel-page-chevron {
+    width: 0;
+    height: 0;
+    margin-left: 6px;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #c8c8c8;
+    transition: transform 0.15s ease;
+    opacity: 0.7;
+}
+
+.intel-page-indicator[aria-expanded="true"] .intel-page-chevron {
+    transform: rotate(180deg);
+    opacity: 1;
+}
+
+.intel-page-indicator:disabled .intel-page-chevron {
+    visibility: hidden;
+}
+
+/* 横向 page strip：仅 click toggle 触发，悬浮在 indicator 上方。
+   锚到 indicator 左边沿（不是 center），沿 footer 1fr 区域自然向右延伸 ——
+   center anchor 在 indicator 靠左时会把 strip 左半截推到 panel 之外，scrollbar 不可达。
+   max-width 给到能容纳 30 页（最长情报「幻层残响」）不出滚动条的尺寸。 */
+.intel-page-strip {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 10px);
+    z-index: 6;
+    width: max-content;
+    max-width: 900px;
+    padding: 6px 8px;
+    background: rgba(20,20,22,0.96);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 4px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.55);
+    pointer-events: auto;
+}
+
+.intel-page-strip[hidden] {
+    display: none;
+}
+
+/* 小三角连接 indicator 与 strip，明示从属关系。
+   --triangle-x 在 openPageStrip 时由 JS 写入，对准 indicator 几何中心；
+   未注入时 fallback 到 50% 兼容静态预览。 */
+.intel-page-strip::after {
+    content: "";
+    position: absolute;
+    left: var(--triangle-x, 50%);
+    bottom: -6px;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid rgba(20,20,22,0.96);
+    filter: drop-shadow(0 1px 0 rgba(255,255,255,0.18));
+}
+
+.intel-page-strip .intel-page-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 3px;
+    max-width: 884px;
+    margin: 0;
+    padding: 0 2px 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.intel-page-strip .intel-page-btn {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    line-height: 26px;
+    font-size: 12px;
 }
