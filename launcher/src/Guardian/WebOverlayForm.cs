@@ -2982,9 +2982,23 @@ namespace CF7Launcher.Guardian
                 case "checkout":
                 case "claim":
                 case "saveCart":
-                case "tooltip":
                     LogManager.Log("[Panel] Routing cmd=" + cmd + " to ShopTask, _shopTask=" + (_shopTask != null ? "ok" : "NULL"));
                     if (_shopTask != null) _shopTask.HandleWebRequest(cmd, parsed);
+                    break;
+                case "tooltip":
+                    {
+                        string panel = parsed.Value<string>("panel") ?? "";
+                        if (panel == "intelligence")
+                        {
+                            LogManager.Log("[Panel] Routing cmd=tooltip to IntelligenceTask, _intelligenceTask=" + (_intelligenceTask != null ? "ok" : "NULL"));
+                            if (_intelligenceTask != null) _intelligenceTask.HandleWebRequest(cmd, parsed);
+                        }
+                        else
+                        {
+                            LogManager.Log("[Panel] Routing cmd=tooltip to ShopTask, _shopTask=" + (_shopTask != null ? "ok" : "NULL"));
+                            if (_shopTask != null) _shopTask.HandleWebRequest(cmd, parsed);
+                        }
+                    }
                     break;
                 case "snapshot":
                 case "navigate":
@@ -2992,6 +3006,7 @@ namespace CF7Launcher.Guardian
                 case "enter":
                 case "jump_frame":
                 case "catalog":
+                case "state":
                 case "bundle":
                     {
                         string panel = parsed.Value<string>("panel") ?? "";
@@ -3120,6 +3135,7 @@ namespace CF7Launcher.Guardian
             if (_shopTask != null) _shopTask.ClearPending();
             if (_mapTask != null) _mapTask.ClearPending();
             if (_stageSelectTask != null) _stageSelectTask.ClearPending();
+            if (_intelligenceTask != null) _intelligenceTask.ClearPending();
         }
 
         public void OnSocketReconnected()

@@ -163,6 +163,7 @@
         <div id="panel-content"></div>
     </div>
 </div>
+<div id="panel-tooltip"></div>
 
 <script>
 (function() {
@@ -187,6 +188,7 @@
 </script>
 <script src="../../bridge.js"></script>
 <script src="../../panels.js"></script>
+<script src="../../tooltip.js"></script>
 <script src="../../minigames/shared/dev/harness-base.js"></script>
 <script>
 window.Icons = {
@@ -221,6 +223,15 @@ window.Icons = {
     }
 
     var fixtures = buildFixtures();
+    var runtimeValues = {
+        '资料': 99,
+        '酒保线报：黑铁会崛起于乡间': 1,
+        '幻层残响': 6,
+        '黑铁会的秘密情报书': 3,
+        '缺图记录': 1
+    };
+    var runtimeDecryptLevel = 10;
+    var runtimePcName = '测试玩家';
 
     var host = window.IntelligenceHarnessHost = {
         sentMessages: [],
@@ -245,17 +256,20 @@ window.Icons = {
             var itemName = options.itemName || itemSelect.value || '资料';
             var value = options.value != null ? options.value : Number(valueInput.value);
             var decryptLevel = options.decryptLevel != null ? options.decryptLevel : Number(decryptInput.value);
+            var mode = options.mode || 'dev';
+            var debug = options.debug != null ? options.debug : mode === 'dev';
             itemSelect.value = itemName;
             valueInput.value = String(value);
             decryptInput.value = String(decryptLevel);
             if (Panels.getActive && Panels.getActive() === 'intelligence') Panels.close();
             Panels.open('intelligence', {
-                mode: options.mode || 'dev',
+                mode: mode,
+                source: options.source || (mode === 'prod' ? 'runtime' : 'harness'),
                 itemName: itemName,
                 value: isNaN(value) ? 0 : value,
                 decryptLevel: isNaN(decryptLevel) ? 0 : decryptLevel,
                 pcName: options.pcName || '测试玩家',
-                debug: options.debug !== false
+                debug: debug
             });
             statusEl.textContent = 'Opened ' + itemName + ' value=' + value + ' decrypt=' + decryptLevel;
         },
@@ -269,7 +283,50 @@ window.Icons = {
                 host.closeCount++;
                 return;
             }
-            if (message.cmd === 'bundle') {
+            if (message.cmd === 'state') {
+                setTimeout(function() {
+                    window.chrome.webview.__dispatch({
+                        type: 'panel_resp',
+                        panel: 'intelligence',
+                        cmd: 'state',
+                        callId: message.callId,
+                        success: true,
+                        items: Object.keys(fixtures).map(function(name) {
+                            return buildStatePayload(fixtures[name], runtimeValues[name] || 0);
+                        }),
+                        values: runtimeValues,
+                        decryptLevel: runtimeDecryptLevel,
+                        pcName: runtimePcName
+                    });
+                }, 8);
+            } else if (message.cmd === 'tooltip') {
+                var tooltipItem = fixtures[message.itemName];
+                setTimeout(function() {
+                    if (!tooltipItem || message.itemName === '缺图记录') {
+                        window.chrome.webview.__dispatch({
+                            type: 'panel_resp',
+                            panel: 'intelligence',
+                            cmd: 'tooltip',
+                            callId: message.callId,
+                            success: false,
+                            itemName: message.itemName,
+                            error: tooltipItem ? 'fixture_tooltip_missing' : 'item_not_found'
+                        });
+                        return;
+                    }
+                    window.chrome.webview.__dispatch({
+                        type: 'panel_resp',
+                        panel: 'intelligence',
+                        cmd: 'tooltip',
+                        callId: message.callId,
+                        success: true,
+                        itemName: message.itemName,
+                        displayname: tooltipItem.name,
+                        descHTML: '<FONT COLOR="#FFCC00"><B><U>情报注释</U></B></FONT><BR>' + tooltipItem.name + ' 的 AS2 注释正文。',
+                        introHTML: '<FONT color=\'#99ddff\'>收集品 · 情报</FONT><br>来自运行态 TooltipComposer。'
+                    });
+                }, 8);
+            } else if (message.cmd === 'bundle') {
                 var bundleValue = Number(message.value);
                 if (isNaN(bundleValue)) bundleValue = 0;
                 setTimeout(function() {
@@ -309,8 +366,11 @@ window.Icons = {
             } else if (message.cmd === 'snapshot') {
                 var item = fixtures[message.itemName] || fixtures['资料'];
                 var value = Number(message.value);
-                if (isNaN(value)) value = item.maxValue;
-                var payload = buildItemPayload(item, value, Number(message.decryptLevel) || 0, message.pcName || '', false);
+                if (isNaN(value)) value = runtimeValues[item.name] != null ? runtimeValues[item.name] : item.maxValue;
+                var decryptLevel = Number(message.decryptLevel);
+                if (isNaN(decryptLevel)) decryptLevel = runtimeDecryptLevel;
+                var pcName = message.pcName || runtimePcName;
+                var payload = buildItemPayload(item, value, decryptLevel, pcName, false);
                 setTimeout(function() {
                     window.chrome.webview.__dispatch({
                         type: 'panel_resp',
@@ -337,6 +397,23 @@ window.Icons = {
             }
         }
     };
+
+    function buildStatePayload(item, value) {
+        value = Math.max(0, Math.min(Number(value) || 0, item.maxValue));
+        var unlocked = 0;
+        for (var i = 0; i < item.pages.length; i++) {
+            if (item.pages[i].value <= value) unlocked++;
+        }
+        return {
+            name: item.name,
+            iconName: item.iconName || item.name,
+            index: item.index,
+            maxValue: item.maxValue,
+            pageCount: item.pages.length,
+            value: value,
+            unlockedCount: unlocked
+        };
+    }
 
     function buildItemPayload(item, value, decryptLevel, pcName, includeLockedText) {
         var pages = item.pages.map(function(page) {

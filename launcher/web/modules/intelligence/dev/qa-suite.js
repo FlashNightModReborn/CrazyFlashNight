@@ -35,6 +35,83 @@ var IntelligenceHarnessQA = (function() {
                     return 'default rendered';
                 });
             }],
+            ['runtime-open-state-snapshot-no-bundle', 'runtime open uses state then one snapshot and never requests bundle', function() {
+                var start = host.sentMessages.length;
+                host.open({ itemName: '资料', mode: 'prod', source: 'runtime', debug: false });
+                return waitReady(api).then(function(state) {
+                    var sent = host.sentMessages.slice(start).filter(isIntelPanelMessage);
+                    var cmds = sent.map(function(m) { return m.cmd; });
+                    api.assertEqual(state.runtime, true, 'runtime flag');
+                    api.assert(!state.devbarVisible, 'devbar hidden in runtime');
+                    api.assert(cmds.indexOf('state') >= 0, 'runtime requests state');
+                    api.assert(cmds.indexOf('snapshot') >= 0, 'runtime requests snapshot');
+                    api.assert(cmds.indexOf('bundle') < 0, 'runtime does not request bundle');
+                    api.assert(cmds.indexOf('state') < cmds.indexOf('snapshot'), 'state precedes snapshot');
+                    api.assertEqual(countCmd(sent, 'snapshot'), 1, 'one snapshot on open');
+                    api.assertEqual(state.pageCount, 18, 'default snapshot loaded after state');
+                    return 'runtime open ok';
+                });
+            }],
+            ['runtime-catalog-progress-values', 'runtime catalog shows mixed per-item progress values from state packet', function() {
+                host.open({ itemName: '资料', mode: 'prod', source: 'runtime', debug: false });
+                return waitReady(api).then(function() {
+                    var longItem = findCatalogButton('幻层残响');
+                    var dataItem = findCatalogButton('资料');
+                    api.assert(!!longItem && !!dataItem, 'catalog items exist');
+                    api.assert(longItem.querySelector('.intel-catalog-meta').textContent.indexOf('12 / 30') >= 0, 'long item uses runtime value 6');
+                    api.assert(dataItem.querySelector('.intel-catalog-meta').textContent.indexOf('18 / 18') >= 0, '资料 item uses runtime value 99');
+                    return 'runtime progress ok';
+                });
+            }],
+            ['runtime-click-requests-selected-snapshot-only', 'runtime catalog click requests only selected item snapshot and updates reader', function() {
+                host.open({ itemName: '资料', mode: 'prod', source: 'runtime', debug: false });
+                return waitReady(api).then(function() {
+                    var start = host.sentMessages.length;
+                    var longItem = findCatalogButton('幻层残响');
+                    longItem.click();
+                    return api.waitFor(function() {
+                        var state = IntelligencePanel._debugGetState();
+                        return state.itemName === '幻层残响' && state.pageCount === 30 ? state : null;
+                    }, 1000, 'runtime catalog switch').then(function(state) {
+                        var sent = host.sentMessages.slice(start).filter(isIntelPanelMessage);
+                        api.assertEqual(countCmd(sent, 'snapshot'), 1, 'one snapshot after click');
+                        api.assertEqual(countCmd(sent, 'bundle'), 0, 'no bundle after click');
+                        api.assertEqual(countCmd(sent, 'state'), 0, 'no state after item click');
+                        api.assertEqual(sent[0].itemName, '幻层残响', 'snapshot requests clicked item only');
+                        api.assertEqual(state.value, 6, 'reader value comes from runtime per-item value');
+                        return 'runtime click ok';
+                    });
+                });
+            }],
+            ['runtime-tooltip-basic-rich-and-failure', 'runtime catalog hover shows basic tooltip, async AS2-rich tooltip, and failure fallback', function() {
+                host.open({ itemName: '资料', mode: 'prod', source: 'runtime', debug: false });
+                return waitReady(api).then(function() {
+                    var item = findCatalogButton('酒保线报：黑铁会崛起于乡间');
+                    api.assert(!!item, 'hover item exists');
+                    item.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true, clientX: 260, clientY: 220 }));
+                    var tt = document.getElementById('panel-tooltip');
+                    api.assert(tt && tt.style.display === 'block', 'tooltip shown immediately');
+                    api.assert(tt.textContent.indexOf('加载注释') >= 0, 'basic loading tooltip shown');
+                    return api.waitFor(function() {
+                        return tt.textContent.indexOf('情报注释') >= 0 ? true : null;
+                    }, 1000, 'rich tooltip').then(function() {
+                        api.assert(!!tt.querySelector('u'), 'AS2 underline converted');
+                        api.assert(!!tt.querySelector('span[style]'), 'AS2 font color converted');
+                        item.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+                        api.assert(tt.style.display === 'none', 'tooltip hides on leave');
+
+                        var missing = findCatalogButton('缺图记录');
+                        missing.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true, clientX: 300, clientY: 260 }));
+                        return api.waitFor(function() {
+                            return tt.textContent.indexOf('注释暂不可用') >= 0 ? true : null;
+                        }, 1000, 'tooltip failure fallback').then(function() {
+                            api.assert(tt.textContent.indexOf('缺图记录') >= 0, 'basic tooltip remains useful after failure');
+                            missing.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+                            return 'runtime tooltip ok';
+                        });
+                    });
+                });
+            }],
             ['prod-mode-hides-devbar', 'production mode hides dev bar and frees vertical space for reader', function() {
                 host.open({ itemName: '资料', value: 99, decryptLevel: 10, debug: false, mode: 'prod' });
                 return waitReady(api).then(function(state) {
@@ -236,19 +313,16 @@ var IntelligenceHarnessQA = (function() {
                 });
             }],
             ['page-indicator-disabled-when-single-page', 'indicator disabled when only one page (chevron hidden, click is no-op)', function() {
-                host.open({ itemName: '酒保线报：黑铁会崛起于乡间', value: 1, decryptLevel: 0 });
+                host.open({ itemName: '缺图记录', value: 1, decryptLevel: 0 });
                 return waitReady(api).then(function() {
                     var indicator = document.querySelector('.intel-page-indicator');
                     var state = IntelligencePanel._debugGetState();
-                    if (state.pageCount === 1) {
-                        api.assert(indicator.disabled, 'indicator disabled at single-page item');
-                        var chevronVis = window.getComputedStyle(document.querySelector('.intel-page-chevron')).visibility;
-                        api.assertEqual(chevronVis, 'hidden', 'chevron hidden when disabled');
-                        indicator.click();
-                        api.assert(document.querySelector('.intel-page-strip').hidden, 'click is no-op when disabled');
-                    } else {
-                        api.assert(!indicator.disabled, 'indicator enabled with multiple pages');
-                    }
+                    api.assertEqual(state.pageCount, 1, 'single-page fixture loaded');
+                    api.assert(indicator.disabled, 'indicator disabled at single-page item');
+                    var chevronVis = window.getComputedStyle(document.querySelector('.intel-page-chevron')).visibility;
+                    api.assertEqual(chevronVis, 'hidden', 'chevron hidden when disabled');
+                    indicator.click();
+                    api.assert(document.querySelector('.intel-page-strip').hidden, 'click is no-op when disabled');
                     return 'disabled state ok';
                 });
             }],
@@ -427,9 +501,9 @@ var IntelligenceHarnessQA = (function() {
                 return chain.then(function() { return 'viewports ok'; });
             }],
             ['stale-vars-fit', 'panel ignores stale viewport css vars and fits actual parent', function() {
+                host.setViewport('1366x768');
                 document.documentElement.style.setProperty('--panel-w', '2400px');
                 document.documentElement.style.setProperty('--panel-h', '1400px');
-                host.setViewport('1366x768');
                 host.open({ itemName: '黑铁会的秘密情报书', value: 99, decryptLevel: 10 });
                 return waitReady(api).then(function() {
                     return api.wait(60).then(function() {
@@ -480,6 +554,18 @@ var IntelligenceHarnessQA = (function() {
             if (buttons[i].getAttribute('data-name') === name) return buttons[i];
         }
         return null;
+    }
+
+    function isIntelPanelMessage(message) {
+        return message && message.panel === 'intelligence' && message.cmd;
+    }
+
+    function countCmd(messages, cmd) {
+        var count = 0;
+        for (var i = 0; i < messages.length; i++) {
+            if (messages[i].cmd === cmd) count++;
+        }
+        return count;
     }
 
     function assertNear(api, actual, expected, tolerance, label) {

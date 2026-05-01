@@ -423,7 +423,7 @@ launcher/
 │       ├── help.js / help-panel.js        帮助系统（顶层入口 + 面板骨架）
 │       ├── map-panel.js / map-panel-data.js / map-fit-presets.js / map-hud.js 地图系统（正式 map panel + 静态页面/热点数据 + filter fit preset 表 + 右上角常驻 HUD）
 │       ├── stage-select-data.js / stage-select-panel.js 选关界面 Stage 2 runtime panel（Panels.register('stage-select')）
-│       ├── intelligence-panel.js          情报详情 Web 测试面板（Panels.register('intelligence')；数据由 C# IntelligenceTask 提供）
+│       ├── intelligence-panel.js          情报详情 Web 面板（Panels.register('intelligence')；runtime 状态由 AS2 提供，正文由 C# IntelligenceTask 按需读取）
 │       ├── map/
 │       │   └── dev/
 │       │       ├── harness.html           地图 panel browser harness + QA suite
@@ -628,7 +628,7 @@ powershell -File run_tests.ps1
   - 从 `flashswf/UI/选关界面/LIBRARY/选关界面UI/选关界面 1024&#042576.xml` 导出 `StageSelectData` 所用 manifest；Stage 2 通过 `StageSelectTask` / `StageSelectPanelService` 接入真实解锁 snapshot、`StageInfoDict` 关卡简介/限制词条/任务提示数据、真实进关、runtime 页内 frame 同步与关闭语义。关卡预览按原版链路导入：外部 PNG → `Symbol 3274` 内部命名帧 → 默认预览帧，layout audit 要求 `previewMissing=0`
   - Stage 2 正式入口替换记录见 `docs/选关界面-AS2入口替换交接.md`：AS2 `openWebStageSelect` 通过 `panel_request stage-select` 传入 `source/frameLabel`，C# 固化 runtime 初始化，`jump_frame` 同步 AS2 `_root.关卡地图帧值`，close 回调 `stageSelectPanelClose`；runtime 布局隐藏测试标题/fixture/dev 控件，16 个 frame tab 收进可展开区域菜单，场景门替换覆盖基地门口、车库、地下 2 层、停机坪、联合大学左右出口，并保留 Flash fallback
 - **Intelligence panel harness**：`node tools/run-intelligence-harness.js --browser edge`
-  - 打开 `web/modules/intelligence/dev/harness.html`，mock `bundle` 全量包协议并保留 `catalog` / `snapshot` 兼容响应，覆盖 Flash 风格阅读窗、右侧可折叠情报目录、物品 XML `iconName` 图标解析、legacy 标签清洗、加密切换、缺图占位、长文本滚动与 1024×576 / 1366×768 / 1600×900 / 1920×1080 视口 hit-test
+  - 打开 `web/modules/intelligence/dev/harness.html`，同时 mock 正式 runtime 的 `state → snapshot(itemName)` 按需正文链路与 dev `bundle` 全量包兼容路径；覆盖运行态无 `bundle` 请求、右侧可折叠情报目录、AS2 tooltip 富文本刷新、物品 XML `iconName` 图标解析、legacy 标签清洗、加密切换、缺图占位、长文本滚动与 1024×576 / 1366×768 / 1600×900 / 1920×1080 视口 hit-test
 - **Stage Select FFDec visual audit**：`powershell -ExecutionPolicy Bypass -File tools/run-stage-select-visual-audit.ps1`
   - 通过 `tools/ffdec/ffdec.jar` 导出 `DefineSprite 330`，按 FFDec SVG 舞台原点裁成 1024×576 原帧，再用无头 Edge 抓 Web 舞台截图，输出 `tmp/stage-select-visual-audit/sheets/*-compare.png` 三联图和 `visual-audit-index.json`
   - 首次运行前先 `npm --prefix launcher/perf ci --ignore-scripts`；工具会优先使用 Adobe Animate 2024 / Flash CS6 自带 JRE，坐标参照 `ffdecFrameIndex` 字段（首帧特殊为 1，其余为 `sourceFrameIndex + 1`）
@@ -1311,7 +1311,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 - **help**（游戏帮助）: 纯 Web 侧 Markdown 帮助面板，不触发 Flash 暂停恢复
 - **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-panel-data.js` + `web/modules/map-fit-presets.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面均已切到 `assembled` 场景拼接模式，右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、filter-fit 离线调优 `tools/tune-map-filter-fit.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`，并在紧凑视口下自动缩放舞台、按 page/filter preset 做二次 content-fit；右上角常驻 HUD 由 `web/modules/map-hud.js` 消费同一份 `MapPanelData` + UiData `mm/mh`，只显示当前区块高亮与固定 beacon，点击后打开 map panel
 - **stage-select**（选关界面 Stage 2 runtime）: `web/modules/stage-select-panel.js` + generated `web/modules/stage-select-data.js`；可通过 Native HUD “其他 → 选关测试” 的 `STAGE_SELECT_TEST` 打开，也可由 AS2 场景门 `openWebStageSelect` → `panel_request stage-select` 正式打开。支持 16 个 frame label、167 个源 XML 选关按钮实例、152 个 Web 运行时去重渲染实例、fixture 锁定/任务/挑战模式、按外部 PNG / 内部命名帧 / 默认帧回退的 hover 预览、browser harness 和 FFDec/Web 视觉对照审计；runtime 下使用 `stageSelectSnapshot` 读取真实解锁/挑战状态，难度按钮通过 `stageSelectEnter` 进入已解锁关卡，`localFrame` 通过 `jump_frame` / `stageSelectJumpFrame` 同步 AS2 frame，return 类 nav 只关闭 panel。runtime 布局隐藏测试标题、fixture/dev 控件与右侧空栏，frame tab 默认收纳到可展开区域菜单。它不迁移外交 / 委托任务界面，旧 Flash `关卡地图` 保留为 fallback
-- **intelligence**（情报详情测试面板）: `web/modules/intelligence-panel.js`；阶段一仅作为开发测试入口，通过 Native HUD 或旧 Web notch 的“其他 → 情报测试” / `INTELLIGENCE_TEST` 打开，AS2 情报图标列表和正式点击链路不变。面板走 `panel/panel_resp` 的 `bundle` / `catalog` / `snapshot` / `close` 协议，由 C# `IntelligenceTask` 读取真实 `data/dictionaries/information_dictionary.xml`、`data/items/收集品_情报.xml` 与固定目录 `data/intelligence/<itemName>.txt`，Web 不直接 fetch 项目根或 `data/`。Web 侧首选 `bundle` 一次性加载全部情报元数据、物品 XML `iconName`、分页正文和加密规则，右侧渲染可折叠情报目录；点击目录只在 Web 本地切换当前情报，后续接 AS2 背包快照时再替换数据来源。图标使用 `icons.js` / `icons/manifest.json` 解析首帧图标，优先 `iconName`、再回退情报名；阅读器渲染 legacy txt 的分页、收集进度、解密/密文视图、`${PC_NAME}` 替换和 `b/strong/u/i/font[color]/br` 白名单标签；关闭时不通知 Flash。视觉第一版对齐旧 Flash 情报窗：深灰标题栏、纸张点阵阅读区、底部箭头翻页；browser harness 为 `web/modules/intelligence/dev/harness.html`
+- **intelligence**（情报详情面板）: `web/modules/intelligence-panel.js`；正式入口为 Native HUD / 旧 Web notch 主工具栏的 `情报` / `INTELLIGENCE`，打开 `mode:"prod", source:"runtime"`；开发入口 `其他 → 情报测试` / `INTELLIGENCE_TEST` 保留。正式 runtime 走 `panel/panel_resp` 的 `state` / `snapshot(itemName)` / `tooltip(itemName)` / `close` 协议：C# `IntelligenceTask` 读取真实 `data/dictionaries/information_dictionary.xml`、`data/items/收集品_情报.xml` 与固定目录 `data/intelligence/<itemName>.txt`，Flash 只返回 `_root.收集品栏.情报.toObject()`、解密等级、玩家名和 TooltipComposer 富文本，Web 不直接 fetch 项目根或 `data/`。正式打开先拉 `state` 小包合并本地 catalog，右侧目录显示每条情报独立 `value/unlockedCount/pageCount/iconName`，点击目录才请求选中项 `snapshot`；锁定页正文不下发。Dev/harness 仍保留 `bundle` / `catalog` / 显式 `snapshot(value, decryptLevel, pcName)` 兼容路径，用于第一阶段全量 fixture 和视觉回归。图标使用 `icons.js` / `icons/manifest.json` 解析首帧图标，优先 `iconName`、再回退情报名；阅读器渲染 legacy txt 的分页、收集进度、解密/密文视图、`${PC_NAME}` 替换和 `b/strong/u/i/font[color]/br` 白名单标签；目录 hover 复用 `tooltip.js` 的 `PanelTooltip.showAtMouse/followMouse/hide/updateContent`，基础 tooltip 立即显示，AS2 `intelligenceTooltip` 返回后刷新富文本。关闭时不通知 Flash。视觉对齐旧 Flash 情报窗：深灰标题栏、纸张点阵阅读区、底部箭头翻页；browser harness 为 `web/modules/intelligence/dev/harness.html`
 - **lockbox**（开锁小游戏）: `web/modules/minigames/lockbox/` 下的正式小游戏模块；支持运行时参数、browser harness、Node QA
 - **pinalign**（定位小游戏）: `web/modules/minigames/pinalign/` 下的正式小游戏模块；和 Lockbox 共用小游戏壳层与 QA 平台
 - **gobang**（五子棋小游戏）: `web/modules/minigames/gobang/` 下的正式小游戏模块；Web core 负责规则裁判，AI 经 Web→C# `gomoku_eval` 调用 `GomokuTask` / Rapfi
@@ -1338,8 +1338,8 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 
 **通用模块**：
 - `panels.js`: 面板注册/生命周期管理 (register/open/close/force_close)
-- `tooltip.js`: hover 跟随 + anchored 锚定两种模式，AS2 HTML 转换
-- `icons.js`: 物品图标 manifest 加载 + 名称→URL 解析，情报详情测试面板也复用该入口
+- `tooltip.js`: hover 跟随 + anchored 锚定两种模式，AS2 HTML 转换；商城和情报 runtime tooltip 共用
+- `icons.js`: 物品图标 manifest 加载 + 名称→URL 解析，情报详情面板也复用该入口
 - `web/modules/minigames/shared/host-bridge.js`: 小游戏 → 宿主的统一桥接
 - `web/modules/minigames/shared/minigame-shell.css`: 小游戏共享结构样式
 

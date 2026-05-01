@@ -128,6 +128,9 @@ namespace CF7Launcher.Guardian
                     break;
                 case "TASK_UI": SendGameCommand("openTaskUI"); break;
                 case "EQUIP_UI": SendGameCommand("openEquipUI"); break;
+                case "INTELLIGENCE":
+                    OpenPanel("intelligence", "{\"mode\":\"prod\",\"source\":\"runtime\",\"debug\":false}");
+                    break;
                 case "BAKE": SendGameCommand("bakeIcons"); break;
                 case "BAKE10": SendGameCommand("bakeIcons", "\"maxCount\":10"); break;
                 case "LOCKBOX_TEST":

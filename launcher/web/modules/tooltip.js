@@ -146,18 +146,29 @@ var PanelTooltip = (function() {
     function convertAS2Html(s) {
         if (!s) return '';
         return String(s)
-            .replace(/<FONT\s+COLOR='([^']+)'/gi, function(m, c) {
-                return '<span style="color:' + c + '"';
+            .replace(/<FONT\b([^>]*)>/gi, function(m, attrs) {
+                attrs = attrs || '';
+                var style = [];
+                var color = /\bCOLOR\s*=\s*(['"])(.*?)\1/i.exec(attrs);
+                if (color && /^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(color[2])) {
+                    style.push('color:' + color[2]);
+                }
+                var size = /\bSIZE\s*=\s*(['"])(.*?)\1/i.exec(attrs);
+                if (size) {
+                    var px = parseInt(size[2], 10);
+                    if (!isNaN(px) && px > 0 && px <= 96) style.push('font-size:' + px + 'px');
+                }
+                return style.length ? '<span style="' + style.join(';') + '">' : '<span>';
             })
             .replace(/<\/FONT>/gi, '</span>')
-            .replace(/<FONT\s+SIZE='([^']+)'/gi, function(m, sz) {
-                return '<span style="font-size:' + sz + 'px"';
-            })
             .replace(/<B>/gi, '<b>').replace(/<\/B>/gi, '</b>')
-            .replace(/<I>/gi, '<i>').replace(/<\/I>/gi, '</i>');
+            .replace(/<I>/gi, '<i>').replace(/<\/I>/gi, '</i>')
+            .replace(/<U>/gi, '<u>').replace(/<\/U>/gi, '</u>')
+            .replace(/<BR\s*\/?>/gi, '<br>');
     }
 
-    window.addEventListener('load', init);
+    if (document.readyState === 'loading') window.addEventListener('load', init);
+    else init();
 
     return {
         getElement: getElement,

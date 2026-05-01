@@ -114,6 +114,21 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void INTELLIGENCE_OpenPanelFallback_UsesRuntimeProdInitData()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.Dispatch("INTELLIGENCE");
+            Assert.Single(c.Posts);
+            Assert.Contains("\"panel\":\"intelligence\"", c.Posts[0]);
+            Assert.Contains("\"mode\":\"prod\"", c.Posts[0]);
+            Assert.Contains("\"source\":\"runtime\"", c.Posts[0]);
+            Assert.Contains("\"debug\":false", c.Posts[0]);
+            Assert.Equal(new[] { "intelligence" }, c.ActivePanels);
+            Assert.Equal(new[] { true }, c.StateCallbacks);
+        }
+
+        [Fact]
         public void RequestOpenPanel_Map_RoutesToOpenMapPanel()
         {
             Capture c = new Capture();

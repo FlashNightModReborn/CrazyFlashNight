@@ -235,3 +235,64 @@ _root.gameCommands["shopTooltip"] = function(params) {
     };
     _root.UI系统.商城WebView.sendResponse(resp);
 };
+
+// ========== 情报 Web 面板运行态状态 ==========
+// 正式情报 Web panel 只向 Flash 读取收集值、解密等级和玩家名；正文仍由 Launcher/C# 读取 txt。
+_root.gameCommands["intelligenceState"] = function(params) {
+    var callId = params.callId;
+    var values = {};
+    if (_root.收集品栏 != undefined && _root.收集品栏.情报 != undefined &&
+        typeof(_root.收集品栏.情报.toObject) == "function") {
+        values = _root.收集品栏.情报.toObject();
+    }
+
+    var decryptLevel = 0;
+    if (_root.主角被动技能 != undefined && _root.主角被动技能.解密 != undefined &&
+        _root.主角被动技能.解密.启用) {
+        decryptLevel = Number(_root.主角被动技能.解密.等级);
+        if (isNaN(decryptLevel)) decryptLevel = 0;
+    }
+
+    var pcName = "";
+    if (_root.角色名 != undefined) pcName = String(_root.角色名);
+
+    var resp = {
+        task: "intelligence_response",
+        callId: callId,
+        success: true,
+        values: values,
+        decryptLevel: decryptLevel,
+        pcName: pcName
+    };
+    _root.UI系统.商城WebView.sendResponse(resp);
+};
+
+// ========== 情报 Web 面板物品注释 ==========
+// 复用原 Flash 物品注释生成链路，Web 只负责显示容器和 AS2 HTML 兼容转换。
+_root.gameCommands["intelligenceTooltip"] = function(params) {
+    var callId = params.callId;
+    var itemName = String(params.itemName || "");
+    var itemData = org.flashNight.arki.item.ItemUtil.getItemData(itemName);
+    if (itemData == undefined) {
+        var errResp = { task: "intelligence_response", callId: callId, success: false, itemName: itemName, error: "item_not_found" };
+        _root.UI系统.商城WebView.sendResponse(errResp);
+        return;
+    }
+
+    var value = { level: 1 };
+    var descHTML = org.flashNight.gesh.tooltip.TooltipComposer.generateItemDescriptionText(itemData, null);
+    var introHTML = org.flashNight.gesh.tooltip.TooltipComposer.generateIntroPanelContent(null, itemData, value);
+    descHTML = descHTML.split('"').join("'");
+    introHTML = introHTML.split('"').join("'");
+
+    var resp = {
+        task: "intelligence_response",
+        callId: callId,
+        success: true,
+        itemName: itemName,
+        displayname: String(itemData.displayname || itemName),
+        descHTML: descHTML,
+        introHTML: introHTML
+    };
+    _root.UI系统.商城WebView.sendResponse(resp);
+};

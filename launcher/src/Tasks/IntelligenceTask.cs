@@ -3,18 +3,34 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using CF7Launcher.Bus;
 using CF7Launcher.Guardian;
 
 namespace CF7Launcher.Tasks
 {
     /// <summary>
-    /// Web 情报详情面板的数据源。只读取固定情报字典和 data/intelligence 文本目录。
+    /// Web 情报详情面板的数据源。
+    /// Dev 路径读取本地全量 bundle；runtime 路径用 Flash 状态小包 + C# 按需正文。
     /// </summary>
-    public sealed class IntelligenceTask
+    public sealed class IntelligenceTask : IDisposable
     {
+        private sealed class PendingRequest
+        {
+            public string WebCallId;
+            public string WebCmd;
+        }
+
+        private sealed class RuntimeState
+        {
+            public readonly Dictionary<string, int> Values = new Dictionary<string, int>();
+            public int DecryptLevel;
+            public string PcName = "";
+        }
+
         private sealed class IntelligencePage
         {
             public int Value;
@@ -36,15 +52,35 @@ namespace CF7Launcher.Tasks
         private readonly string _dictionaryPath;
         private readonly string _itemDictionaryPath;
         private readonly string _textDir;
+        private readonly Func<bool> _isClientReady;
+        private readonly Action<string> _send;
         private readonly object _lock = new object();
+        private readonly Dictionary<int, PendingRequest> _pending = new Dictionary<int, PendingRequest>();
+        private readonly Dictionary<int, Timer> _timers = new Dictionary<int, Timer>();
         private Action<string> _postToWeb;
         private Action<Action> _invokeOnUI;
         private Dictionary<string, IntelligenceItem> _items;
         private List<IntelligenceItem> _catalog;
+        private RuntimeState _runtimeState;
+        private int _seq;
+        private volatile bool _disposed;
         private readonly Dictionary<string, Dictionary<string, string>> _textCache =
             new Dictionary<string, Dictionary<string, string>>();
 
         public IntelligenceTask(string projectRoot)
+            : this(projectRoot, (Func<bool>)null, null)
+        {
+        }
+
+        public IntelligenceTask(string projectRoot, XmlSocketServer socket)
+            : this(
+                projectRoot,
+                delegate { return socket != null && socket.IsClientReady; },
+                delegate(string payload) { if (socket != null) socket.Send(payload); })
+        {
+        }
+
+        public IntelligenceTask(string projectRoot, Func<bool> isClientReady, Action<string> send)
         {
             string root = string.IsNullOrEmpty(projectRoot)
                 ? AppDomain.CurrentDomain.BaseDirectory
@@ -52,10 +88,29 @@ namespace CF7Launcher.Tasks
             _dictionaryPath = Path.Combine(root, "data", "dictionaries", "information_dictionary.xml");
             _itemDictionaryPath = Path.Combine(root, "data", "items", "收集品_情报.xml");
             _textDir = Path.Combine(root, "data", "intelligence");
+            _isClientReady = isClientReady ?? delegate { return false; };
+            _send = send ?? delegate { };
         }
 
         public void SetPostToWeb(Action<string> post) { _postToWeb = post; }
         public void SetInvoker(Action<Action> invoker) { _invokeOnUI = invoker; }
+
+        public void Dispose()
+        {
+            _disposed = true;
+            ClearPending();
+        }
+
+        public void ClearPending()
+        {
+            lock (_lock)
+            {
+                foreach (var t in _timers.Values) t.Dispose();
+                _timers.Clear();
+                _pending.Clear();
+                _runtimeState = null;
+            }
+        }
 
         public void HandleWebRequest(string cmd, JObject parsed)
         {
@@ -80,6 +135,12 @@ namespace CF7Launcher.Tasks
                     case "snapshot":
                         RespondSnapshot(webCallId, parsed);
                         break;
+                    case "state":
+                        RequestFlash(webCallId, cmd, "intelligenceState", parsed);
+                        break;
+                    case "tooltip":
+                        RequestTooltip(webCallId, parsed);
+                        break;
                     default:
                         RespondError(webCallId, cmd, "unsupported_cmd");
                         break;
@@ -90,6 +151,157 @@ namespace CF7Launcher.Tasks
                 LogManager.Log("[IntelligenceTask] failed: " + ex.Message);
                 RespondError(webCallId, cmd, "internal_error");
             }
+        }
+
+        public void HandleFlashResponse(JObject msg, Action<string> respond)
+        {
+            LogManager.Log("[IntelligenceTask] <- Flash response received");
+            int fid = msg.Value<int>("callId");
+            PendingRequest entry;
+            lock (_lock)
+            {
+                if (!_pending.TryGetValue(fid, out entry))
+                {
+                    if (respond != null) respond(null);
+                    return;
+                }
+                _pending.Remove(fid);
+                Timer timer;
+                if (_timers.TryGetValue(fid, out timer))
+                {
+                    timer.Dispose();
+                    _timers.Remove(fid);
+                }
+            }
+
+            try
+            {
+                if (entry.WebCmd == "state")
+                {
+                    ForwardStateResponse(entry.WebCallId, msg);
+                }
+                else
+                {
+                    ForwardPassThroughResponse(entry.WebCallId, entry.WebCmd, msg);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[IntelligenceTask] flash response failed: " + ex.Message);
+                RespondError(entry.WebCallId, entry.WebCmd, "internal_error");
+            }
+
+            if (respond != null) respond(null);
+        }
+
+        private void RequestTooltip(string webCallId, JObject parsed)
+        {
+            EnsureCatalogLoaded();
+            string itemName = parsed.Value<string>("itemName") ?? "";
+            if (!_items.ContainsKey(itemName))
+            {
+                RespondError(webCallId, "tooltip", "unknown_item");
+                return;
+            }
+            RequestFlash(webCallId, "tooltip", "intelligenceTooltip", parsed);
+        }
+
+        private void RequestFlash(string webCallId, string webCmd, string action, JObject parsed)
+        {
+            if (!_isClientReady())
+            {
+                RespondError(webCallId, webCmd, "disconnected");
+                return;
+            }
+
+            int fid;
+            lock (_lock)
+            {
+                fid = ++_seq;
+                _pending[fid] = new PendingRequest
+                {
+                    WebCallId = webCallId,
+                    WebCmd = webCmd
+                };
+            }
+
+            var timer = new Timer(delegate
+            {
+                if (_disposed) return;
+
+                PendingRequest entry;
+                lock (_lock)
+                {
+                    if (!_pending.TryGetValue(fid, out entry)) return;
+                    _pending.Remove(fid);
+                    _timers.Remove(fid);
+                }
+
+                RespondError(entry.WebCallId, entry.WebCmd, "timeout");
+            }, null, 10000, Timeout.Infinite);
+
+            lock (_lock) { _timers[fid] = timer; }
+
+            var flashMsg = new JObject();
+            flashMsg["task"] = "cmd";
+            flashMsg["action"] = action;
+            flashMsg["callId"] = fid;
+            foreach (var prop in parsed.Properties())
+            {
+                if (prop.Name != "type" && prop.Name != "panel" && prop.Name != "cmd" && prop.Name != "callId")
+                    flashMsg[prop.Name] = prop.Value;
+            }
+
+            string flashJson = flashMsg.ToString(Newtonsoft.Json.Formatting.None);
+            LogManager.Log("[IntelligenceTask] -> Flash: " + flashJson);
+            _send(flashJson + "\0");
+        }
+
+        private void ForwardStateResponse(string webCallId, JObject msg)
+        {
+            bool success = msg.Value<bool?>("success") ?? false;
+            if (!success)
+            {
+                RespondError(webCallId, "state", msg.Value<string>("error") ?? "flash_error");
+                return;
+            }
+
+            EnsureCatalogLoaded();
+
+            JObject rawValues = msg["values"] as JObject;
+            var state = new RuntimeState();
+            state.DecryptLevel = ParseInt(msg["decryptLevel"], 0);
+            state.PcName = msg.Value<string>("pcName") ?? "";
+
+            var items = new JArray();
+            var values = new JObject();
+            foreach (IntelligenceItem item in _catalog)
+            {
+                int value = rawValues == null ? 0 : ParseInt(rawValues[item.Name], 0);
+                value = ClampValue(value, item);
+                state.Values[item.Name] = value;
+                values[item.Name] = value;
+                items.Add(BuildStateEntry(item, value));
+            }
+
+            lock (_lock) { _runtimeState = state; }
+
+            var resp = BaseResponse("state", webCallId, true);
+            resp["items"] = items;
+            resp["values"] = values;
+            resp["decryptLevel"] = state.DecryptLevel;
+            resp["pcName"] = state.PcName;
+            PostToWeb(resp.ToString(Newtonsoft.Json.Formatting.None));
+        }
+
+        private void ForwardPassThroughResponse(string webCallId, string webCmd, JObject msg)
+        {
+            msg.Remove("task");
+            msg["type"] = "panel_resp";
+            msg["panel"] = "intelligence";
+            msg["cmd"] = webCmd;
+            msg["callId"] = webCallId;
+            PostToWeb(msg.ToString(Newtonsoft.Json.Formatting.None));
         }
 
         private void RespondCatalog(string webCallId)
@@ -114,7 +326,7 @@ namespace CF7Launcher.Tasks
 
             var items = new JArray();
             foreach (IntelligenceItem item in _catalog)
-                items.Add(BuildItemSnapshot(item, value, decryptLevel, pcName, true));
+                items.Add(BuildItemSnapshot(item, ClampValue(value, item), decryptLevel, pcName, true));
 
             var resp = BaseResponse("bundle", webCallId, true);
             resp["value"] = value;
@@ -144,10 +356,29 @@ namespace CF7Launcher.Tasks
                 return;
             }
 
-            int value = ParseInt(parsed["value"], item.MaxValue);
-            int decryptLevel = ParseInt(parsed["decryptLevel"], 0);
-            string pcName = parsed.Value<string>("pcName") ?? "";
+            bool explicitState = parsed["value"] != null || parsed["decryptLevel"] != null || parsed["pcName"] != null;
+            RuntimeState runtimeState = null;
+            if (!explicitState)
+            {
+                lock (_lock) { runtimeState = _runtimeState; }
+                if (runtimeState == null)
+                {
+                    RespondError(webCallId, "snapshot", "state_required");
+                    return;
+                }
+            }
 
+            int value = explicitState
+                ? ParseInt(parsed["value"], item.MaxValue)
+                : GetRuntimeValue(runtimeState, item.Name);
+            int decryptLevel = explicitState
+                ? ParseInt(parsed["decryptLevel"], 0)
+                : runtimeState.DecryptLevel;
+            string pcName = explicitState
+                ? (parsed.Value<string>("pcName") ?? "")
+                : (runtimeState.PcName ?? "");
+
+            value = ClampValue(value, item);
             JObject payload = BuildItemSnapshot(item, value, decryptLevel, pcName, false);
 
             var resp = BaseResponse("snapshot", webCallId, true);
@@ -170,13 +401,13 @@ namespace CF7Launcher.Tasks
             string pcName,
             bool includeLockedText)
         {
-            // bundle 路径会容忍 text_missing；snapshot 已在外层提前拒了，所以这里直接消费缓存即可。
             Dictionary<string, string> textMap;
             string textError;
             TryLoadTextMap(item, out textMap, out textError);
 
             JObject obj = BuildCatalogEntry(item);
             obj["value"] = value;
+            obj["unlockedCount"] = CountUnlockedPages(item, value);
             obj["decryptLevel"] = decryptLevel;
             obj["pcName"] = pcName;
             if (!string.IsNullOrEmpty(textError))
@@ -217,6 +448,14 @@ namespace CF7Launcher.Tasks
             obj["index"] = item.Index;
             obj["maxValue"] = item.MaxValue;
             obj["pageCount"] = item.Pages.Count;
+            return obj;
+        }
+
+        private JObject BuildStateEntry(IntelligenceItem item, int value)
+        {
+            JObject obj = BuildCatalogEntry(item);
+            obj["value"] = value;
+            obj["unlockedCount"] = CountUnlockedPages(item, value);
             return obj;
         }
 
@@ -441,6 +680,27 @@ namespace CF7Launcher.Tasks
                 _invokeOnUI(delegate { if (_postToWeb != null) _postToWeb(json); });
             else if (_postToWeb != null)
                 _postToWeb(json);
+        }
+
+        private static int GetRuntimeValue(RuntimeState state, string itemName)
+        {
+            int value;
+            return state != null && state.Values.TryGetValue(itemName, out value) ? value : 0;
+        }
+
+        private static int ClampValue(int value, IntelligenceItem item)
+        {
+            if (value < 0) return 0;
+            if (item != null && value > item.MaxValue) return item.MaxValue;
+            return value;
+        }
+
+        private static int CountUnlockedPages(IntelligenceItem item, int value)
+        {
+            int count = 0;
+            for (int i = 0; i < item.Pages.Count; i++)
+                if (item.Pages[i].Value <= value) count++;
+            return count;
         }
 
         private static JObject DictionaryToJObject(Dictionary<string, string> dict)

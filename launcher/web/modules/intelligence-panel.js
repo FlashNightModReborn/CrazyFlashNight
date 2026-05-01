@@ -20,8 +20,11 @@ var IntelligencePanel = (function() {
     var _decryptLevel = 10;
     var _pcName = '测试玩家';
     var _debugMode = false;
+    var _runtimeMode = false;
     var _drawerCollapsed = false;
     var _pagePopupOpen = false;
+    var _tooltipCache = {};
+    var _hoverTooltipName = '';
     var _resizeObserver = null;
     var _keyHandler = null;
     var _outsideClickHandler = null;
@@ -176,6 +179,9 @@ var IntelligencePanel = (function() {
         if (isNaN(_decryptLevel)) _decryptLevel = 10;
         _pcName = initData.pcName || '测试玩家';
         _debugMode = initData.debug === true || initData.mode === 'dev';
+        _runtimeMode = initData.mode === 'prod' || initData.source === 'runtime' && !_debugMode;
+        _tooltipCache = {};
+        _hoverTooltipName = '';
         if (_debugMode) _el.classList.add('is-debug');
         else _el.classList.remove('is-debug');
         _refs.devbar.hidden = !_debugMode;
@@ -188,23 +194,39 @@ var IntelligencePanel = (function() {
             Icons.load(function() { renderIcon(); renderCatalogPanel(); });
         }
 
-        requestBundle(function() {
-            populateCatalog();
-            applyCurrentItemFromBundle();
-        });
+        if (_runtimeMode) {
+            requestState(function() {
+                populateCatalog(true);
+                requestSnapshot();
+            });
+        } else {
+            requestBundle(function() {
+                populateCatalog(false);
+                applyCurrentItemFromBundle();
+            });
+        }
         bindScaleWatcher();
         bindKeyboardAndOutsideClick();
         scheduleScaleUpdate();
     }
 
     function onClose() {
+        if (typeof PanelTooltip !== 'undefined' && PanelTooltip) PanelTooltip.hide();
         unbindScaleWatcher();
         unbindKeyboardAndOutsideClick();
         _pagePopupOpen = false;
         _pending = {};
+        _hoverTooltipName = '';
     }
 
     function readInputsAndRefresh() {
+        if (_runtimeMode) {
+            requestState(function() {
+                populateCatalog(true);
+                requestSnapshot();
+            });
+            return;
+        }
         _currentValue = Number(_refs.valueInput.value);
         if (isNaN(_currentValue)) _currentValue = 0;
         _decryptLevel = Number(_refs.decryptInput.value);
@@ -215,7 +237,7 @@ var IntelligencePanel = (function() {
             applyCurrentItemFromBundle();
         } else {
             requestBundle(function() {
-                populateCatalog();
+                populateCatalog(false);
                 applyCurrentItemFromBundle();
             });
         }
@@ -232,6 +254,27 @@ var IntelligencePanel = (function() {
                 return;
             }
             ingestBundle(resp.items || []);
+            if (done) done(resp);
+        });
+    }
+
+    function requestState(done) {
+        showLoading('正在同步情报状态…');
+        sendRequest('state', {}, function(resp) {
+            if (!resp.success) {
+                showError('运行态情报状态加载失败：' + (resp.error || 'unknown'));
+                return;
+            }
+            _catalog = resp.items || [];
+            _catalogByName = {};
+            _bundleByName = {};
+            _decryptLevel = Number(resp.decryptLevel);
+            if (isNaN(_decryptLevel)) _decryptLevel = 0;
+            _pcName = resp.pcName || '';
+            _refs.decryptInput.value = String(_decryptLevel);
+            for (var i = 0; i < _catalog.length; i++) {
+                _catalogByName[_catalog[i].name] = _catalog[i];
+            }
             if (done) done(resp);
         });
     }
@@ -253,17 +296,25 @@ var IntelligencePanel = (function() {
 
     function requestSnapshot() {
         showLoading('正在读取情报文本…');
-        sendRequest('snapshot', {
-            itemName: _currentItemName,
-            value: _currentValue,
-            decryptLevel: _decryptLevel,
-            pcName: _pcName
-        }, function(resp) {
+        var payload = { itemName: _currentItemName };
+        if (!_runtimeMode) {
+            payload.value = _currentValue;
+            payload.decryptLevel = _decryptLevel;
+            payload.pcName = _pcName;
+        }
+        sendRequest('snapshot', payload, function(resp) {
             if (!resp.success) {
                 showError('文本加载失败：' + (resp.error || 'unknown'));
                 return;
             }
             _snapshot = resp;
+            _currentValue = Number(resp.value);
+            if (isNaN(_currentValue)) _currentValue = 0;
+            _decryptLevel = Number(resp.decryptLevel);
+            if (isNaN(_decryptLevel)) _decryptLevel = 0;
+            _pcName = resp.pcName || _pcName || '';
+            _refs.valueInput.value = String(_currentValue);
+            _refs.decryptInput.value = String(_decryptLevel);
             if (_selectedPage >= getPages().length) _selectedPage = 0;
             renderSnapshot();
         });
@@ -290,11 +341,27 @@ var IntelligencePanel = (function() {
         Bridge.send(msg);
     }
 
-    function populateCatalog() {
-        if (!_catalogByName[_currentItemName] && _catalog.length) {
-            _currentItemName = _catalog[0].name;
+    function populateCatalog(preferProgress) {
+        var current = _catalogByName[_currentItemName];
+        if (_catalog.length && (!current || (preferProgress && (Number(current.value) || 0) <= 0))) {
+            _currentItemName = pickDefaultItemName(preferProgress);
+            current = _catalogByName[_currentItemName];
+        }
+        if (current && current.value != null) {
+            _currentValue = Number(current.value);
+            if (isNaN(_currentValue)) _currentValue = 0;
+            _refs.valueInput.value = String(_currentValue);
         }
         renderCatalogPanel();
+    }
+
+    function pickDefaultItemName(preferProgress) {
+        if (preferProgress) {
+            for (var i = 0; i < _catalog.length; i++) {
+                if ((Number(_catalog[i].value) || 0) > 0) return _catalog[i].name;
+            }
+        }
+        return _catalog.length ? _catalog[0].name : '资料';
     }
 
     function applyCurrentItemFromBundle() {
@@ -431,8 +498,7 @@ var IntelligencePanel = (function() {
         label.textContent = name;
         var meta = document.createElement('span');
         meta.className = 'intel-catalog-meta';
-        var pages = item.pages || [];
-        meta.textContent = countUnlockedPagesForItem(item) + ' / ' + pages.length + ' 页';
+        meta.textContent = countUnlockedPagesForItem(item) + ' / ' + getPageCountForItem(item) + ' 页';
         text.appendChild(label);
         text.appendChild(meta);
 
@@ -442,21 +508,121 @@ var IntelligencePanel = (function() {
             var nextName = e.currentTarget.getAttribute('data-name');
             if (!nextName || nextName === _currentItemName) return;
             _currentItemName = nextName;
+            var nextItem = _catalogByName[_currentItemName];
+            if (nextItem && nextItem.value != null) {
+                _currentValue = Number(nextItem.value);
+                if (isNaN(_currentValue)) _currentValue = 0;
+                _refs.valueInput.value = String(_currentValue);
+            }
             _selectedPage = 0;
             _showPlain = true;
-            if (_bundleByName[_currentItemName]) applyCurrentItemFromBundle();
+            if (!_runtimeMode && _bundleByName[_currentItemName]) applyCurrentItemFromBundle();
             else requestSnapshot();
+        });
+        btn.addEventListener('mouseenter', function(e) { showCatalogTooltip(name, e); });
+        btn.addEventListener('mousemove', function(e) {
+            if (typeof PanelTooltip !== 'undefined' && PanelTooltip) PanelTooltip.followMouse(e);
+        });
+        btn.addEventListener('mouseleave', function() {
+            _hoverTooltipName = '';
+            if (typeof PanelTooltip !== 'undefined' && PanelTooltip) PanelTooltip.hide();
         });
         return btn;
     }
 
     function countUnlockedPagesForItem(item) {
+        if (item && item.unlockedCount != null) return Number(item.unlockedCount) || 0;
         var pages = item && item.pages ? item.pages : [];
         var count = 0;
         for (var i = 0; i < pages.length; i++) {
             if ((Number(pages[i].value) || 0) <= _currentValue) count++;
         }
         return count;
+    }
+
+    function getPageCountForItem(item) {
+        if (item && item.pageCount != null) return Number(item.pageCount) || 0;
+        return item && item.pages ? item.pages.length : 0;
+    }
+
+    function showCatalogTooltip(name, e) {
+        if (typeof PanelTooltip === 'undefined' || !PanelTooltip) return;
+        var item = _catalogByName[name] || _bundleByName[name] || { name: name };
+        _hoverTooltipName = name;
+        PanelTooltip.showAtMouse(buildBasicTooltip(item, false), e);
+
+        var cached = _tooltipCache[name];
+        if (cached && cached.success) {
+            PanelTooltip.updateContent(buildRichTooltip(item, cached));
+            return;
+        }
+        if (cached && cached.loading) return;
+
+        _tooltipCache[name] = { loading: true };
+        sendRequest('tooltip', { itemName: name }, function(resp) {
+            if (!resp.success) {
+                _tooltipCache[name] = { failed: true, error: resp.error || 'unknown' };
+                if (_hoverTooltipName === name && PanelTooltip.isVisible()) {
+                    PanelTooltip.updateContent(buildBasicTooltip(item, true));
+                }
+                return;
+            }
+            _tooltipCache[name] = resp;
+            if (_hoverTooltipName === name && PanelTooltip.isVisible()) {
+                PanelTooltip.updateContent(buildRichTooltip(item, resp));
+            }
+        });
+    }
+
+    function buildBasicTooltip(item, failed) {
+        var name = item.name || '';
+        var iconUrl = resolveIconUrl(item);
+        var iconHtml = iconUrl
+            ? '<div class="kshop-tt-icon"><img src="' + escAttr(iconUrl) + '" alt=""></div>'
+            : '<div class="kshop-tt-icon"><span class="intel-catalog-icon-placeholder">?</span></div>';
+        return '<div class="kshop-tt-rich intel-tt-basic">' +
+            iconHtml +
+            '<div class="kshop-tt-desc">' +
+                '<div class="kshop-tt-header"><b>' + escHtml(name) + '</b></div>' +
+                '<div class="kshop-tt-divider"></div>' +
+                '<div class="kshop-tt-dim">收集品 · 情报</div>' +
+                '<div class="kshop-tt-dim">已发现 ' + countUnlockedPagesForItem(item) + ' / ' + getPageCountForItem(item) + ' 页</div>' +
+                (failed ? '<div class="kshop-tt-locked">注释暂不可用</div>' : '<div class="kshop-tt-loading">加载注释…</div>') +
+            '</div>' +
+        '</div>';
+    }
+
+    function buildRichTooltip(item, resp) {
+        var iconUrl = resolveIconUrl(item);
+        var iconHtml = iconUrl
+            ? '<div class="kshop-tt-icon"><img src="' + escAttr(iconUrl) + '" alt=""></div>'
+            : '<div class="kshop-tt-icon"><span class="intel-catalog-icon-placeholder">?</span></div>';
+        var display = resp.displayname || item.name || '';
+        var intro = PanelTooltip.convertAS2Html(resp.introHTML || '');
+        var desc = PanelTooltip.convertAS2Html(resp.descHTML || '');
+        return '<div class="kshop-tt-rich intel-tt-rich">' +
+            iconHtml +
+            '<div class="kshop-tt-intro">' +
+                '<div class="kshop-tt-header"><b>' + escHtml(display) + '</b></div>' +
+                '<div class="kshop-tt-divider"></div>' +
+                '<div class="kshop-tt-dim">已发现 ' + countUnlockedPagesForItem(item) + ' / ' + getPageCountForItem(item) + ' 页</div>' +
+                intro +
+            '</div>' +
+            '<div class="kshop-tt-desc">' + desc + '</div>' +
+        '</div>';
+    }
+
+    function escHtml(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function escAttr(s) {
+        return escHtml(s);
     }
 
     function toggleCatalogDrawer() {
@@ -818,6 +984,7 @@ var IntelligencePanel = (function() {
                 pageIndex: _selectedPage,
                 pageCount: getPages().length,
                 debug: _debugMode,
+                runtime: _runtimeMode,
                 hasSnapshot: !!_snapshot,
                 catalogCount: _catalog.length,
                 catalogCollapsed: _drawerCollapsed,

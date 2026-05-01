@@ -575,7 +575,7 @@ class Program
         ShopTask shopTask = new ShopTask(socketServer);
         MapTask mapTask = new MapTask(socketServer);
         StageSelectTask stageSelectTask = new StageSelectTask(socketServer);
-        IntelligenceTask intelligenceTask = new IntelligenceTask(projectRoot);
+        IntelligenceTask intelligenceTask = new IntelligenceTask(projectRoot, socketServer);
         ArchiveTask archiveTask;
         using (PerfTrace.Scope("task.archive_init"))
         {
@@ -626,7 +626,7 @@ class Program
         BenchTask benchTask = new BenchTask(socketServer);
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, stageSelectTask, archiveTask, benchTask, webOverlay);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, stageSelectTask, intelligenceTask, archiveTask, benchTask, webOverlay);
         }
 
         // 面板系统接线 (11c: webOverlay 必有)
@@ -654,6 +654,7 @@ class Program
             shopTask.Dispose();
             mapTask.Dispose();
             stageSelectTask.Dispose();
+            intelligenceTask.Dispose();
             socketServer.SetFrameHandler(null);
             socketServer.SetNotchHandler(null);
         };
@@ -854,6 +855,7 @@ class Program
         try { shopTask.Dispose(); } catch { }
         try { mapTask.Dispose(); } catch { }
         try { stageSelectTask.Dispose(); } catch { }
+        try { intelligenceTask.Dispose(); } catch { }
         try { socketServer.Dispose(); } catch { }
         try { httpServer.Dispose(); } catch { }
         try { if (inputShield != null) inputShield.Dispose(); } catch { }

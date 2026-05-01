@@ -27,6 +27,7 @@ namespace CF7Launcher.Bus
     ///   archive         JSON async  AS2↔C#  httpCallable=true  (存档shadow备份/读取)
     ///   panel_request   JSON sync   AS2→C#  (旧 Flash UI 请求 WebView 打开面板: map / stage-select)
     ///   stage_select_response JSON async AS2↔C# (选关 Web panel 测试入口)
+    ///   intelligence_response JSON async AS2↔C# (情报 Web panel runtime 状态 / tooltip)
     /// </summary>
     public static class TaskRegistry
     {
@@ -57,6 +58,7 @@ namespace CF7Launcher.Bus
             ShopTask shopTask,
             MapTask mapTask,
             StageSelectTask stageSelectTask,
+            IntelligenceTask intelligenceTask,
             ArchiveTask archiveTask,
             BenchTask benchTask,
             WebOverlayForm webOverlay)
@@ -85,6 +87,10 @@ namespace CF7Launcher.Bus
             // 选关面板回包路由
             if (stageSelectTask != null)
                 router.RegisterAsync("stage_select_response", stageSelectTask.HandleFlashResponse);
+
+            // 情报面板 runtime 回包路由
+            if (intelligenceTask != null)
+                router.RegisterAsync("intelligence_response", intelligenceTask.HandleFlashResponse);
 
             // AS2 → C# 面板打开请求 (旧 Flash 地图界面按钮 / openTaskMap 命令接入 WebView)
             if (webOverlay != null)
@@ -192,6 +198,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "shop_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "map_response",   "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "stage_select_response","json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "intelligence_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "cursor_control", "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "archive",        "json_async","AS2<->C#",true,  first);
