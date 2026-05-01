@@ -4150,6 +4150,43 @@ html.perf-low-effects .map-stage-backdrop::before {
     font-weight: 700;
 }
 
+.stage-select-frame-toggle {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    min-width: 150px;
+    max-width: 260px;
+    height: 30px;
+    padding: 0 10px;
+    border: 1px solid rgba(148, 163, 184, 0.38);
+    background: rgba(15, 23, 42, 0.88);
+    color: #e0f2fe;
+    font-family: "Microsoft YaHei", "SimHei", Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.stage-select-frame-toggle:hover,
+.stage-select-panel.is-frame-menu-open .stage-select-frame-toggle {
+    border-color: rgba(96, 165, 250, 0.9);
+    background: rgba(30, 64, 175, 0.78);
+    color: #ffffff;
+}
+
+.stage-select-frame-toggle-label {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.stage-select-frame-toggle-icon {
+    flex: 0 0 auto;
+    color: #facc15;
+    font-size: 10px;
+}
+
 .stage-select-region {
     font-size: 13px;
     color: #93c5fd;
@@ -4217,6 +4254,70 @@ html.perf-low-effects .map-stage-backdrop::before {
     display: none;
 }
 
+.stage-select-panel.is-runtime {
+    width: min(98vw, 1560px);
+    height: min(96vh, 920px);
+}
+
+.stage-select-panel.is-runtime .stage-select-header {
+    position: relative;
+    height: 42px;
+    grid-template-columns: minmax(160px, max-content) 1fr auto;
+    gap: 8px;
+    padding: 5px 10px;
+    overflow: visible;
+    z-index: 80;
+}
+
+.stage-select-panel.is-runtime .stage-select-heading {
+    min-width: 0;
+}
+
+.stage-select-panel.is-runtime .stage-select-title,
+.stage-select-panel.is-runtime .stage-select-region {
+    display: none;
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle {
+    display: inline-flex;
+}
+
+.stage-select-panel.is-runtime .stage-select-tabs {
+    position: absolute;
+    left: 10px;
+    top: 40px;
+    z-index: 90;
+    display: none;
+    grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+    align-content: start;
+    width: min(650px, calc(100% - 72px));
+    max-height: min(330px, calc(100vh - 118px));
+    padding: 8px;
+    overflow: auto;
+    background: rgba(8, 13, 20, 0.98);
+    border: 1px solid rgba(96, 165, 250, 0.46);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.62);
+}
+
+.stage-select-panel.is-runtime.is-frame-menu-open .stage-select-tabs {
+    display: grid;
+}
+
+.stage-select-panel.is-runtime .stage-select-tab {
+    height: 30px;
+    padding: 0 9px;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 28px;
+    text-align: left;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.stage-select-panel.is-runtime .stage-select-tools {
+    justify-self: end;
+}
+
 .stage-select-close-btn {
     width: 28px;
     height: 28px;
@@ -4234,6 +4335,13 @@ html.perf-low-effects .map-stage-backdrop::before {
     padding: 12px;
 }
 
+.stage-select-panel.is-runtime .stage-select-body {
+    height: calc(100% - 42px);
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 8px;
+}
+
 .stage-select-stage-shell {
     position: relative;
     min-width: 0;
@@ -4241,6 +4349,10 @@ html.perf-low-effects .map-stage-backdrop::before {
     background: #020617;
     border: 1px solid rgba(148, 163, 184, 0.2);
     overflow: hidden;
+}
+
+.stage-select-panel.is-runtime .stage-select-stage-shell {
+    border-color: rgba(148, 163, 184, 0.26);
 }
 
 .stage-select-stage {
@@ -4752,6 +4864,19 @@ html.perf-low-effects .map-stage-backdrop::before {
     border: 1px solid rgba(148, 163, 184, 0.2);
 }
 
+.stage-select-panel.is-runtime .stage-select-side {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    z-index: 85;
+    display: block;
+    width: min(360px, calc(100% - 24px));
+    padding: 0;
+    background: transparent;
+    border: 0;
+    pointer-events: none;
+}
+
 .stage-select-side-title {
     color: #bfdbfe;
     font-size: 15px;
@@ -4786,6 +4911,12 @@ html.perf-low-effects .map-stage-backdrop::before {
 
 .stage-select-panel.is-runtime .stage-select-dev-log.is-error {
     display: block;
+    min-height: 0;
+    padding: 8px 10px;
+    background: rgba(127, 29, 29, 0.92);
+    border: 1px solid rgba(248, 113, 113, 0.6);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+    pointer-events: auto;
 }
 
 @keyframes stageSelectBoot {

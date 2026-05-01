@@ -18,9 +18,9 @@ Stage 2 在此基础上完成 live bridge 与正式入口替换：
 - Web 打开时通过 `stageSelectSnapshot` 读取真实 `isStageUnlocked` / `isChallengeMode`，并把 `StageInfoDict` 中的 `Description` / `MaterialDetail` / `Limitation`、`tasks_to_do` 任务提示与推荐难度同步到 hover 卡片
 - 难度按钮通过 `stageSelectEnter` 进入已解锁关卡
 - C# 使用 `StageSelectTask` 桥接 `stage_select_response`
-- AS2 `openWebStageSelect` 通过 `panel_request` 请求 `panel:"stage-select"`，并携带 `source`、`mode:"runtime"`、`frameLabel`
+- AS2 `openWebStageSelect` 通过 `panel_request` 请求 `panel:"stage-select"`，并携带 `source`、`frameLabel`；C# 打开正式入口时固定初始化 `mode:"runtime"`
 - 场景门 helper 复用旧 `切换场景` 的方向键、hitTest、15 帧节流、出生点与转场记录语义；Web 打开成功时留在原场景，失败时回落旧 Flash `关卡地图`
-- Web runtime 下隐藏 fixture/dev 控件，`localFrame` 页内跳转会同步 AS2 `_root.关卡地图帧值`，`return` / `return-garage` 只关闭 panel
+- Web runtime 下隐藏 fixture/dev 控件与测试标题，16 个 frame tab 收进可展开区域菜单，`localFrame` 页内跳转会同步 AS2 `_root.关卡地图帧值`，`return` / `return-garage` 只关闭 panel
 
 Stage 2 明确不做：
 
@@ -73,8 +73,8 @@ Stage 2 bridge 当前状态：
 - Step 1：`stageSelectSnapshot` / `stageSelectEnter` 已服务刘海屏“选关测试”，按真实解锁校验后进关
 - Step 2：已替换原 Flash 选关界面场景门入口，补齐打开时机、关闭回退、当前 frame label 同步；落地记录见 `docs/选关界面-AS2入口替换交接.md`
   - AS2 新增 `openWebStageSelect`，通过 `panel_request` 请求 `stage-select`
-  - C# `TaskRegistry` / `LauncherCommandRouter` 支持 `panel_request stage-select` 与 `frameLabel` / `mode` 初始化，未知 panel 仍只记 unsupported
-  - Web runtime 模式隐藏 fixture/dev 控件；`localFrame` 先切 Web 页面再发 `jump_frame`，C# 转为 AS2 `stageSelectJumpFrame`
+  - C# `TaskRegistry` / `LauncherCommandRouter` 支持 `panel_request stage-select` 与 `frameLabel` 初始化，正式入口 `mode` 固化为 `runtime`，未知 panel 仍只记 unsupported
+  - Web runtime 模式隐藏 fixture/dev 控件与测试标题，右侧空信息栏不占布局；16 个 frame tab 收进可展开区域菜单；`localFrame` 先切 Web 页面再发 `jump_frame`，C# 转为 AS2 `stageSelectJumpFrame`
   - `return` / `return-garage` 在 runtime 下关闭 panel；C# 关闭时通知 AS2 `stageSelectPanelClose` 清理门入口防重复打开状态
   - 已替换 `基地门口`、车库、地下 2 层、停机坪、联合大学左右出口
   - 保留旧 Flash `关卡地图MC` 与 `切换场景("", "关卡地图", ...)` fallback

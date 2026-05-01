@@ -13,6 +13,8 @@ var StageSelectPanel = (function() {
     var _badgeEl;
     var _logEl;
     var _fixtureSelectEl;
+    var _frameToggleEl;
+    var _frameToggleLabelEl;
     var _currentFrameLabel = '';
     var _fixtureName = 'mixed';
     var _fixture = null;
@@ -24,6 +26,7 @@ var StageSelectPanel = (function() {
     var _mode = 'dev';
     var _busyStageName = '';
     var _lastError = '';
+    var _frameMenuOpen = false;
     var _layoutObserver = null;
     var _resizeHandler = null;
 
@@ -41,6 +44,10 @@ var StageSelectPanel = (function() {
             '<div class="stage-select-header">' +
                 '<div class="stage-select-heading">' +
                     '<span class="stage-select-title">选关测试</span>' +
+                    '<button class="stage-select-frame-toggle" id="stage-select-frame-toggle" type="button" aria-expanded="false" title="选择区域" data-audio-cue="confirm">' +
+                        '<span class="stage-select-frame-toggle-label" id="stage-select-frame-toggle-label"></span>' +
+                        '<span class="stage-select-frame-toggle-icon" aria-hidden="true">▼</span>' +
+                    '</button>' +
                     '<span class="stage-select-region" id="stage-select-region"></span>' +
                 '</div>' +
                 '<div class="stage-select-tabs" id="stage-select-tabs"></div>' +
@@ -79,8 +86,23 @@ var StageSelectPanel = (function() {
         _badgeEl = _el.querySelector('#stage-select-badge');
         _logEl = _el.querySelector('#stage-select-dev-log');
         _fixtureSelectEl = _el.querySelector('#stage-select-fixture');
+        _frameToggleEl = _el.querySelector('#stage-select-frame-toggle');
+        _frameToggleLabelEl = _el.querySelector('#stage-select-frame-toggle-label');
 
         _el.querySelector('.stage-select-close-btn').addEventListener('click', requestClose);
+        _frameToggleEl.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            setFrameMenuOpen(!_frameMenuOpen);
+        });
+        _tabsEl.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+        _el.addEventListener('click', function(e) {
+            if (!_frameMenuOpen || !isRuntimeMode()) return;
+            if (isWithin(e.target, _frameToggleEl) || isWithin(e.target, _tabsEl)) return;
+            setFrameMenuOpen(false);
+        });
         _fixtureSelectEl.addEventListener('change', function() {
             setFixture(_fixtureSelectEl.value);
             renderCurrentFrame();
@@ -107,6 +129,7 @@ var StageSelectPanel = (function() {
         setFixture(_fixtureName);
         if (_fixtureSelectEl) _fixtureSelectEl.value = _fixtureName;
         if (_el) _el.classList.toggle('is-runtime', isRuntimeMode());
+        setFrameMenuOpen(false);
         _lastDifficultyClick = null;
         renderTabs();
         initLayoutWatcher();
@@ -134,7 +157,12 @@ var StageSelectPanel = (function() {
             button.setAttribute('data-frame-label', label);
             button.textContent = label;
             button.addEventListener('click', function() {
+                var sourceFrameLabel = _currentFrameLabel;
                 setFrame(label, 'tab');
+                if (isRuntimeMode() && label !== sourceFrameLabel) {
+                    requestJumpFrame(label, { id: 'tab:' + label }, sourceFrameLabel);
+                }
+                setFrameMenuOpen(false);
             });
             _tabsEl.appendChild(button);
         });
@@ -166,6 +194,7 @@ var StageSelectPanel = (function() {
         }
         var region = _el.querySelector('#stage-select-region');
         if (region) region.textContent = frame.frameLabel;
+        if (_frameToggleLabelEl) _frameToggleLabelEl.textContent = frame.frameLabel;
         if (_summaryEl) {
             _summaryEl.innerHTML =
                 '<div>frame: <b>' + escapeHtml(frame.frameLabel) + '</b></div>' +
@@ -483,6 +512,22 @@ var StageSelectPanel = (function() {
         return _mode === 'runtime';
     }
 
+    function setFrameMenuOpen(open) {
+        _frameMenuOpen = !!open && isRuntimeMode();
+        if (_el) _el.classList.toggle('is-frame-menu-open', _frameMenuOpen);
+        if (_frameToggleEl) _frameToggleEl.setAttribute('aria-expanded', _frameMenuOpen ? 'true' : 'false');
+    }
+
+    function isWithin(target, parent) {
+        if (!target || !parent) return false;
+        var node = target;
+        while (node) {
+            if (node === parent) return true;
+            node = node.parentNode;
+        }
+        return false;
+    }
+
     function requestSnapshot() {
         if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') {
             logDev('snapshot skipped: bridge unavailable');
@@ -645,6 +690,7 @@ var StageSelectPanel = (function() {
     }
 
     function onClose() {
+        setFrameMenuOpen(false);
         teardownLayoutWatcher();
     }
 
@@ -654,7 +700,8 @@ var StageSelectPanel = (function() {
         if (!shell) return;
         var rect = shell.getBoundingClientRect();
         var scale = Math.min(rect.width / DESIGN_W, rect.height / DESIGN_H);
-        scale = Math.max(0.45, Math.min(1.35, scale || 1));
+        var maxScale = isRuntimeMode() ? 1.65 : 1.35;
+        scale = Math.max(0.45, Math.min(maxScale, scale || 1));
         _stageEl.style.width = DESIGN_W + 'px';
         _stageEl.style.height = DESIGN_H + 'px';
         _stageEl.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
@@ -704,6 +751,7 @@ var StageSelectPanel = (function() {
                 frameLabel: _currentFrameLabel,
                 fixture: _fixtureName,
                 mode: _mode,
+                frameMenuOpen: _frameMenuOpen,
                 challenge: isChallengeMode(),
                 stageButtonCount: _buttonLayerEl ? _buttonLayerEl.querySelectorAll('.stage-select-stage-button').length : 0,
                 navButtonCount: _navLayerEl ? _navLayerEl.querySelectorAll('.stage-select-nav-button').length : 0,

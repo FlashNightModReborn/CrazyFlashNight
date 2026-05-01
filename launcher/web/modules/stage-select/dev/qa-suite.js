@@ -105,11 +105,62 @@ var StageSelectHarnessQA = (function() {
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function(state) {
                     api.assertEqual(state.mode, 'runtime', 'runtime mode set');
+                    api.assertEqual(getComputedStyle(document.querySelector('.stage-select-title')).display, 'none', 'test title hidden');
                     api.assertEqual(getComputedStyle(document.querySelector('.stage-select-fixture-label')).display, 'none', 'fixture label hidden');
                     api.assertEqual(getComputedStyle(document.getElementById('stage-select-fixture')).display, 'none', 'fixture select hidden');
                     api.assertEqual(getComputedStyle(document.querySelector('.stage-select-badge')).display, 'none', 'badge hidden');
                     api.assertEqual(getComputedStyle(document.getElementById('stage-select-dev-log')).display, 'none', 'dev log hidden');
+                    api.assertEqual(getComputedStyle(document.getElementById('stage-select-tabs')).display, 'none', 'frame menu collapsed by default');
                     return 'runtime chrome hidden';
+                });
+            }],
+            ['runtime-map-space', 'runtime layout gives stage most panel space', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    var panel = document.querySelector('.stage-select-panel').getBoundingClientRect();
+                    var shell = document.querySelector('.stage-select-stage-shell').getBoundingClientRect();
+                    var stage = document.getElementById('stage-select-stage').getBoundingClientRect();
+                    api.assert(shell.width / panel.width >= 0.94, 'stage shell width ratio');
+                    api.assert(shell.height / panel.height >= 0.86, 'stage shell height ratio');
+                    api.assert(stage.width / panel.width >= 0.86, 'scaled stage width ratio');
+                    api.assert(stage.height / panel.height >= 0.78, 'scaled stage height ratio');
+                    return 'runtime stage space ok';
+                });
+            }],
+            ['runtime-frame-menu', 'runtime frame menu expands and syncs frame', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function(state) {
+                    host.jumpMessages.length = 0;
+                    var manifest = StageSelectData.getManifest();
+                    var targetLabel = manifest.frameOrder.filter(function(label) { return label !== state.frameLabel; })[0];
+                    var toggle = document.getElementById('stage-select-frame-toggle');
+                    var tabs = document.getElementById('stage-select-tabs');
+                    api.assert(!!toggle, 'frame toggle exists');
+                    api.assertEqual(getComputedStyle(tabs).display, 'none', 'menu starts collapsed');
+                    toggle.click();
+                    api.assertEqual(StageSelectPanel._debugGetState().frameMenuOpen, true, 'menu state open');
+                    api.assert(getComputedStyle(tabs).display !== 'none', 'menu visible');
+                    var targetTab = null;
+                    var tabNodes = tabs.querySelectorAll('.stage-select-tab');
+                    [].some.call(tabNodes, function(tab) {
+                        if (tab.getAttribute('data-frame-label') === targetLabel) {
+                            targetTab = tab;
+                            return true;
+                        }
+                        return false;
+                    });
+                    api.assert(!!targetTab, 'target frame tab exists');
+                    targetTab.click();
+                    return api.waitFor(function() {
+                        return host.jumpMessages.length ? host.jumpMessages[0] : null;
+                    }, 2000, 'frame menu jump').then(function(msg) {
+                        api.assertEqual(msg.cmd, 'jump_frame', 'frame menu jump cmd');
+                        api.assertEqual(msg.frameLabel, targetLabel, 'frame menu jump target');
+                        api.assertEqual(StageSelectPanel._debugGetState().frameLabel, targetLabel, 'frame changed');
+                        api.assertEqual(StageSelectPanel._debugGetState().frameMenuOpen, false, 'menu closes after select');
+                        api.assertEqual(getComputedStyle(tabs).display, 'none', 'menu hidden after select');
+                        return 'runtime frame menu synced';
+                    });
                 });
             }],
             ['runtime-local-frame-sync', 'runtime localFrame nav sends one frame sync', function() {

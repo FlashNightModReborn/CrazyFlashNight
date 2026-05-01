@@ -2,13 +2,14 @@
 
 **文档角色**：Stage Select Web Panel 从刘海屏测试入口推进到正式替换 Flash `关卡地图` 入口的施工交接。  
 **当前状态**：Stage 2 Step 2 工程实现已落地；本文保留为正式入口替换的落地记录与后续验收清单。
+
 **边界提醒**：本文只规划正式入口替换，不扩大到委托任务界面迁移，也不做 Stage 3 现代化视觉改造。
 
 ## 0. 本轮落地摘要
 
-- AS2 已新增 `openWebStageSelect`、`stageSelectJumpFrame`、`stageSelectPanelClose` 命令；正式打开 payload 为 `panel_request` + `panel:"stage-select"` + `mode:"runtime"` + `frameLabel`
-- C# `TaskRegistry` / `LauncherCommandRouter` / `WebOverlayForm` 已支持 `stage-select` panel request、`frameLabel` / `mode` 初始化、`jump_frame` 转发与 close 回调
-- Web runtime 已隐藏 fixture/dev 控件；`localFrame` 先切 Web 页面再同步 AS2 frame，`return` / `return-garage` 只关闭 panel
+- AS2 已新增 `openWebStageSelect`、`stageSelectJumpFrame`、`stageSelectPanelClose` 命令；正式打开 payload 为 `panel_request` + `panel:"stage-select"` + `source` + `frameLabel`
+- C# `TaskRegistry` / `LauncherCommandRouter` / `WebOverlayForm` 已支持 `stage-select` panel request、`frameLabel` 初始化、runtime mode 固化、`jump_frame` 转发与 close 回调
+- Web runtime 已隐藏 fixture/dev 控件与测试标题；16 个 frame tab 收进可展开区域菜单，`localFrame` 先切 Web 页面再同步 AS2 frame，`return` / `return-garage` 只关闭 panel
 - 场景门替换已覆盖 `基地门口`、`车库`、`地下 2 层`、`停机坪`、`地图-联合大学` 左右出口；旧 `切换场景("", "关卡地图", ...)` 保留为发送失败 fallback
 - 战斗结束回流、角斗场返回、外交 / 委托任务 UI 不纳入本阶段
 
@@ -86,8 +87,7 @@ _root.gameCommands["openWebStageSelect"] = function(params) {
   "task": "panel_request",
   "panel": "stage-select",
   "source": "as2_stage_map_door",
-  "frameLabel": "_root.关卡地图帧值",
-  "mode": "runtime"
+  "frameLabel": "_root.关卡地图帧值"
 }
 ```
 
@@ -100,14 +100,14 @@ AS2 侧要求：
 
 ### 4.2 C# 支持 stage-select panel_request
 
-`TaskRegistry` 的 `panel_request` 已从 `panel/source/pageId` 扩展到 `frameLabel/mode`。`LauncherCommandRouter.RequestOpenPanel` 当前显式支持 `map` 与 `stage-select`，其他 panel 仍记录 unsupported，不扩大任意 JSON 透传面。
+`TaskRegistry` 的 `panel_request` 已从 `panel/source/pageId` 扩展到 `frameLabel`。`LauncherCommandRouter.RequestOpenPanel` 当前显式支持 `map` 与 `stage-select`；`stage-select` 正式入口的 `mode` 由 C# 固化为 `runtime`，其他 panel 仍记录 unsupported，不扩大任意 JSON 透传面。
 
 当前实现：
 
-- `TaskRegistry` 解析 `frameLabel`、`mode`
+- `TaskRegistry` 解析 `frameLabel`
 - `WebOverlayForm.RequestOpenPanel` 增加对应参数重载
 - `LauncherCommandRouter.RequestOpenPanel` 支持 `panelName == "stage-select"`
-- `OpenStageSelectPanel(source, frameLabel, mode)` 生成：
+- `OpenStageSelectPanel(source, frameLabel)` 生成：
 
 ```json
 {
@@ -129,7 +129,9 @@ AS2 侧要求：
 
 Web 已支持 runtime snapshot / enter，本轮补齐：
 
-- `mode === "runtime"` 下隐藏 fixture 控件和 dev log，保留错误提示
+- `mode === "runtime"` 下隐藏 fixture 控件、测试标题和 dev log，保留错误提示
+- 16 个 frame tab 收进可展开区域菜单，默认折叠，选择后同步 AS2 frame 并自动收起
+- runtime 下去掉右侧空信息栏，地图舞台改为单列主区域并放宽缩放上限
 - nav `return` / `return-garage` 在 runtime 下执行关闭 panel，而不是只 log
 - `localFrame` 先做 Web 内页切换，再发送 `jump_frame`，由 C# / AS2 同步 `_root.关卡地图帧值`
 - 非本阶段支持的外交/委托按钮保持不触发任务 UI；建议显示明确提示或保持静态
