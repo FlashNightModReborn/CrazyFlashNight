@@ -101,6 +101,57 @@ var StageSelectHarnessQA = (function() {
                     return 'live snapshot ok';
                 });
             }],
+            ['runtime-ui', 'runtime mode hides fixture controls and dev log', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function(state) {
+                    api.assertEqual(state.mode, 'runtime', 'runtime mode set');
+                    api.assertEqual(getComputedStyle(document.querySelector('.stage-select-fixture-label')).display, 'none', 'fixture label hidden');
+                    api.assertEqual(getComputedStyle(document.getElementById('stage-select-fixture')).display, 'none', 'fixture select hidden');
+                    api.assertEqual(getComputedStyle(document.querySelector('.stage-select-badge')).display, 'none', 'badge hidden');
+                    api.assertEqual(getComputedStyle(document.getElementById('stage-select-dev-log')).display, 'none', 'dev log hidden');
+                    return 'runtime chrome hidden';
+                });
+            }],
+            ['runtime-local-frame-sync', 'runtime localFrame nav sends one frame sync', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    host.jumpMessages.length = 0;
+                    var nav = document.querySelector('.stage-select-nav-button[data-action-kind="localFrame"]');
+                    api.assert(!!nav, 'localFrame nav exists');
+                    var target = nav.textContent.replace(/^进入/, '') || nav.getAttribute('data-nav-id');
+                    nav.click();
+                    return api.waitFor(function() {
+                        return host.jumpMessages.length ? host.jumpMessages[0] : null;
+                    }, 2000, 'jump frame').then(function(msg) {
+                        api.assertEqual(host.jumpMessages.length, 1, 'single jump frame message');
+                        api.assertEqual(msg.cmd, 'jump_frame', 'jump cmd');
+                        api.assert(!!msg.frameLabel, 'jump frame label exists');
+                        api.assertEqual(StageSelectPanel._debugGetState().frameLabel, msg.frameLabel, 'web frame switched');
+                        return 'runtime localFrame synced ' + (target || msg.frameLabel);
+                    });
+                });
+            }],
+            ['runtime-return-close', 'runtime return nav closes panel', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    var manifest = StageSelectData.getManifest();
+                    var nav = document.querySelector('.stage-select-nav-button[data-action-kind="flashJumpCurrent"], .stage-select-nav-button[data-action-kind="flashJumpFrameValue"]');
+                    if (!nav) {
+                        manifest.frameOrder.some(function(label) {
+                            StageSelectPanel._debugSetFrame(label, 'qa-return');
+                            nav = document.querySelector('.stage-select-nav-button[data-action-kind="flashJumpCurrent"], .stage-select-nav-button[data-action-kind="flashJumpFrameValue"]');
+                            return !!nav;
+                        });
+                    }
+                    api.assert(!!nav, 'runtime return nav exists');
+                    nav.click();
+                    return api.waitFor(function() {
+                        return Panels.getActive && Panels.getActive() === null ? true : null;
+                    }, 2000, 'return close').then(function() {
+                        return 'runtime return closed';
+                    });
+                });
+            }],
             ['locked-no-enter', 'locked stage does not send enter', function() {
                 document.getElementById('stage-fixture-select').value = 'mixed';
                 host.open();

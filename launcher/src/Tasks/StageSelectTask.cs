@@ -10,7 +10,7 @@ namespace CF7Launcher.Tasks
 {
     /// <summary>
     /// 选关面板 WebView<->Flash 双层 callId 桥接。
-    /// Stage 2 Step 1 仅覆盖测试入口的 snapshot/enter 闭环。
+    /// Stage 2 覆盖 runtime snapshot/enter 与页内 frame 同步。
     /// </summary>
     public sealed class StageSelectTask : IDisposable
     {
@@ -78,6 +78,9 @@ namespace CF7Launcher.Tasks
                     break;
                 case "enter":
                     action = "stageSelectEnter";
+                    break;
+                case "jump_frame":
+                    action = "stageSelectJumpFrame";
                     break;
                 default:
                     RespondError(webCallId, cmd, "unsupported_cmd");

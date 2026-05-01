@@ -56,6 +56,19 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void HandleWebRequest_JumpFrame_SendsStageSelectJumpFrameAction()
+        {
+            string sent = null;
+            var task = new StageSelectTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("jump_frame", JObject.Parse("{\"callId\":\"web-5\",\"frameLabel\":\"基地车库\"}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("stageSelectJumpFrame", (string)msg["action"]);
+            Assert.Equal("基地车库", (string)msg["frameLabel"]);
+        }
+
+        [Fact]
         public void HandleFlashResponse_RewritesToStageSelectPanelResponse()
         {
             string posted = null;

@@ -155,15 +155,25 @@ namespace CF7Launcher.Guardian
 
         /// <summary>
         /// AS2 → C# panel 打开请求（替代旧 WebOverlayForm.RequestOpenPanel 的 dispatch 段）。
-        /// 仅 source/pageId 透传给 OpenMapPanel；其他 panel name 由 OpenPanel 通用路径。
+        /// map 透传 pageId；stage-select 透传 frameLabel/mode；其他 panel 保持 unsupported。
         /// </summary>
         public void RequestOpenPanel(string panelName, string source, string pageId)
+        {
+            RequestOpenPanel(panelName, source, pageId, null, null);
+        }
+
+        public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string mode)
         {
             if (string.IsNullOrEmpty(panelName)) return;
             string safeSource = string.IsNullOrEmpty(source) ? "as2_request" : source;
             if (string.Equals(panelName, "map", StringComparison.OrdinalIgnoreCase))
             {
                 OpenMapPanel(safeSource, pageId);
+                return;
+            }
+            if (string.Equals(panelName, "stage-select", StringComparison.OrdinalIgnoreCase))
+            {
+                OpenStageSelectPanel(safeSource, frameLabel, mode);
                 return;
             }
             LogManager.Log("[Router] RequestOpenPanel unsupported panel=" + panelName);
@@ -176,6 +186,15 @@ namespace CF7Launcher.Guardian
                 initData += ",\"page\":\"" + EscapeJsonString(pageId) + "\"";
             initData += "}";
             OpenPanel("map", initData);
+        }
+
+        private void OpenStageSelectPanel(string source, string frameLabel, string mode)
+        {
+            string safeMode = "runtime";
+            string safeFrameLabel = string.IsNullOrEmpty(frameLabel) ? "基地门口" : frameLabel;
+            string initData = "{\"mode\":\"" + EscapeJsonString(safeMode) + "\",\"fixture\":\"mixed\",\"frameLabel\":\"" +
+                EscapeJsonString(safeFrameLabel) + "\",\"debug\":false,\"source\":\"" + EscapeJsonString(source) + "\"}";
+            OpenPanel("stage-select", initData);
         }
 
         /// <summary>

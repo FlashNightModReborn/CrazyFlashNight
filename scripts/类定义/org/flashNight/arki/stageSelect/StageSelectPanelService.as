@@ -17,6 +17,15 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         _root.gameCommands["stageSelectEnter"] = function(params) {
             org.flashNight.arki.stageSelect.StageSelectPanelService.handleEnter(params);
         };
+        _root.gameCommands["stageSelectJumpFrame"] = function(params) {
+            org.flashNight.arki.stageSelect.StageSelectPanelService.handleJumpFrame(params);
+        };
+        _root.gameCommands["stageSelectPanelClose"] = function(params) {
+            org.flashNight.arki.stageSelect.StageSelectPanelService.handleClose(params);
+        };
+        _root.gameCommands["openWebStageSelect"] = function(params) {
+            return org.flashNight.arki.stageSelect.StageSelectPanelService.handleOpenWebStageSelect(params);
+        };
 
         _inited = true;
     }
@@ -69,6 +78,55 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             stageName: stageName,
             difficulty: difficulty
         });
+    }
+
+    public static function handleJumpFrame(params:Object):Void {
+        var callId = params.callId;
+        var frameLabel:String = String(params.frameLabel || params.targetFrameLabel || "");
+        if (frameLabel == "") {
+            sendResponse({
+                task: "stage_select_response",
+                callId: callId,
+                success: false,
+                error: "invalid_frame"
+            });
+            return;
+        }
+
+        _root.关卡地图帧值 = frameLabel;
+        sendResponse({
+            task: "stage_select_response",
+            callId: callId,
+            success: true,
+            frameLabel: frameLabel
+        });
+    }
+
+    public static function handleClose(params:Object):Void {
+        if (_root.场景转换函数 != undefined) {
+            _root.场景转换函数.Web选关打开中 = false;
+            if (_root.帧计时器 != undefined) {
+                _root.场景转换函数.上次切换帧数 = _root.帧计时器.当前帧数;
+            }
+        }
+    }
+
+    public static function handleOpenWebStageSelect(params:Object):Boolean {
+        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) {
+            return false;
+        }
+
+        var source:String = (params != undefined && params.source != undefined)
+            ? String(params.source)
+            : "as2_stage_map_door";
+        var frameLabel:String = (params != undefined && params.frameLabel != undefined)
+            ? String(params.frameLabel)
+            : String(_root.关卡地图帧值 || "基地门口");
+        if (frameLabel == "") frameLabel = "基地门口";
+
+        var payload:String = '{"task":"panel_request","panel":"stage-select","source":"' +
+            escapeJsonString(source) + '","mode":"runtime","frameLabel":"' + escapeJsonString(frameLabel) + '"}';
+        return _root.server.sendSocketMessage(payload);
     }
 
     private static function validateEnter(stageName:String, difficulty:String):Object {
@@ -230,5 +288,10 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
 
     private static function sendResponse(resp:Object):Void {
         _root.server.sendSocketMessage(_json.stringify(resp));
+    }
+
+    private static function escapeJsonString(value:String):String {
+        if (value == undefined || value == null) return "";
+        return String(value).split("\\").join("\\\\").split("\"").join("\\\"");
     }
 }

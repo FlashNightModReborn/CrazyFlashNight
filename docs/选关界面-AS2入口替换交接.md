@@ -1,8 +1,16 @@
 # 选关界面 AS2 入口替换交接
 
 **文档角色**：Stage Select Web Panel 从刘海屏测试入口推进到正式替换 Flash `关卡地图` 入口的施工交接。  
-**当前状态**：Stage 2 Step 1 已闭环；本文为 Stage 2 Step 2 开工包。  
+**当前状态**：Stage 2 Step 2 工程实现已落地；本文保留为正式入口替换的落地记录与后续验收清单。
 **边界提醒**：本文只规划正式入口替换，不扩大到委托任务界面迁移，也不做 Stage 3 现代化视觉改造。
+
+## 0. 本轮落地摘要
+
+- AS2 已新增 `openWebStageSelect`、`stageSelectJumpFrame`、`stageSelectPanelClose` 命令；正式打开 payload 为 `panel_request` + `panel:"stage-select"` + `mode:"runtime"` + `frameLabel`
+- C# `TaskRegistry` / `LauncherCommandRouter` / `WebOverlayForm` 已支持 `stage-select` panel request、`frameLabel` / `mode` 初始化、`jump_frame` 转发与 close 回调
+- Web runtime 已隐藏 fixture/dev 控件；`localFrame` 先切 Web 页面再同步 AS2 frame，`return` / `return-garage` 只关闭 panel
+- 场景门替换已覆盖 `基地门口`、`车库`、`地下 2 层`、`停机坪`、`地图-联合大学` 左右出口；旧 `切换场景("", "关卡地图", ...)` 保留为发送失败 fallback
+- 战斗结束回流、角斗场返回、外交 / 委托任务 UI 不纳入本阶段
 
 ## 1. 已完成基线
 
@@ -59,7 +67,7 @@
 - `scripts/逻辑/关卡系统/关卡系统_lsy_场景转换.as`：`_root.返回基地` 使用 `_root.关卡地图帧值` 回到基地/地图帧；这条不应直接替换成打开 panel，否则会破坏战斗结束回流
 - `CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml`：主时间轴 `关卡地图` label 上挂载 `关卡地图MC`，这是旧 UI 最终承载点，保留作 fallback
 
-## 4. 推荐施工路径
+## 4. 施工路径与当前实现
 
 ### 4.1 AS2 新增正式打开命令
 
@@ -92,14 +100,14 @@ AS2 侧要求：
 
 ### 4.2 C# 支持 stage-select panel_request
 
-当前 `TaskRegistry` 的 `panel_request` 只传 `panel/source/pageId`，`LauncherCommandRouter.RequestOpenPanel` 也只支持 `map`，其他 panel 会记录 unsupported。
+`TaskRegistry` 的 `panel_request` 已从 `panel/source/pageId` 扩展到 `frameLabel/mode`。`LauncherCommandRouter.RequestOpenPanel` 当前显式支持 `map` 与 `stage-select`，其他 panel 仍记录 unsupported，不扩大任意 JSON 透传面。
 
-Step 2 必须补：
+当前实现：
 
-- `TaskRegistry` 解析 `frameLabel`、`mode`，或改为透传 `initData`
-- `WebOverlayForm.RequestOpenPanel` 增加对应参数或接受初始化 JSON
+- `TaskRegistry` 解析 `frameLabel`、`mode`
+- `WebOverlayForm.RequestOpenPanel` 增加对应参数重载
 - `LauncherCommandRouter.RequestOpenPanel` 支持 `panelName == "stage-select"`
-- 新增 `OpenStageSelectPanel(source, frameLabel, mode)`，生成：
+- `OpenStageSelectPanel(source, frameLabel, mode)` 生成：
 
 ```json
 {
@@ -119,11 +127,11 @@ Step 2 必须补：
 
 ### 4.3 Web 正式模式行为
 
-当前 Web 已支持 runtime snapshot / enter。Step 2 需要补齐：
+Web 已支持 runtime snapshot / enter，本轮补齐：
 
 - `mode === "runtime"` 下隐藏 fixture 控件和 dev log，保留错误提示
 - nav `return` / `return-garage` 在 runtime 下执行关闭 panel，而不是只 log
-- `localFrame` 继续只做 Web 内页切换
+- `localFrame` 先做 Web 内页切换，再发送 `jump_frame`，由 C# / AS2 同步 `_root.关卡地图帧值`
 - 非本阶段支持的外交/委托按钮保持不触发任务 UI；建议显示明确提示或保持静态
 - close/backdrop/ESC 都只关闭 Web panel，不发送进关命令
 
@@ -131,20 +139,21 @@ Step 2 必须补：
 
 ### 4.4 替换 AS2 调用点
 
-推荐按小步替换：
+本轮实际替换顺序：
 
-1. 新增 `openWebStageSelect`，不改旧入口
+1. 新增 `openWebStageSelect` 与 `stageSelectJumpFrame` / `stageSelectPanelClose`
 2. C# 支持 `panel_request stage-select`
-3. 只替换 `基地门口.xml` 一个入口，手测打开/关闭/进关
-4. 扩展到 `车库.xml`、`溶洞.xml`、`停机坪.xml`
-5. 再处理 `地图-联合大学.xml`
-6. 最后判断 `角斗场选择界面.xml` 是否也纳入 Step 2
+3. 抽出 `_root.场景转换函数.打开Web选关` helper，统一复用门入口判定与 fallback
+4. 替换 `基地门口.xml`
+5. 扩展到 `车库.xml`、`溶洞.xml`、`停机坪.xml`
+6. 扩展到 `地图-联合大学.xml` 左右出口
+7. `角斗场选择界面.xml` 不纳入 Stage 2
 
 每个调用点建议保留 fallback：
 
 ```actionscript
-if (_root.gameCommands != undefined && _root.gameCommands["openWebStageSelect"] != undefined) {
-    _root.gameCommands["openWebStageSelect"]({ source: "as2_base_gate" });
+if (打开Web选关 != undefined) {
+    打开Web选关("", "关卡地图", "", _root.左键, "as2_base_gate");
 } else {
     切换场景("", "关卡地图", "", _root.左键);
 }
@@ -156,7 +165,7 @@ if (_root.gameCommands != undefined && _root.gameCommands["openWebStageSelect"] 
 
 主要风险：
 
-- C# `panel_request` 当前只支持 map，必须先扩展 router，否则 AS2 请求会被 unsupported 丢掉
+- C# `panel_request` 只允许显式 panel；`stage-select` 已接入，未知 panel 仍应保持 unsupported
 - 场景门脚本处于 `onClipEvent(enterFrame)`，错误调用可能导致重复打开 panel
 - Web 关闭语义和旧 Flash 返回按钮不同，必须确认玩家仍在原场景且输入恢复
 - 挑战模式只允许地狱难度，替换正式入口后仍要覆盖
@@ -167,6 +176,8 @@ if (_root.gameCommands != undefined && _root.gameCommands["openWebStageSelect"] 
 
 ```powershell
 node tools/run-stage-select-harness.js --browser edge
+node tools/export-stage-select-manifest.js --summary
+node tools/audit-stage-select-layout.js --json
 powershell -ExecutionPolicy Bypass -File launcher/build.ps1
 powershell -ExecutionPolicy Bypass -File launcher/tests/run_tests.ps1
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1
@@ -177,7 +188,8 @@ node tools/validate-doc-governance.js
 
 - 基地门口 → 选关 Web panel → 关闭 → 仍在基地门口，HUD/鼠标正常
 - 基地门口 → 选关 Web panel → 新手练习场 / 简单 → 成功进关
-- 车库 / 地下 2 层 / 停机坪入口分别打开对应 `frameLabel`
+- 车库 / 地下 2 层 / 停机坪 / 联合大学左右出口分别打开对应 `frameLabel`
+- Web 页内跳转后关闭 / 重开，当前 frame 同步符合预期
 - 锁定关卡不可进
 - 挑战模式只显示/允许地狱
 - 长文本 hover 不露 `<BR>` / `<FONT>`，锁定 hover 不丢红圈/文字
@@ -189,12 +201,11 @@ node tools/validate-doc-governance.js
 - 若 WebView / C# / XMLSocket 不可用，AS2 调用点应回到旧 Flash 选关界面
 - 若正式入口替换出现问题，可只撤回场景门调用点，保留 Stage 2 Step 1 测试入口继续调试
 
-## 7. 给下个施工者的提示词
+## 7. 给后续施工者的提示词
 
 ```text
-请按 docs/选关界面-AS2入口替换交接.md 实施 Stage Select Stage 2 Step 2。
-先新增 AS2 openWebStageSelect 命令和 C# panel_request stage-select 路由，
-只替换基地门口一个入口做最小闭环；保持旧 Flash 关卡地图 fallback。
-不要迁移委托任务界面，不删除关卡地图MC。
-完成后跑 Edge harness、launcher build/tests、Flash compile smoke、doc governance。
+Stage Select Stage 2 Step 2 已完成工程落地。
+后续优先做 Flash CS6 smoke 与人工验收，不要把战斗结束回流或角斗场返回误改成 Web panel。
+继续保留旧 Flash 关卡地图 fallback；不要迁移委托任务界面，不删除关卡地图MC。
+改动协议或测试入口后继续跑 Edge harness、launcher build/tests、Flash compile smoke、doc governance。
 ```

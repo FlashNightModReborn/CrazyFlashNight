@@ -94,6 +94,14 @@ namespace CF7Launcher.Guardian
             return foregroundInOwnerTree;
         }
 
+        internal static string ResolvePanelCloseGameCommand(string panel)
+        {
+            if (panel == "kshop") return "shopPanelClose";
+            if (panel == "map") return "mapPanelClose";
+            if (panel == "stage-select") return "stageSelectPanelClose";
+            return null;
+        }
+
         [StructLayout(LayoutKind.Sequential)]
         private struct POINT
         {
@@ -2942,14 +2950,15 @@ namespace CF7Launcher.Guardian
                 case "close":
                     {
                         string panel = parsed.Value<string>("panel") ?? "";
-                        if (panel == "kshop")
+                        string closeAction = ResolvePanelCloseGameCommand(panel);
+                        if (closeAction == "shopPanelClose")
                         {
-                            if (!TrySendGameCommand("shopPanelClose"))
+                            if (!TrySendGameCommand(closeAction))
                                 _pauseNeedsRestore = true;
                         }
-                        else if (panel == "map")
+                        else if (closeAction != null)
                         {
-                            TrySendGameCommand("mapPanelClose");
+                            TrySendGameCommand(closeAction);
                         }
                         // help 等纯 web 面板无需通知 Flash
                         _activePanel = null;
@@ -2973,6 +2982,7 @@ namespace CF7Launcher.Guardian
                 case "navigate":
                 case "refresh":
                 case "enter":
+                case "jump_frame":
                     {
                         string panel = parsed.Value<string>("panel") ?? "";
                         if (panel == "stage-select")
@@ -3149,10 +3159,15 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void RequestOpenPanel(string panelName, string source)
         {
-            RequestOpenPanel(panelName, source, null);
+            RequestOpenPanel(panelName, source, null, null, null);
         }
 
         public void RequestOpenPanel(string panelName, string source, string pageId)
+        {
+            RequestOpenPanel(panelName, source, pageId, null, null);
+        }
+
+        public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string mode)
         {
             if (_disposed) return;
             if (this.IsHandleCreated && this.InvokeRequired)
@@ -3161,7 +3176,7 @@ namespace CF7Launcher.Guardian
                 {
                     this.BeginInvoke(new Action(delegate()
                     {
-                        RequestOpenPanel(panelName, source, pageId);
+                        RequestOpenPanel(panelName, source, pageId, frameLabel, mode);
                     }));
                 }
                 catch { }
@@ -3170,7 +3185,7 @@ namespace CF7Launcher.Guardian
 
             if (_commandRouter != null)
             {
-                _commandRouter.RequestOpenPanel(panelName, source, pageId);
+                _commandRouter.RequestOpenPanel(panelName, source, pageId, frameLabel, mode);
                 return;
             }
             LogManager.Log("[Panel] RequestOpenPanel before router wired, panel=" + (panelName ?? "<null>"));

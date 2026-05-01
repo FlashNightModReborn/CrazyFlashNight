@@ -350,6 +350,7 @@ _root.返回基地 = function(){
 _root.场景转换函数 = new Object();
 
 _root.场景转换函数.上次切换帧数 = 0;
+_root.场景转换函数.Web选关打开中 = false;
 
 _root.场景转换函数.切换场景 = function(对应门名, 目标场景帧, 开门效果, 同时按键值){
 	var 游戏世界 = _root.gameworld;
@@ -382,6 +383,62 @@ _root.场景转换函数.切换场景 = function(对应门名, 目标场景帧, 
 			_root.场景进入位置名 = 对应门名;
 			_root.转场景记录数据();
 			_root.场景转换函数.上次切换帧数 = currentFrame;
+			if (开门效果 == null || 开门效果 == ""){
+				_root.淡出动画.淡出跳转帧(目标场景帧);
+				this.gotoAndStop(3);
+			}else{
+				_root.淡出动画.跳转帧 = 目标场景帧;
+				游戏世界[开门效果].play();
+				this.gotoAndStop(3);
+			}
+		}
+	}
+}
+
+_root.场景转换函数.打开Web选关 = function(对应门名, 目标场景帧, 开门效果, 同时按键值, source){
+	var 游戏世界 = _root.gameworld;
+	if (!游戏世界.允许通行) return;
+	if (_root.场景转换函数.Web选关打开中) return;
+
+	var 控制对象 = 游戏世界[_root.控制目标];
+	var 对应方向 = false;
+	switch(同时按键值){
+		case _root.上键:
+			对应方向 = 控制对象.上行;
+			break;
+		case _root.下键:
+			对应方向 = 控制对象.下行;
+			break;
+		case _root.左键:
+			对应方向 = 控制对象.左行;
+			break;
+		case _root.右键:
+			对应方向 = 控制对象.右行;
+			break;
+	}
+
+	var currentFrame:Number = _root.帧计时器.当前帧数;
+	if ((currentFrame - _root.场景转换函数.上次切换帧数 > 15) && 对应方向 && this.hitTest(控制对象.area) && 控制对象.hp > 0){
+		var pt = {x:控制对象._x, y:控制对象.Z轴坐标};
+		游戏世界.localToGlobal(pt);
+		if (this.hitTest(pt.x, pt.y, true)){
+			_root.场景进入位置名 = 对应门名;
+			_root.转场景记录数据();
+			_root.场景转换函数.上次切换帧数 = currentFrame;
+
+			var ok:Boolean = false;
+			if (_root.gameCommands != undefined && _root.gameCommands["openWebStageSelect"] != undefined) {
+				var requestSource:String = (source != undefined && source != "") ? String(source) : "as2_stage_map_door";
+				ok = _root.gameCommands["openWebStageSelect"]({
+					source: requestSource,
+					frameLabel: String(_root.关卡地图帧值 || "基地门口")
+				}) == true;
+			}
+			if (ok) {
+				_root.场景转换函数.Web选关打开中 = true;
+				return;
+			}
+
 			if (开门效果 == null || 开门效果 == ""){
 				_root.淡出动画.淡出跳转帧(目标场景帧);
 				this.gotoAndStop(3);

@@ -4211,6 +4211,12 @@ html.perf-low-effects .map-stage-backdrop::before {
     font-size: 11px;
 }
 
+.stage-select-panel.is-runtime .stage-select-fixture-label,
+.stage-select-panel.is-runtime #stage-select-fixture,
+.stage-select-panel.is-runtime .stage-select-badge {
+    display: none;
+}
+
 .stage-select-close-btn {
     width: 28px;
     height: 28px;
@@ -4770,6 +4776,16 @@ html.perf-low-effects .map-stage-backdrop::before {
 .stage-select-dev-log.is-error,
 .stage-select-error-line {
     color: #fecaca;
+}
+
+.stage-select-panel.is-runtime .stage-select-side-title,
+.stage-select-panel.is-runtime .stage-select-summary,
+.stage-select-panel.is-runtime .stage-select-dev-log {
+    display: none;
+}
+
+.stage-select-panel.is-runtime .stage-select-dev-log.is-error {
+    display: block;
 }
 
 @keyframes stageSelectBoot {

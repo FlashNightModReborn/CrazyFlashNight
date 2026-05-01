@@ -113,6 +113,21 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void RequestOpenPanel_StageSelect_RoutesRuntimeInitData()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.RequestOpenPanel("stage-select", "as2_base_gate", null, "基地门口", "dev");
+            Assert.Single(c.Posts);
+            Assert.Contains("\"panel\":\"stage-select\"", c.Posts[0]);
+            Assert.Contains("\"mode\":\"runtime\"", c.Posts[0]);
+            Assert.Contains("\"fixture\":\"mixed\"", c.Posts[0]);
+            Assert.Contains("\"frameLabel\":\"基地门口\"", c.Posts[0]);
+            Assert.Contains("\"source\":\"as2_base_gate\"", c.Posts[0]);
+            Assert.Contains("\"debug\":false", c.Posts[0]);
+        }
+
+        [Fact]
         public void RequestOpenPanel_Unknown_NoPost()
         {
             Capture c = new Capture();

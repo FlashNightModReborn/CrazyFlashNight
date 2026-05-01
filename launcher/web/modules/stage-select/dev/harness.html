@@ -139,6 +139,7 @@
     var host = window.StageSelectHarnessHost = {
         sentMessages: [],
         enterMessages: [],
+        jumpMessages: [],
         nextEnterError: '',
         setViewport: function(value) {
             var parts = String(value || '1366x768').split('x');
@@ -148,13 +149,14 @@
             shell.style.height = height + 'px';
             viewportSelect.value = width + 'x' + height;
         },
-        open: function() {
+        open: function(options) {
+            options = options || {};
             if (Panels.getActive && Panels.getActive() === 'stage-select') Panels.close();
             Panels.open('stage-select', {
-                mode: 'dev',
+                mode: options.mode || 'dev',
                 fixture: fixtureSelect.value,
                 frameLabel: frameSelect.value,
-                debug: true
+                debug: options.debug !== false
             });
             statusEl.textContent = 'Opened ' + frameSelect.value + ' / ' + fixtureSelect.value;
         },
@@ -191,6 +193,19 @@
                         success: !error && unlocked,
                         error: error || (unlocked ? '' : 'locked'),
                         closePanel: !error && unlocked
+                    });
+                }, 15);
+            } else if (message.cmd === 'jump_frame') {
+                host.jumpMessages.push(message);
+                frameSelect.value = message.frameLabel || frameSelect.value;
+                setTimeout(function() {
+                    window.chrome.webview.__dispatch({
+                        type: 'panel_resp',
+                        panel: 'stage-select',
+                        cmd: 'jump_frame',
+                        callId: message.callId,
+                        success: true,
+                        frameLabel: message.frameLabel || ''
                     });
                 }, 15);
             }

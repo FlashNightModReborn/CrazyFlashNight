@@ -52,7 +52,11 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(enterFrame){
-   切换场景("","关卡地图","",_root.右键,"小门");
+   if (打开Web选关 != undefined) {
+      打开Web选关("","关卡地图","",_root.右键,"as2_base_gate");
+   } else {
+      切换场景("","关卡地图","",_root.右键,"小门");
+   }
 }
 onClipEvent(load){
    是否从门加载主角 = true;

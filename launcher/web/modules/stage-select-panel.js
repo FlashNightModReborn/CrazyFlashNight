@@ -21,6 +21,7 @@ var StageSelectPanel = (function() {
     var _pendingReq = {};
     var _reqSeq = 0;
     var _session = 0;
+    var _mode = 'dev';
     var _busyStageName = '';
     var _lastError = '';
     var _layoutObserver = null;
@@ -98,12 +99,14 @@ var StageSelectPanel = (function() {
         _runtimeSnapshot = null;
         _busyStageName = '';
         _lastError = '';
+        _mode = initData && initData.mode || 'dev';
         DESIGN_W = manifest.designSize && manifest.designSize.width || 1024;
         DESIGN_H = manifest.designSize && manifest.designSize.height || 576;
         _fixtureName = initData && initData.fixture || 'mixed';
         _currentFrameLabel = initData && initData.frameLabel || initData && initData.page || manifest.frameOrder[0];
         setFixture(_fixtureName);
         if (_fixtureSelectEl) _fixtureSelectEl.value = _fixtureName;
+        if (_el) _el.classList.toggle('is-runtime', isRuntimeMode());
         _lastDifficultyClick = null;
         renderTabs();
         initLayoutWatcher();
@@ -304,7 +307,11 @@ var StageSelectPanel = (function() {
             node.addEventListener('click', function(e) {
                 e.stopPropagation();
                 if (nav.actionKind === 'localFrame' && nav.targetFrameLabel) {
+                    var sourceFrameLabel = _currentFrameLabel;
                     setFrame(nav.targetFrameLabel, 'nav');
+                    if (isRuntimeMode()) requestJumpFrame(nav.targetFrameLabel, nav, sourceFrameLabel);
+                } else if (isRuntimeMode() && (nav.actionKind === 'flashJumpCurrent' || nav.actionKind === 'flashJumpFrameValue')) {
+                    requestClose();
                 } else {
                     logDev('nav static only: ' + (nav.targetFrameLabel || nav.actionKind));
                 }
@@ -472,6 +479,10 @@ var StageSelectPanel = (function() {
         return !!(_fixture && _fixture.challenge);
     }
 
+    function isRuntimeMode() {
+        return _mode === 'runtime';
+    }
+
     function requestSnapshot() {
         if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') {
             logDev('snapshot skipped: bridge unavailable');
@@ -494,6 +505,34 @@ var StageSelectPanel = (function() {
             cmd: 'snapshot',
             callId: reqId,
             stageNames: getManifestStageNames()
+        });
+    }
+
+    function requestJumpFrame(frameLabel, nav, sourceFrameLabel) {
+        if (!frameLabel) return;
+        if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') {
+            showError('bridge_unavailable');
+            return;
+        }
+        var reqId = 'stage-select-jump-' + (++_reqSeq);
+        var currentSession = _session;
+        _pendingReq[reqId] = function(resp) {
+            delete _pendingReq[reqId];
+            if (currentSession !== _session || !Panels.isOpen() || Panels.getActive() !== 'stage-select') return;
+            if (!resp.success) {
+                showError(resp.error || 'jump_frame_failed');
+                return;
+            }
+            logDev('jump frame synced: ' + frameLabel);
+        };
+        Bridge.send({
+            type: 'panel',
+            panel: 'stage-select',
+            cmd: 'jump_frame',
+            callId: reqId,
+            frameLabel: frameLabel,
+            sourceFrameLabel: sourceFrameLabel || '',
+            navId: nav && nav.id || ''
         });
     }
 
@@ -664,6 +703,7 @@ var StageSelectPanel = (function() {
                 isOpen: Panels.getActive && Panels.getActive() === 'stage-select',
                 frameLabel: _currentFrameLabel,
                 fixture: _fixtureName,
+                mode: _mode,
                 challenge: isChallengeMode(),
                 stageButtonCount: _buttonLayerEl ? _buttonLayerEl.querySelectorAll('.stage-select-stage-button').length : 0,
                 navButtonCount: _navLayerEl ? _navLayerEl.querySelectorAll('.stage-select-nav-button').length : 0,

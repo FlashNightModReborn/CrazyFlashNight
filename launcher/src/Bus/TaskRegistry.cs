@@ -25,7 +25,7 @@ namespace CF7Launcher.Bus
     ///   console_result  JSON event  AS2→C#  (内部事件，触发 OnConsoleResult)
     ///   icon_bake       JSON sync   AS2↔C#  (图标烘焙：begin/chunk/end/complete)
     ///   archive         JSON async  AS2↔C#  httpCallable=true  (存档shadow备份/读取)
-    ///   panel_request   JSON sync   AS2→C#  (旧 Flash UI 请求 WebView 打开面板: 目前仅 map)
+    ///   panel_request   JSON sync   AS2→C#  (旧 Flash UI 请求 WebView 打开面板: map / stage-select)
     ///   stage_select_response JSON async AS2↔C# (选关 Web panel 测试入口)
     /// </summary>
     public static class TaskRegistry
@@ -96,7 +96,9 @@ namespace CF7Launcher.Bus
                     string panel = msg.Value<string>("panel") ?? "";
                     string source = msg.Value<string>("source") ?? "as2_request";
                     string pageId = msg.Value<string>("pageId") ?? "";
-                    webOverlay.RequestOpenPanel(panel, source, pageId);
+                    string frameLabel = msg.Value<string>("frameLabel") ?? "";
+                    string mode = msg.Value<string>("mode") ?? "";
+                    webOverlay.RequestOpenPanel(panel, source, pageId, frameLabel, mode);
                     return null;
                 });
             }
