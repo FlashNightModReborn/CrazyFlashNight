@@ -117,7 +117,7 @@ namespace CF7Launcher.Tests.Guardian
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
-            r.RequestOpenPanel("stage-select", "as2_base_gate", null, "基地门口", "dev");
+            r.RequestOpenPanel("stage-select", "as2_base_gate", null, "基地门口");
             Assert.Single(c.Posts);
             Assert.Contains("\"panel\":\"stage-select\"", c.Posts[0]);
             Assert.Contains("\"mode\":\"runtime\"", c.Posts[0]);

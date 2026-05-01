@@ -97,8 +97,7 @@ namespace CF7Launcher.Bus
                     string source = msg.Value<string>("source") ?? "as2_request";
                     string pageId = msg.Value<string>("pageId") ?? "";
                     string frameLabel = msg.Value<string>("frameLabel") ?? "";
-                    string mode = msg.Value<string>("mode") ?? "";
-                    webOverlay.RequestOpenPanel(panel, source, pageId, frameLabel, mode);
+                    webOverlay.RequestOpenPanel(panel, source, pageId, frameLabel);
                     return null;
                 });
             }

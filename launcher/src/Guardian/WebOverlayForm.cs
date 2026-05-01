@@ -3159,15 +3159,15 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void RequestOpenPanel(string panelName, string source)
         {
-            RequestOpenPanel(panelName, source, null, null, null);
+            RequestOpenPanel(panelName, source, null, null);
         }
 
         public void RequestOpenPanel(string panelName, string source, string pageId)
         {
-            RequestOpenPanel(panelName, source, pageId, null, null);
+            RequestOpenPanel(panelName, source, pageId, null);
         }
 
-        public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string mode)
+        public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel)
         {
             if (_disposed) return;
             if (this.IsHandleCreated && this.InvokeRequired)
@@ -3176,7 +3176,7 @@ namespace CF7Launcher.Guardian
                 {
                     this.BeginInvoke(new Action(delegate()
                     {
-                        RequestOpenPanel(panelName, source, pageId, frameLabel, mode);
+                        RequestOpenPanel(panelName, source, pageId, frameLabel);
                     }));
                 }
                 catch { }
@@ -3185,7 +3185,7 @@ namespace CF7Launcher.Guardian
 
             if (_commandRouter != null)
             {
-                _commandRouter.RequestOpenPanel(panelName, source, pageId, frameLabel, mode);
+                _commandRouter.RequestOpenPanel(panelName, source, pageId, frameLabel);
                 return;
             }
             LogManager.Log("[Panel] RequestOpenPanel before router wired, panel=" + (panelName ?? "<null>"));

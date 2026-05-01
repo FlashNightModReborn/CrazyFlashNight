@@ -155,14 +155,14 @@ namespace CF7Launcher.Guardian
 
         /// <summary>
         /// AS2 → C# panel 打开请求（替代旧 WebOverlayForm.RequestOpenPanel 的 dispatch 段）。
-        /// map 透传 pageId；stage-select 透传 frameLabel/mode；其他 panel 保持 unsupported。
+        /// map 透传 pageId；stage-select 透传 frameLabel（mode 固化为 runtime）；其他 panel 保持 unsupported。
         /// </summary>
         public void RequestOpenPanel(string panelName, string source, string pageId)
         {
-            RequestOpenPanel(panelName, source, pageId, null, null);
+            RequestOpenPanel(panelName, source, pageId, null);
         }
 
-        public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string mode)
+        public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel)
         {
             if (string.IsNullOrEmpty(panelName)) return;
             string safeSource = string.IsNullOrEmpty(source) ? "as2_request" : source;
@@ -173,7 +173,7 @@ namespace CF7Launcher.Guardian
             }
             if (string.Equals(panelName, "stage-select", StringComparison.OrdinalIgnoreCase))
             {
-                OpenStageSelectPanel(safeSource, frameLabel, mode);
+                OpenStageSelectPanel(safeSource, frameLabel);
                 return;
             }
             LogManager.Log("[Router] RequestOpenPanel unsupported panel=" + panelName);
@@ -188,11 +188,10 @@ namespace CF7Launcher.Guardian
             OpenPanel("map", initData);
         }
 
-        private void OpenStageSelectPanel(string source, string frameLabel, string mode)
+        private void OpenStageSelectPanel(string source, string frameLabel)
         {
-            string safeMode = "runtime";
             string safeFrameLabel = string.IsNullOrEmpty(frameLabel) ? "基地门口" : frameLabel;
-            string initData = "{\"mode\":\"" + EscapeJsonString(safeMode) + "\",\"fixture\":\"mixed\",\"frameLabel\":\"" +
+            string initData = "{\"mode\":\"runtime\",\"fixture\":\"mixed\",\"frameLabel\":\"" +
                 EscapeJsonString(safeFrameLabel) + "\",\"debug\":false,\"source\":\"" + EscapeJsonString(source) + "\"}";
             OpenPanel("stage-select", initData);
         }

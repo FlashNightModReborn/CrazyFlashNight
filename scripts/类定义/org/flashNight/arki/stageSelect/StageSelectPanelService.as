@@ -119,14 +119,17 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         var source:String = (params != undefined && params.source != undefined)
             ? String(params.source)
             : "as2_stage_map_door";
-        var frameLabel:String = (params != undefined && params.frameLabel != undefined)
+        var rawFrame:String = (params != undefined && params.frameLabel != undefined)
             ? String(params.frameLabel)
-            : String(_root.关卡地图帧值 || "基地门口");
-        if (frameLabel == "") frameLabel = "基地门口";
+            : "";
+        if (rawFrame == "") rawFrame = String(_root.关卡地图帧值 || "基地门口");
 
-        var payload:String = '{"task":"panel_request","panel":"stage-select","source":"' +
-            escapeJsonString(source) + '","mode":"runtime","frameLabel":"' + escapeJsonString(frameLabel) + '"}';
-        return _root.server.sendSocketMessage(payload);
+        return _root.server.sendSocketMessage(_json.stringify({
+            task: "panel_request",
+            panel: "stage-select",
+            source: source,
+            frameLabel: rawFrame
+        }));
     }
 
     private static function validateEnter(stageName:String, difficulty:String):Object {
@@ -288,10 +291,5 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
 
     private static function sendResponse(resp:Object):Void {
         _root.server.sendSocketMessage(_json.stringify(resp));
-    }
-
-    private static function escapeJsonString(value:String):String {
-        if (value == undefined || value == null) return "";
-        return String(value).split("\\").join("\\\\").split("\"").join("\\\"");
     }
 }
