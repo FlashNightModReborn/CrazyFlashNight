@@ -299,14 +299,19 @@ class Program
             v8Runtime.InitGameInput();
         }
 
-        // 刘海 Notch overlay（FPS 显示 + 可展开工具栏）
-        NotchOverlay notchOverlay = new NotchOverlay(
-            form, form.FlashHostPanel, frameTask.FpsBuffer,
-            projectRoot,
-            new Action(form.ToggleFullscreen),
-            new Action(form.ToggleLog),
-            new Action(form.ForceExit),
-            new Action<Keys>(form.HandleButtonClick));
+        // 刘海 Notch overlay（FPS 显示 + 可展开工具栏）。
+        // useNativeHud=true 时不实例化独立 ULW；下面 if (UseNativeHud) 分支用 NotchWidget 在 NativeHud 内承载，省一层 layered window。
+        NotchOverlay notchOverlay = null;
+        if (!config.UseNativeHud)
+        {
+            notchOverlay = new NotchOverlay(
+                form, form.FlashHostPanel, frameTask.FpsBuffer,
+                projectRoot,
+                new Action(form.ToggleFullscreen),
+                new Action(form.ToggleLog),
+                new Action(form.ForceExit),
+                new Action<Keys>(form.HandleButtonClick));
+        }
 
         // Phase 1 (11c): WebView2 全局硬依赖; 入口已预检, 这里 WebOverlayForm 构造异常直接 throw 到上游
         string wv2ver;
@@ -357,7 +362,8 @@ class Program
                 new Action<Keys>(form.HandleButtonClick));
 
             // GDI+ fallback：WebView2 初始化失败或未就绪时走这里。
-            // useNativeHud=true 时 toastOverlay 为 null，下面 if (UseNativeHud) 分支会用 nativeHud（IToastSink）覆盖。
+            // useNativeHud=true 时 toastOverlay/notchOverlay 都为 null；下面 if (UseNativeHud) 分支会用 nativeHud
+            // 同时充当 IToastSink + INotchSink 覆盖（NotchWidget/ToastWidget 接管渲染）。
             webOverlay.SetFallback(toastOverlay, notchOverlay);
 
             // 光照等级数据（与 NotchOverlay 共用同一默认值）
@@ -398,7 +404,7 @@ class Program
             new Action<bool>(form.HandlePanelStateChanged),
             new Action<string>(webOverlay.SetActivePanel));
         webOverlay.SetCommandRouter(commandRouter);
-        notchOverlay.SetCommandRouter(commandRouter);
+        if (notchOverlay != null) notchOverlay.SetCommandRouter(commandRouter);
 
         // === Phase 2: Native HUD + PanelHostController 完整装配（config.useNativeHud）===
         // Flag OFF：跳过 NativeHud/Backdrop/PanelHost；router 走 PostToWeb 旧路径
@@ -462,9 +468,21 @@ class Program
             CF7Launcher.Guardian.Hud.ToastWidget toastWidget =
                 new CF7Launcher.Guardian.Hud.ToastWidget(form.FlashHostPanel);
             nativeHud.AddWidget(toastWidget);
-            // 升级 webOverlay 的 toast fallback：先前以 toastOverlay=null 注入，nativeHud 就绪后接管 IToastSink。
-            // notchOverlay 暂时保留作 INotchSink（A.2 再迁移）。
-            webOverlay.SetFallback(nativeHud, notchOverlay);
+            // NotchWidget 顶替原 NotchOverlay 独立 ULW（FPS 药丸 + 工具栏 + 通知栈 + 展开图表）。
+            // INotchSink.AddNotice/SetStatusItem/ClearStatusItem 路由到此 widget。
+            CF7Launcher.Guardian.Hud.NotchWidget notchWidget =
+                new CF7Launcher.Guardian.Hud.NotchWidget(
+                    form.FlashHostPanel, frameTask.FpsBuffer, projectRoot,
+                    new Action(form.ToggleFullscreen),
+                    new Action(form.ToggleLog),
+                    new Action(form.ForceExit),
+                    new Action<Keys>(form.HandleButtonClick));
+            notchWidget.SetCommandRouter(commandRouter);
+            nativeHud.AddWidget(notchWidget);
+            // 升级 webOverlay 的 toast/notch fallback：先前以 toastOverlay=null/notchOverlay=null 注入，
+            // nativeHud 就绪后接管 IToastSink + INotchSink。webOverlay.AddMessage/AddNotice 在
+            // _useNativeHud=true 时直接转发 _toastFallback / _notchFallback，无需 ExecScript。
+            webOverlay.SetFallback(nativeHud, nativeHud);
             // web `#quest-row > #map-hud-toggle` click → router MAPHUD_TOGGLE → C# 折叠态切换
             commandRouter.OnMapHudToggle = delegate { rightContext.ToggleMapCollapsed(); };
             // z-order 锚点：把 NativeHud 沉到 HitNumber 之下（Cursor 在 HitNumber 之上 → 自动也在 NativeHud 之上）
@@ -475,7 +493,7 @@ class Program
             // 旧版每条 raw 被三方各自 Split('|')；高频 socket / FrameTask 流下 ~3x 字符串数组分配。
             // 共享 UiDataPacket 后只 split 一次。
             WebOverlayForm capturedWeb = webOverlay;
-            NotchOverlay capturedNotch = notchOverlay;
+            NotchOverlay capturedNotch = notchOverlay; // useNativeHud=true 时为 null，下面 try 中守护
             NativeHudOverlay capturedHud2 = nativeHud;
             Action<string> uiDataTee = delegate(string raw)
             {
@@ -483,7 +501,7 @@ class Program
                 CF7Launcher.Guardian.Hud.UiDataPacket pkt = new CF7Launcher.Guardian.Hud.UiDataPacket(raw);
                 try { capturedWeb.HandleUiData(pkt); }
                 catch (Exception ex) { LogManager.Log("[Tee] web UiData throw: " + ex.Message); }
-                try { capturedNotch.HandleUiData(pkt); }
+                try { if (capturedNotch != null) capturedNotch.HandleUiData(pkt); }
                 catch (Exception ex) { LogManager.Log("[Tee] notch UiData throw: " + ex.Message); }
                 try { capturedHud2.HandleUiData(pkt); }
                 catch (Exception ex) { LogManager.Log("[Tee] hud UiData throw: " + ex.Message); }
@@ -685,7 +703,7 @@ class Program
             try { if (webOverlay != null) webOverlay.Dispose(); } catch { }
             try { if (backdrop != null) backdrop.Dispose(); } catch { }
             try { if (nativeHud != null) nativeHud.Dispose(); } catch { }
-            try { notchOverlay.Dispose(); } catch { }
+            try { if (notchOverlay != null) notchOverlay.Dispose(); } catch { }
             try { hnOverlay.Dispose(); } catch { }
             try { v8Runtime.Dispose(); } catch { }
             try { if (toastOverlay != null) toastOverlay.Dispose(); } catch { }

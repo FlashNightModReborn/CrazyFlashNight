@@ -71,7 +71,7 @@ Program.Run(args)
    ├─ 正常模式额外校验 `flashPlayerPath` / `swfPath`
    ├─ `AudioEngine.Init` + `MusicCatalog`
    ├─ `PortAllocator` → `XmlSocketServer.Start` + `HttpApiServer.Start`
-   ├─ `ToastOverlay` / `V8Runtime` / `FrameTask` / `NotchOverlay`
+   ├─ `ToastOverlay` / `NotchOverlay`（两者均仅 `useNativeHud=false`） / `V8Runtime` / `FrameTask`
    ├─ 再次获取 WebView2 Runtime 版本，构造 `WebOverlayForm` + `InputShieldForm`
    ├─ `TaskRegistry.RegisterAll(...)` + 写 `launcher_ports.json`
    │
@@ -257,8 +257,8 @@ launcher/
 │   │   ├── ProcessManager.cs              Flash SA 进程生命周期 + 僵尸兜底
 │   │   ├── LogManager.cs                  线程安全日志 → TextBox + 文件通道（logs/launcher.log）+ 测试 sink hook
 │   │   ├── OverlayBase.cs                 GDI+ Layered Window 覆盖层基类
-│   │   ├── ToastOverlay.cs                GDI+ toast 消息（WS_EX_TRANSPARENT）
-│   │   ├── NotchOverlay.cs                GDI+ 刘海栏（选择性穿透, 状态机）
+│   │   ├── ToastOverlay.cs                GDI+ toast 消息（独立 ULW；仅 useNativeHud=false fallback；useNativeHud=true 由 Hud/ToastWidget 在 NativeHudOverlay 内承载）
+│   │   ├── NotchOverlay.cs                GDI+ 刘海栏（独立 ULW，仅 useNativeHud=false fallback；useNativeHud=true 由 Hud/NotchWidget 在 NativeHudOverlay 内承载）
 │   │   ├── HitNumberOverlay.cs            GDI+ 伤害数字
 │   │   ├── CursorOverlayForm.cs           原生 cursor 视觉层（Layered Window，高频低延迟）
 │   │   ├── WebOverlayForm.cs              WebView2 视觉层（WS_EX_TRANSPARENT）
@@ -279,6 +279,8 @@ launcher/
 │   │   │   ├── RightContextWidget.cs       右侧 5 键 + 小地图卡片 + 装备/任务行 + jukebox titlebar
 │   │   │   ├── SafeExitPanelWidget.cs      安全退出二次确认
 │   │   │   ├── ComboWidget.cs              搓招输入态与命中通知
+│   │   │   ├── ToastWidget.cs              toast 消息（useNativeHud=true 时承载，复刻 ToastOverlay 视觉，alpha 在 segment 颜色内做）
+│   │   │   ├── NotchWidget.cs              刘海栏（useNativeHud=true 时承载，FPS 药丸 + 工具栏 + 通知栈 + 展开图表 + currency/clock）
 │   │   │   ├── MapHudWidget.cs             小地图 shared renderer / blocks fallback
 │   │   │   └── WidgetScaler.cs / UiDataPacketParser.cs / MapHudDataCatalog.cs 等支撑类
 │   │   │
@@ -698,17 +700,24 @@ gpuPreference = "off"
 devGpuProbeHotkey = false
 
 # 开关 Native HUD + PanelHostController 装配（overlay 架构纯化迁移态；默认 false）。
-# 设 true 启用 Panel-Only + NotchOverlay/ToastOverlay + 当前已注册 NativeHud widget：
-#   - panel 打开走 PanelHostController.OpenPanel：FlashSnapshot → backdrop → NativeHud/NotchOverlay/ToastOverlay 全 Suspend
+# 设 true 启用 Panel-Only + 当前已注册 NativeHud widget（含 ToastWidget + NotchWidget）：
+#   - useNativeHud=true 时不实例化 ToastOverlay 与 NotchOverlay；toast/notch 全部由 NativeHudOverlay 内的
+#     ToastWidget + NotchWidget 承载，panel 开关随 nativeHud.Suspend/Resume，省两层独立 ULW
+#     （DWM α traversal 收益叠加；常驻 ULW 5→3）
+#   - panel 打开走 PanelHostController.OpenPanel：FlashSnapshot → backdrop → NativeHud（含 ToastWidget+NotchWidget）整层 Suspend
 #     → WebOverlay 缩到 panel 矩形 + opaque + 去 LAYERED|TRANSPARENT
-#   - panel 关闭：WebOverlay 回 anchor + 透明 + click-through；NotchOverlay/ToastOverlay 重新 SetReady 显示
-#   - WebOverlay SetReady 时不再 SuspendFallback——NotchOverlay/ToastOverlay 一直作为常驻 HUD（含 LOG/EXIT/全屏按钮）
+#   - panel 关闭：WebOverlay 回 anchor + 透明 + click-through；NativeHud Resume 重新评估 widget union（toast/notch 一并复显）
+#   - WebOverlay SetReady 时不再 SuspendFallback——NativeHud 内 NotchWidget 一直作为常驻 HUD（含 LOG/EXIT/全屏按钮、FPS 药丸、currency、clock）；
+#     toast/notch fallback 在 nativeHud 构造完毕后由 webOverlay.SetFallback(nativeHud, nativeHud) 升级，
+#     IToastSink → ToastWidget，INotchSink → NotchWidget（同一 NativeHud 实例同时实现两个接口）
 #   - 注入 CSS 隐藏 web 端 #notch / #toast-container / #top-right-tools / #context-panel / #safe-exit-panel /
 #     #quest-notice-bar / #combo-status / #jukebox-panel / #map-hud 避免双重 UI
-#   - NativeHudOverlay 当前注册 RightContextWidget / SafeExitPanelWidget / ComboWidget；
+#   - NativeHudOverlay 当前注册 RightContextWidget / SafeExitPanelWidget / ComboWidget / ToastWidget / NotchWidget；
 #     RightContextWidget 内部复用 MapHudWidget renderer，旧拆分 widget 类已移除。
-#   - notch 通知 fan-out（CompositeNotchSink）：NativeHud 优先消费已订阅 category（如 combo），
-#     未订阅 category 继续流向 webOverlay/NotchOverlay 过渡渲染
+#   - notch 通知 fan-out（CompositeNotchSink）：useNativeHud=true 时 NotchWidget 注册即视为通用 sink，
+#     HasNoticeConsumerFor 对所有 category 返回 true，CompositeNotchSink 跳过 webOverlay 兜底；
+#     INotchNoticeConsumer 精确订阅（如 ComboWidget 接 "combo"）优先于 NotchWidget 通用渲染，
+#     避免 ComboWidget 命中条 + NotchWidget 通知行双显示
 # 性能收益：panel 打开期 α blend 成本下降；panel 关闭后 DoFullIdleSuspend 会 SW_HIDE + TrySuspendAsync 运行态 WebView2。
 useNativeHud = false
 
@@ -725,22 +734,23 @@ useDesktopCursorOverlay = true
 
 `devGpuProbeHotkey=true`（或 `CF7_DEV_GPU_PROBE=1`）启用 Ctrl+G 切换 WebView2 `DefaultBackgroundColor=Black` + Flash 子窗口隐藏的 GPU 合成探针，用于实测 alpha blend 占 iGPU 的比重。日志写 `[GpuProbe] ON/OFF tick=...` 可对照任务管理器曲线。**玩家版必须保持 false**：误触会让游戏画面消失，再按一次才能恢复。
 
-`useNativeHud=true`（或 `CF7_NATIVE_HUD=1`）开启 Panel-Only 架构 + NotchOverlay 接管 HUD + 当前 NativeHud widget：
+`useNativeHud=true`（或 `CF7_NATIVE_HUD=1`）开启 Panel-Only 架构 + NativeHud 接管 HUD + 当前 NativeHud widget：
 - `HandleButtonClick` 与 `RequestOpenPanel` 路由到 [LauncherCommandRouter.cs](src/Guardian/LauncherCommandRouter.cs)（按钮命令唯一中枢）
-- 所有 panel 打开统一进 [PanelHostController.cs](src/Guardian/PanelHostController.cs) 的 command queue：[FlashSnapshot.cs](src/Guardian/FlashSnapshot.cs).Capture → ComposeBackdrop → [NativePanelBackdrop.cs](src/Guardian/NativePanelBackdrop.cs) 显示 → [NativeHudOverlay.cs](src/Guardian/NativeHudOverlay.cs)+NotchOverlay+ToastOverlay 全 Suspend → WebOverlayForm.ResumeForPanel（去 `WS_EX_LAYERED|WS_EX_TRANSPARENT`、`TransparencyKey=Empty`、`DefaultBackgroundColor=Black`、SetWindowPos `HWND_TOP|SWP_FRAMECHANGED` 至 [PanelLayoutCatalog.cs](src/Guardian/PanelLayoutCatalog.cs) 决定的矩形）→ PostToWeb `panel_viewport_set` → InputShield 进 telemetry → 顶置 HitNumber/Cursor → 启用 ESC
-- panel 关闭（useNativeHud=true 路径）：WebOverlayForm.ForceIdleState 走 `DoFullIdleSuspend` —— `SuspendWebTimers` 停 fps/audio/position-settle/reload timer + `_frozenForIdle=true` 冻结 HandleUiData 仅缓存不 ExecScript + `ShowWindow SW_HIDE` + 恢复 `WS_EX_LAYERED|WS_EX_TRANSPARENT` + `HWND_NOTOPMOST` 防御 + `TransparencyKey/transparent BG` 复位 + `CoreWebView2.TrySuspendAsync` fire-and-forget；NotchOverlay/ToastOverlay 重新 SetReady 显示。下次 `ResumeForPanel` 先调 `CoreWebView2.Resume()` 唤醒。useNativeHud=false 仍走 `DoSoftIdleRestore` 仅恢复样式拉回 anchor 矩形（保留 web HUD 显示）
-- WebOverlay SetReady 时不再 SuspendFallback ([WebOverlayForm.SuspendFallback](src/Guardian/WebOverlayForm.cs))——NotchOverlay/ToastOverlay 一直显示作为常驻 HUD，含 LOG/EXIT/全屏等按钮
-- WebOverlay 注入 CSS 隐藏 web 端 `#notch` / `#toast-container` / `#top-right-tools` / `#safe-exit-panel` / `#quest-notice-bar` / `#combo-status` / `#jukebox-panel` / `#map-hud` / **`#context-panel`**（整个容器，含 `#quest-row > #map-hud-toggle / EQUIP_UI / TASK_UI` 按钮）避免与 C# 渲染重叠；notch/toast 消息（AddNotice/SetStatusItem/AddMessage）始终走 fallback (NotchOverlay/ToastOverlay) 而不是 web ExecScript。装备/任务入口由 [RightContextWidget](src/Guardian/Hud/RightContextWidget.cs) 的右侧 `装备/任务` 行接管，通过 [LauncherCommandRouter.cs](src/Guardian/LauncherCommandRouter.cs) 直接 `SendGameCommand("openEquipUI"/"openTaskUI")`，与原 web 路径等价
-- **Native HUD 默认组成**：[NotchOverlay](src/Guardian/NotchOverlay.cs) 接管 web `#notch`（金币/KP、FPS、光照 sparkline、时钟、row1-right、hover toolbar，UiData `g/k/s/q` 直接喂入；`game` notice 复刻 Web 的队列、去重计数、3 秒退场和 4 条上限），[ToastOverlay](src/Guardian/ToastOverlay.cs) 复刻 web `#toast-container` 的 `285px` 宽度、8 秒显示 + 1.2 秒淡出、最多 8 条队列，[RightContextWidget](src/Guardian/Hud/RightContextWidget.cs) 接管右侧 5 键 + context panel + jukebox titlebar（布局统一走 [RightHudLayout](src/Guardian/Hud/RightHudLayout.cs)，小地图 card 复用 [MapHudWidget](src/Guardian/Hud/MapHudWidget.cs) shared renderer：优先按 `visuals.assetUrl` PNG alpha 绘制 web `map-hud-svg-silhouette` 等价剪影，失败才回退 blocks），[SafeExitPanelWidget](src/Guardian/Hud/SafeExitPanelWidget.cs)（**必须由 SAFEEXIT click → router → widget.Arm() 显式开启**才显示；同样走 `right:80px` 对齐规则；Arm 后 sv:1 显示「存盘中…」状态条，sv:2 切到 取消/退出 按钮），[ComboWidget](src/Guardian/Hud/ComboWidget.cs)（搓招进度 + DFA/Sync 命中扫光、字符收束、收起动画）。旧的拆分 widget 类已收敛进 `RightContextWidget` 或移除，不再在源码树中作为独立类维护
+- 所有 panel 打开统一进 [PanelHostController.cs](src/Guardian/PanelHostController.cs) 的 command queue：[FlashSnapshot.cs](src/Guardian/FlashSnapshot.cs).Capture → ComposeBackdrop → [NativePanelBackdrop.cs](src/Guardian/NativePanelBackdrop.cs) 显示 → [NativeHudOverlay.cs](src/Guardian/NativeHudOverlay.cs)（含 ToastWidget+NotchWidget）整层 Suspend → WebOverlayForm.ResumeForPanel（去 `WS_EX_LAYERED|WS_EX_TRANSPARENT`、`TransparencyKey=Empty`、`DefaultBackgroundColor=Black`、SetWindowPos `HWND_TOP|SWP_FRAMECHANGED` 至 [PanelLayoutCatalog.cs](src/Guardian/PanelLayoutCatalog.cs) 决定的矩形）→ PostToWeb `panel_viewport_set` → InputShield 进 telemetry → 顶置 HitNumber/Cursor → 启用 ESC
+- panel 关闭（useNativeHud=true 路径）：WebOverlayForm.ForceIdleState 走 `DoFullIdleSuspend` —— `SuspendWebTimers` 停 fps/audio/position-settle/reload timer + `_frozenForIdle=true` 冻结 HandleUiData 仅缓存不 ExecScript + `ShowWindow SW_HIDE` + 恢复 `WS_EX_LAYERED|WS_EX_TRANSPARENT` + `HWND_NOTOPMOST` 防御 + `TransparencyKey/transparent BG` 复位 + `CoreWebView2.TrySuspendAsync` fire-and-forget；NativeHud Resume 重新评估 widget union（toast/notch 一并复显）。下次 `ResumeForPanel` 先调 `CoreWebView2.Resume()` 唤醒。useNativeHud=false 仍走 `DoSoftIdleRestore` 仅恢复样式拉回 anchor 矩形（保留 web HUD 显示）
+- WebOverlay SetReady 时不再 SuspendFallback ([WebOverlayForm.SuspendFallback](src/Guardian/WebOverlayForm.cs))——NotchWidget/ToastWidget 在 NativeHud 内一直显示作为常驻 HUD（含 LOG/EXIT/全屏等按钮、FPS 药丸、currency、clock）；不再依赖独立 NotchOverlay/ToastOverlay ULW
+- Toast / Notch 宿主迁移：useNativeHud=true 时 Program.cs 不实例化 ToastOverlay 也不实例化 NotchOverlay。nativeHud 构造完成后 `webOverlay.SetFallback(nativeHud, nativeHud)` 让同一 NativeHud 实例同时充当 IToastSink + INotchSink；socket → WebOverlayForm.AddMessage/AddNotice → _toastFallback/_notchFallback (=nativeHud) → NativeHudOverlay 内 BeginInvoke → ToastWidget.AddMessage / NotchWidget.AddNotice。NotchWidget 注册后 `HasNoticeConsumerFor` 对所有 category 返回 true，CompositeNotchSink 跳过 webOverlay 兜底；INotchNoticeConsumer 精确订阅（如 ComboWidget 接 "combo"）优先于 NotchWidget 通用渲染，避免双显示。useNativeHud=false 退化路径仍是独立 ToastOverlay/NotchOverlay ULW
+- WebOverlay 注入 CSS 隐藏 web 端 `#notch` / `#toast-container` / `#top-right-tools` / `#safe-exit-panel` / `#quest-notice-bar` / `#combo-status` / `#jukebox-panel` / `#map-hud` / **`#context-panel`**（整个容器，含 `#quest-row > #map-hud-toggle / EQUIP_UI / TASK_UI` 按钮）避免与 C# 渲染重叠；notch/toast 消息（AddNotice/SetStatusItem/AddMessage）始终走 fallback (NativeHud→NotchWidget / NativeHud→ToastWidget) 而不是 web ExecScript。装备/任务入口由 [RightContextWidget](src/Guardian/Hud/RightContextWidget.cs) 的右侧 `装备/任务` 行接管，通过 [LauncherCommandRouter.cs](src/Guardian/LauncherCommandRouter.cs) 直接 `SendGameCommand("openEquipUI"/"openTaskUI")`，与原 web 路径等价
+- **Native HUD 默认组成**：[NotchWidget](src/Guardian/Hud/NotchWidget.cs) 接管 web `#notch`（金币/KP、FPS、光照 sparkline、时钟、row1-right、hover toolbar，UiData `g/k/s/q` 直接喂入；`game` notice 复刻 Web 的队列、去重计数、3 秒退场和 4 条上限；视觉与原 [NotchOverlay](src/Guardian/NotchOverlay.cs) 严格对齐——hover state machine 通过 OnMouseEvent Enter/Leave 驱动而非 WM_MOUSELEAVE，按钮/sparkline/▼ 命中走 widget-local 坐标），[ToastWidget](src/Guardian/Hud/ToastWidget.cs) 复刻 web `#toast-container` 的 `285px` 宽度、8 秒显示 + 1.2 秒淡出、最多 8 条队列（视觉与原 [ToastOverlay](src/Guardian/ToastOverlay.cs) 严格对齐，alpha 在 segment 颜色内做以共享 NativeHud bitmap），[RightContextWidget](src/Guardian/Hud/RightContextWidget.cs) 接管右侧 5 键 + context panel + jukebox titlebar（布局统一走 [RightHudLayout](src/Guardian/Hud/RightHudLayout.cs)，小地图 card 复用 [MapHudWidget](src/Guardian/Hud/MapHudWidget.cs) shared renderer：优先按 `visuals.assetUrl` PNG alpha 绘制 web `map-hud-svg-silhouette` 等价剪影，失败才回退 blocks），[SafeExitPanelWidget](src/Guardian/Hud/SafeExitPanelWidget.cs)（**必须由 SAFEEXIT click → router → widget.Arm() 显式开启**才显示；同样走 `right:80px` 对齐规则；Arm 后 sv:1 显示「存盘中…」状态条，sv:2 切到 取消/退出 按钮），[ComboWidget](src/Guardian/Hud/ComboWidget.cs)（搓招进度 + DFA/Sync 命中扫光、字符收束、收起动画）。旧的拆分 widget 类已收敛进 `RightContextWidget` 或移除，不再在源码树中作为独立类维护
 - NativeHud 鼠标 Click 合成必须 Down/Up 命中**同 widget**（[NativeHudOverlay.cs](src/Guardian/NativeHudOverlay.cs) `_leftDownWidget` 跟踪）；widget 内部如需 button-level 匹配（如 SafeExitPanel 的取消/退出），自行用 `_downIndex` 守门（见 SafeExitPanelWidget.TryFireButtonClick）
 - NativeHud UiData 派发分两路：snapshot KV (`g:1234|k:5`) 走 [IUiDataConsumer](src/Guardian/Hud/INativeHudWidget.cs)；旧版 (`task|拯救公主` / `combo|波动拳|↓↘|...`) 走 [IUiDataLegacyConsumer](src/Guardian/Hud/INativeHudWidget.cs)。检测：[UiDataPacketParser.TryParseLegacy](src/Guardian/Hud/UiDataPacketParser.cs)——首段无 `:` 且总段数 ≥ 2 视为 legacy。NativeHudOverlay.HandleUiData 优先 legacy 探测，命中则一次性事件不入 snapshot；不命中再走 KV 路径。两套消费者计数 + LegacyTypes 集合 fast-path 独立守门（无消费者或 type 未订阅时整包早 return）
-- N 前缀 notice 派发走 [INotchNoticeConsumer](src/Guardian/Hud/INativeHudWidget.cs)：socket "N{category}|color|text" → INotchSink.AddNotice → [CompositeNotchSink](src/Guardian/CompositeNotchSink.cs) fan-out 到 webOverlay + nativeHud。NativeHud 用 `_registeredNoticeCategories` 集合门控未订阅 category（如 perf/icon_bake/wave 不进 native 派发预算）；ComboWidget 订阅 category="combo" 处理 DFA/Sync 命中通知
-- NativeHudOverlay / NotchOverlay 鼠标管线：拦 `WM_MOUSEACTIVATE` 返 `MA_NOACTIVATE` 防 Owner 被点击 deactivate；NativeHud 的 OnMouseDown/Up/Move 派发屏幕坐标到 widget，hit testing 走 `widget.TryHitTest(screenPt)`
+- N 前缀 notice 派发走 [INotchNoticeConsumer](src/Guardian/Hud/INativeHudWidget.cs)：socket "N{category}|color|text" → INotchSink.AddNotice → [CompositeNotchSink](src/Guardian/CompositeNotchSink.cs) fan-out 到 webOverlay + nativeHud。NativeHud 用 `_registeredNoticeCategories` 集合门控未订阅 category；ComboWidget 订阅 category="combo" 处理 DFA/Sync 命中通知；**NotchWidget 注册后视为通用兜底 sink**——所有未被 INotchNoticeConsumer 订阅的 category 都路由到 NotchWidget 通知行（`HasNoticeConsumerFor` 整体返回 true，CompositeNotchSink 跳过 webOverlay 兜底）
+- NativeHudOverlay 鼠标管线：拦 `WM_MOUSEACTIVATE` 返 `MA_NOACTIVATE` 防 Owner 被点击 deactivate；NativeHud 的 OnMouseDown/Up/Move 派发屏幕坐标到 widget，hit testing 走 `widget.TryHitTest(screenPt)`。NotchWidget 内部 hover state machine 通过 `OnMouseEvent(Enter/Leave)` 替代 WM_MOUSEMOVE/WM_MOUSELEAVE：Enter→Expanding，Leave→AutoHide 倒计时 500ms
 - z-order：NativeHud 通过 `SetZOrderInsertAfter(hitNumber.Handle)` 沉到 HitNumber/Cursor 之下，widget 区域不会遮挡伤害数字与鼠标。架构链：Cursor → HitNumber → NativeHud → (Backdrop → WebOverlay) → Flash
 - 缩放统一走 [WidgetScaler](src/Guardian/Hud/WidgetScaler.cs)：`scale = vpH/576`（用 letterbox-stripped viewport 高度，与 widgets 的 CalcViewport 锚点同源；不用 anchor.Height 避免 4:3 窗口下偏大错位）
 - SAFEEXIT 二次确认：router 先调 `OnSafeExitArm`（→ `SafeExitPanelWidget.Arm()`，必须）再 `SendGameCommand("safeExit")` 触发存盘；C# widget 进 Saving 立即显示状态条，sv:2 后展示按钮。**Arm 是必需的**——否则 sv 这种通用存盘事件被自动存盘/商店关闭/升级路径触发时也会拉起退出确认面板
 - 异常恢复：任何 step 抛异常 → `ResetToClosedState()` 强制 `ForceIdleState`，保证回到一致基线；连续 5 次失败熔断清空队列
-- 关键不变量：`_panelMode==true ⇔ WebView 在 panelRect+opaque+direct-hit + NotchOverlay 隐藏`；`_panelMode==false ⇔ WebView 在 anchor+transparent+click-through + NotchOverlay 显示`
+- 关键不变量：`_panelMode==true ⇔ WebView 在 panelRect+opaque+direct-hit + NativeHud(含 NotchWidget) 隐藏`；`_panelMode==false ⇔ WebView 在 anchor+transparent+click-through + NativeHud 显示`
 - 性能收益：panel 打开期 α blend 成本下降（panel 矩形小 + opaque）；idle 期 `DoFullIdleSuspend` 整个 SW_HIDE WebView2 + TrySuspendAsync → 拿回 ~15pp DWM α 地板（所有常驻 HUD 已迁到 C# widget，玩家在 panel 关闭期间仍能看到 notch / toast / 货币 / combo / RightContext 右侧 cluster）
 - panel 态跟随：PanelHost.DoOpen 订阅 `ownerForm.LocationChanged`（拖窗）+ `FlashHostPanel.SizeChanged`（全屏/最大化/还原 → ResizeFlashToPanel 完成后才触发，比 owner SizeChanged 时序晚但读到的 viewport 正确）。BeginInvoke 节流合并多次事件 → 调 `WebOverlayForm.GetCurrentAnchorScreenRect`（与 SyncPosition 同算法）→ `PanelLayoutCatalog.GetRect` 重算 panelRect → `NativePanelBackdrop.RepositionTo` + `WebOverlayForm.RepositionForPanel`（两者均 `SWP_NOZORDER` 不重排避免拖动闪烁，不 `SWP_FRAMECHANGED` 跳过 NCPAINT）+ `InputShield.EnterTelemetryMode` 重设。**不**主动 ReTop HitNumber/Cursor——SWP_NOZORDER 已保证 z-order 不变。DoClose / ResetToClosedState 反订阅
 

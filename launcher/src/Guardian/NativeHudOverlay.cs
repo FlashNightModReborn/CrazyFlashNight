@@ -48,6 +48,9 @@ namespace CF7Launcher.Guardian
         // ToastWidget 引用：AddWidget 时自动捕获，IToastSink.AddMessage / SetReady 路由到此
         private ToastWidget _toastWidget;
 
+        // NotchWidget 引用：AddWidget 时自动捕获，INotchSink.AddNotice/SetStatusItem/ClearStatusItem 路由到此
+        private NotchWidget _notchWidget;
+
         private Bitmap _composedBitmap;
         private int _composedW;
         private int _composedH;
@@ -132,6 +135,7 @@ namespace CF7Launcher.Guardian
             {
                 _widgets.Add(widget);
                 if (widget is ToastWidget) _toastWidget = (ToastWidget)widget;
+                if (widget is NotchWidget) _notchWidget = (NotchWidget)widget;
                 if (widget is IUiDataConsumer) _uiDataConsumerCount++;
                 IUiDataLegacyConsumer legacy = widget as IUiDataLegacyConsumer;
                 if (legacy != null)
@@ -174,6 +178,7 @@ namespace CF7Launcher.Guardian
                 if (_widgets.Remove(widget))
                 {
                     if (_toastWidget == widget) _toastWidget = null;
+                    if (_notchWidget == widget) _notchWidget = null;
                     if (widget is IUiDataConsumer) _uiDataConsumerCount--;
                     if (widget is IUiDataLegacyConsumer)
                     {
@@ -772,32 +777,47 @@ namespace CF7Launcher.Guardian
         /// <summary>
         /// 已有 native consumer 订阅此 category？供 CompositeNotchSink 路由：native 处理的 category
         /// 不再 forward 给 webOverlay/NotchOverlay，避免双重显示（如 N combo|... 同时弹 ComboWidget 命中条 + NotchOverlay 通知行）。
+        /// NotchWidget 注册后视为通用通知 sink（处理所有 category），整路 webOverlay 兜底跳过。
         /// </summary>
         public bool HasNoticeConsumerFor(string category)
         {
-            if (_notchNoticeConsumerCount == 0) return false;
             if (string.IsNullOrEmpty(category)) return false;
+            if (_notchWidget != null) return true;
+            if (_notchNoticeConsumerCount == 0) return false;
             lock (_widgetsLock) { return _registeredNoticeCategories.Contains(category); }
         }
 
         public void AddNotice(string category, string text, Color accentColor)
         {
-            // Phase 4: fan out 到 INotchNoticeConsumer widget（如 ComboWidget 处理 N combo|...）。
-            // Fast path：无 consumer / category 未订阅 → 整条早 return，不污染 UI 线程预算。
-            if (_notchNoticeConsumerCount == 0) return;
+            // 路由：
+            //   1. INotchNoticeConsumer fan-out（如 ComboWidget 处理 N combo|...）—— 类别精确订阅
+            //   2. NotchWidget 通用通知 sink（接收 INotchNoticeConsumer 未订阅的 category）—— 兜底
+            // ⚠ 同一 category 不能两条同时收：ComboWidget 已渲染命中条时 NotchWidget 不再渲染
+            //   通用通知行，避免双重显示（与原 NotchOverlay+ComboWidget 路径行为对齐）。
             if (string.IsNullOrEmpty(category)) return;
-            bool registered;
-            lock (_widgetsLock) { registered = _registeredNoticeCategories.Contains(category); }
-            if (!registered) return;
+            NotchWidget nw = _notchWidget;
+            bool hasCategoryConsumer = false;
+            if (_notchNoticeConsumerCount > 0)
+            {
+                lock (_widgetsLock) { hasCategoryConsumer = _registeredNoticeCategories.Contains(category); }
+            }
+            if (nw == null && !hasCategoryConsumer) return;
             if (!this.IsHandleCreated) return;
             string capCategory = category;
             string capText = text ?? "";
             Color capColor = accentColor;
+            bool capHasCategory = hasCategoryConsumer;
+            NotchWidget capNw = nw;
             try
             {
                 this.BeginInvoke(new Action(delegate
                 {
-                    DispatchNotchNoticeToWidgets(capCategory, capText, capColor);
+                    if (capHasCategory) DispatchNotchNoticeToWidgets(capCategory, capText, capColor);
+                    if (capNw != null && !capHasCategory)
+                    {
+                        try { capNw.AddNotice(capCategory, capText, capColor); }
+                        catch (Exception ex) { LogManager.Log("[NativeHud] notchWidget Notice throw: " + ex.Message); }
+                    }
                 }));
             }
             catch { }
@@ -848,17 +868,43 @@ namespace CF7Launcher.Guardian
 
         public void SetStatusItem(string id, string label, string subLabel, Color accentColor)
         {
-            // Phase 3 → notchWidget.SetStatusItem(...)
+            NotchWidget nw = _notchWidget;
+            if (nw == null) return;
+            if (!this.IsHandleCreated) { try { nw.SetStatusItem(id, label, subLabel, accentColor); } catch { } return; }
+            string capId = id;
+            string capLabel = label;
+            string capSub = subLabel;
+            Color capColor = accentColor;
+            try
+            {
+                this.BeginInvoke(new Action(delegate
+                {
+                    if (_notchWidget != null) _notchWidget.SetStatusItem(capId, capLabel, capSub, capColor);
+                }));
+            }
+            catch { }
         }
 
         public void ClearStatusItem(string id)
         {
-            // Phase 3 → notchWidget.ClearStatusItem(...)
+            NotchWidget nw = _notchWidget;
+            if (nw == null) return;
+            if (!this.IsHandleCreated) { try { nw.ClearStatusItem(id); } catch { } return; }
+            string capId = id;
+            try
+            {
+                this.BeginInvoke(new Action(delegate
+                {
+                    if (_notchWidget != null) _notchWidget.ClearStatusItem(capId);
+                }));
+            }
+            catch { }
         }
 
         void INotchSink.SetReady()
         {
-            // Phase 1：复用 Lifecycle.SetReady()
+            // Lifecycle.SetReady（首帧准入 + RecomputeBounds）。
+            // NotchWidget 不需要单独 SetReady：rows/queue 在构造期就可接收，render 由 NativeHud 整体调度。
             this.SetReady();
         }
 
