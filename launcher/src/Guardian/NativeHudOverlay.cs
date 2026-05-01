@@ -45,6 +45,9 @@ namespace CF7Launcher.Guardian
         private readonly Dictionary<string, string> _uiDataSnapshot = new Dictionary<string, string>();
         private readonly object _uiDataLock = new object();
 
+        // ToastWidget 引用：AddWidget 时自动捕获，IToastSink.AddMessage / SetReady 路由到此
+        private ToastWidget _toastWidget;
+
         private Bitmap _composedBitmap;
         private int _composedW;
         private int _composedH;
@@ -128,6 +131,7 @@ namespace CF7Launcher.Guardian
             lock (_widgetsLock)
             {
                 _widgets.Add(widget);
+                if (widget is ToastWidget) _toastWidget = (ToastWidget)widget;
                 if (widget is IUiDataConsumer) _uiDataConsumerCount++;
                 IUiDataLegacyConsumer legacy = widget as IUiDataLegacyConsumer;
                 if (legacy != null)
@@ -169,6 +173,7 @@ namespace CF7Launcher.Guardian
             {
                 if (_widgets.Remove(widget))
                 {
+                    if (_toastWidget == widget) _toastWidget = null;
                     if (widget is IUiDataConsumer) _uiDataConsumerCount--;
                     if (widget is IUiDataLegacyConsumer)
                     {
@@ -859,12 +864,44 @@ namespace CF7Launcher.Guardian
 
         public void AddMessage(string text)
         {
-            // Phase 3 → toastWidget.AddMessage(...)
+            // ToastWidget 路由：useNativeHud=true 时 Program.cs 注册 ToastWidget 顶替原 ToastOverlay。
+            // 未注册时（useNativeHud=false 或注册前的窗口期）静默丢弃，与旧 silent stub 行为一致。
+            ToastWidget tw = _toastWidget;
+            if (tw == null) return;
+            if (text == null) return;
+            if (!this.IsHandleCreated)
+            {
+                // handle 未建期间直接走 widget 内 _earlyBuffer，与 ToastOverlay.AddMessage 早期缓冲对齐
+                tw.AddMessage(text);
+                return;
+            }
+            string capText = text;
+            try
+            {
+                this.BeginInvoke(new Action(delegate
+                {
+                    if (_toastWidget != null) _toastWidget.AddMessage(capText);
+                }));
+            }
+            catch { }
         }
 
         void IToastSink.SetReady()
         {
             this.SetReady();
+            ToastWidget tw = _toastWidget;
+            if (tw == null) return;
+            if (!this.IsHandleCreated)
+            {
+                tw.SetReady();
+                return;
+            }
+            if (this.InvokeRequired)
+            {
+                try { this.BeginInvoke(new Action(delegate { tw.SetReady(); })); } catch { }
+                return;
+            }
+            tw.SetReady();
         }
 
         #endregion

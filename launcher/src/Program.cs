@@ -269,8 +269,13 @@ class Program
                 socketServer.Send(updateJson + "\0");
         };
 
-        // Toast overlay（GDI+ 保留作 fallback）
-        ToastOverlay toastOverlay = new ToastOverlay(form, form.FlashHostPanel);
+        // Toast overlay（GDI+ 独立 ULW，仅 useNativeHud=false 时实例化）。
+        // useNativeHud=true 时 ToastWidget 在 NativeHudOverlay 内承载，省一层全屏 layered window。
+        ToastOverlay toastOverlay = null;
+        if (!config.UseNativeHud)
+        {
+            toastOverlay = new ToastOverlay(form, form.FlashHostPanel);
+        }
 
         // V8 持久化 Runtime + 打击伤害数字 overlay
         string scriptsDir = Path.Combine(projectRoot, "launcher", "scripts");
@@ -351,7 +356,8 @@ class Program
                 new Action(form.ForceExit),
                 new Action<Keys>(form.HandleButtonClick));
 
-            // GDI+ fallback：WebView2 初始化失败或未就绪时走这里
+            // GDI+ fallback：WebView2 初始化失败或未就绪时走这里。
+            // useNativeHud=true 时 toastOverlay 为 null，下面 if (UseNativeHud) 分支会用 nativeHud（IToastSink）覆盖。
             webOverlay.SetFallback(toastOverlay, notchOverlay);
 
             // 光照等级数据（与 NotchOverlay 共用同一默认值）
@@ -451,6 +457,14 @@ class Program
             CF7Launcher.Guardian.Hud.ComboWidget comboWidget =
                 new CF7Launcher.Guardian.Hud.ComboWidget(form.FlashHostPanel);
             nativeHud.AddWidget(comboWidget);
+            // ToastWidget 顶替原 ToastOverlay 全屏 ULW。NativeHudOverlay.AddWidget 自动捕获引用，
+            // IToastSink.AddMessage / SetReady 会 fan-out 到此 widget。
+            CF7Launcher.Guardian.Hud.ToastWidget toastWidget =
+                new CF7Launcher.Guardian.Hud.ToastWidget(form.FlashHostPanel);
+            nativeHud.AddWidget(toastWidget);
+            // 升级 webOverlay 的 toast fallback：先前以 toastOverlay=null 注入，nativeHud 就绪后接管 IToastSink。
+            // notchOverlay 暂时保留作 INotchSink（A.2 再迁移）。
+            webOverlay.SetFallback(nativeHud, notchOverlay);
             // web `#quest-row > #map-hud-toggle` click → router MAPHUD_TOGGLE → C# 折叠态切换
             commandRouter.OnMapHudToggle = delegate { rightContext.ToggleMapCollapsed(); };
             // z-order 锚点：把 NativeHud 沉到 HitNumber 之下（Cursor 在 HitNumber 之上 → 自动也在 NativeHud 之上）
@@ -674,7 +688,7 @@ class Program
             try { notchOverlay.Dispose(); } catch { }
             try { hnOverlay.Dispose(); } catch { }
             try { v8Runtime.Dispose(); } catch { }
-            try { toastOverlay.Dispose(); } catch { }
+            try { if (toastOverlay != null) toastOverlay.Dispose(); } catch { }
             try { File.Delete(portsFile); } catch { }
             LogManager.Shutdown();
 
@@ -760,7 +774,7 @@ class Program
             /* readyWiring */ delegate
             {
                 // Phase 1 全局硬依赖 WebView2: webOverlay 永不为 null
-                toastOverlay.SetReady();
+                if (toastOverlay != null) toastOverlay.SetReady();
                 webOverlay.SetReady();
                 if (inputShield != null) inputShield.SetReady();
                 hnOverlay.SetReady();
