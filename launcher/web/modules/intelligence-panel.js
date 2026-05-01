@@ -1,0 +1,742 @@
+/**
+ * IntelligencePanel — 情报详情 Web 测试面板。
+ *
+ * 第一阶段只读取 legacy txt 数据，由 C# IntelligenceTask 返回真实字典和分页文本。
+ */
+var IntelligencePanel = (function() {
+    'use strict';
+
+    var _el, _refs;
+    var _catalog = [];
+    var _catalogByName = {};
+    var _bundleByName = {};
+    var _snapshot = null;
+    var _reqSeq = 0;
+    var _pending = {};
+    var _selectedPage = 0;
+    var _showPlain = true;
+    var _currentItemName = '资料';
+    var _currentValue = 99;
+    var _decryptLevel = 10;
+    var _pcName = '测试玩家';
+    var _debugMode = false;
+    var _drawerCollapsed = false;
+    var _resizeObserver = null;
+
+    var DESIGN_WIDTH = 1180;
+    var DESIGN_HEIGHT = 790;
+
+    Panels.register('intelligence', {
+        create: createDOM,
+        onOpen: onOpen,
+        onClose: onClose,
+        onRequestClose: doClose
+    });
+
+    Bridge.on('panel_resp', function(data) {
+        if (!data || data.panel !== 'intelligence') return;
+        var cb = _pending[data.callId];
+        if (!cb) return;
+        delete _pending[data.callId];
+        cb(data);
+    });
+
+    function createDOM() {
+        _el = document.createElement('div');
+        _el.className = 'intelligence-panel';
+        _el.innerHTML =
+            '<div class="intel-shell">' +
+                '<header class="intel-header">' +
+                    '<div class="intel-icon-wrap"><img class="intel-icon" alt=""><span class="intel-icon-placeholder">?</span></div>' +
+                    '<div class="intel-heading">' +
+                        '<div class="intel-name">未选择</div>' +
+                        '<div class="intel-meta"></div>' +
+                    '</div>' +
+                    '<div class="intel-progress-box">' +
+                        '<div class="intel-progress-label">收集进度</div>' +
+                        '<div class="intel-progress-value"></div>' +
+                    '</div>' +
+                    '<button class="intel-close-btn" type="button" title="关闭" aria-label="关闭"></button>' +
+                '</header>' +
+                '<section class="intel-devbar">' +
+                    '<div class="intel-dev-label">测试参数</div>' +
+                    '<div class="intel-field-row">' +
+                        '<label class="intel-field">收集值<input class="intel-value-input" type="number" min="0"></label>' +
+                        '<label class="intel-field">解密等级<input class="intel-decrypt-input" type="number" min="0"></label>' +
+                    '</div>' +
+                    '<button class="intel-refresh-btn" type="button">刷新</button>' +
+                    '<div class="intel-page-list"></div>' +
+                '</section>' +
+                '<main class="intel-reader">' +
+                    '<div class="intel-status"></div>' +
+                    '<article class="intel-content"></article>' +
+                '</main>' +
+                '<aside class="intel-catalog-panel" aria-label="情报目录">' +
+                    '<button class="intel-catalog-toggle" type="button" title="收纳情报栏" aria-label="收纳情报栏"><span class="intel-catalog-toggle-mark"></span></button>' +
+                    '<div class="intel-catalog-body">' +
+                        '<div class="intel-catalog-head">' +
+                            '<div class="intel-catalog-title">情报物品</div>' +
+                            '<div class="intel-catalog-count"></div>' +
+                        '</div>' +
+                        '<div class="intel-catalog-list"></div>' +
+                    '</div>' +
+                '</aside>' +
+                '<footer class="intel-footer">' +
+                    '<button class="intel-prev-btn" type="button" title="上一页" aria-label="上一页"><span class="intel-arrow-left"></span></button>' +
+                    '<button class="intel-next-btn" type="button" title="下一页" aria-label="下一页"><span class="intel-arrow-right"></span></button>' +
+                    '<div class="intel-page-indicator"></div>' +
+                    '<button class="intel-toggle-btn" type="button">密文视图</button>' +
+                '</footer>' +
+            '</div>';
+
+        _refs = {
+            itemSelect: _el.querySelector('.intel-item-select'),
+            valueInput: _el.querySelector('.intel-value-input'),
+            decryptInput: _el.querySelector('.intel-decrypt-input'),
+            refreshBtn: _el.querySelector('.intel-refresh-btn'),
+            pageList: _el.querySelector('.intel-page-list'),
+            icon: _el.querySelector('.intel-icon'),
+            iconPlaceholder: _el.querySelector('.intel-icon-placeholder'),
+            name: _el.querySelector('.intel-name'),
+            meta: _el.querySelector('.intel-meta'),
+            progress: _el.querySelector('.intel-progress-value'),
+            status: _el.querySelector('.intel-status'),
+            content: _el.querySelector('.intel-content'),
+            pageIndicator: _el.querySelector('.intel-page-indicator'),
+            toggleBtn: _el.querySelector('.intel-toggle-btn'),
+            prevBtn: _el.querySelector('.intel-prev-btn'),
+            nextBtn: _el.querySelector('.intel-next-btn'),
+            closeBtn: _el.querySelector('.intel-close-btn'),
+            catalogPanel: _el.querySelector('.intel-catalog-panel'),
+            catalogToggle: _el.querySelector('.intel-catalog-toggle'),
+            catalogList: _el.querySelector('.intel-catalog-list'),
+            catalogCount: _el.querySelector('.intel-catalog-count')
+        };
+
+        if (_refs.itemSelect) {
+            _refs.itemSelect.addEventListener('change', function() {
+                _currentItemName = _refs.itemSelect.value || _currentItemName;
+                var entry = _catalogByName[_currentItemName];
+                if (entry) {
+                    _currentValue = entry.maxValue || 0;
+                    _refs.valueInput.value = String(_currentValue);
+                }
+                _selectedPage = 0;
+                if (_bundleByName[_currentItemName]) applyCurrentItemFromBundle();
+                else requestSnapshot();
+            });
+        }
+        _refs.valueInput.addEventListener('change', readInputsAndRefresh);
+        _refs.decryptInput.addEventListener('change', readInputsAndRefresh);
+        _refs.refreshBtn.addEventListener('click', readInputsAndRefresh);
+        _refs.prevBtn.addEventListener('click', function() { movePage(-1); });
+        _refs.nextBtn.addEventListener('click', function() { movePage(1); });
+        _refs.toggleBtn.addEventListener('click', function() {
+            _showPlain = !_showPlain;
+            renderPage();
+        });
+        _refs.closeBtn.addEventListener('click', doClose);
+        _refs.catalogToggle.addEventListener('click', toggleCatalogDrawer);
+
+        return _el;
+    }
+
+    function onOpen(el, initData) {
+        _snapshot = null;
+        _bundleByName = {};
+        _selectedPage = 0;
+        _showPlain = true;
+
+        initData = initData || {};
+        _currentItemName = initData.itemName || '资料';
+        _currentValue = Number(initData.value);
+        if (isNaN(_currentValue)) _currentValue = 99;
+        _decryptLevel = Number(initData.decryptLevel);
+        if (isNaN(_decryptLevel)) _decryptLevel = 10;
+        _pcName = initData.pcName || '测试玩家';
+        _debugMode = initData.debug === true || initData.mode === 'dev';
+        if (_debugMode) _el.classList.add('is-debug');
+        else _el.classList.remove('is-debug');
+
+        _refs.valueInput.value = String(_currentValue);
+        _refs.decryptInput.value = String(_decryptLevel);
+        showLoading('正在读取情报目录…');
+
+        if (typeof Icons !== 'undefined' && Icons && Icons.load) {
+            Icons.load(function() { renderIcon(); renderCatalogPanel(); });
+        }
+
+        requestBundle(function() {
+            populateCatalog();
+            applyCurrentItemFromBundle();
+        });
+        bindScaleWatcher();
+        scheduleScaleUpdate();
+    }
+
+    function onClose() {
+        unbindScaleWatcher();
+    }
+
+    function readInputsAndRefresh() {
+        _currentValue = Number(_refs.valueInput.value);
+        if (isNaN(_currentValue)) _currentValue = 0;
+        _decryptLevel = Number(_refs.decryptInput.value);
+        if (isNaN(_decryptLevel)) _decryptLevel = 0;
+        _selectedPage = 0;
+        _showPlain = true;
+        if (_catalog.length) {
+            applyCurrentItemFromBundle();
+        } else {
+            requestBundle(function() {
+                populateCatalog();
+                applyCurrentItemFromBundle();
+            });
+        }
+    }
+
+    function requestBundle(done) {
+        sendRequest('bundle', {
+            value: _currentValue,
+            decryptLevel: _decryptLevel,
+            pcName: _pcName
+        }, function(resp) {
+            if (!resp.success) {
+                showError('全量情报加载失败：' + (resp.error || 'unknown'));
+                return;
+            }
+            ingestBundle(resp.items || []);
+            if (done) done(resp);
+        });
+    }
+
+    function requestCatalog(done) {
+        sendRequest('catalog', {}, function(resp) {
+            if (!resp.success) {
+                showError('目录加载失败：' + (resp.error || 'unknown'));
+                return;
+            }
+            _catalog = resp.items || [];
+            _catalogByName = {};
+            for (var i = 0; i < _catalog.length; i++) {
+                _catalogByName[_catalog[i].name] = _catalog[i];
+            }
+            if (done) done(resp);
+        });
+    }
+
+    function requestSnapshot() {
+        showLoading('正在读取情报文本…');
+        sendRequest('snapshot', {
+            itemName: _currentItemName,
+            value: _currentValue,
+            decryptLevel: _decryptLevel,
+            pcName: _pcName
+        }, function(resp) {
+            if (!resp.success) {
+                showError('文本加载失败：' + (resp.error || 'unknown'));
+                return;
+            }
+            _snapshot = resp;
+            if (_selectedPage >= getPages().length) _selectedPage = 0;
+            renderSnapshot();
+        });
+    }
+
+    function ingestBundle(items) {
+        _catalog = items || [];
+        _catalogByName = {};
+        _bundleByName = {};
+        for (var i = 0; i < _catalog.length; i++) {
+            _catalogByName[_catalog[i].name] = _catalog[i];
+            _bundleByName[_catalog[i].name] = _catalog[i];
+        }
+    }
+
+    function sendRequest(cmd, payload, cb) {
+        var callId = 'intel-' + (++_reqSeq);
+        _pending[callId] = cb;
+        var msg = payload || {};
+        msg.type = 'panel';
+        msg.panel = 'intelligence';
+        msg.cmd = cmd;
+        msg.callId = callId;
+        Bridge.send(msg);
+    }
+
+    function populateCatalog() {
+        var select = _refs.itemSelect;
+        if (!select) {
+            if (!_catalogByName[_currentItemName] && _catalog.length) {
+                _currentItemName = _catalog[0].name;
+            }
+            renderCatalogPanel();
+            return;
+        }
+        select.innerHTML = '';
+        for (var i = 0; i < _catalog.length; i++) {
+            var item = _catalog[i];
+            var opt = document.createElement('option');
+            opt.value = item.name;
+            opt.textContent = item.index + ' · ' + item.name + ' (' + item.pageCount + ')';
+            select.appendChild(opt);
+        }
+        if (!_catalogByName[_currentItemName] && _catalog.length) {
+            _currentItemName = _catalog[0].name;
+        }
+        select.value = _currentItemName;
+        renderCatalogPanel();
+    }
+
+    function applyCurrentItemFromBundle() {
+        var item = _bundleByName[_currentItemName];
+        if (!item) {
+            showError('未找到情报条目：' + _currentItemName);
+            return;
+        }
+
+        var pages = [];
+        var sourcePages = item.pages || [];
+        for (var i = 0; i < sourcePages.length; i++) {
+            var page = sourcePages[i] || {};
+            pages.push({
+                pageKey: page.pageKey,
+                value: Number(page.value) || 0,
+                encryptLevel: Number(page.encryptLevel) || 0,
+                unlocked: (Number(page.value) || 0) <= _currentValue,
+                text: page.text || ''
+            });
+        }
+
+        _snapshot = {
+            item: {
+                name: item.name,
+                iconName: item.iconName,
+                index: item.index,
+                maxValue: item.maxValue,
+                pageCount: item.pageCount || sourcePages.length
+            },
+            name: item.name,
+            maxValue: item.maxValue || 0,
+            value: _currentValue,
+            decryptLevel: _decryptLevel,
+            pcName: _pcName,
+            pages: pages,
+            encryptRules: item.encryptRules || { replace: {}, cut: {} },
+            textError: item.textError || ''
+        };
+
+        if (_selectedPage >= pages.length) _selectedPage = 0;
+        renderSnapshot();
+    }
+
+    function renderSnapshot() {
+        var item = _snapshot.item || {};
+        var pages = getPages();
+        var unlockedPages = countUnlockedPages(pages);
+        _refs.name.textContent = item.name || _snapshot.name || '未命名情报';
+        _refs.meta.textContent = '已发现 ' + unlockedPages + ' / ' + pages.length + ' 页信息';
+        _refs.progress.textContent = (_snapshot.value || 0) + ' / ' + (_snapshot.maxValue || 0);
+        renderIcon();
+        renderCatalogPanel();
+        renderPageList();
+        renderPage();
+        scheduleScaleUpdate();
+    }
+
+    function renderIcon() {
+        if (!_refs || !_refs.icon) return;
+        var url = resolveIconUrl(_bundleByName[_currentItemName] || _catalogByName[_currentItemName] || _currentItemName);
+        if (url) {
+            _refs.icon.src = url;
+            _refs.icon.style.display = '';
+            _refs.iconPlaceholder.style.display = 'none';
+        } else {
+            _refs.icon.removeAttribute('src');
+            _refs.icon.style.display = 'none';
+            _refs.iconPlaceholder.style.display = '';
+        }
+    }
+
+    function resolveIconUrl(name) {
+        if (typeof Icons === 'undefined' || !Icons || !Icons.resolve) return null;
+        var candidates = [];
+        if (name && typeof name === 'object') {
+            candidates.push(name.iconName);
+            candidates.push(name.icon);
+            candidates.push(name.name);
+        } else {
+            candidates.push(name);
+        }
+        if ((name && name.name === '资料') || name === '资料') candidates.push('废城资料');
+
+        var seen = {};
+        for (var i = 0; i < candidates.length; i++) {
+            var key = candidates[i];
+            if (!key || seen[key]) continue;
+            seen[key] = true;
+            var url = Icons.resolve(key);
+            if (url) return url;
+        }
+        return null;
+    }
+
+    function renderCatalogPanel() {
+        if (!_refs || !_refs.catalogList) return;
+        _refs.catalogList.innerHTML = '';
+        _refs.catalogCount.textContent = _catalog.length + ' 件';
+        for (var i = 0; i < _catalog.length; i++) {
+            _refs.catalogList.appendChild(createCatalogItem(_catalog[i]));
+        }
+    }
+
+    function createCatalogItem(item) {
+        var name = item.name || '';
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'intel-catalog-item' + (name === _currentItemName ? ' active' : '') + (item.textError ? ' has-error' : '');
+        btn.setAttribute('data-name', name);
+        btn.title = name + (item.textError ? ' / ' + item.textError : '');
+
+        var iconWrap = document.createElement('span');
+        iconWrap.className = 'intel-catalog-icon-wrap';
+        var iconUrl = resolveIconUrl(item);
+        if (iconUrl) {
+            var img = document.createElement('img');
+            img.className = 'intel-catalog-icon';
+            img.alt = '';
+            img.src = iconUrl;
+            img.onerror = function() { this.style.display = 'none'; };
+            iconWrap.appendChild(img);
+        } else {
+            var placeholder = document.createElement('span');
+            placeholder.className = 'intel-catalog-icon-placeholder';
+            placeholder.textContent = '?';
+            iconWrap.appendChild(placeholder);
+        }
+
+        var text = document.createElement('span');
+        text.className = 'intel-catalog-text';
+        var label = document.createElement('span');
+        label.className = 'intel-catalog-name';
+        label.textContent = name;
+        var meta = document.createElement('span');
+        meta.className = 'intel-catalog-meta';
+        var pages = item.pages || [];
+        meta.textContent = countUnlockedPagesForItem(item) + ' / ' + pages.length + ' 页';
+        text.appendChild(label);
+        text.appendChild(meta);
+
+        btn.appendChild(iconWrap);
+        btn.appendChild(text);
+        btn.addEventListener('click', function(e) {
+            var nextName = e.currentTarget.getAttribute('data-name');
+            if (!nextName || nextName === _currentItemName) return;
+            _currentItemName = nextName;
+            _selectedPage = 0;
+            _showPlain = true;
+            if (_refs.itemSelect) _refs.itemSelect.value = _currentItemName;
+            if (_bundleByName[_currentItemName]) applyCurrentItemFromBundle();
+            else requestSnapshot();
+        });
+        return btn;
+    }
+
+    function countUnlockedPagesForItem(item) {
+        var pages = item && item.pages ? item.pages : [];
+        var count = 0;
+        for (var i = 0; i < pages.length; i++) {
+            if ((Number(pages[i].value) || 0) <= _currentValue) count++;
+        }
+        return count;
+    }
+
+    function toggleCatalogDrawer() {
+        _drawerCollapsed = !_drawerCollapsed;
+        if (_drawerCollapsed) {
+            _el.classList.add('is-catalog-collapsed');
+            _refs.catalogToggle.title = '展开情报栏';
+            _refs.catalogToggle.setAttribute('aria-label', '展开情报栏');
+        } else {
+            _el.classList.remove('is-catalog-collapsed');
+            _refs.catalogToggle.title = '收纳情报栏';
+            _refs.catalogToggle.setAttribute('aria-label', '收纳情报栏');
+        }
+        scheduleScaleUpdate();
+    }
+
+    function renderPageList() {
+        var pages = getPages();
+        _refs.pageList.innerHTML = '';
+        for (var i = 0; i < pages.length; i++) {
+            var page = pages[i];
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'intel-page-btn' + (i === _selectedPage ? ' active' : '') + (!page.unlocked ? ' locked' : '');
+            btn.setAttribute('data-index', String(i));
+            btn.textContent = String(i + 1);
+            btn.title = 'PageKey ' + page.pageKey + (page.encryptLevel > 0 ? ' / E' + page.encryptLevel : '');
+            btn.addEventListener('click', function(e) {
+                _selectedPage = Number(e.currentTarget.getAttribute('data-index')) || 0;
+                _showPlain = true;
+                renderPageList();
+                renderPage();
+            });
+            _refs.pageList.appendChild(btn);
+        }
+    }
+
+    function renderPage() {
+        var pages = getPages();
+        var page = pages[_selectedPage];
+        _refs.content.innerHTML = '';
+
+        if (!page) {
+            _refs.status.textContent = '没有可显示的情报页';
+            _refs.pageIndicator.textContent = '0 / 0';
+            _refs.toggleBtn.disabled = true;
+            _refs.prevBtn.disabled = true;
+            _refs.nextBtn.disabled = true;
+            return;
+        }
+
+        _refs.pageIndicator.textContent = (_selectedPage + 1) + ' / ' + pages.length + ' 页';
+        _refs.prevBtn.disabled = _selectedPage <= 0;
+        _refs.nextBtn.disabled = _selectedPage >= pages.length - 1;
+
+        if (_snapshot.textError) {
+            _refs.status.textContent = '文本加载失败：' + _snapshot.textError;
+            _refs.toggleBtn.disabled = true;
+            _refs.toggleBtn.textContent = '不可用';
+            _refs.content.appendChild(emptyBlock('该情报文本暂不可用。'));
+            return;
+        }
+
+        if (!page.unlocked) {
+            _refs.status.textContent = '尚未发现 · 需要收集进度达到 ' + page.value;
+            _refs.toggleBtn.disabled = true;
+            _refs.toggleBtn.textContent = '未解锁';
+            _refs.content.appendChild(emptyBlock('情报页仍处于锁定状态。'));
+            return;
+        }
+
+        var canDecrypt = page.encryptLevel > 0 && (_snapshot.decryptLevel || 0) >= page.encryptLevel;
+        var mustEncrypt = page.encryptLevel > (_snapshot.decryptLevel || 0);
+        var renderText = page.text || '';
+        if (mustEncrypt || (page.encryptLevel > 0 && !_showPlain)) {
+            renderText = encryptText(renderText, _snapshot.encryptRules || {});
+        }
+
+        if (mustEncrypt) {
+            _refs.status.textContent = '信息未完全解明 · 需要解密等级 ' + page.encryptLevel;
+            _refs.toggleBtn.disabled = true;
+            _refs.toggleBtn.textContent = '密文视图';
+        } else if (canDecrypt) {
+            _refs.status.textContent = _showPlain ? '信息已解明' : '当前显示未解明文本';
+            _refs.toggleBtn.disabled = false;
+            _refs.toggleBtn.textContent = _showPlain ? '密文视图' : '明文视图';
+        } else {
+            _refs.status.textContent = '';
+            _refs.toggleBtn.disabled = true;
+            _refs.toggleBtn.textContent = '明文视图';
+        }
+
+        appendLegacyHtml(_refs.content, renderText, _snapshot.pcName || _pcName);
+        _refs.content.scrollTop = 0;
+    }
+
+    function movePage(delta) {
+        var pages = getPages();
+        var next = _selectedPage + delta;
+        if (next < 0 || next >= pages.length) return;
+        _selectedPage = next;
+        _showPlain = true;
+        renderPageList();
+        renderPage();
+    }
+
+    function getPages() {
+        return (_snapshot && _snapshot.pages) ? _snapshot.pages : [];
+    }
+
+    function countUnlockedPages(pages) {
+        var count = 0;
+        for (var i = 0; i < pages.length; i++) {
+            if (pages[i] && pages[i].unlocked) count++;
+        }
+        return count;
+    }
+
+    function showLoading(text) {
+        _refs.status.textContent = text;
+        _refs.content.innerHTML = '';
+        _refs.content.appendChild(emptyBlock(text));
+        scheduleScaleUpdate();
+    }
+
+    function showError(text) {
+        _refs.status.textContent = text;
+        _refs.content.innerHTML = '';
+        var block = emptyBlock(text);
+        block.className += ' error';
+        _refs.content.appendChild(block);
+        scheduleScaleUpdate();
+    }
+
+    function emptyBlock(text) {
+        var div = document.createElement('div');
+        div.className = 'intel-empty';
+        div.textContent = text;
+        return div;
+    }
+
+    function encryptText(raw, rules) {
+        var text = raw || '';
+        var replace = rules.replace || {};
+        var cut = rules.cut || {};
+        var keys = Object.keys(replace).sort(lengthDesc);
+        for (var i = 0; i < keys.length; i++) {
+            text = text.split(keys[i]).join(replace[keys[i]] == null ? '' : String(replace[keys[i]]));
+        }
+        keys = Object.keys(cut).sort(lengthDesc);
+        for (i = 0; i < keys.length; i++) {
+            var parts = text.split(keys[i]);
+            if (parts.length > 1) text = parts[0] + (cut[keys[i]] == null ? '' : String(cut[keys[i]]));
+        }
+        return text;
+    }
+
+    function lengthDesc(a, b) {
+        return b.length - a.length;
+    }
+
+    function appendLegacyHtml(target, raw, pcName) {
+        raw = (raw || '').split('${PC_NAME}').join(pcName || '');
+        raw = raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n/g, '<br>');
+        var doc = new DOMParser().parseFromString('<div>' + raw + '</div>', 'text/html');
+        var root = doc.body.firstChild;
+        var fragment = document.createDocumentFragment();
+        copySafeChildren(root, fragment);
+        target.appendChild(fragment);
+    }
+
+    function copySafeChildren(source, target) {
+        if (!source) return;
+        for (var i = 0; i < source.childNodes.length; i++) {
+            var node = source.childNodes[i];
+            if (node.nodeType === 3) {
+                target.appendChild(document.createTextNode(node.nodeValue));
+            } else if (node.nodeType === 1) {
+                appendSafeElement(node, target);
+            }
+        }
+    }
+
+    function appendSafeElement(node, target) {
+        var tag = node.tagName.toLowerCase();
+        var el = null;
+        if (tag === 'b' || tag === 'strong') el = document.createElement('strong');
+        else if (tag === 'u') el = document.createElement('u');
+        else if (tag === 'i') el = document.createElement('em');
+        else if (tag === 'br') el = document.createElement('br');
+        else if (tag === 'font') {
+            el = document.createElement('span');
+            var color = node.getAttribute('color') || '';
+            if (/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(color)) el.style.color = color;
+        }
+
+        if (!el) {
+            copySafeChildren(node, target);
+            return;
+        }
+        if (tag !== 'br') copySafeChildren(node, el);
+        target.appendChild(el);
+    }
+
+    function doClose() {
+        Panels.close();
+        Bridge.send({ type: 'panel', cmd: 'close', panel: 'intelligence' });
+    }
+
+    function bindScaleWatcher() {
+        unbindScaleWatcher();
+        window.addEventListener('resize', scheduleScaleUpdate);
+        if (typeof ResizeObserver !== 'undefined' && _el) {
+            _resizeObserver = new ResizeObserver(scheduleScaleUpdate);
+            _resizeObserver.observe(_el);
+            if (_el.parentElement) _resizeObserver.observe(_el.parentElement);
+        }
+    }
+
+    function unbindScaleWatcher() {
+        window.removeEventListener('resize', scheduleScaleUpdate);
+        if (_resizeObserver) {
+            _resizeObserver.disconnect();
+            _resizeObserver = null;
+        }
+    }
+
+    function scheduleScaleUpdate() {
+        if (typeof requestAnimationFrame === 'function') {
+            requestAnimationFrame(updateFitScale);
+        } else {
+            setTimeout(updateFitScale, 0);
+        }
+    }
+
+    function updateFitScale() {
+        if (!_el) return;
+        fitPanelToParent();
+        var width = _el.clientWidth || _el.offsetWidth || 0;
+        var height = _el.clientHeight || _el.offsetHeight || 0;
+        if (!width || !height) return;
+        var scale = Math.min(width / DESIGN_WIDTH, height / DESIGN_HEIGHT);
+        if (!isFinite(scale) || scale <= 0) scale = 1;
+        _el.style.setProperty('--intel-scale', scale.toFixed(4));
+    }
+
+    function fitPanelToParent() {
+        var parent = _el.parentElement;
+        var parentWidth = parent ? parent.clientWidth : 0;
+        var parentHeight = parent ? parent.clientHeight : 0;
+        if (!parentWidth) parentWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+        if (!parentHeight) parentHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+        if (!parentWidth || !parentHeight) return;
+
+        var aspect = DESIGN_WIDTH / DESIGN_HEIGHT;
+        var panelWidth = parentWidth;
+        var panelHeight = panelWidth / aspect;
+        if (panelHeight > parentHeight) {
+            panelHeight = parentHeight;
+            panelWidth = panelHeight * aspect;
+        }
+        panelWidth = Math.max(1, Math.floor(panelWidth));
+        panelHeight = Math.max(1, Math.floor(panelHeight));
+        if (_el.style.width !== panelWidth + 'px') _el.style.width = panelWidth + 'px';
+        if (_el.style.height !== panelHeight + 'px') _el.style.height = panelHeight + 'px';
+    }
+
+    return {
+        _debugRequestSnapshot: requestSnapshot,
+        _debugGetState: function() {
+            return {
+                itemName: _currentItemName,
+                value: _currentValue,
+                decryptLevel: _decryptLevel,
+                pageIndex: _selectedPage,
+                pageCount: getPages().length,
+                debug: _debugMode,
+                hasSnapshot: !!_snapshot,
+                catalogCount: _catalog.length,
+                catalogCollapsed: _drawerCollapsed,
+                scale: _el ? Number(_el.style.getPropertyValue('--intel-scale')) || 1 : 1
+            };
+        },
+        _debugSetPage: function(index) {
+            var pages = getPages();
+            _selectedPage = Math.max(0, Math.min(pages.length - 1, Number(index) || 0));
+            renderPageList();
+            renderPage();
+        }
+    };
+})();

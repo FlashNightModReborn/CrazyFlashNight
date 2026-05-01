@@ -115,6 +115,7 @@
     <Compile Include="src\Tasks\ShopTask.cs" />
     <Compile Include="src\Tasks\MapTask.cs" />
     <Compile Include="src\Tasks\StageSelectTask.cs" />
+    <Compile Include="src\Tasks\IntelligenceTask.cs" />
     <Compile Include="src\Tasks\ArchiveTask.cs" />
     <Compile Include="src\Guardian\IToastSink.cs" />
     <Compile Include="src\Guardian\CompositeNotchSink.cs" />

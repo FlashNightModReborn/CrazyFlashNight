@@ -1,5 +1,4 @@
 # 测试约定与验证矩阵
-
 **文档角色**：验证矩阵 canonical doc。  
 **最后核对代码基线**：commit `cc25c357d`（2026-04-30）。
 
@@ -26,6 +25,7 @@ chcp.com 65001 | Out-Null
 | Launcher Web / Minigame | `node launcher/tools/run-minigame-qa.js --game lockbox\|pinalign\|gobang\|all` | browser harness、`node launcher/tools/validate-minigame-final-state.js` |
 | Launcher Web / Map Panel | `powershell -ExecutionPolicy Bypass -File launcher/build.ps1` + `node tools/audit-map-taskmarkers.js`（契约守门，必须 0 error / 0 warn） | browser harness `map-ui1`~`map-ui23` 全绿（`launcher/web/modules/map/dev/harness.html` → 面板"Run suite"）、`node tools/audit-map-layout.js`；重算 filter-fit preset 时跑 `node tools/tune-map-filter-fit.js --write` |
 | Launcher Web / Stage Select Panel | `powershell -ExecutionPolicy Bypass -File launcher/build.ps1` + `node tools/export-stage-select-manifest.js --summary` + `node tools/audit-stage-select-layout.js --json` + `node tools/run-stage-select-harness.js --browser edge` | 接 AS2 snapshot / enter 时追加 `launcher/tests/run_tests.ps1` 与 `scripts/compile_test.ps1`；坐标/视觉偏移时追加 `powershell -ExecutionPolicy Bypass -File tools/run-stage-select-visual-audit.ps1` 生成 FFDec/Web 对照图 |
+| Launcher Web / Intelligence Panel | `powershell -ExecutionPolicy Bypass -File launcher/build.ps1` + `powershell -ExecutionPolicy Bypass -File launcher/tests/run_tests.ps1` + `node tools/run-intelligence-harness.js --browser edge` | 手测 Native HUD 与旧 Web notch 的“其他 → 情报测试”；阶段一未接 AS2 正式入口，不要求 Flash compile smoke |
 | 文档与治理 | `node tools/validate-doc-governance.js` | 交叉 grep / 链接检查 / 基线复核 |
 
 ## 2. AS2 / Flash 验证
@@ -57,10 +57,10 @@ chcp.com 65001 | Out-Null
 
 `--bus-only` 适用：Flash CS6 testMovie ↔ Launcher 通信链验证;AI / 模拟实验需外部 Flash 自连总线;排查启动链路 vs 总线本身。
 
-当前 `launcher/build.ps1` 除编译外还会 fail-fast 校验 `launcher/web` 必需资源（bootstrap/overlay/config/assets/help/icons/data/cursor/map/stage-select 与关键 modules / minigame 入口）、运行 `node tools/audit-native-cursor-assets.js` 校验 native cursor `64x64` 画布与 `(16,16)` 热点契约，并校验 `launcher/data/map_hud_data.json` / `save_schema.json` 存在。
+当前 `launcher/build.ps1` 除编译外还会 fail-fast 校验 `launcher/web` 必需资源（bootstrap/overlay/config/assets/help/icons/data/cursor/map/stage-select 与关键 modules / intelligence panel / minigame 入口）、运行 `node tools/audit-native-cursor-assets.js` 校验 native cursor `64x64` 画布与 `(16,16)` 热点契约，并校验 `launcher/data/map_hud_data.json` / `save_schema.json` 存在。
 
 DPI 相关 smoke：改 DPI manifest / overlay 坐标 / Web viewport metrics 时，除 build + xUnit 外人工覆盖单屏 100/125/150/175%、Windows 未勾选与“应用程序”覆盖、双屏混合 DPI 启动/跨屏/全屏切换；“系统/系统(增强)”只要求 `[DPI]` 日志和提示，不把点击正确性列为通过标准。
-Native HUD parity gate：改 [NotchOverlay](../launcher/src/Guardian/NotchOverlay.cs)、[RightContextWidget](../launcher/src/Guardian/Hud/RightContextWidget.cs)、[RightHudLayout](../launcher/src/Guardian/Hud/RightHudLayout.cs)、[MapHudWidget](../launcher/src/Guardian/Hud/MapHudWidget.cs)、[SafeExitPanelWidget](../launcher/src/Guardian/Hud/SafeExitPanelWidget.cs)、[ComboWidget](../launcher/src/Guardian/Hud/ComboWidget.cs)、`Program.cs` native widget 注册顺序时，必跑 `launcher/build.ps1` + `launcher/tests/run_tests.ps1`。人工截图对比旧 Web 与 native：刘海栏居中 pill/hover toolbar/未 ready 行为、combo 输入提示 + DFA/Sync 命中扫光/收起、toast 最多 8 条队列、`game` notice 去重计数/3 秒退场、基地场景、任务完成可交付、小地图 PNG 剪影/current/beacon + 展开/折叠、未播放/播放中 jukebox、暂停态、安全退出弹出、7 个 panel 开关后 idle。通过标准：刘海栏与右侧 cluster 的位置、宽度、纵向顺序、点击区域、文案和主要颜色层级等价；允许字体抗锯齿差异。性能回归需确认 idle WebView2 仍 `SW_HIDE`，Ctrl+G / Task Manager 采样不比当前 native HUD 基线明显退化。
+Native HUD parity gate：改 [NotchOverlay](../launcher/src/Guardian/NotchOverlay.cs)、[RightContextWidget](../launcher/src/Guardian/Hud/RightContextWidget.cs)、[RightHudLayout](../launcher/src/Guardian/Hud/RightHudLayout.cs)、[MapHudWidget](../launcher/src/Guardian/Hud/MapHudWidget.cs)、[SafeExitPanelWidget](../launcher/src/Guardian/Hud/SafeExitPanelWidget.cs)、[ComboWidget](../launcher/src/Guardian/Hud/ComboWidget.cs)、`Program.cs` native widget 注册顺序时，必跑 `launcher/build.ps1` + `launcher/tests/run_tests.ps1`。人工截图对比旧 Web 与 native：刘海栏居中 pill/hover toolbar/未 ready 行为、combo 输入提示 + DFA/Sync 命中扫光/收起、toast 最多 8 条队列、`game` notice 去重计数/3 秒退场、基地场景、任务完成可交付、小地图 PNG 剪影/current/beacon + 展开/折叠、未播放/播放中 jukebox、暂停态、安全退出弹出、8 个 panel 开关后 idle。通过标准：刘海栏与右侧 cluster 的位置、宽度、纵向顺序、点击区域、文案和主要颜色层级等价；允许字体抗锯齿差异。性能回归需确认 idle WebView2 仍 `SW_HIDE`，Ctrl+G / Task Manager 采样不比当前 native HUD 基线明显退化。
 ## 4. Launcher Web 验证（Minigame / Map / Jukebox）
 | 用途 | 命令 |
 |------|------|
@@ -68,7 +68,7 @@ Native HUD parity gate：改 [NotchOverlay](../launcher/src/Guardian/NotchOverla
 | Node QA(全套) | `node launcher/tools/run-minigame-qa.js --game all` |
 | 静态校验 | `node launcher/tools/validate-minigame-final-state.js` |
 
-**Browser harness**(直接打开)：`launcher/web/modules/minigames/{lockbox,pinalign,gobang}/dev/harness.html` / `launcher/web/modules/map/dev/harness.html` / `launcher/web/modules/stage-select/dev/harness.html`。
+**Browser harness**(直接打开)：`launcher/web/modules/minigames/{lockbox,pinalign,gobang}/dev/harness.html` / `launcher/web/modules/map/dev/harness.html` / `launcher/web/modules/stage-select/dev/harness.html` / `launcher/web/modules/intelligence/dev/harness.html`。
 
 **默认顺序**：纯逻辑 / 确定性问题先跑 Node QA；协议 / DOM / 布局 / 交互问题进 browser harness；目录 / 协议 / 旧入口回流问题再补静态校验。
 `map` harness 固定覆盖：顶部分页与关闭按钮的 hit-test 可达性、右侧层级按钮遮挡、学校页 `室友头像` 动态切换、`1366x768` 紧凑视口滚动可达性、locked group 的锁定提示与锁定原因可达性、`base` assembled 热点框与 scene visual 联合包围框对齐（`map-ui11`）、静态头像运行时 rect 与 source metadata 对齐（`map-ui10`）、taskNpc 环锚点跟随动态头像中心（`map-ui12`）、连点热点去重 + busy 物理 disabled（`map-ui13`）、hotspot / 分页 / filter / close 的 `data-audio-cue` 语义路由 **且单次触发**（`map-ui14`，依赖 overlay 载入 `modules/audio.js` + `modules/overlay-audio-bindings.js`；harness 用 `BootstrapAudio` 计数器存根替身）、右侧 rail 脱离 stage frame + body 不溢出（`map-ui15`）、locked filter 点击不切状态且弹锁定原因 toast（`map-ui16`）、faction filter 切换驱动 `data-active-filter` 属性 + `is-retuning` 过渡 class（`map-ui17`）、defense restricted filter 触发 `.map-stage-anomaly.is-active` 且脉冲偏心到右上（`map-ui18`）、rail 手风琴仅展开 active 非 meta filter 子场景列表 + 点子项复用 `requestNavigate`（`map-ui19` / `map-ui20`）、filter-fit preset 按 page/filter preset 命中并维持 coverage floor（`map-ui21`）、学校页静态头像与场景归属保持一致并输出 review 候选（`map-ui22`）、热点左下角标签通过 content-fit 内独立标签层保持高于头像层并贴合热点（`map-ui23`）。

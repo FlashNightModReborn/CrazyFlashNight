@@ -202,6 +202,7 @@ $requiredWebPaths = @(
     "modules\icons.js",
     "modules\kshop.js",
     "modules\help-panel.js",
+    "modules\intelligence-panel.js",
     "modules\panels\jukebox-panel.js",
     "modules\map-avatar-source-data.js",
     "modules\map-panel-data.js",

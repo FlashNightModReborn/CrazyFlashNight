@@ -101,6 +101,19 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void INTELLIGENCE_TEST_OpenPanelFallback_IncludesFixtureInitData()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.Dispatch("INTELLIGENCE_TEST");
+            Assert.Single(c.Posts);
+            Assert.Contains("\"panel\":\"intelligence\"", c.Posts[0]);
+            Assert.Contains("\"itemName\":\"资料\"", c.Posts[0]);
+            Assert.Contains("\"value\":99", c.Posts[0]);
+            Assert.Contains("\"decryptLevel\":10", c.Posts[0]);
+        }
+
+        [Fact]
         public void RequestOpenPanel_Map_RoutesToOpenMapPanel()
         {
             Capture c = new Capture();

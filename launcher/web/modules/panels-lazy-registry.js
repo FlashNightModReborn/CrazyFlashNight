@@ -1,5 +1,5 @@
 /**
- * Panels Lazy Registry — 7 个 panel 的依赖声明 + 占位注册。
+ * Panels Lazy Registry — 8 个 panel 的依赖声明 + 占位注册。
  *
  * 这里只声明依赖；真正的 Panels.register('id', {create, onOpen, ...}) 由各 panel.js 自己
  * 在被加载时执行。Panels.open(id) 命中 _lazy entry 时，先按依赖列表注入 <script>，
@@ -80,5 +80,10 @@
          'modules/minigames/gobang/core/index.js',
          'modules/minigames/gobang/gobang-audio.js',
          'modules/minigames/gobang/gobang-panel.js'],
+        noop);
+
+    // ── intelligence ──
+    Panels.registerLazy('intelligence',
+        ['modules/intelligence-panel.js'],
         noop);
 })();

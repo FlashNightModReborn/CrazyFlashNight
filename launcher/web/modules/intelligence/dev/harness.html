@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Intelligence Panel Harness</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../../css/panels.css">
+<link rel="stylesheet" href="../../minigames/shared/dev/harness-base.css">
+<style>
+    html,
+    body {
+        margin: 0;
+        min-height: 100%;
+        background: #050505;
+        color: #d9e4e8;
+        font: 12px/1.5 Consolas, "Microsoft YaHei", monospace;
+    }
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 18px 140px;
+        box-sizing: border-box;
+    }
+    #harness-toolbar,
+    #harness-status {
+        width: min(1600px, calc(100vw - 36px));
+        box-sizing: border-box;
+    }
+    #harness-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 12px;
+        padding: 12px 14px;
+        background: rgba(10, 10, 10, 0.92);
+        border: 1px solid rgba(180, 180, 180, 0.26);
+    }
+    .harness-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .harness-group label {
+        color: #d8d8d8;
+    }
+    .harness-group select,
+    .harness-group input,
+    .harness-group button {
+        font: inherit;
+        color: #f1f5f9;
+        background: #171717;
+        border: 1px solid #4a4a4a;
+        padding: 5px 8px;
+        box-sizing: border-box;
+    }
+    .harness-group button {
+        cursor: pointer;
+    }
+    .harness-group button:hover {
+        background: #2a2a2a;
+    }
+    #viewport-shell {
+        position: relative;
+        width: 1366px;
+        height: 768px;
+        flex: 0 0 auto;
+        background:
+            linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px) 0 0 / 48px 48px,
+            linear-gradient(0deg, rgba(255,255,255,0.04) 1px, transparent 1px) 0 0 / 48px 48px,
+            #111;
+        border: 1px solid rgba(180, 180, 180, 0.24);
+        box-shadow: 0 14px 42px rgba(0,0,0,0.45);
+        overflow: hidden;
+    }
+    #panel-container {
+        position: absolute !important;
+        inset: 0 !important;
+        display: block !important;
+    }
+    #panel-backdrop {
+        position: absolute;
+        inset: 0;
+    }
+    #panel-content {
+        position: absolute;
+        inset: 1.5% 2%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #harness-status {
+        color: #9aa4ae;
+    }
+    body.intelligence-qa {
+        overflow: hidden;
+        padding: 0;
+        align-items: flex-start;
+    }
+    body.intelligence-qa #harness-toolbar,
+    body.intelligence-qa #harness-status {
+        display: none;
+    }
+    body.intelligence-qa #viewport-shell {
+        margin: 0;
+        border: 0;
+    }
+    body.intelligence-qa #qa-panel,
+    body.intelligence-qa #debug-log {
+        pointer-events: none;
+    }
+    #qa-panel {
+        top: auto;
+        bottom: 12px;
+        right: 12px;
+    }
+    #debug-log {
+        bottom: 12px;
+        left: 12px;
+        max-width: 520px;
+    }
+</style>
+</head>
+<body>
+<div id="harness-toolbar">
+    <div class="harness-group">
+        <label for="intel-item-select">item</label>
+        <select id="intel-item-select">
+            <option value="资料">资料</option>
+            <option value="幻层残响">幻层残响</option>
+            <option value="缺图记录">缺图记录</option>
+        </select>
+    </div>
+    <div class="harness-group">
+        <label for="intel-value-input">value</label>
+        <input id="intel-value-input" type="number" value="99" min="0">
+    </div>
+    <div class="harness-group">
+        <label for="intel-decrypt-input">decrypt</label>
+        <input id="intel-decrypt-input" type="number" value="10" min="0">
+    </div>
+    <div class="harness-group">
+        <label for="intel-viewport-select">viewport</label>
+        <select id="intel-viewport-select">
+            <option value="1024x576">1024x576</option>
+            <option value="1366x768" selected>1366x768</option>
+            <option value="1600x900">1600x900</option>
+            <option value="1920x1080">1920x1080</option>
+        </select>
+    </div>
+    <div class="harness-group">
+        <button type="button" id="intel-open-btn">open</button>
+        <button type="button" id="intel-close-btn">force close</button>
+    </div>
+</div>
+
+<div id="harness-status">Intelligence harness ready.</div>
+
+<div id="viewport-shell">
+    <div id="panel-container" data-panel="intelligence">
+        <div id="panel-backdrop"></div>
+        <div id="panel-content"></div>
+    </div>
+</div>
+
+<script>
+(function() {
+    var listeners = [];
+    window.chrome = window.chrome || {};
+    window.chrome.webview = {
+        addEventListener: function(type, handler) {
+            if (type === 'message') listeners.push(handler);
+        },
+        postMessage: function(message) {
+            if (window.IntelligenceHarnessHost) {
+                window.IntelligenceHarnessHost.sentMessages.push(message);
+                if (window.IntelligenceHarnessHost.handleMessage) window.IntelligenceHarnessHost.handleMessage(message);
+            }
+        },
+        __dispatch: function(data) {
+            var event = { data: data };
+            listeners.forEach(function(listener) { listener(event); });
+        }
+    };
+})();
+</script>
+<script src="../../bridge.js"></script>
+<script src="../../panels.js"></script>
+<script src="../../minigames/shared/dev/harness-base.js"></script>
+<script>
+window.Icons = {
+    load: function(cb) { if (cb) cb(); },
+    resolve: function(name) {
+        if (name === '缺图记录' || name === '酒保线报：黑铁会崛起于乡间') return null;
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">' +
+            '<rect x="14" y="6" width="34" height="52" fill="#e8e8e8" stroke="#222" stroke-width="3"/>' +
+            '<path d="M20 16h21M20 23h19M20 30h23M20 37h18M20 44h20" stroke="#777" stroke-width="3"/>' +
+            '<path d="M44 6l4 8h-8z" fill="#aaa"/></svg>'
+        );
+    }
+};
+</script>
+<script src="../../intelligence-panel.js"></script>
+<script src="./qa-suite.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    var query = MinigameHarness.parseQuery(location.search);
+    var shell = document.getElementById('viewport-shell');
+    var statusEl = document.getElementById('harness-status');
+    var itemSelect = document.getElementById('intel-item-select');
+    var valueInput = document.getElementById('intel-value-input');
+    var decryptInput = document.getElementById('intel-decrypt-input');
+    var viewportSelect = document.getElementById('intel-viewport-select');
+
+    if (query.qa === '1' || query.case) {
+        document.body.classList.add('intelligence-qa');
+    }
+
+    var fixtures = buildFixtures();
+
+    var host = window.IntelligenceHarnessHost = {
+        sentMessages: [],
+        closeCount: 0,
+        setViewport: function(value) {
+            var parts = String(value || '1366x768').split('x');
+            var width = Math.max(800, parseInt(parts[0] || '1366', 10) || 1366);
+            var height = Math.max(520, parseInt(parts[1] || '768', 10) || 768);
+            shell.style.width = width + 'px';
+            shell.style.height = height + 'px';
+            document.documentElement.style.setProperty('--panel-w', width + 'px');
+            document.documentElement.style.setProperty('--panel-h', height + 'px');
+            if (document.body.classList.contains('intelligence-qa')) {
+                var scale = Math.min((window.innerWidth || width) / width, (window.innerHeight || height) / height, 1);
+                shell.style.transformOrigin = 'top left';
+                shell.style.transform = scale < 1 ? 'scale(' + scale + ')' : '';
+            }
+            viewportSelect.value = width + 'x' + height;
+        },
+        open: function(options) {
+            options = options || {};
+            var itemName = options.itemName || itemSelect.value || '资料';
+            var value = options.value != null ? options.value : Number(valueInput.value);
+            var decryptLevel = options.decryptLevel != null ? options.decryptLevel : Number(decryptInput.value);
+            itemSelect.value = itemName;
+            valueInput.value = String(value);
+            decryptInput.value = String(decryptLevel);
+            if (Panels.getActive && Panels.getActive() === 'intelligence') Panels.close();
+            Panels.open('intelligence', {
+                mode: options.mode || 'dev',
+                itemName: itemName,
+                value: isNaN(value) ? 0 : value,
+                decryptLevel: isNaN(decryptLevel) ? 0 : decryptLevel,
+                pcName: options.pcName || '测试玩家',
+                debug: options.debug !== false
+            });
+            statusEl.textContent = 'Opened ' + itemName + ' value=' + value + ' decrypt=' + decryptLevel;
+        },
+        close: function() {
+            Panels.close();
+            statusEl.textContent = 'Closed.';
+        },
+        handleMessage: function(message) {
+            if (!message || message.panel !== 'intelligence') return;
+            if (message.cmd === 'close') {
+                host.closeCount++;
+                return;
+            }
+            if (message.cmd === 'bundle') {
+                var bundleValue = Number(message.value);
+                if (isNaN(bundleValue)) bundleValue = 0;
+                setTimeout(function() {
+                    window.chrome.webview.__dispatch({
+                        type: 'panel_resp',
+                        panel: 'intelligence',
+                        cmd: 'bundle',
+                        callId: message.callId,
+                        success: true,
+                        value: bundleValue,
+                        decryptLevel: Number(message.decryptLevel) || 0,
+                        pcName: message.pcName || '',
+                        items: Object.keys(fixtures).map(function(name) {
+                            return buildItemPayload(fixtures[name], bundleValue, Number(message.decryptLevel) || 0, message.pcName || '', true);
+                        })
+                    });
+                }, 8);
+            } else if (message.cmd === 'catalog') {
+                setTimeout(function() {
+                    window.chrome.webview.__dispatch({
+                        type: 'panel_resp',
+                        panel: 'intelligence',
+                        cmd: 'catalog',
+                        callId: message.callId,
+                        success: true,
+                        items: Object.keys(fixtures).map(function(name) {
+                            return {
+                                name: name,
+                                iconName: fixtures[name].iconName || name,
+                                index: fixtures[name].index,
+                                maxValue: fixtures[name].maxValue,
+                                pageCount: fixtures[name].pages.length
+                            };
+                        })
+                    });
+                }, 8);
+            } else if (message.cmd === 'snapshot') {
+                var item = fixtures[message.itemName] || fixtures['资料'];
+                var value = Number(message.value);
+                if (isNaN(value)) value = item.maxValue;
+                var payload = buildItemPayload(item, value, Number(message.decryptLevel) || 0, message.pcName || '', false);
+                setTimeout(function() {
+                    window.chrome.webview.__dispatch({
+                        type: 'panel_resp',
+                        panel: 'intelligence',
+                        cmd: 'snapshot',
+                        callId: message.callId,
+                        success: true,
+                        item: {
+                            name: payload.name,
+                            iconName: payload.iconName,
+                            index: payload.index,
+                            maxValue: payload.maxValue,
+                            pageCount: payload.pageCount
+                        },
+                        name: payload.name,
+                        maxValue: payload.maxValue,
+                        value: value,
+                        decryptLevel: payload.decryptLevel,
+                        pcName: payload.pcName,
+                        pages: payload.pages,
+                        encryptRules: payload.encryptRules
+                    });
+                }, 8);
+            }
+        }
+    };
+
+    function buildItemPayload(item, value, decryptLevel, pcName, includeLockedText) {
+        var pages = item.pages.map(function(page) {
+            var unlocked = page.value <= value;
+            return {
+                pageKey: page.pageKey,
+                value: page.value,
+                encryptLevel: page.encryptLevel || 0,
+                unlocked: unlocked,
+                text: (unlocked || includeLockedText) ? page.text : ''
+            };
+        });
+        return {
+            name: item.name,
+            iconName: item.iconName || item.name,
+            index: item.index,
+            maxValue: item.maxValue,
+            pageCount: item.pages.length,
+            value: value,
+            decryptLevel: decryptLevel,
+            pcName: pcName,
+            pages: pages,
+            encryptRules: item.encryptRules
+        };
+    }
+
+    function buildFixtures() {
+        var docText = '<b>【尘都联合大学 安保部 现场记录】</b><br>' +
+            '行动：<b>下水道勘探（第7次）</b> | 状态：<font color="#FF3333">中止</font><br><br>' +
+            '<b>【物资留存说明】</b><br>' +
+            '鉴于前方环境恶化，我队在此设立<b>临时补给点</b>。<br>' +
+            '警告：<font color="#FF3333">未装备上述物资前，严禁通过前方闸门。</font><br><br>' +
+            '<u>${PC_NAME}</u> 已被记录为本次阅读者。';
+        var encryptedText = '<b>【区域威胁评估】</b><br>' +
+            'A兵团正在汇总诺亚组织留下的资料。秘密讨论尚未完成。';
+        var pages = [];
+        for (var i = 1; i <= 18; i++) {
+            pages.push({
+                pageKey: String(i),
+                value: i === 18 ? 99 : Math.max(1, i * 5),
+                encryptLevel: i === 2 ? 2 : (i > 14 ? 8 : 0),
+                text: i === 1 ? docText : (i === 2 ? encryptedText : '第 ' + i + ' 页情报正文。<br>这是一段用于验证分页与滚动的 legacy txt 内容。')
+            });
+        }
+        var longPages = [];
+        for (i = 1; i <= 30; i++) {
+            longPages.push({
+                pageKey: String(i),
+                value: Math.ceil(i / 2),
+                encryptLevel: 0,
+                text: '<b>幻层残响记录 ' + i + '</b><br>' + repeatLine('观测点回声持续增强，边界层出现重复脚步声与断续通信噪声。', 30)
+            });
+        }
+        return {
+            '资料': {
+                name: '资料',
+                iconName: '资料',
+                index: 0,
+                maxValue: 99,
+                pages: pages,
+                encryptRules: {
+                    replace: { 'A兵团': '██', '诺亚组织': '████', '资料': '██' },
+                    cut: { '秘密讨论': '--' }
+                }
+            },
+            '酒保线报：黑铁会崛起于乡间': {
+                name: '酒保线报：黑铁会崛起于乡间',
+                iconName: '黑铁会档案图标',
+                index: 4,
+                maxValue: 1,
+                pages: [
+                    { pageKey: '1_1', value: 1, encryptLevel: 0, text: '酒保递来一份盖着黑铁会印记的线报。' },
+                    { pageKey: '1_2', value: 1, encryptLevel: 0, text: '乡间矿场近日出现新的武装巡逻。' },
+                    { pageKey: '1_3', value: 1, encryptLevel: 0, text: '档案夹上的图标来自物品 XML 的 icon 字段。' },
+                    { pageKey: '1_4', value: 1, encryptLevel: 0, text: '若只用情报名称查 manifest，会找不到该图标。' },
+                    { pageKey: '1_5', value: 1, encryptLevel: 0, text: 'Web 面板需要优先使用 iconName。' },
+                    { pageKey: '1_6', value: 1, encryptLevel: 0, text: '测试结束。' }
+                ],
+                encryptRules: { replace: {}, cut: {} }
+            },
+            '幻层残响': {
+                name: '幻层残响',
+                iconName: '幻层残响',
+                index: 74,
+                maxValue: 15,
+                pages: longPages,
+                encryptRules: { replace: {}, cut: {} }
+            },
+            '黑铁会的秘密情报书': {
+                name: '黑铁会的秘密情报书',
+                iconName: '黑铁会的秘密情报书',
+                index: 98,
+                maxValue: 3,
+                pages: [
+                    { pageKey: '1', value: 1, encryptLevel: 0, text: '<font color="#ff6666">持有符令，此纸阅后即焚</font><br><br>谨呈：黑铁会秘录。' },
+                    { pageKey: '2', value: 2, encryptLevel: 0, text: '虚渊诡道流毒未清，借旧世遗线潜入虚渊。' },
+                    { pageKey: '3', value: 3, encryptLevel: 0, text: '万诺亚余孽遗术，专以乱心夺魂。' }
+                ],
+                encryptRules: { replace: {}, cut: {} }
+            },
+            '缺图记录': {
+                name: '缺图记录',
+                iconName: '缺图记录',
+                index: 200,
+                maxValue: 1,
+                pages: [{ pageKey: '1', value: 1, encryptLevel: 0, text: '这条情报故意不提供图标，用于验证占位图。' }],
+                encryptRules: { replace: {}, cut: {} }
+            }
+        };
+    }
+
+    function repeatLine(text, count) {
+        var out = [];
+        for (var i = 0; i < count; i++) out.push(text);
+        return out.join('<br>');
+    }
+
+    viewportSelect.addEventListener('change', function() {
+        host.setViewport(viewportSelect.value);
+    });
+    document.getElementById('intel-open-btn').addEventListener('click', function() { host.open(); });
+    document.getElementById('intel-close-btn').addEventListener('click', function() { host.close(); });
+
+    var api = MinigameHarness.create({
+        panelId: 'intelligence',
+        openPanel: function() {
+            host.setViewport(query.viewport || '1366x768');
+            if (query.item) itemSelect.value = query.item;
+            if (query.value) valueInput.value = query.value;
+            if (query.decrypt) decryptInput.value = query.decrypt;
+            host.open({
+                itemName: itemSelect.value,
+                value: Number(valueInput.value),
+                decryptLevel: Number(decryptInput.value),
+                debug: true
+            });
+        },
+        runSuite: function(api, onlyCase) {
+            return IntelligenceHarnessQA.runSuite(api, host, onlyCase);
+        },
+        collectDump: function() {
+            return {
+                state: IntelligencePanel._debugGetState(),
+                panelRect: rectOf('.intelligence-panel'),
+                contentRect: rectOf('.intel-content')
+            };
+        }
+    });
+
+    function rectOf(selector) {
+        var node = document.querySelector(selector);
+        if (!node) return null;
+        var rect = node.getBoundingClientRect();
+        return { x: rect.x, y: rect.y, w: rect.width, h: rect.height };
+    }
+
+    api.boot();
+})();
+</script>
+</body>
+</html>

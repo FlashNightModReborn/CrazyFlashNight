@@ -17,6 +17,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal("shopPanelClose", WebOverlayForm.ResolvePanelCloseGameCommand("kshop"));
             Assert.Equal("mapPanelClose", WebOverlayForm.ResolvePanelCloseGameCommand("map"));
             Assert.Null(WebOverlayForm.ResolvePanelCloseGameCommand("help"));
+            Assert.Null(WebOverlayForm.ResolvePanelCloseGameCommand("intelligence"));
         }
     }
 }

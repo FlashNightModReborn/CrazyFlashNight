@@ -204,6 +204,7 @@ namespace CF7Launcher.Guardian
         private ShopTask _shopTask;
         private MapTask _mapTask;
         private StageSelectTask _stageSelectTask;
+        private IntelligenceTask _intelligenceTask;
         private GomokuTask _gomokuTask;
         private Action<bool> _onPanelStateChanged;
         private string _activePanel;  // null = 无面板, "kshop"/"help"/...
@@ -2600,6 +2601,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetIntelligenceTask(IntelligenceTask task)
+        {
+            _intelligenceTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetPanelStateCallback(Action<bool> cb) { _onPanelStateChanged = cb; }
 
         #region PanelHost 集成（Phase 2 应急版）
@@ -2983,12 +2991,19 @@ namespace CF7Launcher.Guardian
                 case "refresh":
                 case "enter":
                 case "jump_frame":
+                case "catalog":
+                case "bundle":
                     {
                         string panel = parsed.Value<string>("panel") ?? "";
                         if (panel == "stage-select")
                         {
                             LogManager.Log("[Panel] Routing cmd=" + cmd + " to StageSelectTask, _stageSelectTask=" + (_stageSelectTask != null ? "ok" : "NULL"));
                             if (_stageSelectTask != null) _stageSelectTask.HandleWebRequest(cmd, parsed);
+                        }
+                        else if (panel == "intelligence")
+                        {
+                            LogManager.Log("[Panel] Routing cmd=" + cmd + " to IntelligenceTask, _intelligenceTask=" + (_intelligenceTask != null ? "ok" : "NULL"));
+                            if (_intelligenceTask != null) _intelligenceTask.HandleWebRequest(cmd, parsed);
                         }
                         else
                         {

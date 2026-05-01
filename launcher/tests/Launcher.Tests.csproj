@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="SanityTests.cs" />
     <Compile Include="Tasks\StageSelectTaskTests.cs" />
+    <Compile Include="Tasks\IntelligenceTaskTests.cs" />
     <Compile Include="Save\SaveMigratorTests.cs" />
     <Compile Include="Bus\MessageRouterTests.cs" />
     <Compile Include="Bus\XmlSocketReadLoopTests.cs" />

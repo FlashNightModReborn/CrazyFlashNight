@@ -423,6 +423,7 @@ launcher/
 │       ├── help.js / help-panel.js        帮助系统（顶层入口 + 面板骨架）
 │       ├── map-panel.js / map-panel-data.js / map-fit-presets.js / map-hud.js 地图系统（正式 map panel + 静态页面/热点数据 + filter fit preset 表 + 右上角常驻 HUD）
 │       ├── stage-select-data.js / stage-select-panel.js 选关界面 Stage 2 runtime panel（Panels.register('stage-select')）
+│       ├── intelligence-panel.js          情报详情 Web 测试面板（Panels.register('intelligence')；数据由 C# IntelligenceTask 提供）
 │       ├── map/
 │       │   └── dev/
 │       │       ├── harness.html           地图 panel browser harness + QA suite
@@ -431,6 +432,9 @@ launcher/
 │       ├── stage-select/
 │       │   └── dev/
 │       │       └── harness.html           选关界面 browser harness + QA suite
+│       ├── intelligence/
+│       │   └── dev/
+│       │       └── harness.html           情报详情 panel browser harness + QA suite
 │       └── minigames/
 │           ├── shared/                    小游戏共享层（host-bridge + minigame-shell + shared/dev QA 基础层）
 │           ├── lockbox/                   开锁小游戏（core/dev + lockbox-audio/panel/css/README）
@@ -438,7 +442,7 @@ launcher/
 │           └── gobang/                    五子棋小游戏（core/dev + panel/css/README，AI 走 GomokuTask/Rapfi）
 │
 ├── tests/                                 【xUnit 2.4.2 C# 单测，见测试基建节】
-│   ├── Launcher.Tests.csproj              legacy csproj + packages.config（net462 对齐主工程；38 个测试源码入口）
+│   ├── Launcher.Tests.csproj              legacy csproj + packages.config（net462 对齐主工程；45 个测试源码入口）
 │   ├── packages.config                    xunit / xunit.runner.console / xunit.runner.visualstudio
 │   ├── run_tests.ps1                      双段 nuget restore + msbuild + xunit.console
 │   ├── SanityTests.cs                     基建冒烟
@@ -502,7 +506,7 @@ powershell -File build.ps1
 | 3.5  | 硬断言 `sol_parser.dll` 已落盘到项目根（防止"编过但运行时 DllNotFoundException"） |
 | 4    | 复制 V8 原生 DLL（ClearScriptV8.win-x64.dll）到项目根 |
 | 5    | 复制 WebView2 原生 loader（WebView2Loader.dll）到项目根 |
-| 6    | fail-fast 校验 `launcher/web` 运行时必需集：`bootstrap.html` / `bootstrap-main.js` / `overlay.html` / `config/version.js` / `assets/bg/manifest.json` / `assets/cursor/native/*` / `assets/intro.mp4` / `assets/map/*` / `assets/stage-select/*` / `help/*.md` / `icons/manifest.json` / `data/lockbox-variants.json` / 关键 `modules/*` 与 minigame 入口文件 |
+| 6    | fail-fast 校验 `launcher/web` 运行时必需集：`bootstrap.html` / `bootstrap-main.js` / `overlay.html` / `config/version.js` / `assets/bg/manifest.json` / `assets/cursor/native/*` / `assets/intro.mp4` / `assets/map/*` / `assets/stage-select/*` / `help/*.md` / `icons/manifest.json` / `data/lockbox-variants.json` / 关键 `modules/*`（含 `intelligence-panel.js`）与 minigame 入口文件 |
 | 6a   | 运行 `node tools/audit-native-cursor-assets.js` 校验 native cursor `64x64` 画布与 `(16,16)` 热点契约，缺失或不合规直接 exit 1 |
 | 6b   | fail-fast 校验 `launcher/data/map_hud_data.json` 与 `launcher/data/save_schema.json`；缺失时分别提示 `node tools/export-maphud-data.js` / `node tools/extract-save-schema.js` |
 
@@ -579,7 +583,7 @@ powershell -File run_tests.ps1
 
 ### 测试覆盖
 
-当前 `Launcher.Tests.csproj` 直接编译 38 个测试源码文件（`<root>` 1 / `Bus` 2 / `Tasks` 3 / `Save` 8 / `Guardian` 24），截至 commit `cc25c357d` 可静态检出 387 个 `[Fact]` / `[Theory]` 标记。`SaveMigratorTests` 继续使用代码内 helper 数据；外部 fixture 目前主要集中在 `Fixtures/MapHud/`。
+当前 `Launcher.Tests.csproj` 直接编译 45 个测试源码文件（`<root>` 1 / `Bus` 2 / `Tasks` 4 / `Save` 8 / `Guardian` 30），可静态检出 443 个 `[Fact]` / `[Theory]` 标记。`SaveMigratorTests` 继续使用代码内 helper 数据；外部 fixture 目前主要集中在 `Fixtures/MapHud/`。
 
 | 分组 | 覆盖面 |
 |------|--------|
@@ -605,6 +609,7 @@ powershell -File run_tests.ps1
   - `web/modules/minigames/gobang/dev/harness.html`
   - `web/modules/map/dev/harness.html`
   - `web/modules/stage-select/dev/harness.html`
+  - `web/modules/intelligence/dev/harness.html`
   - 共享 QA 基础层：`web/modules/minigames/shared/dev/harness-base.js` + `harness-base.css`
   - 支持 query 驱动的 `?qa=1` / `?case=` / `?scenario=` / `?dump=1`
   - `map` harness 额外覆盖页签 hit-test、右侧层级按钮遮挡、学校室友动态图、`1366x768` 紧凑视口可达性、locked group 锁定提示与锁定原因可达性
@@ -622,6 +627,8 @@ powershell -File run_tests.ps1
 - **Stage Select manifest / audit / harness**：`node tools/export-stage-select-manifest.js --summary`、`node tools/audit-stage-select-layout.js --json`、`node tools/run-stage-select-harness.js --browser edge`
   - 从 `flashswf/UI/选关界面/LIBRARY/选关界面UI/选关界面 1024&#042576.xml` 导出 `StageSelectData` 所用 manifest；Stage 2 通过 `StageSelectTask` / `StageSelectPanelService` 接入真实解锁 snapshot、`StageInfoDict` 关卡简介/限制词条/任务提示数据、真实进关、runtime 页内 frame 同步与关闭语义。关卡预览按原版链路导入：外部 PNG → `Symbol 3274` 内部命名帧 → 默认预览帧，layout audit 要求 `previewMissing=0`
   - Stage 2 正式入口替换记录见 `docs/选关界面-AS2入口替换交接.md`：AS2 `openWebStageSelect` 通过 `panel_request stage-select` 传入 `source/frameLabel`，C# 固化 runtime 初始化，`jump_frame` 同步 AS2 `_root.关卡地图帧值`，close 回调 `stageSelectPanelClose`；runtime 布局隐藏测试标题/fixture/dev 控件，16 个 frame tab 收进可展开区域菜单，场景门替换覆盖基地门口、车库、地下 2 层、停机坪、联合大学左右出口，并保留 Flash fallback
+- **Intelligence panel harness**：`node tools/run-intelligence-harness.js --browser edge`
+  - 打开 `web/modules/intelligence/dev/harness.html`，mock `bundle` 全量包协议并保留 `catalog` / `snapshot` 兼容响应，覆盖 Flash 风格阅读窗、右侧可折叠情报目录、物品 XML `iconName` 图标解析、legacy 标签清洗、加密切换、缺图占位、长文本滚动与 1024×576 / 1366×768 / 1600×900 / 1920×1080 视口 hit-test
 - **Stage Select FFDec visual audit**：`powershell -ExecutionPolicy Bypass -File tools/run-stage-select-visual-audit.ps1`
   - 通过 `tools/ffdec/ffdec.jar` 导出 `DefineSprite 330`，按 FFDec SVG 舞台原点裁成 1024×576 原帧，再用无头 Edge 抓 Web 舞台截图，输出 `tmp/stage-select-visual-audit/sheets/*-compare.png` 三联图和 `visual-audit-index.json`
   - 首次运行前先 `npm --prefix launcher/perf ci --ignore-scripts`；工具会优先使用 Adobe Animate 2024 / Flash CS6 自带 JRE，坐标参照 `ffdecFrameIndex` 字段（首帧特殊为 1，其余为 `sourceFrameIndex + 1`）
@@ -762,7 +769,7 @@ useDesktopCursorOverlay = true
 
 #### Native HUD parity gate
 
-`useNativeHud=true` 扩散或改默认前，必须先过刘海栏 + 右侧 HUD 视觉/功能等价 gate：刘海栏由 [NotchOverlay](src/Guardian/NotchOverlay.cs) 复刻 web `#notch` 居中 pill、`28px` row1、hover 展开 toolbar、未 game-ready 仅显示 row1-right；combo 由 [ComboWidget](src/Guardian/Hud/ComboWidget.cs) 复刻 web `#combo-status` 输入提示、DFA/Sync 命中扫光、字符收束与收起；toast 和 `game` notice 也必须保持 Web 队列/去重/生命周期语义。右侧 cluster 由 [RightHudLayout](src/Guardian/Hud/RightHudLayout.cs) 固定复刻旧 Web 常量（`right:80px`、`width:170px`、5×`34px` 顶部工具、地图 `86px`、任务行/通知行 `32px`、jukebox `24px`），小地图需显示与 web `map-hud-svg-silhouette` 等价的 PNG alpha 剪影 + current/beacon。人工截图对比旧 Web 与 native：基地场景、任务完成可交付、小地图展开/折叠、未播放/播放中 jukebox、combo 输入/命中、toast/notice 堆叠、暂停态、安全退出弹出、7 个 panel 开关后 idle；通过标准是位置、宽度、纵向顺序、点击区域、文案和主要颜色层级等价，允许 GDI+/CSS 字体抗锯齿差异。性能回归仍要确认 idle WebView2 `SW_HIDE`，Ctrl+G / Task Manager 采样不比当前 native HUD 基线明显退化。
+`useNativeHud=true` 扩散或改默认前，必须先过刘海栏 + 右侧 HUD 视觉/功能等价 gate：刘海栏由 [NotchOverlay](src/Guardian/NotchOverlay.cs) 复刻 web `#notch` 居中 pill、`28px` row1、hover 展开 toolbar、未 game-ready 仅显示 row1-right；combo 由 [ComboWidget](src/Guardian/Hud/ComboWidget.cs) 复刻 web `#combo-status` 输入提示、DFA/Sync 命中扫光、字符收束与收起；toast 和 `game` notice 也必须保持 Web 队列/去重/生命周期语义。右侧 cluster 由 [RightHudLayout](src/Guardian/Hud/RightHudLayout.cs) 固定复刻旧 Web 常量（`right:80px`、`width:170px`、5×`34px` 顶部工具、地图 `86px`、任务行/通知行 `32px`、jukebox `24px`），小地图需显示与 web `map-hud-svg-silhouette` 等价的 PNG alpha 剪影 + current/beacon。人工截图对比旧 Web 与 native：基地场景、任务完成可交付、小地图展开/折叠、未播放/播放中 jukebox、combo 输入/命中、toast/notice 堆叠、暂停态、安全退出弹出、8 个 panel 开关后 idle；通过标准是位置、宽度、纵向顺序、点击区域、文案和主要颜色层级等价，允许 GDI+/CSS 字体抗锯齿差异。性能回归仍要确认 idle WebView2 `SW_HIDE`，Ctrl+G / Task Manager 采样不比当前 native HUD 基线明显退化。
 
 `webOverlayLowEffects` 是运行态 overlay 聚合诊断开关，等价于同时启用 `webOverlayDisableCssAnimations` 与 `webOverlayDisableVisualizers`，并对 map panel 额外关闭全屏 scanline / radar / pulse、移除大图与场景节点的 CSS filter/drop-shadow、降低 full-surface overlay 透明覆膜成本。`webOverlayDisableCssAnimations` 只注入 `perf-no-css-animations`，关闭 CSS animation / transition；`webOverlayDisableVisualizers` 只隐藏 BGM/FPS canvas，并把 BGM 可视化推送从 60ms 降为 250ms 的 track-end 轮询。`webOverlayFrameRateLimit` 默认 `60`，通过 Web 端 requestAnimationFrame 限帧器把 overlay 的 JS/canvas 刷新链路限制到 60fps；`0`、`off` 或 `unlimited` 表示跟随当前显示器刷新率跑满。`webView2DisableGpu` 会同时给 BootstrapPanel 与运行态 WebOverlayForm 追加 `--disable-gpu --disable-gpu-rasterization --disable-accelerated-2d-canvas`，用于验证核显占满是否来自 WebView2 合成；它可能把负载转移到 CPU，不建议作为默认运行配置。`nativeCursorOverlay=false` 或环境变量 `CF7_NATIVE_CURSOR_OVERLAY=0` 会关闭 C# 原生 cursor layered window，恢复系统鼠标，用于 A/B 排除 cursor 迁移对 GPU 满载的影响。`useDesktopCursorOverlay`（默认 `true`，2026-05 推 default-on）：DesktopCursorOverlay 是 desktop 顶层 ULW，scale 跟 `GuardianForm.ClientSize`（窗口级，panel 开关/全屏切换都跟随；ctor 即 seed，外部 SetScale 推送只在 GuardianForm 还没 sample 过时作 fallback）。`useDesktopCursorOverlay=false` 或环境变量 `CF7_DESKTOP_CURSOR=0` 一键回滚到旧 CursorOverlayForm（OverlayBase 子类，anchor-bound，scale 跟 FlashHostPanel-based viewport，仅作回滚兜底）。详见 toml 示例注释。`useNativeHud=true` 或环境变量 `CF7_NATIVE_HUD=1` 启用 Panel-Only 架构 + Native HUD widget（详见上方 useNativeHud 段落与 Native HUD parity gate）。`webView2AdditionalArgs` 和环境变量 `CF7_WEBVIEW2_ARGS` 用于一次性追加 Chromium 参数；环境变量 `CF7_WEB_LOW_EFFECTS`、`CF7_WEB_DISABLE_CSS_ANIMATIONS`、`CF7_WEB_DISABLE_VISUALIZERS`、`CF7_WEB_FRAME_RATE_LIMIT`、`CF7_WEBVIEW2_DISABLE_GPU` 可覆盖对应配置。
 
@@ -1304,6 +1311,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 - **help**（游戏帮助）: 纯 Web 侧 Markdown 帮助面板，不触发 Flash 暂停恢复
 - **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-panel-data.js` + `web/modules/map-fit-presets.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面均已切到 `assembled` 场景拼接模式，右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、filter-fit 离线调优 `tools/tune-map-filter-fit.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`，并在紧凑视口下自动缩放舞台、按 page/filter preset 做二次 content-fit；右上角常驻 HUD 由 `web/modules/map-hud.js` 消费同一份 `MapPanelData` + UiData `mm/mh`，只显示当前区块高亮与固定 beacon，点击后打开 map panel
 - **stage-select**（选关界面 Stage 2 runtime）: `web/modules/stage-select-panel.js` + generated `web/modules/stage-select-data.js`；可通过 Native HUD “其他 → 选关测试” 的 `STAGE_SELECT_TEST` 打开，也可由 AS2 场景门 `openWebStageSelect` → `panel_request stage-select` 正式打开。支持 16 个 frame label、167 个源 XML 选关按钮实例、152 个 Web 运行时去重渲染实例、fixture 锁定/任务/挑战模式、按外部 PNG / 内部命名帧 / 默认帧回退的 hover 预览、browser harness 和 FFDec/Web 视觉对照审计；runtime 下使用 `stageSelectSnapshot` 读取真实解锁/挑战状态，难度按钮通过 `stageSelectEnter` 进入已解锁关卡，`localFrame` 通过 `jump_frame` / `stageSelectJumpFrame` 同步 AS2 frame，return 类 nav 只关闭 panel。runtime 布局隐藏测试标题、fixture/dev 控件与右侧空栏，frame tab 默认收纳到可展开区域菜单。它不迁移外交 / 委托任务界面，旧 Flash `关卡地图` 保留为 fallback
+- **intelligence**（情报详情测试面板）: `web/modules/intelligence-panel.js`；阶段一仅作为开发测试入口，通过 Native HUD 或旧 Web notch 的“其他 → 情报测试” / `INTELLIGENCE_TEST` 打开，AS2 情报图标列表和正式点击链路不变。面板走 `panel/panel_resp` 的 `bundle` / `catalog` / `snapshot` / `close` 协议，由 C# `IntelligenceTask` 读取真实 `data/dictionaries/information_dictionary.xml`、`data/items/收集品_情报.xml` 与固定目录 `data/intelligence/<itemName>.txt`，Web 不直接 fetch 项目根或 `data/`。Web 侧首选 `bundle` 一次性加载全部情报元数据、物品 XML `iconName`、分页正文和加密规则，右侧渲染可折叠情报目录；点击目录只在 Web 本地切换当前情报，后续接 AS2 背包快照时再替换数据来源。图标使用 `icons.js` / `icons/manifest.json` 解析首帧图标，优先 `iconName`、再回退情报名；阅读器渲染 legacy txt 的分页、收集进度、解密/密文视图、`${PC_NAME}` 替换和 `b/strong/u/i/font[color]/br` 白名单标签；关闭时不通知 Flash。视觉第一版对齐旧 Flash 情报窗：深灰标题栏、纸张点阵阅读区、底部箭头翻页；browser harness 为 `web/modules/intelligence/dev/harness.html`
 - **lockbox**（开锁小游戏）: `web/modules/minigames/lockbox/` 下的正式小游戏模块；支持运行时参数、browser harness、Node QA
 - **pinalign**（定位小游戏）: `web/modules/minigames/pinalign/` 下的正式小游戏模块；和 Lockbox 共用小游戏壳层与 QA 平台
 - **gobang**（五子棋小游戏）: `web/modules/minigames/gobang/` 下的正式小游戏模块；Web core 负责规则裁判，AI 经 Web→C# `gomoku_eval` 调用 `GomokuTask` / Rapfi
@@ -1331,7 +1339,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 **通用模块**：
 - `panels.js`: 面板注册/生命周期管理 (register/open/close/force_close)
 - `tooltip.js`: hover 跟随 + anchored 锚定两种模式，AS2 HTML 转换
-- `icons.js`: 物品图标 manifest 加载 + 名称→URL 解析
+- `icons.js`: 物品图标 manifest 加载 + 名称→URL 解析，情报详情测试面板也复用该入口
 - `web/modules/minigames/shared/host-bridge.js`: 小游戏 → 宿主的统一桥接
 - `web/modules/minigames/shared/minigame-shell.css`: 小游戏共享结构样式
 
@@ -1345,8 +1353,8 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
   - `turn` / `result` / `export`: 沿用各游戏语义，但都走同一 envelope
 - Gobang AI 额外走 Web panel → C# `gomoku_eval`：`{ type:'panel', panel:'gobang', cmd:'gomoku_eval', callId, payload:{ moves, timeLimit, ruleset } }`；响应为同 `callId` 的 `panel_resp`，`moves` 为 `[[x,y,role],...]`，`role` 使用 `1` 黑 / `-1` 白
 
-**状态机**：`useNativeHud=true` 时 panel 打开状态以 `PanelHostController.ActivePanelName` 为主；`useNativeHud=false` 仍保留 WebOverlayForm `_activePanel` fallback（`null` → `"kshop" / "help" / "lockbox" / "pinalign" / "gobang" / ...` → `null`）。当前只有 `kshop` 会在断连或强制关闭路径里设置 `_pauseNeedsRestore`；其余纯 Web / dev panel 只做面板生命周期管理，不触发 Flash 暂停恢复。
+**状态机**：`useNativeHud=true` 时 panel 打开状态以 `PanelHostController.ActivePanelName` 为主；`useNativeHud=false` 仍保留 WebOverlayForm `_activePanel` fallback（`null` → `"kshop" / "help" / "map" / "stage-select" / "intelligence" / "lockbox" / "pinalign" / "gobang" / ...` → `null`）。当前只有 `kshop` 会在断连或强制关闭路径里设置 `_pauseNeedsRestore`；其余纯 Web / dev panel 只做面板生命周期管理，不触发 Flash 暂停恢复。
 
 **热重载恢复**：`_uiDataSnapshot` 按 KV key 维护最新值快照，WebView2 热重载后 `FlushUiDataBuffer` 先回放完整快照，确保 game-ready 等关键状态不丢失。
 
-**维护约束**：凡是小游戏、地图 panel、stage-select panel、Native HUD/PanelHost 的目录迁移、宿主协议变更、QA 入口变化，必须同步更新本 README 的目录树、测试入口和本节协议说明；模块内细节留在各自模块 README / 设计文档。
+**维护约束**：凡是小游戏、地图 panel、stage-select panel、intelligence panel、Native HUD/PanelHost 的目录迁移、宿主协议变更、QA 入口变化，必须同步更新本 README 的目录树、测试入口和本节协议说明；模块内细节留在各自模块 README / 设计文档。

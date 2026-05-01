@@ -575,6 +575,7 @@ class Program
         ShopTask shopTask = new ShopTask(socketServer);
         MapTask mapTask = new MapTask(socketServer);
         StageSelectTask stageSelectTask = new StageSelectTask(socketServer);
+        IntelligenceTask intelligenceTask = new IntelligenceTask(projectRoot);
         ArchiveTask archiveTask;
         using (PerfTrace.Scope("task.archive_init"))
         {
@@ -633,6 +634,7 @@ class Program
         webOverlay.SetGomokuTask(gomokuTask);
         webOverlay.SetMapTask(mapTask);
         webOverlay.SetStageSelectTask(stageSelectTask);
+        webOverlay.SetIntelligenceTask(intelligenceTask);
         webOverlay.SetPanelStateCallback(form.HandlePanelStateChanged);
         form.SetWebOverlay(webOverlay);
         socketServer.OnClientDisconnected += webOverlay.OnSocketDisconnected;
