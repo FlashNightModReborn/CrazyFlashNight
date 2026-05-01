@@ -531,24 +531,19 @@ class Program
 
         // Phase 1 (11c): WebView2 硬依赖 — webOverlay 必有, 直接用
         IToastSink toastSink = webOverlay;
-        // Phase 4: useNativeHud=true 时把 N 前缀 notice fan-out 到 NativeHudOverlay，让 ComboWidget 等
-        // INotchNoticeConsumer 收到 category="combo" 通知（web combo.js 的迁移路径）。webOverlay 仍在
-        // 链上以保留过渡期 web overlay 兼容渲染（Phase 7 移除 web 通知后才能删 webOverlay 这条 sink）。
-        INotchSink notchSink;
-        if (config.UseNativeHud && nativeHud != null)
-        {
-            // native 优先：nativeHud 收所有 category；webOverlay/NotchOverlay 跳过 native 已订阅的 category（如 "combo"）。
-            // 否则 N combo|... 会同时弹 ComboWidget 命中条 + NotchOverlay 普通通知行（webOverlay.AddNotice 在 useNativeHud=true
-            // 时直接转给 _notchFallback=NotchOverlay 走默认 upsertRow 路径，与 ComboWidget 命中态重复）。
-            NativeHudOverlay capturedHud = nativeHud;
-            notchSink = new CompositeNotchSink(
-                new CompositeNotchSink.Entry(nativeHud, null),
-                new CompositeNotchSink.Entry(webOverlay, delegate(string cat) { return !capturedHud.HasNoticeConsumerFor(cat); }));
-        }
-        else
-        {
-            notchSink = webOverlay;
-        }
+        // useNativeHud=true：notchSink 直接是 nativeHud。NotchWidget 注册后处理所有 category 的
+        // AddNotice/SetStatusItem/ClearStatusItem，无需再复合 webOverlay：
+        //   - WebOverlayForm.AddNotice/SetStatusItem/ClearStatusItem 在 _useNativeHud=true 时本就 forward
+        //     给 _notchFallback（A.2 起 = nativeHud），把 webOverlay 留在 CompositeNotchSink 里会让
+        //     SetStatusItem/ClearStatusItem 通过 nativeHud→webOverlay→nativeHud 派发两次，徒增
+        //     UI 线程 BeginInvoke + NotchWidget upsert/repaint 压力（id 去重避免视觉双显但不省 CPU）。
+        //   - AddNotice 由 NotchWidget 通用兜底接管 + INotchNoticeConsumer 精确订阅，duplicate 已被
+        //     NativeHudOverlay.HasNoticeConsumerFor 收口；CompositeNotchSink 的 webOverlay 路径在 A.2 后
+        //     是死路径（AcceptCategory 永远 false）。
+        // useNativeHud=false：保留旧路径，notchSink = webOverlay（ExecScript / GDI+ NotchOverlay 兜底）。
+        INotchSink notchSink = config.UseNativeHud && nativeHud != null
+            ? (INotchSink)nativeHud
+            : webOverlay;
         ToastTask toastTask = new ToastTask(toastSink);
         // 音量 sanity toast（迁移期临时兜底）：master_vol==0 / bgm_vol<0.02 时进程级首次提示。
         // 设置入口在 Flash 侧迁移完成前，存档编辑器简易模式系统卡片为唯一恢复路径。
