@@ -163,6 +163,231 @@ var StageSelectHarnessQA = (function() {
                     });
                 });
             }],
+            ['runtime-frame-counter', 'runtime toggle shows current frame index out of total', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    var manifest = StageSelectData.getManifest();
+                    var counter = document.getElementById('stage-select-frame-toggle-counter');
+                    api.assert(!!counter, 'counter element exists');
+                    var firstLabel = manifest.frameOrder[0];
+                    StageSelectPanel._debugSetFrame(firstLabel, 'qa-counter');
+                    api.assertEqual(counter.textContent, '1/' + manifest.frameOrder.length, 'first frame counter');
+                    var lastIdx = manifest.frameOrder.length - 1;
+                    StageSelectPanel._debugSetFrame(manifest.frameOrder[lastIdx], 'qa-counter');
+                    api.assertEqual(counter.textContent, (lastIdx + 1) + '/' + manifest.frameOrder.length, 'last frame counter');
+                    return 'counter ok';
+                });
+            }],
+            ['runtime-frame-menu-keyboard', 'runtime frame menu supports arrow / Enter / Esc', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    host.jumpMessages.length = 0;
+                    var toggle = document.getElementById('stage-select-frame-toggle');
+                    var tabs = document.getElementById('stage-select-tabs');
+                    toggle.focus();
+                    toggle.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }));
+                    api.assertEqual(StageSelectPanel._debugGetState().frameMenuOpen, true, 'menu opens via ArrowDown');
+                    api.assert(document.activeElement && document.activeElement.classList.contains('stage-select-tab'), 'focus moved to a tab');
+                    var initialActive = document.activeElement;
+                    initialActive.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }));
+                    api.assert(document.activeElement !== initialActive, 'ArrowDown moved focus');
+                    var targetTab = document.activeElement;
+                    var targetLabel = targetTab.getAttribute('data-frame-label');
+                    targetTab.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                    return api.waitFor(function() {
+                        return host.jumpMessages.length ? host.jumpMessages[0] : null;
+                    }, 2000, 'keyboard select').then(function(msg) {
+                        api.assertEqual(msg.frameLabel, targetLabel, 'Enter selects frame');
+                        api.assertEqual(StageSelectPanel._debugGetState().frameMenuOpen, false, 'menu closes after Enter');
+                        api.assert(document.activeElement === toggle, 'focus returns to toggle after select');
+                        toggle.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                        api.assertEqual(StageSelectPanel._debugGetState().frameMenuOpen, true, 'menu re-opens via Enter');
+                        var firstFocused = document.activeElement;
+                        firstFocused.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+                        api.assertEqual(StageSelectPanel._debugGetState().frameMenuOpen, false, 'Escape closes menu');
+                        api.assert(document.activeElement === toggle, 'focus returns to toggle after Escape');
+                        return 'keyboard nav ok';
+                    });
+                });
+            }],
+            ['runtime-nav-button-breathing', 'runtime entry nav buttons have horizontal padding and min-width', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    StageSelectPanel._debugSetFrame('基地车库', 'qa-nav-pad');
+                    var entry = document.querySelector('.stage-select-nav-button.is-entry-yellow, .stage-select-nav-button.is-entry-red');
+                    api.assert(!!entry, 'entry nav button exists in 基地车库');
+                    var cs = getComputedStyle(entry);
+                    var padL = parseFloat(cs.paddingLeft);
+                    var padR = parseFloat(cs.paddingRight);
+                    api.assert(padL >= 12 && padR >= 12, 'entry nav has horizontal padding >=12 (L=' + padL + ', R=' + padR + ')');
+                    api.assert(parseFloat(cs.minWidth) >= 110, 'entry nav min-width >= 110');
+                    api.assert(parseFloat(cs.height) >= 34, 'entry nav height >= 34');
+                    var ret = document.querySelector('.stage-select-nav-button.is-return, .stage-select-nav-button.is-return-garage');
+                    if (ret) {
+                        var rcs = getComputedStyle(ret);
+                        api.assert(parseFloat(rcs.paddingRight) >= 10, 'return nav has right padding');
+                        api.assert(parseFloat(rcs.paddingLeft) >= 20, 'return nav reserves arrow space');
+                    }
+                    return 'nav buttons breathe';
+                });
+            }],
+            ['runtime-card-height-measured', 'runtime card height comes from real DOM measurement, fits all text', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    var manifest = StageSelectData.getManifest();
+                    var label = manifest.frameOrder[0];
+                    StageSelectPanel._debugSetFrame(label, 'qa-height');
+                    var btns = document.querySelectorAll('.stage-select-stage-button');
+                    api.assert(btns.length > 0, 'stage buttons rendered');
+                    var sample = btns[0];
+                    var stageName = sample.getAttribute('data-stage-name');
+                    StageSelectPanel._debugApplySnapshot({
+                        unlockedStages: (function() { var u = {}; u[stageName] = true; return u; })(),
+                        stageDetails: (function() {
+                            var d = {};
+                            d[stageName] = {
+                                exists: true,
+                                stageType: '初期关卡',
+                                detail: '盗贼的势力范围，抢劫、杀人等犯罪是家常便饭，从某种意义上来说此地比废城区更危险。这里可以获得一些中级材料和装备碎片。',
+                                materialDetail: '',
+                                limitDetail: '',
+                                limitLevel: '',
+                                task: false,
+                                highestDifficulty: '简单'
+                            };
+                            return d;
+                        })(),
+                        isChallengeMode: false,
+                        currentFrameLabel: label
+                    });
+                    var btn = document.querySelector('.stage-select-stage-button[data-stage-name="' + stageName + '"]');
+                    var declaredHeight = parseFloat(btn.style.getPropertyValue('--stage-card-height')) || 0;
+                    api.assert(declaredHeight > 232, 'long text raised height past min (got ' + declaredHeight + ')');
+                    btn.focus();
+                    var detail = btn.querySelector('.stage-select-card-detail');
+                    var detailScroll = detail.scrollHeight;
+                    var detailRect = detail.getBoundingClientRect();
+                    // declared height = baseline + measured detail. detail rendered height should fit inside card box.
+                    api.assert(detailScroll <= detailRect.height + 4, 'rendered detail fits inside box (scroll=' + detailScroll + ', box=' + Math.round(detailRect.height) + ')');
+                    return 'measured height fits text';
+                });
+            }],
+            ['runtime-card-adaptive-width', 'runtime card stays 167 for short, 195 for medium, 220 for long names', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    var manifest = StageSelectData.getManifest();
+                    var found = { short: null, medium: null, long: null, longest: null };
+                    var weighName = function(s) {
+                        var w = 0;
+                        for (var i = 0; i < s.length; i += 1) w += s.charCodeAt(i) < 128 ? 0.58 : 1;
+                        return w;
+                    };
+                    manifest.frameOrder.some(function(label) {
+                        var f = StageSelectData.getFrame(label);
+                        (f.stageButtons || []).forEach(function(b) {
+                            var w = weighName(b.stageName || '');
+                            if (!found.short && w <= 9.4) found.short = { label: label, name: b.stageName };
+                            if (!found.medium && w > 9.4 && w <= 12.2) found.medium = { label: label, name: b.stageName };
+                            if (!found.long && w > 12.2 && w <= 14.0) found.long = { label: label, name: b.stageName };
+                            if (!found.longest && w > 14.0) found.longest = { label: label, name: b.stageName };
+                        });
+                        return found.short && found.medium && found.long && found.longest;
+                    });
+                    api.assert(!!found.short, 'short stage exists');
+                    api.assert(!!found.medium, 'medium stage exists');
+                    var measureCard = function(target) {
+                        StageSelectPanel._debugSetFrame(target.label, 'qa-adaptive');
+                        var btn = document.querySelector('.stage-select-stage-button[data-stage-name="' + target.name + '"]');
+                        api.assert(!!btn, 'stage btn exists: ' + target.name);
+                        // Read CSS variable directly: avoids stage-scale distortion in getBoundingClientRect
+                        return parseFloat(btn.style.getPropertyValue('--stage-card-width')) || 0;
+                    };
+                    api.assertEqual(measureCard(found.short), 167, 'short card width = 167 (original)');
+                    api.assertEqual(measureCard(found.medium), 195, 'medium card width = 195');
+                    if (found.long) api.assertEqual(measureCard(found.long), 220, 'long card width = 220');
+                    if (found.longest) {
+                        StageSelectPanel._debugSetFrame(found.longest.label, 'qa-adaptive');
+                        var btn = document.querySelector('.stage-select-stage-button[data-stage-name="' + found.longest.name + '"]');
+                        api.assertEqual(btn.getAttribute('data-card-name-lines'), '2', 'longest uses 2-line title');
+                    }
+                    return 'adaptive widths ok';
+                });
+            }],
+            ['runtime-panel-centered', 'runtime panel centers symmetrically in viewport', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    var panel = document.querySelector('.stage-select-panel');
+                    var rect = panel.getBoundingClientRect();
+                    var vw = window.innerWidth;
+                    var leftMargin = rect.left;
+                    var rightMargin = vw - rect.right;
+                    api.assert(Math.abs(leftMargin - rightMargin) <= 4, 'left/right margins symmetric (L=' + leftMargin + ', R=' + rightMargin + ')');
+                    return 'panel centered';
+                });
+            }],
+            ['runtime-card-fits-long-name', 'runtime hover card widens and 2-line wraps long titles', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    var manifest = StageSelectData.getManifest();
+                    var found = null;
+                    var isAllCjk = function(s) {
+                        for (var i = 0; i < s.length; i += 1) if (s.charCodeAt(i) < 128) return false;
+                        return s.length > 0;
+                    };
+                    manifest.frameOrder.some(function(label) {
+                        var f = StageSelectData.getFrame(label);
+                        for (var i = 0; i < (f.stageButtons || []).length; i += 1) {
+                            var name = f.stageButtons[i].stageName || '';
+                            if (name.length >= 13 && isAllCjk(name)) {
+                                found = { label: label, name: name };
+                                return true;
+                            }
+                        }
+                        return false;
+                    });
+                    api.assert(!!found, 'long all-CJK stage exists in fixture');
+                    StageSelectPanel._debugSetFrame(found.label, 'qa-card');
+                    var btn = document.querySelector('.stage-select-stage-button[data-stage-name="' + found.name + '"]');
+                    api.assert(!!btn, 'long stage button rendered');
+                    btn.focus();
+                    var card = btn.querySelector('.stage-select-card');
+                    var name = btn.querySelector('.stage-select-card-name');
+                    var detail = btn.querySelector('.stage-select-card-detail');
+                    var cardW = parseFloat(btn.style.getPropertyValue('--stage-card-width')) || 0;
+                    api.assert(cardW >= 215, 'runtime card width >= 215px (got ' + cardW + ')');
+                    api.assertEqual(getComputedStyle(name).whiteSpace, 'normal', 'card name allows wrap in runtime');
+                    api.assert(name.textContent === found.name, 'full title in DOM (no js truncation)');
+                    api.assertEqual(btn.getAttribute('data-card-name-lines'), '2', 'long title uses 2-line layout');
+                    return 'long title fits';
+                });
+            }],
+            ['runtime-close-button-visible', 'runtime close button has visible glyph', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    var close = document.querySelector('.stage-select-close-btn');
+                    api.assert(!!close, 'close btn exists');
+                    api.assertEqual(close.textContent, '✕', 'uses ✕ glyph');
+                    var rect = close.getBoundingClientRect();
+                    api.assert(rect.width >= 28 && rect.height >= 28, 'tappable size (>=28px)');
+                    var fs = parseFloat(getComputedStyle(close).fontSize);
+                    api.assert(fs >= 15, 'glyph >= 15px (got ' + fs + ')');
+                    return 'close glyph visible';
+                });
+            }],
+            ['runtime-error-toast-persists', 'logDev no longer wipes runtime error toast', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    var log = document.getElementById('stage-select-dev-log');
+                    log.classList.add('is-error');
+                    log.textContent = 'qa_demo_error';
+                    var manifest = StageSelectData.getManifest();
+                    var otherLabel = manifest.frameOrder.filter(function(l) { return l !== StageSelectPanel._debugGetState().frameLabel; })[0];
+                    StageSelectPanel._debugSetFrame(otherLabel, 'qa-error-keep');
+                    api.assert(log.classList.contains('is-error'), 'error class persists across logDev');
+                    api.assertEqual(log.textContent, 'qa_demo_error', 'error text persists');
+                    return 'error toast persists';
+                });
+            }],
             ['runtime-local-frame-sync', 'runtime localFrame nav sends one frame sync', function() {
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function() {

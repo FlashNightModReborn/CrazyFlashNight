@@ -15,6 +15,7 @@ var StageSelectPanel = (function() {
     var _fixtureSelectEl;
     var _frameToggleEl;
     var _frameToggleLabelEl;
+    var _frameToggleCounterEl;
     var _currentFrameLabel = '';
     var _fixtureName = 'mixed';
     var _fixture = null;
@@ -44,9 +45,10 @@ var StageSelectPanel = (function() {
             '<div class="stage-select-header">' +
                 '<div class="stage-select-heading">' +
                     '<span class="stage-select-title">选关测试</span>' +
-                    '<button class="stage-select-frame-toggle" id="stage-select-frame-toggle" type="button" aria-expanded="false" title="选择区域" data-audio-cue="confirm">' +
+                    '<button class="stage-select-frame-toggle" id="stage-select-frame-toggle" type="button" aria-expanded="false" aria-haspopup="listbox" title="切换区域" data-audio-cue="confirm">' +
                         '<span class="stage-select-frame-toggle-label" id="stage-select-frame-toggle-label"></span>' +
-                        '<span class="stage-select-frame-toggle-icon" aria-hidden="true">▼</span>' +
+                        '<span class="stage-select-frame-toggle-counter" id="stage-select-frame-toggle-counter" aria-hidden="true"></span>' +
+                        '<span class="stage-select-frame-toggle-icon" aria-hidden="true">▾</span>' +
                     '</button>' +
                     '<span class="stage-select-region" id="stage-select-region"></span>' +
                 '</div>' +
@@ -59,7 +61,7 @@ var StageSelectPanel = (function() {
                         '<option value="challenge">challenge</option>' +
                     '</select>' +
                     '<span class="stage-select-badge" id="stage-select-badge">DEV</span>' +
-                    '<button class="stage-select-close-btn" type="button" title="关闭" data-audio-cue="cancel">X</button>' +
+                    '<button class="stage-select-close-btn" type="button" title="关闭" aria-label="关闭" data-audio-cue="cancel">✕</button>' +
                 '</div>' +
             '</div>' +
             '<div class="stage-select-body">' +
@@ -88,20 +90,32 @@ var StageSelectPanel = (function() {
         _fixtureSelectEl = _el.querySelector('#stage-select-fixture');
         _frameToggleEl = _el.querySelector('#stage-select-frame-toggle');
         _frameToggleLabelEl = _el.querySelector('#stage-select-frame-toggle-label');
+        _frameToggleCounterEl = _el.querySelector('#stage-select-frame-toggle-counter');
 
         _el.querySelector('.stage-select-close-btn').addEventListener('click', requestClose);
         _frameToggleEl.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            setFrameMenuOpen(!_frameMenuOpen);
+            var willOpen = !_frameMenuOpen;
+            setFrameMenuOpen(willOpen);
+            if (willOpen) focusActiveFrameTab();
         });
+        _frameToggleEl.addEventListener('keydown', handleFrameToggleKey);
         _tabsEl.addEventListener('click', function(e) {
             e.stopPropagation();
         });
+        _tabsEl.addEventListener('keydown', handleFrameMenuKey);
         _el.addEventListener('click', function(e) {
             if (!_frameMenuOpen || !isRuntimeMode()) return;
             if (isWithin(e.target, _frameToggleEl) || isWithin(e.target, _tabsEl)) return;
             setFrameMenuOpen(false);
+        });
+        _el.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && _frameMenuOpen && isRuntimeMode()) {
+                e.preventDefault();
+                setFrameMenuOpen(false);
+                if (_frameToggleEl) _frameToggleEl.focus();
+            }
         });
         _fixtureSelectEl.addEventListener('change', function() {
             setFixture(_fixtureSelectEl.value);
@@ -149,23 +163,95 @@ var StageSelectPanel = (function() {
     function renderTabs() {
         if (!_tabsEl || !window.StageSelectData) return;
         var manifest = StageSelectData.getManifest();
+        _tabsEl.setAttribute('role', 'listbox');
         _tabsEl.innerHTML = '';
-        manifest.frameOrder.forEach(function(label) {
+        manifest.frameOrder.forEach(function(label, index) {
             var button = document.createElement('button');
             button.type = 'button';
             button.className = 'stage-select-tab';
             button.setAttribute('data-frame-label', label);
+            button.setAttribute('data-frame-index', String(index));
+            button.setAttribute('role', 'option');
+            button.tabIndex = -1;
             button.textContent = label;
             button.addEventListener('click', function() {
-                var sourceFrameLabel = _currentFrameLabel;
-                setFrame(label, 'tab');
-                if (isRuntimeMode() && label !== sourceFrameLabel) {
-                    requestJumpFrame(label, { id: 'tab:' + label }, sourceFrameLabel);
-                }
-                setFrameMenuOpen(false);
+                selectFrameTab(label);
             });
             _tabsEl.appendChild(button);
         });
+    }
+
+    function selectFrameTab(label) {
+        var sourceFrameLabel = _currentFrameLabel;
+        setFrame(label, 'tab');
+        if (isRuntimeMode() && label !== sourceFrameLabel) {
+            requestJumpFrame(label, { id: 'tab:' + label }, sourceFrameLabel);
+        }
+        setFrameMenuOpen(false);
+        if (_frameToggleEl) _frameToggleEl.focus();
+    }
+
+    function focusActiveFrameTab() {
+        if (!_tabsEl) return;
+        var active = _tabsEl.querySelector('.stage-select-tab.is-active');
+        if (!active) active = _tabsEl.querySelector('.stage-select-tab');
+        if (active) active.focus();
+    }
+
+    function handleFrameToggleKey(e) {
+        if (!isRuntimeMode()) return;
+        if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (!_frameMenuOpen) setFrameMenuOpen(true);
+            focusActiveFrameTab();
+        } else if (e.key === 'Escape' && _frameMenuOpen) {
+            e.preventDefault();
+            setFrameMenuOpen(false);
+        }
+    }
+
+    function handleFrameMenuKey(e) {
+        if (!_frameMenuOpen || !_tabsEl) return;
+        var nodes = _tabsEl.querySelectorAll('.stage-select-tab');
+        if (!nodes.length) return;
+        var current = document.activeElement;
+        var idx = -1;
+        for (var i = 0; i < nodes.length; i += 1) {
+            if (nodes[i] === current) { idx = i; break; }
+        }
+        var next = idx;
+        switch (e.key) {
+            case 'ArrowRight':
+            case 'ArrowDown':
+                next = idx < 0 ? 0 : (idx + 1) % nodes.length;
+                break;
+            case 'ArrowLeft':
+            case 'ArrowUp':
+                next = idx < 0 ? 0 : (idx - 1 + nodes.length) % nodes.length;
+                break;
+            case 'Home':
+                next = 0;
+                break;
+            case 'End':
+                next = nodes.length - 1;
+                break;
+            case 'Enter':
+            case ' ':
+                if (idx >= 0) {
+                    e.preventDefault();
+                    selectFrameTab(nodes[idx].getAttribute('data-frame-label'));
+                }
+                return;
+            case 'Escape':
+                e.preventDefault();
+                setFrameMenuOpen(false);
+                if (_frameToggleEl) _frameToggleEl.focus();
+                return;
+            default:
+                return;
+        }
+        e.preventDefault();
+        nodes[next].focus();
     }
 
     function setFrame(label, source) {
@@ -188,13 +274,21 @@ var StageSelectPanel = (function() {
 
     function renderHeader(frame) {
         var tabs = _tabsEl ? _tabsEl.querySelectorAll('.stage-select-tab') : [];
-        var i;
-        for (i = 0; i < tabs.length; i += 1) {
-            tabs[i].classList.toggle('is-active', tabs[i].getAttribute('data-frame-label') === frame.frameLabel);
+        var activeIndex = -1;
+        for (var i = 0; i < tabs.length; i += 1) {
+            var isActive = tabs[i].getAttribute('data-frame-label') === frame.frameLabel;
+            tabs[i].classList.toggle('is-active', isActive);
+            tabs[i].setAttribute('aria-selected', isActive ? 'true' : 'false');
+            if (isActive) activeIndex = i;
         }
         var region = _el.querySelector('#stage-select-region');
         if (region) region.textContent = frame.frameLabel;
         if (_frameToggleLabelEl) _frameToggleLabelEl.textContent = frame.frameLabel;
+        if (_frameToggleCounterEl) {
+            _frameToggleCounterEl.textContent = tabs.length
+                ? (activeIndex >= 0 ? (activeIndex + 1) : 1) + '/' + tabs.length
+                : '';
+        }
         if (_summaryEl) {
             _summaryEl.innerHTML =
                 '<div>frame: <b>' + escapeHtml(frame.frameLabel) + '</b></div>' +
@@ -235,15 +329,18 @@ var StageSelectPanel = (function() {
     function createStageButton(button) {
         var state = getStageState(button.stageName);
         var detail = buildStageDetail(button, state);
+        var sizing = computeCardSizing(button, detail);
         var node = document.createElement('div');
         node.className = 'stage-select-stage-button';
         node.tabIndex = 0;
         node.setAttribute('role', 'button');
         node.setAttribute('data-stage-name', button.stageName);
         node.setAttribute('data-stage-id', button.id);
+        node.setAttribute('data-card-name-lines', String(sizing.nameLines));
         node.style.left = button.x + 'px';
         node.style.top = button.y + 'px';
-        node.style.setProperty('--stage-card-height', detail.cardHeight + 'px');
+        node.style.setProperty('--stage-card-width', sizing.width + 'px');
+        node.style.setProperty('--stage-card-height', sizing.cardHeight + 'px');
         if (button.y < 60) node.classList.add('is-edge-top');
         if (button.x < 40) node.classList.add('is-edge-left');
         if (button.x > 790) node.classList.add('is-edge-right');
@@ -445,7 +542,7 @@ var StageSelectPanel = (function() {
         var text = parts.join('\n');
         return {
             html: escapeHtml(text).replace(/\r?\n/g, '<br>'),
-            cardHeight: estimateStageCardHeight(text)
+            rawText: text
         };
     }
 
@@ -490,17 +587,110 @@ var StageSelectPanel = (function() {
         return value;
     }
 
-    function estimateStageCardHeight(text) {
+    function weighChars(s) {
+        var w = 0;
+        for (var i = 0; i < s.length; i += 1) {
+            w += s.charCodeAt(i) < 128 ? 0.58 : 1;
+        }
+        return w;
+    }
+
+    // Off-DOM measurer: replicate .stage-select-card-detail typography exactly.
+    // Reused across measurements to avoid layout-tree churn.
+    var _detailMeasurer = null;
+    function getDetailMeasurer() {
+        if (_detailMeasurer || typeof document === 'undefined' || !document.body) return _detailMeasurer;
+        _detailMeasurer = document.createElement('div');
+        _detailMeasurer.setAttribute('aria-hidden', 'true');
+        _detailMeasurer.style.cssText = [
+            'position:absolute',
+            'visibility:hidden',
+            'pointer-events:none',
+            'left:-9999px',
+            'top:0',
+            'box-sizing:content-box',
+            'font-family:"Microsoft YaHei","Microsoft JhengHei",Arial,sans-serif',
+            'font-size:14px',
+            'white-space:normal',
+            'word-break:break-all',
+            'overflow-wrap:anywhere',
+            'padding:0',
+            'margin:0',
+            'border:0'
+        ].join(';');
+        document.body.appendChild(_detailMeasurer);
+        return _detailMeasurer;
+    }
+
+    // Measure exact rendered height of the detail HTML at a given inner width + line-height.
+    // Returns -1 if measurement is unavailable (test/SSR contexts).
+    function measureDetailHeight(html, innerWidth, lineHeight) {
+        var m = getDetailMeasurer();
+        if (!m) return -1;
+        m.style.width = innerWidth + 'px';
+        m.style.lineHeight = lineHeight + 'px';
+        m.innerHTML = html || '';
+        return m.scrollHeight;
+    }
+
+    // Heuristic fallback when DOM measurement isn't available.
+    function estimateStageCardHeight(text, charsPerLine, lineHeight, baseline, minH, maxH) {
         var lines = cleanStageText(text).split('\n');
-        var estimated = 0;
+        var estLines = 0;
         lines.forEach(function(line) {
-            var weight = 0;
-            for (var i = 0; i < line.length; i++) {
-                weight += line.charCodeAt(i) < 128 ? 0.58 : 1;
-            }
-            estimated += Math.max(1, Math.ceil(weight / 10.8));
+            estLines += Math.max(1, Math.ceil(weighChars(line) / charsPerLine));
         });
-        return Math.max(232, Math.min(430, 124 + estimated * 20));
+        return Math.max(minH, Math.min(maxH, baseline + estLines * lineHeight));
+    }
+
+    // Adaptive card sizing: keep 167px (original look) when content fits;
+    // bump to 195 / 220 only when title or description would overflow.
+    // Card height comes from a real off-DOM render measurement so wrapping,
+    // CJK glyph metrics and word-break behavior are pixel-accurate.
+    function computeCardSizing(button, detail) {
+        var nameWeight = weighChars(button.stageName || '');
+        var textWeight = weighChars(cleanStageText(detail.rawText || '').replace(/\n/g, ' '));
+
+        if (!isRuntimeMode()) {
+            // Dev mode: original geometry, fall back to estimation since the
+            // dev card uses the legacy 167-wide layout.
+            return {
+                width: 167,
+                nameLines: 1,
+                cardHeight: estimateStageCardHeight(detail.rawText || '', 10.8, 20, 124, 232, 430)
+            };
+        }
+
+        var width;
+        var nameLines;
+        if (nameWeight <= 9.4)         { width = 167; nameLines = 1; }
+        else if (nameWeight <= 12.2)   { width = 195; nameLines = 1; }
+        else if (nameWeight <= 14.0)   { width = 220; nameLines = 1; }
+        else                           { width = 220; nameLines = 2; }
+
+        // Description-driven bump: wider card → fewer wrap lines.
+        if (textWeight > 130 && width < 220) width = 220;
+        else if (textWeight > 90 && width < 195) width = 195;
+
+        // Inner widths must match CSS: detail width = card width - 17px
+        var innerWidth = width - 17;
+        // Line height matches CSS rules (runtime detail = 19px; non-runtime = 20px)
+        var lineHeight = 19;
+        var baseline = (nameLines === 2) ? 167 : 124;
+        var minH = (nameLines === 2) ? 240 : 232;
+        // Generous cap: ~17 lines of 19px detail in 220-wide card.
+        var maxH = 480;
+
+        var detailH = measureDetailHeight(detail.html, innerWidth, lineHeight);
+        var cardHeight;
+        if (detailH >= 0) {
+            cardHeight = Math.max(minH, Math.min(maxH, baseline + detailH));
+        } else {
+            // Headless / SSR fallback path
+            var charsPerLine = (width === 220) ? 14.6 : (width === 195) ? 12.6 : 10.8;
+            cardHeight = estimateStageCardHeight(detail.rawText || '', charsPerLine, lineHeight, baseline, minH, maxH);
+        }
+        return { width: width, nameLines: nameLines, cardHeight: cardHeight };
     }
 
     function isChallengeMode() {
@@ -516,6 +706,7 @@ var StageSelectPanel = (function() {
         _frameMenuOpen = !!open && isRuntimeMode();
         if (_el) _el.classList.toggle('is-frame-menu-open', _frameMenuOpen);
         if (_frameToggleEl) _frameToggleEl.setAttribute('aria-expanded', _frameMenuOpen ? 'true' : 'false');
+        if (_frameMenuOpen) clearError();
     }
 
     function isWithin(target, parent) {
@@ -542,6 +733,7 @@ var StageSelectPanel = (function() {
                 showError(resp.error || 'snapshot_failed');
                 return;
             }
+            clearError();
             applyRuntimeSnapshot(resp.snapshot || {});
         };
         Bridge.send({
@@ -568,6 +760,7 @@ var StageSelectPanel = (function() {
                 showError(resp.error || 'jump_frame_failed');
                 return;
             }
+            clearError();
             logDev('jump frame synced: ' + frameLabel);
         };
         Bridge.send({
@@ -659,6 +852,15 @@ var StageSelectPanel = (function() {
         }
     }
 
+    function clearError() {
+        if (!_lastError && (!_logEl || !_logEl.classList.contains('is-error'))) return;
+        _lastError = '';
+        if (_logEl) {
+            _logEl.classList.remove('is-error');
+            if (isRuntimeMode()) _logEl.textContent = '';
+        }
+    }
+
     function requestClose() {
         _pendingReq = {};
         Panels.close();
@@ -709,7 +911,7 @@ var StageSelectPanel = (function() {
     }
 
     function logDev(message) {
-        if (_logEl) {
+        if (_logEl && !isRuntimeMode()) {
             _logEl.classList.remove('is-error');
             _logEl.textContent = message;
         }
