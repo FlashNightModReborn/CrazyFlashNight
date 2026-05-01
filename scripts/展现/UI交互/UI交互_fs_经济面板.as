@@ -17,6 +17,14 @@ _root.UI系统.虚拟币刷新 = function(newValue:Number, oldValue:Number):Void
   if (!isNaN(v)) org.flashNight.arki.render.FrameBroadcaster.pushUiState("k:" + Math.round(v));
 };
 
+// 旧基地 UI 仍会在 K 点消费后调用该 shim；商城 UI 已迁移到 WebView Panel。
+_root.获取虚拟币值 = function():Void {
+  if (isNaN(_root.虚拟币)) {
+    _root.虚拟币 = 0;
+  }
+  _root.UI系统.虚拟币刷新(_root.虚拟币, undefined);
+};
+
 // 变量监视器
 _root.UI系统.设置变量监视 = function(变量名:String, 刷新函数:Function):Void {
   _root.watch(变量名, function(prop:String, oldValue, newValue) {

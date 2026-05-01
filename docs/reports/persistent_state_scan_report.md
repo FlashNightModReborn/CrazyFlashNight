@@ -207,7 +207,7 @@ Key.addListener({
 | `战宠` | 宠物数据 | 引擎_lsy_战宠系统.as |
 | `tasks_to_do` | 当前任务 | 通信_鸡蛋_任务系统.as |
 | `tasks_finished` | 完成记录 | 通信_鸡蛋_任务系统.as |
-| `商城已购买物品` | 已购物品 | UI交互_lsy_商城系统.as |
+| `商城已购买物品` | 已购物品 | SaveManager.as / 商城系统_WebView.as |
 
 **结论**: 这是预期行为，不需要在游戏重启时清理
 

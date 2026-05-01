@@ -1255,7 +1255,7 @@ shadow 链不仅是运行中存盘的 JSON 冗余副本，也是启动期 Resolv
 | 存盘动画 | ✕ 按钮状态变化 (·· → ✓) | `sv:1/2` (KV 帧同步) |
 | 安全退出界面 | `#safe-exit-panel` 面板 | `sv:1/2` + `EXIT_CONFIRM` click |
 | 帮助界面 (帮助界面.swf) | Panel 系统 `help-panel.js` (Markdown tab) | Bridge → C# panel_cmd open help |
-| K点商城 (商城界面 MC) | Panel 系统 `kshop.js` (商品/购物车/领取) | ShopTask 双层 callId 桥接 (Web↔Flash) |
+| K点商城 (旧商城界面 MC 已退役) | Panel 系统 `kshop.js` (商品/购物车/领取) | `SHOP` → `kshop`，ShopTask 双层 callId 桥接 (Web↔Flash) |
 
 **右上角工具条布局**：
 ```
@@ -1300,7 +1300,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 ```
 
 **面板类型**：
-- **kshop**（K 点商城）: 需要 Flash 交互；打开/关闭会走 `shopPanelOpen/shopPanelClose`，并参与 `_pauseNeedsRestore`
+- **kshop**（K 点商城）: 唯一支持入口为 Launcher `SHOP` → Web Panel；旧 Flash `shopMainMC` 已退役。面板需要 Flash 交互；打开/关闭会走 `shopPanelOpen/shopPanelClose`，并参与 `_pauseNeedsRestore`
 - **help**（游戏帮助）: 纯 Web 侧 Markdown 帮助面板，不触发 Flash 暂停恢复
 - **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-panel-data.js` + `web/modules/map-fit-presets.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面均已切到 `assembled` 场景拼接模式，右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、filter-fit 离线调优 `tools/tune-map-filter-fit.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`，并在紧凑视口下自动缩放舞台、按 page/filter preset 做二次 content-fit；右上角常驻 HUD 由 `web/modules/map-hud.js` 消费同一份 `MapPanelData` + UiData `mm/mh`，只显示当前区块高亮与固定 beacon，点击后打开 map panel
 - **stage-select**（选关界面 Stage 2 Step 1）: `web/modules/stage-select-panel.js` + generated `web/modules/stage-select-data.js`；通过 Native HUD “其他 → 选关测试” 的 `STAGE_SELECT_TEST` 打开；支持 16 个 frame label、167 个源 XML 选关按钮实例、152 个 Web 运行时去重渲染实例、fixture 锁定/任务/挑战模式、按外部 PNG / 内部命名帧 / 默认帧回退的 hover 预览、browser harness 和 FFDec/Web 视觉对照审计；runtime 下使用 `stageSelectSnapshot` 读取真实解锁/挑战状态，难度按钮通过 `stageSelectEnter` 进入已解锁关卡。它暂不替换原 Flash 选关界面，不接管页内跳转按钮，不迁委托任务界面

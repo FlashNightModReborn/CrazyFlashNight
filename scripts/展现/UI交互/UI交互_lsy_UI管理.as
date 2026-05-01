@@ -83,7 +83,7 @@ _root.gameCommands["toggleSettings"] = function() {
 };
 
 _root.gameCommands["openShop"] = function() {
-    _root.商城主mc = _root.从库中加载全屏UI("shopMainMC");
+    _root.最上层发布文字提示(_root.获得翻译("商城请通过 Launcher SHOP 面板打开"));
 };
 
 _root.gameCommands["openHelp"] = function() {

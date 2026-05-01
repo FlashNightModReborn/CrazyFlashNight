@@ -26,6 +26,10 @@ var KShop = (function() {
     var _categories = [];
     var _iconsLoaded = false;
     var _loading = false;
+    var _cartSaveTimer = 0;
+    var _cartSaveInFlight = false;
+    var _cartSaveDirty = false;
+    var CART_SAVE_DEBOUNCE_MS = 700;
 
     // DOM refs
     var _el, _catBar, _grid, _cartList, _cartTotal, _balanceEl;
@@ -56,6 +60,70 @@ var KShop = (function() {
             : '<div class="' + (cls||'kshop-icon') + ' kshop-icon-placeholder"></div>';
     }
     function toast(msg) { if (typeof Toast !== 'undefined') Toast.add(msg); }
+    function playCue(name) {
+        if (typeof BootstrapAudio === 'undefined' || !BootstrapAudio || !name) return;
+        var method = 'play' + name.charAt(0).toUpperCase() + name.slice(1);
+        if (typeof BootstrapAudio[method] === 'function') BootstrapAudio[method]();
+    }
+    function buildCartPayload() {
+        var payload = [];
+        for (var i = 0; i < _cart.length; i++) payload.push({idx: _cart[i].idx, qty: _cart[i].qty});
+        return payload;
+    }
+    function messageForError(scope, error) {
+        var code = error || 'unknown';
+        if (scope === 'checkout') {
+            if (code === 'insufficient_kpoints') return 'K点不足！';
+            if (code === 'timeout') return '结账超时，请重试。';
+            if (code === 'disconnected') return '商城连接已断开，请稍后再试。';
+            return '购买失败：' + code;
+        }
+        if (scope === 'claim') {
+            if (code === 'inventory_full') return '物品栏已满，无法领取！';
+            if (code === 'acquire_failed') return '背包空间不足，无法领取！';
+            if (code === 'item_not_found') return '商品不存在或已被领取。';
+            if (code === 'timeout') return '领取超时，请重试。';
+            if (code === 'disconnected') return '商城连接已断开，请稍后再试。';
+            return '领取失败：' + code;
+        }
+        if (scope === 'save') {
+            if (code === 'timeout') return '保存超时，状态未知';
+            if (code === 'disconnected') return '商城连接已断开，购物车尚未确认保存';
+            return code === 'unknown' ? '保存失败' : code;
+        }
+        return code;
+    }
+    function cancelScheduledCartSave() {
+        if (_cartSaveTimer) {
+            clearTimeout(_cartSaveTimer);
+            _cartSaveTimer = 0;
+        }
+        _cartSaveDirty = false;
+    }
+    function markCartDirty() {
+        if (_closing || _checkingOut) return;
+        _cartSaveDirty = true;
+        if (_cartSaveTimer) clearTimeout(_cartSaveTimer);
+        _cartSaveTimer = setTimeout(flushCartSave, CART_SAVE_DEBOUNCE_MS);
+    }
+    function flushCartSave() {
+        _cartSaveTimer = 0;
+        if (!_cartSaveDirty || _cartSaveInFlight || _closing || _checkingOut || !Panels.isOpen()) return;
+        _cartSaveDirty = false;
+        _cartSaveInFlight = true;
+        var reqId = 'autosv' + (++_reqSeq);
+        _pendingReq[reqId] = function(resp) {
+            delete _pendingReq[reqId];
+            _cartSaveInFlight = false;
+            if (!Panels.isOpen()) return;
+            if (!resp.success) {
+                _cartSaveDirty = true;
+                return;
+            }
+            if (_cartSaveDirty) markCartDirty();
+        };
+        Bridge.send({type:'panel', cmd:'saveCart', callId: reqId, cart: buildCartPayload()});
+    }
 
     // 长按加速：按住按钮自动重复触发，间隔逐步缩短
     // 初始 400ms → 加速到最快 50ms（每次 ×0.85）
@@ -110,7 +178,7 @@ var KShop = (function() {
             '<div class="kshop-header">' +
                 '<span class="kshop-title">K点商城</span>' +
                 '<span class="kshop-balance">K点: <b id="kshop-kpoints">0</b></span>' +
-                '<button class="kshop-close-btn">×</button>' +
+                '<button class="kshop-close-btn" data-audio-cue="cancel">×</button>' +
             '</div>' +
             '<div class="kshop-categories" id="kshop-cat-bar"></div>' +
             '<div class="kshop-body">' +
@@ -123,7 +191,7 @@ var KShop = (function() {
                     '<div class="kshop-cart-list" id="kshop-cart-list"></div>' +
                     '<div class="kshop-cart-footer">' +
                         '<span>合计: <b id="kshop-cart-total">0</b></span>' +
-                        '<button class="kshop-checkout-btn" id="kshop-checkout">结账</button>' +
+                        '<button class="kshop-checkout-btn" id="kshop-checkout" data-audio-cue="confirm">结账</button>' +
                     '</div>' +
                     '<div class="kshop-claim-header">// 已购买</div>' +
                     '<div class="kshop-claim-list" id="kshop-claim-list"></div>' +
@@ -152,6 +220,8 @@ var KShop = (function() {
     function onOpen(el) {
         _closing = false;
         _checkingOut = false;
+        _cartSaveInFlight = false;
+        cancelScheduledCartSave();
         _loading = true;
         UiData.on('k', _kHandler);
         if (_loadingEl) _loadingEl.style.display = '';
@@ -208,6 +278,7 @@ var KShop = (function() {
             btn.className = 'kshop-cat-btn' + (_categories[i] === _activeCategory ? ' active' : '');
             btn.textContent = _categories[i];
             btn.setAttribute('data-cat', _categories[i]);
+            btn.setAttribute('data-audio-cue', 'select');
             btn.addEventListener('click', onCatClick);
             _catBar.appendChild(btn);
         }
@@ -246,9 +317,9 @@ var KShop = (function() {
             var actionHtml = '';
             if (!nosale && !locked) {
                 if (stackable) {
-                    actionHtml = '<button class="kshop-add-btn" data-idx="' + item.idx + '" title="加入购物车">+</button>';
+                    actionHtml = '<button class="kshop-add-btn" data-idx="' + item.idx + '" data-audio-cue="select" title="加入购物车">+</button>';
                 } else {
-                    actionHtml = '<button class="kshop-add-btn kshop-add-single" data-idx="' + item.idx + '" title="加入购物车">✓</button>';
+                    actionHtml = '<button class="kshop-add-btn kshop-add-single" data-idx="' + item.idx + '" data-audio-cue="select" title="加入购物车">✓</button>';
                 }
             }
 
@@ -368,6 +439,7 @@ var KShop = (function() {
 
         if (isLocked(item)) {
             toast('等级不足，无法购买！');
+            playCue('error');
             return;
         }
 
@@ -378,11 +450,13 @@ var KShop = (function() {
             for (var i = 0; i < _cart.length; i++) {
                 if (_cart[i].idx === idx) {
                     toast('该装备已在购物车中');
+                    playCue('error');
                     return;
                 }
             }
             _cart.push({idx: idx, qty: 1});
             renderCart();
+            markCartDirty();
         } else {
             // 消耗品/收集品：弹出数量输入
             showQtyInput(e.target, idx);
@@ -401,15 +475,15 @@ var KShop = (function() {
         _qtyPopup.innerHTML =
             '<div class="kshop-qty-popup-title">' + escHtml(item.displayname) + '</div>' +
             '<div class="kshop-qty-popup-row">' +
-                '<button class="kshop-qty-pop-btn" data-v="-10">−−</button>' +
-                '<button class="kshop-qty-pop-btn" data-v="-1">−</button>' +
+                '<button class="kshop-qty-pop-btn" data-v="-10" data-audio-cue="click">−−</button>' +
+                '<button class="kshop-qty-pop-btn" data-v="-1" data-audio-cue="click">−</button>' +
                 '<input class="kshop-qty-input" type="number" value="1" min="1" max="999">' +
-                '<button class="kshop-qty-pop-btn" data-v="1">+</button>' +
-                '<button class="kshop-qty-pop-btn" data-v="10">++</button>' +
+                '<button class="kshop-qty-pop-btn" data-v="1" data-audio-cue="click">+</button>' +
+                '<button class="kshop-qty-pop-btn" data-v="10" data-audio-cue="click">++</button>' +
             '</div>' +
             '<div class="kshop-qty-popup-foot">' +
                 '<span class="kshop-qty-subtotal">K ' + item.price + '</span>' +
-                '<button class="kshop-qty-confirm">加购</button>' +
+                '<button class="kshop-qty-confirm" data-audio-cue="confirm">加购</button>' +
             '</div>';
 
         // 定位到按钮附近
@@ -417,6 +491,7 @@ var KShop = (function() {
         _qtyPopup.style.left = (rect.right + 4) + 'px';
         _qtyPopup.style.top = rect.top + 'px';
         document.body.appendChild(_qtyPopup);
+        playCue('modalOpen');
 
         var input = _qtyPopup.querySelector('.kshop-qty-input');
         var subtotalEl = _qtyPopup.querySelector('.kshop-qty-subtotal');
@@ -481,11 +556,13 @@ var KShop = (function() {
             if (_cart[i].idx === idx) {
                 _cart[i].qty += qty;
                 renderCart();
+                markCartDirty();
                 return;
             }
         }
         _cart.push({idx: idx, qty: qty});
         renderCart();
+        markCartDirty();
     }
 
     function renderCart() {
@@ -509,14 +586,14 @@ var KShop = (function() {
             if (stackable) {
                 qtyHtml =
                     '<span class="kshop-cart-qty">' +
-                        '<button class="kshop-qty-btn" data-idx="' + c.idx + '" data-delta="-1">−</button>' +
+                        '<button class="kshop-qty-btn" data-idx="' + c.idx + '" data-delta="-1" data-audio-cue="click">−</button>' +
                         ' ' + c.qty + ' ' +
-                        '<button class="kshop-qty-btn" data-idx="' + c.idx + '" data-delta="1">+</button>' +
+                        '<button class="kshop-qty-btn" data-idx="' + c.idx + '" data-delta="1" data-audio-cue="click">+</button>' +
                     '</span>';
             } else {
                 qtyHtml =
                     '<span class="kshop-cart-qty">×1</span>' +
-                    '<button class="kshop-qty-btn kshop-remove-btn" data-idx="' + c.idx + '" data-delta="-1" title="移除">✕</button>';
+                    '<button class="kshop-qty-btn kshop-remove-btn" data-idx="' + c.idx + '" data-delta="-1" data-audio-cue="cancel" title="移除">✕</button>';
             }
 
             row.innerHTML =
@@ -539,6 +616,7 @@ var KShop = (function() {
                                 _cart[j].qty += delta;
                                 if (_cart[j].qty <= 0) { _cart.splice(j, 1); }
                                 renderCart();
+                                markCartDirty();
                                 return;
                             }
                         }
@@ -566,6 +644,7 @@ var KShop = (function() {
                 _cart[i].qty += delta;
                 if (_cart[i].qty <= 0) _cart.splice(i, 1);
                 renderCart();
+                markCartDirty();
                 return;
             }
         }
@@ -593,9 +672,9 @@ var KShop = (function() {
     function checkout() {
         if (_checkingOut || _cart.length === 0) return;
         _checkingOut = true;
+        cancelScheduledCartSave();
         var reqId = 'co' + (++_reqSeq);
-        var payload = [];
-        for (var i = 0; i < _cart.length; i++) payload.push({idx: _cart[i].idx, qty: _cart[i].qty});
+        var payload = buildCartPayload();
         _pendingReq[reqId] = function(resp) {
             delete _pendingReq[reqId];
             if (!Panels.isOpen()) return;
@@ -608,10 +687,15 @@ var KShop = (function() {
                 renderCart();
                 renderClaimed();
                 toast('购买成功！');
+                playCue('success');
             } else if (resp.error === 'insufficient_kpoints') {
-                toast('K点不足');
+                toast(messageForError('checkout', resp.error));
+                playCue('error');
+                markCartDirty();
             } else {
-                toast('购买失败: ' + (resp.error || 'unknown'));
+                toast(messageForError('checkout', resp.error));
+                playCue('error');
+                markCartDirty();
             }
         };
         Bridge.send({type:'panel', cmd:'checkout', callId: reqId, cart: payload});
@@ -645,7 +729,7 @@ var KShop = (function() {
             row.innerHTML =
                 '<span class="kshop-cart-thumb">' + iconHtml(iconName, 'kshop-row-icon') + '</span>' +
                 '<span class="kshop-claim-name">' + escHtml(displayName) + ' ×' + qty + '</span>' +
-                '<button class="kshop-claim-btn" data-pidx="' + i + '">领取</button>';
+                '<button class="kshop-claim-btn" data-pidx="' + i + '" data-audio-cue="confirm">领取</button>';
             row.querySelector('.kshop-claim-btn').addEventListener('click', onClaim);
             if (catItem) row.addEventListener('click', onClaimRowClick);
             _claimList.appendChild(row);
@@ -670,8 +754,10 @@ var KShop = (function() {
                 _purchased = resp.purchased || [];
                 renderClaimed();
                 toast('领取成功！');
+                playCue('success');
             } else {
-                toast('领取失败: ' + (resp.error || 'unknown'));
+                toast(messageForError('claim', resp.error));
+                playCue('error');
                 e.target.disabled = false;
             }
         };
@@ -684,8 +770,8 @@ var KShop = (function() {
     function requestClose() {
         if (_closing) return;
         _closing = true;
-        var cartPayload = [];
-        for (var i = 0; i < _cart.length; i++) cartPayload.push({idx: _cart[i].idx, qty: _cart[i].qty});
+        cancelScheduledCartSave();
+        var cartPayload = buildCartPayload();
         var reqId = 'wclose' + (++_reqSeq);
         _pendingReq[reqId] = function(resp) {
             delete _pendingReq[reqId];
@@ -694,10 +780,10 @@ var KShop = (function() {
                 doClose();
             } else if (resp.error === 'timeout') {
                 _closing = false;
-                showSaveFailedDialog('保存超时，状态未知', true);
+                showSaveFailedDialog(messageForError('save', resp.error), true);
             } else {
                 _closing = false;
-                showSaveFailedDialog(resp.error || '保存失败', false);
+                showSaveFailedDialog(messageForError('save', resp.error), false);
             }
         };
         Bridge.send({type:'panel', cmd:'saveCart', callId: reqId, cart: cartPayload});
@@ -705,6 +791,8 @@ var KShop = (function() {
 
     function doClose() {
         _pendingReq = {};
+        cancelScheduledCartSave();
+        _cartSaveInFlight = false;
         dismissDialog();
         dismissQtyInput();
         hideTooltip();
@@ -722,9 +810,10 @@ var KShop = (function() {
     function showSaveFailedDialog(msg, timeoutMode) {
         var dlg = _el.querySelector('#kshop-dialog');
         if (!dlg) return;
-        var btns = '<button class="kshop-dlg-btn" data-action="retry">重试</button>';
-        if (!timeoutMode) btns += '<button class="kshop-dlg-btn" data-action="cancel">继续购物</button>';
-        btns += '<button class="kshop-dlg-btn kshop-dlg-danger" data-action="force">强制关闭</button>';
+        playCue('modalOpen');
+        var btns = '<button class="kshop-dlg-btn" data-action="retry" data-audio-cue="select">重试</button>';
+        if (!timeoutMode) btns += '<button class="kshop-dlg-btn" data-action="cancel" data-audio-cue="cancel">继续购物</button>';
+        btns += '<button class="kshop-dlg-btn kshop-dlg-danger" data-action="force" data-audio-cue="error">强制关闭</button>';
 
         dlg.innerHTML =
             '<div class="kshop-dlg-inner">' +
@@ -746,6 +835,7 @@ var KShop = (function() {
             requestClose();
         } else if (action === 'cancel') {
             dismissDialog();
+            markCartDirty();
         } else if (action === 'force') {
             doClose();
         }
@@ -760,6 +850,8 @@ var KShop = (function() {
         _pendingReq = {};
         _closing = false;
         _checkingOut = false;
+        cancelScheduledCartSave();
+        _cartSaveInFlight = false;
         dismissDialog();
         dismissQtyInput();
         hideTooltip();

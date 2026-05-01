@@ -8,21 +8,7 @@
               <Actionscript>
                 <script><![CDATA[this.onRelease = function()
 {
-	if (!_root.商城主mc && !_root.商城主mc层级定位器.商城主mc)
-	{
-		/*if (isNaN(depth))
-		{
-			depth = _root.商城主mc层级定位器.getDepth();
-		}*/
-		shopMainMC = _root.商城主mc层级定位器.attachMovie("shopMainMC", "商城主mc", 1);
-		_root.商城主mc = shopMainMC;
-	}
-	else
-	{
-		_root.保存购物车();
-		delete _root.商城主mc;
-		shopMainMC.removeMovieClip();
-	}
+	_root.最上层发布文字提示(_root.获得翻译("商城请通过 Launcher SHOP 面板打开"));
 };]]></script>
               </Actionscript>
               <elements/>
