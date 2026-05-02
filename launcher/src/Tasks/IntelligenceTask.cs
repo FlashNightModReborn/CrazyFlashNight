@@ -87,7 +87,7 @@ namespace CF7Launcher.Tasks
         {
             "paragraph", "heading", "list", "table", "quote", "divider", "stamp", "note",
             "handwritten", "annotation", "terminalLog", "redaction", "decryptBlock", "blueprint", "timeline",
-            "hardwareExtract", "surfaceMark"
+            "hardwareExtract", "surfaceMark", "paperFragment", "paperStage"
         };
 
         private static readonly HashSet<string> H5InlineTypes = new HashSet<string>(StringComparer.Ordinal)
@@ -104,7 +104,22 @@ namespace CF7Launcher.Tasks
 
         private static readonly HashSet<string> H5Skins = new HashSet<string>(StringComparer.Ordinal)
         {
-            "paper", "report", "dossier", "terminal", "newspaper", "blueprint", "diary", "edict"
+            "paper", "report", "dossier", "terminal", "newspaper", "blueprint", "diary", "edict", "field-notes"
+        };
+
+        private static readonly HashSet<string> H5FragmentTones = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "aged", "burnt", "torn", "ink", "carbon"
+        };
+
+        private static readonly HashSet<string> H5FragmentPins = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "none", "pushpin", "tape", "clip"
+        };
+
+        private static readonly HashSet<string> H5StageLayouts = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "stack", "scatter"
         };
 
         private static readonly HashSet<string> H5SurfaceVariants = new HashSet<string>(StringComparer.Ordinal)
@@ -878,6 +893,30 @@ namespace CF7Launcher.Tasks
                     return false;
                 }
             }
+            if (type == "paperFragment")
+            {
+                string tone = obj.Value<string>("tone") ?? "aged";
+                if (!H5FragmentTones.Contains(tone))
+                {
+                    error = "h5_unknown_fragment_tone";
+                    return false;
+                }
+                string pin = obj.Value<string>("pin") ?? "none";
+                if (!H5FragmentPins.Contains(pin))
+                {
+                    error = "h5_unknown_fragment_pin";
+                    return false;
+                }
+            }
+            if (type == "paperStage")
+            {
+                string layout = obj.Value<string>("layout") ?? "stack";
+                if (!H5StageLayouts.Contains(layout))
+                {
+                    error = "h5_unknown_stage_layout";
+                    return false;
+                }
+            }
 
             if (!ValidateH5InlineArray(obj["content"], out error)) return false;
             if (!ValidateH5InlineOrString(obj["title"], out error)) return false;
@@ -888,6 +927,7 @@ namespace CF7Launcher.Tasks
             if (!ValidateH5BlockArray(obj["reveal"], out error)) return false;
             if (!ValidateH5BlockArray(obj["plain"], out error)) return false;
             if (!ValidateH5BlockArray(obj["encrypted"], out error)) return false;
+            if (!ValidateH5BlockArray(obj["fragments"], out error)) return false;
             if (!ValidateH5Items(obj["items"], out error)) return false;
             if (!ValidateH5Entries(obj["entries"], out error)) return false;
             if (!ValidateH5Rows(obj["rows"], out error)) return false;

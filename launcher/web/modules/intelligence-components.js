@@ -24,7 +24,9 @@ var IntelligenceComponentRenderer = (function() {
         blueprint: true,
         timeline: true,
         hardwareExtract: true,
-        surfaceMark: true
+        surfaceMark: true,
+        paperFragment: true,
+        paperStage: true
     };
 
     var INLINE_TYPES = {
@@ -74,8 +76,66 @@ var IntelligenceComponentRenderer = (function() {
             case 'timeline': return renderTimeline(block, context);
             case 'hardwareExtract': return renderHardwareExtract(block, context);
             case 'surfaceMark': return renderSurfaceMark(block);
+            case 'paperFragment': return renderPaperFragment(block, context, 'scatter');
+            case 'paperStage': return renderPaperStage(block, context);
         }
         return null;
+    }
+
+    function renderPaperStage(block, context) {
+        var layout = (block.layout === 'scatter') ? 'scatter' : 'stack';
+        var el = document.createElement('div');
+        el.className = 'intel-h5-stage intel-h5-stage-' + layout;
+        var fragments = Array.isArray(block.fragments) ? block.fragments : [];
+        for (var i = 0; i < fragments.length; i++) {
+            var frag = fragments[i];
+            if (!frag || frag.type !== 'paperFragment') continue;
+            var node = renderPaperFragment(frag, context, layout);
+            if (node) el.appendChild(node);
+        }
+        return el;
+    }
+
+    function renderPaperFragment(block, context, layout) {
+        var el = document.createElement('div');
+        var tone = safeClass(block.tone || 'aged');
+        var pin = safeClass(block.pin || 'none');
+        var positioned = layout === 'scatter';
+        el.className = 'intel-h5-fragment intel-h5-fragment-' + tone +
+                       ' intel-h5-fragment-pin-' + pin +
+                       (positioned ? ' is-scatter' : ' is-stack');
+        if (positioned) {
+            setPercent(el, 'left', block.x, 5);
+            setPercent(el, 'top', block.y, 5);
+            setPercent(el, 'width', block.w, 40);
+            if (block.h != null) setPercent(el, 'height', block.h, 0);
+            var rotate = clampNumber(block.rotate, -15, 15, 0);
+            el.style.transform = 'rotate(' + rotate + 'deg)';
+        } else {
+            // stack 布局：纸条自然纵向流，仅微旋转保留手贴感
+            var stackRotate = clampNumber(block.rotate, -3, 3, 0);
+            if (stackRotate !== 0) el.style.transform = 'rotate(' + stackRotate + 'deg)';
+        }
+        var opacity = clampNumber(block.opacity, 0.4, 1, 1);
+        if (opacity !== 1) el.style.opacity = String(opacity);
+        if (pin !== 'none') {
+            var pinEl = document.createElement('span');
+            pinEl.className = 'intel-h5-fragment-pinmark';
+            pinEl.setAttribute('aria-hidden', 'true');
+            el.appendChild(pinEl);
+        }
+        var inner = document.createElement('div');
+        inner.className = 'intel-h5-fragment-body';
+        if (Array.isArray(block.blocks) && block.blocks.length) {
+            for (var i = 0; i < block.blocks.length; i++) {
+                var child = renderBlock(block.blocks[i], context);
+                if (child) inner.appendChild(child);
+            }
+        } else {
+            appendInline(inner, block.content || [], context);
+        }
+        el.appendChild(inner);
+        return el;
     }
 
     function renderHeading(block, context) {

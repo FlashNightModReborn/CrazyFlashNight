@@ -1,17 +1,41 @@
 {
   "schemaVersion": 1,
   "itemName": "资料",
-  "skin": "paper",
+  "skin": "field-notes",
   "pages": [
     {
       "pageKey": "1",
       "blocks": [
         {
-          "type": "note",
-          "content": [
+          "type": "paperStage",
+          "layout": "scatter",
+          "fragments": [
             {
-              "type": "text",
-              "text": "该系列文档主要从废城收集，运用了简单的符号加密，但存在部分干扰因素。随获取数量增多，能通过破译得到更多信息。所有内容均翻译为标准汉语。"
+              "type": "paperFragment",
+              "tone": "aged",
+              "x": 6, "y": 4, "w": 56,
+              "rotate": -3, "opacity": 0.96,
+              "content": [
+                { "type": "text", "text": "该系列文档主要从废城收集，运用了简单的符号加密，但存在部分干扰因素。" }
+              ]
+            },
+            {
+              "type": "paperFragment",
+              "tone": "ink",
+              "x": 38, "y": 36, "w": 52,
+              "rotate": 2, "opacity": 0.95,
+              "content": [
+                { "type": "text", "text": "随获取数量增多，能通过破译得到更多信息。" }
+              ]
+            },
+            {
+              "type": "paperFragment",
+              "tone": "torn",
+              "x": 14, "y": 66, "w": 48,
+              "rotate": -2, "opacity": 0.92,
+              "content": [
+                { "type": "text", "text": "所有内容均翻译为标准汉语。" }
+              ]
             }
           ]
         }
@@ -21,19 +45,26 @@
       "pageKey": "2",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "stack",
+          "fragments": [
             {
-              "type": "text",
-              "text": "目标已被A兵团后勤负责人带走，看来我们晚了一步。不要妄想搞出什么动作，他们可不是好惹的。尽管如此，我们依然可以尝试在废城散布一些资料，最好能有人看到。"
+              "type": "paperFragment",
+              "tone": "aged",
+              "pin": "pushpin",
+              "rotate": -1,
+              "content": [
+                { "type": "text", "text": "目标已被A兵团后勤负责人带走，看来我们晚了一步。不要妄想搞出什么动作，他们可不是好惹的。尽管如此，我们依然可以尝试在废城散布一些资料，最好能有人看到。" }
+              ]
             },
             {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "目标凭借自己的能力一定能破译出这些，而大部分非特殊能力者大概不会在意这些内容。我给资料增加了一些特殊加密，会误导一般人以为这些资料不重要。"
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "tape",
+              "rotate": 1,
+              "content": [
+                { "type": "text", "text": "目标凭借自己的能力一定能破译出这些，而大部分非特殊能力者大概不会在意这些内容。我给资料增加了一些特殊加密，会误导一般人以为这些资料不重要。" }
+              ]
             }
           ]
         }
@@ -43,19 +74,25 @@
       "pageKey": "5",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "stack",
+          "fragments": [
             {
-              "type": "text",
-              "text": "A兵团开始尝试向废城进行扩张，这不是好兆头。另外，盗贼群体正在逐渐渗透废城，而蓉都公社等势力也在尝试从郊区向内城进发。后续走向仍需观察。"
+              "type": "paperFragment",
+              "tone": "aged",
+              "pin": "pushpin",
+              "content": [
+                { "type": "text", "text": "A兵团开始尝试向废城进行扩张，这不是好兆头。另外，盗贼群体正在逐渐渗透废城，而蓉都公社等势力也在尝试从郊区向内城进发。后续走向仍需观察。" }
+              ]
             },
             {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "废城与堕落城在相近的时间段中先后陷入处于紧张状态，是否有幕后推手仍需观察。"
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "tape",
+              "rotate": 1,
+              "content": [
+                { "type": "text", "text": "废城与堕落城在相近的时间段中先后陷入紧张状态——是否有幕后推手仍需观察。" }
+              ]
             }
           ]
         }
@@ -65,27 +102,34 @@
       "pageKey": "10",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "stack",
+          "fragments": [
             {
-              "type": "text",
-              "text": "已确认废城内向外释放丧尸的钻头的科技来自末日前巨企，最大嫌疑者为3xf。但3xf的企图先前被andylaw挫败，后趋于崩溃，考虑到动机因素，和andylaw一定程度合作的政府或者其他巨型企业均可能回收相关科技。"
+              "type": "paperFragment",
+              "tone": "aged",
+              "pin": "pushpin",
+              "content": [
+                { "type": "text", "text": "已确认废城内向外释放丧尸的钻头的科技来自末日前巨企，最大嫌疑者为3xf。但3xf的企图先前被andylaw挫败，后趋于崩溃，考虑到动机因素，和andylaw一定程度合作的政府或者其他巨型企业均可能回收相关科技。" }
+              ]
             },
             {
-              "type": "text",
-              "text": "\n"
+              "type": "paperFragment",
+              "tone": "carbon",
+              "pin": "clip",
+              "rotate": -1,
+              "content": [
+                { "type": "text", "text": "据解剖验证，钻头放出的丧尸与长期暴露在野外的丧尸相比，身体状况较好，较少出现体内积水现象——怀疑有人为饲养丧尸的情况，通过钻头释放饲养的丧尸，动机不明。" }
+              ]
             },
             {
-              "type": "text",
-              "text": "据解剖验证，钻头放出的丧尸与长期暴露在野外的丧尸相比，身体状况较好，较少出现体内积水现象，怀疑有人为饲养丧尸的情况，通过钻头释放饲养的丧尸，动机不明。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "据悉，A兵团已派遣人前往废城贫民窟调查情况，怀疑其目标是摸清狂暴丧尸的情况。继续观察。"
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "tape",
+              "rotate": 1,
+              "content": [
+                { "type": "text", "text": "据悉，A兵团已派遣人前往废城贫民窟调查情况，怀疑其目标是摸清狂暴丧尸的情况。继续观察。" }
+              ]
             }
           ]
         }
@@ -95,19 +139,25 @@
       "pageKey": "15",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "stack",
+          "fragments": [
             {
-              "type": "text",
-              "text": "废城钻头确系3xf遗产。三战之后3xf的势力被WP兼并，而WP则作为统合的合作对象控制尘都地区。看来废城丧尸泛滥与WP错误利用3xf技术有关。"
+              "type": "paperFragment",
+              "tone": "aged",
+              "pin": "pushpin",
+              "content": [
+                { "type": "text", "text": "废城钻头确系3xf遗产。三战之后3xf的势力被WP兼并，而WP则作为统合的合作对象控制尘都地区。看来废城丧尸泛滥与WP错误利用3xf技术有关。" }
+              ]
             },
             {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "尽管C＆T继承了部分3xf技术，但他们已经被andylaw在审判日前彻底击溃，仅有少量人员混入WP中，因此不用怀疑C＆T仍在活动。"
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "tape",
+              "rotate": 1,
+              "content": [
+                { "type": "text", "text": "尽管C＆T继承了部分3xf技术，但他们已经被andylaw在审判日前彻底击溃，仅有少量人员混入WP中——因此不用怀疑C＆T仍在活动。" }
+              ]
             }
           ]
         }
@@ -117,27 +167,33 @@
       "pageKey": "20",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "stack",
+          "fragments": [
             {
-              "type": "text",
-              "text": "前治安官在CSSF崩溃后投靠统合西南临时政府，堕落城的人一般撑他们为军警宪政派，与军阀相区分。"
+              "type": "paperFragment",
+              "tone": "aged",
+              "pin": "pushpin",
+              "content": [
+                { "type": "text", "text": "前治安官在CSSF崩溃后投靠统合西南临时政府，堕落城的人一般撑他们为军警宪政派，与军阀相区分。" }
+              ]
             },
             {
-              "type": "text",
-              "text": "\n"
+              "type": "paperFragment",
+              "tone": "carbon",
+              "pin": "clip",
+              "content": [
+                { "type": "text", "text": "军警宪政派政治混乱，凭借着废城外围的地盘和周边村庄的暂时服从，难以和A兵团这样的武力组织硬碰硬。不过看样子，他们内部已经决定与A兵团交好，希望能够获取支援打败军阀。" }
+              ]
             },
             {
-              "type": "text",
-              "text": "军警宪政派政治混乱，凭借着废城外围的地盘和周边村庄的暂时服从，难以和A兵团这样的武力组织硬碰硬。不过看样子，他们内部已经决定与A兵团交好，希望能够获取支援打败军阀。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "前治安官会被派去A兵团负责外交工作，两边的关系升温在所难免。"
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "tape",
+              "rotate": 1,
+              "content": [
+                { "type": "text", "text": "前治安官会被派去A兵团负责外交工作——两边的关系升温在所难免。" }
+              ]
             }
           ]
         }
@@ -147,27 +203,33 @@
       "pageKey": "25",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "stack",
+          "fragments": [
             {
-              "type": "text",
-              "text": "已探查到立交桥残骸上的余烬小队哨所。哨所防卫并不严密，但暂时难以确认余烬小队真实实力，大部分废城活跃的组织也不会冒险得罪A兵团。"
+              "type": "paperFragment",
+              "tone": "aged",
+              "pin": "pushpin",
+              "content": [
+                { "type": "text", "text": "已探查到立交桥残骸上的余烬小队哨所。哨所防卫并不严密，但暂时难以确认余烬小队真实实力，大部分废城活跃的组织也不会冒险得罪A兵团。" }
+              ]
             },
             {
-              "type": "text",
-              "text": "\n"
+              "type": "paperFragment",
+              "tone": "carbon",
+              "pin": "clip",
+              "content": [
+                { "type": "text", "text": "据悉，CSSF崩溃后，一部分人最后逃往A兵团，参与组建了余烬小队。余烬队长曾在CSSF中工作，后参与第一防线保卫战，遭遇失败后退走，现已加盟A兵团。" }
+              ]
             },
             {
-              "type": "text",
-              "text": "据悉，CSSF崩溃后，一部分人最后逃往A兵团，参与组建了余烬小队。余烬队长曾在CSSF中工作，后参与第一防线保卫战，遭遇失败后退走，现已加盟A兵团。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "这叛徒···"
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "tape",
+              "rotate": -2,
+              "content": [
+                { "type": "strong", "content": [{ "type": "text", "text": "这叛徒···" }] }
+              ]
             }
           ]
         }
@@ -177,27 +239,33 @@
       "pageKey": "30",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "stack",
+          "fragments": [
             {
-              "type": "text",
-              "text": "已整理CSSF资料。尘都地区由WP控制，然而统合政府因审判日前与WP关系逐渐恶化，为了在尘都地区彰显存在，派遣了CSSF，即Chendu Special Security Force。"
+              "type": "paperFragment",
+              "tone": "aged",
+              "pin": "pushpin",
+              "content": [
+                { "type": "text", "text": "已整理CSSF资料。尘都地区由WP控制，然而统合政府因审判日前与WP关系逐渐恶化，为了在尘都地区彰显存在，派遣了CSSF，即Chendu Special Security Force。" }
+              ]
             },
             {
-              "type": "text",
-              "text": "\n"
+              "type": "paperFragment",
+              "tone": "carbon",
+              "pin": "clip",
+              "content": [
+                { "type": "text", "text": "当时CSSF由现已投靠军警宪政派的前治安官负责——「前治安官」的名号也是来自于CSSF的维护治安的名义。" }
+              ]
             },
             {
-              "type": "text",
-              "text": "当时CSSF由现已投靠军警宪政派的前治安官负责，“前治安官”的名号也是来自于CSSF的维护治安的名义。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "CSSF的力量远比尘都本地的各种武装组织弱小，在审判日发生前被WP缴械，押往地铁站的过程中遭遇审判日。后来他们被释放，但失去武器和部分人员后，组织最终崩溃。"
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "tape",
+              "rotate": 1,
+              "content": [
+                { "type": "text", "text": "CSSF的力量远比尘都本地的各种武装组织弱小，在审判日发生前被WP缴械，押往地铁站的过程中遭遇审判日。后来他们被释放，但失去武器和部分人员后，组织最终崩溃。" }
+              ]
             }
           ]
         }
@@ -207,27 +275,33 @@
       "pageKey": "35",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "stack",
+          "fragments": [
             {
-              "type": "text",
-              "text": "蓉都公社正在尝试与A兵团接触。不出意外，公社的那位老兵会作为代表前往A兵团。"
+              "type": "paperFragment",
+              "tone": "aged",
+              "pin": "pushpin",
+              "content": [
+                { "type": "text", "text": "蓉都公社正在尝试与A兵团接触。不出意外，公社的那位老兵会作为代表前往A兵团。" }
+              ]
             },
             {
-              "type": "text",
-              "text": "\n"
+              "type": "paperFragment",
+              "tone": "carbon",
+              "pin": "clip",
+              "content": [
+                { "type": "text", "text": "在尘都南部的森林遭到重创后，游击队与工厂和农业集团合作，组建公社。资料显示蓉都公社力量弱小，但拥有一定的生产能力——特别是他们拥有现成的工业设施，这会遭到其他势力的觊觎。" }
+              ]
             },
             {
-              "type": "text",
-              "text": "在尘都南部的森林遭到重创后，游击队与工厂和农业集团合作，组建公社。资料显示蓉都公社力量弱小，但拥有一定的生产能力。特别是他们拥有现成的工业设施，这会遭到其他势力的觊觎。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "向A兵团寻求安全保障是必然的，但这一保护是否奏效仍需观察。"
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "tape",
+              "rotate": -1,
+              "content": [
+                { "type": "text", "text": "向A兵团寻求安全保障是必然的，但这一保护是否奏效仍需观察。" }
+              ]
             }
           ]
         }
@@ -237,100 +311,60 @@
       "pageKey": "40",
       "blocks": [
         {
-          "type": "surfaceMark",
-          "variant": "fold",
-          "x": 8,
-          "y": 0,
-          "w": 8,
-          "h": 100,
-          "rotate": -2,
-          "opacity": 0.2
-        },
-        {
-          "type": "surfaceMark",
-          "variant": "dirt",
-          "x": 64,
-          "y": 13,
-          "w": 18,
-          "h": 14,
-          "rotate": -8,
-          "opacity": 0.16
-        },
-        {
-          "type": "heading",
-          "level": 2,
-          "content": [
+          "type": "paperStage",
+          "layout": "stack",
+          "fragments": [
             {
-              "type": "strong",
-              "content": [
+              "type": "paperFragment",
+              "tone": "carbon",
+              "pin": "pushpin",
+              "blocks": [
                 {
-                  "type": "text",
-                  "text": "重组组织研判摘录"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "annotation",
-          "content": [
-            {
-              "type": "text",
-              "text": "根据近期资料推算，“"
-            },
-            {
-              "type": "decryptText",
-              "level": 1,
-              "encryptedText": "NOAH-██",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "诺亚方舟计划组"
+                  "type": "heading",
+                  "level": 2,
+                  "content": [
+                    { "type": "strong", "content": [{ "type": "text", "text": "重组组织研判摘录" }] }
+                  ]
                 }
               ]
             },
             {
-              "type": "text",
-              "text": "”已重组为一个新组织，具体情况有待调查。"
-            }
-          ],
-          "note": [
-            {
-              "type": "text",
-              "text": "交叉比对：旧世研究组编号、地铁站异常样本、钻头技术回收记录均指向同一后继实体。"
-            }
-          ]
-        },
-        {
-          "type": "paragraph",
-          "content": [
-            {
-              "type": "text",
-              "text": "该组织可能对废城进行了渗透，可能对于钻头技术进行了回收。但仍不能确认废城是否有该组织发送的钻头。"
-            }
-          ]
-        },
-        {
-          "type": "paragraph",
-          "content": [
-            {
-              "type": "text",
-              "text": "可确认地铁站近期骚动与该组织有关；资料显示地铁站出现大体型、身穿特殊服装的丧尸，其来源极可能就是“"
-            },
-            {
-              "type": "decryptText",
-              "level": 1,
-              "encryptedText": "NOAH-██",
-              "content": [
+              "type": "paperFragment",
+              "tone": "aged",
+              "pin": "clip",
+              "blocks": [
                 {
-                  "type": "text",
-                  "text": "诺亚方舟计划组"
+                  "type": "annotation",
+                  "content": [
+                    { "type": "text", "text": "根据近期资料推算，「" },
+                    { "type": "decryptText", "level": 1, "encryptedText": "NOAH-██", "content": [{ "type": "text", "text": "诺亚方舟计划组" }] },
+                    { "type": "text", "text": "」已重组为一个新组织，具体情况有待调查。" }
+                  ],
+                  "note": [
+                    { "type": "text", "text": "交叉比对：旧世研究组编号、地铁站异常样本、钻头技术回收记录均指向同一后继实体。" }
+                  ]
                 }
               ]
             },
             {
-              "type": "text",
-              "text": "”转型后的组织。"
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "tape",
+              "rotate": 1,
+              "content": [
+                { "type": "text", "text": "该组织可能对废城进行了渗透，可能对于钻头技术进行了回收。但仍不能确认废城是否有该组织发送的钻头。" }
+              ]
+            },
+            {
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "tape",
+              "rotate": -1,
+              "content": [
+                { "type": "text", "text": "可确认地铁站近期骚动与该组织有关；资料显示地铁站出现大体型、身穿特殊服装的丧尸，其来源极可能就是「" },
+                { "type": "decryptText", "level": 1, "encryptedText": "NOAH-██", "content": [{ "type": "text", "text": "诺亚方舟计划组" }] },
+                { "type": "text", "text": "」转型后的组织。" }
+              ]
             }
           ]
         }
@@ -340,87 +374,41 @@
       "pageKey": "45",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "stack",
+          "fragments": [
             {
-              "type": "text",
-              "text": "目标在"
-            },
-            {
-              "type": "decryptText",
-              "level": 1,
-              "encryptedText": "A██",
+              "type": "paperFragment",
+              "tone": "aged",
+              "pin": "pushpin",
               "content": [
-                {
-                  "type": "text",
-                  "text": "A兵团"
-                }
+                { "type": "text", "text": "目标在" },
+                { "type": "decryptText", "level": 1, "encryptedText": "A██", "content": [{ "type": "text", "text": "A兵团" }] },
+                { "type": "text", "text": "内部似乎取得了不错的发展。看起来之前的猜测没错，目标并非一般人。下一步可能需要对" },
+                { "type": "decryptText", "level": 1, "encryptedText": "A██", "content": [{ "type": "text", "text": "A兵团" }] },
+                { "type": "text", "text": "内的机械师小F与制药师丽丽丝进行调查，这些人一定存在共同点。" }
               ]
             },
             {
-              "type": "text",
-              "text": "内部似乎取得了不错的发展。看起来之前的猜测没错，目标并非一般人。下一步可能需要对"
-            },
-            {
-              "type": "decryptText",
-              "level": 1,
-              "encryptedText": "A██",
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "tape",
+              "rotate": 1,
               "content": [
-                {
-                  "type": "text",
-                  "text": "A兵团"
-                }
+                { "type": "text", "text": "然而，废城内部各组织的扩张已经严重影响了我的活动，后续工作能否进行犹未可知。" }
               ]
             },
             {
-              "type": "text",
-              "text": "内的机械师小F与制药师丽丽丝进行调查，这些人一定存在共同点。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "然而，废城内部各组织的扩张已经严重影响了我的活动，后续工作能否进行犹未可知。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "另外，已确认“"
-            },
-            {
-              "type": "decryptText",
-              "level": 1,
-              "encryptedText": "███████",
+              "type": "paperFragment",
+              "tone": "carbon",
+              "pin": "clip",
               "content": [
-                {
-                  "type": "text",
-                  "text": "诺亚方舟计划组"
-                }
+                { "type": "text", "text": "另外，已确认「" },
+                { "type": "decryptText", "level": 1, "encryptedText": "███████", "content": [{ "type": "text", "text": "诺亚方舟计划组" }] },
+                { "type": "text", "text": "」转型为" },
+                { "type": "decryptText", "level": 1, "encryptedText": "████", "content": [{ "type": "text", "text": "诺亚组织" }] },
+                { "type": "text", "text": "，其内部情况依然有待观察。" }
               ]
-            },
-            {
-              "type": "text",
-              "text": "”转型为"
-            },
-            {
-              "type": "decryptText",
-              "level": 1,
-              "encryptedText": "████",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "诺亚组织"
-                }
-              ]
-            },
-            {
-              "type": "text",
-              "text": "，其内部情况依然有待观察。"
             }
           ]
         }
@@ -430,34 +418,27 @@
       "pageKey": "50",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "stack",
+          "fragments": [
             {
-              "type": "text",
-              "text": "根据探查得知，地铁站深处似乎有人活动。探查过程中发现有部分未知人员尝试绕过地铁站的丧尸群体，通过特殊管道转移至地铁站外部。如果这些人并非诺亚成员，则很可能是地铁站深处的人类组织成员。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "如果预测为真，则地铁站至少有两个组织在尝试活动。随着"
-            },
-            {
-              "type": "decryptText",
-              "level": 1,
-              "encryptedText": "A██",
+              "type": "paperFragment",
+              "tone": "aged",
+              "pin": "pushpin",
               "content": [
-                {
-                  "type": "text",
-                  "text": "A兵团"
-                }
+                { "type": "text", "text": "根据探查得知，地铁站深处似乎有人活动。探查过程中发现有部分未知人员尝试绕过地铁站的丧尸群体，通过特殊管道转移至地铁站外部。如果这些人并非诺亚成员，则很可能是地铁站深处的人类组织成员。" }
               ]
             },
             {
-              "type": "text",
-              "text": "对废城的进一步开发，这第三个组织必然会意识到前两个组织的存在。必须对此情况做好准备。"
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "tape",
+              "rotate": 1,
+              "content": [
+                { "type": "text", "text": "如果预测为真，则地铁站至少有两个组织在尝试活动。随着" },
+                { "type": "decryptText", "level": 1, "encryptedText": "A██", "content": [{ "type": "text", "text": "A兵团" }] },
+                { "type": "text", "text": "对废城的进一步开发，这第三个组织必然会意识到前两个组织的存在——必须对此情况做好准备。" }
+              ]
             }
           ]
         }
@@ -467,75 +448,33 @@
       "pageKey": "60",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "stack",
+          "fragments": [
             {
-              "type": "text",
-              "text": "已获取极重要情报："
-            },
-            {
-              "type": "decryptText",
-              "level": 6,
-              "encryptedText": "████",
+              "type": "paperFragment",
+              "tone": "carbon",
+              "pin": "pushpin",
+              "rotate": -1,
               "content": [
-                {
-                  "type": "text",
-                  "text": "诺亚组织"
-                }
+                { "type": "strong", "content": [{ "type": "text", "text": "已获取极重要情报：" }] },
+                { "type": "text", "text": "\n" },
+                { "type": "decryptText", "level": 6, "encryptedText": "████", "content": [{ "type": "text", "text": "诺亚组织" }] },
+                { "type": "text", "text": "在尝试对其他组织进行渗透。目前已确认摇滚公园、黑铁会、堕落城联合大学有" },
+                { "type": "decryptText", "level": 6, "encryptedText": "████", "content": [{ "type": "text", "text": "诺亚组织" }] },
+                { "type": "decryptText", "level": 6, "encryptedText": "██", "content": [{ "type": "text", "text": "间谍" }] },
+                { "type": "text", "text": "。" }
               ]
             },
             {
-              "type": "text",
-              "text": "在尝试对其他组织进行渗透。目前已确认摇滚公园、黑铁会、堕落城联合大学有"
-            },
-            {
-              "type": "decryptText",
-              "level": 6,
-              "encryptedText": "████",
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "clip",
               "content": [
-                {
-                  "type": "text",
-                  "text": "诺亚组织"
-                }
+                { "type": "text", "text": "难以确认诺亚的目的，但考虑到各大组织维持的平衡局面正在被打破，或许" },
+                { "type": "decryptText", "level": 6, "encryptedText": "████", "content": [{ "type": "text", "text": "诺亚组织" }] },
+                { "type": "text", "text": "的目的是挑动其他组织进行互相攻伐，以此来获取利益。" }
               ]
-            },
-            {
-              "type": "decryptText",
-              "level": 6,
-              "encryptedText": "██",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "间谍"
-                }
-              ]
-            },
-            {
-              "type": "text",
-              "text": "。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "难以确认诺亚的目的，但考虑到各大组织维持的平衡局面正在被打破，或许"
-            },
-            {
-              "type": "decryptText",
-              "level": 6,
-              "encryptedText": "████",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "诺亚组织"
-                }
-              ]
-            },
-            {
-              "type": "text",
-              "text": "的目的是挑动其他组织进行互相攻伐，以此来获取利益。"
             }
           ]
         }
@@ -545,87 +484,52 @@
       "pageKey": "70",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "scatter",
+          "fragments": [
             {
-              "type": "text",
-              "text": "到此为止，情报小组存活人员仅剩我一人。但其他人的牺牲没有白费，我们搞清楚了一个事实，那就是雪山那边有一个组织的基地。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "情报小组之前借助雪山地区"
-            },
-            {
-              "type": "decryptText",
-              "level": 3,
-              "encryptedText": "██",
+              "type": "paperFragment",
+              "tone": "aged",
+              "x": 4, "y": 3, "w": 56,
+              "rotate": -4, "opacity": 0.96,
               "content": [
-                {
-                  "type": "text",
-                  "text": "统合"
-                }
+                { "type": "text", "text": "到此为止，情报小组存活人员仅剩我一人。但其他人的牺牲没有白费——我们搞清楚了一个事实：雪山那边有一个组织的基地。" }
               ]
             },
             {
-              "type": "text",
-              "text": "秘密"
-            },
-            {
-              "type": "decryptText",
-              "level": 3,
-              "encryptedText": "███",
+              "type": "paperFragment",
+              "tone": "torn",
+              "x": 42, "y": 28, "w": 54,
+              "rotate": 3, "opacity": 0.93,
               "content": [
-                {
-                  "type": "text",
-                  "text": "研究所"
-                }
+                { "type": "text", "text": "情报小组之前借助雪山地区" },
+                { "type": "decryptText", "level": 3, "encryptedText": "██", "content": [{ "type": "text", "text": "统合" }] },
+                { "type": "text", "text": "秘密" },
+                { "type": "decryptText", "level": 3, "encryptedText": "███", "content": [{ "type": "text", "text": "研究所" }] },
+                { "type": "text", "text": "的设备，进行资料收集和调查，获取了大量信息。" }
               ]
             },
             {
-              "type": "text",
-              "text": "的设备，进行资料收集和调查，获取了大量信息。而最近一次前往"
-            },
-            {
-              "type": "decryptText",
-              "level": 3,
-              "encryptedText": "███",
+              "type": "paperFragment",
+              "tone": "burnt",
+              "x": 6, "y": 52, "w": 56,
+              "rotate": -2, "opacity": 0.92,
               "content": [
-                {
-                  "type": "text",
-                  "text": "研究所"
-                }
+                { "type": "text", "text": "而最近一次前往" },
+                { "type": "decryptText", "level": 3, "encryptedText": "███", "content": [{ "type": "text", "text": "研究所" }] },
+                { "type": "text", "text": "之后，情报小组遭到了不明组织的伏击，除我这个废城活动的人员外全军覆没。" }
               ]
             },
             {
-              "type": "text",
-              "text": "之后，情报小组遭到了不明组织的伏击，除我这个废城活动的人员外全军覆没。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "能够获知这个"
-            },
-            {
-              "type": "decryptText",
-              "level": 3,
-              "encryptedText": "███",
+              "type": "paperFragment",
+              "tone": "ink",
+              "x": 46, "y": 76, "w": 50,
+              "rotate": 4, "opacity": 0.94,
               "content": [
-                {
-                  "type": "text",
-                  "text": "研究所"
-                }
+                { "type": "text", "text": "能够获知这个" },
+                { "type": "decryptText", "level": 3, "encryptedText": "███", "content": [{ "type": "text", "text": "研究所" }] },
+                { "type": "text", "text": "存在的人不多——或许我们接近真相了。" }
               ]
-            },
-            {
-              "type": "text",
-              "text": "存在的人不多，或许我们接近真相了。"
             }
           ]
         }
@@ -635,42 +539,35 @@
       "pageKey": "80",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "stack",
+          "fragments": [
             {
-              "type": "text",
-              "text": "尽管失去了全部信息来源，但是通过整理现有资料，我有了新的发现。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "通缉令本身可能涉及到几个大组织之间的博弈，至少有"
-            },
-            {
-              "type": "decryptText",
-              "level": 6,
-              "encryptedText": "A██",
+              "type": "paperFragment",
+              "tone": "aged",
+              "pin": "pushpin",
               "content": [
-                {
-                  "type": "text",
-                  "text": "A兵团"
-                }
+                { "type": "text", "text": "尽管失去了全部信息来源，但是通过整理现有资料，我有了新的发现。" }
               ]
             },
             {
-              "type": "text",
-              "text": "、军阀、黑铁会和摇滚公园参与了这一博弈。但最终颁发的通缉令当中，有一部分人似乎与诺亚有关。"
+              "type": "paperFragment",
+              "tone": "carbon",
+              "pin": "clip",
+              "content": [
+                { "type": "text", "text": "通缉令本身可能涉及到几个大组织之间的博弈，至少有" },
+                { "type": "decryptText", "level": 6, "encryptedText": "A██", "content": [{ "type": "text", "text": "A兵团" }] },
+                { "type": "text", "text": "、军阀、黑铁会和摇滚公园参与了这一博弈。但最终颁发的通缉令当中，有一部分人似乎与诺亚有关。" }
+              ]
             },
             {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "考虑到通缉令人选由各大组织讨论得到，且各大组织内部的通缉令人选不完全一致，事情可能比想象的更加复杂。"
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "tape",
+              "rotate": 1,
+              "content": [
+                { "type": "text", "text": "考虑到通缉令人选由各大组织讨论得到，且各大组织内部的通缉令人选不完全一致——事情可能比想象的更加复杂。" }
+              ]
             }
           ]
         }
@@ -680,109 +577,37 @@
       "pageKey": "90",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "stack",
+          "fragments": [
             {
-              "type": "text",
-              "text": "我现在确认，"
-            },
-            {
-              "type": "decryptText",
-              "level": 9,
-              "encryptedText": "A██",
+              "type": "paperFragment",
+              "tone": "carbon",
+              "pin": "pushpin",
               "content": [
-                {
-                  "type": "text",
-                  "text": "A兵团"
-                }
+                { "type": "text", "text": "我现在确认，" },
+                { "type": "decryptText", "level": 9, "encryptedText": "A██", "content": [{ "type": "text", "text": "A兵团" }] },
+                { "type": "text", "text": "一定有诺亚安插的" },
+                { "type": "decryptText", "level": 9, "encryptedText": "██", "content": [{ "type": "text", "text": "间谍" }] },
+                { "type": "text", "text": "，但是不确认是哪一个人。也可能这个人不是" },
+                { "type": "decryptText", "level": 9, "encryptedText": "A██", "content": [{ "type": "text", "text": "A兵团" }] },
+                { "type": "text", "text": "内部人士，而是更接近和" },
+                { "type": "decryptText", "level": 9, "encryptedText": "A██", "content": [{ "type": "text", "text": "A兵团" }] },
+                { "type": "text", "text": "交好的人。或许我该再研究一下" },
+                { "type": "decryptText", "level": 9, "encryptedText": "A██", "content": [{ "type": "text", "text": "A兵团" }] },
+                { "type": "text", "text": "高层的人际关系。" }
               ]
             },
             {
-              "type": "text",
-              "text": "一定有诺亚安插的"
-            },
-            {
-              "type": "decryptText",
-              "level": 9,
-              "encryptedText": "██",
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "clip",
+              "rotate": -1,
               "content": [
-                {
-                  "type": "text",
-                  "text": "间谍"
-                }
+                { "type": "text", "text": "无论如何，这个" },
+                { "type": "decryptText", "level": 9, "encryptedText": "██", "content": [{ "type": "text", "text": "间谍" }] },
+                { "type": "text", "text": "一定干扰了通缉令的人员选择——通缉令的发布者和目标中至少有一边和诺亚有关。" }
               ]
-            },
-            {
-              "type": "text",
-              "text": "，但是不确认是哪一个人。也可能这个人不是"
-            },
-            {
-              "type": "decryptText",
-              "level": 9,
-              "encryptedText": "A██",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "A兵团"
-                }
-              ]
-            },
-            {
-              "type": "text",
-              "text": "内部人士，而是更接近和"
-            },
-            {
-              "type": "decryptText",
-              "level": 9,
-              "encryptedText": "A██",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "A兵团"
-                }
-              ]
-            },
-            {
-              "type": "text",
-              "text": "交好的人。或许我该再研究一下"
-            },
-            {
-              "type": "decryptText",
-              "level": 9,
-              "encryptedText": "A██",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "A兵团"
-                }
-              ]
-            },
-            {
-              "type": "text",
-              "text": "高层的人际关系。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "无论如何，这个"
-            },
-            {
-              "type": "decryptText",
-              "level": 9,
-              "encryptedText": "██",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "间谍"
-                }
-              ]
-            },
-            {
-              "type": "text",
-              "text": "一定干扰了通缉令的人员选择，通缉令的发布者和目标中至少有一边和诺亚有关。"
             }
           ]
         }
@@ -792,52 +617,30 @@
       "pageKey": "98",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "stack",
+          "fragments": [
             {
-              "type": "decryptText",
-              "level": 10,
-              "encryptedText": "A██",
+              "type": "paperFragment",
+              "tone": "carbon",
+              "pin": "pushpin",
               "content": [
-                {
-                  "type": "text",
-                  "text": "A兵团"
-                }
+                { "type": "decryptText", "level": 10, "encryptedText": "A██", "content": [{ "type": "text", "text": "A兵团" }] },
+                { "type": "text", "text": "里的诺亚" },
+                { "type": "decryptText", "level": 10, "encryptedText": "██", "content": [{ "type": "text", "text": "间谍" }] },
+                { "type": "text", "text": "应该很早就和高层们打好关系了，应该早于审判日。但很难确认是谁。" }
               ]
             },
             {
-              "type": "text",
-              "text": "里的诺亚"
-            },
-            {
-              "type": "decryptText",
-              "level": 10,
-              "encryptedText": "██",
+              "type": "paperFragment",
+              "tone": "ink",
+              "pin": "tape",
+              "rotate": -1,
               "content": [
-                {
-                  "type": "text",
-                  "text": "间谍"
-                }
+                { "type": "text", "text": "我只能推测到这里了——后续内容只能靠目标来调查了，如果目标···" },
+                { "type": "pcName" },
+                { "type": "text", "text": "真的能看到我写的这些···" }
               ]
-            },
-            {
-              "type": "text",
-              "text": "应该很早就和高层们打好关系了，应该早于审判日。但很难确认是谁。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "我只能推测到这里了，后续内容只能靠目标来调查了，如果目标···"
-            },
-            {
-              "type": "pcName"
-            },
-            {
-              "type": "text",
-              "text": "真的能看到我写的这些···"
             }
           ]
         }
@@ -847,19 +650,21 @@
       "pageKey": "99",
       "blocks": [
         {
-          "type": "paragraph",
-          "content": [
+          "type": "paperStage",
+          "layout": "scatter",
+          "fragments": [
             {
-              "type": "text",
-              "text": "应该是最后的情报汇总了。但我没什么可说的。一定要说的话，CSSF是个彻头彻尾的错误，是统合对尘都地区扩张势力的投机行为。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "我们这些CSSF的人被牺牲了。"
+              "type": "paperFragment",
+              "tone": "burnt",
+              "x": 18, "y": 32, "w": 64,
+              "rotate": -3, "opacity": 0.96,
+              "content": [
+                { "type": "text", "text": "应该是最后的情报汇总了。但我没什么可说的。" },
+                { "type": "text", "text": "\n\n" },
+                { "type": "text", "text": "一定要说的话——CSSF 是个彻头彻尾的错误，是统合对尘都地区扩张势力的投机行为。" },
+                { "type": "text", "text": "\n\n" },
+                { "type": "strong", "content": [{ "type": "text", "text": "我们这些 CSSF 的人，被牺牲了。" }] }
+              ]
             }
           ]
         }

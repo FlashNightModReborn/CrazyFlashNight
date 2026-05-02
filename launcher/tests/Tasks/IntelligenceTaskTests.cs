@@ -326,6 +326,122 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void Snapshot_AcceptsPaperStageWithStackLayoutAndPinnedFragments()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            WriteH5("资料",
+                "{\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"field-notes\",\"pages\":[" +
+                "{\"pageKey\":\"1\",\"blocks\":[" +
+                "{\"type\":\"paperStage\",\"layout\":\"stack\",\"fragments\":[" +
+                "{\"type\":\"paperFragment\",\"tone\":\"aged\",\"pin\":\"pushpin\",\"content\":[{\"type\":\"text\",\"text\":\"主纸条\"}]}," +
+                "{\"type\":\"paperFragment\",\"tone\":\"ink\",\"pin\":\"clip\",\"content\":[{\"type\":\"text\",\"text\":\"次纸条\"}]}" +
+                "]}]}]}");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"stage-1\",\"itemName\":\"资料\",\"value\":1,\"decryptLevel\":0,\"pcName\":\"测试\"}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.True((bool)resp["success"]);
+            JObject stage = (JObject)resp["pages"][0]["blocks"][0];
+            Assert.Equal("paperStage", (string)stage["type"]);
+            Assert.Equal("stack", (string)stage["layout"]);
+            Assert.Equal(2, ((JArray)stage["fragments"]).Count);
+            Assert.Equal("pushpin", (string)stage["fragments"][0]["pin"]);
+            Assert.Equal("clip", (string)stage["fragments"][1]["pin"]);
+        }
+
+        [Fact]
+        public void Snapshot_H5StrictRejectsUnknownStageLayout()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            WriteH5("资料",
+                "{\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"field-notes\",\"pages\":[" +
+                "{\"pageKey\":\"1\",\"blocks\":[" +
+                "{\"type\":\"paperStage\",\"layout\":\"freeform\",\"fragments\":[]}" +
+                "]}]}");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"stage-bad\",\"itemName\":\"资料\",\"value\":1}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("h5_unknown_stage_layout", (string)resp["error"]);
+        }
+
+        [Fact]
+        public void Snapshot_H5StrictRejectsUnknownFragmentPin()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            WriteH5("资料",
+                "{\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"field-notes\",\"pages\":[" +
+                "{\"pageKey\":\"1\",\"blocks\":[" +
+                "{\"type\":\"paperFragment\",\"tone\":\"aged\",\"pin\":\"magnet\",\"content\":[]}" +
+                "]}]}");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"pin-bad\",\"itemName\":\"资料\",\"value\":1}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("h5_unknown_fragment_pin", (string)resp["error"]);
+        }
+
+        [Fact]
+        public void Snapshot_AcceptsFieldNotesSkinAndPaperFragment()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            WriteH5("资料",
+                "{\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"field-notes\",\"pages\":[" +
+                "{\"pageKey\":\"1\",\"blocks\":[" +
+                "{\"type\":\"paperFragment\",\"tone\":\"burnt\",\"x\":10,\"y\":20,\"w\":50,\"rotate\":-3,\"content\":[{\"type\":\"text\",\"text\":\"碎片正文\"}]}" +
+                "]}]}");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"frag-1\",\"itemName\":\"资料\",\"value\":1,\"decryptLevel\":0,\"pcName\":\"测试\"}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.True((bool)resp["success"]);
+            Assert.Equal("field-notes", (string)resp["skin"]);
+            JObject frag = (JObject)resp["pages"][0]["blocks"][0];
+            Assert.Equal("paperFragment", (string)frag["type"]);
+            Assert.Equal("burnt", (string)frag["tone"]);
+            Assert.Equal("碎片正文", (string)frag["content"][0]["text"]);
+        }
+
+        [Fact]
+        public void Snapshot_H5StrictRejectsUnknownFragmentTone()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            WriteH5("资料",
+                "{\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"field-notes\",\"pages\":[" +
+                "{\"pageKey\":\"1\",\"blocks\":[" +
+                "{\"type\":\"paperFragment\",\"tone\":\"plasma\",\"content\":[{\"type\":\"text\",\"text\":\"X\"}]}" +
+                "]}]}");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"frag-bad\",\"itemName\":\"资料\",\"value\":1}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("h5_unknown_fragment_tone", (string)resp["error"]);
+        }
+
+        [Fact]
         public void Snapshot_StripsLockedDecryptTextContentButKeepsEncryptedPlaceholder()
         {
             WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
