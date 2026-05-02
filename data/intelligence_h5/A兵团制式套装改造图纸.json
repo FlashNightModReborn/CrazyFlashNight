@@ -1,0 +1,500 @@
+{
+  "schemaVersion": 1,
+  "itemName": "A兵团制式套装改造图纸",
+  "skin": "blueprint",
+  "pages": [
+    {
+      "pageKey": "1_1",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "A兵团制式套装改造图纸"
+            }
+          ],
+          "materials": [
+            [
+              {
+                "type": "text",
+                "text": "材料需求："
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "为防毒面具，作战服，裤子，手套，皮靴各准备"
+              },
+              {
+                "type": "colorToken",
+                "token": "material-basic",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "军用帆布"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "1块，"
+              },
+              {
+                "type": "colorToken",
+                "token": "info",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "碳纤维布料"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "1份。"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "其中作战服需要1瓶"
+              },
+              {
+                "type": "colorToken",
+                "token": "material-basic",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "上色涂料"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "喷涂灰蓝色迷彩。"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "裤子和皮靴各需要1块"
+              },
+              {
+                "type": "colorToken",
+                "token": "material-basic",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "可塑式钢板"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "制作护膝和防撞头。"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "翻新项链需要少量"
+              },
+              {
+                "type": "colorToken",
+                "token": "material-mid",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "高强度合金"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "与"
+              },
+              {
+                "type": "colorToken",
+                "token": "material-mid",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "高耐力橡胶"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "。"
+              }
+            ]
+          ],
+          "steps": []
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A兵团制式套装改造图纸"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "材料需求："
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "为防毒面具，作战服，裤子，手套，皮靴各准备"
+            },
+            {
+              "type": "colorToken",
+              "token": "material-basic",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "军用帆布"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "1块，"
+            },
+            {
+              "type": "colorToken",
+              "token": "info",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "碳纤维布料"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "1份。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "其中作战服需要1瓶"
+            },
+            {
+              "type": "colorToken",
+              "token": "material-basic",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "上色涂料"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "喷涂灰蓝色迷彩。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "裤子和皮靴各需要1块"
+            },
+            {
+              "type": "colorToken",
+              "token": "material-basic",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "可塑式钢板"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "制作护膝和防撞头。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "翻新项链需要少量"
+            },
+            {
+              "type": "colorToken",
+              "token": "material-mid",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "高强度合金"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "与"
+            },
+            {
+              "type": "colorToken",
+              "token": "material-mid",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "高耐力橡胶"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_2",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "A兵团制式套装改造图纸"
+            }
+          ],
+          "materials": [
+            [
+              {
+                "type": "text",
+                "text": "如果你对“改装材料为什么分成初级，中级，高级三类”有疑问，给你一个很负责任的答案："
+              }
+            ]
+          ],
+          "steps": []
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Tips:"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "这段笔记是给那些经常出门的A兵团战士看的。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "如果你对“改装材料为什么分成初级，中级，高级三类”有疑问，给你一个很负责任的答案："
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "我分的。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_3",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "A兵团制式套装改造图纸"
+            }
+          ],
+          "materials": [
+            [
+              {
+                "type": "colorToken",
+                "token": "material-basic",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "初级材料"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：这一类材料大多是基建用材或容易生产的小产品。军警宪政处有直接的供应链到我们基地。"
+              }
+            ],
+            [
+              {
+                "type": "colorToken",
+                "token": "material-mid",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "中级材料"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：这一类包括一些稀有原材料和需要一定工艺的产品。我们跟联合大学的其中一条合作事项就是学校替我们有偿搜集和生产这类材料。不过，联合大学在原材料方面日常被卡脖子，所以也不是所有材料都无限量供应。"
+              }
+            ],
+            [
+              {
+                "type": "colorToken",
+                "token": "info",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "高级材料"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：这一类材料包括了含高精度纳米工艺的精微产品，以及有制式生产规范的武器配件。统合瓦解后，尘都的军工业随之四分五裂，没有任何一家工厂能独立生产这些东西。想拿到高级材料，要么去找现成的货源，要么只能从别人身上抢了。"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "我手上倒是有一条"
+              },
+              {
+                "type": "colorToken",
+                "token": "info",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "碳纤维布料"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "的货源。之前有个神经病非要我把僵尸皮肤缝成装甲给他用，作为补偿他从黑市拿到了这种通用缝合材料的购买方式，你想买的话直接报我名字就行。如果你发现了别的材料的直售来源，记得马上汇报给我。"
+              }
+            ]
+          ],
+          "steps": []
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "colorToken",
+              "token": "material-basic",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "初级材料"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "：这一类材料大多是基建用材或容易生产的小产品。军警宪政处有直接的供应链到我们基地。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "colorToken",
+              "token": "material-mid",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "中级材料"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "：这一类包括一些稀有原材料和需要一定工艺的产品。我们跟联合大学的其中一条合作事项就是学校替我们有偿搜集和生产这类材料。不过，联合大学在原材料方面日常被卡脖子，所以也不是所有材料都无限量供应。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "colorToken",
+              "token": "info",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "高级材料"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "：这一类材料包括了含高精度纳米工艺的精微产品，以及有制式生产规范的武器配件。统合瓦解后，尘都的军工业随之四分五裂，没有任何一家工厂能独立生产这些东西。想拿到高级材料，要么去找现成的货源，要么只能从别人身上抢了。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "我手上倒是有一条"
+            },
+            {
+              "type": "colorToken",
+              "token": "info",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "碳纤维布料"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "的货源。之前有个神经病非要我把僵尸皮肤缝成装甲给他用，作为补偿他从黑市拿到了这种通用缝合材料的购买方式，你想买的话直接报我名字就行。如果你发现了别的材料的直售来源，记得马上汇报给我。"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

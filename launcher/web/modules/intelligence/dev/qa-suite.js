@@ -35,6 +35,54 @@ var IntelligenceHarnessQA = (function() {
                     return 'default rendered';
                 });
             }],
+            ['h5-components-render', 'H5 component tree renders without innerHTML scripts and supports redaction/hardware/surface widgets', function() {
+                host.open({ itemName: '资料', value: 99, decryptLevel: 10 });
+                return waitReady(api).then(function(state) {
+                    api.assertEqual(state.contentMode, 'h5', 'content mode');
+                    api.assertEqual(document.querySelector('.intel-content').getAttribute('data-content-mode'), 'h5', 'content mode attribute');
+                    api.assert(!!document.querySelector('.intel-h5-heading'), 'heading component rendered');
+                    api.assert(!!document.querySelector('.intel-h5-redaction'), 'redaction component rendered');
+                    api.assert(!!document.querySelector('.intel-h5-handwritten'), 'handwritten component rendered');
+                    api.assert(!!document.querySelector('.intel-h5-damage-data-loss'), 'damageText token rendered');
+                    api.assert(!!document.querySelector('.intel-h5-surface-dirt'), 'surface mark component rendered');
+                    var hardware = document.querySelector('.intel-h5-hardware');
+                    api.assert(!!hardware, 'hardware component rendered');
+                    hardware.querySelector('.intel-h5-hardware-head').click();
+                    api.assert(hardware.classList.contains('is-open'), 'hardware component opens');
+                    return 'h5 components ok';
+                });
+            }],
+            ['h5-decrypt-toggle', 'H5 decryptText masks only sensitive inline spans and reveals on hover/click', function() {
+                host.open({ itemName: '资料', value: 99, decryptLevel: 10 });
+                return waitReady(api).then(function() {
+                    IntelligencePanel._debugSetPage(1);
+                    var content = document.querySelector('.intel-content');
+                    api.assert(content.textContent.indexOf('区域威胁评估') >= 0, 'plain heading visible');
+                    api.assert(content.textContent.indexOf('A兵团') >= 0, 'plain sensitive term visible before toggle');
+                    document.querySelector('.intel-toggle-btn').click();
+                    content = document.querySelector('.intel-content');
+                    api.assert(content.textContent.indexOf('区域威胁评估') >= 0, 'ordinary text remains readable in encrypted view');
+                    api.assert(content.textContent.indexOf('正在汇总') >= 0, 'non-sensitive inline text remains readable');
+                    api.assert(content.textContent.indexOf('████') >= 0, 'inline encrypted masks rendered');
+                    var decryptToken = content.querySelector('.intel-h5-decrypt-text.can-reveal');
+                    api.assert(!!decryptToken, 'decryptText token rendered');
+                    api.assert(decryptToken.querySelector('.intel-h5-redaction-mask').textContent.indexOf('██') >= 0, 'decryptText visible mask rendered');
+                    api.assert(decryptToken.querySelector('.intel-h5-redaction-reveal').textContent.indexOf('A兵团') >= 0, 'hover reveal carries plaintext');
+                    decryptToken.click();
+                    api.assert(decryptToken.classList.contains('is-open'), 'decryptText click pins reveal');
+                    api.assert(!!document.querySelector('.intel-h5-floating-reveal.is-visible'), 'floating reveal visible after pin');
+                    document.body.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 4, clientY: 4 }));
+                    api.assert(!decryptToken.classList.contains('is-open'), 'outside click closes pinned reveal');
+                    api.assert(!document.querySelector('.intel-h5-floating-reveal.is-visible'), 'floating reveal hidden after outside click');
+                    var unresolved = content.querySelector('.intel-h5-redaction.unresolved');
+                    api.assert(!!unresolved, 'unresolved redaction rendered');
+                    unresolved.click();
+                    api.assert(!document.querySelector('.intel-h5-floating-reveal.is-visible'), 'unresolved redaction does not open reveal');
+                    document.querySelector('.intel-toggle-btn').click();
+                    api.assert(document.querySelector('.intel-content').textContent.indexOf('A兵团') >= 0, 'plain view restores sensitive term');
+                    return 'h5 decryptText toggle ok';
+                });
+            }],
             ['runtime-open-state-snapshot-no-bundle', 'runtime open uses state then one snapshot and never requests bundle', function() {
                 var start = host.sentMessages.length;
                 host.open({ itemName: '资料', mode: 'prod', source: 'runtime', debug: false });
@@ -400,16 +448,16 @@ var IntelligenceHarnessQA = (function() {
                     return 'paper texture ok';
                 });
             }],
-            ['legacy-tags', 'legacy tags are sanitized and rendered', function() {
+            ['h5-inline-tokens', 'H5 inline tokens are sanitized and rendered', function() {
                 host.open({ itemName: '资料', value: 99, decryptLevel: 10 });
                 return waitReady(api).then(function() {
                     var content = document.querySelector('.intel-content');
                     api.assert(content.querySelector('strong'), 'strong rendered');
-                    api.assert(content.querySelector('span[style]'), 'font color mapped to span');
-                    api.assert(content.querySelector('u'), 'underline rendered');
+                    api.assert(content.querySelector('.intel-h5-token-danger'), 'color token mapped to semantic class');
+                    api.assert(content.querySelector('.intel-h5-redaction'), 'redaction token rendered');
                     api.assert(!content.querySelector('font'), 'font tag removed');
                     api.assert(content.textContent.indexOf('测试玩家') >= 0, 'PC_NAME replaced');
-                    return 'legacy tags ok';
+                    return 'h5 inline tokens ok';
                 });
             }],
             ['encrypted-toggle', 'decrypted page can toggle encrypted view', function() {
@@ -420,7 +468,9 @@ var IntelligenceHarnessQA = (function() {
                     document.querySelector('.intel-toggle-btn').click();
                     var after = document.querySelector('.intel-content').textContent;
                     api.assert(before.indexOf('A兵团') >= 0, 'plain text visible');
+                    api.assert(after.indexOf('正在汇总') >= 0, 'non-sensitive text remains visible');
                     api.assert(after.indexOf('██') >= 0, 'encrypted replacement visible');
+                    api.assert(!!document.querySelector('.intel-h5-decrypt-text .intel-h5-redaction-mask'), 'sensitive text rendered as decryptText mask');
                     return 'toggle ok';
                 });
             }],

@@ -1,0 +1,4267 @@
+{
+  "schemaVersion": 1,
+  "itemName": "水厂外勤档案",
+  "skin": "dossier",
+  "pages": [
+    {
+      "pageKey": "1_1",
+      "blocks": [
+        {
+          "type": "surfaceMark",
+          "variant": "water",
+          "x": 66,
+          "y": 7,
+          "w": 24,
+          "h": 18,
+          "rotate": -8,
+          "opacity": 0.38
+        },
+        {
+          "type": "surfaceMark",
+          "variant": "dirt",
+          "x": 7,
+          "y": 70,
+          "w": 18,
+          "h": 16,
+          "rotate": 16,
+          "opacity": 0.24
+        },
+        {
+          "type": "annotation",
+          "content": [
+            {
+              "type": "text",
+              "text": "关键阀门："
+            },
+            {
+              "type": "decryptText",
+              "level": 3,
+              "encryptedText": "V-██C",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "V-15C"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。所有后续异常均围绕该联通阀回流。"
+            }
+          ],
+          "note": [
+            {
+              "type": "text",
+              "text": "水渍遮挡处仍能辨认“下水道联通”字样，疑似有人反复翻看这一页。"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "字段",
+            "内容"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "巡检员"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "OP-017 | 日期：2012-12-07"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "V-12A（主进水阀）"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "正常"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "V-12B（备用进水阀）"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "正常"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "V-15C（下水道联通阀）"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "【已按指令关闭】"
+                }
+              ]
+            ]
+          ]
+        },
+        {
+          "type": "stamp",
+          "tone": "danger",
+          "content": [
+            {
+              "type": "text",
+              "text": "机密档案夹"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "WP",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "WP"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "-东区自来水厂 外勤档案】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【文件夹内含多份工单，部分被水渍浸透】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "《设备巡检单 #2012-1207》"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "巡检员：OP-017 | 日期：2012-12-07"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "一、主阀门状态"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "V-12A（主进水阀）：正常"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "V-12B（备用进水阀）：正常"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "decryptText",
+              "level": 3,
+              "encryptedText": "V-15C",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "V-15C"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "（"
+            },
+            {
+              "type": "decryptText",
+              "level": 3,
+              "encryptedText": "███",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "下水道"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "联通阀）："
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【已按指令关闭】"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "二、异常记录"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "仓库B区发现不明液体泄漏，已上报。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "decryptText",
+              "level": 3,
+              "encryptedText": "████",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合部门"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "要求暂不处理，等待"
+            },
+            {
+              "type": "decryptText",
+              "level": 3,
+              "encryptedText": "████",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "外部接口"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "指示。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_2",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "三、备注"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "下水道联通管道走向：V-15C → 地下主干管 → 堕落城下水道入口"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "封锁原因：未知（上级指令）"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "《水质异常通报 #2012-1215》"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "字段",
+            "内容"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "下水道联通管道走向"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "V-15C → 地下主干管 → 堕落城下水道入口"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "封锁原因"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "未知（上级指令）"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "检测员"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "TEC-003 | 日期：2012-12-15"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "异常项目"
+                }
+              ],
+              []
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 浓度"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "0.03ppm（超出常规阈值）"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 特征"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "灰色悬浮颗粒，显微镜下呈丝状结构"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "处置建议"
+                }
+              ],
+              []
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "检测员：TEC-003 | 日期：2012-12-15"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "异常项目："
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "出水口检测到未知有机物残留"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "浓度：0.03ppm（超出常规阈值）"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "特征：灰色悬浮颗粒，显微镜下呈丝状结构"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "处置建议："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "暂停供水，进行全面检测。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_3",
+      "blocks": [
+        {
+          "type": "stamp",
+          "tone": "danger",
+          "content": [
+            {
+              "type": "text",
+              "text": "驳回"
+            }
+          ]
+        },
+        {
+          "type": "annotation",
+          "content": [
+            {
+              "type": "text",
+              "text": "上级批示直接覆盖巡检风险，投放工单继续执行。"
+            }
+          ],
+          "note": [
+            {
+              "type": "text",
+              "text": "“外部合作方已知悉”是该页最关键字段，说明水厂不是单独行动。"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【上级批示】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "驳回。"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "试点投放按计划继续。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "外部合作方已知悉，无需额外检测。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "——"
+            },
+            {
+              "type": "decryptText",
+              "level": 3,
+              "encryptedText": "████",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合部门"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "联络（签章模糊）"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "字段",
+            "内容"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "执行日期"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "2012-12-20"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "执行人员"
+                }
+              ],
+              [
+                {
+                  "type": "damageText",
+                  "kind": "edited",
+                  "text": "[已编辑]"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "监督方"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "外部接口人（统合部门）"
+                }
+              ]
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "《投放工单 #"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "WP",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "WP"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "-EXT-0023》"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【机密 - 仅限授权人员查阅】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "执行日期：2012-12-20"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "执行人员："
+            },
+            {
+              "type": "damageText",
+              "kind": "edited",
+              "text": "[已编辑]"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "监督方："
+            },
+            {
+              "type": "decryptText",
+              "level": 3,
+              "encryptedText": "█████",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "外部接口人"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "（"
+            },
+            {
+              "type": "decryptText",
+              "level": 3,
+              "encryptedText": "████",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合部门"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "）"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_4",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "投放内容（分区对照）："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "A区（东城主管网）："
+            },
+            {
+              "type": "decryptText",
+              "level": 3,
+              "encryptedText": "█-ECHO",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "γ-ECHO"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "载体溶液 | 批次CL-2012-12-B | 500ml"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "B区（南城支管网）：θ-HIVE强化剂 | 批次TH-2012-12-A | 200ml"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "C区（工业区循环系统）：Σ-ITE永生诱导剂 | 批次SI-2012-12-C | 300ml"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "预期效果："
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "A区：骨刺增生速率测试，观察体型膨胀倍率与攻击性变化（Protocol-7）"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "字段",
+            "内容"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "投放内容（分区对照）"
+                }
+              ],
+              []
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "A区（东城主管网）"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "γ-ECHO载体溶液 | 批次CL-2012-12-B | 500ml"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "B区（南城支管网）"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "θ-HIVE强化剂 | 批次TH-2012-12-A | 200ml"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "C区（工业区循环系统）"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "Σ-ITE永生诱导剂 | 批次SI-2012-12-C | 300ml"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "预期效果"
+                }
+              ],
+              []
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- A区"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "骨刺增生速率测试，观察体型膨胀倍率与攻击性变化（Protocol-7）"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- B区"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "综合强化效果验证，观察变异稳定性与行为可控度（Protocol-9）"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- C区"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "角质硬化与再生周期测试，观察神经保留率（Protocol-12）"
+                }
+              ]
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "B区：综合强化效果验证，观察变异稳定性与行为可控度（Protocol-9）"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "C区：角质硬化与再生周期测试，观察神经保留率（Protocol-12）"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "观察期："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "72小时"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "采样点："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "各区供水"
+            },
+            {
+              "type": "decryptText",
+              "level": 3,
+              "encryptedText": "██",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "终端"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "×5，共15处"
+            }
+          ]
+        },
+        {
+          "type": "hardwareExtract",
+          "label": "离线介质提取",
+          "status": "需要解密等级 3",
+          "steps": [
+            "握手",
+            "校验密钥",
+            "抽取残片"
+          ],
+          "reveal": [
+            {
+              "type": "note",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "硬件提取流程已建立，正文内容以当前解密等级显示。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "投放区",
+            "目标",
+            "疑点"
+          ],
+          "rows": [
+            [
+              "A区",
+              "东城主管网",
+              "居民区样本扩散"
+            ],
+            [
+              "B区",
+              "备用供水线",
+              "与仓库B区交接有关"
+            ],
+            [
+              "C区",
+              "工业区",
+              "后续指标异常最明显"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_5",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "注意事项："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "1. 投放后立即封锁仓库B区"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "2. 禁止任何人员接触原液"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "3. 各区症状按对应Protocol处理：A区-7，B区-9，C区-12"
+            }
+          ]
+        },
+        {
+          "type": "handwritten",
+          "tone": "red",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【手写备注】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "\"三种药剂，三种怪物。还是更多？\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_6",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "《紧急封锁指令 #2012-1220》"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "字段",
+            "内容"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "发布单位"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "统合部门"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "发布日期"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "2012-12-20"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "指令内容"
+                }
+              ],
+              []
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "原因"
+                }
+              ],
+              []
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "联络方式"
+                }
+              ],
+              []
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "发布单位："
+            },
+            {
+              "type": "decryptText",
+              "level": 3,
+              "encryptedText": "████",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合部门"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "发布日期：2012-12-20"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "指令内容："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "1. 自来水厂即日起进入封锁状态"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "2. 所有外勤人员撤离，不得返回"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "3. "
+            },
+            {
+              "type": "decryptText",
+              "level": 3,
+              "encryptedText": "V-15C",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "V-15C"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "联通阀"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "永久封死"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，禁止任何人员开启"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "原因："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "审判日前夕预案启动，外部试点提前终止。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "后续工作由地下设施接管。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "联络方式："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "damageText",
+              "kind": "deleted",
+              "text": "[已删除]"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "4. 仓库B区设备移交地铁站项目组"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_7",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "《治安部队进驻通知 #2012-1208》"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "字段",
+            "内容"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "发布单位"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "统合部门"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "发布日期"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "2012-12-08"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "指令内容"
+                }
+              ],
+              []
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "人员编制"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "12人（含1名指挥官）"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "驻扎区域"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "正门岗哨、主路巡逻、大厅警戒"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "职责"
+                }
+              ],
+              []
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "发布单位："
+            },
+            {
+              "type": "decryptText",
+              "level": 3,
+              "encryptedText": "████",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合部门"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "发布日期：2012-12-08"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "指令内容："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "根据二期试点安保需求，东区治安部队第7分队即日起进驻自来水厂。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "人员编制：12人（含1名指挥官）"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "驻扎区域：正门岗哨、主路巡逻、大厅警戒"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "职责："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "1. 封锁区域警戒，防止外部人员进入"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "2. 配合设备转移工作"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "3. 必要时执行\"清场\"指令"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_8",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "注意事项："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "部队人员"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "不得"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "接触仓库B区残留物。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "饮用水由外部统一配送，"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "禁止"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "使用厂区供水系统。"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【补充通知 #2012-1211】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "第7分队两名士兵（编号SEC-071、SEC-072）因违规使用厂区供水，已移交医务室观察。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "其余人员重申禁令，加强督察。"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【补充通知 #2012-1213】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "SEC-071、SEC-072出现γ-ECHO疑似症状，已上报统合部门。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "第7分队全员暂停轮换，原地待命。"
+            }
+          ]
+        },
+        {
+          "type": "handwritten",
+          "tone": "dark",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【手写，铅笔】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "\"才两天就发作了？浓度是不是太高了...\""
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "\"他们不知道自己在守什么。\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_9",
+      "blocks": [
+        {
+          "type": "surfaceMark",
+          "variant": "water",
+          "x": 58,
+          "y": 2,
+          "w": 26,
+          "h": 16,
+          "rotate": 5,
+          "opacity": 0.28
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "《员工健康监测表 #2012-1218》"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "字段",
+            "内容"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "监测员"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "MED-001 | 日期：2012-12-18"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "【注意"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "C级人员（普通雇员）与B组（替换体）数据需分开归档】"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "异常人员记录（按居住区分类）"
+                }
+              ],
+              []
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 症状"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "持续性手部震颤，自述记忆有时候断片"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 体检结果"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "血清颜色偏深，黏稠度异常"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 处置"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "调离一线，等待复检"
+                }
+              ]
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "监测员：MED-001 | 日期：2012-12-18"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【注意：C级人员（普通雇员）与B组（替换体）数据需分开归档】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "异常人员记录（按居住区分类）："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "以下均为C级人员，B组数据参见附录B-7"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "OP-017（巡检组）- 居住A区"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "症状：持续性手部震颤，自述记忆有时候断片"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "体检结果：血清颜色偏深，黏稠度异常"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "处置：调离一线，等待复检"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "【备注】"
+                  },
+                  {
+                    "type": "decryptText",
+                    "level": 4,
+                    "encryptedText": "█-ECHO",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "γ-ECHO"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": "疑似阳性，已通知"
+                  },
+                  {
+                    "type": "decryptText",
+                    "level": 4,
+                    "encryptedText": "█████",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "外部接口人"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          ]
+        },
+        {
+          "type": "timeline",
+          "entries": [
+            {
+              "label": "12-18",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "普通雇员健康监测开始出现连续异常。"
+                }
+              ]
+            },
+            {
+              "label": "复检",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "血清黏稠度异常，记忆断片频率升高。"
+                }
+              ]
+            },
+            {
+              "label": "归档",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "C级人员与B组替换体被要求分开归档。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_10",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "TEC-003（水质组）- 居住A区"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "症状：轻微咳嗽，痰液带灰色丝状物"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "字段",
+            "内容"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 症状"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "轻微咳嗽，痰液带灰色丝状物"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 体检结果"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "γ-ECHO抗体滴度1:160（临界值）"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 处置"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "继续观察，禁止离厂"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 症状"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "皮肤出现灰白色斑块，集中于前臂"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 体检结果"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "γ-ECHO抗体滴度1:320（阳性）"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 处置"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "【已移交】"
+                }
+              ]
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "体检结果：γ-ECHO抗体滴度1:160（临界值）"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "处置：继续观察，禁止离厂"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "【备注】已列入"
+                  },
+                  {
+                    "type": "decryptText",
+                    "level": 4,
+                    "encryptedText": "Protocol-7",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Protocol-7"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": "预备名单"
+                  }
+                ]
+              }
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "ADM-008（行政组）- 居住A区"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "症状：皮肤出现灰白色斑块，集中于前臂"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "体检结果：γ-ECHO抗体滴度1:320（阳性）"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "处置："
+              },
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "【已移交】"
+                  }
+                ]
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "【备注】该编号档案已销毁"
+                  }
+                ]
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_11",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "OP-022（管道组）- 居住B区"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "症状：肌肉密度上升，反应速度加快，瞳孔偶发扩张"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "字段",
+            "内容"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 症状"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "肌肉密度上升，反应速度加快，瞳孔偶发扩张"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 体检结果"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "θ-HIVE强化标记物检出，变异指数稳定"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 处置"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "继续观察"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 症状"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "皮肤角质层增厚，触感如石，但神志清醒"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 体检结果"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "Σ-ITE永生指标超标，角质硬化进行中"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 处置"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "【已移交】"
+                }
+              ]
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "体检结果：θ-HIVE强化标记物检出，变异指数稳定"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "处置：继续观察"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "【备注】综合强化效果符合预期，行为可控，"
+                  },
+                  {
+                    "type": "decryptText",
+                    "level": 4,
+                    "encryptedText": "Protocol-9",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Protocol-9"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": "待定"
+                  }
+                ]
+              }
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "ADM-015（财务组）- 居住C区"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "症状：皮肤角质层增厚，触感如石，但神志清醒"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "体检结果：Σ-ITE永生指标超标，角质硬化进行中"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "处置："
+              },
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "【已移交】"
+                  }
+                ]
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "【备注】受试者死亡后6小时心跳恢复，"
+                  },
+                  {
+                    "type": "decryptText",
+                    "level": 4,
+                    "encryptedText": "Protocol-12",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Protocol-12"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": "执行"
+                  }
+                ]
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_12",
+      "blocks": [
+        {
+          "type": "handwritten",
+          "tone": "red",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【手写】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "\"五个月内十二个编号了。三种症状，三种去向。他们到底在筛选什么？\""
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "\"B组的消耗速度更快，但C级也开始出事了...他们根本不在乎。\""
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "\"ADM-015那个...他明明已经死了？\""
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "\"还有，034不是上个月就出事了吗？怎么今天又看到他在A区晃？脸色灰得吓人...\""
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "字段",
+            "内容"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "【注"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "本报告基于11月起持续低浓度试投的累积数据，12-20追加投放前的混配校准样】"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "采样时间"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "2012-12-19 06:00"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "分析员"
+                }
+              ],
+              [
+                {
+                  "type": "damageText",
+                  "kind": "edited",
+                  "text": "[已编辑]"
+                }
+              ]
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "《水样分析报告 #LAB-2012-1219》"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【仅限技术人员查阅】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【注：本报告基于11月起持续低浓度试投的累积数据，12-20追加投放前的混配校准样】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "采样时间：2012-12-19 06:00"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "分析员："
+            },
+            {
+              "type": "damageText",
+              "kind": "edited",
+              "text": "[已编辑]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_13",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "常规指标（全区）："
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "pH值：7.2（正常）"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "字段",
+            "内容"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "常规指标（全区）"
+                }
+              ],
+              []
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- pH值"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "7.2（正常）"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 浊度"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "0.5NTU（正常）"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 余氯"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "0.3mg/L（正常）"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "特殊指标（分区对照）"
+                }
+              ],
+              []
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 浓度"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "0.05ppm | 丝状结构密度：12个/ml"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 活性评估"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "休眠态"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 显微观察"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "灰色丝状物加热至37℃后开始蠕动，具趋温特性"
+                }
+              ]
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "浊度：0.5NTU（正常）"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "余氯：0.3mg/L（正常）"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "特殊指标（分区对照）："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "A区（东城）- "
+            },
+            {
+              "type": "decryptText",
+              "level": 4,
+              "encryptedText": "█-ECHO",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "γ-ECHO"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "载体"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "浓度：0.05ppm | 丝状结构密度：12个/ml"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "活性评估："
+              },
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "休眠态"
+                  }
+                ]
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "显微观察：灰色丝状物加热至37℃后开始蠕动，具趋温特性"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "B区（南城）- θ-HIVE强化剂"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "浓度：0.02ppm | 纳米颗粒密度：8个/ml"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "活性评估："
+              },
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "持续释放"
+                  }
+                ]
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "显微观察：透明微粒，穿透血脑屏障后与神经突触共生，同步强化肌纤维"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_14",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "C区（工业区）- Σ-ITE永生诱导剂"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "浓度：0.03ppm | 晶体结构密度：15个/ml"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "字段",
+            "内容"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 浓度"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "0.03ppm | 晶体结构密度：15个/ml"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 活性评估"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "累积型"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "- 显微观察"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "白色针状晶体，优先沉积于表皮角质层，形成类石质硬壳"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "结论"
+                }
+              ],
+              []
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "A区"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "预计72小时内骨刺萌芽，7天内体型膨胀可见"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "B区"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "预计48小时内综合体能提升可测量，变异稳定"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "C区"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "预计7天内角质硬化完成，神经功能保留待验证"
+                }
+              ]
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "活性评估："
+              },
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "累积型"
+                  }
+                ]
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "text",
+                "text": "显微观察：白色针状晶体，优先沉积于表皮角质层，形成类石质硬壳"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "结论："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "三区投放浓度均符合预期。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "A区：预计72小时内骨刺萌芽，7天内体型膨胀可见"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "B区：预计48小时内综合体能提升可测量，变异稳定"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "C区：预计7天内角质硬化完成，神经功能保留待验证"
+            }
+          ]
+        },
+        {
+          "type": "handwritten",
+          "tone": "red",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【红字批注】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "\"三种阈值，三种结果，对照实验。\""
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "\"兵器，士兵，不死？\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_15",
+      "blocks": [
+        {
+          "type": "surfaceMark",
+          "variant": "tear",
+          "x": 76,
+          "y": 4,
+          "w": 14,
+          "h": 22,
+          "rotate": 9,
+          "opacity": 0.3
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "《设备交接清单 #TRF-2012-1220》"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "字段",
+            "内容"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "移交方"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "WP-东区自来水厂"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "接收方"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "[参见内部通讯#1220-C]"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "移交设备"
+                }
+              ],
+              []
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "4. 频率调节器 ×1（型号"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "WP-FQ-07）"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "移交文件"
+                }
+              ],
+              []
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "移交方："
+            },
+            {
+              "type": "decryptText",
+              "level": 5,
+              "encryptedText": "WP",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "WP"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "-东区自来水厂"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "接收方：[参见内部通讯#1220-C]"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "移交设备："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "1. "
+            },
+            {
+              "type": "decryptText",
+              "level": 5,
+              "encryptedText": "█-ECHO",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "γ-ECHO"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "载体储存罐 ×3（剩余容量约40%）"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "2. θ-HIVE强化剂储存罐 ×2（剩余容量约60%）"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "3. Σ-ITE永生诱导剂储存罐 ×2（剩余容量约55%）"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "4. 频率调节器 ×1（型号："
+            },
+            {
+              "type": "decryptText",
+              "level": 5,
+              "encryptedText": "WP",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "WP"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "-FQ-07）"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "5. 信号发射基站 ×1（便携式）"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "6. 生物样本冷藏箱 ×4（内含各区受试者组织样本）"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "移交文件："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "1. 三区对照投放记录（2012-11至2012-12）"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "2. 感染追踪数据（城区分布图，按试剂类型分层标注）"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "3. "
+            },
+            {
+              "type": "decryptText",
+              "level": 5,
+              "encryptedText": "Protocol-7",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Protocol-7"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "/9/12执行手册"
+            }
+          ]
+        },
+        {
+          "type": "hardwareExtract",
+          "label": "移交箱封条扫描",
+          "status": "封条残留可读",
+          "steps": [
+            "紫外照射",
+            "封蜡边缘取样",
+            "读取接收方压痕"
+          ],
+          "reveal": [
+            {
+              "type": "table",
+              "columns": [
+                "位置",
+                "读取结果"
+              ],
+              "rows": [
+                [
+                  "封条左上",
+                  "WP-东区自来水厂"
+                ],
+                [
+                  "接收方压痕",
+                  "[内部通讯#1220-C]"
+                ],
+                [
+                  "罐体标记",
+                  "γ-ECHO / θ-HIVE / Σ-ITE"
+                ],
+                [
+                  "异常",
+                  "频率调节器单独二次封装"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_16",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "接收人签字："
+                }
+              ]
+            },
+            {
+              "type": "damageText",
+              "kind": "blurred",
+              "text": "[签名模糊]"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "监督方："
+                }
+              ]
+            },
+            {
+              "type": "decryptText",
+              "level": 5,
+              "encryptedText": "█████",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "外部接口人"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "（"
+            },
+            {
+              "type": "decryptText",
+              "level": 5,
+              "encryptedText": "████",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合部门"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "）"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "备注："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "一期试点（内部封闭设施，如医院地下层、克隆体生产线）数据已回收，证明低浓度投放可控。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "二期目标：城市管网大规模投放，验证开放环境传播效率。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "三期目标：封闭空间（地铁通风系统）高浓度扩散。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "接收方设施代号："
+            },
+            {
+              "type": "damageText",
+              "kind": "edited",
+              "text": "[已编辑]"
+            }
+          ]
+        },
+        {
+          "type": "handwritten",
+          "tone": "red",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【手写，不同笔迹】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "字段",
+            "内容"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "接收人签字"
+                }
+              ],
+              [
+                {
+                  "type": "damageText",
+                  "kind": "blurred",
+                  "text": "[签名模糊]"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "监督方"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "外部接口人（统合部门）"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "备注"
+                }
+              ],
+              []
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "二期目标"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "城市管网大规模投放，验证开放环境传播效率。"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "三期目标"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "封闭空间（地铁通风系统）高浓度扩散。"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "接收方设施代号"
+                }
+              ],
+              [
+                {
+                  "type": "damageText",
+                  "kind": "edited",
+                  "text": "[已编辑]"
+                }
+              ]
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "\"为什么要往下面转移？那里不是早就封了吗？\""
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "\"通风管道...他们疯了。\""
+            }
+          ]
+        },
+        {
+          "type": "decryptBlock",
+          "label": "接收方设施代号还原",
+          "level": 5,
+          "plain": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "接收方并非普通仓储单位，而是地下设施接管链路。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "可读片段："
+                },
+                {
+                  "type": "decryptText",
+                  "level": 5,
+                  "encryptedText": "█████",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "地铁通风系统"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": " / 高浓度扩散。"
+                }
+              ]
+            }
+          ],
+          "encrypted": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "receiver facility: █████ / ventilation █████"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_17",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "《下水道异常报告 #2012-1219》"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "字段",
+            "内容"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "报告人"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "SEC-006"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "日期"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "2012-12-19"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "事件描述"
+                }
+              ],
+              []
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "报告人：SEC-006"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "日期：2012-12-19"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "事件描述："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "凌晨3点左右，V-15C阀门处传来异响。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "起初以为是管道压力波动，但声音越来越像...像是有什么东西在刮金属。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "拿手电照了一下检修口。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "看到管道深处有东西在动。黑红色的，嘴巴很长。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "它转过来的时候，看到了眼睛。很多眼睛。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "立即撤离现场。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_18",
+      "blocks": [
+        {
+          "type": "surfaceMark",
+          "variant": "water",
+          "x": 18,
+          "y": 12,
+          "w": 34,
+          "h": 20,
+          "rotate": -4,
+          "opacity": 0.34
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【上级批示】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "已知悉。V-15C阀门加固完成。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "禁止任何人员靠近下水道入口。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "该报告列为机密，不得外传。"
+            }
+          ]
+        },
+        {
+          "type": "handwritten",
+          "tone": "red",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【手写】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "\"SEC-006第二天就'调走'了。\""
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "\"没人知道这个编号去了哪里。\""
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【档案末页，潦草字迹】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "\"下水道那边已经开始出事了。\""
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "\"V-15C千万别打开。\""
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "\"那些东西会顺着管道爬上来。\""
+            }
+          ]
+        },
+        {
+          "type": "decryptBlock",
+          "label": "末页水渍下的手写补录",
+          "level": 5,
+          "plain": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "“SEC-006第二天就调走了。”"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "“调走不是调岗，是从名单里消失。”"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "“V-15C千万别打开。那些东西会顺着管道爬上来。”"
+                }
+              ]
+            }
+          ],
+          "encrypted": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[水渍覆盖] SEC-006 █████████ V-15C █████████"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

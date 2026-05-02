@@ -220,6 +220,112 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void Snapshot_H5Strict_ReturnsBlocksAndDoesNotLeakLockedBlocks()
+        {
+            WriteDictionary(
+                "<root>" +
+                "  <Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/><Information Value=\"5\" PageKey=\"5\" EncryptLevel=\"2\"/></Item>" +
+                "</root>");
+            WriteH5("资料",
+                "{" +
+                "\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"terminal\",\"pages\":[" +
+                "{\"pageKey\":\"1\",\"blocks\":[" +
+                    "{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"第一页H5\"},{\"type\":\"decryptText\",\"level\":2,\"encryptedText\":\"██\",\"content\":[{\"type\":\"text\",\"text\":\"密钥\"}]}]}," +
+                    "{\"type\":\"handwritten\",\"tone\":\"red\",\"content\":[{\"type\":\"text\",\"text\":\"手写批注\"},{\"type\":\"damageText\",\"kind\":\"data-loss\",\"text\":\"[数据损毁]\"}]}," +
+                    "{\"type\":\"surfaceMark\",\"variant\":\"blood-hand\",\"x\":70,\"y\":10,\"w\":12,\"h\":18}" +
+                "]}," +
+                "{\"pageKey\":\"5\",\"blocks\":[{\"type\":\"decryptBlock\",\"level\":2,\"plain\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"锁定H5\"}]}]}]}" +
+                "]}");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"h5-1\",\"itemName\":\"资料\",\"value\":1,\"decryptLevel\":2,\"pcName\":\"测试\"}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.True((bool)resp["success"]);
+            Assert.Equal("h5", (string)resp["contentMode"]);
+            Assert.Equal("terminal", (string)resp["skin"]);
+            Assert.Equal("第一页H5", (string)resp["pages"][0]["blocks"][0]["content"][0]["text"]);
+            Assert.Equal("decryptText", (string)resp["pages"][0]["blocks"][0]["content"][1]["type"]);
+            Assert.Equal("handwritten", (string)resp["pages"][0]["blocks"][1]["type"]);
+            Assert.Equal("damageText", (string)resp["pages"][0]["blocks"][1]["content"][1]["type"]);
+            Assert.Equal("surfaceMark", (string)resp["pages"][0]["blocks"][2]["type"]);
+            Assert.Empty((JArray)resp["pages"][1]["blocks"]);
+            Assert.Null(resp["pages"][0]["text"]);
+        }
+
+        [Fact]
+        public void Snapshot_H5StrictMissingFile_ReturnsExplicitError()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            Directory.CreateDirectory(Path.Combine(_root, "data", "intelligence_h5"));
+            WriteText("资料", "@@@1@@@\nlegacy fallback should not be used in strict h5 mode");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"h5-missing\",\"itemName\":\"资料\",\"value\":1}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("h5_missing", (string)resp["error"]);
+        }
+
+        [Fact]
+        public void Snapshot_H5StrictRejectsUnknownComponents()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            WriteH5("资料", "{\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"paper\",\"pages\":[{\"pageKey\":\"1\",\"blocks\":[{\"type\":\"scriptBox\",\"content\":[{\"type\":\"text\",\"text\":\"bad\"}]}]}]}");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"h5-bad\",\"itemName\":\"资料\",\"value\":1}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("h5_unknown_block", (string)resp["error"]);
+        }
+
+        [Fact]
+        public void Snapshot_H5StrictRejectsUnknownSurfaceVariant()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            WriteH5("资料", "{\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"paper\",\"pages\":[{\"pageKey\":\"1\",\"blocks\":[{\"type\":\"surfaceMark\",\"variant\":\"script-stain\"}]}]}");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"h5-surface-bad\",\"itemName\":\"资料\",\"value\":1}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("h5_unknown_surface_variant", (string)resp["error"]);
+        }
+
+        [Fact]
+        public void Snapshot_H5StrictRejectsUnknownDamageKind()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            WriteH5("资料", "{\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"paper\",\"pages\":[{\"pageKey\":\"1\",\"blocks\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"damageText\",\"kind\":\"script\",\"text\":\"[bad]\"}]}]}]}");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"h5-damage-bad\",\"itemName\":\"资料\",\"value\":1}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("h5_unknown_damage_kind", (string)resp["error"]);
+        }
+
+        [Fact]
         public void Tooltip_RoutesToFlashAndMapsResponseBackToWebCallId()
         {
             WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
@@ -275,6 +381,13 @@ namespace CF7Launcher.Tests.Tasks
         private void WriteItemIcons(string xml)
         {
             File.WriteAllText(Path.Combine(_root, "data", "items", "收集品_情报.xml"), xml, Encoding.UTF8);
+        }
+
+        private void WriteH5(string itemName, string content)
+        {
+            string dir = Path.Combine(_root, "data", "intelligence_h5");
+            Directory.CreateDirectory(dir);
+            File.WriteAllText(Path.Combine(dir, itemName + ".json"), content, Encoding.UTF8);
         }
     }
 }

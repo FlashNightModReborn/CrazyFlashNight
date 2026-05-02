@@ -1,0 +1,722 @@
+{
+  "schemaVersion": 1,
+  "itemName": "下水道探索报告",
+  "skin": "report",
+  "pages": [
+    {
+      "pageKey": "1_1",
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【尘都联合大学 安保部 现场记录】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "行动：下水道勘探（第7次） | 状态："
+                }
+              ]
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "danger",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "中止"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【物资留存说明】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "鉴于前方环境恶化，我队在此设立"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "临时补给点"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "箱内留存："
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "C级防化服"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "（抗腐蚀）、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "红外夜视仪"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "danger",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "警告：未装备上述物资前，严禁通过前方闸门。"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【区域威胁评估】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "1. 防暴型感染者"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "前警备部队残骸，配备重型护具，建议攻击护甲缝隙。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "2. 特战型感染者（"
+                }
+              ]
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "danger",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "扩散警报"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "）"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "原驻守深层。因电力抢修导致闸门开启，现已"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "danger",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "涌入浅层区域"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "常规轻武器"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "danger",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "无法击穿"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "danger",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "极度危险"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "3. 变异盗贼"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "长期暴露于污染环境的拾荒者，已产生严重变异，具有极强的攻击欲望。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_2",
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【环境与战术预警】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "1. 光照条件差异"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "B-1区："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "应急电源已修复，仅存微弱照明。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "B-2区："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "线路彻底熔毁，无夜视设备将寸步难行，且极易遭到伏击。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "danger",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "务必检查夜视仪电池电量。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "2. 生物威胁：变异鼠群"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "撕咬时可"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "danger",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "摄取血液中的活性细胞"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "加速组织再生。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "战斗拖延越久，鼠群愈发难以消灭。"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "danger",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "务必速战速决。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "danger",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "战术指导："
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "目标体型极小，常规平射难以命中。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "务必"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "danger",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "向下瞄准"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "或使用近战武器清理。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "3. 腐蚀性威胁"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "部分感染者具备"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "吐酸"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "毒性攻击能力。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "普通作战服接触即溃，造成重度化学烧伤。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "danger",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "必须全程维持防化服完整性。"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_3",
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "【撤离日志】"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "14:10 - 接通B-1区备用电源。照明恢复30%。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "14:12 - 电力重启引发连锁反应，深层隔离门意外开启。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "14:15 - "
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "danger",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "特战型感染者潮"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "从深处涌出。前锋小队被迫向B-2区转移。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "14:20 - 进入B-2区。光照全无。遭遇鼠群伏击。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "14:25 - 03号队员防化服破损，腿部重度腐蚀，休克。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "14:33 - 无法确认敌方规模，火力压制无效。腹背受敌。防线崩溃。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "14:35 - 退守至B-1区中段，爆破深处入口阻断尸潮。留下重型装备以减轻负重搬运伤员。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "结论："
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "下水道深处已沦为高浓度污染区，电力抢修失败，反导致高危目标扩散。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "现有人员与装备无力继续执行此任务。建议外聘专业人员处理。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "安保队封锁入口，等待重火力支援。"
+            },
+            {
+              "type": "text",
+              "text": "\n"
+            },
+            {
+              "type": "text",
+              "text": "——安保部 裴玄龄"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

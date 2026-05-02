@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "itemName": "初级家常菜配方",
+  "skin": "blueprint",
+  "pages": [
+    {
+      "pageKey": "1",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "初级家常菜配方"
+            }
+          ],
+          "materials": [],
+          "steps": []
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "基地厨房的大锅一次能烧好几桌菜，不要浪费了每次开火的火力。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "家常菜单："
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "【蒜蓉炒空心菜】"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "【清炒白菜】"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "【清炒花菜】"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "【清炒土豆丝】"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "【葱花炒蛋】"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

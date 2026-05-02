@@ -1,0 +1,1027 @@
+{
+  "schemaVersion": 1,
+  "itemName": "基础家常菜配方",
+  "skin": "blueprint",
+  "pages": [
+    {
+      "pageKey": "1_1",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "基础家常菜配方"
+            }
+          ],
+          "materials": [],
+          "steps": []
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "基地厨房的大锅一次能烧好几桌菜，不要浪费了每次开火的火力。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "家常菜单："
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "【番茄炒蛋】"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "【土豆炒肉丝】"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "【黄瓜炒肉片】"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_2",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "基础家常菜配方"
+            }
+          ],
+          "materials": [
+            [
+              {
+                "type": "text",
+                "text": "1. 将"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "10个番茄"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "切成丁备用。将"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "10个鸡蛋"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "打散，放入"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "少许食用盐"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "搅拌均匀。"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "2. 锅中加入"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "少量食用油"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "，大火烧热后，下入鸡蛋液。"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "4. 加入炒蛋翻炒的同时大火收汁，出锅后"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "分装成5盘"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "。"
+              }
+            ]
+          ],
+          "steps": [
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "1. 将"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "10个番茄"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "切成丁备用。将"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "10个鸡蛋"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "打散，放入"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "少许食用盐"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "搅拌均匀。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "2. 锅中加入"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "少量食用油"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "，大火烧热后，下入鸡蛋液。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "3. 蛋液充分受热均匀后盛起，加入番茄丁，简单翻炒后小火上盖5分钟。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "4. 加入炒蛋翻炒的同时大火收汁，出锅后"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "分装成5盘"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "【番茄炒蛋】"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "1. 将"
+            },
+            {
+              "type": "colorToken",
+              "token": "success",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "10个番茄"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "切成丁备用。将"
+            },
+            {
+              "type": "colorToken",
+              "token": "success",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "10个鸡蛋"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "打散，放入"
+            },
+            {
+              "type": "colorToken",
+              "token": "success",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "少许食用盐"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "搅拌均匀。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "2. 锅中加入"
+            },
+            {
+              "type": "colorToken",
+              "token": "success",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "少量食用油"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，大火烧热后，下入鸡蛋液。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "3. 蛋液充分受热均匀后盛起，加入番茄丁，简单翻炒后小火上盖5分钟。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "4. 加入炒蛋翻炒的同时大火收汁，出锅后"
+            },
+            {
+              "type": "colorToken",
+              "token": "success",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "分装成5盘"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_3",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "基础家常菜配方"
+            }
+          ],
+          "materials": [
+            [
+              {
+                "type": "text",
+                "text": "1. 将"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "10个土豆"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "洗净切丝，土豆泡在清水里反复冲洗，洗去淀粉。将"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "5块猪肉"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "洗净切丝。"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "2. 锅中加入"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "少量食用油"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "，烧至五成热，放入猪肉丝翻炒。"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "3. 加入土豆丝和"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "少许食用盐"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "，翻炒至土豆变软即可。出锅后"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "分装成5盘"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "。"
+              }
+            ]
+          ],
+          "steps": [
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "1. 将"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "10个土豆"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "洗净切丝，土豆泡在清水里反复冲洗，洗去淀粉。将"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "5块猪肉"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "洗净切丝。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "2. 锅中加入"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "少量食用油"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "，烧至五成热，放入猪肉丝翻炒。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "3. 加入土豆丝和"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "少许食用盐"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "，翻炒至土豆变软即可。出锅后"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "分装成5盘"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "【土豆炒肉丝】"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "1. 将"
+            },
+            {
+              "type": "colorToken",
+              "token": "success",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "10个土豆"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "洗净切丝，土豆泡在清水里反复冲洗，洗去淀粉。将"
+            },
+            {
+              "type": "colorToken",
+              "token": "success",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "5块猪肉"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "洗净切丝。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "2. 锅中加入"
+            },
+            {
+              "type": "colorToken",
+              "token": "success",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "少量食用油"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，烧至五成热，放入猪肉丝翻炒。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "3. 加入土豆丝和"
+            },
+            {
+              "type": "colorToken",
+              "token": "success",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "少许食用盐"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，翻炒至土豆变软即可。出锅后"
+            },
+            {
+              "type": "colorToken",
+              "token": "success",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "分装成5盘"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "备注：可以略过洗去土豆淀粉的环节。大末日的可不兴挥霍饮用水，反正那些佣兵也尝不出来区别。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_4",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "基础家常菜配方"
+            }
+          ],
+          "materials": [
+            [
+              {
+                "type": "text",
+                "text": "1. 将"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "10条黄瓜"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "斜切成段。将"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "5块猪肉"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "洗净切片。"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "2. 锅中加入"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "少量食用油"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "，烧至五成热，姜蒜爆香后下肉片炒至变白色。"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "3. 下入黄瓜片和"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "少许食用盐"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "，炒至出汤汁即可出锅。出锅后"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "分装成5盘"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "。"
+              }
+            ]
+          ],
+          "steps": [
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "1. 将"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "10条黄瓜"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "斜切成段。将"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "5块猪肉"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "洗净切片。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "2. 锅中加入"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "少量食用油"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "，烧至五成热，姜蒜爆香后下肉片炒至变白色。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "3. 下入黄瓜片和"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "少许食用盐"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "，炒至出汤汁即可出锅。出锅后"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "分装成5盘"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "【黄瓜炒肉片】"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "1. 将"
+            },
+            {
+              "type": "colorToken",
+              "token": "success",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "10条黄瓜"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "斜切成段。将"
+            },
+            {
+              "type": "colorToken",
+              "token": "success",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "5块猪肉"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "洗净切片。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "2. 锅中加入"
+            },
+            {
+              "type": "colorToken",
+              "token": "success",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "少量食用油"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，烧至五成热，姜蒜爆香后下肉片炒至变白色。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "3. 下入黄瓜片和"
+            },
+            {
+              "type": "colorToken",
+              "token": "success",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "少许食用盐"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，炒至出汤汁即可出锅。出锅后"
+            },
+            {
+              "type": "colorToken",
+              "token": "success",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "分装成5盘"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "备注：使用蚝油腌制猪肉风味更佳，但目前尘都的诸多农业公社均不生产蚝油。估计生蚝早就灭绝了。"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

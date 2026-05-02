@@ -84,6 +84,7 @@
 
     // ── intelligence ──
     Panels.registerLazy('intelligence',
-        ['modules/intelligence-panel.js'],
+        ['modules/intelligence-components.js',
+         'modules/intelligence-panel.js'],
         noop);
 })();

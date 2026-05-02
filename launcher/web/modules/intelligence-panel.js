@@ -380,7 +380,8 @@ var IntelligencePanel = (function() {
                 value: Number(page.value) || 0,
                 encryptLevel: Number(page.encryptLevel) || 0,
                 unlocked: (Number(page.value) || 0) <= _currentValue,
-                text: page.text || ''
+                text: page.text || '',
+                blocks: page.blocks || []
             });
         }
 
@@ -397,6 +398,8 @@ var IntelligencePanel = (function() {
             value: _currentValue,
             decryptLevel: _decryptLevel,
             pcName: _pcName,
+            contentMode: item.contentMode || 'legacy',
+            skin: item.skin || '',
             pages: pages,
             encryptRules: item.encryptRules || { replace: {}, cut: {} },
             textError: item.textError || ''
@@ -416,6 +419,8 @@ var IntelligencePanel = (function() {
         _refs.name.textContent = displayLabel;
         _refs.meta.textContent = '已发现 ' + unlockedPages + ' / ' + pages.length + ' 页信息';
         _refs.progress.textContent = (_snapshot.value || 0) + ' / ' + (_snapshot.maxValue || 0);
+        _refs.content.setAttribute('data-content-mode', _snapshot.contentMode || 'legacy');
+        _refs.content.setAttribute('data-skin', _snapshot.skin || 'paper');
         renderIcon();
         renderCatalogPanel();
         renderPageList();
@@ -707,6 +712,7 @@ var IntelligencePanel = (function() {
 
         var canDecrypt = page.encryptLevel > 0 && (_snapshot.decryptLevel || 0) >= page.encryptLevel;
         var mustEncrypt = page.encryptLevel > (_snapshot.decryptLevel || 0);
+        var isH5 = (_snapshot.contentMode === 'h5') || (page.blocks && page.blocks.length);
         var renderText = page.text || '';
         if (mustEncrypt || (page.encryptLevel > 0 && !_showPlain)) {
             renderText = encryptText(renderText, _snapshot.encryptRules || {});
@@ -726,7 +732,21 @@ var IntelligencePanel = (function() {
             _refs.toggleBtn.textContent = '明文视图';
         }
 
-        appendLegacyHtml(_refs.content, renderText, _snapshot.pcName || _pcName);
+        if (isH5) {
+            if (typeof IntelligenceComponentRenderer === 'undefined' || !IntelligenceComponentRenderer) {
+                _refs.content.appendChild(emptyBlock('H5 情报组件渲染器未加载。'));
+            } else {
+                IntelligenceComponentRenderer.render(_refs.content, page.blocks || [], {
+                    pcName: _snapshot.pcName || _pcName,
+                    decryptLevel: _snapshot.decryptLevel || 0,
+                    showPlain: _showPlain,
+                    encryptedView: mustEncrypt,
+                    pageEncryptLevel: page.encryptLevel || 0
+                });
+            }
+        } else {
+            appendLegacyHtml(_refs.content, renderText, _snapshot.pcName || _pcName);
+        }
         _refs.content.scrollTop = 0;
     }
 
@@ -992,6 +1012,8 @@ var IntelligencePanel = (function() {
                 debug: _debugMode,
                 runtime: _runtimeMode,
                 hasSnapshot: !!_snapshot,
+                contentMode: _snapshot ? (_snapshot.contentMode || 'legacy') : '',
+                skin: _snapshot ? (_snapshot.skin || '') : '',
                 catalogCount: _catalog.length,
                 catalogCollapsed: _drawerCollapsed,
                 pagePopupOpen: _pagePopupOpen,

@@ -204,6 +204,7 @@ window.Icons = {
     }
 };
 </script>
+<script src="../../intelligence-components.js"></script>
 <script src="../../intelligence-panel.js"></script>
 <script src="./qa-suite.js"></script>
 <script>
@@ -393,6 +394,8 @@ window.Icons = {
                         value: value,
                         decryptLevel: payload.decryptLevel,
                         pcName: payload.pcName,
+                        contentMode: payload.contentMode || 'legacy',
+                        skin: payload.skin || '',
                         pages: payload.pages,
                         encryptRules: payload.encryptRules
                     });
@@ -427,7 +430,8 @@ window.Icons = {
                 value: page.value,
                 encryptLevel: page.encryptLevel || 0,
                 unlocked: unlocked,
-                text: (unlocked || includeLockedText) ? page.text : ''
+                text: (unlocked || includeLockedText) ? page.text : '',
+                blocks: (unlocked || includeLockedText) ? (page.blocks || []) : []
             };
         });
         return {
@@ -440,6 +444,8 @@ window.Icons = {
             value: value,
             decryptLevel: decryptLevel,
             pcName: pcName,
+            contentMode: item.contentMode || 'legacy',
+            skin: item.skin || '',
             pages: pages,
             encryptRules: item.encryptRules
         };
@@ -460,7 +466,8 @@ window.Icons = {
                 pageKey: String(i),
                 value: i === 18 ? 99 : Math.max(1, i * 5),
                 encryptLevel: i === 2 ? 2 : (i > 14 ? 8 : 0),
-                text: i === 1 ? docText : (i === 2 ? encryptedText : '第 ' + i + ' 页情报正文。<br>这是一段用于验证分页与滚动的 legacy txt 内容。')
+                text: i === 1 ? docText : (i === 2 ? encryptedText : '第 ' + i + ' 页情报正文。<br>这是一段用于验证分页与滚动的 legacy txt 内容。'),
+                blocks: buildHarnessH5Blocks(i)
             });
         }
         var longPages = [];
@@ -477,6 +484,8 @@ window.Icons = {
                 name: '资料',
                 displayName: '废城基础资料集',
                 iconName: '资料',
+                contentMode: 'h5',
+                skin: 'paper',
                 index: 0,
                 maxValue: 99,
                 pages: pages,
@@ -535,6 +544,49 @@ window.Icons = {
         var out = [];
         for (var i = 0; i < count; i++) out.push(text);
         return out.join('<br>');
+    }
+
+    function buildHarnessH5Blocks(pageIndex) {
+        if (pageIndex === 1) {
+            return [
+                { type: 'surfaceMark', variant: 'dirt', x: 70, y: 8, w: 18, h: 15, rotate: -8, opacity: 0.24 },
+                { type: 'heading', level: 2, content: [{ type: 'text', text: '尘都联合大学 安保部 现场记录' }] },
+                { type: 'paragraph', content: [
+                    { type: 'strong', content: [{ type: 'text', text: '行动：下水道勘探（第7次）' }] },
+                    { type: 'text', text: ' | 状态：' },
+                    { type: 'colorToken', token: 'danger', content: [{ type: 'text', text: '中止' }] },
+                    { type: 'text', text: '\n' },
+                    { type: 'pcName' },
+                    { type: 'text', text: ' 已被记录为本次阅读者。 ' },
+                    { type: 'redaction', text: '████', reveal: [{ type: 'text', text: '临时补给点坐标已解出' }] }
+                ] },
+                { type: 'handwritten', tone: 'red', content: [
+                    { type: 'text', text: '档案人注记：' },
+                    { type: 'damageText', kind: 'data-loss', text: '[数据损毁]' },
+                    { type: 'text', text: ' 处不可复原。' }
+                ] },
+                { type: 'hardwareExtract', label: '门禁芯片提取', status: '可测试', steps: ['握手', '校验', '读取'], reveal: [
+                    { type: 'note', content: [{ type: 'text', text: '这是 harness 的 H5 组件示例。' }] }
+                ] }
+            ];
+        }
+        if (pageIndex === 2) {
+            return [
+                { type: 'paragraph', content: [
+                    { type: 'strong', content: [{ type: 'text', text: '区域威胁评估' }] },
+                    { type: 'text', text: '\n' },
+                    { type: 'decryptText', level: 2, encryptedText: '███', content: [{ type: 'text', text: 'A兵团' }] },
+                    { type: 'text', text: '正在汇总' },
+                    { type: 'decryptText', level: 2, encryptedText: '████', content: [{ type: 'text', text: '诺亚组织' }] },
+                    { type: 'text', text: '留下的资料。秘密讨论尚未完成。执行人：' },
+                    { type: 'redaction', text: '[已编辑]', reveal: [{ type: 'text', text: '████' }] }
+                ] }
+            ];
+        }
+        return [
+            { type: 'paragraph', content: [{ type: 'text', text: '第 ' + pageIndex + ' 页情报正文。' }] },
+            { type: 'note', content: [{ type: 'text', text: '这是一段用于验证 H5 分页与滚动的组件内容。' }] }
+        ];
     }
 
     viewportSelect.addEventListener('change', function() {

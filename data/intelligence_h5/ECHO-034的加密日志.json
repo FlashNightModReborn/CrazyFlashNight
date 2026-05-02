@@ -1,0 +1,2127 @@
+{
+  "schemaVersion": 1,
+  "itemName": "ECHO-034的加密日志",
+  "skin": "terminal",
+  "pages": [
+    {
+      "pageKey": "1_1",
+      "blocks": [
+        {
+          "type": "surfaceMark",
+          "variant": "dirt",
+          "x": 4,
+          "y": 72,
+          "w": 24,
+          "h": 18,
+          "rotate": 12,
+          "opacity": 0.2
+        },
+        {
+          "type": "annotation",
+          "content": [
+            {
+              "type": "text",
+              "text": "恢复会话：废弃天网节点#7749 / 植入芯片紧急上传"
+            }
+          ],
+          "note": [
+            {
+              "type": "text",
+              "text": "记录不是日记原件，而是从异常上传包中拼接出的可读层。缺块位置保留为局部密文。"
+            }
+          ]
+        },
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "*数据流意外恢复自：废弃天网节点#7749。推测为Project_ECHO植入芯片紧急上传。获取路径已损坏。*"
+                }
+              ]
+            },
+            {
+              "kind": "prompt",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[区块#000001 - D-14]"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "今天食堂的粥又是馊的。老张说是因为米放太久，我觉得是WP又在省成本。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "手又开始发抖了，筷子差点掉地上。可能是天凉？"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "阿蔓借我两个罐头，是她上个月生日时攒的。我居然忘了她生日。"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "监控AI问我是不是第一次来医院地下节点...奇怪，我天天都来。它是不是该维护了？"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "hardwareExtract",
+          "label": "Project_ECHO 残片提取",
+          "status": "链路不稳定",
+          "steps": [
+            "恢复节点握手",
+            "校验植入芯片记录",
+            "抽取日志块"
+          ],
+          "reveal": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "该页来自受损终端缓存，提取结果会随解密等级稳定。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_2",
+      "blocks": [
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "prompt",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[区块#000087 - D-10]"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "凌晨三点被叫去清理地下三层的医疗废弃物。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "那些袋子...摸起来软软的，还有温度。监工说别多管闲事。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "回来路上吐了。胃里翻江倒海，喉咙有股铁锈味。"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "工牌今天开始显示红字：INACTIVE。找了IT，他们说是系统bug。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "主管叫我时停顿了一下，嘴唇动了两次才说出\"034\"。像是在努力想起什么。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_3",
+      "blocks": [
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "prompt",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[区块#000156 - D-7]"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "做了个梦。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "梦见自己躺在冰冷的金属台上，有人在我胸口贴标签。醒来时枕头全湿了。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "镜子里的脸...是我吗？眼眶深了，颧骨突出。阿蔓送饭时愣了一下：\"你最近瘦这么多？\""
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "她眼里有担心。我却害怕被她看出什么，赶紧低头扒饭。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "楼道里贴了告示：近期失踪克隆体增多，请注意安全。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_4",
+      "blocks": [
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "prompt",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[区块#000203 - D-5]"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "义仁诊所。等了四个小时。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "抽血时护士皱眉：\"你这血...颜色不太对劲。\"像是兑了水的墨汁。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "检验单上一串我看不懂的数字。"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "█-ECHO",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "γ-ECHO"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "抗体1:320。医生含糊说是\"惰性携带\"。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\"最近很多病人，\"他小声嘟囔，\"皮肤发灰，关节处有奇怪的凸起，嘴巴...嘴巴能张到不正常的大。不知道是什么新病毒。\""
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "药瓶上没有名字，只有一串编码。喉咙深处偶尔有嗡嗡声，像收音机的白噪音。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "听说哪里在配合什么外部试点，说是下个月要正式投放。不过最近好像提前了。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "具体我也搞不清，只看到每周都有车来取样。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "奇怪的是，车上同时贴有"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "██",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "统合"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "和企业的标志。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_5",
+      "blocks": [
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "prompt",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[区块#000234 - D-4]"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "半夜醒来，T恤被汗水粘在背上。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "做噩梦了。梦见一排排人站在冷柜里，像超市里的冻肉。他们都有我的脸。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "去洗手间时路过老王的值班室。监控屏幕上，有个人影在清运垃圾。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "动作、身形都像我。可我明明在这里。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "手抖得厉害，水杯摔碎了。碎片划破手指，血是暗红色的，有点稠。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_6",
+      "blocks": [
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "prompt",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[区块#000267 - D-3]"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "》》》 系统日志中断 - 数据损坏 《"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "找到了...排班表上...我的名字旁边打了问号..."
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "老李的字：\"034昨晚没来，但打卡机显示已签到\""
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "我记得我来了。还是...没来？记忆开始模糊。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "为什么手臂上有针孔？密密麻麻，像蜂窝。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "喉咙里的嗡嗡声变大了。有时像在说话，但听不清在说什么。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "我不是真正的易柯？"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_7",
+      "blocks": [
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "prompt",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[区块#000289 - D-2]"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "被派去地下冷冻层。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "门禁密码变了。用工牌刷了三次才开。里面比想象的冷。呼吸结成白雾。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "看到了。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "一排排...不，不能说是尸体。他们站着，灰白的皮肤，闭着眼。胸前贴着标签。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "001-B、002-B、003-B..."
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "我的腿在发软。035-B。那张脸。老张的脸。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "可老张早上还跟我抱怨粥馊了。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "突然明白为什么监控AI会问我是不是第一次来。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "我原来就是..."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_8",
+      "blocks": [
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "prompt",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[区块#000301 - D-1]"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "手在抖。打字都困难。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "找到了出厂单。藏在档案室最底层，沾满灰尘。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\"批次CL-2012-10-B，产品编号034-B，状态：INVALID\""
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\"原记录#034已terminated，系统自动派工未同步\""
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "翻开人事档案。一个月前，易柯，工号034。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "因举报工伤被辞退。照片上的人...五官和我一样，但更胖，眼神更有生气。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "我是谁？不，我知道我是什么了。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "我自己是克隆人..?"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_9",
+      "blocks": [
+        {
+          "type": "surfaceMark",
+          "variant": "blood-hand",
+          "x": 72,
+          "y": 8,
+          "w": 15,
+          "h": 18,
+          "rotate": 13,
+          "opacity": 0.42
+        },
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "prompt",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[区块#000342 - D日 04:17]"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "》》》 非授权访问 - 权限不足 《"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "》》》 尝试备用权限... [成功] 《"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "》》》 "
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "██",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "终端"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "过热警告：该"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "██",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "终端"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "将在300秒后自毁 《"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "我的手指在键盘上打滑。汗水模糊了视线。"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "███",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "黑匣子"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "吐出冰冷的系统日志："
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "WORLD-PULSE EMERGENCY PROTOCOL"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "时间：2012-12-21 04:17:33"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "ACTIVATE-ECHO GROUP-B INITIATED"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "hardwareExtract",
+          "label": "Project_ECHO 残片提取",
+          "status": "权限门槛 E4",
+          "steps": [
+            "恢复节点握手",
+            "校验植入芯片记录",
+            "抽取日志块"
+          ],
+          "reveal": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "该页来自受损"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "██",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "终端"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "缓存，提取结果会随解密等级稳定。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "decryptBlock",
+          "label": "备用权限解封记录",
+          "level": 4,
+          "plain": [
+            {
+              "type": "terminalLog",
+              "title": "ROOT://ECHO-034/FAILSAFE",
+              "entries": [
+                {
+                  "kind": "system",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "AUTH_FALLBACK accepted"
+                    }
+                  ]
+                },
+                {
+                  "kind": "system",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "thermals: "
+                    },
+                    {
+                      "type": "colorToken",
+                      "token": "danger",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "critical"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " / self-delete: 300s"
+                    }
+                  ]
+                },
+                {
+                  "kind": "text",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "最后可读输入："
+                    },
+                    {
+                      "type": "decryptText",
+                      "level": 4,
+                      "encryptedText": "███",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "我还是我"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": "。至少现在还是。"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "encrypted": [
+            {
+              "type": "terminalLog",
+              "title": "ROOT://ECHO-034/FAILSAFE",
+              "entries": [
+                {
+                  "kind": "system",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "AUTH_FALLBACK ███████"
+                    }
+                  ]
+                },
+                {
+                  "kind": "system",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "thermals: ███████ / self-delete: ███s"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_10",
+      "blocks": [
+        {
+          "type": "annotation",
+          "content": [
+            {
+              "type": "text",
+              "text": "自诊断日志连续输出 SUCCESS，但正文语气已经从“我”转向系统观察。"
+            }
+          ],
+          "note": [
+            {
+              "type": "text",
+              "text": "该页保留原始终端文本，不额外改写叙述，只标记身份漂移。"
+            }
+          ]
+        },
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[001-B] SUCCESS - 响应时间0.3秒"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[002-B] SUCCESS - 响应时间0.2秒"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "..."
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[034-B] ERROR - INACTIVE TAG - NO SIGNAL SENT"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "系统提示：编号034-B应已回收，请立即通知管理员"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": ">> 错误处理：忽略。不值得为单个单位暂停批处理进程。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[035-B] SUCCESS - 响应时间0.1秒"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "ERROR。只有我是ERROR。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "不是bug。是他们的疏忽。原版的易柯已经死了。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "不值得。我不值得。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_11",
+      "blocks": [
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "prompt",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[区块#000356 - D日 04:45]"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "备用仓的不锈钢墙。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "看到了自己。灰白的皮肤，凹陷的眼窝。瞳孔...瞳孔是浑浊的。嘴唇发黑。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "用指甲在墙上刻字。指甲断了，露出下面灰色的肉。血是黑色的，粘稠的。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\"我原来就是它\""
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "易柯死了一个月了。我只是个编号。失效的编号。"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "如果信号来了，如果ERROR被修复..."
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "我会记得阿蔓吗？会记得她担心的眼神吗？会记得馊粥的味道吗？"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "喉咙里的声音越来越清晰：\"让我们出去...让我们扩散...\""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_12",
+      "blocks": [
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "prompt",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[区块#000401 - D+5]"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "咳嗽。一直在咳。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "痰里有黑色的丝状物，像...像活的。它们在蠕动，试图爬回我嘴里。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "路过郊区时躲在墙后。黑铁教的农民围着什么。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "是个灰皮肤的人。嘴巴张开，大得能吞下一个西瓜。他在找什么，不停地说：\"信号...信号...\""
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "他们浇上桐油。\"让它找到讯号，百里之地都要遭殃！\"一个农民喊。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "火光中，那人的脸在融化。黑烟带着腥味。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "他们不懂科学。但他们是对的。他们阻止了一个母体。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "decryptBlock",
+          "label": "D+5 生理状态片段",
+          "level": 4,
+          "plain": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "缓存中可恢复到多个短句，但语义重复指向“身体边界正在失效”。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "解码关键词："
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "███",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "骨刺"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": " / "
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "███",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "灰皮肤症"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "encrypted": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "physiology fragment: ███ / ███ / boundary lost"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_13",
+      "blocks": [
+        {
+          "type": "surfaceMark",
+          "variant": "dirt",
+          "x": 72,
+          "y": 68,
+          "w": 20,
+          "h": 14,
+          "rotate": -18,
+          "opacity": 0.2
+        },
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "prompt",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[区块#000423 - D+8]"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "药用完了。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "喉咙里像有什么东西在生长。说话时能感觉到震动。有时它会抢先说话，声音不是我的。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "皮肤下面开始发硬。像是有什么东西在钙化。摸上去一块一块的，硬得像石头。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "手背上鼓起灰白色的斑块。按下去不疼，但能感觉到骨头在往外顶。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "今天差点...差点咬了阿蔓。她来送饭，还带了感冒药。闻到她的味道，口水就..."
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "我推开她，躲进储物间。用皮带勒住自己的脖子。不能让它醒来。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "翻看偷来的档案。"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "█-ECHO",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "γ-ECHO"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "母体。2小时完全转化。"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "████",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "感染半径"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "500米。一个街区。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "我不怕死。怕的是死后还在行走，怕的是亲手撕碎关心我的人。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_14",
+      "blocks": [
+        {
+          "type": "surfaceMark",
+          "variant": "blood-hand",
+          "x": 78,
+          "y": 16,
+          "w": 13,
+          "h": 16,
+          "rotate": -11,
+          "opacity": 0.28
+        },
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[区块#000451 - D+9 - 最终上传]"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "这是选择。我的选择。"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "芯片还能用。密码是从主管尸体上找到的。他昨天\"失踪\"了。上传到区块链，也许..."
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "手指开始发黑。指甲全部脱落。能感觉到体内有东西在等待。等待那个信号。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "手臂上的硬块已经刺破皮肤。灰白色的骨刺，从肘部往外长。不疼。什么都感觉不到了。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "如果我不做这个选择...再过几个小时，我就会变成那些东西..."
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "勒紧皮带时，脑后有声音在低语：\"放松一点，只要一秒钟...我们可以一起活下去...\""
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "不。这身体里另一个东西在挣扎，想夺回控制权。但我还是我。至少现在还是。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "hardwareExtract",
+          "label": "Project_ECHO 残片提取",
+          "status": "链路不稳定",
+          "steps": [
+            "恢复节点握手",
+            "校验植入芯片记录",
+            "抽取日志块"
+          ],
+          "reveal": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "该页来自受损终端缓存，提取结果会随解密等级稳定。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "hardwareExtract",
+          "label": "植入芯片自毁栈",
+          "status": "逆向完成",
+          "steps": [
+            "定位上传栈",
+            "跳过INACTIVE清理",
+            "复制最后三段缓存"
+          ],
+          "reveal": [
+            {
+              "type": "terminalLog",
+              "title": "chip.dump.last_words",
+              "entries": [
+                {
+                  "kind": "system",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "checksum repaired: 91%"
+                    }
+                  ]
+                },
+                {
+                  "kind": "text",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "肉体控制权持续下降；自杀动作被判定为“主动选择”，未触发外部接管。"
+                    }
+                  ]
+                },
+                {
+                  "kind": "system",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "residual signal: "
+                    },
+                    {
+                      "type": "decryptText",
+                      "level": 4,
+                      "encryptedText": "██-███",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "ECHO-034"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_15",
+      "blocks": [
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "阿蔓，对不起。你借我的罐头，我还没还。告诉过你别来找我。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "如果你看到这个，记住：灰皮肤的人要立刻烧掉。别让他们找到信号。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "至少让我以人类的身份死去。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "信...号...来...了..."
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "》》》 传输完成 《"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "》》》 终端自毁倒计时：5...4...3... 《"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "》》》 连接终止 《《《"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "hardwareExtract",
+          "label": "Project_ECHO 残片提取",
+          "status": "链路不稳定",
+          "steps": [
+            "恢复节点握手",
+            "校验植入芯片记录",
+            "抽取日志块"
+          ],
+          "reveal": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "该页来自受损终端缓存，提取结果会随解密等级稳定。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_16",
+      "blocks": [
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "prompt",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[元数据分析]"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "来源节点：医院地下三层-B区"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "██",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "终端"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "（已销毁）"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "加密协议："
+                },
+                {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "WP",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "WP"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "-Legacy-7"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "警告级别：极高"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "自动删除触发：3次（因INACTIVE保护失败）"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "备注：该日志利用系统漏洞伪装成错误报告上传。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\"失效产品\"记录本应在出厂时销毁，但034-B因标签错误逃过清理程序。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "hardwareExtract",
+          "label": "Project_ECHO 残片提取",
+          "status": "权限门槛 E3",
+          "steps": [
+            "恢复节点握手",
+            "校验植入芯片记录",
+            "抽取日志块"
+          ],
+          "reveal": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "该页来自受损"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "██",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "终端"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "缓存，提取结果会随解密等级稳定。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "timeline",
+          "entries": [
+            {
+              "label": "D-14",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "工牌仍正常，症状以震颤和记忆错位为主。"
+                }
+              ]
+            },
+            {
+              "label": "D-4",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "INACTIVE 标签出现，个体身份开始被系统重写。"
+                }
+              ]
+            },
+            {
+              "label": "D日",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "备用权限接管，上传伪装为错误报告。"
+                }
+              ]
+            },
+            {
+              "label": "D+9",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "节点周边出现“灰皮肤症”连锁报告。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "decryptBlock",
+          "label": "INACTIVE 保护失败明细",
+          "level": 3,
+          "plain": [
+            {
+              "type": "table",
+              "columns": [
+                "字段",
+                "状态"
+              ],
+              "rows": [
+                [
+                  "出厂销毁标记",
+                  "未执行"
+                ],
+                [
+                  "标签错误",
+                  "034-B 被错误写入错误报告队列"
+                ],
+                [
+                  "自动删除触发",
+                  "3 次"
+                ],
+                [
+                  "上传伪装",
+                  "系统错误报告"
+                ]
+              ]
+            }
+          ],
+          "encrypted": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "INACTIVE guard: █████ / upload: error_report"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_17",
+      "blocks": [
+        {
+          "type": "terminalLog",
+          "title": "ECHO-034的加密日志",
+          "entries": [
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "在审判日混乱中，类似日志大量涌现。多数在上传中被截断。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "这是"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 5,
+                  "encryptedText": "█-ECHO",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "γ-ECHO"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "少数完整保存的样本。"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "后续追踪：该上传节点500米内，后续72小时内报告87起\"灰皮肤症\"病例。全部被焚烧处理。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "编号034-B遗体于医院电梯处被发现，已完成骨刺化转变。"
+                }
+              ]
+            },
+            {
+              "kind": "system",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "注：尸体虽经自杀处理，但在地下节点环境中仍触发转化（骨刺化不可逆）。"
+                }
+              ]
+            },
+            {
+              "kind": "text",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "遗体后被途经的Σ-ITE感染者吞噬，相关样本已移交病理组。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "hardwareExtract",
+          "label": "Project_ECHO 残片提取",
+          "status": "权限门槛 E5",
+          "steps": [
+            "恢复节点握手",
+            "校验植入芯片记录",
+            "抽取日志块"
+          ],
+          "reveal": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "该页来自受损"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 5,
+                  "encryptedText": "██",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "终端"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "缓存，提取结果会随解密等级稳定。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "decryptBlock",
+          "label": "E5 完整链路还原",
+          "level": 5,
+          "plain": [
+            {
+              "type": "table",
+              "columns": [
+                "字段",
+                "恢复值"
+              ],
+              "rows": [
+                [
+                  "样本",
+                  "γ-ECHO / 034-B"
+                ],
+                [
+                  "触发源",
+                  "医院地下三层-B区终端"
+                ],
+                [
+                  "扩散迹象",
+                  "500米内72小时87起灰皮肤症"
+                ],
+                [
+                  "处理记录",
+                  "焚烧处理，样本移交病理组"
+                ]
+              ]
+            },
+            {
+              "type": "note",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "结论：这不是单一感染日志，而是一次失败产品在审判日混乱中的逃逸记录。"
+                }
+              ]
+            }
+          ],
+          "encrypted": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "██████ / ███-ECHO / █████████████████"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
