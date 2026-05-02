@@ -496,9 +496,16 @@ namespace CF7Launcher.Tasks
                 if (useH5)
                 {
                     if ((unlocked || includeLockedText) && h5Doc.Pages.ContainsKey(page.PageKey))
-                        pageObj["blocks"] = h5Doc.Pages[page.PageKey].DeepClone();
+                    {
+                        JToken cloned = h5Doc.Pages[page.PageKey].DeepClone();
+                        if (!includeLockedText)
+                            StripLockedDecryptText(cloned, decryptLevel);
+                        pageObj["blocks"] = cloned;
+                    }
                     else
+                    {
                         pageObj["blocks"] = new JArray();
+                    }
                 }
                 else
                 {
@@ -516,6 +523,33 @@ namespace CF7Launcher.Tasks
             obj["encryptRules"] = rules;
 
             return obj;
+        }
+
+        private static void StripLockedDecryptText(JToken token, int decryptLevel)
+        {
+            JArray arr = token as JArray;
+            if (arr != null)
+            {
+                for (int i = 0; i < arr.Count; i++) StripLockedDecryptText(arr[i], decryptLevel);
+                return;
+            }
+            JObject obj = token as JObject;
+            if (obj == null) return;
+
+            string type = obj.Value<string>("type");
+            if (string.Equals(type, "decryptText", StringComparison.Ordinal))
+            {
+                int level = ParseInt(obj["level"], 0);
+                if (level > decryptLevel)
+                {
+                    obj["content"] = new JArray();
+                    obj.Remove("text");
+                }
+                return;
+            }
+
+            foreach (JProperty prop in obj.Properties())
+                StripLockedDecryptText(prop.Value, decryptLevel);
         }
 
         private JObject BuildCatalogEntry(IntelligenceItem item)

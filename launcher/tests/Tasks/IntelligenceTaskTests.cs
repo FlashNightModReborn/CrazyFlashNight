@@ -326,6 +326,84 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void Snapshot_StripsLockedDecryptTextContentButKeepsEncryptedPlaceholder()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            WriteH5("资料",
+                "{\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"paper\",\"pages\":[" +
+                "{\"pageKey\":\"1\",\"blocks\":[{\"type\":\"paragraph\",\"content\":[" +
+                    "{\"type\":\"text\",\"text\":\"前缀\"}," +
+                    "{\"type\":\"decryptText\",\"level\":3,\"encryptedText\":\"██\",\"content\":[{\"type\":\"text\",\"text\":\"低级机密\"}]}," +
+                    "{\"type\":\"decryptText\",\"level\":9,\"encryptedText\":\"████\",\"content\":[{\"type\":\"text\",\"text\":\"高级机密\"}]}" +
+                "]}]}]}");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"strip-1\",\"itemName\":\"资料\",\"value\":1,\"decryptLevel\":3,\"pcName\":\"测试\"}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.True((bool)resp["success"]);
+            JArray content = (JArray)resp["pages"][0]["blocks"][0]["content"];
+            Assert.Equal("低级机密", (string)content[1]["content"][0]["text"]);
+            Assert.Empty((JArray)content[2]["content"]);
+            Assert.Equal("████", (string)content[2]["encryptedText"]);
+            Assert.Equal(9, (int)content[2]["level"]);
+        }
+
+        [Fact]
+        public void Bundle_KeepsAllDecryptTextContentForCreatorPreview()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            WriteH5("资料",
+                "{\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"paper\",\"pages\":[" +
+                "{\"pageKey\":\"1\",\"blocks\":[{\"type\":\"paragraph\",\"content\":[" +
+                    "{\"type\":\"decryptText\",\"level\":9,\"encryptedText\":\"████\",\"content\":[{\"type\":\"text\",\"text\":\"高级机密\"}]}" +
+                "]}]}]}");
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("bundle", JObject.Parse("{\"callId\":\"bundle-strip\",\"value\":1,\"decryptLevel\":1,\"pcName\":\"测试\"}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.True((bool)resp["success"]);
+            JArray content = (JArray)resp["items"][0]["pages"][0]["blocks"][0]["content"];
+            Assert.Equal("高级机密", (string)content[0]["content"][0]["text"]);
+        }
+
+        [Fact]
+        public void RuntimeSnapshot_StripsLockedDecryptTextUsingCachedDecryptLevel()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            WriteH5("资料",
+                "{\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"paper\",\"pages\":[" +
+                "{\"pageKey\":\"1\",\"blocks\":[{\"type\":\"paragraph\",\"content\":[" +
+                    "{\"type\":\"decryptText\",\"level\":5,\"encryptedText\":\"██\",\"content\":[{\"type\":\"text\",\"text\":\"中级机密\"}]}" +
+                "]}]}]}");
+
+            var posted = new List<string>();
+            var sent = new List<string>();
+            var task = new IntelligenceTask(_root, delegate { return true; }, delegate(string json) { sent.Add(json); });
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("state", JObject.Parse("{\"callId\":\"state-1\"}"));
+            JObject flash = JObject.Parse(sent[0].TrimEnd('\0'));
+            task.HandleFlashResponse(JObject.Parse("{\"task\":\"intelligence_response\",\"callId\":" + (int)flash["callId"] + ",\"success\":true,\"values\":{\"资料\":1},\"decryptLevel\":2,\"pcName\":\"主角\"}"), delegate(string ignored) { });
+            posted.Clear();
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"snap-1\",\"itemName\":\"资料\"}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.True((bool)resp["success"]);
+            JArray content = (JArray)resp["pages"][0]["blocks"][0]["content"];
+            Assert.Empty((JArray)content[0]["content"]);
+            Assert.Equal("██", (string)content[0]["encryptedText"]);
+        }
+
+        [Fact]
         public void Snapshot_H5StrictRejectsDeeplyNestedContent()
         {
             WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");

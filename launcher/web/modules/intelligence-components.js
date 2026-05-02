@@ -377,28 +377,49 @@ var IntelligenceComponentRenderer = (function() {
         var plain = node.content || [{ type: 'text', text: node.text || '' }];
         var canReveal = level <= (Number(context.decryptLevel) || 0);
         var masked = context.encryptedView || context.showPlain === false || !canReveal || node.forceMask === true;
-        if (masked) {
-            var span = document.createElement('span');
-            span.className = 'intel-h5-redaction intel-h5-decrypt-text' + (canReveal ? ' can-reveal' : ' locked');
+        if (!masked) {
+            appendInline(target, plain, context);
+            return;
+        }
+        // 锁死：未达等级时不向 DOM 写入明文，无 hover/click 揭示。
+        // canReveal=true 但 showPlain=false 的情况（明文/密文视图切换）保留 hover 揭示。
+        var tier = pickDecryptTier(level);
+        var span = document.createElement('span');
+        span.className = 'intel-h5-decrypt-text intel-h5-decrypt-text-' + tier + (canReveal ? ' can-reveal' : ' locked');
+        var fallbackGlyph = canReveal ? '████' : tierGlyph(tier);
+        var mask = document.createElement('span');
+        mask.className = 'intel-h5-decrypt-mask';
+        mask.appendChild(document.createTextNode(node.encryptedText || scrambleText(flattenInline(plain)) || fallbackGlyph));
+        span.appendChild(mask);
+        if (canReveal) {
             span.tabIndex = 0;
-            var mask = document.createElement('span');
-            mask.className = 'intel-h5-redaction-mask';
-            mask.appendChild(document.createTextNode(node.encryptedText || scrambleText(flattenInline(plain)) || '████'));
-            span.appendChild(mask);
             var reveal = document.createElement('span');
             reveal.className = 'intel-h5-redaction-reveal';
-            if (canReveal) appendInline(reveal, plain, extend(context, { encryptedView: false, showPlain: true }));
-            else reveal.appendChild(document.createTextNode('解密等级不足'));
+            appendInline(reveal, plain, extend(context, { encryptedView: false, showPlain: true }));
             span.appendChild(reveal);
             span.addEventListener('click', function(e) {
                 e.stopPropagation();
                 toggleRevealPinned(span, reveal, e);
             });
             wireRevealHover(span, reveal);
-            target.appendChild(span);
-            return;
+        } else {
+            span.setAttribute('aria-label', '需要逆向技能等级 ' + level);
         }
-        appendInline(target, plain, context);
+        target.appendChild(span);
+    }
+
+    function pickDecryptTier(level) {
+        if (level >= 10) return 'tier4';
+        if (level >= 7)  return 'tier3';
+        if (level >= 4)  return 'tier2';
+        return 'tier1';
+    }
+
+    function tierGlyph(tier) {
+        if (tier === 'tier4') return '●●●';
+        if (tier === 'tier3') return '▓▓▓';
+        if (tier === 'tier2') return '＿＿';
+        return '████';
     }
 
     function appendRedaction(target, hiddenInline, revealInline, context) {
@@ -634,6 +655,7 @@ var IntelligenceComponentRenderer = (function() {
 
     return {
         render: render,
-        _debugScrambleText: scrambleText
+        _debugScrambleText: scrambleText,
+        _debugPickDecryptTier: pickDecryptTier
     };
 })();
