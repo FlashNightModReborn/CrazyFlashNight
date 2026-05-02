@@ -17,7 +17,9 @@ using Microsoft.Web.WebView2.Core;
 
 class Program
 {
-    static GuardianForm _guardianForm;
+    // volatile: HandleUiThreadException 可能在 form 引用刚被赋值后立即跑 (Application.Run 早期),
+    // 不写成 volatile 时 JIT 理论上能 hoist 出 null. 实际 UI 线程单点写 + 单点读, 但加 volatile 零成本上保险.
+    static volatile GuardianForm _guardianForm;
     static int _fatalUiExceptionExiting;
 
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]

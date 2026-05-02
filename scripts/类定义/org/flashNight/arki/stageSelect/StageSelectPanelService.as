@@ -146,9 +146,14 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         } else {
             frameLabel = String(_root.关卡地图帧值 || "基地门口");
         }
+        // skipTransition 判定要在 frameLabel 转 url folder 之前做:
+        // resolveRootReturnFrameLabel 会把外交地图 "地图-XXX" 替换成 stage url folder (英文),
+        // 而 MapHotspotResolver.isCurrentFrameName 是按 NAVIGATE_TARGETS 中文 frame name 匹配的——
+        // 用 url folder 永远查不到, 会让"已在外交地图入口时按返回"误走重复淡出.
+        var rawReturnFrameLabel:String = frameLabel;
         frameLabel = resolveRootReturnFrameLabel(frameLabel);
         if (frameLabel == "") frameLabel = "基地门口";
-        var skipTransition:Boolean = isAlreadyAtReturnFrame(frameLabel);
+        var skipTransition:Boolean = isAlreadyAtReturnFrame(rawReturnFrameLabel != "" ? rawReturnFrameLabel : frameLabel);
 
         if (!skipTransition && (_root.淡出动画 == undefined || _root.淡出动画.淡出跳转帧 == undefined)) {
             sendResponse({
