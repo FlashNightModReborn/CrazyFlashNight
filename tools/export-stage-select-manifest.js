@@ -16,6 +16,8 @@ const webAssetRoot = path.join(projectRoot, 'launcher', 'web', 'assets', 'stage-
 const moduleOutput = path.join(projectRoot, 'launcher', 'web', 'modules', 'stage-select-data.js');
 const sourceSwf = path.join(projectRoot, 'flashswf', 'UI', '选关界面.swf');
 const ffdecJar = path.join(projectRoot, 'tools', 'ffdec', 'ffdec.jar');
+const magicSigilAssetName = 'magic-sigil.png';
+const magicSigilExportId = 255;
 
 const backgroundNames = {
     '背景-废城-topaz-enhance-1024w.png': 'waste-city.png',
@@ -124,6 +126,8 @@ function escapeRegExp(value) {
 
 function decodeXml(value) {
     return String(value || '')
+        .replace(/&#x([0-9a-f]+);/gi, function(_, hex) { return String.fromCharCode(parseInt(hex, 16)); })
+        .replace(/&#([0-9]+);/g, function(_, dec) { return String.fromCharCode(parseInt(dec, 10)); })
         .replace(/&quot;/g, '"')
         .replace(/&apos;/g, "'")
         .replace(/&lt;/g, '<')
@@ -217,6 +221,16 @@ function findStageName(script) {
     return match ? match[1] : '';
 }
 
+function findLegacyStageName(script) {
+    const match = String(script || '').match(/(?:^|\n)\s*当前关卡名\s*=\s*"([^"]+)"/u);
+    return match ? match[1] : '';
+}
+
+function findTaskStageName(script) {
+    const match = String(script || '').match(/(?:^|\n)\s*NPC任务_任务_关卡路径\s*=\s*"([^"]+)"/u);
+    return match ? match[1] : '';
+}
+
 function findStageDetail(script) {
     const match = String(script || '').match(/(?:^|\n)\s*详细\s*=\s*"([^"]*)"/u);
     return match ? match[1] : '';
@@ -250,12 +264,210 @@ function dedupeByKey(items, keyFn) {
     });
 }
 
+function readStageInfoIndex() {
+    const stagesRoot = path.join(projectRoot, 'data', 'stages');
+    const byName = {};
+    if (!fs.existsSync(stagesRoot)) return byName;
+    fs.readdirSync(stagesRoot, { withFileTypes: true }).forEach(function(entry) {
+        if (!entry.isDirectory()) return;
+        const listPath = path.join(stagesRoot, entry.name, '__list__.xml');
+        if (!fs.existsSync(listPath)) return;
+        const xml = readUtf8(listPath);
+        const re = /<StageInfo>([\s\S]*?)<\/StageInfo>/gu;
+        let match;
+        while ((match = re.exec(xml))) {
+            const body = match[1] || '';
+            const name = readSimpleXmlTag(body, 'Name');
+            if (!name) continue;
+            byName[name] = {
+                name: name,
+                area: entry.name,
+                type: readSimpleXmlTag(body, 'Type'),
+                description: readSimpleXmlTag(body, 'Description'),
+                rootFadeTransitionFrame: readSimpleXmlTag(body, 'RootFadeTransitionFrame')
+            };
+        }
+    });
+    return byName;
+}
+
+function readSimpleXmlTag(body, tagName) {
+    const match = String(body || '').match(new RegExp('<' + escapeRegExp(tagName) + '\\b[^>]*>([\\s\\S]*?)<\\/' + escapeRegExp(tagName) + '>|<' + escapeRegExp(tagName) + '\\b[^>]*/>', 'u'));
+    if (!match) return '';
+    return decodeXml(String(match[1] || '').replace(/<[^>]+>/gu, '').trim());
+}
+
+function inferStageEntry(script, libraryItemName, stageInfoIndex) {
+    let stageName = findStageName(script);
+    let sourceKind = stageName ? 'config' : '';
+    if (!stageName) {
+        stageName = findTaskStageName(script);
+        sourceKind = stageName ? 'taskPath' : '';
+    }
+    if (!stageName) {
+        const legacyName = findLegacyStageName(script);
+        if (legacyName && stageInfoIndex[legacyName]) {
+            stageName = legacyName;
+            sourceKind = 'legacyCurrentName';
+        }
+    }
+    if (!stageName) return null;
+
+    const stageInfo = stageInfoIndex[stageName] || {};
+    const stageType = stageInfo.type || '';
+    let entryKind = 'difficulty';
+    if (sourceKind === 'taskPath') entryKind = 'task';
+    else if (stageType === '外交地图') entryKind = 'map';
+
+    return {
+        stageName: stageName,
+        sourceKind: sourceKind,
+        entryKind: entryKind,
+        stageType: stageType,
+        stageArea: stageInfo.area || '',
+        detail: findStageDetail(script) || stageInfo.description || '',
+        visualKind: inferStageVisualKind(libraryItemName, entryKind)
+    };
+}
+
+function inferStageVisualKind(libraryItemName, entryKind) {
+    if (entryKind === 'task') return 'task-direct';
+    if (entryKind === 'map') return 'map-direct';
+    if (libraryItemName === '选关界面UI/选关按钮') return 'standard';
+    return 'standard';
+}
+
+const directLayoutCache = {};
+
+function resolveLibraryItemPath(libraryItemName) {
+    if (!libraryItemName) return '';
+    return path.join(libraryRoot, ...String(libraryItemName).split('/')) + '.xml';
+}
+
+function readDirectMapLayout(libraryItemName) {
+    if (!libraryItemName) return null;
+    if (Object.prototype.hasOwnProperty.call(directLayoutCache, libraryItemName)) {
+        return directLayoutCache[libraryItemName];
+    }
+
+    const itemPath = resolveLibraryItemPath(libraryItemName);
+    if (!fs.existsSync(itemPath)) {
+        directLayoutCache[libraryItemName] = null;
+        return null;
+    }
+
+    const xml = readUtf8(itemPath);
+    let marker = null;
+    eachSymbol(xml, function(attrs, body) {
+        if (marker) return;
+        if (attrs.libraryItemName !== 'shape/外交地图点') return;
+        const matrix = firstMatrixAttrs(body);
+        marker = {
+            x: round(numberAttr(matrix, 'tx', 0)),
+            y: round(numberAttr(matrix, 'ty', 0))
+        };
+    });
+
+    let text = null;
+    const textMatch = String(xml).match(/<DOMDynamicText\b([^>]*)>([\s\S]*?)<\/DOMDynamicText>/u);
+    if (textMatch) {
+        const attrs = attrsToObject(textMatch[1]);
+        const body = textMatch[2] || '';
+        const matrix = firstMatrixAttrs(body);
+        const charsMatch = body.match(/<characters>([\s\S]*?)<\/characters>/u);
+        text = {
+            x: round(numberAttr(matrix, 'tx', -68.5)),
+            y: round(numberAttr(matrix, 'ty', 135.7)),
+            width: round(numberAttr(attrs, 'width', 137)),
+            height: round(numberAttr(attrs, 'height', 34.3)),
+            label: charsMatch ? cleanDirectLabel(decodeXml(charsMatch[1])) : ''
+        };
+    }
+
+    const layout = marker || text ? {
+        marker: marker || { x: 0, y: 120 },
+        text: text || { x: -68.5, y: 135.7, width: 137, height: 34.3, label: '' },
+        sourceSymbol: libraryItemName
+    } : null;
+    directLayoutCache[libraryItemName] = layout;
+    return layout;
+}
+
+function cleanDirectLabel(value) {
+    return String(value || '')
+        .replace(/\r\n/g, '\n')
+        .replace(/\r/g, '\n')
+        .replace(/\n+/g, '\n')
+        .replace(/^\s+|\s+$/g, '');
+}
+
+function createStageButton(frameMap, frameLabel, sourceFrameIndex, instanceAttrs, matrix, script, entry, previewIndex) {
+    const x = numberAttr(matrix, 'tx', 0);
+    const y = numberAttr(matrix, 'ty', 0);
+    const centerX = numberAttr(instanceAttrs, 'centerPoint3DX', x);
+    const centerY = numberAttr(instanceAttrs, 'centerPoint3DY', y);
+    const preview = resolvePreview(entry.stageName, previewIndex);
+    const button = {
+        id: 'stage_' + sourceFrameIndex + '_' + frameMap[frameLabel].stageButtons.length,
+        frameLabel: frameLabel,
+        stageName: entry.stageName,
+        detail: entry.detail,
+        x: round(x),
+        y: round(y),
+        centerX: round(centerX),
+        centerY: round(centerY),
+        sourceFrameIndex: sourceFrameIndex,
+        sourceKind: entry.sourceKind,
+        entryKind: entry.entryKind,
+        visualKind: entry.visualKind,
+        stageType: entry.stageType,
+        stageArea: entry.stageArea,
+        libraryItemName: instanceAttrs.libraryItemName || '',
+        previewUrl: preview.previewUrl,
+        previewAssetName: preview.previewAssetName,
+        previewSource: preview.previewSource,
+        previewSourcePath: preview.previewSourcePath,
+        previewSourceFrameIndex: preview.previewSourceFrameIndex,
+        previewCrop: preview.previewCrop,
+        previewMissing: preview.previewMissing
+    };
+    if (entry.entryKind === 'map') {
+        button.directLayout = readDirectMapLayout(instanceAttrs.libraryItemName || '');
+    }
+    return button;
+}
+
+function createDecoration(frameMap, frameLabel, sourceFrameIndex, instanceAttrs, matrix) {
+    const x = numberAttr(matrix, 'tx', 0);
+    const y = numberAttr(matrix, 'ty', 0);
+    const variant = String(instanceAttrs.name || '').indexOf('16') >= 0 ? 'red' : 'blue';
+    return {
+        id: 'decor_' + sourceFrameIndex + '_' + frameMap[frameLabel].decorations.length,
+        frameLabel: frameLabel,
+        kind: 'magic-sigil',
+        variant: variant,
+        x: round(x - 50),
+        y: round(y - 50),
+        width: 100,
+        height: 100,
+        sourceFrameIndex: sourceFrameIndex,
+        libraryItemName: instanceAttrs.libraryItemName || '',
+        sourceSymbol: '选关界面UI/Symbol 3325 -> 选关界面UI/Symbol 3323 -> image/bitmap3321.png',
+        assetUrl: decorationAssetUrl(magicSigilAssetName),
+        assetName: magicSigilAssetName
+    };
+}
+
 function backgroundAssetUrl(assetName) {
     return 'assets/stage-select/backgrounds/' + assetName;
 }
 
 function previewAssetUrl(assetName) {
     return 'assets/stage-select/previews/' + assetName;
+}
+
+function decorationAssetUrl(assetName) {
+    return 'assets/stage-select/decorations/' + assetName;
 }
 
 function readMediaIndex() {
@@ -473,6 +685,7 @@ function buildManifest() {
     const xml = readUtf8(mainSymbolPath);
     const labels = parseLabels(xml);
     const previewIndex = buildPreviewIndex();
+    const stageInfoIndex = readStageInfoIndex();
     const frameMap = {};
     labels.forEach(function(label) {
         frameMap[label.label] = {
@@ -480,6 +693,7 @@ function buildManifest() {
             sourceFrameIndex: label.index,
             sourceDuration: label.duration,
             background: null,
+            decorations: [],
             stageButtons: [],
             navButtons: []
         };
@@ -491,6 +705,8 @@ function buildManifest() {
     let sourceNavButtonCount = 0;
     const uniqueStages = {};
     const backgroundsByLabel = {};
+    const unmappedStageLikeInstances = [];
+    const ignoredStageButtonInstances = [];
 
     while ((layerMatch = layerRe.exec(xml))) {
         const layerAttrs = attrsToObject(layerMatch[1]);
@@ -517,28 +733,42 @@ function buildManifest() {
                 const scriptMatch = String(instanceBody || '').match(/<script><!\[CDATA\[([\s\S]*?)\]\]><\/script>/u);
                 const script = scriptMatch ? scriptMatch[1] : '';
 
-                if (libraryItemName === '选关界面UI/选关按钮') {
-                    const stageName = findStageName(script);
-                    const preview = resolvePreview(stageName, previewIndex);
+                if (libraryItemName === '选关界面UI/Symbol 3325') {
+                    frameMap[frameLabel].decorations.push(createDecoration(
+                        frameMap,
+                        frameLabel,
+                        sourceFrameIndex,
+                        instanceAttrs,
+                        matrix
+                    ));
+                    return;
+                }
+
+                const entry = inferStageEntry(script, libraryItemName, stageInfoIndex);
+                if (entry) {
                     sourceStageButtonCount += 1;
-                    uniqueStages[stageName] = true;
-                    frameMap[frameLabel].stageButtons.push({
-                        id: 'stage_' + sourceFrameIndex + '_' + frameMap[frameLabel].stageButtons.length,
+                    uniqueStages[entry.stageName] = true;
+                    frameMap[frameLabel].stageButtons.push(createStageButton(
+                        frameMap,
+                        frameLabel,
+                        sourceFrameIndex,
+                        instanceAttrs,
+                        matrix,
+                        script,
+                        entry,
+                        previewIndex
+                    ));
+                    return;
+                }
+
+                if (libraryItemName === '选关界面UI/选关按钮') {
+                    ignoredStageButtonInstances.push({
+                        sourceFrameIndex: sourceFrameIndex,
                         frameLabel: frameLabel,
-                        stageName: stageName,
-                        detail: findStageDetail(script),
+                        libraryItemName: libraryItemName,
                         x: round(x),
                         y: round(y),
-                        centerX: round(centerX),
-                        centerY: round(centerY),
-                        sourceFrameIndex: sourceFrameIndex,
-                        previewUrl: preview.previewUrl,
-                        previewAssetName: preview.previewAssetName,
-                        previewSource: preview.previewSource,
-                        previewSourcePath: preview.previewSourcePath,
-                        previewSourceFrameIndex: preview.previewSourceFrameIndex,
-                        previewCrop: preview.previewCrop,
-                        previewMissing: preview.previewMissing
+                        reason: '选关按钮 instance has no supported stage binding'
                     });
                     return;
                 }
@@ -569,6 +799,9 @@ function buildManifest() {
         frameMap[frameLabel].stageButtons = dedupeByKey(frameMap[frameLabel].stageButtons, function(button) {
             return [button.stageName, button.x, button.y].join('|');
         });
+        frameMap[frameLabel].decorations = dedupeByKey(frameMap[frameLabel].decorations, function(item) {
+            return [item.kind, item.variant, item.x, item.y].join('|');
+        });
         frameMap[frameLabel].navButtons = dedupeByKey(frameMap[frameLabel].navButtons, function(button) {
             return [button.label, button.x, button.y, button.targetFrameLabel, button.actionKind].join('|');
         });
@@ -576,7 +809,7 @@ function buildManifest() {
 
     const frames = labels.map(function(label) { return frameMap[label.label]; });
     const stageNames = Object.keys(uniqueStages).filter(Boolean).sort(function(a, b) { return a.localeCompare(b, 'zh-CN'); });
-    const assetReport = buildAssetReport(frames, stageNames, sourceStageButtonCount, sourceNavButtonCount, previewIndex);
+    const assetReport = buildAssetReport(frames, stageNames, sourceStageButtonCount, sourceNavButtonCount, previewIndex, unmappedStageLikeInstances, ignoredStageButtonInstances);
     return {
         version: 1,
         schema: 'stage-select-manifest-v1',
@@ -681,7 +914,7 @@ function readImageSize(filePath) {
     return null;
 }
 
-function buildAssetReport(frames, stageNames, sourceStageButtonCount, sourceNavButtonCount, previewIndex) {
+function buildAssetReport(frames, stageNames, sourceStageButtonCount, sourceNavButtonCount, previewIndex, unmappedStageLikeInstances, ignoredStageButtonInstances) {
     const backgroundMissing = [];
     const backgroundFallbacks = [];
     const derivedBackgrounds = [];
@@ -712,6 +945,8 @@ function buildAssetReport(frames, stageNames, sourceStageButtonCount, sourceNavB
         sourceStageButtonInstances: sourceStageButtonCount,
         sourceNavButtonInstances: sourceNavButtonCount,
         uniqueStageNames: stageNames.length,
+        unmappedStageLikeInstances: unmappedStageLikeInstances || [],
+        ignoredStageButtonInstances: ignoredStageButtonInstances || [],
         backgroundMissing: backgroundMissing,
         backgroundFallbacks: backgroundFallbacks,
         derivedBackgrounds: derivedBackgrounds,
@@ -782,8 +1017,10 @@ function ensureDir(dir) {
 function copyAssets(manifest) {
     const backgroundDir = path.join(webAssetRoot, 'backgrounds');
     const previewDir = path.join(webAssetRoot, 'previews');
+    const decorationDir = path.join(webAssetRoot, 'decorations');
     ensureDir(backgroundDir);
     ensureDir(previewDir);
+    ensureDir(decorationDir);
 
     Object.keys(backgroundNames).forEach(function(sourceName) {
         const targetName = backgroundNames[sourceName];
@@ -806,6 +1043,30 @@ function copyAssets(manifest) {
         fs.copyFileSync(source, path.join(previewDir, previewAssetName(stageName)));
     });
     copyInternalPreviewAssets(manifest, previewDir);
+    copyDecorationAssets(decorationDir);
+}
+
+function copyDecorationAssets(decorationDir) {
+    const tempDir = path.join(projectRoot, 'tmp_ffdec_stage_select_decoration_export');
+    if (fs.existsSync(tempDir)) {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+    const result = childProcess.spawnSync(resolveJava(), [
+        '-jar', ffdecJar,
+        '-format', 'image:png_gif_jpeg',
+        '-selectid', String(magicSigilExportId),
+        '-export', 'image',
+        tempDir,
+        sourceSwf
+    ], { encoding: 'utf8' });
+    if (result.status !== 0) {
+        throw new Error('FFDec magic decoration export failed: ' + (result.stderr || result.stdout || result.error || 'unknown error'));
+    }
+    const exported = firstExisting(path.join(tempDir, magicSigilExportId + '.png'), path.join(tempDir, magicSigilExportId + '.jpg'));
+    if (!exported) {
+        throw new Error('Missing FFDec exported magic decoration image for character id ' + magicSigilExportId);
+    }
+    removeBlackToAlpha(exported, path.join(decorationDir, magicSigilAssetName));
 }
 
 function copyInternalPreviewAssets(manifest, previewDir) {
@@ -981,6 +1242,20 @@ function cropImage(source, target, crop) {
     const ffmpeg = childProcess.spawnSync('ffmpeg', args, { encoding: 'utf8' });
     if (ffmpeg.status !== 0) {
         throw new Error('ffmpeg crop failed for ' + path.relative(projectRoot, source) + ': ' + (ffmpeg.stderr || ffmpeg.error || 'unknown error'));
+    }
+}
+
+function removeBlackToAlpha(source, target) {
+    const ffmpeg = childProcess.spawnSync('ffmpeg', [
+        '-y',
+        '-hide_banner',
+        '-loglevel', 'error',
+        '-i', source,
+        '-vf', 'colorkey=0x000000:0.08:0.22,format=rgba',
+        target
+    ], { encoding: 'utf8' });
+    if (ffmpeg.status !== 0) {
+        throw new Error('ffmpeg transparent key failed for ' + path.relative(projectRoot, source) + ': ' + (ffmpeg.stderr || ffmpeg.error || 'unknown error'));
     }
 }
 

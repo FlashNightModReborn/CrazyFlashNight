@@ -16,12 +16,14 @@
 - `launcher/web/assets/stage-select/`：Web 运行时背景与预览图派生资产。
 - `tools/export-stage-select-manifest.js`：XFL/XML 到 manifest / assets / data module 的导出工具。
 - `tools/audit-stage-select-layout.js`：Stage Select 静态布局审计工具。
+- `tools/audit-diplomacy-stage-select-links.js`：外交地图 SWF 旧 `关卡地图` 返回门与 Web 选关回流审计工具。
 - `tools/run-stage-select-visual-audit.ps1`：FFDec 原帧与 Web 舞台截图的视觉对照工具，输出 `tmp/stage-select-visual-audit/sheets/*-compare.png`。
 
 ## 注意事项
 
 - 不要手动编辑 SWF。
-- Stage 2 Step 1 新增 AS2 bridge，只服务刘海屏“选关测试”真实进关闭环，并从 `StageInfoDict` / `tasks_to_do` 同步 hover 卡片所需的简介、限制词条与任务推荐难度；不替换原 Flash 选关入口，不手动编辑 SWF。
+- Stage 2 runtime 的 AS2 bridge 服务 Web 选关真实交互：普通 `选关按钮` 走难度进关，`配置关卡属性("外交-*")` / `Type=外交地图` 入口按 `shape/外交地图点.xml` 的 `#009900` 绿色点直达原 Flash 淡出跳转，旧外交地图 SWF 内返回 `关卡地图` 的门由公共 AS2 门函数转入 Web 选关，`地图-*` frameLabel 会反查回选关页签，页内跳转只记录 Web 当前选关页；原版 return nav 通过独立 `returnFrameLabel` + `stageSelectReturnFrame` 淡出回 `_root.关卡地图帧值` 对应基地帧，同场景返回只关闭 Web panel，`NPC任务_任务_关卡路径` 魔神入口按 `选关界面UI/Symbol 3325` 放置 `Symbol 3323` 的 `image/bitmap3321.png` 法阵底图，文字按钮按 `选关界面UI/魔神选关.xml` 的 90.6×21px 红色渐变矢量复刻并打开原 `委托任务界面`；不手动编辑 SWF。
+- 外交地图直达入口不能使用统一偏移：导出器会读取每个 `配置关卡属性("外交-*")` 符号内部的 `shape/外交地图点` 与 `DOMDynamicText` 矩阵生成 `directLayout`。`外交地图-第一防线防区.xml` 的点和文字相对坐标不同于通用外交点，必须以源符号 XML 为准。
 - 0 帧内容归入第一个 label `基地门口`；这是原 XFL 中 label 从 1 帧开始但内容从 0 帧开始导致的兼容规则。
 - 部分背景来自 SWF 内嵌 bitmap/shape。导出器优先使用 Adobe Animate 2024 / Flash CS6 自带 JRE 运行 `tools/ffdec/ffdec.jar`，并将派生图写入 `launcher/web/assets/stage-select/backgrounds/`。
 - 关卡 hover 预览分三类：外部 PNG、`Symbol 3274` 内部命名帧、默认预览帧。大部分内部预览可直接从 XFL `bin/M *.dat` 复制 JPEG；少量 lossless 图由导出器用 FFDec 补出。审计口径中 `previewMissing` 应为 0，`previewFallbacks` 表示内部/默认回退数量。

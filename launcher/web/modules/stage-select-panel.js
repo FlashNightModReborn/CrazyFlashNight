@@ -17,6 +17,7 @@ var StageSelectPanel = (function() {
     var _frameToggleLabelEl;
     var _frameToggleCounterEl;
     var _currentFrameLabel = '';
+    var _returnFrameLabel = '';
     var _fixtureName = 'mixed';
     var _fixture = null;
     var _lastDifficultyClick = null;
@@ -140,6 +141,7 @@ var StageSelectPanel = (function() {
         DESIGN_H = manifest.designSize && manifest.designSize.height || 576;
         _fixtureName = initData && initData.fixture || 'mixed';
         _currentFrameLabel = initData && initData.frameLabel || initData && initData.page || manifest.frameOrder[0];
+        _returnFrameLabel = initData && initData.returnFrameLabel || _currentFrameLabel;
         setFixture(_fixtureName);
         if (_fixtureSelectEl) _fixtureSelectEl.value = _fixtureName;
         if (_el) _el.classList.toggle('is-runtime', isRuntimeMode());
@@ -292,6 +294,7 @@ var StageSelectPanel = (function() {
         if (_summaryEl) {
             _summaryEl.innerHTML =
                 '<div>frame: <b>' + escapeHtml(frame.frameLabel) + '</b></div>' +
+                '<div>decorations: <b>' + (frame.decorations || []).length + '</b></div>' +
                 '<div>stage buttons: <b>' + (frame.stageButtons || []).length + '</b></div>' +
                 '<div>nav buttons: <b>' + (frame.navButtons || []).length + '</b></div>' +
                 '<div>background: <b>' + escapeHtml(frame.background && frame.background.mode || 'missing') + '</b></div>' +
@@ -321,24 +324,63 @@ var StageSelectPanel = (function() {
 
     function renderStageButtons(frame) {
         _buttonLayerEl.innerHTML = '';
+        (frame.decorations || []).forEach(function(item) {
+            _buttonLayerEl.appendChild(createDecoration(item));
+        });
         (frame.stageButtons || []).forEach(function(button) {
             _buttonLayerEl.appendChild(createStageButton(button));
         });
+    }
+
+    function createDecoration(item) {
+        var node = document.createElement('span');
+        node.className = 'stage-select-decoration';
+        node.classList.add('is-' + (item.kind || 'decor'));
+        node.classList.add('is-' + (item.variant || 'default'));
+        node.setAttribute('data-decoration-id', item.id || '');
+        node.setAttribute('data-decoration-kind', item.kind || '');
+        node.style.left = (Number(item.x) || 0) + 'px';
+        node.style.top = (Number(item.y) || 0) + 'px';
+        node.style.width = (Number(item.width) || 0) + 'px';
+        node.style.height = (Number(item.height) || 0) + 'px';
+        node.innerHTML = '<img class="stage-select-decoration-img" src="' + escapeAttr(resolveAssetUrl(item.assetUrl || '')) + '" alt="" draggable="false">';
+        return node;
     }
 
     function createStageButton(button) {
         var state = getStageState(button.stageName);
         var detail = buildStageDetail(button, state);
         var sizing = computeCardSizing(button, detail);
+        var direct = isDirectEntry(button);
+        var directSizing = direct ? computeDirectSizing(button) : null;
+        var mapLayout = direct && button.entryKind === 'map' && button.directLayout ? buildMapDirectLayout(button.directLayout) : null;
+        var displayName = getStageDisplayName(button);
         var node = document.createElement('div');
         node.className = 'stage-select-stage-button';
+        if (direct) {
+            node.classList.add('is-direct-entry');
+            node.classList.add('is-' + (button.entryKind || 'direct') + '-entry');
+            node.style.setProperty('--stage-direct-width', directSizing.width + 'px');
+            node.style.setProperty('--stage-direct-height', directSizing.height + 'px');
+            if (mapLayout) {
+                applyMapDirectLayoutVars(node, mapLayout);
+            }
+        }
         node.tabIndex = 0;
         node.setAttribute('role', 'button');
         node.setAttribute('data-stage-name', button.stageName);
         node.setAttribute('data-stage-id', button.id);
+        node.setAttribute('data-entry-kind', button.entryKind || 'difficulty');
         node.setAttribute('data-card-name-lines', String(sizing.nameLines));
-        node.style.left = button.x + 'px';
-        node.style.top = button.y + 'px';
+        if (mapLayout) {
+            node.style.left = (button.x + mapLayout.bounds.x) + 'px';
+            node.style.top = (button.y + mapLayout.bounds.y) + 'px';
+            node.style.width = mapLayout.bounds.width + 'px';
+            node.style.minHeight = mapLayout.bounds.height + 'px';
+        } else {
+            node.style.left = button.x + 'px';
+            node.style.top = button.y + 'px';
+        }
         node.style.setProperty('--stage-card-width', sizing.width + 'px');
         node.style.setProperty('--stage-card-height', sizing.cardHeight + 'px');
         if (button.y < 60) node.classList.add('is-edge-top');
@@ -347,32 +389,102 @@ var StageSelectPanel = (function() {
         if (!state.unlocked) node.classList.add('is-locked');
         if (state.task) node.classList.add('is-task');
         if (_busyStageName && _busyStageName === button.stageName) node.classList.add('is-busy');
-        node.innerHTML =
-            '<span class="stage-select-hit-zone" aria-hidden="true"></span>' +
-            renderStageMarkerSvg() +
-            '<span class="stage-select-stage-name">' + escapeHtml(button.stageName || '未命名') + '</span>' +
-            renderStageLockSvg() +
-            '<span class="stage-select-task-pulse"></span>' +
+        var cardHtml = direct ? '' :
             '<span class="stage-select-card">' +
                 '<span class="stage-select-card-corner" aria-hidden="true"></span>' +
-                '<span class="stage-select-card-name">' + escapeHtml(button.stageName || '未命名') + '</span>' +
+                '<span class="stage-select-card-name">' + escapeHtml(displayName) + '</span>' +
                 '<span class="stage-select-preview-wrap">' +
-                    '<img class="stage-select-preview" src="' + escapeAttr(resolveAssetUrl(button.previewUrl)) + '" alt="' + escapeAttr(button.stageName) + ' 预览" data-preview-source="' + escapeAttr(button.previewSource || '') + '">' +
+                    '<img class="stage-select-preview" src="' + escapeAttr(resolveAssetUrl(button.previewUrl)) + '" alt="' + escapeAttr(displayName) + ' 预览" data-preview-source="' + escapeAttr(button.previewSource || '') + '">' +
                 '</span>' +
                 '<span class="stage-select-card-detail">' + detail.html + '</span>' +
                 '<span class="stage-select-difficulties">' + renderDifficulties(button, state) + '</span>' +
             '</span>';
+        node.innerHTML =
+            '<span class="stage-select-hit-zone" aria-hidden="true"></span>' +
+            renderStageMarkerSvg() +
+            '<span class="stage-select-stage-name">' + escapeHtml(displayName) + '</span>' +
+            renderStageLockSvg() +
+            '<span class="stage-select-task-pulse"></span>' +
+            cardHtml;
         node.addEventListener('click', function(e) {
             if (e.target && e.target.classList && e.target.classList.contains('stage-select-difficulty')) return;
+            if (direct) {
+                if (e.target && e.target.closest && e.target.closest('.stage-select-card')) return;
+                requestStageActivation(button, '', null);
+                return;
+            }
             logDev('select stage: ' + button.stageName + (state.unlocked ? '' : ' (locked fixture)'));
         });
         node.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
+                if (direct) {
+                    requestStageActivation(button, '', null);
+                    return;
+                }
                 logDev('select stage: ' + button.stageName + (state.unlocked ? '' : ' (locked fixture)'));
             }
         });
         return node;
+    }
+
+    function isDirectEntry(button) {
+        return button && button.entryKind && button.entryKind !== 'difficulty';
+    }
+
+    function buildMapDirectLayout(layout) {
+        var marker = layout && layout.marker || {};
+        var text = layout && layout.text || {};
+        var markerX = finiteNumber(marker.x, 0);
+        var markerY = finiteNumber(marker.y, 120);
+        var textX = finiteNumber(text.x, -68.5);
+        var textY = finiteNumber(text.y, 135.7);
+        var textW = finiteNumber(text.width, 137);
+        var textH = finiteNumber(text.height, 34.3);
+        var minX = Math.min(markerX - 22, textX);
+        var minY = Math.min(markerY - 22, textY);
+        var maxX = Math.max(markerX + 22, textX + textW);
+        var maxY = Math.max(markerY + 22, textY + textH);
+        return {
+            marker: { x: markerX - minX, y: markerY - minY },
+            text: { x: textX - minX, y: textY - minY, width: textW, height: textH },
+            bounds: {
+                x: minX,
+                y: minY,
+                width: Math.max(1, maxX - minX),
+                height: Math.max(1, maxY - minY)
+            }
+        };
+    }
+
+    function applyMapDirectLayoutVars(node, layout) {
+        var marker = layout && layout.marker || {};
+        var text = layout && layout.text || {};
+        node.style.setProperty('--stage-map-marker-x', numericCss(marker.x, 0));
+        node.style.setProperty('--stage-map-marker-y', numericCss(marker.y, 120));
+        node.style.setProperty('--stage-map-text-x', numericCss(text.x, -68.5));
+        node.style.setProperty('--stage-map-text-y', numericCss(text.y, 135.7));
+        node.style.setProperty('--stage-map-text-width', numericCss(text.width, 137));
+        node.style.setProperty('--stage-map-text-height', numericCss(text.height, 34.3));
+    }
+
+    function finiteNumber(value, fallback) {
+        var n = Number(value);
+        return isFinite(n) ? n : fallback;
+    }
+
+    function numericCss(value, fallback) {
+        return finiteNumber(value, fallback) + 'px';
+    }
+
+    function getStageDisplayName(button) {
+        var directText = button && button.directLayout && button.directLayout.text && button.directLayout.text.label || '';
+        if ((button && button.entryKind) === 'map' && directText) return directText;
+        var name = button && button.stageName || '';
+        if ((button && button.entryKind) === 'map' && name.indexOf('外交-') === 0) {
+            return name.substr(3);
+        }
+        return name || '未命名';
     }
 
     function renderStageMarkerSvg() {
@@ -405,7 +517,7 @@ var StageSelectPanel = (function() {
         var difficulties = isChallengeMode() ? ['地狱'] : ['简单', '冒险', '修罗', '地狱'];
         return difficulties.map(function(name) {
             var active = state.task && state.highestDifficulty === name ? ' is-recommended' : '';
-            return '<button type="button" class="stage-select-difficulty is-' + difficultyClass(name) + active + '" data-stage-name="' + escapeAttr(button.stageName) + '" data-difficulty="' + escapeAttr(name) + '">' + escapeHtml(name) + '</button>';
+            return '<button type="button" class="stage-select-difficulty is-' + difficultyClass(name) + active + '" data-stage-name="' + escapeAttr(button.stageName) + '" data-entry-kind="' + escapeAttr(button.entryKind || 'difficulty') + '" data-difficulty="' + escapeAttr(name) + '">' + escapeHtml(name) + '</button>';
         }).join('');
     }
 
@@ -437,7 +549,7 @@ var StageSelectPanel = (function() {
                     setFrame(nav.targetFrameLabel, 'nav');
                     if (isRuntimeMode()) requestJumpFrame(nav.targetFrameLabel, nav, sourceFrameLabel);
                 } else if (isRuntimeMode() && (nav.actionKind === 'flashJumpCurrent' || nav.actionKind === 'flashJumpFrameValue')) {
-                    requestClose();
+                    requestReturnFrame(resolveReturnFrameLabel(nav), nav);
                 } else {
                     logDev('nav static only: ' + (nav.targetFrameLabel || nav.actionKind));
                 }
@@ -465,6 +577,13 @@ var StageSelectPanel = (function() {
         return target || nav.label || '返回';
     }
 
+    function resolveReturnFrameLabel(nav) {
+        if (nav && nav.actionKind === 'flashJumpFrameValue' && nav.targetFrameLabel) {
+            return nav.targetFrameLabel;
+        }
+        return _returnFrameLabel || _currentFrameLabel || '';
+    }
+
     function handleDifficultyClick(e) {
         var target = e.target;
         if (!target || !target.classList || !target.classList.contains('stage-select-difficulty')) return;
@@ -472,6 +591,18 @@ var StageSelectPanel = (function() {
         e.stopPropagation();
         var stageName = target.getAttribute('data-stage-name') || '';
         var difficulty = target.getAttribute('data-difficulty') || '';
+        var entryKind = target.getAttribute('data-entry-kind') || 'difficulty';
+        var button = findStageButton(stageName, entryKind);
+        if (button) {
+            requestStageActivation(button, difficulty, target);
+            return;
+        }
+        requestStageActivation({ stageName: stageName, entryKind: entryKind }, difficulty, target);
+    }
+
+    function requestStageActivation(button, difficulty, pressedTarget) {
+        var stageName = button && button.stageName || '';
+        var entryKind = button && button.entryKind || 'difficulty';
         var state = getStageState(stageName);
         if (!stageName) {
             showError('invalid_stage');
@@ -481,10 +612,11 @@ var StageSelectPanel = (function() {
             _lastDifficultyClick = {
                 stageName: stageName,
                 difficulty: difficulty,
+                entryKind: entryKind,
                 blocked: 'locked'
             };
             showError('locked');
-            logDev('difficulty blocked: ' + stageName + ' / locked');
+            logDev((entryKind === 'difficulty' ? 'difficulty' : entryKind) + ' blocked: ' + stageName + ' / locked');
             return;
         }
         if (_busyStageName) {
@@ -493,14 +625,26 @@ var StageSelectPanel = (function() {
         }
         _lastDifficultyClick = {
             stageName: stageName,
-            difficulty: difficulty
+            difficulty: difficulty,
+            entryKind: entryKind
         };
-        logDev('difficulty enter request: ' + stageName + ' / ' + difficulty);
-        target.classList.add('is-pressed');
-        setTimeout(function() {
-            target.classList.remove('is-pressed');
-        }, 180);
-        requestEnter(stageName, difficulty);
+        logDev((entryKind === 'difficulty' ? 'difficulty' : entryKind) + ' enter request: ' + stageName + (difficulty ? ' / ' + difficulty : ''));
+        if (pressedTarget && pressedTarget.classList && pressedTarget.classList.contains('stage-select-difficulty')) {
+            pressedTarget.classList.add('is-pressed');
+            setTimeout(function() {
+                pressedTarget.classList.remove('is-pressed');
+            }, 180);
+        }
+        requestEnter(stageName, difficulty, entryKind);
+    }
+
+    function findStageButton(stageName, entryKind) {
+        var frame = StageSelectData.getFrame(_currentFrameLabel);
+        var buttons = frame && frame.stageButtons || [];
+        for (var i = 0; i < buttons.length; i += 1) {
+            if (buttons[i].stageName === stageName && (buttons[i].entryKind || 'difficulty') === entryKind) return buttons[i];
+        }
+        return null;
     }
 
     function getStageState(stageName) {
@@ -693,6 +837,17 @@ var StageSelectPanel = (function() {
         return { width: width, nameLines: nameLines, cardHeight: cardHeight };
     }
 
+    function computeDirectSizing(button) {
+        var nameWeight = weighChars(button && button.stageName || '');
+        var width = Math.max(92, Math.min(168, Math.ceil(nameWeight * 13) + 28));
+        var height = nameWeight > 9.8 ? 34 : 26;
+        if (button && button.entryKind === 'task') {
+            width = 91;
+            height = 21;
+        }
+        return { width: width, height: height };
+    }
+
     function isChallengeMode() {
         if (_runtimeSnapshot && typeof _runtimeSnapshot.isChallengeMode !== 'undefined') return !!_runtimeSnapshot.isChallengeMode;
         return !!(_fixture && _fixture.challenge);
@@ -774,7 +929,7 @@ var StageSelectPanel = (function() {
         });
     }
 
-    function requestEnter(stageName, difficulty) {
+    function requestEnter(stageName, difficulty, entryKind) {
         if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') {
             showError('bridge_unavailable');
             return;
@@ -806,7 +961,44 @@ var StageSelectPanel = (function() {
             cmd: 'enter',
             callId: reqId,
             stageName: stageName,
-            difficulty: difficulty
+            difficulty: difficulty,
+            entryKind: entryKind || 'difficulty'
+        });
+    }
+
+    function requestReturnFrame(frameLabel, nav) {
+        var targetFrameLabel = frameLabel || _returnFrameLabel || _currentFrameLabel;
+        if (!targetFrameLabel) {
+            showError('invalid_return_frame');
+            return;
+        }
+        if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') {
+            showError('bridge_unavailable');
+            return;
+        }
+        var reqId = 'stage-select-return-' + (++_reqSeq);
+        var currentSession = _session;
+        _pendingReq[reqId] = function(resp) {
+            delete _pendingReq[reqId];
+            if (currentSession !== _session) return;
+            if (!resp.success) {
+                showError(resp.error || 'return_frame_failed');
+                return;
+            }
+            clearError();
+            logDev('return frame synced: ' + (resp.returnFrameLabel || targetFrameLabel));
+            if (resp.closePanel) {
+                requestClose();
+            }
+        };
+        Bridge.send({
+            type: 'panel',
+            panel: 'stage-select',
+            cmd: 'return_frame',
+            callId: reqId,
+            frameLabel: targetFrameLabel,
+            returnFrameLabel: targetFrameLabel,
+            navId: nav && nav.id || ''
         });
     }
 
@@ -953,6 +1145,7 @@ var StageSelectPanel = (function() {
                 frameLabel: _currentFrameLabel,
                 fixture: _fixtureName,
                 mode: _mode,
+                returnFrameLabel: _returnFrameLabel,
                 frameMenuOpen: _frameMenuOpen,
                 challenge: isChallengeMode(),
                 stageButtonCount: _buttonLayerEl ? _buttonLayerEl.querySelectorAll('.stage-select-stage-button').length : 0,

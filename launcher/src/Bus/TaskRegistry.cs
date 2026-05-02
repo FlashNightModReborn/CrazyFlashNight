@@ -92,7 +92,7 @@ namespace CF7Launcher.Bus
             if (intelligenceTask != null)
                 router.RegisterAsync("intelligence_response", intelligenceTask.HandleFlashResponse);
 
-            // AS2 → C# 面板打开请求 (旧 Flash 地图界面按钮 / openTaskMap 命令接入 WebView)
+            // AS2 → C# 面板打开请求 (旧 Flash 地图界面按钮 / openTaskMap / stage-select 命令接入 WebView)
             if (webOverlay != null)
             {
                 router.RegisterSync("cursor_control", webOverlay.HandleCursorControl);
@@ -103,7 +103,8 @@ namespace CF7Launcher.Bus
                     string source = msg.Value<string>("source") ?? "as2_request";
                     string pageId = msg.Value<string>("pageId") ?? "";
                     string frameLabel = msg.Value<string>("frameLabel") ?? "";
-                    webOverlay.RequestOpenPanel(panel, source, pageId, frameLabel);
+                    string returnFrameLabel = msg.Value<string>("returnFrameLabel") ?? "";
+                    webOverlay.RequestOpenPanel(panel, source, pageId, frameLabel, returnFrameLabel);
                     return null;
                 });
             }

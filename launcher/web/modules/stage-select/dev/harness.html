@@ -140,6 +140,7 @@
         sentMessages: [],
         enterMessages: [],
         jumpMessages: [],
+        returnMessages: [],
         nextEnterError: '',
         setViewport: function(value) {
             var parts = String(value || '1366x768').split('x');
@@ -156,6 +157,7 @@
                 mode: options.mode || 'dev',
                 fixture: fixtureSelect.value,
                 frameLabel: frameSelect.value,
+                returnFrameLabel: options.returnFrameLabel || frameSelect.value,
                 debug: options.debug !== false
             });
             statusEl.textContent = 'Opened ' + frameSelect.value + ' / ' + fixtureSelect.value;
@@ -208,6 +210,19 @@
                         frameLabel: message.frameLabel || ''
                     });
                 }, 15);
+            } else if (message.cmd === 'return_frame') {
+                host.returnMessages.push(message);
+                setTimeout(function() {
+                    window.chrome.webview.__dispatch({
+                        type: 'panel_resp',
+                        panel: 'stage-select',
+                        cmd: 'return_frame',
+                        callId: message.callId,
+                        success: true,
+                        closePanel: true,
+                        returnFrameLabel: message.returnFrameLabel || message.frameLabel || ''
+                    });
+                }, 15);
             }
         }
     };
@@ -221,10 +236,11 @@
         names.forEach(function(name) {
             if (!name) return;
             var state = stages[name] || {};
+            var manifestButton = findManifestStageButton(name);
             unlocked[name] = stages[name] ? !!state.unlocked : true;
             stageDetails[name] = {
                 exists: true,
-                stageType: '无限过图',
+                stageType: manifestButton && manifestButton.stageType || '无限过图',
                 detail: 'live detail: ' + name + '&amp;lt;BR&amp;gt;live second line',
                 materialDetail: 'live material: ' + name,
                 limitDetail: state.task ? '<FONT COLOR="#FFCC00">live limit: ' + name + '</FONT>' : '',
@@ -253,6 +269,17 @@
             });
         });
         return names;
+    }
+
+    function findManifestStageButton(stageName) {
+        for (var i = 0; i < manifest.frames.length; i += 1) {
+            var frame = manifest.frames[i];
+            var buttons = frame && frame.stageButtons || [];
+            for (var j = 0; j < buttons.length; j += 1) {
+                if (buttons[j].stageName === stageName) return buttons[j];
+            }
+        }
+        return null;
     }
 
     document.getElementById('stage-open-btn').addEventListener('click', function() { host.open(); });

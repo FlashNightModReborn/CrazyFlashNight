@@ -4475,6 +4475,30 @@ html.perf-low-effects .map-stage-backdrop::before {
     outline: none;
 }
 
+.stage-select-decoration {
+    position: absolute;
+    display: block;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.stage-select-decoration-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    mix-blend-mode: screen;
+    opacity: 0.96;
+}
+
+.stage-select-decoration.is-magic-sigil.is-red .stage-select-decoration-img {
+    filter: sepia(1) saturate(7) hue-rotate(310deg) brightness(0.96) contrast(1.22);
+}
+
+.stage-select-decoration.is-magic-sigil.is-blue .stage-select-decoration-img {
+    filter: saturate(1.28) brightness(1.04) contrast(1.08);
+}
+
 .stage-select-marker {
     position: absolute;
     left: 55.9px;
@@ -4562,6 +4586,103 @@ html.perf-low-effects .map-stage-backdrop::before {
 
 .stage-select-stage-button.is-locked .stage-select-stage-name {
     color: #94a3b8;
+}
+
+.stage-select-stage-button.is-map-entry .stage-select-marker-fill {
+    fill: #009900;
+}
+
+.stage-select-stage-button.is-map-entry {
+    width: 0;
+    min-height: 0;
+    transform: none;
+}
+
+.stage-select-stage-button.is-map-entry.is-locked {
+    display: none;
+}
+
+.stage-select-stage-button.is-map-entry .stage-select-marker {
+    left: calc(var(--stage-map-marker-x, 0px) - 14.625px);
+    top: calc(var(--stage-map-marker-y, 120px) - 14.625px);
+}
+
+.stage-select-stage-button.is-map-entry .stage-select-hit-zone {
+    left: calc(var(--stage-map-marker-x, 0px) - 22px);
+    top: calc(var(--stage-map-marker-y, 120px) - 22px);
+}
+
+.stage-select-stage-button.is-map-entry .stage-select-stage-name {
+    position: absolute;
+    left: var(--stage-map-text-x, -68.5px);
+    top: var(--stage-map-text-y, 135.7px);
+    width: var(--stage-map-text-width, 137px);
+    min-height: var(--stage-map-text-height, 34.3px);
+    background: transparent;
+}
+
+.stage-select-panel.is-runtime .stage-select-stage-button.is-map-entry .stage-select-stage-name {
+    background: transparent;
+}
+
+.stage-select-stage-button.is-map-entry:not(.is-locked):hover > .stage-select-marker,
+.stage-select-stage-button.is-map-entry:not(.is-locked):focus > .stage-select-marker {
+    display: block;
+}
+
+.stage-select-stage-button.is-map-entry:not(.is-locked):hover .stage-select-stage-name,
+.stage-select-stage-button.is-map-entry:not(.is-locked):focus .stage-select-stage-name {
+    visibility: visible;
+}
+
+.stage-select-stage-button.is-task-entry {
+    width: var(--stage-direct-width, 91px);
+    min-height: var(--stage-direct-height, 21px);
+    transform: none;
+}
+
+.stage-select-stage-button.is-task-entry .stage-select-marker,
+.stage-select-stage-button.is-task-entry .stage-select-task-pulse {
+    display: none;
+}
+
+.stage-select-stage-button.is-task-entry .stage-select-hit-zone {
+    left: 0;
+    top: 0;
+    width: var(--stage-direct-width, 91px);
+    height: var(--stage-direct-height, 21px);
+    border-radius: 5px;
+}
+
+.stage-select-stage-button.is-task-entry .stage-select-stage-name {
+    width: var(--stage-direct-width, 91px);
+    height: var(--stage-direct-height, 21px);
+    min-height: var(--stage-direct-height, 21px);
+    padding: 0 1px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+    font-family: NSimSun, SimSun, "Microsoft YaHei", Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: calc(var(--stage-direct-height, 21px) - 2px);
+    background: linear-gradient(180deg, #cc0000 0%, #660000 100%);
+    border: 1px solid #050505;
+    border-radius: 5px;
+    box-shadow:
+        inset 1px 1px 0 rgba(255, 255, 255, 0.18),
+        0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.stage-select-stage-button.is-task-entry:not(.is-locked):hover .stage-select-stage-name,
+.stage-select-stage-button.is-task-entry:not(.is-locked):focus .stage-select-stage-name {
+    visibility: visible;
+    filter: brightness(1.18);
+}
+
+.stage-select-stage-button.is-task-entry .stage-select-lock {
+    left: calc(var(--stage-direct-width, 91px) - 20px);
+    top: -8px;
 }
 
 .stage-select-stage-button.is-busy {

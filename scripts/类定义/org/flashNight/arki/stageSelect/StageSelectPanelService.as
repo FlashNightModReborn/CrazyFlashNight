@@ -20,6 +20,9 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         _root.gameCommands["stageSelectJumpFrame"] = function(params) {
             org.flashNight.arki.stageSelect.StageSelectPanelService.handleJumpFrame(params);
         };
+        _root.gameCommands["stageSelectReturnFrame"] = function(params) {
+            org.flashNight.arki.stageSelect.StageSelectPanelService.handleReturnFrame(params);
+        };
         _root.gameCommands["stageSelectPanelClose"] = function(params) {
             org.flashNight.arki.stageSelect.StageSelectPanelService.handleClose(params);
         };
@@ -50,7 +53,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
                 unlockedStages: unlocked,
                 stageDetails: details,
                 isChallengeMode: isChallengeMode(),
-                currentFrameLabel: String(_root.关卡地图帧值 || "")
+                currentFrameLabel: resolveStageSelectFrameLabel(String(_root.Web选关当前帧值 || _root.关卡地图帧值 || ""))
             }
         });
     }
@@ -59,7 +62,9 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         var callId = params.callId;
         var stageName:String = String(params.stageName || "");
         var difficulty:String = String(params.difficulty || "");
-        var validation:Object = validateEnter(stageName, difficulty);
+        var entryKind:String = String(params.entryKind || "difficulty");
+        if (entryKind == "") entryKind = "difficulty";
+        var validation:Object = validateEnter(stageName, difficulty, entryKind);
 
         if (!validation.success) {
             validation.task = "stage_select_response";
@@ -68,7 +73,22 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             return;
         }
 
-        performEnter(validation.context, difficulty);
+        var actionResult:Object;
+        if (entryKind == "map") {
+            actionResult = performMapEnter(validation.context.stageInfo);
+        } else if (entryKind == "task") {
+            actionResult = performTaskOpen(stageName);
+        } else {
+            performEnter(validation.context, difficulty);
+            actionResult = { success: true };
+        }
+
+        if (!actionResult.success) {
+            actionResult.task = "stage_select_response";
+            actionResult.callId = callId;
+            sendResponse(actionResult);
+            return;
+        }
 
         sendResponse({
             task: "stage_select_response",
@@ -76,7 +96,8 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             success: true,
             closePanel: true,
             stageName: stageName,
-            difficulty: difficulty
+            difficulty: difficulty,
+            entryKind: entryKind
         });
     }
 
@@ -93,13 +114,63 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             return;
         }
 
-        _root.关卡地图帧值 = frameLabel;
+        frameLabel = resolveStageSelectFrameLabel(frameLabel);
+        _root.Web选关当前帧值 = frameLabel;
         sendResponse({
             task: "stage_select_response",
             callId: callId,
             success: true,
             frameLabel: frameLabel
         });
+    }
+
+    public static function handleReturnFrame(params:Object):Void {
+        var callId = params != undefined ? params.callId : undefined;
+        var frameLabel:String = "";
+        if (params != undefined && params.returnFrameLabel != undefined) {
+            frameLabel = String(params.returnFrameLabel);
+        } else if (params != undefined && params.frameLabel != undefined) {
+            frameLabel = String(params.frameLabel);
+        } else if (_root.Web选关返回帧值 != undefined) {
+            frameLabel = String(_root.Web选关返回帧值 || "");
+        } else {
+            frameLabel = String(_root.关卡地图帧值 || "基地门口");
+        }
+        frameLabel = resolveRootReturnFrameLabel(frameLabel);
+        if (frameLabel == "") frameLabel = "基地门口";
+        var skipTransition:Boolean = isAlreadyAtReturnFrame(frameLabel);
+
+        if (!skipTransition && (_root.淡出动画 == undefined || _root.淡出动画.淡出跳转帧 == undefined)) {
+            sendResponse({
+                task: "stage_select_response",
+                callId: callId,
+                success: false,
+                error: "stage_transition_unavailable"
+            });
+            return;
+        }
+
+        _root.关卡地图帧值 = frameLabel;
+        _root.Web选关返回帧值 = frameLabel;
+        _root.场景进入位置名 = "出生地";
+        if (_root.场景转换函数 != undefined) {
+            _root.场景转换函数.Web选关打开中 = false;
+            if (_root.帧计时器 != undefined) {
+                _root.场景转换函数.上次切换帧数 = _root.帧计时器.当前帧数;
+            }
+        }
+
+        sendResponse({
+            task: "stage_select_response",
+            callId: callId,
+            success: true,
+            closePanel: true,
+            skippedTransition: skipTransition,
+            returnFrameLabel: frameLabel
+        });
+        if (!skipTransition) {
+            _root.淡出动画.淡出跳转帧(frameLabel);
+        }
     }
 
     public static function handleClose(params:Object):Void {
@@ -123,21 +194,53 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             ? String(params.frameLabel)
             : "";
         if (rawFrame == "") rawFrame = String(_root.关卡地图帧值 || "基地门口");
+        var returnFrame:String = (params != undefined && params.returnFrameLabel != undefined)
+            ? String(params.returnFrameLabel)
+            : "";
+        if (returnFrame == "") returnFrame = String(_root.Web选关返回帧值 || _root.关卡地图帧值 || "基地门口");
+
+        var stageFrame:String = resolveStageSelectFrameLabel(rawFrame);
+        returnFrame = resolveRootReturnFrameLabel(returnFrame);
+        if (stageFrame == "") stageFrame = "基地门口";
+        if (returnFrame == "") returnFrame = "基地门口";
+
+        _root.Web选关当前帧值 = stageFrame;
+        _root.Web选关返回帧值 = returnFrame;
+        _root.关卡地图帧值 = returnFrame;
 
         return _root.server.sendSocketMessage(_json.stringify({
             task: "panel_request",
             panel: "stage-select",
             source: source,
-            frameLabel: rawFrame
+            frameLabel: stageFrame,
+            returnFrameLabel: returnFrame
         }));
     }
 
-    private static function validateEnter(stageName:String, difficulty:String):Object {
+    private static function validateEnter(stageName:String, difficulty:String, entryKind:String):Object {
         if (stageName == "") return { success: false, error: "invalid_stage" };
         if (_root.StageInfoDict == undefined || _root.StageInfoDict[stageName] == undefined) {
             return { success: false, error: "invalid_stage" };
         }
-        if (!isSupportedStageType(_root.StageInfoDict[stageName].Type)) {
+        var stageInfo:Object = _root.StageInfoDict[stageName];
+        var stageType:String = String(stageInfo.Type || "");
+        if (entryKind == "map") {
+            if (stageType != "外交地图") return { success: false, error: "unsupported_stage_type" };
+            if (!canEnterStage(stageName)) return { success: false, error: "locked" };
+            if (stageInfo.RootFadeTransitionFrame == undefined || stageInfo.RootFadeTransitionFrame == "") {
+                return { success: false, error: "stage_config_failed" };
+            }
+            return { success: true, context: { stageInfo: stageInfo } };
+        }
+        if (entryKind == "task") {
+            if (!isDifficultyStageType(stageType)) return { success: false, error: "unsupported_stage_type" };
+            if (!canEnterStage(stageName)) return { success: false, error: "locked" };
+            return { success: true, context: { stageInfo: stageInfo } };
+        }
+        if (entryKind != "difficulty") {
+            return { success: false, error: "unsupported_entry_kind" };
+        }
+        if (!isDifficultyStageType(stageType)) {
             return { success: false, error: "unsupported_stage_type" };
         }
         if (!isValidDifficulty(difficulty)) {
@@ -185,6 +288,54 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             _root.soundEffectManager.stopBGMForTransition();
         }
         _root.淡出动画.淡出跳转帧(context.淡出跳转帧);
+    }
+
+    private static function performMapEnter(stageInfo:Object):Object {
+        if (_root.淡出动画 == undefined || _root.淡出动画.淡出跳转帧 == undefined) {
+            return { success: false, error: "stage_transition_unavailable" };
+        }
+        _root.场景进入位置名 = String(stageInfo.Address || "出生地");
+        if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
+            _root.soundEffectManager.stopBGMForTransition();
+        }
+        _root.淡出动画.淡出跳转帧(stageInfo.RootFadeTransitionFrame);
+        return { success: true };
+    }
+
+    private static function performTaskOpen(stageName:String):Object {
+        var panel:Object = _root.委托任务界面;
+        if (panel == undefined || panel == null) {
+            return { success: false, error: "task_ui_unavailable" };
+        }
+        if (typeof _root.getTaskData != "function") {
+            return { success: false, error: "task_data_unavailable" };
+        }
+        var taskData:Object = _root.getTaskData(stageName);
+        if (taskData == undefined || taskData == null) {
+            return { success: false, error: "task_data_unavailable" };
+        }
+        if (typeof panel.显示任务明细 != "function") {
+            return { success: false, error: "task_ui_unavailable" };
+        }
+        if (typeof panel.配置关卡属性 != "function") {
+            if (typeof _root.配置关卡属性 != "function") {
+                return { success: false, error: "stage_config_unavailable" };
+            }
+            panel.配置关卡属性 = _root.配置关卡属性;
+        }
+
+        panel.NPC任务_任务_起始帧 = null;
+        panel.taskData = taskData;
+        panel.NPC任务_任务_契约金 = taskData.deposit;
+        panel.NPC任务_任务_等级限制 = taskData.restricted_level;
+        panel.NPC任务_任务_K点 = taskData.Kdeposit;
+        if (typeof _root.SetDialogue == "function") {
+            _root.SetDialogue(taskData.get_conversation);
+        }
+        panel.配置关卡属性(stageName);
+        panel.显示任务明细(taskData);
+        panel._visible = true;
+        return { success: true };
     }
 
     private static function canEnterStage(stageName:String):Boolean {
@@ -257,8 +408,54 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         return info;
     }
 
-    private static function isSupportedStageType(stageType:String):Boolean {
+    private static function isDifficultyStageType(stageType:String):Boolean {
         return stageType == "无限过图" || stageType == "初期关卡";
+    }
+
+    private static function isSupportedStageType(stageType:String):Boolean {
+        return isDifficultyStageType(stageType) || stageType == "外交地图";
+    }
+
+    private static function resolveStageSelectFrameLabel(frameLabel:String):String {
+        if (frameLabel == "") return "基地门口";
+        if (frameLabel.indexOf("地图-") != 0) return frameLabel;
+        if (_root.StageInfoDict == undefined) return frameLabel;
+
+        for (var stageName in _root.StageInfoDict) {
+            var stageInfo:Object = _root.StageInfoDict[stageName];
+            if (stageInfo == undefined || stageInfo == null) continue;
+            if (String(stageInfo.Type || "") != "外交地图") continue;
+            if (String(stageInfo.RootFadeTransitionFrame || "") != frameLabel) continue;
+
+            var folder:String = extractStageFolder(String(stageInfo.url || ""));
+            if (folder != "") return folder;
+        }
+        return frameLabel;
+    }
+
+    private static function resolveRootReturnFrameLabel(frameLabel:String):String {
+        if (frameLabel == "") return "";
+        if (frameLabel.indexOf("地图-") == 0) return resolveStageSelectFrameLabel(frameLabel);
+        return frameLabel;
+    }
+
+    private static function isAlreadyAtReturnFrame(frameLabel:String):Boolean {
+        if (frameLabel == "") return false;
+        if (_root.当前为战斗地图 == true) return false;
+        if (String(_root.关卡标志 || "") == frameLabel) return true;
+        if (String(_root._currentlabel || "") == frameLabel) return true;
+        return false;
+    }
+
+    private static function extractStageFolder(url:String):String {
+        if (url == "") return "";
+        var parts:Array = url.split("/");
+        for (var i:Number = 0; i < parts.length - 1; i++) {
+            if (parts[i] == "stages" && parts[i + 1] != undefined && parts[i + 1] != "") {
+                return String(parts[i + 1]);
+            }
+        }
+        return "";
     }
 
     private static function isValidDifficulty(difficulty:String):Boolean {

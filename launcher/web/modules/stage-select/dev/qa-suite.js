@@ -66,7 +66,7 @@ var StageSelectHarnessQA = (function() {
                         currentFrameLabel: StageSelectPanel._debugGetState().frameLabel
                     });
                     var state = StageSelectPanel._debugGetState();
-                    var difficulties = document.querySelectorAll('.stage-select-difficulty');
+                    var difficulties = document.querySelectorAll('.stage-select-stage-button:not(.is-direct-entry) .stage-select-difficulty');
                     api.assert(state.challenge, 'challenge flag set');
                     api.assert(difficulties.length > 0, 'challenge difficulties rendered');
                     api.assert([].every.call(difficulties, function(btn) {
@@ -425,24 +425,44 @@ var StageSelectHarnessQA = (function() {
                     });
                 });
             }],
-            ['runtime-return-close', 'runtime return nav closes panel', function() {
+            ['runtime-return-close', 'runtime return nav syncs Flash frame and closes panel', function() {
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function() {
                     var manifest = StageSelectData.getManifest();
-                    var nav = document.querySelector('.stage-select-nav-button[data-action-kind="flashJumpCurrent"], .stage-select-nav-button[data-action-kind="flashJumpFrameValue"]');
-                    if (!nav) {
-                        manifest.frameOrder.some(function(label) {
-                            StageSelectPanel._debugSetFrame(label, 'qa-return');
-                            nav = document.querySelector('.stage-select-nav-button[data-action-kind="flashJumpCurrent"], .stage-select-nav-button[data-action-kind="flashJumpFrameValue"]');
-                            return !!nav;
-                        });
+                    var initialReturnFrameLabel = StageSelectPanel._debugGetState().returnFrameLabel;
+                    host.returnMessages.length = 0;
+                    var localNav = document.querySelector('.stage-select-nav-button[data-action-kind="localFrame"]');
+                    var afterLocalFrame = Promise.resolve();
+                    if (localNav) {
+                        host.jumpMessages.length = 0;
+                        localNav.click();
+                        afterLocalFrame = api.waitFor(function() {
+                            return host.jumpMessages.length ? true : null;
+                        }, 2000, 'pre-return local frame jump');
                     }
-                    api.assert(!!nav, 'runtime return nav exists');
-                    nav.click();
-                    return api.waitFor(function() {
-                        return Panels.getActive && Panels.getActive() === null ? true : null;
-                    }, 2000, 'return close').then(function() {
-                        return 'runtime return closed';
+                    return afterLocalFrame.then(function() {
+                        var nav = document.querySelector('.stage-select-nav-button[data-action-kind="flashJumpCurrent"], .stage-select-nav-button[data-action-kind="flashJumpFrameValue"]');
+                        if (!nav) {
+                            manifest.frameOrder.some(function(label) {
+                                StageSelectPanel._debugSetFrame(label, 'qa-return');
+                                nav = document.querySelector('.stage-select-nav-button[data-action-kind="flashJumpCurrent"], .stage-select-nav-button[data-action-kind="flashJumpFrameValue"]');
+                                return !!nav;
+                            });
+                        }
+                        api.assert(!!nav, 'runtime return nav exists');
+                        var expected = nav.getAttribute('data-action-kind') === 'flashJumpFrameValue'
+                            ? (StageSelectData.getFrame(StageSelectPanel._debugGetState().frameLabel).navButtons.filter(function(item) {
+                                return item.id === nav.getAttribute('data-nav-id');
+                            })[0] || {}).targetFrameLabel
+                            : initialReturnFrameLabel;
+                        nav.click();
+                        return api.waitFor(function() {
+                            return Panels.getActive && Panels.getActive() === null && host.returnMessages.length ? true : null;
+                        }, 2000, 'return close').then(function() {
+                            api.assertEqual(host.returnMessages[0].cmd, 'return_frame', 'return cmd');
+                            api.assertEqual(host.returnMessages[0].returnFrameLabel, expected, 'return frame label');
+                            return 'runtime return synced and closed';
+                        });
                     });
                 });
             }],
@@ -457,7 +477,7 @@ var StageSelectHarnessQA = (function() {
                     var manifest = StageSelectData.getManifest();
                     manifest.frameOrder.some(function(label) {
                         StageSelectPanel._debugSetFrame(label, 'qa-locked');
-                        lockedButton = document.querySelector('.stage-select-stage-button.is-locked');
+                        lockedButton = document.querySelector('.stage-select-stage-button.is-locked:not(.is-direct-entry)');
                         if (lockedButton) {
                             difficulty = lockedButton.querySelector('.stage-select-difficulty');
                             return true;
@@ -483,7 +503,7 @@ var StageSelectHarnessQA = (function() {
                 return waitRuntime(api).then(function() {
                     api.events.length = 0;
                     host.enterMessages.length = 0;
-                    var difficulty = document.querySelector('.stage-select-difficulty');
+                    var difficulty = document.querySelector('.stage-select-stage-button:not(.is-direct-entry) .stage-select-difficulty');
                     api.assert(!!difficulty, 'difficulty button exists');
                     difficulty.click();
                     return api.waitFor(function() {
@@ -500,7 +520,7 @@ var StageSelectHarnessQA = (function() {
                 host.open();
                 return waitRuntime(api).then(function() {
                     host.nextEnterError = 'invalid_stage';
-                    var difficulty = document.querySelector('.stage-select-difficulty');
+                    var difficulty = document.querySelector('.stage-select-stage-button:not(.is-direct-entry) .stage-select-difficulty');
                     api.assert(!!difficulty, 'difficulty button exists');
                     difficulty.click();
                     return api.waitFor(function() {
@@ -518,7 +538,7 @@ var StageSelectHarnessQA = (function() {
                 host.open();
                 return waitRuntime(api).then(function(state) {
                     api.assert(state.challenge, 'challenge flag set from snapshot');
-                    var difficulties = document.querySelectorAll('.stage-select-difficulty');
+                    var difficulties = document.querySelectorAll('.stage-select-stage-button:not(.is-direct-entry) .stage-select-difficulty');
                     api.assert(difficulties.length > 0, 'challenge difficulty exists');
                     api.assert([].every.call(difficulties, function(btn) {
                         return btn.getAttribute('data-difficulty') === '地狱';
@@ -531,6 +551,100 @@ var StageSelectHarnessQA = (function() {
                         api.assertEqual(msg.difficulty, '地狱', 'hell difficulty sent');
                         return 'challenge enter ok';
                     });
+                });
+            }],
+            ['direct-entry-actions', 'direct map/task entries send entryKind without difficulty', function() {
+                document.getElementById('stage-fixture-select').value = 'allUnlocked';
+                document.getElementById('stage-frame-select').value = '地下2层';
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    StageSelectPanel._debugSetFrame('地下2层', 'qa-direct-map');
+                    var directEntries = document.querySelectorAll('.stage-select-stage-button.is-direct-entry');
+                    var sigils = document.querySelectorAll('.stage-select-decoration.is-magic-sigil');
+                    var mapEntry = document.querySelector('.stage-select-stage-button.is-map-entry[data-stage-name="幸存者营地"]');
+                    var taskEntry = document.querySelector('.stage-select-stage-button.is-task-entry[data-stage-name="菲尼克斯Lv10"]');
+                    api.assert(sigils.length === 2, '地下2层 magic sigil base art rendered');
+                    api.assert(directEntries.length >= 6, '地下2层 direct entries rendered');
+                    api.assert(!!mapEntry, '幸存者营地 map entry rendered');
+                    api.assert(!!taskEntry, '菲尼克斯Lv10 task entry rendered');
+                    host.enterMessages.length = 0;
+                    api.assert(!mapEntry.querySelector('.stage-select-difficulty'), 'map entry has no secondary choice');
+                    mapEntry.click();
+                    return api.waitFor(function() {
+                        return host.enterMessages.length ? host.enterMessages[0] : null;
+                    }, 2000, 'direct map enter').then(function(msg) {
+                        api.assertEqual(msg.entryKind, 'map', 'map entryKind sent');
+                        api.assertEqual(msg.difficulty, '', 'map difficulty empty');
+                        api.assertEqual(msg.stageName, '幸存者营地', 'map stage name sent');
+                    });
+                }).then(function() {
+                    document.getElementById('stage-frame-select').value = '地下2层';
+                    host.open({ mode: 'runtime', debug: false });
+                    return waitRuntime(api).then(function() {
+                        StageSelectPanel._debugSetFrame('地下2层', 'qa-direct-task');
+                        var taskEntry = document.querySelector('.stage-select-stage-button.is-task-entry[data-stage-name="菲尼克斯Lv10"]');
+                        api.assert(!!taskEntry, '菲尼克斯Lv10 task entry rendered after reopen');
+                        host.enterMessages.length = 0;
+                        api.assert(!taskEntry.querySelector('.stage-select-difficulty'), 'task entry has no secondary choice');
+                        taskEntry.click();
+                        return api.waitFor(function() {
+                            return host.enterMessages.length ? host.enterMessages[0] : null;
+                        }, 2000, 'direct task enter').then(function(msg) {
+                            api.assertEqual(msg.entryKind, 'task', 'task entryKind sent');
+                            api.assertEqual(msg.difficulty, '', 'task difficulty empty');
+                            api.assertEqual(msg.stageName, '菲尼克斯Lv10', 'task stage name sent');
+                            return 'direct entries ok';
+                        });
+                    });
+                });
+            }],
+            ['runtime-diplomacy-layout', 'runtime diplomacy map points follow XFL internal marker/text matrices', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    var manifest = StageSelectData.getManifest();
+                    var checked = 0;
+                    manifest.frames.forEach(function(frame) {
+                        var mapButtons = (frame.stageButtons || []).filter(function(button) {
+                            return button.entryKind === 'map';
+                        });
+                        if (!mapButtons.length) return;
+                        StageSelectPanel._debugSetFrame(frame.frameLabel, 'qa-diplomacy-layout');
+                        var stage = document.querySelector('.stage-select-stage');
+                        var stageRect = stage.getBoundingClientRect();
+                        var scale = stageRect.width / 1024;
+                        mapButtons.forEach(function(button) {
+                            var layout = button.directLayout || {};
+                            var markerLayout = layout.marker || {};
+                            var textLayout = layout.text || {};
+                            var node = document.querySelector('.stage-select-stage-button[data-stage-id="' + button.id + '"]');
+                            api.assert(!!node, 'map node exists: ' + button.stageName);
+                            var marker = node.querySelector('.stage-select-marker');
+                            var label = node.querySelector('.stage-select-stage-name');
+                            api.assert(!!marker, 'map marker exists: ' + button.stageName);
+                            api.assert(!!label, 'map label exists: ' + button.stageName);
+
+                            var markerRect = marker.getBoundingClientRect();
+                            var labelRect = label.getBoundingClientRect();
+                            var markerX = (markerRect.left - stageRect.left + markerRect.width / 2) / scale;
+                            var markerY = (markerRect.top - stageRect.top + markerRect.height / 2) / scale;
+                            var labelX = (labelRect.left - stageRect.left) / scale;
+                            var labelY = (labelRect.top - stageRect.top) / scale;
+                            var expectedMarkerX = button.x + Number(markerLayout.x || 0);
+                            var expectedMarkerY = button.y + Number(markerLayout.y || 0);
+                            var expectedLabelX = button.x + Number(textLayout.x || 0);
+                            var expectedLabelY = button.y + Number(textLayout.y || 0);
+                            api.assert(Math.abs(markerX - expectedMarkerX) < 0.8, 'marker x matches XFL: ' + button.stageName);
+                            api.assert(Math.abs(markerY - expectedMarkerY) < 0.8, 'marker y matches XFL: ' + button.stageName);
+                            api.assert(Math.abs(labelX - expectedLabelX) < 1.2, 'label x matches XFL: ' + button.stageName);
+                            api.assert(Math.abs(labelY - expectedLabelY) < 1.2, 'label y matches XFL: ' + button.stageName);
+                            if (textLayout.label) {
+                                api.assertEqual(label.textContent, textLayout.label, 'label text matches XFL: ' + button.stageName);
+                            }
+                            checked += 1;
+                        });
+                    });
+                    api.assertEqual(checked, 9, 'checked diplomacy map entries');
+                    return 'diplomacy map layout ok';
                 });
             }],
             ['viewports', 'supported viewports keep stage visible', function() {
@@ -573,6 +687,7 @@ var StageSelectHarnessQA = (function() {
                         StageSelectPanel._debugSetFrame(label, 'qa-anchor');
                         var frame = StageSelectData.getFrame(label);
                         (frame.stageButtons || []).forEach(function(button) {
+                            if (button.entryKind === 'map' || button.entryKind === 'task') return;
                             var node = document.querySelector('.stage-select-stage-button[data-stage-id="' + button.id + '"]');
                             api.assert(!!node, 'missing button node ' + button.id);
                             assertNear(api, parseFloat(node.style.left), button.x, 0.01, 'button x ' + button.id);

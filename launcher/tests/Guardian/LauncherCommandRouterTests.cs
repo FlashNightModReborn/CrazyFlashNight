@@ -151,8 +151,20 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains("\"mode\":\"runtime\"", c.Posts[0]);
             Assert.Contains("\"fixture\":\"mixed\"", c.Posts[0]);
             Assert.Contains("\"frameLabel\":\"基地门口\"", c.Posts[0]);
+            Assert.Contains("\"returnFrameLabel\":\"基地门口\"", c.Posts[0]);
             Assert.Contains("\"source\":\"as2_base_gate\"", c.Posts[0]);
             Assert.Contains("\"debug\":false", c.Posts[0]);
+        }
+
+        [Fact]
+        public void RequestOpenPanel_StageSelect_CarriesExplicitReturnFrame()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.RequestOpenPanel("stage-select", "as2_legacy_stage_gate", null, "黑铁会总部", "基地车库");
+            Assert.Single(c.Posts);
+            Assert.Contains("\"frameLabel\":\"黑铁会总部\"", c.Posts[0]);
+            Assert.Contains("\"returnFrameLabel\":\"基地车库\"", c.Posts[0]);
         }
 
         [Fact]

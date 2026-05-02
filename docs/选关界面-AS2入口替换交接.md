@@ -7,11 +7,11 @@
 
 ## 0. 本轮落地摘要
 
-- AS2 已新增 `openWebStageSelect`、`stageSelectJumpFrame`、`stageSelectPanelClose` 命令；正式打开 payload 为 `panel_request` + `panel:"stage-select"` + `source` + `frameLabel`
-- C# `TaskRegistry` / `LauncherCommandRouter` / `WebOverlayForm` 已支持 `stage-select` panel request、`frameLabel` 初始化、runtime mode 固化、`jump_frame` 转发与 close 回调
-- Web runtime 已隐藏 fixture/dev 控件与测试标题；16 个 frame tab 收进可展开区域菜单，`localFrame` 先切 Web 页面再同步 AS2 frame，`return` / `return-garage` 只关闭 panel
-- 场景门替换已覆盖 `基地门口`、`车库`、`地下 2 层`、`停机坪`、`地图-联合大学` 左右出口；旧 `切换场景("", "关卡地图", ...)` 保留为发送失败 fallback
-- 战斗结束回流、角斗场返回、外交 / 委托任务 UI 不纳入本阶段
+- AS2 已新增 `openWebStageSelect`、`stageSelectJumpFrame`、`stageSelectReturnFrame`、`stageSelectPanelClose` 命令；正式打开 payload 为 `panel_request` + `panel:"stage-select"` + `source` + `frameLabel` + `returnFrameLabel`
+- C# `TaskRegistry` / `LauncherCommandRouter` / `WebOverlayForm` 已支持 `stage-select` panel request、`frameLabel/returnFrameLabel` 初始化、runtime mode 固化、`jump_frame` / `return_frame` 转发与 close 回调
+- Web runtime 已隐藏 fixture/dev 控件与测试标题；16 个 frame tab 收进可展开区域菜单，`localFrame` 先切 Web 页面再同步 AS2 frame，`return` / `return-garage` 先请求 AS2 淡出回对应基地帧，再关闭 panel
+- 场景门替换已覆盖 `基地门口`、`车库`、`地下 2 层`、`停机坪`、`地图-联合大学` 左右出口；只带 SWF 的外交地图若仍调用旧 `切换场景("", "关卡地图", ...)`，由公共 AS2 门函数捕获并转入 Web 选关；旧 Flash `关卡地图` 保留为发送失败 fallback
+- 战斗结束回流、角斗场返回不纳入本阶段；委托任务仍复用原 Flash `委托任务界面`
 
 ## 1. 已完成基线
 
@@ -39,13 +39,13 @@
 
 - 玩家从基地门口、车库、地下 2 层、停机坪、联合大学等旧入口进入关卡地图时，默认打开 Web `stage-select`
 - 不再把玩家带到 Flash 主时间轴 `关卡地图` 帧上显示 `关卡地图MC`
-- Web 关闭时回到原场景，不触发进关、不留下 HUD / 鼠标 / PanelHost 半状态
+- Web 关闭时不触发进关、不留下 HUD / 鼠标 / PanelHost 半状态；原版 return nav 复刻 `_root.淡出动画.淡出跳转帧(_root.关卡地图帧值)` 回到对应基地帧
 - 进关仍走 `stageSelectEnter`，由 AS2 执行原 `选关界面进入关卡` 等价副作用
 - 旧 Flash `关卡地图` 帧保留为回滚 fallback，不在本阶段删除
 
 不做：
 
-- 不迁移外交/委托任务界面
+- 不迁移外交地图场景本体 / 委托任务界面视觉
 - 不接管所有非战斗副本任务 UI
 - 不重做 2.5D / 天幕 / 场景现代化
 - 不手动编辑 SWF
@@ -87,24 +87,27 @@ _root.gameCommands["openWebStageSelect"] = function(params) {
   "task": "panel_request",
   "panel": "stage-select",
   "source": "as2_stage_map_door",
-  "frameLabel": "_root.关卡地图帧值"
+  "frameLabel": "当前选关页或当前外交地图帧",
+  "returnFrameLabel": "_root.关卡地图帧值"
 }
 ```
 
 AS2 侧要求：
 
-- `frameLabel` 默认取 `String(_root.关卡地图帧值 || "基地门口")`
+- `frameLabel` 默认取当前选关入口位置；外交地图返回门可传当前 `地图-*` 帧并由 AS2 反查到对应选关页
+- `returnFrameLabel` 单独保存原 `_root.关卡地图帧值`，用于 return nav 回到基地/地图入口；页内 `localFrame` 不允许覆盖它
+- 若 `frameLabel` 是 `地图-*` 外交地图帧，`StageSelectPanelService` 会按 `StageInfoDict.RootFadeTransitionFrame` 反查回其所属选关页签
 - `source` 由调用点传入，便于日志定位
 - 如果 `_root.server` 或 `sendSocketMessage` 不可用，返回失败并允许调用点走旧 `切换场景("", "关卡地图", ...)`
 - 字符串拼 JSON 时只拼固定字段和已清洗值；复杂扩展留给 C# / Web runtime snapshot
 
 ### 4.2 C# 支持 stage-select panel_request
 
-`TaskRegistry` 的 `panel_request` 已从 `panel/source/pageId` 扩展到 `frameLabel`。`LauncherCommandRouter.RequestOpenPanel` 当前显式支持 `map` 与 `stage-select`；`stage-select` 正式入口的 `mode` 由 C# 固化为 `runtime`，其他 panel 仍记录 unsupported，不扩大任意 JSON 透传面。
+`TaskRegistry` 的 `panel_request` 已从 `panel/source/pageId` 扩展到 `frameLabel/returnFrameLabel`。`LauncherCommandRouter.RequestOpenPanel` 当前显式支持 `map` 与 `stage-select`；`stage-select` 正式入口的 `mode` 由 C# 固化为 `runtime`，其他 panel 仍记录 unsupported，不扩大任意 JSON 透传面。
 
 当前实现：
 
-- `TaskRegistry` 解析 `frameLabel`
+- `TaskRegistry` 解析 `frameLabel/returnFrameLabel`
 - `WebOverlayForm.RequestOpenPanel` 增加对应参数重载
 - `LauncherCommandRouter.RequestOpenPanel` 支持 `panelName == "stage-select"`
 - `OpenStageSelectPanel(source, frameLabel)` 生成：
@@ -114,6 +117,7 @@ AS2 侧要求：
   "mode": "runtime",
   "fixture": "mixed",
   "frameLabel": "基地门口",
+  "returnFrameLabel": "基地门口",
   "debug": false,
   "source": "as2_stage_map_door"
 }
@@ -132,24 +136,26 @@ Web 已支持 runtime snapshot / enter，本轮补齐：
 - `mode === "runtime"` 下隐藏 fixture 控件、测试标题和 dev log，保留错误提示
 - 16 个 frame tab 收进可展开区域菜单，默认折叠，选择后同步 AS2 frame 并自动收起
 - runtime 下去掉右侧空信息栏，地图舞台改为单列主区域并放宽缩放上限
-- nav `return` / `return-garage` 在 runtime 下执行关闭 panel，而不是只 log
-- `localFrame` 先做 Web 内页切换，再发送 `jump_frame`，由 C# / AS2 同步 `_root.关卡地图帧值`
-- 非本阶段支持的外交/委托按钮保持不触发任务 UI；建议显示明确提示或保持静态
-- close/backdrop/ESC 都只关闭 Web panel，不发送进关命令
+- nav `return` / `return-garage` 在 runtime 下发送 `return_frame`，由 AS2 使用入口保存的 `returnFrameLabel` 设置 `_root.关卡地图帧值`、`_root.场景进入位置名 = "出生地"` 并淡出回对应基地帧；成功后 Web 关闭 panel
+- 如果 `returnFrameLabel` 已经等于当前 `_root.关卡标志` / `_root._currentlabel`，AS2 会返回 `skippedTransition=true` 并只关闭 Web panel，避免从基地门口打开后直接返回时重复黑屏
+- `localFrame` 先做 Web 内页切换，再发送 `jump_frame`，由 C# / AS2 只同步 `Web选关当前帧值`，不覆盖 `_root.关卡地图帧值`
+- 外交地图入口按原版绿色点直达，委托任务入口仍打开原 Flash 委托详情
+- close/backdrop/ESC 都只关闭 Web panel，不发送进关命令；不要和原版 return nav 的回场景语义混用
 
-如果采用“先拦截场景门，不进入 Flash `关卡地图` 帧”的策略，关闭 panel 后玩家自然停留原场景，Web 不需要再让 AS2 淡出返回。
+如果采用“先拦截场景门，不进入 Flash `关卡地图` 帧”的策略，close/backdrop/ESC 会停留原场景；玩家点击原版 `返回` nav 时必须走 `return_frame`，否则只带 SWF 的外交地图会在关闭 overlay 后露出外交地图本体。
 
 ### 4.4 替换 AS2 调用点
 
 本轮实际替换顺序：
 
-1. 新增 `openWebStageSelect` 与 `stageSelectJumpFrame` / `stageSelectPanelClose`
+1. 新增 `openWebStageSelect` 与 `stageSelectJumpFrame` / `stageSelectReturnFrame` / `stageSelectPanelClose`
 2. C# 支持 `panel_request stage-select`
 3. 抽出 `_root.场景转换函数.打开Web选关` helper，统一复用门入口判定与 fallback
-4. 替换 `基地门口.xml`
-5. 扩展到 `车库.xml`、`溶洞.xml`、`停机坪.xml`
-6. 扩展到 `地图-联合大学.xml` 左右出口
-7. `角斗场选择界面.xml` 不纳入 Stage 2
+4. 在公共 `切换场景` 中捕获 `目标场景帧 == "关卡地图"`，覆盖只带 SWF 的外交地图旧门
+5. 替换 `基地门口.xml`
+6. 扩展到 `车库.xml`、`溶洞.xml`、`停机坪.xml`
+7. 扩展到 `地图-联合大学.xml` 左右出口
+8. `角斗场选择界面.xml` 不纳入 Stage 2
 
 每个调用点建议保留 fallback：
 
@@ -169,9 +175,9 @@ if (打开Web选关 != undefined) {
 
 - C# `panel_request` 只允许显式 panel；`stage-select` 已接入，未知 panel 仍应保持 unsupported
 - 场景门脚本处于 `onClipEvent(enterFrame)`，错误调用可能导致重复打开 panel
-- Web 关闭语义和旧 Flash 返回按钮不同，必须确认玩家仍在原场景且输入恢复
+- Web close/backdrop/ESC 语义和旧 Flash 返回按钮不同，必须确认普通关闭不进关、return nav 能回对应基地帧且输入恢复
 - 挑战模式只允许地狱难度，替换正式入口后仍要覆盖
-- 外交/委托按钮仍留 Flash，不能误当普通关卡进入
+- 外交地图直达不能弹二次难度选择；委托任务仍打开原 Flash 委托详情，不能误当普通关卡进入
 - Flash compile smoke 只在有新鲜 trace / Output Panel 证据时才能宣称通过
 
 最低验收：
@@ -180,6 +186,7 @@ if (打开Web选关 != undefined) {
 node tools/run-stage-select-harness.js --browser edge
 node tools/export-stage-select-manifest.js --summary
 node tools/audit-stage-select-layout.js --json
+node tools/audit-diplomacy-stage-select-links.js --json
 powershell -ExecutionPolicy Bypass -File launcher/build.ps1
 powershell -ExecutionPolicy Bypass -File launcher/tests/run_tests.ps1
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1
@@ -189,8 +196,10 @@ node tools/validate-doc-governance.js
 手测路径：
 
 - 基地门口 → 选关 Web panel → 关闭 → 仍在基地门口，HUD/鼠标正常
+- 基地门口 → 选关 Web panel → 返回 nav → 淡出回基地门口，HUD/鼠标正常
 - 基地门口 → 选关 Web panel → 新手练习场 / 简单 → 成功进关
 - 车库 / 地下 2 层 / 停机坪 / 联合大学左右出口分别打开对应 `frameLabel`
+- 从第一防线防区等外交地图沿旧“返回选关”路径返回时，应打开 Web `stage-select` 而不是进入 Flash `关卡地图` 帧；随后点 Web `返回` nav 应回 `基地门口` / 对应基地帧，而不是露出外交地图
 - Web 页内跳转后关闭 / 重开，当前 frame 同步符合预期
 - 锁定关卡不可进
 - 挑战模式只显示/允许地狱
@@ -208,6 +217,6 @@ node tools/validate-doc-governance.js
 ```text
 Stage Select Stage 2 Step 2 已完成工程落地。
 后续优先做 Flash CS6 smoke 与人工验收，不要把战斗结束回流或角斗场返回误改成 Web panel。
-继续保留旧 Flash 关卡地图 fallback；不要迁移委托任务界面，不删除关卡地图MC。
+继续保留旧 Flash 关卡地图 fallback；外交地图旧门统一由公共门函数兜住，不手动编辑 SWF；不要迁移委托任务界面，不删除关卡地图MC。
 改动协议或测试入口后继续跑 Edge harness、launcher build/tests、Flash compile smoke、doc governance。
 ```

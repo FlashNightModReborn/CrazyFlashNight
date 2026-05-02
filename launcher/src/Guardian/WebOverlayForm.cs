@@ -3005,6 +3005,7 @@ namespace CF7Launcher.Guardian
                 case "refresh":
                 case "enter":
                 case "jump_frame":
+                case "return_frame":
                 case "catalog":
                 case "state":
                 case "bundle":
@@ -3190,15 +3191,20 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void RequestOpenPanel(string panelName, string source)
         {
-            RequestOpenPanel(panelName, source, null, null);
+            RequestOpenPanel(panelName, source, null, null, null);
         }
 
         public void RequestOpenPanel(string panelName, string source, string pageId)
         {
-            RequestOpenPanel(panelName, source, pageId, null);
+            RequestOpenPanel(panelName, source, pageId, null, null);
         }
 
         public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel)
+        {
+            RequestOpenPanel(panelName, source, pageId, frameLabel, null);
+        }
+
+        public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string returnFrameLabel)
         {
             if (_disposed) return;
             if (this.IsHandleCreated && this.InvokeRequired)
@@ -3207,7 +3213,7 @@ namespace CF7Launcher.Guardian
                 {
                     this.BeginInvoke(new Action(delegate()
                     {
-                        RequestOpenPanel(panelName, source, pageId, frameLabel);
+                        RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel);
                     }));
                 }
                 catch { }
@@ -3216,7 +3222,7 @@ namespace CF7Launcher.Guardian
 
             if (_commandRouter != null)
             {
-                _commandRouter.RequestOpenPanel(panelName, source, pageId, frameLabel);
+                _commandRouter.RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel);
                 return;
             }
             LogManager.Log("[Panel] RequestOpenPanel before router wired, panel=" + (panelName ?? "<null>"));

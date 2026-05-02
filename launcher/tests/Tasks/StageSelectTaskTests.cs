@@ -47,12 +47,13 @@ namespace CF7Launcher.Tests.Tasks
             string sent = null;
             var task = new StageSelectTask(delegate { return true; }, delegate(string payload) { sent = payload; });
 
-            task.HandleWebRequest("enter", JObject.Parse("{\"callId\":\"web-3\",\"stageName\":\"新手练习场\",\"difficulty\":\"简单\"}"));
+            task.HandleWebRequest("enter", JObject.Parse("{\"callId\":\"web-3\",\"stageName\":\"新手练习场\",\"difficulty\":\"简单\",\"entryKind\":\"difficulty\"}"));
 
             var msg = JObject.Parse(sent.TrimEnd('\0'));
             Assert.Equal("stageSelectEnter", (string)msg["action"]);
             Assert.Equal("新手练习场", (string)msg["stageName"]);
             Assert.Equal("简单", (string)msg["difficulty"]);
+            Assert.Equal("difficulty", (string)msg["entryKind"]);
         }
 
         [Fact]
@@ -66,6 +67,19 @@ namespace CF7Launcher.Tests.Tasks
             var msg = JObject.Parse(sent.TrimEnd('\0'));
             Assert.Equal("stageSelectJumpFrame", (string)msg["action"]);
             Assert.Equal("基地车库", (string)msg["frameLabel"]);
+        }
+
+        [Fact]
+        public void HandleWebRequest_ReturnFrame_SendsStageSelectReturnFrameAction()
+        {
+            string sent = null;
+            var task = new StageSelectTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("return_frame", JObject.Parse("{\"callId\":\"web-6\",\"returnFrameLabel\":\"基地门口\"}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("stageSelectReturnFrame", (string)msg["action"]);
+            Assert.Equal("基地门口", (string)msg["returnFrameLabel"]);
         }
 
         [Fact]

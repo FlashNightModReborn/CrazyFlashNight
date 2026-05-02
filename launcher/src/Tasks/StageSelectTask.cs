@@ -82,6 +82,9 @@ namespace CF7Launcher.Tasks
                 case "jump_frame":
                     action = "stageSelectJumpFrame";
                     break;
+                case "return_frame":
+                    action = "stageSelectReturnFrame";
+                    break;
                 default:
                     RespondError(webCallId, cmd, "unsupported_cmd");
                     return;
