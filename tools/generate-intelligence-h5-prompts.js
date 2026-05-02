@@ -79,7 +79,7 @@ ${pageLines}
 {
   "schemaVersion": 1,
   "itemName": "条目名",
-  "skin": "paper|report|dossier|terminal|newspaper|blueprint|diary|edict",
+  "skin": "paper|report|dossier|terminal|newspaper|blueprint|diary|edict|field-notes",
   "pages": [
     { "pageKey": "1", "blocks": [] }
   ]
@@ -87,9 +87,22 @@ ${pageLines}
 \`\`\`
 
 ## 组件白名单
-block: paragraph, heading, list, table, quote, divider, stamp, note, handwritten, annotation, terminalLog, redaction, decryptBlock, blueprint, timeline, hardwareExtract, surfaceMark
+block: paragraph, heading, list, table, quote, divider, stamp, note, handwritten, annotation, terminalLog, redaction, decryptBlock, blueprint, timeline, hardwareExtract, surfaceMark, paperFragment, paperStage
 
 inline: text, strong, underline, colorToken, damageText, redaction, decryptText, pcName
+
+## decryptText 锁死契约（重要）
+- 当玩家 \`decryptLevel\` < \`decryptText.level\` 时，C# 会**剥离 content 字段**，前端不渲染明文，不挂 hover/click。
+- 视觉按 level 自动分档：1-3 撕缺米色纸条 / 4-6 涂改液划线 / 7-9 焦痕碎块 / 10 油墨晕染。
+- \`encryptedText\` 字段是必需的（锁定时用作占位），\`content\` 是真正的明文（解锁后才下发）。
+- 这意味着 \`decryptText\` 是**真隐藏**，不再像 redaction 一样可 hover 偷看。
+
+## 叙事容器（field-notes skin 的统一隐喻）
+- \`paperStage\`：碎纸条容器，必带 \`layout\`：\`stack\`（纵向堆叠，主用）或 \`scatter\`（绝对定位散落，配合 x/y/w/rotate）。
+  - \`fragments\` 数组里只放 \`paperFragment\` 块，不要混其他 block。
+- \`paperFragment\`：单张纸条；属性 \`tone\`（aged/burnt/torn/ink/carbon）+ \`pin\`（none/pushpin/tape/clip）。
+  - 内容用 \`content\`（inline 数组，常见情况）或 \`blocks\`（嵌入 heading/annotation 等复合结构）。
+  - \`pushpin\` 适合主条目、\`clip\` 适合延伸观察、\`tape\` 适合短结论旁注、\`none\` 适合 scatter 散落彩蛋页。
 
 ## 约束
 - \`pages[].pageKey\` 必须与上方 PageKey 契约完全一致，顺序也一致。
@@ -98,10 +111,11 @@ inline: text, strong, underline, colorToken, damageText, redaction, decryptText,
 - \`\${PC_NAME}\` 转 \`{ "type": "pcName" }\`。
 - 手写批注、档案人注记、铅笔/红字旁注优先转 handwritten block。
 - [已编辑]、[数据损毁]、[缺失]、[已删除]、[涂抹]、[签名模糊] 等不可恢复占位优先转 damageText；只有存在真实可 reveal 明文时才使用 redaction。
-- 段落内需要“鼠标悬浮/点击显示明文”的局部密文优先转 decryptText，不要把整页包成 decryptBlock。
+- 段落内需要"按等级解锁后显示明文"的局部密文用 decryptText（参考上方契约）。
 - 终端/芯片/U盘/黑匣子/缓存/上传内容可用 terminalLog 或 hardwareExtract。
 - 图纸/配方/材料清单可用 blueprint 或 table。
 - 污垢、水痕、血手印、折痕、破损边缘等纸面痕迹可用 surfaceMark，variant 使用 dirt / water / blood-hand / fold / tear。
+- 想走"纸条钉到本子上"的统一隐喻时，整页用 \`paperStage\` 包裹，所有正文转 \`paperFragment\`，skin 用 \`field-notes\`。
 
 ## 验收
 完成后必须通过：

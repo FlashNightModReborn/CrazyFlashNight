@@ -26,6 +26,8 @@ const BLOCK_TYPES = new Set([
   'timeline',
   'hardwareExtract',
   'surfaceMark',
+  'paperFragment',
+  'paperStage',
 ]);
 
 const INLINE_TYPES = new Set([
@@ -82,6 +84,27 @@ const SKINS = new Set([
   'blueprint',
   'diary',
   'edict',
+  'field-notes',
+]);
+
+const FRAGMENT_TONES = new Set([
+  'aged',
+  'burnt',
+  'torn',
+  'ink',
+  'carbon',
+]);
+
+const FRAGMENT_PINS = new Set([
+  'none',
+  'pushpin',
+  'tape',
+  'clip',
+]);
+
+const STAGE_LAYOUTS = new Set([
+  'stack',
+  'scatter',
 ]);
 
 function read(filePath) {
@@ -185,6 +208,16 @@ function validateBlock(block, loc, errors) {
   if (block.type === 'surfaceMark' && block.variant && !SURFACE_VARIANTS.has(block.variant)) {
     errors.push(`${loc}: unknown surface variant "${block.variant}"`);
   }
+  if (block.type === 'paperFragment') {
+    const tone = block.tone || 'aged';
+    if (!FRAGMENT_TONES.has(tone)) errors.push(`${loc}: unknown fragment tone "${tone}"`);
+    const pin = block.pin || 'none';
+    if (!FRAGMENT_PINS.has(pin)) errors.push(`${loc}: unknown fragment pin "${pin}"`);
+  }
+  if (block.type === 'paperStage') {
+    const layout = block.layout || 'stack';
+    if (!STAGE_LAYOUTS.has(layout)) errors.push(`${loc}: unknown stage layout "${layout}"`);
+  }
   ['content', 'title', 'caption', 'label', 'note'].forEach((key) => {
     if (Array.isArray(block[key])) validateInlineArray(block[key], `${loc}.${key}`, errors);
   });
@@ -200,6 +233,7 @@ function validateBlock(block, loc, errors) {
   if (Array.isArray(block.reveal)) block.reveal.forEach((child, index) => validateBlock(child, `${loc}.reveal[${index}]`, errors));
   if (Array.isArray(block.plain)) block.plain.forEach((child, index) => validateBlock(child, `${loc}.plain[${index}]`, errors));
   if (Array.isArray(block.encrypted)) block.encrypted.forEach((child, index) => validateBlock(child, `${loc}.encrypted[${index}]`, errors));
+  if (Array.isArray(block.fragments)) block.fragments.forEach((child, index) => validateBlock(child, `${loc}.fragments[${index}]`, errors));
   if (Array.isArray(block.entries)) {
     block.entries.forEach((entry, index) => {
       if (entry && Array.isArray(entry.content)) validateInlineArray(entry.content, `${loc}.entries[${index}].content`, errors);
