@@ -1,16 +1,16 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-剑气释放" itemID="6958f3c4-00003690" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-剑气释放" lastModified="1769694923" lastUniqueIdentifier="4136">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-剑气释放" itemID="6958f3c4-00003690" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-剑气释放" lastModified="1777726464" lastUniqueIdentifier="4137">
   <timeline>
     <DOMTimeline name="兵器攻击容器-剑气释放" currentFrame="12">
       <layers>
-        <DOMLayer name="左手-2" color="#AFE9DD" locked="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#AFE9DD" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" name="剑气释放" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码相关" color="#FF800A" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#EA62EE" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="代码相关" color="#FF800A" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="攻击as" color="#EA62EE" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <Actionscript>
@@ -34,14 +34,14 @@ _parent.UpdateSmallState("剑气释放中");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#808080" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#808080" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器使用检测" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="兵器使用检测" color="#FF4FFF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements>
@@ -57,7 +57,7 @@ _parent.UpdateSmallState("剑气释放中");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器攻击检测" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="兵器攻击检测" color="#FF800A" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements>
@@ -73,14 +73,14 @@ _parent.UpdateSmallState("剑气释放中");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#DDB110" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#DDB110" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -106,14 +106,14 @@ _parent.UpdateSmallState("剑气释放中");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#FF800A" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#FF800A" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -284,7 +284,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手-2" color="#B9D016" locked="true" autoNamed="false">
+        <DOMLayer name="左手-2" color="#B9D016" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -358,7 +358,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左下臂-2" color="#8FDE82" locked="true" autoNamed="false">
+        <DOMLayer name="左下臂-2" color="#8FDE82" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -428,7 +428,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#19D0A9" locked="true" autoNamed="false">
+        <DOMLayer name="刀" color="#19D0A9" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -498,7 +498,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左上臂-2" color="#F13ED0" locked="true" autoNamed="false">
+        <DOMLayer name="左上臂-2" color="#F13ED0" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -532,7 +532,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#ADBECD" locked="true" autoNamed="false">
+        <DOMLayer name="右小腿" color="#ADBECD" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -566,7 +566,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪" color="#7FB7C9" locked="true" autoNamed="false">
+        <DOMLayer name="手枪" color="#7FB7C9" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -600,7 +600,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#8E8EAF" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="右小腿" color="#8E8EAF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -650,7 +650,35 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右脚" color="#7AE78C" locked="true" autoNamed="false">
+        <DOMLayer name="副手刀" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-95.5" centerPoint3DY="48.55">
+                  <matrix>
+                    <Matrix a="-0.141769409179688" b="-0.989181518554688" c="-0.98797607421875" d="0.141571044921875" tx="119.55" ty="21.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.4" y="111.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-80.5" centerPoint3DY="97.75">
+                  <matrix>
+                    <Matrix a="-0.141769409179688" b="-0.989181518554688" c="-0.98797607421875" d="0.141571044921875" tx="134.55" ty="70.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.4" y="111.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右脚" color="#7AE78C" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -720,7 +748,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右大腿" color="#D7EA78" locked="true" autoNamed="false">
+        <DOMLayer name="右大腿" color="#D7EA78" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -790,7 +818,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左小腿" color="#38ECD3" locked="true" autoNamed="false">
+        <DOMLayer name="左小腿" color="#38ECD3" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -860,7 +888,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左脚" color="#C7E838" locked="true" autoNamed="false">
+        <DOMLayer name="左脚" color="#C7E838" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -930,7 +958,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="屁股" color="#72F4A6" locked="true" autoNamed="false">
+        <DOMLayer name="屁股" color="#72F4A6" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1000,7 +1028,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头" color="#7F92B3" locked="true" autoNamed="false">
+        <DOMLayer name="头" color="#7F92B3" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1070,7 +1098,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="身体" color="#CBE269" locked="true" autoNamed="false">
+        <DOMLayer name="身体" color="#CBE269" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1140,7 +1168,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手" color="#A86CDA" locked="true" autoNamed="false">
+        <DOMLayer name="左手" color="#A86CDA" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1210,7 +1238,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头" color="#FF800A" locked="true" autoNamed="false">
+        <DOMLayer name="头" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1280,7 +1308,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF" locked="true">
+        <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1350,7 +1378,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 22" color="#12EDB6" locked="true">
+        <DOMLayer name="Layer 22" color="#12EDB6">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1420,7 +1448,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左大腿" color="#C77188" locked="true" autoNamed="false">
+        <DOMLayer name="左大腿" color="#C77188" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1490,7 +1518,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="手枪2" color="#6796DF" locked="true" autoNamed="false">
+        <DOMLayer name="手枪2" color="#6796DF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1539,7 +1567,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 27" color="#9EF477" locked="true">
+        <DOMLayer name="Layer 27" color="#9EF477">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1588,7 +1616,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 28" color="#D15C9E" locked="true">
+        <DOMLayer name="Layer 28" color="#D15C9E">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1637,7 +1665,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 29" color="#59B48B" locked="true">
+        <DOMLayer name="Layer 29" color="#59B48B">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1693,7 +1721,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左下臂" color="#F95194" locked="true" autoNamed="false">
+        <DOMLayer name="左下臂" color="#F95194" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -1763,7 +1791,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左上臂" color="#E6E462" locked="true" autoNamed="false">
+        <DOMLayer name="左上臂" color="#E6E462" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1869,7 +1897,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#697CF8" locked="true" autoNamed="false">
+        <DOMLayer name="阴影" color="#697CF8" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements>

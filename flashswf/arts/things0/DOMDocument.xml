@@ -10,7 +10,7 @@
           <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a"/>
-          <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
+          <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
           <DOMFolderItem name="个人编辑单位" itemID="695d3442-00003dd6"/>
           <DOMFolderItem name="个人编辑单位/浮士德的一堆相关或是不相关" itemID="695d3442-00003dd7"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
@@ -101,7 +101,7 @@
           <DOMFolderItem name="余烬小队/余烬剑痴" itemID="663cf35d-000026f8" isExpanded="true"/>
           <DOMFolderItem name="重复项目文件夹" itemID="66b9eabe-00000ca4"/>
           <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
-          <DOMFolderItem name="主角肢体素材" itemID="68c8295d-0000091e"/>
+          <DOMFolderItem name="主角肢体素材" itemID="68c8295d-0000091e" isExpanded="true"/>
      </folders>
      <media>
           <DOMSoundItem name="音效/armorfoley.wav" itemID="66abac42-00000443" sourceExternalFilepath="../../../SteamLibrary/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/未命名-1/LIBRARY/音效/armorfoley.wav" sourceLastImported="1722526777" href="音效/armorfoley.wav" soundDataHRef="M 96 1767715906.dat" format="44kHz 16bit Mono" sampleCount="22050" exportFormat="5" exportBits="17"/>
@@ -1123,9 +1123,9 @@
           <Include href="sprite/兵器待机.xml" loadImmediate="false" itemID="690df7b1-00000ba7" lastModified="1777484789"/>
           <Include href="sprite/兵器攻击标志.xml" loadImmediate="false" itemID="697b1094-00002018" lastModified="1719241660"/>
           <Include href="sprite/兵器跑.xml" loadImmediate="false" itemID="690ce8f2-00000725" lastModified="1777484864"/>
-          <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1769694922"/>
+          <Include href="sprite/兵器跑攻.xml" loadImmediate="false" itemID="690cd8bb-0000117d" lastModified="1777725729"/>
           <Include href="sprite/兵器使用标签.xml" loadImmediate="false" itemID="697b1094-00002017" lastModified="1719241655"/>
-          <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1771510315"/>
+          <Include href="sprite/兵器跳跃.xml" loadImmediate="false" itemID="690cd8ce-0000117e" lastModified="1777728745"/>
           <Include href="sprite/兵器跳跃旧动作备份.xml" loadImmediate="false" itemID="690cd8d3-0000117f" lastModified="1769694922"/>
           <Include href="sprite/兵器走路.xml" loadImmediate="false" itemID="690ce360-00000724" lastModified="1777486663"/>
           <Include href="sprite/兵器走路旧版备份.xml" loadImmediate="false" itemID="690ce373-00000766" lastModified="1769694922"/>
@@ -1300,25 +1300,25 @@
           <Include href="拳风特效.xml" itemIcon="1" loadImmediate="false" itemID="68499705-000050c2" lastModified="1749653253"/>
           <Include href="容器/兵器攻击容器/！兵器攻击容器-旋刃1连招.xml" loadImmediate="false" itemID="696461a6-00000a23" lastModified="1770225157"/>
           <Include href="容器/兵器攻击容器/！兵器攻击容器-长枪原动作.xml" loadImmediate="false" itemID="69647489-00000fef" lastModified="1769694922"/>
-          <Include href="容器/兵器攻击容器/↓R兵攻容器-次元斩.xml" itemID="695dde0b-00003179" lastModified="1769694923"/>
+          <Include href="容器/兵器攻击容器/↓R兵攻容器-次元斩.xml" itemID="695dde0b-00003179" lastModified="1777726048"/>
           <Include href="容器/兵器攻击容器/↓R兵攻容器-追地祀.xml" itemID="695dde14-0000317a" lastModified="1777378574"/>
           <Include href="容器/兵器攻击容器/兵器攻击.xml" loadImmediate="false" itemID="6976bf0b-00000a1f" lastModified="1769694922"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-百万突刺.xml" itemID="695a240a-00001045" lastModified="1771728976"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-百万突刺.xml" itemID="695a240a-00001045" lastModified="1777726916"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-飞沙走石.xml" itemID="695a4279-000014b2" lastModified="1777377797"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-粉碎切割.xml" itemID="695a23b9-00001043" lastModified="1777377803"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-粉碎切割.xml" itemID="695a23b9-00001043" lastModified="1777727048"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-风卷残云.xml" itemID="6967a6cc-00002d54" lastModified="1777377813"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-贯穿突刺.xml" itemID="695a42b9-0000153e" lastModified="1769694923"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-幻影剑舞.xml" itemID="6965fa98-00000ac4" lastModified="1772361892"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-贯穿突刺.xml" itemID="695a42b9-0000153e" lastModified="1777727135"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-幻影剑舞.xml" itemID="6965fa98-00000ac4" lastModified="1777726694"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-见切后撤.xml" itemID="695a2f8a-000012d5" lastModified="1777377818"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-剑气释放.xml" itemID="6958f3c4-00003690" lastModified="1769694923"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-剑气释放.xml" itemID="6958f3c4-00003690" lastModified="1777726464"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-空坠强袭.xml" itemID="695b3df6-00002f39" lastModified="1777377832"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-猎影十字.xml" itemID="6959f10a-00000b18" lastModified="1777377836"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-猎影十字.xml" itemID="6959f10a-00000b18" lastModified="1777726362"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-千山破晓钟.xml" itemID="696533ff-00003120" lastModified="1777378540"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-全垒打.xml" itemID="696796fb-000028fd" lastModified="1777378547"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-日曜三段突.xml" itemID="696529f6-00002c87" lastModified="1777378558"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-十六夜月华.xml" itemID="695a2793-00001246" lastModified="1777378563"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-蓄力重劈.xml" itemID="695a431f-000015c6" lastModified="1776006974"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-月光斩.xml" itemID="695a2a52-0000128d" lastModified="1769694923"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-十六夜月华.xml" itemID="695a2793-00001246" lastModified="1777727811"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-蓄力重劈.xml" itemID="695a431f-000015c6" lastModified="1777727994"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-月光斩.xml" itemID="695a2a52-0000128d" lastModified="1777727582"/>
           <Include href="容器/兵器攻击容器/平A/！兵器攻击容器-棍棒1连招（屑鱼搓的）.xml" loadImmediate="false" itemID="6986462c-00000c0f" lastModified="1770407468"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-1连招.xml" itemID="6976bef2-00000a1e" lastModified="1775484676"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-刀剑1连招.xml" itemID="69637c74-0000337c" lastModified="1777343187"/>
@@ -1328,7 +1328,7 @@
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml" itemID="69eff1b8-00000ac4" lastModified="1777484685"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1777471753"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml" itemID="696493ce-00000e0e" lastModified="1770225044"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招.xml" itemID="6974a6b3-00001f9d" lastModified="1777469210"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招.xml" itemID="6974a6b3-00001f9d" lastModified="1777726113"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-迅捷1连招.xml" itemID="69875871-00000a1a" lastModified="1777381558"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1775485128"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml" itemID="696c6d20-0000139b" lastModified="1777471731"/>
@@ -2229,7 +2229,7 @@
                                         <script><![CDATA[stop();]]></script>
                                    </Actionscript>
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="加载MC库-00" centerPoint3DX="1277" centerPoint3DY="546.05">
+                                        <DOMSymbolInstance libraryItemName="加载MC库-00" selected="true" centerPoint3DX="1277" centerPoint3DY="546.05">
                                              <matrix>
                                                   <Matrix tx="356.3" ty="-65.75"/>
                                              </matrix>
@@ -2724,6 +2724,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4330956" publishTime="1777725345"/>
           <PublishItem publishSize="4324235" publishTime="1777485037"/>
           <PublishItem publishSize="4322489" publishTime="1777352865"/>
           <PublishItem publishSize="4322495" publishTime="1777351860"/>
@@ -2743,6 +2744,5 @@
           <PublishItem publishSize="4286774" publishTime="1776698945"/>
           <PublishItem publishSize="4286778" publishTime="1776698620"/>
           <PublishItem publishSize="4286689" publishTime="1776544145"/>
-          <PublishItem publishSize="4286687" publishTime="1776543548"/>
      </publishHistory>
 </DOMDocument>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑攻" itemID="690cd8bb-0000117d" lastModified="1769694922" lastUniqueIdentifier="22">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑攻" itemID="690cd8bb-0000117d" lastModified="1777725729" lastUniqueIdentifier="25">
   <timeline>
-    <DOMTimeline name="兵器跑攻">
+    <DOMTimeline name="兵器跑攻" currentFrame="51">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="18" name="跑攻第一段" labelType="name" keyMode="9728">
               <elements/>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#73C76A">
+        <DOMLayer name="Script Layer" color="#73C76A" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -278,7 +278,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#9933CC" autoNamed="false">
+        <DOMLayer name="攻击as" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -481,7 +481,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器使用检测" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="兵器使用检测" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="55" keyMode="9728">
               <elements>
@@ -497,7 +497,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器攻击检测" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="兵器攻击检测" color="#FF800A" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="55" keyMode="9728">
               <elements>
@@ -513,7 +513,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#FBC187" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#FBC187" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -578,7 +578,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招2" color="#FF800A" autoNamed="false">
+        <DOMLayer name="变招2" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -645,7 +645,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招" color="#9933CC" autoNamed="false">
+        <DOMLayer name="变招" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -798,7 +798,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#BDE6AF">
+        <DOMLayer name="Layer 4" color="#BDE6AF" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -878,8 +878,8 @@ onClipEvent (enterFrame) {
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!9735 -8517[13573 -6766 13573 -3488!13573 -3488[13573 -212 9735 2671!9735 2671[5899 5552 472 6352!472 6352[-4955 7152 -8792 5397!-8792 5397[-12630 3648 -12630 370!-12630 370[-12630 -2908 -8792 -5790!-8792 -5790[-4955 -8670 472 -9471!472
- -9471[5899 -10269 9735 -8517"/>
+                    <Edge fillStyle1="1" edges="!9735 -8517S2[13573 -6766 13573 -3488!13573 -3488[13573 -212 9735 2671!9735 2671[5899 5552 472 6352!472 6352[-4955 7152 -8792 5397!-8792 5397[-12630 3648 -12630 370!-12630 370[-12630 -2908 -8792 -5790!-8792 -5790[-4955 -8670 472 -9471
+!472 -9471[5899 -10269 9735 -8517"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1187,7 +1187,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#EC7641">
+        <DOMLayer name="Layer 5" color="#EC7641" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -1280,7 +1280,7 @@ onClipEvent (enterFrame) {
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!10337 -2766[13409 -2404 14107 -1190!14107 -1190[14807 22 12723 1377!12723 1377[10638 2732 6991 3433!6991 3433[3346 4136 273 3774!273 3774[-2800 3412 -3499 2199!-3499 2199[-4197 986 -2114 -368!-2114 -368[-30 -1722 3617 -2425!3617 -2425
+!10337 -2766S2[13409 -2404 14107 -1190!14107 -1190[14807 22 12723 1377!12723 1377[10638 2732 6991 3433!6991 3433[3346 4136 273 3774!273 3774[-2800 3412 -3499 2199!-3499 2199[-4197 986 -2114 -368!-2114 -368[-30 -1722 3617 -2425!3617 -2425
 [7265 -3127 10337 -2766"/>
                   </edges>
                 </DOMShape>
@@ -1539,8 +1539,8 @@ onClipEvent (enterFrame) {
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961!-11073 -1961[-7416 -3736 -1293 -4087!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782
- 292!15782 292[16733 2452 13077 4231"/>
+!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782 292!15782 292[16733 2452 13077 4231!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961
+!-11073 -1961[-7416 -3736 -1293 -4087"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1561,8 +1561,8 @@ onClipEvent (enterFrame) {
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372 259!16372 259[17361 2505 13559 4354!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636
-!-10955 -2636[-7752 -3930 -1385 -4296"/>
+!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636!-10955 -2636[-7752 -3930 -1385 -4296!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372
+ 259!16372 259[17361 2505 13559 4354"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1572,11 +1572,270 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#C8E013" current="true" isSelected="true">
+        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-88.9" centerPoint3DY="82.05">
+                  <matrix>
+                    <Matrix a="-0.195968627929688" b="-0.979476928710938" c="-0.979476928710938" d="0.195968627929688" tx="123.4" ty="41.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.75" y="109.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-88.9" centerPoint3DY="82.05">
+                  <matrix>
+                    <Matrix a="-0.195968627929688" b="-0.979476928710938" c="-0.979476928710938" d="0.195968627929688" tx="123.4" ty="41.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.75" y="109.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-88.9" centerPoint3DY="103.05">
+                  <matrix>
+                    <Matrix a="-0.195968627929688" b="-0.979476928710938" c="-0.979476928710938" d="0.195968627929688" tx="123.4" ty="62.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.75" y="109.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-88.9" centerPoint3DY="112.05">
+                  <matrix>
+                    <Matrix a="-0.195968627929688" b="-0.979476928710938" c="-0.979476928710938" d="0.195968627929688" tx="123.4" ty="71.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.75" y="109.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="163.6" centerPoint3DY="-22.65">
+                  <matrix>
+                    <Matrix a="0.105178833007813" b="-0.994110107421875" c="0.99298095703125" d="0.105056762695313" tx="-51.1" ty="-43.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="109.55"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="104"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="158.05" centerPoint3DY="-14.65">
+                  <matrix>
+                    <Matrix a="0.105178833007813" b="-0.994110107421875" c="0.99298095703125" d="0.105056762695313" tx="-56.65" ty="-35.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.8" y="109.55"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="104"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-135.3" centerPoint3DY="0.65">
+                  <matrix>
+                    <Matrix a="-0.236373901367188" b="-0.970977783203125" c="-0.971282958984375" d="0.2364501953125" tx="74.05" ty="-50.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.85" y="109.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="104"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-112.3" centerPoint3DY="-5.35">
+                  <matrix>
+                    <Matrix a="-0.236373901367188" b="-0.970977783203125" c="-0.971282958984375" d="0.2364501953125" tx="97.05" ty="-56.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.85" y="109.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="104"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-95.9" centerPoint3DY="-15.15">
+                  <matrix>
+                    <Matrix a="-0.236373901367188" b="-0.970977783203125" c="-0.971282958984375" d="0.2364501953125" tx="113.45" ty="-65.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.85" y="109.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="104"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="151" centerPoint3DY="-24.8">
+                  <matrix>
+                    <Matrix a="0.150299072265625" b="-0.9871826171875" c="0.987838745117188" d="0.150405883789063" tx="-60.1" ty="-56.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.85" y="109.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="104"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="163" centerPoint3DY="-24.8">
+                  <matrix>
+                    <Matrix a="0.150299072265625" b="-0.9871826171875" c="0.987838745117188" d="0.150405883789063" tx="-48.1" ty="-56.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.85" y="109.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="104"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="183.1" centerPoint3DY="-17.8">
+                  <matrix>
+                    <Matrix a="0.150299072265625" b="-0.9871826171875" c="0.987838745117188" d="0.150405883789063" tx="-28" ty="-49.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.85" y="109.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="104"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-105.05" centerPoint3DY="-13.25">
+                  <matrix>
+                    <Matrix a="-0.365081787109375" b="-0.928878784179688" c="-0.930206298828125" d="0.3656005859375" tx="94.1" ty="-91.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="109.55"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="104"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-79.05" centerPoint3DY="-39.65">
+                  <matrix>
+                    <Matrix a="-0.0694427490234375" b="-0.995635986328125" c="-0.997055053710938" d="0.0695343017578125" tx="133.9" ty="-54.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="109.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="104"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-59.05" centerPoint3DY="52.45">
+                  <matrix>
+                    <Matrix a="-0.0694427490234375" b="-0.995635986328125" c="-0.997055053710938" d="0.0695343017578125" tx="153.9" ty="37.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="109.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="50"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-44.05" centerPoint3DY="89.65">
+                  <matrix>
+                    <Matrix a="-0.0694427490234375" b="-0.995635986328125" c="-0.997055053710938" d="0.0695343017578125" tx="168.9" ty="74.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="109.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-38.05" centerPoint3DY="101.15">
+                  <matrix>
+                    <Matrix a="-0.0694427490234375" b="-0.995635986328125" c="-0.997055053710938" d="0.0695343017578125" tx="174.9" ty="86.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="109.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-49.5" centerPoint3DY="105.15">
+                  <matrix>
+                    <Matrix a="-0.021514892578125" b="-0.997817993164063" c="-0.999237060546875" d="0.02154541015625" tx="163.8" ty="100.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.9" y="109.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#C8E013" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="-122.4" centerPoint3DY="154.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-122.4" centerPoint3DY="154.9">
                   <matrix>
                     <Matrix a="0.88580322265625" b="-0.419036865234375" c="0.419036865234375" d="0.88580322265625" tx="-158.95" ty="-46.85"/>
                   </matrix>
@@ -7819,7 +8078,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#E5C5DD">
+        <DOMLayer name="Layer 7" color="#E5C5DD" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -7859,7 +8118,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#F6963F">
+        <DOMLayer name="Layer 8" color="#F6963F" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -7899,7 +8158,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#14BDD2">
+        <DOMLayer name="Layer 18" color="#14BDD2" locked="true">
           <frames>
             <DOMFrame index="0" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -7939,7 +8198,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#60DDE2">
+        <DOMLayer name="Layer 9" color="#60DDE2" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -8006,7 +8265,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#96BF3E">
+        <DOMLayer name="Layer 10" color="#96BF3E" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -8073,7 +8332,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#7682EB">
+        <DOMLayer name="Layer 11" color="#7682EB" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -8140,7 +8399,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#911BD8">
+        <DOMLayer name="Layer 12" color="#911BD8" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -8207,7 +8466,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#507EB6">
+        <DOMLayer name="Layer 13" color="#507EB6" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -8274,7 +8533,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#24F792">
+        <DOMLayer name="Layer 14" color="#24F792" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -8341,7 +8600,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#DADA3E">
+        <DOMLayer name="Layer 15" color="#DADA3E" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -8408,7 +8667,62 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 16" color="#F7EA45">
+        <DOMLayer name="副手刀" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-161.45" centerPoint3DY="68.45">
+                  <matrix>
+                    <Matrix a="-0.354415893554688" b="-0.93389892578125" c="-0.93389892578125" d="0.354415893554688" tx="41.1" ty="-6.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.7" y="109.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-58.5" centerPoint3DY="25.45">
+                  <matrix>
+                    <Matrix a="-0.195968627929688" b="-0.979476928710938" c="-0.979476928710938" d="0.195968627929688" tx="153.8" ty="-14.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.75" y="109.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-43.95" centerPoint3DY="17.75">
+                  <matrix>
+                    <Matrix a="-0.195968627929688" b="-0.979476928710938" c="-0.979476928710938" d="0.195968627929688" tx="168.35" ty="-22.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.75" y="109.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-43.95" centerPoint3DY="17.75">
+                  <matrix>
+                    <Matrix a="-0.195968627929688" b="-0.979476928710938" c="-0.979476928710938" d="0.195968627929688" tx="168.35" ty="-22.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.75" y="109.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="37" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#F7EA45" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -8475,7 +8789,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#39EDCC">
+        <DOMLayer name="Layer 17" color="#39EDCC" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -8542,7 +8856,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#FB8EB2">
+        <DOMLayer name="Layer 19" color="#FB8EB2" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -8609,7 +8923,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 20" color="#BEF121">
+        <DOMLayer name="Layer 20" color="#BEF121" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -8676,7 +8990,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#5EE3BB">
+        <DOMLayer name="Layer 21" color="#5EE3BB" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
@@ -8743,7 +9057,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 30" color="#23D3DA">
+        <DOMLayer name="Layer 30" color="#23D3DA" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -8798,7 +9112,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 31" color="#65E239">
+        <DOMLayer name="Layer 31" color="#65E239" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -8853,7 +9167,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 32" color="#03A9DB">
+        <DOMLayer name="Layer 32" color="#03A9DB" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -8923,7 +9237,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 33" color="#9753F6">
+        <DOMLayer name="Layer 33" color="#9753F6" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-92">
               <elements>
