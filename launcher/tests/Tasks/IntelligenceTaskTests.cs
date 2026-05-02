@@ -106,7 +106,7 @@ namespace CF7Launcher.Tests.Tasks
                 "  <Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/><Information Value=\"5\" PageKey=\"5\"/></Item>" +
                 "  <Item><Name>缺失文本</Name><Index>2</Index><Information Value=\"1\" PageKey=\"1\"/></Item>" +
                 "</root>");
-            WriteItemIcons("<root><item><name>资料</name><icon>资料图标</icon></item></root>");
+            WriteItemIcons("<root><item><name>资料</name><displayname>废城基础资料集</displayname><icon>资料图标</icon></item></root>");
             WriteText("资料", "@@@1@@@\n第一页\n@@@5@@@\n锁定页正文");
 
             string posted = null;
@@ -122,7 +122,11 @@ namespace CF7Launcher.Tests.Tasks
 
             JObject item = (JObject)resp["items"][0];
             Assert.Equal("资料", (string)item["name"]);
+            Assert.Equal("废城基础资料集", (string)item["displayName"]);
             Assert.Equal("资料图标", (string)item["iconName"]);
+            JObject fallbackItem = (JObject)resp["items"][1];
+            Assert.Equal("缺失文本", (string)fallbackItem["name"]);
+            Assert.Equal("缺失文本", (string)fallbackItem["displayName"]);
             Assert.True((bool)item["pages"][0]["unlocked"]);
             Assert.False((bool)item["pages"][1]["unlocked"]);
             Assert.Equal("第一页", (string)item["pages"][0]["text"]);
@@ -160,6 +164,7 @@ namespace CF7Launcher.Tests.Tasks
                 "<root>" +
                 "  <Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/><Information Value=\"5\" PageKey=\"5\"/></Item>" +
                 "</root>");
+            WriteItemIcons("<root><item><name>资料</name><displayname>废城基础资料集</displayname><icon>资料图标</icon></item></root>");
 
             var posted = new List<string>();
             var sent = new List<string>();
@@ -178,6 +183,7 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("state", (string)resp["cmd"]);
             Assert.Equal(5, (int)resp["items"][0]["value"]);
             Assert.Equal(2, (int)resp["items"][0]["unlockedCount"]);
+            Assert.Equal("废城基础资料集", (string)resp["items"][0]["displayName"]);
             Assert.Equal(5, (int)resp["values"]["资料"]);
             Assert.Equal(3, (int)resp["decryptLevel"]);
             Assert.Equal("测试玩家", (string)resp["pcName"]);

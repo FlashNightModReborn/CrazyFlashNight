@@ -179,7 +179,7 @@ var IntelligencePanel = (function() {
         if (isNaN(_decryptLevel)) _decryptLevel = 10;
         _pcName = initData.pcName || '测试玩家';
         _debugMode = initData.debug === true || initData.mode === 'dev';
-        _runtimeMode = initData.mode === 'prod' || initData.source === 'runtime' && !_debugMode;
+        _runtimeMode = initData.mode === 'prod' || (initData.source === 'runtime' && !_debugMode);
         _tooltipCache = {};
         _hoverTooltipName = '';
         if (_debugMode) _el.classList.add('is-debug');
@@ -410,7 +410,10 @@ var IntelligencePanel = (function() {
         var item = _snapshot.item || {};
         var pages = getPages();
         var unlockedPages = countUnlockedPages(pages);
-        _refs.name.textContent = item.name || _snapshot.name || '未命名情报';
+        var displayLabel = item.displayName || _snapshot.displayName ||
+                           (_catalogByName[_currentItemName] && _catalogByName[_currentItemName].displayName) ||
+                           item.name || _snapshot.name || '未命名情报';
+        _refs.name.textContent = displayLabel;
         _refs.meta.textContent = '已发现 ' + unlockedPages + ' / ' + pages.length + ' 页信息';
         _refs.progress.textContent = (_snapshot.value || 0) + ' / ' + (_snapshot.maxValue || 0);
         renderIcon();
@@ -468,11 +471,13 @@ var IntelligencePanel = (function() {
 
     function createCatalogItem(item) {
         var name = item.name || '';
+        var label = item.displayName || name;
         var btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'intel-catalog-item' + (name === _currentItemName ? ' active' : '') + (item.textError ? ' has-error' : '');
         btn.setAttribute('data-name', name);
-        btn.title = name + (item.textError ? ' / ' + item.textError : '');
+        // 使用 aria-label 保留可访问性；不用 title 是为了避免 WebView2/Chromium 在 hover 长停后弹出原生 tooltip 与 PanelTooltip 重叠
+        btn.setAttribute('aria-label', label + (label !== name ? ' (' + name + ')' : '') + (item.textError ? ' / ' + item.textError : ''));
 
         var iconWrap = document.createElement('span');
         iconWrap.className = 'intel-catalog-icon-wrap';
@@ -493,13 +498,13 @@ var IntelligencePanel = (function() {
 
         var text = document.createElement('span');
         text.className = 'intel-catalog-text';
-        var label = document.createElement('span');
-        label.className = 'intel-catalog-name';
-        label.textContent = name;
+        var labelEl = document.createElement('span');
+        labelEl.className = 'intel-catalog-name';
+        labelEl.textContent = label;
         var meta = document.createElement('span');
         meta.className = 'intel-catalog-meta';
         meta.textContent = countUnlockedPagesForItem(item) + ' / ' + getPageCountForItem(item) + ' 页';
-        text.appendChild(label);
+        text.appendChild(labelEl);
         text.appendChild(meta);
 
         btn.appendChild(iconWrap);
@@ -557,11 +562,15 @@ var IntelligencePanel = (function() {
             return;
         }
         if (cached && cached.loading) return;
+        if (cached && cached.failed && (Date.now() - (cached.failedAt || 0)) < 8000) {
+            PanelTooltip.updateContent(buildBasicTooltip(item, true));
+            return;
+        }
 
         _tooltipCache[name] = { loading: true };
         sendRequest('tooltip', { itemName: name }, function(resp) {
             if (!resp.success) {
-                _tooltipCache[name] = { failed: true, error: resp.error || 'unknown' };
+                _tooltipCache[name] = { failed: true, failedAt: Date.now(), error: resp.error || 'unknown' };
                 if (_hoverTooltipName === name && PanelTooltip.isVisible()) {
                     PanelTooltip.updateContent(buildBasicTooltip(item, true));
                 }
@@ -575,7 +584,7 @@ var IntelligencePanel = (function() {
     }
 
     function buildBasicTooltip(item, failed) {
-        var name = item.name || '';
+        var label = item.displayName || item.name || '';
         var iconUrl = resolveIconUrl(item);
         var iconHtml = iconUrl
             ? '<div class="kshop-tt-icon"><img src="' + escAttr(iconUrl) + '" alt=""></div>'
@@ -583,7 +592,7 @@ var IntelligencePanel = (function() {
         return '<div class="kshop-tt-rich intel-tt-basic">' +
             iconHtml +
             '<div class="kshop-tt-desc">' +
-                '<div class="kshop-tt-header"><b>' + escHtml(name) + '</b></div>' +
+                '<div class="kshop-tt-header"><b>' + escHtml(label) + '</b></div>' +
                 '<div class="kshop-tt-divider"></div>' +
                 '<div class="kshop-tt-dim">收集品 · 情报</div>' +
                 '<div class="kshop-tt-dim">已发现 ' + countUnlockedPagesForItem(item) + ' / ' + getPageCountForItem(item) + ' 页</div>' +
@@ -592,23 +601,20 @@ var IntelligencePanel = (function() {
         '</div>';
     }
 
+    // 与商城 buildRichHtml 对齐：introHTML 已含 displayname 标题，不再重复 header；
+    // 仅渲染 icon + intro + desc 三栏，避免和 TooltipComposer 输出的标题撞行。
     function buildRichTooltip(item, resp) {
         var iconUrl = resolveIconUrl(item);
         var iconHtml = iconUrl
             ? '<div class="kshop-tt-icon"><img src="' + escAttr(iconUrl) + '" alt=""></div>'
             : '<div class="kshop-tt-icon"><span class="intel-catalog-icon-placeholder">?</span></div>';
-        var display = resp.displayname || item.name || '';
         var intro = PanelTooltip.convertAS2Html(resp.introHTML || '');
         var desc = PanelTooltip.convertAS2Html(resp.descHTML || '');
+        var meta = '<div class="kshop-tt-dim">已发现 ' + countUnlockedPagesForItem(item) + ' / ' + getPageCountForItem(item) + ' 页</div>';
         return '<div class="kshop-tt-rich intel-tt-rich">' +
             iconHtml +
-            '<div class="kshop-tt-intro">' +
-                '<div class="kshop-tt-header"><b>' + escHtml(display) + '</b></div>' +
-                '<div class="kshop-tt-divider"></div>' +
-                '<div class="kshop-tt-dim">已发现 ' + countUnlockedPagesForItem(item) + ' / ' + getPageCountForItem(item) + ' 页</div>' +
-                intro +
-            '</div>' +
-            '<div class="kshop-tt-desc">' + desc + '</div>' +
+            (intro ? '<div class="kshop-tt-intro">' + intro + meta + '</div>' : '<div class="kshop-tt-intro">' + meta + '</div>') +
+            (desc ? '<div class="kshop-tt-desc">' + desc + '</div>' : '') +
         '</div>';
     }
 

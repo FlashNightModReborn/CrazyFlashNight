@@ -23,6 +23,7 @@ _root.UI系统.商城WebView.ensureState = function():Void {
     }
 };
 
+// sendResponse 是所有 Web panel 共用的 socket 出口（命名沿袭历史；语义上是 "WebView 通用响应"，不仅商城）
 _root.UI系统.商城WebView.sendResponse = function(resp:Object):Void {
     _root.server.sendSocketMessage(_root.UI系统.商城WebView.json.stringify(resp));
 };
@@ -205,35 +206,20 @@ _root.gameCommands["shopTooltip"] = function(params) {
 
     var entry = _root.kshop_list[idx];
     var itemName = entry.item;
-    var itemData = org.flashNight.arki.item.ItemUtil.getItemData(itemName);
-    if (itemData == undefined) {
-        var errResp2 = { task: "shop_response", callId: callId, success: false, error: "item_not_found" };
-        _root.UI系统.商城WebView.sendResponse(errResp2);
+    var tt = _root.Web物品注释HTML(itemName);
+    if (tt == null) {
+        _root.UI系统.商城WebView.sendResponse({ task: "shop_response", callId: callId, success: false, error: "item_not_found" });
         return;
     }
-
-    // value 对象：商城物品不涉及强化等级，默认 level=1
-    var value = { level: 1 };
-
-    // 生成两段 HTML（与 物品图标注释 同一调用链，但不渲染 Flash 注释框）
-    var descHTML = org.flashNight.gesh.tooltip.TooltipComposer.generateItemDescriptionText(itemData, null);
-    var introHTML = org.flashNight.gesh.tooltip.TooltipComposer.generateIntroPanelContent(null, itemData, value);
-
-    // LiteJSON 不转义双引号，XML 数据中内嵌的 <font color="#xxx"> 会破坏 JSON 结构
-    // 将双引号替换为单引号（AS2 TextField 两者等效）
-    descHTML = descHTML.split('"').join("'");
-    introHTML = introHTML.split('"').join("'");
-
-    var resp = {
+    _root.UI系统.商城WebView.sendResponse({
         task: "shop_response",
         callId: callId,
         success: true,
-        descHTML: descHTML,
-        introHTML: introHTML,
+        descHTML: tt.descHTML,
+        introHTML: tt.introHTML,
         itemName: itemName,
-        displayname: String(itemData.displayname || itemName)
-    };
-    _root.UI系统.商城WebView.sendResponse(resp);
+        displayname: tt.displayname
+    });
 };
 
 // ========== 情报 Web 面板运行态状态 ==========
@@ -268,31 +254,22 @@ _root.gameCommands["intelligenceState"] = function(params) {
 };
 
 // ========== 情报 Web 面板物品注释 ==========
-// 复用原 Flash 物品注释生成链路，Web 只负责显示容器和 AS2 HTML 兼容转换。
+// 与 shopTooltip 共用 _root.Web物品注释HTML（定义于 UI交互_鸡蛋_fs_aka_物品图标注释.as），本文件只做 response 包封。
 _root.gameCommands["intelligenceTooltip"] = function(params) {
     var callId = params.callId;
     var itemName = String(params.itemName || "");
-    var itemData = org.flashNight.arki.item.ItemUtil.getItemData(itemName);
-    if (itemData == undefined) {
-        var errResp = { task: "intelligence_response", callId: callId, success: false, itemName: itemName, error: "item_not_found" };
-        _root.UI系统.商城WebView.sendResponse(errResp);
+    var tt = _root.Web物品注释HTML(itemName);
+    if (tt == null) {
+        _root.UI系统.商城WebView.sendResponse({ task: "intelligence_response", callId: callId, success: false, itemName: itemName, error: "item_not_found" });
         return;
     }
-
-    var value = { level: 1 };
-    var descHTML = org.flashNight.gesh.tooltip.TooltipComposer.generateItemDescriptionText(itemData, null);
-    var introHTML = org.flashNight.gesh.tooltip.TooltipComposer.generateIntroPanelContent(null, itemData, value);
-    descHTML = descHTML.split('"').join("'");
-    introHTML = introHTML.split('"').join("'");
-
-    var resp = {
+    _root.UI系统.商城WebView.sendResponse({
         task: "intelligence_response",
         callId: callId,
         success: true,
         itemName: itemName,
-        displayname: String(itemData.displayname || itemName),
-        descHTML: descHTML,
-        introHTML: introHTML
-    };
-    _root.UI系统.商城WebView.sendResponse(resp);
+        displayname: tt.displayname,
+        descHTML: tt.descHTML,
+        introHTML: tt.introHTML
+    });
 };

@@ -41,12 +41,19 @@ namespace CF7Launcher.Tasks
         private sealed class IntelligenceItem
         {
             public string Name;
+            public string DisplayName;
             public string IconName;
             public int Index;
             public int MaxValue;
             public readonly List<IntelligencePage> Pages = new List<IntelligencePage>();
             public readonly Dictionary<string, string> EncryptReplace = new Dictionary<string, string>();
             public readonly Dictionary<string, string> EncryptCut = new Dictionary<string, string>();
+        }
+
+        private struct ItemMeta
+        {
+            public string IconName;
+            public string DisplayName;
         }
 
         private readonly string _dictionaryPath;
@@ -444,6 +451,7 @@ namespace CF7Launcher.Tasks
         {
             var obj = new JObject();
             obj["name"] = item.Name;
+            obj["displayName"] = string.IsNullOrEmpty(item.DisplayName) ? item.Name : item.DisplayName;
             obj["iconName"] = string.IsNullOrEmpty(item.IconName) ? item.Name : item.IconName;
             obj["index"] = item.Index;
             obj["maxValue"] = item.MaxValue;
@@ -467,7 +475,7 @@ namespace CF7Launcher.Tasks
 
                 var doc = new XmlDocument();
                 doc.Load(_dictionaryPath);
-                Dictionary<string, string> iconByName = LoadItemIconMap();
+                Dictionary<string, ItemMeta> metaByName = LoadItemMetaMap();
                 var items = new Dictionary<string, IntelligenceItem>();
                 var catalog = new List<IntelligenceItem>();
                 XmlNodeList nodes = doc.SelectNodes("/root/Item");
@@ -477,9 +485,12 @@ namespace CF7Launcher.Tasks
                     {
                         IntelligenceItem item = ParseItem(node);
                         if (item == null || string.IsNullOrEmpty(item.Name)) continue;
-                        string iconName;
-                        if (iconByName.TryGetValue(item.Name, out iconName) && !string.IsNullOrEmpty(iconName))
-                            item.IconName = iconName;
+                        ItemMeta meta;
+                        if (metaByName.TryGetValue(item.Name, out meta))
+                        {
+                            if (!string.IsNullOrEmpty(meta.IconName)) item.IconName = meta.IconName;
+                            if (!string.IsNullOrEmpty(meta.DisplayName)) item.DisplayName = meta.DisplayName;
+                        }
                         items[item.Name] = item;
                         catalog.Add(item);
                     }
@@ -520,9 +531,9 @@ namespace CF7Launcher.Tasks
             return item;
         }
 
-        private Dictionary<string, string> LoadItemIconMap()
+        private Dictionary<string, ItemMeta> LoadItemMetaMap()
         {
-            var result = new Dictionary<string, string>();
+            var result = new Dictionary<string, ItemMeta>();
             if (!File.Exists(_itemDictionaryPath)) return result;
 
             try
@@ -534,14 +545,16 @@ namespace CF7Launcher.Tasks
                 foreach (XmlNode node in nodes)
                 {
                     string name = ChildText(node, "name");
-                    string icon = ChildText(node, "icon");
-                    if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(icon))
-                        result[name] = icon;
+                    if (string.IsNullOrEmpty(name)) continue;
+                    var meta = new ItemMeta();
+                    meta.IconName = ChildText(node, "icon");
+                    meta.DisplayName = ChildText(node, "displayname");
+                    result[name] = meta;
                 }
             }
             catch (Exception ex)
             {
-                LogManager.Log("[IntelligenceTask] item icon map load failed: " + ex.Message);
+                LogManager.Log("[IntelligenceTask] item meta map load failed: " + ex.Message);
             }
             return result;
         }

@@ -314,6 +314,8 @@ window.Icons = {
                         });
                         return;
                     }
+                    var ttDisplay = tooltipItem.displayName || tooltipItem.name;
+                    // 模拟 TooltipComposer 真实行为：intro 含 displayname 标题，desc 仅含正文（不重复标题）
                     window.chrome.webview.__dispatch({
                         type: 'panel_resp',
                         panel: 'intelligence',
@@ -321,9 +323,9 @@ window.Icons = {
                         callId: message.callId,
                         success: true,
                         itemName: message.itemName,
-                        displayname: tooltipItem.name,
-                        descHTML: '<FONT COLOR="#FFCC00"><B><U>情报注释</U></B></FONT><BR>' + tooltipItem.name + ' 的 AS2 注释正文。',
-                        introHTML: '<FONT color=\'#99ddff\'>收集品 · 情报</FONT><br>来自运行态 TooltipComposer。'
+                        displayname: ttDisplay,
+                        descHTML: '<FONT COLOR="#FFCC00"><B><U>情报注释</U></B></FONT><BR>来自 TooltipComposer 的注释正文。',
+                        introHTML: '<B>' + ttDisplay + '</B><br><FONT color=\'#99ddff\'>收集品 · 情报</FONT><br>来自运行态 TooltipComposer。'
                     });
                 }, 8);
             } else if (message.cmd === 'bundle') {
@@ -355,6 +357,7 @@ window.Icons = {
                         items: Object.keys(fixtures).map(function(name) {
                             return {
                                 name: name,
+                                displayName: fixtures[name].displayName || name,
                                 iconName: fixtures[name].iconName || name,
                                 index: fixtures[name].index,
                                 maxValue: fixtures[name].maxValue,
@@ -406,6 +409,7 @@ window.Icons = {
         }
         return {
             name: item.name,
+            displayName: item.displayName || item.name,
             iconName: item.iconName || item.name,
             index: item.index,
             maxValue: item.maxValue,
@@ -428,6 +432,7 @@ window.Icons = {
         });
         return {
             name: item.name,
+            displayName: item.displayName || item.name,
             iconName: item.iconName || item.name,
             index: item.index,
             maxValue: item.maxValue,
@@ -470,6 +475,7 @@ window.Icons = {
         return {
             '资料': {
                 name: '资料',
+                displayName: '废城基础资料集',
                 iconName: '资料',
                 index: 0,
                 maxValue: 99,

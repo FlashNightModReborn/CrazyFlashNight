@@ -83,6 +83,18 @@ var IntelligenceHarnessQA = (function() {
                     });
                 });
             }],
+            ['runtime-displayname-used-in-catalog-and-reader', 'runtime catalog label and reader title use displayname (not raw name)', function() {
+                host.open({ itemName: '资料', mode: 'prod', source: 'runtime', debug: false });
+                return waitReady(api).then(function() {
+                    var dataItem = findCatalogButton('资料');
+                    var labelEl = dataItem.querySelector('.intel-catalog-name');
+                    api.assertEqual(labelEl.textContent, '废城基础资料集', 'catalog list shows displayName');
+                    api.assertEqual(dataItem.getAttribute('data-name'), '资料', 'data-name still uses canonical name for routing');
+                    var readerTitle = document.querySelector('.intel-name');
+                    api.assertEqual(readerTitle.textContent, '废城基础资料集', 'reader title shows displayName');
+                    return 'displayName ok';
+                });
+            }],
             ['runtime-tooltip-basic-rich-and-failure', 'runtime catalog hover shows basic tooltip, async AS2-rich tooltip, and failure fallback', function() {
                 host.open({ itemName: '资料', mode: 'prod', source: 'runtime', debug: false });
                 return waitReady(api).then(function() {
@@ -109,6 +121,22 @@ var IntelligenceHarnessQA = (function() {
                             missing.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
                             return 'runtime tooltip ok';
                         });
+                    });
+                });
+            }],
+            ['runtime-tooltip-no-duplicate-displayname', 'rich tooltip does not render displayname twice (intro carries title, panel does not prepend its own)', function() {
+                host.open({ itemName: '资料', mode: 'prod', source: 'runtime', debug: false });
+                return waitReady(api).then(function() {
+                    var dataItem = findCatalogButton('资料');
+                    dataItem.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true, clientX: 240, clientY: 200 }));
+                    var tt = document.getElementById('panel-tooltip');
+                    return api.waitFor(function() {
+                        return tt.textContent.indexOf('情报注释') >= 0 ? true : null;
+                    }, 1000, 'rich tooltip ready').then(function() {
+                        var occurrences = tt.textContent.split('废城基础资料集').length - 1;
+                        api.assertEqual(occurrences, 1, 'displayName appears exactly once in rich tooltip');
+                        dataItem.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+                        return 'no duplicate ok';
                     });
                 });
             }],

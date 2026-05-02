@@ -111,6 +111,36 @@ _root.注释 = function(宽度, 内容, 框体) {
 };
 
 /**
+ * Web 面板物品注释 HTML 构造（无渲染版本，对应 _root.物品图标注释 的纯数据双胞胎）
+ *
+ * - 与 物品图标注释 共用同一条 TooltipComposer 调用链，仅区别在不调 renderItemTooltipSmart，
+ *   返回 desc/intro 字符串供 Web/JSON 通道下发。
+ * - LiteJSON 不转义双引号；XML 内嵌的 <font color="#xxx"> 会破坏 JSON 结构，
+ *   因此输出前把 " 替换为 '（AS2 TextField 两者等效）。
+ * - 各 panel 的 *_WebView.as 只需做：参数解析 → 调用本函数 → 按自身 task 名包成 response → sendResponse。
+ *
+ * @param name:String 物品名（缺省时返回 null）
+ * @return Object | null  形如 { descHTML, introHTML, displayname, itemData }；item 找不到返回 null
+ */
+_root.Web物品注释HTML = function(name:String):Object {
+    if (name == undefined || name == null || name == "") return null;
+    var itemData:Object = ItemUtil.getItemData(name);
+    if (itemData == undefined) return null;
+
+    // value 对象：Web 入口当前没有强化等级 / 涂装上下文，统一以 level=1 走基础数据
+    var value:Object = { level: 1 };
+    var descHTML:String = TooltipComposer.generateItemDescriptionText(itemData, null);
+    var introHTML:String = TooltipComposer.generateIntroPanelContent(null, itemData, value);
+
+    return {
+        descHTML: descHTML.split('"').join("'"),
+        introHTML: introHTML.split('"').join("'"),
+        displayname: String(itemData.displayname || name),
+        itemData: itemData
+    };
+};
+
+/**
  * 注释结束函数 (兼容接口，转发到 TooltipLayout.hideTooltip)
  */
 _root.注释结束 = function() {
