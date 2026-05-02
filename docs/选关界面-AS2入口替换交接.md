@@ -139,7 +139,7 @@ Web 已支持 runtime snapshot / enter，本轮补齐：
 - 16 个 frame tab 收进可展开区域菜单，默认折叠，选择后同步 AS2 frame 并自动收起
 - runtime 下去掉右侧空信息栏，地图舞台改为单列主区域并放宽缩放上限
 - nav `return` / `return-garage` 在 runtime 下发送 `return_frame`，由 AS2 使用入口保存的 `returnFrameLabel` 设置 `_root.关卡地图帧值`、`_root.场景进入位置名 = "出生地"` 并淡出回对应基地帧；成功后 Web 关闭 panel
-- 如果 `returnFrameLabel` 已经等于当前 `_root.关卡标志` / `_root._currentlabel`，AS2 会返回 `skippedTransition=true` 并只关闭 Web panel，避免从基地门口打开后直接返回时重复黑屏
+- 如果 `returnFrameLabel` 已经等于 `MapHotspotResolver` 从真实场景源解析出的当前热点，AS2 会返回 `skippedTransition=true` 并只关闭 Web panel，避免从基地门口打开后直接返回时重复黑屏；该判断只读 source，不读 pending，避免地图面板刚发起跳转时把乐观目标误判为已到达
 - `localFrame` 先做 Web 内页切换，再发送 `jump_frame`，由 C# / AS2 只同步 `Web选关当前帧值`，不覆盖 `_root.关卡地图帧值`
 - Web 地图面板加载 `stage-select-data.js`，按外交地图 / 基地帧的 `RootFadeTransitionFrame` 建立热点到选关页签的索引；二级“选关”按钮发送 `open_stage_select`，并把当前热点场景名作为 `returnFrameLabel`
 - Stage Select runtime snapshot 会把初始 `frameLabel/returnFrameLabel` 回传给 AS2 `StageSelectPanelService`，保证地图面板直接打开时 AS2 当前选关页与返回帧同步

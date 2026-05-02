@@ -451,9 +451,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
 
     private static function isAlreadyAtReturnFrame(frameLabel:String):Boolean {
         if (frameLabel == "") return false;
-        if (_root.当前为战斗地图 == true) return false;
-        if (String(_root.关卡标志 || "") == frameLabel) return true;
-        return false;
+        return org.flashNight.arki.map.MapHotspotResolver.isCurrentFrameName(frameLabel);
     }
 
     private static function extractStageFolder(url:String):String {

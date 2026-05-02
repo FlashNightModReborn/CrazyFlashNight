@@ -20,7 +20,7 @@ Stage 2 在此基础上完成 live bridge 与正式入口替换：
 - C# 使用 `StageSelectTask` 桥接 `stage_select_response`
 - AS2 `openWebStageSelect` 通过 `panel_request` 请求 `panel:"stage-select"`，并携带 `source`、`frameLabel`、`returnFrameLabel`；C# 打开正式入口时固定初始化 `mode:"runtime"`
 - 场景门 helper 复用旧 `切换场景` 的方向键、hitTest、15 帧节流、出生点与转场记录语义；Web 打开成功时留在原场景，失败时回落旧 Flash `关卡地图`
-- Web runtime 下隐藏 fixture/dev 控件与测试标题，16 个 frame tab 收进可展开区域菜单，`localFrame` 页内跳转只同步 Web 当前选关页，不覆盖 AS2 `_root.关卡地图帧值`；`return` / `return-garage` 会先通过独立 `returnFrameLabel` + `return_frame` 回到对应基地帧再关闭 panel；若返回目标已经是当前 `_root.关卡标志`，AS2 会跳过重复淡出
+- Web runtime 下隐藏 fixture/dev 控件与测试标题，16 个 frame tab 收进可展开区域菜单，`localFrame` 页内跳转只同步 Web 当前选关页，不覆盖 AS2 `_root.关卡地图帧值`；`return` / `return-garage` 会先通过独立 `returnFrameLabel` + `return_frame` 回到对应基地帧再关闭 panel；若返回目标已经等于 `MapHotspotResolver` 从真实场景源解析出的当前热点，AS2 会跳过重复淡出
 - Web 地图面板复用 `stage-select-data.js` 中的 `RootFadeTransitionFrame` 索引，为已解锁且有选关页签的地图热点提供二级“选关”动作；地图热点主点击仍保持直接导航。
 
 Stage 2 明确不做：

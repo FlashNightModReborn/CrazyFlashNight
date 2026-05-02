@@ -1442,6 +1442,7 @@ namespace CF7Launcher.Guardian
         private void DoExit()
         {
             if (System.Threading.Interlocked.Exchange(ref _exitStarted, 1) != 0) return;
+            GuardianLifecycle.MarkShuttingDown();
 
             // 最先启动绝对保底线程：独立前台线程，不依赖 ThreadPool/消息循环/任何锁
             // 无论后续清理如何卡死，8 秒后强制终结进程

@@ -627,7 +627,7 @@ powershell -File run_tests.ps1
 - **Map layout fallback audit**：`node tools/audit-map-layout.js [--page school] [--json]`
 - **Stage Select manifest / audit / harness**：`node tools/export-stage-select-manifest.js --summary`、`node tools/audit-stage-select-layout.js --json`、`node tools/audit-diplomacy-stage-select-links.js --json`、`node tools/run-stage-select-harness.js --browser edge`
   - 从 `flashswf/UI/选关界面/LIBRARY/选关界面UI/选关界面 1024&#042576.xml` 导出 `StageSelectData` 所用 manifest；Stage 2 通过 `StageSelectTask` / `StageSelectPanelService` 接入真实解锁 snapshot、`StageInfoDict` 关卡简介/限制词条/任务提示数据、普通难度进关、外交地图直达、委托任务详情打开、runtime 页内 frame 同步与关闭语义。关卡预览按原版链路导入：外部 PNG → `Symbol 3274` 内部命名帧 → 默认预览帧，layout audit 要求 `previewMissing=0`
-  - Stage 2 正式入口替换记录见 `docs/选关界面-AS2入口替换交接.md`：AS2 `openWebStageSelect` 通过 `panel_request stage-select` 传入 `source/frameLabel/returnFrameLabel`，C# 固化 runtime 初始化，`jump_frame` 只同步 Web 当前选关页，不覆盖 AS2 `_root.关卡地图帧值`；原版 return nav 通过独立 `returnFrameLabel` + `return_frame` / `stageSelectReturnFrame` 先淡出回对应基地帧再关闭 Web panel，若返回目标已经是当前 `_root.关卡标志` 则跳过重复淡出，close 回调 `stageSelectPanelClose`；runtime 布局隐藏测试标题/fixture/dev 控件，16 个 frame tab 收进可展开区域菜单，场景门替换覆盖基地门口、车库、地下 2 层、停机坪、联合大学左右出口；外交地图绿色点与文字从每个外交符号内部 `shape/外交地图点` / `DOMDynamicText` 矩阵导出，避免把第一防线防区按通用外交点偏移；只带 SWF、没有 XFL 的外交地图如果仍调用旧 `切换场景("", "关卡地图", ...)`，会被 AS2 公共门函数转入 Web 选关并保留 Flash fallback；地图 panel 也可通过二级 `open_stage_select` 动作复用 `RootFadeTransitionFrame` 直接打开对应选关页签，主热点点击仍只负责 `navigate`
+  - Stage 2 正式入口替换记录见 `docs/选关界面-AS2入口替换交接.md`：AS2 `openWebStageSelect` 通过 `panel_request stage-select` 传入 `source/frameLabel/returnFrameLabel`，C# 固化 runtime 初始化，`jump_frame` 只同步 Web 当前选关页，不覆盖 AS2 `_root.关卡地图帧值`；原版 return nav 通过独立 `returnFrameLabel` + `return_frame` / `stageSelectReturnFrame` 先淡出回对应基地帧再关闭 Web panel，若返回目标已经等于 `MapHotspotResolver` 从真实场景源解析出的当前热点则跳过重复淡出，close 回调 `stageSelectPanelClose`；runtime 布局隐藏测试标题/fixture/dev 控件，16 个 frame tab 收进可展开区域菜单，场景门替换覆盖基地门口、车库、地下 2 层、停机坪、联合大学左右出口；外交地图绿色点与文字从每个外交符号内部 `shape/外交地图点` / `DOMDynamicText` 矩阵导出，避免把第一防线防区按通用外交点偏移；只带 SWF、没有 XFL 的外交地图如果仍调用旧 `切换场景("", "关卡地图", ...)`，会被 AS2 公共门函数转入 Web 选关并保留 Flash fallback；地图 panel 也可通过二级 `open_stage_select` 动作复用 `RootFadeTransitionFrame` 直接打开对应选关页签，主热点点击仍只负责 `navigate`
   - `audit-diplomacy-stage-select-links` 同时报告 `stageInfoOnlyMaps`；当前 `外交-黑铁阁` 属于 `StageInfo` 与地图 SWF 存在、但原选关 XFL 没有按钮的 data-only 外交地图，不自动作为 Web 选关漏配处理。
 - **Intelligence panel harness**：`node tools/run-intelligence-harness.js --browser edge`
   - 打开 `web/modules/intelligence/dev/harness.html`，同时 mock 正式 runtime 的 `state → snapshot(itemName)` 按需正文链路与 dev `bundle` 全量包兼容路径；覆盖运行态无 `bundle` 请求、右侧可折叠情报目录、AS2 tooltip 富文本刷新、物品 XML `iconName` 图标解析、H5 组件渲染、legacy 标签兼容、加密切换、缺图占位、长文本滚动与 1024×576 / 1366×768 / 1600×900 / 1920×1080 视口 hit-test
@@ -1239,6 +1239,7 @@ shadow 链不仅是运行中存盘的 JSON 冗余副本，也是启动期 Resolv
 - **Flash 僵尸进程检测**：Socket 断连后 10s 内进程仍未退出则 ForceExit（Flash Player 20 SA 偶发退出卡死）
 - **OnKillFlash 钩子**：退出前先 DetachFlash + AudioEngine.Shutdown + KillFlash，在 ExitThread 之前执行
 - **ProcessManager 线程安全**：`_flashProcess` 访问加锁，`KillFlash()` 可多次安全调用
+- **Application.ThreadException**：接管 WinForms 默认错误对话框；退出期异常只写日志并压掉弹窗，运行期 UI 线程异常按 fatal 记录后触发 `ForceExit`
 - **AppDomain.UnhandledException**：非 UI 线程未处理异常写日志
 
 ### GPU 锐化（实验性, 当前禁用）

@@ -17,6 +17,9 @@ using Microsoft.Web.WebView2.Core;
 
 class Program
 {
+    static GuardianForm _guardianForm;
+    static int _fatalUiExceptionExiting;
+
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     static extern int MessageBoxW(IntPtr hWnd, string text, string caption, uint type);
 
@@ -37,6 +40,41 @@ class Program
         try { f.Hide(); } catch { }
     }
 
+    static void HandleUiThreadException(Exception ex)
+    {
+        if (GuardianLifecycle.IsShuttingDown)
+        {
+            try { LogManager.Log("[Guardian] UI thread exception suppressed during shutdown:\n" + ex); } catch { }
+            return;
+        }
+
+        if (Interlocked.Exchange(ref _fatalUiExceptionExiting, 1) != 0)
+        {
+            try { LogManager.Log("[Guardian] duplicate UI thread fatal exception dropped:\n" + ex); } catch { }
+            return;
+        }
+
+        try { LogManager.Log("[Guardian] UI thread fatal exception; forcing shutdown:\n" + ex); } catch { }
+        GuardianLifecycle.MarkShuttingDown();
+
+        GuardianForm form = _guardianForm;
+        if (form != null)
+        {
+            try
+            {
+                form.ForceExit();
+                return;
+            }
+            catch (Exception exitEx)
+            {
+                try { LogManager.Log("[Guardian] ForceExit after UI fatal failed: " + exitEx); } catch { }
+            }
+        }
+
+        try { Application.ExitThread(); } catch { }
+        Environment.Exit(1);
+    }
+
     [STAThread]
     static int Main(string[] args)
     {
@@ -53,14 +91,12 @@ class Program
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
 
-        // UI 线程未处理异常: 必须在第一次 WinForms 调用之前 SetUnhandledExceptionMode + 装 handler,
-        // 否则 CLR 会弹默认 "Microsoft .NET Framework" 错误对话框 (一闪而过的白色窗口).
-        // 退出期间任意 overlay/task 的 Dispose 抛异常 (e.g. WebView2 IPC race / SharpDX D3D device lost),
-        // 都会冒泡到 Application.Run 的消息循环 → ThreadException → 默认 ThreadExceptionDialog.
+        // UI 线程未处理异常: 必须在第一次 WinForms 调用之前 SetUnhandledExceptionMode + 装 handler.
+        // 退出期只写日志并压掉默认 ThreadExceptionDialog; 运行期仍按 fatal 处理并退出, 避免半状态继续跑.
         Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
         Application.ThreadException += delegate(object s, System.Threading.ThreadExceptionEventArgs te)
         {
-            try { LogManager.Log("[Guardian] UI thread exception swallowed:\n" + te.Exception); } catch { }
+            HandleUiThreadException(te.Exception);
         };
 
         // 非 UI 线程未处理异常：仅补日志（进程即将终止，CLR 自行处理）
@@ -135,6 +171,7 @@ class Program
             bootstrapWebDir,
             config.WebView2DisableGpu,
             config.WebView2AdditionalArgs);
+        _guardianForm = form;
         PerfTrace.Duration("guardian.form_construct", formStart);
         PerfTrace.Mark("guardian.form_constructed");
 
@@ -882,6 +919,7 @@ class Program
         Application.Run(ctx);
 
         // 清理：每步 try-catch 保护，防止单点异常跳过后续步骤
+        GuardianLifecycle.MarkShuttingDown();
         LogManager.Log("[Guardian] Shutting down...");
         PerfTrace.Mark("guardian.shutdown_start");
         PerfTrace.FlushCounters("shutdown_start");

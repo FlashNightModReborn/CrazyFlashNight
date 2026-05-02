@@ -58,6 +58,19 @@ class org.flashNight.arki.map.MapHotspotResolver {
         return "";
     }
 
+    /**
+     * 判断当前真实场景源是否已经位于指定地图帧。
+     * 只读 source，不读 pending，避免刚发起跳转时把乐观目标误判为已到达。
+     */
+    public static function isCurrentFrameName(frameName:String):Boolean {
+        if (frameName == undefined || frameName == "") return false;
+        if (_root.当前为战斗地图 == true) return false;
+
+        var targetHotspotId:String = MapPanelCatalog.resolveHotspotIdByFrameName(String(frameName));
+        if (targetHotspotId == "") return false;
+        return resolveCurrentFromSources() == targetHotspotId;
+    }
+
     private static function resolveRuntimeSceneKind():String {
         if (_root.当前为战斗地图 == true) return "combat";
 
