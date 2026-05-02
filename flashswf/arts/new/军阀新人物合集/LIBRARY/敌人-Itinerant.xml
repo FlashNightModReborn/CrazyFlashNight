@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-Itinerant" itemID="66a1374f-00000492" linkageExportForAS="true" linkageIdentifier="敌人-Itinerant" lastModified="1775977792" lastUniqueIdentifier="58">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-Itinerant" itemID="66a1374f-00000492" linkageExportForAS="true" linkageIdentifier="敌人-Itinerant" lastModified="1777740927" lastUniqueIdentifier="58">
   <timeline>
-    <DOMTimeline name="敌人-Itinerant" currentFrame="37">
+    <DOMTimeline name="敌人-Itinerant" currentFrame="74">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -206,78 +206,9 @@ x轴保持距离 = 100;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_3" color="#5586F0" locked="true" heightLiteral="24">
+        <DOMLayer name="Layer_4" color="#CDB6B4" locked="true" current="true" isSelected="true" heightLiteral="24">
           <frames>
-            <DOMFrame index="0" duration="120" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/area框/按钮框" symbolType="button">
-                  <matrix>
-                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.9" ty="-142.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(press){
-   if(_root.控制目标 == this._name and this.hp > 0)
-   {
-      gotoAndStop("被击");
-   }
-   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
-   {
-      _root.gameworld[_root.控制目标].攻击目标 = this._name;
-      _root.控制目标全自动 = true;
-   }
-}
-on(press, release, rollOver){
-   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
-   {
-      _root.鼠标.gotoAndStop("手型攻击");
-   }
-}
-on(rollOut){
-   _root.鼠标.gotoAndStop("手型普通");
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="120" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer_4" color="#CDB6B4" locked="true" heightLiteral="24">
-          <frames>
-            <DOMFrame index="0" duration="79" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
-                  <matrix>
-                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="79" duration="9" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="88" duration="7" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-72.75" centerPoint3DY="-37.85">
-                  <matrix>
-                    <Matrix a="5.72386169433594" d="1.68096923828125" tx="-85.25" ty="-50.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="95" duration="9" keyMode="9728">
+            <DOMFrame index="0" duration="104" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
                   <matrix>
@@ -497,27 +428,12 @@ on(rollOut){
         </DOMLayer>
         <DOMLayer name="图层 2" color="#9933CC" locked="true" outline="true" useOutlineView="true">
           <frames>
-            <DOMFrame index="0" duration="79" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="79" duration="9" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
-                  <matrix>
-                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="88" duration="33" keyMode="9728">
+            <DOMFrame index="0" duration="121" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
