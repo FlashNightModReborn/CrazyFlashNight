@@ -109,6 +109,7 @@ AS2 侧要求：
 
 - `TaskRegistry` 解析 `frameLabel/returnFrameLabel`
 - `WebOverlayForm.RequestOpenPanel` 增加对应参数重载
+- `WebOverlayForm` 接受地图面板 `panel:"map" / cmd:"open_stage_select"`，调用同一 `RequestOpenPanel("stage-select", source, null, frameLabel, returnFrameLabel)` 路径打开 runtime 选关
 - `LauncherCommandRouter.RequestOpenPanel` 支持 `panelName == "stage-select"`
 - `OpenStageSelectPanel(source, frameLabel)` 生成：
 
@@ -128,6 +129,7 @@ AS2 侧要求：
 - `fixture` 只作为 Bridge 失败 fallback；runtime 下 live snapshot 覆盖解锁/挑战/详情
 - `frameLabel` 允许中文原名，不另起英文 ID
 - 未知 `frameLabel` 由 Web fallback 到 manifest 首帧，但 C# 日志应记录 source 和 frameLabel
+- 地图面板直达选关只作为二级动作；原热点主点击仍发送 `navigate` 并进入场景，`open_stage_select` 成功后由 PanelHost 关闭 map 再打开 stage-select，避免 map close 回调误关新面板
 
 ### 4.3 Web 正式模式行为
 
@@ -139,6 +141,8 @@ Web 已支持 runtime snapshot / enter，本轮补齐：
 - nav `return` / `return-garage` 在 runtime 下发送 `return_frame`，由 AS2 使用入口保存的 `returnFrameLabel` 设置 `_root.关卡地图帧值`、`_root.场景进入位置名 = "出生地"` 并淡出回对应基地帧；成功后 Web 关闭 panel
 - 如果 `returnFrameLabel` 已经等于当前 `_root.关卡标志` / `_root._currentlabel`，AS2 会返回 `skippedTransition=true` 并只关闭 Web panel，避免从基地门口打开后直接返回时重复黑屏
 - `localFrame` 先做 Web 内页切换，再发送 `jump_frame`，由 C# / AS2 只同步 `Web选关当前帧值`，不覆盖 `_root.关卡地图帧值`
+- Web 地图面板加载 `stage-select-data.js`，按外交地图 / 基地帧的 `RootFadeTransitionFrame` 建立热点到选关页签的索引；二级“选关”按钮发送 `open_stage_select`，并把当前热点场景名作为 `returnFrameLabel`
+- Stage Select runtime snapshot 会把初始 `frameLabel/returnFrameLabel` 回传给 AS2 `StageSelectPanelService`，保证地图面板直接打开时 AS2 当前选关页与返回帧同步
 - 外交地图入口按原版绿色点直达，委托任务入口仍打开原 Flash 委托详情
 - close/backdrop/ESC 都只关闭 Web panel，不发送进关命令；不要和原版 return nav 的回场景语义混用
 

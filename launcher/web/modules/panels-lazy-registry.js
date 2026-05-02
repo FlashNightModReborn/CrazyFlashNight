@@ -43,8 +43,10 @@
 
     // ── map ──
     // map-panel-data.js / map-fit-presets.js 已 boot 加载（map-hud 依赖），不在此列
+    // stage-select-data.js 供 map panel 派生 hotspot -> 选关页签副动作，不加载 stage-select UI 本体。
     Panels.registerLazy('map',
         ['modules/map-avatar-source-data.js',
+         'modules/stage-select-data.js',
          'modules/map-panel.js'],
         noop);
 

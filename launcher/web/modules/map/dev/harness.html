@@ -87,6 +87,7 @@
 <script src="../../map-avatar-source-data.js"></script>
 <script src="../../map-panel-data.js"></script>
 <script src="../../map-fit-presets.js"></script>
+<script src="../../stage-select-data.js"></script>
 <script>
 window.Toast = {
     messages: [],
@@ -348,6 +349,22 @@ window.BootstrapAudio = (function() {
                         success: success,
                         error: success ? null : 'invalid_target',
                         closePanel: !!success
+                    });
+                }, 20);
+                return;
+            }
+
+            if (message.cmd === 'open_stage_select') {
+                this.lastStageSelectRequest = message;
+                setTimeout(function() {
+                    self.dispatch({
+                        type: 'panel_resp',
+                        panel: 'map',
+                        cmd: 'open_stage_select',
+                        callId: message.callId,
+                        success: true,
+                        frameLabel: message.frameLabel,
+                        returnFrameLabel: message.returnFrameLabel
                     });
                 }, 20);
                 return;

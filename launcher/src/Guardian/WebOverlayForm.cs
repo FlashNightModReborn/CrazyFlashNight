@@ -3003,6 +3003,7 @@ namespace CF7Launcher.Guardian
                 case "snapshot":
                 case "navigate":
                 case "refresh":
+                case "open_stage_select":
                 case "enter":
                 case "jump_frame":
                 case "return_frame":
@@ -3015,6 +3016,10 @@ namespace CF7Launcher.Guardian
                         {
                             LogManager.Log("[Panel] Routing cmd=" + cmd + " to StageSelectTask, _stageSelectTask=" + (_stageSelectTask != null ? "ok" : "NULL"));
                             if (_stageSelectTask != null) _stageSelectTask.HandleWebRequest(cmd, parsed);
+                        }
+                        else if (panel == "map" && cmd == "open_stage_select")
+                        {
+                            HandleMapOpenStageSelectRequest(parsed);
                         }
                         else if (panel == "intelligence")
                         {
@@ -3049,6 +3054,42 @@ namespace CF7Launcher.Guardian
                     }
                     break;
             }
+        }
+
+        private void HandleMapOpenStageSelectRequest(JObject parsed)
+        {
+            string webCallId = parsed.Value<string>("callId");
+            if (string.IsNullOrEmpty(webCallId))
+            {
+                LogManager.Log("[Panel] open_stage_select callId is empty");
+                return;
+            }
+
+            string frameLabel = parsed.Value<string>("frameLabel") ?? "";
+            string returnFrameLabel = parsed.Value<string>("returnFrameLabel") ?? "";
+            string source = parsed.Value<string>("source") ?? "map_panel";
+            if (string.IsNullOrEmpty(frameLabel))
+            {
+                PostMapOpenStageSelectResponse(webCallId, false, "invalid_frame", frameLabel, returnFrameLabel);
+                return;
+            }
+
+            RequestOpenPanel("stage-select", source, null, frameLabel, returnFrameLabel);
+            PostMapOpenStageSelectResponse(webCallId, true, null, frameLabel, returnFrameLabel);
+        }
+
+        private void PostMapOpenStageSelectResponse(string webCallId, bool success, string error, string frameLabel, string returnFrameLabel)
+        {
+            var msg = new JObject();
+            msg["type"] = "panel_resp";
+            msg["panel"] = "map";
+            msg["cmd"] = "open_stage_select";
+            msg["callId"] = webCallId;
+            msg["success"] = success;
+            if (!string.IsNullOrEmpty(error)) msg["error"] = error;
+            if (!string.IsNullOrEmpty(frameLabel)) msg["frameLabel"] = frameLabel;
+            if (!string.IsNullOrEmpty(returnFrameLabel)) msg["returnFrameLabel"] = returnFrameLabel;
+            PostToWeb(msg.ToString(Newtonsoft.Json.Formatting.None));
         }
 
         private void HandleGobangEvalRequest(JObject parsed)

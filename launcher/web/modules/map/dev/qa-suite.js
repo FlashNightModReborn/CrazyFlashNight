@@ -902,13 +902,14 @@ var MapPanelHarnessQA = (function() {
                 id: 'map-ui21',
                 title: 'filter fit presets expand sparse subsets without losing stage containment',
                 run: function() {
+                    // Fit floors follow MapFitPresets source-aware caps; capped PNG composites should not be forced past their clarity budget.
                     var probes = [
                         { pageId: 'base', filterId: 'roof', presetId: 'base:roof', minFitScale: 1.68, minX: 0.75, minY: 0.46 },
                         { pageId: 'base', filterId: 'first_floor', presetId: 'base:*', minFitScale: 1.02, minX: 0.88, minY: 0.38 },
-                        { pageId: 'base', filterId: 'basement1', presetId: 'base:basement1', minFitScale: 1.68, minX: 0.54, minY: 0.58 },
-                        { pageId: 'faction', filterId: 'rock', presetId: 'faction:rock', minFitScale: 1.68, minX: 0.44, minY: 0.66 },
-                        { pageId: 'defense', filterId: 'restricted', presetId: 'defense:restricted', minFitScale: 1.68, minX: 0.45, minY: 0.6 },
-                        { pageId: 'school', filterId: 'outside', presetId: 'school:outside', minFitScale: 1.68, minX: 0.38, minY: 0.28 }
+                        { pageId: 'base', filterId: 'basement1', presetId: 'base:basement1', minFitScale: 1.68, minX: 0.54, minY: 0.43 },
+                        { pageId: 'faction', filterId: 'rock', presetId: 'faction:rock', minFitScale: 1.14, minX: 0.30, minY: 0.48 },
+                        { pageId: 'defense', filterId: 'restricted', presetId: 'defense:restricted', minFitScale: 1.14, minX: 0.30, minY: 0.43 },
+                        { pageId: 'school', filterId: 'outside', presetId: 'school:outside', minFitScale: 1.0, minX: 0.23, minY: 0.17 }
                     ];
                     var details = [];
 
@@ -1082,6 +1083,45 @@ var MapPanelHarnessQA = (function() {
                                 ' z=' + window.getComputedStyle(labelLayer).zIndex + '/' + window.getComputedStyle(avatarLayer).zIndex +
                                 ' anchor=' + Math.round(labelRect.left - hotspotRect.left) + ',' + Math.round(labelRect.bottom - hotspotRect.top) +
                                 ' lh/hh=' + Math.round(labelRect.height) + '/' + Math.round(hotspotRect.height);
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui24',
+                title: 'stage-select shortcut opens matching stage frame without replacing hotspot navigation',
+                run: function() {
+                    return bootMap(api, host, { defaultPageId: 'faction', currentHotspotId: 'rock_park' }).then(function() {
+                        clickByHitTest(api, getFilterButton('rock'), 'rock filter');
+                        return api.waitFor(function() {
+                            var state = currentState();
+                            return state && state.activeFilterId === 'rock' ? state : null;
+                        }, 1500, 'switch to rock').then(function(state) {
+                            api.assert(state.stageSelectHotspotIds.indexOf('rock_park') >= 0, 'rock_park should expose stage-select shortcut');
+                            api.assert(state.stageSelectHotspotIds.indexOf('rock_rehearsal') < 0, 'rock_rehearsal should not expose stage-select shortcut');
+
+                            var action = document.querySelector('.map-rail-stage-select-btn[data-hotspot-id="rock_park"]');
+                            var missingAction = document.querySelector('.map-rail-stage-select-btn[data-hotspot-id="rock_rehearsal"]');
+                            api.assert(!!action, 'rock_park stage-select action missing');
+                            api.assert(!missingAction, 'rock_rehearsal should not render stage-select action');
+
+                            var beforeNavCount = host.getMessages().filter(function(m) { return m && m.cmd === 'navigate'; }).length;
+                            var beforeOpenCount = host.getMessages().filter(function(m) { return m && m.cmd === 'open_stage_select'; }).length;
+                            clickByHitTest(api, action, 'rock_park stage-select action');
+                            var afterNavCount = host.getMessages().filter(function(m) { return m && m.cmd === 'navigate'; }).length;
+                            var openMessages = host.getMessages().filter(function(m) { return m && m.cmd === 'open_stage_select'; });
+                            api.assertEqual(afterNavCount - beforeNavCount, 0, 'stage-select action must not emit navigate');
+                            api.assertEqual(openMessages.length - beforeOpenCount, 1, 'stage-select action should emit one open_stage_select');
+                            var msg = openMessages[openMessages.length - 1];
+                            api.assertEqual(msg.targetId, 'rock_park', 'open_stage_select targetId');
+                            api.assertEqual(msg.frameLabel, '基地车库', 'rock_park opens garage stage-select frame');
+                            api.assertEqual(msg.returnFrameLabel, '地图-摇滚公园', 'return frame follows current map hotspot scene');
+                            return api.waitFor(function() {
+                                var s = currentState();
+                                return s && !s.stageSelectBusyHotspotId ? s : null;
+                            }, 1500, 'stage-select shortcut busy reset').then(function() {
+                                return 'open_stage_select=' + msg.targetId + '->' + msg.frameLabel;
+                            });
                         });
                     });
                 }

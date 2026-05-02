@@ -31,13 +31,15 @@ namespace CF7Launcher.Tests.Tasks
             string sent = null;
             var task = new StageSelectTask(delegate { return true; }, delegate(string payload) { sent = payload; });
 
-            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"web-2\",\"stageNames\":[\"新手练习场\",\"超市废墟\"]}"));
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"web-2\",\"frameLabel\":\"基地车库\",\"returnFrameLabel\":\"基地门口\",\"stageNames\":[\"新手练习场\",\"超市废墟\"]}"));
 
             Assert.EndsWith("\0", sent);
             var msg = JObject.Parse(sent.TrimEnd('\0'));
             Assert.Equal("cmd", (string)msg["task"]);
             Assert.Equal("stageSelectSnapshot", (string)msg["action"]);
             Assert.Equal(1, (int)msg["callId"]);
+            Assert.Equal("基地车库", (string)msg["frameLabel"]);
+            Assert.Equal("基地门口", (string)msg["returnFrameLabel"]);
             Assert.Equal("新手练习场", (string)msg["stageNames"][0]);
         }
 

@@ -896,6 +896,8 @@ var StageSelectPanel = (function() {
             panel: 'stage-select',
             cmd: 'snapshot',
             callId: reqId,
+            frameLabel: _currentFrameLabel,
+            returnFrameLabel: _returnFrameLabel,
             stageNames: getManifestStageNames()
         });
     }
@@ -1007,6 +1009,9 @@ var StageSelectPanel = (function() {
         _lastError = '';
         if (_runtimeSnapshot.currentFrameLabel && StageSelectData.getFrame(_runtimeSnapshot.currentFrameLabel)) {
             _currentFrameLabel = _runtimeSnapshot.currentFrameLabel;
+        }
+        if (_runtimeSnapshot.returnFrameLabel) {
+            _returnFrameLabel = _runtimeSnapshot.returnFrameLabel;
         }
         renderCurrentFrame();
         logDev('snapshot live: ' + countUnlocked(_runtimeSnapshot.unlockedStages) + ' unlocked');

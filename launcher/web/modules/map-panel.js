@@ -23,6 +23,8 @@ var MapPanel = (function() {
     var _requestedInitialPageId = '';
     var _hoverHotspotId = '';
     var _busyLookup = {};
+    var _stageSelectBusyHotspotId = '';
+    var _stageSelectHotspotIndex = null;
     var _closing = false;
     var _session = 0;
     var _stageScale = 1;
@@ -523,6 +525,60 @@ var MapPanel = (function() {
         });
     }
 
+    function requestOpenStageSelect(hotspot, event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        if (!_activePage || _closing || !hotspot) return;
+
+        var entry = resolveStageSelectEntryForHotspot(hotspot);
+        if (!entry) {
+            if (typeof Toast !== 'undefined' && Toast) Toast.add('该区域没有对应的选关入口。');
+            return;
+        }
+        if (!_enabledLookup[hotspot.id]) {
+            pushLockedReason(hotspot.id);
+            return;
+        }
+        if (_stageSelectBusyHotspotId) return;
+
+        if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') {
+            if (typeof Toast !== 'undefined' && Toast) Toast.add('选关面板暂不可用。');
+            return;
+        }
+
+        var reqId = 'map-stage-select-' + (++_reqSeq);
+        var currentSession = _session;
+        var returnFrameLabel = resolveStageSelectReturnFrameLabel();
+        _pendingReq[reqId] = function(resp) {
+            delete _pendingReq[reqId];
+            if (currentSession !== _session) return;
+
+            _stageSelectBusyHotspotId = '';
+            syncHotspotStates();
+            if (!resp.success) {
+                if (typeof Toast !== 'undefined' && Toast) {
+                    Toast.add('打开选关失败: ' + (resp.error || 'unknown_error'));
+                }
+            }
+        };
+
+        _stageSelectBusyHotspotId = hotspot.id;
+        syncHotspotStates();
+        Bridge.send({
+            type: 'panel',
+            panel: 'map',
+            cmd: 'open_stage_select',
+            callId: reqId,
+            targetId: hotspot.id,
+            targetSceneName: getHotspotSceneName(hotspot),
+            frameLabel: entry.frameLabel,
+            returnFrameLabel: returnFrameLabel,
+            source: 'map_panel'
+        });
+    }
+
     function requestClose() {
         finishClose(true);
     }
@@ -541,6 +597,7 @@ var MapPanel = (function() {
         _currentHotspotId = '';
         _hoverHotspotId = '';
         _busyLookup = {};
+        _stageSelectBusyHotspotId = '';
         // cancel cue 由调用方负责: DOM click 走 overlay click 代理, Esc/backdrop 走 onRequestClose
         // navigate 成功直闭(resp.closePanel)不播 cancel, transition cue 已足够表达
         resetContentFit();
@@ -705,6 +762,59 @@ var MapPanel = (function() {
         return null;
     }
 
+    function findHotspotByIdAnyPage(hotspotId) {
+        var pageId = hotspotId && MapPanelData.findHotspotPageId ? MapPanelData.findHotspotPageId(hotspotId) : '';
+        return pageId ? MapPanelData.findHotspot(pageId, hotspotId) : null;
+    }
+
+    function getHotspotSceneName(hotspot) {
+        if (!hotspot) return '';
+        if (hotspot.target && hotspot.target.sceneName) return hotspot.target.sceneName;
+        return hotspot.sceneName || '';
+    }
+
+    function getStageSelectHotspotIndex() {
+        if (_stageSelectHotspotIndex) return _stageSelectHotspotIndex;
+        var index = {};
+        if (typeof StageSelectData === 'undefined' || !StageSelectData || typeof StageSelectData.getManifest !== 'function') {
+            return index;
+        }
+
+        var manifest = StageSelectData.getManifest();
+        (manifest.frames || []).forEach(function(frame) {
+            if (frame.frameLabel) {
+                index[frame.frameLabel] = {
+                    frameLabel: frame.frameLabel,
+                    source: 'frame'
+                };
+            }
+            (frame.stageButtons || []).forEach(function(button) {
+                if (button.entryKind !== 'map' || !button.rootFadeTransitionFrame) return;
+                index[button.rootFadeTransitionFrame] = {
+                    frameLabel: frame.frameLabel,
+                    source: 'diplomacy',
+                    stageName: button.stageName || '',
+                    rootFadeTransitionFrame: button.rootFadeTransitionFrame
+                };
+            });
+        });
+
+        _stageSelectHotspotIndex = index;
+        return index;
+    }
+
+    function resolveStageSelectEntryForHotspot(hotspot) {
+        var sceneName = getHotspotSceneName(hotspot);
+        if (!sceneName) return null;
+        return getStageSelectHotspotIndex()[sceneName] || null;
+    }
+
+    function resolveStageSelectReturnFrameLabel() {
+        var currentHotspot = findHotspotByIdAnyPage(_currentHotspotId);
+        var sceneName = getHotspotSceneName(currentHotspot);
+        return sceneName || '基地门口';
+    }
+
     function buildSceneSubList(filter) {
         var ids = filter.hotspotIds || [];
         if (!ids.length) return null;
@@ -718,6 +828,10 @@ var MapPanel = (function() {
             var state = getHotspotState(hotspotId);
             var enabled = !!_enabledLookup[hotspotId];
             var isCurrent = _currentHotspotId === hotspotId;
+            var stageSelectEntry = resolveStageSelectEntryForHotspot(hotspot);
+            var row = document.createElement('div');
+            row.className = 'map-rail-scene-row';
+            row.setAttribute('data-hotspot-id', hotspotId);
             var item = document.createElement('button');
             item.className = 'map-rail-scene-item';
             item.type = 'button';
@@ -736,7 +850,20 @@ var MapPanel = (function() {
                 '<span class="map-rail-scene-dot" aria-hidden="true"></span>' +
                 '<span class="map-rail-scene-label">' + escHtml(hotspot.label) + '</span>';
             attachSceneItemHandler(item, hotspot);
-            list.appendChild(item);
+            row.appendChild(item);
+            if (stageSelectEntry && enabled) {
+                var stageBtn = document.createElement('button');
+                stageBtn.className = 'map-rail-stage-select-btn';
+                stageBtn.type = 'button';
+                stageBtn.textContent = '选关';
+                stageBtn.setAttribute('data-hotspot-id', hotspotId);
+                stageBtn.setAttribute('data-stage-select-frame', stageSelectEntry.frameLabel);
+                stageBtn.setAttribute('data-audio-cue', 'select');
+                stageBtn.setAttribute('title', '打开' + stageSelectEntry.frameLabel + '选关');
+                attachStageSelectActionHandler(stageBtn, hotspot);
+                row.appendChild(stageBtn);
+            }
+            list.appendChild(row);
         }
         return list;
     }
@@ -745,6 +872,12 @@ var MapPanel = (function() {
         item.addEventListener('click', function() {
             // 复用 requestNavigate: enabled 走 transition + 导航; disabled 推 toast 原因; busy 去重
             requestNavigate(hotspot);
+        });
+    }
+
+    function attachStageSelectActionHandler(item, hotspot) {
+        item.addEventListener('click', function(event) {
+            requestOpenStageSelect(hotspot, event);
         });
     }
 
@@ -904,12 +1037,26 @@ var MapPanel = (function() {
         for (var i = 0; i < hotspots.length; i++) {
             var hotspot = hotspots[i];
             var rect = hotspot.rect;
+            var hotspotState = getHotspotState(hotspot.id);
+            var stageSelectEntry = resolveStageSelectEntryForHotspot(hotspot);
             var label = document.createElement('div');
             label.className = 'map-hotspot-overlay-label';
             label.setAttribute('data-hotspot-id', hotspot.id);
             label.style.left = toPercent(rect.x + 8, _activePage.width);
             label.style.top = toPercent((rect.y + rect.h) - 8, _activePage.height);
-            label.textContent = hotspot.label || hotspot.id;
+            label.innerHTML = '<span class="map-hotspot-overlay-label-text">' + escHtml(hotspot.label || hotspot.id) + '</span>';
+            if (stageSelectEntry && hotspotState.enabled) {
+                var action = document.createElement('button');
+                action.className = 'map-hotspot-stage-select-btn';
+                action.type = 'button';
+                action.textContent = '选关';
+                action.setAttribute('data-hotspot-id', hotspot.id);
+                action.setAttribute('data-stage-select-frame', stageSelectEntry.frameLabel);
+                action.setAttribute('data-audio-cue', 'select');
+                action.setAttribute('title', '打开' + stageSelectEntry.frameLabel + '选关');
+                attachStageSelectActionHandler(action, hotspot);
+                label.appendChild(action);
+            }
             _hotspotLabelLayer.appendChild(label);
         }
 
@@ -1355,6 +1502,13 @@ function resolveFeedbackAnchor(item) {
             labels[i].classList.toggle('is-muted', isMuted);
             labels[i].classList.toggle('is-disabled', !hotspotState.enabled);
             labels[i].classList.toggle('is-relation', activeViewMode === 'hierarchy');
+            var action = labels[i].querySelector('.map-hotspot-stage-select-btn');
+            if (action) {
+                var stageSelectBusy = _stageSelectBusyHotspotId === id;
+                action.classList.toggle('is-busy', stageSelectBusy);
+                action.disabled = stageSelectBusy || (!!_stageSelectBusyHotspotId && !stageSelectBusy);
+                action.setAttribute('aria-busy', stageSelectBusy ? 'true' : 'false');
+            }
         }
     }
 
@@ -1368,6 +1522,15 @@ function resolveFeedbackAnchor(item) {
             items[i].classList.toggle('is-busy', isBusy);
             items[i].disabled = isBusy;
             items[i].setAttribute('aria-busy', isBusy ? 'true' : 'false');
+        }
+
+        var actions = _railEl.querySelectorAll('.map-rail-stage-select-btn');
+        for (i = 0; i < actions.length; i++) {
+            id = actions[i].getAttribute('data-hotspot-id') || '';
+            var stageSelectBusy = _stageSelectBusyHotspotId === id;
+            actions[i].classList.toggle('is-busy', stageSelectBusy);
+            actions[i].disabled = stageSelectBusy || (!!_stageSelectBusyHotspotId && !stageSelectBusy);
+            actions[i].setAttribute('aria-busy', stageSelectBusy ? 'true' : 'false');
         }
     }
 
@@ -1824,6 +1987,7 @@ function resolveFeedbackAnchor(item) {
         var visibleHotspotIds = [];
         var enabledHotspotIds = [];
         var lockedHotspotIds = [];
+        var stageSelectHotspotIds = [];
         var i;
 
         for (i = 0; i < hotspots.length; i++) {
@@ -1832,6 +1996,9 @@ function resolveFeedbackAnchor(item) {
                 enabledHotspotIds.push(hotspots[i].id);
             } else {
                 lockedHotspotIds.push(hotspots[i].id);
+            }
+            if (resolveStageSelectEntryForHotspot(hotspots[i])) {
+                stageSelectHotspotIds.push(hotspots[i].id);
             }
         }
 
@@ -1847,6 +2014,8 @@ function resolveFeedbackAnchor(item) {
             visibleHotspotIds: visibleHotspotIds,
             enabledHotspotIds: enabledHotspotIds,
             lockedHotspotIds: lockedHotspotIds,
+            stageSelectHotspotIds: stageSelectHotspotIds,
+            stageSelectBusyHotspotId: _stageSelectBusyHotspotId,
             dynamicAvatarState: _dynamicAvatarState,
             unlockFlags: _unlockFlags,
             currentHotspotId: _currentHotspotId,

@@ -3037,6 +3037,9 @@
 
 .map-hotspot-overlay-label {
     position:absolute;
+    display:flex;
+    align-items:center;
+    gap:4px;
     padding:2px 8px;
     color:#e9ffc1;
     background:rgba(6, 8, 6, 0.72);
@@ -3048,6 +3051,40 @@
     opacity:0;
     transform:translateY(calc(-100% + 4px));
     transition:opacity 0.12s ease, transform 0.12s ease;
+}
+
+.map-hotspot-overlay-label-text {
+    max-width:128px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.map-hotspot-stage-select-btn {
+    width:30px;
+    height:18px;
+    padding:0;
+    border:1px solid rgba(140, 255, 120, 0.32);
+    border-radius:3px;
+    background:rgba(0, 102, 24, 0.72);
+    color:#dfffbd;
+    font-size:10px;
+    line-height:16px;
+    cursor:pointer;
+    pointer-events:auto;
+}
+
+.map-hotspot-stage-select-btn:hover,
+.map-hotspot-stage-select-btn:focus {
+    outline:none;
+    border-color:rgba(190, 255, 120, 0.72);
+    background:rgba(0, 130, 32, 0.86);
+    color:#ffffff;
+}
+
+.map-hotspot-stage-select-btn.is-busy,
+.map-hotspot-stage-select-btn:disabled {
+    cursor:progress;
+    opacity:0.72;
 }
 
 .map-hotspot-overlay-label.is-disabled {
@@ -3272,6 +3309,13 @@
     border-left:1px solid rgba(200,255,76,0.22);
 }
 
+.map-rail-scene-row {
+    display:flex;
+    align-items:center;
+    gap:3px;
+    width:100%;
+}
+
 .map-rail-scene-item {
     display:flex;
     align-items:center;
@@ -3287,6 +3331,41 @@
     cursor:pointer;
     text-align:left;
     transition:background 0.12s ease, border-color 0.12s ease, color 0.12s ease, transform 0.12s ease;
+}
+
+.map-rail-scene-row .map-rail-scene-item {
+    flex:1 1 auto;
+    min-width:0;
+}
+
+.map-rail-stage-select-btn {
+    flex:0 0 36px;
+    width:36px;
+    height:26px;
+    padding:0;
+    border:1px solid rgba(110, 235, 102, 0.18);
+    background:rgba(8, 48, 20, 0.7);
+    color:#c9f7ad;
+    font-size:11px;
+    letter-spacing:0;
+    cursor:pointer;
+    transition:background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+.map-rail-stage-select-btn:hover,
+.map-rail-stage-select-btn:focus {
+    outline:none;
+    border-color:rgba(158, 255, 118, 0.48);
+    background:rgba(12, 76, 28, 0.86);
+    color:#ffffff;
+}
+
+.map-rail-stage-select-btn.is-busy,
+.map-rail-stage-select-btn:disabled {
+    cursor:progress;
+    border-color:#ffd04f;
+    background:rgba(42, 32, 12, 0.86);
+    color:#ffe6a8;
 }
 
 .map-rail-scene-item:hover {

@@ -35,10 +35,19 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
 
     public static function handleSnapshot(params:Object):Void {
         var callId = params.callId;
+        var requestedFrameLabel:String = params != undefined && params.frameLabel != undefined
+            ? resolveStageSelectFrameLabel(String(params.frameLabel))
+            : "";
+        var requestedReturnFrameLabel:String = params != undefined && params.returnFrameLabel != undefined
+            ? resolveRootReturnFrameLabel(String(params.returnFrameLabel))
+            : "";
         var names:Array = normalizeStageNames(params.stageNames);
         var unlocked:Object = {};
         var details:Object = {};
         var i:Number;
+
+        if (requestedFrameLabel != "") _root.Web选关当前帧值 = requestedFrameLabel;
+        if (requestedReturnFrameLabel != "") _root.Web选关返回帧值 = requestedReturnFrameLabel;
 
         for (i = 0; i < names.length; i++) {
             unlocked[names[i]] = canEnterStage(names[i]);
@@ -53,7 +62,8 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
                 unlockedStages: unlocked,
                 stageDetails: details,
                 isChallengeMode: isChallengeMode(),
-                currentFrameLabel: resolveStageSelectFrameLabel(String(_root.Web选关当前帧值 || _root.关卡地图帧值 || ""))
+                currentFrameLabel: resolveStageSelectFrameLabel(String(_root.Web选关当前帧值 || _root.关卡地图帧值 || "")),
+                returnFrameLabel: resolveRootReturnFrameLabel(String(_root.Web选关返回帧值 || _root.关卡地图帧值 || ""))
             }
         });
     }

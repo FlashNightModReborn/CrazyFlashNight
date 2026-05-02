@@ -325,6 +325,7 @@ function inferStageEntry(script, libraryItemName, stageInfoIndex) {
         entryKind: entryKind,
         stageType: stageType,
         stageArea: stageInfo.area || '',
+        rootFadeTransitionFrame: stageInfo.rootFadeTransitionFrame || '',
         detail: findStageDetail(script) || stageInfo.description || '',
         visualKind: inferStageVisualKind(libraryItemName, entryKind)
     };
@@ -422,6 +423,7 @@ function createStageButton(frameMap, frameLabel, sourceFrameIndex, instanceAttrs
         visualKind: entry.visualKind,
         stageType: entry.stageType,
         stageArea: entry.stageArea,
+        rootFadeTransitionFrame: entry.rootFadeTransitionFrame || '',
         libraryItemName: instanceAttrs.libraryItemName || '',
         previewUrl: preview.previewUrl,
         previewAssetName: preview.previewAssetName,
