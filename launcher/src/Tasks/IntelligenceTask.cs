@@ -1062,9 +1062,21 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
+        private const int MaxValidationDepth = 50;
+
         private bool ValidateSafeJson(JToken token, out string error)
         {
+            return ValidateSafeJson(token, 0, out error);
+        }
+
+        private bool ValidateSafeJson(JToken token, int depth, out string error)
+        {
             error = null;
+            if (depth > MaxValidationDepth)
+            {
+                error = "h5_depth_exceeded";
+                return false;
+            }
             JObject obj = token as JObject;
             if (obj != null)
             {
@@ -1078,7 +1090,7 @@ namespace CF7Launcher.Tasks
                         error = "h5_unsafe_key";
                         return false;
                     }
-                    if (!ValidateSafeJson(prop.Value, out error)) return false;
+                    if (!ValidateSafeJson(prop.Value, depth + 1, out error)) return false;
                 }
                 return true;
             }
@@ -1086,7 +1098,7 @@ namespace CF7Launcher.Tasks
             if (arr != null)
             {
                 for (int i = 0; i < arr.Count; i++)
-                    if (!ValidateSafeJson(arr[i], out error)) return false;
+                    if (!ValidateSafeJson(arr[i], depth + 1, out error)) return false;
                 return true;
             }
             if (token != null && token.Type == JTokenType.String)
@@ -1191,8 +1203,9 @@ namespace CF7Launcher.Tasks
 
         private void PostToWeb(string json)
         {
+            if (_disposed) return;
             if (_invokeOnUI != null)
-                _invokeOnUI(delegate { if (_postToWeb != null) _postToWeb(json); });
+                _invokeOnUI(delegate { if (_disposed) return; if (_postToWeb != null) _postToWeb(json); });
             else if (_postToWeb != null)
                 _postToWeb(json);
         }

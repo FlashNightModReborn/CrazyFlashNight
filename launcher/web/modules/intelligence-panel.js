@@ -279,21 +279,6 @@ var IntelligencePanel = (function() {
         });
     }
 
-    function requestCatalog(done) {
-        sendRequest('catalog', {}, function(resp) {
-            if (!resp.success) {
-                showError('目录加载失败：' + (resp.error || 'unknown'));
-                return;
-            }
-            _catalog = resp.items || [];
-            _catalogByName = {};
-            for (var i = 0; i < _catalog.length; i++) {
-                _catalogByName[_catalog[i].name] = _catalog[i];
-            }
-            if (done) done(resp);
-        });
-    }
-
     function requestSnapshot() {
         showLoading('正在读取情报文本…');
         var payload = { itemName: _currentItemName };

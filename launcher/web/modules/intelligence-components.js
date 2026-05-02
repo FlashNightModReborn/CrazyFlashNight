@@ -588,7 +588,9 @@ var IntelligenceComponentRenderer = (function() {
         return out;
     }
 
-    function flattenInline(inline) {
+    function flattenInline(inline, depth) {
+        depth = depth || 0;
+        if (depth > 50) return '';
         var text = '';
         var list = Array.isArray(inline) ? inline : [];
         for (var i = 0; i < list.length; i++) {
@@ -596,7 +598,7 @@ var IntelligenceComponentRenderer = (function() {
             if (typeof node === 'string') text += node;
             else if (node && node.type === 'text') text += node.text || '';
             else if (node && node.type === 'pcName') text += '玩家';
-            else if (node && Array.isArray(node.content)) text += flattenInline(node.content);
+            else if (node && Array.isArray(node.content)) text += flattenInline(node.content, depth + 1);
         }
         return text;
     }

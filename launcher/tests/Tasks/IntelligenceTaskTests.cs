@@ -326,6 +326,31 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void Snapshot_H5StrictRejectsDeeplyNestedContent()
+        {
+            WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
+            var sb = new StringBuilder();
+            sb.Append("{\"schemaVersion\":1,\"itemName\":\"资料\",\"skin\":\"paper\",\"pages\":[{\"pageKey\":\"1\",\"blocks\":[");
+            sb.Append("{\"type\":\"paragraph\",\"content\":[");
+            const int depth = 26;
+            for (int i = 0; i < depth; i++) sb.Append("{\"type\":\"strong\",\"content\":[");
+            sb.Append("{\"type\":\"text\",\"text\":\"deep\"}");
+            for (int i = 0; i < depth; i++) sb.Append("]}");
+            sb.Append("]}]}]}");
+            WriteH5("资料", sb.ToString());
+
+            var posted = new List<string>();
+            var task = new IntelligenceTask(_root);
+            task.SetPostToWeb(delegate(string json) { posted.Add(json); });
+
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"h5-deep\",\"itemName\":\"资料\",\"value\":1}"));
+
+            JObject resp = JObject.Parse(posted[0]);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("h5_depth_exceeded", (string)resp["error"]);
+        }
+
+        [Fact]
         public void Tooltip_RoutesToFlashAndMapsResponseBackToWebCallId()
         {
             WriteDictionary("<root><Item><Name>资料</Name><Index>0</Index><Information Value=\"1\" PageKey=\"1\"/></Item></root>");
