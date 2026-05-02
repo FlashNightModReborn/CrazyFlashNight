@@ -390,7 +390,7 @@ var MapPanel = (function() {
             node.style.top = toPercent(rect.y, _activePage.height);
             node.style.width = toPercent(rect.w, _activePage.width);
             node.style.height = toPercent(rect.h, _activePage.height);
-            node.title = visual.label || visual.id;
+            node.setAttribute('aria-label', visual.label || visual.id);
             node.innerHTML =
                 '<img class="map-scene-node-image" alt="" src="' + escAttr(assetUrl) + '">' +
                 '<span class="map-scene-node-glow"></span>';
@@ -551,7 +551,20 @@ var MapPanel = (function() {
         var reqId = 'map-stage-select-' + (++_reqSeq);
         var currentSession = _session;
         var returnFrameLabel = resolveStageSelectReturnFrameLabel();
+        var timeoutHandle = setTimeout(function() {
+            if (!_pendingReq[reqId]) return;
+            delete _pendingReq[reqId];
+            if (currentSession !== _session) return;
+            if (_stageSelectBusyHotspotId === hotspot.id) {
+                _stageSelectBusyHotspotId = '';
+                syncHotspotStates();
+            }
+            if (typeof Toast !== 'undefined' && Toast) {
+                Toast.add('打开选关超时, 请重试。');
+            }
+        }, 5000);
         _pendingReq[reqId] = function(resp) {
+            clearTimeout(timeoutHandle);
             delete _pendingReq[reqId];
             if (currentSession !== _session) return;
 
@@ -671,11 +684,9 @@ var MapPanel = (function() {
             btn.style.width = toPercent(rect.w, _activePage.width);
             btn.style.height = toPercent(rect.h, _activePage.height);
             btn.setAttribute('aria-disabled', enabled ? 'false' : 'true');
+            btn.setAttribute('aria-label', hotspot.label);
             if (!enabled && hotspotState.lockedReason) {
                 btn.setAttribute('data-locked-reason', hotspotState.lockedReason);
-                btn.title = hotspotState.lockedReason;
-            } else {
-                btn.title = hotspot.label;
             }
             btn.innerHTML =
                 '<span class="map-hotspot-sheen"></span>';
@@ -730,8 +741,7 @@ var MapPanel = (function() {
             btn.type = 'button';
             btn.setAttribute('data-filter-id', filter.id);
             btn.setAttribute('data-audio-cue', isLocked ? 'error' : 'select');
-            btn.setAttribute('title', buildFilterTitle(filter, enabledCount, filterMeta, isLocked));
-            btn.setAttribute('aria-label', filter.label);
+            btn.setAttribute('aria-label', buildFilterTitle(filter, enabledCount, filterMeta, isLocked));
             btn.classList.toggle('is-active', !!activeFilter && activeFilter.id === filter.id);
             btn.classList.toggle('is-empty', enabledCount === 0);
             btn.classList.toggle('is-locked', isLocked);
@@ -841,11 +851,9 @@ var MapPanel = (function() {
             item.classList.toggle('is-disabled', !enabled);
             if (!enabled && state.lockedReason) {
                 item.setAttribute('data-locked-reason', state.lockedReason);
-                item.setAttribute('title', state.lockedReason);
-            } else {
-                item.setAttribute('title', hotspot.label);
             }
             item.setAttribute('aria-disabled', enabled ? 'false' : 'true');
+            item.setAttribute('aria-label', hotspot.label);
             item.innerHTML =
                 '<span class="map-rail-scene-dot" aria-hidden="true"></span>' +
                 '<span class="map-rail-scene-label">' + escHtml(hotspot.label) + '</span>';
@@ -859,7 +867,7 @@ var MapPanel = (function() {
                 stageBtn.setAttribute('data-hotspot-id', hotspotId);
                 stageBtn.setAttribute('data-stage-select-frame', stageSelectEntry.frameLabel);
                 stageBtn.setAttribute('data-audio-cue', 'select');
-                stageBtn.setAttribute('title', '打开' + stageSelectEntry.frameLabel + '选关');
+                stageBtn.setAttribute('aria-label', '打开' + stageSelectEntry.frameLabel + '选关');
                 attachStageSelectActionHandler(stageBtn, hotspot);
                 row.appendChild(stageBtn);
             }
@@ -877,6 +885,8 @@ var MapPanel = (function() {
 
     function attachStageSelectActionHandler(item, hotspot) {
         item.addEventListener('click', function(event) {
+            // 卡片浮在 hotspot 上方; 显式停止传播, 防止 overlay click 代理误把动作识别成导航
+            if (event && typeof event.stopPropagation === 'function') event.stopPropagation();
             requestOpenStageSelect(hotspot, event);
         });
     }
@@ -941,7 +951,7 @@ var MapPanel = (function() {
             avatar.className = 'map-avatar map-static-avatar';
             avatar.setAttribute('data-avatar-id', slot.id || '');
             avatar.setAttribute('data-hotspot-id', slot.hotspotId || '');
-            avatar.title = slot.label || '';
+            avatar.setAttribute('aria-label', slot.label || '');
             avatar.style.left = toPercent(rect.x, _activePage.width);
             avatar.style.top = toPercent(rect.y, _activePage.height);
             avatar.style.width = toPercent(rect.w, _activePage.width);
@@ -1044,23 +1054,50 @@ var MapPanel = (function() {
             label.setAttribute('data-hotspot-id', hotspot.id);
             label.style.left = toPercent(rect.x + 8, _activePage.width);
             label.style.top = toPercent((rect.y + rect.h) - 8, _activePage.height);
-            label.innerHTML = '<span class="map-hotspot-overlay-label-text">' + escHtml(hotspot.label || hotspot.id) + '</span>';
+            // 卡片头: 地点名; hover/current 时整张卡片浮出, 操作行附在下方
+            label.innerHTML =
+                '<span class="map-hotspot-overlay-label-head">' +
+                    '<span class="map-hotspot-overlay-label-text">' + escHtml(hotspot.label || hotspot.id) + '</span>' +
+                '</span>';
+            // 锁定: 把 lockedReason 直接写进卡片, 替代被移除的 OS title tooltip
+            if (!hotspotState.enabled && hotspotState.lockedReason) {
+                var lockedRow = document.createElement('div');
+                lockedRow.className = 'map-hotspot-overlay-locked';
+                lockedRow.textContent = hotspotState.lockedReason;
+                label.appendChild(lockedRow);
+            }
+            // 可选关: 加大尺寸的 "前往选关" 按钮独占一行, 避免与 hotspot 整块点击区争抢命中
             if (stageSelectEntry && hotspotState.enabled) {
+                var actions = document.createElement('div');
+                actions.className = 'map-hotspot-overlay-actions';
                 var action = document.createElement('button');
                 action.className = 'map-hotspot-stage-select-btn';
                 action.type = 'button';
-                action.textContent = '选关';
+                action.textContent = '前往选关';
                 action.setAttribute('data-hotspot-id', hotspot.id);
                 action.setAttribute('data-stage-select-frame', stageSelectEntry.frameLabel);
                 action.setAttribute('data-audio-cue', 'select');
-                action.setAttribute('title', '打开' + stageSelectEntry.frameLabel + '选关');
+                action.setAttribute('aria-label', '打开' + stageSelectEntry.frameLabel + '选关');
                 attachStageSelectActionHandler(action, hotspot);
-                label.appendChild(action);
+                actions.appendChild(action);
+                label.appendChild(actions);
             }
+            attachHotspotLabelHoverBridge(label, hotspot);
             _hotspotLabelLayer.appendChild(label);
         }
 
         syncHotspotLabelStates();
+    }
+
+    // 鼠标从 hotspot 移到浮层卡片时, hotspot 的 mouseleave 会先清掉 _hoverHotspotId,
+    // 这里用 label 自身的 mouseenter 立即接管, 保证卡片不会瞬时坍缩。
+    function attachHotspotLabelHoverBridge(label, hotspot) {
+        label.addEventListener('mouseenter', function() {
+            setHotspotHover(hotspot.id, true);
+        });
+        label.addEventListener('mouseleave', function() {
+            setHotspotHover(hotspot.id, false);
+        });
     }
 
     function renderFlashHints(hints) {
@@ -1474,9 +1511,6 @@ function resolveFeedbackAnchor(item) {
             buttons[i].classList.toggle('is-muted', isMuted);
             buttons[i].classList.toggle('is-relation', activeViewMode === 'hierarchy');
             buttons[i].disabled = isBusy;
-            if (!hotspotState.enabled && hotspotState.lockedReason) {
-                buttons[i].title = hotspotState.lockedReason;
-            }
         }
 
         syncHotspotLabelStates();

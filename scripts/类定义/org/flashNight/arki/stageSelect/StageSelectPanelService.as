@@ -453,7 +453,6 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         if (frameLabel == "") return false;
         if (_root.当前为战斗地图 == true) return false;
         if (String(_root.关卡标志 || "") == frameLabel) return true;
-        if (String(_root._currentlabel || "") == frameLabel) return true;
         return false;
     }
 

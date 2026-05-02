@@ -3026,6 +3026,10 @@ namespace CF7Launcher.Guardian
                             LogManager.Log("[Panel] Routing cmd=" + cmd + " to IntelligenceTask, _intelligenceTask=" + (_intelligenceTask != null ? "ok" : "NULL"));
                             if (_intelligenceTask != null) _intelligenceTask.HandleWebRequest(cmd, parsed);
                         }
+                        else if (cmd == "enter" || cmd == "jump_frame" || cmd == "return_frame" || cmd == "open_stage_select")
+                        {
+                            LogManager.Log("[Panel] Dropping cmd=" + cmd + " for unsupported panel=" + panel);
+                        }
                         else
                         {
                             LogManager.Log("[Panel] Routing cmd=" + cmd + " to MapTask, _mapTask=" + (_mapTask != null ? "ok" : "NULL"));
@@ -3068,14 +3072,30 @@ namespace CF7Launcher.Guardian
             string frameLabel = parsed.Value<string>("frameLabel") ?? "";
             string returnFrameLabel = parsed.Value<string>("returnFrameLabel") ?? "";
             string source = parsed.Value<string>("source") ?? "map_panel";
-            if (string.IsNullOrEmpty(frameLabel))
+            if (!IsLikelyValidFrameLabel(frameLabel))
             {
                 PostMapOpenStageSelectResponse(webCallId, false, "invalid_frame", frameLabel, returnFrameLabel);
                 return;
             }
+            if (!string.IsNullOrEmpty(returnFrameLabel) && !IsLikelyValidFrameLabel(returnFrameLabel))
+            {
+                returnFrameLabel = "";
+            }
 
             RequestOpenPanel("stage-select", source, null, frameLabel, returnFrameLabel);
             PostMapOpenStageSelectResponse(webCallId, true, null, frameLabel, returnFrameLabel);
+        }
+
+        private static bool IsLikelyValidFrameLabel(string label)
+        {
+            if (string.IsNullOrEmpty(label)) return false;
+            if (label.Length > 64) return false;
+            for (int i = 0; i < label.Length; i++)
+            {
+                char c = label[i];
+                if (c < 0x20 || c == 0x7F) return false;
+            }
+            return true;
         }
 
         private void PostMapOpenStageSelectResponse(string webCallId, bool success, string error, string frameLabel, string returnFrameLabel)

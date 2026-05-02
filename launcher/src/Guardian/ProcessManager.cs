@@ -115,7 +115,11 @@ namespace CF7Launcher.Guardian
                 if (!target.HasExited)
                 {
                     target.CloseMainWindow();
-                    if (!target.WaitForExit(500))
+                    // 2000ms 让 Flash 走完正常 cleanup 自然退出 (exit code 0).
+                    // 之前 500ms 不够—Flash 收到 WM_CLOSE 后约 140ms 断 socket, 但 cleanup 总时长可达 700-1200ms,
+                    // 超时落到 Kill() 时 exit code = -1 (abnormal), 触发 Windows Error Reporting / Flash projector 自身 crash dialog,
+                    // 一闪而过的白色系统对话框. 8s ExitGuard 仍在兜底.
+                    if (!target.WaitForExit(2000))
                     {
                         target.Kill();
                         try { target.WaitForExit(1000); } catch { }

@@ -3038,47 +3038,79 @@
 .map-hotspot-overlay-label {
     position:absolute;
     display:flex;
-    align-items:center;
+    flex-direction:column;
+    align-items:stretch;
     gap:4px;
-    padding:2px 8px;
+    padding:6px 10px 8px;
+    min-width:96px;
+    max-width:188px;
     color:#e9ffc1;
-    background:rgba(6, 8, 6, 0.72);
-    border:1px solid rgba(200,255,76,0.18);
+    background:rgba(6, 8, 6, 0.78);
+    border:1px solid rgba(200,255,76,0.22);
+    border-radius:4px;
     font-size:11px;
     letter-spacing:1px;
     white-space:nowrap;
+    /* 默认整张卡片不阻挡点击, 让鼠标命中底层 hotspot;
+       hover/current/busy 时切换到 auto, 卡片成为可交互浮层 */
     pointer-events:none;
     opacity:0;
     transform:translateY(calc(-100% + 4px));
     transition:opacity 0.12s ease, transform 0.12s ease;
+    box-shadow:0 6px 16px rgba(0,0,0,0.28);
+    z-index:1;
+}
+
+.map-hotspot-overlay-label-head {
+    display:flex;
+    align-items:center;
+    gap:4px;
 }
 
 .map-hotspot-overlay-label-text {
-    max-width:128px;
+    max-width:168px;
     overflow:hidden;
     text-overflow:ellipsis;
 }
 
-.map-hotspot-stage-select-btn {
-    width:30px;
-    height:18px;
-    padding:0;
-    border:1px solid rgba(140, 255, 120, 0.32);
-    border-radius:3px;
-    background:rgba(0, 102, 24, 0.72);
-    color:#dfffbd;
+.map-hotspot-overlay-locked {
     font-size:10px;
-    line-height:16px;
+    letter-spacing:0;
+    color:#bdb18a;
+    white-space:normal;
+    line-height:1.35;
+    max-width:168px;
+}
+
+.map-hotspot-overlay-actions {
+    display:flex;
+    flex-direction:column;
+    margin-top:2px;
+}
+
+.map-hotspot-stage-select-btn {
+    display:block;
+    width:100%;
+    padding:6px 10px;
+    border:1px solid rgba(140, 255, 120, 0.36);
+    border-radius:3px;
+    background:rgba(0, 110, 28, 0.78);
+    color:#dfffbd;
+    font-size:12px;
+    line-height:1.1;
+    letter-spacing:1px;
     cursor:pointer;
     pointer-events:auto;
+    text-align:center;
 }
 
 .map-hotspot-stage-select-btn:hover,
 .map-hotspot-stage-select-btn:focus {
     outline:none;
-    border-color:rgba(190, 255, 120, 0.72);
-    background:rgba(0, 130, 32, 0.86);
+    border-color:rgba(200, 255, 120, 0.85);
+    background:rgba(0, 144, 36, 0.92);
     color:#ffffff;
+    box-shadow:0 0 12px rgba(140,255,120,0.32);
 }
 
 .map-hotspot-stage-select-btn.is-busy,
@@ -3089,18 +3121,19 @@
 
 .map-hotspot-overlay-label.is-disabled {
     color:#7d8578;
+    border-color:rgba(140,140,128,0.18);
 }
 
 .map-hotspot-overlay-label.is-hover,
-.map-hotspot-overlay-label.is-busy {
+.map-hotspot-overlay-label.is-busy,
+.map-hotspot-overlay-label.is-current {
+    pointer-events:auto;
     opacity:1;
     transform:translateY(-100%);
 }
 
-/* 当前位置: label 常驻 + 青蓝高亮, 呼应 feedback-layer 的 currentLocation 雷达点 */
+/* 当前位置: label 常驻 (visibility 由 .is-current 选择器组负责) + 青蓝高亮 */
 .map-hotspot-overlay-label.is-current {
-    opacity:1;
-    transform:translateY(-100%);
     color:#b7f1ff;
     border-color:rgba(114,230,255,0.5);
     background:rgba(8, 16, 22, 0.82);

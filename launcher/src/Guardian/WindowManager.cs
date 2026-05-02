@@ -600,6 +600,9 @@ namespace CF7Launcher.Guardian
             {
                 if (IsWindow(_flashHwnd))
                 {
+                    // 先 SW_HIDE: 不然 SetParent(null) 后 Flash 立刻成为顶层窗口,
+                    // 在 KillFlash 的 WaitForExit 期间会闪现 projector 默认 chrome (灰白底).
+                    ShowWindow(_flashHwnd, SW_HIDE);
                     int style = GetWindowLong(_flashHwnd, GWL_STYLE);
                     style = style & ~WS_CHILD;
                     SetWindowLong(_flashHwnd, GWL_STYLE, style);

@@ -28,6 +28,15 @@ class Program
         MessageBoxW(IntPtr.Zero, message, "CF7:ME Guardian", MB_OK | MB_ICONERROR);
     }
 
+    // 退出早期把 overlay form 立即 SW_HIDE, 防 KillFlash WaitForExit / Dispose 期间任何窗口背景闪现.
+    // 直接走 Form.Hide() 等价 ShowWindow(SW_HIDE), 不会触发 FormClosing.
+    static void HideOverlayForm(System.Windows.Forms.Form f)
+    {
+        if (f == null) return;
+        try { if (f.IsDisposed || !f.IsHandleCreated) return; } catch { return; }
+        try { f.Hide(); } catch { }
+    }
+
     [STAThread]
     static int Main(string[] args)
     {
@@ -43,6 +52,16 @@ class Program
 
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
+
+        // UI 线程未处理异常: 必须在第一次 WinForms 调用之前 SetUnhandledExceptionMode + 装 handler,
+        // 否则 CLR 会弹默认 "Microsoft .NET Framework" 错误对话框 (一闪而过的白色窗口).
+        // 退出期间任意 overlay/task 的 Dispose 抛异常 (e.g. WebView2 IPC race / SharpDX D3D device lost),
+        // 都会冒泡到 Application.Run 的消息循环 → ThreadException → 默认 ThreadExceptionDialog.
+        Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+        Application.ThreadException += delegate(object s, System.Threading.ThreadExceptionEventArgs te)
+        {
+            try { LogManager.Log("[Guardian] UI thread exception swallowed:\n" + te.Exception); } catch { }
+        };
 
         // 非 UI 线程未处理异常：仅补日志（进程即将终止，CLR 自行处理）
         AppDomain.CurrentDomain.UnhandledException += delegate(object s, UnhandledExceptionEventArgs ue)
@@ -649,6 +668,26 @@ class Program
         // 退出前回调：在 Form dispose 之前断开快车道，防退出竞态
         form.OnShutdownEarly = delegate
         {
+            // 顺序敏感: 这两步必须最前。
+            // 1) 卸全局低级鼠标 hook —— UI 线程接下来要被 GpuRenderer.Join + KillFlash WaitForExit 阻塞数秒,
+            //    hook 还挂着的话全系统鼠标消息都要排队走它的回调, 光标视觉延迟显著。
+            // 2) WebOverlay panel→idle —— SW_HIDE + 恢复 EX_TRANSPARENT + 停 web timer + TrySuspendAsync,
+            //    后面的 _webView.Dispose() 才不会卡住 200-800ms 销毁 Chromium。
+            try { if (inputShield != null) inputShield.ExitTelemetryMode(); } catch (Exception ex) { LogManager.Log("[Guardian] ExitTelemetryMode early failed: " + ex.Message); }
+            try { if (webOverlay != null) webOverlay.SuspendAfterPanel(); } catch (Exception ex) { LogManager.Log("[Guardian] SuspendAfterPanel early failed: " + ex.Message); }
+
+            // 所有 overlay form 立即 Hide: 退出过程中后续的 KillFlash WaitForExit / Dispose 阶段,
+            // WebView2 子窗口、α-shield、HUD widget 任何一帧背景闪现都不再可见。
+            // 这是白闪兜底——SuspendAfterPanel 只在 _panelMode=true 时切 idle, 但用户可能在 panel 已关后才点退出,
+            // 那种路径下 webOverlay 仍在 idle 透明态, dispose 中间帧仍可能露默认背景。
+            HideOverlayForm(webOverlay);
+            HideOverlayForm(inputShield);
+            HideOverlayForm(nativeHud);
+            HideOverlayForm(notchOverlay);
+            HideOverlayForm(hnOverlay);
+            HideOverlayForm(toastOverlay);
+            HideOverlayForm(backdrop);
+
             musicCatalog.Dispose();
             frameTask.Stop();
             shopTask.Dispose();
