@@ -75,6 +75,14 @@ const DAMAGE_KINDS = new Set([
   'edited',
 ]);
 
+const MASK_STYLES = new Set([
+  'block',
+  'bar',
+  'garble',
+  'mojibake',
+  'symbol',
+]);
+
 const SKINS = new Set([
   'paper',
   'report',
@@ -273,6 +281,9 @@ function validateInline(node, loc, errors) {
   if (!INLINE_TYPES.has(node.type)) errors.push(`${loc}: unknown inline token "${node.type}"`);
   if (node.type === 'colorToken' && !COLOR_TOKENS.has(node.token)) errors.push(`${loc}: unknown color token "${node.token}"`);
   if (node.type === 'damageText' && node.kind && !DAMAGE_KINDS.has(node.kind)) errors.push(`${loc}: unknown damage kind "${node.kind}"`);
+  if ((node.type === 'decryptText' || node.type === 'redaction') && node.mask && !MASK_STYLES.has(node.mask)) {
+    errors.push(`${loc}: unknown mask style "${node.mask}"`);
+  }
   if (Array.isArray(node.content)) validateInlineArray(node.content, `${loc}.content`, errors);
   if (Array.isArray(node.reveal)) validateInlineArray(node.reveal, `${loc}.reveal`, errors);
 }

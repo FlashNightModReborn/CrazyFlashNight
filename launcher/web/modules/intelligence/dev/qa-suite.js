@@ -66,7 +66,7 @@ var IntelligenceHarnessQA = (function() {
                     api.assert(content.textContent.indexOf('████') >= 0, 'inline encrypted masks rendered');
                     var decryptToken = content.querySelector('.intel-h5-decrypt-text.can-reveal');
                     api.assert(!!decryptToken, 'decryptText token rendered');
-                    api.assert(decryptToken.querySelector('.intel-h5-redaction-mask').textContent.indexOf('██') >= 0, 'decryptText visible mask rendered');
+                    api.assert(decryptToken.querySelector('.intel-h5-decrypt-mask').textContent.indexOf('██') >= 0, 'decryptText visible mask rendered');
                     api.assert(decryptToken.querySelector('.intel-h5-redaction-reveal').textContent.indexOf('A兵团') >= 0, 'hover reveal carries plaintext');
                     decryptToken.click();
                     api.assert(decryptToken.classList.contains('is-open'), 'decryptText click pins reveal');
@@ -470,7 +470,7 @@ var IntelligenceHarnessQA = (function() {
                     api.assert(before.indexOf('A兵团') >= 0, 'plain text visible');
                     api.assert(after.indexOf('正在汇总') >= 0, 'non-sensitive text remains visible');
                     api.assert(after.indexOf('██') >= 0, 'encrypted replacement visible');
-                    api.assert(!!document.querySelector('.intel-h5-decrypt-text .intel-h5-redaction-mask'), 'sensitive text rendered as decryptText mask');
+                    api.assert(!!document.querySelector('.intel-h5-decrypt-text .intel-h5-decrypt-mask'), 'sensitive text rendered as decryptText mask');
                     return 'toggle ok';
                 });
             }],

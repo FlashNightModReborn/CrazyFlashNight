@@ -1,25 +1,193 @@
 {
   "schemaVersion": 1,
   "itemName": "军阀前线基地通关证明",
-  "skin": "report",
+  "skin": "dossier",
   "pages": [
     {
       "pageKey": "1",
       "blocks": [
         {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "§1 概况 · 强干弱根 · 军阀的前身"
+            }
+          ]
+        },
+        {
           "type": "paragraph",
           "content": [
             {
               "type": "text",
-              "text": "统合太平洋西岸联合军——军阀的前身，强干弱根（1）"
+              "text": "为了削弱各地的反"
+            },
+            {
+              "type": "colorToken",
+              "token": "info",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合"
+                }
+              ]
             },
             {
               "type": "text",
-              "text": "\n"
+              "text": "势力，"
+            },
+            {
+              "type": "colorToken",
+              "token": "info",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合政府"
+                }
+              ]
             },
             {
               "type": "text",
-              "text": "为了削弱各地的反统合势力，统合政府选择了横跨国家实体形式的军队组织模式。在太平洋西岸，沿着大陆海岸线部署的军队是统合政府在该地的实力象征。当然，这种部署离不开对过去国家实体的利用，例如A国在东南A洲的军事基地就被作为统合军在太平洋西岸的总部，被称为“将军”的将领正在酝酿着组建莱昂利亚自由革命军。"
+              "text": "选择了"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "横跨国家实体"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "形式的军队组织模式。在太平洋西岸，沿着大陆海岸线部署的军队成为"
+            },
+            {
+              "type": "colorToken",
+              "token": "info",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合政府"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "在该地的实力象征。"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "content": [
+            {
+              "type": "text",
+              "text": "西岸联合军 · 编制要点"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "组织模式"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：横跨国家实体，沿大陆海岸线分段部署。"
+              }
+            ],
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "总部依托"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：A 国在东南 A 洲的旧军事基地，被改编为"
+              },
+              {
+                "type": "colorToken",
+                "token": "info",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "统合军"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "在太平洋西岸的总部。"
+              }
+            ],
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "首脑"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：化名"
+              },
+              {
+                "type": "colorToken",
+                "token": "warning",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "「将军」"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "的将领，正在酝酿组建"
+              },
+              {
+                "type": "colorToken",
+                "token": "warning",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "莱昂利亚自由革命军"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "。"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "content": [
+            {
+              "type": "text",
+              "text": "本卷以「强干弱根」为题，分六章追述军阀前身——统合太平洋西岸联合军的兴起、扩张与隐患。专名颜色不代表政治立场，仅作阅读区分。"
             }
           ]
         }
@@ -29,19 +197,105 @@
       "pageKey": "5",
       "blocks": [
         {
-          "type": "paragraph",
+          "type": "heading",
+          "level": 2,
           "content": [
             {
               "type": "text",
-              "text": "统合太平洋西岸联合军——军阀的前身，强干弱根（2）"
+              "text": "§1.2 将军生平 · 信息碎片"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "colorToken",
+              "token": "warning",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "将军"
+                }
+              ]
             },
             {
               "type": "text",
-              "text": "\n"
-            },
+              "text": "本人的真实姓名或许会永远埋藏在内部档案之中，但一些公开资料与人证依然可拼出他的轮廓。"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "content": [
             {
               "type": "text",
-              "text": "将军本人的真实姓名或许会永远埋藏在内部档案中，但一些公开的资料和人证依然可以展现一些关于他的信息碎片。将军出生在C国西南部，是当地的少数民族，很早就跟随父母到了A国生活。他刚加入军队时，基因编辑实用化的成果以第一批基因编辑的形式展现，后者很快就带来了社会的巨大动荡。他在镇压工作中崭露头角，被上级器重，很快在A国的特种部队中担任中层指挥。在随后的国与国间的有限战争中，将军继续立下战功，地位进一步提升。他凭借自己的威望和职务，在A国军队内部搭建人脉，谋求获取更高的军队职位。"
+              "text": "履历时间线"
+            }
+          ]
+        },
+        {
+          "type": "timeline",
+          "entries": [
+            {
+              "label": "出身",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "出生于 C 国西南部，当地少数民族；幼年随父母迁居 A 国。"
+                }
+              ]
+            },
+            {
+              "label": "入伍初期",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "入伍前后，第一批"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "biohazard",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "基因编辑"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "实用化成果出现，引发社会动荡。"
+                }
+              ]
+            },
+            {
+              "label": "镇压崭露",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "在镇压基因动荡中表现突出，被上级器重，进入 A 国特种部队中层指挥岗位。"
+                }
+              ]
+            },
+            {
+              "label": "有限战争",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "在国与国间的有限战争中继续立功，地位进一步提升。"
+                }
+              ]
+            },
+            {
+              "label": "经营人脉",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "凭借威望与职务，在 A 国军队内部搭建人脉，谋求更高的军队职位。"
+                }
+              ]
             }
           ]
         }
@@ -51,19 +305,183 @@
       "pageKey": "10",
       "blocks": [
         {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "§1.3 三战 · 染指与被压制"
+            }
+          ]
+        },
+        {
           "type": "paragraph",
           "content": [
             {
               "type": "text",
-              "text": "统合太平洋西岸联合军——军阀的前身，强干弱根（3）"
+              "text": "本来"
+            },
+            {
+              "type": "colorToken",
+              "token": "warning",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "将军"
+                }
+              ]
             },
             {
               "type": "text",
-              "text": "\n"
+              "text": "可能只会在军队内部经营势力，然而意外出现了。"
+            },
+            {
+              "type": "colorToken",
+              "token": "info",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合"
+                }
+              ]
             },
             {
               "type": "text",
-              "text": "本来将军可能只会在军队内部经营势力，然而意外出现了。统合与反统合进行了规模巨大的三战，而他也参与其中，为统合作战。他在面对敌人时杀伐果断，为自己赢得了更大的威望——能够用来染指政府的威望。将军在战后试图将自己的势力扩张到政府，但很快就被统合政府压制，自己也被明升暗降，转移到A国在太平洋西岸的军事基地。"
+              "text": "与"
+            },
+            {
+              "type": "colorToken",
+              "token": "danger",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "反统合"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "进行了规模巨大的三战，他亦参与其中，为"
+            },
+            {
+              "type": "colorToken",
+              "token": "info",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "作战。"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "content": [
+            {
+              "type": "text",
+              "text": "战中战后 · 关键节点"
+            }
+          ]
+        },
+        {
+          "type": "timeline",
+          "entries": [
+            {
+              "label": "三战中",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "面对敌人时杀伐果断，赢得了更大的威望——能用来染指政府的威望。"
+                }
+              ]
+            },
+            {
+              "label": "战后扩张",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "试图将自身势力扩张至"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "info",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "统合政府"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
+                }
+              ]
+            },
+            {
+              "label": "压制",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "很快被"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "info",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "统合政府"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "压制；本人被"
+                },
+                {
+                  "type": "strong",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "明升暗降"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
+                }
+              ]
+            },
+            {
+              "label": "调任",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "转移到 A 国在太平洋西岸的军事基地，成为日后"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "warning",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "西岸联合军"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "经营的起点。"
+                }
+              ]
             }
           ]
         }
@@ -73,20 +491,152 @@
       "pageKey": "15",
       "blocks": [
         {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "§2 西岸经营 · 才能与权术"
+            }
+          ]
+        },
+        {
           "type": "paragraph",
           "content": [
             {
               "type": "text",
-              "text": "统合太平洋西岸联合军——军阀的前身，强干弱根（4）"
+              "text": "尽管被边缘化，"
+            },
+            {
+              "type": "colorToken",
+              "token": "warning",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "将军"
+                }
+              ]
             },
             {
               "type": "text",
-              "text": "\n"
+              "text": "依然凭借才能、权术、名声及先前积累的人脉，在"
+            },
+            {
+              "type": "colorToken",
+              "token": "warning",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合太平洋西岸联合军"
+                }
+              ]
             },
             {
               "type": "text",
-              "text": "不过，将军依然凭借自己的才能、权术、名声和先前积累的人脉，在统合太平洋西岸联合军中组建自己的势力，自然也被统合军内部其他势力的警惕。在审判日来临前，将军的首要任务还是在动荡时局中，一面镇压反建制派，一面压制军队内部的异见者，让自己在军队中能够维持地位，乃至逐渐控制军队和政府。"
+              "text": "中组建了自己的势力——这自然引来"
+            },
+            {
+              "type": "colorToken",
+              "token": "info",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合军"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "内部其他势力的警惕。"
             }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "content": [
+            {
+              "type": "text",
+              "text": "审判日来临前 · 双线任务"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "对外"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：在动荡时局中镇压"
+              },
+              {
+                "type": "colorToken",
+                "token": "danger",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "反建制派"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "，维持西岸表层秩序。"
+              }
+            ],
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "对内"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：压制军队内部的"
+              },
+              {
+                "type": "colorToken",
+                "token": "warning",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "异见者"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "，巩固自身在军队中的地位。"
+              }
+            ],
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "远期"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：以军队为跳板，逐步控制军队与政府。"
+              }
+            ]
           ]
         }
       ]
@@ -95,19 +645,242 @@
       "pageKey": "20",
       "blocks": [
         {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "§2.2 西岸联合军 · 表里之差"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "colorToken",
+              "token": "warning",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "将军"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "所在的"
+            },
+            {
+              "type": "colorToken",
+              "token": "warning",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "太平洋西岸联合军"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "并没有看起来的那么强大。"
+            },
+            {
+              "type": "colorToken",
+              "token": "info",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合政府"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "只能把军队作为"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "钉子"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，插入一些重要地区，对边缘地带却无可奈何。"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "content": [
+            {
+              "type": "text",
+              "text": "钉子 vs 边缘 · 部署对照"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "维度",
+            "沿海钉子地区",
+            "内陆边缘地带"
+          ],
+          "rows": [
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "驻军强度"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "重兵驻扎"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "几乎无统合直辖军队"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "经济地位"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "商业繁荣 / 科技发达"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "庞大河运上游市场与原材料产地"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "治理手段"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "钉子式驻军 + 行政掌控"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "限制手段稀缺，依赖"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "muted",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "自治势力"
+                    }
+                  ]
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "type": "text",
+                  "text": "敌情压力"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "以维稳为主"
+                }
+              ],
+              [
+                {
+                  "type": "colorToken",
+                  "token": "danger",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "宗教叛军"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": " / "
+                },
+                {
+                  "type": "colorToken",
+                  "token": "danger",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "游击队"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": " 此起彼伏"
+                }
+              ]
+            ]
+          ]
+        },
+        {
           "type": "paragraph",
           "content": [
             {
               "type": "text",
-              "text": "统合太平洋西岸联合军——军阀的前身，强干弱根（5）"
+              "text": "面对此起彼伏的内陆叛乱，"
+            },
+            {
+              "type": "colorToken",
+              "token": "info",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合政府"
+                }
+              ]
             },
             {
               "type": "text",
-              "text": "\n"
+              "text": "能给军队提供的最多还是"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "放权"
+                }
+              ]
             },
             {
               "type": "text",
-              "text": "然而，将军所在的太平洋西岸联合军并没有看起来的那么强大。统合政府只能把军队为代表的势力作为钉子，插入一些重要的地区，却对边缘地带无可奈何。那些军队占据的地区，或许商业繁荣、科技发达，但它们大多沿海，背靠庞大的、内陆河运组成的上游市场与原材料产地。统合政府对内陆地区的自治势力缺少限制手段，又不得不面对此起彼伏的宗教叛军和游击队，能够给军队提供的最多还是放权。"
+              "text": "——这正是西岸联合军后来失控的伏笔。"
             }
           ]
         }
@@ -117,19 +890,113 @@
       "pageKey": "25",
       "blocks": [
         {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "§2.3 末路预警 · 强干弱根"
+            }
+          ]
+        },
+        {
           "type": "paragraph",
           "content": [
             {
               "type": "text",
-              "text": "统合太平洋西岸联合军——军阀的前身，强干弱根（6）"
+              "text": "于是，军队内部腐败不堪，经商与参政情绪热烈，这些都逐渐削弱了军队，尤其是"
+            },
+            {
+              "type": "colorToken",
+              "token": "warning",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "太平洋西岸联合军"
+                }
+              ]
             },
             {
               "type": "text",
-              "text": "\n"
-            },
+              "text": "这一背靠世界最大工业产区的军队的实力。"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "content": [
             {
               "type": "text",
-              "text": "于是，军队内部腐败不堪，经商与参政情绪热烈，这些都逐渐削弱了军队，尤其是太平洋西岸联合军这一背靠世界最大工业产区的军队的实力。只需要一场变动，看似枝干强大，实际上根系糜烂的太平洋西岸联合军恐怕就要崩溃了。"
+              "text": "削弱因子 · 三联齐发"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "腐败"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：军内职务沦为利益分配工具，纪律涣散。"
+              }
+            ],
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "经商"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：高级军官集体下海，注意力从战备转向账面。"
+              }
+            ],
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "参政"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：派系倾向取代军令链条，内部牵制不断。"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "quote",
+          "content": [
+            {
+              "type": "text",
+              "text": "「枝干强大，根系糜烂——只需要一场变动，太平洋西岸联合军恐怕就要崩溃了。」"
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "content": [
+            {
+              "type": "text",
+              "text": "本卷至此告一段落。后续动态——审判日的真正冲击，以及联合军残部如何重组为今日的「军阀」——将随后续观察补完。"
             }
           ]
         }

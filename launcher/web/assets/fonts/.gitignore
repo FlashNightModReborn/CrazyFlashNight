@@ -1,0 +1,9 @@
+# 字体二进制不入 git。launcher FontPackTask（计划中）按需下载到本目录。
+# 仅 JetBrains Mono 这种 ~100KB 的小字体允许入仓，作为 baseline 兜底。
+*.ttf
+*.otf
+*.woff
+*.woff2
+
+# 例外：JetBrains Mono Regular ~92KB，作为 mojibake mask + terminal skin 的本地兜底
+!jetbrains-mono.woff2

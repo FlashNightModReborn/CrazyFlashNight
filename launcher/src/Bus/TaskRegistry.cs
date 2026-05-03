@@ -28,6 +28,7 @@ namespace CF7Launcher.Bus
     ///   panel_request   JSON sync   AS2→C#  (旧 Flash UI 请求 WebView 打开面板: map / stage-select)
     ///   stage_select_response JSON async AS2↔C# (选关 Web panel 测试入口)
     ///   intelligence_response JSON async AS2↔C# (情报 Web panel runtime 状态 / tooltip)
+    ///   font_pack       JSON async AS2↔C#  httpCallable=true (字体包按需下载/状态查询)
     /// </summary>
     public static class TaskRegistry
     {
@@ -61,6 +62,7 @@ namespace CF7Launcher.Bus
             IntelligenceTask intelligenceTask,
             ArchiveTask archiveTask,
             BenchTask benchTask,
+            FontPackTask fontPackTask,
             WebOverlayForm webOverlay)
         {
             // JSON 路由 task（经 MessageRouter 分发）
@@ -112,6 +114,10 @@ namespace CF7Launcher.Bus
             // 存档 shadow 备份
             if (archiveTask != null)
                 router.RegisterAsync("archive", archiveTask.HandleAsync);
+
+            // 字体包按需下载
+            if (fontPackTask != null)
+                router.RegisterAsync("font_pack", fontPackTask.HandleAsync);
 
             // C4: AS2 兜底 fffd 扫描结果上报 (loadAll 末尾扫一次).
             //   载荷: { slot, fffdCount, keyHits, sampled, elapsedMs, paths }.
@@ -206,6 +212,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "bench_sync",     "json_sync", "AS2<->C#",false, first);
             first = AppendTask(sb, "bench_async",    "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "bench_push",     "json_push", "AS2<->C#",false, first);
+            first = AppendTask(sb, "font_pack",      "json_async","AS2<->C#",true,  first);
         }
 
         /// <summary>

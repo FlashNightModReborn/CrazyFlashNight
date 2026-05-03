@@ -208,6 +208,11 @@ var IntelligencePanel = (function() {
         bindScaleWatcher();
         bindKeyboardAndOutsideClick();
         scheduleScaleUpdate();
+
+        // 字体包条幅：异步检测，不阻塞面板渲染。已 suppress / 全部已装时 noop。
+        if (typeof FontPackBanner !== 'undefined' && FontPackBanner && FontPackBanner.checkAndShow) {
+            try { FontPackBanner.checkAndShow(_el); } catch (e) { console.error(e); }
+        }
     }
 
     function onClose() {
@@ -217,6 +222,9 @@ var IntelligencePanel = (function() {
         _pagePopupOpen = false;
         _pending = {};
         _hoverTooltipName = '';
+        if (typeof FontPackBanner !== 'undefined' && FontPackBanner && FontPackBanner.dispose) {
+            try { FontPackBanner.dispose(); } catch (e) {}
+        }
     }
 
     function readInputsAndRefresh() {

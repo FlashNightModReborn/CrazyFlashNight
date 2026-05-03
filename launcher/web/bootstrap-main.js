@@ -17,6 +17,14 @@
   var btnConfirmStart = document.getElementById('btn-confirm-start');
   var btnSwitchSlot = document.getElementById('btn-switch-slot');
   var chkIntro = document.getElementById('chk-intro');
+  var fontPackBox = document.getElementById('welcome-fontpack');
+  var fontPackText = document.getElementById('welcome-fontpack-text');
+  var fontPackBtn = document.getElementById('welcome-fontpack-install');
+  var fontPackCancelBtn = document.getElementById('welcome-fontpack-cancel');
+  var fontPackSkip = document.getElementById('welcome-fontpack-skip');
+  var fontPackProgressBox = document.getElementById('welcome-fontpack-progress');
+  var fontPackBarFill = document.getElementById('welcome-fontpack-bar-fill');
+  var fontPackBytesEl = document.getElementById('welcome-fontpack-bytes');
 
   // ── Phase D Step D12: launch-in-flight 本地状态 ──
   var _launchInFlight = false;
@@ -598,6 +606,240 @@
     }
   }
 
+  // ── 字体扩展条 ──
+  // 启动期通过 fontpack_status 询问 launcher：哪些 group 缺失。
+  // 缺失 → 显示一键安装按钮；安装中由 fontpack_progress (push) 驱动进度条 + fontpack_install_resp 切完成/失败态。
+  // 取消按钮发 fontpack_cancel；× 按钮 = 本次启动 6h 抑制。
+  // 与 intelligence 面板内的 FontPackBanner 共享同一 localStorage 抑制 key。
+  var FONTPACK_SUPPRESS_KEY = 'cfn_font_pack_banner_suppressed_until';
+  var FONTPACK_SUPPRESS_HOURS = 6;
+  var _fontPackMissingGroups = [];   // [{name,label,totalBytes}]
+  var _fontPackInstalling = false;
+  var _fontPackQueried = false;
+  var _fontPackCurrentGroupBytesTotal = 0;
+  var _fontPackCurrentGroupName = null;
+  var _fontPackCancelRequested = false;
+
+  function fontPackIsSuppressed() {
+    try {
+      var until = parseInt(window.localStorage.getItem(FONTPACK_SUPPRESS_KEY) || '0', 10);
+      return until && Date.now() < until;
+    } catch (e) { return false; }
+  }
+  function fontPackSuppress() {
+    try { window.localStorage.setItem(FONTPACK_SUPPRESS_KEY, String(Date.now() + FONTPACK_SUPPRESS_HOURS * 3600 * 1000)); } catch (e) {}
+  }
+  function fontPackClearSuppress() {
+    try { window.localStorage.removeItem(FONTPACK_SUPPRESS_KEY); } catch (e) {}
+  }
+  function fontPackFmtBytes(b) {
+    if (b == null || b <= 0) return '0KB';
+    if (b < 1024) return b + 'B';
+    if (b < 1024 * 1024) return Math.round(b / 1024) + 'KB';
+    return (b / (1024 * 1024)).toFixed(1) + 'MB';
+  }
+  function fontPackHide() { if (fontPackBox) fontPackBox.hidden = true; }
+  function fontPackShow() { if (fontPackBox) fontPackBox.hidden = false; }
+  function fontPackSetText(text, cls) {
+    if (!fontPackText) return;
+    fontPackText.textContent = text;
+    fontPackText.className = 'welcome-fontpack-text' + (cls ? ' ' + cls : '');
+  }
+  function fontPackShowProgress(visible) {
+    if (fontPackProgressBox) fontPackProgressBox.hidden = !visible;
+  }
+  function fontPackSetProgress(downloaded, total) {
+    if (!fontPackBarFill || !fontPackBytesEl) return;
+    var pct = (total > 0) ? Math.min(100, Math.floor(downloaded * 100 / total)) : 0;
+    fontPackBarFill.style.width = pct + '%';
+    fontPackBytesEl.textContent = fontPackFmtBytes(downloaded) + ' / ' + fontPackFmtBytes(total) + ' · ' + pct + '%';
+  }
+  function fontPackSetButtonsForState(state) {
+    // state: 'idle' | 'installing' | 'done' | 'failed'
+    if (fontPackBtn) {
+      if (state === 'idle')           { fontPackBtn.hidden = false; fontPackBtn.textContent = '安装'; fontPackBtn.disabled = false; }
+      else if (state === 'installing'){ fontPackBtn.hidden = true; }
+      else if (state === 'done')      { fontPackBtn.hidden = true; }
+      else if (state === 'failed')    { fontPackBtn.hidden = false; fontPackBtn.textContent = '重试'; fontPackBtn.disabled = false; }
+    }
+    if (fontPackCancelBtn) {
+      fontPackCancelBtn.hidden = (state !== 'installing');
+      fontPackCancelBtn.disabled = false;
+    }
+    if (fontPackSkip) {
+      fontPackSkip.hidden = (state === 'installing' || state === 'done');
+    }
+  }
+
+  function requestFontPackStatus() {
+    if (_fontPackQueried) return;
+    _fontPackQueried = true;
+    if (fontPackIsSuppressed()) { fontPackHide(); return; }
+    send({ cmd: 'fontpack_status' });
+  }
+
+  function applyFontPackStatus(msg) {
+    if (!fontPackBox) {
+      logLine('tag-err', 'fontpack: status arrived but DOM missing');
+      return;
+    }
+    if (!msg || msg.ok === false) {
+      logLine('tag-err', 'fontpack: status not ok: ' + (msg && msg.error || 'unknown'));
+      fontPackHide();
+      return;
+    }
+    var groups = msg.groups || [];
+    var missing = [];
+    var totalBytes = 0;
+    var labels = [];
+    for (var i = 0; i < groups.length; i++) {
+      var g = groups[i];
+      if (g && g.allInstalled === false) {
+        missing.push({ name: g.name, label: g.label || g.name, totalBytes: g.totalBytes || 0 });
+        totalBytes += g.totalBytes || 0;
+        labels.push(g.label || g.name);
+      }
+    }
+    _fontPackMissingGroups = missing;
+    if (missing.length === 0) {
+      fontPackHide();
+      fontPackBox.classList.remove('is-done', 'is-failed');
+      return;
+    }
+    if (fontPackIsSuppressed()) { fontPackHide(); return; }
+    fontPackShow();
+    fontPackBox.classList.remove('is-done', 'is-failed');
+    var bytesStr = fontPackFmtBytes(totalBytes);
+    fontPackSetText('字体扩展可选：' + labels.join(' / ') + '（' + bytesStr + '）', null);
+    fontPackShowProgress(false);
+    fontPackSetButtonsForState('idle');
+  }
+
+  function applyFontPackProgress(msg) {
+    if (!fontPackBox || !_fontPackInstalling) return;
+    var fileBytesDownloaded = Number(msg.fileBytesDownloaded) || 0;
+    var fileBytesTotal = Number(msg.fileBytesTotal) || 0;
+    var groupBytesDownloaded = Number(msg.groupBytesDownloaded) || 0;
+    var groupBytesTotal = Number(msg.groupBytesTotal) || 0;
+    if (groupBytesTotal <= 0) groupBytesTotal = _fontPackCurrentGroupBytesTotal;
+    // 进度条按 group 累计字节，文字在多文件 group 时附带 (fileIdx/fileTotal)
+    var label = '下载中：' + (msg.fileName || '');
+    if (Number(msg.fileTotal) > 1) label += ' (' + msg.fileIdx + '/' + msg.fileTotal + ')';
+    fontPackSetText(label, 'installing');
+    fontPackShowProgress(true);
+    fontPackSetProgress(groupBytesDownloaded, groupBytesTotal);
+  }
+
+  function applyFontPackInstallResp(msg) {
+    if (!fontPackBox) return;
+    _fontPackInstalling = false;
+    var cancelled = msg && msg.cancelled === true;
+    if (cancelled) {
+      fontPackSetText('已取消下载', 'cancelled');
+      fontPackShowProgress(false);
+      fontPackBox.classList.remove('is-done', 'is-failed');
+      fontPackSetButtonsForState('idle');
+      _fontPackCancelRequested = false;
+      return;
+    }
+    if (msg && msg.ok) {
+      fontPackSetText('已安装，下次启动生效', 'done');
+      fontPackShowProgress(false);
+      fontPackBox.classList.add('is-done');
+      fontPackBox.classList.remove('is-failed');
+      fontPackSetButtonsForState('done');
+      fontPackClearSuppress();
+      setTimeout(fontPackHide, 4000);
+    } else {
+      var failedNames = '';
+      if (msg && msg.failed && msg.failed.length) {
+        var names = [];
+        for (var i = 0; i < msg.failed.length; i++) names.push(msg.failed[i].name);
+        failedNames = '（' + names.join(', ') + '）';
+      }
+      fontPackSetText('安装失败' + failedNames + '，可重试', 'failed');
+      fontPackBox.classList.add('is-failed');
+      fontPackBox.classList.remove('is-done');
+      fontPackSetButtonsForState('failed');
+      // 进度条保留在最后位置作为视觉残留，直观告诉玩家哪步断的
+    }
+  }
+
+  // 已发送但未拿到 resp 的安装请求队列（FIFO 匹配）
+  var pendingInstalls = [];
+
+  function startFontPackInstall() {
+    logLine('tag-out', 'fontpack: install clicked, missing=' + _fontPackMissingGroups.length
+      + ' installing=' + _fontPackInstalling);
+    if (_fontPackInstalling || _fontPackMissingGroups.length === 0) {
+      logLine('tag-err', 'fontpack: install no-op (already installing or no missing groups)');
+      return;
+    }
+    _fontPackInstalling = true;
+    _fontPackCancelRequested = false;
+    fontPackBox.classList.remove('is-done', 'is-failed');
+    fontPackSetText('准备下载…', 'installing');
+    fontPackShowProgress(true);
+    fontPackSetProgress(0, _fontPackMissingGroups[0].totalBytes || 0);
+    fontPackSetButtonsForState('installing');
+
+    var idx = 0;
+    function next() {
+      if (idx >= _fontPackMissingGroups.length) return;
+      var g = _fontPackMissingGroups[idx++];
+      _fontPackCurrentGroupName = g.name;
+      _fontPackCurrentGroupBytesTotal = g.totalBytes || 0;
+      pendingInstalls.push({ group: g.name, onResp: function(respMsg) {
+        if (!respMsg || respMsg.ok === false || respMsg.cancelled) {
+          applyFontPackInstallResp(respMsg);
+          return;
+        }
+        if (idx < _fontPackMissingGroups.length) {
+          next();
+        } else {
+          applyFontPackInstallResp(respMsg);
+        }
+      }});
+      send({ cmd: 'fontpack_install', group: g.name });
+    }
+    next();
+  }
+
+  function cancelFontPackInstall() {
+    if (!_fontPackInstalling || _fontPackCancelRequested) return;
+    _fontPackCancelRequested = true;
+    if (fontPackCancelBtn) { fontPackCancelBtn.disabled = true; }
+    fontPackSetText('正在取消…', 'cancelled');
+    send({ cmd: 'fontpack_cancel' });
+  }
+
+  // 启动期一次性诊断：哪些 DOM 元素被绑定。失败 → 可立刻看出 HTML/JS 不匹配
+  logLine('tag-in', 'fontpack DOM: box=' + !!fontPackBox + ' btn=' + !!fontPackBtn
+    + ' cancel=' + !!fontPackCancelBtn + ' skip=' + !!fontPackSkip
+    + ' progress=' + !!fontPackProgressBox + ' bar=' + !!fontPackBarFill);
+
+  if (fontPackBtn) {
+    fontPackBtn.addEventListener('click', function() {
+      logLine('tag-out', 'fontpack: install button click event fired');
+      if (Audio) Audio.playClick && Audio.playClick();
+      startFontPackInstall();
+    });
+  }
+  if (fontPackCancelBtn) {
+    fontPackCancelBtn.addEventListener('click', function() {
+      logLine('tag-out', 'fontpack: cancel button click event fired');
+      if (Audio) Audio.playClick && Audio.playClick();
+      cancelFontPackInstall();
+    });
+  }
+  if (fontPackSkip) {
+    fontPackSkip.addEventListener('click', function() {
+      logLine('tag-out', 'fontpack: skip button click event fired');
+      fontPackSuppress();
+      fontPackHide();
+    });
+  }
+
   // ── onMessage 分发 ──
   function dispatchMessage(msg) {
     var cmd = msg.cmd;
@@ -633,6 +875,8 @@
       }
       renderCards(lastSlotsFromLauncher);
       renderWelcomeSlot();
+      // 首次 list_resp 拿到 prefs 后查一次字体扩展状态（幂等：requestFontPackStatus 内部去重）
+      requestFontPackStatus();
     }
     else if (msg.cmd === 'config_set_resp') {
       // 按 requestId 取 applyFn (每个请求独立槽位, 连点/乱序都互不覆盖).
@@ -678,6 +922,24 @@
       } else {
         logLine('tag-err', 'delete failed: ' + msg.error);
         playUiCue('playError');
+      }
+    }
+    else if (msg.cmd === 'fontpack_status_resp') {
+      applyFontPackStatus(msg);
+    }
+    else if (msg.cmd === 'fontpack_progress') {
+      applyFontPackProgress(msg);
+    }
+    else if (msg.cmd === 'fontpack_cancel_resp') {
+      // 真正的"已取消"态由 fontpack_install_resp(cancelled=true) 接管，这里只是 ack
+    }
+    else if (msg.cmd === 'fontpack_install_resp') {
+      // FIFO 匹配 pending 请求；若没 pending（异常），就直接当作终结态处理
+      if (pendingInstalls.length > 0) {
+        var p = pendingInstalls.shift();
+        try { p.onResp(msg); } catch (e) { logLine('tag-err', 'fontpack handler error: ' + e.message); }
+      } else {
+        applyFontPackInstallResp(msg);
       }
     }
     else if (msg.cmd === 'error')       { logLine('tag-err', msg.code + ': ' + msg.msg); playUiCue('playError'); }

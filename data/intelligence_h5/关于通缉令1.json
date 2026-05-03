@@ -53,8 +53,19 @@
           "type": "paragraph",
           "content": [
             {
+              "type": "decryptText",
+              "level": 6,
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Aether"
+                }
+              ],
+              "mask": "garble"
+            },
+            {
               "type": "text",
-              "text": "Aether [21:19:01]"
+              "text": " [21:19:01]"
             },
             {
               "type": "text",
@@ -91,8 +102,19 @@
           "type": "paragraph",
           "content": [
             {
+              "type": "decryptText",
+              "level": 6,
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Aether"
+                }
+              ],
+              "mask": "garble"
+            },
+            {
               "type": "text",
-              "text": "Aether [09:43:30]"
+              "text": " [09:43:30]"
             },
             {
               "type": "text",
@@ -129,8 +151,19 @@
           "type": "paragraph",
           "content": [
             {
+              "type": "decryptText",
+              "level": 6,
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Nyx"
+                }
+              ],
+              "mask": "garble"
+            },
+            {
               "type": "text",
-              "text": "Nyx [18:30:00]"
+              "text": " [18:30:00]"
             },
             {
               "type": "text",
@@ -181,8 +214,19 @@
           "type": "paragraph",
           "content": [
             {
+              "type": "decryptText",
+              "level": 6,
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Ikelos"
+                }
+              ],
+              "mask": "garble"
+            },
+            {
               "type": "text",
-              "text": "Ikelos [14:50:32]"
+              "text": " [14:50:32]"
             },
             {
               "type": "text",
@@ -198,7 +242,52 @@
             },
             {
               "type": "text",
-              "text": "另外，Hypnos失去联系已经超过24小时了。Hypnos身边的兄弟会成员在最近两天内也没一个有消息。我们都知道这意味着什么。如果今天Hypnos没有上线，本频段会在明天零点关闭，销毁所有通讯记录。"
+              "text": "另外，"
+            },
+            {
+              "type": "decryptText",
+              "level": 6,
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Hypnos"
+                }
+              ],
+              "mask": "garble"
+            },
+            {
+              "type": "text",
+              "text": "失去联系已经超过24小时了。"
+            },
+            {
+              "type": "decryptText",
+              "level": 6,
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Hypnos"
+                }
+              ],
+              "mask": "garble"
+            },
+            {
+              "type": "text",
+              "text": "身边的兄弟会成员在最近两天内也没一个有消息。我们都知道这意味着什么。如果今天"
+            },
+            {
+              "type": "decryptText",
+              "level": 6,
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Hypnos"
+                }
+              ],
+              "mask": "garble"
+            },
+            {
+              "type": "text",
+              "text": "没有上线，本频段会在明天零点关闭，销毁所有通讯记录。"
             }
           ]
         }
@@ -212,7 +301,18 @@
           "content": [
             {
               "type": "text",
-              "text": "记录人：Nyx"
+              "text": "记录人："
+            },
+            {
+              "type": "decryptText",
+              "level": 6,
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Nyx"
+                }
+              ],
+              "mask": "garble"
             },
             {
               "type": "text",

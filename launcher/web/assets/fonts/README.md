@@ -1,0 +1,82 @@
+# 情报 H5 Webfont 资源
+
+本目录下的字体被 `launcher/web/css/panels.css` 顶部的 `@font-face` 引用，用于情报系统多 skin 表达力。文件**缺失也不会破坏渲染**——CSS 已配置 `font-display: swap` 与系统字体回退链。
+
+字体清单的权威源是 [`font-pack-manifest.json`](font-pack-manifest.json)（FontPackTask 按需下载到 `%LOCALAPPDATA%/CF7FlashNight/fonts/`，cfn-fonts.local 虚拟主机优先映射该目录）。本 README 是人类可读说明，新增/修改字体时**两处都要改**。
+
+## 字体矩阵
+
+| 文件名 | 字体 | 角色 | 大小 | License | Group |
+|---|---|---|---|---|---|
+| `jetbrains-mono.woff2` | JetBrains Mono Regular | terminal skin / mask=mojibake 字形 / `--intel-font-mono` | 92 KB | Apache 2.0 | `essential`（shipped） |
+| `lxgw-wenkai-screen.ttf` | 霞鹜文楷 Screen v1.522 | dossier 朱印 / field-notes 批注 / diary 全文 / mask=garble & symbol 罕用 CJK / `--intel-font-body` | 24.5 MB | SIL OFL 1.1 | `expressive` |
+| `klee-one-regular.ttf` | Klee One Regular | 私人批注 / dossier note / diary 全文 / `--intel-font-note` | 8.3 MB | SIL OFL 1.1 | `expressive-handwriting` |
+| `ma-shan-zheng-regular.ttf` | Ma Shan Zheng Regular | 标题手写 / 戏剧性大字 / `--intel-font-title` 主选 | 5.6 MB | SIL OFL 1.1 | `expressive-handwriting` |
+| `zhi-mang-xing-regular.ttf` | Zhi Mang Xing Regular | 标题随性手写 / `--intel-font-title` fallback | 3.9 MB | SIL OFL 1.1 | `expressive-handwriting` |
+| `liu-jian-mao-cao-regular.ttf` | Liu Jian Mao Cao Regular | 失控短句 / outburst 戏剧草书 / `--intel-font-outburst` | 4.7 MB | SIL OFL 1.1 | `expressive-handwriting` |
+| `source-han-serif-cn-regular.otf` | Source Han Serif CN Regular（思源宋体） | dossier / 官方资料集 / 中立编纂 / `--intel-font-archive` | 11.1 MB | SIL OFL 1.1 | `expressive-archive` |
+
+**Group 总量**：essential 92 KB（shipped）+ expressive 24.5 MB + expressive-handwriting 22.5 MB + expressive-archive 11.1 MB ≈ **58 MB 全矩阵**
+
+## CSS 角色绑定
+
+`panels.css` 顶部声明了一组字体角色变量，使用方在 .intel-* 选择器里 `font-family: var(--intel-font-X)` 引用即可。变量内置完整 fallback 链，未安装时自动落回系统字体（STKaiti / SimSun / Consolas）。
+
+```css
+--intel-font-body:     'LXGW WenKai Screen', 'LXGW WenKai', 'STKaiti', '楷体', 'KaiTi', serif;
+--intel-font-title:    'Ma Shan Zheng', 'Zhi Mang Xing', 'STKaiti', '楷体', 'KaiTi', serif;
+--intel-font-note:     'Klee One', 'LXGW WenKai Screen', 'STKaiti', '楷体', 'KaiTi', serif;
+--intel-font-outburst: 'Liu Jian Mao Cao', 'Ma Shan Zheng', 'STKaiti', '楷体', 'KaiTi', serif;
+--intel-font-archive:  'Source Han Serif CN', 'Source Han Serif SC', 'Noto Serif CJK SC', 'SimSun', '宋体', serif;
+--intel-font-mono:     'JetBrains Mono', Consolas, 'Courier New', monospace;
+```
+
+绑定到具体 skin / block 的工作（"字体角色绑定"）单列任务，本次只完成**矩阵储备**：manifest 注册 + @font-face 声明 + 变量声明。
+
+## 玩家入口
+
+1. **Welcome 页字体扩展条**（100% 经过的入口）：检测 missing groups → "立即安装" 进度条 + 取消按钮 → 6h × 抑制
+2. **情报面板内 banner**（兜底冗余）：跳过 welcome 直接 deeplink 进游戏的极端路径
+
+两入口共享 `cfn_font_pack_banner_suppressed_until` localStorage key。
+
+## 创作期 vs 打包阶段
+
+**创作期**：所有字体走全字符 ttf/otf，FontPackTask 按需下载到 AppData。理由：
+- mask=garble 字符池含罕用 CJK（蹇鼯驎黧 等），子集化到 GB2312 会裁掉
+- 创作期会随时引入新字，重复跑子集化太脆弱
+- 用户网络一次下完终身受益
+
+**打包阶段（发行版优化）**：按实际用字裁剪到 woff2，体积可压到 ~1.5 MB / 字体：
+```
+node tools/collect-h5-charset.js > release.charset.txt
+pyftsubset launcher/web/assets/fonts/lxgw-wenkai-screen.ttf \
+    --unicodes-file=release.charset.txt \
+    --flavor=woff2 \
+    --output-file=launcher/web/assets/fonts/lxgw-wenkai-screen.woff2
+```
+
+`tools/collect-h5-charset.js` 待后续编写——遍历 data/intelligence_h5/*.json + components.js 的 MASK_POOLS 收集所有出现过的 codepoint。
+
+## 字体 fallback 链（缺失时仍可用）
+
+- 楷体路径：`'LXGW WenKai Screen' → 'LXGW WenKai' → 'STKaiti' → '楷体' → 'KaiTi' → 'serif'`
+- 等宽路径：`'JetBrains Mono' → Consolas → 'Courier New' → monospace'`
+- 衬线路径：`'Source Han Serif CN' → 'Noto Serif CJK SC' → 'SimSun' → '宋体' → 'serif'`
+- 标题手写：`'Ma Shan Zheng' → 'Zhi Mang Xing' → 'STKaiti' → ...`
+- 批注手写：`'Klee One' → 'LXGW WenKai Screen' → 'STKaiti' → ...`
+- 戏剧草书：`'Liu Jian Mao Cao' → 'Ma Shan Zheng' → 'STKaiti' → ...`
+
+## 何时该考虑把字体打包进发行版
+
+- 字体文件总和 < 6MB ≈ 一首 mp3 大小，可接受 → 当前 essential 92 KB 已 shipped
+- 玩家无网络时打开游戏，系统字体回退视觉退化明显但不破图
+- 若装机率覆盖率成问题，再考虑随发行版打包 expressive base（LXGW Screen 子集化版）
+
+## 添加新字体
+
+1. 下载字体到本地，`sha256sum` 计算 SHA256（小写）+ 记录 byte 大小
+2. `font-pack-manifest.json` 加 group/file 条目（urls 多镜像优先）
+3. `panels.css` 加 `@font-face`（src 走 `https://cfn-fonts.local/<name>`）
+4. 必要时新增 `--intel-font-<role>` 变量并补 fallback 链
+5. 更新本 README 表格 + fallback 链段落

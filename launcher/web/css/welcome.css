@@ -134,6 +134,39 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 .btn-go.retry{background:linear-gradient(90deg,#4a2020 0%,var(--rust) 100%)}
 .btn-go.retry::after{content:" \21BB"}
 
+/* 字体扩展条 — welcome 卡片底部低优先级提示 */
+.welcome-fontpack{display:flex;flex-direction:column;gap:6px;margin-top:14px;padding:6px 10px;background:rgba(61,213,255,.06);border-left:2px solid var(--dls-dim);color:#9aa2a9;font-family:Consolas,monospace;font-size:var(--fs-2xs);letter-spacing:calc(1px * var(--ls-scale))}
+.welcome-fontpack[hidden]{display:none}
+.welcome-fontpack-row{display:flex;align-items:center;gap:10px}
+.welcome-fontpack-icon{color:var(--dls);font-size:var(--fs-base)}
+.welcome-fontpack-text{flex:1 1 auto;color:#bcc3ca;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.welcome-fontpack-text.installing{color:var(--dls)}
+.welcome-fontpack-text.done{color:#7fc97f}
+.welcome-fontpack-text.failed{color:var(--rust)}
+.welcome-fontpack-text.cancelled{color:#9a8c5a}
+.welcome-fontpack-btn,.welcome-fontpack-skip,.welcome-fontpack-cancel{appearance:none;border:1px solid var(--dust);background:transparent;color:#bcc3ca;font:inherit;font-family:inherit;font-size:var(--fs-2xs);padding:3px 10px;cursor:pointer;letter-spacing:calc(2px * var(--ls-scale))}
+.welcome-fontpack-btn:hover:not(:disabled),.welcome-fontpack-cancel:hover:not(:disabled){background:rgba(61,213,255,.15);color:#fff;border-color:var(--dls)}
+.welcome-fontpack-btn:disabled{opacity:.5;cursor:default}
+.welcome-fontpack-cancel{border-color:var(--rust-dim);color:#c8a59c}
+.welcome-fontpack-cancel:hover:not(:disabled){background:rgba(184,58,46,.18);color:#fff;border-color:var(--rust)}
+.welcome-fontpack-skip{padding:2px 8px;color:#666;border-color:transparent;font-size:var(--fs-base);line-height:1}
+.welcome-fontpack-skip:hover{color:var(--rust)}
+.welcome-fontpack.is-done .welcome-fontpack-btn,
+.welcome-fontpack.is-done .welcome-fontpack-cancel,
+.welcome-fontpack.is-done .welcome-fontpack-skip{display:none}
+
+/* 进度条：纤细 + 青色填充 + 字节数靠右。
+   注意：display:flex 会覆盖 [hidden] 默认 display:none，必须显式声明 [hidden]。 */
+.welcome-fontpack-progress{display:flex;align-items:center;gap:8px;padding-left:22px;color:var(--dust);font-size:var(--fs-2xs)}
+.welcome-fontpack-progress[hidden],
+.welcome-fontpack-btn[hidden],
+.welcome-fontpack-cancel[hidden],
+.welcome-fontpack-skip[hidden]{display:none}
+.welcome-fontpack-bar{flex:1 1 auto;height:4px;background:rgba(255,255,255,.06);border:1px solid rgba(61,213,255,.15);overflow:hidden}
+.welcome-fontpack-bar-fill{height:100%;width:0;background:linear-gradient(90deg,var(--dls-deep),var(--dls));box-shadow:0 0 6px rgba(61,213,255,.5);transition:width .25s ease-out}
+.welcome-fontpack-bytes{flex:0 0 auto;font-variant-numeric:tabular-nums;color:#9aa2a9}
+.welcome-fontpack.is-failed .welcome-fontpack-bar-fill{background:linear-gradient(90deg,#4a2020,var(--rust))}
+
 /* 右栏 */
 .side-r{align-self:stretch;padding:16px 8px 16px 20px;border-right:1px solid var(--rust-dim);position:relative;font-family:Consolas,monospace}
 .side-r::before{content:"";position:absolute;top:0;right:-3px;width:5px;height:5px;background:var(--rust);box-shadow:0 0 8px var(--rust)}

@@ -132,6 +132,11 @@ namespace CF7Launcher.Tasks
             "data-loss", "smear", "deleted", "missing", "blurred", "edited"
         };
 
+        private static readonly HashSet<string> H5MaskStyles = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "block", "bar", "garble", "mojibake", "symbol"
+        };
+
         public IntelligenceTask(string projectRoot)
             : this(projectRoot, (Func<bool>)null, null)
         {
@@ -1010,6 +1015,18 @@ namespace CF7Launcher.Tasks
                 {
                     error = "h5_unknown_damage_kind";
                     return false;
+                }
+            }
+            if (type == "decryptText" || type == "redaction")
+            {
+                JToken maskToken = obj["mask"];
+                if (maskToken != null && maskToken.Type == JTokenType.String)
+                {
+                    if (!H5MaskStyles.Contains(maskToken.ToString()))
+                    {
+                        error = "h5_unknown_mask_style";
+                        return false;
+                    }
                 }
             }
             if (!ValidateH5InlineArray(obj["content"], out error)) return false;

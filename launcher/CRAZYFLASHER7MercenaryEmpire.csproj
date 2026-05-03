@@ -76,6 +76,7 @@
     <Compile Include="src\Guardian\Handlers\UiCommandHandler.cs" />
     <Compile Include="src\Guardian\Handlers\ConfigCommandHandler.cs" />
     <Compile Include="src\Guardian\Handlers\RepairCommandHandler.cs" />
+    <Compile Include="src\Guardian\Handlers\FontPackCommandHandler.cs" />
     <Compile Include="src\Guardian\GuardianContext.cs" />
     <Compile Include="src\Guardian\LogManager.cs" />
     <Compile Include="src\Guardian\PerfTrace.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="src\Tasks\StageSelectTask.cs" />
     <Compile Include="src\Tasks\IntelligenceTask.cs" />
     <Compile Include="src\Tasks\ArchiveTask.cs" />
+    <Compile Include="src\Tasks\FontPackTask.cs" />
     <Compile Include="src\Guardian\IToastSink.cs" />
     <Compile Include="src\Guardian\CompositeNotchSink.cs" />
     <Compile Include="src\Guardian\INotchSink.cs" />

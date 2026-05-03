@@ -427,8 +427,11 @@ var IntelligenceComponentRenderer = (function() {
 
     function appendInlineRedaction(target, node, context) {
         var span = document.createElement('span');
-        span.className = 'intel-h5-redaction';
-        appendRedaction(span, [{ type: 'text', text: node.text || '████' }], node.reveal || node.content || [], context);
+        var maskStyle = pickMaskStyle(node.mask, 'block');
+        span.className = 'intel-h5-redaction intel-h5-mask-' + maskStyle;
+        var revealInline = node.reveal || node.content || [];
+        var maskText = node.text || generateMaskGlyphs(revealInline, maskStyle, 0);
+        appendRedaction(span, [{ type: 'text', text: maskText }], revealInline, context);
         target.appendChild(span);
     }
 
@@ -444,12 +447,16 @@ var IntelligenceComponentRenderer = (function() {
         // 锁死：未达等级时不向 DOM 写入明文，无 hover/click 揭示。
         // canReveal=true 但 showPlain=false 的情况（明文/密文视图切换）保留 hover 揭示。
         var tier = pickDecryptTier(level);
+        var maskStyle = pickMaskStyle(node.mask, 'block');
         var span = document.createElement('span');
-        span.className = 'intel-h5-decrypt-text intel-h5-decrypt-text-' + tier + (canReveal ? ' can-reveal' : ' locked');
+        span.className = 'intel-h5-decrypt-text intel-h5-decrypt-text-' + tier
+            + ' intel-h5-mask-' + maskStyle
+            + (canReveal ? ' can-reveal' : ' locked');
         var fallbackGlyph = canReveal ? '████' : tierGlyph(tier);
+        var maskGlyphs = node.encryptedText || generateMaskGlyphs(plain, maskStyle, level) || fallbackGlyph;
         var mask = document.createElement('span');
         mask.className = 'intel-h5-decrypt-mask';
-        mask.appendChild(document.createTextNode(node.encryptedText || scrambleText(flattenInline(plain)) || fallbackGlyph));
+        mask.appendChild(document.createTextNode(maskGlyphs));
         span.appendChild(mask);
         if (canReveal) {
             span.tabIndex = 0;
@@ -482,11 +489,51 @@ var IntelligenceComponentRenderer = (function() {
         return '████';
     }
 
+    // mask 字符池：每种 mask 风格对应一组字形池，长度等于明文长度，
+    // 由 (plain text + level) 哈希出确定性 seed，刷新不抖动但跨节点不重复。
+    var MASK_POOLS = {
+        block:    '█▓▒░',
+        bar:      '▀▄█▖▗▘▙▚▛▜▝▞▟',
+        garble:   '蹇鼯恃缈飔殤寤驎鞴鬣黧龠瑪瑬譩珹瑮瑹瑫琭⤋⨷⧈※╳',
+        mojibake: 'Ã¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿─│┌┐└┘├┤┬┴┼',
+        symbol:   '☰☱☲☳☴☵☶☷䷀䷁䷂䷃䷄䷅䷆䷇䷈䷉䷊䷋䷌䷍䷎䷏䷐※⌘⌧⎀⧈'
+    };
+
+    function pickMaskStyle(value, fallback) {
+        if (value && MASK_POOLS[value]) return value;
+        return fallback || 'block';
+    }
+
+    function strHash(s) {
+        var h = 0;
+        if (!s) return 0;
+        for (var i = 0; i < s.length; i++) {
+            h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+        }
+        return h;
+    }
+
+    function generateMaskGlyphs(plainOrInline, maskStyle, level) {
+        var pool = MASK_POOLS[maskStyle] || MASK_POOLS.block;
+        var text = (typeof plainOrInline === 'string') ? plainOrInline : flattenInline(plainOrInline);
+        var len = (text || '').length;
+        if (len <= 0) return '';
+        var seed = (strHash(text) ^ ((Number(level) || 0) * 31)) & 0x7fffffff;
+        if (seed === 0) seed = 1;
+        var out = '';
+        for (var i = 0; i < len; i++) {
+            // Park-Miller LCG，零外部随机源，跨平台一致
+            seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+            out += pool.charAt(seed % pool.length);
+        }
+        return out;
+    }
+
     function appendRedaction(target, hiddenInline, revealInline, context) {
         var canReveal = hasMeaningfulReveal(revealInline);
         var mask = document.createElement('span');
         mask.className = 'intel-h5-redaction-mask';
-        mask.appendChild(document.createTextNode(scrambleText(flattenInline(hiddenInline)) || '████'));
+        mask.appendChild(document.createTextNode(flattenInline(hiddenInline) || '████'));
         target.appendChild(mask);
         if (!canReveal) {
             target.className += ' unresolved';
@@ -654,7 +701,7 @@ var IntelligenceComponentRenderer = (function() {
     }
 
     function displayText(text, context) {
-        return context && context.encryptedView ? scrambleText(text) : String(text == null ? '' : text);
+        return String(text == null ? '' : text);
     }
 
     function scrambleText(text) {

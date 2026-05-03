@@ -91,7 +91,18 @@ async function main() {
     const pageErrors = [];
     page.on('requestfailed', request => {
         const failure = request.failure();
-        failedRequests.push(request.url() + ' :: ' + ((failure && failure.errorText) || 'failed'));
+        const url = request.url();
+        // 字体文件可能由 launcher 按需下载，本地缺失不应判为 harness 失败。
+        // 系统 fallback（STKaiti / Consolas）保证视觉不破图。
+        if (/\.(ttf|otf|woff2?|eot)$/i.test(url)) {
+            const errText = (failure && failure.errorText) || '';
+            if (errText === 'net::ERR_FILE_NOT_FOUND') return;
+        }
+        // cfn-fonts.local / overlay.local 等是 launcher 的 WebView2 虚拟主机映射，
+        // 在 Playwright 独立 harness 中无对应映射，请求必然失败。
+        // panels.css 已配 font-display: swap + 系统字体回退，视觉不破图。
+        if (/^https?:\/\/cfn-fonts\.local\//i.test(url)) return;
+        failedRequests.push(url + ' :: ' + ((failure && failure.errorText) || 'failed'));
     });
     page.on('pageerror', error => pageErrors.push(error && error.message ? error.message : String(error)));
 

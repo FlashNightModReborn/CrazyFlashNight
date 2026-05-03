@@ -25,7 +25,8 @@ namespace CF7Launcher.Guardian
             ArchiveTask archiveTask,
             GameLaunchFlow launchFlow,
             SaveResolutionContext saveCtx,
-            UserPrefs userPrefs)
+            UserPrefs userPrefs,
+            FontPackTask fontPackTask)
         {
             JObject msg;
             try { msg = JObject.Parse(json); }
@@ -117,6 +118,17 @@ namespace CF7Launcher.Guardian
                 // ─────── Config ───────
                 case "config_set":
                     ConfigCommandHandler.HandleConfigSet(msg, bootForm, userPrefs);
+                    return;
+
+                // ─────── Font pack ───────
+                case "fontpack_status":
+                    FontPackCommandHandler.HandleStatus(bootForm, fontPackTask);
+                    return;
+                case "fontpack_install":
+                    FontPackCommandHandler.HandleInstall(msg, bootForm, fontPackTask);
+                    return;
+                case "fontpack_cancel":
+                    FontPackCommandHandler.HandleCancel(bootForm, fontPackTask);
                     return;
 
                 // ─────── C2-β: 存档修复卡片 (Repairable saveDecision 路径) ───────

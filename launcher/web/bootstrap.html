@@ -82,6 +82,21 @@
         <label class="chk-intro"><input type="checkbox" id="chk-intro"> <span>加载片头动画</span></label>
         <button class="btn-go" id="btn-confirm-start">确 认</button>
       </div>
+
+      <!-- 字体扩展条：异步检测，未装时显示一键安装；装好/暂不/进行中各状态由 bootstrap-main.js 切换 -->
+      <div class="welcome-fontpack" id="welcome-fontpack" hidden>
+        <div class="welcome-fontpack-row">
+          <span class="welcome-fontpack-icon" aria-hidden="true">&#9733;</span>
+          <span class="welcome-fontpack-text" id="welcome-fontpack-text">字体扩展可选</span>
+          <button class="welcome-fontpack-btn" id="welcome-fontpack-install" type="button">安装</button>
+          <button class="welcome-fontpack-cancel" id="welcome-fontpack-cancel" type="button" hidden>取消</button>
+          <button class="welcome-fontpack-skip" id="welcome-fontpack-skip" type="button" title="本次启动不再提示">&times;</button>
+        </div>
+        <div class="welcome-fontpack-progress" id="welcome-fontpack-progress" hidden>
+          <div class="welcome-fontpack-bar"><div class="welcome-fontpack-bar-fill" id="welcome-fontpack-bar-fill"></div></div>
+          <span class="welcome-fontpack-bytes" id="welcome-fontpack-bytes">0 / 0 KB · 0%</span>
+        </div>
+      </div>
     </div>
 
     <!-- 右栏：版本 + 阵营列表 -->

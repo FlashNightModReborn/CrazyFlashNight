@@ -2,6 +2,82 @@
    Panel System — Cyberpunk 2077 Style
    ═══════════════════════════════════════════════════════ */
 
+/* ─── Webfont 基建（情报 H5 多 skin 表达力）─────────────
+   字体文件由 cfn-fonts.local 虚拟主机提供，launcher 端 FontPackTask + WebOverlayForm 解析：
+   - 优先映射 %LOCALAPPDATA%/CF7FlashNight/fonts/ （用户态下载目录）
+   - shipped fallback 走 launcher/web/assets/fonts/ （仅 jetbrains-mono.woff2 跟随发行版）
+   - 字体缺失时 font-family 回退链降级到系统字体（font-display: swap 不阻塞渲染）
+   下载来源/SHA256 见 launcher/web/assets/fonts/font-pack-manifest.json。
+
+   霞鹜文楷 Screen v1.522（全字符集 ttf，~25MB）— 创作期不子集化，
+   理由：mask=garble 字符池含罕用 CJK，子集化 GB2312 会裁掉。
+   打包阶段再用 pyftsubset 按实际用字裁剪到 ~1.2MB。 */
+@font-face {
+    font-family: 'LXGW WenKai Screen';
+    src: url('https://cfn-fonts.local/lxgw-wenkai-screen.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'JetBrains Mono';
+    src: url('https://cfn-fonts.local/jetbrains-mono.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* 字体矩阵扩展（FontPackTask groups: expressive-handwriting + expressive-archive）
+   这些 @font-face 仅在用户安装了对应字体包后才能加载到字形；未安装时通过下方 --intel-font-* 链
+   降级到系统字体（STKaiti / SimSun 等）。
+   src URL 走 cfn-fonts.local 虚拟主机；FontPackTask 把 %LOCALAPPDATA%/CF7FlashNight/fonts/ 映射进去。 */
+@font-face {
+    font-family: 'Klee One';
+    src: url('https://cfn-fonts.local/klee-one-regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Ma Shan Zheng';
+    src: url('https://cfn-fonts.local/ma-shan-zheng-regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Zhi Mang Xing';
+    src: url('https://cfn-fonts.local/zhi-mang-xing-regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Liu Jian Mao Cao';
+    src: url('https://cfn-fonts.local/liu-jian-mao-cao-regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Source Han Serif CN';
+    src: url('https://cfn-fonts.local/source-han-serif-cn-regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* 角色绑定变量（"字体矩阵储备"——声明可用，绑定到具体 .intel-* 选择器在后续"字体角色绑定"任务中完成；
+   现在直接 var(--intel-font-xxx) 引用即可享受 fallback 链，未安装时自动落回系统字体）。 */
+:root {
+    --intel-font-body:     'LXGW WenKai Screen', 'LXGW WenKai', 'STKaiti', '楷体', 'KaiTi', serif;
+    --intel-font-title:    'Ma Shan Zheng', 'Zhi Mang Xing', 'STKaiti', '楷体', 'KaiTi', serif;
+    --intel-font-note:     'Klee One', 'LXGW WenKai Screen', 'STKaiti', '楷体', 'KaiTi', serif;
+    --intel-font-outburst: 'Liu Jian Mao Cao', 'Ma Shan Zheng', 'STKaiti', '楷体', 'KaiTi', serif;
+    --intel-font-archive:  'Source Han Serif CN', 'Source Han Serif SC', 'Noto Serif CJK SC', 'SimSun', '宋体', serif;
+    --intel-font-mono:     'JetBrains Mono', Consolas, 'Courier New', monospace;
+}
+
 :root {
     --cp-cyan:    #00f0ff;
     --cp-yellow:  #fcee09;
@@ -6171,6 +6247,57 @@ html.perf-low-effects .map-stage-backdrop::before {
     padding: 0;
 }
 
+/* 字体包安装条幅：插在 .intel-status 之前，沿用 cyberpunk 配色 */
+.intel-fontpack-banner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 8px 14px 0;
+    padding: 8px 14px;
+    background: rgba(0, 240, 255, 0.06);
+    border: 1px solid rgba(0, 240, 255, 0.25);
+    border-left: 3px solid var(--cp-cyan, #00f0ff);
+    color: var(--cp-text, #d0d8e8);
+    font-size: 13px;
+    line-height: 1.5;
+    border-radius: 2px;
+}
+.intel-fontpack-msg {
+    flex: 1 1 auto;
+}
+.intel-fontpack-actions {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 8px;
+}
+.intel-fontpack-install,
+.intel-fontpack-later {
+    appearance: none;
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    background: rgba(0, 240, 255, 0.1);
+    color: var(--cp-cyan, #00f0ff);
+    font: inherit;
+    font-size: 12px;
+    padding: 4px 12px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 120ms;
+}
+.intel-fontpack-install:hover:not(:disabled),
+.intel-fontpack-later:hover:not(:disabled) {
+    background: rgba(0, 240, 255, 0.2);
+}
+.intel-fontpack-install:disabled,
+.intel-fontpack-later:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+.intel-fontpack-later {
+    border-color: rgba(96, 112, 136, 0.5);
+    background: transparent;
+    color: var(--cp-dim, #607088);
+}
+
 .intel-content {
     position: relative;
     min-height: 0;
@@ -6426,6 +6553,93 @@ html.perf-low-effects .map-stage-backdrop::before {
         radial-gradient(ellipse 70% 80% at 70% 60%, #050505 0%, rgba(0,0,0,0.75) 50%, transparent 100%),
         radial-gradient(ellipse at center, #000 30%, rgba(0,0,0,0.5) 75%, transparent 100%);
     filter: blur(0.4px);
+}
+
+/* ─────────────── mask 风格：把"加密"从涂黑升级到符号替换 ─────────────── */
+/* mask=block 是默认 tier 视觉；以下四种风格在 tier 视觉之上覆写 mask 字形显示。
+   思路：tier1-4 控制"如何遮"（纸条/涂改液/烧痕/油墨），mask 控制"遮成什么字"。
+   对于 garble/mojibake/symbol/bar，让 mask 字符本身可见，盖在 tier 容器上。 */
+
+/* garble：罕用 CJK 替换，最贴合 field-notes "符号加密" 叙事 */
+.intel-h5-decrypt-text.locked.intel-h5-mask-garble .intel-h5-decrypt-mask {
+    color: rgba(40, 25, 8, 0.78);
+    background: linear-gradient(180deg, rgba(244,236,214,0.92) 0%, rgba(230,217,177,0.88) 100%);
+    -webkit-mask-image: none;
+            mask-image: none;
+    text-shadow: 0 0 1px rgba(0,0,0,0.18);
+    letter-spacing: 0.05em;
+    font-family: 'STKaiti', 'KaiTi', '楷体', '华文楷体', serif;
+}
+.intel-h5-decrypt-text.locked.intel-h5-mask-garble .intel-h5-decrypt-mask::after { content: none; }
+
+.intel-h5-redaction.intel-h5-mask-garble .intel-h5-redaction-mask {
+    background: rgba(244, 236, 214, 0.4);
+    color: rgba(40, 25, 8, 0.78);
+    text-shadow: 0 0 1px rgba(0,0,0,0.18);
+    letter-spacing: 0.05em;
+    font-family: 'STKaiti', 'KaiTi', '楷体', '华文楷体', serif;
+}
+
+/* mojibake：UTF-8-as-Latin1 错误编码风，适合 terminal / 数字档案 */
+.intel-h5-decrypt-text.locked.intel-h5-mask-mojibake .intel-h5-decrypt-mask {
+    color: #5dd57a;
+    background: #0a0f0c;
+    -webkit-mask-image: none;
+            mask-image: none;
+    border: 1px solid rgba(60, 200, 100, 0.32);
+    border-radius: 0;
+    padding: 1px 4px;
+    font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 4px rgba(80, 230, 120, 0.45);
+}
+.intel-h5-decrypt-text.locked.intel-h5-mask-mojibake .intel-h5-decrypt-mask::after { content: none; }
+
+.intel-h5-redaction.intel-h5-mask-mojibake .intel-h5-redaction-mask {
+    color: #5dd57a;
+    background: #0a0f0c;
+    padding: 0 3px;
+    font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+    text-shadow: 0 0 4px rgba(80, 230, 120, 0.45);
+}
+
+/* symbol：易经卦 + 占卜符号，适合 edict / 古籍向 */
+.intel-h5-decrypt-text.locked.intel-h5-mask-symbol .intel-h5-decrypt-mask {
+    color: #4b0e0e;
+    background: rgba(255, 248, 230, 0.6);
+    -webkit-mask-image: none;
+            mask-image: none;
+    border: 0;
+    text-shadow: 0 0 1px rgba(0,0,0,0.25);
+    font-family: 'STKaiti', 'KaiTi', serif;
+    letter-spacing: 0.08em;
+}
+.intel-h5-decrypt-text.locked.intel-h5-mask-symbol .intel-h5-decrypt-mask::after { content: none; }
+
+.intel-h5-redaction.intel-h5-mask-symbol .intel-h5-redaction-mask {
+    color: #4b0e0e;
+    text-shadow: 0 0 1px rgba(0,0,0,0.25);
+    font-family: 'STKaiti', 'KaiTi', serif;
+    letter-spacing: 0.08em;
+}
+
+/* bar：档案条形涂黑，dossier 中立 */
+.intel-h5-decrypt-text.locked.intel-h5-mask-bar .intel-h5-decrypt-mask {
+    color: transparent;
+    background: linear-gradient(180deg, #1a1a1a 0%, #050505 100%);
+    -webkit-mask-image: none;
+            mask-image: none;
+    border-radius: 1px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.06);
+    letter-spacing: 0;
+}
+.intel-h5-decrypt-text.locked.intel-h5-mask-bar .intel-h5-decrypt-mask::after { content: none; }
+
+.intel-h5-redaction.intel-h5-mask-bar .intel-h5-redaction-mask {
+    color: transparent;
+    background: linear-gradient(180deg, #1a1a1a 0%, #050505 100%);
+    border-radius: 1px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.06);
 }
 
 /* ─────────────── field-notes skin：笔记本台面 ─────────────── */
@@ -6715,12 +6929,67 @@ html.perf-low-effects .map-stage-backdrop::before {
     background: rgba(0,0,0,0.06);
 }
 
+/* note 通用底层：默认仍是淡灰留白；具体身份感由各 skin override */
 .intel-h5-note {
-    padding: 10px 12px;
-    color: #333;
+    position: relative;
+    padding: 10px 14px 10px 18px;
+    color: #444;
     background: rgba(255,255,255,0.34);
-    border-left: 4px solid rgba(70,70,70,0.34);
+    border-left: 3px solid rgba(70,70,70,0.34);
     white-space: pre-line;
+    font-family: 'LXGW WenKai Screen', 'LXGW WenKai', 'STKaiti', '楷体', 'KaiTi', '华文楷体', serif;
+    font-size: 0.96em;
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+}
+
+/* dossier skin：编纂注 = 朱赭细线 + 朱印图章。
+   不再依赖文本里写"编纂注："这种硬编码前缀，由样式承担身份。 */
+.intel-content[data-skin="dossier"] .intel-h5-note {
+    margin: 14px 0 18px;
+    padding: 12px 16px 12px 36px;
+    color: #5b3a1f;
+    background:
+        linear-gradient(90deg, rgba(180, 60, 30, 0.07), transparent 70%),
+        rgba(255, 250, 240, 0.55);
+    border-left: 2px solid rgba(168, 50, 30, 0.55);
+    box-shadow: inset 1px 0 0 rgba(168, 50, 30, 0.25);
+    font-style: normal;
+}
+.intel-content[data-skin="dossier"] .intel-h5-note::before {
+    content: '※';
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    color: #a8321e;
+    font-family: 'STKaiti', 'KaiTi', serif;
+    font-size: 14px;
+    font-weight: 700;
+    border: 1.5px solid #a8321e;
+    border-radius: 2px;
+    background: rgba(255, 248, 232, 0.7);
+    transform: rotate(-4deg);
+    box-shadow: inset 0 0 0 1px rgba(168, 50, 30, 0.18);
+}
+
+/* field-notes skin：纸条上的批注更随手 */
+.intel-content[data-skin="field-notes"] .intel-h5-note {
+    color: #4a2810;
+    background: transparent;
+    border-left: 2px dashed rgba(140, 60, 20, 0.45);
+    transform: rotate(-0.3deg);
+}
+
+/* diary skin：手写日记体，无装饰 */
+.intel-content[data-skin="diary"] .intel-h5-note,
+.intel-content[data-skin="diary"] .intel-h5-p,
+.intel-content[data-skin="diary"] .intel-h5-quote {
+    font-family: 'LXGW WenKai Screen', 'LXGW WenKai', 'STKaiti', '楷体', 'KaiTi', serif;
+    letter-spacing: 0.02em;
 }
 
 .intel-h5-quote {

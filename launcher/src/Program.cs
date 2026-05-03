@@ -682,10 +682,23 @@ class Program
         }
 
         BenchTask benchTask = new BenchTask(socketServer);
+
+        // 字体包：按需下载到 %LOCALAPPDATA%/CF7FlashNight/fonts/，WebOverlay 把该目录映射为 cfn-fonts.local
+        FontPackTask fontPackTask;
+        using (PerfTrace.Scope("task.font_pack_init"))
+        {
+            fontPackTask = new FontPackTask(projectRoot, notchSink, toastSink);
+        }
+        webOverlay.SetFontsDir(fontPackTask.AppDataFontsDir,
+            Path.Combine(projectRoot, "launcher", "web", "assets", "fonts"));
+
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, stageSelectTask, intelligenceTask, archiveTask, benchTask, webOverlay);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, stageSelectTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
         }
+
+        // 注入 router 到 webOverlay：开启 Web→C# 通用 task 桥（FontPack 安装条幅等使用）
+        webOverlay.SetTaskRouter(router);
 
         // 面板系统接线 (11c: webOverlay 必有)
         webOverlay.SetShopTask(shopTask);
@@ -906,8 +919,12 @@ class Program
                     archiveTask,
                     launchFlow,
                     saveCtx,
-                    userPrefs);
+                    userPrefs,
+                    fontPackTask);
             };
+            // FontPackTask 进度推送 → bootstrap fontpack_progress 消息
+            CF7Launcher.Guardian.Handlers.FontPackCommandHandler.RegisterProgressSink(
+                form.BootstrapPanel, fontPackTask);
         }
 
         // Phase A Step A3: GuardianContext 单 Form 模型（原 boot.FormClosed → guard.ForceExit 桥已删除）

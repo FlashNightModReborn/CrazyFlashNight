@@ -286,6 +286,15 @@ namespace CF7Launcher.Guardian
         private bool _compositionProbeActive;
         private Color _probeOriginalWebBackColor = Color.Transparent;
 
+        // 字体包目录：cfn-fonts.local 虚拟主机优先映射 %LOCALAPPDATA%/CF7FlashNight/fonts/，
+        // launcher/web/assets/fonts/ 作为 shipped fallback。SetFontsDir 由 Program.cs 在 FontPackTask 构造后注入。
+        private string _fontsDirPrimary;
+        private string _fontsDirFallback;
+
+        // Web→C# 任务桥：JS 端 Bridge.send({type:'task', task:'font_pack', callId, payload}) 透传到 MessageRouter，
+        // 异步响应通过 PostToWeb 回送，前端按 callId 匹配。
+        private CF7Launcher.Bus.MessageRouter _taskRouter;
+
         public WebOverlayForm(Form owner, Control anchor, string webDir,
             bool lowEffectsMode, bool disableCssAnimations, bool disableVisualizers,
             int frameRateLimit,
@@ -351,6 +360,46 @@ namespace CF7Launcher.Guardian
         {
             _toastFallback = toastFallback;
             _notchFallback = notchFallback;
+        }
+
+        /// <summary>
+        /// 注入字体包目录（FontPackTask 构造后调用）。primary = %LOCALAPPDATA% 下载目录，
+        /// fallback = launcher/web/assets/fonts/。两者都映射到 cfn-fonts.local 虚拟主机
+        /// （WebView2 一个虚拟主机只能映射一个目录，所以靠 manifest 提供 sha + 双路径回退由
+        /// FontPackTask 解析；此处只暴露 primary，shipped fallback 由 FontPackTask 复制兜底）。
+        /// 如果 CoreWebView2 已就绪则立即建映射，否则 InitWebView2Async 末尾会补建。
+        /// </summary>
+        public void SetFontsDir(string primaryDir, string fallbackDir)
+        {
+            _fontsDirPrimary = primaryDir;
+            _fontsDirFallback = fallbackDir;
+            TryRegisterFontsVirtualHost("set_fonts_dir");
+        }
+
+        /// <summary>注入 MessageRouter，开放 Web→C# 通用 task 桥。</summary>
+        public void SetTaskRouter(CF7Launcher.Bus.MessageRouter router)
+        {
+            _taskRouter = router;
+        }
+
+        private void TryRegisterFontsVirtualHost(string trigger)
+        {
+            try
+            {
+                if (_webView == null || _webView.CoreWebView2 == null) return;
+                string dir = !string.IsNullOrEmpty(_fontsDirPrimary) && Directory.Exists(_fontsDirPrimary)
+                    ? _fontsDirPrimary
+                    : _fontsDirFallback;
+                if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir)) return;
+                _webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
+                    "cfn-fonts.local", dir,
+                    CoreWebView2HostResourceAccessKind.Allow);
+                LogManager.Log("[WebOverlay] cfn-fonts.local → " + dir + " (" + trigger + ")");
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[WebOverlay] cfn-fonts.local mapping failed (" + trigger + "): " + ex.Message);
+            }
         }
 
         /// <summary>注入 InputShieldForm 引用。若 WebView2 已就绪，立即补调 SetTargetWebView。</summary>
@@ -423,6 +472,10 @@ namespace CF7Launcher.Guardian
                 _webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
                     "overlay.local", webDir,
                     CoreWebView2HostResourceAccessKind.Allow);
+
+                // 字体包虚拟主机：https://cfn-fonts.local/ → %LOCALAPPDATA%/CF7FlashNight/fonts/（FontPackTask 注入）
+                // 若 SetFontsDir 已先于 CoreWebView2 ready 调用，此处补建映射；反之 SetFontsDir 立即建。
+                TryRegisterFontsVirtualHost("init_webview2");
 
                 // JS→C# 消息
                 _webView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
@@ -1019,6 +1072,13 @@ namespace CF7Launcher.Guardian
                 else if (type == "interactiveRect" || json.Contains("\"interactiveRect\""))
                 {
                     HandleInteractiveRects(parsed, json);
+                }
+                else if (type == "task")
+                {
+                    // 通用 Web→C# task 桥：把 message 透传给 MessageRouter，异步响应回 PostToWeb。
+                    // JS 端格式：{ type:'task', task:'font_pack', callId, payload:{op,...} }
+                    // C# 响应回到 JS：{ type:'taskResult', task, callId, ...原响应 }
+                    HandleWebTaskMessage(parsed, json);
                 }
                 else if (type == "panel")
                 {
@@ -2945,6 +3005,65 @@ namespace CF7Launcher.Guardian
         }
 
         #endregion
+
+        /// <summary>
+        /// Web→C# 通用 task 桥。把 message 透传到 MessageRouter，
+        /// 异步响应通过 PostToWeb 回送到 JS（前端按 callId 匹配）。
+        /// </summary>
+        private void HandleWebTaskMessage(JObject parsed, string json)
+        {
+            if (_taskRouter == null)
+            {
+                LogManager.Log("[WebTask] no router injected, dropping: " + json);
+                return;
+            }
+            JToken callIdToken = parsed != null ? parsed["callId"] : null;
+            string taskName = parsed != null ? parsed.Value<string>("task") : null;
+            if (string.IsNullOrEmpty(taskName))
+            {
+                LogManager.Log("[WebTask] missing task field");
+                return;
+            }
+            try
+            {
+                string syncResult = _taskRouter.ProcessMessage(json, delegate(string asyncResp)
+                {
+                    PostTaskResultToWeb(taskName, callIdToken, asyncResp);
+                });
+                if (syncResult != null)
+                    PostTaskResultToWeb(taskName, callIdToken, syncResult);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[WebTask] " + taskName + " threw: " + ex.Message);
+            }
+        }
+
+        private void PostTaskResultToWeb(string taskName, JToken callIdToken, string resultJson)
+        {
+            try
+            {
+                JObject wrap;
+                if (string.IsNullOrEmpty(resultJson))
+                {
+                    wrap = new JObject();
+                    wrap["success"] = true;
+                }
+                else
+                {
+                    try { wrap = JObject.Parse(resultJson); }
+                    catch { wrap = new JObject(); wrap["raw"] = resultJson; }
+                }
+                wrap["type"] = "taskResult";
+                wrap["task"] = taskName;
+                if (callIdToken != null) wrap["callId"] = callIdToken;
+                PostToWeb(wrap.ToString(Newtonsoft.Json.Formatting.None));
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[WebTask] post result failed: " + ex.Message);
+            }
+        }
 
         private void HandlePanelMessage(string json)
         {

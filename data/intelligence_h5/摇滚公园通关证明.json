@@ -1,25 +1,150 @@
 {
   "schemaVersion": 1,
   "itemName": "摇滚公园通关证明",
-  "skin": "report",
+  "skin": "dossier",
   "pages": [
     {
       "pageKey": "1",
       "blocks": [
         {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "§1 战役结论 · 摇滚女皇之乱"
+            }
+          ]
+        },
+        {
           "type": "paragraph",
           "content": [
             {
               "type": "text",
-              "text": "因为与军阀有冲突，且效忠的黑铁会与前者有来往，摇滚女皇最终决定反叛。A兵团接下委托并战胜了摇滚女皇。"
+              "text": "因与"
+            },
+            {
+              "type": "colorToken",
+              "token": "warning",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "军阀"
+                }
+              ]
             },
             {
               "type": "text",
-              "text": "\n"
+              "text": "积累冲突，且效忠的"
+            },
+            {
+              "type": "colorToken",
+              "token": "faction-blackiron",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "黑铁会"
+                }
+              ]
             },
             {
               "type": "text",
-              "text": "然而无论是他们还是其他势力都不打算处死摇滚女皇，毕竟后者永远是堕落城不落的炙热太阳。"
+              "text": "与前者素有来往，"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "摇滚女皇"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "最终决定反叛。"
+            },
+            {
+              "type": "colorToken",
+              "token": "faction-army",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "A 兵团"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "接下委托并战胜了摇滚女皇。"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "content": [
+            {
+              "type": "text",
+              "text": "战后处置共识"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "不处死"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：所涉各方均不打算处死摇滚女皇。"
+              }
+            ],
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "存续理由"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：她永远是堕落城"
+              },
+              {
+                "type": "colorToken",
+                "token": "warning",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "不落的炙热太阳"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "。"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "content": [
+            {
+              "type": "text",
+              "text": "本卷为摇滚公园方向行动后的简要资料集，正卷将随后续观察补完。"
             }
           ]
         }
@@ -29,27 +154,60 @@
       "pageKey": "2",
       "blocks": [
         {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "§1.2 民间侧记 · 街角酒话"
+            }
+          ]
+        },
+        {
+          "type": "quote",
+          "content": [
+            {
+              "type": "text",
+              "text": "「摇滚公园那些娘们儿难道不是想睡就睡的？」一个盗贼把手中的啤酒一饮而尽后，随手把酒瓶扔向了远处。「装什么清高？都这个时代了，还讲究什么清白身子？"
+            },
+            {
+              "type": "text",
+              "text": "\n\n"
+            },
+            {
+              "type": "text",
+              "text": "能帮黑铁会那帮人泄泄火，让我泄泄火怎么了？！老子也不是没物资，五个牛肉罐头还不够玩儿上一个？他妈的，老子就不信这个邪，我今天就必须玩儿上一个！」"
+            }
+          ]
+        },
+        {
           "type": "paragraph",
           "content": [
             {
               "type": "text",
-              "text": "“摇滚公园那些娘们儿难道不是想睡就睡的？”一个盗贼把手中的啤酒一饮而尽后，随手把酒瓶扔向了远处。“装什么清高？都这个时代了，还讲究什么清白身子？"
+              "text": "第二天，在堕落城的某处角落，四条野狗正在啃食一具盗贼的尸体——尸体旁，随意地摆着"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "五个被子弹射穿的牛肉罐头"
+                }
+              ]
             },
             {
               "type": "text",
-              "text": "\n"
-            },
+              "text": "。"
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "content": [
             {
               "type": "text",
-              "text": "能帮黑铁会那帮人泄泄火，让我泄泄火怎么了？！老子也不是没物资，五个牛肉罐头还不够玩儿上一个？他妈的，老子就不信这个邪，我今天就必须玩儿上一个！”"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "第二天，在堕落城的某处角落，四条野狗正在啃食一具盗贼的尸体，而那个盗贼的尸体旁，随意的摆放着五个被子弹射穿的牛肉罐头。"
+              "text": "该侧记由酒馆采集员转录，未列入正式档案；保留此页以记录民间对摇滚公园的复杂态度——以及对此类言论的代价。"
             }
           ]
         }

@@ -1,5 +1,7 @@
 ﻿var Bridge = (function() {
     var handlers = {};
+    var taskCallbacks = {};
+    var taskSeq = 0;
     function on(type, handler) {
         if (!handlers[type]) handlers[type] = [];
         handlers[type].push(handler);
@@ -19,10 +21,34 @@
             window.chrome.webview.postMessage(msg);
         }
     }
+    /**
+     * Web→C# 通用 task 调用：
+     *   Bridge.task('font_pack', { op:'status' }, function(resp){ ... });
+     * C# 端响应回到 type='taskResult'，按 callId 匹配触发回调（一次性，触发后销毁）。
+     * cb(null) 在 webview 缺失时同步触发，便于浏览器 harness 防御。
+     */
+    function task(taskName, payload, cb) {
+        if (!window.chrome || !window.chrome.webview) {
+            if (typeof cb === 'function') cb(null);
+            return null;
+        }
+        taskSeq += 1;
+        var callId = 'wt_' + Date.now().toString(36) + '_' + taskSeq;
+        if (typeof cb === 'function') taskCallbacks[callId] = cb;
+        send({ type: 'task', task: taskName, callId: callId, payload: payload || {} });
+        return callId;
+    }
     if (window.chrome && window.chrome.webview) {
         window.chrome.webview.addEventListener('message', function(event) {
             var data = event.data;
-            if (data && data.type && handlers[data.type]) {
+            if (!data || !data.type) return;
+            if (data.type === 'taskResult' && data.callId && taskCallbacks[data.callId]) {
+                var cb = taskCallbacks[data.callId];
+                delete taskCallbacks[data.callId];
+                try { cb(data); } catch(e) { console.error(e); }
+                return;
+            }
+            if (handlers[data.type]) {
                 var list = handlers[data.type];
                 for (var i = 0; i < list.length; i++) {
                     try { list[i](data); } catch(e) { console.error(e); }
@@ -30,7 +56,7 @@
             }
         });
     }
-    return { on: on, off: off, send: send };
+    return { on: on, off: off, send: send, task: task };
 })();
 
 var OverlayViewportMetrics = (function() {

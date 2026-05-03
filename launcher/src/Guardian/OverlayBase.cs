@@ -94,6 +94,18 @@ namespace CF7Launcher.Guardian
         /// </summary>
         protected virtual bool IsClickThrough { get { return true; } }
 
+        private bool CanUseExistingHandle()
+        {
+            try
+            {
+                return !this.IsDisposed && !this.Disposing && this.IsHandleCreated;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         protected OverlayBase(Form owner, Control anchor, float stageW, float stageH)
         {
             _owner = owner;
@@ -158,9 +170,11 @@ namespace CF7Launcher.Guardian
 
         private void OnOwnerActivated()
         {
+            if (this.IsDisposed || this.Disposing) return;
             _ownerVisible = true;
             if (_shown)
             {
+                if (!CanUseExistingHandle()) return;
                 ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
                 OnOwnerBecameVisible();
             }
@@ -168,10 +182,12 @@ namespace CF7Launcher.Guardian
 
         private void OnOwnerDeactivated()
         {
+            if (this.IsDisposed || this.Disposing) return;
             _ownerVisible = false;
             if (_shown)
                 HideOverlay();
-            OnOwnerBecameHidden();
+            if (!this.IsDisposed && !this.Disposing)
+                OnOwnerBecameHidden();
         }
 
         /// <summary>Owner 回到前台时调用。子类可 override 以触发重绘。</summary>
@@ -192,6 +208,7 @@ namespace CF7Launcher.Guardian
             _shown = true;
             if (_ownerVisible)
             {
+                if (!CanUseExistingHandle()) return;
                 ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
                 SetWindowPos(this.Handle, HWND_TOP, 0, 0, 0, 0,
                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
@@ -216,6 +233,7 @@ namespace CF7Launcher.Guardian
             _shown = true;
             if (_ownerVisible)
             {
+                if (!CanUseExistingHandle()) return;
                 ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
                 SetWindowPos(this.Handle, insertAfter, 0, 0, 0, 0,
                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
@@ -228,6 +246,7 @@ namespace CF7Launcher.Guardian
         /// </summary>
         protected void HideOverlay()
         {
+            if (!CanUseExistingHandle()) return;
             ShowWindow(this.Handle, SW_HIDE);
             // 注意：不改 _shown
         }
@@ -239,6 +258,7 @@ namespace CF7Launcher.Guardian
         protected void DismissOverlay()
         {
             _shown = false;
+            if (!CanUseExistingHandle()) return;
             ShowWindow(this.Handle, SW_HIDE);
         }
 
@@ -270,7 +290,7 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void PreCommitTransparent()
         {
-            if (!this.IsHandleCreated) return;
+            if (!CanUseExistingHandle()) return;
             try
             {
                 using (Bitmap warm = new Bitmap(1, 1, PixelFormat.Format32bppPArgb))
@@ -287,6 +307,7 @@ namespace CF7Launcher.Guardian
         /// </summary>
         protected void CommitBitmap(Bitmap bmp, int screenX, int screenY, byte globalAlpha)
         {
+            if (!CanUseExistingHandle()) return;
             IntPtr hdcScreen = IntPtr.Zero;
             IntPtr hdcMem = CreateCompatibleDC(hdcScreen);
             IntPtr hBmp = bmp.GetHbitmap(Color.FromArgb(0));
@@ -325,6 +346,7 @@ namespace CF7Launcher.Guardian
 
         public void RequestPositionSync()
         {
+            if (this.IsDisposed || this.Disposing) return;
             OnPositionChanged();
         }
     }
