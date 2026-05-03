@@ -2,38 +2,39 @@
 <!--
 物品ID已自动生成，无需手动维护-->
 <root>
-     <item>
-      <name>阎魔刀带鞘版</name>
-      <displayname>阎魔刀带鞘版</displayname>
-      <icon>阎魔刀带鞘版</icon>
+    <item>
+      <name>虎彻配鞘版</name>
+      <displayname>虎彻配鞘版</displayname>
+      <icon>虎彻配鞘版</icon>
       <type>武器</type>
       <use>刀</use>
       <actiontype>疾影</actiontype>
-      <price>1300000</price>
-      <description>一把锋利无比的魔剑，其刀锋甚至能切开空间。
-      阎魔刀和叛逆之刃一样原为斯巴达的武器。
-      后来，斯巴达将叛逆之刃与阎魔刀作为礼物送给了他的两个儿子。
-      这是阎魔刀的带鞘版本。
-      </description>
+      <price>80000</price>
       <skill>
-        <skillname>居合次元斩</skillname>
-        <description>收拢入鞘，气沉丹田，感知魔力，一瞬之间挥刀斩出二连次元斩。</description>
-        <cd>6000</cd>
-        <mp>60</mp>
+        <skillname>弧光斩</skillname>
+        <description>手持该武器时可以使用弧光斩。</description>
+        <cd>5000</cd>
+        <mp>40</mp>
       </skill>
+      <description>
+      刀身修长的虎彻适合爆发式的进攻招式，其锐利可以斩断护甲脆弱的敌人，并对坚固的装甲造成打击，这款虎彻配了刀鞘，使用方式较原版有一些变化。</description>
       <data>
-        <level>60</level>
-        <weight>0</weight>
-        <dressup>刀-阎魔刀</dressup>
-        <dressup2>刀-阎魔刀刀鞘</dressup2>
-        <power>600</power>
+        <level>15</level>
+        <weight>3</weight>
+        <dressup>刀-虎彻</dressup>
+        <dressup2>刀-虎彻的鞘</dressup2>
+        <power>150</power>
         <hp>0</hp>
-        <mp>0</mp>
+        <mp>50</mp>
         <defence>0</defence>
+        <skillmultipliers>
+          <拔刀术>3</拔刀术>
+          <瞬步斩>3</瞬步斩>
+        </skillmultipliers>
         <bladeCount>3</bladeCount>
       </data>
     </item>
-      <item>
+    <item>
       <name>黑铁武士的刀带鞘</name>
       <displayname>黑铁武士的刀带鞘</displayname>
       <icon>黑铁武士的刀带鞘</icon>
@@ -61,38 +62,34 @@
       </data>
     </item>
     <item>
-      <name>黑金古刀配鞘</name>
-      <displayname>黑金古刀配鞘</displayname>
-      <icon>黑金古刀配鞘</icon>
+      <name>血刀配鞘版</name>
+      <displayname>血刀配鞘版</displayname>
+      <icon>血刀配鞘版</icon>
       <type>武器</type>
       <use>刀</use>
       <actiontype>疾影</actiontype>
-      <price>308000</price>
-      <description>由陨铁打造的黑金古刀，剑身异常沉重，常人无法使用。此版本黑金古刀配刀鞘，使用方式较原版有所变化。
-      </description>
+      <price>260000</price>
       <skill>
-        <skillname>黑刀斩术</skillname>
-        <description>手持该武器时可释放漆黑斩术。</description>
-        <cd>3000</cd>
-        <hp>0</hp>
-        <mp>50</mp>
-      </skill>
-      <data>
-        <level>39</level>
-        <weight>55</weight>
-        <dressup>刀-黑金古刀</dressup>
-        <dressup2>刀-黑金古刀鞘</dressup2>
-        <power>580</power>
+        <skillname>猩红居合</skillname>
+        <description>手持该武器时可释放猩红居合。</description>
+        <information>冷却5秒，释放时清空溢出HP，伤害受溢出HP影响。</information>
+        <cd>5000</cd>
         <hp>0</hp>
         <mp>0</mp>
-        <defence>0</defence>
-        <criticalhit>20</criticalhit>
-        <skillmultipliers>
-          <凶斩>3</凶斩>
-        </skillmultipliers>
+      </skill>
+      <description>
+      此版本血刀刃长加长且配置了刀鞘，使用方式较原版有一些变化。</description>
+      <data>
+        <level>24</level>
+        <weight>3</weight>
+        <dressup>刀-血刀加长版</dressup>
+        <dressup2>刀-血刀刀鞘</dressup2>
+        <power>240</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>20</defence>
+        <vampirism>1</vampirism>
         <bladeCount>3</bladeCount>
-        <damagetype>破击</damagetype>
-        <magictype>生化</magictype>
       </data>
       </item>
     <item>
@@ -143,69 +140,41 @@
       </attr_0>
     </lifecycle>
     </item>
-     <item>
-      <name>虎彻配鞘版</name>
-      <displayname>虎彻配鞘版</displayname>
-      <icon>虎彻配鞘版</icon>
+    <item>
+      <name>黑金古刀配鞘</name>
+      <displayname>黑金古刀配鞘</displayname>
+      <icon>黑金古刀配鞘</icon>
       <type>武器</type>
       <use>刀</use>
       <actiontype>疾影</actiontype>
-      <price>80000</price>
+      <price>308000</price>
+      <description>由陨铁打造的黑金古刀，剑身异常沉重，常人无法使用。此版本黑金古刀配刀鞘，使用方式较原版有所变化。
+      </description>
       <skill>
-        <skillname>弧光斩</skillname>
-        <description>手持该武器时可以使用弧光斩。</description>
-        <cd>5000</cd>
-        <mp>40</mp>
-      </skill>
-      <description>
-      刀身修长的虎彻适合爆发式的进攻招式，其锐利可以斩断护甲脆弱的敌人，并对坚固的装甲造成打击，这款虎彻配了刀鞘，使用方式较原版有一些变化。</description>
-      <data>
-        <level>15</level>
-        <weight>3</weight>
-        <dressup>刀-虎彻</dressup>
-        <dressup2>刀-虎彻的鞘</dressup2>
-        <power>150</power>
+        <skillname>黑刀斩术</skillname>
+        <description>手持该武器时可释放漆黑斩术。</description>
+        <cd>3000</cd>
         <hp>0</hp>
         <mp>50</mp>
+      </skill>
+      <data>
+        <level>39</level>
+        <weight>55</weight>
+        <dressup>刀-黑金古刀</dressup>
+        <dressup2>刀-黑金古刀鞘</dressup2>
+        <power>580</power>
+        <hp>0</hp>
+        <mp>0</mp>
         <defence>0</defence>
+        <criticalhit>20</criticalhit>
         <skillmultipliers>
-          <拔刀术>3</拔刀术>
-          <瞬步斩>3</瞬步斩>
+          <凶斩>3</凶斩>
         </skillmultipliers>
         <bladeCount>3</bladeCount>
+        <damagetype>破击</damagetype>
+        <magictype>生化</magictype>
       </data>
-    </item>
-      <item>
-      <name>血刀配鞘版</name>
-      <displayname>血刀配鞘版</displayname>
-      <icon>血刀配鞘版</icon>
-      <type>武器</type>
-      <use>刀</use>
-      <actiontype>疾影</actiontype>
-      <price>260000</price>
-      <skill>
-        <skillname>猩红居合</skillname>
-        <description>手持该武器时可释放猩红居合。</description>
-        <information>冷却5秒，释放时清空溢出HP，伤害受溢出HP影响。</information>
-        <cd>5000</cd>
-        <hp>0</hp>
-        <mp>0</mp>
-      </skill>
-      <description>
-      此版本血刀刃长加长且配置了刀鞘，使用方式较原版有一些变化。</description>
-      <data>
-        <level>24</level>
-        <weight>3</weight>
-        <dressup>刀-血刀加长版</dressup>
-        <dressup2>刀-血刀刀鞘</dressup2>
-        <power>240</power>
-        <hp>0</hp>
-        <mp>0</mp>
-        <defence>20</defence>
-        <vampirism>1</vampirism>
-        <bladeCount>3</bladeCount>
-      </data>
-    </item>
+      </item>
       <item>
       <name>血能源刃配鞘版</name>
       <displayname>血能源刃配鞘版</displayname>
@@ -236,6 +205,37 @@
         <rout>0.05</rout>
         <vampirism>10</vampirism>
         <criticalhit>15</criticalhit>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+    <item>
+      <name>阎魔刀带鞘版</name>
+      <displayname>阎魔刀带鞘版</displayname>
+      <icon>阎魔刀带鞘版</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>疾影</actiontype>
+      <price>1300000</price>
+      <description>一把锋利无比的魔剑，其刀锋甚至能切开空间。
+      阎魔刀和叛逆之刃一样原为斯巴达的武器。
+      后来，斯巴达将叛逆之刃与阎魔刀作为礼物送给了他的两个儿子。
+      这是阎魔刀的带鞘版本。
+      </description>
+      <skill>
+        <skillname>居合次元斩</skillname>
+        <description>收拢入鞘，气沉丹田，感知魔力，一瞬之间挥刀斩出二连次元斩。</description>
+        <cd>6000</cd>
+        <mp>60</mp>
+      </skill>
+      <data>
+        <level>60</level>
+        <weight>0</weight>
+        <dressup>刀-阎魔刀</dressup>
+        <dressup2>刀-阎魔刀刀鞘</dressup2>
+        <power>600</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
         <bladeCount>3</bladeCount>
       </data>
     </item>
