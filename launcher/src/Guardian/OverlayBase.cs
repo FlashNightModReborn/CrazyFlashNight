@@ -87,6 +87,11 @@ namespace CF7Launcher.Guardian
         protected readonly FlashCoordinateMapper _mapper;
         protected bool _shown;
         protected bool _ownerVisible;
+        private EventHandler _ownerMoveHandler;
+        private EventHandler _ownerResizeHandler;
+        private EventHandler _ownerActivatedHandler;
+        private EventHandler _ownerDeactivateHandler;
+        private EventHandler _anchorResizeHandler;
 
         /// <summary>
         /// 是否点击穿透。默认 true（Toast/HitNumber）。
@@ -94,11 +99,14 @@ namespace CF7Launcher.Guardian
         /// </summary>
         protected virtual bool IsClickThrough { get { return true; } }
 
-        private bool CanUseExistingHandle()
+        private bool TryGetExistingHandle(out IntPtr handle)
         {
+            handle = IntPtr.Zero;
             try
             {
-                return !this.IsDisposed && !this.Disposing && this.IsHandleCreated;
+                if (this.IsDisposed || this.Disposing || !this.IsHandleCreated) return false;
+                handle = this.Handle;
+                return handle != IntPtr.Zero;
             }
             catch
             {
@@ -123,20 +131,25 @@ namespace CF7Launcher.Guardian
             CreateHandle();
 
             // 位置跟踪
-            owner.Move += delegate { OnPositionChanged(); };
-            owner.Resize += delegate { OnPositionChanged(); };
-            anchor.Resize += delegate { OnPositionChanged(); };
-
-            // Owner 可见性跟踪
-            owner.Activated += delegate { OnOwnerActivated(); };
-            owner.Deactivate += delegate { OnOwnerDeactivated(); };
-            owner.Resize += delegate
+            _ownerMoveHandler = delegate { SafeOnPositionChanged(); };
+            _ownerResizeHandler = delegate
             {
+                SafeOnPositionChanged();
                 if (owner.WindowState == FormWindowState.Minimized)
                     OnOwnerDeactivated();
                 else
                     OnOwnerActivated();
             };
+            _anchorResizeHandler = delegate { SafeOnPositionChanged(); };
+            owner.Move += _ownerMoveHandler;
+            owner.Resize += _ownerResizeHandler;
+            anchor.Resize += _anchorResizeHandler;
+
+            // Owner 可见性跟踪
+            _ownerActivatedHandler = delegate { OnOwnerActivated(); };
+            _ownerDeactivateHandler = delegate { OnOwnerDeactivated(); };
+            owner.Activated += _ownerActivatedHandler;
+            owner.Deactivate += _ownerDeactivateHandler;
         }
 
         protected override CreateParams CreateParams
@@ -174,8 +187,9 @@ namespace CF7Launcher.Guardian
             _ownerVisible = true;
             if (_shown)
             {
-                if (!CanUseExistingHandle()) return;
-                ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
+                IntPtr handle;
+                if (!TryGetExistingHandle(out handle)) return;
+                ShowWindow(handle, SW_SHOWNOACTIVATE);
                 OnOwnerBecameVisible();
             }
         }
@@ -208,9 +222,10 @@ namespace CF7Launcher.Guardian
             _shown = true;
             if (_ownerVisible)
             {
-                if (!CanUseExistingHandle()) return;
-                ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
-                SetWindowPos(this.Handle, HWND_TOP, 0, 0, 0, 0,
+                IntPtr handle;
+                if (!TryGetExistingHandle(out handle)) return;
+                ShowWindow(handle, SW_SHOWNOACTIVATE);
+                SetWindowPos(handle, HWND_TOP, 0, 0, 0, 0,
                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
             }
         }
@@ -233,9 +248,10 @@ namespace CF7Launcher.Guardian
             _shown = true;
             if (_ownerVisible)
             {
-                if (!CanUseExistingHandle()) return;
-                ShowWindow(this.Handle, SW_SHOWNOACTIVATE);
-                SetWindowPos(this.Handle, insertAfter, 0, 0, 0, 0,
+                IntPtr handle;
+                if (!TryGetExistingHandle(out handle)) return;
+                ShowWindow(handle, SW_SHOWNOACTIVATE);
+                SetWindowPos(handle, insertAfter, 0, 0, 0, 0,
                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
             }
         }
@@ -246,8 +262,9 @@ namespace CF7Launcher.Guardian
         /// </summary>
         protected void HideOverlay()
         {
-            if (!CanUseExistingHandle()) return;
-            ShowWindow(this.Handle, SW_HIDE);
+            IntPtr handle;
+            if (!TryGetExistingHandle(out handle)) return;
+            ShowWindow(handle, SW_HIDE);
             // 注意：不改 _shown
         }
 
@@ -258,8 +275,9 @@ namespace CF7Launcher.Guardian
         protected void DismissOverlay()
         {
             _shown = false;
-            if (!CanUseExistingHandle()) return;
-            ShowWindow(this.Handle, SW_HIDE);
+            IntPtr handle;
+            if (!TryGetExistingHandle(out handle)) return;
+            ShowWindow(handle, SW_HIDE);
         }
 
         #endregion
@@ -290,7 +308,8 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void PreCommitTransparent()
         {
-            if (!CanUseExistingHandle()) return;
+            IntPtr handle;
+            if (!TryGetExistingHandle(out handle)) return;
             try
             {
                 using (Bitmap warm = new Bitmap(1, 1, PixelFormat.Format32bppPArgb))
@@ -307,7 +326,8 @@ namespace CF7Launcher.Guardian
         /// </summary>
         protected void CommitBitmap(Bitmap bmp, int screenX, int screenY, byte globalAlpha)
         {
-            if (!CanUseExistingHandle()) return;
+            IntPtr handle;
+            if (!TryGetExistingHandle(out handle)) return;
             IntPtr hdcScreen = IntPtr.Zero;
             IntPtr hdcMem = CreateCompatibleDC(hdcScreen);
             IntPtr hBmp = bmp.GetHbitmap(Color.FromArgb(0));
@@ -326,7 +346,7 @@ namespace CF7Launcher.Guardian
                     AlphaFormat = AC_SRC_ALPHA
                 };
 
-                UpdateLayeredWindow(this.Handle, hdcScreen,
+                UpdateLayeredWindow(handle, hdcScreen,
                     ref ptDst, ref sz, hdcMem, ref ptSrc, 0, ref blend, ULW_ALPHA);
             }
             finally
@@ -347,7 +367,31 @@ namespace CF7Launcher.Guardian
         public void RequestPositionSync()
         {
             if (this.IsDisposed || this.Disposing) return;
-            OnPositionChanged();
+            SafeOnPositionChanged();
+        }
+
+        private void SafeOnPositionChanged()
+        {
+            if (this.IsDisposed || this.Disposing) return;
+            try { OnPositionChanged(); }
+            catch (ObjectDisposedException) { }
+            catch (InvalidOperationException ex)
+            {
+                LogManager.Log("[OverlayBase] position sync ignored: " + ex.Message);
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                try { if (_owner != null && _ownerMoveHandler != null) _owner.Move -= _ownerMoveHandler; } catch { }
+                try { if (_owner != null && _ownerResizeHandler != null) _owner.Resize -= _ownerResizeHandler; } catch { }
+                try { if (_owner != null && _ownerActivatedHandler != null) _owner.Activated -= _ownerActivatedHandler; } catch { }
+                try { if (_owner != null && _ownerDeactivateHandler != null) _owner.Deactivate -= _ownerDeactivateHandler; } catch { }
+                try { if (_anchor != null && _anchorResizeHandler != null) _anchor.Resize -= _anchorResizeHandler; } catch { }
+            }
+            base.Dispose(disposing);
         }
     }
 }

@@ -1513,7 +1513,19 @@ namespace CF7Launcher.Guardian
         /// <summary>向 JS 发送结构化消息。</summary>
         public void PostToWeb(string json)
         {
-            if (!_webReady || _disposed) return;
+            if (_disposed) return;
+            if (this.IsHandleCreated && this.InvokeRequired)
+            {
+                try { this.BeginInvoke(new Action<string>(PostToWebCore), json); }
+                catch { }
+                return;
+            }
+            PostToWebCore(json);
+        }
+
+        private void PostToWebCore(string json)
+        {
+            if (!_webReady || _disposed || _webView == null || _webView.CoreWebView2 == null) return;
             try
             {
                 _webView.CoreWebView2.PostWebMessageAsJson(json);

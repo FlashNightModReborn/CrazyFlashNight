@@ -140,6 +140,61 @@
           ]
         },
         {
+          "type": "timeline",
+          "entries": [
+            {
+              "label": "T-N",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "摇滚女皇与"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "warning",
+                  "content": [{ "type": "text", "text": "军阀" }]
+                },
+                {
+                  "type": "text",
+                  "text": "积怨已深，效忠的"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "faction-blackiron",
+                  "content": [{ "type": "text", "text": "黑铁会" }]
+                },
+                {
+                  "type": "text",
+                  "text": "与之另有往来"
+                }
+              ]
+            },
+            {
+              "label": "T-0",
+              "content": [
+                { "type": "text", "text": "摇滚女皇决定反叛" }
+              ]
+            },
+            {
+              "label": "T+δ",
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "faction-army",
+                  "content": [{ "type": "text", "text": "A 兵团" }]
+                },
+                { "type": "text", "text": "接下委托并击败摇滚女皇" }
+              ]
+            },
+            {
+              "label": "T+1",
+              "content": [
+                { "type": "text", "text": "各方默契不处死，摇滚公园按兵自治" }
+              ]
+            }
+          ]
+        },
+        {
           "type": "note",
           "content": [
             {
@@ -168,15 +223,34 @@
           "content": [
             {
               "type": "text",
-              "text": "「摇滚公园那些娘们儿难道不是想睡就睡的？」一个盗贼把手中的啤酒一饮而尽后，随手把酒瓶扔向了远处。「装什么清高？都这个时代了，还讲究什么清白身子？"
+              "text": "「摇滚公园那些娘们儿难道不是想睡就睡的？」一个盗贼把手中的啤酒一饮而尽后，随手把酒瓶扔向了远处。「装什么清高？都这个时代了，还讲究什么清白身子？\n\n能帮"
+            },
+            {
+              "type": "colorToken",
+              "token": "faction-blackiron",
+              "content": [{ "type": "text", "text": "黑铁会" }]
             },
             {
               "type": "text",
-              "text": "\n\n"
+              "text": "那帮人泄泄火，让我泄泄火怎么了？！老子也不是没物资，五个牛肉罐头还不够玩儿上一个？他妈的"
+            },
+            {
+              "type": "outburst",
+              "tone": "rage",
+              "text": "老子就不信这个邪！"
             },
             {
               "type": "text",
-              "text": "能帮黑铁会那帮人泄泄火，让我泄泄火怎么了？！老子也不是没物资，五个牛肉罐头还不够玩儿上一个？他妈的，老子就不信这个邪，我今天就必须玩儿上一个！」"
+              "text": "  "
+            },
+            {
+              "type": "outburst",
+              "tone": "rage",
+              "text": "我今天就必须玩儿上一个！"
+            },
+            {
+              "type": "text",
+              "text": "」"
             }
           ]
         },
@@ -200,6 +274,12 @@
               "type": "text",
               "text": "。"
             }
+          ]
+        },
+        {
+          "type": "stamp",
+          "content": [
+            { "type": "text", "text": "侧记 · 不入正卷" }
           ]
         },
         {

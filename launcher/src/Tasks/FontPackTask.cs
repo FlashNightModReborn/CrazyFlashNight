@@ -95,6 +95,7 @@ namespace CF7Launcher.Tasks
             }
 
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+            EnsureShippedFallbacksAvailable("ctor");
         }
 
         public void HandleAsync(JObject message, Action<string> respond)
@@ -183,7 +184,7 @@ namespace CF7Launcher.Tasks
                             totalBytes += bytes;
 
                             string resolvedPath;
-                            bool installed = TryResolveExisting(name, out resolvedPath);
+                            bool installed = TryResolveExisting(f, out resolvedPath);
                             LogManager.Log("[FontPack] status check " + name
                                 + ": installed=" + installed
                                 + " path=" + (resolvedPath ?? "(none)"));
@@ -257,7 +258,7 @@ namespace CF7Launcher.Tasks
                     if (f == null) continue;
                     string name = f.Value<string>("name");
                     string resolved;
-                    bool exists = TryResolveExisting(name, out resolved);
+                    bool exists = TryResolveExisting(f, out resolved);
                     LogManager.Log("[FontPack] resolve " + name + ": exists=" + exists
                         + " path=" + (resolved ?? "(none)"));
                     if (!exists) filesToDownload.Add(f);
@@ -465,6 +466,17 @@ namespace CF7Launcher.Tasks
             string expectedSha = (fileEntry.Value<string>("sha256") ?? "").ToLowerInvariant();
             JArray urls = fileEntry.Value<JArray>("urls");
             bool shippedFallback = fileEntry.Value<bool?>("shippedFallback") ?? false;
+            if (!IsSafeFontFileName(name))
+            {
+                err = "unsafe_file_name";
+                return false;
+            }
+            try { Directory.CreateDirectory(_appDataFontsDir); }
+            catch (Exception ex)
+            {
+                err = "cannot_create_fonts_dir: " + ex.Message;
+                return false;
+            }
 
             string targetPath = Path.Combine(_appDataFontsDir, name);
             string tmpPath = targetPath + ".download.tmp";
@@ -638,26 +650,144 @@ namespace CF7Launcher.Tasks
         // ================================================================
 
         /// <summary>
-        /// 解析字体文件实际位置：优先 AppData，回退 shipped。两者都不存在或 sha 不通过 → false。
+        /// 解析字体文件实际位置。WebView2 只映射 AppData primary；shippedFallback 文件必须先复制进
+        /// primary 才能视为 installed，避免 status 显示已安装但 cfn-fonts.local 实际 404。
         /// </summary>
-        private bool TryResolveExisting(string name, out string resolved)
+        private bool TryResolveExisting(JObject fileEntry, out string resolved)
         {
             resolved = null;
+            if (fileEntry == null) return false;
+            string name = fileEntry.Value<string>("name");
             if (string.IsNullOrEmpty(name)) return false;
+            if (!IsSafeFontFileName(name))
+            {
+                LogManager.Log("[FontPack] unsafe font file name ignored: " + name);
+                return false;
+            }
+            string expectedSha = (fileEntry.Value<string>("sha256") ?? "").ToLowerInvariant();
 
             string appDataPath = Path.Combine(_appDataFontsDir, name);
             if (File.Exists(appDataPath))
             {
-                resolved = appDataPath;
-                return true;
+                if (VerifySha256(appDataPath, expectedSha))
+                {
+                    resolved = appDataPath;
+                    return true;
+                }
+                LogManager.Log("[FontPack] existing appData font sha mismatch: " + appDataPath);
+                if (!SameDirectory(_appDataFontsDir, _shippedFontsDir))
+                    try { File.Delete(appDataPath); } catch { }
             }
-            string shippedPath = Path.Combine(_shippedFontsDir, name);
-            if (File.Exists(shippedPath))
+
+            if (!SameDirectory(_appDataFontsDir, _shippedFontsDir)
+                && (fileEntry.Value<bool?>("shippedFallback") ?? false))
             {
-                resolved = shippedPath;
-                return true;
+                EnsureOneShippedFallback(fileEntry, "resolve");
+                if (File.Exists(appDataPath) && VerifySha256(appDataPath, expectedSha))
+                {
+                    resolved = appDataPath;
+                    return true;
+                }
+            }
+
+            if (SameDirectory(_appDataFontsDir, _shippedFontsDir))
+            {
+                string shippedPath = Path.Combine(_shippedFontsDir, name);
+                if (File.Exists(shippedPath) && VerifySha256(shippedPath, expectedSha))
+                {
+                    resolved = shippedPath;
+                    return true;
+                }
             }
             return false;
+        }
+
+        private void EnsureShippedFallbacksAvailable(string trigger)
+        {
+            JObject manifest;
+            string err;
+            if (!TryLoadManifest(out manifest, out err))
+            {
+                LogManager.Log("[FontPack] shipped fallback bootstrap skipped (" + trigger + "): " + err);
+                return;
+            }
+            EnsureShippedFallbacksAvailable(manifest, trigger);
+        }
+
+        private void EnsureShippedFallbacksAvailable(JObject manifest, string trigger)
+        {
+            if (manifest == null || SameDirectory(_appDataFontsDir, _shippedFontsDir)) return;
+            JObject groupsObj = manifest.Value<JObject>("groups");
+            if (groupsObj == null) return;
+            foreach (var kvp in groupsObj)
+            {
+                JObject g = kvp.Value as JObject;
+                if (g == null) continue;
+                JArray files = g.Value<JArray>("files");
+                if (files == null) continue;
+                foreach (JToken t in files)
+                {
+                    JObject f = t as JObject;
+                    if (f == null || !(f.Value<bool?>("shippedFallback") ?? false)) continue;
+                    EnsureOneShippedFallback(f, trigger);
+                }
+            }
+        }
+
+        private void EnsureOneShippedFallback(JObject fileEntry, string trigger)
+        {
+            string name = fileEntry.Value<string>("name");
+            if (!IsSafeFontFileName(name)) return;
+            string expectedSha = (fileEntry.Value<string>("sha256") ?? "").ToLowerInvariant();
+            string src = Path.Combine(_shippedFontsDir, name);
+            string dst = Path.Combine(_appDataFontsDir, name);
+            if (File.Exists(dst) && VerifySha256(dst, expectedSha)) return;
+            if (!File.Exists(src) || !VerifySha256(src, expectedSha)) return;
+
+            try
+            {
+                Directory.CreateDirectory(_appDataFontsDir);
+                string tmp = dst + ".shipped.tmp";
+                File.Copy(src, tmp, true);
+                string moveErr;
+                if (TryMoveAtomic(tmp, dst, out moveErr))
+                    LogManager.Log("[FontPack] shipped fallback copied: " + name + " (" + trigger + ")");
+                else
+                    LogManager.Log("[FontPack] shipped fallback move failed: " + name + " :: " + moveErr);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[FontPack] shipped fallback copy failed: " + name + " :: " + ex.Message);
+            }
+        }
+
+        private static bool IsSafeFontFileName(string name)
+        {
+            if (string.IsNullOrEmpty(name) || name.Length > 128) return false;
+            if (name == "." || name == "..") return false;
+            if (name.IndexOf('/') >= 0 || name.IndexOf('\\') >= 0 || name.IndexOf(':') >= 0) return false;
+            if (!string.Equals(name, Path.GetFileName(name), StringComparison.Ordinal)) return false;
+            if (name.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0) return false;
+            string ext = Path.GetExtension(name);
+            return string.Equals(ext, ".ttf", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(ext, ".otf", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(ext, ".woff", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(ext, ".woff2", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool SameDirectory(string a, string b)
+        {
+            if (string.IsNullOrEmpty(a) || string.IsNullOrEmpty(b)) return false;
+            try
+            {
+                string fa = Path.GetFullPath(a).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                string fb = Path.GetFullPath(b).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                return string.Equals(fa, fb, StringComparison.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
+            }
         }
 
         private bool TryLoadManifest(out JObject manifest, out string err)

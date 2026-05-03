@@ -37,7 +37,15 @@ var IntelligenceComponentRenderer = (function() {
         damageText: true,
         redaction: true,
         decryptText: true,
-        pcName: true
+        pcName: true,
+        outburst: true
+    };
+
+    var OUTBURST_TONES = {
+        panic: true,
+        rage: true,
+        despair: true,
+        whisper: true
     };
 
     var _revealLayer = null;
@@ -404,7 +412,23 @@ var IntelligenceComponentRenderer = (function() {
             appendInlineRedaction(target, node, context);
         } else if (node.type === 'decryptText') {
             appendInlineDecrypt(target, node, context);
+        } else if (node.type === 'outburst') {
+            appendInlineOutburst(target, node, context);
         }
+    }
+
+    function appendInlineOutburst(target, node, context) {
+        var span = document.createElement('span');
+        var tone = OUTBURST_TONES[node.tone] ? node.tone : 'panic';
+        span.className = 'intel-h5-outburst intel-h5-outburst-' + tone;
+        var text = typeof node.text === 'string' ? node.text : '';
+        if (text) {
+            span.appendChild(document.createTextNode(displayText(text, context)));
+        }
+        if (Array.isArray(node.content) && node.content.length) {
+            appendInline(span, node.content, context);
+        }
+        target.appendChild(span);
     }
 
     function appendDamageText(target, node) {

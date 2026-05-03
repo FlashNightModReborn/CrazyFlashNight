@@ -39,6 +39,14 @@ const INLINE_TYPES = new Set([
   'redaction',
   'decryptText',
   'pcName',
+  'outburst',
+]);
+
+const OUTBURST_TONES = new Set([
+  'panic',
+  'rage',
+  'despair',
+  'whisper',
 ]);
 
 const COLOR_TOKENS = new Set([
@@ -283,6 +291,9 @@ function validateInline(node, loc, errors) {
   if (node.type === 'damageText' && node.kind && !DAMAGE_KINDS.has(node.kind)) errors.push(`${loc}: unknown damage kind "${node.kind}"`);
   if ((node.type === 'decryptText' || node.type === 'redaction') && node.mask && !MASK_STYLES.has(node.mask)) {
     errors.push(`${loc}: unknown mask style "${node.mask}"`);
+  }
+  if (node.type === 'outburst' && node.tone && !OUTBURST_TONES.has(node.tone)) {
+    errors.push(`${loc}: unknown outburst tone "${node.tone}"`);
   }
   if (Array.isArray(node.content)) validateInlineArray(node.content, `${loc}.content`, errors);
   if (Array.isArray(node.reveal)) validateInlineArray(node.reveal, `${loc}.reveal`, errors);

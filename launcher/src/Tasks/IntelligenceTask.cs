@@ -92,7 +92,12 @@ namespace CF7Launcher.Tasks
 
         private static readonly HashSet<string> H5InlineTypes = new HashSet<string>(StringComparer.Ordinal)
         {
-            "text", "strong", "underline", "colorToken", "damageText", "redaction", "decryptText", "pcName"
+            "text", "strong", "underline", "colorToken", "damageText", "redaction", "decryptText", "pcName", "outburst"
+        };
+
+        private static readonly HashSet<string> H5OutburstTones = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "panic", "rage", "despair", "whisper"
         };
 
         private static readonly HashSet<string> H5ColorTokens = new HashSet<string>(StringComparer.Ordinal)
@@ -1025,6 +1030,18 @@ namespace CF7Launcher.Tasks
                     if (!H5MaskStyles.Contains(maskToken.ToString()))
                     {
                         error = "h5_unknown_mask_style";
+                        return false;
+                    }
+                }
+            }
+            if (type == "outburst")
+            {
+                JToken toneToken = obj["tone"];
+                if (toneToken != null && toneToken.Type == JTokenType.String)
+                {
+                    if (!H5OutburstTones.Contains(toneToken.ToString()))
+                    {
+                        error = "h5_unknown_outburst_tone";
                         return false;
                     }
                 }

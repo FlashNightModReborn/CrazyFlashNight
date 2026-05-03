@@ -1,4 +1,4 @@
-# 字体二进制不入 git。launcher FontPackTask（计划中）按需下载到本目录。
+# 字体二进制不入 git。launcher FontPackTask 按需下载到用户 AppData 字体目录。
 # 仅 JetBrains Mono 这种 ~100KB 的小字体允许入仓，作为 baseline 兜底。
 *.ttf
 *.otf

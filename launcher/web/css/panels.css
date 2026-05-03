@@ -6344,14 +6344,16 @@ html.perf-low-effects .map-stage-backdrop::before {
 .intel-h5-heading {
     margin: 4px 0 10px;
     color: #050505;
+    font-family: var(--intel-font-title);
     font-weight: 900;
     line-height: 1.2;
+    letter-spacing: 0.02em;
 }
 
-.intel-h5-heading-1 { font-size: 28px; }
-.intel-h5-heading-2 { font-size: 24px; }
-.intel-h5-heading-3 { font-size: 21px; }
-.intel-h5-heading-4 { font-size: 18px; }
+.intel-h5-heading-1 { font-size: 32px; }
+.intel-h5-heading-2 { font-size: 27px; }
+.intel-h5-heading-3 { font-size: 23px; }
+.intel-h5-heading-4 { font-size: 19px; }
 
 .intel-h5-token-danger { color: #ff3333; font-weight: 800; }
 .intel-h5-token-warning { color: #a96b00; font-weight: 800; }
@@ -6660,7 +6662,7 @@ html.perf-low-effects .map-stage-backdrop::before {
         radial-gradient(ellipse at 70% 100%, rgba(140, 100, 50, 0.12), transparent 70%),
         linear-gradient(180deg, #f0e3b8 0%, #d8c08a 100%);
     color: #2a1f12;
-    font-family: 'KaiTi', '楷体', 'STKaiti', '华文楷体', 'FangSong', '仿宋', serif;
+    font-family: var(--intel-font-body);
     font-size: 17px;
     line-height: 1.85;
     box-shadow:
@@ -6687,7 +6689,7 @@ html.perf-low-effects .map-stage-backdrop::before {
 /* ─────────────── paperFragment 块 ─────────────── */
 .intel-h5-fragment {
     padding: 18px 24px 20px;
-    font-family: 'KaiTi', '楷体', 'STKaiti', serif;
+    font-family: var(--intel-font-body);
     line-height: 1.78;
     color: #261a0a;
     box-shadow:
@@ -6937,10 +6939,21 @@ html.perf-low-effects .map-stage-backdrop::before {
     background: rgba(255,255,255,0.34);
     border-left: 3px solid rgba(70,70,70,0.34);
     white-space: pre-line;
-    font-family: 'LXGW WenKai Screen', 'LXGW WenKai', 'STKaiti', '楷体', 'KaiTi', '华文楷体', serif;
+    font-family: var(--intel-font-note);
     font-size: 0.96em;
     line-height: 1.7;
     letter-spacing: 0.02em;
+}
+
+/* dossier skin 根：思源宋体 CN 担正式档案衬线感。
+   note 单独 override 见下条（朱赭楷体不被宋体盖过）。 */
+.intel-content[data-skin="dossier"] {
+    font-family: var(--intel-font-archive);
+    letter-spacing: 0.01em;
+}
+.intel-content[data-skin="dossier"] .intel-h5-heading {
+    font-family: var(--intel-font-archive);
+    letter-spacing: 0.04em;  /* 宋体标题撑开一点更像档案 */
 }
 
 /* dossier skin：编纂注 = 朱赭细线 + 朱印图章。
@@ -6984,11 +6997,12 @@ html.perf-low-effects .map-stage-backdrop::before {
     transform: rotate(-0.3deg);
 }
 
-/* diary skin：手写日记体，无装饰 */
+/* diary skin：手写日记体，无装饰
+   走 --intel-font-note（Klee One 私人手写）让全篇日记一致的"个人手记"质感。 */
 .intel-content[data-skin="diary"] .intel-h5-note,
 .intel-content[data-skin="diary"] .intel-h5-p,
 .intel-content[data-skin="diary"] .intel-h5-quote {
-    font-family: 'LXGW WenKai Screen', 'LXGW WenKai', 'STKaiti', '楷体', 'KaiTi', serif;
+    font-family: var(--intel-font-note);
     letter-spacing: 0.02em;
 }
 
@@ -7007,7 +7021,7 @@ html.perf-low-effects .map-stage-backdrop::before {
     color: #8f1e1e;
     background: rgba(255,255,255,0.10);
     border: 1px dashed rgba(135, 28, 28, 0.32);
-    font-family: KaiTi, STKaiti, FangSong, "Microsoft YaHei", sans-serif;
+    font-family: var(--intel-font-note);
     font-size: 1.08em;
     line-height: 1.65;
     white-space: pre-line;
@@ -7037,6 +7051,48 @@ html.perf-low-effects .map-stage-backdrop::before {
     transform: rotate(-4deg);
     font-weight: 900;
     letter-spacing: 0.08em;
+}
+
+/* outburst：失控短句的戏剧性 inline 节点。两条字体轴：
+   - panic / rage / despair：Ma Shan Zheng（手写但可读），叙事高峰需要"被听到"
+   - whisper：Liu Jian Mao Cao（草书，刻意的不可读）——"听不清"本身就是叙事意图
+   单句 ≤ 12 字最有冲击力，不要长段落用。 */
+.intel-h5-outburst {
+    display: inline-block;
+    padding: 0 4px;
+    font-family: var(--intel-font-title);
+    font-size: 1.22em;
+    line-height: 1.15;
+    letter-spacing: 0.02em;
+    vertical-align: baseline;
+    transform: rotate(-1.2deg);
+    transform-origin: center bottom;
+}
+.intel-h5-outburst-panic {
+    color: #b81818;
+    text-shadow: 0 0 1px rgba(184, 24, 24, 0.4);
+}
+.intel-h5-outburst-rage {
+    color: #6c0a0a;
+    font-weight: 900;
+    transform: rotate(-2deg) scale(1.04);
+    letter-spacing: 0.04em;
+}
+.intel-h5-outburst-despair {
+    color: #2a2a32;
+    opacity: 0.78;
+    transform: rotate(-0.4deg) skewX(-3deg);
+    filter: blur(0.2px);
+}
+/* whisper 是唯一保留草书的 tone：听不清/记不全/最后一缕话的视觉化。
+   font-family override 必须比基础 .intel-h5-outburst 后置才生效。 */
+.intel-h5-outburst-whisper {
+    color: #4a4a4a;
+    opacity: 0.62;
+    font-family: var(--intel-font-outburst);
+    font-size: 1.16em;
+    letter-spacing: 0.08em;
+    transform: rotate(-0.6deg);
 }
 
 .intel-h5-stamp-danger { color: #a01818; }
@@ -7069,7 +7125,7 @@ html.perf-low-effects .map-stage-backdrop::before {
     background: transparent;
     border: 0;
     border-left: 2px solid rgba(156, 26, 26, 0.55);
-    font-family: 'STXingkai', '行楷', 'KaiTi', '楷体', cursive, serif;
+    font-family: var(--intel-font-note);
     font-size: 0.95em;
     line-height: 1.55;
     letter-spacing: 0.02em;
@@ -7085,7 +7141,7 @@ html.perf-low-effects .map-stage-backdrop::before {
         #08120c;
     border: 1px solid #1d4a2b;
     box-shadow: inset 0 0 22px rgba(0,255,100,0.08);
-    font-family: Consolas, "Courier New", monospace;
+    font-family: var(--intel-font-mono);
     font-size: 17px;
     line-height: 1.45;
 }
@@ -7194,7 +7250,7 @@ html.perf-low-effects .map-stage-backdrop::before {
     margin: 0 0 4px;
     color: #16475c;
     font-size: 0.86em;
-    font-family: Consolas, "Courier New", monospace;
+    font-family: var(--intel-font-mono);
 }
 
 .intel-h5-timeline-entry {
