@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿ <?xml version="1.0" encoding="UTF-8"?>
 <!--
 物品ID已自动生成，无需手动维护-->
 <root>
@@ -655,9 +655,9 @@
     <type>武器</type>
     <use>长枪</use>
     <price>50000</price>
-    <description>FSC7</description>
+    <description>内置子母弹的高爆弹体，命中目标后附着并扩散微型炸弹，触发连锁爆破，大范围清场与单体爆发兼备。</description>
     <data>
-      <level>10</level>
+      <level>55</level>
       <weight>6</weight>
       <dressup>枪-长枪-FSC7</dressup>
       <capacity>1</capacity>
@@ -674,6 +674,8 @@
       <bulletsize>50</bulletsize>
       <power>4000</power>
       <impact>0</impact>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
     <lifecycle>
@@ -697,7 +699,7 @@
     <type>武器</type>
     <use>长枪</use>
     <price>140000</price>
-    <description>FM92刺弹炮</description>
+    <description>并非平常说的那把FM92，确实是枪炮师专用的武器，但是这个是外销需求而简化设计的型号，所以采用单发装填机制，可发射一枚高压高爆巨型榴弹。榴弹撞击目标后触发高压内爆，以强冲击波与大范围破片扫荡战场。</description>
     <data>
       <level>24</level>
       <weight>6</weight>
@@ -716,6 +718,8 @@
       <bulletsize>40</bulletsize>
       <power>1600</power>
       <impact>0</impact>
+      <damagetype>魔法</damagetype>
+      <magictype>热</magictype>
       <reloadType>tube</reloadType>
       <reloadPenalty>0</reloadPenalty>
     </data>
@@ -727,7 +731,7 @@
     <type>武器</type>
     <use>长枪</use>
     <price>250000</price>
-    <description>暂无</description>
+    <description>枪炮师专属重火器，采用特制的破甲弹设计，定位是单点破甲、定点攻坚，专为打击重甲单位、工事掩体而生。</description>
     <data>
       <level>22</level>
       <weight>5</weight>
@@ -746,6 +750,8 @@
       <bulletsize>50</bulletsize>
       <power>2700</power>
       <impact>0</impact>
+      <damagetype>破击</damagetype>
+      <magictype>装甲</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
   </item>

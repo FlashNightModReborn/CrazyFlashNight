@@ -73,10 +73,12 @@
       <icon>沧蓝陨铁手炮</icon>
       <type>武器</type>
       <use>手枪</use>
-      <price>400000</price>
-      <description>由“泰拉复苏手炮”与“真武劫之魂手炮”融合而成的手炮，材质中融入陨铁，泛着清冷蓝光，兼具守御与破敌之力的手炮。</description>
+      <price>450000</price>
+      <description>由“泰拉复苏手炮”与“真武劫之魂手炮”融合而成的手炮，材质中融入陨铁，泛着清冷蓝光，兼具守御与破敌之力的手炮。
+        意味着这是一把很稀有的武器。
+        特殊效果：破击装甲</description>
       <data>
-        <level>50</level>
+        <level>33</level>
         <weight>4</weight>
         <modslot>1</modslot>
         <dressup>枪-手枪-沧蓝陨铁手炮</dressup>
@@ -93,8 +95,10 @@
         <bullethit>火花</bullethit>
         <clipname>火箭弹弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>3500</power>
+        <power>2500</power>
         <impact>0</impact>
+        <damagetype>破击</damagetype>
+        <magictype>装甲</magictype>
         <reloadPenalty>0</reloadPenalty>
       </data>
     </item>
@@ -104,16 +108,16 @@
       <icon>加农手炮</icon>
       <type>武器</type>
       <use>手枪</use>
-      <price>400000</price>
-      <description>以“最高天的科技”手炮为原型打造的特制手炮。而白紫交织的配色是这个武器制作者的个人偏好。通过重构炮身能量传导与击发机构，彻底改写【加农炮】的这个技能的释放机制，实现无蓄力瞬发与多次连发，使其成为近身与持续压制的常规手段
+      <price>800000</price>
+      <description>以“最高天的科技”手炮为原型打造的特制手炮。而白紫交织的配色则是这个武器制作者的个人偏好。通过重构炮身能量传导与击发机构，彻底改写【加农炮】的这个技能的释放机制，实现无蓄力瞬发与多次连发，使其成为近身与持续压制的常规手段
         加农炮这个技能连发是什么样子？使用者将会体会到这把武器的趣味所在~
-        温馨提示：不要将这里的加农炮混为其他的什么东西，如果是枪炮师或者是和枪炮师交战的人，大概能明白</description>
+        温馨提示：不要将这里的加农炮混为其他的什么东西，如果是枪炮师或者是和枪炮师交战的人，大概能明白这一点</description>
       <data>
-        <level>50</level>
+        <level>55</level>
         <weight>4</weight>
         <modslot>1</modslot>
         <dressup>枪-手枪-加农手炮</dressup>
-        <capacity>5</capacity>
+        <capacity>7</capacity>
         <split>1</split>
         <diffusion>3</diffusion>
         <interval>200</interval>
@@ -126,8 +130,10 @@
         <bullethit>火花</bullethit>
         <clipname>火箭弹弹药</clipname>
         <bulletsize>25</bulletsize>
-        <power>3500</power>
+        <power>4200</power>
         <impact>0</impact>
+        <damagetype>魔法</damagetype>
+        <magictype>热</magictype>
         <reloadPenalty>0</reloadPenalty>
       </data>
     </item>

@@ -909,7 +909,7 @@
     <type>武器</type>
     <use>长枪</use>
     <price>800000</price>
-    <description>原型源自游戏《CODOL》中的传说武器 “众神之力”，某个执着于重武器的人被其外观与概念吸引，以游戏设定为蓝本自主设计仿制，造出这把强劲的能量霰弹枪，近距离清场、中距离爆发皆可，稀有且极具收藏价值。</description>
+    <description>原型源自游戏《CODOL》中的传说武器 “众神之力”，某个执着于重武器的人被其外观与概念吸引，以游戏设定为蓝本自主设计仿制，造出这把强劲的能量霰弹枪，近距离清场、中距离爆发皆可，威力十分强劲，稀有且极具收藏价值。</description>
      <skill>
       <skillname>发射榴弹</skillname>
       <description>
@@ -946,6 +946,8 @@
       <bulletsize>25</bulletsize>
       <power>500</power>
       <impact>12</impact>
+      <damagetype>魔法</damagetype>
+      <magictype>能</magictype>
       <reloadPenalty>0</reloadPenalty>
     </data>
   </item>
