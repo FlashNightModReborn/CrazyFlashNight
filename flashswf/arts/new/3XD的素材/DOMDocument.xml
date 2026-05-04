@@ -95,7 +95,7 @@
           <DOMFolderItem name="1主武器/游戏/Lady2.0/人物的部件/武器素材" itemID="69e991d9-00000b4c"/>
           <DOMFolderItem name="1主武器/众神之力" itemID="69e74df6-000009a3"/>
           <DOMFolderItem name="1主武器/众神之力/众神之力素材" itemID="69e74d8b-000008f0"/>
-          <DOMFolderItem name="2副武器" itemID="6976d736-00001fef"/>
+          <DOMFolderItem name="2副武器" itemID="6976d736-00001fef" isExpanded="true"/>
           <DOMFolderItem name="2副武器/沧蓝陨铁手炮" itemID="69e73845-00000426"/>
           <DOMFolderItem name="2副武器/沧蓝陨铁手炮/沧蓝陨铁手炮文件" itemID="69e7381b-00000417"/>
           <DOMFolderItem name="2副武器/短剑印花集" itemID="67225fe2-00000128"/>
@@ -137,7 +137,8 @@
           <DOMFolderItem name="2副武器/一部分武器1/武器本体/MP7极品战术版/武器本体/武器配件/瞄准镜/光学瞄准镜/ACOG" itemID="6976d55b-0000193d"/>
           <DOMFolderItem name="2副武器/一部分武器1/武器本体/MP7极品战术版/武器本体/武器配件/枪托" itemID="6976d55b-0000193e"/>
           <DOMFolderItem name="2副武器/一部分武器1/武器本体/MP7极品战术版/武器本体/武器配件/握把" itemID="6976d55b-0000193f"/>
-          <DOMFolderItem name="2副武器/狱之流火铳" itemID="6971c414-000001ac"/>
+          <DOMFolderItem name="2副武器/狱之流火铳" itemID="6971c414-000001ac" isExpanded="true"/>
+          <DOMFolderItem name="2副武器/狱之流火铳简装版" itemID="69f8209e-00000502" isExpanded="true"/>
           <DOMFolderItem name="3冷兵器" itemID="6976d739-00001ff0"/>
           <DOMFolderItem name="3冷兵器/汉剑部分" itemID="6976cccc-0000100b"/>
           <DOMFolderItem name="3冷兵器/汉剑部分/图标" itemID="660c787b-000004f7"/>
@@ -263,12 +264,12 @@
           <DOMFolderItem name="4人物服饰外观/战术JK套装/衣服图标/衣服/做的新玩意" itemID="65f51de1-00000201"/>
           <DOMFolderItem name="4人物服饰外观/战术JK套装/衣服图标/衣服/做的新玩意/战术JK套装" itemID="65f51de1-00000202"/>
           <DOMFolderItem name="4人物服饰外观/战术JK套装/衣服图标/衣服/做的新玩意/战术JK套装/联合计划服装" itemID="65f51de1-00000203"/>
-          <DOMFolderItem name="5武器特效和子弹" itemID="6976d73f-00001ff2" isExpanded="true"/>
+          <DOMFolderItem name="5武器特效和子弹" itemID="6976d73f-00001ff2"/>
           <DOMFolderItem name="5武器特效和子弹/爆炸狙击子弹" itemID="6973101c-0000005e"/>
           <DOMFolderItem name="5武器特效和子弹/爆炸狙击子弹/3.音效相关" itemID="69733068-00000e78"/>
           <DOMFolderItem name="5武器特效和子弹/爆炸狙击子弹/无AS链接" itemID="6690f257-00002761"/>
-          <DOMFolderItem name="5武器特效和子弹/冰流爆发特效" itemID="69721fdf-000001df" isExpanded="true"/>
-          <DOMFolderItem name="5武器特效和子弹/冰流爆发特效/图片" itemID="697221f2-0000044f"/>
+          <DOMFolderItem name="5武器特效和子弹/冰流爆发特效" itemID="69721fdf-000001df"/>
+          <DOMFolderItem name="5武器特效和子弹/冰流爆发特效/图片" itemID="697221f2-0000044f" isExpanded="true"/>
           <DOMFolderItem name="5武器特效和子弹/高爆子弹" itemID="662f2ed4-000021fb"/>
           <DOMFolderItem name="5武器特效和子弹/高爆子弹/爆炸" itemID="662f2edd-000021fd"/>
           <DOMFolderItem name="5武器特效和子弹/火焰爆发特效" itemID="6971c2b6-00000955" isExpanded="true"/>
@@ -654,6 +655,11 @@
           <Include href="2副武器/狱之流火铳/枪-手枪-狱之流火铳.xml" itemID="6971c409-000001ab" lastModified="1769401094"/>
           <Include href="2副武器/狱之流火铳/图标-狱之流火铳.xml" itemID="6971c406-000001aa" lastModified="1769145080"/>
           <Include href="2副武器/狱之流火铳/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="6971c5d0-00000472" lastModified="1769145070"/>
+          <Include href="2副武器/狱之流火铳简装版/流火铳.xml" itemIcon="1" loadImmediate="false" itemID="69f8207f-00000500" lastModified="1777874498"/>
+          <Include href="2副武器/狱之流火铳简装版/判定使用.xml" loadImmediate="false" itemID="69f8207f-000004ff" lastModified="1769063924"/>
+          <Include href="2副武器/狱之流火铳简装版/枪-手枪-狱之流火铳简装版.xml" itemID="69f820a5-00000505" lastModified="1777868984"/>
+          <Include href="2副武器/狱之流火铳简装版/图标-狱之流火铳简装版.xml" itemID="69f820a6-00000506" lastModified="1777869135"/>
+          <Include href="2副武器/狱之流火铳简装版/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="69f8207f-000004fd" lastModified="1777869128"/>
           <Include href="3冷兵器/汉剑部分/Symbol 13.xml" loadImmediate="false" itemID="6976cccc-00001043" lastModified="1706416154"/>
           <Include href="3冷兵器/汉剑部分/图标/Symbol 13.xml" loadImmediate="false" itemID="65f5171e-000005b0" lastModified="1769393406"/>
           <Include href="3冷兵器/汉剑部分/图标/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="65f5171e-000005ad" lastModified="1710560856"/>
@@ -1170,7 +1176,7 @@
           <Include href="5武器特效和子弹/爆炸狙击子弹/无AS链接/Symbol 429.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000006bd" lastModified="1720533000"/>
           <Include href="5武器特效和子弹/爆炸狙击子弹/小火焰爆炸.xml" itemID="69732f4b-00000781" lastModified="1769157201"/>
           <Include href="5武器特效和子弹/爆炸狙击子弹/小火焰爆炸素材.xml" itemIcon="1" loadImmediate="false" itemID="69732d7a-00000747" lastModified="1769156228"/>
-          <Include href="5武器特效和子弹/冰流爆发特效/冰流爆发.xml" itemID="69721fc4-000001dc" lastModified="1777252517"/>
+          <Include href="5武器特效和子弹/冰流爆发特效/冰流爆发.xml" itemID="69721fc4-000001dc" lastModified="1777869733"/>
           <Include href="5武器特效和子弹/冰流爆发特效/冰流爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="69721fc1-000001db" lastModified="1769086913"/>
           <Include href="5武器特效和子弹/冰流爆发特效/寒冰爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="69721f34-000001c9" lastModified="1769086959"/>
           <Include href="5武器特效和子弹/冰流爆发特效/图片/area40X40.xml" loadImmediate="false" itemID="697221f2-0000045b" lastModified="1762772154"/>
@@ -1184,8 +1190,9 @@
           <Include href="5武器特效和子弹/高爆子弹/爆炸/Symbol 1231.xml" loadImmediate="false" itemID="662f2a77-00000011" lastModified="1714395009"/>
           <Include href="5武器特效和子弹/高爆子弹/爆炸/Symbol 1234.xml" loadImmediate="false" itemID="662f2a77-00000012" lastModified="1714367025"/>
           <Include href="5武器特效和子弹/高爆子弹/爆炸/Symbol 1236.xml" loadImmediate="false" itemID="662f2a77-00000013" lastModified="1714367025"/>
-          <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发.xml" itemID="6971c15c-000008f1" lastModified="1777252481"/>
+          <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发.xml" itemID="6971c15c-000008f1" lastModified="1777869746"/>
           <Include href="5武器特效和子弹/火焰爆发特效/火焰爆发素材.xml" itemIcon="1" loadImmediate="false" itemID="6971c148-000008ef" lastModified="1769064265"/>
+          <Include href="5武器特效和子弹/火焰爆发特效/小火焰爆发.xml" itemID="69f821ba-00000597" lastModified="1777869959"/>
           <Include href="6消耗品/罐头/白米饭罐头.xml" loadImmediate="false" itemID="66a92613-0000001b" lastModified="1722405828"/>
           <Include href="6消耗品/罐头/番茄炒鸡蛋罐头.xml" loadImmediate="false" itemID="66a92607-0000001a" lastModified="1722361351"/>
           <Include href="6消耗品/罐头/图标-白米饭罐头.xml" itemID="66a9d3dc-000002cd" lastModified="1763134765"/>
@@ -1239,6 +1246,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1888977" publishTime="1777874534"/>
+          <PublishItem publishSize="1893173" publishTime="1777869829"/>
+          <PublishItem publishSize="1893168" publishTime="1777869759"/>
+          <PublishItem publishSize="1893186" publishTime="1777869358"/>
           <PublishItem publishSize="1886929" publishTime="1777252273"/>
           <PublishItem publishSize="1887029" publishTime="1777252037"/>
           <PublishItem publishSize="1886807" publishTime="1777251205"/>
@@ -1255,9 +1266,5 @@
           <PublishItem publishSize="1886964" publishTime="1777216220"/>
           <PublishItem publishSize="1886999" publishTime="1777216035"/>
           <PublishItem publishSize="1886980" publishTime="1777215950"/>
-          <PublishItem publishSize="1886882" publishTime="1777215628"/>
-          <PublishItem publishSize="1886779" publishTime="1777215569"/>
-          <PublishItem publishSize="1887986" publishTime="1777215341"/>
-          <PublishItem publishSize="1886884" publishTime="1777215092"/>
      </publishHistory>
 </DOMDocument>

@@ -307,19 +307,49 @@
       </data>
     </item>
      <item weapontype="霰弹枪">
+      <name>狱之流火铳简装版</name>
+      <displayname>狱之流火铳简装版</displayname>
+      <icon>狱之流火铳简装版</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>416750</price>
+      <description>狱之流火铳的简装版本，这把武器的原版过于“爆火”，因此才有这把简装版
+      特效效果：“热暴击”，有一定的概率可以触发热属性攻击</description>
+      <data>
+        <level>33</level>
+        <weight>8</weight>
+        <dressup>枪-手枪-狱之流火铳简装版</dressup>
+        <capacity>6</capacity>
+        <split>1</split>
+        <diffusion>5</diffusion>
+        <interval>600</interval>
+        <singleshoot>true</singleshoot>
+        <velocity>1</velocity>
+        <bullet>小火焰爆发</bullet>
+        <bulletrename>烈焰集束爆炸</bulletrename>
+        <sound>火流.wav</sound>
+        <muzzle></muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>00号鹿弹</clipname>
+        <bulletsize>80</bulletsize>
+        <power>400</power>
+        <impact>15</impact>
+        <reloadPenalty>0</reloadPenalty>
+      </data>
+       </item>
+     <item weapontype="霰弹枪">
       <name>狱之流火铳</name>
       <displayname>狱之流火铳</displayname>
       <icon>狱之流火铳</icon>
       <type>武器</type>
       <use>手枪</use>
-      <price>416750</price>
-      <description>此武器以「加持的密制突击步枪」为原型改造而来，实际上是某个武器设计者认为弹药专家的「交叉射击」火力凶悍却仅能一次性使用，实属可惜，遂以此为灵感打造此枪，让这份强劲火力得以连续施展。并且还附带一定的特殊效果
-      特效效果：“热暴击”，有40%的概率可以触发热属性攻击</description>
+      <price>750000</price>
+      <description>此武器以「加持的密制突击步枪」为原型改造而来，实际上是某个武器设计者认为弹药专家的「交叉射击」火力凶悍却仅能一次性使用，实属可惜，遂以此为灵感打造此枪，让这份强劲火力得以连续施展。</description>
       <data>
-        <level>33</level>
+        <level>43</level>
         <weight>8</weight>
         <dressup>枪-手枪-狱之流火铳</dressup>
-        <capacity>7</capacity>
+        <capacity>8</capacity>
         <split>1</split>
         <diffusion>5</diffusion>
         <interval>600</interval>
@@ -332,7 +362,7 @@
         <bullethit>火花</bullethit>
         <clipname>00号鹿弹</clipname>
         <bulletsize>80</bulletsize>
-        <power>400</power>
+        <power>700</power>
         <impact>15</impact>
         <reloadPenalty>0</reloadPenalty>
       </data>
@@ -343,13 +373,14 @@
       <icon>霜之流冰铳</icon>
       <type>武器</type>
       <use>手枪</use>
-      <price>868800</price>
-      <description>狱之流火铳的冰属性改造版本，是彻底的冰冷伤！哪怕只是没靠近都能让人“不寒而栗”！</description>
+      <price>788800</price>
+      <description>狱之流火铳的冰属性改造版本，是彻底的冰冷伤！哪怕只是没靠近都能让人“不寒而栗”！
+        顺便也解决了原来的武器问题，火力过于爆火而带来的过热问题和硝烟弥漫</description>
       <data>
-        <level>43</level>
+        <level>45</level>
         <weight>8</weight>
         <dressup>枪-手枪-霜之流冰铳</dressup>
-        <capacity>7</capacity>
+        <capacity>8</capacity>
         <split>1</split>
         <diffusion>5</diffusion>
         <interval>600</interval>
@@ -362,7 +393,7 @@
         <bullethit>火花</bullethit>
         <clipname>00号鹿弹</clipname>
         <bulletsize>80</bulletsize>
-        <power>700</power>
+        <power>800</power>
         <impact>15</impact>
         <reloadPenalty>0</reloadPenalty>
       </data>

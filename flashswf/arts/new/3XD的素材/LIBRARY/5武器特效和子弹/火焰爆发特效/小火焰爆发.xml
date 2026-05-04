@@ -1,0 +1,106 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="5武器特效和子弹/火焰爆发特效/小火焰爆发" itemID="69f821ba-00000597" linkageExportForAS="true" linkageIdentifier="小火焰爆发" lastModified="1777869959" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="小火焰爆发">
+      <layers>
+        <DOMLayer name="Script Layer" color="#CA8E4F" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// 45% 热魔法伤害（带击退），55% 物理伤害
+if (random(100) < 45) {
+	this.伤害类型 = "魔法";
+	this.魔法伤害属性 = "热";
+	this.水平击退速度 = 13;
+	this.垂直击退速度 = 2;
+} else {
+	this.伤害类型 = "物理";
+	// 如果你不想用物理，就把上面这句改成：this.伤害类型 = "魔法";
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="判定" color="#33FFFF" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="5武器特效和子弹/冰流爆发特效/图片/area40X40" name="area" centerPoint3DX="142.05" centerPoint3DY="-4.65">
+                  <matrix>
+                    <Matrix a="6.65916442871094" d="4.83143615722656" tx="-10.05" ty="-101.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.55" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="5武器特效和子弹/冰流爆发特效/图片/area40X40" name="area" centerPoint3DX="142.05" centerPoint3DY="-4.65">
+                  <matrix>
+                    <Matrix a="7.10133361816406" d="5.48271179199219" tx="-10.45" ty="-114.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="5武器特效和子弹/冰流爆发特效/图片/area40X40" name="area" selected="true" centerPoint3DX="142.05" centerPoint3DY="-4.65">
+                  <matrix>
+                    <Matrix a="7.04745483398438" d="5.48271179199219" tx="-9.3" ty="-114.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.75" y="21.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="火焰素材" color="#4FFF4F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="5武器特效和子弹/火焰爆发特效/火焰爆发素材" selected="true" symbolType="graphic" centerPoint3DX="127.35" centerPoint3DY="-8.85" loop="loop">
+                  <matrix>
+                    <Matrix a="0.42999267578125" d="0.42999267578125" tx="-92.15" ty="-132.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="221.3" y="311.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
