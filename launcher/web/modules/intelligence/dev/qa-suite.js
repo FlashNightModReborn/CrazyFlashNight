@@ -35,7 +35,7 @@ var IntelligenceHarnessQA = (function() {
                     return 'default rendered';
                 });
             }],
-            ['h5-components-render', 'H5 component tree renders without innerHTML scripts and supports redaction/hardware/surface widgets', function() {
+            ['h5-components-render', 'H5 component tree renders without innerHTML scripts and supports redaction/hardware/surface/outburst widgets', function() {
                 host.open({ itemName: '资料', value: 99, decryptLevel: 10 });
                 return waitReady(api).then(function(state) {
                     api.assertEqual(state.contentMode, 'h5', 'content mode');
@@ -44,6 +44,7 @@ var IntelligenceHarnessQA = (function() {
                     api.assert(!!document.querySelector('.intel-h5-redaction'), 'redaction component rendered');
                     api.assert(!!document.querySelector('.intel-h5-handwritten'), 'handwritten component rendered');
                     api.assert(!!document.querySelector('.intel-h5-damage-data-loss'), 'damageText token rendered');
+                    api.assert(!!document.querySelector('.intel-h5-outburst-panic'), 'outburst token rendered');
                     api.assert(!!document.querySelector('.intel-h5-surface-dirt'), 'surface mark component rendered');
                     var hardware = document.querySelector('.intel-h5-hardware');
                     api.assert(!!hardware, 'hardware component rendered');

@@ -47,6 +47,12 @@ const OUTBURST_TONES = new Set([
   'rage',
   'despair',
   'whisper',
+  'lament',
+]);
+
+const HANDWRITTEN_VOICES = new Set([
+  'neat',
+  'rough',
 ]);
 
 const COLOR_TOKENS = new Set([
@@ -233,6 +239,9 @@ function validateBlock(block, loc, errors) {
   if (block.type === 'paperStage') {
     const layout = block.layout || 'stack';
     if (!STAGE_LAYOUTS.has(layout)) errors.push(`${loc}: unknown stage layout "${layout}"`);
+  }
+  if (block.type === 'handwritten' && block.voice && !HANDWRITTEN_VOICES.has(block.voice)) {
+    errors.push(`${loc}: unknown handwritten voice "${block.voice}"`);
   }
   ['content', 'title', 'caption', 'label', 'note'].forEach((key) => {
     if (Array.isArray(block[key])) validateInlineArray(block[key], `${loc}.${key}`, errors);

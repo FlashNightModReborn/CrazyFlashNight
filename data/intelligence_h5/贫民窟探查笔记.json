@@ -7,12 +7,9 @@
       "pageKey": "1_1",
       "blocks": [
         {
-          "type": "paragraph",
+          "type": "note",
           "content": [
-            {
-              "type": "text",
-              "text": "（沾满污渍的笔记本，字迹透着疲惫）"
-            }
+            { "type": "text", "text": "（沾满污渍的笔记本，字迹透着疲惫）" }
           ]
         },
         {
@@ -21,53 +18,28 @@
           "content": [
             {
               "type": "strong",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "【日志 - Day 1】"
-                }
-              ]
+              "content": [{ "type": "text", "text": "【日志 - Day 1】" }]
             }
           ]
         },
         {
           "type": "paragraph",
           "content": [
+            { "type": "text", "text": "雇主：Shop Girl。任务：查异常。\n跟来了十几个公社的娃娃，只有我和老周带了正经家伙。" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            { "type": "text", "text": "这帮人不行。拿土枪，背罐头。\n讲了队形，没人听。" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
             {
-              "type": "text",
-              "text": "雇主：Shop Girl。任务：查异常。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "跟来了十几个公社的娃娃，只有我和老周带了正经家伙。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "这帮人不行。拿土枪，背罐头。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "讲了队形，没人听。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "这活接亏了。"
+              "type": "strong",
+              "content": [{ "type": "text", "text": "这活接亏了。" }]
             }
           ]
         }
@@ -82,62 +54,26 @@
           "content": [
             {
               "type": "strong",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "【日志 - Day 1 夜】"
-                }
-              ]
+              "content": [{ "type": "text", "text": "【日志 - Day 1 夜】" }]
             }
           ]
         },
         {
           "type": "paragraph",
           "content": [
-            {
-              "type": "text",
-              "text": "太安静。地上全是碎骨。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "墙根有抓痕，很低。老周说是狗，随他吧。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "进三区看见了。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "丧尸挣扎着折断膝盖，四肢着地。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "速度很快。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "菜鸟们乱开枪，全打空了。"
-            }
+            { "type": "text", "text": "太安静。地上全是碎骨。\n墙根有抓痕，很低。老周说是狗，随他吧。" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            { "type": "text", "text": "进三区——看见了。" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            { "type": "text", "text": "丧尸挣扎着折断膝盖，四肢着地。\n速度很快。\n菜鸟们乱开枪，全打空了。" }
           ]
         }
       ]
@@ -151,54 +87,32 @@
           "content": [
             {
               "type": "strong",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "【日志 - Day 2】"
-                }
-              ]
+              "content": [{ "type": "text", "text": "【日志 - Day 2】" }]
             }
           ]
         },
         {
           "type": "paragraph",
           "content": [
+            { "type": "text", "text": "「" },
             {
-              "type": "text",
-              "text": "四脚怪很多。专咬落单的。"
+              "type": "colorToken",
+              "token": "biohazard",
+              "content": [{ "type": "text", "text": "四脚怪" }]
             },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "队伍散了。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "枪毙了一个藏咬伤的。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "大家都不说话了。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "退路没了，只能往前走。"
-            }
+            { "type": "text", "text": "」很多。专咬落单的。\n队伍散了。" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            { "type": "text", "text": "枪毙了一个藏咬伤的。\n大家都不说话了。" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            { "type": "text", "text": "退路没了，只能往前走。" }
           ]
         }
       ]
@@ -212,52 +126,28 @@
           "content": [
             {
               "type": "strong",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "【日志 - Day 2 续】"
-                }
-              ]
+              "content": [{ "type": "text", "text": "【日志 - Day 2 续】" }]
             }
           ]
         },
         {
           "type": "paragraph",
           "content": [
+            { "type": "text", "text": "跑不动路，丢了辎重。\n留了几个箱子。" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            { "type": "text", "text": "老周说用活人当诱饵。\n我没同意。收钱办事，得讲规矩。" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
             {
-              "type": "text",
-              "text": "跑不动路，丢了辎重。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "留了几个箱子。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "老周说用活人当诱饵。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "我没同意。收钱办事，得讲规矩。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
+              "type": "outburst",
+              "tone": "despair",
               "text": "干他娘，也许他是对的。"
             }
           ]
@@ -273,12 +163,7 @@
           "content": [
             {
               "type": "strong",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "【日志 - Day 3】"
-                }
-              ]
+              "content": [{ "type": "text", "text": "【日志 - Day 3】" }]
             }
           ]
         },
@@ -286,40 +171,41 @@
           "type": "paragraph",
           "content": [
             {
-              "type": "text",
+              "type": "outburst",
+              "tone": "panic",
               "text": "尸潮。"
-            },
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            { "type": "text", "text": "防线崩了。老周不见了。" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            { "type": "text", "text": "那些" },
             {
-              "type": "text",
-              "text": "\n"
+              "type": "colorToken",
+              "token": "biohazard",
+              "content": [{ "type": "text", "text": "爬行的东西" }]
             },
+            { "type": "text", "text": "在赶尸群。\n像" },
             {
-              "type": "text",
-              "text": "防线崩了。老周不见了。"
+              "type": "strong",
+              "content": [{ "type": "text", "text": "牧羊" }]
             },
+            { "type": "text", "text": "。" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
             {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "那些爬行的东西在赶尸群。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "像牧羊。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "这里是巢穴。"
+              "type": "strong",
+              "content": [{ "type": "text", "text": "这里是巢穴。" }]
             }
           ]
         }
@@ -334,54 +220,53 @@
           "content": [
             {
               "type": "strong",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "【日志 - 终】"
-                }
-              ]
+              "content": [{ "type": "text", "text": "【日志 - 终】" }]
             }
           ]
         },
         {
           "type": "paragraph",
           "content": [
+            { "type": "text", "text": "腿断了。躲在出口边。" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            { "type": "text", "text": "谁捡到箱子归谁。" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
             {
-              "type": "text",
-              "text": "腿断了。躲在出口边。"
+              "type": "colorToken",
+              "token": "biohazard",
+              "content": [{ "type": "text", "text": "丧尸在进化" }]
             },
+            { "type": "text", "text": "。" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
             {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "谁捡到箱子归谁。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
-              "text": "丧尸在进化。"
-            },
-            {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
+              "type": "outburst",
+              "tone": "whisper",
               "text": "别派人来了。"
             },
+            { "type": "text", "text": "  " },
             {
-              "type": "text",
-              "text": "\n"
-            },
-            {
-              "type": "text",
+              "type": "outburst",
+              "tone": "whisper",
               "text": "烧了吧。"
             }
+          ]
+        },
+        {
+          "type": "stamp",
+          "content": [
+            { "type": "text", "text": "笔记终止 · 焚毁建议" }
           ]
         }
       ]

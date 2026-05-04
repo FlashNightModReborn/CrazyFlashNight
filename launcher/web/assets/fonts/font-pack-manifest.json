@@ -41,12 +41,24 @@
         },
         "expressive-handwriting": {
             "label": "手写字体矩阵",
-            "description": "私人批注 / 标题手写 / 失控短句。Klee One 走 note，Ma Shan Zheng / Zhi Mang Xing 做大字标题，Liu Jian Mao Cao 做 outburst inline 节点的戏剧性短句。",
+            "description": "中文私人批注 / 标题手写 / 失控短句。猫啃硬笔楷书做 note 主选（GB2312 全字符简中覆盖），Ma Shan Zheng / Zhi Mang Xing 做大字标题，Liu Jian Mao Cao 做 outburst inline 节点的戏剧性短句。Klee One 保留作日文场景备用，已从 --intel-font-note 链移除。",
             "totalBytes": 0,
             "files": [
                 {
+                    "name": "maoken-yingbi-kaishu.ttf",
+                    "label": "猫啃硬笔楷书 v0.20（中文 note 主选 / diary 全文 / 私人手记）",
+                    "license": "SIL-OFL-1.1",
+                    "bytes": 6394236,
+                    "sha256": "68fb84b7a7eb2c1ffab59e7b75c90176c95bc1a078c4a1f66bd516c60ac75e1a",
+                    "urls": [
+                        "https://cdn.jsdelivr.net/gh/maoken-fonts/MaokenYingBiKaiShuJ@main/MaokenYingBiKaiShuJ_0.20.ttf",
+                        "https://github.com/maoken-fonts/MaokenYingBiKaiShuJ/raw/main/MaokenYingBiKaiShuJ_0.20.ttf"
+                    ],
+                    "shippedFallback": false
+                },
+                {
                     "name": "klee-one-regular.ttf",
-                    "label": "Klee One Regular（私人批注 / dossier note 朱印 / diary 全文）",
+                    "label": "Klee One Regular（日文场景备用——简中字符覆盖不全，已从 --intel-font-note 链中移除）",
                     "license": "SIL-OFL-1.1",
                     "bytes": 8724204,
                     "sha256": "bf4063f030cc2ae6adf0a11424a1888e5c0eb4438f1f6d02f52294af868e9b3a",
@@ -77,6 +89,42 @@
                     "urls": [
                         "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/zhimangxing/ZhiMangXing-Regular.ttf",
                         "https://github.com/google/fonts/raw/main/ofl/zhimangxing/ZhiMangXing-Regular.ttf"
+                    ],
+                    "shippedFallback": false
+                },
+                {
+                    "name": "jason-handwriting-7.ttf",
+                    "label": "清松手写体 7 号 飘逸（情绪极性 / outburst lament 哀痛 / 临终独白 / --intel-font-emotional）",
+                    "license": "SIL-OFL-1.1",
+                    "bytes": 9254640,
+                    "sha256": "415a3b569ae977de87377a892f250e53c8d12139e0f47ef7cadd8a8a359c288e",
+                    "urls": [
+                        "https://cdn.jsdelivr.net/gh/jasonhandwriting/JasonHandwriting@master/JasonHandwriting7.ttf",
+                        "https://github.com/jasonhandwriting/JasonHandwriting/raw/master/JasonHandwriting7.ttf"
+                    ],
+                    "shippedFallback": false
+                },
+                {
+                    "name": "jason-handwriting-1.ttf",
+                    "label": "清松手写体 1 号 圆体（neat 端正商务 / 文员/雇主笔迹 / --intel-font-character-neat）",
+                    "license": "SIL-OFL-1.1",
+                    "bytes": 8921060,
+                    "sha256": "de76a15b1e2c1a7050d061485e28195f5b682d45e37499cf730c2b8554c44cf3",
+                    "urls": [
+                        "https://cdn.jsdelivr.net/gh/jasonhandwriting/JasonHandwriting@master/JasonHandwriting1.ttf",
+                        "https://github.com/jasonhandwriting/JasonHandwriting/raw/master/JasonHandwriting1.ttf"
+                    ],
+                    "shippedFallback": false
+                },
+                {
+                    "name": "jason-handwriting-8.ttf",
+                    "label": "清松手写体 8 号 Casual（rough 随性匆忙 / 雇佣兵/盗贼笔迹 / --intel-font-character-rough）",
+                    "license": "SIL-OFL-1.1",
+                    "bytes": 8030664,
+                    "sha256": "1437de4a5fee29a5c6b43450df56e734af9cddb5b3a68d236cf5f42be178c93f",
+                    "urls": [
+                        "https://cdn.jsdelivr.net/gh/jasonhandwriting/JasonHandwriting@master/JasonHandwriting8.ttf",
+                        "https://github.com/jasonhandwriting/JasonHandwriting/raw/master/JasonHandwriting8.ttf"
                     ],
                     "shippedFallback": false
                 },

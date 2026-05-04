@@ -45,7 +45,13 @@ var IntelligenceComponentRenderer = (function() {
         panic: true,
         rage: true,
         despair: true,
-        whisper: true
+        whisper: true,
+        lament: true
+    };
+
+    var HANDWRITTEN_VOICES = {
+        neat: true,
+        rough: true
     };
 
     var _revealLayer = null;
@@ -229,7 +235,11 @@ var IntelligenceComponentRenderer = (function() {
 
     function renderHandwritten(block, context) {
         var el = document.createElement('aside');
-        el.className = 'intel-h5-handwritten intel-h5-handwritten-' + safeClass(block.tone || 'red');
+        var classes = ['intel-h5-handwritten', 'intel-h5-handwritten-' + safeClass(block.tone || 'red')];
+        if (block.voice && HANDWRITTEN_VOICES[block.voice]) {
+            classes.push('intel-h5-handwritten-voice-' + safeClass(block.voice));
+        }
+        el.className = classes.join(' ');
         appendInline(el, block.content || block.note || [], context);
         return el;
     }

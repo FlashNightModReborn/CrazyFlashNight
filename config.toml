@@ -40,7 +40,7 @@ devGpuProbeHotkey = false
 # Native HUD（Panel-Only 架构 + NotchOverlay/ToastOverlay/RightContextWidget/ComboWidget 接管 web HUD）。
 # 默认 false（仍以 web 渲染为主路径）；true = 启用 C# native HUD + panel host controller。
 # 详见 launcher/README.md「useNativeHud=true」段；env: CF7_NATIVE_HUD=1 一次性覆盖。
-useNativeHud = false
+useNativeHud = true
 
 # Desktop 顶层 ULW cursor（默认 true，2026-05 推 default-on）。
 # true  = DesktopCursorOverlay：scale 跟 GuardianForm.ClientSize（窗口级），跨 anchor 自由

@@ -10,13 +10,17 @@
 |---|---|---|---|---|---|
 | `jetbrains-mono.woff2` | JetBrains Mono Regular | terminal skin / mask=mojibake 字形 / `--intel-font-mono` | 92 KB | Apache 2.0 | `essential`（shipped） |
 | `lxgw-wenkai-screen.ttf` | 霞鹜文楷 Screen v1.522 | dossier 朱印 / field-notes 批注 / diary 全文 / mask=garble & symbol 罕用 CJK / `--intel-font-body` | 24.5 MB | SIL OFL 1.1 | `expressive` |
-| `klee-one-regular.ttf` | Klee One Regular | 私人批注 / dossier note / diary 全文 / `--intel-font-note` | 8.3 MB | SIL OFL 1.1 | `expressive-handwriting` |
+| `maoken-yingbi-kaishu.ttf` | 猫啃硬笔楷书 v0.20 | 中文 note 主选 / diary 全文 / 私人手记 / `--intel-font-note` 主选 | 6.1 MB | SIL OFL 1.1 | `expressive-handwriting` |
+| `klee-one-regular.ttf` | Klee One Regular | 日文场景备用——简中字符覆盖不全（per-char fallback 漏字），已从 `--intel-font-note` 链移除 | 8.3 MB | SIL OFL 1.1 | `expressive-handwriting` |
 | `ma-shan-zheng-regular.ttf` | Ma Shan Zheng Regular | 标题手写 / 戏剧性大字 / `--intel-font-title` 主选 | 5.6 MB | SIL OFL 1.1 | `expressive-handwriting` |
 | `zhi-mang-xing-regular.ttf` | Zhi Mang Xing Regular | 标题随性手写 / `--intel-font-title` fallback | 3.9 MB | SIL OFL 1.1 | `expressive-handwriting` |
 | `liu-jian-mao-cao-regular.ttf` | Liu Jian Mao Cao Regular | 失控短句 / outburst 戏剧草书 / `--intel-font-outburst` | 4.7 MB | SIL OFL 1.1 | `expressive-handwriting` |
+| `jason-handwriting-7.ttf` | 清松手写体 7 号 飘逸 | 哀痛情绪 / outburst lament tone / 临终遗言 / `--intel-font-emotional` | 8.8 MB | SIL OFL 1.1 | `expressive-handwriting` |
+| `jason-handwriting-1.ttf` | 清松手写体 1 号 圆体 | NPC 笔迹差异化 / handwritten voice="neat" / Shop Girl 类商务文员 / `--intel-font-character-neat` | 8.5 MB | SIL OFL 1.1 | `expressive-handwriting` |
+| `jason-handwriting-8.ttf` | 清松手写体 8 号 Casual | NPC 笔迹差异化 / handwritten voice="rough" / 老周/盗贼/雇佣兵 / `--intel-font-character-rough` | 7.7 MB | SIL OFL 1.1 | `expressive-handwriting` |
 | `source-han-serif-cn-regular.otf` | Source Han Serif CN Regular（思源宋体） | dossier / 官方资料集 / 中立编纂 / `--intel-font-archive` | 11.1 MB | SIL OFL 1.1 | `expressive-archive` |
 
-**Group 总量**：essential 92 KB（shipped）+ expressive 24.5 MB + expressive-handwriting 22.5 MB + expressive-archive 11.1 MB ≈ **58 MB 全矩阵**
+**Group 总量**：essential 92 KB（shipped）+ expressive 24.5 MB + expressive-handwriting 53.6 MB（猫啃 6.1 + 清松1 8.5 + 清松7 8.8 + 清松8 7.7 + 4 旧字 22.5）+ expressive-archive 11.1 MB ≈ **89 MB 全矩阵**
 
 ## CSS 角色绑定
 
@@ -25,9 +29,12 @@
 ```css
 --intel-font-body:     'LXGW WenKai Screen', 'LXGW WenKai', 'STKaiti', '楷体', 'KaiTi', serif;
 --intel-font-title:    'Ma Shan Zheng', 'Zhi Mang Xing', 'STKaiti', '楷体', 'KaiTi', serif;
---intel-font-note:     'Klee One', 'LXGW WenKai Screen', 'STKaiti', '楷体', 'KaiTi', serif;
+--intel-font-note:     'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', 'KaiTi', serif;
 --intel-font-outburst: 'Liu Jian Mao Cao', 'Ma Shan Zheng', 'STKaiti', '楷体', 'KaiTi', serif;
+--intel-font-emotional:'JasonHandwriting7', 'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', serif;
 --intel-font-archive:  'Source Han Serif CN', 'Source Han Serif SC', 'Noto Serif CJK SC', 'SimSun', '宋体', serif;
+--intel-font-character-neat:  'JasonHandwriting1', 'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', serif;
+--intel-font-character-rough: 'JasonHandwriting8', 'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', serif;
 --intel-font-mono:     'JetBrains Mono', Consolas, 'Courier New', monospace;
 ```
 

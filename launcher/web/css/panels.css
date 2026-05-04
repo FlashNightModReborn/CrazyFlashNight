@@ -31,6 +31,15 @@
    这些 @font-face 仅在用户安装了对应字体包后才能加载到字形；未安装时通过下方 --intel-font-* 链
    降级到系统字体（STKaiti / SimSun 等）。
    src URL 走 cfn-fonts.local 虚拟主机；FontPackTask 把 %LOCALAPPDATA%/CF7FlashNight/fonts/ 映射进去。 */
+/* 猫啃硬笔楷书 v0.20——中文 note 主选。Klee One 是日文字体对简中字符覆盖不全
+   会触发 per-character fallback；猫啃覆盖 GB/T 2312-80 全 6763 字，简中无 fallback 漏字。 */
+@font-face {
+    font-family: 'MaokenYingBiKaiShuJ';
+    src: url('https://cfn-fonts.local/maoken-yingbi-kaishu.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
 @font-face {
     font-family: 'Klee One';
     src: url('https://cfn-fonts.local/klee-one-regular.ttf') format('truetype');
@@ -59,6 +68,32 @@
     font-style: normal;
     font-display: swap;
 }
+/* 清松手写体 7 号 飘逸——情绪极性 / 哀痛感 / 临终独白；
+   简繁双覆盖 cmap 10380，专给 outburst lament tone 用。 */
+@font-face {
+    font-family: 'JasonHandwriting7';
+    src: url('https://cfn-fonts.local/jason-handwriting-7.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+/* 清松手写体 1 号 圆体——neat 端正商务，文员/雇主笔迹（Shop Girl 风格）；
+   清松手写体 8 号 Casual——rough 随性匆忙，雇佣兵/盗贼笔迹（老周/盗贼风格）。
+   两者都简繁双覆盖（JH1 cmap 11014，JH8 cmap 9461）。 */
+@font-face {
+    font-family: 'JasonHandwriting1';
+    src: url('https://cfn-fonts.local/jason-handwriting-1.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'JasonHandwriting8';
+    src: url('https://cfn-fonts.local/jason-handwriting-8.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
 @font-face {
     font-family: 'Source Han Serif CN';
     src: url('https://cfn-fonts.local/source-han-serif-cn-regular.otf') format('opentype');
@@ -72,9 +107,12 @@
 :root {
     --intel-font-body:     'LXGW WenKai Screen', 'LXGW WenKai', 'STKaiti', '楷体', 'KaiTi', serif;
     --intel-font-title:    'Ma Shan Zheng', 'Zhi Mang Xing', 'STKaiti', '楷体', 'KaiTi', serif;
-    --intel-font-note:     'Klee One', 'LXGW WenKai Screen', 'STKaiti', '楷体', 'KaiTi', serif;
+    --intel-font-note:     'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', 'KaiTi', serif;
     --intel-font-outburst: 'Liu Jian Mao Cao', 'Ma Shan Zheng', 'STKaiti', '楷体', 'KaiTi', serif;
+    --intel-font-emotional:'JasonHandwriting7', 'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', serif;
     --intel-font-archive:  'Source Han Serif CN', 'Source Han Serif SC', 'Noto Serif CJK SC', 'SimSun', '宋体', serif;
+    --intel-font-character-neat:  'JasonHandwriting1', 'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', serif;
+    --intel-font-character-rough: 'JasonHandwriting8', 'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', serif;
     --intel-font-mono:     'JetBrains Mono', Consolas, 'Courier New', monospace;
 }
 
@@ -6998,12 +7036,35 @@ html.perf-low-effects .map-stage-backdrop::before {
 }
 
 /* diary skin：手写日记体，无装饰
-   走 --intel-font-note（Klee One 私人手写）让全篇日记一致的"个人手记"质感。 */
+   走 --intel-font-note（Klee One 私人手写）让全篇日记一致的"个人手记"质感。
+   heading / list / handwritten 等同样要 override——日期标题和正文是同一只手写的，
+   不能 heading 走 Ma Shan Zheng 而 body 走 Klee One，那是两个人的笔迹。 */
 .intel-content[data-skin="diary"] .intel-h5-note,
 .intel-content[data-skin="diary"] .intel-h5-p,
-.intel-content[data-skin="diary"] .intel-h5-quote {
+.intel-content[data-skin="diary"] .intel-h5-quote,
+.intel-content[data-skin="diary"] .intel-h5-heading,
+.intel-content[data-skin="diary"] .intel-h5-handwritten,
+.intel-content[data-skin="diary"] .intel-h5-stamp,
+.intel-content[data-skin="diary"] li,
+.intel-content[data-skin="diary"] td,
+.intel-content[data-skin="diary"] th {
     font-family: var(--intel-font-note);
     letter-spacing: 0.02em;
+}
+/* diary heading 弱化"印刷感"——还原"同一支笔写大一号字"的视觉，
+   保留 weight + size 区分层级，但不上 Ma Shan Zheng 的毛笔气场。 */
+.intel-content[data-skin="diary"] .intel-h5-heading {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+/* field-notes skin：纸条上的"实地手写"，body 是 LXGW WenKai；
+   heading / list 等同步——同一只手写在笔记本上的标题与正文。 */
+.intel-content[data-skin="field-notes"] .intel-h5-heading,
+.intel-content[data-skin="field-notes"] .intel-h5-stamp {
+    font-family: var(--intel-font-body);
+    font-weight: 700;
+    letter-spacing: 0.04em;
 }
 
 .intel-h5-quote {
@@ -7042,6 +7103,22 @@ html.perf-low-effects .map-stage-backdrop::before {
     color: #8f1e1e;
 }
 
+/* voice 维度（character handwriting differentiation）：
+   不同 NPC/PC 的笔迹差异。tone 决定颜色（red/dark/blue），voice 决定字体形态。
+   两者正交可叠加：voice="rough" + tone="dark" = 雇佣兵的暗色匆忙草记。
+   未指定 voice 时继承所在 skin 的默认 --intel-font-note（猫啃硬笔楷书）—— PC 默认笔迹。 */
+.intel-h5-handwritten-voice-neat {
+    font-family: var(--intel-font-character-neat);
+    /* 端正商务感：略小字距，clean line */
+    letter-spacing: 0.02em;
+}
+.intel-h5-handwritten-voice-rough {
+    font-family: var(--intel-font-character-rough);
+    /* 随性匆忙：拉大字距 + 浅旋转 */
+    letter-spacing: 0.04em;
+    transform: rotate(-0.6deg);
+}
+
 .intel-h5-stamp {
     display: inline-block;
     margin: 0 0 10px;
@@ -7053,15 +7130,19 @@ html.perf-low-effects .map-stage-backdrop::before {
     letter-spacing: 0.08em;
 }
 
-/* outburst：失控短句的戏剧性 inline 节点。两条字体轴：
-   - panic / rage / despair：Ma Shan Zheng（手写但可读），叙事高峰需要"被听到"
-   - whisper：Liu Jian Mao Cao（草书，刻意的不可读）——"听不清"本身就是叙事意图
+/* outburst：失控短句的戏剧性 inline 节点。
+   ★字体规则：默认 inherit ——继承所在 skin/block 的"写作者之手"，让情绪通过
+     size/color/transform/text-shadow 表达，而不是换一种字体（diary/field-notes
+     是同一个人在写，换字体会出戏）。
+   ★例外：whisper 走 Liu Jian Mao Cao 草书——"同一只手开始失控/草化"，
+     "听不清"语义跨 skin 通用。
+   ★例外：dossier skin 是档案排版，outburst 是被收纳的"印刷强调/标题感"，override 走 Ma Shan Zheng。
    单句 ≤ 12 字最有冲击力，不要长段落用。 */
 .intel-h5-outburst {
     display: inline-block;
     padding: 0 4px;
-    font-family: var(--intel-font-title);
-    font-size: 1.22em;
+    font-family: inherit;
+    font-size: 1.32em;
     line-height: 1.15;
     letter-spacing: 0.02em;
     vertical-align: baseline;
@@ -7070,29 +7151,58 @@ html.perf-low-effects .map-stage-backdrop::before {
 }
 .intel-h5-outburst-panic {
     color: #b81818;
-    text-shadow: 0 0 1px rgba(184, 24, 24, 0.4);
+    /* 双层 text-shadow 当伪 bold（Klee One/LXGW 都只有 Regular 无重粗体） */
+    text-shadow:
+        0 0 0.5px rgba(184, 24, 24, 0.85),
+        0 0 1px rgba(184, 24, 24, 0.45);
 }
 .intel-h5-outburst-rage {
     color: #6c0a0a;
-    font-weight: 900;
-    transform: rotate(-2deg) scale(1.04);
-    letter-spacing: 0.04em;
+    font-size: 1.45em;
+    /* 三层 shadow + scale 强化"重笔/狂草未到草书"质感 */
+    text-shadow:
+        0 0 0.4px rgba(108, 10, 10, 0.95),
+        0 0 0.8px rgba(108, 10, 10, 0.75),
+        0 1px 0 rgba(108, 10, 10, 0.4);
+    transform: rotate(-2.2deg) scale(1.04);
+    letter-spacing: 0.05em;
 }
 .intel-h5-outburst-despair {
     color: #2a2a32;
-    opacity: 0.78;
+    opacity: 0.72;
+    font-size: 1.18em;
     transform: rotate(-0.4deg) skewX(-3deg);
-    filter: blur(0.2px);
+    filter: blur(0.25px);
+    letter-spacing: 0.04em;
 }
-/* whisper 是唯一保留草书的 tone：听不清/记不全/最后一缕话的视觉化。
-   font-family override 必须比基础 .intel-h5-outburst 后置才生效。 */
+/* whisper：唯一字体例外——同一只手草化失控，听不清/记不全/最后一缕话的视觉化 */
 .intel-h5-outburst-whisper {
     color: #4a4a4a;
-    opacity: 0.62;
+    opacity: 0.6;
     font-family: var(--intel-font-outburst);
-    font-size: 1.16em;
-    letter-spacing: 0.08em;
+    font-size: 1.22em;
+    letter-spacing: 0.1em;
     transform: rotate(-0.6deg);
+}
+/* lament：哀痛的明确 register shift——不是失控（panic/rage），不是失语（whisper），
+   是在叙事高峰前停下来用清松手写7号"飘逸"字体把哀恸写下来。
+   明确地用情绪字体（同一支笔的"另一种心情"），跟普通 outburst 拉开距离。
+   适合：临终遗言段、人物告别、悲剧定格、宿命陈述。 */
+.intel-h5-outburst-lament {
+    color: #4a3530;
+    font-family: var(--intel-font-emotional);
+    font-size: 1.34em;
+    line-height: 1.3;
+    letter-spacing: 0.06em;
+    opacity: 0.92;
+    transform: rotate(-0.4deg);
+}
+
+/* dossier skin：档案排版里 outburst 是被收纳/印刷强调的"标题感"（如转录的咒骂、
+   印章式短句），用 Ma Shan Zheng 而不是档案宋体——让"原话"质感跳出中立编纂。
+   whisper 仍然走草书（语义跨 skin 一致）。 */
+.intel-content[data-skin="dossier"] .intel-h5-outburst:not(.intel-h5-outburst-whisper) {
+    font-family: var(--intel-font-title);
 }
 
 .intel-h5-stamp-danger { color: #a01818; }

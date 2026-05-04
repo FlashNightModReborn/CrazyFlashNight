@@ -97,7 +97,12 @@ namespace CF7Launcher.Tasks
 
         private static readonly HashSet<string> H5OutburstTones = new HashSet<string>(StringComparer.Ordinal)
         {
-            "panic", "rage", "despair", "whisper"
+            "panic", "rage", "despair", "whisper", "lament"
+        };
+
+        private static readonly HashSet<string> H5HandwrittenVoices = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "neat", "rough"
         };
 
         private static readonly HashSet<string> H5ColorTokens = new HashSet<string>(StringComparer.Ordinal)
@@ -925,6 +930,18 @@ namespace CF7Launcher.Tasks
                 {
                     error = "h5_unknown_stage_layout";
                     return false;
+                }
+            }
+            if (type == "handwritten")
+            {
+                JToken voiceToken = obj["voice"];
+                if (voiceToken != null && voiceToken.Type == JTokenType.String)
+                {
+                    if (!H5HandwrittenVoices.Contains(voiceToken.ToString()))
+                    {
+                        error = "h5_unknown_handwritten_voice";
+                        return false;
+                    }
                 }
             }
 
