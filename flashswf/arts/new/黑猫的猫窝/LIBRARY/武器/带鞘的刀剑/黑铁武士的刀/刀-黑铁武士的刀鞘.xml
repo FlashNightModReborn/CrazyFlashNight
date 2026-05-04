@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/带鞘的刀剑/黑铁武士的刀/刀-黑铁武士的刀鞘" itemID="69f02dfe-00000885" linkageExportForAS="true" linkageIdentifier="刀-黑铁武士的刀鞘" lastModified="1777491011" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="武器/带鞘的刀剑/黑铁武士的刀/刀-黑铁武士的刀鞘" itemID="69f02dfe-00000885" linkageExportForAS="true" linkageIdentifier="刀-黑铁武士的刀鞘" lastModified="1777829156" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="刀-黑铁武士的刀鞘" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -6,25 +6,25 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="15.45" centerPoint3DY="-15.6">
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="7.1" centerPoint3DY="-21.3">
                   <matrix>
-                    <Matrix a="-1.95556640625" b="-0.103042602539063" c="-0.356094360351563" d="6.75830078125" tx="34" ty="-32.8"/>
+                    <Matrix a="-1.956298828125" b="-0.087799072265625" c="-0.3106689453125" d="6.92314147949219" tx="24.75" ty="-37.55"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="12.55"/>
+                    <Point x="12.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" selected="true" centerPoint3DX="8.2" centerPoint3DY="156.05">
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="3.8" centerPoint3DY="160.2">
                   <matrix>
-                    <Matrix a="-1.4022216796875" b="0.0360107421875" c="0.173797607421875" d="6.76544189453125" tx="18.15" ty="134.2"/>
+                    <Matrix a="-1.40190124511719" b="0.0469512939453125" c="0.226547241210938" d="6.76387023925781" tx="13.2" ty="134.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.5" y="0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="14.4" centerPoint3DY="326.15">
+                <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置3" centerPoint3DX="11.05" centerPoint3DY="330.35">
                   <matrix>
-                    <Matrix a="-1.32135009765625" b="0.149658203125" c="0.691970825195313" d="6.10850524902344" tx="21.55" ty="299.4"/>
+                    <Matrix a="-1.32014465332031" b="0.159957885742188" c="0.841644287109375" d="6.94512939453125" tx="17.9" ty="302.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.5" y="-0.05"/>
@@ -38,9 +38,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/黑铁武士的刀/黑铁武士的刀鞘图形" symbolType="graphic" centerPoint3DX="10" centerPoint3DY="217.75" loop="loop">
+                <DOMSymbolInstance libraryItemName="武器/带鞘的刀剑/黑铁武士的刀/黑铁武士的刀鞘图形" symbolType="graphic" centerPoint3DX="5.7" centerPoint3DY="218.85" loop="loop">
                   <matrix>
-                    <Matrix a="0.0140838623046875" b="-1.04985046386719" c="-1.04985046386719" d="-0.0140838623046875" tx="32" ty="472.7"/>
+                    <Matrix a="0.0059051513671875" b="-1.0499267578125" c="-1.0499267578125" d="-0.0059051513671875" tx="29.7" ty="472.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
