@@ -27,7 +27,7 @@
           '<span class="qq">562130873</span><span class="b">（将满）</span>、' +
           '<span class="qq">149188029</span><span class="b">（将满）</span>、' +
           '<span class="qq">307710279</span>' +
-          ' 参与讨论，关注 B 站账号 <span class="qq">黑月雾人</span> 与 <span class="qq">无名氏的低谷</span> 获取最新信息。</p>' +
+          ' 参与讨论，关注 B 站账号 <span class="qq">黑月雾人</span>  /  <span class="qq">无名的低谷</span>  / <span class="qq">crazyfs</span> 获取最新信息。</p>' +
         '<h3 style="margin-top:18px">AUDIO</h3>' +
         '<div class="audio-toggles">' +
           '<label class="audio-toggle"><input type="checkbox" id="about-sfx"' + (sfxOn ? ' checked' : '') + '> <span>UI 音效 · hover / click / confirm / error</span></label>' +
