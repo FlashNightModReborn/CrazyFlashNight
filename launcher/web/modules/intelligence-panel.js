@@ -414,6 +414,11 @@ var IntelligencePanel = (function() {
         _refs.progress.textContent = (_snapshot.value || 0) + ' / ' + (_snapshot.maxValue || 0);
         _refs.content.setAttribute('data-content-mode', _snapshot.contentMode || 'legacy');
         _refs.content.setAttribute('data-skin', _snapshot.skin || 'paper');
+        if (_snapshot.writerVoice) {
+            _refs.content.setAttribute('data-writer-voice', _snapshot.writerVoice);
+        } else {
+            _refs.content.removeAttribute('data-writer-voice');
+        }
         renderIcon();
         renderCatalogPanel();
         renderPageList();

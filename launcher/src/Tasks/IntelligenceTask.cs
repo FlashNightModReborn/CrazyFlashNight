@@ -53,6 +53,7 @@ namespace CF7Launcher.Tasks
         private sealed class H5Document
         {
             public string Skin;
+            public string WriterVoice;
             public readonly Dictionary<string, JArray> Pages = new Dictionary<string, JArray>();
         }
 
@@ -102,7 +103,12 @@ namespace CF7Launcher.Tasks
 
         private static readonly HashSet<string> H5HandwrittenVoices = new HashSet<string>(StringComparer.Ordinal)
         {
-            "neat", "rough"
+            "neat", "rough", "plain", "weary"
+        };
+
+        private static readonly HashSet<string> H5NoteTones = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "archive", "stagecraft"
         };
 
         private static readonly HashSet<string> H5ColorTokens = new HashSet<string>(StringComparer.Ordinal)
@@ -134,7 +140,7 @@ namespace CF7Launcher.Tasks
 
         private static readonly HashSet<string> H5SurfaceVariants = new HashSet<string>(StringComparer.Ordinal)
         {
-            "dirt", "water", "blood-hand", "fold", "tear"
+            "dirt", "water", "blood-hand", "fold", "tear", "soot"
         };
 
         private static readonly HashSet<string> H5DamageKinds = new HashSet<string>(StringComparer.Ordinal)
@@ -470,6 +476,7 @@ namespace CF7Launcher.Tasks
             resp["pcName"] = payload["pcName"];
             resp["contentMode"] = payload["contentMode"];
             if (payload["skin"] != null) resp["skin"] = payload["skin"];
+            if (payload["writerVoice"] != null) resp["writerVoice"] = payload["writerVoice"];
             resp["pages"] = payload["pages"];
             resp["encryptRules"] = payload["encryptRules"];
 
@@ -505,7 +512,11 @@ namespace CF7Launcher.Tasks
             obj["pcName"] = pcName;
             obj["contentMode"] = useH5 ? "h5" : "legacy";
             if (useH5)
+            {
                 obj["skin"] = h5Doc.Skin;
+                if (!string.IsNullOrEmpty(h5Doc.WriterVoice))
+                    obj["writerVoice"] = h5Doc.WriterVoice;
+            }
             if (!string.IsNullOrEmpty(h5Error) && IsH5Strict())
                 obj["textError"] = h5Error;
             else if (!string.IsNullOrEmpty(textError))
@@ -787,6 +798,13 @@ namespace CF7Launcher.Tasks
                 return null;
             }
 
+            string writerVoice = root.Value<string>("writerVoice");
+            if (!string.IsNullOrEmpty(writerVoice) && !H5HandwrittenVoices.Contains(writerVoice))
+            {
+                error = "h5_unknown_writer_voice";
+                return null;
+            }
+
             JArray pages = root["pages"] as JArray;
             if (pages == null || pages.Count != item.Pages.Count)
             {
@@ -796,6 +814,7 @@ namespace CF7Launcher.Tasks
 
             var doc = new H5Document();
             doc.Skin = skin;
+            doc.WriterVoice = writerVoice;
             for (int i = 0; i < pages.Count; i++)
             {
                 JObject page = pages[i] as JObject;
@@ -940,6 +959,18 @@ namespace CF7Launcher.Tasks
                     if (!H5HandwrittenVoices.Contains(voiceToken.ToString()))
                     {
                         error = "h5_unknown_handwritten_voice";
+                        return false;
+                    }
+                }
+            }
+            if (type == "note")
+            {
+                JToken toneToken = obj["tone"];
+                if (toneToken != null && toneToken.Type == JTokenType.String)
+                {
+                    if (!H5NoteTones.Contains(toneToken.ToString()))
+                    {
+                        error = "h5_unknown_note_tone";
                         return false;
                     }
                 }

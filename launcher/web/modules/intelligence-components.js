@@ -51,7 +51,16 @@ var IntelligenceComponentRenderer = (function() {
 
     var HANDWRITTEN_VOICES = {
         neat: true,
-        rough: true
+        rough: true,
+        plain: true,
+        weary: true
+    };
+
+    // note 形式分级：default=私人批注 / archive=制度铅字（思源宋体）/
+    // stagecraft=舞台说明（小字 italic 低饱和，区别于叙事正文）
+    var NOTE_TONES = {
+        archive: true,
+        stagecraft: true
     };
 
     var _revealLayer = null;
@@ -80,7 +89,7 @@ var IntelligenceComponentRenderer = (function() {
             case 'quote': return blockWithInline('blockquote', 'intel-h5-quote', block.content, context);
             case 'divider': return document.createElement('hr');
             case 'stamp': return blockWithInline('div', 'intel-h5-stamp intel-h5-stamp-' + safeClass(block.tone || 'neutral'), block.content, context);
-            case 'note': return blockWithInline('div', 'intel-h5-note', block.content, context);
+            case 'note': return renderNote(block, context);
             case 'handwritten': return renderHandwritten(block, context);
             case 'annotation': return renderAnnotation(block, context);
             case 'terminalLog': return renderTerminalLog(block, context);
@@ -150,6 +159,14 @@ var IntelligenceComponentRenderer = (function() {
         }
         el.appendChild(inner);
         return el;
+    }
+
+    function renderNote(block, context) {
+        var classes = ['intel-h5-note'];
+        if (block.tone && NOTE_TONES[block.tone]) {
+            classes.push('intel-h5-note-' + safeClass(block.tone));
+        }
+        return blockWithInline('div', classes.join(' '), block.content, context);
     }
 
     function renderHeading(block, context) {

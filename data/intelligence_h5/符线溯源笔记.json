@@ -2,6 +2,7 @@
   "schemaVersion": 1,
   "itemName": "符线溯源笔记",
   "skin": "diary",
+  "writerVoice": "neat",
   "pages": [
     {
       "pageKey": "1",
@@ -57,6 +58,7 @@
         },
         {
           "type": "note",
+          "tone": "archive",
           "content": [
             { "type": "text", "text": "声明：此录仅为个人观察存档，不属于正式情报系统，不上报堂主，不抄送任何坛口。" }
           ]
@@ -111,6 +113,7 @@
         },
         {
           "type": "note",
+          "tone": "archive",
           "content": [
             { "type": "text", "text": "备注：上述观察已从正式通讯日志中剔除。" }
           ]
@@ -169,6 +172,7 @@
         },
         {
           "type": "note",
+          "tone": "archive",
           "content": [
             { "type": "text", "text": "评估：超出本人情报专业范围，无法判断。标注「需具备相应知识背景才能处理的发现」，暂时存档。不作进一步行动。" }
           ]
@@ -326,6 +330,7 @@
         },
         {
           "type": "note",
+          "tone": "archive",
           "content": [
             { "type": "text", "text": "理由：本人职责是整理事实，不是制造悬案。" }
           ]
@@ -383,6 +388,7 @@
         },
         {
           "type": "note",
+          "tone": "archive",
           "content": [
             { "type": "text", "text": "附录至此终止。后续事态走向，另有记录在案。" }
           ]

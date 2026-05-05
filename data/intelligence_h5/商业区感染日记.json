@@ -2,12 +2,14 @@
   "schemaVersion": 1,
   "itemName": "商业区感染日记",
   "skin": "diary",
+  "writerVoice": "plain",
   "pages": [
     {
       "pageKey": "1_1",
       "blocks": [
         {
           "type": "note",
+          "tone": "stagecraft",
           "content": [
             { "type": "text", "text": "（一本沾满污渍的日记本，字迹潦草，散发着腐臭）" }
           ]

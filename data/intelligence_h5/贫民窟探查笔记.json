@@ -2,14 +2,36 @@
   "schemaVersion": 1,
   "itemName": "贫民窟探查笔记",
   "skin": "diary",
+  "writerVoice": "rough",
   "pages": [
     {
       "pageKey": "1_1",
       "blocks": [
         {
+          "type": "surfaceMark",
+          "variant": "soot",
+          "x": 6,
+          "y": 4,
+          "w": 22,
+          "h": 14,
+          "rotate": -8,
+          "opacity": 0.55
+        },
+        {
+          "type": "surfaceMark",
+          "variant": "soot",
+          "x": 78,
+          "y": 82,
+          "w": 18,
+          "h": 12,
+          "rotate": 12,
+          "opacity": 0.42
+        },
+        {
           "type": "note",
+          "tone": "stagecraft",
           "content": [
-            { "type": "text", "text": "（沾满污渍的笔记本，字迹透着疲惫）" }
+            { "type": "text", "text": "（纸张边缘参差不齐，沾着黑色的火药灰烬，字迹有些潦草）" }
           ]
         },
         {

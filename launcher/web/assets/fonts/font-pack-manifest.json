@@ -129,6 +129,30 @@
                     "shippedFallback": false
                 },
                 {
+                    "name": "jason-handwriting-2.ttf",
+                    "label": "清松手写体 2 号 不规则（plain 朴拙未受训 / 浑浑噩噩小市民笔迹 / --intel-font-character-plain）",
+                    "license": "SIL-OFL-1.1",
+                    "bytes": 5378712,
+                    "sha256": "b67dce349d32e92e4ee7befeb0339d04ca69551bb523e60cfb5ea8f5fbd5d669",
+                    "urls": [
+                        "https://cdn.jsdelivr.net/gh/jasonhandwriting/JasonHandwriting@master/JasonHandwriting2.ttf",
+                        "https://github.com/jasonhandwriting/JasonHandwriting/raw/master/JasonHandwriting2.ttf"
+                    ],
+                    "shippedFallback": false
+                },
+                {
+                    "name": "jason-handwriting-9.ttf",
+                    "label": "清松手写体 9 号（weary 疲惫涣散 / 流民/逃难者笔迹 / --intel-font-character-weary）",
+                    "license": "SIL-OFL-1.1",
+                    "bytes": 8379644,
+                    "sha256": "b50728e2c7442a76a661c4d43c8ec22142e8edc83909a9d40b7c25d04bd04cf5",
+                    "urls": [
+                        "https://cdn.jsdelivr.net/gh/jasonhandwriting/JasonHandwriting@master/JasonHandwriting9.ttf",
+                        "https://github.com/jasonhandwriting/JasonHandwriting/raw/master/JasonHandwriting9.ttf"
+                    ],
+                    "shippedFallback": false
+                },
+                {
                     "name": "liu-jian-mao-cao-regular.ttf",
                     "label": "Liu Jian Mao Cao Regular（失控短句 / outburst 戏剧草书）",
                     "license": "SIL-OFL-1.1",

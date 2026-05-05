@@ -18,6 +18,8 @@
 | `jason-handwriting-7.ttf` | 清松手写体 7 号 飘逸 | 哀痛情绪 / outburst lament tone / 临终遗言 / `--intel-font-emotional` | 8.8 MB | SIL OFL 1.1 | `expressive-handwriting` |
 | `jason-handwriting-1.ttf` | 清松手写体 1 号 圆体 | NPC 笔迹差异化 / handwritten voice="neat" / Shop Girl 类商务文员 / `--intel-font-character-neat` | 8.5 MB | SIL OFL 1.1 | `expressive-handwriting` |
 | `jason-handwriting-8.ttf` | 清松手写体 8 号 Casual | NPC 笔迹差异化 / handwritten voice="rough" / 老周/盗贼/雇佣兵 / `--intel-font-character-rough` | 7.7 MB | SIL OFL 1.1 | `expressive-handwriting` |
+| `jason-handwriting-2.ttf` | 清松手写体 2 号 不规则 | NPC 笔迹差异化 / handwritten voice="plain" / 浑浑噩噩小市民 / `--intel-font-character-plain` | 5.1 MB | SIL OFL 1.1 | `expressive-handwriting` |
+| `jason-handwriting-9.ttf` | 清松手写体 9 号 | NPC 笔迹差异化 / handwritten voice="weary" / 流民/逃难者疲惫笔迹 / `--intel-font-character-weary` | 8.0 MB | SIL OFL 1.1 | `expressive-handwriting` |
 | `source-han-serif-cn-regular.otf` | Source Han Serif CN Regular（思源宋体） | dossier / 官方资料集 / 中立编纂 / `--intel-font-archive` | 11.1 MB | SIL OFL 1.1 | `expressive-archive` |
 
 **Group 总量**：essential 92 KB（shipped）+ expressive 24.5 MB + expressive-handwriting 53.6 MB（猫啃 6.1 + 清松1 8.5 + 清松7 8.8 + 清松8 7.7 + 4 旧字 22.5）+ expressive-archive 11.1 MB ≈ **89 MB 全矩阵**
@@ -35,10 +37,32 @@
 --intel-font-archive:  'Source Han Serif CN', 'Source Han Serif SC', 'Noto Serif CJK SC', 'SimSun', '宋体', serif;
 --intel-font-character-neat:  'JasonHandwriting1', 'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', serif;
 --intel-font-character-rough: 'JasonHandwriting8', 'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', serif;
+--intel-font-character-plain: 'JasonHandwriting2', 'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', serif;
+--intel-font-character-weary: 'JasonHandwriting9', 'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', serif;
 --intel-font-mono:     'JetBrains Mono', Consolas, 'Courier New', monospace;
 ```
 
 绑定到具体 skin / block 的工作（"字体角色绑定"）单列任务，本次只完成**矩阵储备**：manifest 注册 + @font-face 声明 + 变量声明。
+
+### 三档差异化人设手写体（2026-05-05 落地）
+
+JSON 顶层 `writerVoice` 字段让一篇 diary/field-notes 整篇走特定 NPC 字迹（不再是 PC 默认）：
+
+| writerVoice | 字体 | 人设 | 实例 |
+|---|---|---|---|
+| (未指定) | 猫啃硬笔楷书 | PC 默认 / 训练有素硬笔楷书 | （未来通用 PC 视角篇） |
+| `plain` | 清松2 不规则 | 浑浑噩噩小市民 / 朴拙未受训 | `商业区感染日记` |
+| `neat` | 清松1 圆体 | 文职首领 / Shop Girl / 商务文员 | `符线溯源笔记` |
+| `rough` | 清松8 Casual | 佣兵 / 老周 / 盗贼 | `贫民窟探查笔记` |
+| `weary` | 清松9 | 流民 / 逃难者 / 疲惫涣散 | `环线流民日记` |
+
+`note tone` 是 `writerVoice` 的显式例外：
+
+| tone | 字体 | 语义 |
+|---|---|---|
+| (未指定) | 跟随写作者的笔 | 个人批注 |
+| `archive` | 思源宋体 | 制度铅字 — 组织文档批注（声明/备注/评估/理由） |
+| `stagecraft` | LXGW italic 小字 | 舞台说明 — `（纸张参差不齐沾着灰烬）`这种观察者代笔旁注 |
 
 ## 玩家入口
 

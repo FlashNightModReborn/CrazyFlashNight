@@ -94,6 +94,23 @@
     font-style: normal;
     font-display: swap;
 }
+/* 清松手写体 2 号 不规则——plain 朴拙未受训笔触，浑浑噩噩小市民笔迹；
+   清松手写体 9 号——weary 疲惫涣散笔触，流民/逃难者笔迹。
+   两者简繁双覆盖各 29/29 + cmap JH2=7212 / JH9=9421。 */
+@font-face {
+    font-family: 'JasonHandwriting2';
+    src: url('https://cfn-fonts.local/jason-handwriting-2.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'JasonHandwriting9';
+    src: url('https://cfn-fonts.local/jason-handwriting-9.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
 @font-face {
     font-family: 'Source Han Serif CN';
     src: url('https://cfn-fonts.local/source-han-serif-cn-regular.otf') format('opentype');
@@ -113,6 +130,8 @@
     --intel-font-archive:  'Source Han Serif CN', 'Source Han Serif SC', 'Noto Serif CJK SC', 'SimSun', '宋体', serif;
     --intel-font-character-neat:  'JasonHandwriting1', 'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', serif;
     --intel-font-character-rough: 'JasonHandwriting8', 'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', serif;
+    --intel-font-character-plain: 'JasonHandwriting2', 'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', serif;
+    --intel-font-character-weary: 'JasonHandwriting9', 'MaokenYingBiKaiShuJ', 'LXGW WenKai Screen', 'STKaiti', '楷体', serif;
     --intel-font-mono:     'JetBrains Mono', Consolas, 'Courier New', monospace;
 }
 
@@ -6983,6 +7002,36 @@ html.perf-low-effects .map-stage-backdrop::before {
     letter-spacing: 0.02em;
 }
 
+/* note tone="archive" — 制度铅字感（思源宋体）。
+   用途：组织文档批注（声明 / 评估 / 备注 / 理由 / 结论），
+   在手写主文中插入"已经被印刷化的部分"——形式高于个人。
+   关键：必须用 !important 级特异性覆盖 diary skin 的全局 var(--intel-font-note)，
+   否则 diary 写作者的"个人手记基线"会盖过这条形式化批注。 */
+.intel-h5-note-archive {
+    font-family: var(--intel-font-archive);
+    font-style: normal;
+    color: #2c2620;
+    background: rgba(247, 240, 224, 0.55);
+    border-left: 2px solid rgba(80, 60, 30, 0.45);
+    letter-spacing: 0.04em;
+    line-height: 1.75;
+}
+
+/* note tone="stagecraft" — 舞台说明（小字 italic 低饱和）。
+   用途：（纸张参差不齐 / 字迹潦草 / 沾着血渍）这种"读者看到的是页面状态而非叙事"的旁注。
+   故意视觉降级——比正文淡、字小、italic，提示"这不是写作者写的，是观察者看到的"。 */
+.intel-h5-note-stagecraft {
+    font-family: var(--intel-font-body);
+    font-style: italic;
+    color: rgba(70, 50, 30, 0.62);
+    background: transparent;
+    border-left: 1px dashed rgba(120, 90, 50, 0.32);
+    font-size: 0.86em;
+    line-height: 1.6;
+    letter-spacing: 0.04em;
+    padding: 6px 12px 6px 14px;
+}
+
 /* dossier skin 根：思源宋体 CN 担正式档案衬线感。
    note 单独 override 见下条（朱赭楷体不被宋体盖过）。 */
 .intel-content[data-skin="dossier"] {
@@ -7036,9 +7085,11 @@ html.perf-low-effects .map-stage-backdrop::before {
 }
 
 /* diary skin：手写日记体，无装饰
-   走 --intel-font-note（Klee One 私人手写）让全篇日记一致的"个人手记"质感。
+   走 --intel-font-note（猫啃硬笔楷书 私人手写）让全篇日记一致的"个人手记"质感。
    heading / list / handwritten 等同样要 override——日期标题和正文是同一只手写的，
-   不能 heading 走 Ma Shan Zheng 而 body 走 Klee One，那是两个人的笔迹。 */
+   不能 heading 走 Ma Shan Zheng 而 body 走猫啃，那是两个人的笔迹。
+   **例外**：handwritten[voice]、note.archive、note.stagecraft 是写作者**之外**的字迹/形式，
+   故意区分写作者本身——见下方独立选择器，让 voice/tone 在 diary skin 内仍然生效。 */
 .intel-content[data-skin="diary"] .intel-h5-note,
 .intel-content[data-skin="diary"] .intel-h5-p,
 .intel-content[data-skin="diary"] .intel-h5-quote,
@@ -7050,6 +7101,124 @@ html.perf-low-effects .map-stage-backdrop::before {
 .intel-content[data-skin="diary"] th {
     font-family: var(--intel-font-note);
     letter-spacing: 0.02em;
+}
+
+/* diary skin 的字迹差异化例外：
+   - handwritten voice="neat" → 文职首领 / Shop Girl 的工整字迹（清松1 圆体）
+   - handwritten voice="rough" → 佣兵 / 老周的粗放字迹（清松8 Casual）
+   这两条优先级必须高于上方 diary skin 全局 override，否则 voice 字段在 diary 内失效。 */
+.intel-content[data-skin="diary"] .intel-h5-handwritten-voice-neat {
+    font-family: var(--intel-font-character-neat);
+    letter-spacing: 0.03em;
+}
+.intel-content[data-skin="diary"] .intel-h5-handwritten-voice-rough {
+    font-family: var(--intel-font-character-rough);
+    letter-spacing: 0.02em;
+}
+.intel-content[data-skin="diary"] .intel-h5-handwritten-voice-plain {
+    font-family: var(--intel-font-character-plain);
+    letter-spacing: 0.04em;
+}
+.intel-content[data-skin="diary"] .intel-h5-handwritten-voice-weary {
+    font-family: var(--intel-font-character-weary);
+    letter-spacing: 0.03em;
+}
+
+/* 顶层 writerVoice 属性：让一篇日记**整篇**走对应字迹，
+   不需要把每段 paragraph 都包成 handwritten。
+   语义："这本日记本是 X 写的"——X = 文职首领(neat) / 佣兵(rough)。
+   note tone="archive" / "stagecraft" 的"另一种笔/形式"例外仍然由更具体的选择器优先生效。 */
+.intel-content[data-skin="diary"][data-writer-voice="neat"] .intel-h5-p,
+.intel-content[data-skin="diary"][data-writer-voice="neat"] .intel-h5-quote,
+.intel-content[data-skin="diary"][data-writer-voice="neat"] .intel-h5-heading,
+.intel-content[data-skin="diary"][data-writer-voice="neat"] .intel-h5-stamp,
+.intel-content[data-skin="diary"][data-writer-voice="neat"] .intel-h5-handwritten:not(.intel-h5-handwritten-voice-rough),
+.intel-content[data-skin="diary"][data-writer-voice="neat"] li,
+.intel-content[data-skin="diary"][data-writer-voice="neat"] td,
+.intel-content[data-skin="diary"][data-writer-voice="neat"] th {
+    font-family: var(--intel-font-character-neat);
+    letter-spacing: 0.03em;
+}
+.intel-content[data-skin="diary"][data-writer-voice="rough"] .intel-h5-p,
+.intel-content[data-skin="diary"][data-writer-voice="rough"] .intel-h5-quote,
+.intel-content[data-skin="diary"][data-writer-voice="rough"] .intel-h5-heading,
+.intel-content[data-skin="diary"][data-writer-voice="rough"] .intel-h5-stamp,
+.intel-content[data-skin="diary"][data-writer-voice="rough"] .intel-h5-handwritten:not(.intel-h5-handwritten-voice-neat),
+.intel-content[data-skin="diary"][data-writer-voice="rough"] li,
+.intel-content[data-skin="diary"][data-writer-voice="rough"] td,
+.intel-content[data-skin="diary"][data-writer-voice="rough"] th {
+    font-family: var(--intel-font-character-rough);
+    letter-spacing: 0.02em;
+}
+
+/* plain — 小市民 / 朴拙未受训笔迹（实例：商业区感染日记） */
+.intel-content[data-skin="diary"][data-writer-voice="plain"] .intel-h5-p,
+.intel-content[data-skin="diary"][data-writer-voice="plain"] .intel-h5-quote,
+.intel-content[data-skin="diary"][data-writer-voice="plain"] .intel-h5-heading,
+.intel-content[data-skin="diary"][data-writer-voice="plain"] .intel-h5-stamp,
+.intel-content[data-skin="diary"][data-writer-voice="plain"] .intel-h5-handwritten:not(.intel-h5-handwritten-voice-neat):not(.intel-h5-handwritten-voice-rough):not(.intel-h5-handwritten-voice-weary),
+.intel-content[data-skin="diary"][data-writer-voice="plain"] li,
+.intel-content[data-skin="diary"][data-writer-voice="plain"] td,
+.intel-content[data-skin="diary"][data-writer-voice="plain"] th {
+    font-family: var(--intel-font-character-plain);
+    letter-spacing: 0.04em;
+}
+/* weary — 流民 / 疲惫涣散笔迹（实例：环线流民日记） */
+.intel-content[data-skin="diary"][data-writer-voice="weary"] .intel-h5-p,
+.intel-content[data-skin="diary"][data-writer-voice="weary"] .intel-h5-quote,
+.intel-content[data-skin="diary"][data-writer-voice="weary"] .intel-h5-heading,
+.intel-content[data-skin="diary"][data-writer-voice="weary"] .intel-h5-stamp,
+.intel-content[data-skin="diary"][data-writer-voice="weary"] .intel-h5-handwritten:not(.intel-h5-handwritten-voice-neat):not(.intel-h5-handwritten-voice-rough):not(.intel-h5-handwritten-voice-plain),
+.intel-content[data-skin="diary"][data-writer-voice="weary"] li,
+.intel-content[data-skin="diary"][data-writer-voice="weary"] td,
+.intel-content[data-skin="diary"][data-writer-voice="weary"] th {
+    font-family: var(--intel-font-character-weary);
+    letter-spacing: 0.03em;
+    opacity: 0.92;
+}
+
+/* field-notes 同款顶层 writerVoice 支持。 */
+.intel-content[data-skin="field-notes"][data-writer-voice="neat"] .intel-h5-p,
+.intel-content[data-skin="field-notes"][data-writer-voice="neat"] .intel-h5-quote,
+.intel-content[data-skin="field-notes"][data-writer-voice="neat"] .intel-h5-heading,
+.intel-content[data-skin="field-notes"][data-writer-voice="neat"] .intel-h5-stamp,
+.intel-content[data-skin="field-notes"][data-writer-voice="neat"] .intel-h5-handwritten:not(.intel-h5-handwritten-voice-rough),
+.intel-content[data-skin="field-notes"][data-writer-voice="neat"] li {
+    font-family: var(--intel-font-character-neat);
+}
+.intel-content[data-skin="field-notes"][data-writer-voice="rough"] .intel-h5-p,
+.intel-content[data-skin="field-notes"][data-writer-voice="rough"] .intel-h5-quote,
+.intel-content[data-skin="field-notes"][data-writer-voice="rough"] .intel-h5-heading,
+.intel-content[data-skin="field-notes"][data-writer-voice="rough"] .intel-h5-stamp,
+.intel-content[data-skin="field-notes"][data-writer-voice="rough"] .intel-h5-handwritten:not(.intel-h5-handwritten-voice-neat),
+.intel-content[data-skin="field-notes"][data-writer-voice="rough"] li {
+    font-family: var(--intel-font-character-rough);
+}
+.intel-content[data-skin="field-notes"][data-writer-voice="plain"] .intel-h5-p,
+.intel-content[data-skin="field-notes"][data-writer-voice="plain"] .intel-h5-quote,
+.intel-content[data-skin="field-notes"][data-writer-voice="plain"] .intel-h5-heading,
+.intel-content[data-skin="field-notes"][data-writer-voice="plain"] .intel-h5-stamp,
+.intel-content[data-skin="field-notes"][data-writer-voice="plain"] .intel-h5-handwritten:not(.intel-h5-handwritten-voice-neat):not(.intel-h5-handwritten-voice-rough):not(.intel-h5-handwritten-voice-weary),
+.intel-content[data-skin="field-notes"][data-writer-voice="plain"] li {
+    font-family: var(--intel-font-character-plain);
+}
+.intel-content[data-skin="field-notes"][data-writer-voice="weary"] .intel-h5-p,
+.intel-content[data-skin="field-notes"][data-writer-voice="weary"] .intel-h5-quote,
+.intel-content[data-skin="field-notes"][data-writer-voice="weary"] .intel-h5-heading,
+.intel-content[data-skin="field-notes"][data-writer-voice="weary"] .intel-h5-stamp,
+.intel-content[data-skin="field-notes"][data-writer-voice="weary"] .intel-h5-handwritten:not(.intel-h5-handwritten-voice-neat):not(.intel-h5-handwritten-voice-rough):not(.intel-h5-handwritten-voice-plain),
+.intel-content[data-skin="field-notes"][data-writer-voice="weary"] li {
+    font-family: var(--intel-font-character-weary);
+}
+
+/* diary skin 内的 note tone 例外：
+   archive 是制度铅字、stagecraft 是舞台旁注，都不是写作者本人的"那支笔"。
+   覆盖 diary 全局 var(--intel-font-note) 让 archive 走思源宋体、stagecraft 走 LXGW italic。 */
+.intel-content[data-skin="diary"] .intel-h5-note-archive {
+    font-family: var(--intel-font-archive);
+}
+.intel-content[data-skin="diary"] .intel-h5-note-stagecraft {
+    font-family: var(--intel-font-body);
 }
 /* diary heading 弱化"印刷感"——还原"同一支笔写大一号字"的视觉，
    保留 weight + size 区分层级，但不上 Ma Shan Zheng 的毛笔气场。 */
@@ -7065,6 +7234,17 @@ html.perf-low-effects .map-stage-backdrop::before {
     font-family: var(--intel-font-body);
     font-weight: 700;
     letter-spacing: 0.04em;
+}
+
+/* field-notes 内 voice/tone 例外：跟 diary 同源逻辑——voice 表"另一支笔"，tone 表"另一种形式"。 */
+.intel-content[data-skin="field-notes"] .intel-h5-handwritten-voice-neat {
+    font-family: var(--intel-font-character-neat);
+}
+.intel-content[data-skin="field-notes"] .intel-h5-handwritten-voice-rough {
+    font-family: var(--intel-font-character-rough);
+}
+.intel-content[data-skin="field-notes"] .intel-h5-note-archive {
+    font-family: var(--intel-font-archive);
 }
 
 .intel-h5-quote {
@@ -7117,6 +7297,22 @@ html.perf-low-effects .map-stage-backdrop::before {
     /* 随性匆忙：拉大字距 + 浅旋转 */
     letter-spacing: 0.04em;
     transform: rotate(-0.6deg);
+}
+/* plain：朴拙未受训笔迹（小市民、未上过书法课）。
+   字距略松、轻微反向旋转、整体降低 contrast 模拟"用力不均、纸张吸墨". */
+.intel-h5-handwritten-voice-plain {
+    font-family: var(--intel-font-character-plain);
+    letter-spacing: 0.05em;
+    transform: rotate(-0.3deg);
+    filter: contrast(0.93);
+}
+/* weary：疲惫涣散笔迹（流民、逃难者、长期饥饿状态写下的字）。
+   降低 opacity、轻微 skew 模拟手抖、字距加宽模拟无力收笔。 */
+.intel-h5-handwritten-voice-weary {
+    font-family: var(--intel-font-character-weary);
+    letter-spacing: 0.04em;
+    opacity: 0.82;
+    transform: skewX(-1.4deg);
 }
 
 .intel-h5-stamp {
@@ -7445,6 +7641,24 @@ html.perf-low-effects .map-stage-backdrop::before {
     background: rgba(250, 244, 224, 0.72);
     border: 1px solid rgba(70, 55, 30, 0.20);
     box-shadow: inset 0 0 12px rgba(70,55,30,0.18);
+}
+
+/* surfaceMark variant="soot" — 火药灰烬污渍。
+   颗粒状深灰黑斑点 + 边缘飞散点，区别于 dirt（土黄水渍）和 blood-hand（红色掌印）。
+   用法：贫民窟探查笔记 / 战斗后纸张外缘"沾着黑色的火药灰烬"。 */
+.intel-h5-surface-soot {
+    border-radius: 38% 52% 46% 58%;
+    background:
+        radial-gradient(circle at 30% 35%, rgba(20, 16, 14, 0.72) 0 6%, transparent 12%),
+        radial-gradient(circle at 62% 28%, rgba(28, 22, 18, 0.58) 0 4%, transparent 10%),
+        radial-gradient(circle at 48% 64%, rgba(20, 16, 14, 0.50) 0 8%, transparent 16%),
+        radial-gradient(circle at 78% 72%, rgba(36, 28, 20, 0.42) 0 5%, transparent 12%),
+        radial-gradient(circle at 18% 76%, rgba(20, 16, 14, 0.34) 0 4%, transparent 10%);
+    filter: blur(0.3px) contrast(1.1);
+    box-shadow:
+        2px 1px 0 -1px rgba(20, 16, 14, 0.4),
+        -3px 2px 0 -2px rgba(28, 22, 18, 0.34),
+        4px -2px 0 -2px rgba(36, 28, 20, 0.28);
 }
 
 .intel-empty {

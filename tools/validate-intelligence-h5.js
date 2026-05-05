@@ -53,6 +53,13 @@ const OUTBURST_TONES = new Set([
 const HANDWRITTEN_VOICES = new Set([
   'neat',
   'rough',
+  'plain',
+  'weary',
+]);
+
+const NOTE_TONES = new Set([
+  'archive',
+  'stagecraft',
 ]);
 
 const COLOR_TOKENS = new Set([
@@ -78,6 +85,7 @@ const SURFACE_VARIANTS = new Set([
   'blood-hand',
   'fold',
   'tear',
+  'soot',
 ]);
 
 const DAMAGE_KINDS = new Set([
@@ -191,6 +199,9 @@ function validateDocument(filePath, item, errors) {
   if (doc.schemaVersion !== 1) errors.push(`${ctx}: schemaVersion must be 1`);
   if (doc.itemName !== item.name) errors.push(`${ctx}: itemName mismatch (${doc.itemName})`);
   if (!SKINS.has(doc.skin)) errors.push(`${ctx}: unknown skin "${doc.skin}"`);
+  if (doc.writerVoice != null && !HANDWRITTEN_VOICES.has(doc.writerVoice)) {
+    errors.push(`${ctx}: unknown writerVoice "${doc.writerVoice}"`);
+  }
   if (!Array.isArray(doc.pages)) {
     errors.push(`${ctx}: pages must be an array`);
     return;
@@ -242,6 +253,9 @@ function validateBlock(block, loc, errors) {
   }
   if (block.type === 'handwritten' && block.voice && !HANDWRITTEN_VOICES.has(block.voice)) {
     errors.push(`${loc}: unknown handwritten voice "${block.voice}"`);
+  }
+  if (block.type === 'note' && block.tone && !NOTE_TONES.has(block.tone)) {
+    errors.push(`${loc}: unknown note tone "${block.tone}"`);
   }
   ['content', 'title', 'caption', 'label', 'note'].forEach((key) => {
     if (Array.isArray(block[key])) validateInlineArray(block[key], `${loc}.${key}`, errors);
