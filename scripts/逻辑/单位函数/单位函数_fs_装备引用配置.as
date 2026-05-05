@@ -39,6 +39,7 @@ _root.装备引用配置.女性裸体映射 = {
 _root.装备引用配置.skinKey映射 = {
     刀_引用: "刀_装扮",
     刀2_引用: "刀2_装扮",
+    刀3_引用: "刀3_装扮",
     长枪_引用: "长枪_装扮",
     手枪_引用: "手枪_装扮",
     手枪2_引用: "手枪2_装扮",
@@ -87,11 +88,6 @@ _root.装备引用配置._执行配置 = function(mc:MovieClip, skinConfig:Strin
         if (fallback) {
             skin = mc.attachMovie(fallback, instanceName, cfg.引用深度配置[baseRefName]);
         }
-    }
-
-    // 设置基本款可见性
-    if (mc.基本款) {
-        mc.基本款._visible = !skin;
     }
 
     // 引用始终有效：换装成功用皮肤子级，否则用基本款（与皮肤同层级）

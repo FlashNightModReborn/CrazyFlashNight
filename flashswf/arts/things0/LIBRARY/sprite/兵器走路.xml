@@ -6392,7 +6392,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
             </DOMFrame>
             <DOMFrame index="98" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="81.05" centerPoint3DY="-78.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="81.05" centerPoint3DY="-78.05">
                   <matrix>
                     <Matrix a="0.773788452148438" b="0.382675170898438" c="-0.382598876953125" d="0.773666381835938" tx="35.35" ty="-134.4"/>
                   </matrix>
@@ -6403,7 +6403,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="46.4" centerPoint3DY="-92.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="46.4" centerPoint3DY="-92.35">
                   <matrix>
                     <Matrix a="0.851318359375" b="0.129974365234375" c="-0.129974365234375" d="0.851318359375" tx="2.7" ty="-54.6"/>
                   </matrix>
@@ -6414,7 +6414,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="-3.15" centerPoint3DY="-6.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="-3.15" centerPoint3DY="-6.25">
                   <matrix>
                     <Matrix a="0.1907958984375" b="0.83685302734375" c="-0.83685302734375" d="0.1907958984375" tx="-4.35" ty="28.8"/>
                   </matrix>
@@ -6425,7 +6425,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="26.2" centerPoint3DY="92.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="26.2" centerPoint3DY="92.4">
                   <matrix>
                     <Matrix a="0.069671630859375" b="-0.962753295898438" c="-0.962753295898438" d="-0.069671630859375" tx="-81.45" ty="-6.65"/>
                   </matrix>
@@ -6436,7 +6436,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="71.65" centerPoint3DY="-3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="71.65" centerPoint3DY="-3">
                   <matrix>
                     <Matrix a="0.065673828125" b="0.99969482421875" c="-0.99969482421875" d="0.065673828125" tx="9.35" ty="-28"/>
                   </matrix>
@@ -6447,7 +6447,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="104.55" centerPoint3DY="231.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="104.55" centerPoint3DY="231.5">
                   <matrix>
                     <Matrix a="0.76776123046875" b="-0.144622802734375" c="0.144622802734375" d="0.76776123046875" tx="62.45" ty="209"/>
                   </matrix>
@@ -6458,7 +6458,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="21.7" centerPoint3DY="89.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="21.7" centerPoint3DY="89.7">
                   <matrix>
                     <Matrix a="0.811309814453125" b="-0.288665771484375" c="0.2886962890625" d="0.811264038085938" tx="11.6" ty="4.9"/>
                   </matrix>
@@ -6469,7 +6469,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="58.2" centerPoint3DY="183.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="58.2" centerPoint3DY="183.95">
                   <matrix>
                     <Matrix a="0.81317138671875" b="-0.11761474609375" c="0.11761474609375" d="0.81317138671875" tx="47.6" ty="109.15"/>
                   </matrix>
@@ -6480,7 +6480,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="1.55" centerPoint3DY="76.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="1.55" centerPoint3DY="76.15">
                   <matrix>
                     <Matrix a="0.847579956054688" b="0.076995849609375" c="-0.076995849609375" d="0.847579956054688" tx="-11.9" ty="-45.85"/>
                   </matrix>
@@ -6491,7 +6491,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="22.25" centerPoint3DY="-140.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="22.25" centerPoint3DY="-140.75">
                   <matrix>
                     <Matrix a="0.91656494140625" b="0.105270385742188" c="-0.105270385742188" d="0.91656494140625" tx="3.05" ty="-185.3"/>
                   </matrix>
@@ -6502,7 +6502,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="34.75" centerPoint3DY="36.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="34.75" centerPoint3DY="36.4">
                   <matrix>
                     <Matrix a="0.87896728515625" b="-0.039276123046875" c="0.039276123046875" d="0.87896728515625" tx="-16" ty="4.2"/>
                   </matrix>
@@ -6513,7 +6513,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="-16.65" centerPoint3DY="102.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-16.65" centerPoint3DY="102.2">
                   <matrix>
                     <Matrix a="0.816375732421875" b="0.241973876953125" c="-0.241973876953125" d="0.816375732421875" tx="-38.45" ty="21.65"/>
                   </matrix>
@@ -6524,7 +6524,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-66.2" centerPoint3DY="242.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-66.2" centerPoint3DY="242.1">
                   <matrix>
                     <Matrix a="0.8056640625" b="0.0599212646484375" c="-0.0599212646484375" d="0.8056640625" tx="-104.2" ty="210.8"/>
                   </matrix>
@@ -6535,7 +6535,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-42.05" centerPoint3DY="193.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-42.05" centerPoint3DY="193.75">
                   <matrix>
                     <Matrix a="0.78466796875" b="0.267013549804688" c="-0.267013549804688" d="0.78466796875" tx="-70.5" ty="121.95"/>
                   </matrix>
@@ -6546,7 +6546,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="-2.65" centerPoint3DY="-26.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-2.65" centerPoint3DY="-26.45">
                   <matrix>
                     <Matrix a="0.000335693359375" b="1.00164794921875" c="-1.00164794921875" d="0.000335693359375" tx="-64.9" ty="-51.5"/>
                   </matrix>
@@ -6557,7 +6557,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="-77.3" centerPoint3DY="-104.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-77.3" centerPoint3DY="-104.35">
                   <matrix>
                     <Matrix a="-0.433822631835938" b="-0.75634765625" c="-0.75634765625" d="0.433822631835938" tx="101.85" ty="-89.45"/>
                   </matrix>
@@ -6565,7 +6565,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.7" y="109.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-127.25" centerPoint3DY="40.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-127.25" centerPoint3DY="40.35">
                   <matrix>
                     <Matrix a="-0.46087646484375" b="-0.794830322265625" c="-0.794830322265625" d="0.46087646484375" tx="45.7" ty="-57.65"/>
                   </matrix>
@@ -6573,7 +6573,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="2" y="109.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="-71.2" centerPoint3DY="-75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-71.2" centerPoint3DY="-75">
                   <matrix>
                     <Matrix a="0.652389526367188" b="0.566314697265625" c="-0.566314697265625" d="0.652389526367188" tx="-49.45" ty="-145"/>
                   </matrix>
@@ -6584,7 +6584,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-133.25" centerPoint3DY="-130">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-133.25" centerPoint3DY="-130">
                   <matrix>
                     <Matrix a="0.5694580078125" b="-0.64385986328125" c="0.644027709960938" d="0.569564819335938" tx="-110.05" ty="-75.8"/>
                   </matrix>
@@ -6595,7 +6595,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="-75.2" centerPoint3DY="-56.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-75.2" centerPoint3DY="-56.85">
                   <matrix>
                     <Matrix a="0.615020751953125" b="0.59808349609375" c="-0.59808349609375" d="0.615020751953125" tx="-55.8" ty="-25.85"/>
                   </matrix>
@@ -6783,7 +6783,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.65" y="109.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-131.4" centerPoint3DY="35.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-131.4" centerPoint3DY="35.8">
                   <matrix>
                     <Matrix a="-0.44024658203125" b="-0.806488037109375" c="-0.806503295898438" d="0.44024658203125" tx="44" ty="-57.7"/>
                   </matrix>
@@ -7001,7 +7001,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.65" y="109.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-135.5" centerPoint3DY="31.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-135.5" centerPoint3DY="31.45">
                   <matrix>
                     <Matrix a="-0.422027587890625" b="-0.8162841796875" c="-0.8162841796875" d="0.422027587890625" tx="42" ty="-58.05"/>
                   </matrix>
@@ -7219,7 +7219,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.65" y="109.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-140" centerPoint3DY="26.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-140" centerPoint3DY="26.75">
                   <matrix>
                     <Matrix a="-0.40087890625" b="-0.826995849609375" c="-0.826995849609375" d="0.40087890625" tx="39.8" ty="-58.2"/>
                   </matrix>
@@ -7437,7 +7437,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.65" y="109.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-143.75" centerPoint3DY="22.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-143.75" centerPoint3DY="22.05">
                   <matrix>
                     <Matrix a="-0.3822021484375" b="-0.83587646484375" c="-0.83587646484375" d="0.382186889648438" tx="37.9" ty="-58.75"/>
                   </matrix>
@@ -7655,7 +7655,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.7" y="109.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-147.95" centerPoint3DY="17.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-147.95" centerPoint3DY="17.15">
                   <matrix>
                     <Matrix a="-0.360580444335938" b="-0.845565795898438" c="-0.845550537109375" d="0.360565185546875" tx="35.75" ty="-59.05"/>
                   </matrix>
@@ -7873,7 +7873,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.7" y="109.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-151.9" centerPoint3DY="12.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-151.9" centerPoint3DY="12.6">
                   <matrix>
                     <Matrix a="-0.34149169921875" b="-0.853607177734375" c="-0.85357666015625" d="0.341476440429688" tx="33.5" ty="-59.4"/>
                   </matrix>
@@ -8091,7 +8091,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.65" y="109.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-155.7" centerPoint3DY="15.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-155.7" centerPoint3DY="15.55">
                   <matrix>
                     <Matrix a="-0.319381713867188" b="-0.8621826171875" c="-0.8621826171875" d="0.319381713867188" tx="31.55" ty="-51.7"/>
                   </matrix>
@@ -8309,7 +8309,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.65" y="109.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-159.95" centerPoint3DY="18.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-159.95" centerPoint3DY="18.3">
                   <matrix>
                     <Matrix a="-0.29705810546875" b="-0.8702392578125" c="-0.870269775390625" d="0.297103881835938" tx="29" ty="-44.05"/>
                   </matrix>
@@ -8527,7 +8527,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.65" y="109.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-163.7" centerPoint3DY="21.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-163.7" centerPoint3DY="21.15">
                   <matrix>
                     <Matrix a="-0.277450561523438" b="-0.8768310546875" c="-0.8768310546875" d="0.277450561523438" tx="26.6" ty="-36.95"/>
                   </matrix>
@@ -8745,7 +8745,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.7" y="109.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-167.55" centerPoint3DY="23.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-167.55" centerPoint3DY="23.9">
                   <matrix>
                     <Matrix a="-0.254791259765625" b="-0.883819580078125" c="-0.883819580078125" d="0.2547607421875" tx="24.2" ty="-29.3"/>
                   </matrix>
@@ -8963,7 +8963,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.7" y="109.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-171.1" centerPoint3DY="26.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-171.1" centerPoint3DY="26.5">
                   <matrix>
                     <Matrix a="-0.234848022460938" b="-0.88946533203125" c="-0.88946533203125" d="0.234848022460938" tx="21.85" ty="-22.35"/>
                   </matrix>
@@ -9181,7 +9181,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.65" y="109.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-174.85" centerPoint3DY="29.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-174.85" centerPoint3DY="29.2">
                   <matrix>
                     <Matrix a="-0.21185302734375" b="-0.89532470703125" c="-0.895355224609375" d="0.21185302734375" tx="19.35" ty="-14.7"/>
                   </matrix>
@@ -9399,7 +9399,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.7" y="109.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-178.25" centerPoint3DY="31.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-178.25" centerPoint3DY="31.7">
                   <matrix>
                     <Matrix a="-0.191696166992188" b="-0.90008544921875" c="-0.900070190429688" d="0.191680908203125" tx="16.85" ty="-7.8"/>
                   </matrix>
@@ -9617,7 +9617,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.6" y="109.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-174.75" centerPoint3DY="28.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-174.75" centerPoint3DY="28.9">
                   <matrix>
                     <Matrix a="-0.211471557617188" b="-0.895477294921875" c="-0.895477294921875" d="0.211456298828125" tx="19.4" ty="-14.9"/>
                   </matrix>
@@ -9835,7 +9835,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.7" y="109.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-171.35" centerPoint3DY="25.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-171.35" centerPoint3DY="25.95">
                   <matrix>
                     <Matrix a="-0.23114013671875" b="-0.890472412109375" c="-0.890487670898438" d="0.23114013671875" tx="21.8" ty="-22.1"/>
                   </matrix>
@@ -10053,7 +10053,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.7" y="109.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-167.75" centerPoint3DY="23">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-167.75" centerPoint3DY="23">
                   <matrix>
                     <Matrix a="-0.250732421875" b="-0.885009765625" c="-0.885009765625" d="0.250717163085938" tx="24.3" ty="-29.3"/>
                   </matrix>
@@ -10271,7 +10271,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.7" y="109.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-164.3" centerPoint3DY="19.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-164.3" centerPoint3DY="19.9">
                   <matrix>
                     <Matrix a="-0.270187377929688" b="-0.879180908203125" c="-0.879150390625" d="0.2701416015625" tx="26.45" ty="-36.65"/>
                   </matrix>
@@ -10489,7 +10489,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.7" y="109.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-160.6" centerPoint3DY="16.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-160.6" centerPoint3DY="16.75">
                   <matrix>
                     <Matrix a="-0.2894287109375" b="-0.87286376953125" c="-0.872894287109375" d="0.289474487304688" tx="28.85" ty="-44"/>
                   </matrix>
@@ -10707,7 +10707,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.7" y="109.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-157" centerPoint3DY="14">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-157" centerPoint3DY="14">
                   <matrix>
                     <Matrix a="-0.311447143554688" b="-0.8651123046875" c="-0.865142822265625" d="0.311492919921875" tx="30.85" ty="-51.5"/>
                   </matrix>
@@ -10925,7 +10925,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.65" y="109.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-153.4" centerPoint3DY="10.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-153.4" centerPoint3DY="10.55">
                   <matrix>
                     <Matrix a="-0.3304443359375" b="-0.857955932617188" c="-0.857955932617188" d="0.3304443359375" tx="32.95" ty="-59.1"/>
                   </matrix>
@@ -11143,7 +11143,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.65" y="109.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.65" centerPoint3DY="15.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.65" centerPoint3DY="15.25">
                   <matrix>
                     <Matrix a="-0.349273681640625" b="-0.850341796875" c="-0.850326538085938" d="0.3492431640625" tx="35.1" ty="-58.45"/>
                   </matrix>
@@ -11361,7 +11361,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.65" y="109.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-145.8" centerPoint3DY="19.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-145.8" centerPoint3DY="19.4">
                   <matrix>
                     <Matrix a="-0.367919921875" b="-0.842330932617188" c="-0.842330932617188" d="0.367919921875" tx="37.25" ty="-58.35"/>
                   </matrix>
@@ -11579,7 +11579,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.65" y="109.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-142.1" centerPoint3DY="23.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-142.1" centerPoint3DY="23.75">
                   <matrix>
                     <Matrix a="-0.386398315429688" b="-0.83392333984375" c="-0.83392333984375" d="0.386383056640625" tx="39.15" ty="-58.05"/>
                   </matrix>
@@ -11797,7 +11797,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.7" y="109.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-138.5" centerPoint3DY="27.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-138.5" centerPoint3DY="27.85">
                   <matrix>
                     <Matrix a="-0.4046630859375" b="-0.825119018554688" c="-0.825119018554688" d="0.404647827148438" tx="40.85" ty="-57.9"/>
                   </matrix>
@@ -12015,7 +12015,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.65" y="109.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-134.55" centerPoint3DY="32.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-134.55" centerPoint3DY="32.25">
                   <matrix>
                     <Matrix a="-0.4254150390625" b="-0.81451416015625" c="-0.81451416015625" d="0.4254150390625" tx="42.55" ty="-58"/>
                   </matrix>
@@ -12233,7 +12233,7 @@ if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长枪" 
                     <Point x="3.65" y="109.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-130.4" centerPoint3DY="36.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-130.4" centerPoint3DY="36.1">
                   <matrix>
                     <Matrix a="-0.443283081054688" b="-0.804901123046875" c="-0.804901123046875" d="0.443283081054688" tx="44.7" ty="-58.05"/>
                   </matrix>

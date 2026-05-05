@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角肢体素材/身体" itemID="697b650a-00002b2a" lastModified="1777486639" lastUniqueIdentifier="16">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角肢体素材/身体" itemID="697b650a-00002b2a" lastModified="1778012328" lastUniqueIdentifier="18">
   <timeline>
     <DOMTimeline name="身体">
       <layers>
@@ -33,11 +33,37 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 12副手刀元件" name="刀" selected="true" centerPoint3DX="-12.35" centerPoint3DY="30.05">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 12刀鞘元件" name="刀" selected="true" centerPoint3DX="-78.7" centerPoint3DY="36.6">
+                  <matrix>
+                    <Matrix a="0.98052978515625" b="0.688568115234375" c="-0.688568115234375" d="0.98052978515625" tx="1.75" ty="-83.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.85" y="119.55"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this.基本款._visible = 0;
+	var 刀 = _parent._parent._parent.刀3_装扮;
+	if (刀 != undefined && !_parent._parent.刀3)
+	{
+		_root.装备引用配置.配置装扮(this,刀,"装扮","刀3_引用");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 12副手刀元件" name="刀" centerPoint3DX="-12.35" centerPoint3DY="30.05">
                   <matrix>
                     <Matrix a="1.0491943359375" b="0.470108032226563" c="-0.470108032226563" d="1.0491943359375" tx="36.75" ty="-168.8"/>
                   </matrix>

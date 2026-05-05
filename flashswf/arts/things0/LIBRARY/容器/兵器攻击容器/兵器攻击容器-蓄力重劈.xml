@@ -609,7 +609,7 @@ Z轴攻击范围 = 30;
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/集气过程/集气过程" selected="true" symbolType="graphic" centerPoint3DX="-48.05" centerPoint3DY="-171.05" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/集气过程/集气过程" symbolType="graphic" centerPoint3DX="-48.05" centerPoint3DY="-171.05" loop="loop">
                   <matrix>
                     <Matrix a="7.19981384277344" d="5.4586181640625" tx="-40.15" ty="312.6"/>
                   </matrix>
@@ -5392,7 +5392,7 @@ Z轴攻击范围 = 30;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="202.35" centerPoint3DY="72.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="202.35" centerPoint3DY="72.05">
                   <matrix>
                     <Matrix a="0.166915893554688" b="-0.9171142578125" c="0.9171142578125" d="0.166915893554688" tx="26.65" ty="150.2"/>
                   </matrix>
@@ -5536,7 +5536,7 @@ Z轴攻击范围 = 30;
                     <Matrix a="-0.563278198242188" b="-0.8218994140625" c="-0.824356079101563" d="0.564956665039063" tx="36.4" ty="-24.75"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.4" y="111.95"/>
+                    <Point x="2.45" y="111.95"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="0" blurY="0"/>
@@ -5593,7 +5593,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-118.4" centerPoint3DY="26.15">
                   <matrix>
-                    <Matrix a="-0.292068481445313" b="-0.95166015625" c="-0.954513549804688" d="0.292953491210938" tx="90.75" ty="-35.25"/>
+                    <Matrix a="-0.292068481445313" b="-0.951644897460938" c="-0.954513549804688" d="0.292953491210938" tx="90.75" ty="-35.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="2.4" y="112"/>

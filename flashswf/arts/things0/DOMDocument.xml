@@ -10,7 +10,7 @@
           <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a"/>
-          <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
+          <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
           <DOMFolderItem name="个人编辑单位" itemID="695d3442-00003dd6"/>
           <DOMFolderItem name="个人编辑单位/浮士德的一堆相关或是不相关" itemID="695d3442-00003dd7"/>
           <DOMFolderItem name="各种图素材等" itemID="65e07117-00000783"/>
@@ -701,7 +701,8 @@
           <Include href="sprite/Symbol 6 副本.xml" loadImmediate="false" itemID="697b650f-00003220" lastModified="1702343951"/>
           <Include href="sprite/Symbol 8.xml" loadImmediate="false" itemID="697b650f-0000321e" lastModified="1702343951"/>
           <Include href="sprite/Symbol 12.xml" loadImmediate="false" itemID="697b650e-000030ca" lastModified="1769248358"/>
-          <Include href="sprite/Symbol 12副手刀元件.xml" loadImmediate="false" itemID="697b650a-00002b2d" lastModified="1769248402"/>
+          <Include href="sprite/Symbol 12刀鞘元件.xml" loadImmediate="false" itemID="69fa2b1a-00000a90" lastModified="1778012337"/>
+          <Include href="sprite/Symbol 12副手刀元件.xml" loadImmediate="false" itemID="697b650a-00002b2d" lastModified="1778002784"/>
           <Include href="sprite/Symbol 12主手刀元件.xml" loadImmediate="false" itemID="6974bf2e-00028938" lastModified="1769258836"/>
           <Include href="sprite/Symbol 16.xml" loadImmediate="false" itemID="697b650d-0000304f" lastModified="1718634467"/>
           <Include href="sprite/Symbol 20.xml" loadImmediate="false" itemID="697b650d-00002fa7" lastModified="1718634467"/>
@@ -737,13 +738,13 @@
           <Include href="sprite/Symbol 117.xml" loadImmediate="false" itemID="6577b699-000009a3" lastModified="1702343951"/>
           <Include href="sprite/Symbol 119.xml" loadImmediate="false" itemID="6577b699-000009a4" lastModified="1769694913"/>
           <Include href="sprite/Symbol 120.xml" loadImmediate="false" itemID="6577b699-000009a5" lastModified="1769694923"/>
-          <Include href="sprite/Symbol 131.xml" loadImmediate="false" itemID="6577b699-000009af" lastModified="1769694922"/>
+          <Include href="sprite/Symbol 131.xml" loadImmediate="false" itemID="6577b699-000009af" lastModified="1778013015"/>
           <Include href="sprite/Symbol 134.xml" loadImmediate="false" itemID="6577b699-000009b1" lastModified="1702343951"/>
           <Include href="sprite/Symbol 135.xml" loadImmediate="false" itemID="6577b699-000009b2" lastModified="1736866247"/>
           <Include href="sprite/Symbol 136.xml" loadImmediate="false" itemID="6577b699-000009b3" lastModified="1769694922"/>
           <Include href="sprite/Symbol 137.xml" loadImmediate="false" itemID="6577b699-000009b4" lastModified="1769694922"/>
           <Include href="sprite/Symbol 142.xml" loadImmediate="false" itemID="6577b699-000009b7" lastModified="1702343951"/>
-          <Include href="sprite/Symbol 144.xml" loadImmediate="false" itemID="6577b699-000009b8" lastModified="1772128503"/>
+          <Include href="sprite/Symbol 144.xml" loadImmediate="false" itemID="6577b699-000009b8" lastModified="1778013223"/>
           <Include href="sprite/Symbol 154.xml" loadImmediate="false" itemID="6577b699-000009bb" lastModified="1702343951"/>
           <Include href="sprite/Symbol 156.xml" loadImmediate="false" itemID="6577b699-000009bc" lastModified="1702343951"/>
           <Include href="sprite/Symbol 158.xml" loadImmediate="false" itemID="6577b699-000009bd" lastModified="1702343951"/>
@@ -880,11 +881,11 @@
           <Include href="sprite/Symbol 619.xml" loadImmediate="false" itemID="6577b699-00000ade" lastModified="1769694922"/>
           <Include href="sprite/Symbol 620.xml" loadImmediate="false" itemID="6577b699-00000adf" lastModified="1769694883"/>
           <Include href="sprite/Symbol 624.xml" loadImmediate="false" itemID="6577b699-00000ae3" lastModified="1769694922"/>
-          <Include href="sprite/Symbol 627.xml" loadImmediate="false" itemID="6577b699-00000ae6" lastModified="1769694922"/>
+          <Include href="sprite/Symbol 627.xml" loadImmediate="false" itemID="6577b699-00000ae6" lastModified="1778013359"/>
           <Include href="sprite/Symbol 628.xml" loadImmediate="false" itemID="6577b699-00000ae7" lastModified="1769694922"/>
           <Include href="sprite/Symbol 630.xml" loadImmediate="false" itemID="6577b699-00000ae8" lastModified="1702343951"/>
           <Include href="sprite/Symbol 638.xml" loadImmediate="false" itemID="6577b699-00000aeb" lastModified="1769694922"/>
-          <Include href="sprite/Symbol 639.xml" loadImmediate="false" itemID="6577b699-00000aec" lastModified="1769694922"/>
+          <Include href="sprite/Symbol 639.xml" loadImmediate="false" itemID="6577b699-00000aec" lastModified="1778013301"/>
           <Include href="sprite/Symbol 640.xml" loadImmediate="false" itemID="6577b699-00000aed" lastModified="1769694922"/>
           <Include href="sprite/Symbol 646.xml" loadImmediate="false" itemID="6577b699-00000af1" lastModified="1769694922"/>
           <Include href="sprite/Symbol 647.xml" loadImmediate="false" itemID="6577b699-00000af2" lastModified="1769694922"/>
@@ -1134,7 +1135,8 @@
           <Include href="sprite/弹壳贴图.xml" loadImmediate="false" itemID="64d9fd11-00001953" lastModified="1692007732"/>
           <Include href="sprite/刀.xml" loadImmediate="false" itemID="695e911c-00000792" lastModified="1767805212"/>
           <Include href="sprite/刀-新手刀（模型）.xml" loadImmediate="false" itemID="697b650e-000030cb" lastModified="1769190145"/>
-          <Include href="sprite/刀-新手刀（模型）副手刀.xml" loadImmediate="false" itemID="697b650a-00002b2e" lastModified="1769248573"/>
+          <Include href="sprite/刀-新手刀（模型）刀鞘.xml" loadImmediate="false" itemID="69fa2b0f-00000a85" lastModified="1778002731"/>
+          <Include href="sprite/刀-新手刀（模型）副手刀.xml" loadImmediate="false" itemID="697b650a-00002b2e" lastModified="1778002770"/>
           <Include href="sprite/刀-新手刀（模型）主手刀.xml" loadImmediate="false" itemID="6974bf4b-00029127" lastModified="1769694701"/>
           <Include href="sprite/防止无限飞元件（弃用）.xml" loadImmediate="false" itemID="66b9b374-000006e4" lastModified="1723446132"/>
           <Include href="sprite/刚体遮罩.xml" loadImmediate="false" itemID="65c9a9f5-0000062e" lastModified="1707753394"/>
@@ -1146,10 +1148,10 @@
           <Include href="sprite/觉醒霸体特效原先.xml" itemID="66c19f0e-000017fb" lastModified="1723965222"/>
           <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="697b6503-00001ff1" lastModified="1711945124"/>
           <Include href="sprite/近战子弹 已obj化.xml" loadImmediate="false" itemID="68ac3fb5-00000753" lastModified="1769694701"/>
-          <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1770063574"/>
-          <Include href="sprite/空手跑.xml" loadImmediate="false" itemID="6925bd91-0000345e" lastModified="1769694923"/>
-          <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1771962004"/>
-          <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1772128261"/>
+          <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1778012391"/>
+          <Include href="sprite/空手跑.xml" loadImmediate="false" itemID="6925bd91-0000345e" lastModified="1778012441"/>
+          <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1778012977"/>
+          <Include href="sprite/空手跳.xml" loadImmediate="false" itemID="6919df9d-00001065" lastModified="1778012879"/>
           <Include href="sprite/落地特效-闪光.xml" loadImmediate="false" itemID="663ba576-00000122" lastModified="1715185258"/>
           <Include href="sprite/木偶-主角-男.xml" itemID="668be718-0000065b" lastModified="1769694913"/>
           <Include href="sprite/男变装-基本脸型.xml" itemID="697b6508-00002817" lastModified="1729259751"/>
@@ -1192,7 +1194,7 @@
           <Include href="sprite/手雷攻击 暗器.xml" loadImmediate="false" itemID="68e55333-00000d86" lastModified="1769694922"/>
           <Include href="sprite/手雷行走.xml" loadImmediate="false" itemID="66a5d6a9-0000068e" lastModified="1769694922"/>
           <Include href="sprite/手雷行走 暗器2.xml" loadImmediate="false" itemID="68e54aec-0000093b" lastModified="1769694922"/>
-          <Include href="sprite/手雷跑.xml" loadImmediate="false" itemID="66a5d6b7-0000068f" lastModified="1769694922"/>
+          <Include href="sprite/手雷跑.xml" loadImmediate="false" itemID="66a5d6b7-0000068f" lastModified="1778013392"/>
           <Include href="sprite/手雷跑 暗器.xml" loadImmediate="false" itemID="68efd416-00001539" lastModified="1769694922"/>
           <Include href="sprite/手雷站立.xml" loadImmediate="false" itemID="66a5d699-0000068d" lastModified="1769694922"/>
           <Include href="sprite/手雷站立 暗器.xml" loadImmediate="false" itemID="68efd8ec-00000ccc" lastModified="1769694922"/>
@@ -2189,7 +2191,7 @@
           <Include href="主角动画层/手枪行走.xml" loadImmediate="false" itemID="66573878-00000631" lastModified="1769694922"/>
           <Include href="主角动画层/双枪攻击.xml" loadImmediate="false" itemID="66577cf3-00002e53" lastModified="1769694922"/>
           <Include href="主角动画层/双枪行走.xml" loadImmediate="false" itemID="66577cfa-00002e54" lastModified="1769694922"/>
-          <Include href="主角动画层/双枪跑.xml" loadImmediate="false" itemID="66577d03-00002e56" lastModified="1769694922"/>
+          <Include href="主角动画层/双枪跑.xml" loadImmediate="false" itemID="66577d03-00002e56" lastModified="1778013424"/>
           <Include href="主角动画层/双枪跳.xml" loadImmediate="false" itemID="66577d06-00002e57" lastModified="1769694922"/>
           <Include href="主角动画层/双枪站立.xml" loadImmediate="false" itemID="66577cfd-00002e55" lastModified="1769694922"/>
           <Include href="主角动画层/长枪攻击.xml" loadImmediate="false" itemID="66560654-000014f8" lastModified="1769694922"/>
@@ -2198,12 +2200,13 @@
           <Include href="主角肢体素材/Symbol 3.xml" loadImmediate="false" itemID="697b650f-00003223" lastModified="1731931497"/>
           <Include href="主角肢体素材/Symbol 6.xml" loadImmediate="false" itemID="697b6503-00001ff2" lastModified="1758557137"/>
           <Include href="主角肢体素材/刀.xml" loadImmediate="false" itemID="697b650e-000030c9" lastModified="1727752227"/>
-          <Include href="主角肢体素材/刀-副手.xml" loadImmediate="false" itemID="68ee4b77-0000073e" lastModified="1769694697"/>
-          <Include href="主角肢体素材/刀-主手.xml" loadImmediate="false" itemID="6974ae9b-00003b7d" lastModified="1769262376"/>
+          <Include href="主角肢体素材/刀-刀鞘.xml" loadImmediate="false" itemID="69fa2b6f-00000aaf" lastModified="1778003973"/>
+          <Include href="主角肢体素材/刀-副手.xml" loadImmediate="false" itemID="68ee4b77-0000073e" lastModified="1778003982"/>
+          <Include href="主角肢体素材/刀-主手.xml" loadImmediate="false" itemID="6974ae9b-00003b7d" lastModified="1778003496"/>
           <Include href="主角肢体素材/脚.xml" loadImmediate="false" itemID="697b650b-00002c94" lastModified="1757948596"/>
           <Include href="主角肢体素材/屁股.xml" loadImmediate="false" itemID="697b6508-000028be" lastModified="1757948600"/>
           <Include href="主角肢体素材/上臂.xml" loadImmediate="false" itemID="697b650d-0000304e" lastModified="1757948637"/>
-          <Include href="主角肢体素材/身体.xml" loadImmediate="false" itemID="697b650a-00002b2a" lastModified="1777486639"/>
+          <Include href="主角肢体素材/身体.xml" loadImmediate="false" itemID="697b650a-00002b2a" lastModified="1778012328"/>
           <Include href="主角肢体素材/手枪.xml" loadImmediate="false" itemID="697b650c-00002e6b" lastModified="1718943834"/>
           <Include href="主角肢体素材/手枪2.xml" loadImmediate="false" itemID="697b650c-00002e89" lastModified="1718943872"/>
           <Include href="主角肢体素材/头.xml" loadImmediate="false" itemID="697b6508-00002815" lastModified="1757948607"/>
@@ -2724,6 +2727,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4355979" publishTime="1778009249"/>
+          <PublishItem publishSize="4345895" publishTime="1778003896"/>
+          <PublishItem publishSize="4345895" publishTime="1778003572"/>
+          <PublishItem publishSize="4345895" publishTime="1778003371"/>
+          <PublishItem publishSize="4345900" publishTime="1778003122"/>
           <PublishItem publishSize="4342630" publishTime="1777902360"/>
           <PublishItem publishSize="4330956" publishTime="1777725345"/>
           <PublishItem publishSize="4324235" publishTime="1777485037"/>
@@ -2739,10 +2747,5 @@
           <PublishItem publishSize="4319030" publishTime="1777340429"/>
           <PublishItem publishSize="4287400" publishTime="1776959463"/>
           <PublishItem publishSize="4286780" publishTime="1776885666"/>
-          <PublishItem publishSize="4286783" publishTime="1776885488"/>
-          <PublishItem publishSize="4286798" publishTime="1776699664"/>
-          <PublishItem publishSize="4286772" publishTime="1776699303"/>
-          <PublishItem publishSize="4286774" publishTime="1776698945"/>
-          <PublishItem publishSize="4286778" publishTime="1776698620"/>
      </publishHistory>
 </DOMDocument>

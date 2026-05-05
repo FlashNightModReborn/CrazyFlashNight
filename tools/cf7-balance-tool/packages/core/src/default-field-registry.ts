@@ -418,6 +418,7 @@ export const DEFAULT_FIELD_REGISTRY: FieldRegistry = {
     "highlightMode",
     "state",
     "dressup2",
+    "dressup3",
     "temp",
     "unit",
     "weapon",

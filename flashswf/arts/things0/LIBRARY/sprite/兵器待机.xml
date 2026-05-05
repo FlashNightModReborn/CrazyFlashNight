@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器待机" itemID="690df7b1-00000ba7" lastModified="1777902532" lastUniqueIdentifier="21">
   <timeline>
-    <DOMTimeline name="兵器待机" currentFrame="462">
+    <DOMTimeline name="兵器待机" currentFrame="420">
       <layers>
         <DOMLayer name="Labels Layer" color="#AD90CF">
           <frames>
@@ -176,7 +176,7 @@ else if(_parent.格斗架势 == true)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右手" color="#34B4F4" autoNamed="false">
+        <DOMLayer name="右手" color="#34B4F4" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -24716,7 +24716,7 @@ else if(_parent.格斗架势 == true)
             </DOMFrame>
             <DOMFrame index="354" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="112.95" centerPoint3DY="-68.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="112.95" centerPoint3DY="-68.6">
                   <matrix>
                     <Matrix a="0.86181640625" b="0.0176544189453125" c="-0.01763916015625" d="0.86163330078125" tx="47.3" ty="-99.8"/>
                   </matrix>
@@ -24727,7 +24727,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="38.05" centerPoint3DY="-70.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="38.05" centerPoint3DY="-70.9">
                   <matrix>
                     <Matrix a="0.521652221679688" b="-0.679672241210938" c="0.6796875" d="0.5216064453125" tx="49.8" ty="-14.65"/>
                   </matrix>
@@ -24738,7 +24738,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="88.25" centerPoint3DY="14.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="88.25" centerPoint3DY="14.75">
                   <matrix>
                     <Matrix a="0.82135009765625" b="0.23638916015625" c="-0.236373901367188" d="0.82135009765625" tx="118.2" ty="32.7"/>
                   </matrix>
@@ -24749,7 +24749,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="29.75" centerPoint3DY="127.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="29.75" centerPoint3DY="127.15">
                   <matrix>
                     <Matrix a="0.107162475585938" b="-0.958282470703125" c="-0.958282470703125" d="-0.107162475585938" tx="-73.8" ty="24"/>
                   </matrix>
@@ -24760,7 +24760,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="74.4" centerPoint3DY="44.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="74.4" centerPoint3DY="44.9">
                   <matrix>
                     <Matrix a="-0.130615234375" b="0.991668701171875" c="-0.991668701171875" d="-0.130615234375" tx="18.25" ty="8.2"/>
                   </matrix>
@@ -24771,7 +24771,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="106.35" centerPoint3DY="233.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="106.35" centerPoint3DY="233.65">
                   <matrix>
                     <Matrix a="0.753753662109375" b="0.1729736328125" c="-0.1729736328125" d="0.753753662109375" tx="77.05" ty="196.6"/>
                   </matrix>
@@ -24782,7 +24782,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="69.65" centerPoint3DY="103.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="69.65" centerPoint3DY="103.25">
                   <matrix>
                     <Matrix a="0.474945068359375" b="-0.71624755859375" c="0.716278076171875" d="0.474899291992188" tx="10.45" ty="41.2"/>
                   </matrix>
@@ -24793,7 +24793,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="83.25" centerPoint3DY="172.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="83.25" centerPoint3DY="172.3">
                   <matrix>
                     <Matrix a="0.785812377929688" b="0.21954345703125" c="-0.21954345703125" d="0.785812377929688" tx="103.7" ty="99.9"/>
                   </matrix>
@@ -24804,7 +24804,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="6.15" centerPoint3DY="109.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="6.15" centerPoint3DY="109.5">
                   <matrix>
                     <Matrix a="0.842864990234375" b="0.106719970703125" c="-0.106719970703125" d="0.842864990234375" tx="-3" ty="-12.55"/>
                   </matrix>
@@ -24815,7 +24815,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="34.3" centerPoint3DY="-106">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="34.3" centerPoint3DY="-106">
                   <matrix>
                     <Matrix a="0.910812377929688" b="0.140899658203125" c="-0.140899658203125" d="0.910812377929688" tx="16.9" ty="-151.15"/>
                   </matrix>
@@ -24826,7 +24826,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="30.45" centerPoint3DY="76.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="30.45" centerPoint3DY="76.45">
                   <matrix>
                     <Matrix a="0.869140625" b="0.134750366210938" c="-0.134750366210938" d="0.869140625" tx="-12.9" ty="34.85"/>
                   </matrix>
@@ -24837,7 +24837,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="-40.35" centerPoint3DY="131.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-40.35" centerPoint3DY="131.6">
                   <matrix>
                     <Matrix a="0.71270751953125" b="0.463119506835938" c="-0.463119506835938" d="0.71270751953125" tx="-38" ty="48.05"/>
                   </matrix>
@@ -24848,7 +24848,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-147.85" centerPoint3DY="243.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-147.85" centerPoint3DY="243.2">
                   <matrix>
                     <Matrix a="0.6842041015625" b="0.421539306640625" c="-0.421539306640625" d="0.6842041015625" tx="-167.1" ty="198.2"/>
                   </matrix>
@@ -24859,7 +24859,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-104.4" centerPoint3DY="211.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-104.4" centerPoint3DY="211.75">
                   <matrix>
                     <Matrix a="0.572860717773438" b="0.595687866210938" c="-0.595687866210938" d="0.572860717773438" tx="-96.55" ty="134.9"/>
                   </matrix>
@@ -24870,7 +24870,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="6.2" centerPoint3DY="7.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="6.2" centerPoint3DY="7.2">
                   <matrix>
                     <Matrix a="-0.194976806640625" b="0.9808349609375" c="-0.9808349609375" d="-0.194976806640625" tx="-49.85" ty="-29.4"/>
                   </matrix>
@@ -24881,7 +24881,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="-65.15" centerPoint3DY="-46.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-65.15" centerPoint3DY="-46.3">
                   <matrix>
                     <Matrix a="0.601913452148438" b="0.615097045898438" c="-0.615097045898438" d="0.601913452148438" tx="-37.35" ty="-113.4"/>
                   </matrix>
@@ -24892,7 +24892,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-87.45" centerPoint3DY="-106.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-87.45" centerPoint3DY="-106.6">
                   <matrix>
                     <Matrix a="0.841827392578125" b="-0.154342651367188" c="0.15435791015625" d="0.841903686523438" tx="-102.1" ty="-49.65"/>
                   </matrix>
@@ -24903,7 +24903,7 @@ else if(_parent.格斗架势 == true)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="-93.8" centerPoint3DY="-63.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="-93.8" centerPoint3DY="-63.75">
                   <matrix>
                     <Matrix a="-0.261093139648438" b="-0.88311767578125" c="-0.88311767578125" d="0.261093139648438" tx="86.9" ty="-4.9"/>
                   </matrix>
@@ -24911,7 +24911,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-177.1" centerPoint3DY="71.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-177.1" centerPoint3DY="71.05">
                   <matrix>
                     <Matrix a="-0.26556396484375" b="-0.892852783203125" c="-0.892852783203125" d="0.26556396484375" tx="16.55" ty="15.5"/>
                   </matrix>
@@ -24919,7 +24919,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="2.05" y="109.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="-105.7" centerPoint3DY="-9.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-105.7" centerPoint3DY="-9.8">
                   <matrix>
                     <Matrix a="0.52410888671875" b="0.671615600585938" c="-0.671615600585938" d="0.52410888671875" tx="-90.7" ty="23.3"/>
                   </matrix>
@@ -25129,7 +25129,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" selected="true" centerPoint3DX="-177.1" centerPoint3DY="68.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-177.1" centerPoint3DY="68.05">
                   <matrix>
                     <Matrix a="-0.26556396484375" b="-0.892852783203125" c="-0.892852783203125" d="0.26556396484375" tx="16.55" ty="12.5"/>
                   </matrix>
@@ -25347,7 +25347,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.65" y="109.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-174.6" centerPoint3DY="69.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-174.6" centerPoint3DY="69.85">
                   <matrix>
                     <Matrix a="-0.291854858398438" b="-0.88482666015625" c="-0.88482666015625" d="0.291854858398438" tx="17.35" ty="8.6"/>
                   </matrix>
@@ -25565,7 +25565,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-172.4" centerPoint3DY="70.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-172.4" centerPoint3DY="70.65">
                   <matrix>
                     <Matrix a="-0.3121337890625" b="-0.878082275390625" c="-0.878082275390625" d="0.3121337890625" tx="18.15" ty="5.05"/>
                   </matrix>
@@ -25783,7 +25783,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.65" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-169.6" centerPoint3DY="72.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-169.6" centerPoint3DY="72.25">
                   <matrix>
                     <Matrix a="-0.33795166015625" b="-0.868698120117188" c="-0.868698120117188" d="0.33795166015625" tx="18.95" ty="1"/>
                   </matrix>
@@ -26001,7 +26001,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.65" y="109.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-167.2" centerPoint3DY="72.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-167.2" centerPoint3DY="72.8">
                   <matrix>
                     <Matrix a="-0.357879638671875" b="-0.86090087890625" c="-0.86090087890625" d="0.357879638671875" tx="19.7" ty="-2.75"/>
                   </matrix>
@@ -26219,7 +26219,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.65" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-164.3" centerPoint3DY="74.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-164.3" centerPoint3DY="74.1">
                   <matrix>
                     <Matrix a="-0.383209228515625" b="-0.850189208984375" c="-0.850189208984375" d="0.383209228515625" tx="20.4" ty="-6.9"/>
                   </matrix>
@@ -26437,7 +26437,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.65" y="109.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-161.8" centerPoint3DY="74.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-161.8" centerPoint3DY="74.65">
                   <matrix>
                     <Matrix a="-0.40264892578125" b="-0.84136962890625" c="-0.84136962890625" d="0.40264892578125" tx="21" ty="-10.6"/>
                   </matrix>
@@ -26655,7 +26655,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.7" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-158.35" centerPoint3DY="75.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-158.35" centerPoint3DY="75.6">
                   <matrix>
                     <Matrix a="-0.427398681640625" b="-0.829330444335938" c="-0.829330444335938" d="0.427398681640625" tx="21.9" ty="-15"/>
                   </matrix>
@@ -26873,7 +26873,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-155.85" centerPoint3DY="75.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-155.85" centerPoint3DY="75.95">
                   <matrix>
                     <Matrix a="-0.446380615234375" b="-0.819503784179688" c="-0.819503784179688" d="0.446380615234375" tx="22.3" ty="-18.85"/>
                   </matrix>
@@ -27091,7 +27091,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.65" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-152.35" centerPoint3DY="76.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-152.35" centerPoint3DY="76.8">
                   <matrix>
                     <Matrix a="-0.470489501953125" b="-0.80615234375" c="-0.80615234375" d="0.470489501953125" tx="22.95" ty="-23.2"/>
                   </matrix>
@@ -27309,7 +27309,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.7" centerPoint3DY="76.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.7" centerPoint3DY="76.75">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.35" ty="-27.3"/>
                   </matrix>
@@ -27527,7 +27527,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.75" centerPoint3DY="76.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.75" centerPoint3DY="76.2">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.3" ty="-27.85"/>
                   </matrix>
@@ -27745,7 +27745,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.75" centerPoint3DY="75.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.75" centerPoint3DY="75.65">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.3" ty="-28.4"/>
                   </matrix>
@@ -27963,7 +27963,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="75.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="75.2">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-28.85"/>
                   </matrix>
@@ -28181,7 +28181,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="74.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="74.7">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-29.35"/>
                   </matrix>
@@ -28399,7 +28399,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="74.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="74.2">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-29.85"/>
                   </matrix>
@@ -28617,7 +28617,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="73.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="73.75">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-30.3"/>
                   </matrix>
@@ -28835,7 +28835,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.75" centerPoint3DY="73.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.75" centerPoint3DY="73.2">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.3" ty="-30.85"/>
                   </matrix>
@@ -29053,7 +29053,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="72.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="72.7">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-31.35"/>
                   </matrix>
@@ -29271,7 +29271,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="72.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="72.25">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-31.8"/>
                   </matrix>
@@ -29489,7 +29489,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="71.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="71.8">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-32.25"/>
                   </matrix>
@@ -29707,7 +29707,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="71.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="71.25">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-32.8"/>
                   </matrix>
@@ -29925,7 +29925,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="70.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="70.75">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-33.3"/>
                   </matrix>
@@ -30143,7 +30143,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.75" centerPoint3DY="70.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.75" centerPoint3DY="70.3">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.3" ty="-33.75"/>
                   </matrix>
@@ -30361,7 +30361,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="69.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="69.85">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-34.2"/>
                   </matrix>
@@ -30579,7 +30579,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="69.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="69.3">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-34.75"/>
                   </matrix>
@@ -30797,7 +30797,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="68.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="68.8">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-35.25"/>
                   </matrix>
@@ -31015,7 +31015,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="68.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="68.4">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-35.65"/>
                   </matrix>
@@ -31233,7 +31233,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="67.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="67.8">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-36.25"/>
                   </matrix>
@@ -31451,7 +31451,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="67.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="67.35">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-36.7"/>
                   </matrix>
@@ -31669,7 +31669,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="66.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="66.8">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-37.25"/>
                   </matrix>
@@ -31887,7 +31887,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="66.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="66.35">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-37.7"/>
                   </matrix>
@@ -32105,7 +32105,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="65.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="65.9">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-38.15"/>
                   </matrix>
@@ -32323,7 +32323,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="65.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="65.4">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-38.65"/>
                   </matrix>
@@ -32541,7 +32541,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="64.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="64.95">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-39.1"/>
                   </matrix>
@@ -32759,7 +32759,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.95" centerPoint3DY="64.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.95" centerPoint3DY="64.4">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.1" ty="-39.65"/>
                   </matrix>
@@ -32977,7 +32977,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="63.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="63.95">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-40.1"/>
                   </matrix>
@@ -33195,7 +33195,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="63.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="63.55">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-40.5"/>
                   </matrix>
@@ -33413,7 +33413,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="62.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="62.85">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-41.2"/>
                   </matrix>
@@ -33631,7 +33631,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="62.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="62.55">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-41.5"/>
                   </matrix>
@@ -33849,7 +33849,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="62.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="62.5">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-41.55"/>
                   </matrix>
@@ -34067,7 +34067,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="62.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="62.5">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-41.55"/>
                   </matrix>
@@ -34285,7 +34285,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="62.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="62.6">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-41.45"/>
                   </matrix>
@@ -34503,7 +34503,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="62.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="62.65">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-41.4"/>
                   </matrix>
@@ -34721,7 +34721,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="62.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="62.7">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-41.35"/>
                   </matrix>
@@ -34939,7 +34939,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="62.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="62.75">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-41.3"/>
                   </matrix>
@@ -35157,7 +35157,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="62.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="62.85">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-41.2"/>
                   </matrix>
@@ -35375,7 +35375,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="63">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="63">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-41.05"/>
                   </matrix>
@@ -35593,7 +35593,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="63.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="63.2">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-40.85"/>
                   </matrix>
@@ -35811,7 +35811,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="63.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="63.35">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-40.7"/>
                   </matrix>
@@ -36029,7 +36029,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="63.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="63.45">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-40.6"/>
                   </matrix>
@@ -36247,7 +36247,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="63.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="63.7">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-40.35"/>
                   </matrix>
@@ -36465,7 +36465,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="63.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="63.9">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-40.15"/>
                   </matrix>
@@ -36683,7 +36683,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="64.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="64.05">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-40"/>
                   </matrix>
@@ -36901,7 +36901,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.95" centerPoint3DY="64.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.95" centerPoint3DY="64.35">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.1" ty="-39.7"/>
                   </matrix>
@@ -37119,7 +37119,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="64.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="64.6">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-39.45"/>
                   </matrix>
@@ -37337,7 +37337,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="64.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="64.7">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-39.35"/>
                   </matrix>
@@ -37555,7 +37555,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="65.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-149.9" centerPoint3DY="65.05">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-39"/>
                   </matrix>
@@ -37773,7 +37773,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="65.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="65.25">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-38.8"/>
                   </matrix>
@@ -37991,7 +37991,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="65.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="65.6">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-38.45"/>
                   </matrix>
@@ -38209,7 +38209,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="65.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="65.9">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-38.15"/>
                   </matrix>
@@ -38427,7 +38427,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="66.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="66.25">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-37.8"/>
                   </matrix>
@@ -38645,7 +38645,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="66.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="66.5">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-37.55"/>
                   </matrix>
@@ -38863,7 +38863,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="66.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="66.9">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-37.15"/>
                   </matrix>
@@ -39081,7 +39081,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="67.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="67.2">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-36.85"/>
                   </matrix>
@@ -39299,7 +39299,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="67.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="67.55">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-36.5"/>
                   </matrix>
@@ -39517,7 +39517,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="68">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="68">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-36.05"/>
                   </matrix>
@@ -39735,7 +39735,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="68.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="68.35">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-35.7"/>
                   </matrix>
@@ -39953,7 +39953,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="68.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="68.75">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-35.3"/>
                   </matrix>
@@ -40171,7 +40171,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="69.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="69.1">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-34.95"/>
                   </matrix>
@@ -40389,7 +40389,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="69.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="69.55">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-34.5"/>
                   </matrix>
@@ -40607,7 +40607,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.75" centerPoint3DY="69.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.75" centerPoint3DY="69.9">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.3" ty="-34.15"/>
                   </matrix>
@@ -40825,7 +40825,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="70.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="70.35">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-33.7"/>
                   </matrix>
@@ -41043,7 +41043,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.9" centerPoint3DY="70.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.9" centerPoint3DY="70.75">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.15" ty="-33.3"/>
                   </matrix>
@@ -41261,7 +41261,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="71.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="71.15">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-32.9"/>
                   </matrix>
@@ -41479,7 +41479,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="71.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="71.6">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-32.45"/>
                   </matrix>
@@ -41697,7 +41697,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.85" centerPoint3DY="72.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.85" centerPoint3DY="72.05">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.2" ty="-32"/>
                   </matrix>
@@ -41915,7 +41915,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.75" centerPoint3DY="72.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.75" centerPoint3DY="72.45">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.3" ty="-31.6"/>
                   </matrix>
@@ -42133,7 +42133,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="73">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="73">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-31.05"/>
                   </matrix>
@@ -42351,7 +42351,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="73.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="73.45">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-30.6"/>
                   </matrix>
@@ -42569,7 +42569,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="73.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="73.85">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-30.2"/>
                   </matrix>
@@ -42787,7 +42787,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.8" centerPoint3DY="74.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.8" centerPoint3DY="74.35">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.25" ty="-29.7"/>
                   </matrix>
@@ -43005,7 +43005,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.75" centerPoint3DY="74.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.75" centerPoint3DY="74.7">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.3" ty="-29.35"/>
                   </matrix>
@@ -43223,7 +43223,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.75" centerPoint3DY="75.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.75" centerPoint3DY="75.3">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.3" ty="-28.75"/>
                   </matrix>
@@ -43441,7 +43441,7 @@ else if(_parent.格斗架势 == true)
                     <Point x="3.6" y="109.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-副手" name="刀2" centerPoint3DX="-149.7" centerPoint3DY="75.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-149.7" centerPoint3DY="75.75">
                   <matrix>
                     <Matrix a="-0.488922119140625" b="-0.79534912109375" c="-0.79534912109375" d="0.488922119140625" tx="23.35" ty="-28.3"/>
                   </matrix>
@@ -43724,7 +43724,7 @@ else if(_parent.格斗架势 == true)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右大臂" color="#59B9C0" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="右大臂" color="#59B9C0" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 144" itemID="6577b699-000009b8" lastModified="1772128503" lastUniqueIdentifier="41">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 144" itemID="6577b699-000009b8" lastModified="1778013223" lastUniqueIdentifier="41">
   <timeline>
     <DOMTimeline name="Symbol 144" currentFrame="54">
       <layers>
@@ -44,7 +44,7 @@ _parent.死亡检测();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#A1AC76" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#A1AC76" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -782,7 +782,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#9933CC" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -1081,7 +1081,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物动画" color="#48A1FC" locked="true" autoNamed="false">
+        <DOMLayer name="人物动画" color="#48A1FC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>
@@ -1354,9 +1354,9 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-398.65" centerPoint3DY="229.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-418.2" centerPoint3DY="147.5">
                   <matrix>
-                    <Matrix a="0.359085083007813" b="-0.893295288085938" c="0.893295288085938" d="0.359085083007813" tx="-243.75" ty="104.3"/>
+                    <Matrix a="0.536483764648438" b="-0.7994384765625" c="0.7994384765625" d="0.536483764648438" tx="-241.1" ty="57.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="3.55" y="113.5"/>
@@ -1750,9 +1750,9 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-133.4" centerPoint3DY="445.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-63.15" centerPoint3DY="471.3">
                   <matrix>
-                    <Matrix a="0.917083740234375" b="-0.244476318359375" c="-0.244476318359375" d="-0.917083740234375" tx="8.1" ty="307.5"/>
+                    <Matrix a="0.853805541992188" b="-0.414505004882813" c="-0.414505004882813" d="-0.853805541992188" tx="49.15" ty="309"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="3.6" y="113.55"/>
@@ -1948,12 +1948,12 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="210.55" centerPoint3DY="23.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="242.15" centerPoint3DY="103.35">
                   <matrix>
-                    <Matrix a="-0.2991943359375" b="0.910888671875" c="-0.910888671875" d="-0.2991943359375" tx="63.25" ty="158.15"/>
+                    <Matrix a="-0.474105834960938" b="0.833343505859375" c="-0.833343505859375" d="-0.474105834960938" tx="70.65" ty="206.85"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="3.65" y="113.55"/>
+                    <Point x="3.65" y="113.6"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="0" blurY="0"/>
@@ -2359,12 +2359,12 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                     <BlurFilter blurX="10" blurY="4"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-291.65" centerPoint3DY="18.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-323.3" centerPoint3DY="89.9">
                   <matrix>
-                    <Matrix a="0.2991943359375" b="0.910888671875" c="0.910888671875" d="-0.2991943359375" tx="-144.35" ty="153.2"/>
+                    <Matrix a="0.459640502929688" b="0.841400146484375" c="0.841400146484375" d="-0.459640502929688" tx="-153.75" ty="195.7"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="3.65" y="113.55"/>
+                    <Point x="3.65" y="113.5"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="10" blurY="4"/>
@@ -3230,12 +3230,12 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="179.15" centerPoint3DY="-469.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="216.55" centerPoint3DY="-448.45">
                   <matrix>
-                    <Matrix a="0.5185546875" b="0.79339599609375" c="-0.79339599609375" d="0.5185546875" tx="192.25" ty="-272.8"/>
+                    <Matrix a="0.395767211914063" b="0.861236572265625" c="-0.861236572265625" d="0.395767211914063" tx="200.4" ty="-251.55"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="3.6" y="113.45"/>
+                    <Point x="3.55" y="113.45"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="0" blurY="0"/>
@@ -3428,9 +3428,9 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-60.45" centerPoint3DY="-470.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-12.45" centerPoint3DY="-472.4">
                   <matrix>
-                    <Matrix a="0.821517944335938" b="0.468673706054688" c="-0.468673706054688" d="0.821517944335938" tx="40.8" ty="-301.75"/>
+                    <Matrix a="0.733657836914063" b="0.596878051757813" c="-0.596878051757813" d="0.733657836914063" tx="59.65" ty="-288.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="3.65" y="113.5"/>
@@ -3626,12 +3626,12 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="133.6" centerPoint3DY="-351.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="183.25" centerPoint3DY="-331.6">
                   <matrix>
-                    <Matrix a="0.543136596679688" b="0.777069091796875" c="-0.777069091796875" d="0.543136596679688" tx="152.85" ty="-155.05"/>
+                    <Matrix a="0.400772094726563" b="0.859176635742188" c="-0.859176635742188" d="0.400772094726563" tx="168.6" ty="-134.7"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="3.6" y="113.5"/>
+                    <Point x="3.65" y="113.45"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="0" blurY="0"/>
@@ -3824,9 +3824,9 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="296.85" centerPoint3DY="-156">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="335.1" centerPoint3DY="-109.05">
                   <matrix>
-                    <Matrix a="0.155029296875" b="0.9354248046875" c="-0.9354248046875" d="0.155029296875" tx="229.5" ty="29.55"/>
+                    <Matrix a="-0.012908935546875" b="0.948104858398438" c="-0.948104858398438" d="-0.012908935546875" tx="235.85" ty="61.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="3.7" y="113.55"/>
@@ -4022,12 +4022,12 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="305.65" centerPoint3DY="-139.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="341.4" centerPoint3DY="-85.25">
                   <matrix>
-                    <Matrix a="0.121551513671875" b="0.94012451171875" c="-0.94012451171875" d="0.121551513671875" tx="231.8" ty="43.75"/>
+                    <Matrix a="-0.0636444091796875" b="0.945816040039063" c="-0.945816040039063" d="-0.0636444091796875" tx="233.05" ty="79.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="3.6" y="113.6"/>
+                    <Point x="3.55" y="113.5"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="0" blurY="0"/>
@@ -4220,9 +4220,9 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="315.95" centerPoint3DY="-119.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="347" centerPoint3DY="-70.05">
                   <matrix>
-                    <Matrix a="0.080474853515625" b="0.94427490234375" c="-0.94427490234375" d="0.080474853515625" tx="234.15" ty="60.4"/>
+                    <Matrix a="-0.0887451171875" b="0.943527221679688" c="-0.943527221679688" d="-0.0887451171875" tx="234.65" ty="92.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="3.6" y="113.55"/>
@@ -4418,9 +4418,9 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="302.45" centerPoint3DY="-145.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="341.15" centerPoint3DY="-93.25">
                   <matrix>
-                    <Matrix a="0.1341552734375" b="0.938507080078125" c="-0.938507080078125" d="0.1341552734375" tx="231" ty="38.45"/>
+                    <Matrix a="-0.0469207763671875" b="0.946884155273438" c="-0.946884155273438" d="-0.0469207763671875" tx="236" ty="73.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="3.65" y="113.5"/>
@@ -4616,12 +4616,12 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="228.4" centerPoint3DY="-254.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="282.75" centerPoint3DY="-213.4">
                   <matrix>
-                    <Matrix a="0.37371826171875" b="0.873153686523438" c="-0.873153686523438" d="0.37371826171875" tx="207.1" ty="-58.15"/>
+                    <Matrix a="0.197021484375" b="0.929107666015625" c="-0.929107666015625" d="0.197021484375" tx="223.6" ty="-24.6"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="3.55" y="113.55"/>
+                    <Point x="3.6" y="113.55"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="0" blurY="0"/>
@@ -4814,12 +4814,12 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="21.7" centerPoint3DY="-408.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="92.3" centerPoint3DY="-409.3">
                   <matrix>
-                    <Matrix a="0.787216186523438" b="0.535552978515625" c="-0.535552978515625" d="0.787216186523438" tx="109.85" ty="-230.85"/>
+                    <Matrix a="0.676742553710938" b="0.669723510742188" c="-0.669723510742188" d="0.676742553710938" tx="146.45" ty="-218.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="3.6" y="113.5"/>
+                    <Point x="3.65" y="113.5"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="0" blurY="0"/>
@@ -5785,13 +5785,13 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#1ECCBE" locked="true">
+        <DOMLayer name="Layer 21" color="#1ECCBE">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-211.7" centerPoint3DY="298.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-202.2" centerPoint3DY="291.3">
                   <matrix>
-                    <Matrix a="0.557220458984375" b="-0.82159423828125" c="0.82159423828125" d="0.557220458984375" tx="-248.25" ty="96.55"/>
+                    <Matrix a="0.557220458984375" b="-0.82159423828125" c="0.82159423828125" d="0.557220458984375" tx="-238.75" ty="89.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -5819,9 +5819,9 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
             <DOMFrame index="19" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="156.9" centerPoint3DY="158.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="187.9" centerPoint3DY="170.95">
                   <matrix>
-                    <Matrix a="0.425933837890625" b="0.898757934570313" c="-0.898757934570313" d="0.425933837890625" tx="120.35" ty="-43.3"/>
+                    <Matrix a="0.425933837890625" b="0.898757934570313" c="-0.898757934570313" d="0.425933837890625" tx="151.35" ty="-30.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

@@ -1702,7 +1702,7 @@ function 消弹()
             </DOMFrame>
             <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-275" centerPoint3DY="70.85">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-275" centerPoint3DY="70.85">
                   <matrix>
                     <Matrix a="58.5083160400391" d="17.1866607666016" tx="85.75" ty="74.4"/>
                   </matrix>
@@ -4756,7 +4756,7 @@ function 消弹()
                     <Color brightness="-0.7"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" blendMode="subtract" centerPoint3DX="40.5" centerPoint3DY="112.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" blendMode="subtract" centerPoint3DX="40.5" centerPoint3DY="112.65">
                   <matrix>
                     <Matrix a="0.345947265625" b="0.77685546875" c="-0.77685546875" d="0.345947265625" tx="141.75" ty="40.65"/>
                   </matrix>
