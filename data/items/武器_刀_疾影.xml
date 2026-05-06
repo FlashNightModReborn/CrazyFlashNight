@@ -4,7 +4,7 @@
 <root>
     <item>
       <name>虎彻配鞘版</name>
-      <displayname>虎彻配鞘版</displayname>
+      <displayname>虎彻-入鞘</displayname>
       <icon>虎彻配鞘版</icon>
       <type>武器</type>
       <use>刀</use>
@@ -36,7 +36,7 @@
     </item>
     <item>
       <name>黑铁武士的刀带鞘</name>
-      <displayname>黑铁武士的刀带鞘</displayname>
+      <displayname>黑铁武士刀-入鞘</displayname>
       <icon>黑铁武士的刀带鞘</icon>
       <type>武器</type>
       <use>刀</use>
@@ -63,7 +63,7 @@
     </item>
     <item>
       <name>血刀配鞘版</name>
-      <displayname>血刀配鞘版</displayname>
+      <displayname>血刀-入鞘</displayname>
       <icon>血刀配鞘版</icon>
       <type>武器</type>
       <use>刀</use>
@@ -91,10 +91,43 @@
         <vampirism>1</vampirism>
         <bladeCount>3</bladeCount>
       </data>
-      </item>
+    </item>
+    <item>
+      <name>寒潭黑蛟-入鞘</name>
+      <displayname>寒潭黑蛟-入鞘</displayname>
+      <icon>寒潭黑蛟-入鞘</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>疾影</actiontype>
+      <price>78000</price>
+      <skill>
+        <skillname>弧光斩</skillname>
+        <description>手持该武器时可以使用弧光斩。</description>
+        <cd>4000</cd>
+        <mp>50</mp>
+      </skill>
+      <description>黑铁会与联合大学的高级订制武器，配有特殊的攻防一体式剑鞘。
+      剑身材料像是使用了特殊的玉石与工业钢铁的融合金属，低调古朴的外形受到权高位重的人士喜爱。
+      冰蓝色的剑身，蕴含着作为前文明时代工业结晶的微型冷冻装置；
+      因此只需轻触，便能冻结血肉。</description>
+      <data>
+        <level>29</level>
+        <weight>3</weight>
+        <dressup>刀-寒潭黑蛟</dressup>
+        <dressup3>刀-寒潭黑蛟剑鞘</dressup3>
+        <power>235</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <evasion>10</evasion>
+        <damagetype>魔法</damagetype>
+        <magictype>冷</magictype>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
     <item>
     <name>黑铁剑配鞘</name>
-    <displayname>黑铁剑配鞘</displayname>
+    <displayname>黑铁剑-入鞘</displayname>
     <icon>黑铁剑配鞘</icon>
     <type>武器</type>
     <use>刀</use>
@@ -142,7 +175,7 @@
     </item>
     <item>
       <name>黑金古刀配鞘</name>
-      <displayname>黑金古刀配鞘</displayname>
+      <displayname>黑金古刀-入鞘</displayname>
       <icon>黑金古刀配鞘</icon>
       <type>武器</type>
       <use>刀</use>
@@ -177,7 +210,7 @@
       </item>
       <item>
       <name>血能源刃配鞘版</name>
-      <displayname>血能源刃配鞘版</displayname>
+      <displayname>血能源刃-入鞘</displayname>
       <icon>血能源刃配鞘版</icon>
       <type>武器</type>
       <use>刀</use>
@@ -210,7 +243,7 @@
     </item>
     <item>
       <name>阎魔刀带鞘版</name>
-      <displayname>阎魔刀带鞘版</displayname>
+      <displayname>阎魔刀-入鞘</displayname>
       <icon>阎魔刀带鞘版</icon>
       <type>武器</type>
       <use>刀</use>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图标/Symbol 16" itemID="66631a4d-000015b1" symbolType="graphic" lastModified="1715872572">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图标/Symbol 16" itemID="66631a4d-000015b1" symbolType="graphic" lastModified="1778037058">
   <timeline>
     <DOMTimeline name="Symbol 16">
       <layers>
@@ -6,7 +6,7 @@
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <RadialGradient>
@@ -19,7 +19,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240"/>
+                    <Edge fillStyle1="1" edges="!-240 -240S2|240 -240!240 -240|240 240!240 240|-240 240!-240 240|-240 -240"/>
                   </edges>
                 </DOMShape>
               </elements>
