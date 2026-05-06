@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1777902665" lastUniqueIdentifier="320">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="480">
+    <DOMTimeline name="主角-男" currentFrame="89">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4" locked="true">
           <frames>
@@ -1056,7 +1056,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="88" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 144" name="man" centerPoint3DX="279.4" centerPoint3DY="158.85">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 144" name="man" selected="true" centerPoint3DX="279.4" centerPoint3DY="158.85">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
                   </matrix>

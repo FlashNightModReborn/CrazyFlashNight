@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 144" itemID="6577b699-000009b8" lastModified="1778013223" lastUniqueIdentifier="41">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 144" itemID="6577b699-000009b8" lastModified="1778081751" lastUniqueIdentifier="41">
   <timeline>
-    <DOMTimeline name="Symbol 144" currentFrame="54">
+    <DOMTimeline name="Symbol 144" currentFrame="40">
       <layers>
         <DOMLayer name="连段标识" color="#AE8F69" locked="true" autoNamed="false">
           <frames>
@@ -284,7 +284,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击代码" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="攻击代码" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -319,6 +319,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 	子弹属性.击倒率 = 1;
 	子弹属性.垂直击退速度 = 2;
 	子弹属性.水平击退速度 = 1;
+	子弹参数.不硬直 = true;
 	//非常用
 	/*
 	子弹属性.水平击退速度 = NaN;
@@ -378,6 +379,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 	子弹属性.击倒率 = 1;
 	子弹属性.垂直击退速度 = 2;
 	子弹属性.水平击退速度 = 1;
+	子弹参数.不硬直 = true;
 	//非常用
 	/*
 	子弹属性.水平击退速度 = NaN;
@@ -437,6 +439,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 	子弹属性.击倒率 = 1;
 	子弹属性.垂直击退速度 = 2;
 	子弹属性.水平击退速度 = 1;
+	子弹参数.不硬直 = true;
 	//非常用
 	/*
 	子弹属性.水平击退速度 = NaN;
@@ -471,7 +474,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
             <DOMFrame index="40" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-7.85" centerPoint3DY="68.25">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="-7.85" centerPoint3DY="68.25">
                   <matrix>
                     <Matrix a="3.4185791015625" d="4.96202087402344" tx="-6.35" ty="-103.4"/>
                   </matrix>
@@ -496,6 +499,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 	子弹属性.击倒率 = 0.5;
 	子弹属性.垂直击退速度 = 3;
 	子弹属性.水平击退速度 = 1;
+	子弹参数.不硬直 = true;
 	//非常用
 	/*
 	子弹属性.水平击退速度 = NaN;
@@ -536,7 +540,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击代码2" color="#FF4FFF" locked="true" autoNamed="false">
+        <DOMLayer name="攻击代码2" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -546,7 +550,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
             <DOMFrame index="26" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-16.6" centerPoint3DY="41">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="-16.6" centerPoint3DY="41">
                   <matrix>
                     <Matrix a="7.7276611328125" d="3.19639587402344" tx="-14.3" ty="39.55"/>
                   </matrix>
@@ -571,6 +575,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 	子弹属性.击倒率 = 1;
 	子弹属性.垂直击退速度 = 2;
 	子弹属性.水平击退速度 = 1;
+	子弹参数.不硬直 = true;
 	//非常用
 	/*
 	子弹属性.水平击退速度 = NaN;
@@ -630,6 +635,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 	子弹属性.击倒率 = 1;
 	子弹属性.垂直击退速度 = 2;
 	子弹属性.水平击退速度 = 1;
+	子弹参数.不硬直 = true;
 	//非常用
 	/*
 	子弹属性.水平击退速度 = NaN;
@@ -689,6 +695,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 	子弹属性.击倒率 = 1;
 	子弹属性.垂直击退速度 = 2;
 	子弹属性.水平击退速度 = 1;
+	子弹参数.不硬直 = true;
 	//非常用
 	/*
 	子弹属性.水平击退速度 = NaN;
@@ -748,6 +755,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 	子弹属性.击倒率 = 0.5;
 	子弹属性.垂直击退速度 = 2;
 	子弹属性.水平击退速度 = 1;
+	子弹参数.不硬直 = true;
 	//非常用
 	/*
 	子弹属性.水平击退速度 = NaN;
@@ -1081,7 +1089,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物动画" color="#48A1FC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="人物动画" color="#48A1FC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>
@@ -5785,7 +5793,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#1ECCBE">
+        <DOMLayer name="Layer 21" color="#1ECCBE" locked="true">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements>

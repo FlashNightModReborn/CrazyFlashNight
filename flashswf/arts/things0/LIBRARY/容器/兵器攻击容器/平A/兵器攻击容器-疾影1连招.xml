@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招" itemID="69eff1b8-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影1连招" lastModified="1778040065" lastUniqueIdentifier="45">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招" itemID="69eff1b8-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影1连招" lastModified="1778082205" lastUniqueIdentifier="45">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-疾影1连招">
+    <DOMTimeline name="兵器攻击容器-疾影1连招" currentFrame="4">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -123,7 +123,7 @@ _root.兵器攻击路由.动画完毕(this, _parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <Actionscript>
@@ -538,7 +538,7 @@ Z轴攻击范围 = 60;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音效" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="音效" color="#9933CC" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -575,6 +575,7 @@ Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 10;
 	子弹属性.水平击退速度 = 2;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.不硬直 = true;
 	
 	//非常用
 	/*
@@ -644,6 +645,7 @@ Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 10;
 	子弹属性.水平击退速度 = 5;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.不硬直 = true;
 	
 	//非常用
 	/*
@@ -710,6 +712,7 @@ Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 1;
 	子弹属性.水平击退速度 = 6;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.不硬直 = true;
 	
 	//非常用
 	/*
@@ -776,6 +779,7 @@ Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 1;
 	子弹属性.水平击退速度 = 6;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.不硬直 = true;
 	
 	//非常用
 	/*
@@ -812,14 +816,14 @@ Z轴攻击范围 = 60;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="4" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="805.45" centerPoint3DY="262.4">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="805.45" centerPoint3DY="262.4">
                   <matrix>
                     <Matrix a="23.2497253417969" d="20.6906127929688" tx="191.25" ty="-1.65"/>
                   </matrix>
@@ -849,6 +853,7 @@ Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 10;
 	子弹属性.水平击退速度 = 2;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.不硬直 = true;
 	
 	//非常用
 	/*
@@ -915,6 +920,7 @@ Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 4;
 	子弹属性.水平击退速度 = 5;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.不硬直 = true;
 	
 	//非常用
 	/*
@@ -981,6 +987,7 @@ Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 5;
 	子弹属性.水平击退速度 = 5;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.不硬直 = true;
 	
 	//非常用
 	/*
@@ -1047,6 +1054,7 @@ Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 1;
 	子弹属性.水平击退速度 = 6;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.不硬直 = true;
 	
 	//非常用
 	/*
@@ -1116,6 +1124,7 @@ Z轴攻击范围 = 60;
 	子弹属性.击倒率 = 1;
 	子弹属性.水平击退速度 = 6;
 	子弹属性.击中后子弹的效果 = "空手攻击火花";
+	子弹属性.不硬直 = true;
 	
 	//非常用
 	/*
@@ -1206,7 +1215,7 @@ Z轴攻击范围 = 60;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -1226,7 +1235,7 @@ Z轴攻击范围 = 60;
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!5354 -7129S2|-3759 6882!-3759 6882[#FFE732.8B #17A8.7F -7456.5 4167.5!-7456.5 4167.5[#FFDE8C.37 #8E6.A -8423 -583!-8423 -583[#FFDFA5.F6 -3444.875 -5759 -5598!-5759 -5598[-3237 -7752 331 -8013!331 -8013[#C66.37 #FFDFE2.F6 5354 -7129"/>
+                    <Edge fillStyle1="1" edges="!5354 -7129|-3759 6882!-3759 6882[#FFE732.8B #17A8.7F -7456.5 4167.5!-7456.5 4167.5[#FFDE8C.37 #8E6.A -8423 -583!-8423 -583[#FFDFA5.F6 -3444.875 -5759 -5598!-5759 -5598[-3237 -7752 331 -8013!331 -8013[#C66.37 #FFDFE2.F6 5354 -7129"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1550,7 +1559,7 @@ Z轴攻击范围 = 60;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="刀" color="#4F80FF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -5784,7 +5793,7 @@ Z轴攻击范围 = 60;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="76.75" centerPoint3DY="117.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="76.75" centerPoint3DY="117.2">
                   <matrix>
                     <Matrix a="0.814498901367188" b="0.330352783203125" c="-0.330352783203125" d="0.814498901367188" tx="43.95" ty="66.55"/>
                   </matrix>
@@ -6438,7 +6447,7 @@ Z轴攻击范围 = 60;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="131.45" centerPoint3DY="110.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="131.45" centerPoint3DY="110.35">
                   <matrix>
                     <Matrix a="0.872955322265625" b="0.1080322265625" c="-0.1080322265625" d="0.872955322265625" tx="86.65" ty="69.9"/>
                   </matrix>
@@ -10362,7 +10371,7 @@ Z轴攻击范围 = 60;
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="61.65" centerPoint3DY="59.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="61.65" centerPoint3DY="59.9">
                   <matrix>
                     <Matrix a="0.87994384765625" d="0.87994384765625" tx="12" ty="25.05"/>
                   </matrix>
