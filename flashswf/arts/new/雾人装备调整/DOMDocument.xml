@@ -8,8 +8,8 @@
           <DOMFolderItem name="1.冷兵器/钝器/黑暗吉他" itemID="6562e3a9-00003e17"/>
           <DOMFolderItem name="1.冷兵器/钝器/精钢锏" itemID="68ee2fc7-000028b7"/>
           <DOMFolderItem name="1.冷兵器/钝器/猎杀巨物大锤" itemID="666681cb-0000045f"/>
-          <DOMFolderItem name="1.冷兵器/入鞘" itemID="69faadc3-00000e87" isExpanded="true"/>
-          <DOMFolderItem name="1.冷兵器/入鞘/寒潭黑蛟" itemID="69fab1a4-00000ec1" isExpanded="true"/>
+          <DOMFolderItem name="1.冷兵器/入鞘+双刀" itemID="69fb623a-0000227a" isExpanded="true"/>
+          <DOMFolderItem name="1.冷兵器/入鞘+双刀/寒潭黑蛟" itemID="69fab1a4-00000ec1"/>
           <DOMFolderItem name="1.冷兵器/锐器" itemID="65f6a69c-00001924"/>
           <DOMFolderItem name="1.冷兵器/锐器/风魔" itemID="691b1da9-000026a8"/>
           <DOMFolderItem name="1.冷兵器/锐器/古风锐器" itemID="68f28e1d-000024f1"/>
@@ -160,10 +160,11 @@
           <Include href="1.冷兵器/钝器/猎杀巨物大锤/锤头.xml" loadImmediate="false" itemID="6666819c-00000453" lastModified="1717996717"/>
           <Include href="1.冷兵器/钝器/猎杀巨物大锤/刀-猎杀巨物大锤.xml" itemID="666681a9-00000457" lastModified="1718621079"/>
           <Include href="1.冷兵器/钝器/猎杀巨物大锤/图标-猎杀巨物大锤.xml" itemID="66668f6a-00000487" lastModified="1760866108"/>
-          <Include href="1.冷兵器/入鞘/寒潭黑蛟/刀-寒潭黑蛟.xml" itemID="69faae91-00000e89" lastModified="1778038197"/>
-          <Include href="1.冷兵器/入鞘/寒潭黑蛟/刀-寒潭黑蛟-入鞘.xml" itemID="69fab11a-00000e97" lastModified="1778037275"/>
-          <Include href="1.冷兵器/入鞘/寒潭黑蛟/刀-寒潭黑蛟剑鞘.xml" itemID="69faaeae-00000e8d" lastModified="1778038312"/>
-          <Include href="1.冷兵器/入鞘/寒潭黑蛟/图标-寒潭黑蛟-入鞘.xml" itemID="69fab198-00000ebd" lastModified="1778037436"/>
+          <Include href="1.冷兵器/入鞘+双刀/寒潭黑蛟/刀-寒潭黑蛟.xml" itemID="69faae91-00000e89" lastModified="1778038197"/>
+          <Include href="1.冷兵器/入鞘+双刀/寒潭黑蛟/刀-寒潭黑蛟-入鞘.xml" itemID="69fab11a-00000e97" lastModified="1778037275"/>
+          <Include href="1.冷兵器/入鞘+双刀/寒潭黑蛟/刀-寒潭黑蛟剑鞘.xml" itemID="69faaeae-00000e8d" lastModified="1778038312"/>
+          <Include href="1.冷兵器/入鞘+双刀/寒潭黑蛟/图标-寒潭黑蛟-入鞘.xml" itemID="69fab198-00000ebd" lastModified="1778037436"/>
+          <Include href="1.冷兵器/入鞘+双刀/图标-炎寒对剑.xml" itemID="69fb625b-0000228d" lastModified="1778082910"/>
           <Include href="1.冷兵器/锐器/刀-魔刀千刃.xml" itemID="691bbab3-00000568" lastModified="1763425110"/>
           <Include href="1.冷兵器/锐器/风魔/刀-风魔.xml" itemID="691b18c5-00002680" lastModified="1769199152"/>
           <Include href="1.冷兵器/锐器/风魔/图标-风魔.xml" itemID="691b1da2-000026a3" lastModified="1763384851"/>
@@ -1406,6 +1407,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1470220" publishTime="1778082611"/>
           <PublishItem publishSize="1469982" publishTime="1778037839"/>
           <PublishItem publishSize="1455291" publishTime="1768754594"/>
           <PublishItem publishSize="1425717" publishTime="1768746392"/>
@@ -1425,6 +1427,5 @@
           <PublishItem publishSize="1265471" publishTime="1760876926"/>
           <PublishItem publishSize="1265430" publishTime="1760875687"/>
           <PublishItem publishSize="1265222" publishTime="1760872943"/>
-          <PublishItem publishSize="1264247" publishTime="1760868768"/>
      </publishHistory>
 </DOMDocument>

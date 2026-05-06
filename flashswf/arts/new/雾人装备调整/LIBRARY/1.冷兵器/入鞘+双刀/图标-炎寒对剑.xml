@@ -1,0 +1,89 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.冷兵器/入鞘+双刀/图标-炎寒对剑" itemID="69fb625b-0000228d" linkageExportForAS="true" linkageIdentifier="图标-炎寒对剑" lastModified="1778082910" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="图标-炎寒对剑" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#6F79DE">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#9B71B7" locked="true" outline="true" useOutlineView="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#FE1B88" parentLayerIndex="1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/锐器/冷热双剑/刀-寒玉剑" centerPoint3DX="-3.15" centerPoint3DY="5.05">
+                  <matrix>
+                    <Matrix a="0.15625" b="0.131118774414063" c="-0.131118774414063" d="0.15625" tx="13.15" ty="-14.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="124.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/锐器/冷热双剑/刀-炎玉剑" centerPoint3DX="2.55" centerPoint3DY="5.05">
+                  <matrix>
+                    <Matrix a="0.15625" b="-0.131118774414063" c="0.131118774414063" d="0.15625" tx="-13.75" ty="-14.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.25" y="124.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/锐器/冷热双剑/刀-寒玉剑" centerPoint3DX="83.55" centerPoint3DY="40.7">
+                  <matrix>
+                    <Matrix a="-0.0724639892578125" b="-0.270462036132813" c="0.270462036132813" d="-0.0724639892578125" tx="-26.3" ty="9.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.冷兵器/锐器/冷热双剑/刀-炎玉剑" centerPoint3DX="53.25" centerPoint3DY="74.5">
+                  <matrix>
+                    <Matrix a="0.0724639892578125" b="-0.270462036132813" c="0.270462036132813" d="0.0724639892578125" tx="-26.3" ty="-7.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#B2ECC2" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图标/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
