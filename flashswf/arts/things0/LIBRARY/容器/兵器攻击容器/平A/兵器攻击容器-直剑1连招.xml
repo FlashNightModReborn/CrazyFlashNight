@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招" itemID="696a8b8f-00001638" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-直剑1连招" lastModified="1777471699">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招" itemID="696a8b8f-00001638" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-直剑1连招" lastModified="1778039345">
   <timeline>
     <DOMTimeline name="兵器攻击容器-直剑1连招">
       <layers>
@@ -22,7 +22,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -1679,7 +1679,7 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!7977 4601|-3802 7673!-3802 7673[-6066 4886 -6066 1160!-6066 1160[-6066 -3174 -3002 -6239!-3002 -6239[-515 -8726 2809 -9194!2809 -9194|7977 4601"/>
+!2809 -9194|7977 4601!7977 4601|-3802 7673!-3802 7673[-6066 4886 -6066 1160!-6066 1160[-6066 -3174 -3002 -6239!-3002 -6239[-515 -8726 2809 -9194"/>
                     <Edge cubics="!2809 -9194(;2809,-9194 7977,4601 7977,4601q2809 -9194 7977 4601);"/>
                     <Edge cubics="!-6066 1160(;-6066,-1729 -5045,-4196 -3002,-6239q-6066 1160Q-6066 -3174q-3002 -6239);"/>
                     <Edge cubics="!-3802 7673(;-5311,5815 -6066,3644 -6066,1160q-3802 7673Q-6066 4886q-6066 1160);"/>
@@ -1891,7 +1891,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#F95194" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#F95194" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -4595,7 +4595,7 @@ Z轴攻击范围 = 30;
                     <Matrix a="-0.506072998046875" b="1.7047119140625" c="0.690902709960938" d="-0.62127685546875" tx="-46.3" ty="93.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.9" y="112.8"/>
+                    <Point x="2.9" y="112.75"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="0" blurY="0"/>

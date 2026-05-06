@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招" itemID="69eff1b8-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影1连招" lastModified="1777902695" lastUniqueIdentifier="45">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招" itemID="69eff1b8-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影1连招" lastModified="1778040065" lastUniqueIdentifier="45">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-疾影1连招" currentFrame="57">
+    <DOMTimeline name="兵器攻击容器-疾影1连招">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -123,7 +123,7 @@ _root.兵器攻击路由.动画完毕(this, _parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <Actionscript>
@@ -145,6 +145,7 @@ _root.兵器攻击路由.动画完毕(this, _parent);
 	if(垂直击退速度){
 		子弹参数.垂直击退速度 = 垂直击退速度;
 	}
+	子弹参数.不硬直 = true;
 
 	_parent.刀口位置生成子弹(_parent, 子弹参数);
 }
@@ -1549,7 +1550,7 @@ Z轴攻击范围 = 60;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="刀" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

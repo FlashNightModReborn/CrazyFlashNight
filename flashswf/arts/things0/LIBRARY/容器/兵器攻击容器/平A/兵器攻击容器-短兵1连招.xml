@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招" itemID="697b6555-00003229" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-短兵1连招" lastModified="1777470478" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招" itemID="697b6555-00003229" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-短兵1连招" lastModified="1778039997" lastUniqueIdentifier="9">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-短兵1连招" currentFrame="81">
+    <DOMTimeline name="兵器攻击容器-短兵1连招">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -209,7 +209,7 @@ _parent.动画完毕();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <Actionscript>
@@ -228,6 +228,7 @@ _parent.动画完毕();
 	子弹参数.Z轴攻击范围 = Z轴攻击范围;
 	子弹参数.击倒率 = 击倒率;
 	子弹参数.水平击退速度 = 水平击退速度;
+	子弹参数.不硬直 = true;
 
 	_parent.刀口位置生成子弹(_parent, 子弹参数);
 }]]></script>
@@ -440,7 +441,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>

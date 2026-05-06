@@ -99,6 +99,38 @@
       </data>
     </item>
     <item>
+      <name>炎寒对剑</name>
+      <displayname>炎寒对剑</displayname>
+      <icon>炎寒对剑</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>双刀</actiontype>
+      <price>570000</price>
+      <description>炎玉剑和寒玉剑的组合对剑，改造后仅能共持使用，不可分开。
+	  本是黑铁会与联合大学的合作产物，现又经小F进行配重与微型装置调整，已成三方共创。
+	  熔断与冷冻装置经过修改，两剑相近时，击发将释放纯粹的能量立场。
+	  </description>
+      <skill>
+        <skillname>深冲利刺</skillname>
+        <description>手持该武器时可以使用深冲利刺。</description>
+        <cd>8000</cd>
+        <mp>80</mp>
+      </skill>
+      <data>
+        <level>37</level>
+        <weight>4</weight>
+        <dressup>刀-炎玉剑</dressup>
+        <dressup2>刀-寒玉剑</dressup2>
+        <power>300</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <evasion>20</evasion>
+        <damagetype>魔法</damagetype>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+    <item>
       <name>战术双刀</name>
       <displayname>战术双刀</displayname>
       <icon>战术双刀</icon>
