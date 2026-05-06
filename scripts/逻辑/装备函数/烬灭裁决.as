@@ -40,9 +40,9 @@ _root.装备生命周期函数.烬灭裁决初始化 = function(ref, param)
     var unit = ref.自机;
     var wv = unit[ref.装备类型].value;
 
-    // param.默认双刀 来自 initParam，长柄 item="false"、双刀 item="true"
-    var 默认双刀态 = (param.默认双刀 == "true" || param.默认双刀 === true);
-    var 双刀态 = _root.装备生命周期函数.读取持久值(wv, "双刀形态", 默认双刀态);
+    // param.默认长柄 来自 initParam，长柄 item="true"、双刀 item="false"
+    var 默认长柄态 = (param.默认长柄 == "true" || param.默认长柄 === true);
+    var 长柄态 = _root.装备生命周期函数.读取持久值(wv, "长柄形态", 默认长柄态);
 
     // edge-trigger 初始化：种成当前键态，避免过图/复活/重装备时玩家本来按着键被误判为新按下
     ref.上次变形键按下 = _root.按键输入检测(unit, _root.武器变形键) ? true : false;
