@@ -469,10 +469,27 @@ class org.flashNight.arki.component.Damage.DamageResult {
         var shieldAbsorb:Number = ((efFlags & 256) != 0) ? this._efShieldAbsorb : 0;
 
         // 标量快照入队，延迟 HTML 构建到 flush 阶段
+        //
+        // MISS 哨兵规范化：calculateScatterDamage 用 list[i] = -1 标记联弹分段建模中的
+        // MISS/直感段，原本依赖 buildHtml 的 `if (damage < 0)` 转 "MISS"。但 socket 路径
+        // (C# overlay/HitNumberOverlay.cs) 仅按 packed bit 9 判定 MISS，会将 -1 字面渲染为 "-1"。
+        //
+        // 在此入队前把哨兵翻译为 packed bit 9 = isMISS（与 dodgeStatus="MISS" 设的全局位同位），
+        // damage 字段恒非负。两条渲染路径（Flash buildHtml / C# overlay）从此只看 isMISS 位，
+        // 协议语义统一。buildHtml 的 `damage < 0` 分支随之退化为防御性死代码，无需删除。
+        var MISS_BIT:Number = 512; // 1 << 9
         var i:Number = 0;
+        var dmg:Number;
+        var pkd:Number;
         do {
+            dmg = list[i];
+            pkd = packed;
+            if (dmg < 0) {
+                dmg = 0;
+                pkd = pkd | MISS_BIT;
+            }
             HitNumberBatchProcessor.enqueueRaw(
-                list[i], packed,
+                dmg, pkd,
                 efText, efEmoji,
                 lifeSteal, shieldAbsorb,
                 targetX, targetY

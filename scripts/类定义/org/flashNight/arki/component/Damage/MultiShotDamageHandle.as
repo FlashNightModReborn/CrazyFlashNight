@@ -286,7 +286,10 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
                 normalCount = actualScatterUsed - instantCount;
 
                 // 汇总主伤害：只有 normal 段造成伤害，instant 段为 0
-                totalDamage = normalCount * rawDamage;
+                // 单段伤害取整对齐 DodgeStateDamageHandle.default 分支：(d>1)?(d|0):1
+                // 避免 totalDamage 在事件分发与飘字阶段保留浮点尾数。
+                var pelletDamage:Number = (rawDamage > 1) ? (rawDamage | 0) : 1;
+                totalDamage = normalCount * pelletDamage;
                 target.损伤值 = totalDamage;
 
                 // 颜色不覆盖：保留 UniversalDamageHandle 设置的常规命中色（物理/破击/魔法/真伤）
@@ -302,7 +305,7 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
                 result.scatterBounceCount = 0;
                 result.scatterPenetrationCount = 0;
                 result.scatterMissCount = instantCount;  // 直感复用 miss 显示通道
-                result.scatterNormalDamage = rawDamage | 0;
+                result.scatterNormalDamage = pelletDamage;
                 result.scatterBounceDamage = 0;
                 result.scatterPenetrationDamage = 0;
             } else {
