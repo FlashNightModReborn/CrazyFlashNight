@@ -91,12 +91,16 @@ class org.flashNight.arki.component.StatHandler.DodgeHandler
      */
     public static function calculateDodgeState(targetMC:MovieClip, dodgeResult:Boolean, bulletMC:MovieClip):String
     {
-        var calcDamage:Number = targetMC.损伤值 + bulletMC.additionalEffectDamage;
-        calcDamage = (isNaN(calcDamage) ? 0 : calcDamage);
-
         // 懒闪避相关逻辑
+        // 历史实现读 targetMC.损伤值（上一发的残值，常因 MISS 路径残留为 0），
+        // 导致 lazyMiss 概率失真。此处改用 fresh 数据：子弹威力 + 附加效果伤害，
+        // 经防御比折算后近似单段命中伤害。仅在 懒闪避>0 时计算，普通目标零增量开销。
         if (targetMC.懒闪避 > 0)
         {
+            var rawHit:Number = (bulletMC.子弹威力 | 0) + (bulletMC.additionalEffectDamage | 0);
+            var def:Number = targetMC.防御力;
+            if (!(def > 0)) def = 1;
+            var calcDamage:Number = rawHit * 300 / (def + 300);
             if (lazyMiss(targetMC, calcDamage, targetMC.懒闪避))
             {
                 return DodgeStatus.INSTANT_FEEL;

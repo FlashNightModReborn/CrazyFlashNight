@@ -148,10 +148,17 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
             penetrationDamage = (t < 1) ? 1 : t;
 
             // 躲闪系统内：MISS概率（与 DodgeHandler.checkDodgeState 一致）
+            // dodgeState=未躲闪：外层 sigmoid 已 roll 失败（calcDodgeResult=false），
+            // 不能在每段重抽 MISS，否则等同于双重判定。此时只采样懒闪避/跳弹/过穿。
             var weight:Number = target.重量;
-            var tmp:Number = (target.等级 - weight);
-            dodgeProb = (tmp < 0) ? 0 : ((tmp > 100) ? 1 : (tmp / 100));
-            if (dodgeProb != dodgeProb) dodgeProb = 0;
+            var tmp:Number;
+            if (manager.dodgeState === DodgeStatus.NOT_DODGE) {
+                dodgeProb = 0;
+            } else {
+                tmp = (target.等级 - weight);
+                dodgeProb = (tmp < 0) ? 0 : ((tmp > 100) ? 1 : (tmp / 100));
+                if (dodgeProb != dodgeProb) dodgeProb = 0;
+            }
 
             // 缓存类级常量（避免重复属性查找开销）
             var PENETRATION_BASE:Number = DodgeHandler.PENETRATION_BASE_WEIGHT;
