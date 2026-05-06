@@ -111,6 +111,9 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       }
 
       append(buffer, TooltipTextBuilder.buildLifecycleInfo(item.lifecyle));
+
+      // 升阶路线（装备专属，三段全空时不输出区块）
+      append(buffer, TooltipTextBuilder.buildUpgradePath(item, baseItem));
     }
 
     // 获取方式信息（所有物品类型都显示，无来源时不显示区块）

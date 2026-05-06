@@ -18,6 +18,7 @@ import org.flashNight.naki.Sort.InsertionSort;
 import org.flashNight.gesh.tooltip.builder.drug.DrugTooltipComposer;
 import org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder;
 import org.flashNight.gesh.tooltip.builder.ModStatBuilder;
+import org.flashNight.gesh.tooltip.builder.UpgradePathBuilder;
 import org.flashNight.gesh.tooltip.TooltipBridge;
 
 /**
@@ -108,6 +109,16 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
    */
   public static function buildObtainMethods(itemName:String):Array {
     return ObtainMethodsBuilder.build(itemName);
+  }
+
+  // === 生成升阶路线信息（装备 tooltip 专用） ===
+  /**
+   * 构建装备升阶路线文本（委托桩，实现在 UpgradePathBuilder）。
+   * 三段：升自（来源配方）/ 可升（去向配方）/ 可进阶（Tier 选项）。
+   * 三段全空时返回空数组，不输出标题区块。
+   */
+  public static function buildUpgradePath(item:Object, baseItem:BaseItem):Array {
+    return UpgradePathBuilder.build(item, baseItem);
   }
 
   // === 生成刀技乘数（重构后：从XML配置读取，显示插件影响） ===

@@ -475,6 +475,52 @@ class org.flashNight.gesh.tooltip.TooltipBridge {
         return _root.改装清单对象[key];
     }
 
+    // ══════════════════════════════════════════════════════════════
+    // 合成反向索引（input → [productName, ...]）
+    // 用于装备 tooltip 升阶路线展示的"可升"段：给定输入物品名，
+    // 返回所有以它为材料的配方产物名列表。
+    // _root.改装清单对象 自身已是 product → recipe 映射（"我从哪来"），
+    // 这里只新建反方向索引，不冗余存储产物侧。
+    // ══════════════════════════════════════════════════════════════
+
+    private static var _craftToIndex:Object = null;
+
+    /**
+     * 懒加载构建 input → [products] 反向索引。
+     * 一次扫全部 _root.改装清单对象 条目，O(配方总数 × 平均材料数) ≈ O(900)。
+     * CF7:ME 不支持运行时热加载配方，索引一次构建后只读。
+     */
+    private static function ensureCraftToIndex():Void {
+        if (_craftToIndex != null) return;
+        _craftToIndex = {};
+        if (!_root.改装清单对象) return;
+        for (var productName:String in _root.改装清单对象) {
+            var recipe:Object = _root.改装清单对象[productName];
+            if (!recipe || !recipe.materials) continue;
+            for (var i:Number = 0; i < recipe.materials.length; i++) {
+                var matName:String = String(recipe.materials[i]).split("#")[0];
+                if (!_craftToIndex[matName]) _craftToIndex[matName] = [];
+                _craftToIndex[matName].push(productName);
+            }
+        }
+    }
+
+    /**
+     * 返回以 inputName 为材料的所有配方产物名数组。
+     * @param inputName 物品名
+     * @return 产物名数组（不存在时返回空数组，不返回 null）
+     */
+    public static function getRecipesUsing(inputName:String):Array {
+        ensureCraftToIndex();
+        var arr:Array = _craftToIndex[inputName];
+        return arr ? arr : [];
+    }
+
+    /** 测试钩子：重置反向索引（仅供测试用，重新触发懒加载） */
+    public static function resetCraftToIndex():Void {
+        _craftToIndex = null;
+    }
+
     /**
      * 获取敌人显示名（替代直接访问 _root.敌人属性表）
      * @param enemyType 敌人类型标识

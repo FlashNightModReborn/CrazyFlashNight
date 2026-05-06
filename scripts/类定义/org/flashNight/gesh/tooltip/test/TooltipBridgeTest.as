@@ -33,6 +33,9 @@ class org.flashNight.gesh.tooltip.test.TooltipBridgeTest {
         test_clampContainerByBg();
         test_getMouseX_returns_number();
         test_getSynthesisData_null_safe();
+        test_getRecipesUsing_basic();
+        test_getRecipesUsing_nonExistent();
+        test_getRecipesUsing_emptyData();
         test_getEnemyDisplayName_fallback();
         test_debugLog_null_safe();
         test_measureRenderedLines_intro_basic();
@@ -211,6 +214,53 @@ class org.flashNight.gesh.tooltip.test.TooltipBridgeTest {
         var result = TooltipBridge.getSynthesisData("不存在的物品");
         assert(result == null, "getSynthesisData null safe: " + result);
         _root.改装清单对象 = saved;
+    }
+
+    private static function test_getRecipesUsing_basic():Void {
+        // 注入受控配方：A 是产物，材料含 X 和 Y
+        var saved = _root.改装清单对象;
+        _root.改装清单对象 = {
+            "测试产物A": { name: "测试产物A", materials: ["测试材料X#1", "测试材料Y#5"] },
+            "测试产物B": { name: "测试产物B", materials: ["测试材料X#2"] }
+        };
+        TooltipBridge.resetCraftToIndex();
+
+        var xUses:Array = TooltipBridge.getRecipesUsing("测试材料X");
+        assert(xUses.length == 2, "getRecipesUsing X length=2 actual=" + xUses.length);
+        // 顺序不保证（for-in 不保证），用 join 后 indexOf 断言成员存在
+        var xJoined:String = xUses.join("|");
+        assert(xJoined.indexOf("测试产物A") >= 0, "getRecipesUsing X contains A: " + xJoined);
+        assert(xJoined.indexOf("测试产物B") >= 0, "getRecipesUsing X contains B: " + xJoined);
+
+        var yUses:Array = TooltipBridge.getRecipesUsing("测试材料Y");
+        assert(yUses.length == 1, "getRecipesUsing Y length=1 actual=" + yUses.length);
+        assert(yUses[0] == "测试产物A", "getRecipesUsing Y[0]=A");
+
+        _root.改装清单对象 = saved;
+        TooltipBridge.resetCraftToIndex();
+    }
+
+    private static function test_getRecipesUsing_nonExistent():Void {
+        var saved = _root.改装清单对象;
+        _root.改装清单对象 = {
+            "X": { name: "X", materials: ["A#1"] }
+        };
+        TooltipBridge.resetCraftToIndex();
+        var arr:Array = TooltipBridge.getRecipesUsing("不存在的材料");
+        assert(arr != null, "getRecipesUsing missing returns non-null");
+        assert(arr.length == 0, "getRecipesUsing missing returns empty array");
+        _root.改装清单对象 = saved;
+        TooltipBridge.resetCraftToIndex();
+    }
+
+    private static function test_getRecipesUsing_emptyData():Void {
+        var saved = _root.改装清单对象;
+        _root.改装清单对象 = undefined;
+        TooltipBridge.resetCraftToIndex();
+        var arr:Array = TooltipBridge.getRecipesUsing("任意");
+        assert(arr != null && arr.length == 0, "getRecipesUsing emptyData returns empty array");
+        _root.改装清单对象 = saved;
+        TooltipBridge.resetCraftToIndex();
     }
 
     private static function test_getEnemyDisplayName_fallback():Void {

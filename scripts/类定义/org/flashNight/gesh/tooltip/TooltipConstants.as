@@ -164,6 +164,17 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var TIP_OBTAIN_QUEST:String = "任务：";
 
   // ══════════════════════════════════════════════════════════════
+  // 升阶路线标签 (Upgrade Path Labels)
+  // ══════════════════════════════════════════════════════════════
+  public static var LBL_UPGRADE_PATH:String = "【升阶路线】";
+  public static var TIP_UPGRADE_FROM:String = "升自：";
+  public static var TIP_UPGRADE_TO:String = "可升：";
+  public static var TIP_TIER_OPTIONS:String = "可进阶：";
+  // 用中文方括号「」而非 ASCII <>：HTMLText 会把 <...> 当 HTML tag 吞掉
+  public static var TIP_TIER_CURRENT:String = "「当前」";     // 标注 item.value.tier 命中的 tier
+  public static var UPGRADE_MAX_TO_PRODUCTS:Number = 3;       // 后继产物 >3 时截断
+
+  // ══════════════════════════════════════════════════════════════
   // 伤害类型标签 (Damage Type Labels)
   // ══════════════════════════════════════════════════════════════
   public static var LBL_DAMAGE_ATTR:String = "伤害属性";

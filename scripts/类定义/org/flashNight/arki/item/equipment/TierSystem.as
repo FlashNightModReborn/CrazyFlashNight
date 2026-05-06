@@ -269,6 +269,53 @@ class org.flashNight.arki.item.equipment.TierSystem {
     }
 
     /**
+     * 按物品名获取所有进阶选项的信息（schema 视图，不依赖 BaseItem 实例）。
+     *
+     * 与 getAllTierOptions 的区别：
+     *   - getAllTierOptions 接受 BaseItem，可被装备实例的 runtime 状态影响（虽然当前实现只用 name）
+     *   - 本方法只读 rawItemData，适用于商店预览、tooltip 静态渲染、Web 面板等
+     *     **没有 BaseItem 实例**的场景
+     *
+     * 适用性判定与 isTierMaterialAvailable 一致：
+     *   - rawItemData 有对应 data_X 字段 → 支持
+     *   - 否则若 isDefaultTierEligible（防具 + 非颈部 + level<10）→ 自动支持二/三/四阶
+     *
+     * @param itemName 装备物品名
+     * @return 进阶信息数组，每个元素包含 {name, material, available}
+     */
+    public static function getAllTierOptionsByName(itemName:String):Array {
+        var options:Array = [];
+        var tierNameToMaterial:Object = EquipmentConfigManager.getTierNameToMaterialDict();
+        if (!tierNameToMaterial) return options;
+
+        var rawItemData:Object = ItemUtil.getRawItemData(itemName);
+        if (!rawItemData) return options;
+
+        var isDefaultEligible:Boolean = isDefaultTierEligible(rawItemData);
+
+        for (var tierName:String in tierNameToMaterial) {
+            var material:String = tierNameToMaterial[tierName];
+            var tierKey:String = EquipmentConfigManager.getTierKeyByMaterial(material);
+            var available:Boolean = false;
+            if (tierKey) {
+                if (rawItemData[tierKey]) {
+                    available = true;
+                } else if (isDefaultEligible &&
+                           (tierKey === "data_2" || tierKey === "data_3" || tierKey === "data_4")) {
+                    available = true;
+                }
+            }
+            options.push({
+                name: tierName,
+                material: material,
+                available: available
+            });
+        }
+
+        return options;
+    }
+
+    /**
      * 简单的对象深度克隆（AS2兼容）
      * @private
      */
