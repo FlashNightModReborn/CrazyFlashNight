@@ -1146,6 +1146,12 @@
     .lockbox-help-actions .lockbox-btn {
         width:100%;
     }
+    .intel-shell {
+        grid-template-columns: 180px minmax(0, 1fr) 0px;  /* 目录折叠到右侧按钮，不占空间 */
+    }
+    .intel-glossary-panel {
+        display: none;
+    }
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -5859,7 +5865,7 @@ html.perf-low-effects .map-stage-backdrop::before {
 .intel-shell {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 276px;
+    grid-template-columns: 240px minmax(0, 1fr) 276px;
     grid-template-rows: 104px auto minmax(0, 1fr) 58px;
     width: 1180px;
     height: 790px;
@@ -5875,7 +5881,7 @@ html.perf-low-effects .map-stage-backdrop::before {
 
 .intel-header {
     display: grid;
-    grid-column: 1 / 3;
+    grid-column: 1 / 4;
     grid-template-columns: 84px minmax(0, 1fr) 180px 52px;
     gap: 14px;
     align-items: center;
@@ -6074,7 +6080,7 @@ html.perf-low-effects .map-stage-backdrop::before {
 .intel-reader {
     position: relative;
     display: grid;
-    grid-column: 1;
+    grid-column: 2;
     grid-row: 3;
     grid-template-rows: auto minmax(0, 1fr);
     min-width: 0;
@@ -6102,7 +6108,7 @@ html.perf-low-effects .map-stage-backdrop::before {
 }
 
 .intel-catalog-panel {
-    grid-column: 2;
+    grid-column: 3;
     grid-row: 3 / 5;
     display: grid;
     grid-template-rows: 42px minmax(0, 1fr);
@@ -6290,6 +6296,43 @@ html.perf-low-effects .map-stage-backdrop::before {
 .intel-catalog-item.active .intel-catalog-meta {
     color: #4f4f4f;
 }
+
+.intel-glossary-panel {
+    grid-column: 1;
+    grid-row: 3 / 5;
+    display: flex;
+    flex-direction: column;
+    margin: 16px 0 16px 18px;
+    background: linear-gradient(180deg, #202020 0%, #151515 100%);
+    border: 1px solid #303030;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.intel-glossary-head {
+    padding: 10px 12px 8px;
+    color: #f0f0f0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-weight: 700;
+}
+.intel-glossary-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+}
+.intel-glossary-item {
+    display: block;
+    width: 100%;
+    padding: 10px 8px;
+    margin-bottom: 4px;
+    background: #222;
+    border: 1px solid #343434;
+    color: #e8e8e8;
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+}
+.intel-glossary-item:hover { background: #2f2f2f; }
+.intel-glossary-item.active { background: #ececec; color: #111; border-color: #f8f8f8; }
 
 .intel-status {
     min-height: 0;
@@ -7678,7 +7721,7 @@ html.perf-low-effects .map-stage-backdrop::before {
 .intel-footer {
     position: relative;
     display: grid;
-    grid-column: 1;
+    grid-column: 2;
     grid-row: 4;
     grid-template-columns: 38px 38px 1fr 112px;
     gap: 10px;

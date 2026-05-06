@@ -28,6 +28,11 @@ var IntelligencePanel = (function() {
     var _resizeObserver = null;
     var _keyHandler = null;
     var _outsideClickHandler = null;
+    
+    var _glossaryCatalog = [];          // 名词列表
+    var _currentViewMode = 'intel';    // 'intel' 或 'glossary'
+    var _currentGlossaryTerm = '';
+    var _glossarySnapshot = null;      // 当前名词的快照数据
 
     var DESIGN_WIDTH = 1180;
     var DESIGN_HEIGHT = 790;
@@ -68,6 +73,10 @@ var IntelligencePanel = (function() {
                     '<div class="intel-status"></div>' +
                     '<article class="intel-content"></article>' +
                 '</main>' +
+                '<aside class="intel-glossary-panel" aria-label="专有名词">' +
+                    '<div class="intel-glossary-head">专有名词</div>' +
+                    '<div class="intel-glossary-list"></div>' +
+                '</aside>' +
                 '<aside class="intel-catalog-panel" aria-label="情报目录">' +
                     '<button class="intel-catalog-toggle" type="button" title="收纳情报栏" aria-label="收纳情报栏"><span class="intel-catalog-toggle-mark"></span></button>' +
                     '<div class="intel-catalog-body">' +
@@ -161,6 +170,8 @@ var IntelligencePanel = (function() {
             togglePageStrip();
         });
         _refs.pageStrip.addEventListener('click', function(e) { e.stopPropagation(); });
+        
+        _refs.glossaryList = _el.querySelector('.intel-glossary-list');
 
         return _el;
     }
@@ -170,6 +181,7 @@ var IntelligencePanel = (function() {
         _bundleByName = {};
         _selectedPage = 0;
         _showPlain = true;
+        _currentViewMode = 'intel';
 
         initData = initData || {};
         _currentItemName = initData.itemName || '资料';
@@ -208,6 +220,11 @@ var IntelligencePanel = (function() {
         bindScaleWatcher();
         bindKeyboardAndOutsideClick();
         scheduleScaleUpdate();
+        
+        // 加载名词目录（如果未缓存）
+        if (!_glossaryCatalog || !_glossaryCatalog.length) {
+            requestGlossaryCatalog();
+        }
 
         // 字体包条幅：异步检测，不阻塞面板渲染。已 suppress / 全部已装时 noop。
         if (typeof FontPackBanner !== 'undefined' && FontPackBanner && FontPackBanner.checkAndShow) {
@@ -265,6 +282,17 @@ var IntelligencePanel = (function() {
             if (done) done(resp);
         });
     }
+    
+    function requestGlossaryCatalog() {
+        sendRequest('glossary_catalog', {}, function(resp) {
+            if (!resp.success) {
+                showError('名词目录加载失败');
+                return;
+            }
+            _glossaryCatalog = resp.items || [];
+            renderGlossaryList();
+        });
+    }
 
     function requestState(done) {
         showLoading('正在同步情报状态…');
@@ -310,6 +338,23 @@ var IntelligencePanel = (function() {
             _refs.decryptInput.value = String(_decryptLevel);
             if (_selectedPage >= getPages().length) _selectedPage = 0;
             renderSnapshot();
+        });
+    }
+    
+    function requestGlossarySnapshot(termName) {
+        showLoading('正在读取名词释义…');
+        var collectedItems = countCollectedItems();
+        sendRequest('glossary_snapshot', {
+            termName: termName,
+            collectedItems: collectedItems,
+            decryptLevel: _decryptLevel
+        }, function(resp) {
+            if (!resp.success) {
+                showError('名词释义加载失败');
+                return;
+            }
+            _glossarySnapshot = resp;
+            renderGlossaryContent();
         });
     }
 
@@ -403,6 +448,10 @@ var IntelligencePanel = (function() {
     }
 
     function renderSnapshot() {
+        if (_currentViewMode === 'glossary') {
+            renderGlossaryContent();
+            return;
+        }
         var item = _snapshot.item || {};
         var pages = getPages();
         var unlockedPages = countUnlockedPages(pages);
@@ -438,6 +487,57 @@ var IntelligencePanel = (function() {
             _refs.icon.style.display = 'none';
             _refs.iconPlaceholder.style.display = '';
         }
+    }
+    
+    function renderGlossaryList() {
+        if (!_refs || !_refs.glossaryList) return;
+        _refs.glossaryList.innerHTML = '';
+        for (var i = 0; i < _glossaryCatalog.length; i++) {
+            var term = _glossaryCatalog[i];
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'intel-glossary-item' + (term.termName === _currentGlossaryTerm ? ' active' : '');
+            btn.textContent = term.displayName || term.termName;
+            btn.setAttribute('data-term', term.termName);
+            btn.addEventListener('click', function(e) {
+                var termName = e.currentTarget.getAttribute('data-term');
+                _currentViewMode = 'glossary';
+                _currentGlossaryTerm = termName;
+                _selectedPage = 0;  // 名词无分页
+                requestGlossarySnapshot(termName);
+                renderGlossaryList();  // 更新 active 状态
+            });
+            _refs.glossaryList.appendChild(btn);
+        }
+    }
+    
+    function renderGlossaryContent() {
+        var term = _glossarySnapshot;
+        _refs.icon.style.display = 'none';           // 隐藏情报图标
+        _refs.iconPlaceholder.style.display = 'none';
+        _refs.name.textContent = term.displayName || term.termName;
+        _refs.meta.textContent = '';                // 不显示页数
+        _refs.progress.textContent = '';            // 不显示收集进度
+        _refs.content.innerHTML = '';
+        _refs.content.setAttribute('data-content-mode', 'h5');
+        _refs.content.setAttribute('data-skin', term.skin || 'paper');
+        if (term.writerVoice) _refs.content.setAttribute('data-writer-voice', term.writerVoice);
+        else _refs.content.removeAttribute('data-writer-voice');
+        if (typeof IntelligenceComponentRenderer !== 'undefined') {
+            IntelligenceComponentRenderer.render(_refs.content, term.blocks || [], {
+                pcName: _pcName,
+                decryptLevel: _decryptLevel,
+                showPlain: true,
+                encryptedView: false
+            });
+        }
+        // 更新分页控件（名词仅单“页”）
+        _refs.pageIndicator.disabled = true;
+        _refs.pageCurrent.textContent = '1';
+        _refs.pageTotal.textContent = '1';
+        _refs.prevBtn.disabled = true;
+        _refs.nextBtn.disabled = true;
+        _refs.toggleBtn.disabled = true;
     }
 
     function resolveIconUrl(name) {
@@ -515,6 +615,7 @@ var IntelligencePanel = (function() {
         btn.addEventListener('click', function(e) {
             var nextName = e.currentTarget.getAttribute('data-name');
             if (!nextName || nextName === _currentItemName) return;
+            _currentViewMode = 'intel';
             _currentItemName = nextName;
             var nextItem = _catalogByName[_currentItemName];
             if (nextItem && nextItem.value != null) {
@@ -544,6 +645,14 @@ var IntelligencePanel = (function() {
         var count = 0;
         for (var i = 0; i < pages.length; i++) {
             if ((Number(pages[i].value) || 0) <= _currentValue) count++;
+        }
+        return count;
+    }
+    
+    function countCollectedItems() {
+        var count = 0;
+        for (var i = 0; i < _catalog.length; i++) {
+            if ((Number(_catalog[i].value) || 0) > 0) count++;
         }
         return count;
     }

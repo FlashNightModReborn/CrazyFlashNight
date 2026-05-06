@@ -83,6 +83,7 @@ namespace CF7Launcher.Tasks
             new Dictionary<string, Dictionary<string, string>>();
         private readonly Dictionary<string, H5Document> _h5Cache =
             new Dictionary<string, H5Document>();
+        private readonly string _projectRoot;
 
         private static readonly HashSet<string> H5BlockTypes = new HashSet<string>(StringComparer.Ordinal)
         {
@@ -177,6 +178,7 @@ namespace CF7Launcher.Tasks
             _h5Dir = Path.Combine(root, "data", "intelligence_h5");
             _isClientReady = isClientReady ?? delegate { return false; };
             _send = send ?? delegate { };
+            _projectRoot = root;
         }
 
         public void SetPostToWeb(Action<string> post) { _postToWeb = post; }
@@ -227,6 +229,12 @@ namespace CF7Launcher.Tasks
                         break;
                     case "tooltip":
                         RequestTooltip(webCallId, parsed);
+                        break;
+                    case "glossary_catalog":
+                        RespondGlossaryCatalog(webCallId);
+                        break;
+                    case "glossary_snapshot":
+                        RespondGlossarySnapshot(webCallId, parsed);
                         break;
                     default:
                         RespondError(webCallId, cmd, "unsupported_cmd");
@@ -291,6 +299,85 @@ namespace CF7Launcher.Tasks
                 return;
             }
             RequestFlash(webCallId, "tooltip", "intelligenceTooltip", parsed);
+        }
+        
+        private void RespondGlossaryCatalog(string webCallId)
+        {
+            string indexPath = Path.Combine(_projectRoot, "data", "glossary", "glossary_index.json");
+            if (!File.Exists(indexPath))
+            {
+                RespondError(webCallId, "glossary_catalog", "missing_index");
+                return;
+            }
+            try
+            {
+                JArray items = JArray.Parse(File.ReadAllText(indexPath, Encoding.UTF8));
+                var resp = BaseResponse("glossary_catalog", webCallId, true);
+                resp["items"] = items;
+                PostToWeb(resp.ToString(Newtonsoft.Json.Formatting.None));
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[IntelligenceTask] glossary index load failed: " + ex.Message);
+                RespondError(webCallId, "glossary_catalog", "parse_error");
+            }
+        }
+        
+        private void RespondGlossarySnapshot(string webCallId, JObject parsed)
+        {
+            string termName = parsed.Value<string>("termName") ?? "";
+            if (string.IsNullOrEmpty(termName))
+            {
+                RespondError(webCallId, "glossary_snapshot", "missing_term");
+                return;
+            }
+            int collectedItems = ParseInt(parsed["collectedItems"], 0);
+            int decryptLevel = ParseInt(parsed["decryptLevel"], 0);
+            string termPath = Path.Combine(_projectRoot, "data", "glossary", termName + ".json");
+            if (!File.Exists(termPath))
+            {
+                RespondError(webCallId, "glossary_snapshot", "term_missing");
+                return;
+            }
+            try
+            {
+                JObject root = JObject.Parse(File.ReadAllText(termPath, Encoding.UTF8));
+                // 验证 schemaVersion 等...
+                JArray levels = root["levels"] as JArray;
+                if (levels == null || levels.Count == 0)
+                {
+                    RespondError(webCallId, "glossary_snapshot", "no_levels");
+                    return;
+                }
+                // 选择最高满足条件的 level
+                JObject best = null;
+                int bestReq = -1;
+                foreach (JObject level in levels)
+                {
+                    int reqItems = ParseInt(level["requiredCollectedItems"], 0);
+                    int reqDecrypt = ParseInt(level["requiredDecryptLevel"], 0);
+                    if (collectedItems >= reqItems && decryptLevel >= reqDecrypt)
+                    {
+                        if (reqItems + reqDecrypt > bestReq)
+                        {
+                            best = level;
+                            bestReq = reqItems + reqDecrypt;
+                        }
+                    }
+                }
+                if (best == null) best = levels[0] as JObject; // 兜底
+                var resp = BaseResponse("glossary_snapshot", webCallId, true);
+                resp["termName"] = termName;
+                resp["displayName"] = root.Value<string>("displayName") ?? termName;
+                resp["skin"] = root.Value<string>("skin") ?? "paper";
+                resp["blocks"] = best["blocks"] as JArray ?? new JArray();
+                PostToWeb(resp.ToString(Newtonsoft.Json.Formatting.None));
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[IntelligenceTask] glossary snapshot failed: " + ex.Message);
+                RespondError(webCallId, "glossary_snapshot", "parse_error");
+            }
         }
 
         private void RequestFlash(string webCallId, string webCmd, string action, JObject parsed)

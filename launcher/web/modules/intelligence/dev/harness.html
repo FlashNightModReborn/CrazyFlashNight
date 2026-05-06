@@ -400,6 +400,40 @@ window.Icons = {
                         encryptRules: payload.encryptRules
                     });
                 }, 8);
+            } else if (message.cmd === 'glossary_catalog') {
+                setTimeout(function() {
+                    window.chrome.webview.__dispatch({
+                        type: 'panel_resp',
+                        panel: 'intelligence',
+                        cmd: 'glossary_catalog',
+                        callId: message.callId,
+                        success: true,
+                        items: [
+                            { termName: '三战', displayName: '三战', iconName: null }
+                        ]
+                    });
+                }, 8);
+            } else if (message.cmd === 'glossary_snapshot') {
+                var termName = message.termName || '三战';
+                var collectedItems = Number(message.collectedItems) || 0;
+                var decryptLevel = Number(message.decryptLevel) || 0;
+                setTimeout(function() {
+                    var blocks = [{ type: 'paragraph', content: [{ type: 'text', text: '第三次世界大战，又被称为统合战争，是统合政府击败反对者并基本确立全球统治的，21 世纪以来最大规模的战争。' }] }];
+                    if (collectedItems >= 2 && decryptLevel >= 1) {
+                        blocks = [{ type: 'paragraph', content: [{ type: 'text', text: '第三次世界大战，又被称为统合战争，是统合政府击败反对者并基本确立全球统治的，21 世纪以来最大规模的战争。后雅尔塔-别洛韦日联合体系的不稳定，其来源是全球化过程塑造的各国经济不平等，以及相对和平环境下地区政治冲突被压制而长久得不到释放。' }] }];
+                    }
+                    window.chrome.webview.__dispatch({
+                        type: 'panel_resp',
+                        panel: 'intelligence',
+                        cmd: 'glossary_snapshot',
+                        callId: message.callId,
+                        success: true,
+                        termName: termName,
+                        displayName: '三战',
+                        skin: 'field-notes',
+                        blocks: blocks
+                    });
+                }, 8);
             }
         }
     };

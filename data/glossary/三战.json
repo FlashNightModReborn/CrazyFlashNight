@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "termName": "三战",
+  "displayName": "三战",
+  "skin": "field-notes",
+  "levels": [
+    {
+      "levelKey": "0",
+      "requiredCollectedItems": 0,
+      "requiredDecryptLevel": 0,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "content": [
+            { "type": "text", "text": "第三次世界大战，又被称为统合战争，是统合政府击败反对者并基本确立全球统治的，21 世纪以来最大规模的战争。" }
+          ]
+        }
+      ]
+    },
+    {
+      "levelKey": "1",
+      "requiredCollectedItems": 2,
+      "requiredDecryptLevel": 1,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "content": [
+            { "type": "text", "text": "第三次世界大战，又被称为统合战争，是统合政府击败反对者并基本确立全球统治的，21 世纪以来最大规模的战争。/n后雅尔塔-别洛韦日联合体系的不稳定，其来源是全球化过程塑造的各国经济不平等，以及相对和平环境下地区政治冲突被压制而长久得不到释放。结果是，随着一系列事件加剧了各国统治的崩溃，积压已久的矛盾爆发，世界陷入了热战之中。" }
+          ]
+        }
+      ]
+    }
+  ]
+}
