@@ -1,4 +1,4 @@
-﻿import org.flashNight.gesh.tooltip.TooltipBridge;
+﻿import org.flashNight.arki.item.synthesis.SynthesisIndex;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.builder.UpgradePathBuilder;
 
@@ -38,6 +38,7 @@ class org.flashNight.gesh.tooltip.test.UpgradePathBuilderTest {
         test_to_truncation_above3();
         test_to_exactly3_noTruncation();
         test_titleNotRendered_whenAllEmpty();
+        test_subsections_separatedByBr();
 
         trace("--- UpgradePathBuilderTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
     }
@@ -48,13 +49,13 @@ class org.flashNight.gesh.tooltip.test.UpgradePathBuilderTest {
     private static function installSynthDict(dict:Object):Object {
         var saved = _root.改装清单对象;
         _root.改装清单对象 = dict;
-        TooltipBridge.resetCraftToIndex();
+        SynthesisIndex.reset();
         return saved;
     }
 
     private static function restoreSynthDict(saved):Void {
         _root.改装清单对象 = saved;
-        TooltipBridge.resetCraftToIndex();
+        SynthesisIndex.reset();
     }
 
     // ──────────────── tests ────────────────
@@ -71,7 +72,7 @@ class org.flashNight.gesh.tooltip.test.UpgradePathBuilderTest {
     private static function test_fromOnly_rendersFromSection():Void {
         // item 的 synthesis key 指向一个配方；item 名不作为任何配方的输入
         var dict:Object = {
-            "升阶配方A": {
+            升阶配方A: {
                 name: "升阶产物A",
                 materials: ["测试材料Q##2", "测试材料R##3"]   // ## = 数量模式
             }
@@ -96,8 +97,8 @@ class org.flashNight.gesh.tooltip.test.UpgradePathBuilderTest {
     private static function test_toOnly_rendersToSection():Void {
         // item 不作为产物（synthesis 无对应配方），但作为输入出现在多个配方里
         var dict:Object = {
-            "进阶产品1": { name: "进阶产品1", materials: ["测试输入P##1"] },
-            "进阶产品2": { name: "进阶产品2", materials: ["测试输入P##1"] }
+            进阶产品1: { name: "进阶产品1", materials: ["测试输入P##1"] },
+            进阶产品2: { name: "进阶产品2", materials: ["测试输入P##1"] }
         };
         var saved = installSynthDict(dict);
         var item:Object = { name: "测试输入P", synthesis: null };
@@ -118,11 +119,11 @@ class org.flashNight.gesh.tooltip.test.UpgradePathBuilderTest {
     private static function test_to_truncation_above3():Void {
         // 5 个产物都用同一输入 → to-list 长度=5 > UPGRADE_MAX_TO_PRODUCTS(3)
         var dict:Object = {
-            "P1": { name: "P1", materials: ["共同输入##1"] },
-            "P2": { name: "P2", materials: ["共同输入##1"] },
-            "P3": { name: "P3", materials: ["共同输入##1"] },
-            "P4": { name: "P4", materials: ["共同输入##1"] },
-            "P5": { name: "P5", materials: ["共同输入##1"] }
+            P1: { name: "P1", materials: ["共同输入##1"] },
+            P2: { name: "P2", materials: ["共同输入##1"] },
+            P3: { name: "P3", materials: ["共同输入##1"] },
+            P4: { name: "P4", materials: ["共同输入##1"] },
+            P5: { name: "P5", materials: ["共同输入##1"] }
         };
         var saved = installSynthDict(dict);
         var item:Object = { name: "共同输入", synthesis: null };
@@ -131,24 +132,24 @@ class org.flashNight.gesh.tooltip.test.UpgradePathBuilderTest {
 
         assert(html.indexOf(TooltipConstants.TIP_ETC) >= 0,
                "truncation: contains TIP_ETC marker - html=" + html);
-        assert(html.indexOf("共5") >= 0,
-               "truncation: shows total count 5 - html=" + html);
+        assert(html.indexOf("共 5 项") >= 0,
+               "truncation: shows '共 5 项' total count - html=" + html);
         restoreSynthDict(saved);
     }
 
     private static function test_to_exactly3_noTruncation():Void {
         // 恰好 3 个产物 → 不应触发截断
         var dict:Object = {
-            "P1": { name: "P1", materials: ["边界输入##1"] },
-            "P2": { name: "P2", materials: ["边界输入##1"] },
-            "P3": { name: "P3", materials: ["边界输入##1"] }
+            P1: { name: "P1", materials: ["边界输入##1"] },
+            P2: { name: "P2", materials: ["边界输入##1"] },
+            P3: { name: "P3", materials: ["边界输入##1"] }
         };
         var saved = installSynthDict(dict);
         var item:Object = { name: "边界输入", synthesis: null };
         var result:Array = UpgradePathBuilder.build(item, null);
         var html:String = result.join("");
 
-        assert(html.indexOf("共3") < 0,
+        assert(html.indexOf("共 3 项") < 0,
                "exactly3: no truncation count - html=" + html);
         assert(html.indexOf("P1") >= 0 && html.indexOf("P2") >= 0 && html.indexOf("P3") >= 0,
                "exactly3: all 3 products listed");
@@ -162,6 +163,35 @@ class org.flashNight.gesh.tooltip.test.UpgradePathBuilderTest {
         var html:String = result.join("");
         assert(html.indexOf(TooltipConstants.LBL_UPGRADE_PATH) < 0,
                "allEmpty: title NOT rendered");
+        restoreSynthDict(saved);
+    }
+
+    /**
+     * 多段共存时，子段之间应有空白 br 分隔（非紧贴）。
+     * 用 from+to 双段场景，验证 from 段最后一行 br 之后还有一个独立 br。
+     */
+    private static function test_subsections_separatedByBr():Void {
+        var dict:Object = {
+            升阶配方M: { name: "M", materials: ["材料Z##1"] },
+            下游产物N: { name: "N", materials: ["M##1"] }
+        };
+        var saved = installSynthDict(dict);
+        var item:Object = { name: "M", synthesis: "升阶配方M" };
+        var result:Array = UpgradePathBuilder.build(item, null);
+        var html:String = result.join("");
+
+        // 必须同时含两段
+        assert(html.indexOf(TooltipConstants.TIP_UPGRADE_FROM) >= 0,
+               "subsections: contains 升自 - html=" + html);
+        assert(html.indexOf(TooltipConstants.TIP_UPGRADE_TO) >= 0,
+               "subsections: contains 可升 - html=" + html);
+        // 升自最后一行的 br 之后再出现的 br 才是分隔 br，所以两个标签之间至少要有 2 个 br
+        var fromIdx:Number = html.indexOf(TooltipConstants.TIP_UPGRADE_FROM);
+        var toIdx:Number = html.indexOf(TooltipConstants.TIP_UPGRADE_TO);
+        var between:String = html.substring(fromIdx, toIdx);
+        // 注意：TooltipFormatter.br() 返回大写 "<BR>"，AS2 split 大小写敏感
+        var brCount:Number = between.split("<BR>").length - 1;
+        assert(brCount >= 3, "subsections: between-from-to br count >= 3 (label br + item br + spacer br) actual=" + brCount + " between=" + between);
         restoreSynthDict(saved);
     }
 }

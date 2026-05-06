@@ -1,9 +1,9 @@
 ﻿import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.equipment.TierSystem;
+import org.flashNight.arki.item.synthesis.SynthesisIndex;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
-import org.flashNight.gesh.tooltip.TooltipBridge;
 
 /**
  * UpgradePathBuilder - 装备升阶路线构建器
@@ -33,11 +33,11 @@ class org.flashNight.gesh.tooltip.builder.UpgradePathBuilder {
         var result:Array = [];
 
         // 1) 升自：item 作为产物的配方
-        var fromRecipe:Object = TooltipBridge.getSynthesisData(item.synthesis);
+        var fromRecipe:Object = SynthesisIndex.getRecipe(item.synthesis);
         var hasFrom:Boolean = (fromRecipe != null && fromRecipe.materials != null);
 
         // 2) 可升：item 作为输入的所有产物名
-        var toProducts:Array = TooltipBridge.getRecipesUsing(item.name);
+        var toProducts:Array = SynthesisIndex.getRecipesUsing(item.name);
         var hasTo:Boolean = (toProducts && toProducts.length > 0);
 
         // 3) 可进阶：用 byName 版本走纯 schema 判定，不依赖 BaseItem 实例
@@ -59,9 +59,21 @@ class org.flashNight.gesh.tooltip.builder.UpgradePathBuilder {
         result.push(TooltipFormatter.color(TooltipConstants.LBL_UPGRADE_PATH, TooltipConstants.COL_INFO));
         result.push(TooltipFormatter.br());
 
-        if (hasFrom) renderFrom(result, fromRecipe);
-        if (hasTo) renderTo(result, toProducts);
-        if (hasTier) renderTier(result, supportedTiers, baseItem);
+        // 子段之间用一个空白 br 分隔，避免视觉堆积；首段不前置空行
+        var rendered:Boolean = false;
+        if (hasFrom) {
+            renderFrom(result, fromRecipe);
+            rendered = true;
+        }
+        if (hasTo) {
+            if (rendered) result.push(TooltipFormatter.br());
+            renderTo(result, toProducts);
+            rendered = true;
+        }
+        if (hasTier) {
+            if (rendered) result.push(TooltipFormatter.br());
+            renderTier(result, supportedTiers, baseItem);
+        }
 
         return result;
     }
@@ -105,14 +117,15 @@ class org.flashNight.gesh.tooltip.builder.UpgradePathBuilder {
 
     /**
      * 渲染"可升"段：子弹列表风格，每个产物独占一行。
-     * 数量 > UPGRADE_MAX_TO_PRODUCTS 时显示前 N + 末尾"... 等共 M"独立一行。
+     * 数量 > UPGRADE_MAX_TO_PRODUCTS 时显示前 N + 末尾"... 等共 M 项"独立一行。
+     * 排序由 TooltipBridge 反向索引在构建时按字典序保证，玩家两次悬停看到一致顺序。
      *
      * 格式：
      *   可升：
      *     • "贯空天盖"上衣
      *     • 黑犀胸甲
      *     • 奇美拉胸甲
-     *     • ... 等共 5
+     *     • ... 等共 5 项
      */
     private static function renderTo(result:Array, toProducts:Array):Void {
         // 标签行
@@ -130,7 +143,7 @@ class org.flashNight.gesh.tooltip.builder.UpgradePathBuilder {
             result.push("  • ", displayName, TooltipFormatter.br());
         }
         if (total > maxN) {
-            result.push("  • ... ", TooltipConstants.TIP_ETC, "共", total, TooltipFormatter.br());
+            result.push("  • ... ", TooltipConstants.TIP_ETC, "共 ", total, " 项", TooltipFormatter.br());
         }
     }
 

@@ -19,7 +19,7 @@ import org.flashNight.gesh.tooltip.builder.drug.DrugTooltipComposer;
 import org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder;
 import org.flashNight.gesh.tooltip.builder.ModStatBuilder;
 import org.flashNight.gesh.tooltip.builder.UpgradePathBuilder;
-import org.flashNight.gesh.tooltip.TooltipBridge;
+import org.flashNight.arki.item.synthesis.SynthesisIndex;
 
 /**
  * 注释文本构建器类
@@ -72,8 +72,8 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   // === 生成合成材料（1:1 复刻 _root.注释文本.生成合成材料） ===
   public static function buildSynthesisMaterials(item:Object):Array {
     var result = [];
-    // 通过 Bridge 获取合成数据（收口 _root.改装清单对象 的直接访问）
-    var synthData:Object = TooltipBridge.getSynthesisData(item.synthesis);
+    // 通过 SynthesisIndex 获取合成数据（domain 层统一收口 _root.改装清单对象）
+    var synthData:Object = SynthesisIndex.getRecipe(item.synthesis);
     if (item.synthesis != null && synthData && synthData.materials) {
       var requirements = ItemUtil.getRequirementFromTask(synthData.materials);
       if (requirements && requirements.length > 0) {

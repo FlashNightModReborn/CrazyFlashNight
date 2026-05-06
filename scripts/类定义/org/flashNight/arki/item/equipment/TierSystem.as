@@ -76,28 +76,36 @@ class org.flashNight.arki.item.equipment.TierSystem {
      * @return true如果可以使用，false否则
      */
     public static function isTierMaterialAvailable(item:BaseItem, matName:String):Boolean {
-        var rawItemData:Object = ItemUtil.getRawItemData(item.name);
         var tierKey:String = EquipmentConfigManager.getTierKeyByMaterial(matName);
-
         if (!tierKey) {
             if (_debugMode) {
                 trace("[TierSystem] 材料 '" + matName + "' 没有对应的进阶键");
             }
             return false;
         }
+        var rawItemData:Object = ItemUtil.getRawItemData(item.name);
+        return isTierAvailableForRawData(rawItemData, tierKey);
+    }
 
-        // 检查装备是否支持该进阶
-        if (rawItemData[tierKey]) {
+    /**
+     * 共用判定：给定 rawItemData + tierKey，判定该装备是否支持该 tier。
+     * 由 isTierMaterialAvailable（runtime 入口，BaseItem）和 getAllTierOptionsByName
+     * （schema 入口，纯名字）共同复用，避免规则改动后需要同步两处。
+     *
+     * 规则：
+     *   - rawItemData 有对应 data_X 字段 → 支持
+     *   - 否则 isDefaultTierEligible（防具+非颈部+level<10）& tierKey ∈ {2/3/4} → 支持
+     *   - 其余不支持
+     *
+     * @private
+     */
+    private static function isTierAvailableForRawData(rawItemData:Object, tierKey:String):Boolean {
+        if (!rawItemData || !tierKey) return false;
+        if (rawItemData[tierKey]) return true;
+        if (isDefaultTierEligible(rawItemData) &&
+            (tierKey === "data_2" || tierKey === "data_3" || tierKey === "data_4")) {
             return true;
         }
-
-        // 检查是否为默认进阶情况
-        if (isDefaultTierEligible(rawItemData)) {
-            if (tierKey === "data_2" || tierKey === "data_3" || tierKey === "data_4") {
-                return true;
-            }
-        }
-
         return false;
     }
 
@@ -291,24 +299,13 @@ class org.flashNight.arki.item.equipment.TierSystem {
         var rawItemData:Object = ItemUtil.getRawItemData(itemName);
         if (!rawItemData) return options;
 
-        var isDefaultEligible:Boolean = isDefaultTierEligible(rawItemData);
-
         for (var tierName:String in tierNameToMaterial) {
             var material:String = tierNameToMaterial[tierName];
             var tierKey:String = EquipmentConfigManager.getTierKeyByMaterial(material);
-            var available:Boolean = false;
-            if (tierKey) {
-                if (rawItemData[tierKey]) {
-                    available = true;
-                } else if (isDefaultEligible &&
-                           (tierKey === "data_2" || tierKey === "data_3" || tierKey === "data_4")) {
-                    available = true;
-                }
-            }
             options.push({
                 name: tierName,
                 material: material,
-                available: available
+                available: isTierAvailableForRawData(rawItemData, tierKey)
             });
         }
 
