@@ -109,8 +109,9 @@ if (targetFrame != undefined) {
       {
          var unit = _parent._parent._parent._parent._parent;
          var st = unit.getSmallState();
-         if ((st == "兵器一段中" || st == "兵器冲击") && random(15) == 0)
+         if ((st == "兵器一段中" || st == "兵器冲击") && random(10) == 0 && getTimer() - this.上次特效时间 >= 1000)
          {
+            this.上次特效时间 = getTimer();
             var myPoint1 = {x:this._x, y:this._y};
             _parent.localToGlobal(myPoint1);
             _root.gameworld.globalToLocal(myPoint1);
@@ -130,8 +131,9 @@ if (targetFrame != undefined) {
             Z轴坐标 = shootY = unit._y;
             _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,null,击倒率,击中后子弹的效果);
          }
-         if ((st == "兵器二段中" || st == "兵器冲击") && random(15) == 0)
+         if ((st == "兵器二段中" || st == "兵器冲击") && random(10) == 0 && getTimer() - this.上次特效时间 >= 1000)
          {
+            this.上次特效时间 = getTimer();
             var myPoint2 = {x:this._x, y:this._y};
             _parent.localToGlobal(myPoint2);
             _root.gameworld.globalToLocal(myPoint2);
@@ -153,8 +155,9 @@ if (targetFrame != undefined) {
             Z轴坐标 = shootY = unit._y;
             _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,null,击倒率,击中后子弹的效果);
          }
-         if ((st == "兵器三段中" || st == "兵器冲击") && random(15) == 0)
+         if ((st == "兵器三段中" || st == "兵器冲击") && random(10) == 0 && getTimer() - this.上次特效时间 >= 1000)
          {
+            this.上次特效时间 = getTimer();
             var myPoint3 = {x:this._x, y:this._y};
             _parent.localToGlobal(myPoint3);
             _root.gameworld.globalToLocal(myPoint3);
@@ -174,8 +177,9 @@ if (targetFrame != undefined) {
             Z轴坐标 = shootY = unit._y;
             _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,null,击倒率,击中后子弹的效果);
          }
-         if ((st == "兵器四段中" || st == "兵器冲击") && random(15) == 0)
+         if ((st == "兵器四段中" || st == "兵器冲击") && random(8) == 0 && getTimer() - this.上次特效时间 >= 1000)
          {
+            this.上次特效时间 = getTimer();
             var myPoint4 = {x:this._x, y:this._y};
             _parent.localToGlobal(myPoint4);
             _root.gameworld.globalToLocal(myPoint4);
@@ -197,8 +201,9 @@ if (targetFrame != undefined) {
             Z轴坐标 = shootY = unit._y;
             _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,null,击倒率,击中后子弹的效果);
          }
-         if ((st == "兵器五段中" || st == "兵器冲击") && random(18) == 0)
+         if ((st == "兵器五段中" || st == "兵器冲击") && random(10) == 0 && getTimer() - this.上次特效时间 >= 1000)
          {
+            this.上次特效时间 = getTimer();
             var myPoint5 = {x:this._x, y:this._y};
             _parent.localToGlobal(myPoint5);
             _root.gameworld.globalToLocal(myPoint5);
@@ -241,7 +246,7 @@ if (targetFrame != undefined) {
                     <script><![CDATA[onClipEvent(enterFrame){
    if(_parent._parent._parent._parent._parent.状态 == "兵器攻击")
    {
-      if (_parent._currentframe != 11 && random(15) == 0)
+      if (_parent._currentframe != 11 && random(7) == 0)
       {
          var myPoint = {x:this._x,y:this._y};
          _parent.localToGlobal(myPoint);
@@ -275,8 +280,9 @@ if (targetFrame != undefined) {
       {
          var unit = _parent._parent._parent._parent._parent;
          var st = unit.getSmallState();
-         if ((st == "兵器一段中" || st == "兵器冲击") && random(15) == 0)
+         if ((st == "兵器一段中" || st == "兵器冲击") && random(7) == 0 && getTimer() - this.上次特效时间 >= 1000)
          {
+            this.上次特效时间 = getTimer();
             var myPoint1 = {x:this._x, y:this._y};
             _parent.localToGlobal(myPoint1);
             _root.gameworld.globalToLocal(myPoint1);
@@ -296,8 +302,9 @@ if (targetFrame != undefined) {
             Z轴坐标 = shootY = unit._y;
             _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,null,击倒率,击中后子弹的效果);
          }
-         if ((st == "兵器四段中" || st == "兵器冲击") && random(15) == 0)
+         if ((st == "兵器四段中" || st == "兵器冲击") && random(7) == 0 && getTimer() - this.上次特效时间 >= 1000)
          {
+            this.上次特效时间 = getTimer();
             var myPoint4 = {x:this._x, y:this._y};
             _parent.localToGlobal(myPoint4);
             _root.gameworld.globalToLocal(myPoint4);
@@ -319,8 +326,9 @@ if (targetFrame != undefined) {
             Z轴坐标 = shootY = unit._y;
             _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,null,击倒率,击中后子弹的效果);
          }
-         if ((st == "兵器五段中" || st == "兵器冲击") && random(20) == 0)
+         if ((st == "兵器五段中" || st == "兵器冲击") && random(5) == 0 && getTimer() - this.上次特效时间 >= 1000)
          {
+            this.上次特效时间 = getTimer();
             var myPoint5 = {x:this._x, y:this._y};
             _parent.localToGlobal(myPoint5);
             _root.gameworld.globalToLocal(myPoint5);
