@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="牙狼剑系列/牙狼剑变斩马刀" itemID="69fc6a30-000044b7" symbolType="graphic" lastModified="1778149936" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="牙狼剑系列/牙狼剑变斩马刀" itemID="69fc6a30-000044b7" symbolType="graphic" lastModified="1778154439" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="牙狼剑变斩马刀" currentFrame="14">
+    <DOMTimeline name="牙狼剑变斩马刀" currentFrame="9">
       <layers>
-        <DOMLayer name="图层_5" color="#009999" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层_5" color="#009999" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -63,9 +63,6 @@
                   </color>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="9" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -236,9 +233,9 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_3" color="#FF800A" parentLayerIndex="3" locked="true">
+        <DOMLayer name="图层_3" color="#FF800A" parentLayerIndex="3" locked="true" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="牙狼剑系列/牙狼斩马刀" symbolType="graphic" loop="loop">
                   <matrix>
@@ -254,7 +251,7 @@
         </DOMLayer>
         <DOMLayer name="图层_1" color="#00FFFF" locked="true">
           <frames>
-            <DOMFrame index="0" duration="9" keyMode="9728">
+            <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="牙狼剑系列/牙狼剑" symbolType="graphic" loop="loop">
                   <matrix>

@@ -54,5 +54,6 @@ _root.装备生命周期函数.牙狼剑周期 = function(ref:Object, param:Obje
         }
     }
 
+    target.牙狼剑帧 = ref.frame;
     saber.gotoAndStop(ref.frame);
 };
