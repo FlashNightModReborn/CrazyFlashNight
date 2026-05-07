@@ -205,21 +205,24 @@ namespace CF7Launcher.Guardian
                         float shieldAbsorb = float.Parse(fields[10]);
                         int hitCount = (int)float.Parse(fields[11]);
 
-                        // fields[12] = flagScales：每 flag 字号档位（'0'=不显示, '1'..'9' = 0.5..1.0）
+                        // fields[12] = flagScales：每 flag 字号档位（'0'=不显示, '1'..'9' = 1/9..9/9）
                         // 旧 ts → 新 C#：fields.Length=12，flagScales 默认全 9（满字号，向后兼容旧行为）
                         string flagScales = (fields.Length >= 13 && fields[12].Length == 9)
                             ? fields[12]
                             : "999999999";
 
-                        // 预计算每个 flag 的字号系数（0..1）
-                        // level 0 → 0（不显示），level 1..9 → 0.5..1.0 线性插值
+                        // 预计算每个 flag 的字号系数（0..1）。
+                        // level 0 → 0（不渲染整段），level 1..9 → level/9 线性映射（1/9 ≈ 0.111）。
+                        // 配合 ts 端 < 0.02 截断为 level=0：1.0 → 0 的衰减过程中，
+                        // 末段 level=1 时实际字号被各标签 Math.Max(4f, ...) clamp 到 ≈ 4pt，
+                        // 然后下一帧 (DECAY_STEP=0.05) 直接跌穿 0.02 触发不渲染——过渡只跨越一帧，无明显 pop。
                         float[] flagScale01 = new float[9];
                         for (int bit = 0; bit < 9; bit++)
                         {
                             int level = flagScales[bit] - '0';
                             if (level <= 0) flagScale01[bit] = 0f;
                             else if (level >= 9) flagScale01[bit] = 1f;
-                            else flagScale01[bit] = 0.5f + (level - 1) / 8f * 0.5f;
+                            else flagScale01[bit] = level / 9f;
                         }
 
                         // Flash 舞台坐标 → bitmap 局部坐标
@@ -240,9 +243,9 @@ namespace CF7Launcher.Guardian
                         if (fields.Length >= 14 && fields[13].Length == 6)
                         {
                             int rByte, gByte, bByte;
-                            if (int.TryParse(fields[13].Substring(0, 2), System.Globalization.NumberStyles.HexNumber, null, out rByte)
-                                && int.TryParse(fields[13].Substring(2, 2), System.Globalization.NumberStyles.HexNumber, null, out gByte)
-                                && int.TryParse(fields[13].Substring(4, 2), System.Globalization.NumberStyles.HexNumber, null, out bByte))
+                            if (int.TryParse(fields[13].Substring(0, 2), System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out rByte)
+                                && int.TryParse(fields[13].Substring(2, 2), System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out gByte)
+                                && int.TryParse(fields[13].Substring(4, 2), System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out bByte))
                             {
                                 mainColor = Color.FromArgb(rByte, gByte, bByte);
                             }
@@ -263,7 +266,7 @@ namespace CF7Launcher.Guardian
                         if (fields.Length >= 15 && fields[14].Length == 1)
                         {
                             int efTextCid;
-                            if (int.TryParse(fields[14], System.Globalization.NumberStyles.HexNumber, null, out efTextCid)
+                            if (int.TryParse(fields[14], System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out efTextCid)
                                 && efTextCid >= 0 && efTextCid < ColorTable.Length)
                             {
                                 labelColor = ColorTable[efTextCid];

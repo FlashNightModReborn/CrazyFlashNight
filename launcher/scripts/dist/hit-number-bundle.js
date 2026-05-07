@@ -143,6 +143,13 @@ var HitNumber;
         return s.length === 1 ? "0" + s : s;
     }
     let _aggregatorCount = 0;
+    // 旧协议 entry 的占位数组：所有非 aggregator entry 共享，避免重复分配。
+    // tick() 旧协议路径直接 hardcode flagScales="999999999" + rgbHex=""，不读这些字段；
+    // 写入路径（pulseAggregator）仅由 isAggregator=true 的 entry 进入，sentinel 不会被污染。
+    // Object.freeze 作为静态护栏：万一未来回归引入误写，会在 strict 模式下抛错而非静默污染。
+    const PLACEHOLDER_FLAG_SUM = Object.freeze([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    const PLACEHOLDER_FLAG_SCALES = Object.freeze([1, 1, 1, 1, 1, 1, 1, 1, 1]);
+    const PLACEHOLDER_COLOR_SUM = Object.freeze([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     /** 找当前 _active 中距离 (rawX, rawY) 最近的 aggregator entry。aggregator 满员时使用 */
     function findNearestAggregator(rawX, rawY) {
         let best = null;
@@ -393,6 +400,9 @@ var HitNumber;
                 continue;
             }
             // === 旧协议路径（无 uid）：原距离合并 fallback ===
+            // 当前所有 caller（DamageResult.triggerDisplay → enqueueRaw）都传 hitTarget._name；
+            // AS2 MovieClip 的 _name 永远非空，所以本分支事实上只在"ts bundle 已升级但 AS2 仍是旧版"
+            // 这种过渡期被命中。保留是为了热替换 dist/hit-number-bundle.js 时不破坏显示。
             const highDensity = _activeCount > DENSITY_LOW;
             if (highDensity) {
                 const mi = findMergeTargetByDistance(rawX, rawY);
@@ -423,9 +433,9 @@ var HitNumber;
                 silentFrames: 0,
                 pulseTimer: 0, // 旧协议 entry 不脉动
                 maxSegmentDmg: 0, // 不使用
-                efFlagDmgSum: [0, 0, 0, 0, 0, 0, 0, 0, 0], // 占位（仅 aggregator 用）
-                displayFlagScales: [1, 1, 1, 1, 1, 1, 1, 1, 1], // 旧协议：全 1.0（输出全 level 9 满字号）
-                colorIdDmgSum: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 占位（仅 aggregator 用）
+                efFlagDmgSum: PLACEHOLDER_FLAG_SUM, // 共享 sentinel（frozen），旧协议不读不写
+                displayFlagScales: PLACEHOLDER_FLAG_SCALES, // 共享 sentinel（frozen），tick 旧协议路径硬编码 "999999999"
+                colorIdDmgSum: PLACEHOLDER_COLOR_SUM, // 共享 sentinel（frozen），仅 aggregator 用
                 displayR: 0, displayG: 0, displayB: 0, // 占位，旧协议输出空 hex 字段，C# fallback 用 colorId
                 efTextColorId: 0 // 占位（旧协议不输出 fields[14]，C# fallback 用 mainColor）
             };
@@ -460,8 +470,11 @@ var HitNumber;
         return f + 1;
     }
     /**
-     * 每帧调用。输出 stride=12：
-     * stgX,stgY,combinedScale,alpha,combinedBlur,damage,packed,efText,efEmoji,lifeSteal,shieldAbsorb,displayHits
+     * 每帧调用。输出 stride=15：
+     *   stgX, stgY, combinedScale, alpha, combinedBlur,
+     *   damage, packed, efText, efEmoji,
+     *   lifeSteal, shieldAbsorb, displayHits,
+     *   flagScales, rgbHex, efTextColorHex
      *
      * 视觉层级：
      *   - Aggregator / 距离合并的 hits>1 → resultHigh → 最上层
@@ -575,9 +588,12 @@ var HitNumber;
                     else
                         next = cur;
                     e.displayFlagScales[bit] = next;
-                    // 编码 0-9 level：next * 9 四舍五入；< 0.05 直接为 0（接近消失即不渲染）
+                    // 编码 0-9 level：next * 9 四舍五入；< 0.02 直接为 0（接近消失即不渲染）。
+                    // 阈值贴近 0 是为了配合 C# 端 level/9 线性公式（level=1 → 0.111×，最小可见态被
+                    // 各标签的 Math.Max(4f, ...) clamp 兜到 ≈ 4pt）：让"显示→消失"过渡只跨越一帧
+                    // （DECAY_STEP=0.05），观感上没有明显 pop。
                     let level;
-                    if (next < 0.05)
+                    if (next < 0.02)
                         level = 0;
                     else
                         level = Math.round(next * 9);
