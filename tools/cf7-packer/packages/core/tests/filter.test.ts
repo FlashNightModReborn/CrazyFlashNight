@@ -90,7 +90,7 @@ describe("filterFiles", () => {
       "flashswf/UI/任务栏界面/DOMDocument.xml",     // .xml 不在 include (注意：如果配置里有 **/*.xml 则会包含)
       "flashswf/UI/任务栏界面/LIBRARY/btn.xml",     // .xml 不在 include
       "flashswf/backgrounds/sky.png",
-      "flashswf/Langrage/Chinese.txt",
+      "flashswf/UI/strings.txt",
       "flashswf/unused/old.swf",                    // excluded dir
       "flashswf/miniGames/game.swf",                // excluded dir
       "flashswf/ComicTool/tool.swf"                 // excluded dir
@@ -102,7 +102,7 @@ describe("filterFiles", () => {
     expect(includedPaths).toContain("flashswf/UI/hud.swf");
     expect(includedPaths).toContain("flashswf/arts/new/char1.swf");
     expect(includedPaths).toContain("flashswf/backgrounds/sky.png");
-    expect(includedPaths).toContain("flashswf/Langrage/Chinese.txt");
+    expect(includedPaths).toContain("flashswf/UI/strings.txt");
 
     expect(includedPaths).not.toContain("flashswf/arts/things0/sword.fla");
     expect(includedPaths).not.toContain("flashswf/unused/old.swf");
