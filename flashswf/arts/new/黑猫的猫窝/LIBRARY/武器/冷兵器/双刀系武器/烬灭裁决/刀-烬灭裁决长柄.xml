@@ -13,6 +13,15 @@
                   <transformationPoint>
                     <Point x="12.5" y="25"/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+    自机 = _root.获得父节点(this,5);
+    if(_root.兵器攻击检测(自机))
+    {
+        _root.刀口触发特效.烬灭裁决长柄特效.call({自机:自机}, 自机.getSmallState());
+    }
+}]]></script>
+                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

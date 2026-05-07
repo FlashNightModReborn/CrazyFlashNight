@@ -22,37 +22,13 @@
                     <Point x="12.55"/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[/*
-onClipEvent (enterFrame) {
-	自机 = _root.获得父节点(this, 5);
-	if (Key.isDown(_root.武器技能键) == true and 自机 == _root.gameworld[_root.控制目标])
-	{
-		if (!自机.主动战技cd中 and (自机.攻击模式 == "兵器"))
-		{
-			if (自机.mp >= 40)
-			{
-				//_parent.触发特效();//
-				_root.gameworld[_root.控制目标].主动战技cd中 = true;
-				setTimeout(function ()
-				{
-				_root.gameworld[_root.控制目标].主动战技cd中 = false;
-				},5000);
-				
-				自机.mp -= 40;
-				_root.主角mp显示界面.刷新显示();
-				
-				自机.技能名 = "黑刀斩术";
-				自机.状态改变("战技");
-				自机.man.gotoAndPlay("黑刀斩术");
-			}
-			else
-			{
-				_root.发布消息("精力不足，无法使用战技！");
-			}
-		}
-	}
-}
-*/]]></script>
+                    <script><![CDATA[onClipEvent(enterFrame){
+    自机 = _root.获得父节点(this,5);
+    if(_root.兵器攻击检测(自机))
+    {
+        _root.刀口触发特效.烬灭裁决双刀特效.call({自机:自机}, 自机.getSmallState());
+    }
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="图标/Symbol 13" name="刀口位置2" centerPoint3DX="-8.4" centerPoint3DY="119.9">

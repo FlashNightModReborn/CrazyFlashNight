@@ -163,15 +163,21 @@ _root.刀口触发特效.主唱光剑光刃 = function(状态名)
 // ============================================================================
 
 // 内部发射器：从自机附近随机扰动位置发射追加子弹
-_root.刀口触发特效.__发射火子弹 = function(unit, 子弹种类, 威力)
+_root.刀口触发特效.__发射火子弹 = function(unit, 子弹种类, 威力, 霰弹值, Z轴攻击范围, 伤害类型, 魔法伤害属性)
 {
+    if (霰弹值 == undefined) 霰弹值 = 1;
+    if (Z轴攻击范围 == undefined) Z轴攻击范围 = 50;
     var range = 4;
     var xOffset = (Math.random() - 0.5) * 2 * range;
     var yOffset = (Math.random() - 0.5) * 2 * range;
     var shootX = unit._x + xOffset;
     var shootY = unit._y + yOffset;
-    _root.子弹区域shoot("", 1, 0, "", 子弹种类, 威力, 0, 50, "",
-        unit._name, shootX, shootY, shootY, null, 50, "");
+    _root.子弹区域shoot("", 霰弹值, 0, "", 子弹种类, 威力, 0, Z轴攻击范围, "",
+        unit._name, shootX, shootY, shootY, null, 50, "",
+        undefined, undefined, undefined, undefined, undefined,
+        undefined, undefined, undefined, undefined, undefined,
+        undefined, undefined,
+        伤害类型, 魔法伤害属性);
 };
 
 // 长柄形态：5 段 + 兵器冲击；300ms 节流
@@ -182,19 +188,23 @@ _root.刀口触发特效.烬灭裁决长柄特效 = function(状态名)
         getTimer() - unit.上次烬灭特效时间 < 300) return;
     unit.上次烬灭特效时间 = getTimer();
 
+    if (!_root.成功率(50)) return;
+
     var 子弹种类;
-    var 子弹威力 = 120;
+    var 子弹威力;
+    var 霰弹值;
+    var Z轴范围;
     switch (状态名)
     {
-        case "兵器一段中": 子弹种类 = "__长柄1段占位"; break;
-        case "兵器二段中": 子弹种类 = "__长柄2段占位"; break;
-        case "兵器三段中": 子弹种类 = "__长柄3段占位"; break;
-        case "兵器四段中": 子弹种类 = "__长柄4段占位"; break;
-        case "兵器五段中": 子弹种类 = "__长柄5段占位"; break;
-        case "兵器冲击":   子弹种类 = "__长柄冲击占位"; 子弹威力 = 240; break;
+        case "兵器一段中": 子弹种类 = "血痕爪杀"; 子弹威力 = 120; 霰弹值 = 1; Z轴范围 = 60; break;
+        case "兵器二段中": 子弹种类 = "圣爆";     子弹威力 = 90;  霰弹值 = 3; Z轴范围 = 120; break;
+        case "兵器三段中": 子弹种类 = "圣爆";     子弹威力 = 90;  霰弹值 = 3; Z轴范围 = 120; break;
+        case "兵器四段中": 子弹种类 = "圣刺";     子弹威力 = 120; 霰弹值 = 3; Z轴范围 = 120; break;
+        case "兵器五段中": 子弹种类 = "血箭";     子弹威力 = 200; 霰弹值 = 5; Z轴范围 = 60; break;
+        case "兵器冲击":   子弹种类 = "圣刺";     子弹威力 = 240; 霰弹值 = 1; Z轴范围 = 60; break;
         default: return;
     }
-    _root.刀口触发特效.__发射火子弹(unit, 子弹种类, 子弹威力);
+    _root.刀口触发特效.__发射火子弹(unit, 子弹种类, 子弹威力, 霰弹值, Z轴范围, "魔法", "热");
 };
 
 // 双刀形态：只到 4 段（双刀连招无段5/兵器冲击）；300ms 节流
@@ -205,16 +215,21 @@ _root.刀口触发特效.烬灭裁决双刀特效 = function(状态名)
         getTimer() - unit.上次烬灭特效时间 < 300) return;
     unit.上次烬灭特效时间 = getTimer();
 
+    if (!_root.成功率(50)) return;
+
     var 子弹种类;
+    var 子弹威力;
+    var 霰弹值;
+    var Z轴范围;
     switch (状态名)
     {
-        case "兵器一段中": 子弹种类 = "__双刀1段占位"; break;
-        case "兵器二段中": 子弹种类 = "__双刀2段占位"; break;
-        case "兵器三段中": 子弹种类 = "__双刀3段占位"; break;
-        case "兵器四段中": 子弹种类 = "__双刀4段占位"; break;
+        case "兵器一段中": 子弹种类 = "地面喷发"; 子弹威力 = 90;  霰弹值 = 3; Z轴范围 = 120; break;
+        case "兵器二段中": 子弹种类 = "烈焰火花"; 子弹威力 = 90;  霰弹值 = 3; Z轴范围 = 120; break;
+        case "兵器三段中": 子弹种类 = "黄金集气"; 子弹威力 = 60;  霰弹值 = 3; Z轴范围 = 120; break;
+        case "兵器四段中": 子弹种类 = "圣刺";     子弹威力 = 200; 霰弹值 = 1; Z轴范围 = 60; break;
         default: return;
     }
-    _root.刀口触发特效.__发射火子弹(unit, 子弹种类, 120);
+    _root.刀口触发特效.__发射火子弹(unit, 子弹种类, 子弹威力, 霰弹值, Z轴范围, "魔法", "热");
 };
 
 // 秋月迁移：MP 门控 + 0.5s 冷却 + 段位四档并列判定（1:1 复刻 刀-秋月.xml:17-210）
