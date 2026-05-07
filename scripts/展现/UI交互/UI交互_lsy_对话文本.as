@@ -1,5 +1,9 @@
 ﻿import org.flashNight.arki.unit.*;
 
+// 多语言系统已废弃（组装多语版NPC随机对话 等函数已被注释），强制中文路径，
+// 否则 Symbol 1770 bt1 会走 else 分支调用不存在的 组装多语版NPC随机对话 → 入参 undefined → 对话框开了立刻被 关闭()
+_root.多语言是否中文 = true;
+
 _root.对话赋值到对话框 = function(内容数组){
 	var i = 0;
 	while (i < 内容数组.length){
@@ -9,6 +13,7 @@ _root.对话赋值到对话框 = function(内容数组){
 	_root.对话框界面.对话进度 = 0;
 	_root.对话框界面.对话条数 += 内容数组.length;
 	_root.对话框界面.gotoAndStop("open");
+	_root.对话框界面._visible = true;
 }
 
 _root.对话覆盖赋值到对话框 = function(内容数组){
@@ -21,6 +26,7 @@ _root.对话覆盖赋值到对话框 = function(内容数组){
 	_root.对话框界面.对话进度 = 0;
 	_root.对话框界面.对话条数 = 内容数组.length;
 	_root.对话框界面.gotoAndStop("open");
+	_root.对话框界面._visible = true;
 }
 
 _root.getDialogueSpecialString = function(str){
