@@ -723,4 +723,46 @@
         <bladeCount>3</bladeCount>
       </data>
     </item>
+      <item>
+    <name>远古诛神剑</name>
+    <displayname>牙狼剑</displayname>
+    <icon>远古诛神剑</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>刀剑</actiontype>
+    <price>1000000</price>
+    <description>由魂钢制成的特殊黄金质感的神剑，寻常人甚至无法拿起，邪祟一经接触就会被灼烧。</description>
+    <data>
+      <level>60</level>
+      <weight>10</weight>
+      <dressup>刀-远古诛神剑</dressup>
+      <power>1200</power>
+      <hp>0</hp>
+      <mp>0</mp>
+      <defence>0</defence>
+      <criticalhit>30</criticalhit>
+      <bladeCount>3</bladeCount>
+    </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>牙狼剑初始化</initRoutines>
+          <initParam>
+            <actionTypeA>刀剑</actionTypeA>
+            <actionTypeB>狂野</actionTypeB>
+            <frameMax>11</frameMax>
+            <skill_0>
+              <skillname>撼地烈狱</skillname>
+              <cd>8000</cd>
+              <hp>0</hp>
+              <mp>50</mp>
+            </skill_0>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>牙狼剑周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>
 </root>

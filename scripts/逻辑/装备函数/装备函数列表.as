@@ -31,6 +31,7 @@ import org.flashNight.arki.component.Buff.Component.*;
 #include "../逻辑/装备函数/双面雷神.as"
 
 #include "../逻辑/装备函数/雷铁斩斧.as"
+#include "../逻辑/装备函数/牙狼剑.as"
 #include "../逻辑/装备函数/公社爆燃钻矛.as"
 
 #include "../逻辑/装备函数/RPG.as"
