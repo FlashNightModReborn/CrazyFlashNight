@@ -83,6 +83,7 @@ namespace CF7Launcher.Guardian
         private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOSIZE = 0x0001;
+        private const uint SWP_NOZORDER = 0x0004;
         private const uint SWP_NOACTIVATE = 0x0010;
         private const byte AC_SRC_OVER = 0x00;
         private const byte AC_SRC_ALPHA = 0x01;
@@ -658,8 +659,12 @@ namespace CF7Launcher.Guardian
             if (_lastCommitX == windowX && _lastCommitY == windowY)
                 return;
 
-            SetWindowPos(this.Handle, HWND_TOPMOST, windowX, windowY, 0, 0,
-                SWP_NOSIZE | SWP_NOACTIVATE);
+            // 跳过 z-order 重算：鼠标移动每 16ms 走此快路径，HWND_TOPMOST 每帧重申会触发 DWM
+            // 重组 desktop z-order，与 layered cursor window 的 UpdateLayeredWindow 节奏叠加，
+            // 挤占 GPU/DWM 时间片，间接拖累同 desktop 上 Flash standalone 进程的出帧。
+            // cursor 已是 topmost（创建时 WS_EX_TOPMOST），此处仅纯位移，无需每次重排 z-order。
+            SetWindowPos(this.Handle, IntPtr.Zero, windowX, windowY, 0, 0,
+                SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
             _lastCommitX = windowX;
             _lastCommitY = windowY;
         }
