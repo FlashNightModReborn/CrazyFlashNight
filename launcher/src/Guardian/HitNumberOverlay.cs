@@ -205,6 +205,23 @@ namespace CF7Launcher.Guardian
                         float shieldAbsorb = float.Parse(fields[10]);
                         int hitCount = (int)float.Parse(fields[11]);
 
+                        // fields[12] = flagScales：每 flag 字号档位（'0'=不显示, '1'..'9' = 0.5..1.0）
+                        // 旧 ts → 新 C#：fields.Length=12，flagScales 默认全 9（满字号，向后兼容旧行为）
+                        string flagScales = (fields.Length >= 13 && fields[12].Length == 9)
+                            ? fields[12]
+                            : "999999999";
+
+                        // 预计算每个 flag 的字号系数（0..1）
+                        // level 0 → 0（不显示），level 1..9 → 0.5..1.0 线性插值
+                        float[] flagScale01 = new float[9];
+                        for (int bit = 0; bit < 9; bit++)
+                        {
+                            int level = flagScales[bit] - '0';
+                            if (level <= 0) flagScale01[bit] = 0f;
+                            else if (level >= 9) flagScale01[bit] = 1f;
+                            else flagScale01[bit] = 0.5f + (level - 1) / 8f * 0.5f;
+                        }
+
                         // Flash 舞台坐标 → bitmap 局部坐标
                         float bmpX = (stgX / 1024f) * vpW + padX;
                         float bmpY = (stgY / 576f) * vpH + padY;
@@ -216,7 +233,43 @@ namespace CF7Launcher.Guardian
                         int flags = packed & 511;
 
                         if (fontSize == 0) fontSize = 28;
-                        Color mainColor = ColorTable[Math.Min(colorId, ColorTable.Length - 1)];
+
+                        // fields[13] = RGB hex（"RRGGBB" 6 字符）：ts 端 dominant colorId 经过指数衰减插值
+                        // 缺失或无效时回退到 colorId 查 COLOR_TABLE（向后兼容旧 ts bundle）
+                        Color mainColor;
+                        if (fields.Length >= 14 && fields[13].Length == 6)
+                        {
+                            int rByte, gByte, bByte;
+                            if (int.TryParse(fields[13].Substring(0, 2), System.Globalization.NumberStyles.HexNumber, null, out rByte)
+                                && int.TryParse(fields[13].Substring(2, 2), System.Globalization.NumberStyles.HexNumber, null, out gByte)
+                                && int.TryParse(fields[13].Substring(4, 2), System.Globalization.NumberStyles.HexNumber, null, out bByte))
+                            {
+                                mainColor = Color.FromArgb(rByte, gByte, bByte);
+                            }
+                            else
+                            {
+                                mainColor = ColorTable[Math.Min(colorId, ColorTable.Length - 1)];
+                            }
+                        }
+                        else
+                        {
+                            mainColor = ColorTable[Math.Min(colorId, ColorTable.Length - 1)];
+                        }
+
+                        // fields[14] = efTextColorId hex 字符（'0'-'F'）：EF_DMG_TYPE_LABEL 标签的属性色
+                        // 与主数字色解耦：标签字符串"热"/"真"等保持来源段的固定 colorId，不被 dominant/boost 干扰
+                        // 缺失或无效时回退到 mainColor（保持旧行为）
+                        Color labelColor = mainColor;
+                        if (fields.Length >= 15 && fields[14].Length == 1)
+                        {
+                            int efTextCid;
+                            if (int.TryParse(fields[14], System.Globalization.NumberStyles.HexNumber, null, out efTextCid)
+                                && efTextCid >= 0 && efTextCid < ColorTable.Length)
+                            {
+                                labelColor = ColorTable[efTextCid];
+                            }
+                        }
+
                         byte a = (byte)(255 * Math.Max(0f, Math.Min(1f, alpha)));
 
                         // ======== 构建文本段 ========
@@ -228,51 +281,61 @@ namespace CF7Launcher.Guardian
                         mainPt = Math.Max(6f, Math.Min(mainPt, 72f));
                         segments.Add(new TextSegment(mainText, mainColor, mainPt));
 
-                        // 效果标签（Flash 中 size=20，按比例缩放）
-                        float labelPt = 20f * combinedScale * pixPerFlash;
-                        labelPt = Math.Max(4f, Math.Min(labelPt, 40f));
+                        // 效果标签 base size（Flash 中 size=20）。每 flag 按 flagScale01 单独缩放
+                        float labelPtBase = 20f * combinedScale * pixPerFlash;
 
-                        // EF_DMG_TYPE_LABEL (bit 3)
-                        if ((flags & 8) != 0 && !string.IsNullOrEmpty(efText))
-                            segments.Add(new TextSegment(" " + efText, mainColor, labelPt, true));
+                        // EF_DMG_TYPE_LABEL (bit 3) —— 颜色用 labelColor（efTextColorId 对应色，与主数字色解耦）
+                        if ((flags & 8) != 0 && !string.IsNullOrEmpty(efText) && flagScale01[3] > 0f)
+                        {
+                            float pt = Math.Max(4f, Math.Min(labelPtBase * flagScale01[3], 40f));
+                            segments.Add(new TextSegment(" " + efText, labelColor, pt, true));
+                        }
 
                         // EF_CRUSH_LABEL (bit 4)
-                        if ((flags & 16) != 0 && !string.IsNullOrEmpty(efText))
+                        if ((flags & 16) != 0 && !string.IsNullOrEmpty(efText) && flagScale01[4] > 0f)
                         {
+                            float pt = Math.Max(4f, Math.Min(labelPtBase * flagScale01[4], 40f));
                             string crushText = " " + (string.IsNullOrEmpty(efEmoji) ? "" : efEmoji) + efText;
-                            segments.Add(new TextSegment(crushText, Color.FromArgb(0x66, 0xBC, 0xF5), labelPt, true));
+                            segments.Add(new TextSegment(crushText, Color.FromArgb(0x66, 0xBC, 0xF5), pt, true));
                         }
 
                         // EF_TOXIC (bit 1)
-                        if ((flags & 2) != 0)
-                            segments.Add(new TextSegment(" 毒", Color.FromArgb(0x66, 0xDD, 0x00), labelPt, true));
+                        if ((flags & 2) != 0 && flagScale01[1] > 0f)
+                        {
+                            float pt = Math.Max(4f, Math.Min(labelPtBase * flagScale01[1], 40f));
+                            segments.Add(new TextSegment(" 毒", Color.FromArgb(0x66, 0xDD, 0x00), pt, true));
+                        }
 
                         // EF_LIFESTEAL (bit 5)
-                        if ((flags & 32) != 0 && lifeSteal > 0)
+                        if ((flags & 32) != 0 && lifeSteal > 0 && flagScale01[5] > 0f)
                         {
-                            float lsPt = 15f * combinedScale * pixPerFlash;
+                            float lsPt = 15f * combinedScale * pixPerFlash * flagScale01[5];
                             lsPt = Math.Max(4f, Math.Min(lsPt, 30f));
                             segments.Add(new TextSegment(" 汲:" + ((int)lifeSteal).ToString(),
                                 Color.FromArgb(0xBB, 0x00, 0xAA), lsPt, true));
                         }
 
                         // EF_CRUMBLE (bit 0)
-                        if ((flags & 1) != 0)
-                            segments.Add(new TextSegment(" 溃", Color.FromArgb(0xFF, 0x33, 0x33), labelPt, true));
+                        if ((flags & 1) != 0 && flagScale01[0] > 0f)
+                        {
+                            float pt = Math.Max(4f, Math.Min(labelPtBase * flagScale01[0], 40f));
+                            segments.Add(new TextSegment(" 溃", Color.FromArgb(0xFF, 0x33, 0x33), pt, true));
+                        }
 
                         // EF_EXECUTE (bit 2)
-                        if ((flags & 4) != 0)
+                        if ((flags & 4) != 0 && flagScale01[2] > 0f)
                         {
+                            float pt = Math.Max(4f, Math.Min(labelPtBase * flagScale01[2], 40f));
                             Color exeColor = ((flags & 128) != 0)
                                 ? Color.FromArgb(0x66, 0x00, 0x33)
                                 : Color.FromArgb(0x4A, 0x00, 0x99);
-                            segments.Add(new TextSegment(" 斩", exeColor, labelPt, true));
+                            segments.Add(new TextSegment(" 斩", exeColor, pt, true));
                         }
 
                         // EF_SHIELD (bit 8)
-                        if ((flags & 256) != 0 && shieldAbsorb > 0)
+                        if ((flags & 256) != 0 && shieldAbsorb > 0 && flagScale01[8] > 0f)
                         {
-                            float shPt = 18f * combinedScale * pixPerFlash;
+                            float shPt = 18f * combinedScale * pixPerFlash * flagScale01[8];
                             shPt = Math.Max(4f, Math.Min(shPt, 36f));
                             segments.Add(new TextSegment(" 🛡" + ((int)shieldAbsorb).ToString(),
                                 Color.FromArgb(0x00, 0xCE, 0xD1), shPt, true));

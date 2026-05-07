@@ -83,6 +83,9 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     /** 盾吸收值数组（无盾时为 0） */
     private static var _efShieldAbsorbs:Array = [];
 
+    /** unitId 数组（来自 hitTarget._name，无 ID 时为空串）。C# overlay 用于 O(1) 同目标合并 */
+    private static var _unitIds:Array = [];
+
     /** 队列长度 */
     private static var _length:Number = 0;
 
@@ -168,12 +171,14 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
      * @param shieldAbsorb 盾吸收量（无则 0）
      * @param x            世界坐标 X
      * @param y            世界坐标 Y
+     * @param unitId       目标 unit 标识（hitTarget._name），用于 C# overlay 同目标 O(1) 合并；
+     *                     无标识时传空串，C# 端回退到距离合并
      */
     public static function enqueueRaw(
         damage:Number, packed:Number,
         efText:String, efEmoji:String,
         lifeSteal:Number, shieldAbsorb:Number,
-        x:Number, y:Number
+        x:Number, y:Number, unitId:String
     ):Void {
         var idx:Number = _length;
         ++_length;
@@ -185,6 +190,7 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         _efShieldAbsorbs[idx] = shieldAbsorb;
         _xs[idx] = x;
         _ys[idx] = y;
+        _unitIds[idx] = (unitId == null) ? "" : unitId;
     }
 
     /**
@@ -266,7 +272,8 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
                     buf += _values[i] + "|" + x + "|" + y + "|" + _packed[i] + "|";
                     buf += safeField(_efTexts[i]) + "|";
                     buf += safeField(_efEmojis[i]) + "|";
-                    buf += _efLifeSteals[i] + "|" + _efShieldAbsorbs[i];
+                    buf += _efLifeSteals[i] + "|" + _efShieldAbsorbs[i] + "|";
+                    buf += _unitIds[i];
                     ++shown2;
                 }
             } while (++i < n);
@@ -436,6 +443,7 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         _efEmojis.length = 0;
         _efLifeSteals.length = 0;
         _efShieldAbsorbs.length = 0;
+        _unitIds.length = 0;
         _length = 0;
     }
 

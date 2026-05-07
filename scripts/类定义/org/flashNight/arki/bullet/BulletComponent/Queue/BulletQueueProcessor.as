@@ -525,7 +525,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         }
 
         // 伤害数字显示
-        damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
+        damageResult.triggerDisplay(hitTarget._x, hitTarget._y, hitTarget._name);
 
         // 命中特效
         if (bullet.shouldGeneratePostHitEffect) {
@@ -2381,7 +2381,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             // --- 表现触发（缓存坐标值） ---
                             targetX = hitTarget._x;
                             targetY = hitTarget._y;
-                            damageResult.triggerDisplay(targetX, targetY);
+                            damageResult.triggerDisplay(targetX, targetY, hitTarget._name);
 
                             // --- 终止意图：近战硬直 或 非穿刺 命中即"消失" ---
                             if (!isPierce) {  // 非穿透

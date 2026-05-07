@@ -449,8 +449,10 @@ class org.flashNight.arki.component.Damage.DamageResult {
      *
      * @param {Number} targetX - 伤害显示的X坐标。
      * @param {Number} targetY - 伤害显示的Y坐标。
+     * @param {String} unitId  - 目标 unit 标识（hitTarget._name），用于 C# overlay 同目标 O(1) 合并；
+     *                           调用方传 null 或空串时 C# 端回退到距离合并。
      */
-    public function triggerDisplay(targetX:Number, targetY:Number):Void {
+    public function triggerDisplay(targetX:Number, targetY:Number, unitId:String):Void {
         var list:Array = this.totalDamageList;
         var len:Number = list.length;
 
@@ -492,7 +494,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
                 dmg, pkd,
                 efText, efEmoji,
                 lifeSteal, shieldAbsorb,
-                targetX, targetY
+                targetX, targetY, unitId
             );
             i++;
         } while (i < len);
