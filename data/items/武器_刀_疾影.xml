@@ -99,7 +99,7 @@
       <type>武器</type>
       <use>刀</use>
       <actiontype>疾影</actiontype>
-      <price>78000</price>
+      <price>290000</price>
       <skill>
         <skillname>弧光斩</skillname>
         <description>手持该武器时可以使用弧光斩。</description>
@@ -122,6 +122,38 @@
         <evasion>10</evasion>
         <damagetype>魔法</damagetype>
         <magictype>冷</magictype>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
+    <item>
+      <name>梁上青-入鞘</name>
+      <displayname>梁上青-入鞘</displayname>
+      <icon>梁上青-入鞘</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>疾影</actiontype>
+      <price>200000</price>
+      <skill>
+        <skillname>弧光斩</skillname>
+        <description>手持该武器时可以使用弧光斩。</description>
+        <cd>4000</cd>
+        <mp>50</mp>
+      </skill>
+      <description>黑铁会与联合大学的高级订制武器，配有特殊的攻防一体式剑鞘。
+      剑身材料像是使用了特殊的玉石与工业钢铁的融合金属，低调古朴的外形受到权高位重的人士喜爱。
+      鞘身蕴含着作为前文明时代工业结晶的微型能源装置；
+      因此只需击发，便能恢复精神。</description>
+      <data>
+        <level>32</level>
+        <weight>3</weight>
+        <dressup>刀-梁上青</dressup>
+        <dressup3>刀-梁上青剑鞘</dressup3>
+        <power>375</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <criticalhit>25</criticalhit>
+        <evasion>10</evasion>
         <bladeCount>3</bladeCount>
       </data>
     </item>
