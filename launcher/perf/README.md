@@ -84,11 +84,11 @@ module.exports = {
 
 ```js
 module.exports = {
-    name: 'mapStageScan-only',
-    description: '只停 map-stage-scanline 动画',
+    name: 'mapRailScenePulse-only',
+    description: '只停 rail 当前关卡 dot 的呼吸脉冲',
 
     // 一级：CSS stylesheet 注入。最快、最广，但 `*` 选择器会引入 cascade 副作用
-    css: `.map-stage-scanline { animation: none !important; }`,
+    css: `.map-rail-scene-item.is-current .map-rail-scene-dot { animation: none !important; }`,
 
     // 二级：靶向 inline style。先 getComputedStyle 找出实际使用该属性的元素，
     // 只对它们注入 inline。避开 cascade 副作用，且能输出归因清单。

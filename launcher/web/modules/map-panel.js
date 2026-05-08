@@ -42,6 +42,7 @@ var MapPanel = (function() {
     var _layoutSettleTimer = 0;
     var _layoutPendingReason = '';
     var _layoutObserver = null;
+    var _resizingClassTimer = 0;
     var _windowResizeBound = false;
     var _visualViewportResizeBound = false;
     var _windowResizeHandler = null;
@@ -262,6 +263,11 @@ var MapPanel = (function() {
             cancelAnimationFrame(_layoutRaf);
         }
         _layoutRaf = 0;
+        if (_resizingClassTimer) {
+            clearTimeout(_resizingClassTimer);
+            _resizingClassTimer = 0;
+        }
+        if (_stageEl) _stageEl.classList.remove('is-resizing');
     }
 
     function applyPage(pageId) {
@@ -1903,8 +1909,21 @@ function resolveFeedbackAnchor(item) {
 
     function handleViewportLayoutChange(reason) {
         var layoutReason = (typeof reason === 'string' && reason) ? reason : 'external_resize';
+        markStageInteracting();
         scheduleLayoutSync(layoutReason);
         scheduleSettledLayoutSync(layoutReason + ':settled');
+    }
+
+    // 滑动 / resize 期临时给 stage 打 is-resizing 类, CSS 借此关掉父级 filter graph 与 scene-node 装饰层。
+    // 每次触发都 push 一次 140ms timer (略大于 settled sync 的 110ms), 停手后才清掉, 避免连续 resize 期间反复 add/remove。
+    function markStageInteracting() {
+        if (!_stageEl) return;
+        _stageEl.classList.add('is-resizing');
+        if (_resizingClassTimer) clearTimeout(_resizingClassTimer);
+        _resizingClassTimer = setTimeout(function() {
+            _resizingClassTimer = 0;
+            if (_stageEl) _stageEl.classList.remove('is-resizing');
+        }, 140);
     }
 
     function scheduleLayoutSync(reason) {

@@ -2902,6 +2902,13 @@
     inset:0;
     z-index:2;
     pointer-events:none;
+    /* 静态色调 filter 上提到层级, 一次合成代替每张 scene-node-image 各自挂 filter graph;
+       per-state 高亮 (hover/current/disabled/...) 仍留在子级以保持单点切换语义 */
+    filter:contrast(1.02) saturate(1.04);
+}
+
+.map-stage-frame[data-page-id="base"] .map-scene-layer {
+    filter:contrast(1.05) saturate(1.03);
 }
 
 .map-scene-node {
@@ -2910,6 +2917,12 @@
     isolation:isolate;
     transform-origin:center center;
     transition:transform 0.14s ease, opacity 0.14s ease;
+    /* 静态 box-shadow 替代旧 image filter:drop-shadow, 避免每张大 PNG 每帧重做 alpha-blur 合成 */
+    box-shadow:0 10px 16px rgba(0, 0, 0, 0.34);
+}
+
+.map-stage-frame[data-page-id="base"] .map-scene-node {
+    box-shadow:0 12px 20px rgba(0, 0, 0, 0.38);
 }
 
 .map-scene-node::before {
@@ -2938,11 +2951,6 @@
     width:100%;
     height:100%;
     object-fit:fill;
-    filter:contrast(1.02) saturate(1.04) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.34));
-}
-
-.map-stage-frame[data-page-id="base"] .map-scene-node-image {
-    filter:contrast(1.05) saturate(1.03) drop-shadow(0 12px 20px rgba(0, 0, 0, 0.38));
 }
 
 .map-scene-node-glow {
@@ -2963,7 +2971,7 @@
 
 .map-scene-node.is-hover .map-scene-node-image,
 .map-scene-node.is-busy .map-scene-node-image {
-    filter:brightness(1.08) saturate(1.08) drop-shadow(0 0 20px rgba(196, 255, 82, 0.22)) drop-shadow(0 12px 20px rgba(0, 0, 0, 0.34));
+    filter:brightness(1.08) saturate(1.08);
 }
 
 .map-scene-node.is-hover .map-scene-node-glow,
@@ -2972,7 +2980,7 @@
 }
 
 .map-scene-node.is-current .map-scene-node-image {
-    filter:brightness(1.06) saturate(1.08) drop-shadow(0 0 18px rgba(114, 230, 255, 0.24)) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.36));
+    filter:brightness(1.06) saturate(1.08);
 }
 
 .map-scene-node.is-current .map-scene-node-glow {
@@ -2985,7 +2993,7 @@
 }
 
 .map-scene-node.is-disabled .map-scene-node-image {
-    filter:grayscale(0.14) brightness(0.76) saturate(0.72) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.24));
+    filter:grayscale(0.14) brightness(0.76) saturate(0.72);
 }
 
 .map-stage-frame[data-page-id="base"] .map-scene-node.is-disabled::before {
@@ -3001,7 +3009,7 @@
 }
 
 .map-stage-frame.is-layer-relation .map-scene-node .map-scene-node-image {
-    filter:brightness(0.74) saturate(0.8) drop-shadow(0 8px 14px rgba(0, 0, 0, 0.28));
+    filter:brightness(0.74) saturate(0.8);
 }
 
 .map-scene-node.is-relationship.is-emphasis,
@@ -3015,7 +3023,7 @@
 .map-scene-node.is-relationship.is-current .map-scene-node-image,
 .map-scene-node.is-relationship.is-hover .map-scene-node-image,
 .map-scene-node.is-relationship.is-busy .map-scene-node-image {
-    filter:brightness(1.08) saturate(1.08) drop-shadow(0 0 18px rgba(196, 255, 82, 0.18)) drop-shadow(0 12px 20px rgba(0, 0, 0, 0.34));
+    filter:brightness(1.08) saturate(1.08);
 }
 
 .map-scene-node.is-muted {
@@ -3023,7 +3031,18 @@
 }
 
 .map-scene-node.is-muted .map-scene-node-image {
-    filter:brightness(0.58) saturate(0.7) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.22));
+    filter:brightness(0.58) saturate(0.7);
+}
+
+/* 滑动 / resize 期临时降级: 关父级 filter graph、关 scene-node 装饰层与发光层。
+   由 map-panel.js handleViewportLayoutChange 打 class, 停手 ~140ms 后清掉。
+   交互手感会 100ms 左右"扁平", 换来 GPU 合成大幅降载。 */
+.map-stage-frame.is-resizing .map-scene-layer {
+    filter:none;
+}
+.map-stage-frame.is-resizing .map-scene-node::before,
+.map-stage-frame.is-resizing .map-scene-node-glow {
+    display:none;
 }
 
 .map-hotspot-layer {
@@ -4029,6 +4048,8 @@ html.perf-low-effects .map-stage-content-fit {
 }
 
 html.perf-low-effects .map-stage-image,
+html.perf-low-effects .map-scene-layer,
+html.perf-low-effects .map-stage-frame[data-page-id="base"] .map-scene-layer,
 html.perf-low-effects .map-scene-node-image,
 html.perf-low-effects .map-scene-node.is-hover .map-scene-node-image,
 html.perf-low-effects .map-scene-node.is-busy .map-scene-node-image,
@@ -4053,6 +4074,7 @@ html.perf-low-effects .map-panel-header::after,
 html.perf-low-effects .map-page-tab.is-active,
 html.perf-low-effects .map-stage-corner::before,
 html.perf-low-effects .map-stage-corner::after,
+html.perf-low-effects .map-scene-node,
 html.perf-low-effects .map-scene-node::before,
 html.perf-low-effects .map-hotspot,
 html.perf-low-effects .map-hotspot:hover,

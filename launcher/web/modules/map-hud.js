@@ -337,7 +337,8 @@ var MapHud = (function() {
 
     function render(meta, outline) {
         var renderMode = meta.pageId === 'base' ? '1' : '2';
-        var pageText = renderMode === '1' ? '基地' : '外部';
+        // base 分支跟随 page.title（当前 'A兵团'），非 base 保留 binary "外部" 语义不展开成具体派系页
+        var pageText = renderMode === '1' ? (meta.pageLabel || 'A兵团') : '外部';
         var titleText = meta.label || meta.pageLabel || '当前位置';
         var svg = buildSvg(outline, meta.hotspotId);
         var groupId = (typeof MapPanelData !== 'undefined' && MapPanelData && typeof MapPanelData.getHotspotUnlockGroup === 'function')
