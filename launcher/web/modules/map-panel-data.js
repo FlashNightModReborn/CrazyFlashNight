@@ -702,7 +702,7 @@ var MapPanelData = (function() {
         return _pageOrder.slice();
     }
 
-    // 与 map-panel.js 内部 resolveAssetUrl 行为一致 (见 map-panel.js:1285): 兼容 overlay 嵌入 Flash
+    // 与 map-panel.js 内部 resolveAssetUrl 行为一致: 兼容 overlay 嵌入 Flash
     // 上下文时 document.location 不在 launcher/web/ 根的情况, 把相对 url 锚到 /launcher/web/。
     function resolveAssetUrlForPrewarm(assetUrl) {
         var value = String(assetUrl || '');

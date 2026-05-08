@@ -45,6 +45,7 @@ var MapPanel = (function() {
     var _resizingClassTimer = 0;
     // sceneLayer DOM cache: 一次构建一页全部 scene-node, 切页 detach/reattach 整个 fragment, filter 切换仅切显隐。
     // 避免每次切页重新 fetch + decode 14 张 PNG。
+    // 假设 MapPanelData 加载后 immutable; 若未来出现热重载或页面数据动态修改, 需在数据更新点 reset 此 cache。
     var _sceneNodeCache = {};
     var _currentSceneLayerPageId = '';
     var _windowResizeBound = false;
