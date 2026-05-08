@@ -702,6 +702,47 @@ var MapPanelData = (function() {
         return _pageOrder.slice();
     }
 
+    // 与 map-panel.js 内部 resolveAssetUrl 行为一致 (见 map-panel.js:1285): 兼容 overlay 嵌入 Flash
+    // 上下文时 document.location 不在 launcher/web/ 根的情况, 把相对 url 锚到 /launcher/web/。
+    function resolveAssetUrlForPrewarm(assetUrl) {
+        var value = String(assetUrl || '');
+        if (!value || /^(?:[a-z]+:|\/|#)/i.test(value)) return value;
+        if (typeof document === 'undefined' || !document.location) return value;
+        var marker = '/launcher/web/';
+        var href = String(document.location.href || '');
+        var idx = href.indexOf(marker);
+        if (idx < 0) return value;
+        try {
+            return new URL(value, href.slice(0, idx + marker.length)).href;
+        } catch (err) {
+            return value;
+        }
+    }
+
+    // 在 boot 阶段 idle window 调用, 把指定页的 sceneVisuals 资产解码进 image cache。
+    // 等用户首次开图, <img src=...> 命中已解码 bitmap, 跳过磁盘 IO + decode 阻塞。
+    function prewarmAssets(pageId) {
+        var page = getPage(pageId);
+        if (!page) return;
+
+        var urls = [];
+        if (page.backgroundUrl) urls.push(page.backgroundUrl);
+        var visuals = page.sceneVisuals || [];
+        for (var i = 0; i < visuals.length; i++) {
+            if (visuals[i] && visuals[i].assetUrl) urls.push(visuals[i].assetUrl);
+        }
+
+        for (var j = 0; j < urls.length; j++) {
+            var img = new Image();
+            img.decoding = 'async';
+            img.src = resolveAssetUrlForPrewarm(urls[j]);
+            // decode() 把 PNG 进一步解到 GPU-ready bitmap; 失败静默 (网络抖动 / 资产缺失不影响主流程)
+            if (typeof img.decode === 'function') {
+                img.decode().catch(function() {});
+            }
+        }
+    }
+
     function isLayerRelationFilter(pageId, filterId) {
         return resolvePageId(pageId) === 'base' && filterId === 'hierarchy';
     }
@@ -1205,6 +1246,7 @@ var MapPanelData = (function() {
         findFilter: findFilter,
         getVisibleHotspots: getVisibleHotspots,
         getVisibleSceneVisuals: getVisibleSceneVisuals,
+        prewarmAssets: prewarmAssets,
         exportPage: exportPage,
         exportManifest: exportManifest
     };

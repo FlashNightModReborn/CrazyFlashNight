@@ -43,6 +43,10 @@ var MapPanel = (function() {
     var _layoutPendingReason = '';
     var _layoutObserver = null;
     var _resizingClassTimer = 0;
+    // sceneLayer DOM cache: 一次构建一页全部 scene-node, 切页 detach/reattach 整个 fragment, filter 切换仅切显隐。
+    // 避免每次切页重新 fetch + decode 14 张 PNG。
+    var _sceneNodeCache = {};
+    var _currentSceneLayerPageId = '';
     var _windowResizeBound = false;
     var _visualViewportResizeBound = false;
     var _windowResizeHandler = null;
@@ -88,7 +92,7 @@ var MapPanel = (function() {
                                 '<div class="map-stage-anomaly-pulse"></div>' +
                             '</div>' +
                         '</div>' +
-                        '<img class="map-stage-image" id="map-stage-image" alt="地图背景">' +
+                        '<img class="map-stage-image" id="map-stage-image" alt="地图背景" decoding="async">' +
                         '<div class="map-stage-content-fit" id="map-stage-content-fit">' +
                             '<div class="map-scene-layer" id="map-scene-layer"></div>' +
                             '<div class="map-hotspot-layer" id="map-hotspot-layer"></div>' +
@@ -368,9 +372,42 @@ var MapPanel = (function() {
     function renderSceneVisuals() {
         if (!_activePage || !_sceneLayer) return;
 
-        var visuals = getVisibleSceneVisuals(_activePage);
-        _sceneLayer.innerHTML = '';
+        var newPageId = _activePage.id;
 
+        if (_currentSceneLayerPageId !== newPageId) {
+            // 切页: 把当前 sceneLayer 的子节点 detach 回旧页 cache fragment, 再 attach 新页 cache。
+            // 节点身份保留 → PNG 已解码进 image cache、CSS class 状态留住, 切回时无需重 fetch/decode。
+            if (_currentSceneLayerPageId) {
+                var oldCache = _sceneNodeCache[_currentSceneLayerPageId];
+                if (oldCache) {
+                    while (_sceneLayer.firstChild) {
+                        oldCache.fragment.appendChild(_sceneLayer.firstChild);
+                    }
+                } else {
+                    _sceneLayer.innerHTML = '';
+                }
+            } else {
+                _sceneLayer.innerHTML = '';
+            }
+
+            var cache = _sceneNodeCache[newPageId];
+            if (!cache) {
+                cache = { fragment: document.createDocumentFragment() };
+                buildSceneNodesIntoFragment(_activePage, cache.fragment);
+                _sceneNodeCache[newPageId] = cache;
+            }
+            // appendChild fragment: 子节点全部搬到 sceneLayer, fragment 留空对象供下次 detach 复用。
+            _sceneLayer.appendChild(cache.fragment);
+            _currentSceneLayerPageId = newPageId;
+        }
+        // pageId 未变 (filter 切换走这里): 不动 DOM, 仅切显隐 + 同步状态 class。
+
+        syncSceneVisualsVisibility();
+        syncSceneNodeStates();
+    }
+
+    function buildSceneNodesIntoFragment(page, fragment) {
+        var visuals = page.sceneVisuals || [];
         for (var i = 0; i < visuals.length; i++) {
             var visual = visuals[i];
             if (!visual || !visual.rect || !visual.assetUrl) continue;
@@ -381,18 +418,30 @@ var MapPanel = (function() {
             node.className = 'map-scene-node';
             node.setAttribute('data-scene-node-id', visual.id);
             node.setAttribute('data-hotspot-ids', (visual.hotspotIds || []).join(' '));
-            node.style.left = toPercent(rect.x, _activePage.width);
-            node.style.top = toPercent(rect.y, _activePage.height);
-            node.style.width = toPercent(rect.w, _activePage.width);
-            node.style.height = toPercent(rect.h, _activePage.height);
+            node.style.left = toPercent(rect.x, page.width);
+            node.style.top = toPercent(rect.y, page.height);
+            node.style.width = toPercent(rect.w, page.width);
+            node.style.height = toPercent(rect.h, page.height);
             node.setAttribute('aria-label', visual.label || visual.id);
             node.innerHTML =
-                '<img class="map-scene-node-image" alt="" src="' + escAttr(assetUrl) + '">' +
+                '<img class="map-scene-node-image" alt="" decoding="async" src="' + escAttr(assetUrl) + '">' +
                 '<span class="map-scene-node-glow"></span>';
-            _sceneLayer.appendChild(node);
+            fragment.appendChild(node);
         }
+    }
 
-        syncSceneNodeStates();
+    function syncSceneVisualsVisibility() {
+        if (!_activePage || !_sceneLayer) return;
+        var visuals = getVisibleSceneVisuals(_activePage);
+        var visibleSet = {};
+        var i;
+        for (i = 0; i < visuals.length; i++) visibleSet[visuals[i].id] = true;
+
+        var nodes = _sceneLayer.querySelectorAll('.map-scene-node');
+        for (i = 0; i < nodes.length; i++) {
+            var sceneId = nodes[i].getAttribute('data-scene-node-id');
+            nodes[i].style.display = visibleSet[sceneId] ? '' : 'none';
+        }
     }
 
     function getVisibleSceneVisuals(page) {
@@ -2064,7 +2113,8 @@ function resolveFeedbackAnchor(item) {
             focusHotspotId: getFocusHotspotId(_activePage),
             activeViewMode: getActiveViewMode(_activePage),
             renderMode: _activePage && _activePage.renderMode ? _activePage.renderMode : 'background',
-            sceneVisualCount: _sceneLayer ? _sceneLayer.querySelectorAll('.map-scene-node').length : 0,
+            // 改为 data-driven 计数 (visible 数, 不算 display:none 隐藏的): sceneLayer 现在常驻全部节点, querySelectorAll 会含被 filter 隐去的
+            sceneVisualCount: _activePage ? getVisibleSceneVisuals(_activePage).length : 0,
             stageScale: _stageScale,
             contentFitScale: _contentFitScale,
             contentFitOffsetX: roundLayoutValue(_contentFitOffsetX),

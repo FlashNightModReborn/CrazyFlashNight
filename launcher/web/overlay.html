@@ -261,6 +261,15 @@
         if (window.OverlayViewportMetrics) OverlayViewportMetrics.report('load_before_ready');
         Bridge.send({ type: 'ready' });
         if (window.OverlayViewportMetrics) OverlayViewportMetrics.schedule('load_after_ready');
+
+        // boot 完成后空闲时段预热地图首页 (base) 资产。用户首次开图时 <img> 命中 image cache, 跳过磁盘 IO + decode 阻塞。
+        // 走 requestIdleCallback 不与其他 lazy panel 加载抢主线程; 5s timeout 兜底, 防止极端 idle starvation。
+        var schedulePrewarm = window.requestIdleCallback || function(cb) { return setTimeout(cb, 1500); };
+        schedulePrewarm(function() {
+            if (window.MapPanelData && typeof MapPanelData.prewarmAssets === 'function') {
+                MapPanelData.prewarmAssets('base');
+            }
+        }, { timeout: 5000 });
     });
 })();
 </script>
