@@ -238,8 +238,8 @@ var MapPanelData = (function() {
     var _pages = {
         base: {
             id: 'base',
-            title: '基地',
-            tabLabel: '基地',
+            title: 'A兵团',
+            tabLabel: 'A兵团',
             renderMode: 'assembled',
             backdropTheme: 'base',
             backgroundUrl: 'assets/map/page-base.png',
@@ -291,8 +291,8 @@ var MapPanelData = (function() {
         },
         faction: {
             id: 'faction',
-            title: 'A兵团',
-            tabLabel: 'A兵团',
+            title: '堕落城/荒漠',
+            tabLabel: '堕落城/荒漠',
             renderMode: 'assembled',
             backdropTheme: 'faction',
             backgroundUrl: 'assets/map/page-faction.png',

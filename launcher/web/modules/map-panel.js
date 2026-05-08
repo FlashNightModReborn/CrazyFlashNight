@@ -7,7 +7,7 @@ var MapPanel = (function() {
     //   - 调大需回查 composite PNG 源分辨率, 否则最终总放大 > 1.5x 会 pixelated
     var STAGE_MAX_SCALE = 1.3;
 
-    var _el, _titleEl, _bodyEl, _stageEl, _stageShellEl, _railEl, _backdropEl, _filterOverlayEl, _anomalyEl, _contentFitEl, _imageEl, _sceneLayer, _hotspotLayer, _avatarLayer, _hotspotLabelLayer, _feedbackLayer, _overlayLayer, _loadingEl, _errorEl, _errorTextEl, _badgeEl;
+    var _el, _bodyEl, _stageEl, _stageShellEl, _railEl, _backdropEl, _filterOverlayEl, _anomalyEl, _contentFitEl, _imageEl, _sceneLayer, _hotspotLayer, _avatarLayer, _hotspotLabelLayer, _feedbackLayer, _overlayLayer, _loadingEl, _errorEl, _errorTextEl;
     var _pageTabsEl, _pageSummaryEl;
     var _activePage = null;
     var _reqSeq = 0;
@@ -71,13 +71,8 @@ var MapPanel = (function() {
         _el.className = 'map-panel';
         _el.innerHTML =
             '<div class="map-panel-header">' +
-                '<div class="map-panel-heading">' +
-                    '<span class="map-panel-title">地图测试</span>' +
-                    '<span class="map-panel-region" id="map-panel-region"></span>' +
-                '</div>' +
                 '<div class="map-page-tabs" id="map-page-tabs"></div>' +
                 '<div class="map-page-summary" id="map-page-summary"></div>' +
-                '<div class="map-panel-badge" id="map-panel-badge">DEV</div>' +
                 '<button class="map-panel-close-btn" type="button" title="关闭" data-audio-cue="cancel">X</button>' +
             '</div>' +
             '<div class="map-panel-body">' +
@@ -101,7 +96,6 @@ var MapPanel = (function() {
                             '<div class="map-feedback-layer" id="map-feedback-layer"></div>' +
                         '</div>' +
                         '<div class="map-stage-overlay-layer" id="map-stage-overlay-layer"></div>' +
-                        '<div class="map-stage-scanline" aria-hidden="true"></div>' +
                         '<div class="map-stage-corner map-stage-corner--tl" aria-hidden="true"></div>' +
                         '<div class="map-stage-corner map-stage-corner--tr" aria-hidden="true"></div>' +
                         '<div class="map-stage-corner map-stage-corner--bl" aria-hidden="true"></div>' +
@@ -120,7 +114,6 @@ var MapPanel = (function() {
                 '<div class="map-rail-shell" id="map-rail-shell"></div>' +
             '</div>';
 
-        _titleEl = _el.querySelector('#map-panel-region');
         _bodyEl = _el.querySelector('.map-panel-body');
         _stageEl = _el.querySelector('#map-stage-frame');
         _backdropEl = _el.querySelector('#map-stage-backdrop');
@@ -139,7 +132,6 @@ var MapPanel = (function() {
         _loadingEl = _el.querySelector('#map-stage-loading');
         _errorEl = _el.querySelector('#map-stage-error');
         _errorTextEl = _el.querySelector('#map-stage-error-text');
-        _badgeEl = _el.querySelector('#map-panel-badge');
         _pageTabsEl = _el.querySelector('#map-page-tabs');
         _pageSummaryEl = _el.querySelector('#map-page-summary');
 
@@ -207,8 +199,6 @@ var MapPanel = (function() {
         _snapshotAnnounced = false;
         resetContentFit();
         if (_el) _el.classList.remove('is-compact');
-
-        _badgeEl.style.display = initData && initData.dev ? '' : 'none';
 
         if (_el) {
             _el.classList.remove('is-entering');
@@ -278,7 +268,6 @@ var MapPanel = (function() {
         _activePage = MapPanelData.getPage(pageId);
         _hoverHotspotId = '';
         ensurePageFilterState(_activePage);
-        _titleEl.textContent = _activePage.title;
         _stageEl.style.aspectRatio = _activePage.width + ' / ' + _activePage.height;
         renderStageBackdrop();
         renderStageImage();
@@ -2040,7 +2029,7 @@ function resolveFeedbackAnchor(item) {
             isOpen: Panels.isOpen(),
             activePageId: _activePage ? _activePage.id : null,
             activeFilterId: activeFilter ? activeFilter.id : null,
-            title: _titleEl ? _titleEl.textContent : '',
+            title: _activePage ? _activePage.title : '',
             summary: _pageSummaryEl ? _pageSummaryEl.textContent : '',
             loadingVisible: !!(_loadingEl && _loadingEl.style.display !== 'none'),
             errorVisible: !!(_errorEl && _errorEl.style.display !== 'none'),

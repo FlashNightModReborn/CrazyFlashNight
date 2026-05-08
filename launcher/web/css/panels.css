@@ -2382,49 +2382,6 @@
     box-shadow:0 0 10px rgba(200,255,76,0.5);
 }
 
-.map-panel-heading {
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-    flex:0 0 auto;
-    padding-right:8px;
-    border-right:1px solid rgba(180,255,0,0.12);
-}
-
-.map-panel-title {
-    color:#d7ff83;
-    font-size:15px;
-    font-weight:bold;
-    letter-spacing:2px;
-    text-transform:uppercase;
-    text-shadow:0 0 10px rgba(200,255,76,0.35);
-}
-
-.map-panel.is-compact .map-panel-title {
-    font-size:14px;
-    letter-spacing:1px;
-}
-
-.map-panel-region {
-    color:#8a9779;
-    font-size:12px;
-    letter-spacing:1px;
-}
-
-.map-panel.is-compact .map-panel-region {
-    font-size:11px;
-}
-
-.map-panel-badge {
-    padding:2px 8px;
-    border:1px solid rgba(255, 196, 64, 0.28);
-    color:#ffd04f;
-    background:rgba(255, 196, 64, 0.08);
-    font-size:11px;
-    letter-spacing:1px;
-    flex:0 0 auto;
-}
-
 .map-panel-close-btn {
     background:none;
     border:1px solid rgba(255,0,60,0.28);
@@ -2818,10 +2775,10 @@
 }
 
 @keyframes mapStageRetune {
-    0%   { transform:skewX(0deg);   filter:blur(0) brightness(1); }
-    20%  { transform:skewX(-2.4deg); filter:blur(1.8px) brightness(1.12); }
-    55%  { transform:skewX(1.2deg);  filter:blur(0.7px) brightness(0.92); }
-    100% { transform:skewX(0deg);   filter:blur(0) brightness(1); }
+    0%   { transform:skewX(0deg);   filter:brightness(1); }
+    20%  { transform:skewX(-2.4deg); filter:brightness(1.18); }
+    55%  { transform:skewX(1.2deg);  filter:brightness(0.88); }
+    100% { transform:skewX(0deg);   filter:brightness(1); }
 }
 
 /* ================================================================
@@ -2952,7 +2909,7 @@
     overflow:visible;
     isolation:isolate;
     transform-origin:center center;
-    transition:transform 0.14s ease, opacity 0.14s ease, filter 0.14s ease;
+    transition:transform 0.14s ease, opacity 0.14s ease;
 }
 
 .map-scene-node::before {
@@ -3299,7 +3256,7 @@
     border:1px solid rgba(220,255,128,0.25);
     background:rgba(6, 8, 6, 0.82);
     box-shadow:0 0 14px rgba(0,0,0,0.32), 0 0 12px rgba(190,255,64,0.12);
-    transition:transform 0.14s ease, opacity 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease, filter 0.14s ease;
+    transition:transform 0.14s ease, opacity 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
     z-index:1;
 }
 
@@ -3483,8 +3440,8 @@
 
 .map-rail-scene-row {
     display:flex;
-    align-items:center;
-    gap:3px;
+    flex-direction:column;
+    gap:2px;
     width:100%;
 }
 
@@ -3506,15 +3463,14 @@
 }
 
 .map-rail-scene-row .map-rail-scene-item {
-    flex:1 1 auto;
-    min-width:0;
+    width:100%;
 }
 
 .map-rail-stage-select-btn {
-    flex:0 0 36px;
-    width:36px;
-    height:26px;
-    padding:0;
+    align-self:flex-end;
+    min-width:56px;
+    height:22px;
+    padding:0 12px;
     border:1px solid rgba(110, 235, 102, 0.18);
     background:rgba(8, 48, 20, 0.7);
     color:#c9f7ad;
@@ -3933,36 +3889,6 @@
 .map-stage-corner--br::before { bottom:0; right:0; }
 .map-stage-corner--br::after  { bottom:0; right:0; }
 
-/* Stage 扫描线 —— 缓慢从上向下扫, 叠加在所有内容之上但不拦事件
- * 元素 inset:0 铺满 stage, 亮带做在 gradient 顶部 ~14%, 靠 translateY 自身高度
- * 动画范围即 stage 全高, 解决旧实现扫描不到下半场的问题 */
-.map-stage-scanline {
-    position:absolute;
-    inset:0;
-    z-index:7;
-    pointer-events:none;
-    background:linear-gradient(
-        180deg,
-        rgba(220, 255, 128, 0.22) 0%,
-        rgba(200, 255, 76, 0.12) 3%,
-        rgba(200, 255, 76, 0.06) 7%,
-        rgba(200, 255, 76, 0.02) 12%,
-        rgba(200, 255, 76, 0) 18%,
-        rgba(200, 255, 76, 0) 100%
-    );
-    /* mix-blend-mode:screen — disabled for iGPU perf 2026-04-25 */
-    opacity:0.55;
-    animation:mapStageScan 14s linear infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-    .map-stage-scanline { display:none; }
-}
-@keyframes mapStageScan {
-    /* 元素占满 stage 高度, translateY(100%) = stage 全高一次完整 sweep */
-    0%   { transform:translateY(-100%); }
-    100% { transform:translateY(100%); }
-}
-
 /* Hotspot hover 靶标括号 —— 四个尖角 L 形。opacity 默认 0，hover/focus/busy/current 才浮现，
    因此在 assembled 模式(bg 透明) 不会出现"十字满天飞"。 */
 .map-hotspot::before {
@@ -4089,7 +4015,6 @@ html.perf-low-effects .map-stage-frame {
 }
 
 html.perf-low-effects .map-panel::before,
-html.perf-low-effects .map-stage-scanline,
 html.perf-low-effects .map-stage-anomaly,
 html.perf-low-effects .map-scene-node-glow,
 html.perf-low-effects .map-hotspot-sheen,
