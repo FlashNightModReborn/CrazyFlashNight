@@ -41,7 +41,6 @@ _root.转场景记录数据 = function(){
 		}
 		_loc3_ += 1;
 	}
-	_root.写入装备缓存();
 }
 
 _root.转场景数据传递 = function(){
@@ -50,20 +49,6 @@ _root.转场景数据传递 = function(){
 		_root.转场景数据 = [0, 0, "空手"];
 		佣兵同伴血量记录 = [-1, -1, -1];
 
-		var hero:MovieClip = TargetCacheManager.findHero();
-		_root.场景转换_主角hp = hero.hp满血值;
-		_root.场景转换_主角mp = hero.mp满血值;
-		// _root.场景转换_主角长枪射击次数 = 0;
-		// _root.场景转换_主角手枪射击次数 = 0;
-		// _root.场景转换_主角手枪2射击次数 = 0;
-		i = 0;
-		while (i < _root.同伴数){
-			if (_root.gameworld["同伴" + i].hp满血值 > 0){
-				_root.场景转换_同伴hp[i] = _root.gameworld["同伴" + i].hp满血值;
-				_root.场景转换_同伴mp[i] = _root.gameworld["同伴" + i].mp满血值;
-			}
-			i++;
-		}
 		_root.新出生 = false;
 		return;
 	}
