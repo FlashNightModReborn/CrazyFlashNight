@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="TestProbeLeaf" itemID="69fdee0b-0000040f" linkageExportForAS="true" linkageIdentifier="TestProbeLeaf" lastModified="1778249295">
+  <timeline>
+    <DOMTimeline name="TestProbeLeaf">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="144" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="2" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>TestProbeLeaf</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMSymbolInstance libraryItemName="leafChild" name="leafChild" centerPoint3DX="94.15" centerPoint3DY="50.95">
+                  <matrix>
+                    <Matrix tx="20.15" ty="41.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74" y="9.75"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    this.leafLoadedFlag = "yes";
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

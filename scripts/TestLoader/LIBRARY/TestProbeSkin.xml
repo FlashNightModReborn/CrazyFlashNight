@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="TestProbeSkin" itemID="69fded06-000003e1" linkageExportForAS="true" linkageIdentifier="TestProbeSkin" lastModified="1778249042">
+  <timeline>
+    <DOMTimeline name="TestProbeSkin">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="144" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="2" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>TestProbeSkin</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMSymbolInstance libraryItemName="child" name="child" selected="true" centerPoint3DX="77.5" centerPoint3DY="42.4">
+                  <matrix>
+                    <Matrix tx="3.5" ty="32.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74" y="9.75"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    this.loadedFlag = "yes";
+    this.loadedAt = _root.__seq;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

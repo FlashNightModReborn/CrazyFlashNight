@@ -1,5 +1,11 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="500" height="500" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="50.6510299754819" tabOrderMode="relative" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
-     <symbols/>
+     <symbols>
+          <Include href="child.xml" itemID="69fded24-000003e6" lastModified="1778249036"/>
+          <Include href="leafChild.xml" itemID="69fdee1d-00000413" lastModified="1778249245"/>
+          <Include href="TestProbeLeaf.xml" itemID="69fdee0b-0000040f" lastModified="1778249295"/>
+          <Include href="TestProbeNested.xml" itemID="69fdedda-0000040d" lastModified="1778249295"/>
+          <Include href="TestProbeSkin.xml" itemID="69fded06-000003e1" lastModified="1778249042"/>
+     </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
                <layers>
@@ -9,7 +15,32 @@
                                    <Actionscript>
                                         <script><![CDATA[#include "../TestLoader.as"]]></script>
                                    </Actionscript>
-                                   <elements/>
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="TestProbeSkin" centerPoint3DX="154.6" centerPoint3DY="254.2">
+                                             <matrix>
+                                                  <Matrix tx="80.6" ty="244.45"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="74" y="9.75"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="TestProbeNested" centerPoint3DX="313.6" centerPoint3DY="259.1">
+                                             <matrix>
+                                                  <Matrix tx="239.6" ty="249.35"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="74" y="9.75"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="TestProbeLeaf" selected="true" centerPoint3DX="35.5" centerPoint3DY="266.3">
+                                             <matrix>
+                                                  <Matrix tx="-38.5" ty="256.55"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="74" y="9.75"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
@@ -22,6 +53,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3033" publishTime="1778249280"/>
+          <PublishItem publishSize="2434" publishTime="1778249128"/>
+          <PublishItem publishSize="44653" publishTime="1778249044"/>
+          <PublishItem publishSize="44604" publishTime="1778249026"/>
           <PublishItem publishSize="524" publishTime="1773126980"/>
           <PublishItem publishSize="502" publishTime="1773126958"/>
           <PublishItem publishSize="723502" publishTime="1773125185"/>
@@ -38,9 +73,5 @@
           <PublishItem publishSize="441233" publishTime="1759048658"/>
           <PublishItem publishSize="441167" publishTime="1759048533"/>
           <PublishItem publishSize="459171" publishTime="1758971884"/>
-          <PublishItem publishSize="459164" publishTime="1758971732"/>
-          <PublishItem publishSize="459144" publishTime="1758971664"/>
-          <PublishItem publishSize="459143" publishTime="1758971606"/>
-          <PublishItem publishSize="458684" publishTime="1758966821"/>
      </publishHistory>
 </DOMDocument>
