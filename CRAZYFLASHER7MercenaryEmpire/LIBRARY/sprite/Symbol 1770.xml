@@ -166,11 +166,7 @@ _root.全部翻译(this);
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (press) {
-	if (_root.gameworld[当前NPC].默认对话[0][0][2] == "佣兵多语言随机对话")
-	{
-		_root.对话赋值到对话框(_root.组装多语版佣兵随机对话("佣兵多语言随机对话" + _root.gameworld[当前NPC].默认对话[0][0][4], _root.gameworld[当前NPC].默认对话[0]));
-	}
-	else if (_root.gameworld[当前NPC].默认对话 != undefined)
+	if (_root.gameworld[当前NPC].默认对话 != undefined)
 	{
 		if (!_root.gameworld[当前NPC].对话index or _root.gameworld[当前NPC].对话index >= _root.gameworld[当前NPC].默认对话.length)
 		{
@@ -180,14 +176,7 @@ _root.全部翻译(this);
 		//var 随机数 = random(_root.gameworld[当前NPC].默认对话.length);   
 		var 随机对话数组 = _root.gameworld[当前NPC].默认对话[_root.gameworld[当前NPC].对话index];
 		_root.gameworld[当前NPC].对话index += 1;
-		if (_root.多语言是否中文)
-		{
-			_root.对话赋值到对话框(随机对话数组);
-		}
-		else
-		{
-			_root.对话赋值到对话框(_root.组装多语版NPC随机对话(当前NPC, _root.gameworld[当前NPC].默认对话, 随机数));
-		}
+		_root.对话赋值到对话框(随机对话数组);
 	}
 	else
 	{

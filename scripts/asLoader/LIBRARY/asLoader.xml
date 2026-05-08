@@ -203,8 +203,8 @@ if (_root._bootstrap == undefined) {
             __bslog("sending ready ack");
             _root._bootstrap.sendReady();
         }
-        __bslog("bootstrap complete, jumping 多语言");
-        _root.gotoAndStop("多语言");
+        __bslog("bootstrap complete, jumping boot_check");
+        _root.gotoAndStop("boot_check");
     };
 }
 ]]></script>

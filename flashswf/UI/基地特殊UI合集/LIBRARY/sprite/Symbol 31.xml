@@ -7,14 +7,7 @@
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[hairName = _root.发型库[hairCode];
-if(_root.多语言是否中文 == true)
-{
-   多语言hairName = _root.发型名称库[hairCode];
-}
-else
-{
-   多语言hairName = "Style " + hairCode;
-}
+多语言hairName = _root.发型名称库[hairCode];
 if(hairName == "")
 {
    hairName = "光头";

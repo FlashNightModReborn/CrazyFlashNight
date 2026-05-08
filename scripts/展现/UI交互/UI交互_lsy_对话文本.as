@@ -1,8 +1,16 @@
 ﻿import org.flashNight.arki.unit.*;
 
-// 多语言系统已废弃（组装多语版NPC随机对话 等函数已被注释），强制中文路径，
-// 否则 Symbol 1770 bt1 会走 else 分支调用不存在的 组装多语版NPC随机对话 → 入参 undefined → 对话框开了立刻被 关闭()
-_root.多语言是否中文 = true;
+// ==============================================================================
+// 多语言系统 passthrough 兼容入口（历史债务）
+// ------------------------------------------------------------------------------
+// 多语言系统（json多语言数据 字典 + 各语言 txt 文档）已彻底剥离，保留以下三个函数
+// 作为 passthrough 入口供 933+ 处历史调用方（_root.获得翻译/_root.全部翻译/
+// _root.translateStrings），分布在主 FLA 各 UI 元件与 art 资源 SWF。
+// 如未来彻底剥离，需先 inline 替换所有调用方（涉及 100+ XML / 多个 SWF 重打）。
+// ==============================================================================
+_root.获得翻译 = function(key) { return key; };
+_root.translateStrings = function(strings) { return strings.join(""); };
+_root.全部翻译 = function(mc) {};
 
 _root.对话赋值到对话框 = function(内容数组){
 	var i = 0;
@@ -13,7 +21,6 @@ _root.对话赋值到对话框 = function(内容数组){
 	_root.对话框界面.对话进度 = 0;
 	_root.对话框界面.对话条数 += 内容数组.length;
 	_root.对话框界面.gotoAndStop("open");
-	_root.对话框界面._visible = true;
 }
 
 _root.对话覆盖赋值到对话框 = function(内容数组){
@@ -26,7 +33,6 @@ _root.对话覆盖赋值到对话框 = function(内容数组){
 	_root.对话框界面.对话进度 = 0;
 	_root.对话框界面.对话条数 = 内容数组.length;
 	_root.对话框界面.gotoAndStop("open");
-	_root.对话框界面._visible = true;
 }
 
 _root.getDialogueSpecialString = function(str){
@@ -80,36 +86,6 @@ _root.SetDialogue = function(arr, 是否覆盖已有对话){
 		_root.对话赋值到对话框(输出对话);
 	}
 }
-
-/*
-_root.组装多语版任务对话 = function(任务属性, 任务名, 任务前后, 原装对话){
-	var arr = [];
-	var i = 0;
-	while (i < 原装对话.length){
-		arr.push([原装对话[i][0], 原装对话[i][1], 原装对话[i][2], _root.json多语言任务对话数据[任务属性 + "【" + 任务名 + "】任务" + 任务前后 + "对话" + i], 原装对话[i][4]]);
-		i += 1;
-	}
-	return arr;
-}
-_root.组装多语版NPC随机对话 = function(NPC名字, 原装对话, 随机数){
-	var arr = [];
-	var i = 0;
-	while (i < 原装对话[随机数].length){
-		arr.push([原装对话[随机数][i][0], 原装对话[随机数][i][1], 原装对话[随机数][i][2], _root.json多语言任务对话数据[NPC名字 + "默认对话" + 随机数 + "_" + i], 原装对话[随机数][i][4]]);
-		i += 1;
-	}
-	return arr;
-}
-_root.组装多语版佣兵随机对话 = function(索引文字, 原装对话){
-	var arr = [];
-	var i = 0;
-	while (i < 原装对话.length){
-		arr.push([原装对话[i][0], 原装对话[i][1], 原装对话[i][2], _root.json多语言任务对话数据[索引文字], "普通"]);
-		i += 1;
-	}
-	return arr;
-}
-*/
 
 _root.获取游戏提示文本 = function(){
 	var 提示文本列表 = _root.提示文本列表;
