@@ -1,894 +1,153 @@
-﻿
-import org.flashNight.naki.Sort.InsertionSort;
-import org.flashNight.arki.unit.UnitComponent.Initializer.*;
-import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
-import org.flashNight.gesh.object.*;
+﻿import org.flashNight.arki.merc.*;
+
+// ════════════════════════════════════════════════════════════════════════════
+// 佣兵刷新系统帧脚本
+// ════════════════════════════════════════════════════════════════════════════
+// 业务逻辑下沉到 org.flashNight.arki.merc.* 四个类：
+//   - MercLibrary     佣兵数据层 (bundle cache / 列表加载 / 表达式查询 / 价格)
+//   - MercHybridizer  杂交器（纯函数化，hybridize 返回杂交副本）
+//   - MercSpawner     场景刷新链（含 emergent throttle 文档化注释）
+//   - ArenaController 决斗场 + 佣兵库请求（callback 风格，不再用全局回调槽）
+//
+// 本文件只保留：
+//   1. _root 状态变量初始化（外部 XML 读写的公共数组、计数器）
+//   2. _root.X 适配器包装器（保持外部可见 API 不变）
+//
+// Step 5 移除：
+//   - _root.随机可雇佣兵           （Hybridizer 改为返回值，调用方持有临时单元素库）
+//   - _root.战队信息数组 init      （MercLibrary.bundle 接管；XML loader 仍写但已废）
+//   - _root.佣兵请求成功/失败/中回调 槽位（callback 风格替代）
+//   - _root.补充佣兵 适配器        （内部 helper，零外部调用）
+//   - _root._mercDataRefCount      （bundle 由 MercLibrary 持有，session 级缓存）
+//   - _root.佣兵不足时出阵人员 / _root.佣兵不足时进入决斗场
+//                                  （死路径：mercs_list 202 条 vs 同伴上限 5，
+//                                   hasEnoughFor 数学上不可能 false）
+// ════════════════════════════════════════════════════════════════════════════
 
 
-_root.删佣兵 = function(佣兵ID)
-{
-	var 删佣兵数组号 = -1;
-	var 迭代器 = 0;
-	while (迭代器 < _root.佣兵个数限制)
-	{
-		if (_root.同伴数据[迭代器][2] == 佣兵ID)
-		{
-			删佣兵数组号 = 迭代器;
-			break;
-		}
-		迭代器 += 1;
-	}
-	if (删佣兵数组号 == -1)
-	{
-		return undefined;
-	}
-	if(_root.同伴数据[删佣兵数组号][19] && _root.同伴数据[删佣兵数组号][19].是否杂交 == false){
-		_root.可雇佣兵.push(_root.同伴数据[删佣兵数组号]);
-	}
-	if(_root.同伴数据[删佣兵数组号][19] && _root.同伴数据[删佣兵数组号][19].隐藏){
-		_root.隐藏的可雇佣兵.push(_root.同伴数据[删佣兵数组号]);
-	}
-	_root.同伴数--;
-	_root.同伴数据[删佣兵数组号] = [];
-	var temp_同伴数据 = [];
-	迭代器 = 0;
-	while (迭代器 < _root.佣兵个数限制)
-	{
-		if (_root.同伴数据[迭代器][0] != undefined)
-		{
-			temp_同伴数据.push(_root.同伴数据[迭代器]);
-		}
-		迭代器 += 1;
-	}
-	_root.同伴数据 = temp_同伴数据;
-	_root.gameworld[_root.菜单MC对应名].removeMovieClip();
-	for (var 单位 in _root.gameworld)
-	{
-		if (_root.gameworld[单位].用户ID == 佣兵ID)
-		{
-			_root.gameworld[单位].removeMovieClip();
-		}
-	}
+// ─── MercHybridizer 适配器 ─────────────────────────────────────────────────
+_root.佣兵杂交序号 = function(n, 杂交几率, 杂交许可) {
+    return MercHybridizer.pickHybridIndex(n, 杂交几率, 杂交许可);
+};
+_root.随机生成杂交佣兵名 = function() {
+    return MercHybridizer.randomHybridName();
+};
+_root.检查并返回有效佣兵名称 = function(佣兵名称) {
+    return MercHybridizer.validateName(佣兵名称);
+};
+_root.佣兵杂交名称 = function(n, 杂交许可, 战队信息) {
+    return MercHybridizer.hybridName(n, 杂交许可, 战队信息);
+};
+_root.杂交许可 = function(输入字符串) {
+    return MercHybridizer.allowHybrid(输入字符串);
+};
+_root.装备杂交许可 = function(杂交装备, 装备杂交几率) {
+    return MercHybridizer.allowEquipHybrid(杂交装备, 装备杂交几率);
+};
+// 注意：原 _root.杂交可雇佣兵 写入 _root.随机可雇佣兵，调用方再读。
+// Step 5 后 hybridize 返回值；适配器把返回值重新装入 _root.随机可雇佣兵 维持旧 API。
+_root.杂交可雇佣兵 = function(n, 杂交几率, 杂交许可) {
+    _root.随机可雇佣兵 = [MercHybridizer.hybridize(n, 杂交几率, 杂交许可)];
 };
 
+
+// ─── MercSpawner 适配器 ────────────────────────────────────────────────────
+_root.删佣兵 = function(佣兵ID) {
+    return MercSpawner.removeMerc(佣兵ID);
+};
 _root.初始化佣兵编号缓存 = function() {
-    var 游戏世界 = _root.gameworld;
-
-    // 初始化并设置为不可枚举
-    if (游戏世界.佣兵编号缓存 == undefined) {
-        游戏世界.佣兵编号缓存 = {权重列表: [], 总权重: 0, 已初始化: false};
-
-        // 设置 `佣兵编号缓存` 为不可枚举
-        _global.ASSetPropFlags(游戏世界, ["佣兵编号缓存"], 1, false);
-    }
+    MercSpawner.initIndexCache();
+};
+_root.更新佣兵编号缓存 = function() {
+    MercSpawner.updateIndexCache();
+};
+_root.获取随机佣兵编号 = function(已上场佣兵编号) {
+    return MercSpawner.pickRandomMercIndex(已上场佣兵编号);
+};
+_root.生成游戏世界佣兵 = function(添加佣兵函数, 机率, 是否门口) {
+    MercSpawner.spawnInWorld(添加佣兵函数, 机率, 是否门口);
+};
+// emergent throttle 文档详见 MercSpawner.spawnAtGate 注释
+_root.门口刷可雇用玩家 = function(几率) {
+    MercSpawner.spawnAtGate(几率);
+};
+_root.场景刷可雇用玩家 = function(机率) {
+    MercSpawner.spawnInScene(机率);
+};
+_root.场景随机有效位置 = function() {
+    return MercSpawner.randomValidPosition();
+};
+_root.创建佣兵实体 = function(n, 杂交几率) {
+    return MercSpawner.createMercData(n, 杂交几率);
+};
+_root.创建佣兵实体对象 = function(佣兵数据, X, Y) {
+    return MercSpawner.createMercEntity(佣兵数据, X, Y);
+};
+_root.添加门口佣兵 = function(n, X, Y) {
+    MercSpawner.addGateMerc(n, X, Y);
+};
+_root.添加场上佣兵 = function(n) {
+    MercSpawner.addCourtMerc(n);
 };
 
 
-_root.更新佣兵编号缓存 = function()
-{
-	_root.初始化佣兵编号缓存();
-	var 缓存 = _root.gameworld.佣兵编号缓存;
-	if (!缓存.已初始化)
-	{
-		缓存.权重列表 = [];
-		缓存.总权重 = 0;
-
-		// 计算等级分界线（作为高斯分布的标准差），至少为15级，或者是玩家等级的30%
-		var 等级分界线 = Math.max(15, Math.floor(_root.等级 * 0.3));
-
-		for (var i = 0; i < _root.可雇佣兵.length; i++)
-		{
-			var 等级差 = Math.abs(_root.等级 - _root.可雇佣兵[i][0]);
-			// 使用高斯分布 + 5%基础权重：权重以玩家等级为中心呈钟形分布，但保证所有等级都有最低5%权重
-			// 权重 = 0.05 + 0.95 * exp(-(等级差^2) / (2 * σ^2))，其中 σ = 等级分界线
-			var 高斯权重 = Math.exp(-(等级差 * 等级差) / (2 * 等级分界线 * 等级分界线));
-			var 权重 = 0.05 + 0.95 * 高斯权重;
-			缓存.权重列表.push(权重);
-			缓存.总权重 += 权重;
-		}
-
-		缓存.已初始化 = true;
-	}
+// ─── ArenaController 适配器 ────────────────────────────────────────────────
+_root.进入决斗场 = function(出阵表) {
+    ArenaController.enter(出阵表);
+};
+_root.决斗场关闭 = function() {
+    ArenaController.close();
+};
+_root.竞技场随机对手选择 = function(条件) {
+    ArenaController.pickRandom(条件);
+};
+_root.竞技场对手请求 = function(请求表达式) {
+    ArenaController.requestOpponent(请求表达式);
+};
+_root.更新重用限制 = function() {
+    ArenaController.bumpReuseLimit();
 };
 
-_root.获取随机佣兵编号 = function(已上场佣兵编号)
-{
-	_root.更新佣兵编号缓存();
-	var 缓存 = _root.gameworld.佣兵编号缓存;
-
-	var 可选择佣兵编号 = [];
-	for (var i = 0; i < 缓存.权重列表.length; i++)
-	{
-		if (已上场佣兵编号[i] == undefined)
-		{
-			可选择佣兵编号.push(i);
-		}
-	}
-
-	if (可选择佣兵编号.length == 0)
-	{
-		return -1;// 如果没有可选佣兵，返回 -1
-	}
-
-	var 随机数 = _root.basic_random() * 缓存.总权重;
-	var 累计 = 0;
-	for (var j = 0; j < 可选择佣兵编号.length; j++)
-	{
-		var 索引 = 可选择佣兵编号[j];
-		累计 += 缓存.权重列表[索引];
-		if (随机数 <= 累计)
-		{
-			return 索引;
-		}
-	}
-
-	return -1;// 理论上不应该到达这里
+// 旧 4-参数签名映射到 callback 风格。失败/中回调可能为 undefined（callback 风格不强制）。
+_root.请求佣兵 = function(请求内容, 成功回调, 失败回调, 请求中回调) {
+    if (请求中回调) 请求中回调();
+    ArenaController.requestMerc(请求内容, function(response) {
+        if (response.success) {
+            if (成功回调) 成功回调();
+        } else {
+            if (失败回调) 失败回调();
+        }
+    });
+};
+_root.请求新佣兵 = function(条件, 回调函数, 回调参数) {
+    MercLibrary.loadMoreByExpression(条件, 回调函数, 回调参数);
 };
 
-_root.生成游戏世界佣兵 = function(添加佣兵函数, 机率, 是否门口)
-{
-	var frameFlag = _root.gameworld.frameFlag;
-	org.flashNight.neur.Server.DataQueryService.query(
-		"merc_bundle", null,
-		function(response:Object):Void {
-			if (frameFlag != _root.gameworld.frameFlag) return;
-			if (response.success) {
-				_root.战队信息数组 = response.result.teams;
-				_root.随机名称库 = response.result.names;
-				_root.佣兵随机对话 = response.result.dialogues;
-				_root.佣兵对话池 = response.result.pool;
-				_root.生成游戏世界佣兵内部_withCleanup(
-					添加佣兵函数, 机率, 是否门口, frameFlag
-				);
-			} else {
-				_root.服务器.发布服务器消息("[生成游戏世界佣兵] 查询失败:", response.error);
-			}
-		}
-	);
+
+// ─── MercLibrary 适配器（数据层） ──────────────────────────────────────────
+_root.确认佣兵库 = function(请求内容) {
+    return MercLibrary.hasEnoughFor(请求内容);
+};
+_root.表达式解析器 = function(条件) {
+    return MercLibrary.parseExpression(条件);
+};
+_root.佣兵库查询 = function(条件) {
+    return MercLibrary.query(条件);
+};
+// 注意：SaveManager 用 _root.载入新佣兵库数据(0,0,0,0,0) 作"触发完整重载"调用，
+// 5 个参数（含 0 占位）保留兼容。MercLibrary.loadMore 不读前 3 个 numeric 参数。
+_root.载入新佣兵库数据 = function(人数, 等级下限, 等级上限, 回调函数, 回调参数) {
+    MercLibrary.loadMore(人数, 等级下限, 等级上限, 回调函数, 回调参数);
+};
+_root.计算佣兵金币价格 = function(等级) {
+    return MercLibrary.calculatePrice(等级);
 };
 
-/**
- * Launcher 数据源的佣兵生成入口，带瞬态 cleanup。
- *
- * 使用闭包捕获 actualEnqueued 共享计数器（非参数传递）。
- * 原因：帧计时器.添加单次任务 通过 ArgumentsUtil.sliceArgs 值拷贝额外参数，
- * 无法让多个回调共享同一可变变量。闭包捕获 activation object 上的绑定，
- * 所有回调引用同一个 actualEnqueued，最后一个完成时触发 cleanup。
- *
- * 并发安全：场景刷可雇用玩家（初始一次）和门口佣兵刷新器（每50帧）可能重叠。
- * 使用 _root._mercDataRefCount 全局引用计数，仅最后一批结束时才 null 化数据。
- * 不触碰 _root.佣兵配置_状态 — 该状态由 通信_fs_lsy_XML数据解析.as 独占管理。
- */
-_root.生成游戏世界佣兵内部_withCleanup = function(
-	添加佣兵函数, 机率, 是否门口, frameFlag
-) {
-	var 游戏世界 = _root.gameworld;
-	var 场上佣兵总人数 = _root.成功率(100 / 机率) ? _root.随机整数(1, 3) : 0.5;
-	var 面积系数 = (_root.Xmax - _root.Xmin) * (_root.Ymax - _root.Ymin) / _root.面积系数;
-	if (!isNaN(游戏世界.面积系数)) 面积系数 *= 游戏世界.面积系数;
-	场上佣兵总人数 = Math.floor(Math.max(场上佣兵总人数 * 面积系数, 1));
-	if (场上佣兵总人数 > _root.可雇佣兵.length) {
-		场上佣兵总人数 = _root.可雇佣兵.length;
-	}
 
-	// 全局引用计数：并发批次共享数据，最后一批结束才释放
-	if (_root._mercDataRefCount == undefined) _root._mercDataRefCount = 0;
-	_root._mercDataRefCount++;
-
-	var 已上场佣兵编号 = [];
-	var actualEnqueued:Number = 0;
-
-	var cleanup:Function = function():Void {
-		_root._mercDataRefCount--;
-		if (_root._mercDataRefCount <= 0) {
-			_root._mercDataRefCount = 0;
-			_root.战队信息数组 = null;
-			_root.随机名称库 = null;
-			_root.佣兵随机对话 = null;
-			_root.佣兵对话池 = null;
-			// 发型库不清理 — 会话常驻数据，被 _root.请求新佣兵 等多条路径持续读取
-			// legacy 生命周期管理不管它，asLoader 启动一次性加载后需要永久存在
-		}
-	};
-
-	for (var 迭代器 = 0; 迭代器 < 场上佣兵总人数; 迭代器++) {
-		var 随机编号 = _root.获取随机佣兵编号(已上场佣兵编号);
-		if (随机编号 == -1) break;
-
-		actualEnqueued++;
-
-		_root.帧计时器.添加单次任务(
-			function(是否门口, 随机编号, 添加佣兵函数, 场上佣兵总人数, fFlag) {
-				if (fFlag != _root.gameworld.frameFlag) {
-					actualEnqueued--;
-					if (actualEnqueued <= 0) cleanup();
-					return;
-				}
-
-				if (是否门口) {
-					var 门 = _root.随机选择数组元素(_root.gameworld.出生点列表);
-					添加佣兵函数(随机编号, 门._x, 门._y);
-				} else {
-					添加佣兵函数(随机编号);
-				}
-
-				actualEnqueued--;
-				if (actualEnqueued <= 0) cleanup();
-			},
-			_root.随机整数(1, 场上佣兵总人数 * 2) * 1000,
-			是否门口, 随机编号, 添加佣兵函数, 场上佣兵总人数, frameFlag
-		);
-
-		已上场佣兵编号[随机编号] = -1;
-	}
-
-	if (actualEnqueued == 0) cleanup();
-};
-
-// === 不要单独"修"这个函数 ===
-// 历史链路：MC 实例属性 _root.门口佣兵刷新器.几率 由场景 XML <Entrance> 注入
-// （见 关卡系统_lsy_add2map_加载背景.as），用作 Symbol 2396 frame 29 的
-// random(几率)==0 触发频率门控；frame 29 调本函数时未传参，本函数体内
-// 历史误字"机率"裸标识符 → undefined → 100/几率=NaN → Math.max(...,1)
-// 兜底强制 1 个佣兵。
-//
-// 实际节流结构（buggy 行为已成 emergent design）:
-//   外层(设计): frame 29 random(几率)==0  → 按 Entrance 控制触发频率
-//   内层(兜底): 函数体几率=undefined      → 强制每次 1 个（关键节流）
-//   数量门控:   frame 29 i < 10            → 场上 ≥10 不刷
-//
-// 若把 frame 29 改成 _root.门口刷可雇用玩家(几率) 让内层"恢复设计意图"，
-// 内层会从"强制 1 个"放宽到"_root.成功率(100/几率) ? 1-3 : 兜底 1"，
-// 整体期望刷出量约 +14%（Entrance=7 时）。运营反馈是当前已偏多，故
-// 暂不修，留到下沉为 MercSpawner 类时与 <Entrance>/<EntranceDensity>
-// 解耦一并设计。
-//
-// 形参用正确字"几率"补齐，不传时与历史一致。
-_root.门口刷可雇用玩家 = function(几率){
-	if (_root.成功率(30)){
-		_root.生成游戏世界佣兵(_root.添加场上佣兵, 几率, false);
-	}else{
-		_root.生成游戏世界佣兵(_root.添加场上佣兵, 几率, true);
-	}
-};
-
-_root.场景刷可雇用玩家 = function(机率)
-{
-	_root.生成游戏世界佣兵(_root.添加场上佣兵,机率,false);
-};
-
-_root.场景随机有效位置 = function(){
-	var 游戏世界 = _root.gameworld;
-	var tempx;
-	var tempy;
-	var pt;
-	for(var i=0; i<99; i++){
-		tempx = _root.随机整数(_root.Xmin, _root.Xmax);
-		tempy = _root.随机整数(_root.Ymin, _root.Ymax);
-		if (!_root.collisionLayer.hitTest(tempx, tempy, true)){
-			break;
-		}else{
-			// _root.gameworld.attachMovie("point","p1" + _root.随机整数(0, 999),_root.gameworld.getNextHighestDepth(),{_x:tempx, _y:tempy});
-		}
-	}
-	return {x:tempx, y:tempy};
-};
-_root.佣兵杂交序号 = function(n, 杂交几率, 杂交许可)
-{
-	if (_root.成功率(杂交几率) and 杂交许可)
-	{
-		return _root.获取随机索引(_root.可雇佣兵);
-	}
-	return n;
-};
-_root.战队信息数组 = [];
-
-// 佣兵配置数据现在由 佣兵配置_ensureLoaded 统一管理
-// 不再在此处直接加载，避免重复加载和竞态问题
-
-_root.随机生成杂交佣兵名 = function()
-{
-	// 从随机名称库中随机选择一个名称
-	var 随机名称 = _root.随机选择数组元素(_root.随机名称库);
-	return 随机名称;
-};
-_root.检查并返回有效佣兵名称 = function(佣兵名称)
-{
-	// 检查佣兵名称是否有效
-	if (佣兵名称 == undefined or 佣兵名称 == null or 佣兵名称.trim() === "")
-	{
-		return "无名的佣兵";// 返回默认名称
-	}
-	return 佣兵名称;// 返回有效的佣兵名称
-};
-
-_root.佣兵杂交名称 = function(n, 杂交许可, 战队信息)
-{
-	if (!杂交许可)
-	{
-		return _root.检查并返回有效佣兵名称(_root.可雇佣兵[n][1]);
-	}
-	return _root.按宽度截断字符串(战队信息.战队抬头 + " " + _root.随机生成杂交佣兵名(), 30);
-};
-_root.杂交许可 = function(输入字符串)
-{
-	var 装备排除表 = ["小熊", "诛神","轶事奇人","炎魔","合金","钛","章鱼","Andy","JK","余烬","军阀","装甲头盔","奇美拉","牙狼", "K5", "兽王", "异形"];
-	for (var i = 0; i < 装备排除表.length; i++)
-	{
-		if (输入字符串.indexOf(装备排除表[i]) != -1)
-		{
-			return false;
-		}
-	}
-	return true;
-};
-_root.装备杂交许可 = function(杂交装备, 装备杂交几率)
-{
-	// 检查杂交装备是否为null或undefined或它们的字符串形式，或者空字符串
-	if (杂交装备 === null or 杂交装备 === "null" or 杂交装备 === undefined or 杂交装备 === "undefined" or 杂交装备 === "")
-	{
-		return false;
-	}
-	// 进一步检查杂交装备是否为合法字符串                                                                                                                                     
-	if (typeof 杂交装备 !== "string" or 杂交装备.trim().length === 0)
-	{
-		return false;
-	}
-	// 检查是否满足随机杂交几率                                                                                                                                     
-	return _root.成功率(装备杂交几率);
-};
-_root.杂交可雇佣兵 = function(n, 杂交几率, 杂交许可)
-{
-	var 样本佣兵 = _root.深拷贝数组(_root.可雇佣兵[n]);
-	var 佣兵杂交等级 = _root.可雇佣兵[_root.佣兵杂交序号(n, 100, 杂交许可)][0];
-	var 战队信息 = _root.根据权重获取随机对象(_root.战队信息数组);
-	var 装备杂交系数 = 3;
-	var 杂交装备等级;
-	var 自身装备等级;
-	var 杂交装备类型;
-	var 装备类型数组 = ["头部装备", "上装装备", "手部装备", "下装装备", "脚部装备", "", "长枪", "手枪", "手枪", "刀", "手雷"];		
-
-	for(var 迭代器 = 0;迭代器 <= 16;迭代器++)
-	{
-		switch(迭代器)
-		{
-			case 0:样本佣兵[0] = Math.min(Math.floor(样本佣兵[0] * 1.5), Math.max(样本佣兵[0], 佣兵杂交等级));break;
-			case 1:样本佣兵[1] = _root.佣兵杂交名称(n, 杂交许可, 战队信息);break;
-			case 3:case 4:case 5:case 17:
-				样本佣兵[迭代器] = _root.可雇佣兵[_root.佣兵杂交序号(n, 杂交几率, 杂交许可)][迭代器];
-				break;
-			case 11:break;
-			default:
-				var 杂交装备 = _root.可雇佣兵[_root.佣兵杂交序号(n, 100, 杂交许可)][迭代器];
-				if(杂交装备 == undefined or 杂交装备 == "null" or 杂交装备 == "undefined" or 杂交装备 == "")
-				{
-					break;
-				}
-				杂交装备等级 = _root.getItemData(杂交装备).data.level;
-				自身装备等级 = _root.getItemData(样本佣兵[迭代器]).data.level;
-				杂交装备类型 = _root.getItemData(杂交装备).use;
-				var 装备杂交几率 = (杂交装备等级 >= 自身装备等级) ? ((杂交几率 - (样本佣兵[0] - 杂交装备等级) * 2) * 装备杂交系数) : 0;
-				var 装备杂交许可检测 = (杂交装备类型 == 装备类型数组[迭代器 - 6]) and (杂交装备等级 <= 样本佣兵[0]) ;
-				if (装备杂交许可检测 and _root.杂交许可(杂交装备) and _root.杂交许可(样本佣兵[迭代器]) and _root.装备杂交许可(杂交装备, 装备杂交几率))
-				{
-					//_root.发布调试消息(样本佣兵[1] + ":" + 样本佣兵[0] + "  " + 杂交装备 + ":" + 杂交装备等级 + " 取代 " + 装备类型数组[迭代器 - 6] + 样本佣兵[迭代器] + ":" + 自身装备等级);
-					样本佣兵[迭代器] = 杂交装备;
-				}
-				break;
-		}
-	}
-	
-	if ((样本佣兵[13] == null or 样本佣兵[13] == "undefined" or 样本佣兵[13] == "") and (样本佣兵[14] != null and 样本佣兵[14] != "undefined" and 样本佣兵[14] != ""))
-	{
-		样本佣兵[13] = 样本佣兵[14];
-	}
-	else if ((样本佣兵[14] == null or 样本佣兵[14] == "undefined" or 样本佣兵[14] == "") and (样本佣兵[13] != null and 样本佣兵[13] != "undefined" and 样本佣兵[13] != ""))
-	{
-		样本佣兵[14] = 样本佣兵[13];
-	}
-	样本佣兵[11] = 战队信息.战队项链;//保证佣兵不会出现只带一把副武器的情况，并且装备上对应的战队项链
-	样本佣兵[19].是否杂交 = true;//保证佣兵不会出现只带一把副武器的情况，并且装备上对应的战队项链
-	_root.随机可雇佣兵=[];//预防内存泄漏，但测试无效
-	_root.随机可雇佣兵.push(样本佣兵);//_root.输出对象属性(样本佣兵);     
-};
-
-_root.创建佣兵实体 = function(n, 杂交几率)
-{
-	var 佣兵库 = _root.可雇佣兵;
-
-	// 直接在条件判断中处理杂交逻辑
-	if (_root.isEasyMode() != true)
-	{
-		杂交几率 = Math.min(杂交几率, Math.max(0, _root.主线任务进度 - 13));//在竞技场之后解锁，当达到38时杂交率达到25
-	}
-	if (_root.成功率(杂交几率))
-	{
-		_root.杂交可雇佣兵(n,杂交几率,true);
-		佣兵库 = _root.随机可雇佣兵;
-		n = _root.随机可雇佣兵.length - 1;
-	}
-
-	佣兵库[n][2] = 佣兵库[n][2].toString() + 佣兵库[n][1] + 佣兵库[n][0].toString() + _root.随机整数(0, 9999).toString();
-
-	if (佣兵库[n] == undefined || 佣兵库[n][1] + "" == "undefined")
-	{
-		return null;
-	}
-	// 返回佣兵库中的佣兵数据                                                                                                                                                              
-	return 佣兵库[n];
-};
-_root.创建佣兵实体对象 = function(佣兵数据, X, Y)
-{
-	if (佣兵数据 == null)
-	{
-		return null;
-	}
-	// 如果没有佣兵数据则返回null                                                                                                                                                            
-
-	生成佣兵计数++;
-	var 佣兵名 = "佣兵" + 佣兵数据[1] + 生成佣兵计数;// 根据佣兵数据生成唯一的佣兵名
-
-	// 在游戏世界中创建佣兵对象
-	_root.加载游戏世界人物("佣兵npc",佣兵名,_root.gameworld.getNextHighestDepth(),{_x:X, _y:Y});
-	var 佣兵对象 = _root.gameworld[佣兵名];
-
-	// 设置佣兵对象的各项属性
-	佣兵对象.佣兵库编号 = 佣兵数据[1];
-	佣兵对象.是否为敌人 = false;
-	佣兵对象.脸型 = 佣兵数据[4];
-	佣兵对象.发型 = 佣兵数据[5];
-	佣兵对象.头部装备 = 佣兵数据[6];
-	佣兵对象.上装装备 = 佣兵数据[7];
-	佣兵对象.手部装备 = 佣兵数据[8];
-	佣兵对象.下装装备 = 佣兵数据[9];
-	佣兵对象.脚部装备 = 佣兵数据[10];
-	佣兵对象.颈部装备 = 佣兵数据[11];
-	佣兵对象.长枪 = 佣兵数据[12];
-	佣兵对象.手枪 = 佣兵数据[13];
-	佣兵对象.手枪2 = 佣兵数据[14];
-	佣兵对象.刀 = 佣兵数据[15];
-	佣兵对象.手雷 = 佣兵数据[16];
-	佣兵对象.名字 = 佣兵数据[1];// 使用佣兵库中的名字
-	佣兵对象.身高 = 佣兵数据[3];
-	佣兵对象.性别 = 佣兵数据[17];
-	佣兵对象.等级 = 佣兵数据[0];
-
-	佣兵对象.NPC = true;
-
-
-	// 设置佣兵对象的佣兵数据
-	佣兵对象.佣兵数据 = 佣兵数据;
-	// 受雇欲望为5的单位必定可以雇佣
-	佣兵对象.受雇欲望 = 5;
-
-	// 提前生成人格向量（幂等，初始化玩家模板中的二次调用会跳过已生成的）
-	_root.配置人形怪AI(佣兵对象);
-
-	// 按人格主维度抽对话（Phase 2: 先人格 → 再按人格抽匹配对话）
-	佣兵对象.默认对话 = [[]];
-	var _pool:Object = _root.佣兵对话池;
-	if (_pool != null && 佣兵对象.personality != null) {
-		var _p:Object = 佣兵对象.personality;
-		var _dims:Array = ["勇气", "技术", "经验", "反应", "智力", "谋略"];
-		// 按人格值降序排列 → 前2个为主要维度
-		_dims.sort(function(a, b) { return (_p[b] > _p[a]) ? 1 : ((_p[b] < _p[a]) ? -1 : 0); });
-
-		var _di:Number = 0;
-		// 第一主维度：抽 2 条
-		var _p1:Array = _pool[_dims[0]];
-		if (_p1 != null && _p1.length > 0) {
-			for (var i:Number = 0; i < 2; i++) {
-				var d1:Object = _p1[_root.获取随机索引(_p1)];
-				佣兵对象.默认对话[0][_di++] = [佣兵数据[1], "佣兵", "主角模板",
-					d1.Text + "   (" + d1.Personality + ":" + d1.Value + ")",
-					d1.Expression, 佣兵对象];
-			}
-		}
-		// 第二主维度：抽 1 条
-		var _p2:Array = _pool[_dims[1]];
-		if (_p2 != null && _p2.length > 0) {
-			var d2:Object = _p2[_root.获取随机索引(_p2)];
-			佣兵对象.默认对话[0][_di++] = [佣兵数据[1], "佣兵", "主角模板",
-				d2.Text + "   (" + d2.Personality + ":" + d2.Value + ")",
-				d2.Expression, 佣兵对象];
-		}
-		// 随机池补充 0-2 条
-		var _fill:Number = _root.随机整数(0, 2);
-		for (var j:Number = 0; j < _fill; j++) {
-			var _ri:Number = _root.获取随机索引(_root.佣兵随机对话);
-			var dr:Object = _root.佣兵随机对话[_ri];
-			佣兵对象.默认对话[0][_di++] = [佣兵数据[1], "佣兵", "主角模板",
-				dr.Text + "   (" + dr.Personality + ":" + dr.Value + ")",
-				dr.Expression, 佣兵对象];
-		}
-	} else {
-		// Fallback: 对话池未就绪时走原始随机逻辑
-		var 对话数量:Number = _root.随机整数(1, 5);
-		for (var i:Number = 0; i < 对话数量; ++i) {
-			var 随机对话编号:Number = _root.获取随机索引(_root.佣兵随机对话);
-			var 随机对话内容:String = _root.佣兵随机对话[随机对话编号].Text + "   (" + _root.佣兵随机对话[随机对话编号].Personality + ":" + _root.佣兵随机对话[随机对话编号].Value + ")";
-			佣兵对象.默认对话[0][i] = [佣兵数据[1], "佣兵", "主角模板", 随机对话内容, _root.佣兵随机对话[随机对话编号].Expression, 佣兵对象];
-		}
-	}
-
-	var nx:Number = 佣兵对象.人物文字信息._x;
-	var ny:Number = 佣兵对象.人物文字信息._y;
-
-	// 随机设置佣兵的方向
-	var 方向 = _root.随机整数(0, 1) == 0 ? "左" : "右";
-	佣兵对象.方向 = 方向;
-
-
-	return 佣兵对象;// 返回创建的佣兵对象
-};
-_root.添加门口佣兵 = function(n, X, Y)
-{
-	var 佣兵数据 = _root.创建佣兵实体(n, _root.杂交佣兵几率);
-	_root.创建佣兵实体对象(佣兵数据,X,Y);
-};
-
-_root.添加场上佣兵 = function(n)
-{
-	var 佣兵数据 = _root.创建佣兵实体(n, _root.杂交佣兵几率);
-	var obj = _root.场景随机有效位置();
-	_root.创建佣兵实体对象(佣兵数据,obj.x,obj.y);
-};
-
-//角斗场
-_root.进入决斗场 = function(出阵表)
-{
-	if (出阵表 != undefined)
-	{
-		_root.金钱 -= _root.押金;
-		_root.最上层发布文字提示("已扣除押金" + _root.押金);
-		_root.当前通关的关卡 = "";
-		_root.当前关卡名 = "DEATH MATCH角斗场";
-		_root.场景进入位置名 = "出生地";
-		_root.敌人同伴数 = _root.出阵人员.length;
-		_root.敌人同伴数据 = _root.出阵人员;
-		_root.淡出动画.淡出跳转帧("wuxianguotu_1");
-	}
-};
-_root.佣兵不足时进入决斗场 = function(请求表达式)
-{
-	var 佣兵不足时查询表 = _root.表达式解析器(请求表达式).slice();
-	var 出阵表 = [];
-	var 迭代器 = 0;
-	while (迭代器 < 佣兵不足时查询表.length)
-	{
-		var 可出场表 = [];
-		var _loc4_ = 0;
-		while (_loc4_ < _root.佣兵不足时出阵人员.length)
-		{
-			if (_root.佣兵不足时出阵人员[_loc4_][0] >= 佣兵不足时查询表[迭代器][1] && _root.佣兵不足时出阵人员[_loc4_][0] <= 佣兵不足时查询表[迭代器][2])
-			{
-				可出场表.push(_loc4_);
-			}
-			_loc4_ += 1;
-		}
-		while (佣兵不足时查询表[迭代器][3] > 0)
-		{
-			var 出阵号 = random(可出场表.length);
-			出阵表.push(可出场表[出阵号]);
-			可出场表.splice(出阵号,1);
-			佣兵不足时查询表[迭代器][3]--;
-		}
-		迭代器 += 1;
-	}
-	_root.出阵人员 = [];
-	var _loc5_ = 0;
-	while (_loc5_ < 出阵表.length)
-	{
-		_root.出阵人员.push(_root.佣兵不足时出阵人员[出阵表[_loc5_]]);
-		_loc5_ += 1;
-	}
-	_root.金钱 -= _root.押金;
-	_root.最上层发布文字提示("已扣除押金" + _root.押金);
-	_root.当前通关的关卡 = "";
-	_root.当前关卡名 = "DEATH MATCH角斗场";
-	_root.场景进入位置名 = "出生地";
-	_root.敌人同伴数 = _root.出阵人员.length;
-	_root.敌人同伴数据 = _root.出阵人员;
-	_root.淡出动画.淡出跳转帧("wuxianguotu_1");
-};
-
-_root.决斗场关闭 = function(){
-	_root.发布请求 = false;
-	_root.决斗场进入中 = false;
-	org.flashNight.arki.scene.StageManager.instance.clear();
-
-}
-
-_root.竞技场随机对手选择 = function(条件)
-{
-	var 查询表 = _root.表达式解析器(条件).slice();
-	var 出阵表 = [];
-	var 迭代器 = 0;
-	while (迭代器 < 查询表.length)
-	{
-		var 可出场表 = [];
-		var _loc4_ = 0;
-		while (_loc4_ < _root.可雇佣兵.length)
-		{
-			if (_root.可雇佣兵[_loc4_][0] >= 查询表[迭代器][1] && _root.可雇佣兵[_loc4_][0] <= 查询表[迭代器][2])
-			{
-				可出场表.push(_loc4_);
-			}
-			_loc4_ += 1;
-		}
-		while (查询表[迭代器][3] > 0)
-		{
-			var 出阵号 = random(可出场表.length);
-			出阵表.push(可出场表[出阵号]);
-			可出场表.splice(出阵号,1);
-			查询表[迭代器][3]--;
-		}
-		迭代器 += 1;
-	}
-	_root.出阵人员 = [];
-	var _loc5_ = 0;
-	while (_loc5_ < 出阵表.length)
-	{
-		_root.出阵人员.push(_root.可雇佣兵[出阵表[_loc5_]]);
-		_loc5_ += 1;
-	}
-	if (_root.决斗场进入中 == true)
-	{
-		_root.进入决斗场(出阵表);
-		_root.决斗场进入中 = false;
-	}
-};
-// _root.abc = function()
-// {
-// };
-_root.竞技场对手请求 = function(请求表达式)
-{
-	if (_root.确认佣兵库(请求表达式))
-	{
-		if (_root.当前佣兵重用数 <= _root.竞技场佣兵重用基数)
-		{
-			_root.当前佣兵重用数++;
-			_root.竞技场随机对手选择(请求表达式);
-		}
-		else
-		{
-			_root.竞技场随机对手选择(请求表达式);
-			_root.请求新佣兵(请求表达式,_root.更新重用限制);
-		}
-	}
-	else
-	{
-		_root.佣兵不足时进入决斗场(请求表达式);
-	}
-};
-_root.更新重用限制 = function()
-{
-	_root.竞技场佣兵重用基数 += _root.重用基数成长率;
-	_root.当前佣兵重用数 = 0;
-};
-// _root.doNothing = function()
-// {
-// };
-_root.佣兵请求成功回调 = function()
-{
-	_root.等待mc._visible = false;
-};
-_root.佣兵请求失败回调 = function()
-{
-	_root.等待mc._visible = false;
-};
-_root.佣兵请求中回调 = function()
-{
-	_root.等待mc._visible = true;
-};
-_root.确认佣兵库 = function(请求内容)
-{
-	var temp = _root.佣兵库查询(请求内容);
-	if (temp != undefined)
-	{
-		return false;
-	}
-	return true;
-};
-_root.请求佣兵 = function(请求内容, 成功回调, 失败回调, 请求中回调)
-{
-	if (成功回调 != undefined)
-	{
-		_root.佣兵请求成功回调 = 成功回调;
-	}
-	if (成功回调 != undefined)
-	{
-		_root.佣兵请求失败回调 = 失败回调;
-	}
-	if (请求中回调 != undefined)
-	{
-		_root.佣兵请求中回调 = 请求中回调;
-	}
-	var temp = _root.佣兵库查询(请求内容);
-	if (temp != undefined)
-	{
-		_root.佣兵请求中回调();
-		_root.补充佣兵(temp,请求内容);
-	}
-	else
-	{
-		_root.佣兵请求成功回调();
-	}
-};
-_root.补充佣兵 = function(要求, 请求内容)
-{
-	_root.载入新佣兵库数据(要求[3],要求[1],要求[2],_root.请求佣兵,请求内容);
-};
-_root.请求新佣兵 = function(条件, 回调函数, 回调参数)
-{
-	var 查询表 = _root.表达式解析器(条件);
-	var _loc5_ = 0;
-	while (_loc5_ < 查询表.length)
-	{
-		载入新佣兵库数据(查询表[_loc5_][3],查询表[_loc5_][1],查询表[_loc5_][2],回调函数,回调参数);
-		_loc5_ += 1;
-	}
-};
-_root.载入新佣兵库数据 = function(人数, 等级下限, 等级上限, 回调函数, 回调参数)
-{
-	// if (_root.isEasyMode() == true)
-	// {
-	// 	list = _root.mercs_easy_list;
-	// }
-	// else
-	// {
-	// 	list = _root.mercs_list;
-	// }
-	var list = _root.mercs_list;
-	_root.可雇佣兵 = [];
-	_root.隐藏的可雇佣兵 = [];
-	var 迭代器 = 0;
-	var seen = {}; 
-	while (迭代器 < _root.佣兵个数限制)
-	{
-		if (_root.同伴数据[迭代器][1] && _root.同伴数据[迭代器][2])
-		{
-			seen[_root.同伴数据[迭代器][2]] = _root.同伴数据[迭代器][1];
-		}
-		迭代器 += 1;
-	}
-	for (var _loc7_ in list)
-	{
-		var rawMercData = list[_loc7_];
-		if(seen[rawMercData.id] && seen[rawMercData.id] == rawMercData.name){
-			continue;
-		}
-		var mercData = new Array(20);
-		mercData[0] = rawMercData.level;//0
-		mercData[1] = rawMercData.name;//1
-		mercData[2] = rawMercData.id;//2
-		mercData[3] = rawMercData.height;//3
-		mercData[4] = rawMercData.face == null ? "" : _root.脸型库[rawMercData.face];//4
-		mercData[5] = rawMercData.hair == null ? "" : _root.发型库[rawMercData.hair];//5
-		mercData[6] = rawMercData.equipment.head == null ? "" : rawMercData.equipment.head;//6
-		mercData[7] = rawMercData.equipment.body == null ? "" : rawMercData.equipment.body;//7
-		mercData[8] = rawMercData.equipment.hand == null ? "" : rawMercData.equipment.hand;//8
-		mercData[9] = rawMercData.equipment.leg == null ? "" : rawMercData.equipment.leg;//9
-		mercData[10] = rawMercData.equipment.foot == null ? "" : rawMercData.equipment.foot;//10
-		mercData[11] = rawMercData.equipment.neck == null ? "" : rawMercData.equipment.neck;//11
-		mercData[12] = rawMercData.equipment.primary == null ? "" : rawMercData.equipment.primary;//12
-		mercData[13] = rawMercData.equipment.secondary1 == null ? "" : rawMercData.equipment.secondary1;//13
-		mercData[14] = rawMercData.equipment.secondary2 == null ? "" : rawMercData.equipment.secondary2;//14
-		mercData[15] = rawMercData.equipment.melee == null ? "" : rawMercData.equipment.melee;//15
-		mercData[16] = rawMercData.equipment.gerenade == null ? "" : rawMercData.equipment.gerenade;//16
-		mercData[17] = rawMercData.gender;//17
-		mercData[18] = _root.计算佣兵金币价格(rawMercData.level);//18
-		mercData[19] = {是否杂交:false};//19
-		if(rawMercData.pricemultiplier){
-			mercData[19].价格倍率 = rawMercData.pricemultiplier;
-		}
-		if(rawMercData.enhancement){
-			mercData[19].装备强化度 = rawMercData.enhancement;
-		}
-		if(rawMercData.passive){
-			mercData[19].被动技能 = rawMercData.passive;
-		}
-		if(rawMercData.hidden){
-			mercData[19].隐藏 = rawMercData.hidden;
-			_root.隐藏的可雇佣兵.push(mercData);
-		}else{
-			_root.可雇佣兵.push(mercData);
-		}
-	}
-	// _root.可雇佣兵去重 = [];
-	// var seen = {}; 
-
-	// for (var i = 0; i < _root.可雇佣兵.length; i++) {
-	// 	var key = _root.可雇佣兵[i].join("-");  // 将子数组转为字符串作为唯一标识
-
-	// 	if (!seen[key]) {
-	// 		seen[key] = true;  // 标记该子数组已出现
-	// 		_root.可雇佣兵去重.push(_root.可雇佣兵[i]);  
-	// 	}
-	// }
-	// _root.可雇佣兵 = _root.可雇佣兵去重;
-	//_root.可雇佣兵.sortOn(0, Array.NUMERIC);
-	InsertionSort.sortOn(_root.可雇佣兵, 0, Array.NUMERIC);
-	_root.可雇佣兵 = _root.可雇佣兵.concat(_root.隐藏的可雇佣兵);
-	if (回调函数 != undefined)
-	{
-		回调函数(回调参数);
-	}
-};
-
-_root.计算佣兵金币价格 = function(等级){
-	var 金币价格 = 0;
-	var 等级 = Number(等级);
-	if (_root.isEasyMode() == true)
-	{
-		金币价格 = 等级 * _root.基础身价值;
-	}
-	else if (_root.isChallengeMode() == true)
-	{
-		金币价格 = 等级 * 15 * _root.基础身价值;
-	}
-	else if (等级 >= 50)
-	{
-		金币价格 = 等级 * 25 * _root.基础身价值 - 1000 * _root.基础身价值;
-	}
-	else if (等级 >= 10)
-	{
-		金币价格 = 等级 * 5 * _root.基础身价值- 20 * _root.基础身价值;
-	}
-	else
-	{
-		金币价格 = 2.5 * _root.基础身价值 + 等级 * 2.5 * _root.基础身价值;
-	}
-	return Number(金币价格);
-}
-_root.表达式解析器 = function(条件)
-{
-	var 查询表 = [];
-	var 条件集 = 条件.split(",");
-	var _loc2_ = 0;
-	while (_loc2_ < 条件集.length)
-	{
-		var temp = 条件集[_loc2_].split("@");
-		var temp2 = temp[1].split("%");
-		查询表.push([Number(temp[0].split("#")[1]), Number(temp2[0].split("-")[0]), Number(temp2[0].split("-")[1]), Number(temp2[1])]);
-		_loc2_ += 1;
-	}
-	return 查询表;
-};
-_root.佣兵库查询 = function(条件)
-{
-	var 查询表 = _root.表达式解析器(条件);
-	var 迭代器 = 0;
-	while (迭代器 < _root.可雇佣兵.length)
-	{
-		var _loc4_ = 0;
-		while (_loc4_ < 查询表.length)
-		{
-			if (查询表[_loc4_][3] > 0)
-			{
-				if (_root.可雇佣兵[迭代器][查询表[_loc4_][0]] >= 查询表[_loc4_][1] && _root.可雇佣兵[迭代器][查询表[_loc4_][0]] <= 查询表[_loc4_][2])
-				{
-					查询表[_loc4_][3]--;
-					break;
-				}
-			}
-			_loc4_ += 1;
-		}
-		迭代器 += 1;
-	}
-	迭代器 = 0;
-	while (迭代器 < 查询表.length)
-	{
-		if (查询表[迭代器][3] > 0)
-		{
-			return 查询表[迭代器];
-		}
-		迭代器 += 1;
-	}
-	return undefined;
-};
+// ─── _root 状态初始化 ─────────────────────────────────────────────────────
+// 这些数组/计数器被外部 XML 直接读写，初始化在帧脚本里以保证启动时存在。
 _root.可雇佣兵 = [];
-_root.随机可雇佣兵 = [];
+_root.隐藏的可雇佣兵 = [];
 _root.杂交佣兵几率 = 50;
 
 _root.竞技场佣兵重用基数 = 2;
@@ -896,29 +155,3 @@ _root.当前佣兵重用数 = 0;
 _root.重用基数成长率 = 2;
 _root.出阵人员 = [];
 _root.生成佣兵计数 = 0;
-_root.佣兵不足时出阵人员 = [];
-_root.佣兵不足时出阵人员.push([1, "欧阳", 0, 175, "男变装-基本脸型", "发型-男式-黑韩式头2", "", "绿色马甲", "", "咖啡色多包短裤", "棕色皮鞋", "", "", "", "", "", "", "男", 0]);
-_root.佣兵不足时出阵人员.push([2, "欧阳冰", 0, 165, "女变装-基本脸型", "发型-女式-咖啡色中长马尾", "", "米色高腰背心", "", "棕色带腿包短裤", "深灰色皮鞋", "", "", "", "", "", "", "女", 0]);
-_root.佣兵不足时出阵人员.push([3, "李逵", 0, 180, "男变装-基本脸型", "发型-男式-黑暴走头", "", "黑色功夫装", "", "咖啡色多包裤", "白色板鞋", "", "", "", "", "", "", "男", 0]);
-_root.佣兵不足时出阵人员.push([4, "母夜叉", 0, 160, "女变装-基本脸型", "发型-女式-银色清爽直发", "", "廉价西服", "", "破牛仔裤", "棕色圆头皮鞋", "", "", "", "", "", "", "女", 0]);
-_root.佣兵不足时出阵人员.push([5, "楚留香", 0, 175, "男变装-基本脸型", "发型-男式-黑长发", "医用口罩", "黑色功夫装", "牛皮手套", "破牛仔裤", "白色板鞋", "", "", "", "", "", "", "男", 0]);
-_root.佣兵不足时出阵人员.push([6, "人杰", 0, 175, "男变装-基本脸型", "发型-男式-黑暴走头", "医用口罩", "黑短袖", "牛皮手套", "咖啡色多包短裤", "棕色皮鞋", "", "", "", "", "匕首", "普通手雷", "男", 0]);
-_root.佣兵不足时出阵人员.push([7, "阿斯顿", 0, 150, "女变装-基本脸型", "发型-女式-咖啡色丸子头", "医用口罩", "米色高腰背心", "牛皮手套", "棕色带腿包短裤", "深灰色皮鞋", "", "", "瓦尔特PPK手枪", "", "匕首", "普通手雷", "女", 0]);
-_root.佣兵不足时出阵人员.push([8, "地灵", 0, 175, "男变装-基本脸型", "发型-男式-黑马尾头", "双色巧克力味小熊头", "双色巧克力味小熊上装", "双色巧克力味小熊手套", "双色巧克力味小熊下装", "双色巧克力味小熊鞋", "", "AK74", "", "", "", "", "男", 0]);
-_root.佣兵不足时出阵人员.push([9, "啊哈", 0, 175, "男变装-基本脸型", "发型-男式-非主流", "防毒面具2号", "休闲马甲", "牛皮手套", "黑色西装裤", "黑色军用皮鞋", "", "", "Desert Eagle", "", "水管", "普通手雷", "男", 0]);
-_root.佣兵不足时出阵人员.push([10, "屋顶", 0, 175, "男变装-基本脸型", "发型-男式-黑猫王头", "防毒面具2号", "bob自由牛仔衫", "牛皮手套", "bob自由喇叭裤", "bob自由火箭皮鞋", "", "", "Desert Eagle", "Desert Eagle", "水管", "普通手雷", "男", 0]);
-_root.佣兵不足时出阵人员.push([11, "偶一", 0, 175, "男变装-基本脸型", "发型-男式-黑贴头", "黑框眼镜", "橘色赛车夹克 ", "黑色皮手套", "墨绿军用下装", "黑色军用皮鞋", "", "", "Mossberg500", "Desert Eagle", "锤子", "", "男", 0]);
-_root.佣兵不足时出阵人员.push([12, "发大水", 0, 175, "男变装-基本脸型", "发型-男式-黑碎平头", "黑框眼镜", "橘色赛车夹克 ", "黑色皮手套", "墨绿军用下装", "黑色军用皮鞋", "", "AUG", "", "", "", "", "男", 0]);
-_root.佣兵不足时出阵人员.push([13, "而非", 0, 175, "男变装-基本脸型", "发型-男式-黑骑士头", "黑色太阳镜", "黑色功夫高手装 ", "白色手套", "白色功夫高手裤子", "黑色功夫布鞋", "", "", "", "", "电子音乐键盘", "", "男", 0]);
-_root.佣兵不足时出阵人员.push([14, "困惑", 0, 150, "女变装-基本脸型", "发型-女式-深蓝色挑染短发", "咖啡色条纹蒙面", "SM女王皮衣", "SM女王黑色皮手套", "SM女王吊带袜", "黑色高跟皮鞋", "", "AK47", "", "", "", "", "女", 0]);
-_root.佣兵不足时出阵人员.push([15, "留人头", 0, 150, "女变装-基本脸型", "发型-女式-金色中长头发", "咖啡色条纹蒙面", "SM女王皮衣", "SM女王黑色皮手套", "SM女王吊带袜", "黑色高跟皮鞋", "", "Galili", "", "", "", "", "女", 0]);
-_root.佣兵不足时出阵人员.push([16, "林肯", 0, 175, "男变装-基本脸型", "发型-男式-平头", "新手面具", "军绿防弹衣", "红色皮手套", "沙漠军装裤", "沙漠军装皮鞋", "", "", "", "", "美式警棍", "", "男", 0]);
-_root.佣兵不足时出阵人员.push([17, "卓天", 0, 175, "男变装-基本脸型", "发型-男式-金色不良少年头", "军阀红色贝雷帽", "军阀突击兵衣服", "军阀装甲手套", "军阀带腰包裤子", "沙漠军装皮鞋", "", "G36", "", "", "", "", "男", 0]);
-_root.佣兵不足时出阵人员.push([18, "凉快", 0, 175, "男变装-基本脸型", "发型-男式-白色主题头", "装甲头盔", "军阀重装兵衣服", "军阀装甲手套", "军阀装甲裤", "军阀棕色皮靴", "", "", "", "", "中国战刀", "", "男", 0]);
-_root.佣兵不足时出阵人员.push([19, "美女", 0, 150, "女变装-基本脸型", "发型-女式-金色中长头发", "科技潜入头盔", "科技潜入上装", "科技潜入手套", "科技潜入裤子", "科技潜入靴", "", "Galili", "", "", "虎彻", "", "女", 0]);
-_root.佣兵不足时出阵人员.push([20, "鱼人", 0, 175, "男变装-基本脸型", "发型-男式-黑妹妹头", "红色风镜", "沙漠军装背心", "红色皮手套", "盗贼牛仔裤带腿包", "褐色简单皮鞋", "", "", "", "", "砍刀", "", "男", 0]);
-_root.佣兵不足时出阵人员.push([21, "概念版", 0, 175, "男变装-基本脸型", "发型-男式-黑妹妹头", "红色风镜", "沙漠军装背心", "红色皮手套", "盗贼牛仔裤带腿包", "褐色简单皮鞋", "", "M3 Rocket Launcher", "", "", "光剑天秤", "", "男", 0]);
-_root.佣兵不足时出阵人员.push([22, "killer", 0, 175, "男变装-基本脸型", "发型-男式-黑混混头", "草莓味小熊头", "草莓味小熊上装", "草莓味小熊手套", "草莓味小熊下装", "草莓味小熊鞋", "", "Fire Gun", "", "", "光剑天秤", "", "男", 0]);
-_root.佣兵不足时出阵人员.push([23, "knight", 0, 175, "男变装-基本脸型", "发型-男式-黑骑士头", "骷髅面具", "褐色皮带装", "道钉手套", "盗贼褐色皮裤", "褐色简单皮鞋", "", "", "P90", "P90", "双面斧", "", "男", 0]);
-_root.佣兵不足时出阵人员.push([24, "monster", 0, 175, "男变装-基本脸型", "发型-男式-黑骑士头", "钢铁小熊头", "钢铁小熊上装", "钢铁小手套", "钢铁小熊下装", "钢铁小熊鞋", "", "M134", "", "", "", "", "男", 0]);
-_root.佣兵不足时出阵人员.push([25, "boss", 0, 175, "男变装-基本脸型", "发型-男式-黑骑士头", "92式头部装甲", "92式胸甲", "92式手甲", "92式腿甲", "92式装甲鞋", "", "", "MP7", "MP7", "光斧金牛", "", "男", 0]);
