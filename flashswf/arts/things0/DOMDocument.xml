@@ -1140,7 +1140,7 @@
           <Include href="sprite/刀-新手刀（模型）主手刀.xml" loadImmediate="false" itemID="6974bf4b-00029127" lastModified="1769694701"/>
           <Include href="sprite/防止无限飞元件（弃用）.xml" loadImmediate="false" itemID="66b9b374-000006e4" lastModified="1723446132"/>
           <Include href="sprite/刚体遮罩.xml" loadImmediate="false" itemID="65c9a9f5-0000062e" lastModified="1707753394"/>
-          <Include href="sprite/攻击模式切换.xml" loadImmediate="false" itemID="691b470f-00002ecf" lastModified="1769694922"/>
+          <Include href="sprite/攻击模式切换.xml" loadImmediate="false" itemID="691b470f-00002ecf" lastModified="1778319326"/>
           <Include href="sprite/黑红色爆炸.xml" itemID="668be72d-0000065f" lastModified="1769694913"/>
           <Include href="sprite/红色刀光.xml" loadImmediate="false" itemID="65b795a7-00000ba0" lastModified="1706530238"/>
           <Include href="sprite/脚.xml" loadImmediate="false" itemID="695e911c-00000795" lastModified="1767805212"/>
@@ -1327,10 +1327,10 @@
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml" itemID="697b6555-00003229" lastModified="1778039997"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短柄1连招.xml" itemID="699e0c20-00001dff" lastModified="1777470439"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招.xml" itemID="698642fe-00000b06" lastModified="1777471697"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml" itemID="69eff1b8-00000ac4" lastModified="1778082205"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml" itemID="69eff1b8-00000ac4" lastModified="1778317526"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1777471753"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml" itemID="696493ce-00000e0e" lastModified="1770225044"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招.xml" itemID="6974a6b3-00001f9d" lastModified="1777726113"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招.xml" itemID="6974a6b3-00001f9d" lastModified="1778317177"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-迅捷1连招.xml" itemID="69875871-00000a1a" lastModified="1777381558"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1775485128"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml" itemID="696c6d20-0000139b" lastModified="1777471731"/>
@@ -2232,7 +2232,7 @@
                                         <script><![CDATA[stop();]]></script>
                                    </Actionscript>
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="加载MC库-00" centerPoint3DX="1277" centerPoint3DY="546.05">
+                                        <DOMSymbolInstance libraryItemName="加载MC库-00" selected="true" centerPoint3DX="1277" centerPoint3DY="546.05">
                                              <matrix>
                                                   <Matrix tx="356.3" ty="-65.75"/>
                                              </matrix>
