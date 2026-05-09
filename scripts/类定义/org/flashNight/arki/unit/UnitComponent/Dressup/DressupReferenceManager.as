@@ -30,6 +30,29 @@
  *              选择跳过本次重算，由组级事件统一驱动。订阅方迁移自愿。
  *
  * 时序依据：agentsDoc/as2-load-timing.md
+ *
+ * ============================================================================
+ * 性能基线 (2026-05-09) — DressupReferenceManagerTest.runBench()
+ * ============================================================================
+ *
+ * 测试机：Intel i7-9750H @ 2.6/4.5GHz, 6C/12T, 32GB RAM, Win11 + Flash Player 20
+ * 参考机：Steam Deck (AMD Aerith / Zen 2 @ 2.4/3.5GHz, 4C/8T)
+ *        AVM1 单线程，Steam Deck 单核约本机 70–80% → 预期 per-call avg ×1.25–1.4
+ *
+ *   (baseline empty wrapper)                       avg=  2.5us
+ *   doConfig (no deferred, no fallback)            avg= 16.8us  (净 ~14us)
+ *   doConfig (deferred, real registerClass x2)     avg= 24.8us  (净 ~22us, Plan B 增量 ~8us)
+ *   doConfig (female fallback, no deferred)        avg= 22.8us  (净 ~20us, fallback 增量 ~6us)
+ *   attach (fresh unit, 1 attach)                  avg= 97.5us  (含 mock setup)
+ *   refreshAll (11 entries, no deferred)           avg=186.6us  (~17us/entry)
+ *
+ * 注：bench 走 mock attachMovie，不含真实 Flash attachMovie 成本（经验值
+ * ~0.5–2ms/次，约 100× 于本表数值）。本类逻辑优化是噪声，refresh 性能优化
+ * 唯一有意义方向是减少 attachMovie 调用（diff-based refresh：skinConfig
+ * 未变则跳过 doConfig）。
+ *
+ * Regression 用法：runBench() 后比对此表，单项 >1.5× 偏离即需调查。换基准
+ * 机时按预期倍率折算后再比对。
  * ============================================================================
  */
 class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
@@ -161,9 +184,12 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
             unit.dressupRegistry = {};
         }
 
-        // 生成唯一的 regKey：已存在且 MC 仍有效则追加数字后缀；旧 MC 失效则清理并复用
-        var baseKey:String = referenceName + "@" + instanceName;
-        var regKey:String = baseKey;
+        // 生成唯一的 regKey + actualRefName：已存在且 MC 仍有效则追加数字后缀；
+        // 旧 MC 失效则清理并复用。regKey 与 actualRefName 用同款 split-base + counter
+        // 命名约定（小腿1_引用@装扮 / 小腿1_引用），便于调试时对照
+        var baseRefSplit:String = referenceName.split("_引用")[0];
+        var actualRefName:String = referenceName;
+        var regKey:String = actualRefName + "@" + instanceName;
         var counter:Number = 1;
         while (unit.dressupRegistry[regKey]) {
             var oldEntry:Object = unit.dressupRegistry[regKey];
@@ -171,14 +197,10 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
                 delete unit.dressupRegistry[regKey];
                 break;
             }
-            regKey = referenceName + counter + "@" + instanceName;
+            actualRefName = baseRefSplit + counter + "_引用";
+            regKey = actualRefName + "@" + instanceName;
             counter++;
         }
-
-        // 数字后缀引用名（同帧多实例的肢体）
-        var actualRefName:String = (counter > 1)
-            ? (referenceName.split("_引用")[0] + (counter - 1) + "_引用")
-            : referenceName;
 
         unit.dressupRegistry[regKey] = {
             mc: movieClip,

@@ -246,12 +246,10 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         DressupReferenceManager.attach(mc2, "skin", "装扮", "小腿_引用");
 
         // 第一次：regKey = "小腿_引用@装扮"，actualRefName = "小腿_引用"
-        // 第二次：regKey = "小腿_引用1@装扮"（用完整 referenceName + counter）
-        //         actualRefName = "小腿1_引用"（用 split base + (counter - 1)）
-        // 注意：regKey 与 actualRefName 命名约定不一致是原代码的细节——
-        // regKey 仅在 dressupRegistry 内部用，无外部读者，影响只限调试可读性
+        // 第二次：regKey = "小腿1_引用@装扮"，actualRefName = "小腿1_引用"
+        // 命名风格已统一：regKey 即 actualRefName + "@" + instanceName
         var entry1 = unit.dressupRegistry["小腿_引用@装扮"];
-        var entry2 = unit.dressupRegistry["小腿_引用1@装扮"];
+        var entry2 = unit.dressupRegistry["小腿1_引用@装扮"];
         assertNotNull("第一次 entry 存在", entry1);
         assertNotNull("第二次 entry 存在（数字后缀 regKey）", entry2);
         assertEquals("第一次 actualRefName = 小腿_引用", "小腿_引用", entry1.referenceName);
@@ -275,7 +273,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
 
         // 应当复用同一 regKey，没有数字后缀
         assertNotNull("regKey 复用，刀_引用@装扮 entry 仍存在", unit.dressupRegistry["刀_引用@装扮"]);
-        assertNull("没有生成 刀1@装扮", unit.dressupRegistry["刀1@装扮"]);
+        assertNull("没有生成 刀1_引用@装扮", unit.dressupRegistry["刀1_引用@装扮"]);
         assertEquals("entry.mc 是新的 mc2", mc2, unit.dressupRegistry["刀_引用@装扮"].mc);
     }
 
@@ -346,6 +344,190 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
     }
 
     // ====================================================================
+    // 多 unit 同帧 attach scope 隔离（验证 register-attach-unregister per-call）
+    //
+    // 注意：曾尝试 Object.registerClass 全局 spy 来验证 register/unregister
+    // 调用对数与顺序，但 AS2/FP20 不允许覆写 Object 内置静态方法（赋值
+    // Object.registerClass = function(){} 静默失败，调用方仍走原方法）。
+    // 因此放弃 spy 思路，改为通过 mock attachMovie 抓取 initObject 来间接
+    // 验证 deferred 路径的正确性。register-attach-unregister 是否真隔离，
+    // 由 agentsDoc/as2-load-timing.md 第 2.3 节 trace 已实测确认。
+    // ====================================================================
+
+    private static function test_multi_unit_perAttach_scope_隔离_异步订阅():Void {
+        trace("--- multi-unit: A 订阅 :ready / B 不订阅，initObject 不串扰 ---");
+        var unitA = makeMockUnit("正常", "男");
+        unitA.syncRefs["刀_引用:ready"] = true;
+        var mcA = makeMockMC();
+
+        var unitB = makeMockUnit("正常", "男");
+        var mcB = makeMockMC();
+
+        // 同一脚本块连续 attach 同名 linkage
+        DressupReferenceManager.doConfig(mcA, "_shared_test_skin", "装扮", "刀_引用", unitA);
+        DressupReferenceManager.doConfig(mcB, "_shared_test_skin", "装扮", "刀_引用", unitB);
+
+        // 清理（doConfig 内已 unregister，再保险一次）
+        Object.registerClass("_shared_test_skin", null);
+
+        assertNotNull("unitA 的 attachMovie 收到 initObject", mcA.attachLog[0].initObject);
+        assertNull("unitB 的 attachMovie 不带 initObject", mcB.attachLog[0].initObject);
+        assertTrue("unitA initObject.__unit === unitA", mcA.attachLog[0].initObject.__unit === unitA);
+    }
+
+    private static function test_multi_unit_perAttach_scope_隔离_双订阅():Void {
+        trace("--- multi-unit: A/B 都订阅，各自 initObject 指向自己的 unit ---");
+        var unitA = makeMockUnit("正常", "男");
+        unitA.syncRefs["刀_引用:ready"] = true;
+        var mcA = makeMockMC();
+
+        var unitB = makeMockUnit("正常", "男");
+        unitB.syncRefs["刀_引用:ready"] = true;
+        var mcB = makeMockMC();
+
+        DressupReferenceManager.doConfig(mcA, "_shared_test_skin", "装扮", "刀_引用", unitA);
+        DressupReferenceManager.doConfig(mcB, "_shared_test_skin", "装扮", "刀_引用", unitB);
+
+        Object.registerClass("_shared_test_skin", null);
+
+        // 关键：A 的 initObject.__unit === unitA, B 的 === unitB（非串扰）
+        assertNotNull("unitA initObject 已注入", mcA.attachLog[0].initObject);
+        assertNotNull("unitB initObject 已注入", mcB.attachLog[0].initObject);
+        assertTrue("unitA initObject.__unit === unitA", mcA.attachLog[0].initObject.__unit === unitA);
+        assertTrue("unitB initObject.__unit === unitB", mcB.attachLog[0].initObject.__unit === unitB);
+        assertTrue("A/B initObject 是不同对象", mcA.attachLog[0].initObject !== mcB.attachLog[0].initObject);
+    }
+
+    // ====================================================================
+    // SkinReadyClass.onLoad 防御性检查
+    // 直接通过 prototype.onLoad.apply 调用，避开 attachMovie/displayList 路径
+    // ====================================================================
+
+    private static function test_SkinReadyClass_onLoad_unit_为null时不crash():Void {
+        trace("--- SkinReadyClass.onLoad: __unit 为 null ---");
+        var fakeSkin = { __unit: null, __publishKey: "x_引用:ready" };
+        SkinReadyClass.prototype.onLoad.apply(fakeSkin);
+        assertTrue("调用未抛错", true);
+    }
+
+    private static function test_SkinReadyClass_onLoad_unit已卸载时不publish():Void {
+        trace("--- SkinReadyClass.onLoad: unit._parent 为 null（已卸载） ---");
+        var publishLog = [];
+        var fakeUnit = {
+            _parent: null,
+            dispatcher: {
+                publish: function(k, u) { publishLog.push({key: k, unit: u}); }
+            }
+        };
+        var fakeSkin = { __unit: fakeUnit, __publishKey: "x_引用:ready" };
+        SkinReadyClass.prototype.onLoad.apply(fakeSkin);
+        assertEquals("publish 未被调用", 0, publishLog.length);
+    }
+
+    private static function test_SkinReadyClass_onLoad_publishKey缺失时不publish():Void {
+        trace("--- SkinReadyClass.onLoad: __publishKey 缺失 ---");
+        var publishLog = [];
+        var fakeUnit = {
+            _parent: {},
+            dispatcher: { publish: function(k, u) { publishLog.push(k); } }
+        };
+        var fakeSkin = { __unit: fakeUnit };  // __publishKey 缺失
+        SkinReadyClass.prototype.onLoad.apply(fakeSkin);
+        assertEquals("publish 未被调用", 0, publishLog.length);
+    }
+
+    private static function test_SkinReadyClass_onLoad_alive时正常publish():Void {
+        trace("--- SkinReadyClass.onLoad: 全条件满足，正常 publish ---");
+        var publishLog = [];
+        var fakeUnit = {
+            _parent: {},
+            dispatcher: {
+                publish: function(k, u) { publishLog.push({key: k, unit: u}); }
+            }
+        };
+        var fakeSkin = { __unit: fakeUnit, __publishKey: "x_引用:ready" };
+        SkinReadyClass.prototype.onLoad.apply(fakeSkin);
+        assertEquals("publish 被调用 1 次", 1, publishLog.length);
+        assertEquals("publish key 正确", "x_引用:ready", publishLog[0].key);
+        assertTrue("publish unit 是 fakeUnit", publishLog[0].unit === fakeUnit);
+    }
+
+    // ====================================================================
+    // Benchmark
+    // ====================================================================
+
+    private static function bench(name:String, fn:Function, iterations:Number):Void {
+        var t0:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            fn();
+        }
+        var dt:Number = getTimer() - t0;
+        var avgUs:Number = (dt * 1000) / iterations;
+        // AS2 Number 无 toFixed，手动两位精度
+        var avgUsStr:String = String(Math.round(avgUs * 100) / 100);
+        trace("[BENCH] " + name + " : " + iterations + " iter,  total=" + dt + "ms,  avg=" + avgUsStr + "us");
+    }
+
+    public static function runBench():Void {
+        trace("================================================================");
+        trace("DressupReferenceManager Benchmarks");
+        trace("================================================================");
+
+        // baseline: empty wrapper（衡量 fn() 调用本身的开销，对照基线）
+        bench("(baseline empty wrapper)", function() {}, 100000);
+
+        // bench 1: doConfig，未订阅 deferred，纯逻辑路径
+        var u1 = makeMockUnit("正常", "男");
+        var m1 = makeMockMC();
+        bench("doConfig (no deferred, no fallback)", function() {
+            DressupReferenceManager.doConfig(m1, "skin", "装扮", "身体_引用", u1);
+        }, 50000);
+
+        // bench 2: doConfig，订阅 deferred，包含真实 Object.registerClass 双调用
+        var u2 = makeMockUnit("正常", "男");
+        u2.syncRefs["刀_引用:ready"] = true;
+        var m2 = makeMockMC();
+        bench("doConfig (deferred, real registerClass x2)", function() {
+            DressupReferenceManager.doConfig(m2, "_bench_skin_a", "装扮", "刀_引用", u2);
+        }, 20000);
+
+        // bench 3: doConfig，女性 fallback 路径（attachMovie 双调用）
+        var u3 = makeMockUnit("正常", "女");
+        var m3 = makeMockMC();
+        m3.failLinkages["primary_skin"] = true;
+        bench("doConfig (female fallback, no deferred)", function() {
+            DressupReferenceManager.doConfig(m3, "primary_skin", "装扮", "身体_引用", u3);
+        }, 20000);
+
+        // bench 4: attach（含 registry 写入 + doConfig）
+        // 每次 attach 都会增加 registry entry，counter 不断递增 → 单测无意义
+        // 改用：每次 fresh unit + 单次 attach，代价 = setup + attach
+        bench("attach (fresh unit, 1 attach)", function() {
+            var u = makeMockUnit("正常", "男");
+            var mm = makeMockMC();
+            wireParentChain(mm, u);
+            DressupReferenceManager.attach(mm, "skin", "装扮", "身体_引用");
+        }, 10000);
+
+        // bench 5: refreshAll，11 entries（模拟主角真实装备数）
+        var u5 = makeMockUnit("正常", "男");
+        var refs = ["头部_引用", "身体_引用", "上臂_引用", "右下臂_引用", "左下臂_引用",
+                    "屁股_引用", "右大腿_引用", "左大腿_引用", "小腿_引用", "脚_引用", "刀_引用"];
+        for (var i:Number = 0; i < refs.length; i++) {
+            var mm = makeMockMC();
+            wireParentChain(mm, u5);
+            DressupReferenceManager.attach(mm, "skin", "装扮", refs[i]);
+            u5[refs[i].split("_引用")[0]] = "skin";  // skinConfig 来源
+        }
+        u5["刀_装扮"] = "skin";
+        bench("refreshAll (11 entries, no deferred)", function() {
+            DressupReferenceManager.refreshAll(u5);
+        }, 5000);
+
+        trace("================================================================");
+    }
+
+    // ====================================================================
     // Runner
     // ====================================================================
 
@@ -373,6 +555,12 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         test_attach_skinKeyOverrides武器走装扮后缀();
         test_refreshAll_标记与组级事件();
         test_refreshAll_dead_entry清理与live同处理();
+        test_multi_unit_perAttach_scope_隔离_异步订阅();
+        test_multi_unit_perAttach_scope_隔离_双订阅();
+        test_SkinReadyClass_onLoad_unit_为null时不crash();
+        test_SkinReadyClass_onLoad_unit已卸载时不publish();
+        test_SkinReadyClass_onLoad_publishKey缺失时不publish();
+        test_SkinReadyClass_onLoad_alive时正常publish();
 
         var dt:Number = getTimer() - t0;
         trace("================================================================");
