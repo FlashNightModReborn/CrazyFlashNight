@@ -51,7 +51,7 @@ class org.flashNight.arki.merc.ArenaController {
             pickRandom(expr);
         } else {
             pickRandom(expr);
-            MercLibrary.loadMoreByExpression(expr, bumpReuseLimit, undefined);
+            MercLibrary.refreshPool(bumpReuseLimit, undefined);
         }
     }
 

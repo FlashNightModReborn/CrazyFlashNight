@@ -37,11 +37,16 @@ class org.flashNight.arki.merc.MercSpawner {
             return undefined;
         }
         var meta:Object = _root.同伴数据[idx][19];
+        var pushedBack:Boolean = false;
         if (meta && meta.是否杂交 == false) {
             _root.可雇佣兵.push(_root.同伴数据[idx]);
+            pushedBack = true;
         }
         if (meta && meta.隐藏) {
             _root.隐藏的可雇佣兵.push(_root.同伴数据[idx]);
+        }
+        if (pushedBack) {
+            invalidateIndexCache();
         }
         _root.同伴数--;
         _root.同伴数据[idx] = [];
@@ -66,6 +71,14 @@ class org.flashNight.arki.merc.MercSpawner {
             // 内部字段命名英文化（私有缓存，仅本类读写）
             gw.佣兵编号缓存 = {weights: [], totalWeight: 0, ready: false};
             _global.ASSetPropFlags(gw, ["佣兵编号缓存"], 1, false);
+        }
+    }
+
+    // 池变化（loadFromList / removeMerc 回写）后必须失效，否则权重表跟新池长度对不齐。
+    public static function invalidateIndexCache():Void {
+        var gw:MovieClip = _root.gameworld;
+        if (gw.佣兵编号缓存 != undefined) {
+            gw.佣兵编号缓存.ready = false;
         }
     }
 
@@ -214,25 +227,25 @@ class org.flashNight.arki.merc.MercSpawner {
 
     /**
      * 创建佣兵数据（含杂交概率应用）。
-     * Step 5: hybridize 返回值改造后，杂交结果是临时单元素数组，不再写 _root.随机可雇佣兵。
+     * 杂交分支由 hybridize 返回新副本；非杂交分支必须 deep-clone，
+     * 否则下面改写 instance[2] 会污染 _root.可雇佣兵 源记录的 id（重复 spawn 同索引会拼接膨胀）。
      */
     public static function createMercData(n:Number, hybridChance:Number) {
-        var lib:Array = _root.可雇佣兵;
         if (_root.isEasyMode() != true) {
             // 在竞技场之后解锁，当达到 38 时杂交率达到 25
             hybridChance = Math.min(hybridChance, Math.max(0, _root.主线任务进度 - 13));
         }
+        var instance:Array;
         if (_root.成功率(hybridChance)) {
-            // hybridize 返回杂交后的副本；用作"单元素临时库"
-            lib = [MercHybridizer.hybridize(n, hybridChance, true)];
-            n = 0;
+            instance = MercHybridizer.hybridize(n, hybridChance, true);
+        } else {
+            instance = _root.深拷贝数组(_root.可雇佣兵[n]);
         }
-        lib[n][2] = lib[n][2].toString() + lib[n][1] + lib[n][0].toString() + _root.随机整数(0, 9999).toString();
-
-        if (lib[n] == undefined || lib[n][1] + "" == "undefined") {
+        if (instance == undefined || instance[1] + "" == "undefined") {
             return null;
         }
-        return lib[n];
+        instance[2] = instance[2].toString() + instance[1] + instance[0].toString() + _root.随机整数(0, 9999).toString();
+        return instance;
     }
 
     public static function createMercEntity(mercData:Array, X:Number, Y:Number):MovieClip {

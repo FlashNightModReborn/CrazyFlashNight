@@ -132,31 +132,18 @@ class org.flashNight.arki.merc.MercLibrary {
         }
         InsertionSort.sortOn(_root.可雇佣兵, 0, Array.NUMERIC);
         _root.可雇佣兵 = _root.可雇佣兵.concat(_root.隐藏的可雇佣兵);
+        // 池索引变了，权重缓存必须重算，否则 pickRandomMercIndex 会读到 stale weights。
+        MercSpawner.invalidateIndexCache();
     }
 
     /**
      * 重新加载完整佣兵库。当前数据源是 _root.mercs_list（legacy XML loader 装填）。
-     * 前 3 个参数（count/minLevel/maxLevel）保留是为兼容原 _root.载入新佣兵库数据
-     * 签名，实际上 marshalling 不使用——它们由 caller 传给 query/hasEnoughFor 做筛选。
-     *
      * 迁移点：把这里改成 DataQueryService.query("mercs_list", ...) 即可。
      */
-    public static function loadMore(count:Number, minLevel:Number, maxLevel:Number, callback:Function, callbackArg):Void {
+    public static function refreshPool(callback:Function, callbackArg):Void {
         loadFromList(_root.mercs_list);
         if (callback != undefined) {
             callback(callbackArg);
-        }
-    }
-
-    /**
-     * 按表达式分段重新加载（保留原 _root.请求新佣兵 行为）。
-     * 注意：原行为是对每个查询条目调一次 loadMore，意味着回调会被调用 N 次。
-     * 这是历史行为不修改。
-     */
-    public static function loadMoreByExpression(expr:String, callback:Function, callbackArg):Void {
-        var queryTable:Array = parseExpression(expr);
-        for (var i:Number = 0; i < queryTable.length; i++) {
-            loadMore(queryTable[i][3], queryTable[i][1], queryTable[i][2], callback, callbackArg);
         }
     }
 
@@ -165,6 +152,10 @@ class org.flashNight.arki.merc.MercLibrary {
     /**
      * 解析查询表达式 `#col@lo-hi%count,...`
      * 返回 [[col, lo, hi, count], ...]
+     *
+     * 注：col 字段保留是为了表达式语法兼容（Symbol 3394 硬编码 #0），
+     * 但 query / selectByExpression 现在固定按 mercData[0]（等级）筛，col 实际不读。
+     * 多 clause（逗号分段）也保留解析能力，当前唯一调用方传 1 段。
      */
     public static function parseExpression(expr:String):Array {
         var queryTable:Array = [];
@@ -184,15 +175,15 @@ class org.flashNight.arki.merc.MercLibrary {
 
     /**
      * 在 _root.可雇佣兵 中按表达式扣减缺额。返回第一个仍不足的查询条目（undefined 表示全部满足）。
+     * 列固定为 0（等级）。
      */
     public static function query(expr:String) {
         var queryTable:Array = parseExpression(expr);
         for (var i:Number = 0; i < _root.可雇佣兵.length; i++) {
             for (var j:Number = 0; j < queryTable.length; j++) {
                 if (queryTable[j][3] > 0) {
-                    var col:Number = queryTable[j][0];
-                    if (_root.可雇佣兵[i][col] >= queryTable[j][1]
-                        && _root.可雇佣兵[i][col] <= queryTable[j][2]) {
+                    if (_root.可雇佣兵[i][0] >= queryTable[j][1]
+                        && _root.可雇佣兵[i][0] <= queryTable[j][2]) {
                         queryTable[j][3]--;
                         break;
                     }
@@ -214,14 +205,11 @@ class org.flashNight.arki.merc.MercLibrary {
     /**
      * 异步确保佣兵库满足表达式。
      *   - 库存够 → 立即 callback({success: true})
-     *   - 不够 → loadMore 补充，递归直到满足
+     *   - 不够 → refreshPool 一次后再判定
+     *     - 仍不够 → callback({success: false, miss: queryEntry})
      *
-     * 替代了原 _root.请求佣兵 + _root.补充佣兵 + 三个全局回调槽位机制。
-     * Wait UI（_root.等待mc._visible）由调用方在 callback 中自行控制。
-     *
-     * 递归终止：如果 mercs_list 本身不足以满足条件，会无限递归——
-     * 这个风险在原代码就存在（实际未触发，因 mercs_list 是综合数据源）。
-     * 不在 Step 5 范围内修复，但记录于此。
+     * 一次性 retry（不再无限递归）：未来 C# 数据源若返回 partial/empty/error，
+     * 不会被卡死在等待 UI 上。
      */
     public static function requireExpression(expr:String, callback:Function):Void {
         var miss = query(expr);
@@ -229,8 +217,13 @@ class org.flashNight.arki.merc.MercLibrary {
             if (callback) callback({success: true});
             return;
         }
-        loadMore(miss[3], miss[1], miss[2], function():Void {
-            requireExpression(expr, callback);
+        refreshPool(function():Void {
+            var miss2 = query(expr);
+            if (miss2 == undefined) {
+                if (callback) callback({success: true});
+            } else {
+                if (callback) callback({success: false, miss: miss2});
+            }
         }, undefined);
     }
 
