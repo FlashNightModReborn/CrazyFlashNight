@@ -143,6 +143,8 @@ _root.配置场景环境信息 = function(){
 		if(_root.门口佣兵刷新器 && !isNaN(环境信息.佣兵刷新数据.Entrance)){
 			_root.门口佣兵刷新器.几率 = 环境信息.佣兵刷新数据.Entrance;
 		}
+		// 一次性场景加载快照，给标定看 area/mult/target
+		org.flashNight.arki.merc.MercBudget.emitLoad();
 		//播放场景bgm（支持单曲/专辑两种模式）
 		if(typeof 环境信息.BGM == "object" && 环境信息.BGM.album != undefined){
 			// 专辑模式: <BGM album="TFR"/> 或 <BGM album="TFR" default="Dialtone"/>

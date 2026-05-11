@@ -1,27 +1,20 @@
 ﻿import org.flashNight.arki.merc.*;
+import org.flashNight.aven.Coordinator.EventCoordinator;
 
 /*
- * 场景佣兵刷新链。
+ * 场景佣兵刷新链（Phase C：单步赤字驱动）。
  *
- * Step 5 改动：
- *   - 干掉 _mercDataRefCount + cleanup 闭包：bundle 由 MercLibrary 缓存，session 级
- *     不主动失效。spawn 不再 null _root 状态。
- *   - 干掉 _root.战队信息数组 / 随机名称库 / 佣兵随机对话 / 佣兵对话池 的写入。
- *     Hybridizer / createMercEntity 直接读 MercLibrary.bundle.X。
- *   - hybridize 返回值：createMercData 接收返回值用作单元素临时库，
- *     不再写 _root.随机可雇佣兵。
+ * 设计：
+ *   - frame 29 (Symbol 2396) random(几率)==0 控制触发频率（XML <Entrance> 注入）
+ *   - 每次触发 spawnAtGate 调度 1 个 spawn task（真正的单步赤字驱动）
+ *   - task 内部独立掷 30/70 gate/court、独立 pickGatePoint、独立位置抖动
+ *   - MercBudget.shouldSpawn（sqrt 模型）在 addCourtMerc/addGateMerc 入口决定落地
+ *   - 旧 emergent throttle 链（areaFactor / 0.5 / NaN / Math.max,1）已删
+ *   - Initial 进场批量走 spawnInScene(count)：XML Initial 字段语义现在是"尝试数"
  *
  * mercData 数组列约定（与 MercHybridizer 共享）：
  *   [0] 等级  [1] 名字  [2] id  [3] 身高  [4] 脸型  [5] 发型
  *   [6..16] 装备  [17] 性别  [18] 价格  [19] 元数据
- *
- * Emergent throttle 文档（保留）：
- *   外层 frame 29 (Symbol 2396): random(几率)==0 控制触发频率（XML <Entrance>）
- *   内层 spawnAtGate: 几率为 undefined 时强制 1 个佣兵（重要兜底节流）
- *   数量门控 frame 29: 场上 ≥10 不刷
- * 不要单独"修"内层 spawnAtGate 的几率参数行为；redesign 留待 schema 扩展
- * <Entrance>/<EntranceDensity> 解耦 + frame 29 改成 _root.门口刷可雇用玩家(几率)
- * 时一并设计。
  */
 class org.flashNight.arki.merc.MercSpawner {
 
@@ -62,6 +55,11 @@ class org.flashNight.arki.merc.MercSpawner {
             if (_root.gameworld[unit].用户ID == mercId) {
                 _root.gameworld[unit].removeMovieClip();
             }
+        }
+        if (MercBudget.telemetryEnabled) {
+            // DISMISS = 玩家解雇，merc 回到 _root.可雇佣兵 池可再次被 spawn。
+            // 此时 alive_after 不会直接 -1（被解雇者的 mc 是同伴 NPC=false，本就不计入 countAlive）。
+            MercBudget.emit("DISMISS", "id=" + mercId + " alive_after=" + MercCensus.countAlive());
         }
     }
 
@@ -130,12 +128,12 @@ class org.flashNight.arki.merc.MercSpawner {
         return -1;
     }
 
-    public static function spawnInWorld(addFn:Function, chance:Number, atGate:Boolean):Void {
+    public static function spawnInWorld(count:Number, isGateBatch:Boolean):Void {
         var frameFlag:Number = _root.gameworld.frameFlag;
         MercLibrary.ensureBundleLoaded(function(response:Object):Void {
             if (frameFlag != _root.gameworld.frameFlag) return;
             if (response.success) {
-                MercSpawner.spawnInternal(addFn, chance, atGate, frameFlag);
+                MercSpawner.spawnInternal(count, isGateBatch, frameFlag);
             } else {
                 _root.服务器.发布服务器消息("[生成游戏世界佣兵] 查询失败:", response.error);
             }
@@ -143,73 +141,96 @@ class org.flashNight.arki.merc.MercSpawner {
     }
 
     /**
-     * 帧计时器异步入队佣兵生成任务。
+     * 帧计时器异步入队佣兵生成任务（Phase C 单步赤字驱动设计）。
      *
-     * 场景切换检测：fFlag != _root.gameworld.frameFlag 时跳过，避免在新场景中
-     * 错误生成。bundle 数据由 MercLibrary 持有，不再需要 refcount 同步。
+     * 设计要点：
+     *   1. 每个 task 独立掷 30/70 gate/court — batch 内不会"全门口"或"全场景"扎堆
+     *   2. 每个 task 独立 pickGatePoint() — 多门场景每次随机门，单门场景靠 ±X 抖动散开
+     *   3. 槽位分配错峰（slotMs=2000）— 严格防聚簇，旧 [1, 2N] 均匀随机会出生日悖论爆发
+     *   4. spawnAtGate(frame 29 周期触发) 传 count=1 — 真正的单步赤字：每帧 29 触发 = 1 spawn
+     *      实际密度由 frame 29 rate + MercBudget.targetAlive 共同决定，不再依赖
+     *      areaFactor / 0.5 / NaN 那一套 emergent throttle
+     *   5. spawnInScene(Initial 进场批量) 传 count=Initial — XML 里的 Initial 现在是
+     *      "进场尝试数"，每次受 MercBudget 上限收敛
+     *
+     * 场景切换检测：fFlag != _root.gameworld.frameFlag 时跳过，避免新场景误刷。
      */
-    public static function spawnInternal(addFn:Function, chance:Number, atGate:Boolean, frameFlag:Number):Void {
-        var gw:MovieClip = _root.gameworld;
-        var totalCount:Number = _root.成功率(100 / chance) ? _root.随机整数(1, 3) : 0.5;
-        var areaFactor:Number = (_root.Xmax - _root.Xmin) * (_root.Ymax - _root.Ymin) / _root.面积系数;
-        if (!isNaN(gw.面积系数)) areaFactor *= gw.面积系数;
-        totalCount = Math.floor(Math.max(totalCount * areaFactor, 1));
-        if (totalCount > _root.可雇佣兵.length) {
-            totalCount = _root.可雇佣兵.length;
+    public static function spawnInternal(count:Number, isGateBatch:Boolean, frameFlag:Number):Void {
+        var slotMs:Number = 2000;
+        if (count > _root.可雇佣兵.length) {
+            count = _root.可雇佣兵.length;
         }
-
         var taken:Array = [];
 
-        for (var i:Number = 0; i < totalCount; i++) {
+        for (var i:Number = 0; i < count; i++) {
             var pick:Number = pickRandomMercIndex(taken);
             if (pick == -1) break;
+            taken[pick] = -1;
+
+            var delayMs:Number = i * slotMs + _root.随机整数(0, slotMs - 1);
 
             _root.帧计时器.添加单次任务(
-                function(atGate, pick, addFn, fFlag) {
+                function(isGateBatch, pick, fFlag) {
                     if (fFlag != _root.gameworld.frameFlag) return;
+                    // Per-task 30/70 gate/court roll：每个 task 独立掷骰，单 batch 内混合
+                    var atGate:Boolean = isGateBatch && !_root.成功率(30);
                     if (atGate) {
-                        var gate = _root.随机选择数组元素(_root.gameworld.出生点列表);
-                        addFn(pick, gate._x, gate._y);
-                    } else {
-                        addFn(pick);
+                        // gameworld.出生点列表 在 配置场景环境信息 里被注释掉了（异步时序问题），
+                        // live walk 兜底；无门则 fallback court 路径，避免 undefined 坐标 spawn。
+                        var gate = MercSpawner.pickGatePoint();
+                        if (gate != null) {
+                            // X 方向 ±100 抖动；单门场景下也散成水平线避免堆叠。
+                            // Y 不动：人物应落在门口地板，垂直方向偏移会导致悬空/穿地。
+                            var jitterX:Number = _root.随机整数(-100, 100);
+                            _root.添加门口佣兵(pick, gate._x + jitterX, gate._y);
+                            return;
+                        }
+                        if (MercBudget.telemetryEnabled) {
+                            MercBudget.emit("NO_GATE", "fallback=court pick=" + pick);
+                        }
                     }
+                    _root.添加场上佣兵(pick);
                 },
-                _root.随机整数(1, totalCount * 2) * 1000,
-                atGate, pick, addFn, frameFlag
+                delayMs,
+                isGateBatch, pick, frameFlag
             );
-
-            taken[pick] = -1;
         }
     }
 
-    // === 不要单独"修"这个函数 ===
-    // 历史链路：MC 实例属性 _root.门口佣兵刷新器.几率 由场景 XML <Entrance> 注入
-    // （见 关卡系统_lsy_add2map_加载背景.as），用作 Symbol 2396 frame 29 的
-    // random(几率)==0 触发频率门控；frame 29 调本函数时未传参，本函数体内
-    // 历史误字"机率"裸标识符 → undefined → 100/几率=NaN → Math.max(...,1)
-    // 兜底强制 1 个佣兵。
-    //
-    // 实际节流结构（buggy 行为已成 emergent design）:
-    //   外层(设计): frame 29 random(几率)==0  → 按 Entrance 控制触发频率
-    //   内层(兜底): 函数体几率=undefined      → 强制每次 1 个（关键节流）
-    //   数量门控:   frame 29 i < 10            → 场上 ≥10 不刷
-    //
-    // 若把 frame 29 改成 _root.门口刷可雇用玩家(几率) 让内层"恢复设计意图"，
-    // 内层会从"强制 1 个"放宽到"_root.成功率(100/几率) ? 1-3 : 兜底 1"，
-    // 整体期望刷出量约 +14%（Entrance=7 时）。运营反馈是当前已偏多，故
-    // 暂不修，留到 schema 扩展 <Entrance>/<EntranceDensity> 解耦时一并设计。
-    //
-    // 形参保留中文"几率"是为了让上述注释中的"几率/机率"对照保持锚点；其他方法用 chance。
+    /**
+     * 周期门口刷新入口。Symbol 2396 frame 29 经 _root.门口刷可雇用玩家() 调入。
+     * 每次触发 = 1 spawn 尝试（单步赤字驱动）；实际是否落地由 MercBudget.shouldSpawn 决定。
+     * 几率参数已经废弃——它从来就不是这里读，而是 frame 29 自己读 _root.门口佣兵刷新器.几率
+     * 做 random(几率)==0 触发频率门控；保留参数名为兼容旧调用 site。
+     */
     public static function spawnAtGate(几率:Number):Void {
-        if (_root.成功率(30)) {
-            spawnInWorld(_root.添加场上佣兵, 几率, false);
-        } else {
-            spawnInWorld(_root.添加场上佣兵, 几率, true);
-        }
+        spawnInWorld(1, true);
     }
 
-    public static function spawnInScene(chance:Number):Void {
-        spawnInWorld(_root.添加场上佣兵, chance, false);
+    /**
+     * 场景加载时的进场批量。count = XML 里的 Initial 字段（已重新诠释为"尝试数"）。
+     * 每个 task 独立走 court 路径（不走门），MercBudget 自动卡在 target 上限。
+     */
+    public static function spawnInScene(count:Number):Void {
+        spawnInWorld(count, false);
+    }
+
+    /**
+     * Live walk gameworld 找门点（是否从门加载主角=true 且非"出生地"）。
+     * 不缓存：场景里的 door MC 可能在脚本中动态启停；walk 成本对 ≤100 子节点忽略不计。
+     * 同样模式见 MecenaryBehavior.as:280-288。
+     */
+    public static function pickGatePoint() {
+        var gw:MovieClip = _root.gameworld;
+        var doors:Array = [];
+        for (var k:String in gw) {
+            var mc:MovieClip = gw[k];
+            if (mc.是否从门加载主角 && k != "出生地") {
+                doors.push(mc);
+            }
+        }
+        if (doors.length == 0) return null;
+        return _root.随机选择数组元素(doors);
     }
 
     public static function randomValidPosition():Object {
@@ -341,17 +362,36 @@ class org.flashNight.arki.merc.MercSpawner {
 
         mc.方向 = (_root.随机整数(0, 1) == 0) ? "左" : "右";
 
+        // 生命周期遥测：onUnload 触发于 HIRE（Symbol 2035 removeMovieClip）、DEATH、场景切换。
+        // 钩子注册受 telemetryEnabled gate：默认关时不占 EventCoordinator 槽，零开销。
+        // 后续打开 telemetry 时新 spawn 才有 DESPAWN，旧 mc 不补；ad-hoc debug 可接受。
+        if (MercBudget.telemetryEnabled) {
+            EventCoordinator.addUnloadCallback(mc, function() {
+                MercBudget.emit("DESPAWN", "id=" + mc.佣兵库编号 + " alive_after=" + (MercCensus.countAlive() - 1));
+            });
+        }
+
         return mc;
     }
 
     public static function addGateMerc(n:Number, X:Number, Y:Number):Void {
+        // MercBudget 赤字门控：每个调度任务 fire 时复查，避免一批任务 schedule 时 OK
+        // 但 fire 时已超 cap 的过冲。kill switch (MercBudget.enabled=false) 直接放行。
+        if (!MercBudget.shouldSpawn()) return;
         var data:Array = createMercData(n, _root.杂交佣兵几率);
-        createMercEntity(data, X, Y);
+        var mc:MovieClip = createMercEntity(data, X, Y);
+        if (mc != null && MercBudget.telemetryEnabled) {
+            MercBudget.emit("SPAWN", "id=" + mc.佣兵库编号 + " atGate=true alive_after=" + MercCensus.countAlive());
+        }
     }
 
     public static function addCourtMerc(n:Number):Void {
+        if (!MercBudget.shouldSpawn()) return;
         var data:Array = createMercData(n, _root.杂交佣兵几率);
         var pos:Object = randomValidPosition();
-        createMercEntity(data, pos.x, pos.y);
+        var mc:MovieClip = createMercEntity(data, pos.x, pos.y);
+        if (mc != null && MercBudget.telemetryEnabled) {
+            MercBudget.emit("SPAWN", "id=" + mc.佣兵库编号 + " atGate=false alive_after=" + MercCensus.countAlive());
+        }
     }
 }

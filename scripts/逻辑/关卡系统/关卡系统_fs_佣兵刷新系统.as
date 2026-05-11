@@ -64,15 +64,19 @@ _root.更新佣兵编号缓存 = function() {
 _root.获取随机佣兵编号 = function(已上场佣兵编号) {
     return MercSpawner.pickRandomMercIndex(已上场佣兵编号);
 };
-_root.生成游戏世界佣兵 = function(添加佣兵函数, 机率, 是否门口) {
-    MercSpawner.spawnInWorld(添加佣兵函数, 机率, 是否门口);
+// 生成游戏世界佣兵 旧签名 (添加佣兵函数, 机率, 是否门口) 已废弃。
+// 现签名是 (数量, 是否门口批次)；保留旧 _root.X 函数名不要让外部 XML 调用断。
+_root.生成游戏世界佣兵 = function(数量, 是否门口批次) {
+    MercSpawner.spawnInWorld(数量, 是否门口批次);
 };
-// emergent throttle 文档详见 MercSpawner.spawnAtGate 注释
+// frame 29 调用入口；几率参数已废弃（frame 29 自己读 _root.门口佣兵刷新器.几率
+// 做触发频率门控，这里不再使用），保留参数名兼容旧 site。
 _root.门口刷可雇用玩家 = function(几率) {
     MercSpawner.spawnAtGate(几率);
 };
-_root.场景刷可雇用玩家 = function(机率) {
-    MercSpawner.spawnInScene(机率);
+// 进场批量入口；数量 = XML Initial 字段（语义现在是"尝试数"，受 MercBudget 上限收敛）
+_root.场景刷可雇用玩家 = function(数量) {
+    MercSpawner.spawnInScene(数量);
 };
 _root.场景随机有效位置 = function() {
     return MercSpawner.randomValidPosition();
@@ -145,6 +149,18 @@ _root.计算佣兵金币价格 = function(等级) {
     return MercLibrary.calculatePrice(等级);
 };
 
+
+// ─── MercCensus / MercBudget 调试适配器 ────────────────────────────────────
+// 业务路径不调；C 阶段标定 baseDensity / 排查"同屏到底几个佣兵"时手动用。
+_root.场上佣兵人数 = function() { return MercCensus.countAlive(); };
+_root.场上人形数   = function() { return MercCensus.countAllGendered(); };
+_root.佣兵普查     = function() { return MercCensus.dump(); };
+_root.佣兵预算     = function() { return MercBudget.targetAlive(); };
+
+// 量化标定开关（默认开，标定完游戏内一行关）
+_root.佣兵遥测 = function(开关) { MercBudget.telemetryEnabled = (开关 != false); };
+
+// _root.佣兵遥测(true)
 
 // ─── _root 状态初始化 ─────────────────────────────────────────────────────
 // 这些数组/计数器被外部 XML 直接读写，初始化在帧脚本里以保证启动时存在。
