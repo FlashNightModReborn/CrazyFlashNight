@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.merc.*;
+import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 
 /*
  * 佣兵杂交器（纯函数化）。
@@ -7,7 +8,7 @@
  * 调用方（MercSpawner.createMercData）自己接结果。
  *
  * 数据依赖：MercLibrary.bundle.teams（战队信息）/ .names（随机名称库）
- *           _root.可雇佣兵 / _root.获取随机索引 / _root.成功率 / _root.深拷贝数组
+ *           _root.可雇佣兵 / _root.获取随机索引 / _root.深拷贝数组
  *           _root.根据权重获取随机对象 / _root.按宽度截断字符串 / _root.getItemData
  *
  * mercData 数组列约定（位置编码，被多处直接索引）：
@@ -29,7 +30,7 @@ class org.flashNight.arki.merc.MercHybridizer {
     ];
 
     public static function pickHybridIndex(n:Number, chance:Number, allow:Boolean):Number {
-        if (_root.成功率(chance) and allow) {
+        if (LinearCongruentialEngine.instance.successRate(chance) and allow) {
             return _root.获取随机索引(_root.可雇佣兵);
         }
         return n;
@@ -74,7 +75,7 @@ class org.flashNight.arki.merc.MercHybridizer {
         if (typeof equip !== "string" or equip.trim().length === 0) {
             return false;
         }
-        return _root.成功率(equipChance);
+        return LinearCongruentialEngine.instance.successRate(equipChance);
     }
 
     /**

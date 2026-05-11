@@ -29,7 +29,7 @@ class org.flashNight.arki.merc.MercBudget {
      * 走 _root.服务器.发布服务器消息 输出可批量 grep/awk 的单行日志。
      *
      * 默认 false（标定已完成 2026-05-11）：onUnload 注册、emit 调用全部短路；
-     * 后续如需再次 debug，游戏内 _root.佣兵遥测(true) 即可临时打开。
+     * 后续如需再次 debug，console 设 MercBudget.telemetryEnabled = true 即可临时打开。
      */
     public static var telemetryEnabled:Boolean = false;
 

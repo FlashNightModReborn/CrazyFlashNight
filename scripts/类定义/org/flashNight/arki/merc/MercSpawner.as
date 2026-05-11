@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.merc.*;
 import org.flashNight.aven.Coordinator.EventCoordinator;
+import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 
 /*
  * 场景佣兵刷新链（Phase C：单步赤字驱动）。
@@ -7,7 +8,7 @@ import org.flashNight.aven.Coordinator.EventCoordinator;
  * 设计：
  *   - frame 29 (Symbol 2396) random(几率)==0 控制触发频率（XML <Entrance> 注入）
  *   - 每次触发 spawnAtGate 调度 1 个 spawn task（真正的单步赤字驱动）
- *   - task 内部独立掷 30/70 gate/court、独立 pickGatePoint、独立位置抖动
+ *   - task 内部独立掷 70/30 gate/court、独立 pickGatePoint、独立位置抖动
  *   - MercBudget.shouldSpawn（sqrt 模型）在 addCourtMerc/addGateMerc 入口决定落地
  *   - 旧 emergent throttle 链（areaFactor / 0.5 / NaN / Math.max,1）已删
  *   - Initial 进场批量走 spawnInScene(count)：XML Initial 字段语义现在是"尝试数"
@@ -144,7 +145,8 @@ class org.flashNight.arki.merc.MercSpawner {
      * 帧计时器异步入队佣兵生成任务（Phase C 单步赤字驱动设计）。
      *
      * 设计要点：
-     *   1. 每个 task 独立掷 30/70 gate/court — batch 内不会"全门口"或"全场景"扎堆
+     *   1. 每个 task 独立掷 70/30 gate/court — batch 内不会"全门口"或"全场景"扎堆
+     *      （isGateBatch 才入 70% gate 分支，否则恒走 court）
      *   2. 每个 task 独立 pickGatePoint() — 多门场景每次随机门，单门场景靠 ±X 抖动散开
      *   3. 槽位分配错峰（slotMs=2000）— 严格防聚簇，旧 [1, 2N] 均匀随机会出生日悖论爆发
      *   4. spawnAtGate(frame 29 周期触发) 传 count=1 — 真正的单步赤字：每帧 29 触发 = 1 spawn
@@ -172,8 +174,8 @@ class org.flashNight.arki.merc.MercSpawner {
             _root.帧计时器.添加单次任务(
                 function(isGateBatch, pick, fFlag) {
                     if (fFlag != _root.gameworld.frameFlag) return;
-                    // Per-task 30/70 gate/court roll：每个 task 独立掷骰，单 batch 内混合
-                    var atGate:Boolean = isGateBatch && !_root.成功率(30);
+                    // Per-task 70/30 gate/court roll：每个 task 独立掷骰，单 batch 内混合
+                    var atGate:Boolean = isGateBatch && LinearCongruentialEngine.instance.successRate(70);
                     if (atGate) {
                         // gameworld.出生点列表 在 配置场景环境信息 里被注释掉了（异步时序问题），
                         // live walk 兜底；无门则 fallback court 路径，避免 undefined 坐标 spawn。
@@ -182,14 +184,14 @@ class org.flashNight.arki.merc.MercSpawner {
                             // X 方向 ±100 抖动；单门场景下也散成水平线避免堆叠。
                             // Y 不动：人物应落在门口地板，垂直方向偏移会导致悬空/穿地。
                             var jitterX:Number = _root.随机整数(-100, 100);
-                            _root.添加门口佣兵(pick, gate._x + jitterX, gate._y);
+                            MercSpawner.addGateMerc(pick, gate._x + jitterX, gate._y);
                             return;
                         }
                         if (MercBudget.telemetryEnabled) {
                             MercBudget.emit("NO_GATE", "fallback=court pick=" + pick);
                         }
                     }
-                    _root.添加场上佣兵(pick);
+                    MercSpawner.addCourtMerc(pick);
                 },
                 delayMs,
                 isGateBatch, pick, frameFlag
@@ -257,7 +259,7 @@ class org.flashNight.arki.merc.MercSpawner {
             hybridChance = Math.min(hybridChance, Math.max(0, _root.主线任务进度 - 13));
         }
         var instance:Array;
-        if (_root.成功率(hybridChance)) {
+        if (LinearCongruentialEngine.instance.successRate(hybridChance)) {
             instance = MercHybridizer.hybridize(n, hybridChance, true);
         } else {
             instance = _root.深拷贝数组(_root.可雇佣兵[n]);
