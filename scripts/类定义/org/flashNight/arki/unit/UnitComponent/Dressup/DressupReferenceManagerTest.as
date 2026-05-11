@@ -234,8 +234,8 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         assertNull("initObject 未注入", mc.attachLog[0].initObject);
     }
 
-    private static function test_attach_数字后缀regKey生成():Void {
-        trace("--- attach: 同 base key 第二次注册生成数字后缀 ---");
+    private static function test_attach_不同mc同refName_溢出命名空间():Void {
+        trace("--- attach: 不同 mc 撞同 referenceName 时走 #N 溢出命名空间 ---");
         var unit = makeMockUnit("正常", "男");
         var mc1 = makeMockMC();
         wireParentChain(mc1, unit);
@@ -246,16 +246,38 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         DressupReferenceManager.attach(mc2, "skin", "装扮", "小腿_引用");
 
         // 第一次：regKey = "小腿_引用@装扮"，actualRefName = "小腿_引用"
-        // 第二次：regKey = "小腿1_引用@装扮"，actualRefName = "小腿1_引用"
-        // 命名风格已统一：regKey 即 actualRefName + "@" + instanceName
+        // 第二次：regKey = "小腿_引用#1@装扮"，actualRefName = "小腿_引用#1"
+        // # 后缀避开 刀1_引用/刀2_引用/刀3_引用（FLA 合法副手/刀鞘引用名）
         var entry1 = unit.dressupRegistry["小腿_引用@装扮"];
-        var entry2 = unit.dressupRegistry["小腿1_引用@装扮"];
+        var entry2 = unit.dressupRegistry["小腿_引用#1@装扮"];
         assertNotNull("第一次 entry 存在", entry1);
-        assertNotNull("第二次 entry 存在（数字后缀 regKey）", entry2);
+        assertNotNull("第二次 entry 存在（#1 溢出 regKey）", entry2);
         assertEquals("第一次 actualRefName = 小腿_引用", "小腿_引用", entry1.referenceName);
-        assertEquals("第二次 actualRefName = 小腿1_引用", "小腿1_引用", entry2.referenceName);
+        assertEquals("第二次 actualRefName = 小腿_引用#1", "小腿_引用#1", entry2.referenceName);
         // baseReferenceName 始终是原始名
         assertEquals("第二次 baseReferenceName = 小腿_引用", "小腿_引用", entry2.baseReferenceName);
+        // 不能去抢合法 FLA 引用名
+        assertNull("没有生成 小腿1_引用@装扮（避免命名空间污染）",
+            unit.dressupRegistry["小腿1_引用@装扮"]);
+    }
+
+    private static function test_attach_同mc重入_复用regKey():Void {
+        trace("--- attach: 同 mc 二次 attach 复用 regKey（不溢出） ---");
+        var unit = makeMockUnit("正常", "男");
+        var mc = makeMockMC();
+        wireParentChain(mc, unit);
+        DressupReferenceManager.attach(mc, "skin", "装扮", "刀_引用");
+        DressupReferenceManager.attach(mc, "skin", "装扮", "刀_引用");
+        DressupReferenceManager.attach(mc, "skin", "装扮", "刀_引用");
+
+        // 三次同 mc 调用应共用 regKey，registry 只有一条 刀_引用@装扮 entry
+        assertNotNull("regKey 复用，刀_引用@装扮 entry 仍存在",
+            unit.dressupRegistry["刀_引用@装扮"]);
+        assertNull("没有生成 刀_引用#1@装扮", unit.dressupRegistry["刀_引用#1@装扮"]);
+        assertNull("没有抢占 刀1_引用@装扮", unit.dressupRegistry["刀1_引用@装扮"]);
+        assertNull("没有抢占 刀2_引用@装扮", unit.dressupRegistry["刀2_引用@装扮"]);
+        assertEquals("entry.mc === 当前 mc", mc,
+            unit.dressupRegistry["刀_引用@装扮"].mc);
     }
 
     private static function test_attach_失效MC复用regKey():Void {
@@ -550,7 +572,8 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         test_doConfig_deferred路径initObject注入();
         test_doConfig_deferred_fallback路径同样注入initObject();
         test_doConfig_未订阅deferred时不传initObject();
-        test_attach_数字后缀regKey生成();
+        test_attach_不同mc同refName_溢出命名空间();
+        test_attach_同mc重入_复用regKey();
         test_attach_失效MC复用regKey();
         test_attach_skinKeyOverrides武器走装扮后缀();
         test_refreshAll_标记与组级事件();

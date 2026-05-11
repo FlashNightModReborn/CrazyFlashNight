@@ -10,17 +10,24 @@
  * 事件通道
  * ============================================================================
  *
- * 【同步通道】placement-ready 时刻
+ * 【同步通道】placement-ready 时刻 — 默认选这个
  *   key = referenceName（如 "刀_引用"）
- *   触发：attach 完成后立即 publish；订阅方可信地读 unit[refName]、其
- *         _x/_y/_visible/_parent，以及 placement 子的 _x/_y。
+ *   触发：attach 完成后立即 publish — 仍在调用 attach 的脚本栈内，**当帧 render 之前**
+ *   可信读：unit[refName] 引用本身、其 _x/_y/_visible/_parent；
+ *           递归 placement 子树（含 grand-placement，如 saber.刀口位置3）的内置属性
+ *           （_x/_y/_visible/_xscale）和 MovieClip 内置方法（gotoAndStop / localToGlobal）
  *   订阅方写：unit.syncRefs[refName] = true; unit.dispatcher.subscribe(...)
+ *           或 DressupSubscriber.onPlacement(unit, refName, fn)
  *
- * 【Deferred 通道】load-fully-ready 时刻
+ * 【Deferred 通道】load-fully-ready 时刻 — 仅在确实必要时选
  *   key = referenceName + ":ready"（如 "刀_引用:ready"）
- *   触发：在 load flush 阶段尾、定时器/enterFrame 之前；订阅方可信地读子 MC
- *         的 onClipEvent(load) 写入字段、嵌套 attachMovie 的孙级。
+ *   触发：load flush 阶段尾、setInterval(0)/enterFrame 之前 — **下一帧开头，render 之后**
+ *         （比 sync 晚一帧物理时间，订阅方写 placement 子的属性会出现 1 帧视觉滞后）
+ *   何时必须用：回调要读子 MC 在它自己 onClipEvent(load) 里**写入的字段**（如 child.弹药数 = N）
+ *               或子 MC 的 onLoad 内**嵌套 attachMovie** 出来的孙级
+ *   反例（不要选 deferred）：回调只读 placement 子树的内置属性 / 调 gotoAndStop 这些 —— 用 sync
  *   订阅方写：unit.syncRefs[refName + ":ready"] = true; unit.dispatcher.subscribe(...)
+ *           或 DressupSubscriber.onReady(unit, refName, fn)
  *   实现：register-attach-unregister + SkinReadyClass.onLoad（详见 doConfig）
  *
  * 【组级 refresh 通道】
@@ -184,10 +191,13 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
             unit.dressupRegistry = {};
         }
 
-        // 生成唯一的 regKey + actualRefName：已存在且 MC 仍有效则追加数字后缀；
-        // 旧 MC 失效则清理并复用。regKey 与 actualRefName 用同款 split-base + counter
-        // 命名约定（小腿1_引用@装扮 / 小腿1_引用），便于调试时对照
-        var baseRefSplit:String = referenceName.split("_引用")[0];
+        // 生成唯一的 regKey + actualRefName。三种情况：
+        //   (1) 现 regKey 空闲 → 直接用
+        //   (2) 旧 entry 的 mc 已死（_parent==null）→ 清理后复用 regKey
+        //   (3) 旧 entry 的 mc === 当前 movieClip → 同 holder 二次 attach（onLoad 重入 / 同 mc 多次配置），
+        //       复用 regKey；doConfig 内 removeMovieClip + attachMovie 幂等
+        //   (4) 真冲突（不同 holder 撞同 referenceName）→ 用 "referenceName#N" 命名空间溢出，
+        //       不能用 "刀1_引用 / 刀2_引用 / 刀3_引用" 这类名字——它们是合法的副手/刀鞘 FLA 引用名
         var actualRefName:String = referenceName;
         var regKey:String = actualRefName + "@" + instanceName;
         var counter:Number = 1;
@@ -197,7 +207,11 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
                 delete unit.dressupRegistry[regKey];
                 break;
             }
-            actualRefName = baseRefSplit + counter + "_引用";
+            if (oldEntry.mc === movieClip) {
+                // 同一物理 holder 再次 attach — 复用现有 regKey，doConfig 重跑幂等
+                break;
+            }
+            actualRefName = referenceName + "#" + counter;
             regKey = actualRefName + "@" + instanceName;
             counter++;
         }

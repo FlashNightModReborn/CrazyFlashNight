@@ -34,9 +34,8 @@ _root.装备生命周期函数.RShG4Я初始化 = function(ref, param)
     ref.emptyStandby      = false;        // 是否处于空仓待机状态
 
     /* ---------- 4) 事件订阅 ---------- */
-    // 长枪引用加载时刷新可视
-    target.syncRefs.长枪_引用 = true;
-    target.dispatcher.subscribe("长枪_引用", function () {
+    // 长枪引用就位时刷新可视（仅读 placement 子级 弹头1/弹头2 内置属性，sync 通道足矣）
+    DressupSubscriber.onPlacement(target, "长枪_引用", function () {
         _root.装备生命周期函数.RShG4Я视觉(ref);
     });
 

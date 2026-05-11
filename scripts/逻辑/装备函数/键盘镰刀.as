@@ -75,9 +75,8 @@
         ref.animFrame = 1;
     }
 
-    // 订阅刀引用同步事件
-    target.syncRefs.刀_引用 = true;
-    target.dispatcher.subscribe("刀_引用", function(unit) {
+    // 仅读 placement 子级 scythe.动画 / 刀口位置1/2/3 的内置属性，sync 通道足矣
+    DressupSubscriber.onPlacement(target, "刀_引用", function(unit) {
         _root.装备生命周期函数.键盘镰刀动画更新(ref);
         _root.装备生命周期函数.键盘镰刀更新刀口位置(ref);
     });

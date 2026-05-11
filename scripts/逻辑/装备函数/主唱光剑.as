@@ -43,8 +43,9 @@
        ref.animFrame = 1;
    }
 
-   target.syncRefs.刀_引用 = true;
-   target.dispatcher.subscribe("刀_引用", function(unit) {
+   // saber 重新挂载时立即刷一次（动画更新内部 isNew 检测会触发 1→N 的物理 walk
+   // 让 motion tween 应用，否则 alpha tween 卡在起点视觉只剩话筒）
+   DressupSubscriber.onPlacement(target, "刀_引用", function(unit) {
        _root.装备生命周期函数.主唱光剑动画更新(ref);
    });
 
@@ -239,10 +240,10 @@ _root.装备生命周期函数.主唱光剑动画控制 = function(ref:Object) {
 _root.装备生命周期函数.主唱光剑动画更新 = function(ref:Object) {
    var target:MovieClip = ref.自机;
    var saber:MovieClip = target.刀_引用;
-   
-   // 更新动画帧
+
    if (saber.动画) {
        saber.动画.gotoAndStop(ref.animFrame);
+       ref.lastSaberAnim = saber.动画;
    }
 
    // 更新刀口位置
@@ -252,7 +253,7 @@ _root.装备生命周期函数.主唱光剑动画更新 = function(ref:Object) {
    if (saber.刀口位置1) {
        saber.刀口位置1._y = ref.saberBladeYOffset1[yOffsetIndex];
    }
-   
+
    if (saber.刀口位置3) {
        saber.刀口位置3._y = ref.saberBladeYOffset3[yOffsetIndex];
    }

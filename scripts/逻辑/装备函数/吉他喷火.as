@@ -108,18 +108,16 @@
     ref.是否刀枪复用 = (target.刀 == target.长枪);
 
     // ===== 订阅引用同步事件 =====
-    // 长枪引用同步（枪形态渲染）
-    target.syncRefs.长枪_引用 = true;
-    target.dispatcher.subscribe("长枪_引用", function(unit) {
+    // 长枪引用就位：仅读 placement 子级 gun.动画 / gun.枪口位置 的内置属性
+    DressupSubscriber.onPlacement(target, "长枪_引用", function(unit) {
         _root.装备生命周期函数.吉他喷火动画控制(ref);
         _root.装备生命周期函数.吉他喷火更新枪口位置(ref);
         _root.装备生命周期函数.吉他喷火刷新机枪弹容(ref);
     });
 
-    // 刀引用同步（刀形态渲染，仅刀枪复用时）
+    // 刀引用就位：仅读 placement 子级 blade.动画 的内置属性；仅刀枪复用时
     if (ref.是否刀枪复用) {
-        target.syncRefs.刀_引用 = true;
-        target.dispatcher.subscribe("刀_引用", function(unit) {
+        DressupSubscriber.onPlacement(target, "刀_引用", function(unit) {
             _root.装备生命周期函数.吉他喷火动画控制(ref);
             _root.装备生命周期函数.吉他喷火刀枪显示控制(ref);
         });

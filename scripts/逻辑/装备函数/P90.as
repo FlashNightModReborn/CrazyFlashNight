@@ -11,8 +11,7 @@
     var bulletCapacity = equipmentData.capacity > 0 ? equipmentData.capacity : 50;
     ref.bulletRate = bulletCapacity / 50; // 以50发为基准的比例
 
-    target.syncRefs[ref.gunString] = true;
-    target.dispatcher.subscribe(ref.gunString, function() {
+    DressupSubscriber.onPlacement(target, ref.gunString, function() {
        _root.装备生命周期函数.P90周期(ref,param);
    });
 };
