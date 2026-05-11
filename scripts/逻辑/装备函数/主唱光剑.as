@@ -43,8 +43,6 @@
        ref.animFrame = 1;
    }
 
-   // saber 重新挂载时立即刷一次（动画更新内部 isNew 检测会触发 1→N 的物理 walk
-   // 让 motion tween 应用，否则 alpha tween 卡在起点视觉只剩话筒）
    DressupSubscriber.onPlacement(target, "刀_引用", function(unit) {
        _root.装备生命周期函数.主唱光剑动画更新(ref);
    });
@@ -157,7 +155,8 @@
 
 _root.装备生命周期函数.主唱光剑周期 = function(ref:Object, param:Object) {
    _root.装备生命周期函数.移除异常周期函数(ref);
-   
+   if (!VisualSync.beginTick(ref)) return;
+
    var target:MovieClip = ref.自机;
    var saber:MovieClip = target.刀_引用;
    
@@ -241,9 +240,9 @@ _root.装备生命周期函数.主唱光剑动画更新 = function(ref:Object) {
    var target:MovieClip = ref.自机;
    var saber:MovieClip = target.刀_引用;
 
+   // 更新动画帧
    if (saber.动画) {
        saber.动画.gotoAndStop(ref.animFrame);
-       ref.lastSaberAnim = saber.动画;
    }
 
    // 更新刀口位置

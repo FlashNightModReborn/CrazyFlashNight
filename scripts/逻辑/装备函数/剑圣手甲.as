@@ -104,10 +104,9 @@ _root.装备生命周期函数.剑圣手甲初始化 = function(ref:Object, para
         }
     }, target);
 
-    // 左下臂引用加载时同步渲染
-    target.syncRefs.左下臂_引用 = true;
-    target.dispatcher.subscribe("左下臂_引用", function(unit) {
-        _root.装备生命周期函数.剑圣手甲渲染更新(ref);
+    // 左下臂引用就位时同步视觉
+    DressupSubscriber.onPlacement(target, "左下臂_引用", function(unit) {
+        _root.装备生命周期函数.剑圣手甲视觉更新(ref);
     }, target);
 
     // 初始化 Buff 系统（使用 EventListenerComponent 统一管理）
@@ -329,6 +328,25 @@ _root.装备生命周期函数.剑圣手甲渲染更新 = function(ref:Object) {
 };
 
 /**
+ * 剑圣手甲 - 视觉更新函数（幂等）
+ * 同步 weapon 的当前帧、位置/旋转、辉光可见性
+ * 由周期函数末尾和 placement 事件触发，必须可被任意次数调用而结果一致
+ *
+ * @param {Object} ref 生命周期反射对象
+ */
+_root.装备生命周期函数.剑圣手甲视觉更新 = function(ref:Object) {
+    var weapon:MovieClip = ref.weapon;
+    if (!weapon) return;
+
+    weapon.gotoAndStop(ref.currentFrame);
+    _root.装备生命周期函数.剑圣手甲渲染更新(ref);
+    // 辉光同步（attachMovie 后子元件可能延迟加载，subordinate guard 兜底）
+    if (weapon.辉光) {
+        weapon.辉光._visible = (ref.isGlowActive === true);
+    }
+};
+
+/**
  * 剑圣手甲 - 周期函数
  * 控制腕刃的展开/收缩动画
  * 性能优化：收缩到第1帧时移除weapon，需要时再创建
@@ -339,6 +357,7 @@ _root.装备生命周期函数.剑圣手甲渲染更新 = function(ref:Object) {
  */
 _root.装备生命周期函数.剑圣手甲周期 = function(ref:Object) {
     _root.装备生命周期函数.移除异常周期函数(ref);
+    if (!VisualSync.beginTick(ref)) return;
 
     var tier:String = ref.tier;
     if (!tier) {
@@ -351,39 +370,26 @@ _root.装备生命周期函数.剑圣手甲周期 = function(ref:Object) {
     var shouldDeploy:Boolean = (target.攻击模式 == "空手") ||
         org.flashNight.arki.unit.HeroUtil.isFistSkill(target.技能名);
 
-    // 动画状态机
+    // 推 state + weapon lifecycle
     if (shouldDeploy) {
-        // 需要展开
         if (ref.currentFrame < ref.maxFrame) {
             ref.currentFrame++;
         }
-        // 确保weapon存在
         if (!ref.weapon) {
             var layer:MovieClip = target.底层背景;
             var weapon:MovieClip = layer.attachMovie(ref.weaponAsset, ref.weaponName, ref.weaponDepth);
             weapon.stop();
             ref.weapon = weapon;
         }
-        // 更新显示帧和位置
-        ref.weapon.gotoAndStop(ref.currentFrame);
-        _root.装备生命周期函数.剑圣手甲渲染更新(ref);
-        // 每帧同步辉光状态（解决 attachMovie 后子元件加载延迟问题）
-        if (ref.weapon.辉光) {
-            ref.weapon.辉光._visible = (ref.isGlowActive === true);
-        }
     } else {
-        // 需要收缩
         if (ref.currentFrame > ref.minFrame) {
             ref.currentFrame--;
-            // 收缩过程中仍需更新
-            if (ref.weapon) {
-                ref.weapon.gotoAndStop(ref.currentFrame);
-                _root.装备生命周期函数.剑圣手甲渲染更新(ref);
-            }
         } else if (ref.weapon) {
             // 已完全收缩，移除weapon
             ref.weapon.removeMovieClip();
             ref.weapon = null;
         }
     }
+
+    _root.装备生命周期函数.剑圣手甲视觉更新(ref);
 };

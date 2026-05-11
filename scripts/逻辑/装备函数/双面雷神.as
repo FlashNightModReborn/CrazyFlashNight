@@ -51,8 +51,7 @@ _root.装备生命周期函数.双面雷神初始化 = function(ref:Object, para
         target.isSniperMode = ref.isSniperMode;
     });
 
-    target.syncRefs.长枪_引用 = true;
-    target.dispatcher.subscribe("长枪_引用", function() {
+    DressupSubscriber.onPlacement(target, "长枪_引用", function() {
         _root.装备生命周期函数.双面雷神视觉(ref);
     });
 };

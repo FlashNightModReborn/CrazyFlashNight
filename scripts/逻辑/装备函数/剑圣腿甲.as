@@ -102,9 +102,8 @@ _root.装备生命周期函数.剑圣腿甲初始化 = function(ref:Object, para
         }
     }, target);
 
-    // 身体引用加载时同步渲染
-    target.syncRefs.身体_引用 = true;
-    target.dispatcher.subscribe("身体_引用", function(unit) {
+    // 身体引用就位时同步渲染
+    DressupSubscriber.onPlacement(target, "身体_引用", function(unit) {
         _root.装备生命周期函数.剑圣腿甲渲染更新(ref);
     }, target);
 
@@ -184,6 +183,7 @@ _root.装备生命周期函数.剑圣腿甲渲染更新 = function(ref:Object) {
  */
 _root.装备生命周期函数.剑圣腿甲周期 = function(ref:Object) {
     _root.装备生命周期函数.移除异常周期函数(ref);
+    if (!VisualSync.beginTick(ref)) return;
 
     var tier:String = ref.tier;
     if (!tier) {

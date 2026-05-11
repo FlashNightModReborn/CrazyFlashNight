@@ -9,6 +9,7 @@ import org.flashNight.arki.unit.*;
 import org.flashNight.arki.spatial.move.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.unit.UnitComponent.Dressup.*;
+import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.*;
 import org.flashNight.arki.unit.Action.Regeneration.*;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.component.Collider.*;

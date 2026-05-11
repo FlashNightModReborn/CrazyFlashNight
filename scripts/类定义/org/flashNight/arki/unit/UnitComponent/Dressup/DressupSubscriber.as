@@ -27,10 +27,10 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupSubscriber {
      *   - 只调 MovieClip 内置方法 gotoAndStop / localToGlobal
      *   placement 子树在 attachMovie 同步返回时就已就绪，sync 已够用
      */
-    public static function onReady(unit:MovieClip, refName:String, handler:Function):Void {
+    public static function onReady(unit:MovieClip, refName:String, handler:Function, scope:Object):Void {
         var key:String = refName + ":ready";
         unit.syncRefs[key] = true;
-        unit.dispatcher.subscribe(key, handler);
+        unit.dispatcher.subscribe(key, handler, scope);
     }
 
     /**
@@ -44,16 +44,16 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupSubscriber {
      *   - 子 MC 在自己 onClipEvent(load) 里写入的字段（拿到 undefined）
      *   - 子 MC 的 onLoad 内嵌套 attachMovie 出来的孙级
      */
-    public static function onPlacement(unit:MovieClip, refName:String, handler:Function):Void {
+    public static function onPlacement(unit:MovieClip, refName:String, handler:Function, scope:Object):Void {
         unit.syncRefs[refName] = true;
-        unit.dispatcher.subscribe(refName, handler);
+        unit.dispatcher.subscribe(refName, handler, scope);
     }
 
     /**
      * 组级 refresh 通道 — refreshAll 串行遍历完所有 entry 后 publish 一次。
      */
-    public static function onRefreshed(unit:MovieClip, handler:Function):Void {
+    public static function onRefreshed(unit:MovieClip, handler:Function, scope:Object):Void {
         unit.syncRefs["dressup:refreshed"] = true;
-        unit.dispatcher.subscribe("dressup:refreshed", handler);
+        unit.dispatcher.subscribe("dressup:refreshed", handler, scope);
     }
 }

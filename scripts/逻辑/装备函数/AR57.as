@@ -1,6 +1,6 @@
 ﻿_root.装备生命周期函数.AR57初始化 = function(ref:Object, param:Object) {
-    var target:MovieClip = ref.自机;    
-    
+    var target:MovieClip = ref.自机;
+
     ref.modeObject = { 长枪:true};
 
     var equipmentType:String = ref.装备类型;
@@ -10,11 +10,20 @@
     var equipmentData = target[ref.装备类型 + "属性"];
     var bulletCapacity = equipmentData.capacity > 0 ? equipmentData.capacity : 50;
     ref.bulletRate = bulletCapacity / 50; // 以50发为基准的比例
+
+    DressupSubscriber.onPlacement(target, ref.gunString, function() {
+        _root.装备生命周期函数.AR57视觉更新(ref);
+    });
 };
 
 _root.装备生命周期函数.AR57周期 = function(ref:Object, param:Object) {
     _root.装备生命周期函数.移除异常周期函数(ref);
-    
+    if (!VisualSync.beginTick(ref)) return;
+
+    _root.装备生命周期函数.AR57视觉更新(ref);
+};
+
+_root.装备生命周期函数.AR57视觉更新 = function(ref:Object) {
     var target:MovieClip = ref.自机;
     var gun:MovieClip = target[ref.gunString];
 

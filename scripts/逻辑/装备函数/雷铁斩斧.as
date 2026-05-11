@@ -1,4 +1,4 @@
-﻿_root.装备生命周期函数.雷铁斩斧初始化 = function(ref:Object, param:Object) 
+﻿_root.装备生命周期函数.雷铁斩斧初始化 = function(ref:Object, param:Object)
 {
     ref.actionTypeA = param.actionTypeA || null;
     ref.actionTypeB = param.actionTypeB || "狂野";
@@ -8,14 +8,18 @@
     ref.frameMax = param.frameMax || 15;
 
     ref.自机.兵器动作类型 = ref.actionTypeA;
-}; 
 
-_root.装备生命周期函数.雷铁斩斧周期 = function(ref:Object, param:Object) 
+    DressupSubscriber.onPlacement(ref.自机, "刀_引用", function() {
+        _root.装备生命周期函数.雷铁斩斧视觉更新(ref);
+    });
+};
+
+_root.装备生命周期函数.雷铁斩斧周期 = function(ref:Object, param:Object)
 {
     _root.装备生命周期函数.移除异常周期函数(ref);
+    if (!VisualSync.beginTick(ref)) return;
 
     var target:MovieClip = ref.自机;
-    var saber:MovieClip = target.刀_引用;
 
     if(_root.兵器使用检测(target)) {
         if(ref.frame === 1 || ref.frame === ref.frameMax) {
@@ -36,5 +40,11 @@ _root.装备生命周期函数.雷铁斩斧周期 = function(ref:Object, param:O
         }
     }
 
+    _root.装备生命周期函数.雷铁斩斧视觉更新(ref);
+};
+
+_root.装备生命周期函数.雷铁斩斧视觉更新 = function(ref:Object)
+{
+    var saber:MovieClip = ref.自机.刀_引用;
     saber.gotoAndStop(ref.frame);
 };

@@ -18,14 +18,18 @@ _root.装备生命周期函数.牙狼剑初始化 = function(ref:Object, param:O
     ref.lastCurrentState = false;
 
     ref.自机.兵器动作类型 = ref.actionTypeA;
+
+    DressupSubscriber.onPlacement(ref.自机, "刀_引用", function() {
+        _root.装备生命周期函数.牙狼剑视觉更新(ref);
+    });
 };
 
 _root.装备生命周期函数.牙狼剑周期 = function(ref:Object, param:Object)
 {
     _root.装备生命周期函数.移除异常周期函数(ref);
+    if (!VisualSync.beginTick(ref)) return;
 
     var target:MovieClip = ref.自机;
-    var saber:MovieClip = target.刀_引用;
 
     if(_root.兵器使用检测(target)) {
         if(ref.frame === 1 || ref.frame === ref.frameMax) {
@@ -53,6 +57,14 @@ _root.装备生命周期函数.牙狼剑周期 = function(ref:Object, param:Obje
             _root.玩家信息界面.玩家必要信息界面.战技栏.战技栏图标刷新();
         }
     }
+
+    _root.装备生命周期函数.牙狼剑视觉更新(ref);
+};
+
+_root.装备生命周期函数.牙狼剑视觉更新 = function(ref:Object)
+{
+    var target:MovieClip = ref.自机;
+    var saber:MovieClip = target.刀_引用;
 
     target.牙狼剑帧 = ref.frame;
     saber.gotoAndStop(ref.frame);
