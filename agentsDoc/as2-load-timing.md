@@ -2,8 +2,8 @@
 
 **文档角色**：AS2 attachMovie 后事件派发的 FP20 实测记录与契约草案。
 **实测平台**：Flash Player 20（项目固化版本）；测试夹具见 `scripts/TestLoader/`（库内 `TestProbeSkin` / `TestProbeNested` / `TestProbeLeaf` / `child` / `leafChild`，已固化签入仓库）；runner 代码见第 5 节（`scripts/TestLoader.as` 是通用入口、被 .gitignore，每次复现需粘贴）。
-**实施状态**：**契约设计中**，第 3 节列出候选方案；当前数据收集阶段，**`_执行配置` 尚未落地任何延后通道**——但 `Object.registerClass` 实测已完成，方案 B 转为推荐方向。
-**最近实测**：2026-05-08（基础时序 + registerClass 类方法 onLoad 确认触发 + register-attach-unregister 精准 scope 验证）。
+**实施状态**：方案 B-精准已落地（DressupReferenceManager.doConfig + SkinReadyClass）；2.4 节钉死了**关键时序漏洞**——同 enterFrame phase 内多 handler 间 load flush **不 interleave**，导致 onReady 通道对 enterFrame-phase 触发的 refresh 不可靠。订阅方应当首选 onPlacement 通道，详见第 3 节使用指引。
+**最近实测**：2026-05-12（T7+T8+T9：nested + 类绑定 + 跨阶段 handler 协同，钉死了 onReady 的时序漏洞）。
 
 ## Quick Sheet（速查）
 
@@ -13,7 +13,8 @@
 - attachMovie 同步返回时：`mc._x` / placement 子的 `_x` 已就绪；`onClipEvent(load)` 写入的字段尚未就绪
 - **类绑定下构造函数同步在 attachMovie 内触发**，此时子 `_x` 已就绪、子 load 字段未就绪
 - 当帧 dispatch 顺序：`脚本返回 → load flush（含嵌套，类 onLoad 后序触发）→ setInterval(0) → enterFrames（reverse depth）`
-- 装扮 publish 延后通道方案：**推荐方向 = `Object.registerClass` + 类 onLoad**（方案 B，详见第 3 节）；mc.onEnterFrame（A）是简易备选；unit.onEnterFrame+队列（C）只在严格交付场景才需要
+- ★ **enterFrame phase 内多 handler 间 load flush 不 interleave**（T9 实测）—— 高 depth handler 内 attachMovie 后，低 depth handler 跑时其 onLoad 还没派发。整个 phase 的 load flush 排到所有 handler 完成后才统一进行
+- 装扮 publish 通道选择：默认 **onPlacement (sync)**；仅当订阅方需要 onLoad-deferred 字段且能容忍 1 帧滞后（或自带门控）才用 onReady (deferred)
 
 ## 1. 当帧 dispatch 顺序
 
@@ -152,6 +153,91 @@
 
 **结论：register-attach-unregister 是真正的 per-attach 精准 scope，不污染其他 unit 的同名 attachMovie。**
 
+### 2.4 第四轮 (2026-05-12)：嵌套与跨阶段时序 — `onReady` 通道的时序漏洞
+
+第 2.1-2.3 节只覆盖 **script-phase attachMovie** 路径。生产中真实的 dressup 触发路径还有两种：
+- (a) `onClipEvent(load)` 内嵌套调 `配置装扮 → doConfig → attachMovie`（body part 首次加载时）
+- (b) `onEnterFrame` 内同步调 `刷新人物装扮 → refreshAll → doConfig → attachMovie`（拾取/动作切换/装备变更触发的运行时 refresh）
+
+T7+T8+T9 系列分别钉死这两类路径下类绑定 onLoad 的派发时机，及多 handler 协同下的载入 flush 行为。
+
+#### T7：script-phase 内嵌套 `attachMovie` + 类绑定 onLoad
+
+夹具：`Object.registerClass("TestProbeLeaf", SkinReadyProbe)` 后 attach `TestProbeNested`，其 placement child 在 `onClipEvent(load)` 内 `attachMovie("TestProbeLeaf", "leaf", 1)`。
+
+```
+[1] === T7: registerClass(TestProbeLeaf) → attachMovie(TestProbeNested) ===
+[2] [T7] after attach (outer plain) loadedFlag=undefined
+[3] === frame script end ===
+[4] [CLS] constructor _name=leaf       ← 嵌套 attach 在 load flush 阶段 child.onClipEvent(load) 内同步触发
+[6] [CLS] onLoad _name=leaf            ← 类 onLoad 在当帧 load flush 末尾递归触发 ★
+[8] === setInterval(0) (load flush 之后) ===
+[9] [T4] skin7 at setInterval(0) loadedFlag=yes loadedAt=4
+[13] === enterFrame N ===
+```
+
+**结论**：嵌套 attachMovie 在 load flush 阶段触发的类绑定 onLoad，**当帧 load flush 末尾递归派发**，早于 setInterval(0)/enterFrame。
+
+#### T8：`onEnterFrame` 内 `attachMovie` + 类绑定 onLoad
+
+夹具：在 `_root.onEnterFrame` 里 `Object.registerClass + attachMovie`。
+
+```
+[15] === enterFrame N+1 — T8 开始 ===
+[17] [T8] after attach (in enterFrame) loadedFlag=undefined
+[18] [CLS] constructor _name=leaf       ← 嵌套 attach 仍同步触发
+[19] [CLS] onLoad _name=leaf            ← onLoad 在 _root.onEnterFrame 返回后、render 之前派发
+[20] [CLS] onEnterFrame _name=leaf
+[21] === enterFrame N+2 (attach 后第 1 帧) ===
+[22] [T3] skin8 at N+2 loadedFlag=yes loadedAt=17
+```
+
+**结论**：enterFrame 阶段触发的嵌套 attachMovie，其类 onLoad 仍在**当帧**派发（**post-enterFrame load flush**），不延后到下一帧。
+
+#### T9：多 enterFrame handler 间 load flush **不 interleave** ★关键漏洞★
+
+夹具：高 depth handler A（depth 10000）attach class-bound clip，低 depth handler B（`_root.onEnterFrame`，depth 0）后 fire，检查 child 的 `loadedFlag`。
+
+```
+[23] === enterFrame N+3 — 安装 handler A (depth 10000) ===
+[24] [T9 handler A] firing (高 depth, 先于 _root)
+[25] [T9 handler A] after attach skin9 loadedFlag=undefined
+[26] === enterFrame N+4 — handler B (_root) 检查 skin9 ===
+[27] [T9 handler B] skin9 from _root loadedFlag=undefined  ← ★ handler B 跑时 child onLoad 还没派发
+[28] [CLS] constructor _name=leaf                          ← onLoad 链在所有 enterFrame handler 完成后才 fire
+[29] [CLS] onLoad _name=leaf
+[30] [CLS] onEnterFrame _name=leaf
+[31] === enterFrame N+5 ===
+[32] [T9 N+5] skin9 loadedFlag=yes loadedAt=27             ← child.loadedAt=27 印证 onLoad 落在 handler B 之后
+```
+
+**关键证据**：[27] handler B 在 handler A 已 attach 完成的情况下仍读到 `loadedFlag=undefined`，说明 **load flush 不在 enterFrame phase 内的多个 handler 之间 interleave**。整个 phase 的 onLoad 派发被排到所有 handler 完成后才统一进行。
+
+**生产影响 — onReady 通道的时序漏洞**：
+
+DressupSubscriber `onReady` 通道依赖 `SkinReadyClass.onLoad` 派发延后事件。但在以下路径下，订阅方在同 enterFrame phase 内读到的 `onReady` 状态会**晚一拍**：
+
+```
+Frame N enterFrame phase:
+  ├ 高 depth handler (input/pickup/action):
+  │   ├ 同步调 refreshAll → doConfig
+  │   ├ doConfig 同步 publish onPlacement (订阅方 reset loadReady=false)
+  │   └ SkinReadyClass attach 但 onLoad 尚未派发
+  ├ ...
+  └ _root.onEnterFrame (LAST, reverse depth):
+      └ ServerManager → 周期 → 读 loadReady=false (onReady 还没 fire)  ★违例★
+Frame N post-enterFrame load flush:
+  └ SkinReadyClass.onLoad → publish onReady → loadReady=true (太晚)
+Frame N+1: 周期 读 loadReady=true ✓
+```
+
+**实测案例**：[电感切割刃](../scripts/逻辑/装备函数/电感切割刃.as) prod 日志 4 次违例，全部对应此路径（PickUpManager / 动作切换触发的 enterFrame-phase refresh）。
+
+**订阅方应对**：
+- 若只需 placement transforms（如 `localToGlobal` 走 placement 链）→ **用 onPlacement，无需门控**。`自机.刀_引用` 已在 doConfig 内同步换成 NEW skin，placement 全链就位
+- 若必须读 onLoad-deferred 字段 → 用 onReady 但加 `loadReady` 门控；接受 1 帧延迟
+- 详见 [DressupSubscriber.as](../scripts/类定义/org/flashNight/arki/unit/UnitComponent/Dressup/DressupSubscriber.as) 类头 §使用指引
+
 ## 3. 候选契约方案（设计中，未落地）
 
 需求：装扮 publish 时机要区分两个语义——
@@ -241,19 +327,20 @@ dynamic class org.flashNight.dev.SkinReadyClass extends MovieClip {
 | 构造函数 / onLoad 与子 load 相对顺序？ | ✅ 构造函数 < 子 load < 类 onLoad（2026-05-08） |
 | `Object.registerClass(name, null)` 解绑是否成立？ | ✅ 解绑未来 attach 不影响已 attach（2026-05-08） |
 | 同帧 register-attach-unregister 是否干净？ | ✅ AVM1 无奇怪交互（2026-05-08） |
-| 现有 unit.onEnterFrame 占用情况？ | 待 grep 确认（仅 B-全量变体或方案 C 才需要） |
-| 装扮场景 limb 卸载频率与丢失事件的实际痛点？ | 待真实场景观察（无具体 bug 时不优化） |
+| script-phase 内嵌套 attach 的类 onLoad 何时派发？ | ✅ 当帧 load flush 末尾递归触发（2026-05-12 T7） |
+| `onEnterFrame` 内 attach 的类 onLoad 何时派发？ | ✅ 当帧 post-enterFrame load flush 派发（2026-05-12 T8） |
+| 多 enterFrame handler 间 load flush 是否 interleave？ | ❌ **不 interleave**，phase 末尾才统一 flush（2026-05-12 T9） |
+| onReady 通道对 enterFrame-phase refresh 的可用性？ | ⚠️ **晚 1 帧**，订阅方需自带门控或改用 onPlacement |
 
-**方向**：以**方案 B-精准（register-attach-unregister）**为推荐落地路径。剩余调研：
-
-1. 现有装扮 XML 中是否存在 `linkageClassName`（FLA-level 类绑定）——若存在，方案 B-精准 会抹掉；当前抽样 5 个 skin XML 都没有，需扫一遍全量确认
-2. 装备 lifecycle 函数的订阅模式 audit：哪些装备需要 `:ready` 通道、各自打 `syncRefs[name + ":ready"] = true` 的位置应放在初始化哪个阶段
+**方向**：方案 B-精准 已落地（DressupReferenceManager.doConfig + SkinReadyClass），但 T9 暴露了 onReady 通道的时序漏洞。**订阅方策略 = 默认用 onPlacement，只在不可避免时用 onReady + 门控**。
 
 ## 4. 反模式（不要用）
 
 - `MovieClip.onLoad = fn` 属性赋值配 attachMovie：**不触发**（FP20 实测），bug 难定位
 - `setInterval(fn, 0)`：FP20 实测稳，但 timer 队列不属于 frame phase 模型，跨 player 版本不保证
-- 在同步 publish 后用 `if (引用.子.子._x === undefined) ...` 判空兜底：当前订阅方临时方案，可接受但不优；待第 3 节延后通道方案确定后应迁移
+- 在同步 publish 后用 `if (引用.子.子._x === undefined) ...` 判空兜底：placement 子树同步可用，这种检查多余且模糊意图；改为信任 onPlacement 契约
+- **在祖先 transform 链上用 `onClipEvent(load)` 写 `_x/_y/_xscale`**：会让 `localToGlobal` 在 placement 阶段返回错误坐标；所有 transform 应来自 PlaceObject 矩阵（FLA-level）。如果非要用 load 写，订阅方必须用 onReady + 门控
+- **依赖 onReady 通道做 input-driven 决策（攻击/射击坐标）而不加门控**：T9 漏洞会让首个动作帧丢失。要么用 onPlacement，要么 onReady + `loadReady` 门控显式跳过
 
 ## 5. 复现步骤
 
@@ -382,6 +469,82 @@ var siId = setInterval(function() {
 _root.标记("=== frame script end ===");
 ```
 
+### T7+T8+T9 Runner（嵌套与跨阶段时序 — 第 2.4 节）
+
+```as
+// AS2 load-flush-phase 嵌套类绑定 + enterFrame 多 handler 时序探测（FP20）
+import org.flashNight.dev.*;
+
+_root.__seq = 0;
+_root.标记 = function(msg) { trace("[" + (++_root.__seq) + "] " + msg); };
+_root.探测 = function(prefix, mc) {
+    if (!mc) return prefix + " mc=null";
+    var s = prefix + " _name=" + mc._name + " _x=" + mc._x;
+    if (mc.child) {
+        s += " child._x=" + mc.child._x + " loadedFlag=" + mc.child.loadedFlag
+           + " loadedAt=" + mc.child.loadedAt;
+        if (mc.child.leaf) s += " leaf._name=" + mc.child.leaf._name + " leaf._x=" + mc.child.leaf._x;
+    }
+    return s;
+};
+
+// === T7: script-phase 嵌套 attach + 类绑定 ===
+_root.标记("=== T7: registerClass(TestProbeLeaf) → attachMovie(TestProbeNested) ===");
+Object.registerClass("TestProbeLeaf", SkinReadyProbe);
+var skin7:MovieClip = _root.attachMovie("TestProbeNested", "__skin7", 9995);
+_root.标记(_root.探测("[T7] after attach (outer plain)", skin7));
+// 注意：unregister 须晚于 load flush 才能让 nested attach 拿到 class binding
+var siId:Number = setInterval(function() {
+    clearInterval(siId);
+    _root.标记("=== setInterval(0) (load flush 之后) ===");
+    _root.标记(_root.探测("[T4] skin7 at setInterval(0)", skin7));
+    Object.registerClass("TestProbeLeaf", null);
+}, 0);
+
+// === T8: enterFrame-phase attach；T9: 多 handler 协同 ===
+_root.createEmptyMovieClip("__handlerA_holder", 10000);
+_root.__handlerA_triggered = false;
+_root.__frameCount = 0;
+_root.onEnterFrame = function():Void {
+    _root.__frameCount++;
+    if (_root.__frameCount == 1) {
+        _root.标记("=== enterFrame N (T7 attach 同帧) ===");
+        _root.标记(_root.探测("[T3] skin7", skin7));
+    } else if (_root.__frameCount == 2) {
+        _root.标记("=== enterFrame N+1 — T8: enterFrame 内 attachMovie ===");
+        Object.registerClass("TestProbeLeaf", SkinReadyProbe);
+        var skin8:MovieClip = _root.attachMovie("TestProbeNested", "__skin8", 9996);
+        _root.标记(_root.探测("[T8] after attach (in enterFrame)", skin8));
+        _root.__skin8 = skin8;
+    } else if (_root.__frameCount == 3) {
+        _root.标记("=== enterFrame N+2 (T8 attach 后第 1 帧) ===");
+        _root.标记(_root.探测("[T3] skin8 at N+2", _root.__skin8));
+    } else if (_root.__frameCount == 4) {
+        _root.标记("=== enterFrame N+3 — T9 prep: 安装 handler A (depth 10000) ===");
+        _root.__handlerA_holder.onEnterFrame = function():Void {
+            if (_root.__handlerA_triggered) return;
+            _root.__handlerA_triggered = true;
+            _root.标记("[T9 handler A] firing (高 depth 先于 _root)");
+            var skin9:MovieClip = _root.attachMovie("TestProbeNested", "__skin9", 9997);
+            _root.__skin9 = skin9;
+            _root.标记(_root.探测("[T9 handler A] after attach", skin9));
+        };
+    } else if (_root.__frameCount == 5) {
+        _root.标记("=== enterFrame N+4 — handler B (_root) 检查 skin9 ===");
+        _root.标记(_root.探测("[T9 handler B] skin9 from _root", _root.__skin9));
+        // ★ 关键：handler B 此时读到的 loadedFlag 反映 load flush 是否 interleave
+    } else if (_root.__frameCount == 6) {
+        _root.标记("=== enterFrame N+5 ===");
+        _root.标记(_root.探测("[T9 N+5] skin9", _root.__skin9));
+        Object.registerClass("TestProbeLeaf", null);
+        delete _root.__handlerA_holder.onEnterFrame;
+        delete this.onEnterFrame;
+    }
+};
+
+_root.标记("=== frame script end ===");
+```
+
 ### 跑测试
 
 1. 粘贴上述代码到 `scripts/TestLoader.as`，**确保文件首字节是 UTF-8 BOM `EF BB BF`**（否则 AS2 编译器静默忽略）。一行命令补 BOM：
@@ -391,4 +554,4 @@ _root.标记("=== frame script end ===");
 2. 确认 `scripts/类定义/org/flashNight/dev/SkinReadyProbe.as` 存在且有 BOM（T5 段依赖）。
 3. 在 Flash CS6 把 `scripts/TestLoader.fla` 设为活动文档（自动化编译链路依赖此前提，详见 `scripts/FlashCS6自动化编译.md`）。
 4. `bash scripts/compile_test.sh` → testMovie 触发 + trace 抓取（输出在 `compile_output.txt` 的 `=== FLASH TRACE OUTPUT ===` 段）。
-5. 期望输出与第 2.2 节一致；偏离则说明 player 版本或夹具结构变化，重新校准本文档。
+5. 期望输出与第 2.2 / 2.4 节一致；偏离则说明 player 版本或夹具结构变化，重新校准本文档。
