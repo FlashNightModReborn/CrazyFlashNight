@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    竞技场（角斗场）挑战卡片配置
+    
+    表达式格式: #0@<等级下限>-<等级上限>%<对手数量>
+      - #0      : 保留字段（固定为0，兼容旧格式）
+      - @       : 等级区间分隔符
+      - <min>-<max> : 敌人等级范围
+      - %       : 数量分隔符
+      - <count> : 对手数量
+    
+    押金公式: Math.floor(reward / 2)
+    
+    奖金公式（历史硬编码）:
+      - 卡片 1-6: opponentCount × levelMin × 1000
+      - 卡片 7-8: opponentCount × levelMin × 1250
+    
+    来源: 反编译 Flash Symbol 3394（角斗场选择界面）提取
+-->
+<ArenaConfig>
+    <!-- 竞技场基础属性 -->
+    <Base>
+        <StageName>DEATH MATCH角斗场</StageName>
+        <FadeTransitionFrame>角斗场-2</FadeTransitionFrame>
+        <UnlockCondition>1</UnlockCondition>
+        <!-- 关卡可获得奖励品，空表示无额外奖励 -->
+        <Rewards></Rewards>
+    </Base>
+
+    <!-- 8 张挑战卡片 -->
+    <Cards>
+        <Card id="arena-1" index="1" name="DEATH MATCH角斗场"
+              opponentCount="1" levelMin="1" levelMax="5"
+              deposit="500" reward="1000"
+              expr="#0@1-5%1" />
+
+        <Card id="arena-2" index="2" name="DEATH MATCH角斗场"
+              opponentCount="2" levelMin="5" levelMax="10"
+              deposit="5000" reward="10000"
+              expr="#0@5-10%2" />
+
+        <Card id="arena-3" index="3" name="DEATH MATCH角斗场"
+              opponentCount="2" levelMin="10" levelMax="15"
+              deposit="10000" reward="20000"
+              expr="#0@10-15%2" />
+
+        <Card id="arena-4" index="4" name="DEATH MATCH角斗场"
+              opponentCount="2" levelMin="10" levelMax="15"
+              deposit="20000" reward="40000"
+              expr="#0@10-15%2" />
+
+        <Card id="arena-5" index="5" name="DEATH MATCH角斗场"
+              opponentCount="4" levelMin="15" levelMax="20"
+              deposit="30000" reward="60000"
+              expr="#0@15-20%4" />
+
+        <Card id="arena-6" index="6" name="DEATH MATCH角斗场"
+              opponentCount="4" levelMin="15" levelMax="20"
+              deposit="30000" reward="60000"
+              expr="#0@15-20%4" />
+
+        <Card id="arena-7" index="7" name="DEATH MATCH角斗场"
+              opponentCount="1" levelMin="20" levelMax="40"
+              deposit="12500" reward="25000"
+              expr="#0@20-40%1" />
+
+        <Card id="arena-8" index="8" name="DEATH MATCH角斗场"
+              opponentCount="4" levelMin="40" levelMax="60"
+              deposit="100000" reward="200000"
+              expr="#0@40-60%4" />
+    </Cards>
+</ArenaConfig>

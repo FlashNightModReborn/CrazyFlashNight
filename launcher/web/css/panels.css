@@ -7889,3 +7889,241 @@ html.perf-low-effects .map-stage-backdrop::before {
     line-height: 26px;
     font-size: 12px;
 }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   Arena Panel (角斗场)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* arena 需要更大的 content 区域来容纳 8 张卡片 */
+#panel-container[data-panel="arena"] #panel-content {
+    inset: 2% 3%;
+}
+
+/* ── 根容器 ── */
+.arena-panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: var(--cp-bg, #0d0d0f);
+    color: var(--cp-text, #e0e0e0);
+    font-family: "Consolas", "Courier New", "Microsoft YaHei", monospace;
+    overflow: hidden;
+}
+
+/* ── 顶部标题栏 ── */
+.arena-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    border-bottom: 1px solid rgba(255, 193, 7, 0.25);
+    background: linear-gradient(90deg, rgba(255, 193, 7, 0.08) 0%, transparent 60%);
+    flex-shrink: 0;
+}
+
+.arena-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffc107;
+    letter-spacing: 2px;
+    text-shadow: 0 0 8px rgba(255, 193, 7, 0.3);
+}
+
+.arena-money {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+}
+
+.arena-money-label {
+    color: #888;
+}
+
+.arena-money-value {
+    color: #4caf50;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.arena-close-btn {
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ccc;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+.arena-close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #fff;
+}
+
+/* ── 卡片网格 ── */
+.arena-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 8px;
+    padding: 8px;
+    flex: 1;
+    overflow-y: auto;
+    align-content: start;
+    min-height: 0;
+}
+
+/* 响应式：极窄面板（<640px）才改为 2 列，否则 4×2 在 1024×720 下可正常显示 */
+@media (max-width: 640px) {
+    .arena-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+    }
+}
+
+/* ── 单张卡片 ── */
+.arena-card {
+    display: flex;
+    flex-direction: column;
+    background: rgba(30, 30, 35, 0.95);
+    border: 1px solid rgba(255, 193, 7, 0.2);
+    border-radius: 6px;
+    padding: 5px 7px;
+    transition: all 0.2s ease;
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.arena-card:hover {
+    border-color: rgba(255, 193, 7, 0.5);
+    box-shadow: 0 0 12px rgba(255, 193, 7, 0.15);
+    transform: translateY(-2px);
+}
+
+.arena-card-disabled {
+    opacity: 0.5;
+    border-color: rgba(128, 128, 128, 0.3);
+    pointer-events: none;
+}
+
+.arena-card-disabled:hover {
+    border-color: rgba(128, 128, 128, 0.3);
+    box-shadow: none;
+    transform: none;
+}
+
+/* ── 卡片头部 ── */
+.arena-card-header {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 3px;
+    padding-bottom: 2px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+}
+
+.arena-card-icon {
+    font-size: 12px;
+    color: #ffc107;
+}
+
+.arena-card-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: #e0e0e0;
+    letter-spacing: 1px;
+}
+
+/* ── 卡片主体 ── */
+.arena-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex: 1;
+    font-size: 11px;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.arena-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.arena-card-label {
+    color: #999;
+}
+
+.arena-card-value {
+    color: #ccc;
+    font-weight: 500;
+}
+
+.arena-card-deposit .arena-card-value,
+.arena-card-reward .arena-card-value {
+    color: #ffc107;
+    font-weight: 600;
+}
+
+/* ── 开始挑战按钮 ── */
+.arena-card-btn {
+    margin-top: 4px;
+    padding: 3px 0;
+    background: linear-gradient(180deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 193, 7, 0.08) 100%);
+    border: 1px solid rgba(255, 193, 7, 0.4);
+    color: #ffc107;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.arena-card-btn:hover:not(:disabled) {
+    background: linear-gradient(180deg, rgba(255, 193, 7, 0.3) 0%, rgba(255, 193, 7, 0.15) 100%);
+    border-color: rgba(255, 193, 7, 0.7);
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.2);
+}
+
+.arena-card-btn:disabled {
+    background: rgba(128, 128, 128, 0.1);
+    border-color: rgba(128, 128, 128, 0.3);
+    color: #666;
+    cursor: not-allowed;
+}
+
+/* ── Toast 提示 ── */
+.arena-toast {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    padding: 10px 24px;
+    background: rgba(180, 40, 40, 0.95);
+    border: 1px solid rgba(255, 100, 100, 0.4);
+    color: #fff;
+    font-size: 14px;
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.arena-toast-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}

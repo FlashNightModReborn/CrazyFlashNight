@@ -90,4 +90,9 @@
          'modules/font-pack-banner.js',
          'modules/intelligence-panel.js'],
         noop);
+
+    // ── arena ──
+    Panels.registerLazy('arena',
+        ['modules/arena-panel.js'],
+        noop);
 })();

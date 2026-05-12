@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arena Panel Harness</title>
+    <link rel="stylesheet" href="../../../css/panels.css">
+    <link rel="stylesheet" href="../../minigames/shared/dev/harness-base.css">
+    <style>
+        /* harness 专属样式 */
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            font-family: "Consolas", "Courier New", "Microsoft YaHei", monospace;
+            color: #ccc;
+        }
+        #harness-toolbar {
+            padding: 8px 12px;
+            background: #252525;
+            border-bottom: 1px solid #444;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        #harness-toolbar label { font-size: 12px; color: #aaa; }
+        #harness-toolbar select,
+        #harness-toolbar button {
+            background: #333;
+            color: #ccc;
+            border: 1px solid #555;
+            padding: 4px 8px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        #harness-toolbar button:hover { background: #444; }
+        #harness-status {
+            padding: 4px 12px;
+            background: #1a1a1a;
+            border-bottom: 1px solid #333;
+            font-size: 12px;
+            color: #888;
+            min-height: 18px;
+        }
+        #viewport-shell {
+            margin: 20px auto;
+            border: 2px solid #444;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+            /* 默认 1024x576（Flash 设计分辨率） */
+            width: 1024px;
+            height: 576px;
+        }
+        /* QA 模式全屏 */
+        body.arena-qa { overflow: hidden; }
+        body.arena-qa #harness-toolbar,
+        body.arena-qa #harness-status { display: none; }
+        body.arena-qa #viewport-shell {
+            margin: 0;
+            border: 0;
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div id="harness-toolbar">
+        <label>视口:</label>
+        <select id="viewport-select">
+            <option value="1024x576">1024×576 (原始)</option>
+            <option value="1024x720">1024×720 (launcher)</option>
+            <option value="1366x768">1366×768</option>
+            <option value="1600x900" selected>1600×900</option>
+            <option value="1920x1080">1920×1080</option>
+        </select>
+        <label>金钱:</label>
+        <select id="money-fixture">
+            <option value="rich">富裕 (10,000,000)</option>
+            <option value="normal" selected>正常 (5,717,348)</option>
+            <option value="poor">贫穷 (1,000)</option>
+            <option value="broke">破产 (0)</option>
+        </select>
+        <button id="btn-open" type="button">Open Panel</button>
+        <button id="btn-close" type="button">Close Panel</button>
+        <button id="btn-force-close" type="button">Force Close</button>
+        <button id="btn-dump" type="button">Dump State</button>
+    </div>
+    <div id="harness-status">就绪</div>
+    <div id="viewport-shell">
+        <div id="panel-container" style="display:none">
+            <div id="panel-backdrop"></div>
+            <div id="panel-content"></div>
+        </div>
+    </div>
+
+    <!-- chrome.webview mock 必须在 bridge.js 之前定义 -->
+    <script>
+    (function() {
+        var listeners = [];
+        window.chrome = window.chrome || {};
+        window.chrome.webview = {
+            addEventListener: function(type, handler) {
+                if (type === 'message') listeners.push(handler);
+            },
+            postMessage: function(message) {
+                if (window.ArenaHarnessHost) {
+                    window.ArenaHarnessHost.sentMessages.push(message);
+                    if (window.ArenaHarnessHost.handleMessage)
+                        window.ArenaHarnessHost.handleMessage(message);
+                }
+            },
+            __dispatch: function(data) {
+                var event = { data: data };
+                listeners.forEach(function(l) { l(event); });
+            }
+        };
+    })();
+    </script>
+
+    <!-- 共享基础设施 -->
+    <script src="../../bridge.js"></script>
+    <script src="../../panels.js"></script>
+    <script src="../../minigames/shared/dev/harness-base.js"></script>
+
+    <!-- 面板业务逻辑 -->
+    <script src="../../arena-panel.js"></script>
+
+    <!-- Harness 初始化 -->
+    <script>
+    (function() {
+        'use strict';
+
+        // ── 解析 URL query ──
+        var query = {};
+        var search = window.location.search;
+        if (search) {
+            var pairs = search.substring(1).split('&');
+            for (var i = 0; i < pairs.length; i++) {
+                var kv = pairs[i].split('=');
+                if (kv.length === 2) query[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1]);
+            }
+        }
+
+        // ── QA 模式 CSS ──
+        if (query.qa === '1' || query.case) {
+            document.body.classList.add('arena-qa');
+        }
+
+        // ── Fixture 数据 ──
+        var FIXTURES = {
+            rich:   { money: 10000000, reuseCount: 0, reuseLimit: 2 },
+            normal: { money: 5717348,  reuseCount: 1, reuseLimit: 2 },
+            poor:   { money: 1000,     reuseCount: 2, reuseLimit: 4 },
+            broke:  { money: 0,        reuseCount: 0, reuseLimit: 2 }
+        };
+
+        // ── Host 对象 ──
+        var host = window.ArenaHarnessHost = {
+            sentMessages: [],
+            enterMessages: [],
+            nextEnterError: '',
+            _fixture: 'normal',
+
+            setViewport: function(value) {
+                var shell = document.getElementById('viewport-shell');
+                if (!shell) return;
+                if (value === 'fullscreen') {
+                    shell.style.width = '100vw';
+                    shell.style.height = '100vh';
+                } else {
+                    var wh = value.split('x');
+                    shell.style.width = wh[0] + 'px';
+                    shell.style.height = wh[1] + 'px';
+                }
+            },
+
+            setFixture: function(name) {
+                this._fixture = name;
+            },
+
+            getSnapshot: function() {
+                var f = FIXTURES[this._fixture] || FIXTURES.normal;
+                return {
+                    money: f.money,
+                    reuseCount: f.reuseCount,
+                    reuseLimit: f.reuseLimit
+                };
+            },
+
+            open: function(options) {
+                chrome.webview.__dispatch({
+                    type: 'panel_cmd',
+                    cmd: 'open',
+                    panel: 'arena',
+                    initData: options || {}
+                });
+            },
+
+            close: function() {
+                chrome.webview.__dispatch({ type: 'panel_cmd', cmd: 'close' });
+            },
+
+            forceClose: function() {
+                chrome.webview.__dispatch({ type: 'panel_cmd', cmd: 'force_close' });
+            },
+
+            handleMessage: function(message) {
+                var status = document.getElementById('harness-status');
+                if (status) status.textContent = '→ ' + JSON.stringify(message).substring(0, 200);
+
+                if (message.cmd === 'snapshot') {
+                    setTimeout(function() {
+                        chrome.webview.__dispatch({
+                            type: 'panel_resp',
+                            panel: 'arena',
+                            cmd: 'snapshot',
+                            callId: message.callId,
+                            success: true,
+                            snapshot: host.getSnapshot()
+                        });
+                    }, 50);
+                }
+                else if (message.cmd === 'enter') {
+                    host.enterMessages.push(message);
+                    setTimeout(function() {
+                        if (host.nextEnterError) {
+                            chrome.webview.__dispatch({
+                                type: 'panel_resp',
+                                panel: 'arena',
+                                cmd: 'enter',
+                                callId: message.callId,
+                                success: false,
+                                error: host.nextEnterError
+                            });
+                            host.nextEnterError = '';
+                        } else {
+                            chrome.webview.__dispatch({
+                                type: 'panel_resp',
+                                panel: 'arena',
+                                cmd: 'enter',
+                                callId: message.callId,
+                                success: true,
+                                closePanel: true
+                            });
+                        }
+                    }, 100);
+                }
+                else if (message.cmd === 'close') {
+                    // Web 通知 C# 关闭；harness 中无需回包
+                }
+            }
+        };
+
+        // ── Toolbar 绑定 ──
+        document.getElementById('viewport-select').addEventListener('change', function(e) {
+            host.setViewport(e.target.value);
+        });
+        document.getElementById('money-fixture').addEventListener('change', function(e) {
+            host.setFixture(e.target.value);
+            if (Panels.getActive && Panels.getActive() === 'arena') {
+                // 若 panel 已打开，模拟推一条 snapshot 更新
+                chrome.webview.__dispatch({
+                    type: 'panel_resp',
+                    panel: 'arena',
+                    cmd: 'snapshot',
+                    callId: 'harness_push_' + Date.now(),
+                    success: true,
+                    snapshot: host.getSnapshot()
+                });
+            }
+        });
+        document.getElementById('btn-open').addEventListener('click', function() { host.open(); });
+        document.getElementById('btn-close').addEventListener('click', function() { host.close(); });
+        document.getElementById('btn-force-close').addEventListener('click', function() { host.forceClose(); });
+        document.getElementById('btn-dump').addEventListener('click', function() {
+            var st = window.ArenaPanel ? window.ArenaPanel.getState() : null;
+            console.log('[Harness Dump]', st);
+            var status = document.getElementById('harness-status');
+            if (status) status.textContent = 'Dump: ' + JSON.stringify(st);
+        });
+
+        // ── MinigameHarness 启动 ──
+        var api = MinigameHarness.create({
+            panelId: 'arena',
+            title: 'Arena Panel QA',
+            openPanel: function() {
+                host.setFixture(document.getElementById('money-fixture').value);
+                host.open();
+            },
+            runSuite: function(api, onlyCase) {
+                return ArenaHarnessQA.runSuite(api, host, onlyCase);
+            },
+            collectDump: function() {
+                return Promise.resolve(window.ArenaPanel ? window.ArenaPanel.getState() : null);
+            }
+        });
+
+        // 自动 boot（加载 panel + 按需跑 QA）
+        api.boot();
+
+        // 若 URL 带 ?open=1 自动打开
+        if (query.open === '1') {
+            setTimeout(function() { host.open(); }, 200);
+        }
+    })();
+    </script>
+
+    <!-- QA Suite -->
+    <script src="./qa-suite.js"></script>
+</body>
+</html>

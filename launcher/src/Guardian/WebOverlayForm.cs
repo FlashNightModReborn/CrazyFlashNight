@@ -3157,6 +3157,10 @@ namespace CF7Launcher.Guardian
                             LogManager.Log("[Panel] Routing cmd=" + cmd + " to IntelligenceTask, _intelligenceTask=" + (_intelligenceTask != null ? "ok" : "NULL"));
                             if (_intelligenceTask != null) _intelligenceTask.HandleWebRequest(cmd, parsed);
                         }
+                        else if (panel == "arena")
+                        {
+                            HandleArenaPanelRequest(cmd, parsed);
+                        }
                         else if (cmd == "enter" || cmd == "jump_frame" || cmd == "return_frame" || cmd == "open_stage_select")
                         {
                             LogManager.Log("[Panel] Dropping cmd=" + cmd + " for unsupported panel=" + panel);
@@ -3269,6 +3273,48 @@ namespace CF7Launcher.Guardian
                 }
                 catch { }
             });
+        }
+
+        private void HandleArenaPanelRequest(string cmd, JObject parsed)
+        {
+            string webCallId = parsed.Value<string>("callId");
+            if (string.IsNullOrEmpty(webCallId))
+            {
+                LogManager.Log("[ArenaPanel] callId is empty, cmd=" + cmd);
+                return;
+            }
+            LogManager.Log("[ArenaPanel] Handling cmd=" + cmd + " callId=" + webCallId);
+            if (cmd == "snapshot")
+            {
+                var msg = new JObject();
+                msg["type"] = "panel_resp";
+                msg["panel"] = "arena";
+                msg["cmd"] = "snapshot";
+                msg["callId"] = webCallId;
+                msg["success"] = true;
+                var snapshot = new JObject();
+                snapshot["money"] = 5717348;
+                snapshot["reuseCount"] = 0;
+                snapshot["reuseLimit"] = 2;
+                msg["snapshot"] = snapshot;
+                PostToWeb(msg.ToString(Newtonsoft.Json.Formatting.None));
+            }
+            else if (cmd == "enter")
+            {
+                var msg = new JObject();
+                msg["type"] = "panel_resp";
+                msg["panel"] = "arena";
+                msg["cmd"] = "enter";
+                msg["callId"] = webCallId;
+                msg["success"] = true;
+                msg["closePanel"] = true;
+                PostToWeb(msg.ToString(Newtonsoft.Json.Formatting.None));
+                LogManager.Log("[ArenaPanel] enter accepted, closing panel");
+            }
+            else
+            {
+                LogManager.Log("[ArenaPanel] Unsupported cmd=" + cmd);
+            }
         }
 
         private void PostGobangEvalResponse(string webCallId, string response)
