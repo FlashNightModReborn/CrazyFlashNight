@@ -64,6 +64,10 @@ _root.装备生命周期函数.XM214初始化 = function(ref:Object, param:Objec
     ref.gunString = ref.装备类型 + "_引用"; // target[gunString]
 
     target.长枪属性.interval = ref.weaponAttributeValue;
+
+    DressupSubscriber.onPlacement(target, ref.gunString, function() {
+        _root.装备生命周期函数.XM214视觉更新(ref);
+    });
 };
 
 /* ---------------------------------------------------------
@@ -71,7 +75,8 @@ _root.装备生命周期函数.XM214初始化 = function(ref:Object, param:Objec
  * --------------------------------------------------------- */
 _root.装备生命周期函数.XM214周期 = function(ref:Object, param:Object) {
     _root.装备生命周期函数.移除异常周期函数(ref);
-    
+    if (!VisualSync.beginTick(ref)) return;
+
     var target:MovieClip = ref.自机;
     var gun:MovieClip = target[ref.gunString];
     if (!gun)
@@ -102,85 +107,56 @@ _root.装备生命周期函数.XM214周期 = function(ref:Object, param:Object) 
     // Step 3.2: 计算当前帧的动画速度
     var currentSpeed:Number = ref.maxVisualSpinSpeed * spinFactor;
 
-    /* -------- 4. 应用转速，更新动画帧 -------- */
+    /* -------- 4. 推进动画帧（仅 state） -------- */
     if (currentSpeed > 0) {
-        // 累加动画帧
         ref.gunFrame += currentSpeed;
 
-        // 高效取模，使动画循环播放
-        // (gun._totalframes 是动画总帧数)
         if (ref.gunFrame > gun._totalframes) {
             ref.gunFrame = ((ref.gunFrame - 1) % gun._totalframes) + 1;
         }
-
-        gun.gotoAndStop(Math.floor(ref.gunFrame));
-    } else // 如果转速为0 (即 shotgunValue <= 5)，则强制停在第1帧
-    {
-        if (gun._currentframe != 1) {
-            gun.gotoAndStop(1);
-        }
+    } else {
         ref.gunFrame = 1; // 重置动画帧变量，以便下次转动时从头开始
     }
 
-    // 获取元件引用
+    _root.装备生命周期函数.XM214视觉更新(ref);
+};
+
+_root.装备生命周期函数.XM214视觉更新 = function(ref:Object) {
+    var gun:MovieClip = ref.自机[ref.gunString];
+    if (!gun) return;
+
+    /* -------- 主体动画帧 -------- */
+    if (ref.gunFrame > 1) {
+        gun.gotoAndStop(Math.floor(ref.gunFrame));
+    } else if (gun._currentframe != 1) {
+        gun.gotoAndStop(1);
+    }
+
+    /* -------- 双环抖动 -------- */
     var ring1:MovieClip = gun.环1;
     var ring2:MovieClip = gun.环2;
+    if (!ring1 || !ring2) return;
 
-    // 检查元件是否存在，避免出错
-    if (!ring1 || !ring2) {
-        return;
-    }
-
-    // 计算基础帧。环动画有8帧，分别对应 shotgunValue 的 5 到 12。
-    // shotgunValue = 5  -> 基础帧 = 1
-    // shotgunValue = 6  -> 基础帧 = 2
-    // ...
-    // shotgunValue = 12 -> 基础帧 = 8
     var baseFrame:Number = ref.shotgunValue - ref.MIN_SHOTGUN_VAL + 1;
+    var frame1:Number;
+    var frame2:Number;
 
-    var frame1:Number; // 最终用于 ring1 的帧
-    var frame2:Number; // 最终用于 ring2 的帧
+    if (ref.shotgunValue == ref.MIN_SHOTGUN_VAL) {
+        frame1 = 1;
+        frame2 = 1;
+    } else {
+        var flickerType:Number = ref.currentFrame % ref.flickerCycle;
 
-    // 根据 shotgunValue 的不同情况应用不同策略
-    switch (ref.shotgunValue) {
+        // 环1：在 [baseFrame-1, baseFrame] 之间抖动
+        frame1 = (flickerType == 0) ? (baseFrame - 1) : baseFrame;
 
-        case ref.MIN_SHOTGUN_VAL: // 情况一：霰弹值为5 (最小值)
-            // 不错开，不抖动，都停在第1帧 (代表关闭/无能量状态)
-            frame1 = 1;
-            frame2 = 1;
-            break;
-
-        default: // 情况三：霰弹值在 6 到 12 之间 (抖动状态)
-            // 使用游戏帧数 currentFrame 来创建周期性的变化
-            var flickerType:Number = ref.currentFrame % ref.flickerCycle; // 得到抖动周期内的索引
-
-            // --- 环1的抖动逻辑 ---
-            // 让它在 [baseFrame-1, baseFrame] 之间抖动
-            if (flickerType == 0) {
-                frame1 = baseFrame - 1;
-            } else { // 其他情况显示基础帧，让基础帧的停留时间更长
-                frame1 = baseFrame;
-            }
-
-            // --- 环2的抖动逻辑 (与环1错开) ---
-            // 让它在 [baseFrame, baseFrame+1] 之间抖动
-            // 使用不同的时机来错开时间
-            if (flickerType == (ref.flickerCycle - 1)) {
-                frame2 = baseFrame + 1;
-            } else {
-                frame2 = baseFrame;
-            }
-            break;
+        // 环2：在 [baseFrame, baseFrame+1] 之间抖动，与环1错开
+        frame2 = (flickerType == (ref.flickerCycle - 1)) ? (baseFrame + 1) : baseFrame;
     }
 
-    // 最后，应用计算出的帧数
-    // 同时要确保帧数在有效范围内 (例如 1 到 _totalframes)
-    var totalFrames:Number = ring1._totalframes; // 假设 ring1 和 ring2 总帧数相同
-
-    // 使用 Math.max 和 Math.min 来防止帧数越界
+    var totalFrames:Number = ring1._totalframes;
     var finalFrame1:Number = Math.max(1, Math.min(frame1, totalFrames));
     var finalFrame2:Number = Math.max(1, Math.min(frame2, totalFrames));
-    //_root.发布消息(finalFrame1, finalFrame2)
 
     ring1.gotoAndStop(finalFrame1);
     ring2.gotoAndStop(finalFrame2);

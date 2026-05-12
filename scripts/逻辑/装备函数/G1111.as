@@ -176,6 +176,10 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
         if(target.攻击模式 !== "长枪") return;
         ref.fireRequest = true;
     });
+
+    DressupSubscriber.onPlacement(target, "长枪_引用", function () {
+        _root.装备生命周期函数.G1111视觉更新(ref);
+    });
 };
 
 /*--------------------------------------------------------
@@ -184,23 +188,21 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
 _root.装备生命周期函数.G1111周期 = function (ref)
 {
     _root.装备生命周期函数.移除异常周期函数(ref);
+    if (!VisualSync.beginTick(ref)) return;
 
     var 自机  = ref.自机;
     var 长枪  = 自机.长枪_引用;
-    var prevFrame = ref.currentFrame;
-    var prevFiring = ref.isFiring;
-    var prevTransforming = ref.isTransforming;
 
     /* ===== 0. 武器激活检测 ===== */
     var prevActive = ref.isWeaponActive;
     ref.isWeaponActive = (自机.攻击模式 === "长枪");
-    
-    
+
+
     if (!ref.isWeaponActive) {
         // 收枪：立即复位并清状态
         ref.isTransforming = ref.isFiring = ref.fireRequest = false;
         ref.currentFrame   = ref.isRocketMode ? ref.ROCKET_START : ref.RIFLE_START;
-        长枪.gotoAndStop(ref.currentFrame);
+        _root.装备生命周期函数.G1111视觉更新(ref);
         return;
     }
 
@@ -233,21 +235,18 @@ _root.装备生命周期函数.G1111周期 = function (ref)
             if (ref.weaponValue)
                 ref.weaponValue.isRocketMode = ref.isRocketMode;
         }
-        
+
         // 设置射击状态并跳转到第一帧
         ref.isFiring = true;
         ref.currentFrame = ref.isRocketMode ? ref.ROCKET_START : ref.RIFLE_START;
-        长枪.gotoAndStop(ref.currentFrame);  // 立即绘制第一帧
-
         自机.isRocketMode = ref.isRocketMode;
+        _root.装备生命周期函数.G1111视觉更新(ref);
         return; // 本周期只绘制第一帧，下周期开始推进
     }
 
     /* ===== 5. 动画推进 ===== */
     // 5-A 变形段 ---------------------------------------------------
     if (ref.isTransforming) {
-        长枪.gotoAndStop(ref.currentFrame);  // 先绘制
-
         if (ref.transformToRock) {           // 步枪→导弹（增帧）
             if (ref.currentFrame < ref.TRANSFORM_END) {
                 ++ref.currentFrame;          // 只增不减
@@ -271,6 +270,7 @@ _root.装备生命周期函数.G1111周期 = function (ref)
         }
 
         自机.isRocketMode = ref.isRocketMode;
+        _root.装备生命周期函数.G1111视觉更新(ref);
         return; // 变形帧已绘制完毕
     }
 
@@ -366,14 +366,23 @@ _root.装备生命周期函数.G1111周期 = function (ref)
             
             currentRotation += delta * ref.laserRotationSpeed;
             ref.laserRotation = currentRotation;
-            
-            if (!isNaN(ref.laserRotation)) {
-                laser._rotation = ref.laserRotation;
-            }
         }
     }
 
     /* ===== 7. 绘制 ===== */
-    长枪.gotoAndStop(ref.currentFrame);
     自机.isRocketMode = ref.isRocketMode;
+    _root.装备生命周期函数.G1111视觉更新(ref);
+};
+
+_root.装备生命周期函数.G1111视觉更新 = function (ref:Object) {
+    var 长枪:MovieClip = ref.自机.长枪_引用;
+    if (!长枪) return;
+
+    长枪.gotoAndStop(ref.currentFrame);
+
+    // 激光模组角度同步
+    var laser:MovieClip = 长枪.激光模组;
+    if (laser != undefined && !isNaN(ref.laserRotation)) {
+        laser._rotation = ref.laserRotation;
+    }
 };

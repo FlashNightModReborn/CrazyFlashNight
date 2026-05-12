@@ -12,13 +12,18 @@
     ref.bulletRate = bulletCapacity / 50; // 以50发为基准的比例
 
     DressupSubscriber.onPlacement(target, ref.gunString, function() {
-       _root.装备生命周期函数.P90周期(ref,param);
-   });
+        _root.装备生命周期函数.P90视觉更新(ref);
+    });
 };
 
 _root.装备生命周期函数.P90周期 = function(ref:Object, param:Object) {
     _root.装备生命周期函数.移除异常周期函数(ref);
-    
+    if (!VisualSync.beginTick(ref)) return;
+
+    _root.装备生命周期函数.P90视觉更新(ref);
+};
+
+_root.装备生命周期函数.P90视觉更新 = function(ref:Object) {
     var target:MovieClip = ref.自机;
     var gun:MovieClip = target[ref.gunString];
 

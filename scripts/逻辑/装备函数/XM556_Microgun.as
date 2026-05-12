@@ -33,6 +33,10 @@ _root.装备生命周期函数.XM556初始化 = function (ref:Object, param:Obje
 
 
     ref.gunString = ref.装备类型 + "_引用";   // target[gunString].动画
+
+    DressupSubscriber.onPlacement(target, ref.gunString, function () {
+        _root.装备生命周期函数.XM556视觉更新(ref);
+    });
 };
 
 /* ---------------------------------------------------------
@@ -41,35 +45,39 @@ _root.装备生命周期函数.XM556初始化 = function (ref:Object, param:Obje
 _root.装备生命周期函数.XM556周期 = function (ref:Object, param:Object)
 {
     _root.装备生命周期函数.移除异常周期函数(ref);
-    
-    var target:MovieClip = ref.自机;
-    var gun:MovieClip    = target[ref.gunString];
-    if (!gun || !gun.动画) return;
-
-    var gunAnim:MovieClip = gun.动画;
+    if (!VisualSync.beginTick(ref)) return;
 
     /* -------- 1. 连射计数更新（短路写法） -------- */
     (ref.isFiring && (ref.fireCount = Math.min(ref.fireCount + ref.spinUpAmount,
                                                ref.maxSpinCount))) ||
     (ref.fireCount = Math.max(0, ref.fireCount - ref.spinDownRate));
 
-    /* -------- 2. 枪管旋转动画 -------- */
+    /* -------- 2. 推进动画帧（仅 state） -------- */
     if (ref.fireCount > 0)
     {
-        var currentSpeed:Number = ref.fireCount * ref.spinSpeedFactor; // ← 与 shotsPerCycle 相关
+        var gunAnim:MovieClip = ref.自机[ref.gunString].动画;
+        var currentSpeed:Number = ref.fireCount * ref.spinSpeedFactor;
         ref.gunFrame += currentSpeed;
 
-        // 高效取模，循环播放
-        if (ref.gunFrame > gunAnim._totalFrames)
+        if (gunAnim && ref.gunFrame > gunAnim._totalFrames)
             ref.gunFrame = ((ref.gunFrame - 1) % gunAnim._totalFrames) + 1;
-
-        gunAnim.gotoAndStop(Math.floor(ref.gunFrame));
-    }
-    else if (gunAnim._currentFrame != 1)
-    {
-        gunAnim.gotoAndStop(1);
     }
 
     /* -------- 3. 本帧逻辑结束，重置射击标记 -------- */
     ref.isFiring = false;
+
+    _root.装备生命周期函数.XM556视觉更新(ref);
+};
+
+_root.装备生命周期函数.XM556视觉更新 = function (ref:Object)
+{
+    var gun:MovieClip = ref.自机[ref.gunString];
+    if (!gun || !gun.动画) return;
+    var gunAnim:MovieClip = gun.动画;
+
+    if (ref.fireCount > 0) {
+        gunAnim.gotoAndStop(Math.floor(ref.gunFrame));
+    } else if (gunAnim._currentFrame != 1) {
+        gunAnim.gotoAndStop(1);
+    }
 };

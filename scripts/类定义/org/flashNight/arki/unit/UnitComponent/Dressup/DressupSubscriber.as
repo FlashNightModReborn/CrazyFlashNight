@@ -11,6 +11,11 @@
  *   onReady     → "<refName>:ready"        deferred (load-fully-ready)
  *   onPlacement → "<refName>"              sync (placement-ready)
  *   onRefreshed → "dressup:refreshed"      group (refreshAll done)
+ *
+ * 【scope 约定】EventBus v3 的精确退订/去重依赖 (callback, scope) 组合键。本 API 把
+ * scope 默认设为 unit（fn.call(unit, ...) 让 handler 内的 this 指向 unit MovieClip），
+ * 保证所有 dressup 订阅都走 EventBus 的精确模式而非 for...in 兼容回退模式。
+ * 调用方无需显式传 scope；若需要更细粒度（如装备级 selective unsubscribe），可显式传 ref。
  */
 class org.flashNight.arki.unit.UnitComponent.Dressup.DressupSubscriber {
 
@@ -26,11 +31,13 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupSubscriber {
      *   - 只读 placement 子树（含递归 grand-placement）的内置属性 _x/_y/_visible/_xscale
      *   - 只调 MovieClip 内置方法 gotoAndStop / localToGlobal
      *   placement 子树在 attachMovie 同步返回时就已就绪，sync 已够用
+     *
+     * @param scope 可选，省略时默认为 unit；handler 内 this 指向该 scope
      */
     public static function onReady(unit:MovieClip, refName:String, handler:Function, scope:Object):Void {
         var key:String = refName + ":ready";
         unit.syncRefs[key] = true;
-        unit.dispatcher.subscribe(key, handler, scope);
+        unit.dispatcher.subscribe(key, handler, (scope != undefined) ? scope : unit);
     }
 
     /**
@@ -43,17 +50,21 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupSubscriber {
      * 不可信读：
      *   - 子 MC 在自己 onClipEvent(load) 里写入的字段（拿到 undefined）
      *   - 子 MC 的 onLoad 内嵌套 attachMovie 出来的孙级
+     *
+     * @param scope 可选，省略时默认为 unit；handler 内 this 指向该 scope
      */
     public static function onPlacement(unit:MovieClip, refName:String, handler:Function, scope:Object):Void {
         unit.syncRefs[refName] = true;
-        unit.dispatcher.subscribe(refName, handler, scope);
+        unit.dispatcher.subscribe(refName, handler, (scope != undefined) ? scope : unit);
     }
 
     /**
      * 组级 refresh 通道 — refreshAll 串行遍历完所有 entry 后 publish 一次。
+     *
+     * @param scope 可选，省略时默认为 unit；handler 内 this 指向该 scope
      */
     public static function onRefreshed(unit:MovieClip, handler:Function, scope:Object):Void {
         unit.syncRefs["dressup:refreshed"] = true;
-        unit.dispatcher.subscribe("dressup:refreshed", handler, scope);
+        unit.dispatcher.subscribe("dressup:refreshed", handler, (scope != undefined) ? scope : unit);
     }
 }

@@ -16,17 +16,15 @@
     target.dispatcher.subscribe("长枪射击", function() {
         ref.isFiring = true; // 标记本帧正在射击
     });
+
+    DressupSubscriber.onPlacement(target, "长枪_引用", function() {
+        _root.装备生命周期函数.M134视觉更新(ref);
+    });
 };
 
 _root.装备生命周期函数.M134周期 = function(ref:Object, param:Object) {
     _root.装备生命周期函数.移除异常周期函数(ref);
-    
-    var target:MovieClip = ref.自机;
-    var gun:MovieClip = target.长枪_引用;
-    if (gun == undefined || gun.动画 == undefined) {
-        return;
-    }
-    var gunAnim:MovieClip = gun.动画;
+    if (!VisualSync.beginTick(ref)) return;
 
     // ===== AVM1性能优化：利用短路逻辑避免条件分支 =====
     // 
@@ -70,22 +68,32 @@ _root.装备生命周期函数.M134周期 = function(ref:Object, param:Object) {
     - 单一表达式链，减少指令间的依赖等待
     */
 
-    // 2. 如果枪在转动，则计算并更新动画
+    // 2. 推进动画帧（仅 state，不 apply 视觉）
     if (ref.fireCount > 0) {
+        var gunAnim:MovieClip = ref.自机.长枪_引用.动画;
         var currentSpeed:Number = ref.fireCount * ref.spinSpeedFactor;
         ref.gunFrame += currentSpeed;
 
         // 使用高效的单行取模运算来处理动画帧循环
-        if (ref.gunFrame > gunAnim._totalFrames) {
+        if (gunAnim && ref.gunFrame > gunAnim._totalFrames) {
             ref.gunFrame = ((ref.gunFrame - 1) % gunAnim._totalFrames) + 1;
         }
-        
-        gunAnim.gotoAndStop(Math.floor(ref.gunFrame));
-    } else if(gunAnim._currentFrame != 1) {
-        // 如果不在射击状态且当前帧不是第一帧，则重置到第一帧
-        gunAnim.gotoAndStop(1);
     }
 
     // 3. 重置射击状态
     ref.isFiring = false;
+
+    _root.装备生命周期函数.M134视觉更新(ref);
+};
+
+_root.装备生命周期函数.M134视觉更新 = function(ref:Object) {
+    var gun:MovieClip = ref.自机.长枪_引用;
+    if (gun == undefined || gun.动画 == undefined) return;
+    var gunAnim:MovieClip = gun.动画;
+
+    if (ref.fireCount > 0) {
+        gunAnim.gotoAndStop(Math.floor(ref.gunFrame));
+    } else if (gunAnim._currentFrame != 1) {
+        gunAnim.gotoAndStop(1);
+    }
 };

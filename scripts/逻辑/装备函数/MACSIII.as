@@ -136,6 +136,10 @@ _root.装备生命周期函数.MACSIII初始化 = function(ref:Object, param:Obj
         mkHandlerEL(ref, executeValueCombo, lifeStealValueCombo)
     ];
     target.dispatcher.subscribe("长枪射击", handlerTable[combo]);
+
+    DressupSubscriber.onPlacement(target, "长枪_引用", function() {
+        _root.装备生命周期函数.MACSIII视觉更新(ref);
+    });
 };
 
 /**
@@ -155,9 +159,9 @@ _root.装备生命周期函数.MACSIII初始化 = function(ref:Object, param:Obj
  */
 _root.装备生命周期函数.MACSIII周期 = function(ref:Object, param:Object) {
     _root.装备生命周期函数.移除异常周期函数(ref);
+    if (!VisualSync.beginTick(ref)) return;
 
     var target:MovieClip = ref.自机;
-    var gun:MovieClip = target.长枪_引用;
 
     // === 【可配置】动画帧常量定义 ===
     var NORMAL_LOOP_FRAMES:Number = param.normalLoopFrames || 4;         // 普通循环动画总帧数
@@ -276,11 +280,19 @@ _root.装备生命周期函数.MACSIII周期 = function(ref:Object, param:Object
             break;
     }
 
-    // 安全检查并应用最终帧
-    if (animFrame) {
-        gun.gotoAndStop(Math.floor(animFrame));
-    }
+    // 把最终帧存到 state，由视觉函数 apply
+    ref.animFrame = animFrame;
 
     // 重置射击状态
     ref.isFiring = false;
+
+    _root.装备生命周期函数.MACSIII视觉更新(ref);
+};
+
+_root.装备生命周期函数.MACSIII视觉更新 = function(ref:Object) {
+    var gun:MovieClip = ref.自机.长枪_引用;
+    if (!gun) return;
+    if (ref.animFrame) {
+        gun.gotoAndStop(Math.floor(ref.animFrame));
+    }
 };

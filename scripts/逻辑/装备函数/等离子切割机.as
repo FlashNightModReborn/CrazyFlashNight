@@ -110,6 +110,10 @@ _root.装备生命周期函数.等离子切割机初始化 = function(ref, param
             }
         }
     });
+
+    DressupSubscriber.onPlacement(target, "长枪_引用", function() {
+        _root.装备生命周期函数.等离子切割机视觉更新(ref);
+    });
 };
 
 /*--------------------------------------------------------
@@ -117,11 +121,9 @@ _root.装备生命周期函数.等离子切割机初始化 = function(ref, param
  *------------------------------------------------------*/
 _root.装备生命周期函数.等离子切割机周期 = function(ref) {
     _root.装备生命周期函数.移除异常周期函数(ref);
-
-    // _root.服务器.发布服务器消息(ref.currentFrame)
+    if (!VisualSync.beginTick(ref)) return;
 
     var 自机:MovieClip = ref.自机;
-    var 长枪:MovieClip = 自机.长枪_引用;
 
     /* ===== 0. 武器激活检测 ===== */
     ref.isWeaponActive = (自机.攻击模式 === "长枪");
@@ -130,12 +132,12 @@ _root.装备生命周期函数.等离子切割机周期 = function(ref) {
         // 收枪：立即复位并清状态
         ref.isExpanding   = false;
         ref.isShooting    = false;
-        ref.isKilling     = false;   // 【新增】清击杀状态
-        ref.killAnimQueue = 0;       // 【新增】清队列
+        ref.isKilling     = false;
+        ref.killAnimQueue = 0;
         ref.fireRequest   = false;
         ref.isDeployed    = false;
         ref.currentFrame  = ref.EXPAND_START;
-        长枪.gotoAndStop(ref.currentFrame);
+        _root.装备生命周期函数.等离子切割机视觉更新(ref);
         return;
     }
 
@@ -145,72 +147,62 @@ _root.装备生命周期函数.等离子切割机周期 = function(ref) {
 
     /* ===== 2. 击杀动画推进（优先级最高） ===== */
     if (ref.isKilling) {
-        长枪.gotoAndStop(ref.currentFrame);
-
         if (ref.currentFrame < ref.KILL_END) {
             ++ref.currentFrame;
         } else {
             // 一个击杀段落播放完成
             if (ref.killAnimQueue > 0) {
-                // 还有排队的击杀动画，继续下一轮
                 ref.killAnimQueue--;
                 ref.currentFrame = ref.KILL_START;
             } else {
-                // 播放完毕，回到战斗待机（15帧）
                 ref.isKilling    = false;
                 ref.isShooting   = false;
                 ref.isExpanding  = false;
-                ref.isDeployed   = true;          // 仍处于战斗展开态
-                ref.currentFrame = ref.EXPAND_END; // 15
+                ref.isDeployed   = true;
+                ref.currentFrame = ref.EXPAND_END;
             }
         }
+        _root.装备生命周期函数.等离子切割机视觉更新(ref);
         return;
     }
 
     /* ===== 3. 武器展开检测 ===== */
     if (!ref.isDeployed && !ref.isExpanding) {
-        // 武器激活时自动开始展开
         ref.isExpanding  = true;
         ref.currentFrame = ref.EXPAND_START;
-        长枪.gotoAndStop(ref.currentFrame);
+        _root.装备生命周期函数.等离子切割机视觉更新(ref);
         return;
     }
 
-    /* ===== 4. 射击触发（击杀动画期间已被屏蔽） ===== */
-    if (wantFire && ref.isDeployed && !ref.isShooting /* && !ref.isKilling */) {
+    /* ===== 4. 射击触发 ===== */
+    if (wantFire && ref.isDeployed && !ref.isShooting) {
         ref.isShooting = true;
         // currentFrame 在“长枪射击”事件里已被定位到 START/触发帧
-        长枪.gotoAndStop(ref.currentFrame);
+        _root.装备生命周期函数.等离子切割机视觉更新(ref);
         return;
     }
 
     /* ===== 5. 动画推进 ===== */
-    // 5-A 展开动画段 (1-15帧)
     if (ref.isExpanding) {
-        长枪.gotoAndStop(ref.currentFrame);
-
         if (ref.currentFrame < ref.EXPAND_END) {
             ++ref.currentFrame;
         } else {
-            // 展开完成，进入战斗待机状态
             ref.isExpanding  = false;
             ref.isDeployed   = true;
-            ref.currentFrame = ref.EXPAND_END; // 15
+            ref.currentFrame = ref.EXPAND_END;
         }
+        _root.装备生命周期函数.等离子切割机视觉更新(ref);
         return;
     }
 
-    // 5-B 射击动画段 (16-23帧或20-23帧)
     if (ref.isShooting) {
-        长枪.gotoAndStop(ref.currentFrame);
-
         if (ref.currentFrame < ref.SHOOT_END) {
             ++ref.currentFrame;
         } else {
-            // 射击动画完成，回到战斗待机状态(15帧)
             ref.isShooting   = false;
             ref.currentFrame = ref.EXPAND_END;
         }
+        _root.装备生命周期函数.等离子切割机视觉更新(ref);
         return;
     }
 
@@ -219,6 +211,11 @@ _root.装备生命周期函数.等离子切割机周期 = function(ref) {
         ref.currentFrame = ref.EXPAND_END;
     }
 
-    /* ===== 6. 绘制 ===== */
+    _root.装备生命周期函数.等离子切割机视觉更新(ref);
+};
+
+_root.装备生命周期函数.等离子切割机视觉更新 = function(ref:Object) {
+    var 长枪:MovieClip = ref.自机.长枪_引用;
+    if (!长枪) return;
     长枪.gotoAndStop(ref.currentFrame);
 };

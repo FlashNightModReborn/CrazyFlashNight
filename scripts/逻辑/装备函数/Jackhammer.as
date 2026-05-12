@@ -26,37 +26,34 @@ _root.装备生命周期函数.Jackhammer初始化 = function(ref:Object, param:
     ref.skill_chargeComplete = param.skill_1;
 
     // target.装载主动战技(ref.skill_normal, "长枪");
+
+    DressupSubscriber.onPlacement(target, "长枪_引用", function() {
+        _root.装备生命周期函数.Jackhammer视觉更新(ref);
+    });
 };
 
 // 每帧周期更新：充能 → 主枪帧 → 动画帧
 _root.装备生命周期函数.Jackhammer周期 = function(ref:Object, param:Object) {
     _root.装备生命周期函数.移除异常周期函数(ref);
-    
+    if (!VisualSync.beginTick(ref)) return;
+
     var target:MovieClip = ref.自机;
     var gun:MovieClip    = target.长枪_引用;
-    var gunAnim:MovieClip= gun.动画;
-    var barrel:MovieClip = gun.枪管;
-    var laser:MovieClip  = gun.激光模组;
-    
-    // —— 1. 充能逻辑 —— 
+
+    // —— 1. 充能逻辑 ——
     var isActive = (target.攻击模式 === "长枪");
-    laser._visible = isActive;
-    
+
     if (isActive) {
-        // 长枪模式：按键增加充能，松开时减少（仅当 > 0 时）
         if (_root.按键输入检测(target, _root.武器变形键)) {
             ref.chargeCount = Math.min(ref.chargeCount + ref.chargeStep, ref.chargeCountMax);
         } else if (ref.chargeCount > 0) {
             ref.chargeCount = Math.max(ref.chargeCount - ref.chargeStep, 0);
         }
-        
-        // 只有在达到最大充能时才设置完成状态（保持锁定机制）
+
         if (ref.chargeCount >= ref.chargeCountMax) {
             target.chargeComplete = true;
-            
         }
     } else {
-        // 非长枪模式：强制重置充能状态
         target.chargeComplete = false;
         if (ref.chargeCount > 0) {
             ref.chargeCount = Math.max(ref.chargeCount - ref.chargeStep, 0);
@@ -64,40 +61,54 @@ _root.装备生命周期函数.Jackhammer周期 = function(ref:Object, param:Obj
     }
 
     var chargeComplete:Boolean = target.chargeComplete;
-    
-    // —— 2. 主枪帧更新 —— 
+
+    // —— 2. 主枪帧推进 ——
     if (chargeComplete) {
-        // 充能完成：增加帧数到最大值
         if (ref.gunFrame < gun._totalFrames) {
             ref.gunFrame = Math.min(ref.gunFrame + ref.frameStep, gun._totalFrames);
         }
     } else {
-        // 充能未完成：减少帧数到最小值
         if (ref.gunFrame > 1) {
             ref.gunFrame = Math.max(ref.gunFrame - ref.frameStep, 1);
         }
     }
-    gun.gotoAndStop(ref.gunFrame);
-    
-    // —— 3. 动画帧更新 —— 
+
+    // —— 3. 动画帧推进（先存显示帧，再推进 state） ——
+    ref.gunAnimDisplayFrame = ref.gunAnimFrame;
     if (ref.gunAnimFrame > 1) {
-        // 先显示当前帧
-        gunAnim.gotoAndStop(ref.gunAnimFrame);
-        barrel.gotoAndStop(ref.gunAnimFrame);
-        
-        // 然后更新到下一帧
-        if (ref.gunAnimFrame >= gunAnim._totalFrames) {
+        var gunAnimTotal:Number = gun.动画._totalFrames;
+        if (gunAnimTotal && ref.gunAnimFrame >= gunAnimTotal) {
             ref.gunAnimFrame = 1;
         } else {
             ref.gunAnimFrame++;
         }
     }
 
-
-    // 根据充能状态切换战技装载
-    if(ref.lastChargeComplete != chargeComplete) {
+    // —— 4. 战技切换 ——
+    if (ref.lastChargeComplete != chargeComplete) {
         var skill:Object = chargeComplete ? ref.skill_chargeComplete : ref.skill_normal;
         target.装载主动战技(skill, "长枪");
-        ref.lastChargeComplete = target.chargeComplete;
+        ref.lastChargeComplete = chargeComplete;
+    }
+
+    _root.装备生命周期函数.Jackhammer视觉更新(ref);
+};
+
+_root.装备生命周期函数.Jackhammer视觉更新 = function(ref:Object) {
+    var target:MovieClip = ref.自机;
+    var gun:MovieClip    = target.长枪_引用;
+    if (!gun) return;
+
+    var gunAnim:MovieClip= gun.动画;
+    var barrel:MovieClip = gun.枪管;
+    var laser:MovieClip  = gun.激光模组;
+
+    laser._visible = (target.攻击模式 === "长枪");
+    gun.gotoAndStop(ref.gunFrame);
+
+    var displayFrame:Number = (ref.gunAnimDisplayFrame != undefined) ? ref.gunAnimDisplayFrame : ref.gunAnimFrame;
+    if (displayFrame > 1) {
+        gunAnim.gotoAndStop(displayFrame);
+        barrel.gotoAndStop(displayFrame);
     }
 };

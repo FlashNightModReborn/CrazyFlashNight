@@ -40,68 +40,78 @@
         prop.伤害类型 = flag ? ref.超载伤害类型 : ref.基础伤害类型;
         prop.魔法伤害属性 = flag ? ref.超载魔法属性 : ref.基础魔法属性;
     });
+
+    DressupSubscriber.onPlacement(target, "长枪_引用", function() {
+        _root.装备生命周期函数.混凝土切割机视觉更新(ref);
+    });
 };
 
 _root.装备生命周期函数.混凝土切割机周期 = function(ref:Object, param:Object) {
     _root.装备生命周期函数.移除异常周期函数(ref);
-    var target:MovieClip = ref.自机;
-    var gun:MovieClip = target.长枪_引用;
-    var spark:MovieClip = gun.火花;
+    if (!VisualSync.beginTick(ref)) return;
 
-    (ref.isFiring && (ref.fireCount = Math.min(ref.fireCount + ref.spinUpAmount, ref.maxSpinCount))) || 
+    var target:MovieClip = ref.自机;
+
+    (ref.isFiring && (ref.fireCount = Math.min(ref.fireCount + ref.spinUpAmount, ref.maxSpinCount))) ||
     (ref.fireCount = Math.max(0, ref.fireCount - ref.spinDownRate));
 
-
-    // 2. 如果枪在转动，则计算并更新动画
+    // 推进动画帧（仅 state）
     if (ref.fireCount > 0) {
+        var gun:MovieClip = target.长枪_引用;
         var currentSpeed:Number = ref.fireCount * ref.spinSpeedFactor;
         ref.gunFrame += currentSpeed;
 
-        // 使用高效的单行取模运算来处理动画帧循环
-        if (ref.gunFrame > gun._totalFrames) {
+        if (gun && ref.gunFrame > gun._totalFrames) {
             ref.gunFrame = ((ref.gunFrame - 1) % gun._totalFrames) + 1;
         }
-        
-        gun.gotoAndStop(Math.floor(ref.gunFrame));
-        spark.play();
-    } else if(gun._currentFrame != 1) {
-        // 如果不在射击状态且当前帧不是第一帧，则重置到第一帧
-        gun.gotoAndStop(1);
     }
 
-    // _root.发布消息(ref.gunFrame);
-    // 3. 重置射击状态
+    // 重置射击状态
     ref.isFiring = false;
+
+    // 超载剩余时间衰减
+    if (target.混凝土切割机超载打击许可) {
+        if (--target.混凝土切割机超载打击剩余时间 < 0) {
+            target.混凝土切割机超载打击许可 = false;
+        }
+    }
+
+    _root.装备生命周期函数.混凝土切割机视觉更新(ref);
+};
+
+_root.装备生命周期函数.混凝土切割机视觉更新 = function(ref:Object) {
+    var target:MovieClip = ref.自机;
+    var gun:MovieClip = target.长枪_引用;
+    if (!gun) return;
+    var spark:MovieClip = gun.火花;
+
+    if (ref.fireCount > 0) {
+        gun.gotoAndStop(Math.floor(ref.gunFrame));
+        spark.play();
+    } else if (gun._currentFrame != 1) {
+        gun.gotoAndStop(1);
+    }
 
     var flag:Boolean = target.混凝土切割机超载打击许可;
     var clip:MovieClip = gun.锯片.晶片;
     var bigClip:MovieClip = gun.锯盘;
 
-    if(flag) {
-        if(--target.混凝土切割机超载打击剩余时间 < 0) {
-            target.混凝土切割机超载打击许可 = false;
-        }
-        // 0‑1 归一化进度
+    if (flag) {
+        // 0‑1 归一化进度（依据剩余时间派生，幂等）
         var prog:Number = 1 - (target.混凝土切割机超载打击剩余时间 /
                             target.混凝土切割机超载打击持续时间);
 
         var ramp:Number = 0.05;      // 峰值所处的时间占比（越小 = 越快亮）
         var fade:Number;             // 0‑1 的可见度系数
-        var fadeAlpha:Number;
 
         if (prog <= ramp) {
-            // --- 快速线性冲峰 ---
-            fade = prog / ramp;                 // 0 → 1
+            fade = prog / ramp;                 // 快速线性冲峰
         } else {
-            // --- 慢速衰减 ---
-            var t:Number = (prog - ramp) / (1 - ramp);     // 0 → 1
-            fade = Math.pow(1 - t, 2);   // 二次幂衰减，比线性更平滑
+            var t:Number = (prog - ramp) / (1 - ramp);
+            fade = Math.pow(1 - t, 2);   // 二次幂衰减
         }
 
-        // fade = fade * 2 - 1;
-
-        // 10‑100 Alpha 区间
-        fadeAlpha = 10 + 90 * fade;
+        var fadeAlpha:Number = 10 + 90 * fade;
         clip._alpha = fadeAlpha;
         spark._alpha = fadeAlpha;
     }

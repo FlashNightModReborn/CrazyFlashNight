@@ -21,34 +21,43 @@
         var area:MovieClip = gun.枪口位置;
         prop.区域定位area = area;
     });
+
+    DressupSubscriber.onPlacement(target, "长枪_引用", function() {
+        _root.装备生命周期函数.僵尸割草机视觉更新(ref);
+    });
 };
 
 _root.装备生命周期函数.僵尸割草机周期 = function(ref:Object, param:Object) {
     _root.装备生命周期函数.移除异常周期函数(ref);
-    
-    var target:MovieClip = ref.自机;
-    var gun:MovieClip = target.长枪_引用;
+    if (!VisualSync.beginTick(ref)) return;
 
-    (ref.isFiring && (ref.fireCount = Math.min(ref.fireCount + ref.spinUpAmount, ref.maxSpinCount))) || 
+    (ref.isFiring && (ref.fireCount = Math.min(ref.fireCount + ref.spinUpAmount, ref.maxSpinCount))) ||
     (ref.fireCount = Math.max(0, ref.fireCount - ref.spinDownRate));
 
-
-    // 2. 如果枪在转动，则计算并更新动画
+    // 2. 推进动画帧（仅 state）
     if (ref.fireCount > 0) {
+        var gun:MovieClip = ref.自机.长枪_引用;
         var currentSpeed:Number = ref.fireCount * ref.spinSpeedFactor;
         ref.gunFrame += currentSpeed;
 
-        // 使用高效的单行取模运算来处理动画帧循环
-        if (ref.gunFrame > gun._totalFrames) {
+        if (gun && ref.gunFrame > gun._totalFrames) {
             ref.gunFrame = ((ref.gunFrame - 1) % gun._totalFrames) + 1;
         }
-        
-        gun.gotoAndStop(Math.floor(ref.gunFrame));
-    } else if(gun._currentFrame != 1) {
-        // 如果不在射击状态且当前帧不是第一帧，则重置到第一帧
-        gun.gotoAndStop(1);
     }
 
     // 3. 重置射击状态
     ref.isFiring = false;
+
+    _root.装备生命周期函数.僵尸割草机视觉更新(ref);
+};
+
+_root.装备生命周期函数.僵尸割草机视觉更新 = function(ref:Object) {
+    var gun:MovieClip = ref.自机.长枪_引用;
+    if (!gun) return;
+
+    if (ref.fireCount > 0) {
+        gun.gotoAndStop(Math.floor(ref.gunFrame));
+    } else if (gun._currentFrame != 1) {
+        gun.gotoAndStop(1);
+    }
 };
