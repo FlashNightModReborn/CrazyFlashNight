@@ -52,28 +52,16 @@ _root.装备生命周期函数.双面雷神初始化 = function(ref:Object, para
     });
 
     DressupSubscriber.onPlacement(target, "长枪_引用", function() {
-        _root.装备生命周期函数.双面雷神视觉(ref);
+        _root.装备生命周期函数.双面雷神视觉更新(ref);
     });
 };
 
 /*--------------------------------------------------------
- * 视觉函数 - 处理武器形态切换的视觉动画
+ * 视觉函数 - 纯写 mc 属性（幂等）
  *------------------------------------------------------*/
-_root.装备生命周期函数.双面雷神视觉 = function(ref:Object) {
-    var 自机 = ref.自机;
-    var 长枪 = 自机.长枪_引用;
-
+_root.装备生命周期函数.双面雷神视觉更新 = function(ref:Object) {
+    var 长枪:MovieClip = ref.自机.长枪_引用;
     if (!长枪) return;
-
-    // 武器未激活时，复位到对应形态的起始帧
-    if (自机.攻击模式 !== "长枪") {
-        ref.isTransforming = false;
-        ref.currentFrame = ref.isSniperMode ? ref.SNIPER_START : ref.RIFLE_START;
-        长枪.gotoAndStop(ref.currentFrame);
-        return;
-    }
-    _root.服务器.发布服务器消息("双面雷神当前帧: " + ref.currentFrame);
-    // 绘制当前帧
     长枪.gotoAndStop(ref.currentFrame);
 };
 
@@ -87,8 +75,11 @@ _root.装备生命周期函数.双面雷神周期 = function(ref:Object) {
 
     var 自机 = ref.自机;
 
-    // 只在武器激活时处理逻辑
+    // 武器未激活：复位到对应形态的起始帧，清变形状态
     if (自机.攻击模式 !== "长枪") {
+        ref.isTransforming = false;
+        ref.currentFrame = ref.isSniperMode ? ref.SNIPER_START : ref.RIFLE_START;
+        _root.装备生命周期函数.双面雷神视觉更新(ref);
         return;
     }
 
@@ -157,5 +148,5 @@ _root.装备生命周期函数.双面雷神周期 = function(ref:Object) {
     自机.isSniperMode = ref.isSniperMode;
 
     // 调用视觉函数绘制（内部会根据 currentFrame 做 gotoAndStop）
-    _root.装备生命周期函数.双面雷神视觉(ref);
+    _root.装备生命周期函数.双面雷神视觉更新(ref);
 };

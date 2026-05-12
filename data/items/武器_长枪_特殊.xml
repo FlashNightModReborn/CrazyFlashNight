@@ -459,54 +459,12 @@
         <init>
           <initRoutines>wa90变形款初始化</initRoutines>
           <initParam>
-            <config>
-              <instanceContainer>长枪_引用</instanceContainer>
-              <toggleInstance>枪口位置</toggleInstance>
-              <toggleInstanceLabel>wa90枪口位置</toggleInstanceLabel>
-            </config>
             <animationDuration>15</animationDuration>
-            <animationTarget>动画</animationTarget>
-            <actionFunc>自机状态检测</actionFunc>
-            <actionFuncParam>
-              <matchConditions>
-                <攻击模式>长枪</攻击模式>
-                <wa90变形>true</wa90变形>
-              </matchConditions>
-              <funcType>ALL_MATCH</funcType>
-            </actionFuncParam>
-            <updateFunc>自机状态更新</updateFunc>
-            <updateloadExecution>2</updateloadExecution>
-            <updateFuncParam>
-              <matchConditions>
-                <攻击模式>长枪</攻击模式>
-              </matchConditions>
-              <funcType>FIRST_MATCH</funcType>
-              <triggerKey>武器变形键</triggerKey>
-              <triggerFunc>wa90变形款触发函数</triggerFunc>
-              <triggerInterval>1000</triggerInterval>
-              <triggerFuncParam>
-                <toggleProperty>wa90变形</toggleProperty>
-                <toggleInstance>枪口位置</toggleInstance>
-                <toggleInstanceLabel>wa90枪口位置</toggleInstanceLabel>
-                <trueInstance>枪口位置1</trueInstance>
-                <falseInstance>枪口位置0</falseInstance>
-                <instanceContainer>长枪_引用</instanceContainer>
-              </triggerFuncParam>
-            </updateFuncParam>
+            <transformInterval>1000</transformInterval>
           </initParam>
         </init>
         <cycle>
           <cycleRoutines>wa90变形款周期</cycleRoutines>
-          <cycleParam>
-            <actionFunc>模板组件切换</actionFunc>
-            <actionFuncParam>
-              <matchFunc>自机状态检测</matchFunc>
-              <matchConditions>
-                <攻击模式>长枪</攻击模式>
-              </matchConditions>
-              <funcType>FIRST_MATCH</funcType>
-            </actionFuncParam>
-          </cycleParam>
         </cycle>
         <data>
           <data0>

@@ -176,6 +176,12 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param)
 
     ref.gunParts = ["欧米茄", "枪身", "轮盘", "枪托", "弹舱", "活塞杆", "枪管"];
 
+    // 轮盘累计旋转角度 - 由 state 维护，视觉函数只做幂等写入
+    ref.轮盘Rotation = 0;
+
+    DressupSubscriber.onPlacement(自机, "长枪_引用", function() {
+        _root.装备生命周期函数.铁枪视觉更新(ref);
+    });
 };
 
 /*--------------------------------------------------------
@@ -184,11 +190,11 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param)
 _root.装备生命周期函数.铁枪周期 = function(ref, param)
 {
     _root.装备生命周期函数.移除异常周期函数(ref);
+    if (!VisualSync.beginTick(ref)) return;
 
     var fsm = ref.fsm;
     var data = fsm.data;
     var 自机 = data.target;
-    var 长枪 = 自机.长枪_引用;
 
     // 同步激活状态
     var prev = data.isWeaponActive;
@@ -217,22 +223,36 @@ _root.装备生命周期函数.铁枪周期 = function(ref, param)
         }
     }
 
-    // 执行动画推进
+    // 执行动画推进（推 state）
     fsm.onAction();
 
-    // 更新画面
+    // 能量等级推进 + 累计旋转角（state）
+    ref.energyLevel = Math.max(ref.energyLevel - 1, (data.isWeaponActive ? 3 : 1));
+    ref.轮盘Rotation += ref.energyLevel;
 
+    _root.装备生命周期函数.铁枪视觉更新(ref);
+};
+
+/**
+ * 视觉更新 - 纯写 mc 属性（幂等）
+ * 轮盘旋转走累计角度，避免 += 的非幂等性
+ */
+_root.装备生命周期函数.铁枪视觉更新 = function(ref)
+{
+    var 长枪:MovieClip = ref.自机.长枪_引用;
+    if (!长枪 || !长枪.动画) return;
+
+    var data = ref.fsm.data;
     长枪.动画.gotoAndStop(data.currentFrame);
 
-    ref.energyLevel = Math.max(ref.energyLevel - 1, (data.isWeaponActive ? 3 : 1));
-    var energyLevel = ref.energyLevel;
-    var gun = ref.自机.长枪_引用.动画;
-    var gunParts = ref.gunParts;
+    var gun:MovieClip = 长枪.动画;
+    var energyLevel:Number = ref.energyLevel;
+    var gunParts:Array = ref.gunParts;
 
     for (var i:Number = 0; i < gunParts.length; ++i)
     {
         gun[gunParts[i]].gotoAndStop(energyLevel);
     }
 
-    gun["轮盘"]._rotation += energyLevel;
+    gun["轮盘"]._rotation = ref.轮盘Rotation;
 };
