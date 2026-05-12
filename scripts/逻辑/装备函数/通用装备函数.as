@@ -12,6 +12,7 @@ import org.flashNight.arki.component.Collider.*;
 import org.flashNight.arki.component.Effect.*;
 import org.flashNight.sara.util.*;
 import org.flashNight.naki.DataStructures.*;
+import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.*;
 import flash.filters.*;
 
 _root.装备生命周期函数.初期特效初始化 = function(反射对象, 参数对象) 
@@ -400,8 +401,24 @@ _root.装备生命周期函数.通用特效刀口周期 = function (reflector:Ob
     _root.装备生命周期函数.移除异常周期函数(reflector);
 
     var target:MovieClip = reflector.自机;
-    var self:MovieClip   = target.刀_引用[reflector.position];
+    var saber:MovieClip  = target.刀_引用;
+
+    // 每帧 snapshot 刀口坐标到 StaleRefCache，订阅方在 stale window 内读它
+    // 避免坐标退化 (0,0)。stale 时 snapshot 不写，保留上次值供 fallback。
+    // 详见 StaleRefCache.as / DressupSubscriber.as 类头【stale-ref window】。
+    StaleRefCache.snapshot(target, saber, reflector.position);
+
+    // stale-ref 源头截断：timeline 切帧 destroy 后不挂 callback 到 dead self，
+    // 避免 player 动作帧通过 target.特效刀口 反向 publish 让订阅者读 stale。
+    if (!saber || !saber._parent) {
+        target.特效刀口 = null;
+        return;
+    }
+
+    var self:MovieClip   = saber[reflector.position];
+    if (!self) return;                                  // 缺 child（fallback skin）
     self.自机 = target;
+
     var isActive:Boolean = Boolean(reflector.states[target.状态]);
 
     if (isActive) {

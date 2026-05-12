@@ -43,6 +43,8 @@
        ref.animFrame = 1;
    }
 
+   // 视觉补触发：onPlacement 一发即够 ── target.刀_引用 已被 doConfig 同步换成 NEW skin，
+   //   动画帧 + 刀口位置 _y 偏移即时同步。详见 agentsDoc/as2-load-timing.md 第 2.4 节。
    DressupSubscriber.onPlacement(target, "刀_引用", function(unit) {
        _root.装备生命周期函数.主唱光剑动画更新(ref);
    });
@@ -93,7 +95,10 @@
        }
    }
 
-   // 订阅光刃事件（由刀口触发特效系统 publish，通过闭包访问 ref）
+   // 订阅光刃事件（由 attr_0 战斗周期 / attr_1 刀口触发特效 双路径 publish）
+   //   StaleRefCache.resolve 内置两级回落：① saber chain live → 精确算
+   //   / ② stale → 上次 snapshot；③ 都失败返 null 由本地 bootstrap 兜底。
+   //   详见 StaleRefCache.as / DressupSubscriber.as 类头【stale-ref window】。
    target.dispatcher.subscribe("主唱光剑光刃", function(状态名:String) {
        if (ref.weaponMode != "光剑") return;
        if (target.mp < ref.主唱光刃耗蓝量) return;
@@ -101,11 +106,8 @@
        var bladeType:String = ref.bladeStateMap[状态名] || ref.defaultBladeType;
        if (!bladeType) return;
 
-       var saber:MovieClip = target.刀_引用;
-       var bladePos:MovieClip = saber.刀口位置3;
-       var myPoint:Object = {x: bladePos._x, y: bladePos._y};
-       saber.localToGlobal(myPoint);
-       _root.gameworld.globalToLocal(myPoint);
+       var myPoint:Object = StaleRefCache.resolve(target, target.刀_引用, "刀口位置3");
+       if (!myPoint) myPoint = {x: target._x, y: target._y};  // bootstrap fallback
 
        var 子弹属性:Object = ref.光刃子弹属性;
        子弹属性.子弹种类 = bladeType;
@@ -340,6 +342,8 @@ _root.装备生命周期函数.主唱光剑战斗周期 = function(ref:Object) {
    if (!_root.兵器攻击检测(target)) return;
 
    // 光剑模式：按冷却状态表触发光刃（通过事件触发订阅者处理）
+   //   stale 由订阅者侧三级回落 handle（cache fallback），此处不再设 target.刀_引用 门控，
+   //   避免 stale window 内丢失发射判定。
    if (ref.weaponMode == "光剑" && target.mp >= ref.主唱光刃耗蓝量) {
        var 间隔:Number = ref.bladeCooldownStates[target.状态];
        if (间隔 != undefined) {

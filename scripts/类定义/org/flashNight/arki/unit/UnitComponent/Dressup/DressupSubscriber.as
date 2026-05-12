@@ -47,6 +47,48 @@
  *   所有 transform 应来自 FLA-level PlaceObject 矩阵。
  *
  * ============================================================================
+ * § stale-ref window —— 2026-05-12 主唱光剑 trace 实测确认
+ * ============================================================================
+ *
+ * 现象：subscriber 读 unit[refName] 拿到 detached MovieClip（_parent==null），
+ *   读其子级（如 saber.刀口位置3）= undefined，调 localToGlobal 不走 parent
+ *   chain → 退化为接近 (0,0) 的坐标。视觉表现：子弹 / 特效在 (0,0) 出现，过
+ *   几帧 timeline 重建完成后才"同步到主角"。
+ *
+ * 触发场景：
+ *   - timeline 切帧（动作改变 / mc 层级改变）触发 FLA 自动 destroy 旧 holder mc
+ *   - 旧 saber 跟着 detach (_parent=null)，但 unit[refName] 仍持有旧引用
+ *   - 新 holder 的 onClipEvent(load) 尚未跑到 → 新 doConfig 未触发 swap
+ *   - 这个 window 内任何 publish 都会让 subscriber 读 stale → 退化坐标
+ *   - 实测高频触发态：兵器冲击（player 冲刺时跨越 timeline 切帧）
+ *
+ * Idiom A —— 静默跳过（适合可丢事件：视觉特效 / 提示音 / 累计 buff 等）：
+ *   var ref:MovieClip = unit[refName];
+ *   if (!ref || !ref._parent) return;
+ *   // 后续可信读 ref / ref placement 子树
+ *
+ * Idiom B —— cache 回落（适合不可丢事件：玩家攻击判定 / 输入响应）：
+ *   用 [[StaleRefCache]] 工具类，挂载方周期函数 snapshot()，订阅方 callback
+ *   resolve()。两个调用各 1 行，三级回落由 class 内部封装：
+ *     ① saber live → 精确算 / ② stale → 上次 snapshot / ③ 全失败返 null
+ *   样例：scripts/逻辑/装备函数/主唱光剑.as 的"主唱光剑光刃"订阅；
+ *         挂载方见 scripts/逻辑/装备函数/通用装备函数.as 通用特效刀口周期。
+ *   误差边界：cache 滞后 ≤1 帧玩家位移（~10-15px @ 30fps），低于人眼帧间分辨。
+ *
+ * 选 Idiom A 还是 B：取决于该订阅事件**丢失**对玩家感知的代价：
+ *   - 视觉补触发 / 状态推帧 → A：丢一帧无所谓，下次 doConfig 自然修复
+ *   - 攻击判定 / 输入响应 → B：丢失=玩家觉得"操作没响应"，必须 cache 兜底
+ *
+ * ★ 不要试图在订阅者侧主动 "修复" stale —— 修复 (重 attach) 是
+ *   DressupReferenceManager 的责任，订阅者只负责 stale 时回落。下一个
+ *   doConfig 会重新 publish onPlacement，订阅者就能拿到 NEW skin。
+ *
+ * 源头截断（callback 挂载方共同约定）：每帧周期里挂 callback 到 unit[refName]
+ *   的子级时，先验 unit[refName]._parent；stale 就清理外挂引用并 return，
+ *   避免后续动作帧脚本通过外挂引用反向 publish。返回前**保留** cache 字段
+ *   不清——Idiom B 的订阅者依赖它跨 stale window 提供回落坐标。
+ *
+ * ============================================================================
  *
  * 【scope 约定】EventBus v3 的精确退订/去重依赖 (callback, scope) 组合键。本 API 把
  * scope 默认设为 unit（fn.call(unit, ...) 让 handler 内的 this 指向 unit MovieClip），

@@ -3,7 +3,7 @@
 **文档角色**：AS2 attachMovie 后事件派发的 FP20 实测记录与契约草案。
 **实测平台**：Flash Player 20（项目固化版本）；测试夹具见 `scripts/TestLoader/`（库内 `TestProbeSkin` / `TestProbeNested` / `TestProbeLeaf` / `child` / `leafChild`，已固化签入仓库）；runner 代码见第 5 节（`scripts/TestLoader.as` 是通用入口、被 .gitignore，每次复现需粘贴）。
 **实施状态**：方案 B-精准已落地（DressupReferenceManager.doConfig + SkinReadyClass）；2.4 节钉死了**关键时序漏洞**——同 enterFrame phase 内多 handler 间 load flush **不 interleave**，导致 onReady 通道对 enterFrame-phase 触发的 refresh 不可靠。订阅方应当首选 onPlacement 通道，详见第 3 节使用指引。
-**最近实测**：2026-05-12（T7+T8+T9：nested + 类绑定 + 跨阶段 handler 协同，钉死了 onReady 的时序漏洞）。
+**最近实测**：2026-05-12（T7+T8+T9：nested + 类绑定 + 跨阶段 handler 协同，钉死了 onReady 的时序漏洞；2.5 节追加 stale-ref window：timeline-destroy 让 `unit[refName]` 跨 doConfig 持有 detached MC，订阅者必须 `_parent != null` 自验；2.6 节 T10-T13 否决事件驱动优化路径，钉死 30fps cache 为 Pareto 最优）。
 
 ## Quick Sheet（速查）
 
@@ -238,6 +238,119 @@ Frame N+1: 周期 读 loadReady=true ✓
 - 若必须读 onLoad-deferred 字段 → 用 onReady 但加 `loadReady` 门控；接受 1 帧延迟
 - 详见 [DressupSubscriber.as](../scripts/类定义/org/flashNight/arki/unit/UnitComponent/Dressup/DressupSubscriber.as) 类头 §使用指引
 
+### 2.5 stale-ref window (2026-05-12 主唱光剑 实测)
+
+`onPlacement` 契约只保证"publish 时 NEW skin 已 swap"，**不保证后续帧 `unit[refName]` 永远 live**。timeline 切帧导致 FLA 自动 destroy 旧 holder mc 时，会产生一个跨 doConfig 的 window：
+
+```
+Frame N enterFrame:
+  ├ timeline 切帧 → 旧 holder mc destroy → 旧 saber detach (_parent=null)
+  ├ (此刻 unit.刀_引用 仍指向旧 saber — 没人通知它 swap)
+  └ 高 depth handler 中 player man 动作帧脚本仍在跑 →
+      _root.技能函数.刀口触发特效(状态) →
+      target.特效刀口.特效刀口触发() 经由上一帧挂的外挂引用 → publish
+
+订阅者读 unit.刀_引用 → 拿到 detached MC
+  saber.toString() = ""                  ← detached MC 特征
+  saber._parent = undefined
+  saber.刀口位置3 = undefined             ← detached MC 子访问全 undefined
+  saber.localToGlobal({...}) → 不 walks → 退化坐标 (0,0)
+
+Frame N+1 (或后续) load flush 期:
+  新 holder onClipEvent(load) → _root.装备引用配置.配置装扮() → doConfig → swap
+  unit.刀_引用 ← NEW saber  ← 现在才 catch up
+```
+
+**实测 trace 数据（[launcher.log](../logs/launcher.log) 2528-2537 行）**：
+
+```
+[主唱光刃-skip] saber= parent=undefined bladePos=undefined state=兵器冲击
+```
+
+8 次 trace 均为 `兵器冲击` 状态 —— 冲刺动作位移大、跨 timeline 切帧概率高，是该 window 的高频触发态。
+
+**契约边界**：
+
+1. `onPlacement` 保证 publish 时刻读 `unit[refName]` 是 NEW skin。
+2. **但订阅者每次使用 `unit[refName]` 时必须自验 `_parent != null`**——这是 timeline-destroy 带来的固有 hole，不属于 DressupSubscriber 可拦截范围。
+3. 挂"外挂引用"（如 `target.特效刀口 = saber.刀口位置3`）的周期函数 **必须** 在挂载前 stale-check（参见 [通用装备函数.as](../scripts/逻辑/装备函数/通用装备函数.as) 通用特效刀口周期），否则外挂引用会成为 stale 旁路。
+4. 修复 stale 是 DressupReferenceManager 的责任（下一帧 onClipEvent(load) 触发 doConfig 自然修复），订阅者只负责 stale 时静默跳过 **或回落到 cache**。
+
+**Idiom B —— cache 回落（不可丢事件，如玩家攻击判定）**：
+
+silent skip 会让玩家感受到"输入没响应"。对攻击判定 / 输入回放这类事件，订阅者**必须**有回落坐标避免丢失。统一封装在工具类 [StaleRefCache.as](../scripts/类定义/org/flashNight/arki/unit/UnitComponent/Dressup/EquipmentUtil/StaleRefCache.as)：
+
+```
+[挂载方每帧顶部 snapshot]
+通用特效刀口周期:
+  StaleRefCache.snapshot(target, target.刀_引用, reflector.position);
+  // ... 后续 stale 短路 + callback 挂载 ...
+
+[订阅者 callback]
+"主唱光剑光刃" subscribe:
+  var pt = StaleRefCache.resolve(target, target.刀_引用, "刀口位置3");
+  if (!pt) pt = {x: target._x, y: target._y};  // bootstrap fallback
+  // ... 用 pt 发射 ...
+```
+
+resolve 内置二级回落：① saber chain live → 精确算 / ② stale → 上次 snapshot / ③ 全失败返 null（调用方需自行 bootstrap）。
+
+误差边界：cache 滞后最多 1 帧玩家位移（30fps 时约 10-15px），低于人眼帧间分辨。代价是周期里多一次 localToGlobal/globalToLocal（~5-10us）。
+
+样例实现：[主唱光剑.as](../scripts/逻辑/装备函数/主唱光剑.as) 订阅者 + [通用装备函数.as](../scripts/逻辑/装备函数/通用装备函数.as) 通用特效刀口周期。
+
+### 2.6 性能优化探索 — T10+T11+T12+T13 (2026-05-12)
+
+目标：是否能撤掉 30fps cache 轮询，改事件驱动。
+
+**T10 — detached MC 的 localToGlobal 各阶段行为**
+
+```
+[T10-A] live attach        glob=(300,400)         ← baseline
+[T10-B] script-phase post-remove  glob=(0,0)     ← 立即退化
+[T10-C] post-load-flush    glob=(0,0)             ← 跨 phase 不恢复
+[T10-D] post-render        glob=(0,0)             ← 跨帧依然
+```
+
+**结论**：detached MC 的 localToGlobal 在 detach 那一瞬间就退化，无延迟窗口可用。**cache 不可撤**。
+
+**T11 — onUnload 触发时机**
+
+- `mc.onUnload = fn` instance-level 赋值 **触发** ✅（不像 `mc.onLoad = fn` 静默失败）
+- 类绑定 `Object.registerClass + class onUnload` 也触发 ✅
+- 触发时 `this._parent` 仍存在，`localToGlobal` 仍正常 walks
+
+**T13 — 跨 phase removeMovieClip 后的 onUnload 时机**
+
+```
+script-phase 内 removeMovieClip → onUnload 在 load flush phase 同帧触发 ✅
+setInterval(0) phase 内 removeMovieClip → onUnload 完全丢失 ❌
+```
+
+setInterval(0) 已 post-load-flush。下一帧 load flush 时 detached MC 已被 AS2 GC 回收，onUnload 无对象可派发。
+
+**T12 — 父级 removeMovieClip 是否级联触发子级 onUnload？**
+
+```
+parent.removeMovieClip() → 子级 leaf 在 script-phase 内 _parent 仍可读
+→ enterFrame phase 内 leaf._parent=undef（静默 GC）
+→ 全程无 leaf.onUnload trace ❌
+```
+
+嵌套 attach 的子级被父级带走时**不会触发 onUnload**，AS2 直接 GC。
+
+**综合判定**：
+
+| 候选 | 验证结果 |
+|---|---|
+| 撤 cache，stale 路径直接读 detached MC | ❌ T10 立即退化 |
+| 在 holder.onUnload 内 snapshot | ❌ T13 跨 phase 丢，T12 级联静默 |
+| 30fps cache (Idiom B) | ✅ 可靠、精度最高，~10us/帧/unit |
+
+**结论**：30fps cache 是 Pareto 最优。事件驱动路径在 FP20 上的 AS2 GC 时序与 cascade 不可靠性让它的工程 risk 远高于性能收益。
+
+Runner 见 `scripts/TestLoader.as` 的 T10-T13 段（已签入），夹具：`UnloadProbe.as` + `TestProbeSkin/Nested/Leaf`。
+
 ## 3. 候选契约方案（设计中，未落地）
 
 需求：装扮 publish 时机要区分两个语义——
@@ -331,6 +444,10 @@ dynamic class org.flashNight.dev.SkinReadyClass extends MovieClip {
 | `onEnterFrame` 内 attach 的类 onLoad 何时派发？ | ✅ 当帧 post-enterFrame load flush 派发（2026-05-12 T8） |
 | 多 enterFrame handler 间 load flush 是否 interleave？ | ❌ **不 interleave**，phase 末尾才统一 flush（2026-05-12 T9） |
 | onReady 通道对 enterFrame-phase refresh 的可用性？ | ⚠️ **晚 1 帧**，订阅方需自带门控或改用 onPlacement |
+| detached MC 的 localToGlobal 当帧仍 walks parent chain？ | ❌ **立即退化** (0,0)，无延迟窗口（2026-05-12 T10） |
+| `mc.onUnload = fn` 在 script-phase removeMovieClip 时触发？ | ✅ load flush phase 同帧触发（2026-05-12 T11） |
+| `setInterval(0)` / `enterFrame` phase removeMovieClip 后 onUnload？ | ❌ **GC 抢先**，onUnload 丢失（2026-05-12 T13） |
+| 父级 removeMovieClip 是否级联子级 onUnload？ | ❌ **静默 GC**，无 cascade（2026-05-12 T12） |
 
 **方向**：方案 B-精准 已落地（DressupReferenceManager.doConfig + SkinReadyClass），但 T9 暴露了 onReady 通道的时序漏洞。**订阅方策略 = 默认用 onPlacement，只在不可避免时用 onReady + 门控**。
 
@@ -358,9 +475,14 @@ dynamic class org.flashNight.dev.SkinReadyClass extends MovieClip {
 
 DOMDocument 帧脚本已固定 `#include "../TestLoader.as"`。
 
-### Probe 类（已签入 `scripts/类定义/org/flashNight/dev/SkinReadyProbe.as`）
+### Probe 类（已签入 `scripts/类定义/org/flashNight/dev/`）
 
-T5 段依赖此类做 registerClass 测试。如果删除需重新创建（保留 BOM）：
+- `SkinReadyProbe.as` — T5/T7/T8/T9 段 registerClass 测试 onLoad / onEnterFrame
+- `UnloadProbe.as` — T11/T12/T13 段 registerClass 测试 onUnload 触发时机 + this 状态
+
+T5 / T11 段依赖这些类。如果删除需重新创建（保留 BOM+CRLF）。
+
+`SkinReadyProbe` 完整代码：
 
 ```as
 dynamic class org.flashNight.dev.SkinReadyProbe extends MovieClip {
@@ -551,7 +673,7 @@ _root.标记("=== frame script end ===");
    ```bash
    python -c "import sys; p='scripts/TestLoader.as'; d=open(p,'rb').read(); open(p,'wb').write(d if d.startswith(b'\xef\xbb\xbf') else b'\xef\xbb\xbf'+d)"
    ```
-2. 确认 `scripts/类定义/org/flashNight/dev/SkinReadyProbe.as` 存在且有 BOM（T5 段依赖）。
+2. 确认 `scripts/类定义/org/flashNight/dev/SkinReadyProbe.as` + `UnloadProbe.as` 存在且有 BOM。
 3. 在 Flash CS6 把 `scripts/TestLoader.fla` 设为活动文档（自动化编译链路依赖此前提，详见 `scripts/FlashCS6自动化编译.md`）。
 4. `bash scripts/compile_test.sh` → testMovie 触发 + trace 抓取（输出在 `compile_output.txt` 的 `=== FLASH TRACE OUTPUT ===` 段）。
-5. 期望输出与第 2.2 / 2.4 节一致；偏离则说明 player 版本或夹具结构变化，重新校准本文档。
+5. 期望输出与第 2.2 / 2.4 / 2.6 节一致；偏离则说明 player 版本或夹具结构变化，重新校准本文档。
