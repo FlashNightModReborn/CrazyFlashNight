@@ -5,6 +5,7 @@
           <Include href="TestProbeLeaf.xml" itemID="69fdee0b-0000040f" lastModified="1778249295"/>
           <Include href="TestProbeNested.xml" itemID="69fdedda-0000040d" lastModified="1778249295"/>
           <Include href="TestProbeSkin.xml" itemID="69fded06-000003e1" lastModified="1778249042"/>
+          <Include href="TestTimelineHolder.xml" itemID="6a03d429-000001e4" lastModified="1778636066"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -32,9 +33,17 @@
                                                   <Point x="74" y="9.75"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="TestProbeLeaf" selected="true" centerPoint3DX="35.5" centerPoint3DY="266.3">
+                                        <DOMSymbolInstance libraryItemName="TestProbeLeaf" centerPoint3DX="35.5" centerPoint3DY="266.3">
                                              <matrix>
                                                   <Matrix tx="-38.5" ty="256.55"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="74" y="9.75"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="TestTimelineHolder" selected="true" centerPoint3DX="61.45" centerPoint3DY="109.4">
+                                             <matrix>
+                                                  <Matrix tx="-12.55" ty="99.65"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="74" y="9.75"/>
@@ -53,6 +62,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="5090" publishTime="1778635953"/>
+          <PublishItem publishSize="4749" publishTime="1778635414"/>
+          <PublishItem publishSize="5969" publishTime="1778634991"/>
+          <PublishItem publishSize="3925" publishTime="1778634973"/>
+          <PublishItem publishSize="4804" publishTime="1778634891"/>
           <PublishItem publishSize="3033" publishTime="1778249280"/>
           <PublishItem publishSize="2434" publishTime="1778249128"/>
           <PublishItem publishSize="44653" publishTime="1778249044"/>
@@ -68,10 +82,5 @@
           <PublishItem publishSize="724404" publishTime="1773106591"/>
           <PublishItem publishSize="460226" publishTime="1759049009"/>
           <PublishItem publishSize="460228" publishTime="1759048935"/>
-          <PublishItem publishSize="460221" publishTime="1759048880"/>
-          <PublishItem publishSize="460215" publishTime="1759048752"/>
-          <PublishItem publishSize="441233" publishTime="1759048658"/>
-          <PublishItem publishSize="441167" publishTime="1759048533"/>
-          <PublishItem publishSize="459171" publishTime="1758971884"/>
      </publishHistory>
 </DOMDocument>

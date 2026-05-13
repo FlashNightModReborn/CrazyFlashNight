@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="TestTimelineHolder" itemID="6a03d429-000001e4" linkageExportForAS="true" linkageIdentifier="TestTimelineHolder" lastModified="1778636066" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="TestTimelineHolder" currentFrame="1">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop(); ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop(); ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="144" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="2" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>TestTimelineHolder</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMSymbolInstance libraryItemName="TestProbeLeaf" name="victim" centerPoint3DX="80" centerPoint3DY="63.3">
+                  <matrix>
+                    <Matrix tx="-4.05" ty="32.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="84.05" y="30.35"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(unload) {
+    trace("[TL-IDE-onUnload] _name=" + this._name
+        + " _parent=" + this._parent
+        + " _x=" + this._x + " _y=" + this._y);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
