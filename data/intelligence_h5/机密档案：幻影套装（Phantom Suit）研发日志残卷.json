@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "itemName": "机密档案：幻影套装研发日志残卷",
+  "itemName": "机密档案：幻影套装（Phantom Suit）研发日志残卷",
   "skin": "dossier",
   "pages": [
     {
@@ -135,15 +135,6 @@
           "content": [
             {
               "type": "text",
-              "text": "/n"
-            }
-          ]
-        },
-        {
-          "type": "paragraph",
-          "content": [
-            {
-              "type": "text",
               "text": "不过技术问题是一方面，政治是我们无法控制的。researcher认为可以采取更激进的实验策略，因为和WP的关系正在面临考验，剩下的时间不多了。"
             }
           ]
@@ -241,7 +232,11 @@
           "content": [
             {
               "type": "text",
-              "text": "记录者：WP应急研发组组长 【名称损毁】"
+              "text": "记录者：WP应急研发组组长 "
+            },
+            {
+              "type": "damageText",
+              "text": "[名称损毁]"
             }
           ]
         },
@@ -284,7 +279,11 @@
           "content": [
             {
               "type": "text",
-              "text": "记录者：【名称损毁】"
+              "text": "记录者：WP应急研发组组长 "
+            },
+            {
+              "type": "damageText",
+              "text": "[名称损毁]"
             }
           ]
         },
@@ -348,7 +347,11 @@
           "content": [
             {
               "type": "text",
-              "text": "记录者 【名称损毁】"
+              "text": "记录者：WP应急研发组组长 "
+            },
+            {
+              "type": "damageText",
+              "text": "[名称损毁]"
             }
           ]
         },
@@ -391,7 +394,11 @@
           "content": [
             {
               "type": "text",
-              "text": "记录者 【名称损毁】"
+              "text": "记录者：WP应急研发组组长 "
+            },
+            {
+              "type": "damageText",
+              "text": "[名称损毁]"
             }
           ]
         },
