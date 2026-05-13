@@ -19,15 +19,24 @@
     // 状态
     // ════════════════════════════════════════════════════════════════════════════
     var _el;
-    var _headerEl;
-    var _gridEl;
+    var _gridViewEl;
+    var _detailViewEl;
     var _moneyEl;
+    var _detailTitleEl;
+    var _detailMetaEl;
+    var _detailOpponentsEl;
+    var _detailRollBtn;
+    var _detailConfirmBtn;
     var _cardEls = [];
     var _pendingReq = {};
     var _reqSeq = 0;
     var _session = 0;
     var _snapshot = null;
     var _busy = false;
+    var _activeCardIdx = -1;     // 当前进入详情的卡片下标；-1 表示在 grid
+    var _previewOpponents = null; // 当前显示的对手数据
+    var _ttCache = {};            // (name|level) → {descHTML, introHTML, displayname}
+    var _ttHoverKey = null;       // 当前 hover 的 cache key
 
     // ════════════════════════════════════════════════════════════════════════════
     // Panel 注册
@@ -54,21 +63,49 @@
                 '</div>' +
                 '<button class="arena-close-btn" type="button" title="关闭" aria-label="关闭" data-audio-cue="cancel">✕</button>' +
             '</div>' +
-            '<div class="arena-grid" id="arena-grid"></div>' +
+            '<div class="arena-grid-view" id="arena-grid-view">' +
+                '<div class="arena-grid" id="arena-grid"></div>' +
+            '</div>' +
+            '<div class="arena-detail-view" id="arena-detail-view" hidden>' +
+                '<div class="arena-detail-header">' +
+                    '<button class="arena-detail-back" type="button" data-audio-cue="cancel">‹ 返回</button>' +
+                    '<div class="arena-detail-title-block">' +
+                        '<h2 class="arena-detail-title" id="arena-detail-title">--</h2>' +
+                        '<div class="arena-detail-meta" id="arena-detail-meta"></div>' +
+                    '</div>' +
+                    '<button class="arena-detail-roll" type="button" data-audio-cue="confirm" title="重新抽取对手（免费）">↻ 换一批</button>' +
+                '</div>' +
+                '<div class="arena-opponents" id="arena-opponents"></div>' +
+                '<div class="arena-detail-footer">' +
+                    '<button class="arena-detail-confirm" type="button" data-audio-cue="confirm">⚔ 确认挑战</button>' +
+                '</div>' +
+            '</div>' +
             '<div class="arena-toast" id="arena-toast"></div>';
 
-        _headerEl = _el.querySelector('.arena-header');
-        _gridEl = _el.querySelector('#arena-grid');
+        _gridViewEl = _el.querySelector('#arena-grid-view');
+        _detailViewEl = _el.querySelector('#arena-detail-view');
         _moneyEl = _el.querySelector('#arena-money-value');
+        _detailTitleEl = _el.querySelector('#arena-detail-title');
+        _detailMetaEl = _el.querySelector('#arena-detail-meta');
+        _detailOpponentsEl = _el.querySelector('#arena-opponents');
+        _detailRollBtn = _el.querySelector('.arena-detail-roll');
+        _detailConfirmBtn = _el.querySelector('.arena-detail-confirm');
 
         _el.querySelector('.arena-close-btn').addEventListener('click', requestClose);
+        _el.querySelector('.arena-detail-back').addEventListener('click', backToGrid);
+        _detailRollBtn.addEventListener('click', onRollAgain);
+        _detailConfirmBtn.addEventListener('click', onConfirmChallenge);
 
         buildCards();
+
+        if (typeof Icons !== 'undefined') Icons.load(function(){});
+
         return _el;
     }
 
     function buildCards() {
-        _gridEl.innerHTML = '';
+        var gridEl = _el.querySelector('#arena-grid');
+        gridEl.innerHTML = '';
         _cardEls = [];
 
         for (var i = 0; i < ARENA_CARDS.length; i++) {
@@ -99,10 +136,10 @@
                         '<span class="arena-card-value">' + formatMoney(card.reward) + '</span>' +
                     '</div>' +
                 '</div>' +
-                '<button class="arena-card-btn" type="button" data-index="' + i + '" data-audio-cue="confirm">开始挑战</button>';
+                '<button class="arena-card-btn" type="button" data-index="' + i + '" data-audio-cue="confirm">查看对手 →</button>';
 
             cardEl.querySelector('.arena-card-btn').addEventListener('click', onCardClick);
-            _gridEl.appendChild(cardEl);
+            gridEl.appendChild(cardEl);
             _cardEls.push(cardEl);
         }
     }
@@ -115,9 +152,14 @@
         _pendingReq = {};
         _busy = false;
         _snapshot = null;
+        _activeCardIdx = -1;
+        _previewOpponents = null;
+        _ttCache = {};
+        _ttHoverKey = null;
         hideToast();
         updateMoneyDisplay(null);
         updateCardStates();
+        showGridView();
         requestSnapshot();
     }
 
@@ -131,7 +173,33 @@
         _pendingReq = {};
         _busy = false;
         _snapshot = null;
+        _activeCardIdx = -1;
+        _previewOpponents = null;
+        _ttCache = {};
+        _ttHoverKey = null;
+        PanelTooltip.hide();
         hideToast();
+    }
+
+    // ════════════════════════════════════════════════════════════════════════════
+    // 视图切换
+    // ════════════════════════════════════════════════════════════════════════════
+    function showGridView() {
+        _gridViewEl.hidden = false;
+        _detailViewEl.hidden = true;
+        PanelTooltip.hide();
+    }
+
+    function showDetailView() {
+        _gridViewEl.hidden = true;
+        _detailViewEl.hidden = false;
+    }
+
+    function backToGrid() {
+        if (_busy) return;
+        _activeCardIdx = -1;
+        _previewOpponents = null;
+        showGridView();
     }
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -145,18 +213,48 @@
         var card = ARENA_CARDS[idx];
         if (!card) return;
 
+        _activeCardIdx = idx;
+        _previewOpponents = null;
+
+        // 切到详情视图：先显示骨架，preview 回包再渲染对手
+        _detailTitleEl.textContent = card.name + ' · 卡片 ' + card.index;
+        _detailMetaEl.innerHTML =
+            '<span class="arena-meta-chip">对手 ×' + card.opponentCount + '</span>' +
+            '<span class="arena-meta-chip">等级 ' + card.levelMin + '—' + card.levelMax + '</span>' +
+            '<span class="arena-meta-chip arena-meta-deposit">押金 ' + formatMoney(card.deposit) + '</span>' +
+            '<span class="arena-meta-chip arena-meta-reward">奖金 ' + formatMoney(card.reward) + '</span>';
+        _detailOpponentsEl.innerHTML = '<div class="arena-opponents-loading">正在抽取对手…</div>';
+        setDetailButtonsBusy(true);
+        showDetailView();
+        requestPreview(card);
+    }
+
+    function onRollAgain() {
+        if (_busy || _activeCardIdx < 0) return;
+        var card = ARENA_CARDS[_activeCardIdx];
+        if (!card) return;
+        _detailOpponentsEl.innerHTML = '<div class="arena-opponents-loading">正在重新抽取…</div>';
+        setDetailButtonsBusy(true);
+        requestPreview(card);
+    }
+
+    function onConfirmChallenge() {
+        if (_busy || _activeCardIdx < 0 || !_previewOpponents) return;
+        var card = ARENA_CARDS[_activeCardIdx];
+        if (!card) return;
+
         if (_snapshot && _snapshot.money != null && _snapshot.money < card.deposit) {
             showToast('金钱不足！');
             return;
         }
 
         _busy = true;
-        setCardBusy(idx, true);
+        setDetailButtonsBusy(true);
 
         var reqId = 'arena_ent_' + (++_reqSeq) + '_' + _session;
         _pendingReq[reqId] = function(data) {
             _busy = false;
-            setCardBusy(idx, false);
+            setDetailButtonsBusy(false);
             if (!data.success) {
                 showToast(data.error || '挑战发起失败');
                 return;
@@ -172,11 +270,16 @@
             panel: 'arena',
             cmd: 'enter',
             callId: reqId,
-            cardIndex: idx,
+            cardIndex: _activeCardIdx,
             expr: card.expr,
             deposit: card.deposit,
             reward: card.reward
         });
+    }
+
+    function setDetailButtonsBusy(busy) {
+        _detailRollBtn.disabled = busy || _activeCardIdx < 0;
+        _detailConfirmBtn.disabled = busy || !_previewOpponents || _previewOpponents.length === 0;
     }
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -192,7 +295,7 @@
     });
 
     // ════════════════════════════════════════════════════════════════════════════
-    // Snapshot 与 UI 更新
+    // Snapshot
     // ════════════════════════════════════════════════════════════════════════════
     function requestSnapshot() {
         var reqId = 'arena_snap_' + (++_reqSeq) + '_' + _session;
@@ -211,6 +314,180 @@
         });
     }
 
+    // ════════════════════════════════════════════════════════════════════════════
+    // Preview
+    // ════════════════════════════════════════════════════════════════════════════
+    function requestPreview(card) {
+        var reqId = 'arena_prev_' + (++_reqSeq) + '_' + _session;
+        var pendingCardIdx = _activeCardIdx; // 闭包捕获，防止抽取返回时已切回 grid
+        _pendingReq[reqId] = function(data) {
+            // 若用户已经返回 grid 或切到其他卡片，丢弃这个回包
+            if (_activeCardIdx !== pendingCardIdx) return;
+
+            if (!data.success || !data.opponents) {
+                _detailOpponentsEl.innerHTML = '<div class="arena-opponents-error">' + escapeHtml(data.error || '抽取失败') + '</div>';
+                setDetailButtonsBusy(false);
+                _detailConfirmBtn.disabled = true;
+                return;
+            }
+            _previewOpponents = data.opponents;
+            renderOpponents(data.opponents);
+            setDetailButtonsBusy(false);
+        };
+        Bridge.send({
+            type: 'panel',
+            panel: 'arena',
+            cmd: 'preview',
+            callId: reqId,
+            expr: card.expr
+        });
+    }
+
+    function renderOpponents(opponents) {
+        var SLOT_LABELS = {
+            6: '头盔', 7: '护身', 8: '护甲', 9: '护腿', 10: '靴子',
+            11: '披风', 12: '主武器', 13: '副武器', 14: '副武器2',
+            15: '近战', 16: '手雷'
+        };
+        var html = '';
+        for (var i = 0; i < opponents.length; i++) {
+            var opp = opponents[i];
+            html += '<div class="arena-opp-row">';
+            html += '<div class="arena-opp-info">';
+            html += '<span class="arena-opp-name">' + escapeHtml(opp.name) + '</span>';
+            html += '<span class="arena-opp-level">LV. ' + opp.level + '</span>';
+            html += '</div>';
+            html += '<div class="arena-opp-equips">';
+            // 11 槽固定渲染：有装备显示图标，空槽显示占位
+            var equipBySlot = {};
+            for (var k = 0; k < opp.equips.length; k++) {
+                equipBySlot[opp.equips[k].slot] = opp.equips[k];
+            }
+            for (var slot = 6; slot <= 16; slot++) {
+                var eq = equipBySlot[slot];
+                if (eq) {
+                    // 注意：raw 是完整编码字符串（含 ##tier #mods），用作 tooltip 查询和 cache key
+                    //       icon 是图标资产 key（多装备可共用一张图），displayname 才是用户可见名
+                    var raw = eq.raw || eq.name;
+                    var iconKey = eq.icon || eq.name;
+                    var displayName = eq.displayname || eq.name;
+                    var iconUrl = (typeof Icons !== 'undefined') ? Icons.resolve(iconKey) : null;
+                    var iconHtml = iconUrl
+                        ? '<img src="' + escapeAttr(iconUrl) + '" alt="" onerror="this.style.display=\'none\'">'
+                        : '<span class="arena-equip-fallback">' + escapeHtml(displayName.charAt(0)) + '</span>';
+                    // 不设 title 属性：避免浏览器原生 tooltip 与 PanelTooltip 富文本重叠显示
+                    html += '<div class="arena-equip-cell"' +
+                            ' data-eq-raw="' + escapeAttr(raw) + '"' +
+                            ' data-eq-displayname="' + escapeAttr(displayName) + '"' +
+                            ' data-eq-icon="' + escapeAttr(iconKey) + '"' +
+                            ' data-eq-level="' + eq.level + '">' +
+                            iconHtml +
+                            '<span class="arena-equip-level">' + eq.level + '</span>' +
+                        '</div>';
+                } else {
+                    // 空槽位保留 title — 没有富文本 tooltip 可覆盖，原生提示就是 fallback
+                    html += '<div class="arena-equip-cell arena-equip-empty" title="' + escapeAttr(SLOT_LABELS[slot] || '') + '"></div>';
+                }
+            }
+            html += '</div>';
+            html += '</div>';
+        }
+        _detailOpponentsEl.innerHTML = html;
+
+        // 装备 hover → tooltip
+        var cells = _detailOpponentsEl.querySelectorAll('.arena-equip-cell[data-eq-raw]');
+        for (var c = 0; c < cells.length; c++) {
+            cells[c].addEventListener('mouseenter', onEquipHover);
+            cells[c].addEventListener('mouseleave', onEquipLeave);
+            cells[c].addEventListener('mousemove', onEquipMove);
+        }
+    }
+
+    // ════════════════════════════════════════════════════════════════════════════
+    // 装备 Tooltip — kshop 范式：immediate basic html + async rich fetch + cache
+    // ════════════════════════════════════════════════════════════════════════════
+    function onEquipHover(e) {
+        var cell = e.currentTarget;
+        var raw = cell.getAttribute('data-eq-raw');
+        var displayName = cell.getAttribute('data-eq-displayname') || raw;
+        var iconKey = cell.getAttribute('data-eq-icon') || '';
+        var level = Number(cell.getAttribute('data-eq-level'));
+        if (!raw) return;
+        var key = raw + '|' + level;
+        _ttHoverKey = key;
+        var iconUrl = (iconKey && typeof Icons !== 'undefined') ? Icons.resolve(iconKey) : null;
+
+        var cached = _ttCache[key];
+        var html = cached
+            ? buildRichTooltipHtml(cached, iconUrl)
+            : buildBasicTooltipHtml(displayName, level, iconUrl);
+        PanelTooltip.showAtMouse(html, e);
+        if (!cached) requestEquipTooltip(raw, level, key, iconUrl);
+    }
+
+    function onEquipLeave() {
+        _ttHoverKey = null;
+        PanelTooltip.hide();
+    }
+
+    function onEquipMove(e) {
+        PanelTooltip.followMouse(e);
+    }
+
+    // 基础态（loading）：仅 hover 即时显示，等 Flash 富文本回包后被 buildRichTooltipHtml 覆盖
+    // 用 kshop-tt-* 类，与商城 / 情报 panel 视觉一致
+    function buildBasicTooltipHtml(displayName, level, iconUrl) {
+        var iconBlock = iconUrl
+            ? '<div class="kshop-tt-icon"><img src="' + iconUrl + '"></div>'
+            : '';
+        return '<div class="kshop-tt-rich arena-tt-basic">' +
+                iconBlock +
+                '<div class="kshop-tt-desc">' +
+                    '<div class="kshop-tt-header"><b>' + escapeHtml(displayName) + '</b>' +
+                        ' <span class="kshop-tt-dim">Lv.' + level + '</span></div>' +
+                    '<div class="kshop-tt-loading">加载中…</div>' +
+                '</div>' +
+            '</div>';
+    }
+
+    // 富文本态：TooltipComposer 的 introHTML/descHTML 已含 displayname header，不再外加
+    function buildRichTooltipHtml(data, iconUrl) {
+        return PanelTooltip.buildItemRichHtml({
+            iconUrl:   iconUrl,
+            introHTML: data.introHTML,
+            descHTML:  data.descHTML,
+            rootClass: 'arena-tt-rich'
+        });
+    }
+
+    function requestEquipTooltip(raw, level, key, iconUrl) {
+        var reqId = 'arena_tt_' + (++_reqSeq) + '_' + _session;
+        _pendingReq[reqId] = function(resp) {
+            if (!resp.success) return;
+            _ttCache[key] = {
+                descHTML: resp.descHTML || '',
+                introHTML: resp.introHTML || '',
+                displayname: resp.displayname || '',
+                itemName: resp.itemName || raw
+            };
+            // 仍 hover 在同一 cell 才更新
+            if (_ttHoverKey === key && PanelTooltip.isVisible() && Panels.isOpen()) {
+                PanelTooltip.updateContent(buildRichTooltipHtml(_ttCache[key], iconUrl));
+            }
+        };
+        Bridge.send({
+            type: 'panel',
+            panel: 'arena',
+            cmd: 'equip_tooltip',
+            callId: reqId,
+            raw: raw,
+            level: level
+        });
+    }
+
+    // ════════════════════════════════════════════════════════════════════════════
+    // UI 更新
+    // ════════════════════════════════════════════════════════════════════════════
     function updateMoneyDisplay(money) {
         if (money == null) {
             _moneyEl.textContent = '--';
@@ -239,25 +516,11 @@
         if (enabled) {
             cardEl.classList.remove('arena-card-disabled');
             btn.disabled = false;
-            btn.textContent = '开始挑战';
+            btn.textContent = '查看对手 →';
         } else {
             cardEl.classList.add('arena-card-disabled');
             btn.disabled = true;
             btn.textContent = '金钱不足';
-        }
-    }
-
-    function setCardBusy(index, busy) {
-        var cardEl = _cardEls[index];
-        if (!cardEl) return;
-        var btn = cardEl.querySelector('.arena-card-btn');
-        if (busy) {
-            btn.disabled = true;
-            btn.textContent = '请稍候...';
-        } else {
-            btn.disabled = false;
-            btn.textContent = '开始挑战';
-            updateCardStates();
         }
     }
 
@@ -294,6 +557,10 @@
         return div.innerHTML;
     }
 
+    function escapeAttr(text) {
+        return String(text).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    }
+
     // ════════════════════════════════════════════════════════════════════════════
     // 调试接口（harness / QA 用）
     // ════════════════════════════════════════════════════════════════════════════
@@ -302,6 +569,8 @@
             session: _session,
             busy: _busy,
             snapshot: _snapshot,
+            activeCardIdx: _activeCardIdx,
+            previewOpponents: _previewOpponents,
             pendingCount: Object.keys(_pendingReq).length
         };
     }

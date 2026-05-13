@@ -167,6 +167,48 @@ var PanelTooltip = (function() {
             .replace(/<BR\s*\/?>/gi, '<br>');
     }
 
+    // ── 共享物品 tooltip 渲染器 ──
+    //
+    // kshop / intelligence / arena 三家都用 TooltipComposer 的 introHTML + descHTML 双段输出，
+    // 且都在富文本里包含 displayname header（在外面再加 header 会重复）。本 helper 固化布局：
+    //
+    //   <div class="kshop-tt-rich {rootClass}">
+    //     {iconBlock}
+    //     <div class="kshop-tt-intro">{intro}{metaHTML}</div>
+    //     <div class="kshop-tt-desc">{desc}</div>
+    //   </div>
+    //   {suffix}
+    //
+    // opts:
+    //   iconUrl        - 已 resolved 的 URL；为空且 iconPlaceholder 未提供则不渲图标
+    //   iconPlaceholder- iconUrl 缺失时的占位 HTML（如 '?' 字符 span）
+    //   introHTML      - AS2 原始 HTML（自动 convertAS2Html）
+    //   descHTML       - 同上
+    //   metaHTML       - 可选附加到 intro 段末尾的 HTML（如"已发现 X/Y 页"）
+    //   rootClass      - 附加到 .kshop-tt-rich 的额外类
+    //   suffix         - 在根 div 之后追加（kshop 的 lock banner 走这里）
+    function buildItemRichHtml(opts) {
+        opts = opts || {};
+        var iconBlock = '';
+        if (opts.iconUrl) {
+            iconBlock = '<div class="kshop-tt-icon"><img src="' + opts.iconUrl +
+                '" onerror="this.parentNode.style.display=\'none\'"></div>';
+        } else if (opts.iconPlaceholder) {
+            iconBlock = '<div class="kshop-tt-icon">' + opts.iconPlaceholder + '</div>';
+        }
+        var intro = opts.introHTML ? convertAS2Html(opts.introHTML) : '';
+        var desc  = opts.descHTML  ? convertAS2Html(opts.descHTML)  : '';
+        var meta  = opts.metaHTML || '';
+        var rootClass = opts.rootClass ? ' ' + opts.rootClass : '';
+        var html = '<div class="kshop-tt-rich' + rootClass + '">' +
+            iconBlock +
+            ((intro || meta) ? '<div class="kshop-tt-intro">' + intro + meta + '</div>' : '') +
+            (desc ? '<div class="kshop-tt-desc">' + desc + '</div>' : '') +
+        '</div>';
+        if (opts.suffix) html += opts.suffix;
+        return html;
+    }
+
     if (document.readyState === 'loading') window.addEventListener('load', init);
     else init();
 
@@ -178,6 +220,7 @@ var PanelTooltip = (function() {
         showAnchored: showAnchored,
         updateContent: updateContent,
         hide: hide,
-        convertAS2Html: convertAS2Html
+        convertAS2Html: convertAS2Html,
+        buildItemRichHtml: buildItemRichHtml
     };
 })();

@@ -39,20 +39,40 @@ class org.flashNight.arki.merc.ArenaController {
         }
     }
 
+    /**
+     * 仅抽阵容，写 _root.出阵人员，**不**碰 reuse 计数 / pool 刷新 / 转场。
+     * Web 预览路径用：抽完取走 _root.出阵人员 序列化给用户看，可以无限重抽。
+     * 返回 true = 成功（库存够），false = 库存不足。
+     */
+    public static function rollPreview(expr:String):Boolean {
+        if (!MercLibrary.hasEnoughFor(expr)) return false;
+        selectByExpression(expr, _root.可雇佣兵);
+        return true;
+    }
+
+    /**
+     * 提交当前 _root.出阵人员（即上一次 rollPreview 写下的阵容）到进场链。
+     * 含 reuse 计数 / pool 刷新 / 扣押金 / 跳转 wuxianguotu_1，等价于 requestOpponent 的后半段。
+     * 调用前必须先 rollPreview 成功；空阵容直接 no-op。
+     */
+    public static function commitArena():Void {
+        if (_root.出阵人员 == undefined || _root.出阵人员.length == 0) return;
+        if (_root.当前佣兵重用数 <= _root.竞技场佣兵重用基数) {
+            _root.当前佣兵重用数++;
+        } else {
+            MercLibrary.refreshPool(bumpReuseLimit, undefined);
+        }
+        enterArenaCommon();
+    }
+
     public static function requestOpponent(expr:String):Void {
-        if (!MercLibrary.hasEnoughFor(expr)) {
+        if (!rollPreview(expr)) {
             // mercs_list 当前规模下数学上不可达；保留为防御性失败路径（明确提示而非
             // 静默切到错档对手）。如未来扩 佣兵个数限制 或缩 mercs_list 才可能触发。
             _root.最上层发布文字提示("佣兵库存不足");
             return;
         }
-        if (_root.当前佣兵重用数 <= _root.竞技场佣兵重用基数) {
-            _root.当前佣兵重用数++;
-            pickRandom(expr);
-        } else {
-            pickRandom(expr);
-            MercLibrary.refreshPool(bumpReuseLimit, undefined);
-        }
+        commitArena();
     }
 
     public static function bumpReuseLimit():Void {

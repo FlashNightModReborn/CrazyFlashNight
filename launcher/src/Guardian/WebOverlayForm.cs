@@ -99,8 +99,8 @@ namespace CF7Launcher.Guardian
             if (panel == "kshop") return "shopPanelClose";
             if (panel == "map") return "mapPanelClose";
             if (panel == "stage-select") return "stageSelectPanelClose";
-            // arena 故意留 null：close cmd 在 ArenaTask 路径里已带 callId 走 arenaClose,
-            // 这里 TrySendGameCommand 是无 callId fire-and-forget, AS2 端会卡在 undefined callId 回包.
+            // arena 故意留 null：角斗场进场链未触发前没有需要 AS2 清理的状态，
+            // 关闭 panel 时直接走 _activePanel = null + PanelHost.ClosePanel() 即可。
             return null;
         }
 
@@ -3151,6 +3151,8 @@ namespace CF7Launcher.Guardian
                 case "catalog":
                 case "state":
                 case "bundle":
+                case "preview":
+                case "equip_tooltip":
                     {
                         string panel = parsed.Value<string>("panel") ?? "";
                         if (panel == "stage-select")

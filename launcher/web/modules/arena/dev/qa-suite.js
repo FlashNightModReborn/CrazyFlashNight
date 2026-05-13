@@ -105,18 +105,19 @@ var ArenaHarnessQA = (function() {
     }
 
     // ── case: enter-success ──
+    // 新流程: 点卡片 → preview → 详情视图 → 确认挑战 → enter
     function caseEnterSuccess(api, host) {
         return Promise.resolve()
             .then(function() {
                 host.setFixture('rich');
                 host.enterMessages = [];
+                host.previewMessages = [];
                 host.open();
                 return api.waitFor(function() {
                     return Panels.getActive && Panels.getActive() === 'arena';
                 }, 2000, 'panel active');
             })
             .then(function() {
-                // 等待 snapshot 渲染完成
                 return api.waitFor(function() {
                     var el = document.querySelector('.arena-card-btn');
                     return el && !el.disabled;
@@ -126,13 +127,33 @@ var ArenaHarnessQA = (function() {
                 var btn = document.querySelector('.arena-card-btn');
                 btn.click();
                 return api.waitFor(function() {
+                    return host.previewMessages.length > 0;
+                }, 2000, 'preview message sent');
+            })
+            .then(function() {
+                var pmsg = host.previewMessages[host.previewMessages.length - 1];
+                api.assert(pmsg.cmd === 'preview', '首条消息应为 preview');
+                api.assert(typeof pmsg.expr === 'string' && pmsg.expr.length > 0, 'preview 应携带 expr');
+                // 等对手渲染完毕（确认挑战按钮启用）
+                return api.waitFor(function() {
+                    var confirmBtn = document.querySelector('.arena-detail-confirm');
+                    return confirmBtn && !confirmBtn.disabled;
+                }, 2000, 'detail view + confirm enabled');
+            })
+            .then(function() {
+                var rows = document.querySelectorAll('.arena-opp-row');
+                api.assert(rows.length >= 1, '对手行应被渲染');
+                var confirmBtn = document.querySelector('.arena-detail-confirm');
+                confirmBtn.click();
+                return api.waitFor(function() {
                     return host.enterMessages.length > 0;
                 }, 2000, 'enter message sent');
             })
             .then(function() {
                 var msg = host.enterMessages[host.enterMessages.length - 1];
-                api.assert(msg.cmd === 'enter', '消息应为 enter');
+                api.assert(msg.cmd === 'enter', '提交消息应为 enter');
                 api.assert(typeof msg.cardIndex === 'number', '应包含 cardIndex');
+                api.assert(typeof msg.expr === 'string' && msg.expr.length > 0, 'enter 应携带 expr');
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });

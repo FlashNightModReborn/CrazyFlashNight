@@ -122,7 +122,12 @@
     <!-- 共享基础设施 -->
     <script src="../../bridge.js"></script>
     <script src="../../panels.js"></script>
+    <script src="../../tooltip.js"></script>
+    <script src="../../icons.js"></script>
     <script src="../../minigames/shared/dev/harness-base.js"></script>
+
+    <!-- PanelTooltip 容器（生产环境由 overlay.html 提供） -->
+    <div id="panel-tooltip" style="display:none;position:fixed;background:#1a1a1a;border:1px solid #444;padding:8px;font-size:11px;color:#ddd;z-index:9999;pointer-events:none;border-radius:3px;"></div>
 
     <!-- 面板业务逻辑 -->
     <script src="../../arena-panel.js"></script>
@@ -160,6 +165,7 @@
         var host = window.ArenaHarnessHost = {
             sentMessages: [],
             enterMessages: [],
+            previewMessages: [],
             nextEnterError: '',
             _fixture: 'normal',
 
@@ -246,6 +252,56 @@
                             });
                         }
                     }, 100);
+                }
+                else if (message.cmd === 'preview') {
+                    host.previewMessages.push(message);
+                    setTimeout(function() {
+                        // 简化 fixture：根据 expr 解析等级范围 / 人数，生成 placeholder 对手数据
+                        var m = String(message.expr || '').match(/@(\d+)-(\d+)%(\d+)/);
+                        var lo = m ? Number(m[1]) : 1;
+                        var hi = m ? Number(m[2]) : 10;
+                        var count = m ? Number(m[3]) : 1;
+                        var opponents = [];
+                        for (var i = 0; i < count; i++) {
+                            var lvl = lo + Math.floor((hi - lo) * (i + 1) / (count + 1));
+                            var eLvl = Math.max(1, Math.floor(lvl/5));
+                            opponents.push({
+                                name: 'Mock-' + (i + 1),
+                                level: lvl,
+                                equips: [
+                                    { slot: 6,  raw: '铁盔',         name: '铁盔', icon: '铁盔', displayname: '铁盔',         level: eLvl },
+                                    { slot: 8,  raw: '铁甲##二阶',    name: '铁甲', icon: '铁甲', displayname: '铁甲 二阶',     level: eLvl },
+                                    { slot: 10, raw: '铁靴',         name: '铁靴', icon: '铁靴', displayname: '铁靴',         level: eLvl },
+                                    { slot: 12, raw: 'M14',          name: 'M14',  icon: 'M14',  displayname: 'M14',          level: eLvl }
+                                ]
+                            });
+                        }
+                        chrome.webview.__dispatch({
+                            type: 'panel_resp',
+                            panel: 'arena',
+                            cmd: 'preview',
+                            callId: message.callId,
+                            success: true,
+                            expr: message.expr,
+                            opponents: opponents
+                        });
+                    }, 80);
+                }
+                else if (message.cmd === 'equip_tooltip') {
+                    setTimeout(function() {
+                        var raw = message.raw || message.name || '';
+                        chrome.webview.__dispatch({
+                            type: 'panel_resp',
+                            panel: 'arena',
+                            cmd: 'equip_tooltip',
+                            callId: message.callId,
+                            success: true,
+                            itemName: raw,
+                            displayname: raw + ' Lv.' + message.level,
+                            descHTML: '基础属性: 攻击 +' + (message.level * 10),
+                            introHTML: '<FONT COLOR=\'#FFCC00\'>强化 ' + message.level + ' 级</FONT>'
+                        });
+                    }, 50);
                 }
                 else if (message.cmd === 'close') {
                     // Web 通知 C# 关闭；harness 中无需回包

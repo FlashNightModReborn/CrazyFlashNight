@@ -12,9 +12,13 @@ namespace CF7Launcher.Tasks
     /// 竞技场（DEATH MATCH 角斗场）面板 WebView ↔ Flash 双层 callId 桥接。
     /// 与 StageSelectTask / MapTask 同构：
     ///   Web → C#   {type:"panel", panel:"arena", cmd, callId, ...}
-    ///   C# → Flash {task:"cmd", action:"arenaSnapshot/arenaEnter/arenaClose", callId:fid, ...}
+    ///   C# → Flash {task:"cmd", action:"arenaSnapshot/arenaEnter", callId:fid, ...}
     ///   Flash → C# {task:"arena_response", callId:fid, success, ...}
     ///   C# → Web   {type:"panel_resp", panel:"arena", cmd, callId, success, ...}
+    ///
+    /// 注意：close 不走本桥。Web 关闭面板时 WebOverlayForm.HandlePanelMessage 直接
+    /// 切 _activePanel = null + ClosePanel()，无需通知 AS2（角斗场进场链尚未触发，
+    /// 没有需要清理的状态）。ResolvePanelCloseGameCommand("arena") 也因此返回 null。
     /// </summary>
     public sealed class ArenaTask : IDisposable
     {
@@ -80,11 +84,14 @@ namespace CF7Launcher.Tasks
                 case "snapshot":
                     action = "arenaSnapshot";
                     break;
+                case "preview":
+                    action = "arenaRollPreview";
+                    break;
+                case "equip_tooltip":
+                    action = "arenaEquipTooltip";
+                    break;
                 case "enter":
                     action = "arenaEnter";
-                    break;
-                case "close":
-                    action = "arenaClose";
                     break;
                 default:
                     RespondError(webCallId, cmd, "unsupported_cmd");
