@@ -106,7 +106,7 @@
        var bladeType:String = ref.bladeStateMap[状态名] || ref.defaultBladeType;
        if (!bladeType) return;
 
-       var myPoint:Object = StaleRefCache.resolve(target, target.刀_引用, "刀口位置3");
+       var myPoint:Object = StaleRefCache.resolve(target, target.刀_引用, BladeSlot.SLOT_3);
        if (!myPoint) myPoint = {x: target._x, y: target._y};  // bootstrap fallback
 
        var 子弹属性:Object = ref.光刃子弹属性;

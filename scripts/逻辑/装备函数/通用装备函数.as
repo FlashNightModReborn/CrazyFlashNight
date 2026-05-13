@@ -352,7 +352,7 @@ _root.装备生命周期函数.通用刀光周期 = function(reflector, paramObj
 _root.装备生命周期函数.通用拖影初始化 = function(reflector, paramObj) 
 {
     reflector.basicStyle = paramObj.basicStyle ? paramObj.basicStyle : "白色蓝框";
-    reflector.target = paramObj.target ? paramObj.target : "刀口位置1";
+    reflector.target = paramObj.target ? paramObj.target : BladeSlot.SLOT_1;
     reflector.actionFuncParam = paramObj.actionFuncParam ? paramObj.actionFuncParam : {
         matchConditions: { 攻击模式: "兵器" },
         funcType: "ALL_MATCH"
@@ -385,7 +385,7 @@ _root.装备生命周期函数.通用拖影周期 = function(reflector, paramObj
 
 
 _root.装备生命周期函数.通用特效刀口初始化 = function (reflector:Object, paramObj:Object) {
-    reflector.position = (paramObj.position != undefined) ? paramObj.position : "刀口位置2";
+    reflector.position = (paramObj.position != undefined) ? paramObj.position : BladeSlot.SLOT_2;
     var funcString:String = (paramObj.func != undefined) ? paramObj.func : "_root.刀口触发特效.黑铁的剑特效";
     reflector.func = eval(funcString);                        
 
