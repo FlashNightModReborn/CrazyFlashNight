@@ -10,12 +10,16 @@
       - <count> : 对手数量
     
     押金公式: Math.floor(reward / 2)
-    
-    奖金公式（历史硬编码）:
-      - 卡片 1-6: opponentCount × levelMin × 1000
-      - 卡片 7-8: opponentCount × levelMin × 1250
-    
-    来源: 反编译 Flash Symbol 3394（角斗场选择界面）提取
+
+    奖金公式（历史硬编码，多数符合公式，少数为手工加码）:
+      - 卡片 1-3, 5-6: opponentCount × levelMin × 1000
+      - 卡片 7-8:      opponentCount × levelMin × 1250
+      - 卡片 4:        Card 3 的精确 2 倍（同等级范围加码版，押金/奖金双倍）
+
+    注意: FadeTransitionFrame "角斗场-2" 仅作历史记录；实际进场调用 ArenaController
+    内部 enterArenaCommon 跳转 "wuxianguotu_1"（无限过图通用入口）。
+
+    来源: 反编译 Flash Symbol 3394（角斗场选择界面）+ ArenaController.as enterArenaCommon
 -->
 <ArenaConfig>
     <!-- 竞技场基础属性 -->

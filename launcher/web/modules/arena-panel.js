@@ -159,8 +159,12 @@
             setCardBusy(idx, false);
             if (!data.success) {
                 showToast(data.error || '挑战发起失败');
+                return;
             }
-            // 成功时 C# 会关闭 panel，无需处理
+            // closePanel:true → 必须走 requestClose 而不是裸 Panels.close()，
+            // 因为后者只关 web 端 UI，不通知 C# 收 PanelHost；不收的话 WebOverlay
+            // 还停在 opaque/panelRect 模式遮盖 Flash → AS2 已转场但视觉黑屏。
+            if (data.closePanel) requestClose();
         };
 
         Bridge.send({
@@ -168,7 +172,10 @@
             panel: 'arena',
             cmd: 'enter',
             callId: reqId,
-            cardIndex: idx
+            cardIndex: idx,
+            expr: card.expr,
+            deposit: card.deposit,
+            reward: card.reward
         });
     }
 

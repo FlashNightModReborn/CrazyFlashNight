@@ -27,6 +27,7 @@ namespace CF7Launcher.Bus
     ///   archive         JSON async  AS2↔C#  httpCallable=true  (存档shadow备份/读取)
     ///   panel_request   JSON sync   AS2→C#  (旧 Flash UI 请求 WebView 打开面板: map / stage-select)
     ///   stage_select_response JSON async AS2↔C# (选关 Web panel 测试入口)
+    ///   arena_response  JSON async AS2↔C# (角斗场 Web panel 测试入口)
     ///   intelligence_response JSON async AS2↔C# (情报 Web panel runtime 状态 / tooltip)
     ///   font_pack       JSON async AS2↔C#  httpCallable=true (字体包按需下载/状态查询)
     /// </summary>
@@ -59,6 +60,7 @@ namespace CF7Launcher.Bus
             ShopTask shopTask,
             MapTask mapTask,
             StageSelectTask stageSelectTask,
+            ArenaTask arenaTask,
             IntelligenceTask intelligenceTask,
             ArchiveTask archiveTask,
             BenchTask benchTask,
@@ -89,6 +91,10 @@ namespace CF7Launcher.Bus
             // 选关面板回包路由
             if (stageSelectTask != null)
                 router.RegisterAsync("stage_select_response", stageSelectTask.HandleFlashResponse);
+
+            // 角斗场面板回包路由
+            if (arenaTask != null)
+                router.RegisterAsync("arena_response", arenaTask.HandleFlashResponse);
 
             // 情报面板 runtime 回包路由
             if (intelligenceTask != null)
@@ -205,6 +211,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "shop_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "map_response",   "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "stage_select_response","json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "arena_response",       "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "intelligence_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "cursor_control", "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);

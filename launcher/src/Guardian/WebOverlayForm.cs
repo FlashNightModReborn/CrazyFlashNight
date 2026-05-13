@@ -99,6 +99,8 @@ namespace CF7Launcher.Guardian
             if (panel == "kshop") return "shopPanelClose";
             if (panel == "map") return "mapPanelClose";
             if (panel == "stage-select") return "stageSelectPanelClose";
+            // arena 故意留 null：close cmd 在 ArenaTask 路径里已带 callId 走 arenaClose,
+            // 这里 TrySendGameCommand 是无 callId fire-and-forget, AS2 端会卡在 undefined callId 回包.
             return null;
         }
 
@@ -204,6 +206,7 @@ namespace CF7Launcher.Guardian
         private ShopTask _shopTask;
         private MapTask _mapTask;
         private StageSelectTask _stageSelectTask;
+        private ArenaTask _arenaTask;
         private IntelligenceTask _intelligenceTask;
         private GomokuTask _gomokuTask;
         private Action<bool> _onPanelStateChanged;
@@ -2673,6 +2676,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetArenaTask(ArenaTask task)
+        {
+            _arenaTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetIntelligenceTask(IntelligenceTask task)
         {
             _intelligenceTask = task;
@@ -3159,7 +3169,8 @@ namespace CF7Launcher.Guardian
                         }
                         else if (panel == "arena")
                         {
-                            HandleArenaPanelRequest(cmd, parsed);
+                            LogManager.Log("[Panel] Routing cmd=" + cmd + " to ArenaTask, _arenaTask=" + (_arenaTask != null ? "ok" : "NULL"));
+                            if (_arenaTask != null) _arenaTask.HandleWebRequest(cmd, parsed);
                         }
                         else if (cmd == "enter" || cmd == "jump_frame" || cmd == "return_frame" || cmd == "open_stage_select")
                         {
@@ -3275,48 +3286,6 @@ namespace CF7Launcher.Guardian
             });
         }
 
-        private void HandleArenaPanelRequest(string cmd, JObject parsed)
-        {
-            string webCallId = parsed.Value<string>("callId");
-            if (string.IsNullOrEmpty(webCallId))
-            {
-                LogManager.Log("[ArenaPanel] callId is empty, cmd=" + cmd);
-                return;
-            }
-            LogManager.Log("[ArenaPanel] Handling cmd=" + cmd + " callId=" + webCallId);
-            if (cmd == "snapshot")
-            {
-                var msg = new JObject();
-                msg["type"] = "panel_resp";
-                msg["panel"] = "arena";
-                msg["cmd"] = "snapshot";
-                msg["callId"] = webCallId;
-                msg["success"] = true;
-                var snapshot = new JObject();
-                snapshot["money"] = 5717348;
-                snapshot["reuseCount"] = 0;
-                snapshot["reuseLimit"] = 2;
-                msg["snapshot"] = snapshot;
-                PostToWeb(msg.ToString(Newtonsoft.Json.Formatting.None));
-            }
-            else if (cmd == "enter")
-            {
-                var msg = new JObject();
-                msg["type"] = "panel_resp";
-                msg["panel"] = "arena";
-                msg["cmd"] = "enter";
-                msg["callId"] = webCallId;
-                msg["success"] = true;
-                msg["closePanel"] = true;
-                PostToWeb(msg.ToString(Newtonsoft.Json.Formatting.None));
-                LogManager.Log("[ArenaPanel] enter accepted, closing panel");
-            }
-            else
-            {
-                LogManager.Log("[ArenaPanel] Unsupported cmd=" + cmd);
-            }
-        }
-
         private void PostGobangEvalResponse(string webCallId, string response)
         {
             JObject msg;
@@ -3374,6 +3343,7 @@ namespace CF7Launcher.Guardian
             if (_shopTask != null) _shopTask.ClearPending();
             if (_mapTask != null) _mapTask.ClearPending();
             if (_stageSelectTask != null) _stageSelectTask.ClearPending();
+            if (_arenaTask != null) _arenaTask.ClearPending();
             if (_intelligenceTask != null) _intelligenceTask.ClearPending();
         }
 
