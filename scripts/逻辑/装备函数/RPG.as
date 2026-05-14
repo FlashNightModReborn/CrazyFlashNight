@@ -1,6 +1,10 @@
 ﻿_root.装备生命周期函数.RPG初始化 = function(ref:Object, param:Object) {
     var target:MovieClip = ref.自机;
-    PlacementVisual.hookVisualUpdate(target, "长枪_引用", ref,param, _root.装备生命周期函数.RPG周期);
+    // RPG 这里走 placement 回调直接驱动周期函数（非视觉更新），需要带 param 实参，
+    // PlacementVisual 1-参签名不适用，保留 DressupSubscriber 直调写法。
+    DressupSubscriber.onPlacement(target, "长枪_引用", function() {
+        _root.装备生命周期函数.RPG周期(ref, param);
+    });
 };
 
 _root.装备生命周期函数.RPG周期 = function(ref:Object, param:Object) {
