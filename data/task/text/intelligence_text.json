@@ -246,6 +246,18 @@
             "name": "$PC",
             "title": "$PC_TITLE",
             "char": "$PC_CHAR",
+            "text": "感觉你好像完全不抵触人体改造。"
+        },
+        {
+            "name": "假肢仙人",
+            "title": "假肢店老板",
+            "char": "假肢仙人",
+            "text": "按照审判日前的说法，我这种人就是所谓“超人类主义者”。不过现在倒是被很多人称为人类叛徒，那我索性就把店铺名改成“终结者崇拜者”，就和这些人对着干。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
             "text": "那么，我直入正题吧：我想为我们A兵团获得一些关于防具的参考资料，你需要什么条件？"
         },
         {
@@ -299,7 +311,7 @@
     ],
     "$SIDE_FINISH_90005": [],
     
-    "$SIDE_TITLE_90006": "最佳人选",
+    "$SIDE_TITLE_90006": "秘密研究员",
     "$SIDE_DESCRIPTION_90006": "找researcher谈谈",
     "$SIDE_GET_90006": [
         {
@@ -324,44 +336,316 @@
             "name": "Shop Girl",
             "title": "军火商",
             "char": "Shop Girl",
-            "text": "也许以后会有势力撕破脸，但是至少目前来看，通过议会的争执和现实的武力冲突，各个势力之间维持了精妙的平衡。这也算是避免了秩序彻底崩溃，算是有点好处吧。"
+            "text": "也许以后会有势力撕破脸，但是至少目前来看，通过议会的争执和现实的武力冲突，各个势力之间维持了精妙的平衡。这也避免了秩序彻底崩溃，算是有点好处吧。"
         },
         {
             "name": "$PC",
             "title": "$PC_TITLE",
             "char": "$PC_CHAR",
             "text": "那么该如何让这个议案得到通过呢？"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "最重要的是找准盟友，你可以看看这个尘都临时政府议会席位图。目前统合党和西南统一民主党处于联合执政地位，但是他们内部不是所有人都支持这种补贴假肢的法案的。",
+            "imageurl": "flashswf/images/task_images/尘都临时政府议会席位图.png"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "虽然代表是前一阵子才选的，而且各方都用了些不光彩的手段···但总之，他们目前就是尘都政治的核心，当然我们还有黑铁会之类的武装人员的意见也很重要嘛。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "法案通过需要议会至少一半的代表同意，因此需要从其他党派获取支持。按照你的说法，假肢仙人那里有对我们帮助很大的资料，那么我们就需要主动为这个法案获取支持。",
+            "imageurl": "close"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl#微笑",
+            "text": "你应该还没忘记之前帮助Blue清扫医院的事情吧。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "也就是说，利用医疗资源获取支持？"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl#微笑",
+            "text": "不错，上次清扫医院后，我们扶持了几个统合党的代表为我们发声，"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "这些代表会向尘都民主党、尘都社会党传达我们的想法，给他们提供医疗资源换取支持，这符合他们一贯的加强医疗保护的主张。至于说尘都民族党之类，虽然他们讨厌假肢和义体改造，但不会拒绝药剂的，不够就再来些许贿赂，总会有议员同意的。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "具体的工作由我来负责吧，还有其他事情需要你帮忙。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "按照你提供的资料，我们用净水药剂拉拢一些盗贼的行为受到了广泛关注。之前我们给的是库存较多的明矾，我知道它对于受到末日特殊污染的水来说净化效果不彻底，有明显副作用，但这正是我们需要的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "这是什么意思？"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "盗贼们的预期中本来就不会指望我们给多好的材料，我们肯给就已经足够让他们感激了。接下来，则是需要攀比忠诚的时候了。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "我们需要一些技术来量产新型净水材料，从中取出一部分奖励给更愿意为我们卖命的盗贼，让他们开始竞争起来。这些新的净水材料能够极大程度提高他们的生活质量，更重要的是窗口期。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "事实上，WP，也就是西部天府（West Paradise）这个尘都巨企虽然完蛋了，但它回收过3xf的材料科学技术，其中的净水材料部分在近期被临时政府研究部门的努力下取得了重大研究突破。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "嗯···所以这些材料早晚会烂大街，我们要趁着它还没烂大街拿下这个技术，并且秘密交给一些盗贼，先提高他们的忠诚。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl#微笑",
+            "text": "不错哦，看来你可以在这方面独当一面了哦。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "那么，现在需要你去堕落城商业街找一个叫做researcher的研究员，她近期被外派到堕落城，实际则是秘密和摇滚技术部门联系，为她们研究乐器的改造技术提供技术支持。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "我们需要了解这方面细节，告诉她你是我派去的，她需要的尽量先答应下来。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "明白。"
         }
     ],
     "$SIDE_FINISH_90006": [],  
     
-    "$SIDE_TITLE_90007": "最佳人选",
-    "$SIDE_DESCRIPTION_90007": "找researcher谈谈",
+    "$SIDE_TITLE_90007": "资料换资料",
+    "$SIDE_DESCRIPTION_90007": "获取对应资料然后找researcher谈谈（提示：水厂外勤资料可在废城-自来水厂关卡中获取，注意探索地图）。",
     "$SIDE_GET_90007": [
         {
-            "name": "Shop Girl",
-            "title": "军火商",
-            "char": "Shop Girl#思考",
-            "text": "看起来，最合适的办法是推动西南统一民主党提出的“假肢补助”议案能够得到议会通过，这样能够降低一般人购买假肢的门槛。"
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "你是researcher吗？我是shopgirl派来的。"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "你的身体好像很符合样本标准，很奇怪，过于符合了。"
         },
         {
             "name": "$PC",
             "title": "$PC_TITLE",
             "char": "$PC_CHAR",
-            "text": "shop姐有办法吗？"
+            "text": "···总之，我们这边需要你的配合，了解临时政府和摇滚的技术交易内幕。"
         },
         {
-            "name": "Boy",
-            "title": "BPK战队-队长",
-            "char": "boy",
-            "text": "她以前在统合那边工作过，肯定是有人脉的。不过就算如此，肯定也需要付出代价的。"
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "没问题，不过需要给出资料作为交换，具体的写入清单了。我会根据需要在随后进一步索取资料。"
         },
         {
             "name": "$PC",
             "title": "$PC_TITLE",
             "char": "$PC_CHAR",
-            "text": "那我先去找shop姐谈谈这事。"
+            "text": "等等，你毫不迟疑吗？"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "我仅对研究负责，政治层面的事情都是可以交易的。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "冒昧问一句，你之前是干什么的？"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "统合政府C国西南特区研究部特派研究员，负责黻城区域统合军事基地的军备研究，后因为全面战乱随当地统合政府撤退到尘都。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "黻城···总觉得哪里听过这个名字。对了，是丽丽丝他们之前在的地方。"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "她是“新世代”的一员，芯片移植手术成功案例之一。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "那是什么意思？"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "需提交更多资料来换取情报。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "···行。"
         }
     ],
     "$SIDE_FINISH_90007": [],
+    
+    "$SIDE_TITLE_90008": "进一步，提交变异生物体资料",
+    "$SIDE_DESCRIPTION_90008": "获取对应资料然后找researcher谈谈（提示：γ-ECHO病理摘要可在废城-医院关卡中获取，注意探索地图）。",
+    "$SIDE_GET_90008": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "没问题吧这个资料？"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "TEC-003···看来水质检测方面并不是WP高级别人员负责，从组织关系来看，是WP高层和外部合作方统合部门一起投放药剂。"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "SEC-071、SEC-072，两个统合派去封锁自来水厂的部队士兵服用了自来水厂受药剂污染的水源，也就是γ-ECHO的影响。这说明项目高度保密，并没有告知统合军事基层人员事实。"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "A区对应的γ-ECHO应该影响了医院，所以医院必然有相关的资料。θ-HIVE强化剂和Σ-ITE永生诱导剂情况有待进一步推理。"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "从后续档案内容来看，医院地下层也是试点区域，看来猜测没错。"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "SEC-006的报告说明，自来水厂当时已经出现了兽化形态僵尸，可能是角质硬化导致的形态变异，。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "所以，我现在是需要去医院是吧？"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "没错，医院必然存在病理报告，仍需调查。"
+        },
+    ],
+    "$SIDE_FINISH_90008": [],
+    
+    "$SIDE_TITLE_90009": "进一步，提交变异生物体资料",
+    "$SIDE_DESCRIPTION_90009": "获取对应资料然后找researcher谈谈（提示：γ-ECHO病理摘要可在废城-医院关卡中获取，注意探索地图）。",
+    "$SIDE_GET_90009": [
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "没问题吧这个资料？"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "TEC-003···看来水质检测方面并不是WP高级别人员负责，从组织关系来看，是WP高层和外部合作方统合部门一起投放药剂。"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "SEC-071、SEC-072，两个统合派去封锁自来水厂的部队士兵服用了自来水厂受药剂污染的水源，也就是γ-ECHO的影响。这说明项目高度保密，并没有告知统合军事基层人员事实。"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "A区对应的γ-ECHO应该影响了医院，所以医院必然有相关的资料。θ-HIVE强化剂和Σ-ITE永生诱导剂情况有待进一步推理。"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "从后续档案内容来看，医院地下层也是试点区域，看来猜测没错。"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "SEC-006的报告说明，自来水厂当时已经出现了兽化形态僵尸，可能是角质硬化导致的形态变异，。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "所以，我现在是需要去医院是吧？"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "没错，医院必然存在病理报告，仍需调查。"
+        },
+    ],
+    "$SIDE_FINISH_90009": [] 
 }
