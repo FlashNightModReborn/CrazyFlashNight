@@ -48,8 +48,8 @@ class org.flashNight.arki.item.BaseItem{
         var __name = initObject.name;
         var __value = initObject.value;
         if(!__value || !ItemUtil.isItem(__name)) return null;
-        // 修复：确保装备的mods字段始终是数组
-        if(ItemUtil.isEquipment(__name) && __value.mods === undefined){
+        // 修复：确保装备的mods字段始终是数组（含老存档 mods:{} 的归一化）
+        if(ItemUtil.isEquipment(__name) && !(__value.mods instanceof Array)){
             __value.mods = [];
         }
         return new BaseItem(__name, __value, initObject.lastUpdate);

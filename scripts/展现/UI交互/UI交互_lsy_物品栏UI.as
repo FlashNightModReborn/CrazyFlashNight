@@ -1525,7 +1525,7 @@ _root.物品UI函数.执行安装配件 = function(matName:String){
 	var item = this.当前物品;
 	if(this.modAvailabilityDict[matName]){
 		var mods = item.value.mods;
-		if(!mods) mods = item.value.mods = [];
+		if(!(mods instanceof Array)) mods = item.value.mods = [];
 		if(ItemUtil.singleSubmit(matName, 1)){
 			mods.push(matName);
 			
