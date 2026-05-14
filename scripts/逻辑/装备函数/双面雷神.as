@@ -72,10 +72,11 @@ _root.装备生命周期函数.双面雷神周期 = function(ref:Object) {
 
     var 自机 = ref.自机;
 
-    // 武器未激活：复位到对应形态的起始帧，清变形状态
+    // 武器未激活：复位到对应形态的稳定帧（END 而非 START），清变形状态。
+    // 用 END 避免 SNIPER_START 与 RIFLE_END 同帧导致 sniper 待机视觉看着像 rifle 终态。
     if (自机.攻击模式 !== "长枪") {
         ref.isTransforming = false;
-        ref.currentFrame = ref.isSniperMode ? ref.SNIPER_START : ref.RIFLE_START;
+        ref.currentFrame = ref.isSniperMode ? ref.SNIPER_END : ref.RIFLE_END;
         _root.装备生命周期函数.双面雷神视觉更新(ref);
         return;
     }
