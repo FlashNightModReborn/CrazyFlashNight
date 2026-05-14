@@ -354,5 +354,38 @@
                 <Text>夜里值班，无线电偶尔会收到一些不在频段表上的东西。规律性很强，不像自然干扰。不过这年头什么都有可能，对吧？</Text>
             </SubDialogue>
         </Dialogue>
+    <Dialogues>
+        <Name>researcher</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>researcher</Name>
+                <Title>原统合研究员</Title>
+                <Char>researcher</Char>
+                <Text>光学校准失败，信号干扰似乎对于光传播也有影响。但是肉眼难以察觉光扭曲，难道光传播的影响只局限于微观层面，还是说仅当观测时才会发生具体改变？</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>researcher</Name>
+                <Title>原统合研究员</Title>
+                <Char>researcher</Char>
+                <Text>我只关心政治对于研究的具体影响，统合党能够提供大量经费，支持他们是理所当然的。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>researcher</Name>
+                <Title>原统合研究员</Title>
+                <Char>researcher</Char>
+                <Text>研究所在诺亚方舟计划组背叛后被他们占据，临时政府决定封锁消息，其他势力权衡之下也认为过早泄露信息影响恶劣，因此一致选择了保密。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>researcher</Name>
+                <Title>原统合研究员</Title>
+                <Char>researcher</Char>
+                <Text>不用惊讶，我没兴趣保守这些秘密，我仅质疑诺亚方舟计划组的研究方向，激进的人兽融合实验上限过于明显，对于电信号武器化的利用也欠考虑，似乎并不是单纯的路线选择问题。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
     </Dialogues>
 </root>
