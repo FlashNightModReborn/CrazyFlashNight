@@ -59,11 +59,11 @@ _root.装备生命周期函数.XM25周期 = function (ref:Object, param:Object)
     if (laser == undefined) { return; }
 
     // --- 1. 按键检测：实现锁定与解锁逻辑 ---
-    
-    var isTransformKeyDown:Boolean = _root.按键输入检测(target, _root.武器变形键);
-    
-    // 关键：检测按键是否为"刚刚被按下" (当前帧按下，上一帧未按下)
-    if (isTransformKeyDown && !ref.wasTransformKeyDown) {
+    // 调用后 ref.wasTransformKeyDown 持当前帧按下状态（既是 hold check 用，
+    // 又是下一帧 edge 检测的 prev-frame slot）
+    var isRise:Boolean = KeyEdgeTrigger.onRise(ref, target, _root.武器变形键, "wasTransformKeyDown");
+
+    if (isRise) {
         // 如果当前已经锁定了目标，则这次按下是"解锁"
         if (ref.lockedEnemy != null) {
             // 完全解锁：清除目标和重置所有锁定状态
@@ -71,7 +71,7 @@ _root.装备生命周期函数.XM25周期 = function (ref:Object, param:Object)
             ref.lockLevel = 0;
             ref.lockTimer = 0;
             ref.isHoldingLock = false;
-        } 
+        }
         // 如果当前未锁定目标，则这次按下是"尝试锁定"
         else {
             // 查找最近的敌人并设为锁定目标
@@ -84,13 +84,13 @@ _root.装备生命周期函数.XM25周期 = function (ref:Object, param:Object)
             }
         }
     }
-    
+
     // --- 2. 持续按键锁定升级逻辑 ---
-    
-    if (ref.lockedEnemy != null && isTransformKeyDown) {
+
+    if (ref.lockedEnemy != null && ref.wasTransformKeyDown) {
         ref.isHoldingLock = true;
         ref.lockTimer++;
-        
+
         // 根据持续时间升级锁定等级
         if (ref.lockLevel == 1 && ref.lockTimer >= ref.lockTimers.level2) {
             ref.lockLevel = 2;
@@ -104,9 +104,6 @@ _root.装备生命周期函数.XM25周期 = function (ref:Object, param:Object)
         ref.isHoldingLock = false;
         // 注意：不重置 lockTimer，这样重新按下时可以继续之前的进度
     }
-    
-    // 在逻辑的最后，更新上一帧的按键状态，为下一帧做准备
-    ref.wasTransformKeyDown = isTransformKeyDown;
 
     
     // --- 3. 追踪与破锁逻辑 ---

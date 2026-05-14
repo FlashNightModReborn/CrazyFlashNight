@@ -44,24 +44,7 @@ _root.装备生命周期函数.XM556周期 = function (ref:Object, param:Object)
 {
     if (!EquipmentTick.open(ref)) return;
 
-    /* -------- 1. 连射计数更新（短路写法） -------- */
-    (ref.isFiring && (ref.fireCount = Math.min(ref.fireCount + ref.spinUpAmount,
-                                               ref.maxSpinCount))) ||
-    (ref.fireCount = Math.max(0, ref.fireCount - ref.spinDownRate));
-
-    /* -------- 2. 推进动画帧（仅 state） -------- */
-    if (ref.fireCount > 0)
-    {
-        var gunAnim:MovieClip = ref.自机[ref.gunString].动画;
-        var currentSpeed:Number = ref.fireCount * ref.spinSpeedFactor;
-        ref.gunFrame += currentSpeed;
-
-        if (gunAnim && ref.gunFrame > gunAnim._totalFrames)
-            ref.gunFrame = ((ref.gunFrame - 1) % gunAnim._totalFrames) + 1;
-    }
-
-    /* -------- 3. 本帧逻辑结束，重置射击标记 -------- */
-    ref.isFiring = false;
+    BladeFireSpinController.tick(ref, ref.自机[ref.gunString].动画);
 
     _root.装备生命周期函数.XM556视觉更新(ref);
 };

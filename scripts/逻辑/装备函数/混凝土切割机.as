@@ -49,22 +49,7 @@ _root.装备生命周期函数.混凝土切割机周期 = function(ref:Object, p
 
     var target:MovieClip = ref.自机;
 
-    (ref.isFiring && (ref.fireCount = Math.min(ref.fireCount + ref.spinUpAmount, ref.maxSpinCount))) ||
-    (ref.fireCount = Math.max(0, ref.fireCount - ref.spinDownRate));
-
-    // 推进动画帧（仅 state）
-    if (ref.fireCount > 0) {
-        var gun:MovieClip = target.长枪_引用;
-        var currentSpeed:Number = ref.fireCount * ref.spinSpeedFactor;
-        ref.gunFrame += currentSpeed;
-
-        if (gun && ref.gunFrame > gun._totalFrames) {
-            ref.gunFrame = ((ref.gunFrame - 1) % gun._totalFrames) + 1;
-        }
-    }
-
-    // 重置射击状态
-    ref.isFiring = false;
+    BladeFireSpinController.tick(ref, target.长枪_引用);
 
     // 超载剩余时间衰减
     if (target.混凝土切割机超载打击许可) {

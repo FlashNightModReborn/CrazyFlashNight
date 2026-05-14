@@ -28,22 +28,7 @@
 _root.装备生命周期函数.僵尸割草机周期 = function(ref:Object, param:Object) {
     if (!EquipmentTick.open(ref)) return;
 
-    (ref.isFiring && (ref.fireCount = Math.min(ref.fireCount + ref.spinUpAmount, ref.maxSpinCount))) ||
-    (ref.fireCount = Math.max(0, ref.fireCount - ref.spinDownRate));
-
-    // 2. 推进动画帧（仅 state）
-    if (ref.fireCount > 0) {
-        var gun:MovieClip = ref.自机.长枪_引用;
-        var currentSpeed:Number = ref.fireCount * ref.spinSpeedFactor;
-        ref.gunFrame += currentSpeed;
-
-        if (gun && ref.gunFrame > gun._totalFrames) {
-            ref.gunFrame = ((ref.gunFrame - 1) % gun._totalFrames) + 1;
-        }
-    }
-
-    // 3. 重置射击状态
-    ref.isFiring = false;
+    BladeFireSpinController.tick(ref, ref.自机.长枪_引用);
 
     _root.装备生命周期函数.僵尸割草机视觉更新(ref);
 };

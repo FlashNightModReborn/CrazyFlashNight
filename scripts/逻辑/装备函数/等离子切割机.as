@@ -57,14 +57,7 @@ _root.装备生命周期函数.等离子切割机初始化 = function(ref, param
         // 仅在本武器近战子弹且处于长枪攻击模式时生效
         if (bullet.子弹种类 === "近战子弹" && targetUnit.攻击模式 === "长枪") {
             // —— 奖励回血（按百分比）
-            var eliteLevel:Number = UnitUtil.getEliteLevel(hitTarget);
-            var level:Number = Math.max(0, eliteLevel);
-            var rewardBulletCount:Number;
-            switch (level) {
-                case 1: rewardBulletCount = ref.eliteReward; break; // 精英
-                case 2: rewardBulletCount = ref.bossReward;  break; // 首领
-                default: rewardBulletCount = ref.basicReward;       // 普通
-            }
+            var rewardBulletCount:Number = EliteTierReward.resolve(hitTarget, ref.basicReward, ref.eliteReward, ref.bossReward);
             RegenerationCore.executeRegeneration(
                 targetUnit,
                 RegenerationCore.HEALTH_REGEN,

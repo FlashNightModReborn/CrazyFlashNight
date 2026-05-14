@@ -108,55 +108,12 @@ _root.装备生命周期函数.烈焰斩马刀周期 = function(ref:Object, para
     // --- 激活窗口处理（与斩马刀一致）---
     if (ref.requireActivation)
     {
-        if (ref.activation)
-        {
-            var elapsed:Number = now - ref.activationStartFrame;
-            if (elapsed >= ref.totalFrames)
-            {
-                ref.activation = false;
-                if (glow != undefined) { glow._visible = false; glow._alpha = 0; }
-            }
-        }
-
-        if (ref.activation)
-        {
-            if (glow != undefined)
-            {
-                if (!glow._visible) glow._visible = true;
-                var e:Number = now - ref.activationStartFrame;
-                var alphaVal:Number;
-
-                if (e <= ref.fadeInFrames && ref.fadeInFrames > 0)
-                {   // 淡入
-                    alphaVal = (e / ref.fadeInFrames) * 100;
-                }
-                else if (e >= ref.totalFrames - ref.fadeOutFrames && ref.fadeOutFrames > 0)
-                {   // 淡出
-                    var fo:Number = (e - (ref.totalFrames - ref.fadeOutFrames)) / ref.fadeOutFrames;
-                    alphaVal = (1 - fo) * 100;
-                }
-                else
-                {   // 常亮
-                    alphaVal = 100;
-                }
-                glow._alpha = (alphaVal > 100) ? 100 : (alphaVal < 0) ? 0 : alphaVal;
-            }
-        }
-        else
-        {
-            if (glow != undefined && glow._visible)
-            {
-                glow._visible = false;
-                glow._alpha = 0;
-            }
-            return; // 未激活直接返回
-        }
+        if (!ActivationGlowWindow.tick(ref, glow, now)) return;
     }
     else
     {
         if (!glow._visible) glow._visible = true;
         glow._alpha = 100;
-
     }
 
     // --- 间隔（帧）判定：一次通过允许同帧按段落多发（与原 FLA 同语义）---

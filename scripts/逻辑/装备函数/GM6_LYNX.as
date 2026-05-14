@@ -75,26 +75,12 @@ _root.装备生命周期函数.GM6_LYNX初始化 = function(ref, param) {
 
 
         if (bullet.子弹种类 === actor.长枪属性.bullet) {
-            var eliteLevel:Number = UnitUtil.getEliteLevel(hitTarget);
-            var level:Number = Math.max(0, eliteLevel);
-            var rewardBulletCount:Number;
+            var level:Number = Math.max(0, UnitUtil.getEliteLevel(hitTarget));
+            var rewardBulletCount:Number = EliteTierReward.resolve(hitTarget, ref.basicReward, ref.eliteReward, ref.bossReward);
 
-            switch (level) {
-                case 1: // 精英
-                    rewardBulletCount = ref.eliteReward;
-                    break;
-                case 2: // 首领
-                    rewardBulletCount = ref.bossReward;
-                    break;
-                default:
-                    rewardBulletCount = ref.basicReward; // 超过最大奖励
-            }
-
-            //_root.发布消息(eliteLevel, level, rewardBulletCount);
             var ic:MovieClip = hitTarget.人物文字信息;
             var effect:MovieClip = EffectSystem.Effect("GM6j击杀特效", hitTarget._x, hitTarget._y - hitTarget._height);
-            // _root.发布消息("GM6_LYNX击杀特效", effect, hitTarget._x, hitTarget._y - hitTarget._height);
-            
+
             effect._xscale = effect._yscale = 20;
             effect.动画.gotoAndPlay(level + 1); // 根据精英等级播放不同动画
             var fireCount:Number = (actor.长枪.value.shot -= rewardBulletCount);

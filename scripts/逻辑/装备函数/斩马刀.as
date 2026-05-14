@@ -82,61 +82,8 @@ _root.装备生命周期函数.斩马刀周期 = function(ref:Object, param:Obje
 
     var glow:MovieClip = saber.发光纹路; // 可能不存在
     var now:Number = _root.帧计时器.当前帧数;
-    var total:Number   = ref.totalFrames;
-    var fadeIn:Number  = ref.fadeInFrames;
-    var fadeOut:Number = ref.fadeOutFrames;
 
-    // --- 激活时长到期检测 ---
-    if (ref.activation)
-    {
-        var elapsed:Number = now - ref.activationStartFrame;
-        if (elapsed >= total)
-        {
-            ref.activation = false;
-            if (glow != undefined) { glow._visible = false; glow._alpha = 0; }
-            // _root.发布消息("斩马刀激活结束");
-        }
-    }
-
-    // --- 激活期：处理刀身纹路的淡入/淡出/常亮 ---
-    if (ref.activation)
-    {
-        if (glow != undefined)
-        {
-            if (!glow._visible) glow._visible = true;
-
-            var e:Number = now - ref.activationStartFrame;
-            var alphaVal:Number;
-
-            if (e <= fadeIn && fadeIn > 0)
-            {
-                // 淡入
-                alphaVal = (e / fadeIn) * 100;
-            }
-            else if (e >= total - fadeOut && fadeOut > 0)
-            {
-                // 淡出
-                var fo:Number = (e - (total - fadeOut)) / fadeOut;
-                alphaVal = (1 - fo) * 100;
-            }
-            else
-            {
-                // 常亮
-                alphaVal = 100;
-            }
-
-            glow._alpha = (alphaVal > 100) ? 100 : (alphaVal < 0) ? 0 : alphaVal;
-        }
-    }
-    else
-    {
-        if (glow != undefined && glow._visible)
-        {
-            glow._visible = false;
-            glow._alpha = 0;
-        }
-        return; // 未激活直接返回
-    }
+    if (!ActivationGlowWindow.tick(ref, glow, now)) return;
 
     // --- 触发间隔（帧）判定 ---
     var canFire:Boolean = false;

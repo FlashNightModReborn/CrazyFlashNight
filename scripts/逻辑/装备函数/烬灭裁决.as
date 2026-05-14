@@ -62,12 +62,9 @@ _root.装备生命周期函数.烬灭裁决周期 = function(ref, param)
     EquipmentTick.cleanup(ref);
     var unit = ref.自机;
 
-    // 手工 edge-trigger：上升沿触发一次；按住不放战技结束后不会再次触发
-    var 按住 = _root.按键输入检测(unit, _root.武器变形键) ? true : false;
-    var 上升沿 = 按住 && !ref.上次变形键按下;
-    ref.上次变形键按下 = 按住;
-
-    if (上升沿 && _root.兵器使用检测(unit) && unit.状态 !== "战技") {
+    // edge-trigger：上升沿触发一次；按住不放战技结束后不会再次触发
+    if (KeyEdgeTrigger.onRise(ref, unit, _root.武器变形键, "上次变形键按下") &&
+        _root.兵器使用检测(unit) && unit.状态 !== "战技") {
         _root.装备生命周期函数.烬灭裁决_请求变形(ref);
     }
     // 段位特效由武器 MC 自带的 onClipEvent(enterFrame) 直接调 _root.刀口触发特效.xxx
