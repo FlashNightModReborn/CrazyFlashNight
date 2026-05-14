@@ -15,7 +15,8 @@ _root.装备生命周期函数.wa90变形款初始化 = function(ref:Object, par
 
     /* ---------- 1. 配置参数 ---------- */
     ref.animDuration = param.animationDuration || 15;
-    ref.transformInterval = param.transformInterval || 1000;
+    // 变形键 edge-trigger seed：避免过图/复活/重装备时按着键被误判为新按下
+    ref.wasTransformKeyDown = _root.按键输入检测(target, _root.武器变形键) ? true : false;
 
     /* ---------- 2. 从 item.value 恢复形态状态 ---------- */
     var wv:Object = target[ref.装备类型].value;
@@ -38,16 +39,9 @@ _root.装备生命周期函数.wa90变形款周期 = function(ref:Object, param:
 
     var target:MovieClip = ref.自机;
 
-    /* ---------- 1. 变形键触发（长枪模式 + 冷却节流） ---------- */
-    if (target.攻击模式 == "长枪" && _root.按键输入检测(target, _root.武器变形键)) {
-        _root.更新并执行时间间隔动作(
-            ref,
-            "wa90变形切换",
-            _root.装备生命周期函数.wa90变形款切换形态,
-            ref.transformInterval,
-            false,
-            ref
-        );
+    /* ---------- 1. 变形键触发（长枪模式 + edge-trigger） ---------- */
+    if (target.攻击模式 == "长枪" && KeyEdgeTrigger.onRise(ref, target, _root.武器变形键, "wasTransformKeyDown")) {
+        _root.装备生命周期函数.wa90变形款切换形态(ref);
     }
 
     /* ---------- 2. 推帧：长枪 + 变形 → 推至 animDuration；否则回 1 ---------- */

@@ -38,25 +38,7 @@ _root.装备生命周期函数.Jackhammer周期 = function(ref:Object, param:Obj
     var gun:MovieClip    = target.长枪_引用;
 
     // —— 1. 充能逻辑 ——
-    var isActive = (target.攻击模式 === "长枪");
-
-    if (isActive) {
-        if (_root.按键输入检测(target, _root.武器变形键)) {
-            ref.chargeCount = Math.min(ref.chargeCount + ref.chargeStep, ref.chargeCountMax);
-        } else if (ref.chargeCount > 0) {
-            ref.chargeCount = Math.max(ref.chargeCount - ref.chargeStep, 0);
-        }
-
-        if (ref.chargeCount >= ref.chargeCountMax) {
-            target.chargeComplete = true;
-        }
-    } else {
-        target.chargeComplete = false;
-        if (ref.chargeCount > 0) {
-            ref.chargeCount = Math.max(ref.chargeCount - ref.chargeStep, 0);
-        }
-    }
-
+    ChargeKeyAccumulator.tick(ref, target, _root.武器变形键, target.攻击模式 === "长枪");
     var chargeComplete:Boolean = target.chargeComplete;
 
     // —— 2. 主枪帧推进 ——

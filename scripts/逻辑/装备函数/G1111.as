@@ -23,9 +23,9 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
     ref.currentFrame     = ref.RIFLE_START;
     ref.isWeaponActive   = false;
 
-    /* ---------- 3. 变形冷却 ---------- */
-    ref.transformCooldown = 0;
-    ref.TRANSFORM_CD_F    = param.transformInterval || 30; // 30 fps = 1 s
+    /* ---------- 3. 变形键 edge-trigger seed ---------- */
+    // seed 当前键态，避免过图/复活/重装备时玩家按着键被误判为新按下
+    ref.wasTransformKeyDown = _root.按键输入检测(target, _root.武器变形键) ? true : false;
 
     /* ---------- 4. 激光模组自动锁定系统 ---------- */
     ref.laserRotation = 0;              // 激光当前角度
@@ -207,15 +207,11 @@ _root.装备生命周期函数.G1111周期 = function (ref)
     var wantFire = ref.fireRequest;
     ref.fireRequest = false;
 
-    /* ===== 2. 冷却计数 ===== */
-    if (ref.transformCooldown > 0) --ref.transformCooldown;
-
-    /* ===== 3. 变形键触发 ===== */
-    if (!ref.isTransforming && ref.transformCooldown == 0) {
-        if (_root.按键输入检测(自机, _root.武器变形键)) {
+    /* ===== 2. 变形键触发（edge） ===== */
+    if (!ref.isTransforming) {
+        if (KeyEdgeTrigger.onRise(ref, 自机, _root.武器变形键, "wasTransformKeyDown")) {
             ref.isTransforming   = true;
             ref.transformToRock  = !ref.isRocketMode;          // 目标形态
-            ref.transformCooldown = ref.TRANSFORM_CD_F;
 
             // 选定起始帧（单向推进）
             ref.currentFrame = ref.transformToRock ?

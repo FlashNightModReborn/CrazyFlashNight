@@ -32,27 +32,7 @@ _root.装备生命周期函数.G111周期 = function(ref:Object, param:Object) {
     var gun:MovieClip    = target.长枪_引用;
 
     // —— 1. 充能逻辑 ——
-    var isActive = (target.攻击模式 === "长枪");
-
-    if (isActive) {
-        // 长枪模式：按键增加充能，松开时减少（仅当 > 0 时）
-        if (_root.按键输入检测(target, _root.武器变形键)) {
-            ref.chargeCount = Math.min(ref.chargeCount + ref.chargeStep, ref.chargeCountMax);
-        } else if (ref.chargeCount > 0) {
-            ref.chargeCount = Math.max(ref.chargeCount - ref.chargeStep, 0);
-        }
-
-        // 只有在达到最大充能时才设置完成状态（保持锁定机制）
-        if (ref.chargeCount >= ref.chargeCountMax) {
-            target.chargeComplete = true;
-        }
-    } else {
-        // 非长枪模式：强制重置充能状态
-        target.chargeComplete = false;
-        if (ref.chargeCount > 0) {
-            ref.chargeCount = Math.max(ref.chargeCount - ref.chargeStep, 0);
-        }
-    }
+    ChargeKeyAccumulator.tick(ref, target, _root.武器变形键, target.攻击模式 === "长枪");
 
     // —— 2. 主枪帧推进 ——
     if (target.chargeComplete) {

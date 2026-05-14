@@ -17,9 +17,9 @@ _root.装备生命周期函数.双面雷神初始化 = function(ref:Object, para
     ref.transformToSniper = false;  // 变形方向：true = 步枪→狙击, false = 狙击→步枪
     ref.currentFrame = ref.RIFLE_START;
 
-    /* ---------- 3. 变形冷却 ---------- */
-    ref.transformCooldown = 0;
-    ref.TRANSFORM_CD_F = param.transformInterval || 30; // 变形冷却时间（帧）
+    /* ---------- 3. 变形键 edge-trigger seed ---------- */
+    // seed 当前键态，避免过图/复活/重装备时玩家按着键被误判为新按下
+    ref.wasTransformKeyDown = _root.按键输入检测(target, _root.武器变形键) ? true : false;
 
     /* ---------- 4. 狙击枪参数 ---------- */
     ref.sniperCapacity = param.capacity2 || 14;    // 狙击模式弹容量
@@ -81,20 +81,14 @@ _root.装备生命周期函数.双面雷神周期 = function(ref:Object) {
         return;
     }
 
-    /* ===== 1. 冷却计数 ===== */
-    if (ref.transformCooldown > 0) {
-        --ref.transformCooldown;
-    }
-
     // 用于避免“首帧被推进”
     var startedThisFrame:Boolean = false;
 
-    /* ===== 2. 变形键触发 ===== */
-    if (!ref.isTransforming && ref.transformCooldown == 0) {
-        if (_root.按键输入检测(自机, _root.武器变形键)) {
+    /* ===== 1. 变形键触发（edge） ===== */
+    if (!ref.isTransforming) {
+        if (KeyEdgeTrigger.onRise(ref, 自机, _root.武器变形键, "wasTransformKeyDown")) {
             ref.isTransforming = true;
             ref.transformToSniper = !ref.isSniperMode;    // 切换到相反形态
-            ref.transformCooldown = ref.TRANSFORM_CD_F;
 
             // 起始帧：一次性定位，不在同一帧推进，避免跳过起始帧
             if (ref.transformToSniper) {

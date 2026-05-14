@@ -37,10 +37,10 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
     var target:MovieClip = ref.自机;
 
     // 配置参数（帧数，30fps）
-    ref.transformCooldownFrames = 30;  // 形态切换冷却（30帧 = 1秒）
     ref.attackCooldownFrames = 8;      // 攻击时天秤转换冷却（8帧 ≈ 250ms）
-    ref.lastTransformFrame = 0;        // 上次形态切换帧数
     ref.lastAttackConvertFrame = 0;    // 上次攻击转换帧数
+    // 变形键 edge-trigger seed：避免过图/复活/重装备时按着键被误判为新按下
+    ref.wasTransformKeyDown = _root.按键输入检测(target, _root.武器变形键) ? true : false;
 
     // 动画帧配置
     // 形态停止帧
@@ -300,13 +300,10 @@ _root.装备生命周期函数.光剑天秤周期 = function(ref:Object, param:O
             }
         }
     } else {
-        // 2. 武器形态切换检测（武器变形键，仅玩家控制单位响应）
+        // 2. 武器形态切换检测（武器变形键 edge-trigger，仅玩家控制单位响应）
         // 只有在非过渡状态下才能触发切换
-        if (_root.按键输入检测(target, _root.武器变形键) && target.攻击模式 == "兵器") {
-            if (currentFrame - ref.lastTransformFrame >= ref.transformCooldownFrames) {
-                ref.lastTransformFrame = currentFrame;
-                _root.装备生命周期函数.光剑天秤切换武器形态(ref);
-            }
+        if (target.攻击模式 == "兵器" && KeyEdgeTrigger.onRise(ref, target, _root.武器变形键, "wasTransformKeyDown")) {
+            _root.装备生命周期函数.光剑天秤切换武器形态(ref);
         }
 
         // 3. 攻击时天秤转换（攻势/守御形态下攻击触发buff互换）

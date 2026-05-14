@@ -9,15 +9,11 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param)
     // 1. 创建状态机
     ref.fsm = new FSM_StateMachine(null, null, null);
 
-    // 2. 定义配置常量 - 集中管理帧区间与变形参数
+    // 2. 定义配置常量 - 集中管理帧区间
     var CONFIG = {FRAMES: {
                 BFG: {start: param.bfgStart || 1, end: param.bfgEnd || 15},
                 TRANSFORM: {start: param.transStart || 16, end: param.transEnd || 25},
                 UNMAYKR: {start: param.unmStart || 26, end: param.unmEnd || 41}
-            },
-            TRANSFORM: {
-                interval: param.transformInterval || 1000,
-                label: param.transformLabel || "铁枪变形检测"
             }};
 
     // 3. 定义共享数据
@@ -179,6 +175,9 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param)
     // 轮盘累计旋转角度 - 由 state 维护，视觉函数只做幂等写入
     ref.轮盘Rotation = 0;
 
+    // 变形键 edge-trigger seed：避免过图/复活/重装备时按着键被误判为新按下
+    ref.wasTransformKeyDown = _root.按键输入检测(自机, _root.武器变形键) ? true : false;
+
     PlacementVisual.hookVisualUpdate(自机, "长枪_引用", ref, _root.装备生命周期函数.铁枪视觉更新);
 };
 
@@ -204,19 +203,16 @@ _root.装备生命周期函数.铁枪周期 = function(ref, param)
         data.lastStateHash = null;
     }
 
-    // 触发变形
+    // 触发变形（edge-trigger）
     if (data.isWeaponActive && !data.isTransforming)
     {
-        if (_root.按键输入检测(自机, _root.武器变形键))
+        if (KeyEdgeTrigger.onRise(ref, 自机, _root.武器变形键, "wasTransformKeyDown"))
         {
-            _root.更新并执行时间间隔动作(ref, data.config.TRANSFORM.label, function(d)
-                {
-                    d.isTransforming = true;
-                    d.transformTargetShape = !d.unmaykr化;
-                    d.currentFrame = d.config.FRAMES.TRANSFORM.start;
-                    d.cachedTargetFrame = null;
-                    d.lastStateHash = null;
-                }, data.config.TRANSFORM.interval, false, data);
+            data.isTransforming = true;
+            data.transformTargetShape = !data.unmaykr化;
+            data.currentFrame = data.config.FRAMES.TRANSFORM.start;
+            data.cachedTargetFrame = null;
+            data.lastStateHash = null;
         }
     }
 

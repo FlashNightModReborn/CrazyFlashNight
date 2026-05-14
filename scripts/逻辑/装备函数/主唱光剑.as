@@ -4,7 +4,8 @@
 
    // ===== 从XML参数对象读取配置 =====
    ref.animDuration = param.animDuration || 15;
-   ref.transformInterval = param.transformInterval || 1000;
+   // 变形键 edge-trigger seed：避免过图/复活/重装备时按着键被误判为新按下
+   ref.wasTransformKeyDown = _root.按键输入检测(target, _root.武器变形键) ? true : false;
 
    var 耗蓝比例:Number = param.mpCostRatio || 1;
    ref.坐标偏移范围 = param.coordOffsetRange || 10;
@@ -159,15 +160,9 @@ _root.装备生命周期函数.主唱光剑周期 = function(ref:Object, param:O
    var target:MovieClip = ref.自机;
    var saber:MovieClip = target.刀_引用;
    
-   // 武器形态切换检测
-   if (target.攻击模式 == "兵器" && _root.按键输入检测(target, _root.武器变形键)) {
-       _root.更新并执行时间间隔动作(
-           ref,
-           "武器形态切换",
-           function() { _root.装备生命周期函数.主唱光剑切换武器形态(ref); },
-           ref.transformInterval,
-           false
-       );
+   // 武器形态切换检测（edge-trigger）
+   if (target.攻击模式 == "兵器" && KeyEdgeTrigger.onRise(ref, target, _root.武器变形键, "wasTransformKeyDown")) {
+       _root.装备生命周期函数.主唱光剑切换武器形态(ref);
    }
    
    // 动画控制和更新
