@@ -59,7 +59,7 @@ _root.装备生命周期函数.烬灭裁决初始化 = function(ref, param)
 
 _root.装备生命周期函数.烬灭裁决周期 = function(ref, param)
 {
-    _root.装备生命周期函数.移除异常周期函数(ref);
+    EquipmentTick.cleanup(ref);
     var unit = ref.自机;
 
     // 手工 edge-trigger：上升沿触发一次；按住不放战技结束后不会再次触发

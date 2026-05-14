@@ -182,8 +182,7 @@ _root.装备生命周期函数.剑圣腿甲渲染更新 = function(ref:Object) {
  * @param {Object} ref 生命周期反射对象
  */
 _root.装备生命周期函数.剑圣腿甲周期 = function(ref:Object) {
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     var tier:String = ref.tier;
     if (!tier) {

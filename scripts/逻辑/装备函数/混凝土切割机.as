@@ -41,14 +41,11 @@
         prop.魔法伤害属性 = flag ? ref.超载魔法属性 : ref.基础魔法属性;
     });
 
-    DressupSubscriber.onPlacement(target, "长枪_引用", function() {
-        _root.装备生命周期函数.混凝土切割机视觉更新(ref);
-    });
+    PlacementVisual.hookVisualUpdate(target, "长枪_引用", ref, _root.装备生命周期函数.混凝土切割机视觉更新);
 };
 
 _root.装备生命周期函数.混凝土切割机周期 = function(ref:Object, param:Object) {
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     var target:MovieClip = ref.自机;
 

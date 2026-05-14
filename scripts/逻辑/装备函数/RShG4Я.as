@@ -35,9 +35,7 @@ _root.装备生命周期函数.RShG4Я初始化 = function(ref, param)
 
     /* ---------- 4) 事件订阅 ---------- */
     // 长枪引用就位时刷新可视（仅读 placement 子级 弹头1/弹头2 内置属性，sync 通道足矣）
-    DressupSubscriber.onPlacement(target, "长枪_引用", function () {
-        _root.装备生命周期函数.RShG4Я视觉(ref);
-    });
+    PlacementVisual.hookVisualUpdate(target, "长枪_引用", ref, _root.装备生命周期函数.RShG4Я视觉);
 
     // 触发一次射击请求（由周期函数消化）
     target.dispatcher.subscribe("updateBullet", function () {
@@ -73,8 +71,7 @@ _root.装备生命周期函数.RShG4Я周期 = function (ref)
        动画播放速度不需要可调
      */
     // 统一异常守护（与 G1111风格对齐，如未定义可忽略）
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     var 自机:MovieClip  = ref.自机;
     var 长枪:MovieClip  = 自机.长枪_引用;

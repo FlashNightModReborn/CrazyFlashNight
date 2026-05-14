@@ -177,9 +177,7 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
         ref.fireRequest = true;
     });
 
-    DressupSubscriber.onPlacement(target, "长枪_引用", function () {
-        _root.装备生命周期函数.G1111视觉更新(ref);
-    });
+    PlacementVisual.hookVisualUpdate(target, "长枪_引用", ref, _root.装备生命周期函数.G1111视觉更新);
 };
 
 /*--------------------------------------------------------
@@ -187,8 +185,7 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
  *------------------------------------------------------*/
 _root.装备生命周期函数.G1111周期 = function (ref)
 {
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     var 自机  = ref.自机;
     var 长枪  = 自机.长枪_引用;

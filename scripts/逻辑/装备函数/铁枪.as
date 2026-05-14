@@ -179,9 +179,7 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param)
     // 轮盘累计旋转角度 - 由 state 维护，视觉函数只做幂等写入
     ref.轮盘Rotation = 0;
 
-    DressupSubscriber.onPlacement(自机, "长枪_引用", function() {
-        _root.装备生命周期函数.铁枪视觉更新(ref);
-    });
+    PlacementVisual.hookVisualUpdate(自机, "长枪_引用", ref, _root.装备生命周期函数.铁枪视觉更新);
 };
 
 /*--------------------------------------------------------
@@ -189,8 +187,7 @@ _root.装备生命周期函数.铁枪初始化 = function(ref, param)
  *------------------------------------------------------*/
 _root.装备生命周期函数.铁枪周期 = function(ref, param)
 {
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     var fsm = ref.fsm;
     var data = fsm.data;

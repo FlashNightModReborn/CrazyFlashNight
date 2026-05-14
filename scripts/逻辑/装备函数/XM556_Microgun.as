@@ -34,9 +34,7 @@ _root.装备生命周期函数.XM556初始化 = function (ref:Object, param:Obje
 
     ref.gunString = ref.装备类型 + "_引用";   // target[gunString].动画
 
-    DressupSubscriber.onPlacement(target, ref.gunString, function () {
-        _root.装备生命周期函数.XM556视觉更新(ref);
-    });
+    PlacementVisual.hookVisualUpdate(target, ref.gunString, ref, _root.装备生命周期函数.XM556视觉更新);
 };
 
 /* ---------------------------------------------------------
@@ -44,8 +42,7 @@ _root.装备生命周期函数.XM556初始化 = function (ref:Object, param:Obje
  * --------------------------------------------------------- */
 _root.装备生命周期函数.XM556周期 = function (ref:Object, param:Object)
 {
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     /* -------- 1. 连射计数更新（短路写法） -------- */
     (ref.isFiring && (ref.fireCount = Math.min(ref.fireCount + ref.spinUpAmount,

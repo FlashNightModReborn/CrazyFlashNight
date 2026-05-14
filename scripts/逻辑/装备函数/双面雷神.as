@@ -51,9 +51,7 @@ _root.装备生命周期函数.双面雷神初始化 = function(ref:Object, para
         target.isSniperMode = ref.isSniperMode;
     });
 
-    DressupSubscriber.onPlacement(target, "长枪_引用", function() {
-        _root.装备生命周期函数.双面雷神视觉更新(ref);
-    });
+    PlacementVisual.hookVisualUpdate(target, "长枪_引用", ref, _root.装备生命周期函数.双面雷神视觉更新);
 };
 
 /*--------------------------------------------------------
@@ -70,8 +68,7 @@ _root.装备生命周期函数.双面雷神视觉更新 = function(ref:Object) {
  * 周期函数 - 只处理形态转换逻辑
  *------------------------------------------------------*/
 _root.装备生命周期函数.双面雷神周期 = function(ref:Object) {
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     var 自机 = ref.自机;
 

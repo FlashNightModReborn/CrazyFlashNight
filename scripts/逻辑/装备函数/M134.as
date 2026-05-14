@@ -17,14 +17,11 @@
         ref.isFiring = true; // 标记本帧正在射击
     });
 
-    DressupSubscriber.onPlacement(target, "长枪_引用", function() {
-        _root.装备生命周期函数.M134视觉更新(ref);
-    });
+    PlacementVisual.hookVisualUpdate(target, "长枪_引用", ref, _root.装备生命周期函数.M134视觉更新);
 };
 
 _root.装备生命周期函数.M134周期 = function(ref:Object, param:Object) {
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     // ===== AVM1性能优化：利用短路逻辑避免条件分支 =====
     // 

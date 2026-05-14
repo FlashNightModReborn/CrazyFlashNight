@@ -20,15 +20,12 @@ _root.装备生命周期函数.XM556_OC_Overlord初始化 = function (ref:Object
         ref.isFiring = true;   // 标记收到射击指令，稍后在周期函数里消费
     });
 
-    DressupSubscriber.onPlacement(target, ref.gunString, function () {
-        _root.装备生命周期函数.XM556_OC_Overlord视觉更新(ref);
-    });
+    PlacementVisual.hookVisualUpdate(target, ref.gunString, ref, _root.装备生命周期函数.XM556_OC_Overlord视觉更新);
 };
 
 /* ============ 周期更新 ============ */
 _root.装备生命周期函数.XM556_OC_Overlord周期 = function (ref:Object, param:Object) {
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     var target:MovieClip = ref.自机;
 

@@ -48,9 +48,7 @@ _root.装备生命周期函数.GM6_LYNX初始化 = function(ref, param) {
     if (rig)
         rig.gotoAndStop(ref.curFrame);
 
-    DressupSubscriber.onPlacement(actor, "长枪_引用", function() {
-        _root.装备生命周期函数.GM6_LYNX视觉更新(ref);
-    });
+    PlacementVisual.hookVisualUpdate(actor, "长枪_引用", ref, _root.装备生命周期函数.GM6_LYNX视觉更新);
 
     // 订阅“长枪射击”
     actor.dispatcher.subscribe("processShot", function() {
@@ -118,8 +116,7 @@ _root.装备生命周期函数.GM6_LYNX初始化 = function(ref, param) {
 // 周期：按状态推进（互斥执行）
 // =======================================================
 _root.装备生命周期函数.GM6_LYNX周期 = function(ref) {
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     var actor:MovieClip = ref.自机;
     var rig:MovieClip = actor.长枪_引用;

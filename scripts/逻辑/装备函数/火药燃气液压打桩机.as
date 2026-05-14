@@ -56,9 +56,7 @@
         reflector.fsm.data.flag = true;
     });
 
-    DressupSubscriber.onPlacement(target, "长枪_引用", function() {
-        _root.装备生命周期函数.火药燃气液压打桩机视觉更新(reflector);
-    });
+    PlacementVisual.hookVisualUpdate(target, "长枪_引用", reflector, _root.装备生命周期函数.火药燃气液压打桩机视觉更新);
 };
 
 /**
@@ -67,8 +65,7 @@
  * @param paramObj:Object - 参数对象(当前未使用)
  */
 _root.装备生命周期函数.火药燃气液压打桩机周期 = function(reflector:Object, paramObj:Object) {
-    _root.装备生命周期函数.移除异常周期函数(reflector);
-    if (!VisualSync.beginTick(reflector)) return;
+    if (!EquipmentTick.open(reflector)) return;
 
     // 处理状态机逻辑（推 state）
     reflector.fsm.onAction();

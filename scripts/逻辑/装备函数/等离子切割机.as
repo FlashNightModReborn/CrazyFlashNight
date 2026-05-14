@@ -111,17 +111,14 @@ _root.装备生命周期函数.等离子切割机初始化 = function(ref, param
         }
     });
 
-    DressupSubscriber.onPlacement(target, "长枪_引用", function() {
-        _root.装备生命周期函数.等离子切割机视觉更新(ref);
-    });
+    PlacementVisual.hookVisualUpdate(target, "长枪_引用", ref, _root.装备生命周期函数.等离子切割机视觉更新);
 };
 
 /*--------------------------------------------------------
  * 周期函数
  *------------------------------------------------------*/
 _root.装备生命周期函数.等离子切割机周期 = function(ref) {
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     var 自机:MovieClip = ref.自机;
 

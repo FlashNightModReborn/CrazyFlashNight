@@ -22,15 +22,12 @@
 
    // 视觉补触发：onPlacement 一发即够 ── 自机.刀_引用 已被 doConfig 同步换成 NEW skin，
    //   placement transforms 全链就位，localToGlobal 可直接用。详见 agentsDoc/as2-load-timing.md 第 2.4 节。
-   DressupSubscriber.onPlacement(反射对象.自机, "刀_引用", function() {
-      _root.装备生命周期函数.电感切割刃视觉更新(反射对象);
-   });
+   PlacementVisual.hookVisualUpdate(反射对象.自机, "刀_引用", 反射对象, _root.装备生命周期函数.电感切割刃视觉更新);
 };
 
 _root.装备生命周期函数.电感切割刃周期 = function(反射对象, 参数对象)
 {
-   _root.装备生命周期函数.移除异常周期函数(反射对象);
-   if (!VisualSync.beginTick(反射对象)) return;
+   if (!EquipmentTick.open(反射对象)) return;
 
    var 自机 = 反射对象.自机;
    var 刀 = 自机.刀_引用;

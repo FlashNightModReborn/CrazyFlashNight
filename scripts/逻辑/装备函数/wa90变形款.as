@@ -30,14 +30,11 @@ _root.装备生命周期函数.wa90变形款初始化 = function(ref:Object, par
     ref.currentFrame = ref.wa90变形 ? ref.animDuration : 1;
 
     /* ---------- 3. placement 触发首次视觉同步 ---------- */
-    DressupSubscriber.onPlacement(target, "长枪_引用", function() {
-        _root.装备生命周期函数.wa90变形款视觉更新(ref);
-    });
+    PlacementVisual.hookVisualUpdate(target, "长枪_引用", ref, _root.装备生命周期函数.wa90变形款视觉更新);
 };
 
 _root.装备生命周期函数.wa90变形款周期 = function(ref:Object, param:Object) {
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     var target:MovieClip = ref.自机;
 

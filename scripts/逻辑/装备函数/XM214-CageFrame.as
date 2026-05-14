@@ -65,17 +65,14 @@ _root.装备生命周期函数.XM214初始化 = function(ref:Object, param:Objec
 
     target.长枪属性.interval = ref.weaponAttributeValue;
 
-    DressupSubscriber.onPlacement(target, ref.gunString, function() {
-        _root.装备生命周期函数.XM214视觉更新(ref);
-    });
+    PlacementVisual.hookVisualUpdate(target, ref.gunString, ref, _root.装备生命周期函数.XM214视觉更新);
 };
 
 /* ---------------------------------------------------------
  * XM214_CageFrame  周期函数 (重构版)
  * --------------------------------------------------------- */
 _root.装备生命周期函数.XM214周期 = function(ref:Object, param:Object) {
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     var target:MovieClip = ref.自机;
     var gun:MovieClip = target[ref.gunString];

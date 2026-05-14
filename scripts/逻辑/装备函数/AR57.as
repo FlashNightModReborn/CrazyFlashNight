@@ -11,14 +11,11 @@
     var bulletCapacity = equipmentData.capacity > 0 ? equipmentData.capacity : 50;
     ref.bulletRate = bulletCapacity / 50; // 以50发为基准的比例
 
-    DressupSubscriber.onPlacement(target, ref.gunString, function() {
-        _root.装备生命周期函数.AR57视觉更新(ref);
-    });
+    PlacementVisual.hookVisualUpdate(target, ref.gunString, ref, _root.装备生命周期函数.AR57视觉更新);
 };
 
 _root.装备生命周期函数.AR57周期 = function(ref:Object, param:Object) {
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     _root.装备生命周期函数.AR57视觉更新(ref);
 };

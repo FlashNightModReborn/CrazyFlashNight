@@ -28,9 +28,7 @@ _root.装备生命周期函数.杀戮风暴初始化 = function(ref:Object, para
     ref.endFrame     = (param.endFrame     != undefined) ? param.endFrame     : animMc._totalframes || 31;
     ref.rotLen       = ref.endFrame - ref.startFrame + 1; // 旋转区间长度
 
-    DressupSubscriber.onPlacement(target, "刀_引用", function() {
-        _root.装备生命周期函数.杀戮风暴视觉更新(ref);
-    });
+    PlacementVisual.hookVisualUpdate(target, "刀_引用", ref, _root.装备生命周期函数.杀戮风暴视觉更新);
 
     // _root.服务器.发布服务器消息("杀戮风暴初始化完成，旋转区间：" + ref.startFrame + " 到 " + ref.endFrame);
 };
@@ -40,8 +38,7 @@ _root.装备生命周期函数.杀戮风暴初始化 = function(ref:Object, para
 // 周期：限制循环在 [startFrame .. endFrame]，并在回到 startFrame 前判断是否该退出
 // ---------------------------------------------------------------
 _root.装备生命周期函数.杀戮风暴周期 = function(ref:Object, param:Object) {
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     var target:MovieClip = ref.自机;
     var start:Number = ref.startFrame;

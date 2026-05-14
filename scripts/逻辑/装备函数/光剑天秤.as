@@ -150,9 +150,7 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
     // ─────────────────────────────────────────────────────────────────────
     // 主动技能"天秤之力"事件订阅（通过闭包持久化ref访问）
     // ─────────────────────────────────────────────────────────────────────
-    DressupSubscriber.onPlacement(target, "刀_引用", function() {
-        _root.装备生命周期函数.光剑天秤视觉更新(ref);
-    });
+    PlacementVisual.hookVisualUpdate(target, "刀_引用", ref, _root.装备生命周期函数.光剑天秤视觉更新);
 
     target.dispatcher.subscribe("WeaponSkill", function(mode:String) {
         if (mode != "兵器") return;
@@ -242,8 +240,7 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
 
 _root.装备生命周期函数.光剑天秤周期 = function(ref:Object, param:Object):Void
 {
-    _root.装备生命周期函数.移除异常周期函数(ref);
-    if (!VisualSync.beginTick(ref)) return;
+    if (!EquipmentTick.open(ref)) return;
 
     var target:MovieClip = ref.自机;
     var currentFrame:Number = _root.帧计时器.当前帧数;
