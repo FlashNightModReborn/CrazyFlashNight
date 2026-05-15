@@ -182,13 +182,16 @@ namespace CF7Launcher.Guardian
         private Rectangle _telemetryPanelRect;
         private Rectangle _telemetryAnchorRect;
         private IntPtr _telemetryGuardianHwnd;
+        // panel 接管前台后 foreground = WebOverlay HWND（owned top-level，不是 IsChild）；纳入白名单避免污染数据
+        private IntPtr _telemetryWebOverlayHwnd;
         private IntPtr _telemetryHookHandle = IntPtr.Zero;
         private LowLevelMouseProc _telemetryHookProc; // 必须长生命周期引用，防 GC 回收委托
         private int _clicksOutsidePanel;
         private int _sessionTotalClicks;
         private int _filteredExternalClicks;
 
-        public void EnterTelemetryMode(Rectangle panelRect, IntPtr guardianHwnd, Rectangle anchorScreenRect)
+        public void EnterTelemetryMode(Rectangle panelRect, IntPtr guardianHwnd, Rectangle anchorScreenRect,
+                                       IntPtr webOverlayHwnd)
         {
             if (_telemetryActive)
             {
@@ -196,6 +199,7 @@ namespace CF7Launcher.Guardian
                 _telemetryPanelRect = panelRect;
                 _telemetryAnchorRect = anchorScreenRect;
                 _telemetryGuardianHwnd = guardianHwnd;
+                _telemetryWebOverlayHwnd = webOverlayHwnd;
                 LogManager.Log("[InputShield] telemetry refresh panel=" + panelRect.Width + "x" + panelRect.Height);
                 return;
             }
@@ -203,6 +207,7 @@ namespace CF7Launcher.Guardian
             _telemetryPanelRect = panelRect;
             _telemetryAnchorRect = anchorScreenRect;
             _telemetryGuardianHwnd = guardianHwnd;
+            _telemetryWebOverlayHwnd = webOverlayHwnd;
             _clicksOutsidePanel = 0;
             _sessionTotalClicks = 0;
             _filteredExternalClicks = 0;
@@ -277,7 +282,10 @@ namespace CF7Launcher.Guardian
                         try
                         {
                             IntPtr fg = GetForegroundWindow();
+                            // panel 接管前台时 fg=WebOverlay HWND（owned top-level，IsChild 不会命中）；
+                            // 直接把 webOverlay hwnd 也算"本进程交互"，避免 panel 期 click 全落 filtered_external。
                             fgIsGuardian = (fg == _telemetryGuardianHwnd) ||
+                                           (fg == _telemetryWebOverlayHwnd && _telemetryWebOverlayHwnd != IntPtr.Zero) ||
                                            (fg != IntPtr.Zero && IsChild(_telemetryGuardianHwnd, fg));
                         }
                         catch { }

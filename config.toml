@@ -47,3 +47,11 @@ useNativeHud = true
 # false = 旧 CursorOverlayForm（OverlayBase 子类，anchor-bound，scale 跟 FlashHostPanel-based viewport）
 # 注释掉 / 缺失此 key 即落代码默认 true。env: CF7_DESKTOP_CURSOR=0 一键回滚。
 # useDesktopCursorOverlay = true
+
+# Panel 态显式接管前台 + WebView 持焦点（默认 true，2026-05 引入）。
+# 修首次点击仅切焦点、二次点击才生效的"卡手"问题。
+# true  = ResumeForPanel 剥 WS_EX_NOACTIVATE + SetForegroundWindow + MoveFocus(Programmatic)；
+#         idle 收尾把 Flash 推回前台。
+# false = 完全等价旧行为（NOACTIVATE 永挂、首次点击只切焦点）。
+# env: CF7_PANEL_TAKE_FG=0 一键回滚。详见 launcher/README.md「焦点不变量」段。
+# webOverlayPanelTakeForeground = true

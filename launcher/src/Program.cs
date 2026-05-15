@@ -379,6 +379,9 @@ class Program
         }
         LogManager.Log("[WebView2] Runtime found: " + wv2ver);
         string webDir = Path.Combine(projectRoot, "launcher", "web");
+        // Flash hwnd 动态查询（SA 进程重启后 hwnd 变）。提前到 WebOverlay 构造前，
+        // 因为 WebOverlay 自身在 idle 收尾时需要把 Flash 推回前台；同一 provider 后续给 PanelHostController 复用。
+        Func<IntPtr> flashHwndProvider = delegate { return form.GetFlashHwnd(); };
         WebOverlayForm webOverlay;
         using (PerfTrace.Scope("web_overlay.construct"))
         {
@@ -388,7 +391,9 @@ class Program
                 config.WebOverlayDisableVisualizers,
                 config.WebOverlayFrameRateLimit,
                 config.WebView2DisableGpu,
-                config.WebView2AdditionalArgs);
+                config.WebView2AdditionalArgs,
+                flashHwndProvider,
+                config.WebOverlayPanelTakeForeground);
         }
         CF7Launcher.Guardian.Hud.INativeCursor cursorOverlay = null;
         if (config.NativeCursorOverlayEnabled)
@@ -479,8 +484,7 @@ class Program
             webOverlay.SetUseNativeHud(true);
             nativeHud = new NativeHudOverlay(form, form.FlashHostPanel);
             backdrop = new NativePanelBackdrop(form);
-            // Flash hwnd 动态查询（SA 进程重启后 hwnd 变）
-            Func<IntPtr> flashHwndProvider = delegate { return form.GetFlashHwnd(); };
+            // flashHwndProvider 已在 WebOverlay 构造前声明并复用；PanelHostController 共享同一份
             // Phase 3: 注入 NotchOverlay/ToastOverlay，让 PanelHost 在 panel open/close 时显式 Suspend/Resume
             panelHost = new PanelHostController(form, webOverlay, nativeHud, backdrop,
                 inputShield, hnOverlay, cursorOverlay, form.GetPanelEscapeSource(), flashHwndProvider,

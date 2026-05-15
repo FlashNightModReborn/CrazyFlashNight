@@ -58,6 +58,10 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
 
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
@@ -178,6 +182,8 @@ namespace CF7Launcher.Guardian
         private readonly int _frameRateLimit;
         private readonly bool _webView2DisableGpu;
         private readonly string _webView2AdditionalArgs;
+        private readonly Func<IntPtr> _flashHwndProvider;
+        private readonly bool _panelTakeForeground;
 
         // GDI+ fallback：WebView2 未就绪或初始化失败时，消息转发到 GDI+ overlay
         private IToastSink _toastFallback;
@@ -301,7 +307,8 @@ namespace CF7Launcher.Guardian
         public WebOverlayForm(Form owner, Control anchor, string webDir,
             bool lowEffectsMode, bool disableCssAnimations, bool disableVisualizers,
             int frameRateLimit,
-            bool webView2DisableGpu, string webView2AdditionalArgs)
+            bool webView2DisableGpu, string webView2AdditionalArgs,
+            Func<IntPtr> flashHwndProvider, bool panelTakeForeground)
         {
             _owner = owner;
             _anchor = anchor;
@@ -314,6 +321,8 @@ namespace CF7Launcher.Guardian
             _frameRateLimit = NormalizeFrameRateLimit(frameRateLimit);
             _webView2DisableGpu = webView2DisableGpu;
             _webView2AdditionalArgs = webView2AdditionalArgs ?? "";
+            _flashHwndProvider = flashHwndProvider; // 可空：null 时 idle 收尾跳过 Flash 前台回推
+            _panelTakeForeground = panelTakeForeground;
 
             this.FormBorderStyle = FormBorderStyle.None;
             this.ShowInTaskbar = false;
@@ -2746,12 +2755,18 @@ namespace CF7Launcher.Guardian
             }
             catch (Exception ex) { LogManager.Log("[Panel] CoreWebView2.Resume failed: " + ex.Message); }
 
-            // EX_STYLE：去 WS_EX_LAYERED 与 WS_EX_TRANSPARENT；DWM 不再做 α traversal
+            // EX_STYLE：去 WS_EX_LAYERED 与 WS_EX_TRANSPARENT；DWM 不再做 α traversal。
+            // _panelTakeForeground=true 时还剥 WS_EX_NOACTIVATE，让 panel 真正可激活成前台（修首次点击失效）。
+            // false 时保留 NOACTIVATE 等价旧行为，作为 CF7_PANEL_TAKE_FG=0 回滚路径。
             try
             {
                 int ex = GetWindowLong(this.Handle, GWL_EXSTYLE);
-                int newEx = ex & ~(WS_EX_TRANSPARENT | WS_EX_LAYERED);
+                int mask = WS_EX_TRANSPARENT | WS_EX_LAYERED;
+                if (_panelTakeForeground) mask |= WS_EX_NOACTIVATE;
+                int newEx = ex & ~mask;
                 SetWindowLong(this.Handle, GWL_EXSTYLE, newEx);
+                LogManager.Log("[Panel] EX_STYLE panel-on old=0x" + ex.ToString("X")
+                    + " new=0x" + newEx.ToString("X") + " take_fg=" + _panelTakeForeground);
             }
             catch (Exception ex) { LogManager.Log("[Panel] ResumeForPanel SetWindowLong failed: " + ex.Message); }
 
@@ -2823,6 +2838,40 @@ namespace CF7Launcher.Guardian
 
             // idle 期间累积的 UiData 一次性补回（FlushUiDataBuffer 已合并 snapshot + buffer）
             try { FlushUiDataBuffer(); } catch (Exception ex) { LogManager.Log("[Panel] FlushUiDataBuffer failed: " + ex.Message); }
+
+            // panel 态接管前台 + WebView 持焦点（修首次点击失效）。
+            // BeginInvoke 排队到下个消息泵循环：等 ResumeForPanel 同步走完（含 FlushUiDataBuffer）、
+            // Chromium 收到 viewport 信号、SetWindowPos 处理完毕之后再激活，避开同帧前台锁定。
+            if (_panelTakeForeground)
+            {
+                try
+                {
+                    this.BeginInvoke(new Action(delegate()
+                    {
+                        if (_disposed || !_panelMode) return;
+                        bool fg = false;
+                        try { fg = SetForegroundWindow(this.Handle); }
+                        catch (Exception fgEx) { LogManager.Log("[Panel] SetForegroundWindow throw: " + fgEx.Message); }
+
+                        string ctrlState = "skip";
+                        try
+                        {
+                            CoreWebView2Controller c = TryGetWebViewController();
+                            if (c != null)
+                            {
+                                c.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
+                                ctrlState = "true";
+                            }
+                            else { ctrlState = "null"; }
+                        }
+                        catch (Exception mfEx) { LogManager.Log("[Panel] MoveFocus throw: " + mfEx.Message); ctrlState = "throw"; }
+
+                        LogManager.Log("[Panel] take-foreground fg=" + fg
+                            + " ctrl=" + ctrlState + " hwnd=" + this.Handle);
+                    }));
+                }
+                catch (Exception ex) { LogManager.Log("[Panel] take-foreground BeginInvoke failed: " + ex.Message); }
+            }
         }
 
         /// <summary>
@@ -2948,12 +2997,15 @@ namespace CF7Launcher.Guardian
             // 3) SW_HIDE
             try { ShowWindow(this.Handle, SW_HIDE); } catch { }
 
-            // 4) 恢复 EX_STYLE：加回 WS_EX_LAYERED + WS_EX_TRANSPARENT
+            // 4) 恢复 EX_STYLE：加回 WS_EX_LAYERED + WS_EX_TRANSPARENT + WS_EX_NOACTIVATE
+            // NOACTIVATE 必需补回——ResumeForPanel 当 _panelTakeForeground=true 时已剥；CreateParams 永挂
+            // NOACTIVATE 的事实让开关 false 路径下这行变成幂等 no-op，开关 true 路径下必需。
             try
             {
                 int ex = GetWindowLong(this.Handle, GWL_EXSTYLE);
-                int newEx = ex | WS_EX_TRANSPARENT | WS_EX_LAYERED;
+                int newEx = ex | WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_NOACTIVATE;
                 SetWindowLong(this.Handle, GWL_EXSTYLE, newEx);
+                LogManager.Log("[Panel] EX_STYLE idle-full new=0x" + newEx.ToString("X"));
             }
             catch (Exception ex) { LogManager.Log("[Panel] DoFullIdleSuspend SetWindowLong failed: " + ex.Message); }
 
@@ -2971,6 +3023,22 @@ namespace CF7Launcher.Guardian
 
             // 7) 不再调用 TrySuspendAsync：实测 WebView2 从 suspend 恢复后可能保留 hidden
             // 小视口，导致 panel 只剩黑底。SW_HIDE + timer freeze 已足够移除 idle 合成成本。
+
+            // 8) Flash 回前台：panel 接管前台后 SW_HIDE 自身，前台需显式回推（OS 自动挑下个前台不稳，
+            //    特别是 panel A→B 直切 / 多显示器场景）。开关 false 时 skip 等价旧行为。
+            if (_panelTakeForeground && _flashHwndProvider != null)
+            {
+                try
+                {
+                    IntPtr h = _flashHwndProvider();
+                    if (h != IntPtr.Zero)
+                    {
+                        bool fg = SetForegroundWindow(h);
+                        LogManager.Log("[Panel] restore-flash-foreground fg=" + fg + " hwnd=" + h);
+                    }
+                }
+                catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground throw: " + ex.Message); }
+            }
         }
 
         /// <summary>
@@ -2979,12 +3047,15 @@ namespace CF7Launcher.Guardian
         /// </summary>
         private void DoSoftIdleRestore()
         {
-            // 恢复 EX_STYLE：加回 WS_EX_LAYERED + WS_EX_TRANSPARENT
+            // 恢复 EX_STYLE：加回 WS_EX_LAYERED + WS_EX_TRANSPARENT + WS_EX_NOACTIVATE
+            // 注意此路径**没有 SW_HIDE**——WebOverlay 仍可见但回到 click-through，Flash 必须重新前台
+            // 否则 WASD 走 WebOverlay 不可见 HWND 黑洞。
             try
             {
                 int ex = GetWindowLong(this.Handle, GWL_EXSTYLE);
-                int newEx = ex | WS_EX_TRANSPARENT | WS_EX_LAYERED;
+                int newEx = ex | WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_NOACTIVATE;
                 SetWindowLong(this.Handle, GWL_EXSTYLE, newEx);
+                LogManager.Log("[Panel] EX_STYLE idle-soft new=0x" + newEx.ToString("X"));
             }
             catch (Exception ex) { LogManager.Log("[Panel] DoSoftIdleRestore SetWindowLong failed: " + ex.Message); }
 
@@ -2999,6 +3070,21 @@ namespace CF7Launcher.Guardian
             catch { }
 
             try { ScheduleSyncPosition("panel_close"); } catch { }
+
+            // Flash 回前台：useNativeHud=false 路径必须，因为 WebOverlay 仍可见无 SW_HIDE。
+            if (_panelTakeForeground && _flashHwndProvider != null)
+            {
+                try
+                {
+                    IntPtr h = _flashHwndProvider();
+                    if (h != IntPtr.Zero)
+                    {
+                        bool fg = SetForegroundWindow(h);
+                        LogManager.Log("[Panel] restore-flash-foreground (soft) fg=" + fg + " hwnd=" + h);
+                    }
+                }
+                catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground (soft) throw: " + ex.Message); }
+            }
         }
 
         /// <summary>停所有 web-side timer。新增 timer 字段必须加入此方法 + WebOverlayTimerFreezeAuditTests 清单。

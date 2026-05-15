@@ -28,6 +28,14 @@ namespace CF7Launcher.Config
         /// <summary>开关 Native HUD + PanelHostController 装配。Phase 1 默认 false（仅装配骨架，不接管 panel 路由）。</summary>
         public bool UseNativeHud { get; private set; }
         /// <summary>
+        /// Panel 态是否显式接管前台 + WebView 焦点（默认 true）。
+        /// true：ResumeForPanel 剥 WS_EX_NOACTIVATE + SetForegroundWindow(this) + controller.MoveFocus(Programmatic)；
+        ///       DoFullIdleSuspend/DoSoftIdleRestore 关闭时 SetForegroundWindow(Flash) 回推前台。
+        /// false：完全等价旧行为 —— 不剥 NOACTIVATE、不调 SetForegroundWindow/MoveFocus；首次点击仍只切焦点。
+        /// 修首次点击失效的"卡手"问题；env CF7_PANEL_TAKE_FG=0 一键回滚。
+        /// </summary>
+        public bool WebOverlayPanelTakeForeground { get; private set; }
+        /// <summary>
         /// Desktop 顶层 ULW cursor（默认 ON，2026-05 推 default-on）。
         /// ON = DesktopCursorOverlay：desktop 顶层 ULW + 跨 anchor 自由 + 单一 visibility 状态机
         ///      + scale 跟 GuardianForm.ClientSize（窗口级）。
@@ -57,6 +65,7 @@ namespace CF7Launcher.Config
             DevGpuProbeHotkey = false;
             UseNativeHud = false;
             UseDesktopCursorOverlay = true;
+            WebOverlayPanelTakeForeground = true;
 
             string configPath = Path.Combine(projectRoot, "config.toml");
             if (File.Exists(configPath))
@@ -102,6 +111,8 @@ namespace CF7Launcher.Config
                         UseNativeHud = ParseBool(val, false);
                     else if (string.Equals(key, "useDesktopCursorOverlay", StringComparison.OrdinalIgnoreCase))
                         UseDesktopCursorOverlay = ParseBool(val, true);
+                    else if (string.Equals(key, "webOverlayPanelTakeForeground", StringComparison.OrdinalIgnoreCase))
+                        WebOverlayPanelTakeForeground = ParseBool(val, true);
                 }
             }
 
@@ -174,6 +185,10 @@ namespace CF7Launcher.Config
             string desktopCursor = Environment.GetEnvironmentVariable("CF7_DESKTOP_CURSOR");
             if (!string.IsNullOrEmpty(desktopCursor))
                 UseDesktopCursorOverlay = ParseBoolLike(desktopCursor, UseDesktopCursorOverlay);
+
+            string panelTakeFg = Environment.GetEnvironmentVariable("CF7_PANEL_TAKE_FG");
+            if (!string.IsNullOrEmpty(panelTakeFg))
+                WebOverlayPanelTakeForeground = ParseBoolLike(panelTakeFg, WebOverlayPanelTakeForeground);
         }
 
         private static string NormalizeGpuPreference(string val, string fallback)

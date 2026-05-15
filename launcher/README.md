@@ -739,6 +739,13 @@ useNativeHud = false
 #   viewport（letterbox 黑边不计入；保留作为回滚兜底，无新功能）
 # 见 plans/cursor-overlay-decoupling.md。环境变量 CF7_DESKTOP_CURSOR=0 一键回滚旧路径。
 useDesktopCursorOverlay = true
+
+# Panel 态是否显式接管前台 + WebView 持焦点（默认 true）。
+# true：ResumeForPanel 剥 WS_EX_NOACTIVATE + SetForegroundWindow(this) + controller.MoveFocus(Programmatic)；
+#       DoFullIdleSuspend/DoSoftIdleRestore 关闭时 SetForegroundWindow(Flash) 把前台推回。
+# false：完全等价旧行为 —— 不剥 NOACTIVATE、不调 SetForegroundWindow/MoveFocus；首次点击仍只切焦点。
+# 修首次点击失效"卡手"问题；env CF7_PANEL_TAKE_FG=0 一键回滚。
+webOverlayPanelTakeForeground = true
 ```
 
 代码默认（[AppConfig.cs](src/Config/AppConfig.cs) 构造函数）：`GpuSharpeningEnabled = true`, `Sharpness = 0.5`。示例显式写 `false` 是遵循正文「当前禁用」语义，等 pipeline 接上以后再统一默认。
@@ -766,6 +773,7 @@ useDesktopCursorOverlay = true
 - SAFEEXIT 二次确认：router 先调 `OnSafeExitArm`（→ `SafeExitPanelWidget.Arm()`，必须）再 `SendGameCommand("safeExit")` 触发存盘；C# widget 进 Saving 立即显示状态条，sv:2 后展示按钮。**Arm 是必需的**——否则 sv 这种通用存盘事件被自动存盘/商店关闭/升级路径触发时也会拉起退出确认面板
 - 异常恢复：任何 step 抛异常 → `ResetToClosedState()` 强制 `ForceIdleState`，保证回到一致基线；连续 5 次失败熔断清空队列
 - 关键不变量：`_panelMode==true ⇔ WebView 在 panelRect+opaque+direct-hit + NativeHud(含 NotchWidget) 隐藏`；`_panelMode==false ⇔ WebView 在 anchor+transparent+click-through + NativeHud 显示`
+- 焦点不变量（`webOverlayPanelTakeForeground=true`，2026-05 起默认）：idle 三件套 `LAYERED | TRANSPARENT | NOACTIVATE` 同时在 → Flash 保前台、click-through；panel 三件套同时**不在** → WebOverlay 真前台 + WebView 持键盘焦点。`ResumeForPanel` 末尾 `BeginInvoke` 排队 `SetForegroundWindow(this) + controller.MoveFocus(Programmatic)`，等当前消息泵循环走完（FlushUiDataBuffer / SetWindowPos 都已落定）下个泵循环再激活，避开同帧前台锁定。`DoFullIdleSuspend` / `DoSoftIdleRestore` 收尾 `SetForegroundWindow(Flash)` 把前台推回。env `CF7_PANEL_TAKE_FG=0` 一键回滚到 NOACTIVATE 永挂的旧行为（首次点击仅切焦点），不需 revert commit。日志关键字：`[Panel] EX_STYLE panel-on / idle-full / idle-soft`、`[Panel] take-foreground fg=... ctrl=...`、`[Panel] restore-flash-foreground fg=...`
 - 性能收益：panel 打开期 α blend 成本下降（panel 矩形小 + opaque）；idle 期 `DoFullIdleSuspend` 整个 SW_HIDE WebView2 + TrySuspendAsync → 拿回 ~15pp DWM α 地板（所有常驻 HUD 已迁到 C# widget，玩家在 panel 关闭期间仍能看到 notch / toast / 货币 / combo / RightContext 右侧 cluster）
 - panel 态跟随：PanelHost.DoOpen 订阅 `ownerForm.LocationChanged`（拖窗）+ `FlashHostPanel.SizeChanged`（全屏/最大化/还原 → ResizeFlashToPanel 完成后才触发，比 owner SizeChanged 时序晚但读到的 viewport 正确）。BeginInvoke 节流合并多次事件 → 调 `WebOverlayForm.GetCurrentAnchorScreenRect`（与 SyncPosition 同算法）→ `PanelLayoutCatalog.GetRect` 重算 panelRect → `NativePanelBackdrop.RepositionTo` + `WebOverlayForm.RepositionForPanel`（两者均 `SWP_NOZORDER` 不重排避免拖动闪烁，不 `SWP_FRAMECHANGED` 跳过 NCPAINT）+ `InputShield.EnterTelemetryMode` 重设。**不**主动 ReTop HitNumber/Cursor——SWP_NOZORDER 已保证 z-order 不变。DoClose / ResetToClosedState 反订阅
 

@@ -335,7 +335,8 @@ namespace CF7Launcher.Guardian
             // Step 5: WebOverlay 切 panel-rect（去 LAYERED+TRANSPARENT、opaque、SetWindowPos HWND_TOP+SWP_FRAMECHANGED、PostToWeb panel_viewport_set）
             _web.ResumeForPanel(panelRect);
             // Step 6: InputShield 进 telemetry（仅记录 panelRect 外 click，不拦截）
-            if (_shield != null) _shield.EnterTelemetryMode(panelRect, _ownerForm.Handle, anchor);
+            if (_shield != null) _shield.EnterTelemetryMode(panelRect, _ownerForm.Handle, anchor,
+                _web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
             EnsurePanelZOrder();
             // Step 7: 通知 web 打开 panel（panel_viewport_set 已在 ResumeForPanel 内 PostToWeb）
             string payload = "{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"" + EscapeJson(name) + "\"";
@@ -439,7 +440,8 @@ namespace CF7Launcher.Guardian
 
                 if (_shield != null)
                 {
-                    try { _shield.EnterTelemetryMode(newPanelRect, _ownerForm.Handle, newAnchor); }
+                    try { _shield.EnterTelemetryMode(newPanelRect, _ownerForm.Handle, newAnchor,
+                        _web.IsHandleCreated ? _web.Handle : IntPtr.Zero); }
                     catch (Exception ex) { LogManager.Log("[PanelHost] shield reposition failed: " + ex.Message); }
                 }
                 // ★ 拖动期间不 ReTopOverlay：backdrop/web 用 SWP_NOZORDER 不破坏 z-order，
