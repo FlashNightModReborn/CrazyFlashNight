@@ -167,6 +167,10 @@
             enterMessages: [],
             previewMessages: [],
             nextEnterError: '',
+            // QA 用：单卡 preview 失败注入。{cardIdx → errString} — preview mock 命中即返失败，单次有效
+            failNextPreviewByCardIdx: {},
+            // mock 端按 cardIndex 缓存 lineup（供 QA 验"web 收到的回包确实带了 cardIndex" + "lineup 一致性"）
+            _previewCache: {},
             _fixture: 'normal',
 
             setViewport: function(value) {
@@ -212,6 +216,21 @@
                 chrome.webview.__dispatch({ type: 'panel_cmd', cmd: 'force_close' });
             },
 
+            // QA helper：让 next preview 命中此 cardIdx 时返回失败（模拟 stock_insufficient / network err）
+            failNextPreviewForCard: function(cardIdx, errString) {
+                this.failNextPreviewByCardIdx[cardIdx] = errString || 'stock_insufficient';
+            },
+
+            getPreviewCache: function() {
+                return this._previewCache;
+            },
+
+            resetPreviewState: function() {
+                this.previewMessages = [];
+                this._previewCache = {};
+                this.failNextPreviewByCardIdx = {};
+            },
+
             handleMessage: function(message) {
                 var status = document.getElementById('harness-status');
                 if (status) status.textContent = '→ ' + JSON.stringify(message).substring(0, 200);
@@ -237,6 +256,7 @@
                                 panel: 'arena',
                                 cmd: 'enter',
                                 callId: message.callId,
+                                cardIndex: message.cardIndex,
                                 success: false,
                                 error: host.nextEnterError
                             });
@@ -247,6 +267,7 @@
                                 panel: 'arena',
                                 cmd: 'enter',
                                 callId: message.callId,
+                                cardIndex: message.cardIndex,
                                 success: true,
                                 closePanel: true
                             });
@@ -255,7 +276,23 @@
                 }
                 else if (message.cmd === 'preview') {
                     host.previewMessages.push(message);
+                    var cardIdx = message.cardIndex;
                     setTimeout(function() {
+                        // 失败注入（QA case grid-single-fail-retry 用）：单次有效，回包后清掉
+                        if (cardIdx !== undefined && host.failNextPreviewByCardIdx[cardIdx] !== undefined) {
+                            var errString = host.failNextPreviewByCardIdx[cardIdx];
+                            delete host.failNextPreviewByCardIdx[cardIdx];
+                            chrome.webview.__dispatch({
+                                type: 'panel_resp',
+                                panel: 'arena',
+                                cmd: 'preview',
+                                callId: message.callId,
+                                cardIndex: cardIdx,
+                                success: false,
+                                error: errString
+                            });
+                            return;
+                        }
                         // 简化 fixture：根据 expr 解析等级范围 / 人数，生成 placeholder 对手数据
                         var m = String(message.expr || '').match(/@(\d+)-(\d+)%(\d+)/);
                         var lo = m ? Number(m[1]) : 1;
@@ -265,8 +302,10 @@
                         for (var i = 0; i < count; i++) {
                             var lvl = lo + Math.floor((hi - lo) * (i + 1) / (count + 1));
                             var eLvl = Math.max(1, Math.floor(lvl/5));
+                            // 名字带 cardIdx 让 QA 能验"摘要文本与回包数据一致"且区分卡片
+                            var oppName = (cardIdx !== undefined ? 'C' + cardIdx + '-' : '') + 'Mock-' + (i + 1);
                             opponents.push({
-                                name: 'Mock-' + (i + 1),
+                                name: oppName,
                                 level: lvl,
                                 equips: [
                                     { slot: 6,  raw: '铁盔',         name: '铁盔', icon: '铁盔', displayname: '铁盔',         level: eLvl },
@@ -276,11 +315,15 @@
                                 ]
                             });
                         }
+                        if (cardIdx !== undefined) {
+                            host._previewCache[cardIdx] = opponents;
+                        }
                         chrome.webview.__dispatch({
                             type: 'panel_resp',
                             panel: 'arena',
                             cmd: 'preview',
                             callId: message.callId,
+                            cardIndex: cardIdx,
                             success: true,
                             expr: message.expr,
                             opponents: opponents

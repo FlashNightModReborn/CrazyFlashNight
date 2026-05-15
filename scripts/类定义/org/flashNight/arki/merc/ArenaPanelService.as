@@ -58,6 +58,10 @@ class org.flashNight.arki.merc.ArenaPanelService {
         // 这里把自管入场锁 reset 掉，覆盖 ArenaController.close 在 web 路径下不会被
         // 调用的事实（close 仅挂在旧 Flash 角斗场选择界面的"取消挑战"按钮上）。
         _root.角斗场入场中 = false;
+        // batch preview lineup cache 镜像 web 端 _previewCache：snapshot 是 panel open 必经握手，
+        // 这里清空让本 session 8 路 preview 重抽签。跨 session 复用旧 lineup 不安全
+        // （_root.可雇佣兵 pool 在战斗 / 雇佣等流程后可能已变）。
+        _root._arenaLineupCache = [];
         sendResponse({
             task: "arena_response",
             callId: callId,
@@ -80,17 +84,29 @@ class org.flashNight.arki.merc.ArenaPanelService {
     public static function handleRollPreview(params:Object):Void {
         var callId = params.callId;
         var expr:String = String(params.expr || "");
+        // cardIndex 来自 web batch preview 路径：每张卡发独立 preview 时带 idx 0..7。
+        // 旧 callsite（如未来调试 / 兼容路径）不传 → NaN，本路径仅跳过缓存写入，业务行为不变。
+        var cardIndex:Number = Number(params.cardIndex);
 
         if (expr == "") {
-            sendResponse({ task: "arena_response", callId: callId, success: false, error: "invalid_expr" });
+            sendResponse({ task: "arena_response", callId: callId, success: false, error: "invalid_expr", cardIndex: cardIndex });
             return;
         }
         if (!ArenaController.rollPreview(expr)) {
-            sendResponse({ task: "arena_response", callId: callId, success: false, error: "stock_insufficient" });
+            sendResponse({ task: "arena_response", callId: callId, success: false, error: "stock_insufficient", cardIndex: cardIndex });
             return;
         }
 
         var lineup:Array = _root.出阵人员;
+
+        // 写 cardIndex → lineup 缓存（深拷贝避免 _root.出阵人员 后续被覆盖时污染缓存）。
+        // handleEnter 按同样 cardIndex 取出 lineup 写回 _root.出阵人员 → commitArena 消费，
+        // 守住 WYSIWYG: 用户看到的对手 = 实际打到的对手。
+        if (!isNaN(cardIndex)) {
+            if (_root._arenaLineupCache == undefined) _root._arenaLineupCache = [];
+            _root._arenaLineupCache[cardIndex] = cloneLineup(lineup);
+        }
+
         var opponents:Array = [];
         for (var i:Number = 0; i < lineup.length; i++) {
             opponents.push(buildOpponentSummary(lineup[i]));
@@ -100,9 +116,20 @@ class org.flashNight.arki.merc.ArenaPanelService {
             task: "arena_response",
             callId: callId,
             success: true,
+            cardIndex: cardIndex,
             expr: expr,
             opponents: opponents
         });
+    }
+
+    // 双层数组浅拷贝：merc tuple 是 Array，slot 是 string/number 基本类型，浅拷贝足够。
+    // 避免后续 batch preview 改写 _root.出阵人员 时污染历史缓存槽位。
+    private static function cloneLineup(src:Array):Array {
+        var out:Array = [];
+        for (var i:Number = 0; i < src.length; i++) {
+            out.push(src[i].slice());
+        }
+        return out;
     }
 
     private static function buildOpponentSummary(merc:Array):Object {
@@ -217,7 +244,9 @@ class org.flashNight.arki.merc.ArenaPanelService {
         // 自管入场锁：防止 web 端 10s timeout 触发后用户重点 confirm 造成双扣 / 双跳关。
         // 注：_root.发布请求 / _root.决斗场进入中 在当前代码库内没有任何地方 set 为 true，
         // 仅 ArenaController.close 单向 reset，故无法靠它兜底；保留其检查仅作向后兼容预留。
-        // 锁的 reset 路径：handleSnapshot 入口（下次玩家打开 panel 即解锁）。
+        // 锁的 reset 路径：
+        //   - 正常路径：handleSnapshot 入口（下次玩家打开 panel 即解锁）
+        //   - 异常路径：commitArena 抛 Error 时本函数 catch 块直接 reset，避免玩家被锁死在主城
         if (_root.角斗场入场中 == true) {
             sendResponse({ task: "arena_response", callId: callId, success: false, error: "busy" });
             return;
@@ -235,8 +264,15 @@ class org.flashNight.arki.merc.ArenaPanelService {
             return;
         }
 
-        // WYSIWYG: 必须先 preview 过；如果 web 端漏调（异常路径），兜底再抽一次保证不空 commit
-        if (_root.出阵人员 == undefined || _root.出阵人员.length == 0) {
+        // 缓存优先取出（守 WYSIWYG）：web 端 batch preview 已按 cardIndex 抽过 8 卡，
+        // 这里按 cardIndex 取缓存写回 _root.出阵人员 → 让 commitArena 消费用户实际看到的那批人。
+        // 兜底：缓存不存在 + _root.出阵人员 也空（web 漏调 batch preview）→ 现场再抽一次保证不空 commit。
+        var cardIndex:Number = Number(params.cardIndex);
+        var cached:Array = (_root._arenaLineupCache != undefined && !isNaN(cardIndex))
+                           ? _root._arenaLineupCache[cardIndex] : undefined;
+        if (cached != undefined && cached.length > 0) {
+            _root.出阵人员 = cloneLineup(cached); // 深拷贝写回，避免后续操作污染缓存槽位
+        } else if (_root.出阵人员 == undefined || _root.出阵人员.length == 0) {
             if (!ArenaController.rollPreview(expr)) {
                 sendResponse({ task: "arena_response", callId: callId, success: false, error: "stock_insufficient" });
                 return;
@@ -286,8 +322,20 @@ class org.flashNight.arki.merc.ArenaPanelService {
         if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
             _root.soundEffectManager.stopBGMForTransition();
         }
-        // commit 已 preview 好的 _root.出阵人员（含 reuse 计数 / pool 刷新 / 扣押金 / 跳关）
-        ArenaController.commitArena();
+        // commit 已 preview 好的 _root.出阵人员（含 reuse 计数 / pool 刷新 / 扣押金 / 跳关）。
+        // try/catch 兜底：commitArena 内任意 step 抛错都不能让 角斗场入场中 锁卡死。
+        // 否则正常路径下要等下次开 panel 才解锁；若错误源持续存在玩家会永远入不了场。
+        // 注：sendResponse(success) 已在 commit 之前发出 → web panel 已 close；异常时
+        // 走 最上层发布文字提示 让玩家知道发生了什么，并 reset 锁让下一次 confirm 可行。
+        try {
+            ArenaController.commitArena();
+        } catch (e:Error) {
+            _root.角斗场入场中 = false;
+            if (typeof _root.最上层发布文字提示 == "function") {
+                _root.最上层发布文字提示("角斗场入场失败：" + e.message);
+            }
+            trace("[ArenaPanelService.handleEnter] commitArena failed: " + e.message);
+        }
     }
 
     private static function sendResponse(resp:Object):Void {

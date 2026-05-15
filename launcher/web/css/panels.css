@@ -8011,7 +8011,8 @@ html.perf-low-effects .map-stage-backdrop::before {
 .arena-card-disabled {
     opacity: 0.5;
     border-color: rgba(128, 128, 128, 0.3);
-    pointer-events: none;
+    /* 不阻断 pointer events：金钱不足时 detail 按钮仍要可点（看对手装备 / 攒够钱再来）；
+       enter 按钮的 disable 由按钮自身 :disabled 状态控制。 */
 }
 
 .arena-card-disabled:hover {
@@ -8103,6 +8104,81 @@ html.perf-low-effects .map-stage-backdrop::before {
     border-color: rgba(128, 128, 128, 0.3);
     color: #666;
     cursor: not-allowed;
+}
+
+/* ── 卡片底部按钮区（主+次布局）─────────────────────────────────────────── */
+/* 主按钮 "⚔ 开始挑战"（grid 直入战场）+ 次按钮 "🔍"（进 detail 看装备 / 换一批） */
+.arena-card-actions {
+    display: flex;
+    gap: 4px;
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.arena-card-btn-enter {
+    flex: 1;
+    /* .arena-card-btn 类已经在 element 上，沿用主黄色 / hover / disabled 样式 */
+}
+
+.arena-card-btn-detail {
+    flex: 0 0 32px;
+    padding: 3px 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #aaa;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+.arena-card-btn-detail:hover:not(:disabled) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
+.arena-card-btn-detail:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ── 对手摘要 row ─────────────────────────────────────────────────────── */
+/* batch preview 回包后渲染："老王 Lv16 / 张三 Lv18 +2"；失败显示"⚠ ... ↻"可点重试 */
+.arena-card-opponents-row {
+    margin-top: 2px;
+    align-items: flex-start;
+    min-height: 14px;
+}
+
+.arena-card-opponents {
+    color: #ddd;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    text-align: right;
+    margin-left: 6px;
+    min-width: 0; /* flex item 默认 min-width:auto 会撑破 ellipsis，必须显式 0 */
+}
+
+.arena-card-opponents-loading {
+    color: #888;
+    font-style: italic;
+    font-weight: normal;
+}
+
+.arena-card-opponents-error {
+    color: #f66;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.arena-card-opponents-error:hover {
+    color: #f99;
+    text-decoration: underline;
 }
 
 /* ── Toast 提示 ── */

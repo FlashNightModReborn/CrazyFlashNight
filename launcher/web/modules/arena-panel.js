@@ -39,6 +39,12 @@
     var _ttHoverKey = null;       // 当前 hover 的 cache key
     var _toastTimer = null;
     var _initDifficulty = '';     // initData.difficulty（来自 stage-select 重定向）→ enter 时回传 AS2
+    // batch preview 缓存：panel open 时并发抽 8 卡，结果按 cardIdx 落 cache。
+    // grid 摘要 + detail 视图共用同一份 cache。WYSIWYG: 用户在 grid 上看到的对手 = enter 时实际打到的人。
+    // AS2 端有镜像缓存 _root._arenaLineupCache（同 cardIdx 索引），handleEnter 按 cardIndex 取出 commit。
+    var _previewCache = {};       // cardIdx → opponents[]（成功时填入）
+    var _previewPending = {};     // cardIdx → reqId（dedup：pending 中不重发）
+    var _previewError = {};       // cardIdx → error string（失败 → 摘要显示"加载失败 ↻"）
 
     // ════════════════════════════════════════════════════════════════════════════
     // Panel 注册
@@ -137,10 +143,21 @@
                         '<span class="arena-card-label">奖金:</span>' +
                         '<span class="arena-card-value">' + formatMoney(card.reward) + '</span>' +
                     '</div>' +
+                    // 对手摘要 row：snapshot 回包后 batchRequestPreview 触发 8 卡并发抽签，
+                    // 单卡回包后 renderCardSummary(cardIdx) 写入下方 span。
+                    '<div class="arena-card-row arena-card-opponents-row">' +
+                        '<span class="arena-card-label">对手:</span>' +
+                        '<span class="arena-card-opponents arena-card-opponents-loading" id="arena-opp-summary-' + i + '">抽取中…</span>' +
+                    '</div>' +
                 '</div>' +
-                '<button class="arena-card-btn" type="button" data-index="' + i + '" data-audio-cue="confirm">查看对手 →</button>';
+                // 主+次按钮：主 ⚔ 开始挑战（grid 直入战场，无需进 detail）；次 🔍 查看对手（进 detail 看装备 / 换一批）
+                '<div class="arena-card-actions">' +
+                    '<button class="arena-card-btn arena-card-btn-enter" type="button" data-index="' + i + '" data-audio-cue="confirm">⚔ 开始挑战</button>' +
+                    '<button class="arena-card-btn-detail" type="button" data-index="' + i + '" data-audio-cue="confirm" title="查看对手详情">🔍</button>' +
+                '</div>';
 
-            cardEl.querySelector('.arena-card-btn').addEventListener('click', onCardClick);
+            cardEl.querySelector('.arena-card-btn-enter').addEventListener('click', onDirectEnter);
+            cardEl.querySelector('.arena-card-btn-detail').addEventListener('click', onCardClick);
             gridEl.appendChild(cardEl);
             _cardEls.push(cardEl);
         }
@@ -158,6 +175,18 @@
         _previewOpponents = null;
         _ttCache = {};
         _ttHoverKey = null;
+        // batch preview 缓存清空：每次 panel reopen = 新 session，旧 lineup 与当前 _root.可雇佣兵 pool 可能不一致
+        _previewCache = {};
+        _previewPending = {};
+        _previewError = {};
+        // 重置所有 grid 摘要回 loading 态（避免 reopen 时残留上次 cache 的文本）
+        for (var k = 0; k < ARENA_CARDS.length; k++) {
+            var sumEl = document.getElementById('arena-opp-summary-' + k);
+            if (sumEl) {
+                sumEl.className = 'arena-card-opponents arena-card-opponents-loading';
+                sumEl.textContent = '抽取中…';
+            }
+        }
         // initData.difficulty 来自 stage-select 重定向；dev 模式 ARENA_TEST 直开时为 ""
         _initDifficulty = (initData && initData.difficulty) ? String(initData.difficulty) : '';
         hideToast();
@@ -189,6 +218,9 @@
         _previewOpponents = null;
         _ttCache = {};
         _ttHoverKey = null;
+        _previewCache = {};
+        _previewPending = {};
+        _previewError = {};
         _initDifficulty = '';
         PanelTooltip.hide();
         hideToast();
@@ -222,24 +254,35 @@
         e.stopPropagation();
         if (_busy) return;
 
-        var idx = parseInt(e.target.dataset.index, 10);
+        // currentTarget = 绑事件的 button 自身；target 在 button 内含子元素时可能是 textNode
+        var btn = e.currentTarget || e.target;
+        var idx = parseInt(btn.dataset.index, 10);
         var card = ARENA_CARDS[idx];
         if (!card) return;
 
         _activeCardIdx = idx;
-        _previewOpponents = null;
 
-        // 切到详情视图：先显示骨架，preview 回包再渲染对手
         _detailTitleEl.textContent = card.name + ' · 卡片 ' + card.index;
         _detailMetaEl.innerHTML =
             '<span class="arena-meta-chip">对手 ×' + card.opponentCount + '</span>' +
             '<span class="arena-meta-chip">等级 ' + card.levelMin + '—' + card.levelMax + '</span>' +
             '<span class="arena-meta-chip arena-meta-deposit">押金 ' + formatMoney(card.deposit) + '</span>' +
             '<span class="arena-meta-chip arena-meta-reward">奖金 ' + formatMoney(card.reward) + '</span>';
+        showDetailView();
+
+        // cache 命中（batch preview 已抽过且成功）→ 直接渲，不发请求。WYSIWYG: detail 看到的 = grid 摘要里那批人
+        if (_previewCache[idx]) {
+            _previewOpponents = _previewCache[idx];
+            renderOpponents(_previewCache[idx]);
+            setDetailButtonsBusy(false);
+            return;
+        }
+
+        // cache miss：① batch preview 仍 pending（dedup 命中等同一回包 fan out）② 失败后从 grid 进 detail 重试
+        _previewOpponents = null;
         _detailOpponentsEl.innerHTML = '<div class="arena-opponents-loading">正在抽取对手…</div>';
         setDetailButtonsBusy(true);
-        showDetailView();
-        requestPreview(card);
+        requestPreviewForCard(idx); // dedup 内部处理：pending 中则不重发，等回包 fan out 到 detail view
     }
 
     function onRollAgain() {
@@ -248,26 +291,61 @@
         if (!card) return;
         _detailOpponentsEl.innerHTML = '<div class="arena-opponents-loading">正在重新抽取…</div>';
         setDetailButtonsBusy(true);
-        requestPreview(card);
+        // 强制重抽：清 dedup token + cache + error，让 requestPreviewForCard 走完整新链路。
+        // 回包后会自动 _previewCache[idx] = 新 lineup → renderCardSummary 同步 grid 摘要（覆盖旧）
+        delete _previewPending[_activeCardIdx];
+        delete _previewCache[_activeCardIdx];
+        delete _previewError[_activeCardIdx];
+        requestPreviewForCard(_activeCardIdx);
+    }
+
+    // grid 直入入口（"⚔ 开始挑战" 按钮）。从 _previewCache[cardIdx] 取 lineup 走入场链。
+    // updateCardStates 在 cache 缺失时已 disable enter 按钮，这里 opponents 兜底校验只是双保险。
+    function onDirectEnter(e) {
+        e.stopPropagation();
+        if (_busy) return;
+        var btn = e.currentTarget || e.target;
+        var cardIdx = parseInt(btn.dataset.index, 10);
+        var card = ARENA_CARDS[cardIdx];
+        if (!card) return;
+        var opponents = _previewCache[cardIdx];
+        if (!opponents) {
+            showToast('对手数据未就绪');
+            return;
+        }
+        enterChallenge(cardIdx, card, opponents);
     }
 
     function onConfirmChallenge() {
-        if (_busy || _activeCardIdx < 0 || !_previewOpponents) return;
-        var card = ARENA_CARDS[_activeCardIdx];
-        if (!card) return;
+        if (_activeCardIdx < 0) return;
+        enterChallenge(_activeCardIdx, ARENA_CARDS[_activeCardIdx], _previewOpponents);
+    }
 
+    // 入场链公共函数：detail "⚔ 确认挑战" 与 grid "⚔ 开始挑战" 共用。
+    // 接口约定：opponents 由 caller 传入（detail = _previewOpponents；grid = _previewCache[idx]），
+    // 本函数不关心来源。busy UI 反馈分两路：detail 走 setDetailButtonsBusy，grid 走 updateCardStates。
+    function enterChallenge(cardIdx, card, opponents) {
+        if (_busy || cardIdx < 0 || !card || !opponents || opponents.length === 0) return;
         if (_snapshot && _snapshot.money != null && _snapshot.money < card.deposit) {
             showToast('金钱不足！');
             return;
         }
 
         _busy = true;
-        setDetailButtonsBusy(true);
+        if (_activeCardIdx >= 0) {
+            setDetailButtonsBusy(true);
+        } else {
+            updateCardStates(); // grid 直入：刷新所有 enter 按钮 → _busy 让全部 disable
+        }
 
         var reqId = 'arena_ent_' + (++_reqSeq) + '_' + _session;
         _pendingReq[reqId] = function(data) {
             _busy = false;
-            setDetailButtonsBusy(false);
+            if (_activeCardIdx >= 0) {
+                setDetailButtonsBusy(false);
+            } else {
+                updateCardStates();
+            }
             if (!data.success) {
                 showToast(data.error || '挑战发起失败');
                 return;
@@ -285,7 +363,7 @@
             panel: 'arena',
             cmd: 'enter',
             callId: reqId,
-            cardIndex: _activeCardIdx,
+            cardIndex: cardIdx,
             expr: card.expr,
             deposit: card.deposit,
             reward: card.reward,
@@ -317,11 +395,17 @@
     // ════════════════════════════════════════════════════════════════════════════
     function requestSnapshot() {
         var reqId = 'arena_snap_' + (++_reqSeq) + '_' + _session;
+        var snapSession = _session; // 闭包捕获，跨 panel reopen 不要触发旧 session 的 batch
         _pendingReq[reqId] = function(data) {
             if (data.success && data.snapshot) {
                 _snapshot = data.snapshot;
                 updateMoneyDisplay(_snapshot.money);
                 updateCardStates();
+                // snapshot 成功才发 batch preview：① 提早发会让 preview 回包后 updateCardStates 拿不到 money
+                //   导致 enter 按钮在 money 未到时一闪亮一下；② snapshot 失败时 panel 实际不可用，preview 也无意义
+                if (snapSession === _session) {
+                    batchRequestPreview();
+                }
             }
         };
         Bridge.send({
@@ -333,32 +417,125 @@
     }
 
     // ════════════════════════════════════════════════════════════════════════════
-    // Preview
+    // Batch Preview（panel open 时并发抽 8 卡）
     // ════════════════════════════════════════════════════════════════════════════
-    function requestPreview(card) {
+    function batchRequestPreview() {
+        for (var i = 0; i < ARENA_CARDS.length; i++) {
+            requestPreviewForCard(i);
+        }
+    }
+
+    // ════════════════════════════════════════════════════════════════════════════
+    // Preview（按 cardIdx 抽签 + 缓存）
+    //
+    // 两条触发路径：
+    //   1. snapshot 成功 → batchRequestPreview() → 8 卡并发首抽
+    //   2. detail "↻ 换一批" → onRollAgain → 强制重抽（清 cache/pending）
+    //   3. cache miss（detail 进入时 batch 仍 pending 或失败重试）→ onCardClick / onSummaryRetry
+    //
+    // dedup：_previewPending[cardIdx] 已存在则 return，避免一卡多飞造成 reqId 失效。
+    // 双 view 同步：回包写 _previewCache → renderCardSummary 同步 grid 摘要；若用户当前 detail
+    //   看的就是该卡（_activeCardIdx === cardIdx），还会同步 detail 视图。
+    // 跨 session 防护：reqId 含 _session，且回包时双重校验 _previewPending[cardIdx] === reqId
+    //   防 onRollAgain 后被新 reqId 覆盖时旧回包污染。
+    // ════════════════════════════════════════════════════════════════════════════
+    function requestPreviewForCard(cardIdx) {
+        if (_previewPending[cardIdx] !== undefined) return; // dedup
+        var card = ARENA_CARDS[cardIdx];
+        if (!card) return;
+
         var reqId = 'arena_prev_' + (++_reqSeq) + '_' + _session;
-        var pendingCardIdx = _activeCardIdx; // 闭包捕获，防止抽取返回时已切回 grid
+        _previewPending[cardIdx] = reqId;
+        delete _previewError[cardIdx]; // 清旧错误，让摘要进 loading 态
+
+        // 摘要 UI 进 loading 态（覆盖上次失败 / 上次结果）
+        var sumEl = document.getElementById('arena-opp-summary-' + cardIdx);
+        if (sumEl) {
+            sumEl.className = 'arena-card-opponents arena-card-opponents-loading';
+            sumEl.textContent = '抽取中…';
+            sumEl.onclick = null;
+        }
+
         _pendingReq[reqId] = function(data) {
-            // 若用户已经返回 grid 或切到其他卡片，丢弃这个回包
-            if (_activeCardIdx !== pendingCardIdx) return;
+            // 跨 session 回包丢弃（panel 已 reopen，这条是上个 session 的）
+            if (_previewPending[cardIdx] !== reqId) return;
+            delete _previewPending[cardIdx];
 
             if (!data.success || !data.opponents) {
-                _detailOpponentsEl.innerHTML = '<div class="arena-opponents-error">' + escapeHtml(data.error || '抽取失败') + '</div>';
-                setDetailButtonsBusy(false);
-                _detailConfirmBtn.disabled = true;
+                _previewError[cardIdx] = data.error || '抽取失败';
+                renderCardSummary(cardIdx);
+                updateCardStates(); // 失败 → enter 按钮 disabled（hasPreview 为 false）
+                if (_activeCardIdx === cardIdx) {
+                    _detailOpponentsEl.innerHTML = '<div class="arena-opponents-error">' + escapeHtml(_previewError[cardIdx]) + '</div>';
+                    setDetailButtonsBusy(false);
+                    _detailConfirmBtn.disabled = true;
+                }
                 return;
             }
-            _previewOpponents = data.opponents;
-            renderOpponents(data.opponents);
-            setDetailButtonsBusy(false);
+
+            _previewCache[cardIdx] = data.opponents;
+            renderCardSummary(cardIdx);
+            updateCardStates(); // 刷新 enter 按钮 enabled
+
+            if (_activeCardIdx === cardIdx) {
+                _previewOpponents = data.opponents;
+                renderOpponents(data.opponents);
+                setDetailButtonsBusy(false);
+            }
         };
+
         Bridge.send({
             type: 'panel',
             panel: 'arena',
             cmd: 'preview',
             callId: reqId,
+            cardIndex: cardIdx,
             expr: card.expr
         });
+    }
+
+    // 渲染单卡 grid 摘要 row：≤2 名全显，>2 名头 2 + "+N"。
+    // 失败态显示 "⚠ ... ↻" 可点击重试。loading 态由 requestPreviewForCard 入口统一写。
+    function renderCardSummary(cardIdx) {
+        var sumEl = document.getElementById('arena-opp-summary-' + cardIdx);
+        if (!sumEl) return;
+
+        if (_previewError[cardIdx]) {
+            sumEl.className = 'arena-card-opponents arena-card-opponents-error';
+            sumEl.textContent = '⚠ ' + _previewError[cardIdx] + ' ↻';
+            sumEl.setAttribute('data-retry-idx', cardIdx);
+            sumEl.onclick = onSummaryRetry; // onclick 自动 dedup 重复绑定
+            return;
+        }
+
+        var opps = _previewCache[cardIdx];
+        if (!opps || opps.length === 0) {
+            sumEl.className = 'arena-card-opponents arena-card-opponents-loading';
+            sumEl.textContent = '抽取中…';
+            sumEl.onclick = null;
+            return;
+        }
+
+        sumEl.className = 'arena-card-opponents';
+        sumEl.onclick = null;
+        var MAX = 2;
+        var parts = [];
+        for (var i = 0; i < Math.min(MAX, opps.length); i++) {
+            parts.push(opps[i].name + ' Lv' + opps[i].level);
+        }
+        var text = parts.join(' / ');
+        if (opps.length > MAX) {
+            text += ' +' + (opps.length - MAX);
+        }
+        sumEl.textContent = text;
+    }
+
+    function onSummaryRetry(e) {
+        e.stopPropagation();
+        var idx = parseInt(e.currentTarget.getAttribute('data-retry-idx'), 10);
+        if (isNaN(idx)) return;
+        delete _previewPending[idx]; // 强制重发：清 dedup token 让 requestPreviewForCard 重新发
+        requestPreviewForCard(idx);
     }
 
     function renderOpponents(opponents) {
@@ -514,32 +691,42 @@
         _moneyEl.textContent = formatMoney(money);
     }
 
+    // 卡片状态机：一张卡有 enter 按钮 + detail 按钮 + 整卡视觉灰类，三者 disable 条件不同
+    //   - enter 按钮：busy / 钱不够 / preview 未到 任一即 disable
+    //   - detail 按钮：仅 busy 时 disable（钱不够也允许查看对手装备）
+    //   - 整卡灰类：仅按 money 判断（视觉降权，不直接干预按钮）
     function updateCardStates() {
-        if (!_snapshot || _snapshot.money == null) {
-            for (var i = 0; i < _cardEls.length; i++) {
-                setCardEnabled(i, true);
-            }
-            return;
-        }
-        var money = _snapshot.money;
-        for (var j = 0; j < ARENA_CARDS.length; j++) {
-            setCardEnabled(j, money >= ARENA_CARDS[j].deposit);
+        var money = (_snapshot && _snapshot.money != null) ? _snapshot.money : null;
+        for (var i = 0; i < ARENA_CARDS.length; i++) {
+            var deposit = ARENA_CARDS[i].deposit;
+            var moneyOk = (money == null) || (money >= deposit); // snapshot 未到先全亮
+            var hasPreview = !!_previewCache[i];
+            setCardEnterEnabled(i, !_busy && moneyOk && hasPreview);
+            setCardDetailEnabled(i, !_busy);
+            setCardVisualDisabled(i, money != null && money < deposit);
         }
     }
 
-    function setCardEnabled(index, enabled) {
+    function setCardEnterEnabled(index, enabled) {
         var cardEl = _cardEls[index];
         if (!cardEl) return;
-        var btn = cardEl.querySelector('.arena-card-btn');
-        if (enabled) {
-            cardEl.classList.remove('arena-card-disabled');
-            btn.disabled = false;
-            btn.textContent = '查看对手 →';
-        } else {
-            cardEl.classList.add('arena-card-disabled');
-            btn.disabled = true;
-            btn.textContent = '金钱不足';
-        }
+        var btn = cardEl.querySelector('.arena-card-btn-enter');
+        if (!btn) return;
+        btn.disabled = !enabled;
+    }
+
+    function setCardDetailEnabled(index, enabled) {
+        var cardEl = _cardEls[index];
+        if (!cardEl) return;
+        var btn = cardEl.querySelector('.arena-card-btn-detail');
+        if (!btn) return;
+        btn.disabled = !enabled;
+    }
+
+    function setCardVisualDisabled(index, disabled) {
+        var cardEl = _cardEls[index];
+        if (!cardEl) return;
+        cardEl.classList.toggle('arena-card-disabled', disabled);
     }
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -587,7 +774,10 @@
             snapshot: _snapshot,
             activeCardIdx: _activeCardIdx,
             previewOpponents: _previewOpponents,
-            pendingCount: Object.keys(_pendingReq).length
+            pendingCount: Object.keys(_pendingReq).length,
+            previewCacheCount: Object.keys(_previewCache).length,
+            previewPendingCount: Object.keys(_previewPending).length,
+            previewErrorCount: Object.keys(_previewError).length
         };
     }
 
