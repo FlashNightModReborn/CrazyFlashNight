@@ -3185,6 +3185,10 @@ namespace CF7Launcher.Guardian
                 case "close":
                     {
                         string panel = parsed.Value<string>("panel") ?? "";
+                        // dismissReturnStack=true 表示业务流程触发的关闭（如 arena enter success 后 AS2
+                        // 已跳关到战场），必须清整个 return stack 防止 PanelHostController 自动 reopen
+                        // 上层 panel 遮挡 Flash 视野。默认 false = 用户主动取消，pop 一层。
+                        bool dismissReturnStack = parsed.Value<bool?>("dismissReturnStack") ?? false;
                         string closeAction = ResolvePanelCloseGameCommand(panel);
                         if (closeAction == "shopPanelClose")
                         {
@@ -3202,7 +3206,13 @@ namespace CF7Launcher.Guardian
                         // Phase 1 _panelHost._activePanel 始终为 null（PanelHost 未接管打开路径）→ ClosePanel 走 ExecuteCommand 内
                         // "if (_activePanel == null) return;" 早 return，无副作用
                         // Phase 2+ PanelHost 真接管打开后，此回流防止 backdrop/HUD 残留半状态
-                        if (_panelHost != null) _panelHost.ClosePanel();
+                        if (_panelHost != null)
+                        {
+                            // 顺序很关键：必须先清栈再 ClosePanel，否则 ExecuteCommand Close path
+                            // 还会读到栈顶 entry 并 enqueue reopen 命令。
+                            if (dismissReturnStack) _panelHost.ClearReturnStack();
+                            _panelHost.ClosePanel();
+                        }
                     }
                     break;
                 case "bulkQuery":
@@ -3426,6 +3436,8 @@ namespace CF7Launcher.Guardian
             {
                 if (_panelHost.ActivePanelName == "kshop") _pauseNeedsRestore = true;
                 PostToWeb("{\"type\":\"panel_cmd\",\"cmd\":\"force_close\",\"reason\":\"disconnected\"}");
+                // 断线属异常路径，不要让 returnTo 链路在已经混乱的状态上又拉起上层 panel。
+                _panelHost.ClearReturnStack();
                 _panelHost.ClosePanel();
             }
             if (_shopTask != null) _shopTask.ClearPending();
@@ -3487,20 +3499,32 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void RequestOpenPanel(string panelName, string source)
         {
-            RequestOpenPanel(panelName, source, null, null, null);
+            RequestOpenPanel(panelName, source, null, null, null, null, null, null);
         }
 
         public void RequestOpenPanel(string panelName, string source, string pageId)
         {
-            RequestOpenPanel(panelName, source, pageId, null, null);
+            RequestOpenPanel(panelName, source, pageId, null, null, null, null, null);
         }
 
         public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel)
         {
-            RequestOpenPanel(panelName, source, pageId, frameLabel, null);
+            RequestOpenPanel(panelName, source, pageId, frameLabel, null, null, null, null);
         }
 
         public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string returnFrameLabel)
+        {
+            RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel, null, null, null);
+        }
+
+        public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string returnFrameLabel,
+            string returnToPanel, string returnToInitDataJson)
+        {
+            RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel, returnToPanel, returnToInitDataJson, null);
+        }
+
+        public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string returnFrameLabel,
+            string returnToPanel, string returnToInitDataJson, string initDataExtrasJson)
         {
             if (_disposed) return;
             if (this.IsHandleCreated && this.InvokeRequired)
@@ -3509,7 +3533,8 @@ namespace CF7Launcher.Guardian
                 {
                     this.BeginInvoke(new Action(delegate()
                     {
-                        RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel);
+                        RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel,
+                            returnToPanel, returnToInitDataJson, initDataExtrasJson);
                     }));
                 }
                 catch { }
@@ -3518,7 +3543,8 @@ namespace CF7Launcher.Guardian
 
             if (_commandRouter != null)
             {
-                _commandRouter.RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel);
+                _commandRouter.RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel,
+                    returnToPanel, returnToInitDataJson, initDataExtrasJson);
                 return;
             }
             LogManager.Log("[Panel] RequestOpenPanel before router wired, panel=" + (panelName ?? "<null>"));

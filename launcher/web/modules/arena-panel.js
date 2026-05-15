@@ -37,6 +37,8 @@
     var _previewOpponents = null; // 当前显示的对手数据
     var _ttCache = {};            // (name|level) → {descHTML, introHTML, displayname}
     var _ttHoverKey = null;       // 当前 hover 的 cache key
+    var _toastTimer = null;
+    var _initDifficulty = '';     // initData.difficulty（来自 stage-select 重定向）→ enter 时回传 AS2
 
     // ════════════════════════════════════════════════════════════════════════════
     // Panel 注册
@@ -156,6 +158,8 @@
         _previewOpponents = null;
         _ttCache = {};
         _ttHoverKey = null;
+        // initData.difficulty 来自 stage-select 重定向；dev 模式 ARENA_TEST 直开时为 ""
+        _initDifficulty = (initData && initData.difficulty) ? String(initData.difficulty) : '';
         hideToast();
         updateMoneyDisplay(null);
         updateCardStates();
@@ -163,10 +167,18 @@
         requestSnapshot();
     }
 
-    function requestClose() {
+    // requestClose 两种调用语义：
+    //   - 无参 / 默认：用户主动取消（点 ✕、ESC、backdrop），PanelHostController 会 pop
+    //     return stack reopen 上层 panel（典型场景：玩家从 stage-select 跳进 arena，
+    //     按 ✕ 想回 stage-select）。
+    //   - {dismissReturnStack:true}：业务流程已 commit，AS2 端已跳关到 wuxianguotu_1。
+    //     必须清整个返回链，否则 PanelHostController 会 reopen stage-select 遮挡战场视野。
+    function requestClose(options) {
         if (_busy) return;
         Panels.close();
-        Bridge.send({ type: 'panel', panel: 'arena', cmd: 'close' });
+        var msg = { type: 'panel', panel: 'arena', cmd: 'close' };
+        if (options && options.dismissReturnStack) msg.dismissReturnStack = true;
+        Bridge.send(msg);
     }
 
     function onClose() {
@@ -177,6 +189,7 @@
         _previewOpponents = null;
         _ttCache = {};
         _ttHoverKey = null;
+        _initDifficulty = '';
         PanelTooltip.hide();
         hideToast();
     }
@@ -262,7 +275,9 @@
             // closePanel:true → 必须走 requestClose 而不是裸 Panels.close()，
             // 因为后者只关 web 端 UI，不通知 C# 收 PanelHost；不收的话 WebOverlay
             // 还停在 opaque/panelRect 模式遮盖 Flash → AS2 已转场但视觉黑屏。
-            if (data.closePanel) requestClose();
+            // dismissReturnStack=true：AS2 已跳关到 wuxianguotu_1，必须清整个返回链；
+            // 否则 PanelHostController 会 pop 出 stage-select 重新打开遮挡战场视野。
+            if (data.closePanel) requestClose({ dismissReturnStack: true });
         };
 
         Bridge.send({
@@ -273,7 +288,10 @@
             cardIndex: _activeCardIdx,
             expr: card.expr,
             deposit: card.deposit,
-            reward: card.reward
+            reward: card.reward,
+            // 来自 stage-select 重定向时是 "冒险"/"修罗" 等；dev 直开时是 ""。
+            // AS2 ArenaPanelService 在非空时设 _root.当前关卡难度，让任务系统能匹配。
+            difficulty: _initDifficulty
         });
     }
 
@@ -543,8 +561,6 @@
         toastEl.classList.remove('arena-toast-visible');
         toastEl.style.display = 'none';
     }
-
-    var _toastTimer = null;
 
     function formatMoney(n) {
         if (typeof n !== 'number') return String(n);

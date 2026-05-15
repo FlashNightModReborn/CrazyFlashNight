@@ -112,7 +112,23 @@ namespace CF7Launcher.Bus
                     string pageId = msg.Value<string>("pageId") ?? "";
                     string frameLabel = msg.Value<string>("frameLabel") ?? "";
                     string returnFrameLabel = msg.Value<string>("returnFrameLabel") ?? "";
-                    webOverlay.RequestOpenPanel(panel, source, pageId, frameLabel, returnFrameLabel);
+                    // returnTo 是 panel 嵌套返回路径：调用方（AS2）显式声明"关闭本 panel 后回到哪里"。
+                    // 唯一调用方：StageSelectPanelService.requestOpenArenaPanel（returnTo="stage-select"
+                    // + returnToInitData 含 frameLabel/returnFrameLabel）。其他 panel 传 null/空。
+                    string returnToPanel = msg.Value<string>("returnTo") ?? "";
+                    JToken returnToInitDataToken = msg["returnToInitData"];
+                    string returnToInitDataJson = returnToInitDataToken != null
+                        ? returnToInitDataToken.ToString(Newtonsoft.Json.Formatting.None)
+                        : null;
+                    // initData 是 panel-specific 额外字段，被 LauncherCommandRouter merge 到 base initData。
+                    // 当前唯一用法：stage-select 角斗场重定向时携带 {difficulty:"冒险"}，让 arena enter
+                    // 时能回传 difficulty 给 AS2，使任务系统 FinishStage 能匹配 stage#difficulty 规则。
+                    JToken initDataToken = msg["initData"];
+                    string initDataExtrasJson = initDataToken != null
+                        ? initDataToken.ToString(Newtonsoft.Json.Formatting.None)
+                        : null;
+                    webOverlay.RequestOpenPanel(panel, source, pageId, frameLabel, returnFrameLabel,
+                        returnToPanel, returnToInitDataJson, initDataExtrasJson);
                     return null;
                 });
             }

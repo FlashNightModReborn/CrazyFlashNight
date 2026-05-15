@@ -83,6 +83,30 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             return;
         }
 
+        // 角斗场重定向：difficulty enter 命中 DEATH MATCH 角斗场时不跳旧 Flash 选关帧
+        // (FadeTransitionFrame="角斗场选择挑战者"), 改为通过 C# LauncherCommandRouter
+        // 打开 arena web panel。difficulty 透传到 arena enter 链路终点，让任务系统
+        // FinishStage(name, _root.当前关卡难度) 能匹配 "stage#difficulty" 完成规则
+        // （角斗场单位本身不吃难度系数，但任务挂在难度上）。
+        if (entryKind == "difficulty" && stageName == "DEATH MATCH角斗场") {
+            cleanupStageSelectState();
+            // 让 web 端 _busyStageName 复位 + UI 复位；closePanel:false 让 PanelHostController
+            // 接管 panel 切换（DoClose stage-select → DoOpen arena 序列内会 PostToWeb panel_cmd
+            // open 触发 web 端 Panels.open('arena') 时自动 close stage-select）。
+            sendResponse({
+                task: "stage_select_response",
+                callId: callId,
+                success: true,
+                closePanel: false,
+                stageName: stageName,
+                difficulty: difficulty,
+                entryKind: entryKind,
+                redirected: "arena"
+            });
+            requestOpenArenaPanel(difficulty);
+            return;
+        }
+
         var actionResult:Object;
         if (entryKind == "map") {
             actionResult = performMapEnter(validation.context.stageInfo);
@@ -109,6 +133,54 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             difficulty: difficulty,
             entryKind: entryKind
         });
+    }
+
+    /**
+     * 通知 C# LauncherCommandRouter 打开 arena panel。
+     * 与 handleOpenWebStageSelect 同模式：走 panel_request 协议。
+     * 由 LauncherCommandRouter.RequestOpenPanel("arena", ...) 接管，PanelHostController
+     * 内部会先 DoClose 当前 stage-select 再 DoOpen arena，所以这里不需要管 panel 切换时序。
+     *
+     * 字段说明：
+     *   - initData.difficulty: 让 arena enter 时能回传给 AS2 设 _root.当前关卡难度，
+     *                          否则任务系统 FinishStage 拿不到难度导致 "stage#冒险" 不匹配。
+     *   - returnTo: 声明"关闭 arena 后回到 stage-select"。携带 returnFrameLabel/frameLabel
+     *               让 PanelHostController 在 pop 栈时用对应 initData 重开 stage-select。
+     */
+    private static function requestOpenArenaPanel(difficulty:String):Void {
+        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return;
+        var frameLabel:String = String(_root.Web选关当前帧值 || _root.关卡地图帧值 || "基地门口");
+        var returnFrameLabel:String = String(_root.Web选关返回帧值 || _root.关卡地图帧值 || frameLabel);
+        _root.server.sendSocketMessage(_json.stringify({
+            task: "panel_request",
+            panel: "arena",
+            source: "stage_select_arena_redirect",
+            initData: {
+                difficulty: String(difficulty || "")
+            },
+            returnTo: "stage-select",
+            returnToInitData: {
+                mode: "runtime",
+                fixture: "mixed",
+                frameLabel: frameLabel,
+                returnFrameLabel: returnFrameLabel,
+                debug: false,
+                source: "arena_return"
+            }
+        }));
+    }
+
+    /**
+     * 复位"web 选关打开中"状态。handleClose / handleReturnFrame 都要做这件事；
+     * 角斗场重定向路径也需要走这步（否则切到 arena panel 期间，场景转换会以为
+     * stage-select 还开着、拒绝其他转换，见 关卡系统_lsy_场景转换.as 中的检查）。
+     */
+    private static function cleanupStageSelectState():Void {
+        if (_root.场景转换函数 == undefined) return;
+        _root.场景转换函数.Web选关打开中 = false;
+        if (_root.帧计时器 != undefined) {
+            _root.场景转换函数.上次切换帧数 = _root.帧计时器.当前帧数;
+        }
     }
 
     public static function handleJumpFrame(params:Object):Void {
@@ -168,12 +240,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         _root.关卡地图帧值 = frameLabel;
         _root.Web选关返回帧值 = frameLabel;
         _root.场景进入位置名 = "出生地";
-        if (_root.场景转换函数 != undefined) {
-            _root.场景转换函数.Web选关打开中 = false;
-            if (_root.帧计时器 != undefined) {
-                _root.场景转换函数.上次切换帧数 = _root.帧计时器.当前帧数;
-            }
-        }
+        cleanupStageSelectState();
 
         sendResponse({
             task: "stage_select_response",
@@ -189,12 +256,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
     }
 
     public static function handleClose(params:Object):Void {
-        if (_root.场景转换函数 != undefined) {
-            _root.场景转换函数.Web选关打开中 = false;
-            if (_root.帧计时器 != undefined) {
-                _root.场景转换函数.上次切换帧数 = _root.帧计时器.当前帧数;
-            }
-        }
+        cleanupStageSelectState();
     }
 
     public static function handleOpenWebStageSelect(params:Object):Boolean {
