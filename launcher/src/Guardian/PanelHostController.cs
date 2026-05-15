@@ -47,14 +47,42 @@ namespace CF7Launcher.Guardian
         {
             public PanelCommandKind Kind;
             public string Name;
-            public string InitDataJson; // 可空；OpenPanel 序列化进 panel_cmd
+            public string InitDataJson;          // 可空；OpenPanel 序列化进 panel_cmd
+            public string ReturnToName;          // 可空；非空 = 关闭本 panel 时自动 reopen 之
+            public string ReturnInitDataJson;    // 可空；reopen returnTo 时用作 initData
             public PanelCommand(PanelCommandKind kind, string name, string initDataJson)
+                : this(kind, name, initDataJson, null, null)
+            {
+            }
+            public PanelCommand(PanelCommandKind kind, string name, string initDataJson,
+                string returnToName, string returnInitDataJson)
             {
                 Kind = kind;
                 Name = name;
                 InitDataJson = initDataJson;
+                ReturnToName = returnToName;
+                ReturnInitDataJson = returnInitDataJson;
             }
         }
+
+        // ── Return Stack（B-ready 的 A 实现）─────────────────────────────────────
+        // A 时代（当前）：调用方显式声明 returnTo。OpenPanel(name, init, returnTo, returnInit)
+        //                  push 一个 entry；ClosePanel 时 pop 栈顶并自动 reopen。
+        // B 时代（未来）：调用方不传 returnTo，OpenPanel 内部自动 push 当前 _activePanel。
+        //                  栈数据结构本身不变；只改 OpenPanel 入口逻辑。
+        // 栈深度当前最大 1（map → stage-select → arena 链路里只有 arena 用 returnTo）；
+        // 设计成栈是为了未来扩展 0 修改。
+        private struct ReturnStackEntry
+        {
+            public string Name;
+            public string InitDataJson;
+            public ReturnStackEntry(string name, string initDataJson)
+            {
+                Name = name;
+                InitDataJson = initDataJson;
+            }
+        }
+        private readonly List<ReturnStackEntry> _returnStack = new List<ReturnStackEntry>();
 
         private readonly Form _ownerForm;
         private readonly WebOverlayForm _web;
@@ -133,18 +161,37 @@ namespace CF7Launcher.Guardian
 
         public void OpenPanel(string name)
         {
-            OpenPanel(name, null);
+            OpenPanel(name, null, null, null);
         }
 
         public void OpenPanel(string name, string initDataJson)
         {
+            OpenPanel(name, initDataJson, null, null);
+        }
+
+        /// <summary>
+        /// 完整 OpenPanel：returnToName 非空时，关闭本 panel 会自动 reopen returnTo
+        /// （带 returnInitDataJson）。返回路径形成栈，支持嵌套（当前生产只用到 1 层）。
+        /// </summary>
+        public void OpenPanel(string name, string initDataJson, string returnToName, string returnInitDataJson)
+        {
             if (string.IsNullOrEmpty(name)) return;
-            EnqueueAndPump(new PanelCommand(PanelCommandKind.Open, name, initDataJson));
+            EnqueueAndPump(new PanelCommand(PanelCommandKind.Open, name, initDataJson, returnToName, returnInitDataJson));
         }
 
         public void ClosePanel()
         {
             EnqueueAndPump(new PanelCommand(PanelCommandKind.Close, null, null));
+        }
+
+        /// <summary>
+        /// 异常路径（断线 / force_close / 进程退出前）专用：清空 return stack，
+        /// 让接下来的 ClosePanel 不要尝试 reopen 任何上层 panel。
+        /// 正常 user-close 路径（点 ✕ / ESC / backdrop）不应该调本方法。
+        /// </summary>
+        public void ClearReturnStack()
+        {
+            lock (_queueLock) { _returnStack.Clear(); }
         }
 
         #endregion
@@ -223,12 +270,30 @@ namespace CF7Launcher.Guardian
             {
                 if (_activePanel == cmd.Name) { _consecutiveFailures = 0; return; }
                 if (_activePanel != null) DoClose();
+                // 调用方显式带了 returnTo → push 进栈，关闭本 panel 时 pop 出来自动 reopen。
+                // B 时代会改成：无 returnTo 参数时，open 自动 push 前一个 _activePanel。
+                if (!string.IsNullOrEmpty(cmd.ReturnToName))
+                {
+                    _returnStack.Add(new ReturnStackEntry(cmd.ReturnToName, cmd.ReturnInitDataJson));
+                }
                 DoOpen(cmd.Name, cmd.InitDataJson);
             }
             else
             {
                 if (_activePanel == null) { _consecutiveFailures = 0; return; }
                 DoClose();
+                // pop 栈顶：若有 returnTo，enqueue 一个 Open（不带新 returnTo，避免无限链）。
+                // PumpQueue 是 while(true) 循环，enqueue 后下一轮自然处理。
+                // 异常路径（断线 / force_close）应在 ClosePanel 之前调 ClearReturnStack 跳过 reopen。
+                if (_returnStack.Count > 0)
+                {
+                    var top = _returnStack[_returnStack.Count - 1];
+                    _returnStack.RemoveAt(_returnStack.Count - 1);
+                    lock (_queueLock)
+                    {
+                        _queue.Enqueue(new PanelCommand(PanelCommandKind.Open, top.Name, top.InitDataJson));
+                    }
+                }
             }
             _consecutiveFailures = 0;
         }
@@ -544,6 +609,9 @@ namespace CF7Launcher.Guardian
             if (_shield != null) { try { _shield.ExitTelemetryMode(); } catch { } }
             if (_escSource != null) { try { _escSource.SetPanelEscapeEnabled(false); } catch { } }
             _activePanel = null;
+
+            // 异常路径不应触发 returnTo reopen：清栈避免在已经混乱的状态上叠加新 panel 命令。
+            _returnStack.Clear();
 
             _consecutiveFailures++;
             if (_consecutiveFailures >= FAILURE_CIRCUIT_BREAKER)

@@ -1,5 +1,7 @@
 using System;
 using System.Windows.Forms;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Guardian
 {
@@ -168,15 +170,34 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void RequestOpenPanel(string panelName, string source, string pageId)
         {
-            RequestOpenPanel(panelName, source, pageId, null, null);
+            RequestOpenPanel(panelName, source, pageId, null, null, null, null, null);
         }
 
         public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel)
         {
-            RequestOpenPanel(panelName, source, pageId, frameLabel, null);
+            RequestOpenPanel(panelName, source, pageId, frameLabel, null, null, null, null);
         }
 
         public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string returnFrameLabel)
+        {
+            RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel, null, null, null);
+        }
+
+        public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string returnFrameLabel,
+            string returnToPanel, string returnToInitDataJson)
+        {
+            RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel, returnToPanel, returnToInitDataJson, null);
+        }
+
+        /// <summary>
+        /// 完整签名：
+        ///   - returnToPanel 非空时，关闭本 panel 后会自动 reopen returnTo（带 returnToInitDataJson）
+        ///   - initDataExtrasJson 是 panel-specific 额外字段的 JSON object（例如 arena 接 stage-select
+        ///     redirect 时附带的 {"difficulty":"冒险"}），由 caller 显式构造，C# 端 merge 到 base initData
+        ///     后透传给 web。base 字段（mode/source/debug）由本类负责，AS2 端不需要懂。
+        /// </summary>
+        public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string returnFrameLabel,
+            string returnToPanel, string returnToInitDataJson, string initDataExtrasJson)
         {
             if (string.IsNullOrEmpty(panelName)) return;
             string safeSource = string.IsNullOrEmpty(source) ? "as2_request" : source;
@@ -188,6 +209,11 @@ namespace CF7Launcher.Guardian
             if (string.Equals(panelName, "stage-select", StringComparison.OrdinalIgnoreCase))
             {
                 OpenStageSelectPanel(safeSource, frameLabel, returnFrameLabel);
+                return;
+            }
+            if (string.Equals(panelName, "arena", StringComparison.OrdinalIgnoreCase))
+            {
+                OpenArenaPanel(safeSource, initDataExtrasJson, returnToPanel, returnToInitDataJson);
                 return;
             }
             LogManager.Log("[Router] RequestOpenPanel unsupported panel=" + panelName);
@@ -212,18 +238,58 @@ namespace CF7Launcher.Guardian
             OpenPanel("stage-select", initData);
         }
 
+        // arena 没有 frameLabel 概念；source 用于诊断（"stage_select_arena_redirect" 表示
+        // 玩家在 stage-select 点了 DEATH MATCH 角斗场的难度按钮被路由过来）。mode=runtime
+        // 与 stage-select 对齐。returnToPanel 非空时，关闭 arena 后由 PanelHostController
+        // 自动 reopen returnTo（return stack 接管，调用方不需要管时序）。
+        // initDataExtrasJson：caller (AS2 stage-select) 提供的 panel-specific 字段（如 difficulty），
+        // merge 到 base initData 后下发给 web；arena-panel.js 通过 initData.difficulty 拿到值，
+        // 在 enter 时回传给 AS2，让 ArenaPanelService 设 _root.当前关卡难度 让任务系统能匹配。
+        private void OpenArenaPanel(string source, string initDataExtrasJson, string returnToPanel, string returnToInitDataJson)
+        {
+            JObject jo = new JObject();
+            jo["mode"] = "runtime";
+            jo["source"] = source;
+            jo["debug"] = false;
+            if (!string.IsNullOrEmpty(initDataExtrasJson))
+            {
+                try
+                {
+                    JObject extras = JObject.Parse(initDataExtrasJson);
+                    foreach (var prop in extras.Properties())
+                    {
+                        jo[prop.Name] = prop.Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[Router] OpenArenaPanel extras parse failed: " + ex.Message);
+                }
+            }
+            OpenPanel("arena", jo.ToString(Formatting.None), returnToPanel, returnToInitDataJson);
+        }
+
         /// <summary>
         /// 统一 panel 打开入口：Flag ON → _panelHost.OpenPanel（含 backdrop/EX_STYLE/HUD-suspend 序列）；
         /// Flag OFF → 旧 PostToWeb panel_cmd open + state callback（保留回滚路径）。
         /// </summary>
         private void OpenPanel(string panelName, string initDataJson)
         {
+            OpenPanel(panelName, initDataJson, null, null);
+        }
+
+        /// <summary>
+        /// returnTo 版本：关闭本 panel 后自动 reopen returnToPanel。仅 PanelHostController 路径支持；
+        /// Flag OFF fallback 无 return stack 概念（旧路径已不再生产使用，returnTo 静默忽略）。
+        /// </summary>
+        private void OpenPanel(string panelName, string initDataJson, string returnToPanel, string returnToInitDataJson)
+        {
             if (_panelHost != null)
             {
-                _panelHost.OpenPanel(panelName, initDataJson);
+                _panelHost.OpenPanel(panelName, initDataJson, returnToPanel, returnToInitDataJson);
                 return;
             }
-            // Flag OFF fallback：行为与本 PR 之前等价
+            // Flag OFF fallback：行为与本 PR 之前等价；returnTo 在该路径下不生效
             string msg;
             if (string.IsNullOrEmpty(initDataJson))
                 msg = "{\"type\":\"panel_cmd\",\"cmd\":\"open\",\"panel\":\"" + panelName + "\"}";

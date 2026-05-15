@@ -2,6 +2,12 @@
  * 文件：org/flashNight/arki/merc/ArenaPanelService.as
  * 说明：WebView 角斗场（DEATH MATCH）面板的 AS2 端桥。
  *
+ * Panel 打开入口（两条）：
+ *   1. LauncherCommandRouter "ARENA_TEST" 按钮直接 OpenPanel("arena", ...) — 仅 dev 模式
+ *   2. 玩家在 stage-select panel 上选 "DEATH MATCH角斗场" 难度 → StageSelectPanelService
+ *      识别后发 panel_request{panel:"arena"} → LauncherCommandRouter.RequestOpenPanel("arena")
+ *      → PanelHostController 内部自动 DoClose(stage-select) + DoOpen(arena)，替换式过渡
+ *
  * 同步管道（与 stage-select / map 同构）：
  *   Web → C# ArenaTask → Flash gameCommands:
  *     arenaSnapshot      — 返回 money / reuseCount / reuseLimit / busy
@@ -48,6 +54,10 @@ class org.flashNight.arki.merc.ArenaPanelService {
 
     public static function handleSnapshot(params:Object):Void {
         var callId = params.callId;
+        // panel 重新打开 = 上次入场链已经走完（玩家从战场回主城，或从未真正入场）。
+        // 这里把自管入场锁 reset 掉，覆盖 ArenaController.close 在 web 路径下不会被
+        // 调用的事实（close 仅挂在旧 Flash 角斗场选择界面的"取消挑战"按钮上）。
+        _root.角斗场入场中 = false;
         sendResponse({
             task: "arena_response",
             callId: callId,
@@ -170,9 +180,13 @@ class org.flashNight.arki.merc.ArenaPanelService {
             success: true,
             itemName: String(item.name),
             displayname: String(itemData.displayname || item.name),
-            // LiteJSON 不转义双引号；XML 内嵌 <font color="..."> 会破坏 JSON → 与 Web物品注释HTML 同步把 " 换 '
-            descHTML: descHTML.split('"').join("'"),
-            introHTML: introHTML.split('"').join("'")
+            // LiteJSON 不转义双引号；TooltipComposer 的 <FONT COLOR='...'> 都用单引号，
+            // 因此当前数据里 " 出现概率为 0，下面替换实际是 no-op。
+            // 仍保留：未来若内容含字面 "，转 &quot; 比换 ' 更稳——
+            //   - 转 '：内容里若已有 '（罕见但可能），会被当作属性闭合提前结束
+            //   - 转 &quot;：HTML 渲染时变回字面 "，JSON 中是无害 ASCII，不影响任何边界
+            descHTML: descHTML.split('"').join("&quot;"),
+            introHTML: introHTML.split('"').join("&quot;")
         });
     }
 
@@ -182,6 +196,11 @@ class org.flashNight.arki.merc.ArenaPanelService {
         var expr:String = String(params.expr || "");
         var deposit:Number = Number(params.deposit);
         var reward:Number = Number(params.reward);
+        // difficulty 来自 stage-select 重定向链；dev 模式 ARENA_TEST 直开时为 ""。
+        // 非空时在 commitArena 之前设 _root.当前关卡难度 + _root.难度等级，
+        // 让 _root.关卡结束 调 _root.FinishStage(name, _root.当前关卡难度) 时能匹配
+        // 任务 finish_requirements 里的 "DEATH MATCH角斗场#冒险" 规则。
+        var difficulty:String = String(params.difficulty || "");
 
         if (expr == "") {
             sendResponse({ task: "arena_response", callId: callId, success: false, error: "invalid_expr" });
@@ -193,6 +212,14 @@ class org.flashNight.arki.merc.ArenaPanelService {
         }
         if (_root.金钱 < deposit) {
             sendResponse({ task: "arena_response", callId: callId, success: false, error: "insufficient_money" });
+            return;
+        }
+        // 自管入场锁：防止 web 端 10s timeout 触发后用户重点 confirm 造成双扣 / 双跳关。
+        // 注：_root.发布请求 / _root.决斗场进入中 在当前代码库内没有任何地方 set 为 true，
+        // 仅 ArenaController.close 单向 reset，故无法靠它兜底；保留其检查仅作向后兼容预留。
+        // 锁的 reset 路径：handleSnapshot 入口（下次玩家打开 panel 即解锁）。
+        if (_root.角斗场入场中 == true) {
+            sendResponse({ task: "arena_response", callId: callId, success: false, error: "busy" });
             return;
         }
         if (_root.发布请求 == true) {
@@ -232,6 +259,19 @@ class org.flashNight.arki.merc.ArenaPanelService {
 
         _root.押金 = deposit;
         _root.角斗场奖金 = reward;
+
+        // 难度上下文：任务系统 FinishStage 用 _root.当前关卡难度 匹配 "stage#difficulty" 规则；
+        // 非 difficulty 关卡的常规路径走 performEnter 已 set 这两个字段，但 arena 走 enterArenaCommon
+        // 不经过那条路径，必须在此手动复现。空 difficulty（dev 直开）保留上次值不破坏。
+        if (difficulty != "") {
+            _root.当前关卡难度 = difficulty;
+            if (typeof _root.计算难度等级 == "function") {
+                _root.难度等级 = _root.计算难度等级(difficulty);
+            }
+        }
+
+        // 上自管入场锁；handleSnapshot 入口 reset。覆盖 web 端 10s timeout 后的重发场景。
+        _root.角斗场入场中 = true;
 
         sendResponse({
             task: "arena_response",

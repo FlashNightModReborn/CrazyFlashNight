@@ -1,7 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     竞技场（角斗场）挑战卡片配置
-    
+
+    ⚠ WARNING: 本文件目前未被代码加载（无运行时读取路径）。运行时真值在
+       launcher/web/modules/arena-panel.js 的 ARENA_CARDS 常量。
+       本 XML 仅作为人类可读参考 + 字段意义文档。若修改卡片数据需同时改两处。
+
+    Runtime 入口：玩家在 stage-select panel 选 "DEATH MATCH角斗场" 难度 → 由
+       StageSelectPanelService 识别 + 走 panel_request → LauncherCommandRouter.RequestOpenPanel
+       → PanelHostController 自动替换 panel。dev 模式下也保留 LauncherCommandRouter
+       的 "ARENA_TEST" 按钮直开入口。
+
+       下次开工方向（等表达力施工触发时一次性迁移）：
+         1. C# 启动期解析本 XML 为 ArenaConfig 内存对象，作为唯一权威源
+         2. ArenaTask 的 snapshot 回包附带 cards 数组下发给 web，
+            arena-panel.js 删 ARENA_CARDS 硬编码，从 snapshot 拿
+         3. enter 消息只传 cardIndex；C# 按 cardIndex 反查 config，
+            组装完整 enter payload（expr/deposit/reward/stageUrl/...）下推 AS2
+         4. AS2 端保持薄：仅消费当前一场的参数，不持有卡片表，
+            新增字段在 AS2 侧不增加常驻内存
+       原因：表达力扩展走 launcher → AS2 的运行时消息下发，AS2 端不应预读 XML。
+
     表达式格式: #0@<等级下限>-<等级上限>%<对手数量>
       - #0      : 保留字段（固定为0，兼容旧格式）
       - @       : 等级区间分隔符
