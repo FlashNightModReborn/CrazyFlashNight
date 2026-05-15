@@ -180,26 +180,25 @@
             "chain":"情报#8"
         },
         {
-            "id": 10013,
-            "title": "$SIDE_TITLE_10013",
-            "description": "$SIDE_DESCRIPTION_10013",
+            "id": 90009,
+            "title": "$SIDE_TITLE_90009",
+            "description": "$SIDE_DESCRIPTION_90009",
 
-            "get_requirements": [25,10012],
-            "get_conversation": "$SIDE_GET_10013",
-            "get_npc": "Shop Girl",
+            "get_requirements": [90008],
+            "get_conversation": "$SIDE_GET_90009",
+            "get_npc": "researcher",
 
             "finish_requirements": [],
-            "finish_conversation": "$SIDE_FINISH_10013",
-            "finish_npc": "格格巫",
+            "finish_conversation": "$SIDE_FINISH_90009",
+            "finish_npc": "Shop Girl",
             "rewards": [
-                "金币#6000",
-                "经验值#1500",
+                "金币#5000",
+                "经验值#1000",
                 "普通hp药剂#5",
-                "普通mp药剂#5",
-                "明矾#20"
+                "普通mp药剂#5"
             ],
             
-            "chain":"支线#13"
+            "chain":"情报#9"
         },
         {
             "id": 10014,

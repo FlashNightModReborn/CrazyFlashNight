@@ -595,57 +595,51 @@
     ],
     "$SIDE_FINISH_90008": [],
     
-    "$SIDE_TITLE_90009": "进一步，提交变异生物体资料",
-    "$SIDE_DESCRIPTION_90009": "获取对应资料然后找researcher谈谈（提示：γ-ECHO病理摘要可在废城-医院关卡中获取，注意探索地图）。",
+    "$SIDE_TITLE_90009": "摇滚技术资料",
+    "$SIDE_DESCRIPTION_90009": "找shopgirl谈谈。",
     "$SIDE_GET_90009": [
         {
-            "name": "$PC",
-            "title": "$PC_TITLE",
-            "char": "$PC_CHAR",
-            "text": "没问题吧这个资料？"
-        },
-        {
             "name": "researcher",
             "title": "原统合研究员",
             "char": "researcher",
-            "text": "TEC-003···看来水质检测方面并不是WP高级别人员负责，从组织关系来看，是WP高层和外部合作方统合部门一起投放药剂。"
-        },
-        {
-            "name": "researcher",
-            "title": "原统合研究员",
-            "char": "researcher",
-            "text": "SEC-071、SEC-072，两个统合派去封锁自来水厂的部队士兵服用了自来水厂受药剂污染的水源，也就是γ-ECHO的影响。这说明项目高度保密，并没有告知统合军事基层人员事实。"
-        },
-        {
-            "name": "researcher",
-            "title": "原统合研究员",
-            "char": "researcher",
-            "text": "A区对应的γ-ECHO应该影响了医院，所以医院必然有相关的资料。θ-HIVE强化剂和Σ-ITE永生诱导剂情况有待进一步推理。"
-        },
-        {
-            "name": "researcher",
-            "title": "原统合研究员",
-            "char": "researcher",
-            "text": "从后续档案内容来看，医院地下层也是试点区域，看来猜测没错。"
-        },
-        {
-            "name": "researcher",
-            "title": "原统合研究员",
-            "char": "researcher",
-            "text": "SEC-006的报告说明，自来水厂当时已经出现了兽化形态僵尸，可能是角质硬化导致的形态变异，。"
+            "text": "明白了，γ-ECHO的技术应用是制造短命的肉体战争兵器，似乎与末日前的牲畜肉质增生技术有关。"
         },
         {
             "name": "$PC",
             "title": "$PC_TITLE",
             "char": "$PC_CHAR",
-            "text": "所以，我现在是需要去医院是吧？"
+            "text": "话说，你说自己是为统合办事，而且级别不低，这些事情为什么还需要来探索？"
         },
         {
             "name": "researcher",
             "title": "原统合研究员",
             "char": "researcher",
-            "text": "没错，医院必然存在病理报告，仍需调查。"
+            "text": "统合对相关项目的保密级别设置极高，不是所有人都能接触的。我是审判日前不久调往C国西南的，而所有外地人员均有“冷却期”，考察合格才能获得资料阅读权限。"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "临时政府的高层大多是之前统合政府在C国西南部的中层、基层人员，还有部分巨型企业残余加入。这些人虽然有一部分项目文件，但是总体上依然缺乏详细资料。"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "因此派遣我来堕落城，目的是尽可能接触各方人员来研究技术。既然你提交了资料，作为交换，临时政府技术人员对摇滚技术的破解资料，这里提交给你。"
+        }
+    ],
+    "$SIDE_FINISH_90009": [],
+    
+    "$SIDE_TITLE_90010": "摇滚技术资料",
+    "$SIDE_DESCRIPTION_90010": "找shopgirl谈谈。",
+    "$SIDE_GET_90010": [
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "不错。"
         },
     ],
-    "$SIDE_FINISH_90009": [] 
+    "$SIDE_FINISH_90010": [] 
 }
