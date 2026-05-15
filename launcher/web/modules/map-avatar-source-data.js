@@ -394,6 +394,34 @@ var MapAvatarSourceData = (function() {
       "h": 116
     }
   },
+  "researcher头像": {
+    "symbolName": "researcher头像",
+    "assetUrl": "assets/map/avatars/researcher头像.png",
+    "size": {
+      "w": 44,
+      "h": 44
+    },
+    "crop": {
+      "scaleX": 1.0,
+      "scaleY": 1.0,
+      "tx": 0.0,
+      "ty": 0.0
+    },
+    "center": {
+      "x": 780.0,
+      "y": 472.0
+    },
+    "rect": {
+      "x": 758.0,
+      "y": 450.0,
+      "w": 44,
+      "h": 44
+    },
+    "assetSize": {
+      "w": 44,
+      "h": 44
+    }
+  },
   "shopgirl头像": {
     "symbolName": "shopgirl头像",
     "assetUrl": "assets/map/avatars/shopgirl头像.png",
