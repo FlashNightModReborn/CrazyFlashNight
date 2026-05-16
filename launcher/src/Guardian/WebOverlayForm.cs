@@ -182,9 +182,9 @@ namespace CF7Launcher.Guardian
         private readonly int _frameRateLimit;
         private readonly bool _webView2DisableGpu;
         private readonly string _webView2AdditionalArgs;
-        private readonly Func<IntPtr> _flashHwndProvider;
         // Focus restore primitive：由 Program.cs 注入 WindowManager.RestoreFlashInputFocus；
-        // 非空时取代旧裸 SetForegroundWindow 路径，带 AttachThreadInput 兜底 + verify + 日志。
+        // 带 AttachThreadInput 兜底 + verify + [FocusRestore] 日志。
+        // null 时 panel→idle 路径跳过 Flash 前台回推（开发/测试场景；生产路径必传）。
         private readonly Func<string, bool> _flashFocusRestorer;
         private readonly bool _panelTakeForeground;
 
@@ -311,8 +311,7 @@ namespace CF7Launcher.Guardian
             bool lowEffectsMode, bool disableCssAnimations, bool disableVisualizers,
             int frameRateLimit,
             bool webView2DisableGpu, string webView2AdditionalArgs,
-            Func<IntPtr> flashHwndProvider, bool panelTakeForeground,
-            Func<string, bool> flashFocusRestorer = null)
+            bool panelTakeForeground, Func<string, bool> flashFocusRestorer)
         {
             _owner = owner;
             _anchor = anchor;
@@ -325,8 +324,8 @@ namespace CF7Launcher.Guardian
             _frameRateLimit = NormalizeFrameRateLimit(frameRateLimit);
             _webView2DisableGpu = webView2DisableGpu;
             _webView2AdditionalArgs = webView2AdditionalArgs ?? "";
-            _flashHwndProvider = flashHwndProvider; // 可空：null 时 idle 收尾跳过 Flash 前台回推
-            _flashFocusRestorer = flashFocusRestorer; // 可空：null 时落回 _flashHwndProvider + 裸 SetForegroundWindow 旧路径
+            _flashFocusRestorer = flashFocusRestorer; // 可空：null 时 panel→idle 跳过 Flash 前台回推
+
             _panelTakeForeground = panelTakeForeground;
 
             this.FormBorderStyle = FormBorderStyle.None;
@@ -3036,29 +3035,12 @@ namespace CF7Launcher.Guardian
 
             // 8) Flash 回前台：panel 接管前台后 SW_HIDE 自身，前台需显式回推（OS 自动挑下个前台不稳，
             //    特别是 panel A→B 直切 / 多显示器场景）。开关 false 时 skip 等价旧行为。
-            //    优先走 _flashFocusRestorer（带 AttachThreadInput 兜底 + verify + 日志的统一 primitive）；
-            //    未注入时落回旧裸 SetForegroundWindow 路径以保兼容。
-            if (_panelTakeForeground)
+            //    走 _flashFocusRestorer 统一 primitive：AttachThreadInput 兜底 + verify + [FocusRestore] 日志。
+            if (_panelTakeForeground && _flashFocusRestorer != null)
             {
-                if (_flashFocusRestorer != null)
-                {
-                    string panelTag = closingPanelName ?? _activePanel ?? "?";
-                    try { _flashFocusRestorer("panel_close:idle:" + panelTag); }
-                    catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground throw: " + ex.Message); }
-                }
-                else if (_flashHwndProvider != null)
-                {
-                    try
-                    {
-                        IntPtr h = _flashHwndProvider();
-                        if (h != IntPtr.Zero)
-                        {
-                            bool fg = SetForegroundWindow(h);
-                            LogManager.Log("[Panel] restore-flash-foreground (fallback) fg=" + fg + " hwnd=" + h);
-                        }
-                    }
-                    catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground throw: " + ex.Message); }
-                }
+                string panelTag = closingPanelName ?? _activePanel ?? "?";
+                try { _flashFocusRestorer("panel_close:idle:" + panelTag); }
+                catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground throw: " + ex.Message); }
             }
         }
 
@@ -3093,28 +3075,12 @@ namespace CF7Launcher.Guardian
             try { ScheduleSyncPosition("panel_close"); } catch { }
 
             // Flash 回前台：useNativeHud=false 路径必须，因为 WebOverlay 仍可见无 SW_HIDE。
-            // 优先走 _flashFocusRestorer 统一 primitive，未注入时落回裸路径兼容。
-            if (_panelTakeForeground)
+            // 走 _flashFocusRestorer 统一 primitive。
+            if (_panelTakeForeground && _flashFocusRestorer != null)
             {
-                if (_flashFocusRestorer != null)
-                {
-                    string panelTag = closingPanelName ?? _activePanel ?? "?";
-                    try { _flashFocusRestorer("panel_close:soft:" + panelTag); }
-                    catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground (soft) throw: " + ex.Message); }
-                }
-                else if (_flashHwndProvider != null)
-                {
-                    try
-                    {
-                        IntPtr h = _flashHwndProvider();
-                        if (h != IntPtr.Zero)
-                        {
-                            bool fg = SetForegroundWindow(h);
-                            LogManager.Log("[Panel] restore-flash-foreground (soft fallback) fg=" + fg + " hwnd=" + h);
-                        }
-                    }
-                    catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground (soft) throw: " + ex.Message); }
-                }
+                string panelTag = closingPanelName ?? _activePanel ?? "?";
+                try { _flashFocusRestorer("panel_close:soft:" + panelTag); }
+                catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground (soft) throw: " + ex.Message); }
             }
         }
 

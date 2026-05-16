@@ -34,9 +34,12 @@ _root.UI系统.商城WebView.log("loaded, gameCommands=" + typeof(_root.gameComm
 _root.gameCommands["shopPanelOpen"] = function(params) {
     _root.UI系统.商城WebView.ensureState();
     _root.UI系统.商城WebView.log("shopPanelOpen, 暂停=" + _root.暂停);
-    // 防御性：如果上一次 close 没走通（异常关 panel / Launcher 重连），先释放旧 lease 再申请新的
+    // 防御性：如果上一次 close 没走通（异常关 panel / Launcher 重连），先释放旧 lease 再申请新的。
+    // 先清 pauseLeaseId 再 release：releaseLease 若抛错也不会留下"已释放的旧 id"假态。
     if (_root.UI系统.商城WebView.pauseLeaseId !== undefined) {
-        org.flashNight.arki.pause.PauseManager.releaseLease(_root.UI系统.商城WebView.pauseLeaseId);
+        var staleId:String = _root.UI系统.商城WebView.pauseLeaseId;
+        _root.UI系统.商城WebView.pauseLeaseId = undefined;
+        org.flashNight.arki.pause.PauseManager.releaseLease(staleId);
     }
     _root.UI系统.商城WebView.pauseLeaseId = org.flashNight.arki.pause.PauseManager.lease(true, "shop");
 };

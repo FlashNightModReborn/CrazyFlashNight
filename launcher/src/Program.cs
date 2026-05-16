@@ -380,7 +380,7 @@ class Program
         LogManager.Log("[WebView2] Runtime found: " + wv2ver);
         string webDir = Path.Combine(projectRoot, "launcher", "web");
         // Flash hwnd 动态查询（SA 进程重启后 hwnd 变）。提前到 WebOverlay 构造前，
-        // 因为 WebOverlay 自身在 idle 收尾时需要把 Flash 推回前台；同一 provider 后续给 PanelHostController 复用。
+        // 因为后续 PanelHostController 也复用同一份。WebOverlay 自身的焦点回推走 flashFocusRestorer。
         Func<IntPtr> flashHwndProvider = delegate { return form.GetFlashHwnd(); };
         // WindowManager 早声明：WebOverlay 构造时需要它的 RestoreFlashInputFocus primitive；
         // 实际 form.BindWindowManager / perfEngine.SetWindowManager / OnKillFlash 还在后面统一装配。
@@ -389,10 +389,10 @@ class Program
         using (PerfTrace.Scope("web_overlay.construct"))
         {
             // Flash 焦点恢复 primitive：所有 panel close / navigate 路径都走 WindowManager.RestoreFlashInputFocus，
-            // 带 AttachThreadInput 兜底 + 前后 fg/pid 日志 + 校验，统一兜底替代散落的裸 SetForegroundWindow。
+            // 带 AttachThreadInput 兜底 + 前后 fg/pid 日志 + 校验，统一替代散落的裸 SetForegroundWindow。
             Func<string, bool> flashFocusRestorer = delegate(string reason)
             {
-                return (windowManager != null) && windowManager.RestoreFlashInputFocus(reason);
+                return windowManager.RestoreFlashInputFocus(reason);
             };
             webOverlay = new WebOverlayForm(form, form.FlashHostPanel, webDir,
                 config.WebOverlayLowEffects,
@@ -401,7 +401,6 @@ class Program
                 config.WebOverlayFrameRateLimit,
                 config.WebView2DisableGpu,
                 config.WebView2AdditionalArgs,
-                flashHwndProvider,
                 config.WebOverlayPanelTakeForeground,
                 flashFocusRestorer);
         }
@@ -494,7 +493,8 @@ class Program
             webOverlay.SetUseNativeHud(true);
             nativeHud = new NativeHudOverlay(form, form.FlashHostPanel);
             backdrop = new NativePanelBackdrop(form);
-            // flashHwndProvider 已在 WebOverlay 构造前声明并复用；PanelHostController 共享同一份
+            // flashHwndProvider 在 WebOverlay 构造前已声明（snapshot 路径用），此处复用给 PanelHostController；
+            // WebOverlay 自身的焦点回推不走 provider 而走 flashFocusRestorer 统一 primitive。
             // Phase 3: 注入 NotchOverlay/ToastOverlay，让 PanelHost 在 panel open/close 时显式 Suspend/Resume
             panelHost = new PanelHostController(form, webOverlay, nativeHud, backdrop,
                 inputShield, hnOverlay, cursorOverlay, form.GetPanelEscapeSource(), flashHwndProvider,

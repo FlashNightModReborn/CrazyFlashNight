@@ -640,9 +640,15 @@ namespace CF7Launcher.Guardian
             }
 
             // 经 RestoreFlashInputFocus primitive 拉回前台 + 焦点（带 AttachThreadInput 兜底 + verify + 日志）；
-            // ctrl_combo 路径 keybd_event 注入前必须确认 Flash 在前台，否则按键命中 launcher 主窗口。
-            if (_windowManager != null)
-                _windowManager.RestoreFlashInputFocus("ctrl_combo:" + key);
+            // ctrl_combo 路径 keybd_event 是全局注入，必须先确认 Flash 真的在前台——否则按键命中
+            // 当前 fg（可能是 launcher 主窗口 / 用户切走的其他应用），引发误操作。
+            // primitive 内部已打 [FocusRestore] 详细日志，此处失败时只补一条 skip 摘要。
+            bool focusOk = (_windowManager != null) && _windowManager.RestoreFlashInputFocus("ctrl_combo:" + key);
+            if (!focusOk)
+            {
+                LogManager.Log("[Input] Skip Ctrl+" + key + " injection: focus restore failed");
+                return;
+            }
 
             keybd_event((byte)Keys.ControlKey, 0, 0, UIntPtr.Zero);
             keybd_event((byte)key, 0, 0, UIntPtr.Zero);

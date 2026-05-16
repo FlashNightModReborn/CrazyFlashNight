@@ -39,7 +39,8 @@
  *    - 任何想观察 _root.暂停 变化的新代码必须走 PauseManager.subscribe，
  *      禁止再调 _root.watch("暂停", ...)（会覆盖 PauseManager 的回调）。
  *    - 业务侧直写 _root.暂停 = ... 不变（subscribers 收到 tag === null）。
- *    - 帧脚本不要在 install 之前发起 set/lease 调用。
+ *    - 帧脚本不要在 install 之前发起 set / lease / subscribe / unsubscribe 调用
+ *      （_subscribers / _leases 字段在 install() 内才初始化，提前调用会 NPE）。
  * =============================================================================
  */
 class org.flashNight.arki.pause.PauseManager {
@@ -89,13 +90,18 @@ class org.flashNight.arki.pause.PauseManager {
     //----------------------------------
 
     public static function onPauseChanged(prop:String, oldVal, newVal) {
-        // 重入跳过：subscriber 内若调 PauseManager.set 又触发本 watch，避免无限递归
+        // 重入跳过：subscriber 回调内若再调 set / lease / releaseLease 触发本 watch，
+        // 内层直接 return newVal 让赋值生效（_root.暂停 = ... 不被拦截），但 subscribers
+        // **不会收到该次嵌套写入的通知**。这是设计意图：避免无限递归 + 避免分发顺序乱套。
+        // 业务约束：subscriber 内不要做"会改 _root.暂停 又依赖被其他 subscriber 同步观察到"的操作。
         if (PauseManager._dispatching) return newVal;
 
         var tag:String = PauseManager._writerTag;
         PauseManager._dispatching = true;
 
-        var subs:Array = PauseManager._subscribers;
+        // 写时快照 subscribers 数组：subscriber 内可安全调 unsubscribe（自己或他人），
+        // 当前轮分发仍以 snapshot 为准；新 subscribe 进来的回调本轮不触发。
+        var subs:Array = PauseManager._subscribers.concat();
         var len:Number = subs.length;
         for (var i:Number = 0; i < len; i++) {
             var sub:Object = subs[i];
@@ -172,9 +178,19 @@ class org.flashNight.arki.pause.PauseManager {
         if (data == undefined) return;
         delete PauseManager._leases[leaseId];
 
-        // CAS：当前值仍等于自己设的值 → 安全还原；否则放弃，由业务侧接管
+        // CAS：当前值仍等于自己设的值 → 安全还原；否则放弃，由业务侧接管。
+        // 失败路径打一条服务器消息：调用方收不到信号，但运维侧能在日志里观测
+        // "release 时业务已改写"的真实分布，给后续设计调整提供依据。
         if (PauseManager.isPaused() === data.leasedValue) {
             PauseManager.set(data.prevValue, data.owner + ":release");
+        } else {
+            _root.服务器.发布服务器消息(
+                "[PauseManager] CAS fail lease=" + leaseId
+                + " owner=" + data.owner
+                + " leasedValue=" + data.leasedValue
+                + " current=" + PauseManager.isPaused()
+                + " prevValue=" + data.prevValue
+            );
         }
     }
 }
