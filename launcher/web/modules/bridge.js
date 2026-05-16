@@ -110,6 +110,76 @@ var OverlayViewportMetrics = (function() {
     };
 })();
 
+// === Overlay scale: 只给 tooltip 用的窗口跟随缩放 ===
+//
+// panel layer 在 launcher Panel 模式下保持 _webViewZoomFactor=1.0 的 CSS px 布局
+// （inset 百分比 + viewport 单位天然跟随窗口）。仅 tooltip 跟 AS2 端 Flash stage
+// 缩放语义不一致，在大窗口下视觉过大，所以单独按 vpH/FLASH_DESIGN_HEIGHT 缩放。
+//
+// 这里把 scale 写入 --cf7-overlay-scale 给 panels.css 的 `#panel-tooltip` 用
+// （`transform: scale(...)`，layout 不受影响，只是视觉缩放）。
+//
+// FLASH_DESIGN_HEIGHT 调优史：
+//   - 576（更早）：@1080p scale=1.875，实测视觉比 AS2 大约 150%，用户反馈偏大
+//   - 864（现）：@1080p=1.25x、@4K=2.5x；用户实测视觉对比定标
+//
+// 历史教训（回滚记录）：曾把 transform 改成 `body { zoom }` 想同步缩放整个 panel，
+// 但破坏了 panel layer 一贯 CSS px 行为，已回滚为只缩 tooltip。
+var OverlayScale = (function() {
+    var FLASH_DESIGN_HEIGHT = 864;
+    var current = 1;
+
+    function compute() {
+        var h = window.innerHeight || 0;
+        if (h <= 0) return 1;
+        return Math.max(0.25, h / FLASH_DESIGN_HEIGHT);
+    }
+
+    function update() {
+        current = compute();
+        if (document.documentElement) {
+            document.documentElement.style.setProperty('--cf7-overlay-scale', current);
+        }
+    }
+
+    function get() { return current; }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', update);
+    } else {
+        update();
+    }
+    window.addEventListener('resize', update);
+    if (window.visualViewport && window.visualViewport.addEventListener) {
+        window.visualViewport.addEventListener('resize', update);
+    }
+
+    return { get: get, update: update };
+})();
+
+// 启动期字体预热：避免 tooltip 首次悬浮时拿 fallback 字体度量算高度、
+// 字体 swap 后再 reflow 导致"第一次错位、第二次才对"。
+// document.fonts.load(spec) 触发字体下载并把对应 FontFace 入 ready Promise；
+// 之后任意时刻调 document.fonts.ready 都立即 resolved。
+// 这里只热常见尺寸，挑战字体（intel-font-*）按需加载，不在这里预热。
+(function preloadCommonFonts() {
+    if (!document.fonts || typeof document.fonts.load !== 'function') return;
+    function warm() {
+        try {
+            // tooltip / panel 主字号
+            document.fonts.load('12px "LXGW WenKai Screen"');
+            document.fonts.load('13px "LXGW WenKai Screen"');
+            // 系统 fallback 也提前 ready 一下，触发 ready Promise 完成
+            document.fonts.load('12px sans-serif');
+        } catch (e) {}
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', warm);
+    } else {
+        warm();
+    }
+})();
+
 // 启动期一次性探针：把 WebGL renderer 回报给 launcher，验证 gpuPreference 是否真的把 WebView2 调度到独显。
 // 写 reg 不等于 Windows 一定遵从（Optimus / MUX / 驱动策略可能覆盖），事后验证比静态推理可靠。
 (function reportGpuInfoOnce() {

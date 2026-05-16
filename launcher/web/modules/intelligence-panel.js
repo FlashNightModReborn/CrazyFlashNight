@@ -714,20 +714,20 @@ var IntelligencePanel = (function() {
     }
 
     // 与商城 buildRichHtml 对齐：introHTML 已含 displayname 标题，不再重复 header；
-    // 仅渲染 icon + intro + desc 三栏，避免和 TooltipComposer 输出的标题撞行。
+    // 走 PanelTooltip.buildItemRichHtml 复用统一布局（icon 在 intro 上方）。
     function buildRichTooltip(item, resp) {
         var iconUrl = resolveIconUrl(item);
-        var iconHtml = iconUrl
-            ? '<div class="kshop-tt-icon"><img src="' + escAttr(iconUrl) + '" alt=""></div>'
-            : '<div class="kshop-tt-icon"><span class="intel-catalog-icon-placeholder">?</span></div>';
-        var intro = PanelTooltip.convertAS2Html(resp.introHTML || '');
-        var desc = PanelTooltip.convertAS2Html(resp.descHTML || '');
-        var meta = '<div class="kshop-tt-dim">已发现 ' + countUnlockedPagesForItem(item) + ' / ' + getPageCountForItem(item) + ' 页</div>';
-        return '<div class="kshop-tt-rich intel-tt-rich">' +
-            iconHtml +
-            (intro ? '<div class="kshop-tt-intro">' + intro + meta + '</div>' : '<div class="kshop-tt-intro">' + meta + '</div>') +
-            (desc ? '<div class="kshop-tt-desc">' + desc + '</div>' : '') +
-        '</div>';
+        var meta = '<div class="flash-tt-dim kshop-tt-dim">已发现 ' +
+                   countUnlockedPagesForItem(item) + ' / ' +
+                   getPageCountForItem(item) + ' 页</div>';
+        return PanelTooltip.buildItemRichHtml({
+            iconUrl:         iconUrl,
+            iconPlaceholder: '<span class="intel-catalog-icon-placeholder">?</span>',
+            introHTML:       resp.introHTML,
+            descHTML:        resp.descHTML,
+            metaHTML:        meta,
+            rootClass:       'intel-tt-rich'
+        });
     }
 
     function escHtml(s) {

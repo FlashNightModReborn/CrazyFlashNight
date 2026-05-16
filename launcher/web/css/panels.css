@@ -156,14 +156,38 @@
 #panel-content   { position:absolute; inset:4% 6%; z-index:1; display:flex; flex-direction:column;
                    pointer-events:auto; }
 
-/* ── Tooltip (rich Flash bridge) ── */
+/* ── Tooltip (rich Flash bridge) ──
+   缩放策略：只对 #panel-tooltip 应用 transform: scale(--cf7-overlay-scale)。
+   panel layer 的 CSS px 布局保持不动（由 launcher panel 模式自身 layout 锚定
+   inset 百分比，window resize 自然跟随），只有 tooltip 需要按 vpH/864 微缩放
+   抵消大窗口下视觉过大的问题。
+   - 历史回滚记录：曾尝试 body { zoom } 整页联动，但破坏了 panel layer 一贯
+     的 CSS px 布局行为（panel buttons 也被缩放），不符合"只调 tooltip 大小"
+     的实际需求，已回滚为 tooltip 局部 transform。
+   默认（非 flash-tt-rich 调用方，如 spark-tooltip）：tooltip 本体有外框；
+   含 .flash-tt-rich 时（K商城/情报/竞技场物品 tooltip）：外框透明，bg/border 由
+   .flash-tt-intro-panel / .flash-tt-desc 各自承担，对齐 AS2 端 introBg + mainBg
+   两个独立 MovieClip 的视觉。 */
 #panel-tooltip   { position:fixed; z-index:1100; pointer-events:none; display:none;
                    background:var(--cp-bg); border:1px solid var(--cp-cyan); color:var(--cp-text);
                    padding:10px 14px; font-size:12px; max-width:480px; letter-spacing:0.3px;
                    line-height:1.5;
                    clip-path:polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
-                   box-shadow:var(--cp-glow); }
+                   box-shadow:var(--cp-glow);
+                   transform:scale(var(--cf7-overlay-scale, 1));
+                   transform-origin:top left; }
 #panel-tooltip b { color:var(--cp-cyan); }
+
+/* flash-tt-rich 模式：外框透明，由内部两个面板独立承担视觉。
+   max-width 也要放开（默认 480 会把 intro(300) + desc(650) 压扁）。 */
+#panel-tooltip:has(.flash-tt-rich) {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    clip-path: none;
+    padding: 0;
+    max-width: none;
+}
 
 #panel-container[data-panel="lockbox"] #panel-content {
     inset:1.2% 1.6%;
@@ -190,30 +214,171 @@
     justify-content: center;
 }
 
-/* Tooltip internal structure */
-.kshop-tt-header b { color:var(--cp-cyan); font-size:13px; }
-.kshop-tt-divider { margin:4px 0; border-top:1px solid rgba(0,240,255,0.15); }
-.kshop-tt-dim { color:var(--cp-dim); font-size:11px; }
-.kshop-tt-price { color:var(--cp-yellow); }
-.kshop-tt-locked { color:var(--cp-red); font-size:11px; }
-.kshop-tt-loading { color:var(--cp-dim); font-size:10px; margin-top:6px; letter-spacing:2px;
-                    animation:kshop-pulse 1.2s ease-in-out infinite; }
-.kshop-tt-lock-banner { margin-top:6px; padding:4px 8px; color:var(--cp-red); font-size:11px;
-                        border-top:1px solid rgba(255,0,60,0.2); letter-spacing:1px; }
+/* ════════════════════════════════════════════════════════════════════
+   Flash Tooltip — Layout Primitives & Visual Tokens
+   ════════════════════════════════════════════════════════════════════
+   设计原则（与 AS2 端 TooltipLayout 对齐）：
+   - 布局原语（尺寸/间距/grid）锁死，跨 panel 共享 → flash-tt-* 类
+   - 视觉 token（颜色/边框/字重）通过 --tt-* CSS 变量暴露，panel 想换主题
+     就 override 这些变量，不要动结构
+   - 旧 .kshop-tt-* 名字保留为 alias 以避免破坏既有 DOM
+   - AS2 端常量参考：TooltipConstants.as
+       BASE_NUM=200, INTRO_MAX_W=300, MIN_W=150, MAX_W=650, RATIO_MIN=0.618
+*/
+.flash-tt-rich,
+.kshop-tt-rich {
+    /* === Layout primitives（锁死，对齐 AS2 TooltipConstants）=== */
+    --tt-icon-size: 192px;        /* ≈ BASE_NUM(200) - 内边距 */
+    --tt-intro-max-w: 300px;      /* = INTRO_MAX_W */
+    --tt-intro-min-h: 220px;      /* = BASE_NUM(200) + BG_HEIGHT_OFFSET(20)
+                                     AS2 端 applyIntroLayout 把 bgHeightOffset 固定为 220px，
+                                     避免短 intro 时面板被压扁；merge 模式下被 override 为 auto */
+    --tt-merge-max-w: 480px;      /* merge 模式 intro-panel 宽度上限（容纳合并的 desc 文字） */
+    --tt-desc-min-w: 160px;
+    --tt-desc-max-w: 650px;       /* = MAX_W */
+    --tt-gap: 0px;                /* 对齐 AS2：两面板紧贴（introBg 右边缘 = mainBg 左边缘） */
+    --tt-panel-pad: 4px;
+    /* line-height 1.25 = Playwright fixture sweep（launcher/perf/tooltip-regression/）
+       命中的最佳值：introTH_diff p50=0px、mean=-0.12 vs AS2 Flash TextField textHeight。
+       1.6 是阅读友好默认，但跟 AS2 端 ~28% 偏高；1.25 对齐 Flash 原生行距。 */
+    --tt-intro-line-height: 1.25;
+    --tt-desc-line-height: 1.25;
+    /* === Visual tokens（可被 panel 通过 .arena-tt-rich / .intel-tt-rich 等覆盖）=== */
+    --tt-divider-color: rgba(0,240,255,0.10);
+    --tt-icon-glow: 0 0 6px rgba(0,240,255,0.2);
 
-/* Rich tooltip (Flash bridge data) */
-.kshop-tt-rich { display:flex; gap:12px; }
-.kshop-tt-icon { flex:0 0 auto; display:flex; align-items:flex-start; justify-content:center;
-                 padding:4px; border-right:1px solid rgba(0,240,255,0.08); }
-.kshop-tt-icon img { width:96px; height:96px; object-fit:contain;
-                     filter:drop-shadow(0 0 6px rgba(0,240,255,0.2)); }
-.kshop-tt-intro { flex:0 0 auto; max-width:200px; padding-right:10px;
-                  border-right:1px solid rgba(0,240,255,0.1); line-height:1.6; }
-.kshop-tt-desc  { flex:1; min-width:160px; line-height:1.6; }
+    display: flex;
+    gap: var(--tt-gap);
+    align-items: flex-start;       /* 两面板都从容器顶部开始，desc 的最终 Y/高度由 JS 写 inline
+                                      style 决定（margin-top + height）。这跟 AS2 端
+                                      positionTooltip 的算法语义一致：
+                                      - IF 分支（mouseY 靠近屏幕底部 + intro 比 main 高）：
+                                        desc 整块下移 offset，底部对齐 intro 底部
+                                      - ELSE 分支（mouseY 靠顶 / main 比 intro 高）：
+                                        desc 紧贴顶部，高度膨胀到 max(textH, iconH)+10 下限
+                                      公式 ground-truth 来自 TooltipGroundTruthDump（862 物品 × 9 mouseY 采样
+                                      落到 launcher/web/assets/tooltip-truth.json，供 regression 校对） */
+}
+
+/* 左面板：icon 在上，intro 文字在下（垂直堆叠，对齐 AS2 introBg 结构）
+   独立背景 + 边框，对齐 AS2 端 introBg MovieClip 视觉。
+   - merge 模式（默认 base）：完整双角斜切（跟原 #panel-tooltip 一致）
+   - split 模式（override）：仅左下斜切，右边框去掉让两面板视觉连续 */
+.flash-tt-intro-panel,
+.kshop-tt-intro-panel {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    max-width: var(--tt-intro-max-w);
+    min-height: var(--tt-intro-min-h);    /* 对齐 AS2 introBg 高度基准 */
+    background: var(--cp-bg);
+    border: 1px solid var(--cp-cyan);
+    box-shadow: var(--cp-glow);
+    padding: 10px 14px 14px 14px;          /* 底部 +4px 安全距离，避免最末行文字贴框 */
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+/* split 模式：intro 在左，砍掉右边框 + 改成仅左下斜切（让右边贴合 desc 左边） */
+.flash-tt-rich:not(.flash-tt-rich--merge) > .flash-tt-intro-panel,
+.flash-tt-rich:not(.flash-tt-rich--merge) > .kshop-tt-intro-panel {
+    border-right: none;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+
+/* ── merge 模式（对齐 AS2 setVisibility("main", false) + desc 拼入 intro） ──
+   - 无右栏：intro-panel 放宽 max-width 容纳合并的 desc
+   - 无强制 min-height：短内容自然收缩，避免空白
+   - icon glow 不变 / line-height 不变（视觉一致性）
+   - 完整 border + clip-path（已由 .flash-tt-intro-panel 基础样式提供）继承 */
+.flash-tt-rich--merge {
+    flex-wrap: nowrap;
+}
+.flash-tt-rich--merge > .flash-tt-intro-panel,
+.flash-tt-rich--merge > .kshop-tt-intro-panel {
+    max-width: var(--tt-merge-max-w);
+    min-height: 0;
+}
+
+/* Icon */
+.flash-tt-icon,
+.kshop-tt-icon {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: var(--tt-panel-pad);
+}
+.flash-tt-icon img,
+.kshop-tt-icon img {
+    width: var(--tt-icon-size);
+    height: var(--tt-icon-size);
+    object-fit: contain;
+    filter: drop-shadow(var(--tt-icon-glow));
+}
+
+/* Intro 文字段（在 intro-panel 内 icon 下方） */
+.flash-tt-intro,
+.kshop-tt-intro {
+    flex: 1 1 auto;
+    line-height: var(--tt-intro-line-height);
+}
+
+/* Desc 右面板（对齐 AS2 mainBg）
+   独立背景 + 边框，对齐 AS2 端 mainBg MovieClip 视觉。
+   marginTop / height 由 JS positionAtMouse 写 inline style（不在 CSS 里固定）：
+   公式直接 port AS2 TooltipLayout.positionTooltip：
+     tipsH    = max(introBgH, mainBgH)
+     tipsY    = clamp(0, stageH - tipsH, mouseY - tipsH - MOUSE_OFFSET)
+     offset   = mouseY - (tipsY + mainBgH) - MOUSE_OFFSET
+     IF offset > 0:  marginTop = offset, height = mainBgH
+     ELSE:           marginTop = 0,      height = max(mainTH, iconH) + HEIGHT_ADJUST
+   box-sizing: border-box 让 inline height 直接控制外框（含 border + padding） */
+.flash-tt-desc,
+.kshop-tt-desc {
+    flex: 0 0 auto;
+    min-width: var(--tt-desc-min-w);
+    max-width: var(--tt-desc-max-w);
+    line-height: var(--tt-desc-line-height);
+    background: var(--cp-bg);
+    border: 1px solid var(--cp-cyan);
+    box-shadow: var(--cp-glow);
+    padding: 10px 14px 14px 14px;          /* 底部 +4px 安全距离，避免最末行文字贴框 */
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* ── 向后兼容：旧结构（icon | intro | desc 三栏）不包 intro-panel 时退化 ──
+   .flash-tt-rich 内若没有 .flash-tt-intro-panel，则 .flash-tt-intro 独立成栏 */
+.flash-tt-rich  > .flash-tt-intro,
+.kshop-tt-rich  > .kshop-tt-intro {
+    max-width: var(--tt-intro-max-w);
+    padding-right: 10px;
+    border-right: 1px solid var(--tt-divider-color);
+}
+.flash-tt-rich  > .flash-tt-icon,
+.kshop-tt-rich  > .kshop-tt-icon {
+    border-right: 1px solid var(--tt-divider-color);
+}
+
+/* === Visual-only token 类（不参与布局，per-panel 视觉一致）=== */
+.kshop-tt-header b, .flash-tt-header b { color:var(--cp-cyan); font-size:13px; }
+.kshop-tt-divider, .flash-tt-divider   { margin:4px 0; border-top:1px solid rgba(0,240,255,0.15); }
+.kshop-tt-dim,     .flash-tt-dim       { color:var(--cp-dim); font-size:11px; }
+.kshop-tt-price,   .flash-tt-price     { color:var(--cp-yellow); }
+.kshop-tt-locked,  .flash-tt-locked    { color:var(--cp-red); font-size:11px; }
+.kshop-tt-loading, .flash-tt-loading   { color:var(--cp-dim); font-size:10px; margin-top:6px; letter-spacing:2px;
+                                          animation:kshop-pulse 1.2s ease-in-out infinite; }
+.kshop-tt-lock-banner, .flash-tt-lock-banner { margin-top:6px; padding:4px 8px; color:var(--cp-red); font-size:11px;
+                                                border-top:1px solid rgba(255,0,60,0.2); letter-spacing:1px; }
 
 /* Flash HTML 继承样式：AS2 <FONT COLOR> 已转为 <span style="color:"> */
 #panel-tooltip span[style] { font-size:inherit; }
 #panel-tooltip b { font-weight:bold; }
+
+/* ── 变体示例：loading / basic 态 icon 缩小（演示"变体走 token 不动结构"） ── */
+.intel-tt-basic, .arena-tt-basic {
+    --tt-icon-size: 64px;
+}
 
 /* ═══════════════════════════════════════════════════════
    K-Shop Panel
@@ -8451,5 +8616,7 @@ html.perf-low-effects .map-stage-backdrop::before {
     cursor: not-allowed;
 }
 
-/* ── Tooltip 复用 kshop-tt-* 通用类（PanelTooltip.buildItemRichHtml）；arena-tt-rich/basic 只作
-   "本面板上下文"语义标记，目前不需要专属覆盖样式。如需收紧最大宽度可在 .arena-tt-rich 上加。 ── */
+/* ── Tooltip 复用 flash-tt-* 布局原语（PanelTooltip.buildItemRichHtml）；
+   arena-tt-rich/intel-tt-rich 是 "本面板上下文" 语义类，按设计系统约定
+   只允许 override 视觉 token（--tt-divider-color / --tt-icon-glow 等），
+   不要 override 尺寸/间距类变量。 ── */

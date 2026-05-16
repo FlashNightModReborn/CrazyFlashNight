@@ -392,24 +392,18 @@ var KShop = (function() {
 
     function buildRichHtml(item, data) {
         var locked = isLocked(item);
-        var introHtml = data.introHTML ? PanelTooltip.convertAS2Html(data.introHTML) : '';
-        var descHtml = data.descHTML ? PanelTooltip.convertAS2Html(data.descHTML) : '';
-
         var lockBanner = locked
-            ? '<div class="kshop-tt-lock-banner">⚿ 锁定 — 需要 Lv.' + item.level + '</div>'
+            ? '<div class="flash-tt-lock-banner kshop-tt-lock-banner">⚿ 锁定 — 需要 Lv.' + item.level + '</div>'
             : '';
-
         var iconUrl = (typeof Icons !== 'undefined') ? Icons.resolve(item.icon) : null;
-        var iconBlock = iconUrl
-            ? '<div class="kshop-tt-icon"><img src="' + iconUrl + '" onerror="this.parentNode.style.display=\'none\'"></div>'
-            : '';
 
-        return '<div class="kshop-tt-rich">' +
-                iconBlock +
-                (introHtml ? '<div class="kshop-tt-intro">' + introHtml + '</div>' : '') +
-                (descHtml ? '<div class="kshop-tt-desc">' + descHtml + '</div>' : '') +
-            '</div>' +
-            lockBanner;
+        return PanelTooltip.buildItemRichHtml({
+            iconUrl:   iconUrl,
+            introHTML: data.introHTML,
+            descHTML:  data.descHTML,
+            rootClass: 'kshop-tt-rich-context',
+            suffix:    lockBanner
+        });
     }
 
     function requestFlashTooltip(idx) {

@@ -2,3 +2,6 @@ node_modules/
 reports/
 *.log
 .cache/
+
+# AS2 真值——dev-only 中间产物，需要时跑 tooltip-regression/parse-gt.py 重生成
+tooltip-regression/tooltip-truth.json

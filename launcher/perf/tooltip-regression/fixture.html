@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>Tooltip Regression Fixture</title>
+<link rel="stylesheet" href="/web/css/panels.css">
+<style>
+    /* fixture 环境：保留 panels.css 的级联（#panel-tooltip 给 font-size:12px），
+       但让面板可见、放在左上角方便排查。measurement 用 offsetHeight，跟 visibility 无关。 */
+    body { margin: 0; padding: 0; background: #111; color: #d0d8e8;
+           font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; }
+    #panel-tooltip { display: block; position: absolute; left: 8px; top: 8px; }
+    /* tooltip.js 的 positionAtMouse 平时会清掉 inline marginTop/height，
+       fixture 模式下我们要测 desc/intro panel 的"自然高度"，不写 inline → 自然 layout */
+    #info { position: fixed; bottom: 8px; left: 8px; font-size: 11px; opacity: 0.7; }
+</style>
+</head>
+<body>
+    <div id="panel-tooltip"><!-- 由 runner 注入 .flash-tt-rich --></div>
+    <div id="info">Tooltip regression fixture — runner.js drives via page.evaluate()</div>
+<script>
+// AS2 HTML → 浏览器 HTML（与 tooltip.js convertAS2Html 同等价物，inline 一份避免依赖 IIFE 初始化）
+function convertAS2Html(s) {
+    if (!s) return '';
+    return String(s)
+        .replace(/<FONT\b([^>]*)>/gi, function(m, attrs) {
+            attrs = attrs || '';
+            var style = [];
+            var color = /\bCOLOR\s*=\s*(['"])(.*?)\1/i.exec(attrs);
+            if (color && /^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(color[2])) {
+                style.push('color:' + color[2]);
+            }
+            var size = /\bSIZE\s*=\s*(['"])(.*?)\1/i.exec(attrs);
+            if (size) {
+                var px = parseInt(size[2], 10);
+                if (!isNaN(px) && px > 0 && px <= 96) style.push('font-size:' + px + 'px');
+            }
+            return style.length ? '<span style="' + style.join(';') + '">' : '<span>';
+        })
+        .replace(/<\/FONT>/gi, '</span>')
+        .replace(/<B>/gi, '<b>').replace(/<\/B>/gi, '</b>')
+        .replace(/<I>/gi, '<i>').replace(/<\/I>/gi, '</i>')
+        .replace(/<U>/gi, '<u>').replace(/<\/U>/gi, '</u>')
+        .replace(/<BR\s*\/?>/gi, '<br>');
+}
+
+// 构造 mock split-mode tooltip DOM（icon 是占位 div，避免下载 200+ 图片）
+// 占位尺寸 = AS2 BASE_NUM=200，跟 AS2 端 icon._height 一致；面板内部 padding 由 CSS 控制
+function buildMockSplitTooltip(introHtml, descHtml) {
+    var introContent = convertAS2Html(introHtml);
+    var descContent = convertAS2Html(descHtml);
+    var html = '<div class="flash-tt-rich kshop-tt-rich">' +
+        '<div class="flash-tt-intro-panel kshop-tt-intro-panel">' +
+            '<div class="flash-tt-icon kshop-tt-icon">' +
+                '<div style="width:var(--tt-icon-size,192px);height:var(--tt-icon-size,192px);background:rgba(0,240,255,0.08);"></div>' +
+            '</div>' +
+            '<div class="flash-tt-intro kshop-tt-intro">' + introContent + '</div>' +
+        '</div>' +
+        '<div class="flash-tt-desc kshop-tt-desc">' + descContent + '</div>' +
+    '</div>';
+    return html;
+}
+
+// ── AS2 TooltipLayout port — Web 端宽度估算与 balance ──
+//
+// 公式来自：scripts/类定义/org/flashNight/gesh/tooltip/TooltipLayout.as
+// 常量：TooltipConstants.as (PIX_PER_UNIT=6.0, LINE_HEIGHT=15, RATIO_*, BALANCE_*)
+//
+// htmlScoresBoth(html) — 返回 {total, maxLine, lineCount}
+//   字符权重：ASCII=1, CJK 双宽=2, Space=0.5, Newline=0（仅总量）
+//   行最大维度：<BR> flushLine（最长单行分数 = maxLine）
+//   行数：<BR> 计数 + 1
+function htmlScoresBoth(input) {
+    if (!input) return { total: 0, maxLine: 0, lineCount: 1 };
+    var s = String(input);
+    var i = 0, n = s.length;
+    var totalScore = 0, lineScore = 0, maxLineScore = 0, lineCount = 1;
+    while (i < n) {
+        var c = s.charCodeAt(i);
+        // HTML 标签：扫描到 '>'，<BR> 触发 flushLine
+        if (c === 60) {
+            var c1 = s.charCodeAt(i + 1);
+            // <BR> / <br> / <BR/> / <BR ...>
+            if ((c1 === 66 || c1 === 98) && (s.charCodeAt(i+2) === 82 || s.charCodeAt(i+2) === 114)) {
+                if (lineScore > maxLineScore) maxLineScore = lineScore;
+                lineScore = 0;
+                lineCount++;
+            }
+            // 跳过整个标签
+            while (i < n && s.charCodeAt(i) !== 62) i++;
+            i++;
+            continue;
+        }
+        // 普通字符权重
+        var w;
+        if (c === 10 || c === 13) {
+            if (lineScore > maxLineScore) maxLineScore = lineScore;
+            lineScore = 0;
+            lineCount++;
+            i++;
+            continue;
+        }
+        if (c === 32 || c === 9) w = 0.5;
+        else if (c < 128) w = 1;
+        else if (c >= 0x4E00 && c <= 0x9FFF) w = 2;       // CJK
+        else if (c >= 0x3000 && c <= 0x33FF) w = 2;
+        else if (c >= 0xFF00 && c <= 0xFFEF) w = 2;
+        else if (c < 256) w = 1;
+        else w = 2;
+        totalScore += w;
+        lineScore += w;
+        i++;
+    }
+    if (lineScore > maxLineScore) maxLineScore = lineScore;
+    return { total: totalScore, maxLine: maxLineScore, lineCount: lineCount };
+}
+
+// AS2 estimateMainWidthFromMetrics — sqrt 公式 + maxLine 约束 + clamp
+//   PIX_PER_UNIT=6.0 是 AS2 Flash 端经验值；web 字号字体不同，需 fixture sweep 校准
+function estimateMainWidth(scores, opts) {
+    var minW = (opts && opts.minW != null) ? opts.minW : 150;
+    var maxW = (opts && opts.maxW != null) ? opts.maxW : 650;
+    var PIX_PER_UNIT = (opts && opts.pixPerUnit != null) ? opts.pixPerUnit : 6.0;
+    var LINE_HEIGHT = 15;
+    var RATIO_MIN = 0.618, RATIO_MAX = 1.5, RATIO_SCORE_CAP = 300;
+    var MAX_RENDERED_LINES = 32;
+    var LINE_GUTTER = 20;
+
+    if (scores.total <= 0) return minW;
+    var t = scores.total / RATIO_SCORE_CAP;
+    if (t > 1) t = 1;
+    var ss = t * t * (3 - 2 * t);
+    var r = RATIO_MIN + ss * (RATIO_MAX - RATIO_MIN);
+
+    var sqrtW = Math.sqrt(r * scores.total * PIX_PER_UNIT * LINE_HEIGHT);
+    var wFloor = scores.total * PIX_PER_UNIT / MAX_RENDERED_LINES;
+    if (sqrtW < wFloor) sqrtW = wFloor;
+
+    if (scores.maxLine > 0) {
+        var maxLineW = scores.maxLine * PIX_PER_UNIT + LINE_GUTTER;
+        if (sqrtW > maxLineW) sqrtW = maxLineW;
+    }
+    return Math.max(minW, Math.min(sqrtW, maxW));
+}
+
+// 全局测量函数 — runner.js 经 page.evaluate 调用
+// opts.descWidthMode:
+//   undefined / 'css' — 用 CSS 默认（max-width: 650）
+//   'estimate'        — 用 estimateMainWidth 算出 inline width 并写入 desc.style.width
+window.__measureItem = function(item, opts) {
+    opts = opts || {};
+    var host = document.getElementById('panel-tooltip');
+    host.innerHTML = buildMockSplitTooltip(item.introHtml, item.descHtml);
+    var rich = host.querySelector('.flash-tt-rich');
+    var introPanel = host.querySelector('.flash-tt-intro-panel');
+    var descPanel = host.querySelector('.flash-tt-desc');
+    var introText = host.querySelector('.flash-tt-intro');
+    var iconEl = host.querySelector('.flash-tt-icon > div');
+    if (!introPanel || !descPanel) return null;
+
+    var estimatedW = null;
+    if (opts.descWidthMode === 'estimate') {
+        var scores = htmlScoresBoth(item.descHtml);
+        estimatedW = estimateMainWidth(scores, { pixPerUnit: opts.pixPerUnit });
+        descPanel.style.width = estimatedW + 'px';
+    }
+    void rich.offsetHeight;
+    return {
+        introPanelH: introPanel.offsetHeight,
+        descPanelH: descPanel.offsetHeight,
+        introTextH: introText ? introText.offsetHeight : 0,
+        introTextW: introText ? introText.offsetWidth : 0,
+        introPanelW: introPanel.offsetWidth,
+        descPanelW: descPanel.offsetWidth,
+        iconH: iconEl ? iconEl.offsetHeight : 0,
+        iconW: iconEl ? iconEl.offsetWidth : 0,
+        estimatedW: estimatedW,
+    };
+};
+
+window.__readyForMeasurement = true;
+</script>
+</body>
+</html>
