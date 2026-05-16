@@ -566,6 +566,7 @@
         </Collision>
         <BGM>Glacial-Grandeur</BGM>
     </Environment>
+    
     <Environment>
         <BackgroundURL>地图-堕落城酒吧</BackgroundURL>
         <Alignment>true</Alignment>
@@ -599,6 +600,38 @@
         </Collision>
         <BGM>酒馆2</BGM>
     </Environment>
+    <Environment>
+        <BackgroundURL>地图-堕落城商业街</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>30</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>600</Ymin>
+        <Ymax>880</Ymax>
+        <Width>1900</Width>
+        <Height>840</Height>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>4</MinIllumination>
+        <BGM>Hip To Be Square</BGM>
+    </Environment>
+    <Environment>
+        <BackgroundURL>地图-堕落城酒吧门口</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1400</Xmax>
+        <Ymin>350</Ymin>
+        <Ymax>550</Ymax>
+        <Width>1450</Width>
+        <Height>550</Height>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>4</MinIllumination>
+        <BGM>Hip To Be Square</BGM>
+        <Collision>
+            <Point>1100,350</Point>
+            <Point>1400,350</Point>
+            <Point>1400,550</Point>
+        </Collision>
+    </Environment>
+    
     <Environment>
         <BackgroundURL>地图-联合大学</BackgroundURL>
         <Alignment>true</Alignment>
@@ -820,19 +853,6 @@
             <Point>0,550</Point>
         </Collision>
         <BGM>Drone</BGM>
-    </Environment>
-    <Environment>
-        <BackgroundURL>地图-堕落城商业街</BackgroundURL>
-        <Alignment>true</Alignment>
-        <Xmin>30</Xmin>
-        <Xmax>1900</Xmax>
-        <Ymin>600</Ymin>
-        <Ymax>880</Ymax>
-        <Width>1900</Width>
-        <Height>840</Height>
-        <MaxIllumination>7</MaxIllumination>
-        <MinIllumination>4</MinIllumination>
-        <BGM>Hip To Be Square</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地图-黑铁会修炼场</BackgroundURL>
