@@ -715,6 +715,8 @@ var IntelligencePanel = (function() {
 
     // 与商城 buildRichHtml 对齐：introHTML 已含 displayname 标题，不再重复 header；
     // 走 PanelTooltip.buildItemRichHtml 复用统一布局（icon 在 intro 上方）。
+    // 情报物品 (item.type='情报') 在 AS2 端 applyIntroLayout 走 default 分支
+    // → web 端用 layoutType:'narrow' 触发 BASE_NUM*RATE=120 窄面板。
     function buildRichTooltip(item, resp) {
         var iconUrl = resolveIconUrl(item);
         var meta = '<div class="flash-tt-dim kshop-tt-dim">已发现 ' +
@@ -726,7 +728,8 @@ var IntelligencePanel = (function() {
             introHTML:       resp.introHTML,
             descHTML:        resp.descHTML,
             metaHTML:        meta,
-            rootClass:       'intel-tt-rich'
+            rootClass:       'intel-tt-rich',
+            layoutType:      PanelTooltip.inferLayoutType(item && item.type)
         });
     }
 

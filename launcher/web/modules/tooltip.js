@@ -294,13 +294,20 @@ var PanelTooltip = (function() {
             var rect = _el.getBoundingClientRect();
             var tw = rect.width, th = rect.height;
 
+            // AS2 TooltipLayout.positionTooltip 严格 clamp 复刻（无翻转分支）：
+            //   tips._x = clamp(introBg._width, mouseX - rightBg._width, stageW - rightBg._width)
+            //   tips._y = clamp(0, mouseY - tipsH - MOUSE_OFFSET, stageH - tipsH)
+            // 旧实现有 `if (y < 8) y = e.clientY + MOUSE_OFFSET`——即鼠标靠近屏顶时
+            // 把 tooltip 翻到鼠标 *下方* MOUSE_OFFSET 处。这跟 AS2 行为不一致：
+            // AS2 会把 tooltip 贴屏顶（y=0），允许鼠标落进 tooltip 内部，但不引入额外 gap。
+            // 翻转分支会让用户感到"鼠标和 tooltip 离得远"——已删除。
             x = e.clientX - tw;
-            if (x < 8) x = 8;
-            if (x + tw > vw - 8) x = vw - tw - 8;
+            if (x < 0) x = 0;
+            if (x + tw > vw) x = vw - tw;
 
             y = e.clientY - th - MOUSE_OFFSET;
-            if (y < 8) y = e.clientY + MOUSE_OFFSET;
-            if (y + th > vh - 8) y = vh - th - 8;
+            if (y < 0) y = 0;
+            if (y + th > vh) y = vh - th;
         } else {
             var fw = _el.offsetWidth, fh = _el.offsetHeight;
             x = e.clientX + 14; y = e.clientY + 14;
@@ -495,6 +502,12 @@ var PanelTooltip = (function() {
     //   rootClass      - 附加到 .flash-tt-rich 的额外类（per-panel 视觉 override）
     //   suffix         - 在根 div 之后追加（kshop 的 lock banner 走这里）
     //   splitMode      - 'auto'(默认) / 'split'(强制双栏) / 'merge'(强制单栏)
+    //   layoutType     - 'wide'(默认) / 'narrow' — 对齐 AS2 TooltipLayout.applyIntroLayout 的两条分支：
+    //                    'wide'   = 武器/护甲/技能/药水分支 (introBg=BASE_NUM=200, icon~185)
+    //                    'narrow' = default 分支 (introBg=BASE_NUM*RATE=120, icon~111)
+    //                    在 .flash-tt-rich 上写 data-layout="narrow"，CSS 局部覆盖 token。
+    //                    判断规则参考 ItemUseTypes.TYPE_WEAPON/TYPE_ARMOR/TYPE_SKILL/POTION，
+    //                    其他类型物品 (消耗品/材料/收集品/情报/…) 由 caller 显式传 'narrow'。
     function buildItemRichHtml(opts) {
         opts = opts || {};
         var iconBlock = '';
@@ -537,12 +550,29 @@ var PanelTooltip = (function() {
             : '';
 
         var mergeClass = doSplit ? '' : ' flash-tt-rich--merge';
-        var html = '<div class="flash-tt-rich kshop-tt-rich' + mergeClass + rootClass + '">' +
+        // layoutType 写到 data-layout 上，CSS 局部覆盖 --tt-intro-w / --tt-icon-size 等 token。
+        // 默认 'wide' 不输出 attr（沿用 .flash-tt-rich 基础 token）。
+        var layoutAttr = (opts.layoutType === 'narrow') ? ' data-layout="narrow"' : '';
+        var html = '<div class="flash-tt-rich kshop-tt-rich' + mergeClass + rootClass + '"' + layoutAttr + '>' +
             introPanel +
             (doSplit && desc ? '<div class="flash-tt-desc kshop-tt-desc">' + desc + '</div>' : '') +
         '</div>';
         if (opts.suffix) html += opts.suffix;
         return html;
+    }
+
+    // 根据 AS2 端 TooltipLayout.applyIntroLayout 的 case 判断布局类型。
+    // - wide  分支匹配 TYPE_WEAPON='武器' / TYPE_ARMOR='防具' / TYPE_SKILL='技能' / POTION='药剂'
+    // - narrow 分支是 default fallthrough，覆盖一切其他类型（消耗品/材料/收集品/情报/...）
+    // AS2 端 K商城 / 情报 / 竞技场 layoutType 推导：
+    //   (data.type == TYPE_CONSUMABLE) ? data.use : data.type
+    // web 这里 caller 传过来的 type 字段语义对齐 AS2 data.type（消耗品时传 use）。
+    function inferLayoutType(typeField) {
+        if (typeField === '武器' || typeField === '防具' ||
+            typeField === '技能' || typeField === '药剂') {
+            return 'wide';
+        }
+        return 'narrow';
     }
 
     if (document.readyState === 'loading') window.addEventListener('load', init);
@@ -558,8 +588,9 @@ var PanelTooltip = (function() {
         hide: hide,
         convertAS2Html: convertAS2Html,
         buildItemRichHtml: buildItemRichHtml,
-        // 决策辅助（暴露给调用方在请求 AS2 注释前/后预判 split/merge）
+        // 决策辅助（暴露给调用方在请求 AS2 注释前/后预判 split/merge / layout）
         htmlTextScore: htmlTextScore,
-        shouldSplitWeb: shouldSplitWeb
+        shouldSplitWeb: shouldSplitWeb,
+        inferLayoutType: inferLayoutType
     };
 })();

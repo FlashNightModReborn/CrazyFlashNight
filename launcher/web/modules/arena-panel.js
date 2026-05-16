@@ -645,7 +645,9 @@
             '</div>';
     }
 
-    // 富文本态：TooltipComposer 的 introHTML/descHTML 已含 displayname header，不再外加
+    // 富文本态：TooltipComposer 的 introHTML/descHTML 已含 displayname header，不再外加。
+    // arena 显示的是玩家身上的装备（武器/护甲/技能/药剂），AS2 端全部走 applyIntroLayout 的
+    // wide 分支（BASE_NUM=200），所以不传 layoutType（buildItemRichHtml 默认 wide）。
     function buildRichTooltipHtml(data, iconUrl) {
         return PanelTooltip.buildItemRichHtml({
             iconUrl:   iconUrl,

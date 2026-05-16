@@ -298,11 +298,12 @@
                                      "避免图标左移导致的视觉断裂；换行损失由条目压缩补偿"。
                                      web 这里必须用 width（不是 max-width）才能复刻 — 否则
                                      长文字行会撑宽 panel，让 icon 在过宽容器里居中→出现左右空洞。
-                                     merge 模式下被 override 解锁。 */
+                                     merge / split 模式同等锁宽（AS2 端 merge 也走 measuredIntroW=BASE_NUM）；
+                                     data-layout="narrow" 时被 override 成 120。 */
     --tt-intro-min-h: 220px;      /* = BASE_NUM(200) + BG_HEIGHT_OFFSET(20)
                                      AS2 端 applyIntroLayout 把 bgHeightOffset 固定为 220px，
-                                     避免短 intro 时面板被压扁；merge 模式下被 override 为 auto */
-    --tt-merge-max-w: 480px;      /* merge 模式 intro-panel 宽度上限（容纳合并的 desc 文字） */
+                                     避免短 intro 时面板被压扁；merge 模式同样保留（AS2 端 icon
+                                     在 merge mode 仍占 200×220 纵深，不应该被 0 override）。 */
     --tt-desc-min-w: 160px;
     --tt-desc-max-w: 650px;       /* = MAX_W */
     --tt-gap: 0px;                /* 对齐 AS2：两面板紧贴（introBg 右边缘 = mainBg 左边缘） */
@@ -310,8 +311,8 @@
                                      来自 Flash TextField 内部 gutter；web 用 panel padding 4 复刻 */
     --tt-icon-text-gap: 17px;     /* AS2 端 text._y(210) - icon 底部(~192.5) ≈ 17.5；
                                      web 用 flex column gap 复刻 icon 与文字段的纵向间距 */
-    /* line-height 1.25 = Playwright fixture sweep（launcher/perf/tooltip-regression/）
-       命中的最佳值：introTH_diff p50=0px、mean=-0.12 vs AS2 Flash TextField textHeight。
+    /* line-height 1.25 = Playwright fixture sweep 命中的最佳值：
+       introTH_diff p50=0、mean=-0.12 vs AS2 Flash TextField textHeight。
        1.6 是阅读友好默认，但跟 AS2 端 ~28% 偏高；1.25 对齐 Flash 原生行距。 */
     --tt-intro-line-height: 1.25;
     --tt-desc-line-height: 1.25;
@@ -331,6 +332,22 @@
                                         desc 紧贴顶部，高度膨胀到 max(textH, iconH)+10 下限
                                       公式 ground-truth 来自 TooltipGroundTruthDump（862 物品 × 9 mouseY 采样
                                       落到 launcher/web/assets/tooltip-truth.json，供 regression 校对） */
+}
+
+/* ── default 分支：非武器/护甲/技能/药水的物品（消耗品/材料/收集品/情报…）──
+   AS2 端 TooltipLayout.applyIntroLayout 的 switch default 分支：
+     scaledWidth      = BASE_NUM × RATE          = 200 × 0.6 = 120
+     target._xscale   = BASE_SCALE × RATE        = 486.8 × 0.6 = 292   → icon ≈ 111 px
+     text._y          = TEXT_Y_BASE + scaledWidth = 10 + 120 = 130
+     bgHeightOffset   = BG_HEIGHT_OFFSET + RATE × BASE_NUM = 20 + 120 = 140
+   caller 在 buildItemRichHtml 里传 layoutType:'narrow' 触发本分支。
+   只 override 几个尺寸 token，display/flex/line-height 都继承 base。 */
+.flash-tt-rich[data-layout="narrow"],
+.kshop-tt-rich[data-layout="narrow"] {
+    --tt-intro-w: 120px;          /* = BASE_NUM × RATE */
+    --tt-icon-size: 111px;        /* ≈ 38 × BASE_SCALE × RATE / 100 */
+    --tt-intro-min-h: 140px;      /* = BG_HEIGHT_OFFSET + RATE × BASE_NUM */
+    --tt-icon-text-gap: 11px;     /* ≈ text._y(130) - icon 底部(118.5) = 11.5 */
 }
 
 /* 左面板：icon 在上，intro 文字在下（垂直堆叠，对齐 AS2 introBg 结构）
@@ -353,20 +370,19 @@
 }
 
 /* ── merge 模式（对齐 AS2 setVisibility("main", false) + desc 拼入 intro） ──
-   - 无右栏：intro-panel 放宽 max-width 容纳合并的 desc
-   - 无强制 min-height：短内容自然收缩，避免空白
-   - line-height / blend / 渐变底 全部继承自 .flash-tt-intro-panel 基础样式 */
-.flash-tt-rich--merge {
-    flex-wrap: nowrap;
-}
-.flash-tt-rich--merge > .flash-tt-intro-panel,
-.flash-tt-rich--merge > .kshop-tt-intro-panel {
-    /* merge 模式：desc 拼到 intro 末尾，需要解锁固定宽。AS2 端 setVisibility("main", false)
-       后 introBg 拓宽到能容纳 desc 文本——web 这里也放开。 */
-    width: auto;
-    max-width: var(--tt-merge-max-w);
-    min-height: 0;
-}
+   AS2 端 TooltipComposer.renderItemTooltipSmart 走 merge 分支时调用：
+     renderItemIcon(true, name, value, introText, descriptionText, itemData)
+   renderItemIcon 内部:
+     introduction = introText + "<BR>" + descriptionText
+     measuredIntroW = BASE_NUM   // 永远是 200，跟 split 模式同等锁宽
+     renderIconTooltip(true, icon, introduction, measuredIntroW, layoutType)
+   再 setVisibility("main", false) 隐藏右栏。
+   也就是说 merge 模式 panel 宽度跟 split 模式完全一致（200 wide / 120 narrow），
+   只是 desc 文本通过 wrap 拼进 intro 显示成多行。AS2 端用 MERGE_MAX_INTRO_LINES
+   行数上限避免失控（超限会 fallback 到 split mode）。
+
+   所以 merge mode 不该 override width，也不该 override min-height —— 全部继承
+   base .flash-tt-intro-panel 样式。本块留空注释占位，写明意图防回退。 */
 
 /* Icon — 容器自己不加 padding；panel 已经提供 4px 边距。
    icon container 在 column flex 里默认 cross-axis stretch 到 panel 内宽（200-8=192），

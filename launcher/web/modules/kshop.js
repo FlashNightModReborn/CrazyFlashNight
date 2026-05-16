@@ -397,12 +397,18 @@ var KShop = (function() {
             : '';
         var iconUrl = (typeof Icons !== 'undefined') ? Icons.resolve(item.icon) : null;
 
+        // layoutType: 对齐 AS2 TooltipLayout.applyIntroLayout 分支。
+        // K 商城 item.majorType 来自 AS2 端的 item.type 字段，可直接喂给 inferLayoutType。
+        // 武器/护甲/技能/药剂 → wide(200px)，消耗品/材料/收集品等 → narrow(120px)。
+        var layoutType = PanelTooltip.inferLayoutType(item.majorType);
+
         return PanelTooltip.buildItemRichHtml({
-            iconUrl:   iconUrl,
-            introHTML: data.introHTML,
-            descHTML:  data.descHTML,
-            rootClass: 'kshop-tt-rich-context',
-            suffix:    lockBanner
+            iconUrl:    iconUrl,
+            introHTML:  data.introHTML,
+            descHTML:   data.descHTML,
+            rootClass:  'kshop-tt-rich-context',
+            suffix:     lockBanner,
+            layoutType: layoutType
         });
     }
 
