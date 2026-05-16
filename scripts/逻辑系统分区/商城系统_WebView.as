@@ -4,7 +4,8 @@
 _root.UI系统 = _root.UI系统 || {};
 _root.UI系统.商城WebView = _root.UI系统.商城WebView || {};
 _root.UI系统.商城WebView.json = new LiteJSON();
-_root.UI系统.商城WebView.prevPause = undefined;
+// 暂停 lease id（由 PauseManager.lease 返回；undefined 表示当前未持有 lease）
+_root.UI系统.商城WebView.pauseLeaseId = undefined;
 
 // 诊断日志 helper
 _root.UI系统.商城WebView.log = function(msg):Void {
@@ -33,16 +34,19 @@ _root.UI系统.商城WebView.log("loaded, gameCommands=" + typeof(_root.gameComm
 _root.gameCommands["shopPanelOpen"] = function(params) {
     _root.UI系统.商城WebView.ensureState();
     _root.UI系统.商城WebView.log("shopPanelOpen, 暂停=" + _root.暂停);
-    _root.UI系统.商城WebView.prevPause = _root.暂停;
-    _root.暂停 = true;
+    // 防御性：如果上一次 close 没走通（异常关 panel / Launcher 重连），先释放旧 lease 再申请新的
+    if (_root.UI系统.商城WebView.pauseLeaseId !== undefined) {
+        org.flashNight.arki.pause.PauseManager.releaseLease(_root.UI系统.商城WebView.pauseLeaseId);
+    }
+    _root.UI系统.商城WebView.pauseLeaseId = org.flashNight.arki.pause.PauseManager.lease(true, "shop");
 };
 
 _root.gameCommands["shopPanelClose"] = function(params) {
     _root.UI系统.商城WebView.log("shopPanelClose");
     _root.自动存盘();
-    if (_root.UI系统.商城WebView.prevPause !== undefined) {
-        _root.暂停 = _root.UI系统.商城WebView.prevPause;
-        _root.UI系统.商城WebView.prevPause = undefined;
+    if (_root.UI系统.商城WebView.pauseLeaseId !== undefined) {
+        org.flashNight.arki.pause.PauseManager.releaseLease(_root.UI系统.商城WebView.pauseLeaseId);
+        _root.UI系统.商城WebView.pauseLeaseId = undefined;
     }
 };
 

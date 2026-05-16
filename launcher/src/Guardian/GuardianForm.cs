@@ -639,8 +639,10 @@ namespace CF7Launcher.Guardian
                 return;
             }
 
-            if (_windowManager != null && _windowManager.FlashHwnd != IntPtr.Zero)
-                SetForegroundWindow(_windowManager.FlashHwnd);
+            // 经 RestoreFlashInputFocus primitive 拉回前台 + 焦点（带 AttachThreadInput 兜底 + verify + 日志）；
+            // ctrl_combo 路径 keybd_event 注入前必须确认 Flash 在前台，否则按键命中 launcher 主窗口。
+            if (_windowManager != null)
+                _windowManager.RestoreFlashInputFocus("ctrl_combo:" + key);
 
             keybd_event((byte)Keys.ControlKey, 0, 0, UIntPtr.Zero);
             keybd_event((byte)key, 0, 0, UIntPtr.Zero);

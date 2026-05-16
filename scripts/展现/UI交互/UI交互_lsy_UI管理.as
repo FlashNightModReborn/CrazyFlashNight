@@ -236,12 +236,13 @@ _root.notifyGameReset = function() {
     org.flashNight.arki.render.FrameBroadcaster.pushUiState("s:0");
 };
 
-// 暂停状态同步
-_root.watch("暂停", function(prop, oldVal, newVal) {
+// 暂停状态同步（经 PauseManager 订阅链分发，取代直接 _root.watch）
+// 任何新增暂停观察者必须走 PauseManager.subscribe；禁止裸 _root.watch("暂停", ...)（会覆盖 PauseManager 的回调）
+org.flashNight.arki.pause.PauseManager.install();
+org.flashNight.arki.pause.PauseManager.subscribe(function(newVal, oldVal, tag):Void {
     org.flashNight.arki.render.FrameBroadcaster.pushUiState("p:" + (newVal ? "1" : "0"));
     System.IME.setEnabled(false);
-    return newVal;
-});
+}, null);
 
 // 主线任务进度 → 控制按钮可见性
 _root.watch("主线任务进度", function(prop, oldVal, newVal) {

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -16,6 +17,47 @@ namespace CF7Launcher.Guardian
 
         [DllImport("user32.dll")]
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SetFocus(IntPtr hWnd);
+
+        [DllImport("kernel32.dll")]
+        private static extern uint GetCurrentThreadId();
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetGUIThreadInfo(uint idThread, ref GUITHREADINFO lpgui);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RECT { public int left, top, right, bottom; }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct GUITHREADINFO
+        {
+            public int cbSize;
+            public int flags;
+            public IntPtr hwndActive;
+            public IntPtr hwndFocus;
+            public IntPtr hwndCapture;
+            public IntPtr hwndMenuOwner;
+            public IntPtr hwndMoveSize;
+            public IntPtr hwndCaret;
+            public RECT rcCaret;
+        }
 
         [DllImport("user32.dll")]
         private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
@@ -617,15 +659,152 @@ namespace CF7Launcher.Guardian
 
         public bool IsFlashForeground()
         {
-            IntPtr hwnd = GetForegroundWindow();
-            if (hwnd == IntPtr.Zero)
-                return false;
+            return IsWindowInFlashSession(GetForegroundWindow());
+        }
 
+        /// <summary>
+        /// 判断 hwnd 是否属于 Flash 进程或 Guardian 进程。
+        /// 嵌入后 Flash 子窗口 pid 归 Guardian；独立运行时 pid 归 Flash。
+        /// </summary>
+        private bool IsWindowInFlashSession(IntPtr hwnd)
+        {
+            if (hwnd == IntPtr.Zero) return false;
             uint pid;
             GetWindowThreadProcessId(hwnd, out pid);
-            // Flash 独立运行时 pid == Flash PID；嵌入后 pid == Guardian PID
             return (pid == _flashProcessId && _flashProcessId != 0)
                 || (pid == _guardianProcessId && _guardianProcessId != 0);
+        }
+
+        /// <summary>诊断用：把 hwnd 渲染成可读字符串 "0xHANDLE pid=N class=NAME title=TITLE"。</summary>
+        internal static string DescribeWindow(IntPtr hwnd)
+        {
+            if (hwnd == IntPtr.Zero) return "0x0";
+            uint pid;
+            GetWindowThreadProcessId(hwnd, out pid);
+            var cls = new StringBuilder(128);
+            try { GetClassName(hwnd, cls, cls.Capacity); } catch { }
+            var title = new StringBuilder(256);
+            try { GetWindowText(hwnd, title, title.Capacity); } catch { }
+            return "0x" + hwnd.ToString("X") + " pid=" + pid + " class=" + cls.ToString() + " title=\"" + title.ToString() + "\"";
+        }
+
+        /// <summary>
+        /// 统一 Flash 焦点恢复 primitive。所有想把输入焦点拉回 Flash 子窗口的路径都走这里：
+        /// panel close（idle / soft idle）、forwardCtrlCombo 前置、未来 navigate heartbeat 等。
+        ///
+        /// 实现两遍尝试：
+        ///   Pass 1：直接 SetForegroundWindow + SetFocus + 校验 GetForegroundWindow 落点
+        ///   Pass 2：pass 1 失败 → AttachThreadInput 把前台线程的输入队列接到当前线程再 SetForegroundWindow，
+        ///           try/finally 严格配对 detach（输入队列泄露是进程级 bug）。
+        ///
+        /// 全程打 [FocusRestore] 日志：reason + fgBefore（hwnd/pid/class/title）+ 各 pass 结果 + final 状态。
+        /// 这条日志是排查"谁偷的焦点"和"primitive 是否生效"的唯一权威源；不要随意删。
+        ///
+        /// 本方法不抛异常；调用方拿 bool 返回值决定是否重试 / 启 heartbeat。
+        /// </summary>
+        public bool RestoreFlashInputFocus(string reason)
+        {
+            IntPtr flashHwnd = _flashHwnd;
+            if (flashHwnd == IntPtr.Zero || !IsWindow(flashHwnd))
+            {
+                LogManager.Log("[FocusRestore] " + reason + ": no flash hwnd, skip");
+                return false;
+            }
+
+            IntPtr fgBefore = GetForegroundWindow();
+            string fgBeforeDesc = DescribeWindow(fgBefore);
+
+            // Pass 1：直接 SetForegroundWindow
+            bool sfwOk1 = false;
+            try { sfwOk1 = SetForegroundWindow(flashHwnd); }
+            catch (Exception ex)
+            {
+                LogManager.Log("[FocusRestore] " + reason + " pass1 SetForegroundWindow threw: " + ex.Message);
+            }
+            try { SetFocus(flashHwnd); } catch { }
+
+            IntPtr fgAfter1 = GetForegroundWindow();
+            if (IsWindowInFlashSession(fgAfter1))
+            {
+                LogManager.Log("[FocusRestore] " + reason + " pass1=ok sfwReturn=" + sfwOk1
+                    + " fgBefore=" + fgBeforeDesc
+                    + " fgAfter=" + DescribeWindow(fgAfter1)
+                    + " innerFocus=" + DescribeInnerFocus(flashHwnd));
+                return true;
+            }
+
+            // Pass 2：AttachThreadInput hack
+            uint myTid = GetCurrentThreadId();
+            uint fgPid2;
+            uint fgTid = GetWindowThreadProcessId(fgAfter1, out fgPid2);
+            bool attached = false;
+            if (fgTid != 0 && fgTid != myTid)
+            {
+                try { attached = AttachThreadInput(myTid, fgTid, true); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[FocusRestore] " + reason + " pass2 AttachThreadInput attach threw: " + ex.Message);
+                }
+            }
+            try
+            {
+                try { SetForegroundWindow(flashHwnd); } catch { }
+                try { SetFocus(flashHwnd); } catch { }
+            }
+            finally
+            {
+                if (attached)
+                {
+                    try { AttachThreadInput(myTid, fgTid, false); }
+                    catch (Exception ex)
+                    {
+                        // 这条若失败必须立刻报：输入队列绑死是进程级 bug，不会自愈
+                        LogManager.Log("[FocusRestore] " + reason + " pass2 AttachThreadInput DETACH FAILED: " + ex.Message
+                            + " (myTid=" + myTid + " fgTid=" + fgTid + ")");
+                    }
+                }
+            }
+
+            IntPtr fgAfter2 = GetForegroundWindow();
+            bool finalOk = IsWindowInFlashSession(fgAfter2);
+            LogManager.Log("[FocusRestore] " + reason + " pass1=fail pass2=" + (finalOk ? "ok" : "fail")
+                + " attached=" + attached
+                + " fgBefore=" + fgBeforeDesc
+                + " fgAfter1=" + DescribeWindow(fgAfter1)
+                + " fgAfter2=" + DescribeWindow(fgAfter2)
+                + " innerFocus=" + DescribeInnerFocus(flashHwnd));
+            return finalOk;
+        }
+
+        /// <summary>
+        /// 诊断用：查 Flash 主窗口所属线程的 GUI focus 状态，看 inner focus 是否真的落在 flashHwnd。
+        /// GetGUIThreadInfo 跨线程安全（无需 AttachThreadInput），返回的 hwndFocus 是该线程当前持有焦点的子窗口。
+        ///
+        /// 输出格式：
+        ///   "matches"       → hwndFocus == flashHwnd（最理想，AS2 能收键）
+        ///   "child=0x..."   → hwndFocus 是 flashHwnd 的子（也算 AS2 能收键的范围）
+        ///   "other=0x..."   → 焦点在 Flash 线程的其他窗口（应该不会出现，Flash SA 一般只有主窗口持焦）
+        ///   "none"          → 该线程当前无 GUI 焦点（SetFocus 没生效或被剥）
+        ///   "gti_fail"      → GetGUIThreadInfo 调用失败
+        /// </summary>
+        private static string DescribeInnerFocus(IntPtr flashHwnd)
+        {
+            if (flashHwnd == IntPtr.Zero) return "no_flash_hwnd";
+            uint flashPid;
+            uint flashTid = GetWindowThreadProcessId(flashHwnd, out flashPid);
+            if (flashTid == 0) return "no_flash_tid";
+
+            GUITHREADINFO gti = new GUITHREADINFO();
+            gti.cbSize = Marshal.SizeOf(typeof(GUITHREADINFO));
+            bool ok = false;
+            try { ok = GetGUIThreadInfo(flashTid, ref gti); }
+            catch { ok = false; }
+            if (!ok) return "gti_fail";
+            if (gti.hwndFocus == IntPtr.Zero) return "none";
+            if (gti.hwndFocus == flashHwnd) return "matches";
+            // 是不是 Flash 主窗口的子？快速检查 GetAncestor(GA_ROOT) 是 flashHwnd
+            // 这里不另引 P/Invoke 了，直接报 hwnd + 类名让人肉判断
+            return "other=" + DescribeWindow(gti.hwndFocus);
         }
     }
 }

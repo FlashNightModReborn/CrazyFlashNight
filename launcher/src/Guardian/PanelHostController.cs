@@ -526,7 +526,9 @@ namespace CF7Launcher.Guardian
             // Step 0: 取消 owner 跟随订阅（先于 SuspendAfterPanel，防止 SW_HIDE 触发的 LocationChanged 误触发 reposition）
             UnsubscribeOwnerLayout();
             // Step 1: WebOverlay 收尾（Phase 1 stub：SW_HIDE）
-            try { _web.SuspendAfterPanel(); }
+            // closingName 传给 SuspendAfterPanel 用于 [FocusRestore] 日志归因——
+            // WebOverlay._activePanel 此时可能已被 HandlePanelMessage 置 null。
+            try { _web.SuspendAfterPanel(closingName); }
             catch (Exception ex) { LogManager.Log("[PanelHost] SuspendAfterPanel failed: " + ex.Message); }
             // Step 2: Shield 退 telemetry
             if (_shield != null)
@@ -600,7 +602,10 @@ namespace CF7Launcher.Guardian
         private void ResetToClosedState()
         {
             UnsubscribeOwnerLayout();
-            try { _web.ForceIdleState(); }
+            // _activePanel 此时尚未置 null（line 613 才置），优先传它作为 closingPanelName；
+            // ResetToClosedState 路径是异常恢复，reason 后缀 ":reset" 用于日志区分正常 close。
+            string resetTag = (_activePanel != null) ? (_activePanel + ":reset") : "reset";
+            try { _web.ForceIdleState(resetTag); }
             catch (Exception ex) { LogManager.Log("[PanelHost] Web ForceIdleState partial failure: " + ex.Message); }
             try { _backdrop.Hide(); } catch { }
             try { _hud.Resume(); } catch { }

@@ -382,9 +382,18 @@ class Program
         // Flash hwnd 动态查询（SA 进程重启后 hwnd 变）。提前到 WebOverlay 构造前，
         // 因为 WebOverlay 自身在 idle 收尾时需要把 Flash 推回前台；同一 provider 后续给 PanelHostController 复用。
         Func<IntPtr> flashHwndProvider = delegate { return form.GetFlashHwnd(); };
+        // WindowManager 早声明：WebOverlay 构造时需要它的 RestoreFlashInputFocus primitive；
+        // 实际 form.BindWindowManager / perfEngine.SetWindowManager / OnKillFlash 还在后面统一装配。
+        WindowManager windowManager = new WindowManager();
         WebOverlayForm webOverlay;
         using (PerfTrace.Scope("web_overlay.construct"))
         {
+            // Flash 焦点恢复 primitive：所有 panel close / navigate 路径都走 WindowManager.RestoreFlashInputFocus，
+            // 带 AttachThreadInput 兜底 + 前后 fg/pid 日志 + 校验，统一兜底替代散落的裸 SetForegroundWindow。
+            Func<string, bool> flashFocusRestorer = delegate(string reason)
+            {
+                return (windowManager != null) && windowManager.RestoreFlashInputFocus(reason);
+            };
             webOverlay = new WebOverlayForm(form, form.FlashHostPanel, webDir,
                 config.WebOverlayLowEffects,
                 config.WebOverlayDisableCssAnimations,
@@ -393,7 +402,8 @@ class Program
                 config.WebView2DisableGpu,
                 config.WebView2AdditionalArgs,
                 flashHwndProvider,
-                config.WebOverlayPanelTakeForeground);
+                config.WebOverlayPanelTakeForeground,
+                flashFocusRestorer);
         }
         CF7Launcher.Guardian.Hud.INativeCursor cursorOverlay = null;
         if (config.NativeCursorOverlayEnabled)
@@ -732,7 +742,7 @@ class Program
             // 2) WebOverlay panel→idle —— SW_HIDE + 恢复 EX_TRANSPARENT + 停 web timer + TrySuspendAsync,
             //    后面的 _webView.Dispose() 才不会卡住 200-800ms 销毁 Chromium。
             try { if (inputShield != null) inputShield.ExitTelemetryMode(); } catch (Exception ex) { LogManager.Log("[Guardian] ExitTelemetryMode early failed: " + ex.Message); }
-            try { if (webOverlay != null) webOverlay.SuspendAfterPanel(); } catch (Exception ex) { LogManager.Log("[Guardian] SuspendAfterPanel early failed: " + ex.Message); }
+            try { if (webOverlay != null) webOverlay.SuspendAfterPanel("shutdown"); } catch (Exception ex) { LogManager.Log("[Guardian] SuspendAfterPanel early failed: " + ex.Message); }
 
             // 所有 overlay form 立即 Hide: 退出过程中后续的 KillFlash WaitForExit / Dispose 阶段,
             // WebView2 子窗口、α-shield、HUD widget 任何一帧背景闪现都不再可见。
@@ -835,9 +845,7 @@ class Program
             LogManager.Log("[Guardian] hotkey_guard.exe not found, shortcuts not blocked");
         }
 
-        // 守护进程核心
-        WindowManager windowManager = new WindowManager();
-
+        // 守护进程核心（windowManager 已在 WebOverlay 构造前 early-declared，flashFocusRestorer 依赖它）
         ProcessManager processManager = new ProcessManager(
             config.FlashPlayerPath, config.SwfPath);
 

@@ -183,6 +183,9 @@ namespace CF7Launcher.Guardian
         private readonly bool _webView2DisableGpu;
         private readonly string _webView2AdditionalArgs;
         private readonly Func<IntPtr> _flashHwndProvider;
+        // Focus restore primitive：由 Program.cs 注入 WindowManager.RestoreFlashInputFocus；
+        // 非空时取代旧裸 SetForegroundWindow 路径，带 AttachThreadInput 兜底 + verify + 日志。
+        private readonly Func<string, bool> _flashFocusRestorer;
         private readonly bool _panelTakeForeground;
 
         // GDI+ fallback：WebView2 未就绪或初始化失败时，消息转发到 GDI+ overlay
@@ -308,7 +311,8 @@ namespace CF7Launcher.Guardian
             bool lowEffectsMode, bool disableCssAnimations, bool disableVisualizers,
             int frameRateLimit,
             bool webView2DisableGpu, string webView2AdditionalArgs,
-            Func<IntPtr> flashHwndProvider, bool panelTakeForeground)
+            Func<IntPtr> flashHwndProvider, bool panelTakeForeground,
+            Func<string, bool> flashFocusRestorer = null)
         {
             _owner = owner;
             _anchor = anchor;
@@ -322,6 +326,7 @@ namespace CF7Launcher.Guardian
             _webView2DisableGpu = webView2DisableGpu;
             _webView2AdditionalArgs = webView2AdditionalArgs ?? "";
             _flashHwndProvider = flashHwndProvider; // 可空：null 时 idle 收尾跳过 Flash 前台回推
+            _flashFocusRestorer = flashFocusRestorer; // 可空：null 时落回 _flashHwndProvider + 裸 SetForegroundWindow 旧路径
             _panelTakeForeground = panelTakeForeground;
 
             this.FormBorderStyle = FormBorderStyle.None;
@@ -2921,22 +2926,26 @@ namespace CF7Launcher.Guardian
         /// panel → idle 切换（正常路径，幂等：非 panel 态直接 return）。
         /// Step：SuspendWebTimers → 冻结 HandleUiData → SW_HIDE → 恢复 EX_LAYERED+TRANSPARENT →
         ///       HWND_NOTOPMOST → TransparencyKey 复原 → DefaultBackgroundColor=Transparent → TrySuspendAsync fire-and-forget
+        ///
+        /// closingPanelName：调用方在 _activePanel 被置 null 之前 snapshot 的 panel 名，用于
+        /// [FocusRestore] 日志的 reason 字段归因（DoFullIdleSuspend/DoSoftIdleRestore 里 _activePanel
+        /// 已为 null）。可空，回落到 _activePanel ?? "?"。
         /// </summary>
-        public void SuspendAfterPanel()
+        public void SuspendAfterPanel(string closingPanelName = null)
         {
             if (_disposed) return;
             if (!_panelMode) return; // 幂等
-            DoForceIdleSequence();
+            DoForceIdleSequence(closingPanelName);
         }
 
         /// <summary>
         /// 异常恢复路径专用：不查 _panelMode，强制把窗口拨回 idle 不变量。
         /// 即便是从未 ResumeForPanel 的中间状态也走完整序列，确保 ResetToClosedState 生效。
         /// </summary>
-        public void ForceIdleState()
+        public void ForceIdleState(string closingPanelName = null)
         {
             if (_disposed) return;
-            DoForceIdleSequence();
+            DoForceIdleSequence(closingPanelName);
         }
 
         private void ScheduleNativeHudIdleSuspend(string reason)
@@ -2955,7 +2964,8 @@ namespace CF7Launcher.Guardian
                     if (_disposed || !_useNativeHud || !_webReady || !_shown || _panelMode || _frozenForIdle)
                         return;
 
-                    ForceIdleState();
+                    // reason 是 NativeHud idle 调度上下文（如 "set_ready"），转给 FocusRestore 做归因
+                    ForceIdleState("native_hud:" + (reason ?? "unspecified"));
                     LogManager.Log("[WebOverlay] NativeHud idle suspend applied: " + (reason ?? "unspecified"));
                 }));
             }
@@ -2966,7 +2976,7 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        private void DoForceIdleSequence()
+        private void DoForceIdleSequence(string closingPanelName)
         {
             PerfTrace.Mark("webOverlay.idle_sequence", _useNativeHud ? "full" : "soft");
             _panelMode = false;
@@ -2976,9 +2986,9 @@ namespace CF7Launcher.Guardian
             // 整个 SW_HIDE WebView2 + TrySuspendAsync 安全 → 拿回 ~15pp DWM α 地板成本。
             // useNativeHud=false 仍走 SoftIdleRestore（保留 web HUD 显示）。
             if (_useNativeHud)
-                DoFullIdleSuspend();
+                DoFullIdleSuspend(closingPanelName);
             else
-                DoSoftIdleRestore();
+                DoSoftIdleRestore(closingPanelName);
         }
 
         /// <summary>
@@ -2986,7 +2996,7 @@ namespace CF7Launcher.Guardian
         /// 仅 useNativeHud=true 时启用——前提是 NotchOverlay/ToastOverlay 接管 HUD 渲染，
         /// 玩家在 panel 关闭期间仍能看到 notch/toolbar/退出按钮。
         /// </summary>
-        private void DoFullIdleSuspend()
+        private void DoFullIdleSuspend(string closingPanelName)
         {
             // 1) 停所有 web-side timer（_cursorTimer 例外，见 SuspendWebTimers 注释）
             try { SuspendWebTimers(); } catch (Exception ex) { LogManager.Log("[Panel] SuspendWebTimers failed: " + ex.Message); }
@@ -3026,18 +3036,29 @@ namespace CF7Launcher.Guardian
 
             // 8) Flash 回前台：panel 接管前台后 SW_HIDE 自身，前台需显式回推（OS 自动挑下个前台不稳，
             //    特别是 panel A→B 直切 / 多显示器场景）。开关 false 时 skip 等价旧行为。
-            if (_panelTakeForeground && _flashHwndProvider != null)
+            //    优先走 _flashFocusRestorer（带 AttachThreadInput 兜底 + verify + 日志的统一 primitive）；
+            //    未注入时落回旧裸 SetForegroundWindow 路径以保兼容。
+            if (_panelTakeForeground)
             {
-                try
+                if (_flashFocusRestorer != null)
                 {
-                    IntPtr h = _flashHwndProvider();
-                    if (h != IntPtr.Zero)
-                    {
-                        bool fg = SetForegroundWindow(h);
-                        LogManager.Log("[Panel] restore-flash-foreground fg=" + fg + " hwnd=" + h);
-                    }
+                    string panelTag = closingPanelName ?? _activePanel ?? "?";
+                    try { _flashFocusRestorer("panel_close:idle:" + panelTag); }
+                    catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground throw: " + ex.Message); }
                 }
-                catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground throw: " + ex.Message); }
+                else if (_flashHwndProvider != null)
+                {
+                    try
+                    {
+                        IntPtr h = _flashHwndProvider();
+                        if (h != IntPtr.Zero)
+                        {
+                            bool fg = SetForegroundWindow(h);
+                            LogManager.Log("[Panel] restore-flash-foreground (fallback) fg=" + fg + " hwnd=" + h);
+                        }
+                    }
+                    catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground throw: " + ex.Message); }
+                }
             }
         }
 
@@ -3045,7 +3066,7 @@ namespace CF7Launcher.Guardian
         /// 应急 idle restore：仅恢复样式拉回 anchor 矩形，保持 web 可见 + 不冻结。
         /// useNativeHud=false 时使用（无 NotchOverlay 接管，必须保留 web HUD）。
         /// </summary>
-        private void DoSoftIdleRestore()
+        private void DoSoftIdleRestore(string closingPanelName)
         {
             // 恢复 EX_STYLE：加回 WS_EX_LAYERED + WS_EX_TRANSPARENT + WS_EX_NOACTIVATE
             // 注意此路径**没有 SW_HIDE**——WebOverlay 仍可见但回到 click-through，Flash 必须重新前台
@@ -3072,18 +3093,28 @@ namespace CF7Launcher.Guardian
             try { ScheduleSyncPosition("panel_close"); } catch { }
 
             // Flash 回前台：useNativeHud=false 路径必须，因为 WebOverlay 仍可见无 SW_HIDE。
-            if (_panelTakeForeground && _flashHwndProvider != null)
+            // 优先走 _flashFocusRestorer 统一 primitive，未注入时落回裸路径兼容。
+            if (_panelTakeForeground)
             {
-                try
+                if (_flashFocusRestorer != null)
                 {
-                    IntPtr h = _flashHwndProvider();
-                    if (h != IntPtr.Zero)
-                    {
-                        bool fg = SetForegroundWindow(h);
-                        LogManager.Log("[Panel] restore-flash-foreground (soft) fg=" + fg + " hwnd=" + h);
-                    }
+                    string panelTag = closingPanelName ?? _activePanel ?? "?";
+                    try { _flashFocusRestorer("panel_close:soft:" + panelTag); }
+                    catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground (soft) throw: " + ex.Message); }
                 }
-                catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground (soft) throw: " + ex.Message); }
+                else if (_flashHwndProvider != null)
+                {
+                    try
+                    {
+                        IntPtr h = _flashHwndProvider();
+                        if (h != IntPtr.Zero)
+                        {
+                            bool fg = SetForegroundWindow(h);
+                            LogManager.Log("[Panel] restore-flash-foreground (soft fallback) fg=" + fg + " hwnd=" + h);
+                        }
+                    }
+                    catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground (soft) throw: " + ex.Message); }
+                }
             }
         }
 
