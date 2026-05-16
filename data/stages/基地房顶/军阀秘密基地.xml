@@ -258,6 +258,11 @@
             <Background>flashswf/backgrounds/军阀秘密基地_改装间_BG.swf</Background>
             <PlayerX>75</PlayerX>
             <PlayerY>400</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Choremix-红色荒野战斗</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Event>
             <EventName>Start</EventName>
