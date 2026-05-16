@@ -179,9 +179,15 @@ class org.flashNight.gesh.tooltip.test.TooltipGroundTruthDump {
             var iM:Number = introSc.maxLine;
             var iL:Number = introSc.lineCount;
 
-            // intro 宽：AS2 端 introBg 用 estimateWidth 把内容塞进 [MIN_W, INTRO_MAX_W]
-            var introW:Number = TooltipLayout.estimateWidth(introText,
-                TooltipConstants.MIN_W, TooltipConstants.INTRO_MAX_W);
+            // intro 宽：AS2 端 TooltipComposer.renderItemIcon R2 注释明确写道：
+            //   "简介面板始终使用固定宽度，不随内容自适应——避免图标左移导致的视觉断裂；
+            //    换行损失由条目压缩 (R1) 补偿"
+            //   measuredIntroW = BASE_NUM = 200
+            // 也就是说 runtime 永远走 customWidth=BASE_NUM 这条分支，applyIntroLayout 内部
+            // w = (customWidth > BASE_NUM ? min(customWidth, INTRO_MAX_W) : BASE_NUM) = 200。
+            // 旧 dump 用 estimateWidth(...) 估算导致 introW 字段在 [150, 300] 漂移，
+            // 跟运行时实际锁宽不一致。修正：直接输出 BASE_NUM。
+            var introW:Number = TooltipConstants.BASE_NUM;
             // main 宽：先用 estimateMainWidth 估算 + balanceWidth 二分搜索 shrink-to-fit
             var initMainW:Number = TooltipLayout.estimateMainWidth(descText,
                 TooltipConstants.MIN_W, TooltipConstants.MAX_W);

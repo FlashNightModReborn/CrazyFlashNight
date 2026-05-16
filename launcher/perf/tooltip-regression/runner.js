@@ -162,11 +162,11 @@ function writeReport(outDir, summary, items) {
 
     lines.push('');
     lines.push('## CSS 常量速查');
-    lines.push('- `.flash-tt-rich` --tt-icon-size: 192px（AS2 BASE_NUM=200, ICON_H_PX=300 含 ICON_SCALE）');
-    lines.push('- `.flash-tt-rich` --tt-intro-max-w: 300px（AS2 INTRO_MAX_W=300）');
+    lines.push('- `.flash-tt-rich` --tt-icon-size: 192px（AS2 icon 实测 ~185px，BASE_SCALE 486.8% × 38px）');
+    lines.push('- `.flash-tt-rich` --tt-intro-w: 200px（AS2 BASE_NUM=200，TooltipComposer R2 锁死）');
     lines.push('- `.flash-tt-rich` --tt-intro-min-h: 220px（AS2 BG_HEIGHT_OFFSET+BASE_NUM）');
-    lines.push('- `.flash-tt-intro-panel` padding: 10px 14px, border: 1px');
-    lines.push('- `.flash-tt-desc` padding: 10px 14px, border: 1px, box-sizing: border-box');
+    lines.push('- `.flash-tt-intro-panel` padding: 4px, border: 0');
+    lines.push('- `.flash-tt-desc` padding: 4px, border: 0, box-sizing: border-box');
     lines.push('- `#panel-tooltip` font-size: 12px, letter-spacing: 0.3px, line-height: 1.5');
     lines.push('- `.flash-tt-intro/.flash-tt-desc` line-height: var(--tt-intro-line-height|--tt-desc-line-height) = 1.6');
 

@@ -68,18 +68,35 @@ port `htmlScoresBoth` + `estimateMainWidth` 到 `tooltip.js`，在 `showAtMouse`
 | `mainBgH_diff` | -78 | +42 | desc 不再横铺；剩余偏差 = padding/font 系统差 |
 | `introW_diff` | +79 | +79 | 未动（icon flex 占位） |
 
+**2026-05-16 — XFL 资产真值复刻 + introBg 锁宽 BASE_NUM=200**：
+读 `flashswf/UI/注释框/LIBRARY/sprite/Symbol 274.xml` 发现 AS2 端 introBg/mainBg 实际是
+垂直金属渐变 (#999→#333) + alpha 0.8、无 border、无 shadow、文字默认色 #FFFFFF、
+icon overlay 混合。读 `TooltipComposer.renderItemIcon` R2 注释发现 `measuredIntroW = BASE_NUM`
+强制锁死宽度，不走 estimateWidth。web 端原本 `max-width:300 + align-items:stretch` 导致
+icon container 在过宽 panel 内居中 → 用户实测发现 icon 左右各 ~40px 空洞。
+修复：`width: 200px` 锁死 + panel padding 24→4 对齐 AS2 端无 padding + Flash TextField gutter。
+
+| metric | 锁宽前 p50 | 锁宽后 p50 | 备注 |
+|--------|-----------|-----------|------|
+| `introBgH_diff` | +4 | **-3** | -border + 锁宽 + padding 全套 |
+| `mainBgH_diff` | +44 | **-2** | padding 24→8 后系统偏差消失 |
+| `introW_diff` | +78 | **+58** | dump bug 显形，见下 |
+
 ## 已知未修偏差
 
-- **`mainBgH_diff` p50=+42** — 系统偏差 12px（web padding 上下 10+border 上下 2 = 22 vs AS2
-  `TEXT_PAD=10`）+ 字号渲染差 ~30px。要压 < 10 可调 desc padding 4px 但视觉太挤；可压更高
-  ppu 让 desc 更宽减行数，但 `mainW_diff` 会反弹。接受现状。
-- **`introW_diff` p50=+79** — web flex column 让 icon 192px 实占，撑大 introPanel；AS2
-  端 icon 是 absolute layer 不影响 introBg 宽。修法待定。
+- **`introW_diff` p50=+58** —— 是 **dump 自身的字段计算 bug**，不是 web 端宽。
+  旧 dump 用 `estimateWidth(introText, MIN_W=150, INTRO_MAX_W=300)` 算出来的范围
+  [150, 300] 漂移；但 AS2 runtime 实际走 `TooltipComposer.renderItemIcon` 的
+  `measuredIntroW = BASE_NUM = 200` 锁宽分支，跟 estimateWidth 没关系。
+  已在 `TooltipGroundTruthDump.as:182` 修复：`var introW:Number = TooltipConstants.BASE_NUM;`。
+  **下次重采 truth.json 后该 diff 应收敛到 ~0**（web 200 vs dump 200）。
 
 ## 重采 truth.json
 
 ```bash
-# 1. 切 TestLoader 到 dump 入口（去掉 TooltipTestSuite 那段的注释，注释掉 dump 那段）
+# 1. 切 TestLoader 到 dump 入口：把 `TooltipTestSuite.runAllTests(...)` 包进 /* */ 注释，
+#    再去掉 dump 段（`import ... TooltipGroundTruthDump; TooltipGroundTruthDump.runWithRealData();`）
+#    外层的 /* */ 包裹
 # 2. 编译并等异步链跑完
 bash scripts/compile_test.sh
 sleep 20

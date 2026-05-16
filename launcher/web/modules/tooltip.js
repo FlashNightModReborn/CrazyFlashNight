@@ -203,25 +203,46 @@ var PanelTooltip = (function() {
     //   - mouseY 接近屏底时：IF 分支主导（desc 整块下移让底部与 intro 底部对齐）
     //   - 同一物品在不同 mouseY 下 desc 位置/高度都变化——这就是"侧边栏根据鼠标位置自由排版"
     //
-    // 公式：
+    // 公式（在 pre-scale 域跑）：
     //   tipsH   = max(introBgH, mainBgH)         # mainBgH 是 base = mainText.textHeight + 10
     //   tipsY   = clamp(0, stageH - tipsH, mouseY - tipsH - MOUSE_OFFSET)
     //   offset  = mouseY - (tipsY + mainBgH) - MOUSE_OFFSET
     //   if offset > 0:  desc marginTop = offset, height = mainBgH
     //   else:           desc marginTop = 0,      height = max(mainTH, iconH) + HEIGHT_ADJUST
     //
-    // 关键测量约定：
+    // 关键测量约定（坐标域）：
     //   - #panel-tooltip 通过 `transform: scale(var(--cf7-overlay-scale))` 缩放（panels.css），
-    //     transform 不影响 layout，所以 introPanel/descPanel.offsetHeight 仍是 pre-transform
-    //     CSS px，positionTooltip 公式在这一空间直接 port 即可。
-    //   - getBoundingClientRect() 会包含 transform 缩放 → 用于跟鼠标 e.clientX/Y 比对（鼠标
-    //     位置是真实视口 CSS px）。inline width/height/marginTop 写在子元素上是 pre-transform px，
-    //     外层 transform 会一起把视觉尺寸缩到对应比例。
-    //   - stageH 用 window.innerHeight (vh)，跟 AS2 端 Stage.height 等效域。
+    //     transform 不影响 layout：introPanel/descPanel.offsetHeight 是 pre-scale CSS px。
+    //   - e.clientX/Y、window.innerHeight 是 post-scale 视口 CSS px。
+    //   - AS2 positionTooltip 原本在单一 stage 坐标系中跑，所以这里要把 mouseY/vh 折算到
+    //     pre-scale 域（除以 scale）后再代入公式；输出的 rightBgY/rightBgH 写到 descPanel
+    //     的 inline style（pre-scale），外层 transform 自动把视觉缩到对应比例。
+    //   - _el 的 left/top 是 pre-transform 的位置；视觉边界比较用 getBoundingClientRect（post-scale）。
     //
     // 没 .flash-tt-rich 根（spark-tooltip / 旧调用方）退化为传统 +14/+14。
     var MOUSE_OFFSET = 20;
     var HEIGHT_ADJUST = 10;
+
+    // 读 #panel-tooltip 的 --cf7-overlay-scale；不存在则视为 1。
+    // 由 bridge.js OverlayScale 在 resize/visualViewport.resize 时写到 documentElement。
+    function getOverlayScale() {
+        if (!document.documentElement) return 1;
+        var v = getComputedStyle(document.documentElement)
+            .getPropertyValue('--cf7-overlay-scale');
+        var s = parseFloat(v);
+        return (isFinite(s) && s > 0) ? s : 1;
+    }
+
+    // 计算 descPanel 的 chrome（padding 上下 + border 上下），用于把 offsetHeight 反推回 mainTH。
+    // 直接 getComputedStyle 比硬编码常量稳：CSS padding 改了也跟得上。
+    function getDescChromeV(el) {
+        var cs = getComputedStyle(el);
+        return (parseFloat(cs.paddingTop) || 0)
+             + (parseFloat(cs.paddingBottom) || 0)
+             + (parseFloat(cs.borderTopWidth) || 0)
+             + (parseFloat(cs.borderBottomWidth) || 0);
+    }
+
     function positionAtMouse(e) {
         var vw = window.innerWidth, vh = window.innerHeight;
         var rich = _el.querySelector('.flash-tt-rich');
@@ -239,21 +260,23 @@ var PanelTooltip = (function() {
                 descPanel.style.marginTop = '';
                 descPanel.style.height = '';
 
-                var introBgH = introPanel.offsetHeight;
-                var mainBgH = descPanel.offsetHeight;   // 自然态 = padding + text + border
+                var scale = getOverlayScale();
+                var introBgH = introPanel.offsetHeight;       // pre-scale
+                var mainBgH = descPanel.offsetHeight;          // pre-scale，自然态 = padding + text + border
                 var iconEl = introPanel.querySelector('.flash-tt-icon');
                 var iconH = iconEl ? iconEl.offsetHeight : 0;
-                // mainTH = desc 文字内容高度（去掉 padding + border 的近似）
-                // 用 descPanel.offsetHeight 减去固定 10+10 padding + 2 border ≈ -22；
-                // 这跟 AS2 的 mainText.textHeight 不完全等价，但在 max(mainTH, iconH) 这个比较里只要
-                // mainTH 估算保守不超过实际，floor 计算就保持 AS2 行为
-                var mainTH = Math.max(0, mainBgH - 22);
+                // mainTH = desc 文字内容高度，从 offsetHeight 减 chrome；
+                // getComputedStyle 现读 padding/border，跟 CSS 实际值同步。
+                var mainTH = Math.max(0, mainBgH - getDescChromeV(descPanel));
+
+                // mouseY / stageH 折算到 pre-scale，跟 introBgH/mainBgH 同域
+                var mouseY = e.clientY / scale;
+                var stageH = vh / scale;
 
                 var tipsH = Math.max(introBgH, mainBgH);
-                var stageH = vh;
-                var tipsY = Math.min(stageH - tipsH, Math.max(0, e.clientY - tipsH - MOUSE_OFFSET));
+                var tipsY = Math.min(stageH - tipsH, Math.max(0, mouseY - tipsH - MOUSE_OFFSET));
                 var rightBottomH = tipsY + mainBgH;
-                var offset = e.clientY - rightBottomH - MOUSE_OFFSET;
+                var offset = mouseY - rightBottomH - MOUSE_OFFSET;
 
                 var rightBgY, rightBgH;
                 if (offset > 0) {
@@ -271,12 +294,7 @@ var PanelTooltip = (function() {
             var rect = _el.getBoundingClientRect();
             var tw = rect.width, th = rect.height;
 
-            // 单/双面板都把右边缘对齐鼠标；双面板时左边界额外受 intro 物理宽度约束
             x = e.clientX - tw;
-            if (isSplit && introPanel) {
-                var introW = introPanel.getBoundingClientRect().width;
-                if (x < introW) x = introW;
-            }
             if (x < 8) x = 8;
             if (x + tw > vw - 8) x = vw - tw - 8;
 
@@ -315,6 +333,11 @@ var PanelTooltip = (function() {
         _el.style.display = 'block';
         _visible = true;
         _lastEvt = null;   // anchored 不依赖鼠标位置，清掉避免被 updateContent 误用
+        // contract 跟 showAtMouse 对齐：split-mode rich tooltip 也写 inline width，避免
+        // anchored 调用方传 rich html 时 desc 退回 CSS max-width:650 横铺。
+        // 注意：anchored 不跑 positionAtMouse 的 desc marginTop/height 公式（依赖 mouseY），
+        // desc 高度由内容自然撑开。
+        applyDescWidth();
 
         // 定位：优先放在锚定元素左侧，放不下则右侧
         if (anchorEl) {
