@@ -618,17 +618,22 @@
         <Alignment>true</Alignment>
         <Xmin>50</Xmin>
         <Xmax>1400</Xmax>
-        <Ymin>350</Ymin>
-        <Ymax>550</Ymax>
-        <Width>1450</Width>
-        <Height>550</Height>
+        <Ymin>500</Ymin>
+        <Ymax>650</Ymax>
+        <Width>1600</Width>
+        <Width>1600</Width>
+        <Height>650</Height>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>4</MinIllumination>
         <BGM>Hip To Be Square</BGM>
+        <Skybox>
+            <url>大学远山天空.swf</url>
+            <SpeedRate>8</SpeedRate>
+        </Skybox>
         <Collision>
-            <Point>1100,350</Point>
-            <Point>1400,350</Point>
-            <Point>1400,550</Point>
+            <Point>1100,500</Point>
+            <Point>1400,500</Point>
+            <Point>1400,650</Point>
         </Collision>
     </Environment>
     
