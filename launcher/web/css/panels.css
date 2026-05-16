@@ -331,7 +331,7 @@
                                       - ELSE 分支（mouseY 靠顶 / main 比 intro 高）：
                                         desc 紧贴顶部，高度膨胀到 max(textH, iconH)+10 下限
                                       公式 ground-truth 来自 TooltipGroundTruthDump（862 物品 × 9 mouseY 采样
-                                      落到 launcher/web/assets/tooltip-truth.json，供 regression 校对） */
+                                      落到 launcher/perf/tooltip-regression/tooltip-truth.json，供 regression 校对） */
 }
 
 /* ── default 分支：非武器/护甲/技能/药水的物品（消耗品/材料/收集品/情报…）──

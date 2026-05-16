@@ -22,6 +22,15 @@ var PanelTooltip = (function() {
     // 不直接存原 event 引用——浏览器复用 event 对象、跨帧不安全。
     var _lastEvt = null;
 
+    // ── show generation counter ──
+    // 每次 show* / hide 单调自增。scheduleReposition 注册的延迟回调（fonts.ready /
+    // raf×2 / img.onload / setTimeout）闭包捕获 gen 值，fire 时 alive() 比对当前 gen
+    // 才执行。防止"前一次 show 注册的回调在 hide+下一次 show 之间 fire，把新 tooltip
+    // 拉到旧坐标"。img.onload 即便元素已脱离 DOM 也会触发，所以仅靠 _visible 不够。
+    var _showGen = 0;
+    // 显式追踪 80ms 兜底定时器，hide() 时主动清掉避免空转
+    var _repositionTimer = null;
+
     function init() {
         _el = document.getElementById('panel-tooltip');
     }
@@ -50,6 +59,7 @@ var PanelTooltip = (function() {
     function showAtMouse(html, e) {
         if (!_el) return;
         cleanupHandlers();
+        _showGen++;                  // 让上一次 show 注册的延迟 reposition 全部失效
         _el.innerHTML = html;
         _el.style.display = 'block';
         _visible = true;
@@ -60,7 +70,7 @@ var PanelTooltip = (function() {
             _lastEvt = { clientX: e.clientX, clientY: e.clientY };
             positionAtMouse(_lastEvt);
             // Safety net：覆盖 async 加载源（字体 swap / icon 图加载 / 外部资源）
-            scheduleReposition(_lastEvt);
+            scheduleReposition(_lastEvt, _showGen);
         }
     }
 
@@ -70,18 +80,24 @@ var PanelTooltip = (function() {
     //   Tier 1: 双 raf —— 覆盖 layout/paint 两帧，处理 transform/CSSOM 稳定
     //   Tier 2: img.onload —— icon 图首次加载完成后再 reposition
     //   Tier 3: 80ms setTimeout —— 极端外部资源延迟兜底
-    function scheduleReposition(e) {
+    //
+    // alive(gen) 守卫：每个回调必须同时满足 _visible && _showGen === gen 才 fire。
+    // _visible 单独不够——hide()+showAtMouse() 之间，旧回调会把新 tooltip 错位到旧坐标。
+    // img.onload 即使 img 已被 innerHTML 替换、脱离 DOM，仍可能触发，所以 gen 守卫是
+    // 唯一可靠的"哪个 show 注册的"标识。
+    function scheduleReposition(e, gen) {
+        function alive() { return _visible && _showGen === gen; }
         // Tier 0: 字体 ready
         if (document.fonts && document.fonts.ready && typeof document.fonts.ready.then === 'function') {
             document.fonts.ready.then(function() {
-                if (_visible) positionAtMouse(e);
+                if (alive()) positionAtMouse(e);
             });
         }
         // Tier 1: 双 raf
         requestAnimationFrame(function() {
-            if (!_visible) return;
+            if (!alive()) return;
             requestAnimationFrame(function() {
-                if (_visible) positionAtMouse(e);
+                if (alive()) positionAtMouse(e);
             });
         });
         // Tier 2: img.onload —— icon 异步加载
@@ -90,15 +106,18 @@ var PanelTooltip = (function() {
             var img = imgs[i];
             if (img.complete) continue;
             img.addEventListener('load', function() {
-                if (_visible) positionAtMouse(e);
+                if (alive()) positionAtMouse(e);
             }, { once: true });
             img.addEventListener('error', function() {
-                if (_visible) positionAtMouse(e);
+                if (alive()) positionAtMouse(e);
             }, { once: true });
         }
         // Tier 3: 80ms 兜底
-        setTimeout(function() {
-            if (_visible) positionAtMouse(e);
+        // updateContent 时会再次调用，覆盖前一次的 timer 避免叠加。hide() 也会清掉。
+        if (_repositionTimer) clearTimeout(_repositionTimer);
+        _repositionTimer = setTimeout(function() {
+            _repositionTimer = null;
+            if (alive()) positionAtMouse(e);
         }, 80);
     }
 
@@ -116,6 +135,15 @@ var PanelTooltip = (function() {
     // fixture (launcher/perf/tooltip-regression/) 显示 ppu=6.0 即可让 mainW 偏差 p50=9，
     // mainBgH 偏差 p50=42（box-model 系统偏移 12 + 字号渲染偏差），比改前 mainW=+381 巨大改善。
     // 后续如需精细，可在 fixture 跑 --sweep-ppu 重新调 ppu 常量。
+    //
+    // ⚠️ 跨语言常量同步：以下数值与 TooltipConstants.as 一一对应，AS2 端改了 web 端必须同步：
+    //   TT_PIX_PER_UNIT     ↔ TooltipConstants.PIX_PER_UNIT          (6.0)
+    //   TT_LINE_HEIGHT      ↔ TooltipConstants.LINE_HEIGHT            (15)
+    //   TT_RATIO_MIN/MAX    ↔ RATIO_MIN / RATIO_MAX                  (0.618 / 1.5)
+    //   TT_RATIO_SCORE_CAP  ↔ RATIO_SCORE_CAP                         (300)
+    //   TT_MAX_LINES        ↔ MAX_RENDERED_LINES                      (32)
+    //   TT_LINE_GUTTER      ↔ LINE_GUTTER                             (20)
+    //   TT_MIN_W / MAX_W    ↔ MIN_W / MAX_W                           (150 / 650)
     var TT_PIX_PER_UNIT = 6.0;
     var TT_LINE_HEIGHT = 15;
     var TT_RATIO_MIN = 0.618, TT_RATIO_MAX = 1.5, TT_RATIO_SCORE_CAP = 300;
@@ -223,9 +251,17 @@ var PanelTooltip = (function() {
     var MOUSE_OFFSET = 20;
     var HEIGHT_ADJUST = 10;
 
-    // 读 #panel-tooltip 的 --cf7-overlay-scale；不存在则视为 1。
-    // 由 bridge.js OverlayScale 在 resize/visualViewport.resize 时写到 documentElement。
+    // 读当前 overlay scale。
+    // 优先用 bridge.js 的 window.OverlayScale.get()——它在 resize/visualViewport.resize
+    // 时已 cache，零成本调用；hover 模式 mousemove 60Hz 触发 positionAtMouse，避免
+    // 每帧 getComputedStyle 触发 style 引擎多余工作。
+    // fallback：OverlayScale 未加载（理论上 bridge.js 先于 tooltip.js）时读 CSS var。
     function getOverlayScale() {
+        if (typeof window !== 'undefined' && window.OverlayScale
+            && typeof window.OverlayScale.get === 'function') {
+            var cached = window.OverlayScale.get();
+            if (isFinite(cached) && cached > 0) return cached;
+        }
         if (!document.documentElement) return 1;
         var v = getComputedStyle(document.documentElement)
             .getPropertyValue('--cf7-overlay-scale');
@@ -233,14 +269,24 @@ var PanelTooltip = (function() {
         return (isFinite(s) && s > 0) ? s : 1;
     }
 
-    // 计算 descPanel 的 chrome（padding 上下 + border 上下），用于把 offsetHeight 反推回 mainTH。
-    // 直接 getComputedStyle 比硬编码常量稳：CSS padding 改了也跟得上。
+    // descPanel chrome（padding 上下 + border 上下）缓存。
+    // 在 hover 模式 mousemove 60Hz 路径里，每帧 getComputedStyle 会让 style 引擎多做
+    // 一次解析。chrome 只取决于 CSS（不随内容变），所以可以按 _showGen 缓存——一次
+    // show 期间 CSS 不变就复用；showAtMouse / showAnchored / updateContent 换 innerHTML
+    // 时 _descChromeGen 会跟新 _showGen 错位，自动失效。
+    // 主题切换（[data-tooltip-theme]）会改 padding/border 但极罕见；切换后下一次 show
+    // 自动重读。
+    var _descChromeV = -1;
+    var _descChromeGen = -1;
     function getDescChromeV(el) {
+        if (_descChromeGen === _showGen && _descChromeV >= 0) return _descChromeV;
         var cs = getComputedStyle(el);
-        return (parseFloat(cs.paddingTop) || 0)
-             + (parseFloat(cs.paddingBottom) || 0)
-             + (parseFloat(cs.borderTopWidth) || 0)
-             + (parseFloat(cs.borderBottomWidth) || 0);
+        _descChromeV = (parseFloat(cs.paddingTop) || 0)
+                     + (parseFloat(cs.paddingBottom) || 0)
+                     + (parseFloat(cs.borderTopWidth) || 0)
+                     + (parseFloat(cs.borderBottomWidth) || 0);
+        _descChromeGen = _showGen;
+        return _descChromeV;
     }
 
     function positionAtMouse(e) {
@@ -336,6 +382,7 @@ var PanelTooltip = (function() {
         var outsideClick = opts.outsideClick !== false;
 
         cleanupHandlers();
+        _showGen++;                  // anchored 也是新一轮 show，失效上一次的延迟回调
         _el.innerHTML = html;
         _el.style.display = 'block';
         _visible = true;
@@ -394,8 +441,11 @@ var PanelTooltip = (function() {
         _el.innerHTML = html;
         applyDescWidth();
         if (_lastEvt) {
+            // 沿用当前 _showGen——updateContent 是同一次 show 的内容刷新，不是新 show。
+            // 旧 scheduleReposition 注册的延迟回调依然 alive，新 schedule 添加针对新
+            // DOM 的额外回调；都用同一个 _lastEvt 跑 positionAtMouse，幂等。
             positionAtMouse(_lastEvt);
-            scheduleReposition(_lastEvt);
+            scheduleReposition(_lastEvt, _showGen);
         }
     }
 
@@ -403,7 +453,12 @@ var PanelTooltip = (function() {
     function hide() {
         cleanupHandlers();
         _visible = false;
+        _showGen++;                  // 让所有未 fire 的 reposition 回调失效
         _lastEvt = null;
+        if (_repositionTimer) {
+            clearTimeout(_repositionTimer);
+            _repositionTimer = null;
+        }
         if (_el) _el.style.display = 'none';
     }
 
@@ -462,18 +517,34 @@ var PanelTooltip = (function() {
         return score;
     }
 
-    // 对齐 AS2 TooltipLayout.shouldSplitSmart：
-    //   needSplit = (descTotal + introTotal > SPLIT_THRESHOLD * SMART_TOTAL_MULTIPLIER)
-    //            && (descTotal > SPLIT_THRESHOLD / SMART_DESC_DIVISOR)
-    // AS2 常量：SPLIT_THRESHOLD=96, SMART_TOTAL_MULTIPLIER=2, SMART_DESC_DIVISOR=2
+    // 对齐 AS2 TooltipLayout.shouldSplitSmart + TooltipComposer.renderItemTooltipSmart
+    // 后置 MERGE_MAX_INTRO_LINES 检查。常量同源 scripts/类定义/org/flashNight/gesh/tooltip/
+    // TooltipConstants.as：SPLIT_THRESHOLD=96, SMART_TOTAL_MULTIPLIER=2, SMART_DESC_DIVISOR=2,
+    // MERGE_MAX_INTRO_LINES=20。常量任一端改了要两边同步。
+    //
+    // 两段决策：
+    //   1) AS2 shouldSplitSmart —— 总量 + desc 量同时过线 → split
+    //   2) merge 二次兜底 —— 即便 shouldSplitSmart 选择 merge，合并行数 > 20 仍强制
+    //      split。AS2 端用 measureRenderedLines 实测；web 无 Flash TextField，用
+    //      "合并 total score / 单格 charsPerLine" 估算 wrapped 行数。merge 模式
+    //      panel 宽度锁 BASE_NUM=200px，PIX_PER_UNIT=6 → 单行约 33 score。
     var SPLIT_THRESHOLD = 96;
     var SMART_TOTAL_MULT = 2;
     var SMART_DESC_DIV = 2;
+    var MERGE_MAX_INTRO_LINES = 20;
+    // BASE_NUM(200) / PIX_PER_UNIT(6) ≈ 33 score 单元/行（200px 宽下的近似容量）
+    var MERGE_CHARS_PER_LINE = 33;
     function shouldSplitWeb(descHtml, introHtml) {
         var descScore = htmlTextScore(descHtml);
         var introScore = htmlTextScore(introHtml);
-        return (descScore + introScore > SPLIT_THRESHOLD * SMART_TOTAL_MULT)
+        var smartSplit = (descScore + introScore > SPLIT_THRESHOLD * SMART_TOTAL_MULT)
             && (descScore > SPLIT_THRESHOLD / SMART_DESC_DIV);
+        if (smartSplit) return true;
+        // merge 二次兜底：估算合并后 wrapped 行数；> 20 行强制 split，避免 200px
+        // 窄面板被拉成长条遮挡视线。
+        var mergedLines = (descScore + introScore) / MERGE_CHARS_PER_LINE;
+        if (mergedLines > MERGE_MAX_INTRO_LINES) return true;
+        return false;
     }
 
     // ── 共享物品 tooltip 渲染器 ──
@@ -567,10 +638,20 @@ var PanelTooltip = (function() {
     // AS2 端 K商城 / 情报 / 竞技场 layoutType 推导：
     //   (data.type == TYPE_CONSUMABLE) ? data.use : data.type
     // web 这里 caller 传过来的 type 字段语义对齐 AS2 data.type（消耗品时传 use）。
+    //
+    // typeField 为 null/undefined/空串时说明 caller 的 item 数据缺字段——会静默走
+    // 'narrow' 让 icon 突然变小。dev 模式下一次性 warn 帮助排查，行为不变（保持 AS2
+    // fallthrough 对齐）。同一个未识别 type 只 warn 一次，避免 hover 刷屏。
+    var _layoutTypeWarnSeen = {};
     function inferLayoutType(typeField) {
         if (typeField === '武器' || typeField === '防具' ||
             typeField === '技能' || typeField === '药剂') {
             return 'wide';
+        }
+        if ((typeField == null || typeField === '')
+            && typeof console !== 'undefined' && !_layoutTypeWarnSeen['__empty__']) {
+            _layoutTypeWarnSeen['__empty__'] = 1;
+            console.warn('[PanelTooltip] inferLayoutType: typeField 为空，fallback narrow');
         }
         return 'narrow';
     }
