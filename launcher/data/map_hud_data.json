@@ -1,12 +1,12 @@
 {
   "protocolVersion": 1,
-  "generatedAt": "2026-04-26T10:11:44.024Z",
+  "generatedAt": "2026-05-17T05:13:34.599Z",
   "sourceFile": "launcher/web/modules/map-panel-data.js",
   "hotspots": {
     "base_roof": {
       "meta": {
         "pageId": "base",
-        "pageLabel": "基地",
+        "pageLabel": "A兵团",
         "hotspotId": "base_roof",
         "label": "基地屋顶",
         "sceneName": "基地房顶",
@@ -61,7 +61,7 @@
     "base_lobby": {
       "meta": {
         "pageId": "base",
-        "pageLabel": "基地",
+        "pageLabel": "A兵团",
         "hotspotId": "base_lobby",
         "label": "基地大厅",
         "sceneName": "基地1层",
@@ -241,7 +241,7 @@
     "base_entrance": {
       "meta": {
         "pageId": "base",
-        "pageLabel": "基地",
+        "pageLabel": "A兵团",
         "hotspotId": "base_entrance",
         "label": "基地门口",
         "sceneName": "基地门口",
@@ -421,7 +421,7 @@
     "base_garage": {
       "meta": {
         "pageId": "base",
-        "pageLabel": "基地",
+        "pageLabel": "A兵团",
         "hotspotId": "base_garage",
         "label": "基地车库",
         "sceneName": "基地车库",
@@ -601,7 +601,7 @@
     "merc_bar": {
       "meta": {
         "pageId": "base",
-        "pageLabel": "基地",
+        "pageLabel": "A兵团",
         "hotspotId": "merc_bar",
         "label": "佣兵酒吧",
         "sceneName": "佣兵酒吧",
@@ -781,7 +781,7 @@
     "infirmary": {
       "meta": {
         "pageId": "base",
-        "pageLabel": "基地",
+        "pageLabel": "A兵团",
         "hotspotId": "infirmary",
         "label": "医务室",
         "sceneName": "医务室",
@@ -961,7 +961,7 @@
     "dormitory": {
       "meta": {
         "pageId": "base",
-        "pageLabel": "基地",
+        "pageLabel": "A兵团",
         "hotspotId": "dormitory",
         "label": "宿舍",
         "sceneName": "房间",
@@ -1141,7 +1141,7 @@
     "basement1": {
       "meta": {
         "pageId": "base",
-        "pageLabel": "基地",
+        "pageLabel": "A兵团",
         "hotspotId": "basement1",
         "label": "地下一层",
         "sceneName": "地下室1层",
@@ -1246,7 +1246,7 @@
     "gym": {
       "meta": {
         "pageId": "base",
-        "pageLabel": "基地",
+        "pageLabel": "A兵团",
         "hotspotId": "gym",
         "label": "健身房",
         "sceneName": "健身房",
@@ -1351,7 +1351,7 @@
     "armory": {
       "meta": {
         "pageId": "base",
-        "pageLabel": "基地",
+        "pageLabel": "A兵团",
         "hotspotId": "armory",
         "label": "武器库",
         "sceneName": "武器库",
@@ -1456,7 +1456,7 @@
     "cafeteria": {
       "meta": {
         "pageId": "base",
-        "pageLabel": "基地",
+        "pageLabel": "A兵团",
         "hotspotId": "cafeteria",
         "label": "食堂",
         "sceneName": "地图-食堂",
@@ -1561,7 +1561,7 @@
     "corridor": {
       "meta": {
         "pageId": "base",
-        "pageLabel": "基地",
+        "pageLabel": "A兵团",
         "hotspotId": "corridor",
         "label": "走廊",
         "sceneName": "地图-走廊",
@@ -1666,7 +1666,7 @@
     "lab": {
       "meta": {
         "pageId": "base",
-        "pageLabel": "基地",
+        "pageLabel": "A兵团",
         "hotspotId": "lab",
         "label": "实验室",
         "sceneName": "地图-实验室",
@@ -1771,7 +1771,7 @@
     "underground_water": {
       "meta": {
         "pageId": "base",
-        "pageLabel": "基地",
+        "pageLabel": "A兵团",
         "hotspotId": "underground_water",
         "label": "地下水",
         "sceneName": "地下2层",
@@ -1826,7 +1826,7 @@
     "warlord_base": {
       "meta": {
         "pageId": "faction",
-        "pageLabel": "A兵团",
+        "pageLabel": "堕落城/荒漠",
         "hotspotId": "warlord_base",
         "label": "军阀基地",
         "sceneName": "地图-军阀基地",
@@ -1836,13 +1836,13 @@
         "focusFilterId": "warlord",
         "focusFilterLabel": "军阀",
         "viewportRect": {
-          "x": 35.01,
+          "x": 15.01,
           "y": 25.56,
           "w": 259.77,
           "h": 300.33
         },
         "currentRect": {
-          "x": 46.35,
+          "x": 26.35,
           "y": 85.4,
           "w": 240.25,
           "h": 125.08
@@ -1852,7 +1852,7 @@
             "hotspotId": "warlord_base",
             "label": "军阀基地",
             "sourceRect": {
-              "x": 46.35,
+              "x": 26.35,
               "y": 85.4,
               "w": 240.25,
               "h": 125.08
@@ -1862,7 +1862,7 @@
             "hotspotId": "warlord_tent",
             "label": "军阀帐篷",
             "sourceRect": {
-              "x": 60.6,
+              "x": 40.6,
               "y": 33.15,
               "w": 193.16,
               "h": 115.48
@@ -1872,7 +1872,7 @@
             "hotspotId": "firing_range",
             "label": "靶场",
             "sourceRect": {
-              "x": 40.75,
+              "x": 20.75,
               "y": 170.05,
               "w": 248.3,
               "h": 148.26
@@ -1888,7 +1888,7 @@
               "warlord_base"
             ],
             "sourceRect": {
-              "x": 46.35,
+              "x": 26.35,
               "y": 85.4,
               "w": 240.25,
               "h": 125.08
@@ -1903,7 +1903,7 @@
               "warlord_tent"
             ],
             "sourceRect": {
-              "x": 60.6,
+              "x": 40.6,
               "y": 33.15,
               "w": 193.16,
               "h": 115.48
@@ -1918,7 +1918,7 @@
               "firing_range"
             ],
             "sourceRect": {
-              "x": 40.75,
+              "x": 20.75,
               "y": 170.05,
               "w": 248.3,
               "h": 148.26
@@ -1931,7 +1931,7 @@
     "warlord_tent": {
       "meta": {
         "pageId": "faction",
-        "pageLabel": "A兵团",
+        "pageLabel": "堕落城/荒漠",
         "hotspotId": "warlord_tent",
         "label": "军阀帐篷",
         "sceneName": "地图-军阀帐篷",
@@ -1941,13 +1941,13 @@
         "focusFilterId": "warlord",
         "focusFilterLabel": "军阀",
         "viewportRect": {
-          "x": 35.01,
+          "x": 15.01,
           "y": 25.56,
           "w": 259.77,
           "h": 300.33
         },
         "currentRect": {
-          "x": 60.6,
+          "x": 40.6,
           "y": 33.15,
           "w": 193.16,
           "h": 115.48
@@ -1957,7 +1957,7 @@
             "hotspotId": "warlord_base",
             "label": "军阀基地",
             "sourceRect": {
-              "x": 46.35,
+              "x": 26.35,
               "y": 85.4,
               "w": 240.25,
               "h": 125.08
@@ -1967,7 +1967,7 @@
             "hotspotId": "warlord_tent",
             "label": "军阀帐篷",
             "sourceRect": {
-              "x": 60.6,
+              "x": 40.6,
               "y": 33.15,
               "w": 193.16,
               "h": 115.48
@@ -1977,7 +1977,7 @@
             "hotspotId": "firing_range",
             "label": "靶场",
             "sourceRect": {
-              "x": 40.75,
+              "x": 20.75,
               "y": 170.05,
               "w": 248.3,
               "h": 148.26
@@ -1993,7 +1993,7 @@
               "warlord_base"
             ],
             "sourceRect": {
-              "x": 46.35,
+              "x": 26.35,
               "y": 85.4,
               "w": 240.25,
               "h": 125.08
@@ -2008,7 +2008,7 @@
               "warlord_tent"
             ],
             "sourceRect": {
-              "x": 60.6,
+              "x": 40.6,
               "y": 33.15,
               "w": 193.16,
               "h": 115.48
@@ -2023,7 +2023,7 @@
               "firing_range"
             ],
             "sourceRect": {
-              "x": 40.75,
+              "x": 20.75,
               "y": 170.05,
               "w": 248.3,
               "h": 148.26
@@ -2036,7 +2036,7 @@
     "firing_range": {
       "meta": {
         "pageId": "faction",
-        "pageLabel": "A兵团",
+        "pageLabel": "堕落城/荒漠",
         "hotspotId": "firing_range",
         "label": "靶场",
         "sceneName": "地图-靶场",
@@ -2046,13 +2046,13 @@
         "focusFilterId": "warlord",
         "focusFilterLabel": "军阀",
         "viewportRect": {
-          "x": 35.01,
+          "x": 15.01,
           "y": 25.56,
           "w": 259.77,
           "h": 300.33
         },
         "currentRect": {
-          "x": 40.75,
+          "x": 20.75,
           "y": 170.05,
           "w": 248.3,
           "h": 148.26
@@ -2062,7 +2062,7 @@
             "hotspotId": "warlord_base",
             "label": "军阀基地",
             "sourceRect": {
-              "x": 46.35,
+              "x": 26.35,
               "y": 85.4,
               "w": 240.25,
               "h": 125.08
@@ -2072,7 +2072,7 @@
             "hotspotId": "warlord_tent",
             "label": "军阀帐篷",
             "sourceRect": {
-              "x": 60.6,
+              "x": 40.6,
               "y": 33.15,
               "w": 193.16,
               "h": 115.48
@@ -2082,7 +2082,7 @@
             "hotspotId": "firing_range",
             "label": "靶场",
             "sourceRect": {
-              "x": 40.75,
+              "x": 20.75,
               "y": 170.05,
               "w": 248.3,
               "h": 148.26
@@ -2098,7 +2098,7 @@
               "warlord_base"
             ],
             "sourceRect": {
-              "x": 46.35,
+              "x": 26.35,
               "y": 85.4,
               "w": 240.25,
               "h": 125.08
@@ -2113,7 +2113,7 @@
               "warlord_tent"
             ],
             "sourceRect": {
-              "x": 60.6,
+              "x": 40.6,
               "y": 33.15,
               "w": 193.16,
               "h": 115.48
@@ -2128,7 +2128,7 @@
               "firing_range"
             ],
             "sourceRect": {
-              "x": 40.75,
+              "x": 20.75,
               "y": 170.05,
               "w": 248.3,
               "h": 148.26
@@ -2141,7 +2141,7 @@
     "rock_park": {
       "meta": {
         "pageId": "faction",
-        "pageLabel": "A兵团",
+        "pageLabel": "堕落城/荒漠",
         "hotspotId": "rock_park",
         "label": "摇滚公园",
         "sceneName": "地图-摇滚公园",
@@ -2151,13 +2151,13 @@
         "focusFilterId": "rock",
         "focusFilterLabel": "摇滚",
         "viewportRect": {
-          "x": 370.49,
+          "x": 298.49,
           "y": 47.93,
           "w": 297.12,
           "h": 279.84
         },
         "currentRect": {
-          "x": 377.05,
+          "x": 305.05,
           "y": 55,
           "w": 284,
           "h": 145
@@ -2167,7 +2167,7 @@
             "hotspotId": "rock_park",
             "label": "摇滚公园",
             "sourceRect": {
-              "x": 377.05,
+              "x": 305.05,
               "y": 55,
               "w": 284,
               "h": 145
@@ -2177,7 +2177,7 @@
             "hotspotId": "rock_rehearsal",
             "label": "摇滚排练室",
             "sourceRect": {
-              "x": 390.3,
+              "x": 318.3,
               "y": 193.7,
               "w": 262,
               "h": 127
@@ -2193,7 +2193,7 @@
               "rock_park"
             ],
             "sourceRect": {
-              "x": 377.05,
+              "x": 305.05,
               "y": 55,
               "w": 284,
               "h": 145
@@ -2208,7 +2208,7 @@
               "rock_rehearsal"
             ],
             "sourceRect": {
-              "x": 390.3,
+              "x": 318.3,
               "y": 193.7,
               "w": 262,
               "h": 127
@@ -2221,7 +2221,7 @@
     "rock_rehearsal": {
       "meta": {
         "pageId": "faction",
-        "pageLabel": "A兵团",
+        "pageLabel": "堕落城/荒漠",
         "hotspotId": "rock_rehearsal",
         "label": "摇滚排练室",
         "sceneName": "地图-摇滚排练室",
@@ -2231,13 +2231,13 @@
         "focusFilterId": "rock",
         "focusFilterLabel": "摇滚",
         "viewportRect": {
-          "x": 370.49,
+          "x": 298.49,
           "y": 47.93,
           "w": 297.12,
           "h": 279.84
         },
         "currentRect": {
-          "x": 390.3,
+          "x": 318.3,
           "y": 193.7,
           "w": 262,
           "h": 127
@@ -2247,7 +2247,7 @@
             "hotspotId": "rock_park",
             "label": "摇滚公园",
             "sourceRect": {
-              "x": 377.05,
+              "x": 305.05,
               "y": 55,
               "w": 284,
               "h": 145
@@ -2257,7 +2257,7 @@
             "hotspotId": "rock_rehearsal",
             "label": "摇滚排练室",
             "sourceRect": {
-              "x": 390.3,
+              "x": 318.3,
               "y": 193.7,
               "w": 262,
               "h": 127
@@ -2273,7 +2273,7 @@
               "rock_park"
             ],
             "sourceRect": {
-              "x": 377.05,
+              "x": 305.05,
               "y": 55,
               "w": 284,
               "h": 145
@@ -2288,7 +2288,7 @@
               "rock_rehearsal"
             ],
             "sourceRect": {
-              "x": 390.3,
+              "x": 318.3,
               "y": 193.7,
               "w": 262,
               "h": 127
@@ -2301,7 +2301,7 @@
     "blackiron_training": {
       "meta": {
         "pageId": "faction",
-        "pageLabel": "A兵团",
+        "pageLabel": "堕落城/荒漠",
         "hotspotId": "blackiron_training",
         "label": "黑铁会修炼场",
         "sceneName": "地图-黑铁会修炼场",
@@ -2311,36 +2311,36 @@
         "focusFilterId": "blackiron",
         "focusFilterLabel": "黑铁会",
         "viewportRect": {
-          "x": 0,
-          "y": 347.14,
-          "w": 351.91,
-          "h": 230.07
+          "x": 593.53,
+          "y": 43.7,
+          "w": 292.94,
+          "h": 249.61
         },
         "currentRect": {
-          "x": 8.1,
-          "y": 352.95,
-          "w": 292,
-          "h": 98
+          "x": 600,
+          "y": 50,
+          "w": 280,
+          "h": 94
         },
         "blocks": [
           {
             "hotspotId": "blackiron_training",
             "label": "黑铁会修炼场",
             "sourceRect": {
-              "x": 8.1,
-              "y": 352.95,
-              "w": 292,
-              "h": 98
+              "x": 600,
+              "y": 50,
+              "w": 280,
+              "h": 94
             }
           },
           {
             "hotspotId": "blackiron_pavilion",
             "label": "黑铁阁",
             "sourceRect": {
-              "x": 6.1,
-              "y": 418.4,
-              "w": 338,
-              "h": 153
+              "x": 600,
+              "y": 160,
+              "w": 280,
+              "h": 127
             }
           }
         ],
@@ -2353,10 +2353,10 @@
               "blackiron_training"
             ],
             "sourceRect": {
-              "x": 8.1,
-              "y": 352.95,
-              "w": 292,
-              "h": 98
+              "x": 600,
+              "y": 50,
+              "w": 280,
+              "h": 94
             },
             "isCurrent": true
           },
@@ -2368,10 +2368,10 @@
               "blackiron_pavilion"
             ],
             "sourceRect": {
-              "x": 6.1,
-              "y": 418.4,
-              "w": 338,
-              "h": 153
+              "x": 600,
+              "y": 160,
+              "w": 280,
+              "h": 127
             },
             "isCurrent": false
           }
@@ -2381,7 +2381,7 @@
     "blackiron_pavilion": {
       "meta": {
         "pageId": "faction",
-        "pageLabel": "A兵团",
+        "pageLabel": "堕落城/荒漠",
         "hotspotId": "blackiron_pavilion",
         "label": "黑铁阁",
         "sceneName": "地图-黑铁阁",
@@ -2391,36 +2391,36 @@
         "focusFilterId": "blackiron",
         "focusFilterLabel": "黑铁会",
         "viewportRect": {
-          "x": 0,
-          "y": 347.14,
-          "w": 351.91,
-          "h": 230.07
+          "x": 593.53,
+          "y": 43.7,
+          "w": 292.94,
+          "h": 249.61
         },
         "currentRect": {
-          "x": 6.1,
-          "y": 418.4,
-          "w": 338,
-          "h": 153
+          "x": 600,
+          "y": 160,
+          "w": 280,
+          "h": 127
         },
         "blocks": [
           {
             "hotspotId": "blackiron_training",
             "label": "黑铁会修炼场",
             "sourceRect": {
-              "x": 8.1,
-              "y": 352.95,
-              "w": 292,
-              "h": 98
+              "x": 600,
+              "y": 50,
+              "w": 280,
+              "h": 94
             }
           },
           {
             "hotspotId": "blackiron_pavilion",
             "label": "黑铁阁",
             "sourceRect": {
-              "x": 6.1,
-              "y": 418.4,
-              "w": 338,
-              "h": 153
+              "x": 600,
+              "y": 160,
+              "w": 280,
+              "h": 127
             }
           }
         ],
@@ -2433,10 +2433,10 @@
               "blackiron_training"
             ],
             "sourceRect": {
-              "x": 8.1,
-              "y": 352.95,
-              "w": 292,
-              "h": 98
+              "x": 600,
+              "y": 50,
+              "w": 280,
+              "h": 94
             },
             "isCurrent": false
           },
@@ -2448,92 +2448,12 @@
               "blackiron_pavilion"
             ],
             "sourceRect": {
-              "x": 6.1,
-              "y": 418.4,
-              "w": 338,
-              "h": 153
+              "x": 600,
+              "y": 160,
+              "w": 280,
+              "h": 127
             },
             "isCurrent": true
-          }
-        ]
-      }
-    },
-    "fallen_bar": {
-      "meta": {
-        "pageId": "faction",
-        "pageLabel": "A兵团",
-        "hotspotId": "fallen_bar",
-        "label": "堕落城酒吧",
-        "sceneName": "地图-堕落城酒吧",
-        "group": "fallen"
-      },
-      "outline": {
-        "focusFilterId": "fallen",
-        "focusFilterLabel": "堕落城",
-        "viewportRect": {
-          "x": 350.27,
-          "y": 385.37,
-          "w": 470.01,
-          "h": 149.55
-        },
-        "currentRect": {
-          "x": 360.65,
-          "y": 389.15,
-          "w": 252,
-          "h": 138
-        },
-        "blocks": [
-          {
-            "hotspotId": "fallen_bar",
-            "label": "堕落城酒吧",
-            "sourceRect": {
-              "x": 360.65,
-              "y": 389.15,
-              "w": 252,
-              "h": 138
-            }
-          },
-          {
-            "hotspotId": "fallen_street",
-            "label": "堕落城商业街",
-            "sourceRect": {
-              "x": 597.9,
-              "y": 392.15,
-              "w": 212,
-              "h": 139
-            }
-          }
-        ],
-        "visuals": [
-          {
-            "id": "fallen_bar_visual",
-            "label": "堕落城酒吧",
-            "assetUrl": "assets/map/composite/faction/fallen-bar.png",
-            "hotspotIds": [
-              "fallen_bar"
-            ],
-            "sourceRect": {
-              "x": 360.65,
-              "y": 389.15,
-              "w": 252,
-              "h": 138
-            },
-            "isCurrent": true
-          },
-          {
-            "id": "fallen_street_visual",
-            "label": "堕落城商业街",
-            "assetUrl": "assets/map/composite/faction/fallen-street.png",
-            "hotspotIds": [
-              "fallen_street"
-            ],
-            "sourceRect": {
-              "x": 597.9,
-              "y": 392.15,
-              "w": 212,
-              "h": 139
-            },
-            "isCurrent": false
           }
         ]
       }
@@ -2541,7 +2461,7 @@
     "fallen_street": {
       "meta": {
         "pageId": "faction",
-        "pageLabel": "A兵团",
+        "pageLabel": "堕落城/荒漠",
         "hotspotId": "fallen_street",
         "label": "堕落城商业街",
         "sceneName": "地图-堕落城商业街",
@@ -2551,55 +2471,50 @@
         "focusFilterId": "fallen",
         "focusFilterLabel": "堕落城",
         "viewportRect": {
-          "x": 350.27,
-          "y": 385.37,
-          "w": 470.01,
-          "h": 149.55
+          "x": 7.04,
+          "y": 385.27,
+          "w": 802.92,
+          "h": 153.61
         },
         "currentRect": {
-          "x": 597.9,
+          "x": 20,
           "y": 392.15,
           "w": 212,
           "h": 139
         },
         "blocks": [
           {
-            "hotspotId": "fallen_bar",
-            "label": "堕落城酒吧",
-            "sourceRect": {
-              "x": 360.65,
-              "y": 389.15,
-              "w": 252,
-              "h": 138
-            }
-          },
-          {
             "hotspotId": "fallen_street",
             "label": "堕落城商业街",
             "sourceRect": {
-              "x": 597.9,
+              "x": 20,
               "y": 392.15,
               "w": 212,
               "h": 139
             }
+          },
+          {
+            "hotspotId": "fallen_entrance",
+            "label": "堕落城酒吧门口",
+            "sourceRect": {
+              "x": 257,
+              "y": 395,
+              "w": 275,
+              "h": 140
+            }
+          },
+          {
+            "hotspotId": "fallen_bar",
+            "label": "堕落城酒吧",
+            "sourceRect": {
+              "x": 557,
+              "y": 389.15,
+              "w": 240,
+              "h": 138
+            }
           }
         ],
         "visuals": [
-          {
-            "id": "fallen_bar_visual",
-            "label": "堕落城酒吧",
-            "assetUrl": "assets/map/composite/faction/fallen-bar.png",
-            "hotspotIds": [
-              "fallen_bar"
-            ],
-            "sourceRect": {
-              "x": 360.65,
-              "y": 389.15,
-              "w": 252,
-              "h": 138
-            },
-            "isCurrent": false
-          },
           {
             "id": "fallen_street_visual",
             "label": "堕落城商业街",
@@ -2608,10 +2523,250 @@
               "fallen_street"
             ],
             "sourceRect": {
-              "x": 597.9,
+              "x": 20,
               "y": 392.15,
               "w": 212,
               "h": 139
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "fallen_entrance_visual",
+            "label": "堕落城酒吧门口",
+            "assetUrl": "assets/map/composite/faction/fallen-entrance.png",
+            "hotspotIds": [
+              "fallen_entrance"
+            ],
+            "sourceRect": {
+              "x": 257,
+              "y": 395,
+              "w": 275,
+              "h": 140
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "fallen_bar_visual",
+            "label": "堕落城酒吧",
+            "assetUrl": "assets/map/composite/faction/fallen-bar.png",
+            "hotspotIds": [
+              "fallen_bar"
+            ],
+            "sourceRect": {
+              "x": 557,
+              "y": 389.15,
+              "w": 240,
+              "h": 138
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "fallen_entrance": {
+      "meta": {
+        "pageId": "faction",
+        "pageLabel": "堕落城/荒漠",
+        "hotspotId": "fallen_entrance",
+        "label": "堕落城酒吧门口",
+        "sceneName": "地图-堕落城酒吧门口",
+        "group": "fallen"
+      },
+      "outline": {
+        "focusFilterId": "fallen",
+        "focusFilterLabel": "堕落城",
+        "viewportRect": {
+          "x": 7.04,
+          "y": 385.27,
+          "w": 802.92,
+          "h": 153.61
+        },
+        "currentRect": {
+          "x": 257,
+          "y": 395,
+          "w": 275,
+          "h": 140
+        },
+        "blocks": [
+          {
+            "hotspotId": "fallen_street",
+            "label": "堕落城商业街",
+            "sourceRect": {
+              "x": 20,
+              "y": 392.15,
+              "w": 212,
+              "h": 139
+            }
+          },
+          {
+            "hotspotId": "fallen_entrance",
+            "label": "堕落城酒吧门口",
+            "sourceRect": {
+              "x": 257,
+              "y": 395,
+              "w": 275,
+              "h": 140
+            }
+          },
+          {
+            "hotspotId": "fallen_bar",
+            "label": "堕落城酒吧",
+            "sourceRect": {
+              "x": 557,
+              "y": 389.15,
+              "w": 240,
+              "h": 138
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "fallen_street_visual",
+            "label": "堕落城商业街",
+            "assetUrl": "assets/map/composite/faction/fallen-street.png",
+            "hotspotIds": [
+              "fallen_street"
+            ],
+            "sourceRect": {
+              "x": 20,
+              "y": 392.15,
+              "w": 212,
+              "h": 139
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "fallen_entrance_visual",
+            "label": "堕落城酒吧门口",
+            "assetUrl": "assets/map/composite/faction/fallen-entrance.png",
+            "hotspotIds": [
+              "fallen_entrance"
+            ],
+            "sourceRect": {
+              "x": 257,
+              "y": 395,
+              "w": 275,
+              "h": 140
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "fallen_bar_visual",
+            "label": "堕落城酒吧",
+            "assetUrl": "assets/map/composite/faction/fallen-bar.png",
+            "hotspotIds": [
+              "fallen_bar"
+            ],
+            "sourceRect": {
+              "x": 557,
+              "y": 389.15,
+              "w": 240,
+              "h": 138
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "fallen_bar": {
+      "meta": {
+        "pageId": "faction",
+        "pageLabel": "堕落城/荒漠",
+        "hotspotId": "fallen_bar",
+        "label": "堕落城酒吧",
+        "sceneName": "地图-堕落城酒吧",
+        "group": "fallen"
+      },
+      "outline": {
+        "focusFilterId": "fallen",
+        "focusFilterLabel": "堕落城",
+        "viewportRect": {
+          "x": 7.04,
+          "y": 385.27,
+          "w": 802.92,
+          "h": 153.61
+        },
+        "currentRect": {
+          "x": 557,
+          "y": 389.15,
+          "w": 240,
+          "h": 138
+        },
+        "blocks": [
+          {
+            "hotspotId": "fallen_street",
+            "label": "堕落城商业街",
+            "sourceRect": {
+              "x": 20,
+              "y": 392.15,
+              "w": 212,
+              "h": 139
+            }
+          },
+          {
+            "hotspotId": "fallen_entrance",
+            "label": "堕落城酒吧门口",
+            "sourceRect": {
+              "x": 257,
+              "y": 395,
+              "w": 275,
+              "h": 140
+            }
+          },
+          {
+            "hotspotId": "fallen_bar",
+            "label": "堕落城酒吧",
+            "sourceRect": {
+              "x": 557,
+              "y": 389.15,
+              "w": 240,
+              "h": 138
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "fallen_street_visual",
+            "label": "堕落城商业街",
+            "assetUrl": "assets/map/composite/faction/fallen-street.png",
+            "hotspotIds": [
+              "fallen_street"
+            ],
+            "sourceRect": {
+              "x": 20,
+              "y": 392.15,
+              "w": 212,
+              "h": 139
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "fallen_entrance_visual",
+            "label": "堕落城酒吧门口",
+            "assetUrl": "assets/map/composite/faction/fallen-entrance.png",
+            "hotspotIds": [
+              "fallen_entrance"
+            ],
+            "sourceRect": {
+              "x": 257,
+              "y": 395,
+              "w": 275,
+              "h": 140
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "fallen_bar_visual",
+            "label": "堕落城酒吧",
+            "assetUrl": "assets/map/composite/faction/fallen-bar.png",
+            "hotspotIds": [
+              "fallen_bar"
+            ],
+            "sourceRect": {
+              "x": 557,
+              "y": 389.15,
+              "w": 240,
+              "h": 138
             },
             "isCurrent": true
           }

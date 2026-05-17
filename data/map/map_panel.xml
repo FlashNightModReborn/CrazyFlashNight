@@ -43,9 +43,10 @@
         <hotspot id="blackiron_training" group="blackiron" frame="地图-黑铁会修炼场"/>
         <hotspot id="blackiron_pavilion" group="blackiron" frame="地图-黑铁阁"/>
 
-        <!-- fallen (2) -->
+        <!-- fallen (3) -->
         <hotspot id="fallen_bar"         group="fallen" frame="地图-堕落城酒吧"/>
         <hotspot id="fallen_street"      group="fallen" frame="地图-堕落城商业街"/>
+        <hotspot id="fallen_entrance"    group="fallen" frame="地图-堕落城酒吧门口"/>
 
         <!-- defense (1) -->
         <hotspot id="first_defense"      group="defense" frame="地图-第一防线防区"/>
@@ -95,21 +96,21 @@
         <npc name="厨师"               hotspot="cafeteria"   x="324.85" y="431.85"/>
 
         <!-- faction (15) -->
-        <npc name="general"            hotspot="warlord_base"       x="239.3"  y="170.6"/>
-        <npc name="gazer"              hotspot="warlord_base"       x="128.95" y="168.1"/>
-        <npc name="director"           hotspot="warlord_tent"       x="190.85" y="125.0"/>
-        <npc name="itinerant"          hotspot="firing_range"       x="154.35" y="293.6"/>
-        <npc name="surveyor"           hotspot="firing_range"       x="254.35" y="264.1"/>
-        <npc name="singer"             hotspot="rock_park"          x="540.55" y="158.5"/>
-        <npc name="keyboard"           hotspot="rock_park"          x="603.75" y="187.7"/>
-        <npc name="guitar"             hotspot="rock_park"          x="476.95" y="186.1"/>
-        <npc name="火凤"               hotspot="blackiron_training" x="135.7"  y="425.45"/>
-        <npc name="翅虎"               hotspot="blackiron_training" x="230.95" y="412.7"/>
-        <npc name="黑龙"               hotspot="blackiron_pavilion" x="277.5"  y="433.2"/>
-        <npc name="黑铁"               hotspot="blackiron_pavilion" x="186.9"  y="514.5"/>
-        <npc name="牛仔"               hotspot="fallen_bar"         x="522.75" y="471.7"/>
-        <npc name="假肢仙人"           hotspot="fallen_street"      x="753.55" y="488.45"/>
-        <npc name="吸特乐"             hotspot="fallen_street"      x="675.8"  y="482.0"/>
+        <npc name="general"            hotspot="warlord_base"       x="219.3"  y="170.6"/>
+        <npc name="gazer"              hotspot="warlord_base"       x="108.95" y="168.1"/>
+        <npc name="director"           hotspot="warlord_tent"       x="170.85" y="125.0"/>
+        <npc name="itinerant"          hotspot="firing_range"       x="134.35" y="293.6"/>
+        <npc name="surveyor"           hotspot="firing_range"       x="234.35" y="264.1"/>
+        <npc name="singer"             hotspot="rock_park"          x="468.55" y="158.5"/>
+        <npc name="keyboard"           hotspot="rock_park"          x="531.75" y="187.7"/>
+        <npc name="guitar"             hotspot="rock_park"          x="404.95" y="186.1"/>
+        <npc name="火凤"               hotspot="blackiron_training" x="722.36" y="119.54"/>
+        <npc name="翅虎"               hotspot="blackiron_training" x="813.78" y="107.31"/>
+        <npc name="黑龙"               hotspot="blackiron_pavilion" x="824.9"  y="172.28"/>
+        <npc name="黑铁"               hotspot="blackiron_pavilion" x="749.77" y="239.77"/>
+        <npc name="牛仔"               hotspot="fallen_bar"         x="711.4"  y="471.7"/>
+        <npc name="假肢仙人"           hotspot="fallen_street"      x="175.65" y="488.45"/>
+        <npc name="吸特乐"             hotspot="fallen_street"      x="97.9"   y="482.0"/>
 
         <!-- defense (6) -->
         <npc name="artist"             hotspot="first_defense"      x="161.65" y="155.15"/>

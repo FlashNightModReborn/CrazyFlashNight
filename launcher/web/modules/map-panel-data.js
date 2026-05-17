@@ -42,7 +42,8 @@ var MapPanelData = (function() {
                 blackiron_training: 'blackiron',
                 blackiron_pavilion: 'blackiron',
                 fallen_bar: 'fallen',
-                fallen_street: 'fallen'
+                fallen_street: 'fallen',
+                fallen_entrance: 'fallen'
             }
         },
         defense: {
@@ -119,12 +120,13 @@ var MapPanelData = (function() {
             warlord_base: { x: 46.35, y: 85.4, w: 745.8, h: 360.1 },
             warlord_tent: { x: 60.6, y: 33.15, w: 613.1, h: 330.1 },
             firing_range: { x: 40.75, y: 170.05, w: 773.6, h: 439.4 },
-            rock_park: { x: 377.05, y: 55, w: 253.8, h: 115.1 },
-            rock_rehearsal: { x: 390.3, y: 193.7, w: 219.9, h: 97.3 },
-            blackiron_training: { x: 8.1, y: 352.95, w: 299.1, h: 100.1 },
-            blackiron_pavilion: { x: 6.1, y: 418.4, w: 308.5, h: 123.6 },
-            fallen_bar: { x: 360.65, y: 389.15, w: 222.6, h: 108.7 },
-            fallen_street: { x: 597.9, y: 392.15, w: 182.7, h: 108.9 }
+            rock_park: { x: 305.05, y: 55, w: 253.8, h: 115.1 },
+            rock_rehearsal: { x: 318.3, y: 193.7, w: 219.9, h: 97.3 },
+            blackiron_training: { x: 600, y: 50, w: 280, h: 94 },
+            blackiron_pavilion: { x: 600, y: 160, w: 280, h: 127 },
+            fallen_bar: { x: 557, y: 389.15, w: 222.6, h: 108.7 },
+            fallen_street: { x: 20, y: 392.15, w: 182.7, h: 108.9 },
+            fallen_entrance: { x: 257, y: 395, w: 275, h: 140 }
         },
         defense: {
             first_defense: { x: 60, y: 94.7, w: 255.1, h: 86.7 },
@@ -193,22 +195,22 @@ var MapPanelData = (function() {
             ['chef_avatar', '厨师', 'cafeteria', 324.85, 431.85, '厨师头像.png']
         ]),
         faction: buildStaticAvatarSlots([
-            ['general_avatar', 'general', 'warlord_base', 239.3, 170.6, 'general头像.png'],
-            ['gazer_avatar', 'gazer', 'warlord_base', 128.95, 168.1, 'gazer头像.png'],
-            ['director_avatar', 'director', 'warlord_tent', 190.85, 125.0, 'director头像.png'],
-            ['itinerant_avatar', 'itinerant', 'firing_range', 154.35, 293.6, 'itinerant头像.png'],
-            ['surveyor_avatar', 'surveyor', 'firing_range', 254.35, 264.1, 'surveyor头像.png'],
-            ['singer_avatar', 'singer', 'rock_park', 540.55, 158.5, 'singer头像.png'],
-            ['keyboard_avatar', 'keyboard', 'rock_park', 603.75, 187.7, 'keyboard头像.png'],
-            ['guitar_avatar', 'guitar', 'rock_park', 476.95, 186.1, 'guitar头像.png'],
-            ['firephoenix_avatar', '火凤', 'blackiron_training', 135.7, 425.45, '火凤头像.png'],
-            ['wingtiger_avatar', '翅虎', 'blackiron_training', 230.95, 412.7, '翅虎头像.png'],
-            ['blackdragon_avatar', '黑龙', 'blackiron_training', 277.5, 433.2, '黑龙头像.png'],
-            ['blackiron_avatar', '黑铁', 'blackiron_pavilion', 186.9, 514.5, '黑铁头像.png'],
-            ['cowboy_avatar', '牛仔', 'fallen_bar', 522.75, 471.7, '牛仔头像.png'],
-            ['cyborg_sage_avatar', '假肢仙人', 'fallen_street', 753.55, 488.45, '假肢仙人头像.png'],
-            ['hitler_avatar', '吸特乐', 'fallen_street', 675.8, 482.0, '吸特乐头像.png'],
-            ['researcher_avatar', 'researcher', 'fallen_street', 780.0, 472.0, 'researcher头像.png']
+            ['general_avatar', 'general', 'warlord_base', 219.3, 170.6, 'general头像.png'],
+            ['gazer_avatar', 'gazer', 'warlord_base', 108.95, 168.1, 'gazer头像.png'],
+            ['director_avatar', 'director', 'warlord_tent', 170.85, 125.0, 'director头像.png'],
+            ['itinerant_avatar', 'itinerant', 'firing_range', 134.35, 293.6, 'itinerant头像.png'],
+            ['surveyor_avatar', 'surveyor', 'firing_range', 234.35, 264.1, 'surveyor头像.png'],
+            ['singer_avatar', 'singer', 'rock_park', 468.55, 158.5, 'singer头像.png'],
+            ['keyboard_avatar', 'keyboard', 'rock_park', 531.75, 187.7, 'keyboard头像.png'],
+            ['guitar_avatar', 'guitar', 'rock_park', 404.95, 186.1, 'guitar头像.png'],
+            ['firephoenix_avatar', '火凤', 'blackiron_training', 722.36, 119.54, '火凤头像.png'],
+            ['wingtiger_avatar', '翅虎', 'blackiron_training', 813.78, 107.31, '翅虎头像.png'],
+            ['blackdragon_avatar', '黑龙', 'blackiron_training', 858.32, 126.97, '黑龙头像.png'],
+            ['blackiron_avatar', '黑铁', 'blackiron_pavilion', 749.77, 239.77, '黑铁头像.png'],
+            ['cowboy_avatar', '牛仔', 'fallen_bar', 711.37, 471.7, '牛仔头像.png'],
+            ['cyborg_sage_avatar', '假肢仙人', 'fallen_street', 175.65, 488.45, '假肢仙人头像.png'],
+            ['hitler_avatar', '吸特乐', 'fallen_street', 97.9, 482.0, '吸特乐头像.png'],
+            ['researcher_avatar', 'researcher', 'fallen_street', 202.1, 472.0, 'researcher头像.png']
         ]),
         defense: buildStaticAvatarSlots([
             ['artist_avatar', 'artist', 'first_defense', 161.65, 155.15, 'artist头像.png'],
@@ -300,35 +302,37 @@ var MapPanelData = (function() {
             width: 1031,
             height: 608,
             sceneVisuals: [
-                { id: 'warlord_base_visual', label: '军阀基地', assetUrl: 'assets/map/composite/faction/warlord-base.png', rect: { x: 46.35, y: 85.4, w: 240.25, h: 125.08 }, filterIds: ['warlord', 'all'], hotspotIds: ['warlord_base'] },
-                { id: 'warlord_tent_visual', label: '军阀帐篷', assetUrl: 'assets/map/composite/faction/warlord-tent.png', rect: { x: 60.6, y: 33.15, w: 193.16, h: 115.48 }, filterIds: ['warlord', 'all'], hotspotIds: ['warlord_tent'] },
-                { id: 'firing_range_visual', label: '靶场', assetUrl: 'assets/map/composite/faction/firing-range.png', rect: { x: 40.75, y: 170.05, w: 248.3, h: 148.26 }, filterIds: ['warlord', 'all'], hotspotIds: ['firing_range'] },
-                { id: 'rock_park_visual', label: '摇滚公园', assetUrl: 'assets/map/composite/faction/rock-park.png', rect: { x: 377.05, y: 55, w: 284, h: 145 }, filterIds: ['rock', 'all'], hotspotIds: ['rock_park'] },
-                { id: 'rock_rehearsal_visual', label: '摇滚排练室', assetUrl: 'assets/map/composite/faction/rock-rehearsal.png', rect: { x: 390.3, y: 193.7, w: 262, h: 127 }, filterIds: ['rock', 'all'], hotspotIds: ['rock_rehearsal'] },
-                { id: 'blackiron_training_visual', label: '黑铁会修炼场', assetUrl: 'assets/map/composite/faction/blackiron-training.png', rect: { x: 8.1, y: 352.95, w: 292, h: 98 }, filterIds: ['blackiron', 'all'], hotspotIds: ['blackiron_training'] },
-                { id: 'blackiron_pavilion_visual', label: '黑铁阁', assetUrl: 'assets/map/composite/faction/blackiron-pavilion.png', rect: { x: 6.1, y: 418.4, w: 338, h: 153 }, filterIds: ['blackiron', 'all'], hotspotIds: ['blackiron_pavilion'] },
-                { id: 'fallen_bar_visual', label: '堕落城酒吧', assetUrl: 'assets/map/composite/faction/fallen-bar.png', rect: { x: 360.65, y: 389.15, w: 252, h: 138 }, filterIds: ['fallen', 'all'], hotspotIds: ['fallen_bar'] },
-                { id: 'fallen_street_visual', label: '堕落城商业街', assetUrl: 'assets/map/composite/faction/fallen-street.png', rect: { x: 597.9, y: 392.15, w: 212, h: 139 }, filterIds: ['fallen', 'all'], hotspotIds: ['fallen_street'] }
+                { id: 'warlord_base_visual', label: '军阀基地', assetUrl: 'assets/map/composite/faction/warlord-base.png', rect: { x: 26.35, y: 85.4, w: 240.25, h: 125.08 }, filterIds: ['warlord', 'all'], hotspotIds: ['warlord_base'] },
+                { id: 'warlord_tent_visual', label: '军阀帐篷', assetUrl: 'assets/map/composite/faction/warlord-tent.png', rect: { x: 40.6, y: 33.15, w: 193.16, h: 115.48 }, filterIds: ['warlord', 'all'], hotspotIds: ['warlord_tent'] },
+                { id: 'firing_range_visual', label: '靶场', assetUrl: 'assets/map/composite/faction/firing-range.png', rect: { x: 20.75, y: 170.05, w: 248.3, h: 148.26 }, filterIds: ['warlord', 'all'], hotspotIds: ['firing_range'] },
+                { id: 'rock_park_visual', label: '摇滚公园', assetUrl: 'assets/map/composite/faction/rock-park.png', rect: { x: 305.05, y: 55, w: 284, h: 145 }, filterIds: ['rock', 'all'], hotspotIds: ['rock_park'] },
+                { id: 'rock_rehearsal_visual', label: '摇滚排练室', assetUrl: 'assets/map/composite/faction/rock-rehearsal.png', rect: { x: 318.3, y: 193.7, w: 262, h: 127 }, filterIds: ['rock', 'all'], hotspotIds: ['rock_rehearsal'] },
+                { id: 'blackiron_training_visual', label: '黑铁会修炼场', assetUrl: 'assets/map/composite/faction/blackiron-training.png', rect: { x: 600, y: 50, w: 280, h: 94 }, filterIds: ['blackiron', 'all'], hotspotIds: ['blackiron_training'] },
+                { id: 'blackiron_pavilion_visual', label: '黑铁阁', assetUrl: 'assets/map/composite/faction/blackiron-pavilion.png', rect: { x: 600, y: 160, w: 280, h: 127 }, filterIds: ['blackiron', 'all'], hotspotIds: ['blackiron_pavilion'] },
+                { id: 'fallen_street_visual', label: '堕落城商业街', assetUrl: 'assets/map/composite/faction/fallen-street.png', rect: { x: 20, y: 392.15, w: 212, h: 139 }, filterIds: ['fallen', 'all'], hotspotIds: ['fallen_street'] },
+                { id: 'fallen_entrance_visual', label: '堕落城酒吧门口', assetUrl: 'assets/map/composite/faction/fallen-entrance.png', rect: { x: 257, y: 395, w: 275, h: 140 }, filterIds: ['fallen', 'all'], hotspotIds: ['fallen_entrance'] },
+                { id: 'fallen_bar_visual', label: '堕落城酒吧', assetUrl: 'assets/map/composite/faction/fallen-bar.png', rect: { x: 557, y: 389.15, w: 240, h: 138 }, filterIds: ['fallen', 'all'], hotspotIds: ['fallen_bar'] }
             ],
             staticAvatars: _pageStaticAvatars.faction,
             filters: [
                 { id: 'warlord', label: '军阀', hotspotIds: ['warlord_base', 'warlord_tent', 'firing_range'], buttonRect: { x: 895, y: 108, w: 132, h: 42 } },
                 { id: 'rock', label: '摇滚', hotspotIds: ['rock_park', 'rock_rehearsal'], buttonRect: { x: 895, y: 168, w: 132, h: 42 } },
                 { id: 'blackiron', label: '黑铁会', hotspotIds: ['blackiron_training', 'blackiron_pavilion'], buttonRect: { x: 895, y: 228, w: 132, h: 42 } },
-                { id: 'fallen', label: '堕落城', hotspotIds: ['fallen_bar', 'fallen_street'], buttonRect: { x: 895, y: 288, w: 132, h: 42 } },
-                { id: 'all', label: '初始化', hotspotIds: ['warlord_base', 'warlord_tent', 'firing_range', 'rock_park', 'rock_rehearsal', 'blackiron_training', 'blackiron_pavilion', 'fallen_bar', 'fallen_street'], buttonRect: { x: 895, y: 348, w: 132, h: 42 } }
+                { id: 'fallen', label: '堕落城', hotspotIds: ['fallen_bar', 'fallen_entrance', 'fallen_street'], buttonRect: { x: 895, y: 288, w: 132, h: 42 } },
+                { id: 'all', label: '初始化', hotspotIds: ['warlord_base', 'warlord_tent', 'firing_range', 'rock_park', 'rock_rehearsal', 'blackiron_training', 'blackiron_pavilion', 'fallen_bar', 'fallen_entrance', 'fallen_street'], buttonRect: { x: 895, y: 348, w: 132, h: 42 } }
             ],
             defaultFilterId: 'all',
             hotspots: [
-                { id: 'warlord_base', label: '军阀基地', sceneName: '地图-军阀基地', rect: { x: 42, y: 82, w: 236, h: 220 } },
-                { id: 'warlord_tent', label: '军阀帐篷', sceneName: '地图-军阀帐篷', rect: { x: 56, y: 36, w: 218, h: 116 } },
-                { id: 'firing_range', label: '靶场', sceneName: '地图-靶场', rect: { x: 48, y: 150, w: 228, h: 148 } },
-                { id: 'rock_park', label: '摇滚公园', sceneName: '地图-摇滚公园', rect: { x: 380, y: 46, w: 238, h: 138 } },
-                { id: 'rock_rehearsal', label: '摇滚排练室', sceneName: '地图-摇滚排练室', rect: { x: 384, y: 186, w: 224, h: 110 } },
-                { id: 'blackiron_training', label: '黑铁会修炼场', sceneName: '地图-黑铁会修炼场', rect: { x: 36, y: 348, w: 248, h: 154 } },
-                { id: 'blackiron_pavilion', label: '黑铁阁', sceneName: '地图-黑铁阁', rect: { x: 346, y: 413, w: 168, h: 74 } },
-                { id: 'fallen_bar', label: '堕落城酒吧', sceneName: '地图-堕落城酒吧', rect: { x: 610, y: 396, w: 112, h: 92 } },
-                { id: 'fallen_street', label: '堕落城商业街', sceneName: '地图-堕落城商业街', rect: { x: 724, y: 394, w: 132, h: 94 } }
+                { id: 'warlord_base', label: '军阀基地', sceneName: '地图-军阀基地', rect: { x: 22, y: 82, w: 236, h: 220 } },
+                { id: 'warlord_tent', label: '军阀帐篷', sceneName: '地图-军阀帐篷', rect: { x: 36, y: 36, w: 218, h: 116 } },
+                { id: 'firing_range', label: '靶场', sceneName: '地图-靶场', rect: { x: 28, y: 150, w: 228, h: 148 } },
+                { id: 'rock_park', label: '摇滚公园', sceneName: '地图-摇滚公园', rect: { x: 308, y: 46, w: 238, h: 138 } },
+                { id: 'rock_rehearsal', label: '摇滚排练室', sceneName: '地图-摇滚排练室', rect: { x: 312, y: 186, w: 224, h: 110 } },
+                { id: 'blackiron_training', label: '黑铁会修炼场', sceneName: '地图-黑铁会修炼场', rect: { x: 600, y: 50, w: 280, h: 94 } },
+                { id: 'blackiron_pavilion', label: '黑铁阁', sceneName: '地图-黑铁阁', rect: { x: 600, y: 160, w: 280, h: 127 } },
+                { id: 'fallen_street', label: '堕落城商业街', sceneName: '地图-堕落城商业街', rect: { x: 20, y: 392, w: 212, h: 139 } },
+                { id: 'fallen_entrance', label: '堕落城酒吧门口', sceneName: '地图-堕落城酒吧门口', rect: { x: 257, y: 395, w: 275, h: 140 } },
+                { id: 'fallen_bar', label: '堕落城酒吧', sceneName: '地图-堕落城酒吧', rect: { x: 557, y: 389, w: 240, h: 138 } }
             ]
         },
         defense: {
@@ -410,12 +414,13 @@ var MapPanelData = (function() {
 
     var _xflLayoutOverrides = {
         faction: {
-            rock_park: { x: 377.05, y: 55, w: 253.8, h: 115.1 },
-            rock_rehearsal: { x: 390.3, y: 193.7, w: 219.9, h: 97.3 },
-            blackiron_training: { x: 8.1, y: 352.95, w: 299.1, h: 100.1 },
-            blackiron_pavilion: { x: 6.1, y: 418.4, w: 308.5, h: 123.6 },
-            fallen_bar: { x: 360.65, y: 389.15, w: 222.6, h: 108.7 },
-            fallen_street: { x: 597.9, y: 392.15, w: 182.7, h: 108.9 }
+            rock_park: { x: 305.05, y: 55, w: 253.8, h: 115.1 },
+            rock_rehearsal: { x: 318.3, y: 193.7, w: 219.9, h: 97.3 },
+            blackiron_training: { x: 600, y: 50, w: 280, h: 94 },
+            blackiron_pavilion: { x: 600, y: 160, w: 280, h: 127 },
+            fallen_bar: { x: 557, y: 389.15, w: 222.6, h: 108.7 },
+            fallen_street: { x: 20, y: 392.15, w: 182.7, h: 108.9 },
+            fallen_entrance: { x: 257, y: 395, w: 275, h: 140 }
         },
         defense: {
             first_defense: { x: 60, y: 94.7, w: 255.1, h: 86.7 }

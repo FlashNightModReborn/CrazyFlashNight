@@ -41,7 +41,7 @@ class org.flashNight.arki.map.MapPanelCatalog {
         "warlord_base", "warlord_tent", "firing_range",
         "rock_park", "rock_rehearsal",
         "blackiron_training", "blackiron_pavilion",
-        "fallen_bar", "fallen_street",
+        "fallen_bar", "fallen_street", "fallen_entrance",
         "first_defense",
         "alliance_dock", "alliance_corridor",
         "union_university",
