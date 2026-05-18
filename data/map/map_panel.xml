@@ -74,66 +74,66 @@
 
     <task_npcs>
         <!-- base (20) -->
-        <npc name="Pig"                hotspot="base_garage" x="171.55" y="217.85"/>
-        <npc name="Boy"                hotspot="base_garage" x="212.95" y="246.0"/>
-        <npc name="King"               hotspot="base_garage" x="265.35" y="217.85"/>
-        <npc name="冷兵器商人"         hotspot="base_garage" x="120.5"  y="222.05"/>
-        <npc name="杀马特"             hotspot="base_garage" x="365.95" y="217.6"/>
-        <npc name="酒保"               hotspot="merc_bar"    x="444.85" y="136.15"/>
-        <npc name="格格巫"             hotspot="merc_bar"    x="567.05" y="173.8"/>
-        <npc name="丽丽丝"             hotspot="merc_bar"    x="621.55" y="173.8"/>
-        <npc name="舞女"               hotspot="merc_bar"    x="389.55" y="140.2"/>
-        <npc name="宝石线人"           hotspot="base_lobby"  x="564.15" y="249.75"/>
-        <npc name="前治安官"           hotspot="base_lobby"  x="625.5"  y="237.2"/>
-        <npc name="黑铁会外交部长"     hotspot="base_lobby"  x="363.25" y="264.75"/>
-        <npc name="学生妹"             hotspot="base_lobby"  x="414.1"  y="245.45"/>
-        <npc name="幸存老兵"           hotspot="base_lobby"  x="466.5"  y="259.35"/>
-        <npc name="The Girl"           hotspot="basement1"   x="436.25" y="332.65"/>
-        <npc name="Andy Law"           hotspot="basement1"   x="497.55" y="329.4"/>
-        <npc name="Shop Girl"          hotspot="basement1"   x="549.95" y="291.2"/>
-        <npc name="Blue"               hotspot="basement1"   x="620.9"  y="336.8"/>
-        <npc name="小F"                hotspot="basement1"   x="609.15" y="279.75"/>
-        <npc name="厨师"               hotspot="cafeteria"   x="324.85" y="431.85"/>
+        <npc name="Pig"                hotspot="base_garage"/>
+        <npc name="Boy"                hotspot="base_garage"/>
+        <npc name="King"               hotspot="base_garage"/>
+        <npc name="冷兵器商人"         hotspot="base_garage"/>
+        <npc name="杀马特"             hotspot="base_lobby"/>
+        <npc name="酒保"               hotspot="merc_bar"/>
+        <npc name="格格巫"             hotspot="infirmary"/>
+        <npc name="丽丽丝"             hotspot="infirmary"/>
+        <npc name="舞女"               hotspot="merc_bar"/>
+        <npc name="宝石线人"           hotspot="base_lobby"/>
+        <npc name="前治安官"           hotspot="base_lobby"/>
+        <npc name="黑铁会外交部长"     hotspot="base_lobby"/>
+        <npc name="学生妹"             hotspot="base_lobby"/>
+        <npc name="幸存老兵"           hotspot="base_lobby"/>
+        <npc name="The Girl"           hotspot="basement1"/>
+        <npc name="Andy Law"           hotspot="basement1"/>
+        <npc name="Shop Girl"          hotspot="armory"/>
+        <npc name="Blue"               hotspot="basement1"/>
+        <npc name="小F"                hotspot="armory"/>
+        <npc name="厨师"               hotspot="cafeteria"/>
 
         <!-- faction (15) -->
-        <npc name="general"            hotspot="warlord_base"       x="219.3"  y="170.6"/>
-        <npc name="gazer"              hotspot="warlord_base"       x="108.95" y="168.1"/>
-        <npc name="director"           hotspot="warlord_tent"       x="170.85" y="125.0"/>
-        <npc name="itinerant"          hotspot="firing_range"       x="134.35" y="293.6"/>
-        <npc name="surveyor"           hotspot="firing_range"       x="234.35" y="264.1"/>
-        <npc name="singer"             hotspot="rock_park"          x="468.55" y="158.5"/>
-        <npc name="keyboard"           hotspot="rock_park"          x="531.75" y="187.7"/>
-        <npc name="guitar"             hotspot="rock_park"          x="404.95" y="186.1"/>
-        <npc name="火凤"               hotspot="blackiron_training" x="722.36" y="119.54"/>
-        <npc name="翅虎"               hotspot="blackiron_training" x="813.78" y="107.31"/>
-        <npc name="黑龙"               hotspot="blackiron_pavilion" x="824.9"  y="172.28"/>
-        <npc name="黑铁"               hotspot="blackiron_pavilion" x="749.77" y="239.77"/>
-        <npc name="牛仔"               hotspot="fallen_bar"         x="711.4"  y="471.7"/>
-        <npc name="假肢仙人"           hotspot="fallen_street"      x="175.65" y="488.45"/>
-        <npc name="吸特乐"             hotspot="fallen_street"      x="97.9"   y="482.0"/>
+        <npc name="general"            hotspot="warlord_base"/>
+        <npc name="gazer"              hotspot="warlord_base"/>
+        <npc name="director"           hotspot="warlord_tent"/>
+        <npc name="itinerant"          hotspot="firing_range"/>
+        <npc name="surveyor"           hotspot="firing_range"/>
+        <npc name="singer"             hotspot="rock_park"/>
+        <npc name="keyboard"           hotspot="rock_park"/>
+        <npc name="guitar"             hotspot="rock_park"/>
+        <npc name="火凤"               hotspot="blackiron_training"/>
+        <npc name="翅虎"               hotspot="blackiron_training"/>
+        <npc name="黑龙"               hotspot="blackiron_training"/>
+        <npc name="黑铁"               hotspot="blackiron_pavilion"/>
+        <npc name="牛仔"               hotspot="fallen_bar"/>
+        <npc name="假肢仙人"           hotspot="fallen_street"/>
+        <npc name="吸特乐"             hotspot="fallen_street"/>
 
         <!-- defense (6) -->
-        <npc name="artist"             hotspot="first_defense"      x="161.65" y="155.15"/>
-        <npc name="soldier"            hotspot="first_defense"      x="250.7"  y="162.6"/>
-        <npc name="排骨"               hotspot="alliance_dock"      x="137.45" y="332.3"/>
-        <npc name="机哥"               hotspot="alliance_dock"      x="189.45" y="333.65"/>
-        <npc name="阿波"               hotspot="alliance_dock"      x="241.2"  y="331.65"/>
-        <npc name="PROPHET"            hotspot="alliance_corridor"  x="228.45" y="392.45"/>
+        <npc name="artist"             hotspot="first_defense"/>
+        <npc name="soldier"            hotspot="first_defense"/>
+        <npc name="排骨"               hotspot="alliance_dock"/>
+        <npc name="机哥"               hotspot="alliance_dock"/>
+        <npc name="阿波"               hotspot="alliance_dock"/>
+        <npc name="PROPHET"            hotspot="alliance_corridor"/>
 
         <!-- school (13) -->
-        <npc name="黑仔"               hotspot="union_university"    x="430.05" y="508.2"/>
-        <npc name="Bat"                hotspot="union_university"    x="471.4"  y="529.7"/>
-        <npc name="Tomboy"             hotspot="union_university"    x="516.9"  y="513.2"/>
-        <npc name="武器订购系统"       hotspot="union_university"    x="570.4"  y="516.7"/>
-        <npc name="体育老师"           hotspot="university_playground" x="539.2" y="428.65"/>
-        <npc name="室友"               hotspot="school_dormitory"    x="130.3"  y="347.3"/>
-        <npc name="程铮"               hotspot="teaching_interior"   x="486.65" y="255.75"/>
-        <npc name="剑道社长"           hotspot="kendo_club"          x="663.3"  y="213.1"/>
-        <npc name="冯佑权"             hotspot="teaching_interior"   x="593.3"  y="211.9"/>
-        <npc name="理科教授"           hotspot="science_class"       x="744.65" y="212.35"/>
-        <npc name="文科老师"           hotspot="arts_class"          x="810.9"  y="213.1"/>
-        <npc name="Vanshuther"         hotspot="university_interior" x="555.75" y="327.2"/>
-        <npc name="教导主任"           hotspot="office"              x="538.9"  y="104.15"/>
+        <npc name="黑仔"               hotspot="union_university"/>
+        <npc name="Bat"                hotspot="union_university"/>
+        <npc name="Tomboy"             hotspot="union_university"/>
+        <npc name="武器订购系统"       hotspot="union_university"/>
+        <npc name="体育老师"           hotspot="university_interior"/>
+        <npc name="室友"               hotspot="school_dormitory"/>
+        <npc name="程铮"               hotspot="teaching_interior"/>
+        <npc name="剑道社长"           hotspot="kendo_club"/>
+        <npc name="冯佑权"             hotspot="kendo_club"/>
+        <npc name="理科教授"           hotspot="science_class"/>
+        <npc name="文科老师"           hotspot="arts_class"/>
+        <npc name="Vanshuther"         hotspot="workshop"/>
+        <npc name="教导主任"           hotspot="office"/>
 
         <alias name="∞天ㄙ★使的剪∞" canonical="杀马特"/>
     </task_npcs>

@@ -151,7 +151,7 @@ H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5
     <hotspot id="…" group="…（必须在 groups 里声明）" frame="…（帧名）"/>
   </hotspots>
   <task_npcs>
-    <npc name="…" hotspot="…（page 由 Catalog 派生）" x="…" y="…"/>
+    <npc name="…" hotspot="…（page 由 Catalog 派生）"/>
     <alias name="别名" canonical="…（必须命中某个 npc name）"/>
   </task_npcs>
 </map_panel>

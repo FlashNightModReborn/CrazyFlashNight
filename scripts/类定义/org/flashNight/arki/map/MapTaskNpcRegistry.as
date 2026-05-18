@@ -10,7 +10,10 @@ import org.flashNight.gesh.xml.XMLParser;
  *   - 数据由 data/map/map_panel.xml 启动时经 applyFromXml 填充（必须在 MapPanelCatalog.applyFromXml 成功之后调用）
  *   - 对外提供按 _root.tasks_to_do 筛选的 marker 投影（buildTaskNpcMarkers）
  *
- * marker 结构：{ pageId:String, hotspotId:String, point:{x:Number, y:Number} }
+ * marker 结构：{ pageId:String, hotspotId:String }
+ *
+ * 注意：NPC 头像视觉锚点完全由 launcher 端 staticAvatars / dynamicAvatars 决定，
+ *      Catalog/Registry 只负责声明 NPC ↔ hotspot 关系。XML 不再带 x/y。
  */
 
 class org.flashNight.arki.map.MapTaskNpcRegistry {
@@ -45,11 +48,10 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
      * 同一小写键只在未被占用时写入。
      */
     public static function register(npcName:String, pageId:String,
-                                     hotspotId:String, x:Number, y:Number):Void {
+                                     hotspotId:String):Void {
         var markerDef:Object = {
             pageId: pageId,
-            hotspotId: hotspotId,
-            point: { x: x, y: y }
+            hotspotId: hotspotId
         };
         _markers[npcName] = markerDef;
 
@@ -113,11 +115,7 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
                 id: "task_npc_" + finishNpc,
                 kind: "taskNpc",
                 pageId: markerDef.pageId,
-                hotspotId: markerDef.hotspotId,
-                point: {
-                    x: markerDef.point.x,
-                    y: markerDef.point.y
-                }
+                hotspotId: markerDef.hotspotId
             });
         }
 
@@ -184,10 +182,6 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
             var n:Object = npcList[i];
             if (n.name == undefined || n.name == "") { trace("[MapTaskNpcRegistry] npc[" + i + "] 缺 name"); return false; }
             if (n.hotspot == undefined || n.hotspot == "") { trace("[MapTaskNpcRegistry] npc '" + n.name + "' 缺 hotspot"); return false; }
-            if (n.x == undefined || n.y == undefined) { trace("[MapTaskNpcRegistry] npc '" + n.name + "' 缺 x 或 y"); return false; }
-            var nx:Number = Number(n.x);
-            var ny:Number = Number(n.y);
-            if (isNaN(nx) || isNaN(ny)) { trace("[MapTaskNpcRegistry] npc '" + n.name + "' 坐标非数字"); return false; }
             var nameStr:String = String(n.name);
             var nameLower:String = nameStr.toLowerCase();
             if (npcNameSet[nameStr] != undefined) { trace("[MapTaskNpcRegistry] npc name 重复: " + nameStr); return false; }
@@ -236,9 +230,7 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
             register(
                 String(n3.name),
                 String(MapPanelCatalog.HOTSPOT_PAGES[hid]),  // page 由 Catalog 派生
-                hid,
-                Number(n3.x),
-                Number(n3.y)
+                hid
             );
         }
         for (i = 0; i < aliasList.length; i++) {
