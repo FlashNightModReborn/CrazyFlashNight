@@ -125,11 +125,15 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingIntent {
     }
 
     public static function dumpState(unit:MovieClip):String {
+        return dumpStateAtFrame(unit, _root.帧计时器.当前帧数);
+    }
+
+    public static function dumpStateAtFrame(unit:MovieClip, frame:Number):String {
         if (unit == undefined) {
             return "[路由dump] unit=undefined";
         }
         var s:String = "[路由dump]";
-        s += " 帧=" + _root.帧计时器.当前帧数;
+        s += " 帧=" + frame;
         s += " name=" + unit._name;
         s += " 状态=" + unit.状态;
         s += " 旧状态=" + unit.旧状态;

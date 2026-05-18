@@ -165,13 +165,15 @@ for ($i = 1; $i -le 30; $i++) {
         Write-Host ('[OK] 编译完成 ({0}s)' -f $i)
         Remove-Item -Path $Marker -ErrorAction SilentlyContinue
 
+        $flashTraceContent = $null
         if (Test-Path $FlashLog) {
             $flashLogItem = Get-Item $FlashLog
             if ($flashLogBefore -and $flashLogItem.LastWriteTimeUtc -le $flashLogBefore) {
                 Write-Host '[WARN] flashlog.txt 未刷新，本次 trace 可能还是旧日志'
             } else {
+                $flashTraceContent = Get-Content -Path $FlashLog -Raw -Encoding UTF8
                 Write-Host '=== FLASH TRACE OUTPUT ==='
-                Get-Content -Path $FlashLog -Encoding UTF8
+                Write-Host $flashTraceContent
                 Write-Host '=== END ==='
                 Copy-Item $FlashLog $LocalFlashLog -Force
             }
@@ -200,7 +202,13 @@ for ($i = 1; $i -le 30; $i++) {
             }
         }
 
-        if ($hasCompileError) {
+        $hasTraceFailure = $false
+        if ($flashTraceContent -and $flashTraceContent -match '\[TEST_FAIL\]') {
+            Write-Host '[ERROR] Flash trace reported [TEST_FAIL]'
+            $hasTraceFailure = $true
+        }
+
+        if ($hasCompileError -or $hasTraceFailure) {
             exit 1
         }
         exit 0

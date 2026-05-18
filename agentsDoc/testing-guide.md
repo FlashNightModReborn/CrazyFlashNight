@@ -36,7 +36,7 @@ chcp.com 65001 | Out-Null
 
 - 本次运行**新鲜生成**的 `scripts/flashlog.txt`
 - 必要时核对 `scripts/compile_output.txt`
-- `scripts/compiler_errors.txt` 为空或无新错误
+- `scripts/compiler_errors.txt` 为空或无新错误，trace 中不能出现 `[TEST_FAIL]` 测试失败哨兵
 - `publish_done.marker` **仅说明 JSFL 触发结束**,不能单独视为成功
 
 **对外表述边界**：

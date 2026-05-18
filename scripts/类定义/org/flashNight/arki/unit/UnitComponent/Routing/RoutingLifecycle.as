@@ -1,6 +1,5 @@
 ﻿import org.flashNight.arki.unit.*;
 import org.flashNight.arki.unit.UnitComponent.Routing.*;
-import org.flashNight.neur.ScheduleTimer.*;
 
 /**
  * RoutingLifecycle — 路由生命周期 API 的 class 化落点
@@ -12,37 +11,33 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle {
 
     public static function preparePoseAndBonus(unit:MovieClip):Void {
         unit.格斗架势 = true;
-        if (HeroUtil.isFistSkill(unit.技能名)) {
-            unit.根据模式重新读取武器加成("空手");
-        } else {
-            unit.根据模式重新读取武器加成("技能");
-        }
+        unit.根据模式重新读取武器加成(
+            RoutingLifecycleCore.resolveBonusMode(HeroUtil.isFistSkill(unit.技能名))
+        );
     }
 
     public static function ensureTempY(unit:MovieClip):Void {
-        if (unit.temp_y > 0) {
-            return;
-        }
-        if (unit.浮空 === true) {
-            unit.temp_y = unit._y;
-            return;
-        }
-        if (!isNaN(unit.Z轴坐标) && unit._y < unit.Z轴坐标) {
-            unit.temp_y = unit._y;
-            return;
-        }
-        unit.temp_y = 0;
+        unit.temp_y = RoutingLifecycleCore.resolveTempY(
+            unit.temp_y,
+            unit.浮空,
+            unit._y,
+            unit.Z轴坐标
+        );
     }
 
     public static function bindMovement(man:MovieClip):Void {
-        man.攻击时移动 = _root.技能函数.攻击时移动;
-        man.攻击时后退移动 = _root.技能函数.攻击时移动;
-        man.攻击时按键四向移动 = _root.技能函数.攻击时按键四向移动;
-        man.攻击时可改变移动方向 = _root.技能函数.攻击时可改变移动方向;
-        man.攻击时可斜向改变移动方向 = _root.技能函数.攻击时可斜向改变移动方向;
-        man.攻击时斜向移动 = _root.技能函数.攻击时斜向移动;
-        man.攻击时可斜向改变移动方向2 = _root.技能函数.攻击时可斜向改变移动方向2;
-        man.获取移动方向 = _root.技能函数.获取移动方向;
+        bindMovementFrom(man, _root.技能函数);
+    }
+
+    public static function bindMovementFrom(man:MovieClip, skillFns:Object):Void {
+        man.攻击时移动 = skillFns.攻击时移动;
+        man.攻击时后退移动 = skillFns.攻击时移动;
+        man.攻击时按键四向移动 = skillFns.攻击时按键四向移动;
+        man.攻击时可改变移动方向 = skillFns.攻击时可改变移动方向;
+        man.攻击时可斜向改变移动方向 = skillFns.攻击时可斜向改变移动方向;
+        man.攻击时斜向移动 = skillFns.攻击时斜向移动;
+        man.攻击时可斜向改变移动方向2 = skillFns.攻击时可斜向改变移动方向2;
+        man.获取移动方向 = skillFns.获取移动方向;
     }
 
     public static function buildPublicContainerInit(container:MovieClip):Object {
@@ -60,7 +55,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle {
                 prevOnUnload.apply(this);
             }
             targetUnit.无敌 = false;
-            var needReset:Boolean = (targetUnit.状态 != excluded);
+            var needReset:Boolean = RoutingLifecycleCore.shouldResetOnEndCleanup(targetUnit.状态, excluded);
             if (needReset) {
                 targetUnit.temp_y = 0;
             }
@@ -81,7 +76,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle {
 
     public static function handleFloat(man:MovieClip, unit:MovieClip, floatFlag:String):Void {
         man.落地 = true;
-        if (unit.temp_y <= 0) {
+        if (!RoutingLifecycleCore.shouldApplyFloat(unit.temp_y)) {
             return;
         }
 
@@ -93,45 +88,37 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle {
 
         clearSkillFloatTask(unit);
 
-        if (_root.空中控制器 != undefined) {
-            _root.空中控制器.关闭自然落地(unit);
-            _root.空中控制器.关闭跳跃浮空(unit);
-            _root.空中控制器.启用技能浮空(unit, floatFlag, man);
-        }
+        RoutingRuntime.closeNaturalLanding(unit);
+        RoutingRuntime.closeJumpFloat(unit);
+        RoutingRuntime.enableSkillFloat(unit, floatFlag, man);
     }
 
     public static function clearSkillFloatTask(unit:MovieClip):Void {
-        if (_root.空中控制器 != undefined) {
-            _root.空中控制器.关闭技能浮空(unit);
-        }
+        RoutingRuntime.closeSkillFloat(unit);
         if (unit.__技能浮空任务ID != null) {
-            EnhancedCooldownWheel.I().removeTask(unit.__技能浮空任务ID);
+            RoutingRuntime.removeTask(unit.__技能浮空任务ID);
             unit.__技能浮空任务ID = null;
         }
     }
 
     public static function clearNaturalLandingTask(unit:MovieClip):Void {
-        if (_root.空中控制器 != undefined) {
-            _root.空中控制器.关闭自然落地(unit);
-        }
+        RoutingRuntime.closeNaturalLanding(unit);
         if (unit.__自然落地任务ID != null) {
-            EnhancedCooldownWheel.I().removeTask(unit.__自然落地任务ID);
+            RoutingRuntime.removeTask(unit.__自然落地任务ID);
             unit.__自然落地任务ID = null;
         }
     }
 
     public static function startNaturalLandingTask(unit:MovieClip):Void {
         clearNaturalLandingTask(unit);
-        if (_root.空中控制器 != undefined) {
-            _root.空中控制器.启用自然落地(unit);
-        }
+        RoutingRuntime.enableNaturalLanding(unit);
     }
 
     public static function completeAnimation(man:MovieClip, unit:MovieClip, enableDoubleJump:Boolean):Void {
         clearSkillFloatTask(unit);
 
-        var inAir:Boolean = unit._y < unit.Z轴坐标 - 0.5;
-        if (enableDoubleJump && inAir) {
+        var inAir:Boolean = RoutingLifecycleCore.isInAir(unit._y, unit.Z轴坐标);
+        if (RoutingLifecycleCore.shouldPreserveDoubleJump(enableDoubleJump, inAir)) {
             unit.技能浮空 = true;
             unit.__preserveFloatFlagOnUnload = "技能浮空";
         }
@@ -139,7 +126,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle {
         unit.动画完毕();
         man.removeMovieClip();
 
-        if (!enableDoubleJump && inAir) {
+        if (RoutingLifecycleCore.shouldStartNaturalLanding(enableDoubleJump, inAir)) {
             startNaturalLandingTask(unit);
         }
     }

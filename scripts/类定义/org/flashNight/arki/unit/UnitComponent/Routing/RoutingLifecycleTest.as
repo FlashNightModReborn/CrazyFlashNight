@@ -1,19 +1,22 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle;
+import org.flashNight.arki.unit.UnitComponent.Routing.RoutingRuntime;
 
 /**
  * RoutingLifecycle Test Suite
  *
- * 覆盖 RoutingLifecycle 中**不依赖 _root.空中控制器** 的部分：
+ * 覆盖 RoutingLifecycle 中可以用 mock 隔离的部分：
  *   - ensureTempY        — 纯函数，四分支
  *   - preparePoseAndBonus — HeroUtil.isFistSkill 真实分支
  *   - bindMovement       — 8 字段写入（setup/teardown _root.技能函数 spy）
  *   - bindEndCleanup     — onUnload 闭包行为（excludeState / __preserveFloat / dispatcher / prev chain）
  *
+ * 额外覆盖：
+ *   - handleFloat / clear* / startNaturalLanding / completeAnimation
+ *     — 通过 RoutingRuntime 注入 mock air/scheduler，不依赖真实空中控制器或帧时间
+ *
  * **故意不测**：
  *   - buildPublicContainerInit — 依赖 ContainerInitScratch.getPublic 的 self-replacing first-call
  *     语义，testloader 上 first-call 不可保证；与 ContainerInitScratch 专项测试一起做。
- *   - handleFloat / clearSkillFloatTask / clearNaturalLandingTask / startNaturalLandingTask
- *     / completeAnimation — 依赖 _root.空中控制器，留给空中控制器解耦工程。
  *
  * AS2 strict 类型注意：见 [[feedback-as2-strict-function-param-dynamic-path]] —
  * fake unit/man/container 全部 untyped 传递给签名 :MovieClip 的 method。
@@ -91,7 +94,10 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleTest {
             __spy_bigStateLastBig: undefined,
             __spy_bigStateLastSmall: undefined,
             __spy_dispatcherEvents: 0,
-            __spy_dispatcherLastEvent: undefined
+            __spy_dispatcherLastEvent: undefined,
+            __spy_animationDone: 0,
+            __技能浮空任务ID: undefined,
+            __自然落地任务ID: undefined
         };
         u.根据模式重新读取武器加成 = function(mode) {
             this.__spy_bonusModeCount++;
@@ -101,6 +107,9 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleTest {
             this.__spy_bigStateCount++;
             this.__spy_bigStateLastBig = big;
             this.__spy_bigStateLastSmall = small;
+        };
+        u.动画完毕 = function() {
+            this.__spy_animationDone++;
         };
         return u;
     }
@@ -120,15 +129,61 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleTest {
         // 模拟 attachMovie 返回的容器或 man：plain object，onUnload 可手动触发
         return {
             __isDynamicMan: true,
-            onUnload: undefined
+            onUnload: undefined,
+            __removed: false,
+            removeMovieClip: function() {
+                this.__removed = true;
+            }
         };
+    }
+
+    private static function makeRuntimeSpy() {
+        var spy = {
+            closeSkillFloatCount: 0,
+            closeNaturalLandingCount: 0,
+            closeJumpFloatCount: 0,
+            enableSkillFloatCount: 0,
+            enableNaturalLandingCount: 0,
+            lastSkillFloatFlag: undefined,
+            lastSkillFloatMan: undefined,
+            removeTaskCount: 0,
+            lastRemovedTask: undefined
+        };
+        spy.air = {
+            __spy: spy,
+            关闭技能浮空: function(unit) {
+                this.__spy.closeSkillFloatCount++;
+            },
+            关闭自然落地: function(unit) {
+                this.__spy.closeNaturalLandingCount++;
+            },
+            关闭跳跃浮空: function(unit) {
+                this.__spy.closeJumpFloatCount++;
+            },
+            启用技能浮空: function(unit, floatFlag, man) {
+                this.__spy.enableSkillFloatCount++;
+                this.__spy.lastSkillFloatFlag = floatFlag;
+                this.__spy.lastSkillFloatMan = man;
+            },
+            启用自然落地: function(unit) {
+                this.__spy.enableNaturalLandingCount++;
+            }
+        };
+        spy.scheduler = {
+            __spy: spy,
+            removeTask: function(taskID) {
+                this.__spy.removeTaskCount++;
+                this.__spy.lastRemovedTask = taskID;
+            }
+        };
+        return spy;
     }
 
     // ====================================================================
     // 测试入口
     // ====================================================================
 
-    public static function runAll():Void {
+    public static function runAll():Boolean {
         trace("================================================================");
         trace("RoutingLifecycle Test Suite");
         trace("================================================================");
@@ -154,12 +209,19 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleTest {
         testBindEndCleanup_PreserveFloatFlag();
         testBindEndCleanup_NoDispatcher();
         testBindEndCleanup_PrevOnUnloadChained();
+        testHandleFloat_MockRuntime();
+        testHandleFloat_NoTempYSkipsRuntime();
+        testClearNaturalLandingTask_MockRuntime();
+        testStartNaturalLandingTask_MockRuntime();
+        testCompleteAnimation_DoubleJumpPreservesFloat();
+        testCompleteAnimation_StartsNaturalLanding();
 
         var elapsed:Number = getTimer() - t0;
         trace("================================================================");
         trace("Results: " + passedTests + "/" + testCount + " passed, "
               + failedTests + " failed (" + elapsed + "ms)");
         trace("================================================================");
+        return failedTests == 0;
     }
 
     // ====================================================================
@@ -391,5 +453,156 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleTest {
 
         assertEquals("前序 onUnload 被调用 1 次", 1, prevCount);
         assertEquals("新逻辑也执行（UpdateBigSmallState 1 次）", 1, u.__spy_bigStateCount);
+    }
+
+    // ====================================================================
+    // float / scheduler / animation — RoutingRuntime mock
+    // ====================================================================
+
+    private static function installRuntimeSpy(spy):Void {
+        RoutingRuntime.setAirControllerForTest(spy.air);
+        RoutingRuntime.setSchedulerForTest(spy.scheduler);
+    }
+
+    private static function clearRuntimeSpy():Void {
+        RoutingRuntime.clearAirControllerForTest();
+        RoutingRuntime.clearSchedulerForTest();
+    }
+
+    private static function testHandleFloat_MockRuntime():Void {
+        trace("\n--- testHandleFloat_MockRuntime ---");
+        var spy = makeRuntimeSpy();
+        installRuntimeSpy(spy);
+        try {
+            var u = makeUnit("hf1");
+            var man = makeClip();
+            u.temp_y = 240;
+            u._y = 320;
+            u.Z轴坐标 = 360;
+            u.__技能浮空任务ID = 77;
+
+            RoutingLifecycle.handleFloat(man, u, "技能浮空");
+
+            assertEquals("man.落地 = false", false, man.落地);
+            assertEquals("unit.技能浮空 = true", true, u.技能浮空);
+            assertEquals("unit._y 回到 temp_y", 240, u._y);
+            assertEquals("unit.起始Y = Z", 360, u.起始Y);
+            assertEquals("unit.浮空 = true", true, u.浮空);
+            assertEquals("关闭技能浮空 1 次", 1, spy.closeSkillFloatCount);
+            assertEquals("关闭自然落地 1 次", 1, spy.closeNaturalLandingCount);
+            assertEquals("关闭跳跃浮空 1 次", 1, spy.closeJumpFloatCount);
+            assertEquals("启用技能浮空 1 次", 1, spy.enableSkillFloatCount);
+            assertEquals("floatFlag 透传", "技能浮空", spy.lastSkillFloatFlag);
+            assertSame("man 透传", man, spy.lastSkillFloatMan);
+            assertEquals("旧任务 remove 1 次", 1, spy.removeTaskCount);
+            assertEquals("旧任务 id 77", 77, spy.lastRemovedTask);
+            assertEquals("unit.__技能浮空任务ID 清空", null, u.__技能浮空任务ID);
+        } finally {
+            clearRuntimeSpy();
+        }
+    }
+
+    private static function testHandleFloat_NoTempYSkipsRuntime():Void {
+        trace("\n--- testHandleFloat_NoTempYSkipsRuntime ---");
+        var spy = makeRuntimeSpy();
+        installRuntimeSpy(spy);
+        try {
+            var u = makeUnit("hf2");
+            var man = makeClip();
+            u.temp_y = 0;
+
+            RoutingLifecycle.handleFloat(man, u, "技能浮空");
+
+            assertEquals("man.落地 = true", true, man.落地);
+            assertEquals("不启用技能浮空", 0, spy.enableSkillFloatCount);
+            assertEquals("不关闭自然落地", 0, spy.closeNaturalLandingCount);
+            assertEquals("不移除任务", 0, spy.removeTaskCount);
+        } finally {
+            clearRuntimeSpy();
+        }
+    }
+
+    private static function testClearNaturalLandingTask_MockRuntime():Void {
+        trace("\n--- testClearNaturalLandingTask_MockRuntime ---");
+        var spy = makeRuntimeSpy();
+        installRuntimeSpy(spy);
+        try {
+            var u = makeUnit("nl1");
+            u.__自然落地任务ID = 88;
+
+            RoutingLifecycle.clearNaturalLandingTask(u);
+
+            assertEquals("关闭自然落地 1 次", 1, spy.closeNaturalLandingCount);
+            assertEquals("removeTask 1 次", 1, spy.removeTaskCount);
+            assertEquals("removeTask id 88", 88, spy.lastRemovedTask);
+            assertEquals("__自然落地任务ID 清空", null, u.__自然落地任务ID);
+        } finally {
+            clearRuntimeSpy();
+        }
+    }
+
+    private static function testStartNaturalLandingTask_MockRuntime():Void {
+        trace("\n--- testStartNaturalLandingTask_MockRuntime ---");
+        var spy = makeRuntimeSpy();
+        installRuntimeSpy(spy);
+        try {
+            var u = makeUnit("nl2");
+            u.__自然落地任务ID = 89;
+
+            RoutingLifecycle.startNaturalLandingTask(u);
+
+            assertEquals("先关闭自然落地", 1, spy.closeNaturalLandingCount);
+            assertEquals("旧自然落地任务已 remove", 1, spy.removeTaskCount);
+            assertEquals("启用自然落地 1 次", 1, spy.enableNaturalLandingCount);
+            assertEquals("__自然落地任务ID 清空", null, u.__自然落地任务ID);
+        } finally {
+            clearRuntimeSpy();
+        }
+    }
+
+    private static function testCompleteAnimation_DoubleJumpPreservesFloat():Void {
+        trace("\n--- testCompleteAnimation_DoubleJumpPreservesFloat ---");
+        var spy = makeRuntimeSpy();
+        installRuntimeSpy(spy);
+        try {
+            var u = makeUnit("ca1");
+            var man = makeClip();
+            u._y = 220;
+            u.Z轴坐标 = 300;
+            u.__技能浮空任务ID = 101;
+
+            RoutingLifecycle.completeAnimation(man, u, true);
+
+            assertEquals("动画完毕调用 1 次", 1, u.__spy_animationDone);
+            assertEquals("man 已 remove", true, man.__removed);
+            assertEquals("技能浮空 = true", true, u.技能浮空);
+            assertEquals("__preserve = 技能浮空", "技能浮空", u.__preserveFloatFlagOnUnload);
+            assertEquals("旧技能浮空任务 remove", 1, spy.removeTaskCount);
+            assertEquals("不启用自然落地", 0, spy.enableNaturalLandingCount);
+        } finally {
+            clearRuntimeSpy();
+        }
+    }
+
+    private static function testCompleteAnimation_StartsNaturalLanding():Void {
+        trace("\n--- testCompleteAnimation_StartsNaturalLanding ---");
+        var spy = makeRuntimeSpy();
+        installRuntimeSpy(spy);
+        try {
+            var u = makeUnit("ca2");
+            var man = makeClip();
+            u._y = 220;
+            u.Z轴坐标 = 300;
+
+            RoutingLifecycle.completeAnimation(man, u, false);
+
+            assertEquals("动画完毕调用 1 次", 1, u.__spy_animationDone);
+            assertEquals("man 已 remove", true, man.__removed);
+            assertEquals("未设置 preserve", undefined, u.__preserveFloatFlagOnUnload);
+            assertEquals("关闭技能浮空 1 次", 1, spy.closeSkillFloatCount);
+            assertEquals("启用自然落地 1 次", 1, spy.enableNaturalLandingCount);
+        } finally {
+            clearRuntimeSpy();
+        }
     }
 }

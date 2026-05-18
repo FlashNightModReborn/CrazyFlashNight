@@ -108,7 +108,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingIntentTest {
     // 测试入口
     // ====================================================================
 
-    public static function runAll():Void {
+    public static function runAll():Boolean {
         trace("================================================================");
         trace("RoutingIntent Test Suite");
         trace("================================================================");
@@ -141,6 +141,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingIntentTest {
         trace("Results: " + passedTests + "/" + testCount + " passed, "
               + failedTests + " failed (" + elapsed + "ms)");
         trace("================================================================");
+        return failedTests == 0;
     }
 
     // ====================================================================
@@ -393,8 +394,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingIntentTest {
     // ====================================================================
 
     private static function testDumpStateBasic():Void {
-        // dumpState 内的"帧"字段读真实 _root.帧计时器.当前帧数，environment-dependent 不测；
-        // 只验证 unit 字段（由测试直接控制）出现在输出里。
+        // dumpStateAtFrame 显式传入帧戳，避免 TestLoader 依赖真实 _root.帧计时器。
         trace("\n--- testDumpStateBasic ---");
 
         assertEquals("undefined unit", "[路由dump] unit=undefined", RoutingIntent.dumpState(undefined));
@@ -408,7 +408,8 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingIntentTest {
 
         RoutingIntent.markWeaponSameFrameJump(u, 42);
 
-        var s:String = RoutingIntent.dumpState(u);
+        var s:String = RoutingIntent.dumpStateAtFrame(u, 99);
+        assertTrue("含 帧=99", s.indexOf("帧=99") >= 0);
         assertTrue("含 unit.name", s.indexOf("name=dump1") >= 0);
         assertTrue("含 状态",      s.indexOf("状态=兵器攻击") >= 0);
         assertTrue("含 兵器攻击名", s.indexOf("兵器攻击名=刀剑1连招") >= 0);
