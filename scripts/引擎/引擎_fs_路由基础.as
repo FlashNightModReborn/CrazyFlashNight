@@ -15,6 +15,7 @@
  */
 import org.flashNight.arki.unit.*;
 import org.flashNight.neur.ScheduleTimer.*;
+import org.flashNight.arki.unit.UnitComponent.Routing.*;
 
 _root.路由基础 = {};
 
@@ -74,27 +75,16 @@ _root.路由基础.绑定移动函数 = function(man:MovieClip):Void {
 
 /**
  * 构建容器初始化对象
- * 技能容器和战技容器共用同一套初始化参数
+ * 技能容器和战技容器共用同一套初始化参数。
+ *
+ * 实现：委派到 ContainerInitScratch.I().getPublic(container) 的 singleton scratch，
+ *       消除每次 new Object literal 的 GC 压力。装配字段对齐契约由 ContainerInitScratch 维护。
  *
  * @param container:MovieClip 容器剪辑（用于获取位置和缩放）
- * @return Object 初始化参数对象
+ * @return Object 初始化参数对象（singleton scratch，attachMovie 同步消费后即可复用）
  */
 _root.路由基础.构建容器初始化对象 = function(container:MovieClip):Object {
-    return {
-        __isDynamicMan: true,
-        _x: container._x,
-        _y: container._y,
-        _xscale: container._xscale,
-        _yscale: container._yscale,
-        攻击时移动: _root.技能函数.攻击时移动,
-        攻击时后退移动: _root.技能函数.攻击时移动,
-        攻击时按键四向移动: _root.技能函数.攻击时按键四向移动,
-        攻击时可改变移动方向: _root.技能函数.攻击时可改变移动方向,
-        攻击时可斜向改变移动方向: _root.技能函数.攻击时可斜向改变移动方向,
-        攻击时斜向移动: _root.技能函数.攻击时斜向移动,
-        攻击时可斜向改变移动方向2: _root.技能函数.攻击时可斜向改变移动方向2,
-        获取移动方向: _root.技能函数.获取移动方向
-    };
+    return ContainerInitScratch.getPublic(container);
 };
 
 /**

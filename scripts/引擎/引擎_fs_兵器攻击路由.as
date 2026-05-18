@@ -27,6 +27,8 @@
  * @version 3.0 - 容器化完成，移除兼容性分支
  */
 
+import org.flashNight.arki.unit.UnitComponent.Routing.*;
+
 _root.兵器攻击路由 = {};
 
 // ============================================================================
@@ -151,51 +153,17 @@ _root.兵器攻击路由.兵器攻击标签跳转 = function(unit:MovieClip, act
 
 /**
  * 构建兵器攻击容器初始化对象
- * - 复用路由基础提供的位置/缩放与移动函数绑定
- * - 补齐兵器攻击容器所需的搓招/派生函数引用（对齐旧"兵器攻击"man的挂载集合）
+ *
+ * 实现：委派到 ContainerInitScratch.I().getWeapon(container) 的 singleton scratch，
+ *       消除每次 new Object literal 的 GC 压力。
+ *       装配字段对齐契约由 ContainerInitScratch 维护（含兵器专用移动函数、变招判定/
+ *       刀口触发特效/兵器攻击、以及对齐 兵器攻击.xml 的搓招/派生函数集合）。
  *
  * @param container:MovieClip "容器"帧上的占位容器（用于获取位置和缩放）
- * @return Object 初始化参数对象
+ * @return Object 初始化参数对象（singleton scratch，attachMovie 同步消费后即可复用）
  */
 _root.兵器攻击路由.构建兵器攻击容器初始化对象 = function(container:MovieClip):Object {
-    var initObj:Object = _root.路由基础.构建容器初始化对象(container);
-
-    // ========== 兵器攻击专用移动函数（覆盖路由基础的通用版本） ==========
-    // 兵器攻击的移动逻辑与技能不同：
-    // - 始终按角色朝向移动，速度正负决定前进/后退
-    // - 按键只影响快/慢速度选择，不改变移动方向
-    initObj.攻击时移动 = _root.技能函数.兵器攻击时移动;
-    initObj.攻击时按键四向移动 = _root.技能函数.兵器攻击时按键四向移动;
-
-    // ========== 兵器攻击核心函数 ==========
-    // 变招判定：普攻连招中的招式切换/跳跃/移动判定
-    initObj.变招判定 = _root.技能函数.变招判定;
-    // 刀口触发特效：触发刀口位置上的特效
-    initObj.刀口触发特效 = _root.技能函数.刀口触发特效;
-    // 兵器攻击：近战攻击子弹生成
-    initObj.兵器攻击 = _root.技能函数.兵器攻击;
-
-    // ========== 搓招/派生函数 ==========
-    // 对齐 flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/兵器攻击.xml 中的函数挂载
-    initObj.轻型武器攻击搓招 = _root.技能函数.轻型武器攻击搓招;
-    initObj.大型武器攻击搓招 = _root.技能函数.大型武器攻击搓招;
-    initObj.剑气释放搓招窗口 = _root.技能函数.剑气释放搓招窗口;
-    initObj.飞沙走石搓招窗口 = _root.技能函数.飞沙走石搓招窗口;
-    initObj.贯穿突刺搓招窗口 = _root.技能函数.贯穿突刺搓招窗口;
-    initObj.蓄力重劈搓招窗口 = _root.技能函数.蓄力重劈搓招窗口;
-    initObj.十六夜月华可派生 = _root.技能函数.十六夜月华可派生;
-    initObj.千山破晓钟可派生 = _root.技能函数.千山破晓钟可派生;
-    initObj.幻影剑舞可派生 = _root.技能函数.幻影剑舞可派生;
-    initObj.百万突刺可派生 = _root.技能函数.百万突刺可派生;
-    initObj.粉碎切割可派生 = _root.技能函数.粉碎切割可派生;
-    initObj.猎影十字可派生 = _root.技能函数.猎影十字可派生;
-    initObj.空坠强袭可派生 = _root.技能函数.空坠强袭可派生;
-    initObj.次元斩可派生 = _root.技能函数.次元斩可派生;
-    initObj.追地祀可派生 = _root.技能函数.追地祀可派生;
-    initObj.月光斩可派生 = _root.技能函数.月光斩可派生;
-    initObj.见切可派生 = _root.技能函数.见切可派生;
-
-    return initObj;
+    return ContainerInitScratch.getWeapon(container);
 };
 
 /**
