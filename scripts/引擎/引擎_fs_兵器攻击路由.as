@@ -100,7 +100,7 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
 _root.兵器攻击路由.兵器攻击标签跳转 = function(unit:MovieClip, actionName:String):Void {
     unit.兵器攻击名 = actionName;
     // 同帧跳转保护：搓招已触发新容器后，跳过旧容器本帧剩余的变招/后摇判定。
-    RoutingIntent.markWeaponSameFrameJump(unit);
+    RoutingIntent.markWeaponSameFrameJump(unit, _root.帧计时器.当前帧数);
 
     // 非主角-男：继续走旧man跳帧（不引入容器化状态依赖）
     if (unit.兵种 !== "主角-男") {

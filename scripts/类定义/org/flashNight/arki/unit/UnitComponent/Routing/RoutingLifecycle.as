@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.unit.*;
+import org.flashNight.arki.unit.UnitComponent.Routing.*;
 import org.flashNight.neur.ScheduleTimer.*;
 
 /**
@@ -45,7 +46,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle {
     }
 
     public static function buildPublicContainerInit(container:MovieClip):Object {
-        return org.flashNight.arki.unit.UnitComponent.Routing.ContainerInitScratch.getPublic(container);
+        return ContainerInitScratch.getPublic(container);
     }
 
     public static function bindEndCleanup(clip:MovieClip, unit:MovieClip, excludeState:String, endBigState:String, floatFlag:String):Void {

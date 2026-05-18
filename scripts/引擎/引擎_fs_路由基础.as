@@ -101,16 +101,16 @@ _root.路由基础.屏蔽旧man卸载 = function(unit:MovieClip):Void {
 // ============================================================================
 
 _root.路由基础.标记同帧跳转兵器 = function(unit:MovieClip):Void {
-    RoutingIntent.markWeaponSameFrameJump(unit);
+    RoutingIntent.markWeaponSameFrameJump(unit, _root.帧计时器.当前帧数);
 };
 _root.路由基础.是否同帧跳转兵器 = function(unit:MovieClip):Boolean {
-    return RoutingIntent.isWeaponSameFrameJump(unit);
+    return RoutingIntent.isWeaponSameFrameJump(unit, _root.帧计时器.当前帧数);
 };
 _root.路由基础.标记同帧跳转空手 = function(unit:MovieClip):Void {
-    RoutingIntent.markBarehandSameFrameJump(unit);
+    RoutingIntent.markBarehandSameFrameJump(unit, _root.帧计时器.当前帧数);
 };
 _root.路由基础.是否同帧跳转空手 = function(unit:MovieClip):Boolean {
-    return RoutingIntent.isBarehandSameFrameJump(unit);
+    return RoutingIntent.isBarehandSameFrameJump(unit, _root.帧计时器.当前帧数);
 };
 
 /**
@@ -120,7 +120,7 @@ _root.路由基础.是否同帧跳转空手 = function(unit:MovieClip):Boolean {
  *
  * @param man:MovieClip 容器化 man（attachMovie 返回值）
  * @param unit:MovieClip 持有 man 的单位
- * @param smallEndState:String 小状态名（推荐传 STATE_END_WEAPON / STATE_END_BAREHAND）
+ * @param smallEndState:String 小状态名（推荐传 SMALL_END_WEAPON / SMALL_END_BAREHAND）
  */
 _root.路由基础.绑定容器结束写状态 = function(man:MovieClip, unit:MovieClip, smallEndState:String):Void {
     RoutingIntent.bindContainerEndState(man, unit, smallEndState);

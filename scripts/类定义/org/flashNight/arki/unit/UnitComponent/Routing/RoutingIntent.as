@@ -18,26 +18,34 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingIntent {
     public static var SMALL_END_WEAPON:String = "兵器攻击结束";
     public static var SMALL_END_BAREHAND:String = "空手攻击结束";
 
+    // ------------------------------------------------------------------
+    // 同帧跳转保护：mark/is 都接受 frame:Number 作为参数，调用方负责取帧戳。
+    // 这样本 class 完全无全局耦合，纯函数；性能上消掉了 fn call + override
+    // check 的两层 indirection，调用方多 1 次 `_root.帧计时器.当前帧数`
+    // prop lookup（同一帧多次调用可复用同一 frame 局部变量）。
+    // 测试夹具直接 mark(u, 42)/is(u, 42)，不再需要 setFrame/clearOverride。
+    // ------------------------------------------------------------------
+
     public static function suppressOldManUnload(unit:MovieClip):Void {
         if (unit.man != undefined) {
             unit.man.onUnload = function() {};
         }
     }
 
-    public static function markWeaponSameFrameJump(unit:MovieClip):Void {
-        unit.__skipWeaponChangeFrame = _root.帧计时器.当前帧数;
+    public static function markWeaponSameFrameJump(unit:MovieClip, frame:Number):Void {
+        unit.__skipWeaponChangeFrame = frame;
     }
 
-    public static function isWeaponSameFrameJump(unit:MovieClip):Boolean {
-        return unit.__skipWeaponChangeFrame === _root.帧计时器.当前帧数;
+    public static function isWeaponSameFrameJump(unit:MovieClip, frame:Number):Boolean {
+        return unit.__skipWeaponChangeFrame === frame;
     }
 
-    public static function markBarehandSameFrameJump(unit:MovieClip):Void {
-        unit.__skipBarehandChangeFrame = _root.帧计时器.当前帧数;
+    public static function markBarehandSameFrameJump(unit:MovieClip, frame:Number):Void {
+        unit.__skipBarehandChangeFrame = frame;
     }
 
-    public static function isBarehandSameFrameJump(unit:MovieClip):Boolean {
-        return unit.__skipBarehandChangeFrame === _root.帧计时器.当前帧数;
+    public static function isBarehandSameFrameJump(unit:MovieClip, frame:Number):Boolean {
+        return unit.__skipBarehandChangeFrame === frame;
     }
 
     public static function bindContainerEndState(man:MovieClip, unit:MovieClip, smallEndState:String):Void {
