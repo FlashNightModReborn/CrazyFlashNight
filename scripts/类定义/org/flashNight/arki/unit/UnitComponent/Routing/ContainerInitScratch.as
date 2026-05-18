@@ -14,7 +14,7 @@
  *       initObject 的 own 属性 copy 到新 MovieClip，调用返回后 initObject 立即可复用。
  *
  * 字段对齐：装配内容必须与 source location 保持一致：
- *       - getPublic   ↔ scripts/引擎/引擎_fs_路由基础.as 构建容器初始化对象
+ *       - getPublic   ↔ RoutingLifecycle.buildPublicContainerInit
  *       - getUnarmed  ↔ scripts/引擎/引擎_fs_空手攻击路由.as 构建空手攻击容器初始化对象
  *       - getWeapon   ↔ scripts/引擎/引擎_fs_兵器攻击路由.as 构建兵器攻击容器初始化对象
  *

@@ -3,7 +3,7 @@
  *
  * 目的：将所有"战技启动的跳帧入口"收口到统一路由
  *
- * 依赖：引擎_fs_路由基础.as（共享底层函数）
+ * 依赖：RoutingLifecycle（生命周期/浮空/结束清理），引擎_fs_路由基础.as 保留为旧资源兼容门面
  *
  * 与技能路由的区别：
  *   - 技能路由处理的是"技能"状态（技能槽触发的主动技能）
@@ -20,6 +20,8 @@
  * @version 3.0 - 容器化完成，移除兼容性分支
  */
 
+import org.flashNight.arki.unit.UnitComponent.Routing.*;
+
 _root.战技路由 = {};
 
 /**
@@ -32,7 +34,7 @@ _root.战技路由 = {};
  */
 _root.战技路由.战技标签跳转_旧 = function(unit:MovieClip, skillName:String):Void {
     unit.技能名 = skillName;
-    _root.路由基础.确保临时Y(unit);
+    RoutingLifecycle.ensureTempY(unit);
 
     // 兼容战技元件 onClipEvent(load) 的旧逻辑：hp<=0 时直接进入血腥死
     if (unit.hp <= 0) {
@@ -43,7 +45,7 @@ _root.战技路由.战技标签跳转_旧 = function(unit:MovieClip, skillName:S
     // 进入战技状态（容器化与旧跳帧都依赖该状态载入man）
     unit.状态改变("战技");
 
-    _root.路由基础.准备姿态与加成(unit);
+    RoutingLifecycle.preparePoseAndBonus(unit);
 
     // AI 事件：战技释放开始（供日志/分析/未来响应式系统）
     if (unit.dispatcher != undefined && unit.dispatcher != null) {
@@ -58,8 +60,8 @@ _root.战技路由.战技标签跳转_旧 = function(unit:MovieClip, skillName:S
 
     // 回退：传统man跳帧逻辑
     var newMan:MovieClip = unit.man;
-    _root.路由基础.绑定移动函数(newMan);
-    _root.路由基础.绑定结束清理(newMan, unit, undefined, "技能结束", "技能浮空");
+    RoutingLifecycle.bindMovement(newMan);
+    RoutingLifecycle.bindEndCleanup(newMan, unit, undefined, "技能结束", "技能浮空");
     _root.战技路由.战技man载入后跳转_旧(newMan, unit);
 };
 
@@ -84,11 +86,11 @@ _root.战技路由.战技man载入后跳转_旧 = function(man:MovieClip, unit:M
  */
 _root.战技路由.载入后跳转战技容器 = function(container:MovieClip, unit:MovieClip):Void {
     var 技能名:String = unit.技能名;
-    var initObj:Object = _root.路由基础.构建容器初始化对象(container);
+    var initObj:Object = RoutingLifecycle.buildPublicContainerInit(container);
     var newMan:MovieClip = unit.attachMovie("战技容器-" + 技能名, "man", 0, initObj);
 
-    _root.路由基础.处理浮空(newMan, unit, "技能浮空");
-    _root.路由基础.绑定结束清理(newMan, unit, undefined, "技能结束", "技能浮空");
+    RoutingLifecycle.handleFloat(newMan, unit, "技能浮空");
+    RoutingLifecycle.bindEndCleanup(newMan, unit, undefined, "技能结束", "技能浮空");
 };
 
 // ============================================================================
@@ -97,22 +99,22 @@ _root.战技路由.载入后跳转战技容器 = function(container:MovieClip, u
 // ============================================================================
 // _root.战技路由.载入后跳转战技容器 = function(container:MovieClip, unit:MovieClip):Void {
 //     var 技能名:String = unit.技能名;
-//     var initObj:Object = _root.路由基础.构建容器初始化对象(container);
+//     var initObj:Object = RoutingLifecycle.buildPublicContainerInit(container);
 //     var newMan:MovieClip = unit.attachMovie("战技容器-" + 技能名, "man", 0, initObj);
 //     if (newMan == undefined) {
 //         _root.发布消息("战技容器-" + 技能名 + "符号缺失，尝试回退到旧跳帧逻辑");
 //         unit.gotoAndStop("战技");
 //         var fallbackMan:MovieClip = unit.man;
 //         if (fallbackMan != undefined) {
-//             _root.路由基础.绑定移动函数(fallbackMan);
-//             _root.路由基础.绑定结束清理(fallbackMan, unit, undefined, "技能结束", "技能浮空");
+//             RoutingLifecycle.bindMovement(fallbackMan);
+//             RoutingLifecycle.bindEndCleanup(fallbackMan, unit, undefined, "技能结束", "技能浮空");
 //             _root.战技路由.战技man载入后跳转_旧(fallbackMan, unit);
 //         }
 //         return;
 //     }
 //     _root.发布消息("战技容器-" + 技能名 + "加载完成，进入容器化战技逻辑");
-//     _root.路由基础.处理浮空(newMan, unit, "技能浮空");
-//     _root.路由基础.绑定结束清理(newMan, unit, undefined, "技能结束", "技能浮空");
+//     RoutingLifecycle.handleFloat(newMan, unit, "技能浮空");
+//     RoutingLifecycle.bindEndCleanup(newMan, unit, undefined, "技能结束", "技能浮空");
 // };
 // ============================================================================
 
@@ -121,5 +123,5 @@ _root.战技路由.载入后跳转战技容器 = function(container:MovieClip, u
  * @param enableDoubleJump:Boolean 可选，传入true则保留空中二段跳特性
  */
 _root.战技路由.动画完毕 = function(man:MovieClip, unit:MovieClip, enableDoubleJump:Boolean):Void {
-    _root.路由基础.动画完毕(man, unit, enableDoubleJump);
+    RoutingLifecycle.completeAnimation(man, unit, enableDoubleJump);
 };

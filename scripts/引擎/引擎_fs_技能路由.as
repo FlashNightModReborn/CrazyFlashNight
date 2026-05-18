@@ -4,7 +4,7 @@
  * 目的：将所有"技能启动的跳帧入口"收口到统一路由。
  * 说明：技能容器化已完成，本文件只负责复用路由基础逻辑，不做额外兼容/兜底。
  *
- * 依赖：引擎_fs_路由基础.as（共享底层函数）
+ * 依赖：RoutingLifecycle（生命周期/浮空/结束清理），引擎_fs_路由基础.as 保留为旧资源兼容门面
  *
  * API说明：
  *   - 技能标签跳转_旧(unit, skillName): 从外部触发技能跳帧入口
@@ -14,6 +14,8 @@
  * @author flashNight
  * @version 3.0 - 使用路由基础收敛结构
  */
+
+import org.flashNight.arki.unit.UnitComponent.Routing.*;
 
 _root.技能路由 = {};
 
@@ -26,11 +28,11 @@ _root.技能路由 = {};
  */
 _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:String):Void {
     unit.技能名 = skillName;
-    _root.路由基础.确保临时Y(unit);
+    RoutingLifecycle.ensureTempY(unit);
 
     // 进入技能状态（主角-男会在状态改变中映射到"容器"帧）
     unit.状态改变("技能");
-    _root.路由基础.准备姿态与加成(unit);
+    RoutingLifecycle.preparePoseAndBonus(unit);
 
     // AI 事件：技能释放开始（供日志/分析/未来响应式系统）
     if (unit.dispatcher != undefined && unit.dispatcher != null) {
@@ -45,8 +47,8 @@ _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:S
 
     // 其他单位维持旧 man 跳帧
     var man:MovieClip = unit.man;
-    _root.路由基础.绑定移动函数(man);
-    _root.路由基础.绑定结束清理(man, unit, "战技", "技能结束", "技能浮空");
+    RoutingLifecycle.bindMovement(man);
+    RoutingLifecycle.bindEndCleanup(man, unit, "战技", "技能结束", "技能浮空");
     _root.技能路由.技能man载入后跳转_旧(man, unit);
 };
 
@@ -69,10 +71,10 @@ _root.技能路由.技能man载入后跳转_旧 = function(man:MovieClip, unit:M
  */
 _root.技能路由.载入后跳转技能容器 = function(container:MovieClip, unit:MovieClip):Void {
     var 技能名:String = unit.技能名;
-    var initObj:Object = _root.路由基础.构建容器初始化对象(container);
+    var initObj:Object = RoutingLifecycle.buildPublicContainerInit(container);
     var man:MovieClip = unit.attachMovie("技能容器-" + 技能名, "man", 0, initObj);
-    _root.路由基础.处理浮空(man, unit, "技能浮空");
-    _root.路由基础.绑定结束清理(man, unit, "战技", "技能结束", "技能浮空");
+    RoutingLifecycle.handleFloat(man, unit, "技能浮空");
+    RoutingLifecycle.bindEndCleanup(man, unit, "战技", "技能结束", "技能浮空");
 };
 
 /**
@@ -80,5 +82,5 @@ _root.技能路由.载入后跳转技能容器 = function(container:MovieClip, u
  * @param enableDoubleJump:Boolean 可选，传入true则保留空中二段跳特性
  */
 _root.技能路由.动画完毕 = function(man:MovieClip, unit:MovieClip, enableDoubleJump:Boolean):Void {
-    _root.路由基础.动画完毕(man, unit, enableDoubleJump);
+    RoutingLifecycle.completeAnimation(man, unit, enableDoubleJump);
 };

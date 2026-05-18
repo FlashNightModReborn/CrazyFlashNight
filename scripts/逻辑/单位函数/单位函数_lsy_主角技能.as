@@ -2,6 +2,7 @@
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.unit.Action.Skill.*;
 import org.flashNight.arki.unit.*;
+import org.flashNight.arki.unit.UnitComponent.Routing.*;
 import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
 
@@ -316,7 +317,7 @@ _root.技能函数.获取移动方向 = function(){
  */
 _root.技能函数.变招判定 = function(招式名:String, 招式是否结束:Boolean):Void {
 	var unit:MovieClip = _parent;
-	if (_root.路由基础.是否同帧跳转兵器(unit)) {
+	if (RoutingIntent.isWeaponSameFrameJump(unit)) {
 		return;
 	}
 	if (unit.操控编号 != -1 && _root.控制目标全自动 == false) {

@@ -6,7 +6,8 @@
  *       同时将 xml 中的 onClipEvent 代码迁移到 AS 文件，消除资产文件中的代码依赖。
  *
  * 依赖：
- * - 引擎_fs_路由基础.as（复用构建容器初始化对象、状态切换作业机制、屏蔽旧man卸载、绑定容器结束写状态、同帧跳转保护）
+ * - 引擎_fs_路由基础.as（动画完毕/浮空兜底与旧资源兼容门面）
+ * - RoutingIntent（状态切换作业机制、屏蔽旧man卸载、绑定容器结束写状态、同帧跳转保护）
  *
  * 架构说明：
  * - 所有路径统一使用"状态切换作业"机制：
@@ -79,12 +80,12 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
 
     // 统一入口：状态改变会触发 gotoAndStop，然后执行作业回调
     // 注意：gotoAndStop 会卸载当前 man（拳刀行走状态机的执行上下文），后续代码不会执行
-    _root.路由基础.触发状态切换作业(
+    RoutingIntent.triggerStateTransitionJob(
         unit,
-        _root.路由基础.STATE_WEAPON,
-        _root.路由基础.LABEL_CONTAINER,
+        RoutingIntent.STATE_WEAPON,
+        RoutingIntent.LABEL_CONTAINER,
         _root.兵器攻击路由.__job_载入后跳转,
-        _root.路由基础.LABEL_CONTAINER
+        RoutingIntent.LABEL_CONTAINER
     );
 };
 
@@ -99,7 +100,7 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
 _root.兵器攻击路由.兵器攻击标签跳转 = function(unit:MovieClip, actionName:String):Void {
     unit.兵器攻击名 = actionName;
     // 同帧跳转保护：搓招已触发新容器后，跳过旧容器本帧剩余的变招/后摇判定。
-    _root.路由基础.标记同帧跳转兵器(unit);
+    RoutingIntent.markWeaponSameFrameJump(unit);
 
     // 非主角-男：继续走旧man跳帧（不引入容器化状态依赖）
     if (unit.兵种 !== "主角-男") {
@@ -111,14 +112,14 @@ _root.兵器攻击路由.兵器攻击标签跳转 = function(unit:MovieClip, act
 
     // 切到"容器"帧会卸载旧man；旧man.onUnload 会写入"普攻结束/兵器攻击结束"。
     // 容器化切换阶段必须屏蔽该卸载回调（真正结束由新容器man卸载时统一处理）。
-    _root.路由基础.屏蔽旧man卸载(unit);
+    RoutingIntent.suppressOldManUnload(unit);
 
-    _root.路由基础.触发状态切换作业(
+    RoutingIntent.triggerStateTransitionJob(
         unit,
-        _root.路由基础.STATE_WEAPON_CONTAINER,
-        _root.路由基础.LABEL_CONTAINER,
+        RoutingIntent.STATE_WEAPON_CONTAINER,
+        RoutingIntent.LABEL_CONTAINER,
         _root.兵器攻击路由.__job_载入后跳转,
-        _root.路由基础.LABEL_CONTAINER
+        RoutingIntent.LABEL_CONTAINER
     );
 };
 
@@ -170,7 +171,7 @@ _root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:
     }
 
     // 统一结束手感：动态man被卸载/移除时写入"普攻结束/兵器攻击结束"
-    _root.路由基础.绑定容器结束写状态(man, unit, _root.路由基础.SMALL_END_WEAPON);
+    RoutingIntent.bindContainerEndState(man, unit, RoutingIntent.SMALL_END_WEAPON);
 
     man.gotoAndPlay(actionName);
     return man;
@@ -179,7 +180,7 @@ _root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:
 /**
  * 动画完毕处理（由容器元件末帧调用）
  *
- * 委派到 _root.路由基础.动画完毕：站立常态下与"两行内联版"等价（清理浮空任务/在空中检测
+ * 委派到 RoutingLifecycle.completeAnimation：站立常态下与"两行内联版"等价（清理浮空任务/在空中检测
  * 都是 no-op），但在边界情况（跨容器残留浮空标记 / 跳跃落地瞬间触发普攻）能走自然落地兜底，
  * 避免直接 removeMovieClip 留下不一致的 _y。
  *
@@ -189,5 +190,5 @@ _root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:
  * @param unit:MovieClip 执行兵器攻击的单位
  */
 _root.兵器攻击路由.动画完毕 = function(man:MovieClip, unit:MovieClip):Void {
-    _root.路由基础.动画完毕(man, unit, false);
+    RoutingLifecycle.completeAnimation(man, unit, false);
 };

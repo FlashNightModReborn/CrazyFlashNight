@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
+import org.flashNight.arki.unit.UnitComponent.Routing.*;
 import org.flashNight.arki.spatial.move.*;
 import org.flashNight.arki.unit.*;
 import org.flashNight.arki.unit.Action.Shoot.*;
@@ -1541,7 +1542,7 @@ _root.主角函数.状态改变 = function(新状态名) {
 
         // 状态切换作业：支持调用方动态覆盖跳转帧标签
         // 用于处理 gotoAndStop 后需要执行回调的场景（例如：兵器攻击容器化）
-        var jobGotoLabel:String = _root.路由基础.获取作业跳转帧覆盖(self);
+        var jobGotoLabel:String = RoutingIntent.getJobGotoOverride(self);
         if (jobGotoLabel != null) {
             gotoLabel = jobGotoLabel;
         }
@@ -1569,11 +1570,11 @@ _root.主角函数.状态改变 = function(新状态名) {
 
         // 执行状态切换作业：仅在确实发生 gotoAndStop 后执行回调
         // 用于解决：调用链在被卸载的 MovieClip 的 onEnterFrame 中时，gotoAndStop 后代码无法执行的问题
-        _root.路由基础.执行状态切换作业(self);
+        RoutingIntent.executeStateTransitionJob(self);
     } else {
         // 未发生跳转时清理作业（避免残留到下次状态改变）
         // 仅标记 job 字段为 undefined，保留对象供下次复用，避免 GC
-        _root.路由基础.清理状态切换作业(self);
+        RoutingIntent.clearStateTransitionJob(self);
     }
 };
 

@@ -1,14 +1,12 @@
 ﻿/**
- * 路由基础 - 技能/战技路由共享的底层函数
+ * 路由基础 - 旧资源兼容门面
  *
- * 目的：抽离技能路由与战技路由的公共逻辑，避免代码重复。
- *       战技本质上是特殊触发的技能，二者共享大量底层逻辑。
+ * 目的：保留 `_root.路由基础.*` 入口给旧 XML / 帧脚本 / 外部资源调用。
+ *       实际实现已迁移到 RoutingIntent / RoutingLifecycle，生产路由优先直连 class。
  *
  * 共享逻辑：
- *   - 临时Y坐标处理（空中释放技能/战技）
- *   - 移动函数绑定
- *   - 浮空处理
- *   - 容器初始化对象构建
+ *   - RoutingIntent：状态切换作业、同帧跳转保护、容器结束状态写入、诊断 dump
+ *   - RoutingLifecycle：姿态加成、临时Y、移动函数、浮空、结束清理、动画完毕
  *
  * @author flashNight
  * @version 1.0
@@ -24,13 +22,13 @@ _root.路由基础 = {};
 // 集中化的目的：让第二步 class 化时重命名只改一处，而不是全工程 grep 字符串。
 // 容器 XML 末帧 callback 与状态机 onUnload 写入的状态名都对齐这里。
 // ============================================================================
-_root.路由基础.LABEL_CONTAINER         = "容器";          // 主角-男 用于容器化 attachMovie 的占位帧
-_root.路由基础.STATE_WEAPON            = "兵器攻击";       // 普攻连招逻辑状态（兵器）
-_root.路由基础.STATE_WEAPON_CONTAINER  = "兵器攻击容器";   // 兵器搓招触发新容器时用的辅助状态
-_root.路由基础.STATE_BAREHAND          = "空手攻击";       // 普攻连招逻辑状态（空手）
-_root.路由基础.BIG_END_PUNCH           = "普攻结束";       // onUnload 写入的大状态名
-_root.路由基础.SMALL_END_WEAPON        = "兵器攻击结束";   // onUnload 写入的小状态名（兵器）
-_root.路由基础.SMALL_END_BAREHAND      = "空手攻击结束";   // onUnload 写入的小状态名（空手）
+_root.路由基础.LABEL_CONTAINER         = RoutingIntent.LABEL_CONTAINER;          // 主角-男 用于容器化 attachMovie 的占位帧
+_root.路由基础.STATE_WEAPON            = RoutingIntent.STATE_WEAPON;             // 普攻连招逻辑状态（兵器）
+_root.路由基础.STATE_WEAPON_CONTAINER  = RoutingIntent.STATE_WEAPON_CONTAINER;   // 兵器搓招触发新容器时用的辅助状态
+_root.路由基础.STATE_BAREHAND          = RoutingIntent.STATE_BAREHAND;           // 普攻连招逻辑状态（空手）
+_root.路由基础.BIG_END_PUNCH           = RoutingIntent.BIG_END_PUNCH;            // onUnload 写入的大状态名
+_root.路由基础.SMALL_END_WEAPON        = RoutingIntent.SMALL_END_WEAPON;         // onUnload 写入的小状态名（兵器）
+_root.路由基础.SMALL_END_BAREHAND      = RoutingIntent.SMALL_END_BAREHAND;       // onUnload 写入的小状态名（空手）
 
 /**
  * 设置通用姿态与武器加成
@@ -39,12 +37,7 @@ _root.路由基础.SMALL_END_BAREHAND      = "空手攻击结束";   // onUnload
  * @param unit:MovieClip 执行技能/战技的单位
  */
 _root.路由基础.准备姿态与加成 = function(unit:MovieClip):Void {
-    unit.格斗架势 = true;
-    if (HeroUtil.isFistSkill(unit.技能名)) {
-        unit.根据模式重新读取武器加成("空手");
-    } else {
-        unit.根据模式重新读取武器加成("技能");
-    }
+    RoutingLifecycle.preparePoseAndBonus(unit);
 };
 
 /**
@@ -54,19 +47,7 @@ _root.路由基础.准备姿态与加成 = function(unit:MovieClip):Void {
  * @param unit:MovieClip 执行技能/战技的单位
  */
 _root.路由基础.确保临时Y = function(unit:MovieClip):Void {
-    if (unit.temp_y > 0) {
-        return;
-    }
-    if (unit.浮空 === true) {
-        unit.temp_y = unit._y;
-        return;
-    }
-    // 兼容：部分跳跃实现可能未同步浮空标记，使用y与Z轴坐标的关系兜底判定
-    if (!isNaN(unit.Z轴坐标) && unit._y < unit.Z轴坐标) {
-        unit.temp_y = unit._y;
-        return;
-    }
-    unit.temp_y = 0;
+    RoutingLifecycle.ensureTempY(unit);
 };
 
 /**
@@ -76,14 +57,7 @@ _root.路由基础.确保临时Y = function(unit:MovieClip):Void {
  * @param man:MovieClip 技能/战技的man剪辑
  */
 _root.路由基础.绑定移动函数 = function(man:MovieClip):Void {
-    man.攻击时移动 = _root.技能函数.攻击时移动;
-    man.攻击时后退移动 = _root.技能函数.攻击时移动;
-    man.攻击时按键四向移动 = _root.技能函数.攻击时按键四向移动;
-    man.攻击时可改变移动方向 = _root.技能函数.攻击时可改变移动方向;
-    man.攻击时可斜向改变移动方向 = _root.技能函数.攻击时可斜向改变移动方向;
-    man.攻击时斜向移动 = _root.技能函数.攻击时斜向移动;
-    man.攻击时可斜向改变移动方向2 = _root.技能函数.攻击时可斜向改变移动方向2;
-    man.获取移动方向 = _root.技能函数.获取移动方向;
+    RoutingLifecycle.bindMovement(man);
 };
 
 /**
@@ -97,7 +71,7 @@ _root.路由基础.绑定移动函数 = function(man:MovieClip):Void {
  * @return Object 初始化参数对象（singleton scratch，attachMovie 同步消费后即可复用）
  */
 _root.路由基础.构建容器初始化对象 = function(container:MovieClip):Object {
-    return ContainerInitScratch.getPublic(container);
+    return RoutingLifecycle.buildPublicContainerInit(container);
 };
 
 /**
@@ -110,9 +84,7 @@ _root.路由基础.构建容器初始化对象 = function(container:MovieClip):O
  * @param unit:MovieClip 持有旧 man 的单位
  */
 _root.路由基础.屏蔽旧man卸载 = function(unit:MovieClip):Void {
-    if (unit.man != undefined) {
-        unit.man.onUnload = function() {};
-    }
+    RoutingIntent.suppressOldManUnload(unit);
 };
 
 // ============================================================================
@@ -129,16 +101,16 @@ _root.路由基础.屏蔽旧man卸载 = function(unit:MovieClip):Void {
 // ============================================================================
 
 _root.路由基础.标记同帧跳转兵器 = function(unit:MovieClip):Void {
-    unit.__skipWeaponChangeFrame = _root.帧计时器.当前帧数;
+    RoutingIntent.markWeaponSameFrameJump(unit);
 };
 _root.路由基础.是否同帧跳转兵器 = function(unit:MovieClip):Boolean {
-    return unit.__skipWeaponChangeFrame === _root.帧计时器.当前帧数;
+    return RoutingIntent.isWeaponSameFrameJump(unit);
 };
 _root.路由基础.标记同帧跳转空手 = function(unit:MovieClip):Void {
-    unit.__skipBarehandChangeFrame = _root.帧计时器.当前帧数;
+    RoutingIntent.markBarehandSameFrameJump(unit);
 };
 _root.路由基础.是否同帧跳转空手 = function(unit:MovieClip):Boolean {
-    return unit.__skipBarehandChangeFrame === _root.帧计时器.当前帧数;
+    return RoutingIntent.isBarehandSameFrameJump(unit);
 };
 
 /**
@@ -151,14 +123,7 @@ _root.路由基础.是否同帧跳转空手 = function(unit:MovieClip):Boolean {
  * @param smallEndState:String 小状态名（推荐传 STATE_END_WEAPON / STATE_END_BAREHAND）
  */
 _root.路由基础.绑定容器结束写状态 = function(man:MovieClip, unit:MovieClip, smallEndState:String):Void {
-    var prevOnUnload:Function = man.onUnload;
-    var bigEnd:String = _root.路由基础.BIG_END_PUNCH;
-    man.onUnload = function() {
-        if (prevOnUnload != undefined) {
-            prevOnUnload.apply(this);
-        }
-        unit.UpdateBigSmallState(bigEnd, smallEndState);
-    };
+    RoutingIntent.bindContainerEndState(man, unit, smallEndState);
 };
 
 /**
@@ -171,34 +136,7 @@ _root.路由基础.绑定容器结束写状态 = function(man:MovieClip, unit:Mo
  * @param floatFlag:String 浮空标记名（"技能浮空"或"战技浮空"）
  */
 _root.路由基础.绑定结束清理 = function(clip:MovieClip, unit:MovieClip, excludeState:String, endBigState:String, floatFlag:String):Void {
-    var prevOnUnload:Function = clip.onUnload;
-    clip.onUnload = function() {
-        if (prevOnUnload != undefined) {
-            prevOnUnload.apply(this);
-        }
-        unit.无敌 = false;
-        var needReset:Boolean = (unit.状态 != excludeState);
-        if (needReset) {
-            unit.temp_y = 0;
-        }
-        unit.UpdateBigSmallState(endBigState, endBigState);
-        unit.根据模式重新读取武器加成(unit.攻击模式);
-        if (needReset) {
-            // 清理浮空标记
-            // 例外：enableDoubleJump 需要把浮空标记带到跳跃状态加载阶段（onClipEvent(load)→启动跳跃浮空）
-            // 否则会出现“动画完毕设置为 true，但下一帧启动跳跃浮空读取为 false”的时序问题。
-            if (unit.__preserveFloatFlagOnUnload == floatFlag) {
-                delete unit.__preserveFloatFlagOnUnload;
-            } else {
-                unit[floatFlag] = false;
-            }
-        }
-        // AI 事件：技能/战技动画结束（man 被卸载）
-        // 订阅方（ActionArbiter）据此立即释放帧锁，消除"技能后发呆"
-        if (unit.dispatcher != undefined && unit.dispatcher != null) {
-            unit.dispatcher.publish("skillEnd", unit);
-        }
-    };
+    RoutingLifecycle.bindEndCleanup(clip, unit, excludeState, endBigState, floatFlag);
 };
 
 /**
@@ -211,28 +149,7 @@ _root.路由基础.绑定结束清理 = function(clip:MovieClip, unit:MovieClip,
  * @param floatFlag:String 浮空标记名（"技能浮空"或"战技浮空"）
  */
 _root.路由基础.处理浮空 = function(man:MovieClip, unit:MovieClip, floatFlag:String):Void {
-    man.落地 = true;
-    if (unit.temp_y <= 0) {
-        return;
-    }
-
-    // 设置单位级别的浮空标记
-    unit[floatFlag] = true;
-    unit._y = unit.temp_y;
-    // 重置起始Y为地面坐标，确保影子高度计算正确
-    unit.起始Y = unit.Z轴坐标;
-    man.落地 = false;
-    unit.浮空 = true;
-
-    // 清理旧定时器（兼容旧实现）
-    _root.路由基础.清理浮空任务(unit);
-
-    // 与旧逻辑一致：进入技能浮空时让出自然落地/跳跃浮空的控制权
-    if (_root.空中控制器 != undefined) {
-        _root.空中控制器.关闭自然落地(unit);
-        _root.空中控制器.关闭跳跃浮空(unit);
-        _root.空中控制器.启用技能浮空(unit, floatFlag, man);
-    }
+    RoutingLifecycle.handleFloat(man, unit, floatFlag);
 };
 
 /**
@@ -240,13 +157,7 @@ _root.路由基础.处理浮空 = function(man:MovieClip, unit:MovieClip, floatF
  * @param unit:MovieClip 执行技能/战技的单位
  */
 _root.路由基础.清理浮空任务 = function(unit:MovieClip):Void {
-    if (_root.空中控制器 != undefined) {
-        _root.空中控制器.关闭技能浮空(unit);
-    }
-    if (unit.__技能浮空任务ID != null) {
-        EnhancedCooldownWheel.I().removeTask(unit.__技能浮空任务ID);
-        unit.__技能浮空任务ID = null;
-    }
+    RoutingLifecycle.clearSkillFloatTask(unit);
 };
 
 /**
@@ -254,13 +165,7 @@ _root.路由基础.清理浮空任务 = function(unit:MovieClip):Void {
  * @param unit:MovieClip 执行技能/战技的单位
  */
 _root.路由基础.清理自然落地任务 = function(unit:MovieClip):Void {
-    if (_root.空中控制器 != undefined) {
-        _root.空中控制器.关闭自然落地(unit);
-    }
-    if (unit.__自然落地任务ID != null) {
-        EnhancedCooldownWheel.I().removeTask(unit.__自然落地任务ID);
-        unit.__自然落地任务ID = null;
-    }
+    RoutingLifecycle.clearNaturalLandingTask(unit);
 };
 
 /**
@@ -270,12 +175,7 @@ _root.路由基础.清理自然落地任务 = function(unit:MovieClip):Void {
  * @param unit:MovieClip 执行技能/战技的单位
  */
 _root.路由基础.启动自然落地任务 = function(unit:MovieClip):Void {
-    // 清理已存在的任务（防止重复）
-    _root.路由基础.清理自然落地任务(unit);
-
-    if (_root.空中控制器 != undefined) {
-        _root.空中控制器.启用自然落地(unit);
-    }
+    RoutingLifecycle.startNaturalLandingTask(unit);
 };
 
 /**
@@ -287,38 +187,7 @@ _root.路由基础.启动自然落地任务 = function(unit:MovieClip):Void {
  * @param enableDoubleJump:Boolean 可选，传入true则保留技能浮空标记触发空中二段跳特性，默认不触发
  */
 _root.路由基础.动画完毕 = function(man:MovieClip, unit:MovieClip, enableDoubleJump:Boolean):Void {
-    // 清理技能浮空任务
-    _root.路由基础.清理浮空任务(unit);
-
-    // 检测是否在空中（在 removeMovieClip 之前检测）
-    var 在空中:Boolean = unit._y < unit.Z轴坐标 - 0.5;
-
-    // 关键时序修复：
-    // 1) 如果需要二段跳，在调用 unit.动画完毕() 之前设置 技能浮空=true，让其进入跳跃状态
-    // 2) unit.动画完毕() 内部会调用 状态改变(...) → gotoAndStop；旧 man/容器通常会在此过程中触发 onUnload
-    // 3) 绑定结束清理默认会在 onUnload 中清掉 unit[floatFlag]，导致下一帧跳跃 onClipEvent(load) 读不到 技能浮空
-    // 4) 因此 enableDoubleJump 时需要保留一次“技能浮空”，交给 跳跃状态 load → 启动跳跃浮空 消费并自行清空
-    if (enableDoubleJump && 在空中) {
-        // 在调用 动画完毕 之前设置标记，让它进入跳跃状态
-        unit.技能浮空 = true;
-        // 保留本次 onUnload 的浮空标记清理：让跳跃状态 load 读取到 true 并消费（启动跳跃浮空会自行清空）
-        unit.__preserveFloatFlagOnUnload = "技能浮空";
-    }
-
-    // 执行动画完毕：如果 技能浮空=true，会进入跳跃状态
-    // 跳跃状态的 onClipEvent (load) 通常在下一帧触发，此时需要仍能读到 技能浮空=true
-    unit.动画完毕();
-
-    // 移除容器：触发 onUnload
-    // - 默认会清理 unit[floatFlag]
-    // - enableDoubleJump 场景会保留一次“技能浮空”，交给跳跃状态初始化消费后再清理
-    man.removeMovieClip();
-
-    // 处理非二段跳但仍在空中的情况
-    if (!enableDoubleJump && 在空中) {
-        // 技能在空中结束但不启用二段跳：启动自然落地任务
-        _root.路由基础.启动自然落地任务(unit);
-    }
+    RoutingLifecycle.completeAnimation(man, unit, enableDoubleJump);
 };
 
 // ============================================================================
@@ -377,18 +246,7 @@ _root.路由基础.动画完毕 = function(man:MovieClip, unit:MovieClip, enable
  * @return Object 作业对象（unit-local 单例，可附加 arg_* 字段传参）
  */
 _root.路由基础.创建状态切换作业 = function(unit:MovieClip, gotoLabel:String, callback:Function):Object {
-    var job:Object = unit.__stateTransitionJob;
-    if (job == undefined) {
-        job = {};
-        unit.__stateTransitionJob = job;
-    }
-    job.gotoLabel = gotoLabel;
-    job.callback = callback;
-    // 清理已知附加参数，调用方若需要参数必须在 create 后立即重写。
-    // 避免 unit-local job 复用时跨路由读到上一轮的参数。
-    job.arg_containerName = undefined;
-    job.arg_targetLabel = undefined;
-    return job;
+    return RoutingIntent.createStateTransitionJob(unit, gotoLabel, callback);
 };
 
 /**
@@ -400,16 +258,7 @@ _root.路由基础.创建状态切换作业 = function(unit:MovieClip, gotoLabel
  * @param forceGotoLabel:String 可选；若当前显示帧已是该标签，则改写上一显示帧标记强制本次 gotoAndStop
  */
 _root.路由基础.提交状态切换作业 = function(unit:MovieClip, logicalState:String, forceGotoLabel:String):Void {
-    if (forceGotoLabel != null && unit.__stateGotoLabel === forceGotoLabel) {
-        unit.__stateGotoLabel = logicalState;
-    }
-    unit.状态改变(logicalState);
-
-    // 正常路径由 状态改变 消费或清理 job。若状态改变早退且当前调用栈仍存活，兜底清掉本轮 producer。
-    var job:Object = unit.__stateTransitionJob;
-    if (job != undefined && job.callback != undefined) {
-        _root.路由基础.清理状态切换作业(unit);
-    }
+    RoutingIntent.submitStateTransitionJob(unit, logicalState, forceGotoLabel);
 };
 
 /**
@@ -424,9 +273,7 @@ _root.路由基础.提交状态切换作业 = function(unit:MovieClip, logicalSt
  * @return Object 作业对象
  */
 _root.路由基础.触发状态切换作业 = function(unit:MovieClip, logicalState:String, gotoLabel:String, callback:Function, forceGotoLabel:String):Object {
-    var job:Object = _root.路由基础.创建状态切换作业(unit, gotoLabel, callback);
-    _root.路由基础.提交状态切换作业(unit, logicalState, forceGotoLabel);
-    return job;
+    return RoutingIntent.triggerStateTransitionJob(unit, logicalState, gotoLabel, callback, forceGotoLabel);
 };
 
 /**
@@ -436,16 +283,7 @@ _root.路由基础.触发状态切换作业 = function(unit:MovieClip, logicalSt
  * @param unit:MovieClip 执行状态改变的单位
  */
 _root.路由基础.执行状态切换作业 = function(unit:MovieClip):Void {
-    var job:Object = unit.__stateTransitionJob;
-    if (job == undefined || job.callback == undefined) {
-        return;
-    }
-    // 取出回调并标记 job 为空闲（必须在回调前标记，防止回调中再次触发状态改变导致重入）
-    // 仅置空 callback/gotoLabel 字段，保留对象本身供 unit 下次复用，避免 GC
-    var cb:Function = job.callback;
-    job.callback = undefined;
-    job.gotoLabel = undefined;
-    cb(unit);
+    RoutingIntent.executeStateTransitionJob(unit);
 };
 
 /**
@@ -456,11 +294,7 @@ _root.路由基础.执行状态切换作业 = function(unit:MovieClip):Void {
  * @return String 覆盖的跳转帧标签，无覆盖时返回 null
  */
 _root.路由基础.获取作业跳转帧覆盖 = function(unit:MovieClip):String {
-    var job:Object = unit.__stateTransitionJob;
-    if (job == undefined || job.gotoLabel == undefined) {
-        return null;
-    }
-    return job.gotoLabel;
+    return RoutingIntent.getJobGotoOverride(unit);
 };
 
 /**
@@ -470,13 +304,7 @@ _root.路由基础.获取作业跳转帧覆盖 = function(unit:MovieClip):String
  * @param unit:MovieClip 持有作业的单位
  */
 _root.路由基础.清理状态切换作业 = function(unit:MovieClip):Void {
-    var job:Object = unit.__stateTransitionJob;
-    if (job != undefined) {
-        job.callback = undefined;
-        job.gotoLabel = undefined;
-        job.arg_containerName = undefined;
-        job.arg_targetLabel = undefined;
-    }
+    RoutingIntent.clearStateTransitionJob(unit);
 };
 
 // ============================================================================
@@ -489,37 +317,5 @@ _root.路由基础.清理状态切换作业 = function(unit:MovieClip):Void {
 // ============================================================================
 
 _root.路由基础.__dump状态 = function(unit:MovieClip):String {
-    if (unit == undefined) {
-        return "[路由dump] unit=undefined";
-    }
-    var s:String = "[路由dump]";
-    s += " 帧=" + _root.帧计时器.当前帧数;
-    s += " name=" + unit._name;
-    s += " 状态=" + unit.状态;
-    s += " 旧状态=" + unit.旧状态;
-    s += " __stateGotoLabel=" + unit.__stateGotoLabel;
-    s += " 兵器攻击名=" + unit.兵器攻击名;
-    s += " 空手攻击名=" + unit.空手攻击名;
-    s += " 技能名=" + unit.技能名;
-    s += " __skipWeapon=" + unit.__skipWeaponChangeFrame;
-    s += " __skipBare=" + unit.__skipBarehandChangeFrame;
-    var job:Object = unit.__stateTransitionJob;
-    if (job == undefined) {
-        s += " job=undefined";
-    } else {
-        s += " job{goto=" + job.gotoLabel
-          +  " cb=" + (job.callback != undefined)
-          +  " arg_cn=" + job.arg_containerName
-          +  " arg_tl=" + job.arg_targetLabel + "}";
-    }
-    s += " 浮空=" + unit.浮空;
-    s += " temp_y=" + unit.temp_y;
-    s += " _y=" + unit._y;
-    s += " Z=" + unit.Z轴坐标;
-    s += " 技能浮空=" + unit.技能浮空;
-    s += " 战技浮空=" + unit.战技浮空;
-    s += " __preserve=" + unit.__preserveFloatFlagOnUnload;
-    s += " man=" + (unit.man != undefined);
-    s += " man.__isDynamic=" + unit.man.__isDynamicMan;
-    return s;
+    return RoutingIntent.dumpState(unit);
 };
