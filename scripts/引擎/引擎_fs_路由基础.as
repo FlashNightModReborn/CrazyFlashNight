@@ -260,16 +260,20 @@ _root.路由基础.动画完毕 = function(man:MovieClip, unit:MovieClip, enable
 // 后统一调度执行。这样无论调用方的执行上下文是否被销毁，作业都能正确执行。
 //
 // 使用方式：
-// 1. 调用方 _root.路由基础.创建状态切换作业(unit, gotoLabel, callback)
+// 1. 调用方优先使用 _root.路由基础.触发状态切换作业(unit, logicalState, gotoLabel, callback, forceGotoLabel)
+//    - 该入口封装 producer-set → 状态改变 → consumer 的同步嵌套契约
+//    - forceGotoLabel 用于当前已在同一显示帧时强制触发一次 gotoAndStop（例如 "容器"）
+// 2. 需要附加参数时，先调用 _root.路由基础.创建状态切换作业(...)，写入 arg_*，
+//    再立刻调用 _root.路由基础.提交状态切换作业(unit, logicalState, forceGotoLabel)
 //    - 内部 lazy-alloc unit.__stateTransitionJob 单例，仅 mutate gotoLabel/callback 字段
 //    - 复用 unit-local job 对象，稳态 0 alloc；callback 推荐传 module-level named function
-//    - 如需附加参数，在返回的 job 对象上挂 arg_* 字段（同 unit-local，下次自动覆盖）
-// 2. 调用方紧接 unit.状态改变(...)，同步触发 consumer：
+//    - 如需附加参数，在返回的 job 对象上挂已约定的 arg_* 字段（同 unit-local，下次自动覆盖）
+// 3. consumer 由 unit.状态改变(...) 同步触发：
 //    a) 状态改变函数读 unit.__stateTransitionJob.gotoLabel 覆盖默认跳转帧
 //    b) 执行 gotoAndStop
 //    c) 取出 job.callback，把 callback/gotoLabel 设为 undefined（标记空闲，对象保留）
 //    d) 调用 callback(unit)
-// 3. 状态改变未发生跳转的兜底路径调用 _root.路由基础.清理状态切换作业(unit)
+// 4. 状态改变未发生跳转的兜底路径调用 _root.路由基础.清理状态切换作业(unit)
 //
 // 关键不变量：
 // - 单 unit 的 producer→consumer 是同步嵌套（producer-set → 状态改变 → gotoAndStop
@@ -296,6 +300,48 @@ _root.路由基础.创建状态切换作业 = function(unit:MovieClip, gotoLabel
     }
     job.gotoLabel = gotoLabel;
     job.callback = callback;
+    // 清理已知附加参数，调用方若需要参数必须在 create 后立即重写。
+    // 避免 unit-local job 复用时跨路由读到上一轮的参数。
+    job.arg_containerName = undefined;
+    job.arg_targetLabel = undefined;
+    return job;
+};
+
+/**
+ * 提交已创建的状态切换作业
+ * 调用方必须在创建 job / 写入 arg_* 后立刻调用本函数，保持 producer→consumer 同步嵌套。
+ *
+ * @param unit:MovieClip 持有作业的单位
+ * @param logicalState:String 传给 unit.状态改变 的逻辑状态
+ * @param forceGotoLabel:String 可选；若当前显示帧已是该标签，则改写上一显示帧标记强制本次 gotoAndStop
+ */
+_root.路由基础.提交状态切换作业 = function(unit:MovieClip, logicalState:String, forceGotoLabel:String):Void {
+    if (forceGotoLabel != null && unit.__stateGotoLabel === forceGotoLabel) {
+        unit.__stateGotoLabel = logicalState;
+    }
+    unit.状态改变(logicalState);
+
+    // 正常路径由 状态改变 消费或清理 job。若状态改变早退且当前调用栈仍存活，兜底清掉本轮 producer。
+    var job:Object = unit.__stateTransitionJob;
+    if (job != undefined && job.callback != undefined) {
+        _root.路由基础.清理状态切换作业(unit);
+    }
+};
+
+/**
+ * 创建并提交状态切换作业
+ * 无附加参数的首选入口，避免调用方手写 create → 状态改变 的同步协议。
+ *
+ * @param unit:MovieClip 持有作业的单位
+ * @param logicalState:String 传给 unit.状态改变 的逻辑状态
+ * @param gotoLabel:String 覆盖的跳转帧标签
+ * @param callback:Function 在 gotoAndStop 后执行的回调函数
+ * @param forceGotoLabel:String 可选；当前显示帧已是该标签时强制跳转
+ * @return Object 作业对象
+ */
+_root.路由基础.触发状态切换作业 = function(unit:MovieClip, logicalState:String, gotoLabel:String, callback:Function, forceGotoLabel:String):Object {
+    var job:Object = _root.路由基础.创建状态切换作业(unit, gotoLabel, callback);
+    _root.路由基础.提交状态切换作业(unit, logicalState, forceGotoLabel);
     return job;
 };
 
@@ -344,5 +390,7 @@ _root.路由基础.清理状态切换作业 = function(unit:MovieClip):Void {
     if (job != undefined) {
         job.callback = undefined;
         job.gotoLabel = undefined;
+        job.arg_containerName = undefined;
+        job.arg_targetLabel = undefined;
     }
 };

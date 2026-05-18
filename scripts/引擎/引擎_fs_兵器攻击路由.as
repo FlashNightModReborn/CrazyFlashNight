@@ -98,12 +98,9 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
     var actionName:String = _root.兵器攻击路由.获取普攻连招首帧标签(unit);
     unit.兵器攻击名 = actionName;
 
-    // 容器化路径：跳转到"容器"帧，attachMovie 动态容器
-    _root.路由基础.创建状态切换作业(unit, "容器", _root.兵器攻击路由.__job_载入后跳转);
-
     // 统一入口：状态改变会触发 gotoAndStop，然后执行作业回调
     // 注意：gotoAndStop 会卸载当前 man（拳刀行走状态机的执行上下文），后续代码不会执行
-    unit.状态改变("兵器攻击");
+    _root.路由基础.触发状态切换作业(unit, "兵器攻击", "容器", _root.兵器攻击路由.__job_载入后跳转, "容器");
 };
 
 // ============================================================================
@@ -135,7 +132,7 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
 
 /**
  * 兵器攻击标签跳转入口
- * - 主角-男：跳到“容器”帧并 attachMovie 对应的“兵器攻击容器-招式名”
+ * - 主角-男：通过状态切换作业跳到“容器”帧，并在 gotoAndStop 后 attachMovie 对应容器
  * - 其他单位：维持旧逻辑（man.gotoAndPlay）
  *
  * @param unit:MovieClip 执行兵器攻击的单位
@@ -143,21 +140,24 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
  */
 _root.兵器攻击路由.兵器攻击标签跳转 = function(unit:MovieClip, actionName:String):Void {
     unit.兵器攻击名 = actionName;
+    // 同帧跳转保护：搓招已触发新容器后，跳过旧容器本帧剩余的变招/后摇判定。
+    unit.__skipWeaponChangeFrame = _root.帧计时器.当前帧数;
 
     // 非主角-男：继续走旧man跳帧（不引入容器化状态依赖）
     if (unit.兵种 !== "主角-男") {
-        unit.man.gotoAndPlay(actionName);
+        if (unit.man != undefined) {
+            unit.man.gotoAndPlay(actionName);
+        }
         return;
     }
 
     // 切到“容器”帧会卸载旧man；旧man.onUnload 会写入“普攻结束/兵器攻击结束”。
     // 容器化切换阶段必须屏蔽该卸载回调（真正结束由新容器man卸载时统一处理）。
-    if (unit.man != undefined && !unit.man.__isDynamicMan) {
+    if (unit.man != undefined) {
         unit.man.onUnload = function() {};
     }
 
-    unit.状态改变("兵器攻击容器");
-    _root.兵器攻击路由.载入后跳转兵器攻击容器(unit.container, unit);
+    _root.路由基础.触发状态切换作业(unit, "兵器攻击容器", "容器", _root.兵器攻击路由.__job_载入后跳转, "容器");
 };
 
 /**

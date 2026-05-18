@@ -61,7 +61,7 @@ _root.空手攻击路由.__job_载入后跳转 = function(u:MovieClip):Void {
 /**
  * 状态切换作业回调：跨容器标签跳转
  * 通过 unit.__stateTransitionJob 上的 arg_containerName / arg_targetLabel 传参
- * （由 跨容器标签跳转 producer 处写入；本回调消费后无需清理，下次 producer 自然覆盖）
+ * （由 跨容器标签跳转 producer 在 create 后写入；下次 create / 清理会置空）
  */
 _root.空手攻击路由.__job_跨容器跳转 = function(u:MovieClip):Void {
     var job:Object = u.__stateTransitionJob;
@@ -126,10 +126,7 @@ _root.空手攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
     var actionName:String = _root.空手攻击路由.获取普攻连招首帧标签(unit);
     unit.空手攻击名 = actionName;
 
-    // 容器化路径：跳转到"容器"帧，attachMovie 动态容器
-    _root.路由基础.创建状态切换作业(unit, "容器", _root.空手攻击路由.__job_载入后跳转);
-
-    unit.状态改变("空手攻击");
+    _root.路由基础.触发状态切换作业(unit, "空手攻击", "容器", _root.空手攻击路由.__job_载入后跳转, "容器");
 };
 
 // ============================================================================
@@ -189,14 +186,7 @@ _root.空手攻击路由.空手攻击标签跳转 = function(unit:MovieClip, act
         unit.man.onUnload = function() {};
     }
 
-    // 若当前逻辑状态与显示帧都已在"容器"，状态改变将因"无跳转"而清理作业不执行回调；
-    // 通过临时改写 __stateGotoLabel 强制触发一次 gotoAndStop，从而保证作业回调执行。
-    if (unit.状态 === "空手攻击" && unit.__stateGotoLabel === "容器") {
-        unit.__stateGotoLabel = "空手攻击";
-    }
-
-    _root.路由基础.创建状态切换作业(unit, "容器", _root.空手攻击路由.__job_载入后跳转);
-    unit.状态改变("空手攻击");
+    _root.路由基础.触发状态切换作业(unit, "空手攻击", "容器", _root.空手攻击路由.__job_载入后跳转, "容器");
 };
 
 /**
@@ -225,15 +215,10 @@ _root.空手攻击路由.跨容器标签跳转 = function(unit:MovieClip, contai
         unit.man.onUnload = function() {};
     }
 
-    // 强制触发 gotoAndStop 以保证作业回调执行
-    if (unit.状态 === "空手攻击" && unit.__stateGotoLabel === "容器") {
-        unit.__stateGotoLabel = "空手攻击";
-    }
-
     var job:Object = _root.路由基础.创建状态切换作业(unit, "容器", _root.空手攻击路由.__job_跨容器跳转);
     job.arg_containerName = containerActionName;
     job.arg_targetLabel = targetLabel;
-    unit.状态改变("空手攻击");
+    _root.路由基础.提交状态切换作业(unit, "空手攻击", "容器");
 };
 
 // ============================================================================
