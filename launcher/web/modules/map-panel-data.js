@@ -149,16 +149,11 @@ var MapPanelData = (function() {
         }
     };
 
-    function buildStaticAvatarSlot(id, label, hotspotId, centerX, centerY, assetName, size) {
-        var diameter = size || 44;
+    function buildStaticAvatarSlot(id, label, hotspotId, assetName) {
         return {
             id: id,
             label: label,
             hotspotId: hotspotId,
-            x: +(centerX - (diameter / 2)).toFixed(2),
-            y: +(centerY - (diameter / 2)).toFixed(2),
-            w: diameter,
-            h: diameter,
             assetUrl: 'assets/map/avatars/' + assetName
         };
     }
@@ -166,75 +161,75 @@ var MapPanelData = (function() {
     function buildStaticAvatarSlots(defs) {
         var slots = [];
         for (var i = 0; i < defs.length; i++) {
-            slots.push(buildStaticAvatarSlot(defs[i][0], defs[i][1], defs[i][2], defs[i][3], defs[i][4], defs[i][5], defs[i][6]));
+            slots.push(buildStaticAvatarSlot(defs[i][0], defs[i][1], defs[i][2], defs[i][3]));
         }
         return slots;
     }
 
     var _pageStaticAvatars = {
         base: buildStaticAvatarSlots([
-            ['pig_avatar', 'Pig', 'base_garage', 171.55, 217.85, 'pig头像.png'],
-            ['boy_avatar', 'Boy', 'base_garage', 212.95, 246.0, 'boy头像.png'],
-            ['king_avatar', 'King', 'base_garage', 265.35, 217.85, 'king头像.png'],
-            ['weapon_merchant_avatar', '冷兵器商人', 'base_garage', 120.5, 222.05, '冷兵器商人头像.png'],
-            ['shamate_avatar', '杀马特', 'base_lobby', 365.95, 217.6, '∞天ㄙ★使的剪∞头像.png'],
-            ['bartender_avatar', '酒保', 'merc_bar', 444.85, 136.15, '酒保头像.png'],
-            ['wizard_avatar', '格格巫', 'infirmary', 567.05, 173.8, '格格巫头像.png'],
-            ['lilith_avatar', '丽丽丝', 'infirmary', 621.55, 173.8, '丽丽丝头像.png'],
-            ['dancer_avatar', '舞女', 'merc_bar', 389.55, 140.2, '舞女头像.png'],
-            ['gem_contact_avatar', '宝石线人', 'base_lobby', 564.15, 249.75, '宝石线人头像.png'],
-            ['sheriff_avatar', '前治安官', 'base_lobby', 625.5, 237.2, '前治安官头像.png'],
-            ['diplomat_avatar', '黑铁会外交部长', 'base_lobby', 363.25, 264.75, '黑铁会外交部长头像.png'],
-            ['schoolgirl_avatar', '学生妹', 'base_lobby', 414.1, 245.45, '学生妹头像.png'],
-            ['veteran_avatar', '幸存老兵', 'base_lobby', 466.5, 259.35, '幸存老兵头像.png'],
-            ['thegirl_avatar', 'The Girl', 'basement1', 436.25, 332.65, 'the girl头像.png'],
-            ['andy_avatar', 'Andy Law', 'basement1', 497.55, 329.4, 'andy头像.png'],
-            ['shopgirl_avatar', 'Shop Girl', 'armory', 549.95, 291.2, 'shopgirl头像.png'],
-            ['blue_avatar', 'Blue', 'basement1', 620.9, 336.8, 'blue头像.png'],
-            ['xiaof_avatar', '小F', 'armory', 609.15, 279.75, '小F头像.png'],
-            ['chef_avatar', '厨师', 'cafeteria', 324.85, 431.85, '厨师头像.png']
+            ['pig_avatar', 'Pig', 'base_garage', 'pig头像.png'],
+            ['boy_avatar', 'Boy', 'base_garage', 'boy头像.png'],
+            ['king_avatar', 'King', 'base_garage', 'king头像.png'],
+            ['weapon_merchant_avatar', '冷兵器商人', 'base_garage', '冷兵器商人头像.png'],
+            ['shamate_avatar', '杀马特', 'base_lobby', '∞天ㄙ★使的剪∞头像.png'],
+            ['bartender_avatar', '酒保', 'merc_bar', '酒保头像.png'],
+            ['wizard_avatar', '格格巫', 'infirmary', '格格巫头像.png'],
+            ['lilith_avatar', '丽丽丝', 'infirmary', '丽丽丝头像.png'],
+            ['dancer_avatar', '舞女', 'merc_bar', '舞女头像.png'],
+            ['gem_contact_avatar', '宝石线人', 'base_lobby', '宝石线人头像.png'],
+            ['sheriff_avatar', '前治安官', 'base_lobby', '前治安官头像.png'],
+            ['diplomat_avatar', '黑铁会外交部长', 'base_lobby', '黑铁会外交部长头像.png'],
+            ['schoolgirl_avatar', '学生妹', 'base_lobby', '学生妹头像.png'],
+            ['veteran_avatar', '幸存老兵', 'base_lobby', '幸存老兵头像.png'],
+            ['thegirl_avatar', 'The Girl', 'basement1', 'the girl头像.png'],
+            ['andy_avatar', 'Andy Law', 'basement1', 'andy头像.png'],
+            ['shopgirl_avatar', 'Shop Girl', 'armory', 'shopgirl头像.png'],
+            ['blue_avatar', 'Blue', 'basement1', 'blue头像.png'],
+            ['xiaof_avatar', '小F', 'armory', '小F头像.png'],
+            ['chef_avatar', '厨师', 'cafeteria', '厨师头像.png']
         ]),
         faction: buildStaticAvatarSlots([
-            ['general_avatar', 'general', 'warlord_base', 219.3, 170.6, 'general头像.png'],
-            ['gazer_avatar', 'gazer', 'warlord_base', 108.95, 168.1, 'gazer头像.png'],
-            ['director_avatar', 'director', 'warlord_tent', 170.85, 125.0, 'director头像.png'],
-            ['itinerant_avatar', 'itinerant', 'firing_range', 134.35, 293.6, 'itinerant头像.png'],
-            ['surveyor_avatar', 'surveyor', 'firing_range', 234.35, 264.1, 'surveyor头像.png'],
-            ['singer_avatar', 'singer', 'rock_park', 468.55, 158.5, 'singer头像.png'],
-            ['keyboard_avatar', 'keyboard', 'rock_park', 531.75, 187.7, 'keyboard头像.png'],
-            ['guitar_avatar', 'guitar', 'rock_park', 404.95, 186.1, 'guitar头像.png'],
-            ['firephoenix_avatar', '火凤', 'blackiron_training', 722.36, 119.54, '火凤头像.png'],
-            ['wingtiger_avatar', '翅虎', 'blackiron_training', 813.78, 107.31, '翅虎头像.png'],
-            ['blackdragon_avatar', '黑龙', 'blackiron_training', 858.32, 126.97, '黑龙头像.png'],
-            ['blackiron_avatar', '黑铁', 'blackiron_pavilion', 749.77, 239.77, '黑铁头像.png'],
-            ['cowboy_avatar', '牛仔', 'fallen_bar', 711.37, 471.7, '牛仔头像.png'],
-            ['cyborg_sage_avatar', '假肢仙人', 'fallen_street', 175.65, 488.45, '假肢仙人头像.png'],
-            ['hitler_avatar', '吸特乐', 'fallen_street', 97.9, 482.0, '吸特乐头像.png'],
-            ['researcher_avatar', 'researcher', 'fallen_street', 202.1, 472.0, 'researcher头像.png']
+            ['general_avatar', 'general', 'warlord_base', 'general头像.png'],
+            ['gazer_avatar', 'gazer', 'warlord_base', 'gazer头像.png'],
+            ['director_avatar', 'director', 'warlord_tent', 'director头像.png'],
+            ['itinerant_avatar', 'itinerant', 'firing_range', 'itinerant头像.png'],
+            ['surveyor_avatar', 'surveyor', 'firing_range', 'surveyor头像.png'],
+            ['singer_avatar', 'singer', 'rock_park', 'singer头像.png'],
+            ['keyboard_avatar', 'keyboard', 'rock_park', 'keyboard头像.png'],
+            ['guitar_avatar', 'guitar', 'rock_park', 'guitar头像.png'],
+            ['firephoenix_avatar', '火凤', 'blackiron_training', '火凤头像.png'],
+            ['wingtiger_avatar', '翅虎', 'blackiron_training', '翅虎头像.png'],
+            ['blackdragon_avatar', '黑龙', 'blackiron_training', '黑龙头像.png'],
+            ['blackiron_avatar', '黑铁', 'blackiron_pavilion', '黑铁头像.png'],
+            ['cowboy_avatar', '牛仔', 'fallen_bar', '牛仔头像.png'],
+            ['cyborg_sage_avatar', '假肢仙人', 'fallen_street', '假肢仙人头像.png'],
+            ['hitler_avatar', '吸特乐', 'fallen_street', '吸特乐头像.png'],
+            ['researcher_avatar', 'researcher', 'fallen_street', 'researcher头像.png']
         ]),
         defense: buildStaticAvatarSlots([
-            ['artist_avatar', 'artist', 'first_defense', 161.65, 155.15, 'artist头像.png'],
-            ['soldier_avatar', 'soldier', 'first_defense', 250.7, 162.6, 'soldier头像.png'],
-            ['paigu_avatar', '排骨', 'alliance_dock', 137.45, 332.3, '排骨头像.png'],
-            ['jige_avatar', '机哥', 'alliance_dock', 189.45, 333.65, '机哥头像.png'],
-            ['abo_avatar', '阿波', 'alliance_dock', 241.2, 331.65, '阿波头像.png'],
-            ['prophet_avatar', 'PROPHET', 'alliance_corridor', 228.45, 392.45, 'PROPHET头像.png']
+            ['artist_avatar', 'artist', 'first_defense', 'artist头像.png'],
+            ['soldier_avatar', 'soldier', 'first_defense', 'soldier头像.png'],
+            ['paigu_avatar', '排骨', 'alliance_dock', '排骨头像.png'],
+            ['jige_avatar', '机哥', 'alliance_dock', '机哥头像.png'],
+            ['abo_avatar', '阿波', 'alliance_dock', '阿波头像.png'],
+            ['prophet_avatar', 'PROPHET', 'alliance_corridor', 'PROPHET头像.png']
         ]),
         school: buildStaticAvatarSlots([
-            ['heizi_avatar', '黑仔', 'union_university', 430.05, 508.2, '黑仔头像.png'],
-            ['bat_avatar', 'Bat', 'union_university', 471.4, 529.7, 'Bat头像.png'],
-            ['tomboy_avatar', 'Tomboy', 'union_university', 516.9, 513.2, 'Tomboy头像.png'],
-            ['weapon_order_avatar', '武器订购系统', 'union_university', 570.4, 516.7, '武器订购系统头像.png'],
-            ['pe_teacher_avatar', '体育老师', 'university_interior', 539.2, 428.65, '体育老师头像.png'],
-            ['chengzheng_avatar', '程铮', 'teaching_interior', 486.65, 255.75, '程铮头像.png'],
-            ['kendo_president_avatar', '剑道社长', 'kendo_club', 663.3, 213.1, '剑道社长头像.png'],
-            ['fengyouquan_avatar', '冯佑权', 'kendo_club', 593.3, 211.9, '冯佑权头像.png'],
+            ['heizi_avatar', '黑仔', 'union_university', '黑仔头像.png'],
+            ['bat_avatar', 'Bat', 'union_university', 'Bat头像.png'],
+            ['tomboy_avatar', 'Tomboy', 'union_university', 'Tomboy头像.png'],
+            ['weapon_order_avatar', '武器订购系统', 'union_university', '武器订购系统头像.png'],
+            ['pe_teacher_avatar', '体育老师', 'university_interior', '体育老师头像.png'],
+            ['chengzheng_avatar', '程铮', 'teaching_interior', '程铮头像.png'],
+            ['kendo_president_avatar', '剑道社长', 'kendo_club', '剑道社长头像.png'],
+            ['fengyouquan_avatar', '冯佑权', 'kendo_club', '冯佑权头像.png'],
             // TODO(school-avatar-ownership): science_prof_avatar / arts_teacher_avatar 几何中心落在多个 hotspot 交界区,
             // qa-suite map-ui22 以 reviewOnly 白名单豁免, 待美术定案确认 science_class / arts_class 边界或移到专属 hotspot
-            ['science_prof_avatar', '理科教授', 'science_class', 744.65, 212.35, '理科教授头像.png'],
-            ['arts_teacher_avatar', '文科老师', 'arts_class', 810.9, 213.1, '文科老师头像.png'],
-            ['vanshuther_avatar', 'Vanshuther', 'workshop', 555.75, 327.2, 'Vanshuther头像.png'],
-            ['dean_avatar', '教导主任', 'office', 538.9, 104.15, '教导主任头像.png']
+            ['science_prof_avatar', '理科教授', 'science_class', '理科教授头像.png'],
+            ['arts_teacher_avatar', '文科老师', 'arts_class', '文科老师头像.png'],
+            ['vanshuther_avatar', 'Vanshuther', 'workshop', 'Vanshuther头像.png'],
+            ['dean_avatar', '教导主任', 'office', '教导主任头像.png']
         ])
     };
 

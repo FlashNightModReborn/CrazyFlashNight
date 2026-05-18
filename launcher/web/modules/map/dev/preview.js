@@ -657,7 +657,7 @@ var MapPreview = (function() {
         if (sourceSlot && sourceSlot.rect) {
             return cloneSourceRect(sourceSlot.rect);
         }
-        return slot ? cloneSourceRect({ x: slot.x, y: slot.y, w: slot.w, h: slot.h }) : null;
+        return null;
     }
 
     function getComponentRect(page, hotspotId) {

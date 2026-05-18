@@ -270,13 +270,10 @@ function buildAvatarRows(mapData, pageIds, avatarSourceData) {
             const sourceSlot = avatarSourceData && avatarSourceData.getByAssetUrl
                 ? avatarSourceData.getByAssetUrl(slot.assetUrl)
                 : null;
-            const authoredRect = cloneRect({ x: slot.x, y: slot.y, w: slot.w, h: slot.h });
             const sourceRect = sourceSlot ? cloneRect(sourceSlot.rect) : null;
-            const runtimeRect = sourceRect || authoredRect;
+            const runtimeRect = sourceRect;
             const runtimeDelta = rectDelta(runtimeRect, sourceRect);
-            const authoredDelta = rectDelta(authoredRect, sourceRect);
             const state = classifyAvatar(runtimeDelta);
-            const authoringState = classifyAvatar(authoredDelta);
 
             rows.push({
                 kind: 'avatar',
@@ -291,12 +288,8 @@ function buildAvatarRows(mapData, pageIds, avatarSourceData) {
                 sourceRect: sourceRect,
                 currentRect: runtimeRect,
                 runtimeRect: runtimeRect,
-                authoredRect: authoredRect,
                 delta: runtimeDelta,
                 runtimeDelta: runtimeDelta,
-                authoredDelta: authoredDelta,
-                authoredStatus: authoringState.status,
-                authoredNote: authoringState.note,
                 crop: sourceSlot ? sourceSlot.crop || null : null,
                 assetSize: sourceSlot ? sourceSlot.assetSize || null : null
             });
@@ -373,12 +366,9 @@ function printAvatarTable(rows) {
             page: row.pageId,
             avatar: row.avatarId,
             symbol: row.symbolName,
-            runtimeStatus: row.status,
-            runtimeDx: row.runtimeDelta ? row.runtimeDelta.dx : null,
-            runtimeDy: row.runtimeDelta ? row.runtimeDelta.dy : null,
-            authoredStatus: row.authoredStatus,
-            authoredDx: row.authoredDelta ? row.authoredDelta.dx : null,
-            authoredDy: row.authoredDelta ? row.authoredDelta.dy : null,
+            status: row.status,
+            dx: row.runtimeDelta ? row.runtimeDelta.dx : null,
+            dy: row.runtimeDelta ? row.runtimeDelta.dy : null,
             hotspot: row.hotspotId
         };
     });

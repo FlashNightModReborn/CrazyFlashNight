@@ -168,12 +168,20 @@ var MapPanelHarnessQA = (function() {
         var page = MapPanelData.getPage(pageId);
         var hotspots = page && page.hotspots ? page.hotspots : [];
         var visuals = page && page.sceneVisuals ? page.sceneVisuals : [];
+        var hasSourceData = typeof MapAvatarSourceData !== 'undefined'
+            && MapAvatarSourceData
+            && typeof MapAvatarSourceData.getByAssetUrl === 'function';
 
         return (page && page.staticAvatars ? page.staticAvatars : []).map(function(slot) {
-            var center = {
-                x: slot.x + (slot.w / 2),
-                y: slot.y + (slot.h / 2)
-            };
+            var sourceSlot = hasSourceData ? MapAvatarSourceData.getByAssetUrl(slot.assetUrl || '') : null;
+            var sourceRect = sourceSlot && sourceSlot.rect ? sourceSlot.rect : null;
+            var sourceSize = sourceSlot && sourceSlot.size ? sourceSlot.size : null;
+            var halfW = sourceSize ? sourceSize.w / 2 : 0;
+            var halfH = sourceSize ? sourceSize.h / 2 : 0;
+            var center = sourceRect ? {
+                x: sourceRect.x + halfW,
+                y: sourceRect.y + halfH
+            } : { x: 0, y: 0 };
             var containingHotspotIds = hotspots.filter(function(hotspot) {
                 return rectContainsPoint(hotspot.rect, center.x, center.y);
             }).map(function(hotspot) {
@@ -525,9 +533,8 @@ var MapPanelHarnessQA = (function() {
                                             api.assert(!!sourceSlot, pageId + ' missing avatar source meta for ' + slot.id);
                                             avatarEl = document.querySelector('.map-static-avatar[data-avatar-id="' + slot.id + '"]');
                                             api.assert(!!avatarEl, pageId + ' missing avatar element for ' + slot.id);
-                                            expectedRect = sourceSlot && sourceSlot.rect
-                                                ? sourceSlot.rect
-                                                : { x: slot.x, y: slot.y, w: slot.w, h: slot.h };
+                                            api.assert(!!(sourceSlot && sourceSlot.rect), pageId + ' avatar missing source rect for ' + slot.id);
+                                            expectedRect = sourceSlot.rect;
                                             api.assert(Math.abs(parseFloat(avatarEl.style.left) - ((expectedRect.x / page.width) * 100)) < 0.05, pageId + ' avatar left mismatch for ' + slot.id);
                                             api.assert(Math.abs(parseFloat(avatarEl.style.top) - ((expectedRect.y / page.height) * 100)) < 0.05, pageId + ' avatar top mismatch for ' + slot.id);
                                             api.assert(Math.abs(parseFloat(avatarEl.style.width) - ((expectedRect.w / page.width) * 100)) < 0.05, pageId + ' avatar width mismatch for ' + slot.id);

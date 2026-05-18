@@ -991,6 +991,10 @@ var MapPanel = (function() {
             if (slot.hotspotId && !visibleLookup[slot.hotspotId]) continue;
             if (!slot.assetUrl) continue;
             var rect = resolveStaticAvatarRect(slot);
+            if (!rect) {
+                console.warn('[map-panel] static avatar missing source-data rect, skip render', slot.id, slot.assetUrl);
+                continue;
+            }
 
             var avatar = document.createElement('div');
             avatar.className = 'map-avatar map-static-avatar';
@@ -1007,19 +1011,11 @@ var MapPanel = (function() {
     }
 
     function resolveStaticAvatarRect(slot) {
-        if (typeof MapAvatarSourceData !== 'undefined' && MapAvatarSourceData && MapAvatarSourceData.getByAssetUrl) {
-            var sourceSlot = MapAvatarSourceData.getByAssetUrl(slot.assetUrl || '');
-            if (sourceSlot && sourceSlot.rect) {
-                return sourceSlot.rect;
-            }
-        }
-
-        return {
-            x: slot.x,
-            y: slot.y,
-            w: slot.w,
-            h: slot.h
-        };
+        if (!slot || !slot.assetUrl) return null;
+        if (typeof MapAvatarSourceData === 'undefined' || !MapAvatarSourceData || !MapAvatarSourceData.getByAssetUrl) return null;
+        var sourceSlot = MapAvatarSourceData.getByAssetUrl(slot.assetUrl);
+        if (!sourceSlot || !sourceSlot.rect) return null;
+        return sourceSlot.rect;
     }
 
     function renderDynamicAvatars(visibleLookup) {

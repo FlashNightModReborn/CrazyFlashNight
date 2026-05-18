@@ -159,7 +159,6 @@ def render_avatar_sheet(repo_root: Path, manifest: dict, audit_rows: list[dict],
 
     for row in rows:
         runtime_rect = row.get("runtimeRect") or row.get("currentRect")
-        authored_rect = row.get("authoredRect")
         source_rect = row.get("sourceRect")
         asset_ref = row.get("assetUrl") or f'assets/map/avatars/{row.get("symbolName", "")}.png'
         asset_path = resolve_asset_path(repo_root, asset_ref)
@@ -167,20 +166,8 @@ def render_avatar_sheet(repo_root: Path, manifest: dict, audit_rows: list[dict],
         if runtime_rect:
             paste_asset(canvas, asset_path, runtime_rect, scale)
             overlay_draw.ellipse(scaled_rect(runtime_rect, scale), outline=rgba("#9dff73", 240), width=2)
-        if authored_rect:
-            overlay_draw.ellipse(scaled_rect(authored_rect, scale), outline=rgba("#ff6ef3", 210), width=2)
         if source_rect:
             overlay_draw.ellipse(scaled_rect(source_rect, scale), outline=rgba("#65d7ff", 210), width=1)
-        if runtime_rect and authored_rect:
-            runtime_center = (
-                int(round((runtime_rect["x"] + runtime_rect["w"] / 2) * scale)),
-                int(round((runtime_rect["y"] + runtime_rect["h"] / 2) * scale)),
-            )
-            authored_center = (
-                int(round((authored_rect["x"] + authored_rect["w"] / 2) * scale)),
-                int(round((authored_rect["y"] + authored_rect["h"] / 2) * scale)),
-            )
-            overlay_draw.line((runtime_center, authored_center), fill=rgba("#ff7e59", 190), width=1)
 
     canvas.alpha_composite(overlay)
 
@@ -188,8 +175,8 @@ def render_avatar_sheet(repo_root: Path, manifest: dict, audit_rows: list[dict],
         runtime_rect = row.get("runtimeRect") or row.get("currentRect")
         if not runtime_rect:
             continue
-        authored_delta = row.get("authoredDelta") or {}
-        label = f'{row["label"]}  authored Δ({authored_delta.get("dx", 0)},{authored_delta.get("dy", 0)})'
+        runtime_delta = row.get("runtimeDelta") or row.get("delta") or {}
+        label = f'{row["label"]}  Δ({runtime_delta.get("dx", 0)},{runtime_delta.get("dy", 0)})'
         draw_label(
             draw,
             int(round(runtime_rect["x"] * scale)),

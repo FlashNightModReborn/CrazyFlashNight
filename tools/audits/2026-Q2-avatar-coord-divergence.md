@@ -1,9 +1,9 @@
 # Stage A.5-1：launcher staticAvatars ↔ source-data center 漂移决策表
 
-**生成日期**：2026-05-18  
-**A5-1 临时 audit 脚本**：`tools/audits/avatar-coord-divergence-scan.js`（**A5-3 已删除**；本表是当时的快照，永久归档）  
-**B 前复核入口（持久工具）**：`node tools/audit-map-layout.js --kind avatar --fail-on-review`——其 avatar `status === 'missing'` 的语义就是本表的 **launcher-orphan**（launcher slot 的 `assetUrl` 在 source-data 找不到 entry），可作为 A5-3 / Stage B 启动前的硬门控；上次跑（A5-3 收尾时）`missing:0`、`review:0`，exit 0 通过。  
-**对账双方**：
+- **生成日期**：2026-05-18
+- **A5-1 临时 audit 脚本**：`tools/audits/avatar-coord-divergence-scan.js`（**A5-3 已删除**；本表是当时的快照，永久归档）
+- **B 前复核入口（持久工具）**：`node tools/audit-map-layout.js --kind avatar --fail-on-review`——其 avatar `status === 'missing'` 的语义就是本表的 **launcher-orphan**（launcher slot 的 `assetUrl` 在 source-data 找不到 entry），可作为 A5-3 / Stage B 启动前的硬门控；上次跑（A5-3 收尾时）`missing:0`、`review:0`，exit 0 通过
+- **对账双方**：
 - **launcher slot center** = `slot.x + slot.w/2`, `slot.y + slot.h/2`（来自 `launcher/web/modules/map-panel-data.js` 的 `_pageStaticAvatars`，经 `buildStaticAvatarSlot(id, label, hotspotId, centerX, centerY, asset)` 反推）
 - **source-data center** = `MapAvatarSourceData.getByAssetUrl(slot.assetUrl).center`（来自 `launcher/web/modules/map-avatar-source-data.js`）
 
@@ -127,8 +127,8 @@
 
 ### A5-3（**已完成**——临时脚本已删；进 B 前的"最后一刻"复核改走持久工具）
 - [x] 删除 audit 脚本 `tools/audits/avatar-coord-divergence-scan.js`（决策表 markdown 保留作历史快照）
-- [x] **B 前复核改用** `node tools/audit-map-layout.js --kind avatar --fail-on-review`——其 avatar `status === 'missing'` 等同于本表 launcher-orphan；`status === 'review'` 提示 authoringState 漂移（B 删 (x, y) 后会一并消失）。上次跑（commit 时）avatar `missing:0`、`review:0`，exit 0
-- [ ] **进 B 前最后一刻**：再跑一次 `audit-map-layout --kind avatar --fail-on-review`，确认从 A5-1 快照之后没有新 launcher-orphan 被引入
+- [x] **B 前复核改用** `node tools/audit-map-layout.js --kind avatar --fail-on-review`——只看 `row.status`（[audit-map-layout.js:426](../../tools/audit-map-layout.js#L426)），其中 `status === 'missing'` ⇔ 本表 launcher-orphan（assetUrl 找不到 source entry），exit 1 兜底。**注意**：本表所有 53 个 1-30px 漂移项目前 `authoredStatus = 'review'`（authored slot rect ↔ source rect 差 > 4px），但 `authoredStatus` **不**在 `--fail-on-review` 的判定范围内（汇总 byKind 里的 `review:0` 是 `status`，不是 `authoredStatus`，所以仍 exit 0）。Stage B 删 staticAvatars (x, y) 后 `authoredRect` 概念消失，那些 review 提示一并清零。上次跑 avatar `missing:0`、status `review:0`，exit 0
+- [x] **进 B 前最后一刻**：再跑一次 `audit-map-layout --kind avatar --fail-on-review`，确认从 A5-1 快照之后没有新 launcher-orphan 被引入（Session 2 开始时执行，结果：avatar exact=54, missing=0, exit 0）
 
 ### A5-2b（B/C 之后可延后）
 - [ ] `revert-to-panel-data` 项落地：**0 项 → 空跳过**
