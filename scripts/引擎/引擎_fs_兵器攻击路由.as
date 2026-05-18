@@ -54,6 +54,17 @@ _root.兵器攻击路由 = {};
 // };
 // ============================================================================
 
+// ============================================================================
+// 状态切换作业回调（module-level named function，避免每次 producer 创建闭包）
+// ============================================================================
+
+/**
+ * 状态切换作业回调：载入后跳转兵器攻击容器
+ */
+_root.兵器攻击路由.__job_载入后跳转 = function(u:MovieClip):Void {
+    _root.兵器攻击路由.载入后跳转兵器攻击容器(u.container, u);
+};
+
 /**
  * 计算兵器普攻连招的首帧标签
  * - 对齐旧版巨型兵器攻击元件的启动逻辑：优先按 unit.兵器动作类型 拼接
@@ -88,9 +99,7 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
     unit.兵器攻击名 = actionName;
 
     // 容器化路径：跳转到"容器"帧，attachMovie 动态容器
-    unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
-        _root.兵器攻击路由.载入后跳转兵器攻击容器(u.container, u);
-    });
+    _root.路由基础.创建状态切换作业(unit, "容器", _root.兵器攻击路由.__job_载入后跳转);
 
     // 统一入口：状态改变会触发 gotoAndStop，然后执行作业回调
     // 注意：gotoAndStop 会卸载当前 man（拳刀行走状态机的执行上下文），后续代码不会执行
@@ -154,7 +163,7 @@ _root.兵器攻击路由.兵器攻击标签跳转 = function(unit:MovieClip, act
 /**
  * 构建兵器攻击容器初始化对象
  *
- * 实现：委派到 ContainerInitScratch.I().getWeapon(container) 的 singleton scratch，
+ * 实现：委派到 ContainerInitScratch.getWeapon(container) 的 singleton scratch，
  *       消除每次 new Object literal 的 GC 压力。
  *       装配字段对齐契约由 ContainerInitScratch 维护（含兵器专用移动函数、变招判定/
  *       刀口触发特效/兵器攻击、以及对齐 兵器攻击.xml 的搓招/派生函数集合）。

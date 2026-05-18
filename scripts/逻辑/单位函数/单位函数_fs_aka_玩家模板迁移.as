@@ -1572,7 +1572,8 @@ _root.主角函数.状态改变 = function(新状态名) {
         _root.路由基础.执行状态切换作业(self);
     } else {
         // 未发生跳转时清理作业（避免残留到下次状态改变）
-        delete self.__stateTransitionJob;
+        // 仅标记 job 字段为 undefined，保留对象供下次复用，避免 GC
+        _root.路由基础.清理状态切换作业(self);
     }
 };
 

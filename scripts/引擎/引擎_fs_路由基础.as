@@ -77,7 +77,7 @@ _root.路由基础.绑定移动函数 = function(man:MovieClip):Void {
  * 构建容器初始化对象
  * 技能容器和战技容器共用同一套初始化参数。
  *
- * 实现：委派到 ContainerInitScratch.I().getPublic(container) 的 singleton scratch，
+ * 实现：委派到 ContainerInitScratch.getPublic(container) 的 singleton scratch，
  *       消除每次 new Object literal 的 GC 压力。装配字段对齐契约由 ContainerInitScratch 维护。
  *
  * @param container:MovieClip 容器剪辑（用于获取位置和缩放）
@@ -260,27 +260,43 @@ _root.路由基础.动画完毕 = function(man:MovieClip, unit:MovieClip, enable
 // 后统一调度执行。这样无论调用方的执行上下文是否被销毁，作业都能正确执行。
 //
 // 使用方式：
-// 1. 调用方设置 unit.__stateTransitionJob = { gotoLabel: "容器", callback: function }
-// 2. 状态改变函数检测到 __stateTransitionJob 后：
-//    a) 使用 job.gotoLabel 覆盖默认跳转帧
+// 1. 调用方 _root.路由基础.创建状态切换作业(unit, gotoLabel, callback)
+//    - 内部 lazy-alloc unit.__stateTransitionJob 单例，仅 mutate gotoLabel/callback 字段
+//    - 复用 unit-local job 对象，稳态 0 alloc；callback 推荐传 module-level named function
+//    - 如需附加参数，在返回的 job 对象上挂 arg_* 字段（同 unit-local，下次自动覆盖）
+// 2. 调用方紧接 unit.状态改变(...)，同步触发 consumer：
+//    a) 状态改变函数读 unit.__stateTransitionJob.gotoLabel 覆盖默认跳转帧
 //    b) 执行 gotoAndStop
-//    c) 调用 job.callback(unit)
-//    d) 清理 __stateTransitionJob
+//    c) 取出 job.callback，把 callback/gotoLabel 设为 undefined（标记空闲，对象保留）
+//    d) 调用 callback(unit)
+// 3. 状态改变未发生跳转的兜底路径调用 _root.路由基础.清理状态切换作业(unit)
+//
+// 关键不变量：
+// - 单 unit 的 producer→consumer 是同步嵌套（producer-set → 状态改变 → gotoAndStop
+//   → 执行状态切换作业），job 不跨帧滞留
+// - unit-local 复用：每个 unit 自己持有一份 job 对象，gotoAndStop 期间子帧脚本对其他
+//   unit producer-set 不会污染当前 unit 的 job
 // ============================================================================
 
 /**
  * 创建状态切换作业
  * 用于需要在 gotoAndStop 后执行回调的场景（例如：拳刀行走状态机触发的兵器攻击容器化）
  *
+ * @param unit:MovieClip 持有作业的单位（每个 unit 持有自己的 job 单例）
  * @param gotoLabel:String 覆盖的跳转帧标签（传 null 则不覆盖）
  * @param callback:Function 在 gotoAndStop 后执行的回调函数，签名为 function(unit:MovieClip)
- * @return Object 作业对象
+ *                          推荐传 module-level named function，避免每次创建闭包
+ * @return Object 作业对象（unit-local 单例，可附加 arg_* 字段传参）
  */
-_root.路由基础.创建状态切换作业 = function(gotoLabel:String, callback:Function):Object {
-    return {
-        gotoLabel: gotoLabel,
-        callback: callback
-    };
+_root.路由基础.创建状态切换作业 = function(unit:MovieClip, gotoLabel:String, callback:Function):Object {
+    var job:Object = unit.__stateTransitionJob;
+    if (job == undefined) {
+        job = {};
+        unit.__stateTransitionJob = job;
+    }
+    job.gotoLabel = gotoLabel;
+    job.callback = callback;
+    return job;
 };
 
 /**
@@ -291,15 +307,15 @@ _root.路由基础.创建状态切换作业 = function(gotoLabel:String, callbac
  */
 _root.路由基础.执行状态切换作业 = function(unit:MovieClip):Void {
     var job:Object = unit.__stateTransitionJob;
-    if (job == undefined) {
+    if (job == undefined || job.callback == undefined) {
         return;
     }
-    // 清理作业（必须在回调前清理，防止回调中再次触发状态改变导致重入）
-    delete unit.__stateTransitionJob;
-    // 执行回调
-    if (job.callback != undefined) {
-        job.callback(unit);
-    };
+    // 取出回调并标记 job 为空闲（必须在回调前标记，防止回调中再次触发状态改变导致重入）
+    // 仅置空 callback/gotoLabel 字段，保留对象本身供 unit 下次复用，避免 GC
+    var cb:Function = job.callback;
+    job.callback = undefined;
+    job.gotoLabel = undefined;
+    cb(unit);
 };
 
 /**
@@ -315,4 +331,18 @@ _root.路由基础.获取作业跳转帧覆盖 = function(unit:MovieClip):String
         return null;
     }
     return job.gotoLabel;
+};
+
+/**
+ * 清理状态切换作业（兜底路径用）
+ * 状态改变未实际发生跳转时调用，标记 job 为空闲（保留对象供复用）
+ *
+ * @param unit:MovieClip 持有作业的单位
+ */
+_root.路由基础.清理状态切换作业 = function(unit:MovieClip):Void {
+    var job:Object = unit.__stateTransitionJob;
+    if (job != undefined) {
+        job.callback = undefined;
+        job.gotoLabel = undefined;
+    }
 };
