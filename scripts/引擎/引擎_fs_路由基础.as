@@ -19,6 +19,19 @@ import org.flashNight.arki.unit.UnitComponent.Routing.*;
 
 _root.路由基础 = {};
 
+// ============================================================================
+// 路由系统公共状态/帧名字符串常量
+// 集中化的目的：让第二步 class 化时重命名只改一处，而不是全工程 grep 字符串。
+// 容器 XML 末帧 callback 与状态机 onUnload 写入的状态名都对齐这里。
+// ============================================================================
+_root.路由基础.LABEL_CONTAINER         = "容器";          // 主角-男 用于容器化 attachMovie 的占位帧
+_root.路由基础.STATE_WEAPON            = "兵器攻击";       // 普攻连招逻辑状态（兵器）
+_root.路由基础.STATE_WEAPON_CONTAINER  = "兵器攻击容器";   // 兵器搓招触发新容器时用的辅助状态
+_root.路由基础.STATE_BAREHAND          = "空手攻击";       // 普攻连招逻辑状态（空手）
+_root.路由基础.BIG_END_PUNCH           = "普攻结束";       // onUnload 写入的大状态名
+_root.路由基础.SMALL_END_WEAPON        = "兵器攻击结束";   // onUnload 写入的小状态名（兵器）
+_root.路由基础.SMALL_END_BAREHAND      = "空手攻击结束";   // onUnload 写入的小状态名（空手）
+
 /**
  * 设置通用姿态与武器加成
  * 技能和战技共用同一套逻辑：根据技能名判断使用空手还是技能加成
@@ -85,6 +98,67 @@ _root.路由基础.绑定移动函数 = function(man:MovieClip):Void {
  */
 _root.路由基础.构建容器初始化对象 = function(container:MovieClip):Object {
     return ContainerInitScratch.getPublic(container);
+};
+
+/**
+ * 屏蔽旧 man 的 onUnload 回调
+ * 容器化切换阶段（兵器攻击标签跳转 / 空手攻击标签跳转 / 跨容器标签跳转）使用：
+ * 旧容器 man 上的 onUnload 会写入"普攻结束/<XX>攻击结束"，但本次切换的目的是
+ * 接力到新容器 man，由新 man 的 onUnload 统一写状态。本函数将旧 man.onUnload 置空，
+ * 避免新容器 man.attachMovie 引发 gotoAndStop 卸载旧 man 时误写结束状态。
+ *
+ * @param unit:MovieClip 持有旧 man 的单位
+ */
+_root.路由基础.屏蔽旧man卸载 = function(unit:MovieClip):Void {
+    if (unit.man != undefined) {
+        unit.man.onUnload = function() {};
+    }
+};
+
+// ============================================================================
+// 同帧跳转保护
+// ----------------------------------------------------------------------------
+// 容器化普攻的执行链通常是 `<攻击>搓招() -> 变招判定()`。若搓招在前半段触发了
+// 标签跳转（新 attachMovie），同帧后半段的变招判定仍会执行，可能覆盖状态/动画
+// 完毕到刚加载的新容器上。这里用 unit-local 的帧戳标记本帧已发生跳转，变招判定
+// 在标记命中时早退即可。
+//
+// 字段分离（__skipWeaponChangeFrame / __skipBarehandChangeFrame）是为了让兵器/
+// 空手两条并发逻辑互不干扰；第二步 class 化时若决定收成单字段，改这四个 API
+// 函数体即可，调用方不需改动。
+// ============================================================================
+
+_root.路由基础.标记同帧跳转兵器 = function(unit:MovieClip):Void {
+    unit.__skipWeaponChangeFrame = _root.帧计时器.当前帧数;
+};
+_root.路由基础.是否同帧跳转兵器 = function(unit:MovieClip):Boolean {
+    return unit.__skipWeaponChangeFrame === _root.帧计时器.当前帧数;
+};
+_root.路由基础.标记同帧跳转空手 = function(unit:MovieClip):Void {
+    unit.__skipBarehandChangeFrame = _root.帧计时器.当前帧数;
+};
+_root.路由基础.是否同帧跳转空手 = function(unit:MovieClip):Boolean {
+    return unit.__skipBarehandChangeFrame === _root.帧计时器.当前帧数;
+};
+
+/**
+ * 绑定容器化普攻 man 的 onUnload 写状态
+ * 容器化普攻（兵器/空手）的 man 被卸载时统一写 (BIG_END_PUNCH, smallEndState)。
+ * chain 前序 onUnload，避免覆盖容器自身可能挂的清理逻辑。
+ *
+ * @param man:MovieClip 容器化 man（attachMovie 返回值）
+ * @param unit:MovieClip 持有 man 的单位
+ * @param smallEndState:String 小状态名（推荐传 STATE_END_WEAPON / STATE_END_BAREHAND）
+ */
+_root.路由基础.绑定容器结束写状态 = function(man:MovieClip, unit:MovieClip, smallEndState:String):Void {
+    var prevOnUnload:Function = man.onUnload;
+    var bigEnd:String = _root.路由基础.BIG_END_PUNCH;
+    man.onUnload = function() {
+        if (prevOnUnload != undefined) {
+            prevOnUnload.apply(this);
+        }
+        unit.UpdateBigSmallState(bigEnd, smallEndState);
+    };
 };
 
 /**
@@ -280,6 +354,16 @@ _root.路由基础.动画完毕 = function(man:MovieClip, unit:MovieClip, enable
 //   → 执行状态切换作业），job 不跨帧滞留
 // - unit-local 复用：每个 unit 自己持有一份 job 对象，gotoAndStop 期间子帧脚本对其他
 //   unit producer-set 不会污染当前 unit 的 job
+//
+// job 字段契约（第二步 class 化时 StateTransitionJob 的字段集）：
+//   gotoLabel:String          — 覆盖的跳转帧标签；consumer 取走后置 undefined
+//   callback:Function         — gotoAndStop 后执行的回调，签名 function(unit:MovieClip):Void
+//                               consumer 取走后置 undefined（标记 job 空闲，对象保留供 unit 下次复用）
+//   arg_containerName:String  — 跨容器标签跳转专用：容器首帧标签
+//   arg_targetLabel:String    — 跨容器标签跳转专用：实际要跳转到的帧标签
+//
+// 新增 arg_* 字段时务必同步在 创建状态切换作业 / 清理状态切换作业 中加 undefined 置空，
+// 否则 unit-local 复用会让 producer 跨路由读到上一轮的脏值。
 // ============================================================================
 
 /**
@@ -393,4 +477,49 @@ _root.路由基础.清理状态切换作业 = function(unit:MovieClip):Void {
         job.arg_containerName = undefined;
         job.arg_targetLabel = undefined;
     }
+};
+
+// ============================================================================
+// 诊断钩子
+// ----------------------------------------------------------------------------
+// 在 testloader / 玩家复现现场时一行 dump 全部路由相关状态。返回字符串而不直接
+// trace，由调用方决定输出方式（_root.发布消息 / trace / 写日志）。
+// 用例：
+//   _root.发布消息(_root.路由基础.__dump状态(unit));
+// ============================================================================
+
+_root.路由基础.__dump状态 = function(unit:MovieClip):String {
+    if (unit == undefined) {
+        return "[路由dump] unit=undefined";
+    }
+    var s:String = "[路由dump]";
+    s += " 帧=" + _root.帧计时器.当前帧数;
+    s += " name=" + unit._name;
+    s += " 状态=" + unit.状态;
+    s += " 旧状态=" + unit.旧状态;
+    s += " __stateGotoLabel=" + unit.__stateGotoLabel;
+    s += " 兵器攻击名=" + unit.兵器攻击名;
+    s += " 空手攻击名=" + unit.空手攻击名;
+    s += " 技能名=" + unit.技能名;
+    s += " __skipWeapon=" + unit.__skipWeaponChangeFrame;
+    s += " __skipBare=" + unit.__skipBarehandChangeFrame;
+    var job:Object = unit.__stateTransitionJob;
+    if (job == undefined) {
+        s += " job=undefined";
+    } else {
+        s += " job{goto=" + job.gotoLabel
+          +  " cb=" + (job.callback != undefined)
+          +  " arg_cn=" + job.arg_containerName
+          +  " arg_tl=" + job.arg_targetLabel + "}";
+    }
+    s += " 浮空=" + unit.浮空;
+    s += " temp_y=" + unit.temp_y;
+    s += " _y=" + unit._y;
+    s += " Z=" + unit.Z轴坐标;
+    s += " 技能浮空=" + unit.技能浮空;
+    s += " 战技浮空=" + unit.战技浮空;
+    s += " __preserve=" + unit.__preserveFloatFlagOnUnload;
+    s += " man=" + (unit.man != undefined);
+    s += " man.__isDynamic=" + unit.man.__isDynamicMan;
+    return s;
 };

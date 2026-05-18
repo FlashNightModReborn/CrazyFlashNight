@@ -316,7 +316,7 @@ _root.技能函数.获取移动方向 = function(){
  */
 _root.技能函数.变招判定 = function(招式名:String, 招式是否结束:Boolean):Void {
 	var unit:MovieClip = _parent;
-	if (unit.__skipWeaponChangeFrame === _root.帧计时器.当前帧数) {
+	if (_root.路由基础.是否同帧跳转兵器(unit)) {
 		return;
 	}
 	if (unit.操控编号 != -1 && _root.控制目标全自动 == false) {

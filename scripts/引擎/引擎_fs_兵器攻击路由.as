@@ -6,7 +6,7 @@
  *       同时将 xml 中的 onClipEvent 代码迁移到 AS 文件，消除资产文件中的代码依赖。
  *
  * 依赖：
- * - 引擎_fs_路由基础.as（复用构建容器初始化对象、状态切换作业机制）
+ * - 引擎_fs_路由基础.as（复用构建容器初始化对象、状态切换作业机制、屏蔽旧man卸载、绑定容器结束写状态、同帧跳转保护）
  *
  * 架构说明：
  * - 所有路径统一使用"状态切换作业"机制：
@@ -23,36 +23,15 @@
  * - 搓招入口：兵器攻击标签跳转(unit, 招式名)
  * - 容器元件最后一帧调用 `_root.兵器攻击路由.动画完毕(this, _parent)`
  *
+ * 渐进式容器化的兼容实现参考已外移到 docs/路由系统-容器化兼容路径.md
+ *
  * @author flashNight
- * @version 3.0 - 容器化完成，移除兼容性分支
+ * @version 3.1 - API 收编：屏蔽旧man卸载/绑定容器结束写状态/同帧跳转保护/状态字符串常量集中
  */
 
 import org.flashNight.arki.unit.UnitComponent.Routing.*;
 
 _root.兵器攻击路由 = {};
-
-// ============================================================================
-// 【兼容性实现参考 - 容器符号存在性检测】
-// 用于渐进式容器化阶段，检测容器符号是否存在，不存在则回退旧帧路径
-// 新增路由时若需渐进式改造可参考此实现
-// ============================================================================
-// _root.兵器攻击路由.__containerExistsCache = {};
-//
-// _root.兵器攻击路由.检查容器符号存在 = function(unit:MovieClip, symbolName:String):Boolean {
-//     var cache:Object = _root.兵器攻击路由.__containerExistsCache;
-//     if (cache[symbolName] !== undefined) {
-//         return cache[symbolName];
-//     }
-//     var testInstanceName:String = "__containerExistTest_" + getTimer() + "_" + Math.floor(Math.random() * 10000);
-//     var testMan:MovieClip = unit.attachMovie(symbolName, testInstanceName, 9999);
-//     var exists:Boolean = (testMan != undefined);
-//     if (exists) {
-//         testMan.removeMovieClip();
-//     }
-//     cache[symbolName] = exists;
-//     return exists;
-// };
-// ============================================================================
 
 // ============================================================================
 // 状态切换作业回调（module-level named function，避免每次 producer 创建闭包）
@@ -100,39 +79,18 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
 
     // 统一入口：状态改变会触发 gotoAndStop，然后执行作业回调
     // 注意：gotoAndStop 会卸载当前 man（拳刀行走状态机的执行上下文），后续代码不会执行
-    _root.路由基础.触发状态切换作业(unit, "兵器攻击", "容器", _root.兵器攻击路由.__job_载入后跳转, "容器");
+    _root.路由基础.触发状态切换作业(
+        unit,
+        _root.路由基础.STATE_WEAPON,
+        _root.路由基础.LABEL_CONTAINER,
+        _root.兵器攻击路由.__job_载入后跳转,
+        _root.路由基础.LABEL_CONTAINER
+    );
 };
-
-// ============================================================================
-// 【兼容性实现参考 - 渐进式容器化的普攻连招开始】
-// 检测容器符号是否存在，存在走容器路径，不存在回退旧帧路径
-// ============================================================================
-// _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Void {
-//     if (unit.兵种 !== "主角-男") {
-//         return;
-//     }
-//     var actionName:String = _root.兵器攻击路由.获取普攻连招首帧标签(unit);
-//     unit.兵器攻击名 = actionName;
-//     var symbolName:String = "兵器攻击容器-" + actionName;
-//     var containerExists:Boolean = _root.兵器攻击路由.检查容器符号存在(unit, symbolName);
-//     if (containerExists) {
-//         _root.发布消息("使用容器路径加载 " + symbolName);
-//         unit.__stateTransitionJob = _root.路由基础.创建状态切换作业("容器", function(u:MovieClip):Void {
-//             _root.兵器攻击路由.载入后跳转兵器攻击容器(u.container, u);
-//         });
-//     } else {
-//         _root.发布消息("容器不存在，使用旧帧路径加载 " + symbolName);
-//         unit.__stateTransitionJob = _root.路由基础.创建状态切换作业(null, function(u:MovieClip):Void {
-//             _root.兵器攻击路由.兵器攻击帧载入(u.man, u);
-//         });
-//     }
-//     unit.状态改变("兵器攻击");
-// };
-// ============================================================================
 
 /**
  * 兵器攻击标签跳转入口
- * - 主角-男：通过状态切换作业跳到“容器”帧，并在 gotoAndStop 后 attachMovie 对应容器
+ * - 主角-男：通过状态切换作业跳到"容器"帧，并在 gotoAndStop 后 attachMovie 对应容器
  * - 其他单位：维持旧逻辑（man.gotoAndPlay）
  *
  * @param unit:MovieClip 执行兵器攻击的单位
@@ -141,7 +99,7 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
 _root.兵器攻击路由.兵器攻击标签跳转 = function(unit:MovieClip, actionName:String):Void {
     unit.兵器攻击名 = actionName;
     // 同帧跳转保护：搓招已触发新容器后，跳过旧容器本帧剩余的变招/后摇判定。
-    unit.__skipWeaponChangeFrame = _root.帧计时器.当前帧数;
+    _root.路由基础.标记同帧跳转兵器(unit);
 
     // 非主角-男：继续走旧man跳帧（不引入容器化状态依赖）
     if (unit.兵种 !== "主角-男") {
@@ -151,13 +109,17 @@ _root.兵器攻击路由.兵器攻击标签跳转 = function(unit:MovieClip, act
         return;
     }
 
-    // 切到“容器”帧会卸载旧man；旧man.onUnload 会写入“普攻结束/兵器攻击结束”。
+    // 切到"容器"帧会卸载旧man；旧man.onUnload 会写入"普攻结束/兵器攻击结束"。
     // 容器化切换阶段必须屏蔽该卸载回调（真正结束由新容器man卸载时统一处理）。
-    if (unit.man != undefined) {
-        unit.man.onUnload = function() {};
-    }
+    _root.路由基础.屏蔽旧man卸载(unit);
 
-    _root.路由基础.触发状态切换作业(unit, "兵器攻击容器", "容器", _root.兵器攻击路由.__job_载入后跳转, "容器");
+    _root.路由基础.触发状态切换作业(
+        unit,
+        _root.路由基础.STATE_WEAPON_CONTAINER,
+        _root.路由基础.LABEL_CONTAINER,
+        _root.兵器攻击路由.__job_载入后跳转,
+        _root.路由基础.LABEL_CONTAINER
+    );
 };
 
 /**
@@ -208,45 +170,24 @@ _root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:
     }
 
     // 统一结束手感：动态man被卸载/移除时写入"普攻结束/兵器攻击结束"
-    var prevOnUnload:Function = man.onUnload;
-    man.onUnload = function() {
-        if (prevOnUnload != undefined) {
-            prevOnUnload.apply(this);
-        }
-        unit.UpdateBigSmallState("普攻结束", "兵器攻击结束");
-    };
+    _root.路由基础.绑定容器结束写状态(man, unit, _root.路由基础.SMALL_END_WEAPON);
 
     man.gotoAndPlay(actionName);
     return man;
 };
 
-// ============================================================================
-// 【兼容性实现参考 - 旧帧路径的载入处理】
-// 用于渐进式容器化阶段，容器符号不存在时回退到旧帧的 load 逻辑
-// ============================================================================
-// _root.兵器攻击路由.兵器攻击帧载入 = function(man:MovieClip, unit:MovieClip):Void {
-//     if (unit._name == _root.控制目标) {
-//         unit.读取当前飞行状态();
-//         if (!unit.飞行浮空 && unit.被动技能.上挑 && unit.被动技能.上挑.启用 && Key.isDown(unit.B键)) {
-//             unit.跳横移速度 = unit.行走X速度;
-//             unit.跳跃中移动速度 = unit.行走X速度;
-//             unit.状态改变("兵器跳");
-//             return;
-//         }
-//     }
-//     man.onUnload = function() {
-//         unit.UpdateBigSmallState("普攻结束", "兵器攻击结束");
-//     };
-// };
-// ============================================================================
-
 /**
  * 动画完毕处理（由容器元件末帧调用）
+ *
+ * 委派到 _root.路由基础.动画完毕：站立常态下与"两行内联版"等价（清理浮空任务/在空中检测
+ * 都是 no-op），但在边界情况（跨容器残留浮空标记 / 跳跃落地瞬间触发普攻）能走自然落地兜底，
+ * 避免直接 removeMovieClip 留下不一致的 _y。
+ *
+ * 普攻不应启用二段跳，enableDoubleJump 固定传 false。
  *
  * @param man:MovieClip 当前容器化兵器攻击man
  * @param unit:MovieClip 执行兵器攻击的单位
  */
 _root.兵器攻击路由.动画完毕 = function(man:MovieClip, unit:MovieClip):Void {
-    unit.动画完毕();
-    man.removeMovieClip();
+    _root.路由基础.动画完毕(man, unit, false);
 };
