@@ -160,7 +160,7 @@ _root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:
         unit.读取当前飞行状态();
 
         // 2. 上挑派生检测：按住B键时触发被动技能"上挑"跳转到"兵器跳"
-        if (!unit.飞行浮空 && unit.被动技能.上挑 && unit.被动技能.上挑.启用 && Key.isDown(unit.B键)) {
+        if (JumpDerivePredicate.shouldTrigger(unit.被动技能.上挑, unit.飞行浮空, Key.isDown(unit.B键))) {
             unit.跳横移速度 = unit.行走X速度;
             unit.跳跃中移动速度 = unit.行走X速度;
             unit.状态改变("兵器跳");

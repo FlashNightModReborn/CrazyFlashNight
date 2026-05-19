@@ -52,14 +52,10 @@ _root.空手攻击路由.__job_跨容器跳转 = function(u:MovieClip):Void {
     var man:MovieClip = u.attachMovie("空手攻击容器-" + containerActionName, "man", 0, initObj);
     if (man == undefined) { return; }
 
-    // 对齐升龙拳判定
+    // 对齐升龙拳判定（A + B 同时按下）
     if (u._name == _root.控制目标) {
         u.读取当前飞行状态();
-        if (!u.飞行浮空 &&
-            u.被动技能.升龙拳 &&
-            u.被动技能.升龙拳.启用 &&
-            Key.isDown(u.A键) &&
-            Key.isDown(u.B键)) {
+        if (JumpDerivePredicate.shouldTrigger(u.被动技能.升龙拳, u.飞行浮空, Key.isDown(u.A键) && Key.isDown(u.B键))) {
             u.跳横移速度 = u.行走X速度;
             u.跳跃中移动速度 = u.行走X速度;
             u.状态改变("空手跳");
@@ -376,14 +372,10 @@ _root.空手攻击路由.载入后跳转空手攻击容器 = function(container:
         return undefined;
     }
 
-    // 对齐原空手攻击帧的 load 逻辑（升龙拳判定等）
+    // 对齐原空手攻击帧的 load 逻辑（升龙拳判定 A + B）
     if (unit._name == _root.控制目标) {
         unit.读取当前飞行状态();
-        if (!unit.飞行浮空 &&
-            unit.被动技能.升龙拳 &&
-            unit.被动技能.升龙拳.启用 &&
-            Key.isDown(unit.A键) &&
-            Key.isDown(unit.B键)) {
+        if (JumpDerivePredicate.shouldTrigger(unit.被动技能.升龙拳, unit.飞行浮空, Key.isDown(unit.A键) && Key.isDown(unit.B键))) {
             unit.跳横移速度 = unit.行走X速度;
             unit.跳跃中移动速度 = unit.行走X速度;
             unit.状态改变("空手跳");

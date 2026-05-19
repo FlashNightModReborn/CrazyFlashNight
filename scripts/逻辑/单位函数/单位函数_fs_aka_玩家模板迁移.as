@@ -1511,71 +1511,13 @@ _root.主角函数.读取当前飞行状态 = function(type) {
 
 
 
+// 状态改变 — 真正实现搬到 StateTransition.apply（class 化 + testloader 端到端覆盖）
+// 决策 真值表：StateTransitionCore（shouldStoreFlyState / shouldEarlyReturnOnFlyingRun /
+// resolveAttackMode / resolvePrevGotoLabel / resolveGotoLabel / shouldTransition）。
+// 副作用编排：StateTransition.apply 内顺序调用 self.存储/读取当前飞行状态、self.gotoAndStop、
+// self.man.removeMovieClip、RoutingIntent.executeStateTransitionJob / clearStateTransitionJob。
 _root.主角函数.状态改变 = function(新状态名) {
-    var self = this;
-    //_root.发布调试消息("状态改变"+this.shadow._x+"/"+this.shadow._y+"/"+this.shadow._visible+"/"+this.状态+"/"+_root.是否阴影);
-    if (self._name === _root.控制目标 && (新状态名 === self.攻击模式 + "攻击" || 新状态名 === self.攻击模式 + "站立")) {
-        self.存储当前飞行状态("状态改变");
-    }
-    if (self.飞行浮空 && 新状态名.indexOf("跑") > -1)
-        return;
-
-    if (!self.攻击模式)
-        self.攻击模式 = "空手";
-
-    self.旧状态 = self.状态;
-
-    // 状态别名/跳转帧映射：用于将"容器化实现"伪装为旧的逻辑状态名，降低全局特判改造成本
-    // - 逻辑状态（self.状态）：供代码判定使用，例如 `状态 == "技能"`
-    // - 跳转帧标签（gotoLabel）：实际 gotoAndStop 的帧名，例如 `"技能容器"`
-    var logicalState:String = 新状态名;
-    var gotoLabel:String = 新状态名;
-    var prevGotoLabel:String = (self.__stateGotoLabel != undefined) ? self.__stateGotoLabel : self.旧状态;
-
-    // 仅对已容器化的主角-男启用映射（避免影响其他单位/模板）
-    if (self.兵种 === "主角-男") {
-
-        // 容器化帧：逻辑状态维持不变，显示层跳转到"容器"帧
-        if (logicalState === "技能" || logicalState === "战技" || logicalState === "兵器攻击容器") {
-            gotoLabel = "容器";
-        }
-
-        // 状态切换作业：支持调用方动态覆盖跳转帧标签
-        // 用于处理 gotoAndStop 后需要执行回调的场景（例如：兵器攻击容器化）
-        var jobGotoLabel:String = RoutingIntent.getJobGotoOverride(self);
-        if (jobGotoLabel != null) {
-            gotoLabel = jobGotoLabel;
-        }
-    }
-
-    // 容器化man清理：attachMovie 动态创建的 man 不会随 gotoAndStop 自动销毁，需要手动移除
-    // 通过 __isDynamicMan 标记识别（技能容器已在路由 attachMovie 时写入该标记）
-    if (self.man && self.man.__isDynamicMan) {
-        self.man.removeMovieClip();
-        // _root.发布消息("移除旧的动态man");
-    }
-
-    // 记录本次实际跳转的帧标签，供下次状态切换时判断"从哪个显示帧离开"
-    self.__stateGotoLabel = gotoLabel;
-
-    // 逻辑状态变化 or 显示帧变化 时才执行跳转
-    if (self.旧状态 != logicalState || prevGotoLabel != gotoLabel) {
-        self.状态 = logicalState;
-        // _root.发布消息("状态改变: " + self.旧状态 + " -> " + logicalState + ", gotoLabel=" + gotoLabel);
-        self.gotoAndStop(gotoLabel);
-
-        // 统一恢复飞行状态：将分散在各帧 onClipEvent(load) 的 读取当前飞行状态() 收口至此
-        // 函数内部已有 _name !== _root.控制目标 的判断，非玩家单位会直接 return
-        self.读取当前飞行状态();
-
-        // 执行状态切换作业：仅在确实发生 gotoAndStop 后执行回调
-        // 用于解决：调用链在被卸载的 MovieClip 的 onEnterFrame 中时，gotoAndStop 后代码无法执行的问题
-        RoutingIntent.executeStateTransitionJob(self);
-    } else {
-        // 未发生跳转时清理作业（避免残留到下次状态改变）
-        // 仅标记 job 字段为 undefined，保留对象供下次复用，避免 GC
-        RoutingIntent.clearStateTransitionJob(self);
-    }
+    StateTransition.apply(this, 新状态名);
 };
 
 
