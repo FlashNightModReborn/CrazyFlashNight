@@ -6,6 +6,34 @@ import org.flashNight.neur.ScheduleTimer.*;
  *
  * 生产环境默认委派到 `_root.空中控制器` 与 EnhancedCooldownWheel。
  * TestLoader 可注入 mock air/scheduler，避免依赖真实帧时间推进。
+ *
+ * ════════════════════════════════════════════════════════════════════
+ * FROZEN ADAPTER SURFACE — 添加方法需 review，业务代码禁止绕过
+ * ════════════════════════════════════════════════════════════════════
+ * 本类是 Routing/* 触达 `_root.空中控制器` 的 ONLY 通道。规则：
+ *
+ * 1) RoutingLifecycle / StateTransition / 任何 Routing/ 下的 class 都
+ *    **不得直接读写 `_root.空中控制器.xxx`**。一律走 RoutingRuntime.*。
+ *
+ * 2) 业务侧（玩家模板迁移.as / 路由 .as / asLoader 帧脚本）需要新的空中控制器
+ *    交互时，**只能从下面这张表扩**，不能在调用点绕回 _root。新加 adapter
+ *    需要：(a) 此处文档加一行；(b) RoutingRuntime 加 setXxxForTest /
+ *    clearXxxForTest 注入接口（如已通过 getAirController 复用则不必）。
+ *
+ * 3) `_root.空中控制器` 本体何时重构、是否拆类，与本表无关 — 本类已抹平
+ *    测试需求，本体改造不再是路由系统稳固的硬阻塞（user 2026-05-18 决策）。
+ *
+ * 当前 frozen surface（v1，2026-05-19）：
+ *   removeTask(taskID)                                  → EnhancedCooldownWheel
+ *   closeSkillFloat(unit)                               → 关闭技能浮空
+ *   closeNaturalLanding(unit)                           → 关闭自然落地
+ *   closeJumpFloat(unit)                                → 关闭跳跃浮空
+ *   enableSkillFloat(unit, floatFlag, man)              → 启用技能浮空
+ *   enableNaturalLanding(unit)                          → 启用自然落地
+ *
+ * 测试侧 mock 接口：
+ *   setAirControllerForTest / clearAirControllerForTest
+ *   setSchedulerForTest     / clearSchedulerForTest
  */
 class org.flashNight.arki.unit.UnitComponent.Routing.RoutingRuntime {
 

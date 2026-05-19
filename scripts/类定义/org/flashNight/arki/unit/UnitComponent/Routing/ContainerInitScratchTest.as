@@ -76,6 +76,11 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerInitScratchTest {
         testAssembleFromMap_WEAPON_FieldsAndSources();
         testFieldMap_NoEmptyDstKeys();
 
+        // sources 注入 + 反向 sentinel 断言（与 fieldMap 互证，独立于 _root）
+        testAssembleFromMap_SourcesInjection();
+        testAssembleFromMap_DefaultSourcesFallbackToRoot();
+        testFieldMap_CriticalSourceContracts();
+
         // trampoline 行为（同一 scratch + transform 刷新）
         testGetPublic_SameScratchOnRepeatedCall();
         testGetUnarmed_SameScratchOnRepeatedCall();
@@ -176,6 +181,107 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerInitScratchTest {
                 assertTrue(label + "[" + j + "].srcKey 非空字符串", typeof entry[2] === "string" && entry[2].length > 0);
             }
         }
+    }
+
+    // ====================================================================
+    // sources 注入 + 反向 sentinel 断言
+    // ====================================================================
+
+    /**
+     * sources 注入功能本身：自构 fields + fakeSources，sentinel 字符串作为期望值。
+     * 这一组不依赖 _root，也不依赖 RoutingFieldMap 的具体内容，纯验证 assembleFromMap
+     * 的"按 fields 表把 sources[srcRoot][srcKey] 拷到 out[dst]"契约。
+     */
+    private static function testAssembleFromMap_SourcesInjection():Void {
+        trace("\n--- testAssembleFromMap_SourcesInjection ---");
+        var c = makeContainer(0, 0, 100, 100);
+        var fields:Array = [
+            ["alpha", "rootA", "k1"],
+            ["beta",  "rootA", "k2"],
+            ["gamma", "rootB", "k1"]
+        ];
+        var sources:Object = {
+            rootA: { k1: "SENTINEL_A_k1", k2: "SENTINEL_A_k2" },
+            rootB: { k1: "SENTINEL_B_k1" }
+        };
+        var s = ContainerInitScratch.assembleFromMap(c, fields, sources);
+
+        assertEquals("alpha → sources.rootA.k1", "SENTINEL_A_k1", s.alpha);
+        assertEquals("beta → sources.rootA.k2",  "SENTINEL_A_k2", s.beta);
+        assertEquals("gamma → sources.rootB.k1", "SENTINEL_B_k1", s.gamma);
+        // sources 注入不影响 transform / __isDynamicMan
+        assertEquals("__isDynamicMan 仍为 true", true, s.__isDynamicMan);
+        assertEquals("_x 来自 container", 0, s._x);
+    }
+
+    /**
+     * 不传 sources（或传 undefined）时退化到 _root：与原 _root 路径行为一致。
+     */
+    private static function testAssembleFromMap_DefaultSourcesFallbackToRoot():Void {
+        trace("\n--- testAssembleFromMap_DefaultSourcesFallbackToRoot ---");
+        var c = makeContainer(0, 0, 100, 100);
+        var fields:Array = [["dst1", "技能函数", "攻击时移动"]];
+
+        var sNoArg = ContainerInitScratch.assembleFromMap(c, fields, undefined);
+        assertSame("不传 sources → fallback _root", _root.技能函数.攻击时移动, sNoArg.dst1);
+    }
+
+    /**
+     * 关键映射人工 audit 表（与 RoutingFieldMap 互证）。
+     *
+     * 这些是字段语义文档里明确定义的"独立来源"：如果 RoutingFieldMap 里 srcRoot/srcKey
+     * 写错（typo / 改错 dict 名 / 漏掉 weapon 覆盖），下列断言会立刻 FAIL。原 PUBLIC/
+     * UNARMED/WEAPON_FieldsAndSources 测试是"测试与被测代码同读 fieldMap"，对 typo
+     * 不敏感；这组用 sentinel 注入做反向断言，弥补盲点。
+     *
+     * 维护原则：
+     *   - 仅断言 _关键_ 易错点，不复制整个 fieldMap
+     *   - 修改 RoutingFieldMap 时，仅在变更这些"独立来源"语义时才需同步本测试
+     */
+    private static function testFieldMap_CriticalSourceContracts():Void {
+        trace("\n--- testFieldMap_CriticalSourceContracts ---");
+        var c = makeContainer(0, 0, 100, 100);
+
+        // 构造 sentinel sources：每个 (srcRoot, srcKey) 一个独有字符串
+        var sources:Object = {};
+        sources["技能函数"] = {
+            攻击时移动:    "SKILL_移动",
+            兵器攻击时移动:"SKILL_兵器移动",
+            获取移动方向:  "SKILL_方向"
+        };
+        sources["空手攻击路由"] = {
+            攻击时移动:    "UNARMED_移动",
+            获取移动方向:  "UNARMED_方向"  // 故意填值，但 fieldMap 不会读它
+        };
+
+        var sPublic  = ContainerInitScratch.assembleFromMap(c, RoutingFieldMap.PUBLIC_FIELDS,  sources);
+        var sUnarmed = ContainerInitScratch.assembleFromMap(c, RoutingFieldMap.UNARMED_FIELDS, sources);
+        var sWeapon  = ContainerInitScratch.assembleFromMap(c, RoutingFieldMap.WEAPON_FIELDS,  sources);
+
+        // PUBLIC：所有 src 都来自 技能函数
+        assertEquals("PUBLIC.攻击时移动 ← 技能函数.攻击时移动",
+            "SKILL_移动", sPublic["攻击时移动"]);
+        assertEquals("PUBLIC.攻击时后退移动 ← 技能函数.攻击时移动（同源）",
+            "SKILL_移动", sPublic["攻击时后退移动"]);
+        assertEquals("PUBLIC.获取移动方向 ← 技能函数.获取移动方向",
+            "SKILL_方向", sPublic["获取移动方向"]);
+
+        // UNARMED：攻击时移动 必须走 空手攻击路由（不是 技能函数）
+        assertEquals("UNARMED.攻击时移动 ← 空手攻击路由.攻击时移动",
+            "UNARMED_移动", sUnarmed["攻击时移动"]);
+        assertEquals("UNARMED.攻击时后退移动 ← 空手攻击路由.攻击时移动（同源）",
+            "UNARMED_移动", sUnarmed["攻击时后退移动"]);
+        // UNARMED.获取移动方向 是关键易错点：来自 技能函数 而非 空手攻击路由
+        assertEquals("UNARMED.获取移动方向 ← 技能函数（而非 空手攻击路由）",
+            "SKILL_方向", sUnarmed["获取移动方向"]);
+
+        // WEAPON：攻击时移动 用 兵器攻击时移动 覆盖；攻击时后退移动 沿用 base
+        assertEquals("WEAPON.攻击时移动 ← 技能函数.兵器攻击时移动（兵器覆盖）",
+            "SKILL_兵器移动", sWeapon["攻击时移动"]);
+        assertEquals("WEAPON.攻击时后退移动 ← 技能函数.攻击时移动（沿用 base 而非兵器版）",
+            "SKILL_移动", sWeapon["攻击时后退移动"]);
+        assertEquals("WEAPON.获取移动方向 ← 技能函数.获取移动方向",
+            "SKILL_方向", sWeapon["获取移动方向"]);
     }
 
     // ====================================================================

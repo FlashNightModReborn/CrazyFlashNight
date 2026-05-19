@@ -49,17 +49,17 @@ _root.空手攻击路由.__job_跨容器跳转 = function(u:MovieClip):Void {
     var targetLabel:String = job.arg_targetLabel;
 
     var initObj:Object = _root.空手攻击路由.构建空手攻击容器初始化对象(u.container);
-    var man:MovieClip = u.attachMovie("空手攻击容器-" + containerActionName, "man", 0, initObj);
+    var man:MovieClip = u.attachMovie(
+        ContainerSpec.buildLinkageName(ContainerSpec.KIND_UNARMED, containerActionName),
+        "man", 0, initObj
+    );
     if (man == undefined) { return; }
 
     // 对齐升龙拳判定（A + B 同时按下）
     if (u._name == _root.控制目标) {
         u.读取当前飞行状态();
-        if (JumpDerivePredicate.shouldTrigger(u.被动技能.升龙拳, u.飞行浮空, Key.isDown(u.A键) && Key.isDown(u.B键))) {
-            u.跳横移速度 = u.行走X速度;
-            u.跳跃中移动速度 = u.行走X速度;
-            u.状态改变("空手跳");
-            man.removeMovieClip();
+        if (JumpDeriveAction.tryDerive(u, man, u.被动技能.升龙拳,
+                Key.isDown(u.A键) && Key.isDown(u.B键), "空手跳")) {
             return;
         }
     }
@@ -367,7 +367,10 @@ _root.空手攻击路由.构建空手攻击容器初始化对象 = function(cont
 _root.空手攻击路由.载入后跳转空手攻击容器 = function(container:MovieClip, unit:MovieClip):MovieClip {
     var actionName:String = unit.空手攻击名;
     var initObj:Object = _root.空手攻击路由.构建空手攻击容器初始化对象(container);
-    var man:MovieClip = unit.attachMovie("空手攻击容器-" + actionName, "man", 0, initObj);
+    var man:MovieClip = unit.attachMovie(
+        ContainerSpec.buildLinkageName(ContainerSpec.KIND_UNARMED, actionName),
+        "man", 0, initObj
+    );
     if (man == undefined) {
         return undefined;
     }
@@ -375,11 +378,8 @@ _root.空手攻击路由.载入后跳转空手攻击容器 = function(container:
     // 对齐原空手攻击帧的 load 逻辑（升龙拳判定 A + B）
     if (unit._name == _root.控制目标) {
         unit.读取当前飞行状态();
-        if (JumpDerivePredicate.shouldTrigger(unit.被动技能.升龙拳, unit.飞行浮空, Key.isDown(unit.A键) && Key.isDown(unit.B键))) {
-            unit.跳横移速度 = unit.行走X速度;
-            unit.跳跃中移动速度 = unit.行走X速度;
-            unit.状态改变("空手跳");
-            man.removeMovieClip();
+        if (JumpDeriveAction.tryDerive(unit, man, unit.被动技能.升龙拳,
+                Key.isDown(unit.A键) && Key.isDown(unit.B键), "空手跳")) {
             return undefined;
         }
     }

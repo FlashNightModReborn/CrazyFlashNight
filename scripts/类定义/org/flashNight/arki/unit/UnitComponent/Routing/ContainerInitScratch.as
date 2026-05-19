@@ -32,8 +32,20 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerInitScratch {
     // ════════════════════════════════════════════════════════════════════
     // 装配 helper：读取 RoutingFieldMap 条目，按 [dst, srcRoot, srcKey] 写入 scratch。
     // 公开为 public static 便于 testloader 直接 assemble 任意 fieldMap 做对照测试。
+    //
+    // sources 参数（可选）：装配源对象，默认 = _root。
+    //   生产路径：getXxx 不传 sources → fallback _root，行为同旧版。
+    //   测试路径：传 fakeSources（sentinel 哨兵值）→ 反向校验 RoutingFieldMap 的
+    //     [srcRoot, srcKey] 真的映射到了正确的来源；如果字段表里 srcRoot/srcKey 写
+    //     错了（typo / 改错 dict 名），sentinel 测试会立刻 FAIL，弥补"测试与被测代
+    //     码读同一份 _root 路径"导致的同义反复盲点。
+    //   形参不标类型：兼容 fakeSources 是 plain Object 的场景，避免 strict 类型注解
+    //     被生产 _root（MovieClip）和 fake plain Object 同时满足时的 IDE 类型摩擦。
     // ════════════════════════════════════════════════════════════════════
-    public static function assembleFromMap(c:MovieClip, fields:Array):Object {
+    public static function assembleFromMap(c:MovieClip, fields:Array, sources):Object {
+        if (sources == undefined) {
+            sources = _root;
+        }
         var out:Object = {
             __isDynamicMan: true,
             _x: c._x,
@@ -44,7 +56,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerInitScratch {
         var len:Number = fields.length;
         for (var i:Number = 0; i < len; i++) {
             var entry = fields[i];
-            out[entry[0]] = _root[entry[1]][entry[2]];
+            out[entry[0]] = sources[entry[1]][entry[2]];
         }
         return out;
     }

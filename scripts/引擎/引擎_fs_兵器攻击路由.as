@@ -147,7 +147,10 @@ _root.兵器攻击路由.构建兵器攻击容器初始化对象 = function(cont
 _root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:MovieClip, unit:MovieClip):MovieClip {
     var actionName:String = unit.兵器攻击名;
     var initObj:Object = _root.兵器攻击路由.构建兵器攻击容器初始化对象(container);
-    var man:MovieClip = unit.attachMovie("兵器攻击容器-" + actionName, "man", 0, initObj);
+    var man:MovieClip = unit.attachMovie(
+        ContainerSpec.buildLinkageName(ContainerSpec.KIND_WEAPON, actionName),
+        "man", 0, initObj
+    );
     if (man == undefined) {
         return undefined;
     }
@@ -160,12 +163,7 @@ _root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:
         unit.读取当前飞行状态();
 
         // 2. 上挑派生检测：按住B键时触发被动技能"上挑"跳转到"兵器跳"
-        if (JumpDerivePredicate.shouldTrigger(unit.被动技能.上挑, unit.飞行浮空, Key.isDown(unit.B键))) {
-            unit.跳横移速度 = unit.行走X速度;
-            unit.跳跃中移动速度 = unit.行走X速度;
-            unit.状态改变("兵器跳");
-            // 已切换状态，移除刚创建的容器man
-            man.removeMovieClip();
+        if (JumpDeriveAction.tryDerive(unit, man, unit.被动技能.上挑, Key.isDown(unit.B键), "兵器跳")) {
             return undefined;
         }
     }
