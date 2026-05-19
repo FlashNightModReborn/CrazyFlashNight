@@ -7,6 +7,7 @@ const vm = require('vm');
 
 const projectRoot = path.resolve(__dirname, '..');
 const dataFile = path.join(projectRoot, 'launcher', 'web', 'modules', 'map-panel-data.js');
+const avatarSourceFile = path.join(projectRoot, 'launcher', 'web', 'modules', 'map-avatar-source-data.js');
 
 function parseArgs(argv) {
     const args = {
@@ -51,10 +52,12 @@ function printHelp(exitCode, error) {
 }
 
 function loadMapData() {
-    const source = fs.readFileSync(dataFile, 'utf8');
     const sandbox = { console };
     vm.createContext(sandbox);
-    vm.runInContext(source, sandbox, { filename: dataFile });
+    // 先加载 source-data, 让 panel-data 内部 exportPage 能解出 avatar marker rect
+    // (panel-data 的 exportManifest 在 IIFE 末尾立即跑, 期间会访问 MapAvatarSourceData)
+    vm.runInContext(fs.readFileSync(avatarSourceFile, 'utf8'), sandbox, { filename: avatarSourceFile });
+    vm.runInContext(fs.readFileSync(dataFile, 'utf8'), sandbox, { filename: dataFile });
     if (!sandbox.MapPanelData) {
         throw new Error('MapPanelData not found in ' + dataFile);
     }

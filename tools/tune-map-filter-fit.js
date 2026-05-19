@@ -7,6 +7,7 @@ const vm = require('vm');
 
 const projectRoot = path.resolve(__dirname, '..');
 const mapDataFile = path.join(projectRoot, 'launcher', 'web', 'modules', 'map-panel-data.js');
+const avatarSourceFile = path.join(projectRoot, 'launcher', 'web', 'modules', 'map-avatar-source-data.js');
 const outputFile = path.join(projectRoot, 'launcher', 'web', 'modules', 'map-fit-presets.js');
 
 const DEFAULT_PRESET = {
@@ -144,15 +145,20 @@ function computeFilterSourceCeiling(mapData, pageId, filterId) {
     return { sourceRatio: round(minRatio), worstAsset: worst };
 }
 
-function evaluateScript(filePath, globalName) {
-    const source = fs.readFileSync(filePath, 'utf8');
+function loadMapBundle() {
     const sandbox = { console };
     vm.createContext(sandbox);
-    vm.runInContext(source, sandbox, { filename: filePath });
-    if (!sandbox[globalName]) {
-        throw new Error(globalName + ' not found in ' + filePath);
+    // C 阶段后 panel-data 的 exportManifest 在 IIFE 末尾访问 MapAvatarSourceData,
+    // 必须先加载 source-data 才能让 staticAvatar marker rect 派生正确。
+    vm.runInContext(fs.readFileSync(avatarSourceFile, 'utf8'), sandbox, { filename: avatarSourceFile });
+    vm.runInContext(fs.readFileSync(mapDataFile, 'utf8'), sandbox, { filename: mapDataFile });
+    if (!sandbox.MapPanelData) {
+        throw new Error('MapPanelData not found in ' + mapDataFile);
     }
-    return sandbox[globalName];
+    if (!sandbox.MapAvatarSourceData) {
+        throw new Error('MapAvatarSourceData not found in ' + avatarSourceFile);
+    }
+    return { mapData: sandbox.MapPanelData, avatarSource: sandbox.MapAvatarSourceData };
 }
 
 function round(value) {
@@ -207,7 +213,35 @@ function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
 }
 
-function buildFilterBounds(mapData, pageId, filterId) {
+function resolveStaticAvatarBoundsRect(mapData, avatarSource, pageId, slot) {
+    if (!slot || !slot.assetUrl) return null;
+    const sourceSlot = avatarSource.getByAssetUrl(slot.assetUrl);
+    if (!sourceSlot || !sourceSlot.size) return null;
+    const hotspotId = sourceSlot.hotspotId || slot.hotspotId;
+    if (!hotspotId) return null;
+    const hotspot = mapData.findHotspot(pageId, hotspotId);
+    if (!hotspot || !hotspot.rect) return null;
+    return {
+        x: hotspot.rect.x + sourceSlot.relX,
+        y: hotspot.rect.y + sourceSlot.relY,
+        w: sourceSlot.size.w,
+        h: sourceSlot.size.h
+    };
+}
+
+function resolveDynamicAvatarBoundsRect(mapData, pageId, slot) {
+    if (!slot || !slot.hotspotId) return null;
+    const hotspot = mapData.findHotspot(pageId, slot.hotspotId);
+    if (!hotspot || !hotspot.rect) return null;
+    return {
+        x: hotspot.rect.x + slot.relX,
+        y: hotspot.rect.y + slot.relY,
+        w: slot.w,
+        h: slot.h
+    };
+}
+
+function buildFilterBounds(mapData, avatarSource, pageId, filterId) {
     const page = mapData.getPage(pageId);
     const visibleHotspots = mapData.getVisibleHotspots(pageId, filterId || '');
     const visibleLookup = {};
@@ -226,24 +260,16 @@ function buildFilterBounds(mapData, pageId, filterId) {
     const staticAvatars = page.staticAvatars || [];
     for (let i = 0; i < staticAvatars.length; i += 1) {
         if (!staticAvatars[i].hotspotId || visibleLookup[staticAvatars[i].hotspotId]) {
-            rects.push({
-                x: staticAvatars[i].x,
-                y: staticAvatars[i].y,
-                w: staticAvatars[i].w,
-                h: staticAvatars[i].h
-            });
+            const rect = resolveStaticAvatarBoundsRect(mapData, avatarSource, pageId, staticAvatars[i]);
+            if (rect) rects.push(rect);
         }
     }
 
     const dynamicAvatars = page.dynamicAvatars || [];
     for (let i = 0; i < dynamicAvatars.length; i += 1) {
         if (!dynamicAvatars[i].hotspotId || visibleLookup[dynamicAvatars[i].hotspotId]) {
-            rects.push({
-                x: dynamicAvatars[i].x,
-                y: dynamicAvatars[i].y,
-                w: dynamicAvatars[i].w,
-                h: dynamicAvatars[i].h
-            });
+            const rect = resolveDynamicAvatarBoundsRect(mapData, pageId, dynamicAvatars[i]);
+            if (rect) rects.push(rect);
         }
     }
 
@@ -494,7 +520,7 @@ function selectFilterOverride(page, filterId, bounds, basePreset, sourceRatio) {
     };
 }
 
-function buildTuningReport(mapData) {
+function buildTuningReport(mapData, avatarSource) {
     const pageOrder = mapData.getPageOrder();
     const presets = {};
     const report = {
@@ -522,7 +548,7 @@ function buildTuningReport(mapData) {
         };
 
         for (let j = 0; j < filters.length; j += 1) {
-            boundsByFilter[filters[j].id] = buildFilterBounds(mapData, pageId, filters[j].id);
+            boundsByFilter[filters[j].id] = buildFilterBounds(mapData, avatarSource, pageId, filters[j].id);
         }
 
         const pageDefault = selectPageDefaults(page, filters, boundsByFilter);
@@ -715,8 +741,8 @@ function main() {
     const args = parseArgs(process.argv.slice(2));
     if (!args) return;
 
-    const mapData = evaluateScript(mapDataFile, 'MapPanelData');
-    const result = buildTuningReport(mapData);
+    const { mapData, avatarSource } = loadMapBundle();
+    const result = buildTuningReport(mapData, avatarSource);
     printSummary(result, args.json);
 
     if (args.write) {

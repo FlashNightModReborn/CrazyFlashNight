@@ -1079,6 +1079,39 @@ var MapPanelData = (function() {
         return filterIds;
     }
 
+    // C 阶段后 staticAvatars 不再带 x/y/w/h, dynamicAvatars 也改为 relX/relY;
+    // exportPage 派生 marker rect 走 source-data + hotspot.rect 两步计算。
+    // MapAvatarSourceData 可能未加载 (overlay.html boot 期 / 旧 Node 工具仅加载 panel-data),
+    // 此时返回 null rect 而不是空对象, 让消费方明确处理 missing-source 状况。
+    function resolveStaticAvatarExportRect(pageId, slot) {
+        if (!slot || !slot.assetUrl) return null;
+        if (typeof MapAvatarSourceData === 'undefined' || !MapAvatarSourceData || !MapAvatarSourceData.getByAssetUrl) return null;
+        var sourceSlot = MapAvatarSourceData.getByAssetUrl(slot.assetUrl);
+        if (!sourceSlot || !sourceSlot.size) return null;
+        var hotspotId = sourceSlot.hotspotId || slot.hotspotId;
+        if (!hotspotId) return null;
+        var hotspot = findHotspot(pageId, hotspotId);
+        if (!hotspot || !hotspot.rect) return null;
+        return {
+            x: hotspot.rect.x + sourceSlot.relX,
+            y: hotspot.rect.y + sourceSlot.relY,
+            w: sourceSlot.size.w,
+            h: sourceSlot.size.h
+        };
+    }
+
+    function resolveDynamicAvatarExportRect(pageId, slot) {
+        if (!slot || !slot.hotspotId) return null;
+        var hotspot = findHotspot(pageId, slot.hotspotId);
+        if (!hotspot || !hotspot.rect) return null;
+        return {
+            x: hotspot.rect.x + slot.relX,
+            y: hotspot.rect.y + slot.relY,
+            w: slot.w,
+            h: slot.h
+        };
+    }
+
     function exportPage(pageId) {
         var page = getPage(pageId);
         var filters = page.filters || [];
@@ -1149,12 +1182,7 @@ var MapPanelData = (function() {
                 label: staticAvatars[k].label || '',
                 hotspotId: staticAvatars[k].hotspotId || null,
                 asset: staticAvatars[k].assetUrl,
-                rect: {
-                    x: staticAvatars[k].x,
-                    y: staticAvatars[k].y,
-                    w: staticAvatars[k].w,
-                    h: staticAvatars[k].h
-                }
+                rect: resolveStaticAvatarExportRect(page.id, staticAvatars[k])
             });
         }
 
@@ -1164,12 +1192,7 @@ var MapPanelData = (function() {
                 kind: 'dynamicAvatar',
                 stateKey: slots[k].kind,
                 hotspotId: slots[k].hotspotId || null,
-                rect: {
-                    x: slots[k].x,
-                    y: slots[k].y,
-                    w: slots[k].w,
-                    h: slots[k].h
-                }
+                rect: resolveDynamicAvatarExportRect(page.id, slots[k])
             });
         }
 

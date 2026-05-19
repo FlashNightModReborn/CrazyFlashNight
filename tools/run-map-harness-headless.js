@@ -1,17 +1,21 @@
 'use strict';
 
-// 临时 headless QA runner：用 launcher/perf 自带的 playwright + http server
-// 跑 map harness QA suite (map-ui1~24)。Stage B 验证用，跑完应删除。
+// Headless map harness QA runner：用 launcher/perf 自带的 playwright + http server
+// 跑 map harness QA suite (map-ui1~24)，作为离线视觉/逻辑回归门控。
 //
 // 用法：node tools/run-map-harness-headless.js
 //   可选 --case=map-ui10 仅跑单条；--keep-open 保留窗口（headed 调试）；
 //   --timeout=120000 调整等待 ms
+//
+// 注意：必须从 repo root 服务而非 launcher/web，否则 map-panel.js resolveAssetUrl
+// 找不到 /launcher/web/ marker，把 'assets/map/...' 解析为页面相对路径 (e.g.
+// /modules/map/dev/assets/...) 而 404；roommate 头像就会渲染成 is-missing。
 
 const path = require('path');
 const { chromium } = require(path.join(__dirname, '..', 'launcher', 'perf', 'node_modules', 'playwright'));
 const { startServer, stopServer } = require(path.join(__dirname, '..', 'launcher', 'perf', 'lib', 'server'));
 
-const WEB_ROOT = path.resolve(__dirname, '..', 'launcher', 'web');
+const REPO_ROOT = path.resolve(__dirname, '..');
 
 function parseArgs() {
     const args = process.argv.slice(2);
@@ -27,8 +31,8 @@ function parseArgs() {
 
 async function main() {
     const opts = parseArgs();
-    const serverHandle = await startServer(WEB_ROOT, 0);
-    const harnessUrl = serverHandle.url + 'modules/map/dev/harness.html?qa=1' + (opts.case ? '&case=' + encodeURIComponent(opts.case) : '');
+    const serverHandle = await startServer(REPO_ROOT, 0);
+    const harnessUrl = serverHandle.url + 'launcher/web/modules/map/dev/harness.html?qa=1' + (opts.case ? '&case=' + encodeURIComponent(opts.case) : '');
     console.log('[map-harness] server', serverHandle.url);
     console.log('[map-harness] navigate', harnessUrl);
 
