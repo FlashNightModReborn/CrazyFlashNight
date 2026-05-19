@@ -7,6 +7,8 @@
 - **launcher slot center** = `slot.x + slot.w/2`, `slot.y + slot.h/2`（来自 `launcher/web/modules/map-panel-data.js` 的 `_pageStaticAvatars`，经 `buildStaticAvatarSlot(id, label, hotspotId, centerX, centerY, asset)` 反推）
 - **source-data center** = `MapAvatarSourceData.getByAssetUrl(slot.assetUrl).center`（来自 `launcher/web/modules/map-avatar-source-data.js`）
 
+> **签名漂移注**：上述 `buildStaticAvatarSlot(...)` 和 `MapAvatarSourceData.center` 是 A5-1 快照当时的形态。Stage A/B/C 之后，`buildStaticAvatarSlot` 已收窄为 `(id, label, hotspotId, assetName)`（不再带 centerX/centerY），`MapAvatarSourceData` entry 也由 `center/rect` 改为 `hotspotId + relX + relY + size`（hotspot-relative）。本快照保留 A5-1 时点的字段表达供审计追溯，**不**反映当前 schema；最新 schema 见 [agentsDoc/data-schemas.md "launcher/web 端 NPC 头像坐标 schema (Stage C 以后 hotspot-relative)"](../../agentsDoc/data-schemas.md)。
+
 ---
 
 ## 1. 摘要

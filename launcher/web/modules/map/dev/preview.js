@@ -595,18 +595,6 @@ var MapPreview = (function() {
         };
     }
 
-    function maxAbsDelta(delta) {
-        if (!delta) return 0;
-        return Math.max(
-            Math.abs(delta.dx),
-            Math.abs(delta.dy),
-            Math.abs(delta.dw),
-            Math.abs(delta.dh),
-            Math.abs(delta.centerDx),
-            Math.abs(delta.centerDy)
-        );
-    }
-
     function unionRects(rects) {
         var filtered = (rects || []).filter(Boolean);
         if (!filtered.length) return null;
@@ -714,15 +702,12 @@ var MapPreview = (function() {
     }
 
     function computeAvatarAudit(slot, pageId) {
+        // Stage C 后 avatar 渲染 rect 与 source-data rect 共源 (都从 hotspot.rect + relX/relY 派生),
+        // delta 恒为 0; 只有 exact (source-data 命中) / missing (source-data 未命中) 两态。
+        // delta 字段保留为 null 而不是 {0,0,0,0}, 让下游 UI 用 `if (delta)` 跳过显示。
         var sourceSlot = getAvatarSourceSlot(slot.assetUrl);
         var currentRect = getAvatarDisplayRect(slot, pageId);
-        // C 阶段后 source-data 不再带 rect, 而是用 hotspotId+relX+relY 推导;
-        // sourceRect 与 currentRect 共源, delta 恒为 0
-        var sourceRect = currentRect ? cloneSourceRect(currentRect) : null;
-        var delta = rectDelta(currentRect, sourceRect);
-        var maxDelta = maxAbsDelta(delta);
-
-        if (!sourceRect) {
+        if (!currentRect) {
             return {
                 status: 'missing',
                 note: 'missing_avatar_source',
@@ -731,14 +716,13 @@ var MapPreview = (function() {
                 sourceSlot: null
             };
         }
-
-        if (maxDelta <= 0.5) {
-            return { status: 'exact', note: 'xfl_aligned', sourceRect: sourceRect, delta: delta, sourceSlot: sourceSlot };
-        }
-        if (maxDelta <= 4) {
-            return { status: 'near', note: 'minor_delta', sourceRect: sourceRect, delta: delta, sourceSlot: sourceSlot };
-        }
-        return { status: 'review', note: 'large_delta', sourceRect: sourceRect, delta: delta, sourceSlot: sourceSlot };
+        return {
+            status: 'exact',
+            note: 'xfl_aligned',
+            sourceRect: cloneSourceRect(currentRect),
+            delta: null,
+            sourceSlot: sourceSlot
+        };
     }
 
     function renderStage(page, filter, visibleHotspots, hotspotStates, unlocks, activeViewMode, currentHotspotId, focusHotspotId) {
@@ -1309,7 +1293,8 @@ var MapPreview = (function() {
 
         var audit = buildPageAudit(page.id);
         var hotspotCounts = { exact: 0, near: 0, hand_tuned: 0, review: 0, missing: 0 };
-        var avatarCounts = { exact: 0, near: 0, review: 0, missing: 0 };
+        // Stage C 后 avatar 只剩 exact / missing 两态; near / review 已不可达
+        var avatarCounts = { exact: 0, missing: 0 };
         var lines = [];
         var i;
 
@@ -1340,14 +1325,10 @@ var MapPreview = (function() {
             }
         }
         lines.push('');
-        lines.push('review avatars');
+        lines.push('missing avatars');
         for (i = 0; i < audit.avatarRows.length; i += 1) {
-            if (audit.avatarRows[i].status === 'review' || audit.avatarRows[i].status === 'missing') {
-                lines.push(
-                    audit.avatarRows[i].id
-                    + ' dx=' + (audit.avatarRows[i].delta ? audit.avatarRows[i].delta.dx : 'n/a')
-                    + ' dy=' + (audit.avatarRows[i].delta ? audit.avatarRows[i].delta.dy : 'n/a')
-                );
+            if (audit.avatarRows[i].status === 'missing') {
+                lines.push(audit.avatarRows[i].id + ' (' + audit.avatarRows[i].label + ' -> ' + (audit.avatarRows[i].hotspotId || 'no-hotspot') + ') ' + audit.avatarRows[i].note);
             }
         }
 
@@ -1357,7 +1338,8 @@ var MapPreview = (function() {
     function renderSummary(page, filter, visibleHotspots, hotspotStates, activeViewMode, currentHotspotId, focusHotspotId) {
         var lockedCount = 0;
         var auditCounts = { exact: 0, near: 0, hand_tuned: 0, review: 0, missing: 0 };
-        var avatarAuditCounts = { exact: 0, near: 0, review: 0, missing: 0 };
+        // Stage C 后 avatar 只剩 exact / missing 两态
+        var avatarAuditCounts = { exact: 0, missing: 0 };
         for (var i = 0; i < visibleHotspots.length; i += 1) {
             if (hotspotStates[visibleHotspots[i].id] && !hotspotStates[visibleHotspots[i].id].enabled) {
                 lockedCount += 1;
@@ -1383,7 +1365,7 @@ var MapPreview = (function() {
             'visible hotspots: ' + visibleHotspots.length + ' / ' + (page.hotspots || []).length,
             'locked visible hotspots: ' + lockedCount,
             'audit visible: exact=' + auditCounts.exact + ', near=' + auditCounts.near + ', hand=' + auditCounts.hand_tuned + ', review=' + auditCounts.review + ', missing=' + auditCounts.missing,
-            'static avatars: ' + staticAvatars.length + ' / audit exact=' + avatarAuditCounts.exact + ', near=' + avatarAuditCounts.near + ', review=' + avatarAuditCounts.review + ', missing=' + avatarAuditCounts.missing,
+            'static avatars: ' + staticAvatars.length + ' / audit exact=' + avatarAuditCounts.exact + ', missing=' + avatarAuditCounts.missing,
             'locked groups: ' + (_state.lockedGroups.length ? _state.lockedGroups.join(',') : 'none'),
             'dynamic avatars: ' + ((page.dynamicAvatars || []).length),
             'draft hotspot overrides: ' + Object.keys(getPageDraftOverrides(page.id)).length,
@@ -1466,9 +1448,7 @@ var MapPreview = (function() {
                 } else {
                     lines.push('source rect: missing');
                 }
-                if (avatarAudit.delta) {
-                    lines.push('delta: dx=' + avatarAudit.delta.dx + ', dy=' + avatarAudit.delta.dy + ', dw=' + avatarAudit.delta.dw + ', dh=' + avatarAudit.delta.dh);
-                }
+                // Stage C 后 source rect 与 render rect 共源, delta 恒为 0; 不再展示 delta 行
                 if (avatarAudit.sourceSlot && avatarAudit.sourceSlot.crop) {
                     lines.push('crop: scaleX=' + avatarAudit.sourceSlot.crop.scaleX + ', scaleY=' + avatarAudit.sourceSlot.crop.scaleY + ', tx=' + avatarAudit.sourceSlot.crop.tx + ', ty=' + avatarAudit.sourceSlot.crop.ty);
                 }

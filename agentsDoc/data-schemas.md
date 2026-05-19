@@ -192,6 +192,8 @@ H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5
 
 **渲染流程**：`resolveStaticAvatarRect` / `resolveDynamicAvatarRect` 通过 `MapPanelData.findHotspot(pageId, hotspotId)` 取 **runtime rect**（经 `applyXflLayoutOverrides` + `syncCompositeHotspotRects` 两道覆盖后的最终值），再加 `relX/relY` 得到屏幕坐标。调 hotspot rect 时 NPC 头像自动跟随，无需手动重算坐标。
 
+**`MapManifest.markers[*].rect` 在 overlay 生产运行时为 `null`**：`map-avatar-source-data.js` 走 [panels-lazy-registry.js](../launcher/web/modules/panels-lazy-registry.js) 懒加载（map panel 首次打开时才注入），而 [map-panel-data.js](../launcher/web/modules/map-panel-data.js) 末尾 `var MapManifest = MapPanelData.exportManifest()` 在 boot 期立刻跑，此时 `MapAvatarSourceData === undefined`，`resolveStaticAvatarExportRect` / `resolveDynamicAvatarExportRect` 走 graceful-null 分支。**消费方约束**：不要直接读 `MapManifest.markers[k].rect`，rect 由 map-panel 渲染期 `resolveStaticAvatarRect` / `resolveDynamicAvatarRect` 动态派生；如确需 manifest 形式带 rect 的导出，走 Node 工具（`tools/export-map-manifest.js` 已预加载 source-data，输出包含正确 rect）。harness.html / preview.html 因为 `<script>` 标签把 source-data 显式放在 panel-data 之前，dev 工具读 MapManifest 也是带 rect 的。
+
 **调位置**：
 - 调一个 NPC 位置：只改 source-data.js（static）或 panel-data.js dynamicAvatars（动态）的 `relX/relY`
 - 调一个 hotspot 位置：按 effective rect 来源改 `_pages.<page>.hotspots[].rect` / `_xflLayoutOverrides` / `_pages.<page>.sceneVisuals[].rect`（参考 `MapPanelData.findHotspot` 返回值跟哪个静态源数字最接近，那就是 effective 来源）

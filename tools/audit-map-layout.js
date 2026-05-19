@@ -147,12 +147,11 @@ function classifyHotspot(delta, componentDelta, handTuned) {
 }
 
 function classifyAvatar(delta) {
+    // Stage C 后 avatar 的 currentRect 与 sourceRect 共源 (都从 hotspot.rect + relX/relY 派生),
+    // delta 恒为 0; 只有 exact (source-data 命中) / missing (source-data 未命中 = launcher-orphan)
+    // 两态会被实际命中。--fail-on-review 因此对 avatar 等价于"launcher-orphan 守门"。
     if (!delta) return { status: 'missing', note: 'missing_avatar_source' };
-
-    const maxDelta = maxAbsDelta(delta);
-    if (maxDelta <= 0.5) return { status: 'exact', note: 'xfl_aligned' };
-    if (maxDelta <= 4) return { status: 'near', note: 'minor_delta' };
-    return { status: 'review', note: 'large_delta' };
+    return { status: 'exact', note: 'xfl_aligned' };
 }
 
 function unionRects(rects) {
@@ -282,6 +281,8 @@ function buildAvatarRows(mapData, pageIds, avatarSourceData) {
                     };
                 }
             }
+            // Stage C 后 sourceRect 已经就是渲染 rect (都从 hotspot.rect + relX/relY 派生),
+            // runtimeRect 别名只保留给下游消费方 (render-map-audit-sheet.py) 的字段约定。
             const runtimeRect = sourceRect;
             const runtimeDelta = rectDelta(runtimeRect, sourceRect);
             const state = classifyAvatar(runtimeDelta);

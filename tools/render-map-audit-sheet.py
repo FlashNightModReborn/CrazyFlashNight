@@ -157,17 +157,18 @@ def render_avatar_sheet(repo_root: Path, manifest: dict, audit_rows: list[dict],
     overlay = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
     overlay_draw = ImageDraw.Draw(overlay)
 
+    # Stage C 后 source-data rect 与 runtime rect 共源 (都从 hotspot.rect + relX/relY 派生),
+    # 漂移 Δ 恒为 0; 不再画 source 椭圆 + Δ 标签, 单画 runtime 椭圆即可。
+    # missing 状态 (source-data 无 entry) 由 status 标签提示, 不依赖几何差异。
     for row in rows:
         runtime_rect = row.get("runtimeRect") or row.get("currentRect")
-        source_rect = row.get("sourceRect")
         asset_ref = row.get("assetUrl") or f'assets/map/avatars/{row.get("symbolName", "")}.png'
         asset_path = resolve_asset_path(repo_root, asset_ref)
 
         if runtime_rect:
             paste_asset(canvas, asset_path, runtime_rect, scale)
-            overlay_draw.ellipse(scaled_rect(runtime_rect, scale), outline=rgba("#9dff73", 240), width=2)
-        if source_rect:
-            overlay_draw.ellipse(scaled_rect(source_rect, scale), outline=rgba("#65d7ff", 210), width=1)
+            outline_color = rgba("#ff6a5c", 240) if row.get("status") == "missing" else rgba("#9dff73", 240)
+            overlay_draw.ellipse(scaled_rect(runtime_rect, scale), outline=outline_color, width=2)
 
     canvas.alpha_composite(overlay)
 
@@ -175,8 +176,7 @@ def render_avatar_sheet(repo_root: Path, manifest: dict, audit_rows: list[dict],
         runtime_rect = row.get("runtimeRect") or row.get("currentRect")
         if not runtime_rect:
             continue
-        runtime_delta = row.get("runtimeDelta") or row.get("delta") or {}
-        label = f'{row["label"]}  Δ({runtime_delta.get("dx", 0)},{runtime_delta.get("dy", 0)})'
+        label = f'{row["label"]}  [{row.get("status", "?")}]'
         draw_label(
             draw,
             int(round(runtime_rect["x"] * scale)),
