@@ -72,10 +72,8 @@ _root.技能路由.技能man载入后跳转_旧 = function(man:MovieClip, unit:M
 _root.技能路由.载入后跳转技能容器 = function(container:MovieClip, unit:MovieClip):Void {
     var 技能名:String = unit.技能名;
     var initObj:Object = RoutingLifecycle.buildPublicContainerInit(container);
-    var man:MovieClip = unit.attachMovie(
-        ContainerSpec.buildLinkageName(ContainerSpec.KIND_SKILL, 技能名),
-        "man", 0, initObj
-    );
+    // SILENT_CONTINUE：handleFloat / bindEndCleanup 在 undefined man 上 no-op safe
+    var man:MovieClip = ContainerAttachAction.attach(unit, ContainerSpec.KIND_SKILL, 技能名, initObj).man;
     RoutingLifecycle.handleFloat(man, unit, "技能浮空");
     RoutingLifecycle.bindEndCleanup(man, unit, "战技", "技能结束", "技能浮空");
 };

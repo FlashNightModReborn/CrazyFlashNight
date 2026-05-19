@@ -147,13 +147,11 @@ _root.兵器攻击路由.构建兵器攻击容器初始化对象 = function(cont
 _root.兵器攻击路由.载入后跳转兵器攻击容器 = function(container:MovieClip, unit:MovieClip):MovieClip {
     var actionName:String = unit.兵器攻击名;
     var initObj:Object = _root.兵器攻击路由.构建兵器攻击容器初始化对象(container);
-    var man:MovieClip = unit.attachMovie(
-        ContainerSpec.buildLinkageName(ContainerSpec.KIND_WEAPON, actionName),
-        "man", 0, initObj
-    );
-    if (man == undefined) {
+    var attachResult = ContainerAttachAction.attach(unit, ContainerSpec.KIND_WEAPON, actionName, initObj);
+    if (attachResult.status === ContainerAttachAction.STATUS_MISSING_ABORT) {
         return undefined;
     }
+    var man:MovieClip = attachResult.man;
 
     // ========== 对齐原兵器攻击帧的 onClipEvent(load) 逻辑 ==========
     // 原逻辑位于 主角-男.xml 兵器攻击帧（index 618）

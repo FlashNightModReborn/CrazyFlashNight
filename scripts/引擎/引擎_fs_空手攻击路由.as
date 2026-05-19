@@ -49,11 +49,9 @@ _root.空手攻击路由.__job_跨容器跳转 = function(u:MovieClip):Void {
     var targetLabel:String = job.arg_targetLabel;
 
     var initObj:Object = _root.空手攻击路由.构建空手攻击容器初始化对象(u.container);
-    var man:MovieClip = u.attachMovie(
-        ContainerSpec.buildLinkageName(ContainerSpec.KIND_UNARMED, containerActionName),
-        "man", 0, initObj
-    );
-    if (man == undefined) { return; }
+    var attachResult = ContainerAttachAction.attach(u, ContainerSpec.KIND_UNARMED, containerActionName, initObj);
+    if (attachResult.status === ContainerAttachAction.STATUS_MISSING_ABORT) { return; }
+    var man:MovieClip = attachResult.man;
 
     // 对齐升龙拳判定（A + B 同时按下）
     if (u._name == _root.控制目标) {
@@ -367,13 +365,11 @@ _root.空手攻击路由.构建空手攻击容器初始化对象 = function(cont
 _root.空手攻击路由.载入后跳转空手攻击容器 = function(container:MovieClip, unit:MovieClip):MovieClip {
     var actionName:String = unit.空手攻击名;
     var initObj:Object = _root.空手攻击路由.构建空手攻击容器初始化对象(container);
-    var man:MovieClip = unit.attachMovie(
-        ContainerSpec.buildLinkageName(ContainerSpec.KIND_UNARMED, actionName),
-        "man", 0, initObj
-    );
-    if (man == undefined) {
+    var attachResult = ContainerAttachAction.attach(unit, ContainerSpec.KIND_UNARMED, actionName, initObj);
+    if (attachResult.status === ContainerAttachAction.STATUS_MISSING_ABORT) {
         return undefined;
     }
+    var man:MovieClip = attachResult.man;
 
     // 对齐原空手攻击帧的 load 逻辑（升龙拳判定 A + B）
     if (unit._name == _root.控制目标) {

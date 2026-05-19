@@ -23,22 +23,25 @@ import org.flashNight.neur.ScheduleTimer.*;
  * 3) `_root.空中控制器` 本体何时重构、是否拆类，与本表无关 — 本类已抹平
  *    测试需求，本体改造不再是路由系统稳固的硬阻塞（user 2026-05-18 决策）。
  *
- * 当前 frozen surface（v1，2026-05-19）：
+ * 当前 frozen surface（v2，2026-05-19）：
  *   removeTask(taskID)                                  → EnhancedCooldownWheel
  *   closeSkillFloat(unit)                               → 关闭技能浮空
  *   closeNaturalLanding(unit)                           → 关闭自然落地
  *   closeJumpFloat(unit)                                → 关闭跳跃浮空
  *   enableSkillFloat(unit, floatFlag, man)              → 启用技能浮空
  *   enableNaturalLanding(unit)                          → 启用自然落地
+ *   attachMovie(parent, linkage, name, depth, initObj)  → MovieClip.attachMovie
  *
  * 测试侧 mock 接口：
- *   setAirControllerForTest / clearAirControllerForTest
- *   setSchedulerForTest     / clearSchedulerForTest
+ *   setAirControllerForTest    / clearAirControllerForTest
+ *   setSchedulerForTest        / clearSchedulerForTest
+ *   setAttachMovieAdapterForTest / clearAttachMovieAdapterForTest
  */
 class org.flashNight.arki.unit.UnitComponent.Routing.RoutingRuntime {
 
     private static var __airController:Object;
     private static var __scheduler:Object;
+    private static var __attachMovieAdapter:Object;
 
     public static function setAirControllerForTest(air:Object):Void {
         __airController = air;
@@ -54,6 +57,14 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingRuntime {
 
     public static function clearSchedulerForTest():Void {
         __scheduler = undefined;
+    }
+
+    public static function setAttachMovieAdapterForTest(adapter:Object):Void {
+        __attachMovieAdapter = adapter;
+    }
+
+    public static function clearAttachMovieAdapterForTest():Void {
+        __attachMovieAdapter = undefined;
     }
 
     private static function getAirController():Object {
@@ -105,5 +116,27 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingRuntime {
         if (air != undefined && air.启用自然落地 != undefined) {
             air.启用自然落地(unit);
         }
+    }
+
+    /**
+     * 低层 attachMovie adapter — Routing/* 调用 parent.attachMovie 的统一入口。
+     *
+     * 生产路径：parent.attachMovie(linkage, name, depth, initObj)（原生 AS2 同步
+     * enumerate + copy initObject own properties 到新 MovieClip）。
+     * 测试路径：若 __attachMovieAdapter 已注入，转发到 adapter.attachMovie(...)
+     * 由 mock 决定返回 MockMovieClip 还是 undefined（模拟 missing symbol）。
+     *
+     * 返回 undefined 表示 linkage 不存在；调用方需自决 fallback
+     * （见 ContainerSpec.getMissingFallback 与高层 ContainerAttachAction）。
+     *
+     * 注：parent / adapter 走 untyped 路径，方便测试侧传 MockMovieClip / spy
+     * object 而无需强制做 MovieClip 子类化。
+     */
+    public static function attachMovie(parent, linkage:String, name:String, depth:Number, initObj:Object):MovieClip {
+        var adapter = __attachMovieAdapter;
+        if (adapter != undefined && adapter.attachMovie != undefined) {
+            return adapter.attachMovie(parent, linkage, name, depth, initObj);
+        }
+        return parent.attachMovie(linkage, name, depth, initObj);
     }
 }
