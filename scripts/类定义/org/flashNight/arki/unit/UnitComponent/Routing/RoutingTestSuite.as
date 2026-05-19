@@ -20,6 +20,10 @@
  *  11. ContainerSpecTest
  *  12. RoutingRuntimeTest         (Pre.2 attachMovie adapter, 2026-05-19)
  *  13. ContainerAttachActionTest  (Pre.3 高层 adapter,        2026-05-19)
+ *  14. MockMovieClipTest          (III.1 黑箱夹具基础类,      2026-05-19)
+ *  15. RoutingEndToEndTest        (III.2 端到端组合样例,      2026-05-19)
+ *  16. RoutingCrossContainerTest  (III.3 跨容器跳转端到端,    2026-05-19)
+ *  17. RoutingGotoAndStopContractTest (III.4 gotoAndStop 强契约 + frameEpoch, 2026-05-19)
  *
  * Sentinel 与旧入口一致：
  *   - 全 PASS → [TEST_PASS] Routing suites
@@ -47,6 +51,10 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingTestSuite {
         ok = ContainerSpecTest.runAll()          && ok;
         ok = RoutingRuntimeTest.runAll()         && ok;
         ok = ContainerAttachActionTest.runAll()  && ok;
+        ok = MockMovieClipTest.runAll()          && ok;
+        ok = RoutingEndToEndTest.runAll()        && ok;
+        ok = RoutingCrossContainerTest.runAll()  && ok;
+        ok = RoutingGotoAndStopContractTest.runAll() && ok;
 
         var elapsed:Number = getTimer() - t0;
         trace("================================================================");
