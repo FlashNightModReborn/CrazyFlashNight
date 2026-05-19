@@ -45,7 +45,11 @@ const STAGE_MAX_SCALE = 1.3;
 // composite "视觉放大倍数" = stageScale * fitScale / sourceRatio (PNG px / logical rect)
 // 超过此阈值说明 PNG 被拉伸绘制到屏幕, 有明显 pixelated 风险。
 // 此阈值既用于告警, 也用于在 selectFilterOverride 里 clip candidate maxScale, 防止生成超采 preset。
-const COMPOSITE_VISUAL_SCALE_CAP = 1.5;
+//
+// 1.75 是配合 map-panel.js 中 scene-node unsharp mask 后处理 (amount=0.45) 的视觉容忍阈;
+// 锐化把"可接受放大"从无后处理的 ~1.5 抬到 ~1.75。改这个常量必须重跑 --write 重新生成
+// map-fit-presets.js, 且需同步调整 sharpen amount 才能持续匹配 (sharpen↑ → cap↑)。
+const COMPOSITE_VISUAL_SCALE_CAP = 1.75;
 // fallback: 当无法读到 PNG 时, 假设 sourceRatio = 1.0 (一张刚好够 1× 绘制的资产)
 const DEFAULT_SOURCE_RATIO = 1.0;
 const webRoot = path.join(projectRoot, 'launcher', 'web');

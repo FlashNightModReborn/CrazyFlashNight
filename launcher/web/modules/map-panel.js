@@ -469,6 +469,7 @@ var MapPanel = (function() {
             node.innerHTML =
                 '<img class="map-scene-node-image" alt="" decoding="async" src="' + escAttr(assetUrl) + '">' +
                 '<span class="map-scene-node-glow"></span>';
+            applySharpenedSrcToImg(node.querySelector('.map-scene-node-image'), assetUrl);
             fragment.appendChild(node);
         }
     }
@@ -1450,6 +1451,124 @@ function resolveFeedbackAnchor(item) {
         } catch (err) {
             return value;
         }
+    }
+
+    // === Scene-node 锐化后处理 ===
+    //
+    // 目的: 缓解 PNG 上采样 (~1.3-1.5x) 视觉糊化, 一次性 unsharp mask 烤进 blob,
+    // 之后 GPU 合成走普通 img 不再吃额外帧成本; 与 tools/tune-map-filter-fit.js
+    // 的 COMPOSITE_VISUAL_SCALE_CAP 抬到 1.75 配套, 让 map-fit-presets 给学校等
+    // filter 更激进的 maxScale。
+    //
+    // 退化路径: 任何环节失败 (worker 不支持 / fetch 失败 / convertToBlob 错误)
+    // 都保留 raw PNG src, 不破坏渲染。
+    var SHARPEN_AMOUNT = 0.45;
+    var SHARPEN_WORKER_URL = 'modules/workers/sharpen-worker.js';
+    var _sharpenWorker = null;
+    var _sharpenWorkerInitFailed = false;
+    var _sharpenCache = {};        // assetUrl → Promise<blobUrl | null>
+    var _sharpenPending = {};      // key → resolve fn (worker round-trip)
+    var _sharpenKeySeq = 0;
+
+    function isSharpenSupported() {
+        return typeof Worker !== 'undefined'
+            && typeof OffscreenCanvas !== 'undefined'
+            && typeof createImageBitmap === 'function'
+            && typeof URL !== 'undefined'
+            && typeof URL.createObjectURL === 'function';
+    }
+
+    function ensureSharpenWorker() {
+        if (_sharpenWorker || _sharpenWorkerInitFailed) return _sharpenWorker;
+        if (!isSharpenSupported()) {
+            _sharpenWorkerInitFailed = true;
+            return null;
+        }
+        try {
+            _sharpenWorker = new Worker(resolveAssetUrl(SHARPEN_WORKER_URL));
+            _sharpenWorker.onmessage = function(e) {
+                var msg = e.data || {};
+                var resolver = _sharpenPending[msg.key];
+                if (!resolver) return;
+                delete _sharpenPending[msg.key];
+                if (msg.error || !msg.blob) {
+                    resolver(null);
+                    return;
+                }
+                try {
+                    resolver(URL.createObjectURL(msg.blob));
+                } catch (err) {
+                    resolver(null);
+                }
+            };
+            _sharpenWorker.onerror = function() {
+                // worker 整体崩溃: 标记永久禁用, 解决所有在途请求 = null 走 fallback
+                _sharpenWorkerInitFailed = true;
+                var keys = Object.keys(_sharpenPending);
+                for (var i = 0; i < keys.length; i++) {
+                    try { _sharpenPending[keys[i]](null); } catch (e) {}
+                }
+                _sharpenPending = {};
+                _sharpenWorker = null;
+            };
+        } catch (err) {
+            _sharpenWorkerInitFailed = true;
+            _sharpenWorker = null;
+        }
+        return _sharpenWorker;
+    }
+
+    function getSharpenedUrl(assetUrl) {
+        if (!assetUrl) return Promise.resolve(null);
+        if (Object.prototype.hasOwnProperty.call(_sharpenCache, assetUrl)) {
+            return _sharpenCache[assetUrl];
+        }
+        var worker = ensureSharpenWorker();
+        if (!worker) {
+            _sharpenCache[assetUrl] = Promise.resolve(null);
+            return _sharpenCache[assetUrl];
+        }
+        var promise = fetch(assetUrl).then(function(res) {
+            if (!res.ok) throw new Error('http ' + res.status);
+            return res.blob();
+        }).then(function(blob) {
+            return createImageBitmap(blob);
+        }).then(function(bitmap) {
+            return new Promise(function(resolve) {
+                var w = ensureSharpenWorker();
+                if (!w) { resolve(null); return; }
+                var key = 'sk' + (++_sharpenKeySeq);
+                _sharpenPending[key] = resolve;
+                try {
+                    w.postMessage({
+                        key: key,
+                        bitmap: bitmap,
+                        amount: SHARPEN_AMOUNT
+                    }, [bitmap]);
+                } catch (err) {
+                    delete _sharpenPending[key];
+                    resolve(null);
+                }
+            });
+        })['catch'](function() {
+            return null;
+        });
+        _sharpenCache[assetUrl] = promise;
+        return promise;
+    }
+
+    function applySharpenedSrcToImg(imgEl, assetUrl) {
+        if (!imgEl || !assetUrl) return;
+        var captured = assetUrl;
+        imgEl.setAttribute('data-asset-key', assetUrl);
+        getSharpenedUrl(assetUrl).then(function(blobUrl) {
+            if (!blobUrl) return;
+            // 防御性: 该 img 若被复用到其他 asset (当前 scene-node fragment cache
+            // 不会发生, 仅留作后续重构容错), data-asset-key 不匹配就跳过。
+            if (imgEl.getAttribute('data-asset-key') === captured) {
+                imgEl.src = blobUrl;
+            }
+        });
     }
 
     function resolveDynamicAvatarUrl(slot) {
