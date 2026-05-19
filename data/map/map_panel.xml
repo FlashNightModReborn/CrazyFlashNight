@@ -137,4 +137,23 @@
 
         <alias name="∞天ㄙ★使的剪∞" canonical="杀马特"/>
     </task_npcs>
+
+    <!--
+        avatar_visibility: 静态 NPC 头像的进度/基建门控。
+        每条 rule = 一个 NPC 头像的可见门，多条同 npc 规则之间 AND。
+        rule 内部：chain/min（可省，配对出现）+ requireInfra（可省，"A|B"=OR）→ 三类之间 AND。
+        chain ∈ SaveManager.REPAIR_DICT_TASK_CHAINS = {主线/引导/支线/挑战/废城/彩蛋/异形/大学/后勤/预览}
+        requireInfra ∈ {自行车/摩托车/越野车}（白名单）
+        avatarId 必须命中 launcher staticAvatars/dynamicAvatars id 集（验证 by tools/audit-map-avatar-visibility.js）
+        npc 用于 AS2 端字典 key（兼容 task_npcs.name 命名）
+        无对应 rule 的 NPC = 默认可见（不门控）
+    -->
+    <avatar_visibility>
+        <rule avatarId="diplomat_avatar"    npc="黑铁会外交部长" chain="主线" min="69"/>
+        <rule avatarId="gem_contact_avatar" npc="宝石线人"       chain="主线" min="36"/>
+        <rule avatarId="sheriff_avatar"     npc="前治安官"       chain="主线" min="22"/>
+        <rule avatarId="veteran_avatar"     npc="幸存老兵"       chain="主线" min="19"/>
+        <rule avatarId="schoolgirl_avatar"  npc="学生妹"         chain="主线" min="29"/>
+        <rule avatarId="cowboy_avatar"      npc="牛仔"           chain="主线" min="95" requireInfra="摩托车|越野车"/>
+    </avatar_visibility>
 </map_panel>

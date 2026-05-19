@@ -205,7 +205,9 @@ class org.flashNight.arki.map.MapPanelService {
             case "blackiron":
                 return (p_main != undefined && infra != undefined && p_main >= 72 && (infra.摩托车 || infra.越野车));
             case "fallen":
-                return (infra != undefined && (infra.摩托车 || infra.越野车));
+                // 主线门 28 = max(外交-堕落城商业街 UC=28, 外交-堕落城酒吧 UC=29) 的较低者，
+                // 让页级解锁 = "至少能开商业街"；酒吧再差 1 级由 stage 层 isStageUnlocked 接力锁住。
+                return (p_main != undefined && infra != undefined && p_main >= 28 && (infra.摩托车 || infra.越野车));
             case "defense":
                 return (p_main != undefined && infra != undefined && p_main >= 14 && (infra.自行车 || infra.摩托车 || infra.越野车));
             case "restricted":
@@ -335,7 +337,7 @@ class org.flashNight.arki.map.MapPanelService {
         }
 
         return {
-            version: 2,
+            version: 3,
             defaultPageId: currentPageId,
             regionId: currentPageId,
             currentHotspotId: currentHotspotId,
@@ -346,8 +348,59 @@ class org.flashNight.arki.map.MapPanelService {
                 roommateGender: roommateGender
             },
             markers: buildMarkers(currentHotspotId),
-            tips: buildTips(currentHotspotId)
+            tips: buildTips(currentHotspotId),
+            // ── v3 新增字段 ──
+            // taskChains: 10 条 task_chain 全量进度（SaveManager.REPAIR_DICT_TASK_CHAINS 一致）
+            // infrastructure: 3 项基建状态
+            // avatarVisibility: { launcher slot id → boolean }，由 MapPanelCatalog.isAvatarVisible 派生
+            taskChains: buildTaskChainsSnapshot(),
+            infrastructure: buildInfrastructureSnapshot(),
+            avatarVisibility: buildAvatarVisibilitySnapshot()
         };
+    }
+
+    private static var TASK_CHAIN_NAMES:Array = [
+        "主线", "引导", "支线", "挑战", "废城",
+        "彩蛋", "异形", "大学", "后勤", "预览"
+    ];
+    private static var INFRA_KEYS:Array = ["自行车", "摩托车", "越野车"];
+
+    private static function buildTaskChainsSnapshot():Object {
+        var snap:Object = {};
+        var progress:Object = _root.task_chains_progress;
+        if (progress == undefined) return snap;
+        for (var i:Number = 0; i < TASK_CHAIN_NAMES.length; i++) {
+            var k:String = TASK_CHAIN_NAMES[i];
+            var v:Number = Number(progress[k]);
+            snap[k] = isNaN(v) ? 0 : v;
+        }
+        return snap;
+    }
+
+    private static function buildInfrastructureSnapshot():Object {
+        var snap:Object = {};
+        var infra:Object = getInfrastructure();
+        if (infra == undefined) return snap;
+        for (var i:Number = 0; i < INFRA_KEYS.length; i++) {
+            var k:String = INFRA_KEYS[i];
+            snap[k] = !!infra[k];
+        }
+        return snap;
+    }
+
+    /**
+     * 枚举 MapPanelCatalog.AVATAR_ID_TO_NPC 中所有声明了 visibility rule 的 avatar,
+     * 调用 isAvatarVisible 求值，结果以 slot id 作 key 下发。
+     * 没有 rule 的 avatar 不出现在 map → Web 端按"缺失=可见"兜底（保留 v2 行为）。
+     */
+    private static function buildAvatarVisibilitySnapshot():Object {
+        var result:Object = {};
+        var idMap:Object = MapPanelCatalog.AVATAR_ID_TO_NPC;
+        for (var avatarId:String in idMap) {
+            var npcName:String = String(idMap[avatarId]);
+            result[avatarId] = MapPanelCatalog.isAvatarVisible(npcName);
+        }
+        return result;
     }
 
     // ─────────────────────────────────────────────

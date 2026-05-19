@@ -154,6 +154,15 @@ H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5
     <npc name="…" hotspot="…（page 由 Catalog 派生）"/>
     <alias name="别名" canonical="…（必须命中某个 npc name）"/>
   </task_npcs>
+  <avatar_visibility>
+    <!-- 静态 NPC 头像的进度/基建门控声明。无对应 rule = 默认可见。
+         同 npc 多条 rule = AND；rule 内部 chain/min（配对）+ requireInfra（"A|B" = OR）三类 AND。 -->
+    <rule avatarId="…（必须命中 launcher staticAvatars/dynamicAvatars id）"
+          npc="…（AS2 字典 key；建议命中 task_npcs/npc.name）"
+          chain="主线|引导|支线|挑战|废城|彩蛋|异形|大学|后勤|预览"
+          min="<非负整数>"
+          requireInfra="自行车|摩托车|越野车"/>
+  </avatar_visibility>
 </map_panel>
 ```
 
@@ -164,6 +173,12 @@ H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5
 - 非 base 组必须显式声明 `lockedReason`（为空会让锁区提示静默消失，按硬失败处理）
 - hotspot.group 必须命中 groups 里声明的 id；npc.hotspot 必须命中 hotspots
 - alias.name 不得与真实 npc 重名、两 alias 不得重名、npc 名不得仅大小写不同
+- `avatar_visibility`（可选段；缺失 = 全部默认可见）：
+  - rule 必须有 avatarId + npc；chain/min 必须配对出现（要么都有要么都没）
+  - chain ∈ `VALID_CHAIN_NAMES`（10 条 task_chain canonical，与 `SaveManager.REPAIR_DICT_TASK_CHAINS` 同步）
+  - requireInfra="A|B" 切分后每项 ∈ `VALID_INFRA_NAMES`（自行车/摩托车/越野车）
+  - 同一 avatarId 不可指向不同 npc；avatarId 必须命中 launcher staticAvatars/dynamicAvatars id 集
+  - 外部 validator：`node tools/audit-map-avatar-visibility.js`
 - 新增热点/分组属于**设计变更**，需同步修改 XML + 代码内 REQUIRED 列表 + launcher 侧 manifest
 
 ### launcher/web 端 NPC 头像坐标 schema (Stage C 以后 hotspot-relative)

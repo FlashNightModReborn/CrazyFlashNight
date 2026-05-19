@@ -84,8 +84,27 @@ _root.getItemData = function(index){
 };
 
 //关卡
+// 解锁优先级：主路径 (UnlockCondition <= 主线任务进度) > 替代路径 (AltUnlockCondition 任一命中)。
+// AltUnlockCondition schema: <AltUnlockCondition chain="<task_chain名>" min="<数值>"/>，可单条或多条 (OR)。
+// chain ∈ SaveManager.REPAIR_DICT_TASK_CHAINS (主线/引导/支线/挑战/废城/彩蛋/异形/大学/后勤/预览)。
 _root.isStageUnlocked = function(name){
-	return _root.StageInfoDict[name].UnlockCondition <= _root.主线任务进度 ? true : false;
+	var info = _root.StageInfoDict[name];
+	if (info == undefined) return false;
+	// 主路径
+	if (Number(info.UnlockCondition) <= Number(_root.主线任务进度)) return true;
+	// 替代路径
+	var alt = info.AltUnlockCondition;
+	if (alt == undefined) return false;
+	var list = (alt instanceof Array) ? alt : [alt];
+	var progress = _root.task_chains_progress;
+	if (progress == undefined) return false;
+	for (var i = 0; i < list.length; i++) {
+		var rule = list[i];
+		var chainName = String(rule.chain);
+		if (chainName == "" || chainName == "undefined") continue;
+		if (Number(progress[chainName]) >= Number(rule.min)) return true;
+	}
+	return false;
 }
 
 //商店

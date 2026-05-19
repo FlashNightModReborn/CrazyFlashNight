@@ -19,6 +19,11 @@ var MapPanel = (function() {
     var _dynamicAvatarState = {};
     var _snapshotMarkers = [];
     var _snapshotTips = [];
+    // v3 snapshot 新增字段缓存（v2 snapshot 时全部为空 = 不门控，等价默认可见）
+    var _avatarVisibility = {};       // { avatarId: boolean }；缺 key = 默认可见
+    var _snapshotTaskChains = {};     // 仅用于 dev/qa 调试，渲染路径不读
+    var _snapshotInfrastructure = {}; // 同上
+    var _snapshotVersion = 2;
     var _currentHotspotId = '';
     var _requestedInitialPageId = '';
     var _hoverHotspotId = '';
@@ -196,6 +201,10 @@ var MapPanel = (function() {
         _unlockFlags = {};
         _pageFilterState = {};
         _dynamicAvatarState = {};
+        _avatarVisibility = {};
+        _snapshotTaskChains = {};
+        _snapshotInfrastructure = {};
+        _snapshotVersion = 2;
         _snapshotMarkers = [];
         _snapshotTips = [];
         _currentHotspotId = '';
@@ -233,6 +242,10 @@ var MapPanel = (function() {
         _unlockFlags = {};
         _pageFilterState = {};
         _dynamicAvatarState = {};
+        _avatarVisibility = {};
+        _snapshotTaskChains = {};
+        _snapshotInfrastructure = {};
+        _snapshotVersion = 2;
         _snapshotMarkers = [];
         _snapshotTips = [];
         _currentHotspotId = '';
@@ -351,6 +364,35 @@ var MapPanel = (function() {
         }
     }
 
+    // 整页是否有任一 hotspot 解锁。base 永远 true（base hotspots 全部默认 enabled）。
+    function pageHasAnyEnabled(pageId) {
+        var page = MapPanelData.getPage(pageId);
+        if (!page || !page.hotspots) return false;
+        for (var i = 0; i < page.hotspots.length; i++) {
+            if (_enabledLookup[page.hotspots[i].id]) return true;
+        }
+        return false;
+    }
+
+    // 整页全锁 → tab 隐藏（display:none）。在 _enabledLookup 重建后调用。
+    function syncPageTabVisibility() {
+        if (!_pageTabsEl) return;
+        var btns = _pageTabsEl.querySelectorAll('.map-page-tab');
+        for (var i = 0; i < btns.length; i++) {
+            var pageId = btns[i].getAttribute('data-page-id');
+            btns[i].style.display = pageHasAnyEnabled(pageId) ? '' : 'none';
+        }
+    }
+
+    // 返回首个 live page id；找不到则 fallback 到 page order 的第一个（base 兜底）
+    function resolveFirstLivePageId() {
+        var order = MapPanelData.getPageOrder();
+        for (var i = 0; i < order.length; i++) {
+            if (pageHasAnyEnabled(order[i])) return order[i];
+        }
+        return order[0] || '';
+    }
+
     function updatePageSummary() {
         if (!_activePage) {
             _pageSummaryEl.textContent = '';
@@ -436,7 +478,15 @@ var MapPanel = (function() {
         var visuals = getVisibleSceneVisuals(_activePage);
         var visibleSet = {};
         var i;
-        for (i = 0; i < visuals.length; i++) visibleSet[visuals[i].id] = true;
+        for (i = 0; i < visuals.length; i++) {
+            // 同时要求其覆盖的 hotspot 至少有一个解锁；否则该场景视觉对应的全是锁定区域，整块不画
+            var ids = visuals[i].hotspotIds || [];
+            var hasEnabledHotspot = ids.length === 0;  // 无 hotspot 关联的视觉（背景类）保持显示
+            for (var j = 0; j < ids.length; j++) {
+                if (_enabledLookup[ids[j]]) { hasEnabledHotspot = true; break; }
+            }
+            if (hasEnabledHotspot) visibleSet[visuals[i].id] = true;
+        }
 
         var nodes = _sceneLayer.querySelectorAll('.map-scene-node');
         for (i = 0; i < nodes.length; i++) {
@@ -650,6 +700,10 @@ var MapPanel = (function() {
         _unlockFlags = {};
         _pageFilterState = {};
         _dynamicAvatarState = {};
+        _avatarVisibility = {};
+        _snapshotTaskChains = {};
+        _snapshotInfrastructure = {};
+        _snapshotVersion = 2;
         _snapshotMarkers = [];
         _snapshotTips = [];
         _currentHotspotId = '';
@@ -675,6 +729,11 @@ var MapPanel = (function() {
         _snapshotMarkers = snapshot.markers || [];
         _snapshotTips = snapshot.tips || [];
         _currentHotspotId = snapshot.currentHotspotId || resolveCurrentHotspotId(_snapshotMarkers) || '';
+        // v3 字段：v2 snapshot 没有这些 key，缺 = 默认可见（保留向后兼容）
+        _snapshotVersion = Number(snapshot.version) || 2;
+        _avatarVisibility = (_snapshotVersion >= 3 && snapshot.avatarVisibility) ? snapshot.avatarVisibility : {};
+        _snapshotTaskChains = (_snapshotVersion >= 3 && snapshot.taskChains) ? snapshot.taskChains : {};
+        _snapshotInfrastructure = (_snapshotVersion >= 3 && snapshot.infrastructure) ? snapshot.infrastructure : {};
 
         if (snapshot.hotspotStates) {
             mergeHotspotStates(snapshot.hotspotStates);
@@ -690,9 +749,16 @@ var MapPanel = (function() {
             rebuildEnabledLookupFromStates(true);
         }
 
+        // _enabledLookup 已就绪 → 同步 tab 可见性（整页全锁则 display:none）
+        syncPageTabVisibility();
+
         var requestedPageId = _requestedInitialPageId;
         _requestedInitialPageId = '';
         var targetPageId = requestedPageId || snapshot.defaultPageId || resolvePageIdForHotspot(_currentHotspotId) || (_activePage ? _activePage.id : '');
+        // 目标页若全锁 → 回落到首个 live page（避免打开后看到空页）
+        if (targetPageId && !pageHasAnyEnabled(targetPageId)) {
+            targetPageId = resolveFirstLivePageId();
+        }
         if (targetPageId) {
             applyPage(targetPageId);
             return;
@@ -718,21 +784,21 @@ var MapPanel = (function() {
             var rect = hotspot.rect;
             var hotspotState = getHotspotState(hotspot.id);
             var enabled = !!hotspotState.enabled;
+            // 锁定 hotspot 整体不渲染（剧透防护）。原本会渲染 is-disabled 按钮 + 点击弹 toast，
+            // 现在改为彻底不可见 + 不可点；解锁原因通过 group 级 filter 按钮自身在解锁前的隐藏来表达。
+            if (!enabled) continue;
             var btn = document.createElement('button');
 
-            btn.className = 'map-hotspot' + (enabled ? '' : ' is-disabled') + (_currentHotspotId === hotspot.id ? ' is-current' : '');
+            btn.className = 'map-hotspot' + (_currentHotspotId === hotspot.id ? ' is-current' : '');
             btn.type = 'button';
             btn.setAttribute('data-hotspot-id', hotspot.id);
-            btn.setAttribute('data-audio-cue', enabled ? 'transition' : 'error');
+            btn.setAttribute('data-audio-cue', 'transition');
             btn.style.left = toPercent(rect.x, _activePage.width);
             btn.style.top = toPercent(rect.y, _activePage.height);
             btn.style.width = toPercent(rect.w, _activePage.width);
             btn.style.height = toPercent(rect.h, _activePage.height);
-            btn.setAttribute('aria-disabled', enabled ? 'false' : 'true');
+            btn.setAttribute('aria-disabled', 'false');
             btn.setAttribute('aria-label', hotspot.label);
-            if (!enabled && hotspotState.lockedReason) {
-                btn.setAttribute('data-locked-reason', hotspotState.lockedReason);
-            }
             btn.innerHTML =
                 '<span class="map-hotspot-sheen"></span>';
 
@@ -781,6 +847,8 @@ var MapPanel = (function() {
             var enabledCount = countEnabledIds(filter.hotspotIds || []);
             var filterMeta = getFilterMeta(_activePage.id, filter.id);
             var isLocked = !!(filterMeta && !_unlockFlags[filterMeta.unlockGroup]);
+            // 锁定的 group-mapped filter 整个按钮不渲染（剧透防护）；meta filter（all/hierarchy）和无 group 关联的 filter 保留。
+            if (isLocked) continue;
             var btn = document.createElement('button');
             btn.className = 'map-filter-hotspot';
             btn.type = 'button';
@@ -970,6 +1038,8 @@ var MapPanel = (function() {
             if (!marker || marker.kind !== 'taskNpc') continue;
             if (marker.pageId && marker.pageId !== _activePage.id) continue;
             if (marker.hotspotId && !visibleLookup[marker.hotspotId]) continue;
+            // 锁定 hotspot 不挂闪光环（即便任务可交付，玩家也得先解锁区域才看得到）
+            if (marker.hotspotId && !_enabledLookup[marker.hotspotId]) continue;
 
             var anchor = findAvatarAnchorForMarker(marker, visibleLookup) || resolveFeedbackAnchor(marker);
             if (!anchor) continue;
@@ -989,7 +1059,11 @@ var MapPanel = (function() {
         for (var i = 0; i < slots.length; i++) {
             var slot = slots[i];
             if (slot.hotspotId && !visibleLookup[slot.hotspotId]) continue;
+            // 锁定 hotspot 不渲染 NPC 头像（剧透防护：视觉上彻底不出现）
+            if (slot.hotspotId && !_enabledLookup[slot.hotspotId]) continue;
             if (!slot.assetUrl) continue;
+            // v3 visibility mask：avatarId 命中 _avatarVisibility 且为 false 时跳过（v2 snapshot 该表恒空）
+            if (slot.id && _avatarVisibility.hasOwnProperty(slot.id) && _avatarVisibility[slot.id] === false) continue;
             var rect = resolveStaticAvatarRect(slot);
             if (!rect) {
                 console.warn('[map-panel] static avatar missing source-data rect, skip render', slot.id, slot.assetUrl);
@@ -1033,6 +1107,8 @@ var MapPanel = (function() {
         for (var i = 0; i < slots.length; i++) {
             var slot = slots[i];
             if (slot.hotspotId && !visibleLookup[slot.hotspotId]) continue;
+            // 锁定 hotspot 不渲染动态头像（与 renderStaticAvatars 口径一致）
+            if (slot.hotspotId && !_enabledLookup[slot.hotspotId]) continue;
 
             var assetUrl = resolveDynamicAvatarUrl(slot);
             if (!assetUrl) continue;
@@ -1219,6 +1295,8 @@ var MapPanel = (function() {
 
         var visibleLookup = buildVisibleLookup(_activePage);
         if (item.hotspotId && !visibleLookup[item.hotspotId]) return false;
+        // 锁定 hotspot 不显示 feedback tip
+        if (item.hotspotId && !_enabledLookup[item.hotspotId]) return false;
 
         return true;
     }
@@ -1294,6 +1372,10 @@ function resolveFeedbackAnchor(item) {
         for (var i = 0; i < slots.length; i++) {
             var slot = slots[i];
             if (slot.hotspotId && visibleLookup && !visibleLookup[slot.hotspotId]) continue;
+            // 锁定 hotspot 不提供锚点
+            if (slot.hotspotId && !_enabledLookup[slot.hotspotId]) continue;
+            // 与 renderStaticAvatars 保持口径一致：avatar 不可见时也不给 task marker 提供锚点（避免泄剧透）
+            if (slot.id && _avatarVisibility.hasOwnProperty(slot.id) && _avatarVisibility[slot.id] === false) continue;
 
             var keys = getSlotNpcKeys(slot);
             for (var j = 0; j < keys.length; j++) {

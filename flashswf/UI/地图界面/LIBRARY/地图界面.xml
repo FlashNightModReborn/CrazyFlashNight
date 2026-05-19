@@ -466,23 +466,20 @@ var LayerUtils = {
  *  3.  任务相关头像控制 & NPC 闪光提示
  * ============================================================================
  */
-function setTaskRelatedAvatar(avatarName, requiredProgress) {
-    if (_root.主线任务进度 == undefined) return;
-    if (_root.主线任务进度 < requiredProgress) {
-        _this[avatarName]._visible = false;
-    } else {
-        _this[avatarName]._visible = true;
-        _this[avatarName]._alpha = 80;
-    }
+// 单一权威源：data/map/map_panel.xml <avatar_visibility> 段，由 MapPanelCatalog.isAvatarVisible 求值。
+// 这里仅做 NPC name → 头像 MC 名的映射（命名差异由 XFL 命名习惯决定，无法在 XML 端表达）。
+function setAvatarVisibility(npcName, avatarMcName) {
+    var visible = org.flashNight.arki.map.MapPanelCatalog.isAvatarVisible(npcName);
+    _this[avatarMcName]._visible = visible;
+    if (visible) _this[avatarMcName]._alpha = 80;
 }
 
 function setDynamicTaskAvatars() {
-    if (_root.主线任务进度 == undefined) return;
-    setTaskRelatedAvatar("黑铁会外交部长头像", 69);
-    setTaskRelatedAvatar("宝石线人头像", 36);
-    setTaskRelatedAvatar("前治安官头像", 22);
-    setTaskRelatedAvatar("幸存老兵头像", 19);
-    setTaskRelatedAvatar("学生妹头像", 29);
+    setAvatarVisibility("黑铁会外交部长", "黑铁会外交部长头像");
+    setAvatarVisibility("宝石线人",       "宝石线人头像");
+    setAvatarVisibility("前治安官",       "前治安官头像");
+    setAvatarVisibility("幸存老兵",       "幸存老兵头像");
+    setAvatarVisibility("学生妹",         "学生妹头像");
 }
 
 // 共享的 NPC 闪光提示数据
@@ -1253,29 +1250,16 @@ tweenManager.addTween(tween);
  *  3.  任务相关头像控制 & NPC 闪光提示
  * ============================================================================
  */
-function setTaskRelatedAvatar(avatarName, requiredProgress)
-{
-	if (_root.主线任务进度 == undefined)
-	{
-		return;
-	}
-	if (_root.主线任务进度 < requiredProgress)
-	{
-		_this[avatarName]._visible = false;
-	}
-	else
-	{
-		_this[avatarName]._visible = true;
-		_this[avatarName]._alpha = 80;
-	}
+// 单一权威源：data/map/map_panel.xml <avatar_visibility> 段，由 MapPanelCatalog.isAvatarVisible 求值。
+// 牛仔的"主线 95 + 摩托车|越野车"门控已经在 XML rule 内表达，无需此处再做基建判断。
+function setAvatarVisibility(npcName, avatarMcName) {
+	var visible = org.flashNight.arki.map.MapPanelCatalog.isAvatarVisible(npcName);
+	_this[avatarMcName]._visible = visible;
+	if (visible) _this[avatarMcName]._alpha = 80;
 }
 
 function setDynamicTaskAvatars() {
-    if (_root.主线任务进度 == undefined) return;
-	var infra = _root.基建系统.infrastructure;
-	if (infra.摩托车 || infra.越野车){
-		setTaskRelatedAvatar("牛仔头像", 95);
-	}
+	setAvatarVisibility("牛仔", "牛仔头像");
 }
 
 // 共享的 NPC 闪光提示数据
@@ -2133,22 +2117,9 @@ tweenManager.addTween(tween);
  *  3.  任务相关头像控制 & NPC 闪光提示
  * ============================================================================
  */
-function setTaskRelatedAvatar(avatarName, requiredProgress)
-{
-	if (_root.主线任务进度 == undefined)
-	{
-		return;
-	}
-	if (_root.主线任务进度 < requiredProgress)
-	{
-		_this[avatarName]._visible = false;
-	}
-	else
-	{
-		_this[avatarName]._visible = true;
-		_this[avatarName]._alpha = 80;
-	}
-}
+// defense 帧无静态进度门控 NPC（artist/soldier/排骨/机哥/阿波/PROPHET 都由 group 级 restricted 门控兜底）
+// 显式声明空 setDynamicTaskAvatars，避免帧切换时继承到上一帧的实现误调用。
+function setDynamicTaskAvatars() {}
 
 // 共享的 NPC 闪光提示数据
 var NPCFlashData = {flashNames:["artist_闪光提示", "soldier_闪光提示"],
@@ -2928,19 +2899,9 @@ var LayerUtils = {
  *  3.  任务相关头像控制 & NPC 闪光提示
  * ============================================================================
  */
-function setTaskRelatedAvatar(avatarName, requiredProgress) {
-    if (_root.主线任务进度 == undefined) return;
-    if (_root.主线任务进度 < requiredProgress) {
-        _this[avatarName]._visible = false;
-    } else {
-        _this[avatarName]._visible = true;
-        _this[avatarName]._alpha = 80;
-    }
-}
-
-function setDynamicTaskAvatars() {
-    if (_root.主线任务进度 == undefined) return;
-}
+// school 帧无静态进度门控 NPC（黑仔/Bat/Tomboy 等都由 group 级 schoolOutside/schoolInside 门控兜底）
+// 显式声明空 setDynamicTaskAvatars，避免帧切换时继承到上一帧的实现误调用。
+function setDynamicTaskAvatars() {}
 
 // 共享的 NPC 闪光提示数据
 var NPCFlashData = {

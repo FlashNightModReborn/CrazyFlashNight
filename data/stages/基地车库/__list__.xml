@@ -60,7 +60,7 @@
     <StageInfo>
         <Type>外交地图</Type>
         <Name>外交-摇滚公园</Name>
-        <UnlockCondition>75</UnlockCondition>
+        <UnlockCondition>74</UnlockCondition>
         <Description>和摇滚公园搞好关系。</Description>
         <RootFadeTransitionFrame>地图-摇滚公园</RootFadeTransitionFrame>
         <Address>出生地</Address>
@@ -69,6 +69,7 @@
         <Type>外交地图</Type>
         <Name>外交-联合大学</Name>
         <UnlockCondition>28</UnlockCondition>
+        <AltUnlockCondition chain="大学" min="7"/>
         <Description> </Description>
         <RootFadeTransitionFrame>地图-联合大学</RootFadeTransitionFrame>
         <Address>出生地</Address>

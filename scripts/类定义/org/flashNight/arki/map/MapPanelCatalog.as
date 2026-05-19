@@ -25,6 +25,12 @@ class org.flashNight.arki.map.MapPanelCatalog {
     public static var UNLOCK_META:Object = {};
     public static var NAVIGATE_TARGETS:Object = {};
     public static var HOTSPOT_PAGES:Object = {};
+    // avatar_visibility 派生表：{ npcName: [rule, rule, ...] }
+    // rule = { chain?:String, min?:Number, requireInfra?:Array<String>, avatarId:String }
+    // 同一 npc 多条 rule = AND；空表 = 无门控 = 默认可见。
+    public static var AVATAR_VISIBILITY_RULES:Object = {};
+    // 反查表：launcher slot id → npc name（snapshot.avatarVisibility 用 slot id 作 key 下发给 Web）
+    public static var AVATAR_ID_TO_NPC:Object = {};
 
     public static var isLoaded:Boolean = false;
 
@@ -51,6 +57,12 @@ class org.flashNight.arki.map.MapPanelCatalog {
         "teaching_interior", "teaching_right"
     ];
     private static var VALID_PAGE_IDS:Array = ["base", "faction", "defense", "school"];
+    // 与 SaveManager.REPAIR_DICT_TASK_CHAINS 必须一致；任何 schema 扩展须同时同步两边。
+    private static var VALID_CHAIN_NAMES:Array = [
+        "主线", "引导", "支线", "挑战", "废城",
+        "彩蛋", "异形", "大学", "后勤", "预览"
+    ];
+    private static var VALID_INFRA_NAMES:Array = ["自行车", "摩托车", "越野车"];
 
     /**
      * 从 XML parse 结果填表。任一校验失败 → trace + 回退空表 + 返回 false。
@@ -135,19 +147,131 @@ class org.flashNight.arki.map.MapPanelCatalog {
             };
         }
 
+        // avatar_visibility 段（可选 — 无则空表）
+        var visParsed:Object = parseAvatarVisibility(raw.avatar_visibility);
+        if (visParsed == null) return false;  // 解析或校验失败
+
         // 原子替换（校验全过后才动 public 字段）
         BASE_HOTSPOT_IDS = base_;
         GROUPED_HOTSPOT_IDS = grouped;
         NAVIGATE_TARGETS = navigate;
         HOTSPOT_PAGES = pages;
         UNLOCK_META = meta;
+        AVATAR_VISIBILITY_RULES = visParsed.rules;
+        AVATAR_ID_TO_NPC = visParsed.idToNpc;
         isLoaded = true;
+        return true;
+    }
+
+    /**
+     * 解析 <avatar_visibility> 段。允许整段缺失（返回空表）。
+     * 校验失败 → trace + 返回 null。
+     * 返回结构：{ rules:Object, idToNpc:Object }
+     */
+    private static function parseAvatarVisibility(rawSection:Object):Object {
+        var rules:Object = {};
+        var idToNpc:Object = {};
+        if (rawSection == undefined) return { rules: rules, idToNpc: idToNpc };
+
+        var list:Array = XMLParser.configureDataAsArray(rawSection.rule);
+        if (list.length == 0) return { rules: rules, idToNpc: idToNpc };
+
+        for (var i:Number = 0; i < list.length; i++) {
+            var r:Object = list[i];
+            if (r.avatarId == undefined || r.avatarId == "") {
+                trace("[MapPanelCatalog] avatar_visibility rule[" + i + "] 缺 avatarId");
+                return null;
+            }
+            if (r.npc == undefined || r.npc == "") {
+                trace("[MapPanelCatalog] avatar_visibility rule '" + r.avatarId + "' 缺 npc");
+                return null;
+            }
+            // chain + min 必须配对出现
+            var hasChain:Boolean = (r.chain != undefined && r.chain != "");
+            var hasMin:Boolean = (r.min != undefined && r.min != "");
+            if (hasChain != hasMin) {
+                trace("[MapPanelCatalog] avatar_visibility rule '" + r.avatarId + "' chain/min 必须配对");
+                return null;
+            }
+            if (hasChain && !inList(VALID_CHAIN_NAMES, String(r.chain))) {
+                trace("[MapPanelCatalog] avatar_visibility rule '" + r.avatarId + "' chain 非白名单: " + r.chain);
+                return null;
+            }
+            if (hasMin && (isNaN(Number(r.min)) || Number(r.min) < 0)) {
+                trace("[MapPanelCatalog] avatar_visibility rule '" + r.avatarId + "' min 非法: " + r.min);
+                return null;
+            }
+            // requireInfra 切分并校验白名单
+            var infraArr:Array = null;
+            if (r.requireInfra != undefined && r.requireInfra != "") {
+                infraArr = String(r.requireInfra).split("|");
+                for (var k:Number = 0; k < infraArr.length; k++) {
+                    var infraName:String = infraArr[k];
+                    if (!inList(VALID_INFRA_NAMES, infraName)) {
+                        trace("[MapPanelCatalog] avatar_visibility rule '" + r.avatarId + "' requireInfra 非白名单: " + infraName);
+                        return null;
+                    }
+                }
+            }
+
+            var ruleObj:Object = { avatarId: String(r.avatarId) };
+            if (hasChain) {
+                ruleObj.chain = String(r.chain);
+                ruleObj.min = Number(r.min);
+            }
+            if (infraArr != null) ruleObj.requireInfra = infraArr;
+
+            var npcKey:String = String(r.npc);
+            if (rules[npcKey] == undefined) rules[npcKey] = [];
+            rules[npcKey].push(ruleObj);
+            // avatarId → npc 反查：同 avatarId 重复声明 = 数据错误
+            if (idToNpc[String(r.avatarId)] != undefined && idToNpc[String(r.avatarId)] != npcKey) {
+                trace("[MapPanelCatalog] avatar_visibility avatarId '" + r.avatarId + "' 指向不同 npc: " + idToNpc[String(r.avatarId)] + " vs " + npcKey);
+                return null;
+            }
+            idToNpc[String(r.avatarId)] = npcKey;
+        }
+
+        return { rules: rules, idToNpc: idToNpc };
+    }
+
+    /**
+     * 求值：给定 NPC 名是否当前可见。
+     * 无规则 = true（默认可见）。任一规则不满足 = false。
+     * 读 _root.task_chains_progress 和 _root.基建系统.infrastructure。
+     */
+    public static function isAvatarVisible(npcName:String):Boolean {
+        if (npcName == undefined || npcName == "") return true;
+        var rulesForNpc:Array = AVATAR_VISIBILITY_RULES[npcName];
+        if (rulesForNpc == undefined || rulesForNpc.length == 0) return true;
+
+        var progress:Object = _root.task_chains_progress;
+        var infra:Object = (_root.基建系统 != undefined) ? _root.基建系统.infrastructure : undefined;
+
+        for (var i:Number = 0; i < rulesForNpc.length; i++) {
+            var r:Object = rulesForNpc[i];
+            // chain/min 检查
+            if (r.chain != undefined) {
+                if (progress == undefined) return false;
+                if (Number(progress[r.chain]) < Number(r.min)) return false;
+            }
+            // requireInfra 检查（OR）
+            if (r.requireInfra != undefined) {
+                if (infra == undefined) return false;
+                var arr:Array = r.requireInfra;
+                var anyHit:Boolean = false;
+                for (var j:Number = 0; j < arr.length; j++) {
+                    if (infra[arr[j]]) { anyHit = true; break; }
+                }
+                if (!anyHit) return false;
+            }
+        }
         return true;
     }
 
     // ── 内部工具 ──
 
-    /** 把 5 张表全部复位为安全零值；isLoaded = false。applyFromXml 开头无条件调用。 */
+    /** 把全部表复位为安全零值；isLoaded = false。applyFromXml 开头无条件调用。 */
     private static function resetTables():Void {
         BASE_HOTSPOT_IDS = [];
         GROUPED_HOTSPOT_IDS = {
@@ -157,6 +281,8 @@ class org.flashNight.arki.map.MapPanelCatalog {
         UNLOCK_META = {};
         NAVIGATE_TARGETS = {};
         HOTSPOT_PAGES = {};
+        AVATAR_VISIBILITY_RULES = {};
+        AVATAR_ID_TO_NPC = {};
         isLoaded = false;
     }
 
