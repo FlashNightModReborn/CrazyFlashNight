@@ -120,8 +120,10 @@ dynamic class org.flashNight.arki.unit.UnitComponent.Routing.MockMovieClip {
 
         var child:MockMovieClip = new MockMovieClip();
         child.__name = name;
+        child._name = name;       // AS2 真实字段：业务可走 mc._name == "man" 判定
         child.__depth = depth;
         child.__parent = this;
+        child._parent = this;     // AS2 真实字段：业务可走 mc._parent 反向引用 / detached signature
 
         // 同步 enumerate + copy init own properties（与 AS2 attachMovie 语义一致）
         if (init != undefined) {
@@ -144,36 +146,40 @@ dynamic class org.flashNight.arki.unit.UnitComponent.Routing.MockMovieClip {
     public function removeMovieClip():Void {
         if (this.__removed) return;  // 幂等
 
-        // 1. snapshot 子级列表 → 避免 child remove 时反向 delete 干扰迭代
+        // 1. 提前标记 __removed + detach parent
+        //    重要：在调用 onUnload 之前完成，让 handler 内的递归 removeMovieClip 直接走幂等 no-op，
+        //    并让 detached 签名（__removed=true / __parent=undefined / _parent=undefined）在
+        //    onUnload 内可见 — 与契约 §3 "onUnload 内调用 this.removeMovieClip() no-op"
+        //    + [[feedback-as2-detached-mc-signature]] 一致。
+        this.__removed = true;
+        var oldParent:Object = this.__parent;
+        this.__parent = undefined;
+        this._parent = undefined;  // AS2 真实字段：detached signature 的关键观察点
+        if (oldParent != undefined && oldParent.__removed !== true) {
+            if (oldParent.__children != undefined && this.__name != undefined) {
+                delete oldParent.__children[this.__name];
+                delete oldParent[this.__name];
+            }
+        }
+
+        // 2. snapshot 子级列表 → 子先于父递归 remove
         var childList:Array = [];
         for (var k:String in this.__children) {
             childList.push(this.__children[k]);
         }
-        // 父先标记 children 已清空，让 child.removeMovieClip 内 detach 检查时不走反向 delete
         this.__children = {};
 
-        // 2. 子级递归 remove（触发各自 onUnload，子先于父）
+        // 3. 子级递归 remove（已 __removed=true，子级 detach 时看到 parent.__removed → 不反向 delete）
         for (var i:Number = 0; i < childList.length; i++) {
             var c:MockMovieClip = MockMovieClip(childList[i]);
             c.removeMovieClip();
         }
 
-        // 3. 自身 onUnload
+        // 4. 自身 onUnload（此时 detached 签名已建立）
         if (typeof this.onUnload === "function") {
             this.__unloadCallCount++;
             this.onUnload();
         }
-
-        // 4. 标记 detached + 从 parent 解绑（除非 parent 也在 removing 路径上）
-        this.__removed = true;
-        if (this.__parent != undefined && this.__parent.__removed !== true) {
-            // 父没在级联中 → 自己挂在父 children 下，解绑两处
-            if (this.__parent.__children != undefined && this.__name != undefined) {
-                delete this.__parent.__children[this.__name];
-                delete this.__parent[this.__name];
-            }
-        }
-        this.__parent = undefined;
     }
 
     public function gotoAndStop(label):Void {

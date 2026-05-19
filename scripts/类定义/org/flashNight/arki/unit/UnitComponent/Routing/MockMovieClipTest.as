@@ -61,6 +61,9 @@ class org.flashNight.arki.unit.UnitComponent.Routing.MockMovieClipTest {
         testAttachMovie_SameNameReplacesAndUnloadsOld();
         testAttachMovie_SnapshotIsolatesFutureMutation();
 
+        // attachMovie 真实字段（review fix 2026-05-19）
+        testAttachMovie_SetsRealNameAndParentFields();
+
         // removeMovieClip
         testRemoveMovieClip_TriggersOnUnload();
         testRemoveMovieClip_Idempotent();
@@ -68,6 +71,10 @@ class org.flashNight.arki.unit.UnitComponent.Routing.MockMovieClipTest {
         testRemoveMovieClip_CascadesToChildren();
         testRemoveMovieClip_ChildUnloadBeforeParent();
         testRemoveMovieClip_DetachedSignature();
+
+        // removeMovieClip 重入保护（review fix 2026-05-19）
+        testRemoveMovieClip_OnUnloadReentryIsNoOp();
+        testRemoveMovieClip_OnUnloadSeesDetachedSignature();
 
         // onUnload chain
         testOnUnload_ChainPrevThenWrapper();
@@ -350,5 +357,79 @@ class org.flashNight.arki.unit.UnitComponent.Routing.MockMovieClipTest {
         assertEquals("子级未被 remove", false, child.__removed);
         assertEquals("子级 onUnload 未触发", 0, unloadCalled);
         assertEquals("parent.man 仍指向 child", child, parent.man);
+    }
+
+    // ════════════════════════════════════════════════════════════════════
+    // Review fix（2026-05-19）：_name / _parent 真实字段 + onUnload 重入
+    // ════════════════════════════════════════════════════════════════════
+
+    /**
+     * attachMovie 同时 set __name/__parent（mock 内部观察用）和 _name/_parent
+     * （AS2 真实字段：业务代码常走 mc._name == "man" 判定 / mc._parent 反向引用）。
+     */
+    private static function testAttachMovie_SetsRealNameAndParentFields():Void {
+        trace("\n--- testAttachMovie_SetsRealNameAndParentFields ---");
+        var parent:MockMovieClip = new MockMovieClip();
+        var child = parent.attachMovie("L", "man", 0, {});
+        // 内部观察字段
+        assertEquals("__name = man", "man", child.__name);
+        assertEquals("__parent = parent", parent, child.__parent);
+        // AS2 真实字段
+        assertEquals("_name = man", "man", child._name);
+        assertEquals("_parent = parent", parent, child._parent);
+        // detached signature 关键：remove 后 _parent === undefined
+        child.removeMovieClip();
+        assertTrue("removed 后 _parent = undefined", child._parent === undefined);
+        assertTrue("removed 后 __parent = undefined", child.__parent === undefined);
+        // _name 在 remove 后是否清空 — 真实 AS2 不可观察（mc 已 detached，访问任何字段都退化）
+        // 本 mock 保留 __name 字段不清空，方便测试断言 + 不强行模拟 toString=="" 退化
+    }
+
+    /**
+     * onUnload handler 内调 this.removeMovieClip() — 应直接幂等 no-op，
+     * 不重入、不二次触发 onUnload、不递归。契约 §4 幂等要求 + user review。
+     */
+    private static function testRemoveMovieClip_OnUnloadReentryIsNoOp():Void {
+        trace("\n--- testRemoveMovieClip_OnUnloadReentryIsNoOp ---");
+        var parent:MockMovieClip = new MockMovieClip();
+        var child = parent.attachMovie("L", "man", 0, {});
+        var called:Number = 0;
+        var sawRemoved:Boolean;
+        child.onUnload = function() {
+            called++;
+            sawRemoved = (this.__removed === true);
+            // onUnload 内业务代码可能"防御性"重调 removeMovieClip — 应 no-op
+            this.removeMovieClip();
+            this.removeMovieClip();
+        };
+        child.removeMovieClip();
+        assertEquals("onUnload 仅触发 1 次（无重入）", 1, called);
+        assertEquals("__unloadCallCount=1", 1, child.__unloadCallCount);
+        assertEquals("onUnload 内可见 __removed=true", true, sawRemoved);
+    }
+
+    /**
+     * onUnload handler 内可看到完整 detached 签名（__removed=true / __parent=undefined /
+     * _parent=undefined / 已从 parent.__children 移除）。
+     * 这是 review fix "提前 mark removed + detach" 的可观察性证明。
+     */
+    private static function testRemoveMovieClip_OnUnloadSeesDetachedSignature():Void {
+        trace("\n--- testRemoveMovieClip_OnUnloadSeesDetachedSignature ---");
+        var parent:MockMovieClip = new MockMovieClip();
+        var child = parent.attachMovie("L", "man", 0, {});
+        var observed:Object = {};
+        child.onUnload = function() {
+            observed.__removed = this.__removed;
+            observed.__parent = this.__parent;
+            observed._parent = this._parent;
+            observed.parentManCleared = (parent.__children["man"] === undefined);
+            observed.parentOwnPropCleared = (parent["man"] === undefined);
+        };
+        child.removeMovieClip();
+        assertEquals("onUnload 内 __removed=true", true, observed.__removed);
+        assertTrue("onUnload 内 __parent=undefined", observed.__parent === undefined);
+        assertTrue("onUnload 内 _parent=undefined", observed._parent === undefined);
+        assertEquals("onUnload 内 parent.__children.man 已清", true, observed.parentManCleared);
+        assertEquals("onUnload 内 parent.man 已清", true, observed.parentOwnPropCleared);
     }
 }

@@ -72,8 +72,14 @@ _root.技能路由.技能man载入后跳转_旧 = function(man:MovieClip, unit:M
 _root.技能路由.载入后跳转技能容器 = function(container:MovieClip, unit:MovieClip):Void {
     var 技能名:String = unit.技能名;
     var initObj:Object = RoutingLifecycle.buildPublicContainerInit(container);
-    // SILENT_CONTINUE：handleFloat / bindEndCleanup 在 undefined man 上 no-op safe
-    var man:MovieClip = ContainerAttachAction.attach(unit, ContainerSpec.KIND_SKILL, 技能名, initObj).man;
+    var attachResult:Object = ContainerAttachAction.attach(unit, ContainerSpec.KIND_SKILL, 技能名, initObj);
+    if (attachResult.status !== ContainerAttachAction.STATUS_OK) {
+        // missing 容器 = 资源/数据错配。handleFloat 会把 unit.浮空 / unit.技能浮空 / unit._y
+        // 写脏（AS2 silent no-op 仅作用于 man.落地 = ...，unit 上的副作用照常发生），且无 man
+        // 让 onUnload 把状态收回。短路：不报错、不 fallback、不执行依赖 man 的 lifecycle。
+        return;
+    }
+    var man:MovieClip = attachResult.man;
     RoutingLifecycle.handleFloat(man, unit, "技能浮空");
     RoutingLifecycle.bindEndCleanup(man, unit, "战技", "技能结束", "技能浮空");
 };

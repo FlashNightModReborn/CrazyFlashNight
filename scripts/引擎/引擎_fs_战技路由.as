@@ -87,8 +87,13 @@ _root.战技路由.战技man载入后跳转_旧 = function(man:MovieClip, unit:M
 _root.战技路由.载入后跳转战技容器 = function(container:MovieClip, unit:MovieClip):Void {
     var 技能名:String = unit.技能名;
     var initObj:Object = RoutingLifecycle.buildPublicContainerInit(container);
-    // SILENT_CONTINUE：handleFloat / bindEndCleanup 在 undefined newMan 上 no-op safe
-    var newMan:MovieClip = ContainerAttachAction.attach(unit, ContainerSpec.KIND_BATTLE_SKILL, 技能名, initObj).man;
+    var attachResult:Object = ContainerAttachAction.attach(unit, ContainerSpec.KIND_BATTLE_SKILL, 技能名, initObj);
+    if (attachResult.status !== ContainerAttachAction.STATUS_OK) {
+        // 同 技能路由 短路理由：missing 容器时 handleFloat 仍会把 unit.浮空 等字段写脏，
+        // 且无 onUnload 回收路径 — 静默跳过 lifecycle 而非"继续跑下游"。
+        return;
+    }
+    var newMan:MovieClip = attachResult.man;
 
     RoutingLifecycle.handleFloat(newMan, unit, "技能浮空");
     RoutingLifecycle.bindEndCleanup(newMan, unit, undefined, "技能结束", "技能浮空");
