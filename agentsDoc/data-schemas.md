@@ -166,6 +166,38 @@ H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5
 - alias.name 不得与真实 npc 重名、两 alias 不得重名、npc 名不得仅大小写不同
 - 新增热点/分组属于**设计变更**，需同步修改 XML + 代码内 REQUIRED 列表 + launcher 侧 manifest
 
+### launcher/web 端 NPC 头像坐标 schema (Stage C 以后 hotspot-relative)
+
+`launcher/web/modules/map-avatar-source-data.js`（手工维护 IIFE）每个 entry 不再带绝对坐标 `center/rect`，而是相对所属 hotspot 的 runtime rect 左上角偏移：
+
+```jsonc
+{
+  "symbolName": "<XFL 头像 MovieClip 名>",
+  "assetUrl": "assets/map/avatars/<symbolName>.png",
+  "hotspotId": "<launcher map-panel-data hotspot id>",
+  "relX": <number>,            // 头像 rect 左上角 X 偏移
+  "relY": <number>,            // 头像 rect 左上角 Y 偏移
+  "size":     { "w": 44, "h": 44 },    // 渲染尺寸 (px); 室友 dynamic = 48
+  "crop":     { "scaleX": 1.0, "scaleY": 1.0, "tx": -0.5, "ty": 0.5 },  // XFL 不可重算元数据, debug-only
+  "assetSize": { "w": 44, "h": 44 }    // PNG 实际尺寸; 审计用
+}
+```
+
+`launcher/web/modules/map-panel-data.js` 的 `dynamicAvatars` 也走同样的相对坐标 schema（室友独占该路径）：
+
+```js
+{ id: 'roommate', label: '室友', kind: 'roommateGender',
+  hotspotId: 'school_dormitory', relX: 20.7, relY: 17.65, w: 48, h: 48 }
+```
+
+**渲染流程**：`resolveStaticAvatarRect` / `resolveDynamicAvatarRect` 通过 `MapPanelData.findHotspot(pageId, hotspotId)` 取 **runtime rect**（经 `applyXflLayoutOverrides` + `syncCompositeHotspotRects` 两道覆盖后的最终值），再加 `relX/relY` 得到屏幕坐标。调 hotspot rect 时 NPC 头像自动跟随，无需手动重算坐标。
+
+**调位置**：
+- 调一个 NPC 位置：只改 source-data.js（static）或 panel-data.js dynamicAvatars（动态）的 `relX/relY`
+- 调一个 hotspot 位置：按 effective rect 来源改 `_pages.<page>.hotspots[].rect` / `_xflLayoutOverrides` / `_pages.<page>.sceneVisuals[].rect`（参考 `MapPanelData.findHotspot` 返回值跟哪个静态源数字最接近，那就是 effective 来源）
+
+**跨边界 NPC**（理科教授 / 文科老师）：保留 `qa-suite.js` reviewOnly 白名单豁免；如需根治需要美术介入。
+
 ### 使用模式
 
 ```actionscript

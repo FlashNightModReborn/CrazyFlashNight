@@ -174,13 +174,15 @@ var MapPanelHarnessQA = (function() {
 
         return (page && page.staticAvatars ? page.staticAvatars : []).map(function(slot) {
             var sourceSlot = hasSourceData ? MapAvatarSourceData.getByAssetUrl(slot.assetUrl || '') : null;
-            var sourceRect = sourceSlot && sourceSlot.rect ? sourceSlot.rect : null;
             var sourceSize = sourceSlot && sourceSlot.size ? sourceSlot.size : null;
             var halfW = sourceSize ? sourceSize.w / 2 : 0;
             var halfH = sourceSize ? sourceSize.h / 2 : 0;
-            var center = sourceRect ? {
-                x: sourceRect.x + halfW,
-                y: sourceRect.y + halfH
+            // C 阶段后 source-data 不带 rect, 用 hotspotId+relX+relY 推导
+            var ownerHotspotId = sourceSlot ? (sourceSlot.hotspotId || slot.hotspotId) : slot.hotspotId;
+            var ownerHotspot = ownerHotspotId ? MapPanelData.findHotspot(pageId, ownerHotspotId) : null;
+            var center = (sourceSlot && ownerHotspot && ownerHotspot.rect) ? {
+                x: ownerHotspot.rect.x + sourceSlot.relX + halfW,
+                y: ownerHotspot.rect.y + sourceSlot.relY + halfH
             } : { x: 0, y: 0 };
             var containingHotspotIds = hotspots.filter(function(hotspot) {
                 return rectContainsPoint(hotspot.rect, center.x, center.y);
@@ -533,8 +535,15 @@ var MapPanelHarnessQA = (function() {
                                             api.assert(!!sourceSlot, pageId + ' missing avatar source meta for ' + slot.id);
                                             avatarEl = document.querySelector('.map-static-avatar[data-avatar-id="' + slot.id + '"]');
                                             api.assert(!!avatarEl, pageId + ' missing avatar element for ' + slot.id);
-                                            api.assert(!!(sourceSlot && sourceSlot.rect), pageId + ' avatar missing source rect for ' + slot.id);
-                                            expectedRect = sourceSlot.rect;
+                                            api.assert(!!(sourceSlot && sourceSlot.size && sourceSlot.hotspotId), pageId + ' avatar missing source schema for ' + slot.id);
+                                            var ownerHotspot = MapPanelData.findHotspot(pageId, sourceSlot.hotspotId);
+                                            api.assert(!!(ownerHotspot && ownerHotspot.rect), pageId + ' avatar owner hotspot missing for ' + slot.id);
+                                            expectedRect = {
+                                                x: ownerHotspot.rect.x + sourceSlot.relX,
+                                                y: ownerHotspot.rect.y + sourceSlot.relY,
+                                                w: sourceSlot.size.w,
+                                                h: sourceSlot.size.h
+                                            };
                                             api.assert(Math.abs(parseFloat(avatarEl.style.left) - ((expectedRect.x / page.width) * 100)) < 0.05, pageId + ' avatar left mismatch for ' + slot.id);
                                             api.assert(Math.abs(parseFloat(avatarEl.style.top) - ((expectedRect.y / page.height) * 100)) < 0.05, pageId + ' avatar top mismatch for ' + slot.id);
                                             api.assert(Math.abs(parseFloat(avatarEl.style.width) - ((expectedRect.w / page.width) * 100)) < 0.05, pageId + ' avatar width mismatch for ' + slot.id);
@@ -600,8 +609,12 @@ var MapPanelHarnessQA = (function() {
                         return api.waitFor(function() {
                             return document.querySelector('.map-avatar-task-ring[data-hotspot-id="school_dormitory"]');
                         }, 1500, 'task ring appears').then(function(ring) {
-                            var expectedX = (slot.x + slot.w / 2) / page.width * 100;
-                            var expectedY = (slot.y + slot.h / 2) / page.height * 100;
+                            var hotspot = MapPanelData.findHotspot('school', slot.hotspotId);
+                            api.assert(!!(hotspot && hotspot.rect), 'school_dormitory hotspot missing rect');
+                            var slotX = hotspot.rect.x + slot.relX;
+                            var slotY = hotspot.rect.y + slot.relY;
+                            var expectedX = (slotX + slot.w / 2) / page.width * 100;
+                            var expectedY = (slotY + slot.h / 2) / page.height * 100;
                             var actualX = parseFloat(ring.style.left);
                             var actualY = parseFloat(ring.style.top);
                             api.assert(Math.abs(actualX - expectedX) < 0.02, 'ring x drift: expected=' + expectedX.toFixed(3) + ' actual=' + actualX.toFixed(3));

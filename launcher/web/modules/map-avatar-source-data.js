@@ -5,6 +5,9 @@ var MapAvatarSourceData = (function() {
   "andy头像": {
     "symbolName": "andy头像",
     "assetUrl": "assets/map/avatars/andy头像.png",
+    "hotspotId": "basement1",
+    "relX": 109.85,
+    "relY": 21.85,
     "size": {
       "w": 44,
       "h": 44
@@ -15,16 +18,6 @@ var MapAvatarSourceData = (function() {
       "tx": -0.5,
       "ty": 0.5
     },
-    "center": {
-      "x": 469.4,
-      "y": 301.25
-    },
-    "rect": {
-      "x": 447.4,
-      "y": 279.25,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -33,6 +26,9 @@ var MapAvatarSourceData = (function() {
   "artist头像": {
     "symbolName": "artist头像",
     "assetUrl": "assets/map/avatars/artist头像.png",
+    "hotspotId": "first_defense",
+    "relX": 51.35,
+    "relY": 10.15,
     "size": {
       "w": 44,
       "h": 44
@@ -43,16 +39,6 @@ var MapAvatarSourceData = (function() {
       "tx": -3.7,
       "ty": 3.4
     },
-    "center": {
-      "x": 133.35,
-      "y": 126.85
-    },
-    "rect": {
-      "x": 111.35,
-      "y": 104.85,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -61,6 +47,9 @@ var MapAvatarSourceData = (function() {
   "Bat头像": {
     "symbolName": "Bat头像",
     "assetUrl": "assets/map/avatars/Bat头像.png",
+    "hotspotId": "union_university",
+    "relX": 44.85,
+    "relY": 35.8,
     "size": {
       "w": 44,
       "h": 44
@@ -71,16 +60,6 @@ var MapAvatarSourceData = (function() {
       "tx": 106.45,
       "ty": 4.0
     },
-    "center": {
-      "x": 442.05,
-      "y": 501.0
-    },
-    "rect": {
-      "x": 420.05,
-      "y": 479.0,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -89,6 +68,9 @@ var MapAvatarSourceData = (function() {
   "blue头像": {
     "symbolName": "blue头像",
     "assetUrl": "assets/map/avatars/blue头像.png",
+    "hotspotId": "basement1",
+    "relX": 233.2,
+    "relY": 29.25,
     "size": {
       "w": 44,
       "h": 44
@@ -99,16 +81,6 @@ var MapAvatarSourceData = (function() {
       "tx": -6.4,
       "ty": 2.3
     },
-    "center": {
-      "x": 592.75,
-      "y": 308.65
-    },
-    "rect": {
-      "x": 570.75,
-      "y": 286.65,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -117,6 +89,9 @@ var MapAvatarSourceData = (function() {
   "boy头像": {
     "symbolName": "boy头像",
     "assetUrl": "assets/map/avatars/boy头像.png",
+    "hotspotId": "base_garage",
+    "relX": 129.5,
+    "relY": 61.6,
     "size": {
       "w": 44,
       "h": 44
@@ -127,16 +102,6 @@ var MapAvatarSourceData = (function() {
       "tx": -15.5,
       "ty": -6.35
     },
-    "center": {
-      "x": 184.8,
-      "y": 217.85
-    },
-    "rect": {
-      "x": 162.8,
-      "y": 195.85,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -145,6 +110,9 @@ var MapAvatarSourceData = (function() {
   "director头像": {
     "symbolName": "director头像",
     "assetUrl": "assets/map/avatars/director头像.png",
+    "hotspotId": "warlord_tent",
+    "relX": 80.85,
+    "relY": 42.25,
     "size": {
       "w": 44,
       "h": 44
@@ -155,16 +123,6 @@ var MapAvatarSourceData = (function() {
       "tx": 1.35,
       "ty": -0.4
     },
-    "center": {
-      "x": 143.45,
-      "y": 97.4
-    },
-    "rect": {
-      "x": 121.45,
-      "y": 75.4,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -173,6 +131,9 @@ var MapAvatarSourceData = (function() {
   "gazer头像": {
     "symbolName": "gazer头像",
     "assetUrl": "assets/map/avatars/gazer头像.png",
+    "hotspotId": "warlord_base",
+    "relX": 33.15,
+    "relY": 32.75,
     "size": {
       "w": 44,
       "h": 44
@@ -183,16 +144,6 @@ var MapAvatarSourceData = (function() {
       "tx": 2.95,
       "ty": 2.1
     },
-    "center": {
-      "x": 81.5,
-      "y": 140.15
-    },
-    "rect": {
-      "x": 59.5,
-      "y": 118.15,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -201,6 +152,9 @@ var MapAvatarSourceData = (function() {
   "general头像": {
     "symbolName": "general头像",
     "assetUrl": "assets/map/avatars/general头像.png",
+    "hotspotId": "warlord_base",
+    "relX": 142.25,
+    "relY": 34.55,
     "size": {
       "w": 44,
       "h": 44
@@ -211,16 +165,6 @@ var MapAvatarSourceData = (function() {
       "tx": -1.85,
       "ty": -0.3
     },
-    "center": {
-      "x": 190.6,
-      "y": 141.95
-    },
-    "rect": {
-      "x": 168.6,
-      "y": 119.95,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -229,6 +173,9 @@ var MapAvatarSourceData = (function() {
   "guitar头像": {
     "symbolName": "guitar头像",
     "assetUrl": "assets/map/avatars/guitar头像.png",
+    "hotspotId": "rock_park",
+    "relX": 50.55,
+    "relY": 81.7,
     "size": {
       "w": 44,
       "h": 44
@@ -239,16 +186,6 @@ var MapAvatarSourceData = (function() {
       "tx": -0.55,
       "ty": -0.85
     },
-    "center": {
-      "x": 377.6,
-      "y": 158.7
-    },
-    "rect": {
-      "x": 355.6,
-      "y": 136.7,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -257,6 +194,9 @@ var MapAvatarSourceData = (function() {
   "itinerant头像": {
     "symbolName": "itinerant头像",
     "assetUrl": "assets/map/avatars/itinerant头像.png",
+    "hotspotId": "firing_range",
+    "relX": 63.85,
+    "relY": 73.15,
     "size": {
       "w": 44,
       "h": 44
@@ -267,16 +207,6 @@ var MapAvatarSourceData = (function() {
       "tx": -7.9,
       "ty": 1.35
     },
-    "center": {
-      "x": 106.6,
-      "y": 265.2
-    },
-    "rect": {
-      "x": 84.6,
-      "y": 243.2,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -285,6 +215,9 @@ var MapAvatarSourceData = (function() {
   "keyboard头像": {
     "symbolName": "keyboard头像",
     "assetUrl": "assets/map/avatars/keyboard头像.png",
+    "hotspotId": "rock_park",
+    "relX": 176.85,
+    "relY": 81.7,
     "size": {
       "w": 44,
       "h": 44
@@ -295,16 +228,6 @@ var MapAvatarSourceData = (function() {
       "tx": -0.05,
       "ty": 0.95
     },
-    "center": {
-      "x": 503.9,
-      "y": 158.7
-    },
-    "rect": {
-      "x": 481.9,
-      "y": 136.7,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -313,6 +236,9 @@ var MapAvatarSourceData = (function() {
   "king头像": {
     "symbolName": "king头像",
     "assetUrl": "assets/map/avatars/king头像.png",
+    "hotspotId": "base_garage",
+    "relX": 181.85,
+    "relY": 33.5,
     "size": {
       "w": 44,
       "h": 44
@@ -323,16 +249,6 @@ var MapAvatarSourceData = (function() {
       "tx": 2.05,
       "ty": 0.4
     },
-    "center": {
-      "x": 237.15,
-      "y": 189.75
-    },
-    "rect": {
-      "x": 215.15,
-      "y": 167.75,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -341,6 +257,9 @@ var MapAvatarSourceData = (function() {
   "pig头像": {
     "symbolName": "pig头像",
     "assetUrl": "assets/map/avatars/pig头像.png",
+    "hotspotId": "base_garage",
+    "relX": 88.2,
+    "relY": 33.75,
     "size": {
       "w": 44,
       "h": 44
@@ -351,16 +270,6 @@ var MapAvatarSourceData = (function() {
       "tx": 0.2,
       "ty": 4.6
     },
-    "center": {
-      "x": 143.5,
-      "y": 190.0
-    },
-    "rect": {
-      "x": 121.5,
-      "y": 168.0,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -369,6 +278,9 @@ var MapAvatarSourceData = (function() {
   "PROPHET头像": {
     "symbolName": "PROPHET头像",
     "assetUrl": "assets/map/avatars/PROPHET头像.png",
+    "hotspotId": "alliance_corridor",
+    "relX": 131.95,
+    "relY": 43.3,
     "size": {
       "w": 44,
       "h": 44
@@ -379,16 +291,6 @@ var MapAvatarSourceData = (function() {
       "tx": -8.55,
       "ty": -2.45
     },
-    "center": {
-      "x": 200.35,
-      "y": 364.4
-    },
-    "rect": {
-      "x": 178.35,
-      "y": 342.4,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 54,
       "h": 116
@@ -397,6 +299,9 @@ var MapAvatarSourceData = (function() {
   "researcher头像": {
     "symbolName": "researcher头像",
     "assetUrl": "assets/map/avatars/researcher头像.png",
+    "hotspotId": "fallen_street",
+    "relX": 160.1,
+    "relY": 57.85,
     "size": {
       "w": 44,
       "h": 44
@@ -407,16 +312,6 @@ var MapAvatarSourceData = (function() {
       "tx": 0.0,
       "ty": 0.0
     },
-    "center": {
-      "x": 202.1,
-      "y": 472.0
-    },
-    "rect": {
-      "x": 180.1,
-      "y": 450.0,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -425,6 +320,9 @@ var MapAvatarSourceData = (function() {
   "shopgirl头像": {
     "symbolName": "shopgirl头像",
     "assetUrl": "assets/map/avatars/shopgirl头像.png",
+    "hotspotId": "armory",
+    "relX": 40.15,
+    "relY": 23.15,
     "size": {
       "w": 44,
       "h": 44
@@ -435,16 +333,6 @@ var MapAvatarSourceData = (function() {
       "tx": 2.05,
       "ty": 0.95
     },
-    "center": {
-      "x": 521.8,
-      "y": 263.05
-    },
-    "rect": {
-      "x": 499.8,
-      "y": 241.05,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -453,6 +341,9 @@ var MapAvatarSourceData = (function() {
   "singer头像": {
     "symbolName": "singer头像",
     "assetUrl": "assets/map/avatars/singer头像.png",
+    "hotspotId": "rock_park",
+    "relX": 112.45,
+    "relY": 53.7,
     "size": {
       "w": 44,
       "h": 44
@@ -463,16 +354,6 @@ var MapAvatarSourceData = (function() {
       "tx": 0.2,
       "ty": -1.0
     },
-    "center": {
-      "x": 439.5,
-      "y": 130.7
-    },
-    "rect": {
-      "x": 417.5,
-      "y": 108.7,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -481,6 +362,9 @@ var MapAvatarSourceData = (function() {
   "soldier头像": {
     "symbolName": "soldier头像",
     "assetUrl": "assets/map/avatars/soldier头像.png",
+    "hotspotId": "first_defense",
+    "relX": 140.55,
+    "relY": 17.55,
     "size": {
       "w": 44,
       "h": 44
@@ -491,16 +375,6 @@ var MapAvatarSourceData = (function() {
       "tx": -8.5,
       "ty": -5.15
     },
-    "center": {
-      "x": 222.55,
-      "y": 134.25
-    },
-    "rect": {
-      "x": 200.55,
-      "y": 112.25,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -509,6 +383,9 @@ var MapAvatarSourceData = (function() {
   "surveyor头像": {
     "symbolName": "surveyor头像",
     "assetUrl": "assets/map/avatars/surveyor头像.png",
+    "hotspotId": "firing_range",
+    "relX": 164.25,
+    "relY": 43.9,
     "size": {
       "w": 44,
       "h": 44
@@ -519,16 +396,6 @@ var MapAvatarSourceData = (function() {
       "tx": -0.15,
       "ty": -1.65
     },
-    "center": {
-      "x": 207.0,
-      "y": 235.95
-    },
-    "rect": {
-      "x": 185.0,
-      "y": 213.95,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -537,6 +404,9 @@ var MapAvatarSourceData = (function() {
   "the girl头像": {
     "symbolName": "the girl头像",
     "assetUrl": "assets/map/avatars/the girl头像.png",
+    "hotspotId": "basement1",
+    "relX": 48.55,
+    "relY": 25.1,
     "size": {
       "w": 44,
       "h": 44
@@ -547,16 +417,6 @@ var MapAvatarSourceData = (function() {
       "tx": -9.0,
       "ty": 5.05
     },
-    "center": {
-      "x": 408.1,
-      "y": 304.5
-    },
-    "rect": {
-      "x": 386.1,
-      "y": 282.5,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -565,6 +425,9 @@ var MapAvatarSourceData = (function() {
   "Tomboy头像": {
     "symbolName": "Tomboy头像",
     "assetUrl": "assets/map/avatars/Tomboy头像.png",
+    "hotspotId": "union_university",
+    "relX": 91.85,
+    "relY": 19.7,
     "size": {
       "w": 44,
       "h": 44
@@ -575,16 +438,6 @@ var MapAvatarSourceData = (function() {
       "tx": -6.75,
       "ty": -1.95
     },
-    "center": {
-      "x": 489.05,
-      "y": 484.9
-    },
-    "rect": {
-      "x": 467.05,
-      "y": 462.9,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -593,6 +446,9 @@ var MapAvatarSourceData = (function() {
   "Vanshuther头像": {
     "symbolName": "Vanshuther头像",
     "assetUrl": "assets/map/avatars/Vanshuther头像.png",
+    "hotspotId": "workshop",
+    "relX": 83.9,
+    "relY": 18.2,
     "size": {
       "w": 44,
       "h": 44
@@ -603,16 +459,6 @@ var MapAvatarSourceData = (function() {
       "tx": 65.45,
       "ty": -3.75
     },
-    "center": {
-      "x": 528.95,
-      "y": 299.4
-    },
-    "rect": {
-      "x": 506.95,
-      "y": 277.4,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -621,6 +467,9 @@ var MapAvatarSourceData = (function() {
   "∞天ㄙ★使的剪∞头像": {
     "symbolName": "∞天ㄙ★使的剪∞头像",
     "assetUrl": "assets/map/avatars/∞天ㄙ★使的剪∞头像.png",
+    "hotspotId": "base_lobby",
+    "relX": 92.35,
+    "relY": 20.8,
     "size": {
       "w": 44,
       "h": 44
@@ -631,16 +480,6 @@ var MapAvatarSourceData = (function() {
       "tx": -7.1,
       "ty": 1.05
     },
-    "center": {
-      "x": 337.7,
-      "y": 189.5
-    },
-    "rect": {
-      "x": 315.7,
-      "y": 167.5,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -649,6 +488,9 @@ var MapAvatarSourceData = (function() {
   "丽丽丝头像": {
     "symbolName": "丽丽丝头像",
     "assetUrl": "assets/map/avatars/丽丽丝头像.png",
+    "hotspotId": "infirmary",
+    "relX": 75,
+    "relY": 28.25,
     "size": {
       "w": 44,
       "h": 44
@@ -659,16 +501,6 @@ var MapAvatarSourceData = (function() {
       "tx": 0.5,
       "ty": 1.45
     },
-    "center": {
-      "x": 593.55,
-      "y": 145.45
-    },
-    "rect": {
-      "x": 571.55,
-      "y": 123.45,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -677,6 +509,9 @@ var MapAvatarSourceData = (function() {
   "体育老师头像": {
     "symbolName": "体育老师头像",
     "assetUrl": "assets/map/avatars/体育老师头像.png",
+    "hotspotId": "university_interior",
+    "relX": 124.75,
+    "relY": 29.2,
     "size": {
       "w": 44,
       "h": 44
@@ -687,16 +522,6 @@ var MapAvatarSourceData = (function() {
       "tx": -8.25,
       "ty": -4.3
     },
-    "center": {
-      "x": 510.9,
-      "y": 401.8
-    },
-    "rect": {
-      "x": 488.9,
-      "y": 379.8,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -705,6 +530,9 @@ var MapAvatarSourceData = (function() {
   "假肢仙人头像": {
     "symbolName": "假肢仙人头像",
     "assetUrl": "assets/map/avatars/假肢仙人头像.png",
+    "hotspotId": "fallen_street",
+    "relX": 105.55,
+    "relY": 46.25,
     "size": {
       "w": 44,
       "h": 44
@@ -715,16 +543,6 @@ var MapAvatarSourceData = (function() {
       "tx": 2.1,
       "ty": 1.0
     },
-    "center": {
-      "x": 147.55,
-      "y": 460.4
-    },
-    "rect": {
-      "x": 125.55,
-      "y": 438.4,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -733,6 +551,9 @@ var MapAvatarSourceData = (function() {
   "冯佑权头像": {
     "symbolName": "冯佑权头像",
     "assetUrl": "assets/map/avatars/冯佑权头像.png",
+    "hotspotId": "kendo_club",
+    "relX": 8.25,
+    "relY": 1.45,
     "size": {
       "w": 44,
       "h": 44
@@ -743,16 +564,6 @@ var MapAvatarSourceData = (function() {
       "tx": -12.85,
       "ty": -2.55
     },
-    "center": {
-      "x": 565.2,
-      "y": 183.95
-    },
-    "rect": {
-      "x": 543.2,
-      "y": 161.95,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -761,6 +572,9 @@ var MapAvatarSourceData = (function() {
   "冷兵器商人头像": {
     "symbolName": "冷兵器商人头像",
     "assetUrl": "assets/map/avatars/冷兵器商人头像.png",
+    "hotspotId": "base_garage",
+    "relX": 37.15,
+    "relY": 37.7,
     "size": {
       "w": 44,
       "h": 44
@@ -771,16 +585,6 @@ var MapAvatarSourceData = (function() {
       "tx": -61.6,
       "ty": -16.75
     },
-    "center": {
-      "x": 92.45,
-      "y": 193.95
-    },
-    "rect": {
-      "x": 70.45,
-      "y": 171.95,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -789,6 +593,9 @@ var MapAvatarSourceData = (function() {
   "前治安官头像": {
     "symbolName": "前治安官头像",
     "assetUrl": "assets/map/avatars/前治安官头像.png",
+    "hotspotId": "base_lobby",
+    "relX": 352.25,
+    "relY": 40.5,
     "size": {
       "w": 44,
       "h": 44
@@ -799,16 +606,6 @@ var MapAvatarSourceData = (function() {
       "tx": 1.8,
       "ty": -2.5
     },
-    "center": {
-      "x": 597.6,
-      "y": 209.2
-    },
-    "rect": {
-      "x": 575.6,
-      "y": 187.2,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -817,6 +614,9 @@ var MapAvatarSourceData = (function() {
   "剑道社长头像": {
     "symbolName": "剑道社长头像",
     "assetUrl": "assets/map/avatars/剑道社长头像.png",
+    "hotspotId": "kendo_club",
+    "relX": 78,
+    "relY": 2.35,
     "size": {
       "w": 44,
       "h": 44
@@ -827,16 +627,6 @@ var MapAvatarSourceData = (function() {
       "tx": -5.15,
       "ty": -1.75
     },
-    "center": {
-      "x": 634.95,
-      "y": 184.85
-    },
-    "rect": {
-      "x": 612.95,
-      "y": 162.85,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -845,6 +635,9 @@ var MapAvatarSourceData = (function() {
   "厨师头像": {
     "symbolName": "厨师头像",
     "assetUrl": "assets/map/avatars/厨师头像.png",
+    "hotspotId": "cafeteria",
+    "relX": 228.55,
+    "relY": 72.2,
     "size": {
       "w": 44,
       "h": 44
@@ -855,16 +648,6 @@ var MapAvatarSourceData = (function() {
       "tx": 46.45,
       "ty": 2.25
     },
-    "center": {
-      "x": 295.15,
-      "y": 408.25
-    },
-    "rect": {
-      "x": 273.15,
-      "y": 386.25,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -873,6 +656,9 @@ var MapAvatarSourceData = (function() {
   "吸特乐头像": {
     "symbolName": "吸特乐头像",
     "assetUrl": "assets/map/avatars/吸特乐头像.png",
+    "hotspotId": "fallen_street",
+    "relX": 28.55,
+    "relY": 39.25,
     "size": {
       "w": 44,
       "h": 44
@@ -883,16 +669,6 @@ var MapAvatarSourceData = (function() {
       "tx": -5.8,
       "ty": -3.55
     },
-    "center": {
-      "x": 70.55,
-      "y": 453.4
-    },
-    "rect": {
-      "x": 48.55,
-      "y": 431.4,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -901,6 +677,9 @@ var MapAvatarSourceData = (function() {
   "学生妹头像": {
     "symbolName": "学生妹头像",
     "assetUrl": "assets/map/avatars/学生妹头像.png",
+    "hotspotId": "base_lobby",
+    "relX": 140.6,
+    "relY": 48.6,
     "size": {
       "w": 44,
       "h": 44
@@ -911,16 +690,6 @@ var MapAvatarSourceData = (function() {
       "tx": 5.3,
       "ty": 1.65
     },
-    "center": {
-      "x": 385.95,
-      "y": 217.3
-    },
-    "rect": {
-      "x": 363.95,
-      "y": 195.3,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -929,6 +698,9 @@ var MapAvatarSourceData = (function() {
   "宝石线人头像": {
     "symbolName": "宝石线人头像",
     "assetUrl": "assets/map/avatars/宝石线人头像.png",
+    "hotspotId": "base_lobby",
+    "relX": 291.35,
+    "relY": 53.2,
     "size": {
       "w": 44,
       "h": 44
@@ -939,16 +711,6 @@ var MapAvatarSourceData = (function() {
       "tx": -0.25,
       "ty": 0.0
     },
-    "center": {
-      "x": 536.7,
-      "y": 221.9
-    },
-    "rect": {
-      "x": 514.7,
-      "y": 199.9,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -957,6 +719,9 @@ var MapAvatarSourceData = (function() {
   "小F头像": {
     "symbolName": "小F头像",
     "assetUrl": "assets/map/avatars/小F头像.png",
+    "hotspotId": "armory",
+    "relX": 99.65,
+    "relY": 12.05,
     "size": {
       "w": 44,
       "h": 44
@@ -967,16 +732,6 @@ var MapAvatarSourceData = (function() {
       "tx": 4.25,
       "ty": -4.4
     },
-    "center": {
-      "x": 581.3,
-      "y": 251.95
-    },
-    "rect": {
-      "x": 559.3,
-      "y": 229.95,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -985,6 +740,9 @@ var MapAvatarSourceData = (function() {
   "幸存老兵头像": {
     "symbolName": "幸存老兵头像",
     "assetUrl": "assets/map/avatars/幸存老兵头像.png",
+    "hotspotId": "base_lobby",
+    "relX": 193,
+    "relY": 62.5,
     "size": {
       "w": 44,
       "h": 44
@@ -995,16 +753,6 @@ var MapAvatarSourceData = (function() {
       "tx": 3.25,
       "ty": -0.6
     },
-    "center": {
-      "x": 438.35,
-      "y": 231.2
-    },
-    "rect": {
-      "x": 416.35,
-      "y": 209.2,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -1013,6 +761,9 @@ var MapAvatarSourceData = (function() {
   "排骨头像": {
     "symbolName": "排骨头像",
     "assetUrl": "assets/map/avatars/排骨头像.png",
+    "hotspotId": "alliance_dock",
+    "relX": 48.7,
+    "relY": 22.05,
     "size": {
       "w": 44,
       "h": 44
@@ -1023,16 +774,6 @@ var MapAvatarSourceData = (function() {
       "tx": 1.2,
       "ty": 0.0
     },
-    "center": {
-      "x": 109.45,
-      "y": 304.45
-    },
-    "rect": {
-      "x": 87.45,
-      "y": 282.45,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 48
@@ -1041,6 +782,9 @@ var MapAvatarSourceData = (function() {
   "教导主任头像": {
     "symbolName": "教导主任头像",
     "assetUrl": "assets/map/avatars/教导主任头像.png",
+    "hotspotId": "office",
+    "relX": 76.75,
+    "relY": 5.95,
     "size": {
       "w": 44,
       "h": 44
@@ -1051,16 +795,6 @@ var MapAvatarSourceData = (function() {
       "tx": 63.55,
       "ty": -2.1
     },
-    "center": {
-      "x": 510.9,
-      "y": 75.55
-    },
-    "rect": {
-      "x": 488.9,
-      "y": 53.55,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -1069,6 +803,9 @@ var MapAvatarSourceData = (function() {
   "文科老师头像": {
     "symbolName": "文科老师头像",
     "assetUrl": "assets/map/avatars/文科老师头像.png",
+    "hotspotId": "arts_class",
+    "relX": 12.2,
+    "relY": -1.6,
     "size": {
       "w": 44,
       "h": 44
@@ -1079,16 +816,6 @@ var MapAvatarSourceData = (function() {
       "tx": 4.0,
       "ty": -2.65
     },
-    "center": {
-      "x": 783.05,
-      "y": 184.85
-    },
-    "rect": {
-      "x": 761.05,
-      "y": 162.85,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -1097,6 +824,9 @@ var MapAvatarSourceData = (function() {
   "机哥头像": {
     "symbolName": "机哥头像",
     "assetUrl": "assets/map/avatars/机哥头像.png",
+    "hotspotId": "alliance_dock",
+    "relX": 101,
+    "relY": 24.2,
     "size": {
       "w": 44,
       "h": 44
@@ -1107,16 +837,6 @@ var MapAvatarSourceData = (function() {
       "tx": 0.25,
       "ty": 3.05
     },
-    "center": {
-      "x": 161.75,
-      "y": 306.6
-    },
-    "rect": {
-      "x": 139.75,
-      "y": 284.6,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 45
@@ -1125,6 +845,9 @@ var MapAvatarSourceData = (function() {
   "格格巫头像": {
     "symbolName": "格格巫头像",
     "assetUrl": "assets/map/avatars/格格巫头像.png",
+    "hotspotId": "infirmary",
+    "relX": 20.35,
+    "relY": 28.45,
     "size": {
       "w": 44,
       "h": 44
@@ -1135,16 +858,6 @@ var MapAvatarSourceData = (function() {
       "tx": -8.4,
       "ty": -0.45
     },
-    "center": {
-      "x": 538.9,
-      "y": 145.65
-    },
-    "rect": {
-      "x": 516.9,
-      "y": 123.65,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -1153,6 +866,9 @@ var MapAvatarSourceData = (function() {
   "武器订购系统头像": {
     "symbolName": "武器订购系统头像",
     "assetUrl": "assets/map/avatars/武器订购系统头像.png",
+    "hotspotId": "union_university",
+    "relX": 145.35,
+    "relY": 23.15,
     "size": {
       "w": 44,
       "h": 44
@@ -1163,16 +879,6 @@ var MapAvatarSourceData = (function() {
       "tx": -12.45,
       "ty": 7.95
     },
-    "center": {
-      "x": 542.55,
-      "y": 488.35
-    },
-    "rect": {
-      "x": 520.55,
-      "y": 466.35,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -1181,6 +887,9 @@ var MapAvatarSourceData = (function() {
   "火凤头像": {
     "symbolName": "火凤头像",
     "assetUrl": "assets/map/avatars/火凤头像.png",
+    "hotspotId": "blackiron_training",
+    "relX": 73.12,
+    "relY": 20.54,
     "size": {
       "w": 44,
       "h": 44
@@ -1191,16 +900,6 @@ var MapAvatarSourceData = (function() {
       "tx": 0.75,
       "ty": 1.55
     },
-    "center": {
-      "x": 695.12,
-      "y": 92.54
-    },
-    "rect": {
-      "x": 673.12,
-      "y": 70.54,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -1209,6 +908,9 @@ var MapAvatarSourceData = (function() {
   "牛仔头像": {
     "symbolName": "牛仔头像",
     "assetUrl": "assets/map/avatars/牛仔头像.png",
+    "hotspotId": "fallen_bar",
+    "relX": 104.7,
+    "relY": 32.25,
     "size": {
       "w": 44,
       "h": 44
@@ -1219,16 +921,6 @@ var MapAvatarSourceData = (function() {
       "tx": -0.3,
       "ty": -1.0
     },
-    "center": {
-      "x": 683.7,
-      "y": 443.4
-    },
-    "rect": {
-      "x": 661.7,
-      "y": 421.4,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -1237,6 +929,9 @@ var MapAvatarSourceData = (function() {
   "理科教授头像": {
     "symbolName": "理科教授头像",
     "assetUrl": "assets/map/avatars/理科教授头像.png",
+    "hotspotId": "science_class",
+    "relX": 12.75,
+    "relY": -2.5,
     "size": {
       "w": 44,
       "h": 44
@@ -1247,16 +942,6 @@ var MapAvatarSourceData = (function() {
       "tx": 1.25,
       "ty": -5.05
     },
-    "center": {
-      "x": 716.5,
-      "y": 183.95
-    },
-    "rect": {
-      "x": 694.5,
-      "y": 161.95,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -1265,6 +950,9 @@ var MapAvatarSourceData = (function() {
   "程铮头像": {
     "symbolName": "程铮头像",
     "assetUrl": "assets/map/avatars/程铮头像.png",
+    "hotspotId": "teaching_interior",
+    "relX": 13.8,
+    "relY": 4.2,
     "size": {
       "w": 44,
       "h": 44
@@ -1275,16 +963,6 @@ var MapAvatarSourceData = (function() {
       "tx": 45.2,
       "ty": -3.5
     },
-    "center": {
-      "x": 458.85,
-      "y": 227.95
-    },
-    "rect": {
-      "x": 436.85,
-      "y": 205.95,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -1293,6 +971,9 @@ var MapAvatarSourceData = (function() {
   "翅虎头像": {
     "symbolName": "翅虎头像",
     "assetUrl": "assets/map/avatars/翅虎头像.png",
+    "hotspotId": "blackiron_training",
+    "relX": 165.38,
+    "relY": 8.07,
     "size": {
       "w": 44,
       "h": 44
@@ -1303,16 +984,6 @@ var MapAvatarSourceData = (function() {
       "tx": -0.15,
       "ty": 0.85
     },
-    "center": {
-      "x": 787.38,
-      "y": 80.07
-    },
-    "rect": {
-      "x": 765.38,
-      "y": 58.07,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -1321,6 +992,9 @@ var MapAvatarSourceData = (function() {
   "舞女头像": {
     "symbolName": "舞女头像",
     "assetUrl": "assets/map/avatars/舞女头像.png",
+    "hotspotId": "merc_bar",
+    "relX": 44.55,
+    "relY": 24.2,
     "size": {
       "w": 44,
       "h": 44
@@ -1331,16 +1005,6 @@ var MapAvatarSourceData = (function() {
       "tx": -6.5,
       "ty": 2.8
     },
-    "center": {
-      "x": 361.65,
-      "y": 112.1
-    },
-    "rect": {
-      "x": 339.65,
-      "y": 90.1,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -1349,6 +1013,9 @@ var MapAvatarSourceData = (function() {
   "酒保头像": {
     "symbolName": "酒保头像",
     "assetUrl": "assets/map/avatars/酒保头像.png",
+    "hotspotId": "merc_bar",
+    "relX": 99.55,
+    "relY": 20,
     "size": {
       "w": 44,
       "h": 44
@@ -1359,16 +1026,6 @@ var MapAvatarSourceData = (function() {
       "tx": 1.65,
       "ty": -0.2
     },
-    "center": {
-      "x": 416.65,
-      "y": 107.9
-    },
-    "rect": {
-      "x": 394.65,
-      "y": 85.9,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -1377,6 +1034,9 @@ var MapAvatarSourceData = (function() {
   "阿波头像": {
     "symbolName": "阿波头像",
     "assetUrl": "assets/map/avatars/阿波头像.png",
+    "hotspotId": "alliance_dock",
+    "relX": 150.6,
+    "relY": 20.85,
     "size": {
       "w": 44,
       "h": 44
@@ -1387,16 +1047,6 @@ var MapAvatarSourceData = (function() {
       "tx": 3.0,
       "ty": -5.4
     },
-    "center": {
-      "x": 211.35,
-      "y": 303.25
-    },
-    "rect": {
-      "x": 189.35,
-      "y": 281.25,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 97,
       "h": 67
@@ -1405,6 +1055,9 @@ var MapAvatarSourceData = (function() {
   "黑仔头像": {
     "symbolName": "黑仔头像",
     "assetUrl": "assets/map/avatars/黑仔头像.png",
+    "hotspotId": "union_university",
+    "relX": 5.35,
+    "relY": 15.15,
     "size": {
       "w": 44,
       "h": 44
@@ -1415,16 +1068,6 @@ var MapAvatarSourceData = (function() {
       "tx": -16.5,
       "ty": 0.0
     },
-    "center": {
-      "x": 402.55,
-      "y": 480.35
-    },
-    "rect": {
-      "x": 380.55,
-      "y": 458.35,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -1433,6 +1076,9 @@ var MapAvatarSourceData = (function() {
   "黑铁会外交部长头像": {
     "symbolName": "黑铁会外交部长头像",
     "assetUrl": "assets/map/avatars/黑铁会外交部长头像.png",
+    "hotspotId": "base_lobby",
+    "relX": 89.65,
+    "relY": 67.9,
     "size": {
       "w": 44,
       "h": 44
@@ -1443,16 +1089,6 @@ var MapAvatarSourceData = (function() {
       "tx": -39.75,
       "ty": 0.05
     },
-    "center": {
-      "x": 335.0,
-      "y": 236.6
-    },
-    "rect": {
-      "x": 313.0,
-      "y": 214.6,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -1461,6 +1097,9 @@ var MapAvatarSourceData = (function() {
   "黑铁头像": {
     "symbolName": "黑铁头像",
     "assetUrl": "assets/map/avatars/黑铁头像.png",
+    "hotspotId": "blackiron_pavilion",
+    "relX": 104.14,
+    "relY": 35.27,
     "size": {
       "w": 44,
       "h": 44
@@ -1471,16 +1110,6 @@ var MapAvatarSourceData = (function() {
       "tx": -0.15,
       "ty": -0.05
     },
-    "center": {
-      "x": 726.14,
-      "y": 217.27
-    },
-    "rect": {
-      "x": 704.14,
-      "y": 195.27,
-      "w": 44,
-      "h": 44
-    },
     "assetSize": {
       "w": 44,
       "h": 44
@@ -1489,6 +1118,9 @@ var MapAvatarSourceData = (function() {
   "黑龙头像": {
     "symbolName": "黑龙头像",
     "assetUrl": "assets/map/avatars/黑龙头像.png",
+    "hotspotId": "blackiron_training",
+    "relX": 209.28,
+    "relY": 28.21,
     "size": {
       "w": 44,
       "h": 44
@@ -1498,16 +1130,6 @@ var MapAvatarSourceData = (function() {
       "scaleY": 1.0,
       "tx": -1.1,
       "ty": -1.4
-    },
-    "center": {
-      "x": 831.28,
-      "y": 100.21
-    },
-    "rect": {
-      "x": 809.28,
-      "y": 78.21,
-      "w": 44,
-      "h": 44
     },
     "assetSize": {
       "w": 44,

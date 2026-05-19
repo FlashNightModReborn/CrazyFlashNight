@@ -1014,8 +1014,17 @@ var MapPanel = (function() {
         if (!slot || !slot.assetUrl) return null;
         if (typeof MapAvatarSourceData === 'undefined' || !MapAvatarSourceData || !MapAvatarSourceData.getByAssetUrl) return null;
         var sourceSlot = MapAvatarSourceData.getByAssetUrl(slot.assetUrl);
-        if (!sourceSlot || !sourceSlot.rect) return null;
-        return sourceSlot.rect;
+        if (!sourceSlot || !sourceSlot.size) return null;
+        var hotspotId = sourceSlot.hotspotId || slot.hotspotId;
+        if (!hotspotId) return null;
+        var hotspot = MapPanelData.findHotspot(_activePage.id, hotspotId);
+        if (!hotspot || !hotspot.rect) return null;
+        return {
+            x: hotspot.rect.x + sourceSlot.relX,
+            y: hotspot.rect.y + sourceSlot.relY,
+            w: sourceSlot.size.w,
+            h: sourceSlot.size.h
+        };
     }
 
     function renderDynamicAvatars(visibleLookup) {
@@ -1028,13 +1037,19 @@ var MapPanel = (function() {
             var assetUrl = resolveDynamicAvatarUrl(slot);
             if (!assetUrl) continue;
 
+            var rect = resolveDynamicAvatarRect(slot);
+            if (!rect) {
+                console.warn('[map-panel] dynamic avatar missing hotspot rect, skip render', slot.id, slot.hotspotId);
+                continue;
+            }
+
             var avatar = document.createElement('div');
             avatar.className = 'map-avatar map-dynamic-avatar map-dynamic-avatar--' + slot.kind;
             avatar.setAttribute('data-hotspot-id', slot.hotspotId || '');
-            avatar.style.left = toPercent(slot.x, _activePage.width);
-            avatar.style.top = toPercent(slot.y, _activePage.height);
-            avatar.style.width = toPercent(slot.w, _activePage.width);
-            avatar.style.height = toPercent(slot.h, _activePage.height);
+            avatar.style.left = toPercent(rect.x, _activePage.width);
+            avatar.style.top = toPercent(rect.y, _activePage.height);
+            avatar.style.width = toPercent(rect.w, _activePage.width);
+            avatar.style.height = toPercent(rect.h, _activePage.height);
             appendAvatarImage(avatar, assetUrl, slot.id || '', 'map-dynamic-avatar-image');
             _avatarLayer.appendChild(avatar);
         }
@@ -1296,7 +1311,15 @@ function resolveFeedbackAnchor(item) {
     }
 
     function resolveDynamicAvatarRect(slot) {
-        return { x: slot.x, y: slot.y, w: slot.w, h: slot.h };
+        if (!slot || !slot.hotspotId) return null;
+        var hotspot = MapPanelData.findHotspot(_activePage.id, slot.hotspotId);
+        if (!hotspot || !hotspot.rect) return null;
+        return {
+            x: hotspot.rect.x + slot.relX,
+            y: hotspot.rect.y + slot.relY,
+            w: slot.w,
+            h: slot.h
+        };
     }
 
     function resolveFlashHintAnchor(hint) {

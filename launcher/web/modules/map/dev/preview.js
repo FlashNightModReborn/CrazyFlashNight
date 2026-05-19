@@ -652,12 +652,39 @@ var MapPreview = (function() {
         return MapAvatarSourceData.getByAssetUrl(assetUrl || '');
     }
 
-    function getAvatarDisplayRect(slot) {
-        var sourceSlot = getAvatarSourceSlot(slot && slot.assetUrl);
-        if (sourceSlot && sourceSlot.rect) {
-            return cloneSourceRect(sourceSlot.rect);
+    function getAvatarDisplayRect(slot, pageId) {
+        if (!slot) return null;
+        var hotspotId = null;
+        var relX = null;
+        var relY = null;
+        var w = null;
+        var h = null;
+        if (slot.assetUrl) {
+            var sourceSlot = getAvatarSourceSlot(slot.assetUrl);
+            if (!sourceSlot || !sourceSlot.size) return null;
+            hotspotId = sourceSlot.hotspotId || slot.hotspotId;
+            relX = sourceSlot.relX;
+            relY = sourceSlot.relY;
+            w = sourceSlot.size.w;
+            h = sourceSlot.size.h;
+        } else if (slot.hotspotId && typeof slot.relX === 'number' && typeof slot.relY === 'number') {
+            hotspotId = slot.hotspotId;
+            relX = slot.relX;
+            relY = slot.relY;
+            w = slot.w;
+            h = slot.h;
+        } else {
+            return null;
         }
-        return null;
+        if (!hotspotId) return null;
+        var hotspot = MapPanelData.findHotspot(pageId || _state.pageId, hotspotId);
+        if (!hotspot || !hotspot.rect) return null;
+        return cloneSourceRect({
+            x: hotspot.rect.x + relX,
+            y: hotspot.rect.y + relY,
+            w: w,
+            h: h
+        });
     }
 
     function getComponentRect(page, hotspotId) {
@@ -686,10 +713,12 @@ var MapPreview = (function() {
         };
     }
 
-    function computeAvatarAudit(slot) {
+    function computeAvatarAudit(slot, pageId) {
         var sourceSlot = getAvatarSourceSlot(slot.assetUrl);
-        var currentRect = getAvatarDisplayRect(slot);
-        var sourceRect = sourceSlot ? cloneSourceRect(sourceSlot.rect) : null;
+        var currentRect = getAvatarDisplayRect(slot, pageId);
+        // C 阶段后 source-data 不再带 rect, 而是用 hotspotId+relX+relY 推导;
+        // sourceRect 与 currentRect 共源, delta 恒为 0
+        var sourceRect = currentRect ? cloneSourceRect(currentRect) : null;
         var delta = rectDelta(currentRect, sourceRect);
         var maxDelta = maxAbsDelta(delta);
 
@@ -873,7 +902,7 @@ var MapPreview = (function() {
 
         var slots = page.staticAvatars || [];
         for (var i = 0; i < slots.length; i += 1) {
-            var audit = computeAvatarAudit(slots[i]);
+            var audit = computeAvatarAudit(slots[i], page.id);
             if (!audit.sourceRect) continue;
 
             var el = document.createElement('div');
@@ -1104,10 +1133,7 @@ var MapPreview = (function() {
         var i;
         for (i = 0; i < slots.length; i += 1) {
             if (slots[i].id === avatarId) {
-                if (page.staticAvatars && i < page.staticAvatars.length) {
-                    return getAvatarDisplayRect(slots[i]);
-                }
-                return { x: slots[i].x, y: slots[i].y, w: slots[i].w, h: slots[i].h };
+                return getAvatarDisplayRect(slots[i], page.id);
             }
         }
         return null;
@@ -1124,11 +1150,11 @@ var MapPreview = (function() {
         var slots = page.staticAvatars || [];
         for (var i = 0; i < slots.length; i += 1) {
             var slot = slots[i];
-            var audit = computeAvatarAudit(slot);
+            var audit = computeAvatarAudit(slot, page.id);
             var isCurrent = !!slot.hotspotId && slot.hotspotId === currentHotspotId;
             var isFocus = !!slot.hotspotId && slot.hotspotId === focusHotspotId;
             var isMuted = !!focusHotspotId && !!slot.hotspotId && slot.hotspotId !== focusHotspotId;
-            var rect = getAvatarDisplayRect(slot);
+            var rect = getAvatarDisplayRect(slot, page.id);
             var el = document.createElement('button');
             el.className = 'preview-avatar-slot preview-avatar-slot--static'
                 + (isSelected('avatar', slot.id) ? ' is-selected' : '')
@@ -1170,10 +1196,12 @@ var MapPreview = (function() {
                 + (isFocus ? ' is-focus' : '')
                 + (isMuted ? ' is-muted' : '');
             el.type = 'button';
-            el.style.left = slot.x + 'px';
-            el.style.top = slot.y + 'px';
-            el.style.width = slot.w + 'px';
-            el.style.height = slot.h + 'px';
+            var dynRect = getAvatarDisplayRect(slot, page.id);
+            if (!dynRect) continue;
+            el.style.left = dynRect.x + 'px';
+            el.style.top = dynRect.y + 'px';
+            el.style.width = dynRect.w + 'px';
+            el.style.height = dynRect.h + 'px';
             el.title = slot.id + ' -> ' + slot.hotspotId;
             el.addEventListener('click', makeAvatarHandler(slot.id));
 
@@ -1237,7 +1265,7 @@ var MapPreview = (function() {
 
         var staticAvatars = page.staticAvatars || [];
         for (i = 0; i < staticAvatars.length; i += 1) {
-            var avatarAudit = computeAvatarAudit(staticAvatars[i]);
+            var avatarAudit = computeAvatarAudit(staticAvatars[i], page.id);
             avatarRows.push({
                 id: staticAvatars[i].id,
                 label: staticAvatars[i].label,
@@ -1245,7 +1273,7 @@ var MapPreview = (function() {
                 status: avatarAudit.status,
                 note: avatarAudit.note,
                 sourceRect: cloneSourceRect(avatarAudit.sourceRect),
-                currentRect: cloneSourceRect(getAvatarDisplayRect(staticAvatars[i])),
+                currentRect: cloneSourceRect(getAvatarDisplayRect(staticAvatars[i], page.id)),
                 delta: avatarAudit.delta,
                 symbolName: avatarAudit.sourceSlot ? avatarAudit.sourceSlot.symbolName : '',
                 crop: avatarAudit.sourceSlot ? avatarAudit.sourceSlot.crop || null : null
@@ -1339,7 +1367,7 @@ var MapPreview = (function() {
         }
         var staticAvatars = page.staticAvatars || [];
         for (i = 0; i < staticAvatars.length; i += 1) {
-            var avatarAudit = computeAvatarAudit(staticAvatars[i]);
+            var avatarAudit = computeAvatarAudit(staticAvatars[i], page.id);
             if (!(avatarAudit.status in avatarAuditCounts)) {
                 avatarAuditCounts[avatarAudit.status] = 0;
             }
@@ -1426,12 +1454,12 @@ var MapPreview = (function() {
             var staticSlots = page.staticAvatars || [];
             for (var i = 0; i < staticSlots.length; i += 1) {
                 if (staticSlots[i].id !== _state.selectedTargetId) continue;
-                var avatarAudit = computeAvatarAudit(staticSlots[i]);
+                var avatarAudit = computeAvatarAudit(staticSlots[i], page.id);
                 lines.push('selected avatar: ' + staticSlots[i].id);
                 lines.push('label: ' + staticSlots[i].label);
                 lines.push('hotspot: ' + (staticSlots[i].hotspotId || ''));
-                lines.push('data rect: x=' + staticSlots[i].x + ', y=' + staticSlots[i].y + ', w=' + staticSlots[i].w + ', h=' + staticSlots[i].h);
-                var avatarRect = getAvatarDisplayRect(staticSlots[i]);
+                lines.push('asset: ' + (staticSlots[i].assetUrl || ''));
+                var avatarRect = getAvatarDisplayRect(staticSlots[i], page.id);
                 lines.push('render rect: x=' + avatarRect.x + ', y=' + avatarRect.y + ', w=' + avatarRect.w + ', h=' + avatarRect.h);
                 if (avatarAudit.sourceRect) {
                     lines.push('source rect: x=' + avatarAudit.sourceRect.x + ', y=' + avatarAudit.sourceRect.y + ', w=' + avatarAudit.sourceRect.w + ', h=' + avatarAudit.sourceRect.h);
@@ -1488,7 +1516,7 @@ var MapPreview = (function() {
             var avatarSlots = page.staticAvatars || [];
             for (var i = 0; i < avatarSlots.length; i += 1) {
                 if (avatarSlots[i].id === _state.selectedTargetId) {
-                    selectedAvatarAudit = computeAvatarAudit(avatarSlots[i]);
+                    selectedAvatarAudit = computeAvatarAudit(avatarSlots[i], page.id);
                     break;
                 }
             }

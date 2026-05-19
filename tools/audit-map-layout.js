@@ -270,7 +270,18 @@ function buildAvatarRows(mapData, pageIds, avatarSourceData) {
             const sourceSlot = avatarSourceData && avatarSourceData.getByAssetUrl
                 ? avatarSourceData.getByAssetUrl(slot.assetUrl)
                 : null;
-            const sourceRect = sourceSlot ? cloneRect(sourceSlot.rect) : null;
+            let sourceRect = null;
+            if (sourceSlot && sourceSlot.size && sourceSlot.hotspotId) {
+                const owner = mapData.findHotspot(pageId, sourceSlot.hotspotId);
+                if (owner && owner.rect) {
+                    sourceRect = {
+                        x: owner.rect.x + sourceSlot.relX,
+                        y: owner.rect.y + sourceSlot.relY,
+                        w: sourceSlot.size.w,
+                        h: sourceSlot.size.h
+                    };
+                }
+            }
             const runtimeRect = sourceRect;
             const runtimeDelta = rectDelta(runtimeRect, sourceRect);
             const state = classifyAvatar(runtimeDelta);
