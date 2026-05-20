@@ -9,10 +9,18 @@
             <PlayerY>420</PlayerY>
             <BGM>
                 <Command>play</Command>
-                <Title>where am i</Title>
+                <Title>Feuer Frei!</Title>
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1350</x>
+                <y>390</y>
+                <QuantityMax>5</QuantityMax>
+                <Offset>30</Offset>
+            </Point>
+        </SpawnPoint>
         <Event>
             <EventName>Start</EventName>
             <Dialogue id="0">
@@ -30,6 +38,7 @@
         </Event>
         <Event>
             <EventName>WaveFinished</EventName>
+            <Parameter>2</Parameter>
             <Dialogue id="0">
                 <Name>丧尸</Name>
                 <Title></Title>
@@ -127,9 +136,204 @@
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种400</Type>
+                        <Interval>600</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种401</Type>
+                        <Interval>900</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种424</Type>
+                        <Interval>1800</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种425</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种442</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种443</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种424</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种425</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
         </Wave>
     </SubStage>
     <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk11_2_BG.swf</Background>
+            <PlayerX>338</PlayerX>
+            <PlayerY>346</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1235</x>
+                <y>270</y>
+                <Identifier>出生点-地铁门</Identifier>
+                <QuantityMax>3</QuantityMax>
+                <Offset>30</Offset>
+            </Point>
+            <Point id="1">
+                <x>1679</x>
+                <y>271</y>
+                <Identifier>出生点-地铁门</Identifier>
+                <QuantityMax>3</QuantityMax>
+                <Offset>30</Offset>
+            </Point>
+            <Point id="2">
+                <x>1895</x>
+                <y>272</y>
+                <Identifier>出生点-地铁门</Identifier>
+                <QuantityMax>3</QuantityMax>
+                <Offset>30</Offset>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种158</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <x>250</x>
+                        <y>400</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种7</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种39</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种7</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk11_3_BG.swf</Background>
+            <PlayerX>88</PlayerX>
+            <PlayerY>490</PlayerY>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1420</x>
+                <y>356</y>
+                <Identifier>出生点-地铁门</Identifier>
+                <QuantityMax>5</QuantityMax>
+                <Offset>30</Offset>
+                <Parameters>
+                    <_rotation>5</_rotation>
+                </Parameters>
+            </Point>
+            <Point id="1">
+                <x>1910</x>
+                <y>362</y>
+                <Identifier>出生点-地铁门</Identifier>
+                <QuantityMax>5</QuantityMax>
+                <Offset>30</Offset>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种158</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <x>150</x>
+                        <y>400</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种10</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种9</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
         <BasicInformation>
             <Background>flashswf/backgrounds/地铁站深处车厢入口.swf</Background>
         </BasicInformation>
