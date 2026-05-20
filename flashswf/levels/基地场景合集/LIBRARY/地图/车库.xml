@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1779301895" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1779302907" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
@@ -424,11 +424,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="场景" color="#A65995" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="背景" color="#A65995" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/车库背景" name="背景" selected="true" centerPoint3DX="577.8" centerPoint3DY="269.6" exportAsBitmap="true">
+                <DOMSymbolInstance libraryItemName="sprite/车库背景" name="背景" centerPoint3DX="577.8" centerPoint3DY="269.6" exportAsBitmap="true">
                   <matrix>
                     <Matrix tx="937.7" ty="245.1"/>
                   </matrix>
