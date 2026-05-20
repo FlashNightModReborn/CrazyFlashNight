@@ -15,9 +15,12 @@
  *
  * 覆盖：
  *   [decision]    夹具自检 3 + 动画完毕 9 + 启动跳跃浮空 9 + 飞行状态读写 14 + 攻击模式切换 12
- *   [integration] 真实 completeAnimation 链路 3（doubleJump / 普通落地 / 置位时序）
+ *   [integration] completeAnimation 链路 3（doubleJump / 普通落地 / 置位时序）
+ *                 + completeAnimation↔bindEndCleanup 浮空标记握手 2（命中 / 清错）
+ *                 + 攻击模式切换↔飞行状态 round-trip 1（真 runStoreFlyState 实写槽位）
  *   [lifecycle]   启动跳跃浮空 onUnload 5（经真实 MockMovieClip.removeMovieClip 触发；含 air live-read）
- *   [contract]    ContainerFrameScriptContract 2（容器帧脚本 _parent.* 调用序列回放）
+ *   [contract]    ContainerFrameScriptContract _parent.* 序列 2 + 末帧 route handoff 3
+ *                 （真 RoutingLifecycle.completeAnimation 驱动容器末帧→路由 接缝）
  *
  * 用法：org.flashNight.arki.unit.UnitComponent.Routing.PlayerTemplateUnitFixtureTest.runAll();
  */
@@ -239,6 +242,10 @@ class org.flashNight.arki.unit.UnitComponent.Routing.PlayerTemplateUnitFixtureTe
         testIntegration_CompleteAnimation_NoDoubleJump_RoutesNormalLanding();
         testIntegration_CompleteAnimation_PreserveFlagSetBeforeAnimDone();
 
+        // ── integration 层：completeAnimation↔bindEndCleanup 浮空标记握手 ──
+        testEndCleanup_CompleteAnimationPreserve_MatchedFlagSurvives();
+        testEndCleanup_CompleteAnimationPreserve_MismatchedFlagClearsWrong();
+
         // ── decision 层：启动跳跃浮空(883) 起跳分支 + 副作用 ──
         testJumpFloat_J1_SkillFloat_DoubleJump();
         testJumpFloat_J2_InAir_ViaFloatFlag();
@@ -287,9 +294,15 @@ class org.flashNight.arki.unit.UnitComponent.Routing.PlayerTemplateUnitFixtureTe
         testAttackMode_StoresFlyState_WhenFlyingControlled();
         testAttackMode_TailEffects_DpsAndRefresh();
 
+        // ── integration 层：攻击模式切换 ↔ 飞行状态 round-trip ──
+        testAttackMode_FlyStateRoundTrip_WeaponSwitchSlot1();
+
         // ── contract 层：容器帧脚本契约回放 ──
         testContainerContract_WeaponCombo_ShapeIsStable();
         testContainerContract_WeaponCombo_DrivesPlayerTemplateInOrder();
+        testContainerContract_RouteHandoff_ShapeIsStable();
+        testContainerContract_RouteHandoff_DrivesCompleteAnimation_InAir();
+        testContainerContract_RouteHandoff_ClearsResidualSkillFloatTask();
 
         var elapsed:Number = getTimer() - t0;
         trace("================================================================");
@@ -1217,5 +1230,189 @@ class org.flashNight.arki.unit.UnitComponent.Routing.PlayerTemplateUnitFixtureTe
         assertEquals("step2 动画完毕",      "动画完毕",                   u.__spy_comboCalls[1]);
         assertEquals("step9 五段中",       "USS:兵器五段中",             u.__spy_comboCalls[8]);
         assertEquals("step10 末帧 UBSS",   "UBSS:普攻结束/兵器五段结束", u.__spy_comboCalls[9]);
+    }
+
+    // ════════════════════════════════════════════════════════════════════
+    // [contract] 容器末帧 route handoff —— _root.兵器攻击路由.动画完毕(this,_parent)
+    // 委派 = RoutingLifecycle.completeAnimation；replayRouteHandoff 驱动真 class
+    // ════════════════════════════════════════════════════════════════════
+
+    private static function testContainerContract_RouteHandoff_ShapeIsStable():Void {
+        trace("\n--- testContainerContract_RouteHandoff_ShapeIsStable ---");
+        var h:Object = ContainerFrameScriptContract.weaponComboRouteHandoff();
+        assertEquals("route handoff 触发帧 = 72",            72,             h.frameIndex);
+        assertEquals("route handoff routeObject = 兵器攻击路由", "兵器攻击路由", h.routeObject);
+        assertEquals("route handoff call = 动画完毕",         "动画完毕",      h.call);
+        assertEquals("route handoff 实参 2 项 (this/_parent)", 2,             h.argShape.length);
+        assertEquals("route handoff 委派 completeAnimation",
+                     "RoutingLifecycle.completeAnimation", h.delegate);
+        assertEquals("普攻 route handoff enableDoubleJump=false", false,      h.delegateEnableDoubleJump);
+    }
+
+    private static function testContainerContract_RouteHandoff_DrivesCompleteAnimation_InAir():Void {
+        // 容器末帧 → 路由：跳跃落地瞬间触发普攻（在空中完成）→ 真 completeAnimation
+        //   走自然落地兜底，而非裸 removeMovieClip 留下不一致 _y。
+        trace("\n--- testContainerContract_RouteHandoff_DrivesCompleteAnimation_InAir ---");
+        var u = PlayerTemplateUnitFixture.makeUnit("rh1");
+        u.攻击模式 = "空手";
+        u._y = 200;
+        u.Z轴坐标 = 300;          // _y < Z-0.5 → 在空中
+        u.技能浮空 = false;
+        PlayerTemplateUnitFixture.bindAnimationDoneReproduction(u);
+
+        var man = new MockMovieClip();
+        var spy = makeRuntimeSpy();
+        installRuntimeSpy(spy);
+        try {
+            ContainerFrameScriptContract.replayRouteHandoff(man, u);
+            assertEquals("末帧 route handoff → 动画完毕 路由到 空手站立", "空手站立", lastState(u));
+            assertTrue  ("route handoff 后 man 已 remove",                man.__removed);
+            assertEquals("在空中完成普攻 → 启用自然落地 1 次",            1, spy.enableNaturalLandingCount);
+            assertEquals("route handoff → clearSkillFloatTask 关技能浮空", 1, spy.closeSkillFloatCount);
+        } finally {
+            clearRuntimeSpy();
+        }
+    }
+
+    private static function testContainerContract_RouteHandoff_ClearsResidualSkillFloatTask():Void {
+        // 跨容器残留浮空标记：容器末帧 route handoff 时 unit 仍挂着上个容器的技能浮空任务，
+        //   completeAnimation→clearSkillFloatTask 应把它清掉，避免孤儿任务卡住浮空。
+        trace("\n--- testContainerContract_RouteHandoff_ClearsResidualSkillFloatTask ---");
+        var u = PlayerTemplateUnitFixture.makeUnit("rh2");
+        u.攻击模式 = "空手";
+        u._y = 100;
+        u.Z轴坐标 = 100;          // 落地
+        u.__技能浮空任务ID = 777;  // 跨容器残留的技能浮空任务
+        PlayerTemplateUnitFixture.bindAnimationDoneReproduction(u);
+
+        var man = new MockMovieClip();
+        var spy = makeRuntimeSpy();
+        installRuntimeSpy(spy);
+        try {
+            ContainerFrameScriptContract.replayRouteHandoff(man, u);
+            assertEquals("残留 __技能浮空任务ID 被清 null",       null, u.__技能浮空任务ID);
+            assertEquals("clearSkillFloatTask removeTask 1 次",   1,    spy.removeTaskCount);
+            assertEquals("落地完成普攻 → 不启用自然落地",          0,    spy.enableNaturalLandingCount);
+        } finally {
+            clearRuntimeSpy();
+        }
+    }
+
+    // ════════════════════════════════════════════════════════════════════
+    // [integration] 攻击模式切换 ↔ 飞行状态 round-trip
+    // 把 存储当前飞行状态 spy 换成真 runStoreFlyState 委派，验"实写 root.fly_*"
+    // ════════════════════════════════════════════════════════════════════
+
+    private static function testAttackMode_FlyStateRoundTrip_WeaponSwitchSlot1():Void {
+        // 集成夹具：攻击模式切换 → 真 runStoreFlyState(slot1) 实写 root.fly_* →
+        //   扰动飞行字段 → runLoadFlyState(slot1) 还原。验"实际写入 root.fly_*"，
+        //   而非仅 spy 调用计数（玩家卡死集中在浮空转换 → 槽位读写须有真往返断言）。
+        trace("\n--- testAttackMode_FlyStateRoundTrip_WeaponSwitchSlot1 ---");
+        var u = PlayerTemplateUnitFixture.makeUnit("amrt1");
+        u.飞行浮空 = true;
+        u.flyType = 1;
+        seedFlySource(u, 800);          // 飞行字段 = 800..807
+        var root = makeRootStub();
+        root.控制目标 = u._name;
+        root.玩家信息界面 = makePlayerInfoUI();
+        // 关键：把 makeUnit 的 存储当前飞行状态 recorder-spy 换成真 runStoreFlyState 委派，
+        //       让 攻击模式切换 真正写 root.fly_*（spy 版本只记调用、不写槽位）。
+        u.存储当前飞行状态 = function(type) {
+            PlayerTemplateUnitFixture.runStoreFlyState(this, type, root);
+        };
+
+        PlayerTemplateUnitFixture.runAttackModeSwitch(u, "空手", root, dpsInvalidatorOf(makeDpsSpy()));
+        // 攻击模式切换 前置：飞行浮空+控制目标 → 存储当前飞行状态("切换武器") → 写 slot1
+        assertEquals("攻击模式切换 → slot1 fly_isFly1 实写", true, root.fly_isFly1);
+        assertEquals("slot1 实写 flySpeed 快照",            800,  root.fly_flySpeed1);
+        assertEquals("slot1 实写 _y 快照",                  805,  root.fly_y1);
+        assertEquals("slot1 实写 Z轴坐标 快照",             807,  root.fly_Z轴坐标1);
+
+        // 切换武器期间飞行字段被扰动
+        seedFlySource(u, 0);
+        u.飞行浮空 = false;
+        // 读回 slot1 还原
+        PlayerTemplateUnitFixture.runLoadFlyState(u, "切换武器", root);
+        assertEquals("round-trip flySpeed 还原",     800,  u.flySpeed);
+        assertEquals("round-trip downFlySpeed 还原", 804,  u.downFlySpeed);
+        assertEquals("round-trip _y 还原",           805,  u._y);
+        assertEquals("round-trip Z轴坐标 还原",      807,  u.Z轴坐标);
+        assertEquals("round-trip 飞行浮空 → true",   true, u.飞行浮空);
+        assertEquals("round-trip 后 slot1 标志释放", false, root.fly_isFly1);
+    }
+
+    // ════════════════════════════════════════════════════════════════════
+    // [integration] completeAnimation ↔ bindEndCleanup 浮空标记握手
+    // completeAnimation 写 __preserveFloatFlagOnUnload，真 bindEndCleanup onUnload 读。
+    // 注：bindEndCleanup onUnload 的隔离行为另由 RoutingLifecycleTest 覆盖；本层验的是
+    //     "写方(completeAnimation) ↔ 读方(bindEndCleanup) 字面量端到端配对"。
+    //     兵器容器末帧走 RoutingIntent.bindContainerEndState（不碰 preserve flag），
+    //     bindEndCleanup 是技能/战技路由的结束清理 —— 故本握手属技能路由侧。
+    // ════════════════════════════════════════════════════════════════════
+
+    private static function testEndCleanup_CompleteAnimationPreserve_MatchedFlagSurvives():Void {
+        // 命中：completeAnimation 写 __preserveFloatFlagOnUnload="技能浮空"，真 bindEndCleanup
+        //   onUnload 以 floatFlag="技能浮空" 读 → 命中 → delete 标记、技能浮空 存活
+        //   （二段跳浮空带到下个状态）。动画完毕 设 no-op 以隔离握手本身。
+        trace("\n--- testEndCleanup_CompleteAnimationPreserve_MatchedFlagSurvives ---");
+        var u = PlayerTemplateUnitFixture.makeUnit("ec1");
+        u.状态 = "技能";              // != excludeState("战技") → needReset=true
+        u.攻击模式 = "空手";
+        u._y = 200;
+        u.Z轴坐标 = 300;             // 在空中 → completeAnimation 置 preserve
+        u.技能浮空 = false;
+        u.__preserveFloatFlagOnUnload = undefined;
+        u.动画完毕 = function() {};   // no-op：隔离 completeAnimation→bindEndCleanup 握手
+        u.UpdateBigSmallState = function(b, s) {
+            this.__spy_endBig = b;
+            this.__spy_endSmall = s;
+        };
+
+        var man = new MockMovieClip();
+        RoutingLifecycle.bindEndCleanup(man, u, "战技", "技能结束", "技能浮空");
+        var spy = makeRuntimeSpy();
+        installRuntimeSpy(spy);
+        try {
+            // completeAnimation(enableDoubleJump=true)+在空中 → 写 preserve="技能浮空" →
+            //   man.removeMovieClip() → 触发 bindEndCleanup onUnload 读 preserve
+            RoutingLifecycle.completeAnimation(man, u, true);
+            assertTrue  ("completeAnimation 后 man 已 remove",         man.__removed);
+            assertEquals("onUnload 命中 preserve → delete 标记",       undefined, u.__preserveFloatFlagOnUnload);
+            assertTrue  ("preserve 命中 → 技能浮空 存活（带到下个状态）", u.技能浮空);
+            assertEquals("onUnload 仍写结束状态 big = 技能结束",       "技能结束", u.__spy_endBig);
+        } finally {
+            clearRuntimeSpy();
+        }
+    }
+
+    private static function testEndCleanup_CompleteAnimationPreserve_MismatchedFlagClearsWrong():Void {
+        // 清错：completeAnimation 写 preserve="技能浮空"，但 bindEndCleanup 以
+        //   floatFlag="飞行浮空" 绑定 → onUnload 字面量不匹配 → unit["飞行浮空"]=false
+        //   （清错了标记）+ preserve 残留未 delete。记录"写/读两侧 flag 名不一致"的危害。
+        trace("\n--- testEndCleanup_CompleteAnimationPreserve_MismatchedFlagClearsWrong ---");
+        var u = PlayerTemplateUnitFixture.makeUnit("ec2");
+        u.状态 = "技能";
+        u.攻击模式 = "空手";
+        u._y = 200;
+        u.Z轴坐标 = 300;             // 在空中
+        u.技能浮空 = false;
+        u.飞行浮空 = true;           // 将被 onUnload 的 else 分支清掉
+        u.__preserveFloatFlagOnUnload = undefined;
+        u.动画完毕 = function() {};
+        u.UpdateBigSmallState = function(b, s) {};
+
+        var man = new MockMovieClip();
+        // floatFlag="飞行浮空" 与 completeAnimation 硬编码写的 "技能浮空" 不一致
+        RoutingLifecycle.bindEndCleanup(man, u, "战技", "技能结束", "飞行浮空");
+        var spy = makeRuntimeSpy();
+        installRuntimeSpy(spy);
+        try {
+            RoutingLifecycle.completeAnimation(man, u, true);
+            assertFalse ("flag 不匹配 → onUnload 清掉 floatFlag 标记(飞行浮空)", u.飞行浮空);
+            assertEquals("flag 不匹配 → preserve 残留未 delete", "技能浮空", u.__preserveFloatFlagOnUnload);
+            assertTrue  ("completeAnimation 设的 技能浮空 无人清 → 残留 true",   u.技能浮空);
+        } finally {
+            clearRuntimeSpy();
+        }
     }
 }
