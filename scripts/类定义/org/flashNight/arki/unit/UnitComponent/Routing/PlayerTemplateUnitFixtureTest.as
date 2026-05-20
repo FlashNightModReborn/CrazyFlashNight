@@ -1386,9 +1386,12 @@ class org.flashNight.arki.unit.UnitComponent.Routing.PlayerTemplateUnitFixtureTe
     }
 
     private static function testEndCleanup_CompleteAnimationPreserve_MismatchedFlagClearsWrong():Void {
+        // 【风险夹具 / negative contract】本测试固化的是*危险行为*、非目标正确行为 ——
+        //   见 docs/路由系统-黑箱夹具契约.md §9.4「不可混用规则」。floatFlag 名混用是 bug，
+        //   本测试是其回归 tripwire；任何让本测试行为改变的改动须回 §9 重新评估。
         // 清错：completeAnimation 写 preserve="技能浮空"，但 bindEndCleanup 以
         //   floatFlag="飞行浮空" 绑定 → onUnload 字面量不匹配 → unit["飞行浮空"]=false
-        //   （清错了标记）+ preserve 残留未 delete。记录"写/读两侧 flag 名不一致"的危害。
+        //   （清错了标记）+ preserve 残留未 delete。
         trace("\n--- testEndCleanup_CompleteAnimationPreserve_MismatchedFlagClearsWrong ---");
         var u = PlayerTemplateUnitFixture.makeUnit("ec2");
         u.状态 = "技能";
