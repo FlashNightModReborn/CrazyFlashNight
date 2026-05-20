@@ -30,13 +30,14 @@
                   <edges>
                     <Edge fillStyle0="1" edges="!659 168[620 55 408 0!408 0[82 3 16 330!16 330|10 363"/>
                     <Edge fillStyle0="1" strokeStyle="1" edges="!10 363[-34 624 105 1066"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!105 1066[542 1021 872 788"/>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="!872 788[784 484 659 168"/>
                     <Edge fillStyle0="2" strokeStyle="1" edges="!105 1066[151 1213 218 1381!218 1381|229 1409"/>
-                    <Edge fillStyle0="2" fillStyle1="3" edges="!229 1409[635 1397 971 1181"/>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!971 1181[929 987 872 788"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!229 1409|659 2494"/>
                     <Edge fillStyle0="3" edges="!659 2494[915 2731 1054 2497"/>
-                    <Edge fillStyle0="3" strokeStyle="1" edges="!1054 2497[1117 1873 971 1181!229 1409|659 2494"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!1054 2497[1117 1873 971 1181"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!971 1181[929 987 872 788"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!872 788[784 484 659 168"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!229 1409[635 1397 971 1181"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!105 1066[542 1021 872 788"/>
                   </edges>
                 </DOMShape>
               </elements>
