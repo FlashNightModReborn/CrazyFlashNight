@@ -17,7 +17,7 @@
             <Point id="0">
                 <x>1350</x>
                 <y>390</y>
-                <QuantityMax>5</QuantityMax>
+                <QuantityMax>6</QuantityMax>
                 <Offset>30</Offset>
             </Point>
         </SpawnPoint>
@@ -33,7 +33,7 @@
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
-                <Text>先干掉这些丧尸！</Text>
+                <Text>果然，andy哥说的军人丧尸来了不少，先干掉它们！</Text>
             </Dialogue>
         </Event>
         <Event>
@@ -127,10 +127,18 @@
                         <y>555</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种158</Type>
+                        <Type>兵种401</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
+                        <x>700</x>
+                        <y>495</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种158</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>80</Level>
                         <x>150</x>
                         <y>550</y>
                     </Enemy>
@@ -145,33 +153,33 @@
                         <Type>兵种400</Type>
                         <Interval>600</Interval>
                         <Quantity>3</Quantity>
-                        <Level>20</Level>
+                        <Level>30</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种401</Type>
                         <Interval>900</Interval>
                         <Quantity>3</Quantity>
-                        <Level>20</Level>
+                        <Level>30</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种424</Type>
                         <Interval>1800</Interval>
                         <Quantity>2</Quantity>
-                        <Level>20</Level>
+                        <Level>30</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种425</Type>
                         <Interval>2000</Interval>
                         <Quantity>1</Quantity>
-                        <Level>20</Level>
+                        <Level>30</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
-            <SubWave id="1">
+            <SubWave id="2">
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
@@ -180,28 +188,28 @@
                         <Type>兵种442</Type>
                         <Interval>1500</Interval>
                         <Quantity>3</Quantity>
-                        <Level>20</Level>
+                        <Level>30</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种443</Type>
                         <Interval>1500</Interval>
                         <Quantity>3</Quantity>
-                        <Level>20</Level>
+                        <Level>30</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种424</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
-                        <Level>20</Level>
+                        <Level>30</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种425</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
-                        <Level>20</Level>
+                        <Level>30</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
@@ -247,7 +255,7 @@
                         <Type>兵种158</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>20</Level>
+                        <Level>80</Level>
                         <x>250</x>
                         <y>400</y>
                     </Enemy>
