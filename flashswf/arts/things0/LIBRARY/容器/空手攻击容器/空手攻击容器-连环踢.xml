@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-连环踢" itemID="699a5324-00000a8e" linkageExportForAS="true" linkageIdentifier="空手攻击容器-连环踢" lastModified="1776959405" lastUniqueIdentifier="843">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-连环踢" itemID="699a5324-00000a8e" linkageExportForAS="true" linkageIdentifier="空手攻击容器-连环踢" lastModified="1779319394" lastUniqueIdentifier="843">
   <timeline>
     <DOMTimeline name="空手攻击容器-连环踢" currentFrame="42">
       <layers>
@@ -313,7 +313,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 	
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.2;
+		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	/*if (_parent._parent.mp攻击加成)
 	{
@@ -382,7 +382,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 	
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.3;
+		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	/*if (_parent._parent.mp攻击加成)
 	{
@@ -451,7 +451,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 	
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.3;
+		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	/*if (_parent._parent.mp攻击加成)
 	{
@@ -526,7 +526,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 	子弹属性.霰弹值 = 2;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 5 + 自机.内力 * 3;
+	子弹属性.子弹威力 =  自机.空手攻击力 * 3+ 自机.内力 * 3;
 	
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
@@ -594,7 +594,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 	子弹属性.霰弹值 = 2;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 5 + 自机.内力 * 3;
+	子弹属性.子弹威力 =  自机.空手攻击力 * 3 + 自机.内力 * 3;
 	
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
@@ -662,7 +662,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 	子弹属性.霰弹值 = 2;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 5 + 自机.内力 * 3;
+	子弹属性.子弹威力 =  自机.空手攻击力 * 3 + 自机.内力 * 3;
 	
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
@@ -731,7 +731,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 	子弹属性.霰弹值 = 2;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 5 + 自机.内力 * 3;
+	子弹属性.子弹威力 =  自机.空手攻击力 * 3 + 自机.内力 * 3;
 	
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
@@ -751,7 +751,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 	子弹属性.不硬直 = true;
 	子弹属性.水平击退速度 = 5;
 	子弹属性.击中后子弹的效果 = "";
-	子弹属性.血量上限击溃 = 1;
+	子弹属性.血量上限击溃 = 0.5;
 	//非常用
 	/*
 	子弹属性.垂直击退速度 = NaN;
@@ -804,7 +804,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 	
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.2;
+		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	/*if (_parent._parent.mp攻击加成)
 	{
@@ -873,7 +873,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 	
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.3;
+		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	/*if (_parent._parent.mp攻击加成)
 	{
@@ -942,7 +942,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 	
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.3;
+		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.2;
 	}
 	/*if (_parent._parent.mp攻击加成)
 	{
@@ -1134,7 +1134,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
             <DOMFrame index="22" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -1143,7 +1143,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	if (_parent._parent._name == _root.控制目标 && _parent._parent.被动技能.拳脚攻击.等级 >= 3 && _parent._parent.被动技能.拳脚攻击.启用)
+	if (_parent._parent._name == _root.控制目标 && _parent._parent.被动技能.拳脚攻击.等级 >= 5 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
 		if (Key.isDown(_parent._parent.A键))
 		{
@@ -1938,9 +1938,9 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="195.8" centerPoint3DY="-55.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="217.8" centerPoint3DY="-35.25">
                   <matrix>
-                    <Matrix a="0.643798828125" b="0.7564697265625" c="-0.7564697265625" d="0.643798828125" tx="155.6" ty="-255.9"/>
+                    <Matrix a="0.643798828125" b="0.7564697265625" c="-0.7564697265625" d="0.643798828125" tx="177.6" ty="-235.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.3" y="-0.35"/>
@@ -2151,9 +2151,9 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="195.7" centerPoint3DY="-56.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="215.2" centerPoint3DY="-37.75">
                   <matrix>
-                    <Matrix a="0.650360107421875" b="0.75079345703125" c="-0.75079345703125" d="0.650360107421875" tx="153.7" ty="-256.55"/>
+                    <Matrix a="0.650360107421875" b="0.75079345703125" c="-0.75079345703125" d="0.650360107421875" tx="173.2" ty="-238.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.3" y="-0.35"/>
@@ -2364,9 +2364,9 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="186.65" centerPoint3DY="-75.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="205.75" centerPoint3DY="-56.7">
                   <matrix>
-                    <Matrix a="0.742431640625" b="0.65936279296875" c="-0.65936279296875" d="0.742431640625" tx="118.95" ty="-268.2"/>
+                    <Matrix a="0.742431640625" b="0.65936279296875" c="-0.65936279296875" d="0.742431640625" tx="138.05" ty="-249.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.3" y="-0.35"/>
@@ -2577,9 +2577,9 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="115.5" centerPoint3DY="-142.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="141.55" centerPoint3DY="-138.45">
                   <matrix>
-                    <Matrix a="0.97906494140625" b="0.15985107421875" c="-0.15985107421875" d="0.97906494140625" tx="-44.75" ty="-269.25"/>
+                    <Matrix a="0.97906494140625" b="0.15985107421875" c="-0.15985107421875" d="0.97906494140625" tx="-18.7" ty="-265.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.35" y="-0.25"/>
@@ -4958,7 +4958,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="34.2" centerPoint3DY="-238.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="34.2" centerPoint3DY="-238.75">
                   <matrix>
                     <Matrix a="0.92938232421875" b="-0.330078125" c="0.330078125" d="0.92938232421875" tx="-166.15" ty="-272.35"/>
                   </matrix>
@@ -5013,7 +5013,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="78.05" centerPoint3DY="-82.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="78.05" centerPoint3DY="-82.9">
                   <matrix>
                     <Matrix a="0.4864501953125" b="-0.6953125" c="0.6953125" d="0.4864501953125" tx="-42.75" ty="-64.75"/>
                   </matrix>
