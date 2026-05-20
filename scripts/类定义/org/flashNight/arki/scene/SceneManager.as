@@ -138,11 +138,15 @@ class org.flashNight.arki.scene.SceneManager {
     public function addBodyLayers(w:Number ,h:Number):Void{
         var deadbody = gameworld.deadbody;
         if(deadbody.layers != null) return;
-        //位图层的大小范围在(1024,512)到(2880,1024)之间
+        // 位图层尺寸钳制：下限保最小可用；上限是防御性护栏，不是设计天花板。
+        // 旧值 2880x1024 是 Flash 8 时代 BitmapData 上限的遗留常量，已实测推翻——
+        // 本运行时(FP11.2 projector) AVM1 BitmapData 无 2880/8191/16M 硬墙，
+        // 真实约束是内存（实测档案见 scripts/优化随笔/AS2-BitmapData-尺寸上限实测.md）。
+        // 8192x4096 仅用于挡住 XML 异常尺寸值，正常手作地图远小于此。
         if(w < 1024) w = 1024;
-        else if(w >= 2880) w = 2880;
+        else if(w > 8192) w = 8192;
         if(h < 512) h = 512;
-        else if(h >= 1024) h = 1024;
+        else if(h > 4096) h = 4096;
         deadbody.layers = new Array(3);
         deadbody.layers[0] = new flash.display.BitmapData(w, h, true, 13421772);
         deadbody.layers[1] = null; // 从未被使用的deadbody1不添加
