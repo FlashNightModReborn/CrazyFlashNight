@@ -144,9 +144,9 @@ class org.flashNight.arki.scene.SceneManager {
         // 真实约束是内存（实测档案见 scripts/优化随笔/AS2-BitmapData-尺寸上限实测.md）。
         // 8192x4096 仅用于挡住 XML 异常尺寸值，正常手作地图远小于此。
         if(w < 1024) w = 1024;
-        else if(w > 8192) w = 8192;
+        else if(w >= 8192) w = 8192;
         if(h < 512) h = 512;
-        else if(h > 4096) h = 4096;
+        else if(h >= 4096) h = 4096;
         deadbody.layers = new Array(3);
         deadbody.layers[0] = new flash.display.BitmapData(w, h, true, 13421772);
         deadbody.layers[1] = null; // 从未被使用的deadbody1不添加
