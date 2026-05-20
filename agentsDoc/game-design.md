@@ -9,6 +9,7 @@
 - **机制属性记录**：`0.说明文件与教程/武器装备与敌人的机制属性伤害类型魔抗的实装记录.txt`
 - **标签与属性**：`0.说明文件与教程/Label与魔法种类与装备属性加成的类型汇总.txt`
 - **数据文件**：`data/items/`、`data/units/`
+- **武器散射度口径**：`data/items/weapon-diffusion-guidelines.md`
 
 ## 2. 机制体系
 
