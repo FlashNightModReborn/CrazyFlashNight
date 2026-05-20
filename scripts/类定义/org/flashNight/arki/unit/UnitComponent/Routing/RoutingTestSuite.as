@@ -24,6 +24,7 @@
  *  15. RoutingEndToEndTest        (III.2 端到端组合样例,      2026-05-19)
  *  16. RoutingCrossContainerTest  (III.3 跨容器跳转端到端,    2026-05-19)
  *  17. RoutingGotoAndStopContractTest (III.4 gotoAndStop 强契约 + frameEpoch, 2026-05-19)
+ *  18. PlayerTemplateUnitFixtureTest (第三阶段 玩家模板路由夹具 + 动画完毕(998) 决策树, 2026-05-20)
  *
  * Sentinel 与旧入口一致：
  *   - 全 PASS → [TEST_PASS] Routing suites
@@ -55,6 +56,7 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingTestSuite {
         ok = RoutingEndToEndTest.runAll()        && ok;
         ok = RoutingCrossContainerTest.runAll()  && ok;
         ok = RoutingGotoAndStopContractTest.runAll() && ok;
+        ok = PlayerTemplateUnitFixtureTest.runAll() && ok;
 
         var elapsed:Number = getTimer() - t0;
         trace("================================================================");
