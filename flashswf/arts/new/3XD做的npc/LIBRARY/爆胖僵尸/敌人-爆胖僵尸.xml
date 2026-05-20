@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/敌人-爆胖僵尸" itemID="69d5f34f-0000088e" linkageExportForAS="true" linkageIdentifier="敌人-爆胖僵尸" lastModified="1775663513" lastUniqueIdentifier="66">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/敌人-爆胖僵尸" itemID="69d5f34f-0000088e" linkageExportForAS="true" linkageIdentifier="敌人-爆胖僵尸" lastModified="1779284947" lastUniqueIdentifier="66">
   <timeline>
-    <DOMTimeline name="敌人-爆胖僵尸" currentFrame="120">
+    <DOMTimeline name="敌人-爆胖僵尸">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -501,7 +501,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1313" name="man" centerPoint3DX="35.35" centerPoint3DY="13.95">
+                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1313" name="man" selected="true" centerPoint3DX="35.35" centerPoint3DY="13.95">
                   <matrix>
                     <Matrix tx="-18.05" ty="-58.6"/>
                   </matrix>
@@ -516,7 +516,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1315" name="man" selected="true" centerPoint3DX="33.7" centerPoint3DY="15.45">
+                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1315" name="man" centerPoint3DX="33.7" centerPoint3DY="15.45">
                   <matrix>
                     <Matrix tx="-13.95" ty="-58.45"/>
                   </matrix>
@@ -531,7 +531,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="19" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新动画/爆胖僵尸跑步" centerPoint3DX="14" centerPoint3DY="-63.55">
+                <DOMSymbolInstance libraryItemName="新动画/爆胖僵尸跑步" selected="true" centerPoint3DX="14" centerPoint3DY="-63.55">
                   <matrix>
                     <Matrix tx="-16.55" ty="3.05"/>
                   </matrix>
@@ -594,7 +594,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="85" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1319" name="man" centerPoint3DX="44.5" centerPoint3DY="69.1">
+                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1319" name="man" selected="true" centerPoint3DX="44.5" centerPoint3DY="69.1">
                   <matrix>
                     <Matrix tx="-1.45" ty="-0.55"/>
                   </matrix>
@@ -627,7 +627,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="110" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/新动画/爆胖僵尸自爆动画" centerPoint3DX="4.95" centerPoint3DY="-64.75">
+                <DOMSymbolInstance libraryItemName="爆胖僵尸/新动画/爆胖僵尸自爆动画" selected="true" centerPoint3DX="4.95" centerPoint3DY="-64.75">
                   <matrix>
                     <Matrix tx="-3.4" ty="-4.2"/>
                   </matrix>
@@ -639,7 +639,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="118" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新动画/爆胖僵尸从天跳下" selected="true" centerPoint3DX="7.75" centerPoint3DY="-64.2">
+                <DOMSymbolInstance libraryItemName="新动画/爆胖僵尸从天跳下" centerPoint3DX="7.75" centerPoint3DY="-64.2">
                   <matrix>
                     <Matrix tx="-0.6" ty="-3.65"/>
                   </matrix>

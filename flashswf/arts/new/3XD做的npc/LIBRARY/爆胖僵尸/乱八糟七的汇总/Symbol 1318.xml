@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/乱八糟七的汇总/Symbol 1318" itemID="6577f78a-000011ef" lastModified="1775642219">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/乱八糟七的汇总/Symbol 1318" itemID="6577f78a-000011ef" lastModified="1779285092">
   <timeline>
-    <DOMTimeline name="Symbol 1318" currentFrame="22">
+    <DOMTimeline name="Symbol 1318" currentFrame="39">
       <layers>
-        <DOMLayer name="Labels_Layer" color="#5E53F5" current="true" isSelected="true">
+        <DOMLayer name="Labels_Layer" color="#5E53F5">
           <frames>
             <DOMFrame index="0" name="a0" labelType="name" keyMode="9728">
               <elements/>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script_Layer" color="#C716D1">
+        <DOMLayer name="Script_Layer" color="#C716D1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -30,7 +30,7 @@
             <DOMFrame index="15" duration="17" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="32" duration="8" keyMode="9728">
+            <DOMFrame index="32" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
@@ -43,7 +43,7 @@
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1312" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1312" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.13739013671875" b="0.358810424804688" c="0.358810424804688" d="0.13739013671875" tx="-33.45" ty="-21.05"/>
                   </matrix>
@@ -55,7 +55,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1312" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1312" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.190963745117188" b="0.332794189453125" c="0.332794189453125" d="0.190963745117188" tx="-1.85" ty="-32"/>
                   </matrix>
@@ -71,7 +71,7 @@
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1311" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1311" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.154647827148438" b="0.351791381835938" c="0.351791381835938" d="0.154647827148438" tx="-7.55" ty="-7.95"/>
                   </matrix>
@@ -83,7 +83,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1311" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1311" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.190963745117188" b="0.332794189453125" c="0.332794189453125" d="0.190963745117188" tx="22.75" ty="-13.45"/>
                   </matrix>
@@ -99,7 +99,7 @@
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1310" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1310" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.13739013671875" b="0.358810424804688" c="0.358810424804688" d="0.13739013671875" tx="-56.5" ty="-39.25"/>
                   </matrix>
@@ -111,7 +111,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1310" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1310" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.190963745117188" b="0.332794189453125" c="0.332794189453125" d="0.190963745117188" tx="-21.75" ty="-53.55"/>
                   </matrix>
@@ -127,7 +127,7 @@
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1309" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1309" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.382308959960938" b="0.0440521240234375" c="0.0440521240234375" d="0.382308959960938" tx="-3.65" ty="3.45"/>
                   </matrix>
@@ -139,7 +139,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1309" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1309" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.379745483398438" b="-0.0612945556640625" c="-0.0612945556640625" d="0.379745483398438" tx="6" ty="7.55"/>
                   </matrix>
@@ -155,7 +155,7 @@
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1308" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1308" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.38165283203125" b="0.049072265625" c="0.049072265625" d="0.38165283203125" tx="7.8" ty="-15.35"/>
                   </matrix>
@@ -167,7 +167,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1308" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1308" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.368011474609375" b="-0.111663818359375" c="-0.111663818359375" d="0.368011474609375" tx="26.25" ty="-4.45"/>
                   </matrix>
@@ -183,7 +183,7 @@
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1307" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1307" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.379623413085938" b="0.062744140625" c="0.062744140625" d="0.379623413085938" tx="-0.85" ty="-56.45"/>
                   </matrix>
@@ -195,7 +195,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1307" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1307" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.364959716796875" b="-0.12109375" c="-0.12109375" d="0.364959716796875" tx="38.65" ty="-43.5"/>
                   </matrix>
@@ -211,7 +211,7 @@
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1306" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1306" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.35687255859375" b="0.14312744140625" c="0.14312744140625" d="0.35687255859375" tx="8.95" ty="-1.25"/>
                   </matrix>
@@ -223,7 +223,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1306" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1306" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.3807373046875" b="0.0548095703125" c="0.0548095703125" d="0.3807373046875" tx="19.6" ty="2.85"/>
                   </matrix>
@@ -239,7 +239,7 @@
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1305" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1305" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.372802734375" b="0.094818115234375" c="0.094818115234375" d="0.372802734375" tx="-13.15" ty="28.65"/>
                   </matrix>
@@ -251,7 +251,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1305" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1305" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.375030517578125" b="0.084075927734375" c="0.084075927734375" d="0.375030517578125" tx="-9.55" ty="28.35"/>
                   </matrix>
@@ -267,7 +267,7 @@
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1304" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1304" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.36517333984375" b="0.1207275390625" c="0.1207275390625" d="0.36517333984375" tx="-15.65" ty="50.4"/>
                   </matrix>
@@ -279,7 +279,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1304" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1304" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.37969970703125" b="-0.062286376953125" c="-0.062286376953125" d="0.37969970703125" tx="-9.3" ty="56.5"/>
                   </matrix>
@@ -295,7 +295,7 @@
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1304" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1304" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.2314453125" b="0.131622314453125" c="0.19000244140625" d="0.334091186523438" tx="17.55" ty="37.2"/>
                   </matrix>
@@ -307,7 +307,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1304" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1304" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.263946533203125" b="-0.037384033203125" c="-0.0539703369140625" d="0.381011962890625" tx="13.95" ty="45.15"/>
                   </matrix>
@@ -323,7 +323,7 @@
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1303" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1303" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.317245483398438" b="0.216796875" c="0.216796875" d="0.317245483398438" tx="11.2" ty="15.85"/>
                   </matrix>
@@ -335,7 +335,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1303" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1303" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.376129150390625" b="0.08001708984375" c="0.08001708984375" d="0.376129150390625" tx="16.35" ty="20.45"/>
                   </matrix>
@@ -351,7 +351,7 @@
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1302" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1302" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.368698120117188" b="0.108383178710938" c="0.108383178710938" d="0.368698120117188" tx="-36.8" ty="-69"/>
                   </matrix>
@@ -363,7 +363,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1302" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1302" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.35601806640625" b="-0.145050048828125" c="-0.145050048828125" d="0.35601806640625" tx="16.3" ty="-68.2"/>
                   </matrix>
@@ -379,7 +379,7 @@
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1301" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1301" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.375732421875" b="0.0789947509765625" c="0.0789947509765625" d="0.375732421875" tx="-6.7" ty="-53.35"/>
                   </matrix>
@@ -391,7 +391,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1301" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1301" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.37408447265625" b="-0.085205078125" c="-0.085205078125" d="0.37408447265625" tx="32.4" ty="-44.4"/>
                   </matrix>
@@ -407,7 +407,7 @@
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1300" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1300" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.380966186523438" b="-0.0447540283203125" c="-0.0447540283203125" d="0.380966186523438" tx="26.3" ty="-44.4"/>
                   </matrix>
@@ -419,7 +419,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1300" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1300" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.3271484375" b="-0.19970703125" c="-0.19970703125" d="0.3271484375" tx="58.6" ty="-22.55"/>
                   </matrix>
@@ -435,7 +435,7 @@
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1299" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1299" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.380966186523438" b="-0.0447540283203125" c="-0.0447540283203125" d="0.380966186523438" tx="10.55" ty="-43.7"/>
                   </matrix>
@@ -447,7 +447,7 @@
             </DOMFrame>
             <DOMFrame index="22" duration="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/乱八糟七的汇总/Symbol 1299" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1299" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.3271484375" b="-0.19970703125" c="-0.19970703125" d="0.3271484375" tx="43.95" ty="-28.5"/>
                   </matrix>
@@ -462,7 +462,19 @@
         <DOMLayer name="Layer_18" color="#BCC96F">
           <frames>
             <DOMFrame index="0" duration="40" keyMode="9728">
-              <elements/>
+              <elements>
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 2" centerPoint3DX="73.15" centerPoint3DY="145.6">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-13.5" ty="58.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>

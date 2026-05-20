@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀狙少女/动画合集/走路" itemID="65acbf17-000005ec" lastModified="1715445065" lastUniqueIdentifier="85">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="刀狙少女/动画合集/走路" itemID="65acbf17-000005ec" lastModified="1779284955" lastUniqueIdentifier="85">
   <timeline>
-    <DOMTimeline name="走路" currentFrame="51" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;106&lt;/guideline&gt;&lt;guideline direction="h"&gt;97&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="走路" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;106&lt;/guideline&gt;&lt;guideline direction="h"&gt;97&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Layer_3" color="#88EF73">
           <frames>
@@ -1322,7 +1322,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_10" color="#966FBF">
+        <DOMLayer name="Layer_10" color="#966FBF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1542,7 +1542,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_9" color="#FE04EC" current="true" isSelected="true">
+        <DOMLayer name="Layer_9" color="#FE04EC">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
