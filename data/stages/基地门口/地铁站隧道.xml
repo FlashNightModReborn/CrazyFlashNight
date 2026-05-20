@@ -561,7 +561,7 @@
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
-                    <Duration>8</Duration>
+                    <Duration>0</Duration>
                 </WaveInformation>
             <EnemyGroup>
                     <Enemy>
@@ -624,7 +624,7 @@
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
-                    <Duration>8</Duration>
+                    <Duration>0</Duration>
                 </WaveInformation>
             <EnemyGroup>
                     <Enemy>
@@ -797,7 +797,7 @@
     <SubStage id="3">
         <BasicInformation>
             <Background>flashswf/backgrounds/地铁站车厢尽头.swf</Background>
-            <PlayerX>900</PlayerX>
+            <PlayerX>400</PlayerX>
             <PlayerY>450</PlayerY>
         </BasicInformation>
         <Event>
@@ -812,7 +812,7 @@
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
-                <Text>不好，你跑太快我追不上！</Text>
+                <Text>你跑太快我追不上···有枪声？！不好，得赶快！</Text>
             </Dialogue>
         </Event>
         <Wave>
@@ -820,99 +820,6 @@
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
-                    <Enemy>
-                        <Type>兵种425</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <x>550</x>
-                        <y>480</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种424</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <x>1250</x>
-                        <y>450</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种400</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <x>1350</x>
-                        <y>420</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种401</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <x>450</x>
-                        <y>420</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种393</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种394</Type>
-                        <Interval>1200</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
-                    </Enemy>
-            </SubWave>
-            <SubWave id="1">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                    <Enemy>
-                        <Type>兵种425</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>left</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种424</Type>
-                        <Interval>2000</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>left</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种400</Type>
-                        <Interval>2000</Interval>
-                        <Quantity>4</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>left</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种401</Type>
-                        <Interval>1800</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>left</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种393</Type>
-                        <Interval>1500</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种394</Type>
-                        <Interval>1800</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
-                    </Enemy>
             </SubWave>
         </Wave>
     </SubStage>
@@ -923,10 +830,10 @@
         <Event>
             <EventName>Start</EventName>
             <Dialogue id="0">
-                <Name>1</Name>
-                <Title></Title>
-                <Char></Char>
-                <Text>关卡尚未制作完成，请期待后续更新。</Text>
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>Pig这是看到了什么这么激动，莫非是诺亚的人？</Text>
             </Dialogue>
         </Event>
         <Wave>
@@ -934,6 +841,167 @@
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种442</Type>
+                        <Interval>2400</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种443</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种424</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种425</Type>
+                        <Interval>1600</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种401</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种400</Type>
+                        <Interval>4000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种442</Type>
+                        <Interval>2400</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种443</Type>
+                        <Interval>3200</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种424</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种425</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种401</Type>
+                        <Interval>4000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种400</Type>
+                        <Interval>4000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="5">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/地铁站隧道最终.swf</Background>
+        </BasicInformation>
+            <BGM>
+                <Command>play</Command>
+                <Title>Full Stop</Title>
+                <Loop>true</Loop>
+            </BGM>
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
+                <Name>Pig</Name>
+                <Title>BPK战队-右前锋</Title>
+                <Char>Pig#愤怒</Char>
+                <Text>吭，一帮龟孙挺凶，换个宽敞地老子不得把你们种地里去</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>别逞强，PIG哥赶紧撤，我来垫后</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>（就是这些家伙吗，总觉得在哪里见过···）</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>管不了那么多，上了！</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>此地不宜久留，我们先回去，那些神秘士兵先别管了。</Text>
+            </Dialogue>
+        </Event>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种413</Type>
+                        <Interval>50</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>780</x>
+                        <y>460</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种413</Type>
+                        <Interval>50</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>1200</x>
+                        <y>630</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种413</Type>
+                        <Interval>50</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>1400</x>
+                        <y>520</y>
+                    </Enemy>
+                </EnemyGroup>
             </SubWave>
         </Wave>
     </SubStage>
