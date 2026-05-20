@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/敌人-触手僵尸" itemID="69d54254-00000739" linkageExportForAS="true" linkageIdentifier="敌人-触手僵尸" lastModified="1775619813" lastUniqueIdentifier="53">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/敌人-触手僵尸" itemID="69d54254-00000739" linkageExportForAS="true" linkageIdentifier="敌人-触手僵尸" lastModified="1779294657" lastUniqueIdentifier="53">
   <timeline>
-    <DOMTimeline name="敌人-触手僵尸">
+    <DOMTimeline name="敌人-触手僵尸" currentFrame="6">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -187,48 +187,6 @@ x轴保持距离 = 100;
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="120" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer_3" color="#5586F0" locked="true" outline="true" useOutlineView="true" heightLiteral="24">
-          <frames>
-            <DOMFrame index="0" duration="120" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="刀狙少女/未命名文件夹 1/怪物通用模板/area框/按钮框" symbolType="button">
-                  <matrix>
-                    <Matrix a="2.11715698242188" d="6.05267333984375" tx="-26.9" ty="-142.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(press){
-   if(_root.控制目标 == this._name and this.hp > 0)
-   {
-      gotoAndStop("被击");
-   }
-   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
-   {
-      _root.gameworld[_root.控制目标].攻击目标 = this._name;
-      _root.控制目标全自动 = true;
-   }
-}
-on(press, release, rollOver){
-   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
-   {
-      _root.鼠标.gotoAndStop("手型攻击");
-   }
-}
-on(rollOut){
-   _root.鼠标.gotoAndStop("手型普通");
-}
-]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -579,25 +537,35 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="触手僵尸/血触手-击飞 合并" selected="true" centerPoint3DX="13.95" centerPoint3DY="-111.4">
+                <DOMSymbolInstance libraryItemName="触手僵尸/血触手-击飞 合并" centerPoint3DX="13.95" centerPoint3DY="-111.4">
                   <matrix>
                     <Matrix a="0.903411865234375" d="0.903411865234375" tx="16.7" ty="-91.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-2.95" y="-21.65"/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞浮空();
+}]]></script>
+                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="触手僵尸/血触手-倒地起身 合并" selected="true" centerPoint3DX="13.7" centerPoint3DY="-111.9">
+                <DOMSymbolInstance libraryItemName="触手僵尸/血触手-倒地起身 合并" centerPoint3DX="13.7" centerPoint3DY="-111.9">
                   <matrix>
                     <Matrix a="0.903411865234375" d="0.903411865234375" tx="-1.15" ty="-78.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16.55" y="-37.2"/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_parent.击飞倒地();
+}]]></script>
+                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
