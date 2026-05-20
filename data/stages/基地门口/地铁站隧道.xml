@@ -928,12 +928,12 @@
     <SubStage id="5">
         <BasicInformation>
             <Background>flashswf/backgrounds/地铁站隧道最终.swf</Background>
-        </BasicInformation>
             <BGM>
                 <Command>play</Command>
                 <Title>Full Stop</Title>
                 <Loop>true</Loop>
             </BGM>
+        </BasicInformation>
         <Event>
             <EventName>Start</EventName>
             <Dialogue id="0">
