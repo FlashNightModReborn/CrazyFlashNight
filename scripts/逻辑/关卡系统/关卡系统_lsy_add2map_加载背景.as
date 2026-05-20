@@ -69,6 +69,13 @@ _root.贴背景图 = function(){
 	var 背景层 = 游戏世界.背景;
 	var 天气系统:WeatherSystem = WeatherSystem.getInstance();
 
+	// 排查：背景元件未命名为"背景"（如散放在"背景"图层）时 gameworld.背景 为 undefined，该图背景无法转位图
+	if (背景层 == undefined) {
+		var logMsg:String = "[贴背景图] 未找到 gameworld.背景 实例 — 地图:" + _root.关卡地图帧值 + " 关卡标志:" + _root.关卡标志 + " — 背景不会转位图（需把背景打包成实例名为'背景'的元件）";
+		_root.发布消息(logMsg);
+		_root.服务器.发布服务器消息(logMsg);
+	}
+
 	if(背景层 != null && !背景层.已更新环境配置){
 		if(_root.天空盒){
 			天气系统.spaceCondition = "室外";
@@ -99,7 +106,9 @@ _root.贴背景图 = function(){
 	var matrix = new flash.geom.Matrix(1, 0, 0, 1, pos.x, pos.y);
 	游戏世界.deadbody.layers[0].draw(背景层,matrix,new flash.geom.ColorTransform(),"normal",undefined,true);
 	背景层._visible = false;
-	背景层.外部动画加载壳mc.unloadMovie(); //尝试直接卸载原背景
+	// 背景已烤进 deadbody 位图，unloadMovie 清空原背景夹、释放全部矢量子级内存
+	// （对时间轴负深度实例同样有效；外部图则连 外部动画加载壳mc 一并清；留空壳故 gameworld.背景 不会变 undefined）
+	背景层.unloadMovie();
 };
 
 _root.配置场景环境信息 = function(){
