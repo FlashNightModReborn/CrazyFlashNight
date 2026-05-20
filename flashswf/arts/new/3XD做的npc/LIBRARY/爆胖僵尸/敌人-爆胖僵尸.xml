@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/敌人-爆胖僵尸" itemID="69d5f34f-0000088e" linkageExportForAS="true" linkageIdentifier="敌人-爆胖僵尸" lastModified="1779294717" lastUniqueIdentifier="66">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/敌人-爆胖僵尸" itemID="69d5f34f-0000088e" linkageExportForAS="true" linkageIdentifier="敌人-爆胖僵尸" lastModified="1779297045" lastUniqueIdentifier="66">
   <timeline>
-    <DOMTimeline name="敌人-爆胖僵尸" currentFrame="86">
+    <DOMTimeline name="敌人-爆胖僵尸" currentFrame="49">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -180,7 +180,7 @@ x轴保持距离 = 100;
           <frames>
             <DOMFrame index="0" duration="126" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/怪物通用模板/血条与名称/新版血条位置示意" name="人物文字信息" selected="true" centerPoint3DX="88" centerPoint3DY="-150.9">
+                <DOMSymbolInstance libraryItemName="爆胖僵尸/怪物通用模板/血条与名称/新版血条位置示意" name="人物文字信息" centerPoint3DX="88" centerPoint3DY="-150.9">
                   <matrix>
                     <Matrix tx="1" ty="-180.3"/>
                   </matrix>
@@ -617,7 +617,7 @@ x轴保持距离 = 100;
             </DOMFrame>
             <DOMFrame index="118" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新动画/爆胖僵尸从天跳下" centerPoint3DX="7.75" centerPoint3DY="-64.2">
+                <DOMSymbolInstance libraryItemName="新动画/爆胖僵尸从天跳下" selected="true" centerPoint3DX="7.75" centerPoint3DY="-64.2">
                   <matrix>
                     <Matrix tx="-0.6" ty="-3.65"/>
                   </matrix>

@@ -55,7 +55,7 @@
                 <Name>Pig</Name>
                 <Title>BPK战队-右前锋</Title>
                 <Char>Pig</Char>
-                <Text>楞啥子呢，前头可还有呢。</Text>
+                <Text>楞啥子呢，前头可还有呢。脑子告诉俺必须进去，有要找的东西。</Text>
             </Dialogue>
             <Dialogue id="3">
                 <Name>$PC</Name>
@@ -227,21 +227,21 @@
                 <x>1235</x>
                 <y>270</y>
                 <Identifier>出生点-地铁门</Identifier>
-                <QuantityMax>3</QuantityMax>
+                <QuantityMax>2</QuantityMax>
                 <Offset>30</Offset>
             </Point>
             <Point id="1">
                 <x>1679</x>
                 <y>271</y>
                 <Identifier>出生点-地铁门</Identifier>
-                <QuantityMax>3</QuantityMax>
+                <QuantityMax>2</QuantityMax>
                 <Offset>30</Offset>
             </Point>
             <Point id="2">
                 <x>1895</x>
                 <y>272</y>
                 <Identifier>出生点-地铁门</Identifier>
-                <QuantityMax>3</QuantityMax>
+                <QuantityMax>2</QuantityMax>
                 <Offset>30</Offset>
             </Point>
         </SpawnPoint>
@@ -260,25 +260,88 @@
                         <y>400</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种7</Type>
-                        <Interval>1000</Interval>
+                        <Type>兵种442</Type>
+                        <Interval>1500</Interval>
                         <Quantity>5</Quantity>
-                        <Level>20</Level>
+                        <Level>30</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种39</Type>
-                        <Interval>1000</Interval>
+                        <Type>兵种443</Type>
+                        <Interval>1500</Interval>
                         <Quantity>5</Quantity>
-                        <Level>20</Level>
+                        <Level>30</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种7</Type>
-                        <Interval>1000</Interval>
+                        <Type>兵种424</Type>
+                        <Interval>1500</Interval>
                         <Quantity>5</Quantity>
-                        <Level>20</Level>
+                        <Level>30</Level>
                         <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种425</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种401</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种400</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种442</Type>
+                        <Interval>2500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种443</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种424</Type>
+                        <Interval>4000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种425</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种401</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种400</Type>
+                        <Interval>3500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -309,6 +372,28 @@
                 <Offset>30</Offset>
             </Point>
         </SpawnPoint>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>这里的丧尸好像种类稀少，难道说明这里是这类丧尸产生的地方？</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>Pig</Name>
+                <Title>BPK战队-右前锋</Title>
+                <Char>Pig</Char>
+                <Text>干啥呦，快点继续走。</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>好好好。</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -319,22 +404,22 @@
                         <Type>兵种158</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>20</Level>
+                        <Level>80</Level>
                         <x>150</x>
                         <y>400</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种10</Type>
+                        <Type>兵种442</Type>
                         <Interval>1000</Interval>
                         <Quantity>10</Quantity>
-                        <Level>20</Level>
+                        <Level>40</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种9</Type>
+                        <Type>兵种443</Type>
                         <Interval>1000</Interval>
                         <Quantity>10</Quantity>
-                        <Level>20</Level>
+                        <Level>40</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
@@ -351,19 +436,19 @@
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR</Char>
-                <Text>总觉得很安静呢，路上也没多少丧尸，和之前完全不一样。</Text>
+                <Text>总觉得很安静呢，这里没多少丧尸，和之前完全不一样。</Text>
             </Dialogue>
             <Dialogue id="1">
                 <Name>Pig</Name>
                 <Title>BPK战队-右前锋</Title>
                 <Char>Pig</Char>
-                <Text>就是啊。</Text>
+                <Text>连个能打的都没有，老子这身力气光砸棉花上，不好玩。</Text>
             </Dialogue>
             <Dialogue id="2">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR</Char>
-                <Text>···不对，还是不要掉以轻心。前面的路被封死了，只能从车厢内部走了。不过我们打到这里就差不多了，也确认没什么丧尸了。</Text>
+                <Text>确实，这种程度的敌人连热身程度都算不上···不对，还是不要掉以轻心。前面的路被封死了，只能从车厢内部走了。不过我们打到这里就差不多了，也确认没什么丧尸了。</Text>
             </Dialogue>
             <Dialogue id="3">
                 <Name>Pig</Name>
@@ -483,7 +568,7 @@
                         <Type>兵种400</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>25</Level>
+                        <Level>45</Level>
                         <x>720</x>
                         <y>430</y>
                     </Enemy>
@@ -491,39 +576,39 @@
                         <Type>兵种401</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>25</Level>
+                        <Level>45</Level>
                         <x>1000</x>
                         <y>425</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种9</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <x>800</x>
-                        <y>460</y>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种10</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <x>1200</x>
-                        <y>480</y>
                     </Enemy>
                     <Enemy>
                         <Type>兵种424</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>25</Level>
+                        <Level>45</Level>
+                        <x>800</x>
+                        <y>460</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种425</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>1200</x>
+                        <y>480</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种443</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
                         <x>650</x>
                         <y>450</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种7</Type>
+                        <Type>兵种442</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>25</Level>
+                        <Level>45</Level>
                         <x>850</x>
                         <y>470</y>
                     </Enemy>
@@ -531,7 +616,7 @@
                         <Type>兵种158</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>20</Level>
+                        <Level>80</Level>
                         <x>150</x>
                         <y>420</y>
                     </Enemy>
@@ -557,29 +642,55 @@
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种9</Type>
+                        <Type>兵种443</Type>
+                        <Interval>600</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>750</x>
+                        <y>440</y>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种443</Type>
+                        <Interval>1800</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>320</x>
+                        <y>430</y>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种443</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>490</x>
+                        <y>480</y>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种425</Type>
                         <Interval>1000</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种10</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
+                        <Type>兵种424</Type>
+                        <Interval>1800</Interval>
+                        <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种424</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种7</Type>
-                        <Interval>1000</Interval>
+                        <Type>兵种442</Type>
+                        <Interval>2600</Interval>
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
@@ -592,53 +703,92 @@
                 </WaveInformation>
             <EnemyGroup>
                     <Enemy>
-                        <Type>兵种400</Type>
-                        <Interval>2000</Interval>
-                        <Quantity>4</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
+                        <Type>兵种443</Type>
+                        <Interval>300</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>250</x>
+                        <y>440</y>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种401</Type>
-                        <Interval>2400</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
+                        <Type>兵种443</Type>
+                        <Interval>600</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>490</x>
+                        <y>480</y>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种9</Type>
-                        <Interval>2000</Interval>
-                        <Quantity>4</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>left</SpawnIndex>
+                        <Type>兵种443</Type>
+                        <Interval>900</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>790</x>
+                        <y>430</y>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种10</Type>
-                        <Interval>1500</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种424</Type>
+                        <Type>兵种443</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>left</SpawnIndex>
+                        <Level>45</Level>
+                        <x>570</x>
+                        <y>450</y>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种425</Type>
-                        <Interval>500</Interval>
+                        <Type>兵种443</Type>
+                        <Interval>1400</Interval>
                         <Quantity>1</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
+                        <Level>45</Level>
+                        <x>320</x>
+                        <y>470</y>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种7</Type>
-                        <Interval>1500</Interval>
-                        <Quantity>3</Quantity>
-                        <Level>25</Level>
-                        <SpawnIndex>right</SpawnIndex>
+                        <Type>兵种443</Type>
+                        <Interval>1800</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>590</x>
+                        <y>430</y>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种443</Type>
+                        <Interval>2200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>780</x>
+                        <y>460</y>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种443</Type>
+                        <Interval>2400</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                        <x>420</x>
+                        <y>450</y>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
