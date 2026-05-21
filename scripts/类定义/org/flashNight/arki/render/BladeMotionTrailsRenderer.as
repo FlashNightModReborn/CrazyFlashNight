@@ -46,7 +46,7 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
     private static function _ensureCache():Void {
         var f:Number = _root.帧计时器.当前帧数;
         if (f !== _cacheFrame) {
-            _mapCache = _root.gameworld.deadbody;
+            _mapCache = VectorAfterimageRenderer.resolveLayerHost();
             _rendererCache = TrailRenderer.getInstance();
             _cacheFrame = f;
         }

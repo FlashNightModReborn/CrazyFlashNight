@@ -79,7 +79,7 @@ class org.flashNight.arki.render.ClipFrameRenderer {
 
         // 局部->全局->目标容器局部坐标转换
         mc.localToGlobal(p0); mc.localToGlobal(p1); mc.localToGlobal(p2);
-        var map:MovieClip = _root.gameworld.deadbody;
+        var map:MovieClip = VectorAfterimageRenderer.resolveLayerHost();
         map.globalToLocal(p0); map.globalToLocal(p1); map.globalToLocal(p2);
 
         // 计算第四个点（左下）：p3 = p0 + (p2 - p1)
@@ -132,7 +132,7 @@ class org.flashNight.arki.render.ClipFrameRenderer {
 
         // 转换到目标容器坐标系
         mc.localToGlobal(p0); mc.localToGlobal(p1); mc.localToGlobal(p2);
-        var map:MovieClip = _root.gameworld.deadbody;
+        var map:MovieClip = VectorAfterimageRenderer.resolveLayerHost();
         map.globalToLocal(p0); map.globalToLocal(p1); map.globalToLocal(p2);
 
         // 利用平行四边形特性计算第四角

@@ -237,7 +237,7 @@ _root.装备生命周期函数.通用拖影周期 = function(reflector, paramObj
         var target:MovieClip = self[reflector.装备类型 + "_引用"][reflector.target];
         if (!(target && target._x != undefined)) return;
 
-        var map:MovieClip = _root.gameworld.deadbody;
+        var map:MovieClip = VectorAfterimageRenderer.resolveLayerHost();
 
         // 直接获取 target 在 map 坐标系下的矩形
         var rect:Object = target.getRect(map);

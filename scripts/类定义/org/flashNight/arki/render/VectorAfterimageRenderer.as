@@ -119,6 +119,18 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         initCanvasPool();
     }
     
+    // ==================== 渲染层宿主解析 ====================
+
+    /**
+     * 残影/刀光画布与坐标系所依附的宿主 MovieClip。集中 seam：
+     * 当前返回 deadbody（与历史行为一致）；未来若要把残影独立成
+     * gameworld 专属图层，只需改此方法体，所有调用点自动同源。
+     * 约定：画布挂此返回值之下，坐标变换也必须以此为参考系。
+     */
+    public static function resolveLayerHost():MovieClip {
+        return _root.gameworld.deadbody;
+    }
+
     // ==================== 对象池初始化 ====================
     
     /**
@@ -146,8 +158,8 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
                     this.clear();
                 }
             },
-            // 父级容器为 _root.gameworld.deadbody
-            _root.gameworld.deadbody,
+            // 父级容器：经 resolveLayerHost 统一解析（集中 seam）
+            VectorAfterimageRenderer.resolveLayerHost(),
             // 对象池最大容量
             30,
             // 预加载对象数量
@@ -620,7 +632,8 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     private function calculateCumulativeMatrix(target:MovieClip):Matrix {
         var matrix:Matrix = new Matrix();
         var current:MovieClip = target;
-        while (current && current != _root.gameworld.deadbody) {
+        var host:MovieClip = VectorAfterimageRenderer.resolveLayerHost();
+        while (current && current != host) {
             matrix.concat(current.transform.matrix);
             current = current._parent;
         }

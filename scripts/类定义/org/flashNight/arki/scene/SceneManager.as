@@ -30,6 +30,13 @@ class org.flashNight.arki.scene.SceneManager {
      */
     public function initGameWorld(_gw:MovieClip):Void{
         gameworld = _gw;
+
+        // ── 钉定 authored 实例深度（必须在 DepthManager 创建之前）──
+        // 把 背景 / deadbody 钉到 gameworld 最底两层，消除对 FLA 摆层规范的依赖：
+        // 背景烤图被提升到 deadbody 层后，任何夹在 deadbody 与 背景 之间的
+        // authored 图层都会被烤好的不透明背景位图盖住。
+        pinAuthoredLayers(gameworld);
+
         // gameworld地图碰撞箱层已经弃用，为防止错误附加一个空影片剪辑作为地图层
         if(gameworld.地图 == null) gameworld.createEmptyMovieClip("地图", -2);
         // 附加子弹层，层级在所有人物之下
@@ -66,6 +73,51 @@ class org.flashNight.arki.scene.SceneManager {
 
         // 发布场景切换事件
         _root.帧计时器.eventBus.publish("SceneChanged");
+    }
+
+    /**
+     * 把 authored 实例 背景 / deadbody 钉到 gameworld 最底两层。
+     * 背景严格最底、deadbody 次底，消除对 FLA 摆层规范的依赖。
+     *
+     * 主路径：求其余子级最小深度 minOther，把 deadbody / 背景 重定位到
+     *         minOther-1 / minOther-2（在所有内容之下且空闲，纯重定位、零位移）。
+     * 降级：无其它子级或底部已贴时间轴下限(-16384)时，直接钉到 -16384/-16383
+     *       两槽（最底两层，排序必然正确；占用者经 swapDepths 互换自然上移）。
+     * 必须在 DepthManager 创建之前调用——此时 swapDepths 尚未被劫持。
+     */
+    private function pinAuthoredLayers(gw:MovieClip):Void {
+        var deadbody:MovieClip = gw.deadbody;
+        if (deadbody == undefined) return;
+        var bg:MovieClip = gw.背景; // 部分无背景室内图为 undefined
+
+        var TIMELINE_FLOOR:Number = -16384;
+
+        // 求其余子级（排除 背景/deadbody 自身）的最小深度
+        var minOther:Number = Number.MAX_VALUE;
+        var child:MovieClip;
+        var d:Number;
+        for (var nm in gw) {
+            child = gw[nm];
+            if (child == deadbody || child == bg) continue;
+            if (child.getDepth == undefined) continue; // 过滤非 MovieClip 属性
+            d = child.getDepth();
+            if (!isNaN(d) && d < minOther) minOther = d;
+        }
+
+        if (minOther != Number.MAX_VALUE && (minOther - 2) >= TIMELINE_FLOOR) {
+            // 主路径：minOther-1 / minOther-2 在所有内容之下且空闲，纯重定位、零位移
+            deadbody.swapDepths(minOther - 1);
+            if (bg != undefined) bg.swapDepths(minOther - 2);
+        } else {
+            // 降级：无其它子级，或底部已贴时间轴下限、无连续空位。
+            // 钉到深度下限两槽——-16384/-16383 即最底两层，排序必然正确。
+            if (bg != undefined) {
+                bg.swapDepths(TIMELINE_FLOOR);
+                deadbody.swapDepths(TIMELINE_FLOOR + 1);
+            } else {
+                deadbody.swapDepths(TIMELINE_FLOOR);
+            }
+        }
     }
 
     /*
