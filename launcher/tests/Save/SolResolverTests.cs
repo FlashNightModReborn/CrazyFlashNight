@@ -4,6 +4,7 @@
 //  - Rust parse 失败 → 直接 DeferToFlash（不 fallback shadow、不比时间戳）
 //  - SOL 缺失 + shadow 无 → Empty（不是 MissingBoth）
 //  - v3.0 结构合法 + shadow 严格更新 → 优先 json_shadow；同秒信任通过 dual-write 校验的 SOL
+//  - v3.0 dual-write 哨兵失败 → SOL 不可信：有 shadow 回退（>=），无 shadow 报 Corrupt
 //  - v3.0 validate 失败 + shadow 同秒 → 可取代（>=）
 //  - pre-2.7 + shadow 同秒 → DeferToFlash（>，严格大于才覆盖）
 
@@ -147,6 +148,20 @@ namespace CF7Launcher.Tests.Save
         {
             JObject so = new JObject();
             so["test"] = ValidMydata(lastSaved);
+            return so;
+        }
+
+        /// <summary>
+        /// v3.0 SOL,但顶层 dual-write 键与 test 内嵌副本不一致 —— 模拟 sol_parser
+        /// AMF0 引用错位:顶层 tasks_to_do 被解析成「单个任务对象」,而
+        /// test.tasks.tasks_to_do 仍是空数组。ValidateDualWriteConsistency 应判失败。
+        /// </summary>
+        private static JObject SoData_V3_DualWriteMismatch(string lastSaved)
+        {
+            JObject so = SoData_V3_Valid(lastSaved);
+            JObject shifted = new JObject();
+            shifted["id"] = 1;
+            so["tasks_to_do"] = shifted;
             return so;
         }
 
@@ -408,6 +423,40 @@ namespace CF7Launcher.Tests.Save
             Assert.Equal(1, writer.Calls);
             Assert.Equal(SLOT, writer.LastSlot);
             Assert.Equal("sol_name", writer.LastData["0"][0].Value<string>());
+        }
+
+        [Fact]
+        public void Row8c_V3DualWriteMismatch_EqualShadow_FallsBackToShadow()
+        {
+            // dual-write 哨兵失败 → SOL 不可信,走 fall-through。
+            // 可疑 SOL 用 >=:同秒/更新的有效 shadow 即可取代(对照 Row8a:可信 SOL 用 >)。
+            var loc = new StubLocator { Result = FAKE_SOL_PATH };
+            JObject shadow = ValidMydata("2020-01-01 00:00:00");
+            ((JArray)shadow["0"])[0] = "shadow_name";
+            var arch = new StubArchive { Shadow = shadow };
+            var writer = new StubShadowWriter();
+            var parser = new StubParser { Data = SoData_V3_DualWriteMismatch("2020-01-01 00:00:00") };
+
+            var r = MakeResolver(loc, arch, parser, writer).Resolve(SLOT, SWF);
+
+            Assert.Equal(DecisionKind.Snapshot, r.Kind);
+            Assert.Equal("json_shadow", r.Source);
+            Assert.Equal("shadow_name", r.Snapshot["0"][0].Value<string>());
+            Assert.Equal(0, writer.Calls);
+        }
+
+        [Fact]
+        public void Row8d_V3DualWriteMismatch_NoShadow_Corrupt()
+        {
+            // dual-write 哨兵失败且无可用 shadow → 不静默加载错位快照,报 Corrupt。
+            var loc = new StubLocator { Result = FAKE_SOL_PATH };
+            var arch = new StubArchive(); // 无 shadow
+            var parser = new StubParser { Data = SoData_V3_DualWriteMismatch("2020-01-01 00:00:00") };
+
+            var r = MakeResolver(loc, arch, parser).Resolve(SLOT, SWF);
+
+            Assert.Equal(DecisionKind.Corrupt, r.Kind);
+            Assert.Equal("v3.0_dual_write_mismatch", r.CorruptDetail);
         }
 
         [Fact]
