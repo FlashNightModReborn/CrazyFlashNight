@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑" itemID="690ce8f2-00000725" lastModified="1779385559" lastUniqueIdentifier="83">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/兵器跑" itemID="690ce8f2-00000725" lastModified="1779388528" lastUniqueIdentifier="83">
   <timeline>
     <DOMTimeline name="兵器跑" currentFrame="113" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;239&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -30,7 +30,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="21" keyMode="9728">
               <Actionscript>
@@ -97,7 +97,7 @@ else if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="持刀手" color="#C08F7D" autoNamed="false">
+        <DOMLayer name="持刀手" color="#C08F7D" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -9933,9 +9933,9 @@ else if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长
             </DOMFrame>
             <DOMFrame index="88" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-115.35" centerPoint3DY="-118.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-48.35" centerPoint3DY="-161.4">
                   <matrix>
-                    <Matrix a="0.39385986328125" b="0.771163940429688" c="0.771163940429688" d="-0.39385986328125" tx="-283.05" ty="-35.05"/>
+                    <Matrix a="0.39385986328125" b="0.771163940429688" c="0.771163940429688" d="-0.39385986328125" tx="-216.05" ty="-78.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.8" y="201.9"/>
@@ -10308,9 +10308,9 @@ else if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="41.65" centerPoint3DY="-38.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="55.95" centerPoint3DY="-56.2">
                   <matrix>
-                    <Matrix a="-0.65728759765625" b="-0.56488037109375" c="0.56488037109375" d="-0.65728759765625" tx="-78.85" ty="104.95"/>
+                    <Matrix a="-0.65728759765625" b="-0.56488037109375" c="0.56488037109375" d="-0.65728759765625" tx="-64.55" ty="87.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.65" y="201.85"/>
@@ -10518,9 +10518,9 @@ else if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-0.4" centerPoint3DY="16">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="12.3" centerPoint3DY="22.5">
                   <matrix>
-                    <Matrix a="0.29339599609375" b="-0.8206787109375" c="0.8206787109375" d="0.29339599609375" tx="-178.45" ty="-45.35"/>
+                    <Matrix a="0.29339599609375" b="-0.8206787109375" c="0.8206787109375" d="0.29339599609375" tx="-165.75" ty="-38.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.75" y="201.75"/>
@@ -10728,9 +10728,9 @@ else if(_parent.兵器动作类型=="长柄" || _parent.兵器动作类型=="长
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-76.35" centerPoint3DY="3.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-76.35" centerPoint3DY="13.2">
                   <matrix>
-                    <Matrix a="0.878021240234375" b="-0.022918701171875" c="0.022918701171875" d="0.878021240234375" tx="-83.4" ty="-186.55"/>
+                    <Matrix a="0.878021240234375" b="-0.022918701171875" c="0.022918701171875" d="0.878021240234375" tx="-83.4" ty="-176.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.65" y="201.75"/>
