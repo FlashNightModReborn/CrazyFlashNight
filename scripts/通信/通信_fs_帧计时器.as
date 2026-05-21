@@ -722,6 +722,8 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     EnhancedCooldownWheel.I().deactivateAll();
     // 重置 TimSort 重入保护标志，防止 compare 异常后永久降级为 Array.sort()
     org.flashNight.naki.Sort.TimSort.resetState();
+    // 运行时任务清理完成后，通知需要重建全局循环/对象池的子系统。
+    _root.帧计时器.eventBus.publish("SceneRuntimeReset");
 }, null);
 
 

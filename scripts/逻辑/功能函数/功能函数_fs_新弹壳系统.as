@@ -20,7 +20,7 @@ missileConfigManager.loadConfigs(
     }
 );
 
-// 订阅场景变更事件
-EventBus.getInstance().subscribe("SceneChanged", function() {
+// 订阅场景运行时重置事件：确保在全局 EnhancedCooldownWheel 清理后重建弹壳循环
+EventBus.getInstance().subscribe("SceneRuntimeReset", function() {
     ShellSystem.initializeBulletPools();
 }, null);

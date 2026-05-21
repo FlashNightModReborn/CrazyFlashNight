@@ -240,10 +240,11 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
      * 停止全局更新循环
      */
     private static function stopUpdateLoop():Void {
-        if (isUpdateLoopRunning) {
+        if (globalUpdateTaskID != undefined && globalUpdateTaskID != null) {
             EnhancedCooldownWheel.I().removeTask(globalUpdateTaskID);
-            isUpdateLoopRunning = false;
+            globalUpdateTaskID = null;
         }
+        isUpdateLoopRunning = false;
     }
 
     /**

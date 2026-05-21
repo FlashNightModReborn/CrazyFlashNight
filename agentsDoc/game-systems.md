@@ -32,6 +32,11 @@
 - **核心**：自定义事件总线、EventDispatcher 模式
 - **审查文档**：`tools/EventSystem_Review_Prompt_CN.md`
 
+### 场景事件阶段
+- `SceneChanged`：场景切换的根事件，用于清理旧场景状态、刷新坐标/表现/UI 快照等直接响应。
+- `SceneRuntimeReset`：由 `scripts/通信/通信_fs_帧计时器.as` 在 `EnhancedCooldownWheel.I().deactivateAll()` 和运行时保护状态重置后发布。只用于需要在全局计时任务清理后重建循环、对象池或运行时句柄的子系统，不是 `SceneChanged` 的通用替代。
+- 当前明确订阅者：弹壳系统在该阶段重建弹壳池与全局更新循环，避免 `EnhancedCooldownWheel` 全局清理后出现外部 running flag 假活。
+
 ## 4. 计时器系统
 
 分层架构：
