@@ -293,6 +293,27 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel {
     }
 
     /**
+     * 失活全部受管任务（不触碰底层共享的 CooldownWheel 槽位）。
+     *
+     * 与 reset() 的区别：
+     * - reset() 会连带 fastWheel.reset()，而 fastWheel 是与 add() 直通任务、
+     *   UI 冷却任务等共享的全局 CooldownWheel，整轮清空会误伤其它系统。
+     * - deactivateAll() 只把本类受管任务（activeTasks）逐个置 isActive=false 并清表，
+     *   其 trigger 闭包到期时会因 isActive=false 静默跳过、不再重排程，
+     *   遗留的死闭包会在 ≤128 帧内随时间轮自然清空。
+     *
+     * 【使用场景】场景切换：旧场景遗留的射击/特效循环任务必须停止，
+     * 否则绑定已销毁单位的"孤儿循环"会跨场景累积；但不能整轮 reset
+     * 误伤共享的 CooldownWheel。nextTaskId 保持单调递增、不复位。
+     */
+    public function deactivateAll():Void {
+        for (var k:String in activeTasks) {
+            activeTasks[k].isActive = false;
+        }
+        activeTasks = {};
+    }
+
+    /**
      * 当前活跃任务数量（测试/调试用）。
      */
     public function getActiveTaskCount():Number {

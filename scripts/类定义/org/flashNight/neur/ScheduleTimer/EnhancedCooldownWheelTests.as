@@ -1,4 +1,5 @@
 ﻿import org.flashNight.neur.ScheduleTimer.*;
+import org.flashNight.arki.unit.Action.Shoot.ShootCore;
 
 /**
  * EnhancedCooldownWheelTests
@@ -47,6 +48,9 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
 
         // v1.8 Never-Early 修复测试
         runFixV18Tests();
+
+        // 射击循环停止语义 / 防孤儿泄露回归
+        runShootLoopLeakTests();
 
         // 性能基准测试
         _runPerfBenchmarks();
@@ -1171,5 +1175,157 @@ class org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheelTests {
             "Never-Early: 34ms task should fire after 2 ticks (ceil guarantees no early fire)");
 
         trace("  Never-Early ceiling bit-op: 全部验证通过");
+    }
+
+    // ========== Ⅵ. 射击循环停止语义 / 防孤儿泄露回归 ==========
+    //
+    // 背景：EnhancedCooldownWheel 的重复任务不消费回调返回值，_executeTrigger
+    //       只看 node.isActive。停止一个循环必须显式 removeTask。
+    //       ShootCore 用 core[taskName]（keepshooting / keepshooting2）存任务 id：
+    //       若注册新任务前不先移除旧任务，旧任务就成为无法回收的"孤儿循环" ——
+    //       它自停时调 removeStoredTask(core, taskName) 删的是 core 上当前那个 id
+    //       （已是新任务），永远删不掉自己 → 射速叠加、永久"卡射速"。
+    //       ShootCore.removeStoredTask + "注册前先移除" 是该缺陷的结构性修复。
+    //       本组测试把"槽 core[taskName] 与活任务同生同死"这一不变式钉死。
+
+    public function runShootLoopLeakTests():Void {
+        trace("\n【射击循环停止语义 / 防孤儿泄露回归测试】");
+        _safeRunTest("testRemoveStoredTask_Semantics", testRemoveStoredTask_Semantics);
+        _safeRunTest("testRemoveStoredTask_SafeOnMissing", testRemoveStoredTask_SafeOnMissing);
+        _safeRunTest("testReRegister_NoOrphan", testReRegister_NoOrphan);
+        _safeRunTest("testOrphanFormsWithoutGuard", testOrphanFormsWithoutGuard);
+        _safeRunTest("testDeactivateAll_StopsAllTracked", testDeactivateAll_StopsAllTracked);
+    }
+
+    /** 测试：removeStoredTask 移除时间轮任务并 delete 掉存储的 id */
+    private function testRemoveStoredTask_Semantics():Void {
+        trace("  测试: ShootCore.removeStoredTask 移除并删除任务 id");
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        wheel.reset();
+
+        var fired:Number = 0;
+        var core:Object = {};
+        core.keepshooting = wheel.addTask(function():Void { fired++; }, 60, true); // 无限循环
+
+        assert(wheel.getActiveTaskCount() == 1, "注册后应有 1 个活跃任务");
+        assert(core.keepshooting != undefined, "core.keepshooting 应存有任务 id");
+
+        // 先让它循环几次，确认确实在跑
+        for (var i:Number = 0; i < 8; i++) wheel.tick();
+        assert(fired > 0, "循环任务应至少触发 1 次");
+        var snapshot:Number = fired;
+
+        // removeStoredTask：移除任务 + delete 属性
+        ShootCore.removeStoredTask(core, "keepshooting");
+        assert(wheel.getActiveTaskCount() == 0, "removeStoredTask 后应无活跃任务");
+        assert(core.keepshooting == undefined, "removeStoredTask 应 delete 掉 core.keepshooting");
+
+        // 再 tick，确认任务彻底停止、不再重排程
+        for (var j:Number = 0; j < 16; j++) wheel.tick();
+        assert(fired == snapshot, "removeStoredTask 后循环任务不应再触发");
+    }
+
+    /** 测试：removeStoredTask 对空 core / 缺失 id / 陈旧 id 均安全无副作用 */
+    private function testRemoveStoredTask_SafeOnMissing():Void {
+        trace("  测试: removeStoredTask 对缺失 id / 空 core 安全无副作用");
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        wheel.reset();
+
+        // 空 core —— 不应抛错
+        ShootCore.removeStoredTask(null, "keepshooting");
+
+        // core 上无该任务 id —— 不应抛错、不影响任务表
+        var core:Object = {};
+        ShootCore.removeStoredTask(core, "keepshooting");
+        assert(wheel.getActiveTaskCount() == 0, "无 id 时 removeStoredTask 不应影响任务表");
+
+        // core 上是已失效的陈旧 id（任务已被别处移除）—— 应为安全 no-op 并清掉 id
+        var stale:Number = wheel.addTask(function():Void {}, 60, true);
+        wheel.removeTask(stale);
+        core.keepshooting = stale;
+        ShootCore.removeStoredTask(core, "keepshooting");
+        assert(core.keepshooting == undefined, "removeStoredTask 应清掉陈旧 id");
+    }
+
+    /** 测试：注册前先 removeStoredTask → 重复注册不产生孤儿循环（同生同死不变式） */
+    private function testReRegister_NoOrphan():Void {
+        trace("  测试: 注册前先 removeStoredTask → 不产生孤儿循环");
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        wheel.reset();
+
+        var fireA:Number = 0;
+        var fireB:Number = 0;
+        var core:Object = {};
+
+        // 第一次注册（模拟 startShooting 全自动分支：先 removeStoredTask 再 addTask）
+        ShootCore.removeStoredTask(core, "keepshooting"); // 槽为空，no-op
+        core.keepshooting = wheel.addTask(function():Void { fireA++; }, 60, true);
+        for (var i:Number = 0; i < 10; i++) wheel.tick();
+        assert(fireA > 0, "任务 A 应在循环触发");
+
+        // 第二次注册（修复关键：注册前先 removeStoredTask 杀掉前任）
+        ShootCore.removeStoredTask(core, "keepshooting");
+        core.keepshooting = wheel.addTask(function():Void { fireB++; }, 60, true);
+
+        var fireA_frozen:Number = fireA;
+        for (var j:Number = 0; j < 16; j++) wheel.tick();
+
+        assert(fireB > 0, "重新注册的任务 B 应正常触发");
+        assert(fireA == fireA_frozen, "任务 A 被 removeStoredTask 后不应再触发（无孤儿）");
+        assert(wheel.getActiveTaskCount() == 1, "全程应只有 1 个活跃循环任务");
+    }
+
+    /** 反例测试：注册前不移除旧任务会产生孤儿循环 —— 说明守卫为何必要（修复前行为） */
+    private function testOrphanFormsWithoutGuard():Void {
+        trace("  测试: 反例 — 注册前不移除旧任务会产生孤儿循环");
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        wheel.reset();
+
+        var fireA:Number = 0;
+        var fireB:Number = 0;
+        var core:Object = {};
+
+        // 模拟修复前的缺陷路径：直接覆盖 core.keepshooting，不先 removeStoredTask
+        core.keepshooting = wheel.addTask(function():Void { fireA++; }, 60, true);
+        core.keepshooting = wheel.addTask(function():Void { fireB++; }, 60, true); // A 被覆盖、成孤儿
+
+        for (var i:Number = 0; i < 16; i++) wheel.tick();
+
+        // 两个任务同时在跑 —— 这正是"卡射速"（射速叠加）的根因
+        assert(fireA > 0 && fireB > 0, "缺陷场景下 A、B 应同时触发（射速叠加）");
+        assert(wheel.getActiveTaskCount() == 2, "缺陷场景下应残留 2 个活跃任务（A 为孤儿）");
+
+        // 此时 removeStoredTask 只能删到 core.keepshooting 指向的 B，孤儿 A 永久泄漏
+        ShootCore.removeStoredTask(core, "keepshooting");
+        assert(wheel.getActiveTaskCount() == 1, "removeStoredTask 只能回收 core 指向的任务，孤儿 A 无法回收");
+
+        wheel.reset(); // 收尾：清掉残留的孤儿 A，避免污染后续测试
+    }
+
+    /** 测试：deactivateAll 失活全部受管任务（场景切换用），且不影响后续注册 */
+    private function testDeactivateAll_StopsAllTracked():Void {
+        trace("  测试: deactivateAll 失活全部受管任务（场景切换用）");
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        wheel.reset();
+
+        var fired:Number = 0;
+        var cb:Function = function():Void { fired++; };
+        wheel.addTask(cb, 60, true);
+        wheel.addTask(cb, 90, true);
+        wheel.addTask(cb, 120, true);
+        assert(wheel.getActiveTaskCount() == 3, "应有 3 个活跃任务");
+
+        wheel.deactivateAll();
+        assert(wheel.getActiveTaskCount() == 0, "deactivateAll 后受管任务表应清空");
+
+        // 已失活任务的 trigger 闭包到期时应因 isActive=false 静默跳过、不再触发
+        for (var i:Number = 0; i < 24; i++) wheel.tick();
+        assert(fired == 0, "deactivateAll 后任何受管任务都不应再触发");
+
+        // deactivateAll 后仍可正常注册并触发新任务（模拟场景切换后新单位）
+        var freshFired:Boolean = false;
+        wheel.addTask(function():Void { freshFired = true; }, 60, 1);
+        for (var j:Number = 0; j < 6; j++) wheel.tick();
+        assert(freshFired, "deactivateAll 后应能正常注册并触发新任务");
     }
 }

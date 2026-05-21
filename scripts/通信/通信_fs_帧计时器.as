@@ -717,6 +717,9 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     }
     // 重置射线视觉效果管理器，清理跨场景残留的射线
     RayVfxManager.reset();
+    // 失活上一场景遗留的射击/特效循环任务，避免绑定已销毁单位的"孤儿循环"跨场景累积。
+    // 用 deactivateAll 而非 reset：不误伤与之共享底层 CooldownWheel 的 UI 冷却等任务。
+    EnhancedCooldownWheel.I().deactivateAll();
     // 重置 TimSort 重入保护标志，防止 compare 异常后永久降级为 Array.sort()
     org.flashNight.naki.Sort.TimSort.resetState();
 }, null);

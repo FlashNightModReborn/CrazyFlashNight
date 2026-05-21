@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.item.*;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
+import org.flashNight.arki.unit.Action.Shoot.ShootCore;
 /**
  * ReloadManager.as
  *
@@ -388,12 +389,18 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             
             // 更新武器状态
             stateManager.updateState();
-            
+
             // 使用状态管理器检查是否需要任何换弹
             if (!stateManager.needsAnyReload()) {
                 return;
             }
-            
+
+            // 防御：换弹前清理射击循环/连射链/半自动锁等帧计时器任务。
+            // 与单枪 开始换弹（ShootInitCore._bindCoreFunctions）保持一致：
+            // 双枪 开始换弹 原先漏掉该清理，残留的射击循环任务会在换弹期间
+            // 继续抢 man 时间轴，极端情况下还能在换弹边界凑出孤儿循环。
+            ShootCore.cleanup(parentRef);
+
             if (parentRef === TargetCacheManager.findHero()) {
                 // 使用状态管理器决定换弹策略
                 var passiveSkills:Object = parentRef.被动技能;
