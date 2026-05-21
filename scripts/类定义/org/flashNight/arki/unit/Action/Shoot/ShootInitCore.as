@@ -354,6 +354,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                     );
                 } else {
                     // 全自动模式：注册持续射击循环任务
+                    ShootCore.removeStoredTask(parentRef, timerProp);
                     parentRef[timerProp] = EnhancedCooldownWheel.I().addTask(
                         that[continueMethodName],
                         interval,

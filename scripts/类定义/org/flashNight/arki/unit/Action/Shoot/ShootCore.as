@@ -114,7 +114,12 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         var man:Object  = core.man;
 
         // 防御：换弹期间不允许射击任务抢时间轴
-        if (man.换弹标签) return false;
+        if (man.换弹标签) {
+            core[params.shootingStateName] = false;
+            core.射击最大后摇中 = false;
+            ShootCore.removeStoredTask(core, params.taskName);
+            return false;
+        }
 
         var controlTarget:Object = root.控制目标;
 
@@ -148,7 +153,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             // _root.发布消息("主角函数.射击许可", "不允许射击");
             core[shootStateName] = false;
             // 移除现有射击任务
-            EnhancedCooldownWheel.I().removeTask(core[config.taskName]);
+            ShootCore.removeStoredTask(core, config.taskName);
             return false;
         }
 
@@ -222,7 +227,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             return true;
         }
         // 移除现有射击任务
-        EnhancedCooldownWheel.I().removeTask(core[config.taskName]);
+        ShootCore.removeStoredTask(core, config.taskName);
         return false;
     }
 
@@ -395,6 +400,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                 );
             } else {
                 // 全自动模式：注册持续射击循环任务
+                ShootCore.removeStoredTask(core, params.taskName);
                 core[params.taskName] = EnhancedCooldownWheel.I().addTask(
                     ShootCore.continuousShoot,
                     interval,
@@ -724,6 +730,24 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
     }
 
     /**
+     * 移除存储在 core 上的射击循环任务，并同步删除任务 ID。
+     *
+     * EnhancedCooldownWheel 的重复任务不会消费回调返回值；
+     * 停止射击必须显式 removeTask，否则会留下无法通过 core[taskName] 找回的循环任务。
+     *
+     * @param core     自机对象
+     * @param taskName 任务 ID 存储属性名，如 "keepshooting" 或 "keepshooting2"
+     */
+    public static function removeStoredTask(core:Object, taskName:String):Void {
+        if (!core) return;
+        var taskId = core[taskName];
+        if (taskId != null) {
+            EnhancedCooldownWheel.I().removeTask(taskId);
+            delete core[taskName];
+        }
+    }
+
+    /**
      * 清理指定单位的所有射击相关任务
      * 用于在武器切换或刷新装扮时清理遗留的射击任务
      *
@@ -734,17 +758,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
         var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
 
-        // 清理主手射击任务
-        if (core[primaryParams.taskName]) {
-            wheel.removeTask(core[primaryParams.taskName]);
-            delete core[primaryParams.taskName];
-        }
-
-        // 清理副手射击任务
-        if (core[secondaryParams.taskName]) {
-            wheel.removeTask(core[secondaryParams.taskName]);
-            delete core[secondaryParams.taskName];
-        }
+        // 清理主副手射击任务
+        ShootCore.removeStoredTask(core, primaryParams.taskName);
+        ShootCore.removeStoredTask(core, secondaryParams.taskName);
 
         // [v1.3] 使用生命周期 API 清理射击后摇任务
         wheel.removeTaskByLabel(core, "结束射击后摇");
