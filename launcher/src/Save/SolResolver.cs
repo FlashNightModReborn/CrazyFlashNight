@@ -241,11 +241,14 @@ namespace CF7Launcher.Save
                         {
                             string validSolTs = mydata.Value<string>("lastSaved");
                             string shadowTs = shadow.Value<string>("lastSaved");
+                            // Once raw SOL passed the dual-write tripwire, same-second
+                            // shadow may be a stale snapshot seeded by the historical
+                            // reference-offset bug. Require strictly newer authority.
                             if (validSolTs != null
                                 && shadowTs != null
-                                && string.Compare(shadowTs, validSolTs, StringComparison.Ordinal) >= 0)
+                                && string.Compare(shadowTs, validSolTs, StringComparison.Ordinal) > 0)
                             {
-                                LogManager.Log("[SolResolver] v3.0 shadow newer-or-equal than SOL — prefer json_shadow");
+                                LogManager.Log("[SolResolver] v3.0 shadow newer than dual-write-validated SOL — prefer json_shadow");
                                 return NewSnapshotResult(slot, shadow, "json_shadow");
                             }
                         }
