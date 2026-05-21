@@ -76,10 +76,74 @@ if (flash.external.ExternalInterface.available) {
 
 // LoadPCTasks / SavePCTasks 空壳定义在 通信_lsy_原版存档系统.as 的 shim 层
 
+// 修复历史「引用错位」存档损坏。
+// 正常存档中 task_chains_progress 的键应为任务链名(主线/大学/委托…);
+// 此前启动器 SOL 解析器的引用错位 bug 会把旧 tasks_finished 的内容(任务ID键)
+// 整体挤进 task_chains_progress,而 tasks_finished 自身被换成残片 —— 表现为
+// 做过的支线任务在 NPC 处全部重新可接。此函数把错位的已完成记录抢救回
+// tasks_finished,并按任务链定义重建 task_chains_progress 的链名进度。
+// 健康存档不含任务ID键 → 探测阶段即返回,不改动任何数据(对健康存档零影响)。
+_root.修复错位的任务存档 = function():Void {
+    var tcp = _root.task_chains_progress;
+    if (tcp == null || _root.tasks_finished == null)
+        return;
+
+    // 1. 探测错位指纹:task_chains_progress 中出现「合法任务ID」键
+    var 错位键:Array = [];
+    for (var k in tcp) {
+        var raw = TaskUtil.getRawTaskData(k);
+        if (raw != undefined && String(raw.id) == String(k)) {
+            错位键.push(k);
+        }
+    }
+    if (错位键.length == 0)
+        return; // 健康存档,直接返回,零改动
+
+    // 2. 把错位键的已完成记录抢救回 tasks_finished,并从 task_chains_progress 清除
+    var 抢救数:Number = 0;
+    for (var i = 0; i < 错位键.length; i++) {
+        var key = 错位键[i];
+        var v:Number = Number(tcp[key]);
+        if (isNaN(v) || v < 1)
+            v = 1;
+        if (isNaN(_root.tasks_finished[key]) || _root.tasks_finished[key] < v) {
+            _root.tasks_finished[key] = v;
+            抢救数++;
+        }
+        delete tcp[key];
+    }
+
+    // 3. 从 tasks_finished 反向重建各任务链的链名进度(只升不降;无序号链如「委托」
+    //    不在 task_chains 中,自然跳过,与正常存档一致)
+    for (var chainName in TaskUtil.task_chains) {
+        var chainObj = TaskUtil.task_chains[chainName];
+        var seqArr:Array = TaskUtil.task_in_chains_by_sequence[chainName];
+        var maxDone:Number = 0;
+        for (var j = 0; j < seqArr.length; j++) {
+            var seq = seqArr[j];
+            if (_root.tasks_finished[chainObj[seq]] > 0 && seq > maxDone) {
+                maxDone = seq;
+            }
+        }
+        if (isNaN(tcp[chainName]) || tcp[chainName] < maxDone) {
+            tcp[chainName] = maxDone;
+        }
+    }
+
+    // 4. 标脏,确保修复结果会在下次存盘时落地
+    if (_root.存档系统 != undefined)
+        _root.存档系统.dirtyMark = true;
+    if (_root.服务器 != undefined)
+        _root.服务器.发布服务器消息("[任务存档修复] 引用错位:抢救已完成任务 " + 抢救数 + " 项,清理错位键 " + 错位键.length + " 个");
+    trace("[任务存档修复] 抢救 " + 抢救数 + " / 清理 " + 错位键.length);
+};
+
 _root.检查任务数据完整性 = function() {
     //先检查任务数据是否加载完毕
     if (TaskUtil.tasks == null)
         return;
+    //修复历史引用错位损坏(健康存档零影响)
+    _root.修复错位的任务存档();
     //检查并删除undefined任务
     for (var index in _root.tasks_to_do) {
         if (TaskUtil.getTaskData(_root.tasks_to_do[index].id).title == null) {

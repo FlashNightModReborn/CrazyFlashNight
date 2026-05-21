@@ -3,6 +3,7 @@
 // bootstrap_handshake response. C# 5 syntax.
 
 using System;
+using System.Collections.Generic;
 using CF7Launcher.Guardian;
 using CF7Launcher.Tasks;
 using Newtonsoft.Json.Linq;
@@ -215,26 +216,45 @@ namespace CF7Launcher.Save
 
             if (ver == "3.0")
             {
-                SaveMigrator.MergeTopLevelKeys(mydata, soData);
-                SaveMigrator.NormalizeResolvedSnapshot(mydata);
-                if (SaveMigrator.ValidateResolvedSnapshot(mydata))
+                // Early-exposure tripwire (run on RAW soData, before merge):
+                // saveAll dual-writes the same object as a top-level key and
+                // nested under mydata.{tasks,pets,shop}; a correct parse makes
+                // them deep-equal. Divergence = sol_parser reference
+                // misresolution → the snapshot is shifted and must not be
+                // trusted. Fail LOUD; do not silently consume bad data.
+                List<string> dwMismatches;
+                bool dualWriteOk = SaveMigrator.ValidateDualWriteConsistency(soData, out dwMismatches);
+                if (!dualWriteOk)
                 {
-                    if (shadowValid)
-                    {
-                        string validSolTs = mydata.Value<string>("lastSaved");
-                        string shadowTs = shadow.Value<string>("lastSaved");
-                        if (validSolTs != null
-                            && shadowTs != null
-                            && string.Compare(shadowTs, validSolTs, StringComparison.Ordinal) >= 0)
-                        {
-                            LogManager.Log("[SolResolver] v3.0 shadow newer-or-equal than SOL — prefer json_shadow");
-                            return NewSnapshotResult(slot, shadow, "json_shadow");
-                        }
-                    }
-                    return NewSnapshotResult(slot, mydata, "sol");
+                    for (int i = 0; i < dwMismatches.Count; i++)
+                        LogManager.Log("[SolResolver] dual-write 不一致: " + dwMismatches[i]);
+                    LogManager.Log("[SolResolver] SOL dual-write 校验失败 — sol_parser 引用解析疑似回归,不信任此 SOL");
                 }
 
-                LogManager.Log("[SolResolver] v3.0 structure invalid — shadow freshness check");
+                if (dualWriteOk)
+                {
+                    SaveMigrator.MergeTopLevelKeys(mydata, soData);
+                    SaveMigrator.NormalizeResolvedSnapshot(mydata);
+                    if (SaveMigrator.ValidateResolvedSnapshot(mydata))
+                    {
+                        if (shadowValid)
+                        {
+                            string validSolTs = mydata.Value<string>("lastSaved");
+                            string shadowTs = shadow.Value<string>("lastSaved");
+                            if (validSolTs != null
+                                && shadowTs != null
+                                && string.Compare(shadowTs, validSolTs, StringComparison.Ordinal) >= 0)
+                            {
+                                LogManager.Log("[SolResolver] v3.0 shadow newer-or-equal than SOL — prefer json_shadow");
+                                return NewSnapshotResult(slot, shadow, "json_shadow");
+                            }
+                        }
+                        return NewSnapshotResult(slot, mydata, "sol");
+                    }
+                    LogManager.Log("[SolResolver] v3.0 structure invalid — shadow freshness check");
+                }
+
+                // SOL 不可信(dual-write 错位 或 结构非法)→ shadow 新鲜度检查 → NewCorrupt
                 string solTs = mydata.Value<string>("lastSaved");
                 if (shadowValid && solTs != null)
                 {
@@ -245,7 +265,8 @@ namespace CF7Launcher.Save
                         return NewSnapshotResult(slot, shadow, "json_shadow");
                     }
                 }
-                return SolResolveResult.NewCorrupt("v3.0_structure_invalid");
+                return SolResolveResult.NewCorrupt(
+                    dualWriteOk ? "v3.0_structure_invalid" : "v3.0_dual_write_mismatch");
             }
 
             if (ver == "2.7")

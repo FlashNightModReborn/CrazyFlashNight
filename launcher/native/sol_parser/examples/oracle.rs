@@ -35,8 +35,7 @@ fn main() -> ExitCode {
     let mut fail = 0u32;
 
     // ── Layer 1.1: top-level presence ──
-    let required_top = ["test", "tasks_to_do", "\u{6218}\u{5BA0}",
-        "\u{5546}\u{57CE}\u{5DF2}\u{8D2D}\u{4E70}\u{7269}\u{54C1}"];
+    let required_top = ["test", "tasks_to_do", "战宠", "商城已购买物品"];
     for key in required_top.iter() {
         let present = sol_data.get(key).is_some();
         let mark = if present { "OK     " } else { "MISSING" };

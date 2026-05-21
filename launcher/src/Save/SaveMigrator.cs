@@ -204,6 +204,57 @@ namespace CF7Launcher.Save
             return true;
         }
 
+        /// <summary>
+        /// Early-exposure tripwire on raw sol_parser output. SaveManager.saveAll
+        /// dual-writes the same object instance both as a top-level SOL key and
+        /// nested under mydata.{tasks,pets,shop}; Flash encodes the second
+        /// occurrence as an AMF0 Reference, so a correct parse resolves both to
+        /// deep-equal values. Divergence means sol_parser misresolved a
+        /// reference — the snapshot is structurally shifted and unsafe to trust.
+        ///
+        /// This is a parser-correctness check, NOT a data-integrity check: it
+        /// does not fire on saves merely written while their in-memory data was
+        /// corrupted (saveAll dual-writes consistently regardless), only on
+        /// read-side reference misresolution. Pure — the caller logs `mismatches`.
+        /// </summary>
+        public static bool ValidateDualWriteConsistency(JObject soData, out List<string> mismatches)
+        {
+            mismatches = new List<string>();
+            if (soData == null) return true;
+            JObject test = soData["test"] as JObject;
+            if (test == null) return true; // not a v3.0-shaped snapshot — nothing to check
+
+            // (top-level SOL key, nested bundle under `test`, key within bundle).
+            // Only complex (reference-carrying) dual-write values; scalars like
+            // 宠物领养限制 are inline-encoded both times and cannot misresolve.
+            string[][] pairs = new string[][]
+            {
+                new string[] { "tasks_to_do", "tasks", "tasks_to_do" },
+                new string[] { "tasks_finished", "tasks", "tasks_finished" },
+                new string[] { "task_chains_progress", "tasks", "task_chains_progress" },
+                new string[] { "战宠", "pets", "宠物信息" },
+                new string[] { "商城已购买物品", "shop", "商城已购买物品" },
+                new string[] { "商城购物车", "shop", "商城购物车" },
+            };
+
+            foreach (string[] p in pairs)
+            {
+                JToken top = soData[p[0]];
+                JObject bundle = test[p[1]] as JObject;
+                JToken nested = bundle != null ? bundle[p[2]] : null;
+                // One side genuinely absent (old-format / partial save) — not a
+                // dual-write pair to compare.
+                if (top == null || nested == null) continue;
+                if (!JToken.DeepEquals(top, nested))
+                {
+                    mismatches.Add(string.Format(
+                        "顶层 `{0}` != `test.{1}.{2}`(sol_parser 引用解析错位)",
+                        p[0], p[1], p[2]));
+                }
+            }
+            return mismatches.Count == 0;
+        }
+
         // ───────── helpers ─────────
 
         private static JToken CloneToken(JToken token)

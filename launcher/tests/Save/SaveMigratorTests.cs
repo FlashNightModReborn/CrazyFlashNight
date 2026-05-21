@@ -1,9 +1,10 @@
 // SaveMigrator 的 C# 镜像测试，与 SaveManagerTest.as 的对应用例同源。
-// 仅覆盖 SaveMigrator 4 个 public API（IsAbsent / Migrate_2_7_to_3_0 /
-// MergeTopLevelKeys / ValidateResolvedSnapshot）。
+// 仅覆盖 SaveMigrator 的 public API（IsAbsent / Migrate_2_7_to_3_0 /
+// MergeTopLevelKeys / ValidateResolvedSnapshot / ValidateDualWriteConsistency）。
 // AS2 测试里 prefetch / loadAll / tombstone / loadFromMydata 等属 SaveManager
 // 运行时状态，不在 SaveMigrator 职责范围，不移植。
 
+using System.Collections.Generic;
 using CF7Launcher.Save;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -651,6 +652,93 @@ namespace CF7Launcher.Tests.Save
             JObject md = BuildValidMydata();
             ((JObject)md["shop"])[field] = new JObject();
             Assert.False(SaveMigrator.ValidateResolvedSnapshot(md));
+        }
+
+        // ─────────── ValidateDualWriteConsistency ───────────
+
+        /// <summary>构造 dual-write 一致的 soData:顶层键 deep-equal test.{tasks,pets,shop} 内嵌副本。</summary>
+        private static JObject BuildConsistentSoData()
+        {
+            JArray tasksToDo = new JArray();
+            JObject t0 = new JObject();
+            t0["id"] = 1;
+            tasksToDo.Add(t0);
+
+            JObject tasksFinished = new JObject();
+            tasksFinished["0"] = 1;
+
+            JObject chains = new JObject();
+            chains["主线"] = 3;
+
+            JArray petInfo = new JArray();
+            petInfo.Add(new JArray());
+
+            JArray shopBought = new JArray();
+            shopBought.Add("x");
+            JArray shopCart = new JArray();
+
+            JObject tasks = new JObject();
+            tasks["tasks_to_do"] = tasksToDo.DeepClone();
+            tasks["tasks_finished"] = tasksFinished.DeepClone();
+            tasks["task_chains_progress"] = chains.DeepClone();
+
+            JObject petsBundle = new JObject();
+            petsBundle["宠物信息"] = petInfo.DeepClone();
+
+            JObject shopBundle = new JObject();
+            shopBundle["商城已购买物品"] = shopBought.DeepClone();
+            shopBundle["商城购物车"] = shopCart.DeepClone();
+
+            JObject test = new JObject();
+            test["tasks"] = tasks;
+            test["pets"] = petsBundle;
+            test["shop"] = shopBundle;
+
+            JObject soData = new JObject();
+            soData["test"] = test;
+            soData["tasks_to_do"] = tasksToDo.DeepClone();
+            soData["tasks_finished"] = tasksFinished.DeepClone();
+            soData["task_chains_progress"] = chains.DeepClone();
+            soData["战宠"] = petInfo.DeepClone();
+            soData["商城已购买物品"] = shopBought.DeepClone();
+            soData["商城购物车"] = shopCart.DeepClone();
+            return soData;
+        }
+
+        [Fact]
+        public void DualWrite_ConsistentSnapshot_True()
+        {
+            List<string> mismatches;
+            bool ok = SaveMigrator.ValidateDualWriteConsistency(BuildConsistentSoData(), out mismatches);
+            Assert.True(ok);
+            Assert.Empty(mismatches);
+        }
+
+        [Fact]
+        public void DualWrite_ShiftedTopLevelKey_False()
+        {
+            // 复现 sol_parser 引用错位:顶层 tasks_to_do 解析成「单个任务对象」,
+            // 而嵌套副本 test.tasks.tasks_to_do 仍是任务数组。
+            JObject soData = BuildConsistentSoData();
+            JObject shifted = new JObject();
+            shifted["id"] = 1;
+            soData["tasks_to_do"] = shifted;
+
+            List<string> mismatches;
+            bool ok = SaveMigrator.ValidateDualWriteConsistency(soData, out mismatches);
+            Assert.False(ok);
+            Assert.NotEmpty(mismatches);
+        }
+
+        [Fact]
+        public void DualWrite_NoTestKey_True()
+        {
+            // 无 test 键 → 非 v3.0 形态,无可比对 → 通过(不误报)。
+            JObject soData = new JObject();
+            soData["tasks_to_do"] = new JArray();
+            List<string> mismatches;
+            bool ok = SaveMigrator.ValidateDualWriteConsistency(soData, out mismatches);
+            Assert.True(ok);
         }
     }
 }

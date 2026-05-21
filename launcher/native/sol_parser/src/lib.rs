@@ -167,9 +167,12 @@ impl Ctx {
     /// ECMAArray, StrictArray, TypedObject). Per AMF0 spec §2.9 the reference
     /// counter increments for complex objects only — simple types (Number,
     /// Bool, String, Null, Date, etc.) and References themselves do not
-    /// advance the counter. flash-lso passes the raw file-level u16 index
-    /// through without translating, so consumer-side resolution must use the
-    /// spec counter.
+    /// advance the counter.
+    ///
+    /// NOTE: this cache holds only **body-level** complex values. Real Flash
+    /// Player additionally occupies reference index 0 with the SharedObject's
+    /// implicit root container, so `by_index` is offset by one from Flash's
+    /// reference table — `resolve_ref` applies the `-1` correction.
     ///
     /// AMF3 containers live in a separate reference pool; they never resolve
     /// into the AMF0 cache and are not indexed here.
@@ -328,17 +331,28 @@ impl Ctx {
     }
 
     fn resolve_ref(&self, r: &Reference, visiting: &mut Vec<u16>) -> Json {
-        // AMF0 spec §2.9: reference indexes are 0-based into the cache of
-        // complex objects encountered so far. flash-lso's own AMF0 writer
-        // (amf0/writer/amf0_writer.rs) also emits the first cached object as
-        // `Reference(0)`, and flash-lso's reader returns the raw file-level
-        // u16 unchanged (it does not adjust). So we look up directly.
+        // AMF0 Reference resolution for real Flash Player-written SOL files.
         //
-        // Round-trip coverage: tests/reference_semantics.rs constructs a SOL
-        // with Reference(0) pointing at the first cached Object and requires
-        // it to resolve to that object. A 1-based misread regresses that
-        // test.
-        let idx = reference_index(r);
+        // Empirically verified (tests/reference_semantics.rs, real SOL
+        // fixture): Flash Player's SharedObject serializer occupies reference
+        // index 0 with the implicit root `data` container. Our `by_index`
+        // holds only body-level complex values and never that root, so it is
+        // short by exactly one entry vs Flash's table. Correct lookup is
+        // therefore `by_index[raw - 1]`.
+        //
+        // DO NOT "simplify" this to a direct 0-based lookup. The AMF0 spec
+        // text and flash-lso's own writer are 0-based, but real Flash Player
+        // SOL output is not. A prior refactor trusted the spec text over real
+        // SOLs and silently shifted every dual-write top-level key
+        // (tasks_to_do / tasks_finished / task_chains_progress / pets / shop)
+        // onto a neighbouring object. The regression test pins this.
+        let raw = reference_index(r);
+        if raw == 0 {
+            // Flash's implicit SharedObject root — never a body-level value
+            // we hold; treat as unresolvable.
+            return Json::Null;
+        }
+        let idx = raw - 1;
         if visiting.contains(&idx) {
             return Json::Null;
         }
