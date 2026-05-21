@@ -303,8 +303,8 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!4020 -365[7565 187 9262 1212!9262 1212[10963 2238 9820 3138!9820 3138[8678 4034 5361 4278!5361 4278[2046 4521 -1500 3970!-1500 3970[-5045 3417 -6745 2392!-6745 2392[-8443 1365 -7302 466!-7302 466[-6158 -432 -2843 -675!-2843 -675[473
- -918 4020 -365"/>
+                    <Edge fillStyle1="1" edges="!9820 3138[8678 4034 5361 4278!5361 4278[2046 4521 -1500 3970!-1500 3970[-5045 3417 -6745 2392!-6745 2392[-8443 1365 -7302 466!-7302 466[-6158 -432 -2843 -675!-2843 -675[473 -918 4020 -365!4020 -365[7565 187 9262 1212!9262 1212[10963
+ 2238 9820 3138"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -742,7 +742,7 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-133.4" centerPoint3DY="19.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-133.4" centerPoint3DY="19.55">
                   <matrix>
                     <Matrix a="0.390869140625" b="-0.91912841796875" c="-0.91912841796875" d="-0.390869140625" tx="64.25" ty="106.2"/>
                   </matrix>
@@ -799,7 +799,7 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
             </DOMFrame>
             <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-152.25" centerPoint3DY="13.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-152.25" centerPoint3DY="13.8">
                   <matrix>
                     <Matrix a="0.377899169921875" b="-0.924514770507813" c="-0.924514770507813" d="-0.377899169921875" tx="47.4" ty="97.15"/>
                   </matrix>
@@ -844,7 +844,7 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
             </DOMFrame>
             <DOMFrame index="9" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-158.8" centerPoint3DY="-23.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-158.8" centerPoint3DY="-23.75">
                   <matrix>
                     <Matrix a="0.571685791015625" b="-0.8189697265625" c="-0.8189697265625" d="-0.571685791015625" tx="17.9" ty="101.8"/>
                   </matrix>
@@ -859,7 +859,7 @@ shootZ = 追踪目标.Z轴坐标;]]></script>
             </DOMFrame>
             <DOMFrame index="13" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-160.65" centerPoint3DY="-27.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-160.65" centerPoint3DY="-27.1">
                   <matrix>
                     <Matrix a="0.550277709960938" b="-0.83349609375" c="-0.83349609375" d="-0.550277709960938" tx="19.55" ty="94.5"/>
                   </matrix>

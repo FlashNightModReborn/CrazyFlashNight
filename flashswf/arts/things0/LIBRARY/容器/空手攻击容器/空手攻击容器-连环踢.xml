@@ -1134,7 +1134,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
             <DOMFrame index="22" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -4958,7 +4958,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="34.2" centerPoint3DY="-238.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="34.2" centerPoint3DY="-238.75">
                   <matrix>
                     <Matrix a="0.92938232421875" b="-0.330078125" c="0.330078125" d="0.92938232421875" tx="-166.15" ty="-272.35"/>
                   </matrix>
@@ -5013,7 +5013,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="78.05" centerPoint3DY="-82.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="78.05" centerPoint3DY="-82.9">
                   <matrix>
                     <Matrix a="0.4864501953125" b="-0.6953125" c="0.6953125" d="0.4864501953125" tx="-42.75" ty="-64.75"/>
                   </matrix>
