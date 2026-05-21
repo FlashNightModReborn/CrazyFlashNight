@@ -31,7 +31,7 @@ class org.flashNight.arki.scene.SceneManager {
     public function initGameWorld(_gw:MovieClip):Void{
         gameworld = _gw;
 
-        // ── 钉定 authored 实例深度（必须在创建 地图/子弹区域 等运行时层之前）──
+        // ── 钉定 authored 实例深度（必须在 DepthManager 与 地图/子弹区域 等运行时层创建之前）──
         // 把 背景 / deadbody 钉到 gameworld 最底两层，消除对 FLA 摆层规范的依赖：
         // 背景烤图被提升到 deadbody 层后，任何夹在 deadbody 与 背景 之间的
         // authored 图层都会被烤好的不透明背景位图盖住。
@@ -86,8 +86,12 @@ class org.flashNight.arki.scene.SceneManager {
      *         子弹区域(-1) 两个保留层，避免与之深度撞槽。
      * 降级：无其它子级或底部已贴时间轴下限(-16384)时，直接钉到 -16384/-16383
      *       两槽（最底两层，排序必然正确；占用者经 swapDepths 互换自然上移）。
-     * 必须在创建 地图/子弹区域 等运行时层之前调用，确保 minOther 只统计
-     * FLA authored 子级。
+     * 调用时机有两条硬约束，缺一不可：
+     *   1) 必须在创建 地图/子弹区域 等运行时层之前——确保 minOther 只统计
+     *      FLA authored 子级，不被运行时层干扰。
+     *   2) 必须在 DepthManager 创建之前——DM 会劫持子级的 swapDepths 并
+     *      重定向到 updateDepth（把入参当 Y 坐标）；若反序调用，本方法的
+     *      swapDepths(anchor-1) 会被当成 Y 坐标而非深度，钉定彻底失效。
      */
     private function pinAuthoredLayers(gw:MovieClip):Void {
         var deadbody:MovieClip = gw.deadbody;

@@ -126,6 +126,11 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      * 当前返回 deadbody（与历史行为一致）；未来若要把残影独立成
      * gameworld 专属图层，只需改此方法体，所有调用点自动同源。
      * 约定：画布挂此返回值之下，坐标变换也必须以此为参考系。
+     *
+     * 适用范围：残影/刀光画布管线——VectorAfterimageRenderer、TrailRenderer、
+     * BladeMotionTrailsRenderer、ClipFrameRenderer、通用装备函数（通用拖影周期）。
+     * RayVfxManager 有意不走此 seam：它属另一套射线 VFX，主宿主是 效果，
+     * deadbody 仅为其 fallback，与本 seam 解耦是刻意为之，改 seam 不应波及它。
      */
     public static function resolveLayerHost():MovieClip {
         return _root.gameworld.deadbody;
