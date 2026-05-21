@@ -113,7 +113,7 @@ class org.flashNight.arki.render.ClipFrameRenderer {
     }
 
     /**
-     * 私有辅助：获取 MovieClip 在目标坐标系 (_root.gameworld.deadbody) 下的四个角点
+     * 私有辅助：获取 MovieClip 在目标坐标系（resolveLayerHost()）下的四个角点
      * @param mc 目标 MovieClip
      * @return {p0,p1,p2,p3} 四个角点向量
      */

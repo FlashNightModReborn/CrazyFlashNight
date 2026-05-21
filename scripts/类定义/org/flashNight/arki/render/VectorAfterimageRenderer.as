@@ -135,7 +135,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     
     /**
      * 初始化画布对象池
-     * 使用单一对象池管理所有画布，父级容器为 _root.gameworld.deadbody
+     * 使用单一对象池管理所有画布，父级容器经 resolveLayerHost() 统一解析
      */
     private function initCanvasPool():Void {
         _canvasPool = new ObjectPool(
@@ -625,7 +625,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     }
     
     /**
-     * 计算从当前 MovieClip 到根容器 _root.gameworld.deadbody 的累积变换矩阵
+     * 计算从当前 MovieClip 到渲染宿主（resolveLayerHost()）的累积变换矩阵
      * @param target 起始 MovieClip 对象
      * @return 返回累计后的 Matrix 对象
      */
