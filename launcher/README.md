@@ -608,7 +608,7 @@ powershell -File run_tests.ps1
   - `web/modules/minigames/lockbox/dev/harness.html`
   - `web/modules/minigames/pinalign/dev/harness.html`
   - `web/modules/minigames/gobang/dev/harness.html`
-  - `web/modules/map/dev/harness.html`（也可用 `node tools/run-map-harness-headless.js --browser edge` 跑 `map-ui1`~`map-ui24`）
+  - `web/modules/map/dev/harness.html`（也可用 `node tools/run-map-harness-headless.js --browser edge` 跑 `map-ui1`~`map-ui25`）
   - `web/modules/stage-select/dev/harness.html`
   - `web/modules/intelligence/dev/harness.html`
   - 共享 QA 基础层：`web/modules/minigames/shared/dev/harness-base.js` + `harness-base.css`
