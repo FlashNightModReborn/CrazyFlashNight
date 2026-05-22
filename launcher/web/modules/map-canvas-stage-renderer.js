@@ -25,6 +25,7 @@ var MapCanvasStageRenderer = (function() {
     var RETUNE_MS = 180;            // 频段重调过渡 (旧 @keyframes mapStageRetune)
     var PAGE_ENTER_MS = 220;        // 切页 filter-overlay 淡入 (旧 transition opacity 0.22s)
     var IDLE_FPS = 30;              // 仅环境动画(无交互)时的限帧目标 — 砍 idle 常驻成本
+    var TASK_RING_GAP = 5;          // 任务环套住头像时, 环中线相对头像外缘的间距 (页面单位)
 
     function Renderer(bgCanvas, options) {
         options = options || {};
@@ -32,9 +33,14 @@ var MapCanvasStageRenderer = (function() {
         this.ctx = this.canvas && this.canvas.getContext ? this.canvas.getContext('2d') : null;
         this.fgCanvas = options.fgCanvas || null;
         this.fgCtx = this.fgCanvas && this.fgCanvas.getContext ? this.fgCanvas.getContext('2d') : null;
+        // 任务环专用层 (z=3, 低于 hotspot/标签) — 与 fg(z=6) 分开, 任务环才不会盖住标签卡片
+        this.ringCanvas = options.ringCanvas || null;
+        this.ringCtx = this.ringCanvas && this.ringCanvas.getContext ? this.ringCanvas.getContext('2d') : null;
         this.resolveAssetUrl = options.resolveAssetUrl ? options.resolveAssetUrl : identity;
         this.state = null;
         this.raf = 0;
+        // host 驱动关闭后置 true: ensureLoop 不再排程, 避免隐藏画布上 RAF 泄漏。
+        this.stopped = false;
         this.imageCache = {};
         this.sharpenCache = {};
         this.sharpenWorker = null;
@@ -42,6 +48,7 @@ var MapCanvasStageRenderer = (function() {
         this.sharpenPending = {};
         this.sharpenKeySeq = 0;
         this.drawCount = 0;
+        this.frameCount = 0;        // RAF 回调累计数 — QA 探测循环是否已停 (map-ui25)
         this.pendingAssets = 0;
         this.missingAssets = [];
         this.lastDynamicAvatarUrl = '';
@@ -77,13 +84,15 @@ var MapCanvasStageRenderer = (function() {
     }
 
     Renderer.prototype.isAvailable = function() {
-        return !!(this.canvas && this.ctx && this.fgCanvas && this.fgCtx);
+        return !!(this.canvas && this.ctx && this.fgCanvas && this.fgCtx && this.ringCanvas && this.ringCtx);
     };
 
     Renderer.prototype.setState = function(state) {
         var prev = this.state;
         var t = nowMs();
         state = state || null;
+        // setState = 面板重新活跃的合法信号 — 解除 stop() 的封停。
+        this.stopped = false;
         if (state && state.page) {
             if (!prev || !prev.page || prev.page.id !== state.page.id) {
                 // 切页: 清补间避免跨页焦点残留, 起 filter-overlay 淡入
@@ -109,15 +118,29 @@ var MapCanvasStageRenderer = (function() {
 
     Renderer.prototype.ensureLoop = function() {
         var self = this;
-        if (!this.isAvailable() || this.raf) return;
+        if (this.stopped || !this.isAvailable() || this.raf) return;
         this.raf = requestFrame(function(ts) {
             self.raf = 0;
             self.frame(ts);
         });
     };
 
+    // host 驱动关闭 / 面板隐藏: 立刻停 RAF 循环。必须显式调用 —
+    // 隐藏画布 clientWidth 为 0, 但渲染器仍持上次 stage 尺寸快照, 循环不会自停。
+    // stopped 标志同时挡住延迟的图片 onload / reduced-motion 回调重启循环。
+    Renderer.prototype.stop = function() {
+        if (this.raf && typeof cancelAnimationFrame === 'function') {
+            cancelAnimationFrame(this.raf);
+        }
+        this.raf = 0;
+        this.stopped = true;
+        this.lastFrameTime = 0;
+        this._lastDrawTime = 0;
+    };
+
     Renderer.prototype.frame = function(timestamp) {
         var t = (typeof timestamp === 'number' && timestamp > 0) ? timestamp : nowMs();
+        this.frameCount += 1;
         // idle 限帧 — 仅环境动画(marker/任务环/异常脉冲)在动、无交互时降到 ~IDLE_FPS;
         // 交互(hover 补间 / retune / 入场 / 状态变更)期间满帧, 不影响跟手。
         var interaction = this.retuneActive(t) || this.factionEntering(t)
@@ -164,8 +187,11 @@ var MapCanvasStageRenderer = (function() {
         var state = this.state;
         var page = state.page;
         var dpr = getDpr();
-        var cssW = Math.max(0, Math.round(this.canvas.clientWidth || state.stageWidth || 0));
-        var cssH = Math.max(0, Math.round(this.canvas.clientHeight || state.stageHeight || 0));
+        // 只认画布自身布局尺寸: 面板隐藏时 clientWidth 为 0 → 返回 null → 循环停。
+        // 不回退 state.stageWidth (上次 setState 的快照) — 该值在面板隐藏后仍为非 0,
+        // 会让隐藏画布的 RAF 循环一直转 (host 驱动关闭后的循环泄漏根因)。
+        var cssW = Math.max(0, Math.round(this.canvas.clientWidth || 0));
+        var cssH = Math.max(0, Math.round(this.canvas.clientHeight || 0));
         if (cssW <= 0 || cssH <= 0) return null;
         var backW = Math.max(1, Math.round(cssW * dpr));
         var backH = Math.max(1, Math.round(cssH * dpr));
@@ -173,6 +199,8 @@ var MapCanvasStageRenderer = (function() {
         if (this.canvas.height !== backH) this.canvas.height = backH;
         if (this.fgCanvas.width !== backW) this.fgCanvas.width = backW;
         if (this.fgCanvas.height !== backH) this.fgCanvas.height = backH;
+        if (this.ringCanvas.width !== backW) this.ringCanvas.width = backW;
+        if (this.ringCanvas.height !== backH) this.ringCanvas.height = backH;
         var stageScale = state.stageScale || (cssW / (page.width || 1)) || 1;
         var contentFitScale = state.contentFitScale || 1;
         return {
@@ -202,19 +230,19 @@ var MapCanvasStageRenderer = (function() {
         this.lastDynamicAvatarUrl = '';
         this.staticAnimating = false;
 
-        // backdrop + 底图 — 稳态走整层缓存; retune/入场/异常层活跃时实时画
-        var backdropLive = this.retuneActive(t) || this.factionEntering(t)
-            || (state.anomalyActive && !m.lowEffects && !this._reduce);
+        // backdrop + 底图 — 稳态走整层缓存; retune/入场时实时画。
+        // 异常层已从 backdrop 拆出 (见下) — anomaly 活跃不再让 backdrop 缓存失效。
+        var backdropLive = this.retuneActive(t) || this.factionEntering(t);
         var backdropCanvas = backdropLive ? null : this.getBackdropCanvas(m);
         if (backdropCanvas) {
             ctx.drawImage(backdropCanvas, 0, 0, m.cssW, m.cssH);
         } else {
-            // 实时路径: retune skew/亮度 / 入场淡入 / 异常层脉冲 都在动, 无法缓存
+            // 实时路径: retune skew/亮度 / 入场淡入 在动, 无法缓存
             ctx.save();
             this.applyRetune(ctx, t, m);
             ctx.scale(m.stageScale, m.stageScale);
             drawBackdrop(ctx, page, state.activeFilterId || '', m.lowEffects,
-                this.overlayAlpha(t), this._reduce ? 0 : t);
+                this.overlayAlpha(t));
             ctx.restore();
             if (state.backgroundImageUrl) {
                 ctx.save();
@@ -222,6 +250,18 @@ var MapCanvasStageRenderer = (function() {
                 this.drawBackgroundImage(ctx, state.backgroundImageUrl, page);
                 ctx.restore();
             }
+        }
+
+        // 禁区异常层 — 动画层, 实时画在 (已缓存的) backdrop 之上 / 场景之下。
+        // 从 drawBackdrop 拆出后, anomaly 页的 backdrop 重回整层缓存 (省掉每帧
+        // 渐变/网格/纹理重栅格)。retune 期跟随 backdrop 一起 skew;
+        // reduced-motion 下 t=0 冻结首帧但仍显示 (还原旧 display 行为)。
+        if (state.anomalyActive && !m.lowEffects) {
+            ctx.save();
+            this.applyRetune(ctx, t, m);
+            ctx.scale(m.stageScale, m.stageScale);
+            drawAnomaly(ctx, page.width || 1031, page.height || 608, this._reduce ? 0 : t);
+            ctx.restore();
         }
 
         // 场景 + 头像 (content-fit 空间)
@@ -269,7 +309,7 @@ var MapCanvasStageRenderer = (function() {
         var page = state.page;
         targetCtx.save();
         targetCtx.scale(m.stageScale, m.stageScale);
-        drawBackdrop(targetCtx, page, state.activeFilterId || '', m.lowEffects, 1, 0);
+        drawBackdrop(targetCtx, page, state.activeFilterId || '', m.lowEffects, 1);
         targetCtx.restore();
         if (state.backgroundImageUrl) {
             targetCtx.save();
@@ -280,18 +320,28 @@ var MapCanvasStageRenderer = (function() {
     };
 
     Renderer.prototype.renderDynamic = function(t, m) {
-        var ctx = this.fgCtx;
         var state = this.state;
         var animT = this._reduce ? 0 : t;   // reduced-motion: 冻结循环动画相位
+        var ringCtx = this.ringCtx;
+        var ctx = this.fgCtx;
 
+        // 任务环层 (ring canvas, z=3): 套住头像, 但低于 hotspot/标签 — 不遮"前往选关"卡片
+        ringCtx.setTransform(m.dpr, 0, 0, m.dpr, 0, 0);
+        ringCtx.clearRect(0, 0, m.cssW, m.cssH);
+        ringCtx.imageSmoothingEnabled = true;
+        ringCtx.save();
+        ringCtx.translate(m.offsetX, m.offsetY);
+        ringCtx.scale(m.contentScale, m.contentScale);
+        drawTaskRings(ringCtx, state, m.lowEffects, animT);
+        ringCtx.restore();
+
+        // 反馈层 (fg canvas, z=6): 标记/提示/未开放提示仍在标签之上 (还原旧 feedback-layer 层序)
         ctx.setTransform(m.dpr, 0, 0, m.dpr, 0, 0);
         ctx.clearRect(0, 0, m.cssW, m.cssH);
         ctx.imageSmoothingEnabled = true;
-
         ctx.save();
         ctx.translate(m.offsetX, m.offsetY);
         ctx.scale(m.contentScale, m.contentScale);
-        drawTaskRings(ctx, state, m.lowEffects, animT);
         drawMarkers(ctx, state, m.lowEffects, animT);
         drawTips(ctx, state, animT);
         drawHints(ctx, state, animT);
@@ -423,6 +473,8 @@ var MapCanvasStageRenderer = (function() {
             canvasPendingAssets: this.pendingAssets,
             canvasMissingAssets: this.missingAssets.slice(),
             canvasDrawCount: this.drawCount,
+            canvasFrameCount: this.frameCount,
+            canvasStopped: this.stopped,
             canvasLastRevision: this.lastRevision,
             canvasLastDynamicAvatarUrl: this.lastDynamicAvatarUrl,
             canvasLastDrawSummary: this.lastDrawSummary
@@ -636,7 +688,10 @@ var MapCanvasStageRenderer = (function() {
     // Backdrop (静态层)
     // ================================================================
 
-    function drawBackdrop(ctx, page, activeFilterId, lowEffects, overlayAlpha, t) {
+    // 禁区异常层 (drawAnomaly) 不在此处画 — 它是动画层, 由 renderStatic 单独实时
+    // 绘制在 backdrop 之上 / 场景之下。并进来会让 anomaly 活跃时整层 backdrop
+    // (渐变 / 网格 / 纹理) 每帧重栅格, getBackdropCanvas 缓存失效。
+    function drawBackdrop(ctx, page, activeFilterId, lowEffects, overlayAlpha) {
         var w = page.width || 1031;
         var h = page.height || 608;
         var theme = page.backdropTheme || 'default';
@@ -648,10 +703,6 @@ var MapCanvasStageRenderer = (function() {
             drawFactionFilter(ctx, activeFilterId, w, h, lowEffects ? 0.42 : overlayAlpha);
         } else {
             drawThemeWash(ctx, theme, w, h);
-        }
-        // 禁区异常层 (defense + restricted, 低性能模式隐藏 — 还原旧 display:none)
-        if (theme === 'defense' && activeFilterId === 'restricted' && !lowEffects) {
-            drawAnomaly(ctx, w, h, t);
         }
     }
 
@@ -1119,31 +1170,46 @@ var MapCanvasStageRenderer = (function() {
         var i;
         var p;
         var ph;
-        var ringScale;
+        var avR;
+        var ringR;
         var ringOp;
-        var waveScale;
+        var waveR;
         var waveOp;
         for (i = 0; i < rings.length; i += 1) {
             p = rings[i].point;
             if (!p) continue;
+            // avatarRadius>0 = 命中目标 NPC 头像 → 环套住头像 (半径 = 头像半径 + 间距);
+            // 0 = 未命中头像 → 回退旧固定小环 (radius 11 / wave 25)
+            avR = rings[i].avatarRadius || 0;
             ph = phase(t, 1450);
-            // 扩散波 ::after (低性能隐藏): scale .82→2.1, opacity .78→0
-            if (!lowEffects) {
-                waveScale = kf(ph, [0, 0.7, 1], [0.82, 1.9, 2.1]);
-                waveOp = kf(ph, [0, 0.7, 1], [0.78, 0.08, 0]);
-                strokeCircleA(ctx, p.x, p.y, 25 * waveScale, 'rgba(255,128,128,1)', 2, waveOp * 0.42);
-            }
-            // 环本体脉冲: scale .92→1.22, opacity .92→.76
-            ringScale = kf(ph, [0, 0.7, 1], [0.92, 1.18, 1.22]);
             ringOp = kf(ph, [0, 0.7, 1], [0.92, 0.86, 0.76]);
+            if (avR > 0) {
+                // 套头像: 呼吸用加性微幅, 不让大半径把脉冲整体放大 (等价旧 11*[.92..1.22] 的振幅)
+                ringR = avR + TASK_RING_GAP + kf(ph, [0, 0.7, 1], [-0.9, 2.0, 2.4]);
+                // 扩散波从环外缘向外涟漪
+                waveR = avR + TASK_RING_GAP + kf(ph, [0, 0.7, 1], [0, 16, 22]);
+            } else {
+                // 旧固定环: scale .92→1.22 / wave .82→2.1
+                ringR = 11 * kf(ph, [0, 0.7, 1], [0.92, 1.18, 1.22]);
+                waveR = 25 * kf(ph, [0, 0.7, 1], [0.82, 1.9, 2.1]);
+            }
+            // 扩散波 (低性能隐藏): opacity .78→0
+            if (!lowEffects) {
+                waveOp = kf(ph, [0, 0.7, 1], [0.78, 0.08, 0]);
+                strokeCircleA(ctx, p.x, p.y, waveR, 'rgba(255,128,128,1)', 2, waveOp * 0.42);
+            }
+            // 环本体
             ctx.save();
             ctx.globalAlpha = ringOp;
-            ctx.fillStyle = 'rgba(255,77,77,0.10)';
             ctx.strokeStyle = 'rgba(255,77,77,0.92)';
             ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.arc(p.x, p.y, 11 * ringScale, 0, TWO_PI);
-            ctx.fill();
+            ctx.arc(p.x, p.y, ringR, 0, TWO_PI);
+            if (avR <= 0) {
+                // 旧固定小环保留淡红心; 套头像的大环只描边, 不给 NPC 头像蒙一层红
+                ctx.fillStyle = 'rgba(255,77,77,0.10)';
+                ctx.fill();
+            }
             ctx.stroke();
             ctx.restore();
         }

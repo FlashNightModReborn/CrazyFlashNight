@@ -7,7 +7,7 @@ var MapPanel = (function() {
     //   - 调大需回查 composite PNG 源分辨率, 否则最终总放大 > 1.5x 会 pixelated
     var STAGE_MAX_SCALE = 1.3;
 
-    var _el, _bodyEl, _stageEl, _stageShellEl, _railEl, _canvasEl, _fgCanvasEl, _canvasRenderer, _contentFitEl, _hotspotLayer, _hotspotLabelLayer, _loadingEl, _errorEl, _errorTextEl;
+    var _el, _bodyEl, _stageEl, _stageShellEl, _railEl, _canvasEl, _ringCanvasEl, _fgCanvasEl, _canvasRenderer, _contentFitEl, _hotspotLayer, _hotspotLabelLayer, _loadingEl, _errorEl, _errorTextEl;
     var _pageTabsEl, _pageSummaryEl;
     var _activePage = null;
     var _reqSeq = 0;
@@ -54,6 +54,8 @@ var MapPanel = (function() {
     var _visualViewportResizeHandler = null;
     var _debugTelemetryEnabled = false;
     var _snapshotAnnounced = false;     // 每次 onOpen 后首次 snapshot 成功播 ready, 避免刷新 spam
+    var _canvasActive = false;          // 面板可见且应渲染时为 true; host 驱动关闭后置 false
+    var _canvasSyncScheduled = false;   // 微任务合并: 同一同步批次多次 sync 只 setState 一次
     var _canvasRevision = 0;
 
     function playCue(name) {
@@ -69,7 +71,7 @@ var MapPanel = (function() {
         // Esc / backdrop 来自 Panels 框架，不经过 DOM click，所以 overlay 的 click 代理不会触发
         // cancel cue — 这里显式补一次；DOM click 路径（close btn）由代理负责，避免双响。
         onRequestClose: function() { playCue('cancel'); requestClose(); },
-        onClose: teardownLayoutWatcher,
+        onClose: handleClose,
         onForceClose: onForceClose
     });
 
@@ -85,10 +87,11 @@ var MapPanel = (function() {
             '<div class="map-panel-body">' +
                 '<div class="map-stage-shell" id="map-stage-shell">' +
                     '<div class="map-stage-frame" id="map-stage-frame">' +
-                        // 双画布: bg 承载 backdrop/场景/头像 (z=2, 低于 hotspot 命中层与标签);
-                        // fg 承载异常层/任务环/反馈标记/提示/未开放提示 (z=6, 高于标签),
-                        // 还原旧 feedback-layer z6 > hotspot-label-layer z5 的层序
+                        // 三画布: bg=backdrop/异常层/场景/头像 (z=2);
+                        // ring=任务环 (z=3, 低于 hotspot/标签 — 套住头像但不遮"前往选关"卡片);
+                        // fg=反馈标记/提示/未开放提示 (z=6, 高于标签, 还原旧 feedback-layer 层序)
                         '<canvas class="map-stage-canvas map-stage-canvas--bg" id="map-stage-canvas" aria-hidden="true"></canvas>' +
+                        '<canvas class="map-stage-canvas map-stage-canvas--ring" id="map-stage-canvas-ring" aria-hidden="true"></canvas>' +
                         '<div class="map-stage-content-fit" id="map-stage-content-fit">' +
                             '<div class="map-hotspot-layer" id="map-hotspot-layer"></div>' +
                             '<div class="map-hotspot-label-layer" id="map-hotspot-label-layer"></div>' +
@@ -115,6 +118,7 @@ var MapPanel = (function() {
         _bodyEl = _el.querySelector('.map-panel-body');
         _stageEl = _el.querySelector('#map-stage-frame');
         _canvasEl = _el.querySelector('#map-stage-canvas');
+        _ringCanvasEl = _el.querySelector('#map-stage-canvas-ring');
         _fgCanvasEl = _el.querySelector('#map-stage-canvas-fg');
         _contentFitEl = _el.querySelector('#map-stage-content-fit');
         _hotspotLayer = _el.querySelector('#map-hotspot-layer');
@@ -127,7 +131,7 @@ var MapPanel = (function() {
         _pageTabsEl = _el.querySelector('#map-page-tabs');
         _pageSummaryEl = _el.querySelector('#map-page-summary');
         _canvasRenderer = (typeof MapCanvasStageRenderer !== 'undefined')
-            ? new MapCanvasStageRenderer(_canvasEl, { fgCanvas: _fgCanvasEl, resolveAssetUrl: resolveAssetUrl })
+            ? new MapCanvasStageRenderer(_canvasEl, { fgCanvas: _fgCanvasEl, ringCanvas: _ringCanvasEl, resolveAssetUrl: resolveAssetUrl })
             : null;
 
         buildPageTabs();
@@ -196,6 +200,7 @@ var MapPanel = (function() {
         _busyLookup = {};
         _debugTelemetryEnabled = !!(initData && initData.dev);
         _snapshotAnnounced = false;
+        _canvasActive = true;
         resetContentFit();
         if (_el) _el.classList.remove('is-compact');
 
@@ -220,6 +225,7 @@ var MapPanel = (function() {
     function onForceClose() {
         // teardownLayoutWatcher 已由 Panels.close() 经 onClose 钩子触发，此处只做状态复位。
         _closing = false;
+        stopCanvasStage();
         _pendingReq = {};
         _enabledLookup = {};
         _hotspotStateLookup = {};
@@ -270,6 +276,21 @@ var MapPanel = (function() {
             _resizingClassTimer = 0;
         }
         if (_stageEl) _stageEl.classList.remove('is-resizing');
+    }
+
+    // 正常 onClose 钩子: 拆布局监听 + 停 canvas 渲染循环。
+    function handleClose() {
+        teardownLayoutWatcher();
+        stopCanvasStage();
+    }
+
+    // 停 canvas 渲染。host 驱动关闭 (panel_cmd close / 切面板 / 选关交接) 也会经 onClose
+    // 走到这里。隐藏画布 clientWidth 为 0, 但渲染器仍持上次 stage 尺寸快照, 不显式停
+    // 就会在隐藏画布上一直转 RAF; stopped 标志同时挡延迟的图片 onload 回调重启循环。
+    function stopCanvasStage() {
+        _canvasActive = false;
+        _canvasSyncScheduled = false;
+        if (_canvasRenderer && _canvasRenderer.stop) _canvasRenderer.stop();
     }
 
     function applyPage(pageId) {
@@ -1037,7 +1058,9 @@ var MapPanel = (function() {
                     if (!rect) return null;
                     return {
                         x: rect.x + (rect.w / 2),
-                        y: rect.y + (rect.h / 2)
+                        y: rect.y + (rect.h / 2),
+                        // 任务环套住头像用: 与 renderer drawAvatar 的 r = max(w,h)/2 同口径
+                        radius: Math.max(rect.w, rect.h) / 2
                     };
                 }
             }
@@ -1415,8 +1438,21 @@ var MapPanel = (function() {
             && document.documentElement.classList.contains('perf-low-effects'));
     }
 
+    // applyPage 一次切页会连环触发 renderStageBackdrop/renderSceneVisuals/renderAvatars/...
+    // 各调一次 syncCanvasStage; 微任务合并成一次 setState, 避免整份 render state 重建六七遍。
+    // revision 仍同步自增 — QA 的 isCanvasCurrent 靠它判断画面是否追上请求。
     function syncCanvasStage() {
-        if (!_canvasRenderer || !_activePage) return;
+        if (!_canvasActive || !_canvasRenderer || !_activePage) return;
+        bumpCanvasRevision();
+        if (_canvasSyncScheduled) return;
+        _canvasSyncScheduled = true;
+        scheduleMicrotask(flushCanvasStage);
+    }
+
+    function flushCanvasStage() {
+        _canvasSyncScheduled = false;
+        // 微任务兑现时面板可能已关 (host 驱动关闭) — 关了就别再 setState 重启循环。
+        if (!_canvasActive || !_canvasRenderer || !_activePage) return;
         if (!_canvasRenderer.isAvailable || !_canvasRenderer.isAvailable()) {
             showError('canvas_unavailable');
             return;
@@ -1424,10 +1460,18 @@ var MapPanel = (function() {
         _canvasRenderer.setState(buildCanvasRenderState());
     }
 
+    function scheduleMicrotask(fn) {
+        if (typeof Promise !== 'undefined') {
+            Promise.resolve().then(fn);
+        } else {
+            setTimeout(fn, 0);
+        }
+    }
+
     function buildCanvasRenderState() {
         var activeFilter = getActiveFilter(_activePage);
         return {
-            revision: bumpCanvasRevision(),
+            revision: _canvasRevision,
             page: _activePage,
             // background 渲染模式的页面: 把底图 PNG 交给 canvas 作底层绘制 (assembled 页面恒为空)
             backgroundImageUrl: (_activePage && _activePage.backgroundUrl && !useAssembledVisuals(_activePage))
@@ -1557,6 +1601,7 @@ var MapPanel = (function() {
         var out = [];
         var i;
         var marker;
+        var avatarAnchor;
         var anchor;
         if (!page) return out;
         for (i = 0; i < _snapshotMarkers.length; i++) {
@@ -1565,12 +1610,15 @@ var MapPanel = (function() {
             if (marker.pageId && marker.pageId !== page.id) continue;
             if (marker.hotspotId && !visibleLookup[marker.hotspotId]) continue;
             if (marker.hotspotId && !_enabledLookup[marker.hotspotId]) continue;
-            anchor = findAvatarAnchorForMarker(marker, visibleLookup) || resolveFeedbackAnchor(marker);
+            avatarAnchor = findAvatarAnchorForMarker(marker, visibleLookup);
+            anchor = avatarAnchor || resolveFeedbackAnchor(marker);
             if (!anchor) continue;
             out.push({
                 id: marker.id || '',
                 hotspotId: marker.hotspotId || '',
-                point: clonePoint(anchor)
+                point: clonePoint(anchor),
+                // >0 = 命中头像, 任务环套住头像; 0 = 未命中, 回退固定小环
+                avatarRadius: (avatarAnchor && avatarAnchor.radius) || 0
             });
         }
         return out;
@@ -1832,7 +1880,7 @@ var MapPanel = (function() {
         var stageRect = _stageEl.getBoundingClientRect();
         var stageWidth = Math.max(0, _stageEl.clientWidth || stageRect.width);
         var stageHeight = Math.max(0, _stageEl.clientHeight || stageRect.height);
-        var bounds = measureContentBounds(stageRect);
+        var bounds = measureContentBounds();
         var padX;
         var padY;
         var fitScale;
@@ -2175,7 +2223,8 @@ var MapPanel = (function() {
                 return shouldRenderFlashHint(item);
             }).map(function(item) { return item.id; }) : [],
             markerIds: (_snapshotMarkers || []).map(function(item) { return item.id; }),
-            tipIds: (_snapshotTips || []).map(function(item) { return item.id; })
+            tipIds: (_snapshotTips || []).map(function(item) { return item.id; }),
+            taskRings: _activePage ? buildCanvasTaskRings(_activePage) : []
         };
         if (_canvasRenderer && _canvasRenderer.getDebugState) {
             var canvasDebug = _canvasRenderer.getDebugState();

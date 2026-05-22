@@ -625,7 +625,7 @@ var MapPanelHarnessQA = (function() {
             },
             {
                 id: 'map-ui12',
-                title: 'task npc ring anchors to dynamic roommate avatar center',
+                title: 'task npc ring anchors to + encircles dynamic roommate avatar',
                 run: function() {
                     return bootMap(api, host, { defaultPageId: 'school', roommateGender: 'female' }).then(function() {
                         var page = MapPanelData.getPage('school');
@@ -661,10 +661,32 @@ var MapPanelHarnessQA = (function() {
                                 api.assert(!!(hotspot && hotspot.rect), 'school_dormitory hotspot missing rect');
                                 var slotX = hotspot.rect.x + slot.relX;
                                 var slotY = hotspot.rect.y + slot.relY;
-                                var expectedX = (slotX + slot.w / 2) / page.width * 100;
-                                var expectedY = (slotY + slot.h / 2) / page.height * 100;
+                                var expectedCx = slotX + slot.w / 2;
+                                var expectedCy = slotY + slot.h / 2;
+                                var expectedAvR = Math.max(slot.w, slot.h) / 2;
                                 api.assert(state.canvasLastDrawSummary.taskRingCount === 1, 'canvas should render one task ring');
-                                return 'ringAnchorPct=' + expectedX.toFixed(3) + '/' + expectedY.toFixed(3);
+                                // 无头 harness 验证锚点 + 套头像半径: ring.point 必须命中室友头像中心,
+                                // avatarRadius 必须 = 头像半径 (否则说明 npc-key 没匹配上, 回退到了 marker.point)
+                                var ring = (state.taskRings || [])[0];
+                                api.assert(!!ring, 'debug state should expose the task ring entry');
+                                api.assert(Math.abs(ring.point.x - expectedCx) < 0.5,
+                                    'ring anchor x should match roommate avatar center (got ' + ring.point.x.toFixed(2) + ', want ' + expectedCx.toFixed(2) + ')');
+                                api.assert(Math.abs(ring.point.y - expectedCy) < 0.5,
+                                    'ring anchor y should match roommate avatar center (got ' + ring.point.y.toFixed(2) + ', want ' + expectedCy.toFixed(2) + ')');
+                                api.assert(Math.abs(ring.avatarRadius - expectedAvR) < 0.5,
+                                    'ring should carry roommate avatar radius for encircle sizing (got ' + ring.avatarRadius.toFixed(2) + ', want ' + expectedAvR.toFixed(2) + ')');
+                                // 层级: 任务环画布须低于 hotspot/标签层 (否则环盖住"前往选关"卡片), feedback 仍高于标签
+                                var ringCanvas = document.getElementById('map-stage-canvas-ring');
+                                var fitLayer = document.getElementById('map-stage-content-fit');
+                                var fgCanvas = document.getElementById('map-stage-canvas-fg');
+                                api.assert(!!ringCanvas, 'task ring canvas layer must exist');
+                                var zRing = parseInt(window.getComputedStyle(ringCanvas).zIndex || '0', 10);
+                                var zFit = parseInt(window.getComputedStyle(fitLayer).zIndex || '0', 10);
+                                var zFg = parseInt(window.getComputedStyle(fgCanvas).zIndex || '0', 10);
+                                api.assert(zRing < zFit, 'task ring layer must sit below hotspot/label layer (ring z=' + zRing + ', content-fit z=' + zFit + ')');
+                                api.assert(zFg > zFit, 'feedback layer must stay above hotspot/label layer (fg z=' + zFg + ', content-fit z=' + zFit + ')');
+                                return 'ringAnchor=' + expectedCx.toFixed(1) + '/' + expectedCy.toFixed(1) +
+                                    ' encircleR=' + (expectedAvR + 5).toFixed(1) + ' z(ring/fit/fg)=' + zRing + '/' + zFit + '/' + zFg;
                             });
                         });
                     });
@@ -1166,6 +1188,48 @@ var MapPanelHarnessQA = (function() {
                                 return s && !s.stageSelectBusyHotspotId ? s : null;
                             }, 1500, 'stage-select shortcut busy reset').then(function() {
                                 return 'open_stage_select=' + msg.targetId + '->' + msg.frameLabel;
+                            });
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui25',
+                title: 'host-driven close stops the canvas RAF loop (no hidden-canvas leak)',
+                run: function() {
+                    function delay(ms) {
+                        return new Promise(function(resolve) { setTimeout(resolve, ms); });
+                    }
+                    // 开图带 currentHotspot → 必有 currentLocation marker, fg 动画循环处于运行态
+                    return bootMap(api, host, { defaultPageId: 'faction', currentHotspotId: 'firing_range' }).then(function() {
+                        return waitForCanvasCurrent(api, 'pre-close canvas current');
+                    }).then(function() {
+                        var before = currentState() || {};
+                        api.assert(before.canvasReady, 'canvas renderer should be ready before close');
+                        api.assert(before.canvasStopped === false, 'renderer should be running before close');
+                        var openFrames = before.canvasFrameCount || 0;
+                        // 确认 RAF 循环确实在推进 (有 marker → needsAnimation true)
+                        return delay(260).then(function() {
+                            api.assert((currentState() || {}).canvasFrameCount > openFrames, 'RAF loop should advance while panel open');
+                            // host 驱动关闭: 不点关闭按钮, 直接 Panels.close()
+                            // (模拟 panel_cmd close / 切面板 / 选关交接 — 不走 finishClose)
+                            api.assert(!!(window.Panels && window.Panels.close), 'Panels.close must be available');
+                            window.Panels.close();
+                            var container = document.getElementById('panel-container');
+                            if (container) container.style.display = 'none';
+                            // 等 onClose 异步兑现 + 循环排空
+                            return delay(140).then(function() {
+                                var atClose = currentState() || {};
+                                api.assert(atClose.canvasStopped === true, 'renderer must be stopped after host-driven close');
+                                var closeFrames = atClose.canvasFrameCount || 0;
+                                // 修复前: 隐藏画布上 RAF 持续推进; 修复后: 应冻结
+                                return delay(420).then(function() {
+                                    var settled = currentState() || {};
+                                    if (container) container.style.display = '';
+                                    var leaked = (settled.canvasFrameCount || 0) - closeFrames;
+                                    api.assert(leaked === 0, 'RAF loop must not advance after close (leaked ' + leaked + ' frames)');
+                                    return 'stopped=' + settled.canvasStopped + ' framesLeakedAfterClose=' + leaked;
+                                });
                             });
                         });
                     });

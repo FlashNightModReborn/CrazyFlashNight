@@ -2815,6 +2815,11 @@
     z-index:2;
 }
 
+/* 任务环层: 夹在 bg(2) 与 content-fit(4) 之间 — 套住头像、却不遮 hotspot 标签卡片 */
+.map-stage-canvas--ring {
+    z-index:3;
+}
+
 .map-stage-canvas--fg {
     z-index:6;
 }
