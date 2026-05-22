@@ -42,6 +42,13 @@ fn real_flash_sol_dual_write_keys_resolve_correctly() {
 
     // (top-level SOL key, nested bundle under `test`, key inside the bundle).
     // Mirrors SaveManager.saveAll dual-write + the 3.0 mydata.{tasks,pets,shop}.
+    //
+    // `宠物领养限制` is a scalar: Flash inline-encodes it on both occurrences
+    // instead of emitting a Reference, so it can never be misresolved. It is
+    // kept here purely as a real-data round-trip assertion. SaveMigrator.cs's
+    // mirror list (ValidateDualWriteConsistency) deliberately omits it — that
+    // tripwire exists only to catch reference misresolution, where a scalar is
+    // dead weight. The two lists diverging by this one scalar is intentional.
     let pairs: [(&str, &str, &str); 7] = [
         ("tasks_to_do", "tasks", "tasks_to_do"),
         ("tasks_finished", "tasks", "tasks_finished"),

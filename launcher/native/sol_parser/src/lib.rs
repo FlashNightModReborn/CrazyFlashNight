@@ -178,6 +178,16 @@ impl Ctx {
     /// into the AMF0 cache and are not indexed here.
     fn index_value(&mut self, v: &Rc<Value>) {
         match v.as_ref() {
+            // NOTE: for `Custom` (AMF0 TypedObject) the `| Value::Custom(_,
+            // elems, _)` pattern binds `elems` to the 2nd tuple field
+            // (`regular_elems`) only — `custom_elems` (sealed class members) is
+            // NOT descended here, whereas `to_json` below emits *both*. If a
+            // TypedObject ever nested a complex value inside `custom_elems`,
+            // `by_index` would be short and every later Reference would shift.
+            // Accepted gap: AS2 SharedObject data is plain Object / Array /
+            // primitive — CF7:ME saves carry no TypedObjects, so this path is
+            // never exercised. Revisit (split the arm, descend both fields in
+            // Flash's write order) only if a typed save format is introduced.
             Value::Object(_, elems, _) | Value::Custom(_, elems, _) => {
                 self.by_index.push(Rc::clone(v));
                 for e in elems {
