@@ -3,7 +3,7 @@
 C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView2 预检，再尽早构造 `GuardianForm`，随后完成 Steam 校验、Flash trust 租约、音频与总线初始化，最后由 BootstrapPanel 的 `list → ready → prewarm → reveal` 链路切入 Flash Player SA 运行态；同时承载 V8 脚本总线、HTTP / XMLSocket 通信和启动前存档决议（Protocol 2）。
 
 > **文档角色**：Guardian Launcher 子系统的 canonical deep doc。项目总览见 [../README.md](../README.md)，顶层任务路由见 [../AGENTS.md](../AGENTS.md)。高变动章节按各自 commit 基线维护。
-> **最后核对代码基线**：commit `cc25c357d`（2026-04-30）。
+> **最后核对代码基线**：commit `7711e949f`（2026-05-22）。
 > **新接手阅读顺序**：本节 → [架构概览](#架构概览)（启动时序 + 运行态面板栈）→ [Bootstrap 前端与协议](#bootstrap-前端与协议)（cmd 表 + reveal gate + config_set）→ [存档权威迁移 (Protocol 2)](#存档权威迁移-protocol-2)。其余章节继续展开音频 / 性能调度 / GPU / UI 迁移 / 面板系统等运行时细节。
 
 ## 技术栈
@@ -361,8 +361,8 @@ launcher/
 │       ├── Cargo.toml                     flash-lso git pin 4b049ff3 + serde_json
 │       ├── Cargo.lock                     ✅ 已入库：锁定依赖版本集，消除浮动解析
 │       ├── build.bat                      cargo build --release + 落盘到 bin/Release
-│       ├── src/lib.rs                     FFI (sol_parse_file / sol_free) + Ctx DFS 索引 + 0-based Reference 解析
-│       ├── tests/reference_semantics.rs   AMF0 Reference round-trip 测试
+│       ├── src/lib.rs                     FFI (sol_parse_file / sol_free) + Ctx DFS 索引 + Flash SOL Reference raw-1 解析
+│       ├── tests/reference_semantics.rs   AMF0 Reference 真实 Flash fixture 回归测试
 │       └── examples/
 │           ├── oracle.rs                  Layer 1 结构断言 + JSON dump
 │           └── dumpidx.rs                 by_index 调试转储
@@ -1151,7 +1151,7 @@ SolResolver.Resolve(slot, swfPath)
    │                    → 当前根 root-scoped fallback
    │
    ├─ [4] SolParserNative.Parse           → Rust sol_parser.dll FFI
-   │       AMF0 → JObject，0-based Reference 解析（round-trip 测试验证）
+   │       AMF0 → JObject，Flash SOL Reference raw-1 解析（真实 Flash fixture 回归验证）
    │
    └─ [5] 版本分流：
          ├─ SOL 缺失 + shadow 有效     → Snapshot(json_shadow)
