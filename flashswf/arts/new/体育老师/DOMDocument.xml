@@ -7,14 +7,10 @@
           <DOMFolderItem name="NPC/NPC-体育老师/组件" itemID="69ce2b82-00000abe" isExpanded="true"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
-          <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f"/>
-          <DOMFolderItem name="怪物通用模板/area框" itemID="65ae673b-00003707"/>
-          <DOMFolderItem name="怪物通用模板/怪物通用模板" itemID="6652ef28-00001215"/>
-          <DOMFolderItem name="怪物通用模板/怪物通用模板/新近战子弹定位元件" itemID="6652ef28-00001216" isExpanded="true"/>
-          <DOMFolderItem name="怪物通用模板/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="6652ef28-00001217" isExpanded="true"/>
+          <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f" isExpanded="true"/>
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="65b3a368-00000650" isExpanded="true"/>
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件/子弹素材" itemID="65ae79f3-00003b03" isExpanded="true"/>
-          <DOMFolderItem name="容器" itemID="6957d32c-00000922"/>
+          <DOMFolderItem name="容器" itemID="6957d32c-00000922" isExpanded="true"/>
           <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09" isExpanded="true"/>
           <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504" isExpanded="true"/>
           <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798" isExpanded="true"/>
@@ -113,31 +109,19 @@
           <Include href="sprite/Symbol 3.xml" loadImmediate="false" itemID="6577b699-00000956" lastModified="1702343951"/>
           <Include href="sprite/Symbol 45.xml" loadImmediate="false" itemID="697b6508-00002816" lastModified="1776605969"/>
           <Include href="sprite/Symbol 49.xml" loadImmediate="false" itemID="697b6508-000028bf" lastModified="1776605966"/>
-          <Include href="sprite/Symbol 74.xml" loadImmediate="false" itemID="6577b699-0000098d" lastModified="1702343951"/>
-          <Include href="sprite/Symbol 76.xml" loadImmediate="false" itemID="6577b699-0000098f" lastModified="1771141111"/>
-          <Include href="sprite/Symbol 78.xml" loadImmediate="false" itemID="6577b699-00000990" lastModified="1702343951"/>
-          <Include href="sprite/Symbol 79.xml" itemIcon="0" loadImmediate="false" itemID="6577b699-00000991" lastModified="1769694883"/>
-          <Include href="sprite/Symbol 83.xml" loadImmediate="false" itemID="6577b699-00000994" lastModified="1702343951"/>
           <Include href="sprite/Symbol 117.xml" loadImmediate="false" itemID="6577b699-000009a3" lastModified="1702343951"/>
           <Include href="sprite/Symbol 119.xml" loadImmediate="false" itemID="6577b699-000009a4" lastModified="1769694913"/>
           <Include href="sprite/Symbol 120.xml" loadImmediate="false" itemID="6577b699-000009a5" lastModified="1776605653"/>
           <Include href="sprite/Symbol 136.xml" loadImmediate="false" itemID="6577b699-000009b3" lastModified="1779436794"/>
           <Include href="sprite/Symbol 825.xml" loadImmediate="false" itemID="6577b699-00000b8f" lastModified="1779436932"/>
-          <Include href="sprite/刚体遮罩.xml" loadImmediate="false" itemID="65c9a9f5-0000062e" lastModified="1707753394"/>
           <Include href="sprite/红色刀光.xml" loadImmediate="false" itemID="65b795a7-00000ba0" lastModified="1706530238"/>
           <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="697b6503-00001ff1" lastModified="1711945124"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1776605880"/>
           <Include href="sprite/空手跑.xml" loadImmediate="false" itemID="6925bd91-0000345e" lastModified="1776605612"/>
           <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1779440053"/>
-          <Include href="sprite/韧性条.xml" loadImmediate="false" itemID="65c9a44e-0000061e" lastModified="1762778455"/>
-          <Include href="sprite/新版人物文字信息.xml" itemID="65c9a1af-000005fc" lastModified="1736864914"/>
-          <Include href="sprite/血槽底.xml" loadImmediate="false" itemID="65c9a8c3-00000624" lastModified="1707753328"/>
-          <Include href="sprite/血槽韧性条.xml" loadImmediate="false" itemID="65c9a3a2-0000060a" lastModified="1707755072"/>
           <Include href="敌人-体育老师.xml" itemID="6a1015ba-0000039b" lastModified="1779439755"/>
-          <Include href="怪物通用模板/area框/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="65689e04-0000008e" lastModified="1700337299"/>
-          <Include href="怪物通用模板/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 23.xml" loadImmediate="false" itemID="666c5d45-00000626" lastModified="1701582054"/>
-          <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1772128023"/>
-          <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" loadImmediate="false" itemID="660a212e-00000b08" lastModified="1779439956"/>
+          <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1779453389"/>
+          <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" loadImmediate="false" itemID="660a212e-00000b08" lastModified="1779453388"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1706271675"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13 副本.xml" itemIcon="1" loadImmediate="false" itemID="660a212e-00000b0b" lastModified="1706271675"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1706271749"/>
@@ -150,7 +134,6 @@
           <Include href="容器/空手攻击容器/空手攻击容器-诛杀步.xml" itemID="6964d583-0000279b" lastModified="1779436122"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-截拳1连招.xml" itemID="6964ce51-00002614" lastModified="1775208039"/>
           <Include href="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招.xml" itemID="6964cd70-0000257c" lastModified="1779438326"/>
-          <Include href="属性标签标志元件/底层背景标签.xml" loadImmediate="false" itemID="667e47f0-00000631" lastModified="1719551984"/>
           <Include href="属性标签标志元件/刚体标签.xml" loadImmediate="false" itemID="66cf12fa-00000756" lastModified="1724846848"/>
           <Include href="属性标签标志元件/无敌标签.xml" loadImmediate="false" itemID="66cd4f63-0000054b" lastModified="1724731329"/>
           <Include href="思考标签.xml" loadImmediate="false" itemID="67e2b780-000010a7" lastModified="1742912305"/>
@@ -320,7 +303,7 @@
                                                   <Point x="50.85" y="-29.3"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="敌人-体育老师" selected="true" centerPoint3DX="782.2" centerPoint3DY="194.8">
+                                        <DOMSymbolInstance libraryItemName="敌人-体育老师" centerPoint3DX="782.2" centerPoint3DY="194.8">
                                              <matrix>
                                                   <Matrix tx="775.7" ty="289.3"/>
                                              </matrix>
@@ -685,6 +668,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="704394" publishTime="1779453049"/>
           <PublishItem publishSize="704400" publishTime="1779440031"/>
           <PublishItem publishSize="704400" publishTime="1779440010"/>
           <PublishItem publishSize="704400" publishTime="1779439853"/>
@@ -704,6 +688,5 @@
           <PublishItem publishSize="4128471" publishTime="1772040386"/>
           <PublishItem publishSize="4128471" publishTime="1772039916"/>
           <PublishItem publishSize="4128474" publishTime="1772039367"/>
-          <PublishItem publishSize="4128441" publishTime="1772038717"/>
      </publishHistory>
 </DOMDocument>
