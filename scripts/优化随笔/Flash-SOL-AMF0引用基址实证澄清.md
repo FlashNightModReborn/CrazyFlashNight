@@ -21,7 +21,7 @@
 |---|---|---|---|
 | 初版 | `raw - 1`（1-based） | 推测 Flash HashMap 行为 | 被「第二版」推翻 |
 | 第二版 | `raw` 直查（0-based） | AMF0 规范 §2.9 + flash-lso writer 0-based + 合成 round-trip 测试 | **误判**：dual-write 顶层键整体错位 |
-| 当前版 | `raw - 1`（1-based） | 真实存档 7 个 dual-write 键 deep-equal | ✅ 本次证实正确 |
+| 当前版 | `raw - 1`（1-based） | 真实存档 dual-write 键 deep-equal + 独立 probe 原始 u16 | ✅ 本次证实正确 |
 
 第二版的「合成 round-trip 测试」是**自证**——手写 fixture 字节的人同时也选定了索引约定，测试只是重复断言自己的假设。本次验证的方法论价值就在于：用真实 Flash 写侧 + 独立解码器，绕开一切自证。
 
@@ -84,7 +84,7 @@ offset 0x42: 0d   = Unsupported marker（不是 0x07 Reference）
 
 子节点指回根，Flash 写的是 `0x0D Unsupported`，**不是** `Reference(0)`。
 
-**机制结论**：与其说「index 0 被隐式根 `.data` 占用」，更准确的表述是 —— Flash 的 SharedObject AMF0 编码器对 body 复杂对象的引用计数器是 **1-based**（首个 = 1）。index 0 永远不是合法 body 引用值；根本身根本不进表（指向它只能退化成 `0x0D`）。对解析器而言：`raw - 1` + `raw==0 → null` 正是「1-based 计数器、0 非法」的正确处理。
+**机制结论**：不要再表述成「index 0 被隐式根 `.data` 占用」。更准确的说法是 —— Flash 的 SharedObject AMF0 编码器对 body 复杂对象的引用计数器是 **1-based**（首个 = 1）。index 0 永远不是合法 body 引用值；根本身根本不进表（指向它只能退化成 `0x0D`）。对解析器而言：`raw - 1` + `raw==0 → null` 正是「1-based 计数器、0 非法」的正确处理。
 
 ---
 
@@ -112,8 +112,8 @@ offset 0x42: 0d   = Unsupported marker（不是 0x07 Reference）
 
 源码核对（pin commit `4b049ff3`）：
 
-- **Reader 透传，无 bug**：`amf0/read.rs::parse_element_reference` 读 u16 后原样 `Value::Reference(raw)`，不加减、不解引用。`sol_parser` 自建表 + `raw-1` 因此是必须且正确的。
-- **内部 reference 计数错**：`parse_single_element` 对**每个**元素（含 String/Number/Null）都 `cache.push`；`Amf0Writer.add_element(inc_ref=true)` 对每个基本类型都 `ref_num += 1`。即 flash-lso「数所有值」，违反 AMF0 §2.9「只数复杂对象」。读侧解引用没用到这个 cache（所以读无 bug），但 **`Amf0Writer` 写出的引用值是错的**——实测它给第 2 个复杂对象写 `Reference(3)`（规范要 1、真实 Flash 要 2）。
+- **Reader 的 Reference marker 读入路径是透传的**：`amf0/read.rs::parse_element_reference` 读 u16 后原样 `Value::Reference(raw)`，不加减、不解引用。`sol_parser` 自建表 + `raw-1` 因此是必须且正确的。
+- **flash-lso 内部 reference 计数错**：`parse_single_element` 对**每个**元素（含 String/Number/Null）都 `cache.push`；`Amf0Writer.add_element(inc_ref=true)` 对每个基本类型都 `ref_num += 1`。即 flash-lso「数所有值」，违反 AMF0 §2.9「只数复杂对象」。普通读取不依赖这个 cache 做 Reference 解引用，但 `as_reference()` 与 `Amf0Writer` 会受影响；实测 writer 给第 2 个复杂对象写 `Reference(3)`（规范要 1、真实 Flash SOL 要 2）。
 
 详见向上游提交的 issue 草稿：[`amf0-help/ISSUE.md`](../../amf0-help/ISSUE.md)。
 
@@ -124,7 +124,7 @@ offset 0x42: 0d   = Unsupported marker（不是 0x07 Reference）
 | 项 | 现状 | 建议 |
 |---|---|---|
 | **引用基址** | `raw-1` + `raw==0→null` | ✅ **正确，不要动**。`lib.rs` 里那段「DO NOT simplify」注释保留 |
-| **空数组/空对象判别** | `to_json` 用 `len_attr > 0` 启发式 → 空数组被还原成 `{}` | ⚠️ **改用 marker**：flash-lso 把两者解码成不同 variant（`Value::ECMAArray` vs `Value::Object`）。`Value::ECMAArray` 一律产 JSON 数组（`len_attr` 只定长度），`Value::Object` 一律产 JSON 对象。同时修掉「带 `length` 属性的对象被误判成数组」 |
+| **空数组/空对象判别** | `to_json` 用 `len_attr > 0` 启发式 → 空数组被还原成 `{}` | ⚠️ **改用 marker**：flash-lso 把两者解码成不同 variant（`Value::ECMAArray` vs `Value::Object`）。`Value::ECMAArray` 一律产 JSON 数组（`len_attr` 只定长度），`Value::Object` 一律产 JSON 对象；带名属性数组的非数字属性需另行决定保留策略 |
 | **TypedObject 不对称** | `index_value` 的合并臂只递归常规成员、漏 sealed 成员，`to_json` 两者都发 | ⚠️ 建议修：实证确认 `registerClass` 实例会写成 `0x10`。当前真实存档 0 个 TypedObject 未触发，但一旦出现会让后续引用整体错位。拆臂、按写出顺序递归两段成员 |
 | `NaN/±Inf → null`、`undefined(0x06)` 与 `null` 合流 | JSON 固有有损 | 本游戏存档不含 Date、不依赖 `=== undefined`，可不管；若将来依赖则需哨兵 |
 
@@ -147,4 +147,4 @@ cd sol_parser && cargo run --example flwriter_probe && cargo test
 #   bash scripts/compile_test.sh，再从 #SharedObjects\...\TestLoader.swf\ 取回 .sol
 ```
 
-证据文件清单见 [`amf0-help/`](../../amf0-help/)：`amf0_probe.py`（独立解码器）、`probe_sols/*.sol`（5 受控存档 + flash-lso 自写样本）、`sol_parser/examples/flwriter_probe.rs`（写侧 bug 最小复现）、`ISSUE.md`（上游 issue 草稿）。
+证据文件清单见 [`amf0-help/`](../../amf0-help/)：`amf0_probe.py`（独立解码器）、`probe_sols/*.sol`（5 受控存档 + flash-lso 自写样本）、`sol_parser/examples/flwriter_probe.rs`（写侧 bug 最小复现）、`ISSUE.md`（上游 #72 评论草稿）、`UPSTREAM_ISSUE_GUIDE.md`（提交流程与文件清单）。
