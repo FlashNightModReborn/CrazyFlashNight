@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" lastModified="1779461006" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" lastModified="1779461263" lastUniqueIdentifier="8">
   <timeline>
-    <DOMTimeline name="空手攻击容器-燃烧指节" currentFrame="181">
+    <DOMTimeline name="空手攻击容器-燃烧指节" currentFrame="10">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -372,7 +372,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -389,37 +389,24 @@ _parent.攻击呐喊();]]></script>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
-	var 自机 = _parent._parent;
+	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 1 + 自机.内力 * 3;
-	
-	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
-	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
-	}
-	if (_parent._parent.mp攻击加成)
-	{
-		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
-	}
-	if (_parent._parent.被动技能.升龙拳 && _parent._parent.被动技能.升龙拳.等级)
-	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.升龙拳.等级 / 10;
-	}
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.不硬直 = true;
-	子弹属性.水平击退速度 = 15;
-	子弹属性.击中后子弹的效果 = "空中小火焰爆炸";
+	
 	//非常用
 	/*
+	子弹属性.水平击退速度 = NaN;
 	子弹属性.垂直击退速度 = NaN;
 	子弹属性.发射效果 = "";
 	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
 	子弹属性.命中率 = NaN.
 	子弹属性.固伤 = NaN;
 	子弹属性.百分比伤害 = NaN;
@@ -457,36 +444,24 @@ _parent.攻击呐喊();]]></script>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
-	var 自机 = _parent._parent;
+	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 1 + 自机.内力 * 3;
-	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
-	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
-	}
-	if (_parent._parent.mp攻击加成)
-	{
-		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
-	}
-	if (_parent._parent.被动技能.升龙拳 && _parent._parent.被动技能.升龙拳.等级)
-	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.升龙拳.等级 / 10;
-	}
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.不硬直 = true;
-	子弹属性.水平击退速度 = 15;
-	子弹属性.击中后子弹的效果 = "空中小火焰爆炸";
+	
 	//非常用
 	/*
+	子弹属性.水平击退速度 = NaN;
 	子弹属性.垂直击退速度 = NaN;
 	子弹属性.发射效果 = "";
 	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
 	子弹属性.命中率 = NaN.
 	子弹属性.固伤 = NaN;
 	子弹属性.百分比伤害 = NaN;
@@ -524,36 +499,24 @@ _parent.攻击呐喊();]]></script>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
-	var 自机 = _parent._parent;
+	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 1 + 自机.内力 * 3;
-	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
-	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
-	}
-	if (_parent._parent.mp攻击加成)
-	{
-		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
-	}
-	if (_parent._parent.被动技能.升龙拳 && _parent._parent.被动技能.升龙拳.等级)
-	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.升龙拳.等级 / 10;
-	}
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.不硬直 = true;
-	子弹属性.水平击退速度 = 15;
-	子弹属性.击中后子弹的效果 = "空中小火焰爆炸";
+	
 	//非常用
 	/*
+	子弹属性.水平击退速度 = NaN;
 	子弹属性.垂直击退速度 = NaN;
 	子弹属性.发射效果 = "";
 	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
 	子弹属性.命中率 = NaN.
 	子弹属性.固伤 = NaN;
 	子弹属性.百分比伤害 = NaN;
@@ -581,7 +544,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="459.05" centerPoint3DY="-143.25">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="459.05" centerPoint3DY="-143.25">
                   <matrix>
                     <Matrix a="9.65892028808594" d="2.43125915527344" tx="-21.85" ty="-100.65"/>
                   </matrix>
@@ -591,36 +554,24 @@ _parent.攻击呐喊();]]></script>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
-	var 自机 = _parent._parent;
+	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 1 + 自机.内力 * 3;
-	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
-	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
-	}
-	if (_parent._parent.mp攻击加成)
-	{
-		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
-	}
-	if (_parent._parent.被动技能.升龙拳 && _parent._parent.被动技能.升龙拳.等级)
-	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.升龙拳.等级 / 10;
-	}
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.不硬直 = true;
-	子弹属性.水平击退速度 = 15;
-	子弹属性.击中后子弹的效果 = "空中小火焰爆炸";
+	
 	//非常用
 	/*
+	子弹属性.水平击退速度 = NaN;
 	子弹属性.垂直击退速度 = NaN;
 	子弹属性.发射效果 = "";
 	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
 	子弹属性.命中率 = NaN.
 	子弹属性.固伤 = NaN;
 	子弹属性.百分比伤害 = NaN;
@@ -2577,36 +2528,24 @@ _parent.攻击呐喊();]]></script>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
-	var 自机 = _parent._parent;
+	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 1 + 自机.内力 * 3;
-	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
-	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
-	}
-	if (_parent._parent.mp攻击加成)
-	{
-		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
-	}
-	if (_parent._parent.被动技能.升龙拳 && _parent._parent.被动技能.升龙拳.等级)
-	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.升龙拳.等级 / 10;
-	}
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.不硬直 = true;
-	子弹属性.水平击退速度 = 15;
-	子弹属性.击中后子弹的效果 = "空中小火焰爆炸";
+	
 	//非常用
 	/*
+	子弹属性.水平击退速度 = NaN;
 	子弹属性.垂直击退速度 = NaN;
 	子弹属性.发射效果 = "";
 	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
 	子弹属性.命中率 = NaN.
 	子弹属性.固伤 = NaN;
 	子弹属性.百分比伤害 = NaN;
@@ -2644,36 +2583,24 @@ _parent.攻击呐喊();]]></script>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
-	var 自机 = _parent._parent;
+	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 1 + 自机.内力 * 3;
-	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
-	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
-	}
-	if (_parent._parent.mp攻击加成)
-	{
-		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
-	}
-	if (_parent._parent.被动技能.升龙拳 && _parent._parent.被动技能.升龙拳.等级)
-	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.升龙拳.等级 / 10;
-	}
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.不硬直 = true;
-	子弹属性.水平击退速度 = 15;
-	子弹属性.击中后子弹的效果 = "空中小火焰爆炸";
+	
 	//非常用
 	/*
+	子弹属性.水平击退速度 = NaN;
 	子弹属性.垂直击退速度 = NaN;
 	子弹属性.发射效果 = "";
 	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
 	子弹属性.命中率 = NaN.
 	子弹属性.固伤 = NaN;
 	子弹属性.百分比伤害 = NaN;
@@ -2711,36 +2638,24 @@ _parent.攻击呐喊();]]></script>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
-	var 自机 = _parent._parent;
+	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 =  自机.空手攻击力 * 1 + 自机.内力 * 3;
-	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
-	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
-	}
-	if (_parent._parent.mp攻击加成)
-	{
-		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
-	}
-	if (_parent._parent.被动技能.升龙拳 && _parent._parent.被动技能.升龙拳.等级)
-	{
-		子弹属性.子弹威力 += _parent._parent.空手攻击力 * _parent._parent.被动技能.升龙拳.等级 / 10;
-	}
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 30;
 	子弹属性.击倒率 = 1;
-	子弹属性.不硬直 = true;
-	子弹属性.水平击退速度 = 15;
-	子弹属性.击中后子弹的效果 = "空中小火焰爆炸";
+	
 	//非常用
 	/*
+	子弹属性.水平击退速度 = NaN;
 	子弹属性.垂直击退速度 = NaN;
 	子弹属性.发射效果 = "";
 	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
 	子弹属性.命中率 = NaN.
 	子弹属性.固伤 = NaN;
 	子弹属性.百分比伤害 = NaN;
@@ -2780,7 +2695,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -2841,7 +2756,7 @@ _parent.攻击呐喊();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-   _parent.攻击时移动(40,45);
+   _parent.攻击时移动(20,25);
 }
 ]]></script>
                   </Actionscript>
@@ -2859,7 +2774,7 @@ _parent.攻击呐喊();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-   _parent.攻击时移动(40,45);
+   _parent.攻击时移动(20,25);
 }
 ]]></script>
                   </Actionscript>
@@ -2877,7 +2792,7 @@ _parent.攻击呐喊();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-   _parent.攻击时移动(40,45);
+   _parent.攻击时移动(20,25);
 }
 ]]></script>
                   </Actionscript>
@@ -2895,7 +2810,7 @@ _parent.攻击呐喊();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-   _parent.攻击时移动(40,45);
+   _parent.攻击时移动(20,25);
 }
 ]]></script>
                   </Actionscript>
@@ -2913,7 +2828,7 @@ _parent.攻击呐喊();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-   _parent.攻击时移动(40,45);
+   _parent.攻击时移动(20,25);
 }
 ]]></script>
                   </Actionscript>
@@ -3228,7 +3143,7 @@ _parent.攻击呐喊();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-   _parent.攻击时移动(40,30);
+   _parent.攻击时移动(30,20);
 }
 ]]></script>
                   </Actionscript>
@@ -3353,7 +3268,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="193" duration="24" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
@@ -23642,46 +23557,7 @@ _parent.攻击呐喊();]]></script>
               </elements>
             </DOMFrame>
             <DOMFrame index="90" duration="42" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
-                  <matrix>
-                    <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	_parent._parent.skillShadow = this;
-	if (!_root.是否阴影)
-	{
-		this._visible = false;
-	}
-	缩放乘数 = 3.611 * 175 / _parent._parent.身高;
-	if (_parent._parent.技能浮空 == true)
-	{
-		if (_parent._parent.浮空)
-		{
-			this._y = 233.05 + (_parent._parent.起始Y - _parent._parent._y - _parent._parent.垂直速度) * 缩放乘数;
-		}
-	}
-}
-onClipEvent (enterFrame) {
-	if (_root.是否阴影 && !_parent.落地)
-	{
-		this._y = 233.05 + (_parent._parent.起始Y - _parent._parent._y - _parent._parent.垂直速度) * 缩放乘数;
-	}
-	else
-	{
-		this._y = 233.05;
-	}
-}]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="132" keyMode="9728">
               <elements/>
@@ -25022,7 +24898,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="89" duration="43" keyMode="9728">
+            <DOMFrame index="89" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="118.4" centerPoint3DY="-248.75">
                   <matrix>
@@ -25033,6 +24909,9 @@ onClipEvent (enterFrame) {
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="42" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="132" duration="25" keyMode="9728">
               <elements/>
@@ -26128,7 +26007,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="89" duration="43" keyMode="9728">
+            <DOMFrame index="89" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="106.15" centerPoint3DY="-35.1">
                   <matrix>
@@ -26139,6 +26018,9 @@ onClipEvent (enterFrame) {
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="42" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="132" duration="59" keyMode="9728">
               <elements/>
@@ -27213,7 +27095,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="89" duration="102" keyMode="9728">
+            <DOMFrame index="89" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-10" centerPoint3DY="132.85">
                   <matrix>
@@ -27224,6 +27106,9 @@ onClipEvent (enterFrame) {
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="101" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="191" keyMode="9728">
               <elements/>
@@ -28295,7 +28180,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="89" duration="102" keyMode="9728">
+            <DOMFrame index="89" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-59.2" centerPoint3DY="236.3">
                   <matrix>
@@ -28306,6 +28191,9 @@ onClipEvent (enterFrame) {
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="101" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="191" keyMode="9728">
               <elements/>
@@ -29365,7 +29253,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="89" duration="102" keyMode="9728">
+            <DOMFrame index="89" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="43.9" centerPoint3DY="6.9">
                   <matrix>
@@ -29376,6 +29264,9 @@ onClipEvent (enterFrame) {
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="101" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="191" keyMode="9728">
               <elements/>
@@ -30465,7 +30356,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="89" duration="102" keyMode="9728">
+            <DOMFrame index="89" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="158.1" centerPoint3DY="111.5">
                   <matrix>
@@ -30476,6 +30367,9 @@ onClipEvent (enterFrame) {
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="101" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="191" keyMode="9728">
               <elements/>
@@ -31439,7 +31333,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="89" duration="102" keyMode="9728">
+            <DOMFrame index="89" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" symbolType="graphic" loop="loop">
                   <matrix>
@@ -31450,6 +31344,9 @@ onClipEvent (enterFrame) {
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="101" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="191" duration="2" keyMode="9728">
               <elements/>
@@ -32428,7 +32325,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="89" duration="102" keyMode="9728">
+            <DOMFrame index="89" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="87.05" centerPoint3DY="-11.45">
                   <matrix>
@@ -32439,6 +32336,9 @@ onClipEvent (enterFrame) {
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="101" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="191" duration="2" keyMode="9728">
               <elements/>
@@ -33402,7 +33302,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="89" duration="102" keyMode="9728">
+            <DOMFrame index="89" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="86.85" centerPoint3DY="-54.8">
                   <matrix>
@@ -33413,6 +33313,9 @@ onClipEvent (enterFrame) {
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="101" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="191" keyMode="9728">
               <elements/>
@@ -34258,7 +34161,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="89" duration="102" keyMode="9728">
+            <DOMFrame index="89" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="220.6" centerPoint3DY="-265.3">
                   <matrix>
@@ -34269,6 +34172,9 @@ onClipEvent (enterFrame) {
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="101" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="191" keyMode="9728">
               <elements/>
@@ -35052,7 +34958,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="89" duration="102" keyMode="9728">
+            <DOMFrame index="89" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="232.1" centerPoint3DY="-153.8">
                   <matrix>
@@ -35063,6 +34969,9 @@ onClipEvent (enterFrame) {
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="101" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="191" keyMode="9728">
               <elements/>
@@ -35801,7 +35710,7 @@ onClipEvent (enterFrame) {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="89" duration="102" keyMode="9728">
+            <DOMFrame index="89" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="90.15" centerPoint3DY="-170.15">
                   <matrix>
@@ -35812,6 +35721,9 @@ onClipEvent (enterFrame) {
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="90" duration="101" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="191" keyMode="9728">
               <elements/>
