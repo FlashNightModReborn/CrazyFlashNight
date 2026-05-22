@@ -1090,6 +1090,17 @@ Guardian 通过 Win32 `SetParent` 将 Flash Player SA 窗口嵌入 `_flashPanel`
 | ③ | `KeyboardHook`（进程内低级钩子） | ESC 面板路由 + Ctrl+F 兜底；安装失败（Windows 钩子配额用尽等）会打 `KeyboardHook failed, falling back to RegisterHotKey` |
 | ④ | `RegisterHotKey`（fallback） | 上一层失败时退化为系统全局热键注册；功能弱化但至少能保住 Ctrl+F/Ctrl+Q |
 
+### 前台 / 激活状态管理（AppActivationState + 前台看门狗）
+
+**`AppActivationState`**：应用激活状态的权威源，取代散落在 `KeyboardHook` / `PerfDecisionEngine` 里的 `GetForegroundWindow()` 现场轮询。
+
+- **激活信号**来自 `WM_ACTIVATEAPP`（进程级——同进程窗口间切换不触发），**最小化信号**来自 `WM_SIZE`/`SIZE_MINIMIZED`，均由 `GuardianForm.WndProc` 在 UI 线程喂入；字段 `volatile` + 单调 `TickCount`，无锁。
+- **去抖**：后台程序（QQ/Telegram 通知）瞬间抢焦再归还会产生 `WM_ACTIVATEAPP(false)→(true)` 抖动；失活留一个 200ms 宽限窗，窗内重新激活视作从未失活。
+- 消费方：`KeyboardHook.ShouldInterceptForOurApp`（判按键是否归本应用拦截）+ `PerfDecisionEngine`（失活 / 最小化时停决策，避免后台降帧污染 tier）。
+- **strict 例外**：破坏性键 Ctrl+Q（`ForceExit` 杀进程）不吃去抖宽限——`KeyboardHook` 对它走 strict 路径，要求实时前台归属本应用，避免用户切走后宽限窗内误把启动器干掉。
+
+**前台看门狗**（`GuardianForm` 400ms 定时器）：兜底层。后台程序抢焦后未归还前台会留下"焦点真空"（`GetForegroundWindow()==NULL`），导致快捷键失灵 + Flash 降帧。看门狗检测到**持续**真空（连续 ≥2 tick 确认，规避前台交接瞬态误判）后，调 `WindowManager.RestoreFlashInputFocus` 把前台回收给 Flash。锁屏 / 安全桌面期间（`SystemEvents.SessionSwitch`）停转，避免空刷日志。
+
 ### 原生音频引擎（miniaudio）
 音频播放从 Flash Sound API 完全迁移到 C# launcher 的 native DLL，Flash 侧仅发送播放指令。
 
@@ -1123,7 +1134,7 @@ Guardian 通过 Win32 `SetParent` 将 Flash Player SA 窗口嵌入 `_flashPanel`
 - **C# PerfDecisionEngine** (~250 行): 滑动窗口统计(mean5/trend10) + 直接阈值 + 2/3 非对称迟滞确认 + 方差自适应
 - **AS2 PerformanceScheduler** (~250 行，薄壳): 采样 + FPS 广播 + 接收 P 指令执行 + 本地后备
 - **P 前缀快车道** (C#→AS2): `P{tier}|{softU_x100}\0`，零 JSON 解析
-- **失焦抑制**: WindowManager.IsFlashForeground() 门控，先于 panic 判定
+- **失活抑制**: `AppActivationState`（WM_ACTIVATEAPP 驱动、去抖）的 `IsAppActive`/`IsMinimized` 门控，先于 panic 判定；toast 瞬时抢焦不算失活，panic 兜底不被掐断（详见下文「前台 / 激活状态管理」）
 - **前馈 hold**: 关卡脚本 setPerformanceLevel() 可挂起远程模式 N 秒
 - **断线后备**: AS2 极简阈值降级 (FPS<15→tier=1)；15 秒无样本自动触发 warmup
 

@@ -657,11 +657,6 @@ namespace CF7Launcher.Guardian
             _flashHwnd = IntPtr.Zero;
         }
 
-        public bool IsFlashForeground()
-        {
-            return IsWindowInFlashSession(GetForegroundWindow());
-        }
-
         /// <summary>
         /// 前台看门狗判定：当前是否处于"焦点真空"——没有任何窗口持有系统前台
         /// （GetForegroundWindow() 返回 NULL）。后台程序抢焦后未归还前台时会留下此态。

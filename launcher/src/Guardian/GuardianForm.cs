@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using System.Diagnostics;
+using Microsoft.Win32;
 using CF7Launcher.Config;
 using CF7Launcher.Render;
 
@@ -119,6 +120,11 @@ namespace CF7Launcher.Guardian
         // 前台看门狗：检测"焦点真空"并自动回收 Flash 前台（详见 SetupForegroundWatchdog）。
         private System.Windows.Forms.Timer _foregroundWatchdog;
         private int _lastWatchdogActionTick;
+        // 焦点真空连续命中的 tick 计数：要求 ≥2 次（≈800ms）才动作，规避用户焦点
+        // 交接瞬间穿过 GetForegroundWindow()==NULL 的竞态（详见 OnForegroundWatchdogTick）。
+        private int _vacuumStreak;
+        // 工作站锁定 / 安全桌面 / 快速用户切换：此期间默认桌面侧前台恒为 NULL，看门狗须停。
+        private volatile bool _sessionLocked;
 
         private Process _flashProcess;
 
@@ -574,6 +580,8 @@ namespace CF7Launcher.Guardian
                 _foregroundWatchdog.Stop();
                 _foregroundWatchdog.Dispose();
                 _foregroundWatchdog = null;
+                // SystemEvents 持静态引用，不退订会泄漏 GuardianForm。
+                SystemEvents.SessionSwitch -= OnSessionSwitch;
             }
             if (!_hotkeysRegistered) return;
             if (_kbHook != null) { _kbHook.Dispose(); _kbHook = null; }
@@ -651,30 +659,70 @@ namespace CF7Launcher.Guardian
             _foregroundWatchdog.Interval = 400;
             _foregroundWatchdog.Tick += OnForegroundWatchdogTick;
             _foregroundWatchdog.Start();
+            // 锁屏 / 安全桌面 / 快速用户切换期间，默认桌面侧 GetForegroundWindow() 恒为
+            // NULL，会被误判为焦点真空——订阅会话切换，断开态直接停看门狗。
+            SystemEvents.SessionSwitch += OnSessionSwitch;
+        }
+
+        private void OnSessionSwitch(object sender, SessionSwitchEventArgs e)
+        {
+            switch (e.Reason)
+            {
+                case SessionSwitchReason.SessionLock:
+                case SessionSwitchReason.ConsoleDisconnect:
+                case SessionSwitchReason.RemoteDisconnect:
+                    _sessionLocked = true;
+                    break;
+                case SessionSwitchReason.SessionUnlock:
+                case SessionSwitchReason.ConsoleConnect:
+                case SessionSwitchReason.RemoteConnect:
+                    _sessionLocked = false;
+                    break;
+            }
         }
 
         private void OnForegroundWatchdogTick(object sender, EventArgs e)
         {
-            if (this.IsDisposed || !this.IsHandleCreated) return;
-            // 仅 Ready 态介入：bootstrap 期 Flash 未嵌入，谈不上前台回收。
-            if (!IsReadyForHotkey()) return;
-            // 最小化是用户的主动选择，不打扰。
-            if (_activationState.IsMinimized) return;
-            // 面板打开时前台合法地属于 WebOverlay（同进程），不在此处理。
-            if (_webOverlay != null && _webOverlay.IsPanelMode) return;
-            if (_windowManager == null) return;
-            // 仅处理"焦点真空"：没有任何窗口持有系统前台。
-            if (!_windowManager.IsForegroundVacuum()) return;
+            // System.Windows.Forms.Timer.Tick 抛异常会冒到消息循环——本文件其余热键
+            // 回调均包 try/catch，此处保持一致（RestoreFlashInputFocus 文档承诺不抛，
+            // 但 IsReadyForHotkey 等仍可能在边界态抛）。
+            try
+            {
+                if (this.IsDisposed || !this.IsHandleCreated) return;
+                // 锁屏 / 安全桌面 / 快速用户切换期间，默认桌面侧前台恒为 NULL，看门狗须停
+                // ——否则整夜锁屏会刷上千条无效 [FgWatchdog] / [FocusRestore] 日志。
+                if (_sessionLocked) { _vacuumStreak = 0; return; }
+                // 仅 Ready 态介入：bootstrap 期 Flash 未嵌入，谈不上前台回收。
+                if (!IsReadyForHotkey()) { _vacuumStreak = 0; return; }
+                // 最小化是用户的主动选择，不打扰。
+                if (_activationState.IsMinimized) { _vacuumStreak = 0; return; }
+                // 面板打开时前台合法地属于 WebOverlay（同进程），不在此处理。
+                if (_webOverlay != null && _webOverlay.IsPanelMode) { _vacuumStreak = 0; return; }
+                if (_windowManager == null) { _vacuumStreak = 0; return; }
 
-            // 节流：真空若持续且回收失败，避免每 400ms 刷一条 [FocusRestore] 日志。
-            int now = Environment.TickCount;
-            if (_lastWatchdogActionTick != 0
-                && unchecked(now - _lastWatchdogActionTick) < 2000)
-                return;
-            _lastWatchdogActionTick = now;
+                // 焦点真空须【连续】命中：GetForegroundWindow()==NULL 在正常的前台交接
+                // 过程中会瞬时出现（MSDN：a window is losing activation 时即为 NULL），
+                // 单帧采样会与用户主动切换竞态——误把交接瞬间当真空，把前台抢回 Flash。
+                // 要求连续 ≥2 次 tick（≈800ms）确认是【持续】真空，才视作"后台程序
+                // 抢焦未归还"，再动作。
+                if (!_windowManager.IsForegroundVacuum()) { _vacuumStreak = 0; return; }
+                _vacuumStreak++;
+                if (_vacuumStreak < 2) return;
 
-            LogManager.Log("[FgWatchdog] foreground vacuum detected, reclaiming Flash foreground");
-            _windowManager.RestoreFlashInputFocus("fg_watchdog:vacuum");
+                // 节流：真空若持续且回收失败，避免每 400ms 刷一条 [FocusRestore] 日志。
+                int now = Environment.TickCount;
+                if (_lastWatchdogActionTick != 0
+                    && unchecked(now - _lastWatchdogActionTick) < 2000)
+                    return;
+                _lastWatchdogActionTick = now;
+
+                LogManager.Log("[FgWatchdog] foreground vacuum detected, reclaiming Flash foreground");
+                _windowManager.RestoreFlashInputFocus("fg_watchdog:vacuum");
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[FgWatchdog] tick error: " + ex.Message);
+            }
         }
 
         [StructLayout(LayoutKind.Sequential)]
