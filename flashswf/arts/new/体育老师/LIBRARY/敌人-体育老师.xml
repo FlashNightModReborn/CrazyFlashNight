@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="6a1015ba-0000039b" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1779460157" lastUniqueIdentifier="339">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="6a1015ba-0000039b" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1779460354" lastUniqueIdentifier="340">
   <timeline>
-    <DOMTimeline name="敌人-体育老师" currentFrame="8">
+    <DOMTimeline name="敌人-体育老师" currentFrame="24">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4" locked="true">
           <frames>
@@ -103,22 +103,6 @@
 ]]></script>
               </Actionscript>
               <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="刚体控制器" color="#AAB531" outline="true" useOutlineView="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="75" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 119" name="刚体控制器" centerPoint3DX="-3.35" centerPoint3DY="-203.5">
-                  <matrix>
-                    <Matrix tx="-43.5" ty="-216"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -285,7 +269,7 @@
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手待机" name="man" selected="true" centerPoint3DX="191.6" centerPoint3DY="218">
+                <DOMSymbolInstance libraryItemName="sprite/空手待机" name="man" centerPoint3DX="191.6" centerPoint3DY="218">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
                   </matrix>
@@ -297,7 +281,7 @@
             </DOMFrame>
             <DOMFrame index="8" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 120" name="man" selected="true" centerPoint3DX="154.05" centerPoint3DY="220.05">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 120" name="man" centerPoint3DX="154.05" centerPoint3DY="220.05">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
                   </matrix>
@@ -309,7 +293,7 @@
             </DOMFrame>
             <DOMFrame index="18" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手跑" name="man" centerPoint3DX="240.85" centerPoint3DY="219.5">
+                <DOMSymbolInstance libraryItemName="sprite/空手跑" name="man" selected="true" centerPoint3DX="240.85" centerPoint3DY="219.5">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
                   </matrix>
@@ -321,7 +305,7 @@
             </DOMFrame>
             <DOMFrame index="24" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-燃烧指节" name="man" centerPoint3DX="-13.95" centerPoint3DY="-78.75">
+                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-燃烧指节" name="man" selected="true" centerPoint3DX="-13.95" centerPoint3DY="-78.75">
                   <matrix>
                     <Matrix a="0.282424926757813" d="0.282424926757813" tx="8.75" ty="-74.7"/>
                   </matrix>
@@ -333,7 +317,7 @@
             </DOMFrame>
             <DOMFrame index="31" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手跑攻" name="man" centerPoint3DX="281.75" centerPoint3DY="249.7">
+                <DOMSymbolInstance libraryItemName="sprite/空手跑攻" name="man" selected="true" centerPoint3DX="281.75" centerPoint3DY="249.7">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
                   </matrix>

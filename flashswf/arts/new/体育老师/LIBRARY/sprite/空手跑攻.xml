@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跑攻" itemID="6919e2a5-00001141" lastModified="1779440053" lastUniqueIdentifier="175">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跑攻" itemID="6919e2a5-00001141" lastModified="1779460627" lastUniqueIdentifier="175">
   <timeline>
     <DOMTimeline name="空手跑攻" currentFrame="56" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;253&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -27,215 +27,33 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
 {
 	if (_parent.方向 == "右")
 	{
-		if (Key.isDown(_parent.右键) == true)
-		{
-			_parent.移动("右",快速度);
-		}
-		else
-		{
-			_parent.移动("右",慢速度);
-		}
+		_parent.移动("右",慢速度);
 	}
 	else if (_parent.方向 == "左")
 	{
-		if (Key.isDown(_parent.左键) == true)
-		{
-			_parent.移动("左",快速度);
-		}
-		else
-		{
-			_parent.移动("左",慢速度);
-		}
-	}
-	if (快速度 == 6)
-	{
-		if (Key.isDown(_parent.上键) == true)
-		{
-			_parent.移动("上",1);
-		}
-		else if (Key.isDown(_parent.下键) == true)
-		{
-			_parent.移动("下",1);
-		}
+		_parent.移动("左",慢速度);
 	}
 }
-function 攻击时按键四向移动(慢速度, 快速度)
+function 攻击时四向移动(上, 下, 左, 右)
 {
-	var 上下未按键 = 0;
-	var 左右未按键 = 0;
-	if (Key.isDown(_parent.上键) == true)
+	if (上 != 0)
 	{
-		_parent.移动("上",快速度 / 2);
+		_parent.移动("上",上);
 	}
-	else if (Key.isDown(_parent.下键) == true)
+	else if (下 != 0)
 	{
-		_parent.移动("下",快速度 / 2);
+		_parent.移动("下",下);
 	}
-	else
-	{
-		上下未按键 = 1;
-	}
-	if (Key.isDown(_parent.左键) == true)
-	{
-		_parent.移动("左",快速度);
-	}
-	else if (Key.isDown(_parent.右键) == true)
-	{
-		_parent.移动("右",快速度);
-	}
-	else
-	{
-		左右未按键 = 1;
-	}
-	if (上下未按键 && 左右未按键)
-	{
-		攻击时移动(慢速度,快速度);
-	}
-}
-function 攻击时可改变移动方向(速度)
-{
-	if (Key.isDown(_parent.右键) == true)
-	{
-		_parent.方向改变("右");
-	}
-	else if (Key.isDown(_parent.左键) == true)
+	if (左 != 0)
 	{
 		_parent.方向改变("左");
+		_parent.移动("左",左);
 	}
-	if (_parent.方向 == "右")
-	{
-		_parent.移动("右",速度);
-	}
-	else if (_parent.方向 == "左")
-	{
-		_parent.移动("左",速度);
-	}
-}
-function 攻击时斜向移动(慢速度, 快速度)
-{
-	if (_parent.方向 == "右")
-	{
-		if (Key.isDown(_parent.右键) == true)
-		{
-			_parent.移动("右",快速度);
-		}
-		else
-		{
-			_parent.移动("右",慢速度);
-		}
-	}
-	else if (_parent.方向 == "左")
-	{
-		if (Key.isDown(_parent.左键) == true)
-		{
-			_parent.移动("左",快速度);
-		}
-		else
-		{
-			_parent.移动("左",慢速度);
-		}
-	}
-	if (Key.isDown(_parent.上键) == true)
-	{
-		_parent.移动("上",快速度);
-	}
-	else if (Key.isDown(_parent.下键) == true)
-	{
-		_parent.移动("下",快速度);
-	}
-}
-function 攻击时可斜向改变移动方向(速度)
-{
-	if (Key.isDown(_parent.右键) == true)
+	else if (右 != 0)
 	{
 		_parent.方向改变("右");
+		_parent.移动("右",右);
 	}
-	else if (Key.isDown(_parent.左键) == true)
-	{
-		_parent.方向改变("左");
-	}
-	if (_parent.方向 == "右")
-	{
-		_parent.移动("右",速度);
-	}
-	else if (_parent.方向 == "左")
-	{
-		_parent.移动("左",速度);
-	}
-	if (Key.isDown(_parent.上键) == true)
-	{
-		_parent.移动("上",速度 / 2);
-	}
-	else if (Key.isDown(_parent.下键) == true)
-	{
-		_parent.移动("下",速度 / 2);
-	}
-}
-function 攻击时可斜向改变移动方向2(速度, 上下)
-{
-	if (Key.isDown(_parent.右键) == true)
-	{
-		_parent.方向改变("右");
-	}
-	else if (Key.isDown(_parent.左键) == true)
-	{
-		_parent.方向改变("左");
-	}
-	if (_parent.方向 == "右")
-	{
-		_parent.移动("右",速度 / 2);
-	}
-	else if (_parent.方向 == "左")
-	{
-		_parent.移动("左",速度 / 2);
-	}
-	if (上下 > 0)
-	{
-		_parent.移动("上",速度);
-	}
-	else if (上下 < 0)
-	{
-		_parent.移动("下",速度);
-	}
-}
-function 攻击时按键四向空中移动(慢速度, 快速度)
-{
-	var 上下未按键 = 0;
-	var 左右未按键 = 0;
-	if (Key.isDown(_parent.上键) == true)
-	{
-		_parent.跳跃上下移动("上",快速度 / 2);
-	}
-	else if (Key.isDown(_parent.下键) == true)
-	{
-		_parent.跳跃上下移动("下",快速度 / 2);
-	}
-	else
-	{
-		上下未按键 = 1;
-	}
-	if (Key.isDown(_parent.左键) == true)
-	{
-		_parent.跳跃上下移动("左",快速度);
-	}
-	else if (Key.isDown(_parent.右键) == true)
-	{
-		_parent.跳跃上下移动("右",快速度);
-	}
-	else
-	{
-		左右未按键 = 1;
-	}
-	if (上下未按键 && 左右未按键)
-	{
-		攻击时移动(慢速度,快速度);
-	}
-}
-if(_parent.空手动作类型 && (_parent.空手动作类型 == "巨拳" || _parent.空手动作类型 == "单臂巨拳" || _parent.空手动作类型 == "拳击" || _parent.空手动作类型 == "强化")){
-	gotoAndPlay("冲拳");
-}
-if(_parent.空手动作类型 == "腕刃") {
-	gotoAndPlay("腕刃冲刺");
 }]]></script>
               </Actionscript>
               <elements/>
