@@ -23,7 +23,7 @@ namespace CF7Launcher.Guardian
         // --- 依赖 ---
         private readonly FpsRingBuffer _buffer;
         private readonly XmlSocketServer _socket;
-        private WindowManager _windowManager; // 延迟注入，可为 null（bus-only 模式）
+        private AppActivationState _activationState; // 延迟注入，可为 null（bus-only 模式）
 
         // --- 配置常量 ---
         private const float TARGET_FPS = 26f;
@@ -70,9 +70,9 @@ namespace CF7Launcher.Guardian
             IsActive = false;
         }
 
-        public void SetWindowManager(WindowManager wm)
+        public void SetActivationState(AppActivationState state)
         {
-            _windowManager = wm;
+            _activationState = state;
         }
 
         /// <summary>
@@ -98,8 +98,11 @@ namespace CF7Launcher.Guardian
                 return null;
             bool trendAvailable = (samplesAfterReset >= TREND_WINDOW);
 
-            // 2. 失焦门控（必须先于 panic）
-            if (_windowManager != null && !_windowManager.IsFlashForeground())
+            // 2. 最小化门控（必须先于 panic）。
+            //    旧实现门控的是"失焦"，导致后台程序瞬时抢焦就让性能控制（含 panic 降级）
+            //    整体失灵。改为只在【最小化】时停决策——此时 AS2 上报的 FPS 本就被系统
+            //    节流、不可信；仅失焦但窗口仍可见时继续决策，panic 兜底不被掐断。
+            if (_activationState != null && _activationState.IsMinimized)
             {
                 _focusCooldownMs = 3000;
                 return null;

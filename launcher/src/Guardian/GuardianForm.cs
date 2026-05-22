@@ -57,6 +57,9 @@ namespace CF7Launcher.Guardian
         private const int WM_XBUTTONUP = 0x020C;
         private const int WM_XBUTTONDBLCLK = 0x020D;
         private const int WM_DPICHANGED = 0x02E0;
+        private const int WM_SIZE = 0x0005;
+        private const int WM_ACTIVATEAPP = 0x001C;
+        private const int SIZE_MINIMIZED = 1;
         private const uint SWP_NOZORDER = 0x0004;
         private const uint SWP_NOACTIVATE = 0x0010;
         private const int MK_LBUTTON = 0x0001;
@@ -110,6 +113,13 @@ namespace CF7Launcher.Guardian
         private KeyboardHook _kbHook; // 前台感知低级钩子，替代 RegisterHotKey
         private WebOverlayForm _webOverlay; // 面板系统：ESC→PostToWeb
 
+        // 应用激活状态的权威源：WM_ACTIVATEAPP/WM_SIZE 喂入，KeyboardHook 与
+        // PerfDecisionEngine 据此判定前台/最小化，取代散落的 GetForegroundWindow() 轮询。
+        private readonly AppActivationState _activationState = new AppActivationState();
+        // 前台看门狗：检测"焦点真空"并自动回收 Flash 前台（详见 SetupForegroundWatchdog）。
+        private System.Windows.Forms.Timer _foregroundWatchdog;
+        private int _lastWatchdogActionTick;
+
         private Process _flashProcess;
 
         private WindowManager _windowManager;
@@ -160,10 +170,14 @@ namespace CF7Launcher.Guardian
             InitializeComponent(bootstrapWebDir, bootstrapWebView2DisableGpu, bootstrapWebView2AdditionalArgs);
             SetupTrayIcon();
             SetupHotkeys();
+            SetupForegroundWatchdog();
             LogManager.Init(this, _logBox);
         }
 
         public void BindWindowManager(WindowManager wm) { _windowManager = wm; }
+
+        /// <summary>应用激活状态的权威源。Program.cs 注入给 PerfDecisionEngine。</summary>
+        public AppActivationState ActivationState { get { return _activationState; } }
 
         /// <summary>Phase 2 PanelHostController FlashSnapshot.Capture 用。SA 进程重启时返回 IntPtr.Zero。</summary>
         public IntPtr GetFlashHwnd()
@@ -460,6 +474,10 @@ namespace CF7Launcher.Guardian
             // 会吞掉其他应用的 Ctrl+F 等快捷键，影响开发效率）
             _kbHook = new KeyboardHook();
 
+            // 钩子的前台判定改读去抖后的进程级激活状态（WM_ACTIVATEAPP 驱动），
+            // 不再在钩子回调里裸轮询 GetForegroundWindow()——后者会被后台程序瞬时抢焦打翻。
+            _kbHook.SetActivationProbe(delegate { return _activationState.IsAppActive; });
+
             // Ctrl+F → 全屏（回调在钩子线程，需 BeginInvoke 回 UI 线程）
             // Phase A Step A3b: 非 Ready 态 no-op（bootstrap 期 Flash 未 embed，全屏切换无意义）
             _kbHook.RegisterAction(0x46, delegate {
@@ -550,6 +568,13 @@ namespace CF7Launcher.Guardian
 
         private void DoUnregisterHotkeys()
         {
+            // 前台看门狗与热键同属输入/前台子系统，一并拆除（独立于 _hotkeysRegistered）。
+            if (_foregroundWatchdog != null)
+            {
+                _foregroundWatchdog.Stop();
+                _foregroundWatchdog.Dispose();
+                _foregroundWatchdog = null;
+            }
             if (!_hotkeysRegistered) return;
             if (_kbHook != null) { _kbHook.Dispose(); _kbHook = null; }
             // fallback 清理（无论是否实际注册过，调用 Unregister 是安全的）
@@ -590,7 +615,66 @@ namespace CF7Launcher.Guardian
                     return;
                 }
             }
+
+            // 应用激活状态：WM_ACTIVATEAPP 是进程级信号（同进程窗口间切换不触发），
+            // WM_SIZE/SIZE_MINIMIZED 给出最小化态。喂入 _activationState 后照常下传。
+            if (m.Msg == WM_ACTIVATEAPP)
+            {
+                _activationState.OnActivateApp(m.WParam != IntPtr.Zero);
+            }
+            else if (m.Msg == WM_SIZE)
+            {
+                _activationState.OnMinimizeChanged(m.WParam.ToInt32() == SIZE_MINIMIZED);
+            }
+
             base.WndProc(ref m);
+        }
+
+        // ============================================================
+        // 前台看门狗：业界标准的"兜底"层。
+        //
+        // 后台程序（QQ/Telegram 的通知窗）抢走系统前台后，有时不会把前台归还给游戏
+        // 窗口，留下"焦点真空"——GetForegroundWindow() 返回 NULL，没有任何窗口持有
+        // 系统前台。此状态下：
+        //   • KeyboardHook 的前台判定落空 → 快捷键失灵（玩家反馈"触发不了 UI"）；
+        //   • Flash SA 因非前台自行降帧 → 帧数大降。
+        // 玩家原本的解法是"点窗口外面再点回来"手动制造一次激活。本看门狗把这个动作
+        // 自动化：检测到焦点真空就调 RestoreFlashInputFocus 把前台拉回 Flash。
+        //
+        // 【保守】只在真空（fg==NULL）时动作——真空绝不会是用户的主动选择。若前台是
+        // 某个真实的其他程序（用户自己切过去的），一律不抢，避免与用户对抗。
+        // ============================================================
+
+        private void SetupForegroundWatchdog()
+        {
+            _foregroundWatchdog = new System.Windows.Forms.Timer();
+            _foregroundWatchdog.Interval = 400;
+            _foregroundWatchdog.Tick += OnForegroundWatchdogTick;
+            _foregroundWatchdog.Start();
+        }
+
+        private void OnForegroundWatchdogTick(object sender, EventArgs e)
+        {
+            if (this.IsDisposed || !this.IsHandleCreated) return;
+            // 仅 Ready 态介入：bootstrap 期 Flash 未嵌入，谈不上前台回收。
+            if (!IsReadyForHotkey()) return;
+            // 最小化是用户的主动选择，不打扰。
+            if (_activationState.IsMinimized) return;
+            // 面板打开时前台合法地属于 WebOverlay（同进程），不在此处理。
+            if (_webOverlay != null && _webOverlay.IsPanelMode) return;
+            if (_windowManager == null) return;
+            // 仅处理"焦点真空"：没有任何窗口持有系统前台。
+            if (!_windowManager.IsForegroundVacuum()) return;
+
+            // 节流：真空若持续且回收失败，避免每 400ms 刷一条 [FocusRestore] 日志。
+            int now = Environment.TickCount;
+            if (_lastWatchdogActionTick != 0
+                && unchecked(now - _lastWatchdogActionTick) < 2000)
+                return;
+            _lastWatchdogActionTick = now;
+
+            LogManager.Log("[FgWatchdog] foreground vacuum detected, reclaiming Flash foreground");
+            _windowManager.RestoreFlashInputFocus("fg_watchdog:vacuum");
         }
 
         [StructLayout(LayoutKind.Sequential)]

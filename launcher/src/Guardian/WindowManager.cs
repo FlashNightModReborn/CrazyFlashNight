@@ -663,6 +663,16 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
+        /// 前台看门狗判定：当前是否处于"焦点真空"——没有任何窗口持有系统前台
+        /// （GetForegroundWindow() 返回 NULL）。后台程序抢焦后未归还前台时会留下此态。
+        /// GuardianForm 的前台看门狗据此把前台回收给 Flash。
+        /// </summary>
+        public bool IsForegroundVacuum()
+        {
+            return GetForegroundWindow() == IntPtr.Zero;
+        }
+
+        /// <summary>
         /// 判断 hwnd 是否属于 Flash 进程或 Guardian 进程。
         /// 嵌入后 Flash 子窗口 pid 归 Guardian；独立运行时 pid 归 Flash。
         /// </summary>

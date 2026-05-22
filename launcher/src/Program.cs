@@ -383,7 +383,7 @@ class Program
         // 因为后续 PanelHostController 也复用同一份。WebOverlay 自身的焦点回推走 flashFocusRestorer。
         Func<IntPtr> flashHwndProvider = delegate { return form.GetFlashHwnd(); };
         // WindowManager 早声明：WebOverlay 构造时需要它的 RestoreFlashInputFocus primitive；
-        // 实际 form.BindWindowManager / perfEngine.SetWindowManager / OnKillFlash 还在后面统一装配。
+        // 实际 form.BindWindowManager / perfEngine.SetActivationState / OnKillFlash 还在后面统一装配。
         WindowManager windowManager = new WindowManager();
         WebOverlayForm webOverlay;
         using (PerfTrace.Scope("web_overlay.construct"))
@@ -854,8 +854,8 @@ class Program
         // 11b-α: processManager.Start / TrackProcess / TrackFlashProcess 迁入 GameLaunchFlow.TransitionToSpawning
         //   Flash 不立即启动, 由 BootstrapForm 的 start_game 触发 launchFlow.StartGame(slot)
 
-        // 延迟注入 WindowManager 到性能决策引擎（bus-only 模式不走此路径）
-        perfEngine.SetWindowManager(windowManager);
+        // 延迟注入应用激活状态到性能决策引擎（bus-only 模式不走此路径）
+        perfEngine.SetActivationState(form.ActivationState);
 
         // 11c: Flash 退出 + zombie 兜底整体迁入 GameLaunchFlow (按 state + attempt 隔离)
         //   Ready 状态 → 触发 form.ForceExit (玩家正常关游戏)

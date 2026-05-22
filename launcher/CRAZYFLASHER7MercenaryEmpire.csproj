@@ -62,6 +62,7 @@
     <Compile Include="src\Guardian\ProcessManager.cs" />
     <Compile Include="src\Guardian\WindowManager.cs" />
     <Compile Include="src\Guardian\KeyboardHook.cs" />
+    <Compile Include="src\Guardian\AppActivationState.cs" />
     <Compile Include="src\Guardian\GuardianForm.cs" />
     <Compile Include="src\Guardian\GameLaunchFlow.cs" />
     <Compile Include="src\Guardian\BootstrapMessageHandler.cs" />
