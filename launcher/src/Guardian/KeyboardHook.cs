@@ -84,6 +84,10 @@ namespace CF7Launcher.Guardian
         private readonly HashSet<uint> _blockedVks;
         // 拦截后需要触发动作的键 → action 回调
         private readonly Dictionary<uint, Action> _actionVks;
+        // 严格判定的键——跳过去抖宽限，要求实时前台归属本应用。
+        // 破坏性 / 不可逆动作（Ctrl+Q ForceExit）放这里：去抖宽限内无法区分
+        // "toast 瞬时抢焦"与"用户真的切走了"，对杀进程级动作必须用实时前台判定。
+        private readonly HashSet<uint> _strictVks;
         private readonly uint _myPid;
         private volatile uint _flashPid; // Flash 进程 PID（嵌入前前台是 Flash 而非 Guardian）
         private volatile bool _ctrlHeld;
@@ -113,6 +117,9 @@ namespace CF7Launcher.Guardian
             // 0x47 (G) 由 GuardianForm 按 config.devGpuProbeHotkey 动态启用，玩家版不注入
 
             _actionVks = new Dictionary<uint, Action>();
+
+            _strictVks = new HashSet<uint>();
+            _strictVks.Add(0x51); // Q — ForceExit 杀进程，严格判定，不吃去抖宽限
         }
 
         /// <summary>
@@ -219,7 +226,7 @@ namespace CF7Launcher.Guardian
                     if (vk == VK_ESCAPE && (_escEnabled || _panelEscEnabled))
                         shouldBlock = true;
 
-                    if (shouldBlock && ShouldInterceptForOurApp())
+                    if (shouldBlock && ShouldInterceptForOurApp(_strictVks.Contains(vk)))
                     {
                         // 触发动作回调（异步，不阻塞钩子线程）
                         Action action;
@@ -249,14 +256,24 @@ namespace CF7Launcher.Guardian
         ///      真空下按键不会落到任何别的程序。旧实现 `if (fg != Zero)` 把这种情况整段
         ///      跳过，正是玩家反馈"触发不了 UI"的成因。
         ///   3. 前台窗口归属本进程或 Flash 进程。
+        ///
+        /// strict=true（破坏性键，如 Ctrl+Q）：跳过判据 1 的去抖宽限，只认判据 2/3 的
+        /// 实时前台。去抖宽限内无法区分 toast 瞬时抢焦与用户真实切走，对杀进程级动作
+        /// 宁可漏触发（用户再按一次）也不能误触发（在别的程序里把启动器干掉）。
         /// </summary>
-        private bool ShouldInterceptForOurApp()
+        private bool ShouldInterceptForOurApp(bool strict)
         {
-            Func<bool> probe = _isAppActive;
-            if (probe != null && probe()) return true;
+            // 非严格键：去抖后的进程级激活态优先——能容忍后台程序瞬时抢焦造成的抖动。
+            // 严格键跳过此探针：宽限窗内 probe 仍返回 true，会让破坏性动作在用户已切到
+            // 别的程序后仍被本应用拦截执行，必须落到判据 2/3 的实时前台判定。
+            if (!strict)
+            {
+                Func<bool> probe = _isAppActive;
+                if (probe != null && probe()) return true;
+            }
 
             IntPtr fg = GetForegroundWindow();
-            if (fg == IntPtr.Zero) return true; // 焦点真空 → 视作我方
+            if (fg == IntPtr.Zero) return true; // 焦点真空 → 视作我方（真空下按键不会落到别的程序）
 
             uint pid;
             GetWindowThreadProcessId(fg, out pid);

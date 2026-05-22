@@ -98,11 +98,13 @@ namespace CF7Launcher.Guardian
                 return null;
             bool trendAvailable = (samplesAfterReset >= TREND_WINDOW);
 
-            // 2. 最小化门控（必须先于 panic）。
-            //    旧实现门控的是"失焦"，导致后台程序瞬时抢焦就让性能控制（含 panic 降级）
-            //    整体失灵。改为只在【最小化】时停决策——此时 AS2 上报的 FPS 本就被系统
-            //    节流、不可信；仅失焦但窗口仍可见时继续决策，panic 兜底不被掐断。
-            if (_activationState != null && _activationState.IsMinimized)
+            // 2. 失活 / 最小化门控（必须先于 panic）。
+            //    用去抖后的进程级激活态（IsAppActive）门控：后台程序瞬时抢焦在去抖宽限内
+            //    不算失活，性能控制（含 panic 降级）不被掐断；用户真的切走 / 最小化后才停
+            //    决策——此时 Flash 非前台自行降帧、AS2 上报的 FPS 已不可信，继续决策会
+            //    把后台降帧误判成性能不足，污染 tier（回到游戏时画质卡在低档）。
+            if (_activationState != null
+                && (!_activationState.IsAppActive || _activationState.IsMinimized))
             {
                 _focusCooldownMs = 3000;
                 return null;

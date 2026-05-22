@@ -21,8 +21,13 @@ namespace CF7Launcher.Guardian
     /// </summary>
     public sealed class AppActivationState
     {
-        /// <summary>WM_ACTIVATEAPP(false) 之后，仍视作激活的宽限窗口（毫秒）。</summary>
-        private const int DEACTIVATE_DEBOUNCE_MS = 450;
+        /// <summary>
+        /// WM_ACTIVATEAPP(false) 之后，仍视作激活的宽限窗口（毫秒）。
+        /// 取值权衡：通知程序"抢焦再归还"通常仅几十毫秒，200ms 足以桥接；同时这也是
+        /// 非严格热键泄漏到他程序、以及 PerfDecisionEngine 延迟停决策的最坏窗口，故不宜过宽。
+        /// 破坏性键（Ctrl+Q）已走 KeyboardHook 的 strict 路径，完全不吃此宽限。
+        /// </summary>
+        private const int DEACTIVATE_DEBOUNCE_MS = 200;
 
         // 最近一次 WM_ACTIVATEAPP 的原始值（未去抖）。
         private volatile bool _rawActive = true;
