@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-后撤步" itemID="6964d656-00002843" lastModified="1779458904" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-后撤步" itemID="6964d656-00002843" lastModified="1779467408" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="空手攻击容器-后撤步" currentFrame="9">
+    <DOMTimeline name="空手攻击容器-后撤步">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -13,7 +13,39 @@
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.攻击呐喊();]]></script>
+                <script><![CDATA[function 攻击时移动(慢速度, 快速度)
+{
+	if (_parent.方向 == "右")
+	{
+		_parent.移动("右",慢速度);
+	}
+	else if (_parent.方向 == "左")
+	{
+		_parent.移动("左",慢速度);
+	}
+}
+function 攻击时四向移动(上, 下, 左, 右)
+{
+	if (上 != 0)
+	{
+		_parent.移动("上",上);
+	}
+	else if (下 != 0)
+	{
+		_parent.移动("下",下);
+	}
+	if (左 != 0)
+	{
+		_parent.方向改变("左");
+		_parent.移动("左",左);
+	}
+	else if (右 != 0)
+	{
+		_parent.方向改变("右");
+		_parent.移动("右",右);
+	}
+}
+_parent.攻击呐喊();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -47,7 +79,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" locked="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -73,43 +105,17 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#808080" locked="true" autoNamed="false">
+        <DOMLayer name="无敌" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="4" duration="6" keyMode="9728">
+            <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/无敌标签" name="无敌标签" centerPoint3DX="-150" centerPoint3DY="210.8">
                   <matrix>
-                    <Matrix tx="-135.3" ty="-307.05"/>
+                    <Matrix tx="-150" ty="200"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point y="10.8"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (enterFrame) {
-	if (_parent._parent._name == _root.控制目标)
-	{	
-		_parent.后撤步可派生搓招();
-		if(Key.isDown(_parent._parent.A键))
-	{
-    _root.空手攻击路由.跨容器标签跳转(_parent._parent, "截拳1连招", "截拳5连招");
-	}
-
-	}
-}
-
-/*onClipEvent (enterFrame) {
-	if (_parent._parent._name == _root.控制目标)
-	{	
-		_parent.后撤步可派生搓招();
-	
-		if(Key.isDown(_parent._parent.A键))
-		{_parent.gotoAndPlay("截拳5连招");}
-	}
-}*/]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
