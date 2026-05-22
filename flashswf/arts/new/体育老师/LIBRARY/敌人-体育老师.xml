@@ -1,44 +1,41 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="6a1015ba-0000039b" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1779459196" lastUniqueIdentifier="339">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="6a1015ba-0000039b" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1779460157" lastUniqueIdentifier="339">
   <timeline>
-    <DOMTimeline name="敌人-体育老师" currentFrame="12">
+    <DOMTimeline name="敌人-体育老师" currentFrame="8">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" name="容器" labelType="name" keyMode="9728">
+            <DOMFrame index="1" duration="7" name="空手站立" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" duration="7" name="空手站立" labelType="name" keyMode="9728">
+            <DOMFrame index="8" duration="10" name="空手行走" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" name="空手行走" labelType="name" keyMode="9728">
+            <DOMFrame index="18" duration="6" name="空手跑" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" duration="6" name="空手跑" labelType="name" keyMode="9728">
+            <DOMFrame index="24" duration="7" name="近战" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="25" duration="7" name="近战" labelType="name" keyMode="9728">
+            <DOMFrame index="31" duration="10" name="空手攻击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="32" duration="10" name="空手攻击" labelType="name" keyMode="9728">
+            <DOMFrame index="41" duration="9" name="击倒" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" duration="9" name="击倒" labelType="name" keyMode="9728">
+            <DOMFrame index="50" duration="11" name="被击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="51" duration="11" name="被击" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="62" duration="14" name="血腥死" labelType="name" keyMode="9728">
+            <DOMFrame index="61" duration="14" name="血腥死" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Script Layer" color="#D5B125" locked="true" outline="true" useOutlineView="true">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[停止机率 = 500;
 随机移动机率 = 500;
@@ -100,7 +97,7 @@
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" duration="74" keyMode="9728">
+            <DOMFrame index="1" duration="74" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this.swapDepths(this._y);
 ]]></script>
@@ -111,7 +108,7 @@
         </DOMLayer>
         <DOMLayer name="刚体控制器" color="#AAB531" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="76" keyMode="9728">
+            <DOMFrame index="0" duration="75" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 119" name="刚体控制器" centerPoint3DX="-3.35" centerPoint3DY="-203.5">
                   <matrix>
@@ -127,7 +124,7 @@
         </DOMLayer>
         <DOMLayer name="人物文字信息" color="#BDB2FA" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="76" keyMode="9728">
+            <DOMFrame index="0" duration="75" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="素材/Symbol 38" name="人物文字信息" centerPoint3DX="89" centerPoint3DY="-170.4">
                   <matrix>
@@ -143,7 +140,7 @@
         </DOMLayer>
         <DOMLayer name="索敌" color="#21CACE" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" duration="28" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="素材/Symbol 23" centerPoint3DX="22.9" centerPoint3DY="-25.35">
                   <matrix>
@@ -214,14 +211,14 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="47" keyMode="9728">
+            <DOMFrame index="28" duration="47" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="area" color="#3CB9C0" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="62" keyMode="9728">
+            <DOMFrame index="0" duration="61" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
                   <matrix>
@@ -233,14 +230,14 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="62" duration="14" keyMode="9728">
+            <DOMFrame index="61" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="逻辑ai" color="#67E099" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="25" keyMode="9728">
+            <DOMFrame index="0" duration="24" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
@@ -252,14 +249,14 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="25" duration="51" keyMode="9728">
+            <DOMFrame index="24" duration="51" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="行走ai" color="#5FEDEE" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="行走ai" color="#5FEDEE" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="25" keyMode="9728">
+            <DOMFrame index="0" duration="24" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="素材/Symbol 19" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
                   <matrix>
@@ -279,16 +276,16 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="25" duration="51" keyMode="9728">
+            <DOMFrame index="24" duration="51" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动画层" color="#32BDEF" autoNamed="false">
+        <DOMLayer name="动画层" color="#32BDEF" current="true" isSelected="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="9" keyMode="9728">
+            <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手待机" name="man" centerPoint3DX="191.6" centerPoint3DY="218">
+                <DOMSymbolInstance libraryItemName="sprite/空手待机" name="man" selected="true" centerPoint3DX="191.6" centerPoint3DY="218">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
                   </matrix>
@@ -298,9 +295,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="8" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 120" name="man" centerPoint3DX="154.05" centerPoint3DY="220.05">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 120" name="man" selected="true" centerPoint3DX="154.05" centerPoint3DY="220.05">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276809692382813" tx="3.35" ty="-60.9"/>
                   </matrix>
@@ -310,7 +307,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="6" keyMode="9728">
+            <DOMFrame index="18" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/空手跑" name="man" centerPoint3DX="240.85" centerPoint3DY="219.5">
                   <matrix>
@@ -322,9 +319,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="25" duration="7" keyMode="9728">
+            <DOMFrame index="24" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-燃烧指节" centerPoint3DX="-13.95" centerPoint3DY="-78.75">
+                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-燃烧指节" name="man" centerPoint3DX="-13.95" centerPoint3DY="-78.75">
                   <matrix>
                     <Matrix a="0.282424926757813" d="0.282424926757813" tx="8.75" ty="-74.7"/>
                   </matrix>
@@ -334,7 +331,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="10" keyMode="9728">
+            <DOMFrame index="31" duration="10" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/空手跑攻" name="man" centerPoint3DX="281.75" centerPoint3DY="249.7">
                   <matrix>
@@ -343,25 +340,10 @@
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-	if (_parent._name == _root.控制目标)
-	{
-		// 按下攻击键K后触发
-		if (_parent.被动技能.升龙拳 && _parent.被动技能.升龙拳.启用 && Key.isDown(_parent.B键))
-		{
-			_parent.跳横移速度 = _parent.跑X速度;
-			_parent.跳跃中移动速度 = _parent.跑X速度;
-			_parent.状态改变("空手跳");
-		}
-	}
-   _parent.格斗架势 = true;
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="42" duration="9" keyMode="9728">
+            <DOMFrame index="41" duration="9" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/Symbol 136" name="man" centerPoint3DX="204" centerPoint3DY="266.8">
                   <matrix>
@@ -370,19 +352,12 @@
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.格斗架势 = true;
-   gotoAndPlay(_parent.攻击模式 + random(2));
-}
-]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="51" duration="11" keyMode="9728">
+            <DOMFrame index="50" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-后撤步" selected="true" centerPoint3DX="-13.85" centerPoint3DY="-59.7">
+                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-后撤步" name="man" centerPoint3DX="-13.85" centerPoint3DY="-59.7">
                   <matrix>
                     <Matrix a="0.258636474609375" d="0.258468627929688" tx="3.1" ty="-69.55"/>
                   </matrix>
@@ -392,35 +367,15 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="62" duration="14" keyMode="9728">
+            <DOMFrame index="61" duration="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 825" name="man" centerPoint3DX="621.55" centerPoint3DY="334.55">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 825" name="man" selected="true" centerPoint3DX="621.55" centerPoint3DY="334.55">
                   <matrix>
                     <Matrix a="0.253448486328125" d="0.253280639648438" tx="3.4" ty="-67.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	function 死()
-	{
-		_parent.死亡检测();
-	}
-	_parent._y = _parent.Z轴坐标;
-	_parent.倒地 = true;
-	_parent.格斗架势 = true;
-	if(_parent.死亡撤退){
-		gotoAndPlay("撤退");
-	}else{
-		_root.主角函数.跳转到招式(this, "a", 6);
-	}
-	this.onUnload = function()
-	{
-		_parent.倒地 = false;
-	};
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -428,7 +383,7 @@
         </DOMLayer>
         <DOMLayer name="阴影" color="#9933CC" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="62" keyMode="9728">
+            <DOMFrame index="0" duration="61" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="86.65" centerPoint3DY="85.4">
                   <matrix>
@@ -453,7 +408,7 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="62" duration="14" keyMode="9728">
+            <DOMFrame index="61" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
