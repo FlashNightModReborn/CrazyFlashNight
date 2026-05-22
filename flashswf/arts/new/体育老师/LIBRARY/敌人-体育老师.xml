@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="6a1015ba-0000039b" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1779460354" lastUniqueIdentifier="340">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="6a1015ba-0000039b" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1779461407" lastUniqueIdentifier="340">
   <timeline>
-    <DOMTimeline name="敌人-体育老师" currentFrame="24">
+    <DOMTimeline name="敌人-体育老师">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4" locked="true">
           <frames>
@@ -33,7 +33,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#D5B125" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Script Layer" color="#D5B125" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -69,7 +69,7 @@
 
 近战技能库.push("虎拳","日字冲拳","破极拳");
 中程技能库.push("平踢","旋风腿","诛杀步","燃烧指节");
-远程技能库.push();
+远程技能库.push("燃烧指节","旋风腿");
 超远程技能库.push();
 
 近战技能随机数 = 近战技能库.length;
@@ -265,7 +265,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动画层" color="#32BDEF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="动画层" color="#32BDEF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
@@ -305,7 +305,7 @@
             </DOMFrame>
             <DOMFrame index="24" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-燃烧指节" name="man" selected="true" centerPoint3DX="-13.95" centerPoint3DY="-78.75">
+                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-燃烧指节" name="man" centerPoint3DX="-13.95" centerPoint3DY="-78.75">
                   <matrix>
                     <Matrix a="0.282424926757813" d="0.282424926757813" tx="8.75" ty="-74.7"/>
                   </matrix>
