@@ -87,6 +87,12 @@ launcher/tests/bin/
 # offline builds.
 launcher/native/sol_parser/target/
 
+# amf0-help: AMF0 Reference 求助/上游 issue 复现包 (源码与样本入库, 生成物不入库)
+amf0-help/sol_parser/target/
+amf0-help/sol_parser/flwriter_probe.sol
+amf0-help/**/*.probe.json
+/amf0-help.zip
+
 # WebView2 runtime cache (machine-specific)
 launcher/webview2_userdata/
 launcher/webview2_overlay_userdata/
