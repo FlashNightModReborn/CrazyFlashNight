@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" lastModified="1776865239" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" linkageExportForAS="true" linkageIdentifier="技能容器-扭转乾坤" lastModified="1775139969" lastUniqueIdentifier="9">
   <timeline>
-    <DOMTimeline name="技能容器-扭转乾坤">
+    <DOMTimeline name="技能容器-扭转乾坤" currentFrame="33">
       <layers>
-        <DOMLayer name="标签" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="28" name="扭转乾坤" labelType="name" keyMode="9728">
               <elements/>
@@ -34,7 +34,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -271,7 +271,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 623" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 623" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
@@ -283,7 +283,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 624" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 624" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
@@ -295,7 +295,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 625" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 625" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
@@ -307,7 +307,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="4" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 626" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 626" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
@@ -319,7 +319,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 627" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 627" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
@@ -331,7 +331,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 628" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 628" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
@@ -343,7 +343,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 629" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 629" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
@@ -355,7 +355,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="8" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 630" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 630" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="-20.6" ty="58.5"/>
                   </matrix>
@@ -367,7 +367,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 631" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 631" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="114.95" ty="-146.1"/>
                   </matrix>
@@ -379,7 +379,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 632" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 632" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="114.95" ty="-146.1"/>
                   </matrix>
@@ -398,7 +398,7 @@ onClipEvent (unload) {
           <frames>
             <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 595" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 595" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
@@ -410,7 +410,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 596" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 596" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
@@ -422,7 +422,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 597" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 597" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
@@ -434,7 +434,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 598" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 598" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
@@ -446,7 +446,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="4" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 599" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 599" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
@@ -458,7 +458,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 600" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 600" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
@@ -470,7 +470,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 601" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
@@ -482,7 +482,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 602" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 602" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
@@ -494,7 +494,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="8" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 603" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 603" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.62982177734375" d="1.62982177734375" tx="33.6" ty="157.6"/>
                   </matrix>
@@ -506,7 +506,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 602" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 602" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.81494140625" b="-1.41142272949219" c="1.41142272949219" d="0.81494140625" tx="204.1" ty="58.35"/>
                   </matrix>
@@ -518,7 +518,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 601" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.49627685546875" b="-0.646072387695313" c="0.646072387695313" d="-1.49627685546875" tx="130.25" ty="-221.4"/>
                   </matrix>
@@ -530,7 +530,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 600" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 600" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.988571166992188" b="1.29571533203125" c="-1.29571533203125" d="-0.988571166992188" tx="-119.1" ty="-164.65"/>
                   </matrix>
@@ -542,7 +542,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 600" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 600" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
@@ -554,7 +554,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 601" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
@@ -566,7 +566,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="14" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 602" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 602" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
@@ -578,7 +578,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="15" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 603" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 603" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
@@ -590,7 +590,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="16" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 602" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 602" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.27874755859375" b="1.01042175292969" c="-1.01042175292969" d="1.27874755859375" tx="-87.6" ty="110.5"/>
                   </matrix>
@@ -602,7 +602,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="17" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 601" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.855636596679688" b="-1.38714599609375" c="1.38714599609375" d="0.855636596679688" tx="199.85" ty="77.95"/>
                   </matrix>
@@ -614,7 +614,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="18" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 600" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 600" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.13916015625" b="-1.16552734375" c="1.16552734375" d="-1.13916015625" tx="179.8" ty="-177"/>
                   </matrix>
@@ -626,7 +626,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="19" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 600" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 600" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.13916015625" b="-1.16552734375" c="1.16552734375" d="-1.13916015625" tx="179.8" ty="-177"/>
                   </matrix>
@@ -638,7 +638,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="20" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 602" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 602" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.81494140625" b="-1.41142272949219" c="1.41142272949219" d="0.81494140625" tx="204.1" ty="58.35"/>
                   </matrix>
@@ -650,7 +650,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="21" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 601" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.49627685546875" b="-0.646072387695313" c="0.646072387695313" d="-1.49627685546875" tx="130.25" ty="-221.4"/>
                   </matrix>
@@ -662,7 +662,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="22" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 600" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 600" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.988571166992188" b="1.29571533203125" c="-1.29571533203125" d="-0.988571166992188" tx="-119.1" ty="-164.65"/>
                   </matrix>
@@ -674,7 +674,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="23" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 600" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 600" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
@@ -686,7 +686,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="24" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 601" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
@@ -698,7 +698,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="25" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 602" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 602" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
@@ -710,7 +710,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="26" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 603" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 603" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.235626220703125" b="1.6126708984375" c="-1.6126708984375" d="-0.235626220703125" tx="-161.2" ty="-72.55"/>
                   </matrix>
@@ -722,7 +722,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="27" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 602" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 602" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.27874755859375" b="1.01042175292969" c="-1.01042175292969" d="1.27874755859375" tx="-87.6" ty="110.5"/>
                   </matrix>
@@ -734,7 +734,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="28" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 601" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.855636596679688" b="-1.38714599609375" c="1.38714599609375" d="0.855636596679688" tx="199.85" ty="77.95"/>
                   </matrix>
@@ -746,7 +746,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="29" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 600" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 600" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.13916015625" b="-1.16552734375" c="1.16552734375" d="-1.13916015625" tx="179.8" ty="-177"/>
                   </matrix>
@@ -758,7 +758,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="30" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 602" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 602" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.81494140625" b="-1.41142272949219" c="1.41142272949219" d="0.81494140625" tx="204.1" ty="58.35"/>
                   </matrix>
@@ -770,7 +770,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="31" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 601" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 601" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.49627685546875" b="-0.646072387695313" c="0.646072387695313" d="-1.49627685546875" tx="130.25" ty="-221.4"/>
                   </matrix>
@@ -782,7 +782,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="32" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 604" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 604" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="63.2" ty="-246.6"/>
                   </matrix>
@@ -794,7 +794,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="33" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 605" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 605" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="63.2" ty="-246.6"/>
                   </matrix>
@@ -806,7 +806,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="34" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 607" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 607" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="63.2" ty="-246.6"/>
                   </matrix>
@@ -818,7 +818,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="35" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 609" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 609" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="63.2" ty="-246.6"/>
                   </matrix>
@@ -830,7 +830,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="36" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 610" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 610" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="63.2" ty="-246.6"/>
                   </matrix>
@@ -842,7 +842,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="37" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 621" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 621" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="63.2" ty="-246.6"/>
                   </matrix>
@@ -854,7 +854,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="38" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 622" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 622" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="63.2" ty="-246.6"/>
                   </matrix>
@@ -1553,7 +1553,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 30" color="#808080" current="true" isSelected="true">
+        <DOMLayer name="图层 30" color="#808080">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1606,7 +1606,7 @@ onClipEvent (unload) {
           <frames>
             <DOMFrame index="0" duration="39" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="单位/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
                   </matrix>

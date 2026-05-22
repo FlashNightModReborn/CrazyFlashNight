@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="怪物通用模板/新近战子弹定位元件/近战子弹定位用" itemID="65ae6c3a-000037f7" lastModified="1772128023" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="近战子弹定位用">
+    <DOMTimeline name="近战子弹定位用" currentFrame="2">
       <layers>
         <DOMLayer name="Script_Layer" color="#B6B0BE">
           <frames>
@@ -20,7 +20,7 @@
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14" name="area" selected="true" centerPoint3DX="74.35" centerPoint3DY="12.5">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14" name="area" centerPoint3DX="74.35" centerPoint3DY="12.5">
                   <matrix>
                     <Matrix a="16.1735229492188" d="2.72158813476563"/>
                   </matrix>

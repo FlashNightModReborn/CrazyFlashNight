@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-日字冲拳" itemID="694ac160-00004b65" lastModified="1776865236" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-日字冲拳" itemID="694ac160-00004b65" linkageExportForAS="true" linkageIdentifier="技能容器-日字冲拳" lastModified="1779438016" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="技能容器-日字冲拳" currentFrame="41">
+    <DOMTimeline name="技能容器-日字冲拳">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -106,7 +106,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="单位/近战子弹 副本" name="攻击点" centerPoint3DX="194.75" centerPoint3DY="-202.7">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="194.75" centerPoint3DY="-202.7">
                   <matrix>
                     <Matrix a="14.9461059570313" d="3.55438232421875" tx="182.25" ty="-215.2"/>
                   </matrix>
@@ -124,7 +124,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="13" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="单位/近战子弹 副本" name="攻击点" centerPoint3DX="157.75" centerPoint3DY="-105.7">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="157.75" centerPoint3DY="-105.7">
                   <matrix>
                     <Matrix a="14.9461059570313" d="3.55438232421875" tx="145.25" ty="-118.2"/>
                   </matrix>
@@ -142,7 +142,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="17" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="单位/近战子弹 副本" name="攻击点" centerPoint3DX="157.75" centerPoint3DY="-105.7">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="157.75" centerPoint3DY="-105.7">
                   <matrix>
                     <Matrix a="14.9461059570313" d="3.55438232421875" tx="145.25" ty="-118.2"/>
                   </matrix>
@@ -160,7 +160,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="21" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="单位/近战子弹 副本" name="攻击点" centerPoint3DX="157.75" centerPoint3DY="-105.7">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="157.75" centerPoint3DY="-105.7">
                   <matrix>
                     <Matrix a="14.9461059570313" d="3.55438232421875" tx="145.25" ty="-118.2"/>
                   </matrix>
@@ -178,7 +178,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="25" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="单位/近战子弹 副本" name="攻击点" centerPoint3DX="157.75" centerPoint3DY="-105.7">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="157.75" centerPoint3DY="-105.7">
                   <matrix>
                     <Matrix a="14.9461059570313" d="3.55438232421875" tx="145.25" ty="-118.2"/>
                   </matrix>
@@ -196,7 +196,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="29" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="单位/近战子弹 副本" name="攻击点" centerPoint3DX="157.75" centerPoint3DY="-105.7">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="157.75" centerPoint3DY="-105.7">
                   <matrix>
                     <Matrix a="14.9461059570313" d="3.55438232421875" tx="145.25" ty="-118.2"/>
                   </matrix>
@@ -214,7 +214,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="33" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="单位/近战子弹 副本" name="攻击点" centerPoint3DX="157.75" centerPoint3DY="-105.7">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="157.75" centerPoint3DY="-105.7">
                   <matrix>
                     <Matrix a="14.9461059570313" d="3.55438232421875" tx="145.25" ty="-118.2"/>
                   </matrix>
@@ -232,7 +232,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="37" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="单位/近战子弹 副本" name="攻击点" centerPoint3DX="157.75" centerPoint3DY="-105.7">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="157.75" centerPoint3DY="-105.7">
                   <matrix>
                     <Matrix a="14.9461059570313" d="3.55438232421875" tx="145.25" ty="-118.2"/>
                   </matrix>
@@ -516,7 +516,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器使用检测" color="#9933CC" autoNamed="false">
+        <DOMLayer name="兵器使用检测" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="42" keyMode="9728">
               <elements/>
@@ -552,7 +552,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="116.4" centerPoint3DY="-132.8">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="116.4" centerPoint3DY="-132.8">
                   <matrix>
                     <Matrix ty="-131.3"/>
                   </matrix>
@@ -572,7 +572,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="150.35" centerPoint3DY="-255.7">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="150.35" centerPoint3DY="-255.7">
                   <matrix>
                     <Matrix tx="33.95" ty="-254.2"/>
                   </matrix>
@@ -592,7 +592,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="10" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影">
                   <matrix>
                     <Matrix a="0.568283081054688" tx="31.15" ty="-222.05"/>
                   </matrix>
@@ -612,7 +612,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="12" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影">
                   <matrix>
                     <Matrix a="0.784149169921875" tx="-5.35" ty="-258.7"/>
                   </matrix>
@@ -632,7 +632,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="120.55" centerPoint3DY="-258.35">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="120.55" centerPoint3DY="-258.35">
                   <matrix>
                     <Matrix tx="4.15" ty="-256.85"/>
                   </matrix>
@@ -649,7 +649,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="14" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="140.1" centerPoint3DY="-220.85">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="140.1" centerPoint3DY="-220.85">
                   <matrix>
                     <Matrix tx="23.7" ty="-219.35"/>
                   </matrix>
@@ -669,7 +669,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="15" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影">
                   <matrix>
                     <Matrix a="0.49383544921875" tx="50.1" ty="-250.25"/>
                   </matrix>
@@ -692,7 +692,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="18" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="200.3" centerPoint3DY="-226.7">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="200.3" centerPoint3DY="-226.7">
                   <matrix>
                     <Matrix tx="83.9" ty="-225.2"/>
                   </matrix>
@@ -712,7 +712,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影">
                   <matrix>
                     <Matrix a="0.568283081054688" tx="31.15" ty="-222.05"/>
                   </matrix>
@@ -733,7 +733,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影">
                   <matrix>
                     <Matrix a="0.469482421875" tx="-2.15" ty="-131.3"/>
                   </matrix>
@@ -754,7 +754,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="21" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="120.55" centerPoint3DY="-258.35">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="120.55" centerPoint3DY="-258.35">
                   <matrix>
                     <Matrix tx="4.15" ty="-256.85"/>
                   </matrix>
@@ -772,7 +772,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="140.1" centerPoint3DY="-220.85">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="140.1" centerPoint3DY="-220.85">
                   <matrix>
                     <Matrix tx="23.7" ty="-219.35"/>
                   </matrix>
@@ -792,7 +792,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="23" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影">
                   <matrix>
                     <Matrix a="0.49383544921875" tx="50.1" ty="-250.25"/>
                   </matrix>
@@ -815,7 +815,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="200.3" centerPoint3DY="-226.7">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="200.3" centerPoint3DY="-226.7">
                   <matrix>
                     <Matrix tx="83.9" ty="-225.2"/>
                   </matrix>
@@ -835,7 +835,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="27" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影">
                   <matrix>
                     <Matrix a="0.568283081054688" tx="31.15" ty="-222.05"/>
                   </matrix>
@@ -856,7 +856,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影">
                   <matrix>
                     <Matrix a="0.469482421875" tx="-2.15" ty="-131.3"/>
                   </matrix>
@@ -877,7 +877,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="120.55" centerPoint3DY="-258.35">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="120.55" centerPoint3DY="-258.35">
                   <matrix>
                     <Matrix tx="4.15" ty="-256.85"/>
                   </matrix>
@@ -895,7 +895,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="140.1" centerPoint3DY="-220.85">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="140.1" centerPoint3DY="-220.85">
                   <matrix>
                     <Matrix tx="23.7" ty="-219.35"/>
                   </matrix>
@@ -915,7 +915,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="31" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影">
                   <matrix>
                     <Matrix a="0.49383544921875" tx="50.1" ty="-250.25"/>
                   </matrix>
@@ -938,7 +938,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="34" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="200.3" centerPoint3DY="-226.7">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="200.3" centerPoint3DY="-226.7">
                   <matrix>
                     <Matrix tx="83.9" ty="-225.2"/>
                   </matrix>
@@ -958,7 +958,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="35" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影">
                   <matrix>
                     <Matrix a="0.568283081054688" tx="31.15" ty="-222.05"/>
                   </matrix>
@@ -979,7 +979,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="36" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影">
                   <matrix>
                     <Matrix a="0.469482421875" tx="-2.15" ty="-131.3"/>
                   </matrix>
@@ -1000,7 +1000,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="37" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="120.55" centerPoint3DY="-258.35">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="120.55" centerPoint3DY="-258.35">
                   <matrix>
                     <Matrix tx="4.15" ty="-256.85"/>
                   </matrix>
@@ -1018,7 +1018,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
             <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="116.4" centerPoint3DY="-132.8">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="116.4" centerPoint3DY="-132.8">
                   <matrix>
                     <Matrix ty="-131.3"/>
                   </matrix>
@@ -1041,7 +1041,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF" current="true" isSelected="true">
+        <DOMLayer name="图层 13" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -3292,7 +3292,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="224.3" centerPoint3DY="-236">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="224.3" centerPoint3DY="-236">
                   <matrix>
                     <Matrix tx="107.9" ty="-234.5"/>
                   </matrix>
@@ -4690,7 +4690,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="224.3" centerPoint3DY="-236">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="224.3" centerPoint3DY="-236">
                   <matrix>
                     <Matrix tx="107.9" ty="-234.5"/>
                   </matrix>
@@ -6088,7 +6088,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/日字冲拳残影" centerPoint3DX="224.3" centerPoint3DY="-236">
+                <DOMSymbolInstance libraryItemName="特效与子弹/日字冲拳残影" centerPoint3DX="224.3" centerPoint3DY="-236">
                   <matrix>
                     <Matrix tx="107.9" ty="-234.5"/>
                   </matrix>
@@ -7501,7 +7501,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
           <frames>
             <DOMFrame index="0" duration="42" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="单位/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
                   </matrix>

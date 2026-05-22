@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-诛杀步" itemID="6964d583-0000279b" lastModified="1776865240">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-诛杀步" itemID="6964d583-0000279b" linkageExportForAS="true" linkageIdentifier="空手攻击容器-诛杀步" lastModified="1779436122">
   <timeline>
     <DOMTimeline name="空手攻击容器-诛杀步" currentFrame="11">
       <layers>
@@ -12,30 +12,6 @@
         <DOMLayer name="动作代码" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="动作代码" color="#FF800A" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="11" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_parent.攻击呐喊();
-空手攻击搓招 = _root.技能函数.空手攻击搓招;
-诛杀步可派生搓招 = _root.技能函数.诛杀步可派生搓招;
-后撤步可派生搓招 = _root.技能函数.后撤步可派生搓招;
-波动拳可派生搓招 = _root.技能函数.波动拳可派生搓招;
-能量喷泉可派生搓招 = _root.技能函数.能量喷泉可派生搓招;
-燃烧指节可派生搓招 = _root.技能函数.燃烧指节可派生搓招;
-连环踢可派生搓招 = _root.技能函数.连环踢可派生搓招;
-回旋踢可派生搓招 = _root.技能函数.回旋踢可派生搓招;]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="11" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.空手攻击路由.动画完毕(this,_parent);]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -141,7 +117,7 @@
           <frames>
             <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/幻影/前闪幻影" blendMode="overlay" centerPoint3DX="-19.75" centerPoint3DY="-19.75">
+                <DOMSymbolInstance libraryItemName="特效与子弹/幻影/前闪幻影" blendMode="overlay" centerPoint3DX="-19.75" centerPoint3DY="-19.75">
                   <matrix>
                     <Matrix d="1.334228515625" tx="-354.75" ty="-263.25"/>
                   </matrix>
@@ -156,7 +132,7 @@
             </DOMFrame>
             <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/幻影/前闪幻影" blendMode="overlay" centerPoint3DX="36.25" centerPoint3DY="-17.75">
+                <DOMSymbolInstance libraryItemName="特效与子弹/幻影/前闪幻影" blendMode="overlay" centerPoint3DX="36.25" centerPoint3DY="-17.75">
                   <matrix>
                     <Matrix c="-0.14794921875" d="1.24876403808594" tx="-271.75" ty="-245.65"/>
                   </matrix>
@@ -171,7 +147,7 @@
             </DOMFrame>
             <DOMFrame index="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/幻影/前闪幻影" blendMode="overlay" centerPoint3DX="57.55" centerPoint3DY="-5.9">
+                <DOMSymbolInstance libraryItemName="特效与子弹/幻影/前闪幻影" blendMode="overlay" centerPoint3DX="57.55" centerPoint3DY="-5.9">
                   <matrix>
                     <Matrix c="-0.115066528320313" d="1.18081665039063" tx="-256.45" ty="-221.4"/>
                   </matrix>
@@ -1150,38 +1126,6 @@
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="0" blurY="0" quality="3"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="影子" color="#9933CC" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="12" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
-                  <matrix>
-                    <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <BlurFilter blurX="10" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>

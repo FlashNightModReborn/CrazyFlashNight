@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/气爆2" itemID="67400581-000001ee" lastModified="1732248961">
+  <timeline>
+    <DOMTimeline name="气爆2">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="repeat">
+                        <matrix>
+                          <Matrix a="0.10552978515625" d="0.10552978515625" tx="121.95" ty="85.2"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.654901960784314"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.917647058823529"/>
+                        <GradientEntry alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!4144 1709S2[4144 2426 3645 2924!3645 2924[3147 3425 2437 3425!2437 3425[1730 3425 1227 2924!1227 2924[729 2426 729 1709!729 1709[729 1004 1227 504!1227 504[1730 0 2437 0!2437 0[3147 0 3645 504!3645 504[4144 1004 4144 1709"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="特殊爆炸" selected="true" symbolType="graphic" firstFrame="2" centerPoint3DX="122.1" centerPoint3DY="73.6" loop="loop">
+                  <matrix>
+                    <Matrix a="3.2861328125" d="3.2861328125" tx="-45.2" ty="-55.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.9" y="39.4"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="1" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

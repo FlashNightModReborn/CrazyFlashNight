@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="余烬小队/余烬剑痴/Symbol 71" itemID="6577b699-0000098a" lastModified="1718938968" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="Symbol 71">
+      <layers>
+        <DOMLayer name="Layer 1" color="#CDB6B4" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 70" selected="true" centerPoint3DX="49.5" centerPoint3DY="21.85">
+                  <matrix>
+                    <Matrix tx="20" ty="0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	var 装扮 = _root.装备引用配置.配置装扮(this, _parent._parent._parent.右手, "装扮", "右手_引用");
+	if (装扮)
+	{
+		this.基本款._visible = false;
+	}
+	else if (_parent._parent._parent.性别 == "女")
+	{
+		_root.装备引用配置.配置装扮(this, "女变装-裸体右手", "装扮", "左手_引用");
+		this.基本款._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

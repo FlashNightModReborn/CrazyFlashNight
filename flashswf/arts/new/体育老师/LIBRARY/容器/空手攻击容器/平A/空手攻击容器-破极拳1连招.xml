@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" itemID="6964cd70-0000257c" lastModified="1776866048" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招" itemID="6964cd70-0000257c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-破极拳1连招" lastModified="1779438326" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="空手攻击容器-破极拳1连招" currentFrame="58">
       <layers>
-        <DOMLayer name="连段标识" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="连段标识" color="#4FFF4F" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" name="破极拳1连招" labelType="name" keyMode="9728">
               <elements/>
@@ -21,7 +21,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#9933CC" autoNamed="false">
+        <DOMLayer name="动作代码" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -204,7 +204,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#FF800A" autoNamed="false">
+        <DOMLayer name="动作代码" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
@@ -267,7 +267,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -789,7 +789,7 @@
             </DOMFrame>
             <DOMFrame index="49" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" selected="true" centerPoint3DX="-59.8" centerPoint3DY="0.95">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="-59.8" centerPoint3DY="0.95">
                   <matrix>
                     <Matrix a="5.53178405761719" d="4.15505981445313" tx="-58.55" ty="-0.6"/>
                   </matrix>
@@ -920,7 +920,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1023,7 +1023,7 @@
             </DOMFrame>
             <DOMFrame index="49" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="118.55" centerPoint3DY="244.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="118.55" centerPoint3DY="244.75">
                   <matrix>
                     <Matrix a="2.16769409179688" d="2.16769409179688" tx="91.15" ty="217.3"/>
                   </matrix>
@@ -1044,14 +1044,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#808080" autoNamed="false">
+        <DOMLayer name="变招层" color="#808080" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气流特效/气流" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/气流" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1" d="-1" tx="54.5" ty="-209.6"/>
                   </matrix>
@@ -1066,7 +1066,7 @@
             </DOMFrame>
             <DOMFrame index="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气流特效/气流" symbolType="graphic" firstFrame="6" centerPoint3DX="146.05" centerPoint3DY="-156.05" loop="loop">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/气流" symbolType="graphic" firstFrame="6" centerPoint3DX="146.05" centerPoint3DY="-156.05" loop="loop">
                   <matrix>
                     <Matrix a="-1" d="-1" tx="143.1" ty="-162.95"/>
                   </matrix>
@@ -1084,7 +1084,7 @@
             </DOMFrame>
             <DOMFrame index="12" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气流特效/气流" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/气流" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.79063415527344" b="-0.178955078125" c="0.099456787109375" d="-0.995040893554688" tx="130.7" ty="-21.6"/>
                   </matrix>
@@ -1102,7 +1102,7 @@
             </DOMFrame>
             <DOMFrame index="25" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气流特效/气流" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/气流" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.69451904296875" b="-0.192291259765625" c="0.112762451171875" d="-0.993621826171875" tx="70.35" ty="-4.7"/>
                   </matrix>
@@ -1120,7 +1120,7 @@
             </DOMFrame>
             <DOMFrame index="37" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气流特效/气流" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/气流" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.566162109375" b="0.67474365234375" c="-0.3956298828125" d="-0.918380737304688" tx="90.8" ty="-5.75"/>
                   </matrix>
@@ -1135,7 +1135,7 @@
             </DOMFrame>
             <DOMFrame index="43" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气流特效/气流" symbolType="graphic" firstFrame="6" centerPoint3DX="219.4" centerPoint3DY="-181.2" loop="loop">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/气流" symbolType="graphic" firstFrame="6" centerPoint3DX="219.4" centerPoint3DY="-181.2" loop="loop">
                   <matrix>
                     <Matrix a="-1.566162109375" b="0.67474365234375" c="-0.3956298828125" d="-0.918380737304688" tx="212" ty="-185.55"/>
                   </matrix>
@@ -1153,7 +1153,7 @@
             </DOMFrame>
             <DOMFrame index="49" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气流特效/气流" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/气流" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.7100830078125" b="-0.19403076171875" c="0.191986083984375" d="-1.69181823730469" tx="-107.65" ty="-37.5"/>
                   </matrix>
@@ -1168,7 +1168,7 @@
             </DOMFrame>
             <DOMFrame index="55" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气流特效/气流" symbolType="graphic" firstFrame="6" centerPoint3DX="-1" centerPoint3DY="-24.75" loop="loop">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/气流" symbolType="graphic" firstFrame="6" centerPoint3DX="-1" centerPoint3DY="-24.75" loop="loop">
                   <matrix>
                     <Matrix a="-1.7100830078125" b="-0.19403076171875" c="0.191986083984375" d="-1.69181823730469" tx="-4.7" ty="-37.05"/>
                   </matrix>
@@ -1186,14 +1186,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#4F80FF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="59" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 8" color="#FF4F4F">
+        <DOMLayer name="图层 8" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -1206,7 +1206,7 @@
             </DOMFrame>
             <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 209" blendMode="overlay" centerPoint3DX="335.05" centerPoint3DY="-107.9">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 209" blendMode="overlay" centerPoint3DX="335.05" centerPoint3DY="-107.9">
                   <matrix>
                     <Matrix a="1.81248474121094" d="1.3121337890625" tx="331.5" ty="-15.2"/>
                   </matrix>
@@ -1214,7 +1214,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/上勾拳特效组件/shape 1048" blendMode="overlay" centerPoint3DX="404.8" centerPoint3DY="-109.25">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1048" blendMode="overlay" centerPoint3DX="404.8" centerPoint3DY="-109.25">
                   <matrix>
                     <Matrix a="0" b="-1.62875366210938" c="1.72103881835938" d="0" tx="450.7" ty="-121.05"/>
                   </matrix>
@@ -1226,7 +1226,7 @@
             </DOMFrame>
             <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 210" blendMode="overlay" centerPoint3DX="354.6" centerPoint3DY="-108.25">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 210" blendMode="overlay" centerPoint3DX="354.6" centerPoint3DY="-108.25">
                   <matrix>
                     <Matrix a="1.46659851074219" d="1.562255859375" tx="378.05" ty="1.75"/>
                   </matrix>
@@ -1234,7 +1234,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/上勾拳特效组件/shape 1049" blendMode="overlay" centerPoint3DX="407.85" centerPoint3DY="-114.45">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1049" blendMode="overlay" centerPoint3DX="407.85" centerPoint3DY="-114.45">
                   <matrix>
                     <Matrix a="0" b="-1.939208984375" c="1.392578125" d="0" tx="452.1" ty="-120.6"/>
                   </matrix>
@@ -1246,7 +1246,7 @@
             </DOMFrame>
             <DOMFrame index="14" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 210" blendMode="overlay" centerPoint3DX="345.1" centerPoint3DY="-117.7">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 210" blendMode="overlay" centerPoint3DX="345.1" centerPoint3DY="-117.7">
                   <matrix>
                     <Matrix a="1.6669921875" d="2.16717529296875" tx="371.8" ty="35.25"/>
                   </matrix>
@@ -1258,7 +1258,7 @@
             </DOMFrame>
             <DOMFrame index="15" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 211" blendMode="overlay" centerPoint3DX="308.95" centerPoint3DY="-109.3">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 211" blendMode="overlay" centerPoint3DX="308.95" centerPoint3DY="-109.3">
                   <matrix>
                     <Matrix a="1.46659851074219" d="2.16717529296875" tx="378.05" ty="35.25"/>
                   </matrix>
@@ -1270,7 +1270,7 @@
             </DOMFrame>
             <DOMFrame index="16" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 212" blendMode="overlay" centerPoint3DX="320.45" centerPoint3DY="-111.4">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 212" blendMode="overlay" centerPoint3DX="320.45" centerPoint3DY="-111.4">
                   <matrix>
                     <Matrix a="1.46659851074219" d="2.67315673828125" tx="378.05" ty="69.5"/>
                   </matrix>
@@ -1282,7 +1282,7 @@
             </DOMFrame>
             <DOMFrame index="17" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 213" blendMode="overlay" centerPoint3DX="308.2" centerPoint3DY="-110.9">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 213" blendMode="overlay" centerPoint3DX="308.2" centerPoint3DY="-110.9">
                   <matrix>
                     <Matrix a="1.46659851074219" d="2.67315673828125" tx="378.05" ty="69.5"/>
                   </matrix>
@@ -1294,7 +1294,7 @@
             </DOMFrame>
             <DOMFrame index="18" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 214" blendMode="overlay" centerPoint3DX="312.1" centerPoint3DY="-115.3">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 214" blendMode="overlay" centerPoint3DX="312.1" centerPoint3DY="-115.3">
                   <matrix>
                     <Matrix a="1.46659851074219" d="2.67315673828125" tx="378.05" ty="69.5"/>
                   </matrix>
@@ -1306,7 +1306,7 @@
             </DOMFrame>
             <DOMFrame index="19" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 215" blendMode="overlay" centerPoint3DX="290.2" centerPoint3DY="-110.8">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 215" blendMode="overlay" centerPoint3DX="290.2" centerPoint3DY="-110.8">
                   <matrix>
                     <Matrix a="1.46659851074219" d="2.67315673828125" tx="378.05" ty="69.5"/>
                   </matrix>
@@ -1321,7 +1321,7 @@
             </DOMFrame>
             <DOMFrame index="25" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 217" blendMode="overlay" centerPoint3DX="559.7" centerPoint3DY="-13.35">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 217" blendMode="overlay" centerPoint3DX="559.7" centerPoint3DY="-13.35">
                   <matrix>
                     <Matrix a="1.43280029296875" b="0.0653839111328125" c="-0.15826416015625" d="0.846359252929688" tx="470.15" ty="43"/>
                   </matrix>
@@ -1329,7 +1329,7 @@
                     <Point x="0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/上勾拳特效组件/shape 1048" blendMode="overlay" centerPoint3DX="494.5" centerPoint3DY="-15.6">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1048" blendMode="overlay" centerPoint3DX="494.5" centerPoint3DY="-15.6">
                   <matrix>
                     <Matrix a="0.196456909179688" b="-1.05056762695313" c="1.77850341796875" d="0.0811614990234375" tx="543.7" ty="-19.45"/>
                   </matrix>
@@ -1337,7 +1337,7 @@
                     <Point y="0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 210" blendMode="overlay" centerPoint3DX="382.85" centerPoint3DY="-25.6">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 210" blendMode="overlay" centerPoint3DX="382.85" centerPoint3DY="-25.6">
                   <matrix>
                     <Matrix a="2.12895202636719" b="0.09716796875" c="-0.15826416015625" d="0.846359252929688" tx="406.25" ty="36.6"/>
                   </matrix>
@@ -1345,7 +1345,7 @@
                     <Point x="0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b107" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b107" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.0849151611328125" b="0.45404052734375" c="-1.3037109375" d="-0.0594940185546875" tx="366.9" ty="-20.35"/>
                   </matrix>
@@ -1357,7 +1357,7 @@
             </DOMFrame>
             <DOMFrame index="26" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 211" blendMode="overlay" centerPoint3DX="378.3" centerPoint3DY="-15.6">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 211" blendMode="overlay" centerPoint3DX="378.3" centerPoint3DY="-15.6">
                   <matrix>
                     <Matrix a="1.87298583984375" b="0.085479736328125" c="-0.15826416015625" d="0.846359252929688" tx="456.65" ty="44.7"/>
                   </matrix>
@@ -1365,7 +1365,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b108" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b108" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.1141357421875" b="0.610382080078125" c="-1.517578125" d="-0.0692596435546875" tx="441.8" ty="-24"/>
                   </matrix>
@@ -1377,7 +1377,7 @@
             </DOMFrame>
             <DOMFrame index="27" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 212" blendMode="overlay" centerPoint3DX="393.75" centerPoint3DY="-16.05">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 212" blendMode="overlay" centerPoint3DX="393.75" centerPoint3DY="-16.05">
                   <matrix>
                     <Matrix a="1.87298583984375" b="0.085479736328125" c="-0.195220947265625" d="1.0439453125" tx="454.1" ty="58"/>
                   </matrix>
@@ -1385,7 +1385,7 @@
                     <Point y="0.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b109" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b109" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.13360595703125" b="0.714447021484375" c="-1.95713806152344" d="-0.089324951171875" tx="356.15" ty="-31.05"/>
                   </matrix>
@@ -1397,7 +1397,7 @@
             </DOMFrame>
             <DOMFrame index="28" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 213" blendMode="overlay" centerPoint3DX="377.85" centerPoint3DY="-16.05">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 213" blendMode="overlay" centerPoint3DX="377.85" centerPoint3DY="-16.05">
                   <matrix>
                     <Matrix a="1.87298583984375" b="0.085479736328125" c="-0.195220947265625" d="1.0439453125" tx="454.1" ty="58"/>
                   </matrix>
@@ -1405,7 +1405,7 @@
                     <Point y="0.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b110" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b110" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.134857177734375" b="0.72119140625" c="-2.35844421386719" d="-0.107635498046875" tx="273.7" ty="-38.1"/>
                   </matrix>
@@ -1417,7 +1417,7 @@
             </DOMFrame>
             <DOMFrame index="29" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 214" blendMode="overlay" centerPoint3DX="383.1" centerPoint3DY="-18.1">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 214" blendMode="overlay" centerPoint3DX="383.1" centerPoint3DY="-18.1">
                   <matrix>
                     <Matrix a="1.87298583984375" b="0.085479736328125" c="-0.195220947265625" d="1.0439453125" tx="454.1" ty="58"/>
                   </matrix>
@@ -1425,7 +1425,7 @@
                     <Point y="0.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b111" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b111" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.14959716796875" b="0.800048828125" c="-2.61637878417969" d="-0.119415283203125" tx="184.5" ty="-40.85"/>
                   </matrix>
@@ -1437,7 +1437,7 @@
             </DOMFrame>
             <DOMFrame index="30" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 215" blendMode="overlay" centerPoint3DX="354.95" centerPoint3DY="-18.1">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 215" blendMode="overlay" centerPoint3DX="354.95" centerPoint3DY="-18.1">
                   <matrix>
                     <Matrix a="1.87298583984375" b="0.085479736328125" c="-0.195220947265625" d="1.0439453125" tx="454.1" ty="58"/>
                   </matrix>
@@ -1455,7 +1455,7 @@
             </DOMFrame>
             <DOMFrame index="37" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 217" blendMode="overlay" centerPoint3DX="517.3" centerPoint3DY="-354.4">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 217" blendMode="overlay" centerPoint3DX="517.3" centerPoint3DY="-354.4">
                   <matrix>
                     <Matrix a="1.19981384277344" b="-0.734481811523438" c="1.02801513671875" d="0.992996215820313" tx="525.6" ty="-244.4"/>
                   </matrix>
@@ -1463,7 +1463,7 @@
                     <Point x="0.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/上勾拳特效组件/shape 1048" blendMode="overlay" centerPoint3DX="466.05" centerPoint3DY="-319">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1048" blendMode="overlay" centerPoint3DX="466.05" centerPoint3DY="-319">
                   <matrix>
                     <Matrix a="-1.27606201171875" b="-1.23257446289063" c="1.4892578125" d="-0.911697387695313" tx="497.65" ty="-352.5"/>
                   </matrix>
@@ -1471,7 +1471,7 @@
                     <Point x="-0.05" y="0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 210" blendMode="overlay" centerPoint3DX="365.75" centerPoint3DY="-267.65">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 210" blendMode="overlay" centerPoint3DX="365.75" centerPoint3DY="-267.65">
                   <matrix>
                     <Matrix a="1.78271484375" b="-1.09130859375" c="1.02801513671875" d="0.992996215820313" tx="467.35" ty="-215.4"/>
                   </matrix>
@@ -1479,7 +1479,7 @@
                     <Point x="0.05" y="-0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b107" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b107" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.551513671875" b="0.532745361328125" c="-1.09172058105469" d="0.668319702148438" tx="359.5" ty="-254.05"/>
                   </matrix>
@@ -1491,7 +1491,7 @@
             </DOMFrame>
             <DOMFrame index="38" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 211" blendMode="overlay" centerPoint3DX="374.05" centerPoint3DY="-255.45">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 211" blendMode="overlay" centerPoint3DX="374.05" centerPoint3DY="-255.45">
                   <matrix>
                     <Matrix a="1.56840515136719" b="-0.96014404296875" c="1.02801513671875" d="0.992996215820313" tx="517.4" ty="-235.05"/>
                   </matrix>
@@ -1499,7 +1499,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b108" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b108" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.741409301757813" b="0.716140747070313" c="-1.27078247070313" d="0.7779541015625" tx="412.5" ty="-300.1"/>
                   </matrix>
@@ -1511,7 +1511,7 @@
             </DOMFrame>
             <DOMFrame index="39" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 212" blendMode="overlay" centerPoint3DX="386" centerPoint3DY="-265.05">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 212" blendMode="overlay" centerPoint3DX="386" centerPoint3DY="-265.05">
                   <matrix>
                     <Matrix a="1.56840515136719" b="-0.96014404296875" c="1.26803588867188" d="1.22479248046875" tx="533.6" ty="-219.35"/>
                   </matrix>
@@ -1519,7 +1519,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b109" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b109" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.867782592773438" b="0.838241577148438" c="-1.63885498046875" d="1.0032958984375" tx="336.5" ty="-259.55"/>
                   </matrix>
@@ -1531,7 +1531,7 @@
             </DOMFrame>
             <DOMFrame index="40" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 213" blendMode="overlay" centerPoint3DX="372.15" centerPoint3DY="-256.7">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 213" blendMode="overlay" centerPoint3DX="372.15" centerPoint3DY="-256.7">
                   <matrix>
                     <Matrix a="1.56840515136719" b="-0.96014404296875" c="1.26803588867188" d="1.22479248046875" tx="533.6" ty="-219.35"/>
                   </matrix>
@@ -1539,7 +1539,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b110" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b110" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.875991821289063" b="0.846145629882813" c="-1.97488403320313" d="1.208984375" tx="262.85" ty="-220.9"/>
                   </matrix>
@@ -1551,7 +1551,7 @@
             </DOMFrame>
             <DOMFrame index="41" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 214" blendMode="overlay" centerPoint3DX="374.9" centerPoint3DY="-260.6">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 214" blendMode="overlay" centerPoint3DX="374.9" centerPoint3DY="-260.6">
                   <matrix>
                     <Matrix a="1.56840515136719" b="-0.96014404296875" c="1.26803588867188" d="1.22479248046875" tx="533.6" ty="-219.35"/>
                   </matrix>
@@ -1559,7 +1559,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b111" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b111" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.971786499023438" b="0.938674926757813" c="-2.19085693359375" d="1.3411865234375" tx="190" ty="-173.75"/>
                   </matrix>
@@ -1571,7 +1571,7 @@
             </DOMFrame>
             <DOMFrame index="42" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 215" blendMode="overlay" centerPoint3DX="353.8" centerPoint3DY="-244.45">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 215" blendMode="overlay" centerPoint3DX="353.8" centerPoint3DY="-244.45">
                   <matrix>
                     <Matrix a="1.56840515136719" b="-0.96014404296875" c="1.26803588867188" d="1.22479248046875" tx="533.6" ty="-219.35"/>
                   </matrix>
@@ -1586,7 +1586,7 @@
             </DOMFrame>
             <DOMFrame index="49" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 217" selected="true" blendMode="overlay" centerPoint3DX="321.7" centerPoint3DY="-75.35">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 217" blendMode="overlay" centerPoint3DX="321.7" centerPoint3DY="-75.35">
                   <matrix>
                     <Matrix a="1.29580688476563" d="4.04400634765625" tx="250.1" ty="209.95"/>
                   </matrix>
@@ -1594,7 +1594,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/上勾拳特效组件/shape 1048" selected="true" blendMode="overlay" centerPoint3DX="262.95" centerPoint3DY="-65.35">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1048" blendMode="overlay" centerPoint3DX="262.95" centerPoint3DY="-65.35">
                   <matrix>
                     <Matrix a="0" b="-5.01969909667969" c="1.60842895507813" d="0" tx="305.6" ty="-102.1"/>
                   </matrix>
@@ -1602,7 +1602,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 210" selected="true" blendMode="overlay" centerPoint3DX="161.05" centerPoint3DY="-91.95">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 210" blendMode="overlay" centerPoint3DX="161.05" centerPoint3DY="-91.95">
                   <matrix>
                     <Matrix a="1.92535400390625" d="4.04400634765625" tx="191.75" ty="193.45"/>
                   </matrix>
@@ -1610,7 +1610,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b107" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b107" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0" b="2.16964721679688" c="-1.17910766601563" d="0" tx="146.9" ty="-67.85"/>
                   </matrix>
@@ -1622,7 +1622,7 @@
             </DOMFrame>
             <DOMFrame index="51" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 211" blendMode="overlay" centerPoint3DX="158.65" centerPoint3DY="-48.1">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 211" blendMode="overlay" centerPoint3DX="158.65" centerPoint3DY="-48.1">
                   <matrix>
                     <Matrix a="1.69390869140625" d="4.04400634765625" tx="238.25" ty="220.7"/>
                   </matrix>
@@ -1630,7 +1630,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b108" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b108" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0" b="2.91653442382813" c="-1.37249755859375" d="0" tx="213.4" ty="-101.5"/>
                   </matrix>
@@ -1642,7 +1642,7 @@
             </DOMFrame>
             <DOMFrame index="52" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 212" blendMode="overlay" centerPoint3DX="171.7" centerPoint3DY="-52.7">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 212" blendMode="overlay" centerPoint3DX="171.7" centerPoint3DY="-52.7">
                   <matrix>
                     <Matrix a="1.69390869140625" d="4.98818969726563" tx="238.25" ty="284.6"/>
                   </matrix>
@@ -1650,7 +1650,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b109" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b109" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0" b="3.41372680664063" c="-1.77000427246094" d="0" tx="135.45" ty="-116.5"/>
                   </matrix>
@@ -1662,7 +1662,7 @@
             </DOMFrame>
             <DOMFrame index="53" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 213" blendMode="overlay" centerPoint3DX="157.85" centerPoint3DY="-51.85">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 213" blendMode="overlay" centerPoint3DX="157.85" centerPoint3DY="-51.85">
                   <matrix>
                     <Matrix a="1.69390869140625" d="4.98818969726563" tx="238.25" ty="284.6"/>
                   </matrix>
@@ -1670,7 +1670,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b110" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b110" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0" b="3.44596862792969" c="-2.13291931152344" d="0" tx="60.3" ty="-132.5"/>
                   </matrix>
@@ -1682,7 +1682,7 @@
             </DOMFrame>
             <DOMFrame index="54" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 214" blendMode="overlay" centerPoint3DX="162" centerPoint3DY="-59.7">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 214" blendMode="overlay" centerPoint3DX="162" centerPoint3DY="-59.7">
                   <matrix>
                     <Matrix a="1.69390869140625" d="4.98818969726563" tx="238.25" ty="284.6"/>
                   </matrix>
@@ -1690,7 +1690,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b111" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b111" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0" b="3.82279968261719" c="-2.36614990234375" d="0" tx="-20.15" ty="-126.2"/>
                   </matrix>
@@ -1702,7 +1702,7 @@
             </DOMFrame>
             <DOMFrame index="55" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 215" blendMode="overlay" centerPoint3DX="137.4" centerPoint3DY="-51.85">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 215" blendMode="overlay" centerPoint3DX="137.4" centerPoint3DY="-51.85">
                   <matrix>
                     <Matrix a="1.69390869140625" d="4.98818969726563" tx="238.25" ty="284.6"/>
                   </matrix>
@@ -1717,14 +1717,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="腕刃反转标签" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="腕刃反转标签" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="59" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 10" color="#9933CC">
+        <DOMLayer name="图层 10" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1767,7 +1767,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 11" color="#FF800A">
+        <DOMLayer name="图层 11" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1813,7 +1813,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 12" color="#FF4FFF">
+        <DOMLayer name="图层 12" color="#FF4FFF" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1859,7 +1859,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF">
+        <DOMLayer name="图层 13" color="#4FFFFF" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -8656,7 +8656,7 @@
             </DOMFrame>
             <DOMFrame index="49" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="50.45" centerPoint3DY="-107.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="50.45" centerPoint3DY="-107.35">
                   <matrix>
                     <Matrix a="-0.792205810546875" b="0.2232666015625" c="0.2232666015625" d="0.792205810546875" tx="104.05" ty="-153.15"/>
                   </matrix>
@@ -8667,7 +8667,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="143.4" centerPoint3DY="-122.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="143.4" centerPoint3DY="-122.95">
                   <matrix>
                     <Matrix a="-0.385101318359375" b="-0.675537109375" c="-0.675537109375" d="0.385101318359375" tx="126.55" ty="-72.85"/>
                   </matrix>
@@ -8678,7 +8678,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="76.5" centerPoint3DY="-48.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="76.5" centerPoint3DY="-48.25">
                   <matrix>
                     <Matrix a="-0.79656982421875" b="0.11700439453125" c="0.11700439453125" d="0.79656982421875" tx="44.25" ty="-35.2"/>
                   </matrix>
@@ -8689,7 +8689,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="102.2" centerPoint3DY="49.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="102.2" centerPoint3DY="49.65">
                   <matrix>
                     <Matrix a="-0.63323974609375" b="-0.566390991210938" c="-0.566390991210938" d="0.63323974609375" tx="143.9" ty="-23.6"/>
                   </matrix>
@@ -8700,7 +8700,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="117.8" centerPoint3DY="9.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="117.8" centerPoint3DY="9.9">
                   <matrix>
                     <Matrix a="-0.85333251953125" b="0.0519866943359375" c="0.0519866943359375" d="0.85333251953125" tx="163.9" ty="-26"/>
                   </matrix>
@@ -8711,7 +8711,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-83.2" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-83.2" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix a="-0.81072998046875" b="-0.0465850830078125" c="-0.0465850830078125" d="0.81072998046875" tx="-42.6" ty="214.3"/>
                   </matrix>
@@ -8722,7 +8722,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="10.35" centerPoint3DY="150.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="10.35" centerPoint3DY="150.5">
                   <matrix>
                     <Matrix a="-0.72308349609375" b="-0.41278076171875" c="-0.41278076171875" d="0.72308349609375" tx="48.5" ty="82.85"/>
                   </matrix>
@@ -8733,7 +8733,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="120.45" centerPoint3DY="42.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="120.45" centerPoint3DY="42.25">
                   <matrix>
                     <Matrix a="-0.836471557617188" b="-0.15460205078125" c="-0.15460205078125" d="0.836471557617188" tx="177.45" ty="-18.1"/>
                   </matrix>
@@ -8744,7 +8744,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="234.7" centerPoint3DY="243.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="234.7" centerPoint3DY="243.1">
                   <matrix>
                     <Matrix a="-0.76031494140625" b="0.308013916015625" c="0.308013916015625" d="0.76031494140625" tx="261.3" ty="200.7"/>
                   </matrix>
@@ -8755,7 +8755,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="158.75" centerPoint3DY="198.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="158.75" centerPoint3DY="198.85">
                   <matrix>
                     <Matrix a="-0.47442626953125" b="0.6900634765625" c="0.6900634765625" d="0.47442626953125" tx="138.2" ty="124.7"/>
                   </matrix>
@@ -8766,7 +8766,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="137.9" centerPoint3DY="55.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="137.9" centerPoint3DY="55.25">
                   <matrix>
                     <Matrix a="-0.848876953125" b="0.018829345703125" c="0.018829345703125" d="0.848876953125" tx="158.75" ty="-64.35"/>
                   </matrix>
@@ -8777,7 +8777,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="127.85" centerPoint3DY="-177.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="127.85" centerPoint3DY="-177.35">
                   <matrix>
                     <Matrix a="-0.946441650390625" b="0.0434417724609375" c="0.0434417724609375" d="0.946441650390625" tx="149.75" ty="-220.85"/>
                   </matrix>
@@ -8788,7 +8788,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="144.4" centerPoint3DY="-188.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="144.4" centerPoint3DY="-188.6">
                   <matrix>
                     <Matrix a="-0.612518310546875" b="0.55255126953125" c="-0.53985595703125" d="-0.598373413085938" tx="207.85" ty="-159.15"/>
                   </matrix>
@@ -8799,7 +8799,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="152.25" centerPoint3DY="-159.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="152.25" centerPoint3DY="-159.2">
                   <matrix>
                     <Matrix a="0.655197143554688" b="0.42352294921875" c="0.42352294921875" d="-0.655197143554688" tx="159.55" ty="-211.9"/>
                   </matrix>
@@ -8810,7 +8810,7 @@
                     <BlurFilter blurX="30" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="187.4" centerPoint3DY="-271.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="187.4" centerPoint3DY="-271.65">
                   <matrix>
                     <Matrix a="0.7137451171875" b="-0.31842041015625" c="-0.31842041015625" d="-0.7137451171875" tx="213.35" ty="-291.9"/>
                   </matrix>
@@ -9659,7 +9659,7 @@
             </DOMFrame>
             <DOMFrame index="56" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="-54.45" centerPoint3DY="-49.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-54.45" centerPoint3DY="-49.15">
                   <matrix>
                     <Matrix a="-0.85333251953125" b="0.0519866943359375" c="0.0519866943359375" d="0.85333251953125" tx="-8.35" ty="-85.05"/>
                   </matrix>
@@ -9667,7 +9667,7 @@
                     <Point x="0.15" y="-0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="-45.7" centerPoint3DY="-1.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-45.7" centerPoint3DY="-1.1">
                   <matrix>
                     <Matrix a="-0.77716064453125" b="-0.3436279296875" c="-0.3436279296875" d="0.77716064453125" tx="-28.8" ty="-83.35"/>
                   </matrix>
@@ -9675,7 +9675,7 @@
                     <Point x="0.4" y="3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-93.35" centerPoint3DY="244.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-93.35" centerPoint3DY="244.55">
                   <matrix>
                     <Matrix a="-0.80841064453125" b="0.14947509765625" c="0.14947509765625" d="0.80841064453125" tx="-60.9" ty="205.9"/>
                   </matrix>
@@ -9683,7 +9683,7 @@
                     <Point x="-0.15" y="2.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-73.25" centerPoint3DY="127.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-73.25" centerPoint3DY="127.3">
                   <matrix>
                     <Matrix a="-0.818084716796875" b="0.1834716796875" c="0.1834716796875" d="0.818084716796875" tx="-90.55" ty="51.3"/>
                   </matrix>
@@ -9691,7 +9691,7 @@
                     <Point x="1.4" y="3.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="-39.65" centerPoint3DY="-7.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-39.65" centerPoint3DY="-7.75">
                   <matrix>
                     <Matrix a="-0.850875854492188" b="-0.00396728515625" c="-0.00396728515625" d="0.850875854492188" tx="5.95" ty="-77.05"/>
                   </matrix>
@@ -9699,7 +9699,7 @@
                     <Point x="-1.55" y="2.35"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="37.7" centerPoint3DY="232.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="37.7" centerPoint3DY="232.65">
                   <matrix>
                     <Matrix a="-0.81304931640625" b="0.150985717773438" c="0.150985717773438" d="0.81304931640625" tx="72.45" ty="196.35"/>
                   </matrix>
@@ -9707,7 +9707,7 @@
                     <Point x="-1.6" y="2.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-18" centerPoint3DY="143.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-18" centerPoint3DY="143.05">
                   <matrix>
                     <Matrix a="-0.727523803710938" b="0.422042846679688" c="0.422042846679688" d="0.727523803710938" tx="-4.75" ty="67.25"/>
                   </matrix>
@@ -9715,7 +9715,7 @@
                     <Point x="1.05" y="2.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="-150.25" centerPoint3DY="-185.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-150.25" centerPoint3DY="-185.35">
                   <matrix>
                     <Matrix a="-0.825119018554688" b="-0.05792236328125" c="-0.05792236328125" d="0.825119018554688" tx="-84.05" ty="-210.5"/>
                   </matrix>
@@ -9723,7 +9723,7 @@
                     <Point x="0.5" y="-0.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="-103.4" centerPoint3DY="-184.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="-103.4" centerPoint3DY="-184.3">
                   <matrix>
                     <Matrix a="-0.659530639648438" b="-0.42742919921875" c="-0.42742919921875" d="0.659530639648438" tx="-95.25" ty="-131.55"/>
                   </matrix>
@@ -9731,7 +9731,7 @@
                     <Point x="-1" y="2.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="-127" centerPoint3DY="-89.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="-127" centerPoint3DY="-89.1">
                   <matrix>
                     <Matrix a="-0.663742065429688" b="0.46856689453125" c="0.46856689453125" d="0.663742065429688" tx="-150" ty="-62.65"/>
                   </matrix>
@@ -9739,7 +9739,7 @@
                     <Point x="0.1" y="-0.15"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="-22.85" centerPoint3DY="-3.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-22.85" centerPoint3DY="-3.05">
                   <matrix>
                     <Matrix a="-0.842514038085938" b="0.1072998046875" c="0.1072998046875" d="0.842514038085938" tx="-14.65" ty="-124.3"/>
                   </matrix>
@@ -9747,7 +9747,7 @@
                     <Point x="9.4" y="14.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="-54.25" centerPoint3DY="-227.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-54.25" centerPoint3DY="-227.65">
                   <matrix>
                     <Matrix a="-0.9400634765625" b="0.146896362304688" c="0.146896362304688" d="0.9400634765625" tx="-37.1" ty="-273.45"/>
                   </matrix>
@@ -9755,7 +9755,7 @@
                     <Point x="-0.8" y="-3.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="100.65" centerPoint3DY="-172">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="100.65" centerPoint3DY="-172">
                   <matrix>
                     <Matrix a="0.79583740234375" b="-0.23345947265625" c="0.22808837890625" d="0.77752685546875" tx="55.7" ty="-226.1"/>
                   </matrix>
@@ -9763,7 +9763,7 @@
                     <Point x="1.5" y="-1.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="84.85" centerPoint3DY="-200.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="84.85" centerPoint3DY="-200.5">
                   <matrix>
                     <Matrix a="-0.6617431640625" b="-0.451950073242188" c="-0.451950073242188" d="0.6617431640625" tx="75.95" ty="-146.35"/>
                   </matrix>
@@ -9771,7 +9771,7 @@
                     <Point x="-1.7" y="0.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="42.7" centerPoint3DY="-93.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="42.7" centerPoint3DY="-93.5">
                   <matrix>
                     <Matrix a="-0.638763427734375" b="0.473175048828125" c="0.473175048828125" d="0.638763427734375" tx="21.35" ty="-67.65"/>
                   </matrix>
@@ -9783,11 +9783,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 14" color="#808080">
+        <DOMLayer name="图层 14" color="#808080" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/幻影/残影1" centerPoint3DX="-51.8" centerPoint3DY="18.45">
+                <DOMSymbolInstance libraryItemName="特效与子弹/幻影/残影1" centerPoint3DX="-51.8" centerPoint3DY="18.45">
                   <matrix>
                     <Matrix a="1.28204345703125" d="1.25163269042969" tx="-257.55" ty="-329.45"/>
                   </matrix>
@@ -9798,7 +9798,7 @@
                     <BlurFilter blurX="80" blurY="0"/>
                   </filters>
                   <color>
-                    <Color tintMultiplier="1"/>
+                    <Color alphaMultiplier="0.48828125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9808,7 +9808,7 @@
             </DOMFrame>
             <DOMFrame index="10" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/幻影/残影2" selected="true" centerPoint3DX="16" centerPoint3DY="31.05">
+                <DOMSymbolInstance libraryItemName="特效与子弹/幻影/残影2" centerPoint3DX="16" centerPoint3DY="31.05">
                   <matrix>
                     <Matrix a="1.33248901367188" d="1.17771911621094" tx="-438.85" ty="-282.85"/>
                   </matrix>
@@ -9819,7 +9819,7 @@
                     <BlurFilter blurX="80" blurY="0"/>
                   </filters>
                   <color>
-                    <Color tintMultiplier="1"/>
+                    <Color alphaMultiplier="0.48828125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9829,7 +9829,7 @@
             </DOMFrame>
             <DOMFrame index="23" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/幻影/残影3" centerPoint3DX="28" centerPoint3DY="10.1">
+                <DOMSymbolInstance libraryItemName="特效与子弹/幻影/残影3" centerPoint3DX="28" centerPoint3DY="10.1">
                   <matrix>
                     <Matrix a="1.031982421875" d="1.311279296875" tx="-401.2" ty="-611.2"/>
                   </matrix>
@@ -9840,7 +9840,7 @@
                     <BlurFilter blurX="80" blurY="0"/>
                   </filters>
                   <color>
-                    <Color tintMultiplier="1"/>
+                    <Color alphaMultiplier="0.48828125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9850,7 +9850,7 @@
             </DOMFrame>
             <DOMFrame index="35" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/幻影/残影4" centerPoint3DX="22.05" centerPoint3DY="17.8">
+                <DOMSymbolInstance libraryItemName="特效与子弹/幻影/残影4" centerPoint3DX="22.05" centerPoint3DY="17.8">
                   <matrix>
                     <Matrix a="1.16546630859375" d="1.24905395507813" tx="-206.75" ty="-323.3"/>
                   </matrix>
@@ -9861,7 +9861,7 @@
                     <BlurFilter blurX="80" blurY="0"/>
                   </filters>
                   <color>
-                    <Color tintMultiplier="1"/>
+                    <Color alphaMultiplier="0.48828125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9871,7 +9871,7 @@
             </DOMFrame>
             <DOMFrame index="47" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/幻影/残影5" selected="true" centerPoint3DX="-83.3" centerPoint3DY="34.4">
+                <DOMSymbolInstance libraryItemName="特效与子弹/幻影/残影5" centerPoint3DX="-83.3" centerPoint3DY="34.4">
                   <matrix>
                     <Matrix a="1.21092224121094" d="1.17521667480469" tx="-370.1" ty="-266.15"/>
                   </matrix>
@@ -9882,7 +9882,7 @@
                     <BlurFilter blurX="80" blurY="0"/>
                   </filters>
                   <color>
-                    <Color tintMultiplier="1"/>
+                    <Color alphaMultiplier="0.48828125"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -9892,14 +9892,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 15" color="#4F80FF">
+        <DOMLayer name="图层 15" color="#4F80FF" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气爆特效/气爆" centerPoint3DX="220.35" centerPoint3DY="-216">
+                <DOMSymbolInstance libraryItemName="特效与子弹/气爆" centerPoint3DX="220.35" centerPoint3DY="-216">
                   <matrix>
                     <Matrix tx="193.85" ty="-239.5"/>
                   </matrix>
@@ -9917,7 +9917,7 @@
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气爆特效/气爆2" centerPoint3DX="200.05" centerPoint3DY="-214.85">
+                <DOMSymbolInstance libraryItemName="特效与子弹/气爆2" centerPoint3DX="200.05" centerPoint3DY="-214.85">
                   <matrix>
                     <Matrix tx="96.45" ty="-305.95"/>
                   </matrix>
@@ -9935,7 +9935,7 @@
             </DOMFrame>
             <DOMFrame index="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气爆特效/气爆3" centerPoint3DX="224.25" centerPoint3DY="-216.4">
+                <DOMSymbolInstance libraryItemName="特效与子弹/气爆3" centerPoint3DX="224.25" centerPoint3DY="-216.4">
                   <matrix>
                     <Matrix tx="37.5" ty="-379"/>
                   </matrix>
@@ -9953,7 +9953,7 @@
             </DOMFrame>
             <DOMFrame index="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气爆特效/气爆4" centerPoint3DX="231.25" centerPoint3DY="-206">
+                <DOMSymbolInstance libraryItemName="特效与子弹/气爆4" centerPoint3DX="231.25" centerPoint3DY="-206">
                   <matrix>
                     <Matrix tx="3.3" ty="-418.75"/>
                   </matrix>
@@ -9971,7 +9971,7 @@
             </DOMFrame>
             <DOMFrame index="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气爆特效/气爆5" centerPoint3DX="224.35" centerPoint3DY="-211.35">
+                <DOMSymbolInstance libraryItemName="特效与子弹/气爆5" centerPoint3DX="224.35" centerPoint3DY="-211.35">
                   <matrix>
                     <Matrix tx="-48.5" ty="-485"/>
                   </matrix>
@@ -9989,7 +9989,7 @@
             </DOMFrame>
             <DOMFrame index="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气爆特效/气爆6" centerPoint3DX="239.3" centerPoint3DY="-229.8">
+                <DOMSymbolInstance libraryItemName="特效与子弹/气爆6" centerPoint3DX="239.3" centerPoint3DY="-229.8">
                   <matrix>
                     <Matrix tx="-94.2" ty="-564.3"/>
                   </matrix>
@@ -10016,7 +10016,7 @@
             </DOMFrame>
             <DOMFrame index="25" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 217" blendMode="overlay" centerPoint3DX="577.9" centerPoint3DY="-44.2">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 217" blendMode="overlay" centerPoint3DX="577.9" centerPoint3DY="-44.2">
                   <matrix>
                     <Matrix a="1.520751953125" b="-0.0059814453125" c="0.0160064697265625" d="0.813491821289063" tx="495.95" ty="13.5"/>
                   </matrix>
@@ -10024,7 +10024,7 @@
                     <Point x="0.1" y="0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/上勾拳特效组件/shape 1048" blendMode="overlay" centerPoint3DX="509.3" centerPoint3DY="-41.75">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1048" blendMode="overlay" centerPoint3DX="509.3" centerPoint3DY="-41.75">
                   <matrix>
                     <Matrix a="-0.0198822021484375" b="-1.00975036621094" c="1.88761901855469" d="-0.0074310302734375" tx="559.85" ty="-49.55"/>
                   </matrix>
@@ -10032,7 +10032,7 @@
                     <Point y="0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 210" blendMode="overlay" centerPoint3DX="390.2" centerPoint3DY="-46.85">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 210" blendMode="overlay" centerPoint3DX="390.2" centerPoint3DY="-46.85">
                   <matrix>
                     <Matrix a="2.25961303710938" b="-0.0088958740234375" c="0.0160064697265625" d="0.813491821289063" tx="427.45" ty="10.35"/>
                   </matrix>
@@ -10040,7 +10040,7 @@
                     <Point x="0.05" y="0.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b107" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b107" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0085906982421875" b="0.436431884765625" c="-1.38372802734375" d="0.0054473876953125" tx="373.75" ty="-41.9"/>
                   </matrix>
@@ -10052,7 +10052,7 @@
             </DOMFrame>
             <DOMFrame index="26" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 211" blendMode="overlay" centerPoint3DX="387.1" centerPoint3DY="-37.8">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 211" blendMode="overlay" centerPoint3DX="387.1" centerPoint3DY="-37.8">
                   <matrix>
                     <Matrix a="1.98797607421875" b="-0.0078125" c="0.0160064697265625" d="0.813491821289063" tx="482.15" ty="15.7"/>
                   </matrix>
@@ -10060,7 +10060,7 @@
                     <Point x="0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b108" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b108" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.01153564453125" b="0.586685180664063" c="-1.61077880859375" d="0.0063323974609375" tx="451.7" ty="-48.95"/>
                   </matrix>
@@ -10072,7 +10072,7 @@
             </DOMFrame>
             <DOMFrame index="27" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 212" blendMode="overlay" centerPoint3DX="402.55" centerPoint3DY="-38.85">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 212" blendMode="overlay" centerPoint3DX="402.55" centerPoint3DY="-38.85">
                   <matrix>
                     <Matrix a="1.98797607421875" b="-0.0078125" c="0.0197601318359375" d="1.00341796875" tx="482.35" ty="28.55"/>
                   </matrix>
@@ -10080,7 +10080,7 @@
                     <Point y="0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b109" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b109" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0135040283203125" b="0.686691284179688" c="-2.07725524902344" d="0.0081634521484375" tx="360.1" ty="-51.65"/>
                   </matrix>
@@ -10092,7 +10092,7 @@
             </DOMFrame>
             <DOMFrame index="28" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 213" blendMode="overlay" centerPoint3DX="386" centerPoint3DY="-38.85">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 213" blendMode="overlay" centerPoint3DX="386" centerPoint3DY="-38.85">
                   <matrix>
                     <Matrix a="1.98797607421875" b="-0.0078125" c="0.0197601318359375" d="1.00341796875" tx="482.35" ty="28.55"/>
                   </matrix>
@@ -10100,7 +10100,7 @@
                     <Point y="0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b110" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b110" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0136260986328125" b="0.693191528320313" c="-2.50320434570313" d="0.0098419189453125" tx="271.85" ty="-54.5"/>
                   </matrix>
@@ -10112,7 +10112,7 @@
             </DOMFrame>
             <DOMFrame index="29" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 214" blendMode="overlay" centerPoint3DX="391.1" centerPoint3DY="-40.6">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 214" blendMode="overlay" centerPoint3DX="391.1" centerPoint3DY="-40.6">
                   <matrix>
                     <Matrix a="1.98797607421875" b="-0.0078125" c="0.0197601318359375" d="1.00341796875" tx="482.35" ty="28.55"/>
                   </matrix>
@@ -10120,7 +10120,7 @@
                     <Point y="0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效/突刺用特效/b05/b111" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/突刺用特效/b05/b111" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.0151214599609375" b="0.76898193359375" c="-2.7769775390625" d="0.0109405517578125" tx="177.45" ty="-52.8"/>
                   </matrix>
@@ -10132,7 +10132,7 @@
             </DOMFrame>
             <DOMFrame index="30" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/其他特效/shape 215" blendMode="overlay" centerPoint3DX="362.3" centerPoint3DY="-38.85">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 215" blendMode="overlay" centerPoint3DX="362.3" centerPoint3DY="-38.85">
                   <matrix>
                     <Matrix a="1.98797607421875" b="-0.0078125" c="0.0197601318359375" d="1.00341796875" tx="482.35" ty="28.55"/>
                   </matrix>
@@ -10147,14 +10147,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 16" color="#FF4F4F">
+        <DOMLayer name="图层 16" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="25" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/气流特效/气流" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/气流" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-2.29904174804688" b="-0.260894775390625" c="0.112762451171875" d="-0.993621826171875" tx="168.5" ty="-3.65"/>
                   </matrix>
@@ -10172,7 +10172,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 33" color="#4FFF4F">
+        <DOMLayer name="图层 33" color="#4FFF4F" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -10236,38 +10236,6 @@
                 <script><![CDATA[_root.播放音效("爆炸 较深邃 02.mp3");]]></script>
               </Actionscript>
               <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="影子" color="#FF800A" current="true" isSelected="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="59" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" selected="true" centerPoint3DX="71.45" centerPoint3DY="319.7">
-                  <matrix>
-                    <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <BlurFilter blurX="10" blurY="0"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>

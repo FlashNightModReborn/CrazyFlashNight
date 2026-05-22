@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-后撤步" itemID="6964d656-00002843" lastModified="1776865242" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-后撤步" itemID="6964d656-00002843" linkageExportForAS="true" linkageIdentifier="空手攻击容器-后撤步" lastModified="1779436291" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="空手攻击容器-后撤步">
+    <DOMTimeline name="空手攻击容器-后撤步" currentFrame="9">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -9,24 +9,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#9933CC" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="10" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[空手攻击搓招 = _root.技能函数.空手攻击搓招;
-诛杀步可派生搓招 = _root.技能函数.诛杀步可派生搓招;
-后撤步可派生搓招 = _root.技能函数.后撤步可派生搓招;
-波动拳可派生搓招 = _root.技能函数.波动拳可派生搓招;
-能量喷泉可派生搓招 = _root.技能函数.能量喷泉可派生搓招;
-燃烧指节可派生搓招 = _root.技能函数.燃烧指节可派生搓招;
-连环踢可派生搓招 = _root.技能函数.连环踢可派生搓招;
-回旋踢可派生搓招 = _root.技能函数.回旋踢可派生搓招;]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="动作代码" color="#FF800A" autoNamed="false">
+        <DOMLayer name="动作代码" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
@@ -36,7 +19,7 @@
             </DOMFrame>
             <DOMFrame index="9" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.空手攻击路由.动画完毕(this,_parent);]]></script>
+                <script><![CDATA[_parent.动画完毕();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -1275,7 +1258,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 25" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 25" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1448,7 +1431,7 @@
             </DOMFrame>
             <DOMFrame index="1" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/幻影/后撤步幻影" blendMode="overlay" centerPoint3DX="-36.15" centerPoint3DY="-48.35">
+                <DOMSymbolInstance libraryItemName="特效与子弹/幻影/后撤步幻影" blendMode="overlay" centerPoint3DX="-36.15" centerPoint3DY="-48.35">
                   <matrix>
                     <Matrix a="1.40591430664063" d="1.24520874023438" tx="-242.1" ty="-342.85"/>
                   </matrix>
@@ -1467,7 +1450,7 @@
             </DOMFrame>
             <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/幻影/后撤步幻影" blendMode="overlay" centerPoint3DX="-69.45" centerPoint3DY="-14.2">
+                <DOMSymbolInstance libraryItemName="特效与子弹/幻影/后撤步幻影" blendMode="overlay" centerPoint3DX="-69.45" centerPoint3DY="-14.2">
                   <matrix>
                     <Matrix c="0.3382568359375" d="1.22410583496094" tx="-295.95" ty="-303.7"/>
                   </matrix>
@@ -1483,7 +1466,7 @@
             </DOMFrame>
             <DOMFrame index="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效/幻影/后撤步幻影" selected="true" blendMode="overlay" centerPoint3DX="-91.45" centerPoint3DY="-43.9">
+                <DOMSymbolInstance libraryItemName="特效与子弹/幻影/后撤步幻影" blendMode="overlay" centerPoint3DX="-91.45" centerPoint3DY="-43.9">
                   <matrix>
                     <Matrix c="0.160675048828125" d="1.2960205078125" tx="-275.95" ty="-350.4"/>
                   </matrix>
@@ -1502,38 +1485,6 @@
             </DOMFrame>
             <DOMFrame index="8" duration="2" keyMode="9728">
               <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="影子" color="#9933CC" locked="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="10" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
-                  <matrix>
-                    <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_root.是否阴影 == true)
-   {
-      this._visible = 1;
-   }
-   else
-   {
-      this._visible = 0;
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <BlurFilter blurX="10" blurY="0"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
