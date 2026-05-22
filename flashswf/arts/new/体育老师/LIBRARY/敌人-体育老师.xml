@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="6a1015ba-0000039b" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1779439755" lastUniqueIdentifier="339">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="6a1015ba-0000039b" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1779459196" lastUniqueIdentifier="339">
   <timeline>
-    <DOMTimeline name="敌人-体育老师" currentFrame="32">
+    <DOMTimeline name="敌人-体育老师" currentFrame="12">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4" locked="true">
           <frames>
@@ -90,11 +90,8 @@
 
 
 男_攻击呐喊_库 = ["11_kda_a_1-22.wav","23_kda_sy_1-22.wav","01_kyn_a_2-22.wav","25_kyo_sb-22.wav","20_kyn_h_9-22.wav"];
-女_攻击呐喊_库 = ["01_kin_a_1-22.wav","02_kin_a_2-22.wav","03_kin_a_3-22.wav","19_kin_nage-22.wav"];
 男_中招呐喊_库 = ["男-主角-0.wav","男-主角-1.wav","男-主角-2.wav","主角中招0.wav","主角中招1.wav","主角中招2.wav"];
-女_中招呐喊_库 = ["05_kin_d_1-22.wav","06_kin_d_2-22.wav","07_kin_d_3-22.wav","08_kin_d_4-22.wav"];
 男_击倒呐喊_库 = ["08_kyo_d_f-22.wav","07_ben_d_f-22.wav","06_cla_d_f-22.wav","04_and_df1-22.wav"];
-女_击倒呐喊_库 = ["女02.wav","09_kin_d_f-22.wav"];
 
 
 初始化敌人模板 = _root.初始化敌人模板;
@@ -112,7 +109,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体控制器" color="#AAB531" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="刚体控制器" color="#AAB531" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="76" keyMode="9728">
               <elements>
@@ -157,40 +154,56 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	if (this._currentframe == 1)
+	if (this._currentframe == 1 && _root.gameworld[_parent.攻击目标].hp > 0)
 	{
-		var 攻击对象 = _root.gameworld[_parent.攻击目标];
-		var 距离X = Math.abs(_parent._x - 攻击对象._x);
-		var 距离Z = Math.abs(_parent.Z轴坐标 - 攻击对象.Z轴坐标);
-		if (this.hitTest(攻击对象.area) && 距离Z <= _parent.y轴攻击范围)
+		敌方目标 = _root.gameworld[_parent.攻击目标];
+		距离X = Math.abs(_parent._x - 敌方目标._x);
+		距离Z = Math.abs(_parent.Z轴坐标 - 敌方目标.Z轴坐标);
+		距离Y = 距离Z;
+		if (this.hitTest(敌方目标.area) && 距离Z <= _parent.y轴攻击范围)
 		{
 			play();
-			if (_parent.宠物属性.弹射弧光斩 && 距离X > 250 && random(_parent.攻击欲望 * 2) == 0)
-			{
-				_parent.状态改变("弹射弧光斩");
-
-			}
 			if (random(_parent.攻击欲望) == 0)
 			{
-				if (距离X > 350)
+				if (_parent._x > 敌方目标._x)
 				{
-					_parent.近战招式 = "a1";
-					_parent.状态改变("近战");
-
+					_parent.方向改变("左");
 				}
-				else
+				else if (_parent._x < 敌方目标._x)
 				{
-					_parent.近战招式 = "a0";
-					_parent.状态改变("近战");
+					_parent.方向改变("右");
 				}
 
+				if (距离X < _parent.近战技能距离)
+				{
+					if (_parent.近战技能库.length > 0)
+					{
+						_parent.近战招式 = _parent.近战技能库[random(_parent.近战技能库.length)];
+						_parent.状态改变("近战");
+					}else{
+						_parent.状态改变("空手攻击");
+					}
+				}
+				else if (距离X < _parent.中程技能距离)
+				{
+					if (_parent.中程技能库.length > 0)
+					{
+						_parent.近战招式 = _parent.中程技能库[random(_parent.中程技能库.length)];
+						_parent.状态改变("近战");
+					}
+				}
+				else if (_parent.远程技能库.length > 0 && 距离X < _parent.远程技能距离 )
+				{
+					_parent.近战招式 = _parent.远程技能库[random(_parent.远程技能库.length)];
+					_parent.状态改变("近战");
+				}
+				else if (_parent.超远程技能库.length > 0 && 距离X >= _parent.远程技能距离 )
+				{
+					_parent.近战招式 = _parent.超远程技能库[random(_parent.超远程技能库.length)];
+					_parent.状态改变("近战");
+				}
 			}
-		}else if(_parent.宠物属性.弹射弧光斩 && 距离X < 500 && 距离Z <= 90){
-			if ( random(_parent.攻击欲望 * 5) == 0)
-			{
-				_parent.状态改变("弹射弧光斩");
 
-			}
 		}
 	}
 }]]></script>
@@ -244,7 +257,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="行走ai" color="#5FEDEE" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="行走ai" color="#5FEDEE" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements>
@@ -256,10 +269,9 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   _parent.行走();
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	_parent.行走();
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -272,7 +284,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动画层" color="#32BDEF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="动画层" color="#32BDEF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -324,7 +336,7 @@
             </DOMFrame>
             <DOMFrame index="32" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手跑攻" name="man" selected="true" centerPoint3DX="281.75" centerPoint3DY="249.7">
+                <DOMSymbolInstance libraryItemName="sprite/空手跑攻" name="man" centerPoint3DX="281.75" centerPoint3DY="249.7">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
                   </matrix>
@@ -370,7 +382,7 @@
             </DOMFrame>
             <DOMFrame index="51" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-后撤步" centerPoint3DX="-13.85" centerPoint3DY="-59.7">
+                <DOMSymbolInstance libraryItemName="容器/空手攻击容器/空手攻击容器-后撤步" selected="true" centerPoint3DX="-13.85" centerPoint3DY="-59.7">
                   <matrix>
                     <Matrix a="0.258636474609375" d="0.258468627929688" tx="3.1" ty="-69.55"/>
                   </matrix>
@@ -414,7 +426,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#9933CC" autoNamed="false">
+        <DOMLayer name="阴影" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="62" keyMode="9728">
               <elements>

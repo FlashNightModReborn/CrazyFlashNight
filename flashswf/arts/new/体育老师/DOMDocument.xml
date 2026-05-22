@@ -1,16 +1,15 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" width="1200" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" timelineLabelWidth="216" viewAngle3D="97.275380851371" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="Graphic" itemID="669baccc-0000152d"/>
-          <DOMFolderItem name="NPC" itemID="69ce2b82-00000abc"/>
-          <DOMFolderItem name="NPC/NPC-体育老师" itemID="69ce2b82-00000abd" isExpanded="true"/>
-          <DOMFolderItem name="NPC/NPC-体育老师/杂项" itemID="67d993db-000003db" isExpanded="true"/>
-          <DOMFolderItem name="NPC/NPC-体育老师/组件" itemID="69ce2b82-00000abe" isExpanded="true"/>
+          <DOMFolderItem name="NPC" itemID="69ce2b82-00000abc" isExpanded="true"/>
+          <DOMFolderItem name="NPC/NPC-体育老师" itemID="69ce2b82-00000abd"/>
+          <DOMFolderItem name="NPC/NPC-体育老师/组件" itemID="69ce2b82-00000abe"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
-          <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f" isExpanded="true"/>
-          <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="65b3a368-00000650" isExpanded="true"/>
-          <DOMFolderItem name="怪物通用模板/新近战子弹定位元件/子弹素材" itemID="65ae79f3-00003b03" isExpanded="true"/>
-          <DOMFolderItem name="容器" itemID="6957d32c-00000922" isExpanded="true"/>
+          <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f"/>
+          <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="65b3a368-00000650"/>
+          <DOMFolderItem name="怪物通用模板/新近战子弹定位元件/子弹素材" itemID="65ae79f3-00003b03"/>
+          <DOMFolderItem name="容器" itemID="6957d32c-00000922"/>
           <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09" isExpanded="true"/>
           <DOMFolderItem name="容器/空手攻击容器" itemID="69639e62-00004504" isExpanded="true"/>
           <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798" isExpanded="true"/>
@@ -30,8 +29,8 @@
           <DOMFolderItem name="特效与子弹/新霸体特效" itemID="66c19db5-000017a9"/>
           <DOMFolderItem name="无AS链接" itemID="673f5879-00000b0e"/>
           <DOMFolderItem name="无AS链接/气功弹（和爆炸）素材" itemID="673f5879-00000b0f" isExpanded="true"/>
-          <DOMFolderItem name="余烬小队" itemID="663cf35d-000026f7"/>
-          <DOMFolderItem name="余烬小队/余烬剑痴" itemID="663cf35d-000026f8" isExpanded="true"/>
+          <DOMFolderItem name="余烬小队" itemID="663cf35d-000026f7" isExpanded="true"/>
+          <DOMFolderItem name="余烬小队/余烬剑痴" itemID="663cf35d-000026f8"/>
           <DOMFolderItem name="重复项目文件夹" itemID="66b9eabe-00000ca4"/>
           <DOMFolderItem name="主角肢体素材" itemID="68c8295d-0000091e"/>
      </folders>
@@ -81,59 +80,45 @@
           <Include href="Graphic/shape 630.xml" itemIcon="1" loadImmediate="false" itemID="58132c1f-00000277" lastModified="1477651487"/>
           <Include href="Graphic/shape 631.xml" itemIcon="1" loadImmediate="false" itemID="58132c1f-00000278" lastModified="1477651487"/>
           <Include href="Graphic/shape 632.xml" itemIcon="1" loadImmediate="false" itemID="58132c1f-00000279" lastModified="1477651487"/>
-          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1_133 复制.xml" loadImmediate="false" itemID="69ce3dfd-00000bb9" lastModified="1775123965"/>
-          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3_66 复制.xml" loadImmediate="false" itemID="69ce3dfd-00000bb7" lastModified="1775123965"/>
-          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3_67 复制.xml" loadImmediate="false" itemID="69ce43b4-00000e06" lastModified="1775125428"/>
-          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3_69 复制.xml" loadImmediate="false" itemID="69ce3dfd-00000bbd" lastModified="1775123965"/>
-          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_4_51 复制.xml" loadImmediate="false" itemID="69ce3dfd-00000bbc" lastModified="1775123965"/>
-          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5_44 复制 2.xml" loadImmediate="false" itemID="69ce3dfd-00000bbb" lastModified="1775123965"/>
-          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_7_29 复制.xml" loadImmediate="false" itemID="69ce3dfd-00000bb8" lastModified="1775123965"/>
-          <Include href="NPC/NPC-体育老师/杂项/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_308 复制.xml" loadImmediate="false" itemID="69ce3dfd-00000bba" lastModified="1775123965"/>
-          <Include href="NPC/NPC-体育老师/组件/屁股.xml" loadImmediate="false" itemID="67d7d8a1-000011bc" lastModified="1742204514"/>
+          <Include href="NPC/NPC-体育老师/组件/屁股.xml" loadImmediate="false" itemID="67d7d8a1-000011bc" lastModified="1779459037"/>
           <Include href="NPC/NPC-体育老师/组件/上臂.xml" loadImmediate="false" itemID="67d86cc1-00000334" lastModified="1760462972"/>
-          <Include href="NPC/NPC-体育老师/组件/身体.xml" itemIcon="1" loadImmediate="false" itemID="67d993db-000003fd" lastModified="1760462682"/>
+          <Include href="NPC/NPC-体育老师/组件/身体.xml" itemIcon="1" loadImmediate="false" itemID="67d993db-000003fd" lastModified="1779459027"/>
           <Include href="NPC/NPC-体育老师/组件/头.xml" loadImmediate="false" itemID="67d87d84-000006e9" lastModified="1742373096"/>
           <Include href="NPC/NPC-体育老师/组件/右大腿.xml" loadImmediate="false" itemID="67d993db-000003fc" lastModified="1742206093"/>
-          <Include href="NPC/NPC-体育老师/组件/右脚.xml" loadImmediate="false" itemID="67d993db-000003f7" lastModified="1742204586"/>
+          <Include href="NPC/NPC-体育老师/组件/右脚.xml" loadImmediate="false" itemID="67d993db-000003f7" lastModified="1779459027"/>
           <Include href="NPC/NPC-体育老师/组件/右手 复制.xml" loadImmediate="false" itemID="67d86cbe-00000333" lastModified="1742236862"/>
           <Include href="NPC/NPC-体育老师/组件/右小臂.xml" loadImmediate="false" itemID="67d87d84-000006e8" lastModified="1742237078"/>
           <Include href="NPC/NPC-体育老师/组件/右小腿.xml" loadImmediate="false" itemID="67d993db-000003f8" lastModified="1742206302"/>
           <Include href="NPC/NPC-体育老师/组件/左大腿.xml" loadImmediate="false" itemID="67d993db-000003fb" lastModified="1742204559"/>
-          <Include href="NPC/NPC-体育老师/组件/左脚.xml" loadImmediate="false" itemID="67d993db-000003f9" lastModified="1742204578"/>
+          <Include href="NPC/NPC-体育老师/组件/左脚.xml" loadImmediate="false" itemID="67d993db-000003f9" lastModified="1779459027"/>
           <Include href="NPC/NPC-体育老师/组件/左手 复制.xml" loadImmediate="false" itemID="67d86cbb-00000332" lastModified="1742236859"/>
           <Include href="NPC/NPC-体育老师/组件/左小臂.xml" loadImmediate="false" itemID="67d87d84-000006d8" lastModified="1742236614"/>
           <Include href="shape/Symbol 5.xml" itemIcon="1" loadImmediate="false" itemID="697b1a32-00003134" lastModified="1702343951"/>
-          <Include href="shape/Symbol 73.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-0000098c" lastModified="1702343951"/>
-          <Include href="shape/Symbol 75.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-0000098e" lastModified="1702343951"/>
-          <Include href="shape/Symbol 80.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000992" lastModified="1702343951"/>
           <Include href="sprite/Symbol 3.xml" loadImmediate="false" itemID="6577b699-00000956" lastModified="1702343951"/>
           <Include href="sprite/Symbol 45.xml" loadImmediate="false" itemID="697b6508-00002816" lastModified="1776605969"/>
           <Include href="sprite/Symbol 49.xml" loadImmediate="false" itemID="697b6508-000028bf" lastModified="1776605966"/>
           <Include href="sprite/Symbol 117.xml" loadImmediate="false" itemID="6577b699-000009a3" lastModified="1702343951"/>
           <Include href="sprite/Symbol 119.xml" loadImmediate="false" itemID="6577b699-000009a4" lastModified="1769694913"/>
           <Include href="sprite/Symbol 120.xml" loadImmediate="false" itemID="6577b699-000009a5" lastModified="1776605653"/>
-          <Include href="sprite/Symbol 136.xml" loadImmediate="false" itemID="6577b699-000009b3" lastModified="1779436794"/>
+          <Include href="sprite/Symbol 136.xml" loadImmediate="false" itemID="6577b699-000009b3" lastModified="1779459001"/>
           <Include href="sprite/Symbol 825.xml" loadImmediate="false" itemID="6577b699-00000b8f" lastModified="1779436932"/>
           <Include href="sprite/红色刀光.xml" loadImmediate="false" itemID="65b795a7-00000ba0" lastModified="1706530238"/>
           <Include href="sprite/近战子弹 副本.xml" loadImmediate="false" itemID="697b6503-00001ff1" lastModified="1711945124"/>
           <Include href="sprite/空手待机.xml" loadImmediate="false" itemID="6693d4ba-00000af2" lastModified="1776605880"/>
           <Include href="sprite/空手跑.xml" loadImmediate="false" itemID="6925bd91-0000345e" lastModified="1776605612"/>
           <Include href="sprite/空手跑攻.xml" loadImmediate="false" itemID="6919e2a5-00001141" lastModified="1779440053"/>
-          <Include href="敌人-体育老师.xml" itemID="6a1015ba-0000039b" lastModified="1779439755"/>
-          <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="65ae6c3a-000037f7" lastModified="1779453389"/>
-          <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" loadImmediate="false" itemID="660a212e-00000b08" lastModified="1779453388"/>
-          <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003e2" lastModified="1706271675"/>
+          <Include href="敌人-体育老师.xml" itemID="6a1015ba-0000039b" lastModified="1779459196"/>
+          <Include href="怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml" loadImmediate="false" itemID="6a1063b5-000002cc" lastModified="1779459019"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13 副本.xml" itemIcon="1" loadImmediate="false" itemID="660a212e-00000b0b" lastModified="1706271675"/>
-          <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml" loadImmediate="false" itemID="6570b322-000003e3" lastModified="1706271749"/>
           <Include href="怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14 副本.xml" loadImmediate="false" itemID="660a212e-00000b0a" lastModified="1706271749"/>
-          <Include href="容器/技能容器/技能容器-虎拳.xml" itemID="695637a0-0000095b" lastModified="1779436965"/>
-          <Include href="容器/技能容器/技能容器-扭转乾坤.xml" itemID="697a65ff-00004088" lastModified="1775139969"/>
-          <Include href="容器/技能容器/技能容器-日字冲拳.xml" itemID="694ac160-00004b65" lastModified="1779438016"/>
-          <Include href="容器/空手攻击容器/空手攻击容器-后撤步.xml" itemID="6964d656-00002843" lastModified="1779436291"/>
-          <Include href="容器/空手攻击容器/空手攻击容器-燃烧指节.xml" itemID="6964d6d2-0000293c" lastModified="1779439967"/>
-          <Include href="容器/空手攻击容器/空手攻击容器-诛杀步.xml" itemID="6964d583-0000279b" lastModified="1779436122"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-截拳1连招.xml" itemID="6964ce51-00002614" lastModified="1775208039"/>
-          <Include href="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招.xml" itemID="6964cd70-0000257c" lastModified="1779438326"/>
+          <Include href="容器/技能容器/技能容器-虎拳.xml" loadImmediate="false" itemID="695637a0-0000095b" lastModified="1779458902"/>
+          <Include href="容器/技能容器/技能容器-扭转乾坤.xml" loadImmediate="false" itemID="697a65ff-00004088" lastModified="1779458903"/>
+          <Include href="容器/技能容器/技能容器-日字冲拳.xml" loadImmediate="false" itemID="694ac160-00004b65" lastModified="1779458901"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-后撤步.xml" loadImmediate="false" itemID="6964d656-00002843" lastModified="1779458904"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-燃烧指节.xml" loadImmediate="false" itemID="6964d6d2-0000293c" lastModified="1779459001"/>
+          <Include href="容器/空手攻击容器/空手攻击容器-诛杀步.xml" loadImmediate="false" itemID="6964d583-0000279b" lastModified="1779458903"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-截拳1连招.xml" loadImmediate="false" itemID="6964ce51-00002614" lastModified="1779459001"/>
+          <Include href="容器/空手攻击容器/平A/空手攻击容器-破极拳1连招.xml" loadImmediate="false" itemID="6964cd70-0000257c" lastModified="1779459001"/>
           <Include href="属性标签标志元件/刚体标签.xml" loadImmediate="false" itemID="66cf12fa-00000756" lastModified="1724846848"/>
           <Include href="属性标签标志元件/无敌标签.xml" loadImmediate="false" itemID="66cd4f63-0000054b" lastModified="1724731329"/>
           <Include href="思考标签.xml" loadImmediate="false" itemID="67e2b780-000010a7" lastModified="1742912305"/>
@@ -303,7 +288,7 @@
                                                   <Point x="50.85" y="-29.3"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="敌人-体育老师" centerPoint3DX="782.2" centerPoint3DY="194.8">
+                                        <DOMSymbolInstance libraryItemName="敌人-体育老师" selected="true" centerPoint3DX="782.2" centerPoint3DY="194.8">
                                              <matrix>
                                                   <Matrix tx="775.7" ty="289.3"/>
                                              </matrix>

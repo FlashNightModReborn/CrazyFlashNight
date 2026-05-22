@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跑攻" itemID="6919e2a5-00001141" lastModified="1779440053" lastUniqueIdentifier="175">
   <timeline>
-    <DOMTimeline name="空手跑攻" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;253&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="空手跑攻" currentFrame="56" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;253&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="连段标识" color="#AAB49D" autoNamed="false">
           <frames>
@@ -277,7 +277,7 @@ if(_parent.空手动作类型 == "腕刃") {
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="81.65" centerPoint3DY="-29.3">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="81.65" centerPoint3DY="-29.3">
                   <matrix>
                     <Matrix a="1.80216979980469" d="1.35382080078125" tx="82.25" ty="-29.95"/>
                   </matrix>
@@ -332,7 +332,7 @@ if(_parent.空手动作类型 == "腕刃") {
             </DOMFrame>
             <DOMFrame index="3" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="100.85" centerPoint3DY="-29.3">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="100.85" centerPoint3DY="-29.3">
                   <matrix>
                     <Matrix a="1.80216979980469" d="1.35382080078125" tx="101.45" ty="-29.95"/>
                   </matrix>
@@ -387,7 +387,7 @@ if(_parent.空手动作类型 == "腕刃") {
             </DOMFrame>
             <DOMFrame index="6" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="167.45" centerPoint3DY="-29.3">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="167.45" centerPoint3DY="-29.3">
                   <matrix>
                     <Matrix a="3.11209106445313" d="1.35382080078125" tx="168.5" ty="-29.95"/>
                   </matrix>
@@ -442,7 +442,7 @@ if(_parent.空手动作类型 == "腕刃") {
             </DOMFrame>
             <DOMFrame index="9" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="174.7" centerPoint3DY="-12.6">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="174.7" centerPoint3DY="-12.6">
                   <matrix>
                     <Matrix a="3.11209106445313" d="1.35382080078125" tx="175.75" ty="-13.25"/>
                   </matrix>
@@ -497,7 +497,7 @@ if(_parent.空手动作类型 == "腕刃") {
             </DOMFrame>
             <DOMFrame index="12" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="154.15" centerPoint3DY="-55.9">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="154.15" centerPoint3DY="-55.9">
                   <matrix>
                     <Matrix a="3.11209106445313" d="1.35382080078125" tx="155.2" ty="-56.55"/>
                   </matrix>
@@ -558,7 +558,7 @@ if(_parent.空手动作类型 == "腕刃") {
             </DOMFrame>
             <DOMFrame index="30" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-198.5" centerPoint3DY="196.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-198.5" centerPoint3DY="196.75">
                   <matrix>
                     <Matrix a="4.38995361328125" d="2.019287109375" tx="-21.3" ty="-9.95"/>
                   </matrix>
@@ -618,7 +618,7 @@ if(_parent.空手动作类型 == "腕刃") {
             </DOMFrame>
             <DOMFrame index="33" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-223.5" centerPoint3DY="101.9">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-223.5" centerPoint3DY="101.9">
                   <matrix>
                     <Matrix a="5.26921081542969" d="2.3580322265625" tx="18.25" ty="-129.9"/>
                   </matrix>
@@ -678,7 +678,7 @@ if(_parent.空手动作类型 == "腕刃") {
             </DOMFrame>
             <DOMFrame index="36" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-212.55" centerPoint3DY="123.9">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-212.55" centerPoint3DY="123.9">
                   <matrix>
                     <Matrix a="5.364990234375" d="2.56376647949219" tx="36.45" ty="-123.1"/>
                   </matrix>
@@ -738,7 +738,7 @@ if(_parent.空手动作类型 == "腕刃") {
             </DOMFrame>
             <DOMFrame index="39" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-215.5" centerPoint3DY="116.35">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-215.5" centerPoint3DY="116.35">
                   <matrix>
                     <Matrix a="5.33636474609375" d="2.894287109375" tx="31.45" ty="-155.15"/>
                   </matrix>
@@ -798,7 +798,7 @@ if(_parent.空手动作类型 == "腕刃") {
             </DOMFrame>
             <DOMFrame index="42" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-212.15" centerPoint3DY="145.25">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-212.15" centerPoint3DY="145.25">
                   <matrix>
                     <Matrix a="5.30986022949219" d="2.80511474609375" tx="32.65" ty="-119.7"/>
                   </matrix>
@@ -858,7 +858,7 @@ if(_parent.空手动作类型 == "腕刃") {
             </DOMFrame>
             <DOMFrame index="45" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-213.3" centerPoint3DY="115.5">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-213.3" centerPoint3DY="115.5">
                   <matrix>
                     <Matrix a="5.29783630371094" d="2.3724365234375" tx="30.8" ty="-117.3"/>
                   </matrix>
@@ -918,7 +918,7 @@ if(_parent.空手动作类型 == "腕刃") {
             </DOMFrame>
             <DOMFrame index="49" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-209.05" centerPoint3DY="113.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-209.05" centerPoint3DY="113.75">
                   <matrix>
                     <Matrix a="5.32345581054688" d="2.38006591796875" tx="36.85" ty="-119.7"/>
                   </matrix>
@@ -978,7 +978,7 @@ if(_parent.空手动作类型 == "腕刃") {
             </DOMFrame>
             <DOMFrame index="52" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-204.5" centerPoint3DY="102.4">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="-204.5" centerPoint3DY="102.4">
                   <matrix>
                     <Matrix a="5.15933227539063" d="2.31634521484375" tx="29.4" ty="-126.35"/>
                   </matrix>
@@ -1045,7 +1045,7 @@ if(_parent.空手动作类型 == "腕刃") {
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="12.5" centerPoint3DY="12.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="12.5" centerPoint3DY="12.5">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
