@@ -47,6 +47,7 @@
     Panels.registerLazy('map',
         ['modules/map-avatar-source-data.js',
          'modules/stage-select-data.js',
+         'modules/map-canvas-stage-renderer.js',
          'modules/map-panel.js'],
         noop);
 

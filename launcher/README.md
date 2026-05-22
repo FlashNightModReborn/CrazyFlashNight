@@ -421,7 +421,7 @@ launcher/
 │       ├── icons.js                       图标 manifest 加载与解析
 │       ├── kshop.js                       K 点商城面板（ShopTask 双层 callId）
 │       ├── help.js / help-panel.js        帮助系统（顶层入口 + 面板骨架）
-│       ├── map-panel.js / map-panel-data.js / map-fit-presets.js / map-hud.js 地图系统（正式 map panel + 静态页面/热点数据 + filter fit preset 表 + 右上角常驻 HUD）
+│       ├── map-panel.js / map-canvas-stage-renderer.js / map-panel-data.js / map-fit-presets.js / map-hud.js 地图系统（正式 map panel + Canvas 舞台视觉 renderer + 静态页面/热点数据 + filter fit preset 表 + 右上角常驻 HUD）
 │       ├── stage-select-data.js / stage-select-panel.js 选关界面 Stage 2 runtime panel（Panels.register('stage-select')）
 │       ├── intelligence-components.js     情报 H5 JSON 组件树白名单渲染器（无内容侧脚本）
 │       ├── intelligence-panel.js          情报详情 Web 面板（Panels.register('intelligence')；runtime 状态由 AS2 提供，正文由 C# IntelligenceTask 按需读取）
@@ -507,7 +507,7 @@ powershell -File build.ps1
 | 3.5  | 硬断言 `sol_parser.dll` 已落盘到项目根（防止"编过但运行时 DllNotFoundException"） |
 | 4    | 复制 V8 原生 DLL（ClearScriptV8.win-x64.dll）到项目根 |
 | 5    | 复制 WebView2 原生 loader（WebView2Loader.dll）到项目根 |
-| 6    | fail-fast 校验 `launcher/web` 运行时必需集：`bootstrap.html` / `bootstrap-main.js` / `overlay.html` / `config/version.js` / `assets/bg/manifest.json` / `assets/cursor/native/*` / `assets/intro.mp4` / `assets/map/*` / `assets/stage-select/*` / `help/*.md` / `icons/manifest.json` / `data/lockbox-variants.json` / 关键 `modules/*`（含 `intelligence-components.js` / `intelligence-panel.js`）与 minigame 入口文件 |
+| 6    | fail-fast 校验 `launcher/web` 运行时必需集：`bootstrap.html` / `bootstrap-main.js` / `overlay.html` / `config/version.js` / `assets/bg/manifest.json` / `assets/cursor/native/*` / `assets/intro.mp4` / `assets/map/*` / `assets/stage-select/*` / `help/*.md` / `icons/manifest.json` / `data/lockbox-variants.json` / 关键 `modules/*`（含 `map-canvas-stage-renderer.js` / `intelligence-components.js` / `intelligence-panel.js`）与 minigame 入口文件 |
 | 6a   | 运行 `node tools/audit-native-cursor-assets.js` 校验 native cursor `64x64` 画布与 `(16,16)` 热点契约，缺失或不合规直接 exit 1 |
 | 6b   | fail-fast 校验 `launcher/data/map_hud_data.json` 与 `launcher/data/save_schema.json`；缺失时分别提示 `node tools/export-maphud-data.js` / `node tools/extract-save-schema.js` |
 
@@ -608,12 +608,12 @@ powershell -File run_tests.ps1
   - `web/modules/minigames/lockbox/dev/harness.html`
   - `web/modules/minigames/pinalign/dev/harness.html`
   - `web/modules/minigames/gobang/dev/harness.html`
-  - `web/modules/map/dev/harness.html`
+  - `web/modules/map/dev/harness.html`（也可用 `node tools/run-map-harness-headless.js --browser edge` 跑 `map-ui1`~`map-ui24`）
   - `web/modules/stage-select/dev/harness.html`
   - `web/modules/intelligence/dev/harness.html`
   - 共享 QA 基础层：`web/modules/minigames/shared/dev/harness-base.js` + `harness-base.css`
   - 支持 query 驱动的 `?qa=1` / `?case=` / `?scenario=` / `?dump=1`
-  - `map` harness 额外覆盖页签 hit-test、右侧层级按钮遮挡、学校室友动态图、`1366x768` 紧凑视口可达性、locked group 锁定提示与锁定原因可达性
+  - `map` harness 额外覆盖 Canvas renderer debug state / 非空像素、页签 hit-test、右侧层级按钮遮挡、学校室友动态图、`1366x768` 紧凑视口可达性、locked group 锁定提示与锁定原因可达性
 - **Map preview / calibration**：`web/modules/map/dev/preview.html`
   - 读取运行时 manifest，显示 assembled stage backdrop、`sceneVisuals` 拼接层、热点、页内按钮 `buttonRect`、动态头像槽位、XFL source rect
   - 支持 draft 校准、source 吸附、复制 selected/page override、复制当前页 JSON、复制完整 manifest、下载当前页 JSON
@@ -1320,7 +1320,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 **面板类型**：
 - **kshop**（K 点商城）: 唯一支持入口为 Launcher `SHOP` → Web Panel；旧 Flash `shopMainMC` 已退役。面板需要 Flash 交互；打开/关闭会走 `shopPanelOpen/shopPanelClose`，并参与 `_pauseNeedsRestore`
 - **help**（游戏帮助）: 纯 Web 侧 Markdown 帮助面板，不触发 Flash 暂停恢复
-- **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-panel-data.js` + `web/modules/map-fit-presets.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `open_stage_select` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面均已切到 `assembled` 场景拼接模式，右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；`map-panel.js` 会懒加载 `stage-select-data.js`，用 `RootFadeTransitionFrame` 为已解锁且有选关页签的热点提供二级“选关”动作，成功后交给 PanelHost 关闭 map 并打开 `stage-select`，主热点点击仍发送 `navigate`；同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、filter-fit 离线调优 `tools/tune-map-filter-fit.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`，并在紧凑视口下自动缩放舞台、按 page/filter preset 做二次 content-fit；右上角常驻 HUD 由 `web/modules/map-hud.js` 消费同一份 `MapPanelData` + UiData `mm/mh`，只显示当前区块高亮与固定 beacon，点击后打开 map panel
+- **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-canvas-stage-renderer.js` + `web/modules/map-panel-data.js` + `web/modules/map-fit-presets.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `open_stage_select` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面的舞台视觉由 Canvas 2D renderer 绘制（DOM 仅保留透明热点、hover 标签、右侧 rail 与操作按钮），右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；`map-panel.js` 会懒加载 `stage-select-data.js`，用 `RootFadeTransitionFrame` 为已解锁且有选关页签的热点提供二级“选关”动作，成功后交给 PanelHost 关闭 map 并打开 `stage-select`，主热点点击仍发送 `navigate`；同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、filter-fit 离线调优 `tools/tune-map-filter-fit.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`，并在紧凑视口下自动缩放舞台、按 page/filter preset 做二次 content-fit；右上角常驻 HUD 由 `web/modules/map-hud.js` 消费同一份 `MapPanelData` + UiData `mm/mh`，只显示当前区块高亮与固定 beacon，点击后打开 map panel
 - **stage-select**（选关界面 Stage 2 runtime）: `web/modules/stage-select-panel.js` + generated `web/modules/stage-select-data.js`；可通过 Native HUD “其他 → 选关测试” 的 `STAGE_SELECT_TEST` 打开，也可由 AS2 场景门 `openWebStageSelect` → `panel_request stage-select` 正式打开。支持 16 个 frame label、182 个源 XML 入口实例、164 个 Web 运行时渲染实例（含 13 个 `entryKind=map/task` 直达入口）、fixture 锁定/任务/挑战模式、按外部 PNG / 内部命名帧 / 默认帧回退的 hover 预览、browser harness 和 FFDec/Web 视觉对照审计；runtime 下使用 `stageSelectSnapshot` 读取真实解锁/挑战状态，普通难度按钮通过 `stageSelectEnter entryKind=difficulty` 进入已解锁关卡，外交地图按原版绿色点直达、从源符号内部 `shape/外交地图点` / `DOMDynamicText` 矩阵复原点和文字位置、通过 `entryKind=map` 走 AS2 淡出跳转且不显示二次选择，旧外交地图 SWF 内仍指向 Flash `关卡地图` 的门由公共 `切换场景` 捕获后打开 Web 选关，`地图-*` frameLabel 会按 `StageInfoDict.RootFadeTransitionFrame` 反查回选关页签，魔神/副本任务区域把 `Symbol 3325 -> Symbol 3323 -> bitmap3321` 导出的法阵底图放在装饰层，文字按钮仍按 XFL 源矢量 CSS 复刻，通过 `entryKind=task` 直接打开原 Flash `委托任务界面`，`localFrame` 通过 `jump_frame` / `stageSelectJumpFrame` 同步 Web 当前选关页但不改 `_root.关卡地图帧值`，return 类 nav 通过独立 `returnFrameLabel` + `return_frame` / `stageSelectReturnFrame` 复刻原版 `_root.淡出动画.淡出跳转帧(_root.关卡地图帧值)`，同场景返回会直接关闭 Web panel、跨场景返回仍淡出跳转，避免旧外交地图底层场景泄露。runtime 布局隐藏测试标题、fixture/dev 控件与右侧空栏，frame tab 默认收纳到可展开区域菜单，旧 Flash `关卡地图` 保留为 fallback
 - **intelligence**（情报详情面板）: `web/modules/intelligence-panel.js` + `web/modules/intelligence-components.js`；正式入口为 Native HUD / 旧 Web notch 主工具栏的 `情报` / `INTELLIGENCE`，开发入口 `其他 → 情报测试` / `INTELLIGENCE_TEST` 保留。正式 runtime 走 `state` → `snapshot(itemName)` → `tooltip(itemName)`：AS2 只返回每条情报收集值、解密等级、玩家名和 TooltipComposer 富文本，C# `IntelligenceTask` 从字典、物品 XML 与 `data/intelligence_h5/<itemName>.json` 读取白名单 H5 正文，Web 不直接 fetch 项目根或 `data/`。H5 正文由 `IntelligenceComponentRenderer` 以 DOM API 渲染，锁定页不下发 blocks，关闭时不通知 Flash。协议、组件语义、手工创作流程和验证门禁见 [情报 H5 组件创作交接](../docs/情报H5组件创作交接.md)
 - **lockbox**（开锁小游戏）: `web/modules/minigames/lockbox/` 下的正式小游戏模块；支持运行时参数、browser harness、Node QA

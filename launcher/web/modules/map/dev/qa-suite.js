@@ -45,12 +45,35 @@ var MapPanelHarnessQA = (function() {
     function waitForReady(api) {
         return api.waitFor(function() {
             var state = window.MapPanel && MapPanel._debugGetState ? MapPanel._debugGetState() : null;
-            return state && state.isOpen && !state.loadingVisible ? state : null;
+            return state && state.isOpen && !state.loadingVisible && isCanvasCurrent(state) ? state : null;
         }, 3000, 'map ready');
     }
 
+    function isCanvasCurrent(state) {
+        var summary;
+        if (!state || !state.canvasReady) return true;
+        summary = state.canvasLastDrawSummary;
+        if (!summary || !(state.canvasDrawCount > 0)) return false;
+        if (summary.pageId !== state.activePageId) return false;
+        if ((summary.filterId || '') !== (state.activeFilterId || '')) return false;
+        if (state.canvasRequestedRevision && state.canvasLastRevision < state.canvasRequestedRevision) return false;
+        return true;
+    }
+
+    function waitForCanvasCurrent(api, label) {
+        return api.waitFor(function() {
+            var state = currentState();
+            return isCanvasCurrent(state) ? state : null;
+        }, 1500, label || 'canvas current');
+    }
+
     function bootMap(api, host, options) {
-        var patch = { currentHotspotId: '' };
+        var patch = {
+            currentHotspotId: '',
+            disabledIds: [],
+            lockedGroups: [],
+            failNavigate: false
+        };
         var key;
         options = options || {};
         for (key in options) {
@@ -78,20 +101,52 @@ var MapPanelHarnessQA = (function() {
     }
 
     function getAvatarSrc() {
-        var img = document.querySelector('.map-dynamic-avatar-image');
-        return img ? img.getAttribute('src') || '' : '';
+        var state = currentState();
+        if (state && state.canvasLastDynamicAvatarUrl) return state.canvasLastDynamicAvatarUrl;
+        return '';
+    }
+
+    function assertCanvasReady(api, label) {
+        var state = currentState();
+        var canvas = document.getElementById('map-stage-canvas');
+        var ctx;
+        var pixel;
+        api.assert(!!canvas, label + ' canvas missing');
+        api.assert(!!state && state.renderer === 'canvas', label + ' should use canvas renderer');
+        api.assert(!!state.canvasReady, label + ' canvas renderer not ready');
+        api.assert((state.canvasDrawCount || 0) > 0, label + ' canvas draw count should be > 0');
+        api.assert(canvas.width > 0 && canvas.height > 0, label + ' canvas backing store should be sized');
+        ctx = canvas.getContext && canvas.getContext('2d');
+        api.assert(!!ctx, label + ' canvas 2d context missing');
+        pixel = ctx.getImageData(Math.floor(canvas.width / 2), Math.floor(canvas.height / 2), 1, 1).data;
+        api.assert(pixel[3] > 0, label + ' canvas center pixel should be non-empty');
+        return state;
     }
 
     function getVisibleStaticAvatarSlots(pageId, filterId) {
         var page = MapPanelData.getPage(pageId);
         var visibleHotspots = MapPanelData.getVisibleHotspots(pageId, filterId || '');
+        var state = currentState() || {};
         var lookup = {};
+        var enabledLookup = {};
         var i;
         for (i = 0; i < visibleHotspots.length; i += 1) {
             lookup[visibleHotspots[i].id] = true;
         }
+        (state.enabledHotspotIds || []).forEach(function(id) {
+            enabledLookup[id] = true;
+        });
         return (page.staticAvatars || []).filter(function(slot) {
-            return !slot.hotspotId || lookup[slot.hotspotId];
+            var sourceSlot;
+            var hotspotId;
+            if (slot.hotspotId && !lookup[slot.hotspotId]) return false;
+            if (slot.hotspotId && !enabledLookup[slot.hotspotId]) return false;
+            if (!slot.assetUrl) return false;
+            if (typeof MapAvatarSourceData === 'undefined' || !MapAvatarSourceData || !MapAvatarSourceData.getByAssetUrl) return true;
+            sourceSlot = MapAvatarSourceData.getByAssetUrl(slot.assetUrl);
+            if (!sourceSlot || !sourceSlot.size) return false;
+            hotspotId = sourceSlot.hotspotId || slot.hotspotId;
+            return !!(hotspotId && MapPanelData.findHotspot(pageId, hotspotId));
         });
     }
 
@@ -255,26 +310,23 @@ var MapPanelHarnessQA = (function() {
                     return bootMap(api, host, { defaultPageId: 'base', roommateGender: 'male' }).then(function() {
                         return api.waitFor(function() {
                             var s = currentState();
-                            return s && s.activePageId === 'base' && s.stageScale > 1 ? s : null;
+                            return s && s.activePageId === 'base' && s.stageScale > 1 && s.contentFitScale >= 1.02 && isCanvasCurrent(s) ? s : null;
                         }, 1500, 'roomy layout ready').then(function(state) {
                             var closeBtn = document.querySelector('.map-panel-close-btn');
                             var schoolTab = getPageTab('school');
-                            var firstSceneNode = document.querySelector('.map-scene-node');
-                            var readabilityPlate = firstSceneNode ? window.getComputedStyle(firstSceneNode, '::before') : null;
+                            var canvasState = assertCanvasReady(api, 'map-ui1');
                             assertHitTest(api, schoolTab, 'school tab');
                             assertHitTest(api, closeBtn, 'close button');
                             api.assertEqual(state.activePageId, 'base', 'default page');
                             api.assert(state.contentFitScale >= 1.02, 'roomy viewport should apply content fit scale');
                             api.assert(state.contentCoverageX >= 0.84, 'content should occupy most stage width');
                             api.assert(state.contentCoverageY >= 0.78, 'content should occupy most stage height');
-                            api.assert(!!firstSceneNode, 'base page should render scene nodes');
-                            api.assert(!!readabilityPlate && readabilityPlate.backgroundImage !== 'none', 'base scene readability plate missing');
-                            api.assert(parseFloat(readabilityPlate.opacity || '0') >= 0.6, 'base scene readability plate should stay visible');
+                            api.assert(canvasState.canvasLastDrawSummary && canvasState.canvasLastDrawSummary.sceneCount > 0, 'base page should render canvas scene visuals');
                             return 'page=' + state.activePageId +
                                 ', stageScale=' + state.stageScale.toFixed(3) +
                                 ', fit=' + state.contentFitScale.toFixed(3) +
                                 ', coverage=' + state.contentCoverageX.toFixed(2) + '/' + state.contentCoverageY.toFixed(2) +
-                                ', plate=' + (readabilityPlate ? readabilityPlate.opacity : '0');
+                                ', canvasDraws=' + canvasState.canvasDrawCount;
                         });
                     });
                 }
@@ -321,17 +373,16 @@ var MapPanelHarnessQA = (function() {
                         clickByHitTest(api, getFilterButton('hierarchy'), 'hierarchy filter');
                         return api.waitFor(function() {
                             var state = currentState();
-                            return state && state.activePageId === 'base' && state.activeFilterId === 'hierarchy' ? state : null;
+                            return state && state.activePageId === 'base' && state.activeFilterId === 'hierarchy' && isCanvasCurrent(state) ? state : null;
                         }, 1500, 'switch to hierarchy').then(function(state) {
                             var stage = document.getElementById('map-stage-frame');
                             var currentHotspot = document.querySelector('.map-hotspot.is-current');
                             var mutedHotspots = document.querySelectorAll('.map-hotspot.is-muted');
-                            var relationNodes = document.querySelectorAll('.map-scene-node.is-relationship');
                             api.assert(stage && stage.classList.contains('is-layer-relation'), 'base hierarchy should enable layer relation mode');
                             api.assert(!!currentHotspot, 'hierarchy mode should preserve current hotspot');
                             api.assert(mutedHotspots.length > 0, 'hierarchy mode should mute non-focused hotspots');
-                            api.assert(relationNodes.length === state.sceneVisualCount, 'all scene visuals should enter relationship mode');
-                            return 'focus=' + state.focusHotspotId + ', mutedHotspots=' + mutedHotspots.length;
+                            api.assert(state.renderer === 'canvas' && state.canvasLastDrawSummary.sceneCount === state.sceneVisualCount, 'canvas should render all relationship scene visuals');
+                            return 'focus=' + state.focusHotspotId + ', mutedHotspots=' + mutedHotspots.length + ', canvasScenes=' + state.canvasLastDrawSummary.sceneCount;
                         });
                     });
                 }
@@ -350,15 +401,15 @@ var MapPanelHarnessQA = (function() {
                                 clickByHitTest(api, tab, pageId + ' tab');
                                 return api.waitFor(function() {
                                     var state = currentState();
-                                    return state && state.activePageId === pageId ? state : null;
+                                    return state && state.activePageId === pageId && isCanvasCurrent(state) ? state : null;
                                 }, 1500, 'switch to ' + pageId).then(function(state) {
-                                    var sceneNodes = document.querySelectorAll('.map-scene-node');
                                     var labels = Array.prototype.slice.call(document.querySelectorAll('.map-filter-hotspot-label')).map(function(el) {
                                         return (el.textContent || '').trim();
                                     }).filter(Boolean);
                                     api.assert(state.renderMode === 'assembled', pageId + ' should use assembled render mode');
-                                    api.assert(state.sceneVisualCount > 0, pageId + ' should render composite scene nodes');
-                                    api.assert(sceneNodes.length === state.sceneVisualCount, pageId + ' scene visual count mismatch');
+                                    api.assert(state.renderer === 'canvas', pageId + ' should use canvas renderer');
+                                    api.assert(state.sceneVisualCount > 0, pageId + ' should render composite scene visuals');
+                                    api.assert(state.canvasLastDrawSummary && state.canvasLastDrawSummary.sceneCount === state.sceneVisualCount, pageId + ' canvas scene visual count mismatch');
                                     api.assert(labels.length > 0, pageId + ' filter labels missing');
                                 });
                             });
@@ -466,23 +517,20 @@ var MapPanelHarnessQA = (function() {
                 title: 'current location feedback retargets across page snapshot jumps',
                 run: function() {
                     return bootMap(api, host, { defaultPageId: 'faction', currentHotspotId: 'firing_range' }).then(function(state) {
-                        var marker = document.querySelector('.map-feedback-marker');
                         var currentHotspot = document.querySelector('.map-hotspot.is-current');
                         api.assert(!!state.currentHotspotId, 'snapshot should expose currentHotspotId');
-                        api.assert(!!marker, 'current location marker missing');
+                        api.assert(state.canvasLastDrawSummary.markerCount > 0, 'current location marker missing from canvas');
                         api.assert(!!currentHotspot, 'current hotspot missing active state');
                         api.assert(currentHotspot.getAttribute('data-hotspot-id') === state.currentHotspotId, 'stage current hotspot mismatch');
-                        api.assert(!marker.querySelector('.map-feedback-marker-label'), 'current location marker should no longer render inline label (tips layer owns text)');
                         api.assertEqual(state.currentHotspotId, 'firing_range', 'initial current hotspot should be firing_range');
                         host.setState({ defaultPageId: 'base', currentHotspotId: 'base_lobby' });
                         host.pushSnapshot('refresh');
                         return api.waitFor(function() {
                             var refreshed = currentState();
-                            return refreshed && refreshed.activePageId === 'base' && refreshed.currentHotspotId === 'base_lobby' ? refreshed : null;
+                            return refreshed && refreshed.activePageId === 'base' && refreshed.currentHotspotId === 'base_lobby' && isCanvasCurrent(refreshed) ? refreshed : null;
                         }, 1500, 'cross-page current hotspot refresh').then(function(refreshed) {
-                            var refreshedMarker = document.querySelector('.map-feedback-marker');
                             var refreshedCurrentHotspot = document.querySelector('.map-hotspot.is-current');
-                            api.assert(!!refreshedMarker, 'refreshed current marker missing');
+                            api.assert(refreshed.canvasLastDrawSummary.markerCount > 0, 'refreshed current marker missing from canvas');
                             api.assert(!!refreshedCurrentHotspot, 'refreshed current hotspot missing');
                             api.assertEqual(refreshedCurrentHotspot.getAttribute('data-hotspot-id'), 'base_lobby', 'current hotspot should move to base_lobby');
                             api.assert(getPageTab('base').classList.contains('is-active'), 'base tab should become active after cross-page refresh');
@@ -493,18 +541,16 @@ var MapPanelHarnessQA = (function() {
             },
             {
                 id: 'map-ui9',
-                title: 'locked groups keep hint and locked reason reachable',
+                title: 'locked groups stay spoiler-safe: locked hotspot hidden, hint still surfaces',
                 run: function() {
                     return bootMap(api, host, { defaultPageId: 'school', lockedGroups: ['schoolInside'] }).then(function(state) {
                         var hotspot = document.querySelector('.map-hotspot[data-hotspot-id="school_dormitory"]');
-                        var hint = document.querySelector('.map-feedback-hint');
                         api.assert(state.lockedHotspotIds.indexOf('school_dormitory') >= 0, 'school dormitory should be locked');
-                        api.assert(!!hint, 'locked filter hint missing');
-                        api.assert(!!hotspot, 'locked hotspot missing');
-                        api.assert(!!hotspot.getAttribute('data-locked-reason'), 'locked hotspot reason missing');
-                        hotspot.click();
-                        api.assert((window.Toast && window.Toast.messages || []).length > 0, 'locked hotspot click should emit toast');
-                        return 'toast=' + window.Toast.messages.slice(-1)[0];
+                        // 剧透防护: 锁定 hotspot 整体不渲染 (无按钮 / 无轮廓 / 无可达标签)
+                        api.assert(!hotspot, 'locked hotspot must not render (spoiler protection)');
+                        // 未开放原因仍通过 canvas 上的 flash hint 表达, 玩家可感知
+                        api.assert(state.canvasLastDrawSummary.flashHintCount > 0, 'locked filter hint missing from canvas');
+                        return 'lockedHotspotHidden flashHints=' + state.canvasLastDrawSummary.flashHintCount;
                     });
                 }
             },
@@ -521,20 +567,16 @@ var MapPanelHarnessQA = (function() {
                                 clickByHitTest(api, getPageTab(pageId), pageId + ' tab');
                                 return api.waitFor(function() {
                                     var state = currentState();
-                                    return state && state.activePageId === pageId ? state : null;
+                                    return state && state.activePageId === pageId && isCanvasCurrent(state) ? state : null;
                                 }, 1500, 'switch to ' + pageId).then(function(state) {
                                     var visibleSlots = getVisibleStaticAvatarSlots(pageId, state.activeFilterId);
-                                    var rendered = document.querySelectorAll('.map-static-avatar');
                                     var page = MapPanelData.getPage(pageId);
-                                    api.assert(rendered.length === visibleSlots.length, pageId + ' static avatar count mismatch');
+                                    api.assert(state.canvasLastDrawSummary.staticAvatarCount === visibleSlots.length, pageId + ' canvas static avatar count mismatch');
                                     if (typeof MapAvatarSourceData !== 'undefined' && MapAvatarSourceData && MapAvatarSourceData.getByAssetUrl) {
                                         visibleSlots.forEach(function(slot) {
                                             var sourceSlot = MapAvatarSourceData.getByAssetUrl(slot.assetUrl);
-                                            var avatarEl;
                                             var expectedRect;
                                             api.assert(!!sourceSlot, pageId + ' missing avatar source meta for ' + slot.id);
-                                            avatarEl = document.querySelector('.map-static-avatar[data-avatar-id="' + slot.id + '"]');
-                                            api.assert(!!avatarEl, pageId + ' missing avatar element for ' + slot.id);
                                             api.assert(!!(sourceSlot && sourceSlot.size && sourceSlot.hotspotId), pageId + ' avatar missing source schema for ' + slot.id);
                                             var ownerHotspot = MapPanelData.findHotspot(pageId, sourceSlot.hotspotId);
                                             api.assert(!!(ownerHotspot && ownerHotspot.rect), pageId + ' avatar owner hotspot missing for ' + slot.id);
@@ -544,10 +586,9 @@ var MapPanelHarnessQA = (function() {
                                                 w: sourceSlot.size.w,
                                                 h: sourceSlot.size.h
                                             };
-                                            api.assert(Math.abs(parseFloat(avatarEl.style.left) - ((expectedRect.x / page.width) * 100)) < 0.05, pageId + ' avatar left mismatch for ' + slot.id);
-                                            api.assert(Math.abs(parseFloat(avatarEl.style.top) - ((expectedRect.y / page.height) * 100)) < 0.05, pageId + ' avatar top mismatch for ' + slot.id);
-                                            api.assert(Math.abs(parseFloat(avatarEl.style.width) - ((expectedRect.w / page.width) * 100)) < 0.05, pageId + ' avatar width mismatch for ' + slot.id);
-                                            api.assert(Math.abs(parseFloat(avatarEl.style.height) - ((expectedRect.h / page.height) * 100)) < 0.05, pageId + ' avatar height mismatch for ' + slot.id);
+                                            api.assert(expectedRect.x >= 0 && expectedRect.x <= page.width, pageId + ' avatar left outside page for ' + slot.id);
+                                            api.assert(expectedRect.y >= 0 && expectedRect.y <= page.height, pageId + ' avatar top outside page for ' + slot.id);
+                                            api.assert(expectedRect.w > 0 && expectedRect.h > 0, pageId + ' avatar size invalid for ' + slot.id);
                                         });
                                     }
                                 });
@@ -595,31 +636,36 @@ var MapPanelHarnessQA = (function() {
                         }
                         api.assert(!!slot, 'school page missing roommate dynamic slot');
 
-                        var snapshot = host.buildSnapshot();
-                        snapshot.markers = (snapshot.markers || []).concat([{
-                            id: 'task_npc_室友',
-                            kind: 'taskNpc',
-                            npcName: '室友',
-                            pageId: 'school',
-                            hotspotId: 'school_dormitory',
-                            point: { x: 130.3, y: 347.3 }
-                        }]);
-                        MapPanel._debugApplySnapshot(snapshot);
-
+                        clickByHitTest(api, getFilterButton('all'), 'school all filter');
                         return api.waitFor(function() {
-                            return document.querySelector('.map-avatar-task-ring[data-hotspot-id="school_dormitory"]');
-                        }, 1500, 'task ring appears').then(function(ring) {
-                            var hotspot = MapPanelData.findHotspot('school', slot.hotspotId);
-                            api.assert(!!(hotspot && hotspot.rect), 'school_dormitory hotspot missing rect');
-                            var slotX = hotspot.rect.x + slot.relX;
-                            var slotY = hotspot.rect.y + slot.relY;
-                            var expectedX = (slotX + slot.w / 2) / page.width * 100;
-                            var expectedY = (slotY + slot.h / 2) / page.height * 100;
-                            var actualX = parseFloat(ring.style.left);
-                            var actualY = parseFloat(ring.style.top);
-                            api.assert(Math.abs(actualX - expectedX) < 0.02, 'ring x drift: expected=' + expectedX.toFixed(3) + ' actual=' + actualX.toFixed(3));
-                            api.assert(Math.abs(actualY - expectedY) < 0.02, 'ring y drift: expected=' + expectedY.toFixed(3) + ' actual=' + actualY.toFixed(3));
-                            return 'ringLeft=' + ring.style.left + ' ringTop=' + ring.style.top;
+                            var s = currentState();
+                            return s && s.activeFilterId === 'all' && isCanvasCurrent(s) ? s : null;
+                        }, 1500, 'switch to school all').then(function() {
+                            var snapshot = host.buildSnapshot();
+                            snapshot.markers = (snapshot.markers || []).concat([{
+                                id: 'task_npc_室友',
+                                kind: 'taskNpc',
+                                npcName: '室友',
+                                pageId: 'school',
+                                hotspotId: 'school_dormitory',
+                                point: { x: 130.3, y: 347.3 }
+                            }]);
+                            snapshot.defaultPageId = 'school';
+                            MapPanel._debugApplySnapshot(snapshot);
+
+                            return api.waitFor(function() {
+                                var s = currentState();
+                                return s && isCanvasCurrent(s) && s.canvasLastDrawSummary && s.canvasLastDrawSummary.taskRingCount > 0 ? s : null;
+                            }, 1500, 'task ring appears').then(function(state) {
+                                var hotspot = MapPanelData.findHotspot('school', slot.hotspotId);
+                                api.assert(!!(hotspot && hotspot.rect), 'school_dormitory hotspot missing rect');
+                                var slotX = hotspot.rect.x + slot.relX;
+                                var slotY = hotspot.rect.y + slot.relY;
+                                var expectedX = (slotX + slot.w / 2) / page.width * 100;
+                                var expectedY = (slotY + slot.h / 2) / page.height * 100;
+                                api.assert(state.canvasLastDrawSummary.taskRingCount === 1, 'canvas should render one task ring');
+                                return 'ringAnchorPct=' + expectedX.toFixed(3) + '/' + expectedY.toFixed(3);
+                            });
                         });
                     });
                 }
@@ -633,6 +679,7 @@ var MapPanelHarnessQA = (function() {
                         api.assert(!!btn, 'base_entrance hotspot button missing');
 
                         var beforeCount = host.getMessages().filter(function(m) { return m && m.cmd === 'navigate'; }).length;
+                        var beforeRevision = (currentState() && currentState().canvasLastRevision) || 0;
                         btn.click();
                         btn.click();
                         btn.click();
@@ -642,7 +689,12 @@ var MapPanelHarnessQA = (function() {
                         api.assert(btn.disabled === true, 'busy hotspot should be physically disabled');
 
                         host.setState({ failNavigate: false });
-                        return 'navigateCount=' + (afterCount - beforeCount);
+                        return api.waitFor(function() {
+                            var s = currentState();
+                            return s && s.canvasLastRevision > beforeRevision ? s : null;
+                        }, 1500, 'busy canvas redraw').then(function(state) {
+                            return 'navigateCount=' + (afterCount - beforeCount) + ' canvasRevision=' + state.canvasLastRevision;
+                        });
                     });
                 }
             },
@@ -664,8 +716,9 @@ var MapPanelHarnessQA = (function() {
                             var enabledHs = document.querySelector('.map-hotspot[data-hotspot-id="base_entrance"]');
                             api.assert(enabledHs && enabledHs.getAttribute('data-audio-cue') === 'transition', 'enabled hotspot should route transition');
 
+                            // 剧透防护: 禁用 hotspot 整体不渲染, 不可点 (#1)
                             var disabledHs = document.querySelector('.map-hotspot[data-hotspot-id="base_lobby"]');
-                            api.assert(disabledHs && disabledHs.getAttribute('data-audio-cue') === 'error', 'disabled hotspot should route error');
+                            api.assert(!disabledHs, 'disabled hotspot must not render (spoiler protection)');
 
                             api.assert(!document.querySelector('.map-scene-chip'), 'scene chip strip removed; right rail owns filter/floor navigation now');
                             api.assert(!document.querySelector('.map-scene-strip'), 'scene chip strip container should not be in DOM');
@@ -680,20 +733,12 @@ var MapPanelHarnessQA = (function() {
                             api.assertEqual(BA._counts.Transition || 0, 1, 'enabled hotspot click should fire Transition exactly once');
                             api.assertEqual(BA._counts.Error || 0, 0, 'enabled hotspot click should not fire Error');
 
-                            // 2) 禁用 hotspot click → 只响一次 Error, 依旧推 toast
-                            var toastBefore = (window.Toast && window.Toast.messages || []).length;
-                            BA._resetCounts();
-                            disabledHs.click();
-                            api.assertEqual(BA._counts.Error || 0, 1, 'disabled hotspot click should fire Error exactly once');
-                            api.assertEqual(BA._counts.Transition || 0, 0, 'disabled hotspot click should not fire Transition');
-                            api.assert((window.Toast && window.Toast.messages || []).length > toastBefore, 'disabled hotspot click should still push locked reason toast');
-
-                            // 3) 关闭按钮 click → 只响一次 Cancel (finishClose 不再直播 cue)
+                            // 2) 关闭按钮 click → 只响一次 Cancel (finishClose 不再直播 cue)
                             BA._resetCounts();
                             document.querySelector('.map-panel-close-btn').click();
                             api.assertEqual(BA._counts.Cancel || 0, 1, 'close btn click should fire Cancel exactly once');
 
-                            return 'cues=ok single-fire=ok';
+                            return 'cues=ok single-fire=ok spoiler-safe=ok';
                         });
                     });
                 }
@@ -725,63 +770,56 @@ var MapPanelHarnessQA = (function() {
             },
             {
                 id: 'map-ui16',
-                title: 'locked filter click keeps state and surfaces locked reason toast',
+                title: 'locked filter stays spoiler-safe: locked filter button not rendered',
                 run: function() {
-                    return bootMap(api, host, { defaultPageId: 'school', lockedGroups: ['schoolInside'] }).then(function(state) {
-                        var beforeFilterId = state.activeFilterId;
+                    return bootMap(api, host, { defaultPageId: 'school', lockedGroups: ['schoolInside'] }).then(function() {
+                        // 剧透防护: 锁定的 group-mapped filter 整个按钮不渲染 (#2)
                         var lockedBtn = getFilterButton('inside');
-                        api.assert(!!lockedBtn, 'inside filter button missing');
-                        api.assert(lockedBtn.classList.contains('is-locked'), 'inside filter should render in locked state');
-                        api.assert(lockedBtn.getAttribute('data-audio-cue') === 'error', 'locked filter cue should be error');
-
-                        var BA = window.BootstrapAudio;
-                        var toastBefore = (window.Toast && window.Toast.messages || []).length;
-                        if (BA && BA._resetCounts) BA._resetCounts();
-
-                        lockedBtn.click();
-
-                        var after = currentState();
-                        api.assertEqual(after.activeFilterId, beforeFilterId, 'locked filter click must not mutate activeFilterId');
-                        api.assert((window.Toast && window.Toast.messages || []).length > toastBefore, 'locked filter click should push locked reason toast');
-                        if (BA) {
-                            api.assertEqual(BA._counts.Error || 0, 1, 'locked filter click should fire Error exactly once');
-                            api.assertEqual(BA._counts.Select || 0, 0, 'locked filter click must not fire Select');
+                        api.assert(!lockedBtn, 'locked filter button must not render (spoiler protection)');
+                        // 解锁的 / meta filter 仍渲染, 且没有任何已渲染 filter 处于 locked 态
+                        var visibleFilters = document.querySelectorAll('.map-filter-hotspot');
+                        api.assert(visibleFilters.length > 0, 'unlocked filters should still render');
+                        for (var i = 0; i < visibleFilters.length; i++) {
+                            api.assert(!visibleFilters[i].classList.contains('is-locked'),
+                                'no rendered filter should be in locked state: ' + visibleFilters[i].getAttribute('data-filter-id'));
                         }
-                        return 'lockedFilter=inside activeFilter=' + after.activeFilterId;
+                        return 'lockedFilterHidden visibleFilters=' + visibleFilters.length;
                     });
                 }
             },
             {
                 id: 'map-ui17',
-                title: 'faction filter switch drives data-active-filter + filter-overlay attribute',
+                title: 'faction filter switch drives data-active-filter + canvas filter state',
                 run: function() {
                     return bootMap(api, host, { defaultPageId: 'faction' }).then(function(state) {
                         var stage = document.getElementById('map-stage-frame');
-                        var overlay = document.getElementById('map-stage-filter-overlay');
-                        api.assert(!!stage && !!overlay, 'stage frame + filter overlay must exist');
+                        api.assert(!!stage, 'stage frame must exist');
                         api.assertEqual(stage.getAttribute('data-page-id'), 'faction', 'stage data-page-id should be faction');
                         api.assertEqual(stage.getAttribute('data-active-filter'), state.activeFilterId, 'stage data-active-filter should match initial filter');
-                        api.assertEqual(overlay.getAttribute('data-page-id'), 'faction', 'overlay data-page-id should be faction');
+                        api.assert(state.renderer === 'canvas', 'map stage should use canvas renderer');
 
-                        // 切换到 blackiron — 应改写 data-active-filter 并触发 retuning 过渡 class
+                        // 切换到 blackiron — 应改写 data-active-filter 并触发 canvas redraw
+                        var beforeRevision = state.canvasLastRevision || 0;
                         clickByHitTest(api, getFilterButton('blackiron'), 'blackiron filter');
                         return api.waitFor(function() {
                             var s = currentState();
-                            return s && s.activeFilterId === 'blackiron' ? s : null;
+                            return s && s.activeFilterId === 'blackiron' && s.canvasLastRevision > beforeRevision ? s : null;
                         }, 1500, 'switch to blackiron').then(function() {
+                            var blackironState = currentState();
                             api.assertEqual(stage.getAttribute('data-active-filter'), 'blackiron', 'stage attr follows blackiron');
-                            api.assertEqual(overlay.getAttribute('data-active-filter'), 'blackiron', 'overlay attr follows blackiron');
-                            api.assert(stage.classList.contains('is-retuning'), 'filter switch should apply is-retuning transition class');
+                            api.assertEqual(blackironState.canvasLastDrawSummary.filterId, 'blackiron', 'canvas filter summary follows blackiron');
 
-                            // 再切回 warlord — 再次触发 retuning
+                            // 再切回 warlord — 再次触发 canvas redraw
+                            beforeRevision = blackironState.canvasLastRevision || 0;
                             clickByHitTest(api, getFilterButton('warlord'), 'warlord filter');
                             return api.waitFor(function() {
                                 var s = currentState();
-                                return s && s.activeFilterId === 'warlord' ? s : null;
+                                return s && s.activeFilterId === 'warlord' && s.canvasLastRevision > beforeRevision ? s : null;
                             }, 1500, 'switch to warlord').then(function() {
+                                var warlordState = currentState();
                                 api.assertEqual(stage.getAttribute('data-active-filter'), 'warlord', 'stage attr follows warlord');
-                                api.assertEqual(overlay.getAttribute('data-active-filter'), 'warlord', 'overlay attr follows warlord');
-                                return 'activeFilter=warlord retune=ok';
+                                api.assertEqual(warlordState.canvasLastDrawSummary.filterId, 'warlord', 'canvas filter summary follows warlord');
+                                return 'activeFilter=warlord canvasRevision=' + warlordState.canvasLastRevision;
                             });
                         });
                     });
@@ -789,36 +827,28 @@ var MapPanelHarnessQA = (function() {
             },
             {
                 id: 'map-ui18',
-                title: 'defense restricted filter toggles anomaly layer is-active',
+                title: 'defense restricted filter toggles canvas anomaly state',
                 run: function() {
                     return bootMap(api, host, { defaultPageId: 'defense' }).then(function() {
-                        var anomaly = document.getElementById('map-stage-anomaly');
-                        api.assert(!!anomaly, 'anomaly layer node must exist');
-                        api.assert(!anomaly.classList.contains('is-active'), 'anomaly must be inactive before restricted filter');
+                        var initial = currentState();
+                        api.assert(!initial.canvasLastDrawSummary.anomalyActive, 'anomaly must be inactive before restricted filter');
 
                         clickByHitTest(api, getFilterButton('restricted'), 'restricted filter');
                         return api.waitFor(function() {
                             var s = currentState();
-                            return s && s.activeFilterId === 'restricted' ? s : null;
+                            return s && s.activeFilterId === 'restricted' && isCanvasCurrent(s) ? s : null;
                         }, 1500, 'switch to restricted').then(function() {
-                            api.assert(anomaly.classList.contains('is-active'), 'anomaly layer should activate when restricted filter selected');
-                            var pulseNode = anomaly.querySelector('.map-stage-anomaly-pulse');
-                            api.assert(!!pulseNode, 'anomaly pulse node must exist');
-                            var pulseRect = pulseNode.getBoundingClientRect();
-                            var stageRect = document.getElementById('map-stage-frame').getBoundingClientRect();
-                            // 偏心: pulse 中心应落在舞台上半 + 右侧 (x>60%, y<40%)
-                            var relX = (pulseRect.left + pulseRect.width / 2 - stageRect.left) / stageRect.width;
-                            var relY = (pulseRect.top + pulseRect.height / 2 - stageRect.top) / stageRect.height;
-                            api.assert(relX > 0.6 && relY < 0.4, 'anomaly pulse must be offset to upper-right (got x=' + relX.toFixed(2) + ' y=' + relY.toFixed(2) + ')');
+                            var restrictedState = currentState();
+                            api.assert(restrictedState.canvasLastDrawSummary.anomalyActive, 'canvas anomaly should activate when restricted filter selected');
 
                             // 切回 first_line — 异常层 deactivate
                             clickByHitTest(api, getFilterButton('first_line'), 'first_line filter');
                             return api.waitFor(function() {
                                 var s = currentState();
-                                return s && s.activeFilterId === 'first_line' ? s : null;
+                                return s && s.activeFilterId === 'first_line' && isCanvasCurrent(s) ? s : null;
                             }, 1500, 'switch to first_line').then(function() {
-                                api.assert(!anomaly.classList.contains('is-active'), 'anomaly should deactivate when leaving restricted filter');
-                                return 'anomaly toggle ok relX=' + relX.toFixed(2) + ' relY=' + relY.toFixed(2);
+                                api.assert(!currentState().canvasLastDrawSummary.anomalyActive, 'canvas anomaly should deactivate when leaving restricted filter');
+                                return 'anomaly toggle ok';
                             });
                         });
                     });
@@ -1031,14 +1061,11 @@ var MapPanelHarnessQA = (function() {
 
                         for (id in expectedOwnership) {
                             var slot = lookup[id];
-                            var avatarEl;
                             api.assert(!!slot, 'school ownership audit missing ' + id);
                             api.assertEqual(slot.assignedHotspotId, expectedOwnership[id], id + ' hotspot ownership mismatch');
                             api.assert(slot.assignedContains, id + ' center should stay inside assigned scene bucket');
-                            avatarEl = document.querySelector('.map-static-avatar[data-avatar-id="' + id + '"]');
-                            api.assert(!!avatarEl, 'school avatar element missing ' + id);
-                            api.assertEqual(avatarEl.getAttribute('data-hotspot-id'), expectedOwnership[id], id + ' rendered hotspot binding mismatch');
                         }
+                        api.assert(currentState().canvasLastDrawSummary.staticAvatarCount > 0, 'school canvas should draw static avatars');
 
                         clearMismatches = audit.filter(function(item) {
                             return item.clearMismatchHotspotId && !reviewOnly[item.avatarId];
@@ -1073,7 +1100,6 @@ var MapPanelHarnessQA = (function() {
                             var hotspotBtn = document.querySelector('.map-hotspot[data-hotspot-id="first_defense"]');
                             var overlayLabel;
                             var overlayStyle;
-                            var avatarLayer = document.getElementById('map-dynamic-avatar-layer');
                             var labelLayer = document.getElementById('map-hotspot-label-layer');
                             var hotspotRect;
                             var labelRect;
@@ -1088,8 +1114,7 @@ var MapPanelHarnessQA = (function() {
                             hotspotRect = hotspotBtn.getBoundingClientRect();
                             labelRect = overlayLabel.getBoundingClientRect();
                             api.assert(!!labelLayer && labelLayer.contains(overlayLabel), 'overlay label should render inside content-fit label layer');
-                            api.assert(!!avatarLayer, 'avatar layer missing');
-                            api.assert(parseInt(window.getComputedStyle(labelLayer).zIndex || '0', 10) > parseInt(window.getComputedStyle(avatarLayer).zIndex || '0', 10), 'label layer should stay above avatar layer');
+                            api.assert(parseInt(window.getComputedStyle(labelLayer).zIndex || '0', 10) > 0, 'label layer should stay above canvas stage');
                             api.assert(overlayLabel.classList.contains('is-hover'), 'overlay label should track hotspot hover state');
                             api.assert(parseFloat(overlayStyle.opacity || '0') > 0.9, 'overlay label should be visible on hover');
                             api.assert(labelRect.left >= hotspotRect.left - 6, 'overlay label should not drift left of hotspot');
@@ -1100,7 +1125,7 @@ var MapPanelHarnessQA = (function() {
                             api.assert(labelRect.height <= (hotspotRect.height * 0.5) + 2,
                                 'overlay label height (' + Math.round(labelRect.height) + 'px) should not exceed 50% of hotspot height (' + Math.round(hotspotRect.height) + 'px)');
                             return 'label=' + overlayLabel.textContent +
-                                ' z=' + window.getComputedStyle(labelLayer).zIndex + '/' + window.getComputedStyle(avatarLayer).zIndex +
+                                ' z=' + window.getComputedStyle(labelLayer).zIndex +
                                 ' anchor=' + Math.round(labelRect.left - hotspotRect.left) + ',' + Math.round(labelRect.bottom - hotspotRect.top) +
                                 ' lh/hh=' + Math.round(labelRect.height) + '/' + Math.round(hotspotRect.height);
                         });

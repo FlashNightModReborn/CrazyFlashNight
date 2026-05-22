@@ -7,7 +7,7 @@ var MapPanel = (function() {
     //   - 调大需回查 composite PNG 源分辨率, 否则最终总放大 > 1.5x 会 pixelated
     var STAGE_MAX_SCALE = 1.3;
 
-    var _el, _bodyEl, _stageEl, _stageShellEl, _railEl, _backdropEl, _filterOverlayEl, _anomalyEl, _contentFitEl, _imageEl, _sceneLayer, _hotspotLayer, _avatarLayer, _hotspotLabelLayer, _feedbackLayer, _overlayLayer, _loadingEl, _errorEl, _errorTextEl;
+    var _el, _bodyEl, _stageEl, _stageShellEl, _railEl, _canvasEl, _fgCanvasEl, _canvasRenderer, _contentFitEl, _hotspotLayer, _hotspotLabelLayer, _loadingEl, _errorEl, _errorTextEl;
     var _pageTabsEl, _pageSummaryEl;
     var _activePage = null;
     var _reqSeq = 0;
@@ -48,17 +48,13 @@ var MapPanel = (function() {
     var _layoutPendingReason = '';
     var _layoutObserver = null;
     var _resizingClassTimer = 0;
-    // sceneLayer DOM cache: 一次构建一页全部 scene-node, 切页 detach/reattach 整个 fragment, filter 切换仅切显隐。
-    // 避免每次切页重新 fetch + decode 14 张 PNG。
-    // 假设 MapPanelData 加载后 immutable; 若未来出现热重载或页面数据动态修改, 需在数据更新点 reset 此 cache。
-    var _sceneNodeCache = {};
-    var _currentSceneLayerPageId = '';
     var _windowResizeBound = false;
     var _visualViewportResizeBound = false;
     var _windowResizeHandler = null;
     var _visualViewportResizeHandler = null;
     var _debugTelemetryEnabled = false;
     var _snapshotAnnounced = false;     // 每次 onOpen 后首次 snapshot 成功播 ready, 避免刷新 spam
+    var _canvasRevision = 0;
 
     function playCue(name) {
         var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
@@ -89,24 +85,15 @@ var MapPanel = (function() {
             '<div class="map-panel-body">' +
                 '<div class="map-stage-shell" id="map-stage-shell">' +
                     '<div class="map-stage-frame" id="map-stage-frame">' +
-                        '<div class="map-stage-backdrop" id="map-stage-backdrop">' +
-                            // filter-overlay 与 anomaly 嵌在 backdrop 内 —
-                            // backdrop z-index:0 建立 stacking context, 子元素全部被封印在 z=0 层,
-                            // 无法逃逸到 image(z:1) / scenes(z:2) 之上, 避免干扰半透明场景边缘
-                            '<div class="map-stage-filter-overlay" id="map-stage-filter-overlay" aria-hidden="true"></div>' +
-                            '<div class="map-stage-anomaly" id="map-stage-anomaly" aria-hidden="true">' +
-                                '<div class="map-stage-anomaly-pulse"></div>' +
-                            '</div>' +
-                        '</div>' +
-                        '<img class="map-stage-image" id="map-stage-image" alt="地图背景" decoding="async">' +
+                        // 双画布: bg 承载 backdrop/场景/头像 (z=2, 低于 hotspot 命中层与标签);
+                        // fg 承载异常层/任务环/反馈标记/提示/未开放提示 (z=6, 高于标签),
+                        // 还原旧 feedback-layer z6 > hotspot-label-layer z5 的层序
+                        '<canvas class="map-stage-canvas map-stage-canvas--bg" id="map-stage-canvas" aria-hidden="true"></canvas>' +
                         '<div class="map-stage-content-fit" id="map-stage-content-fit">' +
-                            '<div class="map-scene-layer" id="map-scene-layer"></div>' +
                             '<div class="map-hotspot-layer" id="map-hotspot-layer"></div>' +
-                            '<div class="map-dynamic-avatar-layer" id="map-dynamic-avatar-layer"></div>' +
                             '<div class="map-hotspot-label-layer" id="map-hotspot-label-layer"></div>' +
-                            '<div class="map-feedback-layer" id="map-feedback-layer"></div>' +
                         '</div>' +
-                        '<div class="map-stage-overlay-layer" id="map-stage-overlay-layer"></div>' +
+                        '<canvas class="map-stage-canvas map-stage-canvas--fg" id="map-stage-canvas-fg" aria-hidden="true"></canvas>' +
                         '<div class="map-stage-corner map-stage-corner--tl" aria-hidden="true"></div>' +
                         '<div class="map-stage-corner map-stage-corner--tr" aria-hidden="true"></div>' +
                         '<div class="map-stage-corner map-stage-corner--bl" aria-hidden="true"></div>' +
@@ -127,17 +114,11 @@ var MapPanel = (function() {
 
         _bodyEl = _el.querySelector('.map-panel-body');
         _stageEl = _el.querySelector('#map-stage-frame');
-        _backdropEl = _el.querySelector('#map-stage-backdrop');
-        _filterOverlayEl = _el.querySelector('#map-stage-filter-overlay');
-        _anomalyEl = _el.querySelector('#map-stage-anomaly');
+        _canvasEl = _el.querySelector('#map-stage-canvas');
+        _fgCanvasEl = _el.querySelector('#map-stage-canvas-fg');
         _contentFitEl = _el.querySelector('#map-stage-content-fit');
-        _imageEl = _el.querySelector('#map-stage-image');
-        _sceneLayer = _el.querySelector('#map-scene-layer');
         _hotspotLayer = _el.querySelector('#map-hotspot-layer');
-        _avatarLayer = _el.querySelector('#map-dynamic-avatar-layer');
         _hotspotLabelLayer = _el.querySelector('#map-hotspot-label-layer');
-        _feedbackLayer = _el.querySelector('#map-feedback-layer');
-        _overlayLayer = _el.querySelector('#map-stage-overlay-layer');
         _stageShellEl = _el.querySelector('#map-stage-shell');
         _railEl = _el.querySelector('#map-rail-shell');
         _loadingEl = _el.querySelector('#map-stage-loading');
@@ -145,6 +126,9 @@ var MapPanel = (function() {
         _errorTextEl = _el.querySelector('#map-stage-error-text');
         _pageTabsEl = _el.querySelector('#map-page-tabs');
         _pageSummaryEl = _el.querySelector('#map-page-summary');
+        _canvasRenderer = (typeof MapCanvasStageRenderer !== 'undefined')
+            ? new MapCanvasStageRenderer(_canvasEl, { fgCanvas: _fgCanvasEl, resolveAssetUrl: resolveAssetUrl })
+            : null;
 
         buildPageTabs();
         initLayoutWatcher();
@@ -311,7 +295,6 @@ var MapPanel = (function() {
     }
 
     function renderStageBackdrop() {
-        var backdropTheme = _activePage && _activePage.backdropTheme ? _activePage.backdropTheme : 'default';
         var activeViewMode = getActiveViewMode(_activePage);
         var activeFilter = _activePage ? getActiveFilter(_activePage) : null;
         var activeFilterId = activeFilter ? activeFilter.id : '';
@@ -319,40 +302,11 @@ var MapPanel = (function() {
         _stageEl.classList.toggle('is-layer-relation', activeViewMode === 'hierarchy');
         _stageEl.setAttribute('data-page-id', _activePage ? _activePage.id : '');
         _stageEl.setAttribute('data-active-filter', activeFilterId);
-        _backdropEl.className = 'map-stage-backdrop map-stage-backdrop--' + backdropTheme;
-        if (_filterOverlayEl) {
-            _filterOverlayEl.setAttribute('data-active-filter', activeFilterId);
-            _filterOverlayEl.setAttribute('data-page-id', _activePage ? _activePage.id : '');
-        }
-        if (_anomalyEl) {
-            // 禁区异常层: defense + restricted filter 时显示; 其它场景隐藏
-            var isAnomaly = _activePage && _activePage.id === 'defense' && activeFilterId === 'restricted';
-            _anomalyEl.classList.toggle('is-active', !!isAnomaly);
-        }
-    }
-
-    function triggerFilterRetune() {
-        if (!_stageEl) return;
-        _stageEl.classList.remove('is-retuning');
-        // force reflow 以重启动画
-        void _stageEl.offsetWidth;
-        _stageEl.classList.add('is-retuning');
+        syncCanvasStage();
     }
 
     function renderStageImage() {
-        var hasBackground = !!(_activePage && _activePage.backgroundUrl);
-        var hideImage = useAssembledVisuals(_activePage);
-
-        _imageEl.classList.toggle('is-hidden', !hasBackground || hideImage);
-        _imageEl.width = _activePage.width;
-        _imageEl.height = _activePage.height;
-
-        if (hasBackground) {
-            _imageEl.src = resolveAssetUrl(_activePage.backgroundUrl);
-            return;
-        }
-
-        _imageEl.removeAttribute('src');
+        syncCanvasStage();
     }
 
     function updatePageTabs() {
@@ -413,87 +367,7 @@ var MapPanel = (function() {
     }
 
     function renderSceneVisuals() {
-        if (!_activePage || !_sceneLayer) return;
-
-        var newPageId = _activePage.id;
-
-        if (_currentSceneLayerPageId !== newPageId) {
-            // 切页: 把当前 sceneLayer 的子节点 detach 回旧页 cache fragment, 再 attach 新页 cache。
-            // 节点身份保留 → PNG 已解码进 image cache、CSS class 状态留住, 切回时无需重 fetch/decode。
-            if (_currentSceneLayerPageId) {
-                var oldCache = _sceneNodeCache[_currentSceneLayerPageId];
-                if (oldCache) {
-                    while (_sceneLayer.firstChild) {
-                        oldCache.fragment.appendChild(_sceneLayer.firstChild);
-                    }
-                } else {
-                    _sceneLayer.innerHTML = '';
-                }
-            } else {
-                _sceneLayer.innerHTML = '';
-            }
-
-            var cache = _sceneNodeCache[newPageId];
-            if (!cache) {
-                cache = { fragment: document.createDocumentFragment() };
-                buildSceneNodesIntoFragment(_activePage, cache.fragment);
-                _sceneNodeCache[newPageId] = cache;
-            }
-            // appendChild fragment: 子节点全部搬到 sceneLayer, fragment 留空对象供下次 detach 复用。
-            _sceneLayer.appendChild(cache.fragment);
-            _currentSceneLayerPageId = newPageId;
-        }
-        // pageId 未变 (filter 切换走这里): 不动 DOM, 仅切显隐 + 同步状态 class。
-
-        syncSceneVisualsVisibility();
-        syncSceneNodeStates();
-    }
-
-    function buildSceneNodesIntoFragment(page, fragment) {
-        var visuals = page.sceneVisuals || [];
-        for (var i = 0; i < visuals.length; i++) {
-            var visual = visuals[i];
-            if (!visual || !visual.rect || !visual.assetUrl) continue;
-
-            var rect = visual.rect;
-            var assetUrl = resolveAssetUrl(visual.assetUrl);
-            var node = document.createElement('div');
-            node.className = 'map-scene-node';
-            node.setAttribute('data-scene-node-id', visual.id);
-            node.setAttribute('data-hotspot-ids', (visual.hotspotIds || []).join(' '));
-            node.style.left = toPercent(rect.x, page.width);
-            node.style.top = toPercent(rect.y, page.height);
-            node.style.width = toPercent(rect.w, page.width);
-            node.style.height = toPercent(rect.h, page.height);
-            node.setAttribute('aria-label', visual.label || visual.id);
-            node.innerHTML =
-                '<img class="map-scene-node-image" alt="" decoding="async" src="' + escAttr(assetUrl) + '">' +
-                '<span class="map-scene-node-glow"></span>';
-            applySharpenedSrcToImg(node.querySelector('.map-scene-node-image'), assetUrl);
-            fragment.appendChild(node);
-        }
-    }
-
-    function syncSceneVisualsVisibility() {
-        if (!_activePage || !_sceneLayer) return;
-        var visuals = getVisibleSceneVisuals(_activePage);
-        var visibleSet = {};
-        var i;
-        for (i = 0; i < visuals.length; i++) {
-            // 同时要求其覆盖的 hotspot 至少有一个解锁；否则该场景视觉对应的全是锁定区域，整块不画
-            var ids = visuals[i].hotspotIds || [];
-            var hasEnabledHotspot = ids.length === 0;  // 无 hotspot 关联的视觉（背景类）保持显示
-            for (var j = 0; j < ids.length; j++) {
-                if (_enabledLookup[ids[j]]) { hasEnabledHotspot = true; break; }
-            }
-            if (hasEnabledHotspot) visibleSet[visuals[i].id] = true;
-        }
-
-        var nodes = _sceneLayer.querySelectorAll('.map-scene-node');
-        for (i = 0; i < nodes.length; i++) {
-            var sceneId = nodes[i].getAttribute('data-scene-node-id');
-            nodes[i].style.display = visibleSet[sceneId] ? '' : 'none';
-        }
+        syncCanvasStage();
     }
 
     function getVisibleSceneVisuals(page) {
@@ -503,46 +377,7 @@ var MapPanel = (function() {
     }
 
     function syncSceneNodeStates() {
-        if (!_sceneLayer) return;
-
-        var nodes = _sceneLayer.querySelectorAll('.map-scene-node');
-        var activeViewMode = getActiveViewMode(_activePage);
-        var focusHotspotId = getFocusHotspotId(_activePage);
-        for (var i = 0; i < nodes.length; i++) {
-            var hotspotIds = getNodeHotspotIds(nodes[i]);
-            var enabledCount = countEnabledIds(hotspotIds);
-            var isCurrent = containsHotspotId(hotspotIds, _currentHotspotId);
-            var isHover = containsHotspotId(hotspotIds, _hoverHotspotId);
-            var isBusy = hasBusyHotspot(hotspotIds);
-            var isLocked = hotspotIds.length ? enabledCount === 0 : false;
-            var isFocused = containsHotspotId(hotspotIds, focusHotspotId);
-            var isMuted = !!focusHotspotId && !isFocused;
-
-            nodes[i].classList.toggle('is-disabled', isLocked);
-            nodes[i].classList.toggle('is-current', isCurrent);
-            nodes[i].classList.toggle('is-hover', isHover);
-            nodes[i].classList.toggle('is-busy', isBusy);
-            nodes[i].classList.toggle('is-muted', isMuted);
-            nodes[i].classList.toggle('is-emphasis', !!focusHotspotId && isFocused);
-            nodes[i].classList.toggle('is-relationship', activeViewMode === 'hierarchy');
-        }
-    }
-
-    function getNodeHotspotIds(node) {
-        var raw = node ? (node.getAttribute('data-hotspot-ids') || '') : '';
-        return raw ? raw.split(/\s+/).filter(Boolean) : [];
-    }
-
-    function containsHotspotId(hotspotIds, hotspotId) {
-        return !!(hotspotId && hotspotIds && hotspotIds.indexOf(hotspotId) >= 0);
-    }
-
-    function hasBusyHotspot(hotspotIds) {
-        if (!hotspotIds || !hotspotIds.length) return false;
-        for (var i = 0; i < hotspotIds.length; i++) {
-            if (_busyLookup[hotspotIds[i]]) return true;
-        }
-        return false;
+        syncCanvasStage();
     }
 
     function requestSnapshot(cmd) {
@@ -785,8 +620,8 @@ var MapPanel = (function() {
             var rect = hotspot.rect;
             var hotspotState = getHotspotState(hotspot.id);
             var enabled = !!hotspotState.enabled;
-            // 锁定 hotspot 整体不渲染（剧透防护）。原本会渲染 is-disabled 按钮 + 点击弹 toast，
-            // 现在改为彻底不可见 + 不可点；解锁原因通过 group 级 filter 按钮自身在解锁前的隐藏来表达。
+            // 锁定 hotspot 整体不渲染（剧透防护）。彻底不可见 + 不可点；
+            // 解锁原因通过 group 级 filter 按钮自身在解锁前的隐藏来表达。
             if (!enabled) continue;
             var btn = document.createElement('button');
 
@@ -848,7 +683,8 @@ var MapPanel = (function() {
             var enabledCount = countEnabledIds(filter.hotspotIds || []);
             var filterMeta = getFilterMeta(_activePage.id, filter.id);
             var isLocked = !!(filterMeta && !_unlockFlags[filterMeta.unlockGroup]);
-            // 锁定的 group-mapped filter 整个按钮不渲染（剧透防护）；meta filter（all/hierarchy）和无 group 关联的 filter 保留。
+            // 锁定的 group-mapped filter 整个按钮不渲染（剧透防护）；
+            // meta filter（all/hierarchy）和无 group 关联的 filter 保留。
             if (isLocked) continue;
             var btn = document.createElement('button');
             btn.className = 'map-filter-hotspot';
@@ -1022,67 +858,7 @@ var MapPanel = (function() {
     }
 
     function renderAvatars() {
-        if (!_activePage || !_avatarLayer) return;
-
-        var visibleLookup = buildVisibleLookup(_activePage);
-        _avatarLayer.innerHTML = '';
-
-        renderAvatarTaskMarkers(visibleLookup);
-        renderStaticAvatars(visibleLookup);
-        renderDynamicAvatars(visibleLookup);
-        syncAvatarStates();
-    }
-
-    function renderAvatarTaskMarkers(visibleLookup) {
-        for (var i = 0; i < _snapshotMarkers.length; i++) {
-            var marker = _snapshotMarkers[i];
-            if (!marker || marker.kind !== 'taskNpc') continue;
-            if (marker.pageId && marker.pageId !== _activePage.id) continue;
-            if (marker.hotspotId && !visibleLookup[marker.hotspotId]) continue;
-            // 锁定 hotspot 不挂闪光环（即便任务可交付，玩家也得先解锁区域才看得到）
-            if (marker.hotspotId && !_enabledLookup[marker.hotspotId]) continue;
-
-            var anchor = findAvatarAnchorForMarker(marker, visibleLookup) || resolveFeedbackAnchor(marker);
-            if (!anchor) continue;
-
-            var ring = document.createElement('div');
-            ring.className = 'map-avatar-task-ring';
-            ring.setAttribute('data-hotspot-id', marker.hotspotId || '');
-            ring.style.left = toPercent(anchor.x, _activePage.width);
-            ring.style.top = toPercent(anchor.y, _activePage.height);
-            _avatarLayer.appendChild(ring);
-        }
-    }
-
-    function renderStaticAvatars(visibleLookup) {
-        var slots = _activePage.staticAvatars || [];
-
-        for (var i = 0; i < slots.length; i++) {
-            var slot = slots[i];
-            if (slot.hotspotId && !visibleLookup[slot.hotspotId]) continue;
-            // 锁定 hotspot 不渲染 NPC 头像（剧透防护：视觉上彻底不出现）
-            if (slot.hotspotId && !_enabledLookup[slot.hotspotId]) continue;
-            if (!slot.assetUrl) continue;
-            // v3 visibility mask：avatarId 命中 _avatarVisibility 且为 false 时跳过（v2 snapshot 该表恒空）
-            if (slot.id && _avatarVisibility.hasOwnProperty(slot.id) && _avatarVisibility[slot.id] === false) continue;
-            var rect = resolveStaticAvatarRect(slot);
-            if (!rect) {
-                console.warn('[map-panel] static avatar missing source-data rect, skip render', slot.id, slot.assetUrl);
-                continue;
-            }
-
-            var avatar = document.createElement('div');
-            avatar.className = 'map-avatar map-static-avatar';
-            avatar.setAttribute('data-avatar-id', slot.id || '');
-            avatar.setAttribute('data-hotspot-id', slot.hotspotId || '');
-            avatar.setAttribute('aria-label', slot.label || '');
-            avatar.style.left = toPercent(rect.x, _activePage.width);
-            avatar.style.top = toPercent(rect.y, _activePage.height);
-            avatar.style.width = toPercent(rect.w, _activePage.width);
-            avatar.style.height = toPercent(rect.h, _activePage.height);
-            appendAvatarImage(avatar, slot.assetUrl, slot.label || '');
-            _avatarLayer.appendChild(avatar);
-        }
+        syncCanvasStage();
     }
 
     function resolveStaticAvatarRect(slot) {
@@ -1102,74 +878,8 @@ var MapPanel = (function() {
         };
     }
 
-    function renderDynamicAvatars(visibleLookup) {
-        var slots = _activePage.dynamicAvatars || [];
-
-        for (var i = 0; i < slots.length; i++) {
-            var slot = slots[i];
-            if (slot.hotspotId && !visibleLookup[slot.hotspotId]) continue;
-            // 锁定 hotspot 不渲染动态头像（与 renderStaticAvatars 口径一致）
-            if (slot.hotspotId && !_enabledLookup[slot.hotspotId]) continue;
-
-            var assetUrl = resolveDynamicAvatarUrl(slot);
-            if (!assetUrl) continue;
-
-            var rect = resolveDynamicAvatarRect(slot);
-            if (!rect) {
-                console.warn('[map-panel] dynamic avatar missing hotspot rect, skip render', slot.id, slot.hotspotId);
-                continue;
-            }
-
-            var avatar = document.createElement('div');
-            avatar.className = 'map-avatar map-dynamic-avatar map-dynamic-avatar--' + slot.kind;
-            avatar.setAttribute('data-hotspot-id', slot.hotspotId || '');
-            avatar.style.left = toPercent(rect.x, _activePage.width);
-            avatar.style.top = toPercent(rect.y, _activePage.height);
-            avatar.style.width = toPercent(rect.w, _activePage.width);
-            avatar.style.height = toPercent(rect.h, _activePage.height);
-            appendAvatarImage(avatar, assetUrl, slot.id || '', 'map-dynamic-avatar-image');
-            _avatarLayer.appendChild(avatar);
-        }
-    }
-
-    function appendAvatarImage(container, assetUrl, fallbackLabel, extraClass) {
-        var image = document.createElement('img');
-        image.className = 'map-avatar-image';
-        if (extraClass) {
-            image.className += ' ' + extraClass;
-        }
-        image.alt = '';
-        image.src = resolveAssetUrl(assetUrl);
-        image.addEventListener('error', function onError() {
-            image.removeEventListener('error', onError);
-            container.classList.add('is-missing');
-            if (image.parentNode === container) {
-                container.removeChild(image);
-            }
-            if (container.querySelector('.map-avatar-fallback')) return;
-
-            var fallback = document.createElement('span');
-            fallback.className = 'map-avatar-fallback';
-            fallback.textContent = buildAvatarFallbackLabel(fallbackLabel);
-            container.appendChild(fallback);
-        });
-        container.appendChild(image);
-    }
-
-    function buildAvatarFallbackLabel(label) {
-        if (!label) return '?';
-        return String(label).trim().charAt(0) || '?';
-    }
-
     function renderFeedback() {
-        if (!_activePage) return;
-
-        _feedbackLayer.innerHTML = '';
-        if (_overlayLayer) _overlayLayer.innerHTML = '';
-
-        renderFlashHints(MapPanelData.getPageFlashHints(_activePage.id));
-        renderFeedbackMarkers(_snapshotMarkers);
-        renderFeedbackTips(_snapshotTips);
+        syncCanvasStage();
     }
 
     function renderHotspotLabels() {
@@ -1179,8 +889,12 @@ var MapPanel = (function() {
         _hotspotLabelLayer.innerHTML = '';
         for (var i = 0; i < hotspots.length; i++) {
             var hotspot = hotspots[i];
-            var rect = hotspot.rect;
             var hotspotState = getHotspotState(hotspot.id);
+            // 锁定 hotspot 不渲染标签（剧透防护：与 renderHotspots 口径一致，
+            // 锁定区域彻底无 DOM，不靠 content-fit 裁剪来隐藏 — 否则未自适应缩放时
+            // 锁定地点名会以 is-muted 0.28 透明度泄露出来）
+            if (!hotspotState.enabled) continue;
+            var rect = hotspot.rect;
             var stageSelectEntry = resolveStageSelectEntryForHotspot(hotspot);
             var label = document.createElement('div');
             label.className = 'map-hotspot-overlay-label';
@@ -1192,15 +906,8 @@ var MapPanel = (function() {
                 '<span class="map-hotspot-overlay-label-head">' +
                     '<span class="map-hotspot-overlay-label-text">' + escHtml(hotspot.label || hotspot.id) + '</span>' +
                 '</span>';
-            // 锁定: 把 lockedReason 直接写进卡片, 替代被移除的 OS title tooltip
-            if (!hotspotState.enabled && hotspotState.lockedReason) {
-                var lockedRow = document.createElement('div');
-                lockedRow.className = 'map-hotspot-overlay-locked';
-                lockedRow.textContent = hotspotState.lockedReason;
-                label.appendChild(lockedRow);
-            }
             // 可选关: 加大尺寸的 "前往选关" 按钮独占一行, 避免与 hotspot 整块点击区争抢命中
-            if (stageSelectEntry && hotspotState.enabled) {
+            if (stageSelectEntry) {
                 var actions = document.createElement('div');
                 actions.className = 'map-hotspot-overlay-actions';
                 var action = document.createElement('button');
@@ -1233,61 +940,6 @@ var MapPanel = (function() {
         });
     }
 
-    function renderFlashHints(hints) {
-        var target = _overlayLayer || _feedbackLayer;
-        if (!target) return;
-
-        for (var i = 0; i < hints.length; i++) {
-            var hint = hints[i];
-            if (!shouldRenderFlashHint(hint)) continue;
-
-            var anchor = resolveFlashHintAnchor(hint);
-            if (!anchor) continue;
-
-            var el = document.createElement('div');
-            el.className = 'map-feedback-hint' + (hint.kind ? ' map-feedback-hint--' + hint.kind : '');
-            el.style.left = toPercent(anchor.x, _activePage.width);
-            el.style.top = toPercent(anchor.y, _activePage.height);
-            el.textContent = hint.label || '未开放';
-            target.appendChild(el);
-        }
-    }
-
-    function renderFeedbackMarkers(markers) {
-        for (var i = 0; i < markers.length; i++) {
-            var marker = markers[i];
-            if (marker && marker.kind === 'taskNpc') continue;
-            if (!shouldRenderFeedbackItem(marker)) continue;
-
-            var anchor = resolveFeedbackAnchor(marker);
-            if (!anchor) continue;
-
-            var el = document.createElement('div');
-            el.className = 'map-feedback-marker' + (marker.kind ? ' map-feedback-marker--' + marker.kind : '');
-            el.style.left = toPercent(anchor.x, _activePage.width);
-            el.style.top = toPercent(anchor.y, _activePage.height);
-            // 标记只留点 + 雷达扫针，文字描述交给 tips 层，避免和 tip "当前位置" 叠字
-            _feedbackLayer.appendChild(el);
-        }
-    }
-
-    function renderFeedbackTips(tips) {
-        for (var i = 0; i < tips.length; i++) {
-            var tip = tips[i];
-            if (!shouldRenderFeedbackItem(tip)) continue;
-
-            var anchor = resolveFeedbackAnchor(tip);
-            if (!anchor) continue;
-
-            var el = document.createElement('div');
-            el.className = 'map-feedback-tip' + (tip.tone ? ' is-' + tip.tone : '');
-            el.style.left = toPercent(anchor.x, _activePage.width);
-            el.style.top = toPercent(anchor.y, _activePage.height);
-            el.textContent = tip.label || '提示';
-            _feedbackLayer.appendChild(el);
-        }
-    }
-
     function shouldRenderFeedbackItem(item) {
         if (!item) return false;
 
@@ -1309,7 +961,7 @@ var MapPanel = (function() {
         return MapPanelData.evaluateCondition(_unlockFlags, hint.conditionId) === !!hint.whenValue;
     }
 
-function resolveFeedbackAnchor(item) {
+    function resolveFeedbackAnchor(item) {
         if (!item) return null;
 
         if (item.point && item.point.x !== undefined && item.point.y !== undefined) {
@@ -1382,6 +1034,7 @@ function resolveFeedbackAnchor(item) {
             for (var j = 0; j < keys.length; j++) {
                 if (keys[j] && keys[j] === npcKey) {
                     var rect = rectResolver(slot);
+                    if (!rect) return null;
                     return {
                         x: rect.x + (rect.w / 2),
                         y: rect.y + (rect.h / 2)
@@ -1451,124 +1104,6 @@ function resolveFeedbackAnchor(item) {
         } catch (err) {
             return value;
         }
-    }
-
-    // === Scene-node 锐化后处理 ===
-    //
-    // 目的: 缓解 PNG 上采样 (~1.3-1.5x) 视觉糊化, 一次性 unsharp mask 烤进 blob,
-    // 之后 GPU 合成走普通 img 不再吃额外帧成本; 与 tools/tune-map-filter-fit.js
-    // 的 COMPOSITE_VISUAL_SCALE_CAP 抬到 1.75 配套, 让 map-fit-presets 给学校等
-    // filter 更激进的 maxScale。
-    //
-    // 退化路径: 任何环节失败 (worker 不支持 / fetch 失败 / convertToBlob 错误)
-    // 都保留 raw PNG src, 不破坏渲染。
-    var SHARPEN_AMOUNT = 0.45;
-    var SHARPEN_WORKER_URL = 'modules/workers/sharpen-worker.js';
-    var _sharpenWorker = null;
-    var _sharpenWorkerInitFailed = false;
-    var _sharpenCache = {};        // assetUrl → Promise<blobUrl | null>
-    var _sharpenPending = {};      // key → resolve fn (worker round-trip)
-    var _sharpenKeySeq = 0;
-
-    function isSharpenSupported() {
-        return typeof Worker !== 'undefined'
-            && typeof OffscreenCanvas !== 'undefined'
-            && typeof createImageBitmap === 'function'
-            && typeof URL !== 'undefined'
-            && typeof URL.createObjectURL === 'function';
-    }
-
-    function ensureSharpenWorker() {
-        if (_sharpenWorker || _sharpenWorkerInitFailed) return _sharpenWorker;
-        if (!isSharpenSupported()) {
-            _sharpenWorkerInitFailed = true;
-            return null;
-        }
-        try {
-            _sharpenWorker = new Worker(resolveAssetUrl(SHARPEN_WORKER_URL));
-            _sharpenWorker.onmessage = function(e) {
-                var msg = e.data || {};
-                var resolver = _sharpenPending[msg.key];
-                if (!resolver) return;
-                delete _sharpenPending[msg.key];
-                if (msg.error || !msg.blob) {
-                    resolver(null);
-                    return;
-                }
-                try {
-                    resolver(URL.createObjectURL(msg.blob));
-                } catch (err) {
-                    resolver(null);
-                }
-            };
-            _sharpenWorker.onerror = function() {
-                // worker 整体崩溃: 标记永久禁用, 解决所有在途请求 = null 走 fallback
-                _sharpenWorkerInitFailed = true;
-                var keys = Object.keys(_sharpenPending);
-                for (var i = 0; i < keys.length; i++) {
-                    try { _sharpenPending[keys[i]](null); } catch (e) {}
-                }
-                _sharpenPending = {};
-                _sharpenWorker = null;
-            };
-        } catch (err) {
-            _sharpenWorkerInitFailed = true;
-            _sharpenWorker = null;
-        }
-        return _sharpenWorker;
-    }
-
-    function getSharpenedUrl(assetUrl) {
-        if (!assetUrl) return Promise.resolve(null);
-        if (Object.prototype.hasOwnProperty.call(_sharpenCache, assetUrl)) {
-            return _sharpenCache[assetUrl];
-        }
-        var worker = ensureSharpenWorker();
-        if (!worker) {
-            _sharpenCache[assetUrl] = Promise.resolve(null);
-            return _sharpenCache[assetUrl];
-        }
-        var promise = fetch(assetUrl).then(function(res) {
-            if (!res.ok) throw new Error('http ' + res.status);
-            return res.blob();
-        }).then(function(blob) {
-            return createImageBitmap(blob);
-        }).then(function(bitmap) {
-            return new Promise(function(resolve) {
-                var w = ensureSharpenWorker();
-                if (!w) { resolve(null); return; }
-                var key = 'sk' + (++_sharpenKeySeq);
-                _sharpenPending[key] = resolve;
-                try {
-                    w.postMessage({
-                        key: key,
-                        bitmap: bitmap,
-                        amount: SHARPEN_AMOUNT
-                    }, [bitmap]);
-                } catch (err) {
-                    delete _sharpenPending[key];
-                    resolve(null);
-                }
-            });
-        })['catch'](function() {
-            return null;
-        });
-        _sharpenCache[assetUrl] = promise;
-        return promise;
-    }
-
-    function applySharpenedSrcToImg(imgEl, assetUrl) {
-        if (!imgEl || !assetUrl) return;
-        var captured = assetUrl;
-        imgEl.setAttribute('data-asset-key', assetUrl);
-        getSharpenedUrl(assetUrl).then(function(blobUrl) {
-            if (!blobUrl) return;
-            // 防御性: 该 img 若被复用到其他 asset (当前 scene-node fragment cache
-            // 不会发生, 仅留作后续重构容错), data-asset-key 不匹配就跳过。
-            if (imgEl.getAttribute('data-asset-key') === captured) {
-                imgEl.src = blobUrl;
-            }
-        });
     }
 
     function resolveDynamicAvatarUrl(slot) {
@@ -1650,12 +1185,7 @@ function resolveFeedbackAnchor(item) {
         var filter = findFilter(_activePage, filterId);
         if (!filter) return;
 
-        var previousFilterId = _pageFilterState[_activePage.id];
         _pageFilterState[_activePage.id] = filter.id;
-        if (previousFilterId && previousFilterId !== filter.id) {
-            // 「频段重调」过渡: 仅在真正切 filter 时触发, 首次/相同不重放
-            triggerFilterRetune();
-        }
         renderStageBackdrop();
         renderAvatars();
         renderSceneVisuals();
@@ -1834,16 +1364,7 @@ function resolveFeedbackAnchor(item) {
     }
 
     function syncAvatarStates() {
-        if (!_avatarLayer) return;
-
-        var focusHotspotId = getFocusHotspotId(_activePage);
-        var avatars = _avatarLayer.querySelectorAll('.map-avatar');
-        for (var i = 0; i < avatars.length; i++) {
-            var hotspotId = avatars[i].getAttribute('data-hotspot-id') || '';
-            avatars[i].classList.toggle('is-current', !!hotspotId && hotspotId === _currentHotspotId);
-            avatars[i].classList.toggle('is-focus', !!focusHotspotId && hotspotId === focusHotspotId);
-            avatars[i].classList.toggle('is-muted', !!focusHotspotId && !!hotspotId && hotspotId !== focusHotspotId);
-        }
+        syncCanvasStage();
     }
 
     function setHotspotBusy(id, isBusy) {
@@ -1882,6 +1403,263 @@ function resolveFeedbackAnchor(item) {
         };
     }
 
+    function bumpCanvasRevision() {
+        _canvasRevision += 1;
+        return _canvasRevision;
+    }
+
+    function isLowEffectsMode() {
+        return !!(typeof document !== 'undefined'
+            && document.documentElement
+            && document.documentElement.classList
+            && document.documentElement.classList.contains('perf-low-effects'));
+    }
+
+    function syncCanvasStage() {
+        if (!_canvasRenderer || !_activePage) return;
+        if (!_canvasRenderer.isAvailable || !_canvasRenderer.isAvailable()) {
+            showError('canvas_unavailable');
+            return;
+        }
+        _canvasRenderer.setState(buildCanvasRenderState());
+    }
+
+    function buildCanvasRenderState() {
+        var activeFilter = getActiveFilter(_activePage);
+        return {
+            revision: bumpCanvasRevision(),
+            page: _activePage,
+            // background 渲染模式的页面: 把底图 PNG 交给 canvas 作底层绘制 (assembled 页面恒为空)
+            backgroundImageUrl: (_activePage && _activePage.backgroundUrl && !useAssembledVisuals(_activePage))
+                ? resolveAssetUrl(_activePage.backgroundUrl)
+                : '',
+            activeFilterId: activeFilter ? activeFilter.id : '',
+            activeViewMode: getActiveViewMode(_activePage),
+            focusHotspotId: getFocusHotspotId(_activePage),
+            currentHotspotId: _currentHotspotId,
+            hoverHotspotId: _hoverHotspotId,
+            busyLookup: cloneLookup(_busyLookup),
+            enabledLookup: cloneLookup(_enabledLookup),
+            stageScale: _stageScale,
+            stageWidth: _stageEl ? _stageEl.clientWidth : 0,
+            stageHeight: _stageEl ? _stageEl.clientHeight : 0,
+            contentFitScale: _contentFitScale,
+            contentFitOffsetX: _contentFitOffsetX,
+            contentFitOffsetY: _contentFitOffsetY,
+            lowEffects: isLowEffectsMode(),
+            anomalyActive: !!(_activePage && _activePage.id === 'defense' && activeFilter && activeFilter.id === 'restricted'),
+            sceneVisuals: buildCanvasSceneVisuals(_activePage),
+            staticAvatars: buildCanvasStaticAvatars(_activePage),
+            dynamicAvatars: buildCanvasDynamicAvatars(_activePage),
+            taskRings: buildCanvasTaskRings(_activePage),
+            feedbackMarkers: buildCanvasFeedbackMarkers(_activePage),
+            feedbackTips: buildCanvasFeedbackTips(_activePage),
+            flashHints: buildCanvasFlashHints(_activePage)
+        };
+    }
+
+    function cloneLookup(source) {
+        var out = {};
+        var key;
+        source = source || {};
+        for (key in source) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) {
+                out[key] = source[key];
+            }
+        }
+        return out;
+    }
+
+    function buildCanvasSceneVisuals(page) {
+        var visuals = getVisibleSceneVisuals(page);
+        var out = [];
+        var i;
+        var ids;
+        var hasEnabledHotspot;
+        var j;
+        if (!page) return out;
+        for (i = 0; i < visuals.length; i++) {
+            ids = visuals[i].hotspotIds || [];
+            hasEnabledHotspot = ids.length === 0;
+            for (j = 0; j < ids.length; j++) {
+                if (_enabledLookup[ids[j]]) {
+                    hasEnabledHotspot = true;
+                    break;
+                }
+            }
+            if (!hasEnabledHotspot) continue;
+            out.push({
+                id: visuals[i].id,
+                label: visuals[i].label || visuals[i].id,
+                assetUrl: visuals[i].assetUrl,
+                rect: cloneRect(visuals[i].rect),
+                hotspotIds: (visuals[i].hotspotIds || []).slice()
+            });
+        }
+        return out;
+    }
+
+    function buildCanvasStaticAvatars(page) {
+        var visibleLookup = buildVisibleLookup(page);
+        var slots = page && page.staticAvatars ? page.staticAvatars : [];
+        var out = [];
+        var i;
+        var slot;
+        var rect;
+        for (i = 0; i < slots.length; i++) {
+            slot = slots[i];
+            if (slot.hotspotId && !visibleLookup[slot.hotspotId]) continue;
+            if (slot.hotspotId && !_enabledLookup[slot.hotspotId]) continue;
+            if (!slot.assetUrl) continue;
+            if (slot.id && _avatarVisibility.hasOwnProperty(slot.id) && _avatarVisibility[slot.id] === false) continue;
+            rect = resolveStaticAvatarRect(slot);
+            if (!rect) continue;
+            out.push({
+                id: slot.id || '',
+                label: slot.label || '',
+                hotspotId: slot.hotspotId || '',
+                assetUrl: resolveAssetUrl(slot.assetUrl),
+                rect: cloneRect(rect)
+            });
+        }
+        return out;
+    }
+
+    function buildCanvasDynamicAvatars(page) {
+        var visibleLookup = buildVisibleLookup(page);
+        var slots = page && page.dynamicAvatars ? page.dynamicAvatars : [];
+        var out = [];
+        var i;
+        var slot;
+        var assetUrl;
+        var rect;
+        for (i = 0; i < slots.length; i++) {
+            slot = slots[i];
+            if (slot.hotspotId && !visibleLookup[slot.hotspotId]) continue;
+            if (slot.hotspotId && !_enabledLookup[slot.hotspotId]) continue;
+            assetUrl = resolveDynamicAvatarUrl(slot);
+            if (!assetUrl) continue;
+            rect = resolveDynamicAvatarRect(slot);
+            if (!rect) continue;
+            out.push({
+                id: slot.id || '',
+                label: slot.label || '',
+                hotspotId: slot.hotspotId || '',
+                assetUrl: resolveAssetUrl(assetUrl),
+                rect: cloneRect(rect)
+            });
+        }
+        return out;
+    }
+
+    function buildCanvasTaskRings(page) {
+        var visibleLookup = buildVisibleLookup(page);
+        var out = [];
+        var i;
+        var marker;
+        var anchor;
+        if (!page) return out;
+        for (i = 0; i < _snapshotMarkers.length; i++) {
+            marker = _snapshotMarkers[i];
+            if (!marker || marker.kind !== 'taskNpc') continue;
+            if (marker.pageId && marker.pageId !== page.id) continue;
+            if (marker.hotspotId && !visibleLookup[marker.hotspotId]) continue;
+            if (marker.hotspotId && !_enabledLookup[marker.hotspotId]) continue;
+            anchor = findAvatarAnchorForMarker(marker, visibleLookup) || resolveFeedbackAnchor(marker);
+            if (!anchor) continue;
+            out.push({
+                id: marker.id || '',
+                hotspotId: marker.hotspotId || '',
+                point: clonePoint(anchor)
+            });
+        }
+        return out;
+    }
+
+    function buildCanvasFeedbackMarkers(page) {
+        var out = [];
+        var i;
+        var marker;
+        var anchor;
+        if (!page) return out;
+        for (i = 0; i < _snapshotMarkers.length; i++) {
+            marker = _snapshotMarkers[i];
+            if (marker && marker.kind === 'taskNpc') continue;
+            if (!shouldRenderFeedbackItem(marker)) continue;
+            anchor = resolveFeedbackAnchor(marker);
+            if (!anchor) continue;
+            out.push({
+                id: marker.id || '',
+                kind: marker.kind || '',
+                hotspotId: marker.hotspotId || '',
+                point: clonePoint(anchor)
+            });
+        }
+        return out;
+    }
+
+    function buildCanvasFeedbackTips(page) {
+        var out = [];
+        var i;
+        var tip;
+        var anchor;
+        if (!page) return out;
+        for (i = 0; i < _snapshotTips.length; i++) {
+            tip = _snapshotTips[i];
+            if (!shouldRenderFeedbackItem(tip)) continue;
+            anchor = resolveFeedbackAnchor(tip);
+            if (!anchor) continue;
+            out.push({
+                id: tip.id || '',
+                label: tip.label || '提示',
+                tone: tip.tone || '',
+                hotspotId: tip.hotspotId || '',
+                point: clonePoint(anchor)
+            });
+        }
+        return out;
+    }
+
+    function buildCanvasFlashHints(page) {
+        var hints = page ? MapPanelData.getPageFlashHints(page.id) : [];
+        var out = [];
+        var i;
+        var hint;
+        var anchor;
+        for (i = 0; i < hints.length; i++) {
+            hint = hints[i];
+            if (!shouldRenderFlashHint(hint)) continue;
+            anchor = resolveFlashHintAnchor(hint);
+            if (!anchor) continue;
+            out.push({
+                id: hint.id || '',
+                label: hint.label || '未开放',
+                kind: hint.kind || '',
+                tone: hint.tone || '',
+                point: clonePoint(anchor)
+            });
+        }
+        return out;
+    }
+
+    function cloneRect(rect) {
+        if (!rect) return null;
+        return {
+            x: Number(rect.x) || 0,
+            y: Number(rect.y) || 0,
+            w: Number(rect.w) || 0,
+            h: Number(rect.h) || 0
+        };
+    }
+
+    function clonePoint(point) {
+        if (!point) return null;
+        return {
+            x: Number(point.x) || 0,
+            y: Number(point.y) || 0
+        };
+    }
+
     function resetContentFit() {
         _contentFitScale = 1;
         _contentFitOffsetX = 0;
@@ -1896,6 +1674,7 @@ function resolveFeedbackAnchor(item) {
         if (_contentFitEl) {
             _contentFitEl.style.transform = 'translate3d(0px, 0px, 0) scale(1)';
         }
+        syncCanvasStage();
     }
 
     function applyContentFit(scale, offsetX, offsetY, bounds, stageWidth, stageHeight, fitMeta) {
@@ -1920,37 +1699,78 @@ function resolveFeedbackAnchor(item) {
             _contentFitEl.style.transform =
                 'translate3d(' + offsetX.toFixed(2) + 'px, ' + offsetY.toFixed(2) + 'px, 0) scale(' + scale.toFixed(4) + ')';
         }
+        syncCanvasStage();
     }
 
-    function measureContentBounds(stageRect) {
-        if (!_contentFitEl || !stageRect) return null;
+    function measureContentBounds() {
+        if (!_activePage) return null;
 
-        var nodes = _contentFitEl.querySelectorAll('.map-scene-node, .map-hotspot, .map-avatar, .map-avatar-task-ring, .map-feedback-marker, .map-feedback-tip');
+        var rects = [];
+        var hotspots = getVisibleHotspots(_activePage);
+        var scenes = buildCanvasSceneVisuals(_activePage);
+        var staticAvatars = buildCanvasStaticAvatars(_activePage);
+        var dynamicAvatars = buildCanvasDynamicAvatars(_activePage);
+        var taskRings = buildCanvasTaskRings(_activePage);
+        var markers = buildCanvasFeedbackMarkers(_activePage);
+        var tips = buildCanvasFeedbackTips(_activePage);
+        var i;
+
+        for (i = 0; i < scenes.length; i++) rects.push(scenes[i].rect);
+        for (i = 0; i < hotspots.length; i++) {
+            // 仅计入实际会渲染的解锁 hotspot；锁定区域不渲染也不参与取景包围盒（剧透防护一致性）
+            if (_enabledLookup[hotspots[i].id]) {
+                rects.push(hotspots[i].rect);
+            }
+        }
+        for (i = 0; i < staticAvatars.length; i++) rects.push(staticAvatars[i].rect);
+        for (i = 0; i < dynamicAvatars.length; i++) rects.push(dynamicAvatars[i].rect);
+        for (i = 0; i < taskRings.length; i++) rects.push(pointRect(taskRings[i].point, 28, 28));
+        for (i = 0; i < markers.length; i++) rects.push(pointRect(markers[i].point, 44, 44));
+        for (i = 0; i < tips.length; i++) rects.push(pointRect(tips[i].point, 132, 32));
+        // flash hint（"尚未开放"提示）锚定在锁定区域，不计入取景包围盒 —
+        // 还原旧 measureContentBounds 行为（旧版 querySelector 不含 .map-feedback-hint），
+        // 否则散布全图的提示会撑大包围盒，使单一解锁区无法自适应放大。
+
+        return scaleBoundsForLayout(unionRects(rects));
+    }
+
+    function scaleBoundsForLayout(bounds) {
+        var scale = _stageScale || 1;
+        if (!bounds) return null;
+        return {
+            x: bounds.x * scale,
+            y: bounds.y * scale,
+            w: bounds.w * scale,
+            h: bounds.h * scale
+        };
+    }
+
+    function pointRect(point, w, h) {
+        if (!point) return null;
+        return {
+            x: point.x - w / 2,
+            y: point.y - h / 2,
+            w: w,
+            h: h
+        };
+    }
+
+    function unionRects(rects) {
         var minX = Infinity;
         var minY = Infinity;
         var maxX = -Infinity;
         var maxY = -Infinity;
         var i;
-
-        for (i = 0; i < nodes.length; i++) {
-            var node = nodes[i];
-            if (!node || !node.getBoundingClientRect) continue;
-            // 过滤 display:none；map-* 节点当前 CSS 不使用 visibility:hidden，若将来引入需改用 getComputedStyle。
-            if (node.offsetParent === null) continue;
-
-            var rect = node.getBoundingClientRect();
-            if (!rect || (rect.width <= 0 && rect.height <= 0)) continue;
-
-            minX = Math.min(minX, rect.left - stageRect.left);
-            minY = Math.min(minY, rect.top - stageRect.top);
-            maxX = Math.max(maxX, rect.right - stageRect.left);
-            maxY = Math.max(maxY, rect.bottom - stageRect.top);
+        var rect;
+        for (i = 0; i < rects.length; i++) {
+            rect = rects[i];
+            if (!rect || rect.w <= 0 || rect.h <= 0) continue;
+            minX = Math.min(minX, rect.x);
+            minY = Math.min(minY, rect.y);
+            maxX = Math.max(maxX, rect.x + rect.w);
+            maxY = Math.max(maxY, rect.y + rect.h);
         }
-
-        if (!isFinite(minX) || !isFinite(minY) || !isFinite(maxX) || !isFinite(maxY)) {
-            return null;
-        }
-
+        if (!isFinite(minX) || !isFinite(minY) || !isFinite(maxX) || !isFinite(maxY)) return null;
         return {
             x: minX,
             y: minY,
@@ -2274,6 +2094,7 @@ function resolveFeedbackAnchor(item) {
             case 'timeout': return '启动器等待地图状态响应超时。';
             case 'disconnected': return '当前未连接到游戏运行时。';
             case 'invalid_target': return '目标区域无效或暂不可达。';
+            case 'canvas_unavailable': return '当前 WebView2 不支持地图 Canvas 渲染。';
             default: return '地图桥接返回错误: ' + String(errorText || 'unknown_error');
         }
     }
@@ -2287,10 +2108,6 @@ function resolveFeedbackAnchor(item) {
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;');
-    }
-
-    function escAttr(s) {
-        return escHtml(s).replace(/"/g, '&quot;');
     }
 
     function getDebugState() {
@@ -2314,7 +2131,7 @@ function resolveFeedbackAnchor(item) {
             }
         }
 
-        return {
+        var state = {
             isOpen: Panels.isOpen(),
             activePageId: _activePage ? _activePage.id : null,
             activeFilterId: activeFilter ? activeFilter.id : null,
@@ -2334,8 +2151,8 @@ function resolveFeedbackAnchor(item) {
             focusHotspotId: getFocusHotspotId(_activePage),
             activeViewMode: getActiveViewMode(_activePage),
             renderMode: _activePage && _activePage.renderMode ? _activePage.renderMode : 'background',
-            // 改为 data-driven 计数 (visible 数, 不算 display:none 隐藏的): sceneLayer 现在常驻全部节点, querySelectorAll 会含被 filter 隐去的
-            sceneVisualCount: _activePage ? getVisibleSceneVisuals(_activePage).length : 0,
+            sceneVisualCount: _activePage ? buildCanvasSceneVisuals(_activePage).length : 0,
+            canvasRequestedRevision: _canvasRevision,
             stageScale: _stageScale,
             contentFitScale: _contentFitScale,
             contentFitOffsetX: roundLayoutValue(_contentFitOffsetX),
@@ -2360,6 +2177,21 @@ function resolveFeedbackAnchor(item) {
             markerIds: (_snapshotMarkers || []).map(function(item) { return item.id; }),
             tipIds: (_snapshotTips || []).map(function(item) { return item.id; })
         };
+        if (_canvasRenderer && _canvasRenderer.getDebugState) {
+            var canvasDebug = _canvasRenderer.getDebugState();
+            var key;
+            for (key in canvasDebug) {
+                if (Object.prototype.hasOwnProperty.call(canvasDebug, key)) {
+                    state[key] = canvasDebug[key];
+                }
+            }
+        } else {
+            state.renderer = 'canvas';
+            state.canvasReady = false;
+            state.canvasPendingAssets = 0;
+            state.canvasDrawCount = 0;
+        }
+        return state;
     }
 
     Bridge.on('panel_resp', function(data) {

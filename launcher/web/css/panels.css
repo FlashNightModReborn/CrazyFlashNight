@@ -2792,338 +2792,7 @@
     z-index:1;
 }
 
-/* ================================================================
- * Map backdrop 分层架构 · 占用地层 (occupation strata)
- *   .map-stage-backdrop          = 深色底 + ::before 公共街区骨架
- *   .map-stage-backdrop--<page>  = ::after 每页占用痕 (page-specific)
- *   .map-stage-filter-overlay    = faction 派系占用痕 / decoder 覆膜
- *   .map-stage-anomaly           = 禁区异常层 (0.77Hz 偏心脉冲)
- * 信息密度压四边 / 中心 60% 留喘息 · composite 场景在 z=2 以上不被干扰
- * ================================================================ */
-
-.map-stage-backdrop {
-    position:absolute;
-    inset:0;
-    background:#0a0c0a; /* 通用 fallback — 各 page 覆写 */
-    z-index:0;
-    overflow:hidden;
-}
-
-/* 公共底骨架: 街区方格 + 主轴线, 全页共享 — "这是同一块物理空间"
- * 亮度: 空白区域应能清晰感知到格线存在, 但不压过 composite 场景 */
-.map-stage-backdrop::before {
-    content:'';
-    position:absolute;
-    inset:0;
-    z-index:0;
-    pointer-events:none;
-    opacity:0.62;
-    background:
-        /* 主轴线 (纵/横 各一条居中轴) */
-        linear-gradient(90deg,
-            transparent calc(50% - 0.5px),
-            rgba(190,255,92,0.12) calc(50% - 0.5px),
-            rgba(190,255,92,0.12) calc(50% + 0.5px),
-            transparent calc(50% + 0.5px)),
-        linear-gradient(180deg,
-            transparent calc(50% - 0.5px),
-            rgba(190,255,92,0.11) calc(50% - 0.5px),
-            rgba(190,255,92,0.11) calc(50% + 0.5px),
-            transparent calc(50% + 0.5px)),
-        /* 街区大格 (148×128px) */
-        repeating-linear-gradient(90deg, rgba(210,240,160,0.07) 0 1px, transparent 1px 148px),
-        repeating-linear-gradient(180deg, rgba(210,240,160,0.065) 0 1px, transparent 1px 128px),
-        /* 细化次级格 (74×64px) 只取边角, 增加密度但中央留空 */
-        repeating-linear-gradient(90deg, rgba(210,240,160,0.028) 0 1px, transparent 1px 74px),
-        repeating-linear-gradient(180deg, rgba(210,240,160,0.028) 0 1px, transparent 1px 64px);
-}
-
-/* page 占用痕插槽: 各 --<page> 覆写 background */
-.map-stage-backdrop::after {
-    content:'';
-    position:absolute;
-    inset:0;
-    z-index:1;
-    pointer-events:none;
-}
-
-/* --- base: 军工营地 / 暖灯 / 人用过的工具感 ---
- * 基础色: 暖橄榄深色 #1a1d10, 让"家的感觉"通过环境色先到位 */
-.map-stage-backdrop--base {
-    background:
-        radial-gradient(ellipse at 50% 58%, rgba(34, 36, 20, 1) 0%, rgba(20, 22, 14, 1) 62%, rgba(10, 12, 8, 1) 100%);
-}
-
-.map-stage-backdrop--base::after {
-    opacity:0.74;
-    background:
-        /* 右上角工作灯晕 (暖琥珀) */
-        radial-gradient(ellipse 220px 138px at 84% 14%, rgba(255, 190, 90, 0.15) 0%, rgba(255, 170, 60, 0) 76%),
-        /* 左下角油污擦痕 */
-        radial-gradient(ellipse 320px 168px at 10% 92%, rgba(82, 58, 26, 0.32) 0%, rgba(50, 36, 14, 0) 80%),
-        /* 中央暖渲染 (橄榄绿 → 透明), 把"家的温度"铺到中心 */
-        radial-gradient(ellipse 500px 300px at 50% 62%, rgba(88, 78, 32, 0.11) 0%, rgba(60, 52, 20, 0.03) 46%, rgba(0, 0, 0, 0) 80%),
-        /* 弥散暖雾 (极大 blob 提亮) */
-        radial-gradient(ellipse 860px 380px at 50% 48%, rgba(140, 108, 42, 0.035) 0%, rgba(0, 0, 0, 0) 68%),
-        /* 金属擦痕横纹 */
-        repeating-linear-gradient(92deg, rgba(150, 118, 50, 0.05) 0 2px, transparent 2px 38px);
-}
-
-/* --- faction: 中性街区共抢底, filter-overlay 负责派系差异 ---
- * 基础色: 墨绿 #16201a, 派系能靠 overlay 各自染色而不被全局色锁死 */
-.map-stage-frame[data-page-id="base"] .map-stage-backdrop::before {
-    opacity:0.46;
-}
-
-.map-stage-backdrop--faction {
-    background:
-        radial-gradient(ellipse at 50% 55%, rgba(22, 32, 22, 1) 0%, rgba(14, 20, 14, 1) 60%, rgba(8, 10, 8, 1) 100%);
-}
-
-.map-stage-backdrop--faction::after {
-    opacity:0.88;
-    background:
-        /* 中央散光 — 中性墨绿 */
-        radial-gradient(ellipse 620px 340px at 50% 48%, rgba(72, 96, 56, 0.2) 0%, rgba(36, 52, 30, 0.06) 56%, rgba(0, 0, 0, 0) 88%),
-        /* 左下暗角 */
-        radial-gradient(ellipse 360px 240px at 12% 88%, rgba(14, 24, 16, 0.5) 0%, rgba(8, 12, 8, 0) 78%),
-        /* 右上亮角 (派系势力接壤的灰光) */
-        radial-gradient(ellipse 320px 200px at 82% 16%, rgba(180, 200, 120, 0.08) 0%, rgba(120, 140, 80, 0) 78%),
-        /* 斜向派系边界暗示 */
-        linear-gradient(136deg, rgba(0, 0, 0, 0) 47%, rgba(255, 255, 255, 0.04) 49.8%, rgba(0, 0, 0, 0) 53%);
-}
-
-/* --- defense: 战壕切痕 / 砂尘沉降 / 远处余烬 ---
- * 基础色: 砂尘棕 #2a1f12, 战损即视感 */
-.map-stage-backdrop--defense {
-    background:
-        radial-gradient(ellipse at 40% 68%, rgba(52, 36, 18, 1) 0%, rgba(28, 20, 12, 1) 62%, rgba(12, 10, 8, 1) 100%);
-}
-
-.map-stage-backdrop--defense::after {
-    opacity:0.94;
-    background:
-        /* 远处余烬火光 (左下) */
-        radial-gradient(ellipse 340px 220px at 24% 84%, rgba(198, 82, 26, 0.28) 0%, rgba(120, 50, 14, 0) 74%),
-        /* 砂尘雾气 (大范围提亮) */
-        radial-gradient(ellipse 900px 320px at 50% 22%, rgba(206, 174, 118, 0.1) 0%, rgba(160, 130, 80, 0) 82%),
-        /* 中央干旱地面底色 */
-        radial-gradient(ellipse 560px 280px at 50% 58%, rgba(100, 76, 38, 0.16) 0%, rgba(60, 44, 22, 0.06) 56%, rgba(0, 0, 0, 0) 86%),
-        /* 战壕切痕 (两条斜线) */
-        linear-gradient(118deg, transparent 39%, rgba(200, 148, 86, 0.16) 40.2%, rgba(200, 148, 86, 0.08) 40.8%, transparent 42%),
-        linear-gradient(122deg, transparent 63%, rgba(186, 124, 64, 0.13) 64.2%, transparent 65.4%),
-        /* 辐射告警斜纹 */
-        repeating-linear-gradient(45deg, rgba(230, 180, 60, 0.05) 0 10px, transparent 10px 42px);
-}
-
-/* --- school: 档案秩序 / 冬日午后光 / 冷观察者 ---
- * 基础色: 冷青蓝 #0e1a24, 与 base 的暖构成冷暖对位 */
-.map-stage-backdrop--school {
-    background:
-        radial-gradient(ellipse at 50% 52%, rgba(22, 38, 54, 1) 0%, rgba(14, 24, 36, 1) 60%, rgba(8, 14, 22, 1) 100%);
-}
-
-.map-stage-backdrop--school::after {
-    opacity:0.9;
-    background:
-        /* 冬日斜光 (右上 暖白) */
-        linear-gradient(216deg, rgba(255, 230, 180, 0.14) 0%, rgba(255, 230, 180, 0) 42%),
-        /* 左下一处档案室暖灯角落 */
-        radial-gradient(ellipse 240px 160px at 14% 86%, rgba(255, 202, 128, 0.12) 0%, rgba(220, 168, 100, 0) 78%),
-        /* 中央冷光提亮 */
-        radial-gradient(ellipse 640px 360px at 50% 50%, rgba(72, 146, 196, 0.18) 0%, rgba(32, 78, 118, 0.06) 58%, rgba(0, 0, 0, 0) 88%),
-        /* 档案索引细网 (比公共骨架更密) */
-        repeating-linear-gradient(90deg, rgba(174, 228, 255, 0.12) 0 1px, transparent 1px 52px),
-        repeating-linear-gradient(180deg, rgba(174, 228, 255, 0.1) 0 1px, transparent 1px 64px);
-}
-
-/* --- default fallback (未匹配 page) 保持纯底色 + 骨架 --- */
-.map-stage-backdrop--default {
-    background:#0a0c0a;
-}
-.map-stage-backdrop--default::after {
-    opacity:0;
-}
-
-/* ================================================================
- * filter-overlay: faction 四派系 "抢同一块地" 的占用痕覆膜
- * (defense/base/school 本层保持空, faction 以外无副作用)
- * ================================================================ */
-
-.map-stage-filter-overlay {
-    position:absolute;
-    inset:0;
-    z-index:2;
-    pointer-events:none;
-    opacity:0;
-    transition:opacity 0.22s ease, background 0.22s ease;
-}
-
-.map-stage-filter-overlay[data-page-id="faction"] {
-    opacity:1;
-}
-
-/* warlord: 旧军绿 + 锈红扇形射界 + 钢印条 */
-.map-stage-filter-overlay[data-page-id="faction"][data-active-filter="warlord"] {
-    background:
-        /* 左上扇形射界 (锈红) */
-        conic-gradient(from 190deg at 22% 26%, rgba(168, 48, 28, 0.32) 0deg, rgba(168, 48, 28, 0) 34deg),
-        /* 右下扇形射界 */
-        conic-gradient(from 330deg at 76% 72%, rgba(152, 42, 22, 0.26) 0deg, rgba(152, 42, 22, 0) 42deg),
-        /* 军绿底覆盖 */
-        linear-gradient(180deg, rgba(78, 96, 50, 0.18) 0%, rgba(40, 52, 26, 0.04) 52%),
-        /* 钢印细条纹 */
-        repeating-linear-gradient(2deg, rgba(220, 86, 56, 0.055) 0 1px, transparent 1px 44px);
-}
-
-/* rock: 霓虹紫洋红 + 共振环 + 脏玻璃渍 */
-.map-stage-filter-overlay[data-page-id="faction"][data-active-filter="rock"] {
-    background:
-        /* 中央紫洋红大光晕 */
-        radial-gradient(circle at 66% 36%, rgba(220, 60, 210, 0.28) 0%, rgba(178, 36, 170, 0) 30%),
-        /* 共振环 · 紫 */
-        radial-gradient(circle at 70% 42%, rgba(220, 60, 210, 0) 13.4%, rgba(220, 60, 210, 0.18) 14.2%, rgba(220, 60, 210, 0) 15%),
-        /* 共振环 · 毒物绿 */
-        radial-gradient(circle at 70% 42%, rgba(110, 240, 160, 0) 17.8%, rgba(110, 240, 160, 0.14) 18.5%, rgba(110, 240, 160, 0) 19.4%),
-        /* 脏玻璃斜色块 */
-        linear-gradient(112deg, rgba(90, 32, 94, 0.2) 0%, rgba(0, 0, 0, 0) 42%);
-}
-
-/* blackiron: 朱砂节点 → 铜接口 → 墨底 "道袍下的光纤" */
-.map-stage-filter-overlay[data-page-id="faction"][data-active-filter="blackiron"] {
-    background:
-        /* 朱砂主节点 (左下) */
-        radial-gradient(circle at 20% 72%, rgba(216, 56, 38, 0.52) 0%, rgba(216, 56, 38, 0) 4.8%),
-        radial-gradient(circle at 26% 88%, rgba(216, 56, 38, 0.44) 0%, rgba(216, 56, 38, 0) 4.2%),
-        /* 铜接口点 */
-        radial-gradient(circle at 14% 80%, rgba(220, 158, 72, 0.4) 0%, rgba(220, 158, 72, 0) 1.6%),
-        radial-gradient(circle at 22% 82%, rgba(220, 158, 72, 0.36) 0%, rgba(220, 158, 72, 0) 1.4%),
-        /* 铜细线 — 管线经络化 */
-        linear-gradient(14deg, rgba(0,0,0,0) 20%, rgba(200, 148, 68, 0.18) 20.15%, rgba(0,0,0,0) 20.4%),
-        linear-gradient(-28deg, rgba(0,0,0,0) 62%, rgba(200, 148, 68, 0.14) 62.15%, rgba(0,0,0,0) 62.4%),
-        /* 墨底压印 (整张压一层 wash) */
-        linear-gradient(180deg, rgba(24, 16, 20, 0.52) 0%, rgba(14, 10, 14, 0.24) 100%);
-}
-
-/* fallen: 琥珀暖雾 + 动线回环 + 招牌水迹 */
-.map-stage-filter-overlay[data-page-id="faction"][data-active-filter="fallen"] {
-    background:
-        /* 右下主光区 · 琥珀 */
-        radial-gradient(ellipse 380px 240px at 72% 70%, rgba(224, 142, 54, 0.32) 0%, rgba(196, 118, 40, 0) 74%),
-        /* 酒红点缀 */
-        radial-gradient(circle at 78% 74%, rgba(220, 62, 80, 0.22) 0%, rgba(198, 48, 64, 0) 26%),
-        /* 霓虹招牌水迹倒影 */
-        radial-gradient(ellipse 80px 10px at 64% 82%, rgba(255, 190, 110, 0.42) 0%, rgba(255, 180, 90, 0) 80%),
-        /* 斜向暖色覆盖 */
-        linear-gradient(222deg, rgba(92, 42, 20, 0.3) 0%, rgba(0, 0, 0, 0) 48%);
-}
-
-/* all: 中性 muted, 轻散光 */
-.map-stage-filter-overlay[data-page-id="faction"][data-active-filter="all"] {
-    background:
-        radial-gradient(ellipse 560px 280px at 50% 50%, rgba(80, 110, 68, 0.14) 0%, rgba(40, 56, 36, 0) 78%);
-}
-
-/* ================================================================
- * 频段重调过渡 · filter 切换瞬态 (~180ms, 可 prefers-reduced-motion 降级)
- * 动作: skewX + 轻微模糊 + 亮度微波动, 借 Gemini "电台找台" 动作
- * ================================================================ */
-.map-stage-frame.is-retuning .map-stage-backdrop {
-    /* filter-overlay 与 anomaly 现在是 backdrop 子节点, 父层 transform 自动传递, 不再单独动画 */
-    animation:mapStageRetune 0.18s ease-out;
-}
-
-@keyframes mapStageRetune {
-    0%   { transform:skewX(0deg);   filter:brightness(1); }
-    20%  { transform:skewX(-2.4deg); filter:brightness(1.18); }
-    55%  { transform:skewX(1.2deg);  filter:brightness(0.88); }
-    100% { transform:skewX(0deg);   filter:brightness(1); }
-}
-
-/* ================================================================
- * 禁区异常层 · defense + restricted filter
- *   等高线向偏右上错误坐标坍缩 + 0.77Hz (1.3s) 三段式呼吸脉冲
- *   "不是界面在呼吸, 是有东西在回看你"
- * ================================================================ */
-.map-stage-anomaly {
-    position:absolute;
-    inset:0;
-    z-index:3;
-    pointer-events:none;
-    opacity:0;
-    transition:opacity 0.4s ease;
-    background:
-        /* 等高线向 (72%, 22%) 坍缩: 奇点附近最亮, 外环递减 */
-        radial-gradient(circle at 72% 22%, rgba(150, 72, 220, 0.38) 0%, rgba(150, 72, 220, 0) 14%),
-        radial-gradient(circle at 72% 22%, rgba(180, 92, 240, 0) 17.4%, rgba(180, 92, 240, 0.22) 18.4%, rgba(180, 92, 240, 0) 19.4%),
-        radial-gradient(circle at 72% 22%, rgba(160, 76, 220, 0) 27.4%, rgba(160, 76, 220, 0.15) 28.4%, rgba(160, 76, 220, 0) 29.4%),
-        radial-gradient(circle at 72% 22%, rgba(140, 62, 200, 0) 39.4%, rgba(140, 62, 200, 0.1) 40.4%, rgba(140, 62, 200, 0) 41.4%),
-        radial-gradient(circle at 72% 22%, rgba(120, 52, 180, 0) 51.4%, rgba(120, 52, 180, 0.06) 52.4%, rgba(120, 52, 180, 0) 53.4%);
-}
-
-.map-stage-anomaly.is-active {
-    opacity:1;
-}
-
-.map-stage-anomaly-pulse {
-    position:absolute;
-    left:72%;
-    top:22%;
-    width:18px;
-    height:18px;
-    margin-left:-9px;
-    margin-top:-9px;
-    border-radius:999px;
-    background:rgba(186, 96, 240, 0.38);
-    box-shadow:0 0 18px rgba(186, 96, 240, 0.4);
-    opacity:0;
-}
-
-.map-stage-anomaly.is-active .map-stage-anomaly-pulse {
-    animation:mapStageAnomalyCore 1.3s ease-out infinite;
-}
-
-.map-stage-anomaly.is-active .map-stage-anomaly-pulse::before,
-.map-stage-anomaly.is-active .map-stage-anomaly-pulse::after {
-    content:'';
-    position:absolute;
-    inset:0;
-    border-radius:999px;
-    border:1px solid rgba(186, 96, 240, 0.58);
-    animation:mapStageAnomalyRing 1.3s ease-out infinite;
-}
-
-.map-stage-anomaly.is-active .map-stage-anomaly-pulse::after {
-    animation-delay:-0.43s;
-    border-color:rgba(160, 82, 220, 0.4);
-}
-
-@keyframes mapStageAnomalyCore {
-    0%   { opacity:0.7; transform:scale(0.65); }
-    70%  { opacity:0.14; transform:scale(1.0); }
-    100% { opacity:0; transform:scale(1.2); }
-}
-
-@keyframes mapStageAnomalyRing {
-    0%   { opacity:0.7; transform:scale(0.8); }
-    80%  { opacity:0.08; transform:scale(3.4); }
-    100% { opacity:0; transform:scale(4); }
-}
-
-/* ================================================================
- * 动效降级
- * ================================================================ */
-@media (prefers-reduced-motion: reduce) {
-    .map-stage-frame.is-retuning .map-stage-backdrop {
-        animation:none;
-    }
-    .map-stage-anomaly.is-active .map-stage-anomaly-pulse,
-    .map-stage-anomaly.is-active .map-stage-anomaly-pulse::before,
-    .map-stage-anomaly.is-active .map-stage-anomaly-pulse::after {
-        animation:none;
-        opacity:0.3;
-    }
-}
+/* Canvas renderer owns map backdrop, filter overlay and anomaly visuals. */
 
 .map-stage-frame.is-assembled::before {
     background:
@@ -3131,177 +2800,31 @@
         linear-gradient(90deg, rgba(5, 7, 10, 0.22) 0%, rgba(5, 7, 10, 0.04) 18%, rgba(5, 7, 10, 0.04) 82%, rgba(5, 7, 10, 0.2) 100%);
 }
 
-.map-stage-image {
+/* 双画布: bg 在 hotspot 命中层/标签层之下, fg 在其之上 —
+ * 还原旧 DOM 层序 (scenes/avatars 低于 hotspot, feedback 高于标签)。 */
+.map-stage-canvas {
     position:absolute;
     inset:0;
     display:block;
     width:100%;
     height:100%;
-    object-fit:cover;
-    filter:contrast(1.03) saturate(1.04);
-    z-index:1;
+    pointer-events:none;
 }
 
-.map-stage-image.is-hidden {
-    display:none;
+.map-stage-canvas--bg {
+    z-index:2;
+}
+
+.map-stage-canvas--fg {
+    z-index:6;
 }
 
 .map-stage-content-fit {
     position:absolute;
     inset:0;
-    /* z-index 显式到 4: 确保 content-fit wrapper (包 scenes/hotspots/avatars/feedback) 在
-     * backdrop(0) / filter-overlay(2) / anomaly(3) 之上, 但仍低于 scanline(7) / overlay-layer(6).
-     * 不依赖 DOM 顺序, 避免未来重排兄弟节点时层级偷偷翻转。 */
+    /* Canvas holds the visuals; this wrapper only carries transformed hit and label layers. */
     z-index:4;
     transform-origin:0 0;
-}
-
-.map-scene-layer {
-    position:absolute;
-    inset:0;
-    z-index:2;
-    pointer-events:none;
-    /* 静态色调 filter 上提到层级, 一次合成代替每张 scene-node-image 各自挂 filter graph;
-       per-state 高亮 (hover/current/disabled/...) 仍留在子级以保持单点切换语义 */
-    filter:contrast(1.02) saturate(1.04);
-}
-
-.map-stage-frame[data-page-id="base"] .map-scene-layer {
-    filter:contrast(1.05) saturate(1.03);
-}
-
-.map-scene-node {
-    position:absolute;
-    overflow:visible;
-    isolation:isolate;
-    transform-origin:center center;
-    transition:transform 0.14s ease, opacity 0.14s ease;
-    /* 静态 box-shadow 替代旧 image filter:drop-shadow, 避免每张大 PNG 每帧重做 alpha-blur 合成 */
-    box-shadow:0 10px 16px rgba(0, 0, 0, 0.34);
-}
-
-.map-stage-frame[data-page-id="base"] .map-scene-node {
-    box-shadow:0 12px 20px rgba(0, 0, 0, 0.38);
-}
-
-.map-scene-node::before {
-    content:'';
-    position:absolute;
-    inset:-7px;
-    border-radius:8px;
-    opacity:0;
-    pointer-events:none;
-    background:radial-gradient(circle at 50% 50%, rgba(8, 10, 7, 0.24) 0%, rgba(8, 10, 7, 0.12) 56%, rgba(8, 10, 7, 0) 88%);
-    transition:opacity 0.14s ease, box-shadow 0.14s ease;
-}
-
-.map-stage-frame[data-page-id="base"] .map-scene-node::before {
-    opacity:0.88;
-    background:
-        linear-gradient(180deg, rgba(12, 15, 10, 0.12) 0%, rgba(9, 11, 8, 0.2) 100%),
-        radial-gradient(circle at 50% 44%, rgba(18, 22, 14, 0.34) 0%, rgba(10, 12, 9, 0.14) 58%, rgba(10, 12, 9, 0) 90%);
-    box-shadow:inset 0 0 0 1px rgba(224, 255, 170, 0.03), 0 10px 18px rgba(0, 0, 0, 0.14);
-}
-
-.map-scene-node-image {
-    display:block;
-    position:relative;
-    z-index:1;
-    width:100%;
-    height:100%;
-    object-fit:fill;
-}
-
-.map-scene-node-glow {
-    position:absolute;
-    inset:-6px;
-    z-index:2;
-    border-radius:6px;
-    background:radial-gradient(circle at 50% 50%, rgba(200, 255, 76, 0.26) 0%, rgba(200, 255, 76, 0.08) 38%, rgba(200, 255, 76, 0) 72%);
-    opacity:0;
-    transition:opacity 0.14s ease;
-    pointer-events:none;
-}
-
-.map-scene-node.is-hover,
-.map-scene-node.is-busy {
-    transform:translateY(-2px) scale(1.012);
-}
-
-.map-scene-node.is-hover .map-scene-node-image,
-.map-scene-node.is-busy .map-scene-node-image {
-    filter:brightness(1.08) saturate(1.08);
-}
-
-.map-scene-node.is-hover .map-scene-node-glow,
-.map-scene-node.is-busy .map-scene-node-glow {
-    opacity:0.82;
-}
-
-.map-scene-node.is-current .map-scene-node-image {
-    filter:brightness(1.06) saturate(1.08);
-}
-
-.map-scene-node.is-current .map-scene-node-glow {
-    opacity:0.94;
-    background:radial-gradient(circle at 50% 50%, rgba(114, 230, 255, 0.24) 0%, rgba(114, 230, 255, 0.08) 38%, rgba(114, 230, 255, 0) 72%);
-}
-
-.map-scene-node.is-disabled {
-    opacity:0.58;
-}
-
-.map-scene-node.is-disabled .map-scene-node-image {
-    filter:grayscale(0.14) brightness(0.76) saturate(0.72);
-}
-
-.map-stage-frame[data-page-id="base"] .map-scene-node.is-disabled::before {
-    opacity:0.68;
-}
-
-.map-scene-node.is-disabled .map-scene-node-glow {
-    opacity:0;
-}
-
-.map-stage-frame.is-layer-relation .map-scene-node {
-    opacity:0.74;
-}
-
-.map-stage-frame.is-layer-relation .map-scene-node .map-scene-node-image {
-    filter:brightness(0.74) saturate(0.8);
-}
-
-.map-scene-node.is-relationship.is-emphasis,
-.map-scene-node.is-relationship.is-current,
-.map-scene-node.is-relationship.is-hover,
-.map-scene-node.is-relationship.is-busy {
-    opacity:1;
-}
-
-.map-scene-node.is-relationship.is-emphasis .map-scene-node-image,
-.map-scene-node.is-relationship.is-current .map-scene-node-image,
-.map-scene-node.is-relationship.is-hover .map-scene-node-image,
-.map-scene-node.is-relationship.is-busy .map-scene-node-image {
-    filter:brightness(1.08) saturate(1.08);
-}
-
-.map-scene-node.is-muted {
-    opacity:0.42;
-}
-
-.map-scene-node.is-muted .map-scene-node-image {
-    filter:brightness(0.58) saturate(0.7);
-}
-
-/* 滑动 / resize 期临时降级: 关父级 filter graph、关 scene-node 装饰层与发光层。
-   由 map-panel.js handleViewportLayoutChange 打 class, 停手 ~140ms 后清掉。
-   交互手感会 100ms 左右"扁平", 换来 GPU 合成大幅降载。 */
-.map-stage-frame.is-resizing .map-scene-layer {
-    filter:none;
-}
-.map-stage-frame.is-resizing .map-scene-node::before,
-.map-stage-frame.is-resizing .map-scene-node-glow {
-    display:none;
 }
 
 .map-hotspot-layer {
@@ -3310,12 +2833,6 @@
     z-index:3;
 }
 
-.map-dynamic-avatar-layer {
-    position:absolute;
-    inset:0;
-    z-index:4;
-    pointer-events:none;
-}
 
 .map-hotspot-label-layer {
     position:absolute;
@@ -3324,19 +2841,7 @@
     pointer-events:none;
 }
 
-.map-feedback-layer {
-    position:absolute;
-    inset:0;
-    z-index:6;
-    pointer-events:none;
-}
 
-.map-stage-overlay-layer {
-    position:absolute;
-    inset:0;
-    z-index:7;
-    pointer-events:none;
-}
 
 .map-hotspot {
     position:absolute;
@@ -3524,80 +3029,6 @@
 .map-hotspot-overlay-label.is-current.is-muted {
     opacity:0.85;
     filter:none;
-}
-
-.map-avatar,
-.map-dynamic-avatar {
-    position:absolute;
-    overflow:visible;
-    border-radius:999px;
-    border:1px solid rgba(220,255,128,0.25);
-    background:rgba(6, 8, 6, 0.82);
-    box-shadow:0 0 14px rgba(0,0,0,0.32), 0 0 12px rgba(190,255,64,0.12);
-    transition:transform 0.14s ease, opacity 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
-    z-index:1;
-}
-
-.map-avatar-image,
-.map-dynamic-avatar-image {
-    width:100%;
-    height:100%;
-    display:block;
-    object-fit:fill;
-    border-radius:999px;
-}
-
-.map-avatar-task-ring {
-    position:absolute;
-    width:22px;
-    height:22px;
-    margin-left:-11px;
-    margin-top:-11px;
-    border-radius:999px;
-    border:3px solid rgba(255,77,77,0.92);
-    background:rgba(255,77,77,0.1);
-    box-shadow:0 0 0 10px rgba(255,77,77,0.1), 0 0 24px rgba(255,82,82,0.42);
-    animation:mapAvatarTaskPulse 1.45s ease-out infinite;
-}
-
-.map-avatar-task-ring::after {
-    content:'';
-    position:absolute;
-    inset:-14px;
-    border-radius:999px;
-    border:2px solid rgba(255,128,128,0.42);
-    animation:mapAvatarTaskWave 1.45s ease-out infinite;
-}
-
-.map-avatar.is-missing {
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:linear-gradient(180deg, rgba(18, 22, 18, 0.96) 0%, rgba(8, 10, 8, 0.92) 100%);
-    border-color:rgba(220,255,128,0.22);
-}
-
-.map-avatar-fallback {
-    font-size:16px;
-    font-weight:700;
-    letter-spacing:0.6px;
-    color:#dff3b8;
-    text-shadow:0 0 10px rgba(0,0,0,0.34);
-}
-
-.map-avatar.is-current,
-.map-avatar.is-focus,
-.map-dynamic-avatar.is-current,
-.map-dynamic-avatar.is-focus {
-    transform:translateY(-1px) scale(1.04);
-    border-color:rgba(220,255,128,0.58);
-    box-shadow:0 0 18px rgba(190,255,64,0.22), 0 0 18px rgba(114,230,255,0.16);
-}
-
-.map-avatar.is-muted,
-.map-dynamic-avatar.is-muted {
-    opacity:0.34;
-    filter:saturate(0.65) brightness(0.72);
 }
 
 .map-filter-hotspot {
@@ -3872,181 +3303,6 @@
     }
 }
 
-.map-feedback-marker {
-    position:absolute;
-    width:14px;
-    height:14px;
-    margin-left:-7px;
-    margin-top:-7px;
-    border-radius:999px;
-    border:2px solid rgba(114,230,255,0.94);
-    background:rgba(114,230,255,0.18);
-    box-shadow:0 0 0 3px rgba(114,230,255,0.1), 0 0 18px rgba(114,230,255,0.26);
-}
-
-.map-feedback-marker--currentLocation {
-    width:16px;
-    height:16px;
-    margin-left:-8px;
-    margin-top:-8px;
-    border-width:2px;
-    box-shadow:0 0 0 4px rgba(114,230,255,0.12), 0 0 20px rgba(114,230,255,0.3);
-}
-
-.map-feedback-marker--taskNpc {
-    width:20px;
-    height:20px;
-    margin-left:-10px;
-    margin-top:-10px;
-    border-width:3px;
-    border-color:rgba(255,77,77,0.96);
-    background:rgba(255,77,77,0.1);
-    box-shadow:0 0 0 4px rgba(255,77,77,0.16), 0 0 22px rgba(255,82,82,0.38);
-}
-
-.map-feedback-marker--taskNpc::after {
-    inset:-10px;
-    border-width:2px;
-    border-color:rgba(255,128,128,0.58);
-    animation-duration:1.35s;
-}
-
-.map-feedback-marker::after {
-    content:'';
-    position:absolute;
-    inset:-7px;
-    border:1px solid rgba(114,230,255,0.42);
-    border-radius:999px;
-    animation:mapFeedbackPulse 1.8s ease-out infinite;
-}
-
-.map-feedback-tip {
-    position:absolute;
-    transform:translate(-50%, calc(-100% - 10px));
-    padding:3px 8px;
-    background:rgba(10,14,8,0.92);
-    border:1px solid rgba(200,255,76,0.32);
-    color:#e7ffb2;
-    font-size:10px;
-    letter-spacing:0.7px;
-    white-space:nowrap;
-    box-shadow:0 0 14px rgba(200,255,76,0.14);
-    animation:mapTipFloat 1.8s ease-in-out infinite;
-}
-
-.map-feedback-tip.is-accent {
-    border-color:rgba(114,230,255,0.34);
-    color:#b7f1ff;
-    box-shadow:0 0 14px rgba(114,230,255,0.14);
-}
-
-.map-feedback-tip::after {
-    content:'';
-    position:absolute;
-    left:50%;
-    bottom:-6px;
-    width:10px;
-    height:10px;
-    margin-left:-5px;
-    transform:rotate(45deg);
-    background:inherit;
-    border-right:inherit;
-    border-bottom:inherit;
-}
-
-.map-feedback-hint {
-    position:absolute;
-    transform:translate(-50%, -100%);
-    padding:4px 8px;
-    background:rgba(31,10,7,0.92);
-    border:1px solid rgba(255,142,96,0.46);
-    color:#ffd3bf;
-    font-size:10px;
-    letter-spacing:0.6px;
-    white-space:nowrap;
-    box-shadow:0 0 14px rgba(255,122,69,0.16);
-    animation:mapHintBlink 1.6s ease-in-out infinite;
-}
-
-.map-feedback-hint::after {
-    content:'';
-    position:absolute;
-    left:50%;
-    bottom:-6px;
-    width:8px;
-    height:8px;
-    margin-left:-4px;
-    transform:rotate(45deg);
-    background:inherit;
-    border-right:inherit;
-    border-bottom:inherit;
-}
-
-@keyframes mapFeedbackPulse {
-    0% {
-        transform:scale(0.8);
-        opacity:0.8;
-    }
-    70% {
-        transform:scale(1.8);
-        opacity:0;
-    }
-    100% {
-        transform:scale(1.8);
-        opacity:0;
-    }
-}
-
-@keyframes mapAvatarTaskPulse {
-    0% {
-        transform:scale(0.92);
-        opacity:0.92;
-    }
-    70% {
-        transform:scale(1.18);
-        opacity:0.86;
-    }
-    100% {
-        transform:scale(1.22);
-        opacity:0.76;
-    }
-}
-
-@keyframes mapAvatarTaskWave {
-    0% {
-        transform:scale(0.82);
-        opacity:0.78;
-    }
-    70% {
-        transform:scale(1.9);
-        opacity:0.08;
-    }
-    100% {
-        transform:scale(2.1);
-        opacity:0;
-    }
-}
-
-@keyframes mapHintBlink {
-    0%, 100% {
-        opacity:0.84;
-        transform:translate(-50%, -100%);
-    }
-    50% {
-        opacity:1;
-        transform:translate(-50%, calc(-100% - 2px));
-    }
-}
-
-@keyframes mapTipFloat {
-    0%, 100% {
-        transform:translate(-50%, calc(-100% - 10px));
-    }
-    50% {
-        transform:translate(-50%, calc(-100% - 13px));
-    }
-}
-
 .map-stage-loading,
 .map-stage-error {
     position:absolute;
@@ -4244,34 +3500,6 @@
     100% { inset:-22px; opacity:0;   }
 }
 
-/* Current location 雷达扫针 —— 在现有蓝色脉冲之上再叠一层旋转扫描 */
-.map-feedback-marker--currentLocation::before {
-    content:'';
-    position:absolute;
-    inset:-18px;
-    border-radius:999px;
-    background:conic-gradient(
-        from 0deg,
-        rgba(114,230,255,0.45) 0deg,
-        rgba(114,230,255,0.18) 30deg,
-        rgba(114,230,255,0) 60deg,
-        rgba(114,230,255,0) 360deg
-    );
-    animation:mapRadarSweep 6s linear infinite;
-    pointer-events:none;
-    /* mix-blend-mode:screen — disabled for iGPU perf 2026-04-25 */
-    opacity:0.82;
-}
-@keyframes mapRadarSweep {
-    0%   { transform:rotate(0deg); }
-    100% { transform:rotate(360deg); }
-}
-@media (prefers-reduced-motion: reduce) {
-    .map-feedback-marker--currentLocation::before { animation:none; opacity:0.3; }
-    .map-hotspot.is-busy::after { animation:none; }
-    .map-hotspot.is-busy::before { animation:none; }
-}
-
 /* 面板关闭红色按钮、重试按钮的视觉细化 —— 增加 hover 时的电流感闪烁 */
 .map-panel-close-btn:hover {
     animation:mapCloseBtnPulse 1.2s ease-in-out infinite;
@@ -4282,9 +3510,8 @@
 }
 
 /* Map panel low-effects mode.
- * The map view is the largest WebView2 surface in normal play. In low-effects
- * mode keep the interaction geometry intact, but remove the full-surface blend,
- * filter and pulse work that can saturate integrated GPUs.
+ * Canvas owns the heavy map visuals now; CSS low-effects only trims the panel
+ * frame and transparent DOM operation layer.
  */
 html.perf-low-effects .map-panel,
 html.perf-low-effects .map-stage-frame {
@@ -4293,12 +3520,7 @@ html.perf-low-effects .map-stage-frame {
 }
 
 html.perf-low-effects .map-panel::before,
-html.perf-low-effects .map-stage-anomaly,
-html.perf-low-effects .map-scene-node-glow,
-html.perf-low-effects .map-hotspot-sheen,
-html.perf-low-effects .map-feedback-marker::after,
-html.perf-low-effects .map-feedback-marker--currentLocation::before,
-html.perf-low-effects .map-avatar-task-ring::after {
+html.perf-low-effects .map-hotspot-sheen {
     display:none !important;
 }
 
@@ -4306,26 +3528,10 @@ html.perf-low-effects .map-stage-content-fit {
     will-change:auto !important;
 }
 
-html.perf-low-effects .map-stage-image,
-html.perf-low-effects .map-scene-layer,
-html.perf-low-effects .map-stage-frame[data-page-id="base"] .map-scene-layer,
-html.perf-low-effects .map-scene-node-image,
-html.perf-low-effects .map-scene-node.is-hover .map-scene-node-image,
-html.perf-low-effects .map-scene-node.is-busy .map-scene-node-image,
-html.perf-low-effects .map-scene-node.is-current .map-scene-node-image,
-html.perf-low-effects .map-scene-node.is-disabled .map-scene-node-image,
-html.perf-low-effects .map-stage-frame.is-layer-relation .map-scene-node .map-scene-node-image,
-html.perf-low-effects .map-scene-node.is-relationship.is-emphasis .map-scene-node-image,
-html.perf-low-effects .map-scene-node.is-relationship.is-current .map-scene-node-image,
-html.perf-low-effects .map-scene-node.is-relationship.is-hover .map-scene-node-image,
-html.perf-low-effects .map-scene-node.is-relationship.is-busy .map-scene-node-image,
-html.perf-low-effects .map-scene-node.is-muted .map-scene-node-image,
 html.perf-low-effects .map-hotspot::before,
 html.perf-low-effects .map-hotspot.is-busy::before,
 html.perf-low-effects .map-hotspot.is-current::before,
-html.perf-low-effects .map-hotspot-overlay-label.is-muted,
-html.perf-low-effects .map-avatar.is-muted,
-html.perf-low-effects .map-dynamic-avatar.is-muted {
+html.perf-low-effects .map-hotspot-overlay-label.is-muted {
     filter:none !important;
 }
 
@@ -4333,8 +3539,6 @@ html.perf-low-effects .map-panel-header::after,
 html.perf-low-effects .map-page-tab.is-active,
 html.perf-low-effects .map-stage-corner::before,
 html.perf-low-effects .map-stage-corner::after,
-html.perf-low-effects .map-scene-node,
-html.perf-low-effects .map-scene-node::before,
 html.perf-low-effects .map-hotspot,
 html.perf-low-effects .map-hotspot:hover,
 html.perf-low-effects .map-hotspot.is-hover,
@@ -4343,31 +3547,14 @@ html.perf-low-effects .map-hotspot.is-busy,
 html.perf-low-effects .map-hotspot.is-current,
 html.perf-low-effects .map-hotspot.is-busy::after,
 html.perf-low-effects .map-hotspot-overlay-label.is-current,
-html.perf-low-effects .map-avatar,
-html.perf-low-effects .map-dynamic-avatar,
-html.perf-low-effects .map-avatar-task-ring,
 html.perf-low-effects .map-filter-hotspot,
 html.perf-low-effects .map-filter-hotspot:hover,
 html.perf-low-effects .map-filter-hotspot:focus,
 html.perf-low-effects .map-filter-hotspot.is-active,
 html.perf-low-effects .map-rail-scene-item.is-current,
 html.perf-low-effects .map-rail-scene-dot,
-html.perf-low-effects .map-feedback-marker,
-html.perf-low-effects .map-feedback-marker--currentLocation,
-html.perf-low-effects .map-feedback-marker--taskNpc,
-html.perf-low-effects .map-feedback-tip,
-html.perf-low-effects .map-feedback-tip.is-accent,
-html.perf-low-effects .map-feedback-hint,
 html.perf-low-effects .map-panel-close-btn:hover {
     box-shadow:none !important;
-}
-
-html.perf-low-effects .map-stage-filter-overlay {
-    opacity:0.42 !important;
-}
-
-html.perf-low-effects .map-stage-backdrop::before {
-    opacity:0.34 !important;
 }
 
 /* ═══════════════════════════════════════════════════════

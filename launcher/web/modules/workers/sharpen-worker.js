@@ -2,7 +2,7 @@
 
 // Scene-node PNG unsharp mask worker.
 //
-// 设计契约 (与 map-panel.js getSharpenedUrl 配套, 与 tools/tune-map-filter-fit.js
+// 设计契约 (与 map-canvas-stage-renderer.js getSharpenedUrl 配套, 与 tools/tune-map-filter-fit.js
 // COMPOSITE_VISUAL_SCALE_CAP 抬高到 1.75 的策略配套):
 //   - 仅对 RGB 通道做 3x3 unsharp, alpha 原样透传, 防止半透明边缘黑色光晕
 //   - 单消息 = 单图: 主线程负责 dedup (assetUrl 缓存 Promise), worker 不维护状态
