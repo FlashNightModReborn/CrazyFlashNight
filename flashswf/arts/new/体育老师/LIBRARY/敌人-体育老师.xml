@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="6a1015ba-0000039b" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1779461927" lastUniqueIdentifier="340">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-体育老师" itemID="6a1015ba-0000039b" linkageExportForAS="true" linkageIdentifier="敌人-体育老师" lastModified="1779509346" lastUniqueIdentifier="341">
   <timeline>
     <DOMTimeline name="敌人-体育老师" currentFrame="50">
       <layers>
@@ -69,7 +69,7 @@
 
 近战技能库.push("虎拳","日字冲拳","破极拳");
 中程技能库.push("平踢","旋风腿","诛杀步","燃烧指节");
-远程技能库.push("燃烧指节","旋风腿");
+远程技能库.push("燃烧指节","旋风腿","诛杀步");
 超远程技能库.push();
 
 近战技能随机数 = 近战技能库.length;
@@ -269,7 +269,7 @@
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/空手待机" name="man" selected="true" centerPoint3DX="190.15" centerPoint3DY="215.85">
+                <DOMSymbolInstance libraryItemName="sprite/空手待机" name="man" centerPoint3DX="190.15" centerPoint3DY="215.85">
                   <matrix>
                     <Matrix a="0.237884521484375" d="0.23773193359375" tx="3.4" ty="-62.3"/>
                   </matrix>

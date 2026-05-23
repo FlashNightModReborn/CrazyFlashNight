@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-后撤步" itemID="6964d656-00002843" lastModified="1779467408" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-后撤步" itemID="6964d656-00002843" lastModified="1779510956" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="空手攻击容器-后撤步">
+    <DOMTimeline name="空手攻击容器-后撤步" currentFrame="1">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -9,11 +9,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 攻击时移动(慢速度, 快速度)
+                <script><![CDATA[function 后撤步移动(慢速度, 快速度)
 {
 	if (_parent.方向 == "右")
 	{
@@ -23,26 +23,13 @@
 	{
 		_parent.移动("左",慢速度);
 	}
-}
-function 攻击时四向移动(上, 下, 左, 右)
-{
-	if (上 != 0)
+	if (random(2) == 0)
 	{
-		_parent.移动("上",上);
+		_parent.移动("上",快速度);
 	}
-	else if (下 != 0)
+	else
 	{
-		_parent.移动("下",下);
-	}
-	if (左 != 0)
-	{
-		_parent.方向改变("左");
-		_parent.移动("左",左);
-	}
-	else if (右 != 0)
-	{
-		_parent.方向改变("右");
-		_parent.移动("右",右);
+		_parent.移动("下",快速度);
 	}
 }
 _parent.攻击呐喊();]]></script>
@@ -79,11 +66,11 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -92,8 +79,7 @@ _parent.攻击呐喊();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-   //_parent.攻击时斜向移动(-20,-25);
-   _parent.攻击时移动(-25,-30);
+   _parent.后撤步移动(-20,-25);
 }
 ]]></script>
                   </Actionscript>
