@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.枪械相关/长枪/图标-M202火箭发射器" itemID="66b466eb-000011d4" linkageExportForAS="true" linkageIdentifier="图标-M134" lastModified="1723098859">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.枪械相关/长枪/图标-M202火箭发射器" itemID="6a11c69e-000031e8" linkageExportForAS="true" linkageIdentifier="图标-M202火箭发射器" lastModified="1779549854">
   <timeline>
     <DOMTimeline name="图标-M202火箭发射器">
       <layers>
-        <DOMLayer name="Script Layer" color="#14FCA3">
+        <DOMLayer name="Script Layer" color="#7C9181">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -13,11 +13,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#88DB9F" locked="true" layerType="mask">
+        <DOMLayer name="Layer 2" color="#B966DF" locked="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 16" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -26,13 +26,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#92B059" parentLayerIndex="1" locked="true">
+        <DOMLayer name="Layer 3" color="#E2F59C" parentLayerIndex="1" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.枪械相关/长枪/枪-长枪-M134" centerPoint3DX="196.75" centerPoint3DY="93.25">
+                <DOMSymbolInstance libraryItemName="1.枪械相关/长枪/枪-长枪-M202火箭发射器" centerPoint3DX="216.65" centerPoint3DY="81.5">
                   <matrix>
-                    <Matrix a="0.147811889648438" b="-0.147811889648438" c="0.147811889648438" d="0.147811889648438" tx="-31.6" ty="21"/>
+                    <Matrix a="0.0789031982421875" b="-0.0789031982421875" c="0.0789031982421875" d="0.0789031982421875" tx="3.7" ty="6.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -42,7 +42,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#9F32B3" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#BCD2D7" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -55,9 +55,9 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.枪械相关/长枪/枪-长枪-M134" centerPoint3DX="194.75" centerPoint3DY="60.3">
+                <DOMSymbolInstance libraryItemName="1.枪械相关/长枪/枪-长枪-M202火箭发射器" centerPoint3DX="235.1" centerPoint3DY="89.3">
                   <matrix>
-                    <Matrix a="0.297576904296875" d="0.297576904296875" tx="-33.6" ty="-11.95"/>
+                    <Matrix a="0.29998779296875" d="0.29998779296875" tx="22.15" ty="14.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
