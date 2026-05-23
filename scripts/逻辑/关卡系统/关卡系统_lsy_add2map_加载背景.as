@@ -99,42 +99,40 @@ _root.贴背景图 = function(){
 	if (背景层._width <= 1300) return;
 
 	// ── Bake：把 背景 烤进 deadbody.layers[0] ──
-	// 兼容作者随手摆：_x/_y/_xscale/_yscale 任意值都正确还原视觉位置和尺寸，
-	// 不再要求作者把 背景 放在 (0,0) + 100% 缩放。两条关键修复：
-	//   (1) 用 transform.matrix.clone() 继承 背景 自身缩放/旋转，老的写死单位阵会把
-	//       _xscale!=100 的 背景 烤成原始尺寸（=放大 1/scale 倍）。
-	//   (2) 用 getBounds(deadbody) 拿到实际可视盒子，按 bounds 重建 BitmapData，
-	//       并把 wrapper MC 反向位移到 bounds.topLeft，让位图视觉位置 = background 原位置。
+	// 维持单一坐标原点：layers[0] 像素 (0,0) = deadbody 局部 (0,0) = gameworld 原点，
+	// 与 BitmapEffectRenderer.renderBloodstain / DeathEffectRenderer.renderCorpse 共用同一原点。
+	// 兼容作者随手摆 _x/_y/_xscale/_yscale 的方式：
+	//   (1) transform.matrix.clone() 继承 背景 自身缩放/旋转（老写死单位阵会把
+	//       _xscale!=100 的 背景 烤成原始矢量尺寸）。
+	//   (2) BD 按需 grow-only：用 getBounds(deadbody) 的 xMax/yMax 与现 BD 取大重建，
+	//       保证位移过的 背景 不被裁。背景放到负坐标(deadbody 局部 x/y<0)的部分会被裁，
+	//       与 blood/corpse 写入方"原点 >= (0,0)"的隐含约束一致。
 	var deadbody:MovieClip = 游戏世界.deadbody;
 	var b:Object = 背景层.getBounds(deadbody);
-	var needW:Number = Math.ceil(b.xMax - b.xMin);
-	var needH:Number = Math.ceil(b.yMax - b.yMin);
-	if (needW < 1) needW = 1;
+	var bd:flash.display.BitmapData = deadbody.layers[0];
+
+	var needW:Number = Math.ceil(b.xMax);
+	var needH:Number = Math.ceil(b.yMax);
+	if (needW < bd.width)  needW = bd.width;
+	if (needH < bd.height) needH = bd.height;
 	if (needW > 8192) needW = 8192;
-	if (needH < 1) needH = 1;
 	if (needH > 4096) needH = 4096;
 
-	var bd:flash.display.BitmapData = deadbody.layers[0];
-	var bgWrap:MovieClip = deadbody.__bgBakeLayer;
-	if (bd.width != needW || bd.height != needH) {
+	if (needW != bd.width || needH != bd.height) {
 		bd.dispose();
 		bd = new flash.display.BitmapData(needW, needH, true, 13421772);
 		deadbody.layers[0] = bd;
-		bgWrap.attachBitmap(bd, 1);
+		deadbody.attachBitmap(bd, 0);
 	}
 
 	var bgMat:flash.geom.Matrix = 背景层.transform.matrix.clone();
 	var dbMat:flash.geom.Matrix = deadbody.transform.matrix.clone();
 	dbMat.invert();
-	bgMat.concat(dbMat);                    // 背景 局部 → deadbody 局部
-	bgMat.translate(-b.xMin, -b.yMin);      // bounds.topLeft → bitmap (0,0)
+	bgMat.concat(dbMat);                    // 背景 局部 → deadbody 局部（= gameworld 局部）
 
 	背景层._visible = true;
 	bd.draw(背景层, bgMat, new flash.geom.ColorTransform(), "normal", undefined, true);
 	背景层._visible = false;
-
-	bgWrap._x = b.xMin;                     // wrapper 反向位移：位图回到 background 原视觉位置
-	bgWrap._y = b.yMin;
 
 	// 背景已烤进 deadbody 位图，unloadMovie 清空原背景夹、释放全部矢量子级内存
 	// （对时间轴负深度实例同样有效；外部图则连 外部动画加载壳mc 一并清；留空壳故 gameworld.背景 不会变 undefined）
