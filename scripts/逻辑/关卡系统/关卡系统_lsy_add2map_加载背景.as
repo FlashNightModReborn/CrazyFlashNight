@@ -98,14 +98,44 @@ _root.贴背景图 = function(){
 
 	if (背景层._width <= 1300) return;
 
-	// 若背景层存在且宽度大于1300则贴背景图
+	// ── Bake：把 背景 烤进 deadbody.layers[0] ──
+	// 兼容作者随手摆：_x/_y/_xscale/_yscale 任意值都正确还原视觉位置和尺寸，
+	// 不再要求作者把 背景 放在 (0,0) + 100% 缩放。两条关键修复：
+	//   (1) 用 transform.matrix.clone() 继承 背景 自身缩放/旋转，老的写死单位阵会把
+	//       _xscale!=100 的 背景 烤成原始尺寸（=放大 1/scale 倍）。
+	//   (2) 用 getBounds(deadbody) 拿到实际可视盒子，按 bounds 重建 BitmapData，
+	//       并把 wrapper MC 反向位移到 bounds.topLeft，让位图视觉位置 = background 原位置。
+	var deadbody:MovieClip = 游戏世界.deadbody;
+	var b:Object = 背景层.getBounds(deadbody);
+	var needW:Number = Math.ceil(b.xMax - b.xMin);
+	var needH:Number = Math.ceil(b.yMax - b.yMin);
+	if (needW < 1) needW = 1;
+	if (needW > 8192) needW = 8192;
+	if (needH < 1) needH = 1;
+	if (needH > 4096) needH = 4096;
+
+	var bd:flash.display.BitmapData = deadbody.layers[0];
+	var bgWrap:MovieClip = deadbody.__bgBakeLayer;
+	if (bd.width != needW || bd.height != needH) {
+		bd.dispose();
+		bd = new flash.display.BitmapData(needW, needH, true, 13421772);
+		deadbody.layers[0] = bd;
+		bgWrap.attachBitmap(bd, 1);
+	}
+
+	var bgMat:flash.geom.Matrix = 背景层.transform.matrix.clone();
+	var dbMat:flash.geom.Matrix = deadbody.transform.matrix.clone();
+	dbMat.invert();
+	bgMat.concat(dbMat);                    // 背景 局部 → deadbody 局部
+	bgMat.translate(-b.xMin, -b.yMin);      // bounds.topLeft → bitmap (0,0)
+
 	背景层._visible = true;
-	var pos = new Object({x:0, y:0});
-	背景层.localToGlobal(pos);
-	游戏世界.deadbody.globalToLocal(pos);
-	var matrix = new flash.geom.Matrix(1, 0, 0, 1, pos.x, pos.y);
-	游戏世界.deadbody.layers[0].draw(背景层,matrix,new flash.geom.ColorTransform(),"normal",undefined,true);
+	bd.draw(背景层, bgMat, new flash.geom.ColorTransform(), "normal", undefined, true);
 	背景层._visible = false;
+
+	bgWrap._x = b.xMin;                     // wrapper 反向位移：位图回到 background 原视觉位置
+	bgWrap._y = b.yMin;
+
 	// 背景已烤进 deadbody 位图，unloadMovie 清空原背景夹、释放全部矢量子级内存
 	// （对时间轴负深度实例同样有效；外部图则连 外部动画加载壳mc 一并清；留空壳故 gameworld.背景 不会变 undefined）
 	背景层.unloadMovie();

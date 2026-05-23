@@ -57,7 +57,7 @@ class org.flashNight.arki.scene.SceneManager {
             return d;
         };
 
-        // ── 创建 DepthManager ──
+        // ── 创建 DepthManager 
         if (DepthManager.instance) DepthManager.instance.dispose();
         DepthManager.instance = new DepthManager(gameworld, 0, 1048575, 256);
         // 用当前可用边界标定（非战斗场景帧脚本已设 Ymin/Ymax；战斗场景在 StageManager 中精确覆盖）
@@ -216,7 +216,13 @@ class org.flashNight.arki.scene.SceneManager {
         deadbody.layers[0] = new flash.display.BitmapData(w, h, true, 13421772);
         deadbody.layers[1] = null; // 从未被使用的deadbody1不添加
         deadbody.layers[2] = new flash.display.BitmapData(w, h, true, 13421772);
-        deadbody.attachBitmap(deadbody.layers[0], 0);
+        // layers[0] 走 wrapper MC：贴背景图 会按 background.getBounds 重建 BD 并把
+        // wrapper 反向位移到 bounds.topLeft，使作者把 背景 摆在任意 (x,y)+缩放都能
+        // 正确视觉对齐 —— 不要直接 attachBitmap 到 deadbody 上，会失去这层位移自由度。
+        var bgWrap:MovieClip = deadbody.createEmptyMovieClip("__bgBakeLayer", 0);
+        bgWrap.attachBitmap(deadbody.layers[0], 1);
+        // 尸体层直接挂在 deadbody（renderCorpse 写 BD 像素时假设 deadbody 在 gameworld 原点，
+        // 跟这次背景兼容化的设计目标无关，保持原状）
         deadbody.attachBitmap(deadbody.layers[2], 2);
 
         // 将 'deadbody' 设置为不可枚举
