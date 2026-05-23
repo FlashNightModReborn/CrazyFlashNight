@@ -14,6 +14,7 @@
 - **编译限制**：AS2 的实际编译仍只能由 Flash CS6 GUI 完成；在已运行 `scripts/setup_compile_env.bat`、已打开 TestLoader 的前提下，可通过 `scripts/compile_test.ps1` / `scripts/compile_test.sh` 做**有限自动化 smoke 验证**并读取 trace / Output Panel 副本。**当前链路仍在迭代期**，不要把 `publish_done.marker` 单独当作成功依据；没有新鲜 trace、输出日志或 IDE 复核时，不要笼统声称“已编译通过”
 - **`.as` 编码**：必须 **UTF-8 with BOM**；新增 / 重建用“复制现有 `.as` → 改名”保留 BOM（见 [as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md) §0）
 - **SWF**：禁止手动编辑；`scripts/asLoader.swf` 达到可用节点时可提交，其他 SWF 完成功能后封档上传
+- **XFL / FLA 治理**：FLA 施工后跑 [scripts/tools/xfl/](scripts/tools/xfl/) 三件套（audit / rename_a_class / fix_includes）+ 重扫 [tools/linkage_scanner/scan_linkage.py](tools/linkage_scanner/scan_linkage.py)；linkageId 撞车类冲突一律人工 CS6 修，工具不动；FLA 出现「轴歪 + 编辑闪退 + 无法另存 XFL」三件套查 [FLA-rigPropagationMatrix-溢出导致元件不可编辑.md](scripts/优化随笔/FLA-rigPropagationMatrix-溢出导致元件不可编辑.md)；整体能力分层与触发条件见 [docs/xfl-agent-工具栈-长期路线-2026-05-24.md](docs/xfl-agent-工具栈-长期路线-2026-05-24.md)，Layer 1+ 未到触发条件不要扩张
 - **终端编码**（PowerShell）：运行命令前先执行 `chcp.com 65001 | Out-Null`，避免 GBK 乱码
 - **Unicode 直写**：代码字符串字面量、注释中直接使用 UTF-8 中文字符；除非目标语境明确要求转义（如协议样例、规范文本或必须 escape 的格式），不要写 `\uXXXX` Unicode 转义
 - **可直接修改**：`data/`、`config/` 下 XML（重启生效）
