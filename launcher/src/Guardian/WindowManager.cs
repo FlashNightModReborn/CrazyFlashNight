@@ -668,6 +668,16 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
+        /// 诊断用：返回当前系统前台窗口的可读描述（hwnd/pid/class/title）。
+        /// 主要给 [Activation] / [FgWatchdog] 日志做"是谁抢的焦"归因——WM_ACTIVATEAPP(false)
+        /// 那一瞬采集到的前台窗口就是肇事者，此后窗口可能消失，再查就晚了。
+        /// </summary>
+        public string DescribeForeground()
+        {
+            return DescribeWindow(GetForegroundWindow());
+        }
+
+        /// <summary>
         /// 判断 hwnd 是否属于 Flash 进程或 Guardian 进程。
         /// 嵌入后 Flash 子窗口 pid 归 Guardian；独立运行时 pid 归 Flash。
         /// </summary>

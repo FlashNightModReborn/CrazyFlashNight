@@ -125,6 +125,8 @@ namespace CF7Launcher.Guardian
         private int _vacuumStreak;
         // 工作站锁定 / 安全桌面 / 快速用户切换：此期间默认桌面侧前台恒为 NULL，看门狗须停。
         private volatile bool _sessionLocked;
+        // [Activation] lost 日志时间戳，gained 时输出 gapMs 用于区分 toast 抢焦 vs 用户切走。
+        private int _lastDeactivateLogTick;
 
         private Process _flashProcess;
 
@@ -628,7 +630,28 @@ namespace CF7Launcher.Guardian
             // WM_SIZE/SIZE_MINIMIZED 给出最小化态。喂入 _activationState 后照常下传。
             if (m.Msg == WM_ACTIVATEAPP)
             {
-                _activationState.OnActivateApp(m.WParam != IntPtr.Zero);
+                bool active = m.WParam != IntPtr.Zero;
+                // 抢焦归因日志：WM_ACTIVATEAPP(false) 这一瞬 GetForegroundWindow() 还能抓到
+                // 抢焦的窗口（pid/class/title），之后窗口可能消失。lost→gained 配对的时间差
+                // 用来区分"toast 瞬时抢焦"（<200ms，被 AppActivationState 去抖吃掉）vs
+                // "用户切走又切回"（秒级）。AppActivationState 自己不打日志（无锁路径），
+                // 这里是唯一归因点。
+                int nowTick = Environment.TickCount;
+                if (active)
+                {
+                    int gapMs = (_lastDeactivateLogTick != 0)
+                        ? unchecked(nowTick - _lastDeactivateLogTick) : -1;
+                    LogManager.Log("[Activation] gained gapMs=" + gapMs);
+                    _lastDeactivateLogTick = 0;
+                }
+                else
+                {
+                    string fgDesc = (_windowManager != null)
+                        ? _windowManager.DescribeForeground() : "(no wm)";
+                    LogManager.Log("[Activation] lost fg=" + fgDesc);
+                    _lastDeactivateLogTick = nowTick;
+                }
+                _activationState.OnActivateApp(active);
             }
             else if (m.Msg == WM_SIZE)
             {

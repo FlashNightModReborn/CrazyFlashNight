@@ -48,6 +48,8 @@ namespace CF7Launcher.Guardian
         private int _lastSendTicks;
         private int _focusCooldownMs;
         private int _lastEvalTicks; // 上次 Evaluate 时间，用于计算 elapsed
+        // 上一次 Evaluate 时门控是否关闭（失活/最小化）。仅在【转换】时打日志，避免每帧刷屏。
+        private bool _gateClosed;
 
         // --- 模式 ---
         /// <summary>
@@ -103,11 +105,29 @@ namespace CF7Launcher.Guardian
             //    不算失活，性能控制（含 panic 降级）不被掐断；用户真的切走 / 最小化后才停
             //    决策——此时 Flash 非前台自行降帧、AS2 上报的 FPS 已不可信，继续决策会
             //    把后台降帧误判成性能不足，污染 tier（回到游戏时画质卡在低档）。
-            if (_activationState != null
-                && (!_activationState.IsAppActive || _activationState.IsMinimized))
+            bool gateClosedNow = (_activationState != null
+                && (!_activationState.IsAppActive || _activationState.IsMinimized));
+            if (gateClosedNow)
             {
+                // 仅在【转换为关闭】时打一条日志，避免每个 FPS 采样都刷。配 [Activation]
+                // lost 日志一起看：抢焦发生时 tier/FPS 是什么状态，回来后是否被卡在低档。
+                if (!_gateClosed)
+                {
+                    string reason = _activationState.IsMinimized ? "minimized" : "deactivated";
+                    LogManager.Log(string.Format(
+                        "[PerfGate] closed reason={0} tier={1} latestFps={2:F1}",
+                        reason, _currentTier, _buffer.Latest));
+                    _gateClosed = true;
+                }
                 _focusCooldownMs = 3000;
                 return null;
+            }
+            if (_gateClosed)
+            {
+                LogManager.Log(string.Format(
+                    "[PerfGate] opened tier={0} latestFps={1:F1} cooldownMs={2}",
+                    _currentTier, _buffer.Latest, _focusCooldownMs));
+                _gateClosed = false;
             }
             if (_focusCooldownMs > 0)
             {
