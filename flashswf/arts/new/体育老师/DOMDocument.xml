@@ -1,14 +1,14 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#333333" width="1200" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" timelineLabelWidth="216" viewAngle3D="97.275380851371" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="Graphic" itemID="669baccc-0000152d"/>
-          <DOMFolderItem name="NPC" itemID="69ce2b82-00000abc" isExpanded="true"/>
-          <DOMFolderItem name="NPC/NPC-体育老师" itemID="69ce2b82-00000abd"/>
+          <DOMFolderItem name="NPC" itemID="69ce2b82-00000abc"/>
+          <DOMFolderItem name="NPC/NPC-体育老师" itemID="69ce2b82-00000abd" isExpanded="true"/>
           <DOMFolderItem name="NPC/NPC-体育老师/组件" itemID="69ce2b82-00000abe"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
-          <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
+          <DOMFolderItem name="sprite" itemID="66530518-00000d78" isExpanded="true"/>
           <DOMFolderItem name="怪物通用模板" itemID="65b3a368-0000064f"/>
           <DOMFolderItem name="怪物通用模板/area框" itemID="65ae673b-00003707"/>
-          <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="65b3a368-00000650"/>
+          <DOMFolderItem name="怪物通用模板/新近战子弹定位元件" itemID="65b3a368-00000650" isExpanded="true"/>
           <DOMFolderItem name="怪物通用模板/新近战子弹定位元件/子弹素材" itemID="65ae79f3-00003b03"/>
           <DOMFolderItem name="容器" itemID="6957d32c-00000922"/>
           <DOMFolderItem name="容器/技能容器" itemID="6949543d-00003b09" isExpanded="true"/>
@@ -16,7 +16,7 @@
           <DOMFolderItem name="容器/空手攻击容器/平A" itemID="6964d54f-00002798" isExpanded="true"/>
           <DOMFolderItem name="属性标签标志元件" itemID="66738923-00001ce2"/>
           <DOMFolderItem name="素材" itemID="6a1015dc-0000039d"/>
-          <DOMFolderItem name="特效与子弹" itemID="6634d11f-000008c2"/>
+          <DOMFolderItem name="特效与子弹" itemID="6634d11f-000008c2" isExpanded="true"/>
           <DOMFolderItem name="特效与子弹/01.白净色系" itemID="6634d11f-000008c3" isExpanded="true"/>
           <DOMFolderItem name="特效与子弹/01.白净色系/上勾拳特效组件" itemID="668c195d-00001fc7"/>
           <DOMFolderItem name="特效与子弹/01.白净色系/突刺用特效" itemID="6666075a-0000150d" isExpanded="true"/>
@@ -27,11 +27,10 @@
           <DOMFolderItem name="特效与子弹/03.赤橙色系/火焰与爆炸/炎飞燕" itemID="6925ec22-00001fbc" isExpanded="true"/>
           <DOMFolderItem name="特效与子弹/03.赤橙色系/火焰与爆炸/炎飞燕/未命名文件夹 1" itemID="65560f6e-0000313d" isExpanded="true"/>
           <DOMFolderItem name="特效与子弹/幻影" itemID="694cbe6e-000013a2" isExpanded="true"/>
-          <DOMFolderItem name="特效与子弹/新霸体特效" itemID="66c19db5-000017a9"/>
           <DOMFolderItem name="无AS链接" itemID="673f5879-00000b0e"/>
           <DOMFolderItem name="无AS链接/气功弹（和爆炸）素材" itemID="673f5879-00000b0f" isExpanded="true"/>
-          <DOMFolderItem name="余烬小队" itemID="663cf35d-000026f7" isExpanded="true"/>
-          <DOMFolderItem name="余烬小队/余烬剑痴" itemID="663cf35d-000026f8"/>
+          <DOMFolderItem name="余烬小队" itemID="663cf35d-000026f7"/>
+          <DOMFolderItem name="余烬小队/余烬剑痴" itemID="663cf35d-000026f8" isExpanded="true"/>
           <DOMFolderItem name="重复项目文件夹" itemID="66b9eabe-00000ca4"/>
           <DOMFolderItem name="主角肢体素材" itemID="68c8295d-0000091e"/>
      </folders>
@@ -98,8 +97,6 @@
           <Include href="sprite/Symbol 3.xml" loadImmediate="false" itemID="6577b699-00000956" lastModified="1702343951"/>
           <Include href="sprite/Symbol 45.xml" loadImmediate="false" itemID="697b6508-00002816" lastModified="1776605969"/>
           <Include href="sprite/Symbol 49.xml" loadImmediate="false" itemID="697b6508-000028bf" lastModified="1776605966"/>
-          <Include href="sprite/Symbol 117.xml" loadImmediate="false" itemID="6577b699-000009a3" lastModified="1702343951"/>
-          <Include href="sprite/Symbol 119.xml" loadImmediate="false" itemID="6577b699-000009a4" lastModified="1769694913"/>
           <Include href="sprite/Symbol 120.xml" loadImmediate="false" itemID="6577b699-000009a5" lastModified="1776605653"/>
           <Include href="sprite/Symbol 136.xml" loadImmediate="false" itemID="6577b699-000009b3" lastModified="1779459001"/>
           <Include href="sprite/Symbol 825.xml" loadImmediate="false" itemID="6577b699-00000b8f" lastModified="1779436932"/>
@@ -181,7 +178,6 @@
           <Include href="特效与子弹/气爆6.xml" loadImmediate="false" itemID="674005c8-0000020e" lastModified="1732249032"/>
           <Include href="特效与子弹/日字冲拳残影.xml" loadImmediate="false" itemID="67cc950f-00000672" lastModified="1775138348"/>
           <Include href="特效与子弹/上勾拳特效删减.xml" loadImmediate="false" itemID="668c1aed-0000204b" lastModified="1720458015"/>
-          <Include href="特效与子弹/新霸体特效/上浮方块.xml" loadImmediate="false" itemID="66c19db5-000017a7" lastModified="1723965837"/>
           <Include href="特效与子弹/旋风腿旋风短.xml" loadImmediate="false" itemID="6692e7b1-000042ed" lastModified="1722147263"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 652.xml" loadImmediate="false" itemID="668b9cdd-000001d4" lastModified="1720425625"/>
           <Include href="无AS链接/气功弹（和爆炸）素材/Symbol 654.xml" loadImmediate="false" itemID="668b9cdd-000001d6" lastModified="1720425625"/>
@@ -259,7 +255,7 @@
                                                   <Point x="50.85" y="-29.3"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="敌人-体育老师" selected="true" centerPoint3DX="782.2" centerPoint3DY="194.8">
+                                        <DOMSymbolInstance libraryItemName="敌人-体育老师" centerPoint3DX="782.2" centerPoint3DY="194.8">
                                              <matrix>
                                                   <Matrix tx="775.7" ty="289.3"/>
                                              </matrix>
