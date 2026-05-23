@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兽化变种/兽化变种0/溅血特效" itemID="684d7929-000009ed" symbolType="graphic" lastModified="1744817696">
+  <timeline>
+    <DOMTimeline name="溅血特效" currentFrame="2">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/蛙型仿生僵尸 副本/杂项素材/Symbol 254" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-26.15" ty="27.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.2" y="-28.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/蛙型仿生僵尸 副本/杂项素材/Symbol 259" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-24" ty="35.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="48.05" y="-49.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/蛙型仿生僵尸 副本/杂项素材/Symbol 263" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-19.65" ty="40.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.7" y="-46.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

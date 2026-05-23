@@ -1,0 +1,281 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="巨臂僵尸/蛙型仿生僵尸/动画合集/被击" itemID="684d700a-00004d16" lastModified="1749903314" lastUniqueIdentifier="17">
+  <timeline>
+    <DOMTimeline name="被击" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;109&lt;/guideline&gt;&lt;guideline direction="h"&gt;98&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="Labels_Layer" color="#C3449E">
+          <frames>
+            <DOMFrame index="0" duration="9" name="a0" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="5" name="a1" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="20" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="MergedLayer_1" color="#669900" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 60" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.989913940429688" b="-0.12811279296875" c="-0.12811279296875" d="0.989913940429688" tx="488.1" ty="148.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="139.2" y="37.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/躯干" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.961883544921875" b="0.267196655273438" c="-0.267196655273438" d="0.961883544921875" tx="206.55" ty="52.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55" y="187.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 64" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9954833984375" b="-0.07373046875" c="0.07373046875" d="0.9954833984375" tx="178.25" ty="270.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42.7" y="34.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 6" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.992340087890625" b="-0.0154266357421875" c="0.0154266357421875" d="0.992340087890625" tx="223.9" ty="533.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.5" y="13.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 5" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.932861328125" b="0.347686767578125" c="-0.347686767578125" d="0.932861328125" tx="272.25" ty="373"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.2" y="26.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.96258544921875" b="0.270919799804688" c="-0.270919799804688" d="0.96258544921875" tx="132.9" ty="216.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="78.15" y="45.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 63" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9708251953125" b="-0.2322998046875" c="0.2322998046875" d="0.9708251953125" tx="82.7" ty="277.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="70.75" y="8.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9920654296875" b="-0.02783203125" c="0.02783203125" d="0.9920654296875" tx="68.05" ty="545.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.25" y="16.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.968856811523438" b="-0.2288818359375" c="0.2288818359375" d="0.968856811523438" tx="39.95" ty="420.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.95" y="80.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 12" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.411376953125" b="-1.35491943359375" c="-1.37744140625" d="0.418258666992188" tx="425.15" ty="150.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.6" y="49.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 61手臂背" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.792724609375" b="-0.596725463867188" c="-0.596725463867188" d="-0.792724609375" tx="423.1" ty="246.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.45" y="-7.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/其他/人物对位置/其他/其他部件/Symbol 70手背" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.403076171875" b="1.01055908203125" c="-1.15850830078125" d="0.46197509765625" tx="336.4" ty="76.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.15" y="-34.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 60" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.23016357421875" b="-0.777587890625" c="0.779281616210938" d="-0.230712890625" tx="238.2" ty="196.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="130" y="33.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 36" symbolType="graphic" centerPoint3DX="328.1" centerPoint3DY="153" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.161529541015625" b="1.7542724609375" c="1.81591796875" d="0.165817260742188" tx="280" ty="100.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.75" y="12.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 60" symbolType="graphic" centerPoint3DX="404.7" centerPoint3DY="243.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.94598388671875" b="-0.314849853515625" c="-0.314849853515625" d="0.94598388671875" tx="502.15" ty="220"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="139.2" y="37.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/躯干" symbolType="graphic" centerPoint3DX="272" centerPoint3DY="192.95" loop="loop">
+                  <matrix>
+                    <Matrix a="0.89141845703125" b="0.449310302734375" c="-0.449310302734375" d="0.89141845703125" tx="244.7" ty="71.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.05" y="187.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 64" symbolType="graphic" centerPoint3DX="254.75" centerPoint3DY="354.4" loop="loop">
+                  <matrix>
+                    <Matrix a="0.979049682617188" b="-0.194381713867188" c="0.194381713867188" d="0.979049682617188" tx="174.85" ty="292.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42.75" y="34.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 6" symbolType="graphic" centerPoint3DX="266.5" centerPoint3DY="570.75" loop="loop">
+                  <matrix>
+                    <Matrix a="0.988693237304688" b="0.0627899169921875" c="-0.0627899169921875" d="0.988693237304688" tx="226.9" ty="533.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="13.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 5" symbolType="graphic" centerPoint3DX="281.15" centerPoint3DY="475.05" loop="loop">
+                  <matrix>
+                    <Matrix a="0.89892578125" b="0.4219970703125" c="-0.4219970703125" d="0.89892578125" tx="288.25" ty="377.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.2" y="26.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 3" symbolType="graphic" centerPoint3DX="195.65" centerPoint3DY="297.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.96258544921875" b="0.270919799804688" c="-0.270919799804688" d="0.96258544921875" tx="132.9" ty="232.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="78.15" y="45.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 63" symbolType="graphic" centerPoint3DX="168.35" centerPoint3DY="364.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.899810791015625" b="-0.432098388671875" c="0.432098388671875" d="0.899810791015625" tx="86.25" ty="308.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="70.9" y="8.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 7" symbolType="graphic" centerPoint3DX="96.35" centerPoint3DY="571.95" loop="loop">
+                  <matrix>
+                    <Matrix a="0.955047607421875" b="0.2547607421875" c="-0.2547607421875" d="0.955047607421875" tx="65.05" ty="527.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="30.3" y="16.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 4" symbolType="graphic" centerPoint3DX="137.9" centerPoint3DY="484.35" loop="loop">
+                  <matrix>
+                    <Matrix a="0.98663330078125" b="0.0652008056640625" c="-0.0652008056640625" d="0.98663330078125" tx="75.1" ty="400.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="111.7" y="20.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 12" symbolType="graphic" centerPoint3DX="392.75" centerPoint3DY="167.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.1446533203125" b="-1.40678405761719" c="-1.43016052246094" d="0.147125244140625" tx="440" ty="210.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.6" y="49.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 61手臂背" symbolType="graphic" centerPoint3DX="460.3" centerPoint3DY="233.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.971282958984375" b="-0.197128295898438" c="-0.197128295898438" d="-0.971282958984375" tx="416.65" ty="290.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.45" y="-7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/其他/人物对位置/其他/其他部件/Symbol 70手背" symbolType="graphic" centerPoint3DX="443.9" centerPoint3DY="134.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.067901611328125" b="1.085205078125" c="-1.2440185546875" d="-0.0779266357421875" tx="411.4" ty="100.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="53.15" y="-34.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 60" symbolType="graphic" centerPoint3DX="284.55" centerPoint3DY="146.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0772247314453125" b="-0.80621337890625" c="0.8079833984375" d="-0.0774383544921875" tx="248.05" ty="219.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="130" y="33.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/身体部件/元件 36" symbolType="graphic" centerPoint3DX="344.75" centerPoint3DY="193.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.493194580078125" b="1.68890380859375" c="1.74853515625" d="0.5091552734375" tx="307.4" ty="133.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兽化变种/补间 3" itemID="68431ea7-000004f0" symbolType="graphic" lastModified="1749907782">
+  <timeline>
+    <DOMTimeline name="补间 3">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/喷血特效" selected="true" symbolType="graphic" centerPoint3DX="-57.85" centerPoint3DY="6.9" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.0157928466796875" b="0.0259552001953125" c="-0.0259552001953125" d="-0.0157928466796875" tx="-60.2" ty="5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-34.8" y="167.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/刺刺特效" selected="true" centerPoint3DX="-0.05" centerPoint3DY="0.2">
+                  <matrix>
+                    <Matrix a="0.988677978515625" b="0.0298004150390625" c="-0.0298004150390625" d="0.988677978515625" ty="-0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-32.05" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

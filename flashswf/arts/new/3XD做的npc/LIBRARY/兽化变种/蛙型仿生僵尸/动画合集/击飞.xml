@@ -1,0 +1,277 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兽化变种/蛙型仿生僵尸/动画合集/击飞" itemID="6a118637-00000c7b" lastModified="1749907783">
+  <timeline>
+    <DOMTimeline name="击飞" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;114&lt;/guideline&gt;&lt;guideline direction="h"&gt;99&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="Labels_Layer" color="#2E97BC">
+          <frames>
+            <DOMFrame index="0" duration="9" name="空手" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="7" name="长枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="6" name="手枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="6" name="手枪2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="7" name="双枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="75" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="7" name="手雷" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="92" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="6" name="兵器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="108" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#14EEAE" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.已加经验值 != true)
+{
+   _parent.击倒呐喊();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="84" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="MergedLayer_1" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/Symbol 2020" symbolType="graphic" centerPoint3DX="32.4" centerPoint3DY="45.1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.250885009765625" b="0.0989837646484375" c="-0.1365966796875" d="0.346054077148438" tx="33.2" ty="27.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26.75" y="7.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/Symbol 1880" symbolType="graphic" centerPoint3DX="23.05" centerPoint3DY="39.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0493927001953125" b="0.395339965820313" c="0.40252685546875" d="-0.0434722900390625" tx="4.15" ty="33.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.2" y="19.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/Symbol 2019" symbolType="graphic" centerPoint3DX="44.6" centerPoint3DY="47.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.20623779296875" b="-0.332229614257813" c="0.405487060546875" d="-0.251861572265625" tx="28.95" ty="63.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.85" y="1.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/Symbol 1890" symbolType="graphic" centerPoint3DX="66.8" centerPoint3DY="101.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.321441650390625" b="0.104721069335938" c="0.132537841796875" d="0.406723022460938" tx="68.25" ty="81.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="11.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/Symbol 1892" symbolType="graphic" centerPoint3DX="67.3" centerPoint3DY="81.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.369705200195313" b="0.0938568115234375" c="0.0938568115234375" d="0.369705200195313" tx="81.6" ty="108.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="40.85" y="14.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/Symbol 1891" symbolType="graphic" centerPoint3DX="-21.15" centerPoint3DY="72.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.32537841796875" b="0.0934600830078125" c="0.105865478515625" d="0.368392944335938" tx="61.35" ty="55.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45" y="3.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/Symbol 1883" symbolType="graphic" centerPoint3DX="31.65" centerPoint3DY="59.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.19622802734375" b="0.37847900390625" c="0.321029663085938" d="0.1744384765625" tx="27.15" ty="43.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.3" y="48.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/兽化变种上半身" centerPoint3DX="9.9" centerPoint3DY="52.5">
+                  <matrix>
+                    <Matrix a="0.184799194335938" b="-0.980148315429688" c="0.980148315429688" d="0.184799194335938" tx="9.8" ty="52.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.55" y="16.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/兽化变种的脑子" centerPoint3DX="-4.45" centerPoint3DY="40.55">
+                  <matrix>
+                    <Matrix a="-0.32281494140625" b="-0.941909790039063" c="0.941909790039063" d="-0.32281494140625" tx="-4.6" ty="40.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.45" y="5.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/Symbol 1890" symbolType="graphic" centerPoint3DX="59.55" centerPoint3DY="112.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.304519653320313" b="0.148696899414063" c="0.188125610351563" d="0.38531494140625" tx="58.55" ty="92.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.75" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/Symbol 1892" symbolType="graphic" centerPoint3DX="72.15" centerPoint3DY="132.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.337860107421875" b="0.178695678710938" c="0.178695678710938" d="0.337860107421875" tx="75.05" ty="116.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="14.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/Symbol 1891" symbolType="graphic" centerPoint3DX="47.5" centerPoint3DY="86.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.335357666015625" b="0.0464324951171875" c="0.0526123046875" d="0.379745483398438" tx="57.3" ty="66.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="51.5" y="7.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/兽化变种的屁股" centerPoint3DX="40.3" centerPoint3DY="65.55">
+                  <matrix>
+                    <Matrix a="0.584945678710938" b="-0.81103515625" c="0.81103515625" d="0.584945678710938" tx="40" ty="65.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.55" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/Symbol 1881" symbolType="graphic" centerPoint3DX="43.05" centerPoint3DY="67.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.210693359375" b="0.374954223632813" c="0.425094604492188" d="0.2127685546875" tx="38.15" ty="51.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.35" y="11"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/Symbol 2021" symbolType="graphic" centerPoint3DX="49.4" centerPoint3DY="87.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.310150146484375" b="-0.33294677734375" c="0.347610473632813" d="-0.293838500976563" tx="50.45" ty="100.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.95" y="67.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/Symbol 1894" symbolType="graphic" centerPoint3DX="15.9" centerPoint3DY="65.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0943603515625" b="0.447784423828125" c="0.447784423828125" d="-0.0943603515625" tx="-2.15" ty="55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="18.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
