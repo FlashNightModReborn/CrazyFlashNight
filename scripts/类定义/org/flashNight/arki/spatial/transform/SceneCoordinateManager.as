@@ -25,6 +25,10 @@ class org.flashNight.arki.spatial.transform.SceneCoordinateManager {
      * 格式：二维向量 (x, y)
      */
     public static var offset:Vector = new Vector(0, 0);
+    /**
+     * 效果层相对 gameworld 的坐标偏移，供绘制在 gameworld.效果 下的 VFX 使用。
+     * deadbody 位图层有独立 layerOrigin，不能复用此偏移。
+     */
     public static var effectOffset:Vector = new Vector(0, 0);
     /**
      * 场景中心点坐标（游戏逻辑坐标系）
@@ -112,12 +116,11 @@ class org.flashNight.arki.spatial.transform.SceneCoordinateManager {
         
         // 获取场景容器引用
         var gw:MovieClip = _root.gameworld;
-        var db:MovieClip = gw.deadbody;
         var effect:MovieClip = gw.效果;
         
         // 执行坐标系转换
         effect.localToGlobal(effectOffset);
-        db.globalToLocal(effectOffset);
+        gw.globalToLocal(effectOffset);
         
         return effectOffset;
     }

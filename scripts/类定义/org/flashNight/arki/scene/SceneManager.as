@@ -1,6 +1,8 @@
 ﻿import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
 import org.flashNight.gesh.depth.DepthManager;
+import flash.display.BitmapData;
+import flash.geom.Point;
 
 /**
 SceneManager.as
@@ -208,22 +210,104 @@ class org.flashNight.arki.scene.SceneManager {
         // 本运行时(FP11.2 projector) AVM1 BitmapData 无 2880/8191/16M 硬墙，
         // 真实约束是内存（实测档案见 scripts/优化随笔/AS2-BitmapData-尺寸上限实测.md）。
         // 8192x4096 仅用于挡住 XML 异常尺寸值，正常手作地图远小于此。
+        if (isNaN(w)) w = 1024;
+        if (isNaN(h)) h = 512;
+        var originX:Number = 0;
+        var originY:Number = 0;
+        var right:Number = w;
+        var bottom:Number = h;
+        if (!isNaN(_root.Xmin) && _root.Xmin < originX) originX = _root.Xmin;
+        if (!isNaN(_root.Ymin) && _root.Ymin < originY) originY = _root.Ymin;
+        if (!isNaN(_root.Xmax) && _root.Xmax > right) right = _root.Xmax;
+        if (!isNaN(_root.Ymax) && _root.Ymax > bottom) bottom = _root.Ymax;
+
+        w = Math.ceil(right - originX);
+        h = Math.ceil(bottom - originY);
         if(w < 1024) w = 1024;
         else if(w >= 8192) w = 8192;
         if(h < 512) h = 512;
         else if(h >= 4096) h = 4096;
+
+        deadbody.layerOriginX = originX;
+        deadbody.layerOriginY = originY;
+        deadbody._x = originX;
+        deadbody._y = originY;
         deadbody.layers = new Array(3);
-        deadbody.layers[0] = new flash.display.BitmapData(w, h, true, 13421772);
+        deadbody.layers[0] = new BitmapData(w, h, true, 13421772);
         deadbody.layers[1] = null; // 从未被使用的deadbody1不添加
-        deadbody.layers[2] = new flash.display.BitmapData(w, h, true, 13421772);
-        // 单一坐标原点不变量：所有 layers BD 的像素 (0,0) 都对应 deadbody 局部 (0,0)
-        // = gameworld 原点。BitmapEffectRenderer.renderBloodstain 与 DeathEffectRenderer
-        // 都基于此假设直接写 gameworld 局部坐标，背景 bake 必须维持同原点（见 贴背景图）。
+        deadbody.layers[2] = new BitmapData(w, h, true, 13421772);
+        // layers BD 的像素 (0,0) 对应 gameworld(layerOriginX, layerOriginY)。
+        // deadbody 自身移动到该世界坐标，因此无需额外 wrapper MC；所有直接写 BD
+        // 的调用方必须写入 world - layerOrigin 后的像素坐标。
         deadbody.attachBitmap(deadbody.layers[0], 0);
         deadbody.attachBitmap(deadbody.layers[2], 2);
 
+        _global.ASSetPropFlags(deadbody, ["layers", "layerOriginX", "layerOriginY"], 1, false);
+
         // 将 'deadbody' 设置为不可枚举
         _global.ASSetPropFlags(gameworld, ["deadbody"], 1, false);
+    }
+
+    /**
+     * 扩展 deadbody 位图画布，支持背景或玩法边界落在负坐标。
+     * 只扩不缩；重建 BitmapData 时按新旧 layerOrigin 偏移复制旧像素。
+     */
+    public function ensureBodyLayerBounds(originX:Number, originY:Number, right:Number, bottom:Number):Void {
+        var deadbody:MovieClip = gameworld.deadbody;
+        if (deadbody == null || deadbody.layers == null || deadbody.layers[0] == null) return;
+
+        var oldOriginX:Number = isNaN(deadbody.layerOriginX) ? 0 : deadbody.layerOriginX;
+        var oldOriginY:Number = isNaN(deadbody.layerOriginY) ? 0 : deadbody.layerOriginY;
+        if (isNaN(originX) || originX > oldOriginX) originX = oldOriginX;
+        if (isNaN(originY) || originY > oldOriginY) originY = oldOriginY;
+
+        var currentRight:Number = oldOriginX + deadbody.layers[0].width;
+        var currentBottom:Number = oldOriginY + deadbody.layers[0].height;
+        if (isNaN(right) || right < currentRight) right = currentRight;
+        if (isNaN(bottom) || bottom < currentBottom) bottom = currentBottom;
+
+        var newW:Number = Math.ceil(right - originX);
+        var newH:Number = Math.ceil(bottom - originY);
+        if (newW < 1024) newW = 1024;
+        else if (newW >= 8192) newW = 8192;
+        if (newH < 512) newH = 512;
+        else if (newH >= 4096) newH = 4096;
+
+        if (originX == oldOriginX && originY == oldOriginY &&
+            newW == deadbody.layers[0].width && newH == deadbody.layers[0].height) {
+            return;
+        }
+
+        deadbody.layers[0] = resizeBodyBitmap(deadbody.layers[0], newW, newH, oldOriginX, oldOriginY, originX, originY);
+        if (deadbody.layers[2] != null) {
+            deadbody.layers[2] = resizeBodyBitmap(deadbody.layers[2], newW, newH, oldOriginX, oldOriginY, originX, originY);
+        }
+
+        deadbody.layerOriginX = originX;
+        deadbody.layerOriginY = originY;
+        deadbody._x = originX;
+        deadbody._y = originY;
+        deadbody.attachBitmap(deadbody.layers[0], 0);
+        if (deadbody.layers[2] != null) deadbody.attachBitmap(deadbody.layers[2], 2);
+        _global.ASSetPropFlags(deadbody, ["layers", "layerOriginX", "layerOriginY"], 1, false);
+    }
+
+    private function resizeBodyBitmap(oldBD:BitmapData, newW:Number, newH:Number,
+                                      oldOriginX:Number, oldOriginY:Number,
+                                      newOriginX:Number, newOriginY:Number):BitmapData {
+        var newBD:BitmapData = new BitmapData(newW, newH, true, 13421772);
+        if (oldBD != null) {
+            newBD.copyPixels(
+                oldBD,
+                oldBD.rectangle,
+                new Point(oldOriginX - newOriginX, oldOriginY - newOriginY),
+                null,
+                null,
+                true
+            );
+            oldBD.dispose();
+        }
+        return newBD;
     }
 
 

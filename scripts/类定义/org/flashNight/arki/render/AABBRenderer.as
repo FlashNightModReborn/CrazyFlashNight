@@ -213,8 +213,12 @@ class org.flashNight.arki.render.AABBRenderer {
                                            zRange:Number):Object
     {
         // =============== 1. 获取主 AABB ===============
+        var host:MovieClip = VectorAfterimageRenderer.resolveLayerHost();
+        var layerOffset:Vector = new Vector(0, 0);
+        _root.gameworld.localToGlobal(layerOffset);
+        host.globalToLocal(layerOffset);
         var collider:AABB = iCollider.getAABB(zOffset)
-                                      .moveNew(SceneCoordinateManager.effectOffset);
+                                      .moveNew(layerOffset);
         
         // 计算矩形四个顶点的坐标（左上、右上、右下、左下）
         var p0:Vector = new Vector(collider.left,   collider.top);

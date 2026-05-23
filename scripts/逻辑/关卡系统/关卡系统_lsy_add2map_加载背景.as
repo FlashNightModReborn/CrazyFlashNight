@@ -99,36 +99,22 @@ _root.贴背景图 = function(){
 	if (背景层._width <= 1300) return;
 
 	// ── Bake：把 背景 烤进 deadbody.layers[0] ──
-	// 维持单一坐标原点：layers[0] 像素 (0,0) = deadbody 局部 (0,0) = gameworld 原点，
-	// 与 BitmapEffectRenderer.renderBloodstain / DeathEffectRenderer.renderCorpse 共用同一原点。
-	// 兼容作者随手摆 _x/_y/_xscale/_yscale 的方式：
+	// 兼容作者随手摆 _x/_y/_xscale/_yscale，包括负坐标背景：
 	//   (1) transform.matrix.clone() 继承 背景 自身缩放/旋转（老写死单位阵会把
 	//       _xscale!=100 的 背景 烤成原始矢量尺寸）。
-	//   (2) BD 按需 grow-only：用 getBounds(deadbody) 的 xMax/yMax 与现 BD 取大重建，
-	//       保证位移过的 背景 不被裁。背景放到负坐标(deadbody 局部 x/y<0)的部分会被裁，
-	//       与 blood/corpse 写入方"原点 >= (0,0)"的隐含约束一致。
+	//   (2) 先用 gameworld 坐标系 bounds 扩展 deadbody.layerOrigin/BD 尺寸；
+	//       deadbody 自身移动到 layerOrigin，无需额外 wrapper MC。所有直接写 BD
+	//       的调用方统一写 world - layerOrigin 后的像素坐标。
 	var deadbody:MovieClip = 游戏世界.deadbody;
-	var b:Object = 背景层.getBounds(deadbody);
+	var b:Object = 背景层.getBounds(游戏世界);
+
+	SceneManager.getInstance().ensureBodyLayerBounds(b.xMin, b.yMin, b.xMax, b.yMax);
 	var bd:flash.display.BitmapData = deadbody.layers[0];
-
-	var needW:Number = Math.ceil(b.xMax);
-	var needH:Number = Math.ceil(b.yMax);
-	if (needW < bd.width)  needW = bd.width;
-	if (needH < bd.height) needH = bd.height;
-	if (needW > 8192) needW = 8192;
-	if (needH > 4096) needH = 4096;
-
-	if (needW != bd.width || needH != bd.height) {
-		bd.dispose();
-		bd = new flash.display.BitmapData(needW, needH, true, 13421772);
-		deadbody.layers[0] = bd;
-		deadbody.attachBitmap(bd, 0);
-	}
 
 	var bgMat:flash.geom.Matrix = 背景层.transform.matrix.clone();
 	var dbMat:flash.geom.Matrix = deadbody.transform.matrix.clone();
 	dbMat.invert();
-	bgMat.concat(dbMat);                    // 背景 局部 → deadbody 局部（= gameworld 局部）
+	bgMat.concat(dbMat);                    // 背景 局部 → deadbody 局部（= world - layerOrigin）
 
 	背景层._visible = true;
 	bd.draw(背景层, bgMat, new flash.geom.ColorTransform(), "normal", undefined, true);
@@ -254,4 +240,4 @@ _root.basicZoomScale = 1;
 
 EventBus.getInstance().subscribe("SceneReady", HorizontalScroller.onSceneChanged, HorizontalScroller); 
 EventBus.getInstance().subscribe("FlashFullScreenChanged", HorizontalScroller.onFullScreenChanged, HorizontalScroller); 
-EventBus.getInstance().subscribe("SceneReady", ZoomController.resetState, ZoomController); 
+EventBus.getInstance().subscribe("SceneReady", ZoomController.resetState, ZoomController);

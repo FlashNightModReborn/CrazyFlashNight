@@ -9,7 +9,7 @@ import org.flashNight.gesh.object.*;
  * @classdesc 处理尸体效果的渲染，包括标准尸体效果与带旋转的尸体效果。
  * 
  * 此类采用对象复用和缓存机制，减少了重复创建矩阵和 ColorTransform 对象的开销。
- * 注意：此类依赖全局对象 _root.gameworld 以及 SceneCoordinateManager.effectOffset，
+ * 注意：此类依赖全局对象 _root.gameworld 以及 gameworld.deadbody，
  *       使用时需保证这些全局对象已正确初始化。
  */
 class org.flashNight.arki.corpse.DeathEffectRenderer {
@@ -60,14 +60,12 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
 
         var gameWorld:MovieClip = _root.gameworld;
 
-        // 将 target 的局部坐标 (0,0) 转换到 gameWorld 坐标系
+        // 同一个全局点分别转换到 gameWorld(剔除用) 与 deadbody(写 BD 用) 坐标系
         var pt:Object = {x: 0, y: 0};
         target.localToGlobal(pt);
+        var layerPt:Object = {x: pt.x, y: pt.y};
         gameWorld.globalToLocal(pt);
-
-        var effectOffset:Vector = SceneCoordinateManager.effectOffset;
-        var worldX:Number = pt.x + effectOffset.x;
-        var worldY:Number = pt.y + effectOffset.y;
+        gameWorld.deadbody.globalToLocal(layerPt);
 
         // 离屏剔除（gameworld 平移+缩放闭式映射）
         if (DeathEffectRenderer.enableCulling) {
@@ -75,8 +73,8 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
             var sx:Number = gameWorld._xscale * 0.01;
 
             // 局部(世界)中心 → 屏幕坐标
-            var gx:Number = gameWorld._x + worldX * sx;
-            var gy:Number = gameWorld._y + worldY * sx;
+            var gx:Number = gameWorld._x + pt.x * sx;
+            var gy:Number = gameWorld._y + pt.y * sx;
 
             if (gx < -CORPSE_CULL_PAD || gx > Stage.width + CORPSE_CULL_PAD ||
                 gy < -CORPSE_CULL_PAD || gy > Stage.height + CORPSE_CULL_PAD) {
@@ -97,8 +95,8 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
 
         reusableMatrix.a  = accumulatedScaleX;
         reusableMatrix.d  = accumulatedScaleY;
-        reusableMatrix.tx = worldX;
-        reusableMatrix.ty = worldY;
+        reusableMatrix.tx = layerPt.x;
+        reusableMatrix.ty = layerPt.y;
 
         gameWorld.deadbody.layers[layerIndex].draw(
             target,
@@ -128,15 +126,19 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
     public static function renderRotatedCorpse(target:MovieClip, layerIndex:Number):Void {
         if (!DeathEffectRenderer.isEnabled) return;
         var gameWorld:MovieClip = _root.gameworld;
+        var worldPt:Object = {x: 0, y: 0};
+        target.localToGlobal(worldPt);
+        var layerPt:Object = {x: worldPt.x, y: worldPt.y};
+        gameWorld.globalToLocal(worldPt);
+        gameWorld.deadbody.globalToLocal(layerPt);
+
         // 离屏剔除（gameworld 平移+缩放闭式映射）
         if (DeathEffectRenderer.enableCulling) {
             
             var sx:Number = gameWorld._xscale * 0.01;
-            var off:Vector = SceneCoordinateManager.effectOffset;
-
             // 局部(世界)中心 → 屏幕坐标
-            var gx:Number = gameWorld._x + (target._x + off.x) * sx;
-            var gy:Number = gameWorld._y + (target._y + off.y) * sx;
+            var gx:Number = gameWorld._x + worldPt.x * sx;
+            var gy:Number = gameWorld._y + worldPt.y * sx;
 
             if (gx < -CORPSE_CULL_PAD || gx > Stage.width + CORPSE_CULL_PAD ||
                 gy < -CORPSE_CULL_PAD || gy > Stage.height + CORPSE_CULL_PAD) {
@@ -146,9 +148,6 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
 
         // 将目标的角度（度）转换为弧度，以便 Math.cos/sin 计算
         var rotationRadians:Number = target._rotation * DEG_TO_RAD;
-        // 全局效果偏移量，用于解决效果与尸体层的偏移问题
-        var offset:Vector = SceneCoordinateManager.effectOffset;
-
         // 构造旋转 + 翻转矩阵元素
         // 根据目标的 _xscale 和 _yscale 符号，计算水平/垂直翻转因子 (±1)
         // 1 - 2*(expr) 利用布尔到数值隐式转换：expr 为 true → 1，false → 0
@@ -165,9 +164,9 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
         reusableTransformMatrix.b  = r_sin;
         reusableTransformMatrix.c  = -r_sin;
         reusableTransformMatrix.d  = r_cos;
-        // 平移分量：目标坐标 + 全局偏移
-        reusableTransformMatrix.tx = target._x + offset.x;
-        reusableTransformMatrix.ty = target._y + offset.y;
+        // 平移分量：目标原点在 deadbody 位图层坐标系中的位置
+        reusableTransformMatrix.tx = layerPt.x;
+        reusableTransformMatrix.ty = layerPt.y;
 
         // 将目标 MovieClip 按照计算好的矩阵绘制到指定尸体层
         gameWorld.deadbody.layers[layerIndex].draw(

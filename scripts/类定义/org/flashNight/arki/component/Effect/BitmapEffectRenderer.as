@@ -48,11 +48,14 @@ class org.flashNight.arki.component.Effect.BitmapEffectRenderer
     public static function renderBloodstain(x:Number, y:Number):Void{
         var bitmapInfo = bloodstainInfos[random(8)];
         var bitmap = bitmapDict[bitmapInfo.id];
+        var deadbody:MovieClip = _root.gameworld.deadbody;
+        var originX:Number = isNaN(deadbody.layerOriginX) ? 0 : deadbody.layerOriginX;
+        var originY:Number = isNaN(deadbody.layerOriginY) ? 0 : deadbody.layerOriginY;
         // 渲染到尸体层第0层
-        _root.gameworld.deadbody.layers[0].copyPixels(
+        deadbody.layers[0].copyPixels(
             bitmap,
             bitmap.rectangle,
-            new Point(x - bitmapInfo.offsetX, y - bitmapInfo.offsetY),
+            new Point(x - originX - bitmapInfo.offsetX, y - originY - bitmapInfo.offsetY),
             null,
             null,
             true
