@@ -1,4 +1,5 @@
 ﻿import org.flashNight.naki.RandomNumberEngine.*;
+import org.flashNight.naki.PseudoRandom.*;
 import org.flashNight.neur.Event.Delegate;
 
 // 获取随机数引擎实例并存储为全局变量
@@ -6,6 +7,11 @@ _root.linearEngine = LinearCongruentialEngine.getInstance();
 _root.mersenneEngine = MersenneTwister.getInstance();
 
 PinkNoiseEngine.getInstance();
+
+// 掉落伪随机分布引擎：键 = "兵种typeKey|物品名"，state 由 SaveManager 在
+// killStats 创建/读档后通过 attachState 重新绑定到 _root.killStats.dropPRD。
+// 引擎构造时 state 尚不存在，先用本地空对象顶上，避免上下文未就绪时崩溃。
+_root.dropPRDEngine = new PseudoRandomDistribution(undefined);
 // LCG 常量已烧录，只需重置种子
 _root.linearEngine.setSeed(new Date().getTime());
 _root.mersenneEngine.initialize(new Date().getTime());

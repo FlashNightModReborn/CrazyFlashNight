@@ -141,6 +141,21 @@ class org.flashNight.neur.Server.SaveManager {
         _prefetchInFlight = false;
     }
 
+    // ==================== killStats 子结构维护 ====================
+    // 击杀统计对象除 total / byType 外还要承载 dropPRD（伪随机分布失败计数表）。
+    // 每次 _root.killStats 被替换（newCharacter / loadGameState / deleteSlot）后必须
+    // 调用本方法补齐子字段，并把新 dropPRD 引用重新挂回 _root.dropPRDEngine。
+    // 注：本方法不创建 killStats 本身，调用方需保证 _root.killStats 已存在。
+    private static function rebindKillStatsExtensions():Void {
+        if (_root.killStats == null) return;
+        if (_root.killStats.dropPRD == undefined) {
+            _root.killStats.dropPRD = {};
+        }
+        if (_root.dropPRDEngine != undefined) {
+            _root.dropPRDEngine.attachState(_root.killStats.dropPRD);
+        }
+    }
+
     // ==================== 测试专用 ====================
     // 仅供 BootstrapProtocolTest 使用。因为 SaveManager 是全局单例，正常运行
     // 期 _protocol2Consumed 单向拉起后 preload 不再响应决议；测试需要复位状态
@@ -642,6 +657,7 @@ class org.flashNight.neur.Server.SaveManager {
         _root.同伴数据 = [];
         _root.同伴数 = 0;
         _root.killStats = { total:0, byType:{} };
+        rebindKillStatsExtensions();
 
         // 补充遗漏项（类型与运行时一致）
         _root.宠物信息 = [[], [], [], [], []];
@@ -920,6 +936,7 @@ class org.flashNight.neur.Server.SaveManager {
 
         // 击杀统计
         _root.killStats = { total:0, byType:{} };
+        rebindKillStatsExtensions();
 
         // 清空物品获取方式的动态发现集合
         ItemObtainIndex.getInstance().clearDynamicDiscoveries();
@@ -976,6 +993,7 @@ class org.flashNight.neur.Server.SaveManager {
 
         if (_root.killStats == null) {
             _root.killStats = { total:0, byType:{} };
+            rebindKillStatsExtensions();
         }
 
         var 其他存储数据:Object = {
@@ -1261,11 +1279,13 @@ class org.flashNight.neur.Server.SaveManager {
             } else {
                 _root.killStats = { total:0, byType:{} };
             }
+            rebindKillStatsExtensions();
             if (mydata.others.物品来源缓存) {
                 ItemObtainIndex.getInstance().loadFromSave(mydata.others.物品来源缓存);
             }
         } else {
             _root.killStats = { total:0, byType:{} };
+            rebindKillStatsExtensions();
         }
 
         // 预留命名空间恢复

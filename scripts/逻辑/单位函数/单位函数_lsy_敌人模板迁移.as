@@ -381,7 +381,17 @@ _root.敌人函数.掉落物品 = function(item) {
     if (itemData == null)
         return;
     if (!isNaN(item.概率)) {
-        if (!_root.成功率(item.概率))
+        // 用 PRD 替换均匀随机：按 (兵种typeKey + 物品名) 维持失败计数，
+        // 命中即清零；长期触发率贴近名义概率，但抹掉"长龙"坏运气体验。
+        // 状态由 SaveManager 通过 _root.killStats.dropPRD 持久化跨存档生效。
+        var prdKey:String = UnitUtil.getUnitTypeKey(this) + "|" + item.名字;
+        // 逆向被动：每级 +5% 名义掉落率（Magic-Find 类乘数），与 PRD 正交叠加
+        var luckBonus:Number = 0;
+        if (_root.主角被动技能.逆向 && _root.主角被动技能.逆向.启用) {
+            luckBonus = _root.主角被动技能.逆向.等级 * 0.05;
+        }
+        var effectiveP:Number = item.概率 * 0.01 * (1 + luckBonus);
+        if (!_root.dropPRDEngine.roll(prdKey, effectiveP))
             return;
     }
 

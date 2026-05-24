@@ -2,7 +2,7 @@
 
 ## Quick Sheet（速查）
 
-- **.as 编码**：必须 UTF-8 with BOM；禁止从零新建，必须复制现有文件再改名
+- **.as 编码**：必须 UTF-8 with BOM；禁止从零新建，必须复制现有文件再改名（帧脚本 `.as` 同样适用——丢 BOM 会被编译器**静默跳过**且不报错）
 - **禁止 `package`**：AS2 无此关键字，类名需全路径 `class org.flashNight...ClassName {}`
 - **帧脚本 import**：必须通配符 `import org.flashNight.xxx.*`，禁止具体类导入
 - **类型**：无 `int`/`uint`（用 `Number`）、无 `Vector.<T>`（用 `Array`）、无 `const`（用 `var`/`static var`）
@@ -19,12 +19,17 @@
 
 ## 0. 文件编码：UTF-8 with BOM（最高优先级）
 
-`.as` 文件必须使用 **UTF-8 with BOM** 编码。BOM 头丢失会导致编译失败或中文乱码。
+`.as` 文件必须使用 **UTF-8 with BOM** 编码。BOM 头丢失的三种后果（按可见性排序）：
+
+1. class 文件 BOM 丢失：编译报错或中文乱码（**明显**，IDE 会报）
+2. **被 FLA 帧脚本 `#include` 的 `.as` 丢 BOM**：编译器**静默跳过**其全部内容，生成 SWF 的对应 DoAction 为 0 字节，**compiler_errors 仍报 `0 个错误`**，smoke 链路无法捕获。诊断步骤见 [`scripts/FlashCS6自动化编译.md`](../scripts/FlashCS6自动化编译.md) §8 "marker 已生成但 flashlog.txt 为空"
+3. 中文字符串 BOM 缺失 + 多字节序列被工具截断：运行时显示 fffd
 
 ### Agent 操作 .as 文件的安全流程
 1. **新建文件**：先复制一个已有的 `.as` 文件，重命名，再修改内容（保留 BOM 头）
 2. **大范围编辑**：大规模修改同一个文件可能触发工具重新生成文件内容，同样会丢失 BOM 头。如发生此情况，按上述复制流程重新操作
 3. **禁止从零新建** `.as` 文件（无法保证 BOM 头）；必须复制现有文件再改名
+4. **TestLoader.as 等帧脚本 `.as` 同样在 BOM 约束内**——它们不是 class 文件但仍被编译器读取，丢 BOM 触发上述第 2 种静默失败
 
 ---
 

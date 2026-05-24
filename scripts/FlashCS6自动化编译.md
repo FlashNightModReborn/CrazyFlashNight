@@ -70,10 +70,12 @@ compile_test.ps1 / compile_test.sh
 - AS2 帧脚本中的类型错误、未声明变量不会稳定体现在编译期错误里
 - 只有语法错误和 class 文件中的静态类型错误更容易被自动捕获
 - 长耗时套件可能超过默认轮询上限
+- **被 FLA 帧脚本 `#include` 的 `.as` 文件失去 BOM 时，CS6 编译器静默跳过其内容**，生成 SWF 的对应帧 DoAction 为 0 字节，但 `compiler_errors.txt` 仍报 `0 个错误`、`publish_done.marker` 正常落盘、`compile_test.sh` 报 `[OK] 编译完成` —— smoke 链路无法捕获此类静默失败
 - 遇到“marker 成功但没有 trace”，优先怀疑：
   - 旧环境残留
   - TestLoader 未正确打开
   - Flash IDE 编译器错误
+  - `TestLoader.as` 或其它被 `#include` 的帧脚本 `.as` 丢失 BOM（见 §8 同名条目）
 
 ## 7. 截图与界面检查
 
@@ -104,6 +106,15 @@ powershell -ExecutionPolicy Bypass -File scripts/capture_screenshot.ps1
 - 先看 Flash IDE 的 **输出 / 编译器错误** 面板
 - 再看 `scripts/compiler_errors.txt`
 - 再核对 `scripts/compile_output.txt` 和真实 `flashlog.txt` 时间戳
+- 若 `compiler_errors.txt` 报 `0 个错误`、SWF 体积异常小（kB 级而非数十 kB）、debug player 直跑也无 trace —— 大概率是被 `#include` 的帧脚本 `.as` **丢了 BOM**，编译器静默跳过 include 内容，生成空帧脚本。验证手段：
+
+  ```bash
+  "/c/Program Files (x86)/FFDec/ffdec.bat" -export script ./tmp_swf_dump scripts/TestLoader.swf
+  ls -la tmp_swf_dump/scripts/frame_1/DoAction.as   # 0 字节 = 帧脚本未被编译进去
+  head -c 3 scripts/TestLoader.as | od -An -tx1     # 应为 ef bb bf；若不是则补 BOM
+  ```
+
+  修复后用 IDE 的"另存为 UTF-8 with BOM"重写一次，或用 `printf '\xef\xbb\xbf'` 前置后再编译
 
 ### 仍然弹 UAC
 
