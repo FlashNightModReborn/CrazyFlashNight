@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -719,17 +720,26 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public bool RestoreFlashInputFocus(string reason)
         {
+            long totalStart = Stopwatch.GetTimestamp();
+            PerfTrace.Mark("focus_restore.start", reason);
+
             IntPtr flashHwnd = _flashHwnd;
             if (flashHwnd == IntPtr.Zero || !IsWindow(flashHwnd))
             {
                 LogManager.Log("[FocusRestore] " + reason + ": no flash hwnd, skip");
+                LogFocusProbe(reason, totalStart, 0, 0, 0, 0, false, false, "no_flash");
                 return false;
             }
 
+            long describeStart = Stopwatch.GetTimestamp();
             IntPtr fgBefore = GetForegroundWindow();
             string fgBeforeDesc = DescribeWindow(fgBefore);
+            double describeBeforeMs = ElapsedMs(describeStart);
+            PerfTrace.Duration("focus_restore.describe_before", describeStart, reason);
 
             // Pass 1：直接 SetForegroundWindow
+            long pass1Start = Stopwatch.GetTimestamp();
+            PerfTrace.Mark("focus_restore.pass1.start", reason);
             bool sfwOk1 = false;
             try { sfwOk1 = SetForegroundWindow(flashHwnd); }
             catch (Exception ex)
@@ -739,16 +749,27 @@ namespace CF7Launcher.Guardian
             try { SetFocus(flashHwnd); } catch { }
 
             IntPtr fgAfter1 = GetForegroundWindow();
+            double pass1Ms = ElapsedMs(pass1Start);
+            PerfTrace.Duration("focus_restore.pass1", pass1Start, reason);
             if (IsWindowInFlashSession(fgAfter1))
             {
+                describeStart = Stopwatch.GetTimestamp();
+                string fgAfter1Desc = DescribeWindow(fgAfter1);
+                string innerFocus1 = DescribeInnerFocus(flashHwnd);
+                double describeAfterMs = ElapsedMs(describeStart);
+                PerfTrace.Duration("focus_restore.describe_after", describeStart, reason + " path=pass1");
                 LogManager.Log("[FocusRestore] " + reason + " pass1=ok sfwReturn=" + sfwOk1
                     + " fgBefore=" + fgBeforeDesc
-                    + " fgAfter=" + DescribeWindow(fgAfter1)
-                    + " innerFocus=" + DescribeInnerFocus(flashHwnd));
+                    + " fgAfter=" + fgAfter1Desc
+                    + " innerFocus=" + innerFocus1);
+                LogFocusProbe(reason, totalStart, pass1Ms, 0, 0,
+                    describeBeforeMs + describeAfterMs, true, false, "pass1");
                 return true;
             }
 
             // Pass 2：AttachThreadInput hack
+            long attachStart = Stopwatch.GetTimestamp();
+            PerfTrace.Mark("focus_restore.attach.start", reason);
             uint myTid = GetCurrentThreadId();
             uint fgPid2;
             uint fgTid = GetWindowThreadProcessId(fgAfter1, out fgPid2);
@@ -761,6 +782,11 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[FocusRestore] " + reason + " pass2 AttachThreadInput attach threw: " + ex.Message);
                 }
             }
+            double attachMs = ElapsedMs(attachStart);
+            PerfTrace.Duration("focus_restore.attach", attachStart, reason + " attached=" + attached);
+
+            long pass2Start = Stopwatch.GetTimestamp();
+            PerfTrace.Mark("focus_restore.pass2.start", reason);
             try
             {
                 try { SetForegroundWindow(flashHwnd); } catch { }
@@ -779,16 +805,57 @@ namespace CF7Launcher.Guardian
                     }
                 }
             }
+            double pass2Ms = ElapsedMs(pass2Start);
+            PerfTrace.Duration("focus_restore.pass2", pass2Start, reason);
 
             IntPtr fgAfter2 = GetForegroundWindow();
             bool finalOk = IsWindowInFlashSession(fgAfter2);
+            describeStart = Stopwatch.GetTimestamp();
+            string fgAfter1Desc2 = DescribeWindow(fgAfter1);
+            string fgAfter2Desc = DescribeWindow(fgAfter2);
+            string innerFocus2 = DescribeInnerFocus(flashHwnd);
+            double describeFinalMs = ElapsedMs(describeStart);
+            PerfTrace.Duration("focus_restore.describe_after", describeStart, reason + " path=pass2");
             LogManager.Log("[FocusRestore] " + reason + " pass1=fail pass2=" + (finalOk ? "ok" : "fail")
                 + " attached=" + attached
                 + " fgBefore=" + fgBeforeDesc
-                + " fgAfter1=" + DescribeWindow(fgAfter1)
-                + " fgAfter2=" + DescribeWindow(fgAfter2)
-                + " innerFocus=" + DescribeInnerFocus(flashHwnd));
+                + " fgAfter1=" + fgAfter1Desc2
+                + " fgAfter2=" + fgAfter2Desc
+                + " innerFocus=" + innerFocus2);
+            LogFocusProbe(reason, totalStart, pass1Ms, attachMs, pass2Ms,
+                describeBeforeMs + describeFinalMs, finalOk, true, "pass2");
             return finalOk;
+        }
+
+        private static void LogFocusProbe(string reason, long totalStart, double pass1Ms,
+            double attachMs, double pass2Ms, double describeMs, bool finalOk, bool usedPass2, string path)
+        {
+            double totalMs = ElapsedMs(totalStart);
+            PerfTrace.Duration("focus_restore.total", totalStart,
+                (reason ?? "?") + " path=" + (path ?? "?") + " final=" + finalOk);
+
+            if (totalMs < 50.0 && pass1Ms < 50.0 && attachMs < 50.0 && pass2Ms < 50.0
+                && describeMs < 50.0 && finalOk && !usedPass2)
+                return;
+
+            LogManager.Log("[FocusProbe] reason=" + (reason ?? "?")
+                + " path=" + (path ?? "?")
+                + " total=" + FormatMs(totalMs) + "ms"
+                + " pass1=" + FormatMs(pass1Ms) + "ms"
+                + " attach=" + FormatMs(attachMs) + "ms"
+                + " pass2=" + FormatMs(pass2Ms) + "ms"
+                + " describe=" + FormatMs(describeMs) + "ms"
+                + " final=" + finalOk);
+        }
+
+        private static double ElapsedMs(long startTimestamp)
+        {
+            return (Stopwatch.GetTimestamp() - startTimestamp) * 1000.0 / Stopwatch.Frequency;
+        }
+
+        private static string FormatMs(double ms)
+        {
+            return ms.ToString("0.0", CultureInfo.InvariantCulture);
         }
 
         /// <summary>

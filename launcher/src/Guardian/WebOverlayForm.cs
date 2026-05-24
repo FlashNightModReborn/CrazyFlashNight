@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -2977,17 +2978,57 @@ namespace CF7Launcher.Guardian
 
         private void DoForceIdleSequence(string closingPanelName)
         {
-            PerfTrace.Mark("webOverlay.idle_sequence", _useNativeHud ? "full" : "soft");
+            string mode = _useNativeHud ? "full" : "soft";
+            string panelTag = closingPanelName ?? _activePanel ?? "?";
+            long idleStart = Stopwatch.GetTimestamp();
+            PerfTrace.Mark("webOverlay.idle_sequence", mode + " panel=" + panelTag);
             _panelMode = false;
 
             // Phase 4 收尾：useNativeHud=true 时所有常驻 HUD 已迁到 C# widget
             // (Notch/Toast/Currency/Combo/QuestNotice/SafeExitPanel/TopRightTools/JukeboxTitlebar/MapHud)，
             // 整个 SW_HIDE WebView2 + TrySuspendAsync 安全 → 拿回 ~15pp DWM α 地板成本。
             // useNativeHud=false 仍走 SoftIdleRestore（保留 web HUD 显示）。
-            if (_useNativeHud)
-                DoFullIdleSuspend(closingPanelName);
-            else
-                DoSoftIdleRestore(closingPanelName);
+            try
+            {
+                if (_useNativeHud)
+                    DoFullIdleSuspend(closingPanelName);
+                else
+                    DoSoftIdleRestore(closingPanelName);
+            }
+            finally
+            {
+                LogIdleTotal(mode, panelTag, idleStart);
+            }
+        }
+
+        private static void LogIdleStepDuration(string step, string panelTag, long startTimestamp, double slowThresholdMs)
+        {
+            double ms = ElapsedMs(startTimestamp);
+            PerfTrace.Duration("webOverlay.idle." + step, startTimestamp, "panel=" + (panelTag ?? "?"));
+            if (ms >= slowThresholdMs)
+            {
+                LogManager.Log("[IdleProbe] " + step + " " + FormatMs(ms) + "ms panel=" + (panelTag ?? "?"));
+            }
+        }
+
+        private static void LogIdleTotal(string mode, string panelTag, long startTimestamp)
+        {
+            double ms = ElapsedMs(startTimestamp);
+            PerfTrace.Duration("webOverlay.idle_sequence.total", startTimestamp,
+                mode + " panel=" + (panelTag ?? "?"));
+            LogManager.Log("[IdleProbe] done mode=" + mode
+                + " panel=" + (panelTag ?? "?")
+                + " total=" + FormatMs(ms) + "ms");
+        }
+
+        private static double ElapsedMs(long startTimestamp)
+        {
+            return (Stopwatch.GetTimestamp() - startTimestamp) * 1000.0 / Stopwatch.Frequency;
+        }
+
+        private static string FormatMs(double ms)
+        {
+            return ms.ToString("0.0", CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -2997,18 +3038,32 @@ namespace CF7Launcher.Guardian
         /// </summary>
         private void DoFullIdleSuspend(string closingPanelName)
         {
+            string panelTag = closingPanelName ?? _activePanel ?? "?";
+            long stepStart;
+
             // 1) 停所有 web-side timer（_cursorTimer 例外，见 SuspendWebTimers 注释）
+            stepStart = Stopwatch.GetTimestamp();
+            PerfTrace.Mark("webOverlay.idle.full.suspend_timers.start", panelTag);
             try { SuspendWebTimers(); } catch (Exception ex) { LogManager.Log("[Panel] SuspendWebTimers failed: " + ex.Message); }
+            LogIdleStepDuration("full.suspend_timers", panelTag, stepStart, 25.0);
 
             // 2) HandleUiData 进入冻结模式（仅缓存到 snapshot，不 ExecScript）
+            stepStart = Stopwatch.GetTimestamp();
+            PerfTrace.Mark("webOverlay.idle.full.freeze_ui_data.start", panelTag);
             _frozenForIdle = true;
+            LogIdleStepDuration("full.freeze_ui_data", panelTag, stepStart, 25.0);
 
             // 3) SW_HIDE
+            stepStart = Stopwatch.GetTimestamp();
+            PerfTrace.Mark("webOverlay.idle.full.sw_hide.start", panelTag);
             try { ShowWindow(this.Handle, SW_HIDE); } catch { }
+            LogIdleStepDuration("full.sw_hide", panelTag, stepStart, 25.0);
 
             // 4) 恢复 EX_STYLE：加回 WS_EX_LAYERED + WS_EX_TRANSPARENT + WS_EX_NOACTIVATE
             // NOACTIVATE 必需补回——ResumeForPanel 当 _panelTakeForeground=true 时已剥；CreateParams 永挂
             // NOACTIVATE 的事实让开关 false 路径下这行变成幂等 no-op，开关 true 路径下必需。
+            stepStart = Stopwatch.GetTimestamp();
+            PerfTrace.Mark("webOverlay.idle.full.ex_style.start", panelTag);
             try
             {
                 int ex = GetWindowLong(this.Handle, GWL_EXSTYLE);
@@ -3017,18 +3072,25 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[Panel] EX_STYLE idle-full new=0x" + newEx.ToString("X"));
             }
             catch (Exception ex) { LogManager.Log("[Panel] DoFullIdleSuspend SetWindowLong failed: " + ex.Message); }
+            LogIdleStepDuration("full.ex_style", panelTag, stepStart, 25.0);
 
             // 5) HWND_NOTOPMOST 防御：意外被唤醒也不浮到 NotchOverlay/HitNumber 之上
+            stepStart = Stopwatch.GetTimestamp();
+            PerfTrace.Mark("webOverlay.idle.full.notopmost.start", panelTag);
             try
             {
                 SetWindowPos(this.Handle, HWND_NOTOPMOST, 0, 0, 0, 0,
                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
             }
             catch { }
+            LogIdleStepDuration("full.notopmost", panelTag, stepStart, 25.0);
 
             // 6) 恢复 TransparencyKey + transparent BG
+            stepStart = Stopwatch.GetTimestamp();
+            PerfTrace.Mark("webOverlay.idle.full.transparency.start", panelTag);
             try { this.TransparencyKey = TRANSPARENT_COLOR; } catch { }
             try { if (_webView != null) _webView.DefaultBackgroundColor = Color.Transparent; } catch { }
+            LogIdleStepDuration("full.transparency", panelTag, stepStart, 25.0);
 
             // 7) 不再调用 TrySuspendAsync：实测 WebView2 从 suspend 恢复后可能保留 hidden
             // 小视口，导致 panel 只剩黑底。SW_HIDE + timer freeze 已足够移除 idle 合成成本。
@@ -3038,9 +3100,11 @@ namespace CF7Launcher.Guardian
             //    走 _flashFocusRestorer 统一 primitive：AttachThreadInput 兜底 + verify + [FocusRestore] 日志。
             if (_panelTakeForeground && _flashFocusRestorer != null)
             {
-                string panelTag = closingPanelName ?? _activePanel ?? "?";
+                stepStart = Stopwatch.GetTimestamp();
+                PerfTrace.Mark("webOverlay.idle.full.restore_focus.start", panelTag);
                 try { _flashFocusRestorer("panel_close:idle:" + panelTag); }
                 catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground throw: " + ex.Message); }
+                LogIdleStepDuration("full.restore_focus", panelTag, stepStart, 25.0);
             }
         }
 
@@ -3050,9 +3114,14 @@ namespace CF7Launcher.Guardian
         /// </summary>
         private void DoSoftIdleRestore(string closingPanelName)
         {
+            string panelTag = closingPanelName ?? _activePanel ?? "?";
+            long stepStart;
+
             // 恢复 EX_STYLE：加回 WS_EX_LAYERED + WS_EX_TRANSPARENT + WS_EX_NOACTIVATE
             // 注意此路径**没有 SW_HIDE**——WebOverlay 仍可见但回到 click-through，Flash 必须重新前台
             // 否则 WASD 走 WebOverlay 不可见 HWND 黑洞。
+            stepStart = Stopwatch.GetTimestamp();
+            PerfTrace.Mark("webOverlay.idle.soft.ex_style.start", panelTag);
             try
             {
                 int ex = GetWindowLong(this.Handle, GWL_EXSTYLE);
@@ -3061,26 +3130,38 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[Panel] EX_STYLE idle-soft new=0x" + newEx.ToString("X"));
             }
             catch (Exception ex) { LogManager.Log("[Panel] DoSoftIdleRestore SetWindowLong failed: " + ex.Message); }
+            LogIdleStepDuration("soft.ex_style", panelTag, stepStart, 25.0);
 
+            stepStart = Stopwatch.GetTimestamp();
+            PerfTrace.Mark("webOverlay.idle.soft.transparency.start", panelTag);
             try { this.TransparencyKey = TRANSPARENT_COLOR; } catch { }
             try { if (_webView != null) _webView.DefaultBackgroundColor = Color.Transparent; } catch { }
+            LogIdleStepDuration("soft.transparency", panelTag, stepStart, 25.0);
 
+            stepStart = Stopwatch.GetTimestamp();
+            PerfTrace.Mark("webOverlay.idle.soft.z_order.start", panelTag);
             try
             {
                 SetWindowPos(this.Handle, HWND_TOP, 0, 0, 0, 0,
                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
             }
             catch { }
+            LogIdleStepDuration("soft.z_order", panelTag, stepStart, 25.0);
 
+            stepStart = Stopwatch.GetTimestamp();
+            PerfTrace.Mark("webOverlay.idle.soft.sync_position.start", panelTag);
             try { ScheduleSyncPosition("panel_close"); } catch { }
+            LogIdleStepDuration("soft.sync_position", panelTag, stepStart, 25.0);
 
             // Flash 回前台：useNativeHud=false 路径必须，因为 WebOverlay 仍可见无 SW_HIDE。
             // 走 _flashFocusRestorer 统一 primitive。
             if (_panelTakeForeground && _flashFocusRestorer != null)
             {
-                string panelTag = closingPanelName ?? _activePanel ?? "?";
+                stepStart = Stopwatch.GetTimestamp();
+                PerfTrace.Mark("webOverlay.idle.soft.restore_focus.start", panelTag);
                 try { _flashFocusRestorer("panel_close:soft:" + panelTag); }
                 catch (Exception ex) { LogManager.Log("[Panel] restore-flash-foreground (soft) throw: " + ex.Message); }
+                LogIdleStepDuration("soft.restore_focus", panelTag, stepStart, 25.0);
             }
         }
 
