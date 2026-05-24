@@ -846,27 +846,63 @@ namespace CF7Launcher.Guardian
             RunOnUi(delegate { DoPerformReveal(); });
         }
 
-        /// <summary>真正的 reveal 副作用: readyWiring + BootstrapPanel 隐藏 + FlashHostPanel 显示 + hotkey guard 启动.</summary>
+        /// <summary>真正的 reveal 副作用: readyWiring + BootstrapPanel 隐藏 + FlashHostPanel 显示 + hotkey guard 启动.
+        /// A.1 (2026-05-24): 每段 PerfTrace.Scope 包裹 + duration 日志, 用于定位 boot 期 UI 冻 7s 的最贵段. 只观测不改行为.</summary>
         private void DoPerformReveal()
         {
-            try { if (_readyWiring != null) _readyWiring(); }
-            catch (Exception ex) { LogManager.Log("[LaunchFlow] readyWiring error: " + ex.Message); }
-            // Phase A Step A4: panel swap 替代原 Show/Hide 双 Form 切换
-            try
+            long revealStart = System.Diagnostics.Stopwatch.GetTimestamp();
+            using (PerfTrace.Scope("reveal.ready_wiring"))
             {
-                if (_form != null)
-                {
-                    if (_form.BootstrapPanel != null) _form.BootstrapPanel.SetPanelVisible(false);
-                    if (_form.FlashHostPanel != null) _form.FlashHostPanel.Visible = true;
-                    _form.Activate();
-                }
+                long t = System.Diagnostics.Stopwatch.GetTimestamp();
+                try { if (_readyWiring != null) _readyWiring(); }
+                catch (Exception ex) { LogManager.Log("[LaunchFlow] readyWiring error: " + ex.Message); }
+                LogManager.Log("[RevealProbe] ready_wiring " + ElapsedMs(t).ToString("0.0") + "ms");
             }
-            catch (Exception ex) { LogManager.Log("[LaunchFlow] panel swap error: " + ex.Message); }
-            try { CF7Launcher.Tasks.AudioTask.ReleaseBootstrapBgmGate(); }
-            catch (Exception ex) { LogManager.Log("[LaunchFlow] release bootstrap BGM gate error: " + ex.Message); }
-            try { if (_hotkeyGuardSpawn != null) _hotkeyGuardSpawn(); }
-            catch (Exception ex) { LogManager.Log("[LaunchFlow] hotkeyGuardSpawn error: " + ex.Message); }
+            // Phase A Step A4: panel swap 替代原 Show/Hide 双 Form 切换
+            using (PerfTrace.Scope("reveal.panel_swap"))
+            {
+                long t = System.Diagnostics.Stopwatch.GetTimestamp();
+                try
+                {
+                    if (_form != null)
+                    {
+                        long tBoot = System.Diagnostics.Stopwatch.GetTimestamp();
+                        if (_form.BootstrapPanel != null) _form.BootstrapPanel.SetPanelVisible(false);
+                        LogManager.Log("[RevealProbe] panel_swap.bootstrap_hide " + ElapsedMs(tBoot).ToString("0.0") + "ms");
+
+                        long tFlash = System.Diagnostics.Stopwatch.GetTimestamp();
+                        if (_form.FlashHostPanel != null) _form.FlashHostPanel.Visible = true;
+                        LogManager.Log("[RevealProbe] panel_swap.flash_show " + ElapsedMs(tFlash).ToString("0.0") + "ms");
+
+                        long tAct = System.Diagnostics.Stopwatch.GetTimestamp();
+                        _form.Activate();
+                        LogManager.Log("[RevealProbe] panel_swap.activate " + ElapsedMs(tAct).ToString("0.0") + "ms");
+                    }
+                }
+                catch (Exception ex) { LogManager.Log("[LaunchFlow] panel swap error: " + ex.Message); }
+                LogManager.Log("[RevealProbe] panel_swap.total " + ElapsedMs(t).ToString("0.0") + "ms");
+            }
+            using (PerfTrace.Scope("reveal.release_bgm"))
+            {
+                long t = System.Diagnostics.Stopwatch.GetTimestamp();
+                try { CF7Launcher.Tasks.AudioTask.ReleaseBootstrapBgmGate(); }
+                catch (Exception ex) { LogManager.Log("[LaunchFlow] release bootstrap BGM gate error: " + ex.Message); }
+                LogManager.Log("[RevealProbe] release_bgm " + ElapsedMs(t).ToString("0.0") + "ms");
+            }
+            using (PerfTrace.Scope("reveal.hotkey_guard"))
+            {
+                long t = System.Diagnostics.Stopwatch.GetTimestamp();
+                try { if (_hotkeyGuardSpawn != null) _hotkeyGuardSpawn(); }
+                catch (Exception ex) { LogManager.Log("[LaunchFlow] hotkeyGuardSpawn error: " + ex.Message); }
+                LogManager.Log("[RevealProbe] hotkey_guard " + ElapsedMs(t).ToString("0.0") + "ms");
+            }
+            LogManager.Log("[RevealProbe] DoPerformReveal.total " + ElapsedMs(revealStart).ToString("0.0") + "ms");
             PerfTrace.Mark("launch.reveal_done");
+        }
+
+        private static double ElapsedMs(long startTimestamp)
+        {
+            return (System.Diagnostics.Stopwatch.GetTimestamp() - startTimestamp) * 1000.0 / System.Diagnostics.Stopwatch.Frequency;
         }
 
         // ==================== Phase 2b-ext: Reveal signal receivers ====================

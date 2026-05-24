@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using CF7Launcher.Diagnostic;
 using CF7Launcher.Guardian.Hud;
 
 namespace CF7Launcher.Guardian
@@ -425,6 +426,9 @@ namespace CF7Launcher.Guardian
             PerfTrace.Duration("panel.open", perfStart,
                 name + " rect=" + panelRect.Width + "x" + panelRect.Height);
             PerfTrace.FlushCounters("panel_open:" + name);
+            // B0 诊断: panel-open 后立即 dump layered HWND 结构, 捕获 visible_layered 峰值时刻
+            if (DiagnosticsBootstrap.LayerAuditEnabled)
+                LayerAuditDump.DumpToLog("panel-open:" + name);
         }
 
         private Control GetFlashPanelOrNull()
@@ -557,6 +561,9 @@ namespace CF7Launcher.Guardian
             LogManager.Log("[PanelHost] closed: " + (closingName ?? "<null>"));
             PerfTrace.Duration("panel.close", perfStart, closingName ?? "<null>");
             PerfTrace.FlushCounters("panel_close:" + (closingName ?? "<null>"));
+            // B0 诊断: panel-close 后立即 dump, 对照 panel-open 看 layered_visible 是否真的回落
+            if (DiagnosticsBootstrap.LayerAuditEnabled)
+                LayerAuditDump.DumpToLog("panel-close:" + (closingName ?? "<null>"));
         }
 
         private void ReTopOverlay(Form f)

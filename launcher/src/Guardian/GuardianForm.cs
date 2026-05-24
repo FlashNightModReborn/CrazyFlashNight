@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using Microsoft.Win32;
 using CF7Launcher.Config;
+using CF7Launcher.Diagnostic;
 using CF7Launcher.Render;
 
 namespace CF7Launcher.Guardian
@@ -120,6 +121,9 @@ namespace CF7Launcher.Guardian
         // 前台看门狗：检测"焦点真空"并自动回收 Flash 前台（详见 SetupForegroundWatchdog）。
         private System.Windows.Forms.Timer _foregroundWatchdog;
         private int _lastWatchdogActionTick;
+        private volatile int _lastWatchdogTickTick;
+        private long _guardianHwndForProbe;
+        private UiFreezeProbe _uiFreezeProbe;
         // 焦点真空连续命中的 tick 计数：要求 ≥2 次（≈800ms）才动作，规避用户焦点
         // 交接瞬间穿过 GetForegroundWindow()==NULL 的竞态（详见 OnForegroundWatchdogTick）。
         private int _vacuumStreak;
@@ -182,7 +186,11 @@ namespace CF7Launcher.Guardian
             LogManager.Init(this, _logBox);
         }
 
-        public void BindWindowManager(WindowManager wm) { _windowManager = wm; }
+        public void BindWindowManager(WindowManager wm)
+        {
+            _windowManager = wm;
+            StartUiFreezeProbe();
+        }
 
         /// <summary>应用激活状态的权威源。Program.cs 注入给 PerfDecisionEngine。</summary>
         public AppActivationState ActivationState { get { return _activationState; } }
@@ -191,6 +199,28 @@ namespace CF7Launcher.Guardian
         public IntPtr GetFlashHwnd()
         {
             return (_windowManager != null) ? _windowManager.FlashHwnd : IntPtr.Zero;
+        }
+
+        private void StartUiFreezeProbe()
+        {
+            if (_uiFreezeProbe != null || _windowManager == null) return;
+
+            _uiFreezeProbe = new UiFreezeProbe(
+                delegate { return new IntPtr(Interlocked.Read(ref _guardianHwndForProbe)); },
+                delegate { return (_windowManager != null) ? _windowManager.FlashHwnd : IntPtr.Zero; },
+                delegate { return _lastWatchdogTickTick; },
+                delegate { return _sessionLocked || _exitStarted != 0; });
+            _uiFreezeProbe.Start();
+        }
+
+        private void StopUiFreezeProbe()
+        {
+            UiFreezeProbe probe = _uiFreezeProbe;
+            _uiFreezeProbe = null;
+            if (probe != null)
+            {
+                try { probe.Dispose(); } catch { }
+            }
         }
 
         /// <summary>
@@ -576,6 +606,7 @@ namespace CF7Launcher.Guardian
 
         private void DoUnregisterHotkeys()
         {
+            StopUiFreezeProbe();
             // 前台看门狗与热键同属输入/前台子系统，一并拆除（独立于 _hotkeysRegistered）。
             if (_foregroundWatchdog != null)
             {
@@ -706,6 +737,10 @@ namespace CF7Launcher.Guardian
 
         private void OnForegroundWatchdogTick(object sender, EventArgs e)
         {
+            _lastWatchdogTickTick = Environment.TickCount;
+            if (this.IsHandleCreated)
+                Interlocked.Exchange(ref _guardianHwndForProbe, this.Handle.ToInt64());
+
             // System.Windows.Forms.Timer.Tick 抛异常会冒到消息循环——本文件其余热键
             // 回调均包 try/catch，此处保持一致（RestoreFlashInputFocus 文档承诺不抛，
             // 但 IsReadyForHotkey 等仍可能在边界态抛）。
@@ -1496,9 +1531,13 @@ namespace CF7Launcher.Guardian
                 try { state = _launchFlow.CurrentState; } catch { }
             }
 
+            // 闪退诊断: 把 CloseReason 写进所有分支, 区分 X-按钮 / Alt+F4 / Application.Exit / WM_QUERYENDSESSION / TaskKill
+            string closeReason = e.CloseReason.ToString();
+
             // Ready / Idle / Error → legacy 硬退出路径
             if (state == "Ready" || state == "Idle" || state == "Error")
             {
+                LogManager.Log("[Guardian] OnFormClosing state=" + state + " reason=" + closeReason + " → DoExit (legacy hard exit)");
                 _closeAlreadyInProgress = true;
                 System.Threading.Interlocked.Exchange(ref _closeTerminated, 1);
                 e.Cancel = false;
@@ -1510,12 +1549,13 @@ namespace CF7Launcher.Guardian
             // 若已被其他路径（重入）终结，阻止 form 默认关闭即可
             if (System.Threading.Interlocked.CompareExchange(ref _closeTerminated, 0, 0) != 0)
             {
+                LogManager.Log("[Guardian] OnFormClosing state=" + state + " reason=" + closeReason + " → already terminating, suppress");
                 e.Cancel = true;
                 return;
             }
 
             e.Cancel = true;
-            LogManager.Log("[Guardian] OnFormClosing state=" + state + " → async cancel + wait terminal");
+            LogManager.Log("[Guardian] OnFormClosing state=" + state + " reason=" + closeReason + " → async cancel + wait terminal");
 
             // 订阅 OnStateChanged 等待 Idle/Error (close watcher 不受 silentAtEmit 过滤, 无论静默与否都要反应终态)
             _closeStateWatcher = delegate(string nextState, string msg, bool silentAtEmit)
@@ -1675,6 +1715,7 @@ namespace CF7Launcher.Guardian
                     _viewportLongSettleTimer = null;
                 }
                 StopGpuRenderer();
+                StopUiFreezeProbe();
                 CleanupTrayIcon();
             }
             base.Dispose(disposing);

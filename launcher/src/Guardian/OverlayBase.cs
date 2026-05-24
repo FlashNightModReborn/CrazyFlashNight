@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using CF7Launcher.Diagnostic;
 
 namespace CF7Launcher.Guardian
 {
@@ -346,8 +347,11 @@ namespace CF7Launcher.Guardian
                     AlphaFormat = AC_SRC_ALPHA
                 };
 
+                // 诊断探针: UlwCommitMonitor 关闭时 StartTick() 返回 0, RecordCommit() 短路, 零开销。
+                long ulwStart = UlwCommitMonitor.StartTick();
                 UpdateLayeredWindow(handle, hdcScreen,
                     ref ptDst, ref sz, hdcMem, ref ptSrc, 0, ref blend, ULW_ALPHA);
+                UlwCommitMonitor.RecordCommit(ulwStart);
             }
             finally
             {

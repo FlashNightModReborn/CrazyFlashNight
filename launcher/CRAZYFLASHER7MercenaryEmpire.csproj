@@ -173,6 +173,11 @@
     <Compile Include="src\Save\RepairPolicy.cs" />
     <Compile Include="src\Save\SaveAutoRepairService.cs" />
     <Compile Include="src\Diagnostic\DiagnosticPackager.cs" />
+    <Compile Include="src\Diagnostic\DiagnosticsBootstrap.cs" />
+    <Compile Include="src\Diagnostic\LayerAuditDump.cs" />
+    <Compile Include="src\Diagnostic\UlwCommitMonitor.cs" />
+    <Compile Include="src\Diagnostic\DwmEtwMonitor.cs" />
+    <Compile Include="src\Diagnostic\UiFreezeProbe.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.manifest" />

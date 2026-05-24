@@ -9,6 +9,7 @@ using System.Threading;
 using System.Windows.Forms;
 using CF7Launcher.Bus;
 using CF7Launcher.Config;
+using CF7Launcher.Diagnostic;
 using CF7Launcher.Guardian;
 using CF7Launcher.Data;
 using CF7Launcher.Tasks;
@@ -183,6 +184,17 @@ class Program
             LogManager.Log("[PerfTrace] writing " + PerfTrace.TracePath);
 
         LogManager.Log("[Guardian] Project root: " + projectRoot);
+
+        // ====== 渲染合成层诊断 (config.toml diag* / env CF7_DIAG_* opt-in, 默认 OFF) ======
+        // diagLayerAudit           启动 + ready + shutdown 三次 dump 所有 top-level HWND + WS_EX 标志
+        // diagUlwMonitor           持续监控 OverlayBase.CommitBitmap 频率 / p50 / p95 / p99 / max
+        // diagEtwDwm               订阅 Microsoft-Windows-Dwm-Core ETW provider (需 admin)
+        // diagReportIntervalSec    ULW + ETW 报告周期, 默认 5s
+        DiagnosticsBootstrap.Init(
+            config.DiagLayerAudit,
+            config.DiagUlwMonitor,
+            config.DiagEtwDwm,
+            config.DiagReportIntervalSec);
 
         // 开发用 Ctrl+G GPU 探针：仅 config.devGpuProbeHotkey=true 时启用。玩家版默认不注入。
         if (config.DevGpuProbeHotkey)
@@ -795,6 +807,7 @@ class Program
 
             // 清理：每步 try-catch 保护，防止单点异常跳过后续步骤
             LogManager.Log("[Guardian] Bus-only shutting down...");
+            try { DiagnosticsBootstrap.Shutdown(); } catch { }
             try { frameTask.Stop(); } catch { }
             try { socketServer.SetFrameHandler(null); } catch { }
             try { socketServer.SetNotchHandler(null); } catch { }
@@ -895,13 +908,51 @@ class Program
             /* readyWiring */ delegate
             {
                 // Phase 1 全局硬依赖 WebView2: webOverlay 永不为 null
-                if (toastOverlay != null) toastOverlay.SetReady();
-                webOverlay.SetReady();
-                if (inputShield != null) inputShield.SetReady();
-                hnOverlay.SetReady();
-                if (nativeHud != null) nativeHud.SetReady();
+                // A.1 (2026-05-24): 每个 SetReady 加 stopwatch, 定位 boot UI 冻最贵段
+                long tOverall = System.Diagnostics.Stopwatch.GetTimestamp();
+                if (toastOverlay != null)
+                {
+                    long t = System.Diagnostics.Stopwatch.GetTimestamp();
+                    using (CF7Launcher.Guardian.PerfTrace.Scope("reveal.setready.toast"))
+                        toastOverlay.SetReady();
+                    LogManager.Log("[RevealProbe] setready.toast " + ((System.Diagnostics.Stopwatch.GetTimestamp() - t) * 1000.0 / System.Diagnostics.Stopwatch.Frequency).ToString("0.0") + "ms");
+                }
+                {
+                    long t = System.Diagnostics.Stopwatch.GetTimestamp();
+                    using (CF7Launcher.Guardian.PerfTrace.Scope("reveal.setready.web"))
+                        webOverlay.SetReady();
+                    LogManager.Log("[RevealProbe] setready.web " + ((System.Diagnostics.Stopwatch.GetTimestamp() - t) * 1000.0 / System.Diagnostics.Stopwatch.Frequency).ToString("0.0") + "ms");
+                }
+                if (inputShield != null)
+                {
+                    long t = System.Diagnostics.Stopwatch.GetTimestamp();
+                    using (CF7Launcher.Guardian.PerfTrace.Scope("reveal.setready.input_shield"))
+                        inputShield.SetReady();
+                    LogManager.Log("[RevealProbe] setready.input_shield " + ((System.Diagnostics.Stopwatch.GetTimestamp() - t) * 1000.0 / System.Diagnostics.Stopwatch.Frequency).ToString("0.0") + "ms");
+                }
+                {
+                    long t = System.Diagnostics.Stopwatch.GetTimestamp();
+                    using (CF7Launcher.Guardian.PerfTrace.Scope("reveal.setready.hitnum"))
+                        hnOverlay.SetReady();
+                    LogManager.Log("[RevealProbe] setready.hitnum " + ((System.Diagnostics.Stopwatch.GetTimestamp() - t) * 1000.0 / System.Diagnostics.Stopwatch.Frequency).ToString("0.0") + "ms");
+                }
+                if (nativeHud != null)
+                {
+                    long t = System.Diagnostics.Stopwatch.GetTimestamp();
+                    using (CF7Launcher.Guardian.PerfTrace.Scope("reveal.setready.native_hud"))
+                        nativeHud.SetReady();
+                    LogManager.Log("[RevealProbe] setready.native_hud " + ((System.Diagnostics.Stopwatch.GetTimestamp() - t) * 1000.0 / System.Diagnostics.Stopwatch.Frequency).ToString("0.0") + "ms");
+                }
                 // 11b-β: Ready 才让托盘可见
-                form.ShowTrayIcon();
+                {
+                    long t = System.Diagnostics.Stopwatch.GetTimestamp();
+                    using (CF7Launcher.Guardian.PerfTrace.Scope("reveal.show_tray"))
+                        form.ShowTrayIcon();
+                    LogManager.Log("[RevealProbe] show_tray " + ((System.Diagnostics.Stopwatch.GetTimestamp() - t) * 1000.0 / System.Diagnostics.Stopwatch.Frequency).ToString("0.0") + "ms");
+                }
+                // 渲染合成层诊断: overlay 全部 ready 后再 dump 一次, 这一份才是稳态 baseline
+                DiagnosticsBootstrap.ReadySnapshot();
+                LogManager.Log("[RevealProbe] readyWiring.total " + ((System.Diagnostics.Stopwatch.GetTimestamp() - tOverall) * 1000.0 / System.Diagnostics.Stopwatch.Frequency).ToString("0.0") + "ms");
             },
             /* hotkeyGuardSpawn */ null,
             saveCtx);
@@ -956,6 +1007,7 @@ class Program
         LogManager.Log("[Guardian] Shutting down...");
         PerfTrace.Mark("guardian.shutdown_start");
         PerfTrace.FlushCounters("shutdown_start");
+        try { DiagnosticsBootstrap.Shutdown(); } catch { }
         try { frameTask.Stop(); } catch { }
         try { socketServer.SetFrameHandler(null); } catch { }
         try { socketServer.SetNotchHandler(null); } catch { }

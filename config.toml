@@ -55,3 +55,47 @@ useNativeHud = true
 # false = 完全等价旧行为（NOACTIVATE 永挂、首次点击只切焦点）。
 # env: CF7_PANEL_TAKE_FG=0 一键回滚。详见 launcher/README.md「焦点不变量」段。
 # webOverlayPanelTakeForeground = true
+
+# ============================================================
+# 渲染合成层诊断（B0 overlay 合并验证用，默认全部 OFF，玩家版保持 false）
+# ============================================================
+# 全部默认 false。建议成对开 layerAudit + ulwMonitor 收集 PR 前/后基线；
+# etwDwm 需 admin，仅作 churn 频次交叉验证。
+#
+# 输出统一前缀 [LayerAudit] / [UlwMonitor] / [EtwMpo] / [Diag]，写入 logs/launcher.log。
+# env 覆盖：CF7_DIAG_LAYER_AUDIT / CF7_DIAG_ULW_MONITOR / CF7_DIAG_ETW_DWM / CF7_DIAG_INTERVAL_SEC
+
+# 结构性快照：启动 + ready + shutdown 三次 dump 当前进程全部 top-level HWND
+# 及其 WS_EX_LAYERED / TRANSPARENT / TOOLWINDOW 等标志。无 admin。
+# 用途：B0 合并前后对比 layered top-level 数量是否真的下降（deterministic 结构指标）。
+diagLayerAudit = false
+
+# 持续监控 OverlayBase.CommitBitmap 调用：每 interval 秒报一次 commit 频率 +
+# 单次 UpdateLayeredWindow 耗时分布 (p50/p95/p99/max)。无 admin。
+# 用途：p99 是 "DWM 让我们等多久" 的进程内代理；高配机平均压不出 MPO 病，
+# 但 p99 仍能看出 churn 尖刺。B0 后频率应降、p99 应平。
+diagUlwMonitor = false
+
+# 订阅 Microsoft-Windows-Dwm-Core ETW provider 并按秒计数事件总量。**需 admin**，
+# 非 admin 启动会 log warn 并静默 skip，不影响正常运行。
+# 用途：DWM 内部活动频次的客观指标，硬件无关，最直接反映合成器繁忙程度。
+diagEtwDwm = false
+
+# 报告周期（秒），范围 [1, 60]。同时影响 UlwMonitor 与 EtwMpo 两路。
+diagReportIntervalSec = 5
+
+# ============================================================
+# 诊断日志分层原则（说明用，无 toml 开关）
+# ============================================================
+# 详见 docs/诊断设施与首轮基线-2026-05-24.md §1。新增诊断日志前先归层：
+#
+# Tier 1 永久"账本"（事件 / 阈值触发，体量极低，绝不开关化）：
+#   [Activation] / [PerfGate] / [FgWatchdog] / [FocusRestore]
+#   ——偶发卡顿复盘的唯一数据源。"关 = 拆黑匣子"，禁。
+#
+# Tier 2 永久"探针"（后台轮询 / 启动期一次性，默认 ON + env 急停）：
+#   [UIFreezeProbe]：CF7_DIAG_FOCUS_PROBE=0 关闭后台线程（疑似探针自身导致问题时用）
+#   [RevealProbe]：boot 期 ~10 行，无急停（成本可忽略）
+#
+# Tier 3 基线测量器（高频连续 / 需 admin，默认 OFF，按需开）：
+#   即上方 §59-86 的 diagLayerAudit / diagUlwMonitor / diagEtwDwm。

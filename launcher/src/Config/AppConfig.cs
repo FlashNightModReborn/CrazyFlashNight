@@ -35,6 +35,14 @@ namespace CF7Launcher.Config
         /// 修首次点击失效的"卡手"问题；env CF7_PANEL_TAKE_FG=0 一键回滚。
         /// </summary>
         public bool WebOverlayPanelTakeForeground { get; private set; }
+        /// <summary>渲染合成层诊断: 启动/ready/shutdown 三次 dump 顶级 HWND 结构快照 (无 admin)。默认 false。</summary>
+        public bool DiagLayerAudit { get; private set; }
+        /// <summary>渲染合成层诊断: 持续监控 OverlayBase ULW commit 频率 + p50/p95/p99 延迟 (无 admin)。默认 false。</summary>
+        public bool DiagUlwMonitor { get; private set; }
+        /// <summary>渲染合成层诊断: 订阅 Microsoft-Windows-Dwm-Core ETW provider 计数事件 (**需 admin**)。默认 false。</summary>
+        public bool DiagEtwDwm { get; private set; }
+        /// <summary>诊断报告周期 (秒), 影响 UlwMonitor + EtwMpo 两路。范围 [1, 60], 默认 5。</summary>
+        public int DiagReportIntervalSec { get; private set; }
         /// <summary>
         /// Desktop 顶层 ULW cursor（默认 ON，2026-05 推 default-on）。
         /// ON = DesktopCursorOverlay：desktop 顶层 ULW + 跨 anchor 自由 + 单一 visibility 状态机
@@ -66,6 +74,10 @@ namespace CF7Launcher.Config
             UseNativeHud = false;
             UseDesktopCursorOverlay = true;
             WebOverlayPanelTakeForeground = true;
+            DiagLayerAudit = false;
+            DiagUlwMonitor = false;
+            DiagEtwDwm = false;
+            DiagReportIntervalSec = 5;
 
             string configPath = Path.Combine(projectRoot, "config.toml");
             if (File.Exists(configPath))
@@ -113,6 +125,14 @@ namespace CF7Launcher.Config
                         UseDesktopCursorOverlay = ParseBool(val, true);
                     else if (string.Equals(key, "webOverlayPanelTakeForeground", StringComparison.OrdinalIgnoreCase))
                         WebOverlayPanelTakeForeground = ParseBool(val, true);
+                    else if (string.Equals(key, "diagLayerAudit", StringComparison.OrdinalIgnoreCase))
+                        DiagLayerAudit = ParseBool(val, false);
+                    else if (string.Equals(key, "diagUlwMonitor", StringComparison.OrdinalIgnoreCase))
+                        DiagUlwMonitor = ParseBool(val, false);
+                    else if (string.Equals(key, "diagEtwDwm", StringComparison.OrdinalIgnoreCase))
+                        DiagEtwDwm = ParseBool(val, false);
+                    else if (string.Equals(key, "diagReportIntervalSec", StringComparison.OrdinalIgnoreCase))
+                        DiagReportIntervalSec = ClampInterval(val, 5);
                 }
             }
 
@@ -189,6 +209,33 @@ namespace CF7Launcher.Config
             string panelTakeFg = Environment.GetEnvironmentVariable("CF7_PANEL_TAKE_FG");
             if (!string.IsNullOrEmpty(panelTakeFg))
                 WebOverlayPanelTakeForeground = ParseBoolLike(panelTakeFg, WebOverlayPanelTakeForeground);
+
+            string diagLayerAudit = Environment.GetEnvironmentVariable("CF7_DIAG_LAYER_AUDIT");
+            if (!string.IsNullOrEmpty(diagLayerAudit))
+                DiagLayerAudit = ParseBoolLike(diagLayerAudit, DiagLayerAudit);
+
+            string diagUlwMonitor = Environment.GetEnvironmentVariable("CF7_DIAG_ULW_MONITOR");
+            if (!string.IsNullOrEmpty(diagUlwMonitor))
+                DiagUlwMonitor = ParseBoolLike(diagUlwMonitor, DiagUlwMonitor);
+
+            string diagEtwDwm = Environment.GetEnvironmentVariable("CF7_DIAG_ETW_DWM");
+            if (!string.IsNullOrEmpty(diagEtwDwm))
+                DiagEtwDwm = ParseBoolLike(diagEtwDwm, DiagEtwDwm);
+
+            string diagInterval = Environment.GetEnvironmentVariable("CF7_DIAG_INTERVAL_SEC");
+            if (!string.IsNullOrEmpty(diagInterval))
+                DiagReportIntervalSec = ClampInterval(diagInterval, DiagReportIntervalSec);
+        }
+
+        private static int ClampInterval(string val, int fallback)
+        {
+            if (string.IsNullOrEmpty(val)) return fallback;
+            int parsed;
+            if (!int.TryParse(val.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out parsed))
+                return fallback;
+            if (parsed < 1) return 1;
+            if (parsed > 60) return 60;
+            return parsed;
         }
 
         private static string NormalizeGpuPreference(string val, string fallback)
