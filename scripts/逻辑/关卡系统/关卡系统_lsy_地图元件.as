@@ -69,12 +69,12 @@ _root.地图元件.掉落物转换为物品栏 = function(target:MovieClip) {
         }
         arr = org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine.getInstance().reservoirSample(arr, target.掉落物.length);
         for (i = target.掉落物.length - 1; i > -1; i--) {
-            item = _root.地图元件.掉落物创建物品(target.掉落物[i]);
+            item = _root.地图元件.掉落物创建物品(target.掉落物[i], target.presetName);
             if (item != null)
                 inventory.add(arr[i], item);
         }
     } else if (target.掉落物.名字) {
-        item = _root.地图元件.掉落物创建物品(target.掉落物);
+        item = _root.地图元件.掉落物创建物品(target.掉落物, target.presetName);
         if (item != null)
             inventory.add(random(cap), item);
     }
@@ -83,10 +83,12 @@ _root.地图元件.掉落物转换为物品栏 = function(target:MovieClip) {
     _root.物品UI函数.创建资源箱图标(inventory, target.presetName, target.row, target.col);
 }
 
-_root.地图元件.掉落物创建物品 = function(item) {
+_root.地图元件.掉落物创建物品 = function(item, presetName:String) {
     if (isNaN(item.概率))
         item.概率 = 100;
-    if (item.名字 && _root.成功率(item.概率)) {
+    // PRD + 逆向乘数：和敌人掉落共用 _root.dropPRDEngine 状态表
+    // key 命名空间 "资源箱|<preset>"，与兵种 typeKey 不冲突
+    if (item.名字 && DropLuckRoller.rollDrop("资源箱|" + presetName, item)) {
         if (isNaN(item.最小数量) || isNaN(item.最大数量)) {
             item.最小数量 = item.最大数量 = 1;
         }
