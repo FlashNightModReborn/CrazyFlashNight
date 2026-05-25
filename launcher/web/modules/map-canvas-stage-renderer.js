@@ -25,6 +25,9 @@ var MapCanvasStageRenderer = (function() {
     var RETUNE_MS = 180;            // 频段重调过渡 (旧 @keyframes mapStageRetune)
     var PAGE_ENTER_MS = 220;        // 切页 filter-overlay 淡入 (旧 transition opacity 0.22s)
     var IDLE_FPS = 30;              // 仅环境动画(无交互)时的限帧目标 — 砍 idle 常驻成本
+    var DYNAMIC_DPR_MAX = 1.5;      // ring/fg sparse layers do not need full backdrop DPR
+    var DYNAMIC_DPR_MAX_LOW = 1.25;
+    var DYNAMIC_CLEAR_PAD = 8;      // CSS px guard band for dirty-rect dynamic clears
     var TASK_RING_GAP = 5;          // 任务环套住头像时, 环中线相对头像外缘的间距 (页面单位)
 
     function Renderer(bgCanvas, options) {
@@ -48,6 +51,7 @@ var MapCanvasStageRenderer = (function() {
         this.sharpenPending = {};
         this.sharpenKeySeq = 0;
         this.drawCount = 0;
+        this.dynamicDrawCount = 0;
         this.frameCount = 0;        // RAF 回调累计数 — QA 探测循环是否已停 (map-ui25)
         this.pendingAssets = 0;
         this.missingAssets = [];
@@ -59,6 +63,12 @@ var MapCanvasStageRenderer = (function() {
         this.bakedCache = {};       // 预烤 filter+阴影 的离屏画布缓存 (切页清空)
         this._backdropCanvas = null; // backdrop 整层缓存 (按 页+filter+尺寸 复用)
         this._backdropKey = null;
+        this._staticRenderKey = '';
+        this._dynamicRenderKey = '';
+        this._lastRingClearRect = null;
+        this._lastFgClearRect = null;
+        this._lastDynamicSummary = null;
+        this.dynamicDirty = true;
         this._lastDrawTime = 0;     // idle 限帧用
         this.staticDirty = true;
         this.staticAnimating = false;
@@ -90,6 +100,8 @@ var MapCanvasStageRenderer = (function() {
     Renderer.prototype.setState = function(state) {
         var prev = this.state;
         var t = nowMs();
+        var nextStaticKey = state && state.page ? buildStaticRenderKey(state) : '';
+        var nextDynamicKey = state && state.page ? buildDynamicRenderKey(state) : '';
         state = state || null;
         // setState = 面板重新活跃的合法信号 — 解除 stop() 的封停。
         this.stopped = false;
@@ -106,7 +118,14 @@ var MapCanvasStageRenderer = (function() {
             }
         }
         this.state = state;
-        this.staticDirty = true;
+        if (nextDynamicKey !== this._dynamicRenderKey) {
+            this.dynamicDirty = true;
+            this._dynamicRenderKey = nextDynamicKey;
+        }
+        if (nextStaticKey !== this._staticRenderKey) {
+            this.staticDirty = true;
+            this._staticRenderKey = nextStaticKey;
+        }
         this.ensureLoop();
     };
 
@@ -180,6 +199,7 @@ var MapCanvasStageRenderer = (function() {
             this.staticDirty = false;
         }
         this.renderDynamic(t, m);
+        this.updateDrawSummary(this.state, m);
         return true;
     };
 
@@ -187,6 +207,7 @@ var MapCanvasStageRenderer = (function() {
         var state = this.state;
         var page = state.page;
         var dpr = getDpr();
+        var dynamicDpr = getDynamicDpr(dpr, !!state.lowEffects);
         // 只认画布自身布局尺寸: 面板隐藏时 clientWidth 为 0 → 返回 null → 循环停。
         // 不回退 state.stageWidth (上次 setState 的快照) — 该值在面板隐藏后仍为非 0,
         // 会让隐藏画布的 RAF 循环一直转 (host 驱动关闭后的循环泄漏根因)。
@@ -195,16 +216,37 @@ var MapCanvasStageRenderer = (function() {
         if (cssW <= 0 || cssH <= 0) return null;
         var backW = Math.max(1, Math.round(cssW * dpr));
         var backH = Math.max(1, Math.round(cssH * dpr));
-        if (this.canvas.width !== backW) this.canvas.width = backW;
-        if (this.canvas.height !== backH) this.canvas.height = backH;
-        if (this.fgCanvas.width !== backW) this.fgCanvas.width = backW;
-        if (this.fgCanvas.height !== backH) this.fgCanvas.height = backH;
-        if (this.ringCanvas.width !== backW) this.ringCanvas.width = backW;
-        if (this.ringCanvas.height !== backH) this.ringCanvas.height = backH;
+        var dynW = Math.max(1, Math.round(cssW * dynamicDpr));
+        var dynH = Math.max(1, Math.round(cssH * dynamicDpr));
+        if (this.canvas.width !== backW) {
+            this.canvas.width = backW;
+            this.staticDirty = true;
+        }
+        if (this.canvas.height !== backH) {
+            this.canvas.height = backH;
+            this.staticDirty = true;
+        }
+        if (this.fgCanvas.width !== dynW) {
+            this.fgCanvas.width = dynW;
+            this.dynamicDirty = true;
+        }
+        if (this.fgCanvas.height !== dynH) {
+            this.fgCanvas.height = dynH;
+            this.dynamicDirty = true;
+        }
+        if (this.ringCanvas.width !== dynW) {
+            this.ringCanvas.width = dynW;
+            this.dynamicDirty = true;
+        }
+        if (this.ringCanvas.height !== dynH) {
+            this.ringCanvas.height = dynH;
+            this.dynamicDirty = true;
+        }
         var stageScale = state.stageScale || (cssW / (page.width || 1)) || 1;
         var contentFitScale = state.contentFitScale || 1;
         return {
             dpr: dpr,
+            dynamicDpr: dynamicDpr,
             cssW: cssW,
             cssH: cssH,
             stageScale: stageScale,
@@ -324,10 +366,14 @@ var MapCanvasStageRenderer = (function() {
         var animT = this._reduce ? 0 : t;   // reduced-motion: 冻结循环动画相位
         var ringCtx = this.ringCtx;
         var ctx = this.fgCtx;
+        var ringRect = getTaskRingCssBounds(state, m);
+        var fgRect = getFeedbackCssBounds(state, m);
+        var ringClear = prepareDynamicClear(this, ringCtx, m, ringRect, this._lastRingClearRect);
+        var fgClear = prepareDynamicClear(this, ctx, m, fgRect, this._lastFgClearRect);
 
         // 任务环层 (ring canvas, z=3): 套住头像, 但低于 hotspot/标签 — 不遮"前往选关"卡片
-        ringCtx.setTransform(m.dpr, 0, 0, m.dpr, 0, 0);
-        ringCtx.clearRect(0, 0, m.cssW, m.cssH);
+        ringCtx.setTransform(m.dynamicDpr, 0, 0, m.dynamicDpr, 0, 0);
+        clearDynamicRect(ringCtx, ringClear);
         ringCtx.imageSmoothingEnabled = true;
         ringCtx.save();
         ringCtx.translate(m.offsetX, m.offsetY);
@@ -336,8 +382,8 @@ var MapCanvasStageRenderer = (function() {
         ringCtx.restore();
 
         // 反馈层 (fg canvas, z=6): 标记/提示/未开放提示仍在标签之上 (还原旧 feedback-layer 层序)
-        ctx.setTransform(m.dpr, 0, 0, m.dpr, 0, 0);
-        ctx.clearRect(0, 0, m.cssW, m.cssH);
+        ctx.setTransform(m.dynamicDpr, 0, 0, m.dynamicDpr, 0, 0);
+        clearDynamicRect(ctx, fgClear);
         ctx.imageSmoothingEnabled = true;
         ctx.save();
         ctx.translate(m.offsetX, m.offsetY);
@@ -346,7 +392,142 @@ var MapCanvasStageRenderer = (function() {
         drawTips(ctx, state, animT);
         drawHints(ctx, state, animT);
         ctx.restore();
+
+        this._lastRingClearRect = ringRect ? cloneCssRect(ringRect) : null;
+        this._lastFgClearRect = fgRect ? cloneCssRect(fgRect) : null;
+        this.dynamicDirty = false;
+        this.dynamicDrawCount += 1;
+        this._lastDynamicSummary = {
+            dynamicDpr: m.dynamicDpr,
+            ringClearMode: ringClear.mode,
+            fgClearMode: fgClear.mode,
+            ringClearArea: Math.round((ringClear.rect ? ringClear.rect.w * ringClear.rect.h : 0)),
+            fgClearArea: Math.round((fgClear.rect ? fgClear.rect.w * fgClear.rect.h : 0))
+        };
     };
+
+    function prepareDynamicClear(renderer, ctx, m, currentRect, previousRect) {
+        var force = !!renderer.dynamicDirty;
+        var rect = null;
+        var mode = 'none';
+        if (!ctx) return { mode: mode, rect: null };
+        if (force) {
+            return {
+                mode: 'full',
+                rect: { x: 0, y: 0, w: m.cssW, h: m.cssH }
+            };
+        }
+        rect = unionCssRects(previousRect, currentRect);
+        if (rect) {
+            rect = expandCssRect(rect, DYNAMIC_CLEAR_PAD, m.cssW, m.cssH);
+            mode = 'dirty';
+        }
+        return { mode: mode, rect: rect };
+    }
+
+    function clearDynamicRect(ctx, clear) {
+        if (!clear || !clear.rect) return;
+        ctx.clearRect(clear.rect.x, clear.rect.y, clear.rect.w, clear.rect.h);
+    }
+
+    function getTaskRingCssBounds(state, m) {
+        var rings = state.taskRings || [];
+        var rects = [];
+        var i;
+        var ring;
+        var p;
+        var r;
+        for (i = 0; i < rings.length; i += 1) {
+            ring = rings[i];
+            p = ring && ring.point;
+            if (!p) continue;
+            r = ring.avatarRadius > 0
+                ? (ring.avatarRadius + TASK_RING_GAP + 28)
+                : 58;
+            rects.push(pageCircleToCssRect(p, r, m));
+        }
+        return unionCssRectsList(rects);
+    }
+
+    function getFeedbackCssBounds(state, m) {
+        var rects = [];
+        var markers = state.feedbackMarkers || [];
+        var tips = state.feedbackTips || [];
+        var hints = state.flashHints || [];
+        var i;
+        var item;
+        var p;
+        for (i = 0; i < markers.length; i += 1) {
+            item = markers[i];
+            p = item && item.point;
+            if (!p) continue;
+            rects.push(pageCircleToCssRect(p, item.kind === 'currentLocation' && !state.lowEffects ? 36 : 16, m));
+        }
+        for (i = 0; i < tips.length; i += 1) {
+            item = tips[i];
+            p = item && item.point;
+            if (!p) continue;
+            rects.push(pageLabelToCssRect(p, item.label || '', 22, 34, m));
+        }
+        for (i = 0; i < hints.length; i += 1) {
+            item = hints[i];
+            p = item && item.point;
+            if (!p) continue;
+            rects.push(pageLabelToCssRect(p, item.label || '', 22, 34, m));
+        }
+        return unionCssRectsList(rects);
+    }
+
+    function pageCircleToCssRect(point, radius, m) {
+        var x = m.offsetX + (point.x - radius) * m.contentScale;
+        var y = m.offsetY + (point.y - radius) * m.contentScale;
+        var d = radius * 2 * m.contentScale;
+        return { x: x, y: y, w: d, h: d };
+    }
+
+    function pageLabelToCssRect(point, label, minHalfWidth, height, m) {
+        var textHalf = Math.max(minHalfWidth, String(label || '').length * 3.6 + 12);
+        var x = m.offsetX + (point.x - textHalf) * m.contentScale;
+        var y = m.offsetY + (point.y - height) * m.contentScale;
+        return { x: x, y: y, w: textHalf * 2 * m.contentScale, h: (height + 12) * m.contentScale };
+    }
+
+    function unionCssRectsList(rects) {
+        var out = null;
+        var i;
+        for (i = 0; i < rects.length; i += 1) {
+            out = unionCssRects(out, rects[i]);
+        }
+        return out;
+    }
+
+    function unionCssRects(a, b) {
+        var x1;
+        var y1;
+        var x2;
+        var y2;
+        if (!a) return b ? cloneCssRect(b) : null;
+        if (!b) return cloneCssRect(a);
+        x1 = Math.min(a.x, b.x);
+        y1 = Math.min(a.y, b.y);
+        x2 = Math.max(a.x + a.w, b.x + b.w);
+        y2 = Math.max(a.y + a.h, b.y + b.h);
+        return { x: x1, y: y1, w: x2 - x1, h: y2 - y1 };
+    }
+
+    function expandCssRect(rect, pad, cssW, cssH) {
+        var x1 = clamp(Math.floor(rect.x - pad), 0, cssW);
+        var y1 = clamp(Math.floor(rect.y - pad), 0, cssH);
+        var x2 = clamp(Math.ceil(rect.x + rect.w + pad), 0, cssW);
+        var y2 = clamp(Math.ceil(rect.y + rect.h + pad), 0, cssH);
+        if (x2 <= x1 || y2 <= y1) return null;
+        return { x: x1, y: y1, w: x2 - x1, h: y2 - y1 };
+    }
+
+    function cloneCssRect(rect) {
+        if (!rect) return null;
+        return { x: rect.x, y: rect.y, w: rect.w, h: rect.h };
+    }
 
     Renderer.prototype.applyRetune = function(ctx, t, m) {
         if (!this.retuneActive(t)) return;
@@ -450,6 +631,7 @@ var MapCanvasStageRenderer = (function() {
     };
 
     Renderer.prototype.updateDrawSummary = function(state, m) {
+        this.lastRevision = state.revision || 0;
         this.lastDrawSummary = {
             pageId: state.page.id,
             filterId: state.activeFilterId || '',
@@ -462,7 +644,10 @@ var MapCanvasStageRenderer = (function() {
             tipCount: (state.feedbackTips || []).length,
             flashHintCount: (state.flashHints || []).length,
             anomalyActive: !!state.anomalyActive,
-            lowEffects: !!m.lowEffects
+            lowEffects: !!m.lowEffects,
+            dynamicDpr: m.dynamicDpr,
+            dynamicDrawCount: this.dynamicDrawCount,
+            dynamicClear: this._lastDynamicSummary
         };
     };
 
@@ -473,6 +658,7 @@ var MapCanvasStageRenderer = (function() {
             canvasPendingAssets: this.pendingAssets,
             canvasMissingAssets: this.missingAssets.slice(),
             canvasDrawCount: this.drawCount,
+            canvasDynamicDrawCount: this.dynamicDrawCount,
             canvasFrameCount: this.frameCount,
             canvasStopped: this.stopped,
             canvasLastRevision: this.lastRevision,
@@ -1193,26 +1379,50 @@ var MapCanvasStageRenderer = (function() {
                 ringR = 11 * kf(ph, [0, 0.7, 1], [0.92, 1.18, 1.22]);
                 waveR = 25 * kf(ph, [0, 0.7, 1], [0.82, 1.9, 2.1]);
             }
-            // 扩散波 (低性能隐藏): opacity .78→0
+            // Expanding hazard reticle (low-effects hides the wave, keeps the core corners).
             if (!lowEffects) {
                 waveOp = kf(ph, [0, 0.7, 1], [0.78, 0.08, 0]);
-                strokeCircleA(ctx, p.x, p.y, waveR, 'rgba(255,128,128,1)', 2, waveOp * 0.42);
+                drawTaskReticle(ctx, p.x, p.y, waveR, 'rgba(255,128,96,1)', 2, waveOp * 0.36);
             }
-            // 环本体
-            ctx.save();
-            ctx.globalAlpha = ringOp;
-            ctx.strokeStyle = 'rgba(255,77,77,0.92)';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, ringR, 0, TWO_PI);
-            if (avR <= 0) {
-                // 旧固定小环保留淡红心; 套头像的大环只描边, 不给 NPC 头像蒙一层红
-                ctx.fillStyle = 'rgba(255,77,77,0.10)';
-                ctx.fill();
-            }
-            ctx.stroke();
-            ctx.restore();
+            drawTaskReticle(ctx, p.x, p.y, ringR, 'rgba(255,77,77,1)', avR > 0 ? 3 : 2, ringOp * 0.92);
+            if (avR <= 0) drawTaskDiamond(ctx, p.x, p.y, 5, ringOp * 0.56);
         }
+    }
+
+    function drawTaskReticle(ctx, x, y, r, color, width, alpha) {
+        var len = clamp(r * 0.34, 6, 18);
+        var x0 = x - r;
+        var x1 = x + r;
+        var y0 = y - r;
+        var y1 = y + r;
+        ctx.save();
+        ctx.globalAlpha = ctx.globalAlpha * clamp(alpha == null ? 1 : alpha, 0, 1);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width || 2;
+        ctx.beginPath();
+        ctx.moveTo(x0, y0 + len); ctx.lineTo(x0, y0); ctx.lineTo(x0 + len, y0);
+        ctx.moveTo(x1 - len, y0); ctx.lineTo(x1, y0); ctx.lineTo(x1, y0 + len);
+        ctx.moveTo(x1, y1 - len); ctx.lineTo(x1, y1); ctx.lineTo(x1 - len, y1);
+        ctx.moveTo(x0 + len, y1); ctx.lineTo(x0, y1); ctx.lineTo(x0, y1 - len);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function drawTaskDiamond(ctx, x, y, r, alpha) {
+        ctx.save();
+        ctx.globalAlpha = ctx.globalAlpha * clamp(alpha == null ? 1 : alpha, 0, 1);
+        ctx.fillStyle = 'rgba(255,77,77,0.26)';
+        ctx.strokeStyle = 'rgba(255,146,98,0.82)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x, y - r);
+        ctx.lineTo(x + r, y);
+        ctx.lineTo(x, y + r);
+        ctx.lineTo(x - r, y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
     }
 
     function drawMarkers(ctx, state, lowEffects, t) {
@@ -1572,6 +1782,114 @@ var MapCanvasStageRenderer = (function() {
     function getDpr() {
         if (typeof window === 'undefined') return 1;
         return Math.max(1, Math.min(3, Number(window.devicePixelRatio) || 1));
+    }
+
+    function getDynamicDpr(dpr, lowEffects) {
+        return Math.max(1, Math.min(dpr || 1, lowEffects ? DYNAMIC_DPR_MAX_LOW : DYNAMIC_DPR_MAX));
+    }
+
+    function buildStaticRenderKey(state) {
+        if (!state || !state.page) return '';
+        return [
+            state.page.id || '',
+            state.activeFilterId || '',
+            state.activeViewMode || '',
+            state.focusHotspotId || '',
+            state.currentHotspotId || '',
+            state.hoverHotspotId || '',
+            state.stageScale || 1,
+            state.stageWidth || 0,
+            state.stageHeight || 0,
+            state.contentFitScale || 1,
+            state.contentFitOffsetX || 0,
+            state.contentFitOffsetY || 0,
+            state.lowEffects ? 'L' : 'N',
+            state.anomalyActive ? 'A' : '',
+            state.backgroundImageUrl || '',
+            lookupSignature(state.busyLookup),
+            itemSignature(state.sceneVisuals),
+            itemSignature(state.staticAvatars),
+            itemSignature(state.dynamicAvatars)
+        ].join('|');
+    }
+
+    function buildDynamicRenderKey(state) {
+        if (!state || !state.page) return '';
+        return [
+            state.page.id || '',
+            state.activeFilterId || '',
+            state.stageScale || 1,
+            state.stageWidth || 0,
+            state.stageHeight || 0,
+            state.contentFitScale || 1,
+            state.contentFitOffsetX || 0,
+            state.contentFitOffsetY || 0,
+            state.lowEffects ? 'L' : 'N',
+            pointItemSignature(state.taskRings),
+            pointItemSignature(state.feedbackMarkers),
+            pointItemSignature(state.feedbackTips),
+            pointItemSignature(state.flashHints)
+        ].join('|');
+    }
+
+    function lookupSignature(lookup) {
+        var keys = [];
+        var key;
+        lookup = lookup || {};
+        for (key in lookup) {
+            if (Object.prototype.hasOwnProperty.call(lookup, key) && lookup[key]) {
+                keys.push(key);
+            }
+        }
+        keys.sort();
+        return keys.join(',');
+    }
+
+    function itemSignature(items) {
+        var out = [];
+        var i;
+        var item;
+        var r;
+        items = items || [];
+        for (i = 0; i < items.length; i += 1) {
+            item = items[i] || {};
+            r = item.rect || {};
+            out.push([
+                item.id || '',
+                item.label || '',
+                item.hotspotId || '',
+                item.assetUrl || '',
+                (item.hotspotIds || []).join(','),
+                r.x || 0,
+                r.y || 0,
+                r.w || 0,
+                r.h || 0
+            ].join(':'));
+        }
+        return out.join(';');
+    }
+
+    function pointItemSignature(items) {
+        var out = [];
+        var i;
+        var item;
+        var p;
+        items = items || [];
+        for (i = 0; i < items.length; i += 1) {
+            item = items[i] || {};
+            p = item.point || {};
+            out.push([
+                item.id || '',
+                item.kind || '',
+                item.hotspotId || '',
+                item.label || '',
+                item.tone || '',
+                item.avatarRadius || 0,
+                p.x || 0,
+                p.y || 0
+            ].join(':'));
+        }
+        return out.join(';');
     }
 
     function nowMs() {

@@ -2678,7 +2678,7 @@
     font-family:inherit;
     font-size:12px;
     letter-spacing:1px;
-    transition:all 0.15s ease;
+    transition:background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
     clip-path:polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
 }
 
@@ -2868,7 +2868,7 @@
 .map-hotspot.is-hover {
     background:rgba(200, 255, 76, 0.12);
     border-color:rgba(220, 255, 128, 0.82);
-    box-shadow:0 0 18px rgba(190, 255, 64, 0.22), inset 0 0 18px rgba(190, 255, 64, 0.08);
+    box-shadow:inset 0 0 0 1px rgba(220,255,128,0.22);
 }
 
 .map-hotspot:focus {
@@ -2993,18 +2993,20 @@
 
 .map-hotspot-stage-select-btn.is-task {
     border-color:rgba(255, 94, 74, 0.68);
-    background:rgba(138, 28, 22, 0.88);
+    background:
+        linear-gradient(90deg, rgba(255, 74, 58, 0.22) 0, rgba(255, 74, 58, 0.22) 3px, transparent 3px),
+        rgba(84, 19, 18, 0.9);
     color:#fff3d4;
-    box-shadow:0 0 12px rgba(255, 74, 58, 0.28);
+    box-shadow:none;
 }
 
 .map-hotspot-stage-select-btn.is-task::before {
     content:"";
-    width:7px;
-    height:7px;
-    border-radius:999px;
-    background:#ff4a3a;
-    box-shadow:0 0 7px rgba(255, 74, 58, 0.85);
+    width:9px;
+    height:9px;
+    border:1px solid rgba(255, 146, 98, 0.82);
+    background:rgba(255, 74, 58, 0.22);
+    clip-path:polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
     flex:0 0 auto;
 }
 
@@ -3020,8 +3022,10 @@
 .map-hotspot-stage-select-btn.is-task:hover,
 .map-hotspot-stage-select-btn.is-task:focus {
     border-color:rgba(255, 146, 98, 0.9);
-    background:rgba(176, 38, 26, 0.95);
-    box-shadow:0 0 14px rgba(255, 74, 58, 0.38);
+    background:
+        linear-gradient(90deg, rgba(255, 146, 98, 0.32) 0, rgba(255, 146, 98, 0.32) 3px, transparent 3px),
+        rgba(116, 28, 22, 0.96);
+    box-shadow:none;
 }
 
 .map-hotspot-stage-select-btn.is-busy,
@@ -3080,7 +3084,7 @@
     cursor:pointer;
     overflow:hidden;
     clip-path:polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
-    transition:background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease, color 0.12s ease;
+    transition:background 0.12s ease, border-color 0.12s ease, transform 0.12s ease, color 0.12s ease;
 }
 
 .map-panel.is-compact .map-filter-hotspot {
@@ -3120,7 +3124,6 @@
 .map-filter-hotspot:hover {
     background:linear-gradient(180deg, rgba(16, 22, 18, 0.98) 0%, rgba(10, 13, 11, 0.94) 100%);
     border-color:rgba(220,255,128,0.46);
-    box-shadow:0 0 16px rgba(190,255,64,0.2);
     color:#f4ffd6;
 }
 
@@ -3133,7 +3136,7 @@
 .map-filter-hotspot.is-active {
     background:linear-gradient(180deg, rgba(189, 255, 78, 0.96) 0%, rgba(162, 230, 56, 0.94) 100%);
     border-color:rgba(220,255,128,0.82);
-    box-shadow:0 0 18px rgba(190,255,64,0.22), inset 0 0 14px rgba(190,255,64,0.08);
+    box-shadow:inset 3px 0 0 rgba(255,255,255,0.38);
     color:#15200c;
 }
 
@@ -3228,18 +3231,20 @@
 .map-rail-stage-select-btn.is-task {
     min-width:72px;
     border-color:rgba(255, 94, 74, 0.6);
-    background:rgba(110, 24, 20, 0.84);
+    background:
+        linear-gradient(90deg, rgba(255, 74, 58, 0.24) 0, rgba(255, 74, 58, 0.24) 3px, transparent 3px),
+        rgba(78, 18, 17, 0.86);
     color:#fff2d2;
-    box-shadow:0 0 10px rgba(255, 74, 58, 0.2);
+    box-shadow:none;
 }
 
 .map-rail-stage-select-btn.is-task::before {
     content:"";
-    width:6px;
-    height:6px;
-    border-radius:999px;
-    background:#ff4a3a;
-    box-shadow:0 0 6px rgba(255, 74, 58, 0.8);
+    width:8px;
+    height:8px;
+    border:1px solid rgba(255, 146, 98, 0.78);
+    background:rgba(255, 74, 58, 0.2);
+    clip-path:polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
     flex:0 0 auto;
 }
 
@@ -3254,7 +3259,9 @@
 .map-rail-stage-select-btn.is-task:hover,
 .map-rail-stage-select-btn.is-task:focus {
     border-color:rgba(255, 146, 98, 0.78);
-    background:rgba(150, 34, 24, 0.92);
+    background:
+        linear-gradient(90deg, rgba(255, 146, 98, 0.32) 0, rgba(255, 146, 98, 0.32) 3px, transparent 3px),
+        rgba(112, 27, 20, 0.94);
     color:#ffffff;
 }
 
@@ -3382,19 +3389,26 @@
 .map-filter-hotspot-badge,
 .stage-select-frame-toggle-task-badge,
 .stage-select-tab-task-badge {
-    display:inline-block;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
     flex:0 0 auto;
-    padding:0 5px;
-    min-width:14px;
+    padding:0 6px;
+    min-width:18px;
     height:14px;
     line-height:14px;
     font-size:9px;
     font-weight:700;
     text-align:center;
-    color:#fff2d2;
-    background:rgba(176, 38, 24, 0.92);
-    border-radius:999px;
+    color:#ffd8c2;
+    background:
+        linear-gradient(90deg, rgba(255, 74, 58, 0.34) 0, rgba(255, 74, 58, 0.34) 3px, transparent 3px),
+        rgba(48, 13, 15, 0.92);
+    border:1px solid rgba(255, 94, 74, 0.62);
+    border-radius:0;
+    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
     letter-spacing:0;
+    font-family:Consolas, "Microsoft YaHei", monospace;
     animation:mapQuestBadgeEnter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -3413,7 +3427,9 @@
 }
 .map-page-tab.is-active .map-page-tab-badge {
     color:#fff2d2;
-    background:rgba(138, 28, 22, 0.95);
+    background:
+        linear-gradient(90deg, rgba(255, 146, 98, 0.42) 0, rgba(255, 146, 98, 0.42) 3px, transparent 3px),
+        rgba(72, 18, 16, 0.95);
 }
 
 /* filter button — 完整 identity shift（filter 高 38px 是 rail 主视觉单元，可以较强表达） */
@@ -3427,7 +3443,7 @@
     border-color:rgba(255, 146, 98, 0.82);
     background:linear-gradient(180deg, rgba(54, 22, 16, 0.98) 0%, rgba(32, 12, 9, 0.96) 100%);
     color:#fff2d2;
-    box-shadow:0 0 14px rgba(255, 74, 58, 0.22);
+    box-shadow:inset 3px 0 0 rgba(255, 146, 98, 0.34);
 }
 .map-filter-hotspot.has-quest:not(.is-active) .map-filter-hotspot-chrome {
     background:
@@ -3436,17 +3452,21 @@
 }
 .map-filter-hotspot.is-active .map-filter-hotspot-badge {
     color:#fff2d2;
-    background:rgba(138, 28, 22, 0.95);
+    background:
+        linear-gradient(90deg, rgba(255, 146, 98, 0.42) 0, rgba(255, 146, 98, 0.42) 3px, transparent 3px),
+        rgba(72, 18, 16, 0.95);
 }
 
 /* rail scene 末端 dot — 用 ::before idiom（对齐 .map-rail-stage-select-btn.is-task::before）
  * 拿掉 7px + heavy glow，改 6px flat dot，再加 item 本体淡 warm-red border 倾向 */
 .map-rail-scene-quest {
     margin-left:auto;
-    width:6px;
-    height:6px;
-    border-radius:999px;
-    background:#ff4a3a;
+    width:8px;
+    height:8px;
+    border:1px solid rgba(255, 146, 98, 0.78);
+    border-radius:0;
+    background:rgba(255, 74, 58, 0.24);
+    clip-path:polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
     flex-shrink:0;
     animation:mapQuestBadgeEnter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -4090,7 +4110,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 
 .stage-select-tab.has-task {
     border-color: rgba(255, 74, 58, 0.58);
-    box-shadow: 0 0 10px rgba(255, 74, 58, 0.16);
+    box-shadow: inset 3px 0 0 rgba(255, 74, 58, 0.36);
 }
 
 .stage-select-tab:hover,
@@ -4169,7 +4189,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 
 .stage-select-panel.is-runtime .stage-select-frame-toggle.has-task {
     border-color: rgba(255, 74, 58, 0.55);
-    box-shadow: 0 0 12px rgba(255, 74, 58, 0.16);
+    box-shadow: inset 3px 0 0 rgba(255, 74, 58, 0.34);
 }
 
 .stage-select-panel.is-runtime .stage-select-tabs {
@@ -4216,7 +4236,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 
 .stage-select-panel.is-runtime .stage-select-tab.has-task::before {
-    background: #ff4a3a;
+    background: linear-gradient(180deg, #ff4a3a 0%, #ff9262 100%);
 }
 
 .stage-select-panel.is-runtime .stage-select-tab::before {
@@ -4516,7 +4536,8 @@ html.perf-low-effects .map-panel-close-btn:hover {
     top: 0;
     width: var(--stage-direct-width, 91px);
     height: var(--stage-direct-height, 21px);
-    border-radius: 5px;
+    border-radius: 0;
+    clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
 }
 
 .stage-select-stage-button.is-task-entry .stage-select-stage-name {
@@ -4531,18 +4552,23 @@ html.perf-low-effects .map-panel-close-btn:hover {
     font-size: 13px;
     font-weight: 400;
     line-height: calc(var(--stage-direct-height, 21px) - 2px);
-    background: linear-gradient(180deg, #cc0000 0%, #660000 100%);
-    border: 1px solid #050505;
-    border-radius: 5px;
-    box-shadow:
-        inset 1px 1px 0 rgba(255, 255, 255, 0.18),
-        0 1px 2px rgba(0, 0, 0, 0.7);
+    color: #ffe8d2;
+    background:
+        linear-gradient(90deg, rgba(255, 74, 58, 0.32) 0, rgba(255, 74, 58, 0.32) 4px, transparent 4px),
+        rgba(75, 14, 18, 0.94);
+    border: 1px solid rgba(255, 94, 74, 0.72);
+    border-radius: 0;
+    box-shadow: none;
+    clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
 }
 
 .stage-select-stage-button.is-task-entry:not(.is-locked):hover .stage-select-stage-name,
 .stage-select-stage-button.is-task-entry:not(.is-locked):focus .stage-select-stage-name {
     visibility: visible;
-    filter: brightness(1.18);
+    background:
+        linear-gradient(90deg, rgba(255, 146, 98, 0.44) 0, rgba(255, 146, 98, 0.44) 4px, transparent 4px),
+        rgba(104, 24, 20, 0.98);
+    border-color: rgba(255, 146, 98, 0.88);
 }
 
 .stage-select-stage-button.is-task-entry .stage-select-lock {
@@ -4596,13 +4622,18 @@ html.perf-low-effects .map-panel-close-btn:hover {
     width: 44px;
     height: 44px;
     box-sizing: border-box;
-    border-radius: 50%;
-    border: 3px solid rgba(255, 0, 0, 0.98);
-    background: transparent;
-    box-shadow:
-        0 0 8px rgba(255, 255, 0, 0.95),
-        0 0 18px rgba(255, 230, 0, 0.62),
-        inset 0 0 6px rgba(255, 255, 0, 0.62);
+    border: 0;
+    border-radius: 0;
+    background:
+        linear-gradient(#ff4a3a, #ff4a3a) 0 0 / 13px 2px no-repeat,
+        linear-gradient(#ff4a3a, #ff4a3a) 0 0 / 2px 13px no-repeat,
+        linear-gradient(#ff4a3a, #ff4a3a) 100% 0 / 13px 2px no-repeat,
+        linear-gradient(#ff4a3a, #ff4a3a) 100% 0 / 2px 13px no-repeat,
+        linear-gradient(#ff4a3a, #ff4a3a) 0 100% / 13px 2px no-repeat,
+        linear-gradient(#ff4a3a, #ff4a3a) 0 100% / 2px 13px no-repeat,
+        linear-gradient(#ff4a3a, #ff4a3a) 100% 100% / 13px 2px no-repeat,
+        linear-gradient(#ff4a3a, #ff4a3a) 100% 100% / 2px 13px no-repeat;
+    opacity: 0.92;
     pointer-events: none;
 }
 

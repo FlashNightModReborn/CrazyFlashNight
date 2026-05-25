@@ -63,6 +63,7 @@ var MapPanel = (function() {
     var _canvasActive = false;          // 面板可见且应渲染时为 true; host 驱动关闭后置 false
     var _canvasSyncScheduled = false;   // 微任务合并: 同一同步批次多次 sync 只 setState 一次
     var _canvasRevision = 0;
+    var _canvasRenderCache = {};
 
     function playCue(name) {
         var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
@@ -210,6 +211,7 @@ var MapPanel = (function() {
         _debugTelemetryEnabled = !!(initData && initData.dev);
         _snapshotAnnounced = false;
         _canvasActive = true;
+        resetCanvasRenderCache();
         resetContentFit();
         if (_el) _el.classList.remove('is-compact');
 
@@ -254,6 +256,7 @@ var MapPanel = (function() {
         _busyLookup = {};
         _debugTelemetryEnabled = false;
         _stageScale = 1;
+        resetCanvasRenderCache();
         resetContentFit();
         if (_el) _el.classList.remove('is-compact');
         hideError();
@@ -652,6 +655,7 @@ var MapPanel = (function() {
         _hoverHotspotId = '';
         _busyLookup = {};
         _stageSelectBusyHotspotId = '';
+        resetCanvasRenderCache();
         // cancel cue 由调用方负责: DOM click 走 overlay click 代理, Esc/backdrop 走 onRequestClose
         // navigate 成功直闭(resp.closePanel)不播 cancel, transition cue 已足够表达
         resetContentFit();
@@ -1573,6 +1577,13 @@ var MapPanel = (function() {
 
     function buildCanvasRenderState() {
         var activeFilter = getActiveFilter(_activePage);
+        var pageId = _activePage ? _activePage.id : '';
+        var filterId = activeFilter ? activeFilter.id : '';
+        var visibleKey = pageId + '|' + filterId + '|' + lookupCacheKey(_enabledLookup);
+        var avatarKey = visibleKey + '|' + objectCacheKey(_avatarVisibility);
+        var dynamicAvatarKey = avatarKey + '|' + objectCacheKey(_dynamicAvatarState);
+        var markerKey = visibleKey + '|' + markerCacheKey(_snapshotMarkers);
+        var tipKey = visibleKey + '|' + markerCacheKey(_snapshotTips);
         return {
             revision: _canvasRevision,
             page: _activePage,
@@ -1580,7 +1591,7 @@ var MapPanel = (function() {
             backgroundImageUrl: (_activePage && _activePage.backgroundUrl && !useAssembledVisuals(_activePage))
                 ? resolveAssetUrl(_activePage.backgroundUrl)
                 : '',
-            activeFilterId: activeFilter ? activeFilter.id : '',
+            activeFilterId: filterId,
             activeViewMode: getActiveViewMode(_activePage),
             focusHotspotId: getFocusHotspotId(_activePage),
             currentHotspotId: _currentHotspotId,
@@ -1595,13 +1606,27 @@ var MapPanel = (function() {
             contentFitOffsetY: _contentFitOffsetY,
             lowEffects: isLowEffectsMode(),
             anomalyActive: !!(_activePage && _activePage.id === 'defense' && activeFilter && activeFilter.id === 'restricted'),
-            sceneVisuals: buildCanvasSceneVisuals(_activePage),
-            staticAvatars: buildCanvasStaticAvatars(_activePage),
-            dynamicAvatars: buildCanvasDynamicAvatars(_activePage),
-            taskRings: buildCanvasTaskRings(_activePage),
-            feedbackMarkers: buildCanvasFeedbackMarkers(_activePage),
-            feedbackTips: buildCanvasFeedbackTips(_activePage),
-            flashHints: buildCanvasFlashHints(_activePage)
+            sceneVisuals: getCanvasRenderSlice('sceneVisuals', visibleKey, function() {
+                return buildCanvasSceneVisuals(_activePage);
+            }),
+            staticAvatars: getCanvasRenderSlice('staticAvatars', avatarKey, function() {
+                return buildCanvasStaticAvatars(_activePage);
+            }),
+            dynamicAvatars: getCanvasRenderSlice('dynamicAvatars', dynamicAvatarKey, function() {
+                return buildCanvasDynamicAvatars(_activePage);
+            }),
+            taskRings: getCanvasRenderSlice('taskRings', markerKey + '|' + avatarKey, function() {
+                return buildCanvasTaskRings(_activePage);
+            }),
+            feedbackMarkers: getCanvasRenderSlice('feedbackMarkers', markerKey, function() {
+                return buildCanvasFeedbackMarkers(_activePage);
+            }),
+            feedbackTips: getCanvasRenderSlice('feedbackTips', tipKey, function() {
+                return buildCanvasFeedbackTips(_activePage);
+            }),
+            flashHints: getCanvasRenderSlice('flashHints', visibleKey, function() {
+                return buildCanvasFlashHints(_activePage);
+            })
         };
     }
 
@@ -1615,6 +1640,70 @@ var MapPanel = (function() {
             }
         }
         return out;
+    }
+
+    function resetCanvasRenderCache() {
+        _canvasRenderCache = {};
+    }
+
+    function getCanvasRenderSlice(name, key, builder) {
+        var slot = _canvasRenderCache[name];
+        if (slot && slot.key === key) return slot.value;
+        slot = {
+            key: key,
+            value: builder()
+        };
+        _canvasRenderCache[name] = slot;
+        return slot.value;
+    }
+
+    function lookupCacheKey(lookup) {
+        var keys = [];
+        var key;
+        lookup = lookup || {};
+        for (key in lookup) {
+            if (Object.prototype.hasOwnProperty.call(lookup, key) && lookup[key]) keys.push(key);
+        }
+        keys.sort();
+        return keys.join(',');
+    }
+
+    function objectCacheKey(source) {
+        var keys = [];
+        var out = [];
+        var key;
+        var i;
+        source = source || {};
+        for (key in source) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) keys.push(key);
+        }
+        keys.sort();
+        for (i = 0; i < keys.length; i++) {
+            out.push(keys[i] + '=' + String(source[keys[i]]));
+        }
+        return out.join(',');
+    }
+
+    function markerCacheKey(markers) {
+        var out = [];
+        var i;
+        var item;
+        markers = markers || [];
+        for (i = 0; i < markers.length; i++) {
+            item = markers[i] || {};
+            out.push([
+                item.id || '',
+                item.kind || '',
+                item.pageId || '',
+                item.hotspotId || '',
+                item.npcName || '',
+                item.label || '',
+                item.tone || '',
+                item.point && item.point.x !== undefined ? item.point.x : '',
+                item.point && item.point.y !== undefined ? item.point.y : ''
+            ].join(':'));
+        }
+        return out.join(';');
     }
 
     function buildCanvasSceneVisuals(page) {

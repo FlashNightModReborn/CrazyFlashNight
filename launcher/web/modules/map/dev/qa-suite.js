@@ -686,8 +686,19 @@ var MapPanelHarnessQA = (function() {
                                 var zFg = parseInt(window.getComputedStyle(fgCanvas).zIndex || '0', 10);
                                 api.assert(zRing < zFit, 'task ring layer must sit below hotspot/label layer (ring z=' + zRing + ', content-fit z=' + zFit + ')');
                                 api.assert(zFg > zFit, 'feedback layer must stay above hotspot/label layer (fg z=' + zFg + ', content-fit z=' + zFit + ')');
-                                return 'ringAnchor=' + expectedCx.toFixed(1) + '/' + expectedCy.toFixed(1) +
-                                    ' encircleR=' + (expectedAvR + 5).toFixed(1) + ' z(ring/fit/fg)=' + zRing + '/' + zFit + '/' + zFg;
+                                api.assert(state.canvasLastDrawSummary.dynamicDpr <= 1.5, 'dynamic canvas DPR should be capped at 1.5');
+                                return api.waitFor(function() {
+                                    var s = currentState();
+                                    var clear = s && s.canvasLastDrawSummary && s.canvasLastDrawSummary.dynamicClear;
+                                    return clear && clear.ringClearMode === 'dirty' ? s : null;
+                                }, 1500, 'task ring uses dirty-rect clear after first frame').then(function(s) {
+                                    var clear = s.canvasLastDrawSummary.dynamicClear;
+                                    return 'ringAnchor=' + expectedCx.toFixed(1) + '/' + expectedCy.toFixed(1) +
+                                        ' encircleR=' + (expectedAvR + 5).toFixed(1) +
+                                        ' z(ring/fit/fg)=' + zRing + '/' + zFit + '/' + zFg +
+                                        ' dynDpr=' + s.canvasLastDrawSummary.dynamicDpr +
+                                        ' ringClear=' + clear.ringClearMode;
+                                });
                             });
                         });
                     });
