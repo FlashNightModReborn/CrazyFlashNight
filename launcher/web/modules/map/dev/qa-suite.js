@@ -85,6 +85,31 @@ var MapPanelHarnessQA = (function() {
         return waitForReady(api);
     }
 
+    // hittest engine 测试用 — 不需要打开 panel; 引擎只依赖 MapPanelData (script-tag 已加载)。
+    // 留 Promise 兜底, 与其它 boot 风格一致。
+    function bootMapForHittest() {
+        return Promise.resolve();
+    }
+
+    // 与 map-panel.js resolveAssetUrl 行为一致: 找 /launcher/web/ 锚点, 让 assets/... 相对 URL
+    // 落到正确根; harness 页位置在 modules/map/dev/ 下, 不能直接用 document.location 作 base。
+    function harnessResolveAsset(assetUrl) {
+        var value = String(assetUrl || '');
+        var marker = '/launcher/web/';
+        var href;
+        var idx;
+        if (!value || /^(?:[a-z]+:|\/|#)/i.test(value)) return value;
+        if (typeof document === 'undefined' || !document.location) return value;
+        href = String(document.location.href || '');
+        idx = href.indexOf(marker);
+        if (idx < 0) return value;
+        try {
+            return new URL(value, href.slice(0, idx + marker.length)).href;
+        } catch (err) {
+            return value;
+        }
+    }
+
     function currentState() {
         return window.MapPanel && MapPanel._debugGetState ? MapPanel._debugGetState() : null;
     }
@@ -1457,6 +1482,160 @@ var MapPanelHarnessQA = (function() {
                             var nineBadge = document.querySelector('.map-page-tab[data-page-id="base"] .map-page-tab-badge');
                             api.assertEqual(nineBadge.textContent, '9', 'at exactly 9 should still show raw "9"');
                             return 'tenClamp=9+, nineExact=9';
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui31a',
+                title: 'hittest engine: out-of-bounds + transparent corner return null; debugState reports per-visual byColor',
+                run: function() {
+                    return bootMapForHittest(api, host).then(function() {
+                        var page = MapPanelData.getPage('base');
+                        return MapHittestEngine.ensurePage(page, harnessResolveAsset).then(function() {
+                            api.assertEqual(MapHittestEngine.query('base', -1, -1), null, 'query(-1,-1) out-of-bounds returns null');
+                            api.assertEqual(MapHittestEngine.query('base', 2000, 2000), null, 'query(2000,2000) out-of-bounds returns null');
+                            api.assertEqual(MapHittestEngine.query('base', 0, 0), null, 'query(0,0) top-left corner (no PNG paints there) returns null');
+                            api.assertEqual(MapHittestEngine.query('base', 5, 5), null, 'query(5,5) transparent corner returns null');
+
+                            var debug = MapHittestEngine.debugState();
+                            api.assert(!!debug.pages.base, 'debugState exposes base page entry');
+                            api.assert(debug.pages.base.ready === true, 'base page must be ready after ensurePage resolves');
+                            api.assertEqual(debug.pages.base.visualCount, (page.sceneVisuals || []).length, 'visualCount equals sceneVisuals length');
+                            api.assertEqual(debug.pages.base.byColorEntries, (page.sceneVisuals || []).length, 'byColorEntries equals sceneVisuals length (color collision check)');
+                            api.assertEqual(debug.pages.base.width, 1031, 'hitmap width matches page.width');
+                            api.assertEqual(debug.pages.base.height, 608, 'hitmap height matches page.height');
+
+                            return 'visuals=' + debug.pages.base.visualCount + ', buildMs=' + debug.pages.base.buildMs;
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui31b',
+                title: 'hittest engine: any non-null hit must have its rect contain the query point (z-order + alpha consistency)',
+                run: function() {
+                    return bootMapForHittest(api, host).then(function() {
+                        var page = MapPanelData.getPage('base');
+                        return MapHittestEngine.ensurePage(page, harnessResolveAsset).then(function() {
+                            // 在 base page 网格上扫一些点; 对每个非空命中, 断言其 visualId 的 rect 必须包含该点
+                            // (后画的 visual 覆盖前画的, 但任意命中点必落在该 visual 自己的 rect 内)
+                            var visuals = page.sceneVisuals || [];
+                            var visualById = {};
+                            var i;
+                            for (i = 0; i < visuals.length; i += 1) visualById[visuals[i].id] = visuals[i];
+
+                            var nonNullHits = 0;
+                            var totalProbes = 0;
+                            var x;
+                            var y;
+                            var hit;
+                            for (x = 30; x < 1030; x += 60) {
+                                for (y = 30; y < 600; y += 60) {
+                                    totalProbes += 1;
+                                    hit = MapHittestEngine.query('base', x, y);
+                                    if (!hit) continue;
+                                    nonNullHits += 1;
+                                    var v = visualById[hit.visualId];
+                                    api.assert(!!v, 'query returned visualId ' + hit.visualId + ' which exists in sceneVisuals');
+                                    // 与 engine 一致的整数化 rect (Math.round 偏移 + Math.ceil 尺寸)
+                                    var vdx = Math.round(v.rect.x);
+                                    var vdy = Math.round(v.rect.y);
+                                    var vex = vdx + Math.ceil(v.rect.w);
+                                    var vey = vdy + Math.ceil(v.rect.h);
+                                    var contains = x >= vdx && x < vex && y >= vdy && y < vey;
+                                    api.assert(contains, 'at (' + x + ',' + y + ') visualId ' + hit.visualId + ' int-rect [' + vdx + ',' + vdy + ',' + vex + ',' + vey + '] must contain query point');
+                                    api.assert(Array.isArray(hit.hotspotIds) && hit.hotspotIds.length > 0, 'hit.hotspotIds is non-empty array');
+                                    api.assert(Array.isArray(hit.filterIds), 'hit.filterIds is array');
+                                }
+                            }
+                            api.assert(nonNullHits > 0, 'at least some grid probes must hit PNG shapes (got ' + nonNullHits + '/' + totalProbes + ')');
+                            return 'probes=' + totalProbes + ', hits=' + nonNullHits;
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui31c',
+                title: 'hittest engine: result.filterIds correctly reflects each visual filterIds for caller-side filter gating',
+                run: function() {
+                    return bootMapForHittest(api, host).then(function() {
+                        var page = MapPanelData.getPage('base');
+                        return MapHittestEngine.ensurePage(page, harnessResolveAsset).then(function() {
+                            var visuals = page.sceneVisuals || [];
+                            var i;
+                            var v;
+                            var x;
+                            var y;
+                            var hit;
+                            var checked = 0;
+                            // 对每个 visual rect 中心采样 (不一定有 PNG 形状, 但若 hit 则 filterIds 必须严格匹配数据)
+                            for (i = 0; i < visuals.length; i += 1) {
+                                v = visuals[i];
+                                x = Math.round(v.rect.x + v.rect.w / 2);
+                                y = Math.round(v.rect.y + v.rect.h / 2);
+                                hit = MapHittestEngine.query('base', x, y);
+                                if (!hit) continue;
+                                // hit.visualId 可能是 v 自己或后画的覆盖者 — 取该 visual 的 filterIds
+                                var hitVisual = null;
+                                for (var j = 0; j < visuals.length; j += 1) {
+                                    if (visuals[j].id === hit.visualId) { hitVisual = visuals[j]; break; }
+                                }
+                                api.assert(!!hitVisual, 'hit.visualId exists in sceneVisuals');
+                                api.assert(hit.filterIds.length === hitVisual.filterIds.length, 'filterIds length matches data for ' + hit.visualId);
+                                for (var k = 0; k < hit.filterIds.length; k += 1) {
+                                    api.assert(hitVisual.filterIds.indexOf(hit.filterIds[k]) >= 0, 'filterIds element ' + hit.filterIds[k] + ' present in data for ' + hit.visualId);
+                                }
+                                checked += 1;
+                            }
+                            api.assert(checked > 0, 'at least one visual center probe must hit (got ' + checked + ')');
+
+                            // 调用方过滤模拟: activeFilterId='roof' 时, hit.filterIds 不含 'roof' 的命中应被拒
+                            var roofOk = 0;
+                            var roofRejected = 0;
+                            var hits = 0;
+                            for (x = 30; x < 1030; x += 80) {
+                                for (y = 30; y < 600; y += 80) {
+                                    hit = MapHittestEngine.query('base', x, y);
+                                    if (!hit) continue;
+                                    hits += 1;
+                                    if (hit.filterIds.indexOf('roof') >= 0) roofOk += 1; else roofRejected += 1;
+                                }
+                            }
+                            api.assert(roofRejected > 0, 'with activeFilter=roof, some hits must be filtered out (got ' + roofRejected + '/' + hits + ')');
+
+                            return 'centerHits=' + checked + ', gridRoofOk=' + roofOk + ', gridRoofRejected=' + roofRejected;
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui31d',
+                title: 'hittest engine: query handles fractional / NaN / out-of-range coordinates without throwing',
+                run: function() {
+                    return bootMapForHittest(api, host).then(function() {
+                        var page = MapPanelData.getPage('base');
+                        return MapHittestEngine.ensurePage(page, harnessResolveAsset).then(function() {
+                            // 浮点按 Math.round 命中; NaN 不崩 (Math.round(NaN)=NaN, 边界比较 false 返回 null)
+                            var cases = [
+                                { x: -0.4, y: -0.4, label: 'near-zero negative rounds to 0 (still in-bounds top-left, transparent)' },
+                                { x: 0.5, y: 0.5, label: '0.5 rounds to 1' },
+                                { x: 1030.4, y: 607.4, label: '1030.4 rounds to 1030 (in-bounds)' },
+                                { x: 1031, y: 608, label: 'exact upper bound (out-of-bounds, exclusive)' },
+                                { x: 1031.6, y: 608.6, label: 'just over (out-of-bounds)' },
+                                { x: NaN, y: NaN, label: 'NaN (out-of-bounds via comparison)' }
+                            ];
+                            cases.forEach(function(c) {
+                                var got;
+                                try {
+                                    got = MapHittestEngine.query('base', c.x, c.y);
+                                } catch (err) {
+                                    api.assert(false, 'query(' + c.x + ',' + c.y + ') threw: ' + err.message);
+                                }
+                                // 不管返回 null 还是命中, 不崩即过 (返回值因 PNG 内容而异, 仅断言 type)
+                                api.assert(got === null || (got && typeof got.visualId === 'string'), c.label + ' returns null or valid hit object');
+                            });
+                            return 'all ' + cases.length + ' edge cases handled';
                         });
                     });
                 }
