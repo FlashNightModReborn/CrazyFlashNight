@@ -3336,6 +3336,14 @@ namespace CF7Launcher.Guardian
                 case "bundle":
                 case "preview":
                 case "equip_tooltip":
+                case "adopt_list":
+                case "adopt":
+                case "deploy":
+                case "advance":
+                case "preview_advance":
+                case "expand_slot":
+                case "rename":
+                case "pet_tooltip":
                     {
                         string panel = parsed.Value<string>("panel") ?? "";
                         if (panel == "stage-select")

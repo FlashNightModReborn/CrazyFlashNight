@@ -5,12 +5,9 @@
     // 状态
     // ═══════════════════════════════════════════════════════════
     var _el;
-    var _listViewEl;
-    var _detailViewEl;
-    var _storeViewEl;
     var _pets = [];
     var _snapshot = null;
-    var _activeView = 'list';
+    var _currentPage = 'list';
     var _activePetIdx = -1;
     var _storeCategoryIdx = 0;
     var _storeData = [];
@@ -18,8 +15,13 @@
     var _reqSeq = 0;
     var _session = 0;
     var _busy = false;
-    var _storeLoading = false;
     var _toastTimer = null;
+
+    // DOM refs (set in createDOM)
+    var _pageList, _pageStore, _pageAdvance;
+    var _goldEl, _kpointEl;
+    var _deployCountEl, _slotCountEl;
+    var _toastEl;
 
     // ═══════════════════════════════════════════════════════════
     // Panel 注册
@@ -38,37 +40,65 @@
         _el = document.createElement('div');
         _el.className = 'pet-panel';
         _el.innerHTML =
-            '<div class="pet-header">' +
-                '<h1 class="pet-title">战宠管理</h1>' +
-                '<div class="pet-resources">' +
-                    '<span class="pet-resource pet-resource-gold" id="pet-gold">--</span>' +
-                    '<span class="pet-resource pet-resource-kpoint" id="pet-kpoint">--</span>' +
+            // ── Toast（共享） ──
+            '<div class="pet-toast" id="pet-toast"></div>' +
+
+            // ═══════════════════════════════════════════════════
+            // 页面 1：战宠列表
+            // ═══════════════════════════════════════════════════
+            '<div class="pet-page" id="pet-page-list">' +
+                '<div class="pet-page-header">' +
+                    '<h1 class="pet-page-title">战宠管理</h1>' +
+                    '<div class="pet-resources">' +
+                        '<span class="pet-resource pet-resource-gold" id="pet-gold">--</span>' +
+                        '<span class="pet-resource pet-resource-kpoint" id="pet-kpoint">--</span>' +
+                    '</div>' +
+                    '<button class="pet-close-btn" type="button" title="关闭" aria-label="关闭" data-audio-cue="cancel">✕</button>' +
                 '</div>' +
-                '<button class="pet-close-btn" type="button" title="关闭" aria-label="关闭" data-audio-cue="cancel">✕</button>' +
-            '</div>' +
-            '<div class="pet-status-bar" id="pet-status-bar">' +
-                '<span>出战: <strong id="pet-deploy-count">0/0</strong></span>' +
-                '<span>宠物栏: <strong id="pet-slot-count">0/0</strong></span>' +
-                '<button class="pet-expand-slot-btn" type="button" id="pet-expand-slot-btn" data-audio-cue="confirm">+开格子</button>' +
-            '</div>' +
-            // ── 列表视图 ──
-            '<div class="pet-list-view" id="pet-list-view">' +
-                '<div class="pet-grid" id="pet-grid"></div>' +
-                '<div class="pet-list-empty" id="pet-list-empty" hidden>暂无战宠，点击下方按钮领养</div>' +
-                '<div class="pet-list-footer">' +
+                '<div class="pet-status-bar" id="pet-status-bar">' +
+                    '<span>出战: <strong id="pet-deploy-count">0/0</strong></span>' +
+                    '<span>宠物栏: <strong id="pet-slot-count">0/0</strong></span>' +
+                    '<button class="pet-expand-slot-btn" type="button" id="pet-expand-slot-btn" data-audio-cue="confirm">+开格子</button>' +
+                '</div>' +
+                '<div class="pet-page-body">' +
+                    '<div class="pet-grid" id="pet-grid"></div>' +
+                    '<div class="pet-list-empty" id="pet-list-empty" hidden>暂无战宠，点击下方按钮领养</div>' +
+                '</div>' +
+                '<div class="pet-page-footer">' +
                     '<button class="pet-adopt-btn" type="button" id="pet-adopt-btn" data-audio-cue="confirm">领养宠物</button>' +
                 '</div>' +
             '</div>' +
-            // ── 详情视图 ──
-            '<div class="pet-detail-view" id="pet-detail-view" hidden>' +
-                '<div class="pet-detail-header">' +
-                    '<button class="pet-detail-back" type="button" data-audio-cue="cancel">‹ 返回</button>' +
-                    '<div class="pet-detail-title-block">' +
-                        '<h2 class="pet-detail-name" id="pet-detail-name">--</h2>' +
-                        '<div class="pet-detail-meta" id="pet-detail-meta"></div>' +
-                    '</div>' +
+
+            // ═══════════════════════════════════════════════════
+            // 页面 2：领养商店
+            // ═══════════════════════════════════════════════════
+            '<div class="pet-page" id="pet-page-store" hidden>' +
+                '<div class="pet-page-header">' +
+                    '<button class="pet-page-back" type="button" data-audio-cue="cancel">‹ 返回</button>' +
+                    '<h2 class="pet-page-title">领养宠物</h2>' +
+                    '<div class="pet-page-header-spacer"></div>' +
                 '</div>' +
-                '<div class="pet-detail-body">' +
+                '<div class="pet-page-body">' +
+                    '<div class="pet-store-tabs" id="pet-store-tabs"></div>' +
+                    '<div class="pet-store-grid" id="pet-store-grid"></div>' +
+                    '<div class="pet-store-empty" id="pet-store-empty" hidden>该分类下暂无可领养宠物</div>' +
+                    '<div class="pet-store-loading" id="pet-store-loading" hidden>加载中...</div>' +
+                '</div>' +
+            '</div>' +
+
+            // ═══════════════════════════════════════════════════
+            // 页面 3：战宠进阶
+            // ═══════════════════════════════════════════════════
+            '<div class="pet-page" id="pet-page-advance" hidden>' +
+                '<div class="pet-page-header">' +
+                    '<button class="pet-page-back" type="button" data-audio-cue="cancel">‹ 返回</button>' +
+                    '<div class="pet-page-title-block">' +
+                        '<h2 class="pet-page-title" id="pet-advance-title">--</h2>' +
+                        '<div class="pet-advance-meta" id="pet-advance-meta"></div>' +
+                    '</div>' +
+                    '<button class="pet-deploy-btn" type="button" id="pet-deploy-btn" data-audio-cue="confirm">出战</button>' +
+                '</div>' +
+                '<div class="pet-page-body">' +
                     '<div class="pet-stats-section">' +
                         '<h3 class="pet-section-title">属性信息</h3>' +
                         '<div class="pet-stats-grid" id="pet-stats-grid">' +
@@ -83,35 +113,39 @@
                         '<div class="pet-promotions-list" id="pet-promotions-list"></div>' +
                     '</div>' +
                 '</div>' +
-                '<div class="pet-detail-footer">' +
-                    '<button class="pet-deploy-btn" type="button" id="pet-deploy-btn" data-audio-cue="confirm">出战</button>' +
-                '</div>' +
-            '</div>' +
-            // ── 领养商店视图 ──
-            '<div class="pet-store-view" id="pet-store-view" hidden>' +
-                '<div class="pet-store-header">' +
-                    '<button class="pet-store-back" type="button" data-audio-cue="cancel">‹ 返回</button>' +
-                    '<h2 class="pet-store-title">领养宠物</h2>' +
-                '</div>' +
-                '<div class="pet-store-tabs" id="pet-store-tabs"></div>' +
-                '<div class="pet-store-grid" id="pet-store-grid"></div>' +
-                '<div class="pet-store-empty" id="pet-store-empty" hidden>该分类下暂无可领养宠物</div>' +
-            '</div>' +
-            // ── Toast ──
-            '<div class="pet-toast" id="pet-toast"></div>';
+            '</div>';
 
-        // 绑定事件
+        // 缓存 DOM 引用
+        _pageList    = _el.querySelector('#pet-page-list');
+        _pageStore   = _el.querySelector('#pet-page-store');
+        _pageAdvance = _el.querySelector('#pet-page-advance');
+        _goldEl      = _el.querySelector('#pet-gold');
+        _kpointEl    = _el.querySelector('#pet-kpoint');
+        _deployCountEl = _el.querySelector('#pet-deploy-count');
+        _slotCountEl   = _el.querySelector('#pet-slot-count');
+        _toastEl     = _el.querySelector('#pet-toast');
+
+        // 关闭按钮
         _el.querySelector('.pet-close-btn').addEventListener('click', requestClose);
-        _el.querySelector('.pet-detail-back').addEventListener('click', backToList);
-        _el.querySelector('.pet-store-back').addEventListener('click', backToList);
-        _el.querySelector('#pet-adopt-btn').addEventListener('click', openStore);
+
+        // 列表页：领养宠物按钮
+        _el.querySelector('#pet-adopt-btn').addEventListener('click', function() {
+            navigateTo('store');
+        });
+
+        // 列表页：开格子按钮
         _el.querySelector('#pet-expand-slot-btn').addEventListener('click', onExpandSlot);
+
+        // 进阶页：出战/休息按钮
         _el.querySelector('#pet-deploy-btn').addEventListener('click', onToggleDeploy);
 
-        // 视图引用
-        _listViewEl = _el.querySelector('#pet-list-view');
-        _detailViewEl = _el.querySelector('#pet-detail-view');
-        _storeViewEl = _el.querySelector('#pet-store-view');
+        // 返回按钮（商店和进阶页共享 .pet-page-back 类名，需按页面分别绑定）
+        var backBtns = _el.querySelectorAll('.pet-page-back');
+        for (var b = 0; b < backBtns.length; b++) {
+            backBtns[b].addEventListener('click', function() {
+                navigateTo('list');
+            });
+        }
 
         return _el;
     }
@@ -123,14 +157,12 @@
         _session++;
         _pendingReq = {};
         _busy = false;
-        _storeLoading = false;
         _snapshot = null;
         _activePetIdx = -1;
-        _activeView = 'list';
         _storeCategoryIdx = 0;
         _storeData = [];
         hideToast();
-        showListView();
+        navigateTo('list');
         requestSnapshot();
     }
 
@@ -143,7 +175,6 @@
     function onClose() {
         _pendingReq = {};
         _busy = false;
-        _storeLoading = false;
         _snapshot = null;
         _activePetIdx = -1;
         hideToast();
@@ -151,44 +182,34 @@
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 视图切换
+    // 页面导航
     // ═══════════════════════════════════════════════════════════
-    function showListView() {
-        _activeView = 'list';
-        _listViewEl.hidden = false;
-        _detailViewEl.hidden = true;
-        _storeViewEl.hidden = true;
-    }
+    function navigateTo(page, params) {
+        if (page === _currentPage && !params) return;
 
-    function showDetailView(idx) {
-        _activeView = 'detail';
-        _activePetIdx = idx;
-        _listViewEl.hidden = true;
-        _detailViewEl.hidden = false;
-        _storeViewEl.hidden = true;
-    }
+        _currentPage = page;
+        _pageList.hidden    = (page !== 'list');
+        _pageStore.hidden   = (page !== 'store');
+        _pageAdvance.hidden = (page !== 'advance');
 
-    function showStoreView() {
-        _activeView = 'store';
-        _listViewEl.hidden = true;
-        _detailViewEl.hidden = true;
-        _storeViewEl.hidden = false;
-    }
-
-    function backToList() {
-        if (_busy) return;
-        _activePetIdx = -1;
-        showListView();
-    }
-
-    function openStore() {
-        if (_busy || _storeLoading) return;
-        showStoreView();
-        if (_storeData.length === 0) {
-            requestAdoptList(0);
-        } else {
-            renderStoreCategories();
-            renderStoreGrid(_storeCategoryIdx);
+        switch (page) {
+            case 'list':
+                _activePetIdx = -1;
+                updateResourceDisplay();
+                updateStatusBar();
+                renderPetGrid();
+                break;
+            case 'store':
+                _storeCategoryIdx = 0;
+                _storeData = [];
+                renderStoreContent();
+                break;
+            case 'advance':
+                if (params && typeof params.petIdx === 'number') {
+                    _activePetIdx = params.petIdx;
+                    renderAdvancePage();
+                }
+                break;
         }
     }
 
@@ -220,7 +241,7 @@
     }
 
     // ═══════════════════════════════════════════════════════════
-    // Snapshot
+    // Snapshot（全局数据拉取）
     // ═══════════════════════════════════════════════════════════
     function requestSnapshot() {
         var snapSession = _session;
@@ -238,29 +259,27 @@
         });
     }
 
-    function requestAdoptList(catIdx) {
-        _storeLoading = true;
+    function requestAdoptList(catIdx, cb) {
         sendPanelMsg('adopt_list', { categoryIndex: catIdx }, function(data) {
-            _storeLoading = false;
             if (!data.success) {
                 showToast('获取领养列表失败: ' + (data.error || '超时'));
+                if (cb) cb(false);
                 return;
             }
             _storeData = data.adoptable || [];
-            renderStoreCategories();
-            renderStoreGrid(catIdx);
+            if (cb) cb(true);
         });
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 渲染：列表视图
+    // 渲染：列表页
     // ═══════════════════════════════════════════════════════════
     function renderPetGrid() {
         var gridEl = _el.querySelector('#pet-grid');
         var emptyEl = _el.querySelector('#pet-list-empty');
         gridEl.innerHTML = '';
 
-        if (_pets.length === 0) {
+        if (!_pets || _pets.length === 0) {
             emptyEl.hidden = false;
             return;
         }
@@ -290,7 +309,9 @@
 
             card.addEventListener('click', function(e) {
                 var idx = parseInt(this.dataset.index, 10);
-                onPetCardClick(idx);
+                if (!_busy && _pets[idx]) {
+                    navigateTo('advance', { petIdx: idx });
+                }
             });
             gridEl.appendChild(card);
         }
@@ -298,30 +319,24 @@
 
     function updateResourceDisplay() {
         if (!_snapshot) return;
-        _el.querySelector('#pet-gold').textContent = '金币: ' + formatMoney(_snapshot.gold);
-        _el.querySelector('#pet-kpoint').textContent = 'K点: ' + formatMoney(_snapshot.kpoint);
+        _goldEl.textContent = '金币: ' + formatMoney(_snapshot.gold);
+        _kpointEl.textContent = 'K点: ' + formatMoney(_snapshot.kpoint);
     }
 
     function updateStatusBar() {
         if (!_snapshot) return;
-        _el.querySelector('#pet-deploy-count').textContent = (_snapshot.currentDeployCount || 0) + '/' + (_snapshot.maxDeploy || 0);
-        _el.querySelector('#pet-slot-count').textContent = (_pets.length || 0) + '/' + (_snapshot.maxSlots || 0);
+        _deployCountEl.textContent = (_snapshot.currentDeployCount || 0) + '/' + (_snapshot.maxDeploy || 0);
+        _slotCountEl.textContent = (_pets.length || 0) + '/' + (_snapshot.maxSlots || 0);
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 渲染：详情视图
+    // 渲染：进阶页
     // ═══════════════════════════════════════════════════════════
-    function onPetCardClick(idx) {
-        if (_busy) return;
-        var pet = _pets[idx];
+    function renderAdvancePage() {
+        var pet = _pets[_activePetIdx];
         if (!pet) return;
 
-        showDetailView(idx);
-        renderDetailView(pet);
-    }
-
-    function renderDetailView(pet) {
-        _el.querySelector('#pet-detail-name').textContent = pet.name + ' Lv.' + pet.level;
+        _el.querySelector('#pet-advance-title').textContent = pet.name + ' Lv.' + pet.level;
 
         var metaHtml = '';
         if (pet.deployed) {
@@ -332,15 +347,13 @@
         if (pet.stamina <= 0) {
             metaHtml += '<span class="pet-meta-chip pet-meta-exhausted">体力耗尽</span>';
         }
-        _el.querySelector('#pet-detail-meta').innerHTML = metaHtml;
+        _el.querySelector('#pet-advance-meta').innerHTML = metaHtml;
 
-        // 属性
         _el.querySelector('#pet-stat-level').textContent = 'Lv.' + pet.level;
         _el.querySelector('#pet-stat-stamina').textContent = pet.stamina + '/20';
         _el.querySelector('#pet-stat-xp').textContent = (pet.xp || 0) + '/' + (pet.xpNeeded || '--');
         _el.querySelector('#pet-stat-height').textContent = (pet.height || '--') + 'cm';
 
-        // 出战按钮
         var deployBtn = _el.querySelector('#pet-deploy-btn');
         deployBtn.textContent = pet.deployed ? '休息' : '出战';
         deployBtn.className = 'pet-deploy-btn' + (pet.deployed ? ' pet-deploy-btn-rest' : '');
@@ -356,7 +369,6 @@
             deployBtn.title = '';
         }
 
-        // 进阶方案列表
         renderPromotions(pet);
     }
 
@@ -375,7 +387,6 @@
             var scheme = window.PetData ? PetData.getScheme(schemeName) : null;
             if (!scheme) continue;
 
-            // 查找当前进阶进度
             var currentTier = 0;
             if (pet.promotions) {
                 for (var j = 0; j < pet.promotions.length; j++) {
@@ -437,8 +448,24 @@
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 渲染：领养商店
+    // 渲染：领养商店页
     // ═══════════════════════════════════════════════════════════
+    function renderStoreContent() {
+        // 显示 loading，隐藏 grid 和 empty
+        _el.querySelector('#pet-store-loading').hidden = false;
+        _el.querySelector('#pet-store-grid').hidden = true;
+        _el.querySelector('#pet-store-empty').hidden = true;
+        _el.querySelector('#pet-store-tabs').innerHTML = '';
+
+        requestAdoptList(_storeCategoryIdx, function(ok) {
+            _el.querySelector('#pet-store-loading').hidden = true;
+            if (ok) {
+                renderStoreCategories();
+                renderStoreGrid(_storeCategoryIdx);
+            }
+        });
+    }
+
     function renderStoreCategories() {
         var tabsEl = _el.querySelector('#pet-store-tabs');
         tabsEl.innerHTML = '';
@@ -453,7 +480,16 @@
                 var ci = parseInt(this.dataset.index, 10);
                 _storeCategoryIdx = ci;
                 renderStoreCategories();
-                requestAdoptList(ci);
+                // 重新加载该分类数据
+                _el.querySelector('#pet-store-loading').hidden = false;
+                _el.querySelector('#pet-store-grid').hidden = true;
+                _el.querySelector('#pet-store-empty').hidden = true;
+                requestAdoptList(ci, function(ok) {
+                    _el.querySelector('#pet-store-loading').hidden = true;
+                    if (ok) {
+                        renderStoreGrid(ci);
+                    }
+                });
             });
             tabsEl.appendChild(tab);
         }
@@ -548,8 +584,8 @@
                     _snapshot.currentDeployCount = data.currentDeployCount;
                 }
                 updateStatusBar();
-                renderDetailView(pet);
                 renderPetGrid();
+                renderAdvancePage();
                 showToast(pet.deployed ? '已出战' : '已休息');
             } else {
                 showToast('操作失败: ' + (data.error || '未知错误'));
@@ -566,13 +602,13 @@
         sendPanelMsg('advance', { slotIndex: pet.slotIndex, scheme: schemeName }, function(data) {
             _busy = false;
             if (data.success) {
-                // 刷新快照
                 if (_snapshot) {
                     _snapshot.gold = data.gold;
                     _snapshot.kpoint = data.kpoint;
                 }
                 updateResourceDisplay();
-                requestSnapshot(); // 重新拉取宠物数据
+                requestSnapshot(); // 重新拉取宠物数据后刷新进阶页
+                showToast('进阶成功！');
             } else {
                 var reason = data.reason || data.error || '未知错误';
                 showToast('进阶失败: ' + reason);
@@ -593,8 +629,9 @@
                 }
                 updateResourceDisplay();
                 requestSnapshot();
-                requestAdoptList(_storeCategoryIdx);
                 showToast('领养成功！');
+                // 领养成功后返回列表页
+                navigateTo('list');
             } else {
                 showToast('领养失败: ' + (data.error || '未知错误'));
             }
@@ -639,20 +676,18 @@
     }
 
     function showToast(msg) {
-        var toastEl = _el.querySelector('#pet-toast');
-        if (!toastEl) return;
-        toastEl.textContent = msg;
-        toastEl.classList.add('pet-toast-visible');
+        if (!_toastEl) return;
+        _toastEl.textContent = msg;
+        _toastEl.classList.add('pet-toast-visible');
         if (_toastTimer) clearTimeout(_toastTimer);
         _toastTimer = setTimeout(function() {
-            toastEl.classList.remove('pet-toast-visible');
+            _toastEl.classList.remove('pet-toast-visible');
             _toastTimer = null;
         }, 2500);
     }
 
     function hideToast() {
-        var toastEl = _el.querySelector('#pet-toast');
-        if (toastEl) toastEl.classList.remove('pet-toast-visible');
+        if (_toastEl) _toastEl.classList.remove('pet-toast-visible');
         if (_toastTimer) { clearTimeout(_toastTimer); _toastTimer = null; }
     }
 })();
