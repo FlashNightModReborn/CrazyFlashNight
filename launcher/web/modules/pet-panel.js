@@ -18,6 +18,7 @@
     var _reqSeq = 0;
     var _session = 0;
     var _busy = false;
+    var _storeLoading = false;
     var _toastTimer = null;
 
     // ═══════════════════════════════════════════════════════════
@@ -122,6 +123,7 @@
         _session++;
         _pendingReq = {};
         _busy = false;
+        _storeLoading = false;
         _snapshot = null;
         _activePetIdx = -1;
         _activeView = 'list';
@@ -141,6 +143,7 @@
     function onClose() {
         _pendingReq = {};
         _busy = false;
+        _storeLoading = false;
         _snapshot = null;
         _activePetIdx = -1;
         hideToast();
@@ -179,7 +182,7 @@
     }
 
     function openStore() {
-        if (_busy) return;
+        if (_busy || _storeLoading) return;
         showStoreView();
         if (_storeData.length === 0) {
             requestAdoptList(0);
@@ -236,9 +239,11 @@
     }
 
     function requestAdoptList(catIdx) {
+        _storeLoading = true;
         sendPanelMsg('adopt_list', { categoryIndex: catIdx }, function(data) {
+            _storeLoading = false;
             if (!data.success) {
-                showToast('获取领养列表失败');
+                showToast('获取领养列表失败: ' + (data.error || '超时'));
                 return;
             }
             _storeData = data.adoptable || [];

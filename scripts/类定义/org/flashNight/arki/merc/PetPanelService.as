@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 文件：org/flashNight/arki/merc/PetPanelService.as
  * 说明：WebView 战宠面板的 AS2 端桥。
  *
@@ -173,34 +173,42 @@ class org.flashNight.arki.merc.PetPanelService {
             for (var c:Number = 0; c < _root.宠物商城列表.length; c++) {
                 if (categoryIdx >= 0 && c != categoryIdx) continue;
                 var cat:Object = _root.宠物商城列表[c];
-                for (var j:Number = 0; j < cat.ids.length; j++) {
-                    var petId:Number = cat.ids[j];
-                    var petDef:Object = _root.宠物库[petId];
-                    if (petDef == undefined) continue;
+                // cat.List 是二维数组：[[0,1,2], [3,4,5], ...]（XML 解析时按 <List> 分行）
+                var rows:Array = cat.List;
+                if (rows == undefined) continue;
+                for (var j:Number = 0; j < rows.length; j++) {
+                    var row:Array = rows[j];
+                    if (row == undefined) continue;
+                    for (var m:Number = 0; m < row.length; m++) {
+                        var petId:Number = Number(row[m]);
+                        if (isNaN(petId) || petId == null) continue;
+                        var petDef:Object = _root.宠物库[petId];
+                        if (petDef == undefined) continue;
 
-                    // 检查是否已拥有（Unique宠物）
-                    var owned:Boolean = false;
-                    if (petDef.Unique == true) {
-                        for (var k:Number = 0; k < _root.宠物信息.length; k++) {
-                            if (_root.宠物信息[k][0] == petId) {
-                                owned = true;
-                                break;
+                        // 检查是否已拥有（Unique宠物）
+                        var owned:Boolean = false;
+                        if (petDef.Unique == true) {
+                            for (var k:Number = 0; k < _root.宠物信息.length; k++) {
+                                if (_root.宠物信息[k][0] == petId) {
+                                    owned = true;
+                                    break;
+                                }
                             }
                         }
-                    }
-                    if (owned) continue;
+                        if (owned) continue;
 
-                    adoptable.push({
-                        petId: petId,
-                        name: String(petDef.Name),
-                        identifier: String(petDef.Identifier),
-                        height: Number(petDef.Height),
-                        price: Number(petDef.Price),
-                        kprice: Number(petDef.KPrice),
-                        unlockLevel: Number(petDef.UnlockLevel),
-                        unlockTask: Number(petDef.UnlockTask),
-                        unique: petDef.Unique == true
-                    });
+                        adoptable.push({
+                            petId: petId,
+                            name: String(petDef.Name),
+                            identifier: String(petDef.Identifier),
+                            height: Number(petDef.Height),
+                            price: Number(petDef.Price),
+                            kprice: Number(petDef.KPrice),
+                            unlockLevel: Number(petDef.UnlockLevel),
+                            unlockTask: Number(petDef.UnlockTask),
+                            unique: petDef.Unique == true
+                        });
+                    }
                 }
             }
         }
@@ -230,8 +238,17 @@ class org.flashNight.arki.merc.PetPanelService {
             return;
         }
 
-        // 检查宠物栏是否已满
-        if (_root.宠物信息.length >= _root.宠物领养限制) {
+        // 查找空位（Flash 宠物界面采用固定槽位+空位填充模式）
+        var emptySlot:Number = -1;
+        for (var s:Number = 0; s < _root.宠物信息.length; s++) {
+            var slotEntry:Array = _root.宠物信息[s];
+            if (slotEntry == undefined || slotEntry.length == 0) {
+                emptySlot = s;
+                break;
+            }
+        }
+
+        if (emptySlot < 0) {
             sendResponse({ task: "pet_response", callId: callId, success: false, error: "slots_full" });
             return;
         }
@@ -262,7 +279,7 @@ class org.flashNight.arki.merc.PetPanelService {
         if (price > 0) _root.金钱 -= price;
         if (kprice > 0) _root.K点 -= kprice;
 
-        // 创建宠物信息条目
+        // 创建宠物信息并填入空位
         var initialLevel:Number = Number(petDef.InitialLevel) || 1;
         var newPet:Array = [petId, initialLevel, 20, 0, 0, {}];
 
@@ -271,7 +288,7 @@ class org.flashNight.arki.merc.PetPanelService {
             petDef.Price += Number(petDef.IncreasePrice);
         }
 
-        _root.宠物信息.push(newPet);
+        _root.宠物信息[emptySlot] = newPet;
 
         // 刷新宠物UI
         if (_root.宠物信息界面 != undefined && _root.宠物信息界面.排列宠物图标 != undefined) {
@@ -283,7 +300,7 @@ class org.flashNight.arki.merc.PetPanelService {
             callId: callId,
             success: true,
             petId: petId,
-            slotIndex: _root.宠物信息.length - 1,
+            slotIndex: emptySlot,
             gold: Number(_root.金钱) || 0,
             kpoint: Number(_root.K点) || 0
         });
