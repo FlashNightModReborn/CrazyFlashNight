@@ -16,6 +16,7 @@ var StageSelectPanel = (function() {
     var _frameToggleEl;
     var _frameToggleLabelEl;
     var _frameToggleCounterEl;
+    var _frameToggleTaskBadgeEl;
     var _currentFrameLabel = '';
     var _returnFrameLabel = '';
     var _fixtureName = 'mixed';
@@ -49,6 +50,7 @@ var StageSelectPanel = (function() {
                     '<button class="stage-select-frame-toggle" id="stage-select-frame-toggle" type="button" aria-expanded="false" aria-haspopup="listbox" title="切换区域" data-audio-cue="confirm">' +
                         '<span class="stage-select-frame-toggle-label" id="stage-select-frame-toggle-label"></span>' +
                         '<span class="stage-select-frame-toggle-counter" id="stage-select-frame-toggle-counter" aria-hidden="true"></span>' +
+                        '<span class="stage-select-frame-toggle-task-badge" id="stage-select-frame-toggle-task-badge" aria-hidden="true"></span>' +
                         '<span class="stage-select-frame-toggle-icon" aria-hidden="true">▾</span>' +
                     '</button>' +
                     '<span class="stage-select-region" id="stage-select-region"></span>' +
@@ -92,6 +94,7 @@ var StageSelectPanel = (function() {
         _frameToggleEl = _el.querySelector('#stage-select-frame-toggle');
         _frameToggleLabelEl = _el.querySelector('#stage-select-frame-toggle-label');
         _frameToggleCounterEl = _el.querySelector('#stage-select-frame-toggle-counter');
+        _frameToggleTaskBadgeEl = _el.querySelector('#stage-select-frame-toggle-task-badge');
 
         _el.querySelector('.stage-select-close-btn').addEventListener('click', requestClose);
         _frameToggleEl.addEventListener('click', function(e) {
@@ -175,7 +178,9 @@ var StageSelectPanel = (function() {
             button.setAttribute('data-frame-index', String(index));
             button.setAttribute('role', 'option');
             button.tabIndex = -1;
-            button.textContent = label;
+            button.innerHTML =
+                '<span class="stage-select-tab-label">' + escapeHtml(label) + '</span>' +
+                '<span class="stage-select-tab-task-badge" aria-hidden="true"></span>';
             button.addEventListener('click', function() {
                 selectFrameTab(label);
             });
@@ -276,6 +281,7 @@ var StageSelectPanel = (function() {
 
     function renderHeader(frame) {
         var tabs = _tabsEl ? _tabsEl.querySelectorAll('.stage-select-tab') : [];
+        var taskTargets = getTaskTargets();
         var activeIndex = -1;
         for (var i = 0; i < tabs.length; i += 1) {
             var isActive = tabs[i].getAttribute('data-frame-label') === frame.frameLabel;
@@ -283,6 +289,7 @@ var StageSelectPanel = (function() {
             tabs[i].setAttribute('aria-selected', isActive ? 'true' : 'false');
             if (isActive) activeIndex = i;
         }
+        syncFrameTaskBadges(taskTargets);
         var region = _el.querySelector('#stage-select-region');
         if (region) region.textContent = frame.frameLabel;
         if (_frameToggleLabelEl) _frameToggleLabelEl.textContent = frame.frameLabel;
@@ -290,6 +297,14 @@ var StageSelectPanel = (function() {
             _frameToggleCounterEl.textContent = tabs.length
                 ? (activeIndex >= 0 ? (activeIndex + 1) : 1) + '/' + tabs.length
                 : '';
+        }
+        if (_frameToggleTaskBadgeEl) {
+            _frameToggleTaskBadgeEl.textContent = taskTargets.total ? formatTaskCount(taskTargets.total) : '';
+            _frameToggleTaskBadgeEl.style.display = taskTargets.total ? '' : 'none';
+        }
+        if (_frameToggleEl) {
+            _frameToggleEl.classList.toggle('has-task', taskTargets.total > 0);
+            _frameToggleEl.setAttribute('data-task-count', String(taskTargets.total || 0));
         }
         if (_summaryEl) {
             _summaryEl.innerHTML =
@@ -299,9 +314,76 @@ var StageSelectPanel = (function() {
                 '<div>nav buttons: <b>' + (frame.navButtons || []).length + '</b></div>' +
                 '<div>background: <b>' + escapeHtml(frame.background && frame.background.mode || 'missing') + '</b></div>' +
                 '<div>fixture: <b>' + escapeHtml(_fixtureName) + '</b></div>' +
+                '<div>task targets: <b>' + taskTargets.total + '</b></div>' +
                 '<div>runtime: <b>' + (_runtimeSnapshot ? 'live' : 'fixture') + '</b></div>' +
                 (_lastError ? '<div class="stage-select-error-line">error: <b>' + escapeHtml(_lastError) + '</b></div>' : '');
         }
+    }
+
+    function syncFrameTaskBadges(taskTargets) {
+        if (!_tabsEl) return;
+        var tabs = _tabsEl.querySelectorAll('.stage-select-tab');
+        for (var i = 0; i < tabs.length; i += 1) {
+            var label = tabs[i].getAttribute('data-frame-label') || '';
+            var count = taskTargets && taskTargets.byFrame ? Number(taskTargets.byFrame[label] || 0) : 0;
+            var badge = tabs[i].querySelector('.stage-select-tab-task-badge');
+            tabs[i].classList.toggle('has-task', count > 0);
+            tabs[i].setAttribute('data-task-count', String(count));
+            if (badge) {
+                badge.textContent = count ? formatTaskCount(count) : '';
+                badge.style.display = count ? '' : 'none';
+            }
+        }
+    }
+
+    function getTaskTargets() {
+        var manifest = StageSelectData.getManifest();
+        var byStage = {};
+        var byFrame = {};
+        var stages = [];
+        var frames = [];
+        var frameSeen = {};
+        var total = 0;
+
+        (manifest.frames || []).forEach(function(frame) {
+            var frameCount = 0;
+            var frameStageSeen = {};
+            (frame.stageButtons || []).forEach(function(button) {
+                var name = button.stageName || '';
+                if (!name || frameStageSeen[name]) return;
+                frameStageSeen[name] = true;
+                if (!getStageState(name).task) return;
+                frameCount += 1;
+                if (!byStage[name]) {
+                    byStage[name] = {
+                        stageName: name,
+                        frameLabel: frame.frameLabel,
+                        highestDifficulty: getStageState(name).highestDifficulty || '简单'
+                    };
+                    stages.push(name);
+                    total += 1;
+                }
+            });
+            if (frameCount > 0) {
+                byFrame[frame.frameLabel] = frameCount;
+                if (!frameSeen[frame.frameLabel]) {
+                    frameSeen[frame.frameLabel] = true;
+                    frames.push(frame.frameLabel);
+                }
+            }
+        });
+
+        return {
+            byStage: byStage,
+            byFrame: byFrame,
+            stages: stages,
+            frames: frames,
+            total: total
+        };
+    }
+
+    function formatTaskCount(count) {
+        return count > 99 ? '99+' : String(count);
     }
 
     function renderBackground(frame) {
@@ -1157,6 +1239,7 @@ var StageSelectPanel = (function() {
                 navButtonCount: _navLayerEl ? _navLayerEl.querySelectorAll('.stage-select-nav-button').length : 0,
                 layoutWatcherActive: !!(_layoutObserver || _resizeHandler),
                 runtimeSnapshot: _runtimeSnapshot,
+                taskTargets: getTaskTargets(),
                 pendingCount: Object.keys(_pendingReq).length,
                 busyStageName: _busyStageName,
                 lastError: _lastError,

@@ -94,6 +94,11 @@ async function main() {
         failedRequests.push(request.url() + ' :: ' + (failure && failure.errorText || 'failed'));
     });
     page.on('pageerror', error => pageErrors.push(error && error.message ? error.message : String(error)));
+    await page.route('https://cfn-fonts.local/**', route => route.fulfill({
+        status: 204,
+        headers: { 'access-control-allow-origin': '*' },
+        body: ''
+    }));
 
     await page.goto(url, { waitUntil: 'load' });
     await page.waitForFunction(() => window.__qaResult && window.__qaResult.qa, null, { timeout: 20000 });

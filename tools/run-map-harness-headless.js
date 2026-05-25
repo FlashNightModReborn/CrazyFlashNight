@@ -1,7 +1,7 @@
 'use strict';
 
 // Headless map harness QA runner：用 launcher/perf 自带的 playwright + http server
-// 跑 map harness QA suite (map-ui1~24)，作为离线视觉/逻辑回归门控。
+// 跑 map harness QA suite (map-ui1~28)，作为离线视觉/逻辑回归门控。
 //
 // 用法：node tools/run-map-harness-headless.js [--browser=edge|chrome]
 //   可选 --case=map-ui10 仅跑单条；--keep-open 保留窗口（headed 调试）；
@@ -84,6 +84,11 @@ async function main() {
             console.log('[' + msg.type() + ']', msg.text());
         }
     });
+    await page.route('https://cfn-fonts.local/**', route => route.fulfill({
+        status: 204,
+        headers: { 'access-control-allow-origin': '*' },
+        body: ''
+    }));
 
     let bundle = null;
     try {

@@ -905,6 +905,7 @@ var MapPanel = (function() {
             var enabled = !!_enabledLookup[hotspotId];
             var isCurrent = _currentHotspotId === hotspotId;
             var stageSelectEntry = resolveStageSelectEntryForHotspot(hotspot);
+            var hasQuest = !!_taskBadge.byHotspot[hotspotId];
             var row = document.createElement('div');
             row.className = 'map-rail-scene-row';
             row.setAttribute('data-hotspot-id', hotspotId);
@@ -921,7 +922,6 @@ var MapPanel = (function() {
             item.setAttribute('aria-disabled', enabled ? 'false' : 'true');
             item.setAttribute('aria-label', hotspot.label);
             // 末端任务红点：只在已解锁 + 有可交付任务时显示（剧透防护已在 rebuildTaskBadgeLookup 内做掉）
-            var hasQuest = !!_taskBadge.byHotspot[hotspotId];
             item.classList.toggle('has-quest', hasQuest);
             var questDotHtml = hasQuest
                 ? '<span class="map-rail-scene-quest" aria-hidden="true"></span>'
@@ -934,13 +934,13 @@ var MapPanel = (function() {
             row.appendChild(item);
             if (stageSelectEntry && enabled) {
                 var stageBtn = document.createElement('button');
-                stageBtn.className = 'map-rail-stage-select-btn';
+                stageBtn.className = 'map-rail-stage-select-btn' + (hasQuest ? ' is-task' : '');
                 stageBtn.type = 'button';
-                stageBtn.textContent = '选关';
+                stageBtn.textContent = hasQuest ? '任务选关' : '选关';
                 stageBtn.setAttribute('data-hotspot-id', hotspotId);
                 stageBtn.setAttribute('data-stage-select-frame', stageSelectEntry.frameLabel);
                 stageBtn.setAttribute('data-audio-cue', 'select');
-                stageBtn.setAttribute('aria-label', '打开' + stageSelectEntry.frameLabel + '选关');
+                stageBtn.setAttribute('aria-label', (hasQuest ? '打开任务指向的' : '打开') + stageSelectEntry.frameLabel + '选关');
                 attachStageSelectActionHandler(stageBtn, hotspot);
                 row.appendChild(stageBtn);
             }
@@ -1019,6 +1019,7 @@ var MapPanel = (function() {
             if (!hotspotState.enabled) continue;
             var rect = hotspot.rect;
             var stageSelectEntry = resolveStageSelectEntryForHotspot(hotspot);
+            var hasQuest = !!_taskBadge.byHotspot[hotspot.id];
             var label = document.createElement('div');
             label.className = 'map-hotspot-overlay-label';
             label.setAttribute('data-hotspot-id', hotspot.id);
@@ -1034,13 +1035,13 @@ var MapPanel = (function() {
                 var actions = document.createElement('div');
                 actions.className = 'map-hotspot-overlay-actions';
                 var action = document.createElement('button');
-                action.className = 'map-hotspot-stage-select-btn';
+                action.className = 'map-hotspot-stage-select-btn' + (hasQuest ? ' is-task' : '');
                 action.type = 'button';
-                action.textContent = '前往选关';
+                action.textContent = hasQuest ? '任务选关' : '前往选关';
                 action.setAttribute('data-hotspot-id', hotspot.id);
                 action.setAttribute('data-stage-select-frame', stageSelectEntry.frameLabel);
                 action.setAttribute('data-audio-cue', 'select');
-                action.setAttribute('aria-label', '打开' + stageSelectEntry.frameLabel + '选关');
+                action.setAttribute('aria-label', (hasQuest ? '打开任务指向的' : '打开') + stageSelectEntry.frameLabel + '选关');
                 attachStageSelectActionHandler(action, hotspot);
                 actions.appendChild(action);
                 label.appendChild(actions);
@@ -2267,6 +2268,7 @@ var MapPanel = (function() {
         var enabledHotspotIds = [];
         var lockedHotspotIds = [];
         var stageSelectHotspotIds = [];
+        var taskStageSelectHotspotIds = [];
         var i;
 
         for (i = 0; i < hotspots.length; i++) {
@@ -2278,6 +2280,9 @@ var MapPanel = (function() {
             }
             if (resolveStageSelectEntryForHotspot(hotspots[i])) {
                 stageSelectHotspotIds.push(hotspots[i].id);
+                if (_taskBadge.byHotspot[hotspots[i].id]) {
+                    taskStageSelectHotspotIds.push(hotspots[i].id);
+                }
             }
         }
 
@@ -2294,6 +2299,7 @@ var MapPanel = (function() {
             enabledHotspotIds: enabledHotspotIds,
             lockedHotspotIds: lockedHotspotIds,
             stageSelectHotspotIds: stageSelectHotspotIds,
+            taskStageSelectHotspotIds: taskStageSelectHotspotIds,
             stageSelectBusyHotspotId: _stageSelectBusyHotspotId,
             dynamicAvatarState: _dynamicAvatarState,
             unlockFlags: _unlockFlags,

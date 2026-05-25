@@ -1271,16 +1271,29 @@ var MapPanelHarnessQA = (function() {
                         var defenseTabBadge = document.querySelector('.map-page-tab[data-page-id="defense"] .map-page-tab-badge');
                         api.assert(defenseTabBadge && defenseTabBadge.offsetParent === null, 'defense tab badge should be hidden');
 
-                        // scene item 末端红点 — base 当前页 base_lobby item 应带 has-quest
+                        // filter 聚合 + scene item 末端红点：切到包含 base_lobby 的非 meta filter，确保红点不是只停在 page tab。
+                        var basePage = MapPanelData.getPage('base');
+                        var lobbyFilter = (basePage.filters || []).filter(function(filter) {
+                            return filter.id !== 'all' && filter.id !== 'hierarchy' && (filter.hotspotIds || []).indexOf('base_lobby') >= 0;
+                        })[0];
+                        api.assert(!!lobbyFilter, 'base_lobby non-meta filter should exist');
+                        var lobbyFilterBtn = getFilterButton(lobbyFilter.id);
+                        api.assert(!!lobbyFilterBtn, 'base_lobby filter button should render');
+                        api.assert(lobbyFilterBtn.classList.contains('has-quest'), 'base_lobby filter should have has-quest class');
+                        api.assert(!!lobbyFilterBtn.querySelector('.map-filter-hotspot-badge'), 'base_lobby filter should render task badge');
+                        clickByHitTest(api, lobbyFilterBtn, 'base_lobby task filter');
+                        return api.waitFor(function() {
+                            var s = currentState();
+                            return s && s.activeFilterId === lobbyFilter.id ? s : null;
+                        }, 1500, 'switch to base_lobby filter').then(function() {
                         var lobbyItem = document.querySelector('.map-rail-scene-item[data-hotspot-id="base_lobby"]');
-                        if (lobbyItem) {
-                            // 只有该 hotspot 被当前 filter 折叠展开时 item 才存在
+                            api.assert(!!lobbyItem, 'base_lobby scene item should render after filter opens');
                             api.assert(lobbyItem.classList.contains('has-quest'), 'base_lobby scene item should have has-quest class');
                             api.assert(!!lobbyItem.querySelector('.map-rail-scene-quest'), 'base_lobby scene item should render quest dot');
-                        }
 
                         return 'byPage=' + JSON.stringify(state.taskBadge.byPage) +
                             ', byHotspotCount=' + Object.keys(state.taskBadge.byHotspot).length;
+                        });
                     });
                 }
             },
@@ -1317,6 +1330,44 @@ var MapPanelHarnessQA = (function() {
                         return 'baseQuestCount=' + state.taskBadge.byPage['base'] +
                             ', factionQuestCount=' + (state.taskBadge.byPage['faction'] || 0) +
                             ', lockedFiltered=ok';
+                    });
+                }
+            },
+            {
+                id: 'map-ui28',
+                title: 'task hotspot stage-select shortcut uses task affordance and opens matching frame',
+                run: function() {
+                    return bootMap(api, host, {
+                        defaultPageId: 'faction',
+                        currentHotspotId: 'rock_park',
+                        taskNpcHotspots: ['rock_park']
+                    }).then(function() {
+                        clickByHitTest(api, getFilterButton('rock'), 'rock filter');
+                        return api.waitFor(function() {
+                            var state = currentState();
+                            return state && state.activeFilterId === 'rock' ? state : null;
+                        }, 1500, 'switch to rock').then(function(state) {
+                            api.assert(state.taskBadge.byHotspot['rock_park'] === true, 'rock_park should be a task hotspot');
+                            api.assert(state.taskStageSelectHotspotIds.indexOf('rock_park') >= 0, 'rock_park should be task stage-select hotspot');
+
+                            var action = document.querySelector('.map-rail-stage-select-btn[data-hotspot-id="rock_park"]');
+                            api.assert(!!action, 'rock_park task stage-select action missing');
+                            api.assert(action.classList.contains('is-task'), 'rail stage-select action should use task class');
+                            api.assert((action.textContent || '').indexOf('任务') >= 0, 'rail action label should mention task');
+
+                            var overlayAction = document.querySelector('.map-hotspot-stage-select-btn[data-hotspot-id="rock_park"]');
+                            api.assert(!!overlayAction, 'rock_park overlay stage-select action missing');
+                            api.assert(overlayAction.classList.contains('is-task'), 'overlay action should use task class');
+
+                            var beforeOpenCount = host.getMessages().filter(function(m) { return m && m.cmd === 'open_stage_select'; }).length;
+                            clickByHitTest(api, action, 'rock_park task stage-select action');
+                            var openMessages = host.getMessages().filter(function(m) { return m && m.cmd === 'open_stage_select'; });
+                            api.assertEqual(openMessages.length - beforeOpenCount, 1, 'task stage-select action should emit one open_stage_select');
+                            var msg = openMessages[openMessages.length - 1];
+                            api.assertEqual(msg.targetId, 'rock_park', 'task open_stage_select targetId');
+                            api.assertEqual(msg.frameLabel, '基地车库', 'task opens matching garage stage-select frame');
+                            return 'taskOpenStageSelect=' + msg.targetId + '->' + msg.frameLabel;
+                        });
                     });
                 }
             }

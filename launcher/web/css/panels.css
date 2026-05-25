@@ -2973,7 +2973,10 @@
 }
 
 .map-hotspot-stage-select-btn {
-    display:block;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
     width:100%;
     padding:6px 10px;
     border:1px solid rgba(140, 255, 120, 0.36);
@@ -2988,6 +2991,23 @@
     text-align:center;
 }
 
+.map-hotspot-stage-select-btn.is-task {
+    border-color:rgba(255, 94, 74, 0.68);
+    background:rgba(138, 28, 22, 0.88);
+    color:#fff3d4;
+    box-shadow:0 0 12px rgba(255, 74, 58, 0.28);
+}
+
+.map-hotspot-stage-select-btn.is-task::before {
+    content:"";
+    width:7px;
+    height:7px;
+    border-radius:999px;
+    background:#ff4a3a;
+    box-shadow:0 0 7px rgba(255, 74, 58, 0.85);
+    flex:0 0 auto;
+}
+
 .map-hotspot-stage-select-btn:hover,
 .map-hotspot-stage-select-btn:focus {
     outline:none;
@@ -2995,6 +3015,13 @@
     background:rgba(0, 144, 36, 0.92);
     color:#ffffff;
     box-shadow:0 0 12px rgba(140,255,120,0.32);
+}
+
+.map-hotspot-stage-select-btn.is-task:hover,
+.map-hotspot-stage-select-btn.is-task:focus {
+    border-color:rgba(255, 146, 98, 0.9);
+    background:rgba(176, 38, 26, 0.95);
+    box-shadow:0 0 14px rgba(255, 74, 58, 0.38);
 }
 
 .map-hotspot-stage-select-btn.is-busy,
@@ -3181,6 +3208,10 @@
 }
 
 .map-rail-stage-select-btn {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
     align-self:flex-end;
     min-width:56px;
     height:22px;
@@ -3194,11 +3225,36 @@
     transition:background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
 }
 
+.map-rail-stage-select-btn.is-task {
+    min-width:72px;
+    border-color:rgba(255, 94, 74, 0.6);
+    background:rgba(110, 24, 20, 0.84);
+    color:#fff2d2;
+    box-shadow:0 0 10px rgba(255, 74, 58, 0.2);
+}
+
+.map-rail-stage-select-btn.is-task::before {
+    content:"";
+    width:6px;
+    height:6px;
+    border-radius:999px;
+    background:#ff4a3a;
+    box-shadow:0 0 6px rgba(255, 74, 58, 0.8);
+    flex:0 0 auto;
+}
+
 .map-rail-stage-select-btn:hover,
 .map-rail-stage-select-btn:focus {
     outline:none;
     border-color:rgba(158, 255, 118, 0.48);
     background:rgba(12, 76, 28, 0.86);
+    color:#ffffff;
+}
+
+.map-rail-stage-select-btn.is-task:hover,
+.map-rail-stage-select-btn.is-task:focus {
+    border-color:rgba(255, 146, 98, 0.78);
+    background:rgba(150, 34, 24, 0.92);
     color:#ffffff;
 }
 
@@ -3394,7 +3450,9 @@
 @media (prefers-reduced-motion: reduce) {
     .map-page-tab-badge,
     .map-filter-hotspot-badge,
-    .map-rail-scene-quest {
+    .map-rail-scene-quest,
+    .stage-select-frame-toggle-task-badge,
+    .stage-select-tab-task-badge {
         animation:none;
     }
 }
@@ -3901,6 +3959,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 
 .stage-select-frame-toggle {
     display: none;
+    position: relative;
     align-items: center;
     gap: 8px;
     min-width: 150px;
@@ -3946,6 +4005,30 @@ html.perf-low-effects .map-panel-close-btn:hover {
     letter-spacing: 0.5px;
 }
 
+.stage-select-frame-toggle-task-badge,
+.stage-select-tab-task-badge {
+    flex: 0 0 auto;
+    min-width: 14px;
+    height: 14px;
+    padding: 0 4px;
+    border: 1px solid rgba(8, 14, 16, 0.55);
+    border-radius: 999px;
+    background: #ff4a3a;
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 14px;
+    text-align: center;
+    letter-spacing: 0;
+    box-shadow: 0 0 7px rgba(255, 74, 58, 0.58);
+    animation: mapQuestBadgeEnter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.stage-select-frame-toggle-task-badge:empty,
+.stage-select-tab-task-badge:empty {
+    display: none;
+}
+
 .stage-select-frame-toggle:hover .stage-select-frame-toggle-counter,
 .stage-select-frame-toggle:focus-visible .stage-select-frame-toggle-counter,
 .stage-select-panel.is-frame-menu-open .stage-select-frame-toggle-counter {
@@ -3980,6 +4063,9 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 
 .stage-select-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     border: 1px solid rgba(148, 163, 184, 0.3);
     background: rgba(15, 23, 42, 0.78);
     color: #dbeafe;
@@ -3987,6 +4073,18 @@ html.perf-low-effects .map-panel-close-btn:hover {
     padding: 0 8px;
     font-size: 12px;
     cursor: pointer;
+}
+
+.stage-select-tab-label {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.stage-select-tab.has-task {
+    border-color: rgba(255, 74, 58, 0.58);
+    box-shadow: 0 0 10px rgba(255, 74, 58, 0.16);
 }
 
 .stage-select-tab:hover,
@@ -4063,6 +4161,11 @@ html.perf-low-effects .map-panel-close-btn:hover {
     display: inline-flex;
 }
 
+.stage-select-panel.is-runtime .stage-select-frame-toggle.has-task {
+    border-color: rgba(255, 74, 58, 0.55);
+    box-shadow: 0 0 12px rgba(255, 74, 58, 0.16);
+}
+
 .stage-select-panel.is-runtime .stage-select-tabs {
     position: absolute;
     left: 10px;
@@ -4086,6 +4189,10 @@ html.perf-low-effects .map-panel-close-btn:hover {
 
 .stage-select-panel.is-runtime .stage-select-tab {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
     height: 30px;
     padding: 0 9px 0 14px;
     overflow: hidden;
@@ -4095,6 +4202,15 @@ html.perf-low-effects .map-panel-close-btn:hover {
     white-space: nowrap;
     text-overflow: ellipsis;
     transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.stage-select-panel.is-runtime .stage-select-tab.has-task {
+    border-color: rgba(255, 74, 58, 0.58);
+    background: rgba(80, 19, 24, 0.58);
+}
+
+.stage-select-panel.is-runtime .stage-select-tab.has-task::before {
+    background: #ff4a3a;
 }
 
 .stage-select-panel.is-runtime .stage-select-tab::before {

@@ -10,6 +10,7 @@ const projectRoot = path.resolve(__dirname, '..');
 const stagesRoot = path.join(projectRoot, 'data', 'stages');
 const levelsRoot = path.join(projectRoot, 'flashswf', 'levels');
 const ffdecCli = path.join(projectRoot, 'tools', 'ffdec', 'ffdec-cli.exe');
+const ffdecJar = path.join(projectRoot, 'tools', 'ffdec', 'ffdec.jar');
 const exportRoot = path.join(projectRoot, 'tmp', 'diplomacy-stage-select-link-audit');
 const sceneTransitionScript = path.join(projectRoot, 'scripts', '逻辑', '关卡系统', '关卡系统_lsy_场景转换.as');
 const stageSelectServiceScript = path.join(projectRoot, 'scripts', '类定义', 'org', 'flashNight', 'arki', 'stageSelect', 'StageSelectPanelService.as');
@@ -56,6 +57,49 @@ function matchPatterns(text, patterns) {
         }
     }
     return hits;
+}
+
+function findJavaRuntime() {
+    const candidates = [];
+    if (process.env.JAVA_HOME) {
+        candidates.push(path.join(process.env.JAVA_HOME, 'bin', 'java.exe'));
+        candidates.push(path.join(process.env.JAVA_HOME, 'bin', 'java'));
+    }
+    candidates.push(
+        path.join(process.env.ProgramFiles || 'C:\\Program Files', 'Adobe', 'Adobe Animate 2024', 'jre', 'bin', 'java.exe'),
+        path.join(process.env['ProgramFiles(x86)'] || 'C:\\Program Files (x86)', 'Common Files', 'Adobe', 'Adobe Flash CS6', 'jre', 'bin', 'java.exe'),
+        'java'
+    );
+
+    for (const candidate of candidates) {
+        if (!candidate) continue;
+        if (candidate === 'java') {
+            const probe = childProcess.spawnSync(candidate, ['-version'], { encoding: 'utf8' });
+            if (!probe.error && probe.status === 0) return candidate;
+            continue;
+        }
+        if (fs.existsSync(candidate)) return candidate;
+    }
+    return '';
+}
+
+function resolveFfdecRunner() {
+    const java = findJavaRuntime();
+    if (java && fs.existsSync(ffdecJar)) {
+        return {
+            command: java,
+            prefixArgs: ['-jar', ffdecJar],
+            description: path.relative(projectRoot, ffdecJar).replace(/\\/g, '/')
+        };
+    }
+    if (fs.existsSync(ffdecCli)) {
+        return {
+            command: ffdecCli,
+            prefixArgs: [],
+            description: path.relative(projectRoot, ffdecCli).replace(/\\/g, '/')
+        };
+    }
+    return null;
 }
 
 function collectDiplomacyMaps() {
@@ -114,15 +158,17 @@ function collectStageSelectMapButtons() {
 
 function exportScripts(entry) {
     const outDir = path.join(exportRoot, safeName(entry.mapFrame));
+    const runner = resolveFfdecRunner();
     fs.mkdirSync(outDir, { recursive: true });
-    const result = childProcess.spawnSync(ffdecCli, [
+    const args = runner.prefixArgs.concat([
         '-onerror',
         'ignore',
         '-export',
         'script',
         outDir,
         entry.swf
-    ], {
+    ]);
+    const result = childProcess.spawnSync(runner.command, args, {
         cwd: projectRoot,
         encoding: 'utf8',
         maxBuffer: 1024 * 1024 * 16
@@ -224,8 +270,9 @@ function audit() {
 
     const scriptScans = [];
     if (!skipFfdec) {
-        if (!fs.existsSync(ffdecCli)) {
-            errors.push('missing FFDec CLI: ' + path.relative(projectRoot, ffdecCli));
+        const ffdecRunner = resolveFfdecRunner();
+        if (!ffdecRunner) {
+            errors.push('missing FFDec runner: ' + path.relative(projectRoot, ffdecCli) + ' or Java + ' + path.relative(projectRoot, ffdecJar));
         } else {
             if (fs.existsSync(exportRoot)) fs.rmSync(exportRoot, { recursive: true, force: true });
             fs.mkdirSync(exportRoot, { recursive: true });

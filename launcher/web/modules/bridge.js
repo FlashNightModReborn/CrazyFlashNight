@@ -164,14 +164,18 @@ var OverlayScale = (function() {
 // 这里只热常见尺寸，挑战字体（intel-font-*）按需加载，不在这里预热。
 (function preloadCommonFonts() {
     if (!document.fonts || typeof document.fonts.load !== 'function') return;
-    function warm() {
+    function safeLoad(spec) {
         try {
-            // tooltip / panel 主字号
-            document.fonts.load('12px "LXGW WenKai Screen"');
-            document.fonts.load('13px "LXGW WenKai Screen"');
-            // 系统 fallback 也提前 ready 一下，触发 ready Promise 完成
-            document.fonts.load('12px sans-serif');
+            var p = document.fonts.load(spec);
+            if (p && typeof p.catch === 'function') p.catch(function() {});
         } catch (e) {}
+    }
+    function warm() {
+        // tooltip / panel 主字号；独立 harness 没有 cfn-fonts.local 虚拟主机，字体加载失败应安静回退系统字体。
+        safeLoad('12px "LXGW WenKai Screen"');
+        safeLoad('13px "LXGW WenKai Screen"');
+        // 系统 fallback 也提前 ready 一下，触发 ready Promise 完成
+        safeLoad('12px sans-serif');
     }
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', warm);

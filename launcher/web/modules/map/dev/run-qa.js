@@ -1,64 +1,157 @@
+#!/usr/bin/env node
+'use strict';
+
 // 用法：
-//   node run-qa.js            → 跑全量
-//   node run-qa.js map-ui26   → 只跑指定 caseId
+//   node launcher/web/modules/map/dev/run-qa.js
+//   node launcher/web/modules/map/dev/run-qa.js map-ui26
+//   node launcher/web/modules/map/dev/run-qa.js --case=map-ui26
 //
-// 依赖 launcher/perf/node_modules/playwright（perf harness 已声明），
-// 通过 file:// 加载 harness.html 跑 MapPanelHarnessQA.runSuite。
-// 退出码：所有 case 通过 = 0，任一 FAIL = 1。
+// 复用 launcher/perf 的 Playwright 与本地静态 server，避免 file:// 下资源解析漂移。
+// 任一 QA fail、页面异常或资源请求失败都会返回非 0。
+
 const path = require('path');
-const playwrightDir = path.resolve(__dirname, '..', '..', '..', '..', 'perf', 'node_modules', 'playwright');
-const { chromium } = require(playwrightDir);
+const fs = require('fs');
 
-const harnessUrl = 'file:///' + path.resolve(__dirname, 'harness.html').replace(/\\/g, '/');
-const caseId = process.argv[2] || '';
+const repoRoot = path.resolve(__dirname, '..', '..', '..', '..', '..');
+const playwrightModule = path.join(repoRoot, 'launcher', 'perf', 'node_modules', 'playwright');
+const { startServer, stopServer } = require(path.join(repoRoot, 'launcher', 'perf', 'lib', 'server'));
 
-(async () => {
-    const browser = await chromium.launch();
-    const ctx = await browser.newContext({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 });
-    const page = await ctx.newPage();
-    const errors = [];
-    page.on('pageerror', err => errors.push('[pageerror] ' + err.message));
-
-    await page.goto(harnessUrl);
-    await page.waitForSelector('.map-panel', { state: 'visible', timeout: 5000 });
-    await page.waitForTimeout(400);
-
-    const result = await page.evaluate(async (caseId) => {
-        const host = window.MapHarnessHost;
-        const qa = window.MapPanelHarnessQA;
-        if (!host || !qa) return { error: 'host or qa missing' };
-
-        const log = [];
-        function assert(cond, msg) { if (!cond) { throw new Error(msg); } }
-        function assertEqual(a, b, msg) {
-            if (a !== b) throw new Error((msg || 'equal') + ': expected ' + JSON.stringify(b) + ', got ' + JSON.stringify(a));
+function parseArgs(argv) {
+    const out = {
+        caseId: '',
+        browser: 'chromium',
+        headed: false,
+        timeout: 120000,
+        viewport: '1600x900'
+    };
+    for (let i = 0; i < argv.length; i += 1) {
+        const arg = argv[i];
+        if (!arg) continue;
+        if (arg === '--case') {
+            out.caseId = argv[i + 1] || '';
+            i += 1;
+        } else if (arg.startsWith('--case=')) {
+            out.caseId = arg.slice(7);
+        } else if (arg === '--browser') {
+            out.browser = argv[i + 1] || out.browser;
+            i += 1;
+        } else if (arg.startsWith('--browser=')) {
+            out.browser = arg.slice(10) || out.browser;
+        } else if (arg === '--headed') {
+            out.headed = true;
+        } else if (arg === '--timeout') {
+            out.timeout = Number(argv[i + 1] || out.timeout);
+            i += 1;
+        } else if (arg.startsWith('--timeout=')) {
+            out.timeout = Number(arg.slice(10) || out.timeout);
+        } else if (arg === '--viewport') {
+            out.viewport = argv[i + 1] || out.viewport;
+            i += 1;
+        } else if (arg.startsWith('--viewport=')) {
+            out.viewport = arg.slice(11) || out.viewport;
+        } else if (!out.caseId && arg.indexOf('--') !== 0) {
+            out.caseId = arg;
         }
-        function waitFor(predicate, timeoutMs, label) {
-            return new Promise(function(resolve, reject) {
-                var start = Date.now();
-                (function tick() {
-                    var r; try { r = predicate(); } catch (e) { r = null; }
-                    if (r) return resolve(r);
-                    if (Date.now() - start > (timeoutMs || 2000)) return reject(new Error('waitFor timeout: ' + (label || '')));
-                    setTimeout(tick, 30);
-                })();
-            });
-        }
-        async function runCase(id, title, fn) {
-            try { const r = await fn(); log.push('PASS ' + id + ' :: ' + String(r)); return { id: id, ok: true, detail: String(r) }; }
-            catch (e) { log.push('FAIL ' + id + ' :: ' + e.message); return { id: id, ok: false, error: e.message }; }
-        }
-        const api = { assert, assertEqual, waitFor, runCase };
+    }
+    return out;
+}
 
-        const r = await qa.runSuite(api, host, caseId || undefined);
-        return { log: log, summary: r };
-    }, caseId);
+function parseViewport(value) {
+    const match = String(value || '').match(/^(\d+)x(\d+)$/);
+    return {
+        width: match ? Number(match[1]) : 1600,
+        height: match ? Number(match[2]) : 900
+    };
+}
 
-    console.log((result.log || []).join('\n'));
-    const lines = result.log || [];
-    const fails = lines.filter(l => l.startsWith('FAIL'));
-    console.log('=== ' + (lines.length - fails.length) + ' passed, ' + fails.length + ' failed ===');
-    if (errors.length) console.log(errors.join('\n'));
-    await browser.close();
-    process.exit(fails.length ? 1 : 0);
-})().catch(e => { console.error(e); process.exit(1); });
+function findInstalledBrowser(name) {
+    const chromeCandidates = [
+        path.join(process.env.ProgramFiles || 'C:\\Program Files', 'Google', 'Chrome', 'Application', 'chrome.exe'),
+        path.join(process.env['ProgramFiles(x86)'] || 'C:\\Program Files (x86)', 'Google', 'Chrome', 'Application', 'chrome.exe')
+    ];
+    const edgeCandidates = [
+        path.join(process.env['ProgramFiles(x86)'] || 'C:\\Program Files (x86)', 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
+        path.join(process.env.ProgramFiles || 'C:\\Program Files', 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
+        path.join(process.env.LOCALAPPDATA || '', 'Microsoft', 'Edge', 'Application', 'msedge.exe')
+    ];
+    const candidates = name === 'chrome' ? chromeCandidates : edgeCandidates;
+    for (let i = 0; i < candidates.length; i += 1) {
+        if (candidates[i] && fs.existsSync(candidates[i])) return candidates[i];
+    }
+    return '';
+}
+
+async function main() {
+    const opts = parseArgs(process.argv.slice(2));
+    if (!fs.existsSync(playwrightModule)) {
+        throw new Error('Missing Playwright dependency. Run: npm --prefix launcher/perf ci --ignore-scripts');
+    }
+
+    const { chromium } = require(playwrightModule);
+    const serverHandle = await startServer(repoRoot, 0);
+    const query = new URLSearchParams({ qa: '1', viewport: opts.viewport });
+    if (opts.caseId) query.set('case', opts.caseId);
+    const url = serverHandle.url + 'launcher/web/modules/map/dev/harness.html?' + query.toString();
+    const viewport = parseViewport(opts.viewport);
+    const launchOptions = { headless: !opts.headed };
+    const executablePath = opts.browser === 'edge' || opts.browser === 'chrome'
+        ? findInstalledBrowser(opts.browser)
+        : '';
+    if (executablePath) launchOptions.executablePath = executablePath;
+
+    const browser = await chromium.launch(launchOptions);
+    const page = await browser.newPage({ viewport });
+    const pageErrors = [];
+    const consoleErrors = [];
+    const failedRequests = [];
+
+    page.on('pageerror', error => pageErrors.push(error && error.message ? error.message : String(error)));
+    page.on('console', msg => {
+        if (msg.type() === 'error') consoleErrors.push(msg.text());
+    });
+    page.on('requestfailed', request => {
+        const failure = request.failure();
+        failedRequests.push(request.url() + ' :: ' + (failure && failure.errorText || 'failed'));
+    });
+    await page.route('https://cfn-fonts.local/**', route => route.fulfill({
+        status: 204,
+        headers: { 'access-control-allow-origin': '*' },
+        body: ''
+    }));
+
+    let bundle = null;
+    try {
+        await page.goto(url, { waitUntil: 'load', timeout: 30000 });
+        const handle = await page.waitForFunction(
+            () => (window.__qaResult && window.__qaResult.qa) ? window.__qaResult.qa : null,
+            { timeout: opts.timeout, polling: 250 }
+        );
+        bundle = await handle.jsonValue();
+    } finally {
+        await browser.close();
+        await stopServer(serverHandle);
+    }
+
+    if (!bundle) {
+        console.error('[map-dev-qa] no QA bundle obtained');
+        process.exit(2);
+    }
+
+    console.log('[map-dev-qa] ' + bundle.passed + '/' + bundle.total + ' passed (failed=' + bundle.failed + ')');
+    (bundle.results || []).forEach(item => {
+        const mark = item.pass ? 'PASS' : 'FAIL';
+        console.log('  ' + mark + ' ' + item.id + ' ' + item.title + (item.detail ? ' :: ' + item.detail : ''));
+    });
+
+    if (pageErrors.length) console.error('[map-dev-qa] page errors:\n' + pageErrors.join('\n'));
+    if (consoleErrors.length) console.error('[map-dev-qa] console errors:\n' + consoleErrors.join('\n'));
+    if (failedRequests.length) console.error('[map-dev-qa] failed requests:\n' + failedRequests.join('\n'));
+
+    const failed = (bundle.failed || 0) + pageErrors.length + consoleErrors.length + failedRequests.length;
+    process.exit(failed ? 1 : 0);
+}
+
+main().catch(error => {
+    console.error(error && error.stack ? error.stack : String(error));
+    process.exit(1);
+});

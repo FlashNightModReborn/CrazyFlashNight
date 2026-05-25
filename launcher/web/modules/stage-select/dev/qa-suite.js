@@ -101,6 +101,77 @@ var StageSelectHarnessQA = (function() {
                     return 'live snapshot ok';
                 });
             }],
+            ['runtime-task-target-indicators', 'runtime task targets mark frame menu and stage button', function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function(state) {
+                    var manifest = StageSelectData.getManifest();
+                    var initialFrame = state.frameLabel;
+                    var target = null;
+                    var findButtonEl = function(stageName) {
+                        var nodes = document.querySelectorAll('.stage-select-stage-button');
+                        for (var i = 0; i < nodes.length; i += 1) {
+                            if (nodes[i].getAttribute('data-stage-name') === stageName) return nodes[i];
+                        }
+                        return null;
+                    };
+
+                    manifest.frames.some(function(frame) {
+                        var buttons = frame.stageButtons || [];
+                        for (var i = 0; i < buttons.length; i += 1) {
+                            if ((buttons[i].entryKind || 'difficulty') !== 'difficulty') continue;
+                            if (frame.frameLabel === initialFrame && manifest.frames.length > 1) continue;
+                            target = {
+                                frameLabel: frame.frameLabel,
+                                stageName: buttons[i].stageName
+                            };
+                            return true;
+                        }
+                        return false;
+                    });
+
+                    api.assert(!!target, 'need a difficulty stage target in manifest');
+                    StageSelectPanel._debugSetFixture('allUnlocked');
+                    StageSelectPanel._debugApplySnapshot({
+                        unlockedStages: (function() {
+                            var u = {};
+                            u[target.stageName] = true;
+                            return u;
+                        })(),
+                        stageDetails: (function() {
+                            var d = {};
+                            d[target.stageName] = {
+                                exists: true,
+                                stageType: '初期关卡',
+                                detail: 'live task target',
+                                materialDetail: '',
+                                limitDetail: '',
+                                limitLevel: '',
+                                task: true,
+                                highestDifficulty: '修罗'
+                            };
+                            return d;
+                        })(),
+                        isChallengeMode: false,
+                        currentFrameLabel: initialFrame
+                    });
+
+                    state = StageSelectPanel._debugGetState();
+                    api.assert(!!state.taskTargets.byStage[target.stageName], 'debug task target should include stage');
+                    api.assertEqual(state.taskTargets.byFrame[target.frameLabel], 1, 'target frame task count');
+                    var toggleBadge = document.querySelector('.stage-select-frame-toggle-task-badge');
+                    api.assert(!!toggleBadge && toggleBadge.textContent === '1', 'frame toggle task badge should show total');
+                    var targetTab = document.querySelector('.stage-select-tab[data-frame-label="' + target.frameLabel + '"]');
+                    api.assert(!!targetTab && targetTab.classList.contains('has-task'), 'target frame tab should be marked');
+                    api.assertEqual((targetTab.querySelector('.stage-select-tab-task-badge') || {}).textContent, '1', 'target frame tab badge count');
+
+                    StageSelectPanel._debugSetFrame(target.frameLabel, 'qa-task-target');
+                    var targetButton = findButtonEl(target.stageName);
+                    api.assert(!!targetButton, 'target stage button should exist after switching frame');
+                    api.assert(targetButton.classList.contains('is-task'), 'target stage button should have task class');
+                    api.assert(!!targetButton.querySelector('.stage-select-task-pulse'), 'target stage button should render task pulse');
+                    return target.stageName + ' @ ' + target.frameLabel;
+                });
+            }],
             ['runtime-ui', 'runtime mode hides fixture controls and dev log', function() {
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function(state) {
