@@ -940,7 +940,7 @@ var MapPanel = (function() {
                 var stageBtn = document.createElement('button');
                 stageBtn.className = 'map-rail-stage-select-btn' + (hasQuest ? ' is-task' : '');
                 stageBtn.type = 'button';
-                stageBtn.textContent = hasQuest ? '任务选关' : '选关';
+                stageBtn.textContent = hasQuest ? '选关' : '选关';
                 stageBtn.setAttribute('data-hotspot-id', hotspotId);
                 stageBtn.setAttribute('data-stage-select-frame', stageSelectEntry.frameLabel);
                 stageBtn.setAttribute('data-audio-cue', 'select');
@@ -1041,7 +1041,7 @@ var MapPanel = (function() {
                 var action = document.createElement('button');
                 action.className = 'map-hotspot-stage-select-btn' + (hasQuest ? ' is-task' : '');
                 action.type = 'button';
-                action.textContent = hasQuest ? '任务选关' : '前往选关';
+                action.textContent = hasQuest ? '选关' : '前往选关';
                 action.setAttribute('data-hotspot-id', hotspot.id);
                 action.setAttribute('data-stage-select-frame', stageSelectEntry.frameLabel);
                 action.setAttribute('data-audio-cue', 'select');
