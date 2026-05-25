@@ -27,13 +27,13 @@
             effect: 'HP+2000/3500/5500×难度, DEF+100, ATK+30/45/65×难度, 韧性+5'
         },
         '强化药剂': {
-            gold: 80000, kpoint: 0, maxTier: 3, unlockLevel: 25,
+            gold: 50000, kpoint: 0, maxTier: 3, unlockLevel: 25,
             require: '基础训练',
             desc: '注射强化药剂，进一步激发单位的战斗潜能，大幅提升生命值和攻击力。',
             effect: 'HP+5000/7500/10000×难度, ATK+50/75/100×难度'
         },
         '超级血清': {
-            gold: 200000, kpoint: 0, maxTier: 3, unlockLevel: 50,
+            gold: 100000, kpoint: 0, maxTier: 3, unlockLevel: 50,
             require: '强化药剂',
             desc: '注射超级血清，彻底改造单位体质，极大提升全属性。',
             effect: 'HP+10000/15000/20000×难度, DEF+200, ATK+100/150/200×难度'
@@ -44,82 +44,82 @@
             effect: '攻击附带中毒DOT'
         },
         '弹射弧光斩': {
-            gold: 150000, kpoint: 0, maxTier: 1, unlockLevel: 35,
+            gold: 200000, kpoint: 0, maxTier: 1, unlockLevel: 35,
             desc: '为键盘角色升级武器技能，攻击变为弹射弧光斩，可弹射多个目标。',
             effect: '攻击弹射多个目标'
         },
         '广域裂空斩': {
-            gold: 150000, kpoint: 0, maxTier: 1, unlockLevel: 35,
+            gold: 200000, kpoint: 0, maxTier: 1, unlockLevel: 35,
             desc: '为主唱角色升级武器技能，攻击变为广域裂空斩，造成范围伤害。',
             effect: '范围攻击'
         },
         '导弹烈炎炮': {
-            gold: 150000, kpoint: 0, maxTier: 1, unlockLevel: 35,
+            gold: 200000, kpoint: 0, maxTier: 1, unlockLevel: 35,
             desc: '为吉他角色升级武器技能，攻击变为导弹烈炎炮，造成爆炸伤害。',
             effect: '爆炸范围伤害'
         },
         '切换发型': {
-            gold: 50000, kpoint: 0, maxTier: 1, unlockLevel: 1,
+            gold: 0, kpoint: 0, maxTier: 1, unlockLevel: 1,
             desc: '切换JK的发色（橙/黑），纯外观变更。',
             effect: '外观变更'
         },
         '冲腿龙息': {
-            gold: 200000, kpoint: 0, maxTier: 1, unlockLevel: 35,
+            gold: 300000, kpoint: 0, maxTier: 1, unlockLevel: 35,
             desc: '为LEE升级技能，冲刺踢腿附带龙息火焰伤害。',
             effect: '冲刺附带火焰DOT'
         },
         '晶能者': {
-            gold: 200000, kpoint: 0, maxTier: 1, unlockLevel: 35,
+            gold: 300000, kpoint: 0, maxTier: 1, unlockLevel: 35,
             desc: '为雪女升级技能，激活晶能，攻击附带冰冻减速效果。',
             effect: '冰冻减速'
         },
         '复仇者': {
-            gold: 150000, kpoint: 0, maxTier: 1, unlockLevel: 35,
+            gold: 300000, kpoint: 0, maxTier: 1, unlockLevel: 35,
             desc: '为黑白无常激活复仇者模式，受到伤害时反击。',
             effect: '受伤反击'
         },
         '抱头嘲讽': {
-            gold: 100000, kpoint: 0, maxTier: 1, unlockLevel: 35,
+            gold: 300000, kpoint: 0, maxTier: 1, unlockLevel: 35,
             desc: '为硬化僵尸激活嘲讽技能，强制敌人攻击自己。',
             effect: '强制嘲讽'
         },
         '涅槃重生': {
-            gold: 250000, kpoint: 0, maxTier: 1, unlockLevel: 35,
+            gold: 300000, kpoint: 0, maxTier: 1, unlockLevel: 35,
             desc: '为火凤激活涅槃重生，死亡后自动复活一次。',
             effect: '死亡后复活'
         },
         '影子刺客': {
-            gold: 150000, kpoint: 0, maxTier: 1, unlockLevel: 35,
+            gold: 300000, kpoint: 0, maxTier: 1, unlockLevel: 35,
             desc: '为翅虎激活影子刺客模式，隐身突袭造成额外伤害。',
             effect: '隐身突袭'
         },
         '追踪飞弹': {
-            gold: 100000, kpoint: 0, maxTier: 1, unlockLevel: 35,
+            gold: 300000, kpoint: 0, maxTier: 1, unlockLevel: 35,
             desc: '为铁血战士激活追踪飞弹，远程追踪目标造成伤害。',
             effect: '远程追踪飞弹'
         },
         '驯鹰者': {
-            gold: 100000, kpoint: 0, maxTier: 1, unlockLevel: 35,
+            gold: 300000, kpoint: 0, maxTier: 1, unlockLevel: 35,
             desc: '为黄色铁血激活驯鹰者模式，召唤猎鹰协助攻击。',
             effect: '召唤猎鹰'
         },
         '美洲狮': {
-            gold: 300000, kpoint: 0, maxTier: 1, unlockLevel: 60,
+            gold: 50000, kpoint: 0, maxTier: 1, unlockLevel: 60,
             desc: '将异形进化为美洲狮异形，全属性大幅提升。',
             effect: '进化+全属性提升'
         },
         '追猎': {
-            gold: 200000, kpoint: 0, maxTier: 1, unlockLevel: 35,
+            gold: 300000, kpoint: 0, maxTier: 1, unlockLevel: 35,
             desc: '为徘徊者/吐酸者异形激活追猎模式，移动速度+攻击力提升。',
             effect: '速度+攻击提升'
         },
         '战马血清': {
-            gold: 200000, kpoint: 0, maxTier: 1, unlockLevel: 35,
+            gold: 300000, kpoint: 0, maxTier: 1, unlockLevel: 35,
             desc: '为黑龙的战马注射血清，提升移动速度和冲击力。',
             effect: '速度+冲击提升'
         },
         '钙化': {
-            gold: 150000, kpoint: 0, maxTier: 1, unlockLevel: 60,
+            gold: 300000, kpoint: 0, maxTier: 1, unlockLevel: 60,
             desc: '为异形禁卫激活钙化装甲，大幅提升防御力。',
             effect: '防御大幅提升'
         },
@@ -129,7 +129,7 @@
             effect: '范围治疗+净化'
         },
         '溢出治疗': {
-            gold: 150000, kpoint: 0, maxTier: 1, unlockLevel: 35,
+            gold: 250000, kpoint: 0, maxTier: 1, unlockLevel: 35,
             desc: '为白女仆升级治疗技能，溢出治疗量转化为护盾。',
             effect: '治疗转护盾'
         },
@@ -139,12 +139,12 @@
             effect: '能量伤害'
         },
         '剧毒子弹': {
-            gold: 150000, kpoint: 0, maxTier: 1, unlockLevel: 35,
+            gold: 250000, kpoint: 0, maxTier: 1, unlockLevel: 35,
             desc: '为黑女仆升级子弹为剧毒子弹，攻击附带强力中毒。',
             effect: '强力中毒DOT'
         },
         '终结者步枪': {
-            gold: 50000, kpoint: 0, maxTier: 1, unlockLevel: 1,
+            gold: 0, kpoint: 0, maxTier: 1, unlockLevel: 1,
             desc: '为终结者更换步枪外观，纯外观变更。',
             effect: '外观变更'
         },

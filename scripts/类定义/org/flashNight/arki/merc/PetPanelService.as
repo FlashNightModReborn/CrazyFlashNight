@@ -152,6 +152,7 @@ class org.flashNight.arki.merc.PetPanelService {
                 gold: Number(_root.金钱) || 0,
                 kpoint: Number(_root.K点) || 0,
                 playerLevel: Number(_root.等级) || 1,
+                playerTask: Number(_root.主线任务进度) || 0,
                 maxDeploy: calcMaxDeploy(),
                 maxSlots: Number(_root.宠物领养限制) || 5,
                 currentDeployCount: countDeployed(),

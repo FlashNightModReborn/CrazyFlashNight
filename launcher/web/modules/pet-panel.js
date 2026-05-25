@@ -523,21 +523,21 @@
 
             var canAdopt = true;
             var cantReason = '';
-            if (_snapshot && pet.price > 0 && _snapshot.gold < pet.price) {
+            if (_snapshot && pet.unlockTask > 0 && pet.unlockTask > (_snapshot.playerTask || 0)) {
                 canAdopt = false;
-                cantReason = '金币不足';
-            }
-            if (_snapshot && pet.kprice > 0 && _snapshot.kpoint < pet.kprice) {
-                canAdopt = false;
-                cantReason = 'K点不足';
-            }
-            if (_snapshot && _pets.length >= _snapshot.maxSlots) {
-                canAdopt = false;
-                cantReason = '宠物栏已满';
-            }
-            if (pet.unlockLevel > (_snapshot ? _snapshot.playerLevel : 1)) {
+                cantReason = '需要主线进度 ' + pet.unlockTask;
+            } else if (pet.unlockLevel > (_snapshot ? _snapshot.playerLevel : 1)) {
                 canAdopt = false;
                 cantReason = '需Lv.' + pet.unlockLevel;
+            } else if (_snapshot && pet.price > 0 && _snapshot.gold < pet.price) {
+                canAdopt = false;
+                cantReason = '金币不足';
+            } else if (_snapshot && pet.kprice > 0 && _snapshot.kpoint < pet.kprice) {
+                canAdopt = false;
+                cantReason = 'K点不足';
+            } else if (_snapshot && _pets.length >= _snapshot.maxSlots) {
+                canAdopt = false;
+                cantReason = '宠物栏已满';
             }
 
             card.innerHTML =
