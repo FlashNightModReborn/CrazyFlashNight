@@ -72,6 +72,7 @@ var MapPanelHarnessQA = (function() {
             currentHotspotId: '',
             disabledIds: [],
             lockedGroups: [],
+            taskNpcHotspots: [],
             failNavigate: false
         };
         var key;
@@ -1232,6 +1233,90 @@ var MapPanelHarnessQA = (function() {
                                 });
                             });
                         });
+                    });
+                }
+            },
+            {
+                id: 'map-ui26',
+                title: 'task badges aggregate scene → filter → page tab (unlocked hotspots only)',
+                run: function() {
+                    // base 永远解锁，所以 base_lobby + merc_bar 红点必现；
+                    // faction warlord 组解锁 → firing_range 红点也现，filter 计数 1，page tab 计数 1。
+                    // base page tab 应聚合两个 hotspot 计数 = 2。
+                    return bootMap(api, host, {
+                        defaultPageId: 'base',
+                        taskNpcHotspots: ['base_lobby', 'merc_bar', 'firing_range']
+                    }).then(function() {
+                        var state = currentState();
+                        api.assert(!!state && state.taskBadge, 'taskBadge must be exposed in debug state');
+
+                        // 末端 hotspot 级
+                        api.assert(state.taskBadge.byHotspot['base_lobby'] === true, 'base_lobby should be marked');
+                        api.assert(state.taskBadge.byHotspot['merc_bar'] === true, 'merc_bar should be marked');
+                        api.assert(state.taskBadge.byHotspot['firing_range'] === true, 'firing_range should be marked');
+
+                        // page tab 聚合
+                        api.assertEqual(state.taskBadge.byPage['base'], 2, 'base page should aggregate 2 quest hotspots');
+                        api.assertEqual(state.taskBadge.byPage['faction'], 1, 'faction page should aggregate 1 quest hotspot');
+
+                        // DOM 验证：base 当前激活页 → scene item 末端 dot 可见
+                        var baseTabBadge = document.querySelector('.map-page-tab[data-page-id="base"] .map-page-tab-badge');
+                        api.assert(!!baseTabBadge && baseTabBadge.textContent === '2', 'base tab badge should show "2"');
+                        api.assert(baseTabBadge.offsetParent !== null, 'base tab badge should be visible');
+
+                        var factionTabBadge = document.querySelector('.map-page-tab[data-page-id="faction"] .map-page-tab-badge');
+                        api.assert(!!factionTabBadge && factionTabBadge.textContent === '1', 'faction tab badge should show "1"');
+
+                        // base 没有 taskNpc 的 page（defense / school）— badge 应该隐藏
+                        var defenseTabBadge = document.querySelector('.map-page-tab[data-page-id="defense"] .map-page-tab-badge');
+                        api.assert(defenseTabBadge && defenseTabBadge.offsetParent === null, 'defense tab badge should be hidden');
+
+                        // scene item 末端红点 — base 当前页 base_lobby item 应带 has-quest
+                        var lobbyItem = document.querySelector('.map-rail-scene-item[data-hotspot-id="base_lobby"]');
+                        if (lobbyItem) {
+                            // 只有该 hotspot 被当前 filter 折叠展开时 item 才存在
+                            api.assert(lobbyItem.classList.contains('has-quest'), 'base_lobby scene item should have has-quest class');
+                            api.assert(!!lobbyItem.querySelector('.map-rail-scene-quest'), 'base_lobby scene item should render quest dot');
+                        }
+
+                        return 'byPage=' + JSON.stringify(state.taskBadge.byPage) +
+                            ', byHotspotCount=' + Object.keys(state.taskBadge.byHotspot).length;
+                    });
+                }
+            },
+            {
+                id: 'map-ui27',
+                title: 'locked group hotspot does not propagate red dot (spoiler protection)',
+                run: function() {
+                    // warlord 组锁住 → firing_range 是 locked → 红点 marker 喂进来但应被完全过滤掉，
+                    // 不允许任何层级（hotspot / filter / page）出现红点。
+                    // 同时给一个 base_lobby（永解锁）作 sanity check 证明 pipeline 仍工作。
+                    return bootMap(api, host, {
+                        defaultPageId: 'base',
+                        lockedGroups: ['warlord', 'rock', 'blackiron', 'fallen'],
+                        taskNpcHotspots: ['firing_range', 'warlord_base', 'base_lobby']
+                    }).then(function() {
+                        var state = currentState();
+                        api.assert(!!state && state.taskBadge, 'taskBadge must be exposed in debug state');
+
+                        // sanity: base_lobby 仍然点亮
+                        api.assert(state.taskBadge.byHotspot['base_lobby'] === true, 'base_lobby should still mark (unlocked)');
+                        api.assertEqual(state.taskBadge.byPage['base'], 1, 'base page should still aggregate base_lobby');
+
+                        // 关键：locked hotspots 必须被剔除
+                        api.assert(!state.taskBadge.byHotspot['firing_range'], 'firing_range (locked) MUST NOT mark');
+                        api.assert(!state.taskBadge.byHotspot['warlord_base'], 'warlord_base (locked) MUST NOT mark');
+
+                        // faction page 整体不点亮（所有 warlord 子项都 locked）
+                        api.assert(!state.taskBadge.byPage['faction'], 'faction page MUST NOT aggregate any locked hotspots');
+
+                        // faction page tab badge 必须隐藏（offsetParent null = display:none）
+                        var factionTabBadge = document.querySelector('.map-page-tab[data-page-id="faction"] .map-page-tab-badge');
+                        api.assert(factionTabBadge && factionTabBadge.offsetParent === null, 'faction tab badge MUST be hidden when only locked hotspots have quests');
+
+                        return 'baseQuestCount=' + state.taskBadge.byPage['base'] +
+                            ', factionQuestCount=' + (state.taskBadge.byPage['faction'] || 0) +
+                            ', lockedFiltered=ok';
                     });
                 }
             }

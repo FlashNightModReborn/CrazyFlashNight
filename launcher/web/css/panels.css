@@ -3308,6 +3308,97 @@
     }
 }
 
+/* ─────────────────────────────────────────────────────────────
+ * 任务红点 · 三档
+ *   page tab badge — 数字，跨页聚合
+ *   filter button badge — 数字，filter 级聚合
+ *   rail scene quest dot — 纯圆点，无数字，末端
+ * 颜色 #ff4a3a（warm red, cyberpunk 主题里互补色对比最强）
+ * 剧透防护：锁定 hotspot 不计入 rebuildTaskBadgeLookup，
+ *           CSS 这层不需要再考虑 locked 状态
+ * 入场弹性动画：scale 0→1.2→1.0, 250ms; reduced-motion 跳过
+ * ───────────────────────────────────────────────────────────── */
+.map-page-tab-badge {
+    display:inline-block;
+    margin-left:6px;
+    padding:0 5px;
+    min-width:14px;
+    height:14px;
+    line-height:14px;
+    font-size:9px;
+    font-weight:700;
+    text-align:center;
+    color:#fff;
+    background:#ff4a3a;
+    border:1px solid rgba(8, 14, 16, 0.55);
+    border-radius:999px;
+    box-shadow:0 0 6px rgba(255, 74, 58, 0.55);
+    letter-spacing:0;
+    vertical-align:middle;
+    animation:mapQuestBadgeEnter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.map-page-tab.is-active .map-page-tab-badge {
+    box-shadow:0 0 8px rgba(255, 90, 70, 0.75);
+    border-color:rgba(20, 26, 8, 0.6);
+}
+
+.map-filter-hotspot-badge {
+    position:relative;
+    z-index:1;
+    flex:0 0 auto;
+    margin:0 4px 0 4px;
+    padding:0 5px;
+    min-width:14px;
+    height:14px;
+    line-height:14px;
+    font-size:9px;
+    font-weight:700;
+    text-align:center;
+    color:#fff;
+    background:#ff4a3a;
+    border:1px solid rgba(8, 14, 16, 0.55);
+    border-radius:999px;
+    box-shadow:0 0 6px rgba(255, 74, 58, 0.5);
+    letter-spacing:0;
+    animation:mapQuestBadgeEnter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.map-filter-hotspot.is-active .map-filter-hotspot-badge {
+    background:#d8311f;
+    box-shadow:0 0 8px rgba(255, 90, 70, 0.7);
+    border-color:rgba(20, 26, 8, 0.6);
+}
+
+.map-rail-scene-quest {
+    margin-left:auto;
+    width:7px;
+    height:7px;
+    border-radius:999px;
+    background:#ff4a3a;
+    box-shadow:0 0 6px rgba(255, 74, 58, 0.7);
+    flex-shrink:0;
+    animation:mapQuestBadgeEnter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* current（青色）+ has-quest（红色）同时存在时优先级仍由位置区分：
+ * is-current 用左侧 .map-rail-scene-dot 表达, has-quest 用右侧 .map-rail-scene-quest，
+ * 互不冲突, 不需要额外 specificity 覆盖. */
+
+@keyframes mapQuestBadgeEnter {
+    0%   { transform: scale(0);   opacity: 0; }
+    60%  { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1);   opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .map-page-tab-badge,
+    .map-filter-hotspot-badge,
+    .map-rail-scene-quest {
+        animation:none;
+    }
+}
+
 .map-stage-loading,
 .map-stage-error {
     position:absolute;
@@ -3558,6 +3649,9 @@ html.perf-low-effects .map-filter-hotspot:focus,
 html.perf-low-effects .map-filter-hotspot.is-active,
 html.perf-low-effects .map-rail-scene-item.is-current,
 html.perf-low-effects .map-rail-scene-dot,
+html.perf-low-effects .map-page-tab-badge,
+html.perf-low-effects .map-filter-hotspot-badge,
+html.perf-low-effects .map-rail-scene-quest,
 html.perf-low-effects .map-panel-close-btn:hover {
     box-shadow:none !important;
 }

@@ -35,6 +35,10 @@
         <input id="map-locked-groups-input" type="text" placeholder="warlord,schoolInside">
     </div>
     <div class="harness-group">
+        <label for="map-task-npcs-input">task npc hotspots</label>
+        <input id="map-task-npcs-input" type="text" placeholder="base_lobby,firing_range">
+    </div>
+    <div class="harness-group">
         <label for="map-viewport-select">viewport</label>
         <select id="map-viewport-select">
             <option value="1600x900">1600x900</option>
@@ -134,6 +138,7 @@ window.BootstrapAudio = (function() {
     var genderSelect = document.getElementById('map-gender-select');
     var disabledInput = document.getElementById('map-disabled-input');
     var lockedGroupsInput = document.getElementById('map-locked-groups-input');
+    var taskNpcsInput = document.getElementById('map-task-npcs-input');
     var viewportSelect = document.getElementById('map-viewport-select');
 
     function parseIds(value) {
@@ -166,6 +171,7 @@ window.BootstrapAudio = (function() {
             roommateGender: query.gender || 'male',
             disabledIds: parseIds(query.disabled),
             lockedGroups: parseIds(query.lockedGroups),
+            taskNpcHotspots: parseIds(query.taskNpcs),
             failNavigate: query.failNavigate === '1'
         },
         sentMessages: [],
@@ -191,6 +197,8 @@ window.BootstrapAudio = (function() {
                     this.state.disabledIds = patch[key].slice();
                 } else if (key === 'lockedGroups' && Array.isArray(patch[key])) {
                     this.state.lockedGroups = patch[key].slice();
+                } else if (key === 'taskNpcHotspots' && Array.isArray(patch[key])) {
+                    this.state.taskNpcHotspots = patch[key].slice();
                 } else if (patch[key] !== undefined) {
                     this.state[key] = patch[key];
                 }
@@ -204,6 +212,7 @@ window.BootstrapAudio = (function() {
                 roommateGender: this.state.roommateGender,
                 disabledIds: this.state.disabledIds.slice(),
                 lockedGroups: this.state.lockedGroups.slice(),
+                taskNpcHotspots: (this.state.taskNpcHotspots || []).slice(),
                 failNavigate: this.state.failNavigate,
                 closeCount: this.closeCount,
                 lastNavigateTarget: this.lastNavigateTarget
@@ -257,6 +266,30 @@ window.BootstrapAudio = (function() {
                 }
             }
             currentPageId = resolvePageIdForHotspotId(currentHotspotId) || currentPageId;
+            // 注入 fake task npc marker（剧透防护交给 map-panel.js 的 rebuildTaskBadgeLookup，
+            // 这里照实塞，包括 locked hotspot — 测试 locked 区域不点亮的关键就是把"应该被过滤"的也喂进来）
+            var taskMarkers = [];
+            var taskNpcHotspots = this.state.taskNpcHotspots || [];
+            for (i = 0; i < taskNpcHotspots.length; i++) {
+                var taskHotspotId = taskNpcHotspots[i];
+                var taskPageId = resolvePageIdForHotspotId(taskHotspotId);
+                if (!taskPageId) continue;
+                taskMarkers.push({
+                    id: 'task_npc_' + taskHotspotId,
+                    kind: 'taskNpc',
+                    pageId: taskPageId,
+                    hotspotId: taskHotspotId
+                });
+            }
+            var baseMarkers = currentHotspotId ? [{
+                id: 'current_location',
+                kind: 'currentLocation',
+                pageId: currentPageId,
+                hotspotId: currentHotspotId,
+                label: '当前位置',
+                tone: 'accent'
+            }] : [];
+
             return {
                 version: 2,
                 defaultPageId: currentPageId,
@@ -268,14 +301,7 @@ window.BootstrapAudio = (function() {
                 dynamicAvatarState: {
                     roommateGender: this.state.roommateGender
                 },
-                markers: currentHotspotId ? [{
-                    id: 'current_location',
-                    kind: 'currentLocation',
-                    pageId: currentPageId,
-                    hotspotId: currentHotspotId,
-                    label: '当前位置',
-                    tone: 'accent'
-                }] : [],
+                markers: baseMarkers.concat(taskMarkers),
                 tips: currentHotspotId ? [{
                     id: 'current_scene',
                     pageId: currentPageId,
@@ -381,7 +407,8 @@ window.BootstrapAudio = (function() {
                 defaultPageId: pageSelect.value,
                 roommateGender: genderSelect.value,
                 disabledIds: parseIds(disabledInput.value),
-                lockedGroups: parseIds(lockedGroupsInput.value)
+                lockedGroups: parseIds(lockedGroupsInput.value),
+                taskNpcHotspots: parseIds(taskNpcsInput.value)
             };
         },
         syncControls: function() {
@@ -389,13 +416,14 @@ window.BootstrapAudio = (function() {
             genderSelect.value = this.state.roommateGender;
             disabledInput.value = this.state.disabledIds.join(',');
             lockedGroupsInput.value = this.state.lockedGroups.join(',');
+            taskNpcsInput.value = (this.state.taskNpcHotspots || []).join(',');
             viewportSelect.value = this.viewport;
         },
         applyControls: function() {
             this.setState(this.readControls());
             this.setViewport(viewportSelect.value);
             this.open();
-            this.logStatus('apply page=' + this.state.defaultPageId + ', gender=' + this.state.roommateGender + ', disabled=' + this.state.disabledIds.join(',') + ', locked=' + this.state.lockedGroups.join(','));
+            this.logStatus('apply page=' + this.state.defaultPageId + ', gender=' + this.state.roommateGender + ', disabled=' + this.state.disabledIds.join(',') + ', locked=' + this.state.lockedGroups.join(',') + ', tasks=' + (this.state.taskNpcHotspots || []).join(','));
         },
         logStatus: function(text) {
             statusEl.textContent = text;

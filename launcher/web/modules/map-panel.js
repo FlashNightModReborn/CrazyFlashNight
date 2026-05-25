@@ -23,6 +23,12 @@ var MapPanel = (function() {
     var _avatarVisibility = {};       // { avatarId: boolean }；缺 key = 默认可见
     var _snapshotTaskChains = {};     // 仅用于 dev/qa 调试，渲染路径不读
     var _snapshotInfrastructure = {}; // 同上
+    // 任务红点聚合 lookup（applySnapshot 末尾、_enabledLookup 就绪后重建）
+    // 剧透防护：只统计 enabled 的 hotspot，被门控锁住的区域永不点亮
+    // - byHotspot[hotspotId] = true 时末端 dot 亮
+    // - byFilter[pageId][filterId] = N 时该 filter 数字 badge 显 N
+    // - byPage[pageId] = N 时该 page tab 数字 badge 显 N
+    var _taskBadge = { byPage: {}, byFilter: {}, byHotspot: {} };
     var _snapshotVersion = 2;
     var _currentHotspotId = '';
     var _requestedInitialPageId = '';
@@ -168,7 +174,9 @@ var MapPanel = (function() {
             btn.type = 'button';
             btn.setAttribute('data-page-id', page.id);
             btn.setAttribute('data-audio-cue', 'select');
-            btn.textContent = page.tabLabel;
+            // 任务红点 badge 静态挂在 tab 上，每次 applySnapshot/applyPage 由 syncPageTabBadges 刷文本/可见性
+            btn.innerHTML = escHtml(page.tabLabel) +
+                '<span class="map-page-tab-badge" aria-hidden="true" style="display:none"></span>';
             attachPageHandler(btn, page.id);
             _pageTabsEl.appendChild(btn);
         }
@@ -192,6 +200,7 @@ var MapPanel = (function() {
         _avatarVisibility = {};
         _snapshotTaskChains = {};
         _snapshotInfrastructure = {};
+        _taskBadge = { byPage: {}, byFilter: {}, byHotspot: {} };
         _snapshotVersion = 2;
         _snapshotMarkers = [];
         _snapshotTips = [];
@@ -235,6 +244,7 @@ var MapPanel = (function() {
         _avatarVisibility = {};
         _snapshotTaskChains = {};
         _snapshotInfrastructure = {};
+        _taskBadge = { byPage: {}, byFilter: {}, byHotspot: {} };
         _snapshotVersion = 2;
         _snapshotMarkers = [];
         _snapshotTips = [];
@@ -337,6 +347,7 @@ var MapPanel = (function() {
             var isActive = _activePage && btn.getAttribute('data-page-id') === _activePage.id;
             btn.classList.toggle('is-active', isActive);
         }
+        syncPageTabBadges();
     }
 
     // 整页是否有任一 hotspot 解锁。base 永远 true（base hotspots 全部默认 enabled）。
@@ -356,6 +367,79 @@ var MapPanel = (function() {
         for (var i = 0; i < btns.length; i++) {
             var pageId = btns[i].getAttribute('data-page-id');
             btns[i].style.display = pageHasAnyEnabled(pageId) ? '' : 'none';
+        }
+    }
+
+    // 扫 _snapshotMarkers，按 hotspot/filter/page 三级聚合任务红点。
+    // 剧透防护：只统计 _enabledLookup[hotspotId] === true 的 hotspot，
+    // 被门控锁住的区域永不点亮红点（避免泄露"那里有任务等你"）。
+    // 接受所有 marker.kind（保留兼容性），但实际只有 'taskNpc' 一种语义；
+    // 'currentLocation' 类型也走 hotspotId 但不会点亮 badge — 我们只把"非当前位置"算作"有事要办"。
+    function rebuildTaskBadgeLookup() {
+        var byPage = {};
+        var byFilter = {};
+        var byHotspot = {};
+        var i;
+        var marker;
+        var hotspotId;
+        var pageId;
+        var page;
+        var filters;
+        var filterId;
+        var f;
+
+        for (i = 0; i < _snapshotMarkers.length; i++) {
+            marker = _snapshotMarkers[i];
+            if (!marker) continue;
+            // 仅"任务交付可达"算红点；其他 kind（含 currentLocation）忽略
+            if (marker.kind !== 'taskNpc') continue;
+            hotspotId = marker.hotspotId;
+            if (!hotspotId || !_enabledLookup[hotspotId]) continue;     // 锁住 / 未登记的 hotspot 一律不计
+            if (byHotspot[hotspotId]) continue;                          // 同 hotspot 多 NPC 折叠为 1
+
+            byHotspot[hotspotId] = true;
+
+            pageId = marker.pageId || (MapPanelData.findHotspotPageId ? MapPanelData.findHotspotPageId(hotspotId) : '');
+            if (!pageId) continue;
+
+            byPage[pageId] = (byPage[pageId] || 0) + 1;
+
+            // hotspot → 它在该 page 哪些 filter 的 hotspotIds 里就给哪些 filter 计一次
+            page = MapPanelData.getPage(pageId);
+            filters = page && page.filters ? page.filters : [];
+            for (f = 0; f < filters.length; f++) {
+                filterId = filters[f].id;
+                if (!filters[f].hotspotIds || filters[f].hotspotIds.indexOf(hotspotId) < 0) continue;
+                if (!byFilter[pageId]) byFilter[pageId] = {};
+                byFilter[pageId][filterId] = (byFilter[pageId][filterId] || 0) + 1;
+            }
+        }
+
+        _taskBadge = { byPage: byPage, byFilter: byFilter, byHotspot: byHotspot };
+    }
+
+    // 数字 badge 渲染：1-9 显数字，>=10 显 "9+"（避免撑爆按钮）
+    function formatBadgeCount(n) {
+        if (!n || n <= 0) return '';
+        if (n >= 10) return '9+';
+        return String(n);
+    }
+
+    // 同步顶部 page tab 的红点文本与 has-quest class。
+    // 由 buildPageTabs 创建静态 span，applySnapshot/applyPage 刷新内容。
+    function syncPageTabBadges() {
+        if (!_pageTabsEl) return;
+        var btns = _pageTabsEl.querySelectorAll('.map-page-tab');
+        for (var i = 0; i < btns.length; i++) {
+            var pageId = btns[i].getAttribute('data-page-id');
+            var n = (_taskBadge.byPage[pageId]) || 0;
+            var txt = formatBadgeCount(n);
+            var badge = btns[i].querySelector('.map-page-tab-badge');
+            btns[i].classList.toggle('has-quest', n > 0);
+            if (badge) {
+                badge.textContent = txt;
+                badge.style.display = txt ? '' : 'none';
+            }
         }
     }
 
@@ -560,6 +644,7 @@ var MapPanel = (function() {
         _avatarVisibility = {};
         _snapshotTaskChains = {};
         _snapshotInfrastructure = {};
+        _taskBadge = { byPage: {}, byFilter: {}, byHotspot: {} };
         _snapshotVersion = 2;
         _snapshotMarkers = [];
         _snapshotTips = [];
@@ -608,6 +693,9 @@ var MapPanel = (function() {
 
         // _enabledLookup 已就绪 → 同步 tab 可见性（整页全锁则 display:none）
         syncPageTabVisibility();
+        // _enabledLookup 已就绪 → 重建任务红点 lookup（locked hotspot 自然被过滤掉，剧透防护）
+        rebuildTaskBadgeLookup();
+        syncPageTabBadges();
 
         var requestedPageId = _requestedInitialPageId;
         _requestedInitialPageId = '';
@@ -716,9 +804,16 @@ var MapPanel = (function() {
             btn.classList.toggle('is-active', !!activeFilter && activeFilter.id === filter.id);
             btn.classList.toggle('is-empty', enabledCount === 0);
             btn.classList.toggle('is-locked', isLocked);
+            // 任务红点 badge：只在该 filter 有"已解锁且有可交付任务"hotspot 时显示
+            var questCount = (_taskBadge.byFilter[_activePage.id] && _taskBadge.byFilter[_activePage.id][filter.id]) || 0;
+            var questBadgeHtml = questCount > 0
+                ? '<span class="map-filter-hotspot-badge" aria-hidden="true">' + formatBadgeCount(questCount) + '</span>'
+                : '';
+            btn.classList.toggle('has-quest', questCount > 0);
             btn.innerHTML =
                 '<span class="map-filter-hotspot-chrome"></span>' +
                 '<span class="map-filter-hotspot-label">' + escHtml(filter.label) + '</span>' +
+                questBadgeHtml +
                 '<span class="map-filter-hotspot-meta">' + enabledCount + '/' + ((filter.hotspotIds || []).length) + '</span>';
             attachFilterHandler(btn, filter.id);
             _railEl.appendChild(btn);
@@ -825,9 +920,16 @@ var MapPanel = (function() {
             }
             item.setAttribute('aria-disabled', enabled ? 'false' : 'true');
             item.setAttribute('aria-label', hotspot.label);
+            // 末端任务红点：只在已解锁 + 有可交付任务时显示（剧透防护已在 rebuildTaskBadgeLookup 内做掉）
+            var hasQuest = !!_taskBadge.byHotspot[hotspotId];
+            item.classList.toggle('has-quest', hasQuest);
+            var questDotHtml = hasQuest
+                ? '<span class="map-rail-scene-quest" aria-hidden="true"></span>'
+                : '';
             item.innerHTML =
                 '<span class="map-rail-scene-dot" aria-hidden="true"></span>' +
-                '<span class="map-rail-scene-label">' + escHtml(hotspot.label) + '</span>';
+                '<span class="map-rail-scene-label">' + escHtml(hotspot.label) + '</span>' +
+                questDotHtml;
             attachSceneItemHandler(item, hotspot);
             row.appendChild(item);
             if (stageSelectEntry && enabled) {
@@ -2224,7 +2326,8 @@ var MapPanel = (function() {
             }).map(function(item) { return item.id; }) : [],
             markerIds: (_snapshotMarkers || []).map(function(item) { return item.id; }),
             tipIds: (_snapshotTips || []).map(function(item) { return item.id; }),
-            taskRings: _activePage ? buildCanvasTaskRings(_activePage) : []
+            taskRings: _activePage ? buildCanvasTaskRings(_activePage) : [],
+            taskBadge: _taskBadge
         };
         if (_canvasRenderer && _canvasRenderer.getDebugState) {
             var canvasDebug = _canvasRenderer.getDebugState();
