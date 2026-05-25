@@ -96,4 +96,10 @@
     Panels.registerLazy('arena',
         ['modules/arena-panel.js'],
         noop);
+
+    // ── pets (战宠) ──
+    Panels.registerLazy('pets',
+        ['modules/pet-data.js',
+         'modules/pet-panel.js'],
+        noop);
 })();

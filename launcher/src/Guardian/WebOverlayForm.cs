@@ -104,6 +104,7 @@ namespace CF7Launcher.Guardian
             if (panel == "kshop") return "shopPanelClose";
             if (panel == "map") return "mapPanelClose";
             if (panel == "stage-select") return "stageSelectPanelClose";
+            if (panel == "pets") return "petPanelClose";
             // arena 故意留 null：角斗场进场链未触发前没有需要 AS2 清理的状态，
             // 关闭 panel 时直接走 _activePanel = null + PanelHost.ClosePanel() 即可。
             return null;
@@ -217,6 +218,7 @@ namespace CF7Launcher.Guardian
         private MapTask _mapTask;
         private StageSelectTask _stageSelectTask;
         private ArenaTask _arenaTask;
+        private PetTask _petTask;
         private IntelligenceTask _intelligenceTask;
         private GomokuTask _gomokuTask;
         private Action<bool> _onPanelStateChanged;
@@ -2697,6 +2699,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetPetTask(PetTask task)
+        {
+            _petTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetIntelligenceTask(IntelligenceTask task)
         {
             _intelligenceTask = task;
@@ -3348,6 +3357,11 @@ namespace CF7Launcher.Guardian
                             LogManager.Log("[Panel] Routing cmd=" + cmd + " to ArenaTask, _arenaTask=" + (_arenaTask != null ? "ok" : "NULL"));
                             if (_arenaTask != null) _arenaTask.HandleWebRequest(cmd, parsed);
                         }
+                        else if (panel == "pets")
+                        {
+                            LogManager.Log("[Panel] Routing cmd=" + cmd + " to PetTask, _petTask=" + (_petTask != null ? "ok" : "NULL"));
+                            if (_petTask != null) _petTask.HandleWebRequest(cmd, parsed);
+                        }
                         else if (cmd == "enter" || cmd == "jump_frame" || cmd == "return_frame" || cmd == "open_stage_select")
                         {
                             LogManager.Log("[Panel] Dropping cmd=" + cmd + " for unsupported panel=" + panel);
@@ -3522,6 +3536,7 @@ namespace CF7Launcher.Guardian
             if (_mapTask != null) _mapTask.ClearPending();
             if (_stageSelectTask != null) _stageSelectTask.ClearPending();
             if (_arenaTask != null) _arenaTask.ClearPending();
+            if (_petTask != null) _petTask.ClearPending();
             if (_intelligenceTask != null) _intelligenceTask.ClearPending();
         }
 

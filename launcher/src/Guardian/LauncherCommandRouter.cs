@@ -102,7 +102,16 @@ namespace CF7Launcher.Guardian
                     { Action arm = OnSafeExitArm; if (arm != null) arm(); }
                     SendGameCommand("safeExit");
                     break;
-                case "PETS": SendGameCommand("togglePets"); break;
+                case "PETS":
+                    LogManager.Log("[Router] PETS clicked");
+                    if (TrySendGameCommand("petPanelOpen"))
+                        OpenPanel("pets", null);
+                    else
+                    {
+                        LogManager.Log("[Router] PETS petPanelOpen failed");
+                        PostToWeb("{\"type\":\"toast\",\"text\":\"战宠面板暂时不可用\"}");
+                    }
+                    break;
                 case "MERCS": SendGameCommand("toggleMercs"); break;
                 case "TABLET": SendGameCommand("toggleTablet"); break;
                 case "GAMESETTINGS": SendGameCommand("openSettings"); break;

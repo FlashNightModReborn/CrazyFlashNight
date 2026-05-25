@@ -61,6 +61,7 @@ namespace CF7Launcher.Bus
             MapTask mapTask,
             StageSelectTask stageSelectTask,
             ArenaTask arenaTask,
+            PetTask petTask,
             IntelligenceTask intelligenceTask,
             ArchiveTask archiveTask,
             BenchTask benchTask,
@@ -95,6 +96,10 @@ namespace CF7Launcher.Bus
             // 角斗场面板回包路由
             if (arenaTask != null)
                 router.RegisterAsync("arena_response", arenaTask.HandleFlashResponse);
+
+            // 战宠面板回包路由
+            if (petTask != null)
+                router.RegisterAsync("pet_response", petTask.HandleFlashResponse);
 
             // 情报面板 runtime 回包路由
             if (intelligenceTask != null)
