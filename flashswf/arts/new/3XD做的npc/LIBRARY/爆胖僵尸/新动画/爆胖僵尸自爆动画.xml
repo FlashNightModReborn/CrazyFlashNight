@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/新动画/爆胖僵尸自爆动画" itemID="69bc3451-00000388" lastModified="1779285207" lastUniqueIdentifier="255">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/新动画/爆胖僵尸自爆动画" itemID="69bc3451-00000388" lastModified="1779720585" lastUniqueIdentifier="255">
   <timeline>
-    <DOMTimeline name="爆胖僵尸自爆动画" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-19&lt;/guideline&gt;&lt;guideline direction="v"&gt;24&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="爆胖僵尸自爆动画" currentFrame="48" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-19&lt;/guideline&gt;&lt;guideline direction="v"&gt;24&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 2" color="#9933CC" autoNamed="false">
           <frames>
@@ -21,7 +21,7 @@
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "透明子弹";
-	子弹属性.子弹威力 = _parent.空手攻击力 * 2;
+	子弹属性.子弹威力 = _parent.空手攻击力;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 50;
 	子弹属性.击倒率 = 10;
@@ -107,7 +107,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹" color="#FF4FFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="33" keyMode="9728">
               <elements/>
@@ -125,8 +125,11 @@
               </elements>
             </DOMFrame>
             <DOMFrame index="35" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="-221.85" centerPoint3DY="-241.45">
+                <DOMSymbolInstance libraryItemName="爆胖僵尸/01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" selected="true" centerPoint3DX="-221.85" centerPoint3DY="-241.45">
                   <matrix>
                     <Matrix a="20.4832763671875" d="10.5841979980469" tx="-252.6" ty="-262.95"/>
                   </matrix>
@@ -136,17 +139,8 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="37" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="-221.85" centerPoint3DY="-241.45">
-                  <matrix>
-                    <Matrix a="20.4832763671875" d="10.5841979980469" tx="-252.6" ty="-262.95"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+            <DOMFrame index="38" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="39" duration="2" keyMode="9728">
               <elements>
@@ -161,16 +155,7 @@
               </elements>
             </DOMFrame>
             <DOMFrame index="41" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="-150.85" centerPoint3DY="-210.95">
-                  <matrix>
-                    <Matrix a="15.3624420166016" d="10.5841979980469" tx="-181.6" ty="-232.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="43" duration="2" keyMode="9728">
               <elements>
@@ -185,20 +170,11 @@
               </elements>
             </DOMFrame>
             <DOMFrame index="45" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="-97.85" centerPoint3DY="-208.45">
-                  <matrix>
-                    <Matrix a="10.3235321044922" d="10.5841979980469" tx="-128.6" ty="-229.95"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
-            <DOMFrame index="47" duration="2" keyMode="9728">
+            <DOMFrame index="47" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" centerPoint3DX="-80.35" centerPoint3DY="-208.45">
+                <DOMSymbolInstance libraryItemName="爆胖僵尸/01.怪物通用模板/area框/hitbox-area框载体" name="攻击点" selected="true" centerPoint3DX="-80.35" centerPoint3DY="-208.45">
                   <matrix>
                     <Matrix a="8.58917236328125" d="10.5841979980469" tx="-111.1" ty="-229.95"/>
                   </matrix>
@@ -207,6 +183,9 @@
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728">
+              <elements/>
             </DOMFrame>
             <DOMFrame index="49" duration="2" keyMode="9728">
               <elements>
@@ -232,7 +211,7 @@
             </DOMFrame>
             <DOMFrame index="33" duration="25" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="血素材/爆血特效" selected="true" centerPoint3DX="-2.1" centerPoint3DY="-155.85">
+                <DOMSymbolInstance libraryItemName="血素材/爆血特效" centerPoint3DX="-2.1" centerPoint3DY="-155.85">
                   <matrix>
                     <Matrix a="0.948333740234375" b="-0.3172607421875" c="0.3172607421875" d="0.948333740234375" tx="32.05" ty="-6.2"/>
                   </matrix>
@@ -281,7 +260,7 @@
             </DOMFrame>
             <DOMFrame index="33" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="蛙型仿生僵尸/杂项素材/Symbol 254" selected="true">
+                <DOMSymbolInstance libraryItemName="蛙型仿生僵尸/杂项素材/Symbol 254">
                   <matrix>
                     <Matrix a="-0.048980712890625" b="-0.021087646484375" c="-0.0167694091796875" d="0.0433807373046875" tx="-5.95" ty="-91.3"/>
                   </matrix>
@@ -393,7 +372,7 @@
             </DOMFrame>
             <DOMFrame index="33" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="蛙型仿生僵尸/杂项素材/Symbol 254" selected="true">
+                <DOMSymbolInstance libraryItemName="蛙型仿生僵尸/杂项素材/Symbol 254">
                   <matrix>
                     <Matrix a="0.043609619140625" b="0.0059051513671875" c="-0.0059051513671875" d="0.043609619140625" tx="48.2" ty="-72.4"/>
                   </matrix>
@@ -502,7 +481,7 @@
             </DOMFrame>
             <DOMFrame index="33" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/飙血特效素材/Symbol 1234" selected="true">
+                <DOMSymbolInstance libraryItemName="爆胖僵尸/飙血特效素材/Symbol 1234">
                   <matrix>
                     <Matrix a="-0.52734375" d="0.406646728515625" tx="115.55" ty="-228.25"/>
                   </matrix>
@@ -1674,7 +1653,7 @@
             </DOMFrame>
             <DOMFrame index="33" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 612" selected="true">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 612">
                   <matrix>
                     <Matrix a="1.09295654296875" d="1.09295654296875" tx="-272.2" ty="-82.35"/>
                   </matrix>
@@ -1689,7 +1668,7 @@
             </DOMFrame>
             <DOMFrame index="35" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 614" selected="true" centerPoint3DX="24.6" centerPoint3DY="-104.7">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 614" centerPoint3DX="24.6" centerPoint3DY="-104.7">
                   <matrix>
                     <Matrix a="1.09295654296875" d="1.09295654296875" tx="-272.2" ty="-82.35"/>
                   </matrix>
@@ -1887,7 +1866,7 @@
             </DOMFrame>
             <DOMFrame index="33" duration="17" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="血素材/爆皮内构" selected="true">
+                <DOMSymbolInstance libraryItemName="血素材/爆皮内构">
                   <matrix>
                     <Matrix a="0.86602783203125" b="-0.499969482421875" c="0.499969482421875" d="0.86602783203125" tx="7.45" ty="-73.65"/>
                   </matrix>
@@ -6062,7 +6041,7 @@
             </DOMFrame>
             <DOMFrame index="33" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1303" selected="true" symbolType="graphic" centerPoint3DX="18.3" centerPoint3DY="-21.35" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1303" symbolType="graphic" centerPoint3DX="18.3" centerPoint3DY="-21.35" loop="loop">
                   <matrix>
                     <Matrix a="-0.348434448242188" b="-0.16107177734375" c="-0.16107177734375" d="0.348434448242188" tx="33" ty="-28.5"/>
                   </matrix>
@@ -6070,7 +6049,7 @@
                     <Point x="22" y="21.35"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1304" selected="true" symbolType="graphic" centerPoint3DX="8.55" centerPoint3DY="-8.35" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1304" symbolType="graphic" centerPoint3DX="8.55" centerPoint3DY="-8.35" loop="loop">
                   <matrix>
                     <Matrix a="-0.241378784179688" b="-0.111572265625" c="-0.16107177734375" d="0.348434448242188" tx="17.6" ty="-11.8"/>
                   </matrix>
@@ -6078,7 +6057,7 @@
                     <Point x="29.95" y="3.85"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1306" selected="true" symbolType="graphic" centerPoint3DX="24.6" centerPoint3DY="-34.8" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1306" symbolType="graphic" centerPoint3DX="24.6" centerPoint3DY="-34.8" loop="loop">
                   <matrix>
                     <Matrix a="-0.332763671875" b="-0.193267822265625" c="-0.193267822265625" d="0.332763671875" tx="44.5" ty="-40.15"/>
                   </matrix>
@@ -6086,7 +6065,7 @@
                     <Point x="37.5" y="19.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1308" selected="true" symbolType="graphic" centerPoint3DX="14.75" centerPoint3DY="-48.95" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1308" symbolType="graphic" centerPoint3DX="14.75" centerPoint3DY="-48.95" loop="loop">
                   <matrix>
                     <Matrix a="-0.3831787109375" b="-0.0359344482421875" c="-0.0359344482421875" d="0.3831787109375" tx="44.55" ty="-63.65"/>
                   </matrix>
@@ -6094,7 +6073,7 @@
                     <Point x="57.8" y="37.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1304" selected="true" symbolType="graphic" centerPoint3DX="-9.3" centerPoint3DY="4.2" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1304" symbolType="graphic" centerPoint3DX="-9.3" centerPoint3DY="4.2" loop="loop">
                   <matrix>
                     <Matrix a="-0.38134765625" b="-0.050262451171875" c="-0.050262451171875" d="0.38134765625" tx="1.2" ty="-1.4"/>
                   </matrix>
@@ -6102,7 +6081,7 @@
                     <Point x="29.75" y="4.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1305" selected="true" symbolType="graphic" centerPoint3DX="-4.3" centerPoint3DY="-12.9" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1305" symbolType="graphic" centerPoint3DX="-4.3" centerPoint3DY="-12.9" loop="loop">
                   <matrix>
                     <Matrix a="-0.38134765625" b="-0.050262451171875" c="-0.050262451171875" d="0.38134765625" tx="11.1" ty="-24.35"/>
                   </matrix>
@@ -6110,7 +6089,7 @@
                     <Point x="5.85" y="10.35"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1309" selected="true" symbolType="graphic" centerPoint3DX="4.95" centerPoint3DY="-35.2" loop="loop">
+                <DOMSymbolInstance libraryItemName="乱八糟七的汇总/Symbol 1309" symbolType="graphic" centerPoint3DX="4.95" centerPoint3DY="-35.2" loop="loop">
                   <matrix>
                     <Matrix a="-0.3748779296875" b="-0.0869903564453125" c="-0.0869903564453125" d="0.3748779296875" tx="28.9" ty="-47.6"/>
                   </matrix>
@@ -9542,7 +9521,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="血" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="血" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="43" keyMode="9728">
               <elements/>

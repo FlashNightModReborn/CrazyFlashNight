@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/敌人-爆胖僵尸" itemID="69d5f34f-0000088e" linkageExportForAS="true" linkageIdentifier="敌人-爆胖僵尸" lastModified="1779297045" lastUniqueIdentifier="66">
   <timeline>
-    <DOMTimeline name="敌人-爆胖僵尸" currentFrame="49">
+    <DOMTimeline name="敌人-爆胖僵尸" currentFrame="48">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -605,7 +605,7 @@ x轴保持距离 = 100;
             </DOMFrame>
             <DOMFrame index="110" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="爆胖僵尸/新动画/爆胖僵尸自爆动画" centerPoint3DX="4.95" centerPoint3DY="-64.75">
+                <DOMSymbolInstance libraryItemName="爆胖僵尸/新动画/爆胖僵尸自爆动画" selected="true" centerPoint3DX="4.95" centerPoint3DY="-64.75">
                   <matrix>
                     <Matrix tx="-3.4" ty="-4.2"/>
                   </matrix>
