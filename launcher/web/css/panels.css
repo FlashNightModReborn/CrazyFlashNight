@@ -3365,45 +3365,25 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
- * 任务红点 · 三档
- *   page tab badge — 数字，跨页聚合
- *   filter button badge — 数字，filter 级聚合
- *   rail scene quest dot — 纯圆点，无数字，末端
- * 颜色 #ff4a3a（warm red, cyberpunk 主题里互补色对比最强）
- * 剧透防护：锁定 hotspot 不计入 rebuildTaskBadgeLookup，
- *           CSS 这层不需要再考虑 locked 状态
- * 入场弹性动画：scale 0→1.2→1.0, 250ms; reduced-motion 跳过
+ * 任务红点 · 三档（对齐 .map-rail-stage-select-btn.is-task 语言）
+ *   page tab / filter button — 数字 chip，跨页/filter 聚合
+ *   rail scene quest dot — 末端纯圆点，无数字
+ * 设计原则：
+ *   1. button identity shift — has-quest 让按钮本体接 warm-red 倾向（border + bg），
+ *      而不是"贴 iOS 通知贴纸"。chip / 末端 dot 只作 quiet confirmation。
+ *   2. 取消 dark 1px border 与 outer glow（拟物源头），用扁平 solid pill。
+ *   3. 颜色对齐 .is-task 系（border rgba(255,94,74,…) / bg rgba(110-138,24-28,20-22,…)）。
+ * 剧透防护：locked hotspot 在 rebuildTaskBadgeLookup 内已过滤，本层不再判断。
+ * 入场动画：scale 0→1.2→1.0, 250ms；reduced-motion 跳过。
  * ───────────────────────────────────────────────────────────── */
-.map-page-tab-badge {
+
+/* — 共用 chip 视觉（map page tab / map filter / stage-select 入口/tab）— */
+.map-page-tab-badge,
+.map-filter-hotspot-badge,
+.stage-select-frame-toggle-task-badge,
+.stage-select-tab-task-badge {
     display:inline-block;
-    margin-left:6px;
-    padding:0 5px;
-    min-width:14px;
-    height:14px;
-    line-height:14px;
-    font-size:9px;
-    font-weight:700;
-    text-align:center;
-    color:#fff;
-    background:#ff4a3a;
-    border:1px solid rgba(8, 14, 16, 0.55);
-    border-radius:999px;
-    box-shadow:0 0 6px rgba(255, 74, 58, 0.55);
-    letter-spacing:0;
-    vertical-align:middle;
-    animation:mapQuestBadgeEnter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.map-page-tab.is-active .map-page-tab-badge {
-    box-shadow:0 0 8px rgba(255, 90, 70, 0.75);
-    border-color:rgba(20, 26, 8, 0.6);
-}
-
-.map-filter-hotspot-badge {
-    position:relative;
-    z-index:1;
     flex:0 0 auto;
-    margin:0 4px 0 4px;
     padding:0 5px;
     min-width:14px;
     height:14px;
@@ -3411,30 +3391,73 @@
     font-size:9px;
     font-weight:700;
     text-align:center;
-    color:#fff;
-    background:#ff4a3a;
-    border:1px solid rgba(8, 14, 16, 0.55);
+    color:#fff2d2;
+    background:rgba(176, 38, 24, 0.92);
     border-radius:999px;
-    box-shadow:0 0 6px rgba(255, 74, 58, 0.5);
     letter-spacing:0;
     animation:mapQuestBadgeEnter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.map-filter-hotspot.is-active .map-filter-hotspot-badge {
-    background:#d8311f;
-    box-shadow:0 0 8px rgba(255, 90, 70, 0.7);
-    border-color:rgba(20, 26, 8, 0.6);
+.map-page-tab-badge { margin-left:6px; vertical-align:middle; }
+.map-filter-hotspot-badge { position:relative; z-index:1; margin:0 4px; }
+
+/* page tab — button identity shift（非 active 时让 tab 本体染上 warm-red 倾向） */
+.map-page-tab.has-quest:not(.is-active) {
+    border-color:rgba(255, 94, 74, 0.55);
+    color:#ffd9c9;
+}
+.map-page-tab.has-quest:not(.is-active):hover {
+    border-color:rgba(255, 146, 98, 0.78);
+    background:rgba(46, 16, 12, 0.45);
+    color:#ffe5d3;
+}
+.map-page-tab.is-active .map-page-tab-badge {
+    color:#fff2d2;
+    background:rgba(138, 28, 22, 0.95);
 }
 
+/* filter button — 完整 identity shift（filter 高 38px 是 rail 主视觉单元，可以较强表达） */
+.map-filter-hotspot.has-quest:not(.is-active):not(.is-locked):not(.is-empty) {
+    border-color:rgba(255, 94, 74, 0.55);
+    background:linear-gradient(180deg, rgba(40, 16, 12, 0.96) 0%, rgba(24, 9, 7, 0.94) 100%);
+    color:#ffe2cc;
+}
+.map-filter-hotspot.has-quest:not(.is-active):not(.is-locked):not(.is-empty):hover,
+.map-filter-hotspot.has-quest:not(.is-active):not(.is-locked):not(.is-empty):focus {
+    border-color:rgba(255, 146, 98, 0.82);
+    background:linear-gradient(180deg, rgba(54, 22, 16, 0.98) 0%, rgba(32, 12, 9, 0.96) 100%);
+    color:#fff2d2;
+    box-shadow:0 0 14px rgba(255, 74, 58, 0.22);
+}
+.map-filter-hotspot.has-quest:not(.is-active) .map-filter-hotspot-chrome {
+    background:
+        linear-gradient(90deg, rgba(255,94,74,0.16) 0, rgba(255,94,74,0.16) 3px, transparent 3px),
+        linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 28%);
+}
+.map-filter-hotspot.is-active .map-filter-hotspot-badge {
+    color:#fff2d2;
+    background:rgba(138, 28, 22, 0.95);
+}
+
+/* rail scene 末端 dot — 用 ::before idiom（对齐 .map-rail-stage-select-btn.is-task::before）
+ * 拿掉 7px + heavy glow，改 6px flat dot，再加 item 本体淡 warm-red border 倾向 */
 .map-rail-scene-quest {
     margin-left:auto;
-    width:7px;
-    height:7px;
+    width:6px;
+    height:6px;
     border-radius:999px;
     background:#ff4a3a;
-    box-shadow:0 0 6px rgba(255, 74, 58, 0.7);
     flex-shrink:0;
     animation:mapQuestBadgeEnter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.map-rail-scene-item.has-quest {
+    border-color:rgba(255, 94, 74, 0.42);
+    color:#ffe2cc;
+}
+.map-rail-scene-item.has-quest:hover {
+    border-color:rgba(255, 146, 98, 0.6);
+    background:rgba(34, 14, 11, 0.78);
+    color:#fff2d2;
 }
 
 /* current（青色）+ has-quest（红色）同时存在时优先级仍由位置区分：
@@ -4005,25 +4028,8 @@ html.perf-low-effects .map-panel-close-btn:hover {
     letter-spacing: 0.5px;
 }
 
-.stage-select-frame-toggle-task-badge,
-.stage-select-tab-task-badge {
-    flex: 0 0 auto;
-    min-width: 14px;
-    height: 14px;
-    padding: 0 4px;
-    border: 1px solid rgba(8, 14, 16, 0.55);
-    border-radius: 999px;
-    background: #ff4a3a;
-    color: #ffffff;
-    font-size: 9px;
-    font-weight: 700;
-    line-height: 14px;
-    text-align: center;
-    letter-spacing: 0;
-    box-shadow: 0 0 7px rgba(255, 74, 58, 0.58);
-    animation: mapQuestBadgeEnter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
+/* 视觉规范已上提到统一 chip 块（见 panels.css 任务红点章节），
+ * 这里仅保留"空 badge 自动隐藏"，避免 stage-select 头部出现空 14px 占位。 */
 .stage-select-frame-toggle-task-badge:empty,
 .stage-select-tab-task-badge:empty {
     display: none;

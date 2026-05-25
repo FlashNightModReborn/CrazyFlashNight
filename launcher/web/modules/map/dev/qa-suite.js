@@ -1370,6 +1370,85 @@ var MapPanelHarnessQA = (function() {
                         });
                     });
                 }
+            },
+            {
+                id: 'map-ui29',
+                title: 'multiple task NPCs at same hotspot collapse to a single quest mark',
+                run: function() {
+                    // 同一 hotspot 喂 3 个独立 marker（模拟 3 个 NPC 都有可交付任务），
+                    // rebuildTaskBadgeLookup 必须在 byHotspot/byFilter/byPage 三层都折叠为 1。
+                    // 第 4 个喂 basement1（在不同 filter "地下一层"）做 sanity：
+                    // 确认聚合是 hotspot-level 而非 marker-level，并验证两个 filter 各计 1 不是 3+1。
+                    return bootMap(api, host, {
+                        defaultPageId: 'base',
+                        taskNpcHotspots: ['base_lobby', 'base_lobby', 'base_lobby', 'basement1']
+                    }).then(function() {
+                        var state = currentState();
+                        api.assert(!!state && state.taskBadge, 'taskBadge must be exposed in debug state');
+
+                        // 4 个 taskNpc marker（host id 已唯一）+ 可能 1 个 currentLocation 兜底；
+                        // 只数 task_npc_* 前缀确认 4 个都到达，再断言 byHotspot 折叠后 = 2
+                        var taskMarkerIds = state.markerIds.filter(function(id) { return /^task_npc_/.test(id); });
+                        api.assertEqual(taskMarkerIds.length, 4, 'all 4 task_npc markers should reach _snapshotMarkers (got ' + taskMarkerIds.join(',') + ')');
+                        api.assertEqual(Object.keys(state.taskBadge.byHotspot).length, 2, 'byHotspot should collapse to 2 unique hotspots');
+                        api.assert(state.taskBadge.byHotspot['base_lobby'] === true, 'base_lobby marked');
+                        api.assert(state.taskBadge.byHotspot['basement1'] === true, 'basement1 marked');
+
+                        // page tab 计数 = 2（按 hotspot 折叠，不是按 marker 计 4）
+                        api.assertEqual(state.taskBadge.byPage['base'], 2, 'base page should count 2 hotspots, not 4 markers');
+                        var baseTabBadge = document.querySelector('.map-page-tab[data-page-id="base"] .map-page-tab-badge');
+                        api.assert(!!baseTabBadge && baseTabBadge.textContent === '2', 'base tab badge should show "2"');
+
+                        // filter 聚合关键断言：base_lobby 所在 filter 重复 3 次依旧计 1（不是 3）
+                        var basePage = MapPanelData.getPage('base');
+                        var lobbyFilter = (basePage.filters || []).filter(function(filter) {
+                            return filter.id !== 'all' && filter.id !== 'hierarchy'
+                                && (filter.hotspotIds || []).indexOf('base_lobby') >= 0
+                                && (filter.hotspotIds || []).indexOf('basement1') < 0;
+                        })[0];
+                        api.assert(!!lobbyFilter, 'base_lobby exclusive filter should exist');
+                        api.assertEqual(state.taskBadge.byFilter['base'][lobbyFilter.id], 1, 'filter count for base_lobby exclusive filter should be 1 not 3');
+
+                        return 'taskMarkers=' + taskMarkerIds.length +
+                            ', uniqueHotspots=' + Object.keys(state.taskBadge.byHotspot).length +
+                            ', byPage=' + JSON.stringify(state.taskBadge.byPage);
+                    });
+                }
+            },
+            {
+                id: 'map-ui30',
+                title: 'page tab badge caps at "9+" when 10 or more hotspots have quests',
+                run: function() {
+                    // 喂满 base 页 10 个 hotspot（base 页有 13 个 hotspot，全部 default enabled），
+                    // page tab badge 必须显示 "9+" 不是 "10"；byPage 计数仍然是真实值 10。
+                    var tenBaseHotspots = [
+                        'base_lobby', 'base_garage', 'merc_bar', 'infirmary', 'dormitory',
+                        'basement1', 'gym', 'armory', 'cafeteria', 'corridor'
+                    ];
+                    return bootMap(api, host, {
+                        defaultPageId: 'base',
+                        taskNpcHotspots: tenBaseHotspots
+                    }).then(function() {
+                        var state = currentState();
+                        api.assertEqual(state.taskBadge.byPage['base'], 10, 'byPage raw count should be 10 (no clamp at data layer)');
+
+                        var baseTabBadge = document.querySelector('.map-page-tab[data-page-id="base"] .map-page-tab-badge');
+                        api.assert(!!baseTabBadge, 'base tab badge should render');
+                        api.assertEqual(baseTabBadge.textContent, '9+', 'badge text must clamp to "9+" at >=10');
+
+                        // 9 = 边界另一侧，不应触发 clamp
+                        host.setState({ taskNpcHotspots: tenBaseHotspots.slice(0, 9) });
+                        host.pushSnapshot('refresh');
+                        return api.waitFor(function() {
+                            var s = currentState();
+                            return s && s.taskBadge.byPage['base'] === 9 ? s : null;
+                        }, 1500, 'refresh to 9 quest hotspots').then(function() {
+                            var nineBadge = document.querySelector('.map-page-tab[data-page-id="base"] .map-page-tab-badge');
+                            api.assertEqual(nineBadge.textContent, '9', 'at exactly 9 should still show raw "9"');
+                            return 'tenClamp=9+, nineExact=9';
+                        });
+                    });
+                }
             }
         ];
 

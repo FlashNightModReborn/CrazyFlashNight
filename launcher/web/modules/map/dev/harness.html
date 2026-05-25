@@ -274,8 +274,11 @@ window.BootstrapAudio = (function() {
                 var taskHotspotId = taskNpcHotspots[i];
                 var taskPageId = resolvePageIdForHotspotId(taskHotspotId);
                 if (!taskPageId) continue;
+                // 同 hotspot 多次出现 = 模拟"该 hotspot 多个 NPC 都有可交付任务"，
+                // marker id 必须唯一才能进入 _snapshotMarkers，由 rebuildTaskBadgeLookup
+                // 内部的 byHotspot[id] 折叠为 1（多 NPC 同 hotspot 不重复计数）。
                 taskMarkers.push({
-                    id: 'task_npc_' + taskHotspotId,
+                    id: 'task_npc_' + taskHotspotId + '_' + i,
                     kind: 'taskNpc',
                     pageId: taskPageId,
                     hotspotId: taskHotspotId
