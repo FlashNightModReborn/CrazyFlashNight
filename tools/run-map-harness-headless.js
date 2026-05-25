@@ -1,7 +1,7 @@
 'use strict';
 
 // Headless map harness QA runner：用 launcher/perf 自带的 playwright + http server
-// 跑 map harness QA suite (map-ui1~31，含 ui31a-d hittest engine 子用例)，作为离线视觉/逻辑回归门控。
+// 跑 map harness QA suite (map-ui1~32，含 ui31a-d hittest engine + ui32a-c sceneVisual DOM 层子用例)，作为离线视觉/逻辑回归门控。
 //
 // 用法：node tools/run-map-harness-headless.js [--browser=edge|chrome]
 //   可选 --case=map-ui10 仅跑单条；--keep-open 保留窗口（headed 调试）；

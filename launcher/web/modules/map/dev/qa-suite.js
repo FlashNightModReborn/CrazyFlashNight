@@ -128,6 +128,11 @@ var MapPanelHarnessQA = (function() {
 
     function getAvatarSrc() {
         var state = currentState();
+        // Phase 2: avatar 迁 DOM 后, 动态头像 URL 来自 MapAvatarLayer.debugState();
+        // canvas 旧字段 canvasLastDynamicAvatarUrl 仍兜底 (Phase 3 删).
+        if (state && state.avatarLayer && state.avatarLayer.currentDynamicAvatarUrl) {
+            return state.avatarLayer.currentDynamicAvatarUrl;
+        }
         if (state && state.canvasLastDynamicAvatarUrl) return state.canvasLastDynamicAvatarUrl;
         return '';
     }
@@ -597,7 +602,11 @@ var MapPanelHarnessQA = (function() {
                                 }, 1500, 'switch to ' + pageId).then(function(state) {
                                     var visibleSlots = getVisibleStaticAvatarSlots(pageId, state.activeFilterId);
                                     var page = MapPanelData.getPage(pageId);
-                                    api.assert(state.canvasLastDrawSummary.staticAvatarCount === visibleSlots.length, pageId + ' canvas static avatar count mismatch');
+                                    // Phase 2: canvas drawAvatars 已删, staticAvatarCount 永远 = 0;
+                                    // 头像计数读 state.avatarLayer.staticVisibleCount (DOM 层 syncState 结果)
+                                    api.assertEqual(state.canvasLastDrawSummary.staticAvatarCount, 0, pageId + ' canvas static avatar count must be 0 after Phase 2 (DOM layer takes over)');
+                                    api.assert(!!state.avatarLayer, pageId + ' avatarLayer debug exposed');
+                                    api.assertEqual(state.avatarLayer.staticVisibleCount, visibleSlots.length, pageId + ' DOM static avatar count mismatch');
                                     if (typeof MapAvatarSourceData !== 'undefined' && MapAvatarSourceData && MapAvatarSourceData.getByAssetUrl) {
                                         visibleSlots.forEach(function(slot) {
                                             var sourceSlot = MapAvatarSourceData.getByAssetUrl(slot.assetUrl);
@@ -1124,7 +1133,8 @@ var MapPanelHarnessQA = (function() {
                             api.assertEqual(slot.assignedHotspotId, expectedOwnership[id], id + ' hotspot ownership mismatch');
                             api.assert(slot.assignedContains, id + ' center should stay inside assigned scene bucket');
                         }
-                        api.assert(currentState().canvasLastDrawSummary.staticAvatarCount > 0, 'school canvas should draw static avatars');
+                        // Phase 2: canvas avatar 绘制路径已删; school 静态头像计数读 DOM avatarLayer
+                        api.assert(currentState().avatarLayer && currentState().avatarLayer.staticVisibleCount > 0, 'school DOM avatar layer should expose static avatars');
 
                         clearMismatches = audit.filter(function(item) {
                             return item.clearMismatchHotspotId && !reviewOnly[item.avatarId];
@@ -1165,7 +1175,10 @@ var MapPanelHarnessQA = (function() {
                             api.assert(!!hotspotBtn, 'first_defense hotspot missing');
                             api.assert(!hotspotBtn.querySelector('.map-hotspot-label'), 'hotspot label should no longer live inside hotspot button');
 
-                            hotspotBtn.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+                            // Phase 1A 后鼠标命中改由 .map-hotspot-hitcapture 像素级接管,
+                            // hotspot button 已 pointer-events:none + 移除 mouseenter listener.
+                            // 用 focus() 走键盘等价路径触发 hover (attachHotspotHandler 仍绑 focus → setHotspotHover).
+                            hotspotBtn.focus();
 
                             overlayLabel = getHotspotOverlayLabel('first_defense');
                             api.assert(!!overlayLabel, 'first_defense overlay label missing');
@@ -1636,6 +1649,130 @@ var MapPanelHarnessQA = (function() {
                                 api.assert(got === null || (got && typeof got.visualId === 'string'), c.label + ' returns null or valid hit object');
                             });
                             return 'all ' + cases.length + ' edge cases handled';
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui32a',
+                title: 'scene visual layer: Plan C non-hierarchy → canvas 画 muted 其它 + DOM 显 current focus',
+                run: function() {
+                    return bootMap(api, host, {
+                        defaultPageId: 'base',
+                        currentHotspotId: 'base_lobby'
+                    }).then(function() {
+                        return waitForCanvasCurrent(api, 'base default filter ready').then(function() {
+                            var state = currentState();
+                            api.assertEqual(state.activeViewMode, 'default', 'base default filter is non-hierarchy');
+                            api.assert(!!state.canvasLastDrawSummary, 'canvasLastDrawSummary exists');
+                            // Plan C: canvas 画所有 scene (跳过 DOM focus 那张); skipDomScenes 字段已退役.
+                            api.assert(state.canvasLastDrawSummary.skipDomScenes === undefined, 'skipDomScenes field removed (Plan C)');
+                            var totalScenes = state.canvasLastDrawSummary.sceneCount;
+                            api.assert(totalScenes > 0, 'sceneCount (input) > 0 (assembled page)');
+
+                            api.assert(!!state.sceneVisualLayer, 'sceneVisualLayer debug exposed');
+                            api.assert(state.sceneVisualLayer.visualCount > 0, 'sceneVisualLayer has wrappers');
+                            api.assert(state.sceneVisualLayer.domVisibleCount >= 1, 'DOM 至少显示 current 那一张 (got ' + state.sceneVisualLayer.domVisibleCount + ')');
+
+                            // Plan C: canvas 画 = 输入 - DOM 已显示数 (双绘防护)
+                            api.assertEqual(state.canvasLastDrawSummary.sceneSkippedCount, state.sceneVisualLayer.domVisibleCount, 'canvas 跳过数 === DOM 显示数 (双绘防护)');
+                            api.assertEqual(state.canvasLastDrawSummary.scenePaintedCount, totalScenes - state.sceneVisualLayer.domVisibleCount, 'canvas painted = total - DOM visible');
+
+                            // Plan C: dimmer 已退役, 永不激活
+                            api.assertEqual(state.sceneVisualLayer.dimActive, false, 'Plan C: dimmer 永不激活');
+                            var stageFrame = document.getElementById('map-stage-frame');
+                            api.assert(!stageFrame.classList.contains('has-focus-dim'), 'stage frame 不应有 has-focus-dim class');
+
+                            // is-current 类必须挂在 current 那张
+                            var currentDomVisual = document.querySelector('.map-scene-visual.is-current');
+                            api.assert(!!currentDomVisual, 'a .map-scene-visual.is-current must exist');
+                            var hotspotIdsAttr = currentDomVisual.getAttribute('data-hotspot-ids') || '';
+                            api.assert(hotspotIdsAttr.indexOf('base_lobby') >= 0, 'is-current visual contains base_lobby (got ' + hotspotIdsAttr + ')');
+
+                            return 'planC default scenePainted=' + state.canvasLastDrawSummary.scenePaintedCount + '/' + totalScenes + ' domVisible=' + state.sceneVisualLayer.domVisibleCount;
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui32b',
+                title: 'scene visual layer: hierarchy mode → canvas 画非 focus muted + DOM 显 focus, 不双绘',
+                run: function() {
+                    return bootMap(api, host, {
+                        defaultPageId: 'base',
+                        currentHotspotId: 'base_roof'
+                    }).then(function() {
+                        // 切 hierarchy filter
+                        var hierFilter = getFilterButton('hierarchy');
+                        api.assert(!!hierFilter, 'base page hierarchy filter button exists');
+                        clickByHitTest(api, hierFilter, 'hierarchy filter');
+                        return api.waitFor(function() {
+                            var s = currentState();
+                            return s && s.activeViewMode === 'hierarchy' && isCanvasCurrent(s) ? s : null;
+                        }, 1500, 'switch to hierarchy mode').then(function() {
+                            var state = currentState();
+                            api.assertEqual(state.activeViewMode, 'hierarchy', 'view mode is hierarchy');
+                            api.assert(state.canvasLastDrawSummary.skipDomScenes === undefined, 'skipDomScenes field removed (Plan C)');
+
+                            api.assertEqual(state.sceneVisualLayer.domVisibleCount, 1, 'hierarchy 模式 DOM 仅显 focus 那一张 (got ' + state.sceneVisualLayer.domVisibleCount + ')');
+                            var totalScenes = state.canvasLastDrawSummary.sceneCount;
+                            // sceneSkippedCount 必须 = DOM 显示数 → canvas 跳过的就是 DOM 已画的, 0 重影
+                            api.assertEqual(state.canvasLastDrawSummary.sceneSkippedCount, state.sceneVisualLayer.domVisibleCount, 'canvasSkippedCount === domVisibleCount (双绘防护)');
+                            api.assertEqual(state.canvasLastDrawSummary.scenePaintedCount, totalScenes - state.sceneVisualLayer.domVisibleCount, 'canvas 画 = 输入 - 跳过');
+
+                            // Plan C: dimmer 已退役, 永不激活
+                            api.assertEqual(state.sceneVisualLayer.dimActive, false, 'Plan C: dimmer 永不激活');
+
+                            var currentDomVisual = document.querySelector('.map-scene-visual.is-current');
+                            api.assert(!!currentDomVisual, 'hierarchy mode 中 current 那张 DOM 仍 .is-current');
+                            var hotspotIdsAttr = currentDomVisual.getAttribute('data-hotspot-ids') || '';
+                            api.assert(hotspotIdsAttr.indexOf('base_roof') >= 0, 'is-current visual contains base_roof');
+
+                            return 'hier ok domVisible=1 scenePainted=' + state.canvasLastDrawSummary.scenePaintedCount + ' totalScenes=' + totalScenes;
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui32c',
+                title: 'scene visual layer: Plan C current + hover 不同位 → DOM 两张同显 + canvas 画其它 muted',
+                run: function() {
+                    return bootMap(api, host, {
+                        defaultPageId: 'base',
+                        currentHotspotId: 'base_lobby'
+                    }).then(function() {
+                        return waitForCanvasCurrent(api, 'base default ready').then(function() {
+                            // 找另一个 enabled 的 hotspot, focus 它触发 setHotspotHover (键盘等价路径)
+                            var hotspotBtn = document.querySelector('.map-hotspot[data-hotspot-id="base_entrance"]');
+                            api.assert(!!hotspotBtn, 'base_entrance hotspot button exists');
+                            hotspotBtn.focus();
+
+                            return api.waitFor(function() {
+                                var s = currentState();
+                                if (!s || !s.sceneVisualLayer) return null;
+                                return s.sceneVisualLayer.domVisibleCount === 2 ? s : null;
+                            }, 1500, 'two DOM visuals visible (current + hover)').then(function() {
+                                var state = currentState();
+                                api.assertEqual(state.sceneVisualLayer.domVisibleCount, 2, 'DOM 显两张 (current=base_lobby + hover=base_entrance)');
+
+                                var isCurrent = document.querySelectorAll('.map-scene-visual.is-current');
+                                var isFocus = document.querySelectorAll('.map-scene-visual.is-focus');
+                                api.assertEqual(isCurrent.length, 1, '一张带 .is-current (current 位)');
+                                api.assertEqual(isFocus.length, 1, '一张带 .is-focus (hover 位, 非 current)');
+                                api.assert(isCurrent[0] !== isFocus[0], 'current 和 hover 是不同的 DOM 节点');
+
+                                // Plan C: dimmer 退役 → 焦点压暗由 canvas per-scene muted (0.42) 提供
+                                api.assertEqual(state.sceneVisualLayer.dimActive, false, 'Plan C: dimmer 永不激活');
+                                var stageFrame = document.getElementById('map-stage-frame');
+                                api.assert(!stageFrame.classList.contains('has-focus-dim'), 'stage frame 不应有 has-focus-dim class');
+
+                                // canvas 跳过 = DOM 显示数 (= 2), painted = total - 2; 其它 visuals 在 canvas 上画 muted 0.42
+                                var totalScenes = state.canvasLastDrawSummary.sceneCount;
+                                api.assertEqual(state.canvasLastDrawSummary.sceneSkippedCount, 2, 'canvas 跳过 2 张 (current + hover by DOM)');
+                                api.assertEqual(state.canvasLastDrawSummary.scenePaintedCount, totalScenes - 2, 'canvas 画其余 muted');
+
+                                return 'planC current=base_lobby hover=base_entrance domVisible=2 canvasMuted=' + (totalScenes - 2);
+                            });
                         });
                     });
                 }

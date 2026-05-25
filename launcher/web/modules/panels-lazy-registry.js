@@ -49,6 +49,9 @@
          'modules/stage-select-data.js',
          'modules/map-canvas-stage-renderer.js',
          'modules/map/map-hittest-engine.js',
+         'modules/map/map-hotspot-hitcapture.js',
+         'modules/map/map-scene-visual-layer.js',
+         'modules/map/map-avatar-layer.js',
          'modules/map-panel.js'],
         noop);
 

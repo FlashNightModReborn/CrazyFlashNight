@@ -306,12 +306,12 @@ var MapCanvasStageRenderer = (function() {
             ctx.restore();
         }
 
-        // 场景 + 头像 (content-fit 空间)
+        // 场景 (content-fit 空间). Phase 2 起头像由 .map-avatar DOM 层接管,
+        // drawAvatars 调用删除; 函数体保留作 Phase 3 死代码 (待清死代码 commit 删除).
         ctx.save();
         ctx.translate(m.offsetX, m.offsetY);
         ctx.scale(m.contentScale, m.contentScale);
         drawScenes(this, ctx, state, m);
-        drawAvatars(this, ctx, state, m.lowEffects);
         ctx.restore();
 
         ctx.filter = 'none';
@@ -632,13 +632,31 @@ var MapCanvasStageRenderer = (function() {
 
     Renderer.prototype.updateDrawSummary = function(state, m) {
         this.lastRevision = state.revision || 0;
+        var scenes = state.sceneVisuals || [];
+        // Plan C: scenePaintedCount = sceneCount - canvasSkipVisualIds 中实际命中的数 (DOM 已显示的 focus 那张).
+        // canvas 全模式都画, 跳过仅为防双绘.
+        var scenePaintedCount = scenes.length;
+        if (state.canvasSkipVisualIds && state.canvasSkipVisualIds.length) {
+            var skipCount = 0;
+            for (var si = 0; si < scenes.length; si += 1) {
+                if (scenes[si] && scenes[si].id
+                    && state.canvasSkipVisualIds.indexOf(scenes[si].id) >= 0) {
+                    skipCount += 1;
+                }
+            }
+            scenePaintedCount = scenes.length - skipCount;
+        }
         this.lastDrawSummary = {
             pageId: state.page.id,
             filterId: state.activeFilterId || '',
-            sceneCount: (state.sceneVisuals || []).length,
-            avatarCount: (state.staticAvatars || []).length + (state.dynamicAvatars || []).length,
-            staticAvatarCount: (state.staticAvatars || []).length,
-            dynamicAvatarCount: (state.dynamicAvatars || []).length,
+            sceneCount: scenes.length,
+            scenePaintedCount: scenePaintedCount,
+            sceneSkippedCount: scenes.length - scenePaintedCount,
+            // Phase 2: canvas avatar 绘制路径已删, 这三个 count 永远 = 0;
+            // 真实 DOM avatar 计数读 state.avatarLayer.{staticVisibleCount,dynamicVisibleCount}
+            avatarCount: 0,
+            staticAvatarCount: 0,
+            dynamicAvatarCount: 0,
             taskRingCount: (state.taskRings || []).length,
             markerCount: (state.feedbackMarkers || []).length,
             tipCount: (state.feedbackTips || []).length,
@@ -1099,6 +1117,8 @@ var MapCanvasStageRenderer = (function() {
     }
 
     function drawScenes(renderer, ctx, state, m) {
+        // 全模式都画 scene (Plan C). DOM scene layer 仍负责 focus 那张的 lift+glow 高亮,
+        // canvasSkipVisualIds 跳过 DOM 已显示的 visualId 避免双绘.
         var scenes = state.sceneVisuals || [];
         var i;
         for (i = 0; i < scenes.length; i += 1) {
@@ -1106,55 +1126,57 @@ var MapCanvasStageRenderer = (function() {
         }
     }
 
+    // Plan C: 还原原始 4 档状态机 (pre-refactor drawScene line 1116-1141 同款语义).
+    //   稳态 (无 focus)              → alpha 1.0 / bri 1.0 / sat 1.0       全原色
+    //   有 focus, 但本 visual 不是   → alpha 0.42 / bri 0.58 / sat 0.7    深 muted
+    //   hierarchy 模式 (非 focus)    → alpha 0.74 / bri 0.74 / sat 0.8    中度 muted
+    //   isFocus (current 或 hover)   → 由 DOM scene layer 绘制 lift+glow, canvas 跳过
+    // canvasSkipVisualIds 由调用方 (map-panel buildCanvasRenderState) 填入 DOM 已显示的 visualId.
     function drawScene(renderer, ctx, scene, state, m) {
         var rect = scene && scene.rect;
         if (!rect) return;
+        // DOM 已显示的 visual 由 DOM 接管 (含 plate/img/glow + lift+scale 全部 CSS 完成);
+        // canvas 跳过避免双绘. focus 视觉完全由 DOM 提供, canvas 只画 muted/原色底图.
+        if (state.canvasSkipVisualIds && scene.id
+            && state.canvasSkipVisualIds.indexOf
+            && state.canvasSkipVisualIds.indexOf(scene.id) >= 0) return;
         var lowEffects = m.lowEffects;
 
         var theme = (state.page && state.page.backdropTheme) || 'default';
-        var hotspotIds = scene.hotspotIds || [];
-        var isCurrent = hasAny(hotspotIds, [state.currentHotspotId]);
-        var isFocus = isCurrent
-            || hasAny(hotspotIds, [state.hoverHotspotId])
-            || hasBusy(hotspotIds, state.busyLookup);
         var hierarchy = state.activeViewMode === 'hierarchy';
-        var focusId = state.focusHotspotId;
-        var muted = !isFocus && !!focusId && !hasAny(hotspotIds, [focusId]);
+        var focusId = state.focusHotspotId || '';
+        var hotspotIds = scene.hotspotIds || [];
+        // muted: 当前有 focus + 本 visual 不含 focus hotspot;
+        // (本 visual 含 focus 时已被 canvasSkipVisualIds 跳过 — 这里默认 muted 路径)
+        var muted = !!focusId && hotspotIds.indexOf(focusId) < 0;
 
-        // 透明度过渡 (旧 .map-scene-node transition 含 opacity)
-        var alphaTarget = isFocus ? 1 : (hierarchy ? 0.74 : (muted ? 0.42 : 1));
-        var alpha = renderer.tween('sa:' + scene.id, alphaTarget);
-        var focusAmt = renderer.tween('sf:' + scene.id, isFocus ? 1 : 0);
-
-        // 亮度/饱和瞬切 (旧 transition 不含 filter)
-        var bri = 1;
-        var sat = 1;
-        if (isFocus) {
-            bri = isCurrent ? 1.06 : 1.08;
-            sat = 1.08;
-        } else if (hierarchy) {
-            bri = 0.74;
-            sat = 0.8;
+        var alpha;
+        var bri;
+        var sat;
+        if (hierarchy) {
+            // hierarchy 模式: 全部非 focus 用统一中度 muted (与旧版一致)
+            alpha = 0.74; bri = 0.74; sat = 0.8;
         } else if (muted) {
-            bri = 0.58;
-            sat = 0.7;
+            // 非 hierarchy + 有 focus: 其它 visual 深度 muted (与旧版一致)
+            alpha = 0.42; bri = 0.58; sat = 0.7;
+        } else {
+            // 稳态 (无 focus): 全原色
+            alpha = 1; bri = 1; sat = 1;
         }
         var baseC = theme === 'base' ? 1.05 : 1.02;     // .map-scene-layer filter (#15)
         var baseS = theme === 'base' ? 1.03 : 1.04;
 
-        var lift = -2 * focusAmt;                       // translateY(-2px)
-        var scaleAmt = 1 + 0.012 * focusAmt;            // scale(1.012)
-        var dw = rect.w * scaleAmt;
-        var dh = rect.h * scaleAmt;
-        var dx = rect.x + rect.w / 2 - dw / 2;
-        var dy = rect.y + rect.h / 2 - dh / 2 + lift;
+        var dx = rect.x;
+        var dy = rect.y;
+        var dw = rect.w;
+        var dh = rect.h;
 
         ctx.save();
-        ctx.globalAlpha = clamp(alpha, 0, 1);
+        ctx.globalAlpha = alpha;
 
         // 可读性衬底 (仅 base 页, 还原 .map-scene-node::before)
         if (!lowEffects && theme === 'base') {
-            drawReadabilityPlate(ctx, rect, lift);
+            drawReadabilityPlate(ctx, rect, 0);
         }
 
         var rec = renderer.loadImage(scene.assetUrl, { sharpen: !lowEffects });
@@ -1185,11 +1207,11 @@ var MapCanvasStageRenderer = (function() {
                 + Math.round(tw) + 'x' + Math.round(th);
             var baked = canBake ? getBaked(renderer, rec.image, bakeKey, tw, th, filterStr, shadow) : null;
             if (baked) {
-                var bw = (baked.canvas.width / es) * scaleAmt;
-                var bh = (baked.canvas.height / es) * scaleAmt;
+                var bw = baked.canvas.width / es;
+                var bh = baked.canvas.height / es;
                 ctx.drawImage(baked.canvas,
                     rect.x + rect.w / 2 - bw / 2,
-                    rect.y + rect.h / 2 + lift - bh / 2, bw, bh);
+                    rect.y + rect.h / 2 - bh / 2, bw, bh);
             } else {
                 // 锐化未就绪的过渡帧 / bake 失败兜底: 老的逐帧路径
                 if (shadow) {
@@ -1206,14 +1228,6 @@ var MapCanvasStageRenderer = (function() {
         }
         ctx.restore();
 
-        // 发光层 (hover=绿 / current=青, 还原 .map-scene-node-glow)
-        if (!lowEffects && focusAmt > 0.01) {
-            drawSceneGlow(
-                ctx, rect, lift,
-                isCurrent ? '114,230,255' : '200,255,76',
-                (isCurrent ? 0.94 : 0.82) * focusAmt
-            );
-        }
         ctx.restore();
     }
 
@@ -1241,111 +1255,11 @@ var MapCanvasStageRenderer = (function() {
         ctx.restore();
     }
 
-    function drawSceneGlow(ctx, rect, lift, rgb, opacity) {
-        var cx = rect.x + rect.w / 2;
-        var cy = rect.y + rect.h / 2 + lift;
-        var r = Math.max(rect.w, rect.h) / 2 + 6;
-        var g;
-        ctx.save();
-        ctx.globalAlpha = ctx.globalAlpha * clamp(opacity, 0, 1);
-        g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
-        g.addColorStop(0, 'rgba(' + rgb + ',0.26)');
-        g.addColorStop(0.38, 'rgba(' + rgb + ',0.08)');
-        g.addColorStop(0.72, 'rgba(' + rgb + ',0)');
-        ctx.fillStyle = g;
-        ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
-        ctx.restore();
-    }
-
-    // ================================================================
-    // 头像 (静态层)
-    // ================================================================
-
-    function drawAvatars(renderer, ctx, state, lowEffects) {
-        var statics = state.staticAvatars || [];
-        var dynamics = state.dynamicAvatars || [];
-        var i;
-        for (i = 0; i < statics.length; i += 1) {
-            drawAvatar(renderer, ctx, statics[i],
-                'static:' + (statics[i].id || statics[i].hotspotId || ('s' + i)), state, lowEffects);
-        }
-        for (i = 0; i < dynamics.length; i += 1) {
-            if (!renderer.lastDynamicAvatarUrl) renderer.lastDynamicAvatarUrl = dynamics[i].assetUrl || '';
-            drawAvatar(renderer, ctx, dynamics[i],
-                'dynamic:' + (dynamics[i].id || dynamics[i].hotspotId || ('d' + i)), state, lowEffects);
-        }
-    }
-
-    function drawAvatar(renderer, ctx, avatar, key, state, lowEffects) {
-        var rect = avatar && avatar.rect;
-        if (!rect) return;
-
-        var focusId = state.focusHotspotId;
-        var isFocus = !!avatar.hotspotId
-            && (avatar.hotspotId === state.currentHotspotId || avatar.hotspotId === focusId);
-        var muted = !isFocus && !!focusId && !!avatar.hotspotId && avatar.hotspotId !== focusId;
-
-        var alpha = renderer.tween('aa:' + key, muted ? 0.34 : 1);
-        var focusAmt = renderer.tween('af:' + key, isFocus ? 1 : 0);
-
-        var scaleAmt = 1 + 0.04 * focusAmt;
-        var lift = -1 * focusAmt;
-        var cx = rect.x + rect.w / 2;
-        var cy = rect.y + rect.h / 2 + lift;
-        var r = (Math.max(rect.w, rect.h) / 2) * scaleAmt;
-        var rec;
-        var fg;
-
-        if (r <= 0) return;
-
-        ctx.save();
-        ctx.globalAlpha = clamp(alpha, 0, 1);
-
-        // 投影 + 环境辉光 (还原 .map-avatar box-shadow)
-        if (!lowEffects) {
-            // 投影: 径向渐变软盘替代 shadowBlur (免每帧 shadowBlur 慢路径)
-            radialA(ctx, cx, cy, r + 12, 'rgba(0,0,0,1)', 0.5);
-            radialA(ctx, cx, cy, r + 8 + 6 * focusAmt, 'rgba(190,255,64,1)', 0.12 + 0.10 * focusAmt);
-            if (focusAmt > 0.01) {
-                radialA(ctx, cx, cy, r + 10, 'rgba(114,230,255,1)', 0.16 * focusAmt);
-            }
-        }
-
-        // 圆形裁剪 + 底色 + 头像图 / fallback
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, TWO_PI);
-        ctx.clip();
-        ctx.fillStyle = 'rgba(6,8,6,0.82)';
-        ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
-        rec = renderer.loadImage(avatar.assetUrl);
-        if (rec && rec.status === 'ready') {
-            if (muted && !lowEffects) ctx.filter = 'saturate(0.65) brightness(0.72)';
-            ctx.drawImage(rec.image, cx - r, cy - r, r * 2, r * 2);
-            ctx.filter = 'none';
-        } else {
-            fg = ctx.createLinearGradient(0, cy - r, 0, cy + r);
-            fg.addColorStop(0, 'rgba(18,22,18,0.96)');
-            fg.addColorStop(1, 'rgba(8,10,8,0.92)');
-            ctx.fillStyle = fg;
-            ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
-            ctx.fillStyle = '#dff3b8';
-            ctx.font = 'bold 16px "Microsoft YaHei",sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(fallbackChar(avatar.label), cx, cy);
-        }
-        ctx.restore();
-
-        // 边框 (focus 时由 0.25 → 0.58)
-        ctx.strokeStyle = 'rgba(220,255,128,' + (0.25 + 0.33 * focusAmt).toFixed(3) + ')';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, TWO_PI);
-        ctx.stroke();
-
-        ctx.restore();
-    }
+    // Phase 3 清理: drawSceneGlow / drawAvatars / drawAvatar / fallbackChar 已删除.
+    //   - drawSceneGlow: drawScene 简化后 focus glow 路径死;
+    //   - drawAvatars/drawAvatar: avatar 已迁 .map-avatar DOM 层 (Phase 2);
+    //   - fallbackChar: 仅 drawAvatar 使用, 一并删除.
+    // 任务环 / 反馈标记 / 提示 / 未开放提示 (动态层) 仍走 canvas.
 
     // ================================================================
     // 任务环 / 反馈标记 / 提示 / 未开放提示 (动态层)
@@ -1718,24 +1632,6 @@ var MapCanvasStageRenderer = (function() {
     // 工具函数
     // ================================================================
 
-    function hasAny(ids, needles) {
-        var i;
-        if (!ids || !ids.length || !needles || !needles.length) return false;
-        for (i = 0; i < ids.length; i += 1) {
-            if (needles.indexOf(ids[i]) >= 0) return true;
-        }
-        return false;
-    }
-
-    function hasBusy(ids, lookup) {
-        var i;
-        if (!ids || !ids.length || !lookup) return false;
-        for (i = 0; i < ids.length; i += 1) {
-            if (lookup[ids[i]]) return true;
-        }
-        return false;
-    }
-
     // 周期相位 [0,1)
     function phase(t, periodMs) {
         var p = (t % periodMs) / periodMs;
@@ -1774,11 +1670,6 @@ var MapCanvasStageRenderer = (function() {
         });
     }
 
-    function fallbackChar(label) {
-        var s = label ? String(label).replace(/^\s+/, '') : '';
-        return s ? s.charAt(0) : '?';
-    }
-
     function getDpr() {
         if (typeof window === 'undefined') return 1;
         return Math.max(1, Math.min(3, Number(window.devicePixelRatio) || 1));
@@ -1790,6 +1681,8 @@ var MapCanvasStageRenderer = (function() {
 
     function buildStaticRenderKey(state) {
         if (!state || !state.page) return '';
+        // Phase 2: avatar 字段从签名中删除 — drawAvatars 调用已删, avatar 数据已不进入
+        // canvas 渲染热路径. 这一删除消除"hover 触发 avatar tween → renderStatic 重画"残路径.
         return [
             state.page.id || '',
             state.activeFilterId || '',
@@ -1808,9 +1701,16 @@ var MapCanvasStageRenderer = (function() {
             state.backgroundImageUrl || '',
             lookupSignature(state.busyLookup),
             itemSignature(state.sceneVisuals),
-            itemSignature(state.staticAvatars),
-            itemSignature(state.dynamicAvatars)
+            // Plan C: canvas 全模式画, 只跳过 DOM 已显示的 focus visualId 避免双绘
+            skipSignature(state.canvasSkipVisualIds)
         ].join('|');
+    }
+
+    function skipSignature(ids) {
+        if (!ids || !ids.length) return '';
+        var copy = ids.slice();
+        copy.sort();
+        return copy.join(',');
     }
 
     function buildDynamicRenderKey(state) {

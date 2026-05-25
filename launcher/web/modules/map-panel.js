@@ -7,7 +7,7 @@ var MapPanel = (function() {
     //   - 调大需回查 composite PNG 源分辨率, 否则最终总放大 > 1.5x 会 pixelated
     var STAGE_MAX_SCALE = 1.3;
 
-    var _el, _bodyEl, _stageEl, _stageShellEl, _railEl, _canvasEl, _ringCanvasEl, _fgCanvasEl, _canvasRenderer, _contentFitEl, _hotspotLayer, _hotspotLabelLayer, _loadingEl, _errorEl, _errorTextEl;
+    var _el, _bodyEl, _stageEl, _stageShellEl, _railEl, _canvasEl, _ringCanvasEl, _fgCanvasEl, _canvasRenderer, _contentFitEl, _sceneVisualLayerEl, _avatarLayerEl, _dimmerEl, _hotspotLayer, _hitcaptureEl, _hotspotLabelLayer, _loadingEl, _errorEl, _errorTextEl;
     var _pageTabsEl, _pageSummaryEl;
     var _activePage = null;
     var _reqSeq = 0;
@@ -98,9 +98,19 @@ var MapPanel = (function() {
                         // ring=任务环 (z=3, 低于 hotspot/标签 — 套住头像但不遮"前往选关"卡片);
                         // fg=反馈标记/提示/未开放提示 (z=6, 高于标签, 还原旧 feedback-layer 层序)
                         '<canvas class="map-stage-canvas map-stage-canvas--bg" id="map-stage-canvas" aria-hidden="true"></canvas>' +
+                        // dimmer (z=2, DOM 顺序在 bg canvas 后) — 压暗 bg 含 anomaly, 不动 ring/fg
+                        '<div class="map-stage-dimmer" id="map-stage-dimmer" aria-hidden="true"></div>' +
                         '<canvas class="map-stage-canvas map-stage-canvas--ring" id="map-stage-canvas-ring" aria-hidden="true"></canvas>' +
                         '<div class="map-stage-content-fit" id="map-stage-content-fit">' +
+                            // sceneVisual DOM 层 (Phase 1B) — 常态隐藏, current/hover/focus 显示;
+                            // canvas drawScenes 非 hierarchy 整层短路, hierarchy 跳过 DOM 已显示的 visualId
+                            '<div class="map-scene-visual-layer" id="map-scene-visual-layer" aria-hidden="true"></div>' +
+                            // avatar DOM 层 (Phase 2) — 静态 + 动态头像 (替代 canvas drawAvatars)
+                            '<div class="map-avatar-layer" id="map-avatar-layer" aria-hidden="true"></div>' +
                             '<div class="map-hotspot-layer" id="map-hotspot-layer"></div>' +
+                            // hitcapture (z=4) 在 hotspot-layer (z=3) 与 label-layer (z=5) 之间
+                            // 唯一接收鼠标的 hotspot 命中层; .map-hotspot button 改 pointer-events:none
+                            '<div class="map-hotspot-hitcapture" id="map-hotspot-hitcapture"></div>' +
                             '<div class="map-hotspot-label-layer" id="map-hotspot-label-layer"></div>' +
                         '</div>' +
                         '<canvas class="map-stage-canvas map-stage-canvas--fg" id="map-stage-canvas-fg" aria-hidden="true"></canvas>' +
@@ -128,7 +138,11 @@ var MapPanel = (function() {
         _ringCanvasEl = _el.querySelector('#map-stage-canvas-ring');
         _fgCanvasEl = _el.querySelector('#map-stage-canvas-fg');
         _contentFitEl = _el.querySelector('#map-stage-content-fit');
+        _sceneVisualLayerEl = _el.querySelector('#map-scene-visual-layer');
+        _avatarLayerEl = _el.querySelector('#map-avatar-layer');
+        _dimmerEl = _el.querySelector('#map-stage-dimmer');
         _hotspotLayer = _el.querySelector('#map-hotspot-layer');
+        _hitcaptureEl = _el.querySelector('#map-hotspot-hitcapture');
         _hotspotLabelLayer = _el.querySelector('#map-hotspot-label-layer');
         _stageShellEl = _el.querySelector('#map-stage-shell');
         _railEl = _el.querySelector('#map-rail-shell');
@@ -140,6 +154,30 @@ var MapPanel = (function() {
         _canvasRenderer = (typeof MapCanvasStageRenderer !== 'undefined')
             ? new MapCanvasStageRenderer(_canvasEl, { fgCanvas: _fgCanvasEl, ringCanvas: _ringCanvasEl, resolveAssetUrl: resolveAssetUrl })
             : null;
+
+        if (typeof MapSceneVisualLayer !== 'undefined' && _sceneVisualLayerEl) {
+            MapSceneVisualLayer.mount(_sceneVisualLayerEl, _dimmerEl, _stageEl, resolveAssetUrl);
+        }
+
+        if (typeof MapAvatarLayer !== 'undefined' && _avatarLayerEl) {
+            MapAvatarLayer.mount(_avatarLayerEl);
+        }
+
+        if (typeof MapHotspotHitcapture !== 'undefined' && _hitcaptureEl) {
+            MapHotspotHitcapture.mount(_hitcaptureEl, {
+                getCurrentPageId: function() { return _activePage ? _activePage.id : ''; },
+                getCurrentPage: function() { return _activePage; },
+                getVisibleLookup: function() { return buildVisibleLookup(_activePage); },
+                getEnabledLookup: function() { return _enabledLookup; },
+                getBusyLookup: function() { return _busyLookup; },
+                onHover: function(id, isHover) { setHotspotHover(id, isHover); },
+                onClick: function(id) {
+                    if (!_activePage) return;
+                    var hotspot = findHotspotById(_activePage, id);
+                    if (hotspot) requestNavigate(hotspot);
+                }
+            });
+        }
 
         buildPageTabs();
         initLayoutWatcher();
@@ -304,6 +342,15 @@ var MapPanel = (function() {
         _canvasActive = false;
         _canvasSyncScheduled = false;
         if (_canvasRenderer && _canvasRenderer.stop) _canvasRenderer.stop();
+        // 释放所有 page 的 hitmap (每张 ~2.4MB ImageData), 下次 applyPage 重建.
+        // hitcapture 自身的 listeners 留在 DOM 上, 由 Panels 框架保留 _el 复用; 状态归零靠
+        // ensurePage 未就绪时 query 返回 null 兜底.
+        if (typeof MapHittestEngine !== 'undefined' && typeof MapPanelData !== 'undefined') {
+            var pageOrder = MapPanelData.getPageOrder ? MapPanelData.getPageOrder() : [];
+            for (var i = 0; i < pageOrder.length; i += 1) {
+                MapHittestEngine.discardPage(pageOrder[i]);
+            }
+        }
     }
 
     function applyPage(pageId) {
@@ -311,6 +358,24 @@ var MapPanel = (function() {
         _hoverHotspotId = '';
         ensurePageFilterState(_activePage);
         _stageEl.style.aspectRatio = _activePage.width + ' / ' + _activePage.height;
+        // 像素级 hittest 构建 (lazy, fire-and-forget):
+        // 必须传整页 sceneVisuals (engine 内部读 page.sceneVisuals), 与 filter 无关;
+        // filter 过滤由 hitcapture 调用方在 query 后用 getVisibleLookup 套
+        if (typeof MapHittestEngine !== 'undefined' && _activePage && _activePage.sceneVisuals && _activePage.sceneVisuals.length) {
+            MapHittestEngine.ensurePage(_activePage, resolveAssetUrl);
+        }
+        // sceneVisual DOM 层重建 (整页全部 visuals, 与 filter 无关).
+        // 必须在 renderStageBackdrop → syncCanvasStage 之前, 因为 buildCanvasRenderState
+        // 会 syncState 拿 domVisibleVisualIds 喂 canvasSkipVisualIds
+        if (typeof MapSceneVisualLayer !== 'undefined' && _activePage) {
+            MapSceneVisualLayer.syncPage(_activePage);
+        }
+        // avatar DOM 层重建 (整页全部 slots, 与 filter 无关).
+        // syncPage 内有 fingerprint 防重建闪烁; _dynamicAvatarState 变化时
+        // dynamic slot 的 assetUrl 会变, fingerprint 不同, 触发重建.
+        if (typeof MapAvatarLayer !== 'undefined' && _activePage) {
+            MapAvatarLayer.syncPage(_activePage, buildAvatarLayerSlots(_activePage));
+        }
         renderStageBackdrop();
         renderStageImage();
         renderSceneVisuals();
@@ -748,8 +813,7 @@ var MapPanel = (function() {
             btn.style.height = toPercent(rect.h, _activePage.height);
             btn.setAttribute('aria-disabled', 'false');
             btn.setAttribute('aria-label', hotspot.label);
-            btn.innerHTML =
-                '<span class="map-hotspot-sheen"></span>';
+            // Phase 2: .map-hotspot-sheen span 删除; 视觉装饰已迁 .map-scene-visual / .map-avatar.
 
             attachHotspotHandler(btn, hotspot);
             _hotspotLayer.appendChild(btn);
@@ -760,14 +824,12 @@ var MapPanel = (function() {
     }
 
     function attachHotspotHandler(btn, hotspot) {
+        // 鼠标命中已迁移到 .map-hotspot-hitcapture (像素级 alpha 命中);
+        // 按钮本身 pointer-events:none. 这里只保留键盘 a11y 路径:
+        // - click: 键盘 focus + Enter 时浏览器仍派发 click 事件 (不依赖 pointer-events)
+        // - focus/blur: Tab 键盘焦点 → 等价于 hover, 让 label 卡片浮起
         btn.addEventListener('click', function() {
             requestNavigate(hotspot);
-        });
-        btn.addEventListener('mouseenter', function() {
-            setHotspotHover(hotspot.id, true);
-        });
-        btn.addEventListener('mouseleave', function() {
-            setHotspotHover(hotspot.id, false);
         });
         btn.addEventListener('focus', function() {
             setHotspotHover(hotspot.id, true);
@@ -1579,11 +1641,42 @@ var MapPanel = (function() {
         var activeFilter = getActiveFilter(_activePage);
         var pageId = _activePage ? _activePage.id : '';
         var filterId = activeFilter ? activeFilter.id : '';
+        var viewMode = getActiveViewMode(_activePage);
         var visibleKey = pageId + '|' + filterId + '|' + lookupCacheKey(_enabledLookup);
         var avatarKey = visibleKey + '|' + objectCacheKey(_avatarVisibility);
-        var dynamicAvatarKey = avatarKey + '|' + objectCacheKey(_dynamicAvatarState);
+        // dynamicAvatarKey 已与 avatarKey 合并到 taskRings 的 markerKey+avatarKey 组合签名中;
+        // canvas 不再需要 dynamic avatar 数据 (DOM 接管), 单独的 dynamicAvatarKey 不必维护.
         var markerKey = visibleKey + '|' + markerCacheKey(_snapshotMarkers);
         var tipKey = visibleKey + '|' + markerCacheKey(_snapshotTips);
+
+        // DOM scene layer 同步: 更新 visibility/.is-* 类, 返回当前 visible visualId 集合.
+        // Plan C: canvas 全模式画 scene (稳态原色 / 有 focus 时其它 muted 0.42 / hierarchy 0.74);
+        // DOM scene layer 负责 focus 那张的 lift+glow 高亮, canvas 通过 canvasSkipVisualIds 跳过避免双绘.
+        var canvasSkipVisualIds = [];
+        if (typeof MapSceneVisualLayer !== 'undefined') {
+            var syncResult = MapSceneVisualLayer.syncState({
+                viewMode: viewMode,
+                activeFilterId: filterId,
+                currentHotspotId: _currentHotspotId,
+                hoverHotspotId: _hoverHotspotId,
+                busyLookup: _busyLookup
+            });
+            canvasSkipVisualIds = (syncResult && syncResult.domVisibleVisualIds) || [];
+        }
+
+        // Phase 2: DOM avatar layer 同步. canvas drawAvatars 已删除调用, 此处只更新 DOM.
+        if (typeof MapAvatarLayer !== 'undefined' && _activePage) {
+            MapAvatarLayer.syncState({
+                visibleLookup: buildVisibleLookup(_activePage),
+                enabledLookup: _enabledLookup,
+                avatarVisibility: _avatarVisibility,
+                focusHotspotId: getFocusHotspotId(_activePage),
+                currentHotspotId: _currentHotspotId,
+                hoverHotspotId: _hoverHotspotId,
+                busyLookup: _busyLookup
+            });
+        }
+
         return {
             revision: _canvasRevision,
             page: _activePage,
@@ -1592,12 +1685,13 @@ var MapPanel = (function() {
                 ? resolveAssetUrl(_activePage.backgroundUrl)
                 : '',
             activeFilterId: filterId,
-            activeViewMode: getActiveViewMode(_activePage),
+            activeViewMode: viewMode,
             focusHotspotId: getFocusHotspotId(_activePage),
             currentHotspotId: _currentHotspotId,
             hoverHotspotId: _hoverHotspotId,
             busyLookup: cloneLookup(_busyLookup),
             enabledLookup: cloneLookup(_enabledLookup),
+            canvasSkipVisualIds: canvasSkipVisualIds,
             stageScale: _stageScale,
             stageWidth: _stageEl ? _stageEl.clientWidth : 0,
             stageHeight: _stageEl ? _stageEl.clientHeight : 0,
@@ -1609,12 +1703,11 @@ var MapPanel = (function() {
             sceneVisuals: getCanvasRenderSlice('sceneVisuals', visibleKey, function() {
                 return buildCanvasSceneVisuals(_activePage);
             }),
-            staticAvatars: getCanvasRenderSlice('staticAvatars', avatarKey, function() {
-                return buildCanvasStaticAvatars(_activePage);
-            }),
-            dynamicAvatars: getCanvasRenderSlice('dynamicAvatars', dynamicAvatarKey, function() {
-                return buildCanvasDynamicAvatars(_activePage);
-            }),
+            // Phase 3: avatar 已迁 DOM, canvas drawAvatars 调用 + buildStaticRenderKey 都已删;
+            // 这里保留 staticAvatars/dynamicAvatars 字段供 measureContentBounds 通过 buildCanvas* 直接调用,
+            // 但不再放入 canvas state — renderer 永远拿到空数组, 无影响.
+            staticAvatars: [],
+            dynamicAvatars: [],
             taskRings: getCanvasRenderSlice('taskRings', markerKey + '|' + avatarKey, function() {
                 return buildCanvasTaskRings(_activePage);
             }),
@@ -1730,6 +1823,57 @@ var MapPanel = (function() {
                 assetUrl: visuals[i].assetUrl,
                 rect: cloneRect(visuals[i].rect),
                 hotspotIds: (visuals[i].hotspotIds || []).slice()
+            });
+        }
+        return out;
+    }
+
+    function avatarFallbackChar(label) {
+        var s = label ? String(label).replace(/^\s+/, '') : '';
+        return s ? s.charAt(0) : '?';
+    }
+
+    // Phase 2: 把 page.staticAvatars + page.dynamicAvatars 解析成统一 slot 列表喂 MapAvatarLayer.
+    // 资源 URL / rect / fallback char 全部预解析. 与 filter / hover 无关, 仅页/动态 state 影响.
+    function buildAvatarLayerSlots(page) {
+        var out = [];
+        var i;
+        var slot;
+        var rect;
+        var url;
+        if (!page) return out;
+        var staticSlots = page.staticAvatars || [];
+        for (i = 0; i < staticSlots.length; i += 1) {
+            slot = staticSlots[i];
+            if (!slot || !slot.assetUrl) continue;
+            rect = resolveStaticAvatarRect(slot);
+            if (!rect) continue;
+            out.push({
+                id: slot.id || '',
+                kind: 'static',
+                label: slot.label || '',
+                hotspotId: slot.hotspotId || '',
+                rect: cloneRect(rect),
+                assetUrl: resolveAssetUrl(slot.assetUrl),
+                fallbackChar: avatarFallbackChar(slot.label)
+            });
+        }
+        var dynamicSlots = page.dynamicAvatars || [];
+        for (i = 0; i < dynamicSlots.length; i += 1) {
+            slot = dynamicSlots[i];
+            if (!slot) continue;
+            url = resolveDynamicAvatarUrl(slot);
+            if (!url) continue;
+            rect = resolveDynamicAvatarRect(slot);
+            if (!rect) continue;
+            out.push({
+                id: slot.id || '',
+                kind: 'dynamic',
+                label: slot.label || '',
+                hotspotId: slot.hotspotId || '',
+                rect: cloneRect(rect),
+                assetUrl: resolveAssetUrl(url),
+                fallbackChar: avatarFallbackChar(slot.label)
             });
         }
         return out;
@@ -2437,6 +2581,12 @@ var MapPanel = (function() {
             state.canvasReady = false;
             state.canvasPendingAssets = 0;
             state.canvasDrawCount = 0;
+        }
+        if (typeof MapSceneVisualLayer !== 'undefined' && MapSceneVisualLayer.debugState) {
+            state.sceneVisualLayer = MapSceneVisualLayer.debugState();
+        }
+        if (typeof MapAvatarLayer !== 'undefined' && MapAvatarLayer.debugState) {
+            state.avatarLayer = MapAvatarLayer.debugState();
         }
         return state;
     }
