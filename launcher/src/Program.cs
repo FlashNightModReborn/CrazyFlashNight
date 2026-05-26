@@ -661,6 +661,7 @@ class Program
         StageSelectTask stageSelectTask = new StageSelectTask(socketServer);
         ArenaTask arenaTask = new ArenaTask(socketServer);
         PetTask petTask = new PetTask(socketServer);
+        MercTask mercTask = new MercTask(socketServer);
         IntelligenceTask intelligenceTask = new IntelligenceTask(projectRoot, socketServer);
         ArchiveTask archiveTask;
         using (PerfTrace.Scope("task.archive_init"))
@@ -722,7 +723,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, stageSelectTask, arenaTask, petTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, stageSelectTask, arenaTask, petTask, mercTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
         }
 
         // 注入 router 到 webOverlay：开启 Web→C# 通用 task 桥（FontPack 安装条幅等使用）
@@ -735,6 +736,7 @@ class Program
         webOverlay.SetStageSelectTask(stageSelectTask);
         webOverlay.SetArenaTask(arenaTask);
         webOverlay.SetPetTask(petTask);
+        webOverlay.SetMercTask(mercTask);
         webOverlay.SetIntelligenceTask(intelligenceTask);
         webOverlay.SetPanelStateCallback(form.HandlePanelStateChanged);
         form.SetWebOverlay(webOverlay);

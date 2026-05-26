@@ -106,4 +106,10 @@
         ['modules/pet-data.js',
          'modules/pet-panel.js'],
         noop);
+
+    // ── mercs (佣兵) ──
+    Panels.registerLazy('mercs',
+        ['modules/merc-data.js',
+         'modules/merc-panel.js'],
+        noop);
 })();

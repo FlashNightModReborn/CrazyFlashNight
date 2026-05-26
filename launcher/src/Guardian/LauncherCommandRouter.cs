@@ -112,7 +112,16 @@ namespace CF7Launcher.Guardian
                         PostToWeb("{\"type\":\"toast\",\"text\":\"战宠面板暂时不可用\"}");
                     }
                     break;
-                case "MERCS": SendGameCommand("toggleMercs"); break;
+                case "MERCS":
+                    LogManager.Log("[Router] MERCS clicked");
+                    if (TrySendGameCommand("mercPanelOpen"))
+                        OpenPanel("mercs", null);
+                    else
+                    {
+                        LogManager.Log("[Router] MERCS mercPanelOpen failed");
+                        PostToWeb("{\"type\":\"toast\",\"text\":\"佣兵面板暂时不可用\"}");
+                    }
+                    break;
                 case "TABLET": SendGameCommand("toggleTablet"); break;
                 case "GAMESETTINGS": SendGameCommand("openSettings"); break;
                 case "JUKEBOX": SendGameCommand("openJukebox"); break;
