@@ -21,12 +21,8 @@ var MapSceneVisualLayer = (function() {
     //     hierarchy 模式: 仅 isFocus + inFilter → visible (.is-current 或 .is-focus);
     //                     非 focus 由 canvas 画 muted 底图 (调用方靠 canvasSkipVisualIds
     //                     跳过 DOM 已显示的, 避免双绘 plate/glow).
-    //     非 hierarchy:   同 hierarchy 的 visible 规则; 但 canvas 整层 drawScenes 跳过.
-    //
-    //   dimmer 规则 (Plan C 已退役):
-    //     原方案: 非 hierarchy + hover → has-focus-dim → dimmer opacity 0.35 压暗 bg canvas.
-    //     Plan C 改为 canvas 端 per-scene muted (alpha 0.42), 焦点对比由 canvas 本身提供;
-    //     dimmer DOM 元素保留但永不激活 (CSS rule 与开关 toggle 都删除/不调用), 避免 anomaly 被一起压暗.
+    //     非 hierarchy:   同 hierarchy 的 visible 规则; canvas 画其余 visuals 的 muted 版本
+    //                     (alpha 0.42/0.58/0.7 四档由 canvas drawScene 提供焦点对比).
     //
     //   坐标契约:
     //     visual.rect (在 page 坐标系, 单位像素) → CSS left/top/width/height 用百分比
@@ -34,7 +30,6 @@ var MapSceneVisualLayer = (function() {
     // ================================================================
 
     var _containerEl = null;
-    var _dimmerEl = null;
     var _stageFrameEl = null;
     var _currentPageId = '';
     var _wrappers = [];        // [{ visualId, rect, hotspotIds, filterIds, el, plate, img, glow }]
@@ -194,8 +189,6 @@ var MapSceneVisualLayer = (function() {
             if (w.el.className !== cls) w.el.className = cls;
         }
 
-        // Plan C: dimmer 已退役, 焦点压暗改由 canvas drawScene 的 per-scene muted (0.42/0.58/0.7) 完成.
-        // 保留 hierarchy 变量声明给未来策略调整, 此处不再 toggle .has-focus-dim.
         void hierarchy;
         void hoverHotspotId;
 
@@ -207,17 +200,14 @@ var MapSceneVisualLayer = (function() {
         return _lastSyncResult;
     }
 
-    function mount(containerEl, dimmerEl, stageFrameEl, resolveAssetUrl) {
+    function mount(containerEl, stageFrameEl, resolveAssetUrl) {
         if (containerEl) _containerEl = containerEl;
-        if (dimmerEl) _dimmerEl = dimmerEl;
         if (stageFrameEl) _stageFrameEl = stageFrameEl;
         setResolveAssetUrl(resolveAssetUrl);
     }
 
     function destroy() {
         ensureContainerCleared();
-        if (_stageFrameEl) _stageFrameEl.classList.remove('has-focus-dim');
-        if (_dimmerEl) _dimmerEl.style.opacity = '';
         _currentPageId = '';
         _lastSyncResult = { domVisibleVisualIds: [] };
     }
@@ -227,10 +217,7 @@ var MapSceneVisualLayer = (function() {
             pageId: _currentPageId,
             visualCount: _wrappers.length,
             domVisibleCount: _lastSyncResult.domVisibleVisualIds.length,
-            domVisibleVisualIds: _lastSyncResult.domVisibleVisualIds.slice(),
-            hasDimmer: !!_dimmerEl,
-            // Plan C: dimActive 永远 false (dimmer 已退役), 字段保留供向后兼容 ui32c
-            dimActive: false
+            domVisibleVisualIds: _lastSyncResult.domVisibleVisualIds.slice()
         };
     }
 

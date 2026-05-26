@@ -2815,9 +2815,10 @@
     z-index:2;
 }
 
-/* 任务环层: 夹在 bg(2) 与 content-fit(4) 之间 — 套住头像、却不遮 hotspot 标签卡片 */
+/* 任务环层: 提到 content-fit(z=4) 之上 (avatar/sceneVisual DOM 化后, ring 套头像
+   不能再用 z=3 — 会被 content-fit 内的 layer 全部遮盖). fg(z=6) 仍在 ring 之上. */
 .map-stage-canvas--ring {
-    z-index:3;
+    z-index:5;
 }
 
 .map-stage-canvas--fg {
@@ -2873,25 +2874,8 @@
     background:transparent;
 }
 
-/* ──────────────────────────────────────────────────────────────────────
-   Phase 1B: sceneVisual DOM 层 + dimmer overlay
-   sceneVisual 从 canvas 抽到 DOM <img>, 常态隐藏 (visibility+opacity 双控),
-   仅 current/hover/focus 显示, 利用 GPU 合成省 canvas 全层重画.
-   dimmer 半透明黑覆盖在 bg canvas 之上 / ring canvas 之下, hover 时渐入压暗.
-   ────────────────────────────────────────────────────────────────────── */
-
-/* dimmer: Plan C 已退役 (canvas 端 per-scene muted 0.42 替代). DOM 元素保留但永不激活,
-   留 styles 是为 future 策略调整 (例如改回 dimmer 时仅需重启 .has-focus-dim toggle). */
-.map-stage-dimmer {
-    position:absolute;
-    inset:0;
-    background:#000;
-    opacity:0;
-    pointer-events:none;
-    z-index:2;
-    transition:opacity 140ms cubic-bezier(0,0,0.2,1);
-}
-
+/* sceneVisual DOM 层: 从 canvas 抽到 DOM <img>, 常态 visibility+opacity 双控隐藏,
+   仅 current/hover/focus 显示, 利用 GPU 合成省 canvas 全层重画. */
 .map-scene-visual-layer {
     position:absolute;
     inset:0;
@@ -2981,13 +2965,60 @@
     background:radial-gradient(ellipse at center, rgba(114,230,255,0.26) 0%, rgba(114,230,255,0.08) 38%, rgba(114,230,255,0) 72%);
 }
 
+/* 4 角靶标括号 — 还原旧 .map-hotspot::before 的视觉语言, 用于选中态
+   (is-current=玩家所在 青色 / is-focus=hover 黄绿). scene visual rect 比旧 hotspot 大,
+   刻线长 16px (旧版 10px). 默认 opacity:0, is-visible + is-current/is-focus 才显示. */
+.map-scene-visual::before {
+    content:'';
+    position:absolute;
+    inset:-6px;
+    z-index:3;
+    pointer-events:none;
+    opacity:0;
+    transition:opacity 140ms cubic-bezier(0,0,0.2,1),
+               inset 140ms cubic-bezier(0,0,0.2,1);
+}
+.map-scene-visual.is-current::before,
+.map-scene-visual.is-focus::before {
+    opacity:0.88;
+    inset:-8px;
+}
+.map-scene-visual.is-current::before {
+    background:
+        linear-gradient(#72e6ff, #72e6ff) left   top    / 16px 2px no-repeat,
+        linear-gradient(#72e6ff, #72e6ff) left   top    / 2px 16px no-repeat,
+        linear-gradient(#72e6ff, #72e6ff) right  top    / 16px 2px no-repeat,
+        linear-gradient(#72e6ff, #72e6ff) right  top    / 2px 16px no-repeat,
+        linear-gradient(#72e6ff, #72e6ff) left   bottom / 16px 2px no-repeat,
+        linear-gradient(#72e6ff, #72e6ff) left   bottom / 2px 16px no-repeat,
+        linear-gradient(#72e6ff, #72e6ff) right  bottom / 16px 2px no-repeat,
+        linear-gradient(#72e6ff, #72e6ff) right  bottom / 2px 16px no-repeat;
+    filter:drop-shadow(0 0 5px rgba(114,230,255,0.45));
+}
+.map-scene-visual.is-focus::before {
+    background:
+        linear-gradient(#c8ff4c, #c8ff4c) left   top    / 16px 2px no-repeat,
+        linear-gradient(#c8ff4c, #c8ff4c) left   top    / 2px 16px no-repeat,
+        linear-gradient(#c8ff4c, #c8ff4c) right  top    / 16px 2px no-repeat,
+        linear-gradient(#c8ff4c, #c8ff4c) right  top    / 2px 16px no-repeat,
+        linear-gradient(#c8ff4c, #c8ff4c) left   bottom / 16px 2px no-repeat,
+        linear-gradient(#c8ff4c, #c8ff4c) left   bottom / 2px 16px no-repeat,
+        linear-gradient(#c8ff4c, #c8ff4c) right  bottom / 16px 2px no-repeat,
+        linear-gradient(#c8ff4c, #c8ff4c) right  bottom / 2px 16px no-repeat;
+    filter:drop-shadow(0 0 5px rgba(200,255,76,0.45));
+}
+
 @media (prefers-reduced-motion: reduce) {
     .map-scene-visual,
     .map-scene-visual-glow,
     .map-scene-visual-img,
-    .map-stage-dimmer {
+    .map-scene-visual::before {
         transition:none;
     }
+}
+
+html.perf-low-effects .map-scene-visual::before {
+    filter:none !important;
 }
 
 /* ──────────────────────────────────────────────────────────────────────
@@ -3379,7 +3410,7 @@
     justify-content:center;
     gap:4px;
     align-self:flex-end;
-    min-width:56px;
+    min-width:72px;
     height:22px;
     padding:0 12px;
     border:1px solid rgba(110, 235, 102, 0.18);
@@ -3392,7 +3423,6 @@
 }
 
 .map-rail-stage-select-btn.is-task {
-    min-width:72px;
     border-color:rgba(255, 94, 74, 0.6);
     background:
         linear-gradient(90deg, rgba(255, 74, 58, 0.24) 0, rgba(255, 74, 58, 0.24) 3px, transparent 3px),
@@ -3449,11 +3479,13 @@
     color:#f1ffcf;
 }
 
+/* 菱形 dot — 与 .map-rail-stage-select-btn.is-task::before / .map-rail-scene-quest 的
+   菱形语言对齐, 让 rail 整列左侧 icon 形状统一 (颜色仍按状态区分). */
 .map-rail-scene-dot {
-    width:5px;
-    height:5px;
-    border-radius:999px;
+    width:6px;
+    height:6px;
     background:rgba(200,255,76,0.34);
+    clip-path:polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
     flex-shrink:0;
 }
 
@@ -3474,13 +3506,14 @@
 
 .map-rail-scene-item.is-current .map-rail-scene-dot {
     background:rgba(114,230,255,0.95);
-    box-shadow:0 0 8px rgba(114,230,255,0.6);
+    /* clip-path 切掉 box-shadow, 改用 filter drop-shadow 让发光描出菱形外形 */
+    filter:drop-shadow(0 0 4px rgba(114,230,255,0.7));
     animation:mapRailSceneCurrentPulse 1.6s ease-in-out infinite;
 }
 
 @keyframes mapRailSceneCurrentPulse {
-    0%, 100% { box-shadow:0 0 6px rgba(114,230,255,0.5); }
-    50%      { box-shadow:0 0 12px rgba(114,230,255,0.9); }
+    0%, 100% { filter:drop-shadow(0 0 3px rgba(114,230,255,0.5)); }
+    50%      { filter:drop-shadow(0 0 7px rgba(114,230,255,0.95)); }
 }
 
 /* is-disabled: 锁定/未启用, 弱化但仍可点 (click → toast lockedReason) */
@@ -3522,7 +3555,8 @@
 .map-rail-scene-item.is-busy .map-rail-scene-dot,
 .map-rail-scene-item:disabled .map-rail-scene-dot {
     background:#ffd04f;
-    box-shadow:0 0 8px rgba(255, 208, 79, 0.52);
+    /* clip-path 切 box-shadow → drop-shadow 让黄光描菱形外形 */
+    filter:drop-shadow(0 0 4px rgba(255, 208, 79, 0.6));
 }
 
 @media (prefers-reduced-motion: reduce) {

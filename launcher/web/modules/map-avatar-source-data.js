@@ -288,12 +288,12 @@ var MapAvatarSourceData = (function() {
     "crop": {
       "scaleX": 1.0,
       "scaleY": 1.0,
-      "tx": -8.55,
-      "ty": -2.45
+      "tx": 0,
+      "ty": 0
     },
     "assetSize": {
-      "w": 54,
-      "h": 116
+      "w": 44,
+      "h": 44
     }
   },
   "researcher头像": {
@@ -769,14 +769,14 @@ var MapAvatarSourceData = (function() {
       "h": 44
     },
     "crop": {
-      "scaleX": 0.75,
-      "scaleY": 0.75,
-      "tx": 1.2,
-      "ty": 0.0
+      "scaleX": 1.0,
+      "scaleY": 1.0,
+      "tx": 0,
+      "ty": 0
     },
     "assetSize": {
       "w": 44,
-      "h": 48
+      "h": 44
     }
   },
   "教导主任头像": {
@@ -832,14 +832,14 @@ var MapAvatarSourceData = (function() {
       "h": 44
     },
     "crop": {
-      "scaleX": 0.45,
-      "scaleY": 0.45,
-      "tx": 0.25,
-      "ty": 3.05
+      "scaleX": 1.0,
+      "scaleY": 1.0,
+      "tx": 0,
+      "ty": 0
     },
     "assetSize": {
       "w": 44,
-      "h": 45
+      "h": 44
     }
   },
   "格格巫头像": {
@@ -1042,14 +1042,14 @@ var MapAvatarSourceData = (function() {
       "h": 44
     },
     "crop": {
-      "scaleX": 0.99,
-      "scaleY": 0.99,
-      "tx": 3.0,
-      "ty": -5.4
+      "scaleX": 1.0,
+      "scaleY": 1.0,
+      "tx": 0,
+      "ty": 0
     },
     "assetSize": {
-      "w": 97,
-      "h": 67
+      "w": 44,
+      "h": 44
     }
   },
   "黑仔头像": {

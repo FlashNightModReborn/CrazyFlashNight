@@ -710,7 +710,8 @@ var MapPanelHarnessQA = (function() {
                                     'ring anchor y should match roommate avatar center (got ' + ring.point.y.toFixed(2) + ', want ' + expectedCy.toFixed(2) + ')');
                                 api.assert(Math.abs(ring.avatarRadius - expectedAvR) < 0.5,
                                     'ring should carry roommate avatar radius for encircle sizing (got ' + ring.avatarRadius.toFixed(2) + ', want ' + expectedAvR.toFixed(2) + ')');
-                                // 层级: 任务环画布须低于 hotspot/标签层 (否则环盖住"前往选关"卡片), feedback 仍高于标签
+                                // 层级: 任务环画布须在 content-fit (sceneVisual + avatar DOM 化) 之上,
+                                // 否则被新 DOM 层全部遮盖; fg 仍是顶层反馈层.
                                 var ringCanvas = document.getElementById('map-stage-canvas-ring');
                                 var fitLayer = document.getElementById('map-stage-content-fit');
                                 var fgCanvas = document.getElementById('map-stage-canvas-fg');
@@ -718,8 +719,8 @@ var MapPanelHarnessQA = (function() {
                                 var zRing = parseInt(window.getComputedStyle(ringCanvas).zIndex || '0', 10);
                                 var zFit = parseInt(window.getComputedStyle(fitLayer).zIndex || '0', 10);
                                 var zFg = parseInt(window.getComputedStyle(fgCanvas).zIndex || '0', 10);
-                                api.assert(zRing < zFit, 'task ring layer must sit below hotspot/label layer (ring z=' + zRing + ', content-fit z=' + zFit + ')');
-                                api.assert(zFg > zFit, 'feedback layer must stay above hotspot/label layer (fg z=' + zFg + ', content-fit z=' + zFit + ')');
+                                api.assert(zRing > zFit, 'task ring layer must sit above content-fit (avatar/sceneVisual DOM) (ring z=' + zRing + ', content-fit z=' + zFit + ')');
+                                api.assert(zFg > zRing, 'feedback layer must stay above task ring (fg z=' + zFg + ', ring z=' + zRing + ')');
                                 api.assert(state.canvasLastDrawSummary.dynamicDpr <= 1.5, 'dynamic canvas DPR should be capped at 1.5');
                                 return api.waitFor(function() {
                                     var s = currentState();
@@ -1402,7 +1403,9 @@ var MapPanelHarnessQA = (function() {
                             var action = document.querySelector('.map-rail-stage-select-btn[data-hotspot-id="rock_park"]');
                             api.assert(!!action, 'rock_park task stage-select action missing');
                             api.assert(action.classList.contains('is-task'), 'rail stage-select action should use task class');
-                            api.assert((action.textContent || '').indexOf('任务') >= 0, 'rail action label should mention task');
+                            // 文案统一为"选关", task 仅靠 .is-task 红色样式 + ::before 菱形 icon 区分;
+                            // 历史曾把 task 写成"任务选关"导致排版超长, 这里只验 class affordance.
+                            api.assertEqual((action.textContent || '').trim(), '选关', 'rail action label is unified to "选关"');
 
                             var overlayAction = document.querySelector('.map-hotspot-stage-select-btn[data-hotspot-id="rock_park"]');
                             api.assert(!!overlayAction, 'rock_park overlay stage-select action missing');
@@ -1654,6 +1657,140 @@ var MapPanelHarnessQA = (function() {
                 }
             },
             {
+                id: 'map-ui31e',
+                title: 'hittest engine: top-most visual\'s alpha>32 pixels must hit itself; transparent pixels never claim it',
+                run: function() {
+                    return bootMapForHittest(api, host).then(function() {
+                        var page = MapPanelData.getPage('base');
+                        return MapHittestEngine.ensurePage(page, harnessResolveAsset).then(function() {
+                            var visuals = page.sceneVisuals || [];
+                            api.assert(visuals.length > 0, 'base page has sceneVisuals');
+                            // 取最后一张 (z-top, 无覆盖者): 它在 hitmap 上的所有 alpha>32 像素都必须 hit 它自己;
+                            // 任何透明像素都不能误认它 (验证 ALPHA_THRESHOLD=32 与覆盖语义)
+                            var topVisual = visuals[visuals.length - 1];
+                            var rect = topVisual.rect;
+                            var imgUrl = harnessResolveAsset(topVisual.assetUrl);
+                            return new Promise(function(resolve, reject) {
+                                var img = new Image();
+                                img.onload = function() { resolve(img); };
+                                img.onerror = function() { reject(new Error('top visual image failed: ' + imgUrl)); };
+                                img.src = imgUrl;
+                            }).then(function(img) {
+                                var tw = Math.ceil(rect.w);
+                                var th = Math.ceil(rect.h);
+                                var tmp = document.createElement('canvas');
+                                tmp.width = tw; tmp.height = th;
+                                var tctx = tmp.getContext('2d');
+                                tctx.drawImage(img, 0, 0, tw, th);
+                                var data;
+                                try {
+                                    data = tctx.getImageData(0, 0, tw, th).data;
+                                } catch (e) {
+                                    return 'skipped (canvas tainted): ' + (e.message || e);
+                                }
+                                var dx = Math.round(rect.x);
+                                var dy = Math.round(rect.y);
+                                var opaqueHits = 0;
+                                var transparentClaims = 0;
+                                var transparentProbes = 0;
+                                var step = 12;
+                                var u, v, alpha, px, py, hit;
+                                for (u = 0; u < tw; u += step) {
+                                    for (v = 0; v < th; v += step) {
+                                        alpha = data[(v * tw + u) * 4 + 3];
+                                        px = dx + u;
+                                        py = dy + v;
+                                        if (px < 0 || px >= page.width || py < 0 || py >= page.height) continue;
+                                        hit = MapHittestEngine.query('base', px, py);
+                                        if (alpha > 32) {
+                                            api.assert(hit && hit.visualId === topVisual.id,
+                                                'alpha=' + alpha + ' at (' + px + ',' + py + ') must hit topVisual ' + topVisual.id + ' (got ' + (hit ? hit.visualId : 'null') + ')');
+                                            opaqueHits += 1;
+                                        } else {
+                                            transparentProbes += 1;
+                                            if (hit && hit.visualId === topVisual.id) transparentClaims += 1;
+                                        }
+                                    }
+                                }
+                                api.assertEqual(transparentClaims, 0, 'no transparent pixel should claim topVisual id');
+                                api.assert(opaqueHits > 0, 'must sample at least some opaque pixels (got ' + opaqueHits + ')');
+                                return 'topVisual=' + topVisual.id + ' opaqueHits=' + opaqueHits + ' transparentProbes=' + transparentProbes;
+                            });
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui31f',
+                title: 'hittest engine: round(x)+ceil(w) boundary — right/bottom edge exclusive, no leak past',
+                run: function() {
+                    return bootMapForHittest(api, host).then(function() {
+                        var page = MapPanelData.getPage('base');
+                        return MapHittestEngine.ensurePage(page, harnessResolveAsset).then(function() {
+                            var visuals = page.sceneVisuals || [];
+                            var topVisual = visuals[visuals.length - 1];
+                            var rect = topVisual.rect;
+                            var dx = Math.round(rect.x);
+                            var dy = Math.round(rect.y);
+                            var rx = dx + Math.ceil(rect.w);
+                            var by = dy + Math.ceil(rect.h);
+                            var cx = Math.round(rect.x + rect.w / 2);
+                            var cy = Math.round(rect.y + rect.h / 2);
+                            // 越过右/下 exclusive 边界 5px 处必不命中 topVisual
+                            // (可命中其它 visual 或 null, 关键是 visualId 不再是 topVisual)
+                            if (rx + 5 < page.width) {
+                                var pastRight = MapHittestEngine.query('base', rx + 5, cy);
+                                if (pastRight) {
+                                    api.assert(pastRight.visualId !== topVisual.id, 'point at (rx+5, cy) must not claim topVisual ' + topVisual.id + ' (got ' + pastRight.visualId + ')');
+                                }
+                            }
+                            if (by + 5 < page.height) {
+                                var pastBottom = MapHittestEngine.query('base', cx, by + 5);
+                                if (pastBottom) {
+                                    api.assert(pastBottom.visualId !== topVisual.id, 'point at (cx, by+5) must not claim topVisual (got ' + pastBottom.visualId + ')');
+                                }
+                            }
+                            // 边界外 1px (rx, by) — exclusive 语义 (rect 不含 rx 列与 by 行)
+                            // 同样不能 claim topVisual
+                            var rightExact = rx < page.width ? MapHittestEngine.query('base', rx, cy) : null;
+                            if (rightExact) {
+                                api.assert(rightExact.visualId !== topVisual.id, 'exclusive right boundary (rx, cy) must not claim topVisual');
+                            }
+                            var bottomExact = by < page.height ? MapHittestEngine.query('base', cx, by) : null;
+                            if (bottomExact) {
+                                api.assert(bottomExact.visualId !== topVisual.id, 'exclusive bottom boundary (cx, by) must not claim topVisual');
+                            }
+                            return 'topVisual=' + topVisual.id + ' intRect[' + dx + ',' + dy + ',' + rx + ',' + by + '] exclusive boundary ok';
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui31g',
+                title: 'hittest engine: cold-start ensurePage build latency stays under ceiling (CI tolerant)',
+                run: function() {
+                    return bootMapForHittest(api, host).then(function() {
+                        var page = MapPanelData.getPage('base');
+                        // cold start: 清缓存重建
+                        MapHittestEngine.discardPage('base');
+                        var t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+                        return MapHittestEngine.ensurePage(page, harnessResolveAsset).then(function() {
+                            var t1 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+                            var wallMs = t1 - t0;
+                            var debug = MapHittestEngine.debugState();
+                            api.assert(!!debug.pages.base, 'base page rebuilt after discard');
+                            var buildMs = debug.pages.base.buildMs;
+                            api.assert(isFinite(buildMs) && buildMs >= 0, 'buildMs finite non-negative (got ' + buildMs + ')');
+                            api.assert(isFinite(wallMs) && wallMs >= 0, 'wallMs finite non-negative');
+                            // 3000ms 上限: 14 张 PNG cold fetch + 14 次 getImageData/putImageData readback;
+                            // 本地 headless 基准 ~1300ms (含 http://127.0.0.1 网络耗时), CI 慢机留 2.3x margin
+                            api.assert(buildMs < 3000, 'buildMs < 3000ms (got ' + buildMs.toFixed(2) + ', local baseline ~1300ms)');
+                            return 'base hitmap buildMs=' + buildMs.toFixed(2) + ' wallMs=' + wallMs.toFixed(2) + ' visuals=' + debug.pages.base.visualCount;
+                        });
+                    });
+                }
+            },
+            {
                 id: 'map-ui32a',
                 title: 'scene visual layer: Plan C non-hierarchy → canvas 画 muted 其它 + DOM 显 current focus',
                 run: function() {
@@ -1677,11 +1814,6 @@ var MapPanelHarnessQA = (function() {
                             // Plan C: canvas 画 = 输入 - DOM 已显示数 (双绘防护)
                             api.assertEqual(state.canvasLastDrawSummary.sceneSkippedCount, state.sceneVisualLayer.domVisibleCount, 'canvas 跳过数 === DOM 显示数 (双绘防护)');
                             api.assertEqual(state.canvasLastDrawSummary.scenePaintedCount, totalScenes - state.sceneVisualLayer.domVisibleCount, 'canvas painted = total - DOM visible');
-
-                            // Plan C: dimmer 已退役, 永不激活
-                            api.assertEqual(state.sceneVisualLayer.dimActive, false, 'Plan C: dimmer 永不激活');
-                            var stageFrame = document.getElementById('map-stage-frame');
-                            api.assert(!stageFrame.classList.contains('has-focus-dim'), 'stage frame 不应有 has-focus-dim class');
 
                             // is-current 类必须挂在 current 那张
                             var currentDomVisual = document.querySelector('.map-scene-visual.is-current');
@@ -1720,9 +1852,6 @@ var MapPanelHarnessQA = (function() {
                             api.assertEqual(state.canvasLastDrawSummary.sceneSkippedCount, state.sceneVisualLayer.domVisibleCount, 'canvasSkippedCount === domVisibleCount (双绘防护)');
                             api.assertEqual(state.canvasLastDrawSummary.scenePaintedCount, totalScenes - state.sceneVisualLayer.domVisibleCount, 'canvas 画 = 输入 - 跳过');
 
-                            // Plan C: dimmer 已退役, 永不激活
-                            api.assertEqual(state.sceneVisualLayer.dimActive, false, 'Plan C: dimmer 永不激活');
-
                             var currentDomVisual = document.querySelector('.map-scene-visual.is-current');
                             api.assert(!!currentDomVisual, 'hierarchy mode 中 current 那张 DOM 仍 .is-current');
                             var hotspotIdsAttr = currentDomVisual.getAttribute('data-hotspot-ids') || '';
@@ -1760,11 +1889,6 @@ var MapPanelHarnessQA = (function() {
                                 api.assertEqual(isCurrent.length, 1, '一张带 .is-current (current 位)');
                                 api.assertEqual(isFocus.length, 1, '一张带 .is-focus (hover 位, 非 current)');
                                 api.assert(isCurrent[0] !== isFocus[0], 'current 和 hover 是不同的 DOM 节点');
-
-                                // Plan C: dimmer 退役 → 焦点压暗由 canvas per-scene muted (0.42) 提供
-                                api.assertEqual(state.sceneVisualLayer.dimActive, false, 'Plan C: dimmer 永不激活');
-                                var stageFrame = document.getElementById('map-stage-frame');
-                                api.assert(!stageFrame.classList.contains('has-focus-dim'), 'stage frame 不应有 has-focus-dim class');
 
                                 // canvas 跳过 = DOM 显示数 (= 2), painted = total - 2; 其它 visuals 在 canvas 上画 muted 0.42
                                 var totalScenes = state.canvasLastDrawSummary.sceneCount;

@@ -7,7 +7,7 @@ var MapPanel = (function() {
     //   - 调大需回查 composite PNG 源分辨率, 否则最终总放大 > 1.5x 会 pixelated
     var STAGE_MAX_SCALE = 1.3;
 
-    var _el, _bodyEl, _stageEl, _stageShellEl, _railEl, _canvasEl, _ringCanvasEl, _fgCanvasEl, _canvasRenderer, _contentFitEl, _sceneVisualLayerEl, _avatarLayerEl, _dimmerEl, _hotspotLayer, _hitcaptureEl, _hotspotLabelLayer, _loadingEl, _errorEl, _errorTextEl;
+    var _el, _bodyEl, _stageEl, _stageShellEl, _railEl, _canvasEl, _ringCanvasEl, _fgCanvasEl, _canvasRenderer, _contentFitEl, _sceneVisualLayerEl, _avatarLayerEl, _hotspotLayer, _hitcaptureEl, _hotspotLabelLayer, _loadingEl, _errorEl, _errorTextEl;
     var _pageTabsEl, _pageSummaryEl;
     var _activePage = null;
     var _reqSeq = 0;
@@ -98,8 +98,6 @@ var MapPanel = (function() {
                         // ring=任务环 (z=3, 低于 hotspot/标签 — 套住头像但不遮"前往选关"卡片);
                         // fg=反馈标记/提示/未开放提示 (z=6, 高于标签, 还原旧 feedback-layer 层序)
                         '<canvas class="map-stage-canvas map-stage-canvas--bg" id="map-stage-canvas" aria-hidden="true"></canvas>' +
-                        // dimmer (z=2, DOM 顺序在 bg canvas 后) — 压暗 bg 含 anomaly, 不动 ring/fg
-                        '<div class="map-stage-dimmer" id="map-stage-dimmer" aria-hidden="true"></div>' +
                         '<canvas class="map-stage-canvas map-stage-canvas--ring" id="map-stage-canvas-ring" aria-hidden="true"></canvas>' +
                         '<div class="map-stage-content-fit" id="map-stage-content-fit">' +
                             // sceneVisual DOM 层 (Phase 1B) — 常态隐藏, current/hover/focus 显示;
@@ -140,7 +138,6 @@ var MapPanel = (function() {
         _contentFitEl = _el.querySelector('#map-stage-content-fit');
         _sceneVisualLayerEl = _el.querySelector('#map-scene-visual-layer');
         _avatarLayerEl = _el.querySelector('#map-avatar-layer');
-        _dimmerEl = _el.querySelector('#map-stage-dimmer');
         _hotspotLayer = _el.querySelector('#map-hotspot-layer');
         _hitcaptureEl = _el.querySelector('#map-hotspot-hitcapture');
         _hotspotLabelLayer = _el.querySelector('#map-hotspot-label-layer');
@@ -156,7 +153,7 @@ var MapPanel = (function() {
             : null;
 
         if (typeof MapSceneVisualLayer !== 'undefined' && _sceneVisualLayerEl) {
-            MapSceneVisualLayer.mount(_sceneVisualLayerEl, _dimmerEl, _stageEl, resolveAssetUrl);
+            MapSceneVisualLayer.mount(_sceneVisualLayerEl, _stageEl, resolveAssetUrl);
         }
 
         if (typeof MapAvatarLayer !== 'undefined' && _avatarLayerEl) {
@@ -1703,11 +1700,6 @@ var MapPanel = (function() {
             sceneVisuals: getCanvasRenderSlice('sceneVisuals', visibleKey, function() {
                 return buildCanvasSceneVisuals(_activePage);
             }),
-            // Phase 3: avatar 已迁 DOM, canvas drawAvatars 调用 + buildStaticRenderKey 都已删;
-            // 这里保留 staticAvatars/dynamicAvatars 字段供 measureContentBounds 通过 buildCanvas* 直接调用,
-            // 但不再放入 canvas state — renderer 永远拿到空数组, 无影响.
-            staticAvatars: [],
-            dynamicAvatars: [],
             taskRings: getCanvasRenderSlice('taskRings', markerKey + '|' + avatarKey, function() {
                 return buildCanvasTaskRings(_activePage);
             }),
