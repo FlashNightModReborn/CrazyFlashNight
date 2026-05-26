@@ -8615,6 +8615,82 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .pet-restore-btn:hover:not(:disabled) { background: rgba(33,150,243,0.25); border-color: rgba(33,150,243,0.6); }
 .pet-restore-btn:disabled { background: rgba(128,128,128,0.1); border-color: rgba(128,128,128,0.2); color: #555; cursor: not-allowed; }
 
+/* ── Level-up button (advance page header) ── */
+.pet-levelup-btn {
+    padding: 4px 12px;
+    font-size: 11px;
+    font-family: inherit;
+    font-weight: 600;
+    background: rgba(156,39,176,0.12);
+    border: 1px solid rgba(156,39,176,0.35);
+    color: #CE93D8;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.pet-levelup-btn:hover:not(:disabled) { background: rgba(156,39,176,0.25); border-color: rgba(156,39,176,0.6); }
+.pet-levelup-btn:disabled { background: rgba(128,128,128,0.1); border-color: rgba(128,128,128,0.2); color: #555; cursor: not-allowed; }
+
+/* ── Delete button (advance page header) ── */
+.pet-delete-btn {
+    padding: 4px 12px;
+    font-size: 11px;
+    font-family: inherit;
+    font-weight: 600;
+    background: rgba(244,67,54,0.12);
+    border: 1px solid rgba(244,67,54,0.35);
+    color: var(--pet-danger);
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.pet-delete-btn:hover:not(:disabled) { background: rgba(244,67,54,0.25); border-color: rgba(244,67,54,0.6); }
+
+/* ── Delete confirm dialog ── */
+.pet-confirm-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+.pet-confirm-overlay[hidden] { display: none; }
+.pet-confirm-dialog {
+    background: #1a1a2e;
+    border: 1px solid rgba(244,67,54,0.35);
+    border-radius: 8px;
+    padding: 24px 28px 18px;
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+}
+.pet-confirm-icon {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--pet-danger);
+    margin-bottom: 6px;
+}
+.pet-confirm-title { font-size: 16px; font-weight: 700; color: var(--pet-danger); margin-bottom: 10px; }
+.pet-confirm-body { font-size: 13px; color: #ccc; white-space: pre-line; line-height: 1.5; margin-bottom: 16px; }
+.pet-confirm-footer { display: flex; gap: 10px; justify-content: center; }
+.pet-confirm-btn {
+    padding: 6px 20px;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 600;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.pet-confirm-btn-yes { background: rgba(244,67,54,0.15); border-color: rgba(244,67,54,0.4); color: var(--pet-danger); }
+.pet-confirm-btn-yes:hover { background: rgba(244,67,54,0.3); border-color: rgba(244,67,54,0.6); }
+.pet-confirm-btn-no { background: rgba(128,128,128,0.15); border-color: rgba(128,128,128,0.3); color: #aaa; }
+.pet-confirm-btn-no:hover { background: rgba(128,128,128,0.25); border-color: rgba(128,128,128,0.5); color: #ddd; }
+
 /* ── Store tabs ── */
 .pet-store-tabs {
     display: flex;

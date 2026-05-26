@@ -62,6 +62,12 @@ class org.flashNight.arki.merc.PetPanelService {
         _root.gameCommands["petRestoreStamina"] = function(params) {
             org.flashNight.arki.merc.PetPanelService.handleRestoreStamina(params);
         };
+        _root.gameCommands["petLevelUp"] = function(params) {
+            org.flashNight.arki.merc.PetPanelService.handleLevelUp(params);
+        };
+        _root.gameCommands["petDelete"] = function(params) {
+            org.flashNight.arki.merc.PetPanelService.handleDelete(params);
+        };
         _root.gameCommands["petPanelOpen"] = function(params) {
             org.flashNight.arki.merc.PetPanelService.handlePanelOpen(params);
         };
@@ -678,6 +684,181 @@ class org.flashNight.arki.merc.PetPanelService {
             slotIndex: slotIndex,
             stamina: 200,
             gold: Number(_root.金钱) || 0
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // handleLevelUp — 消耗战宠灵石升级
+    // ═══════════════════════════════════════════════════════════
+    public static function handleLevelUp(params:Object):Void {
+        var callId = params.callId;
+        var slotIndex:Number = Number(params.slotIndex);
+        if (isNaN(slotIndex) || slotIndex < 0 || slotIndex >= _root.宠物信息.length) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "invalid_slot" });
+            return;
+        }
+
+        var petInfo:Array = _root.宠物信息[slotIndex];
+        if (petInfo == undefined || petInfo.length < 5) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "invalid_pet" });
+            return;
+        }
+
+        var currentLevel:Number = Number(petInfo[1]);
+        var levelLimit:Number = Number(_root.等级限制) || 100;
+        if (currentLevel >= levelLimit) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "level_maxed" });
+            return;
+        }
+
+        var petId:Number = Number(petInfo[0]);
+        var petDef:Object = _root.宠物库[petId];
+        if (petDef == undefined) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "pet_not_found" });
+            return;
+        }
+        var identifier:String = String(petDef.Identifier);
+
+        // 确保经验值已初始化
+        var attrs:Object = petInfo[5];
+        if (attrs == undefined || typeof attrs != "object") {
+            attrs = {};
+            petInfo[5] = attrs;
+        }
+        if (Number(attrs.宠物升级所需经验) <= 0 && _root.战宠UI函数 != undefined
+            && _root.战宠UI函数.计算战宠升级所需经验 != undefined) {
+            attrs.宠物升级所需经验 = _root.战宠UI函数.计算战宠升级所需经验(identifier, currentLevel);
+        }
+        var xpNeeded:Number = Number(attrs.宠物升级所需经验) || 0;
+        var stoneCost:Number = currentLevel * 2 + Math.floor(xpNeeded / 10000);
+        if (stoneCost <= 0) stoneCost = 1;
+
+        // 扣除灵石
+        if (!_root.singleSubmit("战宠灵石", stoneCost)) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "insufficient_stones", cost: stoneCost });
+            return;
+        }
+
+        // 升级
+        petInfo[1] = currentLevel + 1;
+        var newLevel:Number = petInfo[1];
+
+        // 重新计算下一级经验需求
+        var newXpNeeded:Number = 0;
+        if (_root.战宠UI函数 != undefined && _root.战宠UI函数.计算战宠升级所需经验 != undefined) {
+            newXpNeeded = Number(_root.战宠UI函数.计算战宠升级所需经验(identifier, newLevel));
+        }
+        attrs.宠物升级所需经验 = newXpNeeded;
+
+        // 刷新出战宠物单位（注意：宠物升级加载 的参数是 mc库索引）
+        if (petInfo[4] == 1 && _root.出战宠物id库 != undefined) {
+            var mcIdx:Number = -1;
+            for (var m:Number = 0; m < _root.出战宠物id库.length; m++) {
+                if (_root.出战宠物id库[m] == slotIndex) {
+                    mcIdx = m;
+                    break;
+                }
+            }
+            if (mcIdx >= 0 && _root.宠物升级加载 != undefined) {
+                _root.宠物升级加载(mcIdx);
+            }
+        }
+
+        // 刷新 Flash UI
+        if (_root.宠物信息界面 != undefined && _root.宠物信息界面.排列宠物图标 != undefined) {
+            _root.宠物信息界面.排列宠物图标();
+        }
+
+        sendResponse({
+            task: "pet_response",
+            callId: callId,
+            success: true,
+            slotIndex: slotIndex,
+            newLevel: newLevel,
+            stoneCost: stoneCost,
+            newXpNeeded: newXpNeeded,
+            levelLimit: levelLimit
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // handleDelete — 删除宠物并返还灵石
+    // ═══════════════════════════════════════════════════════════
+    public static function handleDelete(params:Object):Void {
+        var callId = params.callId;
+        var slotIndex:Number = Number(params.slotIndex);
+        if (isNaN(slotIndex) || slotIndex < 0 || slotIndex >= _root.宠物信息.length) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "invalid_slot" });
+            return;
+        }
+
+        var petInfo:Array = _root.宠物信息[slotIndex];
+        if (petInfo == undefined || petInfo.length == 0) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "empty_slot" });
+            return;
+        }
+
+        var currentLevel:Number = Number(petInfo[1]);
+
+        // 计算返还灵石
+        var attrs:Object = petInfo[5];
+        var xpNeeded:Number = 0;
+        if (attrs != undefined && typeof attrs == "object") {
+            xpNeeded = Number(attrs.宠物升级所需经验) || 0;
+        }
+        var stoneRefund:Number = Math.floor(Math.sqrt(currentLevel) * 0.8 * xpNeeded / 10000);
+        if (isNaN(stoneRefund) || stoneRefund < 0) stoneRefund = 0;
+
+        // 清理场上所有宠物 MC
+        if (_root.删除场景宠物 != undefined) {
+            _root.删除场景宠物();
+        }
+
+        // 返还灵石
+        if (stoneRefund > 0) {
+            _root.singleAcquire("战宠灵石", stoneRefund);
+        }
+
+        // 清空槽位
+        _root.宠物信息[slotIndex] = [];
+
+        // 重建场上其他出战宠物
+        var hasDeployed:Boolean = false;
+        for (var k:Number = 0; k < _root.宠物信息.length; k++) {
+            if (_root.宠物信息[k] != undefined && _root.宠物信息[k].length > 0 && _root.宠物信息[k][4] == 1) {
+                hasDeployed = true;
+                break;
+            }
+        }
+        if (hasDeployed && _root.加载宠物 != undefined) {
+            var heroX:Number = 500;
+            var heroY:Number = 300;
+            if (typeof org != "undefined" && org.flashNight != undefined
+                && org.flashNight.arki != undefined && org.flashNight.arki.unit != undefined
+                && org.flashNight.arki.unit.UnitComponent != undefined
+                && org.flashNight.arki.unit.UnitComponent.Targetcache != undefined
+                && org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager != undefined) {
+                var hero:MovieClip = org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager.findHero();
+                if (hero != undefined) {
+                    heroX = hero._x;
+                    heroY = hero._y;
+                }
+            }
+            _root.加载宠物(heroX, heroY);
+        }
+
+        // 刷新 Flash UI
+        if (_root.宠物信息界面 != undefined && _root.宠物信息界面.排列宠物图标 != undefined) {
+            _root.宠物信息界面.排列宠物图标();
+        }
+
+        sendResponse({
+            task: "pet_response",
+            callId: callId,
+            success: true,
+            slotIndex: slotIndex,
+            deleted: true,
+            stoneRefund: stoneRefund
         });
     }
 

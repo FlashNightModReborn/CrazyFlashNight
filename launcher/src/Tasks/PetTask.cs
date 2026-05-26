@@ -113,6 +113,12 @@ namespace CF7Launcher.Tasks
                 case "restore_stamina":
                     action = "petRestoreStamina";
                     break;
+                case "level_up":
+                    action = "petLevelUp";
+                    break;
+                case "delete":
+                    action = "petDelete";
+                    break;
                 default:
                     RespondError(webCallId, cmd, "unsupported_cmd");
                     return;

@@ -99,6 +99,8 @@
                     '<div class="pet-header-actions">' +
                         '<button class="pet-deploy-btn" type="button" id="pet-deploy-btn" data-audio-cue="confirm">出战</button>' +
                         '<button class="pet-restore-btn" type="button" id="pet-restore-btn">恢复体力</button>' +
+                        '<button class="pet-levelup-btn" type="button" id="pet-levelup-btn" title="">强化</button>' +
+                        '<button class="pet-delete-btn" type="button" id="pet-delete-btn" title="永久删除此宠物">删除</button>' +
                     '</div>' +
                 '</div>' +
                 '<div class="pet-page-body">' +
@@ -114,6 +116,19 @@
                     '<div class="pet-promotions-section">' +
                         '<h3 class="pet-section-title">进阶方案</h3>' +
                         '<div class="pet-promotions-list" id="pet-promotions-list"></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+
+            // ── 删除确认弹窗（共享） ──
+            '<div class="pet-confirm-overlay" id="pet-confirm-overlay" hidden>' +
+                '<div class="pet-confirm-dialog">' +
+                    '<div class="pet-confirm-icon">!</div>' +
+                    '<div class="pet-confirm-title">确认删除</div>' +
+                    '<div class="pet-confirm-body" id="pet-confirm-body"></div>' +
+                    '<div class="pet-confirm-footer">' +
+                        '<button class="pet-confirm-btn pet-confirm-btn-yes" id="pet-confirm-yes">确认</button>' +
+                        '<button class="pet-confirm-btn pet-confirm-btn-no" id="pet-confirm-no">取消</button>' +
                     '</div>' +
                 '</div>' +
             '</div>';
@@ -147,6 +162,22 @@
             if (_activePetIdx >= 0 && _pets[_activePetIdx]) {
                 onRestoreStamina(_pets[_activePetIdx].slotIndex);
             }
+        });
+
+        // 进阶页：强化按钮（战宠灵石升级）
+        _el.querySelector('#pet-levelup-btn').addEventListener('click', onLevelUp);
+
+        // 进阶页：删除按钮 → 弹出确认弹窗
+        _el.querySelector('#pet-delete-btn').addEventListener('click', onDeleteClick);
+
+        // 删除确认弹窗
+        var confirmOverlay = _el.querySelector('#pet-confirm-overlay');
+        _el.querySelector('#pet-confirm-yes').addEventListener('click', onDeleteConfirm);
+        _el.querySelector('#pet-confirm-no').addEventListener('click', function() {
+            confirmOverlay.hidden = true;
+        });
+        confirmOverlay.addEventListener('click', function(e) {
+            if (e.target === confirmOverlay) confirmOverlay.hidden = true;
         });
 
         // 返回按钮（商店和进阶页共享 .pet-page-back 类名，需按页面分别绑定）
@@ -434,6 +465,21 @@
             restoreBtn.title = '消耗1000金币恢复体力至满值';
         }
 
+        var levelupBtn = _el.querySelector('#pet-levelup-btn');
+        var levelLimit = _snapshot ? (_snapshot.levelLimit || 100) : 100;
+        if (pet.level >= levelLimit) {
+            levelupBtn.disabled = true;
+            levelupBtn.title = '已达等级上限';
+            levelupBtn.textContent = '已满级';
+        } else {
+            levelupBtn.disabled = false;
+            var xpNeededForCost = pet.xpNeeded || 0;
+            var stoneCost = pet.level * 2 + Math.floor(xpNeededForCost / 10000);
+            if (stoneCost < 1) stoneCost = 1;
+            levelupBtn.title = '消耗战宠灵石:' + stoneCost + '  |  经验:' + (pet.xp || 0) + '/' + (xpNeededForCost || '--');
+            levelupBtn.textContent = '强化 Lv.' + (pet.level + 1);
+        }
+
         renderPromotions(pet);
     }
 
@@ -719,6 +765,65 @@
                 else if (data.error === 'stamina_full') errMsg = '体力已满';
                 else if (data.error) errMsg = data.error;
                 showToast(errMsg);
+            }
+        });
+    }
+
+    function onLevelUp() {
+        if (_busy || _activePetIdx < 0) return;
+        var pet = _pets[_activePetIdx];
+        if (!pet) return;
+
+        _busy = true;
+        sendPanelMsg('level_up', { slotIndex: pet.slotIndex }, function(data) {
+            _busy = false;
+            if (data.success) {
+                pet.level = data.newLevel;
+                pet.xpNeeded = data.newXpNeeded;
+                updateResourceDisplay();
+                renderPetGrid();
+                renderAdvancePage();
+                showToast('战宠升级！战宠灵石 -' + data.stoneCost);
+            } else {
+                var errMsg = '升级失败';
+                if (data.error === 'level_maxed') errMsg = '已达等级上限';
+                else if (data.error === 'insufficient_stones') errMsg = '战宠灵石不足，需要' + (data.cost || '?') + '个';
+                else if (data.error) errMsg = data.error;
+                showToast(errMsg);
+            }
+        });
+    }
+
+    function onDeleteClick() {
+        if (_busy || _activePetIdx < 0) return;
+        var pet = _pets[_activePetIdx];
+        if (!pet) return;
+
+        var xpNeededForRefund = pet.xpNeeded || 0;
+        var refund = Math.floor(Math.sqrt(pet.level) * 0.8 * xpNeededForRefund / 10000);
+        if (isNaN(refund) || refund < 0) refund = 0;
+
+        _el.querySelector('#pet-confirm-body').textContent =
+            '确认要永久删除 ' + pet.name + ' (Lv.' + pet.level + ') 吗？\n返还战宠灵石: ' + refund + ' 个';
+        _el.querySelector('#pet-confirm-overlay').hidden = false;
+    }
+
+    function onDeleteConfirm() {
+        _el.querySelector('#pet-confirm-overlay').hidden = true;
+        if (_busy || _activePetIdx < 0) return;
+        var pet = _pets[_activePetIdx];
+        if (!pet) return;
+
+        _busy = true;
+        sendPanelMsg('delete', { slotIndex: pet.slotIndex }, function(data) {
+            _busy = false;
+            if (data.success) {
+                var refundText = data.stoneRefund > 0 ? '，返还战宠灵石' + data.stoneRefund + '个' : '';
+                showToast('已删除战宠' + refundText);
+                requestSnapshot();
+                navigateTo('list');
+            } else {
+                showToast('删除失败: ' + (data.error || '未知错误'));
             }
         });
     }
