@@ -135,4 +135,34 @@
         <description>穿甲特化针束霰弹，但会略微降低威力。</description>
         <tag>弹药</tag>
     </mod>
+
+    <!-- 八门金锁镇暴弹: 西南自治区出品的反人海特化弹种
+         设计思路: 单射线 pierce 8 替代 8 颗散弹, 几何上保证对单严格 1 段
+                   ×2 火力 + 1 段命中 → 对单 DPS 降至原版 1/4
+                   命中 4+ 敌人即收益, 越密集越强, 巨额削韧拦阻打飞
+         视觉占位: ra3_wave (后续替换为金锁专属束流) -->
+    <mod>
+        <name>八门金锁镇暴弹</name>
+        <use>手枪,长枪</use>
+        <weapontype>霰弹枪</weapontype>
+        <stats>
+            <override>
+                <bullet>镇暴射线</bullet>
+                <bulletrename>镇暴射线</bulletrename>
+                <split>1</split>
+            </override>
+            <percentage>
+                <impact>-90</impact>
+                <diffusion>-80</diffusion>
+            </percentage>
+            <multiplier>
+                <power>100</power>
+            </multiplier>
+            <flat>
+                <bulletsize>12</bulletsize>
+            </flat>
+        </stats>
+        <description>镇暴用途的霰弹，牺牲对单威力，专攻对群控制。</description>
+        <tag>弹药</tag>
+    </mod>
 </root>

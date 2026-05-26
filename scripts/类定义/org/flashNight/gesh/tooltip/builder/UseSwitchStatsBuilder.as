@@ -80,8 +80,21 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             var sortedList = TooltipTextBuilder.getSortedAttrList(statsObj.percentage);
             for (var i = 0; i < sortedList.length; i++) {
                 var key = sortedList[i];
+                // impact 倒数生效，单独处理（见下方专用块）
+                if (key == "impact") continue;
                 result.push(indent);
                 TooltipFormatter.statLine(result, "multiply", key, statsObj.percentage[key], null);
+            }
+            // impact 倒数生效：raw × (1+p) → 玩家可见冲击力变化 = -p/(1+p)
+            // 例：percentage.impact = -0.9 → raw ×0.1 → 玩家可见 +900%
+            if (statsObj.percentage.impact != undefined) {
+                var pctImpact:Number = Number(statsObj.percentage.impact);
+                if (!isNaN(pctImpact) && pctImpact != 0 && pctImpact > -1) {
+                    var changePct:Number = Math.round(-pctImpact / (1 + pctImpact) * 100);
+                    var pctSign:String = changePct >= 0 ? " + " : " - ";
+                    if (changePct < 0) changePct = -changePct;
+                    result.push(indent, TooltipConstants.LBL_IMPACT, pctSign, changePct, "%<BR>");
+                }
             }
         }
 
@@ -93,6 +106,15 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 var mValue = statsObj.multiplier[key];
                 var label = TooltipConstants.PROPERTY_DICT[key];
                 if (!label) label = key;
+
+                if (key == "impact") {
+                    // impact 倒数生效：multiplier 作用于 raw，玩家可见 × 系数 = 1/(1+m)
+                    var rawFactor:Number = 1 + mValue;
+                    if (rawFactor < 0.01) rawFactor = 0.01;
+                    var dispFactor:Number = Math.round((1 / rawFactor) * 100) / 100;
+                    result.push(indent, "<FONT COLOR='" + TooltipConstants.COL_MULTIPLIER + "'>", label, " ×", dispFactor, "</FONT> <FONT COLOR='" + TooltipConstants.COL_MULTIPLIER_HINT + "'>" + TooltipConstants.TAG_MULTIPLIER_ZONE + "</FONT><BR>");
+                    continue;
+                }
 
                 // 统一显示为实际倍率（正负一致：×1.02 / ×0.59）
                 var factorValue = Math.round((1 + mValue) * 100) / 100;
@@ -109,6 +131,8 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 var key = sortedList[i];
                 // 跳过 slay，使用专门的 SlayEffectBuilder 显示
                 if (key == "slay") continue;
+                // 跳过 impact，倒数生效单独处理
+                if (key == "impact") continue;
                 result.push(indent);
                 TooltipFormatter.statLine(result, "add", key, statsObj.flat[key], null);
             }
@@ -116,6 +140,19 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             if (statsObj.flat.slay) {
                 result.push(indent);
                 SlayEffectBuilder.buildFlat(result, statsObj.flat.slay);
+            }
+            // impact 倒数生效：flat -N 表示 raw -N（玩家可见冲击力增强）
+            // 实际百分比依赖基础值，这里仅做方向标注
+            if (statsObj.flat.impact != undefined) {
+                var flatImpact:Number = Number(statsObj.flat.impact);
+                if (!isNaN(flatImpact) && flatImpact != 0) {
+                    var isBuff:Boolean = (flatImpact < 0);
+                    var flatLabel:String = isBuff ? "冲击力增强" : "冲击力削弱";
+                    var flatColor:String = isBuff ? TooltipConstants.COL_HL : TooltipConstants.COL_ROUT;
+                    var flatAbs:Number = isBuff ? -flatImpact : flatImpact;
+                    var flatRawSign:String = isBuff ? " -" : " +";
+                    result.push(indent, "<FONT COLOR='", flatColor, "'>", flatLabel, "</FONT> (原始", flatRawSign, flatAbs, ")<BR>");
+                }
             }
         }
 

@@ -91,6 +91,8 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     public static var VFX_PLASMA:String = "plasma";
     /** 聚束风格：多导轨漏斗收束 + 压缩节点 + 十字准星 */
     public static var VFX_CONVERGENCE:String = "convergence";
+    /** 八卦束流风格：8 切片堆叠 + 反向自旋 + 律动传递 (镇暴霰弹专用) */
+    public static var VFX_BAGUA_ROD:String = "bagua_rod";
 
     // ========== 射线物理参数 ==========
 
@@ -269,6 +271,53 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     /** 准星缩放系数，控制命中十字准星的整体大小 */
     public var crosshairScale:Number;
 
+    // ========== BaguaRod 专用参数（镇暴霰弹束流） ==========
+
+    /** 切片数量（默认 8, 对应霰弹散弹数） */
+    public var slicesCount:Number;
+
+    /** 切片轴向间距（像素） */
+    public var sliceSpacing:Number;
+
+    /** 切片八边形半径（像素） */
+    public var sliceRadius:Number;
+
+    /** 切片横向压缩比（沿射线方向, 给"3D 透视"感, 默认 0.5） */
+    public var sliceCompressX:Number;
+
+    /** 自旋角速度（度/帧, 默认 15） */
+    public var angVelDeg:Number;
+
+    /** 偶/奇切片反向自旋（DNA 双螺旋意象） */
+    public var counterRotate:Boolean;
+
+    /** 相邻切片初始相位差（度, 默认 22.5 = 半个边） */
+    public var phaseOffsetDeg:Number;
+
+    /** 律动脉冲宽度（单位: 切片数, 默认 2.5 宽脉冲） */
+    public var pulseWidth:Number;
+
+    /** 待机切片透明度（脉冲范围外, 0-100 AS2 标准, 默认 10 = dim_idle 风格） */
+    public var baseIdleAlpha:Number;
+
+    /** 跨界混色边颜色（黑白分界处的中性色） */
+    public var mixedColor:Number;
+
+    /** 中枢贯穿线颜色（深金, 默认 0xFFB347） */
+    public var spineColor:Number;
+
+    /** 暖白半边的外发光透明度（0-100, 默认 18） */
+    public var glowAlpha:Number;
+
+    /** 外发光描边宽度倍率（相对 thickness, 默认 4.5） */
+    public var glowWidthMult:Number;
+
+    /** 内部主对角数量（默认 2, 跟随旋转） */
+    public var nDiagonals:Number;
+
+    /** 切片间连杆顶点步长（1=8 根全部, 2=4 根, 4=2 根） */
+    public var linkerStride:Number;
+
     // ========== 时间参数 ==========
 
     /** 视觉持续帧数（电弧保持显示的时间） */
@@ -327,6 +376,23 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     private static var DEFAULT_NODE_COUNT:Number = 5;
     private static var DEFAULT_NODE_SPEED:Number = 0.12;
     private static var DEFAULT_CROSSHAIR_SCALE:Number = 1.0;
+
+    // BaguaRod 专用默认值（v4 锁定参数）
+    private static var DEFAULT_SLICES_COUNT:Number = 8;
+    private static var DEFAULT_SLICE_SPACING:Number = 90;
+    private static var DEFAULT_SLICE_RADIUS:Number = 35;
+    private static var DEFAULT_SLICE_COMPRESS_X:Number = 0.5;
+    private static var DEFAULT_ANG_VEL_DEG:Number = 15;
+    private static var DEFAULT_COUNTER_ROTATE:Boolean = true;
+    private static var DEFAULT_PHASE_OFFSET_DEG:Number = 22.5;
+    private static var DEFAULT_PULSE_WIDTH:Number = 2.5;
+    private static var DEFAULT_BASE_IDLE_ALPHA:Number = 10;
+    private static var DEFAULT_MIXED_COLOR:Number = 0x7A6F66;
+    private static var DEFAULT_SPINE_COLOR:Number = 0xFFB347;
+    private static var DEFAULT_GLOW_ALPHA:Number = 18;
+    private static var DEFAULT_GLOW_WIDTH_MULT:Number = 4.5;
+    private static var DEFAULT_N_DIAGONALS:Number = 2;
+    private static var DEFAULT_LINKER_STRIDE:Number = 1;
 
     // 多目标伤害衰减默认值
     private static var DEFAULT_DAMAGE_FALLOFF:Number = 1.0;
@@ -407,7 +473,23 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             {k:"railCount",          p:P_NUM},
             {k:"nodeCount",          p:P_NUM},
             {k:"nodeSpeed",          p:P_NUM},
-            {k:"crosshairScale",     p:P_NUM}
+            {k:"crosshairScale",     p:P_NUM},
+            // BaguaRod
+            {k:"slicesCount",        p:P_NUM},
+            {k:"sliceSpacing",       p:P_NUM},
+            {k:"sliceRadius",        p:P_NUM},
+            {k:"sliceCompressX",     p:P_NUM},
+            {k:"angVelDeg",          p:P_NUM},
+            {k:"counterRotate",      p:P_BOOL},
+            {k:"phaseOffsetDeg",     p:P_NUM},
+            {k:"pulseWidth",         p:P_NUM},
+            {k:"baseIdleAlpha",      p:P_NUM},
+            {k:"mixedColor",         p:P_COLOR},
+            {k:"spineColor",         p:P_COLOR},
+            {k:"glowAlpha",          p:P_NUM},
+            {k:"glowWidthMult",      p:P_NUM},
+            {k:"nDiagonals",         p:P_NUM},
+            {k:"linkerStride",       p:P_NUM}
         ];
     }
 
@@ -483,6 +565,23 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         nodeCount = DEFAULT_NODE_COUNT;
         nodeSpeed = DEFAULT_NODE_SPEED;
         crosshairScale = DEFAULT_CROSSHAIR_SCALE;
+
+        // BaguaRod 专用
+        slicesCount = DEFAULT_SLICES_COUNT;
+        sliceSpacing = DEFAULT_SLICE_SPACING;
+        sliceRadius = DEFAULT_SLICE_RADIUS;
+        sliceCompressX = DEFAULT_SLICE_COMPRESS_X;
+        angVelDeg = DEFAULT_ANG_VEL_DEG;
+        counterRotate = DEFAULT_COUNTER_ROTATE;
+        phaseOffsetDeg = DEFAULT_PHASE_OFFSET_DEG;
+        pulseWidth = DEFAULT_PULSE_WIDTH;
+        baseIdleAlpha = DEFAULT_BASE_IDLE_ALPHA;
+        mixedColor = DEFAULT_MIXED_COLOR;
+        spineColor = DEFAULT_SPINE_COLOR;
+        glowAlpha = DEFAULT_GLOW_ALPHA;
+        glowWidthMult = DEFAULT_GLOW_WIDTH_MULT;
+        nDiagonals = DEFAULT_N_DIAGONALS;
+        linkerStride = DEFAULT_LINKER_STRIDE;
 
         // 伤害衰减（damageFalloff=1.0 → 无衰减）
         damageFalloff = DEFAULT_DAMAGE_FALLOFF;

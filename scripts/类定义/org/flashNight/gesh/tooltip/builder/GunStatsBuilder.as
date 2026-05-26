@@ -193,10 +193,19 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
             }
         }
 
-        // 11. 冲击力显示（impact 防护：确保是有效数值且非零）
-        var impact:Number = Number(data.impact);
-        if (!isNaN(impact) && impact > 0) {
-            result.push(TooltipConstants.LBL_IMPACT, "：", Math.floor(500 / impact), "<BR>");
+        // 11. 冲击力显示
+        // 注意：impact 在数值层倒数生效——raw 越小，玩家可见的冲击力（500/raw）越大
+        // 这里读 equipData.impact 拿到含插件修改的最终值，与 split/interval 一致的 base→final 对比形式
+        var baseImpact:Number = Number(data.impact);
+        var finalImpact:Number = (equipData && equipData.impact != undefined) ? Number(equipData.impact) : baseImpact;
+        if (!isNaN(finalImpact) && finalImpact > 0) {
+            var finalImpactDisplay:Number = Math.floor(500 / finalImpact);
+            if (equipData && !isNaN(baseImpact) && baseImpact > 0 && finalImpact != baseImpact) {
+                var baseImpactDisplay:Number = Math.floor(500 / baseImpact);
+                result.push(TooltipConstants.LBL_IMPACT, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalImpactDisplay, "</FONT> (←", baseImpactDisplay, ")<BR>");
+            } else {
+                result.push(TooltipConstants.LBL_IMPACT, "：", finalImpactDisplay, "<BR>");
+            }
         }
 
         // 11.5 换弹延迟/加速显示（reloadPenalty：换弹惩罚值，用于调整换弹时间）

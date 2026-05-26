@@ -1111,4 +1111,23 @@
             </rayConfig>
         </attribute>
     </bullet>
+
+    <!-- ========== 镇暴弹药 (Riot Suppression / 西南自治区) ========== -->
+    <!-- 镇暴射线: 纳米丝出膛瞬展为连续杆, 单射线 pierce 8 中距离扫掠
+         视觉风格: bagua_rod (八门金锁束流, 8 切片堆叠 + 律动传递 + DNA 双螺旋)
+         详细设计参考: tools/ray-vfx-prototype/八门金锁_视觉原型.py -->
+    <bullet>
+        <name>镇暴射线</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <pierceLimit>8</pierceLimit>
+            <rayConfig>
+                <rayLength>300</rayLength>
+                <rayMode>pierce</rayMode>
+                <vfxStyle>bagua_rod</vfxStyle>
+                <vfxPreset>bagua_rod</vfxPreset>
+                <damageFalloff>1.0</damageFalloff>
+            </rayConfig>
+        </attribute>
+    </bullet>
 </bullets>

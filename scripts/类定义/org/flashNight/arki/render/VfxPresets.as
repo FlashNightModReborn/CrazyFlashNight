@@ -248,9 +248,47 @@ class org.flashNight.arki.render.VfxPresets {
     private static var _presetMap:Object = null;
 
     /**
+     * 八门金锁束流预设 (镇暴霰弹专用 - v4 锁定参数)
+     *
+     * 视觉特征:
+     *   • 8 切片 横向压缩堆叠 (3D 透视感)
+     *   • 暖白 + 深石墨 二极配色 (避开黑场吞噬)
+     *   • 偶/奇切片反向自旋 → DNA 双螺旋
+     *   • 黑白分界沿对角旋进 (太极动态平衡)
+     *   • 律动脉冲沿轴传递 + α 调制 (发射→衰减自然涌现)
+     *   • 暖白半边外发光描边
+     */
+    public static var bagua_rod:Object = {
+        // 公共字段
+        primaryColor: 0xFFE5C4,         // 暖白 (warm white, 阳极)
+        secondaryColor: 0x36404A,       // 深石墨 (gunmetal, 阴极)
+        thickness: 1.8,                 // 主线宽度
+        visualDuration: 9,              // 爆发 9 帧 (≈0.3s @ 30fps, 霰弹打击感)
+        fadeOutDuration: 4,             // 末尾淡出 4 帧
+        // BaguaRod 专用
+        slicesCount: 8,                 // 8 切片 (对应散弹数)
+        sliceSpacing: 90,               // 切片轴向间距
+        sliceRadius: 35,                // 八边形半径
+        sliceCompressX: 0.5,            // 横向压缩 50% (3D 透视)
+        angVelDeg: 45,                  // 自旋 45°/帧 
+        counterRotate: true,            // 偶/奇反向 (双螺旋)
+        phaseOffsetDeg: 22.5,           // 切片间初始相位差
+        pulseAmp: 0.66,                 // 律动尺寸放大 +66% (峰值 1.66x 基础半径)
+        pulseWidth: 3.0,                // 脉冲跨 3 切片 ( 强方向性)
+        baseIdleAlpha: 15,              // 待机切片 15/100 α (近无, 脉冲独占视觉)
+        mixedColor: 0x7A6F66,           // 跨界中性边
+        spineColor: 0xFFB347,           // 深金中枢
+        glowAlpha: 26,                  // 暖白外发光 α (从 18 拉高, 弥补缩短的曝光时间)
+        glowWidthMult: 5.0,             // 外发光描边宽度倍率 (4.5→5.0, 更醒目)
+        nDiagonals: 2,                  // 内部对角 2 条 (随旋转)
+        linkerStride: 1,                // 切片间连杆: 8 顶点全部连接
+        flickerEnabled: false
+    };
+
+    /**
      * 根据预设名获取预设对象
      *
-     * @param presetName 预设名 ("ra2_tesla", "ra2_prism", "ra3_spectrum", "ra3_wave")
+     * @param presetName 预设名 ("ra2_tesla", "ra2_prism", "ra3_spectrum", "ra3_wave", "bagua_rod" 等)
      * @return 预设对象，若不存在返回 null
      */
     public static function get(presetName:String):Object {
@@ -266,7 +304,8 @@ class org.flashNight.arki.render.VfxPresets {
                 thermal: thermal,
                 vortex: vortex,
                 plasma: plasma,
-                convergence: convergence
+                convergence: convergence,
+                bagua_rod: bagua_rod
             };
         }
         return _presetMap[presetName];
@@ -288,7 +327,7 @@ class org.flashNight.arki.render.VfxPresets {
      * @return 预设名数组
      */
     public static function getPresetNames():Array {
-        return ["ra2_tesla", "ra2_prism", "radiance", "ra3_spectrum", "resonance", "ra3_wave", "thermal", "vortex", "plasma", "convergence"];
+        return ["ra2_tesla", "ra2_prism", "radiance", "ra3_spectrum", "resonance", "ra3_wave", "thermal", "vortex", "plasma", "convergence", "bagua_rod"];
     }
 
     /**
