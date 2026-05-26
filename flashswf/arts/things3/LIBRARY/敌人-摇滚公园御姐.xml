@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-摇滚公园御姐" itemID="67ac3e1e-0000061f" linkageExportForAS="true" linkageIdentifier="敌人-摇滚公园御姐" lastModified="1747143283" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="敌人-摇滚公园御姐" currentFrame="41" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;6&lt;/guideline&gt;&lt;guideline direction="v"&gt;-31&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="敌人-摇滚公园御姐" currentFrame="126" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;6&lt;/guideline&gt;&lt;guideline direction="v"&gt;-31&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#E1FF16">
           <frames>
@@ -605,7 +605,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="37" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 681" name="man" centerPoint3DX="328" centerPoint3DY="-11.3">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 681" name="man" selected="true" centerPoint3DX="328" centerPoint3DY="-11.3">
                   <matrix>
                     <Matrix a="-1" tx="88.6" ty="-170.1"/>
                   </matrix>
@@ -656,7 +656,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="61" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 649" name="man" centerPoint3DX="27.8" centerPoint3DY="24.1">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 649" name="man" selected="true" centerPoint3DX="27.8" centerPoint3DY="24.1">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>

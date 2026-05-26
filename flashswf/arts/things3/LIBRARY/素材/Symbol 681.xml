@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 681" itemID="6577faef-0000154d" lastModified="1749003614" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 681" itemID="6577faef-0000154d" lastModified="1779772228" lastUniqueIdentifier="8">
   <timeline>
-    <DOMTimeline name="Symbol 681" currentFrame="205">
+    <DOMTimeline name="Symbol 681" currentFrame="256">
       <layers>
-        <DOMLayer name="Labels Layer" color="#FD57B3" locked="true" visible="false">
+        <DOMLayer name="Labels Layer" color="#FD57B3" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -45,7 +45,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#D622A5" locked="true" current="true" isSelected="true" autoNamed="false" visible="false">
+        <DOMLayer name="as" color="#D622A5" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -564,7 +564,50 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#C4FC89" locked="true" outline="true" useOutlineView="true" visible="false">
+        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="210" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="210" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("黑闪.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="219" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("黑闪.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="227" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("黑闪.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="236" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("黑闪.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="243" duration="32" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("黑闪.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="275" duration="46" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("黑闪.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#C4FC89" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -1165,7 +1208,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#D810CA" locked="true" visible="false">
+        <DOMLayer name="Layer 4" color="#D810CA" locked="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -1762,7 +1805,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#A1B4BE" locked="true" visible="false">
+        <DOMLayer name="Layer 5" color="#A1B4BE" locked="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -2249,7 +2292,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#8077C7" locked="true" visible="false">
+        <DOMLayer name="Layer 6" color="#8077C7" locked="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -2541,7 +2584,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#7F9DEB" locked="true" visible="false">
+        <DOMLayer name="Layer 7" color="#7F9DEB" locked="true">
           <frames>
             <DOMFrame index="0" duration="130" keyMode="9728">
               <elements>
@@ -2576,7 +2619,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#CDA46D" locked="true" visible="false">
+        <DOMLayer name="Layer 8" color="#CDA46D" locked="true">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -2610,7 +2653,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#F67B37" locked="true" visible="false">
+        <DOMLayer name="Layer 9" color="#F67B37" locked="true">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -2644,7 +2687,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#CFE4F7" locked="true" visible="false">
+        <DOMLayer name="Layer 10" color="#CFE4F7" locked="true">
           <frames>
             <DOMFrame index="0" duration="70" keyMode="9728">
               <elements/>
@@ -3116,7 +3159,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#9998D9" locked="true" visible="false">
+        <DOMLayer name="Layer 11" color="#9998D9" locked="true">
           <frames>
             <DOMFrame index="0" duration="70" keyMode="9728">
               <elements/>
@@ -3498,7 +3541,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#99D0C7" locked="true" visible="false">
+        <DOMLayer name="Layer 12" color="#99D0C7" locked="true">
           <frames>
             <DOMFrame index="0" duration="70" keyMode="9728">
               <elements/>
@@ -3880,7 +3923,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#C6899C" locked="true" visible="false">
+        <DOMLayer name="Layer 13" color="#C6899C" locked="true">
           <frames>
             <DOMFrame index="0" duration="70" keyMode="9728">
               <elements/>
@@ -4334,7 +4377,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#3FD273" locked="true" visible="false">
+        <DOMLayer name="Layer 14" color="#3FD273" locked="true">
           <frames>
             <DOMFrame index="0" duration="73" keyMode="9728">
               <elements/>
@@ -4548,7 +4591,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#AE876D" locked="true" visible="false">
+        <DOMLayer name="Layer 15" color="#AE876D" locked="true">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -4819,7 +4862,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 16" color="#AFE9DD" locked="true" visible="false">
+        <DOMLayer name="Layer 16" color="#AFE9DD" locked="true">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -4901,7 +4944,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#EA62EE" locked="true" visible="false">
+        <DOMLayer name="Layer 17" color="#EA62EE" locked="true">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -4989,7 +5032,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#DDB110" locked="true" visible="false">
+        <DOMLayer name="Layer 18" color="#DDB110" locked="true">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -5053,7 +5096,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#17D999" visible="false">
+        <DOMLayer name="Layer 19" color="#17D999">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -5168,7 +5211,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
             <DOMFrame index="227" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="重复项目文件夹/刀光" selected="true" symbolType="graphic" firstFrame="3" centerPoint3DX="117.65" centerPoint3DY="135.3" loop="loop">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/刀光" symbolType="graphic" firstFrame="3" centerPoint3DX="117.65" centerPoint3DY="135.3" loop="loop">
                   <matrix>
                     <Matrix a="-0.992919921875" b="0.118499755859375" c="1.44970703125" d="0.1998291015625" tx="117.25" ty="135"/>
                   </matrix>
@@ -5198,7 +5241,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 20" color="#C990E2" visible="false">
+        <DOMLayer name="Layer 20" color="#C990E2">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -5271,7 +5314,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
             <DOMFrame index="209" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="重复项目文件夹/刀光" selected="true" symbolType="graphic" firstFrame="3" centerPoint3DX="126.3" centerPoint3DY="135.2" loop="loop">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/刀光" symbolType="graphic" firstFrame="3" centerPoint3DX="126.3" centerPoint3DY="135.2" loop="loop">
                   <matrix>
                     <Matrix a="-0.992919921875" b="0.118499755859375" c="1.44970703125" d="0.1998291015625" tx="125.9" ty="134.9"/>
                   </matrix>
@@ -5491,7 +5534,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
                   </fills>
                   <edges>
                     <Edge fillStyle0="1" edges="
-!-1261 2333[-576 3174 588 3623!588 3623[1744 4086 2693 3891!2693 3891[3638 3698 3821 2973!3821 2973[4001 2243 3315 1399!3315 1399[2622 563 1458 109!1458 109[304 -350 -644 -160!-644 -160[-1590 37 -1773 760!-1773 760[-1952 1492 -1261 2333"/>
+!3315 1399[2622 563 1458 109!1458 109[304 -350 -644 -160!-644 -160[-1590 37 -1773 760!-1773 760[-1952 1492 -1261 2333!-1261 2333[-576 3174 588 3623!588 3623[1744 4086 2693 3891!2693 3891[3638 3698 3821 2973!3821 2973[4001 2243 3315 1399"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -34313,7 +34356,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 23" color="#F1F2DA" locked="true" visible="false">
+        <DOMLayer name="Layer 23" color="#F1F2DA" locked="true">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -34374,7 +34417,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 24" color="#C452B2" locked="true" visible="false">
+        <DOMLayer name="Layer 24" color="#C452B2" locked="true">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -34423,7 +34466,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 25" color="#6ED445" locked="true" visible="false">
+        <DOMLayer name="Layer 25" color="#6ED445" locked="true">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -34484,7 +34527,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 26" color="#F08E7E" locked="true" visible="false">
+        <DOMLayer name="Layer 26" color="#F08E7E" locked="true">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -34533,7 +34576,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 27" color="#AC795D" locked="true" visible="false">
+        <DOMLayer name="Layer 27" color="#AC795D" locked="true">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -34594,7 +34637,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 28" color="#B1FCB1" locked="true" visible="false">
+        <DOMLayer name="Layer 28" color="#B1FCB1" locked="true">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -34655,7 +34698,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 29" color="#31C697" locked="true" visible="false">
+        <DOMLayer name="Layer 29" color="#31C697" locked="true">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -34716,7 +34759,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 30" color="#B9D016" locked="true" visible="false">
+        <DOMLayer name="Layer 30" color="#B9D016" locked="true">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -34777,7 +34820,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 31" color="#D75AF9" locked="true" visible="false">
+        <DOMLayer name="Layer 31" color="#D75AF9" locked="true">
           <frames>
             <DOMFrame index="0" duration="67" keyMode="9728">
               <elements/>
@@ -34835,7 +34878,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 32" color="#8FDE82" locked="true" visible="false">
+        <DOMLayer name="Layer 32" color="#8FDE82" locked="true">
           <frames>
             <DOMFrame index="0" duration="75" keyMode="9728">
               <elements/>
@@ -34869,7 +34912,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 33" color="#F49B51" locked="true" visible="false">
+        <DOMLayer name="Layer 33" color="#F49B51" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -34903,7 +34946,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 34" color="#19D0A9" locked="true" visible="false">
+        <DOMLayer name="Layer 34" color="#19D0A9" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -34937,7 +34980,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 35" color="#7885C9" locked="true" visible="false">
+        <DOMLayer name="Layer 35" color="#7885C9" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -34971,7 +35014,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 36" color="#F13ED0" locked="true" visible="false">
+        <DOMLayer name="Layer 36" color="#F13ED0" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -35005,7 +35048,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 37" color="#9A6EEE" locked="true" visible="false">
+        <DOMLayer name="Layer 37" color="#9A6EEE" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -35039,7 +35082,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 38" color="#7FB7C9" locked="true" visible="false">
+        <DOMLayer name="Layer 38" color="#7FB7C9" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -35073,7 +35116,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 39" color="#9F5EA8" locked="true" visible="false">
+        <DOMLayer name="Layer 39" color="#9F5EA8" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -35107,7 +35150,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 40" color="#8E8EAF" locked="true" visible="false">
+        <DOMLayer name="Layer 40" color="#8E8EAF" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -35141,7 +35184,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 41" color="#57DFD9" locked="true" visible="false">
+        <DOMLayer name="Layer 41" color="#57DFD9" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -35175,7 +35218,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 42" color="#7AE78C" locked="true" visible="false">
+        <DOMLayer name="Layer 42" color="#7AE78C" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -35197,7 +35240,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 43" color="#BA7D82" locked="true" visible="false">
+        <DOMLayer name="Layer 43" color="#BA7D82" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -35231,7 +35274,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 44" color="#D7EA78" locked="true" visible="false">
+        <DOMLayer name="Layer 44" color="#D7EA78" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -35253,7 +35296,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 45" color="#D30CD0" locked="true" visible="false">
+        <DOMLayer name="Layer 45" color="#D30CD0" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -35287,7 +35330,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 46" color="#38ECD3" locked="true" visible="false">
+        <DOMLayer name="Layer 46" color="#38ECD3" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -35321,7 +35364,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 47" color="#F367A9" locked="true" visible="false">
+        <DOMLayer name="Layer 47" color="#F367A9" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -35355,7 +35398,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 48" color="#C7E838" locked="true" visible="false">
+        <DOMLayer name="Layer 48" color="#C7E838" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -35389,7 +35432,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 49" color="#EEA6D3" locked="true" visible="false">
+        <DOMLayer name="Layer 49" color="#EEA6D3" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -35423,7 +35466,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 50" color="#72F4A6" locked="true" visible="false">
+        <DOMLayer name="Layer 50" color="#72F4A6" locked="true">
           <frames>
             <DOMFrame index="0" duration="79" keyMode="9728">
               <elements/>
@@ -35457,7 +35500,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 51" color="#C47CFD" locked="true" visible="false">
+        <DOMLayer name="Layer 51" color="#C47CFD" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35491,7 +35534,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 52" color="#7F92B3" locked="true" visible="false">
+        <DOMLayer name="Layer 52" color="#7F92B3" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35525,7 +35568,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 53" color="#5860D6" locked="true" visible="false">
+        <DOMLayer name="Layer 53" color="#5860D6" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35559,7 +35602,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 54" color="#A86CDA" locked="true" visible="false">
+        <DOMLayer name="Layer 54" color="#A86CDA" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35593,7 +35636,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 55" color="#6C9B8C" locked="true" visible="false">
+        <DOMLayer name="Layer 55" color="#6C9B8C" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35627,7 +35670,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 56" color="#12EDB6" locked="true" visible="false">
+        <DOMLayer name="Layer 56" color="#12EDB6" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35661,7 +35704,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 57" color="#F8309F" locked="true" visible="false">
+        <DOMLayer name="Layer 57" color="#F8309F" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35695,7 +35738,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 58" color="#F95194" locked="true" visible="false">
+        <DOMLayer name="Layer 58" color="#F95194" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35729,7 +35772,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 59" color="#F5BD1D" locked="true" visible="false">
+        <DOMLayer name="Layer 59" color="#F5BD1D" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35763,7 +35806,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 60" color="#CBE269" locked="true" visible="false">
+        <DOMLayer name="Layer 60" color="#CBE269" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35785,7 +35828,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 61" color="#65FB82" locked="true" visible="false">
+        <DOMLayer name="Layer 61" color="#65FB82" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35819,7 +35862,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 62" color="#C77188" locked="true" visible="false">
+        <DOMLayer name="Layer 62" color="#C77188" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35841,7 +35884,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 63" color="#D9A5CD" locked="true" visible="false">
+        <DOMLayer name="Layer 63" color="#D9A5CD" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35875,7 +35918,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 64" color="#6796DF" locked="true" visible="false">
+        <DOMLayer name="Layer 64" color="#6796DF" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35909,7 +35952,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 65" color="#0EF8AE" locked="true" visible="false">
+        <DOMLayer name="Layer 65" color="#0EF8AE" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35943,7 +35986,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 66" color="#9EF477" locked="true" visible="false">
+        <DOMLayer name="Layer 66" color="#9EF477" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -35977,7 +36020,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 67" color="#9FC2AC" locked="true" visible="false">
+        <DOMLayer name="Layer 67" color="#9FC2AC" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -36011,7 +36054,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 68" color="#D15C9E" locked="true" visible="false">
+        <DOMLayer name="Layer 68" color="#D15C9E" locked="true">
           <frames>
             <DOMFrame index="0" duration="83" keyMode="9728">
               <elements/>
@@ -36045,7 +36088,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 69" color="#76AED8" locked="true" visible="false">
+        <DOMLayer name="Layer 69" color="#76AED8" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36079,7 +36122,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 70" color="#59B48B" locked="true" visible="false">
+        <DOMLayer name="Layer 70" color="#59B48B" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36113,7 +36156,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 71" color="#9C44DE" locked="true" visible="false">
+        <DOMLayer name="Layer 71" color="#9C44DE" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36147,7 +36190,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 72" color="#E6E462" locked="true" visible="false">
+        <DOMLayer name="Layer 72" color="#E6E462" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36181,7 +36224,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 73" color="#48A59A" locked="true" visible="false">
+        <DOMLayer name="Layer 73" color="#48A59A" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36215,7 +36258,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 74" color="#8E92A9" locked="true" visible="false">
+        <DOMLayer name="Layer 74" color="#8E92A9" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36249,7 +36292,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 75" color="#A221E4" locked="true" visible="false">
+        <DOMLayer name="Layer 75" color="#A221E4" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36283,7 +36326,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 76" color="#67E27F" locked="true" visible="false">
+        <DOMLayer name="Layer 76" color="#67E27F" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36317,7 +36360,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 77" color="#95F44D" locked="true" visible="false">
+        <DOMLayer name="Layer 77" color="#95F44D" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36351,7 +36394,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 78" color="#E0BCDF" locked="true" visible="false">
+        <DOMLayer name="Layer 78" color="#E0BCDF" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36373,7 +36416,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 79" color="#E653ED" locked="true" visible="false">
+        <DOMLayer name="Layer 79" color="#E653ED" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36407,7 +36450,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 80" color="#C5E40C" locked="true" visible="false">
+        <DOMLayer name="Layer 80" color="#C5E40C" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36429,7 +36472,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 81" color="#CC5E60" locked="true" visible="false">
+        <DOMLayer name="Layer 81" color="#CC5E60" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36463,7 +36506,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 82" color="#FEA2C4" locked="true" visible="false">
+        <DOMLayer name="Layer 82" color="#FEA2C4" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36497,7 +36540,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 83" color="#D08AF0" locked="true" visible="false">
+        <DOMLayer name="Layer 83" color="#D08AF0" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36531,7 +36574,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 84" color="#F3B308" locked="true" visible="false">
+        <DOMLayer name="Layer 84" color="#F3B308" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36565,7 +36608,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 85" color="#D14AD1" locked="true" visible="false">
+        <DOMLayer name="Layer 85" color="#D14AD1" locked="true">
           <frames>
             <DOMFrame index="0" duration="85" keyMode="9728">
               <elements/>
@@ -36599,7 +36642,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 86" color="#D47D8D" locked="true" visible="false">
+        <DOMLayer name="Layer 86" color="#D47D8D" locked="true">
           <frames>
             <DOMFrame index="0" duration="87" keyMode="9728">
               <elements/>
@@ -36633,7 +36676,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 87" color="#C9EEE8" locked="true" visible="false">
+        <DOMLayer name="Layer 87" color="#C9EEE8" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -36667,7 +36710,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 88" color="#A730B4" locked="true" visible="false">
+        <DOMLayer name="Layer 88" color="#A730B4" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -36701,7 +36744,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 89" color="#AEA0B5" locked="true" visible="false">
+        <DOMLayer name="Layer 89" color="#AEA0B5" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -36735,7 +36778,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 90" color="#5DE184" locked="true" visible="false">
+        <DOMLayer name="Layer 90" color="#5DE184" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -36769,7 +36812,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 91" color="#D5D8DA" locked="true" visible="false">
+        <DOMLayer name="Layer 91" color="#D5D8DA" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -36803,7 +36846,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 92" color="#65B775" locked="true" visible="false">
+        <DOMLayer name="Layer 92" color="#65B775" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -36837,7 +36880,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 93" color="#E03CD2" locked="true" visible="false">
+        <DOMLayer name="Layer 93" color="#E03CD2" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -36871,7 +36914,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 94" color="#AFE5AE" locked="true" visible="false">
+        <DOMLayer name="Layer 94" color="#AFE5AE" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -36905,7 +36948,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 95" color="#AFB2E1" locked="true" visible="false">
+        <DOMLayer name="Layer 95" color="#AFB2E1" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -36939,7 +36982,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 96" color="#E2C0E3" locked="true" visible="false">
+        <DOMLayer name="Layer 96" color="#E2C0E3" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -36961,7 +37004,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 97" color="#C68852" locked="true" visible="false">
+        <DOMLayer name="Layer 97" color="#C68852" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -36995,7 +37038,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 98" color="#FBEB8E" locked="true" visible="false">
+        <DOMLayer name="Layer 98" color="#FBEB8E" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -37017,7 +37060,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 99" color="#EB91D3" locked="true" visible="false">
+        <DOMLayer name="Layer 99" color="#EB91D3" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -37051,7 +37094,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 100" color="#68A9BA" locked="true" visible="false">
+        <DOMLayer name="Layer 100" color="#68A9BA" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -37085,7 +37128,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 101" color="#7967A3" locked="true" visible="false">
+        <DOMLayer name="Layer 101" color="#7967A3" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -37119,7 +37162,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 102" color="#8B8B6A" locked="true" visible="false">
+        <DOMLayer name="Layer 102" color="#8B8B6A" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -37153,7 +37196,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 103" color="#E7FD76" locked="true" visible="false">
+        <DOMLayer name="Layer 103" color="#E7FD76" locked="true">
           <frames>
             <DOMFrame index="0" duration="89" keyMode="9728">
               <elements/>
@@ -37187,7 +37230,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 104" color="#E4BAA4" locked="true" visible="false">
+        <DOMLayer name="Layer 104" color="#E4BAA4" locked="true">
           <frames>
             <DOMFrame index="0" duration="91" keyMode="9728">
               <elements/>
@@ -37221,7 +37264,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 105" color="#C25371" locked="true" visible="false">
+        <DOMLayer name="Layer 105" color="#C25371" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37255,7 +37298,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 106" color="#EAAC55" locked="true" visible="false">
+        <DOMLayer name="Layer 106" color="#EAAC55" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37289,7 +37332,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 107" color="#C0B82B" locked="true" visible="false">
+        <DOMLayer name="Layer 107" color="#C0B82B" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37323,7 +37366,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 108" color="#85EB8F" locked="true" visible="false">
+        <DOMLayer name="Layer 108" color="#85EB8F" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37357,7 +37400,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 109" color="#9887F5" locked="true" visible="false">
+        <DOMLayer name="Layer 109" color="#9887F5" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37391,7 +37434,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 110" color="#C6E29E" locked="true" visible="false">
+        <DOMLayer name="Layer 110" color="#C6E29E" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37425,7 +37468,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 111" color="#1CB1E4" locked="true" visible="false">
+        <DOMLayer name="Layer 111" color="#1CB1E4" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37459,7 +37502,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 112" color="#876EF3" locked="true" visible="false">
+        <DOMLayer name="Layer 112" color="#876EF3" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37493,7 +37536,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 113" color="#C9BBF8" locked="true" visible="false">
+        <DOMLayer name="Layer 113" color="#C9BBF8" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37527,7 +37570,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 114" color="#F46DF0" locked="true" visible="false">
+        <DOMLayer name="Layer 114" color="#F46DF0" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37549,7 +37592,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 115" color="#CF7FE6" locked="true" visible="false">
+        <DOMLayer name="Layer 115" color="#CF7FE6" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37583,7 +37626,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 116" color="#82EE3F" locked="true" visible="false">
+        <DOMLayer name="Layer 116" color="#82EE3F" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37605,7 +37648,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 117" color="#AC89DC" locked="true" visible="false">
+        <DOMLayer name="Layer 117" color="#AC89DC" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37639,7 +37682,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 118" color="#CB77F5" locked="true" visible="false">
+        <DOMLayer name="Layer 118" color="#CB77F5" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37673,7 +37716,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 119" color="#42CE74" locked="true" visible="false">
+        <DOMLayer name="Layer 119" color="#42CE74" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37707,7 +37750,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 120" color="#5C7DBC" locked="true" visible="false">
+        <DOMLayer name="Layer 120" color="#5C7DBC" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37885,7 +37928,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 121" color="#63D8F8" locked="true" visible="false">
+        <DOMLayer name="Layer 121" color="#63D8F8" locked="true">
           <frames>
             <DOMFrame index="0" duration="93" keyMode="9728">
               <elements/>
@@ -37919,7 +37962,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 122" color="#50E8C2" locked="true" visible="false">
+        <DOMLayer name="Layer 122" color="#50E8C2" locked="true">
           <frames>
             <DOMFrame index="0" duration="95" keyMode="9728">
               <elements/>
@@ -38034,7 +38077,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 123" color="#8CC92B" locked="true" visible="false">
+        <DOMLayer name="Layer 123" color="#8CC92B" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -38116,7 +38159,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 124" color="#B6FC08" locked="true" visible="false">
+        <DOMLayer name="Layer 124" color="#B6FC08" locked="true">
           <frames>
             <DOMFrame index="0" duration="130" keyMode="9728">
               <elements/>
@@ -38366,7 +38409,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 125" color="#67DDD2" locked="true" visible="false">
+        <DOMLayer name="Layer 125" color="#67DDD2" locked="true">
           <frames>
             <DOMFrame index="0" duration="130" keyMode="9728">
               <elements/>
@@ -38556,7 +38599,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 126" color="#D8A7E6" locked="true" visible="false">
+        <DOMLayer name="Layer 126" color="#D8A7E6" locked="true">
           <frames>
             <DOMFrame index="0" duration="130" keyMode="9728">
               <elements/>
@@ -38746,7 +38789,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 127" color="#BEABC3" locked="true" visible="false">
+        <DOMLayer name="Layer 127" color="#BEABC3" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -38804,7 +38847,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 128" color="#2B6CF4" locked="true" visible="false">
+        <DOMLayer name="Layer 128" color="#2B6CF4" locked="true">
           <frames>
             <DOMFrame index="0" duration="107" keyMode="9728">
               <elements/>
@@ -39066,7 +39109,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 129" color="#B92FBD" locked="true" visible="false">
+        <DOMLayer name="Layer 129" color="#B92FBD" locked="true">
           <frames>
             <DOMFrame index="0" duration="107" keyMode="9728">
               <elements/>
@@ -39115,7 +39158,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 130" color="#B5A8AC" locked="true" visible="false">
+        <DOMLayer name="Layer 130" color="#B5A8AC" locked="true">
           <frames>
             <DOMFrame index="0" duration="113" keyMode="9728">
               <elements/>
@@ -39164,7 +39207,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 131" color="#9040B5" locked="true" visible="false">
+        <DOMLayer name="Layer 131" color="#9040B5" locked="true">
           <frames>
             <DOMFrame index="0" duration="107" keyMode="9728">
               <elements/>
@@ -39243,7 +39286,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 132" color="#3FDCAB" locked="true" visible="false">
+        <DOMLayer name="Layer 132" color="#3FDCAB" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -39349,7 +39392,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 133" color="#B8EA9A" locked="true" visible="false">
+        <DOMLayer name="Layer 133" color="#B8EA9A" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -39455,7 +39498,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 134" color="#C7CC9B" locked="true" visible="false">
+        <DOMLayer name="Layer 134" color="#C7CC9B" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -39561,7 +39604,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 135" color="#51FD34" locked="true" visible="false">
+        <DOMLayer name="Layer 135" color="#51FD34" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -39667,7 +39710,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 136" color="#7F9BDE" locked="true" visible="false">
+        <DOMLayer name="Layer 136" color="#7F9BDE" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -39773,7 +39816,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 137" color="#70C2EE" locked="true" visible="false">
+        <DOMLayer name="Layer 137" color="#70C2EE" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -39879,7 +39922,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 138" color="#79F154" locked="true" visible="false">
+        <DOMLayer name="Layer 138" color="#79F154" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -39985,7 +40028,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 139" color="#69F082" locked="true" visible="false">
+        <DOMLayer name="Layer 139" color="#69F082" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -40067,7 +40110,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 140" color="#89DA2C" locked="true" visible="false">
+        <DOMLayer name="Layer 140" color="#89DA2C" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -40173,7 +40216,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 141" color="#B7CCC4" locked="true" visible="false">
+        <DOMLayer name="Layer 141" color="#B7CCC4" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -40267,7 +40310,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 142" color="#E26AB8" locked="true" visible="false">
+        <DOMLayer name="Layer 142" color="#E26AB8" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -40373,7 +40416,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 143" color="#3A8FFB" locked="true" visible="false">
+        <DOMLayer name="Layer 143" color="#3A8FFB" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -40479,7 +40522,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 144" color="#24D6D8" locked="true" visible="false">
+        <DOMLayer name="Layer 144" color="#24D6D8" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -40585,7 +40628,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 145" color="#47B1A6" locked="true" visible="false">
+        <DOMLayer name="Layer 145" color="#47B1A6" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -40691,7 +40734,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 146" color="#ABE1B6" locked="true" visible="false">
+        <DOMLayer name="Layer 146" color="#ABE1B6" locked="true">
           <frames>
             <DOMFrame index="0" duration="97" keyMode="9728">
               <elements/>
@@ -40797,7 +40840,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 147" color="#625CDA" locked="true" visible="false">
+        <DOMLayer name="Layer 147" color="#625CDA" locked="true">
           <frames>
             <DOMFrame index="0" duration="135" keyMode="9728">
               <elements/>
@@ -40831,7 +40874,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 148" color="#E7F82F" locked="true" visible="false">
+        <DOMLayer name="Layer 148" color="#E7F82F" locked="true">
           <frames>
             <DOMFrame index="0" duration="137" keyMode="9728">
               <elements/>
@@ -40865,7 +40908,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 149" color="#EC2DC1" locked="true" visible="false">
+        <DOMLayer name="Layer 149" color="#EC2DC1" locked="true">
           <frames>
             <DOMFrame index="0" duration="137" keyMode="9728">
               <elements/>
@@ -40899,7 +40942,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 150" color="#8AF848" locked="true" visible="false">
+        <DOMLayer name="Layer 150" color="#8AF848" locked="true">
           <frames>
             <DOMFrame index="0" duration="137" keyMode="9728">
               <elements/>
@@ -40933,7 +40976,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 151" color="#75D057" locked="true" visible="false">
+        <DOMLayer name="Layer 151" color="#75D057" locked="true">
           <frames>
             <DOMFrame index="0" duration="137" keyMode="9728">
               <elements/>
@@ -40967,7 +41010,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 152" color="#D0BD35" locked="true" visible="false">
+        <DOMLayer name="Layer 152" color="#D0BD35" locked="true">
           <frames>
             <DOMFrame index="0" duration="137" keyMode="9728">
               <elements/>
@@ -41001,7 +41044,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 153" color="#D48944" locked="true" visible="false">
+        <DOMLayer name="Layer 153" color="#D48944" locked="true">
           <frames>
             <DOMFrame index="0" duration="137" keyMode="9728">
               <elements/>
@@ -41035,7 +41078,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 154" color="#7D8CCC" locked="true" visible="false">
+        <DOMLayer name="Layer 154" color="#7D8CCC" locked="true">
           <frames>
             <DOMFrame index="0" duration="137" keyMode="9728">
               <elements/>
@@ -41069,7 +41112,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 155" color="#B7FF6E" locked="true" visible="false">
+        <DOMLayer name="Layer 155" color="#B7FF6E" locked="true">
           <frames>
             <DOMFrame index="0" duration="137" keyMode="9728">
               <elements/>
@@ -41103,7 +41146,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 156" color="#ABEBB7" locked="true" visible="false">
+        <DOMLayer name="Layer 156" color="#ABEBB7" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -41185,7 +41228,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 157" color="#DF7183" locked="true" visible="false">
+        <DOMLayer name="Layer 157" color="#DF7183" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -41255,7 +41298,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 158" color="#94ADD8" locked="true" visible="false">
+        <DOMLayer name="Layer 158" color="#94ADD8" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -41304,7 +41347,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 159" color="#C8ACE0" locked="true" visible="false">
+        <DOMLayer name="Layer 159" color="#C8ACE0" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -41341,7 +41384,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 160" color="#1DD8CD" locked="true" visible="false">
+        <DOMLayer name="Layer 160" color="#1DD8CD" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -41390,7 +41433,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 161" color="#CADB00" locked="true" visible="false">
+        <DOMLayer name="Layer 161" color="#CADB00" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -41460,7 +41503,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 162" color="#E2DE0A" locked="true" visible="false">
+        <DOMLayer name="Layer 162" color="#E2DE0A" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -41545,7 +41588,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 163" color="#56DDBF" locked="true" visible="false">
+        <DOMLayer name="Layer 163" color="#56DDBF" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -41627,7 +41670,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 164" color="#99A852" locked="true" visible="false">
+        <DOMLayer name="Layer 164" color="#99A852" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -41709,7 +41752,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 165" color="#AAC851" locked="true" visible="false">
+        <DOMLayer name="Layer 165" color="#AAC851" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -41791,7 +41834,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 166" color="#F25AF2" locked="true" visible="false">
+        <DOMLayer name="Layer 166" color="#F25AF2" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -41873,7 +41916,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 167" color="#6F9BBC" locked="true" visible="false">
+        <DOMLayer name="Layer 167" color="#6F9BBC" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -41955,7 +41998,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 168" color="#95D484" locked="true" visible="false">
+        <DOMLayer name="Layer 168" color="#95D484" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -42100,7 +42143,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 169" color="#87B3F2" locked="true" visible="false">
+        <DOMLayer name="Layer 169" color="#87B3F2" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -42206,7 +42249,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 170" color="#B6F5AA" locked="true" visible="false">
+        <DOMLayer name="Layer 170" color="#B6F5AA" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
@@ -42264,7 +42307,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 171" color="#82C53A" locked="true" visible="false">
+        <DOMLayer name="Layer 171" color="#82C53A" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -42370,7 +42413,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 172" color="#9EA8CF" locked="true" visible="false">
+        <DOMLayer name="Layer 172" color="#9EA8CF" locked="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
@@ -42428,7 +42471,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 173" color="#A68C72" locked="true" visible="false">
+        <DOMLayer name="Layer 173" color="#A68C72" locked="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -42489,7 +42532,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 174" color="#81F79B" locked="true" visible="false">
+        <DOMLayer name="Layer 174" color="#81F79B" locked="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -42550,7 +42593,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 175" color="#5B87AF" locked="true" visible="false">
+        <DOMLayer name="Layer 175" color="#5B87AF" locked="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -42599,7 +42642,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 176" color="#DABC72" locked="true" visible="false">
+        <DOMLayer name="Layer 176" color="#DABC72" locked="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -42660,7 +42703,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 177" color="#B153A4" locked="true" visible="false">
+        <DOMLayer name="Layer 177" color="#B153A4" locked="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -42709,7 +42752,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 178" color="#13A0DF" locked="true" visible="false">
+        <DOMLayer name="Layer 178" color="#13A0DF" locked="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -42770,7 +42813,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 179" color="#C8EC4B" locked="true" visible="false">
+        <DOMLayer name="Layer 179" color="#C8EC4B" locked="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -42831,7 +42874,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 180" color="#27A6E7" locked="true" visible="false">
+        <DOMLayer name="Layer 180" color="#27A6E7" locked="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -42892,7 +42935,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 181" color="#E18F66" locked="true" visible="false">
+        <DOMLayer name="Layer 181" color="#E18F66" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -42986,7 +43029,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 182" color="#F4D952" locked="true" visible="false">
+        <DOMLayer name="Layer 182" color="#F4D952" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -43080,7 +43123,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 183" color="#18E4B3" locked="true" visible="false">
+        <DOMLayer name="Layer 183" color="#18E4B3" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -43174,7 +43217,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 184" color="#B431D4" locked="true" visible="false">
+        <DOMLayer name="Layer 184" color="#B431D4" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -43268,7 +43311,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 185" color="#9BDEB9" locked="true" visible="false">
+        <DOMLayer name="Layer 185" color="#9BDEB9" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -43395,7 +43438,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 186" color="#996AA2" locked="true" visible="false">
+        <DOMLayer name="Layer 186" color="#996AA2" locked="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -43468,7 +43511,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 187" color="#E34ED0" locked="true" visible="false">
+        <DOMLayer name="Layer 187" color="#E34ED0" locked="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -43517,7 +43560,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 188" color="#64CF82" locked="true" visible="false">
+        <DOMLayer name="Layer 188" color="#64CF82" locked="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -43566,7 +43609,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 189" color="#F27E41" locked="true" visible="false">
+        <DOMLayer name="Layer 189" color="#F27E41" locked="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -43615,7 +43658,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 190" color="#E06BA8" locked="true" visible="false">
+        <DOMLayer name="Layer 190" color="#E06BA8" locked="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -43664,7 +43707,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 191" color="#F48FC0" locked="true" visible="false">
+        <DOMLayer name="Layer 191" color="#F48FC0" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -43782,7 +43825,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 192" color="#9EF60A" locked="true" visible="false">
+        <DOMLayer name="Layer 192" color="#9EF60A" locked="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -43855,7 +43898,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 193" color="#B1D6A6" locked="true" visible="false">
+        <DOMLayer name="Layer 193" color="#B1D6A6" locked="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -43916,7 +43959,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 194" color="#92FE46" locked="true" visible="false">
+        <DOMLayer name="Layer 194" color="#92FE46" locked="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -43965,7 +44008,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 195" color="#78FE58" locked="true" visible="false">
+        <DOMLayer name="Layer 195" color="#78FE58" locked="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -44032,7 +44075,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 196" color="#CBD7EE" locked="true" visible="false">
+        <DOMLayer name="Layer 196" color="#CBD7EE" locked="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -44093,7 +44136,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 197" color="#4967DA" locked="true" visible="false">
+        <DOMLayer name="Layer 197" color="#4967DA" locked="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -44142,7 +44185,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 198" color="#C3EF48" locked="true" visible="false">
+        <DOMLayer name="Layer 198" color="#C3EF48" locked="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -44203,7 +44246,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 199" color="#7CD7D9" locked="true" visible="false">
+        <DOMLayer name="Layer 199" color="#7CD7D9" locked="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -44264,7 +44307,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 200" color="#B39255" locked="true" visible="false">
+        <DOMLayer name="Layer 200" color="#B39255" locked="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -44313,7 +44356,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 201" color="#D8D191" locked="true" visible="false">
+        <DOMLayer name="Layer 201" color="#D8D191" locked="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -44374,7 +44417,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 202" color="#DF6496" locked="true" visible="false">
+        <DOMLayer name="Layer 202" color="#DF6496" locked="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -44480,7 +44523,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 203" color="#DC4AAA" locked="true" visible="false">
+        <DOMLayer name="Layer 203" color="#DC4AAA" locked="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -44649,7 +44692,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 204" color="#FB2F8B" locked="true" visible="false">
+        <DOMLayer name="Layer 204" color="#FB2F8B" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -44710,7 +44753,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 205" color="#95A84D" locked="true" visible="false">
+        <DOMLayer name="Layer 205" color="#95A84D" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -44771,7 +44814,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 206" color="#10D8ED" locked="true" visible="false">
+        <DOMLayer name="Layer 206" color="#10D8ED" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -44832,7 +44875,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 207" color="#ABC544" locked="true" visible="false">
+        <DOMLayer name="Layer 207" color="#ABC544" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -44893,7 +44936,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 208" color="#D741BF" locked="true" visible="false">
+        <DOMLayer name="Layer 208" color="#D741BF" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -44954,7 +44997,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 209" color="#90CAE4" locked="true" visible="false">
+        <DOMLayer name="Layer 209" color="#90CAE4" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -45015,7 +45058,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 210" color="#CBC818" locked="true" visible="false">
+        <DOMLayer name="Layer 210" color="#CBC818" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -45076,7 +45119,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 211" color="#65CBF3" locked="true" visible="false">
+        <DOMLayer name="Layer 211" color="#65CBF3" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -45113,7 +45156,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 212" color="#97EB9E" locked="true" visible="false">
+        <DOMLayer name="Layer 212" color="#97EB9E" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -45162,7 +45205,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 213" color="#E952F1" locked="true" visible="false">
+        <DOMLayer name="Layer 213" color="#E952F1" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -45199,7 +45242,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 214" color="#8DBCD9" locked="true" visible="false">
+        <DOMLayer name="Layer 214" color="#8DBCD9" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -45248,7 +45291,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 215" color="#D34BBD" locked="true" visible="false">
+        <DOMLayer name="Layer 215" color="#D34BBD" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -45297,7 +45340,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 216" color="#AF7BE9" locked="true" visible="false">
+        <DOMLayer name="Layer 216" color="#AF7BE9" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -45346,7 +45389,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 217" color="#F7D373" locked="true" visible="false">
+        <DOMLayer name="Layer 217" color="#F7D373" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -45407,7 +45450,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 218" color="#594AF7" locked="true" visible="false">
+        <DOMLayer name="Layer 218" color="#594AF7" locked="true">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -45456,7 +45499,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 219" color="#40BCF3" locked="true" visible="false">
+        <DOMLayer name="Layer 219" color="#40BCF3" locked="true">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -45505,7 +45548,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 220" color="#F0E381" locked="true" visible="false">
+        <DOMLayer name="Layer 220" color="#F0E381" locked="true">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -45554,7 +45597,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 221" color="#C19CDE" locked="true" visible="false">
+        <DOMLayer name="Layer 221" color="#C19CDE" locked="true">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -45603,7 +45646,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 222" color="#BEFCD9" locked="true" visible="false">
+        <DOMLayer name="Layer 222" color="#BEFCD9" locked="true">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -45652,7 +45695,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 223" color="#F4A26C" locked="true" visible="false">
+        <DOMLayer name="Layer 223" color="#F4A26C" locked="true">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -45701,7 +45744,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 224" color="#50E48E" locked="true" visible="false">
+        <DOMLayer name="Layer 224" color="#50E48E" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -45762,7 +45805,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 225" color="#9A9D56" locked="true" visible="false">
+        <DOMLayer name="Layer 225" color="#9A9D56" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -45823,7 +45866,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 226" color="#C9D589" locked="true" visible="false">
+        <DOMLayer name="Layer 226" color="#C9D589" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -45896,7 +45939,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 227" color="#52BEDB" locked="true" visible="false">
+        <DOMLayer name="Layer 227" color="#52BEDB" locked="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -45957,7 +46000,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 228" color="#9BC8BD" locked="true" visible="false">
+        <DOMLayer name="Layer 228" color="#9BC8BD" locked="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -46030,7 +46073,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 229" color="#7FDA7F" locked="true" visible="false">
+        <DOMLayer name="Layer 229" color="#7FDA7F" locked="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -46091,7 +46134,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 230" color="#F891BF" locked="true" visible="false">
+        <DOMLayer name="Layer 230" color="#F891BF" locked="true">
           <frames>
             <DOMFrame index="0" duration="153" keyMode="9728">
               <elements/>
@@ -46125,7 +46168,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 231" color="#71EF76" locked="true" visible="false">
+        <DOMLayer name="Layer 231" color="#71EF76" locked="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
@@ -46195,7 +46238,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 232" color="#95A95F" locked="true" visible="false">
+        <DOMLayer name="Layer 232" color="#95A95F" locked="true">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -46340,7 +46383,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 233" color="#5E7DF6" locked="true" visible="false">
+        <DOMLayer name="Layer 233" color="#5E7DF6" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -46437,7 +46480,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 234" color="#DEFB82" locked="true" visible="false">
+        <DOMLayer name="Layer 234" color="#DEFB82" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -46534,7 +46577,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 235" color="#BEA03F" locked="true" visible="false">
+        <DOMLayer name="Layer 235" color="#BEA03F" locked="true">
           <frames>
             <DOMFrame index="0" duration="153" keyMode="9728">
               <elements/>
@@ -46568,7 +46611,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 236" color="#BDEB20" locked="true" visible="false">
+        <DOMLayer name="Layer 236" color="#BDEB20" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -46680,7 +46723,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 237" color="#E6A643" locked="true" visible="false">
+        <DOMLayer name="Layer 237" color="#E6A643" locked="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -46861,7 +46904,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 238" color="#849BCB" locked="true" visible="false">
+        <DOMLayer name="Layer 238" color="#849BCB" locked="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -47018,7 +47061,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 239" color="#B7CA08" locked="true" visible="false">
+        <DOMLayer name="Layer 239" color="#B7CA08" locked="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -47139,7 +47182,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 240" color="#BAB1B8" locked="true" visible="false">
+        <DOMLayer name="Layer 240" color="#BAB1B8" locked="true">
           <frames>
             <DOMFrame index="0" duration="50" keyMode="9728">
               <elements/>
@@ -47212,7 +47255,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 241" color="#AB6AEE" locked="true" visible="false">
+        <DOMLayer name="Layer 241" color="#AB6AEE" locked="true">
           <frames>
             <DOMFrame index="0" duration="50" keyMode="9728">
               <elements/>
@@ -47285,7 +47328,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 242" color="#FBB30E" locked="true" visible="false">
+        <DOMLayer name="Layer 242" color="#FBB30E" locked="true">
           <frames>
             <DOMFrame index="0" duration="59" keyMode="9728">
               <elements/>
@@ -47322,7 +47365,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 243" color="#50DAB5" locked="true" visible="false">
+        <DOMLayer name="Layer 243" color="#50DAB5" locked="true">
           <frames>
             <DOMFrame index="0" duration="50" keyMode="9728">
               <elements/>
@@ -47434,7 +47477,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 244" color="#979AFB" locked="true" visible="false">
+        <DOMLayer name="Layer 244" color="#979AFB" locked="true">
           <frames>
             <DOMFrame index="0" duration="53" keyMode="9728">
               <elements/>
@@ -47543,7 +47586,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 245" color="#7AE343" locked="true" visible="false">
+        <DOMLayer name="Layer 245" color="#7AE343" locked="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -47712,7 +47755,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 246" color="#D2D961" locked="true" visible="false">
+        <DOMLayer name="Layer 246" color="#D2D961" locked="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -47881,7 +47924,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 247" color="#D930A3" locked="true" visible="false">
+        <DOMLayer name="Layer 247" color="#D930A3" locked="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -48050,7 +48093,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 248" color="#FAA930" locked="true" visible="false">
+        <DOMLayer name="Layer 248" color="#FAA930" locked="true">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
@@ -48219,7 +48262,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 249" color="#BDFE66" locked="true" visible="false">
+        <DOMLayer name="Layer 249" color="#BDFE66" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -48400,7 +48443,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 250" color="#91CA62" locked="true" visible="false">
+        <DOMLayer name="Layer 250" color="#91CA62" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -48581,7 +48624,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 251" color="#B5558D" locked="true" visible="false">
+        <DOMLayer name="Layer 251" color="#B5558D" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -48750,7 +48793,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 252" color="#2AF0F7" locked="true" visible="false">
+        <DOMLayer name="Layer 252" color="#2AF0F7" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -48907,7 +48950,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 253" color="#86F6CB" locked="true" visible="false">
+        <DOMLayer name="Layer 253" color="#86F6CB" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -49004,7 +49047,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 254" color="#F2980A" locked="true" visible="false">
+        <DOMLayer name="Layer 254" color="#F2980A" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -49185,7 +49228,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 255" color="#1EF18F" locked="true" visible="false">
+        <DOMLayer name="Layer 255" color="#1EF18F" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -49366,7 +49409,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 256" color="#E0968B" locked="true" visible="false">
+        <DOMLayer name="Layer 256" color="#E0968B" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -49547,7 +49590,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 257" color="#D1DD78" locked="true" visible="false">
+        <DOMLayer name="Layer 257" color="#D1DD78" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -49728,7 +49771,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 258" color="#609CC8" locked="true" visible="false">
+        <DOMLayer name="Layer 258" color="#609CC8" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -49909,7 +49952,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 259" color="#06BEDA" locked="true" visible="false">
+        <DOMLayer name="Layer 259" color="#06BEDA" locked="true">
           <frames>
             <DOMFrame index="0" duration="59" keyMode="9728">
               <elements/>
@@ -50375,7 +50418,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 260" color="#F3801F" locked="true" visible="false">
+        <DOMLayer name="Layer 260" color="#F3801F" locked="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -51042,7 +51085,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#F4DF5C" locked="true" visible="false">
+        <DOMLayer name="Sound Layer 0" color="#F4DF5C" locked="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -51055,7 +51098,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 1" color="#648CDF" locked="true" visible="false">
+        <DOMLayer name="Sound Layer 1" color="#648CDF" locked="true">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
@@ -51068,7 +51111,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 2" color="#3781E5" locked="true" visible="false">
+        <DOMLayer name="Sound Layer 2" color="#3781E5" locked="true">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
               <elements/>
@@ -51081,7 +51124,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 3" color="#9EF933" locked="true" visible="false">
+        <DOMLayer name="Sound Layer 3" color="#9EF933" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -51094,7 +51137,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 4" color="#DE94AD" locked="true" visible="false">
+        <DOMLayer name="Sound Layer 4" color="#DE94AD" locked="true">
           <frames>
             <DOMFrame index="0" duration="51" keyMode="9728">
               <elements/>
@@ -51107,7 +51150,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 5" color="#8D9085" locked="true" visible="false">
+        <DOMLayer name="Sound Layer 5" color="#8D9085" locked="true">
           <frames>
             <DOMFrame index="0" duration="72" keyMode="9728">
               <elements/>
@@ -51120,7 +51163,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 6" color="#EA95C6" locked="true" visible="false">
+        <DOMLayer name="Sound Layer 6" color="#EA95C6" locked="true">
           <frames>
             <DOMFrame index="0" duration="77" keyMode="9728">
               <elements/>
@@ -51133,7 +51176,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 7" color="#9A6EA0" locked="true" visible="false">
+        <DOMLayer name="Sound Layer 7" color="#9A6EA0" locked="true">
           <frames>
             <DOMFrame index="0" duration="81" keyMode="9728">
               <elements/>
@@ -51146,7 +51189,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 8" color="#2AF2BB" locked="true" visible="false">
+        <DOMLayer name="Sound Layer 8" color="#2AF2BB" locked="true">
           <frames>
             <DOMFrame index="0" duration="84" keyMode="9728">
               <elements/>
@@ -51159,7 +51202,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 9" color="#CDCFF8" locked="true" visible="false">
+        <DOMLayer name="Sound Layer 9" color="#CDCFF8" locked="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements/>
@@ -51172,7 +51215,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 10" color="#D8F404" locked="true" visible="false">
+        <DOMLayer name="Sound Layer 10" color="#D8F404" locked="true">
           <frames>
             <DOMFrame index="0" duration="92" keyMode="9728">
               <elements/>
@@ -51185,7 +51228,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 11" color="#935DA5" locked="true" visible="false">
+        <DOMLayer name="Sound Layer 11" color="#935DA5" locked="true">
           <frames>
             <DOMFrame index="0" duration="96" keyMode="9728">
               <elements/>
@@ -51198,7 +51241,7 @@ if (_root.gameworld[_parent.攻击目标].hp > 0)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 12" color="#DCB394" locked="true" visible="false">
+        <DOMLayer name="Sound Layer 12" color="#DCB394" locked="true">
           <frames>
             <DOMFrame index="0" duration="109" keyMode="9728">
               <elements/>
