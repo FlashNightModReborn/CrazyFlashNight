@@ -8456,6 +8456,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
     align-items: center;
     gap: 10px;
 }
+.pet-card-icon { flex-shrink: 0; width: 80px; height: 80px; border-radius: 4px; object-fit: cover; }
 .pet-card-info { flex: 1; min-width: 0; }
 .pet-card-deploy-btn {
     padding: 5px 14px;
@@ -8515,6 +8516,39 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .pet-card-footer { margin-top: 4px; }
 .pet-card-hint { font-size: 11px; color: #555; }
 .pet-card:hover .pet-card-hint { color: var(--pet-accent); }
+
+/* ── Expand slot card (grid内开格子按钮) ── */
+.pet-expand-slot-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+    background: rgba(255,255,255,0.02);
+    border: 1px dashed rgba(0,188,212,0.2);
+    border-radius: 5px;
+}
+.pet-expand-slot-card .pet-expand-slot-btn {
+    padding: 6px 20px;
+    font-size: 13px;
+    font-family: inherit;
+    background: rgba(0,188,212,0.12);
+    border: 1px solid rgba(0,188,212,0.3);
+    color: var(--pet-accent);
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+.pet-expand-slot-card .pet-expand-slot-btn:hover:not(:disabled) {
+    background: rgba(0,188,212,0.25);
+    border-color: rgba(0,188,212,0.6);
+}
+.pet-expand-slot-card .pet-expand-slot-btn:disabled {
+    background: rgba(128,128,128,0.1);
+    border-color: rgba(128,128,128,0.2);
+    color: #555;
+    cursor: not-allowed;
+}
+.pet-expand-slot-card-full { border-color: rgba(128,128,128,0.15); opacity: 0.6; }
 
 /* ── Section titles ── */
 .pet-section-title {
@@ -8728,6 +8762,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
     font-size: 15px;
     color: #666;
 }
+.pet-store-empty[hidden] { display: none; }
 .pet-store-loading {
     flex: 1;
     display: flex;
@@ -8736,21 +8771,28 @@ html.perf-low-effects .map-panel-close-btn:hover {
     font-size: 14px;
     color: var(--pet-accent);
 }
+.pet-store-loading[hidden] { display: none; }
 .pet-store-card {
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 5px;
-    padding: 10px;
+    padding: 12px 10px;
     transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
 }
 .pet-store-card:hover { border-color: rgba(0,188,212,0.25); background: rgba(0,188,212,0.03); }
 .pet-store-card-header {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
-    margin-bottom: 6px;
+    text-align: center;
 }
 .pet-store-card-name { font-size: 14px; font-weight: 700; color: #ddd; }
+.pet-store-card-icon { flex-shrink: 0; width: 80px; height: 80px; border-radius: 4px; object-fit: cover; }
 .pet-store-card-unique {
     font-size: 10px;
     padding: 1px 5px;
@@ -8763,10 +8805,11 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .pet-store-card-row { display: flex; justify-content: space-between; font-size: 12px; }
 .pet-store-card-label { color: #888; }
 .pet-store-card-value { color: #ccc; font-weight: 600; }
-.pet-store-card-footer { display: flex; justify-content: center; }
+.pet-store-card-footer { width: 100%; display: flex; justify-content: center; }
 .pet-store-adopt-btn {
-    padding: 5px 18px;
-    font-size: 13px;
+    width: 100%;
+    padding: 6px 14px;
+    font-size: 12px;
     font-family: inherit;
     font-weight: 600;
     background: rgba(0,188,212,0.12);
@@ -8775,6 +8818,9 @@ html.perf-low-effects .map-panel-close-btn:hover {
     border-radius: 4px;
     cursor: pointer;
     letter-spacing: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .pet-store-adopt-btn:hover:not(:disabled) { background: rgba(0,188,212,0.3); border-color: rgba(0,188,212,0.6); }
 .pet-store-adopt-btn:disabled { background: rgba(128,128,128,0.1); border-color: rgba(128,128,128,0.2); color: #555; cursor: not-allowed; }

@@ -58,7 +58,6 @@
                 '<div class="pet-status-bar" id="pet-status-bar">' +
                     '<span>出战: <strong id="pet-deploy-count">0/0</strong></span>' +
                     '<span>宠物栏: <strong id="pet-slot-count">0/0</strong></span>' +
-                    '<button class="pet-expand-slot-btn" type="button" id="pet-expand-slot-btn" data-audio-cue="confirm">+开格子</button>' +
                 '</div>' +
                 '<div class="pet-page-body">' +
                     '<div class="pet-grid" id="pet-grid"></div>' +
@@ -151,8 +150,6 @@
             navigateTo('store');
         });
 
-        // 列表页：开格子按钮
-        _el.querySelector('#pet-expand-slot-btn').addEventListener('click', onExpandSlot);
 
         // 进阶页：出战/休息按钮
         _el.querySelector('#pet-deploy-btn').addEventListener('click', onToggleDeploy);
@@ -320,10 +317,7 @@
         var emptyEl = _el.querySelector('#pet-list-empty');
         gridEl.innerHTML = '';
 
-        if (!_pets || _pets.length === 0) {
-            emptyEl.hidden = false;
-            return;
-        }
+        if (!_pets) _pets = [];
         emptyEl.hidden = true;
 
         for (var i = 0; i < _pets.length; i++) {
@@ -346,6 +340,7 @@
             var staminaFull = pet.stamina >= (pet.maxStamina || 200);
 
             card.innerHTML =
+                '<img class="pet-card-icon" src="assets/pets/pet_locked.png" width="80" height="80" alt="">' +
                 '<div class="pet-card-info">' +
                     '<div class="pet-card-header">' +
                         '<span class="pet-card-name">' + escapeHtml(pet.name) + '</span>' +
@@ -399,6 +394,23 @@
 
             gridEl.appendChild(card);
         }
+
+        // 开格子按钮卡片（跟在最后一个战宠卡片后面）
+        var maxSlots = _snapshot ? _snapshot.maxSlots : 0;
+        var slotsFull = maxSlots > 0 && _pets.length >= maxSlots;
+        var expandCard = document.createElement('div');
+        expandCard.className = 'pet-expand-slot-card' + (slotsFull ? ' pet-expand-slot-card-full' : '');
+        expandCard.innerHTML =
+            '<button class="pet-expand-slot-btn" type="button"' + (slotsFull ? ' disabled' : '') + '>' +
+                (slotsFull ? '栏位已满' : '+ 开格子') +
+            '</button>';
+        if (!slotsFull) {
+            expandCard.querySelector('.pet-expand-slot-btn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                onExpandSlot();
+            });
+        }
+        gridEl.appendChild(expandCard);
     }
 
     function updateResourceDisplay() {
@@ -633,22 +645,25 @@
             if (!priceText) priceText = '免费';
 
             var canAdopt = true;
-            var cantReason = '';
+            var btnText = priceText;
             if (_snapshot && pet.unlockTask > 0 && pet.unlockTask > (_snapshot.playerTask || 0)) {
                 canAdopt = false;
-                cantReason = '需要主线进度 ' + pet.unlockTask;
+                btnText = '需主线进度 ' + pet.unlockTask;
             } else if (pet.unlockLevel > (_snapshot ? _snapshot.playerLevel : 1)) {
                 canAdopt = false;
-                cantReason = '需Lv.' + pet.unlockLevel;
-            } else if (_snapshot && pet.price > 0 && _snapshot.gold < pet.price) {
+                btnText = '需Lv.' + pet.unlockLevel;
+            } else if (pet.unique && hasPet(pet.petId)) {
                 canAdopt = false;
-                cantReason = '金币不足';
-            } else if (_snapshot && pet.kprice > 0 && _snapshot.kpoint < pet.kprice) {
-                canAdopt = false;
-                cantReason = 'K点不足';
+                btnText = '已拥有';
             } else if (_snapshot && _pets.length >= _snapshot.maxSlots) {
                 canAdopt = false;
-                cantReason = '宠物栏已满';
+                btnText = '宠物栏已满';
+            } else if (_snapshot && pet.price > 0 && _snapshot.gold < pet.price) {
+                canAdopt = false;
+                // 不改变text
+            } else if (_snapshot && pet.kprice > 0 && _snapshot.kpoint < pet.kprice) {
+                canAdopt = false;
+                // 不改变text
             }
 
             card.innerHTML =
@@ -656,14 +671,9 @@
                     '<span class="pet-store-card-name">' + escapeHtml(pet.name) + '</span>' +
                     (pet.unique ? '<span class="pet-store-card-unique">唯一</span>' : '') +
                 '</div>' +
-                '<div class="pet-store-card-body">' +
-                    '<div class="pet-store-card-row"><span class="pet-store-card-label">身高</span><span class="pet-store-card-value">' + (pet.height || '--') + 'cm</span></div>' +
-                    '<div class="pet-store-card-row"><span class="pet-store-card-label">价格</span><span class="pet-store-card-value">' + priceText + '</span></div>' +
-                '</div>' +
+                '<img class="pet-store-card-icon" src="assets/pets/pet_locked.png" width="80" height="80" alt="">' +
                 '<div class="pet-store-card-footer">' +
-                    (canAdopt
-                        ? '<button class="pet-store-adopt-btn" data-pet-id="' + pet.petId + '">领养</button>'
-                        : '<button class="pet-store-adopt-btn" disabled>' + cantReason + '</button>') +
+                    '<button class="pet-store-adopt-btn" data-pet-id="' + pet.petId + '"' + (canAdopt ? '' : ' disabled') + '>' + btnText + '</button>' +
                 '</div>';
 
             if (canAdopt) {
@@ -908,6 +918,13 @@
         if (!s) return '';
         s = String(s);
         return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function hasPet(petId) {
+        for (var i = 0; i < _pets.length; i++) {
+            if (_pets[i].petId === petId) return true;
+        }
+        return false;
     }
 
     function showToast(msg) {

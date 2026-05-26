@@ -199,18 +199,6 @@ class org.flashNight.arki.merc.PetPanelService {
                         var petDef:Object = _root.宠物库[petId];
                         if (petDef == undefined) continue;
 
-                        // 检查是否已拥有（Unique宠物）
-                        var owned:Boolean = false;
-                        if (petDef.Unique == true) {
-                            for (var k:Number = 0; k < _root.宠物信息.length; k++) {
-                                if (_root.宠物信息[k][0] == petId) {
-                                    owned = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (owned) continue;
-
                         adoptable.push({
                             petId: petId,
                             name: String(petDef.Name),
