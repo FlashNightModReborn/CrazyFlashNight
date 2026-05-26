@@ -1791,6 +1791,70 @@ var MapPanelHarnessQA = (function() {
                 }
             },
             {
+                id: 'map-ui31h',
+                title: 'hittest engine: LRU eviction — slot=2, third page evicts oldest; hot page touch keeps it alive',
+                run: function() {
+                    return bootMapForHittest(api, host).then(function() {
+                        // 清空所有 page hitmap, 确保起步纯 LRU 行为
+                        ['base', 'faction', 'defense', 'school'].forEach(function(id) {
+                            MapHittestEngine.discardPage(id);
+                        });
+                        var debug = MapHittestEngine.debugState();
+                        api.assertEqual(debug.lruOrder.length, 0, 'LRU empty after full discard');
+                        api.assertEqual(debug.maxPages, 2, 'MAX_PAGES = 2 (base + 当前场景)');
+
+                        var basePage = MapPanelData.getPage('base');
+                        var factionPage = MapPanelData.getPage('faction');
+                        var defensePage = MapPanelData.getPage('defense');
+
+                        // 顺序 ensure base → faction: LRU = [base, faction], 都在
+                        return MapHittestEngine.ensurePage(basePage, harnessResolveAsset).then(function() {
+                            return MapHittestEngine.ensurePage(factionPage, harnessResolveAsset);
+                        }).then(function() {
+                            debug = MapHittestEngine.debugState();
+                            api.assertEqual(debug.lruOrder.join(','), 'base,faction', 'after base→faction LRU=[base,faction]');
+                            api.assert(!!debug.pages.base && debug.pages.base.ready, 'base ready');
+                            api.assert(!!debug.pages.faction && debug.pages.faction.ready, 'faction ready');
+
+                            // ensure 第 3 个 page → 应 evict 最旧的 base
+                            return MapHittestEngine.ensurePage(defensePage, harnessResolveAsset);
+                        }).then(function() {
+                            debug = MapHittestEngine.debugState();
+                            api.assertEqual(debug.lruOrder.join(','), 'faction,defense', 'after defense build, LRU evicts base → [faction,defense]');
+                            api.assert(!debug.pages.base, 'base entry evicted from cache');
+                            api.assert(!!debug.pages.faction, 'faction still cached');
+                            api.assert(!!debug.pages.defense, 'defense newly cached');
+
+                            // 再 ensure 已在 cache 的 faction → 应只 touch, 不重建, 不 evict defense
+                            var factionEntryBefore = debug.pages.faction.buildMs;
+                            return MapHittestEngine.ensurePage(factionPage, harnessResolveAsset).then(function() {
+                                debug = MapHittestEngine.debugState();
+                                api.assertEqual(debug.lruOrder.join(','), 'defense,faction', 'touch faction moves it to MRU end → [defense,faction]');
+                                api.assertEqual(debug.pages.faction.buildMs, factionEntryBefore, 'faction buildMs unchanged (no rebuild on hit)');
+                                api.assert(!!debug.pages.defense, 'defense still cached after touch');
+                            });
+                        }).then(function() {
+                            // 再 ensure base → evict 现在 LRU 头部 = defense (faction 刚 touch 过)
+                            return MapHittestEngine.ensurePage(basePage, harnessResolveAsset);
+                        }).then(function() {
+                            debug = MapHittestEngine.debugState();
+                            api.assertEqual(debug.lruOrder.join(','), 'faction,base', 'after base rebuild, LRU evicts defense → [faction,base]');
+                            api.assert(!!debug.pages.base && debug.pages.base.ready, 'base rebuilt and ready');
+                            api.assert(!debug.pages.defense, 'defense evicted');
+                            api.assert(!!debug.pages.faction, 'faction survived (was touched most recently before base)');
+
+                            // discardPage 应同步清 LRU
+                            MapHittestEngine.discardPage('faction');
+                            debug = MapHittestEngine.debugState();
+                            api.assertEqual(debug.lruOrder.join(','), 'base', 'discardPage(faction) removes from LRU');
+                            api.assert(!debug.pages.faction, 'faction discarded from cache');
+
+                            return 'LRU ok: slot=2, oldest evicted, hot touch preserved, discard syncs';
+                        });
+                    });
+                }
+            },
+            {
                 id: 'map-ui32a',
                 title: 'scene visual layer: Plan C non-hierarchy → canvas 画 muted 其它 + DOM 显 current focus',
                 run: function() {

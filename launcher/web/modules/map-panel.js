@@ -94,9 +94,9 @@ var MapPanel = (function() {
             '<div class="map-panel-body">' +
                 '<div class="map-stage-shell" id="map-stage-shell">' +
                     '<div class="map-stage-frame" id="map-stage-frame">' +
-                        // 三画布: bg=backdrop/异常层/场景/头像 (z=2);
-                        // ring=任务环 (z=3, 低于 hotspot/标签 — 套住头像但不遮"前往选关"卡片);
-                        // fg=反馈标记/提示/未开放提示 (z=6, 高于标签, 还原旧 feedback-layer 层序)
+                        // 三画布: bg=backdrop/异常层/场景 muted 底图 (z=2);
+                        // ring=任务环 (z=5, 高于 content-fit(z=4) 套住头像, 低于 fg 不遮反馈; label-layer z=5 同栈 tree-order 后画仍盖 ring);
+                        // fg=反馈标记/提示/未开放提示 (z=6, 顶层 feedback)
                         '<canvas class="map-stage-canvas map-stage-canvas--bg" id="map-stage-canvas" aria-hidden="true"></canvas>' +
                         '<canvas class="map-stage-canvas map-stage-canvas--ring" id="map-stage-canvas-ring" aria-hidden="true"></canvas>' +
                         '<div class="map-stage-content-fit" id="map-stage-content-fit">' +

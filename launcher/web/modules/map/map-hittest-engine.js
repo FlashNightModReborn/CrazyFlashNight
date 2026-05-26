@@ -25,6 +25,12 @@ var MapHittestEngine = (function() {
     var ALPHA_THRESHOLD = 32;
     var MAX_VISUALS = 0xFFFFFE;     // 16M-2, 远超实际 36/page 需求
 
+    // LRU 槽位上限. 总 page=4 (base/faction/defense/school), 每 page hitmap ImageData ~2.5MB,
+    // 槽位 2 兜底 base + 当前场景: 玩家"基地 ↔ 场景 X"二跳 pattern 不重建.
+    // base→A→B→base 三跳会让 base 被 evict 一次后重建 (cold ~1.3s), 实测可接受;
+    // 若发现实战中"基地常驻"延迟敏感再考虑 pin base 或调大.
+    var MAX_PAGES = 2;
+
     // cache[pageId] = {
     //     ready: bool,
     //     promise: Promise<void>,
@@ -36,6 +42,9 @@ var MapHittestEngine = (function() {
     //     buildMs: number
     // }
     var cache = {};
+    // _lru 末尾 = 最近用. ensurePage 命中或新建都把 pageId 上移到末尾,
+    // 新建后 cache.size > MAX_PAGES 时 shift 最旧的 evict.
+    var _lru = [];
     var lastError = null;
 
     function packPixel(r, g, b) {
@@ -220,11 +229,33 @@ var MapHittestEngine = (function() {
         return pageEntry.promise;
     }
 
+    function touchLru(pageId) {
+        var idx = _lru.indexOf(pageId);
+        if (idx >= 0) _lru.splice(idx, 1);
+        _lru.push(pageId);
+    }
+
+    // 新建后驱逐多余条目. 命中既有 entry 不需驱逐 (size 不变).
+    // building 中的 entry (ready=false) 同样可被 evict — 其 Promise 不取消, 写入 detached entry,
+    // cache[id] 已删, 下次 ensurePage 会重建; 浪费一次 build 但不卡命中路径.
+    function evictIfNeeded() {
+        while (_lru.length > MAX_PAGES) {
+            var evictId = _lru.shift();
+            if (cache[evictId]) delete cache[evictId];
+        }
+    }
+
     function ensurePage(page, resolveAssetUrl) {
         if (!page || !page.id) return Promise.reject(new Error('hittest: page or page.id missing'));
         var entry = cache[page.id];
-        if (entry && entry.promise) return entry.promise;
-        return buildPage(page, resolveAssetUrl);
+        if (entry && entry.promise) {
+            touchLru(page.id);
+            return entry.promise;
+        }
+        touchLru(page.id);
+        var promise = buildPage(page, resolveAssetUrl);
+        evictIfNeeded();
+        return promise;
     }
 
     function query(pageId, pageX, pageY) {
@@ -249,6 +280,8 @@ var MapHittestEngine = (function() {
         if (cache[pageId]) {
             delete cache[pageId];
         }
+        var idx = _lru.indexOf(pageId);
+        if (idx >= 0) _lru.splice(idx, 1);
     }
 
     function debugState() {
@@ -269,7 +302,9 @@ var MapHittestEngine = (function() {
         return {
             pages: pages,
             alphaThreshold: ALPHA_THRESHOLD,
-            lastError: lastError
+            lastError: lastError,
+            lruOrder: _lru.slice(),   // 末尾 = 最近用
+            maxPages: MAX_PAGES
         };
     }
 
