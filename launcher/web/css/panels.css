@@ -8415,7 +8415,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .pet-grid {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 10px;
     overflow-y: auto;
     align-content: start;
@@ -8451,7 +8451,44 @@ html.perf-low-effects .map-panel-close-btn:hover {
     padding: 10px;
     cursor: pointer;
     transition: all 0.15s;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
 }
+.pet-card-info { flex: 1; min-width: 0; }
+.pet-card-deploy-btn {
+    padding: 5px 14px;
+    font-size: 12px;
+    font-family: inherit;
+    font-weight: 600;
+    background: rgba(76,175,80,0.15);
+    border: 1px solid rgba(76,175,80,0.4);
+    color: var(--pet-deploy);
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+.pet-card-deploy-btn:hover:not(:disabled) { background: rgba(76,175,80,0.3); border-color: rgba(76,175,80,0.7); }
+.pet-card-deploy-btn:disabled { background: rgba(128,128,128,0.1); border-color: rgba(128,128,128,0.2); color: #555; cursor: not-allowed; }
+.pet-card-deploy-btn-rest { color: var(--pet-rest); background: rgba(255,152,0,0.12); border-color: rgba(255,152,0,0.35); }
+.pet-card-deploy-btn-rest:hover:not(:disabled) { background: rgba(255,152,0,0.25); border-color: rgba(255,152,0,0.6); }
+.pet-card-actions { flex-shrink: 0; display: flex; flex-direction: column; gap: 4px; align-items: stretch; }
+.pet-card-restore-btn {
+    padding: 4px 10px;
+    font-size: 11px;
+    font-family: inherit;
+    font-weight: 600;
+    background: rgba(33,150,243,0.12);
+    border: 1px solid rgba(33,150,243,0.35);
+    color: #64B5F6;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.pet-card-restore-btn:hover:not(:disabled) { background: rgba(33,150,243,0.25); border-color: rgba(33,150,243,0.6); }
+.pet-card-restore-btn:disabled { background: rgba(128,128,128,0.1); border-color: rgba(128,128,128,0.2); color: #555; cursor: not-allowed; }
 .pet-card:hover { border-color: rgba(0,188,212,0.3); background: rgba(0,188,212,0.04); }
 .pet-card-deployed { border-color: rgba(76,175,80,0.35); }
 .pet-card-header {
@@ -8562,6 +8599,21 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .pet-deploy-btn:disabled { background: rgba(128,128,128,0.1); border-color: rgba(128,128,128,0.2); color: #555; cursor: not-allowed; }
 .pet-deploy-btn-rest { color: var(--pet-rest); background: rgba(255,152,0,0.12); border-color: rgba(255,152,0,0.35); }
 .pet-deploy-btn-rest:hover:not(:disabled) { background: rgba(255,152,0,0.25); border-color: rgba(255,152,0,0.6); }
+.pet-header-actions { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; align-items: stretch; }
+.pet-restore-btn {
+    padding: 4px 12px;
+    font-size: 11px;
+    font-family: inherit;
+    font-weight: 600;
+    background: rgba(33,150,243,0.12);
+    border: 1px solid rgba(33,150,243,0.35);
+    color: #64B5F6;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.pet-restore-btn:hover:not(:disabled) { background: rgba(33,150,243,0.25); border-color: rgba(33,150,243,0.6); }
+.pet-restore-btn:disabled { background: rgba(128,128,128,0.1); border-color: rgba(128,128,128,0.2); color: #555; cursor: not-allowed; }
 
 /* ── Store tabs ── */
 .pet-store-tabs {

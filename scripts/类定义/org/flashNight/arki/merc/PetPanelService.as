@@ -59,6 +59,9 @@ class org.flashNight.arki.merc.PetPanelService {
         _root.gameCommands["petTooltip"] = function(params) {
             org.flashNight.arki.merc.PetPanelService.handleTooltip(params);
         };
+        _root.gameCommands["petRestoreStamina"] = function(params) {
+            org.flashNight.arki.merc.PetPanelService.handleRestoreStamina(params);
+        };
         _root.gameCommands["petPanelOpen"] = function(params) {
             org.flashNight.arki.merc.PetPanelService.handlePanelOpen(params);
         };
@@ -90,15 +93,19 @@ class org.flashNight.arki.merc.PetPanelService {
                 identifier: String(petDef.Identifier),
                 level: Number(info[1]),
                 stamina: Number(info[2]),
-                xp: Number(info[3]),
+                xp: 0,
                 deployed: Number(info[4]) == 1,
                 height: Number(petDef.Height),
                 promotions: []
             };
 
-            // 序列化进阶属性
+            // 序列化进阶属性 / 提取经验值
             var attrs:Object = info[5];
+            var xpFromAttr:Number = 0;
+            var xpNeededFromAttr:Number = 0;
             if (attrs != undefined && typeof attrs == "object") {
+                xpFromAttr = Number(attrs.宠物升级经验) || 0;
+                xpNeededFromAttr = Number(attrs.宠物升级所需经验) || 0;
                 var promos:Array = [];
                 for (var key:String in attrs) {
                     var val:Object = attrs[key];
@@ -113,9 +120,9 @@ class org.flashNight.arki.merc.PetPanelService {
                 petEntry.promotions = promos;
             }
 
-            // 计算经验值需求
-            petEntry.xpNeeded = calcXpForLevel(info[1] + 1);
-            petEntry.maxStamina = 20;
+            petEntry.xp = xpFromAttr;
+            petEntry.xpNeeded = xpNeededFromAttr > 0 ? xpNeededFromAttr : calcXpForLevel(info[1] + 1);
+            petEntry.maxStamina = 200;
 
             pets.push(petEntry);
         }
@@ -150,7 +157,7 @@ class org.flashNight.arki.merc.PetPanelService {
                 pets: pets,
                 petLib: petLib,
                 gold: Number(_root.金钱) || 0,
-                kpoint: Number(_root.K点) || 0,
+                kpoint: Number(_root.虚拟币) || 0,
                 playerLevel: Number(_root.等级) || 1,
                 playerTask: Number(_root.主线任务进度) || 0,
                 maxDeploy: calcMaxDeploy(),
@@ -271,18 +278,18 @@ class org.flashNight.arki.merc.PetPanelService {
             sendResponse({ task: "pet_response", callId: callId, success: false, error: "insufficient_gold" });
             return;
         }
-        if (kprice > 0 && _root.K点 < kprice) {
+        if (kprice > 0 && _root.虚拟币 < kprice) {
             sendResponse({ task: "pet_response", callId: callId, success: false, error: "insufficient_kpoint" });
             return;
         }
 
         // 执行购买
         if (price > 0) _root.金钱 -= price;
-        if (kprice > 0) _root.K点 -= kprice;
+        if (kprice > 0) _root.虚拟币 -= kprice;
 
         // 创建宠物信息并填入空位
         var initialLevel:Number = Number(petDef.InitialLevel) || 1;
-        var newPet:Array = [petId, initialLevel, 20, 0, 0, {}];
+        var newPet:Array = [petId, initialLevel, 200, 0, 0, {}];
 
         // 处理 IncreasePrice（每次购买后涨价）
         if (Number(petDef.IncreasePrice) > 0) {
@@ -303,7 +310,7 @@ class org.flashNight.arki.merc.PetPanelService {
             petId: petId,
             slotIndex: emptySlot,
             gold: Number(_root.金钱) || 0,
-            kpoint: Number(_root.K点) || 0
+            kpoint: Number(_root.虚拟币) || 0
         });
     }
 
@@ -459,7 +466,7 @@ class org.flashNight.arki.merc.PetPanelService {
             slotIndex: slotIndex,
             scheme: schemeName,
             gold: Number(_root.金钱) || 0,
-            kpoint: Number(_root.K点) || 0
+            kpoint: Number(_root.虚拟币) || 0
         });
     }
 
@@ -491,14 +498,14 @@ class org.flashNight.arki.merc.PetPanelService {
         // 获取方案描述
         if (typeof scheme.详情页描述 == "function") {
             var ctx:Object = {
-                当前宠物信息: _root.宠物信息[0] != undefined ? _root.宠物信息[0] : [petId, 1, 20, 0, 0, {}],
+                当前宠物信息: _root.宠物信息[0] != undefined ? _root.宠物信息[0] : [petId, 1, 200, 0, 0, {}],
                 当前宠物属性: {},
                 进阶方案: _root.战宠进阶函数
             };
             descText = String(scheme.详情页描述.call(ctx));
         } else if (scheme.描述 != undefined) {
             if (typeof scheme.描述 == "function") {
-                descText = String(scheme.描述.call({当前宠物信息: [petId, 1, 20, 0, 0, {}], 当前宠物属性: {}, 进阶方案: _root.战宠进阶函数}));
+                descText = String(scheme.描述.call({当前宠物信息: [petId, 1, 200, 0, 0, {}], 当前宠物属性: {}, 进阶方案: _root.战宠进阶函数}));
             } else {
                 descText = String(scheme.描述);
             }
@@ -605,7 +612,7 @@ class org.flashNight.arki.merc.PetPanelService {
         var desc:String = "";
         if (typeof scheme.详情页描述 == "function") {
             var ctx:Object = {
-                当前宠物信息: [petId, 1, 20, 0, 0, {}],
+                当前宠物信息: [petId, 1, 200, 0, 0, {}],
                 当前宠物属性: {},
                 进阶方案: _root.战宠进阶函数
             };
@@ -629,6 +636,48 @@ class org.flashNight.arki.merc.PetPanelService {
             buttonText: btnText,
             goldCost: goldCost,
             kpointCost: kpointCost
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // handleRestoreStamina — 消耗金币恢复宠物体力
+    // ═══════════════════════════════════════════════════════════
+    public static function handleRestoreStamina(params:Object):Void {
+        var callId = params.callId;
+        var slotIndex:Number = Number(params.slotIndex);
+        if (isNaN(slotIndex) || slotIndex < 0 || slotIndex >= _root.宠物信息.length) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "invalid_slot" });
+            return;
+        }
+
+        var petInfo:Array = _root.宠物信息[slotIndex];
+        if (petInfo == undefined || petInfo.length < 5) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "invalid_pet" });
+            return;
+        }
+
+        var currentStamina:Number = Number(petInfo[2]);
+        if (currentStamina >= 200) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "stamina_full" });
+            return;
+        }
+
+        var cost:Number = 1000;
+        if (_root.金钱 < cost) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "insufficient_gold", cost: cost });
+            return;
+        }
+
+        _root.金钱 -= cost;
+        petInfo[2] = 200;
+
+        sendResponse({
+            task: "pet_response",
+            callId: callId,
+            success: true,
+            slotIndex: slotIndex,
+            stamina: 200,
+            gold: Number(_root.金钱) || 0
         });
     }
 

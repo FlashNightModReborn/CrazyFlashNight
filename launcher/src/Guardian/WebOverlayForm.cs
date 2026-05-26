@@ -3344,6 +3344,7 @@ namespace CF7Launcher.Guardian
                 case "expand_slot":
                 case "rename":
                 case "pet_tooltip":
+                case "restore_stamina":
                     {
                         string panel = parsed.Value<string>("panel") ?? "";
                         if (panel == "stage-select")
