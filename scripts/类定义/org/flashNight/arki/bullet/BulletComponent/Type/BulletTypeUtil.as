@@ -1,5 +1,4 @@
-﻿import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeData;
-import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter;
+﻿import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter;
 import org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer;
 
 /**
