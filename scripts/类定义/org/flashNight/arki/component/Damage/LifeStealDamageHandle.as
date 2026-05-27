@@ -18,6 +18,33 @@ class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDam
     /** 单例实例 */
     public static var instance:LifeStealDamageHandle = new LifeStealDamageHandle();
 
+    // ========== 溢出治疗衰减参数（设计契约） ==========
+    //
+    // 【不变量 — 改动需重审设计契约】
+    //   η₀ = 1.0      满血处边际效率 100%，曲线在 HP=M 导数连续，
+    //                 玩家跨过满血时不会感到"突然变弱"
+    //   C  = 0.5 × M  溢出渐近上限。HP 渐近趋于 1.5M（理论不可达，
+    //                 整数截断会形成事实封顶）
+    //
+    // 【曲线】dO/dx = η₀·(1 - O/C)
+    //   闭式：ΔO = (C - O₀)·(1 - exp(-η₀·Δx/C))
+    //
+    // 【派生行为参考表 — 累计原始吸血输入 X（从 O₀=0 起）→ 溢出量 O】
+    //   X=0.5M  → O=0.316M (63%)   旧系统在此恰好填满 0.5M
+    //   X=1.0M  → O=0.432M (87%)   2× 旧输入仅填到 87%
+    //   X=1.15M → O=0.450M (90%)
+    //   X=2.0M  → O=0.491M (98%)   实际"封顶"门槛
+    //   X=2.3M  → O=0.495M (99%)
+    //
+    // 【调参指引】
+    //   - 体感过强 → 优先下调 OVERFLOW_CAP_RATIO（如 0.4 / 0.3），
+    //     保留 η₀=1 的导数连续契约
+    //   - 不建议下调 OVERFLOW_INITIAL_EFFICIENCY：会破坏满血处平滑过渡，
+    //     玩家会感到"100% HP 是一道墙"
+
+    public static var OVERFLOW_INITIAL_EFFICIENCY:Number = 1.0;
+    public static var OVERFLOW_CAP_RATIO:Number = 0.5;
+
     // ========== 构造函数 ==========
 
     /**
@@ -56,11 +83,15 @@ class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDam
 
     /**
      * 处理吸血伤害。
-     * - 根据目标的损伤值和吸血比例，计算吸血量并恢复射击者的血量。
-     * - 吸血量受以下限制：
-     *   1. 不能超过目标当前血量。
-     *   2. 不能超过射击者最大血量的 1.5 倍减去当前血量。
-     * - 吸血效果会显示在伤害结果中。
+     * - 根据目标的损伤值和吸血比例，计算原始吸血量。
+     * - 吸血量上限不超过目标当前血量。
+     * - 治疗分两段：
+     *   1. 满血以下部分以 100% 效率治疗。
+     *   2. 满血以上部分（溢出治疗）应用边际效率衰减：
+     *      微分形式  dO/dx = η₀·(1 - O/C)^1
+     *      闭式积分  ΔO = (C - O₀)·(1 - exp(-η₀·Δx/C))
+     *      其中 C = OVERFLOW_CAP_RATIO × hp满血值，O 渐近趋于 C（永远不到）。
+     * - 显示数值为应用衰减后的实际治疗量。
      *
      * @param bullet  子弹对象
      * @param shooter 射击者对象
@@ -69,37 +100,46 @@ class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDam
      * @param result  伤害结果对象
      */
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
-        // 护盾强度检查：子弹威力必须超过护盾强度才能触发吸血
+        // 护盾强度足以阻挡：子弹威力 ≤ 护盾强度，吸血不触发
         var shield:IShield = target.shield;
-        if (shield && bullet.子弹威力 <= shield.getStrength()) {
-            return; // 护盾强度足以阻挡，吸血失败
+        if (shield && bullet.子弹威力 <= shield.getStrength()) return;
+
+        // 伤害过小，不触发吸血
+        if (target.损伤值 <= 1) return;
+
+        // 原始吸血量（不超过目标当前血量，不小于 0）
+        var lifeStealAmount:Number = (target.损伤值 * bullet.吸血 / 100) | 0;
+        lifeStealAmount = lifeStealAmount > target.hp ? target.hp : lifeStealAmount;
+        lifeStealAmount = lifeStealAmount < 0 ? 0 : lifeStealAmount;
+
+        // 射击者已死 / 无可吸血量
+        var shooterHP:Number = shooter.hp;
+        if (shooterHP <= 0 || lifeStealAmount <= 0) return;
+
+        // 治疗分两段：满血以下 100% 效率 + 满血以上 (1-O/C) 边际衰减
+        var M:Number = shooter.hp满血值;
+        var C:Number = M * OVERFLOW_CAP_RATIO; // 溢出渐近上限
+
+        var roomToMax:Number = M - shooterHP;
+        if (roomToMax < 0) roomToMax = 0;
+        var part1:Number = lifeStealAmount < roomToMax ? lifeStealAmount : roomToMax;
+        var overflowInput:Number = lifeStealAmount - part1;
+
+        var part2:Number = 0;
+        var O0:Number = shooterHP > M ? shooterHP - M : 0;
+        if (overflowInput > 0 && O0 < C) {
+            part2 = (C - O0) * (1 - Math.exp(-OVERFLOW_INITIAL_EFFICIENCY * overflowInput / C));
         }
 
-        if (target.损伤值 > 1) {
-            var actualScatterUsed:Number = result.actualScatterUsed;
+        // 整数截断后无治疗（溢出饱和或衰减后 < 1 点），不冒 "+0" 数字
+        var healAmount:Number = (part1 + part2) | 0;
+        if (healAmount <= 0) return;
 
-            // 计算吸血量
-            var lifeStealAmount:Number = (target.损伤值 * bullet.吸血 / 100) | 0; // 使用位运算取整
-            // _root.服务器.发布服务器消息("吸血效果：恢复 " + lifeStealAmount + " 点生命值。");
-            lifeStealAmount = lifeStealAmount > target.hp ? target.hp : lifeStealAmount; // 限制吸血量不超过目标当前血量
-            lifeStealAmount = lifeStealAmount < 0 ? 0 : lifeStealAmount; // 确保吸血量不小于 0
+        shooter.hp = shooterHP + healAmount;
 
-            // 计算射击者可恢复的血量上限
-            // 缓存射击者HP，减少属性访问
-            var shooterHP:Number = shooter.hp;
-            // 检查射击者是否存活，只有存活的单位才能吸血
-            if (shooterHP > 0) {
-                var maxHeal:Number = (shooter.hp满血值 * 1.5 - shooterHP) | 0; // 使用位运算取整
-                var healAmount:Number = lifeStealAmount > maxHeal ? maxHeal : lifeStealAmount; // 限制吸血量不超过可恢复上限
-                
-                // 恢复射击者血量
-                shooter.hp = shooterHP + healAmount;
-            }
-
-            // 延迟 HTML 构建：位标记 + 吸血槽
-            result._efFlags |= 32; // EF_LIFESTEAL
-            result._efLifeSteal = (lifeStealAmount / actualScatterUsed) | 0;
-        }
+        // 延迟 HTML 构建：位标记 + 吸血槽（显示实际治疗量）
+        result._efFlags |= 32; // EF_LIFESTEAL
+        result._efLifeSteal = (healAmount / result.actualScatterUsed) | 0;
     }
 
     /**
