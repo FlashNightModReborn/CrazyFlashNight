@@ -1,6 +1,6 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#000000" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" timelineLabelWidth="253" viewAngle3D="67.3530907632092" sharedLibraryURL="Font" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
-          <DOMFolderItem name="button" itemID="659760e3-00000e95" isExpanded="true"/>
+          <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
           <DOMFolderItem name="frameend事件发生器" itemID="69ce7d00-00001298" isExpanded="true"/>
           <DOMFolderItem name="image" itemID="65976161-00000eac"/>
           <DOMFolderItem name="import" itemID="65977cdc-00001d38" isExpanded="true"/>
@@ -843,7 +843,7 @@
           <Include href="sprite/悬浮UI/Symbol 2022.xml" loadImmediate="false" itemID="6597607e-00000a7f" lastModified="1704196122"/>
           <Include href="sprite/悬浮UI/Symbol 2023.xml" loadImmediate="false" itemID="6597607e-00000a80" lastModified="1704196122"/>
           <Include href="sprite/悬浮UI/Symbol 2028.xml" loadImmediate="false" itemID="6597607e-00000a82" lastModified="1704196122"/>
-          <Include href="sprite/悬浮UI/Symbol 2035.xml" loadImmediate="false" itemID="6597607e-00000a84" lastModified="1744812329"/>
+          <Include href="sprite/悬浮UI/Symbol 2035.xml" loadImmediate="false" itemID="6597607e-00000a84" lastModified="1779860030"/>
           <Include href="sprite/悬浮UI/Symbol 2039.xml" loadImmediate="false" itemID="6597607e-00000a86" lastModified="1739634758"/>
           <Include href="sprite/悬浮UI/Symbol 2043.xml" loadImmediate="false" itemID="6597607e-00000a87" lastModified="1704196122"/>
           <Include href="sprite/悬浮UI/Symbol 2054.xml" loadImmediate="false" itemID="6597607e-00000a88" lastModified="1704196122"/>
@@ -880,12 +880,12 @@
           <Include href="弹出公告UI/弹出公告界面.xml" loadImmediate="false" itemID="65bb977f-00000c80" lastModified="1753775071"/>
           <Include href="弹出公告UI/公告消息栏.xml" loadImmediate="false" itemID="65bb922d-000001f2" lastModified="1706795494"/>
           <Include href="弹出公告UI/任务开启栏.xml" loadImmediate="false" itemID="65bb9236-000001f5" lastModified="1706795449"/>
-          <Include href="地图-堕落城酒吧门口.xml" itemID="6a0804bc-00000880" lastModified="1778910396"/>
           <Include href="底部UI/底部UI按钮1.xml" itemIcon="0" loadImmediate="false" itemID="66365767-0000211f" lastModified="1740332184"/>
           <Include href="底部UI/底部UI按钮2.xml" itemIcon="0" loadImmediate="false" itemID="66365816-00002174" lastModified="1716478150"/>
           <Include href="底部UI/底部UI组.xml" loadImmediate="false" itemID="6636575b-0000211d" lastModified="1755969522"/>
           <Include href="底部UI/平板电脑.xml" loadImmediate="false" itemID="6700c0f0-00000a9f" lastModified="1728102640"/>
           <Include href="底部UI/原版4图标备份.xml" loadImmediate="false" itemID="664df9ac-00004b87" lastModified="1716386220"/>
+          <Include href="地图-堕落城酒吧门口.xml" itemID="6a0804bc-00000880" lastModified="1778910396"/>
           <Include href="角斗场选择界面.xml" loadImmediate="false" itemID="68490695-00000498" lastModified="1755053587"/>
           <Include href="全局音量mc.xml" loadImmediate="false" itemID="67ada6a8-00000794" lastModified="1740072967"/>
           <Include href="全屏UI层.xml" loadImmediate="false" itemID="67cea723-000006eb" lastModified="1753776858"/>
@@ -901,9 +901,9 @@
           <Include href="无限过图计时器.xml" itemID="689c1899-000001f2" lastModified="1755135414"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="161" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;29&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="136" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;29&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
-                    <DOMLayer name="Labels Layer 1" color="#E88C68" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="5" name="steam" labelType="name" keyMode="9728">
                                    <elements/>
@@ -1625,7 +1625,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="上层遮罩" color="#EBC19E" autoNamed="false">
+                    <DOMLayer name="上层遮罩" color="#EBC19E" locked="true" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="211" keyMode="9728">
                                    <elements>
@@ -4245,15 +4245,15 @@ on(rollOut){
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9395 4546|9092 4546!9092 4546|8789 4546!8789 4546|8485 4546!8485 4546|8182 4546!8182 4546|8472 4727!8472 4727|8762 4908!8762 4908|9052 5089!9052 5089|9342 5270!9342 5270|9633 5451!9633 5451|9935 5451!9935 5451|10239 5451!10239 5451|10542
- 5451!10542 5451|10845 5451!10845 5451|11149 5451!11149 5451|11452 5451!11452 5451|11755 5451!11755 5451|12059 5451!12059 5451|11769 5270!11769 5270|11479 5089!11479 5089|11189 4908!11189 4908|10899 4727!10899 4727|10609 4546!10609 4546
-|10305 4546!10305 4546|10002 4546!10002 4546|9699 4546!9699 4546|9395 4546!9395 4546|9685 4727!9685 4727|9975 4908!9975 4908|9672 4908!9672 4908|9962 5089!9962 5089|9659 5089!9659 5089|9369 4908!9369 4908|9065 4908!9065 4908|8775 4727
-!8775 4727|9079 4727!9079 4727|9369 4908!9369 4908|9672 4908!9672 4908|9382 4727!9382 4727|9685 4727!9685 4727|9989 4727!9989 4727|10279 4908!10279 4908|10582 4908!10582 4908|10292 4727!10292 4727|9989 4727!9989 4727|9699 4546!9092 4546
-|9382 4727!9382 4727|9079 4727!9079 4727|8789 4546!8485 4546|8775 4727!8775 4727|8472 4727!9052 5089|9355 5089!9355 5089|9065 4908!9065 4908|8762 4908!9355 5089|9659 5089!9659 5089|9949 5270!9949 5270|9645 5270!9645 5270|9355 5089!9342
- 5270|9645 5270!9645 5270|9935 5451!10899 4727|10595 4727!10595 4727|10885 4908!10885 4908|10582 4908!10582 4908|10872 5089!10872 5089|11162 5270!11162 5270|11465 5270!11465 5270|11755 5451!11465 5270|11769 5270!11189 4908|10885 4908
-!10885 4908|11175 5089!11175 5089|11465 5270!10002 4546|10292 4727!10292 4727|10595 4727!10595 4727|10305 4546!10239 5451|9949 5270!9949 5270|10252 5270!10252 5270|9962 5089!9962 5089|10265 5089!10265 5089|10569 5089!10569 5089|10859
- 5270!10859 5270|10555 5270!10555 5270|10265 5089!10265 5089|9975 4908!9975 4908|10279 4908!10279 4908|10569 5089!10569 5089|10872 5089!10872 5089|11175 5089!11175 5089|11479 5089!10845 5451|10555 5270!11149 5451|10859 5270!10859 5270
-|11162 5270!11162 5270|11452 5451!10542 5451|10252 5270!10252 5270|10555 5270"/>
+!9699 4546|10002 4546!10002 4546|10305 4546!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|11189 4908!11189 4908|11479 5089!11479 5089|11769 5270!11769 5270|12059 5451!12059 5451|11755 5451!11755 5451|11452 5451!11452 5451|11149
+ 5451!11149 5451|10845 5451!10845 5451|10542 5451!10542 5451|10239 5451!10239 5451|9935 5451!9935 5451|9633 5451!9633 5451|9342 5270!9342 5270|9052 5089!9052 5089|8762 4908!8762 4908|8472 4727!8472 4727|8182 4546!8182 4546|8485 4546!8485
+ 4546|8789 4546!8789 4546|9092 4546!9092 4546|9395 4546!9395 4546|9685 4727!9685 4727|9989 4727!9989 4727|9699 4546!9699 4546|9395 4546!9342 5270|9645 5270!9645 5270|9355 5089!9355 5089|9659 5089!9659 5089|9369 4908!9369 4908|9672 4908
+!9672 4908|9962 5089!9962 5089|10265 5089!10265 5089|9975 4908!9975 4908|9672 4908!9672 4908|9382 4727!9382 4727|9079 4727!9079 4727|9369 4908!9369 4908|9065 4908!9065 4908|8762 4908!9092 4546|9382 4727!9382 4727|9685 4727!9685 4727|9975
+ 4908!9975 4908|10279 4908!10279 4908|10582 4908!10582 4908|10872 5089!10872 5089|11175 5089!11175 5089|11465 5270!11465 5270|11769 5270!9355 5089|9065 4908!9065 4908|8775 4727!8775 4727|8472 4727!8485 4546|8775 4727!8775 4727|9079 4727
+!9079 4727|8789 4546!9052 5089|9355 5089!11465 5270|11755 5451!11189 4908|10885 4908!10885 4908|10582 4908!10582 4908|10292 4727!10292 4727|10595 4727!10595 4727|10885 4908!10885 4908|11175 5089!11175 5089|11479 5089!10899 4727|10595
+ 4727!10595 4727|10305 4546!10002 4546|10292 4727!10292 4727|9989 4727!9989 4727|10279 4908!10279 4908|10569 5089!10569 5089|10859 5270!10859 5270|11162 5270!11162 5270|11465 5270!10542 5451|10252 5270!10252 5270|9962 5089!9962 5089|9659
+ 5089!9659 5089|9949 5270!9949 5270|10252 5270!10252 5270|10555 5270!10555 5270|10845 5451!10239 5451|9949 5270!9949 5270|9645 5270!9645 5270|9935 5451!11149 5451|10859 5270!10859 5270|10555 5270!10555 5270|10265 5089!10265 5089|10569
+ 5089!10569 5089|10872 5089!10872 5089|11162 5270!11162 5270|11452 5451"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="865.35" centerPoint3DY="164.1">
@@ -4666,15 +4666,15 @@ on (rollOut) {
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!8475 4533|8779 4533!8779 4533|9069 4714!9069 4714|8765 4714!8765 4714|8462 4714!8462 4714|8172 4533!8172 4533|8475 4533!8475 4533|8765 4714!8765 4714|9055 4895!9055 4895|9345 5076!9345 5076|9042 5076!9042 5076|8752 4895!8752 4895|9055
- 4895!9055 4895|9359 4895!9359 4895|9662 4895!9662 4895|9965 4895!9965 4895|10269 4895!10269 4895|10559 5076!10559 5076|10255 5076!10255 5076|9965 4895!9965 4895|9675 4714!9675 4714|9385 4533!9385 4533|9689 4533!9689 4533|9979 4714!9979
- 4714|9675 4714!9675 4714|9372 4714!9372 4714|9662 4895!9662 4895|9952 5076!9952 5076|9649 5076!9649 5076|9359 4895!8779 4533|9082 4533!9082 4533|9372 4714!9372 4714|9069 4714!9069 4714|9359 4895!9385 4533|9082 4533!8462 4714|8752 4895
-!9042 5076|9332 5257!9332 5257|9623 5438!9623 5438|9925 5438!9925 5438|10229 5438!10229 5438|10532 5438!10532 5438|10835 5438!10835 5438|11139 5438!11139 5438|11442 5438!11442 5438|11745 5438!11745 5438|12049 5438!12049 5438|11759 5257
-!11759 5257|11455 5257!11455 5257|11152 5257!11152 5257|10862 5076!10862 5076|10572 4895!10572 4895|10269 4895!10269 4895|9979 4714!9979 4714|10282 4714!10282 4714|10572 4895!9649 5076|9345 5076!9345 5076|9635 5257!9635 5257|9332 5257
-!11759 5257|11469 5076!11469 5076|11179 4895!11179 4895|10889 4714!10889 4714|10599 4533!10599 4533|10295 4533!10295 4533|9992 4533!9992 4533|9689 4533!10862 5076|11165 5076!11165 5076|11455 5257!11455 5257|11745 5438!11469 5076|11165
- 5076!11165 5076|10875 4895!10875 4895|11179 4895!10572 4895|10875 4895!10875 4895|10585 4714!10585 4714|10889 4714!9992 4533|10282 4714!10255 5076|9952 5076!9952 5076|10242 5257!10242 5257|9939 5257!9939 5257|10229 5438!10835 5438|10545
- 5257!10545 5257|10849 5257!10849 5257|11139 5438!11152 5257|10849 5257!10849 5257|10559 5076!10862 5076|10559 5076!10532 5438|10242 5257!10242 5257|10545 5257!10545 5257|10255 5076!10295 4533|10585 4714!10585 4714|10282 4714!11152 5257
-|11442 5438!9925 5438|9635 5257!9635 5257|9939 5257!9939 5257|9649 5076"/>
+!9345 5076|9042 5076!9042 5076|9332 5257!9332 5257|9635 5257!9635 5257|9345 5076!9345 5076|9649 5076!9649 5076|9359 4895!9359 4895|9662 4895!9662 4895|9952 5076!9952 5076|10242 5257!10242 5257|10545 5257!10545 5257|10849 5257!10849 5257
+|10559 5076!10559 5076|10255 5076!10255 5076|10545 5257!9952 5076|10255 5076!10255 5076|9965 4895!9965 4895|10269 4895!10269 4895|9979 4714!9979 4714|9675 4714!9675 4714|9385 4533!9385 4533|9082 4533!9082 4533|9372 4714!9372 4714|9662
+ 4895!9662 4895|9965 4895!9965 4895|9675 4714!9675 4714|9372 4714!9372 4714|9069 4714!9069 4714|8765 4714!8765 4714|9055 4895!9055 4895|9359 4895!9359 4895|9069 4714!9385 4533|9689 4533!9689 4533|9992 4533!9992 4533|10295 4533!10295 4533
+|10599 4533!10599 4533|10889 4714!10889 4714|11179 4895!11179 4895|11469 5076!11469 5076|11759 5257!11759 5257|11455 5257!11455 5257|11745 5438!11745 5438|12049 5438!12049 5438|11759 5257!9069 4714|8779 4533!8779 4533|8475 4533!8475 4533
+|8765 4714!8765 4714|8462 4714!8462 4714|8752 4895!8752 4895|9055 4895!9055 4895|9345 5076!8462 4714|8172 4533!8172 4533|8475 4533!9332 5257|9623 5438!9623 5438|9925 5438!9925 5438|9635 5257!8779 4533|9082 4533!9042 5076|8752 4895!11469
+ 5076|11165 5076!11165 5076|11455 5257!11455 5257|11152 5257!11152 5257|11442 5438!11442 5438|11745 5438!10295 4533|10585 4714!10585 4714|10889 4714!9992 4533|10282 4714!10282 4714|10572 4895!10572 4895|10269 4895!10269 4895|10559 5076
+!10559 5076|10862 5076!10862 5076|11165 5076!11165 5076|10875 4895!10875 4895|10585 4714!10585 4714|10282 4714!10862 5076|10572 4895!10572 4895|10875 4895!10875 4895|11179 4895!9689 4533|9979 4714!9979 4714|10282 4714!9635 5257|9939 5257
+!9939 5257|10229 5438!10229 5438|10532 5438!10532 5438|10242 5257!10242 5257|9939 5257!9939 5257|9649 5076!9925 5438|10229 5438!10532 5438|10835 5438!10835 5438|10545 5257!10835 5438|11139 5438!11139 5438|10849 5257!10849 5257|11152 5257
+!11152 5257|10862 5076!11139 5438|11442 5438!9952 5076|9649 5076"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="864.85" centerPoint3DY="163.45">
@@ -5159,10 +5159,10 @@ on (rollOut) {
                                              <edges>
                                                   <Edge fillStyle0="2" edges="
 !17466 11519.5|17440 11520!17440 11520|20104 11520!20104 11520[20480 11520 20480 11241!20480 11241|20480 278!20480 278[20480 0 20104 0!20104 0|17571 0"/>
-                                                  <Edge fillStyle0="2" fillStyle1="1" edges="
-!17571 0|17571 11519!17571 11519|17466 11519.5"/>
-                                                  <Edge fillStyle1="1" edges="
-!17466 11519.5|376 11520!376 11520[0 11520 0 11241!0 11241|0 278!0 278[0 0 376 0!376 0|17571 0"/>
+                                                  <Edge fillStyle0="1" edges="
+!17571 0|376 0!376 0[0 0 0 278!0 278|0 11241!0 11241[0 11520 376 11520!376 11520|17466 11519.5"/>
+                                                  <Edge fillStyle0="1" fillStyle1="2" edges="
+!17466 11519.5|17571 11519!17571 11519|17571 0"/>
                                              </edges>
                                         </DOMShape>
                                    </elements>
@@ -5288,7 +5288,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="新：图片容器" color="#4FFF4F" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="新：图片容器" color="#4FFF4F" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -5307,7 +5307,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="获得任务奖励" color="#7DE3A2" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="获得任务奖励" color="#7DE3A2" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -5332,7 +5332,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="对话框界面" color="#A9FD4E" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="对话框界面" color="#A9FD4E" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -5358,7 +5358,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="物品栏界面" color="#AEF0A1" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="物品栏界面" color="#AEF0A1" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -5377,7 +5377,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="购买物品界面" color="#EC5A72" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="购买物品界面" color="#EC5A72" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -5396,7 +5396,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="平板电脑界面" color="#99B8ED" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="平板电脑界面" color="#99B8ED" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -5418,7 +5418,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="修改工具界面" color="#4676EE" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="修改工具界面" color="#4676EE" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="134" keyMode="9728">
                                    <elements/>
@@ -5446,7 +5446,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="通关奖励" color="#79CA6B" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="通关奖励" color="#79CA6B" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -5481,7 +5481,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="确认通用面板" color="#4FFF4F" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="确认通用面板" color="#4FFF4F" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -5505,7 +5505,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="佣兵确认面板" color="#D5FADA" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="佣兵确认面板" color="#D5FADA" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -5529,7 +5529,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="仓库界面" color="#F2AAC2" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="仓库界面" color="#F2AAC2" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -5548,7 +5548,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="委托任务界面" color="#27F8E8" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="委托任务界面" color="#27F8E8" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -5567,7 +5567,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="关卡结束界面" color="#7F9FFA" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="关卡结束界面" color="#7F9FFA" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -5586,7 +5586,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="学习技能界面" color="#A17585" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="学习技能界面" color="#A17585" parentLayerIndex="20" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -5638,25 +5638,7 @@ on (rollOut) {
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="134" duration="26" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 923" name="佣兵信息界面" centerPoint3DX="531.9" centerPoint3DY="396.35">
-                                             <matrix>
-                                                  <Matrix tx="255.9" ty="83.85"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   this._visible = 0;
-}
-]]></script>
-                                             </Actionscript>
-                                             <filters>
-                                                  <AdjustColorFilter/>
-                                             </filters>
-                                        </DOMSymbolInstance>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                               <DOMFrame index="160" duration="51" keyMode="9728">
                                    <elements/>
@@ -5669,50 +5651,20 @@ on (rollOut) {
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="134" duration="26" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="import/UI组件/领养宠物界面" name="领养宠物界面" centerPoint3DX="510.3" centerPoint3DY="236.2">
-                                             <matrix>
-                                                  <Matrix tx="281.85" ty="70.25"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   this._visible = 0;
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                               <DOMFrame index="160" duration="51" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="宠物信息界面" color="#45F649" parentLayerIndex="20" autoNamed="false">
+                    <DOMLayer name="宠物信息界面" color="#45F649" parentLayerIndex="20" current="true" isSelected="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="134" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="134" duration="26" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="import/UI组件/宠物信息界面" name="宠物信息界面" centerPoint3DX="391.75" centerPoint3DY="285.25">
-                                             <matrix>
-                                                  <Matrix tx="135.05" ty="53.55"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   this._visible = 0;
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                               <DOMFrame index="160" duration="51" keyMode="9728">
                                    <elements/>
