@@ -16,6 +16,8 @@
     var _session = 0;
     var _busy = false;
     var _toastTimer = null;
+    var _ttCache = {};            // (raw|level) → {descHTML, introHTML, displayname}
+    var _ttHoverKey = null;       // current hover cache key
 
     var _pageList, _pageHire;
     var _goldEl, _kpointEl;
@@ -35,7 +37,7 @@
     // ═══════════════════════════════════════════════════════════
     function sendPanelMsg(cmd, extra, cb) {
         var callId = 'merc_' + (++_reqSeq) + '_' + Date.now();
-        if (cb) _pendingReq[callId] = { cmd: cmd, cb: cb, ts: Date.now() };
+        if (cb) _pendingReq[callId] = cb;
         var msg = { type: 'panel', panel: 'mercs', cmd: cmd, callId: callId };
         if (extra) {
             Object.keys(extra).forEach(function(k) { msg[k] = extra[k]; });
@@ -45,9 +47,11 @@
 
     Bridge.on('panel_resp', function(data) {
         if (data.panel !== 'mercs') return;
-        var entry = _pendingReq[data.callId];
-        if (entry && entry.cb) entry.cb(data);
-        delete _pendingReq[data.callId];
+        var cb = _pendingReq[data.callId];
+        if (cb) {
+            delete _pendingReq[data.callId];
+            cb(data);
+        }
     });
 
     // ═══════════════════════════════════════════════════════════
@@ -231,26 +235,46 @@
                 (merc.deployed ? ' | <span class="merc-deployed">已出战</span>' : '') +
                 '</div>';
 
-            // 装备图标网格
+            // 装备图标网格 — 11 槽固定渲染 (slot 6-16)
             var equipGrid = document.createElement('div');
             equipGrid.className = 'merc-equip-grid';
+            var SLOTS = window.MercData.SLOTS;
+            var SLOT_NAMES = window.MercData.SLOT_NAMES;
+            var equipBySlot = {};
             if (merc.equips && merc.equips.length > 0) {
-                merc.equips.forEach(function(eq) {
-                    var icon = document.createElement('div');
-                    icon.className = 'merc-equip-icon';
-                    icon.title = eq.displayname + ' Lv.' + eq.level;
-                    icon.textContent = eqSlotLabel(eq.slot);
-                    icon.dataset.raw = eq.raw;
-                    icon.dataset.level = eq.level;
-                    icon.addEventListener('mouseenter', function() { showEquipTooltip(icon, eq); });
-                    icon.addEventListener('mouseleave', hideEquipTooltip);
-                    equipGrid.appendChild(icon);
-                });
-            } else {
-                var noEquip = document.createElement('span');
-                noEquip.className = 'merc-no-equip';
-                noEquip.textContent = '无装备';
-                equipGrid.appendChild(noEquip);
+                for (var k = 0; k < merc.equips.length; k++) {
+                    equipBySlot[merc.equips[k].slot] = merc.equips[k];
+                }
+            }
+            for (var s = 0; s < SLOTS.length; s++) {
+                var slot = SLOTS[s];
+                var eq = equipBySlot[slot];
+                if (eq) {
+                    var raw = eq.raw || eq.name;
+                    var iconKey = eq.icon || eq.name;
+                    var displayName = eq.displayname || eq.name;
+                    var iconUrl = (typeof Icons !== 'undefined') ? Icons.resolve(iconKey) : null;
+                    var iconHtml = iconUrl
+                        ? '<img src="' + escAttr(iconUrl) + '" alt="" onerror="this.style.display=\'none\'">'
+                        : '<span class="merc-equip-fallback">' + escHtml(displayName.charAt(0)) + '</span>';
+                    var cell = document.createElement('div');
+                    cell.className = 'merc-equip-cell';
+                    cell.setAttribute('data-eq-raw', raw);
+                    cell.setAttribute('data-eq-displayname', displayName);
+                    cell.setAttribute('data-eq-icon', iconKey);
+                    cell.setAttribute('data-eq-level', eq.level);
+                    cell.innerHTML = iconHtml +
+                        '<span class="merc-equip-level">' + eq.level + '</span>';
+                    cell.addEventListener('mouseenter', onEquipHover);
+                    cell.addEventListener('mouseleave', onEquipLeave);
+                    cell.addEventListener('mousemove', onEquipMove);
+                    equipGrid.appendChild(cell);
+                } else {
+                    var emptyCell = document.createElement('div');
+                    emptyCell.className = 'merc-equip-cell merc-equip-empty';
+                    emptyCell.title = SLOT_NAMES[slot] || '';
+                    equipGrid.appendChild(emptyCell);
+                }
             }
 
             // 操作按钮
@@ -309,26 +333,46 @@
                 (merc.kPrice > 0 ? ' | <span class="merc-price-kpoint">' + merc.kPrice + ' K点</span>' : '') +
                 '</div>';
 
-            // 装备图标网格
+            // 装备图标网格 — 11 槽固定渲染 (slot 6-16)
             var equipGrid = document.createElement('div');
             equipGrid.className = 'merc-equip-grid';
+            var SLOTS = window.MercData.SLOTS;
+            var SLOT_NAMES = window.MercData.SLOT_NAMES;
+            var equipBySlot = {};
             if (merc.equips && merc.equips.length > 0) {
-                merc.equips.forEach(function(eq) {
-                    var icon = document.createElement('div');
-                    icon.className = 'merc-equip-icon';
-                    icon.title = eq.displayname + ' Lv.' + eq.level;
-                    icon.textContent = eqSlotLabel(eq.slot);
-                    icon.dataset.raw = eq.raw;
-                    icon.dataset.level = eq.level;
-                    icon.addEventListener('mouseenter', function() { showEquipTooltip(icon, eq); });
-                    icon.addEventListener('mouseleave', hideEquipTooltip);
-                    equipGrid.appendChild(icon);
-                });
-            } else {
-                var noEquip = document.createElement('span');
-                noEquip.className = 'merc-no-equip';
-                noEquip.textContent = '无装备';
-                equipGrid.appendChild(noEquip);
+                for (var k = 0; k < merc.equips.length; k++) {
+                    equipBySlot[merc.equips[k].slot] = merc.equips[k];
+                }
+            }
+            for (var s = 0; s < SLOTS.length; s++) {
+                var slot = SLOTS[s];
+                var eq = equipBySlot[slot];
+                if (eq) {
+                    var raw = eq.raw || eq.name;
+                    var iconKey = eq.icon || eq.name;
+                    var displayName = eq.displayname || eq.name;
+                    var iconUrl = (typeof Icons !== 'undefined') ? Icons.resolve(iconKey) : null;
+                    var iconHtml = iconUrl
+                        ? '<img src="' + escAttr(iconUrl) + '" alt="" onerror="this.style.display=\'none\'">'
+                        : '<span class="merc-equip-fallback">' + escHtml(displayName.charAt(0)) + '</span>';
+                    var cell = document.createElement('div');
+                    cell.className = 'merc-equip-cell';
+                    cell.setAttribute('data-eq-raw', raw);
+                    cell.setAttribute('data-eq-displayname', displayName);
+                    cell.setAttribute('data-eq-icon', iconKey);
+                    cell.setAttribute('data-eq-level', eq.level);
+                    cell.innerHTML = iconHtml +
+                        '<span class="merc-equip-level">' + eq.level + '</span>';
+                    cell.addEventListener('mouseenter', onEquipHover);
+                    cell.addEventListener('mouseleave', onEquipLeave);
+                    cell.addEventListener('mousemove', onEquipMove);
+                    equipGrid.appendChild(cell);
+                } else {
+                    var emptyCell = document.createElement('div');
+                    emptyCell.className = 'merc-equip-cell merc-equip-empty';
+                    emptyCell.title = SLOT_NAMES[slot] || '';
+                    equipGrid.appendChild(emptyCell);
+                }
             }
 
             var actions = document.createElement('div');
@@ -356,38 +400,98 @@
     }
 
     function updateHirePagination() {
+        var firstBtn = _el.querySelector('#merc-hire-first');
+        var skipPrevBtn = _el.querySelector('#merc-hire-skip-prev');
         var prevBtn = _el.querySelector('#merc-hire-prev');
         var nextBtn = _el.querySelector('#merc-hire-next');
-        if (prevBtn) prevBtn.disabled = (_hirePage <= 1);
-        if (nextBtn) nextBtn.disabled = (_hirePage >= _hireTotalPages);
+        var skipNextBtn = _el.querySelector('#merc-hire-skip-next');
+        var lastBtn = _el.querySelector('#merc-hire-last');
+        var atFirst = (_hirePage <= 1);
+        var atLast = (_hirePage >= _hireTotalPages);
+        if (firstBtn) firstBtn.disabled = atFirst;
+        if (skipPrevBtn) skipPrevBtn.disabled = atFirst;
+        if (prevBtn) prevBtn.disabled = atFirst;
+        if (nextBtn) nextBtn.disabled = atLast;
+        if (skipNextBtn) skipNextBtn.disabled = atLast;
+        if (lastBtn) lastBtn.disabled = atLast;
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 装备 Tooltip
+    // 装备 Tooltip — kshop 范式：immediate basic html + async rich fetch + cache
     // ═══════════════════════════════════════════════════════════
-    function showEquipTooltip(iconEl, eq) {
-        var tip = _el.querySelector('#merc-tooltip');
-        if (!tip) return;
-        tip.innerHTML = '<div class="merc-tooltip-loading">加载中...</div>';
-        var rect = iconEl.getBoundingClientRect();
-        var panelRect = _el.getBoundingClientRect();
-        tip.style.left = (rect.left - panelRect.left + 30) + 'px';
-        tip.style.top = (rect.top - panelRect.top - 10) + 'px';
-        tip.hidden = false;
+    function onEquipHover(e) {
+        var cell = e.currentTarget;
+        var raw = cell.getAttribute('data-eq-raw');
+        var displayName = cell.getAttribute('data-eq-displayname') || raw;
+        var iconKey = cell.getAttribute('data-eq-icon') || '';
+        var level = Number(cell.getAttribute('data-eq-level'));
+        if (!raw) return;
+        var key = raw + '|' + level;
+        _ttHoverKey = key;
+        var iconUrl = (iconKey && typeof Icons !== 'undefined') ? Icons.resolve(iconKey) : null;
 
-        sendPanelMsg('equip_tooltip', { raw: eq.raw, level: eq.level }, function(data) {
-            if (!data.success) {
-                tip.innerHTML = '<div class="merc-tooltip-error">' + escHtml(eq.displayname) + ' Lv.' + eq.level + '</div>';
-                return;
-            }
-            tip.innerHTML = (data.introHTML || data.descHTML || '') +
-                '<div class="merc-tooltip-name">' + escHtml(data.displayname || eq.displayname) + '</div>';
+        var cached = _ttCache[key];
+        var html = cached
+            ? buildRichTooltipHtml(cached, iconUrl)
+            : buildBasicTooltipHtml(displayName, level, iconUrl);
+        PanelTooltip.showAtMouse(html, e);
+        if (!cached) requestEquipTooltip(raw, level, key, iconUrl);
+    }
+
+    function onEquipLeave() {
+        _ttHoverKey = null;
+        PanelTooltip.hide();
+    }
+
+    function onEquipMove(e) {
+        PanelTooltip.followMouse(e);
+    }
+
+    function buildBasicTooltipHtml(displayName, level, iconUrl) {
+        var iconBlock = iconUrl
+            ? '<div class="kshop-tt-icon"><img src="' + iconUrl + '"></div>'
+            : '';
+        return '<div class="kshop-tt-rich merc-tt-basic">' +
+                iconBlock +
+                '<div class="kshop-tt-desc">' +
+                    '<div class="kshop-tt-header"><b>' + escHtml(displayName) + '</b>' +
+                        ' <span class="kshop-tt-dim">Lv.' + level + '</span></div>' +
+                    '<div class="kshop-tt-loading">加载中...</div>' +
+                '</div>' +
+            '</div>';
+    }
+
+    function buildRichTooltipHtml(data, iconUrl) {
+        return PanelTooltip.buildItemRichHtml({
+            iconUrl:   iconUrl,
+            introHTML: data.introHTML,
+            descHTML:  data.descHTML,
+            rootClass: 'merc-tt-rich'
         });
     }
 
-    function hideEquipTooltip() {
-        var tip = _el.querySelector('#merc-tooltip');
-        if (tip) tip.hidden = true;
+    function requestEquipTooltip(raw, level, key, iconUrl) {
+        var reqId = 'merc_tt_' + (++_reqSeq) + '_' + _session;
+        _pendingReq[reqId] = function(resp) {
+            if (!resp.success) return;
+            _ttCache[key] = {
+                descHTML: resp.descHTML || '',
+                introHTML: resp.introHTML || '',
+                displayname: resp.displayname || '',
+                itemName: resp.itemName || raw
+            };
+            if (_ttHoverKey === key && PanelTooltip.isVisible() && Panels.isOpen()) {
+                PanelTooltip.updateContent(buildRichTooltipHtml(_ttCache[key], iconUrl));
+            }
+        };
+        Bridge.send({
+            type: 'panel',
+            panel: 'mercs',
+            cmd: 'equip_tooltip',
+            callId: reqId,
+            raw: raw,
+            level: level
+        });
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -396,6 +500,10 @@
     function escHtml(s) {
         if (!s) return '';
         return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function escAttr(text) {
+        return String(text).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
     }
 
     function eqSlotLabel(slot) {
@@ -449,15 +557,16 @@
                 '</div>' +
                 '<div class="merc-page-footer">' +
                     '<div class="merc-page-nav">' +
+                        '<button class="merc-page-nav-btn merc-page-skip-btn" type="button" id="merc-hire-first" disabled>|‹</button>' +
+                        '<button class="merc-page-nav-btn merc-page-skip-btn" type="button" id="merc-hire-skip-prev" disabled>«</button>' +
                         '<button class="merc-page-nav-btn" type="button" id="merc-hire-prev" disabled>上一页</button>' +
                         '<span class="merc-page-nav-info" id="merc-hire-page-info"></span>' +
                         '<button class="merc-page-nav-btn" type="button" id="merc-hire-next">下一页</button>' +
+                        '<button class="merc-page-nav-btn merc-page-skip-btn" type="button" id="merc-hire-skip-next">»</button>' +
+                        '<button class="merc-page-nav-btn merc-page-skip-btn" type="button" id="merc-hire-last">›|</button>' +
                     '</div>' +
                 '</div>' +
-            '</div>' +
-
-            // Tooltip 浮层
-            '<div class="merc-tooltip" id="merc-tooltip" hidden></div>';
+            '</div>';
 
         _pageList  = _el.querySelector('#merc-page-list');
         _pageHire  = _el.querySelector('#merc-page-hire');
@@ -478,12 +587,27 @@
         });
 
         // 分页按钮
+        _el.querySelector('#merc-hire-first').addEventListener('click', function() {
+            if (_hirePage > 1) { _hirePage = 1; requestHireList(); }
+        });
+        _el.querySelector('#merc-hire-skip-prev').addEventListener('click', function() {
+            if (_hirePage > 1) { _hirePage = Math.max(1, _hirePage - 5); requestHireList(); }
+        });
         _el.querySelector('#merc-hire-prev').addEventListener('click', function() {
             if (_hirePage > 1) { _hirePage--; requestHireList(); }
         });
         _el.querySelector('#merc-hire-next').addEventListener('click', function() {
             if (_hirePage < _hireTotalPages) { _hirePage++; requestHireList(); }
         });
+        _el.querySelector('#merc-hire-skip-next').addEventListener('click', function() {
+            if (_hirePage < _hireTotalPages) { _hirePage = Math.min(_hireTotalPages, _hirePage + 5); requestHireList(); }
+        });
+        _el.querySelector('#merc-hire-last').addEventListener('click', function() {
+            if (_hirePage < _hireTotalPages) { _hirePage = _hireTotalPages; requestHireList(); }
+        });
+
+        // 预加载图标 manifest（首次打开且未加载时发起 fetch，与其他面板共享缓存）
+        if (typeof Icons !== 'undefined') Icons.load(function(){});
 
         return _el;
     }
@@ -497,11 +621,15 @@
         _busy = false;
         _snapshot = null;
         _hiredMercs = [];
+        _ttCache = {};
+        _ttHoverKey = null;
         _currentPage = 'list';
         navigateTo('list');
     }
 
     function requestClose() {
+        if (_busy) return;  // 对齐 pet 模式：pending 操作期间阻止关闭，防止状态泄漏
+        Panels.close();     // 先触发 onClose 清理 JS 状态（tooltip/缓存/pendingReq），再通知 C#
         Bridge.send({ type: 'panel', panel: 'mercs', cmd: 'close' });
     }
 
@@ -510,5 +638,8 @@
         if (_toastTimer) clearTimeout(_toastTimer);
         _pendingReq = {};
         _busy = false;
+        _ttCache = {};
+        _ttHoverKey = null;
+        PanelTooltip.hide();
     }
 })();

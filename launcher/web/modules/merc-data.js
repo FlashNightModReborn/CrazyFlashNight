@@ -20,7 +20,7 @@
     };
 
     // 每页显示数量
-    var HIRE_PER_PAGE = 5;
+    var HIRE_PER_PAGE = 10;
 
     window.MercData = {
         SLOTS: SLOTS,

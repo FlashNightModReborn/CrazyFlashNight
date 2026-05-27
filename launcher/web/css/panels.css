@@ -470,7 +470,7 @@
 #panel-tooltip b { font-weight:bold; }
 
 /* ── 变体示例：loading / basic 态 icon 缩小（演示"变体走 token 不动结构"） ── */
-.intel-tt-basic, .arena-tt-basic {
+.intel-tt-basic, .arena-tt-basic, .merc-tt-basic {
     --tt-icon-size: 64px;
 }
 
@@ -8980,6 +8980,10 @@ html.perf-low-effects .map-panel-close-btn:hover {
     opacity: 0.4;
     cursor: not-allowed;
 }
+.merc-page-skip-btn {
+    padding: 6px 10px;
+    font-size: 14px;
+}
 .merc-page-nav-info {
     font-size: 13px;
     color: #999;
@@ -9046,28 +9050,62 @@ html.perf-low-effects .map-panel-close-btn:hover {
     gap: 3px;
     margin-top: 4px;
 }
-.merc-equip-icon {
+
+.merc-equip-cell {
+    position: relative;
     width: 26px;
     height: 26px;
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
-    color: #aaa;
-    cursor: pointer;
-    transition: border-color 0.15s;
+    cursor: help;
+    flex-shrink: 0;
+    overflow: hidden;
+    transition: border-color 0.12s ease, box-shadow 0.12s ease;
 }
-.merc-equip-icon:hover {
-    border-color: var(--merc-accent);
-    background: rgba(255, 152, 0, 0.1);
+.merc-equip-cell:hover {
+    border-color: rgba(255, 152, 0, 0.6);
+    box-shadow: 0 0 6px rgba(255, 152, 0, 0.25);
 }
-.merc-no-equip {
-    font-size: 11px;
-    color: #666;
-    font-style: italic;
+.merc-equip-cell img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.merc-equip-empty {
+    background: rgba(255, 255, 255, 0.02);
+    border-style: dashed;
+    border-color: rgba(255, 255, 255, 0.08);
+    cursor: default;
+}
+.merc-equip-empty:hover {
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+}
+
+.merc-equip-level {
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+    font-size: 8px;
+    line-height: 1;
+    color: var(--merc-accent);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1px 2px;
+    border-radius: 2px;
+    pointer-events: none;
+    font-weight: 600;
+}
+
+.merc-equip-fallback {
+    font-size: 13px;
+    color: #888;
+    font-weight: 600;
 }
 
 /* 操作按钮 */
@@ -9133,35 +9171,13 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 .merc-hire-loading[hidden] { display: none; }
 
-/* 雇佣列表网格 */
+/* 雇佣列表网格 — 两列布局，每页10条 */
 .merc-hire-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
 }
 
-/* Tooltip */
-.merc-tooltip {
-    position: absolute;
-    max-width: 300px;
-    padding: 8px 10px;
-    background: rgba(0, 0, 0, 0.92);
-    border: 1px solid rgba(255, 152, 0, 0.3);
-    border-radius: 4px;
-    font-size: 12px;
-    color: #ccc;
-    line-height: 1.5;
-    z-index: 20;
-    pointer-events: none;
-}
-.merc-tooltip[hidden] { display: none; }
-.merc-tooltip-name {
-    margin-top: 4px;
-    color: var(--merc-accent);
-    font-weight: 600;
-}
-.merc-tooltip-loading { color: #999; }
-.merc-tooltip-error { color: #f44336; }
 
 /* Toast */
 .merc-toast {

@@ -88,12 +88,12 @@ class org.flashNight.arki.merc.MercPanelService {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // handleHireList — 分页返回可雇佣列表（5条/页）
+    // handleHireList — 分页返回可雇佣列表（10条/页）
     // ═══════════════════════════════════════════════════════════
     public static function handleHireList(params:Object):Void {
         var callId = params.callId;
         var page:Number = Number(params.page) || 1;
-        var perPage:Number = 5;
+        var perPage:Number = 10;
 
         var pool:Array = _root.可雇佣兵;
         if (pool == undefined) pool = [];
@@ -293,10 +293,9 @@ class org.flashNight.arki.merc.MercPanelService {
 
         var mercName:String = String(merc[1]);
 
-        // 刷新佣兵UI
-        if (_root.佣兵信息界面 != undefined && _root.佣兵信息界面.排列佣兵图标 != undefined) {
-            _root.佣兵信息界面.排列佣兵图标();
-        }
+        // WebView 面板管理 UI 刷新（JS 端 hire 回包后 requestSnapshot 已重新拉取列表），
+        // 不调用 Flash 排列佣兵图标()：避免 gotoAndStop + attachMovie 帧脚本干扰
+        // PanelHost 的 close 恢复序列，导致关闭面板后鼠标阻塞。
 
         sendResponse({
             task: "merc_response",
