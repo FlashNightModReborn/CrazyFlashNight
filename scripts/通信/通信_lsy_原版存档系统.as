@@ -24,6 +24,9 @@ _root.存档系统.migrateAndSync = function(data, soData) { SaveManager.getInst
 // 核心存/读委托
 _root.自动存盘 = function() { SaveManager.getInstance().saveAll(); };
 _root.本地存盘 = function() { SaveManager.getInstance().saveAll(); };
+// Plan A: 强制存盘 = flushNow（绕过 debounce，立即同步落盘）。
+// 关键事件路径走本入口：safeExit / 升级 / 手动 / 商城checkout/claim / 奖励弹窗关闭。
+_root.强制存盘 = function() { return SaveManager.getInstance().flushNow(); };
 _root.读取本地存盘 = function() { SaveManager.getInstance().preload(); };
 _root.读取存盘 = function() { return SaveManager.getInstance().loadAll(); };
 _root.是否存过盘 = function() { return SaveManager.getInstance().hasSaveData(); };

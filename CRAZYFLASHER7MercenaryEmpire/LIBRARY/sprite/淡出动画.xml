@@ -105,7 +105,10 @@ _root.跳转地图(跳转帧);]]></script>
             </DOMFrame>
             <DOMFrame index="16" duration="19" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.自动存盘();
+                <script><![CDATA[// Plan A: dirtyMark 守卫。SceneChanged hook 在 deactivateAll 前已 unconditional
+// flushNow，到达本帧时 dirty 已清零；只有 SceneChanged 之后又有新 mutator 标脏
+// 才触发本守卫。audit 漏标的 mutator 也由 SceneChanged hook 兜底，数据不丢。
+if (_root.存档系统.dirtyMark) _root.自动存盘();
 ]]></script>
               </Actionscript>
               <elements/>

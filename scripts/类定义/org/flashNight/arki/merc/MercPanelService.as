@@ -180,6 +180,8 @@ class org.flashNight.arki.merc.MercPanelService {
         var currentState:Number = Number(_root.佣兵是否出战信息[mercIndex]) || 0;
         var newState:Number = (currentState == 1) ? 0 : 1;
         _root.佣兵是否出战信息[mercIndex] = newState;
+        // Plan A audit: handleDeploy 写 佣兵是否出战信息（save-relevant），必须标脏
+        _root.存档系统.dirtyMark = true;
 
         sendResponse({
             task: "merc_response",
@@ -299,6 +301,8 @@ class org.flashNight.arki.merc.MercPanelService {
         // 初始化出战信息（默认不出战）
         if (_root.佣兵是否出战信息 == undefined) _root.佣兵是否出战信息 = [];
         _root.佣兵是否出战信息[_root.同伴数据.length - 1] = 0;
+        // Plan A audit: handleRecruit 写 金钱/虚拟币/同伴数据/同伴数/佣兵是否出战信息，全部 save-relevant，必须标脏
+        _root.存档系统.dirtyMark = true;
 
         var mercName:String = String(merc[1]);
 

@@ -182,11 +182,7 @@ on (rollOut) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
-   if(_root.物品栏界面._visible)
-   {
-      _root.储存数据库存盘();
-   }
-   _root.保存仓库数据();
+   // Plan A: 储存数据库存盘/保存仓库数据 全局未定义（dead code），已清；保留 自动存盘 走 debounce
    _root.自动存盘();
    _root.存储金钱界面._visible = 0;
    this._visible = 0;

@@ -418,7 +418,8 @@ function 关闭商城(){
 	_root.保存购物车();
 	_root.商城主mc = null;
 	_root.卸载全屏UI();
-	_root.自动存盘();
+	// Plan A: 商城关闭必达，绕过 debounce 立即同步落盘
+	_root.强制存盘();
 }
 
 购物倍数 = 1;

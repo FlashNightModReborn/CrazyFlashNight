@@ -46,6 +46,8 @@ _root.gameCommands["shopPanelOpen"] = function(params) {
 
 _root.gameCommands["shopPanelClose"] = function(params) {
     _root.UI系统.商城WebView.log("shopPanelClose");
+    // TODO Plan A2/C: 可改 if(dirtyMark) 守卫或直接删除（checkout/claim 已 flushNow）
+    // 本轮保留 _root.自动存盘() 作为 SOL 子层兜底；走 debounce 不会立即落盘
     _root.自动存盘();
     if (_root.UI系统.商城WebView.pauseLeaseId !== undefined) {
         org.flashNight.arki.pause.PauseManager.releaseLease(_root.UI系统.商城WebView.pauseLeaseId);
@@ -141,6 +143,9 @@ _root.gameCommands["shopCheckout"] = function(params) {
         resp.success = true;
         resp.newBalance = _root.虚拟币;
         resp.purchased = _root.商城已购买物品;
+        // Plan A: 商城 checkout 真实扣 K 点 + 写入已购列表，必达。绕过 debounce 立即同步落盘。
+        // 测试：购买后立刻杀进程，重启验 K点/已购队列 一致。
+        _root.强制存盘();
     } else {
         resp.success = false;
         resp.error = "insufficient_kpoints";
@@ -172,6 +177,9 @@ _root.gameCommands["shopClaim"] = function(params) {
             _root.存盘商城已购买物品();
             resp.success = true;
             resp.purchased = _root.商城已购买物品;
+            // Plan A: 商城 claim 真实从已购列表移除 + 物品入背包，必达。绕过 debounce 立即同步落盘。
+            // 测试：领取后立刻杀进程，重启验 已购列表已移除 + 背包含该物品。
+            _root.强制存盘();
         } else {
             resp.success = false; resp.error = "acquire_failed";
         }

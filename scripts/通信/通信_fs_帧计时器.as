@@ -717,6 +717,11 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     }
     // 重置射线视觉效果管理器，清理跨场景残留的射线
     RayVfxManager.reset();
+    // Plan A: 在 deactivateAll 失活轮子前同步落盘 SaveManager pending save。
+    // **无条件 flushNow**：unconditional 是 audit 漏标 mutator 的 safety net——
+    // 即使 audit 漏掉某 mutator 没设 dirtyMark，本 hook 也会保存当前 mydata，
+    // 数据不丢。代价：每次场景切换 1 次落盘（与 baseline 淡出 unconditional 相同）。
+    SaveManager.getInstance().flushNow();
     // 失活上一场景遗留的射击/特效循环任务，避免绑定已销毁单位的"孤儿循环"跨场景累积。
     // 用 deactivateAll 而非 reset：不误伤与之共享底层 CooldownWheel 的 UI 冷却等任务。
     EnhancedCooldownWheel.I().deactivateAll();

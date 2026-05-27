@@ -291,6 +291,8 @@ class org.flashNight.arki.merc.PetPanelService {
         }
 
         _root.宠物信息[emptySlot] = newPet;
+        // Plan A audit: handleBuy 写 金钱/虚拟币/宠物信息，必须标脏
+        _root.存档系统.dirtyMark = true;
 
         // 刷新宠物UI
         if (_root.宠物信息界面 != undefined && _root.宠物信息界面.排列宠物图标 != undefined) {

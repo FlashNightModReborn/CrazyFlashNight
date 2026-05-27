@@ -2009,8 +2009,8 @@ on(release){
    _root.安全退出界面._visible = 1;
    _root.仓库标志 = 0;
    _root.存盘标志 = 0;
-   _root.自动存盘();
-   _root.保存仓库数据();
+   // Plan A: 手动存档按钮必达，绕过 debounce 立即同步落盘
+   _root.强制存盘();
 }
 on(press){
    gotoAndStop(3);

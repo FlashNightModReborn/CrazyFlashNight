@@ -6031,7 +6031,7 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
-   _root.自动存盘();
+   // Plan A: 弃用界面（文件名带"弃用"），存盘调用清除
    this._visible = 0;
 }
 ]]></script>

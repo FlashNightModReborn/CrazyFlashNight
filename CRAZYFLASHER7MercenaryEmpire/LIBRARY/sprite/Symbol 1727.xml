@@ -2009,8 +2009,8 @@ on(release){
    _root.安全退出界面._visible = 1;
    _root.仓库标志 = 0;
    _root.存盘标志 = 0;
+   // Plan A: 保存仓库数据 全局未定义（dead code），已清；保留 自动存盘 走 debounce
    _root.自动存盘();
-   _root.保存仓库数据();
 }
 on(press){
    gotoAndStop(3);

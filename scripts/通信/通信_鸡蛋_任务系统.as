@@ -305,6 +305,9 @@ _root.FinishTask = function(index) {
     //移除已完成的任务
     _root.UpdateTaskProgress(taskID);
     _root.tasks_to_do.splice(index, 1);
+    // Plan A audit: FinishTask 写 tasks_to_do + 通过 acquire/UpdateTaskProgress 已标脏；
+    // 此处显式补标确保 splice 后状态被标脏（UpdateTaskProgress 标脏路径见其内补标）
+    _root.存档系统.dirtyMark = true;
     //检索是否可以接取任务链的下一个任务
     var isTaskInChain = false;
     var chainDict = TaskUtil.task_chains[taskData.chain[0]];
@@ -349,6 +352,8 @@ _root.FinishStage = function(name, difficulty) {
             }
         }
     }
+    // Plan A audit: FinishStage 写 tasks_to_do[i].requirements，必须标脏
+    _root.存档系统.dirtyMark = true;
     _root.UpdateTaskProgress();
     //检测更低难度的任务完成
     switch (difficulty) {
@@ -397,6 +402,8 @@ _root.AddTask = function(id) {
     task.id = id;
     task.requirements = 关卡要求;
     _root.tasks_to_do.push(task);
+    // Plan A audit: AddTask 写 tasks_to_do，必须标脏
+    _root.存档系统.dirtyMark = true;
 
     // === 更新任务奖励缓存（接取任务时记录基础奖励） ===
     if (taskData.rewards && taskData.rewards.length > 0) {
@@ -413,6 +420,8 @@ _root.DeleteTask = function(index) {
         return false;
     }
     _root.tasks_to_do.splice(index, 1);
+    // Plan A audit: DeleteTask 写 tasks_to_do，必须标脏
+    _root.存档系统.dirtyMark = true;
     _root.发布消息("删除任务成功！");
     return true;
 }
@@ -430,6 +439,8 @@ _root.UpdateTaskProgress = function(id) {
                 _root.tasks_finished[String(id)] += 1;
             }
         }
+        // Plan A audit: UpdateTaskProgress 写 task_chains_progress / tasks_finished，必须标脏
+        _root.存档系统.dirtyMark = true;
     }
     if (isNaN(_root.task_chains_progress.主线)) {
         _root.task_chains_progress.主线 = 0;

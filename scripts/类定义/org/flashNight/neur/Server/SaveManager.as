@@ -7,6 +7,7 @@ import org.flashNight.arki.render.FrameBroadcaster;
 import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import LiteJSON;
 import JSON;
+import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 /**
  * SaveManager — 存档系统统一管理器（单例）
  *
@@ -18,6 +19,98 @@ import JSON;
  *   5. 为后续 Launcher 迁移提供统一接口
  */
 class org.flashNight.neur.Server.SaveManager {
+
+    /**
+     * ============================================================
+     * 性能演进路线图（Plan A 已落地 / Plan B / Plan C）
+     * ============================================================
+     *
+     * [Plan A] saveAll 尾防抖 + SceneChanged flushNow + 淡出守卫 + dirtyMark
+     *   audit 补全（已落地）
+     *   - 见 saveAll / flushNow / _doSaveAll
+     *   - SceneChanged hook 在 通信_fs_帧计时器.as deactivateAll 之前**无条件**
+     *     调用 flushNow，消除 deactivateAll 静默杀 token 风险；同时是 audit
+     *     漏标的 safety net
+     *   - 淡出动画 frame 16 改为 dirtyMark 守卫；SceneChanged hook 已 flush，
+     *     淡出 frame 16 到达时 dirty=false 跳过
+     *   - 关键事件（safeExit/升级×2/商城checkout/商城claim/手动/任务奖励/物品奖励）
+     *     走 flushNow
+     *   - 21 处 _root.储存数据库存盘 / _root.保存仓库数据 死调用已清
+     *   - dirtyMark audit 三列清单见本注释末尾
+     *
+     * [Plan B] 分块 dirty（待启动）
+     *   - 触发条件：存档膨胀到 ≥ 30KB（击杀统计扩展是主膨胀源），或用户反馈
+     *     "手动存档卡顿"
+     *   - 设计思路：
+     *       a) packGameState 拆 sections: character / equipment / inventory /
+     *          collection / infrastructure / tasks / pets / shop / killStats / others
+     *       b) 每个 section 独立 dirty bit（替换全局 _dirtyMark）
+     *       c) _doSaveAll 只重新组包 dirty sections，clean 复用上次产物挂回
+     *       d) shadow push 仍 14KB 全量（launcher 端不做增量协议，先扛住）
+     *   - 关键 schema 决策点：
+     *       * mydata.version 不动（仍 "3.0"）—— 分块是组包路径优化，不改格式
+     *       * SO 内仍写完整 mydata，避免 readback 拼接复杂度
+     *       * dirty bit 用 Object hash 而非 bitmask（AS2 友好）
+     *       * 击杀统计 schema 同期定型（按敌种 / 按关卡 / 按 session 颗粒度选型）
+     *
+     * [Plan C] 早退守卫 + shopPanelClose 收紧
+     *   - 触发条件：监控发现 _dirtyMark=false 时仍走 _doSaveAll 频次 > 30%
+     *   - 设计思路：
+     *       a) _doSaveAll 头部加 if (!_dirtyMark) return true; 早退
+     *       b) shopPanelClose（商城系统_WebView.as:49）从 _root.自动存盘()
+     *          改为 if(dirtyMark) 守卫或直接删除（checkout/claim 已 flushNow）
+     *       c) 其他 13 处仍 _root.自动存盘() 的非关键 UI 关闭事件可考虑 dirty 守卫
+     *
+     * Plan B + C 实施后，预期 saveAll 单次成本从 14KB+socket 降到 ~2-3KB 平均，
+     * FPS 影响应进一步消失。
+     * ============================================================
+     *
+     * [Plan A dirtyMark Audit 三列清单]
+     *
+     * == 已审计路径（有 dirtyMark setter）==
+     *   - scripts/通信/通信_鸡蛋_任务系统.as:135 → 修复错位的任务存档 末尾标脏
+     *   - scripts/展现/UI交互/UI交互_lsy_物品栏UI.as:150 / 226 / 2074 / 2349 → 购买/出售/批量
+     *   - scripts/类定义/.../EnemyKilledEventComponent.as:59 → 击杀统计更新
+     *   - scripts/类定义/.../ItemUtil.as:218 / 246 / 254 → moveItem 三态（背包/装备栏/药剂栏迁移）
+     *   - scripts/类定义/.../itemIcon/InventoryIcon.as:194 / 308 / 320 → 物品图标拖拽/丢弃
+     *   - scripts/类定义/.../itemIcon/EquipmentIcon.as:33 → 装备图标交互
+     *
+     * == 补标路径（Plan A 本轮新增 dirtyMark = true）==
+     *   - scripts/类定义/.../ItemUtil.as:516 (acquire return 前)
+     *       覆盖 acquire 内 金钱/虚拟币/经验值/技能点数/材料/情报/药剂栏/背包 全部写入
+     *   - scripts/通信/通信_鸡蛋_任务系统.as: AddTask / DeleteTask / FinishTask (splice后) /
+     *       FinishStage (循环后) / UpdateTaskProgress (id != null 分支末尾)
+     *       覆盖 tasks_to_do / tasks_finished / task_chains_progress 运行时变更
+     *   - scripts/引擎/引擎_lsy_战宠系统.as: 开宠物格子 末尾
+     *       覆盖 宠物领养限制 / 宠物信息 写入
+     *   - scripts/引擎/引擎_lsy_等级与经验值.as: 经验值计算 line 148 之后
+     *       覆盖 经验值 += 路径（升级路径已 flushNow，不升级路径靠本标脏）
+     *   - scripts/类定义/.../PetPanelService.as: handleBuy 末尾
+     *       覆盖 金钱 / 虚拟币 / 宠物信息 写入（WebView 宠物购买路径）
+     *   - scripts/类定义/.../MercPanelService.as: handleRecruit 末尾
+     *       覆盖 金钱 / 虚拟币 / 同伴数据 / 同伴数 / 佣兵是否出战信息 写入
+     *   - scripts/类定义/.../MercPanelService.as: handleDeploy 末尾
+     *       覆盖 佣兵是否出战信息[mercIndex] toggle 写入（上游 WebView 佣兵迁移引入）
+     *
+     * == 确认无需补标路径（state 改动但有理由）==
+     *   - SaveManager 内部所有 newCharacter / loadGameState / migrateAndSync /
+     *       restoreFromSnapshot 路径写入：均是 load/init，不算运行时变更，重启会重做
+     *   - 引擎_lsy_技能系统.as: _root.更新主角被动技能 line 64 / 70 重建 _root.主角被动技能
+     *       理由：_root.主角被动技能 是从 _root.主角技能表 重建的 cache，原 mutator
+     *       在调用方（学习技能/启用技能 UI），_root.主角技能表 写入处应已通过物品栏 UI
+     *       150 / 226 / 2074 / 2349 路径标脏
+     *   - 引擎_lsy_技能系统.as line 230-232: _root.主角技能表 init 默认数组（length>0 提前 return 幂等）
+     *   - 引擎_lsy_等级与经验值.as line 43 / 64 / 86 / 107: 升级路径 _root.技能点数 +=
+     *       理由：升级路径末尾走 _root.强制存盘() = flushNow，已绕过 debounce 立即落盘
+     *   - 通信_鸡蛋_任务系统.as 检查任务数据完整性 line 162 / 168: 写 tasks_finished
+     *       理由：该函数顶部调 _root.修复错位的任务存档(line 146) 已标脏；为 init/repair 路径
+     *
+     * == 相邻冗余（Plan §6d 记录但不修复，下一轮 Plan B/C 处理）==
+     *   - 经验值计算 内部调 主角是否升级 + 外层调用方又调一次
+     *     (单位函数_lsy_敌人模板迁移.as:292, 单位函数_fs_aka_玩家模板迁移.as:1390)
+     *     第二次升级 while 已推进无新等级，冗余但非数据风险
+     * ============================================================
+     */
 
     // ==================== 单例 ====================
     private static var _instance:SaveManager;
@@ -103,6 +196,12 @@ class org.flashNight.neur.Server.SaveManager {
     private var _prefetchedSlot:String;
     private var _prefetchGen:Number;
     private var _prefetchInFlight:Boolean;
+
+    // ==================== Debounce 状态（saveAll 尾防抖） ====================
+    // _dispatchToken: undefined=无挂起；Number=EnhancedCooldownWheel 的 taskId
+    private var _dispatchToken;
+    private static var DEBOUNCE_MS:Number = 300;
+    private var _saveInFlight:Boolean = false; // 重入护栏
 
     // ── Protocol 2 (launcher 存档决议) ──
     // 握手回调把 _root._launcher* 写入, preload() 一次性消费并转存到实例字段后 delete.
@@ -216,7 +315,63 @@ class org.flashNight.neur.Server.SaveManager {
 
     // ==================== 核心存/读 ====================
 
+    /**
+     * Plan A 落点：本方法是 debounce wrapper（300ms trailing edge）。
+     * 真正落盘逻辑在 _doSaveAll；同步落盘走 flushNow（关键事件路径 + SceneChanged hook）。
+     *
+     * Plan B/C 路标：当本方法成为热点 #1 时，请考虑：
+     *   (1) 在 _doSaveAll 入口加 `if (!_dirtyMark) return true;` 早退（Plan C）
+     *   (2) 把 packGameState() 拆 section + 维护 sectionDirty（Plan B）
+     * 禁止在本函数体内做组包/IO，任何"真正落盘"逻辑都应在 _doSaveAll 内。
+     */
     public function saveAll():Boolean {
+        if (_root.允许存档 !== true) return false;
+        // 立即转入实例字段，避免 token 调度期间 mark 被读后清零的 race
+        if (_root.存档系统.dirtyMark) _dirtyMark = true;
+
+        // trailing edge：每次 saveAll 取消旧任务、重新调度
+        if (_dispatchToken != undefined) {
+            EnhancedCooldownWheel.I().removeTask(_dispatchToken);
+            _dispatchToken = undefined;
+        }
+
+        _dispatchToken = EnhancedCooldownWheel.I().addDelayedTask(
+            DEBOUNCE_MS,
+            function():Void {
+                // AS2 闭包陷阱规避：每次走 getInstance()，不闭包捕获 sm
+                SaveManager.getInstance()._onDebounceFire();
+            }
+        );
+        return true;
+    }
+
+    private function _onDebounceFire():Void {
+        _dispatchToken = undefined;
+        if (_saveInFlight) return;
+        _saveInFlight = true;
+        var ok:Boolean = _doSaveAll();
+        _saveInFlight = false;
+    }
+
+    /**
+     * 公开 API：立即同步落盘，绕过 debounce。
+     * 关键事件路径（safeExit/升级/手动/商城checkout/商城claim/奖励）调用本入口。
+     * SceneChanged hook 也调本入口（保证 pending 在 deactivateAll 前落盘）。
+     */
+    public function flushNow():Boolean {
+        if (_root.允许存档 !== true) return false;
+        if (_dispatchToken != undefined) {
+            EnhancedCooldownWheel.I().removeTask(_dispatchToken);
+            _dispatchToken = undefined;
+        }
+        if (_saveInFlight) return false;
+        _saveInFlight = true;
+        var ok:Boolean = _doSaveAll();
+        _saveInFlight = false;
+        return ok;
+    }
+
+    private function _doSaveAll():Boolean {
         if (_root.允许存档 !== true) return false;
 
         // 同步外部 dirtyMark
@@ -959,6 +1114,16 @@ class org.flashNight.neur.Server.SaveManager {
 
     // ==================== 数据组包/解包 ====================
 
+    /**
+     * Plan B 落点：本方法当前一次性组装全量 mydata（~14KB）。
+     * 未来分块 dirty 时把本函数拆成：
+     *   packCharacterSection() / packEquipmentSection() / packInventorySection() /
+     *   packCollectionSection() / packTasksSection() / packPetsSection() /
+     *   packShopSection() / packKillStatsSection() / packOthersSection() /
+     *   packInfrastructureSection()
+     * 由 _doSaveAll 根据 _sectionDirty[name] 选择性调用；clean section 复用上次结果。
+     * 注意：mydata.lastSaved / mydata.version 必须每次都更新（不可分块跳过）。
+     */
     public function packGameState():Object {
         _root.身价 = _root.基础身价值 * _root.等级;
 

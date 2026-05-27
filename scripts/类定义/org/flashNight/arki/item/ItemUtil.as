@@ -511,6 +511,9 @@ class org.flashNight.arki.item.ItemUtil{
             }
         }
 
+        // Plan A audit: acquire() 改 金币/K点/经验/技能点/材料/情报/药剂栏/背包 全部 save-relevant
+        // 字段，必须设 dirtyMark 让 SaveManager 知道需要落盘
+        _root.存档系统.dirtyMark = true;
         return true;
     }
 

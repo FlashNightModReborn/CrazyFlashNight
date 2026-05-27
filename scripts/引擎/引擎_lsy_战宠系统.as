@@ -5,6 +5,8 @@ _root.战宠UI函数 = new Object();
 _root.开宠物格子 = function(){
 	_root.宠物领养限制 += 1;
 	_root.宠物信息.push([]);
+	// Plan A audit: 开宠物格子 写 宠物领养限制 + 宠物信息，必须标脏
+	_root.存档系统.dirtyMark = true;
 }
 
 _root.加载宠物 = function(地点X, 地点Y){

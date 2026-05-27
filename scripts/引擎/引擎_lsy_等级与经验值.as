@@ -60,7 +60,8 @@ _root.健身房主角是否升级 = function()
 		_root.玩家信息界面.刷新hp显示();
 		_root.玩家信息界面.刷新mp显示();
 		EffectSystem.Effect("升级动画",控制对象._x,控制对象._y,100);
-		_root.自动存盘();
+		// Plan A: 升级必达，绕过 debounce 立即同步落盘
+		_root.强制存盘();
 	}
 }
 
@@ -102,7 +103,8 @@ _root.主角是否升级 = function(当前等级, 当前经验值)
 		_root.玩家信息界面.刷新hp显示();
 		_root.玩家信息界面.刷新mp显示();
 		EffectSystem.Effect("升级动画",控制对象._x,控制对象._y,100);
-		_root.自动存盘();
+		// Plan A: 升级必达，绕过 debounce 立即同步落盘
+		_root.强制存盘();
 	}
 }
 
@@ -144,6 +146,8 @@ _root.经验值计算 = function(最小经验值, 最大经验值, 怪物等级,
 			tmp_exp = Math.floor(tmp_exp / (_root.等级 - 怪物等级) * _root.难度等级);
 		}
 		_root.经验值 = Number(_root.经验值) + tmp_exp;
+		// Plan A audit: 经验值变更必须标脏；升级路径已 flushNow，不升级时本标脏保证 debounce 落盘
+		_root.存档系统.dirtyMark = true;
 		_root.主角是否升级(_root.等级,_root.经验值);
 	}
 }

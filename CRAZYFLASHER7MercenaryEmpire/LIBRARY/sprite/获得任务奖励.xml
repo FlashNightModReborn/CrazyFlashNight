@@ -63,12 +63,8 @@ _root.全部翻译(this);]]></script>
 }
 on (release) {
 	gotoAndStop(1);
-	if (_root.物品栏界面._visible)
-	{
-		_root.储存数据库存盘();
-	}
-	_root.保存仓库数据();
-	_root.自动存盘();
+	// Plan A: 奖励弹窗关闭必达；储存数据库存盘/保存仓库数据 全局未定义（dead code），已清
+	_root.强制存盘();
 	_root.存储金钱界面._visible = 0;
 	_parent._visible = 0;
 }
@@ -107,12 +103,8 @@ on (rollOut) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
-   if(_root.物品栏界面._visible)
-   {
-      _root.储存数据库存盘();
-   }
-   _root.保存仓库数据();
-   _root.自动存盘();
+   // Plan A: 奖励弹窗关闭必达；储存数据库存盘/保存仓库数据 全局未定义（dead code），已清
+   _root.强制存盘();
    _root.存储金钱界面._visible = 0;
    this._visible = 0;
 }
