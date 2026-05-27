@@ -24,6 +24,40 @@
  */
 class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
 
+    // ========== 溢出治疗曲线参数（项目级单一来源） ==========
+    //
+    // 【不变量 — 改动需重审设计契约】
+    //   η₀ = 1.0      满血处边际效率 100%，曲线在 HP=baseMax 处导数连续，
+    //                 玩家跨过满血时不会感到"突然变弱"
+    //   C  = 0.5×baseMax  溢出渐近上限。HP 渐近趋于 1.5×baseMax
+    //                     （理论不可达，整数截断会形成事实封顶）
+    //
+    // 【曲线】dO/dx = η₀·(1 - O/C)
+    //   闭式：ΔO = (C - O₀)·(1 - exp(-η₀·Δx/C))
+    //
+    // 【派生行为参考表 — 累计原始溢出输入 X（从 O₀=0 起）→ 溢出量 O】
+    //   X=0.5M  → O=0.316M (63%)
+    //   X=1.0M  → O=0.432M (87%)
+    //   X=1.15M → O=0.450M (90%)
+    //   X=2.0M  → O=0.491M (98%)   实际"封顶"门槛
+    //   X=2.3M  → O=0.495M (99%)
+    //
+    // 【取整副作用】
+    //   单段输入不变性仅在连续域成立。每段 < 1 点的小输入会被 (x | 0) 截断丢弃，
+    //   高分段下事实回血量低于一次性大段。由于实战伤害普遍高到可忽略取整影响，简化实现。
+    //
+    // 【调参指引】
+    //   - 体感过强 → 优先下调 OVERFLOW_CAP_RATIO（如 0.4 / 0.3），保留 η₀=1 的导数连续契约
+    //   - 不建议下调 OVERFLOW_INITIAL_EFFICIENCY：会破坏满血处平滑过渡，
+    //     玩家会感到"100% HP 是一道墙"
+    //
+    // 【共享原则】
+    //   所有走 applyHpOverflow 的路径（吸血 / 扭转乾坤 / 未来类似机制）共享此曲线。
+    //   如设计意图差异化，应新增独立 applyXxxOverflow 而非加参数侵入主路径。
+
+    public static var OVERFLOW_INITIAL_EFFICIENCY:Number = 1.0;
+    public static var OVERFLOW_CAP_RATIO:Number = 0.5;
+
     /**
      * HP 硬封顶治疗。把 target.hp 向上推到 capValue，超过的部分丢弃。
      *
@@ -55,33 +89,28 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
     }
 
     /**
-     * HP 溢出衰减治疗。满血以下 100% 效率，满血以上按
-     *     dO/dx = eta0 · (1 - O/C)
-     *     闭式：ΔO = (C - O₀) · (1 - exp(-eta0·Δx/C))
-     * 其中 C = baseMax · capRatio，O 渐近趋于 C（理论不可达，整数截断形成事实封顶）。
-     *
-     * 设计契约：eta0=1.0 时曲线在 HP=baseMax 处导数连续，跨越满血无突变。
+     * HP 溢出衰减治疗。满血以下 100% 效率，满血以上按项目级共享曲线衰减。
+     * 曲线参数见类顶部 OVERFLOW_CAP_RATIO / OVERFLOW_INITIAL_EFFICIENCY；
+     * 所有走本方法的调用方共享同一条曲线，调参一处生效。
      *
      * 注意：满血处效率 100% 的"满血"指 baseMax，**不**含外部封顶提升（如炼金）。
-     * 若炼金把玩家长期托在 1.30·baseMax，则吸血输入在该点的边际效率已是 40%
-     * （这是有意的：炼金给地板、吸血给天花板，分工不重叠）。
+     * 若炼金把玩家长期托在 1.30·baseMax，则在该点的边际效率已是 40%
+     * （这是有意的：炼金给地板、本曲线给天花板，分工不重叠）。
      *
-     * @param target    目标对象（需有 hp 字段）
-     * @param amount    请求恢复量
-     * @param baseMax   曲线基准（吸血传 target.hp满血值；不含炼金加成）
-     * @param capRatio  渐近上限比例（吸血 = 0.5 → 渐近 1.5·baseMax）
-     * @param eta0      满血处边际效率（吸血 = 1.0，导数连续）
+     * @param target  目标对象（需有 hp 字段）
+     * @param amount  请求恢复量
+     * @param baseMax 曲线基准（通常 = target.hp满血值；不含炼金加成）
      * @return 实际恢复量（已取整）；0 表示衰减后 < 1 点 或 已死亡 或 amount<=0
      */
-    public static function applyHpOverflow(target:Object, amount:Number, baseMax:Number, capRatio:Number, eta0:Number):Number {
+    public static function applyHpOverflow(target:Object, amount:Number, baseMax:Number):Number {
         if (!target) return 0;
         var current:Number = target.hp;
         if (current <= 0) return 0;
         if (!(amount > 0)) return 0;
-        if (!(baseMax > 0) || !(capRatio > 0) || !(eta0 > 0)) return 0;
+        if (!(baseMax > 0)) return 0;
 
         var M:Number = baseMax;
-        var C:Number = M * capRatio;
+        var C:Number = M * OVERFLOW_CAP_RATIO;
 
         // 满血以下段：100% 效率
         var roomToMax:Number = M - current;
@@ -93,7 +122,7 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
         var part2:Number = 0;
         var O0:Number = current > M ? current - M : 0;
         if (overflowInput > 0 && O0 < C) {
-            part2 = (C - O0) * (1 - Math.exp(-eta0 * overflowInput / C));
+            part2 = (C - O0) * (1 - Math.exp(-OVERFLOW_INITIAL_EFFICIENCY * overflowInput / C));
         }
 
         var healed:Number = (part1 + part2) | 0;

@@ -162,7 +162,7 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplierTest {
 
     private static function test_Overflow_满血以下退化为100效率():Void {
         var t:Object = {hp: 80};
-        var r:Number = HealApplier.applyHpOverflow(t, 10, 100, 0.5, 1.0);
+        var r:Number = HealApplier.applyHpOverflow(t, 10, 100);
         assertEq(10, r, "Overflow 满血下: 100% 效率");
         assertEq(90, t.hp, "Overflow 满血下: hp 80→90");
     }
@@ -170,7 +170,7 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplierTest {
     // M=10000, 起 hp=8000, amount=4000: part1=2000, part2≈1648
     private static function test_Overflow_跨满血段():Void {
         var t:Object = {hp: 8000};
-        var r:Number = HealApplier.applyHpOverflow(t, 4000, 10000, 0.5, 1.0);
+        var r:Number = HealApplier.applyHpOverflow(t, 4000, 10000);
         assertFloatEq(3648, r, 1, "Overflow 跨满血: 实际回 2000+1648");
         assertFloatEq(11648, t.hp, 1, "Overflow 跨满血: hp 8000→11648");
     }
@@ -178,21 +178,21 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplierTest {
     // M=10000, 起 hp=10000, amount=10000: part2 = 5000*(1-exp(-2)) ≈ 4323
     private static function test_Overflow_纯衰减段():Void {
         var t:Object = {hp: 10000};
-        var r:Number = HealApplier.applyHpOverflow(t, 10000, 10000, 0.5, 1.0);
+        var r:Number = HealApplier.applyHpOverflow(t, 10000, 10000);
         assertFloatEq(4323, r, 1, "Overflow 纯衰减: 实际回 0.4323M");
         assertFloatEq(14323, t.hp, 1, "Overflow 纯衰减: hp 10000→14323");
     }
 
     private static function test_Overflow_死亡守门():Void {
         var t:Object = {hp: 0};
-        var r:Number = HealApplier.applyHpOverflow(t, 100, 100, 0.5, 1.0);
+        var r:Number = HealApplier.applyHpOverflow(t, 100, 100);
         assertEq(0, r, "Overflow 死亡: 返回0");
         assertEq(0, t.hp, "Overflow 死亡: hp 不被复活");
     }
 
     private static function test_Overflow_零amount():Void {
         var t:Object = {hp: 50};
-        var r:Number = HealApplier.applyHpOverflow(t, 0, 100, 0.5, 1.0);
+        var r:Number = HealApplier.applyHpOverflow(t, 0, 100);
         assertEq(0, r, "Overflow amount=0: 返回0");
         assertEq(50, t.hp, "Overflow amount=0: hp 不变");
     }

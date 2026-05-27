@@ -19,32 +19,8 @@ class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDam
     /** 单例实例 */
     public static var instance:LifeStealDamageHandle = new LifeStealDamageHandle();
 
-    // ========== 溢出治疗衰减参数（设计契约） ==========
-    //
-    // 【不变量 — 改动需重审设计契约】
-    //   η₀ = 1.0      满血处边际效率 100%，曲线在 HP=M 导数连续，
-    //                 玩家跨过满血时不会感到"突然变弱"
-    //   C  = 0.5 × M  溢出渐近上限。HP 渐近趋于 1.5M（理论不可达，
-    //                 整数截断会形成事实封顶）
-    //
-    // 【曲线】dO/dx = η₀·(1 - O/C)
-    //   闭式：ΔO = (C - O₀)·(1 - exp(-η₀·Δx/C))
-    //
-    // 【派生行为参考表 — 累计原始吸血输入 X（从 O₀=0 起）→ 溢出量 O】
-    //   X=0.5M  → O=0.316M (63%)   旧系统在此恰好填满 0.5M
-    //   X=1.0M  → O=0.432M (87%)   2× 旧输入仅填到 87%
-    //   X=1.15M → O=0.450M (90%)
-    //   X=2.0M  → O=0.491M (98%)   实际"封顶"门槛
-    //   X=2.3M  → O=0.495M (99%)
-    //
-    // 【调参指引】
-    //   - 体感过强 → 优先下调 OVERFLOW_CAP_RATIO（如 0.4 / 0.3），
-    //     保留 η₀=1 的导数连续契约
-    //   - 不建议下调 OVERFLOW_INITIAL_EFFICIENCY：会破坏满血处平滑过渡，
-    //     玩家会感到"100% HP 是一道墙"
-
-    public static var OVERFLOW_INITIAL_EFFICIENCY:Number = 1.0;
-    public static var OVERFLOW_CAP_RATIO:Number = 0.5;
+    // 溢出衰减曲线参数现在统一在 HealApplier（OVERFLOW_CAP_RATIO / OVERFLOW_INITIAL_EFFICIENCY）
+    // 所有走 applyHpOverflow 的路径共享一条曲线，调参一处生效
 
     // ========== 构造函数 ==========
 
@@ -113,11 +89,8 @@ class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDam
         if (lifeStealAmount > target.hp) lifeStealAmount = target.hp;
         if (lifeStealAmount <= 0) return;
 
-        // 委托 HealApplier 执行衰减曲线；存活检查 / 边界检查 / 取整事实封顶在内部完成
-        var healAmount:Number = HealApplier.applyHpOverflow(
-            shooter, lifeStealAmount,
-            shooter.hp满血值, OVERFLOW_CAP_RATIO, OVERFLOW_INITIAL_EFFICIENCY
-        );
+        // 委托 HealApplier 执行衰减曲线；曲线参数、存活检查、取整事实封顶在内部完成
+        var healAmount:Number = HealApplier.applyHpOverflow(shooter, lifeStealAmount, shooter.hp满血值);
         if (healAmount <= 0) return;
 
         // 每弹显示量：联弹/霰弹下 healAmount < actualScatterUsed 会被取整成 0，

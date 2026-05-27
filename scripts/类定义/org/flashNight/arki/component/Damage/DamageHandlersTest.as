@@ -101,7 +101,8 @@ class org.flashNight.arki.component.Damage.DamageHandlersTest {
         test_LifeSteal_canHandle_边界值();
         test_LifeSteal_溢出纯衰减段();
         test_LifeSteal_跨满血段();
-        test_LifeSteal_多段输入不变性();
+        test_LifeSteal_低分段误差容忍();
+        test_LifeSteal_高分段截断退化();
         test_LifeSteal_显示零守门();
 
         test_Crumble_基础击溃();
@@ -275,15 +276,18 @@ class org.flashNight.arki.component.Damage.DamageHandlersTest {
         assertFloatEq(11648, shooter.hp, 1, "LifeSteal 跨满血: 8000→11648");
     }
 
-    // 设计契约（忽略取整下）：一次性输入 X 与多次叠加输入 X 等价
-    // 用 M=10000 让取整误差占比 <0.1%；A: 1×10000, B: 2×5000
-    // 二者都应渐近到 14323
-    private static function test_LifeSteal_多段输入不变性():Void {
+    // 连续域设计契约："一次输入 X" 与"多次输入累计 X"等价。
+    // 离散实现里只在"低分段 + 高基数"才近似成立——每段 part2 都被 (x|0) 截断，
+    // 分段越细单段截断损失占比越高，最终回血量越偏低。
+    //
+    // 本测试用 1×M vs 2×0.5M（极低分段、M=10000）验收"低分段噪声 ≤ 个位数"。
+    // 高分段截断行为由 test_LifeSteal_高分段截断退化 单独度量并固化。
+    private static function test_LifeSteal_低分段误差容忍():Void {
         var h:LifeStealDamageHandle = LifeStealDamageHandle.getInstance();
         var bulletBig:Object = {吸血: 10, 子弹威力: 999};
         var bulletHalf:Object = {吸血: 10, 子弹威力: 999};
 
-        // A 路：一次性 lifesteal=10000
+        // A 路：一次性 lifesteal=10000 → hp ≈ 14323
         var shooterA:Object = {hp: 10000, hp满血值: 10000};
         var targetA:Object = {损伤值: 100000, hp: 999999, shield: mockShield()};
         var rA:DamageResult = freshResult(); rA.actualScatterUsed = 1;
@@ -299,7 +303,39 @@ class org.flashNight.arki.component.Damage.DamageHandlersTest {
         h.handleBulletDamage(bulletHalf, shooterB, targetB2, null, rB2);
 
         // 容差 ≤2：每段单次取整误差 < 1，两段累计 < 2
-        assertFloatEq(shooterA.hp, shooterB.hp, 2, "LifeSteal 多段不变性: 1×M vs 2×0.5M 终态等价");
+        assertFloatEq(shooterA.hp, shooterB.hp, 2, "LifeSteal 低分段误差容忍: 1×M vs 2×0.5M 终态差 ≤ 2");
+    }
+
+    // 高分段下取整逐段吞噬：把"等价契约"破坏到肉眼可见的程度。
+    // 把行为锚住，未来如果改成残差累加（保留小数尾巴跨段进位）这个测试会失败 →
+    // 提醒人主动审视是否要变更契约。
+    //
+    // 参考值（M=10000）：
+    //   1×10000     → hp ≈ 14323
+    //   2×5000      → hp ≈ 14323（参见上一测试）
+    //   100×100     → hp ≈ 14301（约损失 22）
+    //   1000×10     → hp ≈ 14085（约损失 238）
+    private static function test_LifeSteal_高分段截断退化():Void {
+        var h:LifeStealDamageHandle = LifeStealDamageHandle.getInstance();
+        var bullet:Object = {吸血: 10, 子弹威力: 999}; // lifesteal = floor(损伤*10/100)
+
+        // 100×100：每段 lifesteal=100，期望 hp ≈ 14301 ± 5
+        var shooterC:Object = {hp: 10000, hp满血值: 10000};
+        for (var i:Number = 0; i < 100; i++) {
+            var tgt:Object = {损伤值: 1000, hp: 999999, shield: mockShield()};
+            var rC:DamageResult = freshResult(); rC.actualScatterUsed = 1;
+            h.handleBulletDamage(bullet, shooterC, tgt, null, rC);
+        }
+        assertFloatEq(14301, shooterC.hp, 5, "LifeSteal 高分段截断: 100×100 终态 ≈ 14301（损失 ≈ 22）");
+
+        // 1000×10：每段 lifesteal=10，截断更严重，期望 hp ≈ 14085 ± 10
+        var shooterD:Object = {hp: 10000, hp满血值: 10000};
+        for (var j:Number = 0; j < 1000; j++) {
+            var tgtD:Object = {损伤值: 100, hp: 999999, shield: mockShield()};
+            var rD:DamageResult = freshResult(); rD.actualScatterUsed = 1;
+            h.handleBulletDamage(bullet, shooterD, tgtD, null, rD);
+        }
+        assertFloatEq(14085, shooterD.hp, 10, "LifeSteal 高分段截断: 1000×10 终态 ≈ 14085（损失 ≈ 238）");
     }
 
     // 显示守门：联弹下 healAmount < actualScatterUsed → perPellet=0，不应冒"+0 吸血"
