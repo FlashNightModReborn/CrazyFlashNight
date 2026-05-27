@@ -106,10 +106,8 @@
                     '<div class="pet-stats-section">' +
                         '<h3 class="pet-section-title">属性信息</h3>' +
                         '<div class="pet-stats-grid" id="pet-stats-grid">' +
-                            '<div class="pet-stat"><span class="pet-stat-label">等级</span><span class="pet-stat-value" id="pet-stat-level">--</span></div>' +
                             '<div class="pet-stat"><span class="pet-stat-label">体力</span><span class="pet-stat-value" id="pet-stat-stamina">--</span></div>' +
                             '<div class="pet-stat"><span class="pet-stat-label">经验</span><span class="pet-stat-value" id="pet-stat-xp">--</span></div>' +
-                            '<div class="pet-stat"><span class="pet-stat-label">身高</span><span class="pet-stat-value" id="pet-stat-height">--</span></div>' +
                         '</div>' +
                     '</div>' +
                     '<div class="pet-promotions-section">' +
@@ -445,10 +443,8 @@
         }
         _el.querySelector('#pet-advance-meta').innerHTML = metaHtml;
 
-        _el.querySelector('#pet-stat-level').textContent = 'Lv.' + pet.level;
         _el.querySelector('#pet-stat-stamina').textContent = pet.stamina + '/' + (pet.maxStamina || 200);
         _el.querySelector('#pet-stat-xp').textContent = (pet.xp || 0) + '/' + (pet.xpNeeded || '--');
-        _el.querySelector('#pet-stat-height').textContent = (pet.height || '--') + 'cm';
 
         var deployBtn = _el.querySelector('#pet-deploy-btn');
         deployBtn.textContent = pet.deployed ? '休息' : '出战';
@@ -543,10 +539,10 @@
                 actionBtn = '<button class="pet-promo-btn" disabled>等级不足</button>';
             } else if (!canAfford && scheme.gold > 0) {
                 statusText = '金币不足';
-                actionBtn = '<button class="pet-promo-btn pet-promo-btn-buy" data-scheme="' + escapeHtml(schemeName) + '">' + formatMoney(scheme.gold) + '金 升级</button>';
+                actionBtn = '<button class="pet-promo-btn pet-promo-btn-buy" data-scheme="' + escapeHtml(schemeName) + '">' + formatMoney(scheme.gold) + '金 ' + (scheme.buttonText || '执行') + '</button>';
             } else {
                 statusText = scheme.gold > 0 ? formatMoney(scheme.gold) + '金币' : '免费';
-                actionBtn = '<button class="pet-promo-btn pet-promo-btn-buy" data-scheme="' + escapeHtml(schemeName) + '">升级</button>';
+                actionBtn = '<button class="pet-promo-btn pet-promo-btn-buy" data-scheme="' + escapeHtml(schemeName) + '">' + (scheme.buttonText || '执行') + '</button>';
             }
 
             promoEl.innerHTML =
