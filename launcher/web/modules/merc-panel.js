@@ -20,7 +20,7 @@
     var _ttHoverKey = null;       // current hover cache key
 
     var _pageList, _pageHire;
-    var _goldEl, _kpointEl;
+    var _goldEl, _kpointEl, _slotCountEl;
 
     // ═══════════════════════════════════════════════════════════
     // Panel 注册
@@ -128,6 +128,7 @@
         if (!_snapshot) return;
         if (_goldEl) _goldEl.textContent = '金币: ' + (_snapshot.gold || 0).toLocaleString();
         if (_kpointEl) _kpointEl.textContent = 'K点: ' + (_snapshot.kpoint || 0);
+        if (_slotCountEl) _slotCountEl.textContent = _hiredMercs.length + '/' + (_snapshot.maxSlots || 0);
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -380,12 +381,18 @@
             var hireBtn = document.createElement('button');
             hireBtn.className = 'merc-hire-btn';
             hireBtn.textContent = '雇佣';
+            // 佣兵槽位已满时禁用
+            var slotsFull = _snapshot && _snapshot.maxSlots > 0 && _hiredMercs.length >= _snapshot.maxSlots;
+            if (slotsFull) {
+                hireBtn.disabled = true;
+                hireBtn.title = '佣兵已满 (' + _hiredMercs.length + '/' + _snapshot.maxSlots + ')';
+            }
             // 金币不足时禁用
-            if (_snapshot && _snapshot.gold < merc.goldPrice) {
+            if (!slotsFull && _snapshot && _snapshot.gold < merc.goldPrice) {
                 hireBtn.disabled = true;
                 hireBtn.title = '金币不足';
             }
-            if (_snapshot && merc.kPrice > 0 && _snapshot.kpoint < merc.kPrice) {
+            if (!slotsFull && _snapshot && merc.kPrice > 0 && _snapshot.kpoint < merc.kPrice) {
                 hireBtn.disabled = true;
                 hireBtn.title = 'K点不足';
             }
@@ -529,6 +536,7 @@
                     '<div class="merc-resources">' +
                         '<span class="merc-resource merc-resource-gold" id="merc-gold">--</span>' +
                         '<span class="merc-resource merc-resource-kpoint" id="merc-kpoint">--</span>' +
+                        '<span class="merc-resource" id="merc-slot-count">0/0</span>' +
                     '</div>' +
                     '<button class="merc-close-btn" type="button" title="关闭" aria-label="关闭" data-audio-cue="cancel">✕</button>' +
                 '</div>' +
@@ -571,7 +579,8 @@
         _pageList  = _el.querySelector('#merc-page-list');
         _pageHire  = _el.querySelector('#merc-page-hire');
         _goldEl    = _el.querySelector('#merc-gold');
-        _kpointEl  = _el.querySelector('#merc-kpoint');
+        _kpointEl     = _el.querySelector('#merc-kpoint');
+	_slotCountEl  = _el.querySelector('#merc-slot-count');
 
         // 关闭按钮
         _el.querySelector('.merc-close-btn').addEventListener('click', requestClose);

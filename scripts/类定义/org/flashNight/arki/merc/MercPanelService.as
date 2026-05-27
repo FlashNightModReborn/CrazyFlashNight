@@ -244,6 +244,15 @@ class org.flashNight.arki.merc.MercPanelService {
         }
 
         var merc:Array = pool[poolIndex];
+
+        // 检查佣兵槽位上限
+        var maxSlots:Number = Number(_root.佣兵个数限制) || 0;
+        var currentCount:Number = Number(_root.同伴数) || 0;
+        if (maxSlots > 0 && currentCount >= maxSlots) {
+            sendResponse({ task: "merc_response", callId: callId, success: false, error: "slots_full", currentCount: currentCount, maxSlots: maxSlots });
+            return;
+        }
+
         var mercLevel:Number = Number(merc[0]);
 
         // 计算价格（与 Flash UI 完全一致）
