@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.item.drug.IDrugEffect;
 import org.flashNight.arki.item.drug.DrugContext;
 import org.flashNight.arki.item.drug.DrugValueParser;
+import org.flashNight.arki.unit.Action.Regeneration.HealApplier;
 
 /**
  * HealEffect - 恢复效果词条
@@ -65,29 +66,17 @@ class org.flashNight.arki.item.drug.effects.HealEffect implements IDrugEffect {
         var target:Object = ctx.target;
         var healed:Boolean = false;
 
-        // HP恢复
+        // HP 恢复（炼金把封顶从 M 抬升到 M·(1+0.03L)）
         if (hpValue > 0) {
-            var maxHP:Number = ctx.getMaxHPWithAlchemy();
-            var newHP:Number = target.hp + hpValue;
-            if (newHP > maxHP) {
-                newHP = maxHP;
-            }
-            if (newHP > target.hp) {
-                target.hp = newHP;
+            if (HealApplier.applyHpCapped(target, hpValue, ctx.getMaxHPWithAlchemy()) > 0) {
                 healed = true;
             }
             _root.玩家信息界面.刷新hp显示();
         }
 
-        // MP恢复
+        // MP 恢复（无炼金加成）
         if (mpValue > 0) {
-            var maxMP:Number = target.mp满血值;
-            var newMP:Number = target.mp + mpValue;
-            if (newMP > maxMP) {
-                newMP = maxMP;
-            }
-            if (newMP > target.mp) {
-                target.mp = newMP;
+            if (HealApplier.applyMpCapped(target, mpValue, target.mp满血值) > 0) {
                 healed = true;
             }
             _root.玩家信息界面.刷新mp显示();

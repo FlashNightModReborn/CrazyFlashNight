@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.component.Shield.*;
+import org.flashNight.arki.unit.Action.Regeneration.HealApplier;
 
 /**
  * LifeStealDamageHandle 类是用于处理吸血伤害的处理器。
@@ -109,37 +110,24 @@ class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDam
 
         // 原始吸血量（不超过目标当前血量，不小于 0）
         var lifeStealAmount:Number = (target.损伤值 * bullet.吸血 / 100) | 0;
-        lifeStealAmount = lifeStealAmount > target.hp ? target.hp : lifeStealAmount;
-        lifeStealAmount = lifeStealAmount < 0 ? 0 : lifeStealAmount;
+        if (lifeStealAmount > target.hp) lifeStealAmount = target.hp;
+        if (lifeStealAmount <= 0) return;
 
-        // 射击者已死 / 无可吸血量
-        var shooterHP:Number = shooter.hp;
-        if (shooterHP <= 0 || lifeStealAmount <= 0) return;
-
-        // 治疗分两段：满血以下 100% 效率 + 满血以上 (1-O/C) 边际衰减
-        var M:Number = shooter.hp满血值;
-        var C:Number = M * OVERFLOW_CAP_RATIO; // 溢出渐近上限
-
-        var roomToMax:Number = M - shooterHP;
-        if (roomToMax < 0) roomToMax = 0;
-        var part1:Number = lifeStealAmount < roomToMax ? lifeStealAmount : roomToMax;
-        var overflowInput:Number = lifeStealAmount - part1;
-
-        var part2:Number = 0;
-        var O0:Number = shooterHP > M ? shooterHP - M : 0;
-        if (overflowInput > 0 && O0 < C) {
-            part2 = (C - O0) * (1 - Math.exp(-OVERFLOW_INITIAL_EFFICIENCY * overflowInput / C));
-        }
-
-        // 整数截断后无治疗（溢出饱和或衰减后 < 1 点），不冒 "+0" 数字
-        var healAmount:Number = (part1 + part2) | 0;
+        // 委托 HealApplier 执行衰减曲线；存活检查 / 边界检查 / 取整事实封顶在内部完成
+        var healAmount:Number = HealApplier.applyHpOverflow(
+            shooter, lifeStealAmount,
+            shooter.hp满血值, OVERFLOW_CAP_RATIO, OVERFLOW_INITIAL_EFFICIENCY
+        );
         if (healAmount <= 0) return;
 
-        shooter.hp = shooterHP + healAmount;
+        // 每弹显示量：联弹/霰弹下 healAmount < actualScatterUsed 会被取整成 0，
+        // 此时仍然完成了真实治疗，但不冒 "+0 吸血" 飘字
+        var perPellet:Number = (healAmount / result.actualScatterUsed) | 0;
+        if (perPellet <= 0) return;
 
         // 延迟 HTML 构建：位标记 + 吸血槽（显示实际治疗量）
         result._efFlags |= 32; // EF_LIFESTEAL
-        result._efLifeSteal = (healAmount / result.actualScatterUsed) | 0;
+        result._efLifeSteal = perPellet;
     }
 
     /**

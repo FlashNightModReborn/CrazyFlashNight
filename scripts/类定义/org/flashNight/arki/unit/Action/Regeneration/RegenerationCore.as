@@ -2,6 +2,7 @@
 import org.flashNight.arki.unit.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.component.Effect.*;
+import org.flashNight.arki.unit.Action.Regeneration.HealApplier;
 
 /**
  * @class RegenerationCore
@@ -263,20 +264,13 @@ class org.flashNight.arki.unit.Action.Regeneration.RegenerationCore {
      * @return Void
      */
     private static function applyRegenerationToUnit(target:MovieClip, regenType:String, value:Number, config:Object):Void {
-        var currentValue:Number;
-        var maxValue:Number;
-        var propertyName:String;
-        
+        // 统一委托 HealApplier；效果播放保持原有无条件触发，与旧实现一致
         switch (regenType) {
             case HEALTH_REGEN:
-                currentValue = target.hp;
-                maxValue = target.hp满血值;
-                propertyName = "hp";
+                HealApplier.applyHpCapped(target, value, target.hp满血值);
                 break;
             case MANA_REGEN:
-                currentValue = target.mp;
-                maxValue = target.mp满血值;
-                propertyName = "mp";
+                HealApplier.applyMpCapped(target, value, target.mp满血值);
                 break;
             case AMMO_REGEN:
                 // 弹药恢复需要特殊处理
@@ -285,14 +279,7 @@ class org.flashNight.arki.unit.Action.Regeneration.RegenerationCore {
             default:
                 return;
         }
-        
-        // 应用恢复
-        if (currentValue + value > maxValue) {
-            target[propertyName] = maxValue;
-        } else {
-            target[propertyName] = currentValue + value;
-        }
-        
+
         // 播放效果
         playRegenerationEffect(target, regenType, config);
     }

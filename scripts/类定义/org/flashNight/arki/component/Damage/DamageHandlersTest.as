@@ -99,6 +99,10 @@ class org.flashNight.arki.component.Damage.DamageHandlersTest {
         test_LifeSteal_基础吸血();
         test_LifeSteal_canHandle();
         test_LifeSteal_canHandle_边界值();
+        test_LifeSteal_溢出纯衰减段();
+        test_LifeSteal_跨满血段();
+        test_LifeSteal_多段输入不变性();
+        test_LifeSteal_显示零守门();
 
         test_Crumble_基础击溃();
         test_Crumble_canHandle();
@@ -240,6 +244,77 @@ class org.flashNight.arki.component.Damage.DamageHandlersTest {
         assertTrue(!h.canHandle({吸血: -5}), "LifeSteal.canHandle: 负值=false");
         assertTrue(!h.canHandle({吸血: null}), "LifeSteal.canHandle: null=false");
         assertTrue(!h.canHandle({}), "LifeSteal.canHandle: 缺省=false");
+    }
+
+    // 设计契约：HP=M 起、lifesteal=M，C=0.5M，η₀=1
+    // 期望 ΔO = 0.5M·(1-exp(-2)) ≈ 0.4323M → 取整 4323（M=10000）
+    private static function test_LifeSteal_溢出纯衰减段():Void {
+        var h:LifeStealDamageHandle = LifeStealDamageHandle.getInstance();
+        var bullet:Object = {吸血: 10, 子弹威力: 999};
+        var shooter:Object = {hp: 10000, hp满血值: 10000};
+        var target:Object = {损伤值: 100000, hp: 999999, shield: mockShield()};
+        var r:DamageResult = freshResult();
+        r.actualScatterUsed = 1;
+        h.handleBulletDamage(bullet, shooter, target, null, r);
+        // part1=0; part2 = 5000*(1-exp(-2)) ≈ 4323.32 → 4323
+        assertFloatEq(14323, shooter.hp, 1, "LifeSteal 纯溢出: HP=M+0.4323M (M=10000)");
+        assertTrue((r._efFlags & 32) != 0, "LifeSteal 纯溢出: EF_LIFESTEAL置位");
+    }
+
+    // 设计契约：HP=0.8M、lifesteal=0.4M 横跨满血点
+    // part1=0.2M (满血以下100%); part2 = 0.5M·(1-exp(-0.4)) ≈ 0.1648M → 1648
+    private static function test_LifeSteal_跨满血段():Void {
+        var h:LifeStealDamageHandle = LifeStealDamageHandle.getInstance();
+        var bullet:Object = {吸血: 10, 子弹威力: 999};
+        var shooter:Object = {hp: 8000, hp满血值: 10000};
+        var target:Object = {损伤值: 40000, hp: 999999, shield: mockShield()};
+        var r:DamageResult = freshResult();
+        r.actualScatterUsed = 1;
+        h.handleBulletDamage(bullet, shooter, target, null, r);
+        // 8000 + 2000(满血以下) + 1648(衰减段) = 11648
+        assertFloatEq(11648, shooter.hp, 1, "LifeSteal 跨满血: 8000→11648");
+    }
+
+    // 设计契约（忽略取整下）：一次性输入 X 与多次叠加输入 X 等价
+    // 用 M=10000 让取整误差占比 <0.1%；A: 1×10000, B: 2×5000
+    // 二者都应渐近到 14323
+    private static function test_LifeSteal_多段输入不变性():Void {
+        var h:LifeStealDamageHandle = LifeStealDamageHandle.getInstance();
+        var bulletBig:Object = {吸血: 10, 子弹威力: 999};
+        var bulletHalf:Object = {吸血: 10, 子弹威力: 999};
+
+        // A 路：一次性 lifesteal=10000
+        var shooterA:Object = {hp: 10000, hp满血值: 10000};
+        var targetA:Object = {损伤值: 100000, hp: 999999, shield: mockShield()};
+        var rA:DamageResult = freshResult(); rA.actualScatterUsed = 1;
+        h.handleBulletDamage(bulletBig, shooterA, targetA, null, rA);
+
+        // B 路：两次 lifesteal=5000
+        var shooterB:Object = {hp: 10000, hp满血值: 10000};
+        var targetB:Object = {损伤值: 50000, hp: 999999, shield: mockShield()};
+        var rB1:DamageResult = freshResult(); rB1.actualScatterUsed = 1;
+        h.handleBulletDamage(bulletHalf, shooterB, targetB, null, rB1);
+        var targetB2:Object = {损伤值: 50000, hp: 999999, shield: mockShield()};
+        var rB2:DamageResult = freshResult(); rB2.actualScatterUsed = 1;
+        h.handleBulletDamage(bulletHalf, shooterB, targetB2, null, rB2);
+
+        // 容差 ≤2：每段单次取整误差 < 1，两段累计 < 2
+        assertFloatEq(shooterA.hp, shooterB.hp, 2, "LifeSteal 多段不变性: 1×M vs 2×0.5M 终态等价");
+    }
+
+    // 显示守门：联弹下 healAmount < actualScatterUsed → perPellet=0，不应冒"+0 吸血"
+    // hp=M、lifesteal=8、actualScatterUsed=16 → part2=7、perPellet=0
+    private static function test_LifeSteal_显示零守门():Void {
+        var h:LifeStealDamageHandle = LifeStealDamageHandle.getInstance();
+        var bullet:Object = {吸血: 10, 子弹威力: 999};
+        var shooter:Object = {hp: 10000, hp满血值: 10000};
+        var target:Object = {损伤值: 80, hp: 999999, shield: mockShield()};
+        var r:DamageResult = freshResult();
+        r.actualScatterUsed = 16;
+        h.handleBulletDamage(bullet, shooter, target, null, r);
+        // 治疗仍然发生（hp 增加 7 左右），但 EF_LIFESTEAL 不置位以避免飘 "+0"
+        assertTrue(shooter.hp > 10000, "LifeSteal 显示守门: 治疗仍生效，hp已增加");
+        assertTrue((r._efFlags & 32) == 0, "LifeSteal 显示守门: perPellet=0 时 EF_LIFESTEAL 不置位");
     }
 
     // ==================== CrumbleDamageHandle ====================

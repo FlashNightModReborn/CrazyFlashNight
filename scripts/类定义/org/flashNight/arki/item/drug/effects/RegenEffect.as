@@ -50,6 +50,7 @@ import org.flashNight.arki.item.drug.DrugContext;
 import org.flashNight.arki.item.drug.DrugValueParser;
 import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
+import org.flashNight.arki.unit.Action.Regeneration.HealApplier;
 
 class org.flashNight.arki.item.drug.effects.RegenEffect implements IDrugEffect {
 
@@ -198,42 +199,21 @@ class org.flashNight.arki.item.drug.effects.RegenEffect implements IDrugEffect {
             var t:Object = ctx.target;
             if (!t || t.hp <= 0) return; // 目标无效或已死亡
 
-            // HP恢复
+            // HP恢复（炼金加成后的封顶在 ctx.maxHPWithAlchemy 中缓存）
             if (ctx.hpPerTick > 0 || ctx.hpRemainder > 0) {
-                // 计算本次恢复量（前N次+1分配余数）
                 var hpThisTick:Number = ctx.hpPerTick;
-                if (tickNum <= ctx.hpRemainder) {
-                    hpThisTick += 1;
-                }
-
-                if (hpThisTick > 0) {
-                    // 使用炼金加成后的HP上限
-                    var maxHP:Number = ctx.maxHPWithAlchemy;
-                    var newHP:Number = t.hp + hpThisTick;
-                    if (newHP > maxHP) newHP = maxHP;
-                    if (newHP > t.hp) {
-                        t.hp = newHP;
-                        _root.玩家信息界面.刷新hp显示();
-                    }
+                if (tickNum <= ctx.hpRemainder) hpThisTick += 1;
+                if (HealApplier.applyHpCapped(t, hpThisTick, ctx.maxHPWithAlchemy) > 0) {
+                    _root.玩家信息界面.刷新hp显示();
                 }
             }
 
-            // MP恢复
+            // MP恢复（无炼金加成）
             if (ctx.mpPerTick > 0 || ctx.mpRemainder > 0) {
-                // 计算本次恢复量（前N次+1分配余数）
                 var mpThisTick:Number = ctx.mpPerTick;
-                if (tickNum <= ctx.mpRemainder) {
-                    mpThisTick += 1;
-                }
-
-                if (mpThisTick > 0) {
-                    var maxMP:Number = t.mp满血值;
-                    var newMP:Number = t.mp + mpThisTick;
-                    if (newMP > maxMP) newMP = maxMP;
-                    if (newMP > t.mp) {
-                        t.mp = newMP;
-                        _root.玩家信息界面.刷新mp显示();
-                    }
+                if (tickNum <= ctx.mpRemainder) mpThisTick += 1;
+                if (HealApplier.applyMpCapped(t, mpThisTick, t.mp满血值) > 0) {
+                    _root.玩家信息界面.刷新mp显示();
                 }
             }
         };
