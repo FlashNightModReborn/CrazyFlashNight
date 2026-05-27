@@ -10,7 +10,8 @@
  * 覆盖：
  *   - applyHpCapped: 普通/超封顶/已达封顶/封顶以上/死亡守门/边界值/炼金抬升封顶
  *   - applyMpCapped: HP/MP 通道隔离 + 死亡用 HP 判
- *   - applyHpOverflow: 满血以下/跨满血/纯衰减/死亡守门/边界值
+ *   - applyHpOverflow: 满血以下/跨满血/纯衰减/炼金叠加/死亡守门/边界值
+ *   - applyMpOverflow: 蓄电池超充/已达超充封顶/capRatio 防御
  *
  * applyHpOverflow 的衰减曲线在 DamageHandlersTest 的 LifeSteal 套件已通过
  * LifeStealDamageHandle → HealApplier 链路覆盖，本测试只复测核心契约。
@@ -70,8 +71,16 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplierTest {
         test_Overflow_满血以下退化为100效率();
         test_Overflow_跨满血段();
         test_Overflow_纯衰减段();
+        test_Overflow_炼金抬升后纯衰减();
         test_Overflow_死亡守门();
         test_Overflow_零amount();
+
+        // applyMpOverflow
+        test_MpOverflow_普通超充();
+        test_MpOverflow_截断到capRatio();
+        test_MpOverflow_已达超充封顶();
+        test_MpOverflow_capRatio小于1视为1();
+        test_MpOverflow_死亡守门();
 
         trace("===== HealApplier 汇总: run=" + _total + " pass=" + _pass + " fail=" + _fail + " =====");
     }
@@ -183,6 +192,15 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplierTest {
         assertFloatEq(14323, t.hp, 1, "Overflow 纯衰减: hp 10000→14323");
     }
 
+    // 炼金把玩家长期托在 1.3M（baseMax 仍是 M），从 O₀=0.3M 起溢出 X=1M
+    // ΔO = (0.5M - 0.3M)·(1 - exp(-1·1M/0.5M)) = 0.2M·(1-exp(-2)) ≈ 0.1729M → 1729
+    private static function test_Overflow_炼金抬升后纯衰减():Void {
+        var t:Object = {hp: 13000};
+        var r:Number = HealApplier.applyHpOverflow(t, 10000, 10000);
+        assertFloatEq(1729, r, 2, "Overflow 炼金叠加: 1.3M 起 X=M, ΔO ≈ 0.1729M");
+        assertFloatEq(14729, t.hp, 2, "Overflow 炼金叠加: hp 13000→14729");
+    }
+
     private static function test_Overflow_死亡守门():Void {
         var t:Object = {hp: 0};
         var r:Number = HealApplier.applyHpOverflow(t, 100, 100);
@@ -195,5 +213,45 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplierTest {
         var r:Number = HealApplier.applyHpOverflow(t, 0, 100);
         assertEq(0, r, "Overflow amount=0: 返回0");
         assertEq(50, t.hp, "Overflow amount=0: hp 不变");
+    }
+
+    // ==================== applyMpOverflow ====================
+
+    // 蓄电池超充：mpBase=100, capRatio=2 → 封顶 200；从 mp=120 加 50 → 170
+    private static function test_MpOverflow_普通超充():Void {
+        var t:Object = {hp: 100, mp: 120};
+        var r:Number = HealApplier.applyMpOverflow(t, 50, 100, 2);
+        assertEq(50, r, "MpOverflow 普通: 返回50");
+        assertEq(170, t.mp, "MpOverflow 普通: mp 120→170");
+    }
+
+    // 从 mp=180 加 100，capValue=200 → 实际只回 20
+    private static function test_MpOverflow_截断到capRatio():Void {
+        var t:Object = {hp: 100, mp: 180};
+        var r:Number = HealApplier.applyMpOverflow(t, 100, 100, 2);
+        assertEq(20, r, "MpOverflow 截断: 实际只回20");
+        assertEq(200, t.mp, "MpOverflow 截断: mp 截断到200");
+    }
+
+    private static function test_MpOverflow_已达超充封顶():Void {
+        var t:Object = {hp: 100, mp: 200};
+        var r:Number = HealApplier.applyMpOverflow(t, 50, 100, 2);
+        assertEq(0, r, "MpOverflow 已达超充封顶: 返回0");
+        assertEq(200, t.mp, "MpOverflow 已达超充封顶: mp 不变");
+    }
+
+    // capRatio < 1 被视为 1，退化为 applyMpCapped 等价行为
+    private static function test_MpOverflow_capRatio小于1视为1():Void {
+        var t:Object = {hp: 100, mp: 80};
+        var r:Number = HealApplier.applyMpOverflow(t, 50, 100, 0.5);
+        assertEq(20, r, "MpOverflow capRatio<1: 退化为cap=mpBase, 只回20");
+        assertEq(100, t.mp, "MpOverflow capRatio<1: mp 截断到mpBase=100");
+    }
+
+    private static function test_MpOverflow_死亡守门():Void {
+        var t:Object = {hp: 0, mp: 50};
+        var r:Number = HealApplier.applyMpOverflow(t, 50, 100, 2);
+        assertEq(0, r, "MpOverflow 死亡: 返回0");
+        assertEq(50, t.mp, "MpOverflow 死亡: mp 不变");
     }
 }

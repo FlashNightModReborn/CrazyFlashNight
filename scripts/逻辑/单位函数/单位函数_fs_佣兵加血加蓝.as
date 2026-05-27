@@ -138,6 +138,45 @@ _root.加血动作.键盘集体加血 = function(加血距离X:Number, 加血距
 	_root.加血动作._范围治疗(_parent, 加血距离X, 加血距离Y, 0.05, true, "猩红增幅");
 };
 
+/**
+ * 单体 HP 硬封顶到 hp满血值 — XML 帧脚本统一治疗入口
+ *
+ * 用途：装备/技能 XML 帧脚本里 `target.hp += N` 的位点，统一改走本函数。
+ * 避免每个 XML 各自写一遍 `if (hp + N >= 满血) hp = 满血` 的截断逻辑。
+ *
+ * @param 单位  目标单位（含 hp / hp满血值）
+ * @param 量    请求恢复量
+ * @return 实际恢复量；0 表示无效/已满
+ */
+_root.加血动作.单位HP_capped = function(单位, 量:Number):Number {
+	return HealApplier.applyHpCapped(单位, 量, 单位.hp满血值);
+};
+
+/**
+ * 单体 MP 硬封顶到 mp满血值 — XML 帧脚本统一回蓝入口
+ *
+ * @param 单位  目标单位（含 hp 判存活、mp / mp满血值）
+ * @param 量    请求恢复量
+ * @return 实际恢复量；0 表示无效/已满
+ */
+_root.加血动作.单位MP_capped = function(单位, 量:Number):Number {
+	return HealApplier.applyMpCapped(单位, 量, 单位.mp满血值);
+};
+
+/**
+ * 单体 MP 蓄电池超充 — 资源溢出统一入口
+ *
+ * 用途：梁上青剑鞘 / 上古青萍元气剑 等"MP 可超充到 mp满血值·倍率"的装备。
+ *
+ * @param 单位   目标单位
+ * @param 量     请求恢复量
+ * @param 倍率   超充倍率（≥1.0；如梁上青/上古青萍传 2）
+ * @return 实际恢复量；0 表示无效/已达超充封顶
+ */
+_root.加血动作.单位MP_overflow = function(单位, 量:Number, 倍率:Number):Number {
+	return HealApplier.applyMpOverflow(单位, 量, 单位.mp满血值, 倍率);
+};
+
 // 为了向后兼容，也提供便捷调用方法
 _root.快速佣兵加血 = function(healValue:Number) {
 	return RegenerationCore.healMercenariesGroup(healValue);

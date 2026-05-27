@@ -7,6 +7,7 @@
  *   applyHpCapped     —— HP 硬封顶到 capValue（药剂炼金加成 / Regen tick / 范围治疗 / 装备形态切换）
  *   applyHpOverflow   —— HP 满血以下 100% + 满血以上指数衰减（吸血；将来 buff 圣盾等可复用）
  *   applyMpCapped     —— MP 硬封顶到 capValue（炼金不抬 MP 封顶，永远是 target.mp满血值）
+ *   applyMpOverflow   —— MP "蓄电池超充" 硬封顶到 mpBase·capRatio（capRatio ≥ 1，无衰减曲线）
  *
  * 不接管：
  *   - 复活 / 九命猫妖（语义=重置，hp 强写 = 满血值，不走治疗 buff 链）
@@ -150,6 +151,44 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
         if (!(amount > 0)) return 0;
         if (!(capValue > 0)) return 0;
 
+        var current:Number = target.mp;
+        if (current >= capValue) return 0;
+
+        var newValue:Number = current + amount;
+        if (newValue > capValue) newValue = capValue;
+
+        var actual:Number = newValue - current;
+        if (actual <= 0) return 0;
+
+        target.mp = newValue;
+        return actual;
+    }
+
+    /**
+     * MP "蓄电池超充" 硬封顶。允许 MP 越过 mpBase（=mp满血值），最终硬封顶到 mpBase·capRatio。
+     *
+     * 与 applyMpCapped 的区别：
+     *   - applyMpCapped 的 capValue 通常 = mp满血值（即 capRatio = 1.0）
+     *   - 本方法专为"装备让 MP 可超充到 N 倍满血"的资源溢出语义（如梁上青/上古青萍 N=2）
+     *
+     * 与 applyHpOverflow 的区别：
+     *   - HP overflow 走 (1-O/C) 边际衰减曲线（玩家心智模型："越满越难吸"）
+     *   - MP overflow 不衰减、纯硬封顶（设计语义："蓄电池可超充，但有最大容量"）
+     *
+     * @param target    目标对象（需有 hp 字段判存活、mp 字段被修改）
+     * @param amount    请求恢复量
+     * @param mpBase    MP 基准（通常 = target.mp满血值）
+     * @param capRatio  超充倍率（≥1.0；< 1 视为 1 防御）
+     * @return 实际恢复量；0 表示无效
+     */
+    public static function applyMpOverflow(target:Object, amount:Number, mpBase:Number, capRatio:Number):Number {
+        if (!target) return 0;
+        if (target.hp <= 0) return 0;
+        if (!(amount > 0)) return 0;
+        if (!(mpBase > 0)) return 0;
+        if (!(capRatio >= 1)) capRatio = 1; // 同时挡 NaN / <1 / 0
+
+        var capValue:Number = mpBase * capRatio;
         var current:Number = target.mp;
         if (current >= capValue) return 0;
 

@@ -171,19 +171,7 @@ gotoAndStop("正常");
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	if (_parent.hp > 0 && _parent.hp < _parent.hp满血值)
-	{
-		if (_parent.回血间隔帧 == 0)
-		{
-			var 已损失体力比值 = (_parent.hp满血值 - _parent.hp) / _parent.hp满血值;
-			var 回血量 = Math.floor(150 * 已损失体力比值);
-			_parent.hp += 回血量;
-		}
-		else
-		{
-			_parent.回血间隔帧--;
-		}
-	}
+	_root.敌人函数.雕像自回血(_parent);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

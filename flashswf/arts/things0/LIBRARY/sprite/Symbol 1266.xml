@@ -496,14 +496,7 @@ if(_root.淡出动画.跳转帧 != "pk场")
               <Actionscript>
                 <script><![CDATA[if(_root.淡出动画.跳转帧 != "pk场")
 {
-   if(_parent.hp < _parent.hp满血值)
-   {
-      _parent.hp += 2 * _parent.技能等级;
-   }
-   if(_parent.mp < _parent.mp满血值)
-   {
-      _parent.mp += 2 * _parent.技能等级;
-   }
+   _root.敌人函数.觉醒不坏金身回血(_parent);
 }
 gotoAndPlay(811);
 ]]></script>

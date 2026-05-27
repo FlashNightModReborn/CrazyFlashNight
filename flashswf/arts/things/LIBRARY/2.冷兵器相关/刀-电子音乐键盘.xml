@@ -110,7 +110,7 @@
             var yOffset = (Math.random() - 0.5) * 2 * range;
             var shooter = _parent._parent._parent._parent._parent;
             var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
-            _parent._parent._parent._parent._parent.mp += 90;
+            _root.加血动作.单位MP_capped(shooter, 90);
             _root.佣兵集体回蓝(100);
             声音 = "";
             霰弹值 = 1;
@@ -166,7 +166,7 @@
          {
             _root.发布消息("悦耳的音符振奋了你们！");
          }
-         _parent._parent._parent._parent._parent.mp += 90;
+         _root.加血动作.单位MP_capped(shooter, 90);
          _root.佣兵集体回蓝(100);
          声音 = "";
          霰弹值 = 1;
@@ -245,7 +245,7 @@
          var yOffset = (Math.random() - 0.5) * 2 * range;
          var shooter = _parent._parent._parent._parent._parent;
          var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
-         _parent._parent._parent._parent._parent.hp += 50;
+         _root.加血动作.单位HP_capped(shooter, 50);
          声音 = "";
          霰弹值 = 1;
          子弹散射度 = 360;

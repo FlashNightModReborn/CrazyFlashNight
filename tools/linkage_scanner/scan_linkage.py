@@ -24,8 +24,13 @@ SYMBOL_RE = re.compile(
     r'linkageExportForAS="true"[^>]*?'
     r'linkageIdentifier="([^"]+)"'
 )
+# Captures: group(1)=href (relative to LIBRARY/, forward-slash separated)
+# Used to determine which LIBRARY/*.xml are registered in the .fla's manifest;
+# any XML present in LIBRARY/ but not referenced here is an orphan
+# (Flash IDE library panel won't show it, but SWF compile still picks up linkage).
+INCLUDE_RE = re.compile(r'<Include\s+[^/]*?\bhref="([^"]+)"')
 
-results = {}       # linkageId -> set((swf_rel, symbol_name))
+results = {}       # linkageId -> set((swf_rel, symbol_name, is_orphan))
 source_counts = {}  # swf_rel -> count
 INCLUDE_ALL = '--include-all' in sys.argv
 XML_ONLY = '--xml-only' in sys.argv
@@ -56,6 +61,20 @@ def should_skip(swf_rel):
     return False
 
 
+def parse_include_set(dom_doc_content):
+    """Extract the set of href values from DOMDocument.xml's <Include> manifest.
+
+    Hrefs are stored as forward-slash paths relative to LIBRARY/, e.g.
+    '1.枪械相关/长枪/图标-Sniper.xml'.  Any XML present in LIBRARY/ but absent
+    from this set is an orphan (Flash IDE won't display it in the library
+    panel; .swf compile may or may not pick it up).
+    """
+    hrefs = set()
+    for m in INCLUDE_RE.finditer(dom_doc_content):
+        hrefs.add(xml_attr_unescape(m.group(1)).replace('\\', '/'))
+    return hrefs
+
+
 def scan_xfl(xfl_dir):
     lib_dir = os.path.join(xfl_dir, 'LIBRARY')
     if not os.path.isdir(lib_dir):
@@ -63,6 +82,15 @@ def scan_xfl(xfl_dir):
     swf_rel = rel_swf(xfl_dir) + '.swf'
     if should_skip(swf_rel):
         return
+
+    # Build Include manifest (orphan filter) from DOMDocument.xml
+    dom_doc = os.path.join(xfl_dir, 'DOMDocument.xml')
+    if os.path.isfile(dom_doc):
+        with open(dom_doc, 'r', encoding='utf-8', errors='replace') as f:
+            include_set = parse_include_set(f.read())
+    else:
+        include_set = None  # cannot determine; treat all as non-orphan
+
     seen_in_source = set()
     for xml_file in glob.glob(os.path.join(lib_dir, '**', '*.xml'), recursive=True):
         with open(xml_file, 'r', encoding='utf-8', errors='replace') as f:
@@ -71,7 +99,9 @@ def scan_xfl(xfl_dir):
         if m:
             sym_name = xml_attr_unescape(m.group(1))
             lid = xml_attr_unescape(m.group(2))
-            results.setdefault(lid, set()).add((swf_rel, sym_name))
+            rel_href = os.path.relpath(xml_file, lib_dir).replace(os.sep, '/')
+            is_orphan = (include_set is not None and rel_href not in include_set)
+            results.setdefault(lid, set()).add((swf_rel, sym_name, is_orphan))
             seen_in_source.add(lid)
     if seen_in_source:
         source_counts[swf_rel] = len(seen_in_source)
@@ -124,6 +154,11 @@ def scan_fla(fla_path):
         data = f.read()
 
     seen_in_source = set()
+    # Two-pass via single scan + buffering: zip member order isn't guaranteed,
+    # so we collect LIBRARY entries first, parse DOMDocument.xml for the
+    # Include manifest, then mark orphans.
+    pending = []   # list of (sym_name, lid, rel_href_under_LIBRARY)
+    include_set = None  # populated when DOMDocument.xml is encountered
     offset = 0
     while offset < len(data) - 4:
         if data[offset:offset + 4] != b'PK\x03\x04':
@@ -161,7 +196,11 @@ def scan_fla(fla_path):
             offset = next_offset
             continue
 
-        if fname.startswith('LIBRARY/') and fname.endswith('.xml'):
+        # Decompress on demand; both DOMDocument.xml (root) and LIBRARY/*.xml are needed
+        is_dom_doc = (fname == 'DOMDocument.xml')
+        is_library_xml = (fname.startswith('LIBRARY/') and fname.endswith('.xml'))
+
+        if is_dom_doc or is_library_xml:
             if comp_method == 8:  # deflate
                 try:
                     content = zlib.decompress(file_data, -15).decode('utf-8')
@@ -171,15 +210,26 @@ def scan_fla(fla_path):
                 content = file_data.decode('utf-8', errors='replace')
             else:
                 content = ''
+        else:
+            content = None
 
+        if is_dom_doc and content:
+            include_set = parse_include_set(content)
+        elif is_library_xml and content:
             m = SYMBOL_RE.search(content)
             if m:
                 sym_name = xml_attr_unescape(m.group(1))
                 lid = xml_attr_unescape(m.group(2))
-                results.setdefault(lid, set()).add((swf_rel, sym_name))
-                seen_in_source.add(lid)
+                rel_href = fname[len('LIBRARY/'):]  # path under LIBRARY/, forward-slash
+                pending.append((sym_name, lid, rel_href))
 
         offset = next_offset
+
+    # Commit pending entries with orphan classification
+    for sym_name, lid, rel_href in pending:
+        is_orphan = (include_set is not None and rel_href not in include_set)
+        results.setdefault(lid, set()).add((swf_rel, sym_name, is_orphan))
+        seen_in_source.add(lid)
 
     if seen_in_source:
         source_counts[swf_rel] = len(seen_in_source)
@@ -198,46 +248,73 @@ def xml_safe(s):
 
 
 def classify_results():
-    """Classify all linkageIds into three categories.
+    """Classify all linkageIds into categories.
 
-    Returns (unique, duplicates, conflicts):
-      unique:     lid -> (swf, sym)          — single entry
-      duplicates: lid -> [(swf, sym), ...]   — multiple entries, all from same SWF
-      conflicts:  lid -> [(swf, sym), ...]   — entries from 2+ distinct SWFs
+    Entries are (swf, sym, is_orphan).  Orphans are XMLs in the .fla LIBRARY/
+    but not referenced by DOMDocument.xml's <Include> manifest — i.e. invisible
+    in Flash IDE library panel, dead linkage left over from element deletion.
+
+    Returns (unique, duplicates, conflicts, orphans):
+      unique:     lid -> (swf, sym, is_orphan)        — single live entry
+      duplicates: lid -> [(swf, sym, is_orphan), ...] — multiple entries, same SWF
+      conflicts:  lid -> [(swf, sym, is_orphan), ...] — entries from 2+ distinct SWFs
+                                                       (excluding any orphan-only
+                                                        sources from conflict count)
+      orphans:    lid -> [(swf, sym, True), ...]      — entries flagged as orphan
+                                                       (subset for separate reporting)
     """
     unique = {}
     duplicates = {}
     conflicts = {}
+    orphans = {}
     for lid in sorted(results.keys()):
         entries = sorted(results[lid])
+        # Collect orphan entries for separate reporting (regardless of category)
+        orphan_entries = [e for e in entries if e[2]]
+        if orphan_entries:
+            orphans[lid] = orphan_entries
+
+        # "Live" entries = non-orphan; conflicts are determined by live SWF count
+        live_entries = [e for e in entries if not e[2]]
         if len(entries) == 1:
             unique[lid] = entries[0]
         else:
-            distinct_swfs = set(swf for swf, _ in entries)
-            if len(distinct_swfs) > 1:
+            live_swfs = set(swf for swf, _, orph in entries if not orph)
+            if len(live_swfs) > 1:
                 conflicts[lid] = entries
             else:
+                # All from one live SWF (rest are orphans) OR all-orphan group
                 duplicates[lid] = entries
-    return unique, duplicates, conflicts
+    return unique, duplicates, conflicts, orphans
+
+
+def _src_attr(swf, sym, lid, is_orphan):
+    """Build attribute string for one source entry."""
+    attr = f'swf="{xml_safe(swf)}"'
+    if sym != lid:
+        attr += f' symbolName="{xml_safe(sym)}"'
+    if is_orphan:
+        attr += ' orphan="true"'
+    return attr
 
 
 def write_xml():
     """Write asset_source_map.xml with all linkage → source mappings."""
     os.makedirs(os.path.dirname(OUTPUT_XML), exist_ok=True)
-    unique, duplicates, conflicts = classify_results()
+    unique, duplicates, conflicts, orphans = classify_results()
 
     lines = ['<?xml version="1.0" encoding="UTF-8"?>']
     lines.append('<assetSourceMap>')
     lines.append('  <!-- Auto-generated by tools/linkage_scanner/scan_linkage.py -->')
     lines.append('  <!-- DO NOT EDIT MANUALLY -->')
+    lines.append('  <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; ')
+    lines.append('       Flash IDE library panel cannot see it but .swf compile may still expose linkage -->')
 
     # Write unique entries
     lines.append('')
     lines.append(f'  <!-- {len(unique)} unique assets -->')
-    for lid, (src, sym) in sorted(unique.items()):
-        attr = f'id="{xml_safe(lid)}" swf="{xml_safe(src)}"'
-        if sym != lid:
-            attr += f' symbolName="{xml_safe(sym)}"'
+    for lid, (src, sym, orph) in sorted(unique.items()):
+        attr = f'id="{xml_safe(lid)}" ' + _src_attr(src, sym, lid, orph)
         lines.append(f'  <asset {attr} />')
 
     # Write same-SWF duplicates (multiple symbolNames for one linkageId within one SWF)
@@ -246,24 +323,18 @@ def write_xml():
         lines.append(f'  <!-- {len(duplicates)} DUPLICATES: same ID, same SWF, multiple symbolNames -->')
         for lid, entries in sorted(duplicates.items()):
             lines.append(f'  <duplicate id="{xml_safe(lid)}">')
-            for swf, sym in entries:
-                attr = f'swf="{xml_safe(swf)}"'
-                if sym != lid:
-                    attr += f' symbolName="{xml_safe(sym)}"'
-                lines.append(f'    <source {attr} />')
+            for swf, sym, orph in entries:
+                lines.append(f'    <source {_src_attr(swf, sym, lid, orph)} />')
             lines.append('  </duplicate>')
 
     # Write cross-SWF conflicts
     if conflicts:
         lines.append('')
-        lines.append(f'  <!-- {len(conflicts)} CONFLICTS: same ID in multiple SWFs -->')
+        lines.append(f'  <!-- {len(conflicts)} CONFLICTS: same ID in multiple SWFs (live sources >= 2) -->')
         for lid, entries in sorted(conflicts.items()):
             lines.append(f'  <conflict id="{xml_safe(lid)}">')
-            for swf, sym in entries:
-                attr = f'swf="{xml_safe(swf)}"'
-                if sym != lid:
-                    attr += f' symbolName="{xml_safe(sym)}"'
-                lines.append(f'    <source {attr} />')
+            for swf, sym, orph in entries:
+                lines.append(f'    <source {_src_attr(swf, sym, lid, orph)} />')
             lines.append('  </conflict>')
 
     lines.append('</assetSourceMap>')
@@ -291,29 +362,44 @@ def main():
         return
 
     # Console report — reuse the same classification as XML
-    unique, duplicates, conflicts = classify_results()
+    unique, duplicates, conflicts, orphans = classify_results()
 
     print(f'\n=== Total: {len(results)} unique linkageIdentifiers from {len(source_counts)} sources ===')
-    print(f'  unique: {len(unique)}, same-SWF duplicates: {len(duplicates)}, cross-SWF conflicts: {len(conflicts)}')
+    print(f'  unique: {len(unique)}, same-SWF duplicates: {len(duplicates)}, '
+          f'cross-SWF conflicts: {len(conflicts)}, orphans: {len(orphans)}')
     if not INCLUDE_ALL:
         print(f'  (skipped: {", ".join(SKIP_DIRS)}  — use --include-all to include)')
     print()
+
+    def fmt_entry(swf, sym, orph, lid):
+        suffix = f'  (symbolName: {sym})' if sym != lid else ''
+        if orph:
+            suffix += '  [ORPHAN: not in DOMDocument <Include>]'
+        return f'    - {swf}{suffix}'
 
     if duplicates:
         print(f'=== DUPLICATES (same ID, same SWF, multiple symbolNames): {len(duplicates)} ===')
         for lid, entries in sorted(duplicates.items()):
             print(f'  {lid}:')
-            for swf, sym in entries:
-                suffix = f'  (symbolName: {sym})' if sym != lid else ''
-                print(f'    - {swf}{suffix}')
+            for swf, sym, orph in entries:
+                print(fmt_entry(swf, sym, orph, lid))
         print()
 
-    print(f'=== CONFLICTS (same ID in multiple SWFs): {len(conflicts)} ===')
+    if orphans:
+        print(f'=== ORPHANS (linkage exported from XML invisible to Flash IDE): {len(orphans)} ===')
+        print(f'  These are dead .fla zip residues — IDE library panel cannot delete them.')
+        print(f'  Use tools/linkage_scanner/strip_orphan_linkage.py to clean.')
+        for lid, entries in sorted(orphans.items()):
+            print(f'  {lid}:')
+            for swf, sym, orph in entries:
+                print(fmt_entry(swf, sym, orph, lid))
+        print()
+
+    print(f'=== CONFLICTS (same ID in multiple SWFs, live sources >= 2): {len(conflicts)} ===')
     for lid, entries in sorted(conflicts.items()):
         print(f'  {lid}:')
-        for swf, sym in entries:
-            suffix = f'  (symbolName: {sym})' if sym != lid else ''
-            print(f'    - {swf}{suffix}')
+        for swf, sym, orph in entries:
+            print(fmt_entry(swf, sym, orph, lid))
 
     print()
     print('=== Exports per source ===')

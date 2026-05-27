@@ -137,3 +137,9 @@ tools/combat-movement-sim/__pycache__/
 # Native cursor image-generation review sheets (generated, not source)
 launcher/web/assets/cursor/native/review/
 *.tombstone
+
+# .fla zip 编辑 (strip_orphan_linkage.py) 的备份
+*.fla.bak
+
+# linkage_scanner 缓存输出 (跑一次 scan_linkage.py 即重新生成)
+tools/linkage_scanner/_last_output.txt

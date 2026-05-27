@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
 import org.flashNight.arki.component.Shield.*;
+import org.flashNight.arki.unit.Action.Regeneration.*;
 
 //基因虫
 _root.敌人函数.基因虫兵种库 = [
@@ -559,6 +560,99 @@ _root.敌人函数.主唱回血增益 = function(单位:MovieClip, 触发概率:
 	_root.敌人函数.摇滚集体加血(单位, "主唱集体加血2", 触发概率, 900, 600);
 };
 
+
+// ==================== 单位帧回血/回蓝 (XML 帧脚本统一入口) ====================
+// 原本散落在多个 XML 帧脚本里 `_parent.hp += N / _parent.mp += N` 的位点
+// 现在统一走 HealApplier，杜绝越过 hp满血值/mp满血值 的事实溢出。
+
+/**
+ * 觉醒不坏金身循环帧回血回蓝
+ *
+ * 原本 XML 帧脚本：
+ *   if (hp < 满血) hp += 2 * 技能等级;   // 每帧加, 无后置截断, 会小幅越过 100%
+ *   if (mp < 满血) mp += 2 * 技能等级;
+ *
+ * 现在统一走 HealApplier 硬封顶，杜绝 +1 ~ +(2L-1) 的事实溢出。
+ *
+ * @param 单位 目标单位（通常是 _parent）
+ */
+_root.敌人函数.觉醒不坏金身回血 = function(单位):Void {
+	if (!单位) return;
+	var 量:Number = 2 * 单位.技能等级;
+	if (!(量 > 0)) return;
+	HealApplier.applyHpCapped(单位, 量, 单位.hp满血值);
+	HealApplier.applyMpCapped(单位, 量, 单位.mp满血值);
+};
+
+/**
+ * 雕像自回血（基于已损失体力比值）
+ *
+ * 原本 XML 帧脚本：
+ *   if (hp > 0 && hp < 满血 && 回血间隔帧 == 0) {
+ *       hp += floor(150 * (满血 - hp) / 满血);    // 无后置截断
+ *   } else 回血间隔帧--;
+ *
+ * @param 单位 目标单位
+ * @return 实际回血量；0 表示无效或仍在冷却
+ */
+_root.敌人函数.雕像自回血 = function(单位):Number {
+	if (!单位) return 0;
+	if (!(单位.hp > 0)) return 0;
+	var 满血:Number = 单位.hp满血值;
+	if (单位.hp >= 满血) return 0;
+	if (单位.回血间隔帧 > 0) {
+		单位.回血间隔帧--;
+		return 0;
+	}
+	var 已损失体力比值:Number = (满血 - 单位.hp) / 满血;
+	var 回血量:Number = Math.floor(150 * 已损失体力比值);
+	return HealApplier.applyHpCapped(单位, 回血量, 满血);
+};
+
+/**
+ * 粉红头发御姐 enterFrame 自回血（按变身阶段分支，参数化常量以适配不同形态副本）
+ *
+ * 原本 XML 帧脚本（8+ 个变身/技能形态副本共用同结构、不同常量）：
+ *   - 未兴奋剂 + hp<满血:                      hp += 常规回血量   (无截断)
+ *   - 兴奋剂阶段1 + 涅槃重生 + hp<满血:        hp += 常规回血量   (无截断)
+ *   - 兴奋剂阶段1 + 非涅槃重生:                hp -= 满血/3600    (扣血，保留)
+ *   - 兵器阶段2 + hp<满血:                     hp += 阶段2回血量  (无截断)
+ *
+ * 各形态实测常量对：
+ *   man-默认:        (26, 130)   man-22:    (22, 90)
+ *   man-17:          (17, 90)    man-39:    (39, 50)
+ *   man-7:           (7,  50)    man-15:    (15, 90)
+ *   man-10:          (10, 70)    man-13:    (13, 130)
+ *   onClipEvent-17:  (17, 105)
+ *
+ * @param 单位         目标单位（通常是 _parent）
+ * @param 常规回血量    未兴奋剂态 / 涅槃重生态每帧回血
+ * @param 阶段2回血量   兵器阶段2态每帧回血
+ */
+_root.敌人函数.粉红头发御姐自回血 = function(单位, 常规回血量:Number, 阶段2回血量:Number):Void {
+	if (!单位) return;
+	if (!(单位.hp > 0)) return;
+	if (_root.暂停 == true) return;
+
+	var 满血:Number = 单位.hp满血值;
+
+	if (单位.已使用兴奋剂 != true) {
+		HealApplier.applyHpCapped(单位, 常规回血量, 满血);
+		return;
+	}
+
+	// 已使用兴奋剂
+	if (单位.变身阶段 == 1) {
+		if (单位.宠物属性.涅槃重生) {
+			HealApplier.applyHpCapped(单位, 常规回血量, 满血);
+		} else {
+			// 扣血路径（非治疗，保持原硬写）
+			单位.hp -= 满血 / 3600;
+		}
+	} else if (单位.变身阶段 == 2) {
+		HealApplier.applyHpCapped(单位, 阶段2回血量, 满血);
+	}
+};
 
 _root.敌人函数.吉他播放嘲讽音效 = function():Void {
     var 歌曲列表 = ["吉他春日影三秒.wav", "吉他春日影三秒2.wav", "again三秒.wav", "again三秒2.wav", "名前のない怪物三秒.wav", "名前のない怪物三秒2.wav", "名前のない怪物三秒3.wav", "飞沙三秒.wav", "飞沙三秒2.wav", "飞沙三秒3.wav", "飞沙三秒5.wav", "飞沙三秒6.wav", "God Knows三秒.wav", "God Knows三秒2.wav", "God Knows三秒3.wav", "God Knows三秒5.wav", "God Knows三秒6.wav", "God Knows三秒7.wav", "God Knows三秒8.wav", "God Knows三秒9.wav", "God Knows三秒10.wav", "轻飘飘时间三秒.wav"];

@@ -466,27 +466,7 @@ function Phoenix()
    gotoAndPlay(random(15));
 }
 onClipEvent(enterFrame){
-   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
-   {
-      _parent.hp += 26;
-   }
-   else if(_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
-   {
-      if(_parent.变身阶段 == 1)
-      {
-         if(_parent.宠物属性.涅槃重生){
-			 if(_parent.hp < _parent.hp满血值){
-			 	_parent.hp += 26;
-			 }
-		 }else{
-		 	_parent.hp -= _parent.hp满血值 / 3600;
-		 }
-      }
-      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
-      {
-         _parent.hp += 130;
-      }
-   }
+   _root.敌人函数.粉红头发御姐自回血(_parent, 26, 130);
 }
 ]]></script>
                   </Actionscript>
@@ -507,27 +487,7 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(enterFrame){
-   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
-   {
-      _parent.hp += 22;
-   }
-   else if(_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
-   {
-      if(_parent.变身阶段 == 1)
-      {
-         if(_parent.宠物属性.涅槃重生){
-			 if(_parent.hp < _parent.hp满血值){
-			 	_parent.hp += 22;
-			 }
-		 }else{
-		 	_parent.hp -= _parent.hp满血值 / 3600;
-		 }
-      }
-      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
-      {
-         _parent.hp += 90;
-      }
-   }
+   _root.敌人函数.粉红头发御姐自回血(_parent, 22, 90);
 }
 ]]></script>
                   </Actionscript>
@@ -548,27 +508,7 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(enterFrame){
-   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
-   {
-      _parent.hp += 17;
-   }
-   else if(_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
-   {
-      if(_parent.变身阶段 == 1)
-      {
-         if(_parent.宠物属性.涅槃重生){
-			 if(_parent.hp < _parent.hp满血值){
-			 	_parent.hp += 17;
-			 }
-		 }else{
-		 	_parent.hp -= _parent.hp满血值 / 3600;
-		 }
-      }
-      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
-      {
-         _parent.hp += 90;
-      }
-   }
+   _root.敌人函数.粉红头发御姐自回血(_parent, 17, 90);
 }
 ]]></script>
                   </Actionscript>
@@ -598,26 +538,25 @@ onClipEvent(unload){
    _parent.刚体 = false;
    _parent.无敌 = false;
 }
+// 阶段1 扣血率 1/1200（异于默认 1/3600），不能套用通用 helper
 onClipEvent(enterFrame){
-   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
+   if(_parent.已使用兴奋剂 != true and _parent.hp > 0 and _root.暂停 == false)
    {
-      _parent.hp += 39;
+      _root.加血动作.单位HP_capped(_parent, 39);
    }
    else if(_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
    {
       if(_parent.变身阶段 == 1)
       {
          if(_parent.宠物属性.涅槃重生){
-			 if(_parent.hp < _parent.hp满血值){
-			 	_parent.hp += 39;
-			 }
+			 _root.加血动作.单位HP_capped(_parent, 39);
 		 }else{
 		 	_parent.hp -= _parent.hp满血值 / 1200;
 		 }
       }
-      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
+      else if(_parent.变身阶段 == 2)
       {
-         _parent.hp += 50;
+         _root.加血动作.单位HP_capped(_parent, 50);
       }
    }
 }
@@ -646,26 +585,25 @@ onClipEvent(unload){
    _parent.刚体 = false;
    _parent.无敌 = false;
 }
+// 阶段1 扣血率 1/1800（异于默认 1/3600），且无暂停判定，不能套用通用 helper
 onClipEvent(enterFrame){
-   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0)
+   if(_parent.已使用兴奋剂 != true and _parent.hp > 0)
    {
-      _parent.hp += 7;
+      _root.加血动作.单位HP_capped(_parent, 7);
    }
    else if(_parent.已使用兴奋剂 == true and _parent.hp > 0)
    {
       if(_parent.变身阶段 == 1)
       {
          if(_parent.宠物属性.涅槃重生){
-			 if(_parent.hp < _parent.hp满血值){
-			 	_parent.hp += 7;
-			 }
+			 _root.加血动作.单位HP_capped(_parent, 7);
 		 }else{
 		 	_parent.hp -= _parent.hp满血值 / 1800;
 		 }
       }
-      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
+      else if(_parent.变身阶段 == 2)
       {
-         _parent.hp += 50;
+         _root.加血动作.单位HP_capped(_parent, 50);
       }
    }
 }
@@ -698,27 +636,7 @@ onClipEvent(unload){
    躲闪 = false;
 }
 onClipEvent(enterFrame){
-   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
-   {
-      _parent.hp += 15;
-   }
-   else if(_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
-   {
-      if(_parent.变身阶段 == 1)
-      {
-         if(_parent.宠物属性.涅槃重生){
-			 if(_parent.hp < _parent.hp满血值){
-			 	_parent.hp += 15;
-			 }
-		 }else{
-		 	_parent.hp -= _parent.hp满血值 / 3600;
-		 }
-      }
-      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
-      {
-         _parent.hp += 90;
-      }
-   }
+   _root.敌人函数.粉红头发御姐自回血(_parent, 15, 90);
 }
 ]]></script>
                   </Actionscript>
@@ -746,27 +664,7 @@ onClipEvent(unload){
    _parent.无敌 = false;
 }
 onClipEvent(enterFrame){
-   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
-   {
-      _parent.hp += 10;
-   }
-   else if(_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
-   {
-      if(_parent.变身阶段 == 1)
-      {
-         if(_parent.宠物属性.涅槃重生){
-			 if(_parent.hp < _parent.hp满血值){
-			 	_parent.hp += 10;
-			 }
-		 }else{
-		 	_parent.hp -= _parent.hp满血值 / 3600;
-		 }
-      }
-      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
-      {
-         _parent.hp += 70;
-      }
-   }
+   _root.敌人函数.粉红头发御姐自回血(_parent, 10, 70);
 }
 ]]></script>
                   </Actionscript>
@@ -798,31 +696,7 @@ onClipEvent(enterFrame){
 }
 
 onClipEvent (enterFrame) {
-	if (_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
-	{
-		_parent.hp += 17;
-	}
-	else if (_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
-	{
-		if (_parent.变身阶段 == 1)
-		{
-			if (_parent.宠物属性.涅槃重生)
-			{
-				if (_parent.hp < _parent.hp满血值)
-				{
-					_parent.hp += 17;
-				}
-			}
-			else
-			{
-				_parent.hp -= _parent.hp满血值 / 3600;
-			}
-		}
-		else if (_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
-		{
-			_parent.hp += 105;
-		}
-	}
+	_root.敌人函数.粉红头发御姐自回血(_parent, 17, 105);
 }]]></script>
                   </Actionscript>
                   <filters>
@@ -845,27 +719,7 @@ onClipEvent (enterFrame) {
 	_parent.击飞倒地();
 }
 onClipEvent(enterFrame){
-   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
-   {
-      _parent.hp += 13;
-   }
-   else if(_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
-   {
-      if(_parent.变身阶段 == 1)
-      {
-         if(_parent.宠物属性.涅槃重生){
-			 if(_parent.hp < _parent.hp满血值){
-			 	_parent.hp += 13;
-			 }
-		 }else{
-		 	_parent.hp -= _parent.hp满血值 / 3600;
-		 }
-      }
-      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
-      {
-         _parent.hp += 130;
-      }
-   }
+   _root.敌人函数.粉红头发御姐自回血(_parent, 13, 130);
 }
 ]]></script>
                   </Actionscript>
