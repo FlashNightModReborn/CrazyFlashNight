@@ -136,15 +136,16 @@ _root.gameCommands["shopCheckout"] = function(params) {
         for (var j = 0; j < resolved.length; j++) {
             _root.商城已购买物品.push(resolved[j]);
         }
-        _root.存盘商城已购买物品();
         _root.商城购物车 = [];
-        _root.保存购物车();
         _root.soundEffectManager.playSound("收银机.mp3");
         resp.success = true;
         resp.newBalance = _root.虚拟币;
         resp.purchased = _root.商城已购买物品;
-        // Plan A: 商城 checkout 真实扣 K 点 + 写入已购列表，必达。绕过 debounce 立即同步落盘。
-        // 测试：购买后立刻杀进程，重启验 K点/已购队列 一致。
+        // Plan A: 商城 checkout 真实扣 K 点 + 写入已购列表，必达。
+        // 删除原本的 _root.存盘商城已购买物品() / _root.保存购物车() 子层 flush：
+        // 子层只写 shop/cart 子层 SOL，与下方 mydata 顶层完整 flushNow 之间存在崩溃窗口
+        // （子层已写但 mydata 没扣 K 点）。改为只走一次 _root.强制存盘() 写完整 mydata，
+        // 保证原子：要么全存，要么全回滚到上次成功的 saveAll 状态。
         _root.强制存盘();
     } else {
         resp.success = false;
@@ -174,11 +175,12 @@ _root.gameCommands["shopClaim"] = function(params) {
             resp.success = false; resp.error = "inventory_full";
         } else if (org.flashNight.arki.item.ItemUtil.singleAcquire(itemName, qty)) {
             _root.商城已购买物品.splice(claimIdx, 1);
-            _root.存盘商城已购买物品();
             resp.success = true;
             resp.purchased = _root.商城已购买物品;
-            // Plan A: 商城 claim 真实从已购列表移除 + 物品入背包，必达。绕过 debounce 立即同步落盘。
-            // 测试：领取后立刻杀进程，重启验 已购列表已移除 + 背包含该物品。
+            // Plan A: 商城 claim 真实从已购列表移除 + 物品入背包，必达。
+            // 删除原本的 _root.存盘商城已购买物品() 子层 flush：
+            // 子层 SOL 写入与下方 mydata 顶层 flushNow 之间存在崩溃窗口
+            // （子层已移除已购但 mydata 没存背包）。改为只走一次 _root.强制存盘() 写完整 mydata。
             _root.强制存盘();
         } else {
             resp.success = false; resp.error = "acquire_failed";
@@ -202,7 +204,13 @@ _root.gameCommands["shopSaveCart"] = function(params) {
         var entry = _root.kshop_list[idx];
         _root.商城购物车.push([entry.id, entry.item, entry.type, entry.price, qty]);
     }
-    _root.保存购物车();
+    // Plan A audit: shopSaveCart 写 _root.商城购物车（save-relevant）。
+    // 删除原本的 _root.保存购物车() 子层 flush（仅写 cart 子层 SOL，与 mydata 顶层
+    // 长期 desync 风险）。改为标脏 + 自动存盘 debounce：购物车连续编辑被合并；
+    // 后续 checkout/claim 会走 flushNow 一次性写完整 mydata；玩家离开商城面板
+    // 时 shopPanelClose 兜底 + SceneChanged hook unconditional flushNow 兜底。
+    _root.存档系统.dirtyMark = true;
+    _root.自动存盘();
     var resp = { task: "shop_response", callId: callId, success: true };
     _root.UI系统.商城WebView.sendResponse(resp);
 };

@@ -61,6 +61,22 @@ class org.flashNight.neur.Server.SaveManager {
      *          改为 if(dirtyMark) 守卫或直接删除（checkout/claim 已 flushNow）
      *       c) 其他 13 处仍 _root.自动存盘() 的非关键 UI 关闭事件可考虑 dirty 守卫
      *
+     * [Plan A2 TODO — review 反馈 Medium] 硬退出前 flush 兜底
+     *   - 问题：剩余 _root.自动存盘() 路径走 300ms trailing debounce；玩家在
+     *     非关键 UI 关闭后立即关进程 / alt+F4 / Launcher 退出 → pending token
+     *     未 fire 即被杀 → 比旧同步 自动存盘() 多一个 300ms 丢存窗口
+     *   - 当前覆盖：safeExit 已走 flushNow；SceneChanged hook 已 unconditional
+     *     flushNow（场景切换路径无窗口）；剩余路径是 同一场景内 UI 关闭后立即退
+     *   - 设计思路：
+     *       a) launcher 端：OnSocketClosed / OnApplicationExit 前先发
+     *          force_flush command 给 Flash，等 ack 后才退出
+     *       b) AS2 端：新增 gameCommands["forceFlush"] handler → 调
+     *          SaveManager.getInstance().flushNow()
+     *       c) 备选方案：把 13 处中能"零间距 lead to 退出"的 UI 关闭逐个改成
+     *          flushNow（但难精准识别）
+     *   - 优先级：低（场景切换路径已 cover 主用例；剩余仅"同场景内关 UI →
+     *     立即退游戏"罕见用例）
+     *
      * Plan B + C 实施后，预期 saveAll 单次成本从 14KB+socket 降到 ~2-3KB 平均，
      * FPS 影响应进一步消失。
      * ============================================================
@@ -91,6 +107,13 @@ class org.flashNight.neur.Server.SaveManager {
      *       覆盖 金钱 / 虚拟币 / 同伴数据 / 同伴数 / 佣兵是否出战信息 写入
      *   - scripts/类定义/.../MercPanelService.as: handleDeploy 末尾
      *       覆盖 佣兵是否出战信息[mercIndex] toggle 写入（上游 WebView 佣兵迁移引入）
+     *   - scripts/逻辑系统分区/商城系统_WebView.as: shopSaveCart 末尾
+     *       覆盖 _root.商城购物车 写入；review High 反馈后从原子层 flush 改为
+     *       dirtyMark + 自动存盘 debounce（与 checkout/claim 一致性原子写入）
+     *   - scripts/逻辑系统分区/商城系统_WebView.as: shopCheckout / shopClaim
+     *       删除原 _root.存盘商城已购买物品() / _root.保存购物车() 子层 flush
+     *       （子层 SOL 与 mydata 顶层之间的崩溃窗口风险），统一走 _root.强制存盘()
+     *       一次性原子写入
      *
      * == 确认无需补标路径（state 改动但有理由）==
      *   - SaveManager 内部所有 newCharacter / loadGameState / migrateAndSync /
