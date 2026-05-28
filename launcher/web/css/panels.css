@@ -8357,6 +8357,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .pet-page-title-block { flex: 1; min-width: 0; }
 .pet-page-title-block .pet-page-title { font-size: 15px; color: #ddd; letter-spacing: 0; }
 .pet-advance-meta { display: flex; gap: 6px; margin-top: 2px; flex-wrap: wrap; }
+.pet-advance-avatar { width: 64px; height: 64px; border-radius: 4px; object-fit: contain; background: #1a1a2e; flex-shrink: 0; }
 .pet-meta-chip {
     font-size: 11px;
     padding: 1px 8px;
@@ -9022,12 +9023,12 @@ html.perf-low-effects .map-panel-close-btn:hover {
     font-size: 14px;
     font-weight: 600;
     color: #fff;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 .merc-card-meta {
     font-size: 12px;
     color: #999;
-    margin-bottom: 4px;
+    font-weight: 400;
 }
 .merc-deployed {
     color: var(--merc-deploy);
@@ -9053,8 +9054,8 @@ html.perf-low-effects .map-panel-close-btn:hover {
 
 .merc-equip-cell {
     position: relative;
-    width: 26px;
-    height: 26px;
+    width: 32px;
+    height: 32px;
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 3px;
@@ -9091,8 +9092,8 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .merc-equip-level {
     position: absolute;
     right: 1px;
-    bottom: 1px;
-    font-size: 8px;
+    bottom: 0;
+    font-size: 9px;
     line-height: 1;
     color: var(--merc-accent);
     background: rgba(0, 0, 0, 0.7);

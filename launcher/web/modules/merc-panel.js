@@ -231,10 +231,10 @@
             var info = document.createElement('div');
             info.className = 'merc-card-info';
             info.innerHTML =
-                '<div class="merc-card-name">' + escHtml(merc.name) + '</div>' +
-                '<div class="merc-card-meta">Lv.' + merc.level + ' | ' + escHtml(merc.gender) +
+                '<div class="merc-card-name">' + escHtml(merc.name) +
+                ' <span class="merc-card-meta">Lv.' + merc.level + ' | ' + escHtml(merc.gender) +
                 (merc.deployed ? ' | <span class="merc-deployed">已出战</span>' : '') +
-                '</div>';
+                '</span></div>';
 
             // 装备图标网格 — 11 槽固定渲染 (slot 6-16)
             var equipGrid = document.createElement('div');
@@ -328,11 +328,11 @@
             var info = document.createElement('div');
             info.className = 'merc-card-info';
             info.innerHTML =
-                '<div class="merc-card-name">' + escHtml(merc.name) + '</div>' +
-                '<div class="merc-card-meta">Lv.' + merc.level + ' | ' + escHtml(merc.gender) +
+                '<div class="merc-card-name">' + escHtml(merc.name) +
+                ' <span class="merc-card-meta">Lv.' + merc.level + ' | ' + escHtml(merc.gender) +
                 ' | <span class="merc-price-gold">' + (merc.goldPrice || 0).toLocaleString() + ' 金币</span>' +
                 (merc.kPrice > 0 ? ' | <span class="merc-price-kpoint">' + merc.kPrice + ' K点</span>' : '') +
-                '</div>';
+                '</span></div>';
 
             // 装备图标网格 — 11 槽固定渲染 (slot 6-16)
             var equipGrid = document.createElement('div');

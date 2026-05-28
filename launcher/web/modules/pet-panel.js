@@ -91,6 +91,7 @@
             '<div class="pet-page" id="pet-page-advance" hidden>' +
                 '<div class="pet-page-header">' +
                     '<button class="pet-page-back" type="button" data-audio-cue="cancel">‹ 返回</button>' +
+                    '<img class="pet-advance-avatar" id="pet-advance-avatar" src="assets/pets/pet_locked.png" width="64" height="64" alt="">' +
                     '<div class="pet-page-title-block">' +
                         '<h2 class="pet-page-title" id="pet-advance-title">--</h2>' +
                         '<div class="pet-advance-meta" id="pet-advance-meta"></div>' +
@@ -338,7 +339,7 @@
             var staminaFull = pet.stamina >= (pet.maxStamina || 200);
 
             card.innerHTML =
-                '<img class="pet-card-icon" src="assets/pets/pet_locked.png" width="80" height="80" alt="">' +
+                '<img class="pet-card-icon" src="assets/pets/pet_' + pet.petId + '.png" onerror="this.onerror=null;this.src=\'assets/pets/pet_locked.png\'" width="80" height="80" alt="">' +
                 '<div class="pet-card-info">' +
                     '<div class="pet-card-header">' +
                         '<span class="pet-card-name">' + escapeHtml(pet.name) + '</span>' +
@@ -431,6 +432,10 @@
         if (!pet) return;
 
         _el.querySelector('#pet-advance-title').textContent = pet.name + ' Lv.' + pet.level;
+
+        var avatarEl = _el.querySelector('#pet-advance-avatar');
+        avatarEl.src = 'assets/pets/pet_' + pet.petId + '.png';
+        avatarEl.onerror = function() { this.onerror = null; this.src = 'assets/pets/pet_locked.png'; };
 
         var metaHtml = '';
         if (pet.deployed) {
@@ -642,8 +647,10 @@
 
             var canAdopt = true;
             var btnText = priceText;
+            var taskLocked = false;
             if (_snapshot && pet.unlockTask > 0 && pet.unlockTask > (_snapshot.playerTask || 0)) {
                 canAdopt = false;
+                taskLocked = true;
                 btnText = '需主线进度 ' + pet.unlockTask;
             } else if (pet.unlockLevel > (_snapshot ? _snapshot.playerLevel : 1)) {
                 canAdopt = false;
@@ -667,7 +674,9 @@
                     '<span class="pet-store-card-name">' + escapeHtml(pet.name) + '</span>' +
                     (pet.unique ? '<span class="pet-store-card-unique">唯一</span>' : '') +
                 '</div>' +
-                '<img class="pet-store-card-icon" src="assets/pets/pet_locked.png" width="80" height="80" alt="">' +
+                (taskLocked
+                    ? '<img class="pet-store-card-icon" src="assets/pets/pet_locked.png" width="80" height="80" alt="">'
+                    : '<img class="pet-store-card-icon" src="assets/pets/pet_' + pet.petId + '.png" onerror="this.onerror=null;this.src=\'assets/pets/pet_locked.png\'" width="80" height="80" alt="">') +
                 '<div class="pet-store-card-footer">' +
                     '<button class="pet-store-adopt-btn" data-pet-id="' + pet.petId + '"' + (canAdopt ? '' : ' disabled') + '>' + btnText + '</button>' +
                 '</div>';
