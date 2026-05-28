@@ -139,8 +139,6 @@ layers:
       - "ClearScriptV8.win-x64.dll"
       # JSON 序列化
       - "Newtonsoft.Json.dll"
-      # .NET Framework 补丁（csproj 引用，2026-05-26 起 launcher 启动期 RID 探测依赖）
-      - "System.Runtime.InteropServices.RuntimeInformation.dll"
       # miniaudio 原生音频引擎
       - "miniaudio.dll"
       # Rust SOL 解析器（Protocol 2 存档决议硬依赖）
