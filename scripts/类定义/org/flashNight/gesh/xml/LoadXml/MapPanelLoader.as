@@ -25,7 +25,8 @@ class org.flashNight.gesh.xml.LoadXml.MapPanelLoader extends BaseXMLLoader {
     /**
      * 覆盖基类的 load 方法。相比模板多一层守卫：
      *   - XMLLoader 在根节点不存在时 parsedData == null，基类仍走 success；这里兜底转 error
-     *   - 正常根节点下必须至少含 groups/hotspots/task_npcs 中的一个，否则也视为失败
+     *   - 正常根节点下必须至少含 groups/hotspots 中的一个，否则也视为失败
+     *     （task_npcs / aliases 段已迁出至 data/map/task_npc_registry.json，由 DataQueryTask 提供）
      *   （parser 行为：返回的 data 是根节点内容，不是 {rootName: content}；见 XMLLoader.as L43-51）
      */
     public function load(onLoadHandler:Function, onErrorHandler:Function):Void {
@@ -39,8 +40,8 @@ class org.flashNight.gesh.xml.LoadXml.MapPanelLoader extends BaseXMLLoader {
                 if (onErrorHandler != null) onErrorHandler();
                 return;
             }
-            if (data.groups == undefined && data.hotspots == undefined && data.task_npcs == undefined) {
-                trace("MapPanelLoader: 根节点下无 groups/hotspots/task_npcs，视为失败");
+            if (data.groups == undefined && data.hotspots == undefined) {
+                trace("MapPanelLoader: 根节点下无 groups/hotspots，视为失败");
                 self.clearCache();
                 if (onErrorHandler != null) onErrorHandler();
                 return;

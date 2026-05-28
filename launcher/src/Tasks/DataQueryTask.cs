@@ -13,7 +13,7 @@ namespace CF7Launcher.Tasks
     /// 数据从项目 XML 文件解析，由 DataCache 延迟加载并缓存。
     ///
     /// 协议：
-    ///   请求 payload: { dataType: "npc_dialogue"|"merc_bundle", key: ..., taskProgress: ... }
+    ///   请求 payload: { dataType: "npc_dialogue"|"merc_bundle"|"enemy_dialogues"|"task_npc_registry", key: ..., taskProgress: ... }
     ///   响应: { success: true, task: "data_query", result: ... }
     ///      或 { success: false, task: "data_query", error: "..." }
     /// </summary>
@@ -61,6 +61,8 @@ namespace CF7Launcher.Tasks
                     return QueryMercBundle();
                 case "enemy_dialogues":
                     return QueryEnemyDialogues();
+                case "task_npc_registry":
+                    return QueryTaskNpcRegistry();
                 default:
                     return BuildError("unknown dataType: " + dataType);
             }
@@ -117,6 +119,21 @@ namespace CF7Launcher.Tasks
             JObject data = _cache.GetEnemyDialogues();
             if (data == null)
                 return BuildError("enemy_dialogues unavailable: " + (_cache.GetEnemyDlgError() ?? "unknown"));
+
+            return BuildSuccess(data);
+        }
+
+        /// <summary>
+        /// 地图任务 NPC 注册表查询。返回 { task_npcs:[{name,hotspot}], aliases:[{name,canonical}] }。
+        /// AS2 端 MapTaskNpcRegistry.applyFromQuery 启动期消费。
+        /// 数据派生自 launcher/web/modules/map-panel-data.js 的 staticAvatars+dynamicAvatars。
+        /// 失败 → success:false，AS2 静默降级（任务环 marker 列表为空），不阻塞游戏进入。
+        /// </summary>
+        private string QueryTaskNpcRegistry()
+        {
+            JObject data = _cache.GetTaskNpcRegistry();
+            if (data == null)
+                return BuildError("task_npc_registry unavailable: " + (_cache.GetTaskNpcError() ?? "unknown"));
 
             return BuildSuccess(data);
         }

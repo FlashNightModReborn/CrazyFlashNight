@@ -117,5 +117,38 @@ namespace CF7Launcher.Data
         }
 
         public string GetEnemyDlgError() { return _enemyDlgError; }
+
+        // ===================== 地图任务 NPC 注册表 =====================
+        // SOT = launcher/web/modules/map-panel-data.js（build.ps1 Step 1b 派生）
+        // 输出文件: data/map/task_npc_registry.json
+        // AS2 端 MapTaskNpcRegistry.applyFromQuery 消费。
+
+        private readonly object _taskNpcLock = new object();
+        private bool _taskNpcAttempted;
+        private JObject _taskNpcRegistry;
+        private string _taskNpcError;
+
+        public JObject GetTaskNpcRegistry()
+        {
+            if (_taskNpcAttempted) return _taskNpcRegistry;
+            lock (_taskNpcLock)
+            {
+                if (_taskNpcAttempted) return _taskNpcRegistry;
+                try
+                {
+                    _taskNpcRegistry = XmlDataLoader.LoadTaskNpcRegistry(_projectRoot);
+                }
+                catch (Exception ex)
+                {
+                    _taskNpcError = ex.Message;
+                    _taskNpcRegistry = null;
+                    LogManager.Log("[DataCache] task_npc_registry load FAILED: " + _taskNpcError);
+                }
+                _taskNpcAttempted = true;
+                return _taskNpcRegistry;
+            }
+        }
+
+        public string GetTaskNpcError() { return _taskNpcError; }
     }
 }

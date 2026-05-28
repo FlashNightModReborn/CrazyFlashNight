@@ -5,6 +5,7 @@
 #
 # 工作流（Phase 4 重写）：
 #   1. TS 编译 launcher/scripts → dist/hit-number-bundle.js（V8 运行时 bundle）
+#   1b. 派生 data/map/task_npc_registry.json (NPC↔hotspot 单源派生自 map-panel-data.js)
 #   2. native miniaudio.dll 构建（cl.exe via vcvars64）
 #   3. native sol_parser.dll 构建（cargo via rustup）
 #   4. dotnet publish -r win-x64 --self-contained true -p:PublishSingleFile=true
@@ -77,6 +78,23 @@ if (Test-Path (Join-Path $tsDir "tsconfig.json")) {
 } else {
     Write-Host "  [SKIP] No tsconfig.json found in $tsDir" -ForegroundColor Yellow
 }
+
+# Step 1b: 派生 data/map/task_npc_registry.json
+# SOT = launcher/web/modules/map-panel-data.js 的 staticAvatars + dynamicAvatars。
+# 派生失败 (e.g. hotspotId 拼错 / 重名 NPC) → exit 1 在 build 阶段拦截，避免 launcher
+# 启动后 DataQueryTask 返回 success:false → AS2 静默降级、任务红点全 0 的难诊断状态。
+Write-Host "[Step 1b/7] Derive data/map/task_npc_registry.json..." -ForegroundColor Yellow
+$deriveScript = Join-Path $projectRoot "tools\derive-task-npc-registry.js"
+if (-not (Test-Path $deriveScript)) {
+    Write-Host "[FAIL] derive-task-npc-registry.js missing: $deriveScript" -ForegroundColor Red
+    exit 1
+}
+node $deriveScript
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] task_npc_registry 派生失败 (上方日志含具体校验错误)" -ForegroundColor Red
+    exit 1
+}
+Write-Host "  task_npc_registry.json OK." -ForegroundColor Green
 
 # Step 2: Build native miniaudio DLL
 Write-Host "[Step 2/7] Build native miniaudio DLL..." -ForegroundColor Yellow

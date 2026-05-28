@@ -519,26 +519,46 @@ var 材料大全loader:MaterialDictionaryLoader = MaterialDictionaryLoader.getIn
     }
 );
 
-// ── 地图面板配置（data/map/map_panel.xml → MapPanelCatalog + MapTaskNpcRegistry） ──
-import org.flashNight.gesh.xml.LoadXml.*;
-import org.flashNight.arki.map.*;
+// ── 地图面板配置 ──
+//   Catalog (groups/hotspots) ← data/map/map_panel.xml (MapPanelLoader async)
+//   Registry (task_npcs + aliases) ← launcher DataQueryTask("task_npc_registry") async，
+//     真相源是 launcher/web/modules/map-panel-data.js 的 staticAvatars + dynamicAvatars，
+//     build.ps1 Step 1b 派生为 data/map/task_npc_registry.json。
+//   顺序：MapPanelLoader → Catalog.applyFromXml → DataQueryService.query → Registry.applyFromQuery
+//   依赖：Registry 读 Catalog.HOTSPOT_PAGES 派生 page，所以 Catalog 必须先 ready。
+//   失败语义：Registry 任一环节失败 → 静默降级（任务红点列表为空），不阻塞游戏进入；
+//     错误信息走 _root.服务器.发布服务器消息 留痕（trace 在 release build 被剔除）。
+import org.flashNight.gesh.xml.LoadXml.MapPanelLoader;
+import org.flashNight.arki.map.MapPanelCatalog;
+import org.flashNight.arki.map.MapTaskNpcRegistry;
+import org.flashNight.neur.Server.DataQueryService;
 
 var mapPanelLoader:MapPanelLoader = MapPanelLoader.getInstance();
 mapPanelLoader.load(
     function(data:Object):Void {
-        // 顺序要求：Catalog 先应用（Registry 依赖 Catalog.HOTSPOT_PAGES 派生 page）
         if (!MapPanelCatalog.applyFromXml(data)) {
             trace("主程序：地图面板配置结构不合法，面板将不可用。");
             _root.发布消息("[错误] 地图面板配置结构不合法");
             return;
         }
-        if (!MapTaskNpcRegistry.applyFromXml(data)) {
-            trace("主程序：任务 NPC 配置不合法，任务 marker 将不可用。");
-            _root.发布消息("[错误] 地图任务 NPC 配置不合法");
-            return;
-        }
-        trace("主程序：地图面板配置加载成功！");
-        _root.发布消息("地图面板配置加载完毕");
+        trace("主程序：地图面板 Catalog 加载成功，发起 task_npc_registry query…");
+        DataQueryService.query("task_npc_registry", null, function(resp:Object):Void {
+            if (resp == null || !resp.success) {
+                var errMsg:String = (resp != null && resp.error != undefined) ? String(resp.error) : "no response";
+                if (_root.服务器 != undefined && _root.服务器.发布服务器消息 != undefined) {
+                    _root.服务器.发布服务器消息("[MapTaskNpcRegistry] query 失败: " + errMsg);
+                }
+                return;
+            }
+            if (!MapTaskNpcRegistry.applyFromQuery(resp.result)) {
+                if (_root.服务器 != undefined && _root.服务器.发布服务器消息 != undefined) {
+                    _root.服务器.发布服务器消息("[MapTaskNpcRegistry] applyFromQuery 校验失败（详情见上方留痕）");
+                }
+                return;
+            }
+            trace("主程序：地图任务 NPC 注册表加载完毕");
+            _root.发布消息("地图配置加载完毕");
+        });
     },
     function():Void {
         trace("主程序：地图面板配置加载失败！面板将不可用。");

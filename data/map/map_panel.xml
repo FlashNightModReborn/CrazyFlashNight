@@ -1,5 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- WebView 地图面板配置：唯一权威源。派生 MapPanelCatalog 的 5 张表 + MapTaskNpcRegistry 的 marker 字典 -->
+<!-- WebView 地图面板配置：派生 MapPanelCatalog 的 5 张表 + avatar_visibility 门控规则。
+     task_npcs / aliases 已迁出（真相源 = launcher/web/modules/map-panel-data.js，
+     build.ps1 Step 1b 派生为 data/map/task_npc_registry.json，AS2 通过 DataQueryTask 查询）。 -->
 <map_panel>
     <groups>
         <group id="base"          page="base"    label="基地"/>
@@ -72,71 +74,15 @@
         <hotspot id="teaching_right"        group="schoolInside" frame="地图-教学楼内部右侧"/>
     </hotspots>
 
-    <task_npcs>
-        <!-- base (20) -->
-        <npc name="Pig"                hotspot="base_garage"/>
-        <npc name="Boy"                hotspot="base_garage"/>
-        <npc name="King"               hotspot="base_garage"/>
-        <npc name="冷兵器商人"         hotspot="base_garage"/>
-        <npc name="杀马特"             hotspot="base_lobby"/>
-        <npc name="酒保"               hotspot="merc_bar"/>
-        <npc name="格格巫"             hotspot="infirmary"/>
-        <npc name="丽丽丝"             hotspot="infirmary"/>
-        <npc name="舞女"               hotspot="merc_bar"/>
-        <npc name="宝石线人"           hotspot="base_lobby"/>
-        <npc name="前治安官"           hotspot="base_lobby"/>
-        <npc name="黑铁会外交部长"     hotspot="base_lobby"/>
-        <npc name="学生妹"             hotspot="base_lobby"/>
-        <npc name="幸存老兵"           hotspot="base_lobby"/>
-        <npc name="The Girl"           hotspot="basement1"/>
-        <npc name="Andy Law"           hotspot="basement1"/>
-        <npc name="Shop Girl"          hotspot="armory"/>
-        <npc name="Blue"               hotspot="basement1"/>
-        <npc name="小F"                hotspot="armory"/>
-        <npc name="厨师"               hotspot="cafeteria"/>
-
-        <!-- faction (15) -->
-        <npc name="general"            hotspot="warlord_base"/>
-        <npc name="gazer"              hotspot="warlord_base"/>
-        <npc name="director"           hotspot="warlord_tent"/>
-        <npc name="itinerant"          hotspot="firing_range"/>
-        <npc name="surveyor"           hotspot="firing_range"/>
-        <npc name="singer"             hotspot="rock_park"/>
-        <npc name="keyboard"           hotspot="rock_park"/>
-        <npc name="guitar"             hotspot="rock_park"/>
-        <npc name="火凤"               hotspot="blackiron_training"/>
-        <npc name="翅虎"               hotspot="blackiron_training"/>
-        <npc name="黑龙"               hotspot="blackiron_training"/>
-        <npc name="黑铁"               hotspot="blackiron_pavilion"/>
-        <npc name="牛仔"               hotspot="fallen_bar"/>
-        <npc name="假肢仙人"           hotspot="fallen_street"/>
-        <npc name="吸特乐"             hotspot="fallen_street"/>
-
-        <!-- defense (6) -->
-        <npc name="artist"             hotspot="first_defense"/>
-        <npc name="soldier"            hotspot="first_defense"/>
-        <npc name="排骨"               hotspot="alliance_dock"/>
-        <npc name="机哥"               hotspot="alliance_dock"/>
-        <npc name="阿波"               hotspot="alliance_dock"/>
-        <npc name="PROPHET"            hotspot="alliance_corridor"/>
-
-        <!-- school (13) -->
-        <npc name="黑仔"               hotspot="union_university"/>
-        <npc name="Bat"                hotspot="union_university"/>
-        <npc name="Tomboy"             hotspot="union_university"/>
-        <npc name="武器订购系统"       hotspot="union_university"/>
-        <npc name="体育老师"           hotspot="university_interior"/>
-        <npc name="室友"               hotspot="school_dormitory"/>
-        <npc name="程铮"               hotspot="teaching_interior"/>
-        <npc name="剑道社长"           hotspot="kendo_club"/>
-        <npc name="冯佑权"             hotspot="kendo_club"/>
-        <npc name="理科教授"           hotspot="science_class"/>
-        <npc name="文科老师"           hotspot="arts_class"/>
-        <npc name="Vanshuther"         hotspot="workshop"/>
-        <npc name="教导主任"           hotspot="office"/>
-
-        <alias name="∞天ㄙ★使的剪∞" canonical="杀马特"/>
-    </task_npcs>
+    <!--
+        task_npcs / aliases 段已于 2026-05-28 迁出本文件。
+        真相源 = launcher/web/modules/map-panel-data.js 的 staticAvatars + dynamicAvatars，
+        派生入口 = tools/derive-task-npc-registry.js（build.ps1 Step 1b 自动跑），
+        派生产物 = data/map/task_npc_registry.json，
+        AS2 端通过 DataQueryService.query("task_npc_registry", ...) 启动期拉取。
+        新增 NPC：编辑 launcher/web/modules/map-panel-data.js 的 staticAvatars 即可，
+                不再需要回写本文件。
+    -->
 
     <!--
         avatar_visibility: 静态 NPC 头像的进度/基建门控。

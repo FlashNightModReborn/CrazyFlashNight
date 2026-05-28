@@ -412,5 +412,33 @@ namespace CF7Launcher.Data
             LogManager.Log("[XmlDataLoader] Enemy dialogues loaded: " + result.Count + " identities");
             return result;
         }
+
+        // ===================== 地图任务 NPC 注册表 =====================
+
+        /// <summary>
+        /// 读取 data/map/task_npc_registry.json，由 tools/derive-task-npc-registry.js 派生。
+        /// 该 JSON 是 launcher/web/modules/map-panel-data.js (staticAvatars + dynamicAvatars)
+        /// 的派生产物；build.ps1 Step 1b 自动重新派生。本方法仅原样转发整段 JSON 给 AS2 端
+        /// MapTaskNpcRegistry.applyFromQuery。校验责任在派生脚本。
+        ///
+        /// 文件缺失 / JSON 解析异常 → 抛出，由 DataCache 缓存错误状态。
+        /// </summary>
+        public static JObject LoadTaskNpcRegistry(string projectRoot)
+        {
+            string path = Path.Combine(projectRoot, "data", "map", "task_npc_registry.json");
+            if (!File.Exists(path))
+                throw new FileNotFoundException("task_npc_registry.json not found: " + path);
+
+            string text = File.ReadAllText(path);
+            JObject obj = JObject.Parse(text);
+
+            JArray npcs = obj["task_npcs"] as JArray;
+            JArray aliases = obj["aliases"] as JArray;
+            int npcCount = npcs != null ? npcs.Count : 0;
+            int aliasCount = aliases != null ? aliases.Count : 0;
+            LogManager.Log("[XmlDataLoader] task_npc_registry loaded: " + npcCount + " npcs + " + aliasCount + " aliases");
+
+            return obj;
+        }
     }
 }

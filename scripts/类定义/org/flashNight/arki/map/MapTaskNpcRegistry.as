@@ -1,19 +1,29 @@
 ﻿import org.flashNight.arki.map.MapPanelCatalog;
-import org.flashNight.gesh.xml.XMLParser;
 
 /**
  * 文件：org/flashNight/arki/map/MapTaskNpcRegistry.as
- * 说明：WebView 地图面板的任务 NPC 坐标 registry。
+ * 说明：WebView 地图面板的任务 NPC ↔ hotspot registry。
  *
  * 职责：
- *   - 维护 NPC 原名 → marker 定义的映射（包括 alias 别名与小写 fallback 查询）
- *   - 数据由 data/map/map_panel.xml 启动时经 applyFromXml 填充（必须在 MapPanelCatalog.applyFromXml 成功之后调用）
+ *   - 维护 NPC 原名 → marker 定义的映射（含 alias 别名与小写 fallback 查询）
+ *   - 数据由 launcher 端 DataQueryTask("task_npc_registry") 派发，经 applyFromQuery 填充
+ *   - 真相源 = launcher/web/modules/map-panel-data.js 的 staticAvatars + dynamicAvatars
+ *     （tools/derive-task-npc-registry.js 在 build.ps1 Step 1b 派生为 JSON，由 launcher 缓存后查询返回）
  *   - 对外提供按 _root.tasks_to_do 筛选的 marker 投影（buildTaskNpcMarkers）
  *
  * marker 结构：{ pageId:String, hotspotId:String }
  *
- * 注意：NPC 头像视觉锚点完全由 launcher 端 staticAvatars / dynamicAvatars 决定，
- *      Catalog/Registry 只负责声明 NPC ↔ hotspot 关系。XML 不再带 x/y。
+ * 约束：
+ *   - applyFromQuery 必须在 MapPanelCatalog.applyFromXml 成功之后调用（读 Catalog.HOTSPOT_PAGES 派生 page）
+ *   - 校验责任在派生脚本 tools/derive-task-npc-registry.js（label 重复/大小写折叠冲突/hotspotId 存在性
+ *     均在 build 阶段拦截）；本类只做轻量结构校验
+ *   - NPC 头像视觉锚点完全由 launcher 端 staticAvatars / dynamicAvatars 决定；本 registry 与视觉
+ *     现已共享同一真相源，新增 NPC 只需改 launcher 端那一份
+ *
+ * 失败语义：
+ *   - applyFromQuery 失败 → registry 留空 dict，findMarker 全 miss，buildTaskNpcMarkers 返回 []
+ *     → 地图任务红点不亮（但不阻塞游戏进入）。错误信息通过 _root.服务器.发布服务器消息 留痕
+ *     （trace 在 release build 被剔除）
  */
 
 class org.flashNight.arki.map.MapTaskNpcRegistry {
@@ -24,24 +34,6 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
     public static var isLoaded:Boolean = false;
 
     private static var _seeded:Boolean = seedAll();
-
-    // Canonical whitelist：XML 必须至少包含这 54 个 canonical npc name（允许超集）
-    // alias 的名字不算；新增/改名 npc 属于设计变更，需同步更新此处 + XML
-    private static var REQUIRED_NPC_NAMES:Array = [
-        "Pig", "Boy", "King", "冷兵器商人", "杀马特",
-        "酒保", "格格巫", "丽丽丝", "舞女",
-        "宝石线人", "前治安官", "黑铁会外交部长", "学生妹", "幸存老兵",
-        "The Girl", "Andy Law", "Shop Girl", "Blue", "小F",
-        "厨师",
-        "general", "gazer", "director", "itinerant", "surveyor",
-        "singer", "keyboard", "guitar",
-        "火凤", "翅虎", "黑龙", "黑铁",
-        "牛仔", "假肢仙人", "吸特乐",
-        "artist", "soldier", "排骨", "机哥", "阿波", "PROPHET",
-        "黑仔", "Bat", "Tomboy", "武器订购系统",
-        "体育老师", "室友", "程铮", "剑道社长", "冯佑权",
-        "理科教授", "文科老师", "Vanshuther", "教导主任"
-    ];
 
     /**
      * 登记一个 NPC marker。小写 fallback key 遵循 "先来先占" 语义：
@@ -154,73 +146,95 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
     }
 
     /**
-     * 从 XML parse 结果填表。任一校验失败 → trace + 回退空字典 + 返回 false。
-     * 前置：调用者必须确保 MapPanelCatalog.applyFromXml 已先行成功（本方法读 Catalog.HOTSPOT_PAGES
-     * 派生 npc.pageId）。
+     * 从 DataQueryTask("task_npc_registry") 响应填表。
      *
-     * @param raw  MapPanelLoader 成功回调拿到的 data 对象（即 <map_panel> 内容，非 {map_panel: ...}）
+     * 前置：MapPanelCatalog.applyFromXml 已先行成功（本方法读 Catalog.HOTSPOT_PAGES 派生 npc.pageId）。
+     * 任何结构校验失败 → 服务器消息留痕 + 回退空字典 + 返回 false。
+     *
+     * @param result 来自 DataQueryService.query callback 的 response.result，
+     *               形如 { task_npcs: [{name, hotspot}], aliases: [{name, canonical}] }
      * @return Boolean 是否成功
      */
-    public static function applyFromXml(raw:Object):Boolean {
-        // 先无条件重置为安全零值：reload 时若后续校验失败，不会留下旧 marker 造成"陈旧 stale"混合态
+    public static function applyFromQuery(result:Object):Boolean {
+        // 无条件重置为安全零值；reload 时若后续校验失败也不会留下旧 marker 造成 stale 混合态
         _aliases = {};
         _markers = {};
         _markersLower = {};
         isLoaded = false;
 
-        if (raw == null) { trace("[MapTaskNpcRegistry] raw 为 null"); return false; }
-        var taskNpcs:Object = raw.task_npcs;
-        var npcList:Array = (taskNpcs == undefined) ? [] : XMLParser.configureDataAsArray(taskNpcs.npc);
-        var aliasList:Array = (taskNpcs == undefined) ? [] : XMLParser.configureDataAsArray(taskNpcs.alias);
+        if (result == null) {
+            logFail("result 为 null");
+            return false;
+        }
 
+        var npcList:Array = (result.task_npcs == undefined) ? [] : result.task_npcs;
+        var aliasList:Array = (result.aliases == undefined) ? [] : result.aliases;
         var i:Number;
 
-        // 1) npc 结构 + 类型 + 名字冲突（含大小写折叠）
+        // 1) npc 结构 + 名字冲突（含大小写折叠）。
+        //    派生脚本已校验过；这里保留 fail-fast 防御，避免脏数据流入 _markers。
         var npcNameSet:Object = {};
         var npcNameLowerSet:Object = {};
         for (i = 0; i < npcList.length; i++) {
             var n:Object = npcList[i];
-            if (n.name == undefined || n.name == "") { trace("[MapTaskNpcRegistry] npc[" + i + "] 缺 name"); return false; }
-            if (n.hotspot == undefined || n.hotspot == "") { trace("[MapTaskNpcRegistry] npc '" + n.name + "' 缺 hotspot"); return false; }
+            if (n.name == undefined || n.name == "") {
+                logFail("npc[" + i + "] 缺 name");
+                return false;
+            }
+            if (n.hotspot == undefined || n.hotspot == "") {
+                logFail("npc '" + n.name + "' 缺 hotspot");
+                return false;
+            }
             var nameStr:String = String(n.name);
             var nameLower:String = nameStr.toLowerCase();
-            if (npcNameSet[nameStr] != undefined) { trace("[MapTaskNpcRegistry] npc name 重复: " + nameStr); return false; }
-            if (npcNameLowerSet[nameLower] != undefined) { trace("[MapTaskNpcRegistry] npc name 仅大小写不同冲突: " + nameStr + " vs " + npcNameLowerSet[nameLower]); return false; }
+            if (npcNameSet[nameStr] != undefined) {
+                logFail("npc name 重复: " + nameStr);
+                return false;
+            }
+            if (npcNameLowerSet[nameLower] != undefined) {
+                logFail("npc name 仅大小写不同冲突: " + nameStr + " vs " + npcNameLowerSet[nameLower]);
+                return false;
+            }
             npcNameSet[nameStr] = true;
             npcNameLowerSet[nameLower] = nameStr;
         }
 
-        // 2) 关系校验：npc.hotspot 必须在 Catalog 里已登记
+        // 2) hotspot 必须在 Catalog 里已登记
         for (i = 0; i < npcList.length; i++) {
             var n2:Object = npcList[i];
             if (MapPanelCatalog.HOTSPOT_PAGES[String(n2.hotspot)] == undefined) {
-                trace("[MapTaskNpcRegistry] npc '" + n2.name + "' 指向未登记热点: " + n2.hotspot);
+                logFail("npc '" + n2.name + "' 指向未登记热点: " + n2.hotspot);
                 return false;
             }
         }
 
-        // 3) alias 校验：结构、名字冲突（与 npc 同名 / 两 alias 同名）、canonical 必须命中
+        // 3) alias 校验
         var aliasNameSet:Object = {};
         for (i = 0; i < aliasList.length; i++) {
             var a:Object = aliasList[i];
-            if (a.name == undefined || a.name == "") { trace("[MapTaskNpcRegistry] alias[" + i + "] 缺 name"); return false; }
-            if (a.canonical == undefined || a.canonical == "") { trace("[MapTaskNpcRegistry] alias '" + a.name + "' 缺 canonical"); return false; }
+            if (a.name == undefined || a.name == "") {
+                logFail("alias[" + i + "] 缺 name");
+                return false;
+            }
+            if (a.canonical == undefined || a.canonical == "") {
+                logFail("alias '" + a.name + "' 缺 canonical");
+                return false;
+            }
             var an:String = String(a.name);
             var ac:String = String(a.canonical);
-            if (npcNameSet[an] != undefined) { trace("[MapTaskNpcRegistry] alias name '" + an + "' 与已有 npc 重名"); return false; }
-            if (aliasNameSet[an] != undefined) { trace("[MapTaskNpcRegistry] alias name 重复: " + an); return false; }
-            if (npcNameSet[ac] == undefined) { trace("[MapTaskNpcRegistry] alias '" + an + "' 的 canonical='" + ac + "' 未命中任何 npc"); return false; }
+            if (npcNameSet[an] != undefined) {
+                logFail("alias name '" + an + "' 与已有 npc 重名");
+                return false;
+            }
+            if (aliasNameSet[an] != undefined) {
+                logFail("alias name 重复: " + an);
+                return false;
+            }
+            if (npcNameSet[ac] == undefined) {
+                logFail("alias '" + an + "' 的 canonical='" + ac + "' 未命中任何 npc");
+                return false;
+            }
             aliasNameSet[an] = true;
-        }
-
-        // 4) Canonical 完整性（⊇ REQUIRED_NPC_NAMES，允许超集）
-        var missing:Array = [];
-        for (i = 0; i < REQUIRED_NPC_NAMES.length; i++) {
-            if (npcNameSet[REQUIRED_NPC_NAMES[i]] == undefined) missing.push(REQUIRED_NPC_NAMES[i]);
-        }
-        if (missing.length > 0) {
-            trace("[MapTaskNpcRegistry] REQUIRED_NPC_NAMES 缺少: " + missing.join(", "));
-            return false;
         }
 
         // 通过校验，开始填表
@@ -229,7 +243,7 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
             var hid:String = String(n3.hotspot);
             register(
                 String(n3.name),
-                String(MapPanelCatalog.HOTSPOT_PAGES[hid]),  // page 由 Catalog 派生
+                String(MapPanelCatalog.HOTSPOT_PAGES[hid]),
                 hid
             );
         }
@@ -240,6 +254,15 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
 
         isLoaded = true;
         return true;
+    }
+
+    /**
+     * 失败信息统一走服务器消息通道（trace 在 release build 被剔除，仅服务器日志可靠留痕）。
+     */
+    private static function logFail(reason:String):Void {
+        if (_root.服务器 != undefined && _root.服务器.发布服务器消息 != undefined) {
+            _root.服务器.发布服务器消息("[MapTaskNpcRegistry] " + reason);
+        }
     }
 
     private static function seedAll():Boolean {
