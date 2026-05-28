@@ -164,6 +164,16 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/hthzt_3_BG.swf</Background>
         </BasicInformation>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>2</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>果然，这种变种僵尸和诺亚有关系！</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -274,6 +284,18 @@
                         <Quantity>1</Quantity>
                         <Level>45</Level>
                     </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种424</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种425</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
                 </EnemyGroup>
             </SubWave>
         </Wave>
@@ -362,19 +384,19 @@
                         <Type>兵种72</Type>
                         <Interval>1800</Interval>
                         <Quantity>9</Quantity>
-                        <Level>40</Level>
+                        <Level>45</Level>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种71</Type>
                         <Interval>800</Interval>
                         <Quantity>4</Quantity>
-                        <Level>40</Level>
+                        <Level>45</Level>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种70</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>45</Level>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种66</Type>
@@ -415,7 +437,7 @@
                         <InstanceName>火凤</InstanceName>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种68</Type>
+                        <Type>兵种73</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -444,21 +466,45 @@
                         <Type>兵种72</Type>
                         <Interval>1200</Interval>
                         <Quantity>6</Quantity>
-                        <Level>40</Level>
+                        <Level>45</Level>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种71</Type>
                         <Interval>1200</Interval>
                         <Quantity>6</Quantity>
-                        <Level>40</Level>
+                        <Level>45</Level>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种70</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种424</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
                     </Enemy>
                     <Enemy id="4">
+                        <Type>兵种425</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种442</Type>
+                        <Interval>800</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种443</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="7">
                         <Type>兵种261</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
@@ -474,7 +520,7 @@
                             </extra>
                         </Parameters>
                     </Enemy>
-                    <Enemy id="5">
+                    <Enemy id="8">
                         <Type>兵种268</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
@@ -516,6 +562,30 @@
                         <Level>45</Level>
                     </Enemy>
                     <Enemy id="3">
+                        <Type>兵种424</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种425</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种442</Type>
+                        <Interval>800</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种443</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="7">
                         <Type>兵种269</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
@@ -531,7 +601,7 @@
                             </extra>
                         </Parameters>
                     </Enemy>
-                    <Enemy id="4">
+                    <Enemy id="8">
                         <Type>兵种270</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
@@ -569,6 +639,30 @@
                     <Enemy id="2">
                         <Type>兵种70</Type>
                         <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种424</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种425</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种442</Type>
+                        <Interval>800</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种443</Type>
+                        <Interval>1200</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
                     </Enemy>
