@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/血触手-远程 合并" itemID="69c148a5-0000055b" lastModified="1775931259" lastUniqueIdentifier="423">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/血触手-远程 合并" itemID="69c148a5-0000055b" lastModified="1779987829" lastUniqueIdentifier="423">
   <timeline>
-    <DOMTimeline name="血触手-远程 合并" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;94&lt;/guideline&gt;&lt;guideline direction="h"&gt;88&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;guideline direction="v"&gt;36&lt;/guideline&gt;&lt;guideline direction="v"&gt;73&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="血触手-远程 合并" currentFrame="114" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;94&lt;/guideline&gt;&lt;guideline direction="h"&gt;88&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;guideline direction="v"&gt;36&lt;/guideline&gt;&lt;guideline direction="v"&gt;73&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
@@ -9,7 +9,26 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" duration="47" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("freesound_community-trench-club-2-101554.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="47" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("freesound_community-trench-club-2-101554.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="115" keyMode="9728">
               <Actionscript>
