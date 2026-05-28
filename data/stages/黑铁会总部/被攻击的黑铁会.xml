@@ -410,7 +410,7 @@
                             <threat>30</threat>
                             <extra>
                                 <add>
-                                    <hp>4000</hp>
+                                    <hp>3500</hp>
                                     <hp满血值>10000</hp满血值>
                                 </add>
                             </extra>
@@ -429,7 +429,7 @@
                             <threat>30</threat>
                             <extra>
                                 <add>
-                                    <hp>3000</hp>
+                                    <hp>2500</hp>
                                     <hp满血值>10000</hp满血值>
                                 </add>
                             </extra>
@@ -448,7 +448,7 @@
                             <threat>30</threat>
                             <extra>
                                 <add>
-                                    <hp>4000</hp>
+                                    <hp>3500</hp>
                                     <hp满血值>10000</hp满血值>
                                 </add>
                             </extra>
@@ -656,14 +656,14 @@
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种442</Type>
-                        <Interval>800</Interval>
-                        <Quantity>1</Quantity>
+                        <Interval>1600</Interval>
+                        <Quantity>2</Quantity>
                         <Level>45</Level>
                     </Enemy>
                     <Enemy id="6">
                         <Type>兵种443</Type>
-                        <Interval>1200</Interval>
-                        <Quantity>1</Quantity>
+                        <Interval>2400</Interval>
+                        <Quantity>2</Quantity>
                         <Level>45</Level>
                     </Enemy>
                 </EnemyGroup>
