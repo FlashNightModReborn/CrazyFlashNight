@@ -269,7 +269,7 @@
                     <Enemy>
                         <Type>兵种443</Type>
                         <Interval>1500</Interval>
-                        <Quantity>5</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
@@ -746,18 +746,6 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种443</Type>
-                        <Interval>3000</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>45</Level>
-                        <x>490</x>
-                        <y>480</y>
-                        <DifficultyMin>地狱</DifficultyMin>
-                        <Parameters>
-                            <登场动画>索降</登场动画>
-                        </Parameters>
-                    </Enemy>
-                    <Enemy>
                         <Type>兵种425</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
@@ -822,18 +810,6 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种443</Type>
-                        <Interval>3000</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>30</Level>
-                        <x>490</x>
-                        <y>480</y>
-                        <DifficultyMax>修罗</DifficultyMax>
-                        <Parameters>
-                            <登场动画>索降</登场动画>
-                        </Parameters>
-                    </Enemy>
-                    <Enemy>
                         <Type>兵种425</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
@@ -878,18 +854,6 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种443</Type>
-                        <Interval>600</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>45</Level>
-                        <x>490</x>
-                        <y>480</y>
-                        <DifficultyMin>地狱</DifficultyMin>
-                        <Parameters>
-                            <登场动画>索降</登场动画>
-                        </Parameters>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种443</Type>
                         <Interval>900</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
@@ -907,18 +871,6 @@
                         <Level>45</Level>
                         <x>570</x>
                         <y>450</y>
-                        <DifficultyMin>地狱</DifficultyMin>
-                        <Parameters>
-                            <登场动画>索降</登场动画>
-                        </Parameters>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种443</Type>
-                        <Interval>1400</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>45</Level>
-                        <x>320</x>
-                        <y>470</y>
                         <DifficultyMin>地狱</DifficultyMin>
                         <Parameters>
                             <登场动画>索降</登场动画>
@@ -974,35 +926,11 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种443</Type>
-                        <Interval>600</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>30</Level>
-                        <x>490</x>
-                        <y>480</y>
-                        <DifficultyMax>修罗</DifficultyMax>
-                        <Parameters>
-                            <登场动画>索降</登场动画>
-                        </Parameters>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种443</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <x>570</x>
                         <y>450</y>
-                        <DifficultyMax>修罗</DifficultyMax>
-                        <Parameters>
-                            <登场动画>索降</登场动画>
-                        </Parameters>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种443</Type>
-                        <Interval>1400</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>30</Level>
-                        <x>320</x>
-                        <y>470</y>
                         <DifficultyMax>修罗</DifficultyMax>
                         <Parameters>
                             <登场动画>索降</登场动画>
@@ -1094,7 +1022,7 @@
                     <Enemy>
                         <Type>兵种443</Type>
                         <Interval>3000</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>45</Level>
                         <DifficultyMin>地狱</DifficultyMin>
                     </Enemy>
@@ -1136,7 +1064,7 @@
                     <Enemy>
                         <Type>兵种443</Type>
                         <Interval>3000</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>30</Level>
                         <DifficultyMax>修罗</DifficultyMax>
                     </Enemy>
@@ -1185,7 +1113,7 @@
                     <Enemy>
                         <Type>兵种443</Type>
                         <Interval>3200</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>45</Level>
                         <DifficultyMin>地狱</DifficultyMin>
                     </Enemy>
@@ -1227,7 +1155,7 @@
                     <Enemy>
                         <Type>兵种443</Type>
                         <Interval>3200</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>30</Level>
                         <DifficultyMax>修罗</DifficultyMax>
                     </Enemy>
