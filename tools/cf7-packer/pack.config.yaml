@@ -1,5 +1,5 @@
 # CF7-Packer 打包配置
-# 基于 2.71 整包精确分析得出的规则
+# 基线：2026-05-28 重新核对（距 2.71 整包后 222 个 commit，含情报/竞技场/佣兵 WebView/存档修复/诊断 4 大块改动）
 
 version: 1
 meta:
@@ -19,10 +19,28 @@ output:
 
 layers:
   - name: data
-    description: "游戏数据（XML 配置）"
+    description: "游戏数据（XML / JSON 配置 + 情报文本）"
     source: "data/"
     include: [ "**/*" ]
-    exclude: [ rag/*, task/agent_tasks.json, task/text/agent_text.json ]
+    exclude:
+      # RAG 与 agent 任务草稿（仅开发链用）
+      - "rag/**"
+      - "task/agent_tasks.json"
+      - "task/text/agent_text.json"
+      # 开发文档与设计稿（含 intelligenceMD 的设计草稿、equipment_mods/README、武器表填写公式 等）
+      - "intelligenceMD/**"
+      - "**/*.md"
+      - "**/*.xlsx"
+      # 已弃用配置（unused/ 里全是 -弃用 后缀文件，不在任何 list 引用链上）
+      - "unused/**"
+      # 关卡编辑器（独立 HTML/JS 应用，由 .lnk 启动，不属于运行时数据）
+      - "levelEditor/**"
+      - "**/*.lnk"
+      # Python 开发工具与缓存（equipment_mods/ 下的 .py + __pycache__）
+      - "**/*.py"
+      - "**/__pycache__/**"
+      # 测试加载器
+      - "**/test_loader.as"
 
   - name: scripts
     description: "运行时脚本（仅 asLoader，源码不打包）"
@@ -49,6 +67,7 @@ layers:
       - "**/LIBRARY/**"
       - "**/META-INF/**"
       # arts/ 下只保留 new/ 目录和根级 .swf
+      - "arts/things/**"
       - "arts/things0/**"
       - "arts/things1/**"
       - "arts/things2/**"
@@ -62,6 +81,9 @@ layers:
       - "arts/素材库-物品技能图标/**"
       # 其他排除
       - "**/*.fla"
+      - "**/*.xlsx"
+      # 备份 SWF（things-备份.swf 等以 -备份 结尾的副本）
+      - "**/*-备份.swf"
       - "arts/原版素材库-子弹_横向拖尾联弹.swf"
 
   - name: sounds
@@ -79,13 +101,13 @@ layers:
       - "**/*.flac"
     exclude:
       # XFL 源工程（运行时不需要，音频已通过 export/ 提供）
-      - "*/LIBRARY/**"
-      - "*/META-INF/**"
-      - "*/bin/**"
-      - "*/DOMDocument.xml"
-      - "*/PublishSettings.xml"
-      - "*/MobileSettings.xml"
-      - "*.swf"
+      - "**/LIBRARY/**"
+      - "**/META-INF/**"
+      - "**/bin/**"
+      - "**/DOMDocument.xml"
+      - "**/PublishSettings.xml"
+      - "**/MobileSettings.xml"
+      - "**/*.swf"
       # 音乐包独立外置（与 cf7-packer/README 口径对齐，避免 **/*.mp3 等通配误收）
       - "music/**"
 
@@ -111,6 +133,8 @@ layers:
       - "ClearScriptV8.win-x64.dll"
       # JSON 序列化
       - "Newtonsoft.Json.dll"
+      # .NET Framework 补丁（csproj 引用，2026-05-26 起 launcher 启动期 RID 探测依赖）
+      - "System.Runtime.InteropServices.RuntimeInformation.dll"
       # miniaudio 原生音频引擎
       - "miniaudio.dll"
       # Rust SOL 解析器（Protocol 2 存档决议硬依赖）
@@ -156,6 +180,29 @@ layers:
     exclude:
       # 已被 help-panel.js 替代，不再被 overlay.html 引用
       - "modules/help.js"
+      # 开发期工具（font-probe）与早期 welcome 风格 mockup
+      - "dev/**"
+      - "mockups/**"
+      # 各模块的 dev harness / preview / QA suite（map、stage-select、intelligence、arena、各 minigame）
+      - "modules/**/dev/**"
+      # pinalign 视觉参考快照（不被 panel 加载）
+      - "modules/**/reference/**"
+      # minigame 与 cursor/fonts 的开发 README
+      - "modules/**/README.md"
+      - "assets/cursor/native/README.md"
+      - "assets/fonts/README.md"
+
+  - name: launcher-data
+    description: "Launcher 运行时数据（MapHud catalog、存档修复字典、存档 schema）"
+    source: "launcher/data/"
+    include:
+      # MapHudWidget 启动期加载，缺失 → useNativeHud=true 下 MapHud 静默不可见
+      - "map_hud_data.json"
+      # SaveAutoRepairService 启动期加载，缺失 → 自动修复降级到只读模式
+      - "save_repair_dict.json"
+      # 存档编辑器 diff 视图基线，缺失 → "已修改" tab 退化为 schema 默认值
+      - "save_schema.json"
+    exclude: []
 
   - name: launcher-scripts
     description: "V8 运行时 JS bundle（伤害数字渲染 + 搓招 DFA）"
@@ -189,13 +236,14 @@ layers:
     include:
       - "闪7重置版字体/**"
       - "0.说明文件与教程/**"
-      - fscommand/**
+      - "fscommand/**"
     exclude: []
 
 globalExclude:
   - "**/.DS_Store"
   - "**/Thumbs.db"
   - "**/*.bak"
+  - "**/__pycache__/**"
 
 # 当前已支持打包工具内手动编辑
 
