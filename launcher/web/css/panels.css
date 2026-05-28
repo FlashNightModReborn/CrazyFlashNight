@@ -2889,6 +2889,10 @@
     opacity:0;
     transform:translateY(0) scale(1);
     transform-origin:center center;
+    /* contain: 把 layout/style 圈在自身范围内, 阻止 ::before 的 inset 过渡 +
+       .glow 的 opacity 过渡触发外层 reflow. 不加 paint, 因为 .glow(-12px)/
+       ::before(-6~-8px)/.plate(-7px) 都用负 inset 延伸到父容器外, paint 会裁掉. */
+    contain:layout style;
     /* visibility 延迟到 transition 结束才切回 hidden, 避免 opacity 渐出途中 hit-test 漏掉. */
     transition:opacity 140ms cubic-bezier(0,0,0.2,1),
                transform 140ms cubic-bezier(0,0,0.2,1),
