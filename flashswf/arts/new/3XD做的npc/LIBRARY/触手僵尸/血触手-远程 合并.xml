@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/血触手-远程 合并" itemID="69c148a5-0000055b" lastModified="1779987829" lastUniqueIdentifier="423">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/血触手-远程 合并" itemID="69c148a5-0000055b" lastModified="1779989284" lastUniqueIdentifier="423">
   <timeline>
-    <DOMTimeline name="血触手-远程 合并" currentFrame="114" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;94&lt;/guideline&gt;&lt;guideline direction="h"&gt;88&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;guideline direction="v"&gt;36&lt;/guideline&gt;&lt;guideline direction="v"&gt;73&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="血触手-远程 合并" currentFrame="69" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;94&lt;/guideline&gt;&lt;guideline direction="h"&gt;88&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-28&lt;/guideline&gt;&lt;guideline direction="v"&gt;36&lt;/guideline&gt;&lt;guideline direction="v"&gt;73&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
@@ -9,7 +9,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="音效" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -104,7 +104,7 @@ function 攻击时四向移动(上, 下, 左, 右)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -127,7 +127,7 @@ function 攻击时四向移动(上, 下, 左, 右)
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 5;
 	子弹属性.子弹种类 = "毒球";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
 	子弹属性.子弹速度 = 30;
 	子弹属性.Z轴攻击范围 = 50.
 	子弹属性.击倒率 = 10;
@@ -185,7 +185,7 @@ function 攻击时四向移动(上, 下, 左, 右)
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 5;
 	子弹属性.子弹种类 = "毒球";
-	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
 	子弹属性.子弹速度 = 30;
 	子弹属性.Z轴攻击范围 = 50.
 	子弹属性.击倒率 = 10;

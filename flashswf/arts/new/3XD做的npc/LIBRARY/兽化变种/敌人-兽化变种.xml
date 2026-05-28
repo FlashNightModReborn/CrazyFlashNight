@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兽化变种/敌人-兽化变种" itemID="68431a9c-000001f6" linkageExportForAS="true" linkageIdentifier="敌人-兽化变种" lastModified="1779533594" lastUniqueIdentifier="50">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兽化变种/敌人-兽化变种" itemID="68431a9c-000001f6" linkageExportForAS="true" linkageIdentifier="敌人-兽化变种" lastModified="1779988761" lastUniqueIdentifier="50">
   <timeline>
-    <DOMTimeline name="敌人-兽化变种">
+    <DOMTimeline name="敌人-兽化变种" currentFrame="104">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" outline="true" useOutlineView="true" autoNamed="false" visible="false" heightLiteral="24">
           <frames>
@@ -486,7 +486,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -544,7 +544,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="37" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="兽化变种/蛙型仿生僵尸/动画合集/攻击动作" name="man" centerPoint3DX="-247.6" centerPoint3DY="-57.45">
+                <DOMSymbolInstance libraryItemName="兽化变种/蛙型仿生僵尸/动画合集/攻击动作" name="man" selected="true" centerPoint3DX="-247.6" centerPoint3DY="-57.45">
                   <matrix>
                     <Matrix tx="-44.1" ty="-136.5"/>
                   </matrix>
@@ -708,7 +708,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="104" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="兽化变种/蛙型仿生僵尸/动画合集/死亡" name="man" centerPoint3DX="114.6" centerPoint3DY="14.1">
+                <DOMSymbolInstance libraryItemName="兽化变种/蛙型仿生僵尸/动画合集/死亡" name="man" selected="true" centerPoint3DX="114.6" centerPoint3DY="14.1">
                   <matrix>
                     <Matrix tx="-64.4" ty="-136.95"/>
                   </matrix>
@@ -732,7 +732,7 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="影子" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="影子" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="79" keyMode="9728">
               <elements>

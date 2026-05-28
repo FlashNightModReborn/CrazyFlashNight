@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兽化变种/蛙型仿生僵尸/动画合集/攻击动作" itemID="6a118636-00000c26" lastModified="1759483939" lastUniqueIdentifier="373">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兽化变种/蛙型仿生僵尸/动画合集/攻击动作" itemID="6a118636-00000c26" lastModified="1779988575" lastUniqueIdentifier="373">
   <timeline>
     <DOMTimeline name="攻击动作" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;132&lt;/guideline&gt;&lt;guideline direction="h"&gt;97&lt;/guideline&gt;&lt;guideline direction="v"&gt;137&lt;/guideline&gt;&lt;guideline direction="v"&gt;42&lt;/guideline&gt;&lt;guideline direction="v"&gt;70&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#9933CC" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="87" keyMode="9728">
               <Actionscript>
@@ -72,6 +72,97 @@ gotoAndPlay(_parent.近战招式);]]></script>
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爪击1.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爪击2.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爪击1.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爪击3.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爪击1.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爪击2.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爪击3.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爪击1.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="63" duration="42" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爪击2.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="105" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爪击3.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="114" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爪击3.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爪击3.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="129" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爪击3.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="136" duration="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爪击3.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -741,7 +832,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="59" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="64.75" centerPoint3DY="20.4">
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="64.75" centerPoint3DY="20.4">
                   <matrix>
                     <Matrix a="1.0059814453125" d="4.05252075195313" tx="64.75" ty="20.4"/>
                   </matrix>
@@ -903,7 +994,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="71" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="64.75" centerPoint3DY="20.4">
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="64.75" centerPoint3DY="20.4">
                   <matrix>
                     <Matrix a="1.0059814453125" d="4.05252075195313" tx="64.75" ty="20.4"/>
                   </matrix>
@@ -960,7 +1051,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="105" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="42.15" centerPoint3DY="9.9">
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="42.15" centerPoint3DY="9.9">
                   <matrix>
                     <Matrix a="0.628997802734375" d="5.44656372070313" tx="42.15" ty="9.9"/>
                   </matrix>
@@ -1068,7 +1159,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="109" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="64.1" centerPoint3DY="12.4">
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="64.1" centerPoint3DY="12.4">
                   <matrix>
                     <Matrix a="0.900482177734375" d="3.62376403808594" tx="64.1" ty="12.4"/>
                   </matrix>
@@ -1122,7 +1213,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="116" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="64.1" centerPoint3DY="12.4">
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="64.1" centerPoint3DY="12.4">
                   <matrix>
                     <Matrix a="1.02635192871094" d="5.42840576171875" tx="64.1" ty="12.4"/>
                   </matrix>
@@ -1176,7 +1267,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="123" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="64.1" centerPoint3DY="12.4">
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="64.1" centerPoint3DY="12.4">
                   <matrix>
                     <Matrix a="1.02635192871094" d="5.42840576171875" tx="64.1" ty="12.4"/>
                   </matrix>
@@ -1230,7 +1321,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="132" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="64.1" centerPoint3DY="12.4">
+                <DOMSymbolInstance libraryItemName="兽化变种/兽化变种0/怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="64.1" centerPoint3DY="12.4">
                   <matrix>
                     <Matrix a="1.02635192871094" d="5.42840576171875" tx="64.1" ty="12.4"/>
                   </matrix>

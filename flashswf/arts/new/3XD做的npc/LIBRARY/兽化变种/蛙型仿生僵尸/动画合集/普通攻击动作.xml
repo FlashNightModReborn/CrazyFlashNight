@@ -1,13 +1,32 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兽化变种/蛙型仿生僵尸/动画合集/普通攻击动作" itemID="6a118636-00000c6c" lastModified="1759484409" lastUniqueIdentifier="140">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兽化变种/蛙型仿生僵尸/动画合集/普通攻击动作" itemID="6a118636-00000c6c" lastModified="1779988664" lastUniqueIdentifier="140">
   <timeline>
-    <DOMTimeline name="普通攻击动作" currentFrame="68">
+    <DOMTimeline name="普通攻击动作" currentFrame="30">
       <layers>
-        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="68" name="砍两下" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="13" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("刺拳1.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="39" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爪击1.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
