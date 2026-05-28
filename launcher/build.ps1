@@ -265,8 +265,9 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "[Step 6b/6] Verify launcher\data runtime assets..." -ForegroundColor Yellow
 $dataDir = Join-Path $launcherDir "data"
 $requiredDataPaths = @(
-    "map_hud_data.json",  # MapHudWidget catalog；缺失会让 useNativeHud=true 下 MapHud 静默不可见
-    "save_schema.json"    # 存档编辑器 diff 视图基线；缺失则"已修改"tab 退化为只用 schema 内的 default 值
+    "map_hud_data.json",     # MapHudWidget catalog；缺失会让 useNativeHud=true 下 MapHud 静默不可见
+    "save_repair_dict.json", # SaveAutoRepairService 启动加载；缺失走 catch 分支静默跳过自动修复
+    "save_schema.json"       # 存档编辑器 diff 视图基线；缺失则"已修改"tab 退化为只用 schema 内的 default 值
 )
 $missingDataPaths = @()
 foreach ($relativePath in $requiredDataPaths) {
@@ -281,11 +282,37 @@ if ($missingDataPaths.Count -gt 0) {
         Write-Host "  - $missingPath" -ForegroundColor Red
     }
     Write-Host "  Hint:" -ForegroundColor Yellow
-    Write-Host "    map_hud_data.json   → node tools/export-maphud-data.js" -ForegroundColor Yellow
-    Write-Host "    save_schema.json    → node tools/extract-save-schema.js" -ForegroundColor Yellow
+    Write-Host "    map_hud_data.json     → node tools/export-maphud-data.js" -ForegroundColor Yellow
+    Write-Host "    save_repair_dict.json → npm --prefix tools/cf7-save-repair-dict-build run build" -ForegroundColor Yellow
+    Write-Host "    save_schema.json      → node tools/extract-save-schema.js" -ForegroundColor Yellow
     exit 1
 }
 Write-Host "  OK: launcher\\data runtime assets present ($($requiredDataPaths.Count) checks)" -ForegroundColor Green
+
+# Step 6c: Verify save_repair_dict.json 与源头一致 (cf7-save-repair-dict-build verify gate)
+# 防止 data/items/*.xml 或 SaveManager.as 改动后 dict 未同步 regenerate；
+# 不一致 = dict 漂移，会让 SaveAutoRepairService 用旧字典误判新条目
+Write-Host "[Step 6c/6] Verify save_repair_dict.json 与源头一致..." -ForegroundColor Yellow
+$repairDictDir = Join-Path $projectRoot "tools\cf7-save-repair-dict-build"
+if (-not (Test-Path (Join-Path $repairDictDir "package.json"))) {
+    Write-Host "[FAIL] cf7-save-repair-dict-build 未找到: $repairDictDir" -ForegroundColor Red
+    exit 1
+}
+Push-Location $repairDictDir
+try {
+    if (-not (Test-Path "node_modules")) {
+        npm install --ignore-scripts 2>&1 | Out-Null
+    }
+    npm run verify --silent
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[FAIL] save_repair_dict.json 与源头不一致 (data/**/*.xml 或 SaveManager.as 改动后未 regenerate)" -ForegroundColor Red
+        Write-Host "  修复: npm --prefix tools/cf7-save-repair-dict-build run build" -ForegroundColor Yellow
+        exit 1
+    }
+} finally {
+    Pop-Location
+}
+Write-Host "  OK: save_repair_dict.json 与源头一致" -ForegroundColor Green
 
 Write-Host ""
 Write-Host "=== Build Complete ===" -ForegroundColor Green

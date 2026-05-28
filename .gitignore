@@ -120,11 +120,12 @@ tools/cf7-save-repair/coverage/
 tools/cf7-save-repair-dict-build/dist/
 tools/cf7-save-repair-dict-build/coverage/
 
-# AI sim (generated results + Python bytecode cache)
+# Python bytecode cache (任何 tools/ 下跑过 .py 都会生成；解释器自动重建)
+**/__pycache__/
+
+# AI sim 生成结果（每次 run 重写）
 tools/mercenary-ai-sim/results/
-tools/mercenary-ai-sim/__pycache__/
 tools/combat-movement-sim/results/
-tools/combat-movement-sim/__pycache__/
 
 # 调试探针/临时 DOM 快照等 ad-hoc 产物, 禁止入库
 /tmp/

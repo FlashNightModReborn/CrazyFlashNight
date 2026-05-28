@@ -1,5 +1,5 @@
 # CF7-Packer 打包配置
-# 基线：2026-05-28 重新核对（距 2.71 整包后 222 个 commit，含情报/竞技场/佣兵 WebView/存档修复/诊断 4 大块改动）
+# 基线：2026-05-28 重新核对（覆盖情报 / 竞技场 / 佣兵 WebView / 存档修复 / 诊断 5 大块改动）
 
 version: 1
 meta:
@@ -28,6 +28,7 @@ layers:
       - "task/agent_tasks.json"
       - "task/text/agent_text.json"
       # 开发文档与设计稿（含 intelligenceMD 的设计草稿、equipment_mods/README、武器表填写公式 等）
+      # data/ 内的 .md/.xlsx 全部是 dev 文档，可整段排除（教程目录里的 xlsx 是另一层）
       - "intelligenceMD/**"
       - "**/*.md"
       - "**/*.xlsx"
@@ -38,7 +39,6 @@ layers:
       - "**/*.lnk"
       # Python 开发工具与缓存（equipment_mods/ 下的 .py + __pycache__）
       - "**/*.py"
-      - "**/__pycache__/**"
       # 测试加载器
       - "**/test_loader.as"
 
@@ -63,9 +63,15 @@ layers:
       - "unused/**"
       - "miniGames/**"
       - "ComicTool/**"
-      # XFL 项目展开结构（LIBRARY/ 子目录中的 .png 等资源）
+      # XFL 项目展开结构（防御性显式排除：即便后续 include 白名单放宽到 **/*.xml
+      # 或 **/* 也不会泄漏 LIBRARY/META-INF/bin 与 4 个工程描述文件）
       - "**/LIBRARY/**"
       - "**/META-INF/**"
+      - "**/bin/**"
+      - "**/*.xfl"
+      - "**/DOMDocument.xml"
+      - "**/MobileSettings.xml"
+      - "**/PublishSettings.xml"
       # arts/ 下只保留 new/ 目录和根级 .swf
       - "arts/things/**"
       - "arts/things0/**"
@@ -231,11 +237,13 @@ layers:
     exclude: []
 
   - name: root-dirs
-    description: "根目录文件夹（字体、教程）"
+    description: "根目录文件夹（字体、教程、fscommand 启动桥）"
     source: "."
     include:
       - "闪7重置版字体/**"
       - "0.说明文件与教程/**"
+      # fscommand/launch_rag.bat：当前为 RAG dev 桥，同时给后续 DLC 预留外部进程启动通道，
+      # 分发包必须保留；DLC 缺位时 fscommand("exec") 静默失败即可
       - "fscommand/**"
     exclude: []
 
@@ -244,6 +252,10 @@ globalExclude:
   - "**/Thumbs.db"
   - "**/*.bak"
   - "**/__pycache__/**"
+  # Office / WPS 临时锁文件（用户正在编辑时生成的占位，~$ 前缀）
+  - "**/~$*"
+  # 文件名带「请勿上传git」前后缀的设计稿（含 data/items/ 与 0.说明文件与教程/ 的填表 Excel）
+  - "**/*请勿上传git*"
 
 # 当前已支持打包工具内手动编辑
 

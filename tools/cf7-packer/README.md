@@ -87,16 +87,19 @@ npm run list-tags
 
 | 层级 | 规则 |
 |------|------|
-| data/ | 全量复制（XML 配置） |
-| scripts/ | 仅 asLoader.swf（运行时加载器） |
-| flashswf/ | 编译后 .swf + 运行时资源（排除 XFL 源工程、.fla） |
-| sounds/ | 音效 SWF + BGM（排除版权音乐） |
-| config/ | 全量复制 |
-| root-files | 根目录运行时文件（Launcher 可执行文件、原生/托管 DLL、Flash Player、配置） |
-| launcher-web | Launcher WebView2 前端资源（bootstrap/overlay/config/assets/help/icons/data） |
-| launcher-scripts | V8 运行时 bundle（`launcher/scripts/dist/`） |
-| rapfi | 五子棋引擎与权重文件（`tools/rapfi/`） |
-| root-dirs | 字体、教程文件夹 |
+| data | XML / JSON 配置 + 情报文本；排除 RAG/agent 草稿、intelligenceMD 设计稿、unused/、levelEditor/、`**/*.md`、`**/*.xlsx`、`**/*.py`、`**/test_loader.as`、`**/*.lnk` |
+| scripts | 仅 `asLoader.swf`（运行时加载器，源码不打包） |
+| flashswf | 编译后 .swf + 运行时资源（白名单 `**/*.{swf,png,flv,html}` + `portraits/**/*.xml`；显式排除 XFL 工程附属 `**/{LIBRARY,META-INF,bin}/**` + `**/*.xfl` + `DOMDocument.xml` / `MobileSettings.xml` / `PublishSettings.xml`，以及 `.fla`、`.xlsx`、`*-备份.swf`、`arts/things*` 源目录、`unused/`、`miniGames/`、`ComicTool/`） |
+| sounds | `export/` SFX + `bgm_list.xml` + 各专辑音频；XFL 残余 exclude 为防御性（音乐包 `music/` 独立外置不打包） |
+| config | 全量复制（仅排除 `*.md` 开发文档） |
+| root-files | 根目录运行时文件：Launcher exe、托管 DLL（含 `System.Runtime.InteropServices.RuntimeInformation.dll`，2026-05-26 后启动期 RID 探测必需）、原生 DLL（ClearScriptV8 / WebView2Loader / SharpDX / miniaudio / sol_parser）、Flash Player、SWF、`crossdomain.xml`、`config.xml` / `config.toml` |
+| launcher-web | WebView2 overlay 前端：bootstrap/overlay/config/css/assets/data/lib/modules/help/icons；排除 `dev/`、`mockups/`、`modules/**/dev/`、`modules/**/reference/`、各 minigame & cursor & fonts 的 README |
+| launcher-data | Launcher 运行时数据：`map_hud_data.json`（MapHud catalog）/ `save_repair_dict.json`（SaveAutoRepairService 字典）/ `save_schema.json`（存档编辑器 diff 基线） |
+| launcher-scripts | V8 运行时 bundle（`launcher/scripts/dist/hit-number-bundle.js`，含伤害数字渲染 + 搓招 DFA） |
+| rapfi | 五子棋引擎与权重文件：5 个 Windows CPU 变体 + `*.bin` / `*.bin.lz4` 权重 + `config.toml` + `AUTHORS`（`tools/rapfi/`） |
+| root-dirs | 字体（`闪7重置版字体/`）、教程（`0.说明文件与教程/`）、Flash fscommand 桥（`fscommand/**`，含 RAG dev 桥 + 后续 DLC 预留的外部启动通道） |
+
+> globalExclude（所有层共用）：`**/.DS_Store`、`**/Thumbs.db`、`**/*.bak`、`**/__pycache__/**`、`**/~$*`（Office/WPS 临时锁）、`**/*请勿上传git*`（设计稿命名约定）
 
 ## 架构
 
