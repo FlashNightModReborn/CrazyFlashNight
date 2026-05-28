@@ -52,7 +52,7 @@ discover_port() {
 case "${1:-status}" in
     start-bus)
         # 启动 launcher --bus-only 后台进程
-        # 跳过 bootstrap（runtime 检测/安装无需走这条 headless 自动化路径），直接走 Core.exe；
+        # 跳过 bootstrap（headless 自动化不要 MessageBox prompt），直接走 Core.exe；
         # Core 是 FDD apphost，要求机器上已装 .NET 10 Desktop Runtime
         # Core 部署在 projectRoot\runtime\ 子目录（build.ps1 Step 6）
         EXE="$PROJECT_ROOT/runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe"
@@ -65,6 +65,23 @@ case "${1:-status}" in
             echo "Bus already running on port $(discover_port)"
             exit 0
         fi
+        # 必须复刻 bootstrap 的 user-scope runtime 探测逻辑：
+        # README/setup-check 优先推荐 user-scope %LOCALAPPDATA%\Microsoft\dotnet 装法；
+        # Core apphost 默认只搜 %ProgramFiles%\dotnet，找不到 user-scope 就直接死。
+        # 与 bootstrap 一致：探到非默认位置则 export DOTNET_ROOT_X64 / DOTNET_ROOT。
+        for cand in "$LOCALAPPDATA/Microsoft/dotnet" "$USERPROFILE/AppData/Local/Microsoft/dotnet" "$USERPROFILE/.dotnet"; do
+            [ -z "$cand" ] && continue
+            if [ -d "$cand/shared/Microsoft.WindowsDesktop.App" ]; then
+                # 任意 10.x 子目录存在即视为可用
+                if ls -d "$cand/shared/Microsoft.WindowsDesktop.App"/10.* >/dev/null 2>&1; then
+                    WIN_DOTNET_ROOT=$(cygpath -w "$cand" 2>/dev/null || echo "$cand")
+                    export DOTNET_ROOT_X64="$WIN_DOTNET_ROOT"
+                    export DOTNET_ROOT="$WIN_DOTNET_ROOT"
+                    echo "Using user-scope dotnet runtime at $WIN_DOTNET_ROOT"
+                    break
+                fi
+            fi
+        done
         # 显式传 --project-root（Core 在子目录，AppContext.BaseDirectory ≠ projectRoot；不传会走 walk-up fallback）
         # 路径用 Windows 反斜杠（Core 内部 Path.GetFullPath 会规范化）
         WIN_PROJECT_ROOT=$(cygpath -w "$PROJECT_ROOT" 2>/dev/null || echo "$PROJECT_ROOT")

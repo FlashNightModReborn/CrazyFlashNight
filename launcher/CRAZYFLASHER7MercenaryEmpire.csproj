@@ -16,12 +16,14 @@
     <ApplicationIcon>app.ico</ApplicationIcon>
     <!-- AssemblyInfo.cs 仍保留 InternalsVisibleTo, 关闭自动生成避免双重定义 -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <!-- SDK-style 默认从项目目录递归收 **/*.cs，需排除 tests/native/packages 子树 -->
-    <DefaultItemExcludes>$(DefaultItemExcludes);tests/**;native/**;packages/**;scripts/**</DefaultItemExcludes>
-    <!-- HotkeyGuard.cs 是独立子进程源码（csc 单独编译为 hotkey_guard.exe），不进 launcher exe -->
-    <DefaultItemExcludes>$(DefaultItemExcludes);src/Guardian/HotkeyGuard.cs</DefaultItemExcludes>
+    <!-- SDK-style 默认从项目目录递归收 **/*.cs；
+         需排除 tests/native/packages/scripts 子树 + 独立子进程源码 HotkeyGuard.cs（csc 单独编译为 hotkey_guard.exe） -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);tests/**;native/**;packages/**;scripts/**;src/Guardian/HotkeyGuard.cs</DefaultItemExcludes>
     <!-- CA1416: 项目 TFM=net10.0-windows 已显式 Windows-only，不再 emit 平台兼容警告 -->
     <NoWarn>$(NoWarn);CA1416</NoWarn>
+    <!-- LatestMajor: runtime/Core.runtimeconfig.json 容忍未来 .NET 11.x；
+         用户只装新版桌面运行时仍能起，配合 bootstrap 内部仅检测 10.x 做下限把关 -->
+    <RollForward>LatestMajor</RollForward>
     <!-- publish 时不带 NuGet 包附带的 XML doc / pdb（运行时不需要，缩小提交体量） -->
     <CopyDocumentationFilesFromPackages>false</CopyDocumentationFilesFromPackages>
     <CopyDebugSymbolFilesFromPackages>false</CopyDebugSymbolFilesFromPackages>

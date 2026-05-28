@@ -12,8 +12,6 @@ namespace CF7Launcher.Config
     {
         public string FlashPlayerPath { get; private set; }
         public string SwfPath { get; private set; }
-        public bool GpuSharpeningEnabled { get; private set; }
-        public float Sharpness { get; private set; }
         public bool WebOverlayLowEffects { get; private set; }
         public bool WebOverlayDisableCssAnimations { get; private set; }
         public bool WebOverlayDisableVisualizers { get; private set; }
@@ -60,8 +58,6 @@ namespace CF7Launcher.Config
         {
             FlashPlayerPath = DefaultFlashPlayer;
             SwfPath = DefaultSwf;
-            GpuSharpeningEnabled = true;
-            Sharpness = 0.5f;
             WebOverlayLowEffects = false;
             WebOverlayDisableCssAnimations = false;
             WebOverlayDisableVisualizers = false;
@@ -97,10 +93,6 @@ namespace CF7Launcher.Config
                         FlashPlayerPath = val;
                     else if (string.Equals(key, "swfPath", StringComparison.OrdinalIgnoreCase))
                         SwfPath = val;
-                    else if (string.Equals(key, "gpuSharpening", StringComparison.OrdinalIgnoreCase))
-                        GpuSharpeningEnabled = ParseBool(val, true);
-                    else if (string.Equals(key, "sharpness", StringComparison.OrdinalIgnoreCase))
-                        Sharpness = ParseFloat(val, 0.5f);
                     else if (string.Equals(key, "webOverlayLowEffects", StringComparison.OrdinalIgnoreCase))
                         WebOverlayLowEffects = ParseBool(val, false);
                     else if (string.Equals(key, "webOverlayDisableCssAnimations", StringComparison.OrdinalIgnoreCase))
@@ -149,14 +141,6 @@ namespace CF7Launcher.Config
         {
             bool result;
             if (bool.TryParse(val, out result)) return result;
-            return fallback;
-        }
-
-        private static float ParseFloat(string val, float fallback)
-        {
-            float result;
-            if (float.TryParse(val, NumberStyles.Float, CultureInfo.InvariantCulture, out result))
-                return result;
             return fallback;
         }
 

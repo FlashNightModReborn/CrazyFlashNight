@@ -16,7 +16,7 @@
 //   6. bootstrap 自身立刻退出
 //
 // 设计原则：纯 Win32 + CRT（静态链接 /MT），零 STL，单文件 ~150KB；能在裸 Windows 跑
-// 日志原则：每次启动 append；不滚动、不删；保护诊断能力
+// 日志原则：每次启动 append；> LOG_ROTATE_BYTES 时滚动一次到 .old（保留前一份诊断）
 // ============================================================
 
 #define WIN32_LEAN_AND_MEAN
@@ -32,11 +32,17 @@
 #pragma comment(lib, "kernel32.lib")
 
 static const wchar_t* TITLE = L"CF7:FlashNight";
-static const wchar_t* RUNTIME_INSTALLER_REL = L"\\tools\\dotnet-runtime\\windowsdesktop-runtime-10.0.8-win-x64.exe";
+// installer 用 glob 扫 windowsdesktop-runtime-10.*-win-x64.exe（10.0.8 / 10.0.9 / 10.1.x ...），
+// 版本 bump 无需改源码 + 同步 4 处脚本
+static const wchar_t* RUNTIME_INSTALLER_DIR_REL = L"\\tools\\dotnet-runtime";
+static const wchar_t* RUNTIME_INSTALLER_GLOB = L"\\tools\\dotnet-runtime\\windowsdesktop-runtime-10.*-win-x64.exe";
 static const wchar_t* CORE_EXE_REL = L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe";
-static const wchar_t* RUNTIME_BASE_REL = L"\\dotnet\\shared\\Microsoft.WindowsDesktop.App";
 static const wchar_t* LOG_DIR_REL = L"\\logs";
 static const wchar_t* LOG_FILE_REL = L"\\logs\\bootstrap.log";
+static const wchar_t* LOG_FILE_OLD_REL = L"\\logs\\bootstrap.log.old";
+// 滚动阈值：10MB。bootstrap 每次启动 ~10 行 ~1KB，理论可记 10 万次启动；
+// 不希望诊断文件无限增长，> 10MB 时滚一次（保留 .old 一份做事后复盘）
+static const long LOG_ROTATE_BYTES = 10L * 1024L * 1024L;
 
 // ---- 工具：获取 bootstrap 自身所在目录（不含末尾反斜杠） ----
 static bool GetExeDir(wchar_t* out, size_t cch)
@@ -66,6 +72,25 @@ static void LogOpen(const wchar_t* exeDir)
 
     if (FAILED(StringCchCopyW(g_logPath, MAX_PATH, exeDir))) return;
     if (FAILED(StringCchCatW(g_logPath, MAX_PATH, LOG_FILE_REL))) return;
+
+    // 滚动：当前 log > LOG_ROTATE_BYTES → 删旧 .old + 当前重命名为 .old，新启动写空文件
+    // 不依赖额外库，用 GetFileSizeEx + MoveFileEx
+    HANDLE hFile = CreateFileW(g_logPath, FILE_READ_ATTRIBUTES,
+                                FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                                NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile != INVALID_HANDLE_VALUE) {
+        LARGE_INTEGER size;
+        BOOL gotSize = GetFileSizeEx(hFile, &size);
+        CloseHandle(hFile);
+        if (gotSize && size.QuadPart > LOG_ROTATE_BYTES) {
+            wchar_t oldPath[MAX_PATH];
+            if (SUCCEEDED(StringCchCopyW(oldPath, MAX_PATH, exeDir)) &&
+                SUCCEEDED(StringCchCatW(oldPath, MAX_PATH, LOG_FILE_OLD_REL))) {
+                DeleteFileW(oldPath);  // 容忍不存在
+                MoveFileExW(g_logPath, oldPath, MOVEFILE_REPLACE_EXISTING);
+            }
+        }
+    }
 
     // append 模式打开，二进制（自己控制换行）；UTF-8 编码
     if (_wfopen_s(&g_logFp, g_logPath, L"ab") != 0) {
@@ -349,22 +374,36 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
     bool hasRuntime = IsRuntimeInstalled(foundVer, 64, foundRoot, MAX_PATH, &needSetEnv);
 
     if (!hasRuntime) {
-        // 2. 确认 installer 文件存在
-        wchar_t installerPath[MAX_PATH];
-        if (FAILED(StringCchCopyW(installerPath, MAX_PATH, exeDir)) ||
-            FAILED(StringCchCatW(installerPath, MAX_PATH, RUNTIME_INSTALLER_REL))) {
+        // 2. 用 glob 扫 tools\dotnet-runtime\windowsdesktop-runtime-10.*-win-x64.exe；
+        //    版本 bump（10.0.8 → 10.0.9 → 10.1.x）不需要改源码 + 同步 build.ps1 / pack.config
+        wchar_t installerGlob[MAX_PATH];
+        if (FAILED(StringCchCopyW(installerGlob, MAX_PATH, exeDir)) ||
+            FAILED(StringCchCatW(installerGlob, MAX_PATH, RUNTIME_INSTALLER_GLOB))) {
             return FatalExit(L"内部错误：路径拼接溢出。");
         }
 
-        DWORD instAttr = GetFileAttributesW(installerPath);
-        if (instAttr == INVALID_FILE_ATTRIBUTES || (instAttr & FILE_ATTRIBUTE_DIRECTORY)) {
+        wchar_t installerPath[MAX_PATH] = { 0 };
+        WIN32_FIND_DATAW instFd;
+        HANDLE hInst = FindFirstFileW(installerGlob, &instFd);
+        if (hInst != INVALID_HANDLE_VALUE) {
+            if ((instFd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
+                StringCchCopyW(installerPath, MAX_PATH, exeDir);
+                StringCchCatW(installerPath, MAX_PATH, RUNTIME_INSTALLER_DIR_REL);
+                StringCchCatW(installerPath, MAX_PATH, L"\\");
+                StringCchCatW(installerPath, MAX_PATH, instFd.cFileName);
+            }
+            FindClose(hInst);
+        }
+
+        if (installerPath[0] == L'\0') {
             wchar_t err[1024];
             StringCchPrintfW(err, 1024,
                 L"未检测到 .NET 10 桌面运行时，且 bundled installer 缺失：\n%s\n\n"
                 L"请重新下载完整安装包，或手动从 Microsoft 网站安装 .NET 10 桌面运行时。",
-                installerPath);
+                installerGlob);
             return FatalExit(err);
         }
+        Logf("INFO", L"installer resolved: %s", installerPath);
 
         // 3. 用户确认
         Log("INFO", L"runtime missing, prompting user to install");
@@ -393,11 +432,11 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
         }
         // installer 退出码: 0 = 成功; 1602 = 用户取消; 1603 = 通用失败; 3010 = 需要重启
         if (installResult != 0 && installResult != 3010) {
-            wchar_t err[512];
-            StringCchPrintfW(err, 512,
+            wchar_t err[1024];
+            StringCchPrintfW(err, 1024,
                 L"运行时安装失败（installer 退出码 %d）。\n\n"
-                L"请尝试手动运行：\n%s\\tools\\dotnet-runtime\\windowsdesktop-runtime-10.0.8-win-x64.exe",
-                installResult, exeDir);
+                L"请尝试手动运行：\n%s",
+                installResult, installerPath);
             return FatalExit(err);
         }
 

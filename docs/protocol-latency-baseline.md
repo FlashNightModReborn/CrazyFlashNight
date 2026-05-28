@@ -1,7 +1,7 @@
 # AS2 Protocol Latency Baseline
 
 Date: 2026-04-16  
-Environment: Flash CS6 `TestLoader` + `CRAZYFLASHER7MercenaryEmpire.exe --bus-only`
+Environment: Flash CS6 `TestLoader` + `CRAZYFLASHER7MercenaryEmpire.exe --bus-only` (pre-net10；当前等价路径 `bash tools/cfn-cli.sh start-bus`，绕过 net10 bootstrap 的 runtime 检测 prompt 直跑 `runtime/Core.exe`)
 
 ## What was measured
 

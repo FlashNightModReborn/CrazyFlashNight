@@ -510,9 +510,11 @@ launcher/
 └── tools/
     ├── lockbox-bake.js                    Lockbox 变体池离线生成工具（写入 web/data/lockbox-variants.json）
     ├── run-minigame-qa.js                 小游戏 Node QA 入口（lockbox / pinalign / gobang / all）
-    ├── validate-minigame-final-state.js   小游戏最终态静态校验（旧路径 / 旧协议 / 旧共享类名）
-    └── nuget.exe                          NuGet CLI
+    └── validate-minigame-final-state.js   小游戏最终态静态校验（旧路径 / 旧协议 / 旧共享类名）
 ```
+
+> 老的 `launcher/tools/nuget.exe` + `launcher/packages/` 是 .NET Framework 4.6.2 时代的 packages.config 工作流残留，
+> 已被 SDK-style PackageReference + `dotnet restore` 取代。可手动 `Remove-Item -Recurse launcher/packages, launcher/tools/nuget.exe` 回收 ~50MB 磁盘。
 
 ## 在 VS Code 中构建
 
@@ -762,11 +764,6 @@ Launcher 的配置被**显式拆成两份**，避免互相污染：
 flashPlayerPath = "Adobe Flash Player 20.exe"
 swfPath = "CRAZYFLASHER7MercenaryEmpire.swf"
 
-# GPU CAS 锐化（实验性）— 当前代码中该字段无消费者，pipeline 待完善。
-# 保留为未来 feature flag；写什么都不影响当前运行行为。
-gpuSharpening = false
-sharpness = 0.5
-
 # WebView2 / overlay performance diagnostics.
 # Keep defaults false while investigating; toggle one at a time or use env vars.
 webOverlayLowEffects = false
@@ -822,8 +819,6 @@ useDesktopCursorOverlay = true
 # 修首次点击失效"卡手"问题；env CF7_PANEL_TAKE_FG=0 一键回滚。
 webOverlayPanelTakeForeground = true
 ```
-
-代码默认（[AppConfig.cs](src/Config/AppConfig.cs) 构造函数）：`GpuSharpeningEnabled = true`, `Sharpness = 0.5`。示例显式写 `false` 是遵循正文「当前禁用」语义，等 pipeline 接上以后再统一默认。
 
 `devGpuProbeHotkey=true`（或 `CF7_DEV_GPU_PROBE=1`）启用 Ctrl+G 切换 WebView2 `DefaultBackgroundColor=Black` + Flash 子窗口隐藏的 GPU 合成探针，用于实测 alpha blend 占 iGPU 的比重。日志写 `[GpuProbe] ON/OFF tick=...` 可对照任务管理器曲线。**玩家版必须保持 false**：误触会让游戏画面消失，再按一次才能恢复。
 

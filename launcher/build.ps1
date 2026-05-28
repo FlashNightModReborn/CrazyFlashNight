@@ -24,6 +24,15 @@ $launcherDir = $PSScriptRoot
 $projectRoot = Split-Path -Parent $launcherDir
 $publishDir = Join-Path $launcherDir "publish"
 
+# PowerShell 5.1 把 cmd / native exe 的 stderr 包成 NativeCommandError，在 ErrorActionPreference=Stop
+# 下会中止脚本——即便是 cl.exe banner、vcvars64 提示这种无害 stderr 也会触发。
+# 用 cmd 内部 2>&1 把 stderr 收编到 cmd 的 stdout，PowerShell 只看到普通输出，行为与 PS7 / CI 一致。
+function Invoke-CmdBat {
+    param([string]$BatPath)
+    # 用 cmd /s /c 包裹整段命令；"$BatPath" 加引号兼容路径含空格；2>&1 在 cmd 内部合并 stderr
+    & cmd.exe /s /c "`"$BatPath`" 2>&1"
+}
+
 # dotnet host 探测：优先 user-scope (%LOCALAPPDATA%\Microsoft\dotnet)，否则系统 PATH
 $userDotnet = Join-Path $env:LOCALAPPDATA "Microsoft\dotnet\dotnet.exe"
 if (Test-Path $userDotnet) {
@@ -73,7 +82,7 @@ if (Test-Path (Join-Path $tsDir "tsconfig.json")) {
 Write-Host "[Step 2/7] Build native miniaudio DLL..." -ForegroundColor Yellow
 $nativeBat = Join-Path $launcherDir "native\build.bat"
 if (Test-Path $nativeBat) {
-    & cmd /c $nativeBat
+    Invoke-CmdBat $nativeBat
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[FAIL] Native build failed." -ForegroundColor Red
         exit 1
@@ -90,7 +99,7 @@ if (-not (Test-Path $solBat)) {
     Write-Host "[FAIL] sol_parser build.bat missing: $solBat" -ForegroundColor Red
     exit 1
 }
-& cmd /c $solBat
+Invoke-CmdBat $solBat
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[FAIL] sol_parser build failed." -ForegroundColor Red
     exit 1
@@ -112,7 +121,7 @@ if (-not (Test-Path $bootBat)) {
     Write-Host "[FAIL] bootstrap build.bat missing: $bootBat" -ForegroundColor Red
     exit 1
 }
-& cmd /c $bootBat
+Invoke-CmdBat $bootBat
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[FAIL] bootstrap build failed." -ForegroundColor Red
     exit 1
@@ -248,12 +257,24 @@ foreach ($f in $mustExistRuntime) {
         exit 1
     }
 }
-# bundled runtime installer 是 bootstrap 的硬依赖，缺失会让 runtime 缺失场景无法自动恢复
-$runtimeInstaller = Join-Path $projectRoot "tools\dotnet-runtime\windowsdesktop-runtime-10.0.8-win-x64.exe"
-if (-not (Test-Path $runtimeInstaller)) {
-    Write-Host "[WARN] bundled runtime installer 缺失: $runtimeInstaller" -ForegroundColor Yellow
-    Write-Host "       未装 .NET 10 桌面运行时的机器双击 launcher 会因 bootstrap 找不到 installer 而失败" -ForegroundColor Yellow
+# bundled runtime installer 是 bootstrap 的硬依赖：runtime 缺失场景 bootstrap 会调用此 installer。
+# pack.config.yaml 的 runtime-installer 层也强依赖它，build 阶段就必须 fail 而不是只 WARN。
+# glob 扫 windowsdesktop-runtime-10.*-win-x64.exe，让版本 bump（10.0.9 / 10.0.10 ...）不需要改脚本
+$runtimeInstallerDir = Join-Path $projectRoot "tools\dotnet-runtime"
+$runtimeInstallerCandidates = @()
+if (Test-Path $runtimeInstallerDir) {
+    $runtimeInstallerCandidates = @(
+        Get-ChildItem -LiteralPath $runtimeInstallerDir -Filter 'windowsdesktop-runtime-10.*-win-x64.exe' -File -ErrorAction SilentlyContinue
+    )
 }
+if ($runtimeInstallerCandidates.Count -eq 0) {
+    Write-Host "[FAIL] bundled runtime installer 缺失（tools\dotnet-runtime\windowsdesktop-runtime-10.*-win-x64.exe）" -ForegroundColor Red
+    Write-Host "       未装 .NET 10 桌面运行时的机器双击 launcher 会因 bootstrap 找不到 installer 而失败" -ForegroundColor Red
+    Write-Host "       下载: https://dotnet.microsoft.com/download/dotnet/10.0 → Desktop Runtime x64 → tools\dotnet-runtime\" -ForegroundColor Yellow
+    exit 1
+}
+$pickedInstaller = $runtimeInstallerCandidates[0].Name
+Write-Host "  bundled installer: $pickedInstaller" -ForegroundColor Green
 Write-Host "  All required artifacts at projectRoot." -ForegroundColor Green
 
 # Step 7: Verify required WebView2 runtime assets

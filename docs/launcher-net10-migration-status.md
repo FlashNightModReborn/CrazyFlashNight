@@ -87,7 +87,7 @@
 ### 可延后 — 不阻塞合并
 
 - WFO0003 `app.manifest` DPI 设置建议迁到 `Application.SetHighDpiMode` API（保持 manifest 方案当前可用）
-- AppConfig.cs 中 `Sharpness` / `GpuSharpeningEnabled` / config.toml `gpuSharpening` 是 pre-existing dead 配置 knob（GpuRenderer 死代码删除后无消费者），cleanup 留给后续 PR
+- ~~AppConfig.cs 中 `Sharpness` / `GpuSharpeningEnabled` / config.toml `gpuSharpening` 是 pre-existing dead 配置 knob（GpuRenderer 死代码删除后无消费者），cleanup 留给后续 PR~~ — 已随 post-migration 收尾批次清理（连带删 `ParseFloat` helper + README sample）
 - WindowsBase 4.0 vs 5.0 transitive 冲突 warning（WebView2 1.0.3856.49 transitive 引 net5.0 WPF dll references WindowsBase 5.0；info-only，build 输出选 4.0）
 - Newtonsoft.Json 13.0.3 → System.Text.Json 切换（独立立项，本次 goal 明令禁止同步）
 - NRT（Nullable=enable）按文件灰度（独立立项，本次禁止同步）
