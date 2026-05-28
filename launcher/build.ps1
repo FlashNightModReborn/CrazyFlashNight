@@ -48,7 +48,11 @@ function Copy-IfDifferent {
             $srcHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $Src).Hash
             $dstHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $Dst).Hash
             if ($srcHash -eq $dstHash) { return $false }
-        } catch { }
+        } catch {
+            # 哈希失败 (文件被锁 / 权限 / IO 错误) 不阻断 build，fall through 强制覆盖；
+            # 但留 [WARN] 给排查用 — 完全静默会让"为啥每次都拷"难定位。
+            Write-Host "  [WARN] Hash compare failed for $Src vs $Dst — falling back to force copy: $_" -ForegroundColor Yellow
+        }
     }
     Copy-Item -LiteralPath $Src -Destination $Dst -Force
     return $true

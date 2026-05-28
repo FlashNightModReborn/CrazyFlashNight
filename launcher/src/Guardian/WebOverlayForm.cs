@@ -602,9 +602,12 @@ namespace CF7Launcher.Guardian
                 if (IsHotReloadExcluded(e.FullPath)) return;
                 ScheduleReload();
             };
+            // Renamed 只看目的地路径：语义 = "文件最终位置在排除区就不 reload"。
+            // 比 OldFullPath && FullPath 都检查更清晰，且不会因 atomic-rename
+            // 写盘 (temp → icons/) 这种 cross-boundary 模式漏掉 self-trigger 屏蔽。
             RenamedEventHandler renHandler = (s, e) =>
             {
-                if (IsHotReloadExcluded(e.FullPath) && IsHotReloadExcluded(e.OldFullPath)) return;
+                if (IsHotReloadExcluded(e.FullPath)) return;
                 ScheduleReload();
             };
             _webWatcher.Changed += handler;
