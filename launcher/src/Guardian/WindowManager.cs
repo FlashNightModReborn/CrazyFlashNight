@@ -126,11 +126,6 @@ namespace CF7Launcher.Guardian
         private IntPtr _flashHwnd;
         private Panel _hostPanel;
 
-        // GPU 模式：锁定 Flash 尺寸，不跟随 Panel resize
-        private bool _gpuMode;
-        private int _fixedWidth;
-        private int _fixedHeight;
-
         // ==================== Phase C: EmbedPhase 单一 owner 协议 ====================
         // ArmEarlyReparent（background poller，hidden reparent）和 EmbedFlashWindow（embedding 阶段，reveal 或 full embed）
         // 两条路径都可能先发现 hwnd；靠 CAS `_embedPhase` 决定谁 own 本 attempt 的 reparent/reveal 流程。
@@ -516,8 +511,7 @@ namespace CF7Launcher.Guardian
 
         private void OnHostPanelResize(object sender, EventArgs e)
         {
-            if (!_gpuMode)
-                ResizeFlashToPanel();
+            ResizeFlashToPanel();
         }
 
         private System.Windows.Forms.Timer _watchdog;
@@ -566,56 +560,7 @@ namespace CF7Launcher.Guardian
             if (_flashHwnd == IntPtr.Zero || _hostPanel == null)
                 return;
 
-            if (_gpuMode)
-                MoveWindow(_flashHwnd, 0, 0, _fixedWidth, _fixedHeight, true);
-            else
-                MoveWindow(_flashHwnd, 0, 0, _hostPanel.Width, _hostPanel.Height, true);
-        }
-
-        /// <summary>GPU 模式：锁定 Flash 到固定捕获分辨率。</summary>
-        public void EnableGpuMode(int captureWidth, int captureHeight)
-        {
-            _gpuMode = true;
-            _fixedWidth = captureWidth;
-            _fixedHeight = captureHeight;
-            if (_flashHwnd != IntPtr.Zero)
-                MoveWindow(_flashHwnd, 0, 0, _fixedWidth, _fixedHeight, true);
-            LogManager.Log("[WindowManager] GPU mode: fixed " + captureWidth + "x" + captureHeight);
-        }
-
-        /// <summary>退出 GPU 模式，恢复跟随 Panel 尺寸。</summary>
-        public void DisableGpuMode()
-        {
-            _gpuMode = false;
-            ResizeFlashToPanel();
-            LogManager.Log("[WindowManager] GPU mode disabled");
-        }
-
-        /// <summary>将 Flash 窗口移到新的宿主 Panel（回退时使用）。</summary>
-        public void ReparentFlash(Panel newHost)
-        {
-            if (_flashHwnd == IntPtr.Zero || newHost == null)
-                return;
-
-            // 解除旧 Panel 的 resize 事件
-            if (_hostPanel != null)
-                _hostPanel.Resize -= OnHostPanelResize;
-
-            _hostPanel = newHost;
-            int style = GetWindowLong(_flashHwnd, GWL_STYLE);
-            style = style & ~WS_CAPTION & ~WS_THICKFRAME & ~WS_BORDER;
-            style = style | WS_CHILD;
-            SetWindowLong(_flashHwnd, GWL_STYLE, style);
-            SetWindowPos(_flashHwnd, IntPtr.Zero, 0, 0, 0, 0,
-                SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
-            SetParent(_flashHwnd, _hostPanel.Handle);
-
-            // 重新绑定 resize 事件
-            _hostPanel.Resize += OnHostPanelResize;
-
-            ResizeFlashToPanel();
-            StartEmbedWatchdog();
-            LogManager.Log("[WindowManager] Flash reparented to new host");
+            MoveWindow(_flashHwnd, 0, 0, _hostPanel.Width, _hostPanel.Height, true);
         }
 
         /// <summary>停止嵌入看门狗定时器。退出时在 DetachFlash 前调用。</summary>

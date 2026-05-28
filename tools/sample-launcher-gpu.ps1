@@ -16,8 +16,11 @@ $sampleCount = [Math]::Max(1, [int][Math]::Ceiling(($duration * 1000.0) / $inter
 function Resolve-Group {
     param($Process)
 
-    if ($Process.Name -eq "CRAZYFLASHER7MercenaryEmpire.exe" -and $Process.ExecutablePath -like "$projectRoot*") {
+    if ($Process.Name -eq "CRAZYFLASHER7MercenaryEmpire.Core.exe" -and $Process.ExecutablePath -like "$projectRoot*") {
         return "launcher"
+    }
+    if ($Process.Name -eq "CRAZYFLASHER7MercenaryEmpire.exe" -and $Process.ExecutablePath -like "$projectRoot*") {
+        return "bootstrap"
     }
     if ($Process.Name -eq "Adobe Flash Player 20.exe" -and $Process.ExecutablePath -like "$projectRoot*") {
         return "flash"
@@ -34,7 +37,7 @@ function Resolve-Group {
 
 $processes = Get-CimInstance Win32_Process |
     Where-Object {
-        $_.Name -in @("CRAZYFLASHER7MercenaryEmpire.exe", "Adobe Flash Player 20.exe", "msedgewebview2.exe")
+        $_.Name -in @("CRAZYFLASHER7MercenaryEmpire.Core.exe", "CRAZYFLASHER7MercenaryEmpire.exe", "Adobe Flash Player 20.exe", "msedgewebview2.exe")
     } |
     ForEach-Object {
         $group = Resolve-Group $_

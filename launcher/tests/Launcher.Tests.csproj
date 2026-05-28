@@ -1,109 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build"
-         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
     <PlatformTarget>x64</PlatformTarget>
-    <AssemblyName>Launcher.Tests</AssemblyName>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
     <RootNamespace>CF7Launcher.Tests</RootNamespace>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AssemblyName>Launcher.Tests</AssemblyName>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!-- CA1416: 测试项目 TFM 同 launcher，Windows-only；显式压住平台兼容警告 -->
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.abstractions">
-      <HintPath>..\packages\xunit.abstractions.2.0.3\lib\net35\xunit.abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.assert">
-      <HintPath>..\packages\xunit.assert.2.4.2\lib\netstandard1.1\xunit.assert.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.core">
-      <HintPath>..\packages\xunit.extensibility.core.2.4.2\lib\netstandard1.1\xunit.core.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.execution.desktop">
-      <HintPath>..\packages\xunit.extensibility.execution.2.4.2\lib\net452\xunit.execution.desktop.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\CRAZYFLASHER7MercenaryEmpire.csproj">
-      <Project>{00000000-0000-0000-0000-000000000001}</Project>
-      <Name>CRAZYFLASHER7MercenaryEmpire</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\CRAZYFLASHER7MercenaryEmpire.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="SanityTests.cs" />
-    <Compile Include="Tasks\StageSelectTaskTests.cs" />
-    <Compile Include="Tasks\IntelligenceTaskTests.cs" />
-    <Compile Include="Save\SaveMigratorTests.cs" />
-    <Compile Include="Bus\MessageRouterTests.cs" />
-    <Compile Include="Bus\XmlSocketReadLoopTests.cs" />
-    <Compile Include="Tasks\IconBakeTaskTests.cs" />
-    <Compile Include="Save\SolResolverTests.cs" />
-    <Compile Include="Save\SolFileLocatorTests.cs" />
-    <Compile Include="Save\LegacyPresetSlotSeederTests.cs" />
-    <Compile Include="Save\RepairBackupStoreTests.cs" />
-    <Compile Include="Save\LauncherVersionGateTests.cs" />
-    <Compile Include="Save\RepairPolicyTests.cs" />
-    <Compile Include="Save\SaveAutoRepairServiceTests.cs" />
-    <Compile Include="Tasks\ArchiveTaskListFilterTests.cs" />
-    <Compile Include="Guardian\Handlers\RepairCommandHandlerTests.cs" />
-    <Compile Include="Guardian\OverlayCoordinateContextTests.cs" />
-    <Compile Include="Guardian\NativeHudBoundsUnionTests.cs" />
-    <Compile Include="Guardian\UiDataPacketParserTests.cs" />
-    <Compile Include="Guardian\NativePanelBackdropClickRoutingTests.cs" />
-    <Compile Include="Guardian\FlashSnapshotLetterboxTests.cs" />
-    <Compile Include="Guardian\FlashSnapshotDpiTests.cs" />
-    <Compile Include="Guardian\FlashSnapshotBlackFrameTests.cs" />
-    <Compile Include="Guardian\FlashSnapshotComposeBackdropTests.cs" />
-    <Compile Include="Guardian\PanelLayoutCatalogTests.cs" />
-    <Compile Include="Guardian\LauncherCommandRouterTests.cs" />
-    <Compile Include="Guardian\WebOverlayFormPanelCloseTests.cs" />
-    <Compile Include="Guardian\DpiAwarenessGetEffectiveTests.cs" />
-    <Compile Include="Guardian\InputShieldTelemetryFilterTests.cs" />
-    <Compile Include="Guardian\ComboWidgetTests.cs" />
-    <Compile Include="Guardian\CompositeNotchSinkTests.cs" />
-    <Compile Include="Guardian\MapHudAssetPathSecurityTests.cs" />
-    <Compile Include="Guardian\MapHudPayloadParseTests.cs" />
-    <Compile Include="Guardian\MapHudWidgetTests.cs" />
-    <Compile Include="Guardian\NotchOverlayTests.cs" />
-    <Compile Include="Guardian\RightContextWidgetTests.cs" />
-    <Compile Include="Guardian\RightHudLayoutTests.cs" />
-    <Compile Include="Guardian\SafeExitPanelWidgetTests.cs" />
-    <Compile Include="Guardian\CursorScaleTests.cs" />
-    <Compile Include="Guardian\DesktopCursorForegroundGuardTests.cs" />
-    <Compile Include="Guardian\DesktopCursorScaleTests.cs" />
-    <Compile Include="Guardian\DesktopCursorVisibilityStateMachineTests.cs" />
-    <Compile Include="Guardian\UiDataPacketTests.cs" />
-    <Compile Include="Guardian\ToastOverlayTests.cs" />
-    <Compile Include="Guardian\WidgetScalerTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="Fixtures\MapHud\payload-v1-basic.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Fixtures\MapHud\payload-v1-fallback-blocks.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Fixtures\MapHud\payload-v1-missing-meta-group.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Fixtures\MapHud\payload-v1-empty-hotspots.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Fixtures\MapHud\payload-v0-legacy.json">
+    <None Update="Fixtures\MapHud\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

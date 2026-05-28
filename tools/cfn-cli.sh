@@ -52,15 +52,23 @@ discover_port() {
 case "${1:-status}" in
     start-bus)
         # 启动 launcher --bus-only 后台进程
-        EXE="$PROJECT_ROOT/CRAZYFLASHER7MercenaryEmpire.exe"
+        # 跳过 bootstrap（runtime 检测/安装无需走这条 headless 自动化路径），直接走 Core.exe；
+        # Core 是 FDD apphost，要求机器上已装 .NET 10 Desktop Runtime
+        # Core 部署在 projectRoot\runtime\ 子目录（build.ps1 Step 6）
+        EXE="$PROJECT_ROOT/runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe"
         if [ ! -f "$EXE" ]; then
-            echo "Error: Launcher EXE not found: $EXE" >&2; exit 1
+            echo "Error: Launcher Core EXE not found: $EXE" >&2
+            echo "  Tip: pre-built FDD artifacts at projectRoot\\runtime\\；如缺失先跑 launcher/build.ps1" >&2
+            exit 1
         fi
         if discover_port > /dev/null 2>&1; then
             echo "Bus already running on port $(discover_port)"
             exit 0
         fi
-        "$EXE" --bus-only &
+        # 显式传 --project-root（Core 在子目录，AppContext.BaseDirectory ≠ projectRoot；不传会走 walk-up fallback）
+        # 路径用 Windows 反斜杠（Core 内部 Path.GetFullPath 会规范化）
+        WIN_PROJECT_ROOT=$(cygpath -w "$PROJECT_ROOT" 2>/dev/null || echo "$PROJECT_ROOT")
+        "$EXE" --bus-only --project-root "$WIN_PROJECT_ROOT" &
         echo "Bus starting (PID=$!)..."
         # 等待就绪
         for i in $(seq 1 15); do
@@ -82,7 +90,11 @@ case "${1:-status}" in
             echo "Shutdown signal sent"
             sleep 1
         else
-            taskkill //IM CRAZYFLASHER7MercenaryEmpire.exe //F 2>/dev/null && echo "Bus killed" || echo "No bus process found"
+            # 真正长跑的进程是 Core.exe（FDD apphost），bootstrap 在启动 Core 后立即退出；
+            # 同时尝试 kill 两个名字以兼容旧的 bus 进程（如果机器上还有 pre-bootstrap 时代的旧 exe 在跑）
+            taskkill //IM CRAZYFLASHER7MercenaryEmpire.Core.exe //F 2>/dev/null && echo "Bus killed (Core)" || \
+            taskkill //IM CRAZYFLASHER7MercenaryEmpire.exe //F 2>/dev/null && echo "Bus killed (legacy entry)" || \
+            echo "No bus process found"
         fi
         ;;
 

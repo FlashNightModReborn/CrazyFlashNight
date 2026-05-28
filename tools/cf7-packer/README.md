@@ -92,7 +92,9 @@ npm run list-tags
 | flashswf | 编译后 .swf + 运行时资源（白名单 `**/*.{swf,png,flv,html}` + `portraits/**/*.xml`；显式排除 XFL 工程附属 `**/{LIBRARY,META-INF,bin}/**` + `**/*.xfl` + `DOMDocument.xml` / `MobileSettings.xml` / `PublishSettings.xml`，以及 `.fla`、`.xlsx`、`*-备份.swf`、`arts/things*` 源目录、`unused/`、`miniGames/`、`ComicTool/`） |
 | sounds | `export/` SFX + `bgm_list.xml` + 各专辑音频；XFL 残余 exclude 为防御性（音乐包 `music/` 独立外置不打包） |
 | config | 全量复制（仅排除 `*.md` 开发文档） |
-| root-files | 根目录运行时文件：Launcher exe、托管 DLL（ClearScript / Newtonsoft.Json / SharpDX / WebView2）、原生 DLL（ClearScriptV8 / WebView2Loader / miniaudio / sol_parser）、Flash Player、SWF、`crossdomain.xml`、`config.xml` / `config.toml` |
+| root-files | 根目录运行时文件：native bootstrap `CRAZYFLASHER7MercenaryEmpire.exe`、`hotkey_guard.exe`、Flash Player、SWF、`crossdomain.xml`、`config.xml` / `config.toml` |
+| launcher-runtime | FDD Core 运行时：`runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe`、managed/native DLL、`*.deps.json` / `*.runtimeconfig.json` |
+| runtime-installer | 缺运行时时由 bootstrap 拉起的 Windows Desktop Runtime installer：`tools/dotnet-runtime/windowsdesktop-runtime-10.0.8-win-x64.exe` |
 | launcher-web | WebView2 overlay 前端：bootstrap/overlay/config/css/assets/data/lib/modules/help/icons；排除 `dev/`、`mockups/`、`modules/**/dev/`、`modules/**/reference/`、各 minigame & cursor & fonts 的 README |
 | launcher-data | Launcher 运行时数据：`map_hud_data.json`（MapHud catalog）/ `save_repair_dict.json`（SaveAutoRepairService 字典）/ `save_schema.json`（存档编辑器 diff 基线） |
 | launcher-scripts | V8 运行时 bundle（`launcher/scripts/dist/hit-number-bundle.js`，含伤害数字渲染 + 搓招 DFA） |

@@ -190,6 +190,7 @@ namespace CF7Launcher.Guardian
         // null 时 panel→idle 路径跳过 Flash 前台回推（开发/测试场景；生产路径必传）。
         private readonly Func<string, bool> _flashFocusRestorer;
         private readonly bool _panelTakeForeground;
+        private readonly string _projectRoot;
 
         // GDI+ fallback：WebView2 未就绪或初始化失败时，消息转发到 GDI+ overlay
         private IToastSink _toastFallback;
@@ -312,7 +313,7 @@ namespace CF7Launcher.Guardian
         // 异步响应通过 PostToWeb 回送，前端按 callId 匹配。
         private CF7Launcher.Bus.MessageRouter _taskRouter;
 
-        public WebOverlayForm(Form owner, Control anchor, string webDir,
+        public WebOverlayForm(Form owner, Control anchor, string webDir, string projectRoot,
             bool lowEffectsMode, bool disableCssAnimations, bool disableVisualizers,
             int frameRateLimit,
             bool webView2DisableGpu, string webView2AdditionalArgs,
@@ -330,6 +331,7 @@ namespace CF7Launcher.Guardian
             _webView2DisableGpu = webView2DisableGpu;
             _webView2AdditionalArgs = webView2AdditionalArgs ?? "";
             _flashFocusRestorer = flashFocusRestorer; // 可空：null 时 panel→idle 跳过 Flash 前台回推
+            _projectRoot = ResolveProjectRoot(webDir, projectRoot);
 
             _panelTakeForeground = panelTakeForeground;
 
@@ -374,6 +376,41 @@ namespace CF7Launcher.Guardian
 
             // 异步初始化 WebView2
             InitWebView2Async(webDir);
+        }
+
+        private static string ResolveProjectRoot(string webDir, string explicitProjectRoot)
+        {
+            if (!string.IsNullOrEmpty(explicitProjectRoot))
+            {
+                try { return System.IO.Path.GetFullPath(explicitProjectRoot).TrimEnd('\\', '/'); }
+                catch { return explicitProjectRoot.TrimEnd('\\', '/'); }
+            }
+
+            try
+            {
+                if (!string.IsNullOrEmpty(webDir))
+                {
+                    string fullWebDir = System.IO.Path.GetFullPath(webDir).TrimEnd('\\', '/');
+                    string launcherDir = System.IO.Path.GetDirectoryName(fullWebDir);
+                    string root = System.IO.Path.GetDirectoryName(launcherDir);
+                    if (!string.IsNullOrEmpty(root))
+                        return root.TrimEnd('\\', '/');
+                }
+            }
+            catch { }
+
+            try
+            {
+                string baseDir = AppContext.BaseDirectory.TrimEnd('\\', '/');
+                string parent = System.IO.Path.GetDirectoryName(baseDir);
+                if (!string.IsNullOrEmpty(parent))
+                    return parent.TrimEnd('\\', '/');
+                return baseDir;
+            }
+            catch
+            {
+                return AppContext.BaseDirectory;
+            }
         }
 
         /// <summary>注入 GDI+ fallback。WebView2 未就绪或失败时消息走这里。</summary>
@@ -3818,7 +3855,7 @@ namespace CF7Launcher.Guardian
             {
                 // 读取 sounds/README.md
                 string readmePath = System.IO.Path.Combine(
-                    System.IO.Path.GetDirectoryName(typeof(Program).Assembly.Location),
+                    _projectRoot,
                     "sounds", "README.md");
                 if (!System.IO.File.Exists(readmePath))
                 {

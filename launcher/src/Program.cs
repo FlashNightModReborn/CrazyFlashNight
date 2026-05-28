@@ -119,14 +119,85 @@ class Program
         }
     }
 
+    /// <summary>
+    /// 从命令行参数读 --project-root <abs path>（bootstrap 注入）。返回 null 表示没传或路径无效。
+    /// </summary>
+    static string TryGetProjectRootFromArgs(string[] args)
+    {
+        if (args == null) return null;
+        for (int i = 0; i < args.Length - 1; i++)
+        {
+            if (string.Equals(args[i], "--project-root", StringComparison.OrdinalIgnoreCase))
+            {
+                string path = args[i + 1];
+                if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+                {
+                    return Path.GetFullPath(path).TrimEnd('\\', '/');
+                }
+            }
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// 哨兵文件 walk-up：从 startExePath 所在目录向上找含 crossdomain.xml 的目录。
+    /// crossdomain.xml 是 Flash socket 跨域策略文件，必须放在 projectRoot；存在即认作 projectRoot.
+    /// 最多向上 6 层；找不到返回 null（调用方 fallback 到 ProcessPath 父目录）。
+    /// </summary>
+    static string TryWalkUpForProjectRoot(string startExePath)
+    {
+        if (string.IsNullOrEmpty(startExePath)) return null;
+        try
+        {
+            string dir = Path.GetDirectoryName(startExePath);
+            for (int i = 0; i < 6 && !string.IsNullOrEmpty(dir); i++)
+            {
+                if (File.Exists(Path.Combine(dir, "crossdomain.xml")))
+                {
+                    return Path.GetFullPath(dir).TrimEnd('\\', '/');
+                }
+                string parent = Path.GetDirectoryName(dir);
+                if (parent == dir) break;  // 已到根
+                dir = parent;
+            }
+        }
+        catch { }
+        return null;
+    }
+
+    static HighDpiCompatibilityResult DetectDpiCompatibility(string projectRoot, string coreExePath)
+    {
+        HighDpiCompatibilityResult core = HighDpiCompatibilityDetector.Detect(coreExePath);
+
+        string bootstrapExePath = null;
+        if (!string.IsNullOrEmpty(projectRoot))
+            bootstrapExePath = Path.Combine(projectRoot, "CRAZYFLASHER7MercenaryEmpire.exe");
+        HighDpiCompatibilityResult bootstrap = HighDpiCompatibilityDetector.Detect(bootstrapExePath);
+
+        if (bootstrap != null && bootstrap.IsRiskyOverride) return bootstrap;
+        if (core != null && core.IsRiskyOverride) return core;
+        if (bootstrap != null && bootstrap.IsApplicationOverride) return bootstrap;
+        if (core != null && core.IsApplicationOverride) return core;
+        return core ?? bootstrap;
+    }
+
     static int Run(string[] args)
     {
         bool busOnly = Array.IndexOf(args, "--bus-only") >= 0;
         bool forceWebViewFail = Array.IndexOf(args, "--force-webview-fail") >= 0;
 
-        // 定位项目根目录（EXE 所在目录）
-        string exePath = typeof(Program).Assembly.Location;
-        string projectRoot = Path.GetDirectoryName(exePath);
+        // 定位项目根目录:
+        // 1. 优先 bootstrap 传 --project-root <abs>（FDD 产物在 projectRoot/runtime/ 子目录,
+        //    AppContext.BaseDirectory != projectRoot, 必须显式传）
+        // 2. 否则 fallback: 从 Environment.ProcessPath 向上 walk 找哨兵文件 crossdomain.xml,
+        //    覆盖 dev 直跑 bin/Debug/net10.0-windows/win-x64/*.exe 的场景, 以及未来 packer 可能
+        //    改变 Core 子目录名时的 robustness
+        // 3. 都失败: 退而用 Environment.ProcessPath 父目录, 与历史行为一致（user 误点 Core 时
+        //    至少不立刻 NullReferenceException, 由后续资产 verify 给出可读错误）
+        string projectRoot = TryGetProjectRootFromArgs(args)
+                             ?? TryWalkUpForProjectRoot(Environment.ProcessPath)
+                             ?? Path.GetDirectoryName(Environment.ProcessPath);
+        string exePath = Environment.ProcessPath;
         PerfTrace.Init(projectRoot);
         PerfTrace.Mark("guardian.run_start");
 
@@ -206,7 +277,7 @@ class Program
         // Phase 2b: 用户级偏好 (lastPlayedSlot / introEnabled), 落盘到 launcher_user_prefs.json
         CF7Launcher.Config.UserPrefs userPrefs = new CF7Launcher.Config.UserPrefs(projectRoot);
 
-        HighDpiCompatibilityResult dpiCompat = HighDpiCompatibilityDetector.Detect(exePath);
+        HighDpiCompatibilityResult dpiCompat = DetectDpiCompatibility(projectRoot, exePath);
         DpiDiagnostics.LogProcessStartup(DpiAwarenessBootstrap.Result, dpiCompat);
         DpiDiagnostics.LogWindow("GuardianForm", form.Handle);
         HighDpiCompatibilityDetector.ScheduleRiskWarning(form, dpiCompat, userPrefs);
@@ -406,7 +477,7 @@ class Program
             {
                 return windowManager.RestoreFlashInputFocus(reason);
             };
-            webOverlay = new WebOverlayForm(form, form.FlashHostPanel, webDir,
+            webOverlay = new WebOverlayForm(form, form.FlashHostPanel, webDir, projectRoot,
                 config.WebOverlayLowEffects,
                 config.WebOverlayDisableCssAnimations,
                 config.WebOverlayDisableVisualizers,
@@ -753,7 +824,7 @@ class Program
         form.OnShutdownEarly = delegate
         {
             // 顺序敏感: 这两步必须最前。
-            // 1) 卸全局低级鼠标 hook —— UI 线程接下来要被 GpuRenderer.Join + KillFlash WaitForExit 阻塞数秒,
+            // 1) 卸全局低级鼠标 hook —— UI 线程接下来要被 KillFlash WaitForExit 阻塞数秒,
             //    hook 还挂着的话全系统鼠标消息都要排队走它的回调, 光标视觉延迟显著。
             // 2) WebOverlay panel→idle —— SW_HIDE + 恢复 EX_TRANSPARENT + 停 web timer + TrySuspendAsync,
             //    后面的 _webView.Dispose() 才不会卡住 200-800ms 销毁 Chromium。

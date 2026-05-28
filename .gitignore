@@ -17,6 +17,11 @@ bin-release/
 # 写完后会 rename 成 save_repair_dict.json; 误 commit 会污染包并破坏 JSON 校验工具).
 launcher/data/save_repair_dict.json.tmp
 
+# Launcher 历史的 self-contained single-file exe（~146MB）已替换为 FDD + bootstrap 形态；
+# 用户面 CRAZYFLASHER7MercenaryEmpire.exe 现在是 ~134KB 的 native C++ bootstrap，可安全入 git。
+# 老的 146MB blob 仍在 history (Phase 5 commit b487...848e)，需要 history 清理时另开任务
+# （git filter-repo / BFG）。当前 .gitignore 不再过滤这个文件名。
+
 # Executables
 # *.swf
 *.air
@@ -80,6 +85,9 @@ node_modules/
 launcher/bin/
 launcher/packages/
 launcher/tests/bin/
+# dotnet publish 输出目录（build.ps1 跑 Step 4 时重新生成）
+launcher/publish/
+launcher/publish-test/
 
 # Rust cargo build intermediates (launcher/native/sol_parser)
 # Cargo.lock IS tracked: sol_parser ships as an application cdylib, not a

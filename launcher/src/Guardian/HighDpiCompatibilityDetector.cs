@@ -10,6 +10,7 @@ namespace CF7Launcher.Guardian
     {
         public string RawValue;
         public string Source;
+        public string CheckedPath;
         public bool IsApplicationOverride;
         public bool IsRiskyOverride;
         public string RiskReason;
@@ -17,6 +18,7 @@ namespace CF7Launcher.Guardian
         public string Describe()
         {
             return "source=" + (Source ?? "none")
+                + " path=" + (CheckedPath ?? "")
                 + " appOverride=" + IsApplicationOverride
                 + " risky=" + IsRiskyOverride
                 + " reason=" + (RiskReason ?? "")
@@ -32,8 +34,13 @@ namespace CF7Launcher.Guardian
         public static HighDpiCompatibilityResult Detect(string exePath)
         {
             HighDpiCompatibilityResult result = new HighDpiCompatibilityResult();
+            result.CheckedPath = exePath ?? "";
             if (string.IsNullOrEmpty(exePath))
+            {
+                result.Source = "none";
+                result.RawValue = "";
                 return result;
+            }
 
             string raw;
             string source;

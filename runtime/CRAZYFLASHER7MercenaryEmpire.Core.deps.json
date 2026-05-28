@@ -1,0 +1,255 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0/win-x64",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {},
+    ".NETCoreApp,Version=v10.0/win-x64": {
+      "CRAZYFLASHER7MercenaryEmpire.Core/1.0.0": {
+        "dependencies": {
+          "Microsoft.ClearScript.Core": "7.4.5",
+          "Microsoft.ClearScript.V8": "7.4.5",
+          "Microsoft.ClearScript.V8.ICUData": "7.4.5",
+          "Microsoft.ClearScript.V8.Native.win-x64": "7.4.5",
+          "Microsoft.Web.WebView2": "1.0.3856.49",
+          "Newtonsoft.Json": "13.0.3",
+          "Vortice.DXGI": "3.6.2",
+          "Microsoft.Web.WebView2.Core": "1.0.3856.49",
+          "Microsoft.Web.WebView2.WinForms": "1.0.3856.49",
+          "Microsoft.Web.WebView2.Wpf": "1.0.3856.49"
+        },
+        "runtime": {
+          "CRAZYFLASHER7MercenaryEmpire.Core.dll": {}
+        }
+      },
+      "Microsoft.ClearScript.Core/7.4.5": {
+        "runtime": {
+          "lib/net5.0/ClearScript.Core.dll": {
+            "assemblyVersion": "7.4.5.0",
+            "fileVersion": "7.4.5.0"
+          }
+        }
+      },
+      "Microsoft.ClearScript.V8/7.4.5": {
+        "dependencies": {
+          "Microsoft.ClearScript.Core": "7.4.5",
+          "Microsoft.ClearScript.V8.ICUData": "7.4.5",
+          "Newtonsoft.Json": "13.0.3"
+        },
+        "runtime": {
+          "lib/net5.0/ClearScript.V8.dll": {
+            "assemblyVersion": "7.4.5.0",
+            "fileVersion": "7.4.5.0"
+          }
+        }
+      },
+      "Microsoft.ClearScript.V8.ICUData/7.4.5": {
+        "runtime": {
+          "lib/netstandard1.0/ClearScript.V8.ICUData.dll": {
+            "assemblyVersion": "7.4.5.0",
+            "fileVersion": "7.4.5.0"
+          }
+        }
+      },
+      "Microsoft.ClearScript.V8.Native.win-x64/7.4.5": {
+        "native": {
+          "runtimes/win-x64/native/ClearScriptV8.win-x64.dll": {
+            "fileVersion": "7.4.5.0"
+          }
+        }
+      },
+      "Microsoft.Web.WebView2/1.0.3856.49": {
+        "native": {
+          "runtimes/win-x64/native/WebView2Loader.dll": {
+            "fileVersion": "1.0.3856.49"
+          }
+        }
+      },
+      "Newtonsoft.Json/13.0.3": {
+        "runtime": {
+          "lib/net6.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "13.0.0.0",
+            "fileVersion": "13.0.3.27908"
+          }
+        }
+      },
+      "SharpGen.Runtime/2.2.0-beta": {
+        "runtime": {
+          "lib/net8.0/SharpGen.Runtime.dll": {
+            "assemblyVersion": "2.2.0.0",
+            "fileVersion": "2.2.0.0"
+          }
+        }
+      },
+      "SharpGen.Runtime.COM/2.2.0-beta": {
+        "dependencies": {
+          "SharpGen.Runtime": "2.2.0-beta"
+        },
+        "runtime": {
+          "lib/net8.0/SharpGen.Runtime.COM.dll": {
+            "assemblyVersion": "2.2.0.0",
+            "fileVersion": "2.2.0.0"
+          }
+        }
+      },
+      "Vortice.DirectX/3.6.2": {
+        "dependencies": {
+          "SharpGen.Runtime": "2.2.0-beta",
+          "SharpGen.Runtime.COM": "2.2.0-beta",
+          "Vortice.Mathematics": "1.9.2"
+        },
+        "runtime": {
+          "lib/net8.0/Vortice.DirectX.dll": {
+            "assemblyVersion": "3.6.2.0",
+            "fileVersion": "3.6.2.0"
+          }
+        }
+      },
+      "Vortice.DXGI/3.6.2": {
+        "dependencies": {
+          "SharpGen.Runtime": "2.2.0-beta",
+          "Vortice.DirectX": "3.6.2"
+        },
+        "runtime": {
+          "lib/net8.0/Vortice.DXGI.dll": {
+            "assemblyVersion": "3.6.2.0",
+            "fileVersion": "3.6.2.0"
+          }
+        }
+      },
+      "Vortice.Mathematics/1.9.2": {
+        "runtime": {
+          "lib/net9.0/Vortice.Mathematics.dll": {
+            "assemblyVersion": "1.9.2.0",
+            "fileVersion": "1.9.2.0"
+          }
+        }
+      },
+      "Microsoft.Web.WebView2.Core/1.0.3856.49": {
+        "runtime": {
+          "Microsoft.Web.WebView2.Core.dll": {
+            "assemblyVersion": "1.0.3856.49",
+            "fileVersion": "1.0.3856.49"
+          }
+        }
+      },
+      "Microsoft.Web.WebView2.WinForms/1.0.3856.49": {
+        "runtime": {
+          "Microsoft.Web.WebView2.WinForms.dll": {
+            "assemblyVersion": "1.0.3856.49",
+            "fileVersion": "1.0.3856.49"
+          }
+        }
+      },
+      "Microsoft.Web.WebView2.Wpf/1.0.3856.49": {
+        "runtime": {
+          "Microsoft.Web.WebView2.Wpf.dll": {
+            "assemblyVersion": "1.0.3856.49",
+            "fileVersion": "1.0.3856.49"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "CRAZYFLASHER7MercenaryEmpire.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.ClearScript.Core/7.4.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CIZCty2L4mXy1xg77IbNPqsz2pS0ZsFVJZ5YolPB4j62xzvDuCFU/MKnTnKve67FGIWaB9w4LVV7YUEFmjEwzw==",
+      "path": "microsoft.clearscript.core/7.4.5",
+      "hashPath": "microsoft.clearscript.core.7.4.5.nupkg.sha512"
+    },
+    "Microsoft.ClearScript.V8/7.4.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/czu8ho8xEiiLF806QP6Iwgp0aN5QE1B/MsXnIIMxiaM/KccD8AfSsM68lVuyW+boGqjF7zjoSlUKs/ERUoLOQ==",
+      "path": "microsoft.clearscript.v8/7.4.5",
+      "hashPath": "microsoft.clearscript.v8.7.4.5.nupkg.sha512"
+    },
+    "Microsoft.ClearScript.V8.ICUData/7.4.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Ji6av4T2xtqZYp5Gm0MPxvez5V6s4NF/wflD8a49A/KOI3kJyPHcmL3xCRuhuHo24NbfQX6+f0YbTdwhd5VSvw==",
+      "path": "microsoft.clearscript.v8.icudata/7.4.5",
+      "hashPath": "microsoft.clearscript.v8.icudata.7.4.5.nupkg.sha512"
+    },
+    "Microsoft.ClearScript.V8.Native.win-x64/7.4.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LvsaJoVgcf09FJ6mZ6SIptdeuwmy42s1N2sMVO3Wqp+HAta7PPksxVh8cGelrGQmmW1C5hT1Jzc6ykxrzU4Adg==",
+      "path": "microsoft.clearscript.v8.native.win-x64/7.4.5",
+      "hashPath": "microsoft.clearscript.v8.native.win-x64.7.4.5.nupkg.sha512"
+    },
+    "Microsoft.Web.WebView2/1.0.3856.49": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OOBKvFgK0pUKcndvTK6/jUsbrPRwce62Wt/0hkJWDsK2AcsJ2ylOS/mLa4xAcNUTOs96YIjpPN4AHMADXJcrgQ==",
+      "path": "microsoft.web.webview2/1.0.3856.49",
+      "hashPath": "microsoft.web.webview2.1.0.3856.49.nupkg.sha512"
+    },
+    "Newtonsoft.Json/13.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
+      "path": "newtonsoft.json/13.0.3",
+      "hashPath": "newtonsoft.json.13.0.3.nupkg.sha512"
+    },
+    "SharpGen.Runtime/2.2.0-beta": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pqf/lAf4jy1iWqkm37JmhoQhBMPVudI/F9qp2zVvzjWAPeSggRIuxGMVEZQ4UQiqtJ1Rf/+j3MVAONGYyCEDzQ==",
+      "path": "sharpgen.runtime/2.2.0-beta",
+      "hashPath": "sharpgen.runtime.2.2.0-beta.nupkg.sha512"
+    },
+    "SharpGen.Runtime.COM/2.2.0-beta": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-4vsXC8ohyVslcUDVBoVXLDkjKprqujh3GWy+DqqULjyZ3GCx7nwRAV5DdrXZxX70iEiKyI3TxW3Qhf/oOXeC1Q==",
+      "path": "sharpgen.runtime.com/2.2.0-beta",
+      "hashPath": "sharpgen.runtime.com.2.2.0-beta.nupkg.sha512"
+    },
+    "Vortice.DirectX/3.6.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pa/97U5IHascS/UJzMWFSKIs3wxh36zc8JpI+fzi/JLQk4wfTZur0n/Y9Lcp8i7hsf613Vu/6n6IImWSc9wupw==",
+      "path": "vortice.directx/3.6.2",
+      "hashPath": "vortice.directx.3.6.2.nupkg.sha512"
+    },
+    "Vortice.DXGI/3.6.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-SPnBb1x3+CEqq7L5SEejElD2tMjkdE+bqN4c/eSNHj9WEpRPvAO0QFSEN8d9LiRDt9i9geD8m7E4s8sLMgz2qQ==",
+      "path": "vortice.dxgi/3.6.2",
+      "hashPath": "vortice.dxgi.3.6.2.nupkg.sha512"
+    },
+    "Vortice.Mathematics/1.9.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+fS68BN4Kn1g+Roh7qnuBdXnVrfpr9DpwPMsqe27J04nDCFUuhEvo+T5PqXU1lZwn8sLlNayWCx/U6w4gWCvuA==",
+      "path": "vortice.mathematics/1.9.2",
+      "hashPath": "vortice.mathematics.1.9.2.nupkg.sha512"
+    },
+    "Microsoft.Web.WebView2.Core/1.0.3856.49": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Web.WebView2.WinForms/1.0.3856.49": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Web.WebView2.Wpf/1.0.3856.49": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

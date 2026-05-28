@@ -21,16 +21,17 @@
 
 ## 3. C# Launcher 规范
 
-> Guardian Launcher（`launcher/`）使用 **C# 5 / .NET Framework 4.6.2 / MSBuild 4.0**。
+> Guardian Launcher（`launcher/`）使用 **C# (`LangVersion=latest`) / `net10.0-windows` / SDK-style csproj / FDD `dotnet publish --self-contained false` + native bootstrap**（2026-05-28 由 .NET Framework 4.6.2 + MSBuild + packages.config 迁来）。
 
 - 任务注册统一经 `TaskRegistry.RegisterAll()`，不要在 `Program.cs` 散装扩散
 - 高/低频消息分层明确：快车道前缀 ≠ JSON 路由
 - 本地服务默认只绑定 `localhost`
-- 代码风格受 C# 5 约束：
-  - 无 string interpolation
-  - 无 null propagation
-  - 无 expression-bodied members
-- 构建入口以 `launcher/build.ps1` 为准；子系统深文档以 `launcher/README.md` 为准
+- 代码风格：`LangVersion=latest` 允许 modern C# 特性（string interpolation / null propagation / pattern matching / expression-bodied members 等），但**不要为了用而用**——新代码风格统一以模块内现有代码为准；遗留 C# 5 风格的文件保留原状直到有功能性改动需要重写
+- FDD/runtime 子目录布局硬约束：**禁止依赖 `Assembly.Location` 推断项目根目录**；需要当前进程 exe 用 `Environment.ProcessPath`，需要 Core runtime 目录用 `AppContext.BaseDirectory`，需要根目录资产时显式传入 `projectRoot`
+- Nullable 默认 `disable`；按文件灰度启用 NRT 是独立立项，不要为单个文件随意打开
+- 依赖版本统一在 [`launcher/Directory.Packages.props`](../launcher/Directory.Packages.props) 中心化锁定；csproj 只写 `PackageReference Include="..."` 不带 Version
+- SDK pin 由 repo root [`global.json`](../global.json) 控制（`10.0.300` + `rollForward: latestFeature`），所有 dotnet 调用前 Push-Location 到 projectRoot 保证 host 能找到
+- 构建入口以 `launcher/build.ps1` 为准；测试入口以 `launcher/tests/run_tests.ps1`（`dotnet test`）为准；子系统深文档以 `launcher/README.md` 为准
 
 ## 4. Web 前端 / Minigame 规范
 

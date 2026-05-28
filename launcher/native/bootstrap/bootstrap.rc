@@ -1,0 +1,5 @@
+// CF7:FlashNight Bootstrap — 资源脚本
+// 嵌入 launcher\app.ico 让用户面 .exe 在 Explorer 显示游戏图标
+// 资源 ID 1 = Windows Explorer 默认拿来作 file icon 的 ID（同 csproj <ApplicationIcon> 等价）
+
+1 ICON "..\\..\\app.ico"

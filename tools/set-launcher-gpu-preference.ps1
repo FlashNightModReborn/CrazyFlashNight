@@ -32,12 +32,15 @@ function Add-Candidate {
 function Get-CandidateExecutables {
     $candidates = New-Object "System.Collections.Generic.List[string]"
 
-    # 只纳入 launcher 与 WebView2 运行时。Adobe Flash Player 刻意排除：
+    # 只纳入 launcher Core 与 WebView2 运行时。Adobe Flash Player 刻意排除：
     # Flash SA 的 Stage3D 走 DX9 老路径，在某些独显驱动组合下稳定性不如核显，不应无差别切换。
-    Add-Candidate $candidates (Join-Path $projectRoot "CRAZYFLASHER7MercenaryEmpire.exe")
-    Add-Candidate $candidates (Join-Path $projectRoot "launcher\bin\Release\CRAZYFLASHER7MercenaryEmpire.exe")
-    Add-Candidate $candidates (Join-Path $projectRoot "launcher\bin\Debug\CRAZYFLASHER7MercenaryEmpire.exe")
-    Add-Candidate $candidates (Join-Path $projectRoot "launcher\bin\CRAZYFLASHER7MercenaryEmpire.exe")
+    # 用户面 bootstrap (CRAZYFLASHER7MercenaryEmpire.exe) 也排除：bootstrap 仅做 runtime 检测
+    # 后转发 Core，自身不占 GPU；Core 才是真正消费 D3D/V8/WebView2 的进程
+    # Core 位于 projectRoot\runtime\ 子目录（build.ps1 Step 6 部署形态）
+    Add-Candidate $candidates (Join-Path $projectRoot "runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe")
+    Add-Candidate $candidates (Join-Path $projectRoot "launcher\bin\Release\net10.0-windows\win-x64\CRAZYFLASHER7MercenaryEmpire.Core.exe")
+    Add-Candidate $candidates (Join-Path $projectRoot "launcher\bin\Debug\net10.0-windows\win-x64\CRAZYFLASHER7MercenaryEmpire.Core.exe")
+    Add-Candidate $candidates (Join-Path $projectRoot "launcher\publish\CRAZYFLASHER7MercenaryEmpire.Core.exe")
 
     $edgeBase = Join-Path ${env:ProgramFiles(x86)} "Microsoft\EdgeWebView\Application"
     if (Test-Path -LiteralPath $edgeBase) {

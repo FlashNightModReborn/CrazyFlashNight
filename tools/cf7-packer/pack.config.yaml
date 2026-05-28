@@ -126,43 +126,66 @@ layers:
       - "**/*.md"
 
   - name: root-files
-    description: "根目录可执行文件、DLL 与配置"
+    description: "根目录文件 — 用户面入口 + 游戏本体资产（极简，Core/managed DLL 全部归到 launcher-runtime 层）"
     source: "."
     include:
-      # Guardian 启动器 + 快捷键拦截辅助进程
+      # === 用户面入口：native C++ bootstrap（~160KB） ===
+      # 双击此 exe 触发：检测 .NET 10 桌面运行时 → 缺失则 ShellExecute bundled installer
+      # (tools/dotnet-runtime/) → ShellExecute runtime/Core.exe 转发命令行参数 + 注入 --project-root
+      # 不依赖 .NET runtime，能在裸 Windows 跑
+      # 即便机器上没装 runtime，也会在 logs/bootstrap.log 留追踪
       - "CRAZYFLASHER7MercenaryEmpire.exe"
+      # 快捷键拦截辅助进程（独立 csc 编译，非主 csproj 输出）
       - "hotkey_guard.exe"
-      # ClearScript V8 引擎（eval/regex task 依赖）
+      # === Flash Player + SWF + 启动脚本 ===
+      - "CRAZYFLASHER7MercenaryEmpire.swf"
+      - "CRAZYFLASHER7MercenaryEmpire.bat"
+      - "Adobe Flash Player 20.exe"
+      # === 配置 ===
+      - "config.xml"
+      - "config.toml"
+      - "crossdomain.xml"
+      - "LICENSE"
+      - "README.md"
+    exclude: []
+
+  - name: launcher-runtime
+    description: "Launcher Core (FDD apphost + managed assemblies + native side-cars) — 部署到 projectRoot\\runtime\\ 子目录隐藏，避免用户误点 Core.exe 触发英文 .NET 缺失对话框"
+    source: "runtime/"
+    include:
+      # FDD apphost + main managed assembly + .NET metadata
+      - "CRAZYFLASHER7MercenaryEmpire.Core.exe"
+      - "CRAZYFLASHER7MercenaryEmpire.Core.dll"
+      - "CRAZYFLASHER7MercenaryEmpire.Core.deps.json"
+      - "CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json"
+      # ClearScript V8 引擎（eval/regex/搓招 DFA 依赖）— managed + native
       - "ClearScript.Core.dll"
       - "ClearScript.V8.dll"
       - "ClearScript.V8.ICUData.dll"
       - "ClearScriptV8.win-x64.dll"
       # JSON 序列化
       - "Newtonsoft.Json.dll"
-      # miniaudio 原生音频引擎
-      - "miniaudio.dll"
-      # Rust SOL 解析器（Protocol 2 存档决议硬依赖）
-      - "sol_parser.dll"
-      # SharpDX（D3D overlay 渲染）
-      - "SharpDX.dll"
-      - "SharpDX.DXGI.dll"
-      - "SharpDX.Direct3D11.dll"
-      - "SharpDX.D3DCompiler.dll"
-      # WebView2（幽灵输入解耦 overlay）
+      # WebView2（managed + native loader）
       - "Microsoft.Web.WebView2.Core.dll"
       - "Microsoft.Web.WebView2.WinForms.dll"
+      - "Microsoft.Web.WebView2.Wpf.dll"
       - "WebView2Loader.dll"
-      # Flash Player + SWF + 启动脚本
-      - "CRAZYFLASHER7MercenaryEmpire.swf"
-      - "CRAZYFLASHER7MercenaryEmpire.bat"
-      - "Adobe Flash Player 20.exe"
-      # 配置
-      - "config.xml"
-      - "config.toml"
-      # Flash 跨域策略（socket/HTTP 沙箱校验硬依赖）
-      - "crossdomain.xml"
-      - "LICENSE"
-      - "README.md"
+      # Vortice.DXGI（GPU 适配器枚举 — GpuPreferenceManager 检测独显）
+      - "Vortice.DXGI.dll"
+      - "Vortice.DirectX.dll"
+      - "Vortice.Mathematics.dll"
+      - "SharpGen.Runtime.dll"
+      - "SharpGen.Runtime.COM.dll"
+      # Native side-cars（与 Core.exe 同目录，让 P/Invoke LoadLibrary 默认搜索能命中）
+      - "miniaudio.dll"
+      - "sol_parser.dll"
+    exclude: []
+
+  - name: runtime-installer
+    description: ".NET 10 Desktop Runtime 官方 installer（首次启动 bootstrap 自动调用）"
+    source: "tools/dotnet-runtime/"
+    include:
+      - "*.exe"
     exclude: []
 
   - name: launcher-web

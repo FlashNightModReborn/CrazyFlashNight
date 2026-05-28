@@ -14,7 +14,7 @@
 └───────────────┬──────────────────────────────────────┘
                 │ XMLSocket / HTTP / 本地文件 / 启动参数
 ┌───────────────▼──────────────────────────────────────┐
-│ Guardian Launcher Host (C# / WinForms / .NET 4.6.2) │
+│ Guardian Launcher Host (C# / WinForms / net10.0-win) │
 │ 启动链路、TaskRegistry、音频、overlay 宿主、存档决议   │
 └───────────────┬──────────────────────────────────────┘
                 │ WebView2 postMessage / bridge

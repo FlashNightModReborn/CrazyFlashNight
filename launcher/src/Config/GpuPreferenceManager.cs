@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using CF7Launcher.Guardian;
 using Microsoft.Win32;
-using SharpDX.DXGI;
+using Vortice.DXGI;
 
 namespace CF7Launcher.Config
 {
@@ -117,7 +117,8 @@ namespace CF7Launcher.Config
             // launcher 自身
             try
             {
-                string exe = typeof(GpuPreferenceManager).Assembly.Location;
+                // 发布布局不依赖 Assembly.Location；Environment.ProcessPath 是当前 Core apphost 实际路径
+                string exe = Environment.ProcessPath;
                 if (!string.IsNullOrEmpty(exe) && File.Exists(exe))
                 {
                     string full = Path.GetFullPath(exe);
@@ -126,10 +127,12 @@ namespace CF7Launcher.Config
             }
             catch (Exception ex) { LogManager.Log("[GpuPref] resolve launcher exe failed: " + ex.Message); }
 
-            // projectRoot 下的 launcher exe（兼容从非项目目录启动场景）
+            // projectRoot\runtime\ 下的 launcher Core exe（兼容从非项目目录启动场景）
+            // Core.exe 是真正使用 D3D / V8 / WebView2 的 FDD apphost，部署到 projectRoot\runtime\ 子目录；
+            // 用户面 bootstrap (CRAZYFLASHER7MercenaryEmpire.exe) 仅做 runtime 检测 + 转发，不需要 GPU pref
             try
             {
-                string rooted = Path.Combine(projectRoot, "CRAZYFLASHER7MercenaryEmpire.exe");
+                string rooted = Path.Combine(projectRoot, "runtime", "CRAZYFLASHER7MercenaryEmpire.Core.exe");
                 if (File.Exists(rooted))
                 {
                     string full = Path.GetFullPath(rooted);
@@ -174,17 +177,17 @@ namespace CF7Launcher.Config
 
         private static bool HasDiscreteGpu()
         {
-            Factory1 factory = null;
+            IDXGIFactory1 factory = null;
             try
             {
-                factory = new Factory1();
-                int count = factory.GetAdapterCount1();
-                for (int i = 0; i < count; i++)
+                factory = DXGI.CreateDXGIFactory1<IDXGIFactory1>();
+                for (uint i = 0; ; i++)
                 {
-                    Adapter1 adapter = null;
+                    IDXGIAdapter1 adapter = null;
                     try
                     {
-                        adapter = factory.GetAdapter1(i);
+                        if (factory.EnumAdapters1(i, out adapter).Failure || adapter == null)
+                            break;
                         AdapterDescription1 desc = adapter.Description1;
 
                         // 跳过软件适配器（WARP / Basic Render Driver）
@@ -202,14 +205,14 @@ namespace CF7Launcher.Config
                             + " (Vendor=0x" + desc.VendorId.ToString("X4") + ")");
                         return true;
                     }
-                    finally { if (adapter != null) adapter.Dispose(); }
+                    finally { adapter?.Dispose(); }
                 }
             }
             catch (Exception ex)
             {
                 LogManager.Log("[GpuPref] DXGI enumeration failed: " + ex.Message);
             }
-            finally { if (factory != null) factory.Dispose(); }
+            finally { factory?.Dispose(); }
             return false;
         }
 

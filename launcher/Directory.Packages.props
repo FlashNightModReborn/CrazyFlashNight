@@ -1,0 +1,28 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- ClearScript V8 引擎（eval/regex/搓招 DFA 依赖） -->
+    <PackageVersion Include="Microsoft.ClearScript.Core" Version="7.4.5" />
+    <PackageVersion Include="Microsoft.ClearScript.V8" Version="7.4.5" />
+    <PackageVersion Include="Microsoft.ClearScript.V8.ICUData" Version="7.4.5" />
+    <PackageVersion Include="Microsoft.ClearScript.V8.Native.win-x64" Version="7.4.5" />
+
+    <!-- JSON 序列化（XML socket + REST + 存档迁移） -->
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+
+    <!-- WebView2 overlay -->
+    <PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.3856.49" />
+
+    <!-- DXGI 适配器枚举（GpuPreferenceManager 检测独显） -->
+    <PackageVersion Include="Vortice.DXGI" Version="3.6.2" />
+
+    <!-- 测试 -->
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageVersion Include="xunit" Version="2.9.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+</Project>

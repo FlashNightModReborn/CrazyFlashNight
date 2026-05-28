@@ -1,188 +1,40 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build"
-         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
     <PlatformTarget>x64</PlatformTarget>
-    <AssemblyName>CRAZYFLASHER7MercenaryEmpire</AssemblyName>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
     <RootNamespace>CF7Launcher</RootNamespace>
+    <!-- AssemblyName 带 ".Core" 后缀：用户面 entry exe = native C++ bootstrap
+         (CRAZYFLASHER7MercenaryEmpire.exe)，bootstrap 检测 .NET 10 runtime + ShellExecute Core.exe.
+         FDD apphost 输出名固定为 AssemblyName + ".exe"，故 Core 拿 .Core 后缀避免与 bootstrap 同名冲突 -->
+    <AssemblyName>CRAZYFLASHER7MercenaryEmpire.Core</AssemblyName>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>app.ico</ApplicationIcon>
+    <!-- AssemblyInfo.cs 仍保留 InternalsVisibleTo, 关闭自动生成避免双重定义 -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- SDK-style 默认从项目目录递归收 **/*.cs，需排除 tests/native/packages 子树 -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);tests/**;native/**;packages/**;scripts/**</DefaultItemExcludes>
+    <!-- HotkeyGuard.cs 是独立子进程源码（csc 单独编译为 hotkey_guard.exe），不进 launcher exe -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);src/Guardian/HotkeyGuard.cs</DefaultItemExcludes>
+    <!-- CA1416: 项目 TFM=net10.0-windows 已显式 Windows-only，不再 emit 平台兼容警告 -->
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+    <!-- publish 时不带 NuGet 包附带的 XML doc / pdb（运行时不需要，缩小提交体量） -->
+    <CopyDocumentationFilesFromPackages>false</CopyDocumentationFilesFromPackages>
+    <CopyDebugSymbolFilesFromPackages>false</CopyDebugSymbolFilesFromPackages>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="ClearScript.Core">
-      <HintPath>packages\Microsoft.ClearScript.Core.7.4.5\lib\net45\ClearScript.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="ClearScript.V8">
-      <HintPath>packages\Microsoft.ClearScript.V8.7.4.5\lib\net45\ClearScript.V8.dll</HintPath>
-    </Reference>
-    <Reference Include="ClearScript.V8.ICUData">
-      <HintPath>packages\Microsoft.ClearScript.V8.ICUData.7.4.5\lib\netstandard1.0\ClearScript.V8.ICUData.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX">
-      <HintPath>packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.DXGI">
-      <HintPath>packages\SharpDX.DXGI.4.2.0\lib\net45\SharpDX.DXGI.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Direct3D11">
-      <HintPath>packages\SharpDX.Direct3D11.4.2.0\lib\net45\SharpDX.Direct3D11.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.D3DCompiler">
-      <HintPath>packages\SharpDX.D3DCompiler.4.2.0\lib\net45\SharpDX.D3DCompiler.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Web.WebView2.Core">
-      <HintPath>packages\Microsoft.Web.WebView2.1.0.3856.49\lib\net462\Microsoft.Web.WebView2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Web.WebView2.WinForms">
-      <HintPath>packages\Microsoft.Web.WebView2.1.0.3856.49\lib\net462\Microsoft.Web.WebView2.WinForms.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Microsoft.ClearScript.Core" />
+    <PackageReference Include="Microsoft.ClearScript.V8" />
+    <PackageReference Include="Microsoft.ClearScript.V8.ICUData" />
+    <PackageReference Include="Microsoft.ClearScript.V8.Native.win-x64" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Microsoft.Web.WebView2" />
+    <PackageReference Include="Vortice.DXGI" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="src\Program.cs" />
-    <Compile Include="src\AssemblyInfo.cs" />
-    <Compile Include="src\Config\AppConfig.cs" />
-    <Compile Include="src\Config\GpuPreferenceManager.cs" />
-    <Compile Include="src\Config\UserPrefs.cs" />
-    <Compile Include="src\Config\FlashTrustManager.cs" />
-    <Compile Include="src\Config\SteamOwnershipCheck.cs" />
-    <Compile Include="src\Guardian\ProcessManager.cs" />
-    <Compile Include="src\Guardian\WindowManager.cs" />
-    <Compile Include="src\Guardian\KeyboardHook.cs" />
-    <Compile Include="src\Guardian\AppActivationState.cs" />
-    <Compile Include="src\Guardian\GuardianForm.cs" />
-    <Compile Include="src\Guardian\GameLaunchFlow.cs" />
-    <Compile Include="src\Guardian\BootstrapMessageHandler.cs" />
-    <Compile Include="src\Guardian\DpiAwarenessBootstrap.cs" />
-    <Compile Include="src\Guardian\GuardianLifecycle.cs" />
-    <Compile Include="src\Guardian\Handlers\BootstrapCommandHelpers.cs" />
-    <Compile Include="src\Guardian\Handlers\LifecycleCommandHandler.cs" />
-    <Compile Include="src\Guardian\Handlers\GameStateCommandHandler.cs" />
-    <Compile Include="src\Guardian\Handlers\ArchiveCommandHandler.cs" />
-    <Compile Include="src\Guardian\Handlers\DataEditCommandHandler.cs" />
-    <Compile Include="src\Guardian\Handlers\ImportCommandHandler.cs" />
-    <Compile Include="src\Guardian\Handlers\UiCommandHandler.cs" />
-    <Compile Include="src\Guardian\Handlers\ConfigCommandHandler.cs" />
-    <Compile Include="src\Guardian\Handlers\RepairCommandHandler.cs" />
-    <Compile Include="src\Guardian\Handlers\FontPackCommandHandler.cs" />
-    <Compile Include="src\Guardian\GuardianContext.cs" />
-    <Compile Include="src\Guardian\LogManager.cs" />
-    <Compile Include="src\Guardian\PerfTrace.cs" />
-    <Compile Include="src\Bus\PortAllocator.cs" />
-    <Compile Include="src\Bus\FlashPolicyHandler.cs" />
-    <Compile Include="src\Bus\MessageRouter.cs" />
-    <Compile Include="src\Bus\BenchTrace.cs" />
-    <Compile Include="src\Bus\XmlSocketServer.cs" />
-    <Compile Include="src\Bus\HttpApiServer.cs" />
-    <Compile Include="src\Render\RenderNativeMethods.cs" />
-<Compile Include="src\Render\CasShaderBytecode.cs" />
-    <Compile Include="src\Render\GpuRenderer.cs" />
-    <Compile Include="src\Render\D3DPanel.cs" />
-    <Compile Include="src\Audio\AudioEngine.cs" />
-    <Compile Include="src\Audio\MusicCatalog.cs" />
-    <Compile Include="src\Services\DirectoryWatcherService.cs" />
-    <Compile Include="src\Tasks\AudioTask.cs" />
-    <Compile Include="src\Tasks\GomokuTask.cs" />
-    <Compile Include="src\Tasks\ToastTask.cs" />
-    <Compile Include="src\Tasks\BenchTask.cs" />
-    <Compile Include="src\Bus\TaskRegistry.cs" />
-    <Compile Include="src\Guardian\OverlayBase.cs" />
-    <Compile Include="src\Guardian\FpsRingBuffer.cs" />
-    <Compile Include="src\Guardian\ToastOverlay.cs" />
-    <Compile Include="src\Guardian\FlashCoordinateMapper.cs" />
-    <Compile Include="src\Guardian\FlashHtmlParser.cs" />
-    <Compile Include="src\Guardian\DpiDiagnostics.cs" />
-    <Compile Include="src\Guardian\HighDpiCompatibilityDetector.cs" />
-    <Compile Include="src\Guardian\OverlayCoordinateContext.cs" />
-    <Compile Include="src\V8\V8Runtime.cs" />
-    <Compile Include="src\Tasks\FrameTask.cs" />
-    <Compile Include="src\Guardian\HitNumberOverlay.cs" />
-    <Compile Include="src\Guardian\NotchOverlay.cs" />
-    <Compile Include="src\Data\DataCache.cs" />
-    <Compile Include="src\Data\XmlDataLoader.cs" />
-    <Compile Include="src\Tasks\DataQueryTask.cs" />
-    <Compile Include="src\Tasks\IconBakeTask.cs" />
-    <Compile Include="src\Tasks\ShopTask.cs" />
-    <Compile Include="src\Tasks\MapTask.cs" />
-    <Compile Include="src\Tasks\StageSelectTask.cs" />
-    <Compile Include="src\Tasks\ArenaTask.cs" />
-    <Compile Include="src\Tasks\PetTask.cs" />
-    <Compile Include="src\Tasks\MercTask.cs" />
-    <Compile Include="src\Tasks\IntelligenceTask.cs" />
-    <Compile Include="src\Tasks\ArchiveTask.cs" />
-    <Compile Include="src\Tasks\FontPackTask.cs" />
-    <Compile Include="src\Guardian\IToastSink.cs" />
-    <Compile Include="src\Guardian\CompositeNotchSink.cs" />
-    <Compile Include="src\Guardian\INotchSink.cs" />
-    <Compile Include="src\Guardian\IPanelEscapeSource.cs" />
-    <Compile Include="src\Guardian\Hud\ComboWidget.cs" />
-    <Compile Include="src\Guardian\Hud\INativeHudWidget.cs" />
-    <Compile Include="src\Guardian\Hud\MapHudDataCatalog.cs" />
-    <Compile Include="src\Guardian\Hud\MapHudPayload.cs" />
-    <Compile Include="src\Guardian\Hud\MapHudWidget.cs" />
-    <Compile Include="src\Guardian\Hud\NativeHudPrewarm.cs" />
-    <Compile Include="src\Guardian\Hud\RightContextWidget.cs" />
-    <Compile Include="src\Guardian\Hud\RightHudLayout.cs" />
-    <Compile Include="src\Guardian\Hud\INativeCursor.cs" />
-    <Compile Include="src\Guardian\Hud\NotchWidget.cs" />
-    <Compile Include="src\Guardian\Hud\SafeExitPanelWidget.cs" />
-    <Compile Include="src\Guardian\Hud\ToastWidget.cs" />
-    <Compile Include="src\Guardian\Hud\UiDataPacketParser.cs" />
-    <Compile Include="src\Guardian\Hud\UiValueParser.cs" />
-    <Compile Include="src\Guardian\Hud\WidgetScaler.cs" />
-    <Compile Include="src\Guardian\NativeHudOverlay.cs" />
-    <Compile Include="src\Guardian\NativePanelBackdrop.cs" />
-    <Compile Include="src\Guardian\PanelHostController.cs" />
-    <Compile Include="src\Guardian\FlashSnapshot.cs" />
-    <Compile Include="src\Guardian\PanelLayoutCatalog.cs" />
-    <Compile Include="src\Guardian\LauncherCommandRouter.cs" />
-    <Compile Include="src\Guardian\CursorOverlayForm.cs" />
-    <Compile Include="src\Guardian\DesktopCursorOverlay.cs" />
-    <Compile Include="src\Guardian\WebOverlayForm.cs" />
-    <Compile Include="src\Guardian\BootstrapPanel.cs" />
-    <Compile Include="src\Guardian\InputShieldForm.cs" />
-    <Compile Include="src\Guardian\PerfDecisionEngine.cs" />
-    <Compile Include="src\Save\SolParserNative.cs" />
-    <Compile Include="src\Save\SolFileLocator.cs" />
-    <Compile Include="src\Save\SolResolver.cs" />
-    <Compile Include="src\Save\SaveMigrator.cs" />
-    <Compile Include="src\Save\SaveResolutionContext.cs" />
-    <Compile Include="src\Save\ISolParser.cs" />
-    <Compile Include="src\Save\NativeSolParser.cs" />
-    <Compile Include="src\Save\ISolFileLocator.cs" />
-    <Compile Include="src\Save\IArchiveStateProbe.cs" />
-    <Compile Include="src\Save\IArchiveShadowWriter.cs" />
-    <Compile Include="src\Save\LegacyPresetSlotSeeder.cs" />
-    <Compile Include="src\Save\RepairBackupStore.cs" />
-    <Compile Include="src\Save\LauncherVersionGate.cs" />
-    <Compile Include="src\Save\SaveFieldLayering.cs" />
-    <Compile Include="src\Save\RepairDictionary.cs" />
-    <Compile Include="src\Save\SaveCorruptionScanner.cs" />
-    <Compile Include="src\Save\RepairMatcher.cs" />
-    <Compile Include="src\Save\RepairPolicy.cs" />
-    <Compile Include="src\Save\SaveAutoRepairService.cs" />
-    <Compile Include="src\Diagnostic\DiagnosticPackager.cs" />
-    <Compile Include="src\Diagnostic\DiagnosticsBootstrap.cs" />
-    <Compile Include="src\Diagnostic\LayerAuditDump.cs" />
-    <Compile Include="src\Diagnostic\UlwCommitMonitor.cs" />
-    <Compile Include="src\Diagnostic\DwmEtwMonitor.cs" />
-    <Compile Include="src\Diagnostic\UiFreezeProbe.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.manifest" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>
