@@ -352,6 +352,34 @@ $pickedInstaller = $runtimeInstallerCandidates[0].Name
 Write-Host "  bundled installer: $pickedInstaller" -ForegroundColor Green
 Write-Host "  All required artifacts at projectRoot." -ForegroundColor Green
 
+# Step 6f: 优化护栏 — 断言发布目录里的托管主程序集是优化构建（非 Debug）
+# 历史卡顿真因：误把 Debug 产物（DebuggableAttribute 的 DisableOptimizations=256 置位 →
+# 运行时 JIT 优化被整个关掉）当作发布版提交。详见 memory: launcher-perf-debug-vs-release。
+# net10 走 `dotnet publish -c Release` 本应永远优化，这里把"必须优化"从流程纪律升级为脚本强制
+# 校验：把 Debug/未优化产物溜进 runtime\ 这一失败模式物理堵死。
+# 工具用 BCL 的 PEReader 直接读 DebuggableAttribute 原始 blob，不解析依赖、不联网。
+Write-Host "[Step 6f/7] Assert published assembly is optimized (no Debug build)..." -ForegroundColor Yellow
+$assertTool = Join-Path $projectRoot "tools\assert-optimized.cs"
+$coreManaged = Join-Path $runtimeDir "CRAZYFLASHER7MercenaryEmpire.Core.dll"
+if (-not (Test-Path $assertTool)) {
+    Write-Host "[FAIL] optimization assert tool missing: $assertTool" -ForegroundColor Red
+    exit 1
+}
+# Push-Location $projectRoot：让 global.json (SDK pin 10.0.x，file-based app 需要) 生效
+Push-Location $projectRoot
+try {
+    & $dotnet run $assertTool -- $coreManaged
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[FAIL] 发布产物优化校验未通过（上方含具体程序集与 DebuggingModes）。" -ForegroundColor Red
+        Write-Host "       排查：确认本次走的是 build.ps1（dotnet publish -c Release），而非 IDE / 裸" -ForegroundColor Yellow
+        Write-Host "       dotnet build 的 Debug 产物被拷进 runtime\；或 csproj/Directory.Build.props 被改写了 Optimize。" -ForegroundColor Yellow
+        exit 1
+    }
+} finally {
+    Pop-Location
+}
+Write-Host "  Optimization gate OK." -ForegroundColor Green
+
 # Step 7: Verify required WebView2 runtime assets
 Write-Host "[Step 7/7] Verify required WebView2 runtime assets..." -ForegroundColor Yellow
 $webDir = Join-Path $launcherDir "web"
