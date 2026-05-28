@@ -30,6 +30,7 @@
 2. **大范围编辑**：大规模修改同一个文件可能触发工具重新生成文件内容，同样会丢失 BOM 头。如发生此情况，按上述复制流程重新操作
 3. **禁止从零新建** `.as` 文件（无法保证 BOM 头）；必须复制现有文件再改名
 4. **TestLoader.as 等帧脚本 `.as` 同样在 BOM 约束内**——它们不是 class 文件但仍被编译器读取，丢 BOM 触发上述第 2 种静默失败
+5. **批量替换大段内容时的字节级 fallback**：复制源文件后如需把整个 class body 改写成 runner / 小型帧脚本，直接 Edit 整文件有 BOM 丢失风险。改用字节级写入：取源文件前 3 字节（已确认是 BOM）+ 新内容的 UTF-8 字节，调 `[System.IO.File]::WriteAllBytes($path, $bom + $contentBytes)`。**`Out-File -Encoding utf8` / `Set-Content -Encoding utf8` 等高层 cmdlet 在 PS5.1 上不可靠**（BOM 写入歧义），只有 `WriteAllBytes` 字节级 API 才保证 BOM 字节序。验证：`[System.IO.File]::ReadAllBytes($path)[0..2]` 应为 `EF BB BF`。2026-05-29 用此法在 `scripts/TestLoader.as` 上端到端验证过 117/117 测试通过
 
 ---
 

@@ -118,8 +118,10 @@ powershell -ExecutionPolicy Bypass -File scripts/capture_screenshot.ps1
 
 ### 仍然弹 UAC
 
-- 旧计划任务残留概率最高
-- 重新运行 `scripts/setup_compile_env.bat`
+- **`CompileTriggerTask` / `FlashCS6Task` 必须 `RunLevel=Highest`**（`setup_compile_env.ps1::Register-CompileTask` 的默认值）。Task Scheduler 服务在 SYSTEM 上下文预置 elevation 令牌，子进程 cmd 已经 elevated，再唤起 Flash 不跨 UAC 边界。改成 `RunLevel=Limited` 反而让 cmd 没 elevated，碰到 `Flash.exe` 的 AppCompat `RUNASADMIN` 标志被强制弹 UAC
+- Flash CS6 在某些机器上必须保留 HKLM `SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers` 下 `Flash.exe = ~ RUNASADMIN ...` 才能启动（去掉直接运行失败），所以这条 AppCompat 不能简单清空
+- 旧计划任务残留概率次高
+- 重新运行 `scripts/setup_compile_env.bat`（`Register-ScheduledTask -Force` 会把 RunLevel 重置回 Highest，覆盖任何手工降级）
 
 ## 9. 相关文档
 
