@@ -21,7 +21,7 @@
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "透明子弹";
-	子弹属性.子弹威力 = _parent.空手攻击力;
+	子弹属性.子弹威力 = _parent.空手攻击力 * 1.15;
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 50;
 	子弹属性.击倒率 = 10;
@@ -31,7 +31,26 @@
 
 	子弹属性.区域定位area = this.攻击点;
 	_root.子弹区域shoot传递(子弹属性);
-}]]></script>
+}
+
+function 自爆轻段()
+{
+    子弹属性 = _root.子弹属性初始化(this.攻击点);
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 0;
+    子弹属性.子弹种类 = "透明子弹";
+    子弹属性.子弹威力 = _parent.空手攻击力 * 0.3;
+    子弹属性.水平击退速度 = 20;      
+    子弹属性.子弹速度 = 0;
+    子弹属性.Z轴攻击范围 = 50;
+    子弹属性.击倒率 = 3;
+    子弹属性.伤害类型 = "魔法";
+    子弹属性.魔法伤害属性 = "毒";
+    子弹属性.区域定位area = this.攻击点;
+    _root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -44,13 +63,13 @@
             </DOMFrame>
             <DOMFrame index="33" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[自爆();]]></script>
+                <script><![CDATA[自爆轻段();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="35" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[自爆();]]></script>
+                <script><![CDATA[自爆轻段();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
