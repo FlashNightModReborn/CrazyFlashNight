@@ -41,13 +41,16 @@ if errorlevel 1 (
 )
 
 echo [INFO] Compiling bootstrap.cpp ^(cl.exe^)...
+:: /Brepro 让 link.exe 写入 IMAGE_FILE_HEADER.TimeDateStamp = 0 + 用源哈希取代 PDB GUID,
+:: 让相同源码 → 相同字节产物 (reproducible build); 同源重建后 git status 不会看到 M.
+:: 见 launcher/build.ps1 顶部"Reproducible build"备注与 docs/build-reproducibility.md.
 cl.exe /nologo /O2 /MT /EHsc /W3 ^
     /source-charset:utf-8 /execution-charset:utf-8 ^
     /DUNICODE /D_UNICODE /D_WIN32_WINNT=0x0A00 ^
     /Fe:bootstrap.exe ^
     "%SCRIPT_DIR%\bootstrap.cpp" ^
     bootstrap.res ^
-    /link /SUBSYSTEM:WINDOWS /MANIFESTUAC:level=asInvoker ^
+    /link /SUBSYSTEM:WINDOWS /MANIFESTUAC:level=asInvoker /Brepro ^
     shell32.lib user32.lib kernel32.lib advapi32.lib
 
 set "BUILD_ERR=%ERRORLEVEL%"

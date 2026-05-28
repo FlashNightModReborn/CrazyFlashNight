@@ -42,6 +42,13 @@ namespace CF7Launcher.Config
         /// <summary>诊断报告周期 (秒), 影响 UlwMonitor + EtwMpo 两路。范围 [1, 60], 默认 5。</summary>
         public int DiagReportIntervalSec { get; private set; }
         /// <summary>
+        /// 开发专用：监视 launcher/web 文件变化并自动 Reload WebView2。玩家版必须 false ——
+        /// IconBakeTask 自身就会往 launcher/web/icons/ 写 PNG，外加杀软扫描 / Steam 校验
+        /// touch 文件都会触发 reload，正在显示的 panel 直接黑屏 1-2 秒。开启时 watcher 仍
+        /// exclude icons/ 子树规避 self-trigger。env: CF7_WEB_HOTRELOAD=1 一次性覆盖。
+        /// </summary>
+        public bool WebOverlayHotReload { get; private set; }
+        /// <summary>
         /// Desktop 顶层 ULW cursor（默认 ON，2026-05 推 default-on）。
         /// ON = DesktopCursorOverlay：desktop 顶层 ULW + 跨 anchor 自由 + 单一 visibility 状态机
         ///      + scale 跟 GuardianForm.ClientSize（窗口级）。
@@ -74,6 +81,7 @@ namespace CF7Launcher.Config
             DiagUlwMonitor = false;
             DiagEtwDwm = false;
             DiagReportIntervalSec = 5;
+            WebOverlayHotReload = false;
 
             string configPath = Path.Combine(projectRoot, "config.toml");
             if (File.Exists(configPath))
@@ -125,6 +133,8 @@ namespace CF7Launcher.Config
                         DiagEtwDwm = ParseBool(val, false);
                     else if (string.Equals(key, "diagReportIntervalSec", StringComparison.OrdinalIgnoreCase))
                         DiagReportIntervalSec = ClampInterval(val, 5);
+                    else if (string.Equals(key, "webOverlayHotReload", StringComparison.OrdinalIgnoreCase))
+                        WebOverlayHotReload = ParseBool(val, false);
                 }
             }
 
@@ -209,6 +219,10 @@ namespace CF7Launcher.Config
             string diagInterval = Environment.GetEnvironmentVariable("CF7_DIAG_INTERVAL_SEC");
             if (!string.IsNullOrEmpty(diagInterval))
                 DiagReportIntervalSec = ClampInterval(diagInterval, DiagReportIntervalSec);
+
+            string webHotReload = Environment.GetEnvironmentVariable("CF7_WEB_HOTRELOAD");
+            if (!string.IsNullOrEmpty(webHotReload))
+                WebOverlayHotReload = ParseBoolLike(webHotReload, WebOverlayHotReload);
         }
 
         private static int ClampInterval(string val, int fallback)

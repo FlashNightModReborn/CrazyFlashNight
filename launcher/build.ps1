@@ -34,6 +34,26 @@ function Invoke-CmdBat {
     & cmd.exe /s /c "`"$BatPath`" 2>&1"
 }
 
+# Reproducible build 闸门：源 → 目的字节相同时跳过 Copy-Item，保留目的 mtime + 防止
+# FileSystemWatcher 误触发（hot-reload / IconBakeTask 类的 self-trigger）。返回 $true =
+# 真复制了；$false = 跳过。配 native /Brepro + .NET Deterministic 一起用，同源重建零 git churn。
+function Copy-IfDifferent {
+    param(
+        [Parameter(Mandatory=$true)][string]$Src,
+        [Parameter(Mandatory=$true)][string]$Dst
+    )
+    if (-not (Test-Path $Src)) { return $false }
+    if (Test-Path $Dst) {
+        try {
+            $srcHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $Src).Hash
+            $dstHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $Dst).Hash
+            if ($srcHash -eq $dstHash) { return $false }
+        } catch { }
+    }
+    Copy-Item -LiteralPath $Src -Destination $Dst -Force
+    return $true
+}
+
 # dotnet host 探测：优先 user-scope (%LOCALAPPDATA%\Microsoft\dotnet)，否则系统 PATH
 $userDotnet = Join-Path $env:LOCALAPPDATA "Microsoft\dotnet\dotnet.exe"
 if (Test-Path $userDotnet) {
@@ -197,21 +217,34 @@ $runtimeDir = Join-Path $projectRoot "runtime"
 if (-not (Test-Path $runtimeDir)) {
     New-Item -ItemType Directory -Path $runtimeDir -Force | Out-Null
 }
-# 清旧 runtime\ 内容以避免 stale managed DLL 残留（比如降级依赖时旧版本不删）
-Get-ChildItem $runtimeDir -File -ErrorAction SilentlyContinue | Remove-Item -Force
+# expectedNames：记录本轮预期落到 runtime\ 的文件名集合，用于 6e 段做 targeted stale 清理。
+# 旧版直接 Remove-Item 全部再拷会让所有产物 mtime 重置（git 不在意 mtime 但 FileSystemWatcher
+# 会误触发），改成 "Copy-IfDifferent + 末尾删未预期项"——同源同字节零写入，不在预期清单的
+# 残留（降级依赖 / 弃用 DLL）仍会被清掉。
+$expectedNames = New-Object 'System.Collections.Generic.HashSet[string]'([System.StringComparer]::OrdinalIgnoreCase)
 
 # 6b: publish/ 下除 *.xml 外全拷到 projectRoot\runtime\
 Get-ChildItem $publishDir -File | Where-Object {
     $_.Extension -ne '.xml'
 } | ForEach-Object {
-    Copy-Item $_.FullName $runtimeDir -Force
-    Write-Host "  Copied to runtime\: $($_.Name)"
+    $dst = Join-Path $runtimeDir $_.Name
+    $copied = Copy-IfDifferent -Src $_.FullName -Dst $dst
+    [void]$expectedNames.Add($_.Name)
+    if ($copied) {
+        Write-Host "  Copied to runtime\: $($_.Name)"
+    } else {
+        Write-Host "  Unchanged in runtime\: $($_.Name)" -ForegroundColor DarkGray
+    }
 }
 
 # 6c: bootstrap.exe → projectRoot\CRAZYFLASHER7MercenaryEmpire.exe（用户面入口名）
 $userFacingExe = Join-Path $projectRoot "CRAZYFLASHER7MercenaryEmpire.exe"
-Copy-Item $bootstrapExe $userFacingExe -Force
-Write-Host "  Copied: bootstrap.exe -> CRAZYFLASHER7MercenaryEmpire.exe (user-facing entry at projectRoot)"
+$copied = Copy-IfDifferent -Src $bootstrapExe -Dst $userFacingExe
+if ($copied) {
+    Write-Host "  Copied: bootstrap.exe -> CRAZYFLASHER7MercenaryEmpire.exe (user-facing entry at projectRoot)"
+} else {
+    Write-Host "  Unchanged: CRAZYFLASHER7MercenaryEmpire.exe (bootstrap source identical)" -ForegroundColor DarkGray
+}
 
 # 6d: native side-cars（miniaudio + sol_parser）→ projectRoot 根目录
 # 这两个是 Win32 DLL，Core 通过 P/Invoke 找 DLL 走 Win32 LoadLibrary 路径搜索:
@@ -237,11 +270,31 @@ foreach ($entry in $nativeDlls) {
     if (Test-Path $entry.Src) {
         # 只放 runtime\：Core 的 P/Invoke 走 Win32 LoadLibrary 默认搜路径（Core.exe 所在目录 → System32 → PATH）
         # 不复制到 projectRoot 根：没有 caller 在 projectRoot 找这些 DLL，root 越干净越好
-        Copy-Item $entry.Src $runtimeDir -Force
-        Write-Host "  Copied to runtime\: $($entry.Name)"
+        $dst = Join-Path $runtimeDir $entry.Name
+        $copied = Copy-IfDifferent -Src $entry.Src -Dst $dst
+        [void]$expectedNames.Add($entry.Name)
+        if ($copied) {
+            Write-Host "  Copied to runtime\: $($entry.Name)"
+        } else {
+            Write-Host "  Unchanged in runtime\: $($entry.Name)" -ForegroundColor DarkGray
+        }
     } else {
         Write-Host "  [WARN] Native DLL not found: $($entry.Src)" -ForegroundColor Yellow
     }
+}
+
+# 6d.5: 清理 runtime\ 内不在本轮 expectedNames 的旧产物（替代旧版前置 Remove-Item *）。
+# 防降级依赖时旧版本 DLL 残留；只删未预期项，已对齐的不动 → 不重置 mtime 不触发 watcher。
+$staleRemoved = 0
+Get-ChildItem $runtimeDir -File -ErrorAction SilentlyContinue | Where-Object {
+    -not $expectedNames.Contains($_.Name)
+} | ForEach-Object {
+    Remove-Item -LiteralPath $_.FullName -Force
+    Write-Host "  Removed stale: $($_.Name)" -ForegroundColor DarkYellow
+    $staleRemoved++
+}
+if ($staleRemoved -gt 0) {
+    Write-Host "  Cleaned $staleRemoved stale file(s) from runtime\"
 }
 
 # 6e: 硬断言关键运行时文件落地

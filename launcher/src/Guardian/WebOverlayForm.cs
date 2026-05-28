@@ -283,9 +283,13 @@ namespace CF7Launcher.Guardian
         private CF7Launcher.Audio.MusicCatalog _musicCatalog;
 
         // Web 资源热重载：监听 webDir 文件变化，去抖后自动 Reload
+        // 仅在 config.toml webOverlayHotReload=true 时启用；玩家版必须 false（IconBakeTask
+        // 自身就会往 web/icons/ 写 PNG 引发 self-trigger，外加杀软扫描也会触发 reload）。
         private FileSystemWatcher _webWatcher;
         private System.Threading.Timer _reloadDebounce;
         private System.Threading.Timer _reloadTimeout;
+        private readonly bool _hotReloadEnabled;
+        private string _hotReloadExcludePrefix; // launcher/web/icons/ 全路径前缀，self-trigger 屏蔽
 
         private readonly OverlayCoordinateContext _coordinateContext = new OverlayCoordinateContext();
         private bool _missingMetricsWarned;
@@ -317,8 +321,10 @@ namespace CF7Launcher.Guardian
             bool lowEffectsMode, bool disableCssAnimations, bool disableVisualizers,
             int frameRateLimit,
             bool webView2DisableGpu, string webView2AdditionalArgs,
-            bool panelTakeForeground, Func<string, bool> flashFocusRestorer)
+            bool panelTakeForeground, bool hotReloadEnabled,
+            Func<string, bool> flashFocusRestorer)
         {
+            _hotReloadEnabled = hotReloadEnabled;
             _owner = owner;
             _anchor = anchor;
             _mapper = new FlashCoordinateMapper(anchor, 1024f, 576f);
@@ -566,23 +572,56 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        /// <summary>监听 webDir 文件变化，去抖后自动 Reload WebView2。</summary>
+        /// <summary>
+        /// 监听 webDir 文件变化，去抖后自动 Reload WebView2。仅在 config webOverlayHotReload=true
+        /// 时启用，默认 false（玩家版避免 IconBakeTask self-trigger + 杀软扫描 touch 触发 reload
+        /// 把正在显示的 panel 黑屏）。开启时仍 exclude launcher/web/icons/ 子树，防止 self-trigger。
+        /// </summary>
         private void StartWebWatcher(string webDir)
         {
+            if (!_hotReloadEnabled)
+            {
+                LogManager.Log("[WebOverlay] Hot-reload watcher disabled (config webOverlayHotReload=false)");
+                return;
+            }
+
+            try
+            {
+                string fullWebDir = Path.GetFullPath(webDir).TrimEnd('\\', '/');
+                _hotReloadExcludePrefix = fullWebDir + "\\icons\\";
+            }
+            catch { _hotReloadExcludePrefix = null; }
+
             _webWatcher = new FileSystemWatcher(webDir);
             _webWatcher.IncludeSubdirectories = true;
             _webWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.CreationTime;
             _webWatcher.Filter = "*.*";
 
-            FileSystemEventHandler handler = (s, e) => ScheduleReload();
-            RenamedEventHandler renHandler = (s, e) => ScheduleReload();
+            FileSystemEventHandler handler = (s, e) =>
+            {
+                if (IsHotReloadExcluded(e.FullPath)) return;
+                ScheduleReload();
+            };
+            RenamedEventHandler renHandler = (s, e) =>
+            {
+                if (IsHotReloadExcluded(e.FullPath) && IsHotReloadExcluded(e.OldFullPath)) return;
+                ScheduleReload();
+            };
             _webWatcher.Changed += handler;
             _webWatcher.Created += handler;
             _webWatcher.Deleted += handler;
             _webWatcher.Renamed += renHandler;
             _webWatcher.EnableRaisingEvents = true;
 
-            LogManager.Log("[WebOverlay] Hot-reload watcher started: " + webDir);
+            LogManager.Log("[WebOverlay] Hot-reload watcher started: " + webDir
+                + " (exclude=" + (_hotReloadExcludePrefix ?? "<none>") + ")");
+        }
+
+        private bool IsHotReloadExcluded(string fullPath)
+        {
+            if (string.IsNullOrEmpty(_hotReloadExcludePrefix) || string.IsNullOrEmpty(fullPath))
+                return false;
+            return fullPath.StartsWith(_hotReloadExcludePrefix, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>去抖 500ms：多次文件变化只触发一次 Reload。</summary>

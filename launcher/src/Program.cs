@@ -514,6 +514,7 @@ class Program
                 config.WebView2DisableGpu,
                 config.WebView2AdditionalArgs,
                 config.WebOverlayPanelTakeForeground,
+                config.WebOverlayHotReload,
                 flashFocusRestorer);
         }
         CF7Launcher.Guardian.Hud.INativeCursor cursorOverlay = null;

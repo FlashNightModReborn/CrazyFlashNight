@@ -1,0 +1,7 @@
+# Reproducible build：rustc 编译产物本身是确定性的，但最终 cdylib 走 MSVC link.exe，
+# 后者默认写 IMAGE_FILE_HEADER.TimeDateStamp + PDB GUID，导致每次重建字节不同。
+# /Brepro 让 link.exe 时间戳归零 + 用源哈希取代 PDB GUID，同源重建后 git status 不会看到 M。
+# 参考: launcher/native/{bootstrap,miniaudio_bridge} 同步开了相同 flag。
+
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-Clink-arg=/Brepro"]

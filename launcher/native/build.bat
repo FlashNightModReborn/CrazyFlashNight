@@ -30,7 +30,9 @@ REM Output to launcher\bin\Release (relative to this script's directory)
 set "OUTDIR=%~dp0..\bin\Release"
 if not exist "%OUTDIR%" mkdir "%OUTDIR%"
 
-cl /O2 /LD /W3 /D_CRT_SECURE_NO_WARNINGS "%~dp0miniaudio_bridge.c" /Fe:"%OUTDIR%\miniaudio.dll" /link ole32.lib
+REM /Brepro 让 link.exe 写入 IMAGE_FILE_HEADER.TimeDateStamp = 0 + 用源哈希取代 PDB GUID,
+REM 让相同源码 -> 相同字节产物 (reproducible build); 同源重建后 git status 不会看到 M.
+cl /O2 /LD /W3 /D_CRT_SECURE_NO_WARNINGS "%~dp0miniaudio_bridge.c" /Fe:"%OUTDIR%\miniaudio.dll" /link /Brepro ole32.lib
 
 if errorlevel 1 (
     echo [FAIL] Compilation failed.

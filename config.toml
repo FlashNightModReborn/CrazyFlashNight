@@ -33,6 +33,14 @@ gpuPreference = "off"
 # 也可用环境变量 CF7_DEV_GPU_PROBE=1 临时启用，不入仓库。
 devGpuProbeHotkey = false
 
+# 开发专用：监视 launcher/web 文件变化并自动 Reload WebView2。
+# 玩家版**必须保持 false** —— 任何外部进程（杀软扫描 / Steam 校验 / 备份同步 /
+# IconBakeTask 本身往 launcher/web/icons/ 写 PNG）touch 文件都会触发 reload，
+# 正在显示的 panel 会黑屏 1-2 秒（实测复现：tester 2026-05-28 22:55 mercs 黑屏）。
+# 开启时 watcher 内部仍 exclude icons/ 子树规避 self-trigger。
+# env: CF7_WEB_HOTRELOAD=1 一次性覆盖，不入仓库。
+webOverlayHotReload = false
+
 # Native HUD（Panel-Only 架构 + NotchOverlay/ToastOverlay/RightContextWidget/ComboWidget 接管 web HUD）。
 # 默认 false（仍以 web 渲染为主路径）；true = 启用 C# native HUD + panel host controller。
 # 详见 launcher/README.md「useNativeHud=true」段；env: CF7_NATIVE_HUD=1 一次性覆盖。
