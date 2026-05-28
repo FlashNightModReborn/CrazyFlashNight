@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="巨臂僵尸/蛙型仿生僵尸/动画合集/攻击动作" itemID="684d7007-000039e2" lastModified="1779989261" lastUniqueIdentifier="363">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="巨臂僵尸/蛙型仿生僵尸/动画合集/攻击动作" itemID="684d7007-000039e2" lastModified="1779990083" lastUniqueIdentifier="363">
   <timeline>
-    <DOMTimeline name="攻击动作" currentFrame="138" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;132&lt;/guideline&gt;&lt;guideline direction="h"&gt;97&lt;/guideline&gt;&lt;guideline direction="v"&gt;106&lt;/guideline&gt;&lt;guideline direction="v"&gt;42&lt;/guideline&gt;&lt;guideline direction="v"&gt;70&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="攻击动作" currentFrame="81" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;132&lt;/guideline&gt;&lt;guideline direction="h"&gt;97&lt;/guideline&gt;&lt;guideline direction="v"&gt;106&lt;/guideline&gt;&lt;guideline direction="v"&gt;42&lt;/guideline&gt;&lt;guideline direction="v"&gt;70&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="招式名" color="#FF800A" autoNamed="false">
           <frames>
@@ -87,37 +87,37 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="17" duration="10" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("克隆怪脚步1.wav");]]></script>
+                <script><![CDATA[_root.播放音效("克隆怪脚步" + (random(1) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="27" duration="11" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("克隆怪脚步2.wav");]]></script>
+                <script><![CDATA[_root.播放音效("克隆怪脚步" + (random(1) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="38" duration="10" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("克隆怪脚步1.wav");]]></script>
+                <script><![CDATA[_root.播放音效("克隆怪脚步" + (random(1) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="48" duration="10" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("克隆怪脚步2.wav");]]></script>
+                <script><![CDATA[_root.播放音效("克隆怪脚步" + (random(1) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="58" duration="10" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("克隆怪脚步1.wav");]]></script>
+                <script><![CDATA[_root.播放音效("克隆怪脚步" + (random(1) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="68" duration="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("克隆怪脚步2.wav");]]></script>
+                <script><![CDATA[_root.播放音效("克隆怪脚步" + (random(1) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

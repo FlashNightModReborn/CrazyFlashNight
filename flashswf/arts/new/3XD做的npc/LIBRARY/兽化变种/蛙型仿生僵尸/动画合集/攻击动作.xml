@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兽化变种/蛙型仿生僵尸/动画合集/攻击动作" itemID="6a118636-00000c26" lastModified="1779988575" lastUniqueIdentifier="373">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兽化变种/蛙型仿生僵尸/动画合集/攻击动作" itemID="6a118636-00000c26" lastModified="1779989870" lastUniqueIdentifier="373">
   <timeline>
-    <DOMTimeline name="攻击动作" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;132&lt;/guideline&gt;&lt;guideline direction="h"&gt;97&lt;/guideline&gt;&lt;guideline direction="v"&gt;137&lt;/guideline&gt;&lt;guideline direction="v"&gt;42&lt;/guideline&gt;&lt;guideline direction="v"&gt;70&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="攻击动作" currentFrame="136" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;132&lt;/guideline&gt;&lt;guideline direction="h"&gt;97&lt;/guideline&gt;&lt;guideline direction="v"&gt;137&lt;/guideline&gt;&lt;guideline direction="v"&gt;42&lt;/guideline&gt;&lt;guideline direction="v"&gt;70&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="招式名" color="#FF800A" locked="true" autoNamed="false">
           <frames>
@@ -84,85 +84,85 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="15" duration="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("爪击1.wav");]]></script>
+                <script><![CDATA[_root.播放音效("爪击" + (random(3) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="21" duration="7" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("爪击2.wav");]]></script>
+                <script><![CDATA[_root.播放音效("爪击" + (random(3) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="28" duration="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("爪击1.wav");]]></script>
+                <script><![CDATA[_root.播放音效("爪击" + (random(3) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="34" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("爪击3.wav");]]></script>
+                <script><![CDATA[_root.播放音效("爪击" + (random(3) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="39" duration="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("爪击1.wav");]]></script>
+                <script><![CDATA[_root.播放音效("爪击" + (random(3) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="45" duration="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("爪击2.wav");]]></script>
+                <script><![CDATA[_root.播放音效("爪击" + (random(3) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="51" duration="8" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("爪击3.wav");]]></script>
+                <script><![CDATA[_root.播放音效("爪击" + (random(3) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="59" duration="4" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("爪击1.wav");]]></script>
+                <script><![CDATA[_root.播放音效("爪击" + (random(3) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="63" duration="42" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("爪击2.wav");]]></script>
+                <script><![CDATA[_root.播放音效("爪击" + (random(3) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="105" duration="9" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("爪击3.wav");]]></script>
+                <script><![CDATA[_root.播放音效("爪击" + (random(3) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="114" duration="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("爪击3.wav");]]></script>
+                <script><![CDATA[_root.播放音效("爪击" + (random(3) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="120" duration="9" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("爪击3.wav");]]></script>
+                <script><![CDATA[_root.播放音效("爪击" + (random(3) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="129" duration="7" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("爪击3.wav");]]></script>
+                <script><![CDATA[_root.播放音效("爪击" + (random(3) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="136" duration="33" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("爪击3.wav");]]></script>
+                <script><![CDATA[_root.播放音效("爪击" + (random(3) + 1) + ".wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

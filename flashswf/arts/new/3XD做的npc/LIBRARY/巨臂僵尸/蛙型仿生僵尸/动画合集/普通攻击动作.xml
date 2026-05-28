@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="巨臂僵尸/蛙型仿生僵尸/动画合集/普通攻击动作" itemID="684d7009-000047a4" lastModified="1759425962" lastUniqueIdentifier="137">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="巨臂僵尸/蛙型仿生僵尸/动画合集/普通攻击动作" itemID="684d7009-000047a4" lastModified="1779990110" lastUniqueIdentifier="137">
   <timeline>
     <DOMTimeline name="普通攻击动作" currentFrame="17">
       <layers>
@@ -8,6 +8,19 @@
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="33" name="砍两下" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="17" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="17" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -29,14 +42,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="17" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="巨臂僵尸/怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="312.1" centerPoint3DY="-13.05">
+                <DOMSymbolInstance libraryItemName="巨臂僵尸/怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="312.1" centerPoint3DY="-13.05">
                   <matrix>
                     <Matrix a="2.6170654296875" d="20.4980163574219" tx="312.1" ty="-13.05"/>
                   </matrix>

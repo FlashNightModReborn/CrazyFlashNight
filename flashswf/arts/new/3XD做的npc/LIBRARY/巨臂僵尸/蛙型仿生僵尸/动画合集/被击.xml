@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="巨臂僵尸/蛙型仿生僵尸/动画合集/被击" itemID="684d700a-00004d16" lastModified="1749903314" lastUniqueIdentifier="17">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="巨臂僵尸/蛙型仿生僵尸/动画合集/被击" itemID="684d700a-00004d16" lastModified="1779989671" lastUniqueIdentifier="17">
   <timeline>
-    <DOMTimeline name="被击" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;109&lt;/guideline&gt;&lt;guideline direction="h"&gt;98&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="被击" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;109&lt;/guideline&gt;&lt;guideline direction="h"&gt;98&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels_Layer" color="#C3449E">
           <frames>
@@ -18,7 +18,17 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="音效" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="47" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("僵尸0" + (random(6) + 1) + ".wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>

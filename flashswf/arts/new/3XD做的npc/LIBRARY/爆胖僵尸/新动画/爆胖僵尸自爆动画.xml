@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/新动画/爆胖僵尸自爆动画" itemID="69bc3451-00000388" lastModified="1779987637" lastUniqueIdentifier="255">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/新动画/爆胖僵尸自爆动画" itemID="69bc3451-00000388" lastModified="1779989611" lastUniqueIdentifier="255">
   <timeline>
-    <DOMTimeline name="爆胖僵尸自爆动画" currentFrame="33" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-19&lt;/guideline&gt;&lt;guideline direction="v"&gt;24&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="爆胖僵尸自爆动画" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-19&lt;/guideline&gt;&lt;guideline direction="v"&gt;24&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 2" color="#9933CC" autoNamed="false">
           <frames>
@@ -129,6 +129,9 @@ function 自爆轻段()
         <DOMLayer name="音效" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("僵尸0" + (random(6) + 1) + ".wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="33" duration="58" keyMode="9728">

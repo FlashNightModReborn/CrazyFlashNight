@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兽化变种/敌人-兽化变种" itemID="68431a9c-000001f6" linkageExportForAS="true" linkageIdentifier="敌人-兽化变种" lastModified="1779988761" lastUniqueIdentifier="50">
   <timeline>
-    <DOMTimeline name="敌人-兽化变种" currentFrame="104">
+    <DOMTimeline name="敌人-兽化变种" currentFrame="120">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" outline="true" useOutlineView="true" autoNamed="false" visible="false" heightLiteral="24">
           <frames>
@@ -647,7 +647,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="兽化变种/蛙型仿生僵尸/动画合集/击飞" name="man" centerPoint3DX="6.4" centerPoint3DY="-59.75">
+                <DOMSymbolInstance libraryItemName="兽化变种/蛙型仿生僵尸/动画合集/击飞" name="man" selected="true" centerPoint3DX="6.4" centerPoint3DY="-59.75">
                   <matrix>
                     <Matrix tx="-69.95" ty="-135"/>
                   </matrix>

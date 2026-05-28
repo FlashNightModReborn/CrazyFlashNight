@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/敌人-触手僵尸" itemID="69d54254-00000739" linkageExportForAS="true" linkageIdentifier="敌人-触手僵尸" lastModified="1779294657" lastUniqueIdentifier="53">
   <timeline>
-    <DOMTimeline name="敌人-触手僵尸" currentFrame="69">
+    <DOMTimeline name="敌人-触手僵尸">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -537,7 +537,7 @@ x轴保持距离 = 100;
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="触手僵尸/血触手-击飞 合并" centerPoint3DX="13.95" centerPoint3DY="-111.4">
+                <DOMSymbolInstance libraryItemName="触手僵尸/血触手-击飞 合并" selected="true" centerPoint3DX="13.95" centerPoint3DY="-111.4">
                   <matrix>
                     <Matrix a="0.903411865234375" d="0.903411865234375" tx="16.7" ty="-91.75"/>
                   </matrix>
