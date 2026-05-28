@@ -164,16 +164,6 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/hthzt_3_BG.swf</Background>
         </BasicInformation>
-        <Event>
-            <EventName>WaveFinished</EventName>
-            <Parameter>2</Parameter>
-            <Dialogue id="0">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>得赶紧回去汇报！</Text>
-            </Dialogue>
-        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -262,6 +252,304 @@
                 </EnemyGroup>
             </SubWave>
             <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种72</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种71</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种70</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/hthzt_4_BG.swf</Background>
+        </BasicInformation>
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>你们情况如何？</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>翅虎</Name>
+                <Title>翅虎堂堂主</Title>
+                <Char>翅虎</Char>
+                <Text>拜你所赐，对付这些家伙感到非常吃力。</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>火凤</Name>
+                <Title>火凤堂堂主</Title>
+                <Char>火凤</Char>
+                <Text>教主已经撤出，我等必须尽忠职守，击退来犯之敌！</Text>
+            </Dialogue>
+            <Dialogue id="3">
+                <Name>黑龙</Name>
+                <Title>黑龙堂堂主</Title>
+                <Char>黑龙</Char>
+                <Text>小子，胜负成败转头空，你我今日面对命中劫数，唯有一战。</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>2</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>得赶紧回去汇报！</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>翅虎</Parameter>
+            <Message>翅虎死亡！</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>翅虎</Parameter>
+            <Message>翅虎情况紧急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>火凤</Parameter>
+            <Message>火凤死亡！</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>火凤</Parameter>
+            <Message>火凤情况紧急！</Message>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>黑龙</Parameter>
+            <Message>黑龙死亡！</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>黑龙</Parameter>
+            <Message>黑龙情况紧急！</Message>
+        </Event>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种72</Type>
+                        <Interval>1800</Interval>
+                        <Quantity>9</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种71</Type>
+                        <Interval>800</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种70</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种66</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <IsHostile>false</IsHostile>
+                        <x>450</x>
+                        <y>450</y>
+                        <Parameters>
+                            <threat>30</threat>
+                            <extra>
+                                <add>
+                                    <hp>5000</hp>
+                                    <hp满血值>10000</hp满血值>
+                                </add>
+                            </extra>
+                        </Parameters>
+                        <InstanceName>翅虎</InstanceName>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种67</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <IsHostile>false</IsHostile>
+                        <x>520</x>
+                        <y>550</y>
+                        <Parameters>
+                            <threat>30</threat>
+                            <extra>
+                                <add>
+                                    <hp>5000</hp>
+                                    <hp满血值>10000</hp满血值>
+                                </add>
+                            </extra>
+                        </Parameters>
+                        <InstanceName>火凤</InstanceName>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种68</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <IsHostile>false</IsHostile>
+                        <x>400</x>
+                        <y>500</y>
+                        <Parameters>
+                            <threat>30</threat>
+                            <extra>
+                                <add>
+                                    <hp>5000</hp>
+                                    <hp满血值>10000</hp满血值>
+                                </add>
+                            </extra>
+                        </Parameters>
+                        <InstanceName>黑龙</InstanceName>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种72</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种71</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种70</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种261</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <IsHostile>false</IsHostile>
+                        <Parameters>
+                            <称号>散人</称号>
+                            <extra>
+                                <add>
+                                    <hp>2500</hp>
+                                    <hp满血值>5000</hp满血值>
+                                </add>
+                            </extra>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种268</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <IsHostile>false</IsHostile>
+                        <Parameters>
+                            <称号>坛主</称号>
+                            <extra>
+                                <add>
+                                    <hp>2500</hp>
+                                    <hp满血值>5000</hp满血值>
+                                </add>
+                            </extra>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种72</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种71</Type>
+                        <Interval>500</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种70</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>45</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种269</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <IsHostile>false</IsHostile>
+                        <Parameters>
+                            <称号>坛主</称号>
+                            <extra>
+                                <add>
+                                    <hp>2500</hp>
+                                    <hp满血值>5000</hp满血值>
+                                </add>
+                            </extra>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种270</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <IsHostile>false</IsHostile>
+                        <Parameters>
+                            <称号>坛主</称号>
+                            <extra>
+                                <add>
+                                    <hp>2500</hp>
+                                    <hp满血值>5000</hp满血值>
+                                </add>
+                            </extra>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="3">
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
