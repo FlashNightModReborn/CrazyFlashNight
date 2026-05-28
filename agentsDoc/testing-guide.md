@@ -53,13 +53,9 @@ chcp.com 65001 | Out-Null
 | xUnit | `powershell -File launcher/tests/run_tests.ps1` |
 | 总线健康 | `bash tools/cfn-cli.sh status` |
 | AS2 回环 | `bash tools/cfn-cli.sh console "help"` |
-| 集成 (testMovie) | `bash tools/cfn-cli.sh start-bus`（headless 自动化路径，直跑 `runtime/Core.exe`） |
+| 集成 (testMovie) | `bash tools/cfn-cli.sh start-bus`（headless：直跑 `runtime/Core.exe`，绕 bootstrap 的 MessageBox） |
 
-`--bus-only` 适用：Flash CS6 testMovie ↔ Launcher 通信链验证;AI / 模拟实验需外部 Flash 自连总线;排查启动链路 vs 总线本身。
-
-> 注意：根目录 `CRAZYFLASHER7MercenaryEmpire.exe` 是 net10 native bootstrap，runtime 缺失时会弹 MessageBox 阻塞自动化。
-> headless 路径用 `cfn-cli.sh start-bus`（绕 bootstrap，复刻其 user-scope `DOTNET_ROOT` 探测）；
-> 玩家路径才走根目录 `.exe`。同理 `automation/start.ps1` / `scripts/gobang_trainer_cycle.ps1` 都已切到 `runtime/Core.exe`。
+`--bus-only` 适用：Flash CS6 testMovie ↔ Launcher 通信链验证;AI / 模拟实验需外部 Flash 自连总线;排查启动链路 vs 总线本身。根目录 `.exe` 是 net10 native bootstrap（runtime 缺失会弹框阻塞自动化），headless 调用方（`cfn-cli.sh` / `automation/start.ps1` / `scripts/gobang_trainer_cycle.ps1`）都已切到 `runtime/Core.exe` + 复刻 bootstrap 的 `DOTNET_ROOT` 探测。
 
 当前 `launcher/build.ps1` 除编译外还会 fail-fast 校验 `launcher/web` 必需资源（bootstrap/overlay/config/assets/help/icons/data/cursor/map/stage-select 与关键 modules / intelligence panel + H5 component renderer / minigame 入口）、运行 `node tools/audit-native-cursor-assets.js` 校验 native cursor `64x64` 画布与 `(16,16)` 热点契约，并校验 `launcher/data/map_hud_data.json` / `save_schema.json` 存在。
 

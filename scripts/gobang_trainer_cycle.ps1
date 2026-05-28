@@ -137,24 +137,9 @@ $ProjectRoot = Split-Path -Parent $ScriptDir
 $LauncherExe = Join-Path $ProjectRoot 'runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe'
 $PortsFile = Join-Path $ProjectRoot 'launcher_ports.json'
 
-# 复刻 bootstrap 的 user-scope runtime 探测逻辑（绕过 bootstrap 时必须自己补 DOTNET_ROOT）
-function Ensure-DotnetRootForCore {
-    foreach ($cand in @(
-        (Join-Path $env:LOCALAPPDATA 'Microsoft\dotnet'),
-        (Join-Path $env:USERPROFILE 'AppData\Local\Microsoft\dotnet'),
-        (Join-Path $env:USERPROFILE '.dotnet')
-    )) {
-        if (-not $cand) { continue }
-        $desktopDir = Join-Path $cand 'shared\Microsoft.WindowsDesktop.App'
-        if (-not (Test-Path $desktopDir)) { continue }
-        if ((Get-ChildItem -LiteralPath $desktopDir -Directory -Filter '10.*' -ErrorAction SilentlyContinue).Count -gt 0) {
-            $env:DOTNET_ROOT_X64 = $cand
-            $env:DOTNET_ROOT = $cand
-            Write-Host "[bus] Using user-scope dotnet runtime at $cand"
-            return
-        }
-    }
-}
+# Runtime 探测 — 共享 tools/dotnet-runtime-detect.ps1（与 bootstrap.cpp ScanOneDotnetRoot 等价：
+# 系统位置优先 + 必须含 Microsoft.WindowsDesktop.App.deps.json，避免半安装 user-scope 误命中）
+. (Join-Path $ProjectRoot 'tools\dotnet-runtime-detect.ps1')
 
 # 盲扫候选列表（fallback）
 $BusPorts = @(1192, 1924, 9243, 2433, 4339, 3399, 3993, 11924, 19243, 24339, 43399, 33993, 3000)
@@ -191,7 +176,7 @@ if (-not $NoBus) {
             exit 1
         }
         Write-Host '[bus] Starting launcher --bus-only...'
-        Ensure-DotnetRootForCore
+        if (-not (Set-DotnetRootForCore)) { exit 1 }
         # 显式传 --project-root（Core 在 runtime\ 子目录，AppContext.BaseDirectory ≠ projectRoot）
         $busProc = Start-Process -FilePath $LauncherExe `
             -ArgumentList @('--bus-only', '--project-root', $ProjectRoot) `

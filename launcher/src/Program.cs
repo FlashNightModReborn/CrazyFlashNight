@@ -140,6 +140,32 @@ class Program
     }
 
     /// <summary>
+    /// 剥离 args 中已被 bootstrap injection 消费的 --project-root <path> 二元组，
+    /// 让下游解析器看不到这两个 token。当前下游用 Array.IndexOf 检 flag，本不冲突；
+    /// 防御未来位置参数解析撞上 "--project-root"/路径字符串造成误判。
+    /// </summary>
+    static string[] StripProjectRootArgs(string[] args)
+    {
+        if (args == null || args.Length == 0) return args;
+        string[] tmp = new string[args.Length];
+        int n = 0;
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (string.Equals(args[i], "--project-root", StringComparison.OrdinalIgnoreCase)
+                && i + 1 < args.Length)
+            {
+                i++; // 跳过紧跟的路径值
+                continue;
+            }
+            tmp[n++] = args[i];
+        }
+        if (n == args.Length) return args;
+        string[] result = new string[n];
+        Array.Copy(tmp, result, n);
+        return result;
+    }
+
+    /// <summary>
     /// 哨兵文件 walk-up：从 startExePath 所在目录向上找含 crossdomain.xml 的目录。
     /// crossdomain.xml 是 Flash socket 跨域策略文件，必须放在 projectRoot；存在即认作 projectRoot.
     /// 最多向上 6 层；找不到返回 null（调用方 fallback 到 ProcessPath 父目录）。
@@ -183,9 +209,6 @@ class Program
 
     static int Run(string[] args)
     {
-        bool busOnly = Array.IndexOf(args, "--bus-only") >= 0;
-        bool forceWebViewFail = Array.IndexOf(args, "--force-webview-fail") >= 0;
-
         // 定位项目根目录:
         // 1. 优先 bootstrap 传 --project-root <abs>（FDD 产物在 projectRoot/runtime/ 子目录,
         //    AppContext.BaseDirectory != projectRoot, 必须显式传）
@@ -198,6 +221,12 @@ class Program
                              ?? TryWalkUpForProjectRoot(Environment.ProcessPath)
                              ?? Path.GetDirectoryName(Environment.ProcessPath);
         string exePath = Environment.ProcessPath;
+
+        // 剥离已消费的 --project-root <path>，避免下游 flag 检测撞上路径字符串
+        args = StripProjectRootArgs(args);
+
+        bool busOnly = Array.IndexOf(args, "--bus-only") >= 0;
+        bool forceWebViewFail = Array.IndexOf(args, "--force-webview-fail") >= 0;
         PerfTrace.Init(projectRoot);
         PerfTrace.Mark("guardian.run_start");
 

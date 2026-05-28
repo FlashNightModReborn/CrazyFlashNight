@@ -19,21 +19,11 @@ if (-not (Test-Path $coreExe)) {
     exit 1
 }
 
-# user-scope runtime 探测（与 bootstrap.cpp / cfn-cli.sh 行为一致）
-foreach ($cand in @(
-    (Join-Path $env:LOCALAPPDATA 'Microsoft\dotnet'),
-    (Join-Path $env:USERPROFILE 'AppData\Local\Microsoft\dotnet'),
-    (Join-Path $env:USERPROFILE '.dotnet')
-)) {
-    if (-not $cand) { continue }
-    $desktopDir = Join-Path $cand 'shared\Microsoft.WindowsDesktop.App'
-    if (-not (Test-Path $desktopDir)) { continue }
-    if ((Get-ChildItem -LiteralPath $desktopDir -Directory -Filter '10.*' -ErrorAction SilentlyContinue).Count -gt 0) {
-        $env:DOTNET_ROOT_X64 = $cand
-        $env:DOTNET_ROOT = $cand
-        Write-Host "Using user-scope dotnet runtime at $cand"
-        break
-    }
+# Runtime 探测 — 共享 tools/dotnet-runtime-detect.ps1（与 bootstrap.cpp ScanOneDotnetRoot 等价：
+# 系统位置优先 + 必须含 Microsoft.WindowsDesktop.App.deps.json，避免半安装 user-scope 误命中）
+. (Join-Path $projectRoot 'tools\dotnet-runtime-detect.ps1')
+if (-not (Set-DotnetRootForCore)) {
+    exit 1
 }
 
 Write-Host "Starting CF7:ME Guardian Core..."

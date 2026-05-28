@@ -65,23 +65,52 @@ case "${1:-status}" in
             echo "Bus already running on port $(discover_port)"
             exit 0
         fi
-        # 必须复刻 bootstrap 的 user-scope runtime 探测逻辑：
-        # README/setup-check 优先推荐 user-scope %LOCALAPPDATA%\Microsoft\dotnet 装法；
-        # Core apphost 默认只搜 %ProgramFiles%\dotnet，找不到 user-scope 就直接死。
-        # 与 bootstrap 一致：探到非默认位置则 export DOTNET_ROOT_X64 / DOTNET_ROOT。
-        for cand in "$LOCALAPPDATA/Microsoft/dotnet" "$USERPROFILE/AppData/Local/Microsoft/dotnet" "$USERPROFILE/.dotnet"; do
-            [ -z "$cand" ] && continue
-            if [ -d "$cand/shared/Microsoft.WindowsDesktop.App" ]; then
-                # 任意 10.x 子目录存在即视为可用
-                if ls -d "$cand/shared/Microsoft.WindowsDesktop.App"/10.* >/dev/null 2>&1; then
+        # Runtime 探测 — 与 launcher/native/bootstrap/bootstrap.cpp ScanOneDotnetRoot 等价：
+        #   1. 系统位置 %ProgramFiles%\dotnet 优先 — 命中即跳过 env override（apphost 默认搜得到）
+        #   2. user-scope 候选必须含 Microsoft.WindowsDesktop.App.deps.json（防半安装空壳目录）
+        # 与 PS 助手 tools/dotnet-runtime-detect.ps1 行为对齐
+        _has_valid_runtime() {
+            # $1 = dotnet root（Posix 风格路径）。命中输出 root，未命中返回 1。
+            local root="$1"
+            [ -z "$root" ] && return 1
+            local desktop="$root/shared/Microsoft.WindowsDesktop.App"
+            [ -d "$desktop" ] || return 1
+            for ver in "$desktop"/10.*; do
+                [ -d "$ver" ] || continue
+                if [ -f "$ver/Microsoft.WindowsDesktop.App.deps.json" ]; then
+                    return 0
+                fi
+            done
+            return 1
+        }
+
+        _runtime_ok=0
+        # 1. 系统位置（与 apphost 默认搜路径一致，命中不设 env）
+        SYSTEM_DOTNET="${PROGRAMFILES:-/c/Program Files}/dotnet"
+        if _has_valid_runtime "$SYSTEM_DOTNET"; then
+            echo "Using system .NET 10 desktop runtime at $SYSTEM_DOTNET (no DOTNET_ROOT override)"
+            _runtime_ok=1
+        else
+            # 2. user-scope 候选（命中必须 export DOTNET_ROOT 让 apphost 找得到）
+            for cand in "$LOCALAPPDATA/Microsoft/dotnet" "$USERPROFILE/.dotnet"; do
+                [ -z "$cand" ] && continue
+                if _has_valid_runtime "$cand"; then
                     WIN_DOTNET_ROOT=$(cygpath -w "$cand" 2>/dev/null || echo "$cand")
                     export DOTNET_ROOT_X64="$WIN_DOTNET_ROOT"
                     export DOTNET_ROOT="$WIN_DOTNET_ROOT"
-                    echo "Using user-scope dotnet runtime at $WIN_DOTNET_ROOT"
+                    echo "Using user-scope .NET 10 desktop runtime at $WIN_DOTNET_ROOT (DOTNET_ROOT set)"
+                    _runtime_ok=1
                     break
                 fi
-            fi
-        done
+            done
+        fi
+
+        if [ "$_runtime_ok" -ne 1 ]; then
+            echo "[Error] 未找到带 Microsoft.WindowsDesktop.App.deps.json 的 .NET 10 桌面运行时；" >&2
+            echo "        请双击 CRAZYFLASHER7MercenaryEmpire.exe 让 bootstrap 自动安装，或手动" >&2
+            echo "        运行 tools/dotnet-runtime/windowsdesktop-runtime-10.*-win-x64.exe" >&2
+            exit 1
+        fi
         # 显式传 --project-root（Core 在子目录，AppContext.BaseDirectory ≠ projectRoot；不传会走 walk-up fallback）
         # 路径用 Windows 反斜杠（Core 内部 Path.GetFullPath 会规范化）
         WIN_PROJECT_ROOT=$(cygpath -w "$PROJECT_ROOT" 2>/dev/null || echo "$PROJECT_ROOT")

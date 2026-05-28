@@ -34,6 +34,16 @@
 static const wchar_t* TITLE = L"CF7:FlashNight";
 // installer 用 glob 扫 windowsdesktop-runtime-10.*-win-x64.exe（10.0.8 / 10.0.9 / 10.1.x ...），
 // 版本 bump 无需改源码 + 同步 4 处脚本
+//
+// 版本策略 — bootstrap 是「下限把关」，Core 的 runtimeconfig 是「上限放行」：
+//   - bootstrap 只接受 10.* 目录（拒绝裸 .NET 11+ 机器，会触发 bundled 10.0.8 安装）
+//   - 但 Core 的 runtimeconfig.json 设了 RollForward=LatestMajor + csproj 同步
+//     → 一旦机器装了 10.x，未来升 11.x 而不卸 10.x 仍能跑（Core 自己 roll-forward）
+//   - 副作用：用户裸 .NET 11 机器明明 Core 能跑，bootstrap 还是会装 10.0.8。
+//     这是有意的——bootstrap 是首装入口，确保 ship 的 runtime 上限是已测过的版本。
+//
+// 不校验最小 patch（10.0.0 也算 hit）：当前 .NET 10 仅有 servicing patch（无 breaking），
+// 不存在「需要 10.0.5+」的场景。未来真要卡 min patch 时在 ScanOneDotnetRoot 内做版本字符串比较。
 static const wchar_t* RUNTIME_INSTALLER_DIR_REL = L"\\tools\\dotnet-runtime";
 static const wchar_t* RUNTIME_INSTALLER_GLOB = L"\\tools\\dotnet-runtime\\windowsdesktop-runtime-10.*-win-x64.exe";
 static const wchar_t* CORE_EXE_REL = L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe";
@@ -73,8 +83,9 @@ static void LogOpen(const wchar_t* exeDir)
     if (FAILED(StringCchCopyW(g_logPath, MAX_PATH, exeDir))) return;
     if (FAILED(StringCchCatW(g_logPath, MAX_PATH, LOG_FILE_REL))) return;
 
-    // 滚动：当前 log > LOG_ROTATE_BYTES → 删旧 .old + 当前重命名为 .old，新启动写空文件
-    // 不依赖额外库，用 GetFileSizeEx + MoveFileEx
+    // 滚动：当前 log > LOG_ROTATE_BYTES → 当前重命名为 .old，新启动写空文件
+    // 不依赖额外库，用 GetFileSizeEx + MoveFileEx；MOVEFILE_REPLACE_EXISTING 自动覆盖旧 .old，
+    // 无需 DeleteFileW 预删（少一步 syscall，并缩小双实例同时启动的竞态窗口）
     HANDLE hFile = CreateFileW(g_logPath, FILE_READ_ATTRIBUTES,
                                 FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
                                 NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -86,7 +97,6 @@ static void LogOpen(const wchar_t* exeDir)
             wchar_t oldPath[MAX_PATH];
             if (SUCCEEDED(StringCchCopyW(oldPath, MAX_PATH, exeDir)) &&
                 SUCCEEDED(StringCchCatW(oldPath, MAX_PATH, LOG_FILE_OLD_REL))) {
-                DeleteFileW(oldPath);  // 容忍不存在
                 MoveFileExW(g_logPath, oldPath, MOVEFILE_REPLACE_EXISTING);
             }
         }
@@ -324,6 +334,13 @@ static int RunInstaller(const wchar_t* installerPath)
 static bool LaunchCore(const wchar_t* exeDir, const wchar_t* corePath, LPWSTR origCmdLine)
 {
     // 构造 args: --project-root "<exeDir>" <origCmdLine>
+    // NTFS 路径分量禁止 `"`（连同 < > : / \ | ? * 都是保留字符），
+    // 所以 GetModuleFileNameW 拿到的 exeDir 永远不含 "，下方裸 quote 拼接安全。
+    // 若极端情况下真出现（例如 GetModuleFileNameW 被劫持），写日志后拒绝启动避免误解析。
+    if (wcschr(exeDir, L'"') != NULL) {
+        Logf("ERROR", L"exeDir contains '\"' which NTFS prohibits — refusing to launch: %s", exeDir);
+        return false;
+    }
     wchar_t args[4096];
     if (origCmdLine && origCmdLine[0] != L'\0') {
         StringCchPrintfW(args, 4096, L"--project-root \"%s\" %s", exeDir, origCmdLine);
@@ -482,7 +499,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
         DWORD err = GetLastError();
         wchar_t buf[256];
         StringCchPrintfW(buf, 256,
-            L"无法启动主程序（系统错误码 %d）。",
+            L"无法启动主程序（系统错误码 %lu）。",
             err);
         return FatalExit(buf);
     }
