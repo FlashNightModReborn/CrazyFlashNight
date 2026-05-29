@@ -303,6 +303,8 @@
     <SubStage id="3">
         <BasicInformation>
             <Background>flashswf/backgrounds/hthzt_4_BG.swf</Background>
+            <PlayerX>550</PlayerX>
+            <PlayerY>482</PlayerY>
         </BasicInformation>
         <Event>
             <EventName>Start</EventName>
@@ -404,13 +406,13 @@
                         <Quantity>1</Quantity>
                         <Level>40</Level>
                         <IsHostile>false</IsHostile>
-                        <x>450</x>
+                        <x>850</x>
                         <y>450</y>
                         <Parameters>
                             <threat>30</threat>
                             <extra>
                                 <add>
-                                    <hp>3000</hp>
+                                    <hp>-1500</hp>
                                     <hp满血值>10000</hp满血值>
                                 </add>
                             </extra>
@@ -423,13 +425,13 @@
                         <Quantity>1</Quantity>
                         <Level>40</Level>
                         <IsHostile>false</IsHostile>
-                        <x>520</x>
+                        <x>920</x>
                         <y>550</y>
                         <Parameters>
                             <threat>30</threat>
                             <extra>
                                 <add>
-                                    <hp>2000</hp>
+                                    <hp>-4000</hp>
                                     <hp满血值>10000</hp满血值>
                                 </add>
                             </extra>
@@ -442,13 +444,13 @@
                         <Quantity>1</Quantity>
                         <Level>40</Level>
                         <IsHostile>false</IsHostile>
-                        <x>400</x>
+                        <x>800</x>
                         <y>500</y>
                         <Parameters>
                             <threat>30</threat>
                             <extra>
                                 <add>
-                                    <hp>3000</hp>
+                                    <hp>-1500</hp>
                                     <hp满血值>10000</hp满血值>
                                 </add>
                             </extra>
