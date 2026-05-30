@@ -112,4 +112,9 @@
         ['modules/merc-data.js',
          'modules/merc-panel.js'],
         noop);
+
+    // ── tasks (任务) ──
+    Panels.registerLazy('tasks',
+        ['modules/tasks/task-panel.js'],
+        noop);
 })();

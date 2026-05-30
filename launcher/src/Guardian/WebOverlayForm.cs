@@ -105,7 +105,7 @@ namespace CF7Launcher.Guardian
             if (panel == "map") return "mapPanelClose";
             if (panel == "stage-select") return "stageSelectPanelClose";
             if (panel == "pets") return "petPanelClose";
-            if (panel == "pets") return "petPanelClose";
+            if (panel == "tasks") return "taskPanelClose";
             // arena / mercs 故意留 null：没有需要 AS2 清理的状态，
             // 关闭 panel 时直接走 _activePanel = null + PanelHost.ClosePanel() 即可。
             return null;
@@ -222,6 +222,7 @@ namespace CF7Launcher.Guardian
         private ArenaTask _arenaTask;
         private PetTask _petTask;
         private MercTask _mercTask;
+        private TaskTask _taskTask;
         private IntelligenceTask _intelligenceTask;
         private GomokuTask _gomokuTask;
         private Action<bool> _onPanelStateChanged;
@@ -466,6 +467,24 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        private void TryRegisterGameAssetsVirtualHost(string trigger)
+        {
+            try
+            {
+                if (_webView == null || _webView.CoreWebView2 == null) return;
+                string assetsDir = Path.Combine(_projectRoot, "flashswf");
+                if (string.IsNullOrEmpty(assetsDir) || !Directory.Exists(assetsDir)) return;
+                _webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
+                    "cfn-assets.local", assetsDir,
+                    CoreWebView2HostResourceAccessKind.Allow);
+                LogManager.Log("[WebOverlay] cfn-assets.local → " + assetsDir + " (" + trigger + ")");
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[WebOverlay] cfn-assets.local mapping failed (" + trigger + "): " + ex.Message);
+            }
+        }
+
         /// <summary>注入 InputShieldForm 引用。若 WebView2 已就绪，立即补调 SetTargetWebView。</summary>
         public void SetInputShield(InputShieldForm shield)
         {
@@ -540,6 +559,9 @@ namespace CF7Launcher.Guardian
                 // 字体包虚拟主机：https://cfn-fonts.local/ → %LOCALAPPDATA%/CF7FlashNight/fonts/（FontPackTask 注入）
                 // 若 SetFontsDir 已先于 CoreWebView2 ready 调用，此处补建映射；反之 SetFontsDir 立即建。
                 TryRegisterFontsVirtualHost("init_webview2");
+
+                // 游戏素材虚拟主机：https://cfn-assets.local/ → {projectRoot}/flashswf/
+                TryRegisterGameAssetsVirtualHost("init_webview2");
 
                 // JS→C# 消息
                 _webView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
@@ -2794,6 +2816,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetTaskTask(TaskTask task)
+        {
+            _taskTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetIntelligenceTask(IntelligenceTask task)
         {
             _intelligenceTask = task;
@@ -3413,6 +3442,7 @@ namespace CF7Launcher.Guardian
                     }
                     break;
                 case "snapshot":
+                case "detail":
                 case "navigate":
                 case "refresh":
                 case "open_stage_select":
@@ -3468,6 +3498,11 @@ namespace CF7Launcher.Guardian
                         {
                             LogManager.Log("[Panel] Routing cmd=" + cmd + " to MercTask, _mercTask=" + (_mercTask != null ? "ok" : "NULL"));
                             if (_mercTask != null) _mercTask.HandleWebRequest(cmd, parsed);
+                        }
+                        else if (panel == "tasks")
+                        {
+                            LogManager.Log("[Panel] Routing cmd=" + cmd + " to TaskTask, _taskTask=" + (_taskTask != null ? "ok" : "NULL"));
+                            if (_taskTask != null) _taskTask.HandleWebRequest(cmd, parsed);
                         }
                         else if (cmd == "enter" || cmd == "jump_frame" || cmd == "return_frame" || cmd == "open_stage_select")
                         {
@@ -3645,6 +3680,7 @@ namespace CF7Launcher.Guardian
             if (_arenaTask != null) _arenaTask.ClearPending();
             if (_petTask != null) _petTask.ClearPending();
             if (_mercTask != null) _mercTask.ClearPending();
+            if (_taskTask != null) _taskTask.ClearPending();
             if (_intelligenceTask != null) _intelligenceTask.ClearPending();
         }
 

@@ -146,6 +146,16 @@ namespace CF7Launcher.Guardian
                             "\"targetId\":\"" + EscapeJsonString(hotspotId) + "\"");
                     }
                     break;
+                case "NEW_TASK_UI":
+                    LogManager.Log("[Router] NEW_TASK_UI clicked");
+                    if (TrySendGameCommand("taskPanelOpen"))
+                        OpenPanel("tasks", null);
+                    else
+                    {
+                        LogManager.Log("[Router] NEW_TASK_UI taskPanelOpen failed");
+                        PostToWeb("{\"type\":\"toast\",\"text\":\"任务面板暂时不可用\"}");
+                    }
+                    break;
                 case "TASK_UI": SendGameCommand("openTaskUI"); break;
                 case "EQUIP_UI": SendGameCommand("openEquipUI"); break;
                 case "INTELLIGENCE":

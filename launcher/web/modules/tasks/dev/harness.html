@@ -25,13 +25,22 @@
             height: 90%;
             box-sizing: border-box;
             padding: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
         }
+        .container_left::-webkit-scrollbar { width: 4px; }
+        .container_left::-webkit-scrollbar-track { background: rgba(0,240,255,0.03); }
+        .container_left::-webkit-scrollbar-thumb { background: rgba(0,240,255,0.15); border-radius: 2px; }
+        .container_left::-webkit-scrollbar-thumb:hover { background: rgba(0,240,255,0.3); }
         /* 任务详情，下右 */
         .container_right {
             width: 74%;
             height: 90%;
             box-sizing: border-box;
             padding: 4px;
+            display: flex;
+            flex-direction: column;
         }
 
         .task-icon {
@@ -43,14 +52,61 @@
 
             width: 220px;
             height: 110px;
-            margin: 2px;
+            margin-bottom: 10px;
+            margin-left: 8px;
             box-sizing: border-box;
             padding: 5px;
 
-            text-align: center;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 2px;
+
             color: #fff;
-            font-size: 18px;
             user-select: none;
+            border: none;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        /* 任务图标左侧文字区 */
+        .task-icon-left {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-sizing: border-box;
+            padding-left: 6px;
+            text-align: left;
+        }
+        .task-icon-type {
+            font-size: 13px;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.3;
+        }
+        .task-icon-name {
+            font-size: 16px;
+            color: #fff;
+            line-height: 1.4;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        /* 任务图标右侧头像 */
+        .task-icon-avatar {
+            flex-shrink: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 4px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.3);
+            font-size: 12px;
         }
         /* 扫光伪元素 */
         .task-icon::after {
@@ -91,6 +147,7 @@
             text-align: left;
             color: #fff;
             font-size: 24px;
+            flex-shrink: 0;
         }
         /* 遮罩 */
         .task-title-box::after {
@@ -117,11 +174,13 @@
             width: 720px;
             height: 120px;
             padding: 12px 30px 12px 30px;
+            margin: 20px 0;
             text-align: left;
             background: transparent;
             color: #fff;
             font-size: 24px;
             overflow: hidden; /* 防止子元素溢出（其实伸缩在内侧，可不加） */
+            flex-shrink: 0;
         }
         .task-desc-box .corner-horizontal {
             position: absolute;
@@ -160,41 +219,91 @@
         }
 
 
+        /* 任务需求区容器 */
+        .task-requirement-area {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 10px 0;
+            padding: 4px 0;
+        }
         .task-requirement {
             width: 175px;
-            height: 90px;
+            height: 100px;
             background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
             border-radius: 8px;
-            margin: 10px 20px;
 
             display: flex;
-            float: left;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
+            margin-right: 20px;
+        }
+        /* 物品需求面板 */
+        .task-item-requirement {
+            width: 175px;
+            min-height: 100px;
+            background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
+            border-radius: 8px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-right: 20px;
         }
         .task-npc {
-            width: 240px;
-            height: 90px;
+            width: 270px;
+            height: 100px;
             background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #ffb547 30%, #f60 70%);
             border-radius: 8px;
-            margin: 10px 20px;
 
             display: flex;
-            float: left;
-            align-items: center;
-            justify-content: center;
+            flex-direction: row;
+            align-items: flex-start;
+            padding: 5px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            margin-right: 20px;
         }
         .task-requirement-inner {
             width: 165px;
-            height: 80px;
+            height: 90px;
             overflow: hidden;
-            border-radius: 8px
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-top: 4px;
         }
-        .task-npc-inner {
-            width: 225px;
-            height: 80px;
+        .task-item-requirement-inner {
+            width: 165px;
+            min-height: 90px;
             overflow: hidden;
-            border-radius: 8px
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-top: 4px;
+        }
+        .task-npc-left {
+            width: 160px;
+            height: 90px;
+            overflow: hidden;
+            border-radius: 8px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .task-npc-avatar {
+            flex-shrink: 0;
+            width: 90px;
+            height: 90px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 4px;
+            margin-left: 8px;
         }
         .task-requirement-title {
             width: 160px;
@@ -204,13 +313,31 @@
             background-image: url('requirement_stage.png');
             background-size: 100%;
         }
+        .task-requirement-title.submit {
+            background-image: url('requirement_submit.png');
+        }
+        .task-requirement-title.contain {
+            background-image: url('requirement_contain.png');
+        }
+        .task-requirement-stage-name {
+            width: 155px;
+            margin-top: 2px;
+            margin-left: 2px;
+            text-align: left;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
         .task-npc-title {
             width: 160px;
             height: 40px;
             margin-top: 3px;
             margin-left: 2px;
             background-image: url('finish_npc.png');
-            background-size: 100%;
+            background-size: cover
         }
         .task-npc-name{
             overflow: hidden;
@@ -269,7 +396,6 @@
             width: 120px;
             height: 36px;
             padding: 2px;
-            margin: 10px 10px;
             text-align: left;
             color: #000;
             font-size: 24px;
@@ -293,6 +419,56 @@
             0%   { left: 90%; }
             100%  { left: 0; }
         }
+
+        /* 任务奖励区 */
+        .task-reward-section {
+            flex-shrink: 0;
+            padding: 4px 0;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .task-reward-items {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        /* 需求物品行 */
+        .task-requirement-items {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        /* 物品图标 32x32 (与 arena/merc equip-cell 一致) */
+        .task-item {
+            position: relative;
+            width: 32px;
+            height: 32px;
+            background: rgba(0, 0, 0, 0.4) url('item_bg.png') center/cover no-repeat;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 3px;
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .task-item-count {
+            position: absolute;
+            right: 1px;
+            bottom: 1px;
+            font-size: 10px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 0 3px;
+            border-radius: 2px;
+            line-height: 1.4;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -300,56 +476,100 @@
     <div class="container_top">
     </div>
     <div class="container_left">
-        <p>
-            <button class="task-icon">
-                <div>任务类型</div>
-                <div>任务名称</div>
-            </button>
-        </p>
+        <button class="task-icon">
+            <div class="task-icon-left">
+                <div class="task-icon-type">主线任务</div>
+                <div class="task-icon-name">初入战场</div>
+            </div>
+            <div class="task-icon-avatar"></div>
+        </button>
+        <button class="task-icon">
+            <div class="task-icon-left">
+                <div class="task-icon-type">支线任务</div>
+                <div class="task-icon-name">收集物资</div>
+            </div>
+            <div class="task-icon-avatar"></div>
+        </button>
+        <button class="task-icon">
+            <div class="task-icon-left">
+                <div class="task-icon-type">日常任务</div>
+                <div class="task-icon-name">击败敌人</div>
+            </div>
+            <div class="task-icon-avatar"></div>
+        </button>
+        <button class="task-icon">
+            <div class="task-icon-left">
+                <div class="task-icon-type">主线任务</div>
+                <div class="task-icon-name">深入敌后</div>
+            </div>
+            <div class="task-icon-avatar"></div>
+        </button>
+        <button class="task-icon">
+            <div class="task-icon-left">
+                <div class="task-icon-type">支线任务</div>
+                <div class="task-icon-name">护送NPC</div>
+            </div>
+            <div class="task-icon-avatar"></div>
+        </button>
+        <button class="task-icon">
+            <div class="task-icon-left">
+                <div class="task-icon-type">挑战任务</div>
+                <div class="task-icon-name">极限生存</div>
+            </div>
+            <div class="task-icon-avatar"></div>
+        </button>
     </div>
     <div class="container_right">
-        <p>
-            <div class="task-title-box">任务类型<br>任务名</div>
-        </p>
-        <p>
-            <div class="task-desc-box">
-                任务描述
-                <span class="corner-horizontal top-left"></span>
-                <span class="corner-horizontal top-right"></span>
-                <span class="corner-horizontal bottom-left"></span>
-                <span class="corner-horizontal bottom-right"></span>
-                <span class="corner-vertical top-left"></span>
-                <span class="corner-vertical top-right"></span>
-                <span class="corner-vertical bottom-left"></span>
-                <span class="corner-vertical bottom-right"></span>
+        <div class="task-title-box">主线任务<br>初入战场</div>
+        <div class="task-desc-box">
+            前往前线营地，与指挥官对话并了解当前战况。
+            <span class="corner-horizontal top-left"></span>
+            <span class="corner-horizontal top-right"></span>
+            <span class="corner-horizontal bottom-left"></span>
+            <span class="corner-horizontal bottom-right"></span>
+            <span class="corner-vertical top-left"></span>
+            <span class="corner-vertical top-right"></span>
+            <span class="corner-vertical bottom-left"></span>
+            <span class="corner-vertical bottom-right"></span>
+        </div>
+        <div class="task-requirement-area">
+            <div class="task-requirement">
+                <div class="task-requirement-inner">
+                    <div class="scroll-track"></div>
+                    <div class="task-requirement-title"></div>
+                    <div class="task-requirement-stage-name">前线营地</div>
+                </div>
             </div>
-        </p>
-        <p>
-            <div>
-                <div class="task-requirement">
-                    <div class="task-requirement-inner">
-                        <div class="scroll-track"></div>
-                        <div class="task-requirement-title"></div>
-                    </div>
-                </div>
-                <div class="task-requirement">
-                    <div class="task-requirement-inner">
-                        <div class="scroll-track"></div>
-                        <div class="task-requirement-title"></div>
-                    </div>
-                </div>
-                <div class="task-npc">
-                    <div class="task-npc-inner">
-                        <div class="scroll-track"></div>
-                        <div class="task-npc-title"></div>
-                        <div class="task-npc-name">NPC</div>
+            <div class="task-item-requirement">
+                <div class="task-item-requirement-inner">
+                    <div class="scroll-track"></div>
+                    <div class="task-requirement-title submit"></div>
+                    <div class="task-requirement-items">
+                        <div class="task-item"><span class="task-item-count">3</span></div>
+                        <div class="task-item"><span class="task-item-count">1</span></div>
+                        <div class="task-item"><span class="task-item-count">5</span></div>
                     </div>
                 </div>
             </div>
-        </p>
-        <p>
+            <div class="task-npc">
+                <div class="task-npc-left">
+                    <div class="scroll-track"></div>
+                    <div class="task-npc-title"></div>
+                    <div class="task-npc-name">NPC</div>
+                </div>
+                <div class="task-npc-avatar"></div>
+            </div>
+        </div>
+        <div class="task-reward-section">
             <div class="task-reward-box"><span>任务奖励</span></div>
-        </p>
+            <div class="task-reward-items">
+                <div class="task-item"><span class="task-item-count">100</span></div>
+                <div class="task-item"><span class="task-item-count">1</span></div>
+                <div class="task-item"><span class="task-item-count">5</span></div>
+                <div class="task-item"><span class="task-item-count">50</span></div>
+                <div class="task-item"><span class="task-item-count">1</span></div>
+            </div>
+        </div>
     </div>
 </div>
 </body>

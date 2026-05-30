@@ -1,12 +1,11 @@
 {
   "runtimeTarget": {
-    "name": ".NETCoreApp,Version=v10.0/win-x64",
+    "name": ".NETCoreApp,Version=v10.0",
     "signature": ""
   },
   "compilationOptions": {},
   "targets": {
-    ".NETCoreApp,Version=v10.0": {},
-    ".NETCoreApp,Version=v10.0/win-x64": {
+    ".NETCoreApp,Version=v10.0": {
       "CRAZYFLASHER7MercenaryEmpire.Core/1.0.0": {
         "dependencies": {
           "Microsoft.ClearScript.Core": "7.4.5",
@@ -54,15 +53,29 @@
         }
       },
       "Microsoft.ClearScript.V8.Native.win-x64/7.4.5": {
-        "native": {
+        "runtimeTargets": {
           "runtimes/win-x64/native/ClearScriptV8.win-x64.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
             "fileVersion": "7.4.5.0"
           }
         }
       },
       "Microsoft.Web.WebView2/1.0.3856.49": {
-        "native": {
+        "runtimeTargets": {
+          "runtimes/win-arm64/native/WebView2Loader.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "1.0.3856.49"
+          },
           "runtimes/win-x64/native/WebView2Loader.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "1.0.3856.49"
+          },
+          "runtimes/win-x86/native/WebView2Loader.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
             "fileVersion": "1.0.3856.49"
           }
         }
