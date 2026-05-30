@@ -37,11 +37,15 @@
         .task-icon {
             background-image: url('task_icon_bg.png');
             background-color: transparent;
+            background-size: 100%;
             position: relative;
             overflow: hidden;
 
-            width: 240px;
-            height: 120px;
+            width: 220px;
+            height: 110px;
+            margin: 2px;
+            box-sizing: border-box;
+            padding: 5px;
 
             text-align: center;
             color: #fff;
@@ -195,14 +199,16 @@
         .task-requirement-title {
             width: 160px;
             height: 40px;
-            margin: 5px 2px;
+            margin-top: 3px;
+            margin-left: 2px;
             background-image: url('requirement_stage.png');
             background-size: 100%;
         }
         .task-npc-title {
             width: 160px;
             height: 40px;
-            margin: 5px 2px;
+            margin-top: 3px;
+            margin-left: 2px;
             background-image: url('finish_npc.png');
             background-size: 100%;
         }
@@ -295,10 +301,10 @@
     </div>
     <div class="container_left">
         <p>
-            <button class="task-icon">任务0</button>
-            <button class="task-icon">任务1</button>
-            <button class="task-icon">任务2</button>
-            <button class="task-icon">任务3</button>
+            <button class="task-icon">
+                <div>任务类型</div>
+                <div>任务名称</div>
+            </button>
         </p>
     </div>
     <div class="container_right">
