@@ -21,14 +21,14 @@
         }
         /* 任务列表，下左 */
         .container_left {
-            width: 27%;
+            width: 26%;
             height: 90%;
             box-sizing: border-box;
             padding: 4px;
         }
         /* 任务详情，下右 */
         .container_right {
-            width: 73%;
+            width: 74%;
             height: 90%;
             box-sizing: border-box;
             padding: 4px;
@@ -159,10 +159,24 @@
         .task-requirement {
             width: 175px;
             height: 90px;
-            background: radial-gradient(circle, rgba(0, 0, 0, 0.11) 0 1px, transparent 1.5px) 0 0 / 7px 7px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
+            background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
             border-radius: 6px;
+            margin: 10px 20px;
 
             display: flex;
+            float: left;
+            align-items: center;
+            justify-content: center;
+        }
+        .task-npc {
+            width: 175px;
+            height: 90px;
+            background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #ffb547 30%, #f60 70%);
+            border-radius: 6px;
+            margin: 10px 20px;
+
+            display: flex;
+            float: left;
             align-items: center;
             justify-content: center;
         }
@@ -190,6 +204,39 @@
             100% {
                 transform: translateX(0);
             }
+        }
+
+
+        .task-reward-box {
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            width: 120px;
+            height: 36px;
+            padding: 2px;
+            margin: 10px 10px;
+            text-align: left;
+            color: #000;
+            font-size: 24px;
+        }
+        .task-reward-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
+            transform-origin: right center;
+            animation: shrink-reveal_2 0.5s ease-out forwards;
+        }
+        .task-reward-box span {
+            position: relative;
+            z-index: 1;  /* 文字在遮罩之上 */
+        }
+        @keyframes shrink-reveal_2 {
+            0%   { left: 90%; }
+            100%  { left: 0; }
         }
     </style>
 </head>
@@ -223,12 +270,29 @@
             </div>
         </p>
         <p>
-            <div class="task-requirement">
-                <div class="task-requirement-inner">
-                    <div class="scroll-track"></div>
-                    <text>关卡需求</text>
+            <div>
+                <div class="task-requirement">
+                    <div class="task-requirement-inner">
+                        <div class="scroll-track"></div>
+                        <text>关卡需求</text>
+                    </div>
+                </div>
+                <div class="task-requirement">
+                    <div class="task-requirement-inner">
+                        <div class="scroll-track"></div>
+                        <text>物品需求</text>
+                    </div>
+                </div>
+                <div class="task-npc">
+                    <div class="task-requirement-inner">
+                        <div class="scroll-track"></div>
+                        <text>NPC</text>
+                    </div>
                 </div>
             </div>
+        </p>
+        <p>
+            <div class="task-reward-box"><span>任务奖励</span></div>
         </p>
     </div>
 </div>
