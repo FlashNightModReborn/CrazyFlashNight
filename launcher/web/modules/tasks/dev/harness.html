@@ -69,7 +69,7 @@
             animation: none;
         }
         .task-icon:hover::after {
-            animation: sweep-down 3.0s ease-in-out forwards;
+            animation: sweep-down 3.0s ease-out forwards;
         }
         @keyframes sweep-down {
             0%   { top: -200%; opacity: 1; }
@@ -195,15 +195,46 @@
         .task-requirement-title {
             width: 160px;
             height: 40px;
+            margin: 5px 2px;
             background-image: url('requirement_stage.png');
             background-size: 100%;
         }
         .task-npc-title {
             width: 160px;
             height: 40px;
+            margin: 5px 2px;
             background-image: url('finish_npc.png');
             background-size: 100%;
         }
+        .task-npc-name{
+            overflow: hidden;
+            position: relative;
+            width: 160px;
+            height: 22px;
+            box-sizing: border-box;
+            padding: 0 20px 2px 20px;
+            text-align: left;
+            font-size: 18px;
+        }
+        .task-npc-name::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            transform-origin: left center;
+            animation: task-npc-reveal 0.5s ease-out forwards;
+        }
+        @keyframes task-npc-reveal {
+            0%   { transform: scaleX(0.1); }
+            80%  { transform: scaleX(1); left: 0;}
+            100% { left: 100%; }
+        }
+
+
+
         .scroll-track {
             background-image: url('task_scroll.png');
             display: block;
@@ -246,13 +277,13 @@
             bottom: 0;
             background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
             transform-origin: right center;
-            animation: shrink-reveal_2 0.5s ease-out forwards;
+            animation: task-reward-reveal 0.5s ease-out forwards;
         }
         .task-reward-box span {
             position: relative;
             z-index: 1;  /* 文字在遮罩之上 */
         }
-        @keyframes shrink-reveal_2 {
+        @keyframes task-reward-reveal {
             0%   { left: 90%; }
             100%  { left: 0; }
         }
@@ -305,6 +336,7 @@
                     <div class="task-npc-inner">
                         <div class="scroll-track"></div>
                         <div class="task-npc-title"></div>
+                        <div class="task-npc-name">NPC</div>
                     </div>
                 </div>
             </div>
