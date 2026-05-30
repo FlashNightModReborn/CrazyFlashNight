@@ -5,7 +5,7 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
+**最后核对代码基线**：commit `d063d53c2`（2026-05-30）。
 
 ---
 
@@ -25,11 +25,12 @@
 
 ---
 
-## Context Packs（按任务最小加载，最后核对 commit `9f8f0c225`）
+## Context Packs（按任务最小加载，最后核对 commit `d063d53c2`）
 
 先判定**主责子栈**，再只读对应文档；跨栈任务先跟主责子栈走，再按依赖补读。
 
 - **AS2 / Flash CS6**：先读 [as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md) + [testing-guide.md](agentsDoc/testing-guide.md)；按需补 [FlashCS6自动化编译.md](scripts/FlashCS6自动化编译.md)、[coding-standards.md](agentsDoc/coding-standards.md)、[as2-performance.md](agentsDoc/as2-performance.md)、[game-systems.md](agentsDoc/game-systems.md)
+- **AS2 UI → Web Panel 迁移**：先读 [as2-web-panel-migration.md](agentsDoc/as2-web-panel-migration.md) + [launcher/README.md](launcher/README.md) + [testing-guide.md](agentsDoc/testing-guide.md)；按需补 AS2 / Launcher Host / Launcher Web 对应文档
 - **XML / 数据与游戏设计**：先读 [data-schemas.md](agentsDoc/data-schemas.md)；按需补 [game-design.md](agentsDoc/game-design.md)、[testing-guide.md](agentsDoc/testing-guide.md)、`0.说明文件与教程/`
 - **Launcher Host（C# / WinForms / WebView2 / Bus）**：先读 [launcher/README.md](launcher/README.md) + [architecture.md](agentsDoc/architecture.md)；按需补 [coding-standards.md](agentsDoc/coding-standards.md)、[testing-guide.md](agentsDoc/testing-guide.md)、[tech-stack-rationalization.md](docs/tech-stack-rationalization.md)、[cfn-cli.sh](tools/cfn-cli.sh)
 - **Launcher Web / Minigames**：先读 [launcher/README.md](launcher/README.md) + [testing-guide.md](agentsDoc/testing-guide.md)；按需补 [architecture.md](agentsDoc/architecture.md)、`launcher/web/modules/minigames/*/README.md`、`launcher/web/modules/minigames/*/dev/harness.html`
@@ -45,6 +46,7 @@
 - [README.md](README.md)：人类维护者总览
 - [agentsDoc/architecture.md](agentsDoc/architecture.md)：系统拓扑 canonical doc
 - [agentsDoc/testing-guide.md](agentsDoc/testing-guide.md)：验证矩阵 canonical doc
+- [agentsDoc/as2-web-panel-migration.md](agentsDoc/as2-web-panel-migration.md)：AS2 UI → Web Panel 迁移护栏 canonical doc
 - [agentsDoc/agent-harness.md](agentsDoc/agent-harness.md)：Agent 协作与任务粒度 canonical doc
 - [agentsDoc/human-care.md](agentsDoc/human-care.md)：人类节奏与会话健康 canonical doc
 - [launcher/README.md](launcher/README.md)：Launcher 子系统 source of truth

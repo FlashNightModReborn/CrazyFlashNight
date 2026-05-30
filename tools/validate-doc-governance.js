@@ -48,6 +48,7 @@ var REQUIRED_FILES = [
     "README.md",
     "agentsDoc/architecture.md",
     "agentsDoc/testing-guide.md",
+    "agentsDoc/as2-web-panel-migration.md",
     "agentsDoc/coding-standards.md",
     "agentsDoc/self-optimization.md",
     "agentsDoc/documentation-governance.md",
@@ -62,6 +63,7 @@ var REQUIRED_FILES = [
 
 var AGENTS_REFERENCES = [
     "agentsDoc/as2-anti-hallucination.md",
+    "agentsDoc/as2-web-panel-migration.md",
     "agentsDoc/testing-guide.md",
     "scripts/FlashCS6自动化编译.md",
     "agentsDoc/coding-standards.md",
@@ -92,6 +94,7 @@ var BASELINE_DOCS = [
     "README.md",
     "agentsDoc/architecture.md",
     "agentsDoc/testing-guide.md",
+    "agentsDoc/as2-web-panel-migration.md",
     "agentsDoc/coding-standards.md",
     "agentsDoc/documentation-governance.md",
     "agentsDoc/self-optimization.md",
@@ -212,6 +215,10 @@ expectContains("agentsDoc/agent-harness.md", /Subagent/, "agent-harness missing 
 expectContains("agentsDoc/agent-harness.md", /Flash smoke/, "agent-harness missing project-specific Flash smoke note");
 expectContains("agentsDoc/human-care.md", /主动行为/, "human-care missing active-behavior section");
 expectContains("agentsDoc/human-care.md", /软停/, "human-care missing soft-stop section");
+expectContains("agentsDoc/as2-web-panel-migration.md", /迁移闭环表/, "as2-web-panel-migration missing closure table section");
+expectContains("agentsDoc/as2-web-panel-migration.md", /Web cmd.*C# action.*AS2 handler/, "as2-web-panel-migration missing protocol closure columns");
+expectContains("agentsDoc/as2-web-panel-migration.md", /ResolvePanelCloseGameCommand/, "as2-web-panel-migration missing close lifecycle guard");
+expectContains("agentsDoc/as2-web-panel-migration.md", /数据权威/, "as2-web-panel-migration missing data authority guard");
 
 // ---- Stale narrative guards ----
 

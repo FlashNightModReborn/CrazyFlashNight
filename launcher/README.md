@@ -3,7 +3,7 @@
 C# WinForms 守护进程，承担游戏启动全链：正常模式先做 WebView2 预检，再尽早构造 `GuardianForm`，随后完成 Steam 校验、Flash trust 租约、音频与总线初始化，最后由 BootstrapPanel 的 `list → ready → prewarm → reveal` 链路切入 Flash Player SA 运行态；同时承载 V8 脚本总线、HTTP / XMLSocket 通信和启动前存档决议（Protocol 2）。
 
 > **文档角色**：Guardian Launcher 子系统的 canonical deep doc。项目总览见 [../README.md](../README.md)，顶层任务路由见 [../AGENTS.md](../AGENTS.md)。高变动章节按各自 commit 基线维护。
-> **最后核对代码基线**：commit `5770934ec`（2026-05-30）。
+> **最后核对代码基线**：commit `d063d53c2`（2026-05-30）。
 > **新接手阅读顺序**：本节 → [架构概览](#架构概览)（启动时序 + 运行态面板栈）→ [Bootstrap 前端与协议](#bootstrap-前端与协议)（cmd 表 + reveal gate + config_set）→ [存档权威迁移 (Protocol 2)](#存档权威迁移-protocol-2)。其余章节继续展开音频 / 性能调度 / GPU / UI 迁移 / 面板系统等运行时细节。
 
 ## 技术栈
@@ -1418,6 +1418,8 @@ shadow 链不仅是运行中存盘的 JSON 冗余副本，也是启动期 Resolv
 
 以下 Flash 主文件实例已迁移到 Launcher WebView2 overlay，释放 Flash 内存并提高 GC 效率：
 
+AS2 UI → Web Panel 迁移的操作护栏统一见 [../agentsDoc/as2-web-panel-migration.md](../agentsDoc/as2-web-panel-migration.md)。迁移任务必须按该文档维护 Web cmd → C# Task → AS2 handler → response task → panel_resp → JS handler 闭环表，并明确 dev harness / 生产 panel / Flash smoke / 游戏内手测边界。
+
 | Flash 实例 | Web 实现 | 协议 |
 |-----------|---------|------|
 | 弹出公告界面 (新任务横幅) | notch.js 通知条 `#quest-notice-bar` | `Utask\|{name}` (旧格式透传) |
@@ -1531,4 +1533,4 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 
 **热重载恢复**：`_uiDataSnapshot` 按 KV key 维护最新值快照，WebView2 热重载后 `FlushUiDataBuffer` 先回放完整快照，确保 game-ready 等关键状态不丢失。
 
-**维护约束**：凡是小游戏、地图 panel、stage-select panel、intelligence panel、arena / pets / mercs panel、Native HUD/PanelHost 的目录迁移、宿主协议变更、QA 入口变化，必须同步更新本 README 的目录树、测试入口和本节协议说明；模块内细节留在各自模块 README / 设计文档。
+**维护约束**：凡是小游戏、地图 panel、stage-select panel、intelligence panel、arena / pets / mercs panel、Native HUD/PanelHost 的目录迁移、宿主协议变更、QA 入口变化，必须同步更新本 README 的目录树、测试入口和本节协议说明；AS2 UI → Web Panel 迁移细则同步维护 [../agentsDoc/as2-web-panel-migration.md](../agentsDoc/as2-web-panel-migration.md)，模块内细节留在各自模块 README / 设计文档。

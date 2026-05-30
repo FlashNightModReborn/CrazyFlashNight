@@ -1,6 +1,6 @@
 # 测试约定与验证矩阵
 **文档角色**：验证矩阵 canonical doc。  
-**最后核对代码基线**：commit `cc25c357d`（2026-04-30）。
+**最后核对代码基线**：commit `d063d53c2`（2026-05-30）。
 
 按子栈选验证；不要用「编译一下」「跑一下 build」笼统覆盖跨栈任务。
 
@@ -11,13 +11,13 @@ PowerShell 命令前先跑（避免 GBK 乱码）：
 ```powershell
 chcp.com 65001 | Out-Null
 ```
-
 下方所有 PowerShell 命令默认已执行该前缀,不再每条重复。
 ## 1. 任务 → 验证入口矩阵
 
 | 任务类型 | 必跑 | 视改动追加 |
 |----------|------|------------|
 | AS2 class / 帧脚本 / Flash 资源联动 | `scripts/compile_test.ps1` 或 `bash scripts/compile_test.sh` | Flash IDE 复核、截图、专项 TestLoader 套件、`tools/swf-audit/`（SWF 静态审计：背景实例覆盖度 / 尺寸 / 标签直方图，见该目录 README） |
+| AS2 UI → Web Panel 迁移 | 按 [as2-web-panel-migration.md](as2-web-panel-migration.md) 补闭环表 + `launcher/build.ps1` + `launcher/tests/run_tests.ps1` | AS2 fresh trace / Web harness / 游戏内端到端手测按改动面追加 |
 | XML / 数据 / 游戏数值 | 受影响路径运行时 smoke | `compile_test`、游戏内人工验证 |
 | 导弹运动 / 追踪参数离线调优 | `python tools/missile-tuning-sim/run_sim.py compare --configs ...` | `scan --objective loiter|pressure|hit` / `audit`、`compile_test`、游戏内人工验证 |
 | Launcher C# / Host / Bus | `launcher/build.ps1` | `launcher/tests/run_tests.ps1`、`tools/cfn-cli`、`--bus-only` |
