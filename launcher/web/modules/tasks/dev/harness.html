@@ -160,7 +160,7 @@
             width: 175px;
             height: 90px;
             background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
-            border-radius: 6px;
+            border-radius: 8px;
             margin: 10px 20px;
 
             display: flex;
@@ -169,10 +169,10 @@
             justify-content: center;
         }
         .task-npc {
-            width: 175px;
+            width: 240px;
             height: 90px;
             background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #ffb547 30%, #f60 70%);
-            border-radius: 6px;
+            border-radius: 8px;
             margin: 10px 20px;
 
             display: flex;
@@ -184,7 +184,25 @@
             width: 165px;
             height: 80px;
             overflow: hidden;
-            border-radius: 6px
+            border-radius: 8px
+        }
+        .task-npc-inner {
+            width: 225px;
+            height: 80px;
+            overflow: hidden;
+            border-radius: 8px
+        }
+        .task-requirement-title {
+            width: 160px;
+            height: 40px;
+            background-image: url('requirement_stage.png');
+            background-size: 100%;
+        }
+        .task-npc-title {
+            width: 160px;
+            height: 40px;
+            background-image: url('finish_npc.png');
+            background-size: 100%;
         }
         .scroll-track {
             background-image: url('task_scroll.png');
@@ -274,19 +292,19 @@
                 <div class="task-requirement">
                     <div class="task-requirement-inner">
                         <div class="scroll-track"></div>
-                        <text>关卡需求</text>
+                        <div class="task-requirement-title"></div>
                     </div>
                 </div>
                 <div class="task-requirement">
                     <div class="task-requirement-inner">
                         <div class="scroll-track"></div>
-                        <text>物品需求</text>
+                        <div class="task-requirement-title"></div>
                     </div>
                 </div>
                 <div class="task-npc">
-                    <div class="task-requirement-inner">
+                    <div class="task-npc-inner">
                         <div class="scroll-track"></div>
-                        <text>NPC</text>
+                        <div class="task-npc-title"></div>
                     </div>
                 </div>
             </div>
