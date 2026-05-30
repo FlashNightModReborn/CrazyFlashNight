@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>task</title>
+    <style>
+        .container {
+            width: 1024px;
+            height: 576px;
+            background-image: url('task_main_bg.png');
+            font-family: system-ui, sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        /* 切换页面/退出按钮，上方独占一行 */
+        .container_top {
+            width: 100%;
+            height: 10%;
+            box-sizing: border-box;
+            padding: 4px;
+        }
+        /* 任务列表，下左 */
+        .container_left {
+            width: 27%;
+            height: 90%;
+            box-sizing: border-box;
+            padding: 4px;
+        }
+        /* 任务详情，下右 */
+        .container_right {
+            width: 73%;
+            height: 90%;
+            box-sizing: border-box;
+            padding: 4px;
+        }
+
+        .task-icon {
+            background-image: url('task_icon_bg.png');
+            background-color: transparent;
+            position: relative;
+            overflow: hidden;
+
+            width: 240px;
+            height: 120px;
+
+            text-align: center;
+            color: #fff;
+            font-size: 18px;
+            user-select: none;
+        }
+        /* 扫光伪元素 */
+        .task-icon::after {
+            content: '';
+            position: absolute;
+            top: -200%;
+            left: 0;
+            width: 100%;
+            height: 300%;
+            background: linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.2) 0%,
+            transparent 25%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.3) 70%,
+            rgba(255, 255, 255, 0.3) 80%,
+            transparent 100%
+            );
+            opacity: 0;
+            animation: none;
+        }
+        .task-icon:hover::after {
+            animation: sweep-down 3.0s ease-in-out forwards;
+        }
+        @keyframes sweep-down {
+            0%   { top: -200%; opacity: 1; }
+            100% { top: 0%; opacity: 1; }
+        }
+
+        /* 任务标题 */
+        .task-title-box {
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            width:720px;
+            height: 60px;
+            padding: 0 20px 0 20px;
+            text-align: left;
+            color: #fff;
+            font-size: 24px;
+        }
+        /* 遮罩 */
+        .task-title-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #ccc;
+            transform-origin: left center;
+            animation: shrink-reveal 0.8s ease-out forwards;
+        }
+        @keyframes shrink-reveal {
+            0%   { transform: scaleX(1); }
+            50%  { transform: scaleX(0.005); }
+            100% { transform: scaleX(0.015); }
+        }
+
+        /* 任务描述动画 */
+        .task-desc-box {
+            position: relative;
+            box-sizing: border-box;
+            width: 720px;
+            height: 120px;
+            padding: 12px 30px 12px 30px;
+            text-align: left;
+            background: transparent;
+            color: #fff;
+            font-size: 24px;
+            overflow: hidden; /* 防止子元素溢出（其实伸缩在内侧，可不加） */
+        }
+        .task-desc-box .corner-horizontal {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ccc;
+            animation: stretch-horizontal 0.5s ease-out forwards;
+        }
+
+        .task-desc-box .corner-vertical {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ccc;
+            animation: stretch-vertical 0.5s ease-out forwards;
+        }
+
+        /* 各自定位在四个角 */
+        .corner-horizontal.top-left    { top: 0; left: 0;   transform-origin: left top; }
+        .corner-horizontal.top-right   { top: 0; right: 0;  transform-origin: right top; animation-delay: 0.5s;}
+        .corner-horizontal.bottom-left { bottom: 0; left: 0; transform-origin: left bottom; animation-delay: 0.5s;}
+        .corner-horizontal.bottom-right{ bottom: 0; right: 0; transform-origin: right bottom; }
+
+        .corner-vertical.top-left    { top: 0; left: 0;   transform-origin: left top; animation-delay: 0.5s;}
+        .corner-vertical.top-right   { top: 0; right: 0;  transform-origin: right top; }
+        .corner-vertical.bottom-left { bottom: 0; left: 0; transform-origin: left bottom; }
+        .corner-vertical.bottom-right{ bottom: 0; right: 0; transform-origin: right bottom; animation-delay: 0.5s;}
+
+        @keyframes stretch-horizontal {
+            from { transform: scaleX(1); }   /* 初始 8px 宽 */
+            to   { transform: scaleX(3); }   /* 最终 24px 宽 */
+        }
+        @keyframes stretch-vertical {
+            from { transform: scaleY(1); }   /* 初始 8px 宽 */
+            to   { transform: scaleY(3); }   /* 最终 24px 宽 */
+        }
+
+
+        .task-requirement {
+            width: 175px;
+            height: 90px;
+            background: radial-gradient(circle, rgba(0, 0, 0, 0.11) 0 1px, transparent 1.5px) 0 0 / 7px 7px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
+            border-radius: 6px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .task-requirement-inner {
+            width: 165px;
+            height: 80px;
+            overflow: hidden;
+            border-radius: 6px
+        }
+        .scroll-track {
+            background-image: url('task_scroll.png');
+            display: block;
+            width: fit-content;
+            animation: slowRoll 0.5s linear infinite;
+            width: 180px;
+            height:5px;
+            flex-shrink: 0;
+            user-select: none;
+            pointer-events: none; 
+        }
+        @keyframes slowRoll {
+            0% {
+                transform: translateX(-15px);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="container_top">
+    </div>
+    <div class="container_left">
+        <p>
+            <button class="task-icon">任务0</button>
+            <button class="task-icon">任务1</button>
+            <button class="task-icon">任务2</button>
+            <button class="task-icon">任务3</button>
+        </p>
+    </div>
+    <div class="container_right">
+        <p>
+            <div class="task-title-box">任务类型<br>任务名</div>
+        </p>
+        <p>
+            <div class="task-desc-box">
+                任务描述
+                <span class="corner-horizontal top-left"></span>
+                <span class="corner-horizontal top-right"></span>
+                <span class="corner-horizontal bottom-left"></span>
+                <span class="corner-horizontal bottom-right"></span>
+                <span class="corner-vertical top-left"></span>
+                <span class="corner-vertical top-right"></span>
+                <span class="corner-vertical bottom-left"></span>
+                <span class="corner-vertical bottom-right"></span>
+            </div>
+        </p>
+        <p>
+            <div class="task-requirement">
+                <div class="task-requirement-inner">
+                    <div class="scroll-track"></div>
+                    <text>关卡需求</text>
+                </div>
+            </div>
+        </p>
+    </div>
+</div>
+</body>
+</html>
