@@ -116,6 +116,12 @@
             <PlayerX>206</PlayerX>
             <PlayerY>549</PlayerY>
         </BasicInformation>
+        <Event>
+            <EventName>Start</EventName>
+            <Animation>
+                <Path>flashswf/movies/军阀基地方舟武士过场动画.swf</Path>
+            </Animation>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -155,13 +161,13 @@
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
-                <Text>难道是这家伙把这些军阀杀死的？</Text>
+                <Text>就是这些家伙把这些军阀杀死的？</Text>
             </Dialogue>
             <Dialogue id="3">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
-                <Text>不对啊，对方只有一个人，这是不可能的！</Text>
+                <Text>只有它还在这里，难道是刚才说的那个单位Ω？它要收集谁的数据？</Text>
             </Dialogue>
             <Dialogue id="4">
                 <Name>$PC</Name>
