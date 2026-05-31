@@ -127,8 +127,23 @@ class org.flashNight.arki.merc.PetPanelService {
             }
 
             petEntry.xp = xpFromAttr;
-            petEntry.xpNeeded = xpNeededFromAttr > 0 ? xpNeededFromAttr : calcXpForLevel(info[1] + 1);
+            petEntry.xpNeeded = xpNeededFromAttr > 0 ? xpNeededFromAttr : calcXpForLevel(String(petDef.Identifier), info[1]);
             petEntry.maxStamina = 200;
+
+            // 每方案权威完成/锁定状态（替代 JS 端按方案名查 次数 的错误推断；
+            // 三件套共用 基础训练.次数 计数，布尔方案查自身标志）
+            var statusMap:Object = {};
+            var schemeNames:Array = extractPromotionNames(petDef.Promotion);
+            for (var sIdx:Number = 0; sIdx < schemeNames.length; sIdx++) {
+                var sNm:String = String(schemeNames[sIdx]);
+                var scDef:Object = _root.战宠进阶函数[sNm];
+                if (scDef == undefined) continue;
+                statusMap[sNm] = {
+                    completed: isSchemeCompleted(sNm, scDef, attrs),
+                    locked: isSchemeLocked(scDef, attrs, Number(info[1]))
+                };
+            }
+            petEntry.schemeStatus = statusMap;
 
             pets.push(petEntry);
         }
@@ -150,8 +165,47 @@ class org.flashNight.arki.merc.PetPanelService {
                     price: Number(def.Price),
                     kprice: Number(def.KPrice),
                     increasePrice: Number(def.IncreasePrice),
-                    promotions: def.Promotion != undefined ? def.Promotion.slice() : []
+                    promotions: extractPromotionNames(def.Promotion)
                 });
+            }
+        }
+
+        // 序列化进阶方案数据字段（B1：数值/文本字段下发，逻辑函数 条件/执行 留 AS2）。
+        // 这是 JS 进阶列表的权威来源，替代已删除的 pet-data.js SCHEMES（含修正后的累进 次数上限）。
+        var schemesMap:Object = {};
+        var advFns:Object = _root.战宠进阶函数;
+        for (var sName:String in advFns) {
+            var sc:Object = advFns[sName];
+            if (sc == undefined || typeof sc != "object") continue;
+            var scCtx:Object = { 当前宠物信息: [0, 1, 200, 0, 0, {}], 当前宠物属性: {}, 进阶方案: advFns };
+            var scDesc:String = "";
+            if (typeof sc.详情页描述 == "function") {
+                scDesc = String(sc.详情页描述.call(scCtx));
+            } else if (typeof sc.描述 == "function") {
+                scDesc = String(sc.描述.call(scCtx));
+            } else if (sc.描述 != undefined) {
+                scDesc = String(sc.描述);
+            }
+            // 列表用简介取第一段（<br> 前），与具体宠物无关，对齐旧 pet-data 静态 desc
+            var brIdx:Number = scDesc.indexOf("<br>");
+            if (brIdx >= 0) scDesc = scDesc.substring(0, brIdx);
+            schemesMap[sName] = {
+                maxTier: Number(sc.次数上限) || 1,
+                gold: Number(sc.消耗金币) || 0,
+                kpoint: Number(sc.消耗K点) || 0,
+                unlockLevel: Number(sc.解锁等级) || 0,
+                buttonText: String(sc.执行按钮文字 || "执行"),
+                desc: scDesc
+            };
+        }
+
+        // 序列化商城分类名（A1：替代已删除的 pet-data.js CATEGORIES；网格内容仍由 adopt_list 下发）
+        var categoriesArr:Array = [];
+        if (_root.宠物商城列表 != undefined) {
+            for (var catIdx:Number = 0; catIdx < _root.宠物商城列表.length; catIdx++) {
+                var catDef:Object = _root.宠物商城列表[catIdx];
+                if (catDef == undefined) continue;
+                categoriesArr.push({ name: String(catDef.Name) });
             }
         }
 
@@ -162,6 +216,8 @@ class org.flashNight.arki.merc.PetPanelService {
             snapshot: {
                 pets: pets,
                 petLib: petLib,
+                schemes: schemesMap,
+                categories: categoriesArr,
                 gold: Number(_root.金钱) || 0,
                 kpoint: Number(_root.虚拟币) || 0,
                 playerLevel: Number(_root.等级) || 1,
@@ -352,7 +408,7 @@ class org.flashNight.arki.merc.PetPanelService {
         var prevState:Number = petInfo[4];
         petInfo[4] = (prevState == 1) ? 0 : 1;
 
-        var success:Boolean = true;
+        var success:Boolean = false;
         if (petInfo[4] == 1) {
             // 出战：需要创建宠物单位
             var hero:MovieClip = undefined;
@@ -371,12 +427,24 @@ class org.flashNight.arki.merc.PetPanelService {
                         heroY = hero._y;
                     }
                 }
-                _root.战宠UI函数.设置宠物出战(slotIndex, true, heroX, heroY);
+                success = _root.战宠UI函数.设置宠物出战(slotIndex, true, heroX, heroY);
             }
         } else {
             // 休息：移除宠物单位
-            _root.战宠UI函数.设置宠物出战(slotIndex, false);
+            success = _root.战宠UI函数.设置宠物出战(slotIndex, false);
         }
+
+        if (!success) {
+            // 引擎拒绝（体力不足 / 宠物mc库已存在该 id / 找不到待移除 mc，或无 gameworld）：
+            // 回滚出战标志，保持存档与场上 mc 一致，避免"出战中却无宠物"或反之的错位坏档。
+            // 对齐引擎 出战按钮函数 的 success 回滚契约。
+            petInfo[4] = prevState;
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "deploy_failed", deployed: prevState == 1, currentDeployCount: countDeployed(), maxDeploy: maxDeploy });
+            return;
+        }
+
+        // 出战标志（petInfo[4]）属存档字段，写入成功后标脏
+        _root.存档系统.dirtyMark = true;
 
         // 刷新UI
         if (_root.宠物信息界面 != undefined && _root.宠物信息界面.排列宠物图标 != undefined) {
@@ -424,16 +492,20 @@ class org.flashNight.arki.merc.PetPanelService {
             进阶方案: _root.战宠进阶函数
         };
 
-        // 检查条件
+        // 服务端完成度守卫：一次性付费方案（如钙化）的 条件 不自检完成，必须在此拦截重复执行，
+        // 否则会被反复点击重复扣费。三件套按 基础训练.次数 判定完成。
+        if (isSchemeCompleted(schemeName, scheme, ctx.当前宠物属性)) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "already_completed", reason: "已完成进阶" });
+            return;
+        }
+
+        // 检查条件：条件函数把失败原因写到 this（即 ctx），旧实现误读 scheme.失败提示（恒为默认值）
         var condFn:Function = scheme.条件;
         if (typeof condFn == "function") {
-            // 临时绑定上下文执行条件检查
-            var oldFail:String = scheme.失败提示;
-            scheme.当前宠物信息 = ctx.当前宠物信息;
-            scheme.当前宠物属性 = ctx.当前宠物属性;
+            ctx.失败提示 = "";
             var condResult:Boolean = condFn.call(ctx);
             if (!condResult) {
-                var failMsg:String = scheme.失败提示 || "条件不满足";
+                var failMsg:String = (ctx.失败提示 != undefined && ctx.失败提示 != "") ? ctx.失败提示 : "条件不满足";
                 sendResponse({ task: "pet_response", callId: callId, success: false, error: "condition_failed", reason: failMsg });
                 return;
             }
@@ -444,6 +516,9 @@ class org.flashNight.arki.merc.PetPanelService {
         if (typeof execFn == "function") {
             execFn.call(ctx);
         }
+
+        // 进阶 执行 写入 金钱 / 宠物属性（均存档字段），标脏
+        _root.存档系统.dirtyMark = true;
 
         // 刷新宠物单位（如果已出战）
         if (ctx.当前宠物信息[4] == 1) {
@@ -576,6 +651,8 @@ class org.flashNight.arki.merc.PetPanelService {
             petInfo[5] = attrs;
         }
         attrs.customName = newName;
+        // customName 存于 宠物属性[5]（随 宠物信息 落盘），标脏
+        _root.存档系统.dirtyMark = true;
 
         // 刷新UI
         if (_root.宠物信息界面 != undefined && _root.宠物信息界面.排列宠物图标 != undefined) {
@@ -666,6 +743,8 @@ class org.flashNight.arki.merc.PetPanelService {
 
         _root.金钱 -= cost;
         petInfo[2] = 200;
+        // 金钱 / 宠物体力(petInfo[2]) 均存档字段，标脏
+        _root.存档系统.dirtyMark = true;
 
         sendResponse({
             task: "pet_response",
@@ -739,6 +818,8 @@ class org.flashNight.arki.merc.PetPanelService {
             newXpNeeded = Number(_root.战宠UI函数.计算战宠升级所需经验(identifier, newLevel));
         }
         attrs.宠物升级所需经验 = newXpNeeded;
+        // 等级(petInfo[1]) / 宠物升级所需经验 均存档字段，标脏（singleSubmit 已扣灵石，但等级写入需独立保证落盘）
+        _root.存档系统.dirtyMark = true;
 
         // 刷新出战宠物单位（注意：宠物升级加载 的参数是 mc库索引）
         if (petInfo[4] == 1 && _root.出战宠物id库 != undefined) {
@@ -811,6 +892,8 @@ class org.flashNight.arki.merc.PetPanelService {
 
         // 清空槽位
         _root.宠物信息[slotIndex] = [];
+        // 删除宠物 + 返还灵石均存档字段；返还为 0 时 singleAcquire 不触发标脏，故此处独立标脏
+        _root.存档系统.dirtyMark = true;
 
         // 重建场上其他出战宠物
         var hasDeployed:Boolean = false;
@@ -912,10 +995,58 @@ class org.flashNight.arki.merc.PetPanelService {
     }
 
     /** 计算战宠升级所需经验（简化公式） */
-    private static function calcXpForLevel(level:Number):Number {
-        if (_root.战宠UI函数 != undefined && _root.战宠UI函数.计算战宠升级所需经验 != undefined) {
-            // 引擎函数需要 兵种 参数，这里用通用估算
+    // 计算指定兵种在 level 级的升级所需经验。优先用引擎权威公式（依赖 敌人属性表[兵种] 的
+    // 真实经验区间），与 handleLevelUp 的扣费基准一致，确保前端预览 == 实际扣费。
+    private static function calcXpForLevel(identifier:String, level:Number):Number {
+        if (_root.战宠UI函数 != undefined && _root.战宠UI函数.计算战宠升级所需经验 != undefined
+            && identifier != undefined && identifier != "") {
+            var v:Number = Number(_root.战宠UI函数.计算战宠升级所需经验(identifier, level));
+            if (!isNaN(v) && v > 0) return v;
         }
+        // 引擎不可用时的粗略回退估算
         return Math.floor((50 + ((400 - 50) / 59) * level) * level);
+    }
+
+    // 解析 pets.xml 的 <Promotion><Item>方案名</Item></Promotion>。通用 XML 解析器
+    // (解析XML节点) 会把多个同名 <Item> 折成 {Item: 数组}，单个折成 {Item: 字符串}，
+    // 空则整个 Promotion 缺省。统一归一化为方案名字符串数组，供 JS 进阶列表使用。
+    private static function extractPromotionNames(promo:Object):Array {
+        if (promo == undefined) return [];
+        if (promo instanceof Array) return promo.slice(); // 防御：已是数组
+        var items:Object = promo.Item;
+        if (items == undefined) return [];
+        var out:Array = [];
+        if (items instanceof Array) {
+            for (var i:Number = 0; i < items.length; i++) out.push(String(items[i]));
+        } else {
+            out.push(String(items)); // 单个 Item
+        }
+        return out;
+    }
+
+    // 判定某进阶方案对该宠物是否已完成（用于 UI 禁用 + handleAdvance 服务端守卫）。
+    // 三件套(基础训练/强化药剂/超级血清)共用累进计数 基础训练.次数，按各自 次数上限 判定；
+    // 一次性付费方案(钙化/武器升级等)按自身布尔标志判定；免费开关方案(切换发型/常驻淬毒)永不判完成。
+    private static function isSchemeCompleted(schemeName:String, sc:Object, attrs:Object):Boolean {
+        if (sc == undefined) return false;
+        if (sc.次数上限 != undefined) {
+            var cnt:Number = (attrs != undefined && attrs.基础训练 != undefined) ? (Number(attrs.基础训练.次数) || 0) : 0;
+            return cnt >= Number(sc.次数上限);
+        }
+        var paid:Boolean = (Number(sc.消耗金币) || 0) > 0 || (Number(sc.消耗K点) || 0) > 0;
+        if (!paid) return false;
+        var flag:Object = (attrs != undefined) ? attrs[schemeName] : undefined;
+        return flag != undefined && flag !== false && flag !== 0 && flag !== "";
+    }
+
+    // 判定方案是否因等级/前置未达而锁定（次数条件 = 需要的前置累进计数）。
+    private static function isSchemeLocked(sc:Object, attrs:Object, petLevel:Number):Boolean {
+        if (sc == undefined) return true;
+        if (petLevel < (Number(sc.解锁等级) || 0)) return true;
+        if (sc.次数条件 != undefined && Number(sc.次数条件) > 0) {
+            var cnt:Number = (attrs != undefined && attrs.基础训练 != undefined) ? (Number(attrs.基础训练.次数) || 0) : 0;
+            if (cnt < Number(sc.次数条件)) return true;
+        }
+        return false;
     }
 }

@@ -503,7 +503,7 @@ launcher/
 │       ├── tooltip.js                     Tooltip（hover/anchored）
 │       ├── icons.js                       图标 manifest 加载与解析
 │       ├── kshop.js                       K 点商城面板（ShopTask 双层 callId）
-│       ├── pet-panel.js / pet-data.js     战宠面板（Panels.register('pets')：管理/领养/进阶三页；PetTask 双层 callId）+ 静态宠物库/进阶方案表
+│       ├── pet-panel.js                   战宠面板（Panels.register('pets')：管理/领养/进阶三页；PetTask 双层 callId）；数据权威全走 AS2 回包，无 JS 静态副本
 │       ├── merc-panel.js / merc-data.js   佣兵面板（Panels.register('mercs')：管理/雇佣两页 + 11 格装备图标；MercTask 双层 callId）+ 槽位常量
 │       ├── arena-panel.js                 竞技场面板（Panels.register('arena')：8 张角斗场卡 + 详情/进场；ArenaTask 双层 callId）
 │       ├── help.js / help-panel.js        帮助系统（顶层入口 + 面板骨架）
@@ -1490,7 +1490,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 - **lockbox**（开锁小游戏）: `web/modules/minigames/lockbox/` 下的正式小游戏模块；支持运行时参数、browser harness、Node QA
 - **pinalign**（定位小游戏）: `web/modules/minigames/pinalign/` 下的正式小游戏模块；和 Lockbox 共用小游戏壳层与 QA 平台
 - **gobang**（五子棋小游戏）: `web/modules/minigames/gobang/` 下的正式小游戏模块；Web core 负责规则裁判，AI 经 Web→C# `gomoku_eval` 调用 `GomokuTask` / Rapfi
-- **pets**（战宠管理）: `web/modules/pet-panel.js` + `pet-data.js`；`Panels.register('pets')`，管理/领养/进阶三页（出战/恢复体力/灵石强化/删除/开格子），`PetTask` 双层 callId 桥接 AS2；不参与 `_pauseNeedsRestore`，close 发 `petPanelClose` 通知 AS2 清理。头像 `assets/pets/pet_<id>.png`（onerror→`pet_locked.png`），静态宠物库/进阶方案表在 `pet-data.js`
+- **pets**（战宠管理）: `web/modules/pet-panel.js`；`Panels.register('pets')`，管理/领养/进阶三页（出战/恢复体力/灵石强化/删除/开格子），`PetTask` 双层 callId 桥接 AS2；不参与 `_pauseNeedsRestore`，close 发 `petPanelClose` 通知 AS2 清理。头像 `assets/pets/pet_<id>.png`（onerror→`pet_locked.png`）。**数据权威全部来自 AS2 回包**：`snapshot` 下发 `petLib`(宠物库, 源 `data/merc/pets.xml`)+`schemes`(进阶方案数值, 源 `战宠进阶函数`)+`categories`+真 `xpNeeded`，`adopt_list` 下发商城网格；JS 无静态数据副本（原 `pet-data.js` 已删，见 [数据权威迁移提案](../docs/战宠数据权威-JS到XML-迁移设计提案-2026-05-31.md)）
 - **mercs**（佣兵管理）: `web/modules/merc-panel.js` + `merc-data.js`；`Panels.register('mercs')`，管理/雇佣两页 + 11 格装备图标（mercData 槽位 6-16），`MercTask` 双层 callId；不参与 `_pauseNeedsRestore`，close 不通知 AS2（无需清理）
 - **arena**（竞技场 DEATH MATCH）: `web/modules/arena-panel.js`；`Panels.register('arena')`，8 张角斗场卡 + 详情/掷骰/进场，`ArenaTask` 双层 callId；可经地图/选关二级动作以 `returnToPanel` 重定向进入，close 不通知 AS2
 - **jukebox**（BGM 点歌台）: `web/modules/panels/jukebox-panel.js` 注册 `Panels.register('jukebox')`，由 `RightContextWidget` 的 jukebox titlebar 展开按钮 → `JUKEBOX_EXPAND` → `LauncherCommandRouter.OpenPanel("jukebox")` 触发；与 kshop/help 等通用 panel 同走完整 backdrop / EX_STYLE / HUD-suspend 序列。PanelLayoutCatalog 用基准 880×620 设计尺寸 + `anchor.Height / 576` 等比缩放（与 `Hud.WidgetScaler.DESIGN_HEIGHT` 同源）：1024×576 design viewport 下宽 880 / 高被 Centered clamp 到 576；1920×1080 anchor 下宽 1650（占比 86%）/ 高 clamp 到 1080。`jukebox-panel.js` 用 inset 百分比布局对 panelRect 任意尺寸鲁棒。曲库 / UiData 状态在 onOpen 时通过 `cmd:'requestCatalog'` + `UiData.get` seed 当前值，避免晚注册错过历史推送。close 路径收敛：× 按钮 / ESC / backdrop click 三入口共用 `closeLocally`（先 `Panels.close()` 让 `_active` 复位再 `Bridge.send panel close`）——避免 ESC/backdrop 单独走 onRequestClose 时 `_active` 滞留导致下次 open 早 return

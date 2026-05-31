@@ -44,13 +44,20 @@ class org.flashNight.arki.merc.MercSpawner {
         }
         _root.同伴数--;
         _root.同伴数据[idx] = [];
+        // 佣兵是否出战信息 与 同伴数据 严格并行、同下标对齐（场景转换按 i 同时读两者
+        // 决定谁出战）。压缩 同伴数据 时必须同步重排出战标志数组，否则解雇/移除队列
+        // 中间的佣兵后，其后所有佣兵的出战/休息状态整体错位一格，并随存档落盘。
+        if (_root.佣兵是否出战信息 == undefined) _root.佣兵是否出战信息 = [];
         var compact:Array = [];
+        var compactDeploy:Array = [];
         for (var k:Number = 0; k < _root.佣兵个数限制; k++) {
             if (_root.同伴数据[k][0] != undefined) {
                 compact.push(_root.同伴数据[k]);
+                compactDeploy.push(Number(_root.佣兵是否出战信息[k]) || 0);
             }
         }
         _root.同伴数据 = compact;
+        _root.佣兵是否出战信息 = compactDeploy;
         _root.gameworld[_root.菜单MC对应名].removeMovieClip();
         for (var unit:String in _root.gameworld) {
             if (_root.gameworld[unit].用户ID == mercId) {

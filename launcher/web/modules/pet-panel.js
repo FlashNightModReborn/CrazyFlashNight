@@ -283,16 +283,17 @@
     function requestSnapshot() {
         var snapSession = _session;
         sendPanelMsg('snapshot', null, function(data) {
+            if (snapSession !== _session) return;
             if (!data.success) {
                 showToast('获取战宠数据失败: ' + (data.error || '未知错误'));
                 return;
             }
-            if (snapSession !== _session) return;
             _snapshot = data.snapshot;
             _pets = data.snapshot.pets || [];
             updateResourceDisplay();
             updateStatusBar();
             renderPetGrid();
+            if (_currentPage === 'advance') renderAdvancePage();
         });
     }
 
@@ -496,11 +497,20 @@
         renderPromotions(pet);
     }
 
+    // 从 snapshot.petLib 查宠物库定义（权威来自 data/merc/pets.xml，经 AS2 下发）
+    function getPetLibDef(petId) {
+        if (!_snapshot || !_snapshot.petLib) return null;
+        for (var i = 0; i < _snapshot.petLib.length; i++) {
+            if (_snapshot.petLib[i].id === petId) return _snapshot.petLib[i];
+        }
+        return null;
+    }
+
     function renderPromotions(pet) {
         var listEl = _el.querySelector('#pet-promotions-list');
         listEl.innerHTML = '';
 
-        var petDef = window.PetData ? PetData.getPet(pet.petId) : null;
+        var petDef = getPetLibDef(pet.petId);
         if (!petDef || !petDef.promotions || petDef.promotions.length === 0) {
             listEl.innerHTML = '<div class="pet-promo-empty">该宠物暂无进阶方案</div>';
             return;
@@ -508,23 +518,14 @@
 
         for (var i = 0; i < petDef.promotions.length; i++) {
             var schemeName = petDef.promotions[i];
-            var scheme = window.PetData ? PetData.getScheme(schemeName) : null;
+            var scheme = (_snapshot && _snapshot.schemes) ? _snapshot.schemes[schemeName] : null;
             if (!scheme) continue;
 
-            var currentTier = 0;
-            if (pet.promotions) {
-                for (var j = 0; j < pet.promotions.length; j++) {
-                    if (pet.promotions[j].scheme === schemeName) {
-                        currentTier = Number(pet.promotions[j].次数) || 0;
-                        break;
-                    }
-                }
-            }
-
-            var maxTier = scheme.maxTier || 1;
-            var isMaxed = currentTier >= maxTier;
+            // 完成/锁定状态来自 AS2 权威 schemeStatus（三件套共用计数、布尔方案查标志，JS 不再自行推断）
+            var status = (pet.schemeStatus && pet.schemeStatus[schemeName]) ? pet.schemeStatus[schemeName] : null;
+            var isMaxed = status ? !!status.completed : false;
+            var levelOk = status ? !status.locked : (pet.level >= (scheme.unlockLevel || 0));
             var canAfford = (_snapshot && _snapshot.gold >= (scheme.gold || 0)) || (scheme.gold || 0) === 0;
-            var levelOk = pet.level >= (scheme.unlockLevel || 0);
 
             var promoEl = document.createElement('div');
             promoEl.className = 'pet-promo-item';
@@ -532,16 +533,15 @@
             else if (!levelOk) promoEl.classList.add('pet-promo-locked');
             else if (!canAfford) promoEl.classList.add('pet-promo-unaffordable');
 
-            var tierText = maxTier > 1 ? ' Lv.' + currentTier + '/' + maxTier : '';
             var statusText = '';
             var actionBtn = '';
 
             if (isMaxed) {
-                statusText = '已达上限';
+                statusText = '已完成';
                 actionBtn = '<button class="pet-promo-btn" disabled>已完成</button>';
             } else if (!levelOk) {
-                statusText = '需Lv.' + scheme.unlockLevel + '解锁';
-                actionBtn = '<button class="pet-promo-btn" disabled>等级不足</button>';
+                statusText = '需Lv.' + (scheme.unlockLevel || 0) + '解锁';
+                actionBtn = '<button class="pet-promo-btn" disabled>未解锁</button>';
             } else if (!canAfford && scheme.gold > 0) {
                 statusText = '金币不足';
                 actionBtn = '<button class="pet-promo-btn pet-promo-btn-buy" data-scheme="' + escapeHtml(schemeName) + '">' + formatMoney(scheme.gold) + '金 ' + (scheme.buttonText || '执行') + '</button>';
@@ -552,7 +552,7 @@
 
             promoEl.innerHTML =
                 '<div class="pet-promo-info">' +
-                    '<div class="pet-promo-name">' + escapeHtml(schemeName) + tierText + '</div>' +
+                    '<div class="pet-promo-name">' + escapeHtml(schemeName) + '</div>' +
                     '<div class="pet-promo-desc">' + escapeHtml(scheme.desc || '') + '</div>' +
                     '<div class="pet-promo-cost">' + statusText + '</div>' +
                 '</div>' +
@@ -593,7 +593,7 @@
     function renderStoreCategories() {
         var tabsEl = _el.querySelector('#pet-store-tabs');
         tabsEl.innerHTML = '';
-        var categories = window.PetData ? PetData.CATEGORIES : [];
+        var categories = (_snapshot && _snapshot.categories) ? _snapshot.categories : [];
 
         for (var c = 0; c < categories.length; c++) {
             var tab = document.createElement('button');
@@ -793,11 +793,9 @@
         sendPanelMsg('level_up', { slotIndex: pet.slotIndex }, function(data) {
             _busy = false;
             if (data.success) {
-                pet.level = data.newLevel;
-                pet.xpNeeded = data.newXpNeeded;
-                updateResourceDisplay();
-                renderPetGrid();
-                renderAdvancePage();
+                // 升级会改变等级门槛（强化药剂 Lv.25 / 超级血清 Lv.50 等），schemeStatus 由 AS2 按等级
+                // 重算，必须重拉快照刷新，不能只本地改 pet.level（否则解锁判定停留在旧等级）
+                requestSnapshot();
                 showToast('战宠升级！战宠灵石 -' + data.stoneCost);
             } else {
                 var errMsg = '升级失败';

@@ -217,6 +217,9 @@ class org.flashNight.arki.merc.MercPanelService {
 
         MercSpawner.removeMerc(mercId);
 
+        // Plan A audit 同口径：解雇写 同伴数据 / 同伴数 / 可雇佣兵 / 佣兵是否出战信息（全 save-relevant），必须标脏
+        _root.存档系统.dirtyMark = true;
+
         sendResponse({
             task: "merc_response",
             callId: callId,

@@ -448,7 +448,6 @@ $requiredWebPaths = @(
     "modules\map-hud.js",
     "modules\stage-select-data.js",
     "modules\stage-select-panel.js",
-    "modules\pet-data.js",
     "modules\pet-panel.js",
     "modules\merc-data.js",
     "modules\merc-panel.js",

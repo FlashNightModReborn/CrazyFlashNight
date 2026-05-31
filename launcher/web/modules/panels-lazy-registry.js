@@ -102,9 +102,9 @@
         noop);
 
     // ── pets (战宠) ──
+    // 数据权威全部走 AS2 snapshot/adopt_list 回包（pets.xml + 战宠进阶函数），无 JS 静态副本
     Panels.registerLazy('pets',
-        ['modules/pet-data.js',
-         'modules/pet-panel.js'],
+        ['modules/pet-panel.js'],
         noop);
 
     // ── mercs (佣兵) ──
