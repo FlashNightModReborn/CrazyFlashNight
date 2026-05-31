@@ -230,7 +230,10 @@
         var html = '';
 
         // 任务标题
-        html += '<div class="task-title-box">' + escHtml(task.type || '') + '<br>' + escHtml(task.title || '') + '</div>';
+        html += '<div class="task-title-box">' +
+            '<span class="task-title-line1">任务详情</span>' +
+            '<span class="task-title-line2">' + escHtml(task.title || '') + '</span>' +
+        '</div>';
 
         // 任务描述
         html += '<div class="task-desc-box">';
@@ -280,7 +283,7 @@
             html += '<div class="task-npc-left">';
             html += '<div class="scroll-track"></div>';
             html += '<div class="task-npc-title"></div>';
-            html += '<div class="task-npc-name">' + escHtml(task.npcName) + '</div>';
+            html += '<div class="task-npc-name"><span>' + escHtml(task.npcName) + '</span></div>';
             html += '</div>';
             html += '<div class="task-npc-avatar"><img src="' + avatarUrl(task.npcName) + '" onerror="this.onerror=null;this.src=\'' + defaultAvatarUrl() + '\';" alt=""></div>';
             html += '</div>';

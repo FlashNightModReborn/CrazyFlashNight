@@ -107,17 +107,18 @@
     box-sizing: border-box;
     padding-left: 6px;
     text-align: left;
+    font-family: "思源宋体 CN Heavy";
 }
 
 .task-icon-type {
-    font-size: 13px;
-    color: rgba(255,255,255,0.55);
+    font-size: 24px;
+    color: #ccc;
     line-height: 1.3;
 }
 
 .task-icon-name {
     font-size: 16px;
-    color: #fff;
+    color: #ccc;
     line-height: 1.4;
     font-weight: 600;
     white-space: nowrap;
@@ -181,10 +182,14 @@
     width: 720px;
     height: 60px;
     padding: 0 20px 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     text-align: left;
-    color: #fff;
-    font-size: 24px;
+    color: #ccc;
     flex-shrink: 0;
+    font-family: "思源宋体 CN Heavy";
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
 }
 
 .task-title-box::after {
@@ -205,20 +210,39 @@
     100% { transform: scaleX(0.015); }
 }
 
+.task-title-line1 {
+    display: block;
+    font-size: 18px;
+    animation: text-slide-in 0.6s ease-out 0.1s both;
+}
+
+.task-title-line2 {
+    display: block;
+    font-size: 24px;
+    animation: text-slide-in 0.6s ease-out 0.3s both;
+}
+
+@keyframes text-slide-in {
+    0%   { transform: translateX(-100%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+
 /* ── 描述（带角标伸缩动画） ── */
 .task-desc-box {
     position: relative;
     box-sizing: border-box;
     width: 720px;
-    height: 120px;
+    height: 140px;
     padding: 12px 30px 12px 30px;
     margin: 20px 0;
     text-align: left;
     background: transparent;
-    color: #fff;
+    color: #ccc;
     font-size: 24px;
     overflow: hidden;
     flex-shrink: 0;
+    font-family: "思源宋体 CN Heavy";
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
 }
 
 .task-desc-box .corner-horizontal {
@@ -264,6 +288,7 @@
     gap: 10px;
     margin: 10px 0;
     padding: 4px 0;
+    font-family: "思源宋体 CN Heavy";
 }
 
 .task-requirement {
@@ -380,7 +405,7 @@
     margin-left: 2px;
     text-align: left;
     color: #333;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
@@ -402,9 +427,15 @@
     width: 160px;
     height: 22px;
     box-sizing: border-box;
-    padding: 0 20px 2px 20px;
+    padding: 0 0 2px 12px;
     text-align: left;
+    color: #333;
     font-size: 18px;
+}
+
+.task-npc-name span {
+    display: block;
+    animation: text-slide-in 0.6s ease-out both;
 }
 
 .task-npc-name::after {
@@ -448,11 +479,13 @@
     overflow: hidden;
     box-sizing: border-box;
     width: 120px;
-    height: 36px;
-    padding: 2px;
+    height: 40px;
+    align-items: center;
     text-align: left;
-    color: #000;
+    overflow: hidden;
+    color: #333;
     font-size: 24px;
+    font-family: "思源宋体 CN Heavy";
 }
 
 .task-reward-box::after {
@@ -470,6 +503,8 @@
 .task-reward-box span {
     position: relative;
     z-index: 1;
+    display: block;
+    animation: text-slide-in 0.6s ease-out both;
 }
 
 @keyframes task-reward-reveal {
