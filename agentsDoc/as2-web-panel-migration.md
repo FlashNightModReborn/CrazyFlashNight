@@ -1,6 +1,6 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
-**文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。  
+**文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
 **最后核对代码基线**：commit `d063d53c2`（2026-05-30）。
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。

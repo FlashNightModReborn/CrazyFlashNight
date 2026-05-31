@@ -525,10 +525,11 @@ launcher/
 │       │       ├── screenshot.js           红点/选关视觉回归截图（写 tmp/map-red-dot-shots/）
 │       │       ├── builder.html            地图可视化构建器入口（跳转到 builder 模式 preview）
 │       │       └── preview.html / .css / .js   地图 manifest 预览 / 校准页
-│       ├── tasks/                          【任务界面 Web 迁移 · 施工中（2026-05-30）：仅 dev harness + 美术，尚无生产模块 / C# task / panel 注册；运行态「任务栏」仍走 Flash `openTaskUI`】
+│       ├── tasks/                          【任务界面 Web 迁移 · 协议接入（2026-05-30）：生产模块 + C# Task + AS2 service 已接入；仍需 Flash fresh trace / 游戏内端到端复核后才能标记生产可用】
+│       │   ├── task-panel.js               任务界面生产 panel（snapshot/detail 只读协议）
+│       │   ├── assets/                     迁移自 Flash 的任务界面生产美术（task_main_bg / task_icon_bg / task_scroll / requirement_* / finish_npc）
 │       │   └── dev/
 │       │       ├── harness.html            任务界面布局原型（顶部切页 + 左任务列表 + 右任务详情，静态 mock）
-│       │       └── *.png                    迁移自 Flash 的任务界面美术（task_main_bg / task_icon_bg / task_scroll / requirement_* / finish_npc）
 │       ├── stage-select/
 │       │   └── dev/
 │       │       └── harness.html           选关界面 browser harness + QA suite
@@ -1435,6 +1436,7 @@ AS2 UI → Web Panel 迁移的操作护栏统一见 [../agentsDoc/as2-web-panel-
 | 佣兵管理界面 | Panel 系统 `merc-panel.js` (管理/雇佣 + 11 格装备) | `MERCS` → `mercPanelOpen` + `mercs`，MercTask 双层 callId |
 | 竞技场 (DEATH MATCH) | Panel 系统 `arena-panel.js` (8 张角斗场卡) | `arena`，ArenaTask 双层 callId |
 | 情报界面 | Panel 系统 `intelligence-panel.js` (H5 富文本) | `情报`/`INTELLIGENCE`，IntelligenceTask 按需正文 |
+| 任务界面 | Panel 系统 `tasks/task-panel.js` (当前任务列表/详情) | `NEW_TASK_UI` → `taskPanelOpen` + `tasks`，TaskTask 双层 callId |
 
 **右上角工具条布局**：
 ```
@@ -1484,6 +1486,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 - **map**（地图面板）: `web/modules/map-panel.js` + `web/modules/map-canvas-stage-renderer.js` + `web/modules/map-panel-data.js` + `web/modules/map-fit-presets.js`；纯 Web panel，走 `panel/panel_resp` 的 `snapshot` / `refresh` / `navigate` / `open_stage_select` / `close` 协议；当前 `snapshot` 额外承载 `unlocks / hotspotStates / currentHotspotId / markers / tips`，四个正式页面的舞台视觉由 Canvas 2D renderer 绘制（DOM 仅保留透明热点、hover 标签、右侧 rail 与操作按钮），右侧层级按钮缺少原始素材时允许直接使用 Web/CSS 复刻旧视觉语言；`map-panel.js` 会懒加载 `stage-select-data.js`，用 `RootFadeTransitionFrame` 为已解锁且有选关页签的热点提供二级“选关”动作，成功后交给 PanelHost 关闭 map 并打开 `stage-select`，主热点点击仍发送 `navigate`；同时支持 browser harness `web/modules/map/dev/harness.html`、preview `web/modules/map/dev/preview.html`、builder `web/modules/map/dev/builder.html`、CLI 导出 `tools/export-map-manifest.js`、fallback 复核 `tools/audit-map-layout.js`、filter-fit 离线调优 `tools/tune-map-filter-fit.js`、审计图导出 `tools/render-map-audit-sheet.py` 与可选的 Kimi 视觉复核 `tools/kimi-map-review.ps1`，并在紧凑视口下自动缩放舞台、按 page/filter preset 做二次 content-fit；右上角常驻 HUD 由 `web/modules/map-hud.js` 消费同一份 `MapPanelData` + UiData `mm/mh`，只显示当前区块高亮与固定 beacon，点击后打开 map panel
 - **stage-select**（选关界面 Stage 2 runtime）: `web/modules/stage-select-panel.js` + generated `web/modules/stage-select-data.js`；可通过 Native HUD “其他 → 选关测试” 的 `STAGE_SELECT_TEST` 打开，也可由 AS2 场景门 `openWebStageSelect` → `panel_request stage-select` 正式打开。支持 16 个 frame label、182 个源 XML 入口实例、164 个 Web 运行时渲染实例（含 13 个 `entryKind=map/task` 直达入口）、fixture 锁定/任务/挑战模式、按外部 PNG / 内部命名帧 / 默认帧回退的 hover 预览、browser harness 和 FFDec/Web 视觉对照审计；runtime 下使用 `stageSelectSnapshot` 读取真实解锁/挑战状态，普通难度按钮通过 `stageSelectEnter entryKind=difficulty` 进入已解锁关卡，外交地图按原版绿色点直达、从源符号内部 `shape/外交地图点` / `DOMDynamicText` 矩阵复原点和文字位置、通过 `entryKind=map` 走 AS2 淡出跳转且不显示二次选择，旧外交地图 SWF 内仍指向 Flash `关卡地图` 的门由公共 `切换场景` 捕获后打开 Web 选关，`地图-*` frameLabel 会按 `StageInfoDict.RootFadeTransitionFrame` 反查回选关页签，魔神/副本任务区域把 `Symbol 3325 -> Symbol 3323 -> bitmap3321` 导出的法阵底图放在装饰层，文字按钮仍按 XFL 源矢量 CSS 复刻，通过 `entryKind=task` 直接打开原 Flash `委托任务界面`，`localFrame` 通过 `jump_frame` / `stageSelectJumpFrame` 同步 Web 当前选关页但不改 `_root.关卡地图帧值`，return 类 nav 通过独立 `returnFrameLabel` + `return_frame` / `stageSelectReturnFrame` 复刻原版 `_root.淡出动画.淡出跳转帧(_root.关卡地图帧值)`，同场景返回会直接关闭 Web panel、跨场景返回仍淡出跳转，避免旧外交地图底层场景泄露。runtime 布局隐藏测试标题、fixture/dev 控件与右侧空栏，frame tab 默认收纳到可展开区域菜单，旧 Flash `关卡地图` 保留为 fallback
 - **intelligence**（情报详情面板）: `web/modules/intelligence-panel.js` + `web/modules/intelligence-components.js`；正式入口为 Native HUD / 旧 Web notch 主工具栏的 `情报` / `INTELLIGENCE`，开发入口 `其他 → 情报测试` / `INTELLIGENCE_TEST` 保留。正式 runtime 走 `state` → `snapshot(itemName)` → `tooltip(itemName)`：AS2 只返回每条情报收集值、解密等级、玩家名和 TooltipComposer 富文本，C# `IntelligenceTask` 从字典、物品 XML 与 `data/intelligence_h5/<itemName>.json` 读取白名单 H5 正文，Web 不直接 fetch 项目根或 `data/`。H5 正文由 `IntelligenceComponentRenderer` 以 DOM API 渲染，锁定页不下发 blocks，关闭时不通知 Flash。协议、组件语义、手工创作流程和验证门禁见 [情报 H5 组件创作交接](../docs/情报H5组件创作交接.md)
+- **tasks**（任务界面）: `web/modules/tasks/task-panel.js` + `css/task_panel.css`；入口为 Native HUD / 旧 Web notch “新任务界面” `NEW_TASK_UI`，先发 `taskPanelOpen` 再打开 `tasks` panel。运行态只读协议为 `snapshot` / `detail`，`TaskTask` 桥接到 AS2 `TaskPanelService` 的 `taskSnapshot` / `taskDetail`，response task 为 `task_response`。close 会发 `taskPanelClose`（当前 AS2 no-op），不写存档；完成 Flash fresh trace 和游戏内端到端复核前，迁移级别只算“协议接入”。
 - **lockbox**（开锁小游戏）: `web/modules/minigames/lockbox/` 下的正式小游戏模块；支持运行时参数、browser harness、Node QA
 - **pinalign**（定位小游戏）: `web/modules/minigames/pinalign/` 下的正式小游戏模块；和 Lockbox 共用小游戏壳层与 QA 平台
 - **gobang**（五子棋小游戏）: `web/modules/minigames/gobang/` 下的正式小游戏模块；Web core 负责规则裁判，AI 经 Web→C# `gomoku_eval` 调用 `GomokuTask` / Rapfi

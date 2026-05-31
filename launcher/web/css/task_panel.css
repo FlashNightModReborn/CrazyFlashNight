@@ -8,7 +8,7 @@
 .task-panel-container {
     width: 100%;
     height: 100%;
-    background-image: url('/modules/tasks/dev/task_main_bg.png');
+    background-image: url('/modules/tasks/assets/task_main_bg.png');
     background-size: 100% 100%;
     font-family: system-ui, sans-serif;
     display: flex;
@@ -71,7 +71,7 @@
 }
 
 .task-icon {
-    background-image: url('/modules/tasks/dev/task_icon_bg.png');
+    background-image: url('/modules/tasks/assets/task_icon_bg.png');
     background-color: transparent;
     background-size: 100%;
     position: relative;
@@ -363,15 +363,15 @@
 }
 
 .task-requirement-title.stage {
-    background-image: url('/modules/tasks/dev/requirement_stage.png');
+    background-image: url('/modules/tasks/assets/requirement_stage.png');
 }
 
 .task-requirement-title.submit {
-    background-image: url('/modules/tasks/dev/requirement_submit.png');
+    background-image: url('/modules/tasks/assets/requirement_submit.png');
 }
 
 .task-requirement-title.contain {
-    background-image: url('/modules/tasks/dev/requirement_contain.png');
+    background-image: url('/modules/tasks/assets/requirement_contain.png');
 }
 
 .task-requirement-stage-name {
@@ -392,7 +392,7 @@
     height: 40px;
     margin-top: 3px;
     margin-left: 2px;
-    background-image: url('/modules/tasks/dev/finish_npc.png');
+    background-image: url('/modules/tasks/assets/finish_npc.png');
     background-size: cover;
 }
 
@@ -427,7 +427,7 @@
 
 /* ── 滚动条 ── */
 .scroll-track {
-    background-image: url('/modules/tasks/dev/task_scroll.png');
+    background-image: url('/modules/tasks/assets/task_scroll.png');
     display: block;
     animation: task-slowRoll 0.5s linear infinite;
     width: 180px;
@@ -504,7 +504,7 @@
     position: relative;
     width: 32px;
     height: 32px;
-    background: rgba(0, 0, 0, 0.4) url('/modules/tasks/dev/item_bg.png') center/cover no-repeat;
+    background: rgba(0, 0, 0, 0.4) url('/modules/tasks/assets/item_bg.png') center/cover no-repeat;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 3px;
     overflow: hidden;

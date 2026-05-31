@@ -28,6 +28,9 @@ namespace CF7Launcher.Bus
     ///   panel_request   JSON sync   AS2→C#  (旧 Flash UI 请求 WebView 打开面板: map / stage-select)
     ///   stage_select_response JSON async AS2↔C# (选关 Web panel 测试入口)
     ///   arena_response  JSON async AS2↔C# (角斗场 Web panel 测试入口)
+    ///   pet_response    JSON async AS2↔C# (战宠 Web panel 运行态)
+    ///   merc_response   JSON async AS2↔C# (佣兵 Web panel 运行态)
+    ///   task_response   JSON async AS2↔C# (任务 Web panel 运行态)
     ///   intelligence_response JSON async AS2↔C# (情报 Web panel runtime 状态 / tooltip)
     ///   font_pack       JSON async AS2↔C#  httpCallable=true (字体包按需下载/状态查询)
     /// </summary>
@@ -243,6 +246,9 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "map_response",   "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "stage_select_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "arena_response",       "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "pet_response",         "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "merc_response",        "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "task_response",        "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "intelligence_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "cursor_control", "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);

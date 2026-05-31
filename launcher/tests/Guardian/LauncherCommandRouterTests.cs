@@ -129,6 +129,19 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void NewTaskUi_WhenFlashUnavailable_PostsUnavailableToast()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.Dispatch("NEW_TASK_UI");
+
+            Assert.Single(c.Posts);
+            Assert.Contains("任务面板暂时不可用", c.Posts[0]);
+            Assert.Empty(c.ActivePanels);
+            Assert.Empty(c.StateCallbacks);
+        }
+
+        [Fact]
         public void RequestOpenPanel_Map_RoutesToOpenMapPanel()
         {
             Capture c = new Capture();

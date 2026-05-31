@@ -29,6 +29,7 @@
 - `launcher/README.md` 的目录树、测试入口、Panel / minigame 章节
 - `agentsDoc/architecture.md`
 - `agentsDoc/testing-guide.md`
+- `agentsDoc/as2-web-panel-migration.md`
 - `agentsDoc/agent-harness.md`
 - `agentsDoc/human-care.md`
 - `agentsDoc/documentation-governance.md`

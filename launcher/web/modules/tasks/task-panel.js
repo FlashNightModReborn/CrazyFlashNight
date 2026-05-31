@@ -145,11 +145,11 @@
     function requestSnapshot() {
         var snapSession = _session;
         sendPanelMsg('snapshot', null, function(data) {
+            if (snapSession !== _session) return;
             if (!data.success) {
                 _leftEl.innerHTML = '<div class="task-empty-hint">获取任务数据失败</div>';
                 return;
             }
-            if (snapSession !== _session) return;
             _tasks = data.tasks || [];
             renderTaskList();
             if (_tasks.length > 0) {
@@ -167,11 +167,11 @@
         highlightActiveIcon();
         _rightEl.innerHTML = '<div class="task-empty-hint">加载中...</div>';
         sendPanelMsg('detail', { index: index }, function(data) {
+            if (snapSession !== _session) return;
             if (!data.success) {
                 _rightEl.innerHTML = '<div class="task-empty-hint">加载任务详情失败: ' + (data.error || '未知错误') + '</div>';
                 return;
             }
-            if (snapSession !== _session) return;
             renderTaskDetail(data.taskData);
         });
     }
@@ -322,7 +322,7 @@
     function itemIconHtml(itemName, count) {
         var url = resolveIconUrl(itemName);
         var imgHtml = url
-            ? '<img src="' + url + '" style="width:28px;height:28px;object-fit:contain;display:block;" alt="">'
+            ? '<img src="' + escHtml(url) + '" style="width:28px;height:28px;object-fit:contain;display:block;" alt="">'
             : '';
         return '<div class="task-item">' + imgHtml
             + '<span class="task-item-count">' + escHtml(String(count)) + '</span></div>';
