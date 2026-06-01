@@ -277,6 +277,10 @@
     justify-content: center;
 }
 
+#panel-container[data-panel="tasks"] #panel-content {
+    inset: 0;
+}
+
 /* ════════════════════════════════════════════════════════════════════
    Flash Tooltip — Layout Primitives & Visual Tokens
    ════════════════════════════════════════════════════════════════════

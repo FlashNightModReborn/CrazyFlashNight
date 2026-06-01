@@ -5,9 +5,16 @@
    由 task-panel.js 在 createDOM 时动态注入 <link> 加载。
    ═══════════════════════════════════════════════════════════════ */
 
+.task-panel-scale-shell {
+    width: 1024px;
+    height: 576px;
+    transform: scale(var(--task-scale, 1));
+    transform-origin: top left;
+}
+
 .task-panel-container {
-    width: 100%;
-    height: 100%;
+    width: 1024px;
+    height: 576px;
     background-image: url('/modules/tasks/assets/task_main_bg.png');
     background-size: 100% 100%;
     font-family: system-ui, sans-serif;
@@ -294,7 +301,7 @@
 .task-requirement {
     width: 175px;
     height: 100px;
-    background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 0.7px, transparent 1px) 0 0 / 5px 5px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
     border-radius: 8px;
     display: flex;
     align-items: flex-start;
@@ -306,7 +313,7 @@
 .task-item-requirement {
     width: 175px;
     min-height: 100px;
-    background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 0.7px, transparent 1px) 0 0 / 5px 5px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
     border-radius: 8px;
     display: flex;
     align-items: flex-start;
@@ -318,7 +325,7 @@
 .task-npc {
     width: 270px;
     height: 100px;
-    background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #ffb547 30%, #f60 70%);
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 0.7px, transparent 1px) 0 0 / 5px 5px, linear-gradient(to bottom, #ffb547 30%, #f60 70%);
     border-radius: 8px;
     display: flex;
     flex-direction: row;
@@ -405,7 +412,7 @@
     margin-left: 2px;
     text-align: left;
     color: #333;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
@@ -495,7 +502,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 0.7px, transparent 1px) 0 0 / 5px 5px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
     transform-origin: right center;
     animation: task-reward-reveal 0.5s ease-out forwards;
 }

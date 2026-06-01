@@ -331,9 +331,11 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 /* 使用 opacity + visibility 做 fade, 不用 display:none (display 不可动画).
    进场: visibility 立即 visible + opacity 0→1 (.35s ease);
    退场: opacity 1→0 (.35s ease) + visibility 延迟 .35s 后变 hidden — 先淡出再移出命中. */
-.intro-ov{position:fixed;inset:0;z-index:100;background:#000;display:flex;align-items:center;justify-content:center;
-  opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s linear .35s}
-.intro-ov.on{opacity:1;visibility:visible;transition:opacity .35s ease,visibility 0s linear 0s}
+/* 视频阶段: 纯黑背景 (配合 video 自身的 background:#000); loading 阶段: 半透明让背景层栈透出. */
+.intro-ov{position:fixed;inset:0;z-index:100;background:transparent;display:flex;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s linear .35s,background-color .3s ease}
+.intro-ov.on{opacity:1;background:#000;visibility:visible;transition:opacity .35s ease,visibility 0s linear 0s,background-color .3s ease}
+.intro-ov.loading{background:transparent}
 /* video + loading-indicator 两态做 crossfade.
    width/height:100% + object-fit:contain 让视频随窗口 (launcher 全屏或普通) 自适应
    保持原比例, 不够大就 letterbox; max-width/height:100% 不强制上采样导致全屏仍原尺寸的 bug 已修复 */
@@ -361,14 +363,17 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 body.launch-in-flight .btn-go:not(.retry){opacity:.4;pointer-events:none;cursor:not-allowed}
 body.launch-in-flight .slot-plate .switch{opacity:.4;pointer-events:none}
 
-/* 片头播放期间熄灯: 隐藏所有背景层 + topbar + 视图 + 底栏, 减掉 blur/动画合成开销,
-   让 GPU 专心解码 video. ESC / 跳过按钮 / 播放结束后 body.intro-playing 解除. */
-body.intro-playing .bg-photo,
-body.intro-playing .bg-tint,
-body.intro-playing .bg-rune,
-body.intro-playing .bg-scan,
-body.intro-playing .bg-grain,
-body.intro-playing .bg-crack,
+/* 片头视频播放阶段熄灯: 隐藏背景层栈, 减掉 blur/动画合成开销, 让 GPU 专心解码 video.
+   body.intro-video 仅在视频播放阶段存在; 视频结束/跳过/无片头时不设置, 背景层保留. */
+body.intro-video .bg-photo,
+body.intro-video .bg-tint,
+body.intro-video .bg-rune,
+body.intro-video .bg-scan,
+body.intro-video .bg-grain,
+body.intro-video .bg-crack{display:none !important}
+
+/* 启动阶段熄灯: 隐藏 topbar + 视图 + 底栏; 背景层栈保留.
+   ESC / 取消 / 状态恢复后 body.intro-playing 解除. */
 body.intro-playing .topbar,
 body.intro-playing .bottom,
 body.intro-playing #view-welcome,

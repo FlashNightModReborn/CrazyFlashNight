@@ -351,7 +351,7 @@
     var vid = document.getElementById('intro-video');
     var skipBtn = document.getElementById('intro-skip');
     _introActive = true;
-    document.body.classList.add('intro-playing');
+    document.body.classList.add('intro-playing', 'intro-video');
     ov.classList.remove('loading');
     ov.classList.add('on');
     skipBtn.style.display = '';
@@ -373,6 +373,8 @@
       try { vid.pause(); vid.onended = null; vid.onerror = null; } catch (e) {}
       skipBtn.onclick = null;
       // 切到 loading 相: 视频淡出, spinner 淡入; 若 Flash 已 reveal_ready, 下一刻即 panel swap.
+      // 片头结束, 恢复背景层栈显示.
+      document.body.classList.remove('intro-video');
       ov.classList.add('loading');
       send({ cmd: 'reveal_ok' });
     }
@@ -410,7 +412,7 @@
     _introActive = false;
     try { vid.pause(); vid.onended = null; vid.onerror = null; } catch (e) {}
     ov.classList.remove('on', 'loading');
-    document.body.classList.remove('intro-playing');
+    document.body.classList.remove('intro-playing', 'intro-video');
     skipBtn.onclick = null;
     skipBtn.style.display = '';
     // 复位 flash-ready 样式 (下一 attempt 全新开始)

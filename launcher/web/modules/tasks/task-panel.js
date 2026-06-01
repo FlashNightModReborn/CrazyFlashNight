@@ -13,6 +13,11 @@
     var _busy = false;
     var _iconsReady = false;
     var _cssLink = null;
+    var _resizeObserver = null;
+
+    // 设计分辨率
+    var DESIGN_W = 1024;
+    var DESIGN_H = 576;
 
     // DOM refs (set in createDOM)
     var _leftEl, _rightEl, _closeBtn;
@@ -45,13 +50,15 @@
         _el.style.padding = '0';
 
         _el.innerHTML = '' +
-            '<div class="task-panel-container">' +
-                '<div class="task-panel-top">' +
-                    '<button class="task-panel-close" title="关闭">✕</button>' +
-                '</div>' +
-                '<div class="task-panel-left" id="task-panel-left"></div>' +
-                '<div class="task-panel-right" id="task-panel-right">' +
-                    '<div class="task-empty-hint">请从左侧选择一个任务</div>' +
+            '<div class="task-panel-scale-shell">' +
+                '<div class="task-panel-container">' +
+                    '<div class="task-panel-top">' +
+                        '<button class="task-panel-close" title="关闭">✕</button>' +
+                    '</div>' +
+                    '<div class="task-panel-left" id="task-panel-left"></div>' +
+                    '<div class="task-panel-right" id="task-panel-right">' +
+                        '<div class="task-empty-hint">请从左侧选择一个任务</div>' +
+                    '</div>' +
                 '</div>' +
             '</div>';
 
@@ -93,6 +100,8 @@
         if (typeof Icons !== 'undefined' && Icons && Icons.load) {
             Icons.load(function() { _iconsReady = true; });
         }
+        updateFitScale();
+        bindScaleWatcher();
         requestSnapshot();
     }
 
@@ -106,9 +115,49 @@
         _pendingReq = {};
         _busy = false;
         _session++;
+        unbindScaleWatcher();
         if (_cssLink && _cssLink.parentNode) {
             _cssLink.parentNode.removeChild(_cssLink);
             _cssLink = null;
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 缩放（设计分辨率 1024×576 → 窗口自适应）
+    // ═══════════════════════════════════════════════════════════
+    function scheduleScaleUpdate() {
+        if (typeof requestAnimationFrame === 'function') {
+            requestAnimationFrame(updateFitScale);
+        } else {
+            setTimeout(updateFitScale, 0);
+        }
+    }
+
+    function updateFitScale() {
+        if (!_el) return;
+        var width = _el.clientWidth || _el.offsetWidth || 0;
+        var height = _el.clientHeight || _el.offsetHeight || 0;
+        if (!width || !height) return;
+        var scale = Math.min(width / DESIGN_W, height / DESIGN_H);
+        if (!isFinite(scale) || scale <= 0) scale = 1;
+        _el.style.setProperty('--task-scale', scale.toFixed(4));
+    }
+
+    function bindScaleWatcher() {
+        unbindScaleWatcher();
+        window.addEventListener('resize', scheduleScaleUpdate);
+        if (typeof ResizeObserver !== 'undefined' && _el) {
+            _resizeObserver = new ResizeObserver(scheduleScaleUpdate);
+            _resizeObserver.observe(_el);
+            if (_el.parentElement) _resizeObserver.observe(_el.parentElement);
+        }
+    }
+
+    function unbindScaleWatcher() {
+        window.removeEventListener('resize', scheduleScaleUpdate);
+        if (_resizeObserver) {
+            _resizeObserver.disconnect();
+            _resizeObserver = null;
         }
     }
 

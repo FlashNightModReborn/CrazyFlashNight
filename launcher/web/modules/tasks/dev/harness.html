@@ -144,9 +144,11 @@
             width:720px;
             height: 60px;
             padding: 0 20px 0 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             text-align: left;
             color: #fff;
-            font-size: 24px;
             flex-shrink: 0;
         }
         /* 遮罩 */
@@ -165,6 +167,20 @@
             0%   { transform: scaleX(1); }
             50%  { transform: scaleX(0.005); }
             100% { transform: scaleX(0.015); }
+        }
+        .task-title-line1 {
+            display: block;
+            font-size: 18px;
+            animation: text-slide-in 0.6s ease-out 0.5s both;
+        }
+        .task-title-line2 {
+            display: block;
+            font-size: 24px;
+            animation: text-slide-in 0.6s ease-out 0.8s both;
+        }
+        @keyframes text-slide-in {
+            0%   { transform: translateX(-100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
         }
 
         /* 任务描述动画 */
@@ -347,7 +363,12 @@
             box-sizing: border-box;
             padding: 0 20px 2px 20px;
             text-align: left;
+            color: #333;
             font-size: 18px;
+        }
+        .task-npc-name span {
+            display: block;
+            animation: text-slide-in 0.6s ease-out both;
         }
         .task-npc-name::after {
             content: '';
@@ -414,6 +435,8 @@
         .task-reward-box span {
             position: relative;
             z-index: 1;  /* 文字在遮罩之上 */
+            display: block;
+            animation: text-slide-in 0.6s ease-out both;
         }
         @keyframes task-reward-reveal {
             0%   { left: 90%; }
@@ -520,7 +543,10 @@
         </button>
     </div>
     <div class="container_right">
-        <div class="task-title-box">主线任务<br>初入战场</div>
+        <div class="task-title-box">
+            <span class="task-title-line1">任务详情</span>
+            <span class="task-title-line2">初入战场</span>
+        </div>
         <div class="task-desc-box">
             前往前线营地，与指挥官对话并了解当前战况。
             <span class="corner-horizontal top-left"></span>
@@ -555,7 +581,7 @@
                 <div class="task-npc-left">
                     <div class="scroll-track"></div>
                     <div class="task-npc-title"></div>
-                    <div class="task-npc-name">NPC</div>
+                    <div class="task-npc-name"><span>NPC</span></div>
                 </div>
                 <div class="task-npc-avatar"></div>
             </div>
