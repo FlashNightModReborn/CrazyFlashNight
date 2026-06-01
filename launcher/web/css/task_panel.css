@@ -29,8 +29,8 @@
     width: 36px;
     height: 36px;
     background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 4px;
+    border: none;
+    border-radius: 8px;
     color: #fff;
     font-size: 20px;
     cursor: pointer;
@@ -56,16 +56,16 @@
     overflow-y: auto;
 }
 
-.task-panel-left::-webkit-scrollbar { width: 4px; }
-.task-panel-left::-webkit-scrollbar-track { background: rgba(0,240,255,0.03); }
-.task-panel-left::-webkit-scrollbar-thumb { background: rgba(0,240,255,0.15); border-radius: 2px; }
-.task-panel-left::-webkit-scrollbar-thumb:hover { background: rgba(0,240,255,0.3); }
+.task-panel-left::-webkit-scrollbar { width: 12px; }
+.task-panel-left::-webkit-scrollbar-track { background: rgba(217,217,217,0.03); }
+.task-panel-left::-webkit-scrollbar-thumb { background: rgba(217,217,217,0.2); border-radius: 4px; }
+.task-panel-left::-webkit-scrollbar-thumb:hover { background: rgba(217,217,217,0.5); }
 
 .task-panel-right {
     width: 74%;
     height: 90%;
     box-sizing: border-box;
-    padding: 4px;
+    padding: 0 5px 0 15px;
     display: flex;
     flex-direction: column;
 }
@@ -179,7 +179,7 @@
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
-    width: 720px;
+    width: 700px;
     height: 60px;
     padding: 0 20px 0 20px;
     display: flex;
@@ -231,7 +231,7 @@
 .task-desc-box {
     position: relative;
     box-sizing: border-box;
-    width: 720px;
+    width: 700px;
     height: 140px;
     padding: 12px 30px 12px 30px;
     margin: 20px 0;
