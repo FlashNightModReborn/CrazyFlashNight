@@ -294,6 +294,9 @@
             updateStatusBar();
             renderPetGrid();
             if (_currentPage === 'advance') renderAdvancePage();
+            // 商店分类页签依赖 _snapshot.categories；若在 snapshot 返回前已进入商店（快速点击 /
+            // snapshot 较慢），tabs 此前会渲染为空，snapshot 到达后在此补渲染，避免页签永久空白。
+            if (_currentPage === 'store') renderStoreCategories();
         });
     }
 
@@ -525,7 +528,12 @@
             var status = (pet.schemeStatus && pet.schemeStatus[schemeName]) ? pet.schemeStatus[schemeName] : null;
             var isMaxed = status ? !!status.completed : false;
             var levelOk = status ? !status.locked : (pet.level >= (scheme.unlockLevel || 0));
-            var canAfford = (_snapshot && _snapshot.gold >= (scheme.gold || 0)) || (scheme.gold || 0) === 0;
+            // 反复型（开关/购买后开关）：repeatable=true。purchased=false 表示"购买后开关"的前置购买未完成，
+            // 此时仍走购买价门槛；purchased=true（含纯开关）则为免费切换，不受 gold 门槛影响。
+            var repeatable = status ? !!status.repeatable : false;
+            var purchased = status ? !!status.purchased : false;
+            var freeToggle = repeatable && purchased;
+            var canAfford = freeToggle || (_snapshot && _snapshot.gold >= (scheme.gold || 0)) || (scheme.gold || 0) === 0;
 
             var promoEl = document.createElement('div');
             promoEl.className = 'pet-promo-item';
@@ -542,6 +550,10 @@
             } else if (!levelOk) {
                 statusText = '需Lv.' + (scheme.unlockLevel || 0) + '解锁';
                 actionBtn = '<button class="pet-promo-btn" disabled>未解锁</button>';
+            } else if (freeToggle) {
+                // 反复型且无购买门槛：始终可点击；启用/停用由 AS2 执行内部处理，不重复扣费
+                statusText = '可切换';
+                actionBtn = '<button class="pet-promo-btn pet-promo-btn-buy" data-scheme="' + escapeHtml(schemeName) + '">' + (scheme.buttonText || '执行') + '</button>';
             } else if (!canAfford && scheme.gold > 0) {
                 statusText = '金币不足';
                 actionBtn = '<button class="pet-promo-btn pet-promo-btn-buy" data-scheme="' + escapeHtml(schemeName) + '">' + formatMoney(scheme.gold) + '金 ' + (scheme.buttonText || '执行') + '</button>';
@@ -920,7 +932,8 @@
     function escapeHtml(s) {
         if (!s) return '';
         s = String(s);
-        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        // 同时转义单引号：当前动态值均进双引号属性/textContent（不可越权），单引号仅作纵深防御
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
     function hasPet(petId) {

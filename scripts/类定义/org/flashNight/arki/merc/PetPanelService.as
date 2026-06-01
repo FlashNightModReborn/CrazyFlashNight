@@ -140,7 +140,11 @@ class org.flashNight.arki.merc.PetPanelService {
                 if (scDef == undefined) continue;
                 statusMap[sNm] = {
                     completed: isSchemeCompleted(sNm, scDef, attrs),
-                    locked: isSchemeLocked(scDef, attrs, Number(info[1]))
+                    locked: isSchemeLocked(scDef, attrs, Number(info[1])),
+                    // 反复型(开关/购买后开关)：JS 据此渲染为可反复点击的开关按钮，不显示"已完成"。
+                    repeatable: isSchemeRepeatable(sNm, scDef),
+                    // 购买后开关的前置购买是否完成（纯开关恒 true）：决定显示购买价还是免费开关。
+                    purchased: isSchemePurchased(sNm, scDef, attrs)
                 };
             }
             petEntry.schemeStatus = statusMap;
@@ -195,6 +199,10 @@ class org.flashNight.arki.merc.PetPanelService {
                 kpoint: Number(sc.消耗K点) || 0,
                 unlockLevel: Number(sc.解锁等级) || 0,
                 buttonText: String(sc.执行按钮文字 || "执行"),
+                // 进阶类型："开关"/"购买后开关"（反复型）或 ""（一次性购买/三件套）。
+                // 对纯开关，gold 是运行时(每张图)扣费而非升级价，JS 不应据此做购买门槛。
+                // 字段优先，缺失回退类内已知集合（帧脚本未重发布时仍正确）。
+                type: getSchemeType(sName, sc),
                 desc: scDesc
             };
         }
@@ -1024,17 +1032,57 @@ class org.flashNight.arki.merc.PetPanelService {
         return out;
     }
 
+    // 反复型方案的类内回退映射。权威来源是 战宠进阶函数[方案].进阶类型，但该数据定义在帧脚本
+    // (单位函数_aka_战宠进阶.as)里，需重发布主 SWF 才生效；本类经 asLoader 单独编译刷新更快。
+    // 为避免"类已更新、帧脚本未重发布"时反复型方案被误锁，这里内置已知集合作回退（字段优先于回退）。
+    private static var _repeatableTypes:Object = null;
+    private static function getRepeatableTypes():Object {
+        if (_repeatableTypes == null) {
+            _repeatableTypes = { 常驻淬毒:"开关", 切换发型:"开关", 影子刺客:"购买后开关" };
+        }
+        return _repeatableTypes;
+    }
+
+    // 取方案进阶类型："开关"/"购买后开关"（反复型）或 ""（一次性购买/三件套）。
+    // 字段(进阶类型)优先；缺失时回退到类内已知集合。
+    private static function getSchemeType(schemeName:String, sc:Object):String {
+        if (sc != undefined && sc.进阶类型 != undefined && sc.进阶类型 != "") return String(sc.进阶类型);
+        var m:Object = getRepeatableTypes();
+        return (m[schemeName] != undefined) ? String(m[schemeName]) : "";
+    }
+
+    // 判定某进阶方案是否为"可反复执行"型（开关 / 购买后开关），这类方案永不进入"已完成"锁死态。
+    // 进阶类型="开关"      纯开关(切换发型/常驻淬毒)：无前置购买，反复切换。
+    // 进阶类型="购买后开关" 混合(影子刺客)：首次=一次性付费购买，购买后=免费启用/停用开关。
+    private static function isSchemeRepeatable(schemeName:String, sc:Object):Boolean {
+        var t:String = getSchemeType(schemeName, sc);
+        return t == "开关" || t == "购买后开关";
+    }
+
     // 判定某进阶方案对该宠物是否已完成（用于 UI 禁用 + handleAdvance 服务端守卫）。
-    // 三件套(基础训练/强化药剂/超级血清)共用累进计数 基础训练.次数，按各自 次数上限 判定；
-    // 一次性付费方案(钙化/武器升级等)按自身布尔标志判定；免费开关方案(切换发型/常驻淬毒)永不判完成。
+    // 反复型(开关/购买后开关)永不"完成"（否则会被锁死无法再切换，见影子刺客/常驻淬毒）；
+    // 三件套(基础训练/强化药剂/超级血清)共用累进计数 基础训练.次数，按各自 次数上限(>0) 判定；
+    // 一次性付费方案(钙化/武器升级等)按自身布尔标志判定。
+    // 隐含契约：次数上限>0 的方案当前均以 基础训练.次数 为权威累进计数（仅三件套），新增此类方案须沿用同源计数。
     private static function isSchemeCompleted(schemeName:String, sc:Object, attrs:Object):Boolean {
         if (sc == undefined) return false;
-        if (sc.次数上限 != undefined) {
+        if (isSchemeRepeatable(schemeName, sc)) return false;
+        if (sc.次数上限 != undefined && Number(sc.次数上限) > 0) {
             var cnt:Number = (attrs != undefined && attrs.基础训练 != undefined) ? (Number(attrs.基础训练.次数) || 0) : 0;
             return cnt >= Number(sc.次数上限);
         }
         var paid:Boolean = (Number(sc.消耗金币) || 0) > 0 || (Number(sc.消耗K点) || 0) > 0;
         if (!paid) return false;
+        var flag:Object = (attrs != undefined) ? attrs[schemeName] : undefined;
+        return flag != undefined && flag !== false && flag !== 0 && flag !== "";
+    }
+
+    // 判定"购买后开关"型方案的前置一次性购买是否已完成（决定 UI 显示"购买价"还是"免费开关"）。
+    // 纯开关型无购买前置，恒视为已就绪；非反复型不适用。
+    private static function isSchemePurchased(schemeName:String, sc:Object, attrs:Object):Boolean {
+        var t:String = getSchemeType(schemeName, sc);
+        if (t == "开关") return true; // 纯开关无购买前置
+        if (t != "购买后开关") return false;
         var flag:Object = (attrs != undefined) ? attrs[schemeName] : undefined;
         return flag != undefined && flag !== false && flag !== 0 && flag !== "";
     }
