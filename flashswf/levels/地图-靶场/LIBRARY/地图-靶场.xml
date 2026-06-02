@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-靶场" itemID="66337922-00000dda" linkageExportForAS="true" linkageIdentifier="地图-靶场" lastModified="1779267021" lastUniqueIdentifier="109">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-靶场" itemID="66337922-00000dda" linkageExportForAS="true" linkageIdentifier="地图-靶场" lastModified="1780377617" lastUniqueIdentifier="116">
   <timeline>
     <DOMTimeline name="地图-靶场">
       <layers>
@@ -137,6 +137,54 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="靶子" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/靶子1" centerPoint3DX="768.45" centerPoint3DY="552.3">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="736.25" ty="480.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.15" y="93.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/靶子2" centerPoint3DX="490" centerPoint3DY="713.25">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="455.55" ty="642.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62.7" y="88.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/靶子3" centerPoint3DX="797.2" centerPoint3DY="690.6">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="759.6" ty="619.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.75" y="94.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="终结者靶子" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/怪物堆" centerPoint3DX="2446.9" centerPoint3DY="712.5">
+                  <matrix>
+                    <Matrix tx="2284" ty="618.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="162" y="93.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="高一点的障碍" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -170,7 +218,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="背景" name="背景" centerPoint3DX="1423.55" centerPoint3DY="487.8">
+                <DOMSymbolInstance libraryItemName="背景" name="背景" selected="true" centerPoint3DX="1423.55" centerPoint3DY="487.8">
                   <matrix>
                     <Matrix tx="-70" ty="-60.05"/>
                   </matrix>
