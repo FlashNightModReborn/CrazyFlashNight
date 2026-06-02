@@ -11,6 +11,12 @@
     var _activePetIdx = -1;
     var _storeCategoryIdx = 0;
     var _storeData = [];
+    // 商城分类（名称+顺序）现由 C# 直答的 adopt_list 回包携带（pets.xml 静态投影），
+    // 不再依赖 _snapshot.categories（已从 AS2 snapshot 移除）。
+    var _storeCategories = [];
+    // 宠物库（进阶页查方案列表用）现由 C# 直答 pet_lib 提供，不再依赖 _snapshot.petLib。
+    // session 级静态缓存（pets.xml 投影），开面板拉一次。
+    var _petLib = null;
     var _pendingReq = {};
     var _reqSeq = 0;
     var _session = 0;
@@ -201,6 +207,18 @@
         hideToast();
         navigateTo('list');
         requestSnapshot();
+        if (!_petLib) requestPetLib();
+    }
+
+    // 宠物库（静态，来自 C# pet_lib 直答）。session 内只拉一次，进阶页 getPetLibDef 读它。
+    function requestPetLib() {
+        sendPanelMsg('pet_lib', null, function(data) {
+            if (data && data.success && data.petLib) {
+                _petLib = data.petLib;
+                // 若此刻正停留在进阶页，补一次渲染（pet_lib 晚于首次进入时）
+                if (_currentPage === 'advance') renderAdvancePage();
+            }
+        });
     }
 
     function requestClose() {
@@ -294,9 +312,7 @@
             updateStatusBar();
             renderPetGrid();
             if (_currentPage === 'advance') renderAdvancePage();
-            // 商店分类页签依赖 _snapshot.categories；若在 snapshot 返回前已进入商店（快速点击 /
-            // snapshot 较慢），tabs 此前会渲染为空，snapshot 到达后在此补渲染，避免页签永久空白。
-            if (_currentPage === 'store') renderStoreCategories();
+            // 商店分类已改由 adopt_list（C# 直答）携带，与 snapshot 解耦，无需在此补渲染。
         });
     }
 
@@ -308,6 +324,7 @@
                 return;
             }
             _storeData = data.adoptable || [];
+            if (data.categories) _storeCategories = data.categories;
             if (cb) cb(true);
         });
     }
@@ -500,11 +517,11 @@
         renderPromotions(pet);
     }
 
-    // 从 snapshot.petLib 查宠物库定义（权威来自 data/merc/pets.xml，经 AS2 下发）
+    // 从 C# pet_lib 直答的宠物库查定义（权威来自 data/merc/pets.xml，C# 直读，不再经 AS2 snapshot）
     function getPetLibDef(petId) {
-        if (!_snapshot || !_snapshot.petLib) return null;
-        for (var i = 0; i < _snapshot.petLib.length; i++) {
-            if (_snapshot.petLib[i].id === petId) return _snapshot.petLib[i];
+        if (!_petLib) return null;
+        for (var i = 0; i < _petLib.length; i++) {
+            if (_petLib[i].id === petId) return _petLib[i];
         }
         return null;
     }
@@ -607,7 +624,7 @@
     function renderStoreCategories() {
         var tabsEl = _el.querySelector('#pet-store-tabs');
         tabsEl.innerHTML = '';
-        var categories = (_snapshot && _snapshot.categories) ? _snapshot.categories : [];
+        var categories = _storeCategories || [];
 
         for (var c = 0; c < categories.length; c++) {
             var tab = document.createElement('button');
@@ -651,8 +668,15 @@
             var card = document.createElement('div');
             card.className = 'pet-store-card';
 
+            // 金币价覆盖：IncreasePrice 宠物的当前价（含已购涨价）来自 snapshot.priceOverrides（AS2 权威），
+            // 否则用 adopt_list 的 pets.xml 基础价。K点价不涨。
+            var effPrice = pet.price;
+            if (_snapshot && _snapshot.priceOverrides && _snapshot.priceOverrides[pet.petId] != null) {
+                effPrice = _snapshot.priceOverrides[pet.petId];
+            }
+
             var priceText = '';
-            if (pet.price > 0) priceText += formatMoney(pet.price) + '金币';
+            if (effPrice > 0) priceText += formatMoney(effPrice) + '金币';
             if (pet.kprice > 0) {
                 if (priceText) priceText += ' / ';
                 priceText += formatMoney(pet.kprice) + 'K点';
@@ -675,7 +699,7 @@
             } else if (_snapshot && _pets.length >= _snapshot.maxSlots) {
                 canAdopt = false;
                 btnText = '宠物栏已满';
-            } else if (_snapshot && pet.price > 0 && _snapshot.gold < pet.price) {
+            } else if (_snapshot && effPrice > 0 && _snapshot.gold < effPrice) {
                 canAdopt = false;
                 // 不改变text
             } else if (_snapshot && pet.kprice > 0 && _snapshot.kpoint < pet.kprice) {

@@ -2,6 +2,23 @@
 
 _root.战宠UI函数 = new Object();
 
+// 宠物当前金币售价 = 基础价 + IncreasePrice×已购次数。
+// 设计意图：IncreasePrice>0 的宠物每买一只就更贵，抑制玩家堆同质化战宠（购买价 + 刷怪可雇用价同步上涨）。
+// 已购次数持久化于 _root._saveExt.宠物购买次数（存档预留命名空间，随 mydata.ext 往返）。
+// 旧实现靠原地改写 _root.宠物库[id].Price 累积（会话内、不入存档）；现改为基于次数计算，配置保持只读。
+// 权威单一来源：商城购买(PetPanelService)与刷怪雇佣价(计算可雇用敌人价格)都调本函数。
+_root.获取宠物当前售价 = function(petId){
+	var def = _root.宠物库[petId];
+	if(def == undefined) return 0;
+	var base = Number(def.Price) || 0;
+	var inc = Number(def.IncreasePrice) || 0;
+	if(inc <= 0) return base;
+	var ext = _root._saveExt;
+	var cnt = (ext != undefined && ext.宠物购买次数 != undefined) ? Number(ext.宠物购买次数[petId]) : 0;
+	if(isNaN(cnt)) cnt = 0;
+	return base + inc * cnt;
+}
+
 _root.开宠物格子 = function(){
 	_root.宠物领养限制 += 1;
 	_root.宠物信息.push([]);

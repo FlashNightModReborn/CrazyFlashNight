@@ -761,7 +761,7 @@ class Program
         MapTask mapTask = new MapTask(socketServer);
         StageSelectTask stageSelectTask = new StageSelectTask(socketServer);
         ArenaTask arenaTask = new ArenaTask(socketServer);
-        PetTask petTask = new PetTask(socketServer);
+        PetTask petTask = new PetTask(socketServer, projectRoot);
         MercTask mercTask = new MercTask(socketServer);
         TaskTask taskTask = new TaskTask(socketServer);
         IntelligenceTask intelligenceTask = new IntelligenceTask(projectRoot, socketServer);

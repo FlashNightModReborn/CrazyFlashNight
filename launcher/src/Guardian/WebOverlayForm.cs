@@ -3455,6 +3455,7 @@ namespace CF7Launcher.Guardian
                 case "preview":
                 case "equip_tooltip":
                 case "adopt_list":
+                case "pet_lib":
                 case "adopt":
                 case "deploy":
                 case "advance":

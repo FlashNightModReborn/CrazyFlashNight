@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Bus;
+using CF7Launcher.Data;
 using CF7Launcher.Guardian;
 
 namespace CF7Launcher.Tasks
@@ -37,19 +39,36 @@ namespace CF7Launcher.Tasks
         private readonly object _lock = new object();
         private volatile bool _disposed;
 
+        // 商城静态目录（pets.xml）的 C# 直答缓存。projectRoot 为 null 时退化为纯 Flash 透传。
+        private readonly string _projectRoot;
+        private PetCatalog _catalog;
+        private string _catalogError;
+
         public PetTask(XmlSocketServer socket)
+            : this(socket, null)
+        {
+        }
+
+        public PetTask(XmlSocketServer socket, string projectRoot)
             : this(
                 delegate { return socket != null && socket.IsClientReady; },
-                delegate(string payload) { if (socket != null) socket.Send(payload); })
+                delegate(string payload) { if (socket != null) socket.Send(payload); },
+                projectRoot)
         {
         }
 
         public PetTask(Func<bool> isClientReady, Action<string> send)
+            : this(isClientReady, send, null)
+        {
+        }
+
+        public PetTask(Func<bool> isClientReady, Action<string> send, string projectRoot)
         {
             _isClientReady = isClientReady ?? delegate { return false; };
             _send = send ?? delegate { };
             _pending = new Dictionary<int, PendingRequest>();
             _timers = new Dictionary<int, Timer>();
+            _projectRoot = projectRoot;
         }
 
         public void SetPostToWeb(Action<string> post) { _postToWeb = post; }
@@ -72,6 +91,14 @@ namespace CF7Launcher.Tasks
             {
                 LogManager.Log("[PetTask] webCallId is empty");
                 return;
+            }
+
+            // 商城目录/宠物库是 pets.xml 的静态投影：C# 直答，不经 Flash、不需 client ready。
+            // adopt_list 顺带消除"进店早于 snapshot 返回时分类页签空白"竞态。projectRoot 缺省时退回 Flash 透传。
+            if (_projectRoot != null)
+            {
+                if (cmd == "adopt_list") { RespondAdoptList(webCallId, parsed); return; }
+                if (cmd == "pet_lib") { RespondPetLib(webCallId); return; }
             }
 
             if (!_isClientReady())
@@ -209,6 +236,120 @@ namespace CF7Launcher.Tasks
                 foreach (var t in _timers.Values) t.Dispose();
                 _timers.Clear();
                 _pending.Clear();
+            }
+        }
+
+        // ── 商城目录 C# 直答（pets.xml 静态投影，等价于 AS2 handleAdoptList + snapshot.categories）──
+
+        /// <summary>
+        /// 直答可领养列表。返回 { categories:[{name}], adoptable:[{petId,name,identifier,height,
+        /// price,kprice,unlockLevel,unlockTask,unique}] }。categories 恒为全量（供页签）；
+        /// adoptable 按 categoryIndex 过滤（&lt;0 = 全部）。运行态门槛由 Web 用 snapshot 自行判定。
+        /// </summary>
+        private void RespondAdoptList(string webCallId, JObject parsed)
+        {
+            PetCatalog catalog;
+            string err;
+            if (!EnsureCatalogLoaded(out catalog, out err))
+            {
+                RespondError(webCallId, "adopt_list", err);
+                return;
+            }
+
+            int categoryIndex = -1;
+            JToken ciTok = parsed["categoryIndex"];
+            if (ciTok != null)
+            {
+                int ci;
+                if (int.TryParse(ciTok.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out ci))
+                    categoryIndex = ci;
+            }
+
+            var categories = new JArray();
+            var adoptable = new JArray();
+            for (int c = 0; c < catalog.Categories.Count; c++)
+            {
+                PetCatalog.PetCategory cat = catalog.Categories[c];
+                var catObj = new JObject();
+                catObj["name"] = cat.Name;
+                categories.Add(catObj);
+
+                if (categoryIndex >= 0 && c != categoryIndex) continue;
+                for (int r = 0; r < cat.Rows.Count; r++)
+                {
+                    List<int?> row = cat.Rows[r];
+                    for (int m = 0; m < row.Count; m++)
+                    {
+                        if (!row[m].HasValue) continue;
+                        PetDef def;
+                        if (catalog.PetsById.TryGetValue(row[m].Value, out def))
+                            adoptable.Add(def.ToAdoptJObject());
+                    }
+                }
+            }
+
+            var resp = new JObject();
+            resp["type"] = "panel_resp";
+            resp["panel"] = "pets";
+            resp["cmd"] = "adopt_list";
+            resp["callId"] = webCallId;
+            resp["success"] = true;
+            resp["categories"] = categories;
+            resp["adoptable"] = adoptable;
+            PostToWeb(resp.ToString(Formatting.None));
+        }
+
+        /// <summary>
+        /// 直答宠物库（替代 AS2 snapshot.petLib）。返回 { petLib:[{id,name,identifier,height,
+        /// initialLevel,unlockLevel,unlockTask,unique,price,kprice,increasePrice,promotions}] }，按 id 升序。
+        /// Web 用于进阶页查方案列表（getPetLibDef）。注：price 为 XML 基础价，会话内涨价以 AS2 为准（迁移方案 §9）。
+        /// </summary>
+        private void RespondPetLib(string webCallId)
+        {
+            PetCatalog catalog;
+            string err;
+            if (!EnsureCatalogLoaded(out catalog, out err))
+            {
+                RespondError(webCallId, "pet_lib", err);
+                return;
+            }
+
+            var petLib = new JArray();
+            List<PetDef> ordered = catalog.PetsOrderedById();
+            for (int i = 0; i < ordered.Count; i++)
+                petLib.Add(ordered[i].ToLibJObject());
+
+            var resp = new JObject();
+            resp["type"] = "panel_resp";
+            resp["panel"] = "pets";
+            resp["cmd"] = "pet_lib";
+            resp["callId"] = webCallId;
+            resp["success"] = true;
+            resp["petLib"] = petLib;
+            PostToWeb(resp.ToString(Formatting.None));
+        }
+
+        private bool EnsureCatalogLoaded(out PetCatalog catalog, out string error)
+        {
+            lock (_lock)
+            {
+                if (_catalog != null) { catalog = _catalog; error = null; return true; }
+                if (_catalogError != null) { catalog = null; error = _catalogError; return false; }
+                try
+                {
+                    _catalog = PetCatalogLoader.Load(_projectRoot);
+                    catalog = _catalog;
+                    error = null;
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    _catalogError = "pet_catalog_unavailable";
+                    LogManager.Log("[PetTask] pet catalog load FAILED: " + ex.Message);
+                    catalog = null;
+                    error = _catalogError;
+                    return false;
+                }
             }
         }
 

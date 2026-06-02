@@ -5,7 +5,6 @@
  * 同步管道（与 ArenaPanelService / MapPanelService 同构）：
  *   Web → C# PetTask → Flash gameCommands:
  *     petSnapshot       — 返回全部宠物信息快照 + 玩家状态
- *     petAdoptList      — 返回可领养宠物列表（按分类）
  *     petAdopt          — 领养宠物（petId）
  *     petDeploy         — 出战/休息切换（slotIndex）
  *     petAdvance        — 执行进阶（slotIndex, schemeName）
@@ -35,9 +34,8 @@ class org.flashNight.arki.merc.PetPanelService {
         _root.gameCommands["petSnapshot"] = function(params) {
             org.flashNight.arki.merc.PetPanelService.handleSnapshot(params);
         };
-        _root.gameCommands["petAdoptList"] = function(params) {
-            org.flashNight.arki.merc.PetPanelService.handleAdoptList(params);
-        };
+        // petAdoptList 已移除：商城静态目录改由 C# PetTask 直读 pets.xml 回答（web 直连，不经 Flash）。
+        // 见 docs/战宠pets.xml-AS2去常驻化-bundle迁移方案-2026-06-02.md。
         _root.gameCommands["petAdopt"] = function(params) {
             org.flashNight.arki.merc.PetPanelService.handleAdopt(params);
         };
@@ -159,27 +157,8 @@ class org.flashNight.arki.merc.PetPanelService {
             pets.push(petEntry);
         }
 
-        // 序列化宠物库摘要（名称+ID映射）
-        var petLib:Array = [];
-        for (var pid:Number = 0; pid < _root.宠物库.length; pid++) {
-            var def:Object = _root.宠物库[pid];
-            if (def != undefined) {
-                petLib.push({
-                    id: pid,
-                    name: String(def.Name),
-                    identifier: String(def.Identifier),
-                    height: Number(def.Height),
-                    initialLevel: Number(def.InitialLevel),
-                    unlockLevel: Number(def.UnlockLevel),
-                    unlockTask: Number(def.UnlockTask),
-                    unique: def.Unique == true,
-                    price: Number(def.Price),
-                    kprice: Number(def.KPrice),
-                    increasePrice: Number(def.IncreasePrice),
-                    promotions: extractPromotionNames(def.Promotion)
-                });
-            }
-        }
+        // 宠物库摘要（petLib）已下沉 C# PetTask.pet_lib（web 直读 pets.xml），snapshot 不再序列化下发。
+        // 见 docs/战宠pets.xml-AS2去常驻化-bundle迁移方案-2026-06-02.md（真·Phase 2）。
 
         // 序列化进阶方案数据字段（B1：数值/文本字段下发，逻辑函数 条件/执行 留 AS2）。
         // 这是 JS 进阶列表的权威来源，替代已删除的 pet-data.js SCHEMES（含修正后的累进 次数上限）。
@@ -218,13 +197,14 @@ class org.flashNight.arki.merc.PetPanelService {
             };
         }
 
-        // 序列化商城分类名（A1：替代已删除的 pet-data.js CATEGORIES；网格内容仍由 adopt_list 下发）
-        var categoriesArr:Array = [];
-        if (_root.宠物商城列表 != undefined) {
-            for (var catIdx:Number = 0; catIdx < _root.宠物商城列表.length; catIdx++) {
-                var catDef:Object = _root.宠物商城列表[catIdx];
-                if (catDef == undefined) continue;
-                categoriesArr.push({ name: String(catDef.Name) });
+        // 商城分类名 + 网格已下沉 C#（PetTask.adopt_list 直读 pets.xml），snapshot 不再下发 categories。
+        // 涨价覆盖：C# adopt_list/pet_lib 只知 pets.xml 基础价；IncreasePrice>0 的宠物当前价含已购次数，
+        // 仅 AS2 知晓（存档态），故在此随 snapshot 下发当前价，web 商城网格据此覆盖显示+可购判定。
+        var priceOverrides:Object = {};
+        for (var ovId:Number = 0; ovId < _root.宠物库.length; ovId++) {
+            var ovDef:Object = _root.宠物库[ovId];
+            if (ovDef != undefined && Number(ovDef.IncreasePrice) > 0) {
+                priceOverrides[ovId] = getPetCurrentPrice(ovId);
             }
         }
 
@@ -234,9 +214,8 @@ class org.flashNight.arki.merc.PetPanelService {
             success: true,
             snapshot: {
                 pets: pets,
-                petLib: petLib,
                 schemes: schemesMap,
-                categories: categoriesArr,
+                priceOverrides: priceOverrides,
                 gold: Number(_root.金钱) || 0,
                 kpoint: Number(_root.虚拟币) || 0,
                 playerLevel: Number(_root.等级) || 1,
@@ -249,54 +228,9 @@ class org.flashNight.arki.merc.PetPanelService {
         });
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // handleAdoptList — 返回可领养宠物列表
-    // ═══════════════════════════════════════════════════════════
-    public static function handleAdoptList(params:Object):Void {
-        var callId = params.callId;
-        var categoryIdx:Number = Number(params.categoryIndex);
-        if (isNaN(categoryIdx)) categoryIdx = -1;
-
-        var adoptable:Array = [];
-        if (_root.宠物商城列表 != undefined) {
-            for (var c:Number = 0; c < _root.宠物商城列表.length; c++) {
-                if (categoryIdx >= 0 && c != categoryIdx) continue;
-                var cat:Object = _root.宠物商城列表[c];
-                // cat.List 是二维数组：[[0,1,2], [3,4,5], ...]（XML 解析时按 <List> 分行）
-                var rows:Array = cat.List;
-                if (rows == undefined) continue;
-                for (var j:Number = 0; j < rows.length; j++) {
-                    var row:Array = rows[j];
-                    if (row == undefined) continue;
-                    for (var m:Number = 0; m < row.length; m++) {
-                        var petId:Number = Number(row[m]);
-                        if (isNaN(petId) || petId == null) continue;
-                        var petDef:Object = _root.宠物库[petId];
-                        if (petDef == undefined) continue;
-
-                        adoptable.push({
-                            petId: petId,
-                            name: String(petDef.Name),
-                            identifier: String(petDef.Identifier),
-                            height: Number(petDef.Height),
-                            price: Number(petDef.Price),
-                            kprice: Number(petDef.KPrice),
-                            unlockLevel: Number(petDef.UnlockLevel),
-                            unlockTask: Number(petDef.UnlockTask),
-                            unique: petDef.Unique == true
-                        });
-                    }
-                }
-            }
-        }
-
-        sendResponse({
-            task: "pet_response",
-            callId: callId,
-            success: true,
-            adoptable: adoptable
-        });
-    }
+    // handleAdoptList 已删除：商城静态目录（分类网格 + 宠物展示定义）改由 C# PetTask 直读 pets.xml
+    // 回答 web（不经 Flash），AS2 不再常驻 _root.宠物商城列表。运行态门槛（金币/等级/任务进度/格子）
+    // 仍由 web 端用 snapshot 字段判定。等价 C#：launcher/src/Data/PetCatalogLoader.cs + PetTask.RespondAdoptList。
 
     // ═══════════════════════════════════════════════════════════
     // handleAdopt — 领养宠物
@@ -340,8 +274,8 @@ class org.flashNight.arki.merc.PetPanelService {
             }
         }
 
-        // 检查金币/K点
-        var price:Number = Number(petDef.Price);
+        // 检查金币/K点。金币价 = 基础价 + IncreasePrice×已购次数（持久涨价，见 getPetCurrentPrice）。
+        var price:Number = getPetCurrentPrice(petId);
         var kprice:Number = Number(petDef.KPrice);
         if (price > 0 && _root.金钱 < price) {
             sendResponse({ task: "pet_response", callId: callId, success: false, error: "insufficient_gold" });
@@ -360,13 +294,15 @@ class org.flashNight.arki.merc.PetPanelService {
         var initialLevel:Number = Number(petDef.InitialLevel) || 1;
         var newPet:Array = [petId, initialLevel, 200, 0, 0, {}];
 
-        // 处理 IncreasePrice（每次购买后涨价）
+        // 涨价：记已购次数（持久于存档），不再原地改写 宠物库.Price 配置。
+        // 副作用更正：旧实现改写 宠物库.Price 会连带抬高 刷怪系统 算的可雇用宠物价；
+        // 改为基于次数计算后，刷怪价回到基础价（解除该意外耦合）。
         if (Number(petDef.IncreasePrice) > 0) {
-            petDef.Price += Number(petDef.IncreasePrice);
+            incrementPetPurchaseCount(petId);
         }
 
         _root.宠物信息[emptySlot] = newPet;
-        // Plan A audit: handleBuy 写 金钱/虚拟币/宠物信息，必须标脏
+        // Plan A audit: handleBuy 写 金钱/虚拟币/宠物信息/购买次数，必须标脏
         _root.存档系统.dirtyMark = true;
 
         // 刷新宠物UI
@@ -991,6 +927,36 @@ class org.flashNight.arki.merc.PetPanelService {
         _root.server.sendSocketMessage(_json.stringify(resp));
     }
 
+    // ── 宠物购买涨价（持久）─────────────────────────────────────────────
+    // IncreasePrice>0 的宠物每购买一次金币价 +IncreasePrice。已购次数持久化于
+    // _root._saveExt.宠物购买次数（存档预留命名空间，随 mydata.ext 往返，无需改 SaveManager/C#）。
+    // Price 不再原地改写 宠物库 配置（配置保持只读=基础价），价格处处由次数计算。
+    private static function getPetPurchaseCount(petId:Number):Number {
+        var ext:Object = _root._saveExt;
+        if (ext == undefined || ext.宠物购买次数 == undefined) return 0;
+        var c:Number = Number(ext.宠物购买次数[petId]);
+        return isNaN(c) ? 0 : c;
+    }
+
+    private static function getPetCurrentPrice(petId:Number):Number {
+        // 权威单一来源：引擎 _root.获取宠物当前售价（战宠系统.as），与刷怪雇佣价同口径。
+        // 下方 inline 仅作 fallback，防 asLoader 先于主 SWF 重发布的过渡期。
+        if (typeof _root.获取宠物当前售价 == "function") return Number(_root.获取宠物当前售价(petId));
+        var def:Object = _root.宠物库[petId];
+        if (def == undefined) return 0;
+        var base:Number = Number(def.Price) || 0;
+        var inc:Number = Number(def.IncreasePrice) || 0;
+        if (inc <= 0) return base;
+        return base + inc * getPetPurchaseCount(petId);
+    }
+
+    private static function incrementPetPurchaseCount(petId:Number):Void {
+        if (_root._saveExt == undefined) _root._saveExt = {};
+        if (_root._saveExt.宠物购买次数 == undefined) _root._saveExt.宠物购买次数 = {};
+        var c:Number = Number(_root._saveExt.宠物购买次数[petId]);
+        _root._saveExt.宠物购买次数[petId] = (isNaN(c) ? 0 : c) + 1;
+    }
+
     /** 计算最大出战数 */
     private static function calcMaxDeploy():Number {
         if (_root.战宠UI函数 != undefined && _root.战宠UI函数.计算战宠最大出战数 != undefined) {
@@ -1045,11 +1011,17 @@ class org.flashNight.arki.merc.PetPanelService {
 
     // 用真实宠物 ctx 计算反复型(开关)方案的列表描述（自带当前开关状态）。先调 初始化 补默认值
     // （如 切换发型 默认发色），避免显示 "undefined发"；再取 描述（短文，含"点击可开启/关闭"等状态语）
-    // 的首段。仅作显示，不主动标脏——默认值未落盘也会在下次 snapshot 重新补上。
+    // 的首段。
+    // 注意：当前宠物属性 用浅拷贝而非真实 attrs 引用——初始化 会向 ctx.当前宠物属性 写默认值
+    // （如 发色="橙"），若直接传真实 attrs，纯展示的描述构建会静默改写权威内存态（不标脏 → 与存档脱同步）。
+    // 浅拷贝后 初始化 只动副本，描述照常显示默认值，真实 attrs 保持只读。
     private static function buildSchemePerPetDesc(sc:Object, info:Array, attrs:Object):String {
-        var ctxAttrs:Object = (attrs != undefined && typeof attrs == "object") ? attrs : {};
+        var ctxAttrs:Object = {};
+        if (attrs != undefined && typeof attrs == "object") {
+            for (var k:String in attrs) ctxAttrs[k] = attrs[k];
+        }
         var ctx:Object = { 当前宠物信息: info, 当前宠物属性: ctxAttrs, 进阶方案: _root.战宠进阶函数 };
-        if (typeof sc.初始化 == "function") sc.初始化.call(ctx); // 补默认值（如发色）
+        if (typeof sc.初始化 == "function") sc.初始化.call(ctx); // 补默认值（如发色），只动副本
         var d:String = "";
         if (typeof sc.描述 == "function") d = String(sc.描述.call(ctx));
         else if (sc.描述 != undefined) d = String(sc.描述);

@@ -532,25 +532,9 @@ _root.加载并配置宠物信息 = function(xml文件地址:String):Void
 		if (加载成功){
 			var 宠物数据 = _root.解析XML节点(this.firstChild);
 			_root.宠物库 = 宠物数据.Pet;
-			var categories = 宠物数据.PetStore.Category;
-			for(var i=0; i<categories.length; i++){
-				category = categories[i];
-				category.List = _root.配置数据为数组(category.List);
-
-				for(var j=0; j<category.List.length; j++){
-					if(!isNaN(category.List[j])) {
-						category.List[j] = [category.List[j]];
-						continue;
-					}
-					var listArr = category.List[j].split(',');
-					for(var k=0; k<listArr.length; k++){
-						var num = Number(listArr[k])
-						listArr[k] = isNaN(num) ? null : num;
-					}
-					category.List[j] = listArr;
-				}
-			}
-			_root.宠物商城列表 = categories;
+			// 商城分类网格（<PetStore>）不再在 AS2 解析/常驻：已下沉 C# PetTask.adopt_list（web 直连读 pets.xml）。
+			// 见 docs/战宠pets.xml-AS2去常驻化-bundle迁移方案-2026-06-02.md（Phase 1）。
+			// 注：_root.宠物库（<Pet>）仍保留——战斗出战/刷怪/升级 + snapshot.petLib 需要；Phase 2 再下沉。
 
 		}else{
 			//_root.服务器.发布服务器消息("无法加载 XML 文件: " + xml文件地址);
