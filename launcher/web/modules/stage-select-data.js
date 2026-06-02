@@ -505,6 +505,50 @@ var StageSelectData = (function() {
                             "h": 69
                         },
                         "previewMissing": false
+                    },
+                    {
+                        "id": "stage_0_10",
+                        "frameLabel": "基地门口",
+                        "stageName": "外交-隧道据点",
+                        "detail": "",
+                        "x": 564.45,
+                        "y": 200.05,
+                        "centerX": 785.45,
+                        "centerY": 425.15,
+                        "sourceFrameIndex": 0,
+                        "sourceKind": "config",
+                        "entryKind": "map",
+                        "visualKind": "map-direct",
+                        "stageType": "外交地图",
+                        "stageArea": "基地门口",
+                        "rootFadeTransitionFrame": "地图-隧道据点",
+                        "libraryItemName": "选关界面UI/外交地图-隧道据点",
+                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
+                        "previewAssetName": "stage-default.jpg",
+                        "previewSource": "default",
+                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewSourceFrameIndex": 1,
+                        "previewCrop": {
+                            "x": 65,
+                            "y": 10,
+                            "w": 161,
+                            "h": 69
+                        },
+                        "previewMissing": false,
+                        "directLayout": {
+                            "marker": {
+                                "x": 70.5,
+                                "y": 14.6
+                            },
+                            "text": {
+                                "x": 2,
+                                "y": 30.3,
+                                "width": 137,
+                                "height": 34.3,
+                                "label": "前往隧道据点"
+                            },
+                            "sourceSymbol": "选关界面UI/外交地图-隧道据点"
+                        }
                     }
                 ],
                 "navButtons": [

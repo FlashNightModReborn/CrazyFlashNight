@@ -808,6 +808,21 @@
         <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
+        <BackgroundURL>地图-隧道据点</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>30</Xmin>
+        <Xmax>1450</Xmax>
+        <Ymin>400</Ymin>
+        <Ymax>700</Ymax>
+        <Width>1450</Width>
+        <Height>700</Height>
+        <Horizon>0</Horizon>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>4</MaxIllumination>
+        <MinIllumination>3</MinIllumination>
+        <BGM>Dialtone</BGM>
+    </Environment>
+    <Environment>
         <BackgroundURL>地图-同盟卸货站</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>120</Xmin>

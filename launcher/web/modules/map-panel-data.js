@@ -53,6 +53,7 @@ var MapPanelData = (function() {
             },
             hotspots: {
                 first_defense: 'defense',
+                subway: 'defense',
                 alliance_dock: 'restricted',
                 alliance_corridor: 'restricted'
             }
@@ -96,6 +97,7 @@ var MapPanelData = (function() {
         warlord_base: true,
         warlord_tent: true,
         firing_range: true,
+        subway: true,
         alliance_dock: true,
         alliance_corridor: true
     };
@@ -130,6 +132,7 @@ var MapPanelData = (function() {
         },
         defense: {
             first_defense: { x: 60, y: 94.7, w: 255.1, h: 86.7 },
+            subway: { x: 360, y: 94.7, w: 270, h: 102 },
             alliance_dock: { x: 38.75, y: 260.4, w: 240.3, h: 98.8 },
             alliance_corridor: { x: 46.4, y: 299.1, w: 247.2, h: 172.6 }
         },
@@ -341,18 +344,20 @@ var MapPanelData = (function() {
             height: 608,
             sceneVisuals: [
                 { id: 'first_defense_visual', label: '第一防线', assetUrl: 'assets/map/composite/defense/first-defense.png', rect: { x: 60, y: 94.7, w: 285, h: 116 }, filterIds: ['first_line', 'all'], hotspotIds: ['first_defense'] },
+                { id: 'subway_visual', label: '隧道据点', assetUrl: 'assets/map/composite/defense/subway.png', rect: { x: 360, y: 94.7, w: 270, h: 102 }, filterIds: ['first_line', 'all'], hotspotIds: ['subway'] },
                 { id: 'alliance_dock_visual', label: '同盟卸货站', assetUrl: 'assets/map/composite/defense/alliance-dock.png', rect: { x: 38.75, y: 260.4, w: 270, h: 128 }, filterIds: ['restricted', 'all'], hotspotIds: ['alliance_dock'] },
                 { id: 'alliance_corridor_visual', label: '同盟通路', assetUrl: 'assets/map/composite/defense/alliance-corridor.png', rect: { x: 46.4, y: 299.1, w: 277, h: 202 }, filterIds: ['restricted', 'all'], hotspotIds: ['alliance_corridor'] }
             ],
             staticAvatars: _pageStaticAvatars.defense,
             filters: [
-                { id: 'first_line', label: '第一防线', hotspotIds: ['first_defense'], buttonRect: { x: 895, y: 201, w: 132, h: 42 } },
+                { id: 'first_line', label: '第一防线', hotspotIds: ['first_defense','subway'], buttonRect: { x: 895, y: 201, w: 132, h: 42 } },
                 { id: 'restricted', label: '禁区', hotspotIds: ['alliance_dock', 'alliance_corridor'], buttonRect: { x: 895, y: 261, w: 132, h: 42 } },
-                { id: 'all', label: '初始化', hotspotIds: ['first_defense', 'alliance_dock', 'alliance_corridor'], buttonRect: { x: 895, y: 321, w: 132, h: 42 } }
+                { id: 'all', label: '初始化', hotspotIds: ['first_defense','subway', 'alliance_dock', 'alliance_corridor'], buttonRect: { x: 895, y: 321, w: 132, h: 42 } }
             ],
             defaultFilterId: 'all',
             hotspots: [
                 { id: 'first_defense', label: '第一防线', sceneName: '地图-第一防线防区', rect: { x: 46, y: 92, w: 252, h: 80 } },
+                { id: 'subway', label: '隧道据点', sceneName: '地图-隧道据点', rect: { x: 360, y: 92, w: 260, h: 80 } },
                 { id: 'alliance_dock', label: '同盟卸货站', sceneName: '地图-同盟卸货站', rect: { x: 37, y: 258, w: 284, h: 196 } },
                 { id: 'alliance_corridor', label: '同盟通路', sceneName: '地图-同盟通路', rect: { x: 90, y: 314, w: 168, h: 72 } }
             ]

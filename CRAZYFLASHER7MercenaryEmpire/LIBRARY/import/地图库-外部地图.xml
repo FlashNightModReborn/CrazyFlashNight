@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1778910396" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1780400005" lastUniqueIdentifier="10">
   <timeline>
-    <DOMTimeline name="地图库-外部地图" currentFrame="18">
+    <DOMTimeline name="地图库-外部地图" currentFrame="23">
       <layers>
         <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
@@ -220,7 +220,7 @@
                     <Point x="122.1" y="22"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="地图-堕落城酒吧门口" selected="true" centerPoint3DX="49.1" centerPoint3DY="47">
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-堕落城酒吧门口" selected="true" centerPoint3DX="49.1" centerPoint3DY="47">
                   <matrix>
                     <Matrix tx="-58" ty="30"/>
                   </matrix>
@@ -324,6 +324,18 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="77.65" y="44"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-隧道据点" selected="true" centerPoint3DX="19.6" centerPoint3DY="17.05">
+                  <matrix>
+                    <Matrix tx="-79" ty="-4.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="98.6" y="21.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

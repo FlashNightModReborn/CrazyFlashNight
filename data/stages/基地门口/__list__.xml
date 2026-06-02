@@ -112,4 +112,12 @@
         <UnlockCondition>19</UnlockCondition>
         <Description>地铁站隧道的入口被堵住，需要通过损坏的车厢深入探查。</Description>
     </StageInfo>
+    <StageInfo>
+        <Type>外交地图</Type>
+        <Name>外交-隧道据点</Name>
+        <UnlockCondition>45</UnlockCondition>
+        <Description> </Description>
+        <RootFadeTransitionFrame>地图-隧道据点</RootFadeTransitionFrame>
+        <Address>出生地</Address>
+    </StageInfo>
     </Stages>
