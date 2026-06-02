@@ -58,7 +58,7 @@ _root.战宠进阶函数.基础训练 = {
 		if( this.当前宠物信息[1] < this.进阶方案.基础训练.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.基础训练.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.基础训练.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.基础训练 && this.当前宠物属性.基础训练.次数 >= this.进阶方案.基础训练.次数上限){
@@ -163,7 +163,7 @@ _root.战宠进阶函数.强化药剂 = {
 		}else if( this.当前宠物信息[1] < this.进阶方案.强化药剂.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.强化药剂.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.强化药剂.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.基础训练 && this.当前宠物属性.基础训练.次数 >= this.进阶方案.强化药剂.次数上限){
@@ -237,7 +237,7 @@ _root.战宠进阶函数.超级血清 = {
 		}else if( this.当前宠物信息[1] < this.进阶方案.超级血清.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.超级血清.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.超级血清.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.基础训练 && this.当前宠物属性.基础训练.次数 >= this.进阶方案.超级血清.次数上限){
@@ -302,7 +302,7 @@ _root.战宠进阶函数.弹射弧光斩 = {
 		if( this.当前宠物信息[1] < this.进阶方案.弹射弧光斩.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.弹射弧光斩.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.弹射弧光斩.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.弹射弧光斩){
@@ -357,7 +357,7 @@ _root.战宠进阶函数.广域裂空斩 = {
 		if( this.当前宠物信息[1] < this.进阶方案.广域裂空斩.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.广域裂空斩.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.广域裂空斩.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.广域裂空斩){
@@ -416,7 +416,7 @@ _root.战宠进阶函数.导弹烈炎炮 = {
 		if( this.当前宠物信息[1] < this.进阶方案.导弹烈炎炮.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.导弹烈炎炮.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.导弹烈炎炮.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.导弹烈炎炮){
@@ -592,7 +592,7 @@ _root.战宠进阶函数.冲腿龙息 = {
 		if( this.当前宠物信息[1] < this.进阶方案.冲腿龙息.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.冲腿龙息.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.冲腿龙息.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.冲腿龙息){
@@ -647,7 +647,7 @@ _root.战宠进阶函数.晶能者 = {
 		if( this.当前宠物信息[1] < this.进阶方案.晶能者.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.晶能者.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.晶能者.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.晶能者){
@@ -704,7 +704,7 @@ _root.战宠进阶函数.复仇者 = {
 		if( this.当前宠物信息[1] < this.进阶方案.复仇者.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.复仇者.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.复仇者.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.复仇者){
@@ -761,7 +761,7 @@ _root.战宠进阶函数.抱头嘲讽 = {
 		if( this.当前宠物信息[1] < this.进阶方案.抱头嘲讽.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.抱头嘲讽.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.抱头嘲讽.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.抱头嘲讽){
@@ -819,7 +819,7 @@ _root.战宠进阶函数.涅槃重生 = {
 		if( this.当前宠物信息[1] < this.进阶方案.涅槃重生.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.涅槃重生.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.涅槃重生.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.涅槃重生){
@@ -878,7 +878,9 @@ _root.战宠进阶函数.影子刺客 = {
 		if( this.当前宠物信息[1] < this.进阶方案.影子刺客.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.影子刺客.消耗金币){
+		}else if( !this.当前宠物属性.影子刺客 && _root.金钱 < this.进阶方案.影子刺客.消耗金币){
+			// 仅首次购买校验金币（与 执行 同口径）；已购后为免费启用/停用开关，不得再卡金币门槛，
+			// 否则与 JS 端"购买后开关=可切换"渲染矛盾，穷玩家切换会被 condition_failed 静默拒绝。
 			this.失败提示 = "金币不足！";
 			return false;
 		}
@@ -945,7 +947,7 @@ _root.战宠进阶函数.追踪飞弹 = {
 		if( this.当前宠物信息[1] < this.进阶方案.追踪飞弹.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.追踪飞弹.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.追踪飞弹.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.追踪飞弹){
@@ -1005,7 +1007,7 @@ _root.战宠进阶函数.驯鹰者 = {
 		if( this.当前宠物信息[1] < this.进阶方案.驯鹰者.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.驯鹰者.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.驯鹰者.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.驯鹰者){
@@ -1069,7 +1071,7 @@ _root.战宠进阶函数.美洲狮 = {
 		if( this.当前宠物信息[1] < this.进阶方案.美洲狮.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.美洲狮.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.美洲狮.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.美洲狮 || this.当前宠物信息[0] == 103){
@@ -1124,7 +1126,7 @@ _root.战宠进阶函数.追猎 = {
 		if( this.当前宠物信息[1] < this.进阶方案.追猎.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.追猎.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.追猎.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.追猎){
@@ -1190,7 +1192,7 @@ _root.战宠进阶函数.战马血清 = {
 		if( this.当前宠物信息[1] < this.进阶方案.战马血清.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.战马血清.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.战马血清.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.战马血清){
@@ -1250,7 +1252,7 @@ _root.战宠进阶函数.钙化 = {
 		if( this.当前宠物信息[1] < this.进阶方案.钙化.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.钙化.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.钙化.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}
@@ -1346,7 +1348,7 @@ _root.战宠进阶函数.净化治疗 = {
 		if( this.当前宠物信息[1] < this.进阶方案.净化治疗.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.净化治疗.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.净化治疗.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.净化治疗){
@@ -1407,7 +1409,7 @@ _root.战宠进阶函数.溢出治疗 = {
 		if( this.当前宠物信息[1] < this.进阶方案.溢出治疗.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.溢出治疗.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.溢出治疗.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.溢出治疗){
@@ -1473,7 +1475,7 @@ _root.战宠进阶函数.能量子弹 = {
 		if( this.当前宠物信息[1] < this.进阶方案.能量子弹.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.能量子弹.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.能量子弹.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.能量子弹){
@@ -1534,7 +1536,7 @@ _root.战宠进阶函数.剧毒子弹 = {
 		if( this.当前宠物信息[1] < this.进阶方案.剧毒子弹.解锁等级){
 			this.失败提示 = "";
 			return false;
-		}else if( _root.金钱 <= this.进阶方案.剧毒子弹.消耗金币){
+		}else if( _root.金钱 < this.进阶方案.剧毒子弹.消耗金币){
 			this.失败提示 = "金币不足！";
 			return false;
 		}else if(this.当前宠物属性.剧毒子弹){

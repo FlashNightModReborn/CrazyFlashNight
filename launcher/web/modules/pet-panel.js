@@ -565,7 +565,9 @@
             promoEl.innerHTML =
                 '<div class="pet-promo-info">' +
                     '<div class="pet-promo-name">' + escapeHtml(schemeName) + '</div>' +
-                    '<div class="pet-promo-desc">' + escapeHtml(scheme.desc || '') + '</div>' +
+                    // 反复型方案优先用 AS2 按本宠物算的 status.desc（含发色/淬毒开关等当前状态），
+                    // 回退到 schemesMap 的通用 desc（dummy ctx，对一次性方案足够）
+                    '<div class="pet-promo-desc">' + escapeHtml((status && status.desc) || scheme.desc || '') + '</div>' +
                     '<div class="pet-promo-cost">' + statusText + '</div>' +
                 '</div>' +
                 '<div class="pet-promo-action">' + actionBtn + '</div>';

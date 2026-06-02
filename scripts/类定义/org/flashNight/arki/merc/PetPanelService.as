@@ -138,6 +138,7 @@ class org.flashNight.arki.merc.PetPanelService {
                 var sNm:String = String(schemeNames[sIdx]);
                 var scDef:Object = _root.战宠进阶函数[sNm];
                 if (scDef == undefined) continue;
+                if (typeof scDef.执行 != "function") continue; // 与 schemesMap 同口径，跳过 凑数组的 等占位方案
                 statusMap[sNm] = {
                     completed: isSchemeCompleted(sNm, scDef, attrs),
                     locked: isSchemeLocked(scDef, attrs, Number(info[1])),
@@ -146,6 +147,12 @@ class org.flashNight.arki.merc.PetPanelService {
                     // 购买后开关的前置购买是否完成（纯开关恒 true）：决定显示购买价还是免费开关。
                     purchased: isSchemePurchased(sNm, scDef, attrs)
                 };
+                // 反复型(开关)方案的描述/状态依赖本宠物属性（发色、淬毒启用…）；schemesMap.desc 用空白
+                // dummy ctx 算，会显示"undefined发"或丢失开关状态。这里用真实 ctx 重算 描述（短文且自带状态），
+                // 下发 perPetDesc 供 JS 优先采用。描述函数已在内存中，运行时调用无需重发布 SWF。
+                if (statusMap[sNm].repeatable) {
+                    statusMap[sNm].desc = buildSchemePerPetDesc(scDef, info, attrs);
+                }
             }
             petEntry.schemeStatus = statusMap;
 
@@ -181,6 +188,10 @@ class org.flashNight.arki.merc.PetPanelService {
         for (var sName:String in advFns) {
             var sc:Object = advFns[sName];
             if (sc == undefined || typeof sc != "object") continue;
+            // 跳过占位/无行为方案（如 凑数组的：执行=null、条件恒 false），它仅为旧 Flash 网格 UI
+            // 凑数对齐用。不下发 schemesMap，JS renderPromotions 的 if(!scheme) continue 即自动隐藏，
+            // 否则会在大量宠物上渲染出一个点击必返回"条件不满足"的脏"执行"按钮。
+            if (typeof sc.执行 != "function") continue;
             var scCtx:Object = { 当前宠物信息: [0, 1, 200, 0, 0, {}], 当前宠物属性: {}, 进阶方案: advFns };
             var scDesc:String = "";
             if (typeof sc.详情页描述 == "function") {
@@ -1030,6 +1041,21 @@ class org.flashNight.arki.merc.PetPanelService {
             out.push(String(items)); // 单个 Item
         }
         return out;
+    }
+
+    // 用真实宠物 ctx 计算反复型(开关)方案的列表描述（自带当前开关状态）。先调 初始化 补默认值
+    // （如 切换发型 默认发色），避免显示 "undefined发"；再取 描述（短文，含"点击可开启/关闭"等状态语）
+    // 的首段。仅作显示，不主动标脏——默认值未落盘也会在下次 snapshot 重新补上。
+    private static function buildSchemePerPetDesc(sc:Object, info:Array, attrs:Object):String {
+        var ctxAttrs:Object = (attrs != undefined && typeof attrs == "object") ? attrs : {};
+        var ctx:Object = { 当前宠物信息: info, 当前宠物属性: ctxAttrs, 进阶方案: _root.战宠进阶函数 };
+        if (typeof sc.初始化 == "function") sc.初始化.call(ctx); // 补默认值（如发色）
+        var d:String = "";
+        if (typeof sc.描述 == "function") d = String(sc.描述.call(ctx));
+        else if (sc.描述 != undefined) d = String(sc.描述);
+        var br:Number = d.indexOf("<br>");
+        if (br >= 0) d = d.substring(0, br);
+        return d;
     }
 
     // 反复型方案的类内回退映射。权威来源是 战宠进阶函数[方案].进阶类型，但该数据定义在帧脚本
