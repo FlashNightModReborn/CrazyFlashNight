@@ -120,6 +120,24 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "  task_npc_registry.json OK." -ForegroundColor Green
 
+# Step 1c: 派生 data/map/map_catalog.json （地图 hotspot 拓扑：groups/hotspots）
+# SOT = launcher/web/modules/map-panel-data.js 的 unlockGroups + 各 page hotspots（公开 API）。
+# 取代原 map_panel.xml 手写 <groups>/<hotspots> 段；AS2 MapPanelCatalog.applyFromCatalogJson 经
+# DataQueryTask("map_catalog") 启动期消费。派生失败 (e.g. 非 base hotspot 漏 group / frame 空 /
+# group 跨页) → exit 1 在 build 阶段拦截。map_catalog 是导航权威，绝不能放进 launcher 后才发现坏数据。
+Write-Host "[Step 1c/7] Derive data/map/map_catalog.json..." -ForegroundColor Yellow
+$deriveCatalogScript = Join-Path $projectRoot "tools\derive-map-catalog.js"
+if (-not (Test-Path $deriveCatalogScript)) {
+    Write-Host "[FAIL] derive-map-catalog.js missing: $deriveCatalogScript" -ForegroundColor Red
+    exit 1
+}
+node $deriveCatalogScript
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] map_catalog 派生失败 (上方日志含具体校验错误)" -ForegroundColor Red
+    exit 1
+}
+Write-Host "  map_catalog.json OK." -ForegroundColor Green
+
 # Step 2: Build native miniaudio DLL
 Write-Host "[Step 2/7] Build native miniaudio DLL..." -ForegroundColor Yellow
 $nativeBat = Join-Path $launcherDir "native\build.bat"

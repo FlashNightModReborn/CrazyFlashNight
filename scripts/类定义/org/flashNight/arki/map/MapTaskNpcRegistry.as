@@ -14,7 +14,7 @@
  * marker 结构：{ pageId:String, hotspotId:String }
  *
  * 约束：
- *   - applyFromQuery 必须在 MapPanelCatalog.applyFromXml 成功之后调用（读 Catalog.HOTSPOT_PAGES 派生 page）
+ *   - applyFromQuery 必须在 MapPanelCatalog.applyFromCatalogJson 成功之后调用（读 Catalog.HOTSPOT_PAGES 派生 page）
  *   - 校验责任在派生脚本 tools/derive-task-npc-registry.js（label 重复/大小写折叠冲突/hotspotId 存在性
  *     均在 build 阶段拦截）；本类只做轻量结构校验
  *   - NPC 头像视觉锚点完全由 launcher 端 staticAvatars / dynamicAvatars 决定；本 registry 与视觉
@@ -148,7 +148,7 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
     /**
      * 从 DataQueryTask("task_npc_registry") 响应填表。
      *
-     * 前置：MapPanelCatalog.applyFromXml 已先行成功（本方法读 Catalog.HOTSPOT_PAGES 派生 npc.pageId）。
+     * 前置：MapPanelCatalog.applyFromCatalogJson 已先行成功（本方法读 Catalog.HOTSPOT_PAGES 派生 npc.pageId）。
      * 任何结构校验失败 → 服务器消息留痕 + 回退空字典 + 返回 false。
      *
      * @param result 来自 DataQueryService.query callback 的 response.result，

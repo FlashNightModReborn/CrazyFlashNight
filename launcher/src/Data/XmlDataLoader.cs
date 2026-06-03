@@ -440,5 +440,33 @@ namespace CF7Launcher.Data
 
             return obj;
         }
+
+        /// <summary>
+        /// 加载 data/map/map_catalog.json（地图 hotspot 拓扑：groups/hotspots）。
+        /// SOT = launcher/web/modules/map-panel-data.js（build.ps1 Step 1c 派生）。
+        /// AS2 端 MapPanelCatalog.applyFromCatalogJson 消费。
+        ///
+        /// 与 task_npc_registry 不同：map_catalog 是导航权威，缺失/空/结构坏一律 throw（→ 上层缓存 error
+        /// → QueryMapCatalog 返回 success:false → AS2 boot 明确报错、地图面板不可用，不做静默降级）。
+        /// </summary>
+        public static JObject LoadMapCatalog(string projectRoot)
+        {
+            string path = Path.Combine(projectRoot, "data", "map", "map_catalog.json");
+            if (!File.Exists(path))
+                throw new FileNotFoundException("map_catalog.json not found: " + path);
+
+            string text = File.ReadAllText(path);
+            JObject obj = JObject.Parse(text);
+
+            JArray groups = obj["groups"] as JArray;
+            JArray hotspots = obj["hotspots"] as JArray;
+            if (groups == null || groups.Count == 0)
+                throw new InvalidDataException("map_catalog.json: groups missing or empty");
+            if (hotspots == null || hotspots.Count == 0)
+                throw new InvalidDataException("map_catalog.json: hotspots missing or empty");
+
+            LogManager.Log("[XmlDataLoader] map_catalog loaded: " + groups.Count + " groups + " + hotspots.Count + " hotspots");
+            return obj;
+        }
     }
 }

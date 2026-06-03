@@ -150,5 +150,38 @@ namespace CF7Launcher.Data
         }
 
         public string GetTaskNpcError() { return _taskNpcError; }
+
+        // ===================== 地图 hotspot 拓扑目录 =====================
+        // SOT = launcher/web/modules/map-panel-data.js（build.ps1 Step 1c 派生）
+        // 输出文件: data/map/map_catalog.json
+        // AS2 端 MapPanelCatalog.applyFromCatalogJson 消费（导航权威；失败不可静默降级）。
+
+        private readonly object _mapCatalogLock = new object();
+        private bool _mapCatalogAttempted;
+        private JObject _mapCatalog;
+        private string _mapCatalogError;
+
+        public JObject GetMapCatalog()
+        {
+            if (_mapCatalogAttempted) return _mapCatalog;
+            lock (_mapCatalogLock)
+            {
+                if (_mapCatalogAttempted) return _mapCatalog;
+                try
+                {
+                    _mapCatalog = XmlDataLoader.LoadMapCatalog(_projectRoot);
+                }
+                catch (Exception ex)
+                {
+                    _mapCatalogError = ex.Message;
+                    _mapCatalog = null;
+                    LogManager.Log("[DataCache] map_catalog load FAILED: " + _mapCatalogError);
+                }
+                _mapCatalogAttempted = true;
+                return _mapCatalog;
+            }
+        }
+
+        public string GetMapCatalogError() { return _mapCatalogError; }
     }
 }

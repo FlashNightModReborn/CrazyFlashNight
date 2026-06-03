@@ -4,13 +4,17 @@
  * 文件：org/flashNight/arki/map/MapPanelCatalog.as
  * 说明：WebView 地图面板的静态目录表。
  *
- * 包含：基地热点列表、分组热点列表、分组解锁元信息、导航帧名映射、热点→页签映射。
- * 数据由 data/map/map_panel.xml 在启动时通过 MapPanelLoader + applyFromXml 填充。
- * XML 未到达前 5 张表保持"安全零值"（空集合；GROUPED_HOTSPOT_IDS 预置 8 个空数组，
+ * 包含：基地热点列表、分组热点列表、分组解锁元信息、导航帧名映射、热点→页签映射、头像可见性表。
+ * 两路独立填充（boot 期，见 asLoader.xml）：
+ *   - 拓扑（groups/hotspots）← DataQueryService("map_catalog") → applyFromCatalogJson
+ *       （map_catalog.json 由 build.ps1 Step 1c 从 launcher web map-panel-data.js 派生）
+ *   - 头像可见性 ← MapAvatarVisibilityLoader 读 data/map/map_panel.xml → applyAvatarVisibilityFromXml
+ * 数据未到达前各表保持"安全零值"（空集合；GROUPED_HOTSPOT_IDS 预置 8 个空数组，
  * 因为 MapPanelService.buildEnabledHotspotIds 会直接读 .xxx.length，undefined 会崩）。
  *
- * 失败语义：applyFromXml 入口先无条件 resetTables()，任一校验失败直接 return false，
- * 保证 reload 场景下不会留下"旧表 + 空 registry"的混合陈旧态；isLoaded 同步复位。
+ * 失败语义：两个入口各自开头无条件 reset 自己那部分表，任一校验失败直接 return false，
+ * 保证 reload 场景下不会留下混合陈旧态；isLoaded（仅反映 catalog）同步复位。
+ * 集合正确性由派生期 gate 保证，运行期不再做 canonical 白名单精确相等校验。
  *
  * 与 MapPanelService / MapHotspotResolver 配合使用。
  */
@@ -34,28 +38,11 @@ class org.flashNight.arki.map.MapPanelCatalog {
 
     public static var isLoaded:Boolean = false;
 
-    // Canonical whitelist：XML 实际集合必须精确等于这些（Phase 2 语义）
-    // 新增/改名 hotspot 属于设计变更，需同步更新此处 + XML + launcher 侧 manifest
-    private static var REQUIRED_GROUP_IDS:Array = [
-        "base", "warlord", "rock", "blackiron", "fallen",
-        "defense", "restricted", "schoolOutside", "schoolInside"
-    ];
-    private static var REQUIRED_HOTSPOT_IDS:Array = [
-        "base_roof", "base_lobby", "base_entrance", "base_garage",
-        "merc_bar", "infirmary", "dormitory", "basement1",
-        "gym", "armory", "cafeteria", "corridor", "lab", "underground_water",
-        "warlord_base", "warlord_tent", "firing_range",
-        "rock_park", "rock_rehearsal",
-        "blackiron_training", "blackiron_pavilion",
-        "fallen_bar", "fallen_street", "fallen_entrance",
-        "first_defense",
-        "alliance_dock", "alliance_corridor",
-        "union_university",
-        "workshop", "university_interior", "university_playground",
-        "dorm_downstairs", "school_dormitory", "office",
-        "kendo_club", "science_class", "arts_class",
-        "teaching_interior", "teaching_right"
-    ];
+    // 拓扑集合不再硬编码白名单（旧 REQUIRED_GROUP_IDS / REQUIRED_HOTSPOT_IDS 已删）：
+    // groups/hotspots 由 data/map/map_catalog.json 提供，该文件 build.ps1 Step 1c 经
+    // tools/derive-map-catalog.js 从 launcher/web/modules/map-panel-data.js 派生，集合正确性
+    // 在派生期 gate 保证。运行期只做结构校验（见 applyFromCatalogJson）。
+    // 收益：加/改 hotspot 不再需要改本文件 + 重编译 SWF，只需改 web SOT + 跑 build/derive。
     private static var VALID_PAGE_IDS:Array = ["base", "faction", "defense", "school"];
     // 与 SaveManager.REPAIR_DICT_TASK_CHAINS 必须一致；任何 schema 扩展须同时同步两边。
     private static var VALID_CHAIN_NAMES:Array = [
@@ -65,22 +52,29 @@ class org.flashNight.arki.map.MapPanelCatalog {
     private static var VALID_INFRA_NAMES:Array = ["自行车", "摩托车", "越野车"];
 
     /**
-     * 从 XML parse 结果填表。任一校验失败 → trace + 回退空表 + 返回 false。
-     * 失败时绝不部分填表（避免"加载成功但数据残缺"的误导）。
+     * 从 DataQueryService("map_catalog") 的 result 填充导航/拓扑表。
+     * 任一结构校验失败 → trace + 回退空表 + 返回 false（绝不部分填表）。
+     * 不再做 canonical 白名单精确相等校验——集合正确性由 build.ps1 Step 1c 的
+     * tools/derive-map-catalog.js 派生期 gate 保证。
      *
-     * @param raw  MapPanelLoader 成功回调拿到的 data 对象（即 <map_panel> 内容，非 {map_panel: ...}）
+     * @param raw  DataQueryService callback 的 response.result，形如
+     *             { groups:[{id,page,label,lockedReason?}], hotspots:[{id,group,frame}] }（JSON 数组）
      * @return Boolean 是否成功
      */
-    public static function applyFromXml(raw:Object):Boolean {
-        // 先无条件重置为安全零值：reload 时若后续校验失败，不会留下旧数据造成"陈旧 stale"混合态
-        resetTables();
+    public static function applyFromCatalogJson(raw:Object):Boolean {
+        // 先无条件重置 catalog 部分（不动 avatar 表）：reload 失败也不留旧数据混合态
+        resetCatalogTables();
 
-        if (raw == null) { trace("[MapPanelCatalog] raw 为 null"); return false; }
+        if (raw == null) { trace("[MapPanelCatalog] catalog raw 为 null"); return false; }
 
-        var groupList:Array = XMLParser.configureDataAsArray(raw.groups.group);
-        var hotspotList:Array = XMLParser.configureDataAsArray(raw.hotspots.hotspot);
-        if (groupList.length == 0) { trace("[MapPanelCatalog] groups/group 为空"); return false; }
-        if (hotspotList.length == 0) { trace("[MapPanelCatalog] hotspots/hotspot 为空"); return false; }
+        var groupList:Array = raw.groups;
+        var hotspotList:Array = raw.hotspots;
+        if (groupList == undefined || groupList.length == undefined || groupList.length == 0) {
+            trace("[MapPanelCatalog] catalog groups 为空或非数组"); return false;
+        }
+        if (hotspotList == undefined || hotspotList.length == undefined || hotspotList.length == 0) {
+            trace("[MapPanelCatalog] catalog hotspots 为空或非数组"); return false;
+        }
 
         // 结构 + 关系校验（同时构建 groupPageMap）
         var groupIdSet:Object = {};
@@ -113,10 +107,6 @@ class org.flashNight.arki.map.MapPanelCatalog {
             hotspotIdSet[h.id] = true;
         }
 
-        // Canonical 精确相等校验
-        if (!setEquals(groupIdSet, REQUIRED_GROUP_IDS, "group", "MapPanelCatalog")) return false;
-        if (!setEquals(hotspotIdSet, REQUIRED_HOTSPOT_IDS, "hotspot", "MapPanelCatalog")) return false;
-
         // 通过校验，开始构建（GROUPED_HOTSPOT_IDS 初值已有 8 个空数组 key，此处只 push）
         var base_:Array = [];
         var grouped:Object = {
@@ -147,19 +137,33 @@ class org.flashNight.arki.map.MapPanelCatalog {
             };
         }
 
-        // avatar_visibility 段（可选 — 无则空表）
-        var visParsed:Object = parseAvatarVisibility(raw.avatar_visibility);
-        if (visParsed == null) return false;  // 解析或校验失败
-
-        // 原子替换（校验全过后才动 public 字段）
+        // 原子替换（校验全过后才动 public 字段；不含 avatar 表）
         BASE_HOTSPOT_IDS = base_;
         GROUPED_HOTSPOT_IDS = grouped;
         NAVIGATE_TARGETS = navigate;
         HOTSPOT_PAGES = pages;
         UNLOCK_META = meta;
+        isLoaded = true;
+        return true;
+    }
+
+    /**
+     * 从 map_panel.xml 的 <avatar_visibility> 段填充头像可见性表。
+     * 整段缺失 → 空表（默认全可见）；解析/校验失败 → 回退空表 + 返回 false。
+     * 与 applyFromCatalogJson 互不影响（各自只 reset 自己那部分表，boot 期独立加载）。
+     *
+     * @param raw  MapAvatarVisibilityLoader 成功回调拿到的 <map_panel> 内容
+     * @return Boolean 是否成功
+     */
+    public static function applyAvatarVisibilityFromXml(raw:Object):Boolean {
+        resetAvatarTables();
+        if (raw == null) { trace("[MapPanelCatalog] avatar raw 为 null"); return false; }
+
+        var visParsed:Object = parseAvatarVisibility(raw.avatar_visibility);
+        if (visParsed == null) return false;  // 解析或校验失败
+
         AVATAR_VISIBILITY_RULES = visParsed.rules;
         AVATAR_ID_TO_NPC = visParsed.idToNpc;
-        isLoaded = true;
         return true;
     }
 
@@ -271,8 +275,8 @@ class org.flashNight.arki.map.MapPanelCatalog {
 
     // ── 内部工具 ──
 
-    /** 把全部表复位为安全零值；isLoaded = false。applyFromXml 开头无条件调用。 */
-    private static function resetTables():Void {
+    /** 复位导航/拓扑表（catalog 部分）；isLoaded = false。applyFromCatalogJson 开头无条件调用。 */
+    private static function resetCatalogTables():Void {
         BASE_HOTSPOT_IDS = [];
         GROUPED_HOTSPOT_IDS = {
             warlord: [], rock: [], blackiron: [], fallen: [],
@@ -281,9 +285,13 @@ class org.flashNight.arki.map.MapPanelCatalog {
         UNLOCK_META = {};
         NAVIGATE_TARGETS = {};
         HOTSPOT_PAGES = {};
+        isLoaded = false;
+    }
+
+    /** 复位头像可见性表（avatar 部分）。applyAvatarVisibilityFromXml 开头无条件调用。 */
+    private static function resetAvatarTables():Void {
         AVATAR_VISIBILITY_RULES = {};
         AVATAR_ID_TO_NPC = {};
-        isLoaded = false;
     }
 
     private static function inList(list:Array, value):Boolean {
@@ -291,28 +299,6 @@ class org.flashNight.arki.map.MapPanelCatalog {
             if (list[i] == value) return true;
         }
         return false;
-    }
-
-    /** 校验 XML 实际 id 集合（Object 形式的 set）与 required 列表精确相等；trace 缺失/多余条目 */
-    private static function setEquals(actualSet:Object, required:Array, kindLabel:String, cls:String):Boolean {
-        var requiredSet:Object = {};
-        var i:Number;
-        for (i = 0; i < required.length; i++) requiredSet[required[i]] = true;
-
-        var missing:Array = [];
-        for (i = 0; i < required.length; i++) {
-            if (actualSet[required[i]] == undefined) missing.push(required[i]);
-        }
-        var extra:Array = [];
-        for (var k:String in actualSet) {
-            if (requiredSet[k] == undefined) extra.push(k);
-        }
-        if (missing.length > 0 || extra.length > 0) {
-            if (missing.length > 0) trace("[" + cls + "] REQUIRED_" + kindLabel + " 缺少: " + missing.join(", "));
-            if (extra.length > 0) trace("[" + cls + "] " + kindLabel + " 存在多余条目（未在 whitelist 内）: " + extra.join(", "));
-            return false;
-        }
-        return true;
     }
 
     /** 反查：通过帧名找 hotspotId；未命中返回空串 */
