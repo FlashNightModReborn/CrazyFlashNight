@@ -117,6 +117,13 @@
 - Web 侧的 `manifest` 是迁移后运行时真相源
 - 任何“只改 DOM 绝对坐标、不回写 manifest”的做法都视为临时调试，不是最终结果
 
+> **`.fla` 退役更新（2026-06）**：地图界面已完全迁移至 web，`flashswf/UI/地图界面`/`选关界面` 的 .fla
+> 不再作为可再生 SOT，仅保留为冻结历史参照。新增/改地图据点直接改 web SOT
+> （`launcher/web/modules/map-panel-data.js`，及其派生 `data/map/map_catalog.json` / `task_npc_registry.json` /
+> `launcher/data/map_hud_data.json` 经 `build.ps1` Step 1b/1c/1d 自动刷新；详见
+> `docs/map-hotspot-拓扑收束-施工方案-2026-06-03.md`）；选关侧据点直接改 `stage-select-data.js`（手写 SOT，
+> 见 `docs/选关界面-webview迁移路线图.md`）。导出器退役、默认拒绝覆盖手写 SOT。
+
 默认约束：
 
 - 不直接以 FFDec 导出结果推断最终布局

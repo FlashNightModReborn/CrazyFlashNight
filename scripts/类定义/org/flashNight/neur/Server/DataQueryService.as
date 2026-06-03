@@ -41,4 +41,53 @@ class org.flashNight.neur.Server.DataQueryService {
     public static function isAvailable():Boolean {
         return ServerManager.getInstance().isSocketConnected;
     }
+
+    // 多个并发等待门各自独立 tick clip，避免命名/状态互相覆盖。
+    private static var _gateSeq:Number = 0;
+
+    /**
+     * 等待 socket 就绪后再执行 onReady；若已就绪则立即同步执行。
+     *
+     * 生命周期安全（这正是本方法存在的理由）：tick 用 **_root 上的 empty movie clip**（不随调用方
+     * 时间轴卸载而消失），等待状态存在 **本方法的 activation（函数局部变量）** 里（不是调用方的帧本地
+     * 时间轴变量）。因此即使调用方所在影片剪辑（如 asLoader 帧 64）在等待期间 removeMovieClip 自卸载，
+     * 等待门与回调依旧存活、照常触发——与 BootstrapWait 同款模式。
+     *
+     * ⚠ 历史坑：早期 asLoader 帧 64 用 `setInterval(帧本地闭包)` 轮询 isAvailable，但帧 91 会自卸载，
+     *   闭包捕获的 `_mapCatalogTries/_mapCatalogPoll/doMapCatalogQuery` 随时间轴销毁 → interval 泄漏且
+     *   永不触发 query（静默击穿 catalog 的“硬报错”设计）。本方法即为根治。
+     *
+     * 超时语义：到点仍未就绪也会执行 onReady（让其内部 query 自己走 {success:false} 失败路径并报错），
+     * 绝不静默吞掉——保持“绝不静默降级”的契约。
+     *
+     * @param timeoutMs 最长等待毫秒（如 10000）。<=0 视为只尝试一次（不等待）。
+     * @param onReady   就绪（或超时兜底）时执行一次的回调；不接收参数。
+     */
+    public static function whenAvailable(timeoutMs:Number, onReady:Function):Void {
+        if (isAvailable()) {
+            if (onReady != null) onReady();
+            return;
+        }
+
+        var holder:MovieClip = _root;
+        if (timeoutMs <= 0 || holder == null || holder.createEmptyMovieClip == null) {
+            // 无法挂 tick（或不等待）：退化为立即执行，让 onReady 内部 query 走失败报错路径。
+            if (onReady != null) onReady();
+            return;
+        }
+
+        var deadline:Number = getTimer() + timeoutMs;
+        var tick:MovieClip = holder.createEmptyMovieClip(
+            "__dataQueryReadyTick" + (_gateSeq++), holder.getNextHighestDepth()
+        );
+        tick.onEnterFrame = function():Void {
+            // isAvailable / getTimer / 本闭包局部均与调用方时间轴无关，调用方卸载后仍可安全运行。
+            var ready:Boolean = org.flashNight.neur.Server.DataQueryService.isAvailable();
+            if (ready || getTimer() >= deadline) {
+                this.onEnterFrame = null;
+                this.removeMovieClip();
+                if (onReady != null) onReady();
+            }
+        };
+    }
 }

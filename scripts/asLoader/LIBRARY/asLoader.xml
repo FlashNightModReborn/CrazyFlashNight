@@ -597,19 +597,12 @@ var doMapCatalogQuery:Function = function():Void {
     });
 };
 
-// socket 就绪即查；未就绪则轮询等待（200ms × 最多 50 次 ≈ 10s），等不到再让 query 走正常失败报错路径。
-if (DataQueryService.isAvailable()) {
-    doMapCatalogQuery();
-} else {
-    var _mapCatalogTries:Number = 0;
-    var _mapCatalogPoll:Number = setInterval(function():Void {
-        _mapCatalogTries++;
-        if (DataQueryService.isAvailable() || _mapCatalogTries >= 50) {
-            clearInterval(_mapCatalogPoll);
-            doMapCatalogQuery();
-        }
-    }, 200);
-}]]></script>
+// socket 就绪即查；未就绪则等待（最多 ~10s），到点仍未就绪也发 query 让其走正常失败报错路径。
+// ⚠ 生命周期：本帧（asLoader 帧 64）在帧 91 会 this.removeMovieClip() 自卸载。绝不能在这里用
+//   setInterval + 帧本地闭包轮询——闭包捕获的帧本地变量随时间轴销毁，interval 泄漏且永不触发 query
+//   （静默击穿 catalog 的“硬报错”设计）。改用 DataQueryService.whenAvailable：tick clip 挂 _root、
+//   等待状态在方法 activation 内，asLoader 卸载后等待门与回调仍存活。详见 DataQueryService.whenAvailable。
+DataQueryService.whenAvailable(10000, doMapCatalogQuery);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
