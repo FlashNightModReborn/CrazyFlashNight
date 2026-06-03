@@ -1,6 +1,6 @@
 {
   "protocolVersion": 1,
-  "generatedAt": "2026-05-17T05:13:34.599Z",
+  "generatedAt": "2026-06-03T09:56:16.434Z",
   "sourceFile": "launcher/web/modules/map-panel-data.js",
   "hotspots": {
     "base_roof": {
@@ -2786,9 +2786,9 @@
         "focusFilterId": "first_line",
         "focusFilterLabel": "第一防线",
         "viewportRect": {
-          "x": 53.42,
+          "x": 47.04,
           "y": 91.1,
-          "w": 298.17,
+          "w": 595.92,
           "h": 123.2
         },
         "currentRect": {
@@ -2807,6 +2807,16 @@
               "w": 285,
               "h": 116
             }
+          },
+          {
+            "hotspotId": "subway",
+            "label": "隧道据点",
+            "sourceRect": {
+              "x": 360,
+              "y": 94.7,
+              "w": 270,
+              "h": 102
+            }
           }
         ],
         "visuals": [
@@ -2822,6 +2832,101 @@
               "y": 94.7,
               "w": 285,
               "h": 116
+            },
+            "isCurrent": true
+          },
+          {
+            "id": "subway_visual",
+            "label": "隧道据点",
+            "assetUrl": "assets/map/composite/defense/subway.png",
+            "hotspotIds": [
+              "subway"
+            ],
+            "sourceRect": {
+              "x": 360,
+              "y": 94.7,
+              "w": 270,
+              "h": 102
+            },
+            "isCurrent": false
+          }
+        ]
+      }
+    },
+    "subway": {
+      "meta": {
+        "pageId": "defense",
+        "pageLabel": "废城/禁区",
+        "hotspotId": "subway",
+        "label": "隧道据点",
+        "sceneName": "地图-隧道据点",
+        "group": "defense"
+      },
+      "outline": {
+        "focusFilterId": "first_line",
+        "focusFilterLabel": "第一防线",
+        "viewportRect": {
+          "x": 47.04,
+          "y": 91.1,
+          "w": 595.92,
+          "h": 123.2
+        },
+        "currentRect": {
+          "x": 360,
+          "y": 94.7,
+          "w": 270,
+          "h": 102
+        },
+        "blocks": [
+          {
+            "hotspotId": "first_defense",
+            "label": "第一防线",
+            "sourceRect": {
+              "x": 60,
+              "y": 94.7,
+              "w": 285,
+              "h": 116
+            }
+          },
+          {
+            "hotspotId": "subway",
+            "label": "隧道据点",
+            "sourceRect": {
+              "x": 360,
+              "y": 94.7,
+              "w": 270,
+              "h": 102
+            }
+          }
+        ],
+        "visuals": [
+          {
+            "id": "first_defense_visual",
+            "label": "第一防线",
+            "assetUrl": "assets/map/composite/defense/first-defense.png",
+            "hotspotIds": [
+              "first_defense"
+            ],
+            "sourceRect": {
+              "x": 60,
+              "y": 94.7,
+              "w": 285,
+              "h": 116
+            },
+            "isCurrent": false
+          },
+          {
+            "id": "subway_visual",
+            "label": "隧道据点",
+            "assetUrl": "assets/map/composite/defense/subway.png",
+            "hotspotIds": [
+              "subway"
+            ],
+            "sourceRect": {
+              "x": 360,
+              "y": 94.7,
+              "w": 270,
+              "h": 102
             },
             "isCurrent": true
           }

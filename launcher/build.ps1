@@ -138,6 +138,25 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "  map_catalog.json OK." -ForegroundColor Green
 
+# Step 1d: 派生 launcher/data/map_hud_data.json （NativeHud 小地图 context：outline + meta）
+# SOT = launcher/web/modules/map-panel-data.js（resolveHotspotMeta + getHudOutline，与 1b/1c 同源）。
+# C# MapHudDataCatalog 启动期反序列化 → RightContextWidget 按 hotspotId 渲染小地图 context。
+# 历史上本文件只在 Step 7b 做"存在性校验"，不重生成 → 加 hotspot 只改 JS 时它会陈旧（旧文件仍存在、
+# 过校验），导致新热点 [RightContextWidget] map hotspot not in catalog → 小地图 context 空白。
+# 与 1b/1c 对齐改为每次 build 重生成，三个 SOT 派生文件一起刷新；派生失败 → exit 1。
+Write-Host "[Step 1d/7] Derive launcher/data/map_hud_data.json..." -ForegroundColor Yellow
+$exportMapHudScript = Join-Path $projectRoot "tools\export-maphud-data.js"
+if (-not (Test-Path $exportMapHudScript)) {
+    Write-Host "[FAIL] export-maphud-data.js missing: $exportMapHudScript" -ForegroundColor Red
+    exit 1
+}
+node $exportMapHudScript
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] map_hud_data 派生失败 (上方日志含具体校验错误)" -ForegroundColor Red
+    exit 1
+}
+Write-Host "  map_hud_data.json OK." -ForegroundColor Green
+
 # Step 2: Build native miniaudio DLL
 Write-Host "[Step 2/7] Build native miniaudio DLL..." -ForegroundColor Yellow
 $nativeBat = Join-Path $launcherDir "native\build.bat"

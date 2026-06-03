@@ -85,6 +85,24 @@ function buildHotspotEntry(D, hotspotId) {
     };
 }
 
+// 实质内容比对子集（排除 generatedAt）：与 derive-map-catalog / derive-task-npc 的 stableSubset 同思路。
+function stableSubset(payload) {
+    return {
+        protocolVersion: payload.protocolVersion,
+        sourceFile: payload.sourceFile,
+        hotspots: payload.hotspots
+    };
+}
+
+function tryReadExistingPayload(outputPath) {
+    try {
+        if (!fs.existsSync(outputPath)) return null;
+        return JSON.parse(fs.readFileSync(outputPath, 'utf8'));
+    } catch (e) {
+        return null;
+    }
+}
+
 function main() {
     const D = loadMapData();
     const ids = D.getAllHotspotIds();
@@ -103,7 +121,7 @@ function main() {
         exported += 1;
     }
 
-    const payload = {
+    const newPayload = {
         protocolVersion: 1,
         generatedAt: new Date().toISOString(),
         sourceFile: 'launcher/web/modules/map-panel-data.js',
@@ -115,9 +133,15 @@ function main() {
         fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    const json = JSON.stringify(payload, null, 2);
-    fs.writeFileSync(outputFile, json, 'utf8');
+    // idempotent：实质内容（protocolVersion/sourceFile/hotspots）未变 → 保留旧 generatedAt + 跳过写盘，
+    // 避免 build.ps1 Step 1d 每次都 dirty map_hud_data.json、给 git 添 mtime 噪声。
+    const oldPayload = tryReadExistingPayload(outputFile);
+    if (oldPayload && JSON.stringify(stableSubset(oldPayload)) === JSON.stringify(stableSubset(newPayload))) {
+        console.log('[export-maphud] unchanged (' + exported + ' hotspots, skipped: ' + skipped + '), kept generatedAt=' + (oldPayload.generatedAt || '<none>'));
+        return;
+    }
 
+    fs.writeFileSync(outputFile, JSON.stringify(newPayload, null, 2), 'utf8');
     console.log('[export-maphud] wrote ' + path.relative(projectRoot, outputFile));
     console.log('[export-maphud] hotspots exported: ' + exported + ' (skipped: ' + skipped + ')');
 }
