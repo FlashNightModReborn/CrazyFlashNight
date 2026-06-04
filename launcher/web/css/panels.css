@@ -8433,6 +8433,89 @@ html.perf-low-effects .map-panel-close-btn:hover {
     font-size: 15px;
     color: #666;
 }
+/* hidden 属性需显式 display:none —— 否则 .pet-list-empty 的 display:flex 会盖过 UA 默认，
+   导致空状态文案在有宠物时也常驻显示（与 .pet-store-empty[hidden] / .merc-list-empty[hidden] 对齐）。 */
+.pet-list-empty[hidden] { display: none; }
+
+/* ── 通用进度条（体力/经验/卡片三处共用） ── */
+.pet-bar {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.07);
+    overflow: hidden;
+}
+.pet-bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    border-radius: 4px;
+    transition: width 0.25s ease;
+}
+/* 体力：绿(满)→默认青绿；低体力转黄/红由 modifier 控制 */
+.pet-bar-stamina .pet-bar-fill { background: linear-gradient(90deg, #2e7d32, var(--pet-deploy)); }
+.pet-bar-stamina.pet-bar-low .pet-bar-fill { background: linear-gradient(90deg, #e6a200, var(--pet-gold)); }
+.pet-bar-stamina.pet-bar-depleted .pet-bar-fill { background: linear-gradient(90deg, #b71c1c, var(--pet-danger)); }
+/* 经验：青色系 */
+.pet-bar-xp .pet-bar-fill { background: linear-gradient(90deg, #00838f, var(--pet-accent)); }
+.pet-bar-xp.pet-bar-max .pet-bar-fill { background: linear-gradient(90deg, #8e24aa, var(--pet-kpoint)); }
+
+/* ── 详情页属性条（带进度条的 stat 卡片） ── */
+.pet-stat--meter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+}
+.pet-stat-head { display: flex; justify-content: space-between; align-items: baseline; }
+.pet-stat-sub { font-size: 11px; color: #777; font-weight: 400; }
+
+/* ── 卡片内迷你进度条 ── */
+.pet-card-meters { display: flex; flex-direction: column; gap: 5px; margin-top: 4px; }
+.pet-card-meter { display: flex; align-items: center; gap: 6px; }
+.pet-card-meter-label { font-size: 10px; color: #888; width: 24px; flex-shrink: 0; }
+.pet-card-meter .pet-bar { height: 6px; flex: 1; min-width: 0; }
+.pet-card-meter-val { font-size: 10px; color: #aaa; width: 30px; text-align: right; flex-shrink: 0; }
+.pet-card-max {
+    font-size: 10px; font-weight: 700; color: var(--pet-kpoint);
+    background: rgba(224,64,251,0.12); border: 1px solid rgba(224,64,251,0.35);
+    border-radius: 3px; padding: 0 5px; letter-spacing: 1px;
+}
+.pet-card-chip {
+    font-size: 10px; font-weight: 600; padding: 0 6px; border-radius: 3px; margin-left: 6px;
+    color: var(--pet-danger); background: rgba(244,67,54,0.12); border: 1px solid rgba(244,67,54,0.3);
+}
+
+/* ── 进阶方案：开关控件 ── */
+.pet-promo-item.pet-promo-on { border-color: rgba(76,175,80,0.35); background: rgba(76,175,80,0.04); }
+.pet-toggle {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: none; border: none; cursor: pointer; font-family: inherit; padding: 0;
+}
+.pet-toggle-track {
+    position: relative; width: 40px; height: 20px; border-radius: 10px;
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.18s;
+}
+.pet-toggle-track::after {
+    content: ''; position: absolute; top: 1px; left: 1px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #888; transition: all 0.18s;
+}
+.pet-toggle-on .pet-toggle-track { background: rgba(76,175,80,0.45); border-color: var(--pet-deploy); }
+.pet-toggle-on .pet-toggle-track::after { left: 21px; background: var(--pet-deploy); }
+.pet-toggle:hover:not(:disabled) .pet-toggle-track { border-color: var(--pet-accent); }
+.pet-toggle:disabled { cursor: not-allowed; opacity: 0.5; }
+.pet-toggle-label { font-size: 12px; font-weight: 600; }
+.pet-toggle-on .pet-toggle-label { color: var(--pet-deploy); }
+.pet-toggle-off .pet-toggle-label { color: #888; }
+
+/* ── 进阶方案：多值循环 chip + 切换 ── */
+.pet-promo-value-chip {
+    display: inline-block; font-size: 12px; font-weight: 700; color: var(--pet-accent);
+    background: rgba(0,188,212,0.1); border: 1px solid rgba(0,188,212,0.3);
+    border-radius: 3px; padding: 1px 8px; margin-right: 8px;
+}
+.pet-promo-btn-sub { display: block; font-size: 10px; font-weight: 400; opacity: 0.85; margin-top: 1px; }
 .pet-adopt-btn {
     padding: 6px 24px;
     font-size: 14px;
@@ -8499,10 +8582,12 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .pet-card-header {
     display: flex;
     align-items: center;
-    gap: 6px;
+    flex-wrap: wrap;
+    gap: 4px 6px;
     margin-bottom: 6px;
 }
 .pet-card-name { font-size: 14px; font-weight: 700; color: #ddd; }
+.pet-card-header .pet-card-value { font-size: 12px; }
 .pet-card-badge {
     font-size: 11px;
     padding: 1px 6px;

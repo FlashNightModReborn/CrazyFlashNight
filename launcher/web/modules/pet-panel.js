@@ -113,8 +113,15 @@
                     '<div class="pet-stats-section">' +
                         '<h3 class="pet-section-title">属性信息</h3>' +
                         '<div class="pet-stats-grid" id="pet-stats-grid">' +
-                            '<div class="pet-stat"><span class="pet-stat-label">体力</span><span class="pet-stat-value" id="pet-stat-stamina">--</span></div>' +
-                            '<div class="pet-stat"><span class="pet-stat-label">经验</span><span class="pet-stat-value" id="pet-stat-xp">--</span></div>' +
+                            '<div class="pet-stat pet-stat--meter">' +
+                                '<div class="pet-stat-head"><span class="pet-stat-label">体力</span><span class="pet-stat-value" id="pet-stat-stamina">--</span></div>' +
+                                '<div id="pet-stat-stamina-bar"></div>' +
+                            '</div>' +
+                            '<div class="pet-stat pet-stat--meter">' +
+                                '<div class="pet-stat-head"><span class="pet-stat-label">经验</span><span class="pet-stat-value" id="pet-stat-xp">--</span></div>' +
+                                '<div id="pet-stat-xp-bar"></div>' +
+                                '<div class="pet-stat-sub" id="pet-stat-xp-sub"></div>' +
+                            '</div>' +
                         '</div>' +
                     '</div>' +
                     '<div class="pet-promotions-section">' +
@@ -338,9 +345,20 @@
         gridEl.innerHTML = '';
 
         if (!_pets) _pets = [];
-        emptyEl.hidden = true;
+        emptyEl.hidden = _pets.length > 0;
 
-        for (var i = 0; i < _pets.length; i++) {
+        // 渲染顺序：出战中置顶 → 再按等级降序。仅排序"视图"，dataset.index 仍指向 _pets 原始下标，
+        // 不打乱导航/出战 slot 语义（slotIndex 另带在按钮上）。
+        var order = [];
+        for (var oi = 0; oi < _pets.length; oi++) order.push(oi);
+        order.sort(function(a, b) {
+            var pa = _pets[a], pb = _pets[b];
+            if (!!pa.deployed !== !!pb.deployed) return pa.deployed ? -1 : 1;
+            return (pb.level || 0) - (pa.level || 0);
+        });
+
+        for (var k = 0; k < order.length; k++) {
+            var i = order[k];
             var pet = _pets[i];
             var card = document.createElement('div');
             card.className = 'pet-card' + (pet.deployed ? ' pet-card-deployed' : '');
@@ -357,23 +375,52 @@
             var deployBtnClass = 'pet-card-deploy-btn' + (pet.deployed ? ' pet-card-deploy-btn-rest' : '');
             var deployLabel = pet.deployed ? '休息' : '出战';
 
-            var staminaFull = pet.stamina >= (pet.maxStamina || 200);
+            var maxSt = pet.maxStamina || 200;
+            var staminaFull = pet.stamina >= maxSt;
+
+            var levelLimit = _snapshot ? (_snapshot.levelLimit || 100) : 100;
+            var maxLevel = pet.level >= levelLimit;
+
+            // 经验/体力迷你条：体力色随状态切，经验满级时显示 MAX 徽章不画条（避免溢出/误导）
+            var xpMeter = maxLevel
+                ? '<div class="pet-card-meter"><span class="pet-card-meter-label">经验</span>' +
+                      buildBar(100, 'pet-bar-xp', 'pet-bar-max') +
+                      '<span class="pet-card-meter-val">MAX</span></div>'
+                : '<div class="pet-card-meter"><span class="pet-card-meter-label">经验</span>' +
+                      buildBar(pct(pet.xp, pet.xpNeeded), 'pet-bar-xp', '') +
+                      '<span class="pet-card-meter-val">' + Math.round(pct(pet.xp, pet.xpNeeded)) + '%</span></div>';
+
+            var staminaMeter = '<div class="pet-card-meter"><span class="pet-card-meter-label">体力</span>' +
+                buildBar(pct(pet.stamina, maxSt), 'pet-bar-stamina', staminaBarMod(pet.stamina)) +
+                '<span class="pet-card-meter-val ' + staminaClass + '">' + pet.stamina + '</span></div>';
+
+            // 出战禁用原因（战斗中优先，与上面 deployDisabled 判定同序）：单一 title，避免重复属性
+            var deployTitle = '';
+            if (deployDisabled && !pet.deployed) {
+                deployTitle = isCombatMap ? '战斗中无法调整出战阵容' : (pet.stamina <= 0 ? '体力耗尽，无法出战' : '');
+            }
 
             card.innerHTML =
                 '<img class="pet-card-icon" src="assets/pets/pet_' + pet.petId + '.png" onerror="this.onerror=null;this.src=\'assets/pets/pet_locked.png\'" width="80" height="80" alt="">' +
                 '<div class="pet-card-info">' +
                     '<div class="pet-card-header">' +
                         '<span class="pet-card-name">' + escapeHtml(pet.name) + '</span>' +
+                        '<span class="pet-card-value">Lv.' + pet.level + '</span>' +
+                        (maxLevel ? '<span class="pet-card-max">MAX</span>' : '') +
                         (pet.deployed ? '<span class="pet-card-badge">出战中</span>' : '') +
+                        (pet.stamina <= 0 ? '<span class="pet-card-chip">体力耗尽</span>' : '') +
                     '</div>' +
-                    '<div class="pet-card-body">' +
-                        '<div class="pet-card-row"><span class="pet-card-label">等级</span><span class="pet-card-value">Lv.' + pet.level + '</span></div>' +
-                        '<div class="pet-card-row"><span class="pet-card-label">体力</span><span class="pet-card-value ' + staminaClass + '">' + pet.stamina + '/' + (pet.maxStamina || 200) + '</span></div>' +
+                    '<div class="pet-card-meters">' +
+                        staminaMeter +
+                        xpMeter +
                     '</div>' +
                 '</div>' +
                 '<div class="pet-card-actions">' +
-                    '<button class="' + deployBtnClass + '" data-slot="' + pet.slotIndex + '"' + (deployDisabled ? ' disabled' : '') + '>' + deployLabel + '</button>' +
-                    '<button class="pet-card-restore-btn" data-slot="' + pet.slotIndex + '"' + (staminaFull ? ' disabled' : '') + '>恢复体力</button>' +
+                    '<button class="' + deployBtnClass + '" data-slot="' + pet.slotIndex + '"' + (deployDisabled ? ' disabled' : '') +
+                        (deployTitle ? ' title="' + deployTitle + '"' : '') +
+                        '>' + deployLabel + '</button>' +
+                    '<button class="pet-card-restore-btn" data-slot="' + pet.slotIndex + '"' + (staminaFull ? ' disabled' : '') + '>' +
+                        (staminaFull ? '体力已满' : '恢复体力') + '</button>' +
                 '</div>';
 
             // 点击卡片信息区 → 进入进阶页
@@ -469,8 +516,27 @@
         }
         _el.querySelector('#pet-advance-meta').innerHTML = metaHtml;
 
-        _el.querySelector('#pet-stat-stamina').textContent = pet.stamina + '/' + (pet.maxStamina || 200);
-        _el.querySelector('#pet-stat-xp').textContent = (pet.xp || 0) + '/' + (pet.xpNeeded || '--');
+        var maxStamina = pet.maxStamina || 200;
+        _el.querySelector('#pet-stat-stamina').textContent = pet.stamina + '/' + maxStamina;
+        _el.querySelector('#pet-stat-stamina-bar').innerHTML =
+            buildBar(pct(pet.stamina, maxStamina), 'pet-bar-stamina', staminaBarMod(pet.stamina));
+
+        var levelLimitForXp = _snapshot ? (_snapshot.levelLimit || 100) : 100;
+        var isMaxLevel = pet.level >= levelLimitForXp;
+        var xpEl = _el.querySelector('#pet-stat-xp');
+        var xpBarEl = _el.querySelector('#pet-stat-xp-bar');
+        var xpSubEl = _el.querySelector('#pet-stat-xp-sub');
+        if (isMaxLevel) {
+            xpEl.textContent = '已满级';
+            xpBarEl.innerHTML = buildBar(100, 'pet-bar-xp', 'pet-bar-max');
+            xpSubEl.textContent = 'Lv.' + pet.level + ' 已达上限';
+        } else {
+            var curXp = pet.xp || 0;
+            var needXp = pet.xpNeeded || 0;
+            xpEl.textContent = curXp + '/' + (needXp || '--');
+            xpBarEl.innerHTML = buildBar(pct(curXp, needXp), 'pet-bar-xp', '');
+            xpSubEl.textContent = needXp > 0 ? ('还需 ' + Math.max(0, needXp - curXp).toLocaleString() + ' 经验升级') : '';
+        }
 
         var deployBtn = _el.querySelector('#pet-deploy-btn');
         deployBtn.textContent = pet.deployed ? '休息' : '出战';
@@ -491,12 +557,15 @@
         if (pet.stamina >= (pet.maxStamina || 200)) {
             restoreBtn.disabled = true;
             restoreBtn.title = '体力已满';
+            restoreBtn.textContent = '体力已满';
         } else if (_snapshot && _snapshot.gold < 1000) {
             restoreBtn.disabled = true;
-            restoreBtn.title = '金币不足';
+            restoreBtn.title = '金币不足（需1000）';
+            restoreBtn.textContent = '恢复体力 · 1000金';
         } else {
             restoreBtn.disabled = false;
             restoreBtn.title = '消耗1000金币恢复体力至满值';
+            restoreBtn.textContent = '恢复体力 · 1000金';
         }
 
         var levelupBtn = _el.querySelector('#pet-levelup-btn');
@@ -511,7 +580,7 @@
             var stoneCost = pet.level * 2 + Math.floor(xpNeededForCost / 10000);
             if (stoneCost < 1) stoneCost = 1;
             levelupBtn.title = '消耗战宠灵石:' + stoneCost + '  |  经验:' + (pet.xp || 0) + '/' + (xpNeededForCost || '--');
-            levelupBtn.textContent = '强化 Lv.' + (pet.level + 1);
+            levelupBtn.textContent = '强化 Lv.' + (pet.level + 1) + ' · 灵石×' + stoneCost;
         }
 
         renderPromotions(pet);
@@ -574,9 +643,31 @@
                 }
                 actionBtn = '<button class="pet-promo-btn" disabled>未解锁</button>';
             } else if (freeToggle) {
-                // 反复型且无购买门槛：始终可点击；启用/停用由 AS2 执行内部处理，不重复扣费
-                statusText = '可切换';
-                actionBtn = '<button class="pet-promo-btn pet-promo-btn-buy" data-scheme="' + escapeHtml(schemeName) + '">' + (scheme.buttonText || '执行') + '</button>';
+                // 反复型且无购买门槛：始终可点击；启用/停用由 AS2 执行内部处理，不重复扣费。
+                // 据 AS2 下发的 toggleKind 渲染明确状态控件：binary→拨动开关；cycle→当前值 chip。
+                var tk = status ? status.toggleKind : null;
+                // 每图扣费型开关（如常驻淬毒，type='开关' 且 gold>0）：成本是"每张图"持续扣费，需点明
+                var perMap = (scheme.type === '开关' && scheme.gold > 0);
+                if (tk === 'binary') {
+                    var on = !!status.toggleOn;
+                    if (on) promoEl.classList.add('pet-promo-on');
+                    statusText = on
+                        ? (perMap ? ('运行中 · 每图消耗 ' + formatMoney(scheme.gold) + '金') : '已启用')
+                        : (perMap ? ('已关闭 · 开启后每图 ' + formatMoney(scheme.gold) + '金') : '已停用');
+                    actionBtn =
+                        '<button class="pet-toggle ' + (on ? 'pet-toggle-on' : 'pet-toggle-off') + '" data-scheme="' + escapeHtml(schemeName) + '" title="点击' + (on ? '关闭' : '开启') + '">' +
+                            '<span class="pet-toggle-track"></span>' +
+                            '<span class="pet-toggle-label">' + (on ? '运行中' : '已关闭') + '</span>' +
+                        '</button>';
+                } else if (tk === 'cycle') {
+                    statusText = '点击切换';
+                    actionBtn =
+                        '<span class="pet-promo-value-chip">' + escapeHtml(status.toggleValue || '') + '</span>' +
+                        '<button class="pet-promo-btn pet-promo-btn-buy" data-scheme="' + escapeHtml(schemeName) + '">切换</button>';
+                } else {
+                    statusText = '可切换';
+                    actionBtn = '<button class="pet-promo-btn pet-promo-btn-buy" data-scheme="' + escapeHtml(schemeName) + '">' + (scheme.buttonText || '执行') + '</button>';
+                }
             } else if (!canAfford && scheme.gold > 0) {
                 statusText = '金币不足';
                 actionBtn = '<button class="pet-promo-btn pet-promo-btn-buy" data-scheme="' + escapeHtml(schemeName) + '">' + formatMoney(scheme.gold) + '金 ' + (scheme.buttonText || '执行') + '</button>';
@@ -595,12 +686,12 @@
                 '</div>' +
                 '<div class="pet-promo-action">' + actionBtn + '</div>';
 
-            var btnEl = promoEl.querySelector('.pet-promo-btn-buy');
-            if (btnEl) {
-                btnEl.addEventListener('click', function(e) {
+            // 统一绑定动作区内带 data-scheme 的可点击元素（购买按钮 / 切换按钮 / 拨动开关）
+            var actEls = promoEl.querySelectorAll('.pet-promo-action [data-scheme]');
+            for (var a = 0; a < actEls.length; a++) {
+                actEls[a].addEventListener('click', function(e) {
                     e.stopPropagation();
-                    var sName = this.dataset.scheme;
-                    onAdvance(sName);
+                    onAdvance(this.dataset.scheme);
                 });
             }
 
@@ -692,23 +783,27 @@
             var canAdopt = true;
             var btnText = priceText;
             var taskLocked = false;
-            if (_snapshot && pet.unlockTask > 0 && pet.unlockTask > (_snapshot.playerTask || 0)) {
+            if (!_snapshot) {
+                // 无快照时无法权威判定任务/等级/金币/格子门槛，一律禁用购买，
+                // 避免快照失败或抢点时抢跑领养主线锁宠（服务端 handleAdopt 已有权威兜底，此为 UI 一致性）。
+                canAdopt = false;
+            } else if (pet.unlockTask > 0 && pet.unlockTask > (_snapshot.playerTask || 0)) {
                 canAdopt = false;
                 taskLocked = true;
                 btnText = '需主线进度 ' + pet.unlockTask;
-            } else if (pet.unlockLevel > (_snapshot ? _snapshot.playerLevel : 1)) {
+            } else if (pet.unlockLevel > _snapshot.playerLevel) {
                 canAdopt = false;
                 btnText = '需Lv.' + pet.unlockLevel;
             } else if (pet.unique && hasPet(pet.petId)) {
                 canAdopt = false;
                 btnText = '已拥有';
-            } else if (_snapshot && _pets.length >= _snapshot.maxSlots) {
+            } else if (_pets.length >= _snapshot.maxSlots) {
                 canAdopt = false;
                 btnText = '宠物栏已满';
-            } else if (_snapshot && effPrice > 0 && _snapshot.gold < effPrice) {
+            } else if (effPrice > 0 && _snapshot.gold < effPrice) {
                 canAdopt = false;
                 // 不改变text
-            } else if (_snapshot && pet.kprice > 0 && _snapshot.kpoint < pet.kprice) {
+            } else if (pet.kprice > 0 && _snapshot.kpoint < pet.kprice) {
                 canAdopt = false;
                 // 不改变text
             }
@@ -925,7 +1020,8 @@
                 // 领养成功后返回列表页
                 navigateTo('list');
             } else {
-                showToast('领养失败: ' + (data.error || '未知错误'));
+                // 优先用服务端 reason（含 等级/主线锁的友好文案），回退 error 码
+                showToast('领养失败: ' + (data.reason || data.error || '未知错误'));
             }
         });
     }
@@ -959,6 +1055,27 @@
         if (n >= 100000000) return (n / 100000000).toFixed(2) + '亿';
         if (n >= 10000) return (n / 10000).toFixed(1) + '万';
         return n.toLocaleString ? n.toLocaleString() : String(n);
+    }
+
+    // 百分比（0~100，已 clamp）。max<=0 时返回 0，避免除零/NaN 渲染异常宽度。
+    function pct(cur, max) {
+        cur = Number(cur) || 0; max = Number(max) || 0;
+        if (max <= 0) return 0;
+        var p = (cur / max) * 100;
+        return p < 0 ? 0 : (p > 100 ? 100 : p);
+    }
+
+    // 通用进度条 HTML。baseClass 如 'pet-bar-stamina'/'pet-bar-xp'；modifier 如 'pet-bar-low'/'pet-bar-max'/''。
+    function buildBar(percent, baseClass, modifier) {
+        var cls = 'pet-bar ' + baseClass + (modifier ? ' ' + modifier : '');
+        return '<div class="' + cls + '"><div class="pet-bar-fill" style="width:' + percent.toFixed(1) + '%"></div></div>';
+    }
+
+    // 体力条状态修饰：耗尽=red，<=5=低，否则默认。与卡片数值色阶（pet-stamina-low/-depleted）同口径。
+    function staminaBarMod(stamina) {
+        if (stamina <= 0) return 'pet-bar-depleted';
+        if (stamina <= 5) return 'pet-bar-low';
+        return '';
     }
 
     function escapeHtml(s) {

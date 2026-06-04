@@ -158,6 +158,14 @@ class org.flashNight.arki.merc.PetPanelService {
                 // 下发 perPetDesc 供 JS 优先采用。描述函数已在内存中，运行时调用无需重发布 SWF。
                 if (statusMap[sNm].repeatable) {
                     statusMap[sNm].desc = buildSchemePerPetDesc(scDef, info, attrs, petSchemeSet);
+                    // 开关类方案的当前开/关（或当前值）状态：供 JS 渲染明确的状态控件
+                    // （二元开关→拨动开关亮灭；多值循环→当前值色块 chip），不再让玩家从文案里猜状态。
+                    var ts:Object = readToggleState(sNm, attrs);
+                    if (ts != undefined) {
+                        statusMap[sNm].toggleKind = ts.kind;
+                        if (ts.kind == "binary") statusMap[sNm].toggleOn = ts.enabled;
+                        else statusMap[sNm].toggleValue = ts.value;
+                    }
                 }
             }
             petEntry.schemeStatus = statusMap;
@@ -254,6 +262,20 @@ class org.flashNight.arki.merc.PetPanelService {
         var petDef:Object = _root.宠物库[petId];
         if (petDef == undefined) {
             sendResponse({ task: "pet_response", callId: callId, success: false, error: "pet_not_found" });
+            return;
+        }
+
+        // 服务端权威解锁守卫（等级 + 主线进度）：UI 门控在无 snapshot 时会失效
+        // （pet-panel.js 的 unlockTask 判定被 _snapshot 短路，等级判定默认 playerLevel=1），
+        // 且任何越过 UI 的消息都不应绕过任务锁。权威值直读 _root（与 snapshot 同源）。
+        var reqLevel:Number = Number(petDef.UnlockLevel) || 0;
+        if ((Number(_root.等级) || 1) < reqLevel) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "level_locked", reason: "需Lv." + reqLevel });
+            return;
+        }
+        var reqTask:Number = Number(petDef.UnlockTask) || 0;
+        if (reqTask > 0 && (Number(_root.主线任务进度) || 0) < reqTask) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "task_locked", reason: "需主线进度 " + reqTask });
             return;
         }
 
@@ -451,10 +473,21 @@ class org.flashNight.arki.merc.PetPanelService {
         // 设置上下文（模拟 Flash UI 的 this 上下文）。进阶方案用本宠子集（per-pet）：
         // 还原原始设计，使条件函数的前置守卫对中/强体质宠正确短路，不再误判前置不足。
         var advPetId:Number = Number(_root.宠物信息[slotIndex][0]);
+        var petSchemeSet:Object = buildPetSchemeSet(advPetId);
+
+        // 服务端授权守卫：方案必须在本宠 Promotion 子集内。否则条件/执行函数读到的
+        // this.进阶方案[该方案] 为 undefined → 等级/金币守卫退化成 `x < undefined`(恒 false) 被绕过，
+        // 且 `_root.金钱 -= undefined` 会把金钱写成 NaN、并越权写入未授权属性（如对普通宠注入 钙化 战斗增益）。
+        // web UI 只下发本宠已配置方案，但畸形/过期消息可能传入越权方案，故服务端显式拦截。
+        if (petSchemeSet[schemeName] == undefined) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "scheme_not_allowed", reason: "该宠物不支持此进阶方案" });
+            return;
+        }
+
         var ctx:Object = {
             当前宠物信息: _root.宠物信息[slotIndex],
             当前宠物属性: _root.宠物信息[slotIndex][5],
-            进阶方案: buildPetSchemeSet(advPetId)
+            进阶方案: petSchemeSet
         };
 
         // 服务端完成度守卫：一次性付费方案（如钙化）的 条件 不自检完成，必须在此拦截重复执行，
@@ -1142,5 +1175,28 @@ class org.flashNight.arki.merc.PetPanelService {
             if (_root.战宠进阶函数[nm] != undefined) set[nm] = _root.战宠进阶函数[nm];
         }
         return set;
+    }
+
+    // 读取开关类方案的当前状态（per-scheme：各方案状态字段不统一，无通用契约，故按方案名分派）。
+    //   { kind:"binary", on:Boolean }  —— 二元开关（常驻淬毒.启用 / 影子单位）：JS 渲染 ON/OFF 拨动开关
+    //   { kind:"cycle",  value:String } —— 多值循环（发型当前色）：JS 渲染当前值色块 chip
+    //   undefined                       —— 非状态型开关：JS 回退通用按钮
+    // 注：状态字段取自 当前宠物属性（存档权威），只读不写。新增开关方案需在此登记。
+    private static function readToggleState(schemeName:String, attrs:Object):Object {
+        if (attrs == undefined) attrs = {};
+        // 注：字段名避开 AS2 保留字（on/onClipEvent 等是事件处理器关键字，作对象键会导致解析失败）。
+        if (schemeName == "常驻淬毒") {
+            var t:Object = attrs.常驻淬毒;
+            return { kind: "binary", enabled: (t != undefined && t.启用 == true) };
+        }
+        if (schemeName == "影子刺客") {
+            // 购买前无开关意义（JS 以 purchased=false 渲染购买按钮）；购买后读 影子单位 的启停。
+            return { kind: "binary", enabled: (attrs.影子单位 == true) };
+        }
+        if (schemeName == "切换发型") {
+            var c:String = (attrs.发色 != undefined) ? String(attrs.发色) : "橙";
+            return { kind: "cycle", value: c + "发" };
+        }
+        return undefined;
     }
 }
