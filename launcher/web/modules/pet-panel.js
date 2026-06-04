@@ -565,7 +565,13 @@
                 statusText = '已完成';
                 actionBtn = '<button class="pet-promo-btn" disabled>已完成</button>';
             } else if (!levelOk) {
-                statusText = '需Lv.' + (scheme.unlockLevel || 0) + '解锁';
+                // 锁定原因细分（AS2 下发 status.lockReason）：前置链未完成时显示"需先完成前置训练"，
+                // 而非误显"需Lv.X"——玩家可能早已够级，卡的是 基础训练→强化药剂→超级血清 的前置累进。
+                if (status && status.lockReason === 'prereq') {
+                    statusText = '需先完成前置训练';
+                } else {
+                    statusText = '需Lv.' + (scheme.unlockLevel || 0) + '解锁';
+                }
                 actionBtn = '<button class="pet-promo-btn" disabled>未解锁</button>';
             } else if (freeToggle) {
                 // 反复型且无购买门槛：始终可点击；启用/停用由 AS2 执行内部处理，不重复扣费

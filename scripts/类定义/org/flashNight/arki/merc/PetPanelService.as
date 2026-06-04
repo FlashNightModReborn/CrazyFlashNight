@@ -132,14 +132,22 @@ class org.flashNight.arki.merc.PetPanelService {
             // 三件套共用 基础训练.次数 计数，布尔方案查自身标志）
             var statusMap:Object = {};
             var schemeNames:Array = extractPromotionNames(petDef.Promotion);
+            // 本宠物专属方案子集（per-pet 进阶方案，还原原始设计）：用于前置档判定，
+            // 中/强体质宠（无基础训练/强化药剂）据此跳过其不具备的低阶前置。
+            var petSchemeSet:Object = filterSchemeSet(schemeNames);
             for (var sIdx:Number = 0; sIdx < schemeNames.length; sIdx++) {
                 var sNm:String = String(schemeNames[sIdx]);
                 var scDef:Object = _root.战宠进阶函数[sNm];
                 if (scDef == undefined) continue;
                 if (typeof scDef.执行 != "function") continue; // 与 schemesMap 同口径，跳过 凑数组的 等占位方案
+                var lockReason:String = schemeLockReason(scDef, attrs, Number(info[1]), petSchemeSet);
                 statusMap[sNm] = {
                     completed: isSchemeCompleted(sNm, scDef, attrs),
-                    locked: isSchemeLocked(scDef, attrs, Number(info[1])),
+                    locked: lockReason != "",
+                    // 锁定原因细分（""未锁 / "level"等级不足 / "prereq"前置训练未完成）：
+                    // 供 JS 区分文案——等级锁显"需Lv.X"，前置锁显"需先完成前置训练"。
+                    // 旧实现只下发布尔 locked，JS 一律误显"需Lv.X"（前置未达时玩家明明已够级，困惑）。
+                    lockReason: lockReason,
                     // 反复型(开关/购买后开关)：JS 据此渲染为可反复点击的开关按钮，不显示"已完成"。
                     repeatable: isSchemeRepeatable(sNm, scDef),
                     // 购买后开关的前置购买是否完成（纯开关恒 true）：决定显示购买价还是免费开关。
@@ -149,7 +157,7 @@ class org.flashNight.arki.merc.PetPanelService {
                 // dummy ctx 算，会显示"undefined发"或丢失开关状态。这里用真实 ctx 重算 描述（短文且自带状态），
                 // 下发 perPetDesc 供 JS 优先采用。描述函数已在内存中，运行时调用无需重发布 SWF。
                 if (statusMap[sNm].repeatable) {
-                    statusMap[sNm].desc = buildSchemePerPetDesc(scDef, info, attrs);
+                    statusMap[sNm].desc = buildSchemePerPetDesc(scDef, info, attrs, petSchemeSet);
                 }
             }
             petEntry.schemeStatus = statusMap;
@@ -440,11 +448,13 @@ class org.flashNight.arki.merc.PetPanelService {
             return;
         }
 
-        // 设置上下文（模拟 Flash UI 的 this 上下文）
+        // 设置上下文（模拟 Flash UI 的 this 上下文）。进阶方案用本宠子集（per-pet）：
+        // 还原原始设计，使条件函数的前置守卫对中/强体质宠正确短路，不再误判前置不足。
+        var advPetId:Number = Number(_root.宠物信息[slotIndex][0]);
         var ctx:Object = {
             当前宠物信息: _root.宠物信息[slotIndex],
             当前宠物属性: _root.宠物信息[slotIndex][5],
-            进阶方案: _root.战宠进阶函数
+            进阶方案: buildPetSchemeSet(advPetId)
         };
 
         // 服务端完成度守卫：一次性付费方案（如钙化）的 条件 不自检完成，必须在此拦截重复执行，
@@ -521,17 +531,18 @@ class org.flashNight.arki.merc.PetPanelService {
         var unlockLevel:Number = Number(scheme.解锁等级) || 0;
         var descText:String = "";
 
-        // 获取方案描述
+        // 获取方案描述。进阶方案用本宠子集，使前置档守卫对中/强体质宠正确短路（描述不再误显"请先训练"）。
+        var previewSchemeSet:Object = buildPetSchemeSet(petId);
         if (typeof scheme.详情页描述 == "function") {
             var ctx:Object = {
                 当前宠物信息: _root.宠物信息[0] != undefined ? _root.宠物信息[0] : [petId, 1, 200, 0, 0, {}],
                 当前宠物属性: {},
-                进阶方案: _root.战宠进阶函数
+                进阶方案: previewSchemeSet
             };
             descText = String(scheme.详情页描述.call(ctx));
         } else if (scheme.描述 != undefined) {
             if (typeof scheme.描述 == "function") {
-                descText = String(scheme.描述.call({当前宠物信息: [petId, 1, 200, 0, 0, {}], 当前宠物属性: {}, 进阶方案: _root.战宠进阶函数}));
+                descText = String(scheme.描述.call({当前宠物信息: [petId, 1, 200, 0, 0, {}], 当前宠物属性: {}, 进阶方案: previewSchemeSet}));
             } else {
                 descText = String(scheme.描述);
             }
@@ -642,7 +653,7 @@ class org.flashNight.arki.merc.PetPanelService {
             var ctx:Object = {
                 当前宠物信息: [petId, 1, 200, 0, 0, {}],
                 当前宠物属性: {},
-                进阶方案: _root.战宠进阶函数
+                进阶方案: buildPetSchemeSet(petId)
             };
             desc = String(scheme.详情页描述.call(ctx));
         } else if (typeof scheme.描述 == "function") {
@@ -1015,12 +1026,12 @@ class org.flashNight.arki.merc.PetPanelService {
     // 注意：当前宠物属性 用浅拷贝而非真实 attrs 引用——初始化 会向 ctx.当前宠物属性 写默认值
     // （如 发色="橙"），若直接传真实 attrs，纯展示的描述构建会静默改写权威内存态（不标脏 → 与存档脱同步）。
     // 浅拷贝后 初始化 只动副本，描述照常显示默认值，真实 attrs 保持只读。
-    private static function buildSchemePerPetDesc(sc:Object, info:Array, attrs:Object):String {
+    private static function buildSchemePerPetDesc(sc:Object, info:Array, attrs:Object, petSchemeSet:Object):String {
         var ctxAttrs:Object = {};
         if (attrs != undefined && typeof attrs == "object") {
             for (var k:String in attrs) ctxAttrs[k] = attrs[k];
         }
-        var ctx:Object = { 当前宠物信息: info, 当前宠物属性: ctxAttrs, 进阶方案: _root.战宠进阶函数 };
+        var ctx:Object = { 当前宠物信息: info, 当前宠物属性: ctxAttrs, 进阶方案: petSchemeSet };
         if (typeof sc.初始化 == "function") sc.初始化.call(ctx); // 补默认值（如发色），只动副本
         var d:String = "";
         if (typeof sc.描述 == "function") d = String(sc.描述.call(ctx));
@@ -1085,14 +1096,51 @@ class org.flashNight.arki.merc.PetPanelService {
         return flag != undefined && flag !== false && flag !== 0 && flag !== "";
     }
 
-    // 判定方案是否因等级/前置未达而锁定（次数条件 = 需要的前置累进计数）。
-    private static function isSchemeLocked(sc:Object, attrs:Object, petLevel:Number):Boolean {
-        if (sc == undefined) return true;
-        if (petLevel < (Number(sc.解锁等级) || 0)) return true;
-        if (sc.次数条件 != undefined && Number(sc.次数条件) > 0) {
-            var cnt:Number = (attrs != undefined && attrs.基础训练 != undefined) ? (Number(attrs.基础训练.次数) || 0) : 0;
-            if (cnt < Number(sc.次数条件)) return true;
+    // 判定方案锁定原因（细分等级锁/前置锁，供 JS 区分文案）。
+    //   ""      = 未锁
+    //   "level" = 等级未达 解锁等级
+    //   "prereq"= 前置累进未达（次数条件 = 需要的 基础训练.次数；三件套链 基础训练→强化药剂→超级血清）
+    // 等级优先：若等级也不够则先报 level（升级是更靠前的硬门槛）。
+    //
+    // petSchemeSet = 本宠物自己的方案子集（按 Promotion 过滤的全局表）。还原原始设计：
+    // 次数前置仅当本宠链里**确实存在更低阶前置**（基础训练/强化药剂）时才强制；中/强体质宠
+    // 从更高档起步（promotion 不含低阶训练），前置天然满足，不再被误锁。等价条件函数里的
+    // `if(进阶方案.基础训练 && ...)` / `if((进阶方案.基础训练||进阶方案.强化药剂) && ...)` 守卫。
+    private static function schemeLockReason(sc:Object, attrs:Object, petLevel:Number, petSchemeSet:Object):String {
+        if (sc == undefined) return "level";
+        if (petLevel < (Number(sc.解锁等级) || 0)) return "level";
+        var req:Number = Number(sc.次数条件);
+        if (sc.次数条件 != undefined && req > 0) {
+            // 本宠链里是否有产出"次数<req"的更低阶前置：基础训练产出次数1，强化药剂产出次数2。
+            var enforce:Boolean = false;
+            if (petSchemeSet != undefined) {
+                if (petSchemeSet["基础训练"] != undefined) enforce = true;
+                else if (req >= 2 && petSchemeSet["强化药剂"] != undefined) enforce = true;
+            }
+            if (enforce) {
+                var cnt:Number = (attrs != undefined && attrs.基础训练 != undefined) ? (Number(attrs.基础训练.次数) || 0) : 0;
+                if (cnt < req) return "prereq";
+            }
         }
-        return false;
+        return "";
+    }
+
+    // 构造本宠物专属的进阶方案子集（仅含该宠 Promotion 列表里、且全局表确有定义的方案）。
+    // 还原"进阶方案 = 本宠子集"的原始语义：传给条件/描述函数的 ctx.进阶方案 用它而非全局表，
+    // 使 `进阶方案.基础训练` 对缺该档的宠物为 undefined → 守卫短路 → 跳过低阶前置直接可用。
+    private static function buildPetSchemeSet(petId:Number):Object {
+        var def:Object = _root.宠物库[petId];
+        if (def == undefined) return {};
+        return filterSchemeSet(extractPromotionNames(def.Promotion));
+    }
+
+    private static function filterSchemeSet(names:Array):Object {
+        var set:Object = {};
+        if (names == undefined) return set;
+        for (var i:Number = 0; i < names.length; i++) {
+            var nm:String = String(names[i]);
+            if (_root.战宠进阶函数[nm] != undefined) set[nm] = _root.战宠进阶函数[nm];
+        }
+        return set;
     }
 }

@@ -151,6 +151,12 @@ namespace CF7Launcher.Data
                         }
                     }
 
+                    // 防御：重复 <id> 会让 C# 的 id 键与 AS2 的数组下标语义错位（后者按文档顺序）。
+                    // 这类填表错误在旧全-AS2 体系里无害（AS2 忽略 <id>），迁移到 C# 直读后会静默拿错宠物，
+                    // 故在此显式告警，避免再次悄悄回归（见 docs 战宠 pets.xml 迁移方案）。
+                    if (catalog.PetsById.ContainsKey(id))
+                        LogManager.Log("[PetCatalogLoader] WARNING duplicate <id>=" + id
+                            + " ('" + def.Name + "' overwrites '" + catalog.PetsById[id].Name + "') — 检查 pets.xml");
                     catalog.PetsById[id] = def;
                 }
             }
