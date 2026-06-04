@@ -348,4 +348,12 @@
         <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
         <Limitation>DisableKnockdownProtection</Limitation>
     </StageInfo>
+    <StageInfo>
+        <Type>无限过图</Type>
+        <Name>总备处站清理</Name>
+        <UnlockCondition>1</UnlockCondition>
+        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
+        <Description />
+        <StartFrame>地图-隧道据点</StartFrame>
+    </StageInfo>
 </Stages>

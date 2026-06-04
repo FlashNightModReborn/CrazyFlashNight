@@ -2890,6 +2890,71 @@
         <MaxIllumination>1</MaxIllumination>
         <MinIllumination>1</MinIllumination>
     </Environment>
+    <Environment>
+        <BackgroundURL>地铁站隧道破损1.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>0</Xmin>
+        <Xmax>1500</Xmax>
+        <Ymin>350</Ymin>
+        <Ymax>700</Ymax>
+        <Width>1500</Width>
+        <Height>700</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>1</MaxIllumination>
+        <MinIllumination>1</MinIllumination>
+        <Collision>
+            <Point>1280,350</Point>
+            <Point>1280,450</Point>
+            <Point>1500,450</Point>
+            <Point>1500,350</Point>
+        </Collision>
+        <Collision>
+            <Point>0,500</Point>
+            <Point>0,700</Point>
+            <Point>320,700</Point>
+            <Point>320,550</Point>
+        </Collision>
+        <Door>
+            <Index>1</Index>
+            <Direction>右</Direction>
+            <x0>1400</x0>
+            <y0>450</y0>
+            <x1>1500</x1>
+            <y1>700</y1>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>地铁站隧道破损2.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>0</Xmin>
+        <Xmax>1500</Xmax>
+        <Ymin>350</Ymin>
+        <Ymax>700</Ymax>
+        <Width>1500</Width>
+        <Height>700</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>1</MaxIllumination>
+        <MinIllumination>1</MinIllumination>
+        <Collision>
+            <Point>0,350</Point>
+            <Point>0,500</Point>
+            <Point>1050,500</Point>
+            <Point>1050,350</Point>
+        </Collision>
+    </Environment>
+    <Environment>
+        <BackgroundURL>地铁站隧道据点大门.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>0</Xmin>
+        <Xmax>1500</Xmax>
+        <Ymin>350</Ymin>
+        <Ymax>700</Ymax>
+        <Width>1500</Width>
+        <Height>700</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>1</MaxIllumination>
+        <MinIllumination>1</MinIllumination>
+    </Environment>
     
     
     <Environment>
