@@ -118,11 +118,39 @@ namespace CF7Launcher.Tests.Bus
 
         private static int ProbeFreePort()
         {
-            TcpListener probe = new TcpListener(IPAddress.Loopback, 0);
-            probe.Start();
-            int port = ((IPEndPoint)probe.LocalEndpoint).Port;
-            probe.Stop();
-            return port;
+            // 选一个在 IPv4 与（若可用）IPv6 loopback 上都空闲的端口，
+            // 避免选到仅 IPv4 空闲的端口让 server 静默退成 IPv4-only、令 AcceptsIPv6Loopback 假阴性。
+            bool needV6 = IPv6LoopbackAvailable();
+            for (int attempt = 0; attempt < 16; attempt++)
+            {
+                TcpListener probe = new TcpListener(IPAddress.Loopback, 0);
+                probe.Start();
+                int port = ((IPEndPoint)probe.LocalEndpoint).Port;
+                probe.Stop();
+
+                if (!needV6 || CanBind(IPAddress.IPv6Loopback, port))
+                    return port;
+            }
+            throw new InvalidOperationException("Could not find a dual-stack free loopback port after 16 attempts");
+        }
+
+        private static bool CanBind(IPAddress addr, int port)
+        {
+            TcpListener probe = null;
+            try
+            {
+                probe = new TcpListener(addr, port);
+                probe.Start();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (probe != null) probe.Stop();
+            }
         }
     }
 }

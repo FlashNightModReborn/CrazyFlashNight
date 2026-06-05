@@ -36,8 +36,9 @@ namespace CF7Launcher.Bus
         private CF7Launcher.Guardian.INotchSink _notchOverlay;
         private Action<string> _uiDataHandler; // U 前缀：UI 数据透传
 
-        // 每次新连接递增，用于 ReadLoop 检测自己是否已被替换
-        private int _generation;
+        // 每次新连接递增，用于 ReadLoop 检测自己是否已被替换。
+        // volatile：HandleMessage 在锁外读它做代际守卫，需保证可见性。
+        private volatile int _generation;
 
         // 业务就绪标记：policy 握手完成后的首条业务消息时触发
         private volatile bool _clientReady;
@@ -159,7 +160,13 @@ namespace CF7Launcher.Bus
             LogManager.Log("[XmlSocket] Client connected (NoDelay=true)");
             PerfTrace.Mark("socket.client_connected");
 
+            // 捕获本地引用，ReadLoop 只操作自己的 client/stream。
+            // 注意：localStream 必须在锁内随 _stream 一起取，不能锁外读 _stream——
+            // 双 loopback accept 后 IPv4/IPv6 两线程可能并发进入本方法，锁外读 _stream
+            // 会拿到另一线程刚写入的 stream，导致 client 与 stream 错配、两个 ReadLoop 读同一连接。
             int gen;
+            TcpClient localClient = client;
+            NetworkStream localStream;
             lock (_clientLock)
             {
                 // 关闭旧连接
@@ -170,11 +177,8 @@ namespace CF7Launcher.Bus
                 _clientReady = false;
                 _client = client;
                 _stream = client.GetStream();
+                localStream = _stream;
             }
-
-            // 捕获本地引用，ReadLoop 只操作自己的 client/stream
-            TcpClient localClient = client;
-            NetworkStream localStream = _stream;
 
             Thread readThread = new Thread(delegate()
             {
@@ -274,6 +278,13 @@ namespace CF7Launcher.Bus
         // 时 held callback 不会把 prewarm error 发到下一条连接.
         private void HandleMessage(string message, int connectionGen)
         {
+            // === 连接代际守卫 ===
+            // 双 loopback accept 下，被新连接替换掉的旧 ReadLoop 可能仍带着已读到的
+            // 残余消息走到这里。仅当本消息所属 connection 仍是当前活动 generation 时才处理，
+            // 否则丢弃——既防止旧连接错误触发 OnClientReady，也防止把陈旧输入灌进业务层。
+            if (connectionGen != _generation)
+                return;
+
             // === 业务就绪信号 ===
             // policy request 不走快车道（它是 XML 文本），所以首条快车道或 JSON 消息
             // 意味着 policy 握手已完成、Flash 业务层已就绪。

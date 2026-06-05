@@ -131,22 +131,44 @@ namespace CF7Launcher.Config
 
                 if (File.Exists(trustFile))
                 {
+                    // ReadAllText 会自动识别并剥掉 BOM，故 content 不含 BOM 字符；
+                    // 是否“原本就带 BOM”需单独看原始字节，用于决定旧文件是否要升级重写。
+                    bool fileHadBom = FileStartsWithUtf8Bom(trustFile);
                     string content = File.ReadAllText(trustFile).Trim();
                     string[] lines = content.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    bool alreadyPresent = false;
                     foreach (string line in lines)
                     {
                         if (line.Trim().Equals(projectRoot, StringComparison.OrdinalIgnoreCase))
                         {
-                            // 条目已存在（由 bat 或之前的进程写入），不纳入租约
-                            // 退出时不会删除此条目
-                            LogManager.Log("[FlashTrust] Already trusted (not leased): " + trustFile);
-                            return true;
+                            alreadyPresent = true;
+                            break;
                         }
                     }
+
+                    if (alreadyPresent)
+                    {
+                        // 条目已存在（由 bat 或之前的进程写入），不纳入租约，退出时不删除。
+                        // 但若旧文件无 BOM，Flash 在中文系统会按 GBK 读乱 → 必须就地升级：
+                        // 去重后全量重写为带 BOM 的 UTF-8（保留所有不同项目的路径）。
+                        if (!fileHadBom)
+                        {
+                            File.WriteAllText(trustFile, JoinDistinct(lines), Utf8Bom);
+                            LogManager.Log("[FlashTrust] Upgraded legacy no-BOM trust file (not leased): " + trustFile);
+                        }
+                        else
+                        {
+                            LogManager.Log("[FlashTrust] Already trusted (not leased): " + trustFile);
+                        }
+                        return true;
+                    }
+
                     // 路径不在文件中，追加——这是我们写的，纳入租约。
                     // 用全量重写(带 BOM)而非 AppendAllText：保证整个文件有 BOM，
-                    // 同时把旧版本可能遗留的无 BOM 文件一并修正(已存在条目原样保留)。
-                    File.WriteAllText(trustFile, content + Environment.NewLine + projectRoot, Utf8Bom);
+                    // 同时把旧版本可能遗留的无 BOM 文件一并修正(已存在条目去重保留)。
+                    string[] merged = AppendDistinct(lines, projectRoot);
+                    File.WriteAllText(trustFile, JoinDistinct(merged), Utf8Bom);
                     _ownedLeasePaths.Add(trustFile);
                     LogManager.Log("[FlashTrust] Lease acquired (appended): " + trustFile);
                 }
@@ -182,6 +204,50 @@ namespace CF7Launcher.Config
                 if (s[i] > 0x7F) return true;
             }
             return false;
+        }
+
+        // 看原始字节判断文件是否以 UTF-8 BOM (EF BB BF) 开头。
+        // 用于区分“旧版本写的无 BOM 文件”和“本版本已升级过的带 BOM 文件”。
+        private static bool FileStartsWithUtf8Bom(string path)
+        {
+            try
+            {
+                byte[] head = new byte[3];
+                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    int n = fs.Read(head, 0, 3);
+                    return n == 3 && head[0] == 0xEF && head[1] == 0xBB && head[2] == 0xBF;
+                }
+            }
+            catch
+            {
+                // 读不到就当作“无 BOM”，触发一次升级重写，宁可多写不可漏修
+                return false;
+            }
+        }
+
+        // 大小写不敏感去重，保留首次出现顺序（不同项目的多条信任路径都保留，只去重完全相同项）。
+        private static string[] AppendDistinct(string[] lines, string extra)
+        {
+            List<string> merged = new List<string>(lines);
+            merged.Add(extra);
+            return merged.ToArray();
+        }
+
+        private static string JoinDistinct(string[] lines)
+        {
+            List<string> kept = new List<string>();
+            Dictionary<string, bool> seen = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+            foreach (string raw in lines)
+            {
+                if (raw == null) continue;
+                string line = raw.Trim();
+                if (line.Length == 0) continue;
+                if (seen.ContainsKey(line)) continue;
+                seen[line] = true;
+                kept.Add(line);
+            }
+            return string.Join(Environment.NewLine, kept.ToArray());
         }
     }
 }

@@ -82,12 +82,27 @@ namespace CF7Launcher.Bus
             _usedPorts.Add(port);
         }
 
+        // 系统是否支持 IPv6（探测一次缓存）。与 XmlSocketServer 的双 loopback 监听模型对齐：
+        // IPv6 可用时 server 会同时监听 ::1，故端口也必须在 ::1 可绑，否则会发布一个
+        // IPv6-first 客户端连不上的端口。IPv6 不可用时 server 退回 IPv4-only，端口只校验 IPv4。
+        private static readonly bool Ipv6Supported = Socket.OSSupportsIPv6;
+
         private static bool IsPortAvailable(int port)
+        {
+            // 端口必须在 IPv4 loopback 可绑；若系统支持 IPv6，也必须在 IPv6 loopback 可绑。
+            if (!TryBindLoopback(IPAddress.Loopback, port))
+                return false;
+            if (Ipv6Supported && !TryBindLoopback(IPAddress.IPv6Loopback, port))
+                return false;
+            return true;
+        }
+
+        private static bool TryBindLoopback(IPAddress addr, int port)
         {
             TcpListener listener = null;
             try
             {
-                listener = new TcpListener(IPAddress.Loopback, port);
+                listener = new TcpListener(addr, port);
                 listener.Start();
                 return true;
             }
