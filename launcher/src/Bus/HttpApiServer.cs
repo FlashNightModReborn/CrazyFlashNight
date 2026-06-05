@@ -190,12 +190,30 @@ namespace CF7Launcher.Bus
 
         private void HandleTestConnection(HttpListenerContext ctx)
         {
+            // 判别器日志：SWF 走到 HTTP 探测 == 已具备网络访问(trust 生效)。
+            // 若日志里有本条但 socket 仍超时, 矛头指向 IPv4/IPv6 loopback 不对称(#2)；
+            // 若连本条都没有, 则是 SWF 未受信(#1, 多为中文路径 trust 编码)。
+            // 附带地址族: HTTP 走 IPv6 而 socket 失败 == #2 现场签名。
+            LogManager.Log("[HTTP] /testConnection from " + DescribeRemote(ctx));
             ctx.Response.ContentType = "application/x-www-form-urlencoded";
             WriteResponse(ctx, "status=success");
         }
 
+        private static string DescribeRemote(HttpListenerContext ctx)
+        {
+            try
+            {
+                System.Net.IPEndPoint ep = ctx.Request.RemoteEndPoint;
+                if (ep == null) return "(unknown)";
+                string fam = (ep.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6) ? "IPv6" : "IPv4";
+                return ep.ToString() + " [" + fam + "]";
+            }
+            catch { return "(unknown)"; }
+        }
+
         private void HandleGetSocketPort(HttpListenerContext ctx)
         {
+            LogManager.Log("[HTTP] /getSocketPort from " + DescribeRemote(ctx) + " -> port " + _socketPort);
             if (_socketPort <= 0)
             {
                 ctx.Response.StatusCode = 503;

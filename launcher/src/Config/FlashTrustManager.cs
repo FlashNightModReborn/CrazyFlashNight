@@ -13,6 +13,12 @@ namespace CF7Launcher.Config
     {
         private const string TrustFileName = "cf7me.cfg";
 
+        // 关键：带 BOM 的 UTF-8。Flash Player 读取无 BOM 的 trust 文件时会按系统默认代码页
+        // (中文系统为 GBK/936) 解释；中文安装路径用 UTF-8 无 BOM 写入会被解成乱码 →
+        // 受信路径与实际 SWF 路径不匹配 → SWF 落入受限沙箱 → 无法连本地后端 (socket 超时)。
+        // 写入 BOM 让 Flash 在任何默认代码页下都按 UTF-8 正确解析路径。
+        private static readonly System.Text.UTF8Encoding Utf8Bom = new System.Text.UTF8Encoding(true);
+
         // 只记录本次 **新写入/追加** 的信任文件路径，退出时逐一清理
         // 预存条目（EnsureTrust 前就已存在的）不纳入此列表
         private static readonly List<string> _ownedLeasePaths = new List<string>();
@@ -26,6 +32,14 @@ namespace CF7Launcher.Config
         {
             string normalizedRoot = Path.GetFullPath(projectRoot).TrimEnd('\\', '/');
             _leasedRoot = normalizedRoot;
+
+            // 非 ASCII 安装路径告警：即便已写 UTF-8 BOM 缓解，仍保留显式告警，
+            // 以便在个别 Flash 构建不识别 BOM 时快速定位"加载界面卡住/无法连后端"问题。
+            if (HasNonAscii(normalizedRoot))
+            {
+                LogManager.Log("[FlashTrust] WARNING: 安装路径含非 ASCII(中文)字符 — " +
+                    "若游戏卡在加载界面/无法连接后端, 建议重装到纯英文路径。Path: " + normalizedRoot);
+            }
 
             // 收集所有候选信任目录
             List<string> trustDirs = new List<string>();
@@ -95,7 +109,7 @@ namespace CF7Launcher.Config
                     else
                     {
                         // 还有其他项目的信任路径，只移除我们的
-                        File.WriteAllText(filePath, string.Join(Environment.NewLine, remaining.ToArray()));
+                        File.WriteAllText(filePath, string.Join(Environment.NewLine, remaining.ToArray()), Utf8Bom);
                         LogManager.Log("[FlashTrust] Lease revoked (removed entry): " + filePath);
                     }
                 }
@@ -129,8 +143,10 @@ namespace CF7Launcher.Config
                             return true;
                         }
                     }
-                    // 路径不在文件中，追加——这是我们写的，纳入租约
-                    File.AppendAllText(trustFile, Environment.NewLine + projectRoot);
+                    // 路径不在文件中，追加——这是我们写的，纳入租约。
+                    // 用全量重写(带 BOM)而非 AppendAllText：保证整个文件有 BOM，
+                    // 同时把旧版本可能遗留的无 BOM 文件一并修正(已存在条目原样保留)。
+                    File.WriteAllText(trustFile, content + Environment.NewLine + projectRoot, Utf8Bom);
                     _ownedLeasePaths.Add(trustFile);
                     LogManager.Log("[FlashTrust] Lease acquired (appended): " + trustFile);
                 }
@@ -139,7 +155,7 @@ namespace CF7Launcher.Config
                     // 文件不存在，整个文件由我们创建，纳入租约
                     if (!Directory.Exists(trustDir))
                         Directory.CreateDirectory(trustDir);
-                    File.WriteAllText(trustFile, projectRoot);
+                    File.WriteAllText(trustFile, projectRoot, Utf8Bom);
                     _ownedLeasePaths.Add(trustFile);
                     LogManager.Log("[FlashTrust] Lease acquired (created): " + trustFile);
                 }
@@ -156,6 +172,16 @@ namespace CF7Launcher.Config
                 LogManager.Log("[FlashTrust] Write failed (" + trustDir + "): " + ex.Message);
                 return false;
             }
+        }
+
+        private static bool HasNonAscii(string s)
+        {
+            if (s == null) return false;
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (s[i] > 0x7F) return true;
+            }
+            return false;
         }
     }
 }

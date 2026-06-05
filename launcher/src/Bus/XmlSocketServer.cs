@@ -21,10 +21,12 @@ namespace CF7Launcher.Bus
     /// </summary>
     public class XmlSocketServer : IDisposable
     {
-        private TcpListener _listener;
+        private TcpListener _listener;    // IPv4 loopback (127.0.0.1)
+        private TcpListener _listener6;   // IPv6 loopback (::1)，IPv6 不可用时为 null
         private TcpClient _client;
         private NetworkStream _stream;
         private Thread _acceptThread;
+        private Thread _acceptThread6;
         private volatile bool _running;
         private readonly MessageRouter _router;
         private readonly object _clientLock = new object();
@@ -83,16 +85,37 @@ namespace CF7Launcher.Bus
         {
             try
             {
+                // 双 loopback 监听：IPv4 127.0.0.1 + IPv6 ::1。
+                // 历史隐患：旧实现只绑 IPAddress.Loopback(仅 IPv4)，而现代 Windows 默认把
+                // "localhost" 优先解析到 ::1。实测多数 Flash/系统会回退到 127.0.0.1 故不发病
+                // (真机日志 WaitingConnect->WaitingHandshake 正常)，但为兼容"只试 ::1 不回退"
+                // 的环境，这里同时在两个 loopback 地址上监听。仍仅限 loopback，不绑 IPv6Any，
+                // 避免把端口暴露到外部网络。
                 _listener = new TcpListener(IPAddress.Loopback, port);
                 _listener.Start();
                 Port = port;
                 _running = true;
 
-                _acceptThread = new Thread(AcceptLoop);
+                _acceptThread = new Thread(delegate() { AcceptLoop(_listener); });
                 _acceptThread.IsBackground = true;
                 _acceptThread.Start();
 
-                LogManager.Log("[XmlSocket] Listening on port " + port);
+                // IPv6 loopback 监听（可选）：IPv6 被禁用的系统会抛异常，降级为仅 IPv4。
+                try
+                {
+                    _listener6 = new TcpListener(IPAddress.IPv6Loopback, port);
+                    _listener6.Start();
+                    _acceptThread6 = new Thread(delegate() { AcceptLoop(_listener6); });
+                    _acceptThread6.IsBackground = true;
+                    _acceptThread6.Start();
+                    LogManager.Log("[XmlSocket] Listening on port " + port + " (IPv4 127.0.0.1 + IPv6 ::1)");
+                }
+                catch (Exception ex6)
+                {
+                    _listener6 = null;
+                    LogManager.Log("[XmlSocket] IPv6 loopback unavailable, IPv4-only on port " + port + " (" + ex6.Message + ")");
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -102,44 +125,23 @@ namespace CF7Launcher.Bus
             }
         }
 
-        private void AcceptLoop()
+        private void AcceptLoop(TcpListener listener)
         {
             while (_running)
             {
                 try
                 {
-                    TcpClient client = _listener.AcceptTcpClient();
-                    client.NoDelay = true; // 禁用 Nagle：frame 消息需要低延迟
-                    LogManager.Log("[XmlSocket] Client connected (NoDelay=true)");
-                    PerfTrace.Mark("socket.client_connected");
-
-                    int gen;
-                    lock (_clientLock)
-                    {
-                        // 关闭旧连接
-                        CloseClientLocked();
-
-                        _generation++;
-                        gen = _generation;
-                        _clientReady = false;
-                        _client = client;
-                        _stream = client.GetStream();
-                    }
-
-                    // 捕获本地引用，ReadLoop 只操作自己的 client/stream
-                    TcpClient localClient = client;
-                    NetworkStream localStream = _stream;
-
-                    Thread readThread = new Thread(delegate()
-                    {
-                        ReadLoop(localClient, localStream, gen);
-                    });
-                    readThread.IsBackground = true;
-                    readThread.Start();
+                    TcpClient client = listener.AcceptTcpClient();
+                    HandleAcceptedClient(client);
                 }
                 catch (SocketException)
                 {
                     // listener stopped
+                    break;
+                }
+                catch (ObjectDisposedException)
+                {
+                    // listener disposed during shutdown
                     break;
                 }
                 catch (Exception ex)
@@ -147,6 +149,39 @@ namespace CF7Launcher.Bus
                     LogManager.Log("[XmlSocket] Accept error: " + ex.Message);
                 }
             }
+        }
+
+        // 单客户端模型：无论连接来自 IPv4 还是 IPv6 loopback accept 循环，
+        // 都经此入口；_clientLock 内 CloseClientLocked 保证新连接替换旧连接。
+        private void HandleAcceptedClient(TcpClient client)
+        {
+            client.NoDelay = true; // 禁用 Nagle：frame 消息需要低延迟
+            LogManager.Log("[XmlSocket] Client connected (NoDelay=true)");
+            PerfTrace.Mark("socket.client_connected");
+
+            int gen;
+            lock (_clientLock)
+            {
+                // 关闭旧连接
+                CloseClientLocked();
+
+                _generation++;
+                gen = _generation;
+                _clientReady = false;
+                _client = client;
+                _stream = client.GetStream();
+            }
+
+            // 捕获本地引用，ReadLoop 只操作自己的 client/stream
+            TcpClient localClient = client;
+            NetworkStream localStream = _stream;
+
+            Thread readThread = new Thread(delegate()
+            {
+                ReadLoop(localClient, localStream, gen);
+            });
+            readThread.IsBackground = true;
+            readThread.Start();
         }
 
         private void ReadLoop(TcpClient localClient, NetworkStream localStream, int gen)
@@ -654,6 +689,11 @@ namespace CF7Launcher.Bus
             {
                 try { _listener.Stop(); } catch { }
                 _listener = null;
+            }
+            if (_listener6 != null)
+            {
+                try { _listener6.Stop(); } catch { }
+                _listener6 = null;
             }
             lock (_clientLock)
             {

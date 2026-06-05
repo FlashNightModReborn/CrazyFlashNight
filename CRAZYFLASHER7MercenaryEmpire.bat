@@ -28,19 +28,11 @@ if not exist "%USER_TRUST_DIR%" (
 
 if exist "%USER_TRUST_DIR%" (
     set "TRUST_FILE=%USER_TRUST_DIR%\%TRUST_FILE_NAME%"
-    :: 检查是否已包含当前路径
-    if exist "!TRUST_FILE!" (
-        findstr /i /x /c:"%SCRIPT_DIR%" "!TRUST_FILE!" >nul 2>&1
-        if !errorlevel! equ 0 (
-            set "TRUST_OK=1"
-        ) else (
-            >> "!TRUST_FILE!" echo %SCRIPT_DIR%
-            set "TRUST_OK=1"
-        )
-    ) else (
-        > "!TRUST_FILE!" echo %SCRIPT_DIR%
-        set "TRUST_OK=1"
-    )
+    :: 用 PowerShell 写带 BOM 的 UTF-8 trust 文件（幂等：已含当前路径则不重复写）。
+    :: 关键：echo 在 chcp 65001 下写出无 BOM UTF-8，中文安装路径会被 Flash 按系统代码页(GBK)
+    :: 读成乱码 → SWF 不受信 → 无法连本地后端(加载界面卡住)。带 BOM 才能让 Flash 正确按 UTF-8 解析。
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "$f='%USER_TRUST_DIR%\%TRUST_FILE_NAME%'; $p='%SCRIPT_DIR%'; $enc=New-Object System.Text.UTF8Encoding($true); $lines=@(); if(Test-Path -LiteralPath $f){$lines=@([System.IO.File]::ReadAllLines($f))}; if($lines -notcontains $p){$lines+=$p; [System.IO.File]::WriteAllText($f, ($lines -join [Environment]::NewLine), $enc)}" >nul 2>&1
+    if exist "!TRUST_FILE!" set "TRUST_OK=1"
 )
 
 if "!TRUST_OK!"=="0" (

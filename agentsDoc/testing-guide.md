@@ -55,7 +55,7 @@ chcp.com 65001 | Out-Null
 | AS2 回环 | `bash tools/cfn-cli.sh console "help"` |
 | 集成 (testMovie) | `bash tools/cfn-cli.sh start-bus`（headless：直跑 `runtime/Core.exe`，绕 bootstrap 的 MessageBox） |
 
-`--bus-only` 适用：Flash CS6 testMovie ↔ Launcher 通信链验证;AI / 模拟实验需外部 Flash 自连总线;排查启动链路 vs 总线本身。根目录 `.exe` 是 net10 native bootstrap（runtime 缺失会弹框阻塞自动化），headless 调用方（`cfn-cli.sh` / `automation/start.ps1` / `scripts/gobang_trainer_cycle.ps1`）都已切到 `runtime/Core.exe` + 复刻 bootstrap 的 `DOTNET_ROOT` 探测。
+`--bus-only` 适用：Flash CS6 testMovie ↔ Launcher 通信链验证;AI / 模拟实验需外部 Flash 自连总线;排查启动链路 vs 总线本身。根目录 `.exe` 是 net10 native bootstrap（runtime 缺失会弹框阻塞自动化），headless 调用方（`cfn-cli.sh` / `automation/start.ps1` / `scripts/gobang_trainer_cycle.ps1`）都已切到 `runtime/Core.exe` + 复刻 bootstrap 的 `DOTNET_ROOT` 探测。验 **Flash↔launcher 建连 / XMLSocket / FlashPlayerTrust** 类问题**只用真 launcher**，别用 `compile_test`/`testMovie` 或裸 socket 桩：testMovie 作者环境 socket 沙箱与独立播放器不同（自动信任 + 默认探 843 master policy），裸桩常假阳性（`connect()=true` 但服务端零连接、`onConnect` 不回）；定病因优先读真机 `logs/launcher.log` 是否出现 `WaitingConnect -> WaitingHandshake`(=socket 已连上)。复盘见 [优化随笔/Flash本地SWF信任与Launcher建连](../scripts/优化随笔/Flash本地SWF信任与Launcher建连——trust编码与IPv6loopback踩坑.md)。
 
 当前 `launcher/build.ps1` 除编译外还会 fail-fast 校验 `launcher/web` 必需资源（bootstrap/overlay/config/assets/help/icons/data/cursor/map/stage-select 与关键 modules / intelligence panel + H5 component renderer / minigame 入口）、运行 `node tools/audit-native-cursor-assets.js` 校验 native cursor `64x64` 画布与 `(16,16)` 热点契约，并校验 `launcher/data/map_hud_data.json` / `save_schema.json` 存在。
 
