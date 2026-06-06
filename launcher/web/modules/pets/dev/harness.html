@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>战宠面板 Harness</title>
+    <!-- base 指向 web 根，使 pet-panel.js 内的相对路径（css/、assets/）正确解析 -->
+    <base href="../../../">
+    <!-- 预注入 pet_panel.css 并带 id：pet-panel.js 检测到已存在则跳过自注入 -->
+    <link rel="stylesheet" id="pet-panel-css" href="css/pet_panel.css">
+    <style>
+        html, body { margin: 0; padding: 0; background: #0b0c10; color: #ccc;
+            font-family: "Consolas", "Microsoft YaHei", monospace; }
+        #bar { padding: 8px 12px; background: #1c1d22; border-bottom: 1px solid #333;
+            display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        #bar label { font-size: 12px; color: #999; }
+        #bar select, #bar button {
+            background: #2a2c33; color: #ccc; border: 1px solid #4a4d55;
+            padding: 4px 10px; font-family: inherit; cursor: pointer; font-size: 12px; }
+        #bar button:hover { background: #353841; }
+        #status { padding: 4px 12px; font-size: 11px; color: #777; background: #0f1014;
+            border-bottom: 1px solid #222; min-height: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #shell { margin: 24px auto; border: 1px solid #333; background: #000;
+            position: relative; overflow: hidden; width: 1280px; height: 720px; }
+    </style>
+</head>
+<body>
+    <div id="bar">
+        <label>视口:</label>
+        <select id="vp">
+            <option value="1024x576">1024×576 (1:1)</option>
+            <option value="1280x720" selected>1280×720</option>
+            <option value="1600x900">1600×900</option>
+            <option value="1920x1080">1920×1080</option>
+            <option value="900x600">900×600 (缩小)</option>
+        </select>
+        <label>金钱:</label>
+        <select id="money">
+            <option value="rich">富裕</option>
+            <option value="normal" selected>正常</option>
+            <option value="poor">贫穷 (1000)</option>
+            <option value="broke">破产 (0)</option>
+        </select>
+        <label><input type="checkbox" id="combat"> 战斗地图</label>
+        <label><input type="checkbox" id="empty"> 空列表</label>
+        <button id="open">打开</button>
+        <button id="close">关闭</button>
+        <button id="dump">Dump</button>
+    </div>
+    <div id="status">就绪</div>
+    <div id="shell">
+        <div id="panel-container" style="display:none">
+            <div id="panel-backdrop"></div>
+            <div id="panel-content"></div>
+        </div>
+    </div>
+
+    <!-- chrome.webview mock，必须在 bridge.js 之前 -->
+    <script>
+    (function() {
+        var listeners = [];
+        window.chrome = window.chrome || {};
+        window.chrome.webview = {
+            addEventListener: function(type, h) { if (type === 'message') listeners.push(h); },
+            postMessage: function(m) { if (window.PetHost && window.PetHost.handle) window.PetHost.handle(m); },
+            __dispatch: function(data) { var ev = { data: data }; listeners.forEach(function(l) { l(ev); }); }
+        };
+    })();
+    </script>
+
+    <script src="modules/bridge.js"></script>
+    <script src="modules/panels.js"></script>
+    <script src="modules/pet-panel.js"></script>
+
+    <script>
+    (function() {
+        'use strict';
+        if (typeof Panels.init === 'function') Panels.init();
+
+        function clone(o) { return JSON.parse(JSON.stringify(o)); }
+        var status = document.getElementById('status');
+        function log(m) { status.textContent = m; }
+
+        var MONEY = { rich: 99000000, normal: 5959000, poor: 1000, broke: 0 };
+        var KPOINT = { rich: 1850000, normal: 1850000, poor: 100, broke: 0 };
+
+        // ── mock 进阶方案库 ──
+        var SCHEMES = {
+            '基础训练': { unlockLevel: 0,  gold: 25000,  type: '一次性', desc: '提升战宠基础属性，三件套训练链第一阶', buttonText: '训练' },
+            '常驻淬毒': { unlockLevel: 10, gold: 500,    type: '开关',   desc: '攻击附带毒素伤害，开启后每图持续消耗金币', buttonText: '开启' },
+            '切换发型': { unlockLevel: 0,  gold: 0,      type: '切换',   desc: '更换外观发色，免费循环切换', buttonText: '切换' },
+            '强化药剂': { unlockLevel: 25, gold: 50000,  type: '一次性', desc: '大幅强化战宠核心属性', buttonText: '强化' }
+        };
+
+        function makePets() {
+            return [
+                pet(0,  '狗狗',         23, true,  182, 40,  fullStatus()),
+                pet(1,  '异形禁卫',     100, true, 200, 100, {}),
+                pet(2,  '雪女',         20, false, 200, 97,  {}),
+                pet(12, '武装JK',       16, false, 148, 62,  {}),
+                pet(23, '独狼铁血保镖', 15, true,  188, 33,  {}),
+                pet(7,  '精锐重装兵',   1,  false, 0,   12,  {})
+            ];
+        }
+        function pet(petId, name, level, deployed, stamina, xpPct, schemeStatus) {
+            var xpNeeded = level >= 100 ? 0 : level * 12000;
+            return {
+                petId: petId, name: name, level: level, deployed: deployed,
+                stamina: stamina, maxStamina: 200,
+                xp: Math.round(xpNeeded * xpPct / 100), xpNeeded: xpNeeded,
+                slotIndex: -1, schemeStatus: schemeStatus
+            };
+        }
+        function fullStatus() {
+            return {
+                '基础训练': { completed: true },
+                '常驻淬毒': { completed: false, locked: false, repeatable: true, purchased: true, toggleKind: 'binary', toggleOn: false, desc: '淬毒：当前关闭' },
+                '切换发型': { completed: false, locked: false, repeatable: true, purchased: true, toggleKind: 'cycle', toggleValue: '红色', desc: '当前发色：红色' },
+                '强化药剂': { completed: false, locked: true, lockReason: 'level' }
+            };
+        }
+
+        var PET_LIB = [
+            { id: 0, promotions: ['基础训练', '常驻淬毒', '切换发型', '强化药剂'] }
+        ];
+
+        var STORE_CATS = [{ name: '犬类' }, { name: '人形' }, { name: '机械' }, { name: '限定' }];
+        var STORE = [
+            [ adoptable(30, '柴犬', 50000, 0, false, 0, 1), adoptable(31, '狼犬', 120000, 0, false, 0, 8), adoptable(32, '军犬', 0, 80, false, 0, 12) ],
+            [ adoptable(40, '剑姬', 300000, 0, true, 0, 20), adoptable(41, '枪娘', 0, 150, true, 3, 25) ],
+            [ adoptable(50, '机械犬', 90000, 0, false, 0, 5), adoptable(51, '战争机甲', 500000, 0, true, 5, 40) ],
+            [ adoptable(60, '限定·影', 0, 500, true, 8, 50) ]
+        ];
+        function adoptable(petId, name, price, kprice, unique, unlockTask, unlockLevel) {
+            return { petId: petId, name: name, price: price, kprice: kprice, unique: unique, unlockTask: unlockTask, unlockLevel: unlockLevel };
+        }
+
+        var host = window.PetHost = {
+            _pets: [],
+            _maxSlots: 16,
+            _money: 'normal',
+            _gold: 0, _kpoint: 0,
+            _combat: false,
+            _empty: false,
+
+            reset: function() {
+                this._money = document.getElementById('money').value;
+                this._gold = MONEY[this._money];
+                this._kpoint = KPOINT[this._money];
+                this._combat = document.getElementById('combat').checked;
+                this._empty = document.getElementById('empty').checked;
+                this._pets = this._empty ? [] : makePets();
+                for (var i = 0; i < this._pets.length; i++) this._pets[i].slotIndex = i;
+                this._maxSlots = 16;
+            },
+
+            snapshot: function() {
+                return {
+                    pets: clone(this._pets),
+                    gold: this._gold, kpoint: this._kpoint,
+                    currentDeployCount: this._pets.filter(function(p) { return p.deployed; }).length,
+                    maxDeploy: 5, maxSlots: this._maxSlots, levelLimit: 100,
+                    isCombatMap: this._combat,
+                    playerLevel: 60, playerTask: 5,
+                    priceOverrides: {},
+                    schemes: SCHEMES
+                };
+            },
+
+            findSlot: function(s) { for (var i = 0; i < this._pets.length; i++) if (this._pets[i].slotIndex === s) return this._pets[i]; return null; },
+
+            handle: function(m) {
+                log('→ ' + m.cmd + (m.slotIndex != null ? ' slot=' + m.slotIndex : '') + (m.scheme ? ' ' + m.scheme : ''));
+                var self = this;
+                function resp(extra) {
+                    var r = { type: 'panel_resp', panel: 'pets', cmd: m.cmd, callId: m.callId };
+                    for (var k in extra) r[k] = extra[k];
+                    setTimeout(function() { chrome.webview.__dispatch(r); }, 90);
+                }
+                switch (m.cmd) {
+                    case 'snapshot': resp({ success: true, snapshot: self.snapshot() }); break;
+                    case 'pet_lib':  resp({ success: true, petLib: PET_LIB }); break;
+                    case 'adopt_list':
+                        var ci = m.categoryIndex || 0;
+                        resp({ success: true, adoptable: STORE[ci] || [], categories: STORE_CATS });
+                        break;
+                    case 'deploy': {
+                        var p = self.findSlot(m.slotIndex);
+                        if (!p) { resp({ success: false, error: 'not_found' }); break; }
+                        if (self._combat && !p.deployed) { resp({ success: false, error: '战斗中不可调整' }); break; }
+                        if (p.stamina <= 0 && !p.deployed) { resp({ success: false, error: '体力耗尽' }); break; }
+                        p.deployed = !p.deployed;
+                        resp({ success: true, deployed: p.deployed, currentDeployCount: self._pets.filter(function(x){return x.deployed;}).length });
+                        break;
+                    }
+                    case 'restore_stamina': {
+                        var p2 = self.findSlot(m.slotIndex);
+                        if (!p2) { resp({ success: false, error: 'not_found' }); break; }
+                        if (p2.stamina >= 200) { resp({ success: false, error: 'stamina_full' }); break; }
+                        if (self._gold < 1000) { resp({ success: false, error: 'insufficient_gold' }); break; }
+                        self._gold -= 1000; p2.stamina = 200;
+                        resp({ success: true, stamina: 200, gold: self._gold });
+                        break;
+                    }
+                    case 'level_up': {
+                        var p3 = self.findSlot(m.slotIndex);
+                        if (!p3) { resp({ success: false, error: 'not_found' }); break; }
+                        if (p3.level >= 100) { resp({ success: false, error: 'level_maxed' }); break; }
+                        p3.level += 1; p3.xpNeeded = p3.level * 12000; p3.xp = 0;
+                        resp({ success: true, stoneCost: p3.level * 2 });
+                        break;
+                    }
+                    case 'delete': {
+                        self._pets = self._pets.filter(function(x) { return x.slotIndex !== m.slotIndex; });
+                        resp({ success: true, stoneRefund: 12 });
+                        break;
+                    }
+                    case 'advance': {
+                        var p4 = self.findSlot(m.slotIndex);
+                        var sc = SCHEMES[m.scheme];
+                        if (p4 && sc && sc.gold > 0) self._gold = Math.max(0, self._gold - sc.gold);
+                        // 切换发型循环演示
+                        if (p4 && p4.schemeStatus && p4.schemeStatus[m.scheme]) {
+                            var st = p4.schemeStatus[m.scheme];
+                            if (st.toggleKind === 'binary') { st.toggleOn = !st.toggleOn; st.desc = '淬毒：当前' + (st.toggleOn ? '开启' : '关闭'); }
+                            else if (st.toggleKind === 'cycle') {
+                                var colors = ['红色', '蓝色', '金色', '银色'];
+                                var idx = (colors.indexOf(st.toggleValue) + 1) % colors.length;
+                                st.toggleValue = colors[idx]; st.desc = '当前发色：' + colors[idx];
+                            } else { st.completed = true; }
+                        }
+                        resp({ success: true, gold: self._gold, kpoint: self._kpoint });
+                        break;
+                    }
+                    case 'adopt': {
+                        var src = null;
+                        for (var c = 0; c < STORE.length && !src; c++) for (var j = 0; j < STORE[c].length; j++) if (STORE[c][j].petId === m.petId) src = STORE[c][j];
+                        if (!src) { resp({ success: false, error: 'not_found' }); break; }
+                        var cost = src.price || 0, kcost = src.kprice || 0;
+                        if (self._gold < cost) { resp({ success: false, reason: '金币不足' }); break; }
+                        if (self._kpoint < kcost) { resp({ success: false, reason: 'K点不足' }); break; }
+                        self._gold -= cost; self._kpoint -= kcost;
+                        var slot = self._pets.length;
+                        self._pets.push(pet(src.petId, src.name, 1, false, 200, 0, {}));
+                        self._pets[self._pets.length - 1].slotIndex = slot;
+                        resp({ success: true, gold: self._gold, kpoint: self._kpoint });
+                        break;
+                    }
+                    case 'expand_slot': {
+                        if (self._gold < 100000) { resp({ success: false, error: '金币不足' }); break; }
+                        self._gold -= 100000; self._maxSlots += 1;
+                        resp({ success: true, gold: self._gold, maxSlots: self._maxSlots });
+                        break;
+                    }
+                    case 'close': break;
+                    default: resp({ success: false, error: 'unknown cmd ' + m.cmd });
+                }
+            },
+
+            open: function() {
+                this.reset();
+                chrome.webview.__dispatch({ type: 'panel_cmd', cmd: 'open', panel: 'pets', initData: {} });
+            },
+            close: function() { chrome.webview.__dispatch({ type: 'panel_cmd', cmd: 'close' }); }
+        };
+
+        // ── toolbar ──
+        function applyVp() {
+            var v = document.getElementById('vp').value.split('x');
+            var s = document.getElementById('shell');
+            s.style.width = v[0] + 'px'; s.style.height = v[1] + 'px';
+        }
+        document.getElementById('vp').addEventListener('change', applyVp);
+        document.getElementById('open').addEventListener('click', function() { host.open(); });
+        document.getElementById('close').addEventListener('click', function() { host.close(); });
+        document.getElementById('dump').addEventListener('click', function() {
+            log('state: ' + JSON.stringify(window.PetPanel ? window.PetPanel.getState() : null));
+        });
+        applyVp();
+        setTimeout(function() {
+            host.open();
+            // ?page=store|advance 调试驱动：打开后自动导航，便于 harness 截图各页
+            var pg = (location.search.match(/[?&]page=([^&]+)/) || [])[1];
+            if (pg === 'store') {
+                setTimeout(function() { var b = document.getElementById('pet-adopt-btn'); if (b) b.click(); }, 350);
+            } else if (pg === 'advance') {
+                var want = (location.search.match(/[?&]pet=([^&]+)/) || [])[1];
+                want = want ? decodeURIComponent(want) : '';
+                setTimeout(function() {
+                    var card = document.querySelector('.pet-card');
+                    if (want) {
+                        var cards = document.querySelectorAll('.pet-card');
+                        for (var i = 0; i < cards.length; i++) {
+                            var nm = cards[i].querySelector('.pet-card-name');
+                            if (nm && nm.textContent === want) { card = cards[i]; break; }
+                        }
+                    }
+                    if (card) card.click();
+                    setTimeout(function() { var d = document.getElementById('pet-sel-detail'); if (d) d.click(); }, 120);
+                }, 350);
+            }
+            // ?sel=名称：选中指定战宠（填充底部选中栏，便于看快捷进阶区）
+            var sel = (location.search.match(/[?&]sel=([^&]+)/) || [])[1];
+            if (sel && !pg) {
+                sel = decodeURIComponent(sel);
+                setTimeout(function() {
+                    var cards = document.querySelectorAll('.pet-card');
+                    for (var i = 0; i < cards.length; i++) {
+                        var nm = cards[i].querySelector('.pet-card-name');
+                        if (nm && nm.textContent === sel) { cards[i].click(); break; }
+                    }
+                }, 380);
+            }
+        }, 150);
+    })();
+    </script>
+</body>
+</html>
