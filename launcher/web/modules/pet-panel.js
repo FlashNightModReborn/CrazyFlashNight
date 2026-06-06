@@ -42,6 +42,7 @@
     var _resizeObserver = null;
     var _toasts = [];           // 活跃 toast DOM 列表
     var _docClickBound = null;
+    var _tipEl = null;          // 当前悬浮 data-tip 元素（PanelTooltip）
 
     // ── DOM refs ──
     var _pageList, _pageStore, _pageAdvance;
@@ -86,7 +87,7 @@
                         '<div class="pet-toolbar-spacer"></div>' +
                         sortDropdownHtml() +
                         filterDropdownHtml() +
-                        '<button class="pet-btn-primary" type="button" id="pet-expand-btn" data-audio-cue="confirm" title="花费金币扩充一个宠物栏位">＋ 开格子</button>' +
+                        '<button class="pet-btn-primary" type="button" id="pet-expand-btn" data-audio-cue="confirm" data-tip="花费金币扩充一个宠物栏位">＋ 开格子</button>' +
                     '</div>' +
                     '<div class="pet-grid-wrap" id="pet-grid-wrap">' +
                         '<div class="pet-grid" id="pet-grid"></div>' +
@@ -129,7 +130,7 @@
                             '<button class="pet-hdr-btn pet-hdr-deploy" type="button" id="pet-deploy-btn" data-audio-cue="confirm">出战</button>' +
                             '<button class="pet-hdr-btn pet-hdr-restore" type="button" id="pet-restore-btn">恢复体力</button>' +
                             '<button class="pet-hdr-btn pet-hdr-levelup" type="button" id="pet-levelup-btn">强化</button>' +
-                            '<button class="pet-hdr-btn pet-hdr-delete" type="button" id="pet-delete-btn" title="永久删除此宠物">删除</button>' +
+                            '<button class="pet-hdr-btn pet-hdr-delete" type="button" id="pet-delete-btn" data-tip="永久删除此宠物">删除</button>' +
                         '</div>' +
                     '</div>' +
                     '<div class="pet-page-body">' +
@@ -242,7 +243,7 @@
             '</div>' +
             '<div class="pet-selbar-quick" id="pet-sel-quick"></div>' +
             '<div class="pet-selbar-actions">' +
-                '<button class="pet-act-btn pet-act-detail" type="button" id="pet-sel-detail" data-audio-cue="confirm" title="进阶养成 / 强化 / 删除 / 完整文案"><span class="pet-act-ico">⚙</span><span>培养</span></button>' +
+                '<button class="pet-act-btn pet-act-detail" type="button" id="pet-sel-detail" data-audio-cue="confirm" data-tip="进阶养成 / 强化 / 删除 / 完整文案"><span class="pet-act-ico">⚙</span><span>培养</span></button>' +
             '</div>' +
         '</div>';
     }
@@ -303,6 +304,59 @@
         // 面板内点击关闭下拉
         _docClickBound = function() { closeAllDropdowns(); };
         _el.addEventListener('click', _docClickBound);
+
+        // 悬浮信息提示：统一走 PanelTooltip（与 K商城/情报/竞技场一致的描边深色注释框），
+        // 取代散落的原生 title。委托到 _el：元素带 data-tip 即显示。
+        // 注意：禁用按钮（disabled）浏览器不派发鼠标事件 → 委托收不到，故禁用态原因仍保留原生 title 兜底。
+        if (typeof PanelTooltip !== 'undefined') {
+            _el.addEventListener('mouseover', onTipOver);
+            _el.addEventListener('mousemove', onTipMove);
+            _el.addEventListener('mouseout', onTipOut);
+        }
+
+        // 软禁用按钮（.pet-off）点击拦截：捕获相位先于所有冒泡 action 处理器触发，
+        // stopPropagation 一处切断，无需逐个 handler 加 guard。
+        _el.addEventListener('click', function(e) {
+            var off = (e.target && e.target.closest) ? e.target.closest('.pet-off') : null;
+            if (off) { e.stopPropagation(); e.preventDefault(); }
+        }, true);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 悬浮提示（PanelTooltip 委托）
+    // ═══════════════════════════════════════════════════════════
+    function onTipOver(e) {
+        var t = (e.target && e.target.closest) ? e.target.closest('[data-tip]') : null;
+        if (!t || t === _tipEl) return;
+        _tipEl = t;
+        PanelTooltip.showAtMouse(escapeHtml(t.getAttribute('data-tip')), e);
+    }
+    function onTipMove(e) {
+        if (_tipEl) PanelTooltip.followMouse(e);
+    }
+    function onTipOut(e) {
+        if (!_tipEl) return;
+        var to = e.relatedTarget;
+        if (to && _tipEl.contains(to)) return; // 仍在同一 tip 元素内部移动
+        PanelTooltip.hide();
+        _tipEl = null;
+    }
+    // 重渲染/切页/关闭时，悬浮元素可能被移除而 mouseout 不触发 → 主动收起，避免注释框残留
+    function hideTip() {
+        if (typeof PanelTooltip === 'undefined') return;
+        if (_tipEl) { PanelTooltip.hide(); _tipEl = null; }
+    }
+    // 软禁用：保留可 hover 的真实元素（原生 disabled 不派发鼠标事件 → 收不到 data-tip）。
+    // 用 .pet-off 类 + aria-disabled 表达禁用态（CSS 复刻 :disabled 观感）；data-tip 始终生效，
+    // 启用/禁用态都走统一的 PanelTooltip 描边框。点击由 bindStaticEvents 的捕获相位统一拦截。
+    function softDisable(btn, off, tip) {
+        if (!btn) return;
+        btn.disabled = false;                       // 不再使用原生 disabled
+        btn.classList.toggle('pet-off', !!off);
+        if (off) btn.setAttribute('aria-disabled', 'true');
+        else btn.removeAttribute('aria-disabled');
+        if (tip) btn.setAttribute('data-tip', tip);
+        else btn.removeAttribute('data-tip');
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -377,6 +431,7 @@
         _activePetIdx = -1;
         _selectedSlot = -1;
         clearToasts();
+        hideTip();
         unbindScaleWatcher();
         if (_cssLink && _cssLink.parentNode) {
             _cssLink.parentNode.removeChild(_cssLink);
@@ -422,6 +477,7 @@
         var back = (page === 'list' && _currentPage !== 'list');
         _currentPage = page;
         closeAllDropdowns();
+        hideTip();
 
         _pageList.hidden    = (page !== 'list');
         _pageStore.hidden   = (page !== 'store');
@@ -498,6 +554,7 @@
             }
             _snapshot = data.snapshot;
             _pets = data.snapshot.pets || [];
+            var wasFirst = _firstSnapshot;   // 仅首帧 snapshot 播放卡片入场；后续刷新（升级/进阶/删除/领养/开格子）静默
             _firstSnapshot = false;
             hideSkeleton();
             // 默认选中：保留旧选中（若仍在），否则选首个
@@ -506,9 +563,9 @@
             }
             updateResourceDisplay(false);
             updateStatusBar();
-            renderPetGrid();
-            renderSelbar();
-            if (_currentPage === 'advance') renderAdvancePage();
+            renderPetGrid(wasFirst);
+            renderSelbar(wasFirst);
+            if (_currentPage === 'advance') renderAdvancePage(wasFirst);
         });
     }
 
@@ -573,19 +630,32 @@
         return order;
     }
 
-    function renderPetGrid() {
+    // animate: 入场逐个 stagger（首屏 snapshot / 切页 / 排序筛选时为 true）；
+    // 局部更新（出战/恢复/进阶后重拉 snapshot）传 false，避免整列卡片重播入场动画 + 跳动。
+    function renderPetGrid(animate) {
+        if (animate === undefined) animate = true;
+        hideTip();
         _gridEl.innerHTML = '';
         var order = visibleOrder();
         var totalPets = _pets ? _pets.length : 0;
 
         // 空位数 = 容量 - 已拥有（仅「全部」筛选下展示，避免与状态筛选混淆）
         var emptyCount = (_snapshot && _filterMode === 'all') ? Math.max(0, (_snapshot.maxSlots || 0) - totalPets) : 0;
-        _listEmptyEl.hidden = (totalPets > 0 || emptyCount > 0);
+        // 空态以「当前可见数」为准：筛选后无匹配也要给反馈，而非按未筛选的总数判断
+        var showEmpty = (order.length === 0 && emptyCount === 0);
+        _listEmptyEl.hidden = !showEmpty;
+        if (showEmpty) {
+            var txtEl = _listEmptyEl.querySelector('.pet-empty-text');
+            if (txtEl) txtEl.textContent = (totalPets === 0)
+                ? '暂无战宠 · 点击「＋ 开格子」开启栏位后即可领养'
+                : '没有符合当前筛选条件的战宠';
+        }
 
         for (var k = 0; k < order.length; k++) {
             var i = order[k];
             var card = renderPetCard(_pets[i], i);
-            card.style.animationDelay = Math.min(k * 0.03, 0.3) + 's';
+            if (animate) card.style.animationDelay = Math.min(k * 0.03, 0.3) + 's';
+            else card.classList.add('pet-noanim'); // 静默：卡片不重播入场，内部体力/经验条不重播 grow
             _gridEl.appendChild(card);
         }
 
@@ -593,11 +663,21 @@
         for (var e = 0; e < emptyCount; e++) {
             var slot = document.createElement('div');
             slot.className = 'pet-slot-empty';
-            slot.style.animationDelay = Math.min((order.length + e) * 0.03, 0.36) + 's';
+            if (animate) slot.style.animationDelay = Math.min((order.length + e) * 0.03, 0.36) + 's';
+            else slot.classList.add('pet-noanim');
             slot.innerHTML = '<span class="pet-slot-plus">＋</span><span class="pet-slot-label">领养空位</span>';
             slot.addEventListener('click', function() { if (!_busy) navigateTo('store'); });
             _gridEl.appendChild(slot);
         }
+    }
+
+    // 是否满足当前筛选（与 visibleOrder 同口径）——出战/恢复后判断卡片是否应留在列表
+    function petMatchesFilter(p) {
+        if (!p) return false;
+        if (_filterMode === 'deployed') return !!p.deployed;
+        if (_filterMode === 'resting') return !p.deployed;
+        if (_filterMode === 'low_stamina') return p.stamina <= 5;
+        return true; // all
     }
 
     function renderPetCard(pet, petIndex) {
@@ -642,8 +722,8 @@
             '</div>' +
             '<div class="pet-card-meters">' + staminaMeter + xpMeter + '</div>' +
             '<div class="pet-card-actions">' +
-                '<button class="pet-mini-btn ' + (pet.deployed ? 'pet-mini-btn-rest' : 'pet-mini-btn-deploy') + '" type="button" data-act="deploy" data-slot="' + pet.slotIndex + '"' +
-                    (deployDisabled ? ' disabled' : '') + (deployTitle ? ' title="' + escapeHtml(deployTitle) + '"' : '') + '>' + (pet.deployed ? '休息' : '出战') + '</button>' +
+                '<button class="pet-mini-btn ' + (pet.deployed ? 'pet-mini-btn-rest' : 'pet-mini-btn-deploy') + (deployDisabled ? ' pet-off' : '') + '" type="button" data-act="deploy" data-slot="' + pet.slotIndex + '"' +
+                    (deployDisabled ? ' aria-disabled="true"' : '') + (deployTitle ? ' data-tip="' + escapeHtml(deployTitle) + '"' : '') + '>' + (pet.deployed ? '休息' : '出战') + '</button>' +
                 '<button class="pet-mini-btn pet-mini-btn-restore" type="button" data-act="restore" data-slot="' + pet.slotIndex + '"' + (staminaFull ? ' disabled' : '') + '>' + (staminaFull ? '体力满' : '恢复') + '</button>' +
             '</div>';
 
@@ -703,20 +783,23 @@
         var old = _gridEl.querySelector('.pet-card[data-slot="' + slotIndex + '"]');
         if (!old) return;
         var fresh = renderPetCard(_pets[idx], idx);
-        fresh.style.animation = 'none'; // 局部替换不重播入场
+        fresh.classList.add('pet-noanim'); // 局部替换不重播入场（卡片 + 内部进度条）
         old.parentNode.replaceChild(fresh, old);
     }
 
     // ═══════════════════════════════════════════════════════════
     // 底部「当前选择」栏
     // ═══════════════════════════════════════════════════════════
-    function renderSelbar() {
+    // animate 省略=true（选中/切页时进度条 grow 反馈）；静默刷新（snapshot/出战/恢复/进阶）传 false
+    function renderSelbar(animate) {
+        hideTip();
         var pet = findPetBySlot(_selectedSlot);
         if (!pet) {
             _selbarEl.classList.add('pet-selbar-empty');
             return;
         }
         _selbarEl.classList.remove('pet-selbar-empty');
+        _selbarEl.classList.toggle('pet-noanim', animate === false);
 
         var avatar = _el.querySelector('#pet-sel-avatar');
         avatar.src = 'assets/pets/pet_' + pet.petId + '.png';
@@ -764,12 +847,12 @@
             pill.className = 'pet-qadv pet-qadv-' + tk + (tk === 'binary' && st.toggleOn ? ' on' : '');
             pill.dataset.scheme = nm;
             if (tk === 'binary') {
-                pill.title = st.toggleOn
+                pill.dataset.tip = st.toggleOn
                     ? ('点击关闭「' + nm + '」' + (perMap ? '（省每图 ' + formatMoney(schemes[nm].gold) + ' 金）' : ''))
                     : ('点击开启「' + nm + '」' + (perMap ? '（开启后每图 ' + formatMoney(schemes[nm].gold) + ' 金）' : ''));
                 pill.innerHTML = '<span class="pet-qadv-name">' + escapeHtml(nm) + '</span><span class="qsw"></span>';
             } else {
-                pill.title = '点击切换「' + nm + '」';
+                pill.dataset.tip = '点击切换「' + nm + '」';
                 pill.innerHTML = '<span class="pet-qadv-name">' + escapeHtml(nm) + '</span><span class="pet-promo-value-chip">' + escapeHtml(st.toggleValue || '') + '</span>';
             }
             var petSlot = pet.slotIndex;
@@ -818,9 +901,12 @@
     // ═══════════════════════════════════════════════════════════
     // 进阶页渲染
     // ═══════════════════════════════════════════════════════════
-    function renderAdvancePage() {
+    // animate 省略=true（导航进入时 stat 条与进阶行入场）；静默刷新（snapshot/出战/恢复/进阶）传 false
+    function renderAdvancePage(animate) {
         var pet = _pets[_activePetIdx];
         if (!pet) return;
+        hideTip();
+        _pageAdvance.classList.toggle('pet-noanim', animate === false);
 
         _el.querySelector('#pet-advance-title').textContent = pet.name + ' Lv.' + pet.level;
         var avatarEl = _el.querySelector('#pet-advance-avatar');
@@ -857,26 +943,25 @@
         var deployBtn = _el.querySelector('#pet-deploy-btn');
         deployBtn.textContent = pet.deployed ? '休息' : '出战';
         deployBtn.classList.toggle('pet-hdr-rest', !!pet.deployed);
-        if (_snapshot && _snapshot.isCombatMap && !pet.deployed) { deployBtn.disabled = true; deployBtn.title = '战斗中无法出战'; }
-        else if (pet.stamina <= 0 && !pet.deployed) { deployBtn.disabled = true; deployBtn.title = '体力不足'; }
-        else { deployBtn.disabled = false; deployBtn.title = ''; }
+        if (_snapshot && _snapshot.isCombatMap && !pet.deployed) softDisable(deployBtn, true, '战斗中无法出战');
+        else if (pet.stamina <= 0 && !pet.deployed) softDisable(deployBtn, true, '体力不足');
+        else softDisable(deployBtn, false, '');
 
         // 恢复体力
         var restoreBtn = _el.querySelector('#pet-restore-btn');
-        if (pet.stamina >= maxStamina) { restoreBtn.disabled = true; restoreBtn.title = '体力已满'; restoreBtn.textContent = '体力已满'; }
-        else if (_snapshot && _snapshot.gold < 1000) { restoreBtn.disabled = true; restoreBtn.title = '金币不足（需1000）'; restoreBtn.textContent = '恢复 · 1000金'; }
-        else { restoreBtn.disabled = false; restoreBtn.title = '消耗1000金币恢复体力至满值'; restoreBtn.textContent = '恢复 · 1000金'; }
+        if (pet.stamina >= maxStamina) { restoreBtn.textContent = '体力已满'; softDisable(restoreBtn, true, '体力已满'); }
+        else if (_snapshot && _snapshot.gold < 1000) { restoreBtn.textContent = '恢复 · 1000金'; softDisable(restoreBtn, true, '金币不足（需1000）'); }
+        else { restoreBtn.textContent = '恢复 · 1000金'; softDisable(restoreBtn, false, '消耗1000金币恢复体力至满值'); }
 
         // 强化
         var levelupBtn = _el.querySelector('#pet-levelup-btn');
-        if (pet.level >= levelLimit) { levelupBtn.disabled = true; levelupBtn.title = '已达等级上限'; levelupBtn.textContent = '已满级'; }
+        if (pet.level >= levelLimit) { levelupBtn.textContent = '已满级'; softDisable(levelupBtn, true, '已达等级上限'); }
         else {
-            levelupBtn.disabled = false;
             var xpNeededForCost = pet.xpNeeded || 0;
             var stoneCost = pet.level * 2 + Math.floor(xpNeededForCost / 10000);
             if (stoneCost < 1) stoneCost = 1;
-            levelupBtn.title = '消耗战宠灵石:' + stoneCost + '  |  经验:' + (pet.xp || 0) + '/' + (xpNeededForCost || '--');
             levelupBtn.textContent = '强化 · 灵石×' + stoneCost;
+            softDisable(levelupBtn, false, '消耗战宠灵石:' + stoneCost + '  |  经验:' + (pet.xp || 0) + '/' + (xpNeededForCost || '--'));
         }
 
         var deleteBtn = _el.querySelector('#pet-delete-btn');
@@ -938,7 +1023,7 @@
                         ? (perMap ? ('运行中 · 每图消耗 ' + formatMoney(scheme.gold) + '金') : '已启用')
                         : (perMap ? ('已关闭 · 开启后每图 ' + formatMoney(scheme.gold) + '金') : '已停用');
                     actionBtn =
-                        '<button class="pet-toggle ' + (on ? 'pet-toggle-on' : 'pet-toggle-off') + '" data-scheme="' + escapeHtml(schemeName) + '" title="点击' + (on ? '关闭' : '开启') + '">' +
+                        '<button class="pet-toggle ' + (on ? 'pet-toggle-on' : 'pet-toggle-off') + '" data-scheme="' + escapeHtml(schemeName) + '" data-tip="点击' + (on ? '关闭' : '开启') + '">' +
                             '<span class="pet-toggle-track"></span>' +
                             '<span class="pet-toggle-label">' + (on ? '运行中' : '已关闭') + '</span>' +
                         '</button>';
@@ -1083,8 +1168,8 @@
                 if (_snapshot) _snapshot.currentDeployCount = data.currentDeployCount;
                 updateStatusBar();
                 refreshCard(pet.slotIndex);
-                if (_selectedSlot === pet.slotIndex) renderSelbar();
-                renderAdvancePage();
+                if (_selectedSlot === pet.slotIndex) renderSelbar(false);
+                renderAdvancePage(false);
                 showToast(pet.deployed ? '已出战' : '已休息', 'success');
             } else {
                 showToast('操作失败：' + (data.error || '未知错误'), 'error');
@@ -1103,8 +1188,10 @@
                 pet.deployed = data.deployed;
                 if (_snapshot) _snapshot.currentDeployCount = data.currentDeployCount;
                 updateStatusBar();
-                refreshCard(slotIndex);             // 局部更新，不整页重排
-                if (_selectedSlot === slotIndex) renderSelbar();
+                // 出战态变化可能改变当前筛选/排序归属：仍匹配则局部刷新（不跳动），否则静默整排让其进/出列表
+                if (petMatchesFilter(pet)) refreshCard(slotIndex);
+                else renderPetGrid(false);
+                if (_selectedSlot === slotIndex) renderSelbar(false);
                 showToast(pet.deployed ? '已出战' : '已休息', 'success');
             } else {
                 showToast('操作失败：' + (data.error || '未知错误'), 'error');
@@ -1124,9 +1211,11 @@
                 pet.stamina = data.stamina;
                 if (_snapshot) _snapshot.gold = data.gold;
                 updateResourceDisplay(true);
-                refreshCard(slotIndex);
-                if (_selectedSlot === slotIndex) renderSelbar();
-                if (_currentPage === 'advance') renderAdvancePage();
+                // 恢复体力可能改变「体力不足」筛选/「体力↑」排序归属：同上策略
+                if (petMatchesFilter(pet)) refreshCard(slotIndex);
+                else renderPetGrid(false);
+                if (_selectedSlot === slotIndex) renderSelbar(false);
+                if (_currentPage === 'advance') renderAdvancePage(false);
                 showToast('体力已恢复至 ' + data.stamina, 'success');
             } else {
                 var msg = '恢复失败';

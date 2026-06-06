@@ -374,7 +374,7 @@
     transition: filter 0.14s, box-shadow 0.14s;
     position: relative;
 }
-.pet-btn-primary:hover:not(:disabled) { filter: brightness(1.12); box-shadow: 0 0 0 1px rgba(255,182,90,0.5), 0 3px 12px rgba(239,148,66,0.4); }
+.pet-btn-primary:hover:not(:disabled):not(.pet-off) { filter: brightness(1.12); box-shadow: 0 0 0 1px rgba(255,182,90,0.5), 0 3px 12px rgba(239,148,66,0.4); }
 .pet-btn-primary:active:not(:disabled) { filter: brightness(0.95); }
 .pet-btn-primary:disabled { filter: grayscale(0.7) brightness(0.6); cursor: not-allowed; }
 
@@ -508,6 +508,13 @@
     animation: pet-bar-grow 0.55s cubic-bezier(0.2,0.7,0.3,1), pet-shimmer 2.2s linear infinite 0.55s;
 }
 @keyframes pet-shimmer { from { background-position: 0 0; } to { background-position: -200% 0; } }
+/* 局部更新（出战/恢复/进阶后重拉 snapshot）：抑制卡片/进阶行/进度条的「入场」动画，
+   避免整列与选中栏的体力·经验条重播 grow；MAX 经验条的环境流光（shimmer）保留。
+   该类由 JS 在静默刷新时挂到卡片 / 选中栏 / 进阶页根节点上。 */
+.pet-noanim,
+.pet-noanim .pet-promo,
+.pet-noanim .pet-bar-fill { animation: none !important; }
+.pet-noanim .pet-bar-xp.pet-bar-max .pet-bar-fill { animation: pet-shimmer 2.2s linear infinite !important; }
 .pet-meter-val { font-size: 10px; color: var(--pet-text-dim); width: 34px; text-align: right; flex-shrink: 0; font-variant-numeric: tabular-nums; }
 .pet-meter-val.pet-stamina-low { color: var(--pet-warn); }
 .pet-meter-val.pet-stamina-depleted { color: var(--pet-danger); }
@@ -528,12 +535,12 @@
     position: relative;
 }
 .pet-mini-btn-deploy { color: var(--pet-deploy); border-color: rgba(92,186,71,0.45); background: rgba(92,186,71,0.10); }
-.pet-mini-btn-deploy:hover:not(:disabled) { background: rgba(92,186,71,0.24); border-color: var(--pet-deploy); }
+.pet-mini-btn-deploy:hover:not(:disabled):not(.pet-off) { background: rgba(92,186,71,0.24); border-color: var(--pet-deploy); }
 .pet-mini-btn-rest { color: var(--pet-rest); border-color: rgba(239,148,66,0.45); background: rgba(239,148,66,0.10); }
-.pet-mini-btn-rest:hover:not(:disabled) { background: rgba(239,148,66,0.24); border-color: var(--pet-rest); }
+.pet-mini-btn-rest:hover:not(:disabled):not(.pet-off) { background: rgba(239,148,66,0.24); border-color: var(--pet-rest); }
 .pet-mini-btn-restore { color: #6fb6e8; border-color: rgba(95,170,230,0.4); background: rgba(95,170,230,0.08); }
-.pet-mini-btn-restore:hover:not(:disabled) { background: rgba(95,170,230,0.2); border-color: #6fb6e8; }
-.pet-mini-btn:disabled { color: var(--pet-text-mute) !important; border-color: rgba(255,255,255,0.08) !important; background: rgba(255,255,255,0.02) !important; cursor: not-allowed; }
+.pet-mini-btn-restore:hover:not(:disabled):not(.pet-off) { background: rgba(95,170,230,0.2); border-color: #6fb6e8; }
+.pet-mini-btn:disabled, .pet-mini-btn.pet-off { color: var(--pet-text-mute) !important; border-color: rgba(255,255,255,0.08) !important; background: rgba(255,255,255,0.02) !important; cursor: not-allowed; }
 
 /* 空闲栏位卡片（全量显示剩余容量，点击即领养） */
 .pet-slot-empty {
@@ -611,6 +618,8 @@
     position: relative;
 }
 .pet-selbar-empty { justify-content: center; }
+.pet-selbar-empty .pet-selbar-avatar,
+.pet-selbar-empty .pet-selbar-quick,
 .pet-selbar-empty .pet-selbar-main,
 .pet-selbar-empty .pet-selbar-actions { display: none; }
 .pet-selbar-hint { display: none; color: var(--pet-text-mute); font-size: 13px; letter-spacing: 1px; }
@@ -699,13 +708,13 @@
 }
 .pet-act-ico { font-size: 18px; line-height: 1; }
 .pet-act-deploy  { color: var(--pet-deploy); border-color: rgba(92,186,71,0.4); background: rgba(92,186,71,0.08); }
-.pet-act-deploy:hover:not(:disabled) { background: rgba(92,186,71,0.2); border-color: var(--pet-deploy); }
+.pet-act-deploy:hover:not(:disabled):not(.pet-off) { background: rgba(92,186,71,0.2); border-color: var(--pet-deploy); }
 .pet-act-rest { color: var(--pet-rest); border-color: rgba(239,148,66,0.4); background: rgba(239,148,66,0.08); }
-.pet-act-rest:hover:not(:disabled) { background: rgba(239,148,66,0.2); border-color: var(--pet-rest); }
+.pet-act-rest:hover:not(:disabled):not(.pet-off) { background: rgba(239,148,66,0.2); border-color: var(--pet-rest); }
 .pet-act-detail { color: var(--pet-text-dim); border-color: rgba(255,255,255,0.14); }
-.pet-act-detail:hover:not(:disabled) { color: var(--pet-accent); border-color: var(--pet-accent); background: var(--pet-accent-dim); }
+.pet-act-detail:hover:not(:disabled):not(.pet-off) { color: var(--pet-accent); border-color: var(--pet-accent); background: var(--pet-accent-dim); }
 .pet-act-restore { color: #6fb6e8; border-color: rgba(95,170,230,0.38); background: rgba(95,170,230,0.07); }
-.pet-act-restore:hover:not(:disabled) { background: rgba(95,170,230,0.18); border-color: #6fb6e8; }
+.pet-act-restore:hover:not(:disabled):not(.pet-off) { background: rgba(95,170,230,0.18); border-color: #6fb6e8; }
 .pet-act-btn:disabled { color: var(--pet-text-mute) !important; border-color: rgba(255,255,255,0.08) !important; background: rgba(255,255,255,0.02) !important; cursor: not-allowed; }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -803,7 +812,7 @@
     transition: all 0.14s;
     clip-path: polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);
 }
-.pet-store-adopt-btn:hover:not(:disabled) { background: rgba(239,148,66,0.24); border-color: var(--pet-accent); }
+.pet-store-adopt-btn:hover:not(:disabled):not(.pet-off) { background: rgba(239,148,66,0.24); border-color: var(--pet-accent); }
 .pet-store-adopt-btn:disabled { color: var(--pet-text-mute); border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); cursor: not-allowed; }
 
 .pet-store-empty, .pet-store-loading {
@@ -845,16 +854,16 @@
     white-space: nowrap;
 }
 .pet-hdr-deploy  { color: var(--pet-deploy); border-color: rgba(92,186,71,0.45); background: rgba(92,186,71,0.10); }
-.pet-hdr-deploy:hover:not(:disabled) { background: rgba(92,186,71,0.22); border-color: var(--pet-deploy); }
+.pet-hdr-deploy:hover:not(:disabled):not(.pet-off) { background: rgba(92,186,71,0.22); border-color: var(--pet-deploy); }
 .pet-hdr-deploy.pet-hdr-rest { color: var(--pet-rest); border-color: rgba(239,148,66,0.45); background: rgba(239,148,66,0.10); }
-.pet-hdr-deploy.pet-hdr-rest:hover:not(:disabled) { background: rgba(239,148,66,0.22); border-color: var(--pet-rest); }
+.pet-hdr-deploy.pet-hdr-rest:hover:not(:disabled):not(.pet-off) { background: rgba(239,148,66,0.22); border-color: var(--pet-rest); }
 .pet-hdr-restore { color: #6fb6e8; border-color: rgba(95,170,230,0.4); background: rgba(95,170,230,0.08); }
-.pet-hdr-restore:hover:not(:disabled) { background: rgba(95,170,230,0.2); border-color: #6fb6e8; }
+.pet-hdr-restore:hover:not(:disabled):not(.pet-off) { background: rgba(95,170,230,0.2); border-color: #6fb6e8; }
 .pet-hdr-levelup { color: var(--pet-xp-max); border-color: rgba(192,123,255,0.4); background: rgba(192,123,255,0.08); }
-.pet-hdr-levelup:hover:not(:disabled) { background: rgba(192,123,255,0.2); border-color: var(--pet-xp-max); }
+.pet-hdr-levelup:hover:not(:disabled):not(.pet-off) { background: rgba(192,123,255,0.2); border-color: var(--pet-xp-max); }
 .pet-hdr-delete { color: var(--pet-danger); border-color: rgba(226,80,62,0.4); background: rgba(226,80,62,0.06); }
-.pet-hdr-delete:hover:not(:disabled) { background: rgba(226,80,62,0.2); border-color: var(--pet-danger); }
-.pet-hdr-btn:disabled { color: var(--pet-text-mute) !important; border-color: rgba(255,255,255,0.08) !important; background: rgba(255,255,255,0.02) !important; cursor: not-allowed; }
+.pet-hdr-delete:hover:not(:disabled):not(.pet-off) { background: rgba(226,80,62,0.2); border-color: var(--pet-danger); }
+.pet-hdr-btn:disabled, .pet-hdr-btn.pet-off { color: var(--pet-text-mute) !important; border-color: rgba(255,255,255,0.08) !important; background: rgba(255,255,255,0.02) !important; cursor: not-allowed; }
 
 .pet-section { display: flex; flex-direction: column; gap: 10px; }
 .pet-section-title {
@@ -925,7 +934,7 @@
     clip-path: polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);
     position: relative;
 }
-.pet-promo-btn:hover:not(:disabled) { background: rgba(239,148,66,0.24); border-color: var(--pet-accent); }
+.pet-promo-btn:hover:not(:disabled):not(.pet-off) { background: rgba(239,148,66,0.24); border-color: var(--pet-accent); }
 .pet-promo-btn:disabled { color: var(--pet-text-mute); border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); cursor: not-allowed; }
 .pet-promo-value-chip {
     font-size: 12px; font-weight: 700; color: var(--pet-accent);

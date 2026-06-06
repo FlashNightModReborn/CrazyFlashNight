@@ -55,6 +55,13 @@
         </div>
     </div>
 
+    <!-- PanelTooltip 容器（生产环境在 overlay.html，由 panels.css 配 #panel-tooltip 主题皮；
+         harness 走极简内联皮足够预览悬浮注释框观感） -->
+    <div id="panel-tooltip" style="display:none;position:fixed;z-index:9999;pointer-events:none;
+        max-width:320px;padding:6px 10px;font-size:12px;line-height:1.5;color:#f1d9b8;
+        background:rgba(20,16,12,0.96);border:1px solid rgba(239,148,66,0.55);border-radius:2px;
+        box-shadow:0 4px 18px rgba(0,0,0,0.6);"></div>
+
     <!-- chrome.webview mock，必须在 bridge.js 之前 -->
     <script>
     (function() {
@@ -70,6 +77,7 @@
 
     <script src="modules/bridge.js"></script>
     <script src="modules/panels.js"></script>
+    <script src="modules/tooltip.js"></script>
     <script src="modules/pet-panel.js"></script>
 
     <script>
@@ -282,7 +290,8 @@
             // ?page=store|advance 调试驱动：打开后自动导航，便于 harness 截图各页
             var pg = (location.search.match(/[?&]page=([^&]+)/) || [])[1];
             if (pg === 'store') {
-                setTimeout(function() { var b = document.getElementById('pet-adopt-btn'); if (b) b.click(); }, 350);
+                // 领养入口已改为空位卡片（旧 #pet-adopt-btn 已删）：点首张空位 → 进商店
+                setTimeout(function() { var b = document.querySelector('.pet-slot-empty'); if (b) b.click(); }, 350);
             } else if (pg === 'advance') {
                 var want = (location.search.match(/[?&]pet=([^&]+)/) || [])[1];
                 want = want ? decodeURIComponent(want) : '';
