@@ -116,8 +116,17 @@
             <PlayerX>206</PlayerX>
             <PlayerY>549</PlayerY>
         </BasicInformation>
+        <Pickups>
+            <Pickup>
+                <Name>资料</Name>
+                <Value>1</Value>
+                <x>900</x>
+                <y>400</y>
+            </Pickup>
+        </Pickups>
         <Event>
-            <EventName>Start</EventName>
+            <EventName>Pickup</EventName>
+            <Parameter>资料</Parameter>
             <Animation>
                 <Path>flashswf/movies/前线基地过场动画.swf</Path>
             </Animation>

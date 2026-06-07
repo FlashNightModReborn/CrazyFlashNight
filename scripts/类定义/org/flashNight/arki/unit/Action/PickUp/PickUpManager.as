@@ -74,6 +74,9 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
         target.gotoAndPlay("消失");
         delete this.pickupItemDict[target.index];
         _root.soundEffectManager.playSound("拾取音效.mp3");
+
+        // 发布Pickup事件
+        _root.gameworld.dispatcher.publish("Pickup", itemName);
         
         if (!拾取者 && 播放拾取动画) {
             控制对象.拾取();

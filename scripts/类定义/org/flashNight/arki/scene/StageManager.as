@@ -212,8 +212,12 @@ class org.flashNight.arki.scene.StageManager {
         if (currentStageInfo.pickupInfo.length > 0){
             for (var i = 0; i < currentStageInfo.pickupInfo.length; i++) {
                 var pickup = currentStageInfo.pickupInfo[i];
+                var params = pickup.Parameters != null ? ObjectUtil.clone(pickup.Parameters) : {};
+                if(pickup.OnPickup){
+                    params.onPickup = pickup.OnPickup;
+                }
                 _root.pickupItemManager.createCollectible(
-                    pickup.Name, pickup.Value, pickup.x, pickup.y, false
+                    pickup.Name, pickup.Value, pickup.x, pickup.y, false, params
                 );
             }
         }
