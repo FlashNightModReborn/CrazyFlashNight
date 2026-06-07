@@ -739,6 +739,7 @@
         var staminaMeter = meterHtml('体力', buildBar(pct(pet.stamina, maxSt), 'pet-bar-stamina', staminaBarMod(pet.stamina)), String(pet.stamina), staminaValClass(pet.stamina));
 
         card.innerHTML =
+            '<span class="pet-card-frame"></span>' + // 4 角 L 框（拟物语汇对齐任务面板）
             '<div class="pet-card-top">' +
                 '<img class="pet-card-icon" src="assets/pets/pet_' + pet.petId + '.png" onerror="this.onerror=null;this.src=\'assets/pets/pet_locked.png\'" alt="">' +
                 '<div class="pet-card-headinfo">' +
