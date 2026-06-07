@@ -151,6 +151,18 @@
     display: block;
 }
 
+/* ── 完成覆盖图标 ── */
+.task-finished-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    z-index: 2;
+}
+
 /* ── 扫光动画 ── */
 .task-icon::after {
     content: '';
@@ -303,6 +315,7 @@
     height: 100px;
     background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 0.7px, transparent 1px) 0 0 / 5px 5px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
     border-radius: 8px;
+    position: relative;
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -418,6 +431,23 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/* ── 关卡难度标签 ── */
+.task-difficulty-label {
+    position: absolute;
+    right: 4px;
+    bottom: 2px;
+    font-size: 24px;
+    font-weight: 700;
+    pointer-events: none;
+    font-family: "思源宋体 CN Heavy";
+    text-shadow: 2px 2px 1px rgba(0, 0, 0, 0.3);
+}
+
+.difficulty-简单 { color: #0099cc; }
+.difficulty-冒险 { color: #22bb00; }
+.difficulty-修罗 { color: #ddaa00; }
+.difficulty-地狱 { color: #cc0000; }
 
 .task-npc-title {
     width: 160px;

@@ -67,11 +67,17 @@ class org.flashNight.arki.task.TaskPanelService {
                 ? String(taskData.chain[0])
                 : "";
 
+            var satisfied:Boolean = false;
+            if (entry.requirements != undefined && entry.requirements.stages != undefined) {
+                satisfied = (entry.requirements.stages.length <= 0);
+            }
+
             tasks.push({
                 taskId: taskId,
                 title: title,
                 type: type,
-                npcName: taskData.get_npc != undefined ? String(taskData.get_npc) : ""
+                npcName: taskData.get_npc != undefined ? String(taskData.get_npc) : "",
+                satisfied: satisfied
             });
         }
 
@@ -116,7 +122,7 @@ class org.flashNight.arki.task.TaskPanelService {
         var finishReqs:Array = taskData.finish_requirements;
         if (finishReqs != undefined && finishReqs.length > 0) {
             var parts:Array = String(finishReqs[0]).split("#");
-            stageReq = { name: parts[0] };
+            stageReq = { name: parts[0], difficulty: parts[1] != undefined ? String(parts[1]) : "" };
         }
 
         // 解析物品需求 (finish_submit_items / finish_contain_items: ["itemName#quantity", ...])

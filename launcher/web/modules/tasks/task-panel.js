@@ -245,7 +245,8 @@
                     '<div class="task-icon-type">' + escHtml(task.type || '') + '</div>' +
                     '<div class="task-icon-name">' + escHtml(task.title || '') + '</div>' +
                 '</div>' +
-                '<div class="task-icon-avatar"><img src="' + avatarUrl(task.npcName) + '" onerror="this.onerror=null;this.src=\'' + defaultAvatarUrl() + '\';" alt=""></div>';
+                '<div class="task-icon-avatar"><img src="' + avatarUrl(task.npcName) + '" onerror="this.onerror=null;this.src=\'' + defaultAvatarUrl() + '\';" alt=""></div>' +
+                (task.satisfied ? '<img class="task-finished-overlay" src="/modules/tasks/assets/task_finished_icon.png" alt="">' : '');
 
             btn.addEventListener('click', (function(idx) {
                 return function() { requestDetail(idx); };
@@ -307,7 +308,11 @@
             html += '<div class="scroll-track"></div>';
             html += '<div class="task-requirement-title stage"></div>';
             html += '<div class="task-requirement-stage-name">' + escHtml(task.stageReq.name || '') + '</div>';
-            html += '</div></div>';
+            html += '</div>';
+            if (task.stageReq.difficulty) {
+                html += '<span class="task-difficulty-label difficulty-' + escHtml(task.stageReq.difficulty) + '">' + escHtml(task.stageReq.difficulty) + '</span>';
+            }
+            html += '</div>';
         }
 
         // 物品需求
