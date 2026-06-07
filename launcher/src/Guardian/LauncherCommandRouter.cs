@@ -146,17 +146,19 @@ namespace CF7Launcher.Guardian
                             "\"targetId\":\"" + EscapeJsonString(hotspotId) + "\"");
                     }
                     break;
+                // 刘海屏「☰ 任务」按钮 (TASK_UI) 与旧 web notch「新任务界面」(NEW_TASK_UI)
+                // 统一跳转到 web 端任务面板，不再走 AS2 openTaskUI 唤起。
+                case "TASK_UI":
                 case "NEW_TASK_UI":
-                    LogManager.Log("[Router] NEW_TASK_UI clicked");
+                    LogManager.Log("[Router] task UI clicked -> web panel");
                     if (TrySendGameCommand("taskPanelOpen"))
                         OpenPanel("tasks", null);
                     else
                     {
-                        LogManager.Log("[Router] NEW_TASK_UI taskPanelOpen failed");
+                        LogManager.Log("[Router] task panel taskPanelOpen failed");
                         PostToWeb("{\"type\":\"toast\",\"text\":\"任务面板暂时不可用\"}");
                     }
                     break;
-                case "TASK_UI": SendGameCommand("openTaskUI"); break;
                 case "EQUIP_UI": SendGameCommand("openEquipUI"); break;
                 case "INTELLIGENCE":
                     OpenPanel("intelligence", "{\"mode\":\"prod\",\"source\":\"runtime\",\"debug\":false}");
