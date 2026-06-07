@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/库-UI" itemID="66795870-000009ce" lastModified="1752512703" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/库-UI" itemID="66795870-000009ce" lastModified="1780876470" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="库-UI" currentFrame="5">
+    <DOMTimeline name="库-UI" currentFrame="1">
       <layers>
         <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
@@ -23,7 +23,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!205 161[205 277 100 277!100 277[0 277 0 165!0 165|0 0!0 0|35 0!35 0|35 164!35 164[35 245 104 245!104 245[170 245 170 166!170 166|170 0!170 0|205 0!205 0|205 161!307 0|307 272!307 272|272 272!272 272|272 0!272 0|307 0"/>
+                    <Edge fillStyle1="1" edges="!307 0|307 272!307 272|272 272!272 272|272 0!272 0|307 0!205 161[205 277 100 277!100 277[0 277 0 165!0 165|0 0!0 0|35 0!35 0|35 164!35 164[35 245 104 245!104 245[170 245 170 166!170 166|170 0!170 0|205 0!205 0|205 161"/>
                     <Edge cubics="!205 0(;205,0 205,161 205,161q205 0 205 161);"/>
                     <Edge cubics="!272 0(;272,0 307,0 307,0q272 0 307 0);"/>
                     <Edge cubics="!0 165(;0,165 0,0 0,0q0 165 0 0);"/>
@@ -52,22 +52,10 @@
               </elements>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="import/UI组件/shopMainMC" centerPoint3DX="17.75" centerPoint3DY="8.7">
-                  <transformationPoint>
-                    <Point x="17.75" y="8.7"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="3" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="import/UI组件/新版任务栏界面" centerPoint3DX="44.85" centerPoint3DY="24.7">
-                  <transformationPoint>
-                    <Point x="44.85" y="24.7"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="4" keyMode="9728">
               <elements>

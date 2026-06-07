@@ -1,14 +1,14 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#000000" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" timelineLabelWidth="253" viewAngle3D="67.3530907632092" sharedLibraryURL="Font" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
-          <DOMFolderItem name="frameend事件发生器" itemID="69ce7d00-00001298" isExpanded="true"/>
+          <DOMFolderItem name="frameend事件发生器" itemID="69ce7d00-00001298"/>
           <DOMFolderItem name="image" itemID="65976161-00000eac"/>
-          <DOMFolderItem name="import" itemID="65977cdc-00001d38" isExpanded="true"/>
+          <DOMFolderItem name="import" itemID="65977cdc-00001d38"/>
           <DOMFolderItem name="import/arts" itemID="65981594-00000b2f"/>
           <DOMFolderItem name="import/scripts" itemID="65996a47-00000b1c"/>
           <DOMFolderItem name="import/UI组件" itemID="6700c220-00000b13"/>
           <DOMFolderItem name="import/关卡地图" itemID="65c78d54-00000eac"/>
-          <DOMFolderItem name="import/外部地图" itemID="65d313c5-00000b63" isExpanded="true"/>
+          <DOMFolderItem name="import/外部地图" itemID="65d313c5-00000b63"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
           <DOMFolderItem name="sound" itemID="6597612c-00000e9d"/>
           <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
@@ -17,14 +17,14 @@
           <DOMFolderItem name="sprite/物品栏" itemID="659d3927-00003122"/>
           <DOMFolderItem name="sprite/新地图" itemID="659bbd75-0000152d"/>
           <DOMFolderItem name="sprite/悬浮UI" itemID="659bbbc2-000014cc"/>
-          <DOMFolderItem name="UI重构" itemID="6649a717-00000ffa" isExpanded="true"/>
+          <DOMFolderItem name="UI重构" itemID="6649a717-00000ffa"/>
           <DOMFolderItem name="UI重构/商店相关" itemID="6689822f-000044fa"/>
           <DOMFolderItem name="UI重构/通缉令UI" itemID="663afec8-00000c0c"/>
           <DOMFolderItem name="弹出公告UI" itemID="65bb95a3-00000c69"/>
           <DOMFolderItem name="底部UI" itemID="66365773-0000216e"/>
           <DOMFolderItem name="面板" itemID="6700c1e4-00000b0c"/>
           <DOMFolderItem name="鼠标元件" itemID="68447b1d-00000b47"/>
-          <DOMFolderItem name="玩家buff界面素材" itemID="69a85c44-0000077a" isExpanded="true"/>
+          <DOMFolderItem name="玩家buff界面素材" itemID="69a85c44-0000077a"/>
      </folders>
      <media>
           <DOMBitmapItem name="面板/&lt;Mesh&gt;" itemID="64044ab7-0000714e" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/面板/&amp;#060Mesh&amp;#062" sourceLastImported="1678002871" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="面板/&amp;#060Mesh&amp;#062" bitmapDataHRef="M 62 1728102884.dat" frameRight="12000" frameBottom="8000"/>
@@ -406,7 +406,7 @@
           <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" externalFileSize="3830" href="sound/sound18.wav" soundDataHRef="M 2 1704419450.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
           <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" externalFileSize="10546" href="sound/sound19.wav" soundDataHRef="M 1 1704196122.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
           <DOMSoundItem name="sound/sound1928.wav" itemID="6597607b-0000040b" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/sound/sound1928.wav" sourceLastImported="1704196122" externalFileCRC32="295431564" externalFileSize="23218" href="sound/sound1928.wav" soundDataHRef="M 118 1704196122.dat" format="11kHz 16bit Mono" sampleCount="10463" exportFormat="5" exportBits="7"/>
-          <DOMSoundItem name="sound/sound619.wav" itemID="6597607a-0000023f" linkageExportForAS="true" linkageIdentifier="levelup-2.wav" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/sound/sound619.wav" sourceLastImported="1704196122" externalFileCRC32="234572686" externalFileSize="29034" href="sound/sound619.wav" soundDataHRef="M 14 1704196122.dat" format="11kHz 16bit Mono" sampleCount="13277" exportFormat="5" exportBits="7"/>
+          <DOMSoundItem name="sound/sound619.wav" itemID="6597607a-0000023f" linkageExportForAS="true" linkageIdentifier="levelup-2.wav" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/sound/sound619.wav" sourceLastImported="1780876680" externalFileCRC32="234572686" externalFileSize="29034" href="sound/sound619.wav" soundDataHRef="M 14 1704196122.dat" format="11kHz 16bit Mono" sampleCount="13277" exportFormat="5" exportBits="7"/>
           <DOMBitmapItem name="image/旧版基地一览" itemID="6787629a-000018b8" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/image/旧版基地一览.jpg" sourceLastImported="1736931319" externalFileCRC32="3047681187" externalFileSize="70362" originalCompressionType="lossless" quality="50" href="image/旧版基地一览.jpg" bitmapDataHRef="M 120 1704196122.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
      </media>
      <symbols>
@@ -529,7 +529,6 @@
           <Include href="button/关闭按钮.xml" itemIcon="0" loadImmediate="false" itemID="67bb5ced-000004a8" lastModified="1740332590"/>
           <Include href="button/退出游戏按钮.xml" itemIcon="0" loadImmediate="false" itemID="66521dda-00000bd9" lastModified="1716657626"/>
           <Include href="frameend事件发生器/frameend事件发生器.xml" loadImmediate="false" itemID="69ce7ce6-00001294" lastModified="1775140070"/>
-          <Include href="import/_check.xml" loadImmediate="false" itemID="6653116c-00000d72" lastModified="1752652040"/>
           <Include href="import/arts/things-new.xml" itemID="6599827a-00000c51" lastModified="1704559398"/>
           <Include href="import/arts/加载MC库-00.xml" itemID="65977e02-000031d3" lastModified="1704467233"/>
           <Include href="import/arts/加载mc库-2.xml" itemID="65977ea3-000035db" lastModified="1704467238"/>
@@ -544,12 +543,9 @@
           <Include href="import/arts/素材库-物品技能图标.xml" itemID="67bdd016-00001d33" lastModified="1740492929"/>
           <Include href="import/arts/原版素材库-子弹.xml" itemID="668ba6d6-00000931" lastModified="1720428941"/>
           <Include href="import/scripts/asLoader.xml" itemID="65996a6b-00000b1f" lastModified="1714731149"/>
-          <Include href="import/UI组件/shopMainMC.xml" itemID="667957ef-000009b0" lastModified="1719228445"/>
-          <Include href="import/UI组件/宠物信息界面.xml" itemID="6652ee5f-000029ef" lastModified="1749362397"/>
           <Include href="import/UI组件/地图界面.xml" itemID="6749c50f-00000907" lastModified="1732887944"/>
           <Include href="import/UI组件/对话框界面.xml" itemID="6652e64d-00001d3c" lastModified="1751481175"/>
           <Include href="import/UI组件/对话框肖像.xml" itemID="66790c16-0000226d" lastModified="1719209001"/>
-          <Include href="import/UI组件/领养宠物界面.xml" itemID="6652ed6b-000028e5" lastModified="1716711695"/>
           <Include href="import/UI组件/平板电脑界面.xml" itemID="6700c1da-00000b05" lastModified="1734958722"/>
           <Include href="import/UI组件/情报信息界面.xml" itemID="687538a2-00000793" lastModified="1752512703"/>
           <Include href="import/UI组件/素材库-基地特殊UI.xml" itemID="67877020-00001f11" lastModified="1736929344"/>
@@ -558,7 +554,6 @@
           <Include href="import/UI组件/物品改装界面.xml" itemID="6873700c-00000814" lastModified="1752395831"/>
           <Include href="import/UI组件/物品图标.xml" itemID="659d38e8-0000310c" lastModified="1735117398"/>
           <Include href="import/UI组件/新版仓库界面.xml" itemID="676fa4b6-0000094c" lastModified="1735369947"/>
-          <Include href="import/UI组件/新版任务栏界面.xml" itemID="67cb1698-000004a0" lastModified="1741362928"/>
           <Include href="import/UI组件/新版商店界面.xml" itemID="676edc2a-00000978" lastModified="1735318643"/>
           <Include href="import/UI组件/新版物品栏界面.xml" itemID="676bc98a-00000892" lastModified="1749362406"/>
           <Include href="import/UI组件/修改工具界面.xml" itemID="6749becf-0000094f" lastModified="1732886280"/>
@@ -569,8 +564,7 @@
           <Include href="import/关卡地图/wuxianguotu_1.xml" itemID="659b414b-00000b2a" lastModified="1704673709"/>
           <Include href="import/加载背景 1024&amp;#042576.xml" itemID="66e5b988-00001027" lastModified="1726331311"/>
           <Include href="import/加载进度条.xml" itemIcon="1" loadImmediate="false" itemID="659d4e6e-00003d5a" lastModified="1750233630"/>
-          <Include href="import/库-UI.xml" loadImmediate="false" itemID="66795870-000009ce" lastModified="1752512703"/>
-          <Include href="import/神秘影片剪辑.xml" itemID="66530531-00000d80" lastModified="1716717136"/>
+          <Include href="import/库-UI.xml" loadImmediate="false" itemID="66795870-000009ce" lastModified="1780876470"/>
           <Include href="import/素材库-基地场景.xml" itemID="67877070-00002016" lastModified="1736929538"/>
           <Include href="import/外部地图/地图-靶场.xml" itemID="66337c69-00000ecd" lastModified="1714650217"/>
           <Include href="import/外部地图/地图-彩蛋地图.xml" itemID="66011154-00000b65" lastModified="1740411265"/>
@@ -902,7 +896,7 @@
           <Include href="无限过图计时器.xml" itemID="689c1899-000001f2" lastModified="1755135414"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="171" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;29&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="80" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;29&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
@@ -1221,16 +1215,9 @@ STEAMstory.onLoad = function()
                               </DOMFrame>
                               <DOMFrame index="5" duration="8" keyMode="9728">
                                    <Actionscript>
-                                        <script><![CDATA[if (!_root._check)
-{
-	_root.unloadMovie();
-	_root.loadMovie("flashswf/UI/验证失败界面.swf");
-}
-else
-{
-	_root.注释结束();
-	_root.gotoAndPlay("单机版开始");
-}]]></script>
+                                        <script><![CDATA[_root.注释结束();
+_root.gotoAndPlay("单机版开始");
+]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
@@ -1710,21 +1697,9 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="import assets" color="#FF800A" parentLayerIndex="9" autoNamed="false">
+                    <DOMLayer name="import assets" color="#FF800A" parentLayerIndex="9" current="true" isSelected="true" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="14" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="import/_check" name="_check" centerPoint3DX="-37.5" centerPoint3DY="12.5">
-                                             <matrix>
-                                                  <Matrix tx="-50"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="12.5" y="12.5"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="14" duration="26" keyMode="9728">
+                              <DOMFrame index="0" duration="40" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="40" duration="3" keyMode="9728">
@@ -4225,15 +4200,15 @@ on(rollOut){
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9699 4546|10002 4546!10002 4546|10305 4546!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|11189 4908!11189 4908|11479 5089!11479 5089|11769 5270!11769 5270|12059 5451!12059 5451|11755 5451!11755 5451|11452 5451!11452 5451|11149
- 5451!11149 5451|10845 5451!10845 5451|10542 5451!10542 5451|10239 5451!10239 5451|9935 5451!9935 5451|9633 5451!9633 5451|9342 5270!9342 5270|9052 5089!9052 5089|8762 4908!8762 4908|8472 4727!8472 4727|8182 4546!8182 4546|8485 4546!8485
- 4546|8789 4546!8789 4546|9092 4546!9092 4546|9395 4546!9395 4546|9685 4727!9685 4727|9989 4727!9989 4727|9699 4546!9699 4546|9395 4546!9342 5270|9645 5270!9645 5270|9355 5089!9355 5089|9659 5089!9659 5089|9369 4908!9369 4908|9672 4908
-!9672 4908|9962 5089!9962 5089|10265 5089!10265 5089|9975 4908!9975 4908|9672 4908!9672 4908|9382 4727!9382 4727|9079 4727!9079 4727|9369 4908!9369 4908|9065 4908!9065 4908|8762 4908!9092 4546|9382 4727!9382 4727|9685 4727!9685 4727|9975
- 4908!9975 4908|10279 4908!10279 4908|10582 4908!10582 4908|10872 5089!10872 5089|11175 5089!11175 5089|11465 5270!11465 5270|11769 5270!9355 5089|9065 4908!9065 4908|8775 4727!8775 4727|8472 4727!8485 4546|8775 4727!8775 4727|9079 4727
-!9079 4727|8789 4546!9052 5089|9355 5089!11465 5270|11755 5451!11189 4908|10885 4908!10885 4908|10582 4908!10582 4908|10292 4727!10292 4727|10595 4727!10595 4727|10885 4908!10885 4908|11175 5089!11175 5089|11479 5089!10899 4727|10595
- 4727!10595 4727|10305 4546!10002 4546|10292 4727!10292 4727|9989 4727!9989 4727|10279 4908!10279 4908|10569 5089!10569 5089|10859 5270!10859 5270|11162 5270!11162 5270|11465 5270!10542 5451|10252 5270!10252 5270|9962 5089!9962 5089|9659
- 5089!9659 5089|9949 5270!9949 5270|10252 5270!10252 5270|10555 5270!10555 5270|10845 5451!10239 5451|9949 5270!9949 5270|9645 5270!9645 5270|9935 5451!11149 5451|10859 5270!10859 5270|10555 5270!10555 5270|10265 5089!10265 5089|10569
- 5089!10569 5089|10872 5089!10872 5089|11162 5270!11162 5270|11452 5451"/>
+!9685 4727|9395 4546!9395 4546|9092 4546!9092 4546|9382 4727!9382 4727|9685 4727!9685 4727|9989 4727!9989 4727|9699 4546!9699 4546|9395 4546!9672 4908|9382 4727!9382 4727|9079 4727!9079 4727|9369 4908!9369 4908|9672 4908!9065 4908|9355
+ 5089!9355 5089|9659 5089!9659 5089|9369 4908!9369 4908|9065 4908!8775 4727|9079 4727!9079 4727|8789 4546!8789 4546|8485 4546!8485 4546|8775 4727!8472 4727|8762 4908!8762 4908|9065 4908!9065 4908|8775 4727!8775 4727|8472 4727!8472 4727
+|8182 4546!8182 4546|8485 4546!8762 4908|9052 5089!9052 5089|9355 5089!9052 5089|9342 5270!9342 5270|9645 5270!9645 5270|9355 5089!9699 4546|10002 4546!10002 4546|10305 4546!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|11189
+ 4908!11189 4908|11479 5089!11479 5089|11769 5270!11769 5270|12059 5451!12059 5451|11755 5451!11755 5451|11452 5451!11452 5451|11149 5451!11149 5451|10845 5451!10845 5451|10542 5451!10542 5451|10239 5451!10239 5451|9935 5451!9935 5451
+|9633 5451!9633 5451|9342 5270!8789 4546|9092 4546!11769 5270|11465 5270!11465 5270|11755 5451!10899 4727|10595 4727!10595 4727|10885 4908!10885 4908|11189 4908!10582 4908|10872 5089!10872 5089|11175 5089!11175 5089|10885 4908!10885 4908
+|10582 4908!10279 4908|10582 4908!10582 4908|10292 4727!10292 4727|9989 4727!9989 4727|10279 4908!10002 4546|10292 4727!10292 4727|10595 4727!10595 4727|10305 4546!9685 4727|9975 4908!9975 4908|10279 4908!10239 5451|9949 5270!9949 5270
+|9645 5270!9645 5270|9935 5451!10252 5270|9962 5089!9962 5089|9659 5089!9659 5089|9949 5270!9949 5270|10252 5270!10265 5089|9975 4908!9975 4908|9672 4908!9672 4908|9962 5089!9962 5089|10265 5089!10859 5270|11162 5270!11162 5270|10872
+ 5089!10872 5089|10569 5089!10569 5089|10859 5270!11149 5451|10859 5270!10859 5270|10555 5270!10555 5270|10845 5451!10265 5089|10569 5089!10569 5089|10279 4908!10252 5270|10555 5270!10555 5270|10265 5089!10542 5451|10252 5270!11465 5270
+|11162 5270!11162 5270|11452 5451!11175 5089|11479 5089!11175 5089|11465 5270"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="865.35" centerPoint3DY="164.1">
@@ -4646,15 +4621,15 @@ on (rollOut) {
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!10282 4714|10585 4714!10585 4714|10295 4533!10295 4533|9992 4533!9992 4533|10282 4714!10282 4714|10572 4895!10572 4895|10269 4895!10269 4895|10559 5076!10559 5076|10849 5257!10849 5257|11139 5438!11139 5438|11442 5438!11442 5438|11152
- 5257!11152 5257|10849 5257!10849 5257|10545 5257!10545 5257|10255 5076!10255 5076|9965 4895!9965 4895|10269 4895!10269 4895|9979 4714!9979 4714|9675 4714!9675 4714|9385 4533!9385 4533|9082 4533!9082 4533|9372 4714!9372 4714|9662 4895
-!9662 4895|9965 4895!9965 4895|9675 4714!9675 4714|9372 4714!9372 4714|9069 4714!9069 4714|8765 4714!8765 4714|9055 4895!9055 4895|9359 4895!9359 4895|9069 4714!9069 4714|8779 4533!8779 4533|8475 4533!8475 4533|8765 4714!8765 4714|8462
- 4714!8462 4714|8752 4895!8752 4895|9055 4895!9055 4895|9345 5076!9345 5076|9042 5076!9042 5076|9332 5257!9332 5257|9635 5257!9635 5257|9345 5076!9345 5076|9649 5076!9649 5076|9359 4895!9359 4895|9662 4895!9662 4895|9952 5076!9952 5076
-|10242 5257!10242 5257|10545 5257!10545 5257|10835 5438!10835 5438|11139 5438!9385 4533|9689 4533!9689 4533|9992 4533!8475 4533|8172 4533!8172 4533|8462 4714!9332 5257|9623 5438!9623 5438|9925 5438!9925 5438|9635 5257!9635 5257|9939 5257
-!9939 5257|9649 5076!9649 5076|9952 5076!9082 4533|8779 4533!9042 5076|8752 4895!10295 4533|10599 4533!10599 4533|10889 4714!10889 4714|11179 4895!11179 4895|11469 5076!11469 5076|11759 5257!11759 5257|11455 5257!11455 5257|11745 5438
-!11745 5438|12049 5438!12049 5438|11759 5257!11442 5438|11745 5438!10585 4714|10889 4714!11455 5257|11165 5076!11165 5076|10862 5076!10862 5076|10572 4895!10572 4895|10875 4895!10875 4895|11179 4895!10585 4714|10875 4895!9689 4533|9979
- 4714!9979 4714|10282 4714!10835 5438|10532 5438!10532 5438|10229 5438!10229 5438|9925 5438!9939 5257|10229 5438!10532 5438|10242 5257!10242 5257|9939 5257!11152 5257|10862 5076!10862 5076|10559 5076!10559 5076|10255 5076!10255 5076|9952
- 5076!10875 4895|11165 5076!11165 5076|11469 5076!11455 5257|11152 5257"/>
+!9689 4533|9992 4533!9992 4533|10295 4533!10295 4533|10599 4533!10599 4533|10889 4714!10889 4714|11179 4895!11179 4895|11469 5076!11469 5076|11759 5257!11759 5257|12049 5438!12049 5438|11745 5438!11745 5438|11442 5438!11442 5438|11139
+ 5438!11139 5438|10835 5438!10835 5438|10532 5438!10532 5438|10229 5438!10229 5438|9925 5438!9925 5438|9623 5438!9623 5438|9332 5257!9332 5257|9042 5076!9042 5076|8752 4895!8752 4895|8462 4714!8462 4714|8172 4533!8172 4533|8475 4533!8475
+ 4533|8779 4533!8779 4533|9082 4533!9082 4533|9385 4533!9385 4533|9689 4533!9082 4533|9372 4714!9372 4714|9675 4714!9675 4714|9385 4533!9372 4714|9662 4895!9662 4895|9965 4895!9965 4895|9675 4714!9372 4714|9069 4714!9069 4714|9359 4895
+!9359 4895|9662 4895!9069 4714|8765 4714!8765 4714|9055 4895!9055 4895|9359 4895!8765 4714|8462 4714!8475 4533|8765 4714!9055 4895|9345 5076!9345 5076|9649 5076!9649 5076|9359 4895!9332 5257|9635 5257!9635 5257|9345 5076!9345 5076|9042
+ 5076!8752 4895|9055 4895!9069 4714|8779 4533!11759 5257|11455 5257!11455 5257|11745 5438!10889 4714|10585 4714!10585 4714|10875 4895!10875 4895|11179 4895!10585 4714|10282 4714!10282 4714|10572 4895!10572 4895|10875 4895!9689 4533|9979
+ 4714!9979 4714|10282 4714!10282 4714|9992 4533!9965 4895|10269 4895!10269 4895|9979 4714!9979 4714|9675 4714!9952 5076|10242 5257!10242 5257|10545 5257!10545 5257|10255 5076!10255 5076|9952 5076!10532 5438|10242 5257!10242 5257|9939
+ 5257!9939 5257|10229 5438!10559 5076|10849 5257!10849 5257|11152 5257!11152 5257|10862 5076!10862 5076|10559 5076!11139 5438|10849 5257!10849 5257|10545 5257!10545 5257|10835 5438!11152 5257|11455 5257!11455 5257|11165 5076!11165 5076
+|10862 5076!10875 4895|11165 5076!11165 5076|11469 5076!10559 5076|10255 5076!10862 5076|10572 4895!10572 4895|10269 4895!10269 4895|10559 5076!10255 5076|9965 4895!10585 4714|10295 4533!11442 5438|11152 5257!9649 5076|9952 5076!9952
+ 5076|9662 4895!9635 5257|9939 5257!9939 5257|9649 5076!9925 5438|9635 5257"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="864.85" centerPoint3DY="163.45">
@@ -5139,10 +5114,10 @@ on (rollOut) {
                                              <edges>
                                                   <Edge fillStyle0="2" edges="
 !17466 11519.5|17440 11520!17440 11520|20104 11520!20104 11520[20480 11520 20480 11241!20480 11241|20480 278!20480 278[20480 0 20104 0!20104 0|17571 0"/>
+                                                  <Edge fillStyle0="2" fillStyle1="1" edges="
+!17571 0|17571 11519!17571 11519|17466 11519.5"/>
                                                   <Edge fillStyle0="1" edges="
 !17571 0|376 0!376 0[0 0 0 278!0 278|0 11241!0 11241[0 11520 376 11520!376 11520|17466 11519.5"/>
-                                                  <Edge fillStyle0="1" fillStyle1="2" edges="
-!17466 11519.5|17571 11519!17571 11519|17571 0"/>
                                              </edges>
                                         </DOMShape>
                                    </elements>
@@ -5667,7 +5642,7 @@ on (rollOut) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="限定地图UI" color="#F0F70C" parentLayerIndex="20" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="限定地图UI" color="#F0F70C" parentLayerIndex="20" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="171" keyMode="9728">
                                    <elements/>
@@ -6534,6 +6509,7 @@ onClipEvent (enterFrame) {
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="529507" publishTime="1780876569"/>
           <PublishItem publishSize="1355410" publishTime="1776945103"/>
           <PublishItem publishSize="1352800" publishTime="1776570601"/>
           <PublishItem publishSize="1352980" publishTime="1776570405"/>
@@ -6553,6 +6529,5 @@ onClipEvent (enterFrame) {
           <PublishItem publishSize="607404" publishTime="1775112215"/>
           <PublishItem publishSize="612145" publishTime="1775111917"/>
           <PublishItem publishSize="616972" publishTime="1775100519"/>
-          <PublishItem publishSize="621399" publishTime="1772271072"/>
      </publishHistory>
 </DOMDocument>

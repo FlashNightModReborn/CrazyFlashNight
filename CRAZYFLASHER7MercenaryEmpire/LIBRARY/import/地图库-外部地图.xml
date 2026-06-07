@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1780400005" lastUniqueIdentifier="10">
   <timeline>
-    <DOMTimeline name="地图库-外部地图" currentFrame="23">
+    <DOMTimeline name="地图库-外部地图">
       <layers>
         <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
@@ -21,7 +21,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="import/外部地图/地图-摇滚公园" selected="true" centerPoint3DX="59.85" centerPoint3DY="14.7">
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-摇滚公园" centerPoint3DX="59.85" centerPoint3DY="14.7">
                   <transformationPoint>
                     <Point x="59.85" y="14.7"/>
                   </transformationPoint>
@@ -330,7 +330,7 @@
             </DOMFrame>
             <DOMFrame index="23" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="import/外部地图/地图-隧道据点" selected="true" centerPoint3DX="19.6" centerPoint3DY="17.05">
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-隧道据点" centerPoint3DX="19.6" centerPoint3DY="17.05">
                   <matrix>
                     <Matrix tx="-79" ty="-4.75"/>
                   </matrix>
