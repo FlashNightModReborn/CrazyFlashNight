@@ -64,7 +64,7 @@
        上压一层半透深灰罩 → 把卡面抬到「中灰」，让柔和云纹读得出（深灰罩 alpha 越低越亮、纹理越显）。
        取代之前的「网点栅格 + 近黑底」——那套纹理与任务卡片不一致、且近黑吃掉了云纹。
        与任务面板共用同一张大理石材质，零新增美术资源。── */
-    --pet-marble:      url('/modules/tasks/assets/task_icon_bg.png') center / cover no-repeat;
+    --pet-marble:      url('../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat;
     /* 战宠卡面：深色基底「适当抬亮」让大理石结隐约透出（不做乳白满铺——对比过强会突兀）。
        深底 → 卡内沿用浅字。末层不透明深石兜底（task_icon_bg 含半透，防背景英雄透卡）。 */
     --pet-stone:       linear-gradient(160deg, rgba(42,45,53,0.70), rgba(27,29,35,0.82)), var(--pet-marble), linear-gradient(#30333a, #25272d);
@@ -89,11 +89,11 @@
        层叠（上→下）：顶部橙光 → 轻灰罩（顶浅底略深，只做层次不压黑）→ 英雄垫图 → 灰白→深 渐变底。
        灰罩 alpha 远低于旧版（旧 0.84~0.96 → 新 0.18~0.62），英雄读得出；底色用中灰起手（#5a5e66）
        复刻任务面板灰天空→地面的明度。英雄图与 1024×576 同为 16:9 → cover 满铺无裁切；
-       url 绝对路径（CSS 在 /css/ 下，相对会错解析到 /css/assets/…）。 */
+       url 按 CSS 文件所在的 /css/ 目录相对寻址，同时兼容 overlay.local 与 file harness。 */
     background:
         radial-gradient(120% 80% at 50% 0%, rgba(239,148,66,0.03), transparent 55%),
         linear-gradient(180deg, rgba(54,57,64,0.87) 0%, rgba(38,40,46,0.90) 100%),
-        url('/assets/bg/battlepet-armed-jk-hero2-v2.png') center center / cover no-repeat,
+        url('../assets/bg/battlepet-armed-jk-hero2-v2.png') center center / cover no-repeat,
         linear-gradient(180deg, #41444b 0%, #2a2c32 100%);
     user-select: none;
 }
