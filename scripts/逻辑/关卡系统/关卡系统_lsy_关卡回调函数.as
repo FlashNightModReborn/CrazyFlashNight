@@ -4,12 +4,6 @@ import org.flashNight.arki.weather.*;
 
 _root.关卡回调函数 = new Object();
 
-_root.关卡回调函数.新手练习场_1 = function(){
-	_root.加载引导界面("引导-拾取");
-	_root.pickupItemManager.createCollectible("金钱",10,700,400,false);
-	_root.pickupItemManager.createCollectible("砖",2,750,500,false);
-}
-
 _root.关卡回调函数.AVP_重设光照 = function(最大光照, 最小光照){
 	if(_root.难度等级 >= 2){
 		var envInfo:Object = WeatherSystem.getInstance().getEnvConfig().getInfiniteMapEnvInfo();
@@ -36,10 +30,6 @@ _root.关卡回调函数.角斗场计算敌人数 = function(){
 _root.关卡回调函数.角斗场获胜 = function(){
 	_root.金钱 += _root.角斗场奖金;
 	_root.最上层发布文字提示("你赢了！获得奖金" + _root.角斗场奖金 + "元！");
-}
-
-_root.关卡回调函数.贫民窟_3 = function(){
-	_root.pickupItemManager.createCollectible("资料",5,1438,400,false);
 }
 
 

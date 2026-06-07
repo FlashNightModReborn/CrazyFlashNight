@@ -7,15 +7,30 @@
             <Background>flashswf/backgrounds/gk1_1_BG.swf</Background>
             <PlayerX>152</PlayerX>
             <PlayerY>461</PlayerY>
-            <CallbackFunction>
-                <Name>新手练习场_1</Name>
-            </CallbackFunction>
             <BGM>
                 <Command>play</Command>
                 <Title>Moan</Title>
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
+        <Pickups>
+            <Pickup>
+                <Name>金钱</Name>
+                <Value>10</Value>
+                <x>700</x>
+                <y>400</y>
+            </Pickup>
+            <Pickup>
+                <Name>砖</Name>
+                <Value>2</Value>
+                <x>750</x>
+                <y>500</y>
+            </Pickup>
+        </Pickups>
+        <Event>
+            <EventName>Start</EventName>
+            <Guidance>引导-拾取</Guidance>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>

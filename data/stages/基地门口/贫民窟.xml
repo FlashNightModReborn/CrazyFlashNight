@@ -52,11 +52,6 @@
             <QuantityMax>1</QuantityMax>
         </Reward>
         <Reward>
-            <Name>资料</Name>
-            <AcquisitionProbability>1</AcquisitionProbability>
-            <QuantityMax>1</QuantityMax>
-        </Reward>
-        <Reward>
             <Name>地铁站通关证明</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>1</QuantityMax>
@@ -200,10 +195,15 @@
             <Background>flashswf/backgrounds/gk9_3_BG.swf</Background>
             <PlayerX>104</PlayerX>
             <PlayerY>503</PlayerY>
-            <CallbackFunction>
-                <Name>贫民窟_3</Name>
-            </CallbackFunction>
         </BasicInformation>
+        <Pickups>
+            <Pickup>
+                <Name>资料</Name>
+                <Value>5</Value>
+                <x>1438</x>
+                <y>400</y>
+            </Pickup>
+        </Pickups>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>

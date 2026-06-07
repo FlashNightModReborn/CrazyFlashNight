@@ -208,6 +208,16 @@ class org.flashNight.arki.scene.StageManager {
         gameworld.地图.僵尸型敌人总个数 = 0;
         gameworld.地图.僵尸型敌人场上实际人数 = 0;
 
+        // 放置可拾取物
+        if (currentStageInfo.pickupInfo.length > 0){
+            for (var i = 0; i < currentStageInfo.pickupInfo.length; i++) {
+                var pickup = currentStageInfo.pickupInfo[i];
+                _root.pickupItemManager.createCollectible(
+                    pickup.Name, pickup.Value, pickup.x, pickup.y, false
+                );
+            }
+        }
+
         // 侦听玩家位置更新事件
         if(currentStageInfo.triggerInfo.length > 0){
             gameworld.dispatcher.subscribe("HeroMoved", this.handleTriggers, this);

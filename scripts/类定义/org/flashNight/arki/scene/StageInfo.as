@@ -11,6 +11,7 @@ class org.flashNight.arki.scene.StageInfo {
     public var basicInfo:Object; // 基本信息
     public var instanceInfo:Array; // 实例信息
     public var spawnPointInfo:Array; // 出生点信息
+    public var pickupInfo:Array; // 可拾取物信息
     public var waveInfo:Array; // 波次信息
     public var eventInfo:Array; // 关卡事件
     public var triggerInfo:Array // 压力板信息
@@ -22,6 +23,7 @@ class org.flashNight.arki.scene.StageInfo {
         basicInfo = parseBasicInfo(data);
         instanceInfo = parseInstanceInfo(data);
         spawnPointInfo = parseSpawnPointInfo(data);
+        pickupInfo = parsePickupInfo(data);
         waveInfo = parseWaveInfo(data);
         eventInfo = parseEventInfo(data);
         triggerInfo = parseTriggerInfo(data);
@@ -47,6 +49,15 @@ class org.flashNight.arki.scene.StageInfo {
 		for (var i:Number = 0; i < info.length; i++){
 			info[i].QuantityMax = info[i].QuantityMax > 0 ? Number(info[i].QuantityMax) : 0;
 			info[i].NoCount = info[i].NoCount ? true : false;
+		}
+        return info;
+    }
+
+    public static function parsePickupInfo(data):Array{
+        if(data.Pickups == null) return null;
+        var info = ObjectUtil.toArray(data.Pickups.Pickup);
+        for (var i:Number = 0; i < info.length; i++){
+			info[i].Value = info[i].Value > 0 ? Number(info[i].Value) : 0;
 		}
         return info;
     }
