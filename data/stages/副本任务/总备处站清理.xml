@@ -306,6 +306,12 @@
                 <Char>$PC_CHAR</Char>
                 <Text>这里身穿特战队员服装的丧尸多得不正常，看来前面很可能有他们以前的驻地。</Text>
             </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>而且···这里的铁轨是被下方隆起的废墟顶断的，看来下面还有更多不为人知的东西。</Text>
+            </Dialogue>
         </Event>
         <Wave>
             <SubWave id="0">
