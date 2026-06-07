@@ -79,7 +79,7 @@
                         '<h1 class="pet-page-title">战宠管理</h1>' +
                         '<div class="pet-header-spacer"></div>' +
                         resourcesHtml() +
-                        '<button class="pet-close-btn" type="button" title="关闭" aria-label="关闭" data-audio-cue="cancel">✕</button>' +
+                        '<button class="pet-close-btn" type="button" data-tip="关闭" aria-label="关闭" data-audio-cue="cancel">✕</button>' +
                     '</div>' +
                     '<div class="pet-toolbar">' +
                         '<span class="pet-status-item">出战 <strong id="pet-deploy-count">0/0</strong></span>' +
@@ -353,8 +353,22 @@
         if (!btn) return;
         btn.disabled = false;                       // 不再使用原生 disabled
         btn.classList.toggle('pet-off', !!off);
-        if (off) btn.setAttribute('aria-disabled', 'true');
-        else btn.removeAttribute('aria-disabled');
+        if (off) {
+            btn.setAttribute('aria-disabled', 'true');
+            // 软禁用同时静音：overlay-audio-bindings 的 cue 代理在 document 捕获阶段先于面板
+            // 拦截器执行，且只认原生 disabled、不认 .pet-off → 禁用按钮仍会响 confirm/hover。
+            // 故摘除 data-audio-cue（暂存到 -off），启用时再还原，不污染原本无 cue 的按钮。
+            if (btn.hasAttribute('data-audio-cue')) {
+                btn.setAttribute('data-audio-cue-off', btn.getAttribute('data-audio-cue'));
+                btn.removeAttribute('data-audio-cue');
+            }
+        } else {
+            btn.removeAttribute('aria-disabled');
+            if (btn.hasAttribute('data-audio-cue-off')) {
+                btn.setAttribute('data-audio-cue', btn.getAttribute('data-audio-cue-off'));
+                btn.removeAttribute('data-audio-cue-off');
+            }
+        }
         if (tip) btn.setAttribute('data-tip', tip);
         else btn.removeAttribute('data-tip');
     }
@@ -646,7 +660,10 @@
         _listEmptyEl.hidden = !showEmpty;
         if (showEmpty) {
             var txtEl = _listEmptyEl.querySelector('.pet-empty-text');
-            if (txtEl) txtEl.textContent = (totalPets === 0)
+            // 非「全部」筛选下 emptyCount 恒为 0：此时空态成因是筛选，而非缺栏位——
+            // 即便已开 16 个空栏位也不能引导去「开格子」（会诱导玩家白花金币）。
+            // 「开格子」引导仅在「全部」筛选且确实无栏位/无宠（maxSlots===0）时出现。
+            if (txtEl) txtEl.textContent = (_filterMode === 'all')
                 ? '暂无战宠 · 点击「＋ 开格子」开启栏位后即可领养'
                 : '没有符合当前筛选条件的战宠';
         }
@@ -671,13 +688,25 @@
         }
     }
 
-    // 是否满足当前筛选（与 visibleOrder 同口径）——出战/恢复后判断卡片是否应留在列表
-    function petMatchesFilter(p) {
-        if (!p) return false;
-        if (_filterMode === 'deployed') return !!p.deployed;
-        if (_filterMode === 'resting') return !p.deployed;
-        if (_filterMode === 'low_stamina') return p.stamina <= 5;
-        return true; // all
+    // 出战/恢复后按「筛选 + 排序」双重归属决定刷新粒度：
+    //   · 仍在列表且位次未变 → refreshCard 局部刷（不跳动）；
+    //   · 被筛选剔除 或 排序位次变化（默认「出战优先」/「体力升序」下出战、恢复都会改变位次）
+    //     → renderPetGrid(false) 静默整排，让卡片落到正确位置。
+    // 仅查筛选不够：父提交的 petMatchesFilter 漏了排序，卡片会停在旧位置（外部审阅 P2）。
+    function reflowCardAfterMutation(slotIndex) {
+        var petIdx = findPetIndexBySlot(slotIndex);
+        if (petIdx < 0) { renderPetGrid(false); return; }
+        var order = visibleOrder();                 // 新状态下的筛选 + 排序结果
+        var newPos = -1;
+        for (var k = 0; k < order.length; k++) { if (order[k] === petIdx) { newPos = k; break; } }
+        if (newPos < 0) { renderPetGrid(false); return; }   // 被当前筛选剔除
+        var oldCard = _gridEl.querySelector('.pet-card[data-slot="' + slotIndex + '"]');
+        if (!oldCard) { renderPetGrid(false); return; }
+        var cards = _gridEl.querySelectorAll('.pet-card');  // 仅宠物卡，空位卡 .pet-slot-empty 不计
+        var oldPos = -1;
+        for (var j = 0; j < cards.length; j++) { if (cards[j] === oldCard) { oldPos = j; break; } }
+        if (oldPos === newPos) refreshCard(slotIndex);      // 位次未变 → 局部刷
+        else renderPetGrid(false);                          // 位次变 → 整排重排
     }
 
     function renderPetCard(pet, petIndex) {
@@ -1188,9 +1217,8 @@
                 pet.deployed = data.deployed;
                 if (_snapshot) _snapshot.currentDeployCount = data.currentDeployCount;
                 updateStatusBar();
-                // 出战态变化可能改变当前筛选/排序归属：仍匹配则局部刷新（不跳动），否则静默整排让其进/出列表
-                if (petMatchesFilter(pet)) refreshCard(slotIndex);
-                else renderPetGrid(false);
+                // 出战态变化可能改变筛选归属或排序位次：原位则局部刷（不跳动），否则静默整排
+                reflowCardAfterMutation(slotIndex);
                 if (_selectedSlot === slotIndex) renderSelbar(false);
                 showToast(pet.deployed ? '已出战' : '已休息', 'success');
             } else {
@@ -1211,9 +1239,8 @@
                 pet.stamina = data.stamina;
                 if (_snapshot) _snapshot.gold = data.gold;
                 updateResourceDisplay(true);
-                // 恢复体力可能改变「体力不足」筛选/「体力↑」排序归属：同上策略
-                if (petMatchesFilter(pet)) refreshCard(slotIndex);
-                else renderPetGrid(false);
+                // 恢复体力可能改变「体力不足」筛选 / 「体力↑」排序位次：同上策略
+                reflowCardAfterMutation(slotIndex);
                 if (_selectedSlot === slotIndex) renderSelbar(false);
                 if (_currentPage === 'advance') renderAdvancePage(false);
                 showToast('体力已恢复至 ' + data.stamina, 'success');

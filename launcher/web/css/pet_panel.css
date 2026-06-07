@@ -66,9 +66,17 @@
     overflow: hidden;
     color: var(--pet-text);
     font-family: system-ui, "Microsoft YaHei", sans-serif;
+    /* 背景层叠（上→下）：半调网点 → 顶部橙光 → 压暗罩 → 英雄垫图 → 不透明底色兜底。
+       垫图风格对齐任务面板（task_main_bg.png 即 official-hero1.jpg 的压暗版）：
+       原图全幅铺满 + 一层深色罩压到「隐约可辨」，让战术橙 UI 在其上保持可读。
+       这里改用 CSS 叠图（不烘焙 PNG）：英雄图垫底，压暗罩在其上代替原本不透明的底色渐变。
+       英雄图与 1024×576 同为 16:9 → cover 正好满铺无裁切。url 用绝对路径（CSS 在 /css/ 下，
+       相对路径会错解析到 /css/assets/…）。 */
     background:
         radial-gradient(circle, rgba(255,255,255,0.012) 0 0.6px, transparent 1px) 0 0 / 6px 6px,
         radial-gradient(120% 80% at 50% 0%, rgba(239,148,66,0.06), transparent 60%),
+        linear-gradient(160deg, rgba(26,28,35,0.84) 0%, rgba(19,20,25,0.91) 55%, rgba(14,15,19,0.96) 100%),
+        url('/assets/bg/battlepet-armed-jk-hero2-v2.png') center center / cover no-repeat,
         linear-gradient(160deg, var(--pet-bg-2) 0%, var(--pet-bg) 55%, #0e0f13 100%);
     user-select: none;
 }
