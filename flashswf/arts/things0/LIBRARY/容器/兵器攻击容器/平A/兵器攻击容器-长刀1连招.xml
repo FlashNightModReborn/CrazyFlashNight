@@ -95,13 +95,13 @@ function 攻击时移动(慢速度, 快速度)
             <DOMFrame index="17" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateSmallState("兵器二段中");
-_root.播放音效("sound344.wav");]]></script>
+_root.播放音效("兵器2段攻击.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="18" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("sound361.wav");]]></script>
+                <script><![CDATA[_root.播放音效("兵器3段攻击.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

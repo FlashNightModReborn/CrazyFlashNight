@@ -100,7 +100,7 @@ function 攻击时移动(慢速度, 快速度)
             </DOMFrame>
             <DOMFrame index="18" duration="11" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("sound361.wav");
+                <script><![CDATA[_root.播放音效("兵器3段攻击.wav");
 刀口触发特效("兵器二段中");]]></script>
               </Actionscript>
               <elements/>
