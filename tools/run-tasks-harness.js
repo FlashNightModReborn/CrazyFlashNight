@@ -58,8 +58,10 @@ function startServer(root) {
         const server = http.createServer((req, res) => {
             let pathname = decodeURIComponent(url.parse(req.url).pathname);
             if (pathname === '/') pathname = '/index.html';
-            const filePath = path.join(root, pathname);
-            if (!filePath.startsWith(root)) { res.writeHead(403); res.end(); return; }
+            const filePath = path.normalize(path.join(root, pathname));
+            // 目录边界用 path.relative 判定，避免 startsWith 把同前缀兄弟目录（如 webview2_userdata）误判为越界通过
+            const rel = path.relative(root, filePath);
+            if (rel === '..' || rel.startsWith('..' + path.sep) || path.isAbsolute(rel)) { res.writeHead(403); res.end(); return; }
             fs.readFile(filePath, (err, data) => {
                 if (err) { res.writeHead(404); res.end('404 ' + pathname); return; }
                 res.writeHead(200, { 'Content-Type': MIME[path.extname(filePath).toLowerCase()] || 'application/octet-stream' });

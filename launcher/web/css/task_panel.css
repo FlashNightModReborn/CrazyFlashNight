@@ -13,9 +13,11 @@
     --task-text: #cccccc;
     --task-text-dim: #9a9a9a;
     --task-ink: #2a1c0c;
-    --task-accent: #ef9442;
-    --task-accent-soft: rgba(239, 148, 66, 0.55);
-    --task-accent-faint: rgba(239, 148, 66, 0.14);
+    /* 功能层一律黑白灰：accent 用浅灰高亮。焦点橙只留给提交NPC卡(--task-npc-grad)，
+       难度色见 .difficulty-*（均为 Flash 原版语义真值，不计入功能层配色） */
+    --task-accent: #d6d6d6;
+    --task-accent-soft: rgba(255, 255, 255, 0.42);
+    --task-accent-faint: rgba(255, 255, 255, 0.10);
     --task-card-grad: linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
     --task-card-dots: radial-gradient(circle, rgba(0,0,0,0.2) 0 0.7px, transparent 1px) 0 0 / 5px 5px;
     --task-npc-grad: linear-gradient(to bottom, #ffb547 30%, #f60 70%);
@@ -85,34 +87,47 @@
 
 .task-tab.active {
     color: var(--task-text);
-    background: rgba(239, 148, 66, 0.10);
+    background: rgba(255, 255, 255, 0.06);
     border-bottom-color: var(--task-accent);
     text-shadow: var(--task-shadow);
 }
 
-/* tab 图标：我的任务=自转兵团标志 · 事件日志=菱形日志标志 */
+/* tab 图标：我的任务 = A 兵团徽（取自原版 XFL 矢量，与战宠面板同源 path；mask+底色上色，
+   跟随功能层灰）。原占位圆环已弃；不旋转（小尺寸非对称图形自转观感差），active 改微发光。
+   事件日志 = 方形「记录」图标，贴合原版方形语言。 */
 .task-tab-emblem {
     width: 22px;
-    height: 22px;
+    height: 20px;
     flex-shrink: 0;
-    background: conic-gradient(from 0deg, var(--task-accent), rgba(239,148,66,0.15), var(--task-accent));
-    border-radius: 50%;
     position: relative;
-    opacity: 0.85;
-}
-.task-tab-emblem::after {
-    content: '';
-    position: absolute;
-    inset: 5px;
-    background: #1a1206;
-    border-radius: 50%;
+    background: var(--task-accent);
+    --task-faction-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='63 -3 168 146'%3E%3Cpath fill='%23000' d='M227.75 140.05L65.95 139.70L134.25 23.10L177.95 98.45L157.95 98.45L134.90 55.95L96.60 123.95L218.75 124.25Z M147.85 0L148.00 0.10L215.30 118.20L108.45 117.30L117.85 101.75L188.30 102.40L138.40 16.10L147.80 0Z'/%3E%3C/svg%3E");
+    -webkit-mask: var(--task-faction-svg) center / contain no-repeat;
+    mask: var(--task-faction-svg) center / contain no-repeat;
+    opacity: 0.9;
 }
 .task-tab.active .task-tab-emblem {
-    animation: task-emblem-spin 6s linear infinite;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.5));
 }
-.task-tab-emblem.log { border-radius: 3px; background: var(--task-accent); }
-.task-tab-emblem.log::after { inset: 4px; border-radius: 2px; transform: rotate(45deg); }
-.task-tab.active .task-tab-emblem.log { animation: none; }
+/* 事件日志：方形描边 + 内部两条横线（记录/列表语义），全方形 */
+.task-tab-emblem.log {
+    width: 20px;
+    height: 18px;
+    background: transparent;
+    -webkit-mask: none;
+    mask: none;
+    border: 2px solid var(--task-accent);
+    border-radius: 1px;
+    box-sizing: border-box;
+}
+.task-tab-emblem.log::after {
+    content: '';
+    position: absolute;
+    left: 3px; right: 3px; top: 4px;
+    height: 2px;
+    background: var(--task-accent);
+    box-shadow: 0 4px 0 var(--task-accent);
+}
 
 @keyframes task-emblem-spin { to { transform: rotate(360deg); } }
 
@@ -125,7 +140,7 @@
     overflow: hidden;
     background: rgba(0, 0, 0, 0.25);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
+    border-radius: 3px;
     color: var(--task-text);
     cursor: pointer;
     display: flex;
@@ -187,7 +202,7 @@
     padding: 4px 13px;
     background: rgba(0, 0, 0, 0.22);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
+    border-radius: 3px;
     color: var(--task-text-dim);
     font-family: var(--task-serif);
     font-size: 14px;
@@ -276,7 +291,7 @@
     font-size: 13px;
     cursor: pointer;
 }
-.task-dd-opt:hover { background: rgba(239, 148, 66, 0.12); color: var(--task-text); }
+.task-dd-opt:hover { background: rgba(255, 255, 255, 0.08); color: var(--task-text); }
 .task-dd-opt.active { color: var(--task-accent); }
 .task-dd-opt.active::before { content: '▸ '; }
 
@@ -320,8 +335,8 @@
 }
 .task-panel-left::-webkit-scrollbar { width: 10px; }
 .task-panel-left::-webkit-scrollbar-track { background: rgba(217,217,217,0.03); }
-.task-panel-left::-webkit-scrollbar-thumb { background: rgba(239,148,66,0.25); border-radius: 4px; }
-.task-panel-left::-webkit-scrollbar-thumb:hover { background: rgba(239,148,66,0.5); }
+.task-panel-left::-webkit-scrollbar-thumb { background: rgba(217,217,217,0.22); border-radius: 4px; }
+.task-panel-left::-webkit-scrollbar-thumb:hover { background: rgba(217,217,217,0.45); }
 
 .task-panel-right {
     width: 73%;
@@ -333,7 +348,7 @@
     overflow-y: auto;
 }
 .task-panel-right::-webkit-scrollbar { width: 8px; }
-.task-panel-right::-webkit-scrollbar-thumb { background: rgba(239,148,66,0.2); border-radius: 4px; }
+.task-panel-right::-webkit-scrollbar-thumb { background: rgba(217,217,217,0.18); border-radius: 4px; }
 
 /* ── 左侧任务卡（卡片模式，默认）── */
 .task-icon {
@@ -363,7 +378,7 @@
 .task-icon.active {
     outline: 2px solid var(--task-accent);
     outline-offset: -2px;
-    box-shadow: 0 0 12px rgba(239, 148, 66, 0.3);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.18);
 }
 .task-icon:focus-visible {
     outline: 2px solid rgba(255, 255, 255, 0.85);
@@ -376,8 +391,8 @@
     top: 4px;
     left: 4px;
     z-index: 3;
-    padding: 1px 7px;
-    border-radius: 9px;
+    padding: 1px 6px;
+    border-radius: 2px;
     font-size: 11px;
     line-height: 1.5;
     font-weight: 600;
@@ -385,11 +400,9 @@
     background: var(--task-accent);
     pointer-events: none;
 }
-.task-icon-cat[data-cat="主线"] { background: #ffcf66; }
-.task-icon-cat[data-cat="支线"] { background: #8fd0ff; }
-.task-icon-cat[data-cat="副本"] { background: #ff8f8f; }
-.task-icon-cat[data-cat="情报"] { background: #b39cff; }
-.task-icon-cat[data-cat="其他"] { background: #bbbbbb; }
+/* 分类角标统一黑白灰（不与焦点橙争视觉）；仅主线略提亮以示主线优先级 */
+.task-icon-cat[data-cat="主线"] { background: #ededed; }
+.task-icon-cat[data-cat="其他"] { background: #b8b8b8; color: #2a2a2a; }
 
 .task-icon-left {
     flex: 1;
@@ -425,7 +438,7 @@
     height: 96px;
     background: transparent;
     border: none;
-    border-radius: 4px;
+    border-radius: 2px;
     box-sizing: border-box;
     overflow: hidden;
 }
@@ -476,7 +489,7 @@
 .task-panel-left.view-list .task-icon {
     background-image: none;
     background: linear-gradient(to right, rgba(0,0,0,0.32), rgba(0,0,0,0.14));
-    border-left: 3px solid rgba(239, 148, 66, 0.35);
+    border-left: 3px solid rgba(255, 255, 255, 0.28);
     border-radius: 3px;
     max-width: none;
     height: 40px;
@@ -486,7 +499,7 @@
 }
 .task-panel-left.view-list .task-icon.active {
     border-left-color: var(--task-accent);
-    background: linear-gradient(to right, rgba(239,148,66,0.22), rgba(0,0,0,0.14));
+    background: linear-gradient(to right, rgba(255,255,255,0.14), rgba(0,0,0,0.14));
 }
 .task-panel-left.view-list .task-icon-cat {
     position: static;
@@ -503,15 +516,15 @@
 .task-panel-left.view-list .task-icon-flag {
     display: block;
     flex-shrink: 0;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
     border: 1px solid rgba(255,255,255,0.25);
 }
 .task-panel-left.view-list .task-icon[data-satisfied="1"] .task-icon-flag {
-    border-color: #2ec27e;
-    background: radial-gradient(circle, #6fffb0 0%, #2ec27e 70%);
-    box-shadow: 0 0 6px rgba(46, 194, 126, 0.6);
+    border-color: #e8e8e8;
+    background: radial-gradient(circle, #ffffff 0%, #bdbdbd 70%);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.55);
 }
 
 /* 空态 */
@@ -593,8 +606,8 @@
 }
 .task-deliverable-label {
     font-size: 12px;
-    color: #2ec27e;
-    text-shadow: 0 0 6px rgba(46,194,126,0.5);
+    color: #ededed;
+    text-shadow: 0 0 6px rgba(255,255,255,0.45);
     white-space: nowrap;
 }
 .task-stamp {
@@ -606,8 +619,8 @@
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    border: 3px solid rgba(46, 194, 126, 0.25);
-    border-top-color: #2ec27e;
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-top-color: #ffffff;
     animation: task-stamp-spin 0.8s linear, task-stamp-ring-fade 0.35s ease-out 0.75s forwards;
 }
 .task-stamp-check {
@@ -616,11 +629,11 @@
     width: 100%;
     height: 100%;
     fill: none;
-    stroke: #2ec27e;
+    stroke: #ffffff;
     stroke-width: 2.6;
     stroke-linecap: round;
     stroke-linejoin: round;
-    filter: drop-shadow(0 0 3px rgba(46,194,126,0.6));
+    filter: drop-shadow(0 0 3px rgba(255,255,255,0.6));
 }
 .task-stamp-check path {
     stroke-dasharray: 24;
@@ -761,7 +774,7 @@
     height: 90px;
     background: transparent;
     border: none;
-    border-radius: 4px;
+    border-radius: 2px;
     margin-left: 8px;
     overflow: hidden;
 }
@@ -904,7 +917,7 @@
     height: 32px;
     background: rgba(0, 0, 0, 0.4) url('/modules/tasks/assets/item_bg.png') center/cover no-repeat;
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 3px;
+    border-radius: 1px;
     overflow: hidden;
     flex-shrink: 0;
     display: flex;
@@ -915,7 +928,7 @@
 }
 .task-item[data-item-name]:hover {
     border-color: var(--task-accent-soft);
-    box-shadow: 0 0 6px rgba(239, 148, 66, 0.4);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
 }
 .task-item[data-i="1"] { animation-delay: 0.05s; }
 .task-item[data-i="2"] { animation-delay: 0.10s; }
