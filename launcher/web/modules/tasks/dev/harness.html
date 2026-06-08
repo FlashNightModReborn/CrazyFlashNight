@@ -2,629 +2,376 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>task</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务面板 Harness</title>
+    <!-- base 指向 web 根，使 task-panel.js 内相对路径（css/、modules/）正确解析；
+         绝对路径 /modules/tasks/assets/... 需从 launcher/web 作为站点根 serve（见 tools/run-tasks-harness.js）。 -->
+    <base href="../../../">
+    <!-- 预注入 task_panel.css 并带 id：task-panel.js 检测到已存在则跳过自注入 -->
+    <link rel="stylesheet" id="task-panel-css" href="css/task_panel.css">
     <style>
-        .container {
-            width: 1024px;
-            height: 576px;
-            background-image: url('../assets/task_main_bg.png');
-            font-family: system-ui, sans-serif;
-            display: flex;
-            flex-wrap: wrap;
-        }
-        /* 切换页面/退出按钮，上方独占一行 */
-        .container_top {
-            width: 100%;
-            height: 10%;
-            box-sizing: border-box;
-            padding: 4px;
-        }
-        /* 任务列表，下左 */
-        .container_left {
-            width: 26%;
-            height: 90%;
-            box-sizing: border-box;
-            padding: 4px;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-        .container_left::-webkit-scrollbar { width: 4px; }
-        .container_left::-webkit-scrollbar-track { background: rgba(0,240,255,0.03); }
-        .container_left::-webkit-scrollbar-thumb { background: rgba(0,240,255,0.15); border-radius: 2px; }
-        .container_left::-webkit-scrollbar-thumb:hover { background: rgba(0,240,255,0.3); }
-        /* 任务详情，下右 */
-        .container_right {
-            width: 74%;
-            height: 90%;
-            box-sizing: border-box;
-            padding: 4px;
-            display: flex;
-            flex-direction: column;
-        }
+        html, body { margin: 0; padding: 0; background: #0b0c10; color: #ccc;
+            font-family: "Consolas", "Microsoft YaHei", monospace; }
+        #bar { padding: 8px 12px; background: #1c1d22; border-bottom: 1px solid #333;
+            display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        #bar label { font-size: 12px; color: #999; }
+        #bar select, #bar button {
+            background: #2a2c33; color: #ccc; border: 1px solid #4a4d55;
+            padding: 4px 10px; font-family: inherit; cursor: pointer; font-size: 12px; }
+        #bar button:hover { background: #353841; }
+        #status { padding: 4px 12px; font-size: 11px; color: #777; background: #0f1014;
+            border-bottom: 1px solid #222; min-height: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #shell { margin: 24px auto; border: 1px solid #333; background: #000;
+            position: relative; overflow: hidden; width: 1280px; height: 720px; }
 
-        .task-icon {
-            background-image: url('../assets/task_icon_bg.png');
-            background-color: transparent;
-            background-size: 100%;
-            position: relative;
-            overflow: hidden;
-
-            width: 220px;
-            height: 110px;
-            margin-bottom: 10px;
-            margin-left: 8px;
-            box-sizing: border-box;
-            padding: 5px;
-
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 2px;
-
-            color: #fff;
-            user-select: none;
-            border: none;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        /* 任务图标左侧文字区 */
-        .task-icon-left {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            box-sizing: border-box;
-            padding-left: 6px;
-            text-align: left;
-        }
-        .task-icon-type {
-            font-size: 13px;
-            color: rgba(255,255,255,0.55);
-            line-height: 1.3;
-        }
-        .task-icon-name {
-            font-size: 16px;
-            color: #fff;
-            line-height: 1.4;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        /* 任务图标右侧头像 */
-        .task-icon-avatar {
-            flex-shrink: 0;
-            width: 100px;
-            height: 100px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 4px;
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255,255,255,0.3);
-            font-size: 12px;
-        }
-        /* 扫光伪元素 */
-        .task-icon::after {
-            content: '';
-            position: absolute;
-            top: -200%;
-            left: 0;
-            width: 100%;
-            height: 300%;
-            background: linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.2) 0%,
-            transparent 25%,
-            transparent 50%,
-            rgba(255, 255, 255, 0.3) 70%,
-            rgba(255, 255, 255, 0.3) 80%,
-            transparent 100%
-            );
-            opacity: 0;
-            animation: none;
-        }
-        .task-icon:hover::after {
-            animation: sweep-down 3.0s ease-out forwards;
-        }
-        @keyframes sweep-down {
-            0%   { top: -200%; opacity: 1; }
-            100% { top: 0%; opacity: 1; }
-        }
-
-        /* 完成覆盖图标 */
-        .task-finished-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        /* 任务标题 */
-        .task-title-box {
-            position: relative;
-            overflow: hidden;
-            box-sizing: border-box;
-            width:720px;
-            height: 60px;
-            padding: 0 20px 0 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: left;
-            color: #fff;
-            flex-shrink: 0;
-        }
-        /* 遮罩 */
-        .task-title-box::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #ccc;
-            transform-origin: left center;
-            animation: shrink-reveal 0.8s ease-out forwards;
-        }
-        @keyframes shrink-reveal {
-            0%   { transform: scaleX(1); }
-            50%  { transform: scaleX(0.005); }
-            100% { transform: scaleX(0.015); }
-        }
-        .task-title-line1 {
-            display: block;
-            font-size: 18px;
-            animation: text-slide-in 0.6s ease-out 0.5s both;
-        }
-        .task-title-line2 {
-            display: block;
-            font-size: 24px;
-            animation: text-slide-in 0.6s ease-out 0.8s both;
-        }
-        @keyframes text-slide-in {
-            0%   { transform: translateX(-100%); opacity: 0; }
-            100% { transform: translateX(0); opacity: 1; }
-        }
-
-        /* 任务描述动画 */
-        .task-desc-box {
-            position: relative;
-            box-sizing: border-box;
-            width: 720px;
-            height: 120px;
-            padding: 12px 30px 12px 30px;
-            margin: 20px 0;
-            text-align: left;
-            background: transparent;
-            color: #fff;
-            font-size: 24px;
-            overflow: hidden; /* 防止子元素溢出（其实伸缩在内侧，可不加） */
-            flex-shrink: 0;
-        }
-        .task-desc-box .corner-horizontal {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #ccc;
-            animation: stretch-horizontal 0.5s ease-out forwards;
-        }
-
-        .task-desc-box .corner-vertical {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #ccc;
-            animation: stretch-vertical 0.5s ease-out forwards;
-        }
-
-        /* 各自定位在四个角 */
-        .corner-horizontal.top-left    { top: 0; left: 0;   transform-origin: left top; }
-        .corner-horizontal.top-right   { top: 0; right: 0;  transform-origin: right top; animation-delay: 0.5s;}
-        .corner-horizontal.bottom-left { bottom: 0; left: 0; transform-origin: left bottom; animation-delay: 0.5s;}
-        .corner-horizontal.bottom-right{ bottom: 0; right: 0; transform-origin: right bottom; }
-
-        .corner-vertical.top-left    { top: 0; left: 0;   transform-origin: left top; animation-delay: 0.5s;}
-        .corner-vertical.top-right   { top: 0; right: 0;  transform-origin: right top; }
-        .corner-vertical.bottom-left { bottom: 0; left: 0; transform-origin: left bottom; }
-        .corner-vertical.bottom-right{ bottom: 0; right: 0; transform-origin: right bottom; animation-delay: 0.5s;}
-
-        @keyframes stretch-horizontal {
-            from { transform: scaleX(1); }   /* 初始 8px 宽 */
-            to   { transform: scaleX(3); }   /* 最终 24px 宽 */
-        }
-        @keyframes stretch-vertical {
-            from { transform: scaleY(1); }   /* 初始 8px 宽 */
-            to   { transform: scaleY(3); }   /* 最终 24px 宽 */
-        }
-
-
-        /* 任务需求区容器 */
-        .task-requirement-area {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-start;
-            gap: 10px;
-            margin: 10px 0;
-            padding: 4px 0;
-        }
-        .task-requirement {
-            width: 175px;
-            height: 100px;
-            background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
-            border-radius: 8px;
-            position: relative;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            margin-right: 20px;
-        }
-        /* 物品需求面板 */
-        .task-item-requirement {
-            width: 175px;
-            min-height: 100px;
-            background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
-            border-radius: 8px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            margin-right: 20px;
-        }
-        .task-npc {
-            width: 270px;
-            height: 100px;
-            background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #ffb547 30%, #f60 70%);
-            border-radius: 8px;
-
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            padding: 5px;
-            box-sizing: border-box;
-            flex-shrink: 0;
-            margin-right: 20px;
-        }
-        .task-requirement-inner {
-            width: 165px;
-            height: 90px;
-            overflow: hidden;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            padding-top: 4px;
-        }
-        .task-item-requirement-inner {
-            width: 165px;
-            min-height: 90px;
-            overflow: hidden;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            padding-top: 4px;
-        }
-        .task-npc-left {
-            width: 160px;
-            height: 90px;
-            overflow: hidden;
-            border-radius: 8px;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-        }
-        .task-npc-avatar {
-            flex-shrink: 0;
-            width: 90px;
-            height: 90px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 4px;
-            margin-left: 8px;
-        }
-        .task-requirement-title {
-            width: 160px;
-            height: 40px;
-            margin-top: 3px;
-            margin-left: 2px;
-            background-image: url('../assets/requirement_stage.png');
-            background-size: 100%;
-        }
-        .task-requirement-title.submit {
-            background-image: url('../assets/requirement_submit.png');
-        }
-        .task-requirement-title.contain {
-            background-image: url('../assets/requirement_contain.png');
-        }
-        .task-requirement-stage-name {
-            width: 155px;
-            margin-top: 2px;
-            margin-left: 2px;
-            text-align: left;
-            color: #333;
-            font-size: 14px;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        /* 关卡难度标签 */
-        .task-difficulty-label {
-            position: absolute;
-            right: 4px;
-            bottom: 2px;
-            font-size: 14px;
-            font-weight: 700;
-            pointer-events: none;
-        }
-        .difficulty-简单 { color: #0099cc; }
-        .difficulty-冒险 { color: #22bb00; }
-        .difficulty-修罗 { color: #ddaa00; }
-        .difficulty-地狱 { color: #cc0000; }
-        .task-npc-title {
-            width: 160px;
-            height: 40px;
-            margin-top: 3px;
-            margin-left: 2px;
-            background-image: url('../assets/finish_npc.png');
-            background-size: cover
-        }
-        .task-npc-name{
-            overflow: hidden;
-            position: relative;
-            width: 160px;
-            height: 22px;
-            box-sizing: border-box;
-            padding: 0 20px 2px 20px;
-            text-align: left;
-            color: #333;
-            font-size: 18px;
-        }
-        .task-npc-name span {
-            display: block;
-            animation: text-slide-in 0.6s ease-out both;
-        }
-        .task-npc-name::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #000;
-            transform-origin: left center;
-            animation: task-npc-reveal 0.5s ease-out forwards;
-        }
-        @keyframes task-npc-reveal {
-            0%   { transform: scaleX(0.1); }
-            80%  { transform: scaleX(1); left: 0;}
-            100% { left: 100%; }
-        }
-
-
-
-        .scroll-track {
-            background-image: url('../assets/task_scroll.png');
-            display: block;
-            width: fit-content;
-            animation: slowRoll 0.5s linear infinite;
-            width: 180px;
-            height:5px;
-            flex-shrink: 0;
-            user-select: none;
-            pointer-events: none; 
-        }
-        @keyframes slowRoll {
-            0% {
-                transform: translateX(-15px);
-            }
-            100% {
-                transform: translateX(0);
-            }
-        }
-
-
-        .task-reward-box {
-            position: relative;
-            overflow: hidden;
-            box-sizing: border-box;
-            width: 120px;
-            height: 36px;
-            padding: 2px;
-            text-align: left;
-            color: #000;
-            font-size: 24px;
-        }
-        .task-reward-box::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0 1px, transparent 1.2px) 0 0 / 7px 7px, linear-gradient(to bottom, #d8d8d8 30%, #999 70%);
-            transform-origin: right center;
-            animation: task-reward-reveal 0.5s ease-out forwards;
-        }
-        .task-reward-box span {
-            position: relative;
-            z-index: 1;  /* 文字在遮罩之上 */
-            display: block;
-            animation: text-slide-in 0.6s ease-out both;
-        }
-        @keyframes task-reward-reveal {
-            0%   { left: 90%; }
-            100%  { left: 0; }
-        }
-
-        /* 任务奖励区 */
-        .task-reward-section {
-            flex-shrink: 0;
-            padding: 4px 0;
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            gap: 8px;
-        }
-        .task-reward-items {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-        }
-
-        /* 需求物品行 */
-        .task-requirement-items {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-            margin-top: 4px;
-        }
-
-        /* 物品图标 32x32 (与 arena/merc equip-cell 一致) */
-        .task-item {
-            position: relative;
-            width: 32px;
-            height: 32px;
-            background: rgba(0, 0, 0, 0.4) url('../assets/item_bg.png') center/cover no-repeat;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 3px;
-            overflow: hidden;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .task-item-count {
-            position: absolute;
-            right: 1px;
-            bottom: 1px;
-            font-size: 10px;
-            color: #fff;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 0 3px;
-            border-radius: 2px;
-            line-height: 1.4;
-            pointer-events: none;
-        }
+        /* tooltip 极简皮（生产由 panels.css 的 .flash-tt-* 提供，harness 自带最小观感） */
+        #panel-tooltip { font-family: "Microsoft YaHei", sans-serif; }
+        .flash-tt-rich { display: flex; gap: 8px; align-items: flex-start; }
+        .flash-tt-rich--merge { display: block; }
+        .flash-tt-intro-panel { display: flex; gap: 6px; align-items: flex-start; }
+        .flash-tt-icon img { width: 46px; height: 46px; object-fit: contain; display: block; }
+        .flash-tt-intro { font-size: 12px; line-height: 1.55; }
+        .flash-tt-desc { font-size: 12px; line-height: 1.55; padding: 0 2px 0 8px;
+            border-left: 1px solid rgba(239,148,66,0.4); }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="container_top">
+    <div id="bar">
+        <label>视口:</label>
+        <select id="vp">
+            <option value="1024x576">1024×576 (1:1)</option>
+            <option value="1280x720" selected>1280×720</option>
+            <option value="1600x900">1600×900</option>
+            <option value="1920x1080">1920×1080</option>
+            <option value="900x560">900×560 (缩小)</option>
+        </select>
+        <label><input type="checkbox" id="empty"> 空列表</label>
+        <button id="open">打开</button>
+        <button id="close">关闭</button>
+        <button id="dump">Dump</button>
     </div>
-    <div class="container_left">
-        <button class="task-icon">
-            <div class="task-icon-left">
-                <div class="task-icon-type">主线任务</div>
-                <div class="task-icon-name">初入战场</div>
-            </div>
-            <div class="task-icon-avatar"></div>
-            <img class="task-finished-overlay" src="../assets/task_finished_icon.png" alt="">
-        </button>
-        <button class="task-icon">
-            <div class="task-icon-left">
-                <div class="task-icon-type">支线任务</div>
-                <div class="task-icon-name">收集物资</div>
-            </div>
-            <div class="task-icon-avatar"></div>
-        </button>
-        <button class="task-icon">
-            <div class="task-icon-left">
-                <div class="task-icon-type">日常任务</div>
-                <div class="task-icon-name">击败敌人</div>
-            </div>
-            <div class="task-icon-avatar"></div>
-        </button>
-        <button class="task-icon">
-            <div class="task-icon-left">
-                <div class="task-icon-type">主线任务</div>
-                <div class="task-icon-name">深入敌后</div>
-            </div>
-            <div class="task-icon-avatar"></div>
-        </button>
-        <button class="task-icon">
-            <div class="task-icon-left">
-                <div class="task-icon-type">支线任务</div>
-                <div class="task-icon-name">护送NPC</div>
-            </div>
-            <div class="task-icon-avatar"></div>
-        </button>
-        <button class="task-icon">
-            <div class="task-icon-left">
-                <div class="task-icon-type">挑战任务</div>
-                <div class="task-icon-name">极限生存</div>
-            </div>
-            <div class="task-icon-avatar"></div>
-        </button>
-    </div>
-    <div class="container_right">
-        <div class="task-title-box">
-            <span class="task-title-line1">任务详情</span>
-            <span class="task-title-line2">初入战场</span>
-        </div>
-        <div class="task-desc-box">
-            前往前线营地，与指挥官对话并了解当前战况。
-            <span class="corner-horizontal top-left"></span>
-            <span class="corner-horizontal top-right"></span>
-            <span class="corner-horizontal bottom-left"></span>
-            <span class="corner-horizontal bottom-right"></span>
-            <span class="corner-vertical top-left"></span>
-            <span class="corner-vertical top-right"></span>
-            <span class="corner-vertical bottom-left"></span>
-            <span class="corner-vertical bottom-right"></span>
-        </div>
-        <div class="task-requirement-area">
-            <div class="task-requirement">
-                <div class="task-requirement-inner">
-                    <div class="scroll-track"></div>
-                    <div class="task-requirement-title"></div>
-                    <div class="task-requirement-stage-name">前线营地</div>
-                </div>
-                <span class="task-difficulty-label difficulty-修罗">修罗</span>
-            </div>
-            <div class="task-item-requirement">
-                <div class="task-item-requirement-inner">
-                    <div class="scroll-track"></div>
-                    <div class="task-requirement-title submit"></div>
-                    <div class="task-requirement-items">
-                        <div class="task-item"><span class="task-item-count">3</span></div>
-                        <div class="task-item"><span class="task-item-count">1</span></div>
-                        <div class="task-item"><span class="task-item-count">5</span></div>
-                    </div>
-                </div>
-            </div>
-            <div class="task-npc">
-                <div class="task-npc-left">
-                    <div class="scroll-track"></div>
-                    <div class="task-npc-title"></div>
-                    <div class="task-npc-name"><span>NPC</span></div>
-                </div>
-                <div class="task-npc-avatar"></div>
-            </div>
-        </div>
-        <div class="task-reward-section">
-            <div class="task-reward-box"><span>任务奖励</span></div>
-            <div class="task-reward-items">
-                <div class="task-item"><span class="task-item-count">100</span></div>
-                <div class="task-item"><span class="task-item-count">1</span></div>
-                <div class="task-item"><span class="task-item-count">5</span></div>
-                <div class="task-item"><span class="task-item-count">50</span></div>
-                <div class="task-item"><span class="task-item-count">1</span></div>
-            </div>
+    <div id="status">就绪</div>
+    <div id="shell">
+        <div id="panel-container" style="display:none">
+            <div id="panel-backdrop"></div>
+            <div id="panel-content"></div>
         </div>
     </div>
-</div>
+
+    <div id="panel-tooltip" style="display:none;position:fixed;z-index:9999;pointer-events:none;
+        max-width:360px;padding:6px 10px;font-size:12px;line-height:1.5;color:#f1d9b8;
+        background:rgba(20,16,12,0.96);border:1px solid rgba(239,148,66,0.55);border-radius:3px;
+        box-shadow:0 4px 18px rgba(0,0,0,0.6);"></div>
+
+    <!-- chrome.webview mock，必须在 bridge.js 之前 -->
+    <script>
+    (function() {
+        var listeners = [];
+        window.chrome = window.chrome || {};
+        window.chrome.webview = {
+            addEventListener: function(type, h) { if (type === 'message') listeners.push(h); },
+            postMessage: function(m) { if (window.TaskHost && window.TaskHost.handle) window.TaskHost.handle(m); },
+            __dispatch: function(data) { var ev = { data: data }; listeners.forEach(function(l) { l(ev); }); }
+        };
+    })();
+    </script>
+
+    <script src="modules/bridge.js"></script>
+    <script src="modules/panels.js"></script>
+    <script src="modules/tooltip.js"></script>
+    <script src="modules/icons.js"></script>
+    <script src="modules/tasks/task-panel.js"></script>
+
+    <script>
+    (function() {
+        'use strict';
+        if (typeof Panels.init === 'function') Panels.init();
+        if (typeof PanelTooltip !== 'undefined' && PanelTooltip.getElement && !PanelTooltip.getElement()) {
+            // tooltip.js init 在 load 前可能已跑；确保拿到元素
+        }
+
+        var status = document.getElementById('status');
+        function log(m) { status.textContent = m; }
+        function clone(o) { return JSON.parse(JSON.stringify(o)); }
+        function q(name) { return (location.search.match(new RegExp('[?&]' + name + '=([^&]+)')) || [])[1]; }
+
+        // ── mock 任务数据：覆盖五类 + 满足/未满足 + stage/item/npc/reward 多样 ──
+        function makeTasks() {
+            return [
+                t(101, '斩杀大boss僵尸', '主线', 'Andy Law', true),
+                t(102, '初入战场',       '主线', '指挥官',   false),
+                t(103, '收集物资',       '支线', '补给官',   false),
+                t(104, '选修课程',       '大学', '冯教授',   true),
+                t(105, '弹药运输',       '后勤', '后勤官',   false),
+                t(106, '通缉：赤色之手', '委托', '赏金中介', false),
+                t(107, '极限生存',       '挑战', '挑战官',   true),
+                t(108, '净化异形巢穴',   '异形', '研究员',   false),
+                t(109, '敌后侦察',       '情报', '情报员',   false),
+                t(110, '隐藏的惊喜',     '彩蛋', '神秘人',   false)
+            ];
+        }
+        function t(id, title, type, npc, satisfied) {
+            return { taskId: id, title: title, type: type, npcName: npc, satisfied: satisfied };
+        }
+
+        // detail by taskId
+        var DETAILS = {
+            101: d(101, '斩杀大boss僵尸', '主线', '斩杀修罗难度的大boss僵尸，为兵团扫清前进障碍。', stage('大boss僵尸', '修罗'), null, 'Andy Law', [rw('金币', 5000), rw('经验书', 2), rw('强化核心', 1)]),
+            102: d(102, '初入战场', '主线', '前往前线营地，与指挥官对话并熟悉基础操作。', stage('前线营地', '简单'), null, '指挥官', [rw('金币', 500), rw('绷带', 5)]),
+            103: d(103, '收集物资', '支线', '为补给站收集急需的医疗与能量物资。', null, items('submit', [it('绷带', 3), it('能量饮料', 2), it('止血针', 1)]), '补给官', [rw('金币', 1200)]),
+            104: d(104, '选修课程', '大学', '在军事学院完成一门选修课程的结业考核。', stage('军事学院', '冒险'), null, '冯教授', [rw('学分', 10), rw('经验书', 1)]),
+            105: d(105, '弹药运输', '后勤', '确保随身携带足量弹药箱以通过后勤检查。', null, items('contain', [it('弹药箱', 5)]), '后勤官', [rw('金币', 800)]),
+            106: d(106, '通缉：赤色之手', '委托', '赏金委托：讨伐通缉目标「赤色之手」，将其首级带回作为凭证。委托可随时放弃。', stage('废弃工厂', '地狱'), items('submit', [it('赤色之手首级', 1)]), '赏金中介', [rw('金币', 30000), rw('K点', 50)]),
+            107: d(107, '极限生存', '挑战', '在生存竞技场地狱难度下坚持到最后一波。', stage('生存竞技场', '地狱'), null, '挑战官', [rw('挑战徽章', 1), rw('金币', 8000)]),
+            108: d(108, '净化异形巢穴', '异形', '潜入异形巢穴，清除核心区域的所有威胁。', stage('异形巢穴', '修罗'), null, '研究员', [rw('异形组织', 3)]),
+            109: d(109, '敌后侦察', '情报', '在敌后区域收集情报文件并安全撤离。', null, items('contain', [it('情报文件', 2)]), '情报员', [rw('情报点', 20)]),
+            110: d(110, '隐藏的惊喜', '彩蛋', '寻找隐藏在地图角落的彩蛋奖励。', null, null, '神秘人', [rw('彩蛋礼盒', 1)])
+        };
+        function d(id, title, type, desc, stageReq, itemReqs, npc, rewards) {
+            return { taskId: id, type: type, title: title, description: desc, stageReq: stageReq, itemReqs: itemReqs, npcName: npc, rewards: rewards };
+        }
+        function stage(name, diff) { return { name: name, difficulty: diff }; }
+        function items(kind, arr) { for (var i = 0; i < arr.length; i++) arr[i].kind = kind; return arr; }
+        function it(name, count) { return { name: name, count: count, kind: 'submit' }; }
+        function rw(name, count) { return { name: name, count: count }; }
+
+        // mock 物品注释
+        function tooltipFor(name) {
+            var longDesc = (name === '强化核心' || name === '赤色之手首级' || name === '弹药箱');
+            return {
+                introHTML: "<b>" + name + "</b><br><font color='#ffcc00' size='12'>类型：任务物品</font>",
+                descHTML: longDesc
+                    ? "<font color='#cccccc'>" + name + "：一件关键的任务道具。它承载着这次行动的全部意义——从废墟深处取回，沿途经历了无数次交火与撤退。妥善保管，切勿在交付前丢失或出售。</font>"
+                    : "<font color='#cccccc'>" + name + " 的简要注释。</font>",
+                type: '消耗品',
+                displayname: name
+            };
+        }
+
+        var host = window.TaskHost = {
+            _tasks: [],
+            _empty: false,
+            _detailCalls: 0,
+            reset: function() {
+                this._empty = document.getElementById('empty').checked;
+                this._tasks = this._empty ? [] : makeTasks();
+            },
+            handle: function(m) {
+                log('→ ' + m.cmd + (m.index != null ? ' index=' + m.index : '') + (m.itemName ? ' ' + m.itemName : ''));
+                if (m.cmd === 'detail') this._detailCalls++;
+                var self = this;
+                function resp(extra) {
+                    var r = { type: 'panel_resp', panel: 'tasks', cmd: m.cmd, callId: m.callId };
+                    for (var k in extra) r[k] = extra[k];
+                    setTimeout(function() { chrome.webview.__dispatch(r); }, 50);
+                }
+                switch (m.cmd) {
+                    case 'snapshot':
+                        resp({ success: true, tasks: clone(self._tasks) });
+                        break;
+                    case 'detail': {
+                        var task = self._tasks[m.index];
+                        if (!task) { resp({ success: false, error: 'invalid_index' }); break; }
+                        resp({ success: true, taskData: clone(DETAILS[task.taskId]) });
+                        break;
+                    }
+                    case 'tooltip': {
+                        var tt = tooltipFor(m.itemName);
+                        resp({ success: true, introHTML: tt.introHTML, descHTML: tt.descHTML, itemType: tt.type });
+                        break;
+                    }
+                    case 'close': break;
+                    default: resp({ success: false, error: 'unknown cmd ' + m.cmd });
+                }
+            },
+            open: function() {
+                this.reset();
+                chrome.webview.__dispatch({ type: 'panel_cmd', cmd: 'open', panel: 'tasks', initData: {} });
+            },
+            close: function() { chrome.webview.__dispatch({ type: 'panel_cmd', cmd: 'close' }); }
+        };
+
+        // ── toolbar ──
+        function applyVp() {
+            var v = document.getElementById('vp').value.split('x');
+            var s = document.getElementById('shell');
+            s.style.width = v[0] + 'px'; s.style.height = v[1] + 'px';
+        }
+        document.getElementById('vp').addEventListener('change', applyVp);
+        document.getElementById('open').addEventListener('click', function() { host.open(); });
+        document.getElementById('close').addEventListener('click', function() { host.close(); });
+        document.getElementById('dump').addEventListener('click', function() {
+            log('state: ' + JSON.stringify(window.TaskPanel ? window.TaskPanel.getState() : null));
+        });
+
+        // ── query 驱动（截图/调试用）: ?vp= ?empty=1 ?filter=副本 ?view=list ?tab=log ?detail=N ?qa=1 ?hover=1 ──
+        var vp = q('vp'); if (vp) { var opt = document.querySelector('#vp option[value="' + vp + '"]'); if (opt) document.getElementById('vp').value = vp; }
+        if (q('empty')) document.getElementById('empty').checked = true;
+        applyVp();
+
+        function waitFor(cond, timeout) {
+            return new Promise(function(resolve, reject) {
+                var t0 = Date.now();
+                (function poll() {
+                    var v;
+                    try { v = cond(); } catch (e) { v = false; }
+                    if (v) return resolve(v);
+                    if (Date.now() - t0 > (timeout || 4000)) return reject(new Error('waitFor timeout'));
+                    setTimeout(poll, 40);
+                })();
+            });
+        }
+        function clickChip(cat) { var c = document.querySelector('.task-chip[data-cat="' + cat + '"]'); if (c) c.click(); }
+
+        // ── 截图状态驱动 ──
+        async function applyShotState() {
+            await waitFor(function() { return document.querySelectorAll('.task-icon').length > 0; }, 5000).catch(function(){});
+            var filter = q('filter'); if (filter) { clickChip(decodeURIComponent(filter)); }
+            var view = q('view'); if (view === 'list') { var vb = document.getElementById('task-view-toggle'); if (vb) vb.click(); }
+            var tab = q('tab'); if (tab === 'log') { var lt = document.querySelector('.task-tab[data-tab="log"]'); if (lt) lt.click(); }
+            var det = q('detail'); if (det != null) { var btn = document.querySelector('.task-icon[data-index="' + det + '"]'); if (btn) btn.click(); }
+            if (q('hover')) {
+                await waitFor(function() { return document.querySelector('.task-item[data-item-name]'); }, 4000).catch(function(){});
+                var item = document.querySelector('.task-item[data-item-name]');
+                if (item) {
+                    var r = item.getBoundingClientRect();
+                    var ev = new MouseEvent('mouseover', { bubbles: true, clientX: r.left + 6, clientY: r.top + 6 });
+                    item.dispatchEvent(ev);
+                }
+            }
+        }
+
+        // ── QA 自断言套件（?qa=1）──
+        async function runQa() {
+            var results = [];
+            function rec(id, title, pass, detail) { results.push({ id: id, title: title, pass: !!pass, detail: detail || '' }); }
+            async function check(id, title, fn) {
+                try { var r = await fn(); rec(id, title, r === undefined ? true : r); }
+                catch (e) { rec(id, title, false, String(e && e.message || e)); }
+            }
+
+            host.open();
+            await waitFor(function() { return window.TaskPanel && window.TaskPanel.getState().taskCount === 10; }, 6000);
+            await waitFor(function() { return document.querySelectorAll('.task-icon').length === 10; }, 4000);
+
+            await check('task-ui1', 'snapshot 渲染 10 张任务卡', function() {
+                return document.querySelectorAll('.task-icon').length === 10;
+            });
+            await check('task-ui2', '分类计数正确(主线2/支线3/副本3/情报1/其他1)', function() {
+                var c = window.TaskPanel.getState().categoryCounts;
+                return c['主线'] === 2 && c['支线'] === 3 && c['副本'] === 3 && c['情报'] === 1 && c['其他'] === 1;
+            });
+            await check('task-ui3', 'CATEGORY_MAP 归并纯度(大学/后勤/将军/引导→支线, 委托/挑战/异形→副本)', function() {
+                var co = window.TaskPanel._categoryOf;
+                return co({ type: '大学' }) === '支线' && co({ type: '后勤' }) === '支线' &&
+                       co({ type: '委托' }) === '副本' && co({ type: '挑战' }) === '副本' &&
+                       co({ type: '异形' }) === '副本' && co({ type: '彩蛋' }) === '其他' &&
+                       co({ type: '未知链' }) === '其他';
+            });
+            await check('task-ui4', '筛选「副本」→ 仅 3 项可见', async function() {
+                clickChip('副本');
+                await waitFor(function() { return window.TaskPanel.getState().filterMode === '副本'; }, 1000);
+                return document.querySelectorAll('.task-icon').length === 3 &&
+                       window.TaskPanel.getState().visibleCount === 3;
+            });
+            await check('task-ui5', '筛选「主线」→ 仅 2 项 + chip active', async function() {
+                clickChip('主线');
+                await waitFor(function() { return window.TaskPanel.getState().filterMode === '主线'; }, 1000);
+                var activeChip = document.querySelector('.task-chip.active');
+                return document.querySelectorAll('.task-icon').length === 2 &&
+                       activeChip && activeChip.getAttribute('data-cat') === '主线';
+            });
+            await check('task-ui6', '排序「可交付优先」→ 首项为已满足', async function() {
+                clickChip('all');
+                await waitFor(function() { return window.TaskPanel.getState().filterMode === 'all'; }, 1000);
+                document.querySelector('.task-dd-opt[data-sort="deliverable"]').click();
+                await waitFor(function() { return window.TaskPanel.getState().sortMode === 'deliverable'; }, 1000);
+                var first = document.querySelector('.task-icon');
+                return first && first.getAttribute('data-satisfied') === '1';
+            });
+            await check('task-ui7', '视图切换 → 列表模式 class', async function() {
+                document.getElementById('task-view-toggle').click();
+                await waitFor(function() { return document.getElementById('task-panel-left').classList.contains('view-list'); }, 1000);
+                var ok = document.getElementById('task-panel-left').classList.contains('view-list');
+                document.getElementById('task-view-toggle').click(); // 切回
+                return ok;
+            });
+            await check('task-ui8', '满足任务详情显示「可交付」转圈→勾选徽章', async function() {
+                // 恢复默认排序避免位序干扰，点 taskId=101(satisfied) 卡片
+                document.querySelector('.task-dd-opt[data-sort="default"]').click();
+                await waitFor(function() { return window.TaskPanel.getState().sortMode === 'default'; }, 1000);
+                var btn = document.querySelector('.task-icon[data-index="0"]');
+                btn.click();
+                await waitFor(function() { return document.querySelector('.task-title-line2'); }, 3000);
+                return !!document.querySelector('.task-deliverable .task-stamp-check') &&
+                       document.querySelector('.task-title-line2').textContent === '斩杀大boss僵尸';
+            });
+            await check('task-ui9', '未满足任务详情不显示可交付徽章', async function() {
+                document.querySelector('.task-icon[data-index="1"]').click();
+                await waitFor(function() { return document.querySelector('.task-title-line2') && document.querySelector('.task-title-line2').textContent === '初入战场'; }, 3000);
+                return !document.querySelector('.task-deliverable');
+            });
+            await check('task-ui10', '物品 hover → 富 tooltip 显示注释', async function() {
+                // 切到含奖励物品的任务(index0)
+                document.querySelector('.task-icon[data-index="0"]').click();
+                await waitFor(function() { return document.querySelector('.task-item[data-item-name]'); }, 3000);
+                var item = document.querySelector('.task-item[data-item-name="强化核心"]') || document.querySelector('.task-item[data-item-name]');
+                var name = item.getAttribute('data-item-name');
+                var r = item.getBoundingClientRect();
+                item.dispatchEvent(new MouseEvent('mouseover', { bubbles: true, clientX: r.left + 6, clientY: r.top + 6 }));
+                // 先确认基础 tip 弹出
+                await waitFor(function() {
+                    var tip = document.getElementById('panel-tooltip');
+                    return tip && tip.style.display === 'block';
+                }, 3000);
+                // 再确认异步富注释到达并 updateContent（'类型' 仅出现在 mock 富响应里，基础 tip 无）
+                await waitFor(function() {
+                    var tip = document.getElementById('panel-tooltip');
+                    return tip && tip.innerHTML.indexOf('类型') >= 0;
+                }, 3000);
+                return true;
+            });
+            await check('task-ui11', 'detail 缓存：再次点击已加载任务不重发 detail', async function() {
+                // 点新任务(index5) → 触发一次 detail；再切走切回均应命中缓存，不再发请求
+                document.querySelector('.task-icon[data-index="5"]').click();
+                await waitFor(function() { return document.querySelector('.task-title-line2') && document.querySelector('.task-title-line2').textContent === '通缉：赤色之手'; }, 3000);
+                var c1 = host._detailCalls;
+                document.querySelector('.task-icon[data-index="0"]').click(); // 已缓存(ui8)
+                await waitFor(function() { return document.querySelector('.task-title-line2').textContent === '斩杀大boss僵尸'; }, 3000);
+                document.querySelector('.task-icon[data-index="5"]').click(); // 现已缓存
+                await waitFor(function() { return document.querySelector('.task-title-line2').textContent === '通缉：赤色之手'; }, 3000);
+                return host._detailCalls === c1;
+            });
+            await check('task-ui12', '空列表 → 「暂无任务」提示', async function() {
+                document.getElementById('empty').checked = true;
+                host.close();
+                await waitFor(function() { return !Panels.isOpen(); }, 2000);
+                host.open();
+                // 等 snapshot 回包后 renderTaskList 真正渲染空态（taskCount 在 onOpen 即为 0，不能作判据）
+                await waitFor(function() {
+                    var h = document.querySelector('.task-panel-left .task-empty-hint');
+                    return h && h.textContent.indexOf('暂无任务') >= 0;
+                }, 4000);
+                document.getElementById('empty').checked = false;
+                return true;
+            });
+
+            var passed = results.filter(function(r) { return r.pass; }).length;
+            window.__qaResult = {
+                qa: { passed: passed, total: results.length, failed: results.length - passed, results: results },
+                logs: []
+            };
+            log('QA: ' + passed + '/' + results.length + ' passed');
+        }
+
+        if (q('qa')) {
+            window.addEventListener('load', function() { setTimeout(runQa, 100); });
+        } else {
+            window.addEventListener('load', function() {
+                setTimeout(function() { host.open(); setTimeout(applyShotState, 150); }, 100);
+            });
+        }
+    })();
+    </script>
 </body>
 </html>

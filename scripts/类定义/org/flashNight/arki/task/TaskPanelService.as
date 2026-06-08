@@ -6,6 +6,7 @@
  *   Web → C# TaskTask → Flash gameCommands:
  *     taskSnapshot       — 返回玩家当前所有任务概要
  *     taskDetail         — 返回单个任务详细信息
+ *     tasksTooltip       — 物品注释（name-keyed，复用 _root.Web物品注释HTML）
  *     taskPanelOpen      — 面板打开通知（当前为空操作）
  *     taskPanelClose     — 面板关闭通知（当前为空操作）
  *
@@ -31,6 +32,9 @@ class org.flashNight.arki.task.TaskPanelService {
         };
         _root.gameCommands["taskDetail"] = function(params) {
             org.flashNight.arki.task.TaskPanelService.handleDetail(params);
+        };
+        _root.gameCommands["tasksTooltip"] = function(params) {
+            org.flashNight.arki.task.TaskPanelService.handleTooltip(params);
         };
         _root.gameCommands["taskPanelOpen"] = function(params) {
             org.flashNight.arki.task.TaskPanelService.handlePanelOpen(params);
@@ -158,7 +162,7 @@ class org.flashNight.arki.task.TaskPanelService {
             }
         }
 
-        var taskData:Object = {
+        var dto:Object = {
             taskId: taskId,
             type: type,
             title: title,
@@ -169,7 +173,40 @@ class org.flashNight.arki.task.TaskPanelService {
             rewards: rewards
         };
 
-        sendResponse({ task: "task_response", callId: callId, success: true, taskData: taskData });
+        sendResponse({ task: "task_response", callId: callId, success: true, taskData: dto });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // handleTooltip — 物品注释（name-keyed，复用 _root.Web物品注释HTML）
+    //   与 intelligenceTooltip 同构（商城系统_WebView.as）。
+    //   注意：物品类型字段名用 itemType，绝不能用 type——会与 panel_resp 信封
+    //   的 type 字段冲突，导致 Web 端 Bridge 按 data.type 路由时丢包。
+    // ═══════════════════════════════════════════════════════════
+    public static function handleTooltip(params:Object):Void {
+        var callId = params.callId;
+        var itemName:String = String(params.itemName != undefined ? params.itemName : "");
+        var tt:Object = _root.Web物品注释HTML(itemName);
+        if (tt == null) {
+            sendResponse({ task: "task_response", callId: callId, success: false, itemName: itemName, error: "item_not_found" });
+            return;
+        }
+        // layoutType 推导对齐 kshop/intelligence：消耗品取 use，其余取 type
+        var itemType:String = "";
+        if (tt.itemData != undefined) {
+            itemType = (tt.itemData.type == "消耗品")
+                ? String(tt.itemData.use != undefined ? tt.itemData.use : "")
+                : String(tt.itemData.type != undefined ? tt.itemData.type : "");
+        }
+        sendResponse({
+            task: "task_response",
+            callId: callId,
+            success: true,
+            itemName: itemName,
+            displayname: tt.displayname,
+            descHTML: tt.descHTML,
+            introHTML: tt.introHTML,
+            itemType: itemType
+        });
     }
 
     // ═══════════════════════════════════════════════════════════

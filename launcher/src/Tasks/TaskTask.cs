@@ -89,6 +89,10 @@ namespace CF7Launcher.Tasks
                 case "detail":
                     action = "taskDetail";
                     break;
+                case "tooltip":
+                    // 物品注释（name-keyed）：转发 itemName 给 AS2 tasksTooltip，回包含 introHTML/descHTML/itemType
+                    action = "tasksTooltip";
+                    break;
                 default:
                     RespondError(webCallId, cmd, "unsupported_cmd");
                     return;

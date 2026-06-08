@@ -3434,6 +3434,11 @@ namespace CF7Launcher.Guardian
                             LogManager.Log("[Panel] Routing cmd=tooltip to IntelligenceTask, _intelligenceTask=" + (_intelligenceTask != null ? "ok" : "NULL"));
                             if (_intelligenceTask != null) _intelligenceTask.HandleWebRequest(cmd, parsed);
                         }
+                        else if (panel == "tasks")
+                        {
+                            LogManager.Log("[Panel] Routing cmd=tooltip to TaskTask, _taskTask=" + (_taskTask != null ? "ok" : "NULL"));
+                            if (_taskTask != null) _taskTask.HandleWebRequest(cmd, parsed);
+                        }
                         else
                         {
                             LogManager.Log("[Panel] Routing cmd=tooltip to ShopTask, _shopTask=" + (_shopTask != null ? "ok" : "NULL"));

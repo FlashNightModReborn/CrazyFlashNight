@@ -55,6 +55,48 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void HandleWebRequest_Tooltip_SendsTasksTooltipActionAndItemName()
+        {
+            string sent = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("tooltip", JObject.Parse("{\"callId\":\"web-t\",\"itemName\":\"强化核心\"}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("cmd", (string)msg["task"]);
+            Assert.Equal("tasksTooltip", (string)msg["action"]);
+            Assert.Equal("强化核心", (string)msg["itemName"]);
+            Assert.Null(msg["panel"]);
+        }
+
+        [Fact]
+        public void HandleFlashResponse_Tooltip_RewritesEnvelopeTypeAndPreservesItemType()
+        {
+            // 协议契约：AS2 用 itemType 承载物品类型；C# 回包必须把信封 type 设为 panel_resp，
+            // 且 itemType 字段原样保留（不能用 type 命名物品类型——会与信封 type 冲突，Web 端丢包）。
+            string sent = null;
+            string posted = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            task.HandleWebRequest("tooltip", JObject.Parse("{\"callId\":\"web-t2\",\"itemName\":\"绷带\"}"));
+            int flashCallId = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+            task.HandleFlashResponse(
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":" + flashCallId + ",\"success\":true,\"itemName\":\"绷带\",\"introHTML\":\"<b>绷带</b>\",\"descHTML\":\"恢复生命\",\"itemType\":\"消耗品\"}"),
+                delegate(string json) { });
+
+            var resp = JObject.Parse(posted);
+            Assert.Equal("panel_resp", (string)resp["type"]);
+            Assert.Equal("tasks", (string)resp["panel"]);
+            Assert.Equal("tooltip", (string)resp["cmd"]);
+            Assert.Equal("web-t2", (string)resp["callId"]);
+            Assert.True((bool)resp["success"]);
+            Assert.Equal("消耗品", (string)resp["itemType"]);
+            Assert.Equal("<b>绷带</b>", (string)resp["introHTML"]);
+        }
+
+        [Fact]
         public void HandleWebRequest_UnsupportedCmd_ReturnsErrorWithoutSending()
         {
             string sent = null;

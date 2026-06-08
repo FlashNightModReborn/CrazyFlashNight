@@ -1,7 +1,7 @@
 # Flash CS6 自动化编译指南
 
 **文档角色**：Flash CS6 编译 smoke canonical doc。  
-**最后核对代码基线**：commit `c2118e295`（2026-04-20）。
+**最后核对代码基线**：commit `981498f7a`（2026-06-08）。
 
 本文件只讲 **Flash CS6 编译与 smoke 验证链**：计划任务、JSFL、trace、编译器错误、截图与故障排查。  
 游戏启动与运行自动化请看 [automation/README.md](../automation/README.md)。
@@ -28,11 +28,25 @@ chcp.com 65001 | Out-Null
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1
 ```
 
+默认等待完成 marker 30 秒；慢 CPU / 低压设备可显式增大等待时间：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -TimeoutSeconds 120
+```
+
 ### Bash
 
 ```bash
 bash scripts/compile_test.sh
 ```
+
+`compile_test.sh` 会把参数原样透传给 PowerShell 脚本：
+
+```bash
+bash scripts/compile_test.sh -TimeoutSeconds 120
+```
+
+`TimeoutSeconds` 允许 `1..3600`，只调整等待 marker 的轮询上限，不改变编译内容或成功判据。
 
 ## 4. 当前链路
 
@@ -69,7 +83,7 @@ compile_test.ps1 / compile_test.sh
 
 - AS2 帧脚本中的类型错误、未声明变量不会稳定体现在编译期错误里
 - 只有语法错误和 class 文件中的静态类型错误更容易被自动捕获
-- 长耗时套件可能超过默认轮询上限
+- 长耗时套件可能超过默认 30 秒轮询上限；先确认 Flash / TestLoader / 计划任务状态，再按需用 `-TimeoutSeconds` 调大
 - **被 FLA 帧脚本 `#include` 的 `.as` 文件失去 BOM 时，CS6 编译器静默跳过其内容**，生成 SWF 的对应帧 DoAction 为 0 字节，但 `compiler_errors.txt` 仍报 `0 个错误`、`publish_done.marker` 正常落盘、`compile_test.sh` 报 `[OK] 编译完成` —— smoke 链路无法捕获此类静默失败
 - 遇到“marker 成功但没有 trace”，优先怀疑：
   - 旧环境残留
@@ -94,12 +108,13 @@ powershell -ExecutionPolicy Bypass -File scripts/capture_screenshot.ps1
 
 ## 8. 故障排查
 
-### 30 秒内无 marker
+### 等待上限内无 marker
 
 - Flash CS6 未运行
 - TestLoader 未打开
 - `CompileTriggerTask` 不存在或失效
 - Loader / `flash_project_path.cfg` 未部署
+- 慢 CPU / 低压设备尚未完成；排除前述环境问题后，用 `-TimeoutSeconds` 调大重试
 
 ### marker 已生成但 `flashlog.txt` 为空
 
