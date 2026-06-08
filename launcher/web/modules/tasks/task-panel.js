@@ -184,6 +184,7 @@
         _iconsReady = false;
         if (_containerEl) _containerEl.setAttribute('data-tab', 'mine');
         setActiveTabButton('mine');
+        resetToolbarControls();
         _rightEl.innerHTML = '<div class="task-empty-hint">请从左侧选择一个任务</div>';
         renderSkeletonList();
 
@@ -435,6 +436,17 @@
         renderTaskList();
     }
     function closeSortMenu() { if (_sortEl) _sortEl.classList.remove('open'); }
+
+    // 重开面板时把工具栏 DOM 同步到 onOpen 里被重置的 _sortMode='default'，
+    // 否则下拉文字/选中项会停留在上一次（如「可交付优先」）与实际状态不符。
+    function resetToolbarControls() {
+        if (!_sortEl) return;
+        var ddText = _sortEl.querySelector('.task-dd-text');
+        if (ddText) ddText.textContent = '默认排序';
+        var opts = _sortEl.querySelectorAll('.task-dd-opt');
+        for (var i = 0; i < opts.length; i++) opts[i].classList.toggle('active', opts[i].dataset.sort === 'default');
+        _sortEl.classList.remove('open');
+    }
 
     function toggleView() {
         _viewMode = _viewMode === 'card' ? 'list' : 'card';

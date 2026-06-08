@@ -152,9 +152,20 @@
             _tasks: [],
             _empty: false,
             _detailCalls: 0,
+            // satisfied 覆盖表：模拟 AS2 taskCompleteCheck 的判定结果随游戏状态变化（如补齐提交物品）。
+            // Web 端只消费此布尔，不自行从 stageReq/itemReqs 推断完成——本表用于验证该契约。
+            _satisfiedOverride: {},
             reset: function() {
                 this._empty = document.getElementById('empty').checked;
                 this._tasks = this._empty ? [] : makeTasks();
+                for (var i = 0; i < this._tasks.length; i++) {
+                    var ov = this._satisfiedOverride[this._tasks[i].taskId];
+                    if (ov !== undefined) this._tasks[i].satisfied = ov;
+                }
+            },
+            setSatisfied: function(taskId, val) {
+                this._satisfiedOverride[taskId] = val;
+                for (var i = 0; i < this._tasks.length; i++) if (this._tasks[i].taskId === taskId) this._tasks[i].satisfied = val;
             },
             handle: function(m) {
                 log('→ ' + m.cmd + (m.index != null ? ' index=' + m.index : '') + (m.itemName ? ' ' + m.itemName : ''));
@@ -354,6 +365,47 @@
                 }, 4000);
                 document.getElementById('empty').checked = false;
                 return true;
+            });
+
+            await check('task-ui13', '重开后排序控件 DOM 重置为默认（不残留上次选择）', async function() {
+                document.getElementById('empty').checked = false;
+                host.close(); await waitFor(function() { return !Panels.isOpen(); }, 2000);
+                host.open(); await waitFor(function() { return window.TaskPanel.getState().taskCount === 10; }, 4000);
+                await waitFor(function() { return document.querySelector('.task-dd-opt[data-sort="deliverable"]'); }, 2000);
+                document.querySelector('.task-dd-opt[data-sort="deliverable"]').click();
+                await waitFor(function() { return window.TaskPanel.getState().sortMode === 'deliverable'; }, 1000);
+                host.close(); await waitFor(function() { return !Panels.isOpen(); }, 2000);
+                host.open(); await waitFor(function() { return window.TaskPanel.getState().taskCount === 10; }, 4000);
+                var txt = document.querySelector('.task-dd-text').textContent;
+                var activeOpt = document.querySelector('.task-dd-opt.active');
+                return window.TaskPanel.getState().sortMode === 'default' && txt === '默认排序' &&
+                       activeOpt && activeOpt.getAttribute('data-sort') === 'default';
+            });
+
+            await check('task-ui14', 'stages清空+物品未满足：权威 satisfied 驱动完成态，不从需求推断；补齐后转可交付', async function() {
+                // 场景对应 AS2 「假完成 bug」回归：任务关卡已清(stages=[])但提交物品未满足→taskCompleteCheck=false。
+                // Web 不看 stages/物品自行判定，只信 snapshot.satisfied。此处用 mock 的 satisfied=false 代表该判定，
+                // 验证 Web 契约：有未满足物品需求的任务【不】误显完成（列表无完成覆盖、详情无可交付徽章），且需求正常渲染。
+                // 真·taskCompleteCheck 计算(stages+物品+特殊)属 AS2 运行态，需游戏内端到端手测（见迁移 doc 待验证）。
+                document.getElementById('empty').checked = false;
+                host._satisfiedOverride = {};
+                host.close(); await waitFor(function() { return !Panels.isOpen(); }, 2000);
+                host.open(); await waitFor(function() { return window.TaskPanel.getState().taskCount === 10; }, 4000);
+                // 任务 106(通缉) satisfied=false 且含 submit 物品需求（index 5）
+                document.querySelector('.task-icon[data-index="5"]').click();
+                await waitFor(function() { return document.querySelector('.task-title-line2') && document.querySelector('.task-title-line2').textContent === '通缉：赤色之手'; }, 3000);
+                var noBadge = !document.querySelector('.task-deliverable');
+                var reqShown = !!document.querySelector('.task-item-requirement');
+                var noOverlay = !document.querySelector('.task-icon[data-index="5"] .task-finished-overlay');
+                if (!(noBadge && reqShown && noOverlay)) return false;
+                // 模拟补齐提交物品 → satisfied 变 true（AS2 端为重新 taskCompleteCheck），重开刷新
+                host.setSatisfied(106, true);
+                host.close(); await waitFor(function() { return !Panels.isOpen(); }, 2000);
+                host.open(); await waitFor(function() { return window.TaskPanel.getState().taskCount === 10; }, 4000);
+                document.querySelector('.task-icon[data-index="5"]').click();
+                await waitFor(function() { return document.querySelector('.task-deliverable .task-stamp-check'); }, 3000);
+                return !!document.querySelector('.task-deliverable .task-stamp-check') &&
+                       !!document.querySelector('.task-icon[data-index="5"] .task-finished-overlay');
             });
 
             var passed = results.filter(function(r) { return r.pass; }).length;

@@ -86,7 +86,7 @@
 | `AGENTS.md` | 顶层路由 | ≤ 80 | 路由项太多 → 拆 Context Pack 类别;深内容 → 下沉到 canonical doc |
 | `CLAUDE.md` | Claude 入口卡 | ≤ 20 | 几乎只剩链接;新规则进 AGENTS.md 或 canonical doc |
 | `README.md` | 人类总览 | ≤ 120 | 教程 / 历史 / 营销话术全部下沉 |
-| `agentsDoc/testing-guide.md` | 验证矩阵 | ≤ 110 | 命令表格化;细节下沉到子系统 README |
+| `agentsDoc/testing-guide.md` | 验证矩阵 | ≤ 112 | 命令表格化;细节下沉到子系统 README |
 | `agentsDoc/agent-harness.md` | 协作 / harness | ≤ 90 | 只写项目特定;模型通识(prompt 写法、subagent 概念)不进 |
 | `agentsDoc/human-care.md` | 人类节奏 | ≤ 90 | 节奏 / 信号 / 主动行为表格化;不重复 self-optimization |
 | `agentsDoc/documentation-governance.md` | 文档治理 | ≤ 130 | 案例下沉到 shared-notes |

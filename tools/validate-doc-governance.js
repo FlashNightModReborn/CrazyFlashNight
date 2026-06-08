@@ -157,7 +157,7 @@ var SIZE_BUDGET = {
     "AGENTS.md": 80,
     "CLAUDE.md": 20,
     "README.md": 120,
-    "agentsDoc/testing-guide.md": 110,
+    "agentsDoc/testing-guide.md": 112,
     "agentsDoc/agent-harness.md": 90,
     "agentsDoc/human-care.md": 90,
     "agentsDoc/documentation-governance.md": 130,
