@@ -188,7 +188,9 @@
             "get_conversation": "$SIDE_GET_90009",
             "get_npc": "researcher",
 
-            "finish_requirements": [],
+            "finish_requirements": [
+                "摇滚公园乐器研究报告#1"
+            ],
             "finish_conversation": "$SIDE_FINISH_90009",
             "finish_npc": "Shop Girl",
             "rewards": [
@@ -199,6 +201,27 @@
             ],
             
             "chain":"情报#9"
+        },
+        {
+            "id": 90010,
+            "title": "$SIDE_TITLE_90010",
+            "description": "$SIDE_DESCRIPTION_90010",
+
+            "get_requirements": [90009],
+            "get_conversation": "$SIDE_GET_90010",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_90010",
+            "finish_npc": "丽丽丝",
+            "rewards": [
+                "金币#5000",
+                "经验值#1000",
+                "普通hp药剂#5",
+                "普通mp药剂#5"
+            ],
+            
+            "chain":"情报#10"
         }
     ]
 }

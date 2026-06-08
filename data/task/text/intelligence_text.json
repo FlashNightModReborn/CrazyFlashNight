@@ -530,7 +530,7 @@
             "name": "researcher",
             "title": "原统合研究员",
             "char": "researcher",
-            "text": "需提交更多资料来换取情报。"
+            "text": "···暂时不便透露。"
         },
         {
             "name": "$PC",
@@ -627,6 +627,42 @@
             "title": "原统合研究员",
             "char": "researcher",
             "text": "因此派遣我来堕落城，目的是尽可能接触各方人员来研究技术。既然你提交了资料，作为交换，临时政府技术人员对摇滚技术的破解资料，以及净水材料研究进展文件，这里提交给你。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "那这些档案，都是你写的？"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "小事一桩，毕竟我也接受了芯片改造。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "好吧···"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "因为相关档案的网络权限问题，我仅能将净水材料相关的技术通过秘密渠道发送给shopgirl，而摇滚乐器研究报告则必须提交纸质版。如果被上级发现我提交净水材料档案还好，被发现提交乐器报告就麻烦了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "所以这个纸质档案是直接复印的吗？"
+        },
+        {
+            "name": "researcher",
+            "title": "原统合研究员",
+            "char": "researcher",
+            "text": "是的，通过堕落城每日哨兵报那里的关系，偷偷复印了一份。详细内容不便透露，请尽快将文件提交给shopgirl。"
         }
     ],
     "$SIDE_FINISH_90009": [],
@@ -638,8 +674,116 @@
             "name": "Shop Girl",
             "title": "军火商",
             "char": "Shop Girl",
-            "text": "不错。"
+            "text": "麻烦了，事情远比我想象得还要复杂。"
         },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "首先，净水材料这方面没什么问题，我们很快会开始行动，至少是先一步发放部分新型净水材料，这方面即使临时政府发现了， 也会睁一只眼闭一只眼的。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "这里最麻烦的问题是摇滚乐器，显然有个神秘组织在给她们提供帮助，目的是促成她们与黑铁会决裂，从而颠覆堕落城秩序。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "幕后黑手是谁不好说，但我判断应该不是军阀，毕竟他们和摇滚产生了大量冲突，背地里加强摇滚确实逻辑不通。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "我们和临时政府也没办这些事，其他势力，例如大学和公社就更不可能了。所以很显然，还有个我们没注意到的势力在背后进行这些工作。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "···你是想说，诺亚方舟？"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "在军阀被诺亚方舟的士兵袭击后，我认为基本可以确定这个组织意图消灭其他所有势力，从而达成某种宏大目标了。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "可能你很难接受，但这应该就是事实。而且，我注意到一个有趣的细节。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "细节？"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "这份技术报告提到，摇滚的武器是有模因能力的，模因···解释起来很复杂，我也只是在为统合办事期间了解到一些内容。总之，这种类似精神攻击的效果，对你似乎效果不大。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "毕竟你真的直面了摇滚女皇的攻击，当初king打算立刻去帮你，但当时我们就怀疑摇滚有这方面的特殊技术，反复劝告下她才佩戴了模因防护装置，因此耽搁了一些时间。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "怪不得当初king姐跟我说她要佩戴什么装置，所以拖延了。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "而报告指出，免疫这种攻击的人，基本都是植入了特殊型号的芯片，也就是说···"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "我是新世代···"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "正是，看来你似乎已经了解了相关内容了。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "researcher提到过，丽丽丝就是接受了芯片移植手术，这种人被称为“新世代”，但是她没告诉我具体内容。"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "这是自然，毕竟她当时应该察觉到你也是芯片改造人了，所以立刻打住话题。"
+        },
+        {
+            "name": "$PC",
+            "title": "$PC_TITLE",
+            "char": "$PC_CHAR",
+            "text": "这是为什么？"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "Shop Girl",
+            "text": "这个嘛···就让丽丽丝告诉你吧，毕竟她更有主观感受。"
+        }
     ],
     "$SIDE_FINISH_90010": [] 
 }
