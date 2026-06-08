@@ -5,7 +5,7 @@
             "title": "$SIDE_TITLE_90001",
             "description": "$SIDE_DESCRIPTION_90001",
 
-            "get_requirements": [41],
+            "get_requirements": [41,10019],
             "get_conversation": "$SIDE_GET_90001",
             "get_npc": "Boy",
 
@@ -222,6 +222,27 @@
             ],
             
             "chain":"情报#10"
+        },
+        {
+            "id": 90011,
+            "title": "$SIDE_TITLE_90011",
+            "description": "$SIDE_DESCRIPTION_90011",
+
+            "get_requirements": [90010],
+            "get_conversation": "$SIDE_GET_90011",
+            "get_npc": "丽丽丝",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_90011",
+            "finish_npc": "小F",
+            "rewards": [
+                "金币#5000",
+                "经验值#1000",
+                "普通hp药剂#5",
+                "普通mp药剂#5"
+            ],
+            
+            "chain":"情报#11"
         }
     ]
 }
