@@ -882,6 +882,37 @@
         <BGM>Drone</BGM>
     </Environment>
     <Environment>
+        <BackgroundURL>地图-同盟下水道</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>55</Xmin>
+        <Xmax>1680</Xmax>
+        <Ymin>600</Ymin>
+        <Ymax>900</Ymax>
+        <Width>1720</Width>
+        <Height>930</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>5</MinIllumination>
+        <Collision>
+            <Point>240,615</Point>
+            <Point>1560,605</Point>
+            <Point>1550,520</Point>
+            <Point>260,480</Point>
+        </Collision>
+        <Collision>
+            <Point>750,570</Point>
+            <Point>777,630</Point>
+            <Point>945,630</Point>
+            <Point>980,570</Point>
+        </Collision>
+        <Collision>
+            <Point>1200,599</Point>
+            <Point>1285,645</Point>
+            <Point>1370,599</Point>
+        </Collision>
+        <BGM>Drone</BGM>
+    </Environment>
+    <Environment>
         <BackgroundURL>地图-黑铁会修炼场</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>50</Xmin>
