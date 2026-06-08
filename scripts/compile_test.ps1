@@ -1,4 +1,12 @@
 ﻿# compile_test.ps1 - Agent 自动编译触发脚本 (PowerShell 版)
+#
+# 用法: powershell -File scripts/compile_test.ps1 [-TimeoutSeconds <秒>]
+#   -TimeoutSeconds 默认 30；低压平板 / 慢 CPU 编译耗时更长时调大，例如 -TimeoutSeconds 120
+
+param(
+    [ValidateRange(1, 3600)]
+    [int]$TimeoutSeconds = 30
+)
 
 $ErrorActionPreference = 'Stop'
 [Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
@@ -157,10 +165,10 @@ Remove-Item -Path $ErrorMarker -ErrorAction SilentlyContinue
 $flashLogBefore = if (Test-Path $FlashLog) { (Get-Item $FlashLog).LastWriteTimeUtc } else { $null }
 $compileOutputBefore = if (Test-Path $CompileOutput) { (Get-Item $CompileOutput).LastWriteTimeUtc } else { $null }
 
-Write-Host '[INFO] 触发编译...'
+Write-Host ('[INFO] 触发编译... (超时 {0}s)' -f $TimeoutSeconds)
 Start-ScheduledTask -TaskName 'CompileTriggerTask'
 
-for ($i = 1; $i -le 30; $i++) {
+for ($i = 1; $i -le $TimeoutSeconds; $i++) {
     if (Test-Path $Marker) {
         Write-Host ('[OK] 编译完成 ({0}s)' -f $i)
         Remove-Item -Path $Marker -ErrorAction SilentlyContinue
@@ -224,9 +232,10 @@ for ($i = 1; $i -le 30; $i++) {
     Start-Sleep -Seconds 1
 }
 
-Write-Host '[TIMEOUT] 30 秒未完成，可能原因：'
+Write-Host ('[TIMEOUT] {0} 秒未完成，可能原因：' -f $TimeoutSeconds)
 Write-Host '  - Flash CS6 未运行'
 Write-Host '  - TestLoader 未在 Flash 中打开'
 Write-Host '  - CompileTriggerTask 计划任务未创建'
 Write-Host '  - 仍在弹 UAC 或旧任务卡住'
+Write-Host '  - 慢 CPU / 低压平板编译未结束 → 用 -TimeoutSeconds 调大重试'
 exit 1

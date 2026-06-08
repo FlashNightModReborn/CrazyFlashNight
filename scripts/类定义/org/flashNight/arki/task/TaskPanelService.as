@@ -67,10 +67,10 @@ class org.flashNight.arki.task.TaskPanelService {
                 ? String(taskData.chain[0])
                 : "";
 
-            var satisfied:Boolean = false;
-            if (entry.requirements != undefined && entry.requirements.stages != undefined) {
-                satisfied = (entry.requirements.stages.length <= 0);
-            }
+            // 完成判定必须与游戏内交付门槛一致：关卡 + 提交/持有物品 + 特殊需求。
+            // 旧逻辑只看 requirements.stages.length，会对交物/持有/特殊型任务显示假完成图标。
+            // 复用权威函数 _root.taskCompleteCheck(index)（定义于 通信_鸡蛋_任务系统.as）。
+            var satisfied:Boolean = (_root.taskCompleteCheck(i) == true);
 
             tasks.push({
                 taskId: taskId,
