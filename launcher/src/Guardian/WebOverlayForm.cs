@@ -3451,6 +3451,8 @@ namespace CF7Launcher.Guardian
                 case "finishTask":
                 case "deleteTask":
                 case "navigateFinish":
+                case "treeState":
+                case "replayDialogue":
                 case "navigate":
                 case "refresh":
                 case "open_stage_select":

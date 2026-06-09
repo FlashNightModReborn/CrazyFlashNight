@@ -208,6 +208,17 @@ H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5
 
 派生时校验：label 不重复（含大小写折叠）+ hotspot 命中 Catalog.HOTSPOT_PAGES + alias.canonical 命中 task_npcs。AS2 端校验等价。失败 → AS2 静默降级（任务红点列表为空），错误走 `_root.服务器.发布服务器消息` 留痕。
 
+### task-catalog.json schema（派生产物，禁手改；WS6 事件日志/任务树）
+
+`launcher/web/modules/tasks/task-catalog.json` 由 `tools/derive-task-catalog.js` 从 **`data/task/*.json` + `data/task/text/*.json`**（游戏权威任务源，AS2 也读它）派生，build.ps1 **Step 1e** 自动跑。与 map_catalog 方向相反：map 是 web JS→AS2 JSON，task 是**游戏 JSON→web JSON**，web 拿同源只读投影（无 AS2/web 双源漂移）。**消费方 = web 任务面板「事件日志」tab 直读**（非 AS2，非 DataQueryService；web `fetch('modules/tasks/task-catalog.json')`）。
+
+形状：`{ version, taskCount, tasks:{ "<id>":{ id, chain:[name,seq|null], type, title, description, npcName, stageReq, itemReqs, rewards, req:[前置id...], hasGetConv, hasFinishConv } }, chains:{ name:[id...按seq升序] }, chainsUnsequenced:{ name:[id...] } }`。`req`=get_requirements（前置任务 id），供图表视图画前置依赖连线 + 算拓扑深度（约 +3KB；多数任务 0-1 个前置）。
+
+**不含**：对话文本本体（留 AS2，catalog 仅持 `hasGetConv/hasFinishConv` 布尔；点「接取/完成对话」时 `replayDialogue` 按需回传【单任务】对话文本行 `lines:[{speaker,sub,text}]`，web 内联展开纯文本、不关面板）、`finish_remote`（写路径权威字段留 AS2）。
+
+派生时校验（失败 → build exit 1）：**闭包性**——任务的 `title/description/get_conversation/finish_conversation` 若值以 `$` 开头，该键必须存在于合并 `task_texts`（防 `$KEY` 缺失运行期显示原始键，亦为审计 Phase1 description 下沉前置门控）；dup-id 守卫；chain 序号无重复。干跑校验：`node tools/derive-task-catalog.js --check`。
+**进度叠加**（哪些已完成/进行中）不在本目录——走只读命令 `taskTreeState` 实时读 `_root.task_chains_progress`/`tasks_finished`/`tasks_to_do`（存档态可变，绝不缓存进目录）。详见 [task 系统 AS2 内存驻留审计](../docs/web-task-panel-WS6-事件日志任务树-设计-2026-06-09.md)。
+
 ### launcher/web 端 NPC 头像坐标 schema (Stage C 以后 hotspot-relative)
 
 `launcher/web/modules/map-avatar-source-data.js`（手工维护 IIFE）每个 entry 不再带绝对坐标 `center/rect`，而是相对所属 hotspot 的 runtime rect 左上角偏移：

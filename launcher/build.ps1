@@ -157,6 +157,24 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "  map_hud_data.json OK." -ForegroundColor Green
 
+# Step 1e: 派生 launcher/web/modules/tasks/task-catalog.json （WS6 任务树/事件日志 web 直读目录）
+# SOT = data/task/*.json + data/task/text/*.json（游戏权威任务源，AS2 也读它；web 拿只读投影，无双源漂移）。
+# web 任务面板「事件日志」tab 直读本文件渲染任务树/明细（静态内容零 AS2 传输）。
+# 内含闭包校验器：任务 title/description/get_conversation/finish_conversation 的 $KEY 必须存在于
+# 合并 task_texts，否则派生失败 → exit 1（防 $KEY 缺失运行时显示原始键，亦为审计 Phase1 description 下沉前置门控）。
+Write-Host "[Step 1e/7] Derive launcher/web/modules/tasks/task-catalog.json..." -ForegroundColor Yellow
+$deriveTaskCatalogScript = Join-Path $projectRoot "tools\derive-task-catalog.js"
+if (-not (Test-Path $deriveTaskCatalogScript)) {
+    Write-Host "[FAIL] derive-task-catalog.js missing: $deriveTaskCatalogScript" -ForegroundColor Red
+    exit 1
+}
+node $deriveTaskCatalogScript
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] task-catalog 派生失败 (上方日志含具体校验错误，如缺失 `$KEY)" -ForegroundColor Red
+    exit 1
+}
+Write-Host "  task-catalog.json OK." -ForegroundColor Green
+
 # Step 2: Build native miniaudio DLL
 Write-Host "[Step 2/7] Build native miniaudio DLL..." -ForegroundColor Yellow
 $nativeBat = Join-Path $launcherDir "native\build.bat"
@@ -489,6 +507,7 @@ $requiredWebPaths = @(
     "modules\merc-data.js",
     "modules\merc-panel.js",
     "modules\tasks\task-panel.js",
+    "modules\tasks\task-catalog.json",
     "assets\pets\pet_locked.png",
     "modules\tasks\assets\finish_npc.png",
     "modules\tasks\assets\item_bg.png",

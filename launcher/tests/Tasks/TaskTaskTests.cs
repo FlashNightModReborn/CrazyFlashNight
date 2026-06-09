@@ -218,6 +218,86 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void HandleWebRequest_TreeState_SendsTaskTreeStateAction()
+        {
+            string sent = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("treeState", JObject.Parse("{\"callId\":\"web-tr\"}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("cmd", (string)msg["task"]);
+            Assert.Equal("taskTreeState", (string)msg["action"]);
+            Assert.Null(msg["panel"]);
+            Assert.Null(msg["cmd"]);
+        }
+
+        [Fact]
+        public void HandleFlashResponse_TreeState_PreservesProgressOverlay()
+        {
+            // WS6 进度小叠加：AS2 回 chainsProgress + finished + active；C# 改写信封后须原样保留。
+            string sent = null;
+            string posted = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            task.HandleWebRequest("treeState", JObject.Parse("{\"callId\":\"web-tr2\"}"));
+            int flashCallId = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+            task.HandleFlashResponse(
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":" + flashCallId + ",\"success\":true,\"chainsProgress\":{\"主线\":14},\"finished\":[\"0\",\"10014\"],\"active\":[10021]}"),
+                delegate(string json) { });
+
+            var resp = JObject.Parse(posted);
+            Assert.Equal("panel_resp", (string)resp["type"]);
+            Assert.Equal("treeState", (string)resp["cmd"]);
+            Assert.True((bool)resp["success"]);
+            Assert.Equal(14, (int)resp["chainsProgress"]["主线"]);
+            Assert.Equal(2, ((JArray)resp["finished"]).Count);
+            Assert.Equal(10021, (int)((JArray)resp["active"])[0]);
+        }
+
+        [Fact]
+        public void HandleWebRequest_ReplayDialogue_SendsActionTaskIdAndWhich()
+        {
+            string sent = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("replayDialogue", JObject.Parse("{\"callId\":\"web-rp\",\"taskId\":10014,\"which\":\"finish\"}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("taskReplayDialogue", (string)msg["action"]);
+            Assert.Equal(10014, (int)msg["taskId"]);
+            Assert.Equal("finish", (string)msg["which"]);
+            Assert.Null(msg["panel"]);
+        }
+
+        [Fact]
+        public void HandleFlashResponse_ReplayDialogue_PreservesDialogueLines()
+        {
+            // 对话回放回传单任务对话文本行（{speaker,sub,text}）供 web 内联渲染；C# 改写信封后须原样保留 lines。
+            string sent = null;
+            string posted = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            task.HandleWebRequest("replayDialogue", JObject.Parse("{\"callId\":\"web-rp2\",\"taskId\":10014,\"which\":\"get\"}"));
+            int flashCallId = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+            task.HandleFlashResponse(
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":" + flashCallId + ",\"success\":true,\"which\":\"get\",\"lines\":[{\"speaker\":\"Andy Law\",\"sub\":\"东区最强战士\",\"text\":\"独行者，欢迎。\"}]}"),
+                delegate(string json) { });
+
+            var resp = JObject.Parse(posted);
+            Assert.Equal("replayDialogue", (string)resp["cmd"]);
+            Assert.True((bool)resp["success"]);
+            var lines = (JArray)resp["lines"];
+            Assert.Single(lines);
+            Assert.Equal("Andy Law", (string)lines[0]["speaker"]);
+            Assert.Equal("独行者，欢迎。", (string)lines[0]["text"]);
+        }
+
+        [Fact]
         public void HandleWebRequest_UnsupportedCmd_ReturnsErrorWithoutSending()
         {
             string sent = null;

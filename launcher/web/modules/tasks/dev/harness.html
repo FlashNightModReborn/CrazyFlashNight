@@ -148,9 +148,45 @@
             };
         }
 
+        // ── 事件日志/任务树（WS6）mock 静态目录（镜像 build 派生 task-catalog.json）──
+        // 对话存在标志 [hasGetConv, hasFinishConv]；105 两者皆无 → 详情不显示重播按钮（QA 验证）
+        var CONV_FLAGS = {
+            101: [true, true], 102: [true, false], 103: [true, true], 104: [false, true],
+            105: [false, false], 106: [true, true], 107: [true, false], 108: [true, true],
+            109: [true, true], 110: [true, true]
+        };
+        var CHAIN_SEQ = { '主线': [[101, 1], [102, 2]], '支线': [[103, 1]], '大学': [[104, 1]], '后勤': [[105, 1]], '挑战': [[107, 1]], '异形': [[108, 1]], '情报': [[109, 1]], '彩蛋': [[110, 1]] };
+        var CHAIN_UNSEQ = { '委托': [106] };
+        // 前置依赖（图表边）：主线 101→102 脊柱；侧链挂在主线里程碑（跨链边）；110 无前置；106 委托不入图
+        var REQ = { 101: [], 102: [101], 103: [101], 104: [102], 105: [101], 107: [102], 108: [102], 109: [101], 110: [], 106: [] };
+        function buildCatalog() {
+            var tasks = {};
+            for (var id in DETAILS) {
+                var dd = DETAILS[id], cf = CONV_FLAGS[id] || [false, false];
+                tasks[String(id)] = {
+                    id: Number(id), chain: [dd.type, null], type: dd.type, title: dd.title,
+                    description: dd.description, npcName: dd.npcName, stageReq: dd.stageReq,
+                    itemReqs: dd.itemReqs, rewards: dd.rewards, req: (REQ[id] || []),
+                    hasGetConv: cf[0], hasFinishConv: cf[1]
+                };
+            }
+            var chains = {};
+            for (var cn in CHAIN_SEQ) {
+                var arr = CHAIN_SEQ[cn].slice().sort(function(a, b) { return a[1] - b[1]; });
+                chains[cn] = arr.map(function(x) { return x[0]; });
+                for (var k = 0; k < arr.length; k++) { var tk = tasks[String(arr[k][0])]; if (tk) tk.chain = [cn, arr[k][1]]; }
+            }
+            return { version: 1, taskCount: Object.keys(tasks).length, tasks: tasks, chains: chains, chainsUnsequenced: CHAIN_UNSEQ };
+        }
+        window.__TASK_CATALOG = buildCatalog();
+
         var host = window.TaskHost = {
             _tasks: [],
             _empty: false,
+            // 进度叠加 mock（taskTreeState 回包）：active=进行中, finished=已完成
+            _treeActive: [101, 103, 104, 106, 109],
+            _treeFinished: ['102', '105', '107', '108', '110'],
+            _treeProgress: { '主线': 2, '大学': 1, '后勤': 1 },
             _detailCalls: 0,
             _inventoryFullFor: null,   // 模拟 FinishTask「背包无法装下奖励」失败的 taskId
             _respDelay: 50,            // 回包延迟(ms)，写操作在途竞态测试可调大
@@ -235,6 +271,23 @@
                         else { resp({ success: false, error: 'not_navigable' }); }
                         break;
                     }
+                    // WS6 进度小叠加（只读存档态）
+                    case 'treeState':
+                        resp({ success: true, chainsProgress: clone(self._treeProgress), finished: self._treeFinished.slice(), active: self._treeActive.slice() });
+                        break;
+                    // WS6 对话回放：镜像 AS2 handleReplayDialogue——按 catalog hasConv 判定，回传对话文本行
+                    case 'replayDialogue': {
+                        var rt = window.__TASK_CATALOG.tasks[String(m.taskId)];
+                        var has = rt && (m.which === 'finish' ? rt.hasFinishConv : rt.hasGetConv);
+                        if (!has) { resp({ success: false, error: 'no_dialogue' }); break; }
+                        var label = (m.which === 'finish') ? '完成' : '接取';
+                        // 镜像真机：玩家行 name=fs + title 为 $PC_TITLE 解析出的 AS2 htmlText 动态称号 + 正文含 <B>
+                        resp({ success: true, which: m.which, lines: [
+                            { speaker: rt.npcName || 'NPC', sub: '前情报员', text: '【' + label + '·' + (rt.title || '') + '】模拟对话第一句。' },
+                            { speaker: 'fs', sub: "<FONT COLOR='#FFCC00'>血量很多</FONT>", text: '玩家回应，<B>强调</B>一下。' }
+                        ] });
+                        break;
+                    }
                     case 'close': break;
                     default: resp({ success: false, error: 'unknown cmd ' + m.cmd });
                 }
@@ -283,7 +336,25 @@
             await waitFor(function() { return document.querySelectorAll('.task-icon').length > 0; }, 5000).catch(function(){});
             var filter = q('filter'); if (filter) { clickChip(decodeURIComponent(filter)); }
             var view = q('view'); if (view === 'list') { var vb = document.getElementById('task-view-toggle'); if (vb) vb.click(); }
-            var tab = q('tab'); if (tab === 'log') { var lt = document.querySelector('.task-tab[data-tab="log"]'); if (lt) lt.click(); }
+            var tab = q('tab');
+            if (tab === 'log') {
+                var lt = document.querySelector('.task-tab[data-tab="log"]'); if (lt) lt.click();
+                await waitFor(function() { return document.querySelector('#tlv-tree .tlv-node'); }, 4000).catch(function(){});
+                var firstNode = document.querySelector('#tlv-tree .tlv-node');
+                if (firstNode) firstNode.click();   // 选中首节点展示明细两栏
+                if (q('dialogue')) {
+                    await waitFor(function() { return document.querySelector('#tlv-detail .tlv-replay-btn'); }, 3000).catch(function(){});
+                    var rb = document.querySelector('#tlv-detail .tlv-replay-btn');
+                    if (rb) { rb.click(); await waitFor(function() { return document.querySelector('#tlv-detail .tlv-dia-line'); }, 3000).catch(function(){}); }
+                }
+                if (q('chart')) {
+                    var cb = document.querySelector('.tlv-logbar .tlv-seg-btn[data-logview="chart"]');
+                    if (cb) cb.click();
+                    await waitFor(function() { return document.querySelector('#tlv-chart-canvas .tlv-hex'); }, 3000).catch(function(){});
+                    var firstHex = document.querySelector('#tlv-chart-canvas .tlv-hex[data-task-id="101"]') || document.querySelector('#tlv-chart-canvas .tlv-hex');
+                    if (firstHex) firstHex.click();   // 选中展示明细 + 高亮
+                }
+            }
             var det = q('detail'); if (det != null) { var btn = document.querySelector('.task-icon[data-index="' + det + '"]'); if (btn) btn.click(); }
             if (q('hover')) {
                 await waitFor(function() { return document.querySelector('.task-item[data-item-name]'); }, 4000).catch(function(){});
@@ -618,6 +689,198 @@
                 }, 4000);
                 var d2 = document.querySelector('.task-act-deliver');
                 return d2 && !d2.disabled && d2.getAttribute('data-act') === 'navigate' && d2.textContent.indexOf('前往交付') >= 0;
+            });
+
+            function clickTab(tab) { var b = document.querySelector('.task-tab[data-tab="' + tab + '"]'); if (b) b.click(); }
+
+            await check('task-ui25', '事件日志：切 tab→任务树渲染(catalog直读+进度叠加)，9 链 10 节点', async function() {
+                await reopenFresh();
+                clickTab('log');
+                await waitFor(function() { return window.TaskPanel._logState().nodeCount === 10; }, 4000);
+                var s = window.TaskPanel._logState();
+                return s.catalogState === 'ready' && s.nodeCount === 10 && s.chainCount === 9;
+            });
+
+            await check('task-ui26', '事件日志：点节点→明细渲染；有对话节点显示重播按钮，无对话节点不显示', async function() {
+                await reopenFresh();
+                clickTab('log');
+                await waitFor(function() { return window.TaskPanel._logState().nodeCount === 10; }, 4000);
+                // 101 进行中(active)+hasGetConv → 仅「接取对话」1 个（完成对话按进度门控隐藏，详见 ui36）
+                window.TaskPanel._selectLogNode(101);
+                await waitFor(function() { return window.TaskPanel._logState().selectedId === '101'; }, 2000);
+                var hasReplay = window.TaskPanel._logState().replayBtnCount === 1 &&
+                    document.querySelector('#tlv-detail .task-title-line2').textContent === '斩杀大boss僵尸';
+                // 105 已完成但无任何对话(CONV_FLAGS[false,false]) → 0 个重播按钮
+                window.TaskPanel._selectLogNode(105);
+                await waitFor(function() { return window.TaskPanel._logState().selectedId === '105'; }, 2000);
+                var none = window.TaskPanel._logState().replayBtnCount === 0;
+                return hasReplay && none;
+            });
+
+            await check('task-ui27', '事件日志：点「接取对话」→内联展开对话文本(不关面板，体验连续)', async function() {
+                await reopenFresh();
+                clickTab('log');
+                await waitFor(function() { return window.TaskPanel._logState().nodeCount === 10; }, 4000);
+                window.TaskPanel._selectLogNode(101);
+                await waitFor(function() { return document.querySelector('#tlv-detail .tlv-replay-btn'); }, 2000);
+                document.querySelector('#tlv-detail .tlv-replay-btn[data-which="get"]').click();
+                await waitFor(function() { return document.querySelectorAll('#tlv-detail .tlv-dialogue .tlv-dia-line').length > 0; }, 4000);
+                var lines = document.querySelectorAll('#tlv-detail .tlv-dialogue .tlv-dia-line').length;
+                var btnActive = document.querySelector('#tlv-detail .tlv-replay-btn[data-which="get"]').classList.contains('active');
+                return Panels.isOpen() && lines === 2 && btnActive; // 关键：面板仍开(连续)
+            });
+
+            await check('task-ui28', 'tab 往返：日志→我的任务，列表完好(catalog 不可变,进度态可变,互不污染)', async function() {
+                await reopenFresh();
+                clickTab('log');
+                await waitFor(function() { return window.TaskPanel._logState().nodeCount === 10; }, 4000);
+                clickTab('mine');
+                await waitFor(function() { return window.TaskPanel.getState().tab === 'mine'; }, 2000);
+                return document.querySelectorAll('.task-icon').length === 10 && window.TaskPanel.getState().taskCount === 10;
+            });
+
+            await check('task-ui29', '事件日志对话：AS2 htmlText(<FONT COLOR>/<B>)经 convertAS2Html 渲染为样式而非字面量', async function() {
+                await reopenFresh();
+                clickTab('log');
+                await waitFor(function() { return window.TaskPanel._logState().nodeCount === 10; }, 4000);
+                window.TaskPanel._selectLogNode(101);
+                await waitFor(function() { return document.querySelector('#tlv-detail .tlv-replay-btn'); }, 2000);
+                document.querySelector('#tlv-detail .tlv-replay-btn[data-which="get"]').click();
+                await waitFor(function() { return document.querySelectorAll('#tlv-detail .tlv-dialogue .tlv-dia-line').length > 0; }, 4000);
+                var dia = document.querySelector('#tlv-detail .tlv-dialogue');
+                var coloredSpan = dia.querySelector('.tlv-dia-sub span[style*="color"]');   // <FONT COLOR>→span style
+                var boldTag = dia.querySelector('.tlv-dia-text b');                          // <B>→<b>
+                var noLiteral = dia.innerHTML.indexOf('&lt;FONT') < 0 && dia.textContent.indexOf('<FONT') < 0; // 无字面标签
+                return !!coloredSpan && !!boldTag && noLiteral;
+            });
+
+            await check('task-ui30', '图表视图：切到图表→渲染六边形节点(9 sequenced,排除委托)+前置连线', async function() {
+                await reopenFresh();
+                clickTab('log');
+                await waitFor(function() { return window.TaskPanel._logState().nodeCount === 10; }, 4000);
+                window.TaskPanel._setLogView('chart');
+                await waitFor(function() { return window.TaskPanel._chartState().hexCount > 0; }, 4000);
+                var cs = window.TaskPanel._chartState();
+                // 9 个 sequenced 节点(101,102,103,104,105,107,108,109,110)；委托106 不入图
+                return cs.logView === 'chart' && cs.hexCount === 9 && cs.edgeCount >= 7;
+            });
+
+            await check('task-ui31', '图表视图：点六边形→选中高亮+右侧明细渲染(复用列表明细)', async function() {
+                await reopenFresh();
+                clickTab('log');
+                await waitFor(function() { return window.TaskPanel._logState().nodeCount === 10; }, 4000);
+                window.TaskPanel._setLogView('chart');
+                await waitFor(function() { return window.TaskPanel._chartState().hexCount > 0; }, 4000);
+                var hex = document.querySelector('#tlv-chart-canvas .tlv-hex[data-task-id="101"]');
+                hex.click();
+                await waitFor(function() { return window.TaskPanel._logState().selectedId === '101'; }, 2000);
+                var selOk = window.TaskPanel._chartState().selectedHex;
+                var detailOk = document.querySelector('#tlv-detail .task-title-line2') &&
+                    document.querySelector('#tlv-detail .task-title-line2').textContent === '斩杀大boss僵尸';
+                return selOk && detailOk;
+            });
+
+            await check('task-ui32', '图表视图：缩放 25% → canvas zoom=0.25', async function() {
+                await reopenFresh();
+                clickTab('log');
+                await waitFor(function() { return window.TaskPanel._logState().nodeCount === 10; }, 4000);
+                window.TaskPanel._setLogView('chart');
+                await waitFor(function() { return window.TaskPanel._chartState().hexCount > 0; }, 4000);
+                document.querySelector('.tlv-chart-ctrls .tlv-seg-btn[data-zoom="0.25"]').click();
+                await waitFor(function() { return window.TaskPanel._chartState().zoom === 0.25; }, 2000);
+                var canvas = document.getElementById('tlv-chart-canvas');
+                return window.TaskPanel._chartState().zoom === 0.25 && String(canvas.style.zoom) === '0.25';
+            });
+
+            await check('task-ui33', '图表视图：章节模式→节点数≤详细模式(折叠线性段)', async function() {
+                await reopenFresh();
+                clickTab('log');
+                await waitFor(function() { return window.TaskPanel._logState().nodeCount === 10; }, 4000);
+                window.TaskPanel._setLogView('chart');
+                await waitFor(function() { return window.TaskPanel._chartState().hexCount > 0; }, 4000);
+                var detailCount = window.TaskPanel._chartState().hexCount;
+                document.querySelector('.tlv-chart-ctrls .tlv-seg-btn[data-chartmode="chapter"]').click();
+                await waitFor(function() { return window.TaskPanel._chartState().mode === 'chapter'; }, 2000);
+                var chapterCount = window.TaskPanel._chartState().hexCount;
+                return window.TaskPanel._chartState().mode === 'chapter' && chapterCount <= detailCount && chapterCount > 0;
+            });
+
+            await check('task-ui34', '图表拖拽平移：拖拽中 grabbing 光标；拖拽末尾 click 被抑制不误选；纯点击正常选', async function() {
+                await reopenFresh();
+                clickTab('log');
+                await waitFor(function() { return window.TaskPanel._logState().nodeCount === 10; }, 4000);
+                window.TaskPanel._setLogView('chart');
+                await waitFor(function() { return window.TaskPanel._chartState().hexCount > 0; }, 4000);
+                window.TaskPanel._selectLogNode(102); // 基线选中 102
+                await waitFor(function() { return window.TaskPanel._logState().selectedId === '102'; }, 2000);
+                var vp = document.getElementById('tlv-chart-viewport');
+                var hex101 = document.querySelector('#tlv-chart-canvas .tlv-hex[data-task-id="101"]');
+                // 模拟拖拽：viewport 按下 → document move(>阈值) → up
+                vp.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, button: 0, clientX: 300, clientY: 300 }));
+                var grabbingDuring = vp.classList.contains('grabbing');
+                document.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: 348, clientY: 300 }));
+                document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+                var grabbingCleared = !vp.classList.contains('grabbing');
+                // 拖拽末尾的 click → 应被抑制（仍是 102）
+                hex101.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                var notHijacked = window.TaskPanel._logState().selectedId === '102';
+                // 纯点击 101 → 正常选中
+                hex101.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                await waitFor(function() { return window.TaskPanel._logState().selectedId === '101'; }, 2000);
+                return grabbingDuring && grabbingCleared && notHijacked && window.TaskPanel._logState().selectedId === '101';
+            });
+
+            await check('task-ui35', '图表任务线配色：不同链六边形得到不同 --hex-rim（chainStyleOf 下发）', async function() {
+                await reopenFresh();
+                clickTab('log');
+                await waitFor(function() { return window.TaskPanel._logState().nodeCount === 10; }, 4000);
+                window.TaskPanel._setLogView('chart');
+                await waitFor(function() { return window.TaskPanel._chartState().hexCount > 0; }, 4000);
+                var rimMain = window.TaskPanel._hexRim(101); // 主线
+                var rimSide = window.TaskPanel._hexRim(103); // 支线
+                var rimUni = window.TaskPanel._hexRim(104);  // 大学
+                // 三链 rim 非空且互不相同 → 配色按链生效
+                return rimMain && rimSide && rimUni && rimMain !== rimSide && rimSide !== rimUni && rimMain !== rimUni;
+            });
+
+            await check('task-ui36', '事件日志对话门控：进行中任务只显示「接取对话」，不显示「完成对话」', async function() {
+                await reopenFresh();
+                clickTab('log');
+                await waitFor(function() { return window.TaskPanel._logState().nodeCount === 10; }, 4000);
+                // 101 主线=进行中(active)，catalog hasGetConv+hasFinishConv 都 true，但按进度只该显示「接取对话」
+                window.TaskPanel._selectLogNode(101);
+                await waitFor(function() { return window.TaskPanel._logState().selectedId === '101'; }, 2000);
+                var btns = document.querySelectorAll('#tlv-detail .tlv-replay-btn');
+                var whichSet = {};
+                for (var i = 0; i < btns.length; i++) whichSet[btns[i].getAttribute('data-which')] = 1;
+                var onlyGet = whichSet['get'] && !whichSet['finish'];
+                // 108 异形=已完成(finished) 且 CONV_FLAGS 108:[true,true] → 接取+完成 两者都显示
+                window.TaskPanel._selectLogNode(108);
+                await waitFor(function() { return window.TaskPanel._logState().selectedId === '108'; }, 2000);
+                var btns2 = document.querySelectorAll('#tlv-detail .tlv-replay-btn');
+                var w2 = {};
+                for (var j = 0; j < btns2.length; j++) w2[btns2[j].getAttribute('data-which')] = 1;
+                var bothShow = w2['get'] && w2['finish'];
+                return onlyGet && bothShow;
+            });
+
+            await check('task-ui37', '重开重置：图表+25%+章节态下重开面板→事件日志回列表且工具栏按钮归位(修「按钮停在图表」)', async function() {
+                await reopenFresh();
+                clickTab('log');
+                await waitFor(function() { return window.TaskPanel._logState().nodeCount === 10; }, 4000);
+                window.TaskPanel._setLogView('chart');
+                await waitFor(function() { return window.TaskPanel._chartState().hexCount > 0; }, 4000);
+                document.querySelector('.tlv-chart-ctrls .tlv-seg-btn[data-zoom="0.25"]').click();
+                document.querySelector('.tlv-chart-ctrls .tlv-seg-btn[data-chartmode="chapter"]').click();
+                await reopenFresh(); // 关→重开（触发 onClose/onOpen）
+                clickTab('log');
+                await waitFor(function() { return window.TaskPanel._logState().nodeCount === 10; }, 4000);
+                var cs = window.TaskPanel._chartState();
+                function segActive(attr, val) { var b = document.querySelector('.tlv-logbar .tlv-seg-btn[' + attr + '="' + val + '"]'); return b && b.classList.contains('active'); }
+                // 视图回列表 + 三组分段按钮归默认(列表/详细/100%)
+                return cs.logView === 'list' && cs.zoom === 1 && cs.mode === 'detail'
+                    && segActive('data-logview', 'list') && !segActive('data-logview', 'chart')
+                    && segActive('data-chartmode', 'detail') && segActive('data-zoom', '1');
             });
 
             var passed = results.filter(function(r) { return r.pass; }).length;

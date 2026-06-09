@@ -108,6 +108,16 @@ namespace CF7Launcher.Tasks
                     // NPC→hotspot 跳转，成功回 closePanel:true（前端关面板让场景淡出跳转）
                     action = "taskNavigateFinish";
                     break;
+                case "treeState":
+                    // 事件日志/任务树 动态进度小叠加（WS6，只读）：AS2 回链进度+已完成 id 集+进行中 id；
+                    // 静态任务目录由 build 派生 task-catalog.json 供 web 直读，不经此桥
+                    action = "taskTreeState";
+                    break;
+                case "replayDialogue":
+                    // 剧情对话回放（WS6，命令回传）：转发 taskId/which 给 AS2 taskReplayDialogue；
+                    // AS2 SetDialogue 在原版对话框播，成功回 closePanel:true（关面板让对话框可见）
+                    action = "taskReplayDialogue";
+                    break;
                 default:
                     RespondError(webCallId, cmd, "unsupported_cmd");
                     return;

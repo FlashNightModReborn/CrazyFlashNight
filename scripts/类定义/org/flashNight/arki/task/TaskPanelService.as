@@ -10,6 +10,8 @@
  *     taskFinish         — 交付任务（写操作，按 taskId 解析 index，taskCompleteCheck 门控）
  *     taskDelete         — 放弃任务（写操作，按 taskId 解析 index，主线任务拒绝）
  *     taskNavigateFinish — 前往交付（便利增强，复用地图 NPC→hotspot 跳转，回 closePanel）
+ *     taskTreeState      — 事件日志/任务树 动态进度小叠加（WS6，只读：链进度+已完成 id 集+进行中 id）
+ *     taskReplayDialogue — 剧情对话回放（WS6，按需回传单任务对话文本行供 web 内联展开，不关面板）
  *     taskPanelOpen      — 面板打开通知（当前为空操作）
  *     taskPanelClose     — 面板关闭通知（当前为空操作）
  *
@@ -70,6 +72,12 @@ class org.flashNight.arki.task.TaskPanelService {
         };
         _root.gameCommands["taskNavigateFinish"] = function(params) {
             org.flashNight.arki.task.TaskPanelService.handleNavigateFinish(params);
+        };
+        _root.gameCommands["taskTreeState"] = function(params) {
+            org.flashNight.arki.task.TaskPanelService.handleTreeState(params);
+        };
+        _root.gameCommands["taskReplayDialogue"] = function(params) {
+            org.flashNight.arki.task.TaskPanelService.handleReplayDialogue(params);
         };
         _root.gameCommands["taskPanelOpen"] = function(params) {
             org.flashNight.arki.task.TaskPanelService.handlePanelOpen(params);
@@ -387,6 +395,87 @@ class org.flashNight.arki.task.TaskPanelService {
             closePanel: ok,
             error: ok ? undefined : "navigate_failed"
         });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // handleTreeState — 事件日志/任务树 的动态进度小叠加（WS6，只读）
+    //   静态任务目录由 build 派生的 task-catalog.json 供 web 直读（零 AS2 传输）；
+    //   本命令只回【可变存档态】：各链进度 + 已完成 id 集 + 当前进行 id。载荷极小（数字+id），非全表。
+    //   web 用 catalog.chains + 本叠加渲染树并标 完成/进行 态。绝不在此回任何静态展示文本。
+    // ═══════════════════════════════════════════════════════════
+    public static function handleTreeState(params:Object):Void {
+        var callId = params.callId;
+
+        // 各链进度（链名→数字，复制 _root.task_chains_progress）
+        var progress:Object = {};
+        var src:Object = _root.task_chains_progress;
+        if (src != undefined) {
+            for (var k:String in src) { progress[k] = src[k]; }
+        }
+
+        // 已完成 id 集（_root.tasks_finished 中值 >0 的键）
+        var finished:Array = [];
+        var fin:Object = _root.tasks_finished;
+        if (fin != undefined) {
+            for (var fk:String in fin) {
+                if (Number(fin[fk]) > 0) finished.push(fk);
+            }
+        }
+
+        // 当前进行的任务 id（tasks_to_do）
+        var active:Array = [];
+        var todo:Array = _root.tasks_to_do;
+        if (todo != undefined) {
+            for (var i:Number = 0; i < todo.length; i++) {
+                if (todo[i] != undefined) active.push(todo[i].id);
+            }
+        }
+
+        sendResponse({
+            task: "task_response", callId: callId, success: true,
+            chainsProgress: progress, finished: finished, active: active
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // handleReplayDialogue — 剧情对话回放（WS6，轻量内联文本）
+    //   按需回传【单条任务】的对话文本行供 web 面板内联展开（不关面板，体验连续）。对话文本仍单权威
+    //   留 AS2（catalog 不含对话本体，仅 hasGetConv/hasFinishConv 布尔），点击才按需回传一条任务的对话，
+    //   载荷小、懒加载。返回解析后的 {speaker,sub,text} 行（name/title 经 getDialogueSpecialString 解析
+    //   $PC/$PC_TITLE 等特殊串，与原版对话框口径一致）。富立绘对话框留待对话框整体迁 web 后替换本文本态。
+    //   按 taskId 取任务即可（双键陷阱见审计：副本任务中文 title 键是 stage-select 活路径，勿删；此处用 id）。
+    // ═══════════════════════════════════════════════════════════
+    public static function handleReplayDialogue(params:Object):Void {
+        var callId = params.callId;
+        var taskData:Object = TaskUtil.tasks[params.taskId];
+        if (taskData == undefined) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "task_not_found" });
+            return;
+        }
+
+        var which:String = (params.which == "finish") ? "finish" : "get";
+        var convKey = (which == "finish") ? taskData.finish_conversation : taskData.get_conversation;
+        var conv = TaskUtil.getTaskText(convKey);
+        if (conv == undefined || conv.length == 0) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "no_dialogue" });
+            return;
+        }
+
+        var hasResolver:Boolean = (typeof _root.getDialogueSpecialString == "function");
+        var lines:Array = [];
+        for (var i:Number = 0; i < conv.length; i++) {
+            var ln:Object = conv[i];
+            if (ln == undefined) continue;
+            var speaker = hasResolver ? _root.getDialogueSpecialString(ln.name) : ln.name;
+            var sub = hasResolver ? _root.getDialogueSpecialString(ln.title) : ln.title;
+            lines.push({
+                speaker: (speaker != undefined ? String(speaker) : ""),
+                sub: (sub != undefined ? String(sub) : ""),
+                text: (ln.text != undefined ? String(ln.text) : "")
+            });
+        }
+
+        sendResponse({ task: "task_response", callId: callId, success: true, which: which, lines: lines });
     }
 
     // ═══════════════════════════════════════════════════════════

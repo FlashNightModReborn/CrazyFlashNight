@@ -43,6 +43,22 @@
     var _hoverItemKey = null;
     var _pendingAbandonId = null;                // 放弃确认弹窗待删 taskId
 
+    // ── 事件日志/任务树（WS6）──
+    //   静态目录 = build 派生 task-catalog.json（web 直读，零 AS2 传输）；
+    //   动态进度 = taskTreeState 小叠加；对话回放 = replayDialogue 命令回传 AS2 SetDialogue。
+    var _catalog = null;            // task-catalog.json（不可变，模块级缓存，只 fetch 一次）
+    var _catalogState = 'idle';     // idle | loading | ready | error
+    var _catalogWaiters = [];       // 加载中等待回调
+    var _treeState = null;          // { chainsProgress, finished:{id:1}, active:{id:1} }
+    var _logSelectedId = null;      // log tab 当前选中任务 id（String）
+    // 图表视图（BALDR SKY 风任务树）
+    var _logView = 'list';          // list | chart（事件日志内的子视图）
+    var _chartZoom = 1;             // 1 | 0.5 | 0.25
+    var _chartMode = 'detail';      // detail | chapter
+    var _chartLayout = null;        // 计算后的布局缓存
+    var _chartDrag = null;          // 左键拖拽平移：{x,y,sl,st}（按下时快照）
+    var _chartDragMoved = false;    // 本次按下是否已成拖拽（用于抑制拖拽末尾的误点选）
+
     // 设计分辨率
     var DESIGN_W = 1024;
     var DESIGN_H = 576;
@@ -63,6 +79,8 @@
 
     // DOM refs
     var _leftEl, _rightEl, _closeBtn, _chipsEl, _countEl, _sortEl, _viewBtn, _containerEl;
+    var _treeEl, _logDetailEl;   // 事件日志/任务树（WS6）DOM refs
+    var _logviewEl, _chartViewportEl, _chartCanvasEl, _chartCtrlsEl;   // 图表视图 DOM refs
 
     // ═══════════════════════════════════════════════════════════
     // Panel 注册
@@ -116,10 +134,31 @@
                             '<div class="task-empty-hint">请从左侧选择一个任务</div>' +
                         '</div>' +
                     '</div>' +
-                    '<div class="task-panel-logview" id="task-panel-logview">' +
-                        '<div class="tlv-icon"></div>' +
-                        '<div class="tlv-title">事件日志 · 任务树</div>' +
-                        '<div class="tlv-sub">链式任务树与剧情对话回放正在开发中，敬请期待。</div>' +
+                    '<div class="task-panel-logview" id="task-panel-logview" data-logview="list">' +
+                        '<div class="tlv-left">' +
+                            '<div class="tlv-logbar">' +
+                                '<div class="tlv-seg">' +
+                                    '<button class="tlv-seg-btn active" data-logview="list" type="button">列表</button>' +
+                                    '<button class="tlv-seg-btn" data-logview="chart" type="button">图表</button>' +
+                                '</div>' +
+                                '<div class="tlv-chart-ctrls" id="tlv-chart-ctrls" hidden>' +
+                                    '<div class="tlv-seg">' +
+                                        '<button class="tlv-seg-btn active" data-chartmode="detail" type="button">详细</button>' +
+                                        '<button class="tlv-seg-btn" data-chartmode="chapter" type="button">章节</button>' +
+                                    '</div>' +
+                                    '<div class="tlv-seg">' +
+                                        '<button class="tlv-seg-btn active" data-zoom="1" type="button">100%</button>' +
+                                        '<button class="tlv-seg-btn" data-zoom="0.5" type="button">50%</button>' +
+                                        '<button class="tlv-seg-btn" data-zoom="0.25" type="button">25%</button>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="tlv-tree" id="tlv-tree" tabindex="0"></div>' +
+                            '<div class="tlv-chart-viewport" id="tlv-chart-viewport" hidden>' +
+                                '<div class="tlv-chart-canvas" id="tlv-chart-canvas"></div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="tlv-detail" id="tlv-detail"></div>' +
                     '</div>' +
                     '<div class="task-confirm-overlay" id="task-confirm-overlay" hidden>' +
                         '<div class="task-confirm-dialog">' +
@@ -142,6 +181,12 @@
         _countEl = _el.querySelector('#task-count');
         _sortEl = _el.querySelector('#task-sort');
         _viewBtn = _el.querySelector('#task-view-toggle');
+        _treeEl = _el.querySelector('#tlv-tree');
+        _logDetailEl = _el.querySelector('#tlv-detail');
+        _logviewEl = _el.querySelector('#task-panel-logview');
+        _chartViewportEl = _el.querySelector('#tlv-chart-viewport');
+        _chartCanvasEl = _el.querySelector('#tlv-chart-canvas');
+        _chartCtrlsEl = _el.querySelector('#tlv-chart-ctrls');
 
         bindStaticEvents();
         container.appendChild(_el);
@@ -192,6 +237,16 @@
         _el.querySelector('#task-confirm-yes').addEventListener('click', function(e) { onAbandonConfirm(e.currentTarget); });
         _el.querySelector('#task-confirm-no').addEventListener('click', closeAbandonConfirm);
         confirmOverlay.addEventListener('click', function(e) { if (e.target === confirmOverlay) closeAbandonConfirm(); });
+
+        // 事件日志/任务树（WS6）：节点点击 + 详情区重播按钮（事件委托）
+        _treeEl.addEventListener('click', onTreeClick);
+        _logDetailEl.addEventListener('click', onLogDetailClick);
+
+        // 图表视图：工具栏（列表/图表切换、章节/详细、缩放）+ 六边形节点点击（事件委托）
+        _el.querySelector('.tlv-logbar').addEventListener('click', onLogbarClick);
+        _chartCanvasEl.addEventListener('click', onChartClick);
+        // 左键拖拽平移（取代滚动条）：在视口上按下，move/up 走 document（处理拖出视口）
+        _chartViewportEl.addEventListener('mousedown', onChartMouseDown);
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -210,6 +265,19 @@
         _hoverItemKey = null;
         _busy = false;
         _iconsReady = false;
+        _treeState = null;          // 进度叠加每次开面板重取（存档态可变）；_catalog 不重置（不可变）
+        _logSelectedId = null;
+        _logView = 'list';
+        _chartZoom = 1;
+        _chartMode = 'detail';
+        _chartLayout = null;
+        _chartDrag = null; _chartDragMoved = false;
+        if (_chartCanvasEl) _chartCanvasEl.style.zoom = 1;   // 清洁重置：防上次 25% 残留到下次开面板
+        if (_logviewEl) _logviewEl.setAttribute('data-logview', 'list');
+        if (_chartCtrlsEl) _chartCtrlsEl.hidden = true;
+        if (_treeEl) _treeEl.hidden = false;
+        if (_chartViewportEl) _chartViewportEl.hidden = true;
+        resetChartToolbarButtons();   // 重置 列表/详细/100% 分段高亮（DOM 复用→防上次 .active 残留，修「按钮停在图表」）
         closeAbandonConfirm();
         if (_containerEl) _containerEl.classList.remove('task-busy');
         if (_containerEl) _containerEl.setAttribute('data-tab', 'mine');
@@ -252,6 +320,7 @@
         hideTip();
         closeAbandonConfirm();
         if (_containerEl) _containerEl.classList.remove('task-busy');
+        endChartDrag();   // 清掉拖拽平移可能残留的 document 监听
         unbindScaleWatcher();
         document.removeEventListener('click', closeSortMenu);
         if (_cssLink && _cssLink.parentNode) {
@@ -269,6 +338,7 @@
         closeAbandonConfirm();
         if (_containerEl) _containerEl.setAttribute('data-tab', tab);
         setActiveTabButton(tab);
+        if (tab === 'log') enterLogTab();
     }
     function setActiveTabButton(tab) {
         var tabs = _el.querySelectorAll('.task-tab');
@@ -877,6 +947,594 @@
         _rightEl.innerHTML = html;
     }
 
+    // ═══════════════════════════════════════════════════════════
+    // 事件日志 / 任务树（WS6）
+    //   静态目录 task-catalog.json（build 派生，web 直读，零 AS2 传输）+ taskTreeState 进度小叠加
+    //   → 渲染各链已完成/进行中节点；点节点看明细（明细来自 catalog）；「重播对话」命令回传 AS2
+    //   由 _root.SetDialogue 在原版对话框播（成功关面板让对话框可见）。
+    // ═══════════════════════════════════════════════════════════
+    function enterLogTab() {
+        var session = _session;
+        _treeEl.innerHTML = '<div class="tlv-loading">加载任务树…</div>';
+        if (!_logSelectedId) _logDetailEl.innerHTML = '<div class="task-empty-hint">从左侧任务树选择一个任务查看详情</div>';
+        loadCatalog(function(cat) {
+            if (session !== _session || _tab !== 'log') return;
+            if (!cat) { _treeEl.innerHTML = '<div class="tlv-loading tlv-error">任务目录加载失败</div>'; return; }
+            requestTreeState(function(state) {
+                if (session !== _session || _tab !== 'log') return;
+                _treeState = state || { chainsProgress: {}, finished: {}, active: {} };
+                renderActiveLogView();
+            });
+        });
+    }
+
+    // 加载 build 派生的静态任务目录（不可变，只 fetch 一次，模块级缓存）。
+    // 测试钩子：harness 可预置 window.__TASK_CATALOG 跳过 fetch。
+    function loadCatalog(cb) {
+        if (_catalogState === 'ready') { cb(_catalog); return; }
+        if (typeof window !== 'undefined' && window.__TASK_CATALOG) {
+            _catalog = window.__TASK_CATALOG; _catalogState = 'ready'; cb(_catalog); return;
+        }
+        _catalogWaiters.push(cb);
+        if (_catalogState === 'loading') return;
+        _catalogState = 'loading';
+        var flush = function(ok) {
+            var ws = _catalogWaiters; _catalogWaiters = [];
+            for (var i = 0; i < ws.length; i++) ws[i](ok ? _catalog : null);
+        };
+        try {
+            fetch('modules/tasks/task-catalog.json').then(function(r) {
+                if (!r.ok) throw new Error('http ' + r.status);
+                return r.json();
+            }).then(function(json) {
+                _catalog = json; _catalogState = 'ready'; flush(true);
+            })['catch'](function() {
+                _catalogState = 'error'; flush(false);
+            });
+        } catch (e) {
+            _catalogState = 'error'; flush(false);
+        }
+    }
+
+    // 进度小叠加（只读存档态）：链进度 + 已完成 id 集 + 进行中 id 集。
+    function requestTreeState(cb) {
+        var session = _session;
+        sendPanelMsg('treeState', null, function(data) {
+            if (session !== _session) return;
+            if (!data || !data.success) { cb(null); return; }
+            cb({
+                chainsProgress: data.chainsProgress || {},
+                finished: toIdSet(data.finished),
+                active: toIdSet(data.active)
+            });
+        });
+    }
+    function toIdSet(arr) {
+        var set = Object.create(null);
+        if (arr && arr.length) for (var i = 0; i < arr.length; i++) set[String(arr[i])] = 1;
+        return set;
+    }
+
+    // 渲染任务树：每个有进展的链一段，节点按序号；状态 = 进行中 / 已完成。
+    function renderTree() {
+        if (!_catalog || !_treeState) return;
+        var fin = _treeState.finished, act = _treeState.active;
+        var html = '';
+        var anyChain = false;
+
+        // 有序号链（含主线），主线置顶，其余按五类序
+        var names = Object.keys(_catalog.chains || {});
+        names.sort(function(a, b) {
+            if (a === '主线') return -1; if (b === '主线') return 1;
+            return ((CATEGORY_ORDER[CATEGORY_MAP[a]] != null ? CATEGORY_ORDER[CATEGORY_MAP[a]] : 9)
+                  - (CATEGORY_ORDER[CATEGORY_MAP[b]] != null ? CATEGORY_ORDER[CATEGORY_MAP[b]] : 9));
+        });
+        for (var n = 0; n < names.length; n++) {
+            var nodes = collectChainNodes(_catalog.chains[names[n]], fin, act);
+            if (!nodes.length) continue;
+            anyChain = true;
+            html += renderChainSection(names[n], nodes);
+        }
+        // 无序号链（委托等）：事件日志比原版树更包容，已完成/进行中也展示
+        var uns = _catalog.chainsUnsequenced || {};
+        var unames = Object.keys(uns);
+        for (var u = 0; u < unames.length; u++) {
+            var unodes = collectChainNodes(uns[unames[u]], fin, act);
+            if (!unodes.length) continue;
+            anyChain = true;
+            html += renderChainSection(unames[u], unodes);
+        }
+
+        _treeEl.innerHTML = anyChain ? html : '<div class="tlv-loading">暂无已完成或进行中的任务记录</div>';
+    }
+
+    function collectChainNodes(ids, fin, act) {
+        var nodes = [];
+        if (!ids) return nodes;
+        for (var i = 0; i < ids.length; i++) {
+            var idk = String(ids[i]);
+            if (act[idk]) nodes.push({ id: idk, state: 'active' });
+            else if (fin[idk]) nodes.push({ id: idk, state: 'done' });
+        }
+        return nodes;
+    }
+
+    function renderChainSection(name, nodes) {
+        var cat = CATEGORY_MAP[name] || '其他';
+        var html = '<div class="tlv-chain" data-cat="' + escAttr(cat) + '">';
+        html += '<div class="tlv-chain-head"><span class="tlv-chain-dot"></span>' + escHtml(name) +
+            '<span class="tlv-chain-count">' + nodes.length + '</span></div>';
+        html += '<div class="tlv-nodes">';
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            var t = _catalog.tasks[node.id];
+            var title = (t && t.title) ? t.title : ('任务 ' + node.id);
+            var sel = (node.id === _logSelectedId) ? ' selected' : '';
+            html += '<button type="button" class="tlv-node ' + node.state + sel + '" data-task-id="' + escAttr(node.id) + '">' +
+                '<span class="tlv-node-state"></span>' +
+                '<span class="tlv-node-title">' + escHtml(title) + '</span>' +
+            '</button>';
+        }
+        html += '</div></div>';
+        return html;
+    }
+
+    function onTreeClick(e) {
+        var t = e.target;
+        while (t && t !== _treeEl && !(t.classList && t.classList.contains('tlv-node'))) t = t.parentNode;
+        if (!t || t === _treeEl || !t.classList || !t.classList.contains('tlv-node')) return;
+        var id = t.getAttribute('data-task-id');
+        if (id) selectLogNode(id);
+    }
+
+    function selectLogNode(id) {
+        _logSelectedId = String(id);
+        var nodes = _treeEl.querySelectorAll('.tlv-node');
+        for (var i = 0; i < nodes.length; i++) {
+            nodes[i].classList.toggle('selected', nodes[i].getAttribute('data-task-id') === _logSelectedId);
+        }
+        // 图表视图：同步高亮选中六边形并滚动入视
+        if (_chartCanvasEl) {
+            var hexes = _chartCanvasEl.querySelectorAll('.tlv-hex'), selHex = null;
+            for (var h = 0; h < hexes.length; h++) {
+                var on = (hexes[h].getAttribute('data-task-id') === _logSelectedId);
+                hexes[h].classList.toggle('selected', on);
+                if (on) selHex = hexes[h];
+            }
+            if (selHex && _logView === 'chart' && selHex.scrollIntoView) {
+                try { selHex.scrollIntoView({ block: 'center', inline: 'center' }); } catch (e) { selHex.scrollIntoView(); }
+            }
+        }
+        renderLogDetail(_logSelectedId);
+    }
+
+    // 日志明细：复用 mine 详情的需求/奖励 HTML 结构（read-only，无交付/放弃），加对话回放按钮。
+    function renderLogDetail(id) {
+        var t = _catalog && _catalog.tasks[id];
+        if (!t) { _logDetailEl.innerHTML = '<div class="task-empty-hint">无任务数据</div>'; return; }
+        var html = '';
+        html += '<div class="task-detail-head"><div class="task-title-box">' +
+            '<span class="task-title-line1">' + escHtml(t.type || '任务') + '</span>' +
+            '<span class="task-title-line2">' + escHtml(t.title || '') + '</span></div>';
+        // 三态：进行中 / 已完成 / 未接取（图表里 locked 节点也可点开，徽章须正确，不能一律"已完成"）
+        var st = (_treeState && _treeState.active[id]) ? 'active' : ((_treeState && _treeState.finished[id]) ? 'done' : 'locked');
+        var stLabel = (st === 'active') ? '进行中' : (st === 'done') ? '已完成' : '未接取';
+        html += '<div class="tlv-detail-badge ' + st + '">' + stLabel + '</div></div>';
+
+        html += '<div class="task-desc-box">' + escHtml(t.description || '') +
+            '<span class="corner-horizontal top-left"></span><span class="corner-horizontal top-right"></span>' +
+            '<span class="corner-horizontal bottom-left"></span><span class="corner-horizontal bottom-right"></span>' +
+            '<span class="corner-vertical top-left"></span><span class="corner-vertical top-right"></span>' +
+            '<span class="corner-vertical bottom-left"></span><span class="corner-vertical bottom-right"></span></div>';
+
+        html += '<div class="task-requirement-area">';
+        var reqI = 0;
+        if (t.stageReq) {
+            html += '<div class="task-requirement" data-i="' + reqI + '"><div class="task-requirement-inner">' +
+                '<div class="scroll-track"></div><div class="task-requirement-title stage"></div>' +
+                '<div class="task-requirement-stage-name">' + escHtml(t.stageReq.name || '') + '</div></div>';
+            if (t.stageReq.difficulty) html += '<span class="task-difficulty-label difficulty-' + escAttr(t.stageReq.difficulty) + '">' + escHtml(t.stageReq.difficulty) + '</span>';
+            html += '</div>'; reqI++;
+        }
+        if (t.itemReqs && t.itemReqs.length) {
+            var titleClass = (t.itemReqs[0].kind === 'contain') ? 'contain' : 'submit';
+            html += '<div class="task-item-requirement" data-i="' + reqI + '"><div class="task-item-requirement-inner">' +
+                '<div class="scroll-track"></div><div class="task-requirement-title ' + titleClass + '"></div><div class="task-requirement-items">';
+            for (var ir = 0; ir < t.itemReqs.length; ir++) html += itemIconHtml(t.itemReqs[ir].name, t.itemReqs[ir].count, ir);
+            html += '</div></div></div>'; reqI++;
+        }
+        if (t.npcName) {
+            html += '<div class="task-npc" data-i="' + reqI + '"><div class="task-npc-left"><div class="scroll-track"></div>' +
+                '<div class="task-npc-title"></div><div class="task-npc-name"><span>' + escHtml(t.npcName) + '</span></div></div>' +
+                '<div class="task-npc-avatar"><img src="' + avatarUrl(t.npcName) + '" onerror="this.onerror=null;this.src=\'' + defaultAvatarUrl() + '\';" alt=""></div></div>';
+            reqI++;
+        }
+        html += '</div>';
+
+        if (t.rewards && t.rewards.length) {
+            html += '<div class="task-reward-section"><div class="task-reward-box"><span>任务奖励</span></div><div class="task-reward-items">';
+            for (var r = 0; r < t.rewards.length; r++) html += itemIconHtml(t.rewards[r].name, t.rewards[r].count, r);
+            html += '</div></div>';
+        }
+
+        // 剧情对话回放（轻量内联文本）：仅显示玩家【已经历过】的对话，避免回放未到达的剧情=剧透/语义不通。
+        //   接取对话：已接取(进行中 active 或 已完成 done) 才显示；
+        //   完成对话：仅已完成(done) 才显示（未完成时不该出现「完成对话」——修真机发现的困惑）。
+        // 对话文本仍留 AS2，点击才按需回传渲染到下方 .tlv-dialogue，不关面板，体验连续。
+        var accepted = (st === 'active' || st === 'done');
+        var showGet = t.hasGetConv && accepted;
+        var showFinish = t.hasFinishConv && (st === 'done');
+        if (showGet || showFinish) {
+            html += '<div class="tlv-replay-actions">';
+            if (showGet) html += '<button type="button" class="tlv-replay-btn" data-which="get" data-task-id="' + escAttr(id) + '">接取对话</button>';
+            if (showFinish) html += '<button type="button" class="tlv-replay-btn" data-which="finish" data-task-id="' + escAttr(id) + '">完成对话</button>';
+            html += '</div>';
+            html += '<div class="tlv-dialogue"></div>';
+        }
+
+        _logDetailEl.innerHTML = html;
+    }
+
+    function onLogDetailClick(e) {
+        var t = e.target;
+        while (t && t !== _logDetailEl && !(t.classList && t.classList.contains('tlv-replay-btn'))) t = t.parentNode;
+        if (!t || t === _logDetailEl || !t.classList || !t.classList.contains('tlv-replay-btn')) return;
+        if (t.disabled || t.classList.contains('task-btn-pending')) return;
+        onReplayDialogue(t.getAttribute('data-task-id'), t.getAttribute('data-which'), t);
+    }
+
+    // 重播对话（轻量内联文本）：按需回传单任务对话行，渲染到详情下方 .tlv-dialogue，不关面板。
+    function onReplayDialogue(taskId, which, btn) {
+        if (!taskId) return;
+        var allBtns = _logDetailEl.querySelectorAll('.tlv-replay-btn');
+        for (var i = 0; i < allBtns.length; i++) allBtns[i].classList.remove('active');
+        if (btn) { btn.classList.add('active'); btn.classList.add('task-btn-pending'); }
+        var dia = _logDetailEl.querySelector('.tlv-dialogue');
+        if (dia) dia.innerHTML = '<div class="tlv-dia-empty">加载对话…</div>';
+        var reqSession = _session;
+        var reqSelected = _logSelectedId;
+        sendPanelMsg('replayDialogue', { taskId: idForRequest(taskId), which: which || 'get' }, function(data) {
+            if (btn) btn.classList.remove('task-btn-pending');
+            if (reqSession !== _session || _logSelectedId !== reqSelected) return; // 已切走/换节点
+            var dia2 = _logDetailEl.querySelector('.tlv-dialogue');
+            if (!dia2) return;
+            if (!data || !data.success || !data.lines || !data.lines.length) {
+                dia2.innerHTML = '<div class="tlv-dia-empty">' + ((data && data.error === 'no_dialogue') ? '该任务无此对话' : '无法加载对话') + '</div>';
+                return;
+            }
+            dia2.innerHTML = renderDialogueLines(data.lines);
+        });
+    }
+    // 对话文本含 AS2 htmlText 标记（如 $PC_TITLE→HeroUtil.getHeroTitle() 回的 <FONT COLOR=...>动态称号</FONT>）。
+    // 复用全项目统一的 PanelTooltip.convertAS2Html：FONT(color/size/face)→span style、B/I/U、BR、P align，
+    // 且带颜色/字号/face 白名单校验（安全）。PanelTooltip 缺失时退回 escHtml（不渲染但不破坏）。
+    function dialogueHtml(s) {
+        if (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.convertAS2Html) return PanelTooltip.convertAS2Html(s);
+        return escHtml(s);
+    }
+    function renderDialogueLines(lines) {
+        var html = '';
+        for (var i = 0; i < lines.length; i++) {
+            var ln = lines[i] || {};
+            html += '<div class="tlv-dia-line">';
+            if (ln.speaker) {
+                html += '<div class="tlv-dia-head"><span class="tlv-dia-speaker">' + dialogueHtml(ln.speaker) + '</span>';
+                if (ln.sub) html += '<span class="tlv-dia-sub">' + dialogueHtml(ln.sub) + '</span>';
+                html += '</div>';
+            }
+            html += '<div class="tlv-dia-text">' + dialogueHtml(ln.text || '') + '</div>';
+            html += '</div>';
+        }
+        return html;
+    }
+    // catalog 用 String id 键；AS2 tasks 用数字 id。回传时尽量还原数字（与 AS2 一致）。
+    function idForRequest(id) {
+        var n = Number(id);
+        return (!isNaN(n) && String(n) === String(id)) ? n : id;
+    }
+
+    // 渲染当前 log 子视图（列表 / 图表），由 enterLogTab 与切换共用
+    function renderActiveLogView() {
+        if (_logView === 'chart') renderChart();
+        else renderTree();
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 图表视图（BALDR SKY 风任务树）
+    //   数据已证实是「主干+分支」结构（237/238 单前置、跨链边多为 主线里程碑→侧链入口），
+    //   故用「拓扑深度分行 + 按链分列 + 前置连线」即可，无需重型 DAG 布局算法。
+    //   委托等无序号链不在图中（无前置顺序，列表视图展示）。点节点复用列表的明细+内联对话。
+    // ═══════════════════════════════════════════════════════════
+    var CHART_COL_W = 112, CHART_ROW_H = 64;
+
+    // ── 任务线配色配置（写手可改）────────────────────────────────────────────
+    //   三个杠杆：rim=边框/外环色(链身份主区分)、num=数字色、face=节点面色(可选,覆盖"状态面")。
+    //   默认：rim+num 区分链，face 仍由状态(已完成银/进行中白/未接取暗)驱动以保可读性。
+    //   阵营链(黑铁会/铁枪会)按制作组要求=黑底白字：设 face(黑)+num(白)，状态靠辉光/暗淡体现。
+    //   未列出的链回落 _default。颜色取低饱和，避免抢"焦点橙(仅提交NPC)"与状态对比。
+    var CHART_CHAIN_STYLE = {
+        '主线': { rim: '#dcdcdc', num: '#1a1a1a' },
+        '支线': { rim: '#6fa8c7', num: '#1a1a1a' },
+        '大学': { rim: '#8fb87a', num: '#1a1a1a' },
+        '后勤': { rim: '#c7a86f', num: '#1a1a1a' },
+        '将军': { rim: '#b8788f', num: '#1a1a1a' },
+        '引导': { rim: '#9a9a9a', num: '#1a1a1a' },
+        '挑战': { rim: '#c77a6f', num: '#1a1a1a' },
+        '预览': { rim: '#8f8fb8', num: '#1a1a1a' },
+        '异形': { rim: '#7ac7b8', num: '#1a1a1a' },
+        '彩蛋': { rim: '#c79f6f', num: '#1a1a1a' },
+        '废城': { rim: '#a08f7a', num: '#1a1a1a' },
+        '情报': { rim: '#7a9fc7', num: '#1a1a1a' },
+        // 阵营链模板（数据尚无此链，预留；底黑数字白）：
+        '黑铁会': { rim: '#5a5a5a', face: '#111111', num: '#ffffff' },
+        '铁枪会': { rim: '#666666', face: '#141414', num: '#ffffff' },
+        '_default': { rim: '#888888', num: '#1a1a1a' }
+    };
+    function chainStyleOf(name) { return CHART_CHAIN_STYLE[name] || CHART_CHAIN_STYLE._default; }
+
+    function computeChartLayout(mode) {
+        if (!_catalog) return null;
+        var tasks = _catalog.tasks;
+        var seqChains = _catalog.chains || {};
+        var chainNames = Object.keys(seqChains);
+        // inChart: id → chainName（仅 sequenced 链）
+        var inChart = Object.create(null);
+        for (var ci = 0; ci < chainNames.length; ci++) {
+            var arr = seqChains[chainNames[ci]];
+            for (var k = 0; k < arr.length; k++) inChart[String(arr[k])] = chainNames[ci];
+        }
+        // 列分配：主线居中(0)，其余交替左右
+        var colOf = Object.create(null);
+        colOf['主线'] = 0;
+        var others = chainNames.filter(function (n) { return n !== '主线'; });
+        for (var oi = 0; oi < others.length; oi++) {
+            colOf[others[oi]] = ((oi % 2 === 0) ? 1 : -1) * (Math.floor(oi / 2) + 1);
+        }
+        // 拓扑深度（最长前置链，仅图内边）
+        var depthMemo = Object.create(null);
+        var depthVisiting = Object.create(null);
+        function depth(id) {
+            if (depthMemo[id] != null) return depthMemo[id];
+            if (depthVisiting[id]) return 0; // 环检测：访问中重入→记 0（任务数据应无环，仅自卫；只缓存最终值不占位污染）
+            depthVisiting[id] = 1;
+            var t = tasks[id], d = 0;
+            if (t && t.req) for (var r = 0; r < t.req.length; r++) {
+                var rk = String(t.req[r]);
+                if (inChart[rk] != null) d = Math.max(d, 1 + depth(rk));
+            }
+            depthVisiting[id] = 0;
+            depthMemo[id] = d; return d;
+        }
+        var allIds = Object.keys(inChart);
+        var fin = (_treeState && _treeState.finished) ? _treeState.finished : Object.create(null);
+        var act = (_treeState && _treeState.active) ? _treeState.active : Object.create(null);
+
+        // chapter 模式过滤集合：链头/链尾 + 分支点(跨链出边) + 合并点(入度≥2) + 进行中
+        var keep = null;
+        if (mode === 'chapter') {
+            keep = Object.create(null);
+            var indeg = Object.create(null), branch = Object.create(null);
+            for (var a = 0; a < allIds.length; a++) {
+                var t2 = tasks[allIds[a]];
+                if (t2 && t2.req) for (var rr = 0; rr < t2.req.length; rr++) {
+                    var rk2 = String(t2.req[rr]);
+                    if (inChart[rk2] == null) continue;
+                    indeg[allIds[a]] = (indeg[allIds[a]] || 0) + 1;
+                    if (inChart[rk2] !== inChart[allIds[a]]) branch[rk2] = 1; // 跨链出边 = 分支点
+                }
+            }
+            for (var cn = 0; cn < chainNames.length; cn++) {
+                var carr = seqChains[chainNames[cn]];
+                if (carr.length) { keep[String(carr[0])] = 1; keep[String(carr[carr.length - 1])] = 1; }
+            }
+            for (var b = 0; b < allIds.length; b++) {
+                var id2 = allIds[b];
+                if (branch[id2] || (indeg[id2] || 0) >= 2 || act[id2]) keep[id2] = 1;
+            }
+        }
+
+        // 节点
+        var nodes = [], minCol = 0, maxCol = 0;
+        for (var ii = 0; ii < allIds.length; ii++) {
+            var id = allIds[ii];
+            if (keep && !keep[id]) continue;
+            var col = colOf[inChart[id]] || 0;
+            minCol = Math.min(minCol, col); maxCol = Math.max(maxCol, col);
+            var st = act[id] ? 'active' : (fin[id] ? 'done' : 'locked');
+            nodes.push({ id: id, chain: inChart[id], col: col, depth: depth(id), state: st });
+        }
+        // y：detail 用原始 depth；chapter 用 kept 子集紧凑 rank
+        if (mode === 'chapter') {
+            nodes.sort(function (x, y) { return x.depth - y.depth; });
+            var rank = -1, lastDepth = -999;
+            for (var n = 0; n < nodes.length; n++) {
+                if (nodes[n].depth !== lastDepth) { lastDepth = nodes[n].depth; rank++; }
+                nodes[n].row = rank;
+            }
+        } else {
+            for (var n2 = 0; n2 < nodes.length; n2++) nodes[n2].row = nodes[n2].depth;
+        }
+        // 坐标
+        var maxRow = 0;
+        for (var p = 0; p < nodes.length; p++) {
+            nodes[p].x = (nodes[p].col - minCol) * CHART_COL_W + CHART_COL_W / 2;
+            nodes[p].y = nodes[p].row * CHART_ROW_H + CHART_ROW_H / 2;
+            maxRow = Math.max(maxRow, nodes[p].row);
+        }
+        var nodeSet = Object.create(null);
+        for (var q = 0; q < nodes.length; q++) nodeSet[nodes[q].id] = nodes[q];
+
+        // 边
+        var edges = [];
+        if (mode === 'chapter') {
+            // 最近 kept 祖先（折叠线性段）
+            for (var e = 0; e < nodes.length; e++) {
+                var nid = nodes[e].id, seen = Object.create(null);
+                var stack = (tasks[nid] && tasks[nid].req) ? tasks[nid].req.map(String) : [];
+                while (stack.length) {
+                    var anc = stack.shift();
+                    if (seen[anc] || inChart[anc] == null) continue;
+                    seen[anc] = 1;
+                    if (nodeSet[anc]) edges.push({ from: anc, to: nid, cross: inChart[anc] !== nodes[e].chain });
+                    else { var at = tasks[anc]; if (at && at.req) stack = stack.concat(at.req.map(String)); }
+                }
+            }
+        } else {
+            for (var e2 = 0; e2 < nodes.length; e2++) {
+                var n3 = nodes[e2], t3 = tasks[n3.id];
+                if (t3 && t3.req) for (var r3 = 0; r3 < t3.req.length; r3++) {
+                    var rk3 = String(t3.req[r3]);
+                    if (nodeSet[rk3]) edges.push({ from: rk3, to: n3.id, cross: inChart[rk3] !== n3.chain });
+                }
+            }
+        }
+        return {
+            nodes: nodes, edges: edges, nodeSet: nodeSet,
+            width: (maxCol - minCol + 1) * CHART_COL_W,
+            height: (maxRow + 1) * CHART_ROW_H
+        };
+    }
+
+    function edgePath(a, b) {
+        var x1 = a.x, y1 = a.y, x2 = b.x, y2 = b.y, my = (y1 + y2) / 2;
+        return 'M' + x1 + ',' + y1 + ' C' + x1 + ',' + my + ' ' + x2 + ',' + my + ' ' + x2 + ',' + y2;
+    }
+    function chartNodeLabel(t) {
+        if (t && t.chain && t.chain[1] != null) return String(t.chain[1]); // 链内序号
+        return (t && t.title) ? t.title.charAt(0) : '?';
+    }
+
+    function renderChart() {
+        if (!_chartCanvasEl) return;
+        if (!_catalog) { _chartCanvasEl.innerHTML = '<div class="tlv-loading">任务目录加载中…</div>'; return; }
+        var layout = computeChartLayout(_chartMode);
+        _chartLayout = layout;
+        if (!layout || !layout.nodes.length) {
+            _chartCanvasEl.innerHTML = '<div class="tlv-loading">暂无可展示的任务链</div>';
+            return;
+        }
+        var W = layout.width, H = layout.height;
+        var svg = '<svg class="tlv-chart-edges" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">';
+        for (var i = 0; i < layout.edges.length; i++) {
+            var ed = layout.edges[i], a = layout.nodeSet[ed.from], b = layout.nodeSet[ed.to];
+            if (!a || !b) continue;
+            svg += '<path class="tlv-edge' + (ed.cross ? ' cross' : '') + '" d="' + edgePath(a, b) + '"/>';
+        }
+        svg += '</svg>';
+        var html = '';
+        for (var j = 0; j < layout.nodes.length; j++) {
+            var n = layout.nodes[j], t = _catalog.tasks[n.id];
+            var sel = (n.id === _logSelectedId) ? ' selected' : '';
+            var cs = chainStyleOf(n.chain);
+            // 链配色经自定义属性下发：--hex-rim(外环) / --hex-num(数字)；face 仅链覆盖时设(否则由状态类驱动)
+            var style = 'left:' + n.x + 'px;top:' + n.y + 'px;--hex-rim:' + cs.rim + ';--hex-num:' + (cs.num || '#1a1a1a') + ';';
+            if (cs.face) style += '--hex-face:' + cs.face + ';';
+            html += '<button type="button" class="tlv-hex ' + n.state + sel + '" data-task-id="' + escAttr(n.id) +
+                '" data-cat="' + escAttr(CATEGORY_MAP[n.chain] || '其他') + '" style="' + style + '"' +
+                ' title="' + escAttr(t ? (t.title || '') : '') + '"><span class="tlv-hex-label">' + escHtml(chartNodeLabel(t)) + '</span></button>';
+        }
+        _chartCanvasEl.style.width = W + 'px';
+        _chartCanvasEl.style.height = H + 'px';
+        _chartCanvasEl.innerHTML = svg + html;
+        applyChartZoom();
+    }
+
+    // WebView2 = Chromium，用 CSS zoom（reflow 滚动区域，比 transform scale 省去手动算尺寸）
+    function applyChartZoom() {
+        if (_chartCanvasEl) _chartCanvasEl.style.zoom = _chartZoom;
+    }
+
+    function onChartClick(e) {
+        if (_chartDragMoved) { _chartDragMoved = false; return; } // 刚发生拖拽平移 → 抑制本次点击，不误选节点
+        var t = e.target;
+        while (t && t !== _chartCanvasEl && !(t.classList && t.classList.contains('tlv-hex'))) t = t.parentNode;
+        if (!t || t === _chartCanvasEl || !t.classList || !t.classList.contains('tlv-hex')) return;
+        var id = t.getAttribute('data-task-id');
+        if (id) selectLogNode(id);
+    }
+
+    // ── 左键拖拽平移（取代滚动条，二维画布更直观；保留滚轮，隐藏滚动条）──
+    // 「点击 vs 拖拽」判定：移动超阈值才算拖拽并平移 + 抑制随后的 click（防误选节点）。
+    var CHART_DRAG_THRESHOLD = 4;
+    function onChartMouseDown(e) {
+        if (e.button !== 0 || !_chartViewportEl) return;          // 仅左键
+        _chartDrag = { x: e.clientX, y: e.clientY, sl: _chartViewportEl.scrollLeft, st: _chartViewportEl.scrollTop };
+        _chartDragMoved = false;
+        _chartViewportEl.classList.add('grabbing');
+        document.addEventListener('mousemove', onChartMouseMove);
+        document.addEventListener('mouseup', onChartMouseUp);
+    }
+    function onChartMouseMove(e) {
+        if (!_chartDrag) return;
+        var dx = e.clientX - _chartDrag.x, dy = e.clientY - _chartDrag.y;
+        if (!_chartDragMoved && (Math.abs(dx) > CHART_DRAG_THRESHOLD || Math.abs(dy) > CHART_DRAG_THRESHOLD)) _chartDragMoved = true;
+        if (_chartDragMoved) {
+            _chartViewportEl.scrollLeft = _chartDrag.sl - dx;
+            _chartViewportEl.scrollTop = _chartDrag.st - dy;
+            if (e.preventDefault) e.preventDefault();
+        }
+    }
+    function onChartMouseUp() {
+        _chartDrag = null;
+        if (_chartViewportEl) _chartViewportEl.classList.remove('grabbing');
+        document.removeEventListener('mousemove', onChartMouseMove);
+        document.removeEventListener('mouseup', onChartMouseUp);
+        // 注：_chartDragMoved 不在此清，留给随后的 onChartClick 读取并自清（拖拽末尾的 click 紧跟 mouseup）
+    }
+    function endChartDrag() { // 生命周期清理（onClose）：确保不残留 document 监听
+        _chartDrag = null; _chartDragMoved = false;
+        if (_chartViewportEl) _chartViewportEl.classList.remove('grabbing');
+        document.removeEventListener('mousemove', onChartMouseMove);
+        document.removeEventListener('mouseup', onChartMouseUp);
+    }
+
+    function onLogbarClick(e) {
+        var t = e.target;
+        while (t && !(t.classList && t.classList.contains('tlv-seg-btn'))) t = t.parentNode;
+        if (!t || !t.classList || !t.classList.contains('tlv-seg-btn')) return;
+        if (t.getAttribute('data-logview')) { setLogView(t.getAttribute('data-logview')); return; }
+        if (t.getAttribute('data-chartmode')) {
+            _chartMode = t.getAttribute('data-chartmode');
+            setSegActive(t);
+            renderChart();
+            return;
+        }
+        if (t.getAttribute('data-zoom')) {
+            _chartZoom = Number(t.getAttribute('data-zoom')) || 1;
+            setSegActive(t);
+            applyChartZoom();
+            return;
+        }
+    }
+    function setSegActive(btn) {
+        var seg = btn.parentNode;
+        if (!seg) return;
+        var btns = seg.querySelectorAll('.tlv-seg-btn');
+        for (var i = 0; i < btns.length; i++) btns[i].classList.toggle('active', btns[i] === btn);
+    }
+    // 重置工具栏三组分段按钮到默认高亮（列表/详细/100%）——onOpen 调，防 DOM 复用残留上次 .active
+    function resetChartToolbarButtons() {
+        if (!_el) return;
+        var defaults = [['data-logview', 'list'], ['data-chartmode', 'detail'], ['data-zoom', '1']];
+        for (var d = 0; d < defaults.length; d++) {
+            var attr = defaults[d][0], val = defaults[d][1];
+            var btns = _el.querySelectorAll('.tlv-logbar .tlv-seg-btn[' + attr + ']');
+            for (var i = 0; i < btns.length; i++) btns[i].classList.toggle('active', btns[i].getAttribute(attr) === val);
+        }
+    }
+    function setLogView(view) {
+        if (view !== 'list' && view !== 'chart') return;
+        _logView = view;
+        _logviewEl.setAttribute('data-logview', view);
+        // 工具栏分段高亮
+        var segBtns = _el.querySelectorAll('.tlv-logbar .tlv-seg-btn[data-logview]');
+        for (var i = 0; i < segBtns.length; i++) segBtns[i].classList.toggle('active', segBtns[i].getAttribute('data-logview') === view);
+        _chartCtrlsEl.hidden = (view !== 'chart');
+        _treeEl.hidden = (view === 'chart');
+        _chartViewportEl.hidden = (view !== 'chart');
+        renderActiveLogView();
+    }
+
     // ── 骨架屏 ──
     function renderSkeletonList() {
         var html = '';
@@ -1055,7 +1713,32 @@
             _isBusy: function() { return _busy; },
             _abandonPendingId: function() { return _pendingAbandonId; },
             // 绕过按钮直发面板命令（QA 验证服务端门控，如对非远程任务发 finishTask 应回 requires_npc）
-            _debugSend: function(cmd, extra, cb) { return sendPanelMsg(cmd, extra, cb); }
+            _debugSend: function(cmd, extra, cb) { return sendPanelMsg(cmd, extra, cb); },
+            // 事件日志/任务树（WS6）QA 钩子
+            _logState: function() {
+                return {
+                    catalogState: _catalogState,
+                    selectedId: _logSelectedId,
+                    chainCount: _treeEl ? _treeEl.querySelectorAll('.tlv-chain').length : 0,
+                    nodeCount: _treeEl ? _treeEl.querySelectorAll('.tlv-node').length : 0,
+                    replayBtnCount: _logDetailEl ? _logDetailEl.querySelectorAll('.tlv-replay-btn').length : 0
+                };
+            },
+            _selectLogNode: function(id) { selectLogNode(id); },
+            // 图表视图（BALDR SKY 风）QA 钩子
+            _setLogView: function(v) { setLogView(v); },
+            _chartState: function() {
+                return {
+                    logView: _logView, zoom: _chartZoom, mode: _chartMode,
+                    hexCount: _chartCanvasEl ? _chartCanvasEl.querySelectorAll('.tlv-hex').length : 0,
+                    edgeCount: _chartCanvasEl ? _chartCanvasEl.querySelectorAll('.tlv-edge').length : 0,
+                    selectedHex: _chartCanvasEl ? !!_chartCanvasEl.querySelector('.tlv-hex.selected') : false
+                };
+            },
+            _setChartMode: function(m) { _chartMode = m; renderChart(); },
+            _setChartZoom: function(z) { _chartZoom = z; applyChartZoom(); },
+            _chainStyle: CHART_CHAIN_STYLE,   // 写手可读改的任务线配色配置
+            _hexRim: function(id) { var h = _chartCanvasEl && _chartCanvasEl.querySelector('.tlv-hex[data-task-id="' + id + '"]'); return h ? h.style.getPropertyValue('--hex-rim').trim() : ''; }
         };
     }
 })();

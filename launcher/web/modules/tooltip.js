@@ -465,8 +465,13 @@ var PanelTooltip = (function() {
     // ── AS2 HTML 转换 ──
 
     /**
-     * 将 AS2 TextField HTML 标记转为浏览器兼容 HTML
-     * AS2 使用 <FONT COLOR='#FFCC00'> 等大写标签
+     * 将 AS2 TextField HTML 标记转为浏览器兼容 HTML（白名单 + 属性校验，安全）。
+     * 覆盖 AS2 htmlText 常用子集：<FONT COLOR/SIZE/FACE>、<B>/<I>/<U>、<BR>、<P ALIGN>。
+     * 设计取舍（2026-06-09 WS6 对话回放）：在不引入 HTML 解析器/不增复杂度前提下尽量贴近 AS2 表达力。
+     *   - COLOR：仅 #RGB/#RRGGBB 十六进制；SIZE：1~96 的整数 px；FACE：白名单字符的 font-family。
+     *   - P ALIGN：left/right/center/justify → text-align。
+     * 刻意【不】支持（留待对话框整体迁 web 的富文本阶段，避免现在引入复杂度/风险）：
+     *   <A HREF>（AS2 asfunction: 无法在 web 执行 + 安全面）、<IMG>（外链加载/排版/立绘）、<TEXTFORMAT>（制表/缩进）、<LI>（需列表上下文）。
      */
     function convertAS2Html(s) {
         if (!s) return '';
@@ -483,9 +488,22 @@ var PanelTooltip = (function() {
                     var px = parseInt(size[2], 10);
                     if (!isNaN(px) && px > 0 && px <= 96) style.push('font-size:' + px + 'px');
                 }
+                var face = /\bFACE\s*=\s*(['"])(.*?)\1/i.exec(attrs);
+                if (face) {
+                    // 仅留字母/数字/中文/空格/连字符（防 style 注入），非空才输出 font-family
+                    var f = face[2].replace(/[^\w一-龥 \-]/g, '').replace(/\s+/g, ' ');
+                    if (f) style.push("font-family:'" + f + "'");
+                }
                 return style.length ? '<span style="' + style.join(';') + '">' : '<span>';
             })
             .replace(/<\/FONT>/gi, '</span>')
+            .replace(/<P\b([^>]*)>/gi, function(m, attrs) {
+                var al = /\bALIGN\s*=\s*(['"])(.*?)\1/i.exec(attrs || '');
+                var a = al ? al[2].toLowerCase() : '';
+                return (a === 'left' || a === 'right' || a === 'center' || a === 'justify')
+                    ? '<p style="text-align:' + a + '">' : '<p>';
+            })
+            .replace(/<\/P>/gi, '</p>')
             .replace(/<B>/gi, '<b>').replace(/<\/B>/gi, '</b>')
             .replace(/<I>/gi, '<i>').replace(/<\/I>/gi, '</i>')
             .replace(/<U>/gi, '<u>').replace(/<\/U>/gi, '</u>')
