@@ -127,6 +127,24 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void HandleWebRequest_WebSuppliedActionTask_CannotOverrideTrustedAction()
+        {
+            // 安全反向用例：Web 消息夹带 action/task 不得覆盖 C# 由 cmd 派生的可信 action/信封。
+            // 否则 cmd:"snapshot" + action:"taskDelete" 可绕过前端确认弹窗，并触达 AS2 裸分发
+            // _root.gameCommands[action]（无白名单）→ 调用任意已注册全局命令。
+            string sent = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("snapshot",
+                JObject.Parse("{\"callId\":\"web-evil\",\"action\":\"taskDelete\",\"task\":\"evil\",\"taskId\":106}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("cmd", (string)msg["task"]);            // 信封 task 仍是可信的 "cmd"，未被 "evil" 覆盖
+            Assert.Equal("taskSnapshot", (string)msg["action"]); // action 仍由 cmd=snapshot 派生，未被 "taskDelete" 劫持
+            Assert.Equal(106, (int)msg["taskId"]);               // 其它字段照常透传——守卫是外科级，仅拦 action/task
+        }
+
+        [Fact]
         public void HandleWebRequest_NavigateFinish_SendsTaskNavigateFinishActionAndTaskId()
         {
             string sent = null;

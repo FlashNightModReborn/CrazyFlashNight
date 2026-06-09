@@ -516,8 +516,12 @@
             endOp(btn);
             if (reqSession !== _session) return;
             if (data && data.success) {
-                toast('任务已交付');
-                applyWriteSnapshot(data);
+                // 远程交付成功后必须关面板：AS2 FinishTask 会 SetDialogue(完成对话) + 弹奖励提示界面 +
+                // 可能自动接取链中下一任务再弹接取对话，这些原版 UI 都在游戏层，会被独占 web 覆盖层挡住
+                // （玩家看不到也无法消解奖励弹窗）。关面板把它们露出来（closePanel 语义同前往交付 / 地图 navigate）。
+                hideTip();
+                Panels.close();
+                Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close' });
             } else {
                 toast(writeErrorMsg('交付失败', data));
                 // 失败也消费刷新后的 tasks：任务未 splice 时 applyWriteSnapshot 按 taskId 原位保留选中，

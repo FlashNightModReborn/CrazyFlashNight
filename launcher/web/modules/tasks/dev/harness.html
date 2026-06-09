@@ -583,14 +583,16 @@
                 return remoteOk && navOk && lockedOk && unsatOk;
             });
 
-            await check('task-ui16', '交付满足任务→移除+计数-1（taskId 解析，非首项 index 偏移无碍）', async function() {
+            await check('task-ui16', '远程交付满足任务→成功后关面板（taskId 解析非首项无碍；关面板露原版奖励/完成对话）', async function() {
                 await reopenFresh();
-                clickIcon(3); // 104 大学(支线) satisfied=true，非首项
+                clickIcon(3); // 104 大学(支线) satisfied=true，非首项，finishRemote
                 await waitFor(function() { return titleNow() === '选修课程'; }, 3000);
                 document.querySelector('.task-act-deliver').click();
-                await waitFor(function() { return window.TaskPanel.getState().taskCount === 9; }, 4000);
-                var gone = host._tasks.filter(function(t) { return t.taskId === 104; }).length === 0;
-                return window.TaskPanel.getState().taskCount === 9 && gone;
+                // P2：远程交付成功后关面板（AS2 FinishTask 会 SetDialogue/弹奖励界面/可能自动接取下一任务再弹对话，
+                // 这些原版 UI 在游戏层、被独占 web 覆盖层挡住）。closePanel 语义同前往交付 / 地图 navigate。
+                await waitFor(function() { return !Panels.isOpen(); }, 4000);
+                var gone = host._tasks.filter(function(t) { return t.taskId === 104; }).length === 0; // 服务端按 taskId 解析并 splice
+                return !Panels.isOpen() && gone;
             });
 
             await check('task-ui17', '放弃→弹确认；取消则不删除', async function() {

@@ -46,6 +46,22 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void HandleWebRequest_WebSuppliedActionTask_CannotOverrideTrustedAction()
+        {
+            // 安全反向用例：Web 夹带 action/task 不得覆盖 C# 由 cmd 派生的可信 action/信封
+            // （AS2 裸分发 _root.gameCommands[action]，无白名单，否则可绕过 cmd→action 映射）。
+            string sent = null;
+            var task = new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("snapshot",
+                JObject.Parse("{\"callId\":\"web-evil\",\"action\":\"petAdvance\",\"task\":\"evil\"}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("cmd", (string)msg["task"]);
+            Assert.Equal("petSnapshot", (string)msg["action"]);
+        }
+
+        [Fact]
         public void HandleWebRequest_Advance_ForwardsExtraParams()
         {
             string sent = null;

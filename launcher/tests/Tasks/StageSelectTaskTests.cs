@@ -44,6 +44,23 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void HandleWebRequest_WebSuppliedActionTask_CannotOverrideTrustedAction()
+        {
+            // 安全反向用例：Web 夹带 action/task 不得覆盖 C# 由 cmd 派生的可信 action/信封
+            // （AS2 裸分发 _root.gameCommands[action]，无白名单，否则可绕过 cmd→action 映射）。
+            string sent = null;
+            var task = new StageSelectTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("snapshot",
+                JObject.Parse("{\"callId\":\"web-evil\",\"action\":\"stageSelectEnter\",\"task\":\"evil\",\"frameLabel\":\"基地车库\"}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("cmd", (string)msg["task"]);
+            Assert.Equal("stageSelectSnapshot", (string)msg["action"]);
+            Assert.Equal("基地车库", (string)msg["frameLabel"]); // 其它字段照常透传，仅 action/task 被守卫
+        }
+
+        [Fact]
         public void HandleWebRequest_Enter_SendsStageSelectEnterAction()
         {
             string sent = null;

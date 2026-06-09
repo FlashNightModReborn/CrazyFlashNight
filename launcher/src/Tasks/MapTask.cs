@@ -114,7 +114,10 @@ namespace CF7Launcher.Tasks
             flashMsg["callId"] = fid;
             foreach (var prop in parsed.Properties())
             {
-                if (prop.Name != "type" && prop.Name != "panel" && prop.Name != "cmd" && prop.Name != "callId")
+                // 安全：排除 action/task，防 Web 消息夹带同名字段覆盖 C# 派生的可信 action
+                // （AS2 handleGameCommand 裸分发 _root.gameCommands[action]，无白名单）。
+                if (prop.Name != "type" && prop.Name != "panel" && prop.Name != "cmd" && prop.Name != "callId"
+                    && prop.Name != "action" && prop.Name != "task")
                     flashMsg[prop.Name] = prop.Value;
             }
 
