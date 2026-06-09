@@ -3448,6 +3448,8 @@ namespace CF7Launcher.Guardian
                     break;
                 case "snapshot":
                 case "detail":
+                case "finishTask":
+                case "deleteTask":
                 case "navigate":
                 case "refresh":
                 case "open_stage_select":

@@ -97,6 +97,89 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void HandleWebRequest_FinishTask_SendsTaskFinishActionAndTaskId()
+        {
+            string sent = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("finishTask", JObject.Parse("{\"callId\":\"web-f\",\"taskId\":106}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("cmd", (string)msg["task"]);
+            Assert.Equal("taskFinish", (string)msg["action"]);
+            Assert.Equal(106, (int)msg["taskId"]);
+            // 写操作必须透传 taskId（不传 index）：AS2 splice 后 index 偏移，taskId 才是稳定主键。
+            Assert.Null(msg["index"]);
+            Assert.Null(msg["panel"]);
+        }
+
+        [Fact]
+        public void HandleWebRequest_DeleteTask_SendsTaskDeleteActionAndTaskId()
+        {
+            string sent = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("deleteTask", JObject.Parse("{\"callId\":\"web-d\",\"taskId\":103}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("taskDelete", (string)msg["action"]);
+            Assert.Equal(103, (int)msg["taskId"]);
+        }
+
+        [Fact]
+        public void HandleFlashResponse_FinishTask_RewritesEnvelopeAndPreservesFreshTasks()
+        {
+            // 写操作回包契约：AS2 在 splice 后回 success + 刷新后的 tasks 概要；C# 须改写信封为
+            // panel_resp 且原样保留 tasks，让 Web 端 applyWriteSnapshot 原子重渲。
+            string sent = null;
+            string posted = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            task.HandleWebRequest("finishTask", JObject.Parse("{\"callId\":\"web-f2\",\"taskId\":104}"));
+            int flashCallId = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+            task.HandleFlashResponse(
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":" + flashCallId + ",\"success\":true,\"tasks\":[{\"taskId\":101,\"title\":\"斩杀大boss僵尸\",\"satisfied\":true}]}"),
+                delegate(string json) { });
+
+            var resp = JObject.Parse(posted);
+            Assert.Equal("panel_resp", (string)resp["type"]);
+            Assert.Equal("tasks", (string)resp["panel"]);
+            Assert.Equal("finishTask", (string)resp["cmd"]);
+            Assert.Equal("web-f2", (string)resp["callId"]);
+            Assert.True((bool)resp["success"]);
+            Assert.Null(resp["task"]);
+            var tasks = (JArray)resp["tasks"];
+            Assert.Single(tasks);
+            Assert.Equal(101, (int)tasks[0]["taskId"]);
+        }
+
+        [Fact]
+        public void HandleFlashResponse_DeleteTask_PreservesErrorAndTasksOnFailure()
+        {
+            // 失败回包（如主线拒绝）也带 tasks：Web 端据此重同步。
+            string sent = null;
+            string posted = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            task.HandleWebRequest("deleteTask", JObject.Parse("{\"callId\":\"web-d2\",\"taskId\":101}"));
+            int flashCallId = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+            task.HandleFlashResponse(
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":" + flashCallId + ",\"success\":false,\"error\":\"cannot_delete_main\",\"tasks\":[{\"taskId\":101}]}"),
+                delegate(string json) { });
+
+            var resp = JObject.Parse(posted);
+            Assert.Equal("panel_resp", (string)resp["type"]);
+            Assert.Equal("deleteTask", (string)resp["cmd"]);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("cannot_delete_main", (string)resp["error"]);
+            Assert.Single((JArray)resp["tasks"]);
+        }
+
+        [Fact]
         public void HandleWebRequest_UnsupportedCmd_ReturnsErrorWithoutSending()
         {
             string sent = null;

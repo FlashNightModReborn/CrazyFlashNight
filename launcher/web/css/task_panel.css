@@ -990,6 +990,170 @@
 .task-panel-container[data-tab="log"] .task-panel-logview { display: flex; }
 
 /* ═══════════════════════════════════════════════════════════════
+   写操作：详情操作区（交付 / 放弃）+ 放弃确认弹窗 + 操作锁
+   配色纪律：功能按钮黑白灰，主次靠「填充 vs 描边」分层，不用焦点橙。
+   方形语言：圆角 3px（与 chips/关闭键一致）。
+   ═══════════════════════════════════════════════════════════════ */
+.task-detail-actions {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: auto;          /* 推到详情区底部 */
+    padding: 10px 4px 6px;
+}
+.task-act-btn {
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+    min-width: 110px;
+    height: 38px;
+    padding: 0 22px;
+    border-radius: 3px;
+    font-family: var(--task-serif);
+    font-size: 18px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.12s, box-shadow 0.18s;
+}
+.task-act-btn:active { transform: translateY(1px); }
+
+/* 主操作=填充浅灰（视觉权重最高，但仍是黑白灰） */
+.task-act-deliver {
+    background: linear-gradient(to bottom, #e8e8e8, #b9b9b9);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    color: #1c1c1c;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+    font-weight: bold;
+}
+.task-act-deliver:hover {
+    background: linear-gradient(to bottom, #ffffff, #cfcfcf);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* 次操作=描边 */
+.task-act-abandon {
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: var(--task-text);
+}
+.task-act-abandon:hover {
+    background: rgba(255, 80, 80, 0.18);
+    border-color: rgba(255, 80, 80, 0.5);
+    color: #ffd9d9;
+}
+
+/* 禁用态（交付未满足 / 主线不可放弃） */
+.task-act-btn[disabled],
+.task-act-btn:disabled {
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--task-text-dim);
+    cursor: not-allowed;
+    box-shadow: none;
+    text-shadow: none;
+    font-weight: normal;
+    opacity: 0.7;
+}
+.task-act-btn[disabled]:hover,
+.task-act-btn:disabled:hover { background: rgba(0, 0, 0, 0.22); border-color: rgba(255, 255, 255, 0.08); color: var(--task-text-dim); }
+
+/* 按钮 pending（写请求在途）：转圈 + 禁交互 */
+.task-btn-pending {
+    pointer-events: none;
+    color: transparent !important;
+    text-shadow: none !important;
+}
+.task-btn-pending::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 16px; height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid rgba(120, 120, 120, 0.4);
+    border-top-color: #2a2a2a;
+    border-radius: 50%;
+    animation: task-btn-spin 0.7s linear infinite;
+}
+.task-act-abandon.task-btn-pending::after { border-color: rgba(255, 255, 255, 0.3); border-top-color: #fff; }
+@keyframes task-btn-spin { to { transform: rotate(360deg); } }
+
+/* 操作锁：写请求在途时屏蔽整个面板交互（按钮自身的 pending 仍可见） */
+.task-panel-container.task-busy .task-panel-body,
+.task-panel-container.task-busy .task-panel-toolbar { pointer-events: none; }
+.task-panel-container.task-busy .task-act-btn.task-btn-pending { pointer-events: none; }
+
+/* ── 放弃确认弹窗 ── */
+.task-confirm-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.55);
+    animation: task-confirm-fade 0.18s ease-out;
+}
+.task-confirm-overlay[hidden] { display: none; }
+@keyframes task-confirm-fade { from { opacity: 0; } to { opacity: 1; } }
+.task-confirm-dialog {
+    box-sizing: border-box;
+    width: 420px;
+    max-width: 80%;
+    padding: 22px 26px 18px;
+    background: linear-gradient(to bottom, #2a2a2a, #1b1b1b);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 3px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    color: var(--task-text);
+    font-family: var(--task-serif);
+    animation: task-confirm-pop 0.22s var(--task-ease);
+}
+@keyframes task-confirm-pop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.task-confirm-title {
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    text-shadow: var(--task-shadow);
+}
+.task-confirm-body {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--task-text-dim);
+    margin-bottom: 18px;
+}
+.task-confirm-body strong { color: var(--task-text); }
+.task-confirm-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.task-confirm-btn {
+    box-sizing: border-box;
+    min-width: 92px;
+    height: 36px;
+    padding: 0 18px;
+    border-radius: 3px;
+    font-family: var(--task-serif);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.18s, border-color 0.18s, color 0.18s;
+}
+.task-confirm-no {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--task-text);
+}
+.task-confirm-no:hover { background: rgba(255, 255, 255, 0.12); }
+.task-confirm-yes {
+    background: rgba(180, 50, 50, 0.3);
+    border: 1px solid rgba(255, 90, 90, 0.5);
+    color: #ffdede;
+}
+.task-confirm-yes:hover { background: rgba(200, 50, 50, 0.45); border-color: rgba(255, 120, 120, 0.7); }
+
+/* ═══════════════════════════════════════════════════════════════
    降级：尊重 prefers-reduced-motion（低功耗机型保护）
    ═══════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
@@ -1008,4 +1172,6 @@
     .task-panel-logview .tlv-icon,
     .scroll-track,
     .task-skel { animation: none !important; }
+    /* 通配符 * 不命中伪元素：写请求 spinner 挂在 ::after 上，须显式停转（低功耗机保护） */
+    .task-btn-pending::after { animation: none !important; }
 }

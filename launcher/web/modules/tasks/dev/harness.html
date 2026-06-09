@@ -152,6 +152,7 @@
             _tasks: [],
             _empty: false,
             _detailCalls: 0,
+            _inventoryFullFor: null,   // 模拟 FinishTask「背包无法装下奖励」失败的 taskId
             // satisfied 覆盖表：模拟 AS2 taskCompleteCheck 的判定结果随游戏状态变化（如补齐提交物品）。
             // Web 端只消费此布尔，不自行从 stageReq/itemReqs 推断完成——本表用于验证该契约。
             _satisfiedOverride: {},
@@ -167,8 +168,13 @@
                 this._satisfiedOverride[taskId] = val;
                 for (var i = 0; i < this._tasks.length; i++) if (this._tasks[i].taskId === taskId) this._tasks[i].satisfied = val;
             },
+            // 按 taskId 解析当前 index（镜像 AS2 resolveIndexByTaskId：splice 后 index 偏移，taskId 才稳定）
+            findIdx: function(taskId) {
+                for (var i = 0; i < this._tasks.length; i++) if (String(this._tasks[i].taskId) === String(taskId)) return i;
+                return -1;
+            },
             handle: function(m) {
-                log('→ ' + m.cmd + (m.index != null ? ' index=' + m.index : '') + (m.itemName ? ' ' + m.itemName : ''));
+                log('→ ' + m.cmd + (m.index != null ? ' index=' + m.index : '') + (m.taskId != null ? ' taskId=' + m.taskId : '') + (m.itemName ? ' ' + m.itemName : ''));
                 if (m.cmd === 'detail') this._detailCalls++;
                 var self = this;
                 function resp(extra) {
@@ -189,6 +195,26 @@
                     case 'tooltip': {
                         var tt = tooltipFor(m.itemName);
                         resp({ success: true, introHTML: tt.introHTML, descHTML: tt.descHTML, itemType: tt.type });
+                        break;
+                    }
+                    // 写操作：镜像 AS2 handleFinish/handleDelete（taskId 解析 + 门控 + splice + 回刷新 tasks）
+                    case 'finishTask': {
+                        var fi = self.findIdx(m.taskId);
+                        if (fi < 0) { resp({ success: false, error: 'task_not_found', tasks: clone(self._tasks) }); break; }
+                        if (!self._tasks[fi].satisfied) { resp({ success: false, error: 'not_satisfied', tasks: clone(self._tasks) }); break; }
+                        if (self._inventoryFullFor != null && String(self._tasks[fi].taskId) === String(self._inventoryFullFor)) {
+                            resp({ success: false, error: 'inventory_full', tasks: clone(self._tasks) }); break;
+                        }
+                        self._tasks.splice(fi, 1);
+                        resp({ success: true, tasks: clone(self._tasks) });
+                        break;
+                    }
+                    case 'deleteTask': {
+                        var di = self.findIdx(m.taskId);
+                        if (di < 0) { resp({ success: false, error: 'task_not_found', tasks: clone(self._tasks) }); break; }
+                        if (self._tasks[di].type === '主线') { resp({ success: false, error: 'cannot_delete_main', tasks: clone(self._tasks) }); break; }
+                        self._tasks.splice(di, 1);
+                        resp({ success: true, tasks: clone(self._tasks) });
                         break;
                     }
                     case 'close': break;
@@ -248,6 +274,16 @@
                     var r = item.getBoundingClientRect();
                     var ev = new MouseEvent('mouseover', { bubbles: true, clientX: r.left + 6, clientY: r.top + 6 });
                     item.dispatchEvent(ev);
+                }
+            }
+            if (q('confirm')) {
+                // 打开放弃确认弹窗（选一个支线任务）以便截图
+                var sideBtn = document.querySelector('.task-icon[data-index="2"]');
+                if (sideBtn) {
+                    sideBtn.click();
+                    await waitFor(function() { return document.querySelector('.task-act-abandon'); }, 3000).catch(function(){});
+                    var ab = document.querySelector('.task-act-abandon');
+                    if (ab && !ab.disabled) ab.click();
                 }
             }
         }
@@ -406,6 +442,96 @@
                 await waitFor(function() { return document.querySelector('.task-deliverable .task-stamp-check'); }, 3000);
                 return !!document.querySelector('.task-deliverable .task-stamp-check') &&
                        !!document.querySelector('.task-icon[data-index="5"] .task-finished-overlay');
+            });
+
+            // ── 写操作（WS5：交付 / 放弃）──
+            function reopenFresh() {
+                host._satisfiedOverride = {};
+                host._inventoryFullFor = null;
+                host.close();
+                return waitFor(function() { return !Panels.isOpen(); }, 2000).then(function() {
+                    host.open();
+                    return waitFor(function() { return window.TaskPanel.getState().taskCount === 10; }, 4000);
+                });
+            }
+            function clickIcon(idx) { var b = document.querySelector('.task-icon[data-index="' + idx + '"]'); if (b) b.click(); return b; }
+            function titleNow() { var n = document.querySelector('.task-title-line2'); return n ? n.textContent : ''; }
+
+            await check('task-ui15', '操作区按钮门控：满足→交付可点+主线放弃禁用；未满足→交付禁用；支线→放弃可点', async function() {
+                await reopenFresh();
+                clickIcon(0); // 101 主线 satisfied
+                await waitFor(function() { return titleNow() === '斩杀大boss僵尸'; }, 3000);
+                var dv = document.querySelector('.task-act-deliver'), ab = document.querySelector('.task-act-abandon');
+                var mainOk = dv && !dv.disabled && ab && ab.disabled; // 主线可交付、不可放弃
+                clickIcon(1); // 102 主线 未满足
+                await waitFor(function() { return titleNow() === '初入战场'; }, 3000);
+                var d2 = document.querySelector('.task-act-deliver');
+                var unsatOk = d2 && d2.disabled;
+                clickIcon(2); // 103 支线 未满足
+                await waitFor(function() { return titleNow() === '收集物资'; }, 3000);
+                var a3 = document.querySelector('.task-act-abandon');
+                var sideOk = a3 && !a3.disabled;
+                return mainOk && unsatOk && sideOk;
+            });
+
+            await check('task-ui16', '交付满足任务→移除+计数-1（taskId 解析，非首项 index 偏移无碍）', async function() {
+                await reopenFresh();
+                clickIcon(3); // 104 大学(支线) satisfied=true，非首项
+                await waitFor(function() { return titleNow() === '选修课程'; }, 3000);
+                document.querySelector('.task-act-deliver').click();
+                await waitFor(function() { return window.TaskPanel.getState().taskCount === 9; }, 4000);
+                var gone = host._tasks.filter(function(t) { return t.taskId === 104; }).length === 0;
+                return window.TaskPanel.getState().taskCount === 9 && gone;
+            });
+
+            await check('task-ui17', '放弃→弹确认；取消则不删除', async function() {
+                await reopenFresh();
+                clickIcon(2); // 103 支线
+                await waitFor(function() { return titleNow() === '收集物资'; }, 3000);
+                document.querySelector('.task-act-abandon').click();
+                await waitFor(function() { var o = document.getElementById('task-confirm-overlay'); return o && !o.hidden; }, 2000);
+                document.getElementById('task-confirm-no').click();
+                await waitFor(function() { var o = document.getElementById('task-confirm-overlay'); return o && o.hidden; }, 2000);
+                return window.TaskPanel.getState().taskCount === 10;
+            });
+
+            await check('task-ui18', '放弃→确认→移除+计数-1+弹窗关闭', async function() {
+                // 接 ui17：仍 10 个
+                clickIcon(2);
+                await waitFor(function() { return titleNow() === '收集物资'; }, 3000);
+                document.querySelector('.task-act-abandon').click();
+                await waitFor(function() { var o = document.getElementById('task-confirm-overlay'); return o && !o.hidden; }, 2000);
+                document.getElementById('task-confirm-yes').click();
+                await waitFor(function() { return window.TaskPanel.getState().taskCount === 9; }, 4000);
+                var gone = host._tasks.filter(function(t) { return t.taskId === 103; }).length === 0;
+                var hidden = document.getElementById('task-confirm-overlay').hidden;
+                return window.TaskPanel.getState().taskCount === 9 && gone && hidden;
+            });
+
+            await check('task-ui19', '交付遇背包满→失败保留任务+计数不变', async function() {
+                await reopenFresh();
+                host._inventoryFullFor = 101;
+                clickIcon(0); // 101 主线 satisfied
+                await waitFor(function() { return titleNow() === '斩杀大boss僵尸'; }, 3000);
+                document.querySelector('.task-act-deliver').click();
+                await waitFor(function() { return !window.TaskPanel._isBusy(); }, 3000);
+                var stillThere = host._tasks.filter(function(t) { return t.taskId === 101; }).length === 1;
+                host._inventoryFullFor = null;
+                return window.TaskPanel.getState().taskCount === 10 && stillThere;
+            });
+
+            await check('task-ui20', 'ESC：弹窗打开时先关弹窗（面板留存）；再 ESC 才关面板', async function() {
+                await reopenFresh();
+                clickIcon(2); // 103 支线
+                await waitFor(function() { return titleNow() === '收集物资'; }, 3000);
+                document.querySelector('.task-act-abandon').click();
+                await waitFor(function() { var o = document.getElementById('task-confirm-overlay'); return o && !o.hidden; }, 2000);
+                chrome.webview.__dispatch({ type: 'panel_esc' }); // 第一次 ESC → 仅关弹窗
+                await waitFor(function() { var o = document.getElementById('task-confirm-overlay'); return o && o.hidden; }, 2000);
+                if (!(Panels.isOpen() && window.TaskPanel._abandonPendingId() == null)) return false;
+                chrome.webview.__dispatch({ type: 'panel_esc' }); // 第二次 ESC → 关面板
+                await waitFor(function() { return !Panels.isOpen(); }, 2000);
+                return !Panels.isOpen();
             });
 
             var passed = results.filter(function(r) { return r.pass; }).length;

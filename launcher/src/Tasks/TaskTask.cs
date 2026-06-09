@@ -93,6 +93,16 @@ namespace CF7Launcher.Tasks
                     // 物品注释（name-keyed）：转发 itemName 给 AS2 tasksTooltip，回包含 introHTML/descHTML/itemType
                     action = "tasksTooltip";
                     break;
+                case "finishTask":
+                    // 交付任务（写操作）：转发 taskId 给 AS2 taskFinish；AS2 端按 taskId 解析当前
+                    // index 并以 taskCompleteCheck 二次门控，回包含刷新后的 tasks 概要（splice 后 index 已偏移）
+                    action = "taskFinish";
+                    break;
+                case "deleteTask":
+                    // 放弃任务（写操作）：转发 taskId 给 AS2 taskDelete；主线任务由 AS2 拒绝，
+                    // 回包含刷新后的 tasks 概要
+                    action = "taskDelete";
+                    break;
                 default:
                     RespondError(webCallId, cmd, "unsupported_cmd");
                     return;

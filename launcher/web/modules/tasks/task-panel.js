@@ -13,6 +13,10 @@
     //                     stageReq{name,difficulty}|null, itemReqs[{name,count,kind}],
     //                     npcName, rewards[{name,count}]} }
     //   tooltip(itemName) → { success, introHTML, descHTML, type, displayname }  (新增)
+    //   finishTask(taskId) → { success, tasks:[...], error? }   写操作·交付（taskId 主键解析）
+    //   deleteTask(taskId) → { success, tasks:[...], error? }   写操作·放弃（主线拒绝）
+    //     · 写操作一律传 taskId（稳定主键），不传 index——AS2 splice 后 index 会偏移
+    //     · 回包附带刷新后的 tasks 概要，前端走 applyWriteSnapshot 原子重渲
     // ═══════════════════════════════════════════════════════════
 
     // ── 状态 ──
@@ -33,6 +37,7 @@
     var _detailCache = Object.create(null);      // taskId → taskData
     var _tooltipCache = Object.create(null);     // itemName → {introHTML,descHTML,type} | {loading:true} | {failed:true,at}（null 原型，防 __proto__ 污染）
     var _hoverItemKey = null;
+    var _pendingAbandonId = null;                // 放弃确认弹窗待删 taskId
 
     // 设计分辨率
     var DESIGN_W = 1024;
@@ -112,6 +117,16 @@
                         '<div class="tlv-title">事件日志 · 任务树</div>' +
                         '<div class="tlv-sub">链式任务树与剧情对话回放正在开发中，敬请期待。</div>' +
                     '</div>' +
+                    '<div class="task-confirm-overlay" id="task-confirm-overlay" hidden>' +
+                        '<div class="task-confirm-dialog">' +
+                            '<div class="task-confirm-title">放弃任务</div>' +
+                            '<div class="task-confirm-body" id="task-confirm-body"></div>' +
+                            '<div class="task-confirm-footer">' +
+                                '<button class="task-confirm-btn task-confirm-no" id="task-confirm-no" type="button">取消</button>' +
+                                '<button class="task-confirm-btn task-confirm-yes" id="task-confirm-yes" type="button">确认放弃</button>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
                 '</div>' +
             '</div>';
 
@@ -164,6 +179,15 @@
 
         // 键盘导航（上下键在左列表切换）
         _leftEl.addEventListener('keydown', onListKeydown);
+
+        // 详情区操作按钮（交付/放弃）——事件委托，按钮随详情每次重渲
+        _rightEl.addEventListener('click', onDetailAction);
+
+        // 放弃确认弹窗
+        var confirmOverlay = _el.querySelector('#task-confirm-overlay');
+        _el.querySelector('#task-confirm-yes').addEventListener('click', function(e) { onAbandonConfirm(e.currentTarget); });
+        _el.querySelector('#task-confirm-no').addEventListener('click', closeAbandonConfirm);
+        confirmOverlay.addEventListener('click', function(e) { if (e.target === confirmOverlay) closeAbandonConfirm(); });
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -182,6 +206,8 @@
         _hoverItemKey = null;
         _busy = false;
         _iconsReady = false;
+        closeAbandonConfirm();
+        if (_containerEl) _containerEl.classList.remove('task-busy');
         if (_containerEl) _containerEl.setAttribute('data-tab', 'mine');
         setActiveTabButton('mine');
         resetToolbarControls();
@@ -208,6 +234,8 @@
 
     function requestClose() {
         if (_busy) return;
+        // 放弃确认弹窗打开时，ESC/全局遮罩关闭应先消解弹窗（modal 栈语义），不直接拆整个面板
+        if (_pendingAbandonId != null) { closeAbandonConfirm(); return; }
         hideTip();
         Panels.close();
         Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close' });
@@ -218,6 +246,8 @@
         _busy = false;
         _session++;
         hideTip();
+        closeAbandonConfirm();
+        if (_containerEl) _containerEl.classList.remove('task-busy');
         unbindScaleWatcher();
         document.removeEventListener('click', closeSortMenu);
         if (_cssLink && _cssLink.parentNode) {
@@ -228,9 +258,11 @@
 
     function switchTab(tab) {
         if (tab === _tab) return;
+        if (_busy) return; // 写操作进行中不切 tab
         _tab = tab;
         hideTip();
         closeSortMenu();
+        closeAbandonConfirm();
         if (_containerEl) _containerEl.setAttribute('data-tab', tab);
         setActiveTabButton(tab);
     }
@@ -335,6 +367,128 @@
             if (data.taskData) _detailCache[task.taskId] = data.taskData;
             renderTaskDetail(data.taskData, task);
         });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 写操作：交付 / 放弃
+    //   · 一律按 taskId 发请求（AS2 splice 后 index 偏移，taskId 才是稳定主键）
+    //   · 回包含刷新后的 tasks，走 applyWriteSnapshot 原子重渲（按 taskId 尽量保留选中）
+    // ═══════════════════════════════════════════════════════════
+    function onDetailAction(e) {
+        var t = e.target;
+        while (t && t !== _rightEl && !(t.classList && t.classList.contains('task-act-btn'))) t = t.parentNode;
+        if (!t || t === _rightEl || !t.classList || !t.classList.contains('task-act-btn')) return;
+        if (t.disabled || t.classList.contains('task-btn-pending')) return;
+        if (t.classList.contains('task-act-deliver')) onDeliver(t);
+        else if (t.classList.contains('task-act-abandon')) openAbandonConfirm();
+    }
+
+    function onDeliver(btn) {
+        if (_busy || _activeIndex < 0) return;
+        var task = _tasks[_activeIndex];
+        if (!task || !task.satisfied) return;     // 客户端预门控；AS2 端 taskCompleteCheck 二次硬门控
+        var taskId = task.taskId;
+        beginOp(btn);
+        var reqSession = _session;
+        sendPanelMsg('finishTask', { taskId: taskId }, function(data) {
+            endOp(btn);
+            if (reqSession !== _session) return;
+            if (data && data.success) {
+                toast('任务已交付');
+                applyWriteSnapshot(data);
+            } else {
+                toast(writeErrorMsg('交付失败', data));
+                // 失败也消费刷新后的 tasks：任务未 splice 时 applyWriteSnapshot 按 taskId 原位保留选中，
+                // 顺带把过期的 satisfied/可交付徽章/计数纠正回服务端真值（如交物型任务物品已被消耗）
+                if (data && data.tasks) applyWriteSnapshot(data);
+            }
+        });
+    }
+
+    function openAbandonConfirm() {
+        if (_busy || _activeIndex < 0) return;
+        var task = _tasks[_activeIndex];
+        if (!task) return;
+        if (task.type === '主线') { toast('主线任务无法放弃'); return; }
+        _pendingAbandonId = task.taskId;
+        var body = _el.querySelector('#task-confirm-body');
+        if (body) body.innerHTML = '确认放弃 <strong>' + escHtml(task.title || '') + '</strong> 吗？该任务将从列表移除，已收集/通关进度会清空，需重新接取。';
+        var overlay = _el.querySelector('#task-confirm-overlay');
+        if (overlay) overlay.hidden = false;
+    }
+
+    function closeAbandonConfirm() {
+        _pendingAbandonId = null;
+        var overlay = _el && _el.querySelector('#task-confirm-overlay');
+        if (overlay) overlay.hidden = true;
+    }
+
+    function onAbandonConfirm(btn) {
+        if (_busy || _pendingAbandonId == null) { closeAbandonConfirm(); return; }
+        var taskId = _pendingAbandonId;
+        beginOp(btn);
+        var reqSession = _session;
+        sendPanelMsg('deleteTask', { taskId: taskId }, function(data) {
+            endOp(btn);
+            closeAbandonConfirm();
+            if (reqSession !== _session) return;
+            if (data && data.success) {
+                toast('已放弃任务');
+                applyWriteSnapshot(data);
+            } else {
+                toast(writeErrorMsg('放弃失败', data));
+                if (data && data.tasks) applyWriteSnapshot(data); // 放弃失败多为状态漂移，重同步保险
+            }
+        });
+    }
+
+    function writeErrorMsg(prefix, data) {
+        if (!data) return prefix;
+        switch (data.error) {
+            case 'not_satisfied':     return '尚未满足交付条件';
+            case 'inventory_full':    return '背包已满，无法交付，请清理背包后重试';
+            case 'cannot_delete_main':return '主线任务无法放弃';
+            case 'task_not_found':    return '任务已不存在，已刷新列表';
+            case 'disconnected':      return '游戏连接已断开';
+            case 'timeout':           return prefix + '：操作超时';
+            default:                  return data.error ? (prefix + '：' + data.error) : prefix;
+        }
+    }
+
+    // 写操作回包后用刷新 tasks 原子重渲；按 taskId 尽量保留原选中，不存在则选首个可见
+    function applyWriteSnapshot(data) {
+        if (!data || !data.tasks) return;
+        var prevId = (_activeIndex >= 0 && _tasks[_activeIndex]) ? _tasks[_activeIndex].taskId : null;
+        _tasks = data.tasks;
+        renderChips();
+        renderCount();
+        renderTaskList();
+        var newIdx = -1;
+        if (prevId != null) {
+            for (var i = 0; i < _tasks.length; i++) {
+                if (String(_tasks[i].taskId) === String(prevId)) { newIdx = i; break; }
+            }
+        }
+        _activeIndex = -1;
+        if (newIdx >= 0) {
+            requestDetail(newIdx);
+        } else {
+            var first = firstVisibleOriginalIndex();
+            if (first >= 0) requestDetail(first);
+            else _rightEl.innerHTML = '<div class="task-empty-hint">' + (_tasks.length ? '请从左侧选择一个任务' : '暂无任务') + '</div>';
+        }
+    }
+
+    // 操作锁 + 按钮 pending（_busy 拦截 requestClose / switchTab / 并发写）
+    function beginOp(btn) {
+        _busy = true;
+        if (_containerEl) _containerEl.classList.add('task-busy');
+        if (btn) btn.classList.add('task-btn-pending');
+    }
+    function endOp(btn) {
+        _busy = false;
+        if (_containerEl) _containerEl.classList.remove('task-busy');
+        if (btn) btn.classList.remove('task-btn-pending');
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -511,6 +665,7 @@
     }
 
     function onListKeydown(e) {
+        if (_busy) return; // 写操作在途锁交互（pointer-events 不拦键盘，需显式守卫，与 switchTab 同口径）
         if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
         var buttons = _leftEl.querySelectorAll('.task-icon');
         if (!buttons.length) return;
@@ -620,6 +775,17 @@
             }
             html += '</div></div>';
         }
+
+        // 操作区（交付 / 放弃）。配色纪律：功能按钮黑白灰，主次靠「填充 vs 描边」分层，不用橙。
+        // 主线任务不可放弃（AS2 DeleteTask 亦拒绝，此处仅前置禁用作即时反馈）。
+        var isMain = (summary && summary.type === '主线') || task.type === '主线';
+        html += '<div class="task-detail-actions">';
+        html += '<button class="task-act-btn task-act-deliver" type="button"' +
+            (satisfied ? '' : ' disabled') + '>' +
+            (satisfied ? '交付任务' : '尚未满足交付条件') + '</button>';
+        html += '<button class="task-act-btn task-act-abandon" type="button"' +
+            (isMain ? ' disabled title="主线任务无法放弃"' : '') + '>放弃任务</button>';
+        html += '</div>';
 
         _rightEl.innerHTML = html;
     }
@@ -797,7 +963,10 @@
             },
             // 暴露纯函数供单元断言
             _categoryOf: categoryOf,
-            _categoryMap: CATEGORY_MAP
+            _categoryMap: CATEGORY_MAP,
+            // 写操作 QA 钩子（harness 也可直接点真实 DOM 按钮；这些便于断言/编排）
+            _isBusy: function() { return _busy; },
+            _abandonPendingId: function() { return _pendingAbandonId; }
         };
     }
 })();
