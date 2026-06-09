@@ -465,49 +465,79 @@ var PanelTooltip = (function() {
     // ── AS2 HTML 转换 ──
 
     /**
-     * 将 AS2 TextField HTML 标记转为浏览器兼容 HTML（白名单 + 属性校验，安全）。
+     * 将 AS2 TextField HTML 标记转为浏览器兼容 HTML（真·标签+属性白名单，防 XSS）。
      * 覆盖 AS2 htmlText 常用子集：<FONT COLOR/SIZE/FACE>、<B>/<I>/<U>、<BR>、<P ALIGN>。
-     * 设计取舍（2026-06-09 WS6 对话回放）：在不引入 HTML 解析器/不增复杂度前提下尽量贴近 AS2 表达力。
      *   - COLOR：仅 #RGB/#RRGGBB 十六进制；SIZE：1~96 的整数 px；FACE：白名单字符的 font-family。
      *   - P ALIGN：left/right/center/justify → text-align。
-     * 刻意【不】支持（留待对话框整体迁 web 的富文本阶段，避免现在引入复杂度/风险）：
-     *   <A HREF>（AS2 asfunction: 无法在 web 执行 + 安全面）、<IMG>（外链加载/排版/立绘）、<TEXTFORMAT>（制表/缩进）、<LI>（需列表上下文）。
+     * 实现（2026-06-09 安全加固）：用浏览器解析器把输入解析成【惰性】DOM（不加载资源/不执行脚本），
+     *   再按白名单逐节点重建——未列入白名单的标签（<IMG>/<A>/<SCRIPT>…）只保留纯文本，事件属性
+     *   （onerror/onclick…）与未知属性一律丢弃，文本节点全转义。
+     *   起因：旧版只做正则标签替换，未知标签原样进 innerHTML；而对话/物品文本含 $PC→存档角色名等
+     *   玩家可控输入，`<img src=x onerror=...>` 可在 WebView 执行脚本。真白名单从结构上杜绝注入。
+     * 刻意【不】支持（留待对话框整体迁 web 的富文本阶段）：
+     *   <A HREF>（asfunction: 无法在 web 执行 + 安全面）、<IMG>（外链/立绘）、<TEXTFORMAT>、<LI>。
      */
     function convertAS2Html(s) {
         if (!s) return '';
-        return String(s)
-            .replace(/<FONT\b([^>]*)>/gi, function(m, attrs) {
-                attrs = attrs || '';
-                var style = [];
-                var color = /\bCOLOR\s*=\s*(['"])(.*?)\1/i.exec(attrs);
-                if (color && /^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(color[2])) {
-                    style.push('color:' + color[2]);
-                }
-                var size = /\bSIZE\s*=\s*(['"])(.*?)\1/i.exec(attrs);
-                if (size) {
-                    var px = parseInt(size[2], 10);
-                    if (!isNaN(px) && px > 0 && px <= 96) style.push('font-size:' + px + 'px');
-                }
-                var face = /\bFACE\s*=\s*(['"])(.*?)\1/i.exec(attrs);
-                if (face) {
-                    // 仅留字母/数字/中文/空格/连字符（防 style 注入），非空才输出 font-family
-                    var f = face[2].replace(/[^\w一-龥 \-]/g, '').replace(/\s+/g, ' ');
-                    if (f) style.push("font-family:'" + f + "'");
-                }
-                return style.length ? '<span style="' + style.join(';') + '">' : '<span>';
-            })
-            .replace(/<\/FONT>/gi, '</span>')
-            .replace(/<P\b([^>]*)>/gi, function(m, attrs) {
-                var al = /\bALIGN\s*=\s*(['"])(.*?)\1/i.exec(attrs || '');
-                var a = al ? al[2].toLowerCase() : '';
-                return (a === 'left' || a === 'right' || a === 'center' || a === 'justify')
-                    ? '<p style="text-align:' + a + '">' : '<p>';
-            })
-            .replace(/<\/P>/gi, '</p>')
-            .replace(/<B>/gi, '<b>').replace(/<\/B>/gi, '</b>')
-            .replace(/<I>/gi, '<i>').replace(/<\/I>/gi, '</i>')
-            .replace(/<U>/gi, '<u>').replace(/<\/U>/gi, '</u>')
-            .replace(/<BR\s*\/?>/gi, '<br>');
+        s = String(s);
+        if (typeof DOMParser === 'undefined') return escapeAS2Text(s);   // 无解析器退路：纯文本转义（不渲染但安全）
+        var doc;
+        try { doc = new DOMParser().parseFromString(s, 'text/html'); }
+        catch (e) { return escapeAS2Text(s); }
+        return (doc && doc.body) ? sanitizeAS2Children(doc.body) : '';
+    }
+
+    // 文本节点转义（进 innerHTML 前防破坏结构 / 实体注入）
+    function escapeAS2Text(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+    function sanitizeAS2Children(node) {
+        var out = '', kids = node.childNodes;
+        for (var i = 0; i < kids.length; i++) out += sanitizeAS2Node(kids[i]);
+        return out;
+    }
+    function sanitizeAS2Node(node) {
+        if (node.nodeType === 3) return escapeAS2Text(node.nodeValue);   // 文本节点 → 转义
+        if (node.nodeType !== 1) return '';                              // 注释/CDATA/其他 → 丢
+        var tag = node.tagName ? node.tagName.toLowerCase() : '';
+        var inner = sanitizeAS2Children(node);
+        switch (tag) {
+            case 'b': case 'strong': return '<b>' + inner + '</b>';
+            case 'i': case 'em':     return '<i>' + inner + '</i>';
+            case 'u':                return '<u>' + inner + '</u>';
+            case 'br':               return '<br>';
+            case 'p': {
+                var al = as2AlignStyle(node.getAttribute('align'));
+                return al ? '<p style="text-align:' + al + '">' + inner + '</p>' : '<p>' + inner + '</p>';
+            }
+            case 'font': case 'span': {
+                var style = as2FontStyle(node);
+                return style ? '<span style="' + style + '">' + inner + '</span>' : '<span>' + inner + '</span>';
+            }
+            default: return inner;   // 未知/危险标签：丢标签、留已 sanitize 的内容
+        }
+    }
+    // FONT 属性白名单 + 严格校验（DOM getAttribute 返回值已解码实体；仅校验通过的安全值进 style）
+    function as2FontStyle(node) {
+        var style = [];
+        var color = node.getAttribute('color');
+        if (color && /^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(color)) style.push('color:' + color);
+        var size = node.getAttribute('size');
+        if (size != null && size !== '') {
+            var px = parseInt(size, 10);
+            if (!isNaN(px) && px > 0 && px <= 96) style.push('font-size:' + px + 'px');
+        }
+        var face = node.getAttribute('face');
+        if (face) {
+            var f = face.replace(/[^\w一-龥 \-]/g, '').replace(/\s+/g, ' ');   // 仅字母/数字/中文/空格/连字符
+            if (f) style.push("font-family:'" + f + "'");
+        }
+        return style.join(';');
+    }
+    function as2AlignStyle(v) {
+        v = (v || '').toLowerCase();
+        return (v === 'left' || v === 'right' || v === 'center' || v === 'justify') ? v : '';
     }
 
     // ── HTML score 估算（对齐 AS2 StringUtils.htmlScoresBoth.total）──

@@ -125,7 +125,10 @@
             107: d(107, '极限生存', '挑战', '在生存竞技场地狱难度下坚持到最后一波。', stage('生存竞技场', '地狱'), null, '挑战官', [rw('挑战徽章', 1), rw('金币', 8000)], true),
             108: d(108, '净化异形巢穴', '异形', '潜入异形巢穴，清除核心区域的所有威胁。', stage('异形巢穴', '修罗'), null, '研究员', [rw('异形组织', 3)]),
             109: d(109, '敌后侦察', '情报', '在敌后区域收集情报文件并安全撤离。', null, items('contain', [it('情报文件', 2)]), '情报员', [rw('情报点', 20)]),
-            110: d(110, '隐藏的惊喜', '彩蛋', '寻找隐藏在地图角落的彩蛋奖励。', null, null, '神秘人', [rw('彩蛋礼盒', 1)])
+            110: d(110, '隐藏的惊喜', '彩蛋', '寻找隐藏在地图角落的彩蛋奖励。', null, null, '神秘人', [rw('彩蛋礼盒', 1)]),
+            // 未接取(locked)节点：不在 _treeActive/_treeFinished/makeTasks 中。验证图表防剧透——
+            // 不进图、详情被遮罩，标题/描述/奖励绝不泄露（task-ui39）。
+            111: d(111, '【剧透】终章·真相', '彩蛋', '【不应泄露的未接取描述】隐藏剧情后续。', stage('密室', '地狱'), null, '神秘人', [rw('传说装备', 1)])
         };
         function d(id, title, type, desc, stageReq, itemReqs, npc, rewards, finishRemote, finishNavigable) {
             return { taskId: id, type: type, title: title, description: desc, stageReq: stageReq, itemReqs: itemReqs, npcName: npc, rewards: rewards, finishRemote: finishRemote === true, finishNavigable: finishNavigable === true };
@@ -153,12 +156,12 @@
         var CONV_FLAGS = {
             101: [true, true], 102: [true, false], 103: [true, true], 104: [false, true],
             105: [false, false], 106: [true, true], 107: [true, false], 108: [true, true],
-            109: [true, true], 110: [true, true]
+            109: [true, true], 110: [true, true], 111: [true, true]
         };
-        var CHAIN_SEQ = { '主线': [[101, 1], [102, 2]], '支线': [[103, 1]], '大学': [[104, 1]], '后勤': [[105, 1]], '挑战': [[107, 1]], '异形': [[108, 1]], '情报': [[109, 1]], '彩蛋': [[110, 1]] };
+        var CHAIN_SEQ = { '主线': [[101, 1], [102, 2]], '支线': [[103, 1]], '大学': [[104, 1]], '后勤': [[105, 1]], '挑战': [[107, 1]], '异形': [[108, 1]], '情报': [[109, 1]], '彩蛋': [[110, 1], [111, 2]] };
         var CHAIN_UNSEQ = { '委托': [106] };
-        // 前置依赖（图表边）：主线 101→102 脊柱；侧链挂在主线里程碑（跨链边）；110 无前置；106 委托不入图
-        var REQ = { 101: [], 102: [101], 103: [101], 104: [102], 105: [101], 107: [102], 108: [102], 109: [101], 110: [], 106: [] };
+        // 前置依赖（图表边）：主线 101→102 脊柱；侧链挂在主线里程碑（跨链边）；110 无前置；106 委托不入图；111 未接取(locked)
+        var REQ = { 101: [], 102: [101], 103: [101], 104: [102], 105: [101], 107: [102], 108: [102], 109: [101], 110: [], 106: [], 111: [110] };
         function buildCatalog() {
             var tasks = {};
             for (var id in DETAILS) {
@@ -275,10 +278,17 @@
                     case 'treeState':
                         resp({ success: true, chainsProgress: clone(self._treeProgress), finished: self._treeFinished.slice(), active: self._treeActive.slice() });
                         break;
-                    // WS6 对话回放：镜像 AS2 handleReplayDialogue——按 catalog hasConv 判定，回传对话文本行
+                    // WS6 对话回放：镜像 AS2 handleReplayDialogue——防剧透门控 + hasConv 判定，回传对话文本行
                     case 'replayDialogue': {
                         var rt = window.__TASK_CATALOG.tasks[String(m.taskId)];
-                        var has = rt && (m.which === 'finish' ? rt.hasFinishConv : rt.hasGetConv);
+                        if (!rt) { resp({ success: false, error: 'task_not_found' }); break; }
+                        // 防剧透硬门控（镜像 AS2，服务端权威）：接取对话需 active||finished；完成对话需 finished。
+                        var rid = String(m.taskId);
+                        var rFin = self._treeFinished.indexOf(rid) >= 0 || self._treeFinished.indexOf(Number(rid)) >= 0;
+                        var rAct = self._treeActive.indexOf(Number(rid)) >= 0 || self._treeActive.indexOf(rid) >= 0;
+                        var rAllowed = (m.which === 'finish') ? rFin : (rAct || rFin);
+                        if (!rAllowed) { resp({ success: false, error: 'locked' }); break; }
+                        var has = (m.which === 'finish' ? rt.hasFinishConv : rt.hasGetConv);
                         if (!has) { resp({ success: false, error: 'no_dialogue' }); break; }
                         var label = (m.which === 'finish') ? '完成' : '接取';
                         // 镜像真机：玩家行 name=fs + title 为 $PC_TITLE 解析出的 AS2 htmlText 动态称号 + 正文含 <B>
@@ -881,6 +891,63 @@
                 return cs.logView === 'list' && cs.zoom === 1 && cs.mode === 'detail'
                     && segActive('data-logview', 'list') && !segActive('data-logview', 'chart')
                     && segActive('data-chartmode', 'detail') && segActive('data-zoom', '1');
+            });
+
+            await check('task-ui38', '对话回放安全：恶意标签/事件属性经 convertAS2Html 白名单清洗，绝不执行脚本(XSS)', async function() {
+                window.__pwned = undefined;
+                var malicious = '<img src=x onerror="window.__pwned=1">'
+                    + '<svg><script>window.__pwned=2<\/script></svg>'
+                    + '<b onclick="window.__pwned=3">粗体</b>'
+                    + '<a href="javascript:window.__pwned=4">链接</a>'
+                    + "<FONT COLOR='#ff0000'>红字</FONT>";
+                if (!(typeof PanelTooltip !== 'undefined' && PanelTooltip.convertAS2Html)) return false;
+                var out = PanelTooltip.convertAS2Html(malicious);
+                // 输出层（同步可靠）：无事件属性 / 无 script / 无 javascript: 协议
+                var clean = !/onerror|onclick|<script|javascript:/i.test(out);
+                // 行为层：塞进真实 DOM（若清洗失效 img.onerror 会异步触发），等一拍确认无脚本执行
+                var probe = document.createElement('div');
+                probe.innerHTML = out;
+                await new Promise(function(r) { setTimeout(r, 60); });
+                var noExec = (window.__pwned === undefined);
+                var imgDropped = probe.querySelector('img') === null;
+                var boldKept = probe.querySelector('b') !== null && probe.textContent.indexOf('粗体') >= 0;
+                var colorKept = !!probe.querySelector('span[style*="color"]');   // 白名单 FONT 仍生效
+                return clean && noExec && imgDropped && boldKept && colorKept;
+            });
+
+            await check('task-ui39', '图表防剧透：未接取(locked)任务不进图、详情被遮罩，标题/描述/奖励不泄露', async function() {
+                await reopenFresh();
+                clickTab('log');
+                await waitFor(function() { return window.TaskPanel._logState().nodeCount === 10; }, 4000);
+                window.TaskPanel._setLogView('chart');
+                await waitFor(function() { return window.TaskPanel._chartState().hexCount > 0; }, 4000);
+                // 111 是 catalog 中的 locked 节点（不在 active/finished）→ 绝不渲染六边形（仍 9 个已接取节点）
+                var hex111 = document.querySelector('#tlv-chart-canvas .tlv-hex[data-task-id="111"]');
+                var notInChart = (hex111 === null) && window.TaskPanel._chartState().hexCount === 9;
+                // 纵深防御：即便经 QA 钩子强制选中 locked id，详情也只显示遮罩占位，不泄露标题/描述/奖励
+                window.TaskPanel._selectLogNode(111);
+                await waitFor(function() { return window.TaskPanel._logState().selectedId === '111'; }, 2000);
+                var html = document.getElementById('tlv-detail').innerHTML;
+                var masked = html.indexOf('未接取') >= 0
+                    && html.indexOf('终章') < 0 && html.indexOf('不应泄露') < 0
+                    && html.indexOf('传说装备') < 0 && html.indexOf('密室') < 0;
+                return notInChart && masked;
+            });
+
+            await check('task-ui40', '对话回放门控(服务端权威)：绕过前端直发 finish 回放给进行中任务→回 locked 不吐对话', async function() {
+                await reopenFresh();
+                // 103 进行中(active,未完成)，catalog hasFinishConv=true；前端不显示「完成对话」按钮，
+                // 但直发 replayDialogue(which=finish) 必须被服务端门控拒绝(locked)，绝不回对话本体。
+                var lock = await new Promise(function(resolve) {
+                    window.TaskPanel._debugSend('replayDialogue', { taskId: 103, which: 'finish' }, resolve);
+                });
+                var lockedOk = lock && lock.success === false && lock.error === 'locked' && !lock.lines;
+                // 对照：同任务接取对话(active 允许)应成功回行
+                var ok = await new Promise(function(resolve) {
+                    window.TaskPanel._debugSend('replayDialogue', { taskId: 103, which: 'get' }, resolve);
+                });
+                var getOk = ok && ok.success === true && ok.lines && ok.lines.length > 0;
+                return lockedOk && getOk;
             });
 
             var passed = results.filter(function(r) { return r.pass; }).length;

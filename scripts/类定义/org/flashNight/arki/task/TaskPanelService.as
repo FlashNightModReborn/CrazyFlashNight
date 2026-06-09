@@ -454,6 +454,25 @@ class org.flashNight.arki.task.TaskPanelService {
         }
 
         var which:String = (params.which == "finish") ? "finish" : "get";
+
+        // 防剧透硬门控（服务端权威，不依赖前端隐藏按钮——前端可被绕过直发 replayDialogue）：
+        //   只回放玩家【已经历】的对话。接取对话=任务进行中(tasks_to_do)或已完成(tasks_finished>0)；
+        //   完成对话=仅已完成（未完成不该能读到完成剧情）。否则回 locked，绝不吐对话本体。
+        var idStr:String = String(params.taskId);
+        var isFinished:Boolean = Number(_root.tasks_finished[idStr]) > 0;
+        var isActive:Boolean = false;
+        var todo:Array = _root.tasks_to_do;
+        if (todo != undefined) {
+            for (var ti:Number = 0; ti < todo.length; ti++) {
+                if (todo[ti] != undefined && String(todo[ti].id) == idStr) { isActive = true; break; }
+            }
+        }
+        var allowed:Boolean = (which == "finish") ? isFinished : (isActive || isFinished);
+        if (!allowed) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "locked" });
+            return;
+        }
+
         var convKey = (which == "finish") ? taskData.finish_conversation : taskData.get_conversation;
         var conv = TaskUtil.getTaskText(convKey);
         if (conv == undefined || conv.length == 0) {

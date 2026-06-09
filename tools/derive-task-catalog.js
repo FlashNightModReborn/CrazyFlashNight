@@ -239,11 +239,15 @@ function buildCatalog(rawTasks, taskTexts) {
     };
 }
 
-// 稳定子集（排除 _generatedAt）用于 unchanged 跳写，避免无意义 mtime/diff churn。
+// 稳定子集（仅排除 _generatedAt，时间戳每次都变）用于 unchanged 跳写，避免无意义 mtime/diff churn。
+// 必须含 version / taskCount：否则 schema 版本升级或任务数变化会被误判为 unchanged 而静默跳过刷新
+// （含手改/损坏的旧产物得不到纠正）。除 _generatedAt 外的字段一律纳入比较。
 function stableSubset(payload) {
     return {
         _source: payload._source,
         _note: payload._note,
+        version: payload.version,
+        taskCount: payload.taskCount,
         tasks: payload.tasks,
         chains: payload.chains,
         chainsUnsequenced: payload.chainsUnsequenced

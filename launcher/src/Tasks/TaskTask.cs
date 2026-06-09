@@ -115,7 +115,8 @@ namespace CF7Launcher.Tasks
                     break;
                 case "replayDialogue":
                     // 剧情对话回放（WS6，命令回传）：转发 taskId/which 给 AS2 taskReplayDialogue；
-                    // AS2 SetDialogue 在原版对话框播，成功回 closePanel:true（关面板让对话框可见）
+                    // AS2 按防剧透门控（仅已接取/已完成才回，否则 locked）回传单任务对话文本行
+                    // lines:[{speaker,sub,text}]，web 内联渲染、不关面板（轻量文本态）
                     action = "taskReplayDialogue";
                     break;
                 default:

@@ -68,7 +68,7 @@
     // 产品级分类归并（链名 chain[0] → 五类）。口径：用户 2026-06-08 拍板。
     var CATEGORY_MAP = {
         '主线': '主线',
-        '支线': '支线', '大学': '支线', '后勤': '支线', '将军': '支线', '引导': '支线',
+        '支线': '支线', '大学': '支线', '后勤': '支线', '将军': '支线', '引导': '支线', '废城': '支线',
         '委托': '副本', '挑战': '副本', '异形': '副本',
         '情报': '情报',
         '彩蛋': '其他', '预览': '其他'
@@ -962,7 +962,15 @@
             if (!cat) { _treeEl.innerHTML = '<div class="tlv-loading tlv-error">任务目录加载失败</div>'; return; }
             requestTreeState(function(state) {
                 if (session !== _session || _tab !== 'log') return;
-                _treeState = state || { chainsProgress: {}, finished: {}, active: {} };
+                if (!state) {
+                    // 区分「桥/超时失败」与「真没记录」：失败给可重试错误态，别误导成"无任务记录"。
+                    _treeState = null;
+                    var errMsg = '<div class="tlv-loading tlv-error">任务进度加载失败（请重开面板重试）</div>';
+                    _treeEl.innerHTML = errMsg;
+                    if (_chartCanvasEl) _chartCanvasEl.innerHTML = errMsg;
+                    return;
+                }
+                _treeState = state;
                 renderActiveLogView();
             });
         });
@@ -1112,13 +1120,22 @@
     function renderLogDetail(id) {
         var t = _catalog && _catalog.tasks[id];
         if (!t) { _logDetailEl.innerHTML = '<div class="task-empty-hint">无任务数据</div>'; return; }
+        // 二态：进行中 / 已完成（未接取=locked 不进此面板）。
+        var st = (_treeState && _treeState.active[id]) ? 'active' : ((_treeState && _treeState.finished[id]) ? 'done' : 'locked');
+        // 防剧透：未接取(locked)任务绝不泄露标题/描述/需求/奖励/对话——只给占位。图表已只含已接取节点，
+        // 此为纵深防御（即便经 QA 钩子/异常态选中 locked id 也不漏内容）。
+        if (st === 'locked') {
+            _logDetailEl.innerHTML = '<div class="task-detail-head"><div class="task-title-box">' +
+                '<span class="task-title-line1">未接取</span>' +
+                '<span class="task-title-line2">完成前置任务后解锁</span></div>' +
+                '<div class="tlv-detail-badge locked">未接取</div></div>';
+            return;
+        }
         var html = '';
         html += '<div class="task-detail-head"><div class="task-title-box">' +
             '<span class="task-title-line1">' + escHtml(t.type || '任务') + '</span>' +
             '<span class="task-title-line2">' + escHtml(t.title || '') + '</span></div>';
-        // 三态：进行中 / 已完成 / 未接取（图表里 locked 节点也可点开，徽章须正确，不能一律"已完成"）
-        var st = (_treeState && _treeState.active[id]) ? 'active' : ((_treeState && _treeState.finished[id]) ? 'done' : 'locked');
-        var stLabel = (st === 'active') ? '进行中' : (st === 'done') ? '已完成' : '未接取';
+        var stLabel = (st === 'active') ? '进行中' : '已完成';
         html += '<div class="tlv-detail-badge ' + st + '">' + stLabel + '</div></div>';
 
         html += '<div class="task-desc-box">' + escHtml(t.description || '') +
@@ -1277,11 +1294,18 @@
         var tasks = _catalog.tasks;
         var seqChains = _catalog.chains || {};
         var chainNames = Object.keys(seqChains);
-        // inChart: id → chainName（仅 sequenced 链）
+        // 防剧透：图表只纳入玩家【已接取(active)/已完成(done)】的节点（与列表视图同口径）。未接取任务
+        // 既不进图、也不暴露其标题/分支结构。fin/act 来自只读存档态叠加 _treeState（缺省空集→空图）。
+        var fin = (_treeState && _treeState.finished) ? _treeState.finished : Object.create(null);
+        var act = (_treeState && _treeState.active) ? _treeState.active : Object.create(null);
+        // inChart: id → chainName（仅 sequenced 链中已接取/已完成的节点）
         var inChart = Object.create(null);
         for (var ci = 0; ci < chainNames.length; ci++) {
             var arr = seqChains[chainNames[ci]];
-            for (var k = 0; k < arr.length; k++) inChart[String(arr[k])] = chainNames[ci];
+            for (var k = 0; k < arr.length; k++) {
+                var idk0 = String(arr[k]);
+                if (act[idk0] || fin[idk0]) inChart[idk0] = chainNames[ci];
+            }
         }
         // 列分配：主线居中(0)，其余交替左右
         var colOf = Object.create(null);
@@ -1306,8 +1330,6 @@
             depthMemo[id] = d; return d;
         }
         var allIds = Object.keys(inChart);
-        var fin = (_treeState && _treeState.finished) ? _treeState.finished : Object.create(null);
-        var act = (_treeState && _treeState.active) ? _treeState.active : Object.create(null);
 
         // chapter 模式过滤集合：链头/链尾 + 分支点(跨链出边) + 合并点(入度≥2) + 进行中
         var keep = null;
@@ -1325,7 +1347,10 @@
             }
             for (var cn = 0; cn < chainNames.length; cn++) {
                 var carr = seqChains[chainNames[cn]];
-                if (carr.length) { keep[String(carr[0])] = 1; keep[String(carr[carr.length - 1])] = 1; }
+                // 链头/链尾取【已接取(在图内)】节点的首尾——跳过未接取节点（防剧透过滤后链可能首尾内缩）。
+                var visible = [];
+                for (var vi = 0; vi < carr.length; vi++) { var vk = String(carr[vi]); if (inChart[vk] != null) visible.push(vk); }
+                if (visible.length) { keep[visible[0]] = 1; keep[visible[visible.length - 1]] = 1; }
             }
             for (var b = 0; b < allIds.length; b++) {
                 var id2 = allIds[b];

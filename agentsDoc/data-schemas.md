@@ -216,6 +216,8 @@ H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5
 
 **不含**：对话文本本体（留 AS2，catalog 仅持 `hasGetConv/hasFinishConv` 布尔；点「接取/完成对话」时 `replayDialogue` 按需回传【单任务】对话文本行 `lines:[{speaker,sub,text}]`，web 内联展开纯文本、不关面板）、`finish_remote`（写路径权威字段留 AS2）。
 
+`replayDialogue` 防剧透硬门控（服务端权威，AS2 `TaskPanelService.handleReplayDialogue`，不依赖前端隐藏按钮）：接取对话仅 active(`tasks_to_do`)/finished(`tasks_finished>0`) 才回，完成对话仅 finished 才回，否则回 `error:"locked"`（绝不吐对话本体）。web 渲染对话行经 `PanelTooltip.convertAS2Html` 真·标签+属性白名单清洗（DOM 重建，丢弃未知标签/事件属性，防 `$PC`→存档角色名等玩家可控输入造成 XSS）。图表视图同口径只画已接取节点、未接取详情遮罩（防剧透）。
+
 派生时校验（失败 → build exit 1）：**闭包性**——任务的 `title/description/get_conversation/finish_conversation` 若值以 `$` 开头，该键必须存在于合并 `task_texts`（防 `$KEY` 缺失运行期显示原始键，亦为审计 Phase1 description 下沉前置门控）；dup-id 守卫；chain 序号无重复。干跑校验：`node tools/derive-task-catalog.js --check`。
 **进度叠加**（哪些已完成/进行中）不在本目录——走只读命令 `taskTreeState` 实时读 `_root.task_chains_progress`/`tasks_finished`/`tasks_to_do`（存档态可变，绝不缓存进目录）。详见 [task 系统 AS2 内存驻留审计](../docs/web-task-panel-WS6-事件日志任务树-设计-2026-06-09.md)。
 

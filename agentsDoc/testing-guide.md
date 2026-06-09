@@ -26,24 +26,24 @@ chcp.com 65001 | Out-Null
 | Launcher Web / Map Panel | `powershell -ExecutionPolicy Bypass -File launcher/build.ps1` + `node tools/audit-map-taskmarkers.js`（契约守门，必须 0 error / 0 warn） | browser harness `map-ui1`~`map-ui32` 全绿（`launcher/web/modules/map/dev/harness.html` → 面板"Run suite"，或 `node tools/run-map-harness-headless.js --browser edge`）、`node tools/audit-map-layout.js`；重算 filter-fit preset 时跑 `node tools/tune-map-filter-fit.js --write` |
 | Launcher Web / Stage Select Panel | `powershell -ExecutionPolicy Bypass -File launcher/build.ps1` + `node tools/export-stage-select-manifest.js --summary` + `node tools/audit-stage-select-layout.js --json` + `node tools/audit-diplomacy-stage-select-links.js --json` + `node tools/run-stage-select-harness.js --browser edge` | 接 AS2 snapshot / enter 时追加 `launcher/tests/run_tests.ps1` 与 `scripts/compile_test.ps1`；坐标/视觉偏移时追加 `powershell -ExecutionPolicy Bypass -File tools/run-stage-select-visual-audit.ps1` 生成 FFDec/Web 对照图 |
 | Launcher Web / Intelligence Panel | `powershell -ExecutionPolicy Bypass -File launcher/build.ps1` + `powershell -ExecutionPolicy Bypass -File launcher/tests/run_tests.ps1` + `node tools/validate-intelligence-h5.js --strict` + `node tools/run-intelligence-harness.js --browser edge` | 改 AS2 `intelligenceState/intelligenceTooltip` 或正式入口运行态联动时追加 Flash compile smoke；手测 Native HUD 与旧 Web notch 的主工具栏“情报”和“其他 → 情报测试” |
-| Launcher Web / Task Panel | `node tools/run-tasks-harness.js --qa`（task-ui1~37，Edge headless：筛选/列表/排序/详情缓存/富物品 tooltip/空态 + 写操作交付·放弃·确认弹窗·背包满·ESC modal栈·远程交付门控(含绕过按钮直发 finishTask→requires_npc 服务端门控自断言)·删除在途锁·前往交付·finishNavigable 不缓存固化(注册表迟到→重选复查) + **事件日志(WS6)：任务树渲染·对话按钮可见性·回放内联文本(不关面板)·对话 AS2 htmlText(FONT/B)经 convertAS2Html 渲染·tab往返·图表视图(BALDR SKY风:六边形+前置连线渲染/点节点选中+明细/25%缩放/章节折叠/左键拖拽平移+点击拖拽判定/任务线配色按链区分/对话回放进度门控/重开重置工具栏)** 自断言） | 改 AS2 `taskSnapshot/taskDetail/tasksTooltip/taskFinish/taskDelete/taskNavigateFinish/taskTreeState/taskReplayDialogue` 或 C# `TaskTask`/`WebOverlayForm` 路由时追加 `launcher/tests/run_tests.ps1`（xUnit `TaskTaskTests` 18）+ `scripts/compile_test.ps1`；**改任务数据展示字段(title/description/chain) 须重跑 `node tools/derive-task-catalog.js`（build Step 1e；含闭包校验器，缺 `$KEY` exit 1）刷新 `task-catalog.json`**；写操作传 taskId（非 index，splice 后偏移）、交付走服务端 `taskCompleteCheck` 硬门控、远程交付仅 `finish_remote` 任务开放（否则回 `requires_npc`）、前往交付复用地图 `MapPanelService.navigateToHotspot`（不可达回 `not_navigable`）、事件日志静态目录走 build 派生 web 直读·进度叠加走 `treeState`·对话回放 `replayDialogue` 按需回传单任务对话文本行 web 内联渲染(不关面板)；视觉/动效复核 `node tools/run-tasks-harness.js --shot=<png> --query="view=list&filter=副本&detail=6"`（日志 tab 用 `--query="tab=log"`）；正式 runtime 富 tooltip/筛选/动效/交付发奖扣物/放弃移除/前往跳转/事件日志树·对话回放需游戏内端到端手测 |
+| Launcher Web / Task Panel | `node tools/run-tasks-harness.js --qa`（task-ui1~40，Edge headless：筛选/列表/排序/详情缓存/富物品 tooltip/空态 + 写操作交付·放弃·确认弹窗·背包满·ESC modal栈·远程交付门控(含绕过按钮直发 finishTask→requires_npc 服务端门控自断言)·删除在途锁·前往交付·finishNavigable 不缓存固化(注册表迟到→重选复查) + **事件日志(WS6)：任务树渲染·对话按钮可见性·回放内联文本(不关面板)·对话 AS2 htmlText(FONT/B)经 convertAS2Html 渲染·tab往返·图表视图(BALDR SKY风:六边形+前置连线渲染/点节点选中+明细/25%缩放/章节折叠/左键拖拽平移+点击拖拽判定/任务线配色按链区分/对话回放进度门控/重开重置工具栏)·对话回放真白名单清洗恶意标签(XSS,ui38)·图表防剧透(未接取节点不进图+详情遮罩,ui39)·服务端对话门控(绕过直发 finish→locked,ui40)** 自断言） | 改 AS2 `taskSnapshot/taskDetail/tasksTooltip/taskFinish/taskDelete/taskNavigateFinish/taskTreeState/taskReplayDialogue` 或 C# `TaskTask`/`WebOverlayForm` 路由时追加 `launcher/tests/run_tests.ps1`（xUnit `TaskTaskTests` 18）+ `scripts/compile_test.ps1`；**改任务数据展示字段(title/description/chain) 须重跑 `node tools/derive-task-catalog.js`（build Step 1e；含闭包校验器，缺 `$KEY` exit 1）刷新 `task-catalog.json`**；写操作传 taskId（非 index，splice 后偏移）、交付走服务端 `taskCompleteCheck` 硬门控、远程交付仅 `finish_remote` 任务开放（否则回 `requires_npc`）、前往交付复用地图 `MapPanelService.navigateToHotspot`（不可达回 `not_navigable`）、事件日志静态目录走 build 派生 web 直读·进度叠加走 `treeState`·对话回放 `replayDialogue` 按需回传单任务对话文本行 web 内联渲染(不关面板)；视觉/动效复核 `node tools/run-tasks-harness.js --shot=<png> --query="view=list&filter=副本&detail=6"`（日志 tab 用 `--query="tab=log"`）；正式 runtime 富 tooltip/筛选/动效/交付发奖扣物/放弃移除/前往跳转/事件日志树·对话回放需游戏内端到端手测 |
 | 文档与治理 | `node tools/validate-doc-governance.js` | 交叉 grep / 链接检查 / 基线复核 |
 
 ## 2. AS2 / Flash 验证
 
 **入口**：`powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1` 或 `bash scripts/compile_test.sh`
 
-**成功判据**（缺一不可视为成功）：
+**两种构建目标，成功判据不同**（取决于 Flash CS6 当前打开的是哪个 loader；脚本据 `publish_done.marker` + `compiler_errors.txt` 决定 exit 0/1）：
 
-- 本次运行**新鲜生成**的 `scripts/flashlog.txt`
-- 必要时核对 `scripts/compile_output.txt`
-- `scripts/compiler_errors.txt` 为空或无新错误，trace 中不能出现 `[TEST_FAIL]` 测试失败哨兵
-- `publish_done.marker` **仅说明 JSFL 触发结束**,不能单独视为成功
+- **TestLoader（测试构建，带 trace）**：成功 = `[OK] 编译完成` + 本次运行**新鲜生成**的 `scripts/flashlog.txt` + trace 无 `[TEST_FAIL]` 哨兵 + `compiler_errors.txt` `0 个错误`。
+- **asLoader / publish 模式（发布二进制，剔 trace 等功能以免性能损耗）**：**本就不出 trace**——脚本会打 `[INFO] 无 trace 输出 (publish 模式不执行 trace)`，`flashlog.txt` 不刷新属正常，**不要据此判失败**。成功 = `[OK] 编译完成` + `scripts/compiler_errors.txt` 显示 `0 个错误` + `scripts/asLoader.swf` 已刷新（mtime/size 变化）。
+
+公共项：`publish_done.marker` **仅说明 JSFL 触发结束**，不能单独视为成功；必要时核对 `scripts/compile_output.txt`。慢机编译易超过默认窗口（实测 asLoader publish ~77s），`[TIMEOUT]` 后先核对 marker / SWF / `compiler_errors.txt` 是否其实已在超时后产出，再用 `-TimeoutSeconds` 调大重试。
 
 **对外表述边界**：
 
-- 可以说：`已完成 Flash CS6 自动化 smoke 验证` / `已触发编译并拿到新鲜 trace`
-- **不要**在缺少新鲜 trace、编译器错误面板或 IDE 复核时说「已编译通过」
+- 可以说：`已完成 Flash CS6 自动化 smoke 验证` / `已触发编译并拿到新鲜 trace`（TestLoader）/ `asLoader 发布编译 0 错误、SWF 已重生成`（publish 模式）
+- **不要**在缺少新鲜 trace、编译器错误面板或 IDE 复核时说「已编译通过」；但 **asLoader publish 无 trace 属正常设计**，以 `0 个错误` + SWF 刷新为准，别因缺 trace 误判失败
 
 **主 SWF / asLoader class 边界审计**：改 `scripts/类定义/org/flashNight/neur/Server/*` 或部署前追加 `node tools/audit-as2-class-embedding.js --policy child-only`；临时双 SWF 重打兜底用 `--policy dual-build --marker _repairPending --marker applyRepairResolved`。若主 SWF 仍嵌入 `__Packages.org.flashNight.neur.Server.SaveManager` / `ServerManager`，asLoader 新 class 不会覆盖。
 详见 [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md)。
