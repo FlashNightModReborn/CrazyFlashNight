@@ -208,7 +208,8 @@ var MapPanelData = (function() {
             ['cowboy_avatar', '牛仔', 'fallen_bar', '牛仔头像.png'],
             ['cyborg_sage_avatar', '假肢仙人', 'fallen_street', '假肢仙人头像.png'],
             ['hitler_avatar', '吸特乐', 'fallen_street', '吸特乐头像.png'],
-            ['researcher_avatar', 'researcher', 'fallen_street', 'researcher头像.png']
+            ['researcher_avatar', 'researcher', 'fallen_street', 'researcher头像.png'],
+            ['cowboy_avatar', '调酒师', 'fallen_bar', '调酒师头像.png']
         ]),
         defense: buildStaticAvatarSlots([
             ['artist_avatar', 'artist', 'first_defense', 'artist头像.png'],

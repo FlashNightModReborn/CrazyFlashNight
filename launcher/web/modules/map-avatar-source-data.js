@@ -909,8 +909,29 @@ var MapAvatarSourceData = (function() {
     "symbolName": "牛仔头像",
     "assetUrl": "assets/map/avatars/牛仔头像.png",
     "hotspotId": "fallen_bar",
-    "relX": 104.7,
+    "relX": 114.7,
     "relY": 32.25,
+    "size": {
+      "w": 44,
+      "h": 44
+    },
+    "crop": {
+      "scaleX": 1.0,
+      "scaleY": 1.0,
+      "tx": -0.3,
+      "ty": -1.0
+    },
+    "assetSize": {
+      "w": 44,
+      "h": 44
+    }
+  },
+  "调酒师头像": {
+    "symbolName": "调酒师头像",
+    "assetUrl": "assets/map/avatars/调酒师头像.png",
+    "hotspotId": "fallen_bar",
+    "relX": 65.0,
+    "relY": 59.25,
     "size": {
       "w": 44,
       "h": 44
