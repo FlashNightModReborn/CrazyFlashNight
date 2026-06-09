@@ -80,18 +80,9 @@ namespace CF7Launcher.Tasks
 
             // 构造 Flash 命令
             string action = "shop" + char.ToUpper(cmd[0]) + cmd.Substring(1);
-            var flashMsg = new JObject();
-            flashMsg["task"] = "cmd";
-            flashMsg["action"] = action;
-            flashMsg["callId"] = fid;
-            foreach (var prop in parsed.Properties())
-            {
-                // 安全：排除 action/task，防 Web 消息夹带同名字段覆盖 C# 派生的可信 action
-                // （AS2 handleGameCommand 裸分发 _root.gameCommands[action]，无白名单）。
-                if (prop.Name != "type" && prop.Name != "cmd" && prop.Name != "callId"
-                    && prop.Name != "action" && prop.Name != "task")
-                    flashMsg[prop.Name] = prop.Value;
-            }
+            // 信封构造 + 安全参数透传统一走 PanelBridge（含 action/task 保留键守卫，杜绝各桥漏抄）。
+            // 注：原 ShopTask 未排除 panel（无害遗留），统一收口后 panel 也不再透传，与其余桥一致。
+            var flashMsg = PanelBridge.BuildFlashCommand(action, fid, parsed);
             string flashJson = flashMsg.ToString(Newtonsoft.Json.Formatting.None);
             LogManager.Log("[ShopTask] → Flash: " + flashJson);
             _socket.Send(flashJson + "\0");

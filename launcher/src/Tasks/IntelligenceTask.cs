@@ -416,18 +416,8 @@ namespace CF7Launcher.Tasks
 
             lock (_lock) { _timers[fid] = timer; }
 
-            var flashMsg = new JObject();
-            flashMsg["task"] = "cmd";
-            flashMsg["action"] = action;
-            flashMsg["callId"] = fid;
-            foreach (var prop in parsed.Properties())
-            {
-                // 安全：排除 action/task，防 Web 消息夹带同名字段覆盖 C# 派生的可信 action
-                // （AS2 handleGameCommand 裸分发 _root.gameCommands[action]，无白名单）。
-                if (prop.Name != "type" && prop.Name != "panel" && prop.Name != "cmd" && prop.Name != "callId"
-                    && prop.Name != "action" && prop.Name != "task")
-                    flashMsg[prop.Name] = prop.Value;
-            }
+            // 信封构造 + 安全参数透传统一走 PanelBridge（含 action/task 保留键守卫，杜绝各桥漏抄）。
+            var flashMsg = PanelBridge.BuildFlashCommand(action, fid, parsed);
 
             string flashJson = flashMsg.ToString(Newtonsoft.Json.Formatting.None);
             LogManager.Log("[IntelligenceTask] -> Flash: " + flashJson);
