@@ -356,7 +356,7 @@
         highlightActiveIcon();
 
         var cached = _detailCache[task.taskId];
-        if (cached) { renderTaskDetail(cached, task); return; }
+        if (cached) { renderTaskDetail(cached, task); maybeRefreshNavigable(index, task, cached); return; }
 
         renderSkeletonDetail();
         var snapSession = _session;
@@ -370,6 +370,47 @@
             }
             if (data.taskData) _detailCache[task.taskId] = data.taskData;
             renderTaskDetail(data.taskData, task);
+        });
+    }
+
+    // 交付/前往按钮三态（满足+远程→交付任务｜满足+可前往→前往交付｜满足+不可前往→前往NPC禁用｜未满足→禁用）。
+    // 抽出供 renderTaskDetail 渲染与 patchDeliverButton 就地修补共用（DRY）。
+    // label/titleText 返回原始文本（含未转义 npcName）：渲染处用 escHtml/escAttr，patch 处用 textContent/.title，均安全。
+    function computeDeliverState(detail, summary) {
+        var satisfied = !!(summary && summary.satisfied);
+        var npc = (detail && detail.npcName) || 'NPC';
+        if (!satisfied) return { enabled: false, label: '尚未满足交付条件', act: '', titleText: '' };
+        if (detail.finishRemote === true) return { enabled: true, label: '交付任务', act: 'deliver', titleText: '' };
+        if (detail.finishNavigable === true) return { enabled: true, label: '前往交付', act: 'navigate', titleText: '前往「' + npc + '」所在地图交付' };
+        return { enabled: false, label: '前往「' + npc + '」交付', act: '', titleText: '需前往交付NPC处提交（该区域暂不可一键前往）' };
+    }
+
+    // 就地修补交付按钮（不重渲详情，避免入场动效重放）
+    function patchDeliverButton(detail, summary) {
+        if (!_rightEl) return;
+        var btn = _rightEl.querySelector('.task-act-deliver');
+        if (!btn) return;
+        var ds = computeDeliverState(detail, summary);
+        btn.disabled = !ds.enabled;
+        btn.setAttribute('data-act', ds.act);
+        btn.textContent = ds.label;
+        if (ds.titleText) btn.title = ds.titleText; else btn.removeAttribute('title');
+    }
+
+    // finishNavigable 是 AS2 动态计算（注册表就绪 + 地图解锁 + 当前是否战斗地图），不应被详情缓存永久固化。
+    // 仅当当前显示为「满足 + 非远程 + 不可前往」（可能因注册表迟到/区域刚解锁而陈旧禁用）时，后台复查一次并就地修补；
+    // 已可前往(true)不复查——陈旧 true 由 navigateFinish 服务端 not_navigable 兜底，避免每次选择都打 AS2。
+    function maybeRefreshNavigable(index, summary, cached) {
+        if (!summary || !summary.satisfied) return;
+        if (!cached || cached.finishRemote === true || cached.finishNavigable === true) return;
+        var reqSession = _session;
+        sendPanelMsg('detail', { index: index }, function(data) {
+            if (reqSession !== _session || _activeIndex !== index) return;
+            if (!data || !data.success || !data.taskData) return;
+            var nav = (data.taskData.finishNavigable === true);
+            if (nav === cached.finishNavigable) return;
+            cached.finishNavigable = nav;
+            patchDeliverButton(cached, summary);
         });
     }
 
@@ -824,24 +865,11 @@
         //   满足+非远程+不可前往 → 「前往「NPC」交付」禁用（区域未解锁/战斗地图，需手动前往）
         //   未满足            → 「尚未满足交付条件」禁用
         var isMain = (summary && summary.type === '主线') || task.type === '主线';
-        var canRemote = task.finishRemote === true;
-        var canNav = task.finishNavigable === true;
-        var npcLabel = escHtml(task.npcName || 'NPC');
-        var dEnabled, dLabel, dAct = '', dTitle = '';
-        if (!satisfied) {
-            dEnabled = false; dLabel = '尚未满足交付条件';
-        } else if (canRemote) {
-            dEnabled = true; dLabel = '交付任务'; dAct = 'deliver';
-        } else if (canNav) {
-            dEnabled = true; dLabel = '前往交付'; dAct = 'navigate';
-            dTitle = ' title="前往「' + escAttr(task.npcName || 'NPC') + '」所在地图交付"';
-        } else {
-            dEnabled = false; dLabel = '前往「' + npcLabel + '」交付';
-            dTitle = ' title="需前往交付NPC处提交（该区域暂不可一键前往）"';
-        }
+        var ds = computeDeliverState(task, summary);
         html += '<div class="task-detail-actions">';
-        html += '<button class="task-act-btn task-act-deliver" type="button" data-act="' + dAct + '"' +
-            (dEnabled ? '' : ' disabled') + dTitle + '>' + dLabel + '</button>';
+        html += '<button class="task-act-btn task-act-deliver" type="button" data-act="' + ds.act + '"' +
+            (ds.enabled ? '' : ' disabled') +
+            (ds.titleText ? ' title="' + escAttr(ds.titleText) + '"' : '') + '>' + escHtml(ds.label) + '</button>';
         html += '<button class="task-act-btn task-act-abandon" type="button"' +
             (isMain ? ' disabled title="主线任务无法放弃"' : '') + '>放弃任务</button>';
         html += '</div>';

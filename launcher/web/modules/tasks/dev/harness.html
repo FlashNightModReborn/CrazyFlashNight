@@ -154,6 +154,7 @@
             _detailCalls: 0,
             _inventoryFullFor: null,   // 模拟 FinishTask「背包无法装下奖励」失败的 taskId
             _respDelay: 50,            // 回包延迟(ms)，写操作在途竞态测试可调大
+            _navOverride: {},          // taskId→Boolean 覆盖 detail.finishNavigable（模拟注册表迟到/区域解锁变化）
             // satisfied 覆盖表：模拟 AS2 taskCompleteCheck 的判定结果随游戏状态变化（如补齐提交物品）。
             // Web 端只消费此布尔，不自行从 stageReq/itemReqs 推断完成——本表用于验证该契约。
             _satisfiedOverride: {},
@@ -190,7 +191,10 @@
                     case 'detail': {
                         var task = self._tasks[m.index];
                         if (!task) { resp({ success: false, error: 'invalid_index' }); break; }
-                        resp({ success: true, taskData: clone(DETAILS[task.taskId]) });
+                        var dd = clone(DETAILS[task.taskId]);
+                        // 动态可达性覆盖（镜像 AS2 按当前游戏态实时算 finishNavigable）
+                        if (self._navOverride[task.taskId] !== undefined) dd.finishNavigable = self._navOverride[task.taskId];
+                        resp({ success: true, taskData: dd });
                         break;
                     }
                     case 'tooltip': {
@@ -463,6 +467,7 @@
                 host._satisfiedOverride = {};
                 host._inventoryFullFor = null;
                 host._respDelay = 50;
+                host._navOverride = {};
                 host.close();
                 return waitFor(function() { return !Panels.isOpen(); }, 2000).then(function() {
                     host.open();
@@ -596,6 +601,23 @@
                 var gated = resp && resp.success === false && resp.error === 'requires_npc';
                 var stillThere = host._tasks.filter(function(t) { return t.taskId === 105; }).length === 1;
                 return gated && stillThere && window.TaskPanel.getState().taskCount === 10;
+            });
+
+            await check('task-ui24', 'finishNavigable 不被缓存固化：注册表迟到→重选后台复查→「前往交付」由禁用转可点', async function() {
+                await reopenFresh();
+                host._navOverride[105] = false; // 首取时不可前往（模拟注册表未就绪）
+                clickIcon(4); // 105 后勤(支线) satisfied 非remote
+                await waitFor(function() { return titleNow() === '弹药运输'; }, 3000);
+                var d1 = document.querySelector('.task-act-deliver');
+                if (!(d1 && d1.disabled && d1.getAttribute('data-act') !== 'navigate')) return false;
+                host._navOverride[105] = true; // 注册表就绪/区域解锁
+                clickIcon(4); // 重选 → 缓存命中(陈旧false) + maybeRefreshNavigable 后台复查 → 修补按钮
+                await waitFor(function() {
+                    var d = document.querySelector('.task-act-deliver');
+                    return d && !d.disabled && d.getAttribute('data-act') === 'navigate';
+                }, 4000);
+                var d2 = document.querySelector('.task-act-deliver');
+                return d2 && !d2.disabled && d2.getAttribute('data-act') === 'navigate' && d2.textContent.indexOf('前往交付') >= 0;
             });
 
             var passed = results.filter(function(r) { return r.pass; }).length;
