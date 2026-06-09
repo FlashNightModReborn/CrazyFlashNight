@@ -354,6 +354,7 @@
                 <Text>夜里值班，无线电偶尔会收到一些不在频段表上的东西。规律性很强，不像自然干扰。不过这年头什么都有可能，对吧？</Text>
             </SubDialogue>
         </Dialogue>
+    </Dialogues>
     <Dialogues>
         <Name>researcher</Name>
         <Dialogue id="0">
@@ -387,5 +388,31 @@
             </SubDialogue>
         </Dialogue>
     </Dialogues>
+    <Dialogues>
+        <Name>调酒师</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>调酒师</Name>
+                <Title></Title>
+                <Char>调酒师</Char>
+                <Text>···干嘛？</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>调酒师</Name>
+                <Title></Title>
+                <Char>调酒师</Char>
+                <Text>我以前喜欢玩赛博朋克题材的游戏，尤其是某个调酒玩法的，结果自己在审判日后成了调酒师。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>调酒师</Name>
+                <Title></Title>
+                <Char>调酒师</Char>
+                <Text>这里的老板神出鬼没的，不过工资一直按时发。</Text>
+            </SubDialogue>
+        </Dialogue>
     </Dialogues>
 </root>
