@@ -202,6 +202,10 @@
                     case 'finishTask': {
                         var fi = self.findIdx(m.taskId);
                         if (fi < 0) { resp({ success: false, error: 'task_not_found', tasks: clone(self._tasks) }); break; }
+                        // 镜像 AS2 handleFinish 门控顺序：远程开关在完成度之前。非远程任务一律 requires_npc，
+                        // 即便客户端绕过禁用按钮直发也拒绝（服务端硬门控的 harness 等价物）。
+                        var fd = DETAILS[self._tasks[fi].taskId];
+                        if (!(fd && fd.finishRemote === true)) { resp({ success: false, error: 'requires_npc', tasks: clone(self._tasks) }); break; }
                         if (!self._tasks[fi].satisfied) { resp({ success: false, error: 'not_satisfied', tasks: clone(self._tasks) }); break; }
                         if (self._inventoryFullFor != null && String(self._tasks[fi].taskId) === String(self._inventoryFullFor)) {
                             resp({ success: false, error: 'inventory_full', tasks: clone(self._tasks) }); break;
@@ -581,6 +585,17 @@
                 dv.click();
                 await waitFor(function() { return !Panels.isOpen(); }, 4000); // 成功 closePanel → 面板关闭
                 return !Panels.isOpen();
+            });
+
+            await check('task-ui23', '服务端远程门控：绕过按钮直发 finishTask 给非远程任务→requires_npc+不交付', async function() {
+                await reopenFresh();
+                // 105 后勤(支线) satisfied + 非remote。直发 finishTask（绕过禁用按钮），mock 镜像 AS2 门控应拒。
+                var resp = await new Promise(function(resolve) {
+                    window.TaskPanel._debugSend('finishTask', { taskId: 105 }, function(data) { resolve(data); });
+                });
+                var gated = resp && resp.success === false && resp.error === 'requires_npc';
+                var stillThere = host._tasks.filter(function(t) { return t.taskId === 105; }).length === 1;
+                return gated && stillThere && window.TaskPanel.getState().taskCount === 10;
             });
 
             var passed = results.filter(function(r) { return r.pass; }).length;

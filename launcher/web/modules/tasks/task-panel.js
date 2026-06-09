@@ -1025,7 +1025,9 @@
             _categoryMap: CATEGORY_MAP,
             // 写操作 QA 钩子（harness 也可直接点真实 DOM 按钮；这些便于断言/编排）
             _isBusy: function() { return _busy; },
-            _abandonPendingId: function() { return _pendingAbandonId; }
+            _abandonPendingId: function() { return _pendingAbandonId; },
+            // 绕过按钮直发面板命令（QA 验证服务端门控，如对非远程任务发 finishTask 应回 requires_npc）
+            _debugSend: function(cmd, extra, cb) { return sendPanelMsg(cmd, extra, cb); }
         };
     }
 })();

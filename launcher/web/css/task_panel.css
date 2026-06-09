@@ -375,11 +375,18 @@
     animation: task-card-slidein 0.55s var(--task-ease) both;
 }
 
-.task-icon.active {
-    outline: 2px solid var(--task-accent);
-    outline-offset: -2px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.18);
+/* 卡片选中：左竖条(inset，盖在卡背景图左缘)+提亮发光，黑白灰——与列表「左竖条」选中语言统一，
+   替换原 outline 描边。左竖条与右滚动条分处两边、语义不同、仅单卡出现，不视觉竞争（列表态已验证）。
+   不动用焦点橙（一色一义，橙只留给提交NPC卡）。focus-visible 仍保留描边作键盘可达。 */
+.task-panel-left.view-card .task-icon.active {
+    /* 6px 白色左竖条(inset) + 左侧渐隐提亮(叠在卡背景图上，镜像列表选中 bg) + 轻发光；
+       卡背景图自带边框，故靠"左竖条 + 左侧提亮"压过它，使选中明确（非全描边） */
+    background-image:
+        linear-gradient(to right, rgba(255,255,255,0.16), rgba(255,255,255,0) 45%),
+        url('/modules/tasks/assets/task_icon_bg.png');
+    box-shadow: inset 6px 0 0 #f2f2f2, 0 0 12px rgba(255, 255, 255, 0.20);
 }
+.task-panel-left.view-card .task-icon.active .task-icon-type { color: #ffffff; }
 .task-icon:focus-visible {
     outline: 2px solid rgba(255, 255, 255, 0.85);
     outline-offset: -2px;
@@ -403,6 +410,8 @@
 /* 分类角标统一黑白灰（不与焦点橙争视觉）；仅主线略提亮以示主线优先级 */
 .task-icon-cat[data-cat="主线"] { background: #ededed; }
 .task-icon-cat[data-cat="其他"] { background: #b8b8b8; color: #2a2a2a; }
+/* 卡片模式去角标（对齐原版：类型即标题，避免与小标题链名重复）；列表模式仍用角标（紧凑态） */
+.task-panel-left.view-card .task-icon-cat { display: none; }
 
 .task-icon-left {
     flex: 1;
