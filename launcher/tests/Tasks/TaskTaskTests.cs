@@ -127,6 +127,44 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void HandleWebRequest_NavigateFinish_SendsTaskNavigateFinishActionAndTaskId()
+        {
+            string sent = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("navigateFinish", JObject.Parse("{\"callId\":\"web-nav\",\"taskId\":40013}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("cmd", (string)msg["task"]);
+            Assert.Equal("taskNavigateFinish", (string)msg["action"]);
+            Assert.Equal(40013, (int)msg["taskId"]);
+            Assert.Null(msg["panel"]);
+        }
+
+        [Fact]
+        public void HandleFlashResponse_NavigateFinish_PreservesClosePanelFlag()
+        {
+            // 前往交付成功回 closePanel:true（与地图 navigate 同语义）；C# 改写信封后须原样保留。
+            string sent = null;
+            string posted = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            task.HandleWebRequest("navigateFinish", JObject.Parse("{\"callId\":\"web-nav2\",\"taskId\":40013}"));
+            int flashCallId = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+            task.HandleFlashResponse(
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":" + flashCallId + ",\"success\":true,\"closePanel\":true}"),
+                delegate(string json) { });
+
+            var resp = JObject.Parse(posted);
+            Assert.Equal("panel_resp", (string)resp["type"]);
+            Assert.Equal("navigateFinish", (string)resp["cmd"]);
+            Assert.True((bool)resp["success"]);
+            Assert.True((bool)resp["closePanel"]);
+        }
+
+        [Fact]
         public void HandleFlashResponse_FinishTask_RewritesEnvelopeAndPreservesFreshTasks()
         {
             // 写操作回包契约：AS2 在 splice 后回 success + 刷新后的 tasks 概要；C# 须改写信封为

@@ -1083,6 +1083,9 @@
 .task-panel-container.task-busy .task-panel-body,
 .task-panel-container.task-busy .task-panel-toolbar { pointer-events: none; }
 .task-panel-container.task-busy .task-act-btn.task-btn-pending { pointer-events: none; }
+/* 删除在途：屏蔽放弃弹窗的取消/遮罩交互（确认键自身的 pending spinner 仍可见），
+   与 JS closeAbandonConfirm 的 _busy 守卫双保险，防"以为取消了却被删" */
+.task-panel-container.task-busy .task-confirm-overlay { pointer-events: none; }
 
 /* ── 放弃确认弹窗 ── */
 .task-confirm-overlay {

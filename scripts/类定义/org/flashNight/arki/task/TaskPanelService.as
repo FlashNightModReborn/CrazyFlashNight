@@ -9,6 +9,7 @@
  *     tasksTooltip       — 物品注释（name-keyed，复用 _root.Web物品注释HTML）
  *     taskFinish         — 交付任务（写操作，按 taskId 解析 index，taskCompleteCheck 门控）
  *     taskDelete         — 放弃任务（写操作，按 taskId 解析 index，主线任务拒绝）
+ *     taskNavigateFinish — 前往交付（便利增强，复用地图 NPC→hotspot 跳转，回 closePanel）
  *     taskPanelOpen      — 面板打开通知（当前为空操作）
  *     taskPanelClose     — 面板关闭通知（当前为空操作）
  *
@@ -26,6 +27,19 @@
  * 交付门控（安全要求）：
  *   _root.FinishTask 自身不校验完成度（原版门控在 NPCTaskCheck）。面板交付必须先过
  *   _root.taskCompleteCheck(index)，否则客户端可交付未完成任务骗取奖励。此为服务端硬门控。
+ *
+ * 远程交付开关（可选玩法增强 finish_remote）：
+ *   任务数据新增布尔字段 finish_remote（data/task/*.json，缺省=false）。面板「交付」按钮
+ *   只对 finish_remote==true 的任务开放远程直接交付；其余任务保持原版玩法——必须前往
+ *   finish_npc 处由 NPCTaskCheck→FinishTask 交付。handleFinish 对非远程任务回 requires_npc
+ *   （服务端硬门控，不信客户端）；handleDetail 回 finishRemote 供面板决定按钮态。
+ *   NPC 交付路径不经 handleFinish，因此该开关不影响任何原版任务的正常交付。
+ *
+ * 前往交付（便利增强 taskNavigateFinish）：
+ *   非远程任务面板按钮变为「前往交付」——复用地图跳转把玩家直送到 finish_npc 的地图位置
+ *   （MapTaskNpcRegistry.findMarker → MapPanelService.canNavigateToHotspot/navigateToHotspot）。
+ *   只负责"前往"，到达后仍由玩家点击 NPC 正常交付。可达性 = 非战斗地图 + 热点已登记 + 所在组解锁；
+ *   不可达（或注册/目录未就绪）则按钮禁用、服务端回 not_navigable。handleDetail 回 finishNavigable。
  */
 import org.flashNight.arki.task.TaskUtil;
 import LiteJSON;
@@ -53,6 +67,9 @@ class org.flashNight.arki.task.TaskPanelService {
         };
         _root.gameCommands["taskDelete"] = function(params) {
             org.flashNight.arki.task.TaskPanelService.handleDelete(params);
+        };
+        _root.gameCommands["taskNavigateFinish"] = function(params) {
+            org.flashNight.arki.task.TaskPanelService.handleNavigateFinish(params);
         };
         _root.gameCommands["taskPanelOpen"] = function(params) {
             org.flashNight.arki.task.TaskPanelService.handlePanelOpen(params);
@@ -196,6 +213,17 @@ class org.flashNight.arki.task.TaskPanelService {
             }
         }
 
+        // 前往交付可达性：finish_npc → marker.hotspotId（MapTaskNpcRegistry）→ 可否直接跳转
+        // （MapPanelService.canNavigateToHotspot：非战斗地图 + NAVIGATE_TARGETS 命中 + 所在组已解锁）。
+        // 面板据此对「非远程但可前往」的任务把按钮变为可点的「前往交付」。注册/目录未就绪时回 false（优雅降级）。
+        var finishNavigable:Boolean = false;
+        if (npcName != "") {
+            var navMarker:Object = org.flashNight.arki.map.MapTaskNpcRegistry.findMarker(npcName);
+            if (navMarker != undefined) {
+                finishNavigable = org.flashNight.arki.map.MapPanelService.canNavigateToHotspot(String(navMarker.hotspotId));
+            }
+        }
+
         var dto:Object = {
             taskId: taskId,
             type: type,
@@ -204,7 +232,11 @@ class org.flashNight.arki.task.TaskPanelService {
             stageReq: stageReq,
             itemReqs: itemReqs,
             npcName: npcName,
-            rewards: rewards
+            rewards: rewards,
+            // 远程交付开关：仅 finish_remote==true 的任务允许面板直接交付，否则须前往 NPC
+            finishRemote: (taskData.finish_remote == true),
+            // 前往交付：该任务 finish_npc 当前是否可一键跳转到其地图位置
+            finishNavigable: finishNavigable
         };
 
         sendResponse({ task: "task_response", callId: callId, success: true, taskData: dto });
@@ -258,6 +290,15 @@ class org.flashNight.arki.task.TaskPanelService {
             return;
         }
 
+        // 远程交付门控（可选功能增强）：面板直接交付仅对显式标记 finish_remote 的任务开放，
+        // 其余任务保持原版玩法——必须前往 finish_npc 处由 NPCTaskCheck→FinishTask 交付。
+        // 默认（字段缺省）= 不允许远程，等价于还原原版行为。NPC 交付路径不经本函数，不受影响。
+        var fTaskData:Object = TaskUtil.tasks[_root.tasks_to_do[index].id];
+        if (!(fTaskData != undefined && fTaskData.finish_remote == true)) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "requires_npc", tasks: buildTaskList() });
+            return;
+        }
+
         // 服务端硬门控：未满足交付条件绝不交付（FinishTask 自身不校验）。
         if (_root.taskCompleteCheck(index) != true) {
             sendResponse({ task: "task_response", callId: callId, success: false, error: "not_satisfied", tasks: buildTaskList() });
@@ -302,6 +343,50 @@ class org.flashNight.arki.task.TaskPanelService {
         }
 
         sendResponse({ task: "task_response", callId: callId, success: true, tasks: buildTaskList() });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // handleNavigateFinish — 前往交付（复用地图跳转，便利性增强）
+    //   按 taskId 解析 finish_npc → MapTaskNpcRegistry 找 hotspot → MapPanelService 跳转。
+    //   成功回 closePanel:true（与地图面板 navigate 同语义，前端关面板让场景淡出跳转）。
+    //   实际交付仍由玩家到达后点击 NPC 完成（本功能只负责"前往"，不自动交付）。
+    // ═══════════════════════════════════════════════════════════
+    public static function handleNavigateFinish(params:Object):Void {
+        var callId = params.callId;
+        var index:Number = resolveIndexByTaskId(params.taskId);
+        if (index < 0) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "task_not_found", tasks: buildTaskList() });
+            return;
+        }
+
+        var taskData:Object = TaskUtil.tasks[_root.tasks_to_do[index].id];
+        var npc:String = (taskData != undefined && taskData.finish_npc != undefined) ? String(taskData.finish_npc) : "";
+        if (npc == "") {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "npc_not_on_map" });
+            return;
+        }
+
+        var marker:Object = org.flashNight.arki.map.MapTaskNpcRegistry.findMarker(npc);
+        if (marker == undefined) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "npc_not_on_map" });
+            return;
+        }
+
+        var hid:String = String(marker.hotspotId);
+        // 二次硬门控：可达性按当前游戏态实时判定（战斗地图/未解锁/目录未就绪都拒绝）
+        if (!org.flashNight.arki.map.MapPanelService.canNavigateToHotspot(hid)) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "not_navigable" });
+            return;
+        }
+
+        var ok:Boolean = org.flashNight.arki.map.MapPanelService.navigateToHotspot(hid);
+        sendResponse({
+            task: "task_response",
+            callId: callId,
+            success: ok,
+            closePanel: ok,
+            error: ok ? undefined : "navigate_failed"
+        });
     }
 
     // ═══════════════════════════════════════════════════════════

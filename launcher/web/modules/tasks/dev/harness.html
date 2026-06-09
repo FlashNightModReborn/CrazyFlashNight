@@ -102,7 +102,7 @@
                 t(102, '初入战场',       '主线', '指挥官',   false),
                 t(103, '收集物资',       '支线', '补给官',   false),
                 t(104, '选修课程',       '大学', '冯教授',   true),
-                t(105, '弹药运输',       '后勤', '后勤官',   false),
+                t(105, '弹药运输',       '后勤', '后勤官',   true),
                 t(106, '通缉：赤色之手', '委托', '赏金中介', false),
                 t(107, '极限生存',       '挑战', '挑战官',   true),
                 t(108, '净化异形巢穴',   '异形', '研究员',   false),
@@ -116,19 +116,19 @@
 
         // detail by taskId
         var DETAILS = {
-            101: d(101, '斩杀大boss僵尸', '主线', '斩杀修罗难度的大boss僵尸，为兵团扫清前进障碍。', stage('大boss僵尸', '修罗'), null, 'Andy Law', [rw('金币', 5000), rw('经验书', 2), rw('强化核心', 1)]),
+            101: d(101, '斩杀大boss僵尸', '主线', '斩杀修罗难度的大boss僵尸，为兵团扫清前进障碍。', stage('大boss僵尸', '修罗'), null, 'Andy Law', [rw('金币', 5000), rw('经验书', 2), rw('强化核心', 1)], false, true),
             102: d(102, '初入战场', '主线', '前往前线营地，与指挥官对话并熟悉基础操作。', stage('前线营地', '简单'), null, '指挥官', [rw('金币', 500), rw('绷带', 5)]),
             103: d(103, '收集物资', '支线', '为补给站收集急需的医疗与能量物资。', null, items('submit', [it('绷带', 3), it('能量饮料', 2), it('止血针', 1)]), '补给官', [rw('金币', 1200)]),
-            104: d(104, '选修课程', '大学', '在军事学院完成一门选修课程的结业考核。', stage('军事学院', '冒险'), null, '冯教授', [rw('学分', 10), rw('经验书', 1)]),
+            104: d(104, '选修课程', '大学', '在军事学院完成一门选修课程的结业考核。', stage('军事学院', '冒险'), null, '冯教授', [rw('学分', 10), rw('经验书', 1)], true),
             105: d(105, '弹药运输', '后勤', '确保随身携带足量弹药箱以通过后勤检查。', null, items('contain', [it('弹药箱', 5)]), '后勤官', [rw('金币', 800)]),
             106: d(106, '通缉：赤色之手', '委托', '赏金委托：讨伐通缉目标「赤色之手」，将其首级带回作为凭证。委托可随时放弃。', stage('废弃工厂', '地狱'), items('submit', [it('赤色之手首级', 1)]), '赏金中介', [rw('金币', 30000), rw('K点', 50)]),
-            107: d(107, '极限生存', '挑战', '在生存竞技场地狱难度下坚持到最后一波。', stage('生存竞技场', '地狱'), null, '挑战官', [rw('挑战徽章', 1), rw('金币', 8000)]),
+            107: d(107, '极限生存', '挑战', '在生存竞技场地狱难度下坚持到最后一波。', stage('生存竞技场', '地狱'), null, '挑战官', [rw('挑战徽章', 1), rw('金币', 8000)], true),
             108: d(108, '净化异形巢穴', '异形', '潜入异形巢穴，清除核心区域的所有威胁。', stage('异形巢穴', '修罗'), null, '研究员', [rw('异形组织', 3)]),
             109: d(109, '敌后侦察', '情报', '在敌后区域收集情报文件并安全撤离。', null, items('contain', [it('情报文件', 2)]), '情报员', [rw('情报点', 20)]),
             110: d(110, '隐藏的惊喜', '彩蛋', '寻找隐藏在地图角落的彩蛋奖励。', null, null, '神秘人', [rw('彩蛋礼盒', 1)])
         };
-        function d(id, title, type, desc, stageReq, itemReqs, npc, rewards) {
-            return { taskId: id, type: type, title: title, description: desc, stageReq: stageReq, itemReqs: itemReqs, npcName: npc, rewards: rewards };
+        function d(id, title, type, desc, stageReq, itemReqs, npc, rewards, finishRemote, finishNavigable) {
+            return { taskId: id, type: type, title: title, description: desc, stageReq: stageReq, itemReqs: itemReqs, npcName: npc, rewards: rewards, finishRemote: finishRemote === true, finishNavigable: finishNavigable === true };
         }
         function stage(name, diff) { return { name: name, difficulty: diff }; }
         function items(kind, arr) { for (var i = 0; i < arr.length; i++) arr[i].kind = kind; return arr; }
@@ -153,6 +153,7 @@
             _empty: false,
             _detailCalls: 0,
             _inventoryFullFor: null,   // 模拟 FinishTask「背包无法装下奖励」失败的 taskId
+            _respDelay: 50,            // 回包延迟(ms)，写操作在途竞态测试可调大
             // satisfied 覆盖表：模拟 AS2 taskCompleteCheck 的判定结果随游戏状态变化（如补齐提交物品）。
             // Web 端只消费此布尔，不自行从 stageReq/itemReqs 推断完成——本表用于验证该契约。
             _satisfiedOverride: {},
@@ -180,7 +181,7 @@
                 function resp(extra) {
                     var r = { type: 'panel_resp', panel: 'tasks', cmd: m.cmd, callId: m.callId };
                     for (var k in extra) r[k] = extra[k];
-                    setTimeout(function() { chrome.webview.__dispatch(r); }, 50);
+                    setTimeout(function() { chrome.webview.__dispatch(r); }, self._respDelay || 50);
                 }
                 switch (m.cmd) {
                     case 'snapshot':
@@ -215,6 +216,15 @@
                         if (self._tasks[di].type === '主线') { resp({ success: false, error: 'cannot_delete_main', tasks: clone(self._tasks) }); break; }
                         self._tasks.splice(di, 1);
                         resp({ success: true, tasks: clone(self._tasks) });
+                        break;
+                    }
+                    // 前往交付：镜像 AS2 handleNavigateFinish——按 DETAILS.finishNavigable 判可达，成功回 closePanel
+                    case 'navigateFinish': {
+                        var gi = self.findIdx(m.taskId);
+                        if (gi < 0) { resp({ success: false, error: 'task_not_found' }); break; }
+                        var gd = DETAILS[self._tasks[gi].taskId];
+                        if (gd && gd.finishNavigable === true) { resp({ success: true, closePanel: true }); }
+                        else { resp({ success: false, error: 'not_navigable' }); }
                         break;
                     }
                     case 'close': break;
@@ -448,6 +458,7 @@
             function reopenFresh() {
                 host._satisfiedOverride = {};
                 host._inventoryFullFor = null;
+                host._respDelay = 50;
                 host.close();
                 return waitFor(function() { return !Panels.isOpen(); }, 2000).then(function() {
                     host.open();
@@ -457,21 +468,29 @@
             function clickIcon(idx) { var b = document.querySelector('.task-icon[data-index="' + idx + '"]'); if (b) b.click(); return b; }
             function titleNow() { var n = document.querySelector('.task-title-line2'); return n ? n.textContent : ''; }
 
-            await check('task-ui15', '操作区按钮门控：满足→交付可点+主线放弃禁用；未满足→交付禁用；支线→放弃可点', async function() {
+            await check('task-ui15', '按钮三态门控：远程→交付任务(deliver)；可前往→前往交付(navigate)；不可前往→前往NPC禁用；未满足→禁用；主线放弃禁用', async function() {
                 await reopenFresh();
-                clickIcon(0); // 101 主线 satisfied
+                // 104 大学(支线) satisfied + remote → 交付任务(deliver)可点 + 放弃可点(非主线)
+                clickIcon(3);
+                await waitFor(function() { return titleNow() === '选修课程'; }, 3000);
+                var dR = document.querySelector('.task-act-deliver'), aR = document.querySelector('.task-act-abandon');
+                var remoteOk = dR && !dR.disabled && dR.getAttribute('data-act') === 'deliver' && dR.textContent.indexOf('交付任务') >= 0 && aR && !aR.disabled;
+                // 101 主线 satisfied + 可前往 + 非remote → 前往交付(navigate)可点 + 放弃禁用(主线)
+                clickIcon(0);
                 await waitFor(function() { return titleNow() === '斩杀大boss僵尸'; }, 3000);
-                var dv = document.querySelector('.task-act-deliver'), ab = document.querySelector('.task-act-abandon');
-                var mainOk = dv && !dv.disabled && ab && ab.disabled; // 主线可交付、不可放弃
-                clickIcon(1); // 102 主线 未满足
+                var dN = document.querySelector('.task-act-deliver'), aN = document.querySelector('.task-act-abandon');
+                var navOk = dN && !dN.disabled && dN.getAttribute('data-act') === 'navigate' && dN.textContent.indexOf('前往交付') >= 0 && aN && aN.disabled;
+                // 105 后勤(支线) satisfied + 非remote + 不可前往 → 前往NPC禁用
+                clickIcon(4);
+                await waitFor(function() { return titleNow() === '弹药运输'; }, 3000);
+                var dL = document.querySelector('.task-act-deliver');
+                var lockedOk = dL && dL.disabled && dL.textContent.indexOf('前往') >= 0;
+                // 102 主线 未满足 → 交付禁用(尚未满足)
+                clickIcon(1);
                 await waitFor(function() { return titleNow() === '初入战场'; }, 3000);
                 var d2 = document.querySelector('.task-act-deliver');
-                var unsatOk = d2 && d2.disabled;
-                clickIcon(2); // 103 支线 未满足
-                await waitFor(function() { return titleNow() === '收集物资'; }, 3000);
-                var a3 = document.querySelector('.task-act-abandon');
-                var sideOk = a3 && !a3.disabled;
-                return mainOk && unsatOk && sideOk;
+                var unsatOk = d2 && d2.disabled && d2.textContent.indexOf('尚未满足') >= 0;
+                return remoteOk && navOk && lockedOk && unsatOk;
             });
 
             await check('task-ui16', '交付满足任务→移除+计数-1（taskId 解析，非首项 index 偏移无碍）', async function() {
@@ -510,12 +529,12 @@
 
             await check('task-ui19', '交付遇背包满→失败保留任务+计数不变', async function() {
                 await reopenFresh();
-                host._inventoryFullFor = 101;
-                clickIcon(0); // 101 主线 satisfied
-                await waitFor(function() { return titleNow() === '斩杀大boss僵尸'; }, 3000);
+                host._inventoryFullFor = 107;
+                clickIcon(6); // 107 挑战(副本) satisfied + remote
+                await waitFor(function() { return titleNow() === '极限生存'; }, 3000);
                 document.querySelector('.task-act-deliver').click();
                 await waitFor(function() { return !window.TaskPanel._isBusy(); }, 3000);
-                var stillThere = host._tasks.filter(function(t) { return t.taskId === 101; }).length === 1;
+                var stillThere = host._tasks.filter(function(t) { return t.taskId === 107; }).length === 1;
                 host._inventoryFullFor = null;
                 return window.TaskPanel.getState().taskCount === 10 && stillThere;
             });
@@ -531,6 +550,36 @@
                 if (!(Panels.isOpen() && window.TaskPanel._abandonPendingId() == null)) return false;
                 chrome.webview.__dispatch({ type: 'panel_esc' }); // 第二次 ESC → 关面板
                 await waitFor(function() { return !Panels.isOpen(); }, 2000);
+                return !Panels.isOpen();
+            });
+
+            await check('task-ui21', '删除在途点取消/遮罩无效：弹窗保持+任务仍按确认删除(不会"以为取消却被删")', async function() {
+                await reopenFresh();
+                host._respDelay = 300; // 拉长在途窗口
+                clickIcon(2); // 103 支线
+                await waitFor(function() { return titleNow() === '收集物资'; }, 3000);
+                document.querySelector('.task-act-abandon').click();
+                await waitFor(function() { var o = document.getElementById('task-confirm-overlay'); return o && !o.hidden; }, 2000);
+                document.getElementById('task-confirm-yes').click();       // 发起删除(in-flight, _busy)
+                document.getElementById('task-confirm-no').click();        // 立刻点取消 → 应被 _busy 守卫忽略
+                var overlay = document.getElementById('task-confirm-overlay');
+                overlay.dispatchEvent(new MouseEvent('click', { bubbles: true })); // 点遮罩本身 → 同样忽略
+                var stillOpenDuringFlight = !overlay.hidden && window.TaskPanel._isBusy();
+                await waitFor(function() { return window.TaskPanel.getState().taskCount === 9; }, 4000);
+                var deleted = host._tasks.filter(function(t) { return t.taskId === 103; }).length === 0;
+                var closedAfter = document.getElementById('task-confirm-overlay').hidden;
+                host._respDelay = 50;
+                return stillOpenDuringFlight && deleted && closedAfter;
+            });
+
+            await check('task-ui22', '前往交付：可前往任务点「前往交付」→发起跳转+面板关闭', async function() {
+                await reopenFresh();
+                clickIcon(0); // 101 主线 satisfied + navigable + 非remote → 前往交付
+                await waitFor(function() { return titleNow() === '斩杀大boss僵尸'; }, 3000);
+                var dv = document.querySelector('.task-act-deliver');
+                if (!(dv && !dv.disabled && dv.getAttribute('data-act') === 'navigate' && dv.textContent.indexOf('前往交付') >= 0)) return false;
+                dv.click();
+                await waitFor(function() { return !Panels.isOpen(); }, 4000); // 成功 closePanel → 面板关闭
                 return !Panels.isOpen();
             });
 

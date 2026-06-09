@@ -13,10 +13,14 @@
     //                     stageReq{name,difficulty}|null, itemReqs[{name,count,kind}],
     //                     npcName, rewards[{name,count}]} }
     //   tooltip(itemName) → { success, introHTML, descHTML, type, displayname }  (新增)
+    //   detail 额外回 finishRemote:Boolean（可否面板远程交付）、finishNavigable:Boolean（可否一键前往NPC）
     //   finishTask(taskId) → { success, tasks:[...], error? }   写操作·交付（taskId 主键解析）
     //   deleteTask(taskId) → { success, tasks:[...], error? }   写操作·放弃（主线拒绝）
+    //   navigateFinish(taskId) → { success, closePanel, error? } 前往交付（复用地图跳转，成功后关面板）
     //     · 写操作一律传 taskId（稳定主键），不传 index——AS2 splice 后 index 会偏移
     //     · 回包附带刷新后的 tasks 概要，前端走 applyWriteSnapshot 原子重渲
+    //     · 远程交付门控：仅 finishRemote 任务可面板直接交付；否则按钮显示「前往NPC交付」，
+    //       AS2 对非远程任务回 requires_npc（服务端硬门控）
     // ═══════════════════════════════════════════════════════════
 
     // ── 状态 ──
@@ -379,14 +383,21 @@
         while (t && t !== _rightEl && !(t.classList && t.classList.contains('task-act-btn'))) t = t.parentNode;
         if (!t || t === _rightEl || !t.classList || !t.classList.contains('task-act-btn')) return;
         if (t.disabled || t.classList.contains('task-btn-pending')) return;
-        if (t.classList.contains('task-act-deliver')) onDeliver(t);
-        else if (t.classList.contains('task-act-abandon')) openAbandonConfirm();
+        if (t.classList.contains('task-act-deliver')) {
+            if (t.getAttribute('data-act') === 'navigate') onNavigateFinish(t);
+            else onDeliver(t);
+        } else if (t.classList.contains('task-act-abandon')) {
+            openAbandonConfirm();
+        }
     }
 
     function onDeliver(btn) {
         if (_busy || _activeIndex < 0) return;
         var task = _tasks[_activeIndex];
         if (!task || !task.satisfied) return;     // 客户端预门控；AS2 端 taskCompleteCheck 二次硬门控
+        // 远程交付门控（防御）：非远程任务即便绕过禁用态也不发请求；AS2 端 requires_npc 兜底
+        var det = _detailCache[task.taskId];
+        if (!det || det.finishRemote !== true) { toast('该任务需前往交付NPC处提交'); return; }
         var taskId = task.taskId;
         beginOp(btn);
         var reqSession = _session;
@@ -405,6 +416,32 @@
         });
     }
 
+    // 前往交付：复用地图跳转把玩家送到 finish_npc 地图位置；成功后关面板（场景在游戏内淡出跳转）
+    function onNavigateFinish(btn) {
+        if (_busy || _activeIndex < 0) return;
+        var task = _tasks[_activeIndex];
+        if (!task) return;
+        var det = _detailCache[task.taskId];
+        if (!det || det.finishNavigable !== true) { toast('该区域暂不可一键前往'); return; }
+        beginOp(btn);
+        var reqSession = _session;
+        sendPanelMsg('navigateFinish', { taskId: task.taskId }, function(data) {
+            endOp(btn);
+            if (reqSession !== _session) return;
+            if (data && data.success) {
+                // 跳转已在游戏内发起（closePanel 语义同地图面板 navigate）→ 关闭任务面板
+                hideTip();
+                Panels.close();
+                Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close' });
+            } else {
+                var msg = '无法前往交付NPC';
+                if (data && data.error === 'not_navigable') msg = '该区域尚未解锁，无法一键前往';
+                else if (data && data.error === 'npc_not_on_map') msg = '该任务NPC不在可跳转地图上';
+                toast(msg);
+            }
+        });
+    }
+
     function openAbandonConfirm() {
         if (_busy || _activeIndex < 0) return;
         var task = _tasks[_activeIndex];
@@ -418,6 +455,9 @@
     }
 
     function closeAbandonConfirm() {
+        // 删除请求在途时（_busy）禁止关闭弹窗：否则用户点「确认放弃」后立刻点「取消」/遮罩，
+        // 弹窗虽关但删除仍会在回包后执行，造成"以为取消了却被删"。请求结束后由回调统一关闭。
+        if (_busy) return;
         _pendingAbandonId = null;
         var overlay = _el && _el.querySelector('#task-confirm-overlay');
         if (overlay) overlay.hidden = true;
@@ -446,6 +486,7 @@
         if (!data) return prefix;
         switch (data.error) {
             case 'not_satisfied':     return '尚未满足交付条件';
+            case 'requires_npc':      return '该任务需前往交付NPC处提交';
             case 'inventory_full':    return '背包已满，无法交付，请清理背包后重试';
             case 'cannot_delete_main':return '主线任务无法放弃';
             case 'task_not_found':    return '任务已不存在，已刷新列表';
@@ -776,13 +817,31 @@
             html += '</div></div>';
         }
 
-        // 操作区（交付 / 放弃）。配色纪律：功能按钮黑白灰，主次靠「填充 vs 描边」分层，不用橙。
-        // 主线任务不可放弃（AS2 DeleteTask 亦拒绝，此处仅前置禁用作即时反馈）。
+        // 操作区（交付 / 前往 / 放弃）。配色纪律：功能按钮黑白灰，主次靠「填充 vs 描边」分层，不用橙。
+        // 主操作按 finishRemote / finishNavigable 三态切换（data-act 决定点击行为）：
+        //   满足+远程        → 「交付任务」直接远程交付（deliver）
+        //   满足+非远程+可前往 → 「前往交付」一键跳转到 NPC 地图（navigate，复用地图跳转）
+        //   满足+非远程+不可前往 → 「前往「NPC」交付」禁用（区域未解锁/战斗地图，需手动前往）
+        //   未满足            → 「尚未满足交付条件」禁用
         var isMain = (summary && summary.type === '主线') || task.type === '主线';
+        var canRemote = task.finishRemote === true;
+        var canNav = task.finishNavigable === true;
+        var npcLabel = escHtml(task.npcName || 'NPC');
+        var dEnabled, dLabel, dAct = '', dTitle = '';
+        if (!satisfied) {
+            dEnabled = false; dLabel = '尚未满足交付条件';
+        } else if (canRemote) {
+            dEnabled = true; dLabel = '交付任务'; dAct = 'deliver';
+        } else if (canNav) {
+            dEnabled = true; dLabel = '前往交付'; dAct = 'navigate';
+            dTitle = ' title="前往「' + escAttr(task.npcName || 'NPC') + '」所在地图交付"';
+        } else {
+            dEnabled = false; dLabel = '前往「' + npcLabel + '」交付';
+            dTitle = ' title="需前往交付NPC处提交（该区域暂不可一键前往）"';
+        }
         html += '<div class="task-detail-actions">';
-        html += '<button class="task-act-btn task-act-deliver" type="button"' +
-            (satisfied ? '' : ' disabled') + '>' +
-            (satisfied ? '交付任务' : '尚未满足交付条件') + '</button>';
+        html += '<button class="task-act-btn task-act-deliver" type="button" data-act="' + dAct + '"' +
+            (dEnabled ? '' : ' disabled') + dTitle + '>' + dLabel + '</button>';
         html += '<button class="task-act-btn task-act-abandon" type="button"' +
             (isMain ? ' disabled title="主线任务无法放弃"' : '') + '>放弃任务</button>';
         html += '</div>';

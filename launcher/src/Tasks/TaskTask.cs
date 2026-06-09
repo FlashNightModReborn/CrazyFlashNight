@@ -103,6 +103,11 @@ namespace CF7Launcher.Tasks
                     // 回包含刷新后的 tasks 概要
                     action = "taskDelete";
                     break;
+                case "navigateFinish":
+                    // 前往交付（便利增强）：转发 taskId 给 AS2 taskNavigateFinish；AS2 复用地图
+                    // NPC→hotspot 跳转，成功回 closePanel:true（前端关面板让场景淡出跳转）
+                    action = "taskNavigateFinish";
+                    break;
                 default:
                     RespondError(webCallId, cmd, "unsupported_cmd");
                     return;
