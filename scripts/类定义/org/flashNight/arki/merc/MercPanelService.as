@@ -416,6 +416,8 @@ class org.flashNight.arki.merc.MercPanelService {
 
         var gender:String = (merc[17] == 1 || merc[17] == "1") ? "男" : "女";
 
+        var personality:Object = buildPersonality(mercName, mercLevel);
+
         return {
             slotIndex:   slotIndex,
             name:        mercName,
@@ -423,8 +425,173 @@ class org.flashNight.arki.merc.MercPanelService {
             level:       mercLevel,
             gender:      gender,
             height:      Number(merc[3]) || 0,
-            equips:      equips
+            equips:      equips,
+            personality: serializePersonality(personality),
+            skills:      buildSkills(mercName, mercLevel, merc, personality)
         };
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // buildPersonality — 重算佣兵人格六维（仅展示用）
+    // 与 单位函数_fs_aka_玩家模板迁移.as 配置人形怪AI 的 aiSeed 算法严格同构：
+    // seed = 等级 起步 → 名字逐字符 seed*31+charCode → &0x7FFFFFFF，
+    // 再走 _root.生成随机人格（确定性 LCG）。不调 计算AI参数（派生参数面板用不到）。
+    // ═══════════════════════════════════════════════════════════
+    private static function buildPersonality(mercName:String, mercLevel:Number):Object {
+        var seed:Number = mercLevel;
+        for (var i:Number = 0; i < mercName.length; i++) {
+            seed = seed * 31 + mercName.charCodeAt(i);
+        }
+        seed = seed & 0x7FFFFFFF;
+        return _root.生成随机人格(seed);
+    }
+
+    // 序列化人格为有序数组（固定维度顺序，JSON 键保持 ASCII）
+    private static function serializePersonality(p:Object):Array {
+        var dims:Array = ["勇气", "技术", "经验", "反应", "智力", "谋略"];
+        var traits:Array = [];
+        for (var i:Number = 0; i < dims.length; i++) {
+            var v:Number = Number(p[dims[i]]);
+            if (isNaN(v)) v = 0;
+            traits.push({ name: dims[i], value: Math.round(v * 100) / 100 });
+        }
+        return traits;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // buildSkills — 重算佣兵已学技能（仅展示用）
+    // 算法与 单位函数_fs_aka_玩家模板迁移.as 主角函数.初始化可用技能 严格同构
+    // （等级桶 + 装备组合预过滤 → LCG 抽技能 → 剩余点数随机强化）。
+    // 命中 _root.技能缓存（实体已初始化过）时直接采用游戏内结果；
+    // 未命中时本地重算且【不回写缓存】——若两边实现意外漂移，
+    // 不能让面板的展示值污染战斗权威数据。
+    // ═══════════════════════════════════════════════════════════
+    private static function buildSkills(mercName:String, mercLevel:Number, merc:Array, personality:Object):Array {
+        var 技术档位:Number = (personality && personality.技术) ? Math.round(personality.技术 * 4) : 0;
+        var 缓存键:String = mercName + "_" + mercLevel + "_t" + 技术档位;
+        var learned:Array = _root.技能缓存[缓存键];
+        if (learned == undefined) {
+            learned = computeSkillList(mercName, mercLevel, merc, personality);
+        }
+
+        var out:Array = [];
+        for (var i:Number = 0; i < learned.length; i++) {
+            var sk:Object = learned[i];
+            out.push({
+                name:     String(sk.技能名),
+                level:    Number(sk.技能等级) || 1,
+                type:     String(sk.类型),
+                trait:    String(sk.功能),
+                cooldown: Number(sk.冷却) || 0,
+                cost:     Number(sk.消耗) || 0,
+                unlock:   Number(sk.限制) || 0
+            });
+        }
+        return out;
+    }
+
+    private static function computeSkillList(mercName:String, mercLevel:Number, merc:Array, personality:Object):Array {
+        var 主角函数:Object = _root.主角函数;
+        var 技能表:Array = 主角函数.人形怪技能表;
+        if (技能表 == undefined) return [];
+
+        var 可学技能数:Number = 3 + ((mercLevel / 5) >> 0);
+
+        // 装备组合: 0=无刀无枪, 1=有刀无枪, 2=无刀有枪, 3=有刀有枪
+        // （注意：取自 mercData 原始装备列；若实体初始化时被默认装备链改写过，
+        //   组合可能与战斗实测有出入，仅作展示预估。）
+        var 有刀:Number = merc[15] ? 1 : 0;
+        var 有枪:Number = (merc[12] || merc[13] || merc[14]) ? 2 : 0;
+        var 装备组合:Number = 有刀 + 有枪;
+
+        // 种子（同 初始化可用技能：等级 + 名字字符码累加）
+        var 种子:Number = mercLevel;
+        for (var ci:Number = 0; ci < mercName.length; ci++) {
+            种子 += mercName.charCodeAt(ci);
+        }
+
+        var LCG_A:Number = 1664525;
+        var LCG_C:Number = 1013904223;
+        var LCG_M:Number = 4294967296;
+
+        var 技能点总数:Number = _root.计算技能点数总和(mercLevel);
+        if (personality && personality.技术) {
+            技能点总数 = Math.round(技能点总数 * (1 + personality.技术));
+        }
+
+        var 桶最大等级:Number = 主角函数.技能等级桶最大等级;
+        var 查询等级:Number = mercLevel > 桶最大等级 ? 桶最大等级 : mercLevel;
+        var 预过滤索引:Array = 主角函数.装备技能桶[查询等级][装备组合];
+        if (预过滤索引 == undefined) return [];
+
+        var 可用技能表:Array = 预过滤索引.slice(0);
+        var 可用技能强化表:Array = [];
+        var 已学技能表:Array = [];
+        var 可用长度:Number;
+        var 随机索引:Number;
+        var 最后索引:Number;
+        var 原始技能:Object;
+        var 点数:Number;
+
+        while (可学技能数 > 0 && (可用长度 = 可用技能表.length) > 0) {
+            种子 = (LCG_A * 种子 + LCG_C) % LCG_M;
+            随机索引 = (种子 / LCG_M * 可用长度) >> 0;
+
+            var 待检测技能索引:Number = 可用技能表[随机索引];
+            最后索引 = 可用长度 - 1;
+            if (随机索引 != 最后索引) {
+                可用技能表[随机索引] = 可用技能表[最后索引];
+            }
+            可用技能表.pop();
+
+            原始技能 = 技能表[待检测技能索引];
+            点数 = 原始技能.点数;
+
+            if (技能点总数 >= 点数) {
+                可用技能强化表.push({
+                    技能名: 原始技能.技能名,
+                    点数: 点数,
+                    冷却: 原始技能.冷却,
+                    消耗: 原始技能.消耗,
+                    限制: 原始技能.限制,
+                    类型: 原始技能.类型,
+                    功能: 原始技能.功能,
+                    技能等级: 1
+                });
+                可学技能数--;
+                技能点总数 -= 点数;
+            }
+        }
+
+        var 待强化技能:Object;
+        var 强化点数:Number;
+
+        while (技能点总数 > 0 && (可用长度 = 可用技能强化表.length) > 0) {
+            种子 = (LCG_A * 种子 + LCG_C) % LCG_M;
+            随机索引 = (种子 / LCG_M * 可用长度) >> 0;
+
+            待强化技能 = 可用技能强化表[随机索引];
+            强化点数 = 待强化技能.点数;
+
+            if (技能点总数 >= 强化点数 && 待强化技能.技能等级 < 10) {
+                待强化技能.技能等级 += 1;
+                技能点总数 -= 强化点数;
+            } else {
+                最后索引 = 可用长度 - 1;
+                if (随机索引 != 最后索引) {
+                    可用技能强化表[随机索引] = 可用技能强化表[最后索引];
+                }
+                已学技能表.push(待强化技能);
+                可用技能强化表.pop();
+            }
+        }
+
+        var 强化表长度:Number = 可用技能强化表.length;
+        for (var ri:Number = 0; ri < 强化表长度; ri++) {
+            已学技能表.push(可用技能强化表[ri]);
+        }
+
+        return 已学技能表;
     }
 
     // ═══════════════════════════════════════════════════════════

@@ -105,6 +105,7 @@
 
     function ensureCss() {
         ensureLink('pet-panel-css', 'css/pet_panel.css');
+        ensureLink('merc-panel-css', 'css/merc_panel.css');
         ensureLink('team-panel-css', 'css/team_panel.css');
     }
 

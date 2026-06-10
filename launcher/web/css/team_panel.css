@@ -84,61 +84,19 @@
 .team-view[hidden] { display: none; }
 .team-child { position: absolute !important; inset: 0; }
 
-/* 子视图由战队壳层负责顶栏与关闭；保留各自页面内部返回按钮。 */
-.team-pet-child #pet-page-list > .pet-page-header,
+/* ── 子视图收口 ──
+   战队壳层负责顶栏（标签 + 关闭）。佣兵列表页 header 整体隐藏（其工具栏
+   自带资源条）；战宠列表页 header 改「瘦身」而非整体隐藏——整体隐藏会连
+   金币/K点资源条一起藏掉（664468b 的问题），故只藏标题与关闭按钮。
+   卡片/网格等视觉样式全部由各自的 pet_panel.css / merc_panel.css 承载，
+   本文件不再 override。 */
 .team-merc-child #merc-page-list > .merc-page-header { display: none; }
+.team-pet-child #pet-page-list > .pet-page-header {
+    height: 40px;
+    flex: 0 0 40px;
+}
+.team-pet-child #pet-page-list > .pet-page-header .pet-title-mark,
+.team-pet-child #pet-page-list > .pet-page-header .pet-page-title,
+.team-pet-child #pet-page-list > .pet-page-header .pet-close-btn { display: none; }
 .team-pet-child .pet-scale-shell { top: 50%; }
-.team-merc-child { border: 0; border-radius: 0; background: #171512; }
-.team-merc-child .merc-grid,
-.team-merc-child .merc-hire-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.team-merc-child .merc-card {
-    min-height: 154px;
-    display: grid;
-    grid-template-columns: 72px minmax(0, 1fr) auto;
-    align-items: stretch;
-    padding: 10px;
-    border-color: rgba(239, 148, 66, .18);
-    background: rgba(255, 255, 255, .035);
-}
-.merc-card-portrait {
-    position: relative;
-    width: 64px;
-    min-height: 112px;
-    overflow: hidden;
-    border: 1px solid rgba(239, 148, 66, .28);
-    background: rgba(0, 0, 0, .35);
-}
-.merc-card-portrait img { width: 100%; height: 100%; object-fit: cover; }
-.merc-card-portrait-fallback::before {
-    content: "";
-    position: absolute;
-    left: 17px;
-    top: 18px;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #49443d;
-}
-.merc-card-portrait-fallback::after {
-    content: "";
-    position: absolute;
-    left: 9px;
-    bottom: 12px;
-    width: 46px;
-    height: 48px;
-    border-radius: 50% 50% 12% 12%;
-    background: #403b35;
-}
-.team-merc-child .merc-equip-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 32px);
-    gap: 3px;
-}
-.merc-ability-placeholder {
-    margin-top: 6px;
-    padding: 4px 7px;
-    border: 1px dashed rgba(239, 148, 66, .2);
-    color: #81776b;
-    font-size: 11px;
-    letter-spacing: 1px;
-}
+.team-merc-child { border: 0; border-radius: 0; }

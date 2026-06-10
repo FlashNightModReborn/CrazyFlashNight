@@ -1,0 +1,911 @@
+/* ═══════════════════════════════════════════════════════════════
+   佣兵面板 (merc-panel) — 军事战术风 · 战队壳层子视图
+
+   设计基线对齐战宠面板 (pet_panel.css)：同一套战术橙 token / 大理石
+   石板卡面 / 4 角 L 框 / 浅石牌交互按钮。佣兵面板不带 scale-shell——
+   它只作为战队壳层 (team-panel) 的子视图，inset:0 填满内容区
+   （1024×518 设计空间），缩放由壳层统一处理。
+
+   卡片规格：与战宠卡同宽（4 列网格），高度 2 倍（312px = 150×2 + 12 gap）。
+   背景垫图：assets/bg/official-bpk.jpg（与战宠的英雄垫图同一层叠语法）。
+
+   由 team-panel.js ensureCss 注入 <link>。纯 CSS，零协议改动。
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════
+   设计 token（与 pet_panel.css 同值，独立作用域）
+   ═══════════════════════════════════════════════════════════════ */
+.merc-panel {
+    --merc-bg:        #131419;
+    --merc-bg-2:      #1a1c23;
+    --merc-bg-3:      #21242d;
+    --merc-bg-raise:  #272b35;
+    --merc-line:        #474b55;
+    --merc-line-bright: #6b7079;
+    --merc-accent:      #ef9442;
+    --merc-accent-2:    #ffb65a;
+    --merc-accent-dim:  rgba(239,148,66,0.14);
+    --merc-accent-glow: rgba(239,148,66,0.45);
+    --merc-text:      #d6d9de;
+    --merc-text-dim:  #8b8f98;
+    --merc-text-mute: #686c75;
+    --merc-gold:    #ffc94a;
+    --merc-kpoint:  #d98cff;
+    --merc-deploy:  #5cba47;
+    --merc-rest:    #ef9442;
+    --merc-danger:  #e2503e;
+    --merc-warn:    #e8b84b;
+    --merc-radius: 7px;
+    --merc-radius-sm: 4px;
+    /* 拟物大理石底纹（与任务/战宠面板共用 task_icon_bg.png，零新增美术资源） */
+    --merc-marble:      url('../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat;
+    --merc-stone:       linear-gradient(160deg, rgba(42,45,53,0.70), rgba(27,29,35,0.82)), var(--merc-marble), linear-gradient(#30333a, #25272d);
+    --merc-stone-soft:  linear-gradient(160deg, rgba(36,39,46,0.76), rgba(23,25,30,0.86)), var(--merc-marble), linear-gradient(#2b2e35, #222429);
+    --merc-marble-btn:  linear-gradient(180deg, rgba(16,16,18,0.05), rgba(16,16,18,0.15)), var(--merc-marble), linear-gradient(#dcdde0, #c9cace);
+    --merc-ink:         #2b2d33;
+    --merc-ink-dim:     #54585f;
+    --merc-ink-mute:    #7a7e86;
+
+    position: relative;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    color: var(--merc-text);
+    font-family: system-ui, "Microsoft YaHei", sans-serif;
+    /* 背景层叠与战宠一致（顶部橙光 → 轻灰罩 → 官方垫图 → 渐变兜底），
+       垫图换 official-bpk.jpg。url 按 /css/ 目录相对寻址，兼容 overlay 与 file harness。 */
+    background:
+        radial-gradient(120% 80% at 50% 0%, rgba(239,148,66,0.03), transparent 55%),
+        linear-gradient(180deg, rgba(54,57,64,0.87) 0%, rgba(38,40,46,0.90) 100%),
+        url('../assets/bg/official-bpk.jpg') center center / cover no-repeat,
+        linear-gradient(180deg, #41444b 0%, #2a2c32 100%);
+    user-select: none;
+}
+.merc-panel * { box-sizing: border-box; }
+
+/* 外框战术角标（4 角，与战宠一致） */
+.merc-panel::before {
+    content: '';
+    position: absolute;
+    inset: 7px;
+    pointer-events: none;
+    border: 1px solid rgba(255,255,255,0.04);
+    z-index: 0;
+}
+.merc-panel::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    pointer-events: none;
+    z-index: 30;
+    --c: var(--merc-line-bright);
+    --l: 22px;
+    --w: 2px;
+    background:
+        linear-gradient(var(--c),var(--c)) 0 0 / var(--l) var(--w) no-repeat,
+        linear-gradient(var(--c),var(--c)) 0 0 / var(--w) var(--l) no-repeat,
+        linear-gradient(var(--c),var(--c)) 100% 0 / var(--l) var(--w) no-repeat,
+        linear-gradient(var(--c),var(--c)) 100% 0 / var(--w) var(--l) no-repeat,
+        linear-gradient(var(--c),var(--c)) 0 100% / var(--l) var(--w) no-repeat,
+        linear-gradient(var(--c),var(--c)) 0 100% / var(--w) var(--l) no-repeat,
+        linear-gradient(var(--c),var(--c)) 100% 100% / var(--l) var(--w) no-repeat,
+        linear-gradient(var(--c),var(--c)) 100% 100% / var(--w) var(--l) no-repeat;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   页面容器
+   ═══════════════════════════════════════════════════════════════ */
+.merc-page {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    opacity: 1;
+    transition: opacity 0.18s ease, transform 0.22s ease;
+}
+.merc-page[hidden] { display: none; }
+.merc-page.merc-page-enter { opacity: 0; transform: translateX(14px); }
+.merc-page.merc-page-enter-back { opacity: 0; transform: translateX(-14px); }
+
+/* ═══════════════════════════════════════════════════════════════
+   通用 Header（列表页 header 在战队壳层内由 team_panel.css 隐藏，
+   雇佣/培养页 header 保留承载返回按钮与上下文操作）
+   ═══════════════════════════════════════════════════════════════ */
+.merc-page-header {
+    flex-shrink: 0;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: linear-gradient(180deg, rgba(239,148,66,0.07), transparent);
+    position: relative;
+}
+.merc-page-header::after {
+    content: '';
+    position: absolute;
+    left: 22px; right: 22px; bottom: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--merc-accent), transparent 70%);
+    opacity: 0.5;
+}
+.merc-title-mark {
+    width: 5px; height: 22px;
+    flex-shrink: 0;
+    background: var(--merc-accent);
+    box-shadow: 0 0 10px var(--merc-accent-glow);
+}
+.merc-page-title {
+    margin: 0;
+    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--merc-text);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    white-space: nowrap;
+}
+.merc-page-title.merc-page-title-sub { font-size: 18px; letter-spacing: 2px; }
+.merc-page-header-spacer { flex: 1; }
+
+.merc-resources { display: flex; gap: 16px; align-items: center; }
+.merc-resource {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    white-space: nowrap;
+}
+.merc-resource-label { font-size: 11px; color: var(--merc-text-mute); font-weight: 600; }
+.merc-resource-gold   { color: var(--merc-gold); }
+.merc-resource-kpoint { color: var(--merc-kpoint); }
+
+.merc-page-back, .merc-close-btn {
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    color: var(--merc-text-dim);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.14s;
+    display: flex; align-items: center; justify-content: center;
+}
+.merc-page-back {
+    height: 30px;
+    padding: 0 14px 0 10px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    border-radius: var(--merc-radius);
+}
+.merc-page-back:hover { color: var(--merc-accent); border-color: var(--merc-accent); background: var(--merc-accent-dim); }
+.merc-close-btn { width: 32px; height: 32px; font-size: 16px; border-radius: var(--merc-radius); }
+.merc-close-btn:hover { color: #fff; border-color: rgba(226,80,62,0.6); background: rgba(226,80,62,0.18); }
+
+/* ═══════════════════════════════════════════════════════════════
+   列表页 — 工具栏（佣兵编制状态 + 资源 + 雇佣 CTA）
+   header 被壳层隐藏后由本栏承载资源显示。
+   ═══════════════════════════════════════════════════════════════ */
+.merc-toolbar {
+    flex-shrink: 0;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 22px;
+    background: rgba(255,255,255,0.015);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.merc-status-item {
+    font-size: 12px;
+    color: var(--merc-text-dim);
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+}
+.merc-status-item strong { color: var(--merc-accent); font-size: 14px; font-weight: 700; }
+.merc-toolbar-spacer { flex: 1; }
+
+.merc-btn-primary {
+    height: 30px;
+    padding: 0 20px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #1a1206;
+    background: linear-gradient(180deg, var(--merc-accent-2), var(--merc-accent));
+    border: none;
+    cursor: pointer;
+    border-radius: var(--merc-radius);
+    box-shadow: 0 0 0 1px rgba(239,148,66,0.3), 0 2px 8px rgba(239,148,66,0.25);
+    transition: filter 0.14s, box-shadow 0.14s;
+    position: relative;
+}
+.merc-btn-primary:hover:not(:disabled) { filter: brightness(1.12); box-shadow: 0 0 0 1px rgba(255,182,90,0.5), 0 3px 12px rgba(239,148,66,0.4); }
+.merc-btn-primary:active:not(:disabled) { filter: brightness(0.95); }
+.merc-btn-primary:disabled { filter: grayscale(0.7) brightness(0.6); cursor: not-allowed; }
+
+/* ═══════════════════════════════════════════════════════════════
+   卡片网格 — 与战宠同宽（4 列），佣兵卡 2 倍高
+   ═══════════════════════════════════════════════════════════════ */
+.merc-grid-wrap {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 18px;
+    min-height: 0;
+}
+.merc-grid, .merc-hire-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    align-content: start;
+}
+
+/* 佣兵卡片：312px = 战宠卡 150px × 2 + 12px gap，列宽与战宠完全一致 */
+.merc-card {
+    position: relative;
+    height: 312px;
+    padding: 11px;
+    background: var(--merc-stone);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--merc-radius);
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    overflow: hidden;
+    transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+    animation: merc-card-in 0.34s cubic-bezier(0.16,0.8,0.3,1) both;
+}
+@keyframes merc-card-in {
+    from { opacity: 0; transform: translateY(14px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.merc-card:hover {
+    border-color: rgba(239,148,66,0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+}
+/* 4 角 L 框 */
+.merc-card-frame {
+    position: absolute; inset: 5px; pointer-events: none; z-index: 2;
+    --bk-len: 13px; --bk-w: 2px; --bk-c: rgba(239,148,66,0.42);
+    background:
+        linear-gradient(var(--bk-c),var(--bk-c)) 0 0      / var(--bk-len) var(--bk-w) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 0 0      / var(--bk-w) var(--bk-len) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 100% 0   / var(--bk-len) var(--bk-w) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 100% 0   / var(--bk-w) var(--bk-len) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 0 100%   / var(--bk-len) var(--bk-w) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 0 100%   / var(--bk-w) var(--bk-len) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 100% 100%/ var(--bk-len) var(--bk-w) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 100% 100%/ var(--bk-w) var(--bk-len) no-repeat;
+}
+.merc-card:hover .merc-card-frame { --bk-c: rgba(255,182,90,0.85); }
+/* 扫光 */
+.merc-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -120%;
+    width: 60%; height: 100%;
+    background: linear-gradient(105deg, transparent, rgba(255,255,255,0.07), transparent);
+    pointer-events: none;
+}
+.merc-card:hover::before { animation: merc-sweep 0.7s ease forwards; }
+@keyframes merc-sweep { to { left: 160%; } }
+/* 出战暖辉（与战宠「在役」语义一致） */
+.merc-card-deployed {
+    box-shadow: inset 0 0 0 1px rgba(239,148,66,0.16),
+                inset 0 15px 26px -18px rgba(255,178,76,0.5);
+}
+
+/* 卡头：头像 + 名字/等级/徽章 */
+.merc-card-top { display: flex; gap: 10px; align-items: flex-start; }
+.merc-card-portrait {
+    position: relative;
+    width: 56px; height: 56px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: #0e0f13;
+    border: 1px solid var(--merc-line);
+    border-radius: var(--merc-radius);
+}
+.merc-card-portrait img { width: 100%; height: 100%; object-fit: cover; }
+/* 头像缺省剪影（无素材时） */
+.merc-card-portrait-fallback::before {
+    content: "";
+    position: absolute;
+    left: 50%; top: 10px;
+    width: 20px; height: 20px;
+    margin-left: -10px;
+    border-radius: 50%;
+    background: #49443d;
+}
+.merc-card-portrait-fallback::after {
+    content: "";
+    position: absolute;
+    left: 50%; bottom: -6px;
+    width: 38px; height: 28px;
+    margin-left: -19px;
+    border-radius: 50% 50% 12% 12%;
+    background: #403b35;
+}
+.merc-card-headinfo { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.merc-card-nameline { display: flex; align-items: baseline; gap: 6px; }
+.merc-card-name {
+    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", serif;
+    font-size: 15px; font-weight: 700; color: var(--merc-text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+.merc-card-lv { font-size: 12px; font-weight: 700; color: var(--merc-accent); flex-shrink: 0; }
+.merc-card-sub { font-size: 11px; color: var(--merc-text-mute); letter-spacing: 0.5px; }
+.merc-card-badges { display: flex; gap: 4px; flex-wrap: wrap; }
+.merc-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+    padding: 0 6px; line-height: 16px;
+    border-radius: var(--merc-radius-sm);
+}
+.merc-badge-deployed {
+    color: #2a1c05;
+    background: linear-gradient(180deg, #ffd271, #f0a93a);
+    box-shadow: 0 0 0 1px rgba(150,92,16,0.45), 0 0 8px rgba(255,180,80,0.3);
+    display: inline-flex; align-items: center; gap: 4px;
+}
+.merc-badge-deployed::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: #fff6df; box-shadow: 0 0 4px rgba(255,255,255,0.9);
+}
+
+/* 卡内分区小标题 */
+.merc-card-seclabel {
+    font-size: 10px;
+    color: var(--merc-text-mute);
+    letter-spacing: 2px;
+    display: flex; align-items: center; gap: 6px;
+}
+.merc-card-seclabel::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, rgba(239,148,66,0.25), transparent);
+}
+
+/* 价格行（雇佣卡） */
+.merc-card-price { display: flex; gap: 10px; align-items: baseline; font-size: 12px; font-weight: 700; }
+.merc-price-gold { color: var(--merc-gold); }
+.merc-price-kpoint { color: var(--merc-kpoint); }
+
+/* ── 装备 / 技能图标网格（同规格 32px 单元）── */
+.merc-equip-grid, .merc-skill-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 32px);
+    gap: 3px;
+}
+.merc-equip-cell, .merc-skill-cell {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: help;
+    flex-shrink: 0;
+    overflow: hidden;
+    transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+.merc-equip-cell:hover, .merc-skill-cell:hover {
+    border-color: rgba(239, 148, 66, 0.6);
+    box-shadow: 0 0 6px rgba(239, 148, 66, 0.25);
+}
+.merc-equip-cell img { max-width: 100%; max-height: 100%; object-fit: contain; pointer-events: none; }
+.merc-equip-empty {
+    background: rgba(255, 255, 255, 0.02);
+    border-style: dashed;
+    border-color: rgba(255, 255, 255, 0.08);
+    cursor: default;
+}
+.merc-equip-empty:hover { border-color: rgba(255, 255, 255, 0.08); box-shadow: none; }
+.merc-equip-level, .merc-skill-level {
+    position: absolute;
+    right: 1px;
+    bottom: 0;
+    font-size: 9px;
+    line-height: 1;
+    color: var(--merc-accent);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1px 2px;
+    border-radius: 2px;
+    pointer-events: none;
+    font-weight: 600;
+}
+.merc-equip-fallback { font-size: 13px; color: #888; font-weight: 600; }
+
+/* 技能占位图标：素材未采集，以类型首字 + 虚线框占位（规格与装备图标一致） */
+.merc-skill-cell {
+    border-style: dashed;
+    border-color: rgba(239,148,66,0.30);
+    background: rgba(239,148,66,0.05);
+}
+.merc-skill-glyph {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(239,148,66,0.75);
+    pointer-events: none;
+}
+.merc-skill-more {
+    border-style: solid;
+    background: rgba(255,255,255,0.03);
+    cursor: default;
+}
+.merc-skill-more .merc-skill-glyph { color: var(--merc-text-dim); font-size: 11px; }
+.merc-skill-none {
+    grid-column: 1 / -1;
+    font-size: 11px;
+    color: var(--merc-text-mute);
+    letter-spacing: 1px;
+    padding: 8px 0;
+    text-align: center;
+    border: 1px dashed rgba(255,255,255,0.10);
+    border-radius: var(--merc-radius-sm);
+}
+
+/* 卡片操作行（浅石牌小按钮） */
+.merc-card-actions { display: flex; gap: 6px; margin-top: auto; }
+.merc-mini-btn {
+    flex: 1;
+    height: 24px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.26);
+    background: var(--merc-marble-btn);
+    color: var(--merc-ink);
+    text-shadow: 0 1px 0 rgba(255,255,255,0.35);
+    transition: all 0.14s;
+    border-radius: var(--merc-radius-sm);
+    position: relative;
+}
+.merc-mini-btn-deploy  { color: #2c7a1f; }
+.merc-mini-btn-rest    { color: #b3650f; }
+.merc-mini-btn-train   { color: #4a4d53; }
+.merc-mini-btn-dismiss { color: #b3302a; }
+.merc-mini-btn-hire    { color: #b3650f; }
+.merc-mini-btn:hover:not(:disabled) {
+    background: var(--merc-marble-btn);
+    filter: brightness(1.07);
+    border-color: rgba(0,0,0,0.42);
+}
+.merc-mini-btn:disabled {
+    background: linear-gradient(#b7b8bb, #a7a8ac);
+    color: #6b6d72;
+    border-color: rgba(0,0,0,0.14);
+    text-shadow: none;
+    filter: none;
+    cursor: not-allowed;
+}
+
+/* 空状态 & loading */
+.merc-list-empty, .merc-hire-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    color: var(--merc-text-mute);
+    font-size: 14px;
+    letter-spacing: 1px;
+    padding: 40px 0;
+}
+.merc-list-empty[hidden], .merc-hire-empty[hidden] { display: none; }
+.merc-empty-mark {
+    width: 56px; height: 50px;
+    background: rgba(239,148,66,0.12);
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    position: relative;
+}
+.merc-empty-mark::after {
+    content: '?';
+    position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%);
+    font-size: 20px; font-weight: 700; color: var(--merc-accent);
+}
+.merc-hire-loading {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--merc-accent);
+    font-size: 14px; letter-spacing: 1px;
+    padding: 20px;
+}
+.merc-hire-loading[hidden] { display: none; }
+.merc-hire-loading::before {
+    content: '';
+    width: 14px; height: 14px;
+    margin-right: 10px;
+    border: 2px solid rgba(239,148,66,0.25);
+    border-top-color: var(--merc-accent);
+    border-radius: 50%;
+    animation: merc-spin 0.7s linear infinite;
+}
+@keyframes merc-spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════════════════════════
+   通用 body / footer（雇佣页分页）
+   ═══════════════════════════════════════════════════════════════ */
+.merc-page-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 18px;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.merc-page-footer {
+    padding: 9px 18px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+}
+.merc-page-nav { display: flex; align-items: center; gap: 12px; }
+.merc-page-nav-btn {
+    padding: 6px 16px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.26);
+    background: var(--merc-marble-btn);
+    color: #b3650f;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.35);
+    border-radius: var(--merc-radius-sm);
+    transition: all 0.14s;
+}
+.merc-page-nav-btn:hover:not(:disabled) { filter: brightness(1.07); border-color: rgba(0,0,0,0.42); }
+.merc-page-nav-btn:disabled {
+    background: linear-gradient(#b7b8bb, #a7a8ac);
+    color: #6b6d72;
+    border-color: rgba(0,0,0,0.14);
+    text-shadow: none;
+    cursor: not-allowed;
+}
+.merc-page-skip-btn { padding: 6px 10px; font-size: 14px; }
+.merc-page-nav-info {
+    font-size: 13px;
+    color: var(--merc-text-dim);
+    min-width: 80px;
+    text-align: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   培养页（对标战宠进阶页）
+   ═══════════════════════════════════════════════════════════════ */
+.merc-detail-portrait {
+    width: 52px; height: 52px;
+    flex-shrink: 0;
+    border-radius: var(--merc-radius);
+}
+.merc-title-block { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.merc-detail-meta { display: flex; gap: 6px; flex-wrap: wrap; }
+.merc-meta-chip {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+    padding: 1px 9px;
+    border-radius: var(--merc-radius-sm);
+    color: var(--merc-text-dim);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.10);
+}
+.merc-meta-deployed { color: #2a1c05; background: linear-gradient(180deg, #ffd271, #f0a93a); border: 1px solid rgba(150,92,16,0.5); }
+
+.merc-header-actions { display: flex; gap: 7px; flex-shrink: 0; }
+.merc-hdr-btn {
+    height: 30px;
+    padding: 0 14px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.26);
+    background: var(--merc-marble-btn);
+    color: var(--merc-ink);
+    text-shadow: 0 1px 0 rgba(255,255,255,0.35);
+    transition: all 0.14s;
+    border-radius: var(--merc-radius);
+    position: relative;
+    white-space: nowrap;
+}
+.merc-hdr-deploy { color: #2c7a1f; }
+.merc-hdr-deploy.merc-hdr-rest { color: #b3650f; }
+.merc-hdr-dismiss { color: #b3302a; }
+.merc-hdr-btn:hover:not(:disabled) { filter: brightness(1.07); border-color: rgba(0,0,0,0.42); }
+.merc-hdr-btn:disabled {
+    background: linear-gradient(#b7b8bb, #a7a8ac);
+    color: #6b6d72;
+    border-color: rgba(0,0,0,0.14);
+    text-shadow: none;
+    cursor: not-allowed;
+}
+
+.merc-section { display: flex; flex-direction: column; gap: 10px; }
+.merc-section-title {
+    margin: 0;
+    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--merc-accent);
+    display: flex; align-items: center; gap: 9px;
+}
+.merc-section-title::before {
+    content: '';
+    width: 3px; height: 14px;
+    background: var(--merc-accent);
+    box-shadow: 0 0 6px var(--merc-accent-glow);
+}
+.merc-section-title::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, rgba(239,148,66,0.4), transparent);
+}
+.merc-section-hint { font-size: 11px; color: var(--merc-text-mute); letter-spacing: 0.5px; }
+
+/* ── 性格特质（六维条形）── */
+.merc-traits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; }
+.merc-trait {
+    padding: 9px 14px;
+    background: var(--merc-stone-soft);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--merc-radius);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.merc-trait-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--merc-text-dim);
+    letter-spacing: 2px;
+    width: 36px;
+    flex-shrink: 0;
+}
+.merc-trait.merc-trait-top .merc-trait-name { color: var(--merc-accent); }
+.merc-trait-bar {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    height: 8px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 2px;
+    overflow: hidden;
+}
+.merc-trait-bar::after {
+    content: '';
+    position: absolute; inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(90deg,
+        transparent 0, transparent 8px,
+        rgba(0,0,0,0.55) 8px, rgba(0,0,0,0.55) 10px);
+    z-index: 1;
+}
+.merc-trait-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: var(--w, 0%);
+    background: linear-gradient(90deg, #9c5a1d, var(--merc-accent));
+    transition: width 0.3s ease;
+    animation: merc-bar-grow 0.55s cubic-bezier(0.2,0.7,0.3,1);
+}
+.merc-trait-top .merc-trait-fill { background: linear-gradient(90deg, var(--merc-accent), var(--merc-accent-2)); }
+@keyframes merc-bar-grow { from { width: 0; } }
+.merc-trait-val {
+    font-size: 11px;
+    color: var(--merc-text-dim);
+    width: 30px;
+    text-align: right;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+}
+.merc-trait-tag {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+    color: var(--merc-accent);
+    background: rgba(239,148,66,0.12);
+    border: 1px solid rgba(239,148,66,0.3);
+    padding: 0 5px; line-height: 14px;
+    border-radius: var(--merc-radius-sm);
+    flex-shrink: 0;
+}
+
+/* ── 战斗技能（完整列表行）── */
+.merc-skill-rows { display: flex; flex-direction: column; gap: 8px; }
+.merc-skill-row {
+    padding: 9px 14px;
+    background: var(--merc-stone-soft);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--merc-radius);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.15s;
+}
+.merc-skill-row:hover { border-color: rgba(239,148,66,0.22); }
+.merc-skill-row-info { flex: 1; min-width: 0; }
+.merc-skill-row-name { font-size: 14px; font-weight: 700; color: var(--merc-text); display: flex; align-items: baseline; gap: 8px; }
+.merc-skill-row-lv { font-size: 12px; font-weight: 700; color: var(--merc-accent); }
+.merc-skill-row-desc { font-size: 12px; color: var(--merc-text-dim); margin-top: 2px; }
+.merc-skill-row-stats {
+    flex-shrink: 0;
+    font-size: 11px;
+    color: var(--merc-text-mute);
+    text-align: right;
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+}
+.merc-skill-empty-row {
+    color: var(--merc-text-mute);
+    text-align: center;
+    padding: 24px;
+    font-size: 13px;
+    border: 1px dashed rgba(255,255,255,0.10);
+    border-radius: var(--merc-radius);
+}
+
+/* ── 装备调配（预留装备更换功能空间）── */
+.merc-equip-manage-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+.merc-equip-slot {
+    padding: 8px 10px;
+    background: var(--merc-stone-soft);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--merc-radius);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 54px;
+}
+.merc-equip-slot .merc-equip-cell { cursor: default; }
+.merc-equip-slot-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.merc-equip-slot-label { font-size: 10px; color: var(--merc-text-mute); letter-spacing: 1px; }
+.merc-equip-slot-name {
+    font-size: 12px; font-weight: 700; color: var(--merc-text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.merc-equip-slot-name.merc-equip-slot-vacant { color: var(--merc-text-mute); font-weight: 400; }
+.merc-equip-swap-btn {
+    flex-shrink: 0;
+    height: 24px;
+    padding: 0 10px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px dashed rgba(239,148,66,0.35);
+    background: rgba(239,148,66,0.05);
+    color: rgba(239,148,66,0.55);
+    border-radius: var(--merc-radius-sm);
+    cursor: not-allowed;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   按钮 pending（loading）态
+   ═══════════════════════════════════════════════════════════════ */
+.merc-btn-pending { color: transparent !important; pointer-events: none; }
+.merc-btn-pending::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 12px; height: 12px;
+    margin: -6px 0 0 -6px;
+    border: 2px solid var(--merc-accent);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: merc-spin 0.6s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Toast
+   ═══════════════════════════════════════════════════════════════ */
+.merc-toast {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 180px; max-width: 460px;
+    padding: 9px 22px;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
+    color: #fff;
+    background: rgba(20,21,26,0.94);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-left: 3px solid var(--merc-accent, #ef9442);
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    border-radius: 7px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 60;
+}
+.merc-toast.visible { opacity: 1; }
+
+/* ═══════════════════════════════════════════════════════════════
+   解雇确认弹窗（对齐战宠删除确认）
+   ═══════════════════════════════════════════════════════════════ */
+.merc-confirm-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.66);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 80;
+    animation: merc-fade-in 0.16s ease;
+}
+.merc-confirm-overlay[hidden] { display: none; }
+@keyframes merc-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.merc-confirm-dialog {
+    width: 360px;
+    padding: 26px 28px 20px;
+    background:
+        radial-gradient(circle, rgba(0,0,0,0.25) 0 0.7px, transparent 1px) 0 0 / 5px 5px,
+        linear-gradient(180deg, var(--merc-bg-raise), var(--merc-bg-2));
+    border: 1px solid rgba(226,80,62,0.4);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 30px rgba(226,80,62,0.15);
+    text-align: center;
+    border-radius: 10px;
+    animation: merc-dialog-in 0.2s cubic-bezier(0.2,0.8,0.3,1);
+}
+@keyframes merc-dialog-in { from { opacity: 0; transform: scale(0.92) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.merc-confirm-icon {
+    width: 44px; height: 40px;
+    margin: 0 auto 12px;
+    background: rgba(226,80,62,0.15);
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    position: relative;
+}
+.merc-confirm-icon::after {
+    content: '!';
+    position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%);
+    font-size: 22px; font-weight: 700; color: var(--merc-danger);
+}
+.merc-confirm-title {
+    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", serif;
+    font-size: 17px; font-weight: 700; letter-spacing: 2px;
+    color: var(--merc-danger);
+    margin-bottom: 12px;
+}
+.merc-confirm-body { font-size: 13px; color: var(--merc-text); line-height: 1.7; margin-bottom: 18px; }
+.merc-confirm-body strong { color: var(--merc-text); font-size: 14px; }
+.merc-confirm-footer { display: flex; gap: 12px; justify-content: center; }
+.merc-confirm-btn {
+    height: 32px; padding: 0 24px;
+    font-family: inherit; font-size: 13px; font-weight: 700; letter-spacing: 1px;
+    cursor: pointer; border: 1px solid;
+    transition: all 0.14s;
+    border-radius: var(--merc-radius);
+    position: relative;
+}
+.merc-confirm-btn-yes { color: var(--merc-danger); border-color: rgba(226,80,62,0.5); background: rgba(226,80,62,0.12); }
+.merc-confirm-btn-yes:hover { background: rgba(226,80,62,0.28); border-color: var(--merc-danger); }
+.merc-confirm-btn-no { color: var(--merc-text-dim); border-color: rgba(255,255,255,0.16); background: rgba(255,255,255,0.03); }
+.merc-confirm-btn-no:hover { color: var(--merc-text); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
+
+/* ═══════════════════════════════════════════════════════════════
+   滚动条
+   ═══════════════════════════════════════════════════════════════ */
+.merc-grid-wrap::-webkit-scrollbar,
+.merc-page-body::-webkit-scrollbar { width: 10px; }
+.merc-grid-wrap::-webkit-scrollbar-track,
+.merc-page-body::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+.merc-grid-wrap::-webkit-scrollbar-thumb,
+.merc-page-body::-webkit-scrollbar-thumb { background: rgba(239,148,66,0.25); }
+.merc-grid-wrap::-webkit-scrollbar-thumb:hover,
+.merc-page-body::-webkit-scrollbar-thumb:hover { background: rgba(239,148,66,0.5); }

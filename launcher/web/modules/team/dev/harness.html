@@ -7,6 +7,7 @@
 <base href="../../../">
 <link rel="stylesheet" href="css/panels.css">
 <link rel="stylesheet" id="pet-panel-css" href="css/pet_panel.css">
+<link rel="stylesheet" id="merc-panel-css" href="css/merc_panel.css">
 <link rel="stylesheet" id="team-panel-css" href="css/team_panel.css">
 <style>
 html,body { margin:0; background:#080807; color:#ddd; font-family:"Microsoft YaHei",sans-serif; }
@@ -39,6 +40,15 @@ var PET_LIB = [
 ];
 function pet(id,name,slot){ return {petId:id,name:name,slotIndex:slot,level:10,deployed:false,stamina:100,maxStamina:200,xp:10,xpNeeded:100,schemeStatus:{}}; }
 function equips(){ var out=[]; for(var i=6;i<=16;i++) out.push({slot:i,name:'装备'+i,displayname:'装备'+i,level:1}); return out; }
+function skills(n){
+  var out=[]; var types=['格斗','刀技','躲避','增益','火器'];
+  for(var i=0;i<n;i++) out.push({name:'技能'+(i+1),level:(i%10)+1,type:types[i%5],trait:'测试用途',cooldown:5,cost:20,unlock:1});
+  return out;
+}
+function personality(){
+  return [{name:'勇气',value:0.62},{name:'技术',value:0.95},{name:'经验',value:0.31},
+          {name:'反应',value:0.05},{name:'智力',value:0.44},{name:'谋略',value:0.18}];
+}
 var MockHost = {
   closeCount:0,
   lastAdoptRequest:null,
@@ -53,9 +63,16 @@ var MockHost = {
     if(msg.panel === 'pets' && msg.cmd === 'adopt_list'){ this.lastAdoptRequest=msg; resp.categories=[{index:0,name:'测试',count:1}]; resp.selectedCategoryIndex=0; resp.adoptable=[]; }
     if(msg.panel === 'mercs' && msg.cmd === 'snapshot'){
       emit('panel_resp',{type:'panel_resp',panel:'pets',cmd:msg.cmd,callId:msg.callId,success:true,snapshot:{pets:[]}});
-      resp.snapshot={gold:999999,kpoint:999,maxSlots:8,hiredMercs:[{slotIndex:0,name:'佣兵甲',level:12,gender:'男',deployed:true,equips:equips()},{slotIndex:1,name:'佣兵乙',level:15,gender:'女',deployed:false,equips:equips()}]};
+      resp.snapshot={gold:999999,kpoint:999,maxSlots:8,hiredMercs:[
+        {slotIndex:0,name:'佣兵甲',level:12,gender:'男',height:175,deployed:true,equips:equips(),skills:skills(13),personality:personality()},
+        {slotIndex:1,name:'佣兵乙',level:15,gender:'女',height:160,deployed:false,equips:equips()}
+      ]};
     }
-    if(msg.panel === 'mercs' && msg.cmd === 'hire_list') resp.hireList={page:1,totalPages:1,hireable:[]};
+    if(msg.panel === 'mercs' && msg.cmd === 'hire_list'){
+      resp.hireList={page:1,totalPages:1,hireable:[
+        {poolIndex:0,name:'雇佣候选',level:20,gender:'男',height:180,goldPrice:5000,kPrice:200,equips:equips(),skills:skills(4),personality:personality()}
+      ]};
+    }
     setTimeout(function(){ emit('panel_resp',resp); },5);
   }
 };
@@ -80,29 +97,68 @@ var MockHost = {
     assert('team-ui2','四标签顺序',Array.from(document.querySelectorAll('.team-tab')).map(function(x){return x.dataset.tab;}).join(',')==='mercenary,partner,pet,mechanical');
     assert('team-ui3','伙伴过滤',document.querySelectorAll('.pet-card').length===1,document.querySelectorAll('.pet-card').length+' cards');
     assert('team-ui4','三类共享完整宠物池容量',document.querySelectorAll('.pet-slot-empty').length===5,document.querySelectorAll('.pet-slot-empty').length+' empty slots');
+    var petCard=document.querySelector('.pet-card');
+    var petW=petCard.offsetWidth, petH=petCard.offsetHeight;
+    var petRes=document.querySelector('.team-pet-child #pet-page-list .pet-resources');
+    assert('team-ui5','战宠列表页资源条可见',petRes && petRes.offsetParent!==null && petRes.offsetWidth>0);
     document.querySelector('.pet-slot-empty').click(); await wait(20);
-    assert('team-ui5','领养商店请求携带当前类型',MockHost.lastAdoptRequest && MockHost.lastAdoptRequest.rosterType==='partner');
+    assert('team-ui6','领养商店请求携带当前类型',MockHost.lastAdoptRequest && MockHost.lastAdoptRequest.rosterType==='partner');
     document.querySelector('#pet-page-store .pet-page-back').click();
     click('pet'); await wait(50);
-    assert('team-ui6','战宠过滤',document.querySelectorAll('.pet-card').length===1);
+    assert('team-ui7','战宠过滤',document.querySelectorAll('.pet-card').length===1);
     click('mechanical'); await wait(50);
-    assert('team-ui7','机械过滤',document.querySelectorAll('.pet-card').length===1);
+    assert('team-ui8','机械过滤',document.querySelectorAll('.pet-card').length===1);
     click('mercenary'); await wait(60);
-    assert('team-ui8','pets/mercs 回包隔离',document.querySelectorAll('#merc-grid .merc-card').length===2);
-    assert('team-ui9','佣兵双列卡片',document.querySelectorAll('#merc-grid .merc-card').length===2);
-    assert('team-ui10','佣兵完整 11 槽',document.querySelectorAll('#merc-grid .merc-equip-cell').length===22);
-    assert('team-ui11','缺省头像与技能占位',document.querySelectorAll('#merc-grid .merc-card-portrait').length===2 && document.querySelectorAll('#merc-grid .merc-ability-placeholder').length===2);
+    assert('team-ui9','pets/mercs 回包隔离',document.querySelectorAll('#merc-grid .merc-card').length===2);
+    var mercCard=document.querySelector('#merc-grid .merc-card');
+    assert('team-ui10','佣兵卡与战宠卡同宽·双倍高度',
+      mercCard && mercCard.offsetWidth===petW && mercCard.offsetHeight===petH*2+12,
+      'merc '+(mercCard?mercCard.offsetWidth+'x'+mercCard.offsetHeight:'-')+' vs pet '+petW+'x'+petH);
+    assert('team-ui11','佣兵完整 11 槽装备',document.querySelectorAll('#merc-grid .merc-equip-cell').length===22);
+    assert('team-ui12','缺省头像剪影',document.querySelectorAll('#merc-grid .merc-card-portrait').length===2);
+    var skillCells=document.querySelectorAll('#merc-grid .merc-skill-cell').length;
+    var moreCells=document.querySelectorAll('#merc-grid .merc-skill-more').length;
+    var noneCells=document.querySelectorAll('#merc-grid .merc-skill-none').length;
+    assert('team-ui13','技能占位图标行（折叠 + 缺失兜底）',skillCells===12 && moreCells===1 && noneCells===1,
+      skillCells+' cells / '+moreCells+' more / '+noneCells+' none');
+    var goldEl=document.querySelector('.team-merc-child .merc-toolbar .merc-res-gold-val');
+    assert('team-ui14','佣兵工具栏资源可见',goldEl && goldEl.offsetParent!==null && goldEl.textContent==='999,999',goldEl && goldEl.textContent);
+    // ── 培养页 ──
+    document.querySelector('#merc-grid .merc-mini-btn-train').click(); await wait(30);
+    var detailVisible=!document.querySelector('#merc-page-detail').hidden;
+    assert('team-ui15','培养页打开',detailVisible && document.querySelector('#merc-detail-title').textContent==='佣兵甲');
+    assert('team-ui16','培养页性格六维 + 主导标记',
+      document.querySelectorAll('#merc-traits-grid .merc-trait').length===6 &&
+      document.querySelectorAll('#merc-traits-grid .merc-trait-tag').length===1);
+    assert('team-ui17','培养页技能全量列表',document.querySelectorAll('#merc-skill-rows .merc-skill-row').length===13);
+    var swapBtns=document.querySelectorAll('#merc-equip-manage-grid .merc-equip-swap-btn');
+    var swapDisabled=true;
+    for(var sb=0;sb<swapBtns.length;sb++){ if(!swapBtns[sb].disabled) swapDisabled=false; }
+    assert('team-ui18','装备调配 11 槽预留（更换禁用）',
+      document.querySelectorAll('#merc-equip-manage-grid .merc-equip-slot').length===11 && swapBtns.length===11 && swapDisabled);
+    document.querySelector('#merc-page-detail .merc-page-back').click(); await wait(40);
+    assert('team-ui19','培养页返回列表',!document.querySelector('#merc-page-list').hidden);
+    // ── 解雇确认弹窗 ──
+    document.querySelector('#merc-grid .merc-mini-btn-dismiss').click(); await wait(10);
+    var overlayShown=!document.querySelector('#merc-confirm-overlay').hidden;
+    document.querySelector('#merc-confirm-no').click();
+    assert('team-ui20','解雇走确认弹窗（取消可收起）',overlayShown && document.querySelector('#merc-confirm-overlay').hidden);
+    // ── 雇佣页 ──
     document.querySelector('#merc-goto-hire').click();
     click('partner');
     document.querySelector('.team-close').click();
-    assert('team-ui12','busy 阶段禁止切换与关闭',active()==='mercenary' && MockHost.closeCount===0);
-    await wait(20);
+    assert('team-ui21','busy 阶段禁止切换与关闭',active()==='mercenary' && MockHost.closeCount===0);
+    await wait(30);
+    var hireCard=document.querySelector('#merc-hire-grid .merc-card');
+    assert('team-ui22','雇佣卡含价格与技能行',
+      hireCard && hireCard.querySelector('.merc-card-price') && hireCard.querySelectorAll('.merc-skill-cell').length===4,
+      hireCard?'ok':'no card');
     Panels.close(); Panels.open('team'); await wait(50);
-    assert('team-ui13','同会话记忆标签',active()==='mercenary',active());
+    assert('team-ui23','同会话记忆标签',active()==='mercenary',active());
     Panels.close(); Panels.open('team',{initialTab:'partner'}); await wait(50);
-    assert('team-ui14','兼容入口覆盖初始标签',active()==='partner',active());
+    assert('team-ui24','兼容入口覆盖初始标签',active()==='partner',active());
     var content=document.querySelector('.team-content');
-    assert('team-ui15','面板内容无布局溢出',content.scrollWidth<=content.clientWidth && content.scrollHeight<=content.clientHeight,content.scrollWidth+'x'+content.scrollHeight);
+    assert('team-ui25','面板内容无布局溢出',content.scrollWidth<=content.clientWidth && content.scrollHeight<=content.clientHeight,content.scrollWidth+'x'+content.scrollHeight);
     var failed=results.filter(function(x){return !x.pass;}).length;
     window.__qaResult={qa:{total:results.length,passed:results.length-failed,failed:failed,results:results}};
     document.getElementById('qa').textContent=(results.length-failed)+'/'+results.length+' passed';

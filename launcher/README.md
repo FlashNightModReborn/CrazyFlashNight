@@ -506,7 +506,7 @@ launcher/
 │       ├── team/team-panel.js             战队唯一生产 Panel（佣兵 / 伙伴 / 战宠 / 机械四标签；统一生命周期）
 │       ├── team/dev/harness.html           战队 browser harness（四标签 / 分类 / 佣兵卡片 / 会话记忆）
 │       ├── pet-panel.js                   可嵌入宠物子控制器（管理/领养/进阶；伙伴/战宠/机械按 rosterType 过滤）
-│       ├── merc-panel.js / merc-data.js   可嵌入佣兵子控制器（管理/雇佣两页 + 双列卡片 + 11 格装备）+ 槽位常量
+│       ├── merc-panel.js / merc-data.js   可嵌入佣兵子控制器（管理/雇佣/培养三页 + 与战宠同宽双高卡片 + 11 格装备 + 技能占位图标）+ 槽位常量
 │       ├── arena-panel.js                 竞技场面板（Panels.register('arena')：8 张角斗场卡 + 详情/进场；ArenaTask 双层 callId）
 │       ├── help.js / help-panel.js        帮助系统（顶层入口 + 面板骨架）
 │       ├── map-avatar-source-data.js      地图 NPC 头像源数据表（symbol → assetUrl + hotspot 相对坐标 + crop）
@@ -1435,7 +1435,7 @@ AS2 UI → Web Panel 迁移的操作护栏统一见 [../agentsDoc/as2-web-panel-
 | 安全退出界面 | `#safe-exit-panel` 面板 | `sv:1/2` + `EXIT_CONFIRM` click |
 | 帮助界面 (帮助界面.swf) | Panel 系统 `help-panel.js` (Markdown tab) | Bridge → C# panel_cmd open help |
 | K点商城 (旧商城界面 MC 已退役) | Panel 系统 `kshop.js` (商品/购物车/领取) | `SHOP` → `kshop`，ShopTask 双层 callId 桥接 (Web↔Flash) |
-| 战队界面 | Panel 系统 `team/team-panel.js`（佣兵 / 伙伴 / 战宠 / 机械；宠物管理/领养/进阶 + 佣兵管理/雇佣） | `TEAM` → `mercPanelOpen` + `team`；子控制器继续使用 `pets` / `mercs` Task 协议 |
+| 战队界面 | Panel 系统 `team/team-panel.js`（佣兵 / 伙伴 / 战宠 / 机械；宠物管理/领养/进阶 + 佣兵管理/雇佣/培养） | `TEAM` → `mercPanelOpen` + `team`；子控制器继续使用 `pets` / `mercs` Task 协议 |
 | 竞技场 (DEATH MATCH) | Panel 系统 `arena-panel.js` (8 张角斗场卡) | `arena`，ArenaTask 双层 callId |
 | 情报界面 | Panel 系统 `intelligence-panel.js` (H5 富文本) | `情报`/`INTELLIGENCE`，IntelligenceTask 按需正文 |
 | 任务界面 | Panel 系统 `tasks/task-panel.js` (当前任务列表/详情) | 刘海屏 `任务` 键 `TASK_UI`（含 `NEW_TASK_UI` 合并）→ `taskPanelOpen` + `tasks`，TaskTask 双层 callId |
@@ -1493,7 +1493,8 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 - **pinalign**（定位小游戏）: `web/modules/minigames/pinalign/` 下的正式小游戏模块；和 Lockbox 共用小游戏壳层与 QA 平台
 - **gobang**（五子棋小游戏）: `web/modules/minigames/gobang/` 下的正式小游戏模块；Web core 负责规则裁判，AI 经 Web→C# `gomoku_eval` 调用 `GomokuTask` / Rapfi
 - **team**（战队）: `web/modules/team/team-panel.js` 是唯一生产 Panel，固定标签顺序为佣兵 / 伙伴 / 战宠 / 机械；首次进入伙伴，同一 WebView 会话记忆末次标签，顶层切换会把目标子视图复位到管理列表，写操作 busy 时禁止切换和关闭。`pet-panel.js` 与 `merc-panel.js` 是可嵌入子控制器，不再独立注册 Panel；它们继续发送 `panel:"pets"` / `panel:"mercs"`，复用现有 `PetTask` / `MercTask` 与 AS2 写操作。统一 close 为纯 Web no-op，不调用有旧 Flash UI 重排副作用的 `petPanelClose`。旧命令 `PETS` / `MERCS` 仅作为隐藏兼容入口打开 `team` 的伙伴 / 佣兵标签。
-- 宠物域的伙伴 / 战宠 / 机械共享同一宠物池、容量与出战配额，分类权威来自 `data/merc/pets.xml` 的 `RosterType`；`pet_lib` / `adopt_list` 下发 `rosterType`，类型化 `adopt_list` 只返回非空原始分类索引。佣兵卡片固定双列、完整展示槽位 6-16，使用无头像资源与 CSS fallback，并预留“战术能力 · 待接入”区域。
+- 宠物域的伙伴 / 战宠 / 机械共享同一宠物池、容量与出战配额，分类权威来自 `data/merc/pets.xml` 的 `RosterType`；`pet_lib` / `adopt_list` 下发 `rosterType`，类型化 `adopt_list` 只返回非空原始分类索引。
+- 佣兵子视图视觉对齐战宠战术风：独立样式 `web/css/merc_panel.css`（背景垫图 `assets/bg/official-bpk.jpg`，由 team-panel `ensureCss` 注入；panels.css 旧佣兵块已删）。卡片与战宠卡同宽（4 列网格）、双倍高度（312px），卡面含 11 格装备 + 技能占位图标行（规格同装备 32px，素材未采集前以技能类型首字占位，超出折叠 `+N`）；「培养」页对标战宠进阶页：性格六维条（主导维度标记）+ 技能全量列表 + 装备调配 11 槽（「更换」按钮禁用占位，为后续装备更换功能预留空间）；解雇走面板内确认弹窗。`mercSnapshot` / `mercHireList` 佣兵摘要新增 `skills`（name/level/type/trait/cooldown/cost/unlock）与 `personality`（勇气/技术/经验/反应/智力/谋略六维有序数组）——由 `MercPanelService` 按 `单位函数_fs_aka_玩家模板迁移.as` 的确定性算法（`初始化可用技能` LCG / `生成随机人格` aiSeed）重算：命中 `_root.技能缓存` 时直接采用游戏内结果，未命中时本地重算且**不回写缓存**（仅展示，不构成战斗权威）；旧 asLoader.swf 下两字段缺失，Web 端兜底显示「技能/性格情报暂不可用」。
 - **arena**（竞技场 DEATH MATCH）: `web/modules/arena-panel.js`；`Panels.register('arena')`，8 张角斗场卡 + 详情/掷骰/进场，`ArenaTask` 双层 callId；可经地图/选关二级动作以 `returnToPanel` 重定向进入，close 不通知 AS2
 - **jukebox**（BGM 点歌台）: `web/modules/panels/jukebox-panel.js` 注册 `Panels.register('jukebox')`，由 `RightContextWidget` 的 jukebox titlebar 展开按钮 → `JUKEBOX_EXPAND` → `LauncherCommandRouter.OpenPanel("jukebox")` 触发；与 kshop/help 等通用 panel 同走完整 backdrop / EX_STYLE / HUD-suspend 序列。PanelLayoutCatalog 用基准 880×620 设计尺寸 + `anchor.Height / 576` 等比缩放（与 `Hud.WidgetScaler.DESIGN_HEIGHT` 同源）：1024×576 design viewport 下宽 880 / 高被 Centered clamp 到 576；1920×1080 anchor 下宽 1650（占比 86%）/ 高 clamp 到 1080。`jukebox-panel.js` 用 inset 百分比布局对 panelRect 任意尺寸鲁棒。曲库 / UiData 状态在 onOpen 时通过 `cmd:'requestCatalog'` + `UiData.get` seed 当前值，避免晚注册错过历史推送。close 路径收敛：× 按钮 / ESC / backdrop click 三入口共用 `closeLocally`（先 `Panels.close()` 让 `_active` 复位再 `Bridge.send panel close`）——避免 ESC/backdrop 单独走 onRequestClose 时 `_active` 滞留导致下次 open 早 return
 

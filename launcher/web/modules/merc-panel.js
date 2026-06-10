@@ -8,6 +8,7 @@
     var _snapshot = null;
     var _hiredMercs = [];
     var _currentPage = 'list';
+    var _detailSlot = -1;         // 培养页当前佣兵 slotIndex
     var _hirePage = 1;
     var _hireTotalPages = 1;
     var _hireData = [];
@@ -18,13 +19,14 @@
     var _toastTimer = null;
     var _ttCache = {};            // (raw|level) → {descHTML, introHTML, displayname}
     var _ttHoverKey = null;       // current hover cache key
+    var _confirmSlot = -1;        // 解雇确认弹窗目标
+    var _firstListRender = true;  // 仅首次渲染播放卡片入场动画（对齐战宠静默刷新）
 
-    var _pageList, _pageHire;
-    var _goldEl, _kpointEl, _slotCountEl;
+    var _pageList, _pageHire, _pageDetail;
 
-    // ═══════════════════════════════════════════════════════════
-    // Panel 注册
-    // ═══════════════════════════════════════════════════════════
+    // 卡片技能图标行最多显示 2 行（与装备网格同规格 6 列）：超出折叠为 +N，全量看培养页
+    var SKILL_CELL_CAP = 12;
+
     // ═══════════════════════════════════════════════════════════
     // Bridge 通信
     // ═══════════════════════════════════════════════════════════
@@ -63,26 +65,54 @@
     }
 
     // ═══════════════════════════════════════════════════════════
+    // 按钮 pending 态
+    // ═══════════════════════════════════════════════════════════
+    function setPending(btn, on) {
+        if (!btn) return;
+        btn.classList.toggle('merc-btn-pending', !!on);
+    }
+
+    // ═══════════════════════════════════════════════════════════
     // 页面导航
     // ═══════════════════════════════════════════════════════════
-    function navigateTo(page) {
+    function navigateTo(page, params) {
         if (_busy) return;
+        var back = (page === 'list' && _currentPage !== 'list');
         _currentPage = page;
-        _pageList.hidden = (page !== 'list');
-        _pageHire.hidden = (page !== 'hire');
+        hideAllTooltips();
+
+        _pageList.hidden   = (page !== 'list');
+        _pageHire.hidden   = (page !== 'hire');
+        _pageDetail.hidden = (page !== 'detail');
+
+        var active = page === 'list' ? _pageList : page === 'hire' ? _pageHire : _pageDetail;
+        playPageEnter(active, back);
 
         if (page === 'list') {
             requestSnapshot();
         } else if (page === 'hire') {
             _hirePage = 1;
             requestHireList();
+        } else if (page === 'detail') {
+            if (params && typeof params.slotIndex === 'number') _detailSlot = params.slotIndex;
+            renderDetailPage();
         }
+    }
+
+    function playPageEnter(node, back) {
+        if (!node) return;
+        node.classList.add(back ? 'merc-page-enter-back' : 'merc-page-enter');
+        void node.offsetWidth;
+        requestAnimationFrame(function() {
+            node.classList.remove('merc-page-enter');
+            node.classList.remove('merc-page-enter-back');
+        });
     }
 
     // ═══════════════════════════════════════════════════════════
     // 数据请求
     // ═══════════════════════════════════════════════════════════
-    function requestSnapshot() {
+    function requestSnapshot(cb) {
         sendPanelMsg('snapshot', null, function(data) {
             if (!data.success) {
                 _busy = false;
@@ -92,7 +122,9 @@
             _snapshot = data.snapshot;
             _hiredMercs = _snapshot.hiredMercs || [];
             updateResources();
-            renderListPage();
+            if (_currentPage === 'list') renderListPage();
+            else if (_currentPage === 'detail') renderDetailPage();
+            if (cb) cb();
         });
     }
 
@@ -119,96 +151,319 @@
 
     function updateResources() {
         if (!_snapshot) return;
-        if (_goldEl) _goldEl.textContent = '金币: ' + (_snapshot.gold || 0).toLocaleString();
-        if (_kpointEl) _kpointEl.textContent = 'K点: ' + (_snapshot.kpoint || 0);
-        if (_slotCountEl) _slotCountEl.textContent = _hiredMercs.length + '/' + (_snapshot.maxSlots || 0);
+        var goldVals = _el.querySelectorAll('.merc-res-gold-val');
+        var kVals = _el.querySelectorAll('.merc-res-kpoint-val');
+        var i;
+        for (i = 0; i < goldVals.length; i++) goldVals[i].textContent = (_snapshot.gold || 0).toLocaleString();
+        for (i = 0; i < kVals.length; i++) kVals[i].textContent = String(_snapshot.kpoint || 0);
+        var deployed = 0;
+        for (i = 0; i < _hiredMercs.length; i++) { if (_hiredMercs[i].deployed) deployed++; }
+        var deployEl = _el.querySelector('#merc-deploy-count');
+        var slotEl = _el.querySelector('#merc-slot-count');
+        if (deployEl) deployEl.textContent = String(deployed);
+        if (slotEl) slotEl.textContent = _hiredMercs.length + '/' + (_snapshot.maxSlots || 0);
+    }
+
+    function findMercBySlot(slotIndex) {
+        for (var i = 0; i < _hiredMercs.length; i++) {
+            if (_hiredMercs[i].slotIndex === slotIndex) return _hiredMercs[i];
+        }
+        return null;
     }
 
     // ═══════════════════════════════════════════════════════════
     // 操作
     // ═══════════════════════════════════════════════════════════
-    function onDeploy(mercIndex, mercName) {
+    function onDeploy(mercIndex, btn) {
         if (_busy) return;
         _busy = true;
+        setPending(btn, true);
         sendPanelMsg('deploy', { mercIndex: mercIndex }, function(data) {
             _busy = false;
+            setPending(btn, false);
             if (!data.success) {
                 showToast('操作失败: ' + (data.error || '未知错误'));
                 return;
             }
-            // 找到对应佣兵更新本地状态（使用 slotIndex 匹配，不能用数组下标直接索引）
             for (var i = 0; i < _hiredMercs.length; i++) {
                 if (_hiredMercs[i].slotIndex === mercIndex) {
                     _hiredMercs[i].deployed = data.deployed;
                     break;
                 }
             }
-            // 同时更新 snapshot 缓存
-            if (_snapshot && _snapshot.hiredMercs) {
-                for (var j = 0; j < _snapshot.hiredMercs.length; j++) {
-                    if (_snapshot.hiredMercs[j].slotIndex === mercIndex) {
-                        _snapshot.hiredMercs[j].deployed = data.deployed;
-                        break;
-                    }
-                }
-            }
-            renderListPage();
+            if (_currentPage === 'detail') renderDetailPage();
+            else renderListPage();
+            updateResources();
         });
     }
 
-    function onDismiss(mercIndex, mercName) {
+    function askDismiss(slotIndex) {
         if (_busy) return;
-        if (!confirm('确定要解雇 ' + mercName + ' 吗？')) return;
+        var merc = findMercBySlot(slotIndex);
+        if (!merc) return;
+        _confirmSlot = slotIndex;
+        var overlay = _el.querySelector('#merc-confirm-overlay');
+        _el.querySelector('#merc-confirm-body').innerHTML =
+            '确定要解雇 <strong>' + escHtml(merc.name) + '</strong> (Lv.' + merc.level + ') 吗？<br>解雇后将回到雇佣市场。';
+        overlay.hidden = false;
+    }
+
+    function onDismissConfirm(btn) {
+        if (_busy || _confirmSlot < 0) return;
+        var slotIndex = _confirmSlot;
         _busy = true;
-        sendPanelMsg('dismiss', { mercIndex: mercIndex }, function(data) {
+        setPending(btn, true);
+        sendPanelMsg('dismiss', { mercIndex: slotIndex }, function(data) {
             _busy = false;
+            setPending(btn, false);
+            _el.querySelector('#merc-confirm-overlay').hidden = true;
+            _confirmSlot = -1;
             if (!data.success) {
                 showToast('解雇失败: ' + (data.error || '未知错误'));
                 return;
             }
             showToast('已解雇 ' + data.mercName);
+            if (_currentPage === 'detail') {
+                _currentPage = 'list';
+                _pageList.hidden = false;
+                _pageDetail.hidden = true;
+            }
             requestSnapshot();
         });
     }
 
-    function onHire(poolIndex, mercName) {
+    function onHire(poolIndex, btn) {
         if (_busy) return;
         _busy = true;
+        setPending(btn, true);
         sendPanelMsg('hire', { poolIndex: poolIndex }, function(data) {
             _busy = false;
+            setPending(btn, false);
             if (!data.success) {
                 showToast('雇佣失败: ' + (data.error || '未知错误'));
                 return;
             }
             showToast('成功雇佣 ' + data.mercName + '！');
-            // 更新资源显示
             if (_snapshot) {
                 _snapshot.gold = data.goldRemaining;
                 _snapshot.kpoint = data.kpointRemaining;
             }
-            updateResources();
-            // 刷新列表
-            requestHireList();
+            // 同步雇佣数（影响槽位上限判断），再刷新雇佣列表
+            requestSnapshot(function() { requestHireList(); });
         });
     }
 
-    function updateSnapshotMerc(index, updates) {
-        if (_snapshot && _snapshot.hiredMercs && _snapshot.hiredMercs[index]) {
-            Object.keys(updates).forEach(function(k) {
-                _snapshot.hiredMercs[index][k] = updates[k];
-            });
+    // ═══════════════════════════════════════════════════════════
+    // 渲染：卡片（列表/雇佣共用骨架）
+    // mode: 'list' | 'hire'
+    // ═══════════════════════════════════════════════════════════
+    function buildMercCard(merc, mode) {
+        var card = document.createElement('div');
+        card.className = 'merc-card' + (mode === 'list' && merc.deployed ? ' merc-card-deployed' : '');
+
+        // ── 卡头：头像 + 名字/等级/副信息 ──
+        var top = document.createElement('div');
+        top.className = 'merc-card-top';
+        top.appendChild(createPortrait());
+
+        var headinfo = document.createElement('div');
+        headinfo.className = 'merc-card-headinfo';
+        var subHtml;
+        if (mode === 'hire') {
+            subHtml = '<div class="merc-card-price">' +
+                '<span class="merc-price-gold">' + (merc.goldPrice || 0).toLocaleString() + ' 金币</span>' +
+                (merc.kPrice > 0 ? '<span class="merc-price-kpoint">' + merc.kPrice + ' K点</span>' : '') +
+            '</div>';
+        } else {
+            subHtml = '<div class="merc-card-badges">' +
+                (merc.deployed ? '<span class="merc-badge merc-badge-deployed">出战中</span>' : '') +
+            '</div>';
         }
+        headinfo.innerHTML =
+            '<div class="merc-card-nameline">' +
+                '<span class="merc-card-name">' + escHtml(merc.name) + '</span>' +
+                '<span class="merc-card-lv">Lv.' + merc.level + '</span>' +
+            '</div>' +
+            '<div class="merc-card-sub">' + escHtml(merc.gender || '') +
+                (merc.height ? ' · ' + merc.height + 'cm' : '') + '</div>' +
+            subHtml;
+        top.appendChild(headinfo);
+        card.appendChild(top);
+
+        // ── 装备 ──
+        card.insertAdjacentHTML('beforeend', '<div class="merc-card-seclabel">装备</div>');
+        card.appendChild(buildEquipGrid(merc));
+
+        // ── 技能（占位图标，规格与装备一致）──
+        card.insertAdjacentHTML('beforeend', '<div class="merc-card-seclabel">技能</div>');
+        card.appendChild(buildSkillGrid(merc, SKILL_CELL_CAP));
+
+        // ── 操作 ──
+        var actions = document.createElement('div');
+        actions.className = 'merc-card-actions';
+        if (mode === 'list') {
+            var deployBtn = document.createElement('button');
+            deployBtn.type = 'button';
+            deployBtn.className = 'merc-mini-btn ' + (merc.deployed ? 'merc-mini-btn-rest' : 'merc-mini-btn-deploy');
+            deployBtn.textContent = merc.deployed ? '休息' : '出战';
+            deployBtn.addEventListener('click', function() { onDeploy(merc.slotIndex, this); });
+            actions.appendChild(deployBtn);
+
+            var trainBtn = document.createElement('button');
+            trainBtn.type = 'button';
+            trainBtn.className = 'merc-mini-btn merc-mini-btn-train';
+            trainBtn.textContent = '培养';
+            trainBtn.addEventListener('click', function() { navigateTo('detail', { slotIndex: merc.slotIndex }); });
+            actions.appendChild(trainBtn);
+
+            var dismissBtn = document.createElement('button');
+            dismissBtn.type = 'button';
+            dismissBtn.className = 'merc-mini-btn merc-mini-btn-dismiss';
+            dismissBtn.textContent = '解雇';
+            dismissBtn.addEventListener('click', function() { askDismiss(merc.slotIndex); });
+            actions.appendChild(dismissBtn);
+        } else {
+            var hireBtn = document.createElement('button');
+            hireBtn.type = 'button';
+            hireBtn.className = 'merc-mini-btn merc-mini-btn-hire';
+            hireBtn.textContent = '雇佣';
+            var slotsFull = _snapshot && _snapshot.maxSlots > 0 && _hiredMercs.length >= _snapshot.maxSlots;
+            if (slotsFull) {
+                hireBtn.disabled = true;
+                hireBtn.title = '佣兵已满 (' + _hiredMercs.length + '/' + _snapshot.maxSlots + ')';
+            }
+            if (!slotsFull && _snapshot && _snapshot.gold < merc.goldPrice) {
+                hireBtn.disabled = true;
+                hireBtn.title = '金币不足';
+            }
+            if (!slotsFull && _snapshot && merc.kPrice > 0 && _snapshot.kpoint < merc.kPrice) {
+                hireBtn.disabled = true;
+                hireBtn.title = 'K点不足';
+            }
+            hireBtn.addEventListener('click', function() { onHire(merc.poolIndex, this); });
+            actions.appendChild(hireBtn);
+        }
+        card.appendChild(actions);
+        return card;
+    }
+
+    // 装备图标网格 — 11 槽固定渲染 (slot 6-16)
+    function buildEquipGrid(merc) {
+        var equipGrid = document.createElement('div');
+        equipGrid.className = 'merc-equip-grid';
+        var SLOTS = window.MercData.SLOTS;
+        var SLOT_NAMES = window.MercData.SLOT_NAMES;
+        var equipBySlot = {};
+        if (merc.equips && merc.equips.length > 0) {
+            for (var k = 0; k < merc.equips.length; k++) {
+                equipBySlot[merc.equips[k].slot] = merc.equips[k];
+            }
+        }
+        for (var s = 0; s < SLOTS.length; s++) {
+            var slot = SLOTS[s];
+            var eq = equipBySlot[slot];
+            if (eq) {
+                equipGrid.appendChild(buildEquipCell(eq));
+            } else {
+                var emptyCell = document.createElement('div');
+                emptyCell.className = 'merc-equip-cell merc-equip-empty';
+                emptyCell.title = SLOT_NAMES[slot] || '';
+                equipGrid.appendChild(emptyCell);
+            }
+        }
+        return equipGrid;
+    }
+
+    function buildEquipCell(eq) {
+        var raw = eq.raw || eq.name;
+        var iconKey = eq.icon || eq.name;
+        var displayName = eq.displayname || eq.name;
+        var iconUrl = (typeof Icons !== 'undefined') ? Icons.resolve(iconKey) : null;
+        var iconHtml = iconUrl
+            ? '<img src="' + escAttr(iconUrl) + '" alt="" onerror="this.style.display=\'none\'">'
+            : '<span class="merc-equip-fallback">' + escHtml(displayName.charAt(0)) + '</span>';
+        var cell = document.createElement('div');
+        cell.className = 'merc-equip-cell';
+        cell.setAttribute('data-eq-raw', raw);
+        cell.setAttribute('data-eq-displayname', displayName);
+        cell.setAttribute('data-eq-icon', iconKey);
+        cell.setAttribute('data-eq-level', eq.level);
+        cell.innerHTML = iconHtml +
+            '<span class="merc-equip-level">' + eq.level + '</span>';
+        cell.addEventListener('mouseenter', onEquipHover);
+        cell.addEventListener('mouseleave', onEquipLeave);
+        cell.addEventListener('mousemove', onEquipMove);
+        return cell;
+    }
+
+    // 技能图标网格（图标素材未采集 → 类型首字占位，规格与装备图标一致）
+    // cap: 最多渲染单元数（含可能的 +N 折叠格）；0/undefined = 不限
+    function buildSkillGrid(merc, cap) {
+        var grid = document.createElement('div');
+        grid.className = 'merc-skill-grid';
+        var skills = merc.skills;
+        if (!skills || !skills.length) {
+            grid.insertAdjacentHTML('beforeend',
+                '<div class="merc-skill-none">' + (skills ? '暂无技能' : '技能情报暂不可用') + '</div>');
+            return grid;
+        }
+        var shown = skills.length;
+        var folded = 0;
+        if (cap && skills.length > cap) {
+            shown = cap - 1;
+            folded = skills.length - shown;
+        }
+        for (var i = 0; i < shown; i++) {
+            grid.appendChild(buildSkillCell(skills[i]));
+        }
+        if (folded > 0) {
+            var more = document.createElement('div');
+            more.className = 'merc-skill-cell merc-skill-more';
+            more.innerHTML = '<span class="merc-skill-glyph">+' + folded + '</span>';
+            more.setAttribute('data-tip-skill', '其余 ' + folded + ' 个技能见「培养」页');
+            grid.appendChild(more);
+        }
+        return grid;
+    }
+
+    function buildSkillCell(sk) {
+        var cell = document.createElement('div');
+        cell.className = 'merc-skill-cell';
+        cell.innerHTML =
+            '<span class="merc-skill-glyph">' + escHtml(String(sk.type || '技').charAt(0)) + '</span>' +
+            '<span class="merc-skill-level">' + (sk.level || 1) + '</span>';
+        cell.setAttribute('data-tip-skill', skillTipHtml(sk));
+        cell.addEventListener('mouseenter', onSkillHover);
+        cell.addEventListener('mouseleave', onSkillLeave);
+        cell.addEventListener('mousemove', onEquipMove);
+        return cell;
+    }
+
+    function skillTipHtml(sk) {
+        return '<b>' + escHtml(sk.name) + '</b> <span class="kshop-tt-dim">Lv.' + (sk.level || 1) + '</span><br>' +
+            escHtml((sk.type || '') + ' · ' + (sk.trait || '')) + '<br>' +
+            '<span class="kshop-tt-dim">冷却 ' + (sk.cooldown || 0) + 's · 消耗 ' + (sk.cost || 0) + ' MP</span>';
+    }
+
+    function onSkillHover(e) {
+        var html = e.currentTarget.getAttribute('data-tip-skill');
+        if (html) PanelTooltip.showAtMouse(html, e);
+    }
+    function onSkillLeave() {
+        PanelTooltip.hide();
     }
 
     // ═══════════════════════════════════════════════════════════
     // 渲染：列表页（佣兵管理）
     // ═══════════════════════════════════════════════════════════
     function renderListPage() {
+        hideAllTooltips();
         var grid = _el.querySelector('#merc-grid');
         var emptyEl = _el.querySelector('#merc-list-empty');
         if (!grid) return;
 
         grid.innerHTML = '';
+        updateResources();
 
         if (_hiredMercs.length === 0) {
             if (emptyEl) emptyEl.hidden = false;
@@ -216,81 +471,12 @@
         }
         if (emptyEl) emptyEl.hidden = true;
 
-        _hiredMercs.forEach(function(merc) {
-            var card = document.createElement('div');
-            card.className = 'merc-card';
-            card.appendChild(createPortrait());
-
-            // 基本信息区
-            var info = document.createElement('div');
-            info.className = 'merc-card-info';
-            info.innerHTML =
-                '<div class="merc-card-name">' + escHtml(merc.name) +
-                ' <span class="merc-card-meta">Lv.' + merc.level + ' | ' + escHtml(merc.gender) +
-                (merc.deployed ? ' | <span class="merc-deployed">已出战</span>' : '') +
-                '</span></div>';
-
-            // 装备图标网格 — 11 槽固定渲染 (slot 6-16)
-            var equipGrid = document.createElement('div');
-            equipGrid.className = 'merc-equip-grid';
-            var SLOTS = window.MercData.SLOTS;
-            var SLOT_NAMES = window.MercData.SLOT_NAMES;
-            var equipBySlot = {};
-            if (merc.equips && merc.equips.length > 0) {
-                for (var k = 0; k < merc.equips.length; k++) {
-                    equipBySlot[merc.equips[k].slot] = merc.equips[k];
-                }
-            }
-            for (var s = 0; s < SLOTS.length; s++) {
-                var slot = SLOTS[s];
-                var eq = equipBySlot[slot];
-                if (eq) {
-                    var raw = eq.raw || eq.name;
-                    var iconKey = eq.icon || eq.name;
-                    var displayName = eq.displayname || eq.name;
-                    var iconUrl = (typeof Icons !== 'undefined') ? Icons.resolve(iconKey) : null;
-                    var iconHtml = iconUrl
-                        ? '<img src="' + escAttr(iconUrl) + '" alt="" onerror="this.style.display=\'none\'">'
-                        : '<span class="merc-equip-fallback">' + escHtml(displayName.charAt(0)) + '</span>';
-                    var cell = document.createElement('div');
-                    cell.className = 'merc-equip-cell';
-                    cell.setAttribute('data-eq-raw', raw);
-                    cell.setAttribute('data-eq-displayname', displayName);
-                    cell.setAttribute('data-eq-icon', iconKey);
-                    cell.setAttribute('data-eq-level', eq.level);
-                    cell.innerHTML = iconHtml +
-                        '<span class="merc-equip-level">' + eq.level + '</span>';
-                    cell.addEventListener('mouseenter', onEquipHover);
-                    cell.addEventListener('mouseleave', onEquipLeave);
-                    cell.addEventListener('mousemove', onEquipMove);
-                    equipGrid.appendChild(cell);
-                } else {
-                    var emptyCell = document.createElement('div');
-                    emptyCell.className = 'merc-equip-cell merc-equip-empty';
-                    emptyCell.title = SLOT_NAMES[slot] || '';
-                    equipGrid.appendChild(emptyCell);
-                }
-            }
-
-            // 操作按钮
-            var actions = document.createElement('div');
-            actions.className = 'merc-card-actions';
-            var deployBtn = document.createElement('button');
-            deployBtn.className = 'merc-deploy-btn' + (merc.deployed ? ' merc-deploy-btn-rest' : '');
-            deployBtn.textContent = merc.deployed ? '休息' : '出战';
-            deployBtn.addEventListener('click', function() { onDeploy(merc.slotIndex, merc.name); });
-            actions.appendChild(deployBtn);
-
-            var dismissBtn = document.createElement('button');
-            dismissBtn.className = 'merc-dismiss-btn';
-            dismissBtn.textContent = '解雇';
-            dismissBtn.addEventListener('click', function() { onDismiss(merc.slotIndex, merc.name); });
-            actions.appendChild(dismissBtn);
-
-            info.appendChild(equipGrid);
-            info.insertAdjacentHTML('beforeend', '<div class="merc-ability-placeholder">战术能力 · 待接入</div>');
-            card.appendChild(info);
-            card.appendChild(actions);
+        var animate = _firstListRender;
+        _firstListRender = false;
+        _hiredMercs.forEach(function(merc, i) {
+            var card = buildMercCard(merc, 'list');
+            if (animate) card.style.animationDelay = Math.min(i * 0.03, 0.36) + 's';
+            else card.style.animation = 'none';
             grid.appendChild(card);
         });
     }
@@ -299,12 +485,14 @@
     // 渲染：雇佣页
     // ═══════════════════════════════════════════════════════════
     function renderHirePage() {
+        hideAllTooltips();
         var grid = _el.querySelector('#merc-hire-grid');
         var emptyEl = _el.querySelector('#merc-hire-empty');
         var pageInfo = _el.querySelector('#merc-hire-page-info');
         if (!grid) return;
 
         grid.innerHTML = '';
+        updateResources();
 
         if (_hireData.length === 0) {
             if (emptyEl) emptyEl.hidden = false;
@@ -316,89 +504,9 @@
 
         updateHirePagination();
 
-        _hireData.forEach(function(merc) {
-            var card = document.createElement('div');
-            card.className = 'merc-card';
-            card.appendChild(createPortrait());
-
-            var info = document.createElement('div');
-            info.className = 'merc-card-info';
-            info.innerHTML =
-                '<div class="merc-card-name">' + escHtml(merc.name) +
-                ' <span class="merc-card-meta">Lv.' + merc.level + ' | ' + escHtml(merc.gender) +
-                ' | <span class="merc-price-gold">' + (merc.goldPrice || 0).toLocaleString() + ' 金币</span>' +
-                (merc.kPrice > 0 ? ' | <span class="merc-price-kpoint">' + merc.kPrice + ' K点</span>' : '') +
-                '</span></div>';
-
-            // 装备图标网格 — 11 槽固定渲染 (slot 6-16)
-            var equipGrid = document.createElement('div');
-            equipGrid.className = 'merc-equip-grid';
-            var SLOTS = window.MercData.SLOTS;
-            var SLOT_NAMES = window.MercData.SLOT_NAMES;
-            var equipBySlot = {};
-            if (merc.equips && merc.equips.length > 0) {
-                for (var k = 0; k < merc.equips.length; k++) {
-                    equipBySlot[merc.equips[k].slot] = merc.equips[k];
-                }
-            }
-            for (var s = 0; s < SLOTS.length; s++) {
-                var slot = SLOTS[s];
-                var eq = equipBySlot[slot];
-                if (eq) {
-                    var raw = eq.raw || eq.name;
-                    var iconKey = eq.icon || eq.name;
-                    var displayName = eq.displayname || eq.name;
-                    var iconUrl = (typeof Icons !== 'undefined') ? Icons.resolve(iconKey) : null;
-                    var iconHtml = iconUrl
-                        ? '<img src="' + escAttr(iconUrl) + '" alt="" onerror="this.style.display=\'none\'">'
-                        : '<span class="merc-equip-fallback">' + escHtml(displayName.charAt(0)) + '</span>';
-                    var cell = document.createElement('div');
-                    cell.className = 'merc-equip-cell';
-                    cell.setAttribute('data-eq-raw', raw);
-                    cell.setAttribute('data-eq-displayname', displayName);
-                    cell.setAttribute('data-eq-icon', iconKey);
-                    cell.setAttribute('data-eq-level', eq.level);
-                    cell.innerHTML = iconHtml +
-                        '<span class="merc-equip-level">' + eq.level + '</span>';
-                    cell.addEventListener('mouseenter', onEquipHover);
-                    cell.addEventListener('mouseleave', onEquipLeave);
-                    cell.addEventListener('mousemove', onEquipMove);
-                    equipGrid.appendChild(cell);
-                } else {
-                    var emptyCell = document.createElement('div');
-                    emptyCell.className = 'merc-equip-cell merc-equip-empty';
-                    emptyCell.title = SLOT_NAMES[slot] || '';
-                    equipGrid.appendChild(emptyCell);
-                }
-            }
-
-            var actions = document.createElement('div');
-            actions.className = 'merc-card-actions';
-            var hireBtn = document.createElement('button');
-            hireBtn.className = 'merc-hire-btn';
-            hireBtn.textContent = '雇佣';
-            // 佣兵槽位已满时禁用
-            var slotsFull = _snapshot && _snapshot.maxSlots > 0 && _hiredMercs.length >= _snapshot.maxSlots;
-            if (slotsFull) {
-                hireBtn.disabled = true;
-                hireBtn.title = '佣兵已满 (' + _hiredMercs.length + '/' + _snapshot.maxSlots + ')';
-            }
-            // 金币不足时禁用
-            if (!slotsFull && _snapshot && _snapshot.gold < merc.goldPrice) {
-                hireBtn.disabled = true;
-                hireBtn.title = '金币不足';
-            }
-            if (!slotsFull && _snapshot && merc.kPrice > 0 && _snapshot.kpoint < merc.kPrice) {
-                hireBtn.disabled = true;
-                hireBtn.title = 'K点不足';
-            }
-            hireBtn.addEventListener('click', function() { onHire(merc.poolIndex, merc.name); });
-            actions.appendChild(hireBtn);
-
-            info.appendChild(equipGrid);
-            info.insertAdjacentHTML('beforeend', '<div class="merc-ability-placeholder">战术能力 · 待接入</div>');
-            card.appendChild(info);
-            card.appendChild(actions);
+        _hireData.forEach(function(merc, i) {
+            var card = buildMercCard(merc, 'hire');
+            card.style.animationDelay = Math.min(i * 0.03, 0.36) + 's';
             grid.appendChild(card);
         });
     }
@@ -418,6 +526,119 @@
         if (nextBtn) nextBtn.disabled = atLast;
         if (skipNextBtn) skipNextBtn.disabled = atLast;
         if (lastBtn) lastBtn.disabled = atLast;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 渲染：培养页（对标战宠进阶页；装备更换功能预留占位）
+    // ═══════════════════════════════════════════════════════════
+    function renderDetailPage() {
+        hideAllTooltips();
+        var merc = findMercBySlot(_detailSlot);
+        if (!merc) {
+            // 佣兵不存在（被解雇/数据刷新）→ 回列表
+            _currentPage = 'list';
+            _pageList.hidden = false;
+            _pageDetail.hidden = true;
+            renderListPage();
+            return;
+        }
+
+        // ── header ──
+        _el.querySelector('#merc-detail-title').textContent = merc.name;
+        var meta = _el.querySelector('#merc-detail-meta');
+        meta.innerHTML =
+            '<span class="merc-meta-chip">Lv.' + merc.level + '</span>' +
+            '<span class="merc-meta-chip">' + escHtml(merc.gender || '') + '</span>' +
+            (merc.height ? '<span class="merc-meta-chip">' + merc.height + 'cm</span>' : '') +
+            (merc.deployed ? '<span class="merc-meta-chip merc-meta-deployed">出战中</span>' : '');
+
+        var deployBtn = _el.querySelector('#merc-detail-deploy');
+        deployBtn.textContent = merc.deployed ? '休息' : '出战';
+        deployBtn.classList.toggle('merc-hdr-rest', !!merc.deployed);
+
+        // ── 性格特质 ──
+        var traitsGrid = _el.querySelector('#merc-traits-grid');
+        traitsGrid.innerHTML = '';
+        var traits = merc.personality;
+        if (traits && traits.length) {
+            var topVal = -1;
+            var t;
+            for (t = 0; t < traits.length; t++) {
+                if (traits[t].value > topVal) topVal = traits[t].value;
+            }
+            for (t = 0; t < traits.length; t++) {
+                var tr = traits[t];
+                var isTop = tr.value >= topVal - 0.0001;
+                var row = document.createElement('div');
+                row.className = 'merc-trait' + (isTop ? ' merc-trait-top' : '');
+                row.innerHTML =
+                    '<span class="merc-trait-name">' + escHtml(tr.name) + '</span>' +
+                    '<div class="merc-trait-bar"><div class="merc-trait-fill" style="--w:' + Math.round(tr.value * 100) + '%"></div></div>' +
+                    '<span class="merc-trait-val">' + Math.round(tr.value * 100) + '</span>' +
+                    (isTop ? '<span class="merc-trait-tag">主导</span>' : '');
+                traitsGrid.appendChild(row);
+            }
+        } else {
+            traitsGrid.innerHTML = '<div class="merc-skill-empty-row">性格情报暂不可用</div>';
+        }
+
+        // ── 战斗技能（完整列表）──
+        var skillRows = _el.querySelector('#merc-skill-rows');
+        skillRows.innerHTML = '';
+        var skills = merc.skills;
+        if (skills && skills.length) {
+            for (var s = 0; s < skills.length; s++) {
+                var sk = skills[s];
+                var srow = document.createElement('div');
+                srow.className = 'merc-skill-row';
+                srow.appendChild(buildSkillCell(sk));
+                srow.insertAdjacentHTML('beforeend',
+                    '<div class="merc-skill-row-info">' +
+                        '<div class="merc-skill-row-name">' + escHtml(sk.name) +
+                            '<span class="merc-skill-row-lv">Lv.' + (sk.level || 1) + '</span></div>' +
+                        '<div class="merc-skill-row-desc">' + escHtml((sk.type || '') + ' · ' + (sk.trait || '')) + '</div>' +
+                    '</div>' +
+                    '<div class="merc-skill-row-stats">冷却 ' + (sk.cooldown || 0) + 's<br>消耗 ' + (sk.cost || 0) + ' MP</div>');
+                skillRows.appendChild(srow);
+            }
+        } else {
+            skillRows.innerHTML = '<div class="merc-skill-empty-row">' +
+                (skills ? '该佣兵尚未习得技能' : '技能情报暂不可用') + '</div>';
+        }
+
+        // ── 装备调配（更换功能预留）──
+        var manageGrid = _el.querySelector('#merc-equip-manage-grid');
+        manageGrid.innerHTML = '';
+        var SLOTS = window.MercData.SLOTS;
+        var SLOT_NAMES = window.MercData.SLOT_NAMES;
+        var equipBySlot = {};
+        if (merc.equips) {
+            for (var e = 0; e < merc.equips.length; e++) equipBySlot[merc.equips[e].slot] = merc.equips[e];
+        }
+        for (var i = 0; i < SLOTS.length; i++) {
+            var slot = SLOTS[i];
+            var eq = equipBySlot[slot];
+            var cellWrap = document.createElement('div');
+            cellWrap.className = 'merc-equip-slot';
+            if (eq) {
+                cellWrap.appendChild(buildEquipCell(eq));
+                cellWrap.insertAdjacentHTML('beforeend',
+                    '<div class="merc-equip-slot-info">' +
+                        '<span class="merc-equip-slot-label">' + escHtml(SLOT_NAMES[slot] || '') + '</span>' +
+                        '<span class="merc-equip-slot-name">' + escHtml(eq.displayname || eq.name) + ' +' + eq.level + '</span>' +
+                    '</div>');
+            } else {
+                cellWrap.insertAdjacentHTML('beforeend',
+                    '<div class="merc-equip-cell merc-equip-empty"></div>' +
+                    '<div class="merc-equip-slot-info">' +
+                        '<span class="merc-equip-slot-label">' + escHtml(SLOT_NAMES[slot] || '') + '</span>' +
+                        '<span class="merc-equip-slot-name merc-equip-slot-vacant">空</span>' +
+                    '</div>');
+            }
+            cellWrap.insertAdjacentHTML('beforeend',
+                '<button class="merc-equip-swap-btn" type="button" disabled title="装备更换功能筹备中">更换</button>');
+            manageGrid.appendChild(cellWrap);
+        }
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -449,6 +670,11 @@
 
     function onEquipMove(e) {
         PanelTooltip.followMouse(e);
+    }
+
+    function hideAllTooltips() {
+        _ttHoverKey = null;
+        if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide();
     }
 
     function buildBasicTooltipHtml(displayName, level, iconUrl) {
@@ -510,11 +736,6 @@
         return String(text).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
     }
 
-    function eqSlotLabel(slot) {
-        var names = { 6:'头', 7:'衣', 8:'手', 9:'裤', 10:'鞋', 11:'颈', 12:'枪', 13:'手', 14:'枪2', 15:'刀', 16:'雷' };
-        return names[slot] || '?';
-    }
-
     function createPortrait() {
         var portrait = document.createElement('div');
         portrait.className = 'merc-card-portrait merc-card-portrait-fallback';
@@ -523,6 +744,13 @@
         img.addEventListener('load', function() { portrait.classList.remove('merc-card-portrait-fallback'); });
         img.addEventListener('error', function() { img.hidden = true; });
         return portrait;
+    }
+
+    function resourcesHtml() {
+        return '<div class="merc-resources">' +
+            '<span class="merc-resource merc-resource-gold"><span class="merc-resource-label">金币</span><span class="merc-res-gold-val">--</span></span>' +
+            '<span class="merc-resource merc-resource-kpoint"><span class="merc-resource-label">K点</span><span class="merc-res-kpoint-val">--</span></span>' +
+        '</div>';
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -539,20 +767,25 @@
             // ═══════════════════════════════════════
             '<div class="merc-page" id="merc-page-list">' +
                 '<div class="merc-page-header">' +
+                    '<span class="merc-title-mark"></span>' +
                     '<h1 class="merc-page-title">佣兵管理</h1>' +
-                    '<div class="merc-resources">' +
-                        '<span class="merc-resource merc-resource-gold" id="merc-gold">--</span>' +
-                        '<span class="merc-resource merc-resource-kpoint" id="merc-kpoint">--</span>' +
-                        '<span class="merc-resource" id="merc-slot-count">0/0</span>' +
-                    '</div>' +
+                    '<div class="merc-page-header-spacer"></div>' +
+                    resourcesHtml() +
                     '<button class="merc-close-btn" type="button" title="关闭" aria-label="关闭" data-audio-cue="cancel">✕</button>' +
                 '</div>' +
-                '<div class="merc-page-body">' +
-                    '<div class="merc-grid" id="merc-grid"></div>' +
-                    '<div class="merc-list-empty" id="merc-list-empty" hidden>暂无佣兵，快去雇佣一个吧！</div>' +
+                '<div class="merc-toolbar">' +
+                    '<span class="merc-status-item">出战 <strong id="merc-deploy-count">0</strong></span>' +
+                    '<span class="merc-status-item">佣兵栏 <strong id="merc-slot-count">0/0</strong></span>' +
+                    '<div class="merc-toolbar-spacer"></div>' +
+                    resourcesHtml() +
+                    '<button class="merc-btn-primary" type="button" id="merc-goto-hire" data-audio-cue="confirm">＋ 雇佣佣兵</button>' +
                 '</div>' +
-                '<div class="merc-page-footer">' +
-                    '<button class="merc-nav-btn" type="button" id="merc-goto-hire">雇佣佣兵</button>' +
+                '<div class="merc-grid-wrap">' +
+                    '<div class="merc-grid" id="merc-grid"></div>' +
+                    '<div class="merc-list-empty" id="merc-list-empty" hidden>' +
+                        '<span class="merc-empty-mark"></span>' +
+                        '<span>暂无佣兵 · 点击右上「雇佣佣兵」</span>' +
+                    '</div>' +
                 '</div>' +
             '</div>' +
 
@@ -562,8 +795,10 @@
             '<div class="merc-page" id="merc-page-hire" hidden>' +
                 '<div class="merc-page-header">' +
                     '<button class="merc-page-back" type="button" data-audio-cue="cancel">‹ 返回</button>' +
-                    '<h2 class="merc-page-title">雇佣佣兵</h2>' +
+                    '<span class="merc-title-mark"></span>' +
+                    '<h2 class="merc-page-title merc-page-title-sub">雇佣佣兵</h2>' +
                     '<div class="merc-page-header-spacer"></div>' +
+                    resourcesHtml() +
                 '</div>' +
                 '<div class="merc-page-body">' +
                     '<div class="merc-hire-grid" id="merc-hire-grid"></div>' +
@@ -581,13 +816,65 @@
                         '<button class="merc-page-nav-btn merc-page-skip-btn" type="button" id="merc-hire-last">›|</button>' +
                     '</div>' +
                 '</div>' +
+            '</div>' +
+
+            // ═══════════════════════════════════════
+            // 页面 3: 培养（对标战宠进阶页）
+            // ═══════════════════════════════════════
+            '<div class="merc-page" id="merc-page-detail" hidden>' +
+                '<div class="merc-page-header">' +
+                    '<button class="merc-page-back" type="button" data-audio-cue="cancel">‹ 返回</button>' +
+                    '<span id="merc-detail-portrait-host"></span>' +
+                    '<div class="merc-title-block">' +
+                        '<h2 class="merc-page-title merc-page-title-sub" id="merc-detail-title">--</h2>' +
+                        '<div class="merc-detail-meta" id="merc-detail-meta"></div>' +
+                    '</div>' +
+                    '<div class="merc-page-header-spacer"></div>' +
+                    '<div class="merc-header-actions">' +
+                        '<button class="merc-hdr-btn merc-hdr-deploy" type="button" id="merc-detail-deploy" data-audio-cue="confirm">出战</button>' +
+                        '<button class="merc-hdr-btn merc-hdr-dismiss" type="button" id="merc-detail-dismiss">解雇</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="merc-page-body">' +
+                    '<div class="merc-section">' +
+                        '<h3 class="merc-section-title">性格特质</h3>' +
+                        '<div class="merc-traits-grid" id="merc-traits-grid"></div>' +
+                    '</div>' +
+                    '<div class="merc-section">' +
+                        '<h3 class="merc-section-title">战斗技能</h3>' +
+                        '<div class="merc-skill-rows" id="merc-skill-rows"></div>' +
+                    '</div>' +
+                    '<div class="merc-section">' +
+                        '<h3 class="merc-section-title">装备调配</h3>' +
+                        '<span class="merc-section-hint">装备更换功能筹备中——当前仅展示，后续将在此调整佣兵装备。</span>' +
+                        '<div class="merc-equip-manage-grid" id="merc-equip-manage-grid"></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+
+            // ═══════════════════════════════════════
+            // 解雇确认弹窗
+            // ═══════════════════════════════════════
+            '<div class="merc-confirm-overlay" id="merc-confirm-overlay" hidden>' +
+                '<div class="merc-confirm-dialog">' +
+                    '<div class="merc-confirm-icon"></div>' +
+                    '<div class="merc-confirm-title">确认解雇</div>' +
+                    '<div class="merc-confirm-body" id="merc-confirm-body"></div>' +
+                    '<div class="merc-confirm-footer">' +
+                        '<button class="merc-confirm-btn merc-confirm-btn-yes" type="button" id="merc-confirm-yes">确认解雇</button>' +
+                        '<button class="merc-confirm-btn merc-confirm-btn-no" type="button" id="merc-confirm-no">取消</button>' +
+                    '</div>' +
+                '</div>' +
             '</div>';
 
-        _pageList  = _el.querySelector('#merc-page-list');
-        _pageHire  = _el.querySelector('#merc-page-hire');
-        _goldEl    = _el.querySelector('#merc-gold');
-        _kpointEl     = _el.querySelector('#merc-kpoint');
-	_slotCountEl  = _el.querySelector('#merc-slot-count');
+        _pageList   = _el.querySelector('#merc-page-list');
+        _pageHire   = _el.querySelector('#merc-page-hire');
+        _pageDetail = _el.querySelector('#merc-page-detail');
+
+        // 培养页头像（克隆卡片头像组件，52px 规格）
+        var detailPortrait = createPortrait();
+        detailPortrait.classList.add('merc-detail-portrait');
+        _el.querySelector('#merc-detail-portrait-host').appendChild(detailPortrait);
 
         // 关闭按钮
         _el.querySelector('.merc-close-btn').addEventListener('click', requestClose);
@@ -597,9 +884,30 @@
             navigateTo('hire');
         });
 
-        // 雇佣页 → 返回列表
-        _el.querySelector('.merc-page-back').addEventListener('click', function() {
-            navigateTo('list');
+        // 返回列表（雇佣页/培养页共用）
+        var backBtns = _el.querySelectorAll('.merc-page-back');
+        for (var b = 0; b < backBtns.length; b++) {
+            backBtns[b].addEventListener('click', function() { navigateTo('list'); });
+        }
+
+        // 培养页操作
+        _el.querySelector('#merc-detail-deploy').addEventListener('click', function() {
+            if (_detailSlot >= 0) onDeploy(_detailSlot, this);
+        });
+        _el.querySelector('#merc-detail-dismiss').addEventListener('click', function() {
+            if (_detailSlot >= 0) askDismiss(_detailSlot);
+        });
+
+        // 解雇确认弹窗
+        var confirmOverlay = _el.querySelector('#merc-confirm-overlay');
+        _el.querySelector('#merc-confirm-yes').addEventListener('click', function() { onDismissConfirm(this); });
+        _el.querySelector('#merc-confirm-no').addEventListener('click', function() {
+            if (_busy) return;
+            confirmOverlay.hidden = true;
+            _confirmSlot = -1;
+        });
+        confirmOverlay.addEventListener('click', function(e) {
+            if (e.target === confirmOverlay && !_busy) { confirmOverlay.hidden = true; _confirmSlot = -1; }
         });
 
         // 分页按钮
@@ -625,6 +933,7 @@
         // 预加载图标 manifest（首次打开且未加载时发起 fetch，与其他面板共享缓存）
         if (typeof Icons !== 'undefined') Icons.load(function(){});
 
+        container.appendChild(_el);
         return _el;
     }
 
@@ -639,8 +948,16 @@
         _hiredMercs = [];
         _ttCache = {};
         _ttHoverKey = null;
+        _detailSlot = -1;
+        _confirmSlot = -1;
+        _firstListRender = true;
+        var overlay = _el.querySelector('#merc-confirm-overlay');
+        if (overlay) overlay.hidden = true;
         _currentPage = 'list';
-        navigateTo('list');
+        _pageList.hidden = false;
+        _pageHire.hidden = true;
+        _pageDetail.hidden = true;
+        requestSnapshot();
     }
 
     function requestClose() {
@@ -660,8 +977,10 @@
         _busy = false;
         _ttCache = {};
         _ttHoverKey = null;
+        _confirmSlot = -1;
         PanelTooltip.hide();
     }
+
     window.MercTeamController = {
         create: createDOM,
         onOpen: onOpen,
