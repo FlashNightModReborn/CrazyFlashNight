@@ -104,9 +104,9 @@ namespace CF7Launcher.Guardian
             if (panel == "kshop") return "shopPanelClose";
             if (panel == "map") return "mapPanelClose";
             if (panel == "stage-select") return "stageSelectPanelClose";
-            if (panel == "pets") return "petPanelClose";
             if (panel == "tasks") return "taskPanelClose";
-            // arena / mercs 故意留 null：没有需要 AS2 清理的状态，
+            // team / arena / pets / mercs 故意留 null：没有需要 AS2 清理的状态，
+            // team 内宠物视图关闭不能调用 petPanelClose，否则会重建旧 Flash 战宠图标。
             // 关闭 panel 时直接走 _activePanel = null + PanelHost.ClosePanel() 即可。
             return null;
         }

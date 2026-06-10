@@ -49,6 +49,7 @@
         <id>0</id>
         <Name>狗狗</Name>
         <Identifier>敌人-僵尸1-狗</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -67,6 +68,7 @@
         <id>1</id>
         <Name>女僵尸喽啰</Name>
         <Identifier>敌人-金发女僵尸1</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -85,6 +87,7 @@
         <id>2</id>
         <Name>光头僵尸喽啰</Name>
         <Identifier>敌人-光头军人僵尸1</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -103,6 +106,7 @@
         <id>3</id>
         <Name>胖子僵尸喽啰</Name>
         <Identifier>敌人-胖僵尸1</Identifier>
+        <RosterType>pet</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -121,6 +125,7 @@
         <id>4</id>
         <Name>大叔小弟</Name>
         <Identifier>敌人-盗贼大叔</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -140,6 +145,7 @@
         <id>5</id>
         <Name>侏儒小弟</Name>
         <Identifier>敌人-盗贼侏儒</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -159,6 +165,7 @@
         <id>6</id>
         <Name>瘦子小弟</Name>
         <Identifier>敌人-盗贼瘦子</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -178,6 +185,7 @@
         <id>7</id>
         <Name>马尾姑娘</Name>
         <Identifier>敌人-狂野玫瑰马尾姑娘</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -197,6 +205,7 @@
         <id>8</id>
         <Name>辫子姑娘</Name>
         <Identifier>敌人-辫子姑娘</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -216,6 +225,7 @@
         <id>9</id>
         <Name>死士小弟</Name>
         <Identifier>敌人-黑铁会死士</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -235,6 +245,7 @@
         <id>10</id>
         <Name>刺客小弟</Name>
         <Identifier>敌人-黑铁会刺客</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -254,6 +265,7 @@
         <id>11</id>
         <Name>大叔打手</Name>
         <Identifier>敌人-黑铁会大叔</Identifier>
+        <RosterType>partner</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -273,6 +285,7 @@
         <id>12</id>
         <Name>狙击兵小弟</Name>
         <Identifier>敌人-军阀狙击兵</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -292,6 +305,7 @@
         <id>13</id>
         <Name>弹药兵小弟</Name>
         <Identifier>敌人-军阀弹药兵</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -311,6 +325,7 @@
         <id>14</id>
         <Name>突击兵小弟</Name>
         <Identifier>敌人-军阀突击兵</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -330,6 +345,7 @@
         <id>15</id>
         <Name>重装兵小弟</Name>
         <Identifier>敌人-军阀重装兵</Identifier>
+        <RosterType>partner</RosterType>
         <Height>195</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -349,6 +365,7 @@
         <id>16</id>
         <Name>黑色异形</Name>
         <Identifier>敌人-黑色异形兵1</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
@@ -368,6 +385,7 @@
         <id>17</id>
         <Name>蓝色异形</Name>
         <Identifier>敌人-蓝色异形兵1</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
@@ -387,6 +405,7 @@
         <id>18</id>
         <Name>肉色异形</Name>
         <Identifier>敌人-肉色异形兵1</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
@@ -406,6 +425,7 @@
         <id>19</id>
         <Name>改造兽化僵尸小弟</Name>
         <Identifier>敌人-兽化改造僵尸</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -424,6 +444,7 @@
         <id>20</id>
         <Name>重型僵尸小弟</Name>
         <Identifier>敌人-重型改造僵尸</Identifier>
+        <RosterType>pet</RosterType>
         <Height>195</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -442,6 +463,7 @@
         <id>21</id>
         <Name>改造僵尸小弟</Name>
         <Identifier>敌人-普通改造僵尸</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -460,6 +482,7 @@
         <id>22</id>
         <Name>爆炸僵尸小弟</Name>
         <Identifier>敌人-普通爆炸僵尸</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -478,6 +501,7 @@
         <id>23</id>
         <Name>萝莉</Name>
         <Identifier>敌人-摇滚公园萝莉</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -495,6 +519,7 @@
         <id>24</id>
         <Name>少女</Name>
         <Identifier>敌人-摇滚公园少女</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -512,6 +537,7 @@
         <id>25</id>
         <Name>御姐</Name>
         <Identifier>敌人-摇滚公园御姐</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -529,6 +555,7 @@
         <id>26</id>
         <Name>蓝色铁血战士小弟</Name>
         <Identifier>敌人-蓝色铁血战士</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -548,6 +575,7 @@
         <id>27</id>
         <Name>黄色铁血战士小弟</Name>
         <Identifier>敌人-黄色铁血战士</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -567,6 +595,7 @@
         <id>28</id>
         <Name>红色铁血战士小弟</Name>
         <Identifier>敌人-红色铁血战士</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -586,6 +615,7 @@
         <id>29</id>
         <Name>红色铁血战士小弟</Name>
         <Identifier>敌人-红色铁血战士</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -599,6 +629,7 @@
         <id>30</id>
         <Name>红色铁血战士小弟</Name>
         <Identifier>敌人-红色铁血战士</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -613,6 +644,7 @@
         <id>31</id>
         <Name>黑铁</Name>
         <Identifier>敌人-唐装剑侠</Identifier>
+        <RosterType>partner</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
@@ -626,6 +658,7 @@
         <id>32</id>
         <Name>将军</Name>
         <Identifier>敌人-军阀将军</Identifier>
+        <RosterType>partner</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -639,6 +672,7 @@
         <id>33</id>
         <Name>吉他</Name>
         <Identifier>敌人-摇滚公园萝莉</Identifier>
+        <RosterType>partner</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -652,6 +686,7 @@
         <id>34</id>
         <Name>键盘</Name>
         <Identifier>敌人-摇滚公园少女</Identifier>
+        <RosterType>partner</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -665,6 +700,7 @@
         <id>35</id>
         <Name>主唱</Name>
         <Identifier>敌人-摇滚公园御姐</Identifier>
+        <RosterType>partner</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -679,6 +715,7 @@
         <id>36</id>
         <Name>战队军医</Name>
         <Identifier>敌人-方舟护士</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -696,6 +733,7 @@
         <id>37</id>
         <Name>武士铁血保镖</Name>
         <Identifier>敌人-武士铁血战士</Identifier>
+        <RosterType>pet</RosterType>
         <Height>190</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -713,6 +751,7 @@
         <id>38</id>
         <Name>终结者保镖</Name>
         <Identifier>敌人-渗透者</Identifier>
+        <RosterType>pet</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -726,6 +765,7 @@
         <id>39</id>
         <Name>方舟卫士保镖</Name>
         <Identifier>敌人-方舟卫士</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -743,6 +783,7 @@
         <id>40</id>
         <Name>无人机保镖</Name>
         <Identifier>敌人-方舟无人机</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -756,6 +797,7 @@
         <id>41</id>
         <Name>兄弟会保镖</Name>
         <Identifier>敌人-黑白无常</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
@@ -773,6 +815,7 @@
         <id>42</id>
         <Name>神枪手保镖</Name>
         <Identifier>敌人-牛仔boss</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
@@ -786,6 +829,7 @@
         <id>43</id>
         <Name>绝世武圣LEE</Name>
         <Identifier>敌人-李小龙</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
@@ -803,6 +847,7 @@
         <id>44</id>
         <Name>黑龙</Name>
         <Identifier>敌人-铠甲勇士战马形态</Identifier>
+        <RosterType>partner</RosterType>
         <Height>230</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
@@ -820,6 +865,7 @@
         <id>45</id>
         <Name>黑铁</Name>
         <Identifier>敌人-唐装剑侠</Identifier>
+        <RosterType>partner</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
@@ -833,6 +879,7 @@
         <id>46</id>
         <Name>兽王</Name>
         <Identifier>敌人-方舟兽王</Identifier>
+        <RosterType>partner</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
@@ -846,6 +893,7 @@
         <id>47</id>
         <Name>白虎</Name>
         <Identifier>敌人-方舟白虎兵</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
@@ -859,6 +907,7 @@
         <id>48</id>
         <Name>火凤</Name>
         <Identifier>敌人-粉红头发御姐</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
@@ -877,6 +926,7 @@
         <id>49</id>
         <Name>翅虎</Name>
         <Identifier>敌人-飞刀小子</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
@@ -895,6 +945,7 @@
         <id>50</id>
         <Name>硬化怪</Name>
         <Identifier>敌人-硬化僵尸</Identifier>
+        <RosterType>pet</RosterType>
         <Height>275</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
@@ -912,6 +963,7 @@
         <id>51</id>
         <Name>忍者</Name>
         <Identifier>敌人-忍者BOSS</Identifier>
+        <RosterType>mechanical</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
@@ -929,6 +981,7 @@
         <id>52</id>
         <Name>斯巴达</Name>
         <Identifier>敌人-斯巴达战士</Identifier>
+        <RosterType>partner</RosterType>
         <Height>195</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
@@ -946,6 +999,7 @@
         <id>53</id>
         <Name>异形女王</Name>
         <Identifier>敌人-异形女王</Identifier>
+        <RosterType>pet</RosterType>
         <Height>350</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
@@ -959,6 +1013,7 @@
         <id>54</id>
         <Name>异形禁卫</Name>
         <Identifier>敌人-球形异形兵1</Identifier>
+        <RosterType>pet</RosterType>
         <Height>200</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
@@ -977,6 +1032,7 @@
         <id>55</id>
         <Name>尸母</Name>
         <Identifier>敌人-普通尸母</Identifier>
+        <RosterType>pet</RosterType>
         <Height>250</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
@@ -995,6 +1051,7 @@
         <id>56</id>
         <Name>暴走改造僵尸</Name>
         <Identifier>敌人-暴走改造僵尸</Identifier>
+        <RosterType>pet</RosterType>
         <Height>250</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1008,6 +1065,7 @@
         <id>57</id>
         <Name>暴走兽化僵尸</Name>
         <Identifier>敌人-暴走兽化改造僵尸</Identifier>
+        <RosterType>pet</RosterType>
         <Height>250</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1021,6 +1079,7 @@
         <id>58</id>
         <Name>暴走重型僵尸</Name>
         <Identifier>敌人-暴走重型改造僵尸</Identifier>
+        <RosterType>pet</RosterType>
         <Height>250</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1034,6 +1093,7 @@
         <id>59</id>
         <Name>暴走爆炸僵尸</Name>
         <Identifier>敌人-暴走爆炸僵尸</Identifier>
+        <RosterType>pet</RosterType>
         <Height>250</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1047,6 +1107,7 @@
         <id>60</id>
         <Name>暴走尸母</Name>
         <Identifier>敌人-暴走尸母</Identifier>
+        <RosterType>pet</RosterType>
         <Height>250</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1061,6 +1122,7 @@
         <id>61</id>
         <Name>雪女</Name>
         <Identifier>敌人-雪女</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
@@ -1078,6 +1140,7 @@
         <id>62</id>
         <Name>妖姬</Name>
         <Identifier>敌人-方舟妖姬</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>30</UnlockLevel>
@@ -1092,6 +1155,7 @@
         <id>63</id>
         <Name>远古方舟兽王</Name>
         <Identifier>敌人-方舟兽王</Identifier>
+        <RosterType>partner</RosterType>
         <Height>195</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1105,6 +1169,7 @@
         <id>64</id>
         <Name>史诗妖姬</Name>
         <Identifier>敌人-方舟妖姬</Identifier>
+        <RosterType>pet</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1118,6 +1183,7 @@
         <id>65</id>
         <Name>远古方舟忍者</Name>
         <Identifier>敌人-忍者BOSS</Identifier>
+        <RosterType>mechanical</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1131,6 +1197,7 @@
         <id>66</id>
         <Name>终结者-x</Name>
         <Identifier>敌人-终结者T800</Identifier>
+        <RosterType>mechanical</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1148,6 +1215,7 @@
         <id>67</id>
         <Name>远古武士铁血</Name>
         <Identifier>敌人-武士铁血战士</Identifier>
+        <RosterType>pet</RosterType>
         <Height>195</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1161,6 +1229,7 @@
         <id>68</id>
         <Name>远古女王异形</Name>
         <Identifier>敌人-异形女王</Identifier>
+        <RosterType>pet</RosterType>
         <Height>230</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1174,6 +1243,7 @@
         <id>69</id>
         <Name>远古魔女</Name>
         <Identifier>敌人-雪女</Identifier>
+        <RosterType>partner</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1187,6 +1257,7 @@
         <id>70</id>
         <Name>史诗方舟兽王</Name>
         <Identifier>敌人-方舟兽王</Identifier>
+        <RosterType>partner</RosterType>
         <Height>200</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1202,6 +1273,7 @@
         <id>71</id>
         <Name>精英战术少女</Name>
         <Identifier>敌人-精英战术少女</Identifier>
+        <RosterType>partner</RosterType>
         <Height>165</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1220,6 +1292,7 @@
         <id>72</id>
         <Name>学姐</Name>
         <Identifier>敌人-双喷少女</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1237,6 +1310,7 @@
         <id>73</id>
         <Name>女仆:白</Name>
         <Identifier>敌人-医疗女仆</Identifier>
+        <RosterType>partner</RosterType>
         <Height>170</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1255,6 +1329,7 @@
         <id>74</id>
         <Name>女仆:黑</Name>
         <Identifier>敌人-狙击女仆</Identifier>
+        <RosterType>partner</RosterType>
         <Height>170</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1273,6 +1348,7 @@
         <id>75</id>
         <Name>不知火舞</Name>
         <Identifier>敌人-不知火舞</Identifier>
+        <RosterType>pet</RosterType>
         <Height>155</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1286,6 +1362,7 @@
         <id>76</id>
         <Name>重锤</Name>
         <Identifier>敌人-黑铁重锤</Identifier>
+        <RosterType>partner</RosterType>
         <Height>190</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1303,6 +1380,7 @@
         <id>77</id>
         <Name>Tomboy</Name>
         <Identifier>敌人-Tomboy</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1321,6 +1399,7 @@
         <id>78</id>
         <Name>武装JK</Name>
         <Identifier>敌人-武装JK</Identifier>
+        <RosterType>partner</RosterType>
         <Height>160</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1341,6 +1420,7 @@
         <id>79</id>
         <Name>兽化僵尸</Name>
         <Identifier>敌人-裸体兽化僵尸1</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1359,6 +1439,7 @@
         <id>80</id>
         <Name>左轮小弟</Name>
         <Identifier>敌人-盗贼枪手</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1378,6 +1459,7 @@
         <id>81</id>
         <Name>独狼铁血保镖</Name>
         <Identifier>敌人-独狼</Identifier>
+        <RosterType>pet</RosterType>
         <Height>220</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1395,6 +1477,7 @@
         <id>82</id>
         <Name>精锐突击兵</Name>
         <Identifier>敌人-军阀精英突击兵</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1413,6 +1496,7 @@
         <id>83</id>
         <Name>精锐狙击兵</Name>
         <Identifier>敌人-军阀精英狙击兵</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1431,6 +1515,7 @@
         <id>84</id>
         <Name>精锐弹药兵</Name>
         <Identifier>敌人-军阀精英弹药兵</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1449,6 +1534,7 @@
         <id>85</id>
         <Name>精锐重装兵</Name>
         <Identifier>敌人-军阀精英重装兵</Identifier>
+        <RosterType>partner</RosterType>
         <Height>210</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1467,6 +1553,7 @@
         <id>86</id>
         <Name>黑铁游侠</Name>
         <Identifier>敌人-黑铁死士精英</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1485,6 +1572,7 @@
         <id>87</id>
         <Name>黑铁流锤</Name>
         <Identifier>敌人-黑铁精英流锤兵</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1503,6 +1591,7 @@
         <id>88</id>
         <Name>黑铁武士</Name>
         <Identifier>敌人-黑铁武士</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1521,6 +1610,7 @@
         <id>89</id>
         <Name>驯化蛙型僵尸</Name>
         <Identifier>敌人-蛙型仿生僵尸</Identifier>
+        <RosterType>pet</RosterType>
         <Height>160</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1538,6 +1628,7 @@
         <id>90</id>
         <Name>方舟爪豪</Name>
         <Identifier>敌人-方舟爪豪</Identifier>
+        <RosterType>mechanical</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
@@ -1551,6 +1642,7 @@
         <id>91</id>
         <Name>方舟白忍</Name>
         <Identifier>敌人-忍者兵</Identifier>
+        <RosterType>pet</RosterType>
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1564,6 +1656,7 @@
         <id>92</id>
         <Name>圣诞白忍</Name>
         <Identifier>敌人-圣诞白忍</Identifier>
+        <RosterType>mechanical</RosterType>
         <Height>180</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1577,6 +1670,7 @@
         <id>93</id>
         <Name>柜员女僵尸</Name>
         <Identifier>敌人-柜员女僵尸</Identifier>
+        <RosterType>pet</RosterType>
         <Height>160</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1595,6 +1689,7 @@
         <id>94</id>
         <Name>Lady</Name>
         <Identifier>敌人-Lady</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1608,6 +1703,7 @@
         <id>95</id>
         <Name>掠夺少女</Name>
         <Identifier>敌人-劫掠少女</Identifier>
+        <RosterType>partner</RosterType>
         <Height>176</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1627,6 +1723,7 @@
         <id>96</id>
         <Name>精锐掠夺少女</Name>
         <Identifier>敌人-刀狙少女</Identifier>
+        <RosterType>partner</RosterType>
         <Height>180</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1645,6 +1742,7 @@
         <id>97</id>
         <Name>诺艾尔</Name>
         <Identifier>敌人-诺艾尔</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1659,6 +1757,7 @@
         <id>98</id>
         <Name>试验体α</Name>
         <Identifier>敌人-黑铁会改造人</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1676,6 +1775,7 @@
         <id>99</id>
         <Name>地狱三头犬</Name>
         <Identifier>敌人-诺亚地狱三头犬</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1689,6 +1789,7 @@
         <id>100</id>
         <Name>长枪兵</Name>
         <Identifier>敌人-黑铁长枪兵</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1708,6 +1809,7 @@
         <id>101</id>
         <Name>弓箭手</Name>
         <Identifier>敌人-黑铁弓箭手</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1727,6 +1829,7 @@
         <id>102</id>
         <Name>侦察队员</Name>
         <Identifier>敌人-不明士兵</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>1</UnlockLevel>
@@ -1745,6 +1848,7 @@
         <id>103</id>
         <Name>美洲狮异形</Name>
         <Identifier>敌人-美洲狮异形</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
@@ -1764,6 +1868,7 @@
         <id>104</id>
         <Name>徘徊者异形</Name>
         <Identifier>敌人-徘徊者异形</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
@@ -1782,6 +1887,7 @@
         <id>105</id>
         <Name>吐酸者异形</Name>
         <Identifier>敌人-吐酸者异形</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
@@ -1800,6 +1906,7 @@
         <id>106</id>
         <Name>齐天大圣</Name>
         <Identifier>敌人-齐天大圣</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>60</UnlockLevel>
@@ -1813,6 +1920,7 @@
         <id>107</id>
         <Name>兽化变种</Name>
         <Identifier>敌人-兽化变种</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1830,6 +1938,7 @@
         <id>108</id>
         <Name>巨臂僵尸</Name>
         <Identifier>敌人-巨臂僵尸</Identifier>
+        <RosterType>pet</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1846,6 +1955,7 @@
         <id>109</id>
         <Name>体育老师</Name>
         <Identifier>敌人-体育老师</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
@@ -1862,6 +1972,7 @@
         <id>110</id>
         <Name>电波</Name>
         <Identifier>敌人-摇滚公园贝斯</Identifier>
+        <RosterType>partner</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>

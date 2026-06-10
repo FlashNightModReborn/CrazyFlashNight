@@ -276,6 +276,14 @@ if (loader.isLoaded()) {
 
 ## 7. 新增数据文件流程
 
+### data/merc/pets.xml 战队分类
+
+每个 `/Pets/Pet` 必须在 `Identifier` 后声明 `<RosterType>`，合法值为 `partner | pet | mechanical`。该字段是战队界面伙伴 / 战宠 / 机械分类的运行时权威；三类仍共享宠物池、槽位、出战配额和存档结构。
+
+敌人属性中的 `魔法抗性/机械` 与 `魔法抗性/人类` 仅用于审计推导，优先级为机械、人类、其他归战宠。人工校对允许显式分类与推导不同。构建门禁 `tools/audit-pet-roster-types.ps1` 严格跟随 `data/enemy_properties/list.xml`：缺失或非法字段、损坏引用为错误；显式分类差异与 Identifier 未匹配为警告。
+
+`PetCatalogLoader` 将 `rosterType` 投影到 `pet_lib` 和 `adopt_list`。类型化 `adopt_list` 请求可带 `rosterType` 与原始 `categoryIndex`，回包分类形状为 `{index,name,count}` 并带 `selectedCategoryIndex`；未传 `rosterType` 时保留旧兼容形状。
+
 1. 确认数据类型对应的目录
 2. 参照该类型现有文件的 XML 结构
 3. 使用 UTF-8 编码，添加中文注释说明用途

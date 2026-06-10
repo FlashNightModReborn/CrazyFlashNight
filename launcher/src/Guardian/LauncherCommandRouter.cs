@@ -102,25 +102,28 @@ namespace CF7Launcher.Guardian
                     { Action arm = OnSafeExitArm; if (arm != null) arm(); }
                     SendGameCommand("safeExit");
                     break;
-                case "PETS":
-                    LogManager.Log("[Router] PETS clicked");
-                    if (TrySendGameCommand("petPanelOpen"))
-                        OpenPanel("pets", null);
+                case "TEAM":
+                    LogManager.Log("[Router] TEAM clicked");
+                    if (TrySendGameCommand("mercPanelOpen"))
+                        OpenPanel("team", null);
                     else
                     {
-                        LogManager.Log("[Router] PETS petPanelOpen failed");
-                        PostToWeb("{\"type\":\"toast\",\"text\":\"战宠面板暂时不可用\"}");
+                        LogManager.Log("[Router] TEAM mercPanelOpen failed");
+                        PostToWeb("{\"type\":\"toast\",\"text\":\"战队面板暂时不可用\"}");
                     }
                     break;
-                case "MERCS":
-                    LogManager.Log("[Router] MERCS clicked");
+                // 隐藏兼容命令：旧入口仍可打开统一战队面板，但不再注册独立 pets/mercs panel。
+                case "PETS":
                     if (TrySendGameCommand("mercPanelOpen"))
-                        OpenPanel("mercs", null);
+                        OpenPanel("team", "{\"initialTab\":\"partner\"}");
                     else
-                    {
-                        LogManager.Log("[Router] MERCS mercPanelOpen failed");
-                        PostToWeb("{\"type\":\"toast\",\"text\":\"佣兵面板暂时不可用\"}");
-                    }
+                        PostToWeb("{\"type\":\"toast\",\"text\":\"战队面板暂时不可用\"}");
+                    break;
+                case "MERCS":
+                    if (TrySendGameCommand("mercPanelOpen"))
+                        OpenPanel("team", "{\"initialTab\":\"mercenary\"}");
+                    else
+                        PostToWeb("{\"type\":\"toast\",\"text\":\"战队面板暂时不可用\"}");
                     break;
                 case "TABLET": SendGameCommand("toggleTablet"); break;
                 case "GAMESETTINGS": SendGameCommand("openSettings"); break;

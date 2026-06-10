@@ -81,6 +81,21 @@ $gjLine = (& $dotnet --info 2>&1 | Select-String -Pattern "global.json file:" -C
 if ($gjLine) { Write-Host "  global.json : $($gjLine.Context.PostContext -join ' ')" }
 Write-Host ""
 
+# Step 1a: 战队伙伴/战宠/机械显式分类审计。
+# 运行时以 data/merc/pets.xml 的 RosterType 为权威；enemy_properties 仅用于审计差异。
+Write-Host "[Step 1a/7] Audit pet roster types..." -ForegroundColor Yellow
+$petRosterAudit = Join-Path $projectRoot "tools\audit-pet-roster-types.ps1"
+if (-not (Test-Path $petRosterAudit)) {
+    Write-Host "[FAIL] audit-pet-roster-types.ps1 missing: $petRosterAudit" -ForegroundColor Red
+    exit 1
+}
+& powershell.exe -ExecutionPolicy Bypass -File $petRosterAudit -ProjectRoot $projectRoot
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] pet roster classification audit failed." -ForegroundColor Red
+    exit 1
+}
+Write-Host "  pet roster classification OK." -ForegroundColor Green
+
 # Step 1: TypeScript compile (V8 scripts)
 Write-Host "[Step 1/7] TypeScript compile..." -ForegroundColor Yellow
 $tsDir = Join-Path $launcherDir "scripts"
@@ -448,6 +463,8 @@ $requiredWebPaths = @(
     "css\overlay.css",
     "css\panels.css",
     "css\task_panel.css",
+    "css\pet_panel.css",
+    "css\team_panel.css",
     "lib\marked.min.js",
     "help\controls.md",
     "help\worldview.md",
@@ -506,6 +523,7 @@ $requiredWebPaths = @(
     "modules\pet-panel.js",
     "modules\merc-data.js",
     "modules\merc-panel.js",
+    "modules\team\team-panel.js",
     "modules\tasks\task-panel.js",
     "modules\tasks\task-catalog.json",
     "assets\pets\pet_locked.png",

@@ -101,16 +101,13 @@
         ['modules/arena-panel.js'],
         noop);
 
-    // ── pets (战宠) ──
-    // 数据权威全部走 AS2 snapshot/adopt_list 回包（pets.xml + 战宠进阶函数），无 JS 静态副本
-    Panels.registerLazy('pets',
-        ['modules/pet-panel.js'],
-        noop);
-
-    // ── mercs (佣兵) ──
-    Panels.registerLazy('mercs',
+    // ── team (战队：佣兵 / 伙伴 / 战宠 / 机械) ──
+    // 子视图继续使用 pets / mercs 协议，但只有 team 是生产 Panel。
+    Panels.registerLazy('team',
         ['modules/merc-data.js',
-         'modules/merc-panel.js'],
+         'modules/pet-panel.js',
+         'modules/merc-panel.js',
+         'modules/team/team-panel.js'],
         noop);
 
     // ── tasks (任务) ──

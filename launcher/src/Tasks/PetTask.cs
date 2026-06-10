@@ -235,9 +235,8 @@ namespace CF7Launcher.Tasks
         // ── 商城目录 C# 直答（pets.xml 静态投影，等价于 AS2 handleAdoptList + snapshot.categories）──
 
         /// <summary>
-        /// 直答可领养列表。返回 { categories:[{name}], adoptable:[{petId,name,identifier,height,
-        /// price,kprice,unlockLevel,unlockTask,unique}] }。categories 恒为全量（供页签）；
-        /// adoptable 按 categoryIndex 过滤（&lt;0 = 全部）。运行态门槛由 Web 用 snapshot 自行判定。
+        /// 直答可领养列表。兼容请求返回全量 categories:[{name}]；带 rosterType 时返回
+        /// 非空 categories:[{index,name,count}] 与 selectedCategoryIndex。categoryIndex 使用原始索引。
         /// </summary>
         private void RespondAdoptList(string webCallId, JObject parsed)
         {
@@ -250,6 +249,13 @@ namespace CF7Launcher.Tasks
             }
 
             int categoryIndex = -1;
+            string rosterType = parsed.Value<string>("rosterType");
+            bool filteredByRoster = !string.IsNullOrEmpty(rosterType);
+            if (filteredByRoster && !PetCatalogLoader.IsValidRosterType(rosterType))
+            {
+                RespondError(webCallId, "adopt_list", "invalid_roster_type");
+                return;
+            }
             JToken ciTok = parsed["categoryIndex"];
             if (ciTok != null)
             {
@@ -260,12 +266,33 @@ namespace CF7Launcher.Tasks
 
             var categories = new JArray();
             var adoptable = new JArray();
+            var availableCategoryIndexes = new List<int>();
+            if (filteredByRoster)
+            {
+                for (int c = 0; c < catalog.Categories.Count; c++)
+                {
+                    int count = CountCategoryPets(catalog, catalog.Categories[c], rosterType);
+                    if (count <= 0) continue;
+                    availableCategoryIndexes.Add(c);
+                    var catObj = new JObject();
+                    catObj["index"] = c;
+                    catObj["name"] = catalog.Categories[c].Name;
+                    catObj["count"] = count;
+                    categories.Add(catObj);
+                }
+                if (!availableCategoryIndexes.Contains(categoryIndex))
+                    categoryIndex = availableCategoryIndexes.Count > 0 ? availableCategoryIndexes[0] : -1;
+            }
+
             for (int c = 0; c < catalog.Categories.Count; c++)
             {
                 PetCatalog.PetCategory cat = catalog.Categories[c];
-                var catObj = new JObject();
-                catObj["name"] = cat.Name;
-                categories.Add(catObj);
+                if (!filteredByRoster)
+                {
+                    var catObj = new JObject();
+                    catObj["name"] = cat.Name;
+                    categories.Add(catObj);
+                }
 
                 if (categoryIndex >= 0 && c != categoryIndex) continue;
                 for (int r = 0; r < cat.Rows.Count; r++)
@@ -275,7 +302,8 @@ namespace CF7Launcher.Tasks
                     {
                         if (!row[m].HasValue) continue;
                         PetDef def;
-                        if (catalog.PetsById.TryGetValue(row[m].Value, out def))
+                        if (catalog.PetsById.TryGetValue(row[m].Value, out def)
+                            && (!filteredByRoster || def.RosterType == rosterType))
                             adoptable.Add(def.ToAdoptJObject());
                     }
                 }
@@ -289,7 +317,25 @@ namespace CF7Launcher.Tasks
             resp["success"] = true;
             resp["categories"] = categories;
             resp["adoptable"] = adoptable;
+            if (filteredByRoster) resp["selectedCategoryIndex"] = categoryIndex;
             PostToWeb(resp.ToString(Formatting.None));
+        }
+
+        private static int CountCategoryPets(PetCatalog catalog, PetCatalog.PetCategory category, string rosterType)
+        {
+            int count = 0;
+            for (int r = 0; r < category.Rows.Count; r++)
+            {
+                List<int?> row = category.Rows[r];
+                for (int m = 0; m < row.Count; m++)
+                {
+                    PetDef def;
+                    if (row[m].HasValue && catalog.PetsById.TryGetValue(row[m].Value, out def)
+                        && def.RosterType == rosterType)
+                        count++;
+                }
+            }
+            return count;
         }
 
         /// <summary>

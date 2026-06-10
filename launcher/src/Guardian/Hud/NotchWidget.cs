@@ -133,8 +133,7 @@ namespace CF7Launcher.Guardian.Hud
             new NotchButtonDef("其他 ▸", null, Keys.None, false, false)
         };
         private static readonly NotchButtonDef[] ToolbarButtons = {
-            new NotchButtonDef("战宠", "PETS", Keys.None, true, false),
-            new NotchButtonDef("佣兵", "MERCS", Keys.None, true, false),
+            new NotchButtonDef("战队", "TEAM", Keys.None, true, false),
             new NotchButtonDef("平板", "TABLET", Keys.None, true, false),
             new NotchButtonDef("战备箱", "WAREHOUSE", Keys.None, true, true),
             new NotchButtonDef("情报", "INTELLIGENCE", Keys.None, true, false),

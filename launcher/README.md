@@ -503,8 +503,10 @@ launcher/
 │       ├── tooltip.js                     Tooltip（hover/anchored）
 │       ├── icons.js                       图标 manifest 加载与解析
 │       ├── kshop.js                       K 点商城面板（ShopTask 双层 callId）
-│       ├── pet-panel.js                   战宠面板（Panels.register('pets')：管理/领养/进阶三页；PetTask 双层 callId）；数据权威全走 AS2 回包，无 JS 静态副本
-│       ├── merc-panel.js / merc-data.js   佣兵面板（Panels.register('mercs')：管理/雇佣两页 + 11 格装备图标；MercTask 双层 callId）+ 槽位常量
+│       ├── team/team-panel.js             战队唯一生产 Panel（佣兵 / 伙伴 / 战宠 / 机械四标签；统一生命周期）
+│       ├── team/dev/harness.html           战队 browser harness（四标签 / 分类 / 佣兵卡片 / 会话记忆）
+│       ├── pet-panel.js                   可嵌入宠物子控制器（管理/领养/进阶；伙伴/战宠/机械按 rosterType 过滤）
+│       ├── merc-panel.js / merc-data.js   可嵌入佣兵子控制器（管理/雇佣两页 + 双列卡片 + 11 格装备）+ 槽位常量
 │       ├── arena-panel.js                 竞技场面板（Panels.register('arena')：8 张角斗场卡 + 详情/进场；ArenaTask 双层 callId）
 │       ├── help.js / help-panel.js        帮助系统（顶层入口 + 面板骨架）
 │       ├── map-avatar-source-data.js      地图 NPC 头像源数据表（symbol → assetUrl + hotspot 相对坐标 + crop）
@@ -739,6 +741,7 @@ powershell -File launcher/tests/run_tests.ps1
   - `web/modules/stage-select/dev/harness.html`
   - `web/modules/arena/dev/harness.html`
   - `web/modules/intelligence/dev/harness.html`
+  - `web/modules/team/dev/harness.html`（也可用 `node tools/run-team-harness.js` 跑 headless QA）
   - 共享 QA 基础层：`web/modules/minigames/shared/dev/harness-base.js` + `harness-base.css`
   - 支持 query 驱动的 `?qa=1` / `?case=` / `?scenario=` / `?dump=1`
   - `map` harness 额外覆盖 Canvas renderer debug state / 非空像素、页签 hit-test、右侧层级按钮遮挡、学校室友动态图、`1366x768` 紧凑视口可达性、locked group 锁定提示与锁定原因可达性
@@ -1432,8 +1435,7 @@ AS2 UI → Web Panel 迁移的操作护栏统一见 [../agentsDoc/as2-web-panel-
 | 安全退出界面 | `#safe-exit-panel` 面板 | `sv:1/2` + `EXIT_CONFIRM` click |
 | 帮助界面 (帮助界面.swf) | Panel 系统 `help-panel.js` (Markdown tab) | Bridge → C# panel_cmd open help |
 | K点商城 (旧商城界面 MC 已退役) | Panel 系统 `kshop.js` (商品/购物车/领取) | `SHOP` → `kshop`，ShopTask 双层 callId 桥接 (Web↔Flash) |
-| 战宠管理界面 | Panel 系统 `pet-panel.js` (管理/领养/进阶三页) | `PETS` → `petPanelOpen` + `pets`，PetTask 双层 callId |
-| 佣兵管理界面 | Panel 系统 `merc-panel.js` (管理/雇佣 + 11 格装备) | `MERCS` → `mercPanelOpen` + `mercs`，MercTask 双层 callId |
+| 战队界面 | Panel 系统 `team/team-panel.js`（佣兵 / 伙伴 / 战宠 / 机械；宠物管理/领养/进阶 + 佣兵管理/雇佣） | `TEAM` → `mercPanelOpen` + `team`；子控制器继续使用 `pets` / `mercs` Task 协议 |
 | 竞技场 (DEATH MATCH) | Panel 系统 `arena-panel.js` (8 张角斗场卡) | `arena`，ArenaTask 双层 callId |
 | 情报界面 | Panel 系统 `intelligence-panel.js` (H5 富文本) | `情报`/`INTELLIGENCE`，IntelligenceTask 按需正文 |
 | 任务界面 | Panel 系统 `tasks/task-panel.js` (当前任务列表/详情) | 刘海屏 `任务` 键 `TASK_UI`（含 `NEW_TASK_UI` 合并）→ `taskPanelOpen` + `tasks`，TaskTask 双层 callId |
@@ -1490,8 +1492,8 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 - **lockbox**（开锁小游戏）: `web/modules/minigames/lockbox/` 下的正式小游戏模块；支持运行时参数、browser harness、Node QA
 - **pinalign**（定位小游戏）: `web/modules/minigames/pinalign/` 下的正式小游戏模块；和 Lockbox 共用小游戏壳层与 QA 平台
 - **gobang**（五子棋小游戏）: `web/modules/minigames/gobang/` 下的正式小游戏模块；Web core 负责规则裁判，AI 经 Web→C# `gomoku_eval` 调用 `GomokuTask` / Rapfi
-- **pets**（战宠管理）: `web/modules/pet-panel.js`；`Panels.register('pets')`，管理/领养/进阶三页（出战/恢复体力/灵石强化/删除/开格子），`PetTask` 双层 callId 桥接 AS2；不参与 `_pauseNeedsRestore`，close 发 `petPanelClose` 通知 AS2 清理。头像 `assets/pets/pet_<id>.png`（onerror→`pet_locked.png`）。**数据权威全部来自 AS2 回包**：`snapshot` 下发 `petLib`(宠物库, 源 `data/merc/pets.xml`)+`schemes`(进阶方案数值, 源 `战宠进阶函数`)+`categories`+真 `xpNeeded`，`adopt_list` 下发商城网格；JS 无静态数据副本（原 `pet-data.js` 已删，见 [数据权威迁移提案](../docs/战宠数据权威-JS到XML-迁移设计提案-2026-05-31.md)）
-- **mercs**（佣兵管理）: `web/modules/merc-panel.js` + `merc-data.js`；`Panels.register('mercs')`，管理/雇佣两页 + 11 格装备图标（mercData 槽位 6-16），`MercTask` 双层 callId；不参与 `_pauseNeedsRestore`，close 不通知 AS2（无需清理）
+- **team**（战队）: `web/modules/team/team-panel.js` 是唯一生产 Panel，固定标签顺序为佣兵 / 伙伴 / 战宠 / 机械；首次进入伙伴，同一 WebView 会话记忆末次标签，顶层切换会把目标子视图复位到管理列表，写操作 busy 时禁止切换和关闭。`pet-panel.js` 与 `merc-panel.js` 是可嵌入子控制器，不再独立注册 Panel；它们继续发送 `panel:"pets"` / `panel:"mercs"`，复用现有 `PetTask` / `MercTask` 与 AS2 写操作。统一 close 为纯 Web no-op，不调用有旧 Flash UI 重排副作用的 `petPanelClose`。旧命令 `PETS` / `MERCS` 仅作为隐藏兼容入口打开 `team` 的伙伴 / 佣兵标签。
+- 宠物域的伙伴 / 战宠 / 机械共享同一宠物池、容量与出战配额，分类权威来自 `data/merc/pets.xml` 的 `RosterType`；`pet_lib` / `adopt_list` 下发 `rosterType`，类型化 `adopt_list` 只返回非空原始分类索引。佣兵卡片固定双列、完整展示槽位 6-16，使用无头像资源与 CSS fallback，并预留“战术能力 · 待接入”区域。
 - **arena**（竞技场 DEATH MATCH）: `web/modules/arena-panel.js`；`Panels.register('arena')`，8 张角斗场卡 + 详情/掷骰/进场，`ArenaTask` 双层 callId；可经地图/选关二级动作以 `returnToPanel` 重定向进入，close 不通知 AS2
 - **jukebox**（BGM 点歌台）: `web/modules/panels/jukebox-panel.js` 注册 `Panels.register('jukebox')`，由 `RightContextWidget` 的 jukebox titlebar 展开按钮 → `JUKEBOX_EXPAND` → `LauncherCommandRouter.OpenPanel("jukebox")` 触发；与 kshop/help 等通用 panel 同走完整 backdrop / EX_STYLE / HUD-suspend 序列。PanelLayoutCatalog 用基准 880×620 设计尺寸 + `anchor.Height / 576` 等比缩放（与 `Hud.WidgetScaler.DESIGN_HEIGHT` 同源）：1024×576 design viewport 下宽 880 / 高被 Centered clamp 到 576；1920×1080 anchor 下宽 1650（占比 86%）/ 高 clamp 到 1080。`jukebox-panel.js` 用 inset 百分比布局对 panelRect 任意尺寸鲁棒。曲库 / UiData 状态在 onOpen 时通过 `cmd:'requestCatalog'` + `UiData.get` seed 当前值，避免晚注册错过历史推送。close 路径收敛：× 按钮 / ESC / backdrop click 三入口共用 `closeLocally`（先 `Panels.close()` 让 `_active` 复位再 `Bridge.send panel close`）——避免 ESC/backdrop 单独走 onRequestClose 时 `_active` 滞留导致下次 open 早 return
 
@@ -1516,7 +1518,7 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 
 **通用模块**：
 - `panels.js`: 面板注册/生命周期管理 (register/registerLazy/open/close/force_close)
-- `panels-lazy-registry.js` + `lazy-loader.js`: 12 个面板的懒注册表（id → deps[]）+ 按需 `<script>` 注入，首次 `Panels.open(id)` 才加载对应模块（kshop/help/jukebox/map/stage-select/intelligence/arena/pets/mercs/lockbox/pinalign/gobang）
+- `panels-lazy-registry.js` + `lazy-loader.js`: 面板懒注册表（id → deps[]）+ 按需 `<script>` 注入，首次 `Panels.open(id)` 才加载对应模块（kshop/help/jukebox/map/stage-select/intelligence/arena/team/lockbox/pinalign/gobang/tasks）
 - `tooltip.js`: hover 跟随 + anchored 锚定两种模式，AS2 HTML 转换；商城和情报 runtime tooltip 共用
 - `icons.js`: 物品图标 manifest 加载 + 名称→URL 解析，情报详情面板也复用该入口
 - `web/modules/minigames/shared/host-bridge.js`: 小游戏 → 宿主的统一桥接
@@ -1532,8 +1534,8 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
   - `turn` / `result` / `export`: 沿用各游戏语义，但都走同一 envelope
 - Gobang AI 额外走 Web panel → C# `gomoku_eval`：`{ type:'panel', panel:'gobang', cmd:'gomoku_eval', callId, payload:{ moves, timeLimit, ruleset } }`；响应为同 `callId` 的 `panel_resp`，`moves` 为 `[[x,y,role],...]`，`role` 使用 `1` 黑 / `-1` 白
 
-**状态机**：`useNativeHud=true` 时 panel 打开状态以 `PanelHostController.ActivePanelName` 为主；`useNativeHud=false` 仍保留 WebOverlayForm `_activePanel` fallback（`null` → `"kshop" / "help" / "map" / "stage-select" / "intelligence" / "arena" / "pets" / "mercs" / "lockbox" / "pinalign" / "gobang" / ...` → `null`）。当前只有 `kshop` 会在断连或强制关闭路径里设置 `_pauseNeedsRestore`；其余纯 Web / dev panel 只做面板生命周期管理，不触发 Flash 暂停恢复。
+**状态机**：`useNativeHud=true` 时 panel 打开状态以 `PanelHostController.ActivePanelName` 为主；`useNativeHud=false` 仍保留 WebOverlayForm `_activePanel` fallback（`null` → `"kshop" / "help" / "map" / "stage-select" / "intelligence" / "arena" / "team" / "lockbox" / "pinalign" / "gobang" / ...` → `null`）。当前只有 `kshop` 会在断连或强制关闭路径里设置 `_pauseNeedsRestore`；其余纯 Web / dev panel 只做面板生命周期管理，不触发 Flash 暂停恢复。
 
 **热重载恢复**：`_uiDataSnapshot` 按 KV key 维护最新值快照，WebView2 热重载后 `FlushUiDataBuffer` 先回放完整快照，确保 game-ready 等关键状态不丢失。
 
-**维护约束**：凡是小游戏、地图 panel、stage-select panel、intelligence panel、arena / pets / mercs panel、Native HUD/PanelHost 的目录迁移、宿主协议变更、QA 入口变化，必须同步更新本 README 的目录树、测试入口和本节协议说明；AS2 UI → Web Panel 迁移细则同步维护 [../agentsDoc/as2-web-panel-migration.md](../agentsDoc/as2-web-panel-migration.md)，模块内细节留在各自模块 README / 设计文档。
+**维护约束**：凡是小游戏、地图 panel、stage-select panel、intelligence panel、arena / team panel、Native HUD/PanelHost 的目录迁移、宿主协议变更、QA 入口变化，必须同步更新本 README 的目录树、测试入口和本节协议说明；AS2 UI → Web Panel 迁移细则同步维护 [../agentsDoc/as2-web-panel-migration.md](../agentsDoc/as2-web-panel-migration.md)，模块内细节留在各自模块 README / 设计文档。

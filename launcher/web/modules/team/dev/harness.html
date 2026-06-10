@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>战队面板 Harness</title>
+<base href="../../../">
+<link rel="stylesheet" href="css/panels.css">
+<link rel="stylesheet" id="pet-panel-css" href="css/pet_panel.css">
+<link rel="stylesheet" id="team-panel-css" href="css/team_panel.css">
+<style>
+html,body { margin:0; background:#080807; color:#ddd; font-family:"Microsoft YaHei",sans-serif; }
+#shell { position:relative; width:100vw; height:100vh; overflow:hidden; }
+#panel-container,#panel-backdrop,#panel-content { position:absolute; inset:0; }
+#panel-tooltip { display:none; }
+#qa { position:fixed; left:8px; bottom:8px; z-index:9999; color:#fff; background:#111c; padding:5px 8px; font-size:12px; }
+</style>
+</head>
+<body>
+<div id="shell">
+  <div id="panel-container"><div id="panel-backdrop"></div><div id="panel-content"></div></div>
+  <div id="panel-tooltip"></div>
+</div>
+<div id="qa">running</div>
+<script>
+var PanelTooltip = { hide:function(){}, showAtMouse:function(){}, followMouse:function(){}, isVisible:function(){return false;}, updateContent:function(){}, buildItemRichHtml:function(){return '';} };
+var Icons = { load:function(cb){ if(cb)cb(); }, resolve:function(){ return null; } };
+var Notch = { reportRect:function(){} };
+var listeners = {};
+var Bridge = {
+  on:function(type, cb){ (listeners[type] || (listeners[type]=[])).push(cb); },
+  send:function(msg){ MockHost.handle(msg); }
+};
+function emit(type, data){ (listeners[type] || []).forEach(function(cb){ cb(data); }); }
+var PET_LIB = [
+  {id:1,rosterType:'partner',promotions:[]},
+  {id:2,rosterType:'pet',promotions:[]},
+  {id:3,rosterType:'mechanical',promotions:[]}
+];
+function pet(id,name,slot){ return {petId:id,name:name,slotIndex:slot,level:10,deployed:false,stamina:100,maxStamina:200,xp:10,xpNeeded:100,schemeStatus:{}}; }
+function equips(){ var out=[]; for(var i=6;i<=16;i++) out.push({slot:i,name:'装备'+i,displayname:'装备'+i,level:1}); return out; }
+var MockHost = {
+  closeCount:0,
+  lastAdoptRequest:null,
+  handle:function(msg){
+    if(msg.cmd === 'close'){ this.closeCount++; return; }
+    var resp={type:'panel_resp',panel:msg.panel,cmd:msg.cmd,callId:msg.callId,success:true};
+    if(msg.panel === 'pets' && msg.cmd === 'snapshot'){
+      emit('panel_resp',{type:'panel_resp',panel:'mercs',cmd:msg.cmd,callId:msg.callId,success:true,snapshot:{hiredMercs:[]}});
+      resp.snapshot={pets:[pet(1,'伙伴甲',0),pet(2,'战宠甲',1),pet(3,'机械甲',2)],gold:999999,kpoint:999,currentDeployCount:0,maxDeploy:5,maxSlots:8,levelLimit:100,playerLevel:60,playerTask:999,schemes:{},priceOverrides:{}};
+    }
+    if(msg.panel === 'pets' && msg.cmd === 'pet_lib') resp.petLib=PET_LIB;
+    if(msg.panel === 'pets' && msg.cmd === 'adopt_list'){ this.lastAdoptRequest=msg; resp.categories=[{index:0,name:'测试',count:1}]; resp.selectedCategoryIndex=0; resp.adoptable=[]; }
+    if(msg.panel === 'mercs' && msg.cmd === 'snapshot'){
+      emit('panel_resp',{type:'panel_resp',panel:'pets',cmd:msg.cmd,callId:msg.callId,success:true,snapshot:{pets:[]}});
+      resp.snapshot={gold:999999,kpoint:999,maxSlots:8,hiredMercs:[{slotIndex:0,name:'佣兵甲',level:12,gender:'男',deployed:true,equips:equips()},{slotIndex:1,name:'佣兵乙',level:15,gender:'女',deployed:false,equips:equips()}]};
+    }
+    if(msg.panel === 'mercs' && msg.cmd === 'hire_list') resp.hireList={page:1,totalPages:1,hireable:[]};
+    setTimeout(function(){ emit('panel_resp',resp); },5);
+  }
+};
+</script>
+<script src="modules/panels.js"></script>
+<script src="modules/merc-data.js"></script>
+<script src="modules/pet-panel.js"></script>
+<script src="modules/merc-panel.js"></script>
+<script src="modules/team/team-panel.js"></script>
+<script>
+(function(){
+  Panels.init();
+  var results=[];
+  function assert(id,title,pass,detail){ results.push({id:id,title:title,pass:!!pass,detail:detail||''}); }
+  function click(tab){ document.querySelector('.team-tab[data-tab="'+tab+'"]').click(); }
+  function active(){ var n=document.querySelector('.team-tab-active'); return n && n.dataset.tab; }
+  function wait(ms){ return new Promise(function(resolve){setTimeout(resolve,ms);});}
+  (async function(){
+    Panels.open('team');
+    await wait(80);
+    assert('team-ui1','首次打开默认伙伴',active()==='partner',active());
+    assert('team-ui2','四标签顺序',Array.from(document.querySelectorAll('.team-tab')).map(function(x){return x.dataset.tab;}).join(',')==='mercenary,partner,pet,mechanical');
+    assert('team-ui3','伙伴过滤',document.querySelectorAll('.pet-card').length===1,document.querySelectorAll('.pet-card').length+' cards');
+    assert('team-ui4','三类共享完整宠物池容量',document.querySelectorAll('.pet-slot-empty').length===5,document.querySelectorAll('.pet-slot-empty').length+' empty slots');
+    document.querySelector('.pet-slot-empty').click(); await wait(20);
+    assert('team-ui5','领养商店请求携带当前类型',MockHost.lastAdoptRequest && MockHost.lastAdoptRequest.rosterType==='partner');
+    document.querySelector('#pet-page-store .pet-page-back').click();
+    click('pet'); await wait(50);
+    assert('team-ui6','战宠过滤',document.querySelectorAll('.pet-card').length===1);
+    click('mechanical'); await wait(50);
+    assert('team-ui7','机械过滤',document.querySelectorAll('.pet-card').length===1);
+    click('mercenary'); await wait(60);
+    assert('team-ui8','pets/mercs 回包隔离',document.querySelectorAll('#merc-grid .merc-card').length===2);
+    assert('team-ui9','佣兵双列卡片',document.querySelectorAll('#merc-grid .merc-card').length===2);
+    assert('team-ui10','佣兵完整 11 槽',document.querySelectorAll('#merc-grid .merc-equip-cell').length===22);
+    assert('team-ui11','缺省头像与技能占位',document.querySelectorAll('#merc-grid .merc-card-portrait').length===2 && document.querySelectorAll('#merc-grid .merc-ability-placeholder').length===2);
+    document.querySelector('#merc-goto-hire').click();
+    click('partner');
+    document.querySelector('.team-close').click();
+    assert('team-ui12','busy 阶段禁止切换与关闭',active()==='mercenary' && MockHost.closeCount===0);
+    await wait(20);
+    Panels.close(); Panels.open('team'); await wait(50);
+    assert('team-ui13','同会话记忆标签',active()==='mercenary',active());
+    Panels.close(); Panels.open('team',{initialTab:'partner'}); await wait(50);
+    assert('team-ui14','兼容入口覆盖初始标签',active()==='partner',active());
+    var content=document.querySelector('.team-content');
+    assert('team-ui15','面板内容无布局溢出',content.scrollWidth<=content.clientWidth && content.scrollHeight<=content.clientHeight,content.scrollWidth+'x'+content.scrollHeight);
+    var failed=results.filter(function(x){return !x.pass;}).length;
+    window.__qaResult={qa:{total:results.length,passed:results.length-failed,failed:failed,results:results}};
+    document.getElementById('qa').textContent=(results.length-failed)+'/'+results.length+' passed';
+  })();
+})();
+</script>
+</body>
+</html>

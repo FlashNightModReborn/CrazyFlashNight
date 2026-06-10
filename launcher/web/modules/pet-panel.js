@@ -28,7 +28,7 @@
     var _storeCategoryIdx = 0;
     var _storeData = [];
     var _storeCategories = [];
-    var _storeCache = {};       // 分类缓存：catIdx → { adoptable, categories }
+    var _storeCache = {};       // 分类缓存：rosterType:catIdx → { adoptable, categories }
     var _petLib = null;
     var _pendingReq = {};
     var _reqSeq = 0;
@@ -43,6 +43,7 @@
     var _toasts = [];           // 活跃 toast DOM 列表
     var _docClickBound = null;
     var _tipEl = null;          // 当前悬浮 data-tip 元素（PanelTooltip）
+    var _rosterType = 'partner';
 
     // ── DOM refs ──
     var _pageList, _pageStore, _pageAdvance;
@@ -51,13 +52,6 @@
     // ═══════════════════════════════════════════════════════════
     // Panel 注册
     // ═══════════════════════════════════════════════════════════
-    Panels.register('pets', {
-        create: createDOM,
-        onOpen: onOpen,
-        onRequestClose: requestClose,
-        onClose: onClose
-    });
-
     // ═══════════════════════════════════════════════════════════
     // DOM 创建
     // ═══════════════════════════════════════════════════════════
@@ -67,6 +61,7 @@
         _el.style.inset = '0';
         _el.style.margin = '0';
         _el.style.padding = '0';
+        _el.className = 'team-child team-pet-child';
 
         _el.innerHTML =
             '<div class="pet-scale-shell">' +
@@ -406,6 +401,7 @@
         _pendingReq = {};
         _busy = false;
         _snapshot = null;
+        _pets = [];
         _activePetIdx = -1;
         _selectedSlot = -1;
         _storeCategoryIdx = 0;
@@ -414,6 +410,7 @@
         _firstSnapshot = true;
         _prevGold = null; _prevKpoint = null;
         clearToasts();
+        _rosterType = initData && initData.rosterType ? initData.rosterType : _rosterType;
 
         // 注入 CSS（task-panel 范式：onOpen 确保加载，onClose 移除）
         if (!document.getElementById('pet-panel-css')) {
@@ -434,6 +431,10 @@
 
     function requestClose() {
         if (_busy) return;
+        if (window.TeamPanelHost && TeamPanelHost.requestClose) {
+            TeamPanelHost.requestClose();
+            return;
+        }
         Panels.close();
         Bridge.send({ type: 'panel', panel: 'pets', cmd: 'close' });
     }
@@ -552,7 +553,15 @@
         sendPanelMsg('pet_lib', null, function(data) {
             if (data && data.success && data.petLib) {
                 _petLib = data.petLib;
+                if (_snapshot) {
+                    renderPetGrid(false);
+                    renderSelbar(false);
+                }
                 if (_currentPage === 'advance') renderAdvancePage();
+            } else {
+                _petLib = [];
+                showToast('宠物分类目录不可用，未知项已归入战宠', 'warning');
+                if (_snapshot) renderPetGrid(false);
             }
         });
     }
@@ -570,6 +579,10 @@
             _pets = data.snapshot.pets || [];
             var wasFirst = _firstSnapshot;   // 仅首帧 snapshot 播放卡片入场；后续刷新（升级/进阶/删除/领养/开格子）静默
             _firstSnapshot = false;
+            if (!_petLib) {
+                showSkeleton();
+                return;
+            }
             hideSkeleton();
             // 默认选中：保留旧选中（若仍在），否则选首个
             if (findPetBySlot(_selectedSlot) == null) {
@@ -584,13 +597,14 @@
     }
 
     function requestAdoptList(catIdx, cb) {
-        if (_storeCache[catIdx]) {  // 命中缓存：零延迟
-            _storeData = _storeCache[catIdx].adoptable;
-            _storeCategories = _storeCache[catIdx].categories || _storeCategories;
+        var cacheKey = _rosterType + ':' + catIdx;
+        if (_storeCache[cacheKey]) {  // 命中缓存：零延迟
+            _storeData = _storeCache[cacheKey].adoptable;
+            _storeCategories = _storeCache[cacheKey].categories || _storeCategories;
             if (cb) cb(true);
             return;
         }
-        sendPanelMsg('adopt_list', { categoryIndex: catIdx }, function(data) {
+        sendPanelMsg('adopt_list', { categoryIndex: catIdx, rosterType: _rosterType }, function(data) {
             if (!data.success) {
                 showToast('获取领养列表失败：' + (data.error || '超时'), 'error');
                 if (cb) cb(false);
@@ -598,7 +612,9 @@
             }
             _storeData = data.adoptable || [];
             if (data.categories) _storeCategories = data.categories;
-            _storeCache[catIdx] = { adoptable: _storeData, categories: _storeCategories };
+            if (typeof data.selectedCategoryIndex === 'number') _storeCategoryIdx = data.selectedCategoryIndex;
+            cacheKey = _rosterType + ':' + _storeCategoryIdx;
+            _storeCache[cacheKey] = { adoptable: _storeData, categories: _storeCategories };
             if (cb) cb(true);
         });
     }
@@ -624,6 +640,7 @@
         var order = [];
         for (var oi = 0; oi < _pets.length; oi++) {
             var p = _pets[oi];
+            if (rosterTypeForPet(p.petId) !== _rosterType) continue;
             if (_filterMode === 'deployed' && !p.deployed) continue;
             if (_filterMode === 'resting' && p.deployed) continue;
             if (_filterMode === 'low_stamina' && p.stamina > 5) continue;
@@ -799,6 +816,7 @@
         var best = null;
         for (var i = 0; i < _pets.length; i++) {
             var p = _pets[i];
+            if (rosterTypeForPet(p.petId) !== _rosterType) continue;
             if (best === null) { best = p; continue; }
             if (!!p.deployed !== !!best.deployed) { if (p.deployed) best = p; continue; }
             if ((p.level || 0) > (best.level || 0)) best = p;
@@ -824,7 +842,7 @@
     function renderSelbar(animate) {
         hideTip();
         var pet = findPetBySlot(_selectedSlot);
-        if (!pet) {
+        if (!pet || rosterTypeForPet(pet.petId) !== _rosterType) {
             _selbarEl.classList.add('pet-selbar-empty');
             return;
         }
@@ -1101,7 +1119,7 @@
         var gridEl = _el.querySelector('#pet-store-grid');
         var emptyEl = _el.querySelector('#pet-store-empty');
         // 命中缓存时不闪 loading
-        var cached = !!_storeCache[_storeCategoryIdx];
+        var cached = !!_storeCache[_rosterType + ':' + _storeCategoryIdx];
         loadingEl.hidden = cached;
         gridEl.hidden = !cached;
         emptyEl.hidden = true;
@@ -1119,9 +1137,10 @@
         var categories = _storeCategories || [];
         for (var c = 0; c < categories.length; c++) {
             var tab = document.createElement('button');
-            tab.className = 'pet-store-tab' + (c === _storeCategoryIdx ? ' pet-store-tab-active' : '');
+            var originalIndex = typeof categories[c].index === 'number' ? categories[c].index : c;
+            tab.className = 'pet-store-tab' + (originalIndex === _storeCategoryIdx ? ' pet-store-tab-active' : '');
             tab.textContent = categories[c].name;
-            tab.dataset.index = c;
+            tab.dataset.index = originalIndex;
             tab.addEventListener('click', function() {
                 var ci = parseInt(this.dataset.index, 10);
                 if (ci === _storeCategoryIdx) return;
@@ -1180,6 +1199,22 @@
                 });
             }
             gridEl.appendChild(card);
+        }
+    }
+
+    function rosterTypeForPet(petId) {
+        var def = getPetLibDef(petId);
+        return def && def.rosterType ? def.rosterType : 'pet';
+    }
+
+    function setRosterType(rosterType) {
+        _rosterType = rosterType || 'pet';
+        _storeCategoryIdx = -1;
+        _storeData = [];
+        navigateTo('list', null, true);
+        if (_snapshot && _petLib) {
+            renderPetGrid(false);
+            renderSelbar(false);
         }
     }
 
@@ -1468,4 +1503,13 @@
             }
         };
     }
+    window.PetTeamController = {
+        create: createDOM,
+        onOpen: onOpen,
+        onClose: onClose,
+        requestClose: requestClose,
+        resetToList: function() { navigateTo('list', null, true); },
+        setRosterType: setRosterType,
+        isBusy: function() { return _busy; }
+    };
 })();

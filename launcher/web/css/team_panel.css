@@ -1,0 +1,144 @@
+.team-scale-root {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    --team-scale: 1;
+}
+.team-scale-shell {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1024px;
+    height: 576px;
+    transform: translate(-50%, -50%) scale(var(--team-scale));
+    transform-origin: center;
+}
+.team-panel {
+    width: 1024px;
+    height: 576px;
+    display: flex;
+    flex-direction: column;
+    color: #e8e1d4;
+    background: #141311;
+    border: 1px solid rgba(239, 148, 66, .48);
+    box-shadow: 0 0 40px rgba(0, 0, 0, .82), inset 0 0 70px rgba(0, 0, 0, .35);
+    overflow: hidden;
+}
+.team-header {
+    height: 58px;
+    flex: 0 0 58px;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    gap: 18px;
+    border-bottom: 1px solid rgba(239, 148, 66, .35);
+    background: linear-gradient(180deg, #242019, #171512);
+}
+.team-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 100px;
+    color: #f4b46e;
+    font-size: 23px;
+    font-weight: 800;
+    letter-spacing: 5px;
+}
+.team-title-mark {
+    width: 5px;
+    height: 27px;
+    background: #ef9442;
+    box-shadow: 0 0 12px rgba(239, 148, 66, .7);
+}
+.team-tabs {
+    display: flex;
+    align-self: stretch;
+    gap: 4px;
+}
+.team-tab {
+    min-width: 96px;
+    padding: 0 18px;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    color: #aaa398;
+    background: transparent;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.team-tab:hover { color: #f0d7bd; background: rgba(239, 148, 66, .06); }
+.team-tab-active { color: #f4b46e; border-bottom-color: #ef9442; background: rgba(239, 148, 66, .1); }
+.team-close {
+    margin-left: auto;
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(239, 148, 66, .3);
+    color: #c8b7a4;
+    background: rgba(0, 0, 0, .25);
+    font-size: 25px;
+    cursor: pointer;
+}
+.team-content { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+.team-view { position: absolute; inset: 0; overflow: hidden; }
+.team-view[hidden] { display: none; }
+.team-child { position: absolute !important; inset: 0; }
+
+/* 子视图由战队壳层负责顶栏与关闭；保留各自页面内部返回按钮。 */
+.team-pet-child #pet-page-list > .pet-page-header,
+.team-merc-child #merc-page-list > .merc-page-header { display: none; }
+.team-pet-child .pet-scale-shell { top: 50%; }
+.team-merc-child { border: 0; border-radius: 0; background: #171512; }
+.team-merc-child .merc-grid,
+.team-merc-child .merc-hire-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.team-merc-child .merc-card {
+    min-height: 154px;
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr) auto;
+    align-items: stretch;
+    padding: 10px;
+    border-color: rgba(239, 148, 66, .18);
+    background: rgba(255, 255, 255, .035);
+}
+.merc-card-portrait {
+    position: relative;
+    width: 64px;
+    min-height: 112px;
+    overflow: hidden;
+    border: 1px solid rgba(239, 148, 66, .28);
+    background: rgba(0, 0, 0, .35);
+}
+.merc-card-portrait img { width: 100%; height: 100%; object-fit: cover; }
+.merc-card-portrait-fallback::before {
+    content: "";
+    position: absolute;
+    left: 17px;
+    top: 18px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #49443d;
+}
+.merc-card-portrait-fallback::after {
+    content: "";
+    position: absolute;
+    left: 9px;
+    bottom: 12px;
+    width: 46px;
+    height: 48px;
+    border-radius: 50% 50% 12% 12%;
+    background: #403b35;
+}
+.team-merc-child .merc-equip-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 32px);
+    gap: 3px;
+}
+.merc-ability-placeholder {
+    margin-top: 6px;
+    padding: 4px 7px;
+    border: 1px dashed rgba(239, 148, 66, .2);
+    color: #81776b;
+    font-size: 11px;
+    letter-spacing: 1px;
+}

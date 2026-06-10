@@ -141,6 +141,22 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Empty(c.StateCallbacks);
         }
 
+        [Theory]
+        [InlineData("TEAM")]
+        [InlineData("PETS")]
+        [InlineData("MERCS")]
+        public void TeamEntries_WhenFlashUnavailable_PostUnavailableToast(string key)
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+
+            r.Dispatch(key);
+
+            Assert.Single(c.Posts);
+            Assert.Contains("战队面板暂时不可用", c.Posts[0]);
+            Assert.Empty(c.ActivePanels);
+        }
+
         [Fact]
         public void RequestOpenPanel_Map_RoutesToOpenMapPanel()
         {

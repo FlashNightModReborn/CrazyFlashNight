@@ -21,9 +21,12 @@ namespace CF7Launcher.Data
     /// </summary>
     public sealed class PetDef
     {
+        public const string DefaultRosterType = "pet";
+
         public int Id;
         public string Name = "";
         public string Identifier = "";
+        public string RosterType = DefaultRosterType;
         public int Height;
         public int InitialLevel;
         public int UnlockLevel;
@@ -41,6 +44,7 @@ namespace CF7Launcher.Data
             o["petId"] = Id;
             o["name"] = Name;
             o["identifier"] = Identifier;
+            o["rosterType"] = RosterType;
             o["height"] = Height;
             o["price"] = Price;
             o["kprice"] = KPrice;
@@ -57,6 +61,7 @@ namespace CF7Launcher.Data
             o["id"] = Id;
             o["name"] = Name;
             o["identifier"] = Identifier;
+            o["rosterType"] = RosterType;
             o["height"] = Height;
             o["initialLevel"] = InitialLevel;
             o["unlockLevel"] = UnlockLevel;
@@ -129,6 +134,17 @@ namespace CF7Launcher.Data
                     def.Id = id;
                     def.Name = ChildText(pet, "Name");
                     def.Identifier = ChildText(pet, "Identifier");
+                    string rosterType = ChildText(pet, "RosterType");
+                    if (IsValidRosterType(rosterType))
+                    {
+                        def.RosterType = rosterType;
+                    }
+                    else
+                    {
+                        def.RosterType = PetDef.DefaultRosterType;
+                        LogManager.Log("[PetCatalogLoader] WARNING invalid/missing RosterType for <id>=" + id
+                            + " ('" + def.Name + "'), fallback=pet");
+                    }
                     def.Height = ParseNum(ChildText(pet, "Height"));
                     def.InitialLevel = ParseNum(ChildText(pet, "InitialLevel"));
                     def.UnlockLevel = ParseNum(ChildText(pet, "UnlockLevel"));
@@ -200,6 +216,11 @@ namespace CF7Launcher.Data
             int v;
             if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out v)) return v;
             return 0;
+        }
+
+        public static bool IsValidRosterType(string value)
+        {
+            return value == "partner" || value == "pet" || value == "mechanical";
         }
 
         private static XmlNode SelectChild(XmlNode node, string name)

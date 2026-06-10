@@ -25,13 +25,6 @@
     // ═══════════════════════════════════════════════════════════
     // Panel 注册
     // ═══════════════════════════════════════════════════════════
-    Panels.register('mercs', {
-        create: createDOM,
-        onOpen: onOpen,
-        onRequestClose: requestClose,
-        onClose: onClose
-    });
-
     // ═══════════════════════════════════════════════════════════
     // Bridge 通信
     // ═══════════════════════════════════════════════════════════
@@ -73,8 +66,8 @@
     // 页面导航
     // ═══════════════════════════════════════════════════════════
     function navigateTo(page) {
+        if (_busy) return;
         _currentPage = page;
-        _busy = false;  // 切换页面时清除任何残留的 busy 状态
         _pageList.hidden = (page !== 'list');
         _pageHire.hidden = (page !== 'hire');
 
@@ -226,6 +219,7 @@
         _hiredMercs.forEach(function(merc) {
             var card = document.createElement('div');
             card.className = 'merc-card';
+            card.appendChild(createPortrait());
 
             // 基本信息区
             var info = document.createElement('div');
@@ -294,6 +288,7 @@
             actions.appendChild(dismissBtn);
 
             info.appendChild(equipGrid);
+            info.insertAdjacentHTML('beforeend', '<div class="merc-ability-placeholder">战术能力 · 待接入</div>');
             card.appendChild(info);
             card.appendChild(actions);
             grid.appendChild(card);
@@ -324,6 +319,7 @@
         _hireData.forEach(function(merc) {
             var card = document.createElement('div');
             card.className = 'merc-card';
+            card.appendChild(createPortrait());
 
             var info = document.createElement('div');
             info.className = 'merc-card-info';
@@ -400,6 +396,7 @@
             actions.appendChild(hireBtn);
 
             info.appendChild(equipGrid);
+            info.insertAdjacentHTML('beforeend', '<div class="merc-ability-placeholder">战术能力 · 待接入</div>');
             card.appendChild(info);
             card.appendChild(actions);
             grid.appendChild(card);
@@ -518,12 +515,22 @@
         return names[slot] || '?';
     }
 
+    function createPortrait() {
+        var portrait = document.createElement('div');
+        portrait.className = 'merc-card-portrait merc-card-portrait-fallback';
+        portrait.innerHTML = '<img src="https://cfn-assets.local/portraits/profiles/%E6%97%A0%E5%A4%B4%E5%83%8F.png" alt="无头像">';
+        var img = portrait.querySelector('img');
+        img.addEventListener('load', function() { portrait.classList.remove('merc-card-portrait-fallback'); });
+        img.addEventListener('error', function() { img.hidden = true; });
+        return portrait;
+    }
+
     // ═══════════════════════════════════════════════════════════
     // DOM 创建
     // ═══════════════════════════════════════════════════════════
     function createDOM(container) {
         _el = document.createElement('div');
-        _el.className = 'merc-panel';
+        _el.className = 'merc-panel team-child team-merc-child';
         _el.innerHTML =
             '<div class="merc-toast" id="merc-toast"></div>' +
 
@@ -638,6 +645,10 @@
 
     function requestClose() {
         if (_busy) return;  // 对齐 pet 模式：pending 操作期间阻止关闭，防止状态泄漏
+        if (window.TeamPanelHost && TeamPanelHost.requestClose) {
+            TeamPanelHost.requestClose();
+            return;
+        }
         Panels.close();     // 先触发 onClose 清理 JS 状态（tooltip/缓存/pendingReq），再通知 C#
         Bridge.send({ type: 'panel', panel: 'mercs', cmd: 'close' });
     }
@@ -651,4 +662,12 @@
         _ttHoverKey = null;
         PanelTooltip.hide();
     }
+    window.MercTeamController = {
+        create: createDOM,
+        onOpen: onOpen,
+        onClose: onClose,
+        requestClose: requestClose,
+        resetToList: function() { navigateTo('list'); },
+        isBusy: function() { return _busy; }
+    };
 })();
