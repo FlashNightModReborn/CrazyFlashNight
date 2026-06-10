@@ -5539,21 +5539,42 @@
     <icon>3XF士兵头盔</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <price>14400</price>
-    <description>一些幸存者组织为新人发放的面具，虽然看起来很可怕，但在防抓和抵抗毒气方面效果意外的不错。</description>
+    <price>54000</price>
+    <description>3XF士兵使用的制式头盔，针对据点防守战情景对毒气防护进行强化。三眼夜视仪，面罩型防毒面具加上全覆式头盔的设计构成了臭名昭著的3XF组织士兵的视觉象征。
+    &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有低级别的夜视效果，开启亮度等级为0~4。</description>
     <helmet>true</helmet>
     <data>
-      <level>1</level>
-      <weight>0.5</weight>
+      <level>13</level>
+      <weight>4</weight>
       <dressup>男变装-3XF士兵头盔</dressup>
-      <hp>0</hp>
-      <mp>0</mp>
-      <damage>0</damage>
-      <defence>32</defence>
+      <hp>45</hp>
+      <mp>15</mp>
+      <damage>35</damage>
+      <defence>90</defence>
       <magicdefence>
-        <毒>10</毒>
+        <毒>30</毒>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>红外夜视仪初始化</initRoutines>
+          <initParam>
+            <visual>夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>红外夜视仪周期</cycleRoutines>
+          <cycleParam>
+            <visual>夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </cycleParam>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <name>3XF士兵上装</name>
@@ -5561,16 +5582,21 @@
     <icon>3XF士兵上装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <price>14400</price>
-    <description>一些幸存者组织为新人发放的上衣，只能提供少许防护。</description>
+    <price>54000</price>
+    <description>3XF士兵的上装装备。与新人套装不同，腹部的袋装缓冲物实际上是非牛顿流体构成的装甲而非纯粹的棉絮填充物。胸甲与腹甲类似肌肉的造型在近身战斗中会给予其敌对者更大的压力，尤其是弹丸未能穿透看似柔软的腹甲时。</description>
     <data>
-      <level>3</level>
-      <weight>1</weight>
+      <level>13</level>
+      <weight>5</weight>
       <dressup>变装-3XF士兵</dressup>
-      <hp>0</hp>
-      <mp>0</mp>
-      <damage>0</damage>
-      <defence>35</defence>
+      <hp>35</hp>
+      <mp>15</mp>
+      <damage>35</damage>
+      <defence>100</defence>
+      <magicdefence>
+        <毒>10</毒>
+        <电>10</电>
+        <冷>10</冷>
+      </magicdefence>
     </data>
   </item>
   <item>
@@ -5579,16 +5605,20 @@
     <icon>3XF士兵下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <price>11700</price>
-    <description>一些幸存者组织为新人发放的裤子，只能提供少许防护。</description>
+    <price>54000</price>
+    <description>3XF士兵的下装装备。在审判日后被称为新人套装的装备正是三战时3XF为了长期作战而生产的廉价士兵制服。其存量之大，即便在战后流出世界各地也仍在当地留有库存。相当一部分存品也在三战后被C&T等恐怖组织使用。</description>
     <data>
-      <level>3</level>
-      <weight>1</weight>
+      <level>13</level>
+      <weight>4</weight>
       <dressup>变装-3XF士兵</dressup>
-      <hp>0</hp>
-      <mp>0</mp>
-      <damage>0</damage>
-      <defence>35</defence>
+      <hp>45</hp>
+      <mp>15</mp>
+      <damage>35</damage>
+      <defence>90</defence>
+      <magicdefence>
+        <毒>15</毒>
+        <热>15</热>
+      </magicdefence>
     </data>
   </item>
   <item>
@@ -5597,17 +5627,21 @@
     <icon>3XF士兵手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <price>4500</price>
-    <description>皮质手套是末世之中抵抗&lt;font color="#b22222"&gt;丧尸&lt;/font&gt;撕咬与尖锐障碍物扎伤的优秀防具。
-    尽管如此，落入&lt;font color="#b22222"&gt;丧尸堆&lt;/font&gt;中的话，它可就没法保护你了。</description>
+    <price>54000</price>
+    <description>3XF士兵的手套。全特种橡胶制成的手套对常见环境危害有着良好的防护能力，这种手套也常被用于实验室环境，而不仅仅是用来抽打平民的脸。</description>
     <data>
-      <level>1</level>
-      <weight>0.2</weight>
+      <level>13</level>
+      <weight>2</weight>
       <dressup>男变装-3XF士兵</dressup>
-      <hp>0</hp>
-      <mp>0</mp>
-      <damage>0</damage>
-      <defence>10</defence>
+      <hp>40</hp>
+      <mp>15</mp>
+      <damage>35</damage>
+      <defence>80</defence>
+      <magicdefence>
+        <毒>10</毒>
+        <冷>10</冷>
+        <热>10</热>
+      </magicdefence>
     </data>
   </item>
   <item>
@@ -5616,16 +5650,21 @@
     <icon>3XF士兵军靴</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <price>12600</price>
-    <description>一些幸存者组织为新人发放的鞋子，在末世里有皮鞋穿就不错了。</description>
+    <price>54000</price>
+    <description>3XF士兵的军靴。针对环境危害进行防护的设计也注定其耐久度有限，因此作为其后续的新人套装改用了更加廉价耐用的材料。在三战后，各种反统合势力穿着3XF生产的军靴在各地对统合展开游击战。</description>
     <data>
-      <level>1</level>
-      <weight>1</weight>
+      <level>13</level>
+      <weight>2</weight>
       <dressup>男变装-3XF士兵脚</dressup>
-      <hp>0</hp>
-      <mp>0</mp>
-      <damage>0</damage>
-      <defence>28</defence>
+      <hp>45</hp>
+      <mp>15</mp>
+      <damage>35</damage>
+      <defence>85</defence>
+      <magicdefence>
+        <毒>20</毒>
+        <冷>5</冷>
+        <热>5</热>
+      </magicdefence>
     </data>
   </item>
 </root>

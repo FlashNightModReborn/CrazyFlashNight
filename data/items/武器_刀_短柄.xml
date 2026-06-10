@@ -204,19 +204,21 @@
       <type>武器</type>
       <use>刀</use>
       <actiontype>短柄</actiontype>
-      <price>9750</price>
+      <price>25000</price>
       <skill>
         <skillname>滑步</skillname>
         <description>手持该武器时可以使用滑步。</description>
         <cd>2000</cd>
         <mp>10</mp>
       </skill>
-      <description>执法有温度，电棍有力度。</description>
+      <description>3XF统治尘都时期由其部队使用的非致命武器，杀伤力有限。执法有温度，电棍有力度。</description>
       <data>
-        <level>4</level>
+        <level>13</level>
         <weight>1</weight>
         <dressup>刀-3XF电棍</dressup>
-        <power>35</power>
+        <power>55</power>
+	<damagetype>魔法</damagetype>
+ 	<magictype>电</magictype>
         <bladeCount>3</bladeCount>
       </data>
     </item>
