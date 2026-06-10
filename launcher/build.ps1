@@ -190,6 +190,25 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "  task-catalog.json OK." -ForegroundColor Green
 
+# Step 1f: 派生 launcher/web/modules/tasks/achievement-catalog.json （成就 tab web 直读目录）
+# SOT = data/achievement/*.json（成就权威源，AS2 AchievementDataLoader 也读它；web 拿脱敏只读投影）。
+# 内含校验器：objective 枚举 / 跨域闭包（taskFinished/chainProgress 引用任务域）/ economyCount
+# counter 白名单（正则解析 AchievementMetrics.as VALID，单源）/ rewards 黑名单{经验值} /
+# hidden 条目脱敏输出（明文仅经 AS2 hiddenReveals 按需回传）。派生失败 → exit 1。
+# 设计：docs/成就系统-A轮-设计-2026-06-10.md §5。
+Write-Host "[Step 1f/7] Derive launcher/web/modules/tasks/achievement-catalog.json..." -ForegroundColor Yellow
+$deriveAchievementCatalogScript = Join-Path $projectRoot "tools\derive-achievement-catalog.js"
+if (-not (Test-Path $deriveAchievementCatalogScript)) {
+    Write-Host "[FAIL] derive-achievement-catalog.js missing: $deriveAchievementCatalogScript" -ForegroundColor Red
+    exit 1
+}
+node $deriveAchievementCatalogScript
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] achievement-catalog 派生失败 (上方日志含具体校验错误)" -ForegroundColor Red
+    exit 1
+}
+Write-Host "  achievement-catalog.json OK." -ForegroundColor Green
+
 # Step 2: Build native miniaudio DLL
 Write-Host "[Step 2/7] Build native miniaudio DLL..." -ForegroundColor Yellow
 $nativeBat = Join-Path $launcherDir "native\build.bat"
@@ -527,6 +546,8 @@ $requiredWebPaths = @(
     "modules\team\team-panel.js",
     "modules\tasks\task-panel.js",
     "modules\tasks\task-catalog.json",
+    "modules\tasks\achievement-catalog.json",
+    "modules\tasks\achievement-tab.js",
     "assets\pets\pet_locked.png",
     "modules\tasks\assets\finish_npc.png",
     "modules\tasks\assets\item_bg.png",

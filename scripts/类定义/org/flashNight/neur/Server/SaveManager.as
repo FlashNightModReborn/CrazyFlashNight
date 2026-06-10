@@ -848,6 +848,7 @@ class org.flashNight.neur.Server.SaveManager {
         _root.商城已购买物品 = [];
         _root.商城购物车 = [];
         _root.easterEgg = undefined;
+        _root._saveExt = {}; // ext 命名空间纵深防线（主防线在 newCharacter；成就/宠物购买次数等随档清空）
 
         // 缓存层清理
         _root.mydata = undefined;
@@ -1069,6 +1070,11 @@ class org.flashNight.neur.Server.SaveManager {
     public function newCharacter():Boolean {
         // deleteSlot() 禁用了存档，新建角色时恢复
         _root.允许存档 = true;
+
+        // ext 命名空间主防线：新建角色无条件清空 _saveExt（成就/宠物购买次数等 per-character 数据）。
+        // 覆盖「删档→新建」与「坏档→新建」两条路径（后者不经 deleteSlot，unpackGameState 已写入
+        // 旧档 ext 残留，下方 packGameState 会把残留原样打包进新档——既有宠物涨价跨角色泄漏即此因）。
+        _root._saveExt = {};
 
         // 初始装备
         if (_root.上装装备 != "") {

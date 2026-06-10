@@ -1,0 +1,187 @@
+{
+    "_note": "A轮占位批次(2026-06-10):打通管线用,玩法口径已自洽可直接上线;制作组定稿后纯数据替换(重跑 derive --check + build),不动代码。id 号段 7001xx-7006xx(90xxx 已被 intelligence_tasks 占用)。设计:docs/成就系统-A轮-设计-2026-06-10.md §3.1",
+    "achievements": [
+        {
+            "id": 700101,
+            "category": "基建#1",
+            "title": "破土动工",
+            "description": "建成你的第一处基建设施",
+            "rewards": ["金币#5000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "infraBuiltCount", "params": {}, "target": 1 }
+        },
+        {
+            "id": 700102,
+            "category": "基建#2",
+            "title": "百业兴旺",
+            "description": "建成 5 处基建设施",
+            "rewards": ["金币#20000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "infraBuiltCount", "params": {}, "target": 5 }
+        },
+        {
+            "id": 700103,
+            "category": "基建#3",
+            "title": "应有尽有",
+            "description": "建成全部 7 处基建设施",
+            "rewards": ["K点#100"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "infraBuiltCount", "params": {}, "target": 7 }
+        },
+        {
+            "id": 700104,
+            "category": "基建#4",
+            "title": "庖厨入门",
+            "description": "将烹饪用具升级至 3 级",
+            "rewards": ["金币#10000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "infraLevel", "params": { "name": "烹饪用具" }, "target": 3 }
+        },
+        {
+            "id": 700105,
+            "category": "基建#5",
+            "title": "满汉全席",
+            "description": "将烹饪用具升级至最高的 6 级",
+            "rewards": ["K点#50"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "infraLevel", "params": { "name": "烹饪用具" }, "target": 6 }
+        },
+        {
+            "id": 700201,
+            "category": "击杀#1",
+            "title": "初试锋芒",
+            "description": "成就启用后累计击杀 10 名敌人",
+            "rewards": ["金币#2000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "killTotal", "params": {}, "target": 10 }
+        },
+        {
+            "id": 700202,
+            "category": "击杀#2",
+            "title": "百人斩",
+            "description": "成就启用后累计击杀 100 名敌人",
+            "rewards": ["金币#10000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "killTotal", "params": {}, "target": 100 }
+        },
+        {
+            "id": 700203,
+            "category": "击杀#3",
+            "title": "千人敌",
+            "description": "成就启用后累计击杀 1000 名敌人",
+            "rewards": ["K点#100"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "killTotal", "params": {}, "target": 1000 }
+        },
+        {
+            "id": 700204,
+            "category": "击杀#4",
+            "title": "一骑当千",
+            "description": "成就启用后累计击杀 5000 名敌人",
+            "hidden": true,
+            "rewards": ["K点#300"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "killTotal", "params": {}, "target": 5000 }
+        },
+        {
+            "id": 700301,
+            "category": "任务#1",
+            "title": "初来乍到",
+            "description": "完成你的第一个主线任务",
+            "rewards": ["金币#1000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskFinished", "params": { "taskId": 0 }, "target": 1 }
+        },
+        {
+            "id": 700302,
+            "category": "任务#2",
+            "title": "渐入佳境",
+            "description": "将主线任务推进至第 5 节",
+            "rewards": ["金币#5000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "chainProgress", "params": { "chain": "主线" }, "target": 5 }
+        },
+        {
+            "id": 700401,
+            "category": "技能#1",
+            "title": "身手敏捷",
+            "description": "学会技能「小跳」",
+            "rewards": ["金币#2000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "skillLevel", "params": { "skill": "小跳" }, "target": 1 }
+        },
+        {
+            "id": 700402,
+            "category": "技能#2",
+            "title": "气贯长虹",
+            "description": "将「气动波」练至 3 级",
+            "rewards": ["金币#8000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "skillLevel", "params": { "skill": "气动波" }, "target": 3 }
+        },
+        {
+            "id": 700501,
+            "category": "物品#1",
+            "title": "小试厨艺",
+            "description": "持有一份「番茄炒蛋」",
+            "rewards": ["金币#3000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "itemOwned", "params": { "item": "番茄炒蛋", "count": 1 }, "target": 1 }
+        },
+        {
+            "id": 700502,
+            "category": "物品#2",
+            "title": "锋芒内敛",
+            "description": "持有名刀「镜之虎彻」",
+            "hidden": true,
+            "rewards": ["K点#200"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "itemOwned", "params": { "item": "镜之虎彻", "count": 1 }, "target": 1 }
+        },
+        {
+            "id": 700601,
+            "category": "经济#1",
+            "title": "精打细算",
+            "description": "成功购买物品 10 次",
+            "rewards": ["金币#5000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "economyCount", "params": { "counter": "购买物品次数" }, "target": 10 }
+        },
+        {
+            "id": 700602,
+            "category": "经济#2",
+            "title": "以物易物",
+            "description": "出售物品 10 次（批量出售按格数计）",
+            "rewards": ["金币#5000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "economyCount", "params": { "counter": "出售次数" }, "target": 10 }
+        },
+        {
+            "id": 700603,
+            "category": "经济#3",
+            "title": "百炼成钢",
+            "description": "成功强化装备 10 次",
+            "rewards": ["金币#10000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "economyCount", "params": { "counter": "装备强化次数" }, "target": 10 }
+        },
+        {
+            "id": 700604,
+            "category": "经济#4",
+            "title": "爱兽之心",
+            "description": "在战宠面板领养 1 只宠物",
+            "rewards": ["金币#5000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "economyCount", "params": { "counter": "宠物领养次数" }, "target": 1 }
+        },
+        {
+            "id": 700605,
+            "category": "经济#5",
+            "title": "招兵买马",
+            "description": "雇佣 1 名佣兵",
+            "rewards": ["金币#5000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "economyCount", "params": { "counter": "佣兵雇佣次数" }, "target": 1 }
+        }
+    ]
+}

@@ -3453,6 +3453,8 @@ namespace CF7Launcher.Guardian
                 case "navigateFinish":
                 case "treeState":
                 case "replayDialogue":
+                case "achievementState":
+                case "achievementClaim":
                 case "navigate":
                 case "refresh":
                 case "open_stage_select":

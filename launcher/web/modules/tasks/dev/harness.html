@@ -80,6 +80,7 @@
     <script src="modules/panels.js"></script>
     <script src="modules/tooltip.js"></script>
     <script src="modules/icons.js"></script>
+    <script src="modules/tasks/achievement-tab.js"></script>
     <script src="modules/tasks/task-panel.js"></script>
 
     <script>
@@ -183,6 +184,26 @@
         }
         window.__TASK_CATALOG = buildCatalog();
 
+        // ── 成就 tab mock 静态目录（镜像 build 派生 achievement-catalog.json：hidden 条目已脱敏，
+        //    title/description="???"、rewards=[]、objective 无 params——明文仅经 hiddenReveals 回传）──
+        function achDef(id, cat, seq, title, desc, hidden, rewards, type, target) {
+            return { id: id, category: [cat, seq], title: title, description: desc, hidden: !!hidden,
+                rewards: rewards || [], claimMode: 'remote',
+                objective: hidden ? { type: type, target: target } : { type: type, params: {}, target: target } };
+        }
+        window.__ACHIEVEMENT_CATALOG = {
+            version: 1, achievementCount: 6,
+            achievements: {
+                '700101': achDef(700101, '基建', 1, '破土动工', '建成你的第一处基建设施', false, [rw('金币', 5000)], 'infraBuiltCount', 1),
+                '700201': achDef(700201, '击杀', 1, '百人斩', '成就启用后累计击杀 100 名敌人', false, [rw('金币', 10000)], 'killTotal', 100),
+                '700202': achDef(700202, '击杀', 2, '十人斩', '成就启用后累计击杀 10 名敌人', false, [rw('金币', 2000)], 'killTotal', 10),
+                '700204': achDef(700204, '击杀', 4, '???', '???', true, [], 'killTotal', 5000),
+                '700301': achDef(700301, '任务', 1, '初来乍到', '完成你的第一个主线任务', false, [rw('金币', 1000)], 'taskFinished', 1),
+                '700502': achDef(700502, '物品', 2, '???', '???', true, [], 'itemOwned', 1)
+            },
+            categories: { '基建': [700101], '击杀': [700201, 700202, 700204], '任务': [700301], '物品': [700502] }
+        };
+
         var host = window.TaskHost = {
             _tasks: [],
             _empty: false,
@@ -197,6 +218,13 @@
             // satisfied 覆盖表：模拟 AS2 taskCompleteCheck 的判定结果随游戏状态变化（如补齐提交物品）。
             // Web 端只消费此布尔，不自行从 stageReq/itemReqs 推断完成——本表用于验证该契约。
             _satisfiedOverride: {},
+            // 成就 mock 状态（镜像 AS2 AchievementService）：unlocked/claimed/progress/hiddenReveals
+            _achUnlocked: [],
+            _achClaimed: [],
+            _achProgress: {},
+            _achReveals: [],
+            _achNotReady: false,
+            _achInventoryFullFor: null,
             reset: function() {
                 this._empty = document.getElementById('empty').checked;
                 this._tasks = this._empty ? [] : makeTasks();
@@ -204,6 +232,33 @@
                     var ov = this._satisfiedOverride[this._tasks[i].taskId];
                     if (ov !== undefined) this._tasks[i].satisfied = ov;
                 }
+                // 成就基线：700101 可领取 / 700301 已领取 / 700201 进行中 37/100 /
+                // 700202 cur(99)>target(10)=UI 封顶专项 / 700204 hidden 未解锁 / 700502 hidden 已解锁(走 reveals)
+                this._achUnlocked = ['700101', '700502'];
+                this._achClaimed = ['700301'];
+                this._achProgress = { '700101': 1, '700201': 37, '700202': 99 };
+                this._achReveals = [{ id: 700502, title: '锋芒内敛', description: '持有名刀「镜之虎彻」', rewards: [{ name: 'K点', count: 200 }] }];
+                this._achNotReady = false;
+                this._achInventoryFullFor = null;
+            },
+            achRevealFor: function(aid) {
+                for (var i = 0; i < this._achReveals.length; i++) {
+                    if (String(this._achReveals[i].id) === String(aid)) return this._achReveals[i];
+                }
+                return null;
+            },
+            // 完整状态叠加（state 与 claim 回包共用——镜像 AS2 buildStateOverlay 单一口径）
+            achOverlay: function(extra) {
+                var unl = this._achUnlocked.slice();
+                for (var i = 0; i < this._achClaimed.length; i++) {
+                    if (unl.indexOf(this._achClaimed[i]) < 0) unl.push(this._achClaimed[i]);  // claimed ⊆ unlocked 不变量
+                }
+                extra.unlocked = unl;
+                extra.claimed = this._achClaimed.slice();
+                extra.progress = clone(this._achProgress);
+                extra.hiddenReveals = clone(this._achReveals);
+                extra.dataReady = true;
+                return extra;
             },
             setSatisfied: function(taskId, val) {
                 this._satisfiedOverride[taskId] = val;
@@ -298,6 +353,29 @@
                         ] });
                         break;
                     }
+                    // 成就：状态叠加（只读）+ 领取（门控链镜像 AS2 handleClaim）
+                    case 'achievementState':
+                        if (self._achNotReady) { resp({ success: false, error: 'not_ready', dataReady: true }); break; }
+                        resp(self.achOverlay({ success: true }));
+                        break;
+                    case 'achievementClaim': {
+                        if (self._achNotReady) { resp({ success: false, error: 'not_ready' }); break; }
+                        var aid = String(m.achievementId);
+                        var adef = window.__ACHIEVEMENT_CATALOG.achievements[aid];
+                        if (!adef) { resp(self.achOverlay({ success: false, error: 'achievement_not_found' })); break; }
+                        if (self._achClaimed.indexOf(aid) >= 0) { resp(self.achOverlay({ success: false, error: 'already_claimed' })); break; }
+                        var aunl = self._achUnlocked.indexOf(aid) >= 0;
+                        if (!aunl) { resp(self.achOverlay({ success: false, error: 'not_unlocked' })); break; }
+                        if (self._achInventoryFullFor != null && aid === String(self._achInventoryFullFor)) {
+                            // 背包满：不置 claimed（保持 unlocked 可重试，镜像 AS2 acquire false 分支）
+                            resp({ success: false, error: 'inventory_full' }); break;
+                        }
+                        self._achClaimed.push(aid);
+                        var arv = adef.hidden ? self.achRevealFor(aid) : null;
+                        var arws = adef.hidden ? (arv ? arv.rewards : []) : adef.rewards;
+                        resp(self.achOverlay({ success: true, rewards: clone(arws) }));
+                        break;
+                    }
                     case 'close': break;
                     default: resp({ success: false, error: 'unknown cmd ' + m.cmd });
                 }
@@ -364,6 +442,10 @@
                     var firstHex = document.querySelector('#tlv-chart-canvas .tlv-hex[data-task-id="101"]') || document.querySelector('#tlv-chart-canvas .tlv-hex');
                     if (firstHex) firstHex.click();   // 选中展示明细 + 高亮
                 }
+            }
+            if (tab === 'ach') {
+                var at = document.querySelector('.task-tab[data-tab="ach"]'); if (at) at.click();
+                await waitFor(function() { return document.querySelector('#ach-list .ach-row'); }, 4000).catch(function(){});
             }
             var det = q('detail'); if (det != null) { var btn = document.querySelector('.task-icon[data-index="' + det + '"]'); if (btn) btn.click(); }
             if (q('hover')) {
@@ -950,6 +1032,149 @@
                 });
                 var getOk = ok && ok.success === true && ok.lines && ok.lines.length > 0;
                 return lockedOk && getOk;
+            });
+
+            // ── 成就 tab（A 轮 2026-06-10）ach-ui1~13 ──
+            function achState() { return window.TaskAchievementTab._state(); }
+            async function enterAch() {
+                clickTab('ach');
+                await waitFor(function() { var s = achState(); return s.stateLoaded || s.stateError; }, 4000);
+                await waitFor(function() { var s = achState(); return s.rowCount > 0 || s.stateError; }, 2000).catch(function() {});
+            }
+
+            await check('ach-ui1', '成就 tab：切入渲染分类分节列表（6 条目 4 分类，achview 可见）', async function() {
+                await reopenFresh();
+                await enterAch();
+                var visible = getComputedStyle(document.getElementById('task-panel-achview')).display !== 'none';
+                return visible && achState().rowCount === 6 &&
+                    document.querySelectorAll('#ach-list .ach-section').length === 4;
+            });
+
+            await check('ach-ui2', '成就目录就绪且含 version/achievementCount', function() {
+                var cat = window.__ACHIEVEMENT_CATALOG;
+                return achState().catalogState === 'ready' && cat.version === 1 && cat.achievementCount === 6;
+            });
+
+            await check('ach-ui3', '四态徽章齐全：locked/inProgress/unlocked/claimed 各至少一条', function() {
+                return !!document.querySelector('.ach-row.state-locked') &&
+                       !!document.querySelector('.ach-row.state-progress') &&
+                       !!document.querySelector('.ach-row.state-unlocked') &&
+                       !!document.querySelector('.ach-row.state-claimed');
+            });
+
+            await check('ach-ui4', '进度封顶：cur(99)>target(10) 显 10/10 + 100%，不出现 NaN/null', function() {
+                var row = document.querySelector('.ach-row[data-ach-id="700202"]');
+                var fill = row.querySelector('.ach-progress-fill');
+                var txt = row.querySelector('.ach-progress-text').textContent;
+                return txt === '10/10' && fill.style.width === '100%' &&
+                    row.innerHTML.indexOf('NaN') < 0 && row.innerHTML.indexOf('null') < 0;
+            });
+
+            await check('ach-ui5', 'hidden 双层：未解锁显"???"无进度条；已解锁经 hiddenReveals 显明文+奖励；catalog 源头脱敏', function() {
+                var lockedRow = document.querySelector('.ach-row[data-ach-id="700204"]');
+                var lockedOk = lockedRow.textContent.indexOf('???') >= 0 && !lockedRow.querySelector('.ach-progress');
+                var revealRow = document.querySelector('.ach-row[data-ach-id="700502"]');
+                var revealOk = revealRow.textContent.indexOf('锋芒内敛') >= 0 &&
+                    revealRow.textContent.indexOf('???') < 0 &&
+                    !!revealRow.querySelector('.task-item[data-item-name="K点"]');
+                var catClean = window.__ACHIEVEMENT_CATALOG.achievements['700502'].title === '???' &&
+                    (window.__ACHIEVEMENT_CATALOG.achievements['700502'].rewards || []).length === 0;
+                return lockedOk && revealOk && catClean;
+            });
+
+            await check('ach-ui6', 'claim 成功：行变 claimed（按钮消失+灰勾）+ 面板内奖励 toast', async function() {
+                var btn = document.querySelector('.ach-row[data-ach-id="700101"] .ach-claim-btn');
+                btn.click();
+                await waitFor(function() {
+                    var row = document.querySelector('.ach-row[data-ach-id="700101"]');
+                    return row && row.classList.contains('state-claimed');
+                }, 3000);
+                var row = document.querySelector('.ach-row[data-ach-id="700101"]');
+                var toastEl = document.querySelector('.ach-toast');
+                return !row.querySelector('.ach-claim-btn') && !!row.querySelector('.ach-claimed-mark') &&
+                    toastEl && toastEl.textContent.indexOf('金币') >= 0;
+            });
+
+            await check('ach-ui7', 'inventory_full：领取失败保持 unlocked 可重试，清障后重试成功', async function() {
+                await reopenFresh();
+                host._achInventoryFullFor = 700101;
+                await enterAch();
+                document.querySelector('.ach-row[data-ach-id="700101"] .ach-claim-btn').click();
+                await waitFor(function() { return !window.TaskPanel._isBusy(); }, 3000);
+                var stillClaimable = !!document.querySelector('.ach-row[data-ach-id="700101"] .ach-claim-btn');
+                host._achInventoryFullFor = null;
+                document.querySelector('.ach-row[data-ach-id="700101"] .ach-claim-btn').click();
+                await waitFor(function() {
+                    var row = document.querySelector('.ach-row[data-ach-id="700101"]');
+                    return row && row.classList.contains('state-claimed');
+                }, 3000);
+                return stillClaimable;
+            });
+
+            await check('ach-ui8', 'already_claimed 幂等：绕过 UI 直发已领取条目→回包幂等错误码，UI 仍 claimed 不抖', async function() {
+                var resp = await new Promise(function(resolve) {
+                    window.TaskPanel._debugSend('achievementClaim', { achievementId: 700301 }, resolve);
+                });
+                var row = document.querySelector('.ach-row[data-ach-id="700301"]');
+                return resp.success === false && resp.error === 'already_claimed' &&
+                    row.classList.contains('state-claimed');
+            });
+
+            await check('ach-ui9', '重开面板无残留：动态状态重置重拉（catalog 缓存保留不重 fetch）', async function() {
+                await reopenFresh();
+                var cleared = !achState().stateLoaded && achState().rowCount === 0;
+                await enterAch();
+                return cleared && achState().stateLoaded && achState().rowCount === 6 &&
+                    achState().catalogState === 'ready';
+            });
+
+            await check('ach-ui10', '_busy 锁：claim 在途拦 切tab + 二次点击，回包后解锁且只领取一次', async function() {
+                await reopenFresh();
+                host._respDelay = 400;
+                await enterAch();
+                var btn = document.querySelector('.ach-row[data-ach-id="700101"] .ach-claim-btn');
+                btn.click();
+                var busyDuring = window.TaskPanel._isBusy();
+                clickTab('mine');   // 在途切 tab 应被拦截
+                var stillAch = window.TaskPanel.getState().tab === 'ach';
+                btn.click();        // 二次点击应被拦截
+                await waitFor(function() { return !window.TaskPanel._isBusy(); }, 3000);
+                host._respDelay = 50;
+                var row = document.querySelector('.ach-row[data-ach-id="700101"]');
+                return busyDuring && stillAch && row.classList.contains('state-claimed');
+            });
+
+            await check('ach-ui11', '回包分流：achievementState 与任务 snapshot 并发互不串扰（callId 各回各家）', async function() {
+                await reopenFresh();
+                var both = await Promise.all([
+                    new Promise(function(resolve) { window.TaskPanel._debugSend('achievementState', null, resolve); }),
+                    new Promise(function(resolve) { window.TaskPanel._debugSend('snapshot', null, resolve); })
+                ]);
+                return both[0].unlocked !== undefined && both[0].tasks === undefined &&
+                       both[1].tasks !== undefined && both[1].unlocked === undefined;
+            });
+
+            await check('ach-ui12', 'catalog 加载失败：降级文案「成就数据未加载」', async function() {
+                await reopenFresh();
+                window.__ACH_FORCE_CATALOG_ERROR = true;
+                clickTab('ach');
+                await waitFor(function() { return document.querySelector('#ach-list .ach-error'); }, 3000);
+                var txt = document.getElementById('ach-list').textContent;
+                window.__ACH_FORCE_CATALOG_ERROR = false;
+                return txt.indexOf('成就数据未加载') >= 0;
+            });
+
+            await check('ach-ui13', 'not_ready：降级文案「存档尚未就绪」+ _busy 解除，就绪后重进恢复', async function() {
+                await reopenFresh();
+                host._achNotReady = true;
+                await enterAch();
+                var degraded = document.getElementById('ach-list').textContent.indexOf('存档尚未就绪') >= 0 &&
+                    !window.TaskPanel._isBusy();
+                host._achNotReady = false;
+                clickTab('mine');
+                clickTab('ach');
+                await waitFor(function() { return achState().rowCount === 6; }, 3000);
+                return degraded;
             });
 
             var passed = results.filter(function(r) { return r.pass; }).length;

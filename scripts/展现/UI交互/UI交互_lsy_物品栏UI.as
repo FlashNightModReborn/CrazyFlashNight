@@ -142,6 +142,11 @@ _root.物品UI函数.购买物品 = function(){
 		return false;
 	}
 	_root.金钱 -= this.总价;
+	// 成就记账（埋点 #3，NPC 金币购买成功分支；守卫为纯防御——同属 asLoader 发布物恒真）
+	if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+		org.flashNight.arki.achievement.AchievementMetrics.record("购买物品次数", 1);
+		org.flashNight.arki.achievement.AchievementMetrics.record("购买花费金币", this.总价);
+	}
 	_root.soundEffectManager.playSound("收银机.mp3");
 	_root.最上层发布文字提示(this.displayname + " X " + this.数量 + "已放入物品栏");
 	this.gotoAndStop("空");
@@ -217,6 +222,11 @@ _root.物品UI函数.出售物品 = function(){
 		this.sellCollection.remove(this.sellIndex);
 	}
 	_root.金钱 += this.总价;
+	// 成就记账（埋点 #4，单件出售成功分支；批量出售走 批量出售样品栏=埋点 #5，两路互斥不双计）
+	if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+		org.flashNight.arki.achievement.AchievementMetrics.record("出售次数", 1);
+		org.flashNight.arki.achievement.AchievementMetrics.record("出售所得金币", this.总价);
+	}
 	_root.soundEffectManager.playSound("收银机.mp3");
 	this.gotoAndStop("空");
 	this.showtext.text = "出售成功，获得 $" + this.总价;
@@ -1101,6 +1111,10 @@ _root.物品UI函数.计算强化装备等级 = function(目标等级){
 _root.物品UI函数.执行强化装备 = function(){
 	if(_root.singleSubmit("强化石", this.强化石需要个数)){
 		this.当前物品.value.level = this.目标强化等级;
+		// 成就记账（埋点 #6，强化成功分支）
+		if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+			org.flashNight.arki.achievement.AchievementMetrics.record("装备强化次数", 1);
+		}
 		_root.最上层发布文字提示(this.强化物品图标.itemIcon.itemData.displayname + " 成功强化到 +" + this.目标强化等级);
 		this.当前物品图标.refreshValue();
 		this.强化物品图标.itemIcon.refreshValue();
@@ -1462,6 +1476,10 @@ _root.物品UI函数.执行进阶 = function(matName:String){
 		if(ItemUtil.singleSubmit(matName, 1)){
 			var tierName = EquipmentUtil.tierMaterialToNameDict[matName];
 			item.value.tier = tierName;
+			// 成就记账（埋点 #7，进阶成功分支）
+			if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+				org.flashNight.arki.achievement.AchievementMetrics.record("装备进阶次数", 1);
+			}
 
 			// 重置物品名称
 			this.名字文本.htmlText = "<B>" + (tierName ? "[" + tierName + "]" : "" ) + this.当前物品显示名字;
@@ -1528,7 +1546,11 @@ _root.物品UI函数.执行安装配件 = function(matName:String){
 		if(!(mods instanceof Array)) mods = item.value.mods = [];
 		if(ItemUtil.singleSubmit(matName, 1)){
 			mods.push(matName);
-			
+			// 成就记账（埋点 #8，配件安装成功分支；卸下不计）
+			if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+				org.flashNight.arki.achievement.AchievementMetrics.record("配件安装次数", 1);
+			}
+
 			// 刷新可安装的配件
 			this.配件材料列表 = EquipmentUtil.getAvailableModMaterials(item);
 
@@ -1871,6 +1893,12 @@ _root.物品UI函数.出售单格 = function(collection, index, 数量:Number):O
 
 	// 增加金钱
 	_root.金钱 += priceResult.总价;
+
+	// 成就记账（埋点 #5，批量出售唯一收口=每格一次，口径=格数；单件出售走 出售物品=埋点 #4，两路互斥不双计）
+	if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+		org.flashNight.arki.achievement.AchievementMetrics.record("出售次数", 1);
+		org.flashNight.arki.achievement.AchievementMetrics.record("出售所得金币", priceResult.总价);
+	}
 
 	result.success = true;
 	result.金额 = priceResult.总价;

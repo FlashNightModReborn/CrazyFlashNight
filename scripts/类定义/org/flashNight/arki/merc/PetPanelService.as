@@ -337,6 +337,12 @@ class org.flashNight.arki.merc.PetPanelService {
         }
 
         _root.宠物信息[emptySlot] = newPet;
+        // 成就记账（埋点 #9，领养成功无条件计数；口径=web 面板领养，关卡内 NPC 雇宠帧脚本不计。
+        // 不复用上方 宠物购买次数——那是 IncreasePrice>0 才记的涨价口径，两口径隔离）
+        if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+            org.flashNight.arki.achievement.AchievementMetrics.record("宠物领养次数", 1);
+            org.flashNight.arki.achievement.AchievementMetrics.record("宠物领养花费金币", price);
+        }
         // Plan A audit: handleBuy 写 金钱/虚拟币/宠物信息/购买次数，必须标脏
         _root.存档系统.dirtyMark = true;
 
@@ -518,6 +524,12 @@ class org.flashNight.arki.merc.PetPanelService {
         var execFn:Function = scheme.执行;
         if (typeof execFn == "function") {
             execFn.call(ctx);
+        }
+
+        // 成就记账（埋点 #10，仅非反复型方案——开关型(影子刺客发色/常驻淬毒)可反复切换，计数会被刷；
+        // 金额不顺带：影子刺客二次免费会失真）
+        if (!isSchemeRepeatable(schemeName, scheme) && org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+            org.flashNight.arki.achievement.AchievementMetrics.record("宠物进阶次数", 1);
         }
 
         // 进阶 执行 写入 金钱 / 宠物属性（均存档字段），标脏
@@ -822,6 +834,10 @@ class org.flashNight.arki.merc.PetPanelService {
             newXpNeeded = Number(_root.战宠UI函数.计算战宠升级所需经验(identifier, newLevel));
         }
         attrs.宠物升级所需经验 = newXpNeeded;
+        // 成就记账（埋点 #11，灵石培养升级成功分支）
+        if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+            org.flashNight.arki.achievement.AchievementMetrics.record("宠物培养次数", 1);
+        }
         // 等级(petInfo[1]) / 宠物升级所需经验 均存档字段，标脏（singleSubmit 已扣灵石，但等级写入需独立保证落盘）
         _root.存档系统.dirtyMark = true;
 

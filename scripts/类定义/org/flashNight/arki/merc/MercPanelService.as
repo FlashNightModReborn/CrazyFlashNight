@@ -333,6 +333,12 @@ class org.flashNight.arki.merc.MercPanelService {
             _root.虚拟币 -= kPrice;
         }
 
+        // 成就记账（埋点 #12，雇佣成功分支=扣款后）
+        if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+            org.flashNight.arki.achievement.AchievementMetrics.record("佣兵雇佣次数", 1);
+            org.flashNight.arki.achievement.AchievementMetrics.record("佣兵雇佣花费金币", goldPrice);
+        }
+
         // 从可雇佣兵池移除
         pool.splice(poolIndex, 1);
 

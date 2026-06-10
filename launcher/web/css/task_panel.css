@@ -1382,6 +1382,198 @@
 .task-confirm-yes:hover { background: rgba(200, 50, 50, 0.45); border-color: rgba(255, 120, 120, 0.7); }
 
 /* ═══════════════════════════════════════════════════════════════
+   成就 tab（A 轮 2026-06-10，achievement-tab.js）
+   配色纪律同写操作区：功能按钮黑白灰；焦点橙仅用于可领取高亮与进度。
+   ═══════════════════════════════════════════════════════════════ */
+/* tab 徽记：菱形勋章（描边方形旋转 45°，区别于 log 的记录簿方形） */
+.task-tab-emblem.ach {
+    width: 17px;
+    height: 17px;
+    background: transparent;
+    -webkit-mask: none;
+    mask: none;
+    border: 2px solid var(--task-accent);
+    border-radius: 2px;
+    box-sizing: border-box;
+    transform: rotate(45deg) scale(0.86);
+}
+.task-tab-emblem.ach::after {
+    content: '';
+    position: absolute;
+    left: 4px; right: 4px; top: 4px; bottom: 4px;
+    background: var(--task-accent);
+    opacity: 0.85;
+}
+
+/* tab=ach 时切换主体可见性（同 log 口径） */
+.task-panel-achview { display: none; }
+.task-panel-container[data-tab="ach"] .task-panel-toolbar,
+.task-panel-container[data-tab="ach"] .task-panel-body { display: none; }
+.task-panel-container[data-tab="ach"] .task-panel-achview {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    padding: 8px 18px 14px;
+    gap: 6px;
+}
+
+/* 顶部总览条 */
+.ach-summary {
+    flex-shrink: 0;
+    display: flex;
+    gap: 20px;
+    align-items: baseline;
+    font-size: 13px;
+    color: var(--task-text-dim);
+    padding: 2px 4px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.ach-summary strong { color: var(--task-text); font-size: 15px; }
+.ach-sum-claimable strong { color: var(--task-accent); }
+
+.ach-list { flex: 1; min-height: 0; overflow-y: auto; padding: 8px 4px 12px; }
+.ach-hint { color: var(--task-text-dim); font-size: 14px; padding: 28px 8px; text-align: center; }
+.ach-error { color: #c97a6a; }
+
+.ach-section { margin-bottom: 16px; }
+.ach-section-title {
+    font-family: var(--task-serif);
+    font-size: 15px;
+    color: var(--task-text);
+    letter-spacing: 2px;
+    padding: 3px 2px 5px 9px;
+    border-left: 3px solid var(--task-accent);
+    margin-bottom: 7px;
+}
+
+/* 条目行（四态：state-locked / state-progress / state-unlocked / state-claimed） */
+.ach-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.03);
+    animation: ach-row-in 0.25s ease both;
+}
+@keyframes ach-row-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.ach-row.state-unlocked { border-color: rgba(239, 148, 66, 0.45); background: rgba(239, 148, 66, 0.06); }
+.ach-row.state-claimed { opacity: 0.62; }
+
+.ach-medal {
+    flex-shrink: 0;
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+    font-size: 14px;
+    color: var(--task-text-dim);
+}
+.ach-row.state-unlocked .ach-medal { color: var(--task-accent); border-color: var(--task-accent); text-shadow: 0 0 6px rgba(239, 148, 66, 0.6); }
+.ach-row.state-claimed .ach-medal { color: #8fae8f; border-color: rgba(143, 174, 143, 0.5); }
+.ach-row.state-locked .ach-medal { opacity: 0.5; }
+
+.ach-main { flex: 1; min-width: 0; }
+.ach-title {
+    font-family: var(--task-serif);
+    font-size: 15px;
+    color: var(--task-text);
+    display: flex; align-items: baseline; gap: 8px;
+}
+.ach-hidden-tag {
+    font-size: 10px;
+    color: var(--task-text-dim);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 2px;
+    padding: 0 4px;
+    letter-spacing: 1px;
+}
+.ach-desc { font-size: 12px; color: var(--task-text-dim); margin-top: 2px; line-height: 1.5; }
+.ach-row.state-locked .ach-title,
+.ach-row.state-locked .ach-desc { opacity: 0.6; }
+
+/* 进度条：cur/target 封顶 100%（hidden 未解锁条目无 progress → 不渲染，防可探测） */
+.ach-progress {
+    position: relative;
+    margin-top: 6px;
+    height: 12px;
+    max-width: 340px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 2px;
+    overflow: hidden;
+}
+.ach-progress-fill {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    background: linear-gradient(to right, rgba(239, 148, 66, 0.35), rgba(239, 148, 66, 0.75));
+    transition: width 0.3s ease;
+}
+.ach-row.state-claimed .ach-progress-fill { background: rgba(143, 174, 143, 0.5); }
+.ach-progress-text {
+    position: absolute; right: 6px; top: 0; bottom: 0;
+    display: flex; align-items: center;
+    font-size: 10px; color: var(--task-text);
+    text-shadow: 0 1px 1px #000;
+}
+
+.ach-rewards { flex-shrink: 0; display: flex; gap: 6px; align-items: center; }
+
+/* 领取按钮：填充浅灰主操作（同 task-act-deliver 语言）+ 可领取红点 */
+.ach-action { flex-shrink: 0; min-width: 92px; display: flex; justify-content: flex-end; }
+.ach-claim-btn {
+    position: relative;
+    min-width: 84px; height: 32px; padding: 0 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: var(--task-serif);
+    font-size: 15px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    background: linear-gradient(to bottom, #e8e8e8, #b9b9b9);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    color: #1c1c1c;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+    transition: transform 0.12s, box-shadow 0.18s;
+}
+.ach-claim-btn:hover { box-shadow: 0 0 8px rgba(239, 148, 66, 0.45); }
+.ach-claim-btn:active { transform: translateY(1px); }
+.ach-claim-btn.task-btn-pending { pointer-events: none; opacity: 0.6; }
+.ach-claim-dot {
+    position: absolute; top: -4px; right: -4px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #d8533a;
+    box-shadow: 0 0 5px rgba(216, 83, 58, 0.8);
+}
+.ach-claimed-mark { font-size: 12px; color: #8fae8f; letter-spacing: 1px; }
+
+/* 写操作锁（claim 在途；与任务面板 task-busy 同口径） */
+.task-panel-container.task-busy .task-panel-achview { pointer-events: none; }
+
+/* 面板内奖励 toast（不走 AS2 弹窗——overlay 遮挡 Flash 弹窗） */
+.ach-toast-anchor {
+    position: absolute; left: 0; right: 0; bottom: 18px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    pointer-events: none;
+}
+.ach-toast {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(20, 16, 12, 0.95);
+    border: 1px solid rgba(239, 148, 66, 0.55);
+    border-radius: 3px;
+    color: #f1d9b8;
+    font-size: 13px;
+    padding: 8px 16px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+    animation: ach-toast-in 0.25s ease, ach-toast-out 0.4s ease 2.7s both;
+}
+@keyframes ach-toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes ach-toast-out { to { opacity: 0; transform: translateY(-6px); } }
+
+/* ═══════════════════════════════════════════════════════════════
    降级：尊重 prefers-reduced-motion（低功耗机型保护）
    ═══════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {

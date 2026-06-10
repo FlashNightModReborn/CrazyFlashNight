@@ -81,6 +81,7 @@
     var _leftEl, _rightEl, _closeBtn, _chipsEl, _countEl, _sortEl, _viewBtn, _containerEl;
     var _treeEl, _logDetailEl;   // 事件日志/任务树（WS6）DOM refs
     var _logviewEl, _chartViewportEl, _chartCanvasEl, _chartCtrlsEl;   // 图表视图 DOM refs
+    var _achViewEl;              // 成就 tab 容器（实现在 achievement-tab.js，lazy deps 先加载）
 
     // ═══════════════════════════════════════════════════════════
     // Panel 注册
@@ -109,6 +110,9 @@
                             '</button>' +
                             '<button class="task-tab" data-tab="log" type="button">' +
                                 '<span class="task-tab-emblem log"></span><span class="task-tab-label">事件日志</span>' +
+                            '</button>' +
+                            '<button class="task-tab" data-tab="ach" type="button">' +
+                                '<span class="task-tab-emblem ach"></span><span class="task-tab-label">成就</span>' +
                             '</button>' +
                         '</div>' +
                         '<button class="task-panel-close" title="关闭" type="button"><span class="task-close-x">✕</span></button>' +
@@ -160,6 +164,7 @@
                         '</div>' +
                         '<div class="tlv-detail" id="tlv-detail"></div>' +
                     '</div>' +
+                    '<div class="task-panel-achview" id="task-panel-achview"></div>' +
                     '<div class="task-confirm-overlay" id="task-confirm-overlay" hidden>' +
                         '<div class="task-confirm-dialog">' +
                             '<div class="task-confirm-title">放弃任务</div>' +
@@ -187,6 +192,24 @@
         _chartViewportEl = _el.querySelector('#tlv-chart-viewport');
         _chartCanvasEl = _el.querySelector('#tlv-chart-canvas');
         _chartCtrlsEl = _el.querySelector('#tlv-chart-ctrls');
+        _achViewEl = _el.querySelector('#task-panel-achview');
+
+        // 成就 tab 装配（achievement-tab.js 经 lazy deps 先加载；缺失时优雅降级为空 tab）。
+        // claim 在途复用本面板 beginOp/endOp 的 _busy 锁——切 tab/关面板/二次点击三处口径统一。
+        if (typeof TaskAchievementTab !== 'undefined') {
+            TaskAchievementTab.install({
+                paneEl: _achViewEl,
+                send: sendPanelMsg,
+                toast: toast,
+                escHtml: escHtml,
+                escAttr: escAttr,
+                itemIconHtml: itemIconHtml,
+                beginOp: beginOp,
+                endOp: endOp,
+                isBusy: function() { return _busy; },
+                session: function() { return _session; }
+            });
+        }
 
         bindStaticEvents();
         container.appendChild(_el);
@@ -266,6 +289,7 @@
         _busy = false;
         _iconsReady = false;
         _treeState = null;          // 进度叠加每次开面板重取（存档态可变）；_catalog 不重置（不可变）
+        if (typeof TaskAchievementTab !== 'undefined') TaskAchievementTab.reset(); // 成就动态状态同口径重置（catalog 缓存保留）
         _logSelectedId = null;
         _logView = 'list';
         _chartZoom = 1;
@@ -339,6 +363,7 @@
         if (_containerEl) _containerEl.setAttribute('data-tab', tab);
         setActiveTabButton(tab);
         if (tab === 'log') enterLogTab();
+        if (tab === 'ach' && typeof TaskAchievementTab !== 'undefined') TaskAchievementTab.enter();
     }
     function setActiveTabButton(tab) {
         var tabs = _el.querySelectorAll('.task-tab');

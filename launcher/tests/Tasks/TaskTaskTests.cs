@@ -361,6 +361,140 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void HandleWebRequest_AchievementState_SendsAchievementStateAction()
+        {
+            string sent = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("achievementState", JObject.Parse("{\"callId\":\"web-as\"}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("cmd", (string)msg["task"]);
+            Assert.Equal("achievementState", (string)msg["action"]);
+            Assert.Null(msg["panel"]);
+            Assert.Null(msg["cmd"]);
+        }
+
+        [Fact]
+        public void HandleWebRequest_AchievementClaim_SendsActionAndAchievementId()
+        {
+            string sent = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("achievementClaim", JObject.Parse("{\"callId\":\"web-ac\",\"achievementId\":700101}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("cmd", (string)msg["task"]);
+            Assert.Equal("achievementClaim", (string)msg["action"]);
+            // 写操作透传 achievementId（稳定主键，绝不传 index）
+            Assert.Equal(700101, (int)msg["achievementId"]);
+            Assert.Null(msg["index"]);
+            Assert.Null(msg["panel"]);
+        }
+
+        [Fact]
+        public void HandleFlashResponse_AchievementState_PreservesStateOverlay()
+        {
+            // 成就状态叠加：AS2 回 unlocked/claimed/progress/hiddenReveals/dataReady；C# 改写信封后须原样保留。
+            string sent = null;
+            string posted = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            task.HandleWebRequest("achievementState", JObject.Parse("{\"callId\":\"web-as2\"}"));
+            int flashCallId = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+            task.HandleFlashResponse(
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":" + flashCallId + ",\"success\":true,\"unlocked\":[\"700101\",\"700204\"],\"claimed\":[\"700101\"],\"progress\":{\"700201\":3},\"hiddenReveals\":[{\"id\":700204,\"title\":\"一骑当千\",\"description\":\"成就启用后累计击杀 5000 名敌人\",\"rewards\":[{\"name\":\"K点\",\"count\":300}]}],\"dataReady\":true}"),
+                delegate(string json) { });
+
+            var resp = JObject.Parse(posted);
+            Assert.Equal("panel_resp", (string)resp["type"]);
+            Assert.Equal("tasks", (string)resp["panel"]);
+            Assert.Equal("achievementState", (string)resp["cmd"]);
+            Assert.True((bool)resp["success"]);
+            Assert.Equal(2, ((JArray)resp["unlocked"]).Count);
+            Assert.Single((JArray)resp["claimed"]);
+            Assert.Equal(3, (int)resp["progress"]["700201"]);
+            Assert.Equal("一骑当千", (string)((JArray)resp["hiddenReveals"])[0]["title"]);
+            Assert.True((bool)resp["dataReady"]);
+        }
+
+        [Fact]
+        public void HandleFlashResponse_AchievementClaim_PreservesRewardsAndOverlay()
+        {
+            // 领取成功回包：rewards（web 内渲染奖励 toast，不走 AS2 弹窗）+ 完整状态叠加（原子重渲）。
+            string sent = null;
+            string posted = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            task.HandleWebRequest("achievementClaim", JObject.Parse("{\"callId\":\"web-ac2\",\"achievementId\":700101}"));
+            int flashCallId = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+            task.HandleFlashResponse(
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":" + flashCallId + ",\"success\":true,\"rewards\":[{\"name\":\"金币\",\"count\":5000}],\"unlocked\":[\"700101\"],\"claimed\":[\"700101\"],\"progress\":{\"700101\":1},\"hiddenReveals\":[],\"dataReady\":true}"),
+                delegate(string json) { });
+
+            var resp = JObject.Parse(posted);
+            Assert.Equal("achievementClaim", (string)resp["cmd"]);
+            Assert.True((bool)resp["success"]);
+            Assert.Equal("金币", (string)((JArray)resp["rewards"])[0]["name"]);
+            Assert.Equal(5000, (int)((JArray)resp["rewards"])[0]["count"]);
+            Assert.Single((JArray)resp["claimed"]);
+        }
+
+        [Fact]
+        public void HandleWebRequest_AchievementClaim_WebSuppliedActionTask_CannotOverrideTrustedAction()
+        {
+            // 安全反向用例（PanelBridge 保留键守卫在新 cmd 上的继承）：夹带 action/task 不得覆盖可信 action。
+            string sent = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("achievementClaim",
+                JObject.Parse("{\"callId\":\"web-evil2\",\"action\":\"taskDelete\",\"task\":\"evil\",\"achievementId\":700101}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("cmd", (string)msg["task"]);
+            Assert.Equal("achievementClaim", (string)msg["action"]);
+            Assert.Equal(700101, (int)msg["achievementId"]);
+        }
+
+        [Fact]
+        public void HandleWebRequest_BareAchievementOrClaimCmd_Unsupported()
+        {
+            // 命名契约反例：成就命令必须全称（achievementState/achievementClaim）。
+            // 裸名 "claim" 在 WebOverlayForm 会在 panel 判别前被无条件路由 ShopTask，
+            // 即便到达 TaskTask 也必须拒绝，防止有人误把缩写接进映射表。
+            string posted = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            task.HandleWebRequest("claim", JObject.Parse("{\"callId\":\"web-bare\"}"));
+            Assert.Equal("unsupported_cmd", (string)JObject.Parse(posted)["error"]);
+
+            posted = null;
+            task.HandleWebRequest("achievement", JObject.Parse("{\"callId\":\"web-bare2\"}"));
+            Assert.Equal("unsupported_cmd", (string)JObject.Parse(posted)["error"]);
+        }
+
+        [Fact]
+        public void HandleWebRequest_AchievementState_Disconnected_ReturnsPanelError()
+        {
+            string posted = null;
+            var task = new TaskTask(delegate { return false; }, delegate(string payload) { });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            task.HandleWebRequest("achievementState", JObject.Parse("{\"callId\":\"web-as3\"}"));
+
+            var resp = JObject.Parse(posted);
+            Assert.Equal("panel_resp", (string)resp["type"]);
+            Assert.Equal("achievementState", (string)resp["cmd"]);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("disconnected", (string)resp["error"]);
+        }
+
+        [Fact]
         public void ClearPending_DropsStaleFlashResponse()
         {
             string sent = null;

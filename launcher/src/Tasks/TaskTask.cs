@@ -119,6 +119,18 @@ namespace CF7Launcher.Tasks
                     // lines:[{speaker,sub,text}]，web 内联渲染、不关面板（轻量文本态）
                     action = "taskReplayDialogue";
                     break;
+                case "achievementState":
+                    // 成就状态叠加（只读）：AS2 回 unlocked/claimed/progress/hiddenReveals/dataReady；
+                    // 静态成就目录由 build 派生 achievement-catalog.json 供 web 直读（hidden 已脱敏），不经此桥
+                    action = "achievementState";
+                    break;
+                case "achievementClaim":
+                    // 成就领取（写操作）：转发 achievementId（稳定主键，非 index）给 AS2 achievementClaim；
+                    // AS2 门控链（服务端解锁判定/claimed 幂等/acquire 背包满回 inventory_full 保持可重试），
+                    // 回包并入完整状态叠加供 web 原子重渲。
+                    // ⚠ 全称命名：裸名 "claim" 会在 WebOverlayForm panel 判别前被无条件路由 ShopTask
+                    action = "achievementClaim";
+                    break;
                 default:
                     RespondError(webCallId, cmd, "unsupported_cmd");
                     return;

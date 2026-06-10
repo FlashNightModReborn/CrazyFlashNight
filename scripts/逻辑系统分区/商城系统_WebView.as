@@ -146,6 +146,11 @@ _root.gameCommands["shopCheckout"] = function(params) {
         // 子层只写 shop/cart 子层 SOL，与下方 mydata 顶层完整 flushNow 之间存在崩溃窗口
         // （子层已写但 mydata 没扣 K 点）。改为只走一次 _root.强制存盘() 写完整 mydata，
         // 保证原子：要么全存，要么全回滚到上次成功的 saveAll 状态。
+        // 成就记账（埋点 #1，须在 强制存盘 之前——计数随本次结账同一笔 flush 原子落盘）
+        if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+            org.flashNight.arki.achievement.AchievementMetrics.record("商城结账次数", 1);
+            org.flashNight.arki.achievement.AchievementMetrics.record("商城花费K点", total);
+        }
         _root.强制存盘();
     } else {
         resp.success = false;
@@ -181,6 +186,10 @@ _root.gameCommands["shopClaim"] = function(params) {
             // 删除原本的 _root.存盘商城已购买物品() 子层 flush：
             // 子层 SOL 写入与下方 mydata 顶层 flushNow 之间存在崩溃窗口
             // （子层已移除已购但 mydata 没存背包）。改为只走一次 _root.强制存盘() 写完整 mydata。
+            // 成就记账（埋点 #2，acquire true 后；领取=入包计数，与 #1 结账两段式口径不双计「购买」）
+            if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+                org.flashNight.arki.achievement.AchievementMetrics.record("商城领取次数", 1);
+            }
             _root.强制存盘();
         } else {
             resp.success = false; resp.error = "acquire_failed";
