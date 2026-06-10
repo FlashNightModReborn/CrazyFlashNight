@@ -147,6 +147,22 @@
                         <Quantity>2</Quantity>
                         <Level>35</Level>
                     </Enemy>
+                    <Enemy>
+                        <Type>兵种416</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                        <IsHostile>true</IsHostile>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种28</Type>
+                        <Interval>1100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <IsHostile>true</IsHostile>
+                    </Enemy>
                 </EnemyGroup>
             </SubWave>
         </Wave>
@@ -172,7 +188,7 @@
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR</Char>
-                <Text>看起来……就是这里了。</Text>
+                <Text>看起来……就是前面了。</Text>
             </Dialogue>
         </Event>
         <Wave>
