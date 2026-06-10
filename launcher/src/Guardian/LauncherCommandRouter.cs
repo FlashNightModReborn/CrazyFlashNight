@@ -168,6 +168,7 @@ namespace CF7Launcher.Guardian
                     break;
                 case "BAKE": SendGameCommand("bakeIcons"); break;
                 case "BAKE10": SendGameCommand("bakeIcons", "\"maxCount\":10"); break;
+                case "BAKE_SKILL": SendGameCommand("bakeSkillIcons"); break;
                 case "LOCKBOX_TEST":
                     {
                         uint familySeed = unchecked((uint)Environment.TickCount);

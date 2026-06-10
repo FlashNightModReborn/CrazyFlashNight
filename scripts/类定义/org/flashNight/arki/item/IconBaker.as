@@ -127,6 +127,67 @@ class org.flashNight.arki.item.IconBaker {
         };
     }
 
+    /**
+     * 启动技能图标烘焙流程。
+     * 从 _root.技能表 收集所有技能名称，按 "图标-" + 技能名 的约定生成 linkage，
+     * 光栅化为 PNG 后通过 icon_bake 协议传输到 C# 端。
+     * 技能图标只有单帧（无掉落物 f2）。
+     */
+    public static function startSkillIcons():Void {
+        if (_phase != IDLE) {
+            _root.发布消息("图标烘焙已在进行中");
+            return;
+        }
+
+        var seen:Object = {};
+        _iconNames = [];
+        _nameToHash = {};
+        var skillList:Array = _root.技能表;
+
+        if (skillList == undefined || skillList.length == 0) {
+            _root.发布消息("技能表尚未加载，无法烘焙技能图标");
+            return;
+        }
+
+        var i:Number = 0;
+        while (i < skillList.length) {
+            var skillObj:Object = skillList[i];
+            var skillName:String = skillObj.Name;
+            if (skillName != undefined && skillName != "" && !seen[skillName]) {
+                seen[skillName] = true;
+                _iconNames.push(skillName);
+                _nameToHash[skillName] = crc32(skillName);
+            }
+            i++;
+        }
+
+        _isFullBake = false;
+        _total = _iconNames.length;
+        _index = 0;
+        _failedIcons = [];
+        _created = 0;
+        _updated = 0;
+        _unchanged = 0;
+
+        if (_total == 0) {
+            _root.发布消息("没有找到技能图标数据");
+            return;
+        }
+
+        _savedQuality = _root._quality;
+        BitmapExporter.resetCalibration();
+
+        _root.发布消息("开始烘焙 " + _total + " 个技能图标...");
+
+        _container = _root.createEmptyMovieClip("_iconBaker", 9999999);
+        _container._visible = false;
+        _phase = SETUP;
+
+        _container.onEnterFrame = function():Void {
+            org.flashNight.arki.item.IconBaker.tick();
+        };
+    }
+
     private static function tick():Void {
         switch (_phase) {
             case SETUP:    doSetup();   break;

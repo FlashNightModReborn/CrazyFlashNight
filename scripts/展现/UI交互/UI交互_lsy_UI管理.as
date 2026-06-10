@@ -223,6 +223,9 @@ _root.gameCommands["bakeIcons"] = function(params) {
     var maxCount:Number = Number(params.maxCount);
     org.flashNight.arki.item.IconBaker.start(isNaN(maxCount) ? 0 : maxCount);
 };
+_root.gameCommands["bakeSkillIcons"] = function(params) {
+    org.flashNight.arki.item.IconBaker.startSkillIcons();
+};
 
 // ============================================================
 // 游戏状态通知 → WebView 按钮可见性

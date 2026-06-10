@@ -153,6 +153,7 @@ namespace CF7Launcher.Guardian.Hud
             new NotchButtonDef("角斗场测试", "ARENA_TEST", Keys.None, false, false),
             new NotchButtonDef("烘焙图标", "BAKE", Keys.None, false, false),
             new NotchButtonDef("烘焙测试(10)", "BAKE10", Keys.None, false, false),
+            new NotchButtonDef("烘焙技能图标", "BAKE_SKILL", Keys.None, false, false),
             new NotchButtonDef("新任务界面", "NEW_TASK_UI", Keys.None, true, false)
         };
 
