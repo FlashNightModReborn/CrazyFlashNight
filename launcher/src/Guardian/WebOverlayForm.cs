@@ -3479,6 +3479,7 @@ namespace CF7Launcher.Guardian
                 case "hire_list":
                 case "hire":
                 case "dismiss":
+                case "revive":
                     {
                         string panel = parsed.Value<string>("panel") ?? "";
                         if (panel == "stage-select")

@@ -464,6 +464,7 @@ $requiredWebPaths = @(
     "css\panels.css",
     "css\task_panel.css",
     "css\pet_panel.css",
+    "css\merc_panel.css",
     "css\team_panel.css",
     "lib\marked.min.js",
     "help\controls.md",

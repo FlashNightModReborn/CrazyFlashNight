@@ -25,7 +25,10 @@ html,body { margin:0; background:#080807; color:#ddd; font-family:"Microsoft YaH
 <div id="qa">running</div>
 <script>
 var PanelTooltip = { hide:function(){}, showAtMouse:function(){}, followMouse:function(){}, isVisible:function(){return false;}, updateContent:function(){}, buildItemRichHtml:function(){return '';} };
-var Icons = { load:function(cb){ if(cb)cb(); }, resolve:function(){ return null; } };
+// 命中烘焙图标的真技能名映射（指向仓库内真实产物，<base> 已指到 web 根）；
+// 其余名字 resolve null → 占位回退路径
+var ICON_BAKED = { '小跳':'icons/0cabdeba_1.png', '闪现':'icons/03b529e4_1.png' };
+var Icons = { load:function(cb){ if(cb)cb(); }, resolve:function(name){ return ICON_BAKED[name] || null; } };
 var Notch = { reportRect:function(){} };
 var listeners = {};
 var Bridge = {
@@ -43,7 +46,8 @@ function pet(id,name,slot){ return {petId:id,name:name,slotIndex:slot,level:10,d
 function equips(){ var out=[]; for(var i=6;i<=16;i++) out.push({slot:i,name:'装备'+i,displayname:'装备'+i,level:1}); return out; }
 function skills(n){
   var out=[]; var types=['格斗','刀技','躲避','增益','火器'];
-  for(var i=0;i<n;i++) out.push({name:'技能'+(i+1),level:(i%10)+1,type:types[i%5],trait:'测试用途',cooldown:5,cost:20,unlock:1});
+  var baked=['小跳','闪现']; // 前两个用真名命中烘焙图标，其余假名覆盖占位回退
+  for(var i=0;i<n;i++) out.push({name:i<baked.length?baked[i]:'技能'+(i+1),level:(i%10)+1,type:types[i%5],trait:'测试用途',cooldown:5,cost:20,unlock:1});
   return out;
 }
 function personality(){
@@ -162,6 +166,14 @@ var MockHost = {
       document.querySelectorAll('#merc-grid .merc-card-selected').length===1 &&
       document.querySelectorAll('#merc-selbar .merc-skill-cell').length===13,
       document.querySelectorAll('#merc-selbar .merc-skill-cell').length+' skill cells');
+    // ── 技能烘焙图标接入：真名命中实图（decode 校验真加载），假名走占位回退 ──
+    var bakedImgs=document.querySelectorAll('#merc-selbar .merc-skill-cell-baked .merc-skill-icon');
+    try { await Promise.all(Array.from(bakedImgs).map(function(im){ return im.decode ? im.decode() : Promise.resolve(); })); } catch(e) {}
+    assert('team-ui16b','技能烘焙图标接入（真名实图+假名回退）',
+      bakedImgs.length===2 &&
+      Array.from(bakedImgs).every(function(im){ return im.naturalWidth>0; }) &&
+      document.querySelectorAll('#merc-selbar .merc-skill-cell:not(.merc-skill-cell-baked) .merc-skill-glyph').length===11,
+      bakedImgs.length+' baked / '+document.querySelectorAll('#merc-selbar .merc-skill-cell').length+' total');
     var cards=document.querySelectorAll('#merc-grid .merc-card');
     cards[1].click(); await wait(10);
     assert('team-ui17','切换选中 → 技能缺失兜底',

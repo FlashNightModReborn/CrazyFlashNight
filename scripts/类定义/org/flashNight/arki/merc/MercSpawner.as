@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.merc.*;
 import org.flashNight.aven.Coordinator.EventCoordinator;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
+import org.flashNight.naki.Sort.InsertionSort;
 
 /*
  * 场景佣兵刷新链（Phase C：单步赤字驱动）。
@@ -40,6 +41,12 @@ class org.flashNight.arki.merc.MercSpawner {
             _root.隐藏的可雇佣兵.push(_root.同伴数据[idx]);
         }
         if (pushedBack) {
+            // 雇佣面板（MercPanelService.handleHireList）的 minLevel 跳页与列表展示
+            // 依赖池可见子序列按等级升序（MercLibrary.loadFromList 的排序不变量）。
+            // 直接 push 会把解雇的低等级佣兵排到池尾（高等级之后），必须重排恢复。
+            // 池近乎有序 → InsertionSort O(n)；隐藏佣兵混入中段无碍（消费方按 meta.隐藏 过滤，
+            // 与位置无关）。雇佣页在 Web 端每次进入/翻页都重拉，索引位移与 handleHire splice 同口径。
+            InsertionSort.sortOn(_root.可雇佣兵, 0, Array.NUMERIC);
             invalidateIndexCache();
         }
         _root.同伴数--;

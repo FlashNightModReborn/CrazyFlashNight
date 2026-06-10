@@ -1068,12 +1068,27 @@ class org.flashNight.arki.merc.PetPanelService {
         };
     }
 
+    // 经逐一审计确认"纯数值"的进阶方案白名单：其 单位进阶执行 只读 this.宠物属性、
+    // 只写 this 上的数值字段，无任何 _root / 全局副作用，可安全在纯对象 sim 上重放。
+    // 常驻淬毒 被刻意排除——它的 单位进阶执行 是"进图扣费上毒"运行时逻辑：战斗地图上会
+    // 真实扣 _root.金钱（500/次，三点采样 = 每次快照每只宠最多误扣 1500）并 发布消息。
+    // 它也不影响 hp/攻击/防御/速度 展示，排除零损失。
+    // 新增方案默认不重放（成长条少算加成，纯展示损失），审计确认无副作用后再加入。
+    private static var PURE_ADVANCE_SCHEMES:Object = {
+        基础训练: true, 强化药剂: true, 超级血清: true,
+        弹射弧光斩: true, 广域裂空斩: true, 导弹烈炎炮: true,
+        冲腿龙息: true, 晶能者: true, 复仇者: true, 抱头嘲讽: true,
+        涅槃重生: true, 影子刺客: true, 追踪飞弹: true, 驯鹰者: true,
+        美洲狮: true, 追猎: true, 战马血清: true, 钙化: true,
+        终结者步枪: true, 净化治疗: true, 溢出治疗: true,
+        能量子弹: true, 剧毒子弹: true
+    };
+
     // 在指定等级模拟出战实体的最终数值：
     // 1) 基线 = 敌人函数.根据等级初始数值 同构插值（hp/攻击 × _root.难度等级，防御/速度不随）；
     // 2) 进阶 = 敌人函数.宠物属性初始化 同构地重放 已达成方案的 单位进阶执行——
-    //    这些函数只读 this.宠物属性、只写 this 上的数值字段（hp满血值/防御力/空手攻击力/
-    //    韧性系数/称号…），无 MC 依赖，故可在纯对象 sim 上 Function-as-property 调用；
-    //    写入只落在 sim 上，绝不回写真实 宠物属性。
+    //    仅限 PURE_ADVANCE_SCHEMES 白名单内方案（见上），写入只落在 sim 上，
+    //    绝不回写真实 宠物属性。
     private static function statsAtLevel(ep:Object, level:Number, petAttrs:Object):Object {
         var diff:Number = Number(_root.难度等级) || 1;
         var sim:Object = {
@@ -1088,6 +1103,7 @@ class org.flashNight.arki.merc.PetPanelService {
         };
         if (petAttrs != undefined && _root.战宠进阶函数 != undefined) {
             for (var key:String in petAttrs) {
+                if (PURE_ADVANCE_SCHEMES[key] != true) continue; // 只重放审计过的纯数值方案
                 var schemeDef:Object = _root.战宠进阶函数[key];
                 if (schemeDef != undefined && typeof schemeDef.单位进阶执行 == "function") {
                     sim.单位进阶执行 = schemeDef.单位进阶执行;

@@ -165,6 +165,8 @@
         sendPanelMsg('hire_list', req, function(data) {
             _busy = false;
             if (!data.success) {
+                // 翻页请求失败要回退触底时的页码自增，否则下次触底再 ++ 会静默跳过一页
+                if (!reset && _hirePage > 1) _hirePage--;
                 setHireSentinel('idle');
                 showToast('加载失败: ' + (data.error || '未知错误'));
                 return;
@@ -350,10 +352,18 @@
         if (_busy) return;
         _busy = true;
         setPending(btn, true);
-        sendPanelMsg('hire', { poolIndex: poolIndex }, function(data) {
+        // 带 mercId 让 AS2 做身份校验：列表刷新前的快速连点会携带已位移的
+        // stale poolIndex（hire splice / 解雇回池重排），只靠索引会雇错人
+        var picked = findHireByPoolIdx(poolIndex);
+        sendPanelMsg('hire', { poolIndex: poolIndex, mercId: picked ? picked.id : '' }, function(data) {
             _busy = false;
             setPending(btn, false);
             if (!data.success) {
+                if (data.error === 'pool_changed') {
+                    showToast('佣兵列表已变化，已为你刷新');
+                    resetHireList();
+                    return;
+                }
                 showToast('雇佣失败: ' + (data.error || '未知错误'));
                 return;
             }
@@ -578,13 +588,25 @@
         return cell;
     }
 
-    // 技能占位图标（素材未采集 → 类型首字占位，规格与装备图标一致 32px）
+    // 技能图标：manifest 以裸技能名为键（IconBaker 烘焙时剥掉「图标-」linkage 前缀，
+    // 与物品图标共用命名空间）。命中 → 烘焙图盖在占位字上（实线样式）；
+    // 未命中 / 图片加载失败 → 回退类型首字占位（虚线样式），规格与装备图标一致 32px。
     function buildSkillCell(sk) {
         var cell = document.createElement('div');
         cell.className = 'merc-skill-cell';
+        var iconUrl = (typeof Icons !== 'undefined') ? Icons.resolve(sk.name) : null;
         cell.innerHTML =
             '<span class="merc-skill-glyph">' + escHtml(String(sk.type || '技').charAt(0)) + '</span>' +
+            (iconUrl ? '<img class="merc-skill-icon" src="' + escAttr(iconUrl) + '" alt="">' : '') +
             '<span class="merc-skill-level">' + (sk.level || 1) + '</span>';
+        if (iconUrl) {
+            cell.classList.add('merc-skill-cell-baked');
+            var img = cell.querySelector('.merc-skill-icon');
+            img.addEventListener('error', function() {
+                img.parentNode.removeChild(img);
+                cell.classList.remove('merc-skill-cell-baked'); // 露出占位字 + 还原虚线样式
+            });
+        }
         cell.setAttribute('data-tip-skill', skillTipHtml(sk));
         cell.addEventListener('mouseenter', onSkillHover);
         cell.addEventListener('mouseleave', onSkillLeave);

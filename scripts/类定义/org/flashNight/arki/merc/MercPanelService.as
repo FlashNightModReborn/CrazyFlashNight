@@ -107,13 +107,17 @@ class org.flashNight.arki.merc.MercPanelService {
         var hidden:Array = _root.隐藏的可雇佣兵;
         if (hidden == undefined) hidden = [];
 
-        // 收集非隐藏佣兵
+        // 收集非隐藏佣兵；顺手实扫最高等级——不取"末位即最大"的捷径，
+        // 升序不变量可能被池的其他写方（XML 直写 / 历史版本解雇 push 池尾）破坏，
+        // 取末位会把 Lv.20+/40+/60+/80+ 定位钮错误禁用。
         var visible:Array = [];
+        var poolMaxLevel:Number = 0;
         for (var i:Number = 0; i < pool.length; i++) {
             var m:Array = pool[i];
             if (m == undefined || m[0] == undefined) continue;
             if (m[19] && m[19].隐藏) continue;
             visible.push(i); // 存的是 pool 中的 index
+            if (Number(m[0]) > poolMaxLevel) poolMaxLevel = Number(m[0]);
         }
 
         var totalPages:Number = Math.max(1, Math.ceil(visible.length / perPage));
@@ -175,8 +179,8 @@ class org.flashNight.arki.merc.MercPanelService {
                 page: page,
                 totalPages: totalPages,
                 totalCount: visible.length,
-                // 可见池最高等级（池升序 → 末位即最大），供 Web 端禁用超出范围的等级定位钮
-                maxLevel: visible.length > 0 ? Number(pool[visible[visible.length - 1]][0]) : 0
+                // 可见池最高等级（构建 visible 时实扫），供 Web 端禁用超出范围的等级定位钮
+                maxLevel: poolMaxLevel
             }
         });
     }
@@ -277,6 +281,14 @@ class org.flashNight.arki.merc.MercPanelService {
         }
 
         var merc:Array = pool[poolIndex];
+
+        // 身份校验：池索引是易失的（hire splice / 解雇回池重排都会位移），Web 端列表
+        // 刷新前的快速连点会带着 stale poolIndex 进来——只查存在性会按错位索引扣钱
+        // 雇到别人。带 mercId 时必须匹配，不匹配让 Web 重拉列表。（不带时兼容放行）
+        if (params.mercId != undefined && String(params.mercId) != "" && String(merc[2]) != String(params.mercId)) {
+            sendResponse({ task: "merc_response", callId: callId, success: false, error: "pool_changed" });
+            return;
+        }
 
         // 检查佣兵槽位上限
         var maxSlots:Number = Number(_root.佣兵个数限制) || 0;

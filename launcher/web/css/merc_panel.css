@@ -506,11 +506,25 @@
 }
 .merc-equip-fallback { font-size: 13px; color: #888; font-weight: 600; }
 
-/* 技能占位图标：素材未采集，以类型首字 + 虚线框占位（规格与装备图标一致） */
+/* 技能格：默认=未命中烘焙图标的占位态（类型首字 + 虚线框，规格与装备图标一致） */
 .merc-skill-cell {
     border-style: dashed;
     border-color: rgba(239,148,66,0.30);
     background: rgba(239,148,66,0.05);
+}
+/* 命中烘焙图标：还原与装备格一致的实线/暗底，虚线风格仅留给回退占位 */
+.merc-skill-cell-baked {
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.4);
+}
+.merc-skill-icon {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
 }
 .merc-skill-glyph {
     font-size: 13px;
