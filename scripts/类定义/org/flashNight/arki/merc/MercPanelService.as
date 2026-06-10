@@ -9,6 +9,7 @@
  *     mercDeploy        — 切换佣兵出战/休息状态
  *     mercDismiss       — 解雇佣兵（回写池 + 清理场景MC）
  *     mercHire          — 雇佣佣兵（扣钱 + 从池移入同伴数据）
+ *     mercRevive        — 消耗复活币复活阵亡佣兵（出战信息 -1 → 0）
  *     mercEquipTooltip  — 装备 tooltip 富文本（委托 ArenaPanelService）
  *     mercPanelOpen     — 面板打开（刷新 Flash 佣兵UI）
  *     mercPanelClose    — 面板关闭（重排佣兵图标）
@@ -44,6 +45,9 @@ class org.flashNight.arki.merc.MercPanelService {
         _root.gameCommands["mercHire"] = function(params) {
             org.flashNight.arki.merc.MercPanelService.handleHire(params);
         };
+        _root.gameCommands["mercRevive"] = function(params) {
+            org.flashNight.arki.merc.MercPanelService.handleRevive(params);
+        };
         _root.gameCommands["mercEquipTooltip"] = function(params) {
             org.flashNight.arki.merc.MercPanelService.handleEquipTooltip(params);
         };
@@ -69,7 +73,9 @@ class org.flashNight.arki.merc.MercPanelService {
             var merc:Array = _root.同伴数据[i];
             if (merc == undefined || merc[0] == undefined) continue;
             var summary:Object = buildMercSummary(merc, i);
+            // 出战信息三态：1=出战 0=休息 -1=阵亡（死亡检测写 -1，见 玩家模板迁移 处理佣兵死亡）
             summary.deployed = (_root.佣兵是否出战信息[i] == 1);
+            summary.dead = (_root.佣兵是否出战信息[i] == -1);
             hiredMercs.push(summary);
         }
 
@@ -81,6 +87,7 @@ class org.flashNight.arki.merc.MercPanelService {
                 hiredMercs: hiredMercs,
                 gold:   Number(_root.金钱) || 0,
                 kpoint: Number(_root.虚拟币) || 0,
+                reviveCoins: Number(ItemUtil.getTotal("复活币")) || 0,
                 maxSlots: maxSlots,
                 isCombatMap: (_root.关卡类型 != undefined && _root.关卡类型 != "")
             }
@@ -110,6 +117,20 @@ class org.flashNight.arki.merc.MercPanelService {
         }
 
         var totalPages:Number = Math.max(1, Math.ceil(visible.length / perPage));
+
+        // 等级快速定位：可雇佣兵池在 MercLibrary.loadFromList 已按等级升序排序
+        // （InsertionSort.sortOn 列 0），minLevel 仅需定位首个达标项所在页。
+        // 命中后覆盖请求页码；无人达标 → 落到最后一页。页内精确定位由 Web 端
+        // scrollIntoView 完成。
+        var minLevel:Number = Number(params.minLevel);
+        if (!isNaN(minLevel) && minLevel > 0) {
+            var jumpIdx:Number = visible.length;
+            for (var v:Number = 0; v < visible.length; v++) {
+                if (Number(pool[visible[v]][0]) >= minLevel) { jumpIdx = v; break; }
+            }
+            page = Math.floor(jumpIdx / perPage) + 1;
+        }
+
         if (page < 1) page = 1;
         if (page > totalPages) page = totalPages;
 
@@ -153,7 +174,9 @@ class org.flashNight.arki.merc.MercPanelService {
                 hireable: hireable,
                 page: page,
                 totalPages: totalPages,
-                totalCount: visible.length
+                totalCount: visible.length,
+                // 可见池最高等级（池升序 → 末位即最大），供 Web 端禁用超出范围的等级定位钮
+                maxLevel: visible.length > 0 ? Number(pool[visible[visible.length - 1]][0]) : 0
             }
         });
     }
@@ -178,6 +201,11 @@ class org.flashNight.arki.merc.MercPanelService {
 
         if (_root.佣兵是否出战信息 == undefined) _root.佣兵是否出战信息 = [];
         var currentState:Number = Number(_root.佣兵是否出战信息[mercIndex]) || 0;
+        // 阵亡（-1）的佣兵不能出战/休息切换，必须先消耗复活币复活（mercRevive）
+        if (currentState == -1) {
+            sendResponse({ task: "merc_response", callId: callId, success: false, error: "merc_dead" });
+            return;
+        }
         var newState:Number = (currentState == 1) ? 0 : 1;
         _root.佣兵是否出战信息[mercIndex] = newState;
         // Plan A audit: handleDeploy 写 佣兵是否出战信息（save-relevant），必须标脏
@@ -326,6 +354,57 @@ class org.flashNight.arki.merc.MercPanelService {
     }
 
     // ═══════════════════════════════════════════════════════════
+    // handleRevive — 消耗 1 枚复活币复活阵亡佣兵
+    // 复活后回到休息位（0）而非直接出战：玩家自行决定何时再派出，
+    // 也避免在战斗图里把人直接拉进场。
+    // ═══════════════════════════════════════════════════════════
+    public static function handleRevive(params:Object):Void {
+        var callId = params.callId;
+        var mercIndex:Number = Number(params.mercIndex);
+
+        if (isNaN(mercIndex) || mercIndex < 0) {
+            sendResponse({ task: "merc_response", callId: callId, success: false, error: "invalid_index" });
+            return;
+        }
+
+        var merc:Array = _root.同伴数据[mercIndex];
+        if (merc == undefined || merc[0] == undefined) {
+            sendResponse({ task: "merc_response", callId: callId, success: false, error: "merc_not_found" });
+            return;
+        }
+
+        if (Number(_root.佣兵是否出战信息[mercIndex]) != -1) {
+            sendResponse({ task: "merc_response", callId: callId, success: false, error: "not_dead" });
+            return;
+        }
+
+        // 扣 1 枚复活币（材料栏权威扣减；不足时 singleSubmit 返回 false）
+        if (!ItemUtil.singleSubmit("复活币", 1)) {
+            sendResponse({
+                task: "merc_response",
+                callId: callId,
+                success: false,
+                error: "no_revive_coin",
+                reviveCoins: Number(ItemUtil.getTotal("复活币")) || 0
+            });
+            return;
+        }
+
+        _root.佣兵是否出战信息[mercIndex] = 0;
+        // 写 佣兵是否出战信息 + 扣材料均 save-relevant，必须标脏
+        _root.存档系统.dirtyMark = true;
+
+        sendResponse({
+            task: "merc_response",
+            callId: callId,
+            success: true,
+            mercIndex: mercIndex,
+            mercName: String(merc[1]),
+            reviveCoins: Number(ItemUtil.getTotal("复活币")) || 0
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════
     // handleEquipTooltip — 装备富文本 tooltip
     // 注意：不能委托 ArenaPanelService，因为后者发 arena_response 而非 merc_response
     // ═══════════════════════════════════════════════════════════
@@ -414,7 +493,11 @@ class org.flashNight.arki.merc.MercPanelService {
             });
         }
 
-        var gender:String = (merc[17] == 1 || merc[17] == "1") ? "男" : "女";
+        // 性别列实际是字符串："男"/"女"（MercLibrary.loadFromList 原样存入
+        // mercenaries.json 的 gender 字段；旧存档另有 "主角-男"/"主角-女" 遗留形态）。
+        // 旧实现按 1/"1" 判男 → 全员误判为女。数字形态仅作兜底保留。
+        var g:String = String(merc[17]);
+        var gender:String = (g == "男" || g == "主角-男" || g == "1" || merc[17] == 1) ? "男" : "女";
 
         var personality:Object = buildPersonality(mercName, mercLevel);
 

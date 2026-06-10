@@ -92,6 +92,9 @@ namespace CF7Launcher.Tasks
                 case "hire":
                     action = "mercHire";
                     break;
+                case "revive":
+                    action = "mercRevive";
+                    break;
                 case "equip_tooltip":
                     action = "mercEquipTooltip";
                     break;

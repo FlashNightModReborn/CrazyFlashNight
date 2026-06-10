@@ -953,6 +953,11 @@
 }
 
 .pet-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* 战斗属性成长条（起点 Lv.1 → 当前 → 满级，培养页「战斗属性」区块） */
+.pet-growth-bar { height: 8px; margin: 1px 0; }
+.pet-growth-bar .pet-bar-fill { background: linear-gradient(90deg, #9c5a1d, var(--pet-accent)); }
+.pet-growth-ends { display: flex; justify-content: space-between; gap: 8px; }
 .pet-stat {
     padding: 11px 14px;
     background: var(--pet-stone-soft);

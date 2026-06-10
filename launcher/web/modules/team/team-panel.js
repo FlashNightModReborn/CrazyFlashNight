@@ -1,14 +1,22 @@
 (function() {
     'use strict';
 
-    var DESIGN_W = 1024;
-    var DESIGN_H = 576;
+    // 战队壳层 = 薄协调器：不再渲染自己的顶栏/画布（避免子面板二次缩放损失空间），
+    // 而是把唯一一条 tab 条（.team-tabs）注入当前激活子视图列表页 header 的
+    // .team-tabs-slot 槽位（替换原「战宠管理/佣兵管理」标题位，徽标/资源条/关闭钮
+    // 由子面板自有 header 承载）。切换标签时 tab 条 DOM 整体迁移到目标子视图。
     var PET_TABS = { partner: true, pet: true, mechanical: true };
+    var TABS = [
+        { id: 'mercenary', label: '佣兵' },
+        { id: 'partner',   label: '伙伴' },
+        { id: 'pet',       label: '战宠' },
+        { id: 'mechanical', label: '机械' }
+    ];
     var _el;
+    var _tabsEl = null;
     var _activeTab = null;
     var _activeController = null;
     var _lastTab = 'partner';
-    var _resizeObserver = null;
     var _views = {};
 
     Panels.register('team', {
@@ -20,22 +28,10 @@
 
     function createDOM(container) {
         _el = document.createElement('div');
-        _el.className = 'team-scale-root';
+        _el.className = 'team-host';
         _el.innerHTML =
-            '<div class="team-scale-shell"><section class="team-panel">' +
-                '<header class="team-header">' +
-                    '<div class="team-title"><span class="team-title-mark"></span><span>战队</span></div>' +
-                    '<nav class="team-tabs" aria-label="战队分类">' +
-                        tabHtml('mercenary', '佣兵') + tabHtml('partner', '伙伴') +
-                        tabHtml('pet', '战宠') + tabHtml('mechanical', '机械') +
-                    '</nav>' +
-                    '<button class="team-close" type="button" aria-label="关闭">×</button>' +
-                '</header>' +
-                '<div class="team-content">' +
-                    '<div class="team-view" data-view="mercenary"></div>' +
-                    '<div class="team-view" data-view="partner"></div>' +
-                '</div>' +
-            '</section></div>';
+            '<div class="team-view" data-view="mercenary"></div>' +
+            '<div class="team-view" data-view="partner"></div>';
 
         _views.mercenary = _el.querySelector('[data-view="mercenary"]');
         _views.pet = _el.querySelector('[data-view="partner"]');
@@ -44,22 +40,25 @@
         _views.mercenary.appendChild(mercEl);
         _views.pet.appendChild(petEl);
 
-        _el.querySelector('.team-close').addEventListener('click', requestClose);
-        var tabs = _el.querySelectorAll('.team-tab');
-        for (var i = 0; i < tabs.length; i++) {
-            tabs[i].addEventListener('click', function() { switchTab(this.dataset.tab); });
+        _tabsEl = document.createElement('nav');
+        _tabsEl.className = 'team-tabs';
+        _tabsEl.setAttribute('aria-label', '战队分类');
+        var html = '';
+        for (var i = 0; i < TABS.length; i++) {
+            html += '<button class="team-tab" type="button" data-tab="' + TABS[i].id + '">' + TABS[i].label + '</button>';
         }
+        _tabsEl.innerHTML = html;
+        var tabs = _tabsEl.querySelectorAll('.team-tab');
+        for (var t = 0; t < tabs.length; t++) {
+            tabs[t].addEventListener('click', function() { switchTab(this.dataset.tab); });
+        }
+
         container.appendChild(_el);
         return _el;
     }
 
-    function tabHtml(id, label) {
-        return '<button class="team-tab" type="button" data-tab="' + id + '">' + label + '</button>';
-    }
-
     function onOpen(el, initData) {
         ensureCss();
-        bindScale();
         window.TeamPanelHost = { requestClose: requestClose };
         switchTab(initData && initData.initialTab ? initData.initialTab : _lastTab, true);
     }
@@ -82,11 +81,18 @@
         _activeController = controllerFor(tab);
         _views.mercenary.hidden = tab !== 'mercenary';
         _views.pet.hidden = tab === 'mercenary';
-        var tabs = _el.querySelectorAll('.team-tab');
+        mountTabs(tab === 'mercenary' ? _views.mercenary : _views.pet);
+        var tabs = _tabsEl.querySelectorAll('.team-tab');
         for (var i = 0; i < tabs.length; i++) tabs[i].classList.toggle('team-tab-active', tabs[i].dataset.tab === tab);
 
         if (PET_TABS[tab]) _activeController.onOpen(_views.pet.firstChild, { rosterType: tab, embedded: true });
         else _activeController.onOpen(_views.mercenary.firstChild, { embedded: true });
+    }
+
+    // tab 条迁移到目标子视图列表页 header 的槽位
+    function mountTabs(view) {
+        var slot = view.querySelector('.team-tabs-slot');
+        if (slot && _tabsEl.parentNode !== slot) slot.appendChild(_tabsEl);
     }
 
     function requestClose() {
@@ -100,7 +106,6 @@
         _activeController = null;
         _activeTab = null;
         window.TeamPanelHost = null;
-        unbindScale();
     }
 
     function ensureCss() {
@@ -116,29 +121,5 @@
         link.rel = 'stylesheet';
         link.href = href;
         document.head.appendChild(link);
-    }
-
-    function updateScale() {
-        if (!_el) return;
-        var w = _el.clientWidth || 0;
-        var h = _el.clientHeight || 0;
-        var scale = Math.min(w / DESIGN_W, h / DESIGN_H);
-        _el.style.setProperty('--team-scale', (isFinite(scale) && scale > 0 ? scale : 1).toFixed(4));
-    }
-
-    function bindScale() {
-        unbindScale();
-        window.addEventListener('resize', updateScale);
-        if (typeof ResizeObserver !== 'undefined') {
-            _resizeObserver = new ResizeObserver(updateScale);
-            _resizeObserver.observe(_el);
-        }
-        updateScale();
-    }
-
-    function unbindScale() {
-        window.removeEventListener('resize', updateScale);
-        if (_resizeObserver) _resizeObserver.disconnect();
-        _resizeObserver = null;
     }
 })();

@@ -26,6 +26,7 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("deploy", "mercDeploy")]
         [InlineData("dismiss", "mercDismiss")]
         [InlineData("hire", "mercHire")]
+        [InlineData("revive", "mercRevive")]
         [InlineData("equip_tooltip", "mercEquipTooltip")]
         public void HandleWebRequest_KnownCommand_ForwardsTrustedAction(string cmd, string action)
         {

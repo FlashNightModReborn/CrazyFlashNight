@@ -68,10 +68,13 @@
             '<div class="pet-panel">' +
 
                 // ── 页面 1：列表 ──
+                // header 标题位让给战队 tab 条（.team-tabs-slot，由 team-panel 把唯一一条
+                // tab 条迁移进来）；徽标/资源条/关闭钮保留，战队壳层不再有独立顶栏。
                 '<div class="pet-page" id="pet-page-list">' +
                     '<div class="pet-page-header">' +
                         '<span class="pet-title-mark"></span>' +
                         '<h1 class="pet-page-title">战宠管理</h1>' +
+                        '<div class="team-tabs-slot"></div>' +
                         '<div class="pet-header-spacer"></div>' +
                         resourcesHtml() +
                         '<button class="pet-close-btn" type="button" data-tip="关闭" aria-label="关闭" data-audio-cue="cancel">✕</button>' +
@@ -142,6 +145,11 @@
                                     '<div class="pet-stat-sub" id="pet-stat-xp-sub"></div>' +
                                 '</div>' +
                             '</div>' +
+                        '</div>' +
+                        // 战斗属性成长（AS2 snapshot.combat：敌人属性表插值；旧 SWF 缺字段时整块隐藏）
+                        '<div class="pet-section" id="pet-combat-section" hidden>' +
+                            '<h3 class="pet-section-title">战斗属性</h3>' +
+                            '<div class="pet-stats-grid" id="pet-combat-grid"></div>' +
                         '</div>' +
                         '<div class="pet-section">' +
                             '<h3 class="pet-section-title">进阶方案</h3>' +
@@ -553,15 +561,14 @@
         sendPanelMsg('pet_lib', null, function(data) {
             if (data && data.success && data.petLib) {
                 _petLib = data.petLib;
-                if (_snapshot) {
-                    renderPetGrid(false);
-                    renderSelbar(false);
-                }
-                if (_currentPage === 'advance') renderAdvancePage();
+                // snapshot 先到、pet_lib 后到时由本回调收尾渲染：
+                // 必须走与 snapshot 路径相同的就绪序列（含默认选中），
+                // 否则首开命中此时序时选中栏空置、「培养」入口失效。
+                if (_snapshot) renderAfterDataReady(false);
             } else {
                 _petLib = [];
                 showToast('宠物分类目录不可用，未知项已归入战宠', 'warning');
-                if (_snapshot) renderPetGrid(false);
+                if (_snapshot) renderAfterDataReady(false);
             }
         });
     }
@@ -583,17 +590,22 @@
                 showSkeleton();
                 return;
             }
-            hideSkeleton();
-            // 默认选中：保留旧选中（若仍在），否则选首个
-            if (findPetBySlot(_selectedSlot) == null) {
-                _selectedSlot = _pets.length > 0 ? defaultSelectSlot() : -1;
-            }
-            updateResourceDisplay(false);
-            updateStatusBar();
-            renderPetGrid(wasFirst);
-            renderSelbar(wasFirst);
-            if (_currentPage === 'advance') renderAdvancePage(wasFirst);
+            renderAfterDataReady(wasFirst);
         });
+    }
+
+    // snapshot + petLib 双数据就绪后的统一渲染序列（snapshot 回调与迟到的 pet_lib 回调共用）
+    function renderAfterDataReady(animate) {
+        hideSkeleton();
+        // 默认选中：保留旧选中（若仍在），否则选首个
+        if (findPetBySlot(_selectedSlot) == null) {
+            _selectedSlot = _pets.length > 0 ? defaultSelectSlot() : -1;
+        }
+        updateResourceDisplay(false);
+        updateStatusBar();
+        renderPetGrid(animate);
+        renderSelbar(animate);
+        if (_currentPage === 'advance') renderAdvancePage(animate);
     }
 
     function requestAdoptList(catIdx, cb) {
@@ -1016,7 +1028,44 @@
         deleteBtn.disabled = false;
         deleteBtn.textContent = '删除';
 
+        renderCombatStats(pet, levelLimit);
         renderPromotions(pet);
+    }
+
+    // 战斗属性成长条（起点 Lv.1 → 当前 → 满级）：数据来自 AS2 snapshot.combat
+    // （敌人属性表[兵种] 插值 + 已达成进阶方案重放——与出战实体初始化管线同构）。
+    // 条形填充 = 当前在 [起点, 终点] 区间的进度，两端标注起点/满级数值。
+    function renderCombatStats(pet, levelLimit) {
+        var section = _el.querySelector('#pet-combat-section');
+        var combat = pet.combat;
+        if (!combat || !combat.hp || typeof combat.hp !== 'object') { section.hidden = true; return; }
+        section.hidden = false;
+        var maxLv = combat.maxLevel || levelLimit;
+        var startLv = combat.startLevel || 1;
+        var defs = [
+            { label: '生命', d: combat.hp },
+            { label: '攻击', d: combat.attack },
+            { label: '防御', d: combat.defense },
+            { label: '速度', d: combat.speed }
+        ];
+        var html = '';
+        for (var i = 0; i < defs.length; i++) {
+            var d = defs[i].d || {};
+            var span = (d.max || 0) - (d.start || 0);
+            var pctv = span > 0 ? Math.max(0, Math.min(100, ((d.cur || 0) - (d.start || 0)) / span * 100)) : 100;
+            html += '<div class="pet-stat">' +
+                '<div class="pet-stat-head"><span class="pet-stat-label">' + defs[i].label + '</span>' +
+                    '<span class="pet-stat-value">' + (d.cur != null ? Number(d.cur).toLocaleString() : '--') + '</span></div>' +
+                '<div class="pet-bar pet-growth-bar"><div class="pet-bar-fill" style="--w:' + Math.round(pctv) + '%"></div></div>' +
+                '<div class="pet-stat-sub pet-growth-ends">' +
+                    '<span>Lv.' + startLv + ' · ' + Number(d.start != null ? d.start : 0).toLocaleString() + '</span>' +
+                    '<span>满级 Lv.' + maxLv + ' · ' + Number(d.max != null ? d.max : 0).toLocaleString() + '</span>' +
+                '</div>' +
+            '</div>';
+        }
+        var grid = _el.querySelector('#pet-combat-grid');
+        grid.innerHTML = html +
+            '<div class="pet-stat-sub" style="grid-column:1/-1">已计入进阶方案加成；出战实体按当前难度与等级初始化，数值随难度档位变化。</div>';
     }
 
     function getPetLibDef(petId) {

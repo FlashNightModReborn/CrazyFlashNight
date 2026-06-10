@@ -128,6 +128,11 @@ class org.flashNight.arki.merc.PetPanelService {
             petEntry.xpNeeded = xpNeededFromAttr > 0 ? xpNeededFromAttr : calcXpForLevel(String(petDef.Identifier), info[1]);
             petEntry.maxStamina = 200;
 
+            // 战斗数值成长展示（敌人属性表插值 + 已达成进阶方案重放，三点采样：
+            // 起点 Lv.1 / 当前 / 满级）；属性缺失时不下发，JS 隐藏区块
+            var combat:Object = buildCombatStats(String(petDef.Identifier), Number(info[1]), attrs);
+            if (combat != undefined) petEntry.combat = combat;
+
             // 每方案权威完成/锁定状态（替代 JS 端按方案名查 次数 的错误推断；
             // 三件套共用 基础训练.次数 计数，布尔方案查自身标志）
             var statusMap:Object = {};
@@ -1034,6 +1039,68 @@ class org.flashNight.arki.merc.PetPanelService {
         }
         // 引擎不可用时的粗略回退估算
         return Math.floor((50 + ((400 - 50) / 59) * level) * level);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // buildCombatStats — 战斗数值成长展示（仅展示，非战斗权威）
+    // 三点采样（起点 Lv.1 / 当前等级 / 满级 _root.等级限制），每点 = 基线插值
+    // + 已达成进阶方案加成，供 JS 渲染「起点→当前→终点」成长条。
+    // 兵种缺属性表时返回 undefined，snapshot 不下发，JS 隐藏区块。
+    // ═══════════════════════════════════════════════════════════
+    private static function buildCombatStats(identifier:String, level:Number, petAttrs:Object):Object {
+        var ep:Object = _root.敌人属性表[identifier];
+        if (ep == undefined || _root.根据等级计算值 == undefined) return undefined;
+        if (isNaN(Number(ep.hp_min))) return undefined;
+
+        var maxLevel:Number = Number(_root.等级限制) || 100;
+        var startP:Object = statsAtLevel(ep, 1, petAttrs);
+        var curP:Object   = statsAtLevel(ep, level, petAttrs);
+        var maxP:Object   = statsAtLevel(ep, maxLevel, petAttrs);
+
+        return {
+            hp:      { start: startP.hp,      cur: curP.hp,      max: maxP.hp },
+            attack:  { start: startP.attack,  cur: curP.attack,  max: maxP.attack },
+            defense: { start: startP.defense, cur: curP.defense, max: maxP.defense },
+            speed:   { start: startP.speed,   cur: curP.speed,   max: maxP.speed },
+            startLevel: 1,
+            maxLevel: maxLevel,
+            difficulty: Number(_root.难度等级) || 1
+        };
+    }
+
+    // 在指定等级模拟出战实体的最终数值：
+    // 1) 基线 = 敌人函数.根据等级初始数值 同构插值（hp/攻击 × _root.难度等级，防御/速度不随）；
+    // 2) 进阶 = 敌人函数.宠物属性初始化 同构地重放 已达成方案的 单位进阶执行——
+    //    这些函数只读 this.宠物属性、只写 this 上的数值字段（hp满血值/防御力/空手攻击力/
+    //    韧性系数/称号…），无 MC 依赖，故可在纯对象 sim 上 Function-as-property 调用；
+    //    写入只落在 sim 上，绝不回写真实 宠物属性。
+    private static function statsAtLevel(ep:Object, level:Number, petAttrs:Object):Object {
+        var diff:Number = Number(_root.难度等级) || 1;
+        var sim:Object = {
+            hp满血值:   Math.floor(_root.根据等级计算值(ep.hp_min, ep.hp_max, level) * diff),
+            空手攻击力: Math.floor(_root.根据等级计算值(ep.空手攻击力_min, ep.空手攻击力_max, level) * diff),
+            防御力:     Number(_root.根据等级计算值(ep.基本防御力_min, ep.基本防御力_max, level)),
+            行走X速度:  Number(_root.根据等级计算值(ep.速度_min, ep.速度_max, level)) / 10,
+            韧性系数:   0,
+            hp:         0,
+            已有称号:   true,
+            宠物属性:   (petAttrs != undefined) ? petAttrs : {}
+        };
+        if (petAttrs != undefined && _root.战宠进阶函数 != undefined) {
+            for (var key:String in petAttrs) {
+                var schemeDef:Object = _root.战宠进阶函数[key];
+                if (schemeDef != undefined && typeof schemeDef.单位进阶执行 == "function") {
+                    sim.单位进阶执行 = schemeDef.单位进阶执行;
+                    sim.单位进阶执行();
+                }
+            }
+        }
+        return {
+            hp:      Math.floor(sim.hp满血值),
+            attack:  Math.floor(sim.空手攻击力),
+            defense: Math.floor(sim.防御力),
+            speed:   Math.round(sim.行走X速度 * 10)
+        };
     }
 
     // 解析 pets.xml 的 <Promotion><Item>方案名</Item></Promotion>。通用 XML 解析器

@@ -1,102 +1,53 @@
-.team-scale-root {
+/* ═══════════════════════════════════════════════════════════════
+   战队壳层 (team-panel) — 薄协调器样式
+
+   壳层不再渲染独立顶栏/画布（旧方案外套 58px header 会把子面板压进
+   1024×518，触发二次缩放与黑边）。tab 条（.team-tabs）由 team-panel.js
+   注入当前激活子视图列表页 header 的 .team-tabs-slot 槽位，替换原
+   「战宠管理 / 佣兵管理」标题位；A 兵团徽标、资源条、关闭钮由子面板
+   自有 header 承载。卡片等视觉样式归 pet_panel.css / merc_panel.css。
+   ═══════════════════════════════════════════════════════════════ */
+
+.team-host {
     position: absolute;
     inset: 0;
     overflow: hidden;
-    --team-scale: 1;
 }
-.team-scale-shell {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 1024px;
-    height: 576px;
-    transform: translate(-50%, -50%) scale(var(--team-scale));
-    transform-origin: center;
-}
-.team-panel {
-    width: 1024px;
-    height: 576px;
-    display: flex;
-    flex-direction: column;
-    color: #e8e1d4;
-    background: #141311;
-    border: 1px solid rgba(239, 148, 66, .48);
-    box-shadow: 0 0 40px rgba(0, 0, 0, .82), inset 0 0 70px rgba(0, 0, 0, .35);
-    overflow: hidden;
-}
-.team-header {
-    height: 58px;
-    flex: 0 0 58px;
-    display: flex;
-    align-items: center;
-    padding: 0 18px;
-    gap: 18px;
-    border-bottom: 1px solid rgba(239, 148, 66, .35);
-    background: linear-gradient(180deg, #242019, #171512);
-}
-.team-title {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    min-width: 100px;
-    color: #f4b46e;
-    font-size: 23px;
-    font-weight: 800;
-    letter-spacing: 5px;
-}
-.team-title-mark {
-    width: 5px;
-    height: 27px;
-    background: #ef9442;
-    box-shadow: 0 0 12px rgba(239, 148, 66, .7);
-}
-.team-tabs {
-    display: flex;
-    align-self: stretch;
-    gap: 4px;
-}
-.team-tab {
-    min-width: 96px;
-    padding: 0 18px;
-    border: 0;
-    border-bottom: 3px solid transparent;
-    color: #aaa398;
-    background: transparent;
-    font: inherit;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-}
-.team-tab:hover { color: #f0d7bd; background: rgba(239, 148, 66, .06); }
-.team-tab-active { color: #f4b46e; border-bottom-color: #ef9442; background: rgba(239, 148, 66, .1); }
-.team-close {
-    margin-left: auto;
-    width: 36px;
-    height: 36px;
-    border: 1px solid rgba(239, 148, 66, .3);
-    color: #c8b7a4;
-    background: rgba(0, 0, 0, .25);
-    font-size: 25px;
-    cursor: pointer;
-}
-.team-content { position: relative; flex: 1; min-height: 0; overflow: hidden; }
 .team-view { position: absolute; inset: 0; overflow: hidden; }
 .team-view[hidden] { display: none; }
 .team-child { position: absolute !important; inset: 0; }
 
-/* ── 子视图收口 ──
-   战队壳层负责顶栏（标签 + 关闭）。佣兵列表页 header 整体隐藏（其工具栏
-   自带资源条）；战宠列表页 header 改「瘦身」而非整体隐藏——整体隐藏会连
-   金币/K点资源条一起藏掉（664468b 的问题），故只藏标题与关闭按钮。
-   卡片/网格等视觉样式全部由各自的 pet_panel.css / merc_panel.css 承载，
-   本文件不再 override。 */
-.team-merc-child #merc-page-list > .merc-page-header { display: none; }
-.team-pet-child #pet-page-list > .pet-page-header {
-    height: 40px;
-    flex: 0 0 40px;
+/* ── tab 条（嵌入子面板 58px header，underline 语言对齐战术风）── */
+.team-tabs-slot {
+    align-self: stretch;
+    display: flex;
+    min-width: 0;
 }
-.team-pet-child #pet-page-list > .pet-page-header .pet-title-mark,
-.team-pet-child #pet-page-list > .pet-page-header .pet-page-title,
-.team-pet-child #pet-page-list > .pet-page-header .pet-close-btn { display: none; }
+.team-tabs {
+    display: flex;
+    align-self: stretch;
+    gap: 2px;
+    margin-left: 4px;
+}
+.team-tab {
+    min-width: 84px;
+    padding: 0 16px;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    color: #8b8f98;
+    background: transparent;
+    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: color 0.14s, background 0.14s, border-color 0.14s;
+}
+.team-tab:hover { color: #f0d7bd; background: rgba(239, 148, 66, .06); }
+.team-tab-active { color: #f4b46e; border-bottom-color: #ef9442; background: rgba(239, 148, 66, .1); }
+
+/* 子视图列表页标题让位给 tab 条（徽标/资源/关闭保留） */
+.team-pet-child #pet-page-list .pet-page-title,
+.team-merc-child #merc-page-list .merc-page-title { display: none; }
 .team-pet-child .pet-scale-shell { top: 50%; }
 .team-merc-child { border: 0; border-radius: 0; }

@@ -12,6 +12,20 @@
    由 team-panel.js ensureCss 注入 <link>。纯 CSS，零协议改动。
    ═══════════════════════════════════════════════════════════════ */
 
+/* ── 固定画布 + 整体缩放外壳（照搬 pet/task scale-shell 机制）──
+   保证佣兵卡片/字号在任意视口都停留在 1024×576 设计像素空间，
+   与战宠子视图缩放行为一致（否则大视口下卡片被拉伸、切 tab 比例跳变） */
+.merc-scale-shell {
+    width: 1024px;
+    height: 576px;
+    transform: scale(var(--merc-scale, 1));
+    transform-origin: center center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -288px 0 0 -512px; /* -H/2, -W/2：缩放前先几何居中，再 scale */
+}
+
 /* ═══════════════════════════════════════════════════════════════
    设计 token（与 pet_panel.css 同值，独立作用域）
    ═══════════════════════════════════════════════════════════════ */
@@ -47,8 +61,8 @@
     --merc-ink-mute:    #7a7e86;
 
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: 1024px;
+    height: 576px;
     box-sizing: border-box;
     overflow: hidden;
     color: var(--merc-text);
@@ -132,11 +146,16 @@
     background: linear-gradient(90deg, var(--merc-accent), transparent 70%);
     opacity: 0.5;
 }
+/* A 兵团三角螺旋徽（与战宠 .pet-title-mark 同源：path 取自游戏原始 XFL 矢量，
+   mask 上色跟随主题橙）——战队 tab 条嵌入 header 后，徽标是各子面板共同的锚点 */
 .merc-title-mark {
-    width: 5px; height: 22px;
+    width: 27px; height: 24px;
     flex-shrink: 0;
     background: var(--merc-accent);
-    box-shadow: 0 0 10px var(--merc-accent-glow);
+    --merc-faction-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='63 -3 168 146'%3E%3Cpath fill='%23000' d='M227.75 140.05L65.95 139.70L134.25 23.10L177.95 98.45L157.95 98.45L134.90 55.95L96.60 123.95L218.75 124.25Z M147.85 0L148.00 0.10L215.30 118.20L108.45 117.30L117.85 101.75L188.30 102.40L138.40 16.10L147.80 0Z'/%3E%3C/svg%3E");
+    -webkit-mask: var(--merc-faction-svg) center / contain no-repeat;
+    mask: var(--merc-faction-svg) center / contain no-repeat;
+    filter: drop-shadow(0 0 4px var(--merc-accent-glow));
 }
 .merc-page-title {
     margin: 0;
@@ -231,8 +250,38 @@
 .merc-btn-primary:active:not(:disabled) { filter: brightness(0.95); }
 .merc-btn-primary:disabled { filter: grayscale(0.7) brightness(0.6); cursor: not-allowed; }
 
+/* 雇佣页等级快速定位 chip（池按等级升序，chip 跳区间起点，无缝下滑保持） */
+.merc-lvl-chips { display: flex; gap: 4px; }
+.merc-lvl-chip {
+    height: 26px;
+    padding: 0 13px;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    color: var(--merc-text-dim);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.10);
+    cursor: pointer;
+    border-radius: var(--merc-radius);
+    transition: all 0.14s;
+}
+.merc-lvl-chip:hover:not(:disabled) { color: var(--merc-accent); border-color: var(--merc-accent); background: var(--merc-accent-dim); }
+.merc-lvl-chip-active {
+    color: var(--merc-accent);
+    background: var(--merc-accent-dim);
+    border-color: rgba(239,148,66,0.45);
+    font-weight: 700;
+}
+.merc-lvl-chip:disabled {
+    background: rgba(12,13,17,0.55);
+    color: var(--merc-text-mute);
+    border: 1px dashed rgba(255,255,255,0.16);
+    cursor: not-allowed;
+}
+
 /* ═══════════════════════════════════════════════════════════════
-   卡片网格 — 与战宠同宽（4 列），佣兵卡 2 倍高
+   卡片网格 — 2 列横版：与战宠卡同高（150px）、双倍宽度
+   （488px = 238×2 + 12gap），装备 11 槽收进一行
    ═══════════════════════════════════════════════════════════════ */
 .merc-grid-wrap {
     flex: 1;
@@ -242,25 +291,33 @@
 }
 .merc-grid, .merc-hire-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     align-content: start;
 }
 
-/* 佣兵卡片：312px = 战宠卡 150px × 2 + 12px gap，列宽与战宠完全一致 */
+/* 卡片左右两列：左=信息/装备（弹性），右=操作列（74px 占满整高，按钮纵向均分） */
 .merc-card {
     position: relative;
-    height: 312px;
+    height: 150px;
     padding: 11px;
     background: var(--merc-stone);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: var(--merc-radius);
+    cursor: pointer;
     display: flex;
-    flex-direction: column;
-    gap: 7px;
+    flex-direction: row;
+    gap: 10px;
     overflow: hidden;
     transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
     animation: merc-card-in 0.34s cubic-bezier(0.16,0.8,0.3,1) both;
+}
+.merc-card-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
 }
 @keyframes merc-card-in {
     from { opacity: 0; transform: translateY(14px) scale(0.97); }
@@ -286,6 +343,16 @@
         linear-gradient(var(--bk-c),var(--bk-c)) 100% 100%/ var(--bk-w) var(--bk-len) no-repeat;
 }
 .merc-card:hover .merc-card-frame { --bk-c: rgba(255,182,90,0.85); }
+/* 选中态（底部详情栏焦点，对齐战宠橙环语义） */
+.merc-card-selected {
+    border-color: var(--merc-accent);
+    box-shadow: 0 0 0 1px var(--merc-accent), 0 0 18px rgba(239,148,66,0.35);
+}
+.merc-card-selected .merc-card-frame { --bk-c: var(--merc-accent-2); }
+.merc-card-deployed.merc-card-selected {
+    box-shadow: 0 0 0 1px var(--merc-accent), 0 0 18px rgba(239,148,66,0.35),
+                inset 0 15px 26px -18px rgba(255,178,76,0.5);
+}
 /* 扫光 */
 .merc-card::before {
     content: '';
@@ -359,6 +426,19 @@
     content: ''; width: 5px; height: 5px; border-radius: 50%;
     background: #fff6df; box-shadow: 0 0 4px rgba(255,255,255,0.9);
 }
+.merc-badge-dead {
+    color: #ffd9d4;
+    background: linear-gradient(180deg, #a3362b, #7e251c);
+    box-shadow: 0 0 0 1px rgba(226,80,62,0.45);
+}
+
+/* 阵亡卡：头像去彩 + 信息压暗 + 红调角框（出战暖辉不可能并存） */
+.merc-card-dead .merc-card-portrait { filter: grayscale(1) brightness(0.75); }
+.merc-card-dead .merc-card-name,
+.merc-card-dead .merc-card-lv { color: var(--merc-text-mute); }
+.merc-card-dead .merc-equip-cell { opacity: 0.65; }
+.merc-card-dead .merc-card-frame { --bk-c: rgba(226,80,62,0.45); }
+.merc-card-dead.merc-card-selected .merc-card-frame { --bk-c: rgba(255,140,120,0.85); }
 
 /* 卡内分区小标题 */
 .merc-card-seclabel {
@@ -378,10 +458,10 @@
 .merc-price-gold { color: var(--merc-gold); }
 .merc-price-kpoint { color: var(--merc-kpoint); }
 
-/* ── 装备 / 技能图标网格（同规格 32px 单元）── */
-.merc-equip-grid, .merc-skill-grid {
+/* ── 装备图标网格（卡片内 11 槽单行）/ 技能占位图标（共用 32px 单元规格）── */
+.merc-equip-grid {
     display: grid;
-    grid-template-columns: repeat(6, 32px);
+    grid-template-columns: repeat(11, 32px);
     gap: 3px;
 }
 .merc-equip-cell, .merc-skill-cell {
@@ -438,32 +518,28 @@
     color: rgba(239,148,66,0.75);
     pointer-events: none;
 }
-.merc-skill-more {
-    border-style: solid;
-    background: rgba(255,255,255,0.03);
-    cursor: default;
-}
-.merc-skill-more .merc-skill-glyph { color: var(--merc-text-dim); font-size: 11px; }
-.merc-skill-none {
-    grid-column: 1 / -1;
-    font-size: 11px;
+.merc-skill-flow-empty {
+    font-size: 12px;
     color: var(--merc-text-mute);
     letter-spacing: 1px;
-    padding: 8px 0;
-    text-align: center;
-    border: 1px dashed rgba(255,255,255,0.10);
-    border-radius: var(--merc-radius-sm);
+    align-self: center;
 }
 
-/* 卡片操作行（浅石牌小按钮） */
-.merc-card-actions { display: flex; gap: 6px; margin-top: auto; }
+/* 卡片操作列：占满卡片右侧整高，按钮纵向均分（解决「小按钮挤右上角、下方留白」） */
+.merc-card-actions {
+    flex-shrink: 0;
+    width: 74px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 .merc-mini-btn {
     flex: 1;
-    height: 24px;
+    min-height: 0;
     font-family: inherit;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     cursor: pointer;
     border: 1px solid rgba(0,0,0,0.26);
     background: var(--merc-marble-btn);
@@ -475,6 +551,7 @@
 }
 .merc-mini-btn-deploy  { color: #2c7a1f; }
 .merc-mini-btn-rest    { color: #b3650f; }
+.merc-mini-btn-revive  { color: #8a6212; }
 .merc-mini-btn-train   { color: #4a4d53; }
 .merc-mini-btn-dismiss { color: #b3302a; }
 .merc-mini-btn-hire    { color: #b3650f; }
@@ -483,13 +560,16 @@
     filter: brightness(1.07);
     border-color: rgba(0,0,0,0.42);
 }
+/* 禁用态 = 暗色凹陷 + 虚线框：与「浅石牌 = 可交互」语言彻底区分。
+   旧的浅灰渐变与可点石牌几乎同明度，读不出不可点。 */
 .merc-mini-btn:disabled {
-    background: linear-gradient(#b7b8bb, #a7a8ac);
-    color: #6b6d72;
-    border-color: rgba(0,0,0,0.14);
+    background: rgba(12,13,17,0.55);
+    color: var(--merc-text-mute);
+    border: 1px dashed rgba(255,255,255,0.16);
     text-shadow: none;
     filter: none;
     cursor: not-allowed;
+    letter-spacing: 1px;
 }
 
 /* 空状态 & loading */
@@ -517,24 +597,114 @@
     position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%);
     font-size: 20px; font-weight: 700; color: var(--merc-accent);
 }
-.merc-hire-loading {
-    flex: 1;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--merc-accent);
-    font-size: 14px; letter-spacing: 1px;
-    padding: 20px;
+/* 无缝下滑哨兵行（加载中 / 下滑加载更多 / 已全部加载） */
+.merc-hire-more {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0 2px;
+    color: var(--merc-text-mute);
+    font-size: 12px;
+    letter-spacing: 1px;
 }
-.merc-hire-loading[hidden] { display: none; }
-.merc-hire-loading::before {
+.merc-hire-more[hidden] { display: none; }
+.merc-hire-more-loading { color: var(--merc-accent); }
+.merc-hire-more-loading::before {
     content: '';
-    width: 14px; height: 14px;
-    margin-right: 10px;
+    width: 13px; height: 13px;
+    margin-right: 9px;
     border: 2px solid rgba(239,148,66,0.25);
     border-top-color: var(--merc-accent);
     border-radius: 50%;
     animation: merc-spin 0.7s linear infinite;
 }
 @keyframes merc-spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════════════════════════
+   底部「当前选择」详情栏（对齐战宠 selbar）
+   卡片不放技能（数量不可控）——选中卡片后在此展示技能图标流 + 培养入口
+   ═══════════════════════════════════════════════════════════════ */
+.merc-selbar {
+    flex-shrink: 0;
+    height: 98px;
+    margin: 0 14px 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background:
+        radial-gradient(circle, rgba(0,0,0,0.25) 0 0.7px, transparent 1px) 0 0 / 5px 5px,
+        linear-gradient(180deg, var(--merc-bg-raise), var(--merc-bg-2));
+    border: 1px solid rgba(239,148,66,0.18);
+    border-radius: var(--merc-radius);
+    position: relative;
+}
+.merc-selbar-empty { justify-content: center; }
+.merc-selbar-empty .merc-selbar-portrait-host,
+.merc-selbar-empty .merc-selbar-main,
+.merc-selbar-empty .merc-selbar-skills,
+.merc-selbar-empty .merc-selbar-actions { display: none; }
+.merc-selbar-hint { display: none; color: var(--merc-text-mute); font-size: 13px; letter-spacing: 1px; }
+.merc-selbar-empty .merc-selbar-hint { display: block; }
+
+.merc-selbar-portrait-host { flex-shrink: 0; display: flex; }
+.merc-selbar-portrait {
+    width: 70px; height: 70px;
+    border-color: var(--merc-accent);
+    box-shadow: 0 0 12px rgba(239,148,66,0.25);
+}
+.merc-selbar-main { width: 200px; flex-shrink: 0; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.merc-selbar-titlerow { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.merc-selbar-name { font-size: 16px; font-weight: 700; color: var(--merc-text); }
+.merc-selbar-lv { font-size: 13px; font-weight: 700; color: var(--merc-accent); }
+.merc-selbar-skill-label {
+    font-size: 10px;
+    color: var(--merc-text-mute);
+    letter-spacing: 2px;
+}
+.merc-selbar-skills {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 3px;
+    max-height: 74px;
+    overflow-y: auto;
+    padding: 2px;
+}
+.merc-selbar-skills::-webkit-scrollbar { width: 6px; }
+.merc-selbar-skills::-webkit-scrollbar-thumb { background: rgba(239,148,66,0.25); }
+.merc-selbar-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+/* 详情栏动作按钮（58×64 竖排图标钮，浅石牌，对齐战宠 pet-act-btn） */
+.merc-act-btn {
+    height: 64px;
+    width: 58px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.26);
+    background: var(--merc-marble-btn);
+    color: #4a4d53;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.35);
+    transition: all 0.14s;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    border-radius: var(--merc-radius);
+    position: relative;
+}
+.merc-act-ico { font-size: 18px; line-height: 1; }
+.merc-act-btn:hover:not(:disabled) { filter: brightness(1.07); border-color: rgba(0,0,0,0.42); }
+.merc-act-btn:disabled {
+    background: rgba(12,13,17,0.55);
+    color: var(--merc-text-mute);
+    border: 1px dashed rgba(255,255,255,0.16);
+    text-shadow: none;
+    cursor: not-allowed;
+}
 
 /* ═══════════════════════════════════════════════════════════════
    通用 body / footer（雇佣页分页）
@@ -548,42 +718,7 @@
     flex-direction: column;
     gap: 14px;
 }
-.merc-page-footer {
-    padding: 9px 18px;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    flex-shrink: 0;
-    display: flex;
-    justify-content: center;
-}
-.merc-page-nav { display: flex; align-items: center; gap: 12px; }
-.merc-page-nav-btn {
-    padding: 6px 16px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    border: 1px solid rgba(0,0,0,0.26);
-    background: var(--merc-marble-btn);
-    color: #b3650f;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.35);
-    border-radius: var(--merc-radius-sm);
-    transition: all 0.14s;
-}
-.merc-page-nav-btn:hover:not(:disabled) { filter: brightness(1.07); border-color: rgba(0,0,0,0.42); }
-.merc-page-nav-btn:disabled {
-    background: linear-gradient(#b7b8bb, #a7a8ac);
-    color: #6b6d72;
-    border-color: rgba(0,0,0,0.14);
-    text-shadow: none;
-    cursor: not-allowed;
-}
-.merc-page-skip-btn { padding: 6px 10px; font-size: 14px; }
-.merc-page-nav-info {
-    font-size: 13px;
-    color: var(--merc-text-dim);
-    min-width: 80px;
-    text-align: center;
-}
+/* （雇佣分页按钮已退役——无缝下滑加载，见 .merc-hire-more） */
 
 /* ═══════════════════════════════════════════════════════════════
    培养页（对标战宠进阶页）
@@ -604,6 +739,7 @@
     border: 1px solid rgba(255,255,255,0.10);
 }
 .merc-meta-deployed { color: #2a1c05; background: linear-gradient(180deg, #ffd271, #f0a93a); border: 1px solid rgba(150,92,16,0.5); }
+.merc-meta-dead { color: #ffd9d4; background: linear-gradient(180deg, #a3362b, #7e251c); border: 1px solid rgba(226,80,62,0.5); }
 
 .merc-header-actions { display: flex; gap: 7px; flex-shrink: 0; }
 .merc-hdr-btn {
@@ -625,12 +761,13 @@
 }
 .merc-hdr-deploy { color: #2c7a1f; }
 .merc-hdr-deploy.merc-hdr-rest { color: #b3650f; }
+.merc-hdr-deploy.merc-hdr-revive { color: #8a6212; }
 .merc-hdr-dismiss { color: #b3302a; }
 .merc-hdr-btn:hover:not(:disabled) { filter: brightness(1.07); border-color: rgba(0,0,0,0.42); }
 .merc-hdr-btn:disabled {
-    background: linear-gradient(#b7b8bb, #a7a8ac);
-    color: #6b6d72;
-    border-color: rgba(0,0,0,0.14);
+    background: rgba(12,13,17,0.55);
+    color: var(--merc-text-mute);
+    border: 1px dashed rgba(255,255,255,0.16);
     text-shadow: none;
     cursor: not-allowed;
 }
