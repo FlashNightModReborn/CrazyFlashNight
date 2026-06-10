@@ -104,8 +104,8 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种400</Type>
-                        <Interval>3600</Interval>
-                        <Quantity>4</Quantity>
+                        <Interval>3000</Interval>
+                        <Quantity>3</Quantity>
                         <Level>50</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
@@ -130,17 +130,6 @@
                         <Level>50</Level>
                         <x>320</x>
                         <y>490</y>
-                        <Parameters>
-                            <登场动画>坠落</登场动画>
-                        </Parameters>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种443</Type>
-                        <Interval>1800</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>50</Level>
-                        <x>920</x>
-                        <y>550</y>
                         <Parameters>
                             <登场动画>坠落</登场动画>
                         </Parameters>
@@ -190,8 +179,8 @@
                     </Enemy>
                     <Enemy>
                         <Type>兵种400</Type>
-                        <Interval>3600</Interval>
-                        <Quantity>4</Quantity>
+                        <Interval>3000</Interval>
+                        <Quantity>3</Quantity>
                         <Level>50</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
@@ -222,17 +211,6 @@
                         <Quantity>2</Quantity>
                         <Level>50</Level>
                         <SpawnIndex>0</SpawnIndex>
-                    </Enemy>
-                    <Enemy>
-                        <Type>兵种443</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>50</Level>
-                        <x>620</x>
-                        <y>490</y>
-                        <Parameters>
-                            <登场动画>坠落</登场动画>
-                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种443</Type>
