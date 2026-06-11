@@ -32,12 +32,8 @@ namespace CF7Launcher.Guardian
                 ScalePanelSize(880, 620, anchorScreenRect, out w, out h);
                 return Centered(anchorScreenRect, w, h);
             }
-            if (name == "arena")
-            {
-                int w, h;
-                ScalePanelSize(1024, 720, anchorScreenRect, out w, out h);
-                return Centered(anchorScreenRect, w, h);
-            }
+            // 沉浸全屏化 2026-06-12：arena 由居中子矩形(Centered 1024×720)升级为全 anchor——
+            // arena-panel.js 已改固定 1024×576 画布 + .panel-scale-shell 整体等比缩放铺满全 16:9。
             return anchorScreenRect;
 
             #pragma warning disable 0162 // unreachable（保留小矩形配置作为其他 panel 适配 panel_viewport_set 后的目标值）

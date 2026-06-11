@@ -18,7 +18,7 @@ namespace CF7Launcher.Tests.Guardian
         [Fact]
         public void Phase5_NonJukeboxPanels_ReturnFullAnchor()
         {
-            string[] names = { "map", "kshop", "help", "lockbox", "pinalign", "gobang", "team", "unknown", null };
+            string[] names = { "map", "kshop", "help", "lockbox", "pinalign", "gobang", "team", "arena", "unknown", null };
             foreach (string n in names)
             {
                 Rectangle r = PanelLayoutCatalog.GetRect(n, Anchor1080p);

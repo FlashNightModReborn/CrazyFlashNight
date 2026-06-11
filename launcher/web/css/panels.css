@@ -7752,18 +7752,25 @@ html.perf-low-effects .map-panel-close-btn:hover {
    Arena Panel (角斗场)
    ════════════════════════════════════════════════════════════════════════════ */
 
-/* arena 需要更大的 content 区域来容纳 8 张卡片 */
+/* 沉浸全屏化 2026-06-12：arena 原为 C# 居中子矩形(Centered 1024×720)+ inset:2% 3% 卡片，浮在暗 backdrop 上。
+   改 C# 全 anchor + inset:0 + 固定 1024×576 画布(.panel-scale-shell 整体等比缩放)，铺满全 16:9。*/
 #panel-container[data-panel="arena"] #panel-content {
-    inset: 2% 3%;
+    inset: 0;
+}
+#panel-container[data-panel="arena"] #panel-backdrop {
+    background: #0a0a0c;
 }
 
-/* ── 根容器 ── */
+/* ── 根容器：固定 1024×576 画布，由外层 .panel-scale-shell 整体缩放 ── */
 .arena-panel {
+    position: relative;
     display: flex;
     flex-direction: column;
-    width: 100%;
-    height: 100%;
-    background: var(--cp-bg, #0d0d0f);
+    width: 1024px;
+    height: 576px;
+    box-sizing: border-box;
+    /* 不透明 cyberpunk 全铺底（顶部琥珀辉光氛围，纯 CSS，留 background-image 插槽后补图）*/
+    background: radial-gradient(ellipse at 50% -10%, rgba(255, 193, 7, 0.05), transparent 58%), #0a0a0c;
     color: var(--cp-text, #e0e0e0);
     font-family: "Consolas", "Courier New", "Microsoft YaHei", monospace;
     overflow: hidden;

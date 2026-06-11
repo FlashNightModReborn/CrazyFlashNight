@@ -18,7 +18,8 @@
     // ════════════════════════════════════════════════════════════════════════════
     // 状态
     // ════════════════════════════════════════════════════════════════════════════
-    var _el;
+    var _el, _shellEl;
+    var _scaleHandle = null;   // 沉浸全屏化：PanelScale 句柄
     var _gridViewEl;
     var _detailViewEl;
     var _moneyEl;
@@ -108,7 +109,12 @@
 
         if (typeof Icons !== 'undefined') Icons.load(function(){});
 
-        return _el;
+        // 沉浸全屏化 2026-06-12：固定 1024×576 画布(.arena-panel)包进共享 .panel-scale-shell，
+        // 整体等比缩放铺满全 anchor（取代旧 fluid 居中子矩形卡片）。
+        _shellEl = document.createElement('div');
+        _shellEl.className = 'panel-scale-shell arena-scale-shell';
+        _shellEl.appendChild(_el);
+        return _shellEl;
     }
 
     function buildCards() {
@@ -167,6 +173,8 @@
     // 生命周期
     // ════════════════════════════════════════════════════════════════════════════
     function onOpen(el, initData) {
+        if (_scaleHandle) _scaleHandle.detach();
+        _scaleHandle = (typeof PanelScale !== 'undefined') ? PanelScale.attach(_shellEl, 1024, 576) : null;
         _session++;
         _pendingReq = {};
         _busy = false;
@@ -211,6 +219,7 @@
     }
 
     function onClose() {
+        if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         _pendingReq = {};
         _busy = false;
         _snapshot = null;
