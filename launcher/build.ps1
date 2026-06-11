@@ -536,6 +536,7 @@ $requiredWebPaths = @(
     "modules\combo.js",
     "modules\lazy-loader.js",
     "modules\panels.js",
+    "modules\panel-scale.js",
     "modules\panels-lazy-registry.js",
     "modules\tooltip.js",
     "modules\icons.js",

@@ -495,10 +495,18 @@ var KShop = (function() {
                 '<button class="kshop-qty-confirm" data-audio-cue="confirm">加购</button>' +
             '</div>';
 
-        // 定位到按钮附近
+        // 定位到按钮附近（anchor.getBoundingClientRect 已是缩放后的真实屏幕 px，定位无需再换算）
         var rect = anchor.getBoundingClientRect();
         _qtyPopup.style.left = (rect.right + 4) + 'px';
         _qtyPopup.style.top = rect.top + 'px';
+        // 沉浸全屏化 2026-06-12：商城主体在 .panel-scale-shell 内整体缩放，本弹窗挂 document.body（在 shell 外，
+        // 故不继承 transform），需手动套同一 --panel-scale 才能与缩放后的主体字号/控件比例一致；
+        // transform-origin:top left 配合上面以真实 px 锚定的 left/top，向右下按比例展开、锚点不偏。
+        var _qScale = parseFloat(_shellEl && _shellEl.style.getPropertyValue('--panel-scale')) || 1;
+        if (_qScale && _qScale !== 1) {
+            _qtyPopup.style.transformOrigin = 'top left';
+            _qtyPopup.style.transform = 'scale(' + _qScale + ')';
+        }
         document.body.appendChild(_qtyPopup);
         playCue('modalOpen');
 

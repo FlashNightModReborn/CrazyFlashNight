@@ -5698,6 +5698,11 @@ html.perf-low-effects .map-panel-close-btn:hover {
     color: #f5f5f5;
     /* 全铺底色（留 background-image 插槽后补 16:9 美术）；去卡片 chrome 求沉浸 */
     background: #121212;
+    /* 显式清零 border/box-shadow：上方约 270 行处另有一条 "Intelligence test panel" 的
+       同选择器 .intelligence-panel（设 1px 描边 + 外阴影），仅删本块的 chrome 会让那条旧规则
+       按层叠回灌到全屏态四角，故在此沉浸块兜底清零，确保全 16:9 无描边/阴影。*/
+    border: none;
+    box-shadow: none;
     overflow: hidden;
 }
 
