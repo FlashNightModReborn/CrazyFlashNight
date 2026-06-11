@@ -612,6 +612,7 @@ powershell -File build.ps1
 |------|------|
 | 1    | TypeScript 编译 — `cd scripts`，若 `node_modules/` 缺失则 `npm install --ignore-scripts`，再 `npx tsc --project tsconfig.json` → `scripts/dist/*.js` 供 V8Runtime 加载 |
 | 1b   | 生成 `data/map/task_npc_registry.json` — `node tools/derive-task-npc-registry.js`（任务 NPC 注册表派生；生成失败 exit 1） |
+| 1e   | 生成 `web/modules/tasks/task-catalog.json` 后运行 `node tools/test-derive-task-conditions.js`（23 个合成夹具覆盖 conditions 单调 AND-OR 不动点；失败 exit 1） |
 | 2    | `native/build.bat` — 编 `miniaudio_bridge.c` → `bin/Release/miniaudio.dll`（自动 vcvars64） |
 | 3    | `native/sol_parser/build.bat` — `cargo build --release` → `bin/Release/sol_parser.dll`（硬依赖，缺失直接 exit 1） |
 | 4    | `native/bootstrap/build.bat` — 编 `bootstrap.cpp` (Win32-only C++) → `bin/Release/bootstrap.exe`（~134KB，零 .NET 依赖，复用 vcvars64） |
