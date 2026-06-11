@@ -214,7 +214,9 @@ H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5
 
 形状：`{ version, taskCount, tasks:{ "<id>":{ id, chain:[name,seq|null], type, title, description, npcName, stageReq, itemReqs, rewards, req:[前置id...], hasGetConv, hasFinishConv } }, chains:{ name:[id...按seq升序] }, chainsUnsequenced:{ name:[id...] } }`。`req`=get_requirements（前置任务 id），供图表视图画前置依赖连线 + 算拓扑深度（约 +3KB；多数任务 0-1 个前置）。
 
-**不含**：对话文本本体（留 AS2，catalog 仅持 `hasGetConv/hasFinishConv` 布尔；点「接取/完成对话」时 `replayDialogue` 按需回传【单任务】对话文本行 `lines:[{speaker,sub,text}]`，web 内联展开纯文本、不关面板）、`finish_remote`（写路径权威字段留 AS2）。
+**不含**：对话文本本体（留 AS2，catalog 仅持 `hasGetConv/hasFinishConv` 布尔；点「接取/完成对话」时 `replayDialogue` 按需回传【单任务】对话文本行 `lines:[{speaker,sub,text}]`，web 内联展开纯文本、不关面板）、`finish_remote`（写路径权威字段留 AS2）、`conditions`（cur 是运行态读数须 AS2 现算，detail 回 `conditions:[{label,cur,target}]`；catalog 不带）。
+
+**任务 `conditions` 字段（可选，2026-06-11 判定层共享）**：`[{type, params, target, label, sinceAccept?}]`——与成就共享 `ObjectiveEvaluator.rawOf` 的 9 类指标（枚举单源 `tools/lib/objective-types.js`，两 derive 共用）；`label` 必填（面板直显）；`sinceAccept:true` 仅限单调类型（killTotal/economyCount），AddTask 拍基线进 `requirements.condBase` 走窗口语义；derive-task-catalog build gate 全量校验（含 economyCount 白名单单源 + taskFinished 闭包）。与老字段（关卡/交物/持有/特殊）合取判定，缺省零成本。设计：docs/任务成就-判定层共享-设计-2026-06-11.md。
 
 `replayDialogue` 防剧透硬门控（服务端权威，AS2 `TaskPanelService.handleReplayDialogue`，不依赖前端隐藏按钮）：接取对话仅 active(`tasks_to_do`)/finished(`tasks_finished>0`) 才回，完成对话仅 finished 才回，否则回 `error:"locked"`（绝不吐对话本体）。web 渲染对话行经 `PanelTooltip.convertAS2Html` 真·标签+属性白名单清洗（DOM 重建，丢弃未知标签/事件属性，防 `$PC`→存档角色名等玩家可控输入造成 XSS）。图表视图同口径只画已接取节点、未接取详情遮罩（防剧透）。
 

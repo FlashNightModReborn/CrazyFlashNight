@@ -946,6 +946,24 @@
 
         html += '</div>'; // .task-requirement-area
 
+        // 共享判定条件进度（conditions，可选；AS2 conditionsProgress 回 {label,cur,target}，
+        // 与成就进度同口径——任务系统借成就表达力后的 UI 复用面）
+        if (task.conditions && task.conditions.length > 0) {
+            html += '<div class="task-cond-area">';
+            for (var ci = 0; ci < task.conditions.length; ci++) {
+                var cond = task.conditions[ci] || {};
+                var cTarget = Number(cond.target) > 0 ? Number(cond.target) : 1;
+                var cCur = Math.min(Math.max(Number(cond.cur) || 0, 0), cTarget);
+                var done = cCur >= cTarget;
+                html += '<div class="task-cond-row' + (done ? ' done' : '') + '">' +
+                    '<span class="task-cond-label">' + escHtml(cond.label || '') + '</span>' +
+                    '<span class="task-cond-count">' + cCur + '/' + cTarget + '</span>' +
+                    '<span class="task-cond-bar"><span class="task-cond-fill" style="width:' + Math.round(cCur * 100 / cTarget) + '%"></span></span>' +
+                    '</div>';
+            }
+            html += '</div>';
+        }
+
         // 奖励
         if (task.rewards && task.rewards.length > 0) {
             html += '<div class="task-reward-section">';

@@ -134,6 +134,12 @@
         function d(id, title, type, desc, stageReq, itemReqs, npc, rewards, finishRemote, finishNavigable) {
             return { taskId: id, type: type, title: title, description: desc, stageReq: stageReq, itemReqs: itemReqs, npcName: npc, rewards: rewards, finishRemote: finishRemote === true, finishNavigable: finishNavigable === true };
         }
+        // 共享判定条件（conditions）mock：镜像 AS2 conditionsProgress 回包形状 {label,cur,target}。
+        // 101 两条（一条进行中一条已达成）→ task-ui41 验证进度行渲染与 done 态。
+        DETAILS[101].conditions = [
+            { label: '击杀敌人（接取后）', cur: 18, target: 50 },
+            { label: '商城花费K点', cur: 200, target: 200 }
+        ];
         function stage(name, diff) { return { name: name, difficulty: diff }; }
         function items(kind, arr) { for (var i = 0; i < arr.length; i++) arr[i].kind = kind; return arr; }
         function it(name, count) { return { name: name, count: count, kind: 'submit' }; }
@@ -1175,6 +1181,24 @@
                 clickTab('ach');
                 await waitFor(function() { return achState().rowCount === 6; }, 3000);
                 return degraded;
+            });
+
+            await check('task-ui41', '共享判定条件：详情渲染 conditions 进度行(label+cur/target+进度条)，达成行带 done 态', async function() {
+                await reopenFresh();
+                clickIcon(0); // 101 主线（mock detail 带 2 条 conditions）
+                await waitFor(function() { return document.querySelectorAll('.task-cond-row').length === 2; }, 3000);
+                var rows = document.querySelectorAll('.task-cond-row');
+                var row0Ok = rows[0].querySelector('.task-cond-label').textContent === '击杀敌人（接取后）' &&
+                    rows[0].querySelector('.task-cond-count').textContent === '18/50' &&
+                    !rows[0].classList.contains('done');
+                var row1Ok = rows[1].querySelector('.task-cond-count').textContent === '200/200' &&
+                    rows[1].classList.contains('done');
+                var fillW = rows[0].querySelector('.task-cond-fill').style.width === '36%';
+                // 无 conditions 的任务不渲染该区块
+                clickIcon(1); // 102
+                await waitFor(function() { return document.querySelector('.task-title-line2') && document.querySelector('.task-title-line2').textContent === '初入战场'; }, 3000);
+                var none = document.querySelectorAll('.task-cond-row').length === 0;
+                return row0Ok && row1Ok && fillW && none;
             });
 
             var passed = results.filter(function(r) { return r.pass; }).length;

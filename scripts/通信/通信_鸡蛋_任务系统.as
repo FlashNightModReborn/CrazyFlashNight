@@ -231,6 +231,10 @@ _root.taskCompleteCheck = function(index) {
     if (!TaskUtil.checkSpecialRequirements(taskData)) {
         return false;
     }
+    //检查共享判定条件（conditions 可选字段，与成就共用 ObjectiveEvaluator；无该字段零成本直过）
+    if (!TaskUtil.checkConditions(taskData, _root.tasks_to_do[index])) {
+        return false;
+    }
     return true;
 }
 
@@ -397,6 +401,19 @@ _root.AddTask = function(id) {
         关卡要求.challenge = {};
         关卡要求.challenge.difficulty = taskData.challenge.difficulty;
         关卡要求.challenge.finished = false;
+    }
+    //conditions 基线快照（判定层共享设计 §4）：sinceAccept 条件记录接取时读数（窗口语义，
+    //照成就 base.kt 模式）；非 sinceAccept 条目记 0 占位保持下标对齐。condBase 随
+    //requirements 进 tasks_to_do 存档透传。
+    if (taskData.conditions != undefined && taskData.conditions.length > 0) {
+        var condBase = [];
+        for (var ci = 0; ci < taskData.conditions.length; ci++) {
+            var cond = taskData.conditions[ci];
+            condBase.push(cond.sinceAccept == true
+                ? org.flashNight.arki.achievement.ObjectiveEvaluator.rawOf(cond.type, cond.params)
+                : 0);
+        }
+        关卡要求.condBase = condBase;
     }
     var task = {};
     task.id = id;

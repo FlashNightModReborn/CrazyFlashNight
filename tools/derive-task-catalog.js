@@ -26,8 +26,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const { validateCondition, parseEconomyWhitelist } = require('./lib/objective-types.js');
 
 const projectRoot = path.resolve(__dirname, '..');
+const metricsFile = path.join(projectRoot, 'scripts', '类定义', 'org', 'flashNight', 'arki', 'achievement', 'AchievementMetrics.as');
 const taskDir = path.join(projectRoot, 'data', 'task');
 const textDir = path.join(projectRoot, 'data', 'task', 'text');
 const defaultOutput = path.join(projectRoot, 'launcher', 'web', 'modules', 'tasks', 'task-catalog.json');
@@ -139,6 +141,10 @@ function parseNameCount(entry, kind) {
 
 function buildCatalog(rawTasks, taskTexts) {
     const tasks = {};
+    // conditions 校验（任务-成就判定层共享，可选字段；设计 docs/任务成就-判定层共享-设计-2026-06-11.md §3）。
+    // economyCount 白名单惰性解析：仅当数据真用到 economyCount 才读 AchievementMetrics.as。
+    let economyCounters = null;
+    const pendingTaskRefs = []; // taskFinished 跨任务引用，全集建完后做存在性闭包（防前向引用误杀）
     const chains = {};            // 有序号链：name → { seq: id }
     const chainsUnsequenced = {}; // 无序号链（委托等）：name → [id...]（遇见序）
     const idSeen = {};
@@ -163,6 +169,28 @@ function buildCatalog(rawTasks, taskTexts) {
         }
 
         const ctx = 'task ' + idKey;
+
+        // conditions（可选）：逐条过共享校验器（类型枚举/target/label/params/sinceAccept 单调限定）
+        if (t.conditions !== undefined) {
+            if (!Array.isArray(t.conditions) || t.conditions.length === 0) {
+                fail(ctx + ': conditions must be a non-empty array when present');
+            }
+            for (let c = 0; c < t.conditions.length; c += 1) {
+                const cond = t.conditions[c];
+                if (cond && cond.type === 'economyCount' && economyCounters === null) {
+                    economyCounters = parseEconomyWhitelist(metricsFile, fail);
+                }
+                validateCondition(cond, ctx + '.conditions[' + c + ']', fail, economyCounters);
+                // 跨任务闭包：自引用即拒；存在性等全集建完后 post-pass（防前向引用误杀）
+                if (cond.type === 'taskFinished') {
+                    if (String(cond.params.taskId) === idKey) {
+                        fail(ctx + '.conditions[' + c + ']: taskFinished cannot reference itself');
+                    }
+                    pendingTaskRefs.push({ ctx: ctx + '.conditions[' + c + ']', ref: String(cond.params.taskId) });
+                }
+            }
+        }
+
         const title = resolveText(t.title, taskTexts, ctx + '.title');
         const description = resolveText(t.description, taskTexts, ctx + '.description');
         const getConv = resolveText(t.get_conversation, taskTexts, ctx + '.get_conversation');
@@ -218,6 +246,13 @@ function buildCatalog(rawTasks, taskTexts) {
         } else {
             if (!chainsUnsequenced[chainName]) chainsUnsequenced[chainName] = [];
             chainsUnsequenced[chainName].push(id);
+        }
+    }
+
+    // taskFinished 条件引用的任务存在性闭包（全集已建完）
+    for (let r = 0; r < pendingTaskRefs.length; r += 1) {
+        if (idSeen[pendingTaskRefs[r].ref] !== true) {
+            fail(pendingTaskRefs[r].ctx + ': taskFinished references missing task id "' + pendingTaskRefs[r].ref + '"');
         }
     }
 
