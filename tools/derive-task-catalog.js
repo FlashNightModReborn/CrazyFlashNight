@@ -30,9 +30,10 @@ const { validateCondition, parseEconomyWhitelist } = require('./lib/objective-ty
 
 const projectRoot = path.resolve(__dirname, '..');
 const metricsFile = path.join(projectRoot, 'scripts', '类定义', 'org', 'flashNight', 'arki', 'achievement', 'AchievementMetrics.as');
-const taskDir = path.join(projectRoot, 'data', 'task');
-const textDir = path.join(projectRoot, 'data', 'task', 'text');
+const defaultTaskDir = path.join(projectRoot, 'data', 'task');
 const defaultOutput = path.join(projectRoot, 'launcher', 'web', 'modules', 'tasks', 'task-catalog.json');
+let taskDir = defaultTaskDir;            // --task-dir 可覆盖（测试夹具用，见 tools/test-derive-task-conditions.js）
+let textDir = path.join(defaultTaskDir, 'text');
 
 function fail(msg) {
     console.error('[derive-task-catalog] ' + msg);
@@ -40,11 +41,12 @@ function fail(msg) {
 }
 
 function parseArgs(argv) {
-    const args = { output: defaultOutput, check: false };
+    const args = { output: defaultOutput, check: false, taskDir: null };
     for (let i = 0; i < argv.length; i += 1) {
         const arg = argv[i];
         if (arg === '--output') { args.output = argv[i + 1] || ''; i += 1; continue; }
         if (arg === '--check') { args.check = true; continue; }
+        if (arg === '--task-dir') { args.taskDir = argv[i + 1] || ''; i += 1; continue; }
         if (arg === '--help' || arg === '-h') { printHelp(0); return null; }
         printHelp(1, 'unknown arg: ' + arg);
         return null;
@@ -54,8 +56,9 @@ function parseArgs(argv) {
 
 function printHelp(exitCode, error) {
     if (error) console.error(error);
-    console.error('usage: node tools/derive-task-catalog.js [--output <file>] [--check]');
-    console.error('  --check  parse + validate only, do not write');
+    console.error('usage: node tools/derive-task-catalog.js [--output <file>] [--check] [--task-dir <dir>]');
+    console.error('  --check     parse + validate only, do not write');
+    console.error('  --task-dir  task data root override (default data/task; for test fixtures)');
     console.error('  default output: ' + defaultOutput);
     process.exit(exitCode);
 }
@@ -138,34 +141,6 @@ function parseNameCount(entry, kind) {
     if (kind) o.kind = kind;
     return o;
 }
-
-// 依赖图 DFS：from 沿 edges 可达 to 时返回路径 [from..to]，不可达返回 null（死锁环检测用）。
-function findDepPath(from, to, edges) {
-    if (from === to) return [from];
-    const stack = [from];
-    const visited = {};
-    const parent = {};
-    visited[from] = true;
-    while (stack.length > 0) {
-        const cur = stack.pop();
-        const next = edges[cur] || [];
-        for (let i = 0; i < next.length; i += 1) {
-            const nb = next[i];
-            if (visited[nb] === true) continue;
-            visited[nb] = true;
-            parent[nb] = cur;
-            if (nb === to) {
-                const path = [to];
-                let p = to;
-                while (p !== from) { p = parent[p]; path.push(p); }
-                return path.reverse();
-            }
-            stack.push(nb);
-        }
-    }
-    return null;
-}
-
 function buildCatalog(rawTasks, taskTexts) {
     const tasks = {};
     // conditions 校验（任务-成就判定层共享，可选字段；设计 docs/任务成就-判定层共享-设计-2026-06-11.md §3）。
@@ -295,46 +270,44 @@ function buildCatalog(rawTasks, taskTexts) {
         }
     }
 
-    // ═══ 条件死锁校验：lower 成任务级依赖图 + 环检测 ═══
-    // 死锁是依赖图的【全局】性质——逐条局部不变量（target<ownSeq / 存在性检查）连续两轮被复审
-    // 击穿（序号缺口、跨链循环各是一个组合盲区），故收敛到标准做法：所有 gating lower 成
-    // 任务级 precedence 边，对条件边做可达性环检测。三类已知死锁（自链/缺口/跨链循环）统一归约。
-    //
-    // 保守顺序模型（偏误杀不偏漏；真有合法乱序设计在此放宽——显式决策点）：
-    //   ① 有序号链按 seq 升序完成 → 每任务依赖链内前一实际 seq 任务
-    //     （实测 225 个相邻链转换 171 个 get_requirements 显式依赖前序，FinishTask 自动接取亦按序）
-    //   ② get_requirements：接取前置 ⇒ 完成前置
-    //   ③ 条件边：taskFinished → 引用任务；chainProgress(C,t) → C 链 seq≥t 的【最小 seq】任务（锚点；
-    //     锚点若死锁，链上更晚任务按 ① 全部死锁，故取最小即足）——seq 缺口天然落到锚点=自身/后续
-    //   判定：沿「依赖」边从锚点 DFS 可达宿主 = 满足条件须先完成宿主自身 → 死锁环，打印路径。
-    // 边界声明：只证「条件无结构性死锁」，不证「任务可完成」（物品/经济/运行态归 playtest）；
-    // 只审计条件边参与的环，存量 get_requirements/链序的历史问题不在此门。
-    const depEdges = {}; // idKey → [依赖的 idKey...]
-    function addDep(from, to) {
-        if (!depEdges[from]) depEdges[from] = [];
-        depEdges[from].push(to);
-    }
-    // ① 链内前驱边
-    const allChainNames = Object.keys(chains);
-    for (let n = 0; n < allChainNames.length; n += 1) {
-        const seqMap = chains[allChainNames[n]];
-        const sorted = Object.keys(seqMap).map(Number).sort(function (a, b) { return a - b; });
-        for (let s = 1; s < sorted.length; s += 1) {
-            addDep(String(seqMap[sorted[s]]), String(seqMap[sorted[s - 1]]));
-        }
-    }
-    // ② get_requirements 边（引用不存在的 id 不在此门审计，跳过）
+    // ═══ 条件可满足性校验：单调 AND-OR 不动点（对齐运行时真实语义） ═══
+    // 四轮演进：局部规则两轮被击穿（前序依赖盲区/seq 缺口）→ 图环检测一轮被击穿（链前驱边
+    // 虚构了运行时不存在的顺序约束：taskAvailable 接取门控只查 get_requirements 不查链序号
+    // ——通信_鸡蛋_任务系统.as，实测 11 个非前序依赖转换含独立挑战任务，会被误报死锁）。
+    // 终版按引擎真实语义建模，不再附加任何顺序假设：
+    //   任务 T 可完成 ⇔ get_requirements 全部可完成（接取门控，唯一真实边）
+    //                 ∧ taskFinished 条件引用任务可完成
+    //                 ∧ 每个 chainProgress(C,t) 条件存在【任一】候选 X∈C、seq(X)≥t、X 可完成
+    //     （chainProgress 是析取——任一候选满足即可，普通有向图环检测表达不了 OR，
+    //       故用单调不动点迭代「可完成集合」直至收敛：Horn 可满足性，O(V·E) 上界，238 任务可忽略；
+    //       候选=宿主自身天然无效——判定时宿主必不在集合内，seq 缺口/自链死锁由此自然涌现）
+    //   基线集 = 仅 get_requirements 的不动点；带条件后从基线集跌出的任务 = 条件引入的死锁 → fail
+    //   并逐任务打印阻塞条件。存量数据在基线集就不可完成的任务不在此门审计（历史问题与 conditions 无关）。
+    // 边界：只证「条件无结构性死锁」，不证「可完成」（物品/经济/运行态/NPC 脚本发任务归 playtest）。
     const allIds = Object.keys(tasks);
+    const reqOf = {};      // idKey → [存在的 get_requirements idKey...]
     for (let i = 0; i < allIds.length; i += 1) {
         const req = tasks[allIds[i]].req;
+        const out = [];
         for (let r = 0; r < req.length; r += 1) {
-            if (idSeen[String(req[r])] === true) addDep(allIds[i], String(req[r]));
+            if (idSeen[String(req[r])] === true) out.push(String(req[r]));
         }
+        reqOf[allIds[i]] = out;
     }
-    // ③ 条件边（基础闭包先行：链存在 / target≤最大 seq —— 锚点解析的前提）
-    const condEdges = [];
+    const tfByHost = {};   // idKey → [{ctx, ref}]
     for (let r = 0; r < pendingTaskRefs.length; r += 1) {
-        condEdges.push({ ctx: pendingTaskRefs[r].ctx, host: pendingTaskRefs[r].host, anchor: pendingTaskRefs[r].ref });
+        const t = pendingTaskRefs[r];
+        if (!tfByHost[t.host]) tfByHost[t.host] = [];
+        tfByHost[t.host].push(t);
+    }
+    const cpByHost = {};   // idKey → [{ctx, chain, target}]（基础闭包先行：链存在 / target≤最大 seq）
+    const chainCands = {}; // 链名 → [{seq, id(idKey)}]
+    const chainNamesAll = Object.keys(chains);
+    for (let n = 0; n < chainNamesAll.length; n += 1) {
+        const seqMap = chains[chainNamesAll[n]];
+        chainCands[chainNamesAll[n]] = Object.keys(seqMap).map(function (s) {
+            return { seq: Number(s), id: String(seqMap[Number(s)]) };
+        });
     }
     for (let r = 0; r < pendingChainRefs.length; r += 1) {
         const ref = pendingChainRefs[r];
@@ -343,29 +316,82 @@ function buildCatalog(rawTasks, taskTexts) {
             fail(ref.ctx + ': chainProgress references unknown sequenced chain "' + ref.chain
                 + '" (无序号链不更新 task_chains_progress，条件永不可达)');
         }
-        const seqs = Object.keys(seqMap).map(Number).sort(function (a, b) { return a - b; });
-        if (ref.target > seqs[seqs.length - 1]) {
+        const seqs = Object.keys(seqMap).map(Number);
+        const maxSeq = Math.max.apply(null, seqs);
+        if (ref.target > maxSeq) {
             fail(ref.ctx + ': chainProgress target ' + ref.target + ' exceeds chain "' + ref.chain
-                + '" max seq ' + seqs[seqs.length - 1] + ' (unreachable condition)');
+                + '" max seq ' + maxSeq + ' (unreachable condition)');
         }
-        let anchorSeq = null;
-        for (let s = 0; s < seqs.length; s += 1) {
-            if (seqs[s] >= ref.target) { anchorSeq = seqs[s]; break; }
-        }
-        condEdges.push({ ctx: ref.ctx, host: ref.host, anchor: String(seqMap[anchorSeq]) });
+        if (!cpByHost[ref.host]) cpByHost[ref.host] = [];
+        cpByHost[ref.host].push(ref);
     }
-    for (let e = 0; e < condEdges.length; e += 1) addDep(condEdges[e].host, condEdges[e].anchor);
-    // 环检测：每条条件边从锚点出发找回宿主的依赖路径
-    for (let e = 0; e < condEdges.length; e += 1) {
-        const edge = condEdges[e];
-        if (edge.anchor === edge.host) {
-            fail(edge.ctx + ': deadlock cycle — 条件锚点为本任务自身'
-                + '（链 seq 缺口或 target ≥ 自身 seq：该进度只能由完成本任务推到）');
+
+    function computeCompletable(useConditions) {
+        const done = {};
+        let changed = true;
+        while (changed) {
+            changed = false;
+            for (let i = 0; i < allIds.length; i += 1) {
+                const id = allIds[i];
+                if (done[id] === true) continue;
+                let ok = true;
+                const req = reqOf[id];
+                for (let r = 0; r < req.length && ok; r += 1) {
+                    if (done[req[r]] !== true) ok = false;
+                }
+                if (ok && useConditions) {
+                    const tfs = tfByHost[id] || [];
+                    for (let t = 0; t < tfs.length && ok; t += 1) {
+                        if (done[tfs[t].ref] !== true) ok = false;
+                    }
+                    const cps = cpByHost[id] || [];
+                    for (let c = 0; c < cps.length && ok; c += 1) {
+                        let sat = false;
+                        const cands = chainCands[cps[c].chain];
+                        for (let k = 0; k < cands.length; k += 1) {
+                            if (cands[k].seq >= cps[c].target && done[cands[k].id] === true) { sat = true; break; }
+                        }
+                        if (!sat) ok = false;
+                    }
+                }
+                if (ok) { done[id] = true; changed = true; }
+            }
         }
-        const path = findDepPath(edge.anchor, edge.host, depEdges);
-        if (path !== null) {
-            fail(edge.ctx + ': deadlock cycle — 满足该条件须先完成任务 ' + edge.anchor
-                + '，而其依赖链回到本任务: ' + path.join(' → ') + '（→ 表示「依赖/须先完成」）');
+        return done;
+    }
+
+    if (pendingTaskRefs.length > 0 || pendingChainRefs.length > 0) {
+        const baseline = computeCompletable(false);
+        const withCond = computeCompletable(true);
+        const lines = [];
+        for (let i = 0; i < allIds.length; i += 1) {
+            const id = allIds[i];
+            if (baseline[id] !== true || withCond[id] === true) continue;
+            // 跌出基线集 = 条件引入的死锁；逐条定位阻塞原因
+            const tfs = tfByHost[id] || [];
+            const cps = cpByHost[id] || [];
+            let blamed = false;
+            for (let t = 0; t < tfs.length; t += 1) {
+                if (withCond[tfs[t].ref] !== true) {
+                    lines.push(tfs[t].ctx + ': taskFinished 引用任务 ' + tfs[t].ref + ' 不可先于本任务完成');
+                    blamed = true;
+                }
+            }
+            for (let c = 0; c < cps.length; c += 1) {
+                const cands = chainCands[cps[c].chain].filter(function (x) { return x.seq >= cps[c].target; });
+                if (!cands.some(function (x) { return withCond[x.id] === true; })) {
+                    lines.push(cps[c].ctx + ': chainProgress ' + cps[c].chain + '≥' + cps[c].target
+                        + ' 的全部候选任务 [' + cands.map(function (x) { return x.id + '(#' + x.seq + ')'; }).join(', ')
+                        + '] 均不可先于本任务完成');
+                    blamed = true;
+                }
+            }
+            if (!blamed) {
+                lines.push('task ' + id + ': 级联死锁——get_requirements 前置任务因上述条件死锁不可完成');
+            }
+        }
+        if (lines.length > 0) {
+            fail('conditions deadlock — 以下任务因条件永不可满足而无法完成:\n  ' + lines.join('\n  '));
         }
     }
 
@@ -414,6 +440,10 @@ function tryReadExistingPayload(outputPath) {
 function main() {
     const args = parseArgs(process.argv.slice(2));
     if (!args) return;
+    if (args.taskDir) {
+        taskDir = path.resolve(args.taskDir);
+        textDir = path.join(taskDir, 'text');
+    }
 
     const rawTasks = loadTasks();
     const taskTexts = loadTexts();
