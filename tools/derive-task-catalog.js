@@ -270,9 +270,11 @@ function buildCatalog(rawTasks, taskTexts) {
     }
 
     // chainProgress 条件可达性闭包（全集已建完；规则对齐 derive-achievement-catalog ⑤）：
-    //   链必须是【有序号链】（无序号链如委托永不写 task_chains_progress）+ target ≤ 链最大 seq；
-    //   引用自己所在链时，须存在【其它】任务 seq ≥ target——否则进度只能靠本任务自身完成推到
-    //   target，条件先于完成永不满足（自链死锁，类比 taskFinished 禁自引用）。
+    //   链必须是【有序号链】（无序号链如委托永不写 task_chains_progress）+ target ≤ 链最大 seq。
+    //   自链引用保守要求 target < 自身 seq：progress ≥ 自身 seq 要么靠本任务自己完成（先有鸡），
+    //   要么靠后续任务先完成——而链任务普遍 get_requirements 依赖前序（实测 225 个相邻链转换
+    //   171 个显式依赖前一任务），「跳过本任务先做后续」基本不存在，存在性检查会放行实际死锁。
+    //   真有合法乱序场景再放宽（显式决策点，类比 REWARD_BLACKLIST）。
     for (let r = 0; r < pendingChainRefs.length; r += 1) {
         const ref = pendingChainRefs[r];
         const seqMap = chains[ref.chain];
@@ -286,15 +288,9 @@ function buildCatalog(rawTasks, taskTexts) {
             fail(ref.ctx + ': chainProgress target ' + ref.target + ' exceeds chain "' + ref.chain
                 + '" max seq ' + maxSeq + ' (unreachable condition)');
         }
-        if (ref.chain === ref.ownChain && ref.ownSeq !== null) {
-            let maxOtherSeq = -Infinity;
-            for (let s = 0; s < seqs.length; s += 1) {
-                if (seqs[s] !== ref.ownSeq && seqs[s] > maxOtherSeq) maxOtherSeq = seqs[s];
-            }
-            if (ref.target > maxOtherSeq) {
-                fail(ref.ctx + ': chainProgress target ' + ref.target + ' on own chain "' + ref.chain
-                    + '" is only reachable by finishing this task itself (self-chain deadlock)');
-            }
+        if (ref.chain === ref.ownChain && ref.ownSeq !== null && ref.target >= ref.ownSeq) {
+            fail(ref.ctx + ': chainProgress target ' + ref.target + ' on own chain "' + ref.chain
+                + '" must be < own seq ' + ref.ownSeq + ' (后续任务依赖前序完成，target ≥ 自身 seq 即自链死锁)');
         }
     }
 

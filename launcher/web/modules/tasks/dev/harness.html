@@ -1231,6 +1231,36 @@
                 }
             });
 
+            await check('task-ui43', 'satisfied 权威纠偏：条件达成翻转完成态→重选后台复查→徽章/交付按钮/列表角标同步更新', async function() {
+                // 接取时条件未达成：override 须在 open 前设好（host.reset 在 open 时应用到 snapshot）
+                host._inventoryFullFor = null; host._respDelay = 50; host._navOverride = {};
+                host.close(); await waitFor(function() { return !Panels.isOpen(); }, 2000);
+                host._satisfiedOverride = { 101: false };
+                host.open(); await waitFor(function() { return window.TaskPanel.getState().taskCount === 10; }, 4000);
+                clickIcon(0); // 101 fresh detail：未满足 → 无徽章 + 交付禁用 + 列表无完成角标
+                await waitFor(function() { return document.querySelectorAll('.task-cond-row').length === 2; }, 3000);
+                var dPre = document.querySelector('.task-act-deliver');
+                var preOk = !document.querySelector('.task-deliverable') && dPre && dPre.disabled &&
+                    !document.querySelector('.task-icon[data-index="0"] .task-finished-overlay');
+                // 模拟条件推进至达成：读数 50/50 且 mock 端 taskCompleteCheck 翻真（AS2 同源翻转）
+                var origCur = DETAILS[101].conditions[0].cur;
+                DETAILS[101].conditions[0].cur = 50;
+                host.setSatisfied(101, true);
+                try {
+                    clickIcon(1); await waitFor(function() { return titleNow() === '初入战场'; }, 3000);
+                    clickIcon(0); // 缓存命中（先按陈旧 satisfied=false 渲染）→ 后台复查 → applyDetailSatisfied 全量纠偏
+                    await waitFor(function() { return !!document.querySelector('.task-deliverable .task-stamp-check'); }, 3000);
+                    var btn = document.querySelector('.task-act-deliver');
+                    var btnOk = btn && !btn.disabled && btn.getAttribute('data-act') === 'navigate'; // 101 非远程+可前往
+                    var listOk = !!document.querySelector('.task-icon[data-index="0"] .task-finished-overlay');
+                    var rowOk = document.querySelector('.task-cond-row').classList.contains('done');
+                    return preOk && btnOk && listOk && rowOk;
+                } finally {
+                    DETAILS[101].conditions[0].cur = origCur;
+                    host._satisfiedOverride = {};
+                }
+            });
+
             var passed = results.filter(function(r) { return r.pass; }).length;
             window.__qaResult = {
                 qa: { passed: passed, total: results.length, failed: results.length - passed, results: results },
