@@ -295,6 +295,13 @@
     inset: 0;
 }
 
+#panel-container[data-panel="kshop"] #panel-content {
+    inset: 0;
+}
+#panel-container[data-panel="kshop"] #panel-backdrop {
+    background: #0a0c12;
+}
+
 #panel-container[data-panel="help"] #panel-content {
     inset: 0;
 }
@@ -527,17 +534,18 @@
    K-Shop Panel
    ═══════════════════════════════════════════════════════ */
 
+/* 沉浸全屏化 2026-06-11：kshop 是最早实现的 panel，原为 fluid 跟分辨率 reflow。
+   升级到现行标准——固定 1024×576(16:9) 画布，由外层 .panel-scale-shell + PanelScale 整体等比缩放；
+   去赛博切角 clip-path / 1px border / 外发光阴影（卡片感），不透明底铺满，保留内发光氛围。*/
 .kshop-panel {
-    display:flex; flex-direction:column; height:100%;
-    background:var(--cp-bg); color:var(--cp-text);
+    position:relative;
+    display:flex; flex-direction:column;
+    width:1024px; height:576px;
+    box-sizing:border-box;
+    background:#0a0c12; color:var(--cp-text);
     font-family:"Consolas","Courier New","Microsoft YaHei",monospace;
     font-size:13px; overflow:hidden;
-    border:1px solid var(--cp-border);
-    clip-path:polygon(
-        0 0, calc(100% - var(--cp-cut)) 0, 100% var(--cp-cut),
-        100% 100%, var(--cp-cut) 100%, 0 calc(100% - var(--cp-cut))
-    );
-    box-shadow:0 0 40px rgba(0,240,255,0.06), inset 0 0 80px rgba(0,240,255,0.02);
+    box-shadow:inset 0 0 80px rgba(0,240,255,0.02);
 }
 
 /* Scanline overlay */

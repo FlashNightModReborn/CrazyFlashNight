@@ -32,8 +32,9 @@ var KShop = (function() {
     var CART_SAVE_DEBOUNCE_MS = 700;
 
     // DOM refs
-    var _el, _catBar, _grid, _cartList, _cartTotal, _balanceEl;
+    var _el, _shellEl, _catBar, _grid, _cartList, _cartTotal, _balanceEl;
     var _checkoutBtn, _claimList, _loadingEl;
+    var _scaleHandle = null;   // 沉浸全屏化：PanelScale 句柄
 
     var _kHandler = function(v) { _kpoints = Number(v); if (_balanceEl) _balanceEl.textContent = _kpoints; };
 
@@ -167,6 +168,7 @@ var KShop = (function() {
     Panels.register('kshop', {
         create: createDOM,
         onOpen: onOpen,
+        onClose: onClose,
         onRequestClose: function() { requestClose(); },
         onForceClose: onForceClose
     });
@@ -211,13 +213,20 @@ var KShop = (function() {
         _el.querySelector('.kshop-close-btn').addEventListener('click', function() { requestClose(); });
         _checkoutBtn.addEventListener('click', checkout);
 
-        return _el;
+        // 沉浸全屏化 2026-06-11：把固定 1024×576 画布(.kshop-panel)包进共享 .panel-scale-shell，
+        // 由 PanelScale 整体等比缩放，取代旧的 fluid 跟分辨率 reflow（kshop 是最早实现的 panel，配套最不全）。
+        _shellEl = document.createElement('div');
+        _shellEl.className = 'panel-scale-shell kshop-scale-shell';
+        _shellEl.appendChild(_el);
+        return _shellEl;
     }
 
     // ══════════════════════════════════════════
     //  Open / Data load
     // ══════════════════════════════════════════
     function onOpen(el) {
+        if (_scaleHandle) _scaleHandle.detach();
+        _scaleHandle = (typeof PanelScale !== 'undefined') ? PanelScale.attach(_shellEl, 1024, 576) : null;
         _closing = false;
         _checkingOut = false;
         _cartSaveInFlight = false;
@@ -787,6 +796,11 @@ var KShop = (function() {
             }
         };
         Bridge.send({type:'panel', cmd:'saveCart', callId: reqId, cart: cartPayload});
+    }
+
+    function onClose() {
+        // 任何关闭路径（doClose→Panels.close / C# close / 切面板 / force_close→close）都经此 detach，防 resize/RO 泄漏
+        if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
     }
 
     function doClose() {
