@@ -8,32 +8,19 @@ namespace CF7Launcher.Guardian
     /// PanelHostController 调用 GetRect(panelName, anchorScreenRect) 决定 WebOverlay 在 panel 态的尺寸/位置。
     /// 默认居中于 anchor；若请求尺寸超出 anchor 则 clamp 到 anchor。
     ///
-    /// Phase 5 jukebox 升格 panel 后按实际 UX 微调 880x620 占位尺寸。
+    /// 沉浸全屏化（2026-06-12）后所有 panel 一律返回全 anchor；Centered / ScalePanelSize 保留为
+    /// 「未来 panel 重新走子矩形」的工具与 Centered_* 单测回归保护，生产路径不再使用。
     /// </summary>
     public static class PanelLayoutCatalog
     {
         public static Rectangle GetRect(string panelName, Rectangle anchorScreenRect)
         {
-            // Phase 3 遗留：除 jukebox 外其他 panel 仍按全 anchor 打开——
-            // 它们的 web CSS 假设全 anchor viewport（kshop/help 等缩到小矩形会物理裁切）。
-            // 待 panels.js 接 panel_viewport_set 后再逐个开启下方 switch 中的小矩形分配。
-            //
-            // Phase 5：jukebox 已是新 panel（jukebox-panel.js 用 inset:6% 12% 百分比布局，
-            // 与 panelRect 大小解耦），可以直接使用基准 880×620 小矩形——
-            // 这是 Phase 4 收尾后真正缩小 panel 态 α blend 表面的第一个例子。
-            //
-            // 基准尺寸按 anchorScreenRect.Height / DESIGN_HEIGHT 缩放，与 WidgetScaler 同源
-            // （anchor 已是 letterbox-stripped viewport），保证大窗口下 panel 跟 widgets 比例一致放大、
-            // 4:3 / 16:10 / 紧凑窗口下整体小一档但布局不裁切。
+            // 沉浸全屏化（2026-06-12 收尾）：所有运行时 panel 一律全 anchor（return anchorScreenRect）。
+            // jukebox / arena 原走 Centered 小矩形（居中卡片浮在暗 backdrop 上），现已改为固定 1024×576 画布
+            // + web 端 .panel-scale-shell 整体等比缩放铺满全 16:9，与 tasks/kshop/stage-select 等一致。
+            // Centered / ScalePanelSize 保留为「未来若有 panel 重新走子矩形」的工具 + 下方 unreachable 占位
+            // 与 Centered_* 单测的回归保护，当前生产路径不使用。
             string name = panelName != null ? panelName.ToLowerInvariant() : "";
-            if (name == "jukebox")
-            {
-                int w, h;
-                ScalePanelSize(880, 620, anchorScreenRect, out w, out h);
-                return Centered(anchorScreenRect, w, h);
-            }
-            // 沉浸全屏化 2026-06-12：arena 由居中子矩形(Centered 1024×720)升级为全 anchor——
-            // arena-panel.js 已改固定 1024×576 画布 + .panel-scale-shell 整体等比缩放铺满全 16:9。
             return anchorScreenRect;
 
             #pragma warning disable 0162 // unreachable（保留小矩形配置作为其他 panel 适配 panel_viewport_set 后的目标值）

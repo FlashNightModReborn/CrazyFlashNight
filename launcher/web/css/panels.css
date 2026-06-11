@@ -3928,14 +3928,21 @@ html.perf-low-effects .map-panel-close-btn:hover {
 /* ═══════════════════════════════════════════════════════
    Jukebox Panel (Phase 5：折叠态由 C# JukeboxTitlebarWidget 接管，本面板仅承载展开内容)
    ═══════════════════════════════════════════════════════ */
+/* 沉浸全屏化 2026-06-12：jukebox 由 C# 居中子矩形(Centered 880×620)升级全 anchor + inset:0 +
+   固定 1024×576 画布(.panel-scale-shell 整体缩放)；双栏控制台布局（左 Now-Playing / 右 曲库）。*/
 #panel-container[data-panel="jukebox"] #panel-content {
-    inset:6% 12%;
+    inset:0;
+}
+#panel-container[data-panel="jukebox"] #panel-backdrop {
+    background:#0b0d12;
 }
 .jbp-panel {
-    width:100%; height:100%;
+    position:relative;
+    width:1024px; height:576px;
+    box-sizing:border-box;
     display:flex; flex-direction:column;
-    background:rgba(18,20,26,0.92);
-    border:1px solid rgba(102,204,255,0.18);
+    /* 不透明电台底 + 顶部 cyan 辉光氛围（纯 CSS，留 background-image 插槽后补电台美术）*/
+    background:radial-gradient(ellipse at 50% -8%, rgba(102,204,255,0.06), transparent 55%), #0b0d12;
     color:rgba(255,255,255,0.85);
     font:12px "Microsoft YaHei",sans-serif;
 }
@@ -3980,13 +3987,23 @@ html.perf-low-effects .map-panel-close-btn:hover {
     font-size:16px;
 }
 .jbp-close-btn:hover { background:rgba(255,80,100,0.25); }
+/* 双栏控制台：左 Now-Playing(波形/进度/设置)，右 曲库(专辑/曲目列表) */
 .jbp-body {
     flex:1; min-height:0;
+    display:flex; flex-direction:row; gap:16px;
+    padding:16px 18px;
+}
+.jbp-now {
+    flex:1.15 1 0; min-width:0; min-height:0;
+    display:flex; flex-direction:column; gap:12px;
+}
+.jbp-library {
+    flex:1 1 0; min-width:0; min-height:0;
     display:flex; flex-direction:column; gap:10px;
-    padding:12px; overflow:auto;
+    padding-left:16px; border-left:1px solid rgba(102,204,255,0.1);
 }
 .jbp-wave {
-    display:block; width:100%; height:64px;
+    display:block; width:100%; height:132px; flex-shrink:0;
     background:rgba(0,0,0,0.3); border:1px solid rgba(102,204,255,0.08); border-radius:3px;
 }
 .jbp-progress {
@@ -4026,7 +4043,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .jbp-album-option:hover { background:rgba(102,204,255,0.12); color:rgba(255,255,255,0.95); }
 .jbp-album-option.active { background:rgba(102,204,255,0.2); color:rgba(102,204,255,0.95); }
 .jbp-track-list {
-    flex:1; min-height:120px; max-height:320px;
+    flex:1; min-height:0;
     overflow-y:auto;
     border:1px solid rgba(255,255,255,0.06);
     border-radius:3px;
@@ -4041,8 +4058,8 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .jbp-track-item:hover { background:rgba(102,204,255,0.08); color:rgba(255,255,255,0.95); }
 .jbp-track-item.active { background:rgba(102,204,255,0.18); color:rgba(102,204,255,0.95); }
 .jbp-settings {
-    border-top:1px solid rgba(255,255,255,0.06);
-    padding-top:10px;
+    flex:1; min-height:0; overflow-y:auto;
+    padding-top:4px;
     display:flex; flex-direction:column; gap:6px;
 }
 .jbp-settings .jb-setting-group-label {

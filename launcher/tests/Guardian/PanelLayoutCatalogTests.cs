@@ -5,20 +5,21 @@ using Xunit;
 namespace CF7Launcher.Tests.Guardian
 {
     /// <summary>
-    /// Phase 5 当前行为：jukebox 走 880×620 小矩形（jukebox-panel.js 用 inset 百分比布局，与 panelRect 大小解耦）；
-    /// 其他 panel（kshop / help / map / lockbox / pinalign / gobang / unknown / null）仍按全 anchor 打开——
-    /// 它们的 web CSS 假设全 anchor viewport，缩到小矩形会物理裁切。Phase 3+ web CSS 适配 panel_viewport_set 后再切回小矩形。
+    /// 沉浸全屏化（2026-06-12）后：所有运行时 panel（含 jukebox / arena，原走 Centered 小矩形）一律返回全 anchor，
+    /// 因为各自 web 端已改固定 1024×576 画布 + .panel-scale-shell 整体等比缩放铺满全 16:9。
     ///
-    /// Centered helper 独立测试作为切回小矩形时的回归保护。
+    /// Centered / ScalePanelSize 仅作「未来 panel 重新走子矩形」的工具，下方 Centered_* 独立测试作回归保护。
     /// </summary>
     public class PanelLayoutCatalogTests
     {
         private static readonly Rectangle Anchor1080p = new Rectangle(100, 50, 1920, 1080);
 
         [Fact]
-        public void Phase5_NonJukeboxPanels_ReturnFullAnchor()
+        public void AllRuntimePanels_ReturnFullAnchor()
         {
-            string[] names = { "map", "kshop", "help", "lockbox", "pinalign", "gobang", "team", "arena", "unknown", null };
+            // 沉浸全屏化后 jukebox / arena 也回全 anchor（原 Centered 子矩形已退役）
+            string[] names = { "map", "kshop", "help", "lockbox", "pinalign", "gobang", "team", "arena",
+                               "jukebox", "intelligence", "stage-select", "tasks", "unknown", null };
             foreach (string n in names)
             {
                 Rectangle r = PanelLayoutCatalog.GetRect(n, Anchor1080p);
@@ -27,44 +28,10 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void Phase5_Jukebox_AtDesignAnchor_Returns880xClampedHeight()
-        {
-            // anchor 1024×576（design viewport，scale=1）→ 请求 880×620，高度被 Centered clamp 到 576
-            Rectangle design = new Rectangle(0, 0, 1024, 576);
-            Rectangle r = PanelLayoutCatalog.GetRect("jukebox", design);
-            Assert.Equal(880, r.Width);
-            Assert.Equal(576, r.Height);
-        }
-
-        [Fact]
-        public void Phase5_Jukebox_AtLargeAnchor_ScalesByViewportHeight()
-        {
-            // anchor 1920×1080 → scale=1080/576=1.875；请求 1650×1163；高度 Centered clamp 到 1080
-            Rectangle r = PanelLayoutCatalog.GetRect("jukebox", Anchor1080p);
-            Assert.Equal(1650, r.Width);
-            Assert.Equal(1080, r.Height);
-            Assert.Equal(100 + (1920 - 1650) / 2, r.X);
-            Assert.Equal(50, r.Y);
-        }
-
-        [Fact]
-        public void Phase5_Jukebox_AtTinyAnchor_FloorAtMinScale()
-        {
-            // 极小 anchor 触发 MIN_SCALE=0.5 floor，保证按钮仍可点击
-            Rectangle tiny = new Rectangle(0, 0, 200, 100);
-            Rectangle r = PanelLayoutCatalog.GetRect("jukebox", tiny);
-            // scale = max(0.5, 100/576) = 0.5；请求 440×310；Centered clamp 到 200×100
-            Assert.Equal(200, r.Width);
-            Assert.Equal(100, r.Height);
-        }
-
-        [Fact]
-        public void Phase5_Jukebox_CaseInsensitive()
+        public void Jukebox_CaseInsensitive_ReturnsFullAnchor()
         {
             Rectangle r = PanelLayoutCatalog.GetRect("JUKEBOX", Anchor1080p);
-            // 仅断言走了 jukebox 分支（被缩放），不是 default 全 anchor
-            Assert.NotEqual(Anchor1080p, r);
-            Assert.Equal(1650, r.Width);
+            Assert.Equal(Anchor1080p, r);
         }
 
         [Fact]

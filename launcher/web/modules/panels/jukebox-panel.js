@@ -15,7 +15,8 @@
 
     if (typeof Panels === 'undefined') return;
 
-    var _el;
+    var _el, _shellEl;
+    var _scaleHandle = null;   // 沉浸全屏化：PanelScale 句柄
     var _refs = {};
     var _opened = false;
 
@@ -78,54 +79,59 @@
                 '<div class="jbp-help-btn jb-ctrl-btn" id="jbp-help-btn" title="帮助">?</div>',
                 '<button class="jbp-close-btn" id="jbp-close-btn" type="button">×</button>',
             '</div>',
+            // 沉浸全屏化 2026-06-12：双栏控制台（左 Now-Playing：波形+进度+设置；右 曲库：专辑下拉+曲目列表）
             '<div class="jbp-body">',
-                '<canvas class="jbp-wave" id="jbp-wave" width="800" height="64"></canvas>',
-                '<div class="jbp-progress" id="jbp-progress"><div class="jbp-prog-fill" id="jbp-prog-fill"></div></div>',
-                '<div class="jbp-browser-row">',
-                    '<div class="jbp-album-dropdown" id="jbp-album-dropdown">',
-                        '<div class="jbp-album-trigger" id="jbp-album-trigger">',
-                            '<span class="jbp-album-label" id="jbp-album-label">全部</span>',
-                            '<span class="jb-dd-arrow">&#9662;</span>',
+                '<div class="jbp-now">',
+                    '<canvas class="jbp-wave" id="jbp-wave" width="800" height="64"></canvas>',
+                    '<div class="jbp-progress" id="jbp-progress"><div class="jbp-prog-fill" id="jbp-prog-fill"></div></div>',
+                    '<div class="jbp-settings" id="jbp-settings">',
+                        '<div class="jb-setting-group-label">音量</div>',
+                        '<div class="jb-slider-row" data-slider="volGlobal">',
+                            '<span class="jb-slider-label">全局</span>',
+                            '<div class="jb-slider-track"><div class="jb-slider-fill"></div><div class="jb-slider-thumb"></div></div>',
+                            '<span class="jb-slider-value">50</span>',
                         '</div>',
-                        '<div class="jbp-album-options" id="jbp-album-options"></div>',
+                        '<div class="jb-slider-row" data-slider="volBgm">',
+                            '<span class="jb-slider-label">音乐</span>',
+                            '<div class="jb-slider-track"><div class="jb-slider-fill"></div><div class="jb-slider-thumb"></div></div>',
+                            '<span class="jb-slider-value">80</span>',
+                        '</div>',
+                        '<div class="jb-setting-divider"></div>',
+                        '<div class="jb-setting-row jb-setting-item" data-key="override">',
+                            '<span class="jb-setting-dot"></span>',
+                            '<span class="jb-setting-label">覆盖关卡BGM</span>',
+                        '</div>',
+                        '<div class="jb-setting-row jb-setting-item" data-key="trueRandom">',
+                            '<span class="jb-setting-dot"></span>',
+                            '<span class="jb-setting-label">真随机</span>',
+                        '</div>',
+                        '<div class="jb-setting-divider"></div>',
+                        '<div class="jb-setting-group-label">播放模式</div>',
+                        '<div class="jb-setting-row jb-setting-item jb-radio" data-key="playMode" data-value="singleLoop">',
+                            '<span class="jb-setting-dot"></span>',
+                            '<span class="jb-setting-label">单曲循环</span>',
+                        '</div>',
+                        '<div class="jb-setting-row jb-setting-item jb-radio" data-key="playMode" data-value="albumLoop">',
+                            '<span class="jb-setting-dot"></span>',
+                            '<span class="jb-setting-label">专辑循环</span>',
+                        '</div>',
+                        '<div class="jb-setting-row jb-setting-item jb-radio" data-key="playMode" data-value="playOnce">',
+                            '<span class="jb-setting-dot"></span>',
+                            '<span class="jb-setting-label">播完回默认</span>',
+                        '</div>',
                     '</div>',
                 '</div>',
-                '<div class="jbp-track-list" id="jbp-track-list"></div>',
-                '<div class="jbp-settings" id="jbp-settings">',
-                    '<div class="jb-setting-group-label">音量</div>',
-                    '<div class="jb-slider-row" data-slider="volGlobal">',
-                        '<span class="jb-slider-label">全局</span>',
-                        '<div class="jb-slider-track"><div class="jb-slider-fill"></div><div class="jb-slider-thumb"></div></div>',
-                        '<span class="jb-slider-value">50</span>',
+                '<div class="jbp-library">',
+                    '<div class="jbp-browser-row">',
+                        '<div class="jbp-album-dropdown" id="jbp-album-dropdown">',
+                            '<div class="jbp-album-trigger" id="jbp-album-trigger">',
+                                '<span class="jbp-album-label" id="jbp-album-label">全部</span>',
+                                '<span class="jb-dd-arrow">&#9662;</span>',
+                            '</div>',
+                            '<div class="jbp-album-options" id="jbp-album-options"></div>',
+                        '</div>',
                     '</div>',
-                    '<div class="jb-slider-row" data-slider="volBgm">',
-                        '<span class="jb-slider-label">音乐</span>',
-                        '<div class="jb-slider-track"><div class="jb-slider-fill"></div><div class="jb-slider-thumb"></div></div>',
-                        '<span class="jb-slider-value">80</span>',
-                    '</div>',
-                    '<div class="jb-setting-divider"></div>',
-                    '<div class="jb-setting-row jb-setting-item" data-key="override">',
-                        '<span class="jb-setting-dot"></span>',
-                        '<span class="jb-setting-label">覆盖关卡BGM</span>',
-                    '</div>',
-                    '<div class="jb-setting-row jb-setting-item" data-key="trueRandom">',
-                        '<span class="jb-setting-dot"></span>',
-                        '<span class="jb-setting-label">真随机</span>',
-                    '</div>',
-                    '<div class="jb-setting-divider"></div>',
-                    '<div class="jb-setting-group-label">播放模式</div>',
-                    '<div class="jb-setting-row jb-setting-item jb-radio" data-key="playMode" data-value="singleLoop">',
-                        '<span class="jb-setting-dot"></span>',
-                        '<span class="jb-setting-label">单曲循环</span>',
-                    '</div>',
-                    '<div class="jb-setting-row jb-setting-item jb-radio" data-key="playMode" data-value="albumLoop">',
-                        '<span class="jb-setting-dot"></span>',
-                        '<span class="jb-setting-label">专辑循环</span>',
-                    '</div>',
-                    '<div class="jb-setting-row jb-setting-item jb-radio" data-key="playMode" data-value="playOnce">',
-                        '<span class="jb-setting-dot"></span>',
-                        '<span class="jb-setting-label">播完回默认</span>',
-                    '</div>',
+                    '<div class="jbp-track-list" id="jbp-track-list"></div>',
                 '</div>',
             '</div>',
             '<div class="jbp-help-modal" id="jbp-help-modal">',
@@ -188,7 +194,11 @@
                 _refs.albumWrap.classList.remove('open');
             }
         };
-        return _el;
+        // 沉浸全屏化：固定 1024×576 画布(.jbp-panel)包进共享 .panel-scale-shell，整体等比缩放铺满全 anchor
+        _shellEl = document.createElement('div');
+        _shellEl.className = 'panel-scale-shell jbp-scale-shell';
+        _shellEl.appendChild(_el);
+        return _shellEl;
     }
 
     var _onDocClick = null;
@@ -201,6 +211,14 @@
 
     function onOpen() {
         _opened = true;
+        if (_scaleHandle) _scaleHandle.detach();
+        _scaleHandle = (typeof PanelScale !== 'undefined') ? PanelScale.attach(_shellEl, 1024, 576) : null;
+        // 双栏布局后波形画布按实际布局尺寸重设 buffer（createDOM 时元件未入 DOM 取不到尺寸，且 CSS 高度由 64→132），避免拉伸/模糊
+        if (_refs.canvas) {
+            var _dpr = window.devicePixelRatio || 1;
+            _refs.canvas.width = Math.round((_refs.canvas.clientWidth || 800) * _dpr);
+            _refs.canvas.height = Math.round((_refs.canvas.clientHeight || 132) * _dpr);
+        }
         if (_onDocClick) document.addEventListener('click', _onDocClick);
 
         _bridgeAudioH = onAudioData;
@@ -267,6 +285,7 @@
     function cleanup() {
         if (!_opened) return;
         _opened = false;
+        if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         if (_onDocClick) document.removeEventListener('click', _onDocClick);
         if (_bridgeAudioH) Bridge.off('audio', _bridgeAudioH);
         if (_bridgeCatalogH) Bridge.off('catalog', _bridgeCatalogH);
