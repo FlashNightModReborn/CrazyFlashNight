@@ -272,9 +272,14 @@
 }
 
 #panel-container[data-panel="stage-select"] #panel-content {
-    inset: 2% 1.5%;
+    inset: 0;
     align-items: center;
     justify-content: center;
+}
+
+/* 沉浸全屏化 2026-06-11：兜底深底，去 backdrop 暗屏（runtime 舞台已铺满，仅防亚像素边缝）*/
+#panel-container[data-panel="stage-select"] #panel-backdrop {
+    background: #0b1118;
 }
 
 #panel-container[data-panel="tasks"] #panel-content {
@@ -4312,21 +4317,30 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 
 .stage-select-panel.is-runtime {
+    /* 沉浸全屏化 2026-06-11：去 max-width:1560/max-height:920 卡片上限 + 去 960/560 min，
+       铺满全 anchor 16:9（小窗口同比缩小不溢出）*/
     width: 100%;
-    max-width: 1560px;
     height: 100%;
-    max-height: 920px;
+    min-width: 0;
+    min-height: 0;
     flex: 0 1 auto;
 }
 
+/* runtime header 改为浮于舞台之上的覆盖 HUD（区域切换/关闭），让舞台吃满全 16:9 高度；
+   背景改顶部 scrim 渐变保证控件可读又不挡舞台，去实线分隔。*/
 .stage-select-panel.is-runtime .stage-select-header {
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 42px;
     grid-template-columns: minmax(160px, max-content) 1fr auto;
     gap: 8px;
     padding: 5px 10px;
     overflow: visible;
     z-index: 80;
+    background: linear-gradient(180deg, rgba(8, 13, 20, 0.82) 0%, rgba(8, 13, 20, 0.34) 64%, transparent 100%);
+    border-bottom: none;
 }
 
 .stage-select-panel.is-runtime .stage-select-heading {
@@ -4458,10 +4472,11 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 
 .stage-select-panel.is-runtime .stage-select-body {
-    height: calc(100% - 42px);
+    /* header 转覆盖 HUD 后 body 吃满全高、去内边距，舞台 edge-to-edge 铺满 16:9 */
+    height: 100%;
     grid-template-columns: 1fr;
     gap: 0;
-    padding: 8px;
+    padding: 0;
 }
 
 .stage-select-stage-shell {

@@ -398,10 +398,22 @@ var StageSelectPanel = (function() {
 
     function applyBackgroundRect(rect) {
         var r = rect || { x: 0, y: 0, w: DESIGN_W, h: DESIGN_H };
-        _backgroundEl.style.left = (Number(r.x) || 0) + 'px';
-        _backgroundEl.style.top = (Number(r.y) || 0) + 'px';
-        _backgroundEl.style.width = (Number(r.w) || DESIGN_W) + 'px';
-        _backgroundEl.style.height = (Number(r.h) || DESIGN_H) + 'px';
+        var x = Number(r.x) || 0;
+        var y = Number(r.y) || 0;
+        var w = Number(r.w) || DESIGN_W;
+        var h = Number(r.h) || DESIGN_H;
+        _backgroundEl.style.left = x + 'px';
+        _backgroundEl.style.top = y + 'px';
+        if (isRuntimeMode()) {
+            // 沉浸全屏化 2026-06-11：runtime 下底图至少铺到舞台右/下边缘——16 帧源 rect 高度参差
+            // （552/555/556/614/768），原本 h<576 帧底沿露 #020617 黑条。只放大不缩小、不改 x/y：
+            // under-fill 帧拉伸填满（背景图 4% 拉伸无感、marker/按钮在独立层不受影响），over-fill/偏移帧
+            // 保持原裁切窗口。dev 静态复刻保留精确 manifest rect 以对齐原版审计。
+            w = Math.max(w, DESIGN_W - x);
+            h = Math.max(h, DESIGN_H - y);
+        }
+        _backgroundEl.style.width = w + 'px';
+        _backgroundEl.style.height = h + 'px';
     }
 
     function renderStageButtons(frame) {
@@ -1181,7 +1193,9 @@ var StageSelectPanel = (function() {
         if (!shell) return;
         var rect = shell.getBoundingClientRect();
         var scale = Math.min(rect.width / DESIGN_W, rect.height / DESIGN_H);
-        var maxScale = isRuntimeMode() ? 1.65 : 1.35;
+        // 沉浸全屏化 2026-06-11：runtime 不再上限钳制，舞台等比放大铺满全 anchor 16:9
+        // （shell 已是全 16:9，两路 Math.min 相等，零 letterbox）；dev 保留 1.35 防静态复刻过放大。
+        var maxScale = isRuntimeMode() ? Infinity : 1.35;
         scale = Math.max(0.45, Math.min(maxScale, scale || 1));
         _stageEl.style.width = DESIGN_W + 'px';
         _stageEl.style.height = DESIGN_H + 'px';
