@@ -145,6 +145,7 @@ function buildCatalog(rawTasks, taskTexts) {
     // economyCount 白名单惰性解析：仅当数据真用到 economyCount 才读 AchievementMetrics.as。
     let economyCounters = null;
     const pendingTaskRefs = []; // taskFinished 跨任务引用，全集建完后做存在性闭包（防前向引用误杀）
+    const pendingChainRefs = []; // chainProgress 链引用，全集建完后校验 链存在 + target ≤ 链最大 seq（可达性）
     const chains = {};            // 有序号链：name → { seq: id }
     const chainsUnsequenced = {}; // 无序号链（委托等）：name → [id...]（遇见序）
     const idSeen = {};
@@ -187,6 +188,18 @@ function buildCatalog(rawTasks, taskTexts) {
                         fail(ctx + '.conditions[' + c + ']: taskFinished cannot reference itself');
                     }
                     pendingTaskRefs.push({ ctx: ctx + '.conditions[' + c + ']', ref: String(cond.params.taskId) });
+                }
+                // chainProgress 可达性闭包（post-pass）：task_chains_progress 只在【有序号链】任务
+                // FinishTask 时写 max(progress, seq)（通信_鸡蛋_任务系统.as UpdateTaskProgress），
+                // 引用无序号链或 target 超链最大 seq = 永不可达静默上架
+                if (cond.type === 'chainProgress') {
+                    pendingChainRefs.push({
+                        ctx: ctx + '.conditions[' + c + ']',
+                        chain: String(cond.params.chain),
+                        target: Number(cond.target),
+                        ownChain: chainName,
+                        ownSeq: seq
+                    });
                 }
             }
         }
@@ -253,6 +266,35 @@ function buildCatalog(rawTasks, taskTexts) {
     for (let r = 0; r < pendingTaskRefs.length; r += 1) {
         if (idSeen[pendingTaskRefs[r].ref] !== true) {
             fail(pendingTaskRefs[r].ctx + ': taskFinished references missing task id "' + pendingTaskRefs[r].ref + '"');
+        }
+    }
+
+    // chainProgress 条件可达性闭包（全集已建完；规则对齐 derive-achievement-catalog ⑤）：
+    //   链必须是【有序号链】（无序号链如委托永不写 task_chains_progress）+ target ≤ 链最大 seq；
+    //   引用自己所在链时，须存在【其它】任务 seq ≥ target——否则进度只能靠本任务自身完成推到
+    //   target，条件先于完成永不满足（自链死锁，类比 taskFinished 禁自引用）。
+    for (let r = 0; r < pendingChainRefs.length; r += 1) {
+        const ref = pendingChainRefs[r];
+        const seqMap = chains[ref.chain];
+        if (seqMap === undefined) {
+            fail(ref.ctx + ': chainProgress references unknown sequenced chain "' + ref.chain
+                + '" (无序号链不更新 task_chains_progress，条件永不可达)');
+        }
+        const seqs = Object.keys(seqMap).map(Number);
+        const maxSeq = Math.max.apply(null, seqs);
+        if (ref.target > maxSeq) {
+            fail(ref.ctx + ': chainProgress target ' + ref.target + ' exceeds chain "' + ref.chain
+                + '" max seq ' + maxSeq + ' (unreachable condition)');
+        }
+        if (ref.chain === ref.ownChain && ref.ownSeq !== null) {
+            let maxOtherSeq = -Infinity;
+            for (let s = 0; s < seqs.length; s += 1) {
+                if (seqs[s] !== ref.ownSeq && seqs[s] > maxOtherSeq) maxOtherSeq = seqs[s];
+            }
+            if (ref.target > maxOtherSeq) {
+                fail(ref.ctx + ': chainProgress target ' + ref.target + ' on own chain "' + ref.chain
+                    + '" is only reachable by finishing this task itself (self-chain deadlock)');
+            }
         }
     }
 

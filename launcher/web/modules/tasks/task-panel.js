@@ -451,7 +451,7 @@
         highlightActiveIcon();
 
         var cached = _detailCache[task.taskId];
-        if (cached) { renderTaskDetail(cached, task); maybeRefreshNavigable(index, task, cached); return; }
+        if (cached) { renderTaskDetail(cached, task); maybeRefreshRuntime(index, task, cached); return; }
 
         renderSkeletonDetail();
         var snapSession = _session;
@@ -464,6 +464,7 @@
                 return;
             }
             if (data.taskData) _detailCache[task.taskId] = data.taskData;
+            applyDetailSatisfied(task, data.taskData); // 渲染前先吸收权威完成态（徽章/按钮/列表同步纠偏）
             renderTaskDetail(data.taskData, task);
         });
     }
@@ -492,21 +493,69 @@
         if (ds.titleText) btn.title = ds.titleText; else btn.removeAttribute('title');
     }
 
-    // finishNavigable 是 AS2 动态计算（注册表就绪 + 地图解锁 + 当前是否战斗地图），不应被详情缓存永久固化。
-    // 仅当当前显示为「满足 + 非远程 + 不可前往」（可能因注册表迟到/区域刚解锁而陈旧禁用）时，后台复查一次并就地修补；
-    // 已可前往(true)不复查——陈旧 true 由 navigateFinish 服务端 not_navigable 兜底，避免每次选择都打 AS2。
-    function maybeRefreshNavigable(index, summary, cached) {
-        if (!summary || !summary.satisfied) return;
-        if (!cached || cached.finishRemote === true || cached.finishNavigable === true) return;
+    // 详情缓存只该固化静态字段；以下【运行态】字段在缓存命中时后台复查一次并就地修补，防永久陈旧：
+    //   · conditions —— cur 是实时读数（击杀/计数随游戏推进），固化后重选任务永远显示旧进度
+    //   · satisfied —— conditions 可无事件翻转完成态；detail 回包带权威 taskCompleteCheck 结果
+    //   · finishNavigable —— 注册表迟到/区域刚解锁导致的陈旧 false（原 maybeRefreshNavigable 语义：
+    //     仅「满足+非远程+不可前往」复查；陈旧 true 由 navigateFinish 服务端 not_navigable 兜底）
+    // 无 conditions 且无导航复查需求的任务保持纯缓存命中（不打 AS2），缓存仍有意义。
+    function maybeRefreshRuntime(index, summary, cached) {
+        if (!cached) return;
+        var hasConds = (cached.conditions && cached.conditions.length > 0);
+        var navStale = (summary && summary.satisfied === true &&
+            cached.finishRemote !== true && cached.finishNavigable !== true);
+        if (!hasConds && !navStale) return;
         var reqSession = _session;
         sendPanelMsg('detail', { index: index }, function(data) {
             if (reqSession !== _session || _activeIndex !== index) return;
             if (!data || !data.success || !data.taskData) return;
-            var nav = (data.taskData.finishNavigable === true);
-            if (nav === cached.finishNavigable) return;
-            cached.finishNavigable = nav;
+            var fresh = data.taskData;
+            cached.finishNavigable = (fresh.finishNavigable === true);
+            if (fresh.conditions) cached.conditions = fresh.conditions;
+            if (applyDetailSatisfied(summary, fresh)) {
+                // 完成态翻转：徽章/按钮/列表角标整体过时 → 全量重渲（罕见事件，入场动效重放可接受）
+                renderTaskDetail(cached, summary);
+                return;
+            }
+            patchCondRows(cached.conditions);
             patchDeliverButton(cached, summary);
         });
+    }
+
+    // 吸收 detail 回包的权威 satisfied（旧 AS2 回包无此字段 → 布尔守卫直接跳过）。
+    // 翻转时同步左侧列表/计数/筛选 chips（与 snapshot 同一渲染路径），返回是否发生翻转。
+    function applyDetailSatisfied(summary, detail) {
+        if (!summary || !detail || typeof detail.satisfied !== 'boolean') return false;
+        if (summary.satisfied === detail.satisfied) return false;
+        summary.satisfied = detail.satisfied;
+        renderChips();
+        renderCount();
+        renderTaskList();
+        highlightActiveIcon();
+        return true;
+    }
+
+    // 就地修补条件进度行（不重渲详情，避免入场动效重放）。
+    // 行结构静态（条数/label/target 来自任务数据），运行态只有 cur 变化。
+    function patchCondRows(conditions) {
+        if (!_rightEl || !conditions) return;
+        var rows = _rightEl.querySelectorAll('.task-cond-row');
+        for (var i = 0; i < rows.length && i < conditions.length; i++) {
+            var pr = condProgress(conditions[i]);
+            var countEl = rows[i].querySelector('.task-cond-count');
+            var fillEl = rows[i].querySelector('.task-cond-fill');
+            if (countEl) countEl.textContent = pr.cur + '/' + pr.target;
+            if (fillEl) fillEl.style.width = pr.pct + '%';
+            if (pr.done) rows[i].classList.add('done'); else rows[i].classList.remove('done');
+        }
+    }
+
+    // 条件进度归一化（渲染与就地修补共用同一口径：target 兜底 1、cur 夹紧 [0,target]）
+    function condProgress(cond) {
+        cond = cond || {};
+        var target = Number(cond.target) > 0 ? Number(cond.target) : 1;
+        var cur = Math.min(Math.max(Number(cond.cur) || 0, 0), target);
+        return { cur: cur, target: target, done: cur >= target, pct: Math.round(cur * 100 / target) };
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -947,18 +996,17 @@
         html += '</div>'; // .task-requirement-area
 
         // 共享判定条件进度（conditions，可选；AS2 conditionsProgress 回 {label,cur,target}，
-        // 与成就进度同口径——任务系统借成就表达力后的 UI 复用面）
+        // 与成就进度同口径——任务系统借成就表达力后的 UI 复用面）。
+        // cur 是运行态读数：缓存命中时由 maybeRefreshRuntime 后台复查 + patchCondRows 就地刷新。
         if (task.conditions && task.conditions.length > 0) {
             html += '<div class="task-cond-area">';
             for (var ci = 0; ci < task.conditions.length; ci++) {
                 var cond = task.conditions[ci] || {};
-                var cTarget = Number(cond.target) > 0 ? Number(cond.target) : 1;
-                var cCur = Math.min(Math.max(Number(cond.cur) || 0, 0), cTarget);
-                var done = cCur >= cTarget;
-                html += '<div class="task-cond-row' + (done ? ' done' : '') + '">' +
+                var pr = condProgress(cond);
+                html += '<div class="task-cond-row' + (pr.done ? ' done' : '') + '">' +
                     '<span class="task-cond-label">' + escHtml(cond.label || '') + '</span>' +
-                    '<span class="task-cond-count">' + cCur + '/' + cTarget + '</span>' +
-                    '<span class="task-cond-bar"><span class="task-cond-fill" style="width:' + Math.round(cCur * 100 / cTarget) + '%"></span></span>' +
+                    '<span class="task-cond-count">' + pr.cur + '/' + pr.target + '</span>' +
+                    '<span class="task-cond-bar"><span class="task-cond-fill" style="width:' + pr.pct + '%"></span></span>' +
                     '</div>';
             }
             html += '</div>';

@@ -294,6 +294,8 @@
                         var dd = clone(DETAILS[task.taskId]);
                         // 动态可达性覆盖（镜像 AS2 按当前游戏态实时算 finishNavigable）
                         if (self._navOverride[task.taskId] !== undefined) dd.finishNavigable = self._navOverride[task.taskId];
+                        // 运行态完成判定（镜像 AS2 handleDetail 实时回 taskCompleteCheck，与 snapshot 同源）
+                        dd.satisfied = (task.satisfied === true);
                         resp({ success: true, taskData: dd });
                         break;
                     }
@@ -565,14 +567,16 @@
                 }, 3000);
                 return true;
             });
-            await check('task-ui11', 'detail 缓存：再次点击已加载任务不重发 detail', async function() {
-                // 点新任务(index5) → 触发一次 detail；再切走切回均应命中缓存，不再发请求
+            await check('task-ui11', 'detail 缓存：再次点击已加载任务不重发 detail（无 conditions/导航复查需求的任务）', async function() {
+                // 点新任务(index5) → 触发一次 detail；再切走切回均应命中缓存，不再发请求。
+                // 用例须避开运行态复查任务：101(index0) 带 conditions、105(index4) 满足+不可前往——
+                // 二者缓存命中会按设计后台复查（task-ui24/ui42 专项验证），不属于"纯缓存"契约面。
                 document.querySelector('.task-icon[data-index="5"]').click();
                 await waitFor(function() { return document.querySelector('.task-title-line2') && document.querySelector('.task-title-line2').textContent === '通缉：赤色之手'; }, 3000);
                 var c1 = host._detailCalls;
-                document.querySelector('.task-icon[data-index="0"]').click(); // 已缓存(ui8)
-                await waitFor(function() { return document.querySelector('.task-title-line2').textContent === '斩杀大boss僵尸'; }, 3000);
-                document.querySelector('.task-icon[data-index="5"]').click(); // 现已缓存
+                document.querySelector('.task-icon[data-index="1"]').click(); // 102 已缓存(ui9)，无 conditions 且未满足
+                await waitFor(function() { return document.querySelector('.task-title-line2').textContent === '初入战场'; }, 3000);
+                document.querySelector('.task-icon[data-index="5"]').click(); // 现已缓存，未满足 → 无导航复查
                 await waitFor(function() { return document.querySelector('.task-title-line2').textContent === '通缉：赤色之手'; }, 3000);
                 return host._detailCalls === c1;
             });
@@ -1199,6 +1203,32 @@
                 await waitFor(function() { return document.querySelector('.task-title-line2') && document.querySelector('.task-title-line2').textContent === '初入战场'; }, 3000);
                 var none = document.querySelectorAll('.task-cond-row').length === 0;
                 return row0Ok && row1Ok && fillW && none;
+            });
+
+            await check('task-ui42', '条件进度不被缓存固化：读数推进后重选任务→后台复查→进度行就地刷新（含 done 态翻转）', async function() {
+                await reopenFresh();
+                clickIcon(0); // 101 首次加载（fresh detail，conditions 18/50 进缓存）
+                await waitFor(function() { return document.querySelectorAll('.task-cond-row').length === 2; }, 3000);
+                // 模拟游戏侧条件推进（AS2 rawOf 读数变化）：mock 源数据前进到 50/50
+                var origCur = DETAILS[101].conditions[0].cur;
+                DETAILS[101].conditions[0].cur = 50;
+                try {
+                    clickIcon(1); // 切走
+                    await waitFor(function() { return titleNow() === '初入战场'; }, 3000);
+                    var c1 = host._detailCalls;
+                    clickIcon(0); // 切回 → 缓存命中（先渲染旧 18/50）→ 后台复查 → 就地修补为 50/50
+                    await waitFor(function() {
+                        var row = document.querySelector('.task-cond-row');
+                        return row && row.querySelector('.task-cond-count').textContent === '50/50';
+                    }, 3000);
+                    var row0 = document.querySelector('.task-cond-row');
+                    var doneOk = row0.classList.contains('done') &&
+                        row0.querySelector('.task-cond-fill').style.width === '100%';
+                    var refetched = host._detailCalls > c1; // 复查确实打了 detail（非纯缓存）
+                    return doneOk && refetched;
+                } finally {
+                    DETAILS[101].conditions[0].cur = origCur; // 恢复 mock，防污染后续用例
+                }
             });
 
             var passed = results.filter(function(r) { return r.pass; }).length;

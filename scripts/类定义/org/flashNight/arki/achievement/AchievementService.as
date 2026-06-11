@@ -180,6 +180,15 @@ class org.flashNight.arki.achievement.AchievementService {
     // scanTick — 解锁锁存 + toast 通知的唯一写点（10 秒循环任务，两次触发间零每帧成本）
     // ═══════════════════════════════════════════════════════════
     public static function scanTick():Void {
+        // A2 联动（判定层共享设计 §7）：含 conditions 的进行中任务，其达成态可能【无事件】翻转
+        //（如击杀计数到 50——没有物品获得/存档事件可触发 是否达成任务检测）。借同一 10s 心跳
+        // 刷新任务红点/td 信号，不另注册第二个循环任务。无 conditions 任务时零额外成本。
+        // ⚠ 必须置于 _dataReady/ensureInit 门【前】：任务判定生命周期不依赖成就目录可用性，
+        // 成就目录加载失败（_dataReady 永 false）不得连带停掉任务条件的红点刷新。
+        if (TaskUtil.anyActiveConditions()) {
+            if (typeof _root.是否达成任务检测 == "function") _root.是否达成任务检测();
+        }
+
         if (!_dataReady) return;
         if (!ensureInit()) return;
         var a:Object = _root._saveExt.成就; // 现场解引用
@@ -202,13 +211,6 @@ class org.flashNight.arki.achievement.AchievementService {
         }
         // 首轮静默仅一次：老档追溯解锁可达十几条，首扫静默锁存；正常会话首扫照常通知
         _suppressToastOnce = false;
-
-        // A2 联动（判定层共享设计 §7）：含 conditions 的进行中任务，其达成态可能【无事件】翻转
-        //（如击杀计数到 50——没有物品获得/存档事件可触发 是否达成任务检测）。借同一 10s 心跳
-        // 刷新任务红点/td 信号，不另注册第二个循环任务。无 conditions 任务时零额外成本。
-        if (TaskUtil.anyActiveConditions()) {
-            if (typeof _root.是否达成任务检测 == "function") _root.是否达成任务检测();
-        }
     }
 
     // ═══════════════════════════════════════════════════════════

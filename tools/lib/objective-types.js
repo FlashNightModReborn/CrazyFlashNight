@@ -47,6 +47,8 @@ function validateCondition(cond, ctx, fail, economyCounters) {
             break; // 无必填 params
         case 'taskFinished':
             if (p.taskId === undefined || p.taskId === null || p.taskId === '') fail(ctx + ': taskFinished params.taskId required');
+            // rawOf 对 taskFinished 显式返 0/1 布尔（完成次数不外露），target>1 = 永不可达静默上架
+            if (target !== 1) fail(ctx + ': taskFinished target must be 1 (boolean-type, rawOf returns 0/1)');
             break;
         case 'chainProgress':
             if (typeof p.chain !== 'string' || !p.chain) fail(ctx + ': chainProgress params.chain required');
@@ -56,6 +58,12 @@ function validateCondition(cond, ctx, fail, economyCounters) {
             break;
         case 'itemOwned':
             if (typeof p.item !== 'string' || !p.item) fail(ctx + ': itemOwned params.item required');
+            // rawOf 对 itemOwned 返 0/1 布尔（进度条用 itemCount），target>1 = 永不可达
+            if (target !== 1) fail(ctx + ': itemOwned target must be 1 (boolean-type; use itemCount for progress)');
+            // count<1 时 containTaskItems("item#0") 恒真 = 条件直接错误达成（与成就 validateObjective 同规）
+            if (p.count !== undefined && (typeof p.count !== 'number' || isNaN(p.count) || p.count < 1)) {
+                fail(ctx + ': itemOwned params.count must be a number >= 1 when present');
+            }
             break;
         case 'itemCount':
             if (typeof p.item !== 'string' || !p.item) fail(ctx + ': itemCount params.item required');

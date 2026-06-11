@@ -244,6 +244,9 @@ class org.flashNight.arki.task.TaskPanelService {
             // 共享判定条件进度（可选字段 conditions；与成就 progressOf 同口径 {label,cur,target}，
             // cur 为运行态实时读数——必须由 AS2 回，web catalog 只有静态 target）
             conditions: TaskUtil.conditionsProgress(taskData, entry),
+            // 运行态完成判定（与 snapshot.satisfied 同口径 taskCompleteCheck）：随详情实时回，
+            // 供 web 缓存命中后台复查纠正陈旧 satisfied（conditions 进度可无事件翻转完成态）
+            satisfied: (_root.taskCompleteCheck(index) == true),
             // 远程交付开关：仅 finish_remote==true 的任务允许面板直接交付，否则须前往 NPC
             finishRemote: (taskData.finish_remote == true),
             // 前往交付：该任务 finish_npc 当前是否可一键跳转到其地图位置
