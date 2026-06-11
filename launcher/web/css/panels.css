@@ -281,6 +281,31 @@
     inset: 0;
 }
 
+/* ── 沉浸全屏化 Wave 1（A 类，2026-06-11）──
+   team / help 与 tasks 同走 inset:0 铺满全 anchor（去默认 4% 6% 卡片 + #panel-backdrop 暗屏）。
+   team 子面板(pet/merc)本身已是 1024×576 scale-shell，inset:0 后 contain 两路相等零信箱；
+   help 是纯文档流，inset:0 后自然撑满，但 .help-panel 的 clip-path 切角 + 1px border 会在四角
+   露出 backdrop 暗三角，故全屏态一并去除卡片 chrome 并兜底不透明底色（详见下方 .help-panel 覆盖）。*/
+#panel-container[data-panel="team"] #panel-content {
+    inset: 0;
+}
+
+#panel-container[data-panel="help"] #panel-content {
+    inset: 0;
+}
+/* help 全屏态：去切角/边框/卡片感，兜底不透明底防 backdrop 透色，正文列宽收敛防超宽行宽过长 */
+#panel-container[data-panel="help"] .help-panel {
+    clip-path: none;
+    border: none;
+    background: #0a0c12;
+}
+#panel-container[data-panel="help"] .help-content {
+    max-width: 980px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 /* ════════════════════════════════════════════════════════════════════
    Flash Tooltip — Layout Primitives & Visual Tokens
    ════════════════════════════════════════════════════════════════════
