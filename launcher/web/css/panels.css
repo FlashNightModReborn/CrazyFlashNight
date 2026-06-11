@@ -2634,6 +2634,15 @@
 /* ═══════════════════════════════════════════════════════
    Map Panel
    ═══════════════════════════════════════════════════════ */
+/* 沉浸全屏化 2026-06-12：map「背景填充铺满」方案——inset:0 去卡片黑边；.map-panel 去切角/border/外阴影
+   铺满全 16:9（保留绿/琥珀渐变作 ambient 底）。**stage 1031×608 坐标/命中图一律不动（hit-test 零风险）**；
+   stage 周围 letterbox 区由 .map-stage-shell 的 per-page 底图延伸(cover + 暗罩, applyPage 设)填充，非黑。*/
+#panel-container[data-panel="map"] #panel-content {
+    inset:0;
+}
+#panel-container[data-panel="map"] #panel-backdrop {
+    background:#05070a;
+}
 .map-panel {
     display:flex;
     flex-direction:column;
@@ -2643,9 +2652,6 @@
         radial-gradient(circle at 18% 14%, rgba(121, 175, 74, 0.1), transparent 24%),
         radial-gradient(circle at 78% 24%, rgba(255, 196, 64, 0.08), transparent 22%),
         linear-gradient(180deg, rgba(8, 10, 14, 0.98), rgba(5, 7, 10, 0.96));
-    border:1px solid rgba(180, 255, 0, 0.16);
-    box-shadow:0 0 40px rgba(144, 255, 0, 0.08), inset 0 0 90px rgba(126, 183, 43, 0.05);
-    clip-path:polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
     overflow:hidden;
     position:relative;
     font-family:"Consolas","Courier New","Microsoft YaHei",monospace;
@@ -2790,10 +2796,21 @@
     flex:1 1 auto;
     min-width:0;
     min-height:0;
-    max-width:1380px;
     display:flex;
     align-items:center;
     justify-content:center;
+    /* 背景延伸：per-page 底图 cover（applyPage 设 backgroundImage），让 stage 周围 letterbox 显扩展地图氛围 */
+    position:relative;
+    background-size:cover;
+    background-position:center;
+}
+/* 背景延伸暗罩：盖在 shell 底图之上、stage-frame 之下（DOM 序在前→被 stage 覆盖），让中央 stage 突出、扩展区氛围化 */
+.map-stage-shell::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    background:rgba(5, 7, 10, 0.60);
+    pointer-events:none;
 }
 
 /* 右侧独立 rail: 和 stage-shell 并排, 承载 filter 按钮 */
