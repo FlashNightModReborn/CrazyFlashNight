@@ -34,7 +34,10 @@ var IntelligencePanel = (function() {
     var _currentGlossaryTerm = '';
     var _glossarySnapshot = null;      // 当前名词的快照数据
 
-    var DESIGN_WIDTH = 1180;
+    // 沉浸全屏化（2026-06-11）：设计画布从 1180×790（aspect 1.494，宽屏下左右柱箱）
+    // 改为 1404×790（=790×16/9，严格 16:9 保字号密度）。fitPanelToParent/updateFitScale
+    // 等比逻辑不变，比例对齐 anchor 16:9 后柱箱自动消失，中列阅读区吃下多出的 224px。
+    var DESIGN_WIDTH = 1404;
     var DESIGN_HEIGHT = 790;
 
     Panels.register('intelligence', {

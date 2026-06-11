@@ -563,7 +563,8 @@ var IntelligenceHarnessQA = (function() {
                                 api.assert(panel.left >= shell.left - 1 && panel.right <= shell.right + 1, preset + ' panel stays inside horizontal bounds');
                                 api.assert(panel.top >= shell.top - 1 && panel.bottom <= shell.bottom + 1, preset + ' panel stays inside vertical bounds');
                                 api.assert(content.width > 300 && content.height > 170, preset + ' content readable area');
-                                assertNear(api, ratios.aspect, 1180 / 790, 0.015, preset + ' panel aspect');
+                                /* 沉浸全屏化 2026-06-11：设计画布 1180×790→1404×790（16:9），断言跟随 */
+                                assertNear(api, ratios.aspect, 1404 / 790, 0.015, preset + ' panel aspect');
                                 if (!baseline) baseline = ratios;
                                 else {
                                     assertNear(api, ratios.contentW, baseline.contentW, 0.035, preset + ' content width ratio');

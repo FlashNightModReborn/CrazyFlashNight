@@ -306,6 +306,21 @@
     box-sizing: border-box;
 }
 
+/* ── 共享 panel scale-shell primitive（沉浸全屏化 Wave 2，2026-06-11）──
+   固定设计画布（--pss-w × --pss-h，默认 1024×576）+ 整体 transform:scale 等比缩放铺满父容器
+   （#panel-content = 全 anchor 16:9）。JS 由 modules/panel-scale.js 的 PanelScale.attach(shellEl,
+   designW, designH) 写 --panel-scale + --pss-w/--pss-h。供新接入 B 类面板复用（kshop/jukebox/
+   arena/stage-select），不强迁 tasks/pet/merc/intelligence 各自既有等价实现。*/
+.panel-scale-shell {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--pss-w, 1024px);
+    height: var(--pss-h, 576px);
+    transform: scale(var(--panel-scale, 1));
+    transform-origin: top left;
+}
+
 /* ════════════════════════════════════════════════════════════════════
    Flash Tooltip — Layout Primitives & Visual Tokens
    ════════════════════════════════════════════════════════════════════
@@ -1434,12 +1449,7 @@
     .lockbox-help-actions .lockbox-btn {
         width:100%;
     }
-    .intel-shell {
-        grid-template-columns: 180px minmax(0, 1fr) 0px;  /* 目录折叠到右侧按钮，不占空间 */
-    }
-    .intel-glossary-panel {
-        display: none;
-    }
+    /* intel-shell/glossary 的 max-width:900px reflow 已移除（沉浸全屏化 2026-06-11，改整体等比缩放）*/
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -5605,45 +5615,32 @@ html.perf-low-effects .map-panel-close-btn:hover {
     text-align: center;
 }
 
-@media (max-width: 900px) {
-    .intelligence-panel {
-        width: 100vw;
-        height: 100vh;
-        min-width: 0;
-        min-height: 0;
-    }
-    .intel-shell {
-        grid-template-columns: 250px 1fr;
-    }
-    .intel-content {
-        padding: 18px 22px;
-        font-size: 15px;
-    }
-}
+/* 沉浸全屏化（2026-06-11）：移除 max-width:900px 响应式 reflow——
+   固定 1404×790(16:9) 画布只做整体 transform:scale 等比缩放，窄窗口同比缩小不重排。*/
 
-/* Intelligence panel Flash-aligned pass */
+/* Intelligence panel Flash-aligned pass — 沉浸全屏化（2026-06-11）：
+   inset:0 铺满全 anchor；去 backdrop 与卡片 chrome（border/radius/外阴影），
+   #121212 作不透明底铺满 16:9（内部 header/纸面/rail 各自有底已全覆盖，无需新底图）。*/
 #panel-container[data-panel="intelligence"] #panel-content {
-    inset: 1.5% 2%;
+    inset: 0;
     align-items: center;
     justify-content: center;
 }
 
 #panel-container[data-panel="intelligence"] #panel-backdrop {
-    background: rgba(0, 0, 0, 0.18);
+    background: transparent;
 }
 
 .intelligence-panel {
-    width: min(100%, 1180px);
+    width: min(100%, 1404px);
     height: min(100%, 790px);
     min-width: 0;
     min-height: 0;
     position: relative;
     box-sizing: border-box;
     color: #f5f5f5;
+    /* 全铺底色（留 background-image 插槽后补 16:9 美术）；去卡片 chrome 求沉浸 */
     background: #121212;
-    border: 2px solid rgba(15, 15, 15, 0.9);
-    border-radius: 12px 12px 18px 18px;
-    box-shadow: 0 3px 0 rgba(255,255,255,0.18) inset, 0 18px 34px rgba(0,0,0,0.46);
     overflow: hidden;
 }
 
@@ -5652,7 +5649,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
     display: grid;
     grid-template-columns: 240px minmax(0, 1fr) 276px;
     grid-template-rows: 104px auto minmax(0, 1fr) 58px;
-    width: 1180px;
+    width: 1404px;
     height: 790px;
     min-width: 0;
     min-height: 0;
