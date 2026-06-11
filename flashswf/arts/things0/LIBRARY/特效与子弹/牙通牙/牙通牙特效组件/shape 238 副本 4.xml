@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/牙通牙/牙通牙特效组件/shape 238 副本 4" itemID="55af0c12-00003445" symbolType="graphic" lastModified="1418787010">
+  <timeline>
+    <DOMTimeline name="shape 238 副本 4">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.01971435546875" c="0.000640869140625" d="0.01971435546875" tx="38.95" ty="8.7"/>
+                        </matrix>
+                        <GradientEntry color="#F2FAE5" alpha="0" ratio="0"/>
+                        <GradientEntry color="#F2FAE5" ratio="0.862745098039216"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0545654296875" c="0.001739501953125" d="0.0545654296875" tx="8.95" ty="44.4"/>
+                        </matrix>
+                        <GradientEntry color="#F2FAE5" alpha="0" ratio="0"/>
+                        <GradientEntry color="#F2FAE5" ratio="0.862745098039216"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!1049 348|1051 346!1051 346|960 227!960 227[915 175 863 130!863 130[819 91 767 64!767 64[638 -5 508 0!508 0|509 8!509 8[562 14 613 41!613 41|700 85!700 85[783 126 861 179!861 179[966 253 1049 348"/>
+                    <Edge fillStyle1="2" edges="!225 51[172 107 147 185!147 185[103 330 96 490!96 490|99 597!99 597[117 872 196 1146!196 1146|200 1157!200 1157|201 1165!201 1165[218 1241 254 1311!254 1311|275 1357!275 1357[316 1465 363 1570!363 1570|351 1572!351 1572|295 1494!295 1494
+|276 1466!276 1466|265 1450!265 1450[251 1451 261 1473!261 1473|274 1512!274 1512[309 1639 376 1764!376 1764|372 1764!372 1764|339 1711!339 1711[280 1607 233 1503!233 1503[176 1382 134 1258!134 1258[93 1137 65 1013!65 1013[39 902 21 790
+!21 790[-3 661 1 534!1 534[2 417 21 305!21 305|22 294!22 294|42 243!42 243[58 205 79 170!79 170[133 86 215 32!215 32[244 11 285 13!285 13[282 28 261 32!261 32[239 35 225 51"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

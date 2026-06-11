@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/牙通牙/牙通牙特效组件/shape 123 副本 4" itemID="55af0c12-0000339d" symbolType="graphic" lastModified="1418787010">
+  <timeline>
+    <DOMTimeline name="shape 123 副本 4">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="-0.0001678466796875" b="-0.0072784423828125" c="0.1512451171875" d="-0.0033721923828125" tx="142" ty="8.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF9900" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2661 322[1346 332 0 204!0 204[1262 44 2497 9!2497 9[2861 -1 3221 0!3221 0[4401 1 5556 120!5556 120[4221 296 2849 318!2849 318|2661 322"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
