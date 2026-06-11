@@ -139,6 +139,33 @@ function parseNameCount(entry, kind) {
     return o;
 }
 
+// 依赖图 DFS：from 沿 edges 可达 to 时返回路径 [from..to]，不可达返回 null（死锁环检测用）。
+function findDepPath(from, to, edges) {
+    if (from === to) return [from];
+    const stack = [from];
+    const visited = {};
+    const parent = {};
+    visited[from] = true;
+    while (stack.length > 0) {
+        const cur = stack.pop();
+        const next = edges[cur] || [];
+        for (let i = 0; i < next.length; i += 1) {
+            const nb = next[i];
+            if (visited[nb] === true) continue;
+            visited[nb] = true;
+            parent[nb] = cur;
+            if (nb === to) {
+                const path = [to];
+                let p = to;
+                while (p !== from) { p = parent[p]; path.push(p); }
+                return path.reverse();
+            }
+            stack.push(nb);
+        }
+    }
+    return null;
+}
+
 function buildCatalog(rawTasks, taskTexts) {
     const tasks = {};
     // conditions 校验（任务-成就判定层共享，可选字段；设计 docs/任务成就-判定层共享-设计-2026-06-11.md §3）。
@@ -182,12 +209,12 @@ function buildCatalog(rawTasks, taskTexts) {
                     economyCounters = parseEconomyWhitelist(metricsFile, fail);
                 }
                 validateCondition(cond, ctx + '.conditions[' + c + ']', fail, economyCounters);
-                // 跨任务闭包：自引用即拒；存在性等全集建完后 post-pass（防前向引用误杀）
+                // 跨任务闭包：自引用即拒；存在性/死锁等全集建完后 post-pass（防前向引用误杀）
                 if (cond.type === 'taskFinished') {
                     if (String(cond.params.taskId) === idKey) {
                         fail(ctx + '.conditions[' + c + ']: taskFinished cannot reference itself');
                     }
-                    pendingTaskRefs.push({ ctx: ctx + '.conditions[' + c + ']', ref: String(cond.params.taskId) });
+                    pendingTaskRefs.push({ ctx: ctx + '.conditions[' + c + ']', host: idKey, ref: String(cond.params.taskId) });
                 }
                 // chainProgress 可达性闭包（post-pass）：task_chains_progress 只在【有序号链】任务
                 // FinishTask 时写 max(progress, seq)（通信_鸡蛋_任务系统.as UpdateTaskProgress），
@@ -195,10 +222,9 @@ function buildCatalog(rawTasks, taskTexts) {
                 if (cond.type === 'chainProgress') {
                     pendingChainRefs.push({
                         ctx: ctx + '.conditions[' + c + ']',
+                        host: idKey,
                         chain: String(cond.params.chain),
-                        target: Number(cond.target),
-                        ownChain: chainName,
-                        ownSeq: seq
+                        target: Number(cond.target)
                     });
                 }
             }
@@ -269,12 +295,47 @@ function buildCatalog(rawTasks, taskTexts) {
         }
     }
 
-    // chainProgress 条件可达性闭包（全集已建完；规则对齐 derive-achievement-catalog ⑤）：
-    //   链必须是【有序号链】（无序号链如委托永不写 task_chains_progress）+ target ≤ 链最大 seq。
-    //   自链引用保守要求 target < 自身 seq：progress ≥ 自身 seq 要么靠本任务自己完成（先有鸡），
-    //   要么靠后续任务先完成——而链任务普遍 get_requirements 依赖前序（实测 225 个相邻链转换
-    //   171 个显式依赖前一任务），「跳过本任务先做后续」基本不存在，存在性检查会放行实际死锁。
-    //   真有合法乱序场景再放宽（显式决策点，类比 REWARD_BLACKLIST）。
+    // ═══ 条件死锁校验：lower 成任务级依赖图 + 环检测 ═══
+    // 死锁是依赖图的【全局】性质——逐条局部不变量（target<ownSeq / 存在性检查）连续两轮被复审
+    // 击穿（序号缺口、跨链循环各是一个组合盲区），故收敛到标准做法：所有 gating lower 成
+    // 任务级 precedence 边，对条件边做可达性环检测。三类已知死锁（自链/缺口/跨链循环）统一归约。
+    //
+    // 保守顺序模型（偏误杀不偏漏；真有合法乱序设计在此放宽——显式决策点）：
+    //   ① 有序号链按 seq 升序完成 → 每任务依赖链内前一实际 seq 任务
+    //     （实测 225 个相邻链转换 171 个 get_requirements 显式依赖前序，FinishTask 自动接取亦按序）
+    //   ② get_requirements：接取前置 ⇒ 完成前置
+    //   ③ 条件边：taskFinished → 引用任务；chainProgress(C,t) → C 链 seq≥t 的【最小 seq】任务（锚点；
+    //     锚点若死锁，链上更晚任务按 ① 全部死锁，故取最小即足）——seq 缺口天然落到锚点=自身/后续
+    //   判定：沿「依赖」边从锚点 DFS 可达宿主 = 满足条件须先完成宿主自身 → 死锁环，打印路径。
+    // 边界声明：只证「条件无结构性死锁」，不证「任务可完成」（物品/经济/运行态归 playtest）；
+    // 只审计条件边参与的环，存量 get_requirements/链序的历史问题不在此门。
+    const depEdges = {}; // idKey → [依赖的 idKey...]
+    function addDep(from, to) {
+        if (!depEdges[from]) depEdges[from] = [];
+        depEdges[from].push(to);
+    }
+    // ① 链内前驱边
+    const allChainNames = Object.keys(chains);
+    for (let n = 0; n < allChainNames.length; n += 1) {
+        const seqMap = chains[allChainNames[n]];
+        const sorted = Object.keys(seqMap).map(Number).sort(function (a, b) { return a - b; });
+        for (let s = 1; s < sorted.length; s += 1) {
+            addDep(String(seqMap[sorted[s]]), String(seqMap[sorted[s - 1]]));
+        }
+    }
+    // ② get_requirements 边（引用不存在的 id 不在此门审计，跳过）
+    const allIds = Object.keys(tasks);
+    for (let i = 0; i < allIds.length; i += 1) {
+        const req = tasks[allIds[i]].req;
+        for (let r = 0; r < req.length; r += 1) {
+            if (idSeen[String(req[r])] === true) addDep(allIds[i], String(req[r]));
+        }
+    }
+    // ③ 条件边（基础闭包先行：链存在 / target≤最大 seq —— 锚点解析的前提）
+    const condEdges = [];
+    for (let r = 0; r < pendingTaskRefs.length; r += 1) {
+        condEdges.push({ ctx: pendingTaskRefs[r].ctx, host: pendingTaskRefs[r].host, anchor: pendingTaskRefs[r].ref });
+    }
     for (let r = 0; r < pendingChainRefs.length; r += 1) {
         const ref = pendingChainRefs[r];
         const seqMap = chains[ref.chain];
@@ -282,15 +343,29 @@ function buildCatalog(rawTasks, taskTexts) {
             fail(ref.ctx + ': chainProgress references unknown sequenced chain "' + ref.chain
                 + '" (无序号链不更新 task_chains_progress，条件永不可达)');
         }
-        const seqs = Object.keys(seqMap).map(Number);
-        const maxSeq = Math.max.apply(null, seqs);
-        if (ref.target > maxSeq) {
+        const seqs = Object.keys(seqMap).map(Number).sort(function (a, b) { return a - b; });
+        if (ref.target > seqs[seqs.length - 1]) {
             fail(ref.ctx + ': chainProgress target ' + ref.target + ' exceeds chain "' + ref.chain
-                + '" max seq ' + maxSeq + ' (unreachable condition)');
+                + '" max seq ' + seqs[seqs.length - 1] + ' (unreachable condition)');
         }
-        if (ref.chain === ref.ownChain && ref.ownSeq !== null && ref.target >= ref.ownSeq) {
-            fail(ref.ctx + ': chainProgress target ' + ref.target + ' on own chain "' + ref.chain
-                + '" must be < own seq ' + ref.ownSeq + ' (后续任务依赖前序完成，target ≥ 自身 seq 即自链死锁)');
+        let anchorSeq = null;
+        for (let s = 0; s < seqs.length; s += 1) {
+            if (seqs[s] >= ref.target) { anchorSeq = seqs[s]; break; }
+        }
+        condEdges.push({ ctx: ref.ctx, host: ref.host, anchor: String(seqMap[anchorSeq]) });
+    }
+    for (let e = 0; e < condEdges.length; e += 1) addDep(condEdges[e].host, condEdges[e].anchor);
+    // 环检测：每条条件边从锚点出发找回宿主的依赖路径
+    for (let e = 0; e < condEdges.length; e += 1) {
+        const edge = condEdges[e];
+        if (edge.anchor === edge.host) {
+            fail(edge.ctx + ': deadlock cycle — 条件锚点为本任务自身'
+                + '（链 seq 缺口或 target ≥ 自身 seq：该进度只能由完成本任务推到）');
+        }
+        const path = findDepPath(edge.anchor, edge.host, depEdges);
+        if (path !== null) {
+            fail(edge.ctx + ': deadlock cycle — 满足该条件须先完成任务 ' + edge.anchor
+                + '，而其依赖链回到本任务: ' + path.join(' → ') + '（→ 表示「依赖/须先完成」）');
         }
     }
 
