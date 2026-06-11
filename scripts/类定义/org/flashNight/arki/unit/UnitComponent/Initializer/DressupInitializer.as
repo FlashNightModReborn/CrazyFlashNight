@@ -339,9 +339,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.命中率 = Math.max(target.基础命中率 * (1 + target.命中加成 / 100), DodgeHandler.HIT_RATE_LIMIT);
         target.韧性系数 = target.韧性系数 * (1 + target.韧性加成 / 100);
 
-        var 躲闪能力:Number = 1 / target.躲闪率;
-        躲闪能力 = Math.max(target.躲闪率 * (1 + target.闪避加成 / 100), DodgeHandler.DODGE_RATE_LIMIT);
-        target.躲闪率 = 1 / 躲闪能力;
+        target.躲闪率 = DodgeHandler.applyDodgeBonus(target.躲闪率, target.闪避加成);
         if (target.懒闪避 > 0.95) {
             target.懒闪避 = 0.95;
         }
