@@ -49,6 +49,10 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.InfoLoader {
                     }
                 }
 
+                // 联弹「模板×单元体」双层配置派生（显式条目优先，派生仅补缺）
+                // 必须在回调分发之前完成，确保 ShellSystem 弹壳池初始化包含派生条目
+                ChainBulletConfigResolver.resolve(data, resultData);
+
                 self.infoData = resultData; // 保存总数据到 infoData
                 self.isLoaded = true;
 

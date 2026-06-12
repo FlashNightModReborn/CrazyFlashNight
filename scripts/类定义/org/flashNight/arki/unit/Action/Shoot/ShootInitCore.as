@@ -76,13 +76,13 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             ShootCore.startShooting(parentRef, target, ShootCore.primaryParams);
         };
         
-        // 持续射击函数
+        // 持续射击函数（第5参为本次实际生效间隔，与基础间隔一致）
         target.主手持续射击 = function(core, attackMode, shootSpeed) {
-            return ShootCore.continuousShoot(core, attackMode, shootSpeed, ShootCore.primaryParams);
+            return ShootCore.continuousShoot(core, attackMode, shootSpeed, ShootCore.primaryParams, shootSpeed);
         };
-        
+
         target.副手持续射击 = function(core, attackMode, shootSpeed) {
-            return ShootCore.continuousShoot(core, attackMode, shootSpeed, ShootCore.secondaryParams);
+            return ShootCore.continuousShoot(core, attackMode, shootSpeed, ShootCore.secondaryParams, shootSpeed);
         };
         
         // ReloadManager 相关函数

@@ -134,7 +134,7 @@
     <data>
       <level>28</level>
       <weight>28</weight>
-      <capacity>360</capacity>
+      <capacity>36000</capacity>
       <split>1</split>
       <diffusion>7</diffusion>
       <interval>15</interval>
@@ -162,7 +162,7 @@
           <initParam>
             <maxVisualSpinSpeed>8</maxVisualSpinSpeed>
             <minShotgunVal>5</minShotgunVal>
-            <maxShotgunVal>12</maxShotgunVal>
+            <maxShotgunVal>30</maxShotgunVal>
             <shotgunDecayDelay>10</shotgunDecayDelay>
             <shotgunIncrement>1</shotgunIncrement>
             <maxBulletCapacity>360</maxBulletCapacity>

@@ -106,9 +106,13 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      *   - gunPath          : String, 指定枪口位置的路径，如 "枪.枪.装扮.枪口位置"
      *   - taskName         : String, 帧计时器中任务的名称，如 "keepshooting" 或 "keepshooting2"
      *   - playerBulletField: String, 玩家界面中需要更新的子弹数属性，如 "子弹数" 或 "子弹数_2"
+     * @param effectiveInterval 可选，本次射击的实际生效间隔（毫秒）。枪械师点按/连按等
+     *                          与基础间隔不一致的场合传入；缺省回退 shootSpeed。
+     *                          经 core.__pendingFireInterval 由 WeaponFireCore.executeShot
+     *                          消费后盖戳到子弹属性（发射间隔毫秒），供纵向联弹推导补弹速率。
      * @return Boolean       返回是否处于持续射击状态
      */
-    public static function continuousShoot(core:Object, attackMode:String, shootSpeed:Number, params:Object):Boolean {
+    public static function continuousShoot(core:Object, attackMode:String, shootSpeed:Number, params:Object, effectiveInterval:Number):Boolean {
         // 缓存常用全局对象和属性引用
         var root:Object = _root;
         var man:Object  = core.man;
@@ -202,6 +206,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             var shootBulletAttrKey:String = config.shootBulletAttrKey;
             var bulletAttr:Object = man[shootBulletAttrKey];
             // _root.发布消息(bulletAttr.子弹种类, bulletAttr.击中地图)
+            // 预置本次射击的精确间隔（毫秒），由 WeaponFireCore.executeShot 同步消费并盖戳到子弹属性
+            core.__pendingFireInterval = (effectiveInterval > 0) ? effectiveInterval : shootSpeed;
             core[shootStateName] = core[shootMethodName](gunRef, bulletAttr);
 
             // 射击成功时设置后摇状态
@@ -326,8 +332,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             return;
         }
 
-        // 调用持续射击核心逻辑
-        if (ShootCore.continuousShoot(core, attackMode, interval, params)) {
+        // 调用持续射击核心逻辑（枪械师点按以 tapInterval 作为实际生效间隔传入）
+        if (ShootCore.continuousShoot(core, attackMode, interval, params, hasGunslingerSkill ? tapInterval : interval)) {
             if (hasGunslingerSkill) {
                 // 枪械师技能：半自动武器连射
                 // 1) 点按收益：以 0.85x 作为最小射击间隔（解锁下一次 startShooting）
@@ -569,8 +575,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         var holdInterval:Number = baseInterval * calcGunslingerHoldMultiplier(gunslingerLevel);
         var tapInterval:Number = baseInterval * calcGunslingerTapMultiplier(gunslingerLevel);
 
-        // 尝试射击
-        if (ShootCore.continuousShoot(core, attackMode, baseInterval, params)) {
+        // 尝试射击（连按链以 holdInterval 作为实际生效间隔传入）
+        if (ShootCore.continuousShoot(core, attackMode, baseInterval, params, holdInterval)) {
             // 射击成功：点按收益最小间隔（用于下一次 startShooting）
             var rateKey:String = core._name + "_" + params.taskName;
             _lastShotTimes[rateKey] = true;
