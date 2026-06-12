@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-见切后撤" itemID="695a2f8a-000012d5" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-见切后撤" lastModified="1777377818">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-见切后撤" itemID="695a2f8a-000012d5" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-见切后撤" lastModified="1781235284">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-见切后撤" currentFrame="26">
+    <DOMTimeline name="兵器攻击容器-见切后撤" currentFrame="13">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -111,7 +111,7 @@ if (_parent._name == _root.控制目标 && _parent.动作C)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -211,7 +211,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
@@ -223,11 +223,15 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (enterFrame) {
-   //_parent.攻击时斜向移动(-20,-25);
-   _parent.攻击时移动(-40,-45);
-}
-]]></script>
+                    <script><![CDATA[
+onClipEvent (enterFrame) {
+	   _parent.攻击时移动(-40,-45);
+	   if (Key.isDown(_parent._parent.上键)) {
+	       _parent._parent.移动("上", 10);
+	   } else if (Key.isDown(_parent._parent.下键)) {
+	       _parent._parent.移动("下", 10);
+	   }
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -237,7 +241,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="13" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -246,10 +250,13 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-   //_parent.攻击时斜向移动(-20,-25);
-   _parent.攻击时移动(60,80);
-}
-]]></script>
+	   _parent.攻击时移动(60,80);
+	   if (Key.isDown(_parent._parent.上键)) {
+	       _parent._parent.移动("上", 10);
+	   } else if (Key.isDown(_parent._parent.下键)) {
+	       _parent._parent.移动("下", 10);
+	   }
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -259,7 +266,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -906,8 +913,8 @@ onClipEvent(unload){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961!-11073 -1961[-7416 -3736 -1293 -4087!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782
- 292!15782 292[16733 2452 13077 4231"/>
+!-1293 -4087[4831 -4437 9831 -3153!9831 -3153[14832 -1873 15782 292!15782 292[16733 2452 13077 4231!13077 4231[9417 6006 3456 6207!3456 6207[-2506 6408 -6897 4561!-6897 4561[-11290 2712 -13010 1265!-13010 1265[-14728 -183 -11073 -1961
+!-11073 -1961[-7416 -3736 -1293 -4087"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -928,8 +935,8 @@ onClipEvent(unload){
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372 259!16372 259[17361 2505 13559 4354!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636
-!-10955 -2636[-7752 -3930 -1385 -4296"/>
+!13559 4354[9753 6200 3387 6563!3387 6563[-2977 6928 -7646 5104!-7646 5104[-12314 3278 -13236 968!-13236 968[-14160 -1341 -10955 -2636!-10955 -2636[-7752 -3930 -1385 -4296!-1385 -4296[4984 -4659 10183 -3324!10183 -3324[15384 -1993 16372
+ 259!16372 259[17361 2505 13559 4354"/>
                   </edges>
                 </DOMShape>
               </elements>
