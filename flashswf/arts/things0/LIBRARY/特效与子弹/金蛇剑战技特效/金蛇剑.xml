@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/金蛇剑战技特效/金蛇剑" itemID="65f8529b-00003438" lastModified="1781233861" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="金蛇剑">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/金蛇剑战技特效/金蛇剑-剑刃" centerPoint3DX="1.2" centerPoint3DY="71.8">
+                  <matrix>
+                    <Matrix tx="-16.85" ty="-89.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="160.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特效与子弹/金蛇剑战技特效/金蛇剑-剑柄" centerPoint3DX="-0.15" centerPoint3DY="-147.1">
+                  <matrix>
+                    <Matrix tx="-24.45" ty="-209.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.3" y="62.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
