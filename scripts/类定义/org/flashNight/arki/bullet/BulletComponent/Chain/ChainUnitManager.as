@@ -1,4 +1,8 @@
-﻿/**
+﻿import org.flashNight.neur.Event.*;
+import org.flashNight.arki.bullet.BulletComponent.Queue.*;
+import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+
+/**
  * ChainUnitManager —— 联弹单元体共享层 / 对象池 / 统一帧更新管理器（P2 池化改造核心）
  *
  * 背景：旧实现中联弹单元体作为子弹 MC 的子剪辑频繁 attachMovie/removeMovieClip，
@@ -26,6 +30,9 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
     /** 单元体实例命名自增计数 */
     private static var unitCounter:Number = 0;
 
+    /** SceneChanged 订阅标记（仅订阅一次） */
+    private static var sceneHooked:Boolean = false;
+
     /**
      * 获取（懒建）共享单元体层。
      * gameworld 重建后旧层随世界销毁，下次调用自动重建新层并重置组注册表。
@@ -36,6 +43,13 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         if (zone == undefined) return null;
         var layer:MovieClip = zone[LAYER_NAME];
         if (layer == undefined) {
+            // 场景切换时主动清空组注册表，避免静态表跨场景持有旧 gameworld/旧池引用
+            if (!sceneHooked) {
+                sceneHooked = true;
+                EventBus.getInstance().subscribe("SceneChanged", function():Void {
+                    ChainUnitManager.resetAll();
+                }, ChainUnitManager);
+            }
             layer = zone.createEmptyMovieClip(LAYER_NAME, LAYER_DEPTH);
             layer.可用单元体池 = {};
             // 旧世界的组与单元体已随世界销毁，重置注册表
@@ -46,6 +60,14 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
             };
         }
         return layer;
+    }
+
+    /**
+     * 清空组注册表（场景切换/世界销毁时调用）。
+     * 旧层、池与单元体随旧 gameworld 一并销毁，此处仅释放静态引用。
+     */
+    public static function resetAll():Void {
+        groups = [];
     }
 
     /**
@@ -61,6 +83,9 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         var unit:MovieClip;
         if (pool != undefined && pool.length > 0) {
             unit = MovieClip(pool.pop());
+            // 复用重置契约：与全新 attachMovie 等价——从第 1 帧开始播放
+            // （多帧单元体如 单元体-铁枪能量子弹，不得从入池时的任意帧续播）
+            unit.gotoAndPlay(1);
         } else {
             unit = layer.attachMovie(linkage, "u" + (unitCounter++), layer.getNextHighestDepth());
             unit.__池键 = linkage;
@@ -74,6 +99,8 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
      */
     public static function releaseUnit(unit:MovieClip):Void {
         if (unit == undefined || unit.__池键 == undefined) return;
+        // 入池重置契约：停住时间轴（隐藏的高水位实例不再逐帧消耗），复用时 gotoAndPlay(1) 重启
+        unit.stop();
         unit._visible = false;
         var pools:Object = unit._parent.可用单元体池;
         if (pools == undefined) return; // 层已随世界销毁
@@ -131,18 +158,52 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
     }
 
     /**
-     * 统一帧更新：倒序分发各组 update；子弹/区域已被移除的组兜底回收。
+     * 统一帧更新：倒序分发各组 update；失效组兜底回收。
      * 暂停时整体跳过（与旧 per-clip onEnterFrame 行为一致）。
+     *
+     * 对象化联弹（group.area == null）在此承担 MC 子弹 onEnterFrame 预检查的职责：
+     * 边界外标记 STATE_HIT_MAP → 更新 AABB（数据路径）→ 泵入 BulletQueueProcessor。
+     * processQueue 由 frameEnd 事件在帧末统一消费，与 MC 子弹的入队时序同构。
      */
     public static function tick():Void {
         if (_root.暂停) return;
+        // === 宏展开：实例状态标志位 ===
+        #include "../macros/STATE_HIT_MAP.as"
+        var xmin:Number = _root.Xmin;
+        var xmax:Number = _root.Xmax;
+        var ymin:Number = _root.Ymin;
+        var ymax:Number = _root.Ymax;
+
         for (var i:Number = groups.length - 1; i >= 0; i--) {
             var g:Object = groups[i];
-            if (g.area._parent == undefined || g.bullet._parent == undefined) {
-                removeGroup(g);
-                continue;
+            if (g.area == null) {
+                // —— 对象化联弹分支 ——
+                var b = g.bullet;
+                if (b.__chainDead) {
+                    removeGroup(g);
+                    continue;
+                }
+                g.update(g);
+
+                // 与 MC 子弹预检查同构：越界标记击中地图（由队列单出口收尾处理）
+                var x:Number = b._x;
+                var y:Number = b.Z轴坐标;
+                if (x < xmin || x > xmax || y < ymin || y > ymax) {
+                    b.stateFlags |= STATE_HIT_MAP;
+                }
+
+                // 数据路径更新 AABB 后泵入碰撞队列
+                var aabb:AABBCollider = b.aabbCollider;
+                aabb.updateFromChainObject(b);
+                BulletQueueProcessor.add(b);
+            } else {
+                // —— MC 壳联弹分支 ——
+                if (g.area._parent == undefined || g.bullet._parent == undefined) {
+                    removeGroup(g);
+                    continue;
+                }
+                g.update(g);
             }
-            g.update(g);
         }
     }
 

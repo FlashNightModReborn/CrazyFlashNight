@@ -72,4 +72,19 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.CoverageAABBColliderFa
         collider._update(unit);
         return collider;
     }
+
+    /**
+     * 创建对象化联弹（无 area 子剪辑）的碰撞器实例。
+     * 更新函数设为 updateFromChainObject（继承自 AABBCollider），
+     * 从联弹组本地碰撞盒 + 子弹仿射矩阵推导边界。
+     *
+     * @param bullet 对象化联弹（携带 chainGroup 组引用）
+     * @return ICollider 实例
+     */
+    public function createFromChainObject(bullet:Object):ICollider {
+        var collider:CoverageAABBCollider = CoverageAABBCollider(this.getObject());
+        collider._update = collider.updateFromChainObject;
+        collider._update(bullet);
+        return collider;
+    }
 }

@@ -71,6 +71,11 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
     public static var AABB:AABB = new AABB(null);
 
     /**
+     * 对象化联弹边界计算用的可复用坐标点（避免每帧分配）
+     */
+    private static var chainPt:Object = {x: 0, y: 0};
+
+    /**
      * 构造函数，初始化 AABB 的边界坐标。
      * 
      * @param left   左边界坐标
@@ -295,6 +300,62 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         this.right = cache.right + x_offset;
         this.top = cache.top + y_offset;
         this.bottom = cache.bottom + y_offset;
+    }
+
+    /**
+     * 基于对象化联弹（无 area 子剪辑的纯对象子弹）更新碰撞器边界。
+     *
+     * 等价契约：与 updateFromBullet 的 detectionArea.getRect(_root.gameworld) 语义一致——
+     * 联弹组本地碰撞盒（盒x/盒y/盒宽/盒高，即 area 子剪辑的本地矩形）四角经子弹
+     * 仿射矩阵（_x/_y/_rotation/_xscale/_yscale）映射到 子弹区域 坐标，
+     * 再经 子弹区域→gameworld 转换取轴对齐包围盒。
+     *
+     * @param bullet 对象化联弹（携带 chainGroup 组引用，坐标字段与 MC 同名）
+     */
+    public function updateFromChainObject(bullet:Object):Void {
+        var g:Object = bullet.chainGroup;
+        var rad:Number = bullet._rotation * 0.017453292519943295;
+        var sx:Number = bullet._xscale * 0.01;
+        var sy:Number = bullet._yscale * 0.01;
+        var cosR:Number = Math.cos(rad);
+        var sinR:Number = Math.sin(rad);
+        var ma:Number = sx * cosR;
+        var mb:Number = sx * sinR;
+        var mc2:Number = -sy * sinR;
+        var md:Number = sy * cosR;
+        var bx:Number = bullet._x;
+        var by:Number = bullet._y;
+
+        var x0:Number = g.盒x;
+        var x1:Number = x0 + g.盒宽;
+        var y0:Number = g.盒y;
+        var y1:Number = y0 + g.盒高;
+
+        var zone:MovieClip = _root.gameworld.子弹区域;
+        var world:MovieClip = _root.gameworld;
+        var pt:Object = AABBCollider.chainPt;
+        var minX:Number = Infinity;
+        var maxX:Number = -Infinity;
+        var minY:Number = Infinity;
+        var maxY:Number = -Infinity;
+
+        for (var corner:Number = 0; corner < 4; corner++) {
+            var lx:Number = (corner == 0 || corner == 3) ? x0 : x1;
+            var ly:Number = (corner < 2) ? y0 : y1;
+            pt.x = bx + ma * lx + mc2 * ly;
+            pt.y = by + mb * lx + md * ly;
+            zone.localToGlobal(pt);
+            world.globalToLocal(pt);
+            if (pt.x < minX) minX = pt.x;
+            if (pt.x > maxX) maxX = pt.x;
+            if (pt.y < minY) minY = pt.y;
+            if (pt.y > maxY) maxY = pt.y;
+        }
+
+        this.left = minX;
+        this.right = maxX;
+        this.top = minY;
+        this.bottom = maxY;
     }
 
     /**

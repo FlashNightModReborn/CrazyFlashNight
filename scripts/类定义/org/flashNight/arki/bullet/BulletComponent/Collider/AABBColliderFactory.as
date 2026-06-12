@@ -78,12 +78,12 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBColliderFactory
 
     /**
      * 创建单位区域的碰撞器实例。
-     * 
+     *
      * 实现流程：
      * 1. 获取一个空闲的碰撞器对象。
      * 2. 将碰撞器的更新函数设为 updateFromUnitArea。
      * 3. 调用更新函数，基于单位区域更新 AABB 边界。
-     * 
+     *
      * @param unit 单位区域的 MovieClip 实例，包含 area 属性。
      * @return ICollider 单位区域的碰撞器实例。
      */
@@ -91,6 +91,20 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBColliderFactory
         var collider = this.getObject();
         collider._update = collider.updateFromUnitArea; // 设置更新函数
         collider._update(unit); // 更新碰撞器的边界信息
+        return collider;
+    }
+
+    /**
+     * 创建对象化联弹（无 area 子剪辑）的碰撞器实例。
+     * 更新函数设为 updateFromChainObject，从联弹组本地碰撞盒 + 子弹仿射矩阵推导边界。
+     *
+     * @param bullet 对象化联弹（携带 chainGroup 组引用）
+     * @return ICollider 碰撞器实例
+     */
+    public function createFromChainObject(bullet:Object):ICollider {
+        var collider = this.getObject();
+        collider._update = collider.updateFromChainObject;
+        collider._update(bullet);
         return collider;
     }
 }

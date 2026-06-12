@@ -768,6 +768,63 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
     }
 
     /**
+     * 基于对象化联弹（无 area 子剪辑）更新多边形顶点。
+     *
+     * 等价契约：与 updateFromBullet(bullet, bullet.area) 语义一致——
+     * MC 路径取 detectionArea 自身坐标系矩形（即 联弹area 固有 25×25，半宽/半高 12.5，
+     * 不随实例缩放），中心经 localToGlobal 链转换到 gameworld，再按子弹旋转展开 OBB。
+     * 对象路径：固有半宽/半高取组注册表常量（盒固有半宽/盒固有半高），
+     * 中心 = 组本地碰撞盒中心经子弹仿射矩阵 → 子弹区域 → gameworld。
+     *
+     * @param bullet 对象化联弹（携带 chainGroup 组引用）
+     */
+    public function updateFromChainObject(bullet:Object):Void {
+        var frame:Number = _root.帧计时器.当前帧数;
+        if (this._currentFrame == frame) return;
+        this._currentFrame = frame;
+
+        var g:Object = bullet.chainGroup;
+        var hw:Number = g.盒固有半宽;
+        var hh:Number = g.盒固有半高;
+
+        // 本地碰撞盒中心 → 子弹仿射 → 子弹区域 → gameworld
+        var rad:Number = bullet._rotation * 0.017453292519943295;
+        var sx:Number = bullet._xscale * 0.01;
+        var sy:Number = bullet._yscale * 0.01;
+        var cosR:Number = Math.cos(rad);
+        var sinR:Number = Math.sin(rad);
+        var lx:Number = g.盒x + g.盒宽 * 0.5;
+        var ly:Number = g.盒y + g.盒高 * 0.5;
+        var pt:Object = _pt;
+        pt.x = bullet._x + sx * cosR * lx - sy * sinR * ly;
+        pt.y = bullet._y + sx * sinR * lx + sy * cosR * ly;
+        _root.gameworld.子弹区域.localToGlobal(pt);
+        _root.gameworld.globalToLocal(pt);
+        var cx:Number = pt.x;
+        var cy:Number = pt.y;
+
+        // 预计算旋转后的半宽/半高向量分量（与 updateFromBullet 同式）
+        var hwCos:Number = hw * cosR;
+        var hwSin:Number = hw * sinR;
+        var hhSin:Number = hh * sinR;
+        var hhCos:Number = hh * cosR;
+
+        p1.x = cx + hwCos - hhSin;
+        p1.y = cy + hwSin + hhCos;
+
+        p2.x = cx - hwCos - hhSin;
+        p2.y = cy - hwSin + hhCos;
+
+        p3.x = cx - hwCos + hhSin;
+        p3.y = cy - hwSin - hhCos;
+
+        p4.x = cx + hwCos + hhSin;
+        p4.y = cy + hwSin - hhCos;
+
+        _geometryDirty = true;
+    }
+
+    /**
      * 从单位区域更新多边形的顶点。
      * @param unit 单位 MovieClip
      */

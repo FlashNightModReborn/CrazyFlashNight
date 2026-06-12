@@ -93,4 +93,19 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonColliderFactory
         collider._update(unit);
         return collider;
     }
+
+    /**
+     * 创建对象化联弹（无 area 子剪辑）的 PolygonCollider 实例。
+     * 更新函数设为 updateFromChainObject，从联弹组本地碰撞盒中心 + 固有半宽高
+     * + 子弹旋转构造 OBB 点集。
+     *
+     * @param bullet 对象化联弹（携带 chainGroup 组引用）
+     * @return ICollider 对应的 PolygonCollider 实例
+     */
+    public function createFromChainObject(bullet:Object):ICollider {
+        var collider:PolygonCollider = PolygonCollider(this.getObject());
+        collider._update = collider.updateFromChainObject;
+        collider._update(bullet);
+        return collider;
+    }
 }

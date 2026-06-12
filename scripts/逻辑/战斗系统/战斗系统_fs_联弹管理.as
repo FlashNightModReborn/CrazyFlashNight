@@ -90,6 +90,10 @@ _root.联弹系统.渲染组 = function(group:Object):Void {
     var bx:Number = b._x;
     var by:Number = b._y;
     var bRot:Number = b._rotation;
+    var bXs:Number = b._xscale;
+    var bYs:Number = b._yscale;
+    var bAlpha:Number = b._alpha;
+    var bVisible:Boolean = b._visible;
     var 无镜像:Boolean = (sx > 0) && (sy > 0);
     var list:Array = group.单元体列表;
     for (var i:Number = 0; i < list.length; i++) {
@@ -97,6 +101,12 @@ _root.联弹系统.渲染组 = function(group:Object):Void {
         var m:MovieClip = u.mc;
         m._x = bx + ma * u.x + mc2 * u.y;
         m._y = by + mb * u.x + md * u.y;
+        // 继承父子弹的缩放/透明度/可见性，复刻旧子剪辑的视觉继承
+        // （非等比缩放+子旋转的斜切无法用 _scale/_rotation 表达，取最近似分解；常规子弹为 100% 等比）
+        m._xscale = bXs;
+        m._yscale = bYs;
+        m._alpha = bAlpha;
+        m._visible = bVisible;
         if (无镜像) {
             m._rotation = bRot + u.rot;
         } else {
@@ -191,6 +201,10 @@ _root.联弹系统.爆炸联弹消失 = function(clip:MovieClip):Void {
         clip.子弹区域area._height = clip.area._height + clip.爆炸范围;
         clip.子弹区域area._width  = clip.area._width + clip.爆炸范围;
 
+        // 移除原联弹碰撞区：area 跨越消失帧，若不移除会被 BulletQueueProcessor
+        // 预检查（仅检测 area 属性）再次识别为战斗子弹入队，与新爆炸碰撞重叠重复结算
+        clip.area.removeMovieClip();
+
         // 将子弹属性传递给子弹区域处理函数
         _root.子弹区域shoot传递(clip.子弹属性);
 
@@ -255,28 +269,52 @@ _root.联弹系统.横向联弹更新 = function(group:Object):Void {
         y_max = Math.max(u.y, y_max);
         y_min = Math.min(u.y, y_min);
     }
-    // 更新碰撞箱（本地坐标，公式与旧实现一致）
-    area._y = y_min;
-    area._height = Math.max(group.y_基准 * -2, y_max - y_min);
+    // 更新碰撞盒（本地坐标，公式与旧实现一致）；对象化联弹由碰撞器直接读取组字段
+    group.盒y = y_min;
+    group.盒高 = Math.max(group.y_基准 * -2, y_max - y_min);
+    if (area != null) {
+        area._y = group.盒y;
+        area._height = group.盒高;
+    }
 
     _root.联弹系统.渲染组(group);
 };
 
-_root.联弹系统.横向联弹初始化 = function(clip:MovieClip):Void {
-    var group:Object = _root.联弹系统.创建组(clip, _root.联弹系统.横向联弹更新);
+// 横向联弹组装核心（MC / 对象双模共用；调用前组的 盒x/盒y/盒宽/盒高 须已初始化）
+_root.联弹系统.横向联弹组装 = function(group:Object):Void {
+    var b = group.bullet;
 
     // 初始化衰竭计数器（衰竭值由霰弹值与子弹衰竭计数综合决定）
-    group.衰竭计数器 = clip._parent.霰弹值 * -1 - _root.子弹衰竭计数(clip._parent) * 3;
-    group.运动方向系数 = clip._parent.xmov < 0 ? -1 : 1;
-    group.y_基准 = clip._y;
-    group.余弦值 = Math.cos(clip._parent._rotation * Math.PI / 180);
-    group.子弹种类 = clip._parent.子弹种类.split("-")[1];
+    group.衰竭计数器 = b.霰弹值 * -1 - _root.子弹衰竭计数(b) * 3;
+    // ⚠ 时序考古（勿再改成常量）：AVM1 中 attachMovie 的时间轴子剪辑在首次渲染才实例化，
+    // area 的 onClipEvent(load) 实际晚于工厂的 xmov 赋值执行——生产行为就是条件值
+    // （左射=-1）。对象路径的组装同样在 xmov 赋值之后调用，两模式一致
+    group.运动方向系数 = b.xmov < 0 ? -1 : 1;
+    group.y_基准 = group.盒y;
+    group.余弦值 = Math.cos(b._rotation * Math.PI / 180);
+    group.子弹种类 = b.子弹种类.split("-")[1];
 
     // 根据霰弹值生成单元体（flag 已定义时跳过，与旧逻辑一致）
-    for (var i:Number = 0; (i < clip._parent.霰弹值) && (clip._parent.flag == undefined); i++) {
-        _root.联弹系统.生成单元体(group, _root.随机偏移(clip._parent.子弹散射度));
+    for (var i:Number = 0; (i < b.霰弹值) && (b.flag == undefined); i++) {
+        _root.联弹系统.生成单元体(group, _root.随机偏移(b.子弹散射度));
     }
     _root.联弹系统.渲染组(group);
+};
+
+// 从 area 子剪辑捕获碰撞盒初值（MC 模式；载入时即 FLA 授权矩形）
+_root.联弹系统.初始化盒 = function(group:Object, clip:MovieClip):Void {
+    group.盒x = clip._x;
+    group.盒y = clip._y;
+    group.盒宽 = clip._width;
+    group.盒高 = clip._height;
+    group.盒固有半宽 = 12.5; // 联弹area 固有 25×25 形状之半（多边形路径用）
+    group.盒固有半高 = 12.5;
+};
+
+_root.联弹系统.横向联弹初始化 = function(clip:MovieClip):Void {
+    var group:Object = _root.联弹系统.创建组(clip, _root.联弹系统.横向联弹更新);
+    _root.联弹系统.初始化盒(group, clip);
+    _root.联弹系统.横向联弹组装(group);
 };
 
 /* =====================================================================
@@ -538,12 +576,17 @@ _root.联弹系统.纵向联弹更新 = function(group:Object):Void {
         var localDeltaY:Number = -globalDeltaX * sinVal + globalDeltaY * cosVal;
 
         // 每帧补充 N 发单元体，沿当帧位移做分数位置插值，避免同点叠弹
-        // （每帧补弹数=1 时插值=1，与旧行为一致）
+        // （每帧补弹数=1 时插值=1）
+        // ⚠ 落点不乘 运动方向系数：localDelta 本身已是带方向的本地位移
+        // （localDeltaX = 当帧位移在枪管轴上的投影，任意射角恒为 +|v|），
+        // 再乘系数会使左射落点反向展开——新单元体出生在枪口后方（枪管内）。
+        // 旧 MC 实现靠"原始坐标捕获于一帧位移后"的时序巧合补偿了该反向；
+        // 对象路径在工厂内捕获（位移前），此处采用方向无关的物理正确插值
         var 补弹数:Number = group.每帧补弹数;
         for (var s:Number = 0; s < 补弹数 && group.count < countTotal; s++) {
             var 插值:Number = (s + 1) / 补弹数;
             u = _root.联弹系统.生成单元体(group, _root.随机偏移(parentMC.子弹散射度));
-            u.x = directionalCoefficient * localDeltaX * 插值 + _root.随机偏移(parentMC.子弹散射度 + countTotal + group.count);
+            u.x = localDeltaX * 插值 + _root.随机偏移(parentMC.子弹散射度 + countTotal + group.count);
             u.y = localDeltaY * 插值;
 
             // 新单元体当帧即纳入包围盒极值，保证首帧可命中
@@ -555,15 +598,21 @@ _root.联弹系统.纵向联弹更新 = function(group:Object):Void {
             group.count++;
         }
 
-        // 更新X碰撞箱（含本帧新增单元体）
-        area._x = x_min;
-        area._width = Math.max(group.x_基准 * -2, x_max - x_min);
+        // 更新X碰撞盒（含本帧新增单元体）；对象化联弹由碰撞器直接读取组字段
+        group.盒x = x_min;
+        group.盒宽 = Math.max(group.x_基准 * -2, x_max - x_min);
+        if (area != null) {
+            area._x = group.盒x;
+            area._width = group.盒宽;
+        }
 
         // 重置子弹坐标为原始值
         parentMC._x = originalX;
         parentMC._y = originalY;
     } else {
-        // X轴不更新时，沿用当前碰撞箱数据，只更新Y轴
+        // X轴不更新时，沿用当前碰撞盒数据，只更新Y轴
+        x_min = group.盒x;
+        x_max = group.盒x + group.盒宽;
         for (var j2:Number = list.length - 1; j2 >= 0; j2--) {
             u = list[j2];
             sinVal = Math.sin(u.rot * radFactor);
@@ -574,22 +623,28 @@ _root.联弹系统.纵向联弹更新 = function(group:Object):Void {
         }
     }
 
-    // 始终更新Y轴碰撞箱
-    area._y = y_min;
-    area._height = Math.max(group.y_基准 * -2, y_max - y_min);
+    // 始终更新Y轴碰撞盒
+    group.盒y = y_min;
+    group.盒高 = Math.max(group.y_基准 * -2, y_max - y_min);
+    if (area != null) {
+        area._y = group.盒y;
+        area._height = group.盒高;
+    }
 
     _root.联弹系统.渲染组(group);
 };
 
-_root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
-    var group:Object = _root.联弹系统.创建组(clip, _root.联弹系统.纵向联弹更新);
+// 纵向联弹组装核心（MC / 对象双模共用；调用前组的 盒x/盒y/盒宽/盒高 须已初始化）
+_root.联弹系统.纵向联弹组装 = function(group:Object):Void {
+    var b = group.bullet;
 
-    group.y_基准 = clip._y;
-    group.x_基准 = clip._x;
-    group.原始坐标x = clip._parent._x;
-    group.原始坐标y = clip._parent._y;
-    group.运动方向系数 = clip._parent.xmov < 0 ? -1 : 1;
-    group.子弹种类 = clip._parent.子弹种类.split("-")[1];
+    group.y_基准 = group.盒y;
+    group.x_基准 = group.盒x;
+    group.原始坐标x = b._x;
+    group.原始坐标y = b._y;
+    // ⚠ 时序考古同 横向联弹组装：area 载入晚于 xmov 赋值，生产行为就是条件值，勿改常量
+    group.运动方向系数 = b.xmov < 0 ? -1 : 1;
+    group.子弹种类 = b.子弹种类.split("-")[1];
     group.count = 1;
 
     // 每帧补弹数：显式推参（每帧补弹数）优先；其次由实际发射间隔（发射间隔毫秒，
@@ -597,21 +652,27 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
     // 保证全部霰弹值在两次射击间隔内发射完毕；两者皆无时保持旧行为（每帧1发）
     // ⚠ 守卫必须用 >0 而非 >=1：AVM1 中 undefined>=1 恒为 true（>= 实现为 !(<)，NaN 比较返回 undefined）
     // ⚠ 向上取整：补弹插值以 (s+1)/每帧补弹数 计算，小数推参会使插值>1、单元体超出当帧位移
-    var 每帧补弹数:Number = Math.ceil(clip._parent.每帧补弹数);
+    var 每帧补弹数:Number = Math.ceil(b.每帧补弹数);
     if (!(每帧补弹数 > 0)) {
-        var 发射间隔毫秒:Number = clip._parent.发射间隔毫秒;
+        var 发射间隔毫秒:Number = b.发射间隔毫秒;
         if (发射间隔毫秒 > 0) {
             var 间隔帧数:Number = Math.floor(发射间隔毫秒 / EnhancedCooldownWheel.I().每帧毫秒);
             if (间隔帧数 < 1) 间隔帧数 = 1;
-            每帧补弹数 = Math.ceil((clip._parent.霰弹值 - 1) / 间隔帧数);
+            每帧补弹数 = Math.ceil((b.霰弹值 - 1) / 间隔帧数);
         }
         if (!(每帧补弹数 > 0)) 每帧补弹数 = 1;
     }
     group.每帧补弹数 = 每帧补弹数;
 
     // 创建第一个单元体
-    _root.联弹系统.生成单元体(group, _root.随机偏移(clip._parent.子弹散射度));
+    _root.联弹系统.生成单元体(group, _root.随机偏移(b.子弹散射度));
     _root.联弹系统.渲染组(group);
+};
+
+_root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
+    var group:Object = _root.联弹系统.创建组(clip, _root.联弹系统.纵向联弹更新);
+    _root.联弹系统.初始化盒(group, clip);
+    _root.联弹系统.纵向联弹组装(group);
 };
 
 /* =====================================================================
@@ -713,3 +774,70 @@ _root.联弹系统.爆炸联弹初始化 = function(clip:MovieClip):Void {
     }
     _root.联弹系统.渲染组(group);
 };
+
+/* =====================================================================
+ * 对象化联弹（P3 去影片剪辑化）
+ *
+ * 注册表声明可对象化的联弹前缀及其 FLA 授权常量（即 area 子剪辑的本地矩形，
+ * 源自壳元件中 联弹area 实例矩阵：固有 25×25 形状 × 0.4 缩放 = 10×10；
+ * 横向系 tx=-5,ty=-5 → [-5,5]×[-5,5]；纵向系 tx=7,ty=-5 → [7,17]×[-5,5]）。
+ *
+ * BulletFactory 按本注册表门控：命中前缀 → 创建纯对象子弹（无 MC 壳），
+ * 碰撞经 updateFromChainObject 数据路径，击杀经 gotoAndPlay 垫片分发到 对象联弹消失。
+ * 删除注册条目即整型回退 MC 壳路径（FLA 元件仍在库中），逐模板可灰度。
+ *
+ * 暂保留 MC 壳的类型：横向拖尾联弹/横向拖尾追踪联弹（trail 矢量绘制依赖 area 画布）、
+ * 滑翔联弹/爆炸联弹（帧标签 + 子弹区域area 联动的死亡行为）。
+ * ===================================================================== */
+
+_root.联弹系统.对象化模板 = {};
+_root.联弹系统.注册对象化模板 = function(prefix:String, 盒x:Number, 盒y:Number, 盒宽:Number, 盒高:Number, updateFn:Function, assembleFn:Function):Void {
+    var tpl:Object = {};
+    tpl.盒x = 盒x;
+    tpl.盒y = 盒y;
+    tpl.盒宽 = 盒宽;
+    tpl.盒高 = 盒高;
+    tpl.盒固有半宽 = 12.5; // 联弹area 固有 25×25 形状之半（多边形路径用，不随实例缩放）
+    tpl.盒固有半高 = 12.5;
+    tpl.update = updateFn;
+    tpl.assemble = assembleFn;
+    _root.联弹系统.对象化模板[prefix] = tpl;
+};
+
+// 对象化联弹初始化（由 BulletFactory 在绑定生命周期之前调用——bindCollider 需读取组碰撞盒）
+_root.联弹系统.对象联弹初始化 = function(bullet:Object):Void {
+    var tpl:Object = _root.联弹系统.对象化模板[bullet.baseAsset];
+    var group:Object = {
+        area: null,
+        bullet: bullet,
+        单元体列表: [],
+        update: tpl.update
+    };
+    bullet.chainGroup = group;
+    group.盒x = tpl.盒x;
+    group.盒y = tpl.盒y;
+    group.盒宽 = tpl.盒宽;
+    group.盒高 = tpl.盒高;
+    group.盒固有半宽 = tpl.盒固有半宽;
+    group.盒固有半高 = tpl.盒固有半高;
+    ChainUnitManager.registerGroup(group);
+    tpl.assemble(group);
+};
+
+// 对象化联弹消失：复刻 MC 消失帧（联弹消失）语义——
+// 霰弹值耗尽或击中地图 → 销毁（removeMovieClip 垫片回收碰撞器与单元体组）；
+// 否则仅置 flag，剩余单元体继续由统一 tick 驱动飞行
+_root.联弹系统.对象联弹消失 = function(bullet:Object):Void {
+    bullet.flag = true;
+    if (bullet.霰弹值 <= 1 || bullet.击中地图) {
+        bullet.removeMovieClip();
+    }
+};
+
+// 六个枪式联弹模板全部对象化（横向系=霰弹齐射，纵向系=机枪扫射）
+_root.联弹系统.注册对象化模板("横向联弹",     -5, -5, 10, 10, _root.联弹系统.横向联弹更新, _root.联弹系统.横向联弹组装);
+_root.联弹系统.注册对象化模板("横向机枪联弹", -5, -5, 10, 10, _root.联弹系统.横向联弹更新, _root.联弹系统.横向联弹组装);
+_root.联弹系统.注册对象化模板("横向手枪联弹", -5, -5, 10, 10, _root.联弹系统.横向联弹更新, _root.联弹系统.横向联弹组装);
+_root.联弹系统.注册对象化模板("纵向联弹",      7, -5, 10, 10, _root.联弹系统.纵向联弹更新, _root.联弹系统.纵向联弹组装);
+_root.联弹系统.注册对象化模板("纵向机枪联弹",  7, -5, 10, 10, _root.联弹系统.纵向联弹更新, _root.联弹系统.纵向联弹组装);
+_root.联弹系统.注册对象化模板("纵向手枪联弹",  7, -5, 10, 10, _root.联弹系统.纵向联弹更新, _root.联弹系统.纵向联弹组装);
