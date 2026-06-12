@@ -577,7 +577,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             if (String(fillRate) == "auto") {
                 bulletProps.补弹对齐射速 = true;
             } else if (Number(fillRate) > 0) {
-                bulletProps.每帧补弹数 = Number(fillRate);
+                // 向上取整：补弹插值以 (s+1)/每帧补弹数 计算，小数会使插值>1、单元体超出当帧位移
+                bulletProps.每帧补弹数 = Math.ceil(Number(fillRate));
             }
         }
         bulletProps.子弹速度       = wd.子弹速度;

@@ -152,8 +152,8 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.ChainBulletConfigResolve
     }
 
     /**
-     * 延迟调度物品引用审计（非触发式：仅轮询 ItemDataLoader 缓存，不主动发起加载，
-     * 避免与游戏自身的物品数据加载编排产生并发竞争）
+     * 延迟调度联弹引用审计（非触发式：仅轮询加载器缓存，不主动发起加载，
+     * 避免与游戏自身的数据加载编排产生并发竞争）
      */
     private static function scheduleItemAudit():Void {
         EnhancedCooldownWheel.I().addDelayedTask(1000, auditWhenItemsReady);
@@ -161,58 +161,110 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.ChainBulletConfigResolve
 
     private static function auditWhenItemsReady():Void {
         var items = ItemDataLoader.getInstance().getData();
-        if (items == null) {
-            // 物品数据尚未就绪，最多重试 30 次（约 30 秒窗口）
+        var mods = EquipModListLoader.getInstance().getModData();
+        // 物品与配件任一未就绪则继续等待（约 30 秒窗口），超时后以现状审计并在结果中注明范围
+        if ((items == null || mods == null) && auditAttempts < 30) {
             auditAttempts++;
-            if (auditAttempts < 30) scheduleItemAudit();
+            scheduleItemAudit();
             return;
         }
-        auditItemReferences(items);
+        auditDataReferences(items, mods);
     }
 
     /**
-     * 扫描全部物品的 data.bullet 引用，凡形如 "模板-单元体" 的联弹组合：
+     * 审计物品 + 配件数据中的全部联弹组合引用。
+     * 递归遍历收集任意深度的 bullet 键，覆盖 data/data_ice/data_fire 等变体块、
+     * lifecycle initParam、skill 块、配件 stats(merge/override)/skill 等，不依赖固定路径。
+     *
+     * 凡形如 "模板-单元体" 的引用：
      * • 模板/单元体必须已声明（双层配置覆盖）
      * • 模板带 casingMap 且单元体材质非"无壳"时，弹壳条目必须已解析存在
-     * 任何缺失都发服务器告警（实际在用却未被治理覆盖 = 漏配）。
+     *
+     * 已知边界（不在本审计范围内）：
+     * • AS2 代码内嵌的子弹名（如装备/单位函数中的硬编码回退值），新增时需人工核对声明
+     * • 配件词缀动态合成（PropertyOperators.mergeString 前缀保留拼接）由
+     *   "模板×单元体全量派生"间接覆盖：词缀后缀只要是已声明单元体，任意模板组合都已派生；
+     *   新增联弹词缀配件时，后缀必须是已声明单元体
      */
-    public static function auditItemReferences(items):Void {
+    public static function auditDataReferences(items, mods):Void {
         var server = ServerManager.getInstance();
-        var warnCount:Number = 0;
-        var checked:Object = {}; // 同名子弹只审一次
+        if (items == null) {
+            server.sendServerMessage("[联弹配置] 联弹引用审计跳过：物品数据未就绪");
+            return;
+        }
+
+        // 收集全部 bullet 键引用
+        var refs:Array = [];
         for (var i:Number = 0; i < items.length; i++) {
-            var it:Object = items[i];
-            var bulletName:String = (it.data != undefined) ? it.data.bullet : undefined;
-            if (bulletName == undefined || checked[bulletName] != undefined) continue;
-            checked[bulletName] = true;
-
-            var key:String = String(bulletName);
-            var idx:Number = key.indexOf("联弹-");
-            if (idx < 0) continue;
-            var dashIdx:Number = idx + 2;
-            var prefix:String = key.substring(0, dashIdx);
-            var suffix:String = key.substring(dashIdx + 1);
-
-            var tpl:Object = auditTemplateMap[prefix];
-            var unit:Object = auditUnitMap[suffix];
-            if (tpl == undefined) {
-                server.sendServerMessage("[联弹配置] 审计告警：武器「" + it.name + "」引用 " + key + "，但模板「" + prefix + "」未声明");
-                warnCount++;
-            }
-            if (unit == undefined) {
-                server.sendServerMessage("[联弹配置] 审计告警：武器「" + it.name + "」引用 " + key + "，但单元体「" + suffix + "」未声明");
-                warnCount++;
-                continue;
-            }
-            // 弹壳覆盖检查（材质明确且模板具备弹壳派生能力时，解析结果必须存在）
-            if (tpl != undefined && tpl.casingMap != undefined
-                && unit.material != null && unit.material != "无壳"
-                && auditShellData[key] == undefined) {
-                server.sendServerMessage("[联弹配置] 审计告警：武器「" + it.name + "」引用 " + key + "，弹壳未解析（材质「" + unit.material + "」未命中模板 casingMap？）");
-                warnCount++;
+            collectBulletRefs(items[i], String(items[i].name), refs, 0);
+        }
+        if (mods != null) {
+            for (var m:Number = 0; m < mods.length; m++) {
+                collectBulletRefs(mods[m], "配件:" + String(mods[m].name), refs, 0);
             }
         }
-        server.sendServerMessage("[联弹配置] 武器引用审计完成：" + (warnCount > 0 ? ("发现 " + warnCount + " 处缺失！") : "全部覆盖"));
+
+        // 同名引用去重后逐一校验
+        var warnCount:Number = 0;
+        var checked:Object = {};
+        for (var r:Number = 0; r < refs.length; r++) {
+            var key:String = refs[r].name;
+            if (checked[key] != undefined) continue;
+            checked[key] = true;
+            warnCount += checkComboRef(key, refs[r].owner, server);
+        }
+
+        var scope:String = (mods != null) ? "物品+配件全字段" : "物品全字段（配件数据未就绪，未覆盖）";
+        server.sendServerMessage("[联弹配置] 联弹引用审计完成（范围：" + scope + "）："
+            + (warnCount > 0 ? ("发现 " + warnCount + " 处缺失！") : "未发现缺失"));
+    }
+
+    /**
+     * 递归收集节点树中所有 bullet 键的字符串值
+     */
+    private static function collectBulletRefs(node, ownerName:String, out:Array, depth:Number):Void {
+        if (node == null || typeof node != "object" || depth > 8) return;
+        for (var k:String in node) {
+            var v = node[k];
+            if (k == "bullet" && typeof v == "string") {
+                out.push({name: v, owner: ownerName});
+            } else if (typeof v == "object") {
+                collectBulletRefs(v, ownerName, out, depth + 1);
+            }
+        }
+    }
+
+    /**
+     * 校验单个联弹组合引用（非 "X联弹-Y" 格式直接放行）
+     * @return Number 告警条数
+     */
+    private static function checkComboRef(key:String, owner:String, server):Number {
+        var idx:Number = key.indexOf("联弹-");
+        if (idx < 0) return 0;
+        var count:Number = 0;
+        var dashIdx:Number = idx + 2;
+        var prefix:String = key.substring(0, dashIdx);
+        var suffix:String = key.substring(dashIdx + 1);
+
+        var tpl:Object = auditTemplateMap[prefix];
+        var unit:Object = auditUnitMap[suffix];
+        if (tpl == undefined) {
+            server.sendServerMessage("[联弹配置] 审计告警：「" + owner + "」引用 " + key + "，但模板「" + prefix + "」未声明");
+            count++;
+        }
+        if (unit == undefined) {
+            server.sendServerMessage("[联弹配置] 审计告警：「" + owner + "」引用 " + key + "，但单元体「" + suffix + "」未声明");
+            count++;
+            return count;
+        }
+        // 弹壳覆盖检查（材质明确且模板具备弹壳派生能力时，解析结果必须存在）
+        if (tpl != undefined && tpl.casingMap != undefined
+            && unit.material != null && unit.material != "无壳"
+            && auditShellData[key] == undefined) {
+            server.sendServerMessage("[联弹配置] 审计告警：「" + owner + "」引用 " + key + "，弹壳未解析（材质「" + unit.material + "」未命中模板 casingMap？）");
+            count++;
+        }
+        return count;
     }
 
     /**
