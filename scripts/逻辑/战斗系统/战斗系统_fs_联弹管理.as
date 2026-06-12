@@ -517,10 +517,6 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
                 if (unit._x < x_min) x_min = unit._x;
             }
 
-            // 当X轴更新时，更新X碰撞箱并创建新的单元体
-            this._x = x_min;
-            this._width = Math.max(this.x_基准 * -2, x_max - x_min);
-            
             // 计算新的单元体坐标（转换全局到父MC局部坐标系）
             var globalDeltaX:Number = currentParentX - originalX;
             var globalDeltaY:Number = currentParentY - originalY;
@@ -540,9 +536,20 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
                 newUnit._x += directionalCoefficient * localDeltaX * 插值 + _root.随机偏移(parentMC.子弹散射度 + countTotal + this.count);
                 newUnit._y += localDeltaY * 插值;
 
+                // 新单元体当帧即纳入包围盒极值，保证首帧可命中
+                if (newUnit._x > x_max) x_max = newUnit._x;
+                if (newUnit._x < x_min) x_min = newUnit._x;
+                if (newUnit._y > y_max) y_max = newUnit._y;
+                if (newUnit._y < y_min) y_min = newUnit._y;
+
                 this.单元体列表.push(newUnit);
                 this.count++;
             }
+
+            // 更新X碰撞箱（含本帧新增单元体）
+            this._x = x_min;
+            this._width = Math.max(this.x_基准 * -2, x_max - x_min);
+
             // 重置父对象坐标为原始值
             parentMC._x = originalX;
             parentMC._y = originalY;

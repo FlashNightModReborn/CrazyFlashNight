@@ -76,13 +76,16 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             ShootCore.startShooting(parentRef, target, ShootCore.primaryParams);
         };
         
-        // 持续射击函数（第5参为本次实际生效间隔，与基础间隔一致）
-        target.主手持续射击 = function(core, attackMode, shootSpeed) {
-            return ShootCore.continuousShoot(core, attackMode, shootSpeed, ShootCore.primaryParams, shootSpeed);
+        // 持续射击函数（targetRef 为双枪调用方传入的主角函数引用，此处不使用；
+        // effectiveInterval 为本次实际生效间隔，枪械师点按/连按场合与基础间隔不同，缺省回退 shootSpeed）
+        target.主手持续射击 = function(core, attackMode, shootSpeed, targetRef, effectiveInterval) {
+            return ShootCore.continuousShoot(core, attackMode, shootSpeed, ShootCore.primaryParams,
+                (effectiveInterval > 0) ? effectiveInterval : shootSpeed);
         };
 
-        target.副手持续射击 = function(core, attackMode, shootSpeed) {
-            return ShootCore.continuousShoot(core, attackMode, shootSpeed, ShootCore.secondaryParams, shootSpeed);
+        target.副手持续射击 = function(core, attackMode, shootSpeed, targetRef, effectiveInterval) {
+            return ShootCore.continuousShoot(core, attackMode, shootSpeed, ShootCore.secondaryParams,
+                (effectiveInterval > 0) ? effectiveInterval : shootSpeed);
         };
         
         // ReloadManager 相关函数
@@ -296,8 +299,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                 return;
             }
 
-            // 开始持续射击
-            var continueShooting:Boolean = that[continueMethodName](parentRef, weaponType, interval, that);
+            // 开始持续射击（枪械师点按以 tapInterval 作为实际生效间隔传入）
+            var continueShooting:Boolean = that[continueMethodName](parentRef, weaponType, interval, that,
+                hasGunslingerSkill ? tapInterval : interval);
             if (continueShooting) {
                 if (hasGunslingerSkill) {
                     // 枪械师技能：半自动可连射
@@ -564,6 +568,18 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         bulletProps.发射效果       = wd.发射效果;
         bulletProps.子弹种类       = wd.子弹种类;
         bulletProps.ammoCost      = BulletTypeUtil.isVertical(wd.子弹种类) ? wd.霰弹值 : 1;
+
+        // 补弹对齐射速（opt-in）：武器 XML 配置 <fillrate>auto</fillrate> 时，
+        // 射击路径会盖戳实际生效间隔（发射间隔毫秒）供纵向联弹推导每帧补弹数；
+        // 配置为正整数时为显式每帧补弹数；未配置不写入任何键，纵向联弹保持每帧1发旧行为
+        var fillRate = weaponData.fillrate;
+        if (fillRate != undefined) {
+            if (String(fillRate) == "auto") {
+                bulletProps.补弹对齐射速 = true;
+            } else if (Number(fillRate) > 0) {
+                bulletProps.每帧补弹数 = Number(fillRate);
+            }
+        }
         bulletProps.子弹速度       = wd.子弹速度;
         bulletProps.击中地图效果   = wd.击中地图效果;
         bulletProps.Z轴攻击范围    = wd.Z轴攻击范围;

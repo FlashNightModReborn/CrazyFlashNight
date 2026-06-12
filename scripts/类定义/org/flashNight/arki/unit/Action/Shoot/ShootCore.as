@@ -206,8 +206,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             var shootBulletAttrKey:String = config.shootBulletAttrKey;
             var bulletAttr:Object = man[shootBulletAttrKey];
             // _root.发布消息(bulletAttr.子弹种类, bulletAttr.击中地图)
-            // 预置本次射击的精确间隔（毫秒），由 WeaponFireCore.executeShot 同步消费并盖戳到子弹属性
-            core.__pendingFireInterval = (effectiveInterval > 0) ? effectiveInterval : shootSpeed;
+            // 预置本次射击的精确间隔（毫秒），由 WeaponFireCore.executeShot 同步消费并盖戳到子弹属性。
+            // 仅 opt-in（武器配置 fillrate=auto → 补弹对齐射速）时写入，未配置武器保持旧行为
+            if (bulletAttr.补弹对齐射速) {
+                core.__pendingFireInterval = (effectiveInterval > 0) ? effectiveInterval : shootSpeed;
+            }
             core[shootStateName] = core[shootMethodName](gunRef, bulletAttr);
 
             // 射击成功时设置后摇状态
@@ -654,8 +657,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         var holdInterval:Number = baseInterval * calcGunslingerHoldMultiplier(gunslingerLevel);
         var tapInterval:Number = baseInterval * calcGunslingerTapMultiplier(gunslingerLevel);
 
-        // 尝试射击
-        var continueShooting:Boolean = target[continueMethodName](core, weaponType, baseInterval, target);
+        // 尝试射击（连按链以 holdInterval 作为实际生效间隔传入）
+        var continueShooting:Boolean = target[continueMethodName](core, weaponType, baseInterval, target, holdInterval);
         if (continueShooting) {
             // 射击成功：点按收益最小间隔（用于下一次 startShooting）
             var rateKey:String = core._name + "_" + timerProp;

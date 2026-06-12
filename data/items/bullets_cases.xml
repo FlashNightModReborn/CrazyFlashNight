@@ -168,6 +168,15 @@
         </attribute>
     </bullet>
     <bullet>
+        <name>铁枪能量子弹</name>
+        <chainUnit>
+            <material>能量</material>
+        </chainUnit>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
+    </bullet>
+    <bullet>
         <name>横向拖尾追踪联弹-普通无壳子弹</name>
         <movement>
             <func>DefaultMissile</func>

@@ -72,15 +72,18 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
 
         dispatcher.publish("processShot", owner, weaponType, muzzlePosition, bulletProps);
 
-        // 盖戳本次发射间隔（毫秒）：供纵向联弹推导每帧补弹数，保证霰弹值在两次射击间隔内发射完毕
+        // 盖戳本次发射间隔（毫秒）：供纵向联弹推导每帧补弹数，保证霰弹值在两次射击间隔内发射完毕。
+        // 仅 opt-in（武器配置 fillrate=auto → 补弹对齐射速）时写入，未配置武器不写不消费、保持旧行为。
         // 优先消费 ShootCore 预置的精确间隔（含枪械师点按/连按修正），消费后立即清零防止跨路径残留；
-        // 未预置时回退武器静态配置 interval（双枪等旁路）；两者皆无则为 undefined，联弹侧回退每帧1发
-        var pendingInterval:Number = owner.__pendingFireInterval;
-        if (pendingInterval > 0) {
-            bulletProps.发射间隔毫秒 = pendingInterval;
-            owner.__pendingFireInterval = 0;
-        } else {
-            bulletProps.发射间隔毫秒 = owner[weaponType + "属性"].interval;
+        // 未预置时回退武器静态配置 interval（旁路路径的近似默认）
+        if (bulletProps.补弹对齐射速) {
+            var pendingInterval:Number = owner.__pendingFireInterval;
+            if (pendingInterval > 0) {
+                bulletProps.发射间隔毫秒 = pendingInterval;
+                owner.__pendingFireInterval = 0;
+            } else {
+                bulletProps.发射间隔毫秒 = owner[weaponType + "属性"].interval;
+            }
         }
 
         // 发射子弹
