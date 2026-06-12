@@ -41,6 +41,8 @@ chcp.com 65001 | Out-Null
 
 公共项：`publish_done.marker` **仅说明 JSFL 触发结束**，不能单独视为成功；必要时核对 `scripts/compile_output.txt`。慢机编译易超过默认窗口（实测 asLoader publish ~77s），`[TIMEOUT]` 后先核对 marker / SWF / `compiler_errors.txt` 是否其实已在超时后产出，再用 `-TimeoutSeconds` 调大重试。
 
+**新建 .as 类被引用时必须显式 import——含同包引用（2026-06-13 实测）**：Flash CS6 常驻会话对"同包隐式解析"使用陈旧的包索引——会话期间新建的类文件，同包既有类不写 import 直接引用会报 `无法加载类或接口'X'`（无任何语法错误细节），而帧脚本与跨包显式 `import a.b.X;` 都解析正常。修复 = 引用方加显式 import。排查弯路提示：删 ASO 缓存、重复编译均无效；BOM 正常 + 帧脚本能加载即可排除内容/编码问题；`fl.quit()` 对常驻实例无效，别指望重启 IDE。
+
 **对外表述边界**：
 
 - 可以说：`已完成 Flash CS6 自动化 smoke 验证` / `已触发编译并拿到新鲜 trace`（TestLoader）/ `asLoader 发布编译 0 错误、SWF 已重生成`（publish 模式）

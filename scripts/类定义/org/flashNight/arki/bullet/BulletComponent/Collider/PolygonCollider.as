@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup;
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.sara.util.*;
 
@@ -776,6 +777,10 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
      * 对象路径：固有半宽/半高取组注册表常量（盒固有半宽/盒固有半高），
      * 中心 = 组本地碰撞盒中心经子弹仿射矩阵 → 子弹区域 → gameworld。
      *
+     * 热路径实现（P4）：子弹三角函数复用渲染矩阵缓存（group.rcos/rsin/ma..md，
+     * 渲染组维护、同帧已先行刷新）；子弹区域→gameworld 复用 AABBCollider 的
+     * 帧缓存仿射——每弹每帧零三角函数、零 native 调用。
+     *
      * @param bullet 对象化联弹（携带 chainGroup 组引用）
      */
     public function updateFromChainObject(bullet:Object):Void {
@@ -783,25 +788,21 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         if (this._currentFrame == frame) return;
         this._currentFrame = frame;
 
-        var g:Object = bullet.chainGroup;
+        var g:ChainGroup = bullet.chainGroup;   // 类型化引用：组字段拼写编译期校验
         var hw:Number = g.盒固有半宽;
         var hh:Number = g.盒固有半高;
+        var cosR:Number = g.rcos;
+        var sinR:Number = g.rsin;
 
-        // 本地碰撞盒中心 → 子弹仿射 → 子弹区域 → gameworld
-        var rad:Number = bullet._rotation * 0.017453292519943295;
-        var sx:Number = bullet._xscale * 0.01;
-        var sy:Number = bullet._yscale * 0.01;
-        var cosR:Number = Math.cos(rad);
-        var sinR:Number = Math.sin(rad);
+        // 本地碰撞盒中心 → 子弹仿射（渲染矩阵缓存）→ 子弹区域 → gameworld（帧缓存仿射）
         var lx:Number = g.盒x + g.盒宽 * 0.5;
         var ly:Number = g.盒y + g.盒高 * 0.5;
-        var pt:Object = _pt;
-        pt.x = bullet._x + sx * cosR * lx - sy * sinR * ly;
-        pt.y = bullet._y + sx * sinR * lx + sy * cosR * ly;
-        _root.gameworld.子弹区域.localToGlobal(pt);
-        _root.gameworld.globalToLocal(pt);
-        var cx:Number = pt.x;
-        var cy:Number = pt.y;
+        var zx:Number = bullet._x + g.ma * lx + g.mc2 * ly;
+        var zy:Number = bullet._y + g.mb * lx + g.md * ly;
+
+        if (AABBCollider.zoneFrame != frame) AABBCollider.refreshChainZoneAffine(frame);
+        var cx:Number = AABBCollider.zoneA * zx + AABBCollider.zoneC * zy + AABBCollider.zoneTx;
+        var cy:Number = AABBCollider.zoneB * zx + AABBCollider.zoneD * zy + AABBCollider.zoneTy;
 
         // 预计算旋转后的半宽/半高向量分量（与 updateFromBullet 同式）
         var hwCos:Number = hw * cosR;

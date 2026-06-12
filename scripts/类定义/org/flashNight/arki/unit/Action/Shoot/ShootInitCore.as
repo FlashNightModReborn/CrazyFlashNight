@@ -569,16 +569,15 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         bulletProps.子弹种类       = wd.子弹种类;
         bulletProps.ammoCost      = BulletTypeUtil.isVertical(wd.子弹种类) ? wd.霰弹值 : 1;
 
-        // 补弹对齐射速（opt-in）：武器 XML 配置 <fillrate>auto</fillrate> 时，
-        // 射击路径会盖戳实际生效间隔（发射间隔毫秒）供纵向联弹推导每帧补弹数；
-        // 配置为正整数时为显式每帧补弹数；未配置不写入任何键，纵向联弹保持每帧1发旧行为
+        // 补弹率（可选覆盖）：纵向联弹默认按本次实际射击间隔自适应推导补弹率
+        // （全武器普及，无需配置；fillrate=auto 为历史 opt-in 写法，现等同缺省）。
+        // 配置正数时为显式每帧补弹率，允许小数——<1 即隔帧补弹，
+        // 由发射端累加器按帧整数化（残差跨帧滚动），帧内插值恒 ≤1 不会超出当帧位移
         var fillRate = weaponData.fillrate;
-        if (fillRate != undefined) {
-            if (String(fillRate) == "auto") {
-                bulletProps.补弹对齐射速 = true;
-            } else if (Number(fillRate) > 0) {
-                // 向上取整：补弹插值以 (s+1)/每帧补弹数 计算，小数会使插值>1、单元体超出当帧位移
-                bulletProps.每帧补弹数 = Math.ceil(Number(fillRate));
+        if (fillRate != undefined && String(fillRate) != "auto") {
+            var fillRateNum:Number = Number(fillRate);
+            if (fillRateNum > 0) {
+                bulletProps.每帧补弹数 = fillRateNum;
             }
         }
         bulletProps.子弹速度       = wd.子弹速度;
