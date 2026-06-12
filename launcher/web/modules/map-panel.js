@@ -355,6 +355,12 @@ var MapPanel = (function() {
         _hoverHotspotId = '';
         ensurePageFilterState(_activePage);
         _stageEl.style.aspectRatio = _activePage.width + ' / ' + _activePage.height;
+        // 沉浸全屏化 2026-06-12：stage-shell 铺当前 page 底图(cover + CSS 暗罩)作背景延伸，让 stage 周围
+        // letterbox 区显扩展地图氛围而非黑（坐标/命中图不变，纯视觉）。assembled-visual 页无 backgroundUrl 时回退渐变底。
+        if (_stageShellEl) {
+            var _bgExtUrl = (_activePage && _activePage.backgroundUrl) ? resolveAssetUrl(_activePage.backgroundUrl) : '';
+            _stageShellEl.style.backgroundImage = _bgExtUrl ? 'url("' + _bgExtUrl + '")' : '';
+        }
         // 像素级 hittest 构建 (lazy, fire-and-forget):
         // 必须传整页 sceneVisuals (engine 内部读 page.sceneVisuals), 与 filter 无关;
         // filter 过滤由 hitcapture 调用方在 query 后用 getVisibleLookup 套

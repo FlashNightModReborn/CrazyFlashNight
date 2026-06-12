@@ -1,0 +1,55 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/牙通牙/牙通牙特效组件/shape 135 副本 7" itemID="55af0c12-0000338f" symbolType="graphic" lastModified="1418787010">
+  <timeline>
+    <DOMTimeline name="shape 135 副本 7">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.10040283203125" d="0.10040283203125" tx="78.15" ty="69.9"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFBB" ratio="0.0705882352941176"/>
+                        <GradientEntry color="#FFFF00" ratio="0.27843137254902"/>
+                        <GradientEntry color="#FF9900" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0587158203125" d="0.0587158203125" tx="110.8" ty="45.8"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFBB" ratio="0.0705882352941176"/>
+                        <GradientEntry color="#FFFF00" ratio="0.27843137254902"/>
+                        <GradientEntry color="#FF9900" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.08038330078125" d="0.08038330078125" tx="90.05" ty="100.2"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFBB" ratio="0.0705882352941176"/>
+                        <GradientEntry color="#FFFF00" ratio="0.27843137254902"/>
+                        <GradientEntry color="#FF9900" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" edges="!2221 738|2156 346!2156 346|2205 1047!2205 1047|2510 0!2510 0|2270 610!2270 610|2249 389!2249 389|2242 389!2242 389|2221 738"/>
+                    <Edge fillStyle1="3" edges="!1710 2054|1872 1925!1872 1925|1146 3146!1146 3146|1768 2036!1768 2036|1710 2054"/>
+                    <Edge fillStyle0="1" edges="!0 1910|1948 1458!1948 1458[884 1667 1740 1371!1740 1371[1480 1389 1651 1264!1651 1264|0 1910"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

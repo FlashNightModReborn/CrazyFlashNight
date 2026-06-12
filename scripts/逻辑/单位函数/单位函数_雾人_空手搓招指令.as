@@ -94,10 +94,10 @@ _root.技能函数.使用诛杀步 = function():Number {
 		return _root.技能函数.搓招监控("诛杀步", 1);
 	}
 
-	// 帧检查兜底：双击前且不按后
-	if(!自机.当前搓招名 && 不按后) {
-		var 双击前 = 面右 ? (自机.doubleTapRunDirection == 1) : (自机.doubleTapRunDirection == -1);
-		if(双击前) {
+	// 帧检查兜底：Shift+前且不按后
+	if(!自机.当前搓招名 && 不按后 && Key.isDown(_root.奔跑键)) {
+		var 按前 = 面右 ? 自机.右行 : 自机.左行;
+		if(按前) {
 			_root.空手攻击路由.空手攻击标签跳转(自机, "诛杀步");
 			return _root.技能函数.搓招监控("诛杀步", 2);
 		}

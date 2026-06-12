@@ -25,6 +25,7 @@ import org.flashNight.neur.Event.EventBus;
 import org.flashNight.gesh.json.LoadJson.AchievementDataLoader;
 import org.flashNight.arki.task.TaskUtil;
 import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.achievement.ObjectiveEvaluator;
 import LiteJSON;
 
 class org.flashNight.arki.achievement.AchievementService {
@@ -136,51 +137,21 @@ class org.flashNight.arki.achievement.AchievementService {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 判定层 — 逐类型进度现算（无通用求值器，YAGNI 已否决；枚举=派生器白名单同集）
+    // 判定层 — 原始读数委派共享 ObjectiveEvaluator.rawOf（任务 conditions 共用同一套基础设施，
+    // 设计 docs/任务成就-判定层共享-设计-2026-06-11.md §2；原"逐类型现算"逻辑 1:1 迁入 rawOf，
+    // "无通用求值器"纪律不变——rawOf 仍是封闭类型枚举分发，枚举=派生器白名单同集）。
+    // 本层只保留【成就域基线策略】：killTotal 扣 a.base.kt（D1 终身语义）；其余类型直通。
     // ═══════════════════════════════════════════════════════════
     private static function curOf(def:Object):Number {
         var o:Object = def.objective;
-        var t:String = o.type;
         var p:Object = (o.params != undefined) ? o.params : {};
-        var a:Object = _root._saveExt.成就;
 
-        if (t == "killTotal") {
-            // D1 公式：基线后增量
-            return Math.max(0, (Number(_root.killStats.total) || 0) - (Number(a.base.kt) || 0));
+        if (o.type == "killTotal") {
+            // D1 公式：基线后增量（rawOf 返原始 total，本层扣成就基线）
+            var a:Object = _root._saveExt.成就;
+            return Math.max(0, ObjectiveEvaluator.rawOf("killTotal", p) - (Number(a.base.kt) || 0));
         }
-        if (t == "economyCount") {
-            var c:Number = Number(a.cnt[p.counter]);
-            return isNaN(c) ? 0 : c;
-        }
-        if (t == "infraLevel") {
-            var lv:Number = Number(_root.基建系统.infrastructure[p.name]);
-            return isNaN(lv) ? 0 : lv;
-        }
-        if (t == "infraBuiltCount") {
-            var n:Number = 0;
-            var infra:Object = _root.基建系统.infrastructure;
-            for (var k:String in infra) {
-                if (Number(infra[k]) > 0) n++;
-            }
-            return n;
-        }
-        if (t == "taskFinished") {
-            // ⚠ tasks_finished 值=完成次数非布尔（可重复任务自增），显式 >=1，禁 ==true
-            return (Number(_root.tasks_finished[String(p.taskId)]) >= 1) ? 1 : 0;
-        }
-        if (t == "chainProgress") {
-            var prog:Number = Number(_root.task_chains_progress[p.chain]);
-            return isNaN(prog) ? 0 : prog;
-        }
-        if (t == "skillLevel") {
-            var sl:Number = Number(_root.根据技能名查找主角技能等级(p.skill));
-            return isNaN(sl) ? 0 : sl;
-        }
-        if (t == "itemOwned") {
-            var cnt:Number = (p.count != undefined && !isNaN(Number(p.count))) ? Number(p.count) : 1;
-            return TaskUtil.containTaskItems([p.item + "#" + cnt]) ? 1 : 0;
-        }
-        return 0; // 未知类型（派生器已拦）：永不解锁，不抛错（AS2 无 try/finally，回调禁 throw）
+        return ObjectiveEvaluator.rawOf(o.type, p);
     }
 
     // 永不返 null；cur 封顶 target（HeroUtil.getNextTitleInfo 满档返 null 教训；ach-ui4 断言）
@@ -209,6 +180,15 @@ class org.flashNight.arki.achievement.AchievementService {
     // scanTick — 解锁锁存 + toast 通知的唯一写点（10 秒循环任务，两次触发间零每帧成本）
     // ═══════════════════════════════════════════════════════════
     public static function scanTick():Void {
+        // A2 联动（判定层共享设计 §7）：含 conditions 的进行中任务，其达成态可能【无事件】翻转
+        //（如击杀计数到 50——没有物品获得/存档事件可触发 是否达成任务检测）。借同一 10s 心跳
+        // 刷新任务红点/td 信号，不另注册第二个循环任务。无 conditions 任务时零额外成本。
+        // ⚠ 必须置于 _dataReady/ensureInit 门【前】：任务判定生命周期不依赖成就目录可用性，
+        // 成就目录加载失败（_dataReady 永 false）不得连带停掉任务条件的红点刷新。
+        if (TaskUtil.anyActiveConditions()) {
+            if (typeof _root.是否达成任务检测 == "function") _root.是否达成任务检测();
+        }
+
         if (!_dataReady) return;
         if (!ensureInit()) return;
         var a:Object = _root._saveExt.成就; // 现场解引用

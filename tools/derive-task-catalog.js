@@ -26,11 +26,14 @@
 
 const fs = require('fs');
 const path = require('path');
+const { validateCondition, parseEconomyWhitelist } = require('./lib/objective-types.js');
 
 const projectRoot = path.resolve(__dirname, '..');
-const taskDir = path.join(projectRoot, 'data', 'task');
-const textDir = path.join(projectRoot, 'data', 'task', 'text');
+const metricsFile = path.join(projectRoot, 'scripts', '类定义', 'org', 'flashNight', 'arki', 'achievement', 'AchievementMetrics.as');
+const defaultTaskDir = path.join(projectRoot, 'data', 'task');
 const defaultOutput = path.join(projectRoot, 'launcher', 'web', 'modules', 'tasks', 'task-catalog.json');
+let taskDir = defaultTaskDir;            // --task-dir 可覆盖（测试夹具用，见 tools/test-derive-task-conditions.js）
+let textDir = path.join(defaultTaskDir, 'text');
 
 function fail(msg) {
     console.error('[derive-task-catalog] ' + msg);
@@ -38,11 +41,12 @@ function fail(msg) {
 }
 
 function parseArgs(argv) {
-    const args = { output: defaultOutput, check: false };
+    const args = { output: defaultOutput, check: false, taskDir: null };
     for (let i = 0; i < argv.length; i += 1) {
         const arg = argv[i];
         if (arg === '--output') { args.output = argv[i + 1] || ''; i += 1; continue; }
         if (arg === '--check') { args.check = true; continue; }
+        if (arg === '--task-dir') { args.taskDir = argv[i + 1] || ''; i += 1; continue; }
         if (arg === '--help' || arg === '-h') { printHelp(0); return null; }
         printHelp(1, 'unknown arg: ' + arg);
         return null;
@@ -52,8 +56,9 @@ function parseArgs(argv) {
 
 function printHelp(exitCode, error) {
     if (error) console.error(error);
-    console.error('usage: node tools/derive-task-catalog.js [--output <file>] [--check]');
-    console.error('  --check  parse + validate only, do not write');
+    console.error('usage: node tools/derive-task-catalog.js [--output <file>] [--check] [--task-dir <dir>]');
+    console.error('  --check     parse + validate only, do not write');
+    console.error('  --task-dir  task data root override (default data/task; for test fixtures)');
     console.error('  default output: ' + defaultOutput);
     process.exit(exitCode);
 }
@@ -136,9 +141,13 @@ function parseNameCount(entry, kind) {
     if (kind) o.kind = kind;
     return o;
 }
-
 function buildCatalog(rawTasks, taskTexts) {
     const tasks = {};
+    // conditions 校验（任务-成就判定层共享，可选字段；设计 docs/任务成就-判定层共享-设计-2026-06-11.md §3）。
+    // economyCount 白名单惰性解析：仅当数据真用到 economyCount 才读 AchievementMetrics.as。
+    let economyCounters = null;
+    const pendingTaskRefs = []; // taskFinished 跨任务引用，全集建完后做存在性闭包（防前向引用误杀）
+    const pendingChainRefs = []; // chainProgress 链引用，全集建完后校验 链存在 + target ≤ 链最大 seq（可达性）
     const chains = {};            // 有序号链：name → { seq: id }
     const chainsUnsequenced = {}; // 无序号链（委托等）：name → [id...]（遇见序）
     const idSeen = {};
@@ -163,6 +172,39 @@ function buildCatalog(rawTasks, taskTexts) {
         }
 
         const ctx = 'task ' + idKey;
+
+        // conditions（可选）：逐条过共享校验器（类型枚举/target/label/params/sinceAccept 单调限定）
+        if (t.conditions !== undefined) {
+            if (!Array.isArray(t.conditions) || t.conditions.length === 0) {
+                fail(ctx + ': conditions must be a non-empty array when present');
+            }
+            for (let c = 0; c < t.conditions.length; c += 1) {
+                const cond = t.conditions[c];
+                if (cond && cond.type === 'economyCount' && economyCounters === null) {
+                    economyCounters = parseEconomyWhitelist(metricsFile, fail);
+                }
+                validateCondition(cond, ctx + '.conditions[' + c + ']', fail, economyCounters);
+                // 跨任务闭包：自引用即拒；存在性/死锁等全集建完后 post-pass（防前向引用误杀）
+                if (cond.type === 'taskFinished') {
+                    if (String(cond.params.taskId) === idKey) {
+                        fail(ctx + '.conditions[' + c + ']: taskFinished cannot reference itself');
+                    }
+                    pendingTaskRefs.push({ ctx: ctx + '.conditions[' + c + ']', host: idKey, ref: String(cond.params.taskId) });
+                }
+                // chainProgress 可达性闭包（post-pass）：task_chains_progress 只在【有序号链】任务
+                // FinishTask 时写 max(progress, seq)（通信_鸡蛋_任务系统.as UpdateTaskProgress），
+                // 引用无序号链或 target 超链最大 seq = 永不可达静默上架
+                if (cond.type === 'chainProgress') {
+                    pendingChainRefs.push({
+                        ctx: ctx + '.conditions[' + c + ']',
+                        host: idKey,
+                        chain: String(cond.params.chain),
+                        target: Number(cond.target)
+                    });
+                }
+            }
+        }
+
         const title = resolveText(t.title, taskTexts, ctx + '.title');
         const description = resolveText(t.description, taskTexts, ctx + '.description');
         const getConv = resolveText(t.get_conversation, taskTexts, ctx + '.get_conversation');
@@ -221,6 +263,138 @@ function buildCatalog(rawTasks, taskTexts) {
         }
     }
 
+    // taskFinished 条件引用的任务存在性闭包（全集已建完）
+    for (let r = 0; r < pendingTaskRefs.length; r += 1) {
+        if (idSeen[pendingTaskRefs[r].ref] !== true) {
+            fail(pendingTaskRefs[r].ctx + ': taskFinished references missing task id "' + pendingTaskRefs[r].ref + '"');
+        }
+    }
+
+    // ═══ 条件可满足性校验：单调 AND-OR 不动点（对齐运行时真实语义） ═══
+    // 四轮演进：局部规则两轮被击穿（前序依赖盲区/seq 缺口）→ 图环检测一轮被击穿（链前驱边
+    // 虚构了运行时不存在的顺序约束：taskAvailable 接取门控只查 get_requirements 不查链序号
+    // ——通信_鸡蛋_任务系统.as，实测 11 个非前序依赖转换含独立挑战任务，会被误报死锁）。
+    // 终版按引擎真实语义建模，不再附加任何顺序假设：
+    //   任务 T 可完成 ⇔ get_requirements 全部可完成（接取门控，唯一真实边）
+    //                 ∧ taskFinished 条件引用任务可完成
+    //                 ∧ 每个 chainProgress(C,t) 条件存在【任一】候选 X∈C、seq(X)≥t、X 可完成
+    //     （chainProgress 是析取——任一候选满足即可，普通有向图环检测表达不了 OR，
+    //       故用单调不动点迭代「可完成集合」直至收敛：Horn 可满足性，O(V·E) 上界，238 任务可忽略；
+    //       候选=宿主自身天然无效——判定时宿主必不在集合内，seq 缺口/自链死锁由此自然涌现）
+    //   基线集 = 仅 get_requirements 的不动点；带条件后从基线集跌出的任务 = 条件引入的死锁 → fail
+    //   并逐任务打印阻塞条件。存量数据在基线集就不可完成的任务不在此门审计（历史问题与 conditions 无关）。
+    // 边界：只证「条件无结构性死锁」，不证「可完成」（物品/经济/运行态/NPC 脚本发任务归 playtest）。
+    const allIds = Object.keys(tasks);
+    const reqOf = {};      // idKey → [存在的 get_requirements idKey...]
+    for (let i = 0; i < allIds.length; i += 1) {
+        const req = tasks[allIds[i]].req;
+        const out = [];
+        for (let r = 0; r < req.length; r += 1) {
+            if (idSeen[String(req[r])] === true) out.push(String(req[r]));
+        }
+        reqOf[allIds[i]] = out;
+    }
+    const tfByHost = {};   // idKey → [{ctx, ref}]
+    for (let r = 0; r < pendingTaskRefs.length; r += 1) {
+        const t = pendingTaskRefs[r];
+        if (!tfByHost[t.host]) tfByHost[t.host] = [];
+        tfByHost[t.host].push(t);
+    }
+    const cpByHost = {};   // idKey → [{ctx, chain, target}]（基础闭包先行：链存在 / target≤最大 seq）
+    const chainCands = {}; // 链名 → [{seq, id(idKey)}]
+    const chainNamesAll = Object.keys(chains);
+    for (let n = 0; n < chainNamesAll.length; n += 1) {
+        const seqMap = chains[chainNamesAll[n]];
+        chainCands[chainNamesAll[n]] = Object.keys(seqMap).map(function (s) {
+            return { seq: Number(s), id: String(seqMap[Number(s)]) };
+        });
+    }
+    for (let r = 0; r < pendingChainRefs.length; r += 1) {
+        const ref = pendingChainRefs[r];
+        const seqMap = chains[ref.chain];
+        if (seqMap === undefined) {
+            fail(ref.ctx + ': chainProgress references unknown sequenced chain "' + ref.chain
+                + '" (无序号链不更新 task_chains_progress，条件永不可达)');
+        }
+        const seqs = Object.keys(seqMap).map(Number);
+        const maxSeq = Math.max.apply(null, seqs);
+        if (ref.target > maxSeq) {
+            fail(ref.ctx + ': chainProgress target ' + ref.target + ' exceeds chain "' + ref.chain
+                + '" max seq ' + maxSeq + ' (unreachable condition)');
+        }
+        if (!cpByHost[ref.host]) cpByHost[ref.host] = [];
+        cpByHost[ref.host].push(ref);
+    }
+
+    function computeCompletable(useConditions) {
+        const done = {};
+        let changed = true;
+        while (changed) {
+            changed = false;
+            for (let i = 0; i < allIds.length; i += 1) {
+                const id = allIds[i];
+                if (done[id] === true) continue;
+                let ok = true;
+                const req = reqOf[id];
+                for (let r = 0; r < req.length && ok; r += 1) {
+                    if (done[req[r]] !== true) ok = false;
+                }
+                if (ok && useConditions) {
+                    const tfs = tfByHost[id] || [];
+                    for (let t = 0; t < tfs.length && ok; t += 1) {
+                        if (done[tfs[t].ref] !== true) ok = false;
+                    }
+                    const cps = cpByHost[id] || [];
+                    for (let c = 0; c < cps.length && ok; c += 1) {
+                        let sat = false;
+                        const cands = chainCands[cps[c].chain];
+                        for (let k = 0; k < cands.length; k += 1) {
+                            if (cands[k].seq >= cps[c].target && done[cands[k].id] === true) { sat = true; break; }
+                        }
+                        if (!sat) ok = false;
+                    }
+                }
+                if (ok) { done[id] = true; changed = true; }
+            }
+        }
+        return done;
+    }
+
+    if (pendingTaskRefs.length > 0 || pendingChainRefs.length > 0) {
+        const baseline = computeCompletable(false);
+        const withCond = computeCompletable(true);
+        const lines = [];
+        for (let i = 0; i < allIds.length; i += 1) {
+            const id = allIds[i];
+            if (baseline[id] !== true || withCond[id] === true) continue;
+            // 跌出基线集 = 条件引入的死锁；逐条定位阻塞原因
+            const tfs = tfByHost[id] || [];
+            const cps = cpByHost[id] || [];
+            let blamed = false;
+            for (let t = 0; t < tfs.length; t += 1) {
+                if (withCond[tfs[t].ref] !== true) {
+                    lines.push(tfs[t].ctx + ': taskFinished 引用任务 ' + tfs[t].ref + ' 不可先于本任务完成');
+                    blamed = true;
+                }
+            }
+            for (let c = 0; c < cps.length; c += 1) {
+                const cands = chainCands[cps[c].chain].filter(function (x) { return x.seq >= cps[c].target; });
+                if (!cands.some(function (x) { return withCond[x.id] === true; })) {
+                    lines.push(cps[c].ctx + ': chainProgress ' + cps[c].chain + '≥' + cps[c].target
+                        + ' 的全部候选任务 [' + cands.map(function (x) { return x.id + '(#' + x.seq + ')'; }).join(', ')
+                        + '] 均不可先于本任务完成');
+                    blamed = true;
+                }
+            }
+            if (!blamed) {
+                lines.push('task ' + id + ': 级联死锁——get_requirements 前置任务因上述条件死锁不可完成');
+            }
+        }
+        if (lines.length > 0) {
+            fail('conditions deadlock — 以下任务因条件永不可满足而无法完成:\n  ' + lines.join('\n  '));
+        }
+    }
+
     // 有序号链 → 按 seq 升序的 id 数组（= AS2 task_in_chains_by_sequence 排序后）
     const chainsOrdered = {};
     const chainNames = Object.keys(chains);
@@ -266,6 +440,10 @@ function tryReadExistingPayload(outputPath) {
 function main() {
     const args = parseArgs(process.argv.slice(2));
     if (!args) return;
+    if (args.taskDir) {
+        taskDir = path.resolve(args.taskDir);
+        textDir = path.join(taskDir, 'text');
+    }
 
     const rawTasks = loadTasks();
     const taskTexts = loadTexts();

@@ -1,6 +1,7 @@
 ﻿import org.flashNight.sara.util.*;
 import org.flashNight.arki.spatial.move.*;
 import org.flashNight.gesh.depth.*;
+import org.flashNight.neur.ScheduleTimer.*;
 _root.单元体计数 = 0;
 
 _root.创建单元体 = function(子弹:MovieClip, 子弹种类:String) {
@@ -430,7 +431,23 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
     // 提取子弹种类
     clip.子弹种类 = clip._parent.子弹种类.split("-")[1];
     clip.count = 1;
-    
+
+    // 每帧补弹数：显式推参（每帧补弹数）优先；其次由实际发射间隔（发射间隔毫秒，
+    // 由 WeaponFireCore.executeShot 盖戳，含枪械师点按/连按修正）推导，
+    // 保证全部霰弹值在两次射击间隔内发射完毕；两者皆无时保持旧行为（每帧1发）
+    // ⚠ 守卫必须用 >0 而非 >=1：AVM1 中 undefined>=1 恒为 true（>= 实现为 !(<)，NaN 比较返回 undefined）
+    var 每帧补弹数:Number = clip._parent.每帧补弹数;
+    if (!(每帧补弹数 > 0)) {
+        var 发射间隔毫秒:Number = clip._parent.发射间隔毫秒;
+        if (发射间隔毫秒 > 0) {
+            var 间隔帧数:Number = Math.floor(发射间隔毫秒 / EnhancedCooldownWheel.I().每帧毫秒);
+            if (间隔帧数 < 1) 间隔帧数 = 1;
+            每帧补弹数 = Math.ceil((clip._parent.霰弹值 - 1) / 间隔帧数);
+        }
+        if (!(每帧补弹数 > 0)) 每帧补弹数 = 1;
+    }
+    clip.每帧补弹数 = 每帧补弹数;
+
     // 创建第一个单元体
     var firstUnit:MovieClip = _root.创建单元体(clip._parent, clip.子弹种类);
     firstUnit._rotation = _root.随机偏移(clip._parent.子弹散射度);
@@ -500,10 +517,6 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
                 if (unit._x < x_min) x_min = unit._x;
             }
 
-            // 当X轴更新时，更新X碰撞箱并创建新的单元体
-            this._x = x_min;
-            this._width = Math.max(this.x_基准 * -2, x_max - x_min);
-            
             // 计算新的单元体坐标（转换全局到父MC局部坐标系）
             var globalDeltaX:Number = currentParentX - originalX;
             var globalDeltaY:Number = currentParentY - originalY;
@@ -512,17 +525,34 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
             sinVal = Math.sin(rad);
             var localDeltaX:Number = globalDeltaX * cosVal + globalDeltaY * sinVal;
             var localDeltaY:Number = -globalDeltaX * sinVal + globalDeltaY * cosVal;
-            
-            var newUnit:MovieClip = _root.创建单元体(parentMC, this.子弹种类);
-            newUnit._rotation = _root.随机偏移(parentMC.子弹散射度);
-            newUnit._x += directionalCoefficient * localDeltaX + _root.随机偏移(parentMC.子弹散射度 + countTotal + this.count);
-            newUnit._y += localDeltaY;
-            
-            this.单元体列表.push(newUnit);
+
+            // 每帧补充 N 发单元体，沿当帧位移做分数位置插值，避免同点叠弹
+            // （每帧补弹数=1 时插值=1，与旧行为逐字节一致）
+            var 补弹数:Number = this.每帧补弹数;
+            for (var s:Number = 0; s < 补弹数 && this.count < countTotal; s++) {
+                var 插值:Number = (s + 1) / 补弹数;
+                var newUnit:MovieClip = _root.创建单元体(parentMC, this.子弹种类);
+                newUnit._rotation = _root.随机偏移(parentMC.子弹散射度);
+                newUnit._x += directionalCoefficient * localDeltaX * 插值 + _root.随机偏移(parentMC.子弹散射度 + countTotal + this.count);
+                newUnit._y += localDeltaY * 插值;
+
+                // 新单元体当帧即纳入包围盒极值，保证首帧可命中
+                if (newUnit._x > x_max) x_max = newUnit._x;
+                if (newUnit._x < x_min) x_min = newUnit._x;
+                if (newUnit._y > y_max) y_max = newUnit._y;
+                if (newUnit._y < y_min) y_min = newUnit._y;
+
+                this.单元体列表.push(newUnit);
+                this.count++;
+            }
+
+            // 更新X碰撞箱（含本帧新增单元体）
+            this._x = x_min;
+            this._width = Math.max(this.x_基准 * -2, x_max - x_min);
+
             // 重置父对象坐标为原始值
             parentMC._x = originalX;
             parentMC._y = originalY;
-            this.count++;
         } else {
             // 当X轴不更新时，沿用当前碰撞箱数据，且只更新Y轴
             x_min = this._x;

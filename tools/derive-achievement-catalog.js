@@ -38,17 +38,11 @@ const taskDir = path.join(projectRoot, 'data', 'task');
 const metricsFile = path.join(projectRoot, 'scripts', '类定义', 'org', 'flashNight', 'arki', 'achievement', 'AchievementMetrics.as');
 const defaultOutput = path.join(projectRoot, 'launcher', 'web', 'modules', 'tasks', 'achievement-catalog.json');
 
-// A 轮 objective.type 枚举（设计 §1.1）。killByType 为后续轮占位，启用注记见设计 §1.3，勿在 A 轮加入。
-const OBJECTIVE_TYPES = {
-    infraLevel: true,
-    infraBuiltCount: true,
-    killTotal: true,
-    taskFinished: true,
-    chainProgress: true,
-    skillLevel: true,
-    itemOwned: true,
-    economyCount: true
-};
+// objective.type 枚举：单源迁移至 tools/lib/objective-types.js（任务 conditions 与成就共享同一枚举，
+// 设计：docs/任务成就-判定层共享-设计-2026-06-11.md §2；原 A 轮本地枚举=设计 §1.1）。
+// 注意：枚举里的新类型（如 itemCount）若未在下方 switch 加 params 校验会落 default fail——
+// 成就域启用新类型必须显式加 case（刻意的双重门，防"枚举放行但语义未评估"静默上架）。
+const { OBJECTIVE_TYPES } = require('./lib/objective-types.js');
 
 // rewards 黑名单：经验值 acquire 触发 _root.主角是否升级（ItemUtil.as:417-419），
 // 面板遮罩下升级弹窗/特效体验未评估（设计 §1.2）。解禁 = 删此条目（显式决策点）。

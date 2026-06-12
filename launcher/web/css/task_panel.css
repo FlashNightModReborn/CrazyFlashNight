@@ -1196,6 +1196,26 @@
 .tlv-replay-btn.active { background: rgba(255, 255, 255, 0.12); border-color: var(--task-accent); color: #ffffff; }
 .tlv-replay-btn.task-btn-pending { pointer-events: none; opacity: 0.6; }
 
+/* 共享判定条件进度行（conditions；与成就进度同口径，黑白灰功能层） */
+.task-cond-area { display: flex; flex-direction: column; gap: 7px; margin: 12px 0 2px; }
+.task-cond-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.30), rgba(0, 0, 0, 0.12));
+    border-left: 3px solid rgba(255, 255, 255, 0.28);
+    border-radius: 3px;
+    font-size: 13px;
+    color: var(--task-text-dim);
+}
+.task-cond-row.done { border-left-color: #f2f2f2; color: var(--task-text); }
+.task-cond-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.task-cond-count { flex-shrink: 0; font-family: var(--task-serif); }
+.task-cond-bar { flex: 0 0 90px; height: 5px; background: rgba(255, 255, 255, 0.10); border-radius: 2px; overflow: hidden; }
+.task-cond-fill { display: block; height: 100%; background: linear-gradient(to right, #9a9a9a, #e8e8e8); transition: width 0.25s var(--task-ease); }
+.task-cond-row.done .task-cond-fill { background: #ffffff; box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
+
 /* 内联对话文本（轻量态；富立绘对话框待对话框迁 web 后替换） */
 .tlv-dialogue { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
 .tlv-dialogue:empty { margin-top: 0; }

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-后撤步" itemID="6964d656-00002843" linkageExportForAS="true" linkageIdentifier="空手攻击容器-后撤步" lastModified="1781089274">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-后撤步" itemID="6964d656-00002843" linkageExportForAS="true" linkageIdentifier="空手攻击容器-后撤步" lastModified="1781235050">
   <timeline>
     <DOMTimeline name="空手攻击容器-后撤步">
       <layers>
@@ -79,9 +79,9 @@
                     <script><![CDATA[onClipEvent (enterFrame) {
 	   _parent.攻击时移动(-20,-25);
 	   if (Key.isDown(_parent._parent.上键)) {
-	       _parent._parent.移动("上", 15);
+	       _parent._parent.移动("上", 10);
 	   } else if (Key.isDown(_parent._parent.下键)) {
-	       _parent._parent.移动("下", 15);
+	       _parent._parent.移动("下", 10);
 	   }
 }]]></script>
                   </Actionscript>

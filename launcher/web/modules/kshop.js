@@ -32,8 +32,9 @@ var KShop = (function() {
     var CART_SAVE_DEBOUNCE_MS = 700;
 
     // DOM refs
-    var _el, _catBar, _grid, _cartList, _cartTotal, _balanceEl;
+    var _el, _shellEl, _catBar, _grid, _cartList, _cartTotal, _balanceEl;
     var _checkoutBtn, _claimList, _loadingEl;
+    var _scaleHandle = null;   // 沉浸全屏化：PanelScale 句柄
 
     var _kHandler = function(v) { _kpoints = Number(v); if (_balanceEl) _balanceEl.textContent = _kpoints; };
 
@@ -167,6 +168,7 @@ var KShop = (function() {
     Panels.register('kshop', {
         create: createDOM,
         onOpen: onOpen,
+        onClose: onClose,
         onRequestClose: function() { requestClose(); },
         onForceClose: onForceClose
     });
@@ -211,13 +213,20 @@ var KShop = (function() {
         _el.querySelector('.kshop-close-btn').addEventListener('click', function() { requestClose(); });
         _checkoutBtn.addEventListener('click', checkout);
 
-        return _el;
+        // 沉浸全屏化 2026-06-11：把固定 1024×576 画布(.kshop-panel)包进共享 .panel-scale-shell，
+        // 由 PanelScale 整体等比缩放，取代旧的 fluid 跟分辨率 reflow（kshop 是最早实现的 panel，配套最不全）。
+        _shellEl = document.createElement('div');
+        _shellEl.className = 'panel-scale-shell kshop-scale-shell';
+        _shellEl.appendChild(_el);
+        return _shellEl;
     }
 
     // ══════════════════════════════════════════
     //  Open / Data load
     // ══════════════════════════════════════════
     function onOpen(el) {
+        if (_scaleHandle) _scaleHandle.detach();
+        _scaleHandle = (typeof PanelScale !== 'undefined') ? PanelScale.attach(_shellEl, 1024, 576) : null;
         _closing = false;
         _checkingOut = false;
         _cartSaveInFlight = false;
@@ -486,10 +495,18 @@ var KShop = (function() {
                 '<button class="kshop-qty-confirm" data-audio-cue="confirm">加购</button>' +
             '</div>';
 
-        // 定位到按钮附近
+        // 定位到按钮附近（anchor.getBoundingClientRect 已是缩放后的真实屏幕 px，定位无需再换算）
         var rect = anchor.getBoundingClientRect();
         _qtyPopup.style.left = (rect.right + 4) + 'px';
         _qtyPopup.style.top = rect.top + 'px';
+        // 沉浸全屏化 2026-06-12：商城主体在 .panel-scale-shell 内整体缩放，本弹窗挂 document.body（在 shell 外，
+        // 故不继承 transform），需手动套同一 --panel-scale 才能与缩放后的主体字号/控件比例一致；
+        // transform-origin:top left 配合上面以真实 px 锚定的 left/top，向右下按比例展开、锚点不偏。
+        var _qScale = parseFloat(_shellEl && _shellEl.style.getPropertyValue('--panel-scale')) || 1;
+        if (_qScale && _qScale !== 1) {
+            _qtyPopup.style.transformOrigin = 'top left';
+            _qtyPopup.style.transform = 'scale(' + _qScale + ')';
+        }
         document.body.appendChild(_qtyPopup);
         playCue('modalOpen');
 
@@ -787,6 +804,11 @@ var KShop = (function() {
             }
         };
         Bridge.send({type:'panel', cmd:'saveCart', callId: reqId, cart: cartPayload});
+    }
+
+    function onClose() {
+        // 任何关闭路径（doClose→Panels.close / C# close / 切面板 / force_close→close）都经此 detach，防 resize/RO 泄漏
+        if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
     }
 
     function doClose() {

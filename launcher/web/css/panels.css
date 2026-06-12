@@ -272,13 +272,65 @@
 }
 
 #panel-container[data-panel="stage-select"] #panel-content {
-    inset: 2% 1.5%;
+    inset: 0;
     align-items: center;
     justify-content: center;
 }
 
+/* 沉浸全屏化 2026-06-11：兜底深底，去 backdrop 暗屏（runtime 舞台已铺满，仅防亚像素边缝）*/
+#panel-container[data-panel="stage-select"] #panel-backdrop {
+    background: #0b1118;
+}
+
 #panel-container[data-panel="tasks"] #panel-content {
     inset: 0;
+}
+
+/* ── 沉浸全屏化 Wave 1（A 类，2026-06-11）──
+   team / help 与 tasks 同走 inset:0 铺满全 anchor（去默认 4% 6% 卡片 + #panel-backdrop 暗屏）。
+   team 子面板(pet/merc)本身已是 1024×576 scale-shell，inset:0 后 contain 两路相等零信箱；
+   help 是纯文档流，inset:0 后自然撑满，但 .help-panel 的 clip-path 切角 + 1px border 会在四角
+   露出 backdrop 暗三角，故全屏态一并去除卡片 chrome 并兜底不透明底色（详见下方 .help-panel 覆盖）。*/
+#panel-container[data-panel="team"] #panel-content {
+    inset: 0;
+}
+
+#panel-container[data-panel="kshop"] #panel-content {
+    inset: 0;
+}
+#panel-container[data-panel="kshop"] #panel-backdrop {
+    background: #0a0c12;
+}
+
+#panel-container[data-panel="help"] #panel-content {
+    inset: 0;
+}
+/* help 全屏态：去切角/边框/卡片感，兜底不透明底防 backdrop 透色，正文列宽收敛防超宽行宽过长 */
+#panel-container[data-panel="help"] .help-panel {
+    clip-path: none;
+    border: none;
+    background: #0a0c12;
+}
+#panel-container[data-panel="help"] .help-content {
+    max-width: 980px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ── 共享 panel scale-shell primitive（沉浸全屏化 Wave 2，2026-06-11）──
+   固定设计画布（--pss-w × --pss-h，默认 1024×576）+ 整体 transform:scale 等比缩放铺满父容器
+   （#panel-content = 全 anchor 16:9）。JS 由 modules/panel-scale.js 的 PanelScale.attach(shellEl,
+   designW, designH) 写 --panel-scale + --pss-w/--pss-h。供新接入 B 类面板复用（kshop/jukebox/
+   arena/stage-select），不强迁 tasks/pet/merc/intelligence 各自既有等价实现。*/
+.panel-scale-shell {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--pss-w, 1024px);
+    height: var(--pss-h, 576px);
+    transform: scale(var(--panel-scale, 1));
+    transform-origin: top left;
 }
 
 /* ════════════════════════════════════════════════════════════════════
@@ -482,17 +534,18 @@
    K-Shop Panel
    ═══════════════════════════════════════════════════════ */
 
+/* 沉浸全屏化 2026-06-11：kshop 是最早实现的 panel，原为 fluid 跟分辨率 reflow。
+   升级到现行标准——固定 1024×576(16:9) 画布，由外层 .panel-scale-shell + PanelScale 整体等比缩放；
+   去赛博切角 clip-path / 1px border / 外发光阴影（卡片感），不透明底铺满，保留内发光氛围。*/
 .kshop-panel {
-    display:flex; flex-direction:column; height:100%;
-    background:var(--cp-bg); color:var(--cp-text);
+    position:relative;
+    display:flex; flex-direction:column;
+    width:1024px; height:576px;
+    box-sizing:border-box;
+    background:#0a0c12; color:var(--cp-text);
     font-family:"Consolas","Courier New","Microsoft YaHei",monospace;
     font-size:13px; overflow:hidden;
-    border:1px solid var(--cp-border);
-    clip-path:polygon(
-        0 0, calc(100% - var(--cp-cut)) 0, 100% var(--cp-cut),
-        100% 100%, var(--cp-cut) 100%, 0 calc(100% - var(--cp-cut))
-    );
-    box-shadow:0 0 40px rgba(0,240,255,0.06), inset 0 0 80px rgba(0,240,255,0.02);
+    box-shadow:inset 0 0 80px rgba(0,240,255,0.02);
 }
 
 /* Scanline overlay */
@@ -1409,12 +1462,7 @@
     .lockbox-help-actions .lockbox-btn {
         width:100%;
     }
-    .intel-shell {
-        grid-template-columns: 180px minmax(0, 1fr) 0px;  /* 目录折叠到右侧按钮，不占空间 */
-    }
-    .intel-glossary-panel {
-        display: none;
-    }
+    /* intel-shell/glossary 的 max-width:900px reflow 已移除（沉浸全屏化 2026-06-11，改整体等比缩放）*/
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -2586,6 +2634,15 @@
 /* ═══════════════════════════════════════════════════════
    Map Panel
    ═══════════════════════════════════════════════════════ */
+/* 沉浸全屏化 2026-06-12：map「背景填充铺满」方案——inset:0 去卡片黑边；.map-panel 去切角/border/外阴影
+   铺满全 16:9（保留绿/琥珀渐变作 ambient 底）。**stage 1031×608 坐标/命中图一律不动（hit-test 零风险）**；
+   stage 周围 letterbox 区由 .map-stage-shell 的 per-page 底图延伸(cover + 暗罩, applyPage 设)填充，非黑。*/
+#panel-container[data-panel="map"] #panel-content {
+    inset:0;
+}
+#panel-container[data-panel="map"] #panel-backdrop {
+    background:#05070a;
+}
 .map-panel {
     display:flex;
     flex-direction:column;
@@ -2595,9 +2652,6 @@
         radial-gradient(circle at 18% 14%, rgba(121, 175, 74, 0.1), transparent 24%),
         radial-gradient(circle at 78% 24%, rgba(255, 196, 64, 0.08), transparent 22%),
         linear-gradient(180deg, rgba(8, 10, 14, 0.98), rgba(5, 7, 10, 0.96));
-    border:1px solid rgba(180, 255, 0, 0.16);
-    box-shadow:0 0 40px rgba(144, 255, 0, 0.08), inset 0 0 90px rgba(126, 183, 43, 0.05);
-    clip-path:polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
     overflow:hidden;
     position:relative;
     font-family:"Consolas","Courier New","Microsoft YaHei",monospace;
@@ -2742,10 +2796,21 @@
     flex:1 1 auto;
     min-width:0;
     min-height:0;
-    max-width:1380px;
     display:flex;
     align-items:center;
     justify-content:center;
+    /* 背景延伸：per-page 底图 cover（applyPage 设 backgroundImage），让 stage 周围 letterbox 显扩展地图氛围 */
+    position:relative;
+    background-size:cover;
+    background-position:center;
+}
+/* 背景延伸暗罩：盖在 shell 底图之上、stage-frame 之下（DOM 序在前→被 stage 覆盖），让中央 stage 突出、扩展区氛围化 */
+.map-stage-shell::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    background:rgba(5, 7, 10, 0.60);
+    pointer-events:none;
 }
 
 /* 右侧独立 rail: 和 stage-shell 并排, 承载 filter 按钮 */
@@ -3880,14 +3945,21 @@ html.perf-low-effects .map-panel-close-btn:hover {
 /* ═══════════════════════════════════════════════════════
    Jukebox Panel (Phase 5：折叠态由 C# JukeboxTitlebarWidget 接管，本面板仅承载展开内容)
    ═══════════════════════════════════════════════════════ */
+/* 沉浸全屏化 2026-06-12：jukebox 由 C# 居中子矩形(Centered 880×620)升级全 anchor + inset:0 +
+   固定 1024×576 画布(.panel-scale-shell 整体缩放)；双栏控制台布局（左 Now-Playing / 右 曲库）。*/
 #panel-container[data-panel="jukebox"] #panel-content {
-    inset:6% 12%;
+    inset:0;
+}
+#panel-container[data-panel="jukebox"] #panel-backdrop {
+    background:#0b0d12;
 }
 .jbp-panel {
-    width:100%; height:100%;
+    position:relative;
+    width:1024px; height:576px;
+    box-sizing:border-box;
     display:flex; flex-direction:column;
-    background:rgba(18,20,26,0.92);
-    border:1px solid rgba(102,204,255,0.18);
+    /* 不透明电台底 + 顶部 cyan 辉光氛围（纯 CSS，留 background-image 插槽后补电台美术）*/
+    background:radial-gradient(ellipse at 50% -8%, rgba(102,204,255,0.06), transparent 55%), #0b0d12;
     color:rgba(255,255,255,0.85);
     font:12px "Microsoft YaHei",sans-serif;
 }
@@ -3932,13 +4004,23 @@ html.perf-low-effects .map-panel-close-btn:hover {
     font-size:16px;
 }
 .jbp-close-btn:hover { background:rgba(255,80,100,0.25); }
+/* 双栏控制台：左 Now-Playing(波形/进度/设置)，右 曲库(专辑/曲目列表) */
 .jbp-body {
     flex:1; min-height:0;
+    display:flex; flex-direction:row; gap:16px;
+    padding:16px 18px;
+}
+.jbp-now {
+    flex:1.15 1 0; min-width:0; min-height:0;
+    display:flex; flex-direction:column; gap:12px;
+}
+.jbp-library {
+    flex:1 1 0; min-width:0; min-height:0;
     display:flex; flex-direction:column; gap:10px;
-    padding:12px; overflow:auto;
+    padding-left:16px; border-left:1px solid rgba(102,204,255,0.1);
 }
 .jbp-wave {
-    display:block; width:100%; height:64px;
+    display:block; width:100%; height:132px; flex-shrink:0;
     background:rgba(0,0,0,0.3); border:1px solid rgba(102,204,255,0.08); border-radius:3px;
 }
 .jbp-progress {
@@ -3978,7 +4060,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .jbp-album-option:hover { background:rgba(102,204,255,0.12); color:rgba(255,255,255,0.95); }
 .jbp-album-option.active { background:rgba(102,204,255,0.2); color:rgba(102,204,255,0.95); }
 .jbp-track-list {
-    flex:1; min-height:120px; max-height:320px;
+    flex:1; min-height:0;
     overflow-y:auto;
     border:1px solid rgba(255,255,255,0.06);
     border-radius:3px;
@@ -3993,8 +4075,8 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .jbp-track-item:hover { background:rgba(102,204,255,0.08); color:rgba(255,255,255,0.95); }
 .jbp-track-item.active { background:rgba(102,204,255,0.18); color:rgba(102,204,255,0.95); }
 .jbp-settings {
-    border-top:1px solid rgba(255,255,255,0.06);
-    padding-top:10px;
+    flex:1; min-height:0; overflow-y:auto;
+    padding-top:4px;
     display:flex; flex-direction:column; gap:6px;
 }
 .jbp-settings .jb-setting-group-label {
@@ -4277,21 +4359,30 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 
 .stage-select-panel.is-runtime {
+    /* 沉浸全屏化 2026-06-11：去 max-width:1560/max-height:920 卡片上限 + 去 960/560 min，
+       铺满全 anchor 16:9（小窗口同比缩小不溢出）*/
     width: 100%;
-    max-width: 1560px;
     height: 100%;
-    max-height: 920px;
+    min-width: 0;
+    min-height: 0;
     flex: 0 1 auto;
 }
 
+/* runtime header 改为浮于舞台之上的覆盖 HUD（区域切换/关闭），让舞台吃满全 16:9 高度；
+   背景改顶部 scrim 渐变保证控件可读又不挡舞台，去实线分隔。*/
 .stage-select-panel.is-runtime .stage-select-header {
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 42px;
     grid-template-columns: minmax(160px, max-content) 1fr auto;
     gap: 8px;
     padding: 5px 10px;
     overflow: visible;
     z-index: 80;
+    background: linear-gradient(180deg, rgba(8, 13, 20, 0.82) 0%, rgba(8, 13, 20, 0.34) 64%, transparent 100%);
+    border-bottom: none;
 }
 
 .stage-select-panel.is-runtime .stage-select-heading {
@@ -4423,10 +4514,11 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 
 .stage-select-panel.is-runtime .stage-select-body {
-    height: calc(100% - 42px);
+    /* header 转覆盖 HUD 后 body 吃满全高、去内边距，舞台 edge-to-edge 铺满 16:9 */
+    height: 100%;
     grid-template-columns: 1fr;
     gap: 0;
-    padding: 8px;
+    padding: 0;
 }
 
 .stage-select-stage-shell {
@@ -5580,45 +5672,37 @@ html.perf-low-effects .map-panel-close-btn:hover {
     text-align: center;
 }
 
-@media (max-width: 900px) {
-    .intelligence-panel {
-        width: 100vw;
-        height: 100vh;
-        min-width: 0;
-        min-height: 0;
-    }
-    .intel-shell {
-        grid-template-columns: 250px 1fr;
-    }
-    .intel-content {
-        padding: 18px 22px;
-        font-size: 15px;
-    }
-}
+/* 沉浸全屏化（2026-06-11）：移除 max-width:900px 响应式 reflow——
+   固定 1404×790(16:9) 画布只做整体 transform:scale 等比缩放，窄窗口同比缩小不重排。*/
 
-/* Intelligence panel Flash-aligned pass */
+/* Intelligence panel Flash-aligned pass — 沉浸全屏化（2026-06-11）：
+   inset:0 铺满全 anchor；去 backdrop 与卡片 chrome（border/radius/外阴影），
+   #121212 作不透明底铺满 16:9（内部 header/纸面/rail 各自有底已全覆盖，无需新底图）。*/
 #panel-container[data-panel="intelligence"] #panel-content {
-    inset: 1.5% 2%;
+    inset: 0;
     align-items: center;
     justify-content: center;
 }
 
 #panel-container[data-panel="intelligence"] #panel-backdrop {
-    background: rgba(0, 0, 0, 0.18);
+    background: transparent;
 }
 
 .intelligence-panel {
-    width: min(100%, 1180px);
+    width: min(100%, 1404px);
     height: min(100%, 790px);
     min-width: 0;
     min-height: 0;
     position: relative;
     box-sizing: border-box;
     color: #f5f5f5;
+    /* 全铺底色（留 background-image 插槽后补 16:9 美术）；去卡片 chrome 求沉浸 */
     background: #121212;
-    border: 2px solid rgba(15, 15, 15, 0.9);
-    border-radius: 12px 12px 18px 18px;
-    box-shadow: 0 3px 0 rgba(255,255,255,0.18) inset, 0 18px 34px rgba(0,0,0,0.46);
+    /* 显式清零 border/box-shadow：上方约 270 行处另有一条 "Intelligence test panel" 的
+       同选择器 .intelligence-panel（设 1px 描边 + 外阴影），仅删本块的 chrome 会让那条旧规则
+       按层叠回灌到全屏态四角，故在此沉浸块兜底清零，确保全 16:9 无描边/阴影。*/
+    border: none;
+    box-shadow: none;
     overflow: hidden;
 }
 
@@ -5627,7 +5711,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
     display: grid;
     grid-template-columns: 240px minmax(0, 1fr) 276px;
     grid-template-rows: 104px auto minmax(0, 1fr) 58px;
-    width: 1180px;
+    width: 1404px;
     height: 790px;
     min-width: 0;
     min-height: 0;
@@ -7707,18 +7791,25 @@ html.perf-low-effects .map-panel-close-btn:hover {
    Arena Panel (角斗场)
    ════════════════════════════════════════════════════════════════════════════ */
 
-/* arena 需要更大的 content 区域来容纳 8 张卡片 */
+/* 沉浸全屏化 2026-06-12：arena 原为 C# 居中子矩形(Centered 1024×720)+ inset:2% 3% 卡片，浮在暗 backdrop 上。
+   改 C# 全 anchor + inset:0 + 固定 1024×576 画布(.panel-scale-shell 整体等比缩放)，铺满全 16:9。*/
 #panel-container[data-panel="arena"] #panel-content {
-    inset: 2% 3%;
+    inset: 0;
+}
+#panel-container[data-panel="arena"] #panel-backdrop {
+    background: #0a0a0c;
 }
 
-/* ── 根容器 ── */
+/* ── 根容器：固定 1024×576 画布，由外层 .panel-scale-shell 整体缩放 ── */
 .arena-panel {
+    position: relative;
     display: flex;
     flex-direction: column;
-    width: 100%;
-    height: 100%;
-    background: var(--cp-bg, #0d0d0f);
+    width: 1024px;
+    height: 576px;
+    box-sizing: border-box;
+    /* 不透明 cyberpunk 全铺底（顶部琥珀辉光氛围，纯 CSS，留 background-image 插槽后补图）*/
+    background: radial-gradient(ellipse at 50% -10%, rgba(255, 193, 7, 0.05), transparent 58%), #0a0a0c;
     color: var(--cp-text, #e0e0e0);
     font-family: "Consolas", "Courier New", "Microsoft YaHei", monospace;
     overflow: hidden;

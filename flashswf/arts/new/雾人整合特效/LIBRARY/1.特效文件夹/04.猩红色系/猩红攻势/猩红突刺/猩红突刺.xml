@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/04.猩红色系/猩红攻势/猩红突刺/猩红突刺" itemID="65464a3e-00000540" linkageExportForAS="true" linkageIdentifier="猩红突刺" lastModified="1760837866" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/04.猩红色系/猩红攻势/猩红突刺/猩红突刺" itemID="65464a3e-00000540" linkageExportForAS="true" linkageIdentifier="猩红突刺" lastModified="1781239531" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="猩红突刺">
       <layers>
-        <DOMLayer name="代码&amp;判定" color="#F76FB9" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="代码&amp;判定" color="#F76FB9" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -12,42 +12,52 @@
 }
 this._rotation = 0;]]></script>
               </Actionscript>
-              <elements>
-                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="153.35" centerPoint3DY="-76.65">
-                  <matrix>
-                    <Matrix a="1.74249267578125" d="2.35000610351563" tx="118.5" ty="-123.65"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="20" y="20"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/04.猩红色系/猩红攻势/猩红下砸/猩红下砸" centerPoint3DX="262" centerPoint3DY="175">
-                  <matrix>
-                    <Matrix tx="102.95" ty="266.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="159.1" y="-91.05"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="194.5" centerPoint3DY="-80.8">
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="194.1" centerPoint3DY="-37.05">
                   <matrix>
-                    <Matrix a="4.24394226074219" b="0.0164337158203125" c="-0.0078887939453125" d="2.043701171875" tx="109.75" ty="-122.25"/>
+                    <Matrix a="6.69393920898438" b="0.0259246826171875" c="-0.0193328857421875" d="5.01046752929688" tx="-15.65" ty="-139.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="20" y="20.05"/>
+                    <Point x="39.55" y="20.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="5" keyMode="9728">
+            <DOMFrame index="4" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="138.9" centerPoint3DY="-73.45">
+                  <matrix>
+                    <Matrix a="11.2102355957031" b="0.0434112548828125" c="-0.0193328857421875" d="5.01046752929688" tx="-248.25" ty="-175.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="39.5" y="20.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area40X40" name="area" centerPoint3DX="-116.4" centerPoint3DY="-35.6">
+                  <matrix>
+                    <Matrix a="4.61587524414063" b="0.01788330078125" c="-0.01129150390625" d="2.92816162109375" tx="-243.3" ty="-95.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="39.4" y="20.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
             <DOMFrame index="9" keyMode="9728">
               <Actionscript>
@@ -59,17 +69,17 @@ this._rotation = 0;]]></script>
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#F55D7C">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" duration="2" keyMode="9728">
+            <DOMFrame index="1" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/04.猩红色系/猩红攻势/猩红突刺/Symbol 456" centerPoint3DX="493.7" centerPoint3DY="113.85">
+                <DOMSymbolInstance libraryItemName="猩红横斩1" centerPoint3DX="14.85" centerPoint3DY="21.05">
                   <matrix>
-                    <Matrix a="-0.317962646484375" b="-0.0359954833984375" c="-0.0359954833984375" d="0.317962646484375" tx="282.4" ty="-137.5"/>
+                    <Matrix a="0.33807373046875" d="0.33807373046875" tx="-227.1" ty="-75.65"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="715.4" y="282.2"/>
                   </transformationPoint>
                   <filters>
                     <GlowFilter blurX="10" blurY="10"/>
@@ -81,18 +91,18 @@ this._rotation = 0;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="4" duration="2" keyMode="9728">
+            <DOMFrame index="3" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/04.猩红色系/猩红攻势/猩红突刺/Symbol 458" centerPoint3DX="489.85" centerPoint3DY="126.65">
+                <DOMSymbolInstance libraryItemName="猩红横斩2">
                   <matrix>
-                    <Matrix a="-0.315887451171875" b="-0.0510711669921875" c="-0.0510711669921875" d="0.315887451171875" tx="275.35" ty="-151.05"/>
+                    <Matrix a="0.33807373046875" d="0.33807373046875" tx="-19.65" ty="-150.1"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="395.75" y="327.3"/>
                   </transformationPoint>
                   <filters>
                     <GlowFilter blurX="10" blurY="10"/>
-                    <BlurFilter blurX="15" blurY="0"/>
+                    <BlurFilter blurX="25" blurY="0"/>
                   </filters>
                   <color>
                     <Color alphaMultiplier="0.8515625"/>
@@ -100,18 +110,18 @@ this._rotation = 0;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="6" duration="2" keyMode="9728">
+            <DOMFrame index="5" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/04.猩红色系/猩红攻势/猩红突刺/Symbol 460" centerPoint3DX="469.15" centerPoint3DY="93.75">
+                <DOMSymbolInstance libraryItemName="猩红横斩3" centerPoint3DX="-38.4" centerPoint3DY="-68.6">
                   <matrix>
-                    <Matrix a="-0.31060791015625" b="-0.07696533203125" c="-0.07696533203125" d="0.31060791015625" tx="280.7" ty="-110.7"/>
+                    <Matrix a="0.33807373046875" d="0.33807373046875" tx="-273.45" ty="-172.85"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="696.45" y="307.75"/>
                   </transformationPoint>
                   <filters>
                     <GlowFilter blurX="10" blurY="10"/>
-                    <BlurFilter blurX="15" blurY="0"/>
+                    <BlurFilter blurX="25" blurY="0"/>
                   </filters>
                   <color>
                     <Color alphaMultiplier="0.8515625"/>
@@ -119,12 +129,31 @@ this._rotation = 0;]]></script>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="8" duration="2" keyMode="9728">
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="猩红横斩4" centerPoint3DX="-159.6" centerPoint3DY="-28.25">
+                  <matrix>
+                    <Matrix a="0.33807373046875" d="0.33807373046875" tx="-263.65" ty="-93.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="311.6" y="189.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10"/>
+                    <BlurFilter blurX="15" blurY="15"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音效" color="#8DDB43" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="音效" color="#8DDB43" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <Actionscript>

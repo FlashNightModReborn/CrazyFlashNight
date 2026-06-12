@@ -134,6 +134,12 @@
         function d(id, title, type, desc, stageReq, itemReqs, npc, rewards, finishRemote, finishNavigable) {
             return { taskId: id, type: type, title: title, description: desc, stageReq: stageReq, itemReqs: itemReqs, npcName: npc, rewards: rewards, finishRemote: finishRemote === true, finishNavigable: finishNavigable === true };
         }
+        // 共享判定条件（conditions）mock：镜像 AS2 conditionsProgress 回包形状 {label,cur,target}。
+        // 101 两条（一条进行中一条已达成）→ task-ui41 验证进度行渲染与 done 态。
+        DETAILS[101].conditions = [
+            { label: '击杀敌人（接取后）', cur: 18, target: 50 },
+            { label: '商城花费K点', cur: 200, target: 200 }
+        ];
         function stage(name, diff) { return { name: name, difficulty: diff }; }
         function items(kind, arr) { for (var i = 0; i < arr.length; i++) arr[i].kind = kind; return arr; }
         function it(name, count) { return { name: name, count: count, kind: 'submit' }; }
@@ -288,6 +294,8 @@
                         var dd = clone(DETAILS[task.taskId]);
                         // 动态可达性覆盖（镜像 AS2 按当前游戏态实时算 finishNavigable）
                         if (self._navOverride[task.taskId] !== undefined) dd.finishNavigable = self._navOverride[task.taskId];
+                        // 运行态完成判定（镜像 AS2 handleDetail 实时回 taskCompleteCheck，与 snapshot 同源）
+                        dd.satisfied = (task.satisfied === true);
                         resp({ success: true, taskData: dd });
                         break;
                     }
@@ -559,14 +567,16 @@
                 }, 3000);
                 return true;
             });
-            await check('task-ui11', 'detail 缓存：再次点击已加载任务不重发 detail', async function() {
-                // 点新任务(index5) → 触发一次 detail；再切走切回均应命中缓存，不再发请求
+            await check('task-ui11', 'detail 缓存：再次点击已加载任务不重发 detail（无 conditions/导航复查需求的任务）', async function() {
+                // 点新任务(index5) → 触发一次 detail；再切走切回均应命中缓存，不再发请求。
+                // 用例须避开运行态复查任务：101(index0) 带 conditions、105(index4) 满足+不可前往——
+                // 二者缓存命中会按设计后台复查（task-ui24/ui42 专项验证），不属于"纯缓存"契约面。
                 document.querySelector('.task-icon[data-index="5"]').click();
                 await waitFor(function() { return document.querySelector('.task-title-line2') && document.querySelector('.task-title-line2').textContent === '通缉：赤色之手'; }, 3000);
                 var c1 = host._detailCalls;
-                document.querySelector('.task-icon[data-index="0"]').click(); // 已缓存(ui8)
-                await waitFor(function() { return document.querySelector('.task-title-line2').textContent === '斩杀大boss僵尸'; }, 3000);
-                document.querySelector('.task-icon[data-index="5"]').click(); // 现已缓存
+                document.querySelector('.task-icon[data-index="1"]').click(); // 102 已缓存(ui9)，无 conditions 且未满足
+                await waitFor(function() { return document.querySelector('.task-title-line2').textContent === '初入战场'; }, 3000);
+                document.querySelector('.task-icon[data-index="5"]').click(); // 现已缓存，未满足 → 无导航复查
                 await waitFor(function() { return document.querySelector('.task-title-line2').textContent === '通缉：赤色之手'; }, 3000);
                 return host._detailCalls === c1;
             });
@@ -1175,6 +1185,80 @@
                 clickTab('ach');
                 await waitFor(function() { return achState().rowCount === 6; }, 3000);
                 return degraded;
+            });
+
+            await check('task-ui41', '共享判定条件：详情渲染 conditions 进度行(label+cur/target+进度条)，达成行带 done 态', async function() {
+                await reopenFresh();
+                clickIcon(0); // 101 主线（mock detail 带 2 条 conditions）
+                await waitFor(function() { return document.querySelectorAll('.task-cond-row').length === 2; }, 3000);
+                var rows = document.querySelectorAll('.task-cond-row');
+                var row0Ok = rows[0].querySelector('.task-cond-label').textContent === '击杀敌人（接取后）' &&
+                    rows[0].querySelector('.task-cond-count').textContent === '18/50' &&
+                    !rows[0].classList.contains('done');
+                var row1Ok = rows[1].querySelector('.task-cond-count').textContent === '200/200' &&
+                    rows[1].classList.contains('done');
+                var fillW = rows[0].querySelector('.task-cond-fill').style.width === '36%';
+                // 无 conditions 的任务不渲染该区块
+                clickIcon(1); // 102
+                await waitFor(function() { return document.querySelector('.task-title-line2') && document.querySelector('.task-title-line2').textContent === '初入战场'; }, 3000);
+                var none = document.querySelectorAll('.task-cond-row').length === 0;
+                return row0Ok && row1Ok && fillW && none;
+            });
+
+            await check('task-ui42', '条件进度不被缓存固化：读数推进后重选任务→后台复查→进度行就地刷新（含 done 态翻转）', async function() {
+                await reopenFresh();
+                clickIcon(0); // 101 首次加载（fresh detail，conditions 18/50 进缓存）
+                await waitFor(function() { return document.querySelectorAll('.task-cond-row').length === 2; }, 3000);
+                // 模拟游戏侧条件推进（AS2 rawOf 读数变化）：mock 源数据前进到 50/50
+                var origCur = DETAILS[101].conditions[0].cur;
+                DETAILS[101].conditions[0].cur = 50;
+                try {
+                    clickIcon(1); // 切走
+                    await waitFor(function() { return titleNow() === '初入战场'; }, 3000);
+                    var c1 = host._detailCalls;
+                    clickIcon(0); // 切回 → 缓存命中（先渲染旧 18/50）→ 后台复查 → 就地修补为 50/50
+                    await waitFor(function() {
+                        var row = document.querySelector('.task-cond-row');
+                        return row && row.querySelector('.task-cond-count').textContent === '50/50';
+                    }, 3000);
+                    var row0 = document.querySelector('.task-cond-row');
+                    var doneOk = row0.classList.contains('done') &&
+                        row0.querySelector('.task-cond-fill').style.width === '100%';
+                    var refetched = host._detailCalls > c1; // 复查确实打了 detail（非纯缓存）
+                    return doneOk && refetched;
+                } finally {
+                    DETAILS[101].conditions[0].cur = origCur; // 恢复 mock，防污染后续用例
+                }
+            });
+
+            await check('task-ui43', 'satisfied 权威纠偏：条件达成翻转完成态→重选后台复查→徽章/交付按钮/列表角标同步更新', async function() {
+                // 接取时条件未达成：override 须在 open 前设好（host.reset 在 open 时应用到 snapshot）
+                host._inventoryFullFor = null; host._respDelay = 50; host._navOverride = {};
+                host.close(); await waitFor(function() { return !Panels.isOpen(); }, 2000);
+                host._satisfiedOverride = { 101: false };
+                host.open(); await waitFor(function() { return window.TaskPanel.getState().taskCount === 10; }, 4000);
+                clickIcon(0); // 101 fresh detail：未满足 → 无徽章 + 交付禁用 + 列表无完成角标
+                await waitFor(function() { return document.querySelectorAll('.task-cond-row').length === 2; }, 3000);
+                var dPre = document.querySelector('.task-act-deliver');
+                var preOk = !document.querySelector('.task-deliverable') && dPre && dPre.disabled &&
+                    !document.querySelector('.task-icon[data-index="0"] .task-finished-overlay');
+                // 模拟条件推进至达成：读数 50/50 且 mock 端 taskCompleteCheck 翻真（AS2 同源翻转）
+                var origCur = DETAILS[101].conditions[0].cur;
+                DETAILS[101].conditions[0].cur = 50;
+                host.setSatisfied(101, true);
+                try {
+                    clickIcon(1); await waitFor(function() { return titleNow() === '初入战场'; }, 3000);
+                    clickIcon(0); // 缓存命中（先按陈旧 satisfied=false 渲染）→ 后台复查 → applyDetailSatisfied 全量纠偏
+                    await waitFor(function() { return !!document.querySelector('.task-deliverable .task-stamp-check'); }, 3000);
+                    var btn = document.querySelector('.task-act-deliver');
+                    var btnOk = btn && !btn.disabled && btn.getAttribute('data-act') === 'navigate'; // 101 非远程+可前往
+                    var listOk = !!document.querySelector('.task-icon[data-index="0"] .task-finished-overlay');
+                    var rowOk = document.querySelector('.task-cond-row').classList.contains('done');
+                    return preOk && btnOk && listOk && rowOk;
+                } finally {
+                    DETAILS[101].conditions[0].cur = origCur;
+                    host._satisfiedOverride = {};
+                }
             });
 
             var passed = results.filter(function(r) { return r.pass; }).length;

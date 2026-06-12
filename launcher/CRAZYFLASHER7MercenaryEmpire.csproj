@@ -27,6 +27,15 @@
     <!-- publish 时不带 NuGet 包附带的 XML doc / pdb（运行时不需要，缩小提交体量） -->
     <CopyDocumentationFilesFromPackages>false</CopyDocumentationFilesFromPackages>
     <CopyDebugSymbolFilesFromPackages>false</CopyDebugSymbolFilesFromPackages>
+    <!-- 可复现构建：committed runtime/Core.dll 是受版本控制的构建产物，必须「同源同字节」，否则每次构建
+         经 build.ps1 的 Copy-IfDifferent 弄脏工作树并被扫进提交（历史上 60acd54 即「零 .cs 改动却改了 DLL」，
+         主因是 global.json 旧 rollForward:latestFeature 让 SDK 跨 feature band 漂移——已收口为 latestPatch）。
+         Deterministic（SDK 默认即 true，此处显式钉死）消除编译期随机 MVID / PE 时间戳；
+         PathMap 把项目目录前缀归一化，使不同 checkout 路径（Steam 安装目录因人而异）产出一致字节。
+         刻意不上 ContinuousIntegrationBuild/SourceLink：前者无 SourceRoot 时不归一化路径形同空操作，
+         后者会把每次都变的 commit SHA 嵌进 DLL，对受版本控制的产物反而是新 churn 源。-->
+    <Deterministic>true</Deterministic>
+    <PathMap>$(MSBuildProjectDirectory)=/_/</PathMap>
   </PropertyGroup>
 
   <ItemGroup>

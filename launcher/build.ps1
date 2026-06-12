@@ -177,6 +177,7 @@ Write-Host "  map_hud_data.json OK." -ForegroundColor Green
 # web 任务面板「事件日志」tab 直读本文件渲染任务树/明细（静态内容零 AS2 传输）。
 # 内含闭包校验器：任务 title/description/get_conversation/finish_conversation 的 $KEY 必须存在于
 # 合并 task_texts，否则派生失败 → exit 1（防 $KEY 缺失运行时显示原始键，亦为审计 Phase1 description 下沉前置门控）。
+# 正式数据派生后固定运行 conditions 合成夹具矩阵；正式数据没有 conditions 时，单跑派生无法覆盖不动点分支。
 Write-Host "[Step 1e/7] Derive launcher/web/modules/tasks/task-catalog.json..." -ForegroundColor Yellow
 $deriveTaskCatalogScript = Join-Path $projectRoot "tools\derive-task-catalog.js"
 if (-not (Test-Path $deriveTaskCatalogScript)) {
@@ -189,6 +190,18 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 Write-Host "  task-catalog.json OK." -ForegroundColor Green
+
+$testTaskConditionsScript = Join-Path $projectRoot "tools\test-derive-task-conditions.js"
+if (-not (Test-Path $testTaskConditionsScript)) {
+    Write-Host "[FAIL] test-derive-task-conditions.js missing: $testTaskConditionsScript" -ForegroundColor Red
+    exit 1
+}
+node $testTaskConditionsScript
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] task conditions 回归矩阵失败 (上方日志含具体夹具错误)" -ForegroundColor Red
+    exit 1
+}
+Write-Host "  task conditions regression matrix OK." -ForegroundColor Green
 
 # Step 1f: 派生 launcher/web/modules/tasks/achievement-catalog.json （成就 tab web 直读目录）
 # SOT = data/achievement/*.json（成就权威源，AS2 AchievementDataLoader 也读它；web 拿脱敏只读投影）。
@@ -523,6 +536,7 @@ $requiredWebPaths = @(
     "modules\combo.js",
     "modules\lazy-loader.js",
     "modules\panels.js",
+    "modules\panel-scale.js",
     "modules\panels-lazy-registry.js",
     "modules\tooltip.js",
     "modules\icons.js",

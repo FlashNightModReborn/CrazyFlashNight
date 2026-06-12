@@ -31,6 +31,20 @@ class org.flashNight.arki.component.StatHandler.DodgeHandler
     // ----------------- 方法定义 -----------------
 
     /**
+     * 将装备挡拆加成应用到反向存储的躲闪率参数。
+     * 躲闪能力是躲闪率参数的倒数；能力越高，传入等级公式的躲闪率参数越低。
+     * @param dodgeRate   基础躲闪率参数
+     * @param dodgeBonus  装备挡拆加成百分比
+     * @return 应用加成后的躲闪率参数
+     */
+    public static function applyDodgeBonus(dodgeRate:Number, dodgeBonus:Number):Number
+    {
+        var dodgeAbility:Number = 1 / dodgeRate;
+        dodgeAbility = Math.max(dodgeAbility * (1 + dodgeBonus / 100), DODGE_RATE_LIMIT);
+        return 1 / dodgeAbility;
+    }
+
+    /**
      * 根据重量判断躲闪类型（跳弹/过穿/躲闪），对应 _root.躲闪状态校验
      * @param weight 重量
      * @param level  等级

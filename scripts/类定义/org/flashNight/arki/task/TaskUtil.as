@@ -92,6 +92,68 @@ class org.flashNight.arki.task.TaskUtil{
         return ItemUtil.contain(itemArray) != null;
     }
 
+    // ═══════════════════════════════════════════════════════════
+    // conditions — 与成就共享的判定条件（可选字段，设计 docs/任务成就-判定层共享-设计-2026-06-11.md §3）
+    //   形状：taskData.conditions = [{type, params, target, label, sinceAccept?}]
+    //   读数走共享 ObjectiveEvaluator.rawOf；sinceAccept=true 扣接取时基线
+    //   taskEntry.requirements.condBase[i]（AddTask 拍快照，窗口语义；老档无 condBase → 终身语义降级）。
+    //   生命周期/奖励链不在此层：本层纯谓词，taskCompleteCheck 合取调用。
+    // ═══════════════════════════════════════════════════════════
+    public static function checkConditions(taskData:Object, taskEntry:Object):Boolean{
+        var conds:Array = taskData.conditions;
+        if(conds == undefined || conds.length == undefined || conds.length == 0) return true;
+        for(var i:Number = 0; i < conds.length; i++){
+            if(conditionCur(conds[i], taskEntry, i) < conditionTarget(conds[i])) return false;
+        }
+        return true;
+    }
+
+    // 面板进度行（与成就 progressOf 同口径：cur 封顶 target，永不返 null/NaN）
+    public static function conditionsProgress(taskData:Object, taskEntry:Object):Array{
+        var out:Array = [];
+        var conds:Array = taskData.conditions;
+        if(conds == undefined || conds.length == undefined) return out;
+        for(var i:Number = 0; i < conds.length; i++){
+            var target:Number = conditionTarget(conds[i]);
+            var cur:Number = conditionCur(conds[i], taskEntry, i);
+            if(cur > target) cur = target;
+            out.push({
+                label: (conds[i].label != undefined) ? String(conds[i].label) : String(conds[i].type),
+                cur: cur,
+                target: target
+            });
+        }
+        return out;
+    }
+
+    // 任一进行中任务带 conditions（A2：scanTick 借心跳刷新任务红点的门控，零任务时零成本）
+    public static function anyActiveConditions():Boolean{
+        var arr:Array = _root.tasks_to_do;
+        if(arr == undefined) return false;
+        for(var i:Number = 0; i < arr.length; i++){
+            if(arr[i] == undefined) continue;
+            var td:Object = tasks[arr[i].id];
+            if(td != undefined && td.conditions != undefined && td.conditions.length > 0) return true;
+        }
+        return false;
+    }
+
+    private static function conditionTarget(cond:Object):Number{
+        var t:Number = Number(cond.target);
+        return (isNaN(t) || t < 1) ? 1 : t;
+    }
+
+    private static function conditionCur(cond:Object, taskEntry:Object, idx:Number):Number{
+        var cur:Number = org.flashNight.arki.achievement.ObjectiveEvaluator.rawOf(cond.type, cond.params);
+        if(cond.sinceAccept == true && taskEntry != undefined && taskEntry.requirements != undefined
+                && taskEntry.requirements.condBase != undefined){
+            var base:Number = Number(taskEntry.requirements.condBase[idx]);
+            if(!isNaN(base)) cur = Math.max(0, cur - base);
+        }
+        if(isNaN(cur) || cur < 0) cur = 0;
+        return cur;
+    }
+
     /**
      * 获取指定进度的引导数据
      * @param progress 主线任务进度

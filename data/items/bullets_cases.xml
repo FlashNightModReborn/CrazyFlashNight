@@ -47,6 +47,9 @@
     </bullet>
     <bullet>
         <name>穿刺子弹</name>
+        <chainUnit>
+            <material>能量</material>
+        </chainUnit>
         <shell>
             <casing>能量弹壳</casing>
             <xOffset>60</xOffset>
@@ -70,35 +73,10 @@
         </attribute>
     </bullet>
     <bullet>
-        <name>横向联弹-次级穿刺子弹</name>
-        <attribute>
-            <pierceLimit>2</pierceLimit>
-            <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
-        <name>纵向联弹-次级穿刺子弹</name>
-        <attribute>
-            <pierceLimit>3</pierceLimit>
-            <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
-        <name>纵向机枪联弹-次级穿刺子弹</name>
-        <attribute>
-            <pierceLimit>3</pierceLimit>
-            <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
-        <name>纵向手枪联弹-次级穿刺子弹</name>
-        <attribute>
-            <pierceLimit>3</pierceLimit>
-            <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
         <name>次级穿刺子弹</name>
+        <chainUnit>
+            <material>能量</material>
+        </chainUnit>
         <attribute>
             <pierceLimit>3</pierceLimit>
             <hitMark>弹坑</hitMark>
@@ -167,8 +145,35 @@
     </bullet>
     <bullet>
         <name>无壳子弹</name>
+        <chainUnit>
+            <material>无壳</material>
+        </chainUnit>
         <attribute>
             <hitMark>弹坑</hitMark>
+        </attribute>
+    </bullet>
+    <bullet>
+        <name>普通无壳子弹</name>
+        <chainUnit>
+            <material>无壳</material>
+        </chainUnit>
+    </bullet>
+    <bullet>
+        <name>红色针弹</name>
+        <chainUnit>
+            <material>能量</material>
+        </chainUnit>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+        </attribute>
+    </bullet>
+    <bullet>
+        <name>铁枪能量子弹</name>
+        <chainUnit>
+            <material>能量</material>
+        </chainUnit>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
         </attribute>
     </bullet>
     <bullet>
@@ -185,91 +190,10 @@
         </attribute>
     </bullet>
     <bullet>
-        <name>横向联弹-穿刺子弹</name>
-        <shell>
-            <casing>能量霰弹弹壳</casing>
-            <xOffset>60</xOffset>
-            <simulationMethod>标准</simulationMethod>
-            <yOffset>0</yOffset>
-        </shell>
-        <attribute>
-            <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
-        <name>纵向联弹-穿刺子弹</name>
-        <shell>
-            <casing>能量弹壳</casing>
-            <xOffset>60</xOffset>
-            <simulationMethod>标准</simulationMethod>
-            <yOffset>0</yOffset>
-        </shell>
-        <attribute>
-            <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
-        <name>纵向联弹-能量普通子弹</name>
-        <shell>
-            <casing>能量弹壳</casing>
-            <xOffset>60</xOffset>
-            <simulationMethod>标准</simulationMethod>
-            <yOffset>0</yOffset>
-        </shell>
-        <attribute>
-            <hitMark>灼烧弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
-        <name>纵向机枪联弹-穿刺子弹</name>
-        <shell>
-            <casing>能量重机枪弹壳</casing>
-            <xOffset>60</xOffset>
-            <simulationMethod>标准</simulationMethod>
-            <yOffset>0</yOffset>
-        </shell>
-        <attribute>
-            <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
-        <name>横向机枪联弹-穿刺子弹</name>
-        <shell>
-            <casing>能量霰弹弹壳</casing>
-            <xOffset>60</xOffset>
-            <simulationMethod>标准</simulationMethod>
-            <yOffset>0</yOffset>
-        </shell>
-        <attribute>
-            <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
-        <name>横向联弹-普通子弹</name>
-        <shell>
-            <casing>霰弹弹壳</casing>
-            <xOffset>60</xOffset>
-            <simulationMethod>标准</simulationMethod>
-            <yOffset>0</yOffset>
-        </shell>
-        <attribute>
-            <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
-        <name>横向机枪联弹-普通子弹</name>
-        <shell>
-            <casing>重机枪弹壳</casing>
-            <xOffset>60</xOffset>
-            <simulationMethod>标准</simulationMethod>
-            <yOffset>0</yOffset>
-        </shell>
-        <attribute>
-            <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
         <name>加强普通子弹</name>
+        <chainUnit>
+            <material>加强</material>
+        </chainUnit>
         <shell>
             <casing>加强弹壳</casing>
             <xOffset>60</xOffset>
@@ -457,66 +381,6 @@
         </attribute>
     </bullet>
     <bullet>
-        <name>横向联弹-加强普通子弹</name>
-        <shell>
-            <casing>加强霰弹弹壳</casing>
-            <xOffset>60</xOffset>
-            <simulationMethod>标准</simulationMethod>
-            <yOffset>0</yOffset>
-        </shell>
-        <attribute>
-            <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
-        <name>纵向联弹-加强普通子弹</name>
-        <shell>
-            <casing>加强步枪弹壳</casing>
-            <xOffset>60</xOffset>
-            <simulationMethod>标准</simulationMethod>
-            <yOffset>0</yOffset>
-        </shell>
-        <attribute>
-            <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
-        <name>纵向手枪联弹-加强普通子弹</name>
-        <shell>
-            <casing>加强手枪弹壳</casing>
-            <xOffset>60</xOffset>
-            <simulationMethod>标准</simulationMethod>
-            <yOffset>0</yOffset>
-        </shell>
-        <attribute>
-            <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
-        <name>横向机枪联弹-加强普通子弹</name>
-        <shell>
-            <casing>加强弹壳</casing>
-            <xOffset>60</xOffset>
-            <simulationMethod>标准</simulationMethod>
-            <yOffset>0</yOffset>
-        </shell>
-        <attribute>
-            <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
-        <name>纵向机枪联弹-加强普通子弹</name>
-        <shell>
-            <casing>加强弹壳</casing>
-            <xOffset>60</xOffset>
-            <simulationMethod>标准</simulationMethod>
-            <yOffset>0</yOffset>
-        </shell>
-        <attribute>
-            <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
         <name>麻醉子弹</name>
         <shell>
             <casing>手枪弹壳</casing>
@@ -527,6 +391,9 @@
     </bullet>
     <bullet>
         <name>普通子弹</name>
+        <chainUnit>
+            <material>普通</material>
+        </chainUnit>
         <shell>
             <casing>步枪弹壳</casing>
             <xOffset>60</xOffset>
@@ -535,30 +402,6 @@
         </shell>
         <attribute>
             <hitMark>弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
-        <name>横向联弹-红色针弹</name>
-        <shell>
-            <casing>能量霰弹弹壳</casing>
-            <xOffset>60</xOffset>
-            <simulationMethod>标准</simulationMethod>
-            <yOffset>0</yOffset>
-        </shell>
-        <attribute>
-            <hitMark>灼烧弹坑</hitMark>
-        </attribute>
-    </bullet>
-    <bullet>
-        <name>横向机枪联弹-红色针弹</name>
-        <shell>
-            <casing>能量弹壳</casing>
-            <xOffset>60</xOffset>
-            <simulationMethod>标准</simulationMethod>
-            <yOffset>0</yOffset>
-        </shell>
-        <attribute>
-            <hitMark>灼烧弹坑</hitMark>
         </attribute>
     </bullet>
     <bullet>
@@ -608,6 +451,9 @@
     </bullet>
     <bullet>
         <name>能量普通子弹</name>
+        <chainUnit>
+            <material>能量</material>
+        </chainUnit>
         <shell>
             <casing>能量弹壳</casing>
             <xOffset>60</xOffset>
@@ -1130,4 +976,104 @@
             </rayConfig>
         </attribute>
     </bullet>
+
+    <!-- ========== 联弹「模板 × 单元体」双层配置 ==========
+         模板声明联弹前缀的弹壳派生规则（casingMap：单元体材质→弹壳名）与属性覆盖；
+         单元体在自身 <bullet> 条目上用 <chainUnit><material>…</material></chainUnit> 声明参与派生。
+         加载期由 ChainBulletConfigResolver 交叉合并：显式 "模板-单元体" 条目始终优先，派生仅补缺。
+         横向系=霰弹枪式齐射（穿刺上限特判为 2，仅替换单元体已声明的键）；纵向系=机枪式扫射。 -->
+    <chainTemplate>
+        <prefix>横向联弹</prefix>
+        <shell>
+            <xOffset>60</xOffset>
+            <yOffset>0</yOffset>
+            <simulationMethod>标准</simulationMethod>
+            <casingMap>
+                <entry><material>能量</material><casing>能量霰弹弹壳</casing></entry>
+                <entry><material>加强</material><casing>加强霰弹弹壳</casing></entry>
+                <entry><material>普通</material><casing>霰弹弹壳</casing></entry>
+            </casingMap>
+        </shell>
+        <attributeOverride>
+            <pierceLimit>2</pierceLimit>
+        </attributeOverride>
+    </chainTemplate>
+    <chainTemplate>
+        <prefix>横向机枪联弹</prefix>
+        <shell>
+            <xOffset>60</xOffset>
+            <yOffset>0</yOffset>
+            <simulationMethod>标准</simulationMethod>
+            <casingMap>
+                <entry><material>能量</material><casing>能量重机枪弹壳</casing></entry>
+                <entry><material>加强</material><casing>加强重机枪弹壳</casing></entry>
+                <entry><material>普通</material><casing>重机枪弹壳</casing></entry>
+            </casingMap>
+        </shell>
+        <attributeOverride>
+            <pierceLimit>2</pierceLimit>
+        </attributeOverride>
+    </chainTemplate>
+    <chainTemplate>
+        <prefix>横向手枪联弹</prefix>
+        <shell>
+            <xOffset>60</xOffset>
+            <yOffset>0</yOffset>
+            <simulationMethod>标准</simulationMethod>
+            <casingMap>
+                <entry><material>能量</material><casing>能量弹壳</casing></entry>
+                <entry><material>加强</material><casing>加强手枪弹壳</casing></entry>
+                <entry><material>普通</material><casing>手枪弹壳</casing></entry>
+            </casingMap>
+        </shell>
+        <attributeOverride>
+            <pierceLimit>2</pierceLimit>
+        </attributeOverride>
+    </chainTemplate>
+    <chainTemplate>
+        <prefix>纵向联弹</prefix>
+        <shell>
+            <xOffset>60</xOffset>
+            <yOffset>0</yOffset>
+            <simulationMethod>标准</simulationMethod>
+            <casingMap>
+                <entry><material>能量</material><casing>能量弹壳</casing></entry>
+                <entry><material>加强</material><casing>加强步枪弹壳</casing></entry>
+                <entry><material>普通</material><casing>步枪弹壳</casing></entry>
+            </casingMap>
+        </shell>
+    </chainTemplate>
+    <chainTemplate>
+        <prefix>纵向机枪联弹</prefix>
+        <shell>
+            <xOffset>60</xOffset>
+            <yOffset>0</yOffset>
+            <simulationMethod>标准</simulationMethod>
+            <casingMap>
+                <entry><material>能量</material><casing>能量重机枪弹壳</casing></entry>
+                <entry><material>加强</material><casing>加强重机枪弹壳</casing></entry>
+                <entry><material>普通</material><casing>重机枪弹壳</casing></entry>
+            </casingMap>
+        </shell>
+    </chainTemplate>
+    <chainTemplate>
+        <prefix>纵向手枪联弹</prefix>
+        <shell>
+            <xOffset>60</xOffset>
+            <yOffset>0</yOffset>
+            <simulationMethod>标准</simulationMethod>
+            <casingMap>
+                <entry><material>能量</material><casing>能量弹壳</casing></entry>
+                <entry><material>加强</material><casing>加强手枪弹壳</casing></entry>
+                <entry><material>普通</material><casing>手枪弹壳</casing></entry>
+            </casingMap>
+        </shell>
+    </chainTemplate>
+    <!-- 拖尾/追踪系为无壳发射，仅参与属性派生与漂移校验 -->
+    <chainTemplate>
+        <prefix>横向拖尾联弹</prefix>
+    </chainTemplate>
+    <chainTemplate>
+        <prefix>横向拖尾追踪联弹</prefix>
+    </chainTemplate>
 </bullets>

@@ -107,6 +107,11 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
             if (!弹壳种类)
                 continue;
 
+            // 按弹壳种类去重：多个子弹条目共享同一弹壳时只建一个池，
+            // 避免重复创建原型 MovieClip 后引用被覆盖造成隐藏泄漏
+            if (shellPools[弹壳种类] != undefined)
+                continue;
+
             var funcs = createBulletPoolFuncs(弹壳种类);
             var 世界效果 = 游戏世界.效果;
             var pool = new org.flashNight.sara.util.ObjectPool(funcs.createFunc, funcs.resetFunc, funcs.releaseFunc, 世界效果, 30, 0, true, true, []);

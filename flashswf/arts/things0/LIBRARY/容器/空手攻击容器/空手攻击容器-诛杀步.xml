@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-诛杀步" itemID="6964d583-0000279b" linkageExportForAS="true" linkageIdentifier="空手攻击容器-诛杀步" lastModified="1781089280">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-诛杀步" itemID="6964d583-0000279b" linkageExportForAS="true" linkageIdentifier="空手攻击容器-诛杀步" lastModified="1781235060">
   <timeline>
     <DOMTimeline name="空手攻击容器-诛杀步">
       <layers>
@@ -66,7 +66,7 @@
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -75,9 +75,13 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-   _parent.攻击时移动(15,20);
-}
-]]></script>
+	   _parent.攻击时移动(20,25);
+	   if (Key.isDown(_parent._parent.上键)) {
+	       _parent._parent.移动("上", 10);
+	   } else if (Key.isDown(_parent._parent.下键)) {
+	       _parent._parent.移动("下", 10);
+	   }
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
