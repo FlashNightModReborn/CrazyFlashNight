@@ -571,8 +571,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
         // 补弹率（可选覆盖）：纵向联弹默认按本次实际射击间隔自适应推导补弹率
         // （全武器普及，无需配置；fillrate=auto 为历史 opt-in 写法，现等同缺省）。
-        // 配置正数时为显式每帧补弹率，允许小数——<1 即隔帧补弹，
-        // 由发射端累加器按帧整数化（残差跨帧滚动），帧内插值恒 ≤1 不会超出当帧位移
+        // 配置正数时为显式每帧补弹率，允许小数——发射端向上定点化至 1/4096，
+        // 最小有效正数为 1/4096；<1 即隔帧补弹，帧内插值恒 ≤1 不会超出当帧位移
         var fillRate = weaponData.fillrate;
         if (fillRate != undefined && String(fillRate) != "auto") {
             var fillRateNum:Number = Number(fillRate);
