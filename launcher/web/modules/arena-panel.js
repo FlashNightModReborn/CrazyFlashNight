@@ -65,14 +65,26 @@
         _el.className = 'arena-panel';
         _el.innerHTML =
             '<div class="arena-header">' +
-                '<h1 class="arena-title">DEATH MATCH角斗场</h1>' +
+                '<span class="arena-title-mark"></span>' +
+                '<div class="arena-title-block">' +
+                    '<h1 class="arena-title">DEATH MATCH</h1>' +
+                    '<span class="arena-subtitle">角斗场 · 生死竞技</span>' +
+                '</div>' +
+                '<div class="arena-header-spacer"></div>' +
                 '<div class="arena-money">' +
-                    '<span class="arena-money-label">当前金钱:</span>' +
+                    '<span class="arena-money-label">金钱</span>' +
                     '<span class="arena-money-value" id="arena-money-value">--</span>' +
                 '</div>' +
                 '<button class="arena-close-btn" type="button" title="关闭" aria-label="关闭" data-audio-cue="cancel">✕</button>' +
             '</div>' +
             '<div class="arena-grid-view" id="arena-grid-view">' +
+                // 说明条：解释角斗场押注机制（原版面板零规则说明，是 UX 缺口）
+                '<div class="arena-toolbar">' +
+                    '<span class="arena-status-item">段位 <strong>8</strong></span>' +
+                    '<span class="arena-rule">⚔ 押注挑战 · 全胜取奖金 · 落败失押金</span>' +
+                    '<div class="arena-toolbar-spacer"></div>' +
+                    '<span class="arena-status-item arena-status-hint">对手即时抽取 · 所见即所战</span>' +
+                '</div>' +
                 '<div class="arena-grid" id="arena-grid"></div>' +
             '</div>' +
             '<div class="arena-detail-view" id="arena-detail-view" hidden>' +
@@ -124,41 +136,47 @@
 
         for (var i = 0; i < ARENA_CARDS.length; i++) {
             var card = ARENA_CARDS[i];
+            var diff = difficultyOf(card);
             var cardEl = document.createElement('div');
-            cardEl.className = 'arena-card';
+            // d{1..6} 类驱动 --d-color 难度热度（CSS .arena-card-d* → 顶部色条 + 难度标签色）
+            cardEl.className = 'arena-card arena-card-d' + diff.tier;
             cardEl.dataset.index = i;
             cardEl.innerHTML =
+                '<div class="arena-card-frame"></div>' +
                 '<div class="arena-card-header">' +
-                    '<span class="arena-card-icon">⚠</span>' +
-                    '<span class="arena-card-name">' + escapeHtml(card.name) + '</span>' +
+                    '<span class="arena-card-rank">段位 ' + card.index + '</span>' +
+                    '<span class="arena-card-icon">⚔</span>' +
+                    '<span class="arena-card-diff">' + diff.label + '</span>' +
                 '</div>' +
                 '<div class="arena-card-body">' +
-                    '<div class="arena-card-row">' +
-                        '<span class="arena-card-label">挑战对手数量:</span>' +
-                        '<span class="arena-card-value">' + card.opponentCount + '</span>' +
+                    '<div class="arena-card-stats">' +
+                        '<div class="arena-stat">' +
+                            '<span class="arena-stat-label">对手</span>' +
+                            '<span class="arena-stat-value">×' + card.opponentCount + '</span>' +
+                        '</div>' +
+                        '<div class="arena-stat">' +
+                            '<span class="arena-stat-label">等级</span>' +
+                            '<span class="arena-stat-value">' + card.levelMin + '–' + card.levelMax + '</span>' +
+                        '</div>' +
                     '</div>' +
-                    '<div class="arena-card-row">' +
-                        '<span class="arena-card-label">对手等级:</span>' +
-                        '<span class="arena-card-value">' + card.levelMin + '—' + card.levelMax + '</span>' +
-                    '</div>' +
-                    '<div class="arena-card-row arena-card-deposit">' +
-                        '<span class="arena-card-label">押金:</span>' +
-                        '<span class="arena-card-value">' + formatMoney(card.deposit) + '</span>' +
-                    '</div>' +
-                    '<div class="arena-card-row arena-card-reward">' +
-                        '<span class="arena-card-label">奖金:</span>' +
-                        '<span class="arena-card-value">' + formatMoney(card.reward) + '</span>' +
+                    // 奖金主视觉（金色大字）/ 押金次视觉，回应"押注挑战"的风险-回报心智模型
+                    '<div class="arena-card-prize">' +
+                        '<div class="arena-prize-main">' +
+                            '<span class="arena-prize-label">奖金</span>' +
+                            '<span class="arena-prize-value">' + formatMoney(card.reward) + '</span>' +
+                        '</div>' +
+                        '<div class="arena-prize-deposit">押金 ' + formatMoney(card.deposit) + '</div>' +
                     '</div>' +
                     // 对手摘要 row：snapshot 回包后 batchRequestPreview 触发 8 卡并发抽签，
                     // 单卡回包后 renderCardSummary(cardIdx) 写入下方 span。
-                    '<div class="arena-card-row arena-card-opponents-row">' +
-                        '<span class="arena-card-label">对手:</span>' +
+                    '<div class="arena-card-opponents-row">' +
+                        '<span class="arena-card-opponents-cap">对手阵容</span>' +
                         '<span class="arena-card-opponents arena-card-opponents-loading" id="arena-opp-summary-' + i + '">抽取中…</span>' +
                     '</div>' +
                 '</div>' +
                 // 主+次按钮：主 ⚔ 开始挑战（grid 直入战场，无需进 detail）；次 🔍 查看对手（进 detail 看装备 / 换一批）
                 '<div class="arena-card-actions">' +
-                    '<button class="arena-card-btn arena-card-btn-enter" type="button" data-index="' + i + '" data-audio-cue="confirm">⚔ 开始挑战</button>' +
+                    '<button class="arena-card-btn-enter" type="button" data-index="' + i + '" data-audio-cue="confirm">⚔ 开始挑战</button>' +
                     '<button class="arena-card-btn-detail" type="button" data-index="' + i + '" data-audio-cue="confirm" title="查看对手详情">🔍</button>' +
                 '</div>';
 
@@ -271,7 +289,7 @@
 
         _activeCardIdx = idx;
 
-        _detailTitleEl.textContent = card.name + ' · 卡片 ' + card.index;
+        _detailTitleEl.textContent = 'DEATH MATCH · 段位 ' + card.index + ' · ' + difficultyOf(card).label;
         _detailMetaEl.innerHTML =
             '<span class="arena-meta-chip">对手 ×' + card.opponentCount + '</span>' +
             '<span class="arena-meta-chip">等级 ' + card.levelMin + '—' + card.levelMax + '</span>' +
@@ -557,6 +575,8 @@
         for (var i = 0; i < opponents.length; i++) {
             var opp = opponents[i];
             html += '<div class="arena-opp-row">';
+            // 对手暂无头像素材 → 剪影占位（与佣兵卡同源），让对手行有"人"的视觉锚点
+            html += '<div class="arena-opp-portrait arena-opp-portrait-fallback"></div>';
             html += '<div class="arena-opp-info">';
             html += '<span class="arena-opp-name">' + escapeHtml(opp.name) + '</span>';
             html += '<span class="arena-opp-level">LV. ' + opp.level + '</span>';
@@ -763,6 +783,19 @@
     function formatMoney(n) {
         if (typeof n !== 'number') return String(n);
         return n.toLocaleString('zh-CN');
+    }
+
+    // 难度档位：按对手最高等级映射「热度」tier（1 安全 → 6 致命）+ 中文段位名。
+    // tier 驱动卡片 .arena-card-d{tier} 类（CSS 决定 --d-color 顶部色条/标签色）。
+    // 8 张卡的 levelMax: 5/10/15/15/20/20/40/60 → 新兵/老兵/精锐×2/王牌×2/传奇/神话。
+    function difficultyOf(card) {
+        var lm = card.levelMax;
+        if (lm <= 5)  return { tier: 1, label: '新兵' };
+        if (lm <= 10) return { tier: 2, label: '老兵' };
+        if (lm <= 15) return { tier: 3, label: '精锐' };
+        if (lm <= 20) return { tier: 4, label: '王牌' };
+        if (lm <= 40) return { tier: 5, label: '传奇' };
+        return { tier: 6, label: '神话' };
     }
 
     function escapeHtml(text) {

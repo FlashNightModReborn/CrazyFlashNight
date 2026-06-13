@@ -7792,7 +7792,12 @@ html.perf-low-effects .map-panel-close-btn:hover {
    ════════════════════════════════════════════════════════════════════════════ */
 
 /* 沉浸全屏化 2026-06-12：arena 原为 C# 居中子矩形(Centered 1024×720)+ inset:2% 3% 卡片，浮在暗 backdrop 上。
-   改 C# 全 anchor + inset:0 + 固定 1024×576 画布(.panel-scale-shell 整体等比缩放)，铺满全 16:9。*/
+   改 C# 全 anchor + inset:0 + 固定 1024×576 画布(.panel-scale-shell 整体等比缩放)，铺满全 16:9。
+
+   视觉对齐 2026-06-13：从旧 cyberpunk 琥珀/等宽风改为军事战术风（对齐 merc/pet/task 面板）——
+   战术橙 token + 大理石石板卡面 + 4 角 L 框 + 思源宋体标题 + A 兵团徽 + 石牌/橙实心 CTA，
+   底图换 official-garage.jpg（人物密集、偏亮，用较重暗罩压成氛围底，不透明石板卡自会跳出）。
+   保留所有 arena-panel.js / QA harness 依赖的类名与 DOM 结构，仅换皮 + 增强标记元素。*/
 #panel-container[data-panel="arena"] #panel-content {
     inset: 0;
 }
@@ -7802,247 +7807,441 @@ html.perf-low-effects .map-panel-close-btn:hover {
 
 /* ── 根容器：固定 1024×576 画布，由外层 .panel-scale-shell 整体缩放 ── */
 .arena-panel {
+    /* ── 设计 token（对齐 merc/pet 军事战术风，独立作用域；仅保留 arena 实际消费的，
+       不照搬 merc 的 ink/marble-btn 浅石牌系——arena 的 CTA 是橙实心，无浅石牌钮）── */
+    --arena-line:        #474b55;
+    --arena-line-bright: #6b7079;
+    --arena-accent:      #ef9442;
+    --arena-accent-2:    #ffb65a;
+    --arena-accent-dim:  rgba(239,148,66,0.14);
+    --arena-accent-glow: rgba(239,148,66,0.45);
+    --arena-text:      #d6d9de;
+    --arena-text-dim:  #8b8f98;
+    --arena-text-mute: #686c75;
+    --arena-gold:    #ffc94a;
+    --arena-danger:  #e2503e;
+    --arena-radius: 7px;
+    --arena-radius-sm: 4px;
+    /* 拟物大理石底纹（与任务/战宠/佣兵面板共用 task_icon_bg.png，零新增美术资源） */
+    --arena-marble:     url('../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat;
+    --arena-stone:      linear-gradient(160deg, rgba(42,45,53,0.72), rgba(27,29,35,0.84)), var(--arena-marble), linear-gradient(#30333a, #25272d);
+    --arena-stone-soft: linear-gradient(160deg, rgba(36,39,46,0.78), rgba(23,25,30,0.88)), var(--arena-marble), linear-gradient(#2b2e35, #222429);
+
     position: relative;
     display: flex;
     flex-direction: column;
     width: 1024px;
     height: 576px;
     box-sizing: border-box;
-    /* 不透明 cyberpunk 全铺底（顶部琥珀辉光氛围，纯 CSS，留 background-image 插槽后补图）*/
-    background: radial-gradient(ellipse at 50% -10%, rgba(255, 193, 7, 0.05), transparent 58%), #0a0a0c;
-    color: var(--cp-text, #e0e0e0);
-    font-family: "Consolas", "Courier New", "Microsoft YaHei", monospace;
     overflow: hidden;
+    color: var(--arena-text);
+    font-family: system-ui, "Microsoft YaHei", sans-serif;
+    user-select: none;
+    /* 背景层叠（上→下）：顶部橙光氛围 → 暗罩（角斗场底图人物密集且偏亮，
+       用较重暗罩压成战术氛围底，卡片为不透明石板自会跳出）→ official-garage.jpg →
+       渐变兜底。url 按 /css/ 目录相对寻址，兼容 overlay 与 file harness。 */
+    background:
+        radial-gradient(120% 90% at 50% -8%, rgba(239,148,66,0.06), transparent 60%),
+        linear-gradient(180deg, rgba(18,19,24,0.74) 0%, rgba(12,13,17,0.90) 100%),
+        url('../assets/bg/official-garage.jpg') center center / cover no-repeat,
+        linear-gradient(180deg, #1a1c22 0%, #101116 100%);
+}
+.arena-panel * { box-sizing: border-box; }
+
+/* 外框战术角标（4 角，与战宠/佣兵一致） */
+.arena-panel::before {
+    content: '';
+    position: absolute;
+    inset: 7px;
+    pointer-events: none;
+    border: 1px solid rgba(255,255,255,0.04);
+    z-index: 0;
+}
+.arena-panel::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    pointer-events: none;
+    z-index: 30;
+    --c: var(--arena-line-bright);
+    --l: 22px;
+    --w: 2px;
+    background:
+        linear-gradient(var(--c),var(--c)) 0 0 / var(--l) var(--w) no-repeat,
+        linear-gradient(var(--c),var(--c)) 0 0 / var(--w) var(--l) no-repeat,
+        linear-gradient(var(--c),var(--c)) 100% 0 / var(--l) var(--w) no-repeat,
+        linear-gradient(var(--c),var(--c)) 100% 0 / var(--w) var(--l) no-repeat,
+        linear-gradient(var(--c),var(--c)) 0 100% / var(--l) var(--w) no-repeat,
+        linear-gradient(var(--c),var(--c)) 0 100% / var(--w) var(--l) no-repeat,
+        linear-gradient(var(--c),var(--c)) 100% 100% / var(--l) var(--w) no-repeat,
+        linear-gradient(var(--c),var(--c)) 100% 100% / var(--w) var(--l) no-repeat;
 }
 
-/* ── 顶部标题栏 ── */
+/* ── 顶部标题栏（58px，对齐 merc-page-header）── */
 .arena-header {
+    flex-shrink: 0;
+    height: 58px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 8px 16px;
-    border-bottom: 1px solid rgba(255, 193, 7, 0.25);
-    background: linear-gradient(90deg, rgba(255, 193, 7, 0.08) 0%, transparent 60%);
-    flex-shrink: 0;
+    gap: 12px;
+    padding: 0 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: linear-gradient(180deg, rgba(239,148,66,0.07), transparent);
+    position: relative;
+    z-index: 2;
 }
-
+.arena-header::after {
+    content: '';
+    position: absolute;
+    left: 22px; right: 22px; bottom: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--arena-accent), transparent 70%);
+    opacity: 0.5;
+}
+/* A 兵团三角螺旋徽（与 merc/pet 同源 SVG，是面板套件共同的品牌锚点） */
+.arena-title-mark {
+    width: 27px; height: 24px;
+    flex-shrink: 0;
+    background: var(--arena-accent);
+    --arena-faction-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='63 -3 168 146'%3E%3Cpath fill='%23000' d='M227.75 140.05L65.95 139.70L134.25 23.10L177.95 98.45L157.95 98.45L134.90 55.95L96.60 123.95L218.75 124.25Z M147.85 0L148.00 0.10L215.30 118.20L108.45 117.30L117.85 101.75L188.30 102.40L138.40 16.10L147.80 0Z'/%3E%3C/svg%3E");
+    -webkit-mask: var(--arena-faction-svg) center / contain no-repeat;
+    mask: var(--arena-faction-svg) center / contain no-repeat;
+    filter: drop-shadow(0 0 4px var(--arena-accent-glow));
+}
+.arena-title-block { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .arena-title {
     margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #ffc107;
-    letter-spacing: 2px;
-    text-shadow: 0 0 8px rgba(255, 193, 7, 0.3);
+    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", serif;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--arena-text);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    white-space: nowrap;
+    line-height: 1.1;
 }
+.arena-subtitle {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--arena-text-mute);
+    white-space: nowrap;
+}
+.arena-header-spacer { flex: 1; }
 
 .arena-money {
-    display: flex;
-    align-items: center;
+    display: inline-flex;
+    align-items: baseline;
     gap: 6px;
-    font-size: 12px;
+    white-space: nowrap;
 }
-
-.arena-money-label {
-    color: #888;
-}
-
+.arena-money-label { font-size: 11px; color: var(--arena-text-mute); font-weight: 600; }
 .arena-money-value {
-    color: #4caf50;
-    font-weight: 600;
-    font-size: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--arena-gold);
+    font-variant-numeric: tabular-nums;
 }
 
 .arena-close-btn {
-    width: 32px;
-    height: 32px;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #ccc;
-    font-size: 18px;
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    color: var(--arena-text-dim);
+    font-size: 16px;
     line-height: 1;
     cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.15s ease;
+    border-radius: var(--arena-radius);
+    transition: all 0.14s;
 }
-
 .arena-close-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.4);
     color: #fff;
+    border-color: rgba(226,80,62,0.6);
+    background: rgba(226,80,62,0.18);
 }
 
-/* ── 卡片网格 ── */
+/* ── 工具/说明条（仅 grid 视图，42px，对齐 merc-toolbar）── */
+.arena-toolbar {
+    flex-shrink: 0;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 22px;
+    background: rgba(255,255,255,0.015);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.arena-status-item {
+    font-size: 12px;
+    color: var(--arena-text-dim);
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    white-space: nowrap;
+}
+.arena-status-item strong { color: var(--arena-accent); font-size: 14px; font-weight: 700; }
+.arena-rule {
+    font-size: 12px;
+    color: var(--arena-text-mute);
+    letter-spacing: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.arena-toolbar-spacer { flex: 1; }
+.arena-status-hint { color: var(--arena-text-mute); }
+
+/* ── 卡片网格（4×2，固定画布内）── */
 .arena-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    gap: 8px;
-    padding: 8px;
+    gap: 12px;
+    padding: 14px 18px;
     flex: 1;
     overflow-y: auto;
-    align-content: start;
+    align-content: stretch;
     min-height: 0;
 }
 
-/* 响应式：极窄面板（<640px）才改为 2 列，否则 4×2 在 1024×720 下可正常显示 */
-@media (max-width: 640px) {
-    .arena-grid {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(4, 1fr);
-    }
-}
-
-/* ── 单张卡片 ── */
+/* ── 单张卡片：大理石石板 + 4 角 L 框 + 悬停抬升/扫光 ── */
 .arena-card {
+    position: relative;
     display: flex;
     flex-direction: column;
-    background: rgba(30, 30, 35, 0.95);
-    border: 1px solid rgba(255, 193, 7, 0.2);
-    border-radius: 6px;
-    padding: 5px 7px;
-    transition: all 0.2s ease;
-    position: relative;
-    min-height: 0;
+    gap: 7px;
+    padding: 10px 12px 11px;
+    background: var(--arena-stone);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--arena-radius);
     overflow: hidden;
+    min-height: 0;
+    transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+    animation: arena-card-in 0.34s cubic-bezier(0.16,0.8,0.3,1) both;
+    /* 难度热度色（按 levelMax 档位，d1 安全 → d6 致命） */
+    --d-color: var(--arena-accent);
 }
-
+@keyframes arena-card-in {
+    from { opacity: 0; transform: translateY(14px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
 .arena-card:hover {
-    border-color: rgba(255, 193, 7, 0.5);
-    box-shadow: 0 0 12px rgba(255, 193, 7, 0.15);
+    border-color: rgba(239,148,66,0.4);
     transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
 }
+/* 顶部难度色条（按 --d-color） */
+.arena-card::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--d-color), transparent 85%);
+    opacity: 0.85;
+    pointer-events: none;
+    z-index: 3;
+}
+/* 扫光 */
+.arena-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -120%;
+    width: 60%; height: 100%;
+    background: linear-gradient(105deg, transparent, rgba(255,255,255,0.07), transparent);
+    pointer-events: none;
+    z-index: 3;
+}
+.arena-card:hover::before { animation: arena-sweep 0.7s ease forwards; }
+@keyframes arena-sweep { to { left: 160%; } }
+/* 4 角 L 框 */
+.arena-card-frame {
+    position: absolute; inset: 5px; pointer-events: none; z-index: 2;
+    --bk-len: 13px; --bk-w: 2px; --bk-c: rgba(239,148,66,0.42);
+    background:
+        linear-gradient(var(--bk-c),var(--bk-c)) 0 0      / var(--bk-len) var(--bk-w) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 0 0      / var(--bk-w) var(--bk-len) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 100% 0   / var(--bk-len) var(--bk-w) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 100% 0   / var(--bk-w) var(--bk-len) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 0 100%   / var(--bk-len) var(--bk-w) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 0 100%   / var(--bk-w) var(--bk-len) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 100% 100%/ var(--bk-len) var(--bk-w) no-repeat,
+        linear-gradient(var(--bk-c),var(--bk-c)) 100% 100%/ var(--bk-w) var(--bk-len) no-repeat;
+}
+.arena-card:hover .arena-card-frame { --bk-c: rgba(255,182,90,0.85); }
 
+/* 难度热度档位（按 levelMax 映射，见 arena-panel.js difficultyOf） */
+.arena-card-d1 { --d-color: #8a9a7e; }
+.arena-card-d2 { --d-color: #b9c06a; }
+.arena-card-d3 { --d-color: #ef9442; }
+.arena-card-d4 { --d-color: #ff8a4a; }
+.arena-card-d5 { --d-color: #ff6a3a; }
+.arena-card-d6 { --d-color: #e2503e; }
+
+/* 金钱不足：整卡降权（不阻断 pointer events，detail 按钮仍可点：看对手装备 / 攒够钱再来；
+   enter 按钮的 disable 由按钮自身 :disabled 状态控制）。 */
 .arena-card-disabled {
-    opacity: 0.5;
-    border-color: rgba(128, 128, 128, 0.3);
-    /* 不阻断 pointer events：金钱不足时 detail 按钮仍要可点（看对手装备 / 攒够钱再来）；
-       enter 按钮的 disable 由按钮自身 :disabled 状态控制。 */
+    opacity: 0.55;
+    filter: saturate(0.6);
 }
-
 .arena-card-disabled:hover {
-    border-color: rgba(128, 128, 128, 0.3);
-    box-shadow: none;
     transform: none;
+    box-shadow: none;
+    border-color: rgba(255,255,255,0.08);
 }
+.arena-card-disabled:hover::before { animation: none; }
 
-/* ── 卡片头部 ── */
+/* ── 卡头：段位 + 难度标签 ── */
 .arena-card-header {
     display: flex;
     align-items: center;
-    gap: 4px;
-    margin-bottom: 3px;
-    padding-bottom: 2px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 7px;
     flex-shrink: 0;
+    position: relative;
+    z-index: 1;
 }
-
+.arena-card-rank {
+    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--arena-text);
+}
 .arena-card-icon {
     font-size: 12px;
-    color: #ffc107;
+    color: var(--d-color);
+    margin-left: auto;
+    line-height: 1;
 }
-
-.arena-card-name {
+.arena-card-diff {
     font-size: 11px;
-    font-weight: 600;
-    color: #e0e0e0;
+    font-weight: 700;
     letter-spacing: 1px;
+    color: var(--d-color);
+    padding: 1px 8px;
+    border-radius: var(--arena-radius-sm);
+    background: rgba(0,0,0,0.28);
+    border: 1px solid var(--d-color);
 }
 
 /* ── 卡片主体 ── */
 .arena-card-body {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 7px;
     flex: 1;
-    font-size: 11px;
     min-height: 0;
     overflow: hidden;
+    position: relative;
+    z-index: 1;
 }
-
-.arena-card-row {
+/* 数据双联：对手数量 / 等级区间 */
+.arena-card-stats {
     display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.arena-stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 4px 8px;
+    background: rgba(0,0,0,0.22);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-stat-label { font-size: 10px; color: var(--arena-text-mute); letter-spacing: 1px; }
+.arena-stat-value { font-size: 15px; font-weight: 700; color: var(--arena-text); font-variant-numeric: tabular-nums; }
+
+/* 奖金/押金：奖金主视觉（金色大字），押金次视觉（小字暗调） */
+.arena-card-prize {
+    display: flex;
+    align-items: flex-end;
     justify-content: space-between;
-    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding: 5px 9px 6px;
+    background: linear-gradient(180deg, rgba(239,148,66,0.10), rgba(239,148,66,0.03));
+    border: 1px solid rgba(239,148,66,0.18);
+    border-radius: var(--arena-radius-sm);
 }
-
-.arena-card-label {
-    color: #999;
+.arena-prize-main { display: flex; flex-direction: column; gap: 0; min-width: 0; }
+.arena-prize-label { font-size: 10px; color: var(--arena-text-mute); letter-spacing: 1px; }
+.arena-prize-value {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.05;
+    color: var(--arena-gold);
+    text-shadow: 0 0 10px rgba(255,201,74,0.25);
+    font-variant-numeric: tabular-nums;
 }
-
-.arena-card-value {
-    color: #ccc;
-    font-weight: 500;
-}
-
-.arena-card-deposit .arena-card-value,
-.arena-card-reward .arena-card-value {
-    color: #ffc107;
-    font-weight: 600;
-}
-
-/* ── 开始挑战按钮 ── */
-.arena-card-btn {
-    margin-top: 4px;
-    padding: 3px 0;
-    background: linear-gradient(180deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 193, 7, 0.08) 100%);
-    border: 1px solid rgba(255, 193, 7, 0.4);
-    color: #ffc107;
-    font-family: inherit;
+.arena-prize-deposit {
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.15s ease;
+    color: var(--arena-text-mute);
+    white-space: nowrap;
     flex-shrink: 0;
 }
 
-.arena-card-btn:hover:not(:disabled) {
-    background: linear-gradient(180deg, rgba(255, 193, 7, 0.3) 0%, rgba(255, 193, 7, 0.15) 100%);
-    border-color: rgba(255, 193, 7, 0.7);
-    box-shadow: 0 0 10px rgba(255, 193, 7, 0.2);
-}
-
-.arena-card-btn:disabled {
-    background: rgba(128, 128, 128, 0.1);
-    border-color: rgba(128, 128, 128, 0.3);
-    color: #666;
-    cursor: not-allowed;
-}
-
-/* ── 卡片底部按钮区（主+次布局）─────────────────────────────────────────── */
-/* 主按钮 "⚔ 开始挑战"（grid 直入战场）+ 次按钮 "🔍"（进 detail 看装备 / 换一批） */
+/* ── 卡片底部按钮区（主 ⚔ 开始挑战 + 次 🔍 详情）── */
 .arena-card-actions {
     display: flex;
-    gap: 4px;
-    margin-top: 4px;
+    gap: 7px;
     flex-shrink: 0;
+    position: relative;
+    z-index: 1;
 }
-
+/* 主按钮 = 橙色实心 CTA（角斗场核心动作）。grid 直入战场，无需进 detail。 */
 .arena-card-btn-enter {
     flex: 1;
-    /* .arena-card-btn 类已经在 element 上，沿用主黄色 / hover / disabled 样式 */
-}
-
-.arena-card-btn-detail {
-    flex: 0 0 32px;
-    padding: 3px 0;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #aaa;
+    height: 32px;
+    padding: 0;
     font-family: inherit;
     font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #1a1206;
+    background: linear-gradient(180deg, var(--arena-accent-2), var(--arena-accent));
+    border: none;
     cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.15s ease;
+    border-radius: var(--arena-radius-sm);
+    box-shadow: 0 0 0 1px rgba(239,148,66,0.3), 0 2px 8px rgba(239,148,66,0.22);
+    transition: filter 0.14s, box-shadow 0.14s;
 }
-
+.arena-card-btn-enter:hover:not(:disabled) {
+    filter: brightness(1.12);
+    box-shadow: 0 0 0 1px rgba(255,182,90,0.5), 0 3px 12px rgba(239,148,66,0.4);
+}
+.arena-card-btn-enter:active:not(:disabled) { filter: brightness(0.95); }
+/* 禁用 = 暗色凹陷 + 虚线框（与可点实心彻底区分，对齐 merc 禁用语言） */
+.arena-card-btn-enter:disabled {
+    background: rgba(12,13,17,0.55);
+    color: var(--arena-text-mute);
+    border: 1px dashed rgba(255,255,255,0.16);
+    box-shadow: none;
+    cursor: not-allowed;
+    letter-spacing: 1px;
+}
+/* 次按钮 = 幽灵图标钮（进 detail 看装备 / 换一批） */
+.arena-card-btn-detail {
+    flex: 0 0 36px;
+    height: 32px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--arena-text-dim);
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: var(--arena-radius-sm);
+    transition: all 0.14s;
+}
 .arena-card-btn-detail:hover:not(:disabled) {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%);
-    border-color: rgba(255, 255, 255, 0.3);
-    color: #fff;
+    color: var(--arena-accent);
+    border-color: var(--arena-accent);
+    background: var(--arena-accent-dim);
 }
-
 .arena-card-btn-detail:disabled {
     opacity: 0.4;
     cursor: not-allowed;
@@ -8051,55 +8250,76 @@ html.perf-low-effects .map-panel-close-btn:hover {
 /* ── 对手摘要 row ─────────────────────────────────────────────────────── */
 /* batch preview 回包后渲染："老王 Lv16 / 张三 Lv18 +2"；失败显示"⚠ ... ↻"可点重试 */
 .arena-card-opponents-row {
-    margin-top: 2px;
-    align-items: flex-start;
-    min-height: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    min-height: 0;
+    overflow: hidden;
 }
-
+/* 小分区标题（"对手阵容"，与 merc-card-seclabel 同语言：标签 + 渐隐分割线） */
+.arena-card-opponents-cap {
+    font-size: 10px;
+    color: var(--arena-text-mute);
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+.arena-card-opponents-cap::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, rgba(239,148,66,0.25), transparent);
+}
 .arena-card-opponents {
-    color: #ddd;
-    font-weight: 500;
+    font-size: 11.5px;
+    color: var(--arena-text-dim);
+    font-weight: 600;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    flex: 1;
-    text-align: right;
-    margin-left: 6px;
     min-width: 0; /* flex item 默认 min-width:auto 会撑破 ellipsis，必须显式 0 */
 }
 
 .arena-card-opponents-loading {
-    color: #888;
+    color: var(--arena-text-mute);
     font-style: italic;
-    font-weight: normal;
+    font-weight: 400;
 }
 
 .arena-card-opponents-error {
-    color: #f66;
+    color: #f08a7a;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .arena-card-opponents-error:hover {
-    color: #f99;
+    color: #f4a99c;
     text-decoration: underline;
 }
 
-/* ── Toast 提示 ── */
+/* ── Toast 提示（对齐 merc-toast：底部居中 + 左侧强调边；JS 切 display + visible 类）── */
 .arena-toast {
     position: absolute;
-    bottom: 20px;
+    bottom: 22px;
     left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    padding: 10px 24px;
-    background: rgba(180, 40, 40, 0.95);
-    border: 1px solid rgba(255, 100, 100, 0.4);
+    transform: translateX(-50%) translateY(16px);
+    min-width: 180px; max-width: 460px;
+    padding: 9px 22px;
+    background: rgba(20,21,26,0.94);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-left: 3px solid var(--arena-danger);
     color: #fff;
-    font-size: 14px;
-    border-radius: 4px;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
+    text-align: center;
+    border-radius: 7px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
     opacity: 0;
     pointer-events: none;
-    transition: all 0.3s ease;
+    transition: opacity 0.25s ease, transform 0.25s ease;
     z-index: 100;
 }
 
@@ -8108,44 +8328,51 @@ html.perf-low-effects .map-panel-close-btn:hover {
     transform: translateX(-50%) translateY(0);
 }
 
-/* ══ 角斗场详情视图（卡片点击后显示对手预览） ══ */
+/* ══ 视图容器（grid / detail 切换）══ */
 .arena-grid-view,
 .arena-detail-view {
     flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 0;
+    position: relative;
+    z-index: 1;
 }
 .arena-grid-view[hidden],
 .arena-detail-view[hidden] {
     display: none;
 }
 
+/* ══ 角斗场详情视图（卡片点击后显示对手预览）══ */
 .arena-detail-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    border-bottom: 1px solid rgba(255, 193, 7, 0.18);
-    background: rgba(255, 193, 7, 0.04);
+    gap: 12px;
+    height: 52px;
     flex-shrink: 0;
+    padding: 0 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: linear-gradient(180deg, rgba(239,148,66,0.06), transparent);
 }
 
 .arena-detail-back {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #ccc;
-    padding: 4px 12px;
+    flex-shrink: 0;
+    height: 30px;
+    padding: 0 14px 0 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    color: var(--arena-text-dim);
     font-family: inherit;
-    font-size: 12px;
-    border-radius: 4px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    border-radius: var(--arena-radius);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.14s;
 }
 .arena-detail-back:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.35);
-    color: #fff;
+    color: var(--arena-accent);
+    border-color: var(--arena-accent);
+    background: var(--arena-accent-dim);
 }
 
 .arena-detail-title-block {
@@ -8158,10 +8385,11 @@ html.perf-low-effects .map-panel-close-btn:hover {
 
 .arena-detail-title {
     margin: 0;
-    font-size: 14px;
-    font-weight: 600;
-    color: #ffc107;
-    letter-spacing: 1.5px;
+    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--arena-text);
+    letter-spacing: 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -8171,35 +8399,43 @@ html.perf-low-effects .map-panel-close-btn:hover {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    font-size: 11px;
 }
 
 .arena-meta-chip {
-    padding: 2px 8px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 10px;
-    color: #ccc;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 1px 9px;
+    border-radius: var(--arena-radius-sm);
+    color: var(--arena-text-dim);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.10);
 }
-.arena-meta-chip.arena-meta-deposit { color: #ffc107; }
-.arena-meta-chip.arena-meta-reward  { color: #4caf50; border-color: rgba(76, 175, 80, 0.3); }
+.arena-meta-chip.arena-meta-deposit { color: var(--arena-text); }
+.arena-meta-chip.arena-meta-reward  {
+    color: var(--arena-gold);
+    background: rgba(255,201,74,0.10);
+    border-color: rgba(255,201,74,0.32);
+}
 
 .arena-detail-roll {
-    background: transparent;
-    border: 1px solid rgba(33, 150, 243, 0.45);
-    color: #64b5f6;
-    padding: 4px 14px;
+    flex-shrink: 0;
+    height: 30px;
+    padding: 0 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    color: var(--arena-text-dim);
     font-family: inherit;
     font-size: 12px;
-    border-radius: 4px;
+    letter-spacing: 0.5px;
+    border-radius: var(--arena-radius);
     cursor: pointer;
-    transition: all 0.15s ease;
-    flex-shrink: 0;
+    transition: all 0.14s;
 }
 .arena-detail-roll:hover:not(:disabled) {
-    background: rgba(33, 150, 243, 0.12);
-    border-color: rgba(33, 150, 243, 0.7);
-    box-shadow: 0 0 8px rgba(33, 150, 243, 0.2);
+    color: var(--arena-accent);
+    border-color: var(--arena-accent);
+    background: var(--arena-accent-dim);
 }
 .arena-detail-roll:disabled {
     opacity: 0.4;
@@ -8209,51 +8445,88 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .arena-opponents {
     flex: 1;
     overflow-y: auto;
-    padding: 8px 12px;
+    padding: 14px 18px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     min-height: 0;
 }
 
+/* loading/error 占位是 detail 唯一在「裸 garega 底图」上画正文的位置（对手行本身是不透明石板）。
+   给它同款石板背板，避免文字直接压在透出的底图上读不清。 */
 .arena-opponents-loading,
 .arena-opponents-error {
-    padding: 24px;
+    padding: 26px;
     text-align: center;
-    color: #888;
+    color: var(--arena-text-dim);
     font-size: 13px;
+    letter-spacing: 1px;
+    background: var(--arena-stone-soft);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--arena-radius);
 }
-.arena-opponents-error { color: #ef5350; }
+.arena-opponents-error { color: var(--arena-danger); }
 
 .arena-opp-row {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 8px 10px;
-    background: rgba(30, 30, 35, 0.85);
-    border: 1px solid rgba(255, 193, 7, 0.15);
-    border-radius: 4px;
+    padding: 10px 12px;
+    background: var(--arena-stone-soft);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--arena-radius);
+    transition: border-color 0.15s;
+}
+.arena-opp-row:hover { border-color: rgba(239,148,66,0.22); }
+
+/* 对手头像（无素材 → 剪影占位，与 merc-card-portrait-fallback 同源） */
+.arena-opp-portrait {
+    position: relative;
+    width: 46px; height: 46px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: #0e0f13;
+    border: 1px solid var(--arena-line);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-opp-portrait-fallback::before {
+    content: "";
+    position: absolute;
+    left: 50%; top: 8px;
+    width: 16px; height: 16px;
+    margin-left: -8px;
+    border-radius: 50%;
+    background: #49443d;
+}
+.arena-opp-portrait-fallback::after {
+    content: "";
+    position: absolute;
+    left: 50%; bottom: -5px;
+    width: 32px; height: 24px;
+    margin-left: -16px;
+    border-radius: 50% 50% 12% 12%;
+    background: #403b35;
 }
 
 .arena-opp-info {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    min-width: 100px;
+    min-width: 92px;
     flex-shrink: 0;
 }
 
 .arena-opp-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: #e0e0e0;
-    letter-spacing: 1px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--arena-text);
+    letter-spacing: 0.5px;
 }
 
 .arena-opp-level {
     font-size: 12px;
-    color: #ffc107;
-    font-weight: 600;
+    color: var(--arena-accent);
+    font-weight: 700;
 }
 
 .arena-opp-equips {
@@ -8280,8 +8553,8 @@ html.perf-low-effects .map-panel-close-btn:hover {
     transition: border-color 0.12s ease, box-shadow 0.12s ease;
 }
 .arena-equip-cell:hover {
-    border-color: rgba(255, 193, 7, 0.6);
-    box-shadow: 0 0 6px rgba(255, 193, 7, 0.25);
+    border-color: rgba(239, 148, 66, 0.6);
+    box-shadow: 0 0 6px rgba(239, 148, 66, 0.25);
 }
 .arena-equip-cell img {
     max-width: 100%;
@@ -8307,7 +8580,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
     bottom: 0;
     font-size: 9px;
     line-height: 1;
-    color: #ffc107;
+    color: var(--arena-accent);
     background: rgba(0, 0, 0, 0.7);
     padding: 1px 2px;
     border-radius: 2px;
@@ -8322,37 +8595,41 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 
 .arena-detail-footer {
-    padding: 10px 16px;
-    border-top: 1px solid rgba(255, 193, 7, 0.18);
-    background: rgba(255, 193, 7, 0.03);
     flex-shrink: 0;
+    padding: 12px 18px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    background: linear-gradient(0deg, rgba(239,148,66,0.05), transparent);
     display: flex;
     justify-content: flex-end;
 }
 
 .arena-detail-confirm {
-    padding: 8px 32px;
-    background: linear-gradient(180deg, rgba(255, 193, 7, 0.25) 0%, rgba(255, 193, 7, 0.12) 100%);
-    border: 1px solid rgba(255, 193, 7, 0.6);
-    color: #ffc107;
+    height: 38px;
+    padding: 0 36px;
     font-family: inherit;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 3px;
+    color: #1a1206;
+    background: linear-gradient(180deg, var(--arena-accent-2), var(--arena-accent));
+    border: none;
     cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.15s ease;
+    border-radius: var(--arena-radius);
+    box-shadow: 0 0 0 1px rgba(239,148,66,0.3), 0 2px 10px rgba(239,148,66,0.28);
+    transition: filter 0.14s, box-shadow 0.14s;
 }
 .arena-detail-confirm:hover:not(:disabled) {
-    background: linear-gradient(180deg, rgba(255, 193, 7, 0.4) 0%, rgba(255, 193, 7, 0.2) 100%);
-    border-color: rgba(255, 193, 7, 0.85);
-    box-shadow: 0 0 14px rgba(255, 193, 7, 0.3);
+    filter: brightness(1.12);
+    box-shadow: 0 0 0 1px rgba(255,182,90,0.5), 0 3px 14px rgba(239,148,66,0.45);
 }
+.arena-detail-confirm:active:not(:disabled) { filter: brightness(0.95); }
 .arena-detail-confirm:disabled {
-    background: rgba(128, 128, 128, 0.1);
-    border-color: rgba(128, 128, 128, 0.3);
-    color: #666;
+    background: rgba(12,13,17,0.55);
+    color: var(--arena-text-mute);
+    border: 1px dashed rgba(255,255,255,0.16);
+    box-shadow: none;
     cursor: not-allowed;
+    letter-spacing: 1px;
 }
 
 /* ── Tooltip 复用 flash-tt-* 布局原语（PanelTooltip.buildItemRichHtml）；
