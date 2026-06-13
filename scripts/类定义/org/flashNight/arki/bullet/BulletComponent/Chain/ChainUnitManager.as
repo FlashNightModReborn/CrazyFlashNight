@@ -64,8 +64,8 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
             }
             layer = zone.createEmptyMovieClip(LAYER_NAME, LAYER_DEPTH);
             layer.可用单元体池 = {};
-            // 旧世界的组与单元体已随世界销毁，重置注册表
-            groups.length = 0;
+            // 旧世界的组与单元体 MC 已随世界销毁，重置注册表（数据对象回收入池）
+            resetAll();
             // 统一帧驱动（类方法内创建的闭包，不受帧脚本 activation object 回收影响）
             layer.onEnterFrame = function():Void {
                 ChainUnitManager.tick();
@@ -76,11 +76,34 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
 
     /**
      * 清空组注册表（场景切换/世界销毁时调用）。
-     * 旧层、池与单元体随旧 gameworld 一并销毁，此处仅释放静态引用。
-     * length=0 截断（~69ns）而非新建数组（~550ns + GC，H21）。
+     * 旧层、池与单元体 MC 随旧 gameworld 一并销毁（仅断引用，不入 MC 池）；
+     * 活动组中的 ChainUnitData 数据对象为纯对象、无场景绑定，必须回收进静态
+     * dataPool 兑现"跨 gameworld 复用"契约——否则每次带活动联弹过图都白白
+     * 丢弃并在新场景重新分配同量数据对象（复审发现）。
+     * 组标记 __removed，防任何残存引用经 removeGroup 二次回池污染自由表。
      */
     public static function resetAll():Void {
-        groups.length = 0;
+        var gs:Array = groups;
+        var gn:Number = gs.length;
+        var pool:Array = dataPool;
+        var pn:Number = pool.length;
+        var g:ChainGroup;
+        var list:Array;
+        var d:ChainUnitData;
+        var n:Number;
+        for (var i:Number = 0; i < gn; i++) {
+            g = gs[i];
+            g.__removed = true;
+            list = g.单元体列表;
+            n = list.length;
+            for (var u:Number = 0; u < n; u++) {
+                d = list[u];
+                d.mc = null;
+                pool[pn++] = d;
+            }
+            list.length = 0;
+        }
+        gs.length = 0;   // 截断（~69ns）而非新建数组（~550ns + GC，H21）
     }
 
     /**

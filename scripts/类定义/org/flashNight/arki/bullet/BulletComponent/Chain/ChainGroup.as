@@ -72,8 +72,10 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
     public var count:Number;
     public var 原始坐标x:Number;
     public var 原始坐标y:Number;
-    // 补弹率（发/帧，可小数；率<1 经累加器隔帧补弹）
-    public var 补弹率:Number;
+    // 补弹率 = 分子/分母（整数 Bresenham 误差累加；禁用浮点率累加——
+    // 4/6 之类在 double 下累加可停在 3.999…，最后一发会延到下一射击周期之后）
+    public var 补弹分子:Number;
+    public var 补弹分母:Number;
     public var 补弹累计:Number;
 
     // ---------- 滑翔 ----------

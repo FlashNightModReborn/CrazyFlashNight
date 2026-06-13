@@ -685,18 +685,20 @@ _root.联弹系统.纵向联弹更新 = function(group:ChainGroup):Void {
         var localDeltaX:Number = globalDeltaX * cosVal + globalDeltaY * sinVal;
         var localDeltaY:Number = -globalDeltaX * sinVal + globalDeltaY * cosVal;
 
-        // —— 补弹率累加器：整数部分本帧生成，小数残差跨帧滚动 ——
-        // 率<1 = 隔帧补弹（低射速武器弹链铺满整个射击间隔，2,3,2,… 不均匀帧分布是预期行为）；
-        // 率>1 = 帧内多发沿当帧位移分数插值（插值=(s+1)/n 恒 ≤1，不会超出当帧位移）
+        // —— 补弹累加器（整数 Bresenham：acc += 分子，每满一个分母出一发）——
+        // 率<1 = 隔帧补弹（2,3,2,… 不均匀帧分布是预期行为，长期均值精确等于分子/分母）；
+        // 率>1 = 帧内多发沿当帧位移分数插值（插值=(s+1)/n 恒 ≤1，不会超出当帧位移）。
+        // 全程整数算术：分母个 tick 内恰好补完，无浮点漂移（勿改回浮点率累加，见组装处注释）
         // ⚠ 落点不乘 运动方向系数：localDelta 本身已是带方向的本地位移
         // （localDeltaX = 当帧位移在枪管轴上的投影，任意射角恒为 +|v|），
         // 再乘系数会使左射落点反向展开——新单元体出生在枪口后方（枪管内）。
         // 旧 MC 实现靠"原始坐标捕获于一帧位移后"的时序巧合补偿了该反向；
         // 对象路径在工厂内捕获（位移前），此处采用方向无关的物理正确插值
-        var acc:Number = group.补弹累计 + group.补弹率;
-        var n:Number = acc | 0;                      // H13：非负有限小值取整
+        var acc:Number = group.补弹累计 + group.补弹分子;
+        var D:Number = group.补弹分母;
+        var n:Number = (acc / D) | 0;        // 整数对整数，floor 精确（H13 前提满足）
         var remain:Number = countTotal - group.count;
-        if (n > remain) { n = remain; acc = n; }
+        if (n > remain) n = remain;
         if (n > 0) {
             var 生成:Function = _root.联弹系统.生成单元体;   // 纯函数，不依赖 this
             var rnd:Function = _root.随机偏移;               // Delegate 闭包自携 this
@@ -718,7 +720,7 @@ _root.联弹系统.纵向联弹更新 = function(group:ChainGroup):Void {
                 group.count++;
             }
         }
-        group.补弹累计 = acc - n;
+        group.补弹累计 = acc - n * D;
 
         // 更新X碰撞盒（含本帧新增单元体）；对象化联弹由碰撞器直接读取组字段
         group.盒x = x_min;
@@ -774,26 +776,35 @@ _root.联弹系统.纵向联弹组装 = function(group:ChainGroup):Void {
     group.子弹种类 = b.子弹种类.split("-")[1];
     group.count = 1;
 
-    // 补弹率（发/帧，可小数）：显式推参（每帧补弹数，武器 fillrate 正数）优先；
+    // 补弹率（分数 分子/分母，整数 Bresenham 误差累加）：显式推参（每帧补弹数）优先；
     // 其次由实际发射间隔（发射间隔毫秒，WeaponFireCore.executeShot 对全武器盖戳，
-    // 含枪械师点按/连按修正与配件改装后的运行时射速）推导：
-    //   率 = (霰弹值 - 1) / 间隔帧数
-    // 保证全部霰弹值恰好在两次射击的间隔内匀速发射完毕——
+    // 含枪械师点按/连按修正与配件改装后的运行时射速）推导 (霰弹值-1)/间隔帧数：
     // 高射速（间隔<1帧，如 XM214）一帧补完；低射速（如磁稳贯穿弹改装后 interval 300ms+）
-    // 率<1 隔帧补弹，弹链节奏与名义射速数学对齐，消除"每帧1发射得太快"的破绽。
-    // 技能等不经射击链路的直调路径无间隔戳 → 回退每帧 1 发旧行为
+    // 隔帧补弹，弹链节奏与名义射速数学对齐。技能等无间隔戳的直调路径 → 回退每帧 1 发旧行为。
+    // ⚠ 必须整数化、禁用浮点率累加（复审发现）：如 4/6 在 double 下累加 6 次可停在
+    //   3.999…，|0 截断使最后一发延至下一射击周期之后（split5/interval200ms 等
+    //   209 组合扫描中 65 组复现）。整数分子/分母的误差累加精确无漂移；
+    //   分母取 Math.ceil(间隔帧数)，与 EnhancedCooldownWheel 的 Never-Early 向上取整
+    //   同源同式——恰好在下一次射击可被调度的那一帧之前补完全部 N 发。
     // ⚠ 守卫必须用 !(x>0) 而非 >=：AVM1 中 undefined>=1 恒为 true（>= 实现为 !(<)，NaN 比较返回 undefined）
+    var fillN:Number = 0;
+    var fillD:Number = 1;
     var rate:Number = b.每帧补弹数;
-    if (!(rate > 0)) {
+    if (rate > 0) {
+        // 显式推参（可小数）：定点化 N/4096，ceil 偏置保证实际节奏不慢于标称率
+        fillN = Math.ceil(rate * 4096);
+        fillD = 4096;
+    } else {
         var 发射间隔毫秒:Number = b.发射间隔毫秒;
         if (发射间隔毫秒 > 0) {
-            var 间隔帧数:Number = 发射间隔毫秒 / EnhancedCooldownWheel.I().每帧毫秒;
-            if (间隔帧数 < 1) 间隔帧数 = 1;
-            rate = (b.霰弹值 - 1) / 间隔帧数;
+            fillD = Math.ceil(发射间隔毫秒 / EnhancedCooldownWheel.I().每帧毫秒);
+            if (fillD < 1) fillD = 1;
+            fillN = b.霰弹值 - 1;
         }
-        if (!(rate > 0)) rate = 1;
     }
-    group.补弹率 = rate;
+    if (!(fillN > 0)) { fillN = 1; fillD = 1; }   // 无戳/异常值 → 每帧 1 发旧行为
+    group.补弹分子 = fillN;
+    group.补弹分母 = fillD;
     group.补弹累计 = 0;
 
     // 创建第一个单元体
