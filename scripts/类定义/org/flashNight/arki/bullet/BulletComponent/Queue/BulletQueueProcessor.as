@@ -2302,13 +2302,26 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             if (isPointSet) {
                                 if(!isUpdatePolygon) {
                                     polygonCollider = bullet.polygonCollider;
-                                    if(!polygonCollider) {
-                                        // 统一懒加载策略：所有点集联弹的多边形碰撞器都在此时创建
-                                        // 注意：createFromBullet内部已包含初始更新
-                                        polygonCollider = bullet.polygonCollider = CFR.getFactory(PolyFactoryId).createFromBullet(bullet, bullet.子弹区域area || bullet.area);
+                                    var chainPolyArea:MovieClip = bullet.子弹区域area || bullet.area;
+                                    if (chainPolyArea) {
+                                        if(!polygonCollider) {
+                                            // 统一懒加载策略：所有点集联弹的多边形碰撞器都在此时创建
+                                            // 注意：createFromBullet内部已包含初始更新
+                                            polygonCollider = bullet.polygonCollider = CFR.getFactory(PolyFactoryId).createFromBullet(bullet, chainPolyArea);
+                                        }
+                                        // 更新碰撞器（创建时已包含更新，但既有碰撞器需要显式更新）
+                                        polygonCollider.updateFromBullet(bullet, chainPolyArea);
+                                    } else {
+                                        // 对象化联弹（无 area 子剪辑且无 子弹区域area）：
+                                        // 从组碰撞盒数据构造/更新 OBB（扩展方法不在接口内，经无类型引用分发）
+                                        var chainPolyFactory = CFR.getFactory(PolyFactoryId);
+                                        var chainPolyCollider = polygonCollider;
+                                        if(!chainPolyCollider) {
+                                            polygonCollider = bullet.polygonCollider = chainPolyFactory.createFromChainObject(bullet);
+                                        } else {
+                                            chainPolyCollider.updateFromChainObject(bullet);
+                                        }
                                     }
-                                    // 更新碰撞器（创建时已包含更新，但既有碰撞器需要显式更新）
-                                    polygonCollider.updateFromBullet(bullet, bullet.子弹区域area || bullet.area);
                                     isUpdatePolygon = true;
                                 } else {
                                     // 后续命中直接使用已更新的碰撞器

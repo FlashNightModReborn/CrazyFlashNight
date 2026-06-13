@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup;
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.sara.util.*;
 import org.flashNight.neur.Server.*;
@@ -69,6 +70,51 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * 用于aabb碰撞器的碰撞交互介质，缓存避免频繁创建
      */
     public static var AABB:AABB = new AABB(null);
+
+    /**
+     * 对象化联弹边界计算用的可复用坐标点（避免每帧分配）
+     */
+    private static var chainPt:Object = {x: 0, y: 0};
+
+    // ---------- 子弹区域 → gameworld 仿射帧缓存（对象化联弹共享） ----------
+    // localToGlobal/globalToLocal 是 native 方法调用（极重带），旧实现逐弹逐角调用
+    // 每帧可达数十次；该变换对全部对象化联弹相同且帧内恒定，按 帧计时器.当前帧数
+    // 缓存，每帧仅在首个调用方处用 3 个基准点重建一次（6 次 native 调用/帧 → 0/弹）。
+    // PolygonCollider.updateFromChainObject 复用同一缓存，故为 public。
+    public static var zoneFrame:Number = -1;
+    public static var zoneA:Number = 1;
+    public static var zoneB:Number = 0;
+    public static var zoneC:Number = 0;
+    public static var zoneD:Number = 1;
+    public static var zoneTx:Number = 0;
+    public static var zoneTy:Number = 0;
+
+    /**
+     * 重建 子弹区域→gameworld 仿射缓存（每帧至多一次，调用方先做帧戳判别）
+     */
+    public static function refreshChainZoneAffine(frame:Number):Void {
+        zoneFrame = frame;
+        var world:MovieClip = _root.gameworld;
+        var zone:MovieClip = world.子弹区域;
+        var pt:Object = chainPt;
+        pt.x = 0; pt.y = 0;
+        zone.localToGlobal(pt);
+        world.globalToLocal(pt);
+        var t0x:Number = pt.x;
+        var t0y:Number = pt.y;
+        pt.x = 1; pt.y = 0;
+        zone.localToGlobal(pt);
+        world.globalToLocal(pt);
+        zoneA = pt.x - t0x;
+        zoneB = pt.y - t0y;
+        pt.x = 0; pt.y = 1;
+        zone.localToGlobal(pt);
+        world.globalToLocal(pt);
+        zoneC = pt.x - t0x;
+        zoneD = pt.y - t0y;
+        zoneTx = t0x;
+        zoneTy = t0y;
+    }
 
     /**
      * 构造函数，初始化 AABB 的边界坐标。
@@ -295,6 +341,88 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         this.right = cache.right + x_offset;
         this.top = cache.top + y_offset;
         this.bottom = cache.bottom + y_offset;
+    }
+
+    /**
+     * 基于对象化联弹（无 area 子剪辑的纯对象子弹）更新碰撞器边界。
+     *
+     * 等价契约：与 updateFromBullet 的 detectionArea.getRect(_root.gameworld) 语义一致——
+     * 联弹组本地碰撞盒（盒x/盒y/盒宽/盒高，即 area 子剪辑的本地矩形）四角经子弹
+     * 仿射矩阵映射到 子弹区域 坐标，再经 子弹区域→gameworld 转换取轴对齐包围盒。
+     *
+     * 热路径实现（P4，agentsDoc/as2-performance.md）：
+     * • 子弹仿射复用渲染矩阵缓存（group.ma/mb/mc2/md，渲染组维护；
+     *   tick 中组更新先于本调用执行，processQueue 晚于 tick——同帧必为新值，零三角函数）
+     * • 子弹区域→gameworld 用帧缓存仿射（refreshChainZoneAffine），与子弹矩阵一次复合后
+     *   4 角纯算术展开——每弹每帧零 native 调用、零分配
+     *
+     * @param bullet 对象化联弹（携带 chainGroup 组引用，坐标字段与 MC 同名）
+     */
+    public function updateFromChainObject(bullet:Object):Void {
+        var g:ChainGroup = bullet.chainGroup;   // 类型化引用：组字段拼写编译期校验
+
+        var frame:Number = _root.帧计时器.当前帧数;
+        if (AABBCollider.zoneFrame != frame) AABBCollider.refreshChainZoneAffine(frame);
+        var za:Number = AABBCollider.zoneA;
+        var zb:Number = AABBCollider.zoneB;
+        var zc:Number = AABBCollider.zoneC;
+        var zd:Number = AABBCollider.zoneD;
+
+        var ma:Number = g.ma;
+        var mb:Number = g.mb;
+        var mc2:Number = g.mc2;
+        var md:Number = g.md;
+        var bx:Number = bullet._x;
+        var by:Number = bullet._y;
+
+        // 复合矩阵 C = Zone ∘ Bullet（6 乘 4 加），4 角展开复用乘积
+        var ca:Number = za * ma + zc * mb;
+        var cc:Number = za * mc2 + zc * md;
+        var cb:Number = zb * ma + zd * mb;
+        var cd:Number = zb * mc2 + zd * md;
+        var ctx:Number = za * bx + zc * by + AABBCollider.zoneTx;
+        var cty:Number = zb * bx + zd * by + AABBCollider.zoneTy;
+
+        var x0:Number = g.盒x;
+        var x1:Number = x0 + g.盒宽;
+        var y0:Number = g.盒y;
+        var y1:Number = y0 + g.盒高;
+
+        var ax0:Number = ca * x0;
+        var ax1:Number = ca * x1;
+        var cy0:Number = cc * y0;
+        var cy1:Number = cc * y1;
+        var bx0:Number = cb * x0;
+        var bx1:Number = cb * x1;
+        var dy0:Number = cd * y0;
+        var dy1:Number = cd * y1;
+
+        var px:Number = ax0 + cy0 + ctx;
+        var pyv:Number = bx0 + dy0 + cty;
+        var minX:Number = px;
+        var maxX:Number = px;
+        var minY:Number = pyv;
+        var maxY:Number = pyv;
+
+        px = ax1 + cy0 + ctx;
+        if (px < minX) minX = px; else if (px > maxX) maxX = px;
+        pyv = bx1 + dy0 + cty;
+        if (pyv < minY) minY = pyv; else if (pyv > maxY) maxY = pyv;
+
+        px = ax1 + cy1 + ctx;
+        if (px < minX) minX = px; else if (px > maxX) maxX = px;
+        pyv = bx1 + dy1 + cty;
+        if (pyv < minY) minY = pyv; else if (pyv > maxY) maxY = pyv;
+
+        px = ax0 + cy1 + ctx;
+        if (px < minX) minX = px; else if (px > maxX) maxX = px;
+        pyv = bx0 + dy1 + cty;
+        if (pyv < minY) minY = pyv; else if (pyv > maxY) maxY = pyv;
+
+        this.left = minX;
+        this.right = maxX;
+        this.top = minY;
+        this.bottom = maxY;
     }
 
     /**

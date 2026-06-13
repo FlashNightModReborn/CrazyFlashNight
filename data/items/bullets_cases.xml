@@ -177,6 +177,18 @@
         </attribute>
     </bullet>
     <bullet>
+        <name>冰冷子弹</name>
+        <chainUnit>
+            <material>能量</material>
+        </chainUnit>
+    </bullet>
+    <bullet>
+        <name>无壳穿刺子弹</name>
+        <chainUnit>
+            <material>无壳</material>
+        </chainUnit>
+    </bullet>
+    <bullet>
         <name>横向拖尾追踪联弹-普通无壳子弹</name>
         <movement>
             <func>DefaultMissile</func>
@@ -415,6 +427,9 @@
     </bullet>
     <bullet>
         <name>烈焰子弹</name>
+        <chainUnit>
+            <material>加强</material>
+        </chainUnit>
         <shell>
             <casing>加强弹壳</casing>
             <xOffset>60</xOffset>

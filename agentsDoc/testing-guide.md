@@ -39,7 +39,7 @@ chcp.com 65001 | Out-Null
 - **TestLoader（测试构建，带 trace）**：成功 = `[OK] 编译完成` + 本次运行**新鲜生成**的 `scripts/flashlog.txt` + trace 无 `[TEST_FAIL]` 哨兵 + `compiler_errors.txt` `0 个错误`。
 - **asLoader / publish 模式（发布二进制，剔 trace 等功能以免性能损耗）**：**本就不出 trace**——脚本会打 `[INFO] 无 trace 输出 (publish 模式不执行 trace)`，`flashlog.txt` 不刷新属正常，**不要据此判失败**。成功 = `[OK] 编译完成` + `scripts/compiler_errors.txt` 显示 `0 个错误` + `scripts/asLoader.swf` 已刷新（mtime/size 变化）。
 
-公共项：`publish_done.marker` **仅说明 JSFL 触发结束**，不能单独视为成功；必要时核对 `scripts/compile_output.txt`。慢机编译易超过默认窗口（实测 asLoader publish ~77s），`[TIMEOUT]` 后先核对 marker / SWF / `compiler_errors.txt` 是否其实已在超时后产出，再用 `-TimeoutSeconds` 调大重试。
+公共项：`publish_done.marker` **仅说明 JSFL 触发结束**，不能单独视为成功；必要时核对 `scripts/compile_output.txt`。慢机编译易超过默认窗口（实测 asLoader publish ~77s），`[TIMEOUT]` 后先核对 marker / SWF / `compiler_errors.txt` 是否其实已在超时后产出，再用 `-TimeoutSeconds` 调大重试。**新建 .as 类被引用时必须显式 import——含同包引用（2026-06-13 实测）**：CS6 常驻会话的同包隐式解析用陈旧包索引，会话期间新建的类不写 import 会报 `无法加载类或接口'X'` 且无语法错误细节（帧脚本与跨包显式 import 均正常）；修复 = 引用方加显式 import；删 ASO 缓存、重复编译、`fl.quit()` 均无效，BOM 正常 + 帧脚本能加载即可排除内容/编码方向。
 
 **对外表述边界**：
 

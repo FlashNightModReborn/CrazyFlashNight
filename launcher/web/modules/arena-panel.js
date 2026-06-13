@@ -15,9 +15,17 @@
         { id: 'arena-8', index: 8, name: 'DEATH MATCH角斗场', opponentCount: 4, levelMin: 40, levelMax: 60, deposit: 100000, reward: 200000, expr: '#0@40-60%4' }
     ];
 
+    // 竞技场模式（顶部 tab 条，视觉对齐战队界面 .team-tab）。
+    // 当前仅「标准模式」；后续不同玩法在此追加 { id, label }，并在 onModeClick 扩展点接入
+    // 各模式自己的卡片集 / preview 逻辑。结构先就位，避免把模式硬编进单一卡片列表。
+    var ARENA_MODES = [
+        { id: 'standard', label: '标准模式' }
+    ];
+
     // ════════════════════════════════════════════════════════════════════════════
     // 状态
     // ════════════════════════════════════════════════════════════════════════════
+    var _activeMode = 'standard';
     var _el, _shellEl;
     var _scaleHandle = null;   // 沉浸全屏化：PanelScale 句柄
     var _gridViewEl;
@@ -65,14 +73,23 @@
         _el.className = 'arena-panel';
         _el.innerHTML =
             '<div class="arena-header">' +
-                '<h1 class="arena-title">DEATH MATCH角斗场</h1>' +
+                '<span class="arena-title-mark"></span>' +
+                '<div class="arena-title-block">' +
+                    '<h1 class="arena-title">DEATH MATCH</h1>' +
+                    '<span class="arena-subtitle">角斗场 · 生死竞技</span>' +
+                '</div>' +
+                '<div class="arena-header-spacer"></div>' +
                 '<div class="arena-money">' +
-                    '<span class="arena-money-label">当前金钱:</span>' +
+                    '<span class="arena-money-label">金钱</span>' +
                     '<span class="arena-money-value" id="arena-money-value">--</span>' +
                 '</div>' +
                 '<button class="arena-close-btn" type="button" title="关闭" aria-label="关闭" data-audio-cue="cancel">✕</button>' +
             '</div>' +
             '<div class="arena-grid-view" id="arena-grid-view">' +
+                // 模式条：首个 = 标准模式；tab 语言对齐战队界面，后续可扩展不同竞技场模式
+                '<div class="arena-toolbar arena-modebar">' +
+                    '<div class="arena-modes" id="arena-modes">' + buildModeTabs() + '</div>' +
+                '</div>' +
                 '<div class="arena-grid" id="arena-grid"></div>' +
             '</div>' +
             '<div class="arena-detail-view" id="arena-detail-view" hidden>' +
@@ -105,6 +122,11 @@
         _detailRollBtn.addEventListener('click', onRollAgain);
         _detailConfirmBtn.addEventListener('click', onConfirmChallenge);
 
+        var modeTabs = _el.querySelectorAll('.arena-mode-tab');
+        for (var mt = 0; mt < modeTabs.length; mt++) {
+            modeTabs[mt].addEventListener('click', onModeClick);
+        }
+
         buildCards();
 
         if (typeof Icons !== 'undefined') Icons.load(function(){});
@@ -124,41 +146,47 @@
 
         for (var i = 0; i < ARENA_CARDS.length; i++) {
             var card = ARENA_CARDS[i];
+            var diff = difficultyOf(card);
             var cardEl = document.createElement('div');
-            cardEl.className = 'arena-card';
+            // d{1..6} 类驱动 --d-color 难度热度（CSS .arena-card-d* → 顶部色条 + 难度标签色）
+            cardEl.className = 'arena-card arena-card-d' + diff.tier;
             cardEl.dataset.index = i;
             cardEl.innerHTML =
+                '<div class="arena-card-frame"></div>' +
                 '<div class="arena-card-header">' +
-                    '<span class="arena-card-icon">⚠</span>' +
-                    '<span class="arena-card-name">' + escapeHtml(card.name) + '</span>' +
+                    '<span class="arena-card-rank">段位 ' + card.index + '</span>' +
+                    '<span class="arena-card-icon">⚔</span>' +
+                    '<span class="arena-card-diff">' + diff.label + '</span>' +
                 '</div>' +
                 '<div class="arena-card-body">' +
-                    '<div class="arena-card-row">' +
-                        '<span class="arena-card-label">挑战对手数量:</span>' +
-                        '<span class="arena-card-value">' + card.opponentCount + '</span>' +
+                    '<div class="arena-card-stats">' +
+                        '<div class="arena-stat">' +
+                            '<span class="arena-stat-label">对手</span>' +
+                            '<span class="arena-stat-value">×' + card.opponentCount + '</span>' +
+                        '</div>' +
+                        '<div class="arena-stat">' +
+                            '<span class="arena-stat-label">等级</span>' +
+                            '<span class="arena-stat-value">' + card.levelMin + '–' + card.levelMax + '</span>' +
+                        '</div>' +
                     '</div>' +
-                    '<div class="arena-card-row">' +
-                        '<span class="arena-card-label">对手等级:</span>' +
-                        '<span class="arena-card-value">' + card.levelMin + '—' + card.levelMax + '</span>' +
-                    '</div>' +
-                    '<div class="arena-card-row arena-card-deposit">' +
-                        '<span class="arena-card-label">押金:</span>' +
-                        '<span class="arena-card-value">' + formatMoney(card.deposit) + '</span>' +
-                    '</div>' +
-                    '<div class="arena-card-row arena-card-reward">' +
-                        '<span class="arena-card-label">奖金:</span>' +
-                        '<span class="arena-card-value">' + formatMoney(card.reward) + '</span>' +
+                    // 奖金主视觉（金色大字）/ 押金次视觉，回应"押注挑战"的风险-回报心智模型
+                    '<div class="arena-card-prize">' +
+                        '<div class="arena-prize-main">' +
+                            '<span class="arena-prize-label">奖金</span>' +
+                            '<span class="arena-prize-value">' + formatMoney(card.reward) + '</span>' +
+                        '</div>' +
+                        '<div class="arena-prize-deposit">押金 ' + formatMoney(card.deposit) + '</div>' +
                     '</div>' +
                     // 对手摘要 row：snapshot 回包后 batchRequestPreview 触发 8 卡并发抽签，
                     // 单卡回包后 renderCardSummary(cardIdx) 写入下方 span。
-                    '<div class="arena-card-row arena-card-opponents-row">' +
-                        '<span class="arena-card-label">对手:</span>' +
+                    '<div class="arena-card-opponents-row">' +
+                        '<span class="arena-card-opponents-cap">对手阵容</span>' +
                         '<span class="arena-card-opponents arena-card-opponents-loading" id="arena-opp-summary-' + i + '">抽取中…</span>' +
                     '</div>' +
                 '</div>' +
                 // 主+次按钮：主 ⚔ 开始挑战（grid 直入战场，无需进 detail）；次 🔍 查看对手（进 detail 看装备 / 换一批）
                 '<div class="arena-card-actions">' +
-                    '<button class="arena-card-btn arena-card-btn-enter" type="button" data-index="' + i + '" data-audio-cue="confirm">⚔ 开始挑战</button>' +
+                    '<button class="arena-card-btn-enter" type="button" data-index="' + i + '" data-audio-cue="confirm">⚔ 开始挑战</button>' +
                     '<button class="arena-card-btn-detail" type="button" data-index="' + i + '" data-audio-cue="confirm" title="查看对手详情">🔍</button>' +
                 '</div>';
 
@@ -167,6 +195,34 @@
             gridEl.appendChild(cardEl);
             _cardEls.push(cardEl);
         }
+    }
+
+    // 模式 tab 条（对齐战队界面 tab）。首个 = 标准模式 active。
+    function buildModeTabs() {
+        var html = '';
+        for (var i = 0; i < ARENA_MODES.length; i++) {
+            var m = ARENA_MODES[i];
+            var active = (m.id === _activeMode) ? ' arena-mode-tab-active' : '';
+            html += '<button class="arena-mode-tab' + active + '" type="button"' +
+                    ' data-mode="' + escapeAttr(m.id) + '" data-audio-cue="confirm">' +
+                    escapeHtml(m.label) + '</button>';
+        }
+        return html;
+    }
+
+    // 模式切换扩展点：当前仅标准模式（点已 active 的 tab 无操作）。
+    // 后续模式接入时，这里按 _activeMode 重建卡片集 / 重发 batch preview。
+    function onModeClick(e) {
+        if (_busy) return;
+        var btn = e.currentTarget;
+        var mode = btn.getAttribute('data-mode');
+        if (!mode || mode === _activeMode) return;
+        _activeMode = mode;
+        var tabs = _el.querySelectorAll('.arena-mode-tab');
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].classList.toggle('arena-mode-tab-active', tabs[i].getAttribute('data-mode') === mode);
+        }
+        // TODO(模式扩展)：切换后重建该模式的卡片与 preview。标准模式下无额外行为。
     }
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -271,7 +327,7 @@
 
         _activeCardIdx = idx;
 
-        _detailTitleEl.textContent = card.name + ' · 卡片 ' + card.index;
+        _detailTitleEl.textContent = 'DEATH MATCH · 段位 ' + card.index + ' · ' + difficultyOf(card).label;
         _detailMetaEl.innerHTML =
             '<span class="arena-meta-chip">对手 ×' + card.opponentCount + '</span>' +
             '<span class="arena-meta-chip">等级 ' + card.levelMin + '—' + card.levelMax + '</span>' +
@@ -557,7 +613,10 @@
         for (var i = 0; i < opponents.length; i++) {
             var opp = opponents[i];
             html += '<div class="arena-opp-row">';
-            html += '<div class="arena-opp-info">';
+            // 对手暂无头像素材 → 剪影占位（与佣兵卡同源），让对手行有"人"的视觉锚点
+            html += '<div class="arena-opp-portrait arena-opp-portrait-fallback"></div>';
+            html += '<div class="arena-opp-main">';
+            html += '<div class="arena-opp-topline">';
             html += '<span class="arena-opp-name">' + escapeHtml(opp.name) + '</span>';
             html += '<span class="arena-opp-level">LV. ' + opp.level + '</span>';
             html += '</div>';
@@ -593,8 +652,11 @@
                     html += '<div class="arena-equip-cell arena-equip-empty" title="' + escapeAttr(SLOT_LABELS[slot] || '') + '"></div>';
                 }
             }
-            html += '</div>';
-            html += '</div>';
+            html += '</div>'; // equips
+            // 技能行：复用战队-佣兵界面技能成果（烘焙图标 + 占位字 + 等级 + hover tooltip）
+            html += buildOppSkillsHtml(opp.skills);
+            html += '</div>'; // arena-opp-main
+            html += '</div>'; // arena-opp-row
         }
         _detailOpponentsEl.innerHTML = html;
 
@@ -605,6 +667,81 @@
             cells[c].addEventListener('mouseleave', onEquipLeave);
             cells[c].addEventListener('mousemove', onEquipMove);
         }
+        // 技能 hover → tooltip + 烘焙图加载失败回退占位字
+        var skillCells = _detailOpponentsEl.querySelectorAll('.arena-skill-cell[data-skill-name]');
+        for (var sc = 0; sc < skillCells.length; sc++) {
+            skillCells[sc].addEventListener('mouseenter', onSkillHover);
+            skillCells[sc].addEventListener('mouseleave', onSkillLeave);
+            skillCells[sc].addEventListener('mousemove', onEquipMove);
+        }
+        var skillImgs = _detailOpponentsEl.querySelectorAll('.arena-skill-cell-baked .arena-skill-icon');
+        for (var si = 0; si < skillImgs.length; si++) {
+            skillImgs[si].addEventListener('error', onSkillImgError);
+        }
+    }
+
+    // ════════════════════════════════════════════════════════════════════════════
+    // 对手技能渲染（复用 merc 技能图标范式：Icons.resolve 烘焙图 → 占位字回退 → 等级 + tooltip）
+    // 优雅降级：opp.skills == null（AS2 未回传 / 未重编译）→ 整段省略；空数组 → "无技能"。
+    // tooltip 数据走 data-* 属性（避免 HTML 入属性的转义陷阱），hover 时现拼富文本。
+    // ════════════════════════════════════════════════════════════════════════════
+    function buildOppSkillsHtml(skills) {
+        if (skills == null) return '';
+        var inner;
+        if (!skills.length) {
+            inner = '<span class="arena-opp-skills-empty">无技能</span>';
+        } else {
+            inner = '';
+            for (var i = 0; i < skills.length; i++) inner += buildSkillCellHtml(skills[i]);
+        }
+        return '<div class="arena-opp-skills">' +
+                '<span class="arena-opp-skills-cap">技能</span>' +
+                '<div class="arena-opp-skills-flow">' + inner + '</div>' +
+            '</div>';
+    }
+
+    function buildSkillCellHtml(sk) {
+        var name = String(sk.name || '');
+        var level = sk.level || 1;
+        var iconUrl = (name && typeof Icons !== 'undefined') ? Icons.resolve(name) : null;
+        var cls = 'arena-skill-cell' + (iconUrl ? ' arena-skill-cell-baked' : '');
+        var imgHtml = iconUrl ? '<img class="arena-skill-icon" src="' + escapeAttr(iconUrl) + '" alt="">' : '';
+        return '<div class="' + cls + '"' +
+                ' data-skill-name="' + escapeAttr(name) + '"' +
+                ' data-skill-level="' + level + '"' +
+                ' data-skill-type="' + escapeAttr(String(sk.type || '')) + '"' +
+                ' data-skill-trait="' + escapeAttr(String(sk.trait || '')) + '"' +
+                ' data-skill-cd="' + (sk.cooldown || 0) + '"' +
+                ' data-skill-cost="' + (sk.cost || 0) + '">' +
+                '<span class="arena-skill-glyph">' + escapeHtml(String(sk.type || '技').charAt(0)) + '</span>' +
+                imgHtml +
+                '<span class="arena-skill-level">' + level + '</span>' +
+            '</div>';
+    }
+
+    function onSkillHover(e) {
+        var c = e.currentTarget;
+        var type = c.getAttribute('data-skill-type') || '';
+        var trait = c.getAttribute('data-skill-trait') || '';
+        var html = '<div class="kshop-tt-rich"><div class="kshop-tt-desc">' +
+                '<div class="kshop-tt-header"><b>' + escapeHtml(c.getAttribute('data-skill-name') || '') + '</b>' +
+                    ' <span class="kshop-tt-dim">Lv.' + (c.getAttribute('data-skill-level') || '1') + '</span></div>' +
+                '<div class="kshop-tt-dim">' + escapeHtml(type + (trait ? ' · ' + trait : '')) + '</div>' +
+                '<div class="kshop-tt-dim">冷却 ' + (c.getAttribute('data-skill-cd') || '0') + 's · 消耗 ' + (c.getAttribute('data-skill-cost') || '0') + ' MP</div>' +
+            '</div></div>';
+        PanelTooltip.showAtMouse(html, e);
+    }
+
+    function onSkillLeave() {
+        PanelTooltip.hide();
+    }
+
+    // 烘焙图加载失败：移除 img + 去 baked 类（露出占位字 + 还原虚线样式），与 merc 一致
+    function onSkillImgError(e) {
+        var img = e.currentTarget;
+        var cell = img.parentNode;
+        if (cell) cell.classList.remove('arena-skill-cell-baked');
+        if (img.parentNode) img.parentNode.removeChild(img);
     }
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -763,6 +900,19 @@
     function formatMoney(n) {
         if (typeof n !== 'number') return String(n);
         return n.toLocaleString('zh-CN');
+    }
+
+    // 难度档位：按对手最高等级映射「热度」tier（1 安全 → 6 致命）+ 中文段位名。
+    // tier 驱动卡片 .arena-card-d{tier} 类（CSS 决定 --d-color 顶部色条/标签色）。
+    // 8 张卡的 levelMax: 5/10/15/15/20/20/40/60 → 新兵/老兵/精锐×2/王牌×2/传奇/神话。
+    function difficultyOf(card) {
+        var lm = card.levelMax;
+        if (lm <= 5)  return { tier: 1, label: '新兵' };
+        if (lm <= 10) return { tier: 2, label: '老兵' };
+        if (lm <= 15) return { tier: 3, label: '精锐' };
+        if (lm <= 20) return { tier: 4, label: '王牌' };
+        if (lm <= 40) return { tier: 5, label: '传奇' };
+        return { tier: 6, label: '神话' };
     }
 
     function escapeHtml(text) {

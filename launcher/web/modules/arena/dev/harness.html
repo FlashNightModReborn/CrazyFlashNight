@@ -313,6 +313,12 @@
                                     { slot: 8,  raw: '铁甲##二阶',    name: '铁甲', icon: '铁甲', displayname: '铁甲 二阶',     level: eLvl },
                                     { slot: 10, raw: '铁靴',         name: '铁靴', icon: '铁靴', displayname: '铁靴',         level: eLvl },
                                     { slot: 12, raw: 'M14',          name: 'M14',  icon: 'M14',  displayname: 'M14',          level: eLvl }
+                                ],
+                                // 技能 mock（AS2 端由 MercPanelService.buildSkills 回传 {name,level,type,trait,cooldown,cost}）
+                                skills: [
+                                    { name: '瞬步',   level: 1 + (i % 5),       type: '位移', trait: '闪避', cooldown: 8,  cost: 20 },
+                                    { name: '蓄力斩', level: 1 + ((i + 1) % 6), type: '近战', trait: '爆发', cooldown: 12, cost: 35 },
+                                    { name: '战吼',   level: 1 + (i % 3),       type: '增益', trait: '团队', cooldown: 20, cost: 15 }
                                 ]
                             });
                         }

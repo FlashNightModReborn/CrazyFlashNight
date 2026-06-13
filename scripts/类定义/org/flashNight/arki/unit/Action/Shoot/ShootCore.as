@@ -206,11 +206,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             var shootBulletAttrKey:String = config.shootBulletAttrKey;
             var bulletAttr:Object = man[shootBulletAttrKey];
             // _root.发布消息(bulletAttr.子弹种类, bulletAttr.击中地图)
-            // 预置本次射击的精确间隔（毫秒），由 WeaponFireCore.executeShot 同步消费并盖戳到子弹属性。
-            // 仅 opt-in（武器配置 fillrate=auto → 补弹对齐射速）时写入，未配置武器保持旧行为
-            if (bulletAttr.补弹对齐射速) {
-                core.__pendingFireInterval = (effectiveInterval > 0) ? effectiveInterval : shootSpeed;
-            }
+            // 预置本次射击的精确间隔（毫秒），由 WeaponFireCore.executeShot 同步消费并盖戳到子弹属性，
+            // 供纵向联弹按实际射速自适应推导补弹率（含枪械师点按/连按修正）。
+            // 全武器普及（原 fillrate=auto opt-in 已默认化）：每次射击仅一次属性写，
+            // 低射速武器（如磁稳贯穿弹改装后 interval 300ms+）由此获得 <1发/帧 的隔帧补弹节奏
+            core.__pendingFireInterval = (effectiveInterval > 0) ? effectiveInterval : shootSpeed;
             core[shootStateName] = core[shootMethodName](gunRef, bulletAttr);
 
             // 射击成功时设置后摇状态

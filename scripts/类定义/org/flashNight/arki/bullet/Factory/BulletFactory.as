@@ -172,6 +172,13 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             angleRadians = scatteringAngle * (Math.PI / 180),
             bulletInstance;
 
+        // 对象化联弹（P3 去影片剪辑化）：联弹且非透明/射线/单位子弹，
+        // 且前缀（baseAsset）已在对象化模板注册表登记。
+        // 命中 → 纯对象子弹（无 MC 壳，视觉单元体由 ChainUnitManager 共享层承载）；
+        // 删除注册条目即整型回退 MC 壳路径，逐模板可灰度
+        var isChainObject:Boolean = isChain && !isTransparent && !isRay && !isUnitBullet
+            && _root.联弹系统.对象化模板[Obj.baseAsset] != undefined;
+
         // 设置旋转角度
 
         // 优化后的条件判断和角度计算
@@ -183,6 +190,14 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
         // 透明子弹（含射线）使用浅拷贝；FLAG_RAY 已在 BulletTypesetter 中蕴含 FLAG_TRANSPARENCY
         if (isTransparent) {
             bulletInstance = _root.对象浅拷贝(Obj);
+        } else if (isChainObject) {
+            // 对象化联弹：浅拷贝纯对象 + 渲染映射所需的显示属性默认值
+            // （渲染组/碰撞器读取 _xscale/_yscale，单元体继承 _alpha/_visible）
+            bulletInstance = _root.对象浅拷贝(Obj);
+            bulletInstance._xscale = 100;
+            bulletInstance._yscale = 100;
+            bulletInstance._alpha = 100;
+            bulletInstance._visible = true;
         } else if (isUnitBullet) {
             // UnitBullet 挂到 gameWorld（非子弹区域），满足 initializeUnit 的 _parent 校验
             // depth 用 count + 1000000 偏移，避免覆盖 gameworld 现有实例
@@ -246,6 +261,20 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             // 透明子弹（含近战子弹/近战联弹）：单帧检测后立即销毁
             lifecycle = TransparentBulletLifecycle.BASIC;
         }
+        else if (isChainObject) {
+            // 对象化联弹：多帧存活的纯对象子弹，运动绑定与普通子弹一致，
+            // 帧泵/碰撞器/销毁由 ChainObjectLifecycle 提供对象化实现
+            lifecycle = ChainObjectLifecycle.BASIC;
+
+            bulletInstance.xmov = velocity * Math.cos(angleRadians);
+            bulletInstance.ymov = velocity * Math.sin(angleRadians);
+
+            var coMovement:IMovement = MovementSystem.createMovementForBullet(
+                Obj.子弹种类, shooter, speedX, speedY, zyRatio, velocity, Obj._rotation
+            );
+            bulletInstance.updateMovement = Delegate.create1(coMovement, coMovement.updateMovement);
+            bulletInstance.shouldDestroy = Delegate.create1(lifecycle, lifecycle.shouldDestroy);
+        }
         else {
             // 普通子弹（含自定义运动类型）
             lifecycle = NormalBulletLifecycle.BASIC;
@@ -258,6 +287,11 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             );
             bulletInstance.updateMovement = Delegate.create1(movement, movement.updateMovement);
             bulletInstance.shouldDestroy = Delegate.create1(lifecycle, lifecycle.shouldDestroy);
+        }
+
+        // 对象化联弹：先构建单元体组（bindCollider 需读取组碰撞盒字段）
+        if (isChainObject) {
+            _root.联弹系统.对象联弹初始化(bulletInstance);
         }
 
         // 绑定生命周期逻辑

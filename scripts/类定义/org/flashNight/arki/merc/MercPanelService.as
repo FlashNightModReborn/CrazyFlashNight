@@ -538,7 +538,8 @@ class org.flashNight.arki.merc.MercPanelService {
     // seed = 等级 起步 → 名字逐字符 seed*31+charCode → &0x7FFFFFFF，
     // 再走 _root.生成随机人格（确定性 LCG）。不调 计算AI参数（派生参数面板用不到）。
     // ═══════════════════════════════════════════════════════════
-    private static function buildPersonality(mercName:String, mercLevel:Number):Object {
+    // public：角斗场面板 (ArenaPanelService) 复用同一份人格重算，避免「两套种子」漂移
+    public static function buildPersonality(mercName:String, mercLevel:Number):Object {
         var seed:Number = mercLevel;
         for (var i:Number = 0; i < mercName.length; i++) {
             seed = seed * 31 + mercName.charCodeAt(i);
@@ -567,7 +568,8 @@ class org.flashNight.arki.merc.MercPanelService {
     // 未命中时本地重算且【不回写缓存】——若两边实现意外漂移，
     // 不能让面板的展示值污染战斗权威数据。
     // ═══════════════════════════════════════════════════════════
-    private static function buildSkills(mercName:String, mercLevel:Number, merc:Array, personality:Object):Array {
+    // public：角斗场面板 (ArenaPanelService) 复用同一份技能重算（含 _root.技能缓存 命中优先）
+    public static function buildSkills(mercName:String, mercLevel:Number, merc:Array, personality:Object):Array {
         var 技术档位:Number = (personality && personality.技术) ? Math.round(personality.技术 * 4) : 0;
         var 缓存键:String = mercName + "_" + mercLevel + "_t" + 技术档位;
         var learned:Array = _root.技能缓存[缓存键];
