@@ -182,6 +182,18 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/据点M-月面暗道1.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>850</x>
+                <y>260</y>
+                <Identifier>出生点-横向钻头</Identifier>
+                <Parameters>
+                    <_xsacle>150</_xsacle>
+                    <_ysacle>150</_ysacle>
+                    <Offset>100</Offset>
+                </Parameters>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>

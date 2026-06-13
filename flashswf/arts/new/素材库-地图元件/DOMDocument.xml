@@ -13,6 +13,7 @@
           <DOMFolderItem name="出生点-改造僵尸管道" itemID="664b1c32-00000329"/>
           <DOMFolderItem name="出生点-管道" itemID="664cd5f3-00000ab5"/>
           <DOMFolderItem name="出生点-光束发射器" itemID="664b2cdd-00000bcb"/>
+          <DOMFolderItem name="出生点-横向钻头" itemID="6a2d855f-000004f0"/>
           <DOMFolderItem name="出生点-僵尸逆袭封死门" itemID="67e962b4-000004ae"/>
           <DOMFolderItem name="出生点-僵尸逆袭卷帘门" itemID="67e95a71-000002fc"/>
           <DOMFolderItem name="出生点-井盖" itemID="67e956b2-000002c9"/>
@@ -92,6 +93,9 @@
           <Include href="出生点-光束发射器/出生点-光束发射器.xml" itemID="664b2cd9-00000bca" lastModified="1747384529"/>
           <Include href="出生点-光束发射器/元件 2.xml" itemIcon="1" loadImmediate="false" itemID="664b29bb-00000b54" lastModified="1716201915"/>
           <Include href="出生点-光束发射器/元件 3.xml" loadImmediate="false" itemID="664b2abd-00000b5e" lastModified="1716202175"/>
+          <Include href="出生点-横向钻头/出生点-横向钻头.xml" itemID="6a2d83f6-00000381" lastModified="1781368677"/>
+          <Include href="出生点-横向钻头/横向钻头门.xml" itemIcon="1" loadImmediate="false" itemID="6a2d83f1-00000380" lastModified="1781367793"/>
+          <Include href="出生点-横向钻头/横向钻头素材.xml" itemIcon="1" loadImmediate="false" itemID="6a2d83ce-0000037a" lastModified="1781367758"/>
           <Include href="出生点-僵尸逆袭封死门/Symbol 38.xml" itemIcon="1" loadImmediate="false" itemID="67e9548b-00000227" lastModified="1705250426"/>
           <Include href="出生点-僵尸逆袭封死门/Symbol 38 副本.xml" itemIcon="1" loadImmediate="false" itemID="67e95f70-0000033e" lastModified="1743347608"/>
           <Include href="出生点-僵尸逆袭封死门/Symbol 38 副本 2.xml" itemIcon="1" loadImmediate="false" itemID="67e95fac-000003d6" lastModified="1743347661"/>
@@ -197,7 +201,7 @@
           <Include href="生存战素材/Symbol 36.xml" loadImmediate="false" itemID="65c24a9a-00000cdc" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 37.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cdd" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 38.xml" loadImmediate="false" itemID="65c24a9a-00000cde" lastModified="1699960314"/>
-          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1776002494"/>
+          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1781368291"/>
           <Include href="投影召唤器/投影召唤器.xml" itemID="687f5035-00004c64" lastModified="1753238678"/>
           <Include href="投影召唤器element.xml" loadImmediate="false" itemID="68803dd5-0000725e" lastModified="1753235024"/>
           <Include href="投影召唤器底座.xml" itemIcon="1" loadImmediate="false" itemID="68803cfe-00007256" lastModified="1753234686"/>
@@ -1193,6 +1197,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="422684" publishTime="1781368684"/>
+          <PublishItem publishSize="422811" publishTime="1781368193"/>
           <PublishItem publishSize="418809" publishTime="1769712498"/>
           <PublishItem publishSize="418817" publishTime="1769712456"/>
           <PublishItem publishSize="418820" publishTime="1769712291"/>
@@ -1211,7 +1217,5 @@
           <PublishItem publishSize="419111" publishTime="1754994629"/>
           <PublishItem publishSize="419107" publishTime="1754994248"/>
           <PublishItem publishSize="419110" publishTime="1754994240"/>
-          <PublishItem publishSize="419036" publishTime="1754993230"/>
-          <PublishItem publishSize="419887" publishTime="1754968109"/>
      </publishHistory>
 </DOMDocument>
