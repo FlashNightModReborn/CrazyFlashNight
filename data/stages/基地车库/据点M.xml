@@ -1,0 +1,257 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+        <Reward>
+            <Name>抗生素</Name>
+            <AcquisitionProbability>8</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/据点M-街道.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种48</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>800</x>
+                        <y>580</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种49</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>600</x>
+                        <y>440</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种44</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>1000</x>
+                        <y>600</y>
+                        <Parameters>
+                            <汽车炸弹数量>1</汽车炸弹数量>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种45</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                        <Parameters>
+                            <手枪>P90战术版</手枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种48</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                        <Parameters>
+                            <手枪>M79式榴弹发射器</手枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种49</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <Parameters>
+                            <手枪>加强版mp7</手枪>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/据点M-月面保洁.swf</Background>
+            <PlayerX>120</PlayerX>
+            <PlayerY>500</PlayerY>
+        </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>305</x>
+                <y>220</y>
+                <url>flashswf/movies/月面暗门.swf</url>
+            </Instance>
+        </Instances>
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>里面也太空旷……太整洁了。除了一个一无所获的盗贼之外什么都没有。这儿真是情报里提到的据点M？</Text>
+            </Dialogue>
+        </Event>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>-1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种29</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>900</x>
+                        <y>320</y>
+                        <IsHostile>null</IsHostile>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种10</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种401</Type>
+                        <Interval>2500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种393</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种45</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                        <Parameters>
+                            <手枪>P90战术版</手枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种45</Type>
+                        <Interval>2500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种49</Type>
+                        <Interval>4000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                        <Parameters>
+                            <手枪>加强版mp7</手枪>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/据点M-月面暗道1.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种5</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种7</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种8</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种393</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种401</Type>
+                        <Interval>2500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种45</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                        <Parameters>
+                            <手枪>P90战术版</手枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种44</Type>
+                        <Interval>4500</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                    </Enemy>
+                    <Enemy id="7">
+                        <Type>兵种48</Type>
+                        <Interval>6000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

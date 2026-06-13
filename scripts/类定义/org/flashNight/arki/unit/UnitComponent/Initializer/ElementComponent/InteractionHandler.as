@@ -32,7 +32,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
             
             var focusedObject:MovieClip = TargetCacheManager.findHero();
             if (InteractionHandler.canInteract(this, focusedObject)) {
-                this.dispatcher.publish("pickUp", this);
+                this.dispatcher.publish("pickUpBox", this);
             }
         };
         
@@ -40,7 +40,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
     }
     
     /**
-     * 设置拾取处理功能
+     * 设置拾取处理功能，目前用到的只有箱子
      * @param target 要设置的目标MovieClip
      */
     private static function setupPickupHandler(target:MovieClip):Void {
@@ -48,7 +48,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
             InteractionHandler.executePickup(target);
         };
         
-        target.dispatcher.subscribe("pickUp", pickFunc, target);
+        target.dispatcher.subscribe("pickUpBox", pickFunc, target);
     }
     
     /**
