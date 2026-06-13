@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/敌人-触手僵尸" itemID="69d54254-00000739" linkageExportForAS="true" linkageIdentifier="敌人-触手僵尸" lastModified="1779294657" lastUniqueIdentifier="53">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="触手僵尸/敌人-触手僵尸" itemID="69d54254-00000739" linkageExportForAS="true" linkageIdentifier="敌人-触手僵尸" lastModified="1781366843" lastUniqueIdentifier="54">
   <timeline>
-    <DOMTimeline name="敌人-触手僵尸">
+    <DOMTimeline name="敌人-触手僵尸" currentFrame="29">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -537,7 +537,7 @@ x轴保持距离 = 100;
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="触手僵尸/血触手-击飞 合并" selected="true" centerPoint3DX="13.95" centerPoint3DY="-111.4">
+                <DOMSymbolInstance libraryItemName="触手僵尸/血触手-击飞 合并" centerPoint3DX="13.95" centerPoint3DY="-111.4">
                   <matrix>
                     <Matrix a="0.903411865234375" d="0.903411865234375" tx="16.7" ty="-91.75"/>
                   </matrix>
@@ -554,7 +554,7 @@ x轴保持距离 = 100;
             </DOMFrame>
             <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="触手僵尸/血触手-倒地起身 合并" centerPoint3DX="13.7" centerPoint3DY="-111.9">
+                <DOMSymbolInstance libraryItemName="触手僵尸/血触手-倒地起身 合并" selected="true" centerPoint3DX="13.7" centerPoint3DY="-111.9">
                   <matrix>
                     <Matrix a="0.903411865234375" d="0.903411865234375" tx="-1.15" ty="-78.25"/>
                   </matrix>
@@ -591,7 +591,33 @@ x轴保持距离 = 100;
         </DOMLayer>
         <DOMLayer name="影子" color="#9933CC" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="104" keyMode="9728">
+            <DOMFrame index="0" duration="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="86.65" centerPoint3DY="86.65">
+                  <matrix>
+                    <Matrix a="0.511276245117188" d="0.2081298828125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (!_root.是否阴影)
+	{
+		this._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" duration="16" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="阴影" centerPoint3DX="86.65" centerPoint3DY="86.65">
                   <matrix>
