@@ -15,9 +15,17 @@
         { id: 'arena-8', index: 8, name: 'DEATH MATCH角斗场', opponentCount: 4, levelMin: 40, levelMax: 60, deposit: 100000, reward: 200000, expr: '#0@40-60%4' }
     ];
 
+    // 竞技场模式（顶部 tab 条，视觉对齐战队界面 .team-tab）。
+    // 当前仅「标准模式」；后续不同玩法在此追加 { id, label }，并在 onModeClick 扩展点接入
+    // 各模式自己的卡片集 / preview 逻辑。结构先就位，避免把模式硬编进单一卡片列表。
+    var ARENA_MODES = [
+        { id: 'standard', label: '标准模式' }
+    ];
+
     // ════════════════════════════════════════════════════════════════════════════
     // 状态
     // ════════════════════════════════════════════════════════════════════════════
+    var _activeMode = 'standard';
     var _el, _shellEl;
     var _scaleHandle = null;   // 沉浸全屏化：PanelScale 句柄
     var _gridViewEl;
@@ -78,12 +86,9 @@
                 '<button class="arena-close-btn" type="button" title="关闭" aria-label="关闭" data-audio-cue="cancel">✕</button>' +
             '</div>' +
             '<div class="arena-grid-view" id="arena-grid-view">' +
-                // 说明条：解释角斗场押注机制（原版面板零规则说明，是 UX 缺口）
-                '<div class="arena-toolbar">' +
-                    '<span class="arena-status-item">段位 <strong>8</strong></span>' +
-                    '<span class="arena-rule">⚔ 押注挑战 · 全胜取奖金 · 落败失押金</span>' +
-                    '<div class="arena-toolbar-spacer"></div>' +
-                    '<span class="arena-status-item arena-status-hint">对手即时抽取 · 所见即所战</span>' +
+                // 模式条：首个 = 标准模式；tab 语言对齐战队界面，后续可扩展不同竞技场模式
+                '<div class="arena-toolbar arena-modebar">' +
+                    '<div class="arena-modes" id="arena-modes">' + buildModeTabs() + '</div>' +
                 '</div>' +
                 '<div class="arena-grid" id="arena-grid"></div>' +
             '</div>' +
@@ -116,6 +121,11 @@
         _el.querySelector('.arena-detail-back').addEventListener('click', backToGrid);
         _detailRollBtn.addEventListener('click', onRollAgain);
         _detailConfirmBtn.addEventListener('click', onConfirmChallenge);
+
+        var modeTabs = _el.querySelectorAll('.arena-mode-tab');
+        for (var mt = 0; mt < modeTabs.length; mt++) {
+            modeTabs[mt].addEventListener('click', onModeClick);
+        }
 
         buildCards();
 
@@ -185,6 +195,34 @@
             gridEl.appendChild(cardEl);
             _cardEls.push(cardEl);
         }
+    }
+
+    // 模式 tab 条（对齐战队界面 tab）。首个 = 标准模式 active。
+    function buildModeTabs() {
+        var html = '';
+        for (var i = 0; i < ARENA_MODES.length; i++) {
+            var m = ARENA_MODES[i];
+            var active = (m.id === _activeMode) ? ' arena-mode-tab-active' : '';
+            html += '<button class="arena-mode-tab' + active + '" type="button"' +
+                    ' data-mode="' + escapeAttr(m.id) + '" data-audio-cue="confirm">' +
+                    escapeHtml(m.label) + '</button>';
+        }
+        return html;
+    }
+
+    // 模式切换扩展点：当前仅标准模式（点已 active 的 tab 无操作）。
+    // 后续模式接入时，这里按 _activeMode 重建卡片集 / 重发 batch preview。
+    function onModeClick(e) {
+        if (_busy) return;
+        var btn = e.currentTarget;
+        var mode = btn.getAttribute('data-mode');
+        if (!mode || mode === _activeMode) return;
+        _activeMode = mode;
+        var tabs = _el.querySelectorAll('.arena-mode-tab');
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].classList.toggle('arena-mode-tab-active', tabs[i].getAttribute('data-mode') === mode);
+        }
+        // TODO(模式扩展)：切换后重建该模式的卡片与 preview。标准模式下无额外行为。
     }
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -577,7 +615,8 @@
             html += '<div class="arena-opp-row">';
             // 对手暂无头像素材 → 剪影占位（与佣兵卡同源），让对手行有"人"的视觉锚点
             html += '<div class="arena-opp-portrait arena-opp-portrait-fallback"></div>';
-            html += '<div class="arena-opp-info">';
+            html += '<div class="arena-opp-main">';
+            html += '<div class="arena-opp-topline">';
             html += '<span class="arena-opp-name">' + escapeHtml(opp.name) + '</span>';
             html += '<span class="arena-opp-level">LV. ' + opp.level + '</span>';
             html += '</div>';
@@ -613,8 +652,11 @@
                     html += '<div class="arena-equip-cell arena-equip-empty" title="' + escapeAttr(SLOT_LABELS[slot] || '') + '"></div>';
                 }
             }
-            html += '</div>';
-            html += '</div>';
+            html += '</div>'; // equips
+            // 技能行：复用战队-佣兵界面技能成果（烘焙图标 + 占位字 + 等级 + hover tooltip）
+            html += buildOppSkillsHtml(opp.skills);
+            html += '</div>'; // arena-opp-main
+            html += '</div>'; // arena-opp-row
         }
         _detailOpponentsEl.innerHTML = html;
 
@@ -625,6 +667,81 @@
             cells[c].addEventListener('mouseleave', onEquipLeave);
             cells[c].addEventListener('mousemove', onEquipMove);
         }
+        // 技能 hover → tooltip + 烘焙图加载失败回退占位字
+        var skillCells = _detailOpponentsEl.querySelectorAll('.arena-skill-cell[data-skill-name]');
+        for (var sc = 0; sc < skillCells.length; sc++) {
+            skillCells[sc].addEventListener('mouseenter', onSkillHover);
+            skillCells[sc].addEventListener('mouseleave', onSkillLeave);
+            skillCells[sc].addEventListener('mousemove', onEquipMove);
+        }
+        var skillImgs = _detailOpponentsEl.querySelectorAll('.arena-skill-cell-baked .arena-skill-icon');
+        for (var si = 0; si < skillImgs.length; si++) {
+            skillImgs[si].addEventListener('error', onSkillImgError);
+        }
+    }
+
+    // ════════════════════════════════════════════════════════════════════════════
+    // 对手技能渲染（复用 merc 技能图标范式：Icons.resolve 烘焙图 → 占位字回退 → 等级 + tooltip）
+    // 优雅降级：opp.skills == null（AS2 未回传 / 未重编译）→ 整段省略；空数组 → "无技能"。
+    // tooltip 数据走 data-* 属性（避免 HTML 入属性的转义陷阱），hover 时现拼富文本。
+    // ════════════════════════════════════════════════════════════════════════════
+    function buildOppSkillsHtml(skills) {
+        if (skills == null) return '';
+        var inner;
+        if (!skills.length) {
+            inner = '<span class="arena-opp-skills-empty">无技能</span>';
+        } else {
+            inner = '';
+            for (var i = 0; i < skills.length; i++) inner += buildSkillCellHtml(skills[i]);
+        }
+        return '<div class="arena-opp-skills">' +
+                '<span class="arena-opp-skills-cap">技能</span>' +
+                '<div class="arena-opp-skills-flow">' + inner + '</div>' +
+            '</div>';
+    }
+
+    function buildSkillCellHtml(sk) {
+        var name = String(sk.name || '');
+        var level = sk.level || 1;
+        var iconUrl = (name && typeof Icons !== 'undefined') ? Icons.resolve(name) : null;
+        var cls = 'arena-skill-cell' + (iconUrl ? ' arena-skill-cell-baked' : '');
+        var imgHtml = iconUrl ? '<img class="arena-skill-icon" src="' + escapeAttr(iconUrl) + '" alt="">' : '';
+        return '<div class="' + cls + '"' +
+                ' data-skill-name="' + escapeAttr(name) + '"' +
+                ' data-skill-level="' + level + '"' +
+                ' data-skill-type="' + escapeAttr(String(sk.type || '')) + '"' +
+                ' data-skill-trait="' + escapeAttr(String(sk.trait || '')) + '"' +
+                ' data-skill-cd="' + (sk.cooldown || 0) + '"' +
+                ' data-skill-cost="' + (sk.cost || 0) + '">' +
+                '<span class="arena-skill-glyph">' + escapeHtml(String(sk.type || '技').charAt(0)) + '</span>' +
+                imgHtml +
+                '<span class="arena-skill-level">' + level + '</span>' +
+            '</div>';
+    }
+
+    function onSkillHover(e) {
+        var c = e.currentTarget;
+        var type = c.getAttribute('data-skill-type') || '';
+        var trait = c.getAttribute('data-skill-trait') || '';
+        var html = '<div class="kshop-tt-rich"><div class="kshop-tt-desc">' +
+                '<div class="kshop-tt-header"><b>' + escapeHtml(c.getAttribute('data-skill-name') || '') + '</b>' +
+                    ' <span class="kshop-tt-dim">Lv.' + (c.getAttribute('data-skill-level') || '1') + '</span></div>' +
+                '<div class="kshop-tt-dim">' + escapeHtml(type + (trait ? ' · ' + trait : '')) + '</div>' +
+                '<div class="kshop-tt-dim">冷却 ' + (c.getAttribute('data-skill-cd') || '0') + 's · 消耗 ' + (c.getAttribute('data-skill-cost') || '0') + ' MP</div>' +
+            '</div></div>';
+        PanelTooltip.showAtMouse(html, e);
+    }
+
+    function onSkillLeave() {
+        PanelTooltip.hide();
+    }
+
+    // 烘焙图加载失败：移除 img + 去 baked 类（露出占位字 + 还原虚线样式），与 merc 一致
+    function onSkillImgError(e) {
+        var img = e.currentTarget;
+        var cell = img.parentNode;
+        if (cell) cell.classList.remove('arena-skill-cell-baked');
+        if (img.parentNode) img.parentNode.removeChild(img);
     }
 
     // ════════════════════════════════════════════════════════════════════════════

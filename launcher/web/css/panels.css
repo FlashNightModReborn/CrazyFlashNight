@@ -7962,37 +7962,42 @@ html.perf-low-effects .map-panel-close-btn:hover {
     background: rgba(226,80,62,0.18);
 }
 
-/* ── 工具/说明条（仅 grid 视图，42px，对齐 merc-toolbar）── */
+/* ── 模式条（仅 grid 视图，42px；tab 下划线语言对齐战队界面 .team-tab）──
+   首个 = 标准模式 active；后续不同竞技场模式在此追加 tab（见 arena-panel.js ARENA_MODES）。 */
 .arena-toolbar {
     flex-shrink: 0;
     height: 42px;
     display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 0 22px;
+    align-items: stretch;
+    padding: 0 18px;
     background: rgba(255,255,255,0.015);
     border-bottom: 1px solid rgba(255,255,255,0.04);
 }
-.arena-status-item {
-    font-size: 12px;
+.arena-modes {
+    display: flex;
+    align-self: stretch;
+    gap: 2px;
+}
+.arena-mode-tab {
+    min-width: 92px;
+    padding: 0 18px;
+    border: 0;
+    border-bottom: 3px solid transparent;
     color: var(--arena-text-dim);
-    letter-spacing: 0.5px;
-    display: inline-flex;
-    align-items: baseline;
-    gap: 5px;
-    white-space: nowrap;
+    background: transparent;
+    font-family: "思源宋体 CN Heavy", "Source Han Serif CN", serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: color 0.14s, background 0.14s, border-color 0.14s;
 }
-.arena-status-item strong { color: var(--arena-accent); font-size: 14px; font-weight: 700; }
-.arena-rule {
-    font-size: 12px;
-    color: var(--arena-text-mute);
-    letter-spacing: 1px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.arena-mode-tab:hover { color: #f0d7bd; background: rgba(239,148,66,0.06); }
+.arena-mode-tab-active {
+    color: var(--arena-accent-2);
+    border-bottom-color: var(--arena-accent);
+    background: rgba(239,148,66,0.1);
 }
-.arena-toolbar-spacer { flex: 1; }
-.arena-status-hint { color: var(--arena-text-mute); }
 
 /* ── 卡片网格（4×2，固定画布内）── */
 .arena-grid {
@@ -8469,9 +8474,9 @@ html.perf-low-effects .map-panel-close-btn:hover {
 
 .arena-opp-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
-    padding: 10px 12px;
+    padding: 11px 12px;
     background: var(--arena-stone-soft);
     border: 1px solid rgba(255,255,255,0.07);
     border-radius: var(--arena-radius);
@@ -8508,13 +8513,15 @@ html.perf-low-effects .map-panel-close-btn:hover {
     background: #403b35;
 }
 
-.arena-opp-info {
+/* 对手卡右侧主区（纵向：名称行 → 装备行 → 技能行） */
+.arena-opp-main {
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    min-width: 92px;
-    flex-shrink: 0;
+    gap: 8px;
 }
+.arena-opp-topline { display: flex; align-items: baseline; gap: 8px; }
 
 .arena-opp-name {
     font-size: 14px;
@@ -8532,9 +8539,88 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .arena-opp-equips {
     display: flex;
     gap: 4px;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+/* ── 对手技能流（复用佣兵技能图标范式：烘焙图实线 / 占位字虚线，规格同装备格 32px）── */
+.arena-opp-skills {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.arena-opp-skills-cap {
+    font-size: 10px;
+    color: var(--arena-text-mute);
+    letter-spacing: 2px;
+    flex-shrink: 0;
+    line-height: 32px;
+}
+.arena-opp-skills-flow {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
     flex: 1;
     min-width: 0;
+}
+.arena-opp-skills-empty {
+    font-size: 11px;
+    color: var(--arena-text-mute);
+    letter-spacing: 1px;
+    line-height: 32px;
+}
+.arena-skill-cell {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    cursor: help;
+    border-radius: 3px;
+    border: 1px dashed rgba(239,148,66,0.30);
+    background: rgba(239,148,66,0.05);
+    transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+.arena-skill-cell:hover {
+    border-color: rgba(239,148,66,0.6);
+    box-shadow: 0 0 6px rgba(239,148,66,0.25);
+}
+/* 命中烘焙图：实线 + 暗底（与装备格一致），虚线仅留给占位回退 */
+.arena-skill-cell-baked {
+    border-style: solid;
+    border-color: rgba(255,255,255,0.12);
+    background: rgba(0,0,0,0.4);
+}
+.arena-skill-icon {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+.arena-skill-glyph {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(239,148,66,0.75);
+    pointer-events: none;
+}
+.arena-skill-level {
+    position: absolute;
+    right: 1px;
+    bottom: 0;
+    font-size: 9px;
+    line-height: 1;
+    color: var(--arena-accent);
+    background: rgba(0,0,0,0.7);
+    padding: 1px 2px;
+    border-radius: 2px;
+    pointer-events: none;
+    font-weight: 600;
 }
 
 .arena-equip-cell {
@@ -8631,6 +8717,17 @@ html.perf-low-effects .map-panel-close-btn:hover {
     cursor: not-allowed;
     letter-spacing: 1px;
 }
+
+/* ── 滚动条（对齐 merc/task 面板：战术橙细条，取代浏览器默认灰条）──
+   两处滚动区：grid 视图卡片网格 + detail 视图对手列表（加技能行后更易触发滚动）。 */
+.arena-grid::-webkit-scrollbar,
+.arena-opponents::-webkit-scrollbar { width: 10px; }
+.arena-grid::-webkit-scrollbar-track,
+.arena-opponents::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+.arena-grid::-webkit-scrollbar-thumb,
+.arena-opponents::-webkit-scrollbar-thumb { background: rgba(239,148,66,0.25); }
+.arena-grid::-webkit-scrollbar-thumb:hover,
+.arena-opponents::-webkit-scrollbar-thumb:hover { background: rgba(239,148,66,0.5); }
 
 /* ── Tooltip 复用 flash-tt-* 布局原语（PanelTooltip.buildItemRichHtml）；
    arena-tt-rich/intel-tt-rich 是 "本面板上下文" 语义类，按设计系统约定
