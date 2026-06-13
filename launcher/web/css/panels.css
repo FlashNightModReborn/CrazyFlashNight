@@ -8011,6 +8011,14 @@ html.perf-low-effects .map-panel-close-btn:hover {
     align-content: stretch;
     min-height: 0;
 }
+/* 卡片数超过单屏（如堕落模式 18 张势力卡）：改顶部对齐的滚动布局，行高随内容、超出滚动。
+   不再用 2 行 1fr stretch（那是 8 卡铺满设计，多卡时顶部行会被压成只剩标题条 → 无法操作）。
+   行高由卡片内容决定（与标准卡同构 ≈ 等高），列数维持 4，纵向滚动浏览全部势力挑战。 */
+.arena-grid.arena-grid-scroll {
+    grid-template-rows: none;
+    grid-auto-rows: min-content;
+    align-content: start;
+}
 
 /* ── 单张卡片：大理石石板 + 4 角 L 框 + 悬停抬升/扫光 ── */
 .arena-card {
@@ -8678,6 +8686,40 @@ html.perf-low-effects .map-panel-close-btn:hover {
     font-size: 13px;
     color: #888;
     font-weight: 600;
+}
+
+/* ── 元战队（非人形怪）混入：紫罗兰强调区分人形 merc 卡（堕落/异界感）── */
+.arena-card-monster .arena-card-opponents-cap { color: #d98cff; }
+.arena-card-monster .arena-card-opponents-cap::after {
+    background: linear-gradient(90deg, rgba(217,140,255,0.3), transparent);
+}
+.arena-card-monster .arena-card-frame { --bk-c: rgba(217,140,255,0.45); }
+.arena-card-monster:hover .arena-card-frame { --bk-c: rgba(228,170,255,0.85); }
+.arena-card-monster .arena-card-opponents { color: #c9a9dd; }
+
+/* 堕落模式（Phase 2）势力挑战卡：rank 槽 = 势力名（卡片身份），紫罗兰强调 + 略大字号 */
+.arena-card-rank-faction {
+    color: #e0b6ff;
+    font-size: 14px;
+    text-shadow: 0 0 8px rgba(217,140,255,0.35);
+}
+
+/* 怪物对手行（detail，简版：无装备/技能） */
+.arena-opp-portrait-monster.arena-opp-portrait-fallback::before { background: #5a4a6e; }
+.arena-opp-portrait-monster.arena-opp-portrait-fallback::after { background: #4e4060; }
+.arena-opp-monster-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    color: #d98cff;
+    background: rgba(217,140,255,0.12);
+    border: 1px solid rgba(217,140,255,0.35);
+    padding: 0 6px; line-height: 16px;
+    border-radius: var(--arena-radius-sm);
+}
+.arena-opp-monster-note {
+    font-size: 11px;
+    color: var(--arena-text-mute);
+    letter-spacing: 0.5px;
+    margin-top: 4px;
 }
 
 .arena-detail-footer {

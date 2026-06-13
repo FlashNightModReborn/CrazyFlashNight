@@ -97,8 +97,11 @@
         noop);
 
     // ── arena ──
+    // arena-meta-rosters.js 先于 panel 载入：提供非人形怪势力 roster（M2 元战队混入采样源，
+    // 由 tools/derive-arena-meta-teams.js 派生）。缺失时 arena-panel.js 退化为全 merc。
     Panels.registerLazy('arena',
-        ['modules/arena-panel.js'],
+        ['modules/arena-meta-rosters.js',
+         'modules/arena-panel.js'],
         noop);
 
     // ── team (战队：佣兵 / 伙伴 / 战宠 / 机械) ──

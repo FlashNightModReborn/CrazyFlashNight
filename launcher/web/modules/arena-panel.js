@@ -19,13 +19,26 @@
     // 当前仅「标准模式」；后续不同玩法在此追加 { id, label }，并在 onModeClick 扩展点接入
     // 各模式自己的卡片集 / preview 逻辑。结构先就位，避免把模式硬编进单一卡片列表。
     var ARENA_MODES = [
-        { id: 'standard', label: '标准模式' }
+        { id: 'standard', label: '标准模式' },
+        // 堕落模式（Phase 2）：势力主题固定挑战。每张卡 = 一个势力，对手全部从该势力 roster
+        // 采样非人形怪（复用 Phase1 的 roster 入场通路，AS2 零改动——合成 expr 只为过校验）。
+        // 需 arena-meta-rosters.js 已载（rostersAvailable）才显示该 tab；
+        // QA harness 未载 → buildModeTabs 跳过本项 → 仅标准模式，行为/卡数不变。
+        { id: 'fallen', label: '堕落模式', requiresRosters: true },
+        // 爬升模式（Phase 3）：势力主题无限爬升 + 奖池押注（拿钱/续战走战斗内压力板位置决策）。
+        // 复用势力卡（与堕落同源），进场发 mode="escalation" + 该势力单位池；战斗循环全在 AS2 自管。
+        { id: 'escalation', label: '爬升模式', requiresRosters: true }
     ];
+
+    // 堕落模式卡片派生参数（业务可调）。
+    var FALLEN_MIN_UNITS = 4;     // 势力 roster 单位数门槛（剔单例 boss/误分类势力，如 联合大学/斯巴达）
+    var FALLEN_BAND_WINDOW = 15;  // 精英窗口：取势力顶端 N 级为挑战带，避免 1-60 这种跨度让挑战失焦
 
     // ════════════════════════════════════════════════════════════════════════════
     // 状态
     // ════════════════════════════════════════════════════════════════════════════
     var _activeMode = 'standard';
+    var _activeCards = ARENA_CARDS; // 当前模式的卡片集（标准=ARENA_CARDS；堕落=buildFallenCards()）；rebuildForMode 切换
     var _el, _shellEl;
     var _scaleHandle = null;   // 沉浸全屏化：PanelScale 句柄
     var _gridViewEl;
@@ -54,6 +67,14 @@
     var _previewCache = {};       // cardIdx → opponents[]（成功时填入）
     var _previewPending = {};     // cardIdx → reqId（dedup：pending 中不重发）
     var _previewError = {};       // cardIdx → error string（失败 → 摘要显示"加载失败 ↻"）
+    // ── 元战队（非人形怪）混入（M2 / 堕落模式雏形）──
+    // 每卡每次抽取先决定种类（merc / monster）。monster 走 web 本地 roster 采样（无 AS2 preview 往返），
+    // enter 时把采样小队作为 roster 下发 AS2（commitRoster 生成非人形怪）。
+    // 数据源 window.ArenaMetaRosters（arena-meta-rosters.js，由 derive-arena-meta-teams.js 派生）；
+    // 未载入（如 QA harness）时 sampleMonsterSquad 恒返回 null → 全卡 merc，旧行为不变。
+    var _cardKind = {};       // cardIdx → 'merc' | 'monster'
+    var _monsterSquad = {};   // cardIdx → { faction, opponents:[{name,level,type,spritename,isMonster:true}] }
+    var _mixChance = 0.35;    // 单卡判为怪物小队的概率（setMixChance 可调，QA/截图注入用）
 
     // ════════════════════════════════════════════════════════════════════════════
     // Panel 注册
@@ -143,18 +164,27 @@
         var gridEl = _el.querySelector('#arena-grid');
         gridEl.innerHTML = '';
         _cardEls = [];
+        // 卡片多于单屏（>8，如堕落模式 18 张）→ 切顶部对齐的滚动布局；否则维持 8 卡铺满（标准模式不变）
+        gridEl.classList.toggle('arena-grid-scroll', _activeCards.length > 8);
 
-        for (var i = 0; i < ARENA_CARDS.length; i++) {
-            var card = ARENA_CARDS[i];
+        for (var i = 0; i < _activeCards.length; i++) {
+            var card = _activeCards[i];
             var diff = difficultyOf(card);
+            var isFallen = !!card.isFallen;
             var cardEl = document.createElement('div');
-            // d{1..6} 类驱动 --d-color 难度热度（CSS .arena-card-d* → 顶部色条 + 难度标签色）
-            cardEl.className = 'arena-card arena-card-d' + diff.tier;
+            // d{1..6} 类驱动 --d-color 难度热度（CSS .arena-card-d* → 顶部色条 + 难度标签色）。
+            // 堕落卡恒非人形 → 建卡即上 arena-card-monster（紫罗兰），不等采样回调。
+            cardEl.className = 'arena-card arena-card-d' + diff.tier + (isFallen ? ' arena-card-monster' : '');
             cardEl.dataset.index = i;
+            // 标准卡 rank = 段位号；堕落卡 rank = 势力名（卡片身份）+ 阵容 cap 改「麾下阵容」
+            var rankHtml = isFallen
+                ? '<span class="arena-card-rank arena-card-rank-faction">' + escapeHtml(card.faction) + '</span>'
+                : '<span class="arena-card-rank">段位 ' + card.index + '</span>';
+            var oppCapText = isFallen ? '麾下阵容' : '对手阵容';
             cardEl.innerHTML =
                 '<div class="arena-card-frame"></div>' +
                 '<div class="arena-card-header">' +
-                    '<span class="arena-card-rank">段位 ' + card.index + '</span>' +
+                    rankHtml +
                     '<span class="arena-card-icon">⚔</span>' +
                     '<span class="arena-card-diff">' + diff.label + '</span>' +
                 '</div>' +
@@ -180,7 +210,7 @@
                     // 对手摘要 row：snapshot 回包后 batchRequestPreview 触发 8 卡并发抽签，
                     // 单卡回包后 renderCardSummary(cardIdx) 写入下方 span。
                     '<div class="arena-card-opponents-row">' +
-                        '<span class="arena-card-opponents-cap">对手阵容</span>' +
+                        '<span class="arena-card-opponents-cap">' + oppCapText + '</span>' +
                         '<span class="arena-card-opponents arena-card-opponents-loading" id="arena-opp-summary-' + i + '">抽取中…</span>' +
                     '</div>' +
                 '</div>' +
@@ -197,11 +227,18 @@
         }
     }
 
-    // 模式 tab 条（对齐战队界面 tab）。首个 = 标准模式 active。
+    // 元战队 roster 数据是否就绪（arena-meta-rosters.js 已载）。
+    // 决定堕落模式 tab 是否显示 + 怪物采样是否可行。QA harness 未载 → 恒 false。
+    function rostersAvailable() {
+        return (typeof window !== 'undefined') && !!window.ArenaMetaRosters && !!window.ArenaMetaRosters.factions;
+    }
+
+    // 模式 tab 条（对齐战队界面 tab）。requiresRosters 的模式仅在数据就绪时出现。
     function buildModeTabs() {
         var html = '';
         for (var i = 0; i < ARENA_MODES.length; i++) {
             var m = ARENA_MODES[i];
+            if (m.requiresRosters && !rostersAvailable()) continue;
             var active = (m.id === _activeMode) ? ' arena-mode-tab-active' : '';
             html += '<button class="arena-mode-tab' + active + '" type="button"' +
                     ' data-mode="' + escapeAttr(m.id) + '" data-audio-cue="confirm">' +
@@ -210,19 +247,120 @@
         return html;
     }
 
-    // 模式切换扩展点：当前仅标准模式（点已 active 的 tab 无操作）。
-    // 后续模式接入时，这里按 _activeMode 重建卡片集 / 重发 batch preview。
+    // 模式切换：重建该模式的卡片集 + 清空全部 per-card 状态（卡 index 含义随模式变，旧 cache 失效），
+    // 重发 batch preview（snapshot 已到才发；未到则由 snapshot 回调按当前 _activeCards 补发）。
     function onModeClick(e) {
         if (_busy) return;
         var btn = e.currentTarget;
         var mode = btn.getAttribute('data-mode');
         if (!mode || mode === _activeMode) return;
+        rebuildForMode(mode);
+        if (_snapshot) batchRequestPreview();
+    }
+
+    // 按模式重建卡片集与 DOM，并复位 per-card 派生状态。不发请求（caller 决定何时 batch）。
+    function rebuildForMode(mode) {
         _activeMode = mode;
-        var tabs = _el.querySelectorAll('.arena-mode-tab');
+        _activeCards = (mode === 'fallen') ? buildFallenCards()
+                     : (mode === 'escalation') ? buildEscalationCards()
+                     : ARENA_CARDS;
+        // 切模式让所有卡 index 重新映射 → 旧 preview/kind/squad 缓存全部作废，避免跨模式串卡
+        _previewCache = {};
+        _previewPending = {};
+        _previewError = {};
+        _cardKind = {};
+        _monsterSquad = {};
+        _activeCardIdx = -1;
+        _previewOpponents = null;
+        // tab active 态
+        var tabs = _el ? _el.querySelectorAll('.arena-mode-tab') : [];
         for (var i = 0; i < tabs.length; i++) {
             tabs[i].classList.toggle('arena-mode-tab-active', tabs[i].getAttribute('data-mode') === mode);
         }
-        // TODO(模式扩展)：切换后重建该模式的卡片与 preview。标准模式下无额外行为。
+        buildCards();       // 重建 grid DOM（_activeCards 驱动）+ 重挂卡片按钮监听 + 摘要回 loading 态
+        showGridView();
+        updateCardStates();
+    }
+
+    // 堕落模式卡片派生：每个合格势力 → 一张「精英挑战」卡。
+    // 等级带取势力顶端 FALLEN_BAND_WINDOW 级（精英窗口）；对手数随等级档 4~6；
+    // 押金/奖金按 等级×人数 线性派生（业务可调）。合成 expr 仅为过 AS2 handleEnter 的非空校验，
+    // roster 分支不消费它（生成走 _root.角斗场roster阵容）。
+    function buildFallenCards() {
+        var factions = rostersAvailable() ? window.ArenaMetaRosters.factions : null;
+        if (!factions) return [];
+        var cards = [];
+        for (var name in factions) {
+            var units = factions[name].units || [];
+            if (units.length < FALLEN_MIN_UNITS) continue;
+            var lo = 99999, hi = 0;
+            for (var u = 0; u < units.length; u++) {
+                if (units[u].minLevel < lo) lo = units[u].minLevel;
+                if (units[u].maxLevel > hi) hi = units[u].maxLevel;
+            }
+            if (hi <= 0) continue;
+            var levelMin = Math.max(lo, hi - FALLEN_BAND_WINDOW);
+            var levelMax = hi;
+            var count = clampInt(3 + Math.floor(levelMax / 25), 4, 6); // 45~60→4~5；100→6
+            var reward = roundTo(levelMax * count * 800, 1000);
+            var deposit = roundTo(reward * 0.4, 1000);
+            cards.push({
+                id: 'fallen-' + name,
+                faction: name,
+                isFallen: true,
+                name: 'DEATH MATCH角斗场',
+                opponentCount: count,
+                levelMin: levelMin,
+                levelMax: levelMax,
+                deposit: deposit,
+                reward: reward,
+                expr: '#0@' + levelMin + '-' + levelMax + '%' + count
+            });
+        }
+        // 按挑战带升序 → grid 呈现难度递进
+        cards.sort(function(a, b) { return (a.levelMin - b.levelMin) || (a.levelMax - b.levelMax); });
+        return cards;
+    }
+
+    function clampInt(v, lo, hi) { v = Math.round(v); return v < lo ? lo : (v > hi ? hi : v); }
+    function roundTo(v, step) { return Math.max(step, Math.round(v / step) * step); }
+
+    // 爬升模式卡片（Phase 3）：与堕落卡同源（每势力一张），但带 isEscalation 标记。
+    // 卡面/预览复用堕落（isFallen=true → 紫罗兰 + 起始波小队采样预览）；差异仅在进场 payload：
+    // opponentCount/levelMin/levelMax 作为「起始波」基准，AS2 据该势力单位池逐波爬升。
+    function buildEscalationCards() {
+        var base = buildFallenCards();
+        var out = [];
+        for (var i = 0; i < base.length; i++) {
+            var c = base[i];
+            out.push({
+                id: 'esc-' + c.faction,
+                faction: c.faction,
+                isFallen: true,        // 复用堕落卡视觉 + 怪物预览
+                isEscalation: true,    // 进场走爬升分叉
+                name: c.name,
+                opponentCount: c.opponentCount,
+                levelMin: c.levelMin,
+                levelMax: c.levelMax,
+                deposit: c.deposit,
+                reward: c.reward,
+                expr: c.expr
+            });
+        }
+        return out;
+    }
+
+    // 取某势力完整单位池（{type,minLevel,maxLevel,weight}）下发给 AS2 逐波采样。
+    function factionPool(faction) {
+        var factions = rostersAvailable() ? window.ArenaMetaRosters.factions : null;
+        if (!factions || !factions[faction]) return [];
+        var units = factions[faction].units || [];
+        var pool = [];
+        for (var i = 0; i < units.length; i++) {
+            var u = units[i];
+            pool.push({ type: u.type, minLevel: u.minLevel, maxLevel: u.maxLevel, weight: u.weight });
+        }
+        return pool;
     }
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -243,20 +381,15 @@
         _previewCache = {};
         _previewPending = {};
         _previewError = {};
-        // 重置所有 grid 摘要回 loading 态（避免 reopen 时残留上次 cache 的文本）
-        for (var k = 0; k < ARENA_CARDS.length; k++) {
-            var sumEl = document.getElementById('arena-opp-summary-' + k);
-            if (sumEl) {
-                sumEl.className = 'arena-card-opponents arena-card-opponents-loading';
-                sumEl.textContent = '抽取中…';
-            }
-        }
+        _cardKind = {};
+        _monsterSquad = {};
         // initData.difficulty 来自 stage-select 重定向；dev 模式 ARENA_TEST 直开时为 ""
         _initDifficulty = (initData && initData.difficulty) ? String(initData.difficulty) : '';
         hideToast();
         updateMoneyDisplay(null);
-        updateCardStates();
-        showGridView();
+        // 每次打开复位到标准模式：重建标准卡 DOM（摘要回 loading）+ 清缓存 + tab active 态 + 显示 grid。
+        // 上次会话可能停在堕落模式；DOM 跨 open/close 复用，必须重建回标准（否则残留堕落卡）。
+        rebuildForMode('standard');
         requestSnapshot();
     }
 
@@ -286,6 +419,8 @@
         _previewCache = {};
         _previewPending = {};
         _previewError = {};
+        _cardKind = {};
+        _monsterSquad = {};
         _initDifficulty = '';
         PanelTooltip.hide();
         hideToast();
@@ -322,12 +457,16 @@
         // currentTarget = 绑事件的 button 自身；target 在 button 内含子元素时可能是 textNode
         var btn = e.currentTarget || e.target;
         var idx = parseInt(btn.dataset.index, 10);
-        var card = ARENA_CARDS[idx];
+        var card = _activeCards[idx];
         if (!card) return;
 
         _activeCardIdx = idx;
 
-        _detailTitleEl.textContent = 'DEATH MATCH · 段位 ' + card.index + ' · ' + difficultyOf(card).label;
+        _detailTitleEl.textContent = card.isEscalation
+            ? (card.faction + ' · 爬升挑战（无限波 · 奖池押注）')
+            : card.isFallen
+                ? (card.faction + ' · ' + difficultyOf(card).label + ' 挑战')
+                : ('DEATH MATCH · 段位 ' + card.index + ' · ' + difficultyOf(card).label);
         _detailMetaEl.innerHTML =
             '<span class="arena-meta-chip">对手 ×' + card.opponentCount + '</span>' +
             '<span class="arena-meta-chip">等级 ' + card.levelMin + '—' + card.levelMax + '</span>' +
@@ -352,15 +491,17 @@
 
     function onRollAgain() {
         if (_busy || _activeCardIdx < 0) return;
-        var card = ARENA_CARDS[_activeCardIdx];
+        var card = _activeCards[_activeCardIdx];
         if (!card) return;
         _detailOpponentsEl.innerHTML = '<div class="arena-opponents-loading">正在重新抽取…</div>';
         setDetailButtonsBusy(true);
-        // 强制重抽：清 dedup token + cache + error，让 requestPreviewForCard 走完整新链路。
-        // 回包后会自动 _previewCache[idx] = 新 lineup → renderCardSummary 同步 grid 摘要（覆盖旧）
+        // 强制重抽：清 dedup token + cache + error + 种类决定（换一批可翻 merc↔monster），
+        // 让 requestPreviewForCard 走完整新链路（含重新决定种类）。
         delete _previewPending[_activeCardIdx];
         delete _previewCache[_activeCardIdx];
         delete _previewError[_activeCardIdx];
+        delete _cardKind[_activeCardIdx];
+        delete _monsterSquad[_activeCardIdx];
         requestPreviewForCard(_activeCardIdx);
     }
 
@@ -371,7 +512,7 @@
         if (_busy) return;
         var btn = e.currentTarget || e.target;
         var cardIdx = parseInt(btn.dataset.index, 10);
-        var card = ARENA_CARDS[cardIdx];
+        var card = _activeCards[cardIdx];
         if (!card) return;
         var opponents = _previewCache[cardIdx];
         if (!opponents) {
@@ -383,7 +524,7 @@
 
     function onConfirmChallenge() {
         if (_activeCardIdx < 0) return;
-        enterChallenge(_activeCardIdx, ARENA_CARDS[_activeCardIdx], _previewOpponents);
+        enterChallenge(_activeCardIdx, _activeCards[_activeCardIdx], _previewOpponents);
     }
 
     // 入场链公共函数：detail "⚔ 确认挑战" 与 grid "⚔ 开始挑战" 共用。
@@ -423,7 +564,7 @@
             if (data.closePanel) requestClose({ dismissReturnStack: true });
         };
 
-        Bridge.send({
+        var msg = {
             type: 'panel',
             panel: 'arena',
             cmd: 'enter',
@@ -435,7 +576,26 @@
             // 来自 stage-select 重定向时是 "冒险"/"修罗" 等；dev 直开时是 ""。
             // AS2 ArenaPanelService 在非空时设 _root.当前关卡难度，让任务系统能匹配。
             difficulty: _initDifficulty
-        });
+        };
+        // 爬升模式：下发该势力完整单位池 + 起始波基准，AS2 逐波采样爬升（不发 roster 快照）。
+        if (card.isEscalation) {
+            msg.mode = 'escalation';
+            msg.faction = card.faction;
+            msg.baseCount = card.opponentCount;
+            msg.baseLevelMin = card.levelMin;
+            msg.baseLevelMax = card.levelMax;
+            msg.pool = factionPool(card.faction);
+        }
+        // 怪物卡（堕落/标准混入）：把本地采样的非人形小队作为 roster 下发 → AS2 走 commitRoster 生成非人形怪。
+        // WYSIWYG：下发的就是 grid/detail 预览里那批怪（type+level 一一对应）。
+        else if (_cardKind[cardIdx] === 'monster' && opponents[0] && opponents[0].isMonster) {
+            var roster = [];
+            for (var ri = 0; ri < opponents.length; ri++) {
+                roster.push({ type: opponents[ri].type, level: opponents[ri].level });
+            }
+            msg.roster = roster;
+        }
+        Bridge.send(msg);
     }
 
     function setDetailButtonsBusy(busy) {
@@ -485,7 +645,7 @@
     // Batch Preview（panel open 时并发抽 8 卡）
     // ════════════════════════════════════════════════════════════════════════════
     function batchRequestPreview() {
-        for (var i = 0; i < ARENA_CARDS.length; i++) {
+        for (var i = 0; i < _activeCards.length; i++) {
             requestPreviewForCard(i);
         }
     }
@@ -505,9 +665,39 @@
     //   防 onRollAgain 后被新 reqId 覆盖时旧回包污染。
     // ════════════════════════════════════════════════════════════════════════════
     function requestPreviewForCard(cardIdx) {
-        if (_previewPending[cardIdx] !== undefined) return; // dedup
-        var card = ARENA_CARDS[cardIdx];
+        if (_previewPending[cardIdx] !== undefined) return; // dedup（仅 merc 异步路径用）
+        var card = _activeCards[cardIdx];
         if (!card) return;
+
+        // 决定本卡种类（首抽 / 换一批后未决定时）。
+        //   - 堕落卡：恒怪物，且锁定从本卡势力采样（非随机势力）；采样失败 → 报错，绝不退回 merc 路径
+        //     （否则合成 expr 会被 AS2 当真去抽人形佣兵，串成人形对手）。
+        //   - 标准卡：按 _mixChance 概率尝试混入随机势力怪物，未命中 → merc（AS2 往返抽佣兵）。
+        if (_cardKind[cardIdx] === undefined) {
+            if (card.isFallen) {
+                var fsq = sampleFactionSquad(card.faction, card.levelMin, card.levelMax, card.opponentCount);
+                if (fsq) { _cardKind[cardIdx] = 'monster'; _monsterSquad[cardIdx] = fsq; }
+                else {
+                    _previewError[cardIdx] = '该势力暂无可用单位';
+                    renderCardSummary(cardIdx);
+                    updateCardStates();
+                    if (_activeCardIdx === cardIdx) {
+                        _detailOpponentsEl.innerHTML = '<div class="arena-opponents-error">该势力暂无可用单位</div>';
+                        setDetailButtonsBusy(false);
+                        _detailConfirmBtn.disabled = true;
+                    }
+                    return;
+                }
+            } else {
+                var decided = decideMonsterSquad(card);
+                if (decided) { _cardKind[cardIdx] = 'monster'; _monsterSquad[cardIdx] = decided; }
+                else { _cardKind[cardIdx] = 'merc'; }
+            }
+        }
+        if (_cardKind[cardIdx] === 'monster') {
+            applyMonsterPreview(cardIdx); // web 本地采样渲染，无 AS2 preview 往返
+            return;
+        }
 
         var reqId = 'arena_prev_' + (++_reqSeq) + '_' + _session;
         _previewPending[cardIdx] = reqId;
@@ -559,6 +749,100 @@
         });
     }
 
+    // ════════════════════════════════════════════════════════════════════════════
+    // 元战队（非人形怪）采样 — M2：web 本地从 window.ArenaMetaRosters 抽，无 AS2 往返
+    // ════════════════════════════════════════════════════════════════════════════
+    // 按概率 + 数据可用性决定本卡是否为怪物小队；返回 {faction, opponents} 或 null（=走 merc）。
+    function decideMonsterSquad(card) {
+        var rosters = (typeof window !== 'undefined' && window.ArenaMetaRosters)
+            ? window.ArenaMetaRosters.factions : null;
+        if (!rosters) return null;                       // 无数据（如 QA harness 未载）→ 恒 merc
+        if (Math.random() >= _mixChance) return null;    // 概率未命中 → merc
+        return sampleMonsterSquad(rosters, card.levelMin, card.levelMax, card.opponentCount);
+    }
+
+    // 从与 [levelMin,levelMax] 重叠的某个势力 roster，按 weight 加权采样 count 个单位（可重复）。
+    // 每个单位等级钳进卡片等级带。无重叠势力 → null（该等级带无怪可混，保持 merc）。
+    function sampleMonsterSquad(rosters, levelMin, levelMax, count) {
+        var eligible = [];
+        for (var f in rosters) {
+            var pool = poolForBand(rosters[f].units, levelMin, levelMax);
+            if (pool.length) eligible.push({ faction: f, pool: pool });
+        }
+        if (eligible.length === 0) return null;
+        var chosen = eligible[Math.floor(Math.random() * eligible.length)];
+        return { faction: chosen.faction, opponents: weightedSample(chosen.pool, levelMin, levelMax, count) };
+    }
+
+    // 堕落模式（Phase 2）：从指定势力采样（非随机势力）。faction 缺失 / 无等级带重叠单位 → null。
+    function sampleFactionSquad(factionName, levelMin, levelMax, count) {
+        var factions = rostersAvailable() ? window.ArenaMetaRosters.factions : null;
+        if (!factions || !factions[factionName]) return null;
+        var pool = poolForBand(factions[factionName].units, levelMin, levelMax);
+        if (!pool.length) return null;
+        return { faction: factionName, opponents: weightedSample(pool, levelMin, levelMax, count) };
+    }
+
+    // 取势力单位中与 [levelMin,levelMax] 等级带重叠的子池。
+    function poolForBand(units, levelMin, levelMax) {
+        units = units || [];
+        var pool = [];
+        for (var i = 0; i < units.length; i++) {
+            var u = units[i];
+            if (u.minLevel <= levelMax && u.maxLevel >= levelMin) pool.push(u);
+        }
+        return pool;
+    }
+
+    // 从单位池按 weight 加权采样 count 个（可重复），每个单位等级钳进 [levelMin,levelMax]。
+    function weightedSample(pool, levelMin, levelMax, count) {
+        var totalW = 0;
+        for (var k = 0; k < pool.length; k++) totalW += (pool[k].weight || 1);
+        var opponents = [];
+        for (var n = 0; n < count; n++) {
+            var r = Math.random() * totalW, acc = 0, pick = pool[0];
+            for (var j = 0; j < pool.length; j++) {
+                acc += (pool[j].weight || 1);
+                if (r <= acc) { pick = pool[j]; break; }
+            }
+            var lo = Math.max(pick.minLevel, levelMin), hi = Math.min(pick.maxLevel, levelMax);
+            if (hi < lo) hi = lo;
+            var lvl = lo + Math.floor(Math.random() * (hi - lo + 1));
+            opponents.push({ name: pick.name, level: lvl, type: pick.type, spritename: pick.spritename, isMonster: true });
+        }
+        return opponents;
+    }
+
+    // 怪物卡：本地采样结果直接写 cache + 渲染（不发 AS2，无 pending）。
+    function applyMonsterPreview(cardIdx) {
+        var squad = _monsterSquad[cardIdx];
+        if (!squad) return;
+        delete _previewError[cardIdx];
+        delete _previewPending[cardIdx];
+        _previewCache[cardIdx] = squad.opponents;
+        markCardMonster(cardIdx, squad.faction);
+        renderCardSummary(cardIdx);
+        updateCardStates();
+        if (_activeCardIdx === cardIdx) {
+            _previewOpponents = squad.opponents;
+            renderOpponents(squad.opponents);
+            setDetailButtonsBusy(false);
+        }
+    }
+
+    // 怪物卡视觉标记：加类 + 把「对手阵容」cap 换成势力名（faction=null 还原为 merc 态）。
+    function markCardMonster(cardIdx, faction) {
+        var cardEl = _cardEls[cardIdx];
+        if (!cardEl) return;
+        var card = _activeCards[cardIdx];
+        var isFallen = !!(card && card.isFallen);
+        // 堕落卡建卡即恒紫罗兰；标准卡按本次采样结果开关
+        cardEl.classList.toggle('arena-card-monster', !!faction || isFallen);
+        if (isFallen) return; // 堕落卡的势力名（rank）+「麾下阵容」cap 已在 buildCards 定好，采样回调不覆盖
+        var capEl = cardEl.querySelector('.arena-card-opponents-cap');
+        if (capEl) capEl.textContent = faction ? ('⚠ ' + faction) : '对手阵容';
+    }
+
     // 渲染单卡 grid 摘要 row：≤2 名全显，>2 名头 2 + "+N"。
     // 失败态显示 "⚠ ... ↻" 可点击重试。loading 态由 requestPreviewForCard 入口统一写。
     function renderCardSummary(cardIdx) {
@@ -600,10 +884,36 @@
         var idx = parseInt(e.currentTarget.getAttribute('data-retry-idx'), 10);
         if (isNaN(idx)) return;
         delete _previewPending[idx]; // 强制重发：清 dedup token 让 requestPreviewForCard 重新发
+        delete _cardKind[idx];       // 重抽可重新决定种类（失败的 merc 卡可翻成稳成功的 monster 卡）
+        delete _monsterSquad[idx];
         requestPreviewForCard(idx);
     }
 
+    // 非人形怪小队（M2）：无装备/技能，渲简版行（头像 + 名/级 + 非人形标 + 家族注）。
+    function renderMonsterOpponents(opponents) {
+        var html = '';
+        for (var i = 0; i < opponents.length; i++) {
+            var opp = opponents[i];
+            html += '<div class="arena-opp-row arena-opp-row-monster">';
+            html += '<div class="arena-opp-portrait arena-opp-portrait-fallback arena-opp-portrait-monster"></div>';
+            html += '<div class="arena-opp-main">';
+            html += '<div class="arena-opp-topline">';
+            html += '<span class="arena-opp-name">' + escapeHtml(opp.name) + '</span>';
+            html += '<span class="arena-opp-level">LV. ' + opp.level + '</span>';
+            html += '<span class="arena-opp-monster-tag">非人形</span>';
+            html += '</div>';
+            html += '<div class="arena-opp-monster-note">' + escapeHtml(String(opp.spritename || '').replace(/^敌人-/, '')) + '</div>';
+            html += '</div></div>';
+        }
+        _detailOpponentsEl.innerHTML = html;
+    }
+
     function renderOpponents(opponents) {
+        // 非人形怪小队：走简版渲染（无装备/技能 hover）
+        if (opponents && opponents.length && opponents[0] && opponents[0].isMonster) {
+            renderMonsterOpponents(opponents);
+            return;
+        }
         var SLOT_LABELS = {
             6: '头盔', 7: '护身', 8: '护甲', 9: '护腿', 10: '靴子',
             11: '披风', 12: '主武器', 13: '副武器', 14: '副武器2',
@@ -845,8 +1155,8 @@
     //   - 整卡灰类：仅按 money 判断（视觉降权，不直接干预按钮）
     function updateCardStates() {
         var money = (_snapshot && _snapshot.money != null) ? _snapshot.money : null;
-        for (var i = 0; i < ARENA_CARDS.length; i++) {
-            var deposit = ARENA_CARDS[i].deposit;
+        for (var i = 0; i < _activeCards.length; i++) {
+            var deposit = _activeCards[i].deposit;
             var moneyOk = (money == null) || (money >= deposit); // snapshot 未到先全亮
             var hasPreview = !!_previewCache[i];
             setCardEnterEnabled(i, !_busy && moneyOk && hasPreview);
@@ -938,7 +1248,8 @@
             pendingCount: Object.keys(_pendingReq).length,
             previewCacheCount: Object.keys(_previewCache).length,
             previewPendingCount: Object.keys(_previewPending).length,
-            previewErrorCount: Object.keys(_previewError).length
+            previewErrorCount: Object.keys(_previewError).length,
+            cardKind: _cardKind
         };
     }
 
@@ -946,7 +1257,11 @@
     if (typeof window !== 'undefined') {
         window.ArenaPanel = {
             getState: _debugGetState,
-            getCards: function() { return ARENA_CARDS.slice(); }
+            getCards: function() { return _activeCards.slice(); },
+            // 测试/截图注入：设怪物混入概率（1=全怪物，0=全 merc）。需 window.ArenaMetaRosters 已载。
+            setMixChance: function(p) { _mixChance = Number(p); },
+            // 测试/截图：切到堕落模式（需 rosters 已载）。返回切后卡片数。
+            switchMode: function(mode) { rebuildForMode(mode); if (_snapshot) batchRequestPreview(); return _activeCards.length; }
         };
     }
 })();

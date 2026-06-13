@@ -58,6 +58,11 @@ class org.flashNight.arki.merc.ArenaPanelService {
         // 这里把自管入场锁 reset 掉，覆盖 ArenaController.close 在 web 路径下不会被
         // 调用的事实（close 仅挂在旧 Flash 角斗场选择界面的"取消挑战"按钮上）。
         _root.角斗场入场中 = false;
+        // 对手类型默认人形；roster（元战队/非人形）由后续 enter 显式置位，
+        // 这里复位防上一场 roster 残留泄漏进 enterArenaCommon / 角斗场加载 的分叉判断。
+        _root.角斗场对手类型 = "merc";
+        _root.角斗场roster阵容 = undefined;
+        _root.角斗场爬升 = undefined; // 爬升模式状态复位，防上一场残留泄漏进 角斗场加载 分叉
         // batch preview lineup cache 镜像 web 端 _previewCache：snapshot 是 panel open 必经握手，
         // 这里清空让本 session 8 路 preview 重抽签。跨 session 复用旧 lineup 不安全
         // （_root.可雇佣兵 pool 在战斗 / 雇佣等流程后可能已变）。
@@ -270,6 +275,96 @@ class org.flashNight.arki.merc.ArenaPanelService {
             return;
         }
 
+        // ── 爬升模式（Phase 3）分叉：web 下发 mode="escalation" + faction + pool（该势力单位池）──
+        // 战斗循环 / 压力板决策 / 奖池经济全在 关卡回调函数 自管；这里仅校验 pool + 预载场景 + commit。
+        if (String(params.mode) == "escalation") {
+            var poolParam:Array = (params.pool != undefined) ? params.pool : null;
+            if (poolParam == null || poolParam.length == 0) {
+                sendResponse({ task: "arena_response", callId: callId, success: false, error: "escalation_pool_empty" });
+                return;
+            }
+            var pool:Array = [];
+            for (var pi:Number = 0; pi < poolParam.length; pi++) {
+                var pt:String = String(poolParam[pi].type);
+                if (_root.兵种库[pt] == undefined) continue; // 跳过 web 与 AS2 兵种库不一致的未知兵种
+                var pmin:Number = Number(poolParam[pi].minLevel);
+                var pmax:Number = Number(poolParam[pi].maxLevel);
+                var pw:Number = Number(poolParam[pi].weight);
+                pool.push({
+                    type:     pt,
+                    minLevel: (isNaN(pmin) || pmin < 1) ? 1 : pmin,
+                    maxLevel: (isNaN(pmax) || pmax < 1) ? 1 : pmax,
+                    weight:   (isNaN(pw) || pw <= 0) ? 1 : pw
+                });
+            }
+            if (pool.length == 0) {
+                sendResponse({ task: "arena_response", callId: callId, success: false, error: "escalation_pool_unknown" });
+                return;
+            }
+            var faction:String = String(params.faction || "");
+            var baseCount:Number = Number(params.baseCount);
+            if (isNaN(baseCount) || baseCount < 1) baseCount = 4;
+            var baseLevelMin:Number = Number(params.baseLevelMin);
+            if (isNaN(baseLevelMin) || baseLevelMin < 1) baseLevelMin = 1;
+            var baseLevelMax:Number = Number(params.baseLevelMax);
+            if (isNaN(baseLevelMax) || baseLevelMax < baseLevelMin) baseLevelMax = baseLevelMin;
+            if (!ArenaController.prepareArenaStage(deposit, reward, difficulty)) {
+                sendResponse({ task: "arena_response", callId: callId, success: false, error: "stage_info_missing" });
+                return;
+            }
+            _root.角斗场入场中 = true;
+            sendResponse({
+                task: "arena_response", callId: callId, success: true,
+                closePanel: true, deposit: deposit, reward: reward, expr: expr, mode: "escalation"
+            });
+            if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
+                _root.soundEffectManager.stopBGMForTransition();
+            }
+            try {
+                ArenaController.commitEscalation(faction, pool, baseCount, baseLevelMin, baseLevelMax, deposit, reward);
+            } catch (eE:Error) {
+                _root.角斗场入场中 = false;
+                if (typeof _root.最上层发布文字提示 == "function") _root.最上层发布文字提示("角斗场入场失败：" + eE.message);
+            }
+            return;
+        }
+
+        // ── 元战队（非人形怪）分叉：web M2 本地采样后下发 roster=[{type:"兵种N", level:L}, ...] ──
+        // 有 roster → 走 commitRoster（不碰佣兵 cache / reuse / pool）；否则落入下方人形 merc 路径。
+        var rosterParam:Array = (params.roster != undefined) ? params.roster : null;
+        if (rosterParam != null && rosterParam.length > 0) {
+            var squad:Array = [];
+            for (var ri:Number = 0; ri < rosterParam.length; ri++) {
+                var rt:String = String(rosterParam[ri].type);
+                if (_root.兵种库[rt] == undefined) continue; // 跳过 web 与 AS2 兵种库不一致的未知兵种
+                var rlvl:Number = Number(rosterParam[ri].level);
+                squad.push({ 兵种: rt, 等级: (isNaN(rlvl) || rlvl < 1) ? 1 : rlvl });
+            }
+            if (squad.length == 0) {
+                sendResponse({ task: "arena_response", callId: callId, success: false, error: "roster_empty" });
+                return;
+            }
+            if (!ArenaController.prepareArenaStage(deposit, reward, difficulty)) {
+                sendResponse({ task: "arena_response", callId: callId, success: false, error: "stage_info_missing" });
+                return;
+            }
+            _root.角斗场入场中 = true;
+            sendResponse({
+                task: "arena_response", callId: callId, success: true,
+                closePanel: true, deposit: deposit, reward: reward, expr: expr, mode: "roster"
+            });
+            if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
+                _root.soundEffectManager.stopBGMForTransition();
+            }
+            try {
+                ArenaController.commitRoster(squad);
+            } catch (eR:Error) {
+                _root.角斗场入场中 = false;
+                if (typeof _root.最上层发布文字提示 == "function") _root.最上层发布文字提示("角斗场入场失败：" + eR.message);
+            }
+            return;
+        }
+
         // 缓存优先取出（守 WYSIWYG）：web 端 batch preview 已按 cardIndex 抽过 8 卡，
         // 这里按 cardIndex 取缓存写回 _root.出阵人员 → 让 commitArena 消费用户实际看到的那批人。
         // 兜底：缓存不存在 + _root.出阵人员 也空（web 漏调 batch preview）→ 现场再抽一次保证不空 commit。
@@ -286,30 +381,12 @@ class org.flashNight.arki.merc.ArenaPanelService {
         }
 
         // 原始路径："DEATH MATCH角斗场" 的 StageInfo.FadeTransitionFrame = "角斗场选择挑战者",
-        // 玩家先到那个帧、由该帧 stage-select 入口预先调过 _root.载入关卡数据 把
-        // StageManager 初始化, 后续 enterArenaCommon → wuxianguotu_1 才能加载场景背景.
-        // Web 面板直接跳关, 必须在此手动复现 stage 数据预载.
-        var stageInfo:Object = _root.StageInfoDict ? _root.StageInfoDict["DEATH MATCH角斗场"] : undefined;
-        if (stageInfo == undefined || stageInfo.url == undefined || String(stageInfo.url) == "") {
+        // 玩家先到那个帧、由该帧 stage-select 入口预先调过 _root.载入关卡数据 把 StageManager 初始化,
+        // 后续 enterArenaCommon → wuxianguotu_1 才能加载场景背景. Web 面板直接跳关, 必须手动复现 stage
+        // 数据预载 + 押金/奖金/难度上下文——抽到 ArenaController.prepareArenaStage（merc 与 roster 共用）。
+        if (!ArenaController.prepareArenaStage(deposit, reward, difficulty)) {
             sendResponse({ task: "arena_response", callId: callId, success: false, error: "stage_info_missing" });
             return;
-        }
-
-        _root.载入关卡数据(String(stageInfo.Type || "无限过图"), String(stageInfo.url));
-        _root.关卡类型 = String(stageInfo.Type || "无限过图");
-        _root.关卡路径 = String(stageInfo.url);
-
-        _root.押金 = deposit;
-        _root.角斗场奖金 = reward;
-
-        // 难度上下文：任务系统 FinishStage 用 _root.当前关卡难度 匹配 "stage#difficulty" 规则；
-        // 非 difficulty 关卡的常规路径走 performEnter 已 set 这两个字段，但 arena 走 enterArenaCommon
-        // 不经过那条路径，必须在此手动复现。空 difficulty（dev 直开）保留上次值不破坏。
-        if (difficulty != "") {
-            _root.当前关卡难度 = difficulty;
-            if (typeof _root.计算难度等级 == "function") {
-                _root.难度等级 = _root.计算难度等级(difficulty);
-            }
         }
 
         // 上自管入场锁；handleSnapshot 入口 reset。覆盖 web 端 10s timeout 后的重发场景。
