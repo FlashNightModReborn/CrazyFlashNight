@@ -1,0 +1,20 @@
+{
+  "name": "@cf7-animate-kit/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "cf7-animate-kit": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --pretty false",
+    "dev": "tsx --conditions=development src/index.ts"
+  },
+  "dependencies": {
+    "@cf7-animate-kit/core": "0.1.0",
+    "@cf7-animate-kit/an-host": "0.1.0"
+  }
+}

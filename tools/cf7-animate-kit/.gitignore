@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.vite/
+packages/web/release/
+packages/cep-panel/dist/
+# keep test fixtures (committed): packages/*/tests/fixtures/**

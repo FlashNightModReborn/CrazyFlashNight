@@ -1,0 +1,24 @@
+Windows Registry Editor Version 5.00
+
+; Enable unsigned CEP extensions + remote debugging for dev.
+; CEP reads PlayerDebugMode per CSXS version; Animate builds span CSXS 9..12.
+; Double-click this file (accept the UAC/registry prompt), then fully restart
+; Animate. Without this, an unsigned panel won't appear in the Window menu.
+;
+; To DISABLE later, set the same values to "0" (or delete the keys).
+
+[HKEY_CURRENT_USER\Software\Adobe\CSXS.9]
+"PlayerDebugMode"="1"
+"LogLevel"="6"
+
+[HKEY_CURRENT_USER\Software\Adobe\CSXS.10]
+"PlayerDebugMode"="1"
+"LogLevel"="6"
+
+[HKEY_CURRENT_USER\Software\Adobe\CSXS.11]
+"PlayerDebugMode"="1"
+"LogLevel"="6"
+
+[HKEY_CURRENT_USER\Software\Adobe\CSXS.12]
+"PlayerDebugMode"="1"
+"LogLevel"="6"

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CF7 AnimateKit</title>
+    <!--
+      DUAL-MODE ENTRY
+      ===============
+      This single index.html serves two purposes:
+
+      1) DEV (hot reload). When this file is opened by Animate's CEP host but a
+         dev marker is present, we redirect the panel's CEF webview to the Vite
+         dev server so edits hot-reload live inside Animate.
+           - Run `npm run dev` (Vite serves http://localhost:5173, host:true).
+           - The Vite dev pattern: vite.config.ts sets `base: './'` and
+             `server: { port: 5173, host: true }`. `host:true` binds 0.0.0.0 so
+             the CEF webview (which is a separate process) can reach it.
+           - Marker: create an empty file `.cf7ak-dev` next to this index, OR
+             set localStorage 'cf7ak-dev'='1' once from remote DevTools. The
+             inline script below probes the marker via a sync XHR (file:// is
+             allowed inside CEP) and, if found, sets window.__CF7AK_DEV__ and
+             redirects.
+
+      2) PROD. `vite build` rewrites this file in `dist/` with hashed
+         <script>/<link> tags pointing at the built bundle (because index.html
+         is Vite's build entry). The dev redirect block is a no-op in the built
+         copy: the marker file is NOT copied into dist, so the probe fails and
+         we fall through to the bundled app.
+
+      The built dist/ (this rewritten index.html + assets/ + host/ + CSXS/ +
+      .debug) is what gets symlinked into the CEP extensions folder.
+    -->
+    <script>
+      // Opt-in dev hot-reload: set localStorage 'cf7ak-dev'='1' from remote
+      // DevTools, then reload, to redirect the panel to the Vite dev server.
+      // (No file probe — that 404s under file:// and just adds console noise.)
+      (function () {
+        if (location.protocol !== 'file:') return;
+        try {
+          if (window.localStorage && localStorage.getItem('cf7ak-dev') === '1') {
+            window.__CF7AK_DEV__ = true;
+            location.href = 'http://localhost:5173/';
+          }
+        } catch (e) {
+          /* localStorage unavailable */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!--
+      In DEV-with-Vite (served from http://localhost:5173) this module entry is
+      what runs. In PROD `vite build` replaces it with the hashed bundle entry.
+      In the disk copy under file:// it is a relative module; Vite's build also
+      emits it relative because base:'./'.
+    -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

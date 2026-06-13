@@ -1,0 +1,37 @@
+{
+  "alpha": {
+    "__id": "ALPHA"
+  },
+  "arr": [
+    {
+      "__id": "ALPHA"
+    },
+    {
+      "__id": "BETA",
+      "ptr": {
+        "__id": "ALPHA"
+      }
+    },
+    {
+      "__id": "ARRITEM"
+    }
+  ],
+  "beta": {
+    "__id": "BETA",
+    "ptr": {
+      "__id": "ALPHA"
+    }
+  },
+  "delta": {
+    "__id": "ALPHA"
+  },
+  "gamma": {
+    "__id": "GAMMA",
+    "deep": {
+      "__id": "GDEEP",
+      "ptr": {
+        "__id": "ALPHA"
+      }
+    }
+  }
+}

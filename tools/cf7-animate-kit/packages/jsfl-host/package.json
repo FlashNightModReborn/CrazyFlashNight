@@ -1,0 +1,12 @@
+{
+  "name": "@cf7-animate-kit/jsfl-host",
+  "version": "0.1.0",
+  "private": true,
+  "description": "JSFL host scripts loaded inside Adobe Animate by the CEP panel (via manifest <ScriptPath>). The ONLY code that touches the live FLA document DOM. Not a TypeScript package — plain .jsfl, copied into the panel build.",
+  "files": [
+    "host"
+  ],
+  "scripts": {
+    "build": "node scripts/build-runner.mjs"
+  }
+}
