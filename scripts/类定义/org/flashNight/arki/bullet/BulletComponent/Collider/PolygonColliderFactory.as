@@ -40,6 +40,21 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonColliderFactory
     }
 
     /**
+     * 从对象池借出碰撞器（重写：复位同帧更新戳）。
+     *
+     * 池中实例可能在本帧早些时候才随子弹销毁被释放（processQueue 单出口的
+     * releaseCollider 与懒创建同帧交织执行）。残留的 _currentFrame 等于当前帧号时，
+     * 借出后的首次 updateFrom* 会被同帧守卫直接短路，新子弹将沿用上一颗子弹的
+     * 顶点几何参与碰撞判定（误命中/漏判）。
+     * 复位为 -1（与 AABBCollider.zoneFrame 同式的必不相等哨兵）强制首次几何更新生效。
+     */
+    public function getObject():ICollider {
+        var collider:PolygonCollider = PolygonCollider(super.getObject());
+        collider._currentFrame = -1;
+        return collider;
+    }
+
+    /**
      * 创建适用于透明子弹的 PolygonCollider 实例。
      * 
      * 实现流程：

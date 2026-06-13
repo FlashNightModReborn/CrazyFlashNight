@@ -915,10 +915,14 @@ _root.联弹系统.爆炸联弹更新 = function(group:ChainGroup):Void {
         uy = u.y + A * u.sin;
         u.y = uy;
 
-        // 超出 Z 轴坐标限制时，通知子弹进入"消失"状态
-        // （gotoAndStop 同步执行消失帧脚本，可能在循环中清空本组——与旧实现行为一致）
+        // 超出 Z 轴坐标限制时，通知子弹进入"消失"状态。
+        // gotoAndStop 同步执行消失帧脚本（爆炸联弹消失）：area 被移除、单元体
+        // 整组回收、本组注销。旧实现由 area.onEnterFrame 驱动，卸载自身即终止
+        // 后续生命周期；共享 tick 驱动下无此语义，组失效后必须立即终止本帧更新，
+        // 不再触碰已回池的 list 数据对象 / 已移除的 area / 空转渲染
         if (uy * cosTilt + py > hitZ && list.length > 1) {
             parentMC.gotoAndStop("消失");
+            if (group.__removed) return;
         }
         if (uy > y_max) y_max = uy;
         if (uy < y_min) y_min = uy;
