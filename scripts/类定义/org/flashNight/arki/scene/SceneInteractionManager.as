@@ -70,13 +70,13 @@ class org.flashNight.arki.scene.SceneInteractionManager {
             nextMC.onHighlight();
         }
         this.currentMC = nextMC;
-
     }
 
     public function interact():Void{
         if(this.currentMC != null){
             this.currentMC.onUnhighlight();
             this.currentMC.onInteract();
+            this.currentMC = null;
         }
     }
 

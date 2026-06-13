@@ -184,14 +184,16 @@
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">
-                <x>850</x>
+                <x>40</x>
+                <y>480</y>
+                <BiasX>20</BiasX>
+                <BiasY>90</BiasY>
+                <NoCount>true</NoCount>
+            </Point>
+            <Point id="1">
+                <x>860</x>
                 <y>260</y>
                 <Identifier>出生点-横向钻头</Identifier>
-                <Parameters>
-                    <_xsacle>150</_xsacle>
-                    <_ysacle>150</_ysacle>
-                    <Offset>100</Offset>
-                </Parameters>
             </Point>
         </SpawnPoint>
         <Wave>
@@ -230,17 +232,17 @@
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种401</Type>
-                        <Interval>2500</Interval>
+                        <Interval>3000</Interval>
                         <Quantity>3</Quantity>
                         <Level>28</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种45</Type>
-                        <Interval>3000</Interval>
-                        <Quantity>4</Quantity>
+                        <Interval>4000</Interval>
+                        <Quantity>3</Quantity>
                         <Level>28</Level>
-                        <SpawnIndex>left</SpawnIndex>
+                        <SpawnIndex>0</SpawnIndex>
                         <IsHostile>null</IsHostile>
                         <Parameters>
                             <手枪>P90战术版</手枪>
@@ -251,7 +253,7 @@
                         <Interval>4500</Interval>
                         <Quantity>4</Quantity>
                         <Level>28</Level>
-                        <SpawnIndex>left</SpawnIndex>
+                        <SpawnIndex>0</SpawnIndex>
                         <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy id="7">
@@ -259,7 +261,269 @@
                         <Interval>6000</Interval>
                         <Quantity>3</Quantity>
                         <Level>28</Level>
-                        <SpawnIndex>left</SpawnIndex>
+                        <SpawnIndex>0</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/据点M-月面暗道2.swf</Background>
+        </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>1275</x>
+                <y>390</y>
+                <url>flashswf/movies/月面暗道控制拉杆.swf</url>
+            </Instance>
+        </Instances>
+        <SpawnPoint>
+            <Point id="0">
+                <x>40</x>
+                <y>480</y>
+                <BiasX>20</BiasX>
+                <BiasY>90</BiasY>
+                <QuantityMax>4</QuantityMax>
+                <NoCount>true</NoCount>
+            </Point>
+            <Point id="1">
+                <x>240</x>
+                <y>280</y>
+                <Identifier>出生点-横向钻头</Identifier>
+                <Parameters>
+                    <Offset>120</Offset>
+                </Parameters>
+            </Point>
+            <Point id="2">
+                <x>550</x>
+                <y>200</y>
+                <Identifier>出生点-横向钻头</Identifier>
+                <Parameters>
+                    <_xscale>120</_xscale>
+                    <_yscale>120</_yscale>
+                    <Offset>200</Offset>
+                </Parameters>
+            </Point>
+            <Point id="3">
+                <x>860</x>
+                <y>270</y>
+                <Identifier>出生点-横向钻头</Identifier>
+                <Parameters>
+                    <Offset>120</Offset>
+                </Parameters>
+            </Point>
+        </SpawnPoint>
+        <Trigger id="0">
+            <Xmin>1050</Xmin>
+        </Trigger>
+        <Event>
+            <EventName>TriggerPressed</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>这是控制大门的设备吗？屏幕和键盘都被炸坏了。只剩一个拉杆好像还能用……</Text>
+            </Dialogue>
+        </Event>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>-1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种393</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种401</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <x>800</x>
+                        <y>500</y>
+                        <IsHostile>null</IsHostile>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种45</Type>
+                        <Interval>4000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <手枪>P90战术版</手枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种49</Type>
+                        <Interval>4400</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <手枪>加强版mp7</手枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种48</Type>
+                        <Interval>4800</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <手枪>M79式榴弹发射器</手枪>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种44</Type>
+                        <Interval>3600</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>-1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种39</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种8</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>-1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种9</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                        <Parameters>
+                            <登场动画>下落</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种424</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种393</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="3">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>-1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种425</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种442</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="4">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>-1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种443</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                        <Parameters>
+                            <登场动画>坠落</登场动画>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="5">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>-1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="1">
+                        <Type>兵种424</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种443</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                        <IsHostile>null</IsHostile>
+                        <Parameters>
+                            <登场动画>坠落</登场动画>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种442</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>28</Level>
+                        <SpawnIndex>3</SpawnIndex>
                         <IsHostile>null</IsHostile>
                     </Enemy>
                 </EnemyGroup>

@@ -271,7 +271,7 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
                 if(this.waveSpawner.spawn(wrapper.attribute, wrapper.index, wrapper.waveIndex, wrapper.quantity)) wrapper.quantity--;
                 if(wrapper.quantity > 0){
                     if(wrapper.interval >= this.wheelSize){
-                        wrapper.delayCount = wrapper.interval;
+                        wrapper.delayCount = (wrapper.interval / 10) | 0;
                     }else{
                         longDelaySlot.splice(i,1);
                         this._addToSlot(wrapper);

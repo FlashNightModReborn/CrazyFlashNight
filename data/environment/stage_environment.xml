@@ -3038,8 +3038,27 @@
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
     </Environment>
-    
-    
+    <Environment>
+        <BackgroundURL>据点M-月面暗道2.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>20</Xmin>
+        <Xmax>1430</Xmax>
+        <Ymin>380</Ymin>
+        <Ymax>575</Ymax>
+        <Width>1450</Width>
+        <Height>650</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
+        <Collision>
+            <Point>1260,370</Point>
+            <Point>1270,400</Point>
+            <Point>1315,400</Point>
+            <Point>1435,580</Point>
+            <Point>1435,370</Point>
+        </Collision>
+    </Environment>
+
     <Environment>
         <BackgroundURL>数据之海.swf</BackgroundURL>
         <Alignment>true</Alignment>
