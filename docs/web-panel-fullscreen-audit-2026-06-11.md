@@ -15,7 +15,7 @@
 |------|------|------|
 | **A. 无损全屏就绪** | 4 个 | 已采用「固定设计分辨率 + CSS transform scale」机制，只需极微调或已就绪 |
 | **B. 需改造适配** | 6 个 | 当前为弹性布局或无固定比例，需在维持视觉语言前提下补 scale 机制或 redesign |
-| **C. 建议维持现状** | 2 个 | 功能属性决定小矩形更合适，强行全屏收益低 |
+| **C. 建议维持现状** | 1 个 | 功能属性决定小矩形更合适，强行全屏收益低（jukebox 已按全屏化方案实施，见 C1） |
 
 **关键结论**：任务面板（tasks）之所以全屏体验最好，是因为它采用了**固定 1024×576 设计分辨率 + 整体 transform scale** 的策略——这是其他 panel 应该对齐的**标准范式**。地图（map）、商城（kshop）等面板的"黑屏割裂感"根源在于：**panel 窗口是全屏的，但内容以弹性布局松散填充，没有统一的缩放锚点**，导致大视口下元素分布稀疏、边缘留白失控。
 
@@ -151,11 +151,12 @@
 
 ### C. 建议维持现状（功能属性决定小矩形更合适）
 
-#### C1. jukebox（BGM 点歌器）
-- **当前状态**: PanelLayoutCatalog 已启用小矩形 880×620（`ScalePanelSize` 按高度比例缩放）
-- **CSS**: `jukebox/jukebox-panel.js` 使用百分比/弹性布局，与 panelRect 大小解耦
-- **功能属性**: 非核心游戏 loop，纯粹的音乐列表浏览。展开内容量有限，不需要全屏
-- **审计意见**: **维持小矩形**。强行全屏会导致列表区域过度拉伸、大量无意义留白。当前设计已是 Phase 5 优化后的合理状态。
+#### C1. jukebox（BGM 点歌器）— 已迁移至全屏化
+- **当前状态**: PanelLayoutCatalog 已由 880×620 小矩形改为**全 anchor**（`return anchorScreenRect`），无子矩形边距
+- **CSS/JS**: `jukebox/jukebox-panel.js` 使用固定 **1024×576** 画布，外包共享 `.panel-scale-shell`，由 `PanelScale.attach()` 整体等比缩放铺满全屏；CSS `inset:0`，backdrop 兜底
+- **布局**: 双栏控制台（左 `.jbp-now`：波形/进度/设置；右 `.jbp-library`：专辑下拉/曲目列表），2026-06-14 二次迭代为拟物电台终端风格（toxic-green 切角、CRT 扫描线、铆钉按钮）
+- **功能属性**: 非核心游戏 loop，但全屏化后可视区域更大、操作控件更舒展
+- **审计意见**: **原审计建议维持小矩形，但后续实现选择了全屏电台终端风格**。因采用了「固定设计分辨率 + 整体 scale」范式，列表区域不会过度拉伸，无意义留白由 scale-shell 等比填充控制。已随 2026-06-12/14 提交实际落地，见 `launcher/web/modules/jukebox/jukebox-panel.js` 与 `launcher/web/css/panels.css`。
 
 #### C2. help（帮助系统）
 - **当前状态**: PanelLayoutCatalog 全屏（`return anchorScreenRect`），注释中预留 720×540 小矩形
