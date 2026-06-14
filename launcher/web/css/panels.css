@@ -3945,93 +3945,296 @@ html.perf-low-effects .map-panel-close-btn:hover {
 /* ═══════════════════════════════════════════════════════
    Jukebox Panel (Phase 5：折叠态由 C# JukeboxTitlebarWidget 接管，本面板仅承载展开内容)
    ═══════════════════════════════════════════════════════ */
-/* 沉浸全屏化 2026-06-12：jukebox 由 C# 居中子矩形(Centered 880×620)升级全 anchor + inset:0 +
-   固定 1024×576 画布(.panel-scale-shell 整体缩放)；双栏控制台布局（左 Now-Playing / 右 曲库）。*/
+/* 沉浸全屏化 2026-06-12：jukebox 全 anchor + 拟物电台终端风格
+   设计语言：复用地图界面的 toxic-green 切角/金属板，叠加辐射风 Pip-Boy 的 CRT 屏、铆钉、工业栅格。 */
 #panel-container[data-panel="jukebox"] #panel-content {
     inset:0;
 }
 #panel-container[data-panel="jukebox"] #panel-backdrop {
-    background:#0b0d12;
+    background:#05070a;
 }
 .jbp-panel {
+    --jb-accent: #c8ff4c;
+    --jb-accent-rgb: 200,255,76;
+    --jb-amber: #ffc440;
+    --jb-red: #ff5e4a;
+    --jb-metal-1: #161913;
+    --jb-metal-2: #10120e;
+    --jb-metal-3: #0b0d09;
+    --jb-screen-bg: #070b06;
+    --jb-text: rgba(220,235,200,0.92);
+    --jb-text-dim: rgba(160,180,140,0.70);
+    --jb-border: rgba(200,255,76,0.18);
+    --jb-cut: 10px;
+
     position:relative;
     width:1024px; height:576px;
     box-sizing:border-box;
     display:flex; flex-direction:column;
-    /* 不透明电台底 + 顶部 cyan 辉光氛围（纯 CSS，留 background-image 插槽后补电台美术）*/
-    background:radial-gradient(ellipse at 50% -8%, rgba(102,204,255,0.06), transparent 55%), #0b0d12;
-    color:rgba(255,255,255,0.85);
-    font:12px "Microsoft YaHei",sans-serif;
+    color:var(--jb-text);
+    font:12px "Consolas","Courier New","Microsoft YaHei",monospace;
+    background:
+        radial-gradient(circle at 18% 14%, rgba(121,175,74,0.10), transparent 24%),
+        radial-gradient(circle at 80% 18%, rgba(255,196,64,0.08), transparent 22%),
+        linear-gradient(180deg, rgba(16,18,13,0.98), rgba(8,10,6,0.96));
+    overflow:hidden;
+    clip-path:polygon(
+        0 0,
+        calc(100% - var(--jb-cut)) 0,
+        100% var(--jb-cut),
+        100% 100%,
+        var(--jb-cut) 100%,
+        0 calc(100% - var(--jb-cut))
+    );
+    box-shadow:
+        inset 0 0 140px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(80,90,70,0.35),
+        0 0 0 4px rgba(20,22,16,0.95),
+        0 0 40px rgba(0,0,0,0.6);
 }
+
+/* 全局 CRT 扫描线 + 边角暗角 */
+.jbp-panel::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent 0px,
+            transparent 2px,
+            rgba(var(--jb-accent-rgb),0.018) 2px,
+            rgba(var(--jb-accent-rgb),0.018) 3px
+        );
+}
+.jbp-panel::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background:radial-gradient(circle at 50% 50%, transparent 45%, rgba(0,0,0,0.38) 100%);
+}
+
+/* ── 顶部控制台标题栏 ── */
 .jbp-header {
-    display:flex; align-items:center; gap:8px;
-    padding:8px 12px;
-    border-bottom:1px solid rgba(255,255,255,0.06);
-    background:rgba(102,204,255,0.04);
+    position:relative;
+    z-index:1;
+    display:flex; align-items:center; gap:10px;
+    padding:10px 14px;
+    border-bottom:1px solid rgba(var(--jb-accent-rgb),0.14);
+    background:
+        linear-gradient(90deg, rgba(var(--jb-accent-rgb),0.14) 0%, rgba(var(--jb-accent-rgb),0.05) 46%, transparent 100%),
+        linear-gradient(180deg, rgba(24,27,20,0.92) 0%, rgba(14,16,11,0.92) 100%);
+}
+.jbp-header::after {
+    content:'';
+    position:absolute;
+    left:0; bottom:-1px;
+    width:200px; height:1px;
+    background:var(--jb-accent);
+    box-shadow:0 0 10px rgba(var(--jb-accent-rgb),0.45);
 }
 .jbp-title-static {
-    color:rgba(102,204,255,0.85); font-weight:bold; flex-shrink:0;
+    color:var(--jb-accent);
+    font-weight:bold;
+    font-size:13px;
+    letter-spacing:1px;
+    text-shadow:0 0 8px rgba(var(--jb-accent-rgb),0.35);
+    flex-shrink:0;
 }
 .jbp-current-title {
-    color:rgba(255,255,255,0.7);
+    color:rgba(255,255,255,0.75);
     flex:1; min-width:0;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    font-size:12px;
 }
 .jbp-time {
-    font:10px/1 "Consolas","Courier New",monospace;
-    color:rgba(255,255,255,0.45); flex-shrink:0;
+    font:11px/1 "Consolas","Courier New",monospace;
+    color:var(--jb-text-dim);
+    flex-shrink:0;
+    letter-spacing:0.5px;
 }
 .jbp-header-spacer { flex:0 0 8px; }
+
+/* 控制台按钮：金属切角 + 铆钉 */
 .jbp-panel .jb-ctrl-btn {
-    width:24px; height:24px; line-height:24px;
-    text-align:center; cursor:pointer;
-    background:rgba(102,204,255,0.08);
-    color:rgba(102,204,255,0.85);
-    border:1px solid rgba(102,204,255,0.18);
-    border-radius:3px;
+    position:relative;
+    display:inline-flex; align-items:center; justify-content:center;
+    width:26px; height:24px;
+    cursor:pointer;
+    background:
+        linear-gradient(180deg, rgba(55,60,48,0.95) 0%, rgba(32,35,26,0.95) 100%);
+    color:var(--jb-text);
+    border:1px solid rgba(140,150,120,0.35);
     user-select:none;
-    transition:background 120ms;
+    font-size:12px;
+    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 1px 2px rgba(0,0,0,0.4);
+    transition:all 120ms ease;
 }
-.jbp-panel .jb-ctrl-btn:hover { background:rgba(102,204,255,0.2); }
-.jbp-panel .jbp-pause-btn.paused { background:rgba(255,200,80,0.18); color:rgba(255,200,80,0.95); }
+.jbp-panel .jb-ctrl-btn::before,
+.jbp-panel .jb-ctrl-btn::after {
+    content:'';
+    position:absolute;
+    width:3px; height:3px;
+    border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.45), rgba(255,255,255,0.05) 60%, rgba(0,0,0,0.35) 100%);
+    box-shadow:inset 0 0 1px rgba(0,0,0,0.6);
+    pointer-events:none;
+}
+.jbp-panel .jb-ctrl-btn::before { top:2px; left:2px; }
+.jbp-panel .jb-ctrl-btn::after  { bottom:2px; right:2px; }
+.jbp-panel .jb-ctrl-btn:hover {
+    background:linear-gradient(180deg, rgba(75,82,62,0.95) 0%, rgba(42,46,34,0.95) 100%);
+    border-color:rgba(180,255,0,0.45);
+    color:#e9ffd6;
+    box-shadow:0 0 8px rgba(var(--jb-accent-rgb),0.18), inset 0 1px 0 rgba(255,255,255,0.10);
+}
+.jbp-panel .jbp-pause-btn.paused {
+    background:linear-gradient(180deg, rgba(160,130,40,0.35) 0%, rgba(90,70,20,0.35) 100%);
+    border-color:rgba(255,196,64,0.55);
+    color:var(--jb-amber);
+    box-shadow:0 0 8px rgba(255,196,64,0.18), inset 0 1px 0 rgba(255,255,255,0.08);
+}
 .jbp-close-btn {
-    width:28px; height:24px; line-height:1;
-    background:rgba(255,80,100,0.1);
-    color:rgba(255,160,170,0.95);
-    border:1px solid rgba(255,80,100,0.3);
-    border-radius:3px;
+    position:relative;
+    display:inline-flex; align-items:center; justify-content:center;
+    width:28px; height:24px;
+    background:
+        linear-gradient(180deg, rgba(85,40,36,0.90) 0%, rgba(48,22,20,0.90) 100%);
+    color:#ffd0c8;
+    border:1px solid rgba(255,94,74,0.45);
     cursor:pointer;
     font-size:16px;
+    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 1px 2px rgba(0,0,0,0.4);
+    transition:all 120ms ease;
 }
-.jbp-close-btn:hover { background:rgba(255,80,100,0.25); }
-/* 双栏控制台：左 Now-Playing(波形/进度/设置)，右 曲库(专辑/曲目列表) */
+.jbp-close-btn:hover {
+    background:linear-gradient(180deg, rgba(120,50,44,0.92) 0%, rgba(68,28,24,0.92) 100%);
+    border-color:rgba(255,94,74,0.70);
+    box-shadow:0 0 8px rgba(255,94,74,0.22);
+}
+
+/* ── 双栏控制台 ── */
 .jbp-body {
+    position:relative;
+    z-index:1;
     flex:1; min-height:0;
-    display:flex; flex-direction:row; gap:16px;
-    padding:16px 18px;
+    display:flex; flex-direction:row; gap:14px;
+    padding:12px 16px;
 }
 .jbp-now {
     flex:1.15 1 0; min-width:0; min-height:0;
-    display:flex; flex-direction:column; gap:12px;
+    display:flex; flex-direction:column; gap:8px;
 }
 .jbp-library {
     flex:1 1 0; min-width:0; min-height:0;
-    display:flex; flex-direction:column; gap:10px;
-    padding-left:16px; border-left:1px solid rgba(102,204,255,0.1);
+    display:flex; flex-direction:column; gap:8px;
+    padding-left:14px;
+    border-left:1px solid rgba(var(--jb-accent-rgb),0.12);
+}
+
+/* ── CRT 示波器屏幕 ── */
+.jbp-wave-bezel {
+    position:relative;
+    flex-shrink:0;
+    padding:5px;
+    background:
+        linear-gradient(180deg, rgba(35,38,30,0.96) 0%, rgba(22,24,18,0.96) 50%, rgba(28,30,24,0.96) 100%);
+    border:1px solid rgba(90,100,78,0.45);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        inset 0 0 18px rgba(0,0,0,0.55),
+        0 2px 6px rgba(0,0,0,0.45);
+    clip-path:polygon(
+        0 0,
+        calc(100% - 12px) 0,
+        100% 12px,
+        100% 100%,
+        12px 100%,
+        0 calc(100% - 12px)
+    );
+}
+.jbp-wave-bezel::before {
+    content:'';
+    position:absolute;
+    inset:5px;
+    pointer-events:none;
+    z-index:1;
+    border:1px solid rgba(var(--jb-accent-rgb),0.18);
+    box-shadow:
+        inset 0 0 20px rgba(0,0,0,0.65),
+        inset 0 0 10px rgba(var(--jb-accent-rgb),0.08);
 }
 .jbp-wave {
-    display:block; width:100%; height:132px; flex-shrink:0;
-    background:rgba(0,0,0,0.3); border:1px solid rgba(102,204,255,0.08); border-radius:3px;
+    position:relative;
+    display:block; width:100%; height:116px;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(var(--jb-accent-rgb),0.05) 0%, transparent 65%),
+        repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(var(--jb-accent-rgb),0.04) 3px, rgba(var(--jb-accent-rgb),0.04) 4px),
+        repeating-linear-gradient(90deg, transparent 0px, transparent 3px, rgba(var(--jb-accent-rgb),0.03) 3px, rgba(var(--jb-accent-rgb),0.03) 4px),
+        var(--jb-screen-bg);
+    box-shadow:
+        inset 0 0 14px rgba(0,0,0,0.7),
+        inset 0 0 6px rgba(var(--jb-accent-rgb),0.12),
+        0 0 18px rgba(var(--jb-accent-rgb),0.06);
+}
+/* 屏幕四角边界框（选关界面同款切角括号） */
+.jbp-wave-corner {
+    position:absolute;
+    width:16px; height:16px;
+    border:2px solid var(--jb-accent);
+    pointer-events:none;
+    z-index:2;
+    opacity:0.80;
+    filter:drop-shadow(0 0 3px rgba(var(--jb-accent-rgb),0.45));
+}
+.jbp-wave-corner-tl { top:10px; left:10px; border-width:2px 0 0 2px; }
+.jbp-wave-corner-tr { top:10px; right:10px; border-width:2px 2px 0 0; }
+.jbp-wave-corner-bl { bottom:10px; left:10px; border-width:0 0 2px 2px; }
+.jbp-wave-corner-br { bottom:10px; right:10px; border-width:0 2px 2px 0; }
+
+/* ── 进度条 + 时间 ── */
+.jbp-progress-row {
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+.jbp-prog-time {
+    font:11px/1 "Consolas","Courier New",monospace;
+    color:var(--jb-text-dim);
+    flex-shrink:0;
+    min-width:36px;
+    text-align:center;
 }
 .jbp-progress {
-    position:relative; height:6px;
-    background:rgba(255,255,255,0.06); border-radius:3px; cursor:pointer;
+    position:relative; flex:1; height:8px;
+    background:
+        linear-gradient(180deg, rgba(10,12,8,0.95) 0%, rgba(22,24,18,0.95) 100%);
+    border:1px solid rgba(120,130,100,0.30);
+    border-radius:2px;
+    cursor:pointer;
+    box-shadow:inset 0 1px 3px rgba(0,0,0,0.6);
 }
 .jbp-prog-fill {
-    position:absolute; top:0; left:0; bottom:0;
-    width:0%; background:rgba(102,204,255,0.7); border-radius:3px;
+    position:absolute; top:1px; left:1px; bottom:1px;
+    width:0%;
+    background:
+        linear-gradient(180deg, rgba(var(--jb-accent-rgb),0.85) 0%, rgba(160,220,50,0.70) 100%);
+    border-radius:1px;
+    box-shadow:0 0 8px rgba(var(--jb-accent-rgb),0.35);
     transition:width 100ms linear;
 }
+
+/* ── 曲库：专辑下拉 + 曲目列表 ── */
 .jbp-browser-row {
     display:flex; align-items:center; gap:8px;
 }
@@ -4042,124 +4245,300 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .jbp-album-trigger {
     display:flex; align-items:center; justify-content:space-between;
     padding:6px 10px; cursor:pointer;
-    background:rgba(255,255,255,0.04);
-    border:1px solid rgba(255,255,255,0.08);
-    border-radius:3px;
-    color:rgba(255,255,255,0.8);
+    background:
+        linear-gradient(180deg, rgba(40,44,34,0.95) 0%, rgba(24,27,20,0.95) 100%);
+    border:1px solid rgba(var(--jb-accent-rgb),0.22);
+    color:#e8f5cb;
+    font-size:12px;
+    letter-spacing:0.5px;
+    clip-path:polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 1px 2px rgba(0,0,0,0.35);
+    transition:all 120ms ease;
 }
-.jbp-album-trigger:hover { background:rgba(255,255,255,0.08); }
+.jbp-album-trigger:hover {
+    background:linear-gradient(180deg, rgba(55,60,46,0.95) 0%, rgba(34,37,28,0.95) 100%);
+    border-color:rgba(220,255,128,0.42);
+    color:#f4ffd6;
+}
 .jbp-album-options {
     display:none; position:absolute; top:100%; left:0; right:0; z-index:10;
-    background:rgba(18,20,26,0.98); border:1px solid rgba(102,204,255,0.18);
+    background:rgba(10,12,8,0.98);
+    border:1px solid rgba(var(--jb-accent-rgb),0.25);
     max-height:240px; overflow-y:auto;
+    box-shadow:0 6px 18px rgba(0,0,0,0.55);
 }
+.jbp-album-options::-webkit-scrollbar { width:7px; }
+.jbp-album-options::-webkit-scrollbar-track { background:rgba(0,0,0,0.35); }
+.jbp-album-options::-webkit-scrollbar-thumb { background:rgba(var(--jb-accent-rgb),0.22); border-radius:2px; }
+.jbp-album-options::-webkit-scrollbar-thumb:hover { background:rgba(var(--jb-accent-rgb),0.42); }
 .jbp-album-dropdown.open .jbp-album-options { display:block; }
 .jbp-album-option {
-    padding:6px 10px; cursor:pointer; color:rgba(255,255,255,0.7);
+    padding:6px 10px; cursor:pointer;
+    color:var(--jb-text-dim);
+    border-bottom:1px solid rgba(255,255,255,0.04);
+    transition:all 80ms ease;
 }
-.jbp-album-option:hover { background:rgba(102,204,255,0.12); color:rgba(255,255,255,0.95); }
-.jbp-album-option.active { background:rgba(102,204,255,0.2); color:rgba(102,204,255,0.95); }
+.jbp-album-option:hover {
+    background:rgba(var(--jb-accent-rgb),0.10);
+    color:#f4ffd6;
+}
+.jbp-album-option.active {
+    background:rgba(var(--jb-accent-rgb),0.18);
+    color:var(--jb-accent);
+}
+
+/* 曲目列表：终端屏幕 */
 .jbp-track-list {
     flex:1; min-height:0;
     overflow-y:auto;
-    border:1px solid rgba(255,255,255,0.06);
-    border-radius:3px;
-    background:rgba(0,0,0,0.18);
+    background:
+        repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(var(--jb-accent-rgb),0.015) 2px, rgba(var(--jb-accent-rgb),0.015) 3px),
+        var(--jb-screen-bg);
+    border:1px solid rgba(120,130,100,0.30);
+    box-shadow:
+        inset 0 0 18px rgba(0,0,0,0.6),
+        inset 0 0 6px rgba(var(--jb-accent-rgb),0.05),
+        0 0 0 1px rgba(20,22,16,0.95);
+    clip-path:polygon(
+        0 0,
+        calc(100% - 10px) 0,
+        100% 10px,
+        100% 100%,
+        10px 100%,
+        0 calc(100% - 10px)
+    );
 }
+.jbp-track-list::-webkit-scrollbar { width:7px; }
+.jbp-track-list::-webkit-scrollbar-track { background:rgba(0,0,0,0.35); }
+.jbp-track-list::-webkit-scrollbar-thumb { background:rgba(var(--jb-accent-rgb),0.22); border-radius:2px; }
+.jbp-track-list::-webkit-scrollbar-thumb:hover { background:rgba(var(--jb-accent-rgb),0.42); }
 .jbp-track-item {
-    padding:6px 10px; cursor:pointer;
-    color:rgba(255,255,255,0.7);
+    position:relative;
+    padding:7px 12px 7px 22px;
+    cursor:pointer;
+    color:var(--jb-text-dim);
     border-bottom:1px solid rgba(255,255,255,0.04);
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    font-size:12px;
+    letter-spacing:0.3px;
+    transition:all 100ms ease;
 }
-.jbp-track-item:hover { background:rgba(102,204,255,0.08); color:rgba(255,255,255,0.95); }
-.jbp-track-item.active { background:rgba(102,204,255,0.18); color:rgba(102,204,255,0.95); }
+.jbp-track-item::before {
+    content:'';
+    position:absolute;
+    left:8px; top:50%; transform:translateY(-50%);
+    width:5px; height:5px;
+    background:rgba(var(--jb-accent-rgb),0.25);
+    clip-path:polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+.jbp-track-item:hover {
+    background:rgba(var(--jb-accent-rgb),0.08);
+    color:#f4ffd6;
+    border-color:rgba(var(--jb-accent-rgb),0.12);
+}
+.jbp-track-item.active {
+    background:rgba(var(--jb-accent-rgb),0.16);
+    color:var(--jb-accent);
+    border-color:rgba(var(--jb-accent-rgb),0.22);
+    box-shadow:inset 3px 0 0 rgba(var(--jb-accent-rgb),0.55);
+}
+.jbp-track-item.active::before {
+    background:var(--jb-accent);
+    filter:drop-shadow(0 0 3px rgba(var(--jb-accent-rgb),0.7));
+}
+.jbp-track-item.active::after {
+    content:'▶';
+    position:absolute;
+    right:10px; top:50%; transform:translateY(-50%);
+    font-size:9px;
+    color:var(--jb-accent);
+    opacity:0.85;
+}
+
+/* ── 左侧设置面板 ── */
 .jbp-settings {
     flex:1; min-height:0; overflow-y:auto;
-    padding-top:4px;
-    display:flex; flex-direction:column; gap:6px;
+    padding:5px 7px;
+    display:flex; flex-direction:column; gap:4px;
+    background:
+        linear-gradient(180deg, rgba(22,25,18,0.60) 0%, rgba(12,14,10,0.60) 100%);
+    border:1px solid rgba(120,130,100,0.22);
+    box-shadow:inset 0 0 16px rgba(0,0,0,0.35);
+    clip-path:polygon(
+        0 0,
+        calc(100% - 8px) 0,
+        100% 8px,
+        100% 100%,
+        0 100%
+    );
 }
+.jbp-settings::-webkit-scrollbar { width:6px; }
+.jbp-settings::-webkit-scrollbar-track { background:rgba(0,0,0,0.25); }
+.jbp-settings::-webkit-scrollbar-thumb { background:rgba(var(--jb-accent-rgb),0.18); border-radius:2px; }
+.jbp-settings::-webkit-scrollbar-thumb:hover { background:rgba(var(--jb-accent-rgb),0.35); }
 .jbp-settings .jb-setting-group-label {
-    color:rgba(102,204,255,0.7);
-    font-size:11px; letter-spacing:1px;
-    margin-top:4px;
+    color:var(--jb-accent);
+    font-size:11px; letter-spacing:1.2px;
+    margin-top:2px;
+    text-shadow:0 0 6px rgba(var(--jb-accent-rgb),0.25);
 }
 .jbp-settings .jb-setting-divider {
-    height:1px; margin:4px 0;
-    background:rgba(255,255,255,0.06);
+    height:1px; margin:3px 0;
+    background:linear-gradient(90deg, transparent 0%, rgba(var(--jb-accent-rgb),0.18) 20%, rgba(var(--jb-accent-rgb),0.18) 80%, transparent 100%);
 }
+
+/* 滑条：金属轨道 + 刻度 + 方形旋钮 */
 .jbp-settings .jb-slider-row {
-    display:flex; align-items:center; gap:8px;
+    display:flex; align-items:center; gap:10px;
     padding:2px 0;
 }
 .jbp-settings .jb-slider-label {
-    width:48px; flex-shrink:0;
-    color:rgba(255,255,255,0.7); font-size:11px;
+    width:40px; flex-shrink:0;
+    color:var(--jb-text-dim);
+    font-size:11px;
+    text-align:right;
 }
 .jbp-settings .jb-slider-track {
-    flex:1; position:relative; height:6px;
-    background:rgba(255,255,255,0.08); border-radius:3px; cursor:pointer;
+    flex:1; position:relative; height:9px;
+    background:
+        linear-gradient(180deg, rgba(8,10,6,0.95) 0%, rgba(24,26,20,0.95) 100%);
+    border:1px solid rgba(120,130,100,0.30);
+    border-radius:1px;
+    cursor:pointer;
+    box-shadow:inset 0 1px 3px rgba(0,0,0,0.55);
 }
-.jbp-settings .jb-slider-fill {
-    position:absolute; top:0; left:0; bottom:0;
-    width:50%; background:rgba(102,204,255,0.65); border-radius:3px;
-}
-.jbp-settings .jb-slider-thumb {
-    position:absolute; top:-3px; width:12px; height:12px;
-    background:rgba(102,204,255,0.95);
-    border:1px solid rgba(255,255,255,0.4);
-    border-radius:50%;
-    transform:translateX(-50%);
+/* 刻度 */
+.jbp-settings .jb-slider-track::after {
+    content:'';
+    position:absolute;
+    top:2px; bottom:2px; left:4px; right:4px;
+    background:
+        repeating-linear-gradient(90deg,
+            transparent 0px,
+            transparent calc(10% - 1px),
+            rgba(140,150,120,0.25) calc(10% - 1px),
+            rgba(140,150,120,0.25) 10%
+        );
     pointer-events:none;
 }
+.jbp-settings .jb-slider-fill {
+    position:absolute; top:1px; left:1px; bottom:1px;
+    width:50%;
+    background:
+        linear-gradient(180deg, rgba(var(--jb-accent-rgb),0.75) 0%, rgba(160,220,50,0.55) 100%);
+    border-radius:1px;
+    box-shadow:0 0 6px rgba(var(--jb-accent-rgb),0.25);
+    pointer-events:none;
+}
+.jbp-settings .jb-slider-thumb {
+    position:absolute; top:50%; width:12px; height:16px;
+    background:
+        linear-gradient(180deg, rgba(75,80,62,0.95) 0%, rgba(45,48,36,0.95) 100%);
+    border:1px solid rgba(140,150,120,0.55);
+    transform:translate(-50%, -50%);
+    pointer-events:none;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 1px 3px rgba(0,0,0,0.5);
+    clip-path:polygon(15% 0, 85% 0, 100% 35%, 100% 65%, 85% 100%, 15% 100%, 0 65%, 0 35%);
+}
 .jbp-settings .jb-slider-value {
-    width:32px; flex-shrink:0;
-    text-align:right;
-    font:10px/1 "Consolas","Courier New",monospace;
-    color:rgba(255,255,255,0.5);
+    width:34px; flex-shrink:0;
+    text-align:center;
+    font:11px/1 "Consolas","Courier New",monospace;
+    color:var(--jb-accent);
+    background:rgba(var(--jb-accent-rgb),0.08);
+    border:1px solid rgba(var(--jb-accent-rgb),0.18);
+    padding:2px 0;
+    clip-path:polygon(0 0, calc(100% - 3px) 0, 100% 3px, 100% 100%, 3px 100%, 0 calc(100% - 3px));
 }
+
+/* 设置项行：控制台开关 */
 .jbp-settings .jb-setting-row {
-    display:flex; align-items:center; gap:6px;
-    padding:4px 6px; cursor:pointer;
-    border-radius:3px;
-    color:rgba(255,255,255,0.7);
+    display:flex; align-items:center; gap:8px;
+    padding:4px 7px;
+    cursor:pointer;
+    background:linear-gradient(90deg, rgba(30,34,26,0.55) 0%, rgba(18,20,14,0.55) 100%);
+    border:1px solid rgba(120,130,100,0.18);
+    color:var(--jb-text-dim);
+    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+    transition:all 100ms ease;
 }
-.jbp-settings .jb-setting-row:hover { background:rgba(255,255,255,0.04); }
-.jbp-settings .jb-setting-row.active { color:rgba(102,204,255,0.95); }
+.jbp-settings .jb-setting-row:hover {
+    background:linear-gradient(90deg, rgba(45,50,36,0.70) 0%, rgba(26,28,20,0.70) 100%);
+    border-color:rgba(var(--jb-accent-rgb),0.28);
+    color:#f4ffd6;
+}
+.jbp-settings .jb-setting-row.active {
+    background:linear-gradient(90deg, rgba(var(--jb-accent-rgb),0.16) 0%, rgba(var(--jb-accent-rgb),0.06) 100%);
+    border-color:rgba(var(--jb-accent-rgb),0.42);
+    color:var(--jb-accent);
+    box-shadow:inset 3px 0 0 rgba(var(--jb-accent-rgb),0.55);
+}
 .jbp-settings .jb-setting-dot {
     width:10px; height:10px; flex-shrink:0;
-    border:1px solid rgba(255,255,255,0.4);
+    border:1px solid rgba(140,150,120,0.50);
     border-radius:50%;
-    background:transparent;
+    background:radial-gradient(circle at 35% 35%, rgba(255,255,255,0.12), rgba(0,0,0,0.25));
+    box-shadow:inset 0 1px 2px rgba(0,0,0,0.4);
+    transition:all 100ms ease;
 }
 .jbp-settings .jb-setting-row.active .jb-setting-dot {
-    background:rgba(102,204,255,0.85);
-    border-color:rgba(102,204,255,1);
+    background:
+        radial-gradient(circle at 35% 35%, rgba(255,255,255,0.55), var(--jb-accent) 40%, rgba(120,170,30,0.90) 100%);
+    border-color:var(--jb-accent);
+    box-shadow:0 0 6px rgba(var(--jb-accent-rgb),0.45);
 }
-.jbp-settings .jb-setting-label { font-size:11px; }
+.jbp-settings .jb-setting-label { font-size:11px; letter-spacing:0.3px; }
+
+/* ── 帮助弹窗 ── */
 .jbp-help-modal {
     display:none; position:absolute;
     top:50%; left:50%; transform:translate(-50%,-50%);
     width:80%; max-height:80%;
-    background:rgba(18,20,26,0.98);
-    border:1px solid rgba(102,204,255,0.3);
-    border-radius:4px;
+    background:rgba(10,12,8,0.98);
+    border:1px solid rgba(var(--jb-accent-rgb),0.32);
     padding:16px; z-index:20;
     overflow-y:auto;
+    box-shadow:
+        inset 0 0 24px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(20,22,16,0.95),
+        0 16px 48px rgba(0,0,0,0.55);
+    clip-path:polygon(
+        0 0,
+        calc(100% - 12px) 0,
+        100% 12px,
+        100% 100%,
+        12px 100%,
+        0 calc(100% - 12px)
+    );
 }
 .jbp-help-modal.visible { display:block; }
 .jbp-help-content {
-    color:rgba(255,255,255,0.85); line-height:1.6;
-    margin-bottom:10px;
+    color:var(--jb-text); line-height:1.7;
+    margin-bottom:14px;
+}
+.jbp-help-content h3,
+.jbp-help-content strong {
+    color:var(--jb-accent);
 }
 .jbp-help-close {
-    background:rgba(102,204,255,0.18);
-    color:rgba(102,204,255,0.95);
-    border:1px solid rgba(102,204,255,0.3);
-    border-radius:3px;
-    padding:6px 14px; cursor:pointer;
+    background:linear-gradient(180deg, rgba(55,60,48,0.95) 0%, rgba(32,35,26,0.95) 100%);
+    color:var(--jb-text);
+    border:1px solid rgba(var(--jb-accent-rgb),0.35);
+    padding:6px 16px; cursor:pointer;
+    font-family:inherit;
+    clip-path:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+    transition:all 120ms ease;
 }
-.jbp-help-close:hover { background:rgba(102,204,255,0.3); }
+.jbp-help-close:hover {
+    background:linear-gradient(180deg, rgba(75,82,62,0.95) 0%, rgba(42,46,34,0.95) 100%);
+    border-color:rgba(var(--jb-accent-rgb),0.55);
+    color:#f4ffd6;
+    box-shadow:0 0 8px rgba(var(--jb-accent-rgb),0.18);
+}
 /* Stage Select Panel - Phase 1 static replica */
 .stage-select-panel {
     position: relative;

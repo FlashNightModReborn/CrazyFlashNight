@@ -82,10 +82,20 @@
             // 沉浸全屏化 2026-06-12：双栏控制台（左 Now-Playing：波形+进度+设置；右 曲库：专辑下拉+曲目列表）
             '<div class="jbp-body">',
                 '<div class="jbp-now">',
-                    '<canvas class="jbp-wave" id="jbp-wave" width="800" height="64"></canvas>',
-                    '<div class="jbp-progress" id="jbp-progress"><div class="jbp-prog-fill" id="jbp-prog-fill"></div></div>',
+                    '<div class="jbp-wave-bezel">',
+                        '<canvas class="jbp-wave" id="jbp-wave" width="800" height="64"></canvas>',
+                        '<span class="jbp-wave-corner jbp-wave-corner-tl"></span>',
+                        '<span class="jbp-wave-corner jbp-wave-corner-tr"></span>',
+                        '<span class="jbp-wave-corner jbp-wave-corner-bl"></span>',
+                        '<span class="jbp-wave-corner jbp-wave-corner-br"></span>',
+                    '</div>',
+                    '<div class="jbp-progress-row">',
+                        '<span class="jbp-prog-time" id="jbp-prog-time-start">00:00</span>',
+                        '<div class="jbp-progress" id="jbp-progress"><div class="jbp-prog-fill" id="jbp-prog-fill"></div></div>',
+                        '<span class="jbp-prog-time" id="jbp-prog-time-end">00:00</span>',
+                    '</div>',
                     '<div class="jbp-settings" id="jbp-settings">',
-                        '<div class="jb-setting-group-label">音量</div>',
+                        '<div class="jb-setting-group-label">音量控制</div>',
                         '<div class="jb-slider-row" data-slider="volGlobal">',
                             '<span class="jb-slider-label">全局</span>',
                             '<div class="jb-slider-track"><div class="jb-slider-fill"></div><div class="jb-slider-thumb"></div></div>',
@@ -97,6 +107,7 @@
                             '<span class="jb-slider-value">80</span>',
                         '</div>',
                         '<div class="jb-setting-divider"></div>',
+                        '<div class="jb-setting-group-label">播放源设置</div>',
                         '<div class="jb-setting-row jb-setting-item" data-key="override">',
                             '<span class="jb-setting-dot"></span>',
                             '<span class="jb-setting-label">覆盖关卡BGM</span>',
@@ -145,6 +156,8 @@
         _refs.canvas      = _el.querySelector('#jbp-wave');
         _refs.progFill    = _el.querySelector('#jbp-prog-fill');
         _refs.progBar     = _el.querySelector('#jbp-progress');
+        _refs.progTimeStart = _el.querySelector('#jbp-prog-time-start');
+        _refs.progTimeEnd   = _el.querySelector('#jbp-prog-time-end');
         _refs.albumWrap   = _el.querySelector('#jbp-album-dropdown');
         _refs.albumTrig   = _el.querySelector('#jbp-album-trigger');
         _refs.albumLabel  = _el.querySelector('#jbp-album-label');
@@ -315,6 +328,8 @@
         if (_refs.title) _refs.title.textContent = '未播放';
         if (_refs.time) _refs.time.textContent = '';
         if (_refs.progFill) _refs.progFill.style.width = '0%';
+        if (_refs.progTimeStart) _refs.progTimeStart.textContent = '00:00';
+        if (_refs.progTimeEnd) _refs.progTimeEnd.textContent = '00:00';
         if (_refs.pauseBtn) {
             _refs.pauseBtn.classList.remove('paused');
             _refs.pauseBtn.textContent = '‖';
@@ -333,7 +348,7 @@
     }
 
     function fmtTime(sec) {
-        if (!sec || sec <= 0) return '--:--';
+        if (!sec || sec <= 0) return '00:00';
         var m = Math.floor(sec / 60);
         var s = Math.floor(sec % 60);
         return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
@@ -357,9 +372,13 @@
             var pct = Math.min(cursor / duration, 1) * 100;
             if (_refs.progFill) _refs.progFill.style.width = pct + '%';
             if (_refs.time) _refs.time.textContent = fmtTime(cursor) + '/' + fmtTime(duration);
+            if (_refs.progTimeStart) _refs.progTimeStart.textContent = fmtTime(cursor);
+            if (_refs.progTimeEnd) _refs.progTimeEnd.textContent = fmtTime(duration);
         } else {
             if (_refs.progFill) _refs.progFill.style.width = '0%';
             if (_refs.time) _refs.time.textContent = '';
+            if (_refs.progTimeStart) _refs.progTimeStart.textContent = '00:00';
+            if (_refs.progTimeEnd) _refs.progTimeEnd.textContent = '00:00';
         }
         var now = performance.now ? performance.now() : Date.now();
         if (!visualizersDisabled() && now - lastWaveRenderAt >= WAVE_RENDER_MS) {
@@ -391,13 +410,13 @@
             var age = (histLen - 1 - i) / Math.max(histLen - 1, 1);
             var alpha = playing ? (0.3 + 0.7 * (1 - age)) : 0.15;
             var hL = Math.max(1 * dpr, lv * maxH);
-            ctx.fillStyle = 'rgba(102,204,255,' + alpha + ')';
+            ctx.fillStyle = 'rgba(200,255,76,' + alpha + ')';
             ctx.fillRect(x, midY - hL, Math.max(barW - 0.5, 1), hL);
             var hR = Math.max(1 * dpr, rv * maxH);
-            ctx.fillStyle = 'rgba(150,220,255,' + (alpha * 0.8) + ')';
+            ctx.fillStyle = 'rgba(180,255,90,' + (alpha * 0.8) + ')';
             ctx.fillRect(x, midY, Math.max(barW - 0.5, 1), hR);
         }
-        ctx.fillStyle = 'rgba(255,255,255,0.15)';
+        ctx.fillStyle = 'rgba(200,255,76,0.25)';
         ctx.fillRect(0, midY - 0.5 * dpr, w, 1 * dpr);
     }
 

@@ -38,7 +38,7 @@
 
     // ── jukebox ──
     Panels.registerLazy('jukebox',
-        ['modules/panels/jukebox-panel.js'],
+        ['modules/jukebox/jukebox-panel.js'],
         noop);
 
     // ── map ──

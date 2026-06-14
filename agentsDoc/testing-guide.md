@@ -68,9 +68,10 @@ Native HUD parity gate：改 [NotchOverlay](../launcher/src/Guardian/NotchOverla
 |------|------|
 | Node QA(单局) | `node launcher/tools/run-minigame-qa.js --game lockbox\|pinalign\|gobang` |
 | Node QA(全套) | `node launcher/tools/run-minigame-qa.js --game all` |
+| Jukebox Panel harness | `node tools/run-jukebox-harness.js --browser edge` |
 | 静态校验 | `node launcher/tools/validate-minigame-final-state.js` |
 
-**Browser harness**(直接打开)：`launcher/web/modules/minigames/{lockbox,pinalign,gobang}/dev/harness.html` / `launcher/web/modules/map/dev/harness.html` / `launcher/web/modules/stage-select/dev/harness.html` / `launcher/web/modules/intelligence/dev/harness.html`。
+**Browser harness**(直接打开)：`launcher/web/modules/minigames/{lockbox,pinalign,gobang}/dev/harness.html` / `launcher/web/modules/map/dev/harness.html` / `launcher/web/modules/stage-select/dev/harness.html` / `launcher/web/modules/intelligence/dev/harness.html` / `launcher/web/modules/jukebox/dev/harness.html`。
 
 **默认顺序**：纯逻辑 / 确定性问题先跑 Node QA；协议 / DOM / 布局 / 交互问题进 browser harness；目录 / 协议 / 旧入口回流问题再补静态校验。
 `map` harness 固定覆盖：Canvas renderer debug state 与非空像素、顶部分页与关闭按钮的 hit-test 可达性、右侧层级按钮遮挡、学校页 `室友头像` 动态切换、`1366x768` 紧凑视口滚动可达性、locked group 的锁定提示与锁定原因可达性、`base` assembled 热点框与 Canvas scene visual 联合包围框对齐（`map-ui11`）、静态头像运行时 rect 与 source metadata 对齐（`map-ui10`）、taskNpc 环锚点跟随并套住动态头像、任务环层低于 hotspot 标签层（`map-ui12`）、连点热点去重 + busy 物理 disabled（`map-ui13`）、hotspot / 分页 / filter / close 的 `data-audio-cue` 语义路由 **且单次触发**（`map-ui14`，依赖 overlay 载入 `modules/audio.js` + `modules/overlay-audio-bindings.js`；harness 用 `BootstrapAudio` 计数器存根替身）、右侧 rail 脱离 stage frame + body 不溢出（`map-ui15`）、locked filter 点击不切状态且弹锁定原因 toast（`map-ui16`）、faction filter 切换驱动 `data-active-filter` 属性与 canvas filter summary（`map-ui17`）、defense restricted filter 触发 canvas anomaly state（`map-ui18`）、rail 手风琴仅展开 active 非 meta filter 子场景列表 + 点子项复用 `requestNavigate`（`map-ui19` / `map-ui20`）、filter-fit preset 按 page/filter preset 命中并维持 coverage floor（`map-ui21`）、学校页静态头像与场景归属保持一致并输出 review 候选（`map-ui22`）、热点左下角标签通过 content-fit 内独立标签层保持高于透明命中层并贴合热点（`map-ui23`）、地图热点二级“选关”动作打开匹配 stage-select frame 且不替代主 `navigate`（`map-ui24`）、host 驱动关闭后 canvas RAF 循环停止不泄漏（`map-ui25`）、任务红点 hotspot/filter/page 三级聚合 + 同 hotspot 多 NPC 折叠为 1（`map-ui26`）、locked group 剧透防护下任务红点不点亮（`map-ui27`）、task hotspot stage-select 副动作快捷入口（`map-ui28`）、同一 hotspot 多 NPC 仅计 1 + 跨 filter 折叠（`map-ui29`）、page tab badge 计数 >= 10 时夹到 "9+"（`map-ui30`）、pixel-level hittest 引擎 alpha 边缘 / 重叠覆盖（z 顺序后画覆盖前画）/ filter 过滤 / 浮点/NaN 坐标边界（`map-ui31a`~`map-ui31d`）、sceneVisual DOM 层非 hierarchy 模式 canvas drawScenes 短路（`map-ui32a`）/ hierarchy 模式 canvas 画非 focus muted + DOM 显 focus 无双绘（`map-ui32b`）/ current+hover 不同位 DOM 两张同显 + dimmer 压暗（`map-ui32c`）。
@@ -87,8 +88,7 @@ URL 参数:`?qa=1` 自动断言 / `?case=` 单条 / `?scenario=` 脚本场景 / 
 
 若改动后的行为无法被现有 harness 或 QA 覆盖，同轮补测试入口，不把“靠人工记得点开”当作默认收尾。
 
-静态校验拦截:旧平铺 Lockbox 入口、旧版分游戏 session 命令名、旧共享结构 class 名。Jukebox panel 暂无自动 harness：改 `web/modules/panels/jukebox-panel.js` / `WebOverlayForm.HandleJukeboxMessage` / `MusicCatalog` / `RightContextWidget` jukebox titlebar 时人工走 [launcher/README.md](../launcher/README.md) "Jukebox panel 手测" 12 步。
-
+静态校验拦截:旧平铺 Lockbox 入口、旧版分游戏 session 命令名、旧共享结构 class 名。Jukebox Panel 自动 harness：`launcher/web/modules/jukebox/dev/harness.html`（手动）或 `node tools/run-jukebox-harness.js --browser edge`（无头）。改 `web/modules/jukebox/jukebox-panel.js` / `WebOverlayForm.HandleJukeboxMessage` / `MusicCatalog` / `RightContextWidget` jukebox titlebar 时仍须补跑 [launcher/README.md](../launcher/README.md) "Jukebox panel 手测" 12 步中未被 harness 覆盖的端到端项。
 ## 5. 自动化与文档治理
 
 | 用途 | 入口 |

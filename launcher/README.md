@@ -495,7 +495,7 @@ launcher/
 │       ├── currency.js                    经济面板动画
 │       ├── combo.js                       搓招连击飞出动效
 │       ├── cursor-feedback.js             Web DOM hover/press 状态回传（只回状态不回坐标）
-│       ├── jukebox.js                     旧 BGM 点歌器入口（脚本入口已注释；展开 UI 已迁 panels/jukebox-panel.js）
+│       ├── jukebox.js                     旧 BGM 点歌器入口（脚本入口已注释；展开 UI 已迁 jukebox/jukebox-panel.js）
 │       ├── panels.js                      通用面板生命周期（register/registerLazy/open/close/ESC）
 │       ├── panels-lazy-registry.js        12 个面板的懒注册表（id → deps[]；首次 open 时按需加载对应模块）
 │       ├── panels/
@@ -1275,7 +1275,7 @@ Guardian 通过 Win32 `SetParent` 将 Flash Player SA 窗口嵌入 `_flashPanel`
 
 **BGM**：双 `ma_sound` 实例 ping-pong crossfade。切换时旧曲淡出与新曲淡入重叠进行，基于 `ma_engine_get_time_in_milliseconds` 全局时钟调度。`stopBGM` 使用 `ma_sound_stop_with_fade_in_milliseconds`，操作两个槽位确保无残留。注意 miniaudio 的 base volume 与 fader 是相乘关系，crossfade 路径中 `ma_sound_set_volume` 必须设为 1.0（由 fader 独立控制 0→1 淡入）。Seek 使用 `ma_sound_seek_to_second()`（基于声源自身采样率换算，不依赖 engine sample rate）。
 
-**BGM 可视化 + 点歌器**：`PeakDetector` 自定义节点（`ma_node_vtable` passthrough）插入 bgmGroup → engine endpoint 之间，实时采样 L/R peak。C# 60ms 轮询 `ma_bridge_bgm_get_peak/cursor/length/is_playing` → WebView2 `PostWebMessageAsJson` 推 `audio` 消息。折叠态由 C# `RightContextWidget` 的 jukebox titlebar 接管（mini wave + 标题 + pause/expand）；展开 UI 是正式 panel：[panels/jukebox-panel.js](web/modules/panels/jukebox-panel.js) 注册 `Panels.register('jukebox')`，由 `JUKEBOX_EXPAND` → `LauncherCommandRouter.OpenPanel("jukebox")` → `PanelHostController` 走完整 backdrop / EX_STYLE / HUD-suspend 序列后渲染大波形 + 进度条 + 专辑浏览 + 选曲 + 设置（音量 / 覆盖关卡BGM / 真随机 / 播放模式）+ 帮助 markdown。曲目标题由 AS2 `pushUiState("bgm:title")` 经 UiData 推送（jukebox-panel.js onOpen 通过 `UiData.get('bgm')` seed 当前值，避免 panel 晚于启动期打开错过历史推送），设置状态由 `jbo:/jbr:/jbm:/vg:/vb:` 通道同步。catalog 由 `MusicCatalog` 在启动期 + 文件变更时增量推 `catalog`/`catalogUpdate`；后开 panel 缺失时主动 `cmd:'requestCatalog'` 拉全量。Web 旧 [modules/jukebox.js](web/modules/jukebox.js) 已注释脚本入口（DOM 暂留 Phase 7 删除），不再参与运行时音频/UiData 订阅。
+**BGM 可视化 + 点歌器**：`PeakDetector` 自定义节点（`ma_node_vtable` passthrough）插入 bgmGroup → engine endpoint 之间，实时采样 L/R peak。C# 60ms 轮询 `ma_bridge_bgm_get_peak/cursor/length/is_playing` → WebView2 `PostWebMessageAsJson` 推 `audio` 消息。折叠态由 C# `RightContextWidget` 的 jukebox titlebar 接管（mini wave + 标题 + pause/expand）；展开 UI 是正式 panel：[jukebox/jukebox-panel.js](web/modules/jukebox/jukebox-panel.js) 注册 `Panels.register('jukebox')`，由 `JUKEBOX_EXPAND` → `LauncherCommandRouter.OpenPanel("jukebox")` → `PanelHostController` 走完整 backdrop / EX_STYLE / HUD-suspend 序列后渲染大波形 + 进度条 + 专辑浏览 + 选曲 + 设置（音量 / 覆盖关卡BGM / 真随机 / 播放模式）+ 帮助 markdown。曲目标题由 AS2 `pushUiState("bgm:title")` 经 UiData 推送（jukebox-panel.js onOpen 通过 `UiData.get('bgm')` seed 当前值，避免 panel 晚于启动期打开错过历史推送），设置状态由 `jbo:/jbr:/jbm:/vg:/vb:` 通道同步。catalog 由 `MusicCatalog` 在启动期 + 文件变更时增量推 `catalog`/`catalogUpdate`；后开 panel 缺失时主动 `cmd:'requestCatalog'` 拉全量。Web 旧 [modules/jukebox.js](web/modules/jukebox.js) 已注释脚本入口（DOM 暂留 Phase 7 删除），不再参与运行时音频/UiData 订阅。
 
 **SFX**：启动时扫描 `sounds/export/{武器,特效,人物}/` 目录，文件名即 linkageId，覆盖顺序武器→特效→人物（后覆盖前）。Flash 侧帧内累积，帧末由 FrameBroadcaster 合批发送 `S{id1}|{id2}|{id3}` 快车道消息。native 层 90ms 去重。
 
@@ -1499,7 +1499,14 @@ JS Bridge.send({cmd:'close', panel:id}) → C# HandlePanelMessage → PanelHost/
 - **佣兵阵亡 / 复活币**：佣兵与战宠机制不同——不耗体力，但战斗阵亡后 `佣兵是否出战信息[i] = -1`（死亡检测写入），必须消耗 1 枚「复活币」（`data/items/收集品_材料.xml` 材料）才能再出战。snapshot 佣兵摘要带 `dead`，快照级带 `reviveCoins`（`ItemUtil.getTotal`）；新增 Web cmd `revive` → C# `MercTask` → AS2 `mercRevive`（校验 -1 态 → `ItemUtil.singleSubmit("复活币",1)` → 置 0=休息位，标脏），`deploy` 对 -1 态回 `merc_dead` 硬拒。Web 端：阵亡卡红框/去彩/「阵亡」徽章，出战位变「复活」（复活币不足禁用），工具栏带复活币计数；培养页 header 同步三态（出战/休息/复活）。
 - **战宠战斗属性成长**：`petSnapshot` 每宠新增 `combat`（hp/attack/defense/speed 各为 `{start,cur,max}` 三点采样 + startLevel/maxLevel/difficulty）——`PetPanelService` 与出战实体初始化管线同构：基线按 `_root.敌人属性表[兵种]`（源 `data/enemy_properties` XML）线性插值（生命/攻击 × 当前 `难度等级`），再与 `敌人函数.宠物属性初始化` 同构地在**纯对象 sim** 上重放已达成进阶方案的 `单位进阶执行`（这些函数只读 `this.宠物属性`、只写 this 数值字段，无 MC 依赖；写入只落 sim，不回写真实宠物属性）。战宠培养页「战斗属性」区块渲染成长条：起点 Lv.1 → 当前（填充进度）→ 满级（`_root.等级限制`），已计入进阶加成；兵种缺属性表或旧 SWF 时整块隐藏。
 - **arena**（竞技场 DEATH MATCH）: `web/modules/arena-panel.js`；`Panels.register('arena')`，8 张角斗场卡 + 详情/掷骰/进场，`ArenaTask` 双层 callId；可经地图/选关二级动作以 `returnToPanel` 重定向进入，close 不通知 AS2
-- **jukebox**（BGM 点歌台）: `web/modules/panels/jukebox-panel.js` 注册 `Panels.register('jukebox')`，由 `RightContextWidget` 的 jukebox titlebar 展开按钮 → `JUKEBOX_EXPAND` → `LauncherCommandRouter.OpenPanel("jukebox")` 触发；与 kshop/help 等通用 panel 同走完整 backdrop / EX_STYLE / HUD-suspend 序列。沉浸全屏化（2026-06-12）后 PanelLayoutCatalog 对 jukebox 返回全 anchor（不再走 Centered 880×620 子矩形）；`jukebox-panel.js` 改固定 1024×576(16:9) 画布外套共享 `.panel-scale-shell` + `PanelScale.attach` 整体等比缩放铺满全 anchor（双栏控制台：左 Now-Playing 波形/进度/设置，右 曲库 专辑/曲目）。`#panel-content` inset:0、backdrop 兜底深底色（panel 铺满后不可见）。曲库 / UiData 状态在 onOpen 时通过 `cmd:'requestCatalog'` + `UiData.get` seed 当前值，避免晚注册错过历史推送。close 路径收敛：× 按钮 / ESC / backdrop click 三入口共用 `closeLocally`（先 `Panels.close()` 让 `_active` 复位再 `Bridge.send panel close`）——避免 ESC/backdrop 单独走 onRequestClose 时 `_active` 滞留导致下次 open 早 return
+- **jukebox**（BGM 点歌台）: `web/modules/jukebox/jukebox-panel.js` 注册 `Panels.register('jukebox')`，由 `RightContextWidget` 的 jukebox titlebar 展开按钮 → `JUKEBOX_EXPAND` → `LauncherCommandRouter.OpenPanel("jukebox")` 触发；与 kshop/help 等通用 panel 同走完整 backdrop / EX_STYLE / HUD-suspend 序列。沉浸全屏化（2026-06-12）后 PanelLayoutCatalog 对 jukebox 返回全 anchor（不再走 Centered 880×620 子矩形）；`jukebox-panel.js` 改固定 1024×576(16:9) 画布外套共享 `.panel-scale-shell` + `PanelScale.attach` 整体等比缩放铺满全 anchor（双栏控制台：左 Now-Playing 波形/进度/设置，右 曲库 专辑/曲目）。`#panel-content` inset:0、backdrop 兜底深底色（panel 铺满后不可见）。曲库 / UiData 状态在 onOpen 时通过 `cmd:'requestCatalog'` + `UiData.get` seed 当前值，避免晚注册错过历史推送。close 路径收敛：× 按钮 / ESC / backdrop click 三入口共用 `closeLocally`（先 `Panels.close()` 让 `_active` 复位再 `Bridge.send panel close`）——避免 ESC/backdrop 单独走 onRequestClose 时 `_active` 滞留导致下次 open 早 return
+
+#### Jukebox panel harness
+
+浏览器 harness：`launcher/web/modules/jukebox/dev/harness.html`（手动调 viewport / 单 case）。
+无头运行：`node tools/run-jukebox-harness.js --browser edge [--viewport 1366x768] [--case <id>] [--headed]`。
+
+覆盖项：面板开闭生命周期、seed 状态渲染、曲库/专辑下拉渲染、当前曲目高亮、点击曲目切歌、暂停/继续/停止、音量滑条、覆盖关卡BGM / 真随机 / 播放模式切换、帮助弹窗、设置区无滚动条、专辑下拉滚动条风格统一。
 
 #### Jukebox panel 手测
 

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Jukebox Panel Harness</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../../css/panels.css">
+<link rel="stylesheet" href="../../minigames/shared/dev/harness-base.css">
+<style>
+    #viewport-shell {
+        width: 1366px;
+        height: 768px;
+        margin: 52px auto 16px;
+        border: 1px solid #334155;
+        background: #020617;
+        position: relative;
+    }
+    #panel-container {
+        display: block;
+        position: absolute;
+        inset: 0;
+    }
+    #panel-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.58);
+    }
+    #panel-content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    body.jukebox-qa {
+        overflow: hidden;
+    }
+    body.jukebox-qa #harness-toolbar,
+    body.jukebox-qa #harness-status {
+        display: none;
+    }
+    body.jukebox-qa #viewport-shell {
+        margin: 0;
+        border: 0;
+    }
+    body.jukebox-qa #qa-panel,
+    body.jukebox-qa #debug-log {
+        pointer-events: none;
+    }
+</style>
+</head>
+<body>
+<div id="harness-toolbar">
+    <div class="harness-group">
+        <label for="jukebox-viewport-select">viewport</label>
+        <select id="jukebox-viewport-select">
+            <option value="1024x576">1024x576</option>
+            <option value="1366x768" selected>1366x768</option>
+            <option value="1920x1080">1920x1080</option>
+        </select>
+    </div>
+    <div class="harness-group">
+        <button type="button" id="jukebox-open-btn">open</button>
+        <button type="button" id="jukebox-close-btn">close</button>
+    </div>
+</div>
+
+<div id="harness-status">Jukebox panel harness ready.</div>
+
+<div id="viewport-shell">
+    <div id="panel-container" data-panel="jukebox">
+        <div id="panel-backdrop"></div>
+        <div id="panel-content"></div>
+    </div>
+</div>
+
+<script>
+(function() {
+    var listeners = [];
+    window.chrome = window.chrome || {};
+    window.chrome.webview = {
+        addEventListener: function(type, handler) {
+            if (type === 'message') listeners.push(handler);
+        },
+        postMessage: function(message) {
+            if (window.JukeboxHarnessHost) {
+                window.JukeboxHarnessHost.sentMessages.push(message);
+                if (window.JukeboxHarnessHost.handleMessage) window.JukeboxHarnessHost.handleMessage(message);
+            }
+        },
+        __dispatch: function(data) {
+            var event = { data: data };
+            listeners.forEach(function(listener) { listener(event); });
+        }
+    };
+})();
+</script>
+<script src="../../../lib/marked.min.js"></script>
+<script src="../../bridge.js"></script>
+<script src="../../panels.js"></script>
+<script src="../../panel-scale.js"></script>
+<script src="../../uidata.js"></script>
+<script src="../../minigames/shared/dev/harness-base.js"></script>
+<script src="../jukebox-panel.js"></script>
+<script src="./qa-suite.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    var query = MinigameHarness.parseQuery(location.search);
+    var shell = document.getElementById('viewport-shell');
+    var statusEl = document.getElementById('harness-status');
+    var viewportSelect = document.getElementById('jukebox-viewport-select');
+
+    if (query.qa === '1' || query.case) {
+        document.body.classList.add('jukebox-qa');
+    }
+
+    function setViewport(value) {
+        var parts = String(value || '1366x768').split('x');
+        var width = Math.max(800, parseInt(parts[0] || '1366', 10) || 1366);
+        var height = Math.max(560, parseInt(parts[1] || '768', 10) || 768);
+        shell.style.width = width + 'px';
+        shell.style.height = height + 'px';
+        viewportSelect.value = width + 'x' + height;
+    }
+
+    var FIXTURE_TRACKS = [
+        { title: 'Tetrriture', album: 'Rammstein', weight: 10 },
+        { title: 'where am i', album: 'Rammstein', weight: 10 },
+        { title: 'Für Elise', album: 'PB', weight: 10 },
+        { title: 'Bring Your Own Doggg', album: 'PB', weight: 10 },
+        { title: 'The Incident', album: 'EAW', weight: 10 },
+        { title: 'The Prime Prime of Your Prime', album: 'EAW', weight: 10 },
+        { title: 'By Peace Or By Power', album: 'Kevin_Macleod', weight: 10 },
+        { title: 'Darkess', album: 'Kevin_Macleod', weight: 10 },
+        { title: 'Bedtime Story', album: 'BONUS', weight: 10 },
+        { title: 'Bulletproof', album: 'BONUS', weight: 10 },
+        { title: 'Mother Mary', album: 'Chrono_Ark', weight: 10 },
+        { title: 'To Victory', album: 'Chrono_Ark', weight: 10 }
+    ];
+
+    var host = window.JukeboxHarnessHost = {
+        sentMessages: [],
+        currentTitle: 'Tetrriture',
+        currentDuration: 178,
+        currentCursor: 8,
+        playing: true,
+        paused: false,
+        volGlobal: 50,
+        volBgm: 80,
+        override: false,
+        trueRandom: false,
+        playMode: 'singleLoop',
+        helpText: '# 点歌台帮助\n\n- 点击曲目即可切歌\n- 拖动进度条可 seek\n- 音量分全局/音乐两路',
+
+        setViewport: setViewport,
+
+        seedUiData: function() {
+            UiData.dispatch([
+                'bgm:' + host.currentTitle,
+                'jbo:' + (host.override ? '1' : '0'),
+                'jbr:' + (host.trueRandom ? '1' : '0'),
+                'jbm:' + host.playMode,
+                'vg:' + host.volGlobal,
+                'vb:' + host.volBgm
+            ].join('|'));
+        },
+
+        open: function() {
+            host.seedUiData();
+            if (Panels.getActive && Panels.getActive() === 'jukebox') Panels.close();
+            Panels.open('jukebox');
+            statusEl.textContent = 'Opened jukebox.';
+        },
+
+        close: function() {
+            Panels.close();
+            statusEl.textContent = 'Closed.';
+        },
+
+        dispatchAudio: function() {
+            window.chrome.webview.__dispatch({
+                type: 'audio',
+                l: host.playing && !host.paused ? 0.6 : 0,
+                r: host.playing && !host.paused ? 0.55 : 0,
+                p: host.playing && !host.paused ? 1 : 0,
+                c: host.currentCursor,
+                d: host.currentDuration
+            });
+        },
+
+        dispatchCatalog: function() {
+            window.chrome.webview.__dispatch({
+                type: 'catalog',
+                tracks: FIXTURE_TRACKS
+            });
+        },
+
+        dispatchHelpText: function() {
+            window.chrome.webview.__dispatch({
+                type: 'helpText',
+                text: host.helpText
+            });
+        },
+
+        handleMessage: function(message) {
+            if (!message) return;
+
+            if (message.type === 'panel' && message.cmd === 'close' && message.panel === 'jukebox') {
+                Panels.close();
+                return;
+            }
+            if (message.type !== 'jukebox') return;
+
+            var cmd = message.cmd;
+            if (cmd === 'requestCatalog') {
+                setTimeout(function() {
+                    host.dispatchCatalog();
+                    host.dispatchAudio();
+                }, 15);
+            } else if (cmd === 'play') {
+                host.currentTitle = message.title || '未知曲目';
+                host.currentCursor = 0;
+                host.playing = true;
+                host.paused = false;
+                UiData.dispatch('bgm:' + host.currentTitle);
+                setTimeout(function() { host.dispatchAudio(); }, 15);
+            } else if (cmd === 'pause') {
+                host.paused = true;
+                setTimeout(function() { host.dispatchAudio(); }, 15);
+            } else if (cmd === 'resume') {
+                host.paused = false;
+                setTimeout(function() { host.dispatchAudio(); }, 15);
+            } else if (cmd === 'stop') {
+                host.playing = false;
+                host.paused = false;
+                host.currentTitle = '';
+                host.currentCursor = 0;
+                UiData.dispatch('bgm:');
+                setTimeout(function() { host.dispatchAudio(); }, 15);
+            } else if (cmd === 'seek') {
+                host.currentCursor = Math.max(0, Math.min(host.currentDuration, message.sec || 0));
+                setTimeout(function() { host.dispatchAudio(); }, 15);
+            } else if (cmd === 'volGlobal') {
+                host.volGlobal = message.value;
+                UiData.dispatch('vg:' + host.volGlobal);
+            } else if (cmd === 'volBgm') {
+                host.volBgm = message.value;
+                UiData.dispatch('vb:' + host.volBgm);
+            } else if (cmd === 'override') {
+                host.override = message.value;
+                UiData.dispatch('jbo:' + (host.override ? '1' : '0'));
+            } else if (cmd === 'trueRandom') {
+                host.trueRandom = message.value;
+                UiData.dispatch('jbr:' + (host.trueRandom ? '1' : '0'));
+            } else if (cmd === 'playMode') {
+                host.playMode = message.value;
+                UiData.dispatch('jbm:' + host.playMode);
+            } else if (cmd === 'loadHelp') {
+                setTimeout(function() { host.dispatchHelpText(); }, 15);
+            }
+        }
+    };
+
+    document.getElementById('jukebox-open-btn').addEventListener('click', function() { host.open(); });
+    document.getElementById('jukebox-close-btn').addEventListener('click', function() { host.close(); });
+    viewportSelect.addEventListener('change', function() { host.setViewport(this.value); });
+
+    if (query.viewport) host.setViewport(query.viewport);
+
+    var api = MinigameHarness.create({
+        panelId: 'jukebox',
+        title: 'Jukebox Panel QA',
+        openPanel: function() {
+            host.setViewport(query.viewport || '1366x768');
+            host.open();
+        },
+        runSuite: function(api, onlyCase) {
+            return JukeboxHarnessQA.runSuite(api, host, onlyCase);
+        }
+    });
+    api.boot();
+})();
+</script>
+</body>
+</html>
