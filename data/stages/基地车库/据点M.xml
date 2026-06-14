@@ -328,6 +328,16 @@
                 <Text>这是控制大门的设备吗？屏幕和键盘都被炸坏了。只剩一个拉杆好像还能用……</Text>
             </Dialogue>
         </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>5</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#微笑</Char>
+                <Text>一通乱拉居然把门开了。趁着盗贼和僵尸缠斗，赶紧前进吧！</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
