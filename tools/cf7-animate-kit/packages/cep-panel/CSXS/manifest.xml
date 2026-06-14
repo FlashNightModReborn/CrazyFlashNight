@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  cf7-animate-kit CEP panel manifest.
+
+  Loaded by Adobe Animate's CEP host (CEP 9+ / CEF). Declares one Panel
+  extension whose UI is ./index.html and whose JSFL host script is
+  ./host/index.jsfl (copied in from ../jsfl-host/host at build time).
+
+  The panel calls the host functions through CSInterface.evalScript — see
+  ../src/bridge.ts. No networking here; all of CEP's value is local document
+  automation inside Animate.
+-->
+<ExtensionManifest Version="7.0"
+                   ExtensionBundleId="com.cf7.animatekit.panel"
+                   ExtensionBundleVersion="0.1.0"
+                   ExtensionBundleName="CF7 AnimateKit"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ExtensionList>
+    <Extension Id="com.cf7.animatekit.panel" Version="0.1.0" />
+  </ExtensionList>
+
+  <ExecutionEnvironment>
+    <!-- Host: FLPR = Adobe Animate (formerly Flash Pro). Range covers
+         Animate CC 2021 (21.0) through future builds. -->
+    <HostList>
+      <Host Name="FLPR" Version="[21.0,99.0]" />
+    </HostList>
+    <LocaleList>
+      <Locale Code="All" />
+    </LocaleList>
+    <RequiredRuntimeList>
+      <RequiredRuntime Name="CSXS" Version="9.0" />
+    </RequiredRuntimeList>
+  </ExecutionEnvironment>
+
+  <DispatchInfoList>
+    <Extension Id="com.cf7.animatekit.panel">
+      <DispatchInfo>
+        <Resources>
+          <MainPath>./index.html</MainPath>
+          <ScriptPath>./host/index.jsfl</ScriptPath>
+          <CEFCommandLine>
+            <Parameter>--enable-nodejs</Parameter>
+            <Parameter>--mixed-context</Parameter>
+          </CEFCommandLine>
+        </Resources>
+        <Lifecycle>
+          <AutoVisible>true</AutoVisible>
+        </Lifecycle>
+        <UI>
+          <Type>Panel</Type>
+          <Menu>CF7 AnimateKit</Menu>
+          <Geometry>
+            <Size>
+              <Height>480</Height>
+              <Width>320</Width>
+            </Size>
+            <MinSize>
+              <Height>360</Height>
+              <Width>280</Width>
+            </MinSize>
+            <MaxSize>
+              <Height>1600</Height>
+              <Width>900</Width>
+            </MaxSize>
+          </Geometry>
+          <Icons />
+        </UI>
+      </DispatchInfo>
+    </Extension>
+  </DispatchInfoList>
+</ExtensionManifest>

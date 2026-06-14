@@ -38,7 +38,7 @@
 
     // ── jukebox ──
     Panels.registerLazy('jukebox',
-        ['modules/panels/jukebox-panel.js'],
+        ['modules/jukebox/jukebox-panel.js'],
         noop);
 
     // ── map ──
@@ -97,8 +97,12 @@
         noop);
 
     // ── arena ──
+    // arena-meta-rosters.js（派生 roster，M2 采样源）+ arena-factions.js（手作势力卡元数据：对标等级/波数档/
+    // 启用/兵种白名单）先于 panel 载入。两者缺失时 arena-panel.js 各自优雅回退（全 merc / 全派生默认）。
     Panels.registerLazy('arena',
-        ['modules/arena-panel.js'],
+        ['modules/arena-meta-rosters.js',
+         'modules/arena-factions.js',
+         'modules/arena-panel.js'],
         noop);
 
     // ── team (战队：佣兵 / 伙伴 / 战宠 / 机械) ──

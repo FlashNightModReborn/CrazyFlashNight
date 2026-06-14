@@ -4,6 +4,8 @@ import org.flashNight.gesh.depth.DepthManager;
 import flash.display.BitmapData;
 import flash.geom.Point;
 
+import org.flashNight.arki.scene.SceneInteractionManager;
+
 /**
 SceneManager.as
 ——————————————————————————————————————————
@@ -72,6 +74,9 @@ class org.flashNight.arki.scene.SceneManager {
 
         // 将上述属性设置为不可枚举
         _global.ASSetPropFlags(gameworld, ["效果", "子弹区域", "地图", "dispatcher", "getNextHighestDepth"], 1, false);
+
+        //  ── 初始化 SceneInteractionManager ──
+        SceneInteractionManager.getInstance().init();
 
         // 发布场景切换事件
         _root.帧计时器.eventBus.publish("SceneChanged");

@@ -57,12 +57,71 @@ class org.flashNight.arki.merc.ArenaController {
      */
     public static function commitArena():Void {
         if (_root.出阵人员 == undefined || _root.出阵人员.length == 0) return;
+        _root.角斗场对手类型 = "merc"; // 守 enterArenaCommon 分叉，防上一场 roster 残留
         if (_root.当前佣兵重用数 <= _root.竞技场佣兵重用基数) {
             _root.当前佣兵重用数++;
         } else {
             MercLibrary.refreshPool(bumpReuseLimit, undefined);
         }
         enterArenaCommon();
+    }
+
+    /**
+     * 提交元战队（非人形怪）阵容进场。squad = [{兵种:"兵种N", 等级:L}, ...]。
+     * 调用前须先 prepareArenaStage（载入关卡数据 + 押金/奖金）。不碰佣兵 reuse/pool 计数。
+     * 怪物经帧脚本 _root.加载角斗场怪物 读 _root.角斗场roster阵容 逐个生成。
+     */
+    public static function commitRoster(squad:Array):Void {
+        if (squad == undefined || squad.length == 0) return;
+        _root.角斗场对手类型 = "roster";
+        _root.角斗场roster阵容 = squad;
+        enterArenaCommon();
+    }
+
+    /**
+     * 提交爬升模式（Phase 3）：势力主题无限爬升 + 奖池押注。
+     * pool = [{type:"兵种N", minLevel, maxLevel, weight}, ...]（web 从该势力 roster 下发，AS2 每波采样）。
+     * 战斗循环 / 压力板决策 / 奖池经济全在 关卡回调函数（_root.角斗场爬升* 一组函数）里自管。
+     * 调用前须先 prepareArenaStage（押金/奖金/场景预载）。reward 作为奖池首波基数。
+     */
+    public static function commitEscalation(faction:String, pool:Array, baseCount:Number, baseLevelMin:Number, baseLevelMax:Number, deposit:Number, reward:Number, maxWaves:Number):Void {
+        if (pool == undefined || pool.length == 0) return;
+        _root.角斗场对手类型 = "escalation";
+        _root.角斗场爬升 = {
+            active:       true,
+            faction:      faction,
+            pool:         pool,
+            baseCount:    baseCount,
+            baseLevelMin: baseLevelMin,
+            baseLevelMax: baseLevelMax,
+            baseReward:   reward,                       // = 波奖励基准（对标等级×base对手数×500，web 算）
+            最大波数:     (maxWaves > 0) ? maxWaves : 10, // 波数上限（小5/大10/联军15），缺省 10
+            round:        0,
+            pot:          0,
+            phase:        "combat",
+            pollFrame:    0
+        };
+        enterArenaCommon();
+    }
+
+    /**
+     * 角斗场场景数据预载 + 押金/奖金/难度上下文（merc 与 roster 共用）。
+     * 复现「角斗场选择挑战者」帧的 stage 预载（Web 直跳关必须手动做）。
+     * 返回 false = StageInfoDict 缺 "DEATH MATCH角斗场"（调用方应报错中止）。
+     */
+    public static function prepareArenaStage(deposit:Number, reward:Number, difficulty:String):Boolean {
+        var stageInfo:Object = _root.StageInfoDict ? _root.StageInfoDict["DEATH MATCH角斗场"] : undefined;
+        if (stageInfo == undefined || stageInfo.url == undefined || String(stageInfo.url) == "") return false;
+        _root.载入关卡数据(String(stageInfo.Type || "无限过图"), String(stageInfo.url));
+        _root.关卡类型 = String(stageInfo.Type || "无限过图");
+        _root.关卡路径 = String(stageInfo.url);
+        _root.押金 = deposit;
+        _root.角斗场奖金 = reward;
+        if (difficulty != undefined && difficulty != "") {
+            _root.当前关卡难度 = difficulty;
+            if (typeof _root.计算难度等级 == "function") _root.难度等级 = _root.计算难度等级(difficulty);
+        }
+        return true;
     }
 
     public static function requestOpponent(expr:String):Void {
@@ -136,8 +195,23 @@ class org.flashNight.arki.merc.ArenaController {
         _root.当前通关的关卡 = "";
         _root.当前关卡名 = "DEATH MATCH角斗场";
         _root.场景进入位置名 = "出生地";
-        _root.敌人同伴数 = _root.出阵人员.length;
-        _root.敌人同伴数据 = _root.出阵人员;
+        if (_root.角斗场对手类型 == "escalation") {
+            // 爬升模式自管波次计数（每波刷怪后自行维护 僵尸型敌人总个数），此处占位即可
+            _root.敌人同伴数 = 0;
+        } else if (_root.角斗场对手类型 == "roster") {
+            // 怪物经 加载角斗场怪物 读 _root.角斗场roster阵容 生成；敌人同伴数=队伍规模供判胜计数
+            _root.敌人同伴数 = _root.角斗场roster阵容.length;
+        } else {
+            _root.敌人同伴数 = _root.出阵人员.length;
+            _root.敌人同伴数据 = _root.出阵人员;
+        }
+        // 抑制基地车库选关门重触发（复刻 StageSelectPanelService 进关后的场景门去抖）：
+        // arena 入场绕过常规 切换场景 路径，不设此去抖时，web panel 关闭、游戏 unpause 的首帧若
+        // 玩家仍站在选关门 hitTest 区且左行态残留，门的 onClipEvent(enterFrame) 会立即重开
+        // stage-select，盖在正淡出加载的战斗场景上 → 主角未生成 + 操作卡死（2026-06-13 第二次进场复现）。
+        if (_root.场景转换函数 != undefined && _root.帧计时器 != undefined) {
+            _root.场景转换函数.上次切换帧数 = _root.帧计时器.当前帧数;
+        }
         _root.淡出动画.淡出跳转帧("wuxianguotu_1");
     }
 }

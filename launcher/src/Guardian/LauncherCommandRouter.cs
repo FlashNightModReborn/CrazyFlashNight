@@ -129,7 +129,7 @@ namespace CF7Launcher.Guardian
                 case "GAMESETTINGS": SendGameCommand("openSettings"); break;
                 case "JUKEBOX": SendGameCommand("openJukebox"); break;
                 case "JUKEBOX_EXPAND":
-                    // Phase 5：launcher/web/modules/panels/jukebox-panel.js 已注册 Panels.register('jukebox')，
+                    // Phase 5：launcher/web/modules/jukebox/jukebox-panel.js 已注册 Panels.register('jukebox')，
                     // OpenPanel 走完整 PanelHostController 序列（backdrop / EX_STYLE / HUD-suspend）。
                     OpenPanel("jukebox", null);
                     break;

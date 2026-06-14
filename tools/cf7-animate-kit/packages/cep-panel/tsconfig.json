@@ -1,0 +1,24 @@
+{
+  // Extends the strict base but overrides the module/JSX bits for a
+  // DOM + React + Vite (bundler) package. Deliberately NOT `composite` and NOT
+  // referenced by the root tsconfig.json — `npm run typecheck` here runs a
+  // standalone `tsc --noEmit`. Keeping it out of the root `tsc -b` graph means
+  // the offline orchestrator's root build never tries to resolve React/DOM.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    // verbatimModuleSyntax fights JSX/bundler default-import interop; off here.
+    "verbatimModuleSyntax": false,
+    "allowJs": true,
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "skipLibCheck": true
+  },
+  "include": ["src", "vite.config.ts"]
+}

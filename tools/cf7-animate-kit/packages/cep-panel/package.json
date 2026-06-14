@@ -1,0 +1,26 @@
+{
+  "name": "@cf7-animate-kit/cep-panel",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Adobe Animate CEP HTML5 panel — the in-Animate authoring accelerator UI. Drives the live FLA via the JSFL host (../jsfl-host) through CSInterface.evalScript. No networking; pure local document automation.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/copy-assets.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cf7-animate-kit/core": "0.1.0",
+    "d3": "^7.9.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.7",
+    "vite-plugin-singlefile": "^2.1.0"
+  }
+}

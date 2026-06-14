@@ -1,0 +1,27 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "noEmit": true,
+    "allowJs": true,
+    "checkJs": false,
+    "customConditions": [
+      "development"
+    ],
+    "verbatimModuleSyntax": false,
+    "lib": [
+      "ES2022"
+    ],
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "src/shared/**/*.ts",
+    "src/electron/**/*.ts",
+    "src/electron/**/*.js"
+  ]
+}

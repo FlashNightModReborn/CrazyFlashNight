@@ -1163,6 +1163,36 @@ var StageSelectData = (function() {
                             "h": 69
                         },
                         "previewMissing": false
+                    },
+                    {
+                        "id": "stage_10_18",
+                        "frameLabel": "基地车库",
+                        "stageName": "据点M",
+                        "detail": "手头上唯一的线索是一家名叫“月面保洁”的清洁公司的地址。要怎么找到据点M呢？",
+                        "x": 250,
+                        "y": 150,
+                        "centerX": 450,
+                        "centerY": 350,
+                        "sourceFrameIndex": 10,
+                        "sourceKind": "config",
+                        "entryKind": "difficulty",
+                        "visualKind": "standard",
+                        "stageType": "无限过图",
+                        "stageArea": "基地车库",
+                        "rootFadeTransitionFrame": "",
+                        "libraryItemName": "选关界面UI/选关按钮",
+                        "previewUrl": "assets/stage-select/previews/stage-default.jpg",
+                        "previewAssetName": "stage-default.jpg",
+                        "previewSource": "default",
+                        "previewSourcePath": "image/bitmap3108.jpg",
+                        "previewSourceFrameIndex": 1,
+                        "previewCrop": {
+                            "x": 65,
+                            "y": 10,
+                            "w": 161,
+                            "h": 69
+                        },
+                        "previewMissing": false
                     }
                 ],
                 "navButtons": [

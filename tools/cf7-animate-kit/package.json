@@ -1,0 +1,30 @@
+{
+  "name": "cf7-animate-kit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Clean, offline, in-repo Adobe Animate productivity tool for CF7: AN maintenance + Flash SharedObject (.sol/AMF0) codec + in-Animate authoring acceleration (CEP/JSFL). No networking, no DRM, no activation.",
+  "packageManager": "npm@10.5.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "tsc -b --pretty false",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "cli": "tsx --conditions=development packages/cli/src/index.ts",
+    "sol": "tsx --conditions=development packages/cli/src/index.ts sol",
+    "an": "tsx --conditions=development packages/cli/src/index.ts an",
+    "art": "tsx --conditions=development packages/cli/src/index.ts art"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.8"
+  },
+  "dependencies": {
+    "zod": "^3.24.2"
+  }
+}

@@ -277,6 +277,34 @@ _root.加载敌方人物 = function(地点X, 地点Y){
 	}
 }
 
+// 角斗场「堕落/元战队」模式生成非人形怪（兵种），与 加载敌方人物（人形 merc）平行。
+// 读 _root.角斗场roster阵容 = [{兵种:"兵种N", 等级:L}, ...]，经 _root.兵种库 解析兵种名+属性，
+// 逐个 加载游戏世界人物（是否为敌人:true）。死亡递减 僵尸型敌人总个数 → 达 -敌人同伴数 触发
+// 角斗场获胜，与人形机制完全一致（见 WaveSpawner finishRequirement / 角斗场计算敌人数）。
+_root.加载角斗场怪物 = function(地点X, 地点Y){
+	var 阵容 = _root.角斗场roster阵容;
+	if(阵容 == undefined) return;
+	var 生成数 = 0;
+	for(var i = 0; i < 阵容.length; i++){
+		var 单位 = 阵容[i];
+		var 属性 = _root.兵种库[单位.兵种];
+		if(属性 == undefined) continue;
+		var 初始化 = _root.duplicateOf(属性);
+		初始化.兵种名 = null;        // 同 WaveSpawner.spawn：兵种名走第一参数 id，initObject 内置 null
+		初始化.等级 = 单位.等级;
+		初始化.是否为敌人 = true;
+		初始化.产生源 = "地图";
+		初始化.掉落物 = [];          // 清空副本掉落（[] 为真值→敌人模板 !this.掉落物 守卫不再回填 兵种库 掉落表）→ 防角斗场刷装备
+		初始化._x = 地点X + random(160) - 80;
+		初始化._y = 地点Y + random(120) - 60;
+		// 仅累计 attachMovie 成功（返回有效 MC）的怪：某兵种缺库 linkage 时实际数<阵容长度，
+		// 判胜基准若仍按阵容长度，计数永到不了 -N → 清场后卡死（与 角斗场爬升刷一个 同口径）
+		if(_root.加载游戏世界人物(属性.兵种名, "敌人同伴" + i, _root.gameworld.getNextHighestDepth(), 初始化) != undefined) 生成数++;
+	}
+	// 用实际成功生成数修正判胜基准（角斗场计算敌人数 在 WaveStarted 才设 finishRequirement，晚于此处）
+	_root.敌人同伴数 = 生成数;
+}
+
 // 单位的统一加载函数
 _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, initObject:Object):MovieClip{
 	if(!initObject) {

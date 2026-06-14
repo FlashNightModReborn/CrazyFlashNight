@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  CEP remote-debugging descriptor. Present only for unsigned dev installs.
+  With PlayerDebugMode=1 (see install/enable-debug.reg), the panel's CEF
+  instance opens a remote DevTools server on the port below. Browse to
+  http://localhost:8088 in Chrome/Edge while Animate has the panel open.
+
+  Do NOT ship .debug in a signed/released ZXP.
+-->
+<ExtensionList>
+  <Extension Id="com.cf7.animatekit.panel">
+    <HostList>
+      <Host Name="FLPR" Port="8088" />
+    </HostList>
+  </Extension>
+</ExtensionList>

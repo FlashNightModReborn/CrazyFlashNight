@@ -1,0 +1,31 @@
+{
+  "name": "@cf7-animate-kit/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "npm run build:renderer && npm run build:electron",
+    "build:renderer": "vite build",
+    "build:electron:bundle": "npx esbuild src/electron/main.ts --bundle --platform=node --format=cjs --conditions=development --outfile=dist/electron/main.cjs --external:electron --banner:js=\"const __import_meta_url = require('url').pathToFileURL(__filename).href;\" --define:import.meta.url=__import_meta_url",
+    "build:electron:preload": "node -e \"require('fs').mkdirSync('dist/electron',{recursive:true});require('fs').copyFileSync('src/electron/preload.js','dist/electron/preload.js')\"",
+    "build:electron": "npm run build:electron:bundle && npm run build:electron:preload",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.electron.json",
+    "dev:renderer": "vite --host 127.0.0.1"
+  },
+  "dependencies": {
+    "@cf7-animate-kit/core": "0.1.0",
+    "@cf7-animate-kit/an-host": "0.1.0",
+    "d3": "^7.9.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^35.7.5",
+    "esbuild": "^0.25.0",
+    "vite": "^6.0.7"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "description": "Relative paths from this tool dir to CF7 game data it operates on. Consumed by core helpers and the CLI/GUI. No absolute paths in source.",
+  "repoRootFromTool": "../..",
+  "saves": {
+    "dir": "../../saves",
+    "comment": "saves/{slot}.json JSON shadows; real SOL lives under %APPDATA%/Macromedia/Flash Player/#SharedObjects"
+  },
+  "sol": {
+    "fixtures": "packages/core/tests/fixtures/sol",
+    "oracleParserExe": "../../amf0-help/sol_parser/target/release/examples/parse.exe",
+    "comment": "oracleParserExe is the Rust flash_lso reference reader used only to (re)generate golden JSON; not invoked at runtime."
+  },
+  "authoring": {
+    "artsDir": "../../flashswf/arts/new",
+    "comment": "60+ source FLA/XFL character/effect projects authored in Adobe Animate CS6"
+  }
+}

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/新动画/爆胖僵尸自爆动画" itemID="69bc3451-00000388" lastModified="1780840423" lastUniqueIdentifier="255">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="爆胖僵尸/新动画/爆胖僵尸自爆动画" itemID="69bc3451-00000388" lastModified="1781366911" lastUniqueIdentifier="259">
   <timeline>
-    <DOMTimeline name="爆胖僵尸自爆动画" currentFrame="33" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-19&lt;/guideline&gt;&lt;guideline direction="v"&gt;24&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="爆胖僵尸自爆动画" currentFrame="90" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;12&lt;/guideline&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;-19&lt;/guideline&gt;&lt;guideline direction="v"&gt;24&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层 2" color="#9933CC" autoNamed="false">
           <frames>
@@ -126,7 +126,7 @@ function 自爆轻段()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音效" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="音效" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="33" keyMode="9728">
               <Actionscript>
@@ -1894,7 +1894,7 @@ function 自爆轻段()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_59" color="#FF800A">
+        <DOMLayer name="图层_59" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="33" keyMode="9728">
               <elements/>
@@ -1914,7 +1914,7 @@ function 自爆轻段()
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="50" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="50" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="血素材/爆皮内构">
                   <matrix>
@@ -1922,6 +1922,70 @@ function 自爆轻段()
                   </matrix>
                   <transformationPoint>
                     <Point x="1.05" y="11.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter saturation="60" hue="80"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="血素材/爆皮内构">
+                  <matrix>
+                    <Matrix a="0.865997314453125" b="-0.497146606445313" c="0.497146606445313" d="0.865997314453125" tx="18.85" ty="-64.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1" y="11.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter saturation="60" hue="80"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="血素材/爆皮内构">
+                  <matrix>
+                    <Matrix a="0.865234375" b="-0.496124267578125" c="0.496124267578125" d="0.865234375" tx="29.8" ty="-50.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1" y="11.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter saturation="60" hue="80"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="血素材/爆皮内构">
+                  <matrix>
+                    <Matrix a="0.864501953125" b="-0.495620727539063" c="0.495620727539063" d="0.864501953125" tx="34.45" ty="-44"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1" y="11.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter saturation="60" hue="80"/>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="血素材/爆皮内构">
+                  <matrix>
+                    <Matrix a="0.864028930664063" b="-0.495346069335938" c="0.495346069335938" d="0.864028930664063" tx="35.75" ty="-43.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1" y="11.9"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter saturation="60" hue="80"/>

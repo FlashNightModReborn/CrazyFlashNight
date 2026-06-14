@@ -1,0 +1,12 @@
+# Windows batch / registry files MUST be CRLF or cmd.exe/regedit mis-parse them
+# (LF in a .bat makes `goto :label` fail → the script aborts mid-run / "闪退").
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.reg text eol=crlf
+*.ps1 text eol=crlf
+
+# Shell scripts must stay LF
+*.sh text eol=lf
+
+# JSFL is fine either way; keep LF for diff sanity
+*.jsfl text eol=lf
