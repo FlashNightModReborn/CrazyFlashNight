@@ -30,8 +30,10 @@
     var playing = false;
     var bgmTitle = '';
     var currentDuration = 0;
-    var lastWaveRenderAt = 0;
-    var WAVE_RENDER_MS = 50;
+    var oscPhase = 0;      // 示波器弦载波相位
+    var _rafId = null;     // requestAnimationFrame 渲染循环句柄
+    var displayHistL = new Float32Array(HISTORY); // 平滑插值显示缓冲
+    var displayHistR = new Float32Array(HISTORY);
 
     var albums = {};       // 专辑名 → [{title,weight}]
     var allTracks = [];
@@ -288,6 +290,8 @@
         }
         // 请求最新 catalog（C# 在初始化时主动 push 一次；保险二次请求）
         Bridge.send({type: 'jukebox', cmd: 'requestCatalog'});
+        // 启动独立高帧率渲染循环（数据仍按 60ms 推送，但波形以显示器刷新率绘制）
+        startRenderLoop();
     }
 
     function subscribeUi(key, handler) {
@@ -325,8 +329,6 @@
         currentDuration = 0;
         playing = false;
         isPaused = false;
-        histIdx = 0;
-        histLen = 0;
         if (_refs.title) _refs.title.textContent = '未播放';
         if (_refs.time) _refs.time.textContent = '';
         if (_refs.progFill) _refs.progFill.style.width = '0%';
@@ -338,6 +340,13 @@
         }
         if (_refs.ctx && _refs.canvas) {
             _refs.ctx.clearRect(0, 0, _refs.canvas.width, _refs.canvas.height);
+        }
+        stopRenderLoop();
+        histIdx = 0;
+        histLen = 0;
+        for (var hi = 0; hi < HISTORY; hi++) {
+            displayHistL[hi] = 0;
+            displayHistR[hi] = 0;
         }
     }
 
@@ -382,10 +391,30 @@
             if (_refs.progTimeStart) _refs.progTimeStart.textContent = '00:00';
             if (_refs.progTimeEnd) _refs.progTimeEnd.textContent = '00:00';
         }
-        var now = performance.now ? performance.now() : Date.now();
-        if (!visualizersDisabled() && now - lastWaveRenderAt >= WAVE_RENDER_MS) {
-            lastWaveRenderAt = now;
+        // 注：渲染已迁移到独立的 requestAnimationFrame 循环，数据更新与绘制解耦
+    }
+
+    function startRenderLoop() {
+        stopRenderLoop();
+        // 锁 30fps：Intel UHD 核显友好，同时避免 120/240Hz 显示器上过度消耗
+        function loop() {
+            if (!_opened) return;
+            _rafId = setTimeout(loop, 33);
+            if (visualizersDisabled()) {
+                if (_refs.ctx && _refs.canvas) {
+                    _refs.ctx.clearRect(0, 0, _refs.canvas.width, _refs.canvas.height);
+                }
+                return;
+            }
             render();
+        }
+        _rafId = setTimeout(loop, 0);
+    }
+
+    function stopRenderLoop() {
+        if (_rafId) {
+            clearTimeout(_rafId);
+            _rafId = null;
         }
     }
 
@@ -400,26 +429,102 @@
         var h = _refs.canvas.height;
         var midY = h / 2;
         var ctx = _refs.ctx;
-        ctx.clearRect(0, 0, w, h);
-        if (histLen === 0) return;
-        var barW = w / HISTORY;
-        var maxH = midY - 1 * dpr;
-        for (var i = 0; i < histLen; i++) {
-            var idx = (histIdx - histLen + i + HISTORY) % HISTORY;
-            var lv = histL[idx];
-            var rv = histR[idx];
-            var x = i * barW;
-            var age = (histLen - 1 - i) / Math.max(histLen - 1, 1);
-            var alpha = playing ? (0.3 + 0.7 * (1 - age)) : 0.15;
-            var hL = Math.max(1 * dpr, lv * maxH);
-            ctx.fillStyle = 'rgba(200,255,76,' + alpha + ')';
-            ctx.fillRect(x, midY - hL, Math.max(barW - 0.5, 1), hL);
-            var hR = Math.max(1 * dpr, rv * maxH);
-            ctx.fillStyle = 'rgba(180,255,90,' + (alpha * 0.8) + ')';
-            ctx.fillRect(x, midY, Math.max(barW - 0.5, 1), hR);
+
+        // 低性能/隐藏页签：直接清空，不做视觉器渲染
+        if (visualizersDisabled()) {
+            ctx.clearRect(0, 0, w, h);
+            return;
         }
-        ctx.fillStyle = 'rgba(200,255,76,0.25)';
-        ctx.fillRect(0, midY - 0.5 * dpr, w, 1 * dpr);
+
+        // 1. 解决【残留过强】与【画面脏】：提高擦除透明度 (0.18 -> 0.5)
+        // 让拖影变短、收尾干脆利落，只保留极短的 CRT 物理余晖，防止画面积灰
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.fillStyle = 'rgba(7, 11, 6, 0.5)';
+        ctx.fillRect(0, 0, w, h);
+
+        if (histLen === 0) return;
+
+        // 数据平滑插值：目标 hist 每 ~60ms 更新一次，显示缓冲每帧向目标逼近，
+        // 使 60ms 的数据跳变在高帧率渲染下过渡顺滑，消除顿挫感
+        var interpK = 0.22;
+        for (var hi = 0; hi < histLen; hi++) {
+            var hidx = (histIdx - histLen + hi + HISTORY) % HISTORY;
+            displayHistL[hidx] += (histL[hidx] - displayHistL[hidx]) * interpK;
+            displayHistR[hidx] += (histR[hidx] - displayHistR[hidx]) * interpK;
+        }
+
+        var barW = w / (HISTORY - 1);
+        var maxH = midY - 6 * dpr;
+
+        // 2. 基准推力：锁 30fps 后，每帧增量需比 60fps 时减半左右，
+        //    保持波形缓慢流动而非狂躁抖动
+        oscPhase += playing ? 1.4 : 0.04;
+
+        // --- 中心辅助基准线 (放底层，保持极其克制的透明度) ---
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.shadowBlur = 0; // 彻底封杀 shadowBlur
+        ctx.beginPath();
+        ctx.moveTo(0, midY);
+        ctx.lineTo(w, midY);
+        ctx.lineWidth = 1 * dpr;
+        ctx.strokeStyle = 'rgba(200, 255, 76, 0.1)';
+        ctx.stroke();
+
+        // 开启光学叠加混合 (交叠处会自动过曝爆白)
+        ctx.globalCompositeOperation = 'lighter';
+
+        // 分别绘制左右声道（传入参数：历史数据, 是否倒置, 外层发光色, 核心高亮色, 相位差）
+        // 刻意把左右声道的颜色拉开了一点点层级，交叉时色彩会极其通透
+        drawOscillator(displayHistL, true,  'rgba(170, 255, 50, 0.3)',  'rgba(230, 255, 180, 0.95)', 0);
+        drawOscillator(displayHistR, false, 'rgba(90,  255, 120, 0.25)', 'rgba(180, 255, 210, 0.90)', Math.PI);
+
+        function drawOscillator(hist, isLeft, colorGlow, colorCore, phaseOffset) {
+            ctx.beginPath();
+            for (var i = 0; i < histLen; i++) {
+                var idx = (histIdx - histLen + i + HISTORY) % HISTORY;
+                var envelope = hist[idx];
+                
+                // 动态拉伸包络：让小音量时电波也有活力，不会变成一根死线
+                envelope = playing ? Math.pow(Math.max(0.015, envelope), 0.8) : 0;
+
+                var x = i * barW;
+                var nx = i / (histLen - 1); // X坐标归一化 (0.0 ~ 1.0)
+                var distanceDamp = Math.sin(nx * Math.PI); // 强制两端向中心线收束
+
+                // 3. 解决【果冻感】：弃用纯平滑三角函数相乘，引入“非线性锐化”与“高频毛刺”
+                var time = oscPhase + phaseOffset;
+                
+                // A. 基础流波：维持整体身段的低频扭动
+                var baseWave = Math.sin(nx * 20 - time * 0.8);
+                // B. 锐化电涌 (核心魔法！)：使用 3次方，它能把平滑的波峰压扁，瞬间拔高成一根尖锐的刺！
+                var spikeWave = Math.pow(Math.sin(nx * 45 + time * 1.5), 3);
+                // C. 物理杂讯：模拟高压电击穿空气的微小随机颤流 (随音量放大)
+                var noise = (Math.random() - 0.5) * 0.35 * envelope;
+
+                // 加法合成：基波(40%) + 尖刺(60%) + 噪音
+                var synthWave = (baseWave * 0.4) + (spikeWave * 0.6) + noise;
+                
+                var offsetY = synthWave * envelope * distanceDamp * maxH;
+                var y = midY + offsetY * (isLeft ? -1 : 1);
+
+                if (i === 0) ctx.moveTo(x, midY);
+                else ctx.lineTo(x, y);
+            }
+            
+            // 4. 解决【画面脏】：废弃 shadowBlur，改用次世代 2D 渲染法 Dual-Stroke (双轨描边)
+            ctx.lineJoin = 'bevel'; // 将连线转角从 round(圆润) 改为 bevel(斜切)，增强机械锋利感
+
+            // 图层 A：外层光晕 (较宽的线，低透明度，模拟物理散射)
+            ctx.lineWidth = 3.5 * dpr;
+            ctx.strokeStyle = colorGlow;
+            ctx.stroke();
+
+            // 图层 B：高温电子内核 (极细的线，高亮度，无阴影，赋予光效真正的骨架实体)
+            // 直接复用上一条 path，无需 beginPath，性能极高且发光极其干净！
+            ctx.lineWidth = 0.8 * dpr;
+            ctx.strokeStyle = colorCore;
+            ctx.stroke();
+        }
     }
 
     function onCatalog(data) {
