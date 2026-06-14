@@ -153,7 +153,7 @@
 
 #### C1. jukebox（BGM 点歌器）
 - **当前状态**: PanelLayoutCatalog 已启用小矩形 880×620（`ScalePanelSize` 按高度比例缩放）
-- **CSS**: `panels/jukebox-panel.js` 使用百分比/弹性布局，与 panelRect 大小解耦
+- **CSS**: `jukebox/jukebox-panel.js` 使用百分比/弹性布局，与 panelRect 大小解耦
 - **功能属性**: 非核心游戏 loop，纯粹的音乐列表浏览。展开内容量有限，不需要全屏
 - **审计意见**: **维持小矩形**。强行全屏会导致列表区域过度拉伸、大量无意义留白。当前设计已是 Phase 5 优化后的合理状态。
 

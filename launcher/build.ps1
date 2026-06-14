@@ -545,7 +545,7 @@ $requiredWebPaths = @(
     "modules\intelligence-components.js",
     "modules\font-pack-banner.js",
     "modules\intelligence-panel.js",
-    "modules\panels\jukebox-panel.js",
+    "modules\jukebox\jukebox-panel.js",
     "modules\map-avatar-source-data.js",
     "modules\map-panel-data.js",
     "modules\map-fit-presets.js",

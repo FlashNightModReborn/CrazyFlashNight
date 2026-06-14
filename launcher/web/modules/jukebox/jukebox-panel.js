@@ -317,6 +317,8 @@
             seekRect = null;
         }
         if (_refs.helpModal) _refs.helpModal.classList.remove('visible');
+        if (_refs.helpContent) _refs.helpContent.innerHTML = '';
+        _helpLoaded = false;
         // 清理瞬态状态：下次 onOpen 重新 seed UiData 当前值
         // （否则关闭期间 BGM 切空 / 进度推进 / 设置改动后，重开会先闪一帧旧数据）
         bgmTitle = '';

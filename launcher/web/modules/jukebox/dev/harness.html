@@ -140,8 +140,7 @@
         { title: 'To Victory', album: 'Chrono_Ark', weight: 10 }
     ];
 
-    var host = window.JukeboxHarnessHost = {
-        sentMessages: [],
+    var DEFAULT_STATE = {
         currentTitle: 'Tetrriture',
         currentDuration: 178,
         currentCursor: 8,
@@ -151,10 +150,38 @@
         volBgm: 80,
         override: false,
         trueRandom: false,
-        playMode: 'singleLoop',
+        playMode: 'singleLoop'
+    };
+
+    var host = window.JukeboxHarnessHost = {
+        sentMessages: [],
+        currentTitle: DEFAULT_STATE.currentTitle,
+        currentDuration: DEFAULT_STATE.currentDuration,
+        currentCursor: DEFAULT_STATE.currentCursor,
+        playing: DEFAULT_STATE.playing,
+        paused: DEFAULT_STATE.paused,
+        volGlobal: DEFAULT_STATE.volGlobal,
+        volBgm: DEFAULT_STATE.volBgm,
+        override: DEFAULT_STATE.override,
+        trueRandom: DEFAULT_STATE.trueRandom,
+        playMode: DEFAULT_STATE.playMode,
         helpText: '# 点歌台帮助\n\n- 点击曲目即可切歌\n- 拖动进度条可 seek\n- 音量分全局/音乐两路',
 
         setViewport: setViewport,
+
+        resetFixture: function() {
+            host.sentMessages.length = 0;
+            host.currentTitle = DEFAULT_STATE.currentTitle;
+            host.currentDuration = DEFAULT_STATE.currentDuration;
+            host.currentCursor = DEFAULT_STATE.currentCursor;
+            host.playing = DEFAULT_STATE.playing;
+            host.paused = DEFAULT_STATE.paused;
+            host.volGlobal = DEFAULT_STATE.volGlobal;
+            host.volBgm = DEFAULT_STATE.volBgm;
+            host.override = DEFAULT_STATE.override;
+            host.trueRandom = DEFAULT_STATE.trueRandom;
+            host.playMode = DEFAULT_STATE.playMode;
+        },
 
         seedUiData: function() {
             UiData.dispatch([
@@ -168,6 +195,7 @@
         },
 
         open: function() {
+            host.resetFixture();
             host.seedUiData();
             if (Panels.getActive && Panels.getActive() === 'jukebox') Panels.close();
             Panels.open('jukebox');
