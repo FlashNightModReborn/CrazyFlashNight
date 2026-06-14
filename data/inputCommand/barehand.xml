@@ -28,10 +28,10 @@
             </Requirements>
         </Command>
 
-        <!-- 诛杀步: 双击前，要求拳脚攻击 Lv1 -->
+        <!-- 诛杀步: Shift + 前，要求拳脚攻击 Lv1 -->
         <Command name="诛杀步" action="诛杀步" priority="5">
             <Sequence>
-                <Event>DOUBLE_TAP_FORWARD</Event>
+            <Event>SHIFT_FORWARD</Event>
             </Sequence>
             <Tags>
                 <Tag>空手</Tag>
@@ -90,10 +90,9 @@
                 <MP ratio="0.02"/>
             </Requirements>
         </Command>
-    </Commands>
 
         <!-- 连环踢: 上 + A，要求拳脚攻击 Lv2 -->
-    <Command name="连环踢" action="连环踢" priority="8">
+         <Command name="连环踢" action="连环踢" priority="8">
             <Sequence>
                 <Event>UP</Event>
                 <Event>A_PRESS</Event>
@@ -106,10 +105,9 @@
                 <Skill name="拳脚攻击" minLevel="2"/>
             </Requirements>
         </Command>
-    </Commands>
 
         <!-- 回旋踢: 下 + A，要求裂地拳 Lv1 -->
-    <Command name="连环踢" action="连环踢" priority="8">
+        <Command name="回旋踢" action="回旋踢" priority="8">
             <Sequence>
                 <Event>DOWN</Event>
                 <Event>A_PRESS</Event>
@@ -122,6 +120,7 @@
                 <Skill name="裂地拳" minLevel="1"/>
             </Requirements>
         </Command>
+
     </Commands>
 
     <Derivations>
