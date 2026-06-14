@@ -81,9 +81,12 @@ _root.关卡回调函数.角斗场获胜 = function(){
 _root.角斗场爬升配置 = {
 	对手增量: 2,      // 每波对手数 +N
 	对手上限: 8,
-	等级增量: 6,      // 每波全员等级 +N（陡峭）
+	等级增量: 6,      // 每波全员等级 +N（陡峭；难度随波数快速上升）
 	等级上限: 130,
-	奖金增长: 1.4,    // 每波奖金 ×N（指数累积进奖池）
+	// 经济（难度指数↑ / 奖励线性↑）：奖励按「对标等级」标定，而非原始怪物等级（廉价怪虚高 → 难度低奖励高）。
+	// 每波奖励 = 波奖励基准(= 对标等级×base对手数×500，web 算好经 baseReward 下发) × 线性斜坡(R)；
+	// 斜坡 1.0×(首波)→(2×效率目标−1)×(末波)，均值=效率目标 → 打满净收益≈效率目标×标准模式同时长收益。
+	效率目标倍率: 1.75, // 打满相对标准模式的净经济效率（用户定 1.5~2 取中；业务可调）
 	精英周期: 3,      // 每 N 波额外刷 1 个精英
 	精英等级加成: 15,
 	// 固定布局（真机反馈调整：玩家左/怪物右；左台从 280 内收，右台 1280 保持）
@@ -109,6 +112,12 @@ _root.角斗场爬升初始化 = function(地点X, 地点Y){
 	st.phase = "combat";
 	st.pollFrame = 0;
 	st.active = true;
+	// 禁复活（奖池押注的核心风险）：复用 限制系统.DisableResurrection（Symbol1861 复活币按钮已读它）。
+	// 死亡→复活币被拦→只能「返回基地」→拿钱() 永不触发→奖池天然作废（即「战死=奖池清零」）。
+	// 限制系统 在 返回基地 调 clearEntries() 自动复位，无需手动清。
+	if(_root.限制系统 != undefined && _root.限制系统.openEntries != undefined){
+		_root.限制系统.openEntries(["DisableResurrection"]);
+	}
 	// 订阅玩家移动事件（决策期据 heroX 判定走左/右台）
 	_root.gameworld.dispatcher.subscribe("HeroMoved", _root.角斗场爬升玩家移动, null);
 	// 自挂轮询时钟（清空检测）：gameworld 上一个空剪辑的 onEnterFrame
@@ -144,6 +153,7 @@ _root.角斗场爬升刷一个 = function(兵种, 等级, 地点X, 地点Y, idx)
 	初始化.等级 = 等级;
 	初始化.是否为敌人 = true;
 	初始化.产生源 = "地图";
+	初始化.掉落物 = [];          // 清空副本掉落，防爬升无限波刷装备绕过奖池押注风险（同 加载角斗场怪物）
 	初始化._x = 地点X + random(220) - 110;
 	初始化._y = 地点Y + random(150) - 75;
 	// 仅在 attachMovie 成功（返回有效 MC）时计入存活数：否则计数永不归零→卡死在战斗相
@@ -207,7 +217,10 @@ _root.角斗场清空回中 = function(){
 	var st = _root.角斗场爬升;
 	var cfg = _root.角斗场爬升配置;
 	st.phase = "回中";
-	var reward = Math.round(st.baseReward * Math.pow(cfg.奖金增长, st.round - 1));
+	// 线性奖励：波奖励基准 × 斜坡(R)。斜坡 1.0→(2×效率目标−1)，均值=效率目标（见 角斗场爬升配置 注释）。
+	var N = (st.最大波数 > 0) ? st.最大波数 : 10;
+	var ramp = (N > 1) ? (1 + (2 * cfg.效率目标倍率 - 2) * (st.round - 1) / (N - 1)) : cfg.效率目标倍率;
+	var reward = Math.round(st.baseReward * ramp);
 	reward = Math.round(reward / 100) * 100;
 	if(reward < 0) reward = 0;
 	st.pot += reward;
@@ -219,8 +232,13 @@ _root.角斗场清空回中 = function(){
 _root.角斗场进入决策 = function(){
 	var st = _root.角斗场爬升;
 	st.phase = "decision";
-	_root.角斗场绘制决策台();
-	_root.最上层发布文字提示("奖池 " + st.pot + "　← 走最左续战（更强一波） / 走最右拿钱离场 →");
+	var atMax = (st.round >= st.最大波数);
+	_root.角斗场绘制决策台(atMax);  // 已达波数上限只亮右(拿钱)台
+	if(atMax){
+		_root.最上层发布文字提示("奖池 " + st.pot + "　已达最高波次（" + st.最大波数 + " 波）！走最右拿钱离场 →");
+	}else{
+		_root.最上层发布文字提示("奖池 " + st.pot + "（第 " + st.round + "/" + st.最大波数 + " 波）　← 走最左续战 / 走最右拿钱离场 →");
+	}
 }
 
 // 玩家移动回调：回中相→踏入中央带亮决策台；决策相→到最左台续战 / 最右台拿钱
@@ -245,6 +263,11 @@ _root.角斗场爬升玩家移动 = function(heroX, heroZ){
 _root.角斗场续战 = function(){
 	var st = _root.角斗场爬升;
 	if(st == undefined || st.phase != "decision") return;
+	if(st.round >= st.最大波数){
+		// 波数上限到顶（手作核心配置耗尽）：不再续战，只能拿钱离场
+		_root.最上层发布文字提示("已达最高波次（" + st.最大波数 + " 波），无法继续，请走最右台拿钱离场");
+		return;
+	}
 	_root.角斗场清除地台();
 	_root.角斗场爬升刷波();
 }
@@ -286,16 +309,18 @@ _root.角斗场绘制中央台 = function(){
 	_root.角斗场画台(C, cfg.中央台界限低, cfg.中央台界限高, 0x5ad0ff, "★ 踏入此处开始抉择");
 	st.plateC = C;
 }
-_root.角斗场绘制决策台 = function(){
+_root.角斗场绘制决策台 = function(atMax){
 	var st = _root.角斗场爬升;
 	var cfg = _root.角斗场爬升配置;
 	_root.角斗场清除地台();
 	var gw = _root.gameworld;
-	var L = gw.createEmptyMovieClip("角斗场左台", gw.getNextHighestDepth());
-	_root.角斗场画台(L, 0, cfg.左台界限, 0x6cd06c, "← 续战 (更强一波)");
+	if(!atMax){  // 未到波数上限才亮左(续战)台；到顶只能拿钱
+		var L = gw.createEmptyMovieClip("角斗场左台", gw.getNextHighestDepth());
+		_root.角斗场画台(L, 0, cfg.左台界限, 0x6cd06c, "← 续战 (更强一波)");
+		st.plateL = L;
+	}
 	var Rt = gw.createEmptyMovieClip("角斗场右台", gw.getNextHighestDepth());
-	_root.角斗场画台(Rt, cfg.右台界限, cfg.右台界限 + 300, 0xffc94a, "拿钱离场 →");
-	st.plateL = L;
+	_root.角斗场画台(Rt, cfg.右台界限, cfg.右台界限 + 300, 0xffc94a, atMax ? "拿钱离场（已封顶）→" : "拿钱离场 →");
 	st.plateR = Rt;
 }
 _root.角斗场画台 = function(clip, x1, x2, color, label){
@@ -345,7 +370,8 @@ _root.测试角斗场爬升 = function(){
 		_root.最上层发布文字提示("角斗场场景数据缺失"); return;
 	}
 	_root.角斗场入场中 = true;
-	org.flashNight.arki.merc.ArenaController.commitEscalation("堕落城", clean, 4, 20, 30, 0, 2000);
+	// 参数：faction, pool, baseCount, baseLevelMin, baseLevelMax, deposit, reward(=波奖励基准), maxWaves
+	org.flashNight.arki.merc.ArenaController.commitEscalation("堕落城", clean, 4, 20, 30, 0, 2000, 5);
 }
 
 

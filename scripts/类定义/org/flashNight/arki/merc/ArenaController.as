@@ -84,7 +84,7 @@ class org.flashNight.arki.merc.ArenaController {
      * 战斗循环 / 压力板决策 / 奖池经济全在 关卡回调函数（_root.角斗场爬升* 一组函数）里自管。
      * 调用前须先 prepareArenaStage（押金/奖金/场景预载）。reward 作为奖池首波基数。
      */
-    public static function commitEscalation(faction:String, pool:Array, baseCount:Number, baseLevelMin:Number, baseLevelMax:Number, deposit:Number, reward:Number):Void {
+    public static function commitEscalation(faction:String, pool:Array, baseCount:Number, baseLevelMin:Number, baseLevelMax:Number, deposit:Number, reward:Number, maxWaves:Number):Void {
         if (pool == undefined || pool.length == 0) return;
         _root.角斗场对手类型 = "escalation";
         _root.角斗场爬升 = {
@@ -94,7 +94,8 @@ class org.flashNight.arki.merc.ArenaController {
             baseCount:    baseCount,
             baseLevelMin: baseLevelMin,
             baseLevelMax: baseLevelMax,
-            baseReward:   reward,
+            baseReward:   reward,                       // = 波奖励基准（对标等级×base对手数×500，web 算）
+            最大波数:     (maxWaves > 0) ? maxWaves : 10, // 波数上限（小5/大10/联军15），缺省 10
             round:        0,
             pot:          0,
             phase:        "combat",

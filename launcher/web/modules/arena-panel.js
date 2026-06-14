@@ -293,6 +293,8 @@
         for (var name in factions) {
             var units = factions[name].units || [];
             if (units.length < FALLEN_MIN_UNITS) continue;
+            var meta = factionMeta(name);
+            if (meta.enabled === false) continue;     // 手作禁用的势力不出卡
             var lo = 99999, hi = 0;
             for (var u = 0; u < units.length; u++) {
                 if (units[u].minLevel < lo) lo = units[u].minLevel;
@@ -301,17 +303,24 @@
             if (hi <= 0) continue;
             var levelMin = Math.max(lo, hi - FALLEN_BAND_WINDOW);
             var levelMax = hi;
+            // 对标等级（手标等效挑战等级，廉价怪通常远低于原始等级）：缺省回退 levelMax。
+            // 奖金/押金按对标等级算（而非原始怪物等级）→ 避免「难度太低奖励太高」。
+            var benchLevel = (meta.benchLevel != null) ? meta.benchLevel : levelMax;
             var count = clampInt(3 + Math.floor(levelMax / 25), 4, 6); // 45~60→4~5；100→6
-            var reward = roundTo(levelMax * count * 800, 1000);
+            var reward = roundTo(benchLevel * count * 800, 1000);
             var deposit = roundTo(reward * 0.4, 1000);
             cards.push({
                 id: 'fallen-' + name,
                 faction: name,
+                displayName: meta.displayName || name,
                 isFallen: true,
                 name: 'DEATH MATCH角斗场',
                 opponentCount: count,
                 levelMin: levelMin,
                 levelMax: levelMax,
+                benchLevel: benchLevel,
+                scale: meta.scale || null,        // small|large|coalition（爬升波数档）
+                unitCount: units.length,
                 deposit: deposit,
                 reward: reward,
                 expr: '#0@' + levelMin + '-' + levelMax + '%' + count
@@ -325,25 +334,49 @@
     function clampInt(v, lo, hi) { v = Math.round(v); return v < lo ? lo : (v > hi ? hi : v); }
     function roundTo(v, step) { return Math.max(step, Math.round(v / step) * step); }
 
-    // 爬升模式卡片（Phase 3）：与堕落卡同源（每势力一张），但带 isEscalation 标记。
-    // 卡面/预览复用堕落（isFallen=true → 紫罗兰 + 起始波小队采样预览）；差异仅在进场 payload：
-    // opponentCount/levelMin/levelMax 作为「起始波」基准，AS2 据该势力单位池逐波爬升。
+    // 手作势力卡元数据（launcher/web/modules/arena-factions.js → window.ArenaFactions），缺省回退派生值。
+    // 字段：benchLevel(对标等级=等效挑战等级，廉价怪远低于原始等级) / scale(small|large|coalition→波数 5|10|15)
+    //       / enabled(false=不出卡) / displayName(叙事名) / units(兵种白名单，预留)。策划逐势力填，未配置即全回退。
+    function factionMeta(faction) {
+        var F = (typeof window !== 'undefined' && window.ArenaFactions && window.ArenaFactions.factions)
+            ? window.ArenaFactions.factions[faction] : null;
+        return F || {};
+    }
+    // 势力规模档 → 爬升波数上限。缺省按 roster 单位数猜（小<6 / 大<12 / 联军≥12）。
+    function wavesForScale(scale, unitCount) {
+        if (scale === 'coalition') return 15;
+        if (scale === 'large') return 10;
+        if (scale === 'small') return 5;
+        return unitCount >= 12 ? 15 : (unitCount >= 6 ? 10 : 5);
+    }
+
+    // 爬升模式卡片（Phase 3）：与堕落卡同源（每势力一张），但带 isEscalation 标记 + 自己的押注经济。
+    // 卡面/预览复用堕落（isFallen=true → 紫罗兰 + 起始波小队采样预览）；差异在进场 payload：
+    // opponentCount/levelMin/levelMax 作为「起始波」基准，AS2 据势力单位池逐波爬升；maxWaves 为波数上限。
+    // 经济：波奖励基准 = 标准模式单场净收益@对标等级 = 对标等级×base对手数×500；AS2 按线性斜坡逐波发奖
+    //       （均值=效率目标 1.75 → 打满≈1.75×标准同时长收益）；押注 deposit≈一场净收益，战死没收。
     function buildEscalationCards() {
         var base = buildFallenCards();
         var out = [];
         for (var i = 0; i < base.length; i++) {
             var c = base[i];
+            var maxWaves = wavesForScale(c.scale, c.unitCount);
+            var waveBase = roundTo(c.benchLevel * c.opponentCount * 500, 100); // 波奖励基准（= AS2 baseReward）
+            var deposit = roundTo(waveBase, 1000);                              // 押注≈一场净收益
             out.push({
                 id: 'esc-' + c.faction,
                 faction: c.faction,
+                displayName: c.displayName,
                 isFallen: true,        // 复用堕落卡视觉 + 怪物预览
                 isEscalation: true,    // 进场走爬升分叉
                 name: c.name,
                 opponentCount: c.opponentCount,
                 levelMin: c.levelMin,
                 levelMax: c.levelMax,
-                deposit: c.deposit,
-                reward: c.reward,
+                benchLevel: c.benchLevel,
+                maxWaves: maxWaves,
+                deposit: deposit,
+                reward: waveBase,      // = 波奖励基准
                 expr: c.expr
             });
         }
@@ -584,6 +617,7 @@
             msg.baseCount = card.opponentCount;
             msg.baseLevelMin = card.levelMin;
             msg.baseLevelMax = card.levelMax;
+            msg.maxWaves = card.maxWaves;        // 波数上限（小5/大10/联军15）
             msg.pool = factionPool(card.faction);
         }
         // 怪物卡（堕落/标准混入）：把本地采样的非人形小队作为 roster 下发 → AS2 走 commitRoster 生成非人形怪。

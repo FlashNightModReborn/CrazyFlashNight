@@ -308,6 +308,8 @@ class org.flashNight.arki.merc.ArenaPanelService {
             if (isNaN(baseLevelMin) || baseLevelMin < 1) baseLevelMin = 1;
             var baseLevelMax:Number = Number(params.baseLevelMax);
             if (isNaN(baseLevelMax) || baseLevelMax < baseLevelMin) baseLevelMax = baseLevelMin;
+            var maxWaves:Number = Number(params.maxWaves);
+            if (isNaN(maxWaves) || maxWaves < 1) maxWaves = 10; // 波数上限（小5/大10/联军15），缺省 10
             if (!ArenaController.prepareArenaStage(deposit, reward, difficulty)) {
                 sendResponse({ task: "arena_response", callId: callId, success: false, error: "stage_info_missing" });
                 return;
@@ -321,7 +323,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
                 _root.soundEffectManager.stopBGMForTransition();
             }
             try {
-                ArenaController.commitEscalation(faction, pool, baseCount, baseLevelMin, baseLevelMax, deposit, reward);
+                ArenaController.commitEscalation(faction, pool, baseCount, baseLevelMin, baseLevelMax, deposit, reward, maxWaves);
             } catch (eE:Error) {
                 _root.角斗场入场中 = false;
                 if (typeof _root.最上层发布文字提示 == "function") _root.最上层发布文字提示("角斗场入场失败：" + eE.message);

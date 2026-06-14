@@ -559,6 +559,7 @@ $requiredWebPaths = @(
     "modules\merc-panel.js",
     "modules\team\team-panel.js",
     "modules\arena-meta-rosters.js",
+    "modules\arena-factions.js",
     "modules\tasks\task-panel.js",
     "modules\tasks\task-catalog.json",
     "modules\tasks\achievement-catalog.json",
