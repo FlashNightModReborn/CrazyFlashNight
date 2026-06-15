@@ -1795,10 +1795,9 @@ var MapPanelHarnessQA = (function() {
                 title: 'hittest engine: LRU eviction — slot=2, third page evicts oldest; hot page touch keeps it alive',
                 run: function() {
                     return bootMapForHittest(api, host).then(function() {
-                        // 清空所有 page hitmap, 确保起步纯 LRU 行为
-                        ['base', 'faction', 'defense', 'school'].forEach(function(id) {
-                            MapHittestEngine.discardPage(id);
-                        });
+                        // 清空所有 hitmap, 确保起步纯 LRU 行为。
+                        // 面板引导会建复合键 (base::all) 条目, 逐 page-id discard 清不掉 → 用 discardAll。
+                        MapHittestEngine.discardAll();
                         var debug = MapHittestEngine.debugState();
                         api.assertEqual(debug.lruOrder.length, 0, 'LRU empty after full discard');
                         api.assertEqual(debug.maxPages, 2, 'MAX_PAGES = 2 (base + 当前场景)');
@@ -1850,6 +1849,64 @@ var MapPanelHarnessQA = (function() {
                             api.assert(!debug.pages.faction, 'faction discarded from cache');
 
                             return 'LRU ok: slot=2, oldest evicted, hot touch preserved, discard syncs';
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui31i',
+                title: 'hittest engine: filter 维度建图 — 屋顶 filter 下整片屋顶可点 (回归: 旧共享整页图把屋顶像素被楼层抢走只剩左下角)',
+                run: function() {
+                    return bootMapForHittest(api, host).then(function() {
+                        MapHittestEngine.discardAll();
+                        var page = MapPanelData.getPage('base');
+                        var roofVisual = null;
+                        (page.sceneVisuals || []).forEach(function(v) {
+                            if (v.id === 'base_roof_visual') roofVisual = v;
+                        });
+                        api.assert(!!roofVisual, 'base_roof_visual exists in sceneVisuals');
+                        var rr = roofVisual.rect;
+
+                        // 两张图: 整页全 visual (旧行为) vs 屋顶 filter 子集 (修复后面板走的路径)
+                        var roofSubset = MapPanelData.getVisibleSceneVisuals('base', 'roof');
+                        api.assertEqual(roofSubset.length, 1, 'roof filter 仅含 base_roof_visual 一张 visual');
+                        var roofPage = { id: 'base::roof', width: page.width, height: page.height, sceneVisuals: roofSubset };
+
+                        return MapHittestEngine.ensurePage(page, harnessResolveAsset).then(function() {
+                            return MapHittestEngine.ensurePage(roofPage, harnessResolveAsset);
+                        }).then(function() {
+                            // 在屋顶 visual bbox 内网格采样, 用屋顶子集图判定哪些点是"屋顶不透明像素"
+                            var step = 6;
+                            var roofOpaque = 0;       // 屋顶子集图里归属屋顶的点 = 真·屋顶可点像素
+                            var stolenInFull = 0;     // 这些点在整页共享图里被其它楼层 visual 抢走 (旧 bug: 屋顶 filter 下点不动)
+                            var roofOwnedInFull = 0;  // 整页图里仍归屋顶的点
+                            var foreignClaimInSubset = 0; // 屋顶子集图里出现非屋顶归属 (应为 0)
+                            var x;
+                            var y;
+                            for (x = Math.max(0, Math.floor(rr.x)); x < Math.min(page.width, Math.ceil(rr.x + rr.w)); x += step) {
+                                for (y = Math.max(0, Math.floor(rr.y)); y < Math.min(page.height, Math.ceil(rr.y + rr.h)); y += step) {
+                                    var rf = MapHittestEngine.query('base::roof', x, y);
+                                    if (!rf) continue;                       // 透明像素跳过
+                                    if (rf.visualId !== 'base_roof_visual') { foreignClaimInSubset += 1; continue; }
+                                    api.assert(rf.hotspotIds.indexOf('base_roof') >= 0, 'roof subset hit carries base_roof hotspot');
+                                    roofOpaque += 1;
+                                    var full = MapHittestEngine.query('base', x, y);
+                                    if (full && full.visualId === 'base_roof_visual') roofOwnedInFull += 1;
+                                    else stolenInFull += 1;                  // 整页图里被覆盖 → 旧实现屋顶 filter 下不可点
+                                }
+                            }
+
+                            api.assertEqual(foreignClaimInSubset, 0, 'roof 子集图不应出现非屋顶归属 (got ' + foreignClaimInSubset + ')');
+                            api.assert(roofOpaque > 200, 'roof filter 下屋顶可点像素应可观 (got ' + roofOpaque + ')');
+                            // 回归核心: 旧共享整页图会把大量屋顶像素让给楼层 visual; 子集图全部归屋顶。
+                            api.assert(stolenInFull > 0, '整页共享图必然有屋顶像素被楼层抢走, 证明旧 bug (got stolen=' + stolenInFull + '/' + roofOpaque + ')');
+                            var stolenRatio = stolenInFull / roofOpaque;
+                            api.assert(stolenRatio > 0.3, '被抢比例应显著 (>30%), 体现"只剩左下角" (got ' + (stolenRatio * 100).toFixed(1) + '%)');
+
+                            MapHittestEngine.discardAll();
+                            return 'roofOpaque=' + roofOpaque + ' filterClickable=' + roofOpaque
+                                + ' fullClickable=' + roofOwnedInFull + ' stolenByFloors=' + stolenInFull
+                                + ' (' + (stolenRatio * 100).toFixed(1) + '%)';
                         });
                     });
                 }

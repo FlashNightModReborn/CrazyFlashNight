@@ -18,17 +18,22 @@ var MapHittestEngine = (function() {
     //     - query: Math.round(pageX/Y)
     //     - 命中阈值: alpha > ALPHA_THRESHOLD (抗锯齿边缘忽略)
     //
-    //   hitmap 必须用整页全部 sceneVisuals 构建 (不传 filtered 子集),
-    //   否则切 filter 后缺图; filter 过滤只在 query 后由调用方做。
+    //   hitmap 按 (page, filter) 维度构建 — 只放当前 filter 可见的 sceneVisuals,
+    //   pageId 由调用方传入复合键 (如 'base::roof'), 每个 filter 一张独立 hitmap。
+    //   缘由 (2026-06-15 修): hitmap 单层 color-picking 每像素只记一个归属, 后画覆盖先画。
+    //   若整页全部 visuals 共用一张, 楼层重叠处只剩"最后画的"那个可点; 屋顶 (index 0 最先画)
+    //   被其后 9 个楼层 visual (大厅占 67%/酒吧 25%…) 覆盖, 切屋顶 filter 时这些像素归属被
+    //   过滤掉 → 屋顶只剩独占的左下角可点。改为 filter 维度建图后判定区与显示精确一致。
+    //   filter 仍由调用方在 query 后用 visible/enabled 兜底 (锁关等), 但不再承担"切楼层"职责。
     // ================================================================
 
     var ALPHA_THRESHOLD = 32;
     var MAX_VISUALS = 0xFFFFFE;     // 16M-2, 远超实际 36/page 需求
 
-    // LRU 槽位上限. 总 page=4 (base/faction/defense/school), 每 page hitmap ImageData ~2.5MB,
-    // 槽位 2 兜底 base + 当前场景: 玩家"基地 ↔ 场景 X"二跳 pattern 不重建.
-    // base→A→B→base 三跳会让 base 被 evict 一次后重建 (cold ~1.3s), 实测可接受;
-    // 若发现实战中"基地常驻"延迟敏感再考虑 pin base 或调大.
+    // LRU 槽位上限. 键现为 (page::filter) 复合维度 (调用方传 'base::roof' 等), 每张 hitmap
+    // ImageData ~2.5MB; 仍保持 slot=2 兜内存 (典型流: base::all → 点楼层 filter → 选关, 两键即够).
+    // 同 page 反复切 3+ 楼层会让最旧的 page::filter evict 后重建, 但 DOM visual 层开页时已把全部
+    // PNG 预载入浏览器缓存, 暖重建 (仅 drawImage + getImageData, 不走网络) 很廉价 → slot=2 足够。
     var MAX_PAGES = 2;
 
     // cache[pageId] = {
@@ -101,7 +106,9 @@ var MapHittestEngine = (function() {
 
         var tmp = createOffscreen(tw, th);
         if (!tmp) return;
-        var tc = tmp.getContext('2d');
+        // willReadFrequently: 此临时画布 drawImage 后立刻 getImageData 二值化, 强制 CPU 后端,
+        // 避免 GPU 纹理上传 + 逐 visual readback 的往返 (与主 hitmap 同策略)。
+        var tc = tmp.getContext('2d', { willReadFrequently: true });
         if (!tc) return;
         try {
             tc.drawImage(img, 0, 0, tw, th);
@@ -284,6 +291,13 @@ var MapHittestEngine = (function() {
         if (idx >= 0) _lru.splice(idx, 1);
     }
 
+    // 释放全部缓存 hitmap. 复合键 (page::filter) 无法靠真实 pageId 列表逐个 discard,
+    // 关面板回收时统一清空 (下次 ensurePage 按需重建)。
+    function discardAll() {
+        cache = {};
+        _lru = [];
+    }
+
     function debugState() {
         var pages = {};
         var k;
@@ -312,6 +326,7 @@ var MapHittestEngine = (function() {
         ensurePage: ensurePage,
         query: query,
         discardPage: discardPage,
+        discardAll: discardAll,
         debugState: debugState
     };
 })();
