@@ -16,6 +16,11 @@ var MapPanel = (function() {
     var _hotspotStateLookup = {};
     var _unlockFlags = {};
     var _pageFilterState = {};
+    // hittest 当前实际查询的 hitmap 复合键。仅在对应 hitmap 构建就绪后原子切换 (见
+    // ensureHitmapForActiveFilter), 切层/切图的构建窗口内仍指向旧的已就绪 hitmap →
+    // 消除"切层首点失效"窗口。_hitmapGeneration 给异步提交做防竞态序号。
+    var _activeHitmapKey = '';
+    var _hitmapGeneration = 0;
     var _dynamicAvatarState = {};
     var _snapshotMarkers = [];
     var _snapshotTips = [];
@@ -162,7 +167,7 @@ var MapPanel = (function() {
 
         if (typeof MapHotspotHitcapture !== 'undefined' && _hitcaptureEl) {
             MapHotspotHitcapture.mount(_hitcaptureEl, {
-                getCurrentPageId: function() { return _activePage ? hitmapPageIdFor(_activePage) : ''; },
+                getCurrentPageId: function() { return _activeHitmapKey; },
                 getCurrentPage: function() { return _activePage; },
                 getVisibleLookup: function() { return buildVisibleLookup(_activePage); },
                 getEnabledLookup: function() { return _enabledLookup; },
@@ -340,42 +345,64 @@ var MapPanel = (function() {
         _canvasSyncScheduled = false;
         if (_canvasRenderer && _canvasRenderer.stop) _canvasRenderer.stop();
         // 释放所有 hitmap (每张 ~2.4MB ImageData), 下次 applyPage 重建.
-        // 键为复合 page::filter, 无法靠真实 pageId 列表逐个 discard → discardAll 统一清空.
+        // 键为内容签名复合键, 无法靠真实 pageId 列表逐个 discard → discardAll 统一清空.
         // hitcapture 自身的 listeners 留在 DOM 上, 由 Panels 框架保留 _el 复用; 状态归零靠
         // ensurePage 未就绪时 query 返回 null 兜底.
         if (typeof MapHittestEngine !== 'undefined' && MapHittestEngine.discardAll) {
             MapHittestEngine.discardAll();
         }
+        // 失效已提交的查询键并作废任何在途构建回调 (gen 失配 → 不再提交)。
+        _activeHitmapKey = '';
+        _hitmapGeneration += 1;
     }
 
-    // hittest hitmap 复合键 = page.id + '::' + filterId, 与显示用的 getVisibleSceneVisuals
-    // 同一维度。'all'/'hierarchy'/无 filter 退化为全部 visual (与旧整页图等价), 单楼层 filter
-    // 只含该层 visual → 不再被其它楼层"抢像素"。
-    function hitmapPageIdFor(page) {
-        if (!page) return '';
-        var activeFilter = getActiveFilter(page);
-        var filterId = activeFilter ? activeFilter.id : '';
-        return page.id + '::' + (filterId || 'all');
+    // hitmap 复合键 = page.id + '::' + 该图实际包含的 visual 集合签名 (按 z 顺序的 id 列)。
+    // 用"内容签名"而非 filterId 作键, 让产生相同 visual 子集的 filter 复用同一张 hitmap：
+    // 'all' 与 'hierarchy' 都退化为整页全部 visual → 同键复用, 不再各占一个 LRU 槽 (P2-2)。
+    // 单楼层 filter 各自子集 → 各自一张, 不被其它楼层"抢像素"。
+    function hitmapKeyFor(pageId, visuals) {
+        var ids = [];
+        for (var i = 0; i < visuals.length; i += 1) {
+            ids.push(visuals[i].id || ('v' + i));
+        }
+        return pageId + '::' + ids.join('|');
     }
 
     function buildHitmapPage(page) {
         if (!page) return null;
         var activeFilter = getActiveFilter(page);
         var filterId = activeFilter ? activeFilter.id : '';
+        var visuals = MapPanelData.getVisibleSceneVisuals(page.id, filterId);
         return {
-            id: page.id + '::' + (filterId || 'all'),
+            id: hitmapKeyFor(page.id, visuals),
             width: page.width,
             height: page.height,
-            sceneVisuals: MapPanelData.getVisibleSceneVisuals(page.id, filterId)
+            sceneVisuals: visuals
         };
     }
 
+    // 按当前 filter 维度构建 hitmap, 并在构建就绪后把 _activeHitmapKey 原子切到新键。
+    // 构建窗口内 _activeHitmapKey 保持旧的已就绪 hitmap (同页坐标系一致, 切层后由
+    // visible/enabled 兜底过滤掉不属于新 filter 的命中) → 切层首点不再失效 (P2-1)。
+    // _hitmapGeneration 序号防止"快速连切"时旧构建回调覆盖新键。
     function ensureHitmapForActiveFilter() {
         if (typeof MapHittestEngine === 'undefined' || !_activePage) return;
         if (!_activePage.sceneVisuals || !_activePage.sceneVisuals.length) return;
         var hitmapPage = buildHitmapPage(_activePage);
-        if (hitmapPage && hitmapPage.sceneVisuals && hitmapPage.sceneVisuals.length) {
-            MapHittestEngine.ensurePage(hitmapPage, resolveAssetUrl);
+        if (!hitmapPage || !hitmapPage.sceneVisuals || !hitmapPage.sceneVisuals.length) return;
+
+        var key = hitmapPage.id;
+        var gen = (_hitmapGeneration += 1);
+        var promise = MapHittestEngine.ensurePage(hitmapPage, resolveAssetUrl);
+        if (promise && promise.then) {
+            promise.then(function() {
+                // 仅当本次仍是最新一次请求时提交 (期间未再切层/切图)
+                if (gen === _hitmapGeneration) _activeHitmapKey = key;
+            });
+        }
+        // 目标 hitmap 已在缓存且就绪 (切回旧楼层/all↔hierarchy 复用) → 立即原子切换, 零窗口。
+        if (MapHittestEngine.isReady && MapHittestEngine.isReady(key)) {
+            _activeHitmapKey = key;
         }
     }
 
@@ -390,10 +417,12 @@ var MapPanel = (function() {
             var _bgExtUrl = (_activePage && _activePage.backgroundUrl) ? resolveAssetUrl(_activePage.backgroundUrl) : '';
             _stageShellEl.style.backgroundImage = _bgExtUrl ? 'url("' + _bgExtUrl + '")' : '';
         }
-        // 像素级 hittest 构建 (lazy, fire-and-forget):
-        // 按当前 filter 维度建图 (复合键 page::filter, 只放该 filter 可见的 visual),
+        // 像素级 hittest 构建 (lazy):
+        // 按当前 filter 维度建图 (内容签名键, 只放该 filter 可见的 visual),
         // 让判定区与显示精确一致; 切 filter 时由 setActiveFilter 重新 ensurePage。
         // 详见 map-hittest-engine.js 顶部契约 (2026-06-15 屋顶判定收缩修复)。
+        // 换页 = 坐标系换 → 清空 _activeHitmapKey, 不跨页回退 (新页就绪前 query 返回 null)。
+        _activeHitmapKey = '';
         ensureHitmapForActiveFilter();
         // sceneVisual DOM 层重建 (整页全部 visuals, 与 filter 无关).
         // 必须在 renderStageBackdrop → syncCanvasStage 之前, 因为 buildCanvasRenderState
@@ -1409,7 +1438,8 @@ var MapPanel = (function() {
         if (!filter) return;
 
         _pageFilterState[_activePage.id] = filter.id;
-        // 切楼层 → 重建该 filter 维度的 hitmap (复合键各自缓存, 切回即时命中)。
+        // 切楼层 → 构建该 filter 维度的 hitmap (内容签名键各自缓存, 切回即时命中)。
+        // 不清 _activeHitmapKey: 同页坐标系一致, 构建窗口内继续查旧 hitmap, 切层首点不失效。
         ensureHitmapForActiveFilter();
         renderStageBackdrop();
         renderAvatars();

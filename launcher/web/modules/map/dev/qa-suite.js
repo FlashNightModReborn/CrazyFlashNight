@@ -1912,6 +1912,67 @@ var MapPanelHarnessQA = (function() {
                 }
             },
             {
+                id: 'map-ui31j',
+                title: 'hittest engine: isReady 契约 — 构建中 false, resolve 后 true; query 在 !ready 时返回 null',
+                run: function() {
+                    return bootMapForHittest(api, host).then(function() {
+                        MapHittestEngine.discardAll();
+                        var page = MapPanelData.getPage('base');
+                        var key = 'base::isready-probe';
+                        var probe = { id: key, width: page.width, height: page.height, sceneVisuals: (page.sceneVisuals || []).slice() };
+                        api.assertEqual(MapHittestEngine.isReady(key), false, '建前 isReady=false');
+                        var p = MapHittestEngine.ensurePage(probe, harnessResolveAsset);
+                        // 同步态: 已发起但图片未解码, 仍未就绪 → 此刻 query 应 null (复现 P2-1 失效窗口根因)
+                        api.assertEqual(MapHittestEngine.isReady(key), false, '建中 isReady=false');
+                        var rr = (page.sceneVisuals || [])[0].rect;
+                        var midX = Math.round(rr.x + rr.w / 2);
+                        var midY = Math.round(rr.y + rr.h / 2);
+                        api.assertEqual(MapHittestEngine.query(key, midX, midY), null, '建中 query 返回 null');
+                        return p.then(function() {
+                            api.assertEqual(MapHittestEngine.isReady(key), true, 'resolve 后 isReady=true');
+                            MapHittestEngine.discardAll();
+                            api.assertEqual(MapHittestEngine.isReady(key), false, 'discardAll 后 isReady=false');
+                            return 'isReady 契约 OK';
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui31k',
+                title: 'hittest engine: 内容签名键复用 — all 与 hierarchy 同 visual 集合 → 同键单图 (回归 P2-2 双图占满 2 槽)',
+                run: function() {
+                    return bootMapForHittest(api, host).then(function() {
+                        MapHittestEngine.discardAll();
+                        // 复刻 map-panel.js hitmapKeyFor: page.id + '::' + visual id 按 z 序拼接
+                        function keyFor(pageId, filterId) {
+                            var visuals = MapPanelData.getVisibleSceneVisuals(pageId, filterId);
+                            var ids = visuals.map(function(v) { return v.id; });
+                            return { key: pageId + '::' + ids.join('|'), visuals: visuals };
+                        }
+                        var allK = keyFor('base', 'all');
+                        var hierK = keyFor('base', 'hierarchy');
+                        var roofK = keyFor('base', 'roof');
+                        api.assertEqual(hierK.key, allK.key, 'all 与 hierarchy visual 集合相同 → 同键 (复用单图)');
+                        api.assert(roofK.key !== allK.key, 'roof 子集键应不同于全集键');
+
+                        // 同键 ensurePage 两次 → 第二次命中缓存, 不重复建图
+                        var pageAll = { id: allK.key, width: 1031, height: 608, sceneVisuals: allK.visuals };
+                        return MapHittestEngine.ensurePage(pageAll, harnessResolveAsset).then(function() {
+                            var afterAll = MapHittestEngine.debugState();
+                            api.assertEqual(afterAll.lruOrder.length, 1, 'all 建图后缓存 1 条');
+                            // hierarchy 走相同键 → 命中, 不新增条目, 也不挤占第二槽
+                            var pageHier = { id: hierK.key, width: 1031, height: 608, sceneVisuals: hierK.visuals };
+                            return MapHittestEngine.ensurePage(pageHier, harnessResolveAsset).then(function() {
+                                var afterHier = MapHittestEngine.debugState();
+                                api.assertEqual(afterHier.lruOrder.length, 1, 'hierarchy 复用同键 → 仍 1 条 (旧实现会变 2 条挤掉楼层图)');
+                                MapHittestEngine.discardAll();
+                                return 'sharedKey=' + allK.key.slice(0, 24) + '… reused (lru=1)';
+                            });
+                        });
+                    });
+                }
+            },
+            {
                 id: 'map-ui32a',
                 title: 'scene visual layer: Plan C non-hierarchy → canvas 画 muted 其它 + DOM 显 current focus',
                 run: function() {

@@ -18,21 +18,27 @@ var MapHittestEngine = (function() {
     //     - query: Math.round(pageX/Y)
     //     - 命中阈值: alpha > ALPHA_THRESHOLD (抗锯齿边缘忽略)
     //
-    //   hitmap 按 (page, filter) 维度构建 — 只放当前 filter 可见的 sceneVisuals,
-    //   pageId 由调用方传入复合键 (如 'base::roof'), 每个 filter 一张独立 hitmap。
+    //   hitmap 按 (page, filter 可见 visual 子集) 维度构建 — 只放当前 filter 可见的
+    //   sceneVisuals。pageId 由调用方传入复合键 = page.id + '::' + 子集内容签名 (visual id
+    //   按 z 顺序拼接, 见 map-panel.js hitmapKeyFor)。产生相同 visual 子集的 filter 自动复用
+    //   同一张 hitmap (如 'all' 与 'hierarchy' 都是整页全集 → 同键, 不重复占 LRU 槽)。
     //   缘由 (2026-06-15 修): hitmap 单层 color-picking 每像素只记一个归属, 后画覆盖先画。
     //   若整页全部 visuals 共用一张, 楼层重叠处只剩"最后画的"那个可点; 屋顶 (index 0 最先画)
     //   被其后 9 个楼层 visual (大厅占 67%/酒吧 25%…) 覆盖, 切屋顶 filter 时这些像素归属被
-    //   过滤掉 → 屋顶只剩独占的左下角可点。改为 filter 维度建图后判定区与显示精确一致。
+    //   过滤掉 → 屋顶只剩独占的左下角可点。改为子集维度建图后判定区与显示精确一致。
     //   filter 仍由调用方在 query 后用 visible/enabled 兜底 (锁关等), 但不再承担"切楼层"职责。
+    //   切层构建窗口: 调用方 (map-panel.js) 用 isReady + _activeHitmapKey 原子切换查询键,
+    //   就绪前继续查旧子集图 → 切层首点不失效。
     // ================================================================
 
     var ALPHA_THRESHOLD = 32;
     var MAX_VISUALS = 0xFFFFFE;     // 16M-2, 远超实际 36/page 需求
 
-    // LRU 槽位上限. 键现为 (page::filter) 复合维度 (调用方传 'base::roof' 等), 每张 hitmap
-    // ImageData ~2.5MB; 仍保持 slot=2 兜内存 (典型流: base::all → 点楼层 filter → 选关, 两键即够).
-    // 同 page 反复切 3+ 楼层会让最旧的 page::filter evict 后重建, 但 DOM visual 层开页时已把全部
+    // LRU 槽位上限. 键现为内容签名复合键 (page.id + '::' + visual 子集签名), 每张 hitmap
+    // ImageData ~2.5MB; 仍保持 slot=2 兜内存 (典型流: 整页全集图 → 点楼层 filter → 选关, 两键即够).
+    // 调用方按 LRU 最近用顺序保活当前查询键: 切层 ensurePage 新键时, 当前键是上一个 ensure 的
+    // 最近项 → 必随新键一起留在 2 槽内, 构建窗口内可继续 query (零失效窗口靠它兜底)。
+    // 同 page 反复切 3+ 楼层会让最旧的子集图 evict 后重建, 但 DOM visual 层开页时已把全部
     // PNG 预载入浏览器缓存, 暖重建 (仅 drawImage + getImageData, 不走网络) 很廉价 → slot=2 足够。
     var MAX_PAGES = 2;
 
@@ -291,7 +297,14 @@ var MapHittestEngine = (function() {
         if (idx >= 0) _lru.splice(idx, 1);
     }
 
-    // 释放全部缓存 hitmap. 复合键 (page::filter) 无法靠真实 pageId 列表逐个 discard,
+    // 该键对应 hitmap 是否已构建就绪 (可被 query 命中). 调用方据此决定是否需要
+    // 等待异步构建完成, 还是可立即原子切换查询键 (零失效窗口)。
+    function isReady(pageId) {
+        var entry = cache[pageId];
+        return !!(entry && entry.ready);
+    }
+
+    // 释放全部缓存 hitmap. 内容签名复合键无法靠真实 pageId 列表逐个 discard,
     // 关面板回收时统一清空 (下次 ensurePage 按需重建)。
     function discardAll() {
         cache = {};
@@ -325,6 +338,7 @@ var MapHittestEngine = (function() {
     return {
         ensurePage: ensurePage,
         query: query,
+        isReady: isReady,
         discardPage: discardPage,
         discardAll: discardAll,
         debugState: debugState
