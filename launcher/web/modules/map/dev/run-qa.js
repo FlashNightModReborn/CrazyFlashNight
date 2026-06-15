@@ -124,6 +124,7 @@ async function main() {
         await page.goto(url, { waitUntil: 'load', timeout: 30000 });
         const handle = await page.waitForFunction(
             () => (window.__qaResult && window.__qaResult.qa) ? window.__qaResult.qa : null,
+            null,
             { timeout: opts.timeout, polling: 250 }
         );
         bundle = await handle.jsonValue();

@@ -95,6 +95,7 @@ async function main() {
         await page.goto(harnessUrl, { waitUntil: 'load', timeout: 30000 });
         bundle = await page.waitForFunction(
             () => (window.__qaResult && window.__qaResult.qa) ? window.__qaResult.qa : null,
+            null,
             { timeout: opts.timeout, polling: 250 }
         );
         bundle = await bundle.jsonValue();
