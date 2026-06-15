@@ -16,10 +16,13 @@ var MapHotspotHitcapture = (function() {
     //     pointercancel / contextmenu / pointerleave → 全清理
     //
     //   切层构建窗口 (目标 hitmap 未就绪, query 恒 null):
-    //     pointerdown 未命中且 !currentMapReady() → 暂存按下坐标 (deferred), pointerup 暂存释放坐标;
-    //     面板在该 hitmap 构建就绪后调 flushDeferred → 用就绪图重放该点击 (down/up 同判定且非 busy 即
-    //     onClick 导航) → 切层首点不丢失。面板每次切层先 clearDeferred 作废上一窗口的暂存。
-    //     窗口内 hover 光标显 progress (显式"加载中", 非静默死区)。
+    //     pointerdown 未命中且 !currentMapReady() → 暂存按下的 page 坐标 (deferred); pointerup 暂存
+    //     释放的 page 坐标。重放只在"按下+释放"都齐 (一次完整点击) 时进行, 不在按住期间误触:
+    //       · hitmap 在 pointerup 之前就绪 → 面板 flushDeferred 此刻 _deferredUp 尚空 → 不动, 待 up;
+    //       · pointerup 时若已就绪 → 由 up 触发重放; 否则留待面板就绪回调 flushDeferred。
+    //     重放用就绪图按 page 坐标重判 (布局无关, 切层重布局/舞台位移不致误解释 client 坐标),
+    //     down/up 同判定且非 busy → onClick 导航 → 切层首点不丢失。面板每次切层先 clearDeferred
+    //     作废上一窗口的暂存; 移出舞台/取消手势亦清。窗口内 hover 光标显 progress (显式"加载中")。
     //
     //   音效路径 (v4 决策):
     //     - hover cue: 由本模块在 hit null→非null 时显式 BootstrapAudio.playHover() 调用,
@@ -27,6 +30,8 @@ var MapHotspotHitcapture = (function() {
     //       属性常驻, 而本模块只在 pointerdown 命中期临时设属性)
     //     - click cue: 走 overlay-audio-bindings.js 的 click capture 代理 (透明转发 [data-audio-cue]),
     //       因 capture 比本模块 click bubble 早, 所以 pointerup 已经决定 attr 在不在
+    //     - 重放 cue: 重放无真实 click 事件, click 代理捕获不到 → flushDeferred 显式 playTransition()
+    //       补一次 (与即时点击各播一次, 不重不漏)
     //
     //   坐标契约:
     //     clientX/Y → page 坐标 = (clientX - rect.left) / rect.width * page.width
@@ -42,11 +47,11 @@ var MapHotspotHitcapture = (function() {
     var _pendingNavigateId = null;     // pointerdown 锁定的导航目标
     var _pendingFrame = 0;
 
-    // 切层构建窗口内的"暂存点击": 目标 hitmap 尚未就绪 (engine.query 返回 null) 时, 记下
-    // 按下/释放坐标; 面板在该 hitmap 构建就绪后调 flushDeferred → 用就绪图重放该点击, 命中即
-    // 导航 → 切层首点不丢失 (P2-1)。面板每次切层/切图先 clearDeferred 作废上一窗口的暂存。
-    var _deferredDown = null;          // { x, y } 窗口内 pointerdown 客户端坐标
-    var _deferredUp = null;            // { x, y } 窗口内 pointerup 客户端坐标 (与 down 比对防拖拽)
+    // 切层构建窗口内的"暂存点击": 目标 hitmap 尚未就绪 (engine.query 返回 null) 时, 记下按下/释放的
+    // page 坐标 (布局无关); 待"按下+释放"都齐, 面板就绪回调 (或 up 时已就绪) 触发 flushDeferred →
+    // 用就绪图重放该点击, 命中即导航 → 切层首点不丢失 (P2-1)。每次切层/切图先 clearDeferred 作废。
+    var _deferredDown = null;          // { px, py } 窗口内 pointerdown 的 page 坐标 (布局无关)
+    var _deferredUp = null;            // { px, py } 窗口内 pointerup 的 page 坐标 (与 down 比对防拖拽)
 
     function getEngine() {
         return typeof MapHittestEngine !== 'undefined' ? MapHittestEngine : null;
@@ -59,18 +64,26 @@ var MapHotspotHitcapture = (function() {
         return !!(engine && pageId && engine.isReady && engine.isReady(pageId));
     }
 
-    function queryHotspot(clientX, clientY) {
-        if (!_el || !_callbacks) return null;
+    // 客户端坐标 → page 坐标 (与 transform 解耦, 直接读 rect)。返回 null = 布局未就绪。
+    function clientToPage(clientX, clientY) {
+        if (!_el) return null;
         var rect = _el.getBoundingClientRect();
         if (!rect.width || !rect.height) return null;
-        var pageId = _callbacks.getCurrentPageId ? _callbacks.getCurrentPageId() : '';
-        if (!pageId) return null;
-        var page = _callbacks.getCurrentPage ? _callbacks.getCurrentPage() : null;
+        var page = _callbacks && _callbacks.getCurrentPage ? _callbacks.getCurrentPage() : null;
         var pageW = (page && page.width) || 1031;
         var pageH = (page && page.height) || 608;
-        var px = (clientX - rect.left) / rect.width * pageW;
-        var py = (clientY - rect.top) / rect.height * pageH;
+        return {
+            px: (clientX - rect.left) / rect.width * pageW,
+            py: (clientY - rect.top) / rect.height * pageH
+        };
+    }
 
+    // page 坐标 → hotspot id (engine 命中 + visible/enabled 兜底)。page 坐标与布局无关,
+    // 故暂存重放时用它 (而非 client 坐标) 不受切层重布局影响。
+    function resolveHotspotAtPage(px, py) {
+        if (!_callbacks) return null;
+        var pageId = _callbacks.getCurrentPageId ? _callbacks.getCurrentPageId() : '';
+        if (!pageId) return null;
         var engine = getEngine();
         if (!engine) return null;
         var result = engine.query(pageId, px, py);
@@ -90,9 +103,22 @@ var MapHotspotHitcapture = (function() {
         return null;
     }
 
+    function queryHotspot(clientX, clientY) {
+        var pagePt = clientToPage(clientX, clientY);
+        if (!pagePt) return null;
+        return resolveHotspotAtPage(pagePt.px, pagePt.py);
+    }
+
     function playHoverCue() {
         var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
         if (A && typeof A.playHover === 'function') A.playHover();
+    }
+
+    // 重放导航的 transition 音效: 重放无真实 click 事件, overlay-audio-bindings 的 click 代理
+    // 捕获不到 → 这里显式补一次 (与即时点击经 data-audio-cue='transition' 播放的语义一致, 各一次)。
+    function playTransitionCue() {
+        var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+        if (A && typeof A.playTransition === 'function') A.playTransition();
     }
 
     function setHover(hit) {
@@ -118,18 +144,21 @@ var MapHotspotHitcapture = (function() {
         _deferredUp = null;
     }
 
-    // 构建就绪后重放窗口内的暂存点击: 用就绪图重新判定按下坐标; 命中且释放坐标判定一致
-    // (防拖拽离开) 且非 busy → 走与即时点击相同的 onClick 导航路径。
+    // 构建就绪后重放窗口内的暂存点击。仅当"按下+释放"都齐 (一次完整点击) 才重放 —— 若 hitmap
+    // 在 pointerup 之前就绪, 此处 _deferredUp 尚空 → 直接返回 (不在按住期间误触), 待 pointerup 触发。
+    // 用就绪图按 page 坐标重判 (布局无关): 命中、释放判定与按下一致 (防拖拽)、非 busy → 走与即时
+    // 点击相同的 onClick 导航路径, 并显式补一次 transition 音效。
     function flushDeferred() {
-        if (!_deferredDown) return;
+        if (!_deferredDown || !_deferredUp) return;
         var down = _deferredDown;
-        var up = _deferredUp || down;
-        clearDeferred();
-        var downHit = queryHotspot(down.x, down.y);
+        var up = _deferredUp;
+        clearDeferred();                                             // 完整点击 → 无论结果都消费掉
+        var downHit = resolveHotspotAtPage(down.px, down.py);
         if (!downHit) return;
-        if (queryHotspot(up.x, up.y) !== downHit) return;   // 拖拽到别处释放 → 不导航 (同即时路径语义)
+        if (resolveHotspotAtPage(up.px, up.py) !== downHit) return;  // 拖拽到别处释放 → 不导航
         var busy = _callbacks && _callbacks.getBusyLookup ? _callbacks.getBusyLookup() : null;
         if (busy && busy[downHit]) return;
+        playTransitionCue();
         if (_callbacks && _callbacks.onClick) _callbacks.onClick(downHit, null);
     }
 
@@ -156,9 +185,10 @@ var MapHotspotHitcapture = (function() {
             _pendingNavigateId = hit;
             clearDeferred();
         } else if (!hit && !currentMapReady()) {
-            // 切层/开页构建窗口: query 因 hitmap 未就绪而返回 null (非真·空白处)。暂存按下坐标,
-            // 待 flushDeferred 用就绪图重放 → 首点不丢。busy 留到重放时再判 (届时才有 id)。
-            _deferredDown = { x: e.clientX, y: e.clientY };
+            // 切层/开页构建窗口: query 因 hitmap 未就绪而返回 null (非真·空白处)。暂存按下的 page 坐标
+            // (布局无关, 切层重布局不致误解释), 待 pointerup + flushDeferred 重放 → 首点不丢。
+            // 仅在拿到 pointerup 后才重放 (见 flushDeferred), 不在按住期间误触。
+            _deferredDown = clientToPage(e.clientX, e.clientY);
             _deferredUp = null;
             clearPending();
         } else {
@@ -170,8 +200,10 @@ var MapHotspotHitcapture = (function() {
     function onPointerUp(e) {
         if (e.button !== 0) return;
         if (_deferredDown) {
-            // 窗口内释放: 暂存释放坐标, 留待 flushDeferred 与按下坐标比对 (防拖拽误触)。
-            _deferredUp = { x: e.clientX, y: e.clientY };
+            // 窗口内释放: 暂存释放的 page 坐标 (与 down 比对防拖拽)。
+            _deferredUp = clientToPage(e.clientX, e.clientY);
+            // 若 hitmap 此刻已就绪 (窗口在按住期间结束) → 释放即重放; 否则留待面板就绪回调 flushDeferred。
+            if (currentMapReady()) flushDeferred();
             return;
         }
         // pointerup 早于 click; 这里 query release 坐标, 不匹配则 remove attr
