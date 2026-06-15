@@ -22,7 +22,8 @@ var MapHotspotHitcapture = (function() {
     //       · pointerup 时若已就绪 → 由 up 触发重放; 否则留待面板就绪回调 flushDeferred。
     //     重放用就绪图按 page 坐标重判 (布局无关, 切层重布局/舞台位移不致误解释 client 坐标),
     //     down/up 同判定且非 busy → onClick 导航 → 切层首点不丢失。面板每次切层先 clearDeferred
-    //     作废上一窗口的暂存; 移出舞台/取消手势亦清。窗口内 hover 光标显 progress (显式"加载中")。
+    //     作废上一窗口的暂存; pointercancel 亦清; pointerleave 仅在"按下未释放"时清 (已完成的点击保留,
+    //     否则触摸 tap 尾序 pointerout→pointerleave 会吞掉首点)。窗口内 hover 光标显 progress。
     //
     //   音效路径 (v4 决策):
     //     - hover cue: 由本模块在 hit null→非null 时显式 BootstrapAudio.playHover() 调用,
@@ -159,7 +160,8 @@ var MapHotspotHitcapture = (function() {
         var busy = _callbacks && _callbacks.getBusyLookup ? _callbacks.getBusyLookup() : null;
         if (busy && busy[downHit]) return;
         playTransitionCue();
-        if (_callbacks && _callbacks.onClick) _callbacks.onClick(downHit, null);
+        // 重放无事件对象; panel onClick(id) 只取 id, 故不传第二参 (保持调用整洁)。
+        if (_callbacks && _callbacks.onClick) _callbacks.onClick(downHit);
     }
 
     function onPointerMove(e) {
@@ -239,7 +241,10 @@ var MapHotspotHitcapture = (function() {
         }
         setHover(null);
         clearPending();
-        clearDeferred();   // 鼠标移出舞台 = 放弃本次点击, 不再于就绪后重放
+        // 仅在手势"按下但尚未释放"时取消暂存 (= 拖出舞台放弃)。已完成的点击 (down+up 齐) 保留待重放:
+        // 触摸 tap 的正常尾序是 pointerdown→pointerup→pointerout→pointerleave→click, 若无条件清,
+        // 触摸屏 (Steam Deck 等) 切层窗口内的每个 tap 都会在重放前被吞掉。
+        if (!_deferredUp) clearDeferred();
         if (_el) _el.style.cursor = 'default';
     }
 

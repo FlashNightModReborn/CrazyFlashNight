@@ -2042,7 +2042,7 @@ var MapPanelHarnessQA = (function() {
             },
             {
                 id: 'map-ui31l',
-                title: 'hittest: 切层构建窗口内完整点击被暂存, 就绪后重放导航 + 补播 transition (P2-1/P3; 旧版静默吞点)',
+                title: 'hittest: 时序C 窗口内完整点击(down+up)→就绪后 flush 重放导航 + 补播 transition (P2-1/P3; 旧版静默吞点)',
                 run: function() {
                     return prepFirstFloorEntrance(api, host).then(function(ctx) {
                         var before = navMessageCount(host);
@@ -2135,6 +2135,36 @@ var MapPanelHarnessQA = (function() {
                         }, function(err) {
                             ctx.hit.style.transform = '';
                             throw err;
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui31o',
+                title: 'hittest: 触摸 tap 尾序 (down→up→pointerout→pointerleave→ready) 完整点击仍重放 (P2; Steam Deck 触摸)',
+                run: function() {
+                    return prepFirstFloorEntrance(api, host).then(function(ctx) {
+                        var before = navMessageCount(host);
+                        reopenFirstFloorWindow();
+                        var c = pageToClient(ctx.hit, ctx.page, ctx.pageX, ctx.pageY);
+                        // 复刻 Edge 触摸 tap 在切层窗口内的真实事件序列 (均早于 hitmap 就绪):
+                        // pointerdown → pointerup → pointerout → pointerleave → click。
+                        // pointerleave 不得吞掉这次"已完成"的点击。
+                        firePointerEvent(ctx.hit, 'pointerdown', c.x, c.y);
+                        firePointerEvent(ctx.hit, 'pointerup', c.x, c.y);
+                        firePointerEvent(ctx.hit, 'pointerout', c.x, c.y);
+                        firePointerEvent(ctx.hit, 'pointerleave', c.x, c.y);
+                        fireClickEvent(ctx.hit, c.x, c.y);
+
+                        api.assertEqual(navMessageCount(host), before, '窗口内点击不应立即导航');
+                        api.assert(MapHotspotHitcapture.debugState().deferredPending, 'pointerleave 后完整点击仍暂存 (不被吞)');
+
+                        return api.waitFor(function() {
+                            return navMessageCount(host) > before ? true : null;
+                        }, 3000, 'touch tap replayed after ready').then(function() {
+                            api.assertEqual(navMessageCount(host), before + 1, '就绪后重放导航一次');
+                            api.assert(!MapHotspotHitcapture.debugState().deferredPending, 'flush 后清空');
+                            return 'touch tap (up→leave→ready) replayed → navigate';
                         });
                     });
                 }
