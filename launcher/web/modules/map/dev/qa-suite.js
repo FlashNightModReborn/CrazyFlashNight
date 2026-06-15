@@ -1772,7 +1772,7 @@ var MapPanelHarnessQA = (function() {
                     return bootMapForHittest(api, host).then(function() {
                         var page = MapPanelData.getPage('base');
                         // cold start: 清缓存重建
-                        MapHittestEngine.discardPage('base');
+                        MapHittestEngine.discardAll();
                         var t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
                         return MapHittestEngine.ensurePage(page, harnessResolveAsset).then(function() {
                             var t1 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
@@ -1842,13 +1842,13 @@ var MapPanelHarnessQA = (function() {
                             api.assert(!debug.pages.defense, 'defense evicted');
                             api.assert(!!debug.pages.faction, 'faction survived (was touched most recently before base)');
 
-                            // discardPage 应同步清 LRU
-                            MapHittestEngine.discardPage('faction');
+                            // discardAll 应清空缓存与 LRU
+                            MapHittestEngine.discardAll();
                             debug = MapHittestEngine.debugState();
-                            api.assertEqual(debug.lruOrder.join(','), 'base', 'discardPage(faction) removes from LRU');
-                            api.assert(!debug.pages.faction, 'faction discarded from cache');
+                            api.assertEqual(debug.lruOrder.length, 0, 'discardAll empties LRU');
+                            api.assert(!debug.pages.base && !debug.pages.faction, 'discardAll clears cache');
 
-                            return 'LRU ok: slot=2, oldest evicted, hot touch preserved, discard syncs';
+                            return 'LRU ok: slot=2, oldest evicted, hot touch preserved, discardAll syncs';
                         });
                     });
                 }
@@ -1967,6 +1967,88 @@ var MapPanelHarnessQA = (function() {
                                 api.assertEqual(afterHier.lruOrder.length, 1, 'hierarchy 复用同键 → 仍 1 条 (旧实现会变 2 条挤掉楼层图)');
                                 MapHittestEngine.discardAll();
                                 return 'sharedKey=' + allK.key.slice(0, 24) + '… reused (lru=1)';
+                            });
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui31l',
+                title: 'hittest: 切层构建窗口内点击被暂存, 就绪后重放导航 (P2-1 切层首点不丢; 旧版返回 null 静默吞点)',
+                run: function() {
+                    function navCount() {
+                        return host.getMessages().filter(function(m) { return m && m.cmd === 'navigate'; }).length;
+                    }
+                    function firePointer(el, type, cx, cy) {
+                        el.dispatchEvent(new PointerEvent(type, { bubbles: true, cancelable: true, clientX: cx, clientY: cy, button: 0, pointerId: 1 }));
+                    }
+                    function fireClick(el, cx, cy) {
+                        el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, clientX: cx, clientY: cy, button: 0 }));
+                    }
+                    return bootMap(api, host, { defaultPageId: 'base' }).then(function() {
+                        var page = MapPanelData.getPage('base');
+                        var hit = document.querySelector('.map-hotspot-hitcapture');
+                        api.assert(!!hit, 'hitcapture el exists');
+
+                        // 1) 切到 first_floor 等就绪, 采样出一个命中 base_entrance 的页面坐标。
+                        //    全程停留 first_floor (同一 fit), 避免切层重布局让重放坐标漂移。
+                        MapPanel._debugSetFilter('first_floor');
+                        return api.waitFor(function() {
+                            var s = currentState();
+                            if (!s || s.activeFilterId !== 'first_floor' || !isCanvasCurrent(s)) return null;
+                            var dbg = MapHittestEngine.debugState();
+                            var k;
+                            for (k in dbg.pages) { if (dbg.pages[k].ready) return s; }
+                            return null;
+                        }, 3000, 'first_floor ready').then(function() {
+                            var rect = hit.getBoundingClientRect();
+                            api.assert(rect.width > 0 && rect.height > 0, 'hitcapture laid out');
+                            var v = null;
+                            (MapPanelData.getVisibleSceneVisuals('base', 'first_floor') || []).forEach(function(x) {
+                                if (x.id === 'base_entrance_visual') v = x;
+                            });
+                            api.assert(!!v, 'base_entrance_visual in first_floor subset');
+                            var rr = v.rect;
+                            var pageX = -1;
+                            var pageY = -1;
+                            var px;
+                            var py;
+                            for (px = Math.floor(rr.x); px < rr.x + rr.w && pageX < 0; px += 4) {
+                                for (py = Math.floor(rr.y); py < rr.y + rr.h && pageX < 0; py += 4) {
+                                    var cx = rect.left + px / page.width * rect.width;
+                                    var cy = rect.top + py / page.height * rect.height;
+                                    if (MapHotspotHitcapture.queryAt(cx, cy) === 'base_entrance') {
+                                        pageX = px;
+                                        pageY = py;
+                                    }
+                                }
+                            }
+                            api.assert(pageX >= 0, 'found a base_entrance opaque page coord');
+
+                            // 2) 制造未就绪窗口: discardAll 清图, 同 filter 重新 ensure (不换 fit → 坐标稳定)。
+                            MapHittestEngine.discardAll();
+                            var before = navCount();
+
+                            // 重新 ensure first_floor (clearDeferred 在 ensure 内先跑), 此刻 hitmap 未就绪;
+                            // 紧接着同步注入点击 → 应被暂存而非静默吞掉。
+                            MapPanel._debugSetFilter('first_floor');
+                            var r2 = hit.getBoundingClientRect();
+                            var ccx = r2.left + pageX / page.width * r2.width;
+                            var ccy = r2.top + pageY / page.height * r2.height;
+                            firePointer(hit, 'pointerdown', ccx, ccy);
+                            firePointer(hit, 'pointerup', ccx, ccy);
+                            fireClick(hit, ccx, ccy);
+
+                            api.assertEqual(navCount(), before, '窗口内点击不应立即导航 (hitmap 未就绪)');
+                            api.assert(MapHotspotHitcapture.debugState().deferredPending, '点击应被暂存 (deferredPending)');
+
+                            // 3) 等 first_floor 构建就绪 → 面板 flushDeferred 重放 → 导航发出
+                            return api.waitFor(function() {
+                                return navCount() > before ? true : null;
+                            }, 3000, 'deferred click replayed → navigate').then(function() {
+                                api.assertEqual(navCount(), before + 1, '重放恰好导航一次');
+                                api.assert(!MapHotspotHitcapture.debugState().deferredPending, 'flush 后 deferred 清空');
+                                return 'deferred replay → navigate base_entrance @page(' + pageX + ',' + pageY + ')';
                             });
                         });
                     });

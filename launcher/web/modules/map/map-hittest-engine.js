@@ -27,8 +27,9 @@ var MapHittestEngine = (function() {
     //   被其后 9 个楼层 visual (大厅占 67%/酒吧 25%…) 覆盖, 切屋顶 filter 时这些像素归属被
     //   过滤掉 → 屋顶只剩独占的左下角可点。改为子集维度建图后判定区与显示精确一致。
     //   filter 仍由调用方在 query 后用 visible/enabled 兜底 (锁关等), 但不再承担"切楼层"职责。
-    //   切层构建窗口: 调用方 (map-panel.js) 用 isReady + _activeHitmapKey 原子切换查询键,
-    //   就绪前继续查旧子集图 → 切层首点不失效。
+    //   切层构建窗口: 查询键同步切到新子集键, 未就绪时 query 返回 null; 调用方 (map-panel.js +
+    //   hitcapture) 用 isReady 把窗口内点击暂存、就绪后重放 → 切层首点不失效。不做"回退旧图":
+    //   旧整页图里目标楼层像素多被其它楼层占据, 回退命不中 (见上)。
     // ================================================================
 
     var ALPHA_THRESHOLD = 32;
@@ -289,14 +290,6 @@ var MapHittestEngine = (function() {
         return entry.byColor[key] || null;
     }
 
-    function discardPage(pageId) {
-        if (cache[pageId]) {
-            delete cache[pageId];
-        }
-        var idx = _lru.indexOf(pageId);
-        if (idx >= 0) _lru.splice(idx, 1);
-    }
-
     // 该键对应 hitmap 是否已构建就绪 (可被 query 命中). 调用方据此决定是否需要
     // 等待异步构建完成, 还是可立即原子切换查询键 (零失效窗口)。
     function isReady(pageId) {
@@ -339,7 +332,6 @@ var MapHittestEngine = (function() {
         ensurePage: ensurePage,
         query: query,
         isReady: isReady,
-        discardPage: discardPage,
         discardAll: discardAll,
         debugState: debugState
     };
