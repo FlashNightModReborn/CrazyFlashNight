@@ -21,7 +21,9 @@ class org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleCore {
         if (isFloating === true) {
             return y;
         }
-        if (!isNaN(z) && y < z) {
+        // 与 isInAir 的 0.5 容差对齐：[z-0.5, z) 带内视为贴地（返回 0），
+        // 防止定时器时序下亚像素残留把单位误判为“在空中”而触发幽灵浮空。
+        if (!isNaN(z) && y < z - 0.5) {
             return y;
         }
         return 0;

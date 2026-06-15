@@ -338,26 +338,34 @@ _root.空中控制器._tick = function(unit:MovieClip):Void {
 
     // 被击飞浮空模式：硬直中暂停重力，独立处理
     if (kb != undefined) {
-        // 硬直中暂停重力更新
+        // 硬直中暂停重力更新：抬升/重力积分与落地检测都只在非硬直时执行。
+        // 【Bug 修复】落地检测必须与抬升同门控。否则贴地单位在残留硬直窗口内被二次击倒时，
+        //   抬升被跳过（_y 仍 == z）而落地检测照跑（z >= z 成立）→ 零滞空立刻倒地。
+        //   硬直只冻结物理、不判定落地；待硬直结束再积分并落地，保留被击飞滞空弧线。
         if (unit.硬直中 != true) {
             unit.浮空 = true;
             unit._y += unit.垂直速度;
             unit.垂直速度 += _root.重力加速度;
-        }
 
-        // 落地检测
-        if (unit._y >= z) {
-            unit._y = z;
-            if (kb.man) {
-                kb.man.落地 = true;
-                // 受身反制时触发动画完毕，否则触发倒地状态
-                if (kb.man.受身反制) {
-                    unit.动画完毕();
-                } else {
-                    unit.状态改变("倒地");
+            // 落地检测（积分后判定）：与统一落地块(:447)/isInAir 对齐用 z - tol，
+            // 避免定时器时序下单位停在 [z-0.5, z) 带内与容差判定口径不一致。
+            if (unit._y >= z - tol) {
+                unit._y = z;
+                // 对齐 fastFall 落地(:319-322) 与统一落地块(:441-443)：落地必须复位 temp_y/浮空，
+                // 否则 temp_y 残留正值会让下一次击飞误走"已在空中"分支而拿不到上升初速（放大本 bug）。
+                unit.temp_y = 0;
+                unit.浮空 = false;
+                if (kb.man) {
+                    kb.man.落地 = true;
+                    // 受身反制时触发动画完毕，否则触发倒地状态
+                    if (kb.man.受身反制) {
+                        unit.动画完毕();
+                    } else {
+                        unit.状态改变("倒地");
+                    }
                 }
+                delete air.sources.knockback;
             }
-            delete air.sources.knockback;
         }
 
         // 被击飞时不执行其他物理逻辑
