@@ -1,6 +1,4 @@
-﻿import org.flashNight.arki.item.itemIcon.*;
-import org.flashNight.arki.task.*;
-
+﻿
 _root.任务栏UI函数 = new Object();
 
 //文本相关函数

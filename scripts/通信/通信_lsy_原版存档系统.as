@@ -1,5 +1,4 @@
-﻿import org.flashNight.neur.Server.*;
-
+﻿
 // ==================== SaveManager shim 层 ====================
 // 注意：不能用 var sm = SaveManager.getInstance() 然后闭包捕获 sm
 // 因为帧脚本局部变量在 asLoader 卸载后被回收（AS2 闭包陷阱）

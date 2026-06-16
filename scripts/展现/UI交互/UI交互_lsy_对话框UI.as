@@ -1,7 +1,4 @@
-﻿import flash.filters.*;
-import flash.geom.Matrix;
-import flash.display.BitmapData;
-
+﻿
 // ===============================
 //  对话框 UI 根对象
 // ===============================

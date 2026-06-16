@@ -1,8 +1,4 @@
-﻿import org.flashNight.arki.bullet.BulletComponent.Shell.*;
-import org.flashNight.neur.Event.*;
-import org.flashNight.arki.bullet.BulletComponent.Movement.Util.*;
-import org.flashNight.arki.bullet.BulletComponent.Movement.*;
-
+﻿
 // 初始化Shell系统
 ShellSystem.initialize();
 MovementSystem.initialize();

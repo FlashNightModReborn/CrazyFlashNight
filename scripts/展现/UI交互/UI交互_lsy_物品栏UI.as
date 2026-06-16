@@ -1,10 +1,4 @@
-﻿import org.flashNight.arki.item.itemIcon.*;
-import org.flashNight.neur.Event.*;
-import org.flashNight.gesh.object.*;
-import org.flashNight.arki.item.*;
-import org.flashNight.arki.item.itemCollection.*;
-import org.flashNight.gesh.text.IntelligenceTextLoader;
-
+﻿
 
 //新版物品栏
 _root.物品UI函数 = new Object();

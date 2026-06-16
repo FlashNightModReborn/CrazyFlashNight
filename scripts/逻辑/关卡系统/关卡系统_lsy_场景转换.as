@@ -2,14 +2,6 @@
 
 _root.操控目标表 = [_root.控制目标];
 
-import org.flashNight.neur.Event.*;
-import org.flashNight.arki.scene.*;
-import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-import org.flashNight.arki.component.Effect.*;
-import org.flashNight.gesh.object.*;
-import org.flashNight.arki.spatial.move.*;
-import org.flashNight.arki.weather.*;
-import org.flashNight.arki.collision.*;
 
 // 场景就绪时，若主角位置处于碰撞中，则尝试挤出到最近合法点（一次性挂钩，避免重复注册）
 EventBus.getInstance().subscribe("SceneReady", function():Void {

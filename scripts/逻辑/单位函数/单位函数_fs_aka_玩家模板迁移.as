@@ -1,21 +1,4 @@
-﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
-import org.flashNight.arki.unit.UnitComponent.Initializer.*;
-import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
-import org.flashNight.arki.unit.UnitComponent.Routing.*;
-import org.flashNight.arki.spatial.move.*;
-import org.flashNight.arki.unit.*;
-import org.flashNight.arki.unit.Action.Shoot.*;
-import org.flashNight.arki.unit.Action.Melee.BladeShootCore; 
-import org.flashNight.neur.Event.*;
-import org.flashNight.naki.RandomNumberEngine.*
-import org.flashNight.arki.spatial.animation.*;
-import org.flashNight.arki.component.StatHandler.DodgeHandler;
-import org.flashNight.arki.component.Effect.*;
-import org.flashNight.arki.item.*;
-import org.flashNight.sara.util.*;
-import org.flashNight.neur.ScheduleTimer.*;
-import org.flashNight.gesh.object.*;
-import org.flashNight.arki.unit.*;
+﻿import org.flashNight.naki.RandomNumberEngine.*
 
 // _root.玩家与佣兵区分装扮刷新 = false;
 _root.AI调试模式 = true;

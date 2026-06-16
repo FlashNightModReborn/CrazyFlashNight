@@ -1,5 +1,4 @@
-﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-
+﻿
 _root.根据技能名查找主角技能等级 = function(技能名){
 	var 主角技能表 = _root.主角技能表;
 	for(var i = 0; i < 主角技能表.length; i++){

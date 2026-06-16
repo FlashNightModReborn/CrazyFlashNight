@@ -1,7 +1,4 @@
-﻿import org.flashNight.arki.unit.Action.Shoot.*;
-import org.flashNight.arki.item.*;
-import org.flashNight.neur.ScheduleTimer.*;
-
+﻿
 /**
  * 单位函数_lsy_主角射击函数.as
  *

@@ -11,6 +11,5 @@
 //   _root.鼠标代理.命中目标(target, shapeFlag)
 //   _root.鼠标代理.清理拖拽图标()
 
-import org.flashNight.arki.cursor.*;
 
 MouseProxy.install();

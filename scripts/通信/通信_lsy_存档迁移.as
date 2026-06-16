@@ -1,5 +1,4 @@
-﻿import org.flashNight.arki.item.*;
-
+﻿
 _root.存档系统.convertInventory = function(data){
     var 旧背包 = data[2];
     var 旧仓库 = data[6];

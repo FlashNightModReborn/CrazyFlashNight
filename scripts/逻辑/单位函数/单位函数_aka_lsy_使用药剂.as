@@ -9,9 +9,6 @@
  * @author FlashNight
  * @version 3.0
  */
-import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-import org.flashNight.arki.item.*;
-import org.flashNight.arki.item.drug.*;
 
 /**
  * 使用药剂（主入口）

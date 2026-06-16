@@ -4,9 +4,6 @@
 //_root.飞行键 = 18;//Alt键
 //_root.武器变形键 = 81;//q键盘
 //_root.奔跑键 = 16;//shift键盘
-import org.flashNight.arki.key.KeyManager;
-import org.flashNight.neur.Event.*;
-import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 
 _root.刷新键值设定 = function() {
     // 调用KeyManager的refreshKeySettings方法

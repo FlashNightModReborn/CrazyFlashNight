@@ -145,6 +145,7 @@ class org.flashNight.boot.BootSequencer {
     // === S10 handoff（顺序铁律: _root.play() 必先于卸载） ===
     function handoff():Void {
         this.tickClip.onEnterFrame = null;
+        delete _root.__boot;   // 收尾：回收引导脚手架（staged 函数容器），boot 后即死代码，避免常驻 _root
         _root.play();
         this.host.removeMovieClip();
         this.tickClip.removeMovieClip();

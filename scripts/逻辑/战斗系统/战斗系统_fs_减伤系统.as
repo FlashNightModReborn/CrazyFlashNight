@@ -1,6 +1,4 @@
-﻿import org.flashNight.arki.component.StatHandler.*;
-import org.flashNight.neur.Event.*;
-
+﻿
 //计算闪避
 // 已移至 DodgeHandler 类中的常量：
 // - _root.躲闪率极限 → DodgeHandler.DODGE_RATE_LIMIT

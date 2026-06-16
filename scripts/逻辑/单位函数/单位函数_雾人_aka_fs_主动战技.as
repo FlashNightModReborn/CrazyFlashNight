@@ -1,12 +1,4 @@
-﻿import org.flashNight.arki.scene.*;
-import org.flashNight.sara.util.*;
-import org.flashNight.neur.ScheduleTimer.*;
-import org.flashNight.arki.component.Effect.*;
-import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-import org.flashNight.arki.item.ItemUtil.*;
-import org.flashNight.arki.unit.Action.Shoot.*;
-import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
-
+﻿
 _root.主动战技函数 = {空手: {}, 兵器: {}, 长枪: {}};
 
 

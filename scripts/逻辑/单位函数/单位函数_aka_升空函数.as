@@ -1,6 +1,4 @@
-﻿import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
-import org.flashNight.arki.component.Effect.*;
-
+﻿
 // 辅助函数：安全移除升空任务（支持并发：按 label 区分不同来源）
 function _清理升空任务(obj, label:String):Void {
     if (!obj) return;

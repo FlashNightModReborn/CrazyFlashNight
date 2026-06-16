@@ -1,6 +1,4 @@
-﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-import org.flashNight.gesh.string.StringUtils;
-
+﻿
 _root.UI系统 = {};
 _root.UI系统.血条刷新显示 = function() 
 {

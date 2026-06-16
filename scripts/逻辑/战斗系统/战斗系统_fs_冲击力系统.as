@@ -1,8 +1,6 @@
 ﻿
 
 /*
-import org.flashNight.neur.Event.*;
-import org.flashNight.arki.component.StatHandler.*;
 
 _root.冲击残余时间 = ImpactHandler.IMPACT_DECAY_TIME;
 _root.踉跄判定 = ImpactHandler.IMPACT_STAGGER_COEFFICIENT;

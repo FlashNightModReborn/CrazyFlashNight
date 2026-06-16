@@ -1,8 +1,4 @@
-﻿import org.flashNight.gesh.object.*;
-import org.flashNight.arki.unit.UnitComponent.Initializer.*;
-import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-import org.flashNight.arki.component.Effect.*;
-
+﻿
 
 _root.最大等级 = 60;
 _root.等级限制 = 100;

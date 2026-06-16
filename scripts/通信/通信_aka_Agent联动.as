@@ -1,5 +1,4 @@
 ﻿// Agent 联动：不调用 _root.服务器；data/rag/sync_state.json 的 task_publish_version 与 _root.agent.last_task_publish_version（初始 0）比较，非战斗图轮询热更。
-import org.flashNight.gesh.path.*;
 
 _root.agent = {};
 _root.agent.npc_state_db_exists = false;

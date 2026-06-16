@@ -22,7 +22,6 @@
  * @author flashNight
  * @version 2.1 - API 收编：屏蔽旧man卸载/绑定容器结束写状态/同帧跳转保护/状态字符串常量集中
  */
-import org.flashNight.arki.unit.UnitComponent.Routing.*;
 
 _root.空手攻击路由 = {};
 

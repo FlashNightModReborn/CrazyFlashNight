@@ -1,5 +1,4 @@
-﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-
+﻿
 _root.战宠UI函数 = new Object();
 
 // 宠物当前金币售价 = 基础价 + IncreasePrice×已购次数。

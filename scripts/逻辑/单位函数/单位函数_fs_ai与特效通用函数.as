@@ -1,5 +1,4 @@
-﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-
+﻿
 _root.获得随机坐标偏离 = function(target:Object, offset:Number)
 {
 	var xOffset:Number = (_root.basic_random() - 0.5) * 2 * offset;

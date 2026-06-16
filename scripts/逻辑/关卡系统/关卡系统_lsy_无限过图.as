@@ -1,6 +1,4 @@
 ﻿//迁移了所有生存模式与无限过图的函数，以及4个难度关卡按钮里的函数
-import org.flashNight.arki.scene.*;
-import org.flashNight.arki.scene.*;
 _root.开启生存模式 = function() {
 	StageManager.instance.initStage();
 }

@@ -1,12 +1,4 @@
-﻿import org.flashNight.arki.spatial.move.*;
-import org.flashNight.arki.item.*;
-import org.flashNight.arki.unit.Action.Skill.*;
-import org.flashNight.arki.unit.*;
-import org.flashNight.arki.unit.UnitComponent.Routing.*;
-import org.flashNight.arki.component.Buff.*;
-import org.flashNight.arki.component.Buff.Component.*;
-import org.flashNight.arki.unit.Action.Regeneration.*;
-
+﻿
 _root.技能函数 = new Object();
 
 //释放条件函数

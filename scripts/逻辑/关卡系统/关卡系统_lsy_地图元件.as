@@ -1,15 +1,5 @@
-﻿import org.flashNight.arki.unit.UnitComponent.Initializer.*;
-import org.flashNight.neur.Event.*;
-import org.flashNight.arki.unit.*;
-import org.flashNight.arki.spatial.animation.*;
-import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-import org.flashNight.arki.unit.Action.PickUp.*;
+﻿
 
-import org.flashNight.arki.item.*;
-import org.flashNight.arki.item.itemCollection.*;
-
-import flash.display.*;
-import flash.geom.*;
 
 // 拾取相关函数
 _root.pickupItemManager = new PickUpManager();

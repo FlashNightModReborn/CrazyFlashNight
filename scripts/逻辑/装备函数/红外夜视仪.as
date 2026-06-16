@@ -1,5 +1,4 @@
-﻿import org.flashNight.arki.weather.*;
-
+﻿
 _root.装备生命周期函数.红外夜视仪初始化 = function(反射对象, 参数对象)
 {
     var 自机 = 反射对象.自机;

@@ -1,7 +1,4 @@
-﻿import org.flashNight.naki.RandomNumberEngine.*;
-import org.flashNight.naki.PseudoRandom.*;
-import org.flashNight.neur.Event.Delegate;
-
+﻿
 // 获取随机数引擎实例并存储为全局变量
 _root.linearEngine = LinearCongruentialEngine.getInstance();
 _root.mersenneEngine = MersenneTwister.getInstance();

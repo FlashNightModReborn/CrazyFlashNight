@@ -1,5 +1,4 @@
-﻿import org.flashNight.arki.weather.*;
-
+﻿
 // 当 XML 加载完成时触发的函数
 // _root.关卡数据缓存 = [];
 

@@ -1,5 +1,4 @@
-﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-
+﻿
 _root.敌人ai函数 = new Object();
 
 _root.敌人ai函数.思考 = function()

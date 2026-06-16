@@ -1,5 +1,4 @@
-﻿import org.flashNight.neur.Event.*;
-
+﻿
 _root.加载后景 = function(环境信息){
     // 根据环境信息判断是否禁用天空效果：
     // 当处于室内环境或明确设置禁用天空时，隐藏默认天空

@@ -1,5 +1,4 @@
-﻿import org.flashNight.arki.unit.UnitComponent.Dressup.*;
-
+﻿
 // _root.装备引用配置 接口（FLA 肢体素材通过此接口调用，无法迁移）
 // 实现已下沉到 org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager
 // 时序与事件契约：agentsDoc/as2-load-timing.md

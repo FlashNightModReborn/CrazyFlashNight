@@ -1,13 +1,4 @@
-﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
-import org.flashNight.arki.unit.UnitComponent.Initializer.*;
-import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
-import org.flashNight.arki.spatial.move.*;
-import org.flashNight.aven.Coordinator.*;
-import org.flashNight.arki.unit.*;
-import org.flashNight.naki.RandomNumberEngine.*
-import org.flashNight.neur.ScheduleTimer.*;
-import org.flashNight.arki.component.Damage.*;
-import org.flashNight.arki.weather.*;
+﻿import org.flashNight.naki.RandomNumberEngine.*
 
 //容纳敌人函数的对象
 _root.敌人函数 = new Object();

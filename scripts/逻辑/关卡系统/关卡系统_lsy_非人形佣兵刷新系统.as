@@ -1,5 +1,4 @@
-﻿import org.flashNight.naki.RandomNumberEngine.*;
-
+﻿
 _root.生成游戏世界可雇用敌人 = function(添加佣兵函数, 机率, 是否门口)
 {
 	_root.刷新受雇欲望基准();

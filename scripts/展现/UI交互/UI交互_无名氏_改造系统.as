@@ -1,5 +1,4 @@
-﻿import org.flashNight.gesh.object.*;
-
+﻿
 _root.改装系统 = new Object();
 _root.改装系统.当前页数 = 1;
 

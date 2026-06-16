@@ -1,8 +1,4 @@
-﻿import org.flashNight.arki.component.Buff.*;
-import org.flashNight.arki.component.Buff.Component.*;
-import org.flashNight.arki.component.Shield.*;
-import org.flashNight.arki.unit.Action.Regeneration.*;
-
+﻿
 //基因虫
 _root.敌人函数.基因虫兵种库 = [
 	{兵种:"敌人-普通改造僵尸", 身高:175, 权重:2},

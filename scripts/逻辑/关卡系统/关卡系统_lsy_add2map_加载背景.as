@@ -1,18 +1,4 @@
-﻿import org.flashNight.arki.bullet.BulletComponent.Shell.*;
-import org.flashNight.arki.corpse.*;
-import org.flashNight.arki.spatial.transform.*;
-import org.flashNight.sara.util.*;
-import org.flashNight.neur.Event.*;
-import flash.geom.Matrix;
-import flash.display.BitmapData;
-import org.flashNight.gesh.object.*;
-import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-import org.flashNight.arki.camera.*;
-import org.flashNight.arki.scene.*;
-import org.flashNight.arki.collision.CollisionLayerRenderer;
-import org.flashNight.arki.weather.*;
-import org.flashNight.gesh.depth.*;
-
+﻿
 
 _root.add2map = _root.add2map2 = DeathEffectRenderer.renderCorpse;
 _root.add2map3 = DeathEffectRenderer.renderRotatedCorpse;

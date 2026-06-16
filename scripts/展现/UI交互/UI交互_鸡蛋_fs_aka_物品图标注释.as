@@ -1,8 +1,4 @@
-﻿import org.flashNight.arki.item.*;
-import org.flashNight.gesh.array.*;
-import org.flashNight.gesh.tooltip.*;
-import org.flashNight.gesh.string.*;
-/**
+﻿/**
  * 物品图标注释主入口函数
  * @param name:String 物品名称
  * @param value:Object 物品数值对象，包含level、tier等属性

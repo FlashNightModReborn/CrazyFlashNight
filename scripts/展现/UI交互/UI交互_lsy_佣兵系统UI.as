@@ -1,7 +1,4 @@
-﻿import org.flashNight.arki.item.*;
-import org.flashNight.arki.item.itemIcon.*;
-import org.flashNight.arki.unit.UnitComponent.Initializer.*;
-
+﻿
 _root.佣兵系统UI = new Object();
 
 

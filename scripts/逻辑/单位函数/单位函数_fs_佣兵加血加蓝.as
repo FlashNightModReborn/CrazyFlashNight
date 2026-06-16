@@ -1,6 +1,4 @@
-﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-import org.flashNight.arki.unit.Action.Regeneration.*;
-
+﻿
 /**
  * 佣兵集体加血 - RegenerationCore包装函数
  * 保持原有接口兼容性，内部使用RegenerationCore实现

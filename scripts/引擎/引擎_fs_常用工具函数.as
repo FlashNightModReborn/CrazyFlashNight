@@ -1,5 +1,4 @@
-﻿import org.flashNight.aven.Coordinator.*;
-
+﻿
 // 确保_root上有常用工具函数对象
 if (_root.常用工具函数 == undefined)
 {

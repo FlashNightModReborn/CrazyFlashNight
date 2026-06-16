@@ -1,26 +1,5 @@
 ﻿// ========== 集中管理的import语句 ==========
 // 所有装备函数文件共享的类库引用
-import org.flashNight.gesh.object.*;
-import org.flashNight.neur.Event.*;
-import org.flashNight.neur.StateMachine.*;
-import org.flashNight.arki.render.*;
-import org.flashNight.arki.camera.*;
-import org.flashNight.arki.unit.*;
-import org.flashNight.arki.spatial.move.*;
-import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-import org.flashNight.arki.unit.UnitComponent.Dressup.*;
-import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.*;
-import org.flashNight.arki.unit.Action.Regeneration.*;
-import org.flashNight.arki.bullet.BulletComponent.Collider.*;
-import org.flashNight.arki.component.Collider.*;
-import org.flashNight.arki.component.Effect.*;
-import org.flashNight.sara.util.*;
-import org.flashNight.naki.DataStructures.*;
-import flash.geom.ColorTransform;
-import flash.filters.*;
-import org.flashNight.arki.item.*;
-import org.flashNight.arki.component.Buff.*;
-import org.flashNight.arki.component.Buff.Component.*;
 
 // ========== 装备函数文件include列表 ==========
 #include "../逻辑/装备函数/外观类挂载.as"

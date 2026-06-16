@@ -1,6 +1,4 @@
-﻿import org.flashNight.naki.RandomNumberEngine.*;
-import org.flashNight.arki.component.StatHandler.DamageResistanceHandler;
-
+﻿
 _root.佣兵思考时间间隔 = 1.5 * _root.帧计时器.帧率;
 
 
