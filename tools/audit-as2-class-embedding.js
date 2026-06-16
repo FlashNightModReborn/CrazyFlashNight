@@ -27,9 +27,11 @@ function usage() {
         "Options:",
         "  --main <path>              Main SWF path (default: " + DEFAULT_MAIN + ")",
         "  --loader <path>            asLoader SWF path (default: " + DEFAULT_LOADER + ")",
-        "  --policy <child-only|dual-build>",
+        "  --policy <child-only|dual-build|single-ownership>",
         "                            child-only: main SWF must not embed SaveManager/ServerManager",
         "                            dual-build: main and loader must both contain repair markers",
+        "                            single-ownership: main SWF embeds ZERO org.flashNight.*,",
+        "                                              and no class is embedded in BOTH SWFs",
         "  --marker <text>            Marker required by policy; may be repeated",
         "  --no-default-markers       Clear default repair markers before adding --marker",
         "  --report-only              Print counts without failing",
@@ -59,7 +61,7 @@ function parseArgs(argv) {
             throw new Error("Unknown argument: " + arg);
         }
     }
-    if (options.policy !== "child-only" && options.policy !== "dual-build") {
+    if (options.policy !== "child-only" && options.policy !== "dual-build" && options.policy !== "single-ownership") {
         throw new Error("Invalid --policy: " + options.policy);
     }
     options.markers = options.markers.filter(function(marker, index, arr) {
@@ -100,6 +102,43 @@ function countNeedle(data, text) {
     }
 }
 
+// 枚举一个 SWF 内全部 __Packages.org.flashNight.<FQN> 类名（去前缀、去重、排序）
+function extractOrgPackages(data) {
+    var text = data.toString("latin1");
+    var re = /__Packages\.(org\.flashNight\.[A-Za-z0-9_.$]+)/g;
+    var set = {};
+    var m;
+    while ((m = re.exec(text)) !== null) set[m[1]] = true;
+    return Object.keys(set).sort();
+}
+
+function auditSingleOwnership(mainSwf, loaderSwf, errors) {
+    var mainPkgs = extractOrgPackages(mainSwf.data);
+    var loaderPkgs = extractOrgPackages(loaderSwf.data);
+    var loaderSet = {};
+    loaderPkgs.forEach(function(p) { loaderSet[p] = true; });
+    var intersection = mainPkgs.filter(function(p) { return loaderSet[p]; });
+
+    console.log("main:   " + path.relative(ROOT, mainSwf.file) + " (" + mainSwf.signature + ")  org.flashNight classes: " + mainPkgs.length);
+    console.log("loader: " + path.relative(ROOT, loaderSwf.file) + " (" + loaderSwf.signature + ")  org.flashNight classes: " + loaderPkgs.length);
+    console.log("intersection (embedded in BOTH): " + intersection.length);
+
+    function sample(arr) { return arr.slice(0, 20).join(", ") + (arr.length > 20 ? ", …(+" + (arr.length - 20) + ")" : ""); }
+
+    // 断言 1：主 SWF 不得嵌入任何游戏 class（否则其副本会随首注册胜出 shadow 掉 asLoader 重编版本）
+    expect(mainPkgs.length === 0,
+        "main SWF embeds " + mainPkgs.length + " org.flashNight class(es) — must be 0 (主时间轴误直引用了游戏 class): " + sample(mainPkgs),
+        errors);
+    // 断言 2：无 class 同时嵌入两个 SWF（每个 class 恰归属一个 SWF）
+    expect(intersection.length === 0,
+        intersection.length + " class(es) embedded in BOTH main and loader — must be 0 (双嵌→shadow 风险): " + sample(intersection),
+        errors);
+    // 断言 3（健全性）：loader 应承载全部游戏 class
+    expect(loaderPkgs.length > 0,
+        "loader SWF embeds 0 org.flashNight classes — unexpected (asLoader 应是类载体子 SWF)",
+        errors);
+}
+
 function auditOne(label, swf, markers) {
     var counts = {};
     CLASS_MARKERS.concat(markers).forEach(function(marker) {
@@ -121,9 +160,22 @@ function main() {
 
     var mainSwf = loadSwf(options.main);
     var loaderSwf = loadSwf(options.loader);
+    var errors = [];
+
+    if (options.policy === "single-ownership") {
+        auditSingleOwnership(mainSwf, loaderSwf, errors);
+        if (errors.length > 0) {
+            console.error("AS2 class embedding audit failed (single-ownership):");
+            errors.forEach(function(error) { console.error("  - " + error); });
+            if (!options.reportOnly) process.exit(1);
+        } else {
+            console.log("AS2 class embedding audit passed (single-ownership).");
+        }
+        return;
+    }
+
     var mainCounts = auditOne("main", mainSwf, options.markers);
     var loaderCounts = auditOne("loader", loaderSwf, options.markers);
-    var errors = [];
 
     if (options.policy === "child-only") {
         CLASS_MARKERS.forEach(function(marker) {

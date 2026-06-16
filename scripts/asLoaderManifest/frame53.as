@@ -1,0 +1,1 @@
+﻿_root.加载并配置子弹映射("data/items/bullets_cases.xml");

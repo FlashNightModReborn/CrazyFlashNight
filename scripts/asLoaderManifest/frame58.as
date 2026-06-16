@@ -1,0 +1,1 @@
+﻿org.flashNight.gesh.xml.LoadXml.SkillDataLoader.getInstance().load(null, null);

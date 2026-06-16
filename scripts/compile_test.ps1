@@ -159,6 +159,24 @@ if ($taskMode.IsLegacy) {
     Write-Host '[WARN] CompileTriggerTask 仍在使用旧版 trigger_compile.ps1 包装器。当前仓库已兼容，但建议重新运行 setup 以切到直开 JSFL。'
 }
 
+# [asLoader 重构 P0] 预编译 BOM 门：被 #include 的 .as 丢 BOM 会被 CS6 静默跳过
+#   （DoAction 0 字节，compiler_errors 仍报 0 错误），现有冒烟链抓不到。先 fail-fast，
+#   省掉一次 77-113s 的无效编译。node 缺失则降级为告警，不阻断旧环境。
+$BomChecker = Join-Path $ProjectDir 'tools\check-bom.js'
+if (Test-Path $BomChecker) {
+    $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
+    if ($nodeCmd) {
+        Write-Host '[INFO] 预编译 BOM 门: node tools/check-bom.js'
+        & node $BomChecker
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host '[ERROR] BOM 门失败：存在缺 BOM 的 #include .as，编译器会静默跳过其内容。修复后重试。'
+            exit 1
+        }
+    } else {
+        Write-Host '[WARN] 未找到 node，跳过预编译 BOM 门（建议安装 node 以启用静默-跳过防护）'
+    }
+}
+
 Remove-Item -Path $Marker -ErrorAction SilentlyContinue
 Remove-Item -Path $ErrorMarker -ErrorAction SilentlyContinue
 

@@ -46,7 +46,7 @@ chcp.com 65001 | Out-Null
 - 可以说：`已完成 Flash CS6 自动化 smoke 验证` / `已触发编译并拿到新鲜 trace`（TestLoader）/ `asLoader 发布编译 0 错误、SWF 已重生成`（publish 模式）
 - **不要**在缺少新鲜 trace、编译器错误面板或 IDE 复核时说「已编译通过」；但 **asLoader publish 无 trace 属正常设计**，以 `0 个错误` + SWF 刷新为准，别因缺 trace 误判失败
 
-**主 SWF / asLoader class 边界审计**：改 `scripts/类定义/org/flashNight/neur/Server/*` 或部署前追加 `node tools/audit-as2-class-embedding.js --policy child-only`；临时双 SWF 重打兜底用 `--policy dual-build --marker _repairPending --marker applyRepairResolved`。若主 SWF 仍嵌入 `__Packages.org.flashNight.neur.Server.SaveManager` / `ServerManager`，asLoader 新 class 不会覆盖。
+**主 SWF / asLoader class 边界审计**：改 `scripts/类定义/org/flashNight/neur/Server/*` 或部署前追加 `node tools/audit-as2-class-embedding.js --policy child-only`；临时双 SWF 重打兜底用 `--policy dual-build --marker _repairPending --marker applyRepairResolved`。若主 SWF 仍嵌入 `__Packages.org.flashNight.neur.Server.SaveManager` / `ServerManager`，asLoader 新 class 不会覆盖。**全局单一归属门（asLoader 重构 P1）**：`--policy single-ownership` 断言「主 SWF 嵌入 `org.flashNight.*` 类 = 0 且无 class 同时嵌入两 SWF」——比 child-only 更强，守「主时间轴误直引用游戏 class 致其嵌进主 SWF → 首注册胜出 shadow 掉 asLoader 重编版本」。改主 FLA 帧脚本 / 新增主时间轴 class 引用、或部署前跑（当前基线 main=0 / loader=570 / intersection=0）。
 详见 [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md)。
 ## 3. Launcher Host 验证
 | 用途 | 命令 |

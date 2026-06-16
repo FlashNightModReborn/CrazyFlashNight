@@ -1,0 +1,1 @@
+﻿_root.加载并配置宠物信息("data/merc/pets.xml");

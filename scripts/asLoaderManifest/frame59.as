@@ -1,0 +1,1 @@
+﻿_root.加载过场背景与文本("data/stages/loading_data.xml");
