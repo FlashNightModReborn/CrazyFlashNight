@@ -13,6 +13,17 @@
 > 5. **2026-06-16 评审修复轮**（两点，已验证）：
 >    - **工具 import 正则盲区**：`stage-wrap-frame.js`/`lint-frame-imports.js` 旧正则强制 `;`，漏剥**无分号 import**（AS2 分号非必需）。实证 `单位函数_fs_aka_玩家模板迁移.as`/`单位函数_lsy_敌人模板迁移.as` 的 `import …RandomNumberEngine.*`（无分号）泄进 f36 staged 函数体、lint 假报「子文件无残留」。修 = 正则改**行首锚定 + 分号可选 + 标识符分段式** `[seg](?:\.[seg])*(?:\.\*)?`（⚠ 仅去 `;` 会因贪婪 `[\w.$]*` 吞掉 `.*` 前的点、末尾全可选不回溯→漏下游离 `*`；分段式根治）。两文件已 BOM 安全剥（`tools/strip-stale-frame-imports.js`，包已在 f36 联合头覆盖故行为不变，待下次 publish 入 SWF）。lint `--fold-specific --strict`=0、check-bom 205、全 tools 已无同类盲区。
 >    - **compile_test asLoader 假成功**：脚本只看 compiler_errors / `[TEST_FAIL]` 即 exit 0，从不校验 `asLoader.swf` 是否真刷新（marker 产出但 SWF 未重写=与 testing-guide 口径相反地假通过）。修 = 新增 opt-in `-VerifySwf <path>`，触发前记 mtime/size 基线、成功路径校验其变化，未刷新→`exit 1`（fail-closed）。**asLoader publish 一律 `-VerifySwf scripts/asLoader.swf`**（testing-guide §2 已写硬）。
+> 6. **2026-06-16 P3 收官 + S6 队列机制更正（读 §3 前必看）**：
+>    - **f42(视觉) 已 staged** → 全 13 sync `#include` 帧 staged 完成（f2/3/9/10/18/32/36/37/38/39/40/41/42）。剩余帧皆非 stage-wrap 类归 BootSequencer。
+>    - **⚠ §3 原 S6 描述（"同步串行 最终化1→最终化2→最终化3"）不准**：实读源码，f18(最终化1)=`for-in` 跑全部 `_root.preloaders`（一次性）；**f26(最终化2)=`onEnterFrame` 每帧抽 1 个 `_root.loaders`（时间切片，async 多帧）**；f32(最终化3)=跑全部 `_root.loaderkillers` + 删三队列。队列生命周期：f9 建 `_root.loaders` → f10(佣兵/兵种/商城/商店_兼容) 各 push → f26 抽干 → f32 删。**BootSequencer.as 已据此改 S6=stepSyncSys（sysPhase 0 跑 s6_pre=f9+f10+f18，相位 1 每 tick 抽 1 个 loader，队空跑 s6_post=f32→S7）**，已更 §3。
+>    - **f5/f6 parity**：原 f5 调 `打印加载内容("加载任务数据……")` + cb `_root.发布消息("任务数据加载完毕")`、f6 cb `_root.发布消息("任务文本加载完毕")`，draft 漏；已补进 BootSequencer S3/S4（host.打印加载内容 + _root.发布消息，C1 事件副作用必留）。
+>    - **塌缩帧需定义的 s-函数**（映射 staged fN）：s0_init=f1·s1_syncCode=f2,f3·s5_parseTask=f7·**s6_pre=f9,f10,f18 / s6_post=f32**·s7_syncLogic=f36..f42+f48-59·s8_fanout=f62-74·s9_onCrafting=f75。**未做**：写塌缩帧 CDATA + 改 asLoader.xml 单帧 + 3 主 FLA 改（destructive，待评审后执行）。
+> 7. **2026-06-17 P5 塌缩已应用 + happy-path 真机全绿（4 个运行时回归已修，凡塌缩必查）**：塌缩 boot 首测暴露 4 类**编译 0 错却运行时坏**的陷阱（publish 无 trace，全靠注入诊断定位）——
+>    - **(a) chunk 帧调度必须调全部 chunk 名，不能调 base `fN`**：组装器 `s7_syncLogic` 调 `_root.__boot.f36()/f37()/f41()`，但这三帧是 chunk 帧只定义 `fN_1..fN_k` **无 base `fN`** → 调用 no-op → 三最大帧（单位函数 506K/装备 456K/UI 189K ≈ 游戏主体）从不执行。**症状=入 base_lobby 但角色瘫痪 + 刘海屏不展开（notifyGameEntered 在 f41 没跑）+「大量代码未运行」观感，且无报错**。修 = `assemble-collapsed-frame.js` 加 `extractDefNames`+`callsFor(N)`（chunk 帧=顺序调全 chunk 名），s1/s6/s7 全改 callsFor。
+>    - **(b) 异步 preload→consume 靠帧间隔，塌缩压成紧 tick → 数据未落地就被读**：`佣兵系统_兼容.as` 是 preloader(异步 XML.load→GetFileByPath 异步 LoadVars)+loader(读 preload 数据建 `_root.mercs_list`) 双阶段；原版 f18(fire)→goto链→f26(consume) 有帧间隔，塌缩压到相邻 tick → loader 在 `onData` 回来前读空 → `mercs_list` 只 1 条 → 佣兵几乎不刷（trace 实证 `mercsList=1`）。**系统性**：全 `兼容` 文件 + 任何 GetFileByPath 型 preload 同理。修 = `GetFileByPath` 加全局在途计数 `_root.__pendingFileLoads`（load++/onData--），BootSequencer.stepSyncSys S6 插**相位 1 等待门**（最少 30 帧 + 等 `__pendingFileLoads==0`，150 帧兜底）再抽 loader。真机验 `mercsList=204` 满编。**通用律：凡「fire 异步→后续帧 consume」的 boot 序列，塌缩后都要加显式等待门**。
+>    - **(c) eager 自单例（`static var instance = new Self()`）构造里做跨类调用 = 类注册序陷阱**：`VectorAfterimageRenderer.as:59` 在类注册期即构造，构造里 `_fadeCallback = Delegate.create1(this, onFadeUpdate)`；塌缩单帧使依赖类 `Delegate` 可能**尚未注册** → **AVM1 对「未定义类.方法()」静默返回 undefined 不抛错** → `_fadeCallback` 变 undefined（其余构造照跑/绘制正常）→ 渐隐回调形同虚设、刀光不消失（**无报错，极隐蔽，只在很久后表现为功能缺失**）。修 = 入队前（initializeCanvas，引擎早就绪）重绑委托。审计：eager 自单例 ∩ 构造调 `Delegate.create*` = 仅此一例（EventBus 的 Delegate.create 只在注释；余自单例皆平凡值构造）。**通用律：eager 自单例构造勿做跨类调用**。
+>    - **(d) 潜伏大小写 typo 被塌缩联合头更严格解析暴露**：`单位函数_lsy_敌人模板迁移.as` 误写 `StaticDeinitializer.deinitializeUnit`（真方法 `deInitializeUnit` 大写 I）。多帧时该上下文未解析为 typed 类故 0 错；塌缩联合头使其解析为 typed 类 → 静态方法类型检查 → 编译报错（非塌缩 bug，是先前潜伏 typo 被更严格解析揪出）。**⚠C1 注记**：若旧运行时大小写敏感(SWF v7+)则修前这 2 处 enemy-deinit 是静默 no-op、修后真 deinit=行为变化，可游戏内验敌人死亡清理。
+>    - **状态**：塌缩 boot happy-path 全绿（引擎/通信/玩家模板/装备/战斗/UI/关卡/佣兵满编/刀光褪色/存档 loadAll OK，launcher.log 无 boot 错），诊断插桩已清理净化重编（SWF 869820B）。**剩 = §5 七边界验 + trace 等价门**。
 
 > 帧号：MAIN = `CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml`（场景帧 0-based）；asLoader = `scripts/asLoader/LIBRARY/asLoader.xml`（DefineSprite 内 f 序号 0-based）；shim = `scripts/通信/通信_fs_bootstrap.as`；类 = `scripts/类定义/org/flashNight/neur/Server/{BootstrapHandshake,BootstrapWait,SaveManager}.as`。
 
@@ -94,7 +105,8 @@ S2_HANDSHAKE [异步, 移植 f4] ★跨SWF★
 S3_TASKDATA  [异步 await]   loadTaskData→taskDataReady; await→S4
 S4_TASKTEXT  [异步 await]   loadTaskText→taskTextReady; await→S5
 S5_PARSE     [同步 f7]      ParseTaskData; raw*=null; fire loadGuideData(不await); →S6
-S6_SYNC_SYS  [同步串行 f9-f32] 初始化→兼容×4→最终化1→【最终化2】→最终化3; →S7  ★必含最终化2★
+S6_SYNC_SYS  [f9-f32,含逐tick队列] s6_pre=f9(建_root.loaders)+f10(兼容×4 push入队)+f18(最终化1:for-in跑全部_root.preloaders)
+             → 每tick抽1个 _root.loaders[current]()(复刻f26最终化2 onEnterFrame切片,async多帧) → 队空 s6_post=f32(最终化3:跑全部_root.loaderkillers+删preloaders/loaders/loaderkillers三队列) →S7  ★三队列语义不同★
 S7_SYNC_LOGIC[同步串行 f36-f59] 单位函数→装备→功能→关卡→战斗→UI交互→视觉 + 杂项loaders; →S8
 S8_FANOUT    [fire-forget f62-74] 发起全部异步 loaders(不await); →S9
 S9_CRAFTING  [异步 await f75] loadCraftingList→建 ItemObtainIndex→craftReady; await→S10

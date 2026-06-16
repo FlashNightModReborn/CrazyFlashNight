@@ -499,6 +499,12 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
             EnhancedCooldownWheel.I().removeTask(canvas.fadeTask);
         }
         // 绑定 onFadeUpdate 方法，添加渐隐任务（使用增强时间轮替换原帧计时器）
+        // [FIX 2026-06-17] 入队前重绑委托，不依赖构造期绑定：
+        //   asLoader 单帧塌缩后，static var instance = new VectorAfterimageRenderer() 在类注册期即构造，
+        //   此刻依赖类 Delegate 可能尚未注册；AVM1 对「未定义类.方法()」静默返回 undefined（不抛错），
+        //   致构造期 _fadeCallback 变 undefined → 渐隐回调形同虚设、刀光不消失（无报错，极隐蔽）。
+        //   改为在 initializeCanvas（首次挥砍、引导早已完成）按方法 UID 缓存重绑，确保拿到有效委托。
+        _fadeCallback = Delegate.create1(this, onFadeUpdate);
         canvas.fadeTask = EnhancedCooldownWheel.I().addTask(_fadeCallback, configObj.refreshInterval, shadowCount, canvas);
     }
     

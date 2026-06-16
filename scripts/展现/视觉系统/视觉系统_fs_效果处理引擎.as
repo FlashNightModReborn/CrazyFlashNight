@@ -1,9 +1,4 @@
-﻿import flash.geom.ColorTransform;
-import flash.filters.*;
-import org.flashNight.naki.DataStructures.*;
-import org.flashNight.arki.render.*;
-import org.flashNight.sara.util.*;
-
+﻿
 
 _root.设置色彩 = function(对象, 红色乘数, 绿色乘数, 蓝色乘数, 红色偏移, 绿色偏移, 蓝色偏移, 透明乘数, 透明偏移)
 {

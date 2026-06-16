@@ -1,9 +1,13 @@
 ﻿_root.GetFileByPath = function(path, out)
 {
+	// 全局在途文件加载计数：boot 期 BootSequencer S6 据此等异步 preload 落地再抽 loader 队列（塌缩压没了原版帧间隔）
+	if (_root.__pendingFileLoads == undefined) _root.__pendingFileLoads = 0;
+	_root.__pendingFileLoads++;
 	var _loc2_ = new LoadVars();
 	_loc2_.onData = function(src)
 	{
 		out.push(src);
+		if (_root.__pendingFileLoads > 0) _root.__pendingFileLoads--;
 		/*var _loc2_ = 0;
 		while (_loc2_ < src.length)
 		{

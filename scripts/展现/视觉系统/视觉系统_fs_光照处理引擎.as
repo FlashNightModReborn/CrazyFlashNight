@@ -3,7 +3,6 @@
 
 /*
 
-import org.flashNight.arki.component.Effect.*;
 
 _root.色彩引擎.生成光照调整参数 = function(光照等级, 视觉情况) 
 {

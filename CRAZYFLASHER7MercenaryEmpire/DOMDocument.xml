@@ -1268,7 +1268,7 @@ Stage.showMenu = false;]]></script>
                               <DOMFrame index="33" duration="19" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[stop();
-_root.asLoader.play();]]></script>
+_root.__boot.mainReadyToContinue = true;]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>

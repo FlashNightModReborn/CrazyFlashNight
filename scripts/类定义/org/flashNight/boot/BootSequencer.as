@@ -2,8 +2,11 @@
 // 权威契约: docs/asLoader-BootSequencer-构建标准-2026-06-16.md
 // 未验证假设（编译期/真机必查）:
 //  1. L42 陷阱: 本类被引用时引用方需显式 import org.flashNight.boot.BootSequencer。
-//  2. _root.__boot 由折叠后的单帧 staged 函数预先填充(s0_init/s1_syncCode/s5_parseTask/s6_syncSystems/
+//  2. _root.__boot 由折叠后的单帧 staged 函数预先填充(s0_init/s1_syncCode/s5_parseTask/s6_pre/s6_post/
 //     s7_syncLogic/s8_fanout/s9_onCrafting + 标志位)。本类只编排，不 #include（避开 import-in-method）。
+//     ⚠ S6 拆 s6_pre(f9 建 _root.loaders + f10 兼容×4 push 入队 + f18 最终化1 跑 _root.preloaders)
+//        / s6_post(f32 最终化3 跑 _root.loaderkillers + 删三队列)；中间 _root.loaders 由本类 stepSyncSys
+//        每 tick 抽 1 个（复刻 f26 最终化2 的 onEnterFrame 时间切片，prevent 单帧抽干卡顿）。
 //  3. 主 FLA 改动 A: MAIN f33 (DOMDocument.xml:1271) _root.asLoader.play() → _root.__boot.mainReadyToContinue=true。
 //  4. 异步 loader 回调与 tick clip 均挂 _root，保证 asLoader 自删(S_HANDOFF)后仍存活。
 //  5. 握手逻辑移植自 asLoader.xml f4(socket 10s / handshake 60s / 存档恢复 gate)；失败=不前进(匹配原版 hang)。
@@ -35,6 +38,8 @@ class org.flashNight.boot.BootSequencer {
     var state:Number;
     var hsPhase:Number;     // S_HANDSHAKE 子相位: 1=socket 2=handshake 3=wait-main-resume
     var hsStart:Number;     // socket 等待起始 getTimer()
+    var sysPhase:Number;    // S_SYNCSYS 子相位: 0=pre 1=等异步preload落地 2=逐tick抽干 _root.loaders
+    var sysWait:Number;     // S_SYNCSYS 相位1 等待计帧（等 GetFileByPath/LoadVars 异步加载落地）
 
     // 幂等入口（防单帧 loop 回绕重入）
     static function run(host:MovieClip):Void {
@@ -49,6 +54,8 @@ class org.flashNight.boot.BootSequencer {
         this.b = _root.__boot;
         this.state = S_INIT;
         this.hsPhase = 0;
+        this.sysPhase = 0;
+        this.sysWait = 0;
     }
 
     function start():Void {
@@ -66,8 +73,8 @@ class org.flashNight.boot.BootSequencer {
             case S_HANDSHAKE: this.stepHandshake();    break;
             case S_TASKDATA:  this.stepTaskData();     break;
             case S_TASKTEXT:  this.stepTaskText();     break;
-            case S_PARSE:     this.b.s5_parseTask();   this.state = S_SYNCSYS;   break;
-            case S_SYNCSYS:   this.b.s6_syncSystems(); this.state = S_SYNCLOGIC; break;
+            case S_PARSE:     this.b.s5_parseTask(this.host); this.state = S_SYNCSYS; break;
+            case S_SYNCSYS:   this.stepSyncSys();      break;
             case S_SYNCLOGIC: this.b.s7_syncLogic();   this.state = S_FANOUT;    break;
             case S_FANOUT:    this.b.s8_fanout();      this.state = S_CRAFTING;  break;
             case S_CRAFTING:  this.stepCrafting();     break;
@@ -112,9 +119,13 @@ class org.flashNight.boot.BootSequencer {
     function stepTaskData():Void {
         if (this.b.taskDataFired != true) {
             this.b.taskDataFired = true;
+            this.host.打印加载内容("加载任务数据……");      // 移植 f5:2（host 即 asLoader 实例，帧顶函数挂其上）
             var self:BootSequencer = this;
             TaskDataLoader.getInstance().loadTaskData(
-                function(data:Object):Void { self.host.rawTaskData = data; self.b.taskDataReady = true; },
+                function(data:Object):Void {
+                    _root.发布消息("任务数据加载完毕");        // 移植 f5:14（事件总线副作用，C1 必留）
+                    self.host.rawTaskData = data; self.b.taskDataReady = true;
+                },
                 function():Void {});
         }
         if (this.b.taskDataReady == true) this.state = S_TASKTEXT;
@@ -125,7 +136,10 @@ class org.flashNight.boot.BootSequencer {
             this.b.taskTextFired = true;
             var self:BootSequencer = this;
             TaskTextLoader.getInstance().loadTaskText(
-                function(data:Object):Void { self.host.rawTextData = data; self.b.taskTextReady = true; },
+                function(data:Object):Void {
+                    _root.发布消息("任务文本加载完毕");        // 移植 f6:11
+                    self.host.rawTextData = data; self.b.taskTextReady = true;
+                },
                 function():Void {});
         }
         if (this.b.taskTextReady == true) this.state = S_PARSE;
@@ -140,6 +154,35 @@ class org.flashNight.boot.BootSequencer {
                 function():Void {});
         }
         if (this.b.craftReady == true) this.state = S_HANDOFF;
+    }
+
+    // === S6 系统初始化（移植 f9/f10/f18/f26/f32 + _root.loaders 逐 tick 抽干队列） ===
+    // 原始 boot：f9 建 _root.loaders → f10(兼容×4) push 入队 → f18(最终化1) 跑全部 _root.preloaders →
+    //   f26(最终化2) onEnterFrame 每帧抽 1 个 _root.loaders（时间切片防卡顿）→ 队空后 f32(最终化3)
+    //   跑全部 _root.loaderkillers 并删三队列。单帧塌缩后由本 tick 复刻「每 tick 抽 1 个」。
+    function stepSyncSys():Void {
+        if (this.sysPhase == 0) {       // pre：建队列 + 入队 + 跑 preloaders（fire 异步 XML.load / GetFileByPath）
+            this.b.s6_pre();            // = f9() + f10() + f18()
+            this.sysPhase = 1;
+            this.sysWait = 0;
+            return;
+        }
+        if (this.sysPhase == 1) {       // ★ 等异步 preloader 落地再抽 loader（原版靠 f18→f26 帧间隔，塌缩压没了→曾致佣兵库只载 1 条）
+            this.sysWait++;
+            var pending:Number = (_root.__pendingFileLoads == undefined) ? 0 : _root.__pendingFileLoads;
+            if (this.sysWait < 30) return;                       // 最少 30 帧：让首发 XML.load 的 onLoad 触发 + GetFileByPath 起飞
+            if (pending > 0 && this.sysWait < 150) return;       // 再等所有 LoadVars 文件加载完(pending==0)；150 帧兜底防卡（加载失败 onData 不回）
+            this.sysPhase = 2;
+            return;
+        }
+        // phase 2：复刻 f26 —— 每 tick 抽 1 个 loader（保序、时间切片）；此时 preload 数据已就绪
+        if (_root.loaders == undefined || _root.loaders.current >= _root.loaders.length) {
+            this.b.s6_post();           // = f32()：跑 loaderkillers + 删三队列
+            this.state = S_SYNCLOGIC;
+            return;
+        }
+        _root.loaders[_root.loaders.current]();
+        _root.loaders.current++;
     }
 
     // === S10 handoff（顺序铁律: _root.play() 必先于卸载） ===

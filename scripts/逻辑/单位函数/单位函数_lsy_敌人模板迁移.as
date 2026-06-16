@@ -336,7 +336,7 @@ _root.敌人函数.死亡检测 = function(para) {
         this.人物文字信息._visible = false;
         this.新版人物文字信息._visible = false;
         if (para.remainMovie === true) {
-            StaticDeinitializer.deinitializeUnit(this); // 不卸载元件直接注销单位
+            StaticDeinitializer.deInitializeUnit(this); // 不卸载元件直接注销单位
         } else {
             if (para.noCorpse !== true)
                 _root.add2map(this, 2); // 检测是否需要贴尸体
@@ -728,7 +728,7 @@ _root.敌人函数.初始化单位 = function(target) {
     StaticInitializer.initializeUnit(target);
 }
 _root.敌人函数.注销单位 = function(target) {
-    StaticDeinitializer.deinitializeUnit(target);
+    StaticDeinitializer.deInitializeUnit(target);
 }
 
 _root.敌人函数.跳转到招式 = _root.主角函数.跳转到招式;
