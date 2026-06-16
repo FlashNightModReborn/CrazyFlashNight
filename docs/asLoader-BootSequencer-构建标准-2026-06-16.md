@@ -132,13 +132,67 @@ S10_HANDOFF  [f91 ★跨SWF★] _root.play()(必先); onEnterFrame=null; removeM
 
 **约定**：编译走 `powershell -File scripts/compile_test.ps1 -TimeoutSeconds 150`（asLoader publish 慢机 ~77-113s；已含预编译 BOM 门）。字节门 = `node tools/swf-tag-diff.js diff tools/baselines/<相位>.golden.json scripts/asLoader.swf`。**每相位起点先 `node tools/swf-tag-diff.js dump scripts/asLoader.swf --out tools/baselines/<相位>.golden.json` 固化基线**。
 
+### P3 前置静态门已落地 + 结论（2026-06-16，纯 node，零源改，已把折叠从「设计」推进到「可施工规格」）
+
+折叠（把每帧 #include 包成 `_root.__boot.sN=function(){...}` 由状态机调度）有两处静态风险，原 Runbook 只有 TODO 没有工具。现各建一门，**两门均给出确定性绿灯结论**：
+
+- **门 ① 联合 import 头碰撞**：`node tools/lint-frame-imports.js --fold-specific [--strict]`。把 47 个具体 import 的「包」并入通配并集（= 子文件剥具体 import、靠单帧联合头解析的终态），重算跨包叶名碰撞。**结论：折叠新增 6 包（`gesh.pratt`/`gesh.text`/`gesh.xml.LoadXml`/`neur.InputCommand`/`neur.PerformanceOptimizer`/`arki.unit.Action.Melee`）→ 并集 76→82，新引入碰撞 = 0**。⇒ 折叠时子文件**仅需删掉自带具体 import，零 FQN 改写**。`--strict --fold-specific` exit 0。
+  - **权威联合头（82 包，已验证 0 碰撞）= 折叠后单帧 CDATA 顶部固定块**：
+
+```as2
+// === asLoader 单帧折叠 · 联合 import 头（82 包，0 跨包碰撞，lint --fold-specific 验证）===
+import flash.display.*; import flash.filters.*; import flash.geom.*;
+import org.flashNight.arki.achievement.*; import org.flashNight.arki.audio.*;
+import org.flashNight.arki.bullet.BulletComponent.Attributes.*; import org.flashNight.arki.bullet.BulletComponent.Chain.*;
+import org.flashNight.arki.bullet.BulletComponent.Collider.*; import org.flashNight.arki.bullet.BulletComponent.Init.*;
+import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*; import org.flashNight.arki.bullet.BulletComponent.Movement.*;
+import org.flashNight.arki.bullet.BulletComponent.Movement.Util.*; import org.flashNight.arki.bullet.BulletComponent.Queue.*;
+import org.flashNight.arki.bullet.BulletComponent.Shell.*; import org.flashNight.arki.bullet.BulletComponent.Type.*;
+import org.flashNight.arki.bullet.BulletComponent.Utils.*; import org.flashNight.arki.bullet.Factory.*;
+import org.flashNight.arki.camera.*; import org.flashNight.arki.collision.*;
+import org.flashNight.arki.component.Buff.*; import org.flashNight.arki.component.Buff.Component.*;
+import org.flashNight.arki.component.Collider.*; import org.flashNight.arki.component.Damage.*;
+import org.flashNight.arki.component.Effect.*; import org.flashNight.arki.component.Shield.*;
+import org.flashNight.arki.component.StatHandler.*; import org.flashNight.arki.corpse.*;
+import org.flashNight.arki.cursor.*; import org.flashNight.arki.item.*; import org.flashNight.arki.item.ItemUtil.*;
+import org.flashNight.arki.item.drug.*; import org.flashNight.arki.item.itemCollection.*; import org.flashNight.arki.item.itemIcon.*;
+import org.flashNight.arki.key.*; import org.flashNight.arki.map.*; import org.flashNight.arki.merc.*;
+import org.flashNight.arki.render.*; import org.flashNight.arki.scene.*;
+import org.flashNight.arki.spatial.animation.*; import org.flashNight.arki.spatial.move.*; import org.flashNight.arki.spatial.transform.*;
+import org.flashNight.arki.stageSelect.*; import org.flashNight.arki.task.*; import org.flashNight.arki.unit.*;
+import org.flashNight.arki.unit.Action.Melee.*; import org.flashNight.arki.unit.Action.PickUp.*;
+import org.flashNight.arki.unit.Action.Regeneration.*; import org.flashNight.arki.unit.Action.Shoot.*; import org.flashNight.arki.unit.Action.Skill.*;
+import org.flashNight.arki.unit.UnitComponent.Deinitializer.*; import org.flashNight.arki.unit.UnitComponent.Dressup.*;
+import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.*; import org.flashNight.arki.unit.UnitComponent.Initializer.*;
+import org.flashNight.arki.unit.UnitComponent.Routing.*; import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.weather.*; import org.flashNight.aven.Coordinator.*; import org.flashNight.aven.Proxy.*;
+import org.flashNight.gesh.arguments.*; import org.flashNight.gesh.array.*; import org.flashNight.gesh.depth.*;
+import org.flashNight.gesh.json.LoadJson.*; import org.flashNight.gesh.object.*; import org.flashNight.gesh.path.*;
+import org.flashNight.gesh.pratt.*; import org.flashNight.gesh.string.*; import org.flashNight.gesh.text.*;
+import org.flashNight.gesh.tooltip.*; import org.flashNight.gesh.xml.LoadXml.*;
+import org.flashNight.naki.DataStructures.*; import org.flashNight.naki.PseudoRandom.*;
+import org.flashNight.naki.RandomNumberEngine.*; import org.flashNight.naki.Sort.*;
+import org.flashNight.neur.Controller.*; import org.flashNight.neur.Event.*; import org.flashNight.neur.InputCommand.*;
+import org.flashNight.neur.PerformanceOptimizer.*; import org.flashNight.neur.ScheduleTimer.*; import org.flashNight.neur.Server.*;
+import org.flashNight.neur.StateMachine.*; import org.flashNight.sara.*; import org.flashNight.sara.util.*;
+```
+
+- **门 ② 作用域安全（staged 函数把帧体从时间轴作用域搬进函数作用域）**：`node tools/audit-frame-scope-safety.js [--strict]`。枚举每帧顶层时间轴声明（列 0 `var`/`function`/裸赋值，剥字符串+注释、shadowing 抑制），扫全帧裸引用，报告**跨帧**依赖。**结论：45 个顶层声明里，仅 2 个被跨帧裸读 → 必须放在折叠后单帧的「帧顶（时间轴作用域）」而非任何 staged 函数体内**：
+  1. **`打印加载内容`**（f0 `function 打印加载内容(str)`，被 f2/3/4/5/9/32/36/48/62/69 裸调）= 真实加载进度打印函数。
+  2. **`onError`**（f41 `function onError():Void {/*TODO*/}`，被 f3 `_root.载入关卡数据` 错误回调裸调）= **空 TODO 死桩**，AVM1 下卸载后调用为静默 no-op，折叠须保留同等（benign）行为。
+  - 其余 43 个顶层声明（含 `技能桶`/`装备桶0-3`/`技能点数查找表` 等 16 个表）**仅本文件/本帧引用** → 放进各自 staged 函数体即可，靠同体 + `_root.*` 闭包捕获存活。⇒ **staged 函数设计对全 boot 安全，唯一约束 = 这 2 个符号置于帧顶**。
+  - 信息性：`asloader` 在 f5/f6/f75 各 `var asloader=this`（异步回调捕获 asLoader 实例的惯语）→ 折叠后由 `BootSequencer.host`（`self.host`）替代，draft 已如此。
+
+> **折叠 viability 已确定性闭合**（静态层）：联合头零碰撞 + 作用域仅 2 符号需帧顶。剩余不可静态证的只有 AVM1 运行时「函数字面量捕获时间轴 scope chain」行为（staged 函数内裸引用帧顶 `打印加载内容`/类名能否解析），属 §5「真机必验」范畴，非设计阻塞。
+
 ### P3 — 同步段去 import + 包 staged 函数（源改，可分批）
 
-P3 改变执行结构（包进函数+延迟调用）→ **字节门不适用**，靠 compile 0 错 + lint + 后续 trace 等价。建议**先在现有多帧结构上验证 staged 函数可用**，再 P5 折叠。
+P3 改变执行结构（包进函数+延迟调用）→ **字节门不适用**，靠 compile 0 错 + lint + scope 门 + 后续 trace 等价。建议**先在现有多帧结构上验证 staged 函数可用**，再 P5 折叠。
 
-1. 生成单帧联合 import 头：取 lint 的 76 包并集 + 10 个同步文件 specific 包（InputCommand/PerformanceOptimizer/pratt/gesh.text 等），写成一份通配头；**跑 `node tools/lint-frame-imports.js --json` 复核加包后仍 0 碰撞**（加包可能引入新碰撞，碰撞处子文件改 FQN）。
-2. 逐 group（14 个同步帧：引擎/通信/单位函数/装备/功能/关卡/战斗/UI/视觉/系统分区/最终化1/2/3）：把帧体 `#include` 列表包成 `_root.__boot.sN_xxx = function(){ ... }`（子文件**剥自带 import**，靠联合头解析；BOM 用 `WriteAllBytes`/copy-from-existing）。**最终化2 单列入 S6 串行**。
-3. lint 门：`node tools/lint-frame-imports.js --strict`（具体 import / 裸用碰撞 → 0）。
+1. ✅ **联合 import 头已定**（见上「P3 前置门 ①」：82 包、0 碰撞、可粘贴块）。门 = `node tools/lint-frame-imports.js --strict --fold-specific`（exit 0）。
+2. 逐 group（14 个同步帧：引擎/通信/单位函数/装备/功能/关卡/战斗/UI/视觉/系统分区/最终化1/2/3）：把帧体 `#include` 列表包成 `_root.__boot.sN_xxx = function(){ ... }`（子文件**剥自带具体 import**，靠联合头解析，**零 FQN 改写已证**；BOM 用 `WriteAllBytes`/copy-from-existing）。**最终化2 单列入 S6 串行**。
+   - ⚠ **`打印加载内容` 与 `onError` 必须留在折叠帧「帧顶」（时间轴作用域），不得包进任何 staged 函数**（门 ② 结论）；其余 43 个顶层声明放进各自 staged 函数体。
+3. scope 门：`node tools/audit-frame-scope-safety.js --strict`（多帧源上现报 2 = 上述 2 符号，折叠为单帧后天然归零）。lint 门：`node tools/lint-frame-imports.js --strict --fold-specific`（折叠新碰撞 → 0）。
 4. compile 门：`compile_test.ps1` 0 错 + SWF 刷新。
 
 ### P4 — 接 BootSequencer + 主 FLA 改动（最高危）

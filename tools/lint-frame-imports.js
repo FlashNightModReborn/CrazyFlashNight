@@ -17,6 +17,10 @@
  *   node tools/lint-frame-imports.js            人读报告
  *   node tools/lint-frame-imports.js --json     结构化输出（供联合头生成器消费）
  *   node tools/lint-frame-imports.js --strict    有具体 import 或被裸用的碰撞 → exit 1
+ *   node tools/lint-frame-imports.js --fold-specific
+ *       把 47 个具体 import 的「包」并入通配并集后重算碰撞 —— 这是 P5 单帧折叠后的真实
+ *       import 头（子文件剥掉自带具体 import，靠联合头解析）。报告折叠**新引入**的叶名碰撞
+ *       （需在子文件改 FQN）。与 --strict 叠加时，新碰撞 → exit 1。Runbook P3 步骤 1 的门。
  *
  * 路径基准：#include = scripts/asLoader/（含嵌套）；类索引 = scripts/类定义/。
  */
@@ -106,10 +110,37 @@ function buildClassIndex() {
 
 function uniq(arr) { var s = {}; arr.forEach(function (x) { s[x] = true; }); return Object.keys(s).sort(); }
 
+// 给定通配包并集 + 类索引 + 全单元文本，算跨包叶名碰撞。addedSet（可空）= 折叠新增的包，
+// 用于标注哪些碰撞是折叠「新引入」的（去掉新增包后该名不再 ≥2 包共享）。
+function computeCollisions(unionWild, idx, allUnitText, addedSet) {
+  addedSet = addedSet || {};
+  var nameInUnion = {};   // name -> [pkgs in union that contain it]
+  unionWild.forEach(function (pkg) {
+    var names = idx.pkgToNames[pkg];
+    if (!names) return;
+    Object.keys(names).forEach(function (n) {
+      (nameInUnion[n] = nameInUnion[n] || []).push(pkg);
+    });
+  });
+  var collisions = [];
+  Object.keys(nameInUnion).forEach(function (n) {
+    var pkgs = nameInUnion[n];
+    if (pkgs.length < 2) return;
+    var bareRe = new RegExp("(^|[^\\w.$])" + n + "\\b");
+    var used = bareRe.test(allUnitText);
+    // 折叠新引入：剔除新增包后剩余 < 2 个包 → 该碰撞由折叠产生
+    var withoutAdded = pkgs.filter(function (p) { return !addedSet[p]; });
+    collisions.push({ name: n, packages: pkgs.sort(), usedBare: used, introducedByFold: withoutAdded.length < 2 });
+  });
+  collisions.sort(function (a, b) { return (b.usedBare - a.usedBare) || (b.packages.length - a.packages.length) || a.name.localeCompare(b.name); });
+  return collisions;
+}
+
 function main() {
   var argv = process.argv.slice(2);
   var asJson = argv.indexOf("--json") >= 0;
   var strict = argv.indexOf("--strict") >= 0;
+  var foldSpecific = argv.indexOf("--fold-specific") >= 0;
 
   var frames = parseFrames(fs.readFileSync(XML, "utf8"));
   var idx = buildClassIndex();
@@ -140,38 +171,47 @@ function main() {
 
   var unionWild = Object.keys(unionWildSet).sort();
 
-  // 跨包叶名碰撞：某简单类名存在于 ≥2 个并集包
-  var collisions = [];
-  var nameInUnion = {};   // name -> [pkgs in union that contain it]
-  unionWild.forEach(function (pkg) {
-    var names = idx.pkgToNames[pkg];
-    if (!names) return;
-    Object.keys(names).forEach(function (n) {
-      (nameInUnion[n] = nameInUnion[n] || []).push(pkg);
+  // 折叠模式：把具体 import 的「包」并入并集（= 单帧折叠后子文件剥具体 import 靠联合头解析）
+  var addedSet = {};
+  var effectiveUnion = unionWild;
+  if (foldSpecific) {
+    specificFindings.forEach(function (s) {
+      var dot = s.full.lastIndexOf(".");
+      var pkg = dot >= 0 ? s.full.slice(0, dot) : "";
+      if (pkg && !unionWildSet[pkg]) addedSet[pkg] = true;
     });
-  });
-  // 该叶名是否在帧脚本里被「裸用」（作为独立标识符出现，非作为 a.Name 成员）
-  Object.keys(nameInUnion).forEach(function (n) {
-    var pkgs = nameInUnion[n];
-    if (pkgs.length < 2) return;
-    var bareRe = new RegExp("(^|[^\\w.$])" + n + "\\b");
-    var used = bareRe.test(allUnitText);
-    collisions.push({ name: n, packages: pkgs.sort(), usedBare: used });
-  });
-  collisions.sort(function (a, b) { return (b.usedBare - a.usedBare) || (b.packages.length - a.packages.length) || a.name.localeCompare(b.name); });
+    effectiveUnion = unionWild.concat(Object.keys(addedSet)).sort();
+  }
+
+  // 跨包叶名碰撞：某简单类名存在于 ≥2 个并集包
+  var collisions = computeCollisions(effectiveUnion, idx, allUnitText, addedSet);
+  var addedPkgs = Object.keys(addedSet).sort();
+  var newCollisions = collisions.filter(function (c) { return c.introducedByFold; });
 
   if (asJson) {
     process.stdout.write(JSON.stringify({
       frameCount: frames.length, unionWild: unionWild,
+      foldSpecific: foldSpecific, addedPackages: addedPkgs, effectiveUnion: foldSpecific ? effectiveUnion : undefined,
       specificImports: specificFindings, collisions: collisions, perFrame: perFrame
     }, null, 1) + "\n");
     return;
   }
 
   // 人读报告
-  console.log("=== C3 帧 import 治理报告 ===");
-  console.log("时间轴帧(含脚本): " + frames.length + "   通配包并集: " + unionWild.length + "   类索引(非Test): " +
-    Object.keys(idx.nameToPkgs).length + " 简单名");
+  console.log("=== C3 帧 import 治理报告" + (foldSpecific ? "（--fold-specific：模拟单帧折叠联合头）" : "") + " ===");
+  console.log("时间轴帧(含脚本): " + frames.length + "   通配包并集: " + unionWild.length +
+    (foldSpecific ? " (+折叠 " + addedPkgs.length + " = " + effectiveUnion.length + ")" : "") +
+    "   类索引(非Test): " + Object.keys(idx.nameToPkgs).length + " 简单名");
+  if (foldSpecific) {
+    console.log("");
+    console.log("--- [0] 折叠新增包（具体 import 提升为通配，子文件需删掉对应具体 import）: " + addedPkgs.length + " ---");
+    addedPkgs.forEach(function (p) { console.log("  + import " + p + ".*;"); });
+    console.log("  折叠**新引入**碰撞（必须 FQN 化，否则单帧 ambiguous）: " + newCollisions.length);
+    newCollisions.forEach(function (c) {
+      console.log("  ⚠NEW " + c.name + (c.usedBare ? "（裸用!）" : "") + "  ∈ {" + c.packages.join(", ") + "}");
+    });
+    if (newCollisions.length === 0) console.log("  ✅ 折叠零新碰撞 → 联合头可安全合并，子文件仅需删具体 import");
+  }
   console.log("");
   console.log("--- [1] 具体 import（C3 转换目标，应改通配头解析或 FQN）: " + specificFindings.length + " 处 ---");
   var byFile = {};
@@ -199,9 +239,17 @@ function main() {
     perFrame.forEach(function (f) { f.missing.forEach(function (r) { console.log("  f" + f.index + ": " + r); }); });
   }
 
-  if (strict && (specificFindings.length > 0 || bareCollisions.length > 0)) {
-    console.log("\n[strict] 存在具体 import 或裸用碰撞 → exit 1");
-    process.exit(1);
+  if (strict) {
+    // 折叠模式下的 strict 门 = 折叠后新引入碰撞为 0（折叠是终态，具体 import 会被联合头吸收，故不计为失败）
+    if (foldSpecific) {
+      if (newCollisions.length > 0) {
+        console.log("\n[strict+fold] 折叠引入 " + newCollisions.length + " 个新碰撞 → exit 1（须在子文件 FQN 化）");
+        process.exit(1);
+      }
+    } else if (specificFindings.length > 0 || bareCollisions.length > 0) {
+      console.log("\n[strict] 存在具体 import 或裸用碰撞 → exit 1");
+      process.exit(1);
+    }
   }
 }
 
