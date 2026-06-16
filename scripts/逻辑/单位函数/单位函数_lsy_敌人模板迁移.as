@@ -1,5 +1,4 @@
-﻿import org.flashNight.naki.RandomNumberEngine.*
-
+﻿
 //容纳敌人函数的对象
 _root.敌人函数 = new Object();
 

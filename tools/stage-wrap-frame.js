@@ -39,8 +39,13 @@ function writeBom(abs, text, hasBom) {
   fs.writeFileSync(abs, hasBom ? Buffer.concat([BOM, body]) : body);
 }
 
-// 行首 import 语句（允许前导空白；注释行 // 或 * 开头不匹配）。返回 {text, pkgs:[wildcardPkg]}
-var IMPORT_RE = /^[ \t]*import\s+([A-Za-z_][\w.$]*(?:\.\*)?)\s*;[ \t]*\r?\n?/gm;
+// 行首 import 语句（允许前导空白；分号可选——AS2 import 末尾分号非必需，实测
+//   单位函数_fs_aka_玩家模板迁移.as / 单位函数_lsy_敌人模板迁移.as / LineSurface.as 都是无分号 import，
+//   旧正则强制 `;` 会静默漏剥→import 泄进 staged 函数体；注释行 // 或 * 开头不匹配）。
+// 末尾仅吃水平空白(避免无分号时 \s* 误吞换行)。返回 {text, pkgs:[wildcardPkg]}
+// 标识符用分段式 [seg](?:\.[seg])*(?:\.\*)? 而非 [\w.$]*(?:\.\*)?：后者在「无分号通配 import」下，
+//   贪婪 [\w.$]* 会吞掉 .* 前的点、又因末尾全可选不回溯 → 只剥到 ...Engine. 漏下游离 `*`（原版靠必填 `;` 回溯才对）。
+var IMPORT_RE = /^[ \t]*import\s+([A-Za-z_][\w$]*(?:\.[\w$]+)*(?:\.\*)?)[ \t]*;?[ \t]*\r?\n?/gm;
 function stripImports(text) {
   var pkgs = [], m;
   IMPORT_RE.lastIndex = 0;

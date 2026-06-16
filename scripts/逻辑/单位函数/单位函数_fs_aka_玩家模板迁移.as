@@ -1,5 +1,4 @@
-﻿import org.flashNight.naki.RandomNumberEngine.*
-
+﻿
 // _root.玩家与佣兵区分装扮刷新 = false;
 _root.AI调试模式 = true;
 _root.AI日志级别 = 3;

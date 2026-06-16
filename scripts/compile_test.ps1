@@ -5,7 +5,11 @@
 
 param(
     [ValidateRange(1, 3600)]
-    [int]$TimeoutSeconds = 30
+    [int]$TimeoutSeconds = 30,
+    # asLoader publish 等「产出 SWF 而非 trace」场景：传 -VerifySwf scripts/asLoader.swf，
+    # 成功路径会校验该 SWF 的 mtime/size 是否真刷新；marker 产出但 SWF 未重写 = 判失败(fail-closed)，
+    # 对齐 testing-guide「0 错误 + scripts/asLoader.swf 已刷新」口径。默认空 = 不校验(普通 trace 测试不受影响)。
+    [string]$VerifySwf = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -183,6 +187,20 @@ Remove-Item -Path $ErrorMarker -ErrorAction SilentlyContinue
 $flashLogBefore = if (Test-Path $FlashLog) { (Get-Item $FlashLog).LastWriteTimeUtc } else { $null }
 $compileOutputBefore = if (Test-Path $CompileOutput) { (Get-Item $CompileOutput).LastWriteTimeUtc } else { $null }
 
+# SWF 刷新门：触发前记录目标 SWF 的 mtime/size 基线（仅当 -VerifySwf 指定）
+$VerifySwfPath = $null
+$verifySwfBefore = $null
+if ($VerifySwf) {
+    $VerifySwfPath = if ([System.IO.Path]::IsPathRooted($VerifySwf)) { $VerifySwf } else { Join-Path $ProjectDir $VerifySwf }
+    if (Test-Path $VerifySwfPath) {
+        $swfItemBefore = Get-Item $VerifySwfPath
+        $verifySwfBefore = [pscustomobject]@{ Mtime = $swfItemBefore.LastWriteTimeUtc; Size = $swfItemBefore.Length }
+        Write-Host ('[INFO] SWF 刷新门已启用: {0} (基线 {1} bytes, {2})' -f $VerifySwfPath, $swfItemBefore.Length, $swfItemBefore.LastWriteTime)
+    } else {
+        Write-Host ('[INFO] SWF 刷新门已启用: {0} (基线不存在，成功路径要求其被新建)' -f $VerifySwfPath)
+    }
+}
+
 Write-Host ('[INFO] 触发编译... (超时 {0}s)' -f $TimeoutSeconds)
 Start-ScheduledTask -TaskName 'CompileTriggerTask'
 
@@ -234,7 +252,25 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
             $hasTraceFailure = $true
         }
 
-        if ($hasCompileError -or $hasTraceFailure) {
+        # SWF 刷新门（仅当 -VerifySwf 指定）：publish 模式不产 trace，靠 mtime/size 确认目标 SWF 真被重写，
+        # 否则「marker 产出 + 0 错误」会与 testing-guide「SWF 已刷新」口径相反地假成功。
+        $hasSwfStale = $false
+        if ($VerifySwf) {
+            if (Test-Path $VerifySwfPath) {
+                $swfNow = Get-Item $VerifySwfPath
+                if ((-not $verifySwfBefore) -or ($swfNow.LastWriteTimeUtc -gt $verifySwfBefore.Mtime) -or ($swfNow.Length -ne $verifySwfBefore.Size)) {
+                    Write-Host ('[OK] 目标 SWF 已刷新: {0} ({1} bytes, {2})' -f $VerifySwfPath, $swfNow.Length, $swfNow.LastWriteTime)
+                } else {
+                    Write-Host ('[ERROR] 目标 SWF 未刷新: {0} (mtime/size 未变) — 编译 marker 产出但 SWF 未重写，按 testing-guide 口径判失败' -f $VerifySwfPath)
+                    $hasSwfStale = $true
+                }
+            } else {
+                Write-Host ('[ERROR] 目标 SWF 不存在: {0} — publish 未产出 SWF' -f $VerifySwfPath)
+                $hasSwfStale = $true
+            }
+        }
+
+        if ($hasCompileError -or $hasTraceFailure -or $hasSwfStale) {
             exit 1
         }
         exit 0

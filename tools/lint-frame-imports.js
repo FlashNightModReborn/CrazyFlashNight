@@ -45,7 +45,10 @@ function extractIncludes(text) {
 // 返回 {wild:[pkg], spec:[{full,pkg,name}]}
 function extractImports(text) {
   text = stripComments(text);
-  var re = /\bimport\s+([A-Za-z_][\w.$]*(?:\.\*)?)\s*;/g, m;
+  // 行首锚定 + 分号可选：AS2 import 末尾分号非必需（实测 单位函数_*_模板迁移.as / LineSurface.as），
+  // 旧 `\bimport ...;` 既漏无分号 import、又可能误命中字符串内 "import"。改 ^[ \t]*import…;? 更稳。
+  // 标识符分段式（同 stage-wrap）：避免无分号通配 import 下贪婪点吞 .* 而漏掉尾 `*`。
+  var re = /^[ \t]*import\s+([A-Za-z_][\w$]*(?:\.[\w$]+)*(?:\.\*)?)[ \t]*;?/gm, m;
   var wild = [], spec = [];
   while ((m = re.exec(text)) !== null) {
     var id = m[1];
