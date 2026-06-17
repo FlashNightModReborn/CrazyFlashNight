@@ -118,7 +118,7 @@ S10_HANDOFF  [f91 ★跨SWF★] _root.play()(必先); onEnterFrame=null; removeM
 ## 4. 必须的主 FLA 改动清单（精确 file:line）
 
 - **改动 A（必须）— MAIN f33 resume 信号**：`DOMDocument.xml:1271` `_root.asLoader.play()` → 状态机可观测信号（如 `_root.__boot.mainReadyToContinue=true`，S2 后据此放行 S3 起加载链）。折叠后 asLoader 单帧帧首已 stop 等握手，f33 不应再 `play()` 推帧。同帧 :1270 `stop()` 保留。
-- **改动 B（必须）— asLoader 实例 keyframe 寿命**：`DOMDocument.xml:1684`(index=1 dur=33) + `:1696`(index=34 移除)。二选一：①延展 :1684 duration 覆盖整个加载窗（至少到 f81 封面前）+ 删/后移 :1696；②**推荐**：删时间轴实例，改 MAIN f1 脚本 `_root.attachMovie("asLoader",…)` 代码挂载，由 S10 `removeMovieClip()` 统一生命周期（消除 keyframe 与自删双重所有权）。
+- **改动 B（原标「必须」→ 2026-06-17 经分析降级为「未做且可省，但属潜伏脆弱」，外部审阅 M1）— asLoader 实例 keyframe 寿命**：`DOMDocument.xml:1684`(index=1 dur=33) + `:1696`(index=34 移除)。**现状：未改**（实例仍 frames 1–33、f34 空关键帧移除）。**为何 happy-path 仍对**：S2 `gotoAndStop("boot_check")` 后 MAIN 走 f5→f30→**f33 `stop()` 冻结**，f33 ∈ [1,33] 跨度内 → 实例全程存活；S10 handoff 的 `_root.play()`+`removeMovieClip()` 先于 MAIN 推进到 f34 执行 → 实例由自删收尾、f34 空关键帧从不真正抢删。真机 happy-path 已印证。**潜伏脆弱（必须知晓）**：此正确性**唯一依赖 f33 的 `stop()`**——若后续任何改动移除该 stop、或失败路径让 MAIN 越过 f33，实例会在 f34 被空关键帧抢删 → `BootSequencer.host.*`（`打印加载内容`/`rawTaskData`…）全失效。**若要根除依赖**：二选一 ①延展 :1684 duration 覆盖整个加载窗 + 删/后移 :1696；②删时间轴实例改 MAIN f1 `_root.attachMovie("asLoader",…)` 代码挂载，由 S10 统一生命周期。当前选择「不改 + 靠 f33 stop」是有意取舍，非遗漏。
 - **改动 C（建议）— 删 f62-64 死代码自旋**：`:1311-1316/1325-1335/1347-1356`。当前不可达；折叠后握手全在 S2。删 f63/f64 的 `gotoAndPlay(63/64)` 自旋回环；f62 可留纯诊断不驱动控制流。
 - **未破坏（无需改）**：MAIN f5/f30/f52/f61/f65/f81/f129 label 与脚本不依赖 asLoader 内部帧结构；f65 `sendReady`、f81 `sendRevealReady` 保留（幂等）。
 
@@ -128,13 +128,17 @@ S10_HANDOFF  [f91 ★跨SWF★] _root.play()(必先); onEnterFrame=null; removeM
 
 采集有序事件：`frame4 entered`(:139)=S2进入 → `socket ready firing handshake`(:170)=阶段1 → `hs=Success`+`firing preload`(:182/195)=阶段2 → `存档恢复等待中` gate 进出(:198)=C2-β边界 → `sending ready ack`(:203)+`jumping boot_check`(:206)=S2收尾 → 三异步cb(`任务数据/文本/合成表加载成功`,:792)=S3/S4/S9 → f91 `_root.play()` 前后=S10。BootSequencer 发同 schema → comparator diff（顺序+事件类型+关键状态，容时间戳差）。**字节门不适用**（结构变了）。
 
-**真机必验**：(a) C2-β 注入 `_repairPending` 坏档→S2 gate 自旋→修复卡→`applyRepairResolved`(SaveManager.as:908/924) 放行；(b) 阻断 socket→10s `socket_connect_timeout`(:162)；(c) shim 缺失 fail-closed（MAIN 冻结非靠 f62）；(d) 存档三分支 `重新游戏确认`/`存档损坏`/`跳转地图("房间")`(:1448/1452/1480)；(e) **最终化2 在场**（S6 没漏 land-frame）；(f) 生命周期不抢（改动 B 后只卸载一次）；(g) 单帧 loop 回绕一轮，#include/loader 不重复执行（guard 生效）。
+**真机必验**：(a) C2-β 注入 `_repairPending` 坏档→S2 gate 自旋→修复卡→`applyRepairResolved`(SaveManager.as:908/924) 放行；(b) 阻断 socket→10s `socket_connect_timeout`(:162)；(c) shim 缺失 fail-closed（MAIN 冻结非靠 f62）；(d) 存档三分支 `重新游戏确认`/`存档损坏`/`跳转地图("房间")`(:1448/1452/1480)；(e) **最终化2 在场**（S6 没漏 land-frame）；(f) 生命周期不抢（改动 B **未做**，靠 f33 `stop()` 使实例在 1–33 跨度存活、handoff 先于 f34 自删 → 仍应只卸载一次，见 §4 改动 B）；(g) 单帧 loop 回绕一轮，#include/loader 不重复执行（guard 生效）。
 
 ### 5.1 trace-diff 门 + 各边界期望信号（2026-06-17 BootSequencer 化 + 失败路径日志落地）
 
 **comparator 已就位**：`node tools/trace-diff.js diff <golden> <new>`（事件序列 LCS diff，分歧 exit 1）；`extract <log>` 抽规范事件。**已批处理感知**：launcher LogBatch 用 `|` 把同帧多条 `[BootstrapAS]` 拼进一行，extract 现按位置多匹配（不再 break，否则 `hs=Success|firing preload` 只留前者→假分歧）。**BootSequencer 词表已对齐 trace-diff RULES**：`handshake stage entered`→S2_ENTER（rule 已加别名）、`socket ready, firing handshake`→SOCKET_READY、`handshake hs=Success`/`handshake FAILED`→HANDSHAKE_RESULT、`firing preload`→PRELOAD_FIRE、`sending ready ack`→READY_ACK、`bootstrap complete`/`jumping boot_check`→BOOT_CHECK_JUMP、`任务数据/文本加载完毕`→TASKDATA_OK/TASKTEXT_OK。
 
-**happy-path 期望规范序列**（extract 应见，容时间戳/批处理）：`S2_ENTER → SOCKET_READY → HANDSHAKE_RESULT → PRELOAD_FIRE →（坏档时 +RECOVERY_GATE_ENTER/EXIT）→ READY_ACK → BOOT_CHECK_JUMP → TASKDATA_OK → TASKTEXT_OK → … → HANDOFF_PLAY`。已实测前 7 段（含 HANDSHAKE_RESULT 待 hs=Success 入 SWF 后的首 boot 确认）。
+**happy-path 期望规范序列**（extract 应见，容时间戳/批处理）：`S2_ENTER → SOCKET_READY → HANDSHAKE_RESULT → PRELOAD_FIRE →（坏档时 +RECOVERY_GATE_ENTER/EXIT）→ READY_ACK → BOOT_CHECK_JUMP → TASKDATA_OK → TASKTEXT_OK → … → CRAFTING_OK → HANDOFF_PLAY`。**✅ 2026-06-17 已实测全 10 段**（真机 boot，SWF 870267：HANDSHAKE_RESULT + 新 CRAFTING_OK/HANDOFF_PLAY 全在，`trace-diff diff` [OK]）。
+
+> **⚠ 2026-06-17 trace 门覆盖修正（外部审阅 Medium）**：当前固化的 `tools/baselines/boot-golden.log` **仅覆盖 S2–S4**（末事件 = `TASKTEXT_OK`）。根因：`TASKDATA_OK/TASKTEXT_OK` 之所以可见，是因为 f5/f6 走 `_root.发布消息`→toast→socket→launcher.log；而**原 frame75（S9）/ frame91（S10）只有 `trace()`，Flash SA 剔 trace → 从不进 launcher.log**，故 golden 无 `CRAFTING_OK`/`HANDOFF_PLAY`，**S5–S10 整段对 trace-diff 不可见 → S9/S10 回归能通过门**。
+> **已修（源级，待重编 + 重抓 golden 生效）**：`BootSequencer.stepCrafting` 成功 cb 加 `bslog("合成表数据加载完毕")`→`CRAFTING_OK`；`handoff()` 首行加 `bslog("event=handoff")`→`HANDOFF_PLAY`（走 `[BootstrapAS]` 诊断通道，**不发 `发布消息` 故无新 UI toast**，行为零变化）。
+> **语义须知**：旧多帧 boot 对 S9/S10 **物理上发不出**可见事件，故 `CRAFTING_OK`/`HANDOFF_PLAY` **不是「旧↔新等价」项，而是「塌缩 boot 的前向回归快照」**——必须用**塌缩 boot 重抓一份新 golden**（含这两事件）作基线，旧 golden 只继续守 S2–S4 等价。**✅ 2026-06-17 已闭合**：真机 boot（recompile 后 SWF 870267）→ `tools/baselines/boot-golden.log` 重抓为单次完整 boot（S2→S10 共 10 事件），`trace-diff diff` [OK]。两新事件真机确发。
 
 **七边界触发 + 期望 `[BootstrapAS]` 信号**（失败路径双通道日志=`BootSequencer.stepHandshake`/`halt`，2026-06-17 恢复）：
 
@@ -149,6 +153,107 @@ S10_HANDOFF  [f91 ★跨SWF★] _root.play()(必先); onEnterFrame=null; removeM
 | (g) 单帧 loop | 正常 boot（单帧 play 回绕） | `run()` 幂等 guard 生效，#include/loader 不重复 | 无双重初始化/双 tick |
 
 握手失败(b/c)现 `halt()` 在 fail-closed 后**释放 `_instance` + 回收 tickClip** → 同会话可重试（关 launcher 重开 / 补 shim 后重挂 asLoader 不卡在「无 tick 驱动」死状态）。
+
+### 5.2 七边界构造细则（2026-06-17 落地，回答「条件如何构造」）
+
+> **贯穿性陷阱（先读）——诊断通道本身依赖 socket**：所有 `[BootstrapAS]` 日志都走 `_root.server.sendServerMessage`→socket→launcher.log。**socket 没连上时这条通道本身是哑的**。故凡涉及 socket 未连/未握手的边界（b、部分 c），**主判据必须是「玩家可见文案 + 主 SWF 冻结」**，launcher.log 信号是 best-effort（只有 socket 后来连上/通道有缓冲才到）。别把「日志没出现」误判为「代码没跑」。
+
+- **(a) C2-β 坏档恢复 gate**（`_repairPending` 自旋 → `applyRepairResolved` 放行）
+  - **前置**：launcher 正常运行（需其 BootstrapPanel 修复卡 + 推 `task=repair_resolved` 的链路在）。
+  - **构造**：关游戏 → 在 `saves/` 写一个**结构损坏**的槽位 json（截断/字段缺失）、**且无同名 `.sol`**（无 SOL → 强制走 JSON 恢复，见 [[save-system-sol-json-shadow]]）→ 启动。`读取本地存盘()`(preload) 检出损坏 → `SaveManager` 置 `_repairPending=true`(SaveManager.as:519)。
+  - **观察**：`PRELOAD_FIRE` 后，S2 hsPhase2 卡在 `if(存档恢复等待中())return` 自旋；屏上停在修复卡；走完修复 → launcher 推 `repair_resolved` → `applyRepairResolved`(SaveManager.as:924) 清 flag → 下一 tick `READY_ACK`→`BOOT_CHECK_JUMP`。
+  - **判据**：gate 进出各一次、不死锁；修复后进游戏；`mydata` 喂的是 cleaned snapshot（非坏档）。
+
+- **(b) socket 连接超时**（10s → `HALT: socket_connect_timeout`）
+  - **构造（择一）**：①直接双击 `CRAZYFLASHER7MercenaryEmpire.swf`/SA 播放器开主 SWF，**不经 launcher**（无 socket server）；②launcher 在跑但**防火墙挡其 XMLSocket 端口** / 改端口令连不上。①更彻底但无 launcher 即无 launcher.log。
+  - **观察**：约 10s 后玩家见**「启动器连接超时」**、主 SWF 冻结在 f1 不前进。`socket timeout after ~10000ms` + `HALT: socket_connect_timeout` 仅当通道可达才进 log（见上陷阱）。
+  - **判据**：fail-closed（不进游戏、不黑屏崩）；屏面文案正确。**首要看屏不看 log**。
+
+- **(c) shim 缺失**（`_root._bootstrap==undefined` → `HALT: shim_missing`）—— **✅ 2026-06-17 真机过**
+  - **构造**：让 asLoader 不建 shim。当前 SWF 必含 shim，故需特制：①临时注释 `_collapsed_frame.as` 的 f3 里 `通信_fs_bootstrap.as` include（或源帧 frame3.as）→ 重编一个**一次性 SWF**（**注意 `git checkout asLoader.swf` 会回退到 HEAD 的 pre-S9/S10 旧 SWF → 还 good SWF 必须重编，不能 checkout**）；②或换入归档的**前-bootstrap asLoader.swf**（旧 build）。
+  - **观察**：`_root.server` 仍建（本地服务器在 bootstrap 之前 include）故 socket 能连、日志可达 → AS2 侧 `shim missing, stopped` + `HALT: shim_missing` + 玩家见**「启动器通信 shim 缺失」**；MAIN 冻结在 f1（**非靠 f62 死代码**，§0 CHECK2）。**⚠ 实测屏幕停在 launcher 的 `Error: handshake_timeout`**：launcher 侧 `WAIT_HANDSHAKE_MS=8000`（GameLaunchFlow）8s 收不到 `bootstrap_handshake` → `WaitingHandshake -> Error (handshake_timeout)` → 杀 Flash（zombie close），抢在 AS2「shim 缺失」文案之前接管 UI。**双层 fail-closed，互不依赖**。
+  - **判据**：AS2 日志 `HALT: shim_missing`（停在 S2 无后续）+ launcher `handshake_timeout` + 进不去游戏；**测毕重编 good SWF 还原（非 checkout）**。
+
+- **(d) 存档三分支**（MAIN f129 读盘分流）
+  - **构造**：分别准备 ①**无任何存档**（删槽位 json+sol）→ `重新游戏确认`；②**坏档**（同 (a) 但走到 f129，或恢复后仍异常）→ `存档损坏`；③**正常档**（完整 sol+json）→ `跳转地图("房间")`。各跑一次。
+  - **判据**：三分支各走对、无串档、无把正常档判坏。
+
+- **(e) 最终化2 在场 + S6 异步等待门**（佣兵满编）
+  - **构造**：正常 boot 即可（无需注入）。重点验**塌缩压紧 tick 后异步 preload 仍落地**。
+  - **观察**：S6 sysPhase1 等待门（最少 30 帧 + `__pendingFileLoads==0`，150 帧兜底）后才逐 tick 抽 loader。
+  - **判据**：佣兵满编 `mercsList=204`、商城/兵种/商店全载（land-frame 即原 f26 最终化2 未漏）。**回归信号 = `mercsList=1`**（等待门失效）。
+
+- **(f) 生命周期不抢**（asLoader 仅卸载一次；改动 B 未做，靠 f33 stop）
+  - **构造**：正常 boot。
+  - **观察/判据**：boot 完成后 `_root.asLoader == undefined`（实例已由 handoff 自删）；无残留空 clip；boot 代码只跑一次。**⚠重点回归探针**：因改动 B 未做（§4），实例存活全靠 MAIN f33 的 `stop()`——若改了 f33 或失败路径让 MAIN 越过 f33，实例会在 f34 被空关键帧抢删致 host 失效。验时确认 MAIN 确实冻结在 f33 直到 handoff。
+
+- **(g) 单帧 loop 不重复**（帧首 stop + 幂等 guard）
+  - **构造**：正常 boot。单帧 `this.stop()` 本就不 loop；本项验**即便回绕也不双初始化**。
+  - **观察/判据**：`BootSequencer.run()` 因 `_instance != undefined` 早退、`if(_root.__boot==undefined)` guard 生效 → 无双 tick / 无 #include 二次执行 / 无 loader 重复 fire。主动测可临时去掉帧首 stop 观察 guard 兜底（**测毕还原**）。
+
+**统一采集 + 判定**：正常路径跑完后 `node tools/trace-diff.js extract logs/launcher.log` 看事件序列；happy-path 应见 §5.1 规范序列（含新 `CRAFTING_OK`/`HANDOFF_PLAY`）。失败边界看 `HALT: <reason>` + 玩家文案。**先重抓一份塌缩 boot 的 golden 再 `diff`**（旧 golden 仅 S2–S4，§5.1）。
+
+### 5.3 验证分层与载体（2026-06-17 落地，回答「用 TestLoader / bus-only 是否更方便」）
+
+把七边界拆三层载体，**绝大多数故障逻辑可自动化，残留人类项收敛到 3 类**：
+
+- **L1 — TestLoader 单元测试**（`scripts/类定义/org/flashNight/boot/BootSequencerTest.as` → 挂进 `scripts/TestLoader.as` → `compile_test.ps1` 抓 trace）：在 debug player 里 **mock `host`/`_root._bootstrap`/`_root.server`/`_root.__boot` staged 函数/`存档恢复等待中` 等**，直接 `new BootSequencer(host)` + 手动驱 `step()` 断言状态机。**deterministic、每次改 BootSequencer.as 即回归**。覆盖：(b) socket 超时、(c) shim 缺失、握手失败、(a) 修复 gate 自旋→放行、(g) `run()` 幂等、S6 等待门/抽干顺序、**新 `CRAFTING_OK`/`HANDOFF_PLAY` 发一条**（= 把 Finding 1 变回归守卫）。
+- **L2 — `launcher --bus-only` + `cfn-cli`**（headless 起 socket bus + 托管游戏，不建 BootstrapPanel）：抓 **happy-path golden**（`cfn-cli start-bus` → 游戏 boot → `cfn-cli ... log` 导 launcher.log → `trace-diff.js diff`）。socket-present 集成验。
+- **L3 — 真机正常模式**：不可 mock 的 Flash/集成行为。
+
+| 边界 | 载体 | 自动化 | 备注 |
+|---|---|---|---|
+| (b) socket 超时（逻辑） | L1 | ✅ | `inst.hsStart = getTimer()-11000` 后 step → HALT |
+| (c) shim 缺失 | L1 | ✅ | `_root._bootstrap=undefined` |
+| 握手失败 | L1 | ✅ | mock `handshakeStatus()="Failed"` |
+| (a) 修复 gate 逻辑 | L1 | ✅ | mock `存档恢复等待中` true→false |
+| (g) 单帧 loop 幂等 | L1 | ✅ | `run()` 二次断言早退 |
+| S9/S10 事件发出 | L1 | ✅ | mock `sendServerMessage` 记录断言 |
+| happy-path golden + trace 等价 | L2 | ✅ | **2026-06-17 已完成**：recompile 后真机 boot → golden 重抓（S2→S10 10 事件）→ `trace-diff` [OK] |
+| (c) **真** shim 缺失 fail-closed | L3 | ✅ | 2026-06-17 过：AS2 `HALT: shim_missing`（停 S2 非靠 f62）+ launcher `handshake_timeout` 双层 |
+| (b) **真** socket 连接/超时 | L3 | ◑ | 视觉态等价已见（独立开 SWF 卡死协议帧）；纯看屏(socket 断→日志哑)、L1 已覆盖逻辑。**连接/XMLSocket/trust 类只用真 launcher，桩常假阳性**（testing-guide） |
+| (a) 修复**端到端**（修复卡 UI） | L3 | ✅ | 2026-06-17 过：L0 坏档→RepairPending→S2 gate 自旋→applyRepairResolved→boot（见 §5.3 进度） |
+| (d) 存档三分支 | L3 | ✅ | 2026-06-17 过：正常/新档(decision=empty)/坏档(随 a)；真 SaveManager + 真 SOL/JSON |
+| (e) 佣兵满编 / staged #include 真跑 | L3 | ✗ | 需真编译 SWF（64KB chunk + 真 preloader 时序） |
+| (f) 跨 SWF 生命周期 + f33-stop 依赖 | L3 | ✗ | Flash 时间轴实例寿命，mock 不出 |
+
+**⚠ L1 的边界（别误判覆盖）**：单测跑的是 **mock 后的逻辑**；塌缩引入的 4 个回归全是「**编译 0 错却运行时坏**」（chunk 调 base 名 / eager 单例跨类调用 / 大小写 typo / 异步压紧 tick），**恰好盲于 L1**。L1 是快速内环（守状态机逻辑回归），**不替代 L2/L3**。
+
+#### L2 golden 重抓步骤（须先人类 CS6 重编）
+
+`logs/launcher.log` 由 launcher 自写（LogManager.InitFileLog），**无 cfn-cli 子命令拉取**（`cfn-cli log <msg>` 是**发**调试消息，非读）——直接读该文件即可。
+
+```bash
+# 0)（人类）CS6 重编 asLoader.swf —— BootSequencer 新事件 + 任何源改入 SWF（结构改需 reopen，见 testing-guide）
+# 1) 真 boot 一次（择一）：
+bash automation/start.ps1                  # 正常模式（最贴真机；连接/握手类首选）
+#   或 headless：bash tools/cfn-cli.sh start-bus && bash tools/cfn-cli.sh wait-socket
+#   （bus-only 起 socket bus + FlashHostPanel；游戏是否自动托管 vs 需外部 Flash 连入按当前链路确认）
+# 2) boot 完成后 launcher 已落 logs/launcher.log：
+node tools/trace-diff.js extract logs/launcher.log         # 末段应见 …→CRAFTING_OK→HANDOFF_PLAY
+# 3) 序列正确后固化为新 golden（建议只截取本次 boot 段）：
+cp logs/launcher.log tools/baselines/boot-golden.log
+node tools/trace-diff.js diff tools/baselines/boot-golden.log logs/launcher.log   # [OK] 自洽
+# bus-only 收尾：bash tools/cfn-cli.sh stop-bus
+```
+
+> ⚠ **连接/握手类只用真 launcher**（testing-guide §「`--bus-only` 适用」铁律）：testMovie 的 socket 沙箱与独立播放器不同、裸桩常假阳性。故 (b) 真 socket 超时归 L3，不在 L2 用 testMovie 代测。
+
+#### 进度（2026-06-17）
+
+1. ✅ **CS6 重编 asLoader.swf** —— agent 经 compile_test 触发，0 错误，SWF 870233→870267（+34=两 bslog），codeSize 门过。
+2. ✅ **CS6 跑 TestLoader/BootSequencerTest** —— agent 临时 retarget harness 触发，**36/36 PASS，0 `[TEST_FAIL]`，0 编译错误**（harness 已 git 还原）。
+3. ✅ **L2 golden 重抓 + `trace-diff diff`** —— recompile 后真机 boot 落 `logs/launcher.log`，抽末次完整 boot（S2→S10 10 事件，含真机实发的 `CRAFTING_OK`/`HANDOFF_PLAY`）→ 覆盖 `tools/baselines/boot-golden.log` → `trace-diff diff` [OK]。
+
+**L3 故障/存档边界进度**：
+- ✅ **(c) shim 缺失（2026-06-17 真机过）**：agent 编无-shim SWF（868014 B，注释 f3 bootstrap include）→ 真机 boot。**双层 fail-closed 实证**：AS2 侧 `handshake stage entered, _bootstrap=false` → `shim missing, stopped` → `HALT: shim_missing`（无后续 firing handshake/boot_check/handoff = 停在 S2，非靠 f62）；launcher 侧 8s 后 `wait timeout: handshake_timeout` → `WaitingHandshake -> Error` → 杀 Flash。**屏幕显示的是 launcher 的 `Error: handshake_timeout`（launcher 抢先接管 + 杀进程，AS2 的「shim 缺失」文案一闪而过）**。测后 agent 重编 good SWF（870268）还原。
+- ✅ **(a) 修复端到端 / C2-β 手动 gate（2026-06-17 真机过）**：fixture = `saves/repair_a.json` 角色名 `$[0][0]` 注入 `�`（L0=永远 Manual）+ 删 `repair_a.sol`（SOL 每次保存会重生，无-SOL 测必删）。日志全程：`[AutoRepair] repair_a fffd=1 applied=0 kept_for_manual=1`（L0 留手动）→ `SolResolver repairable byLayer=L0:1 source=json_shadow` → `repair_required posted` → `Embedding -> RepairPending` → **AS2 S2 gate 自旋**（`[SaveManager.preload] repairable: pending user decision` 后**无 sending ready ack**）→ 用户在修复卡决策（丢弃 `path=["0","0"] ClearValue`）→ `RepairPending -> WaitingGameReady` → `[SaveManager.applyRepairResolved] applied cleanedSnapshot, pending cleared` → **`sending ready ack` → `boot_check` → `event=handoff` → reveal**。gate 自旋→放行→boot 完成，不死锁/不串档/角色名落地为决策值。**asLoader 的 `存档恢复等待中` gate 真机确证**（与 L1 `test_repairGate_spinsThenReleases` 互证）。
+  - **观察记**：reveal 是引导器面板盖住 Flash 直到 handoff 后 `panel swap` 一次性露出（`requireFlashReveal` 设计，AS2 加载画面全程被盖）→ 非本次重构行为；reveal 路径（MAIN f81 `sendRevealReady`@DOMDocument.xml:1373 + launcher-web）不在本次 diff（范围内 MAIN 仅改 f33 改动A）。
+- ✅ **(d) 存档三分支（2026-06-17 真机过）**：正常档（test，`loadAll source=sol OK weqr lv100`）+ 新档（空槽 `crazyflasher7_saves8`：`save resolved wire=empty kind=Empty` → `decision=empty` → 即 `sending ready ack` → `boot_check` → `event=handoff` → reveal，无 gate 无报错）+ 坏档分支已随 (a) 覆盖。
+- ✅ **握手失败 fail-closed（2026-06-17 顺带实证）**：测试快速关/重开导致 13:01:33 / 13:04:30 两次 `handshake FAILED: callback timeout` → `HALT: handshake_failed`，AS2 正确停在 S2，下次干净启动恢复（halt() 释放 _instance 生效）。与 L1 `test_handshakeFailed_halts` 互证。
+- ⏳ 剩 **(b) 真 socket 超时**：纯看屏（socket 断→`[BootstrapAS]` 通道也哑，无 AS2 日志）；独立开 SWF 已见「卡死协议帧」≈ 等价 fail-closed；逻辑 L1 `test_socketTimeout_halts` 已覆盖。低价值，可速过/跳。
+- 📝 **观察（单次、自恢复、不阻塞）**：12:31 一次 boot 在 handoff/S9 附近 `UIFreezeProbe ui_stale ~2562ms` 后 `ui_stale_exit`（~1s 自恢复）；仅一次，疑与晚期 boot 密集工作（S9 建 ItemObtainIndex / panel-swap）或「S7 单 tick 跑完全部 include」权衡相关；频繁复现再深究。
+- (e) 佣兵满编 / (f) 生命周期 happy-path 面已随成功 boot（跑到 HANDOFF_PLAY + 卸载一次）覆盖；故障注入态建议真机眼验。
 
 ---
 
@@ -178,6 +283,7 @@ S10_HANDOFF  [f91 ★跨SWF★] _root.play()(必先); onEnterFrame=null; removeM
 折叠（把每帧 #include 包成 `_root.__boot.sN=function(){...}` 由状态机调度）有两处静态风险，原 Runbook 只有 TODO 没有工具。现各建一门，**两门均给出确定性绿灯结论**：
 
 - **门 ① 联合 import 头碰撞**：`node tools/lint-frame-imports.js --fold-specific [--strict]`。把 47 个具体 import 的「包」并入通配并集（= 子文件剥具体 import、靠单帧联合头解析的终态），重算跨包叶名碰撞。**结论：折叠新增 6 包（`gesh.pratt`/`gesh.text`/`gesh.xml.LoadXml`/`neur.InputCommand`/`neur.PerformanceOptimizer`/`arki.unit.Action.Melee`）→ 并集 76→82，新引入碰撞 = 0**。⇒ 折叠时子文件**仅需删掉自带具体 import，零 FQN 改写**。`--strict --fold-specific` exit 0。
+  - **⚠ 单一具体 import 白名单例外（外部审阅 Low，2026-06-17 显式化）**：塌缩产物 `_collapsed_frame.as` **故意保留恰好一条具体 import**——`import org.flashNight.boot.BootSequencer;`（L42 陷阱：CS6 会话缓存对会话内新建类，通配头/FQN 都可能解析失败，须显式具体 import）。它由 `assemble-collapsed-frame.js` **生成后注入**，不在任何被 lint 扫描的时间轴帧源内，故 `lint --fold-specific` 的 strict 分支**按设计只判「折叠新碰撞」、不判「具体 import」**（具体 import 是折叠终态会被联合头吸收的合法形态），看不到也不应 flag 这条。**结论：这是唯一允许的具体 import，治理上等价于白名单单例**；新增任何**其它**具体 import 到产物都属违规（评审 `_collapsed_frame.as` 头部时人工把关）。「strict」之名不覆盖此例外是已知且有意。
   - **权威联合头（82 包，已验证 0 碰撞）= 折叠后单帧 CDATA 顶部固定块**：
 
 ```as2

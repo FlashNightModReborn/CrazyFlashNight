@@ -4,8 +4,8 @@
 
 if (_root.__boot == undefined) _root.__boot = {};
 _root.__boot.f9 = function() {
-    打印加载内容("加载佣兵数据……");    
-        
+    打印加载内容("加载佣兵数据……");
+
     #include "../逻辑系统分区/系统文件/逻辑系统分区_初始化.as"
 };
 _root.__boot.f9();

@@ -29,11 +29,11 @@ import org.flashNight.sara.util.*;
 
 if (_root.__boot == undefined) _root.__boot = {};
 _root.__boot.f40 = function() {
-    #include "../逻辑/战斗系统/战斗系统_aka_特殊闪避计算函数.as"    
-    #include "../逻辑/战斗系统/战斗系统_fs_lsy_aka_重写子弹生成逻辑.as"    
-    #include "../逻辑/战斗系统/战斗系统_fs_冲击力系统.as"    
-    #include "../逻辑/战斗系统/战斗系统_fs_减伤系统.as"    
-    #include "../逻辑/战斗系统/战斗系统_fs_联弹管理.as"    
+    #include "../逻辑/战斗系统/战斗系统_aka_特殊闪避计算函数.as"
+    #include "../逻辑/战斗系统/战斗系统_fs_lsy_aka_重写子弹生成逻辑.as"
+    #include "../逻辑/战斗系统/战斗系统_fs_冲击力系统.as"
+    #include "../逻辑/战斗系统/战斗系统_fs_减伤系统.as"
+    #include "../逻辑/战斗系统/战斗系统_fs_联弹管理.as"
     #include "../逻辑/战斗系统/战斗系统_lsy_消弹判定.as"
 };
 _root.__boot.f40();

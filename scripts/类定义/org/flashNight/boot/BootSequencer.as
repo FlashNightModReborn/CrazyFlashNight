@@ -203,7 +203,11 @@ class org.flashNight.boot.BootSequencer {
             this.b.craftFired = true;
             var self:BootSequencer = this;
             CraftingListLoader.getInstance().loadCraftingList(
-                function(data:Object):Void { self.b.s9_onCrafting(data); self.b.craftReady = true; },
+                function(data:Object):Void {
+                    self.b.s9_onCrafting(data);
+                    self.bslog("合成表数据加载完毕");   // S9 完成事件 → trace-diff CRAFTING_OK。原 frame75 仅 trace()（SA 剔除）→ gate 对 S9 盲；此处补 [BootstrapAS] 可见事件。
+                    self.b.craftReady = true;
+                },
                 function():Void {});
         }
         if (this.b.craftReady == true) this.state = S_HANDOFF;
@@ -240,11 +244,12 @@ class org.flashNight.boot.BootSequencer {
 
     // === S10 handoff（顺序铁律: _root.play() 必先于卸载） ===
     function handoff():Void {
-        this.tickClip.onEnterFrame = null;
+        this.bslog("event=handoff");   // S10 handoff 事件 → trace-diff HANDOFF_PLAY。原 f91 无 SA-可见事件 → gate 对 S10 盲；_root.server 在自删后仍存活，先于卸载发。
+        if (this.tickClip != undefined) this.tickClip.onEnterFrame = null;   // 判空：单测可不经 start() 直驱到 handoff（halt() 已同款判空）
         delete _root.__boot;   // 收尾：回收引导脚手架（staged 函数容器），boot 后即死代码，避免常驻 _root
         _root.play();
         this.host.removeMovieClip();
-        this.tickClip.removeMovieClip();
+        if (this.tickClip != undefined) this.tickClip.removeMovieClip();
         this.state = S_HALT;
         BootSequencer._instance = undefined;  // 释放重入保护(显式限定静态)：同会话重挂 asLoader 时 run() 才会重建实例 + tick（否则新 _root.__boot 无驱动→卡死）
     }

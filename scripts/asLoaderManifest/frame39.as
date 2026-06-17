@@ -27,14 +27,14 @@ import org.flashNight.sara.util.*;
 
 if (_root.__boot == undefined) _root.__boot = {};
 _root.__boot.f39 = function() {
-    #include "../逻辑/关卡系统/关卡系统_fs_佣兵刷新系统.as"    
-    #include "../逻辑/关卡系统/关卡系统_lsy_add2map_加载背景.as"    
-    #include "../逻辑/关卡系统/关卡系统_lsy_场景转换.as"    
-    #include "../逻辑/关卡系统/关卡系统_lsy_地图元件.as"    
-    #include "../逻辑/关卡系统/关卡系统_lsy_非人形佣兵刷新系统.as"    
-    #include "../逻辑/关卡系统/关卡系统_lsy_无限过图.as"    
-    #include "../逻辑/关卡系统/关卡系统_lsy_关卡回调函数.as"    
-    #include "../逻辑/关卡系统/关卡系统_lsy_后景.as"    
+    #include "../逻辑/关卡系统/关卡系统_fs_佣兵刷新系统.as"
+    #include "../逻辑/关卡系统/关卡系统_lsy_add2map_加载背景.as"
+    #include "../逻辑/关卡系统/关卡系统_lsy_场景转换.as"
+    #include "../逻辑/关卡系统/关卡系统_lsy_地图元件.as"
+    #include "../逻辑/关卡系统/关卡系统_lsy_非人形佣兵刷新系统.as"
+    #include "../逻辑/关卡系统/关卡系统_lsy_无限过图.as"
+    #include "../逻辑/关卡系统/关卡系统_lsy_关卡回调函数.as"
+    #include "../逻辑/关卡系统/关卡系统_lsy_后景.as"
     #include "../逻辑/关卡系统/关卡系统_lsy_限制系统.as"
 };
 _root.__boot.f39();

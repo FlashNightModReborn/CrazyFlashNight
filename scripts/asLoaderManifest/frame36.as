@@ -35,7 +35,7 @@ import org.flashNight.sara.util.*;
 if (_root.__boot == undefined) _root.__boot = {};
 _root.__boot.f36_1 = function() {
     打印加载内容("加载逻辑代码……");
-    
+
     #include "../逻辑/单位函数/单位函数_aka_lsy_使用药剂.as"
     #include "../逻辑/单位函数/单位函数_aka_升空函数.as"
     #include "../逻辑/单位函数/单位函数_fs_ai与特效通用函数.as"
