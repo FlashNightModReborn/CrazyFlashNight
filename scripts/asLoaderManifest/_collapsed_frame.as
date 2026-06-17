@@ -693,17 +693,17 @@ _root.__boot.s8_fanout = function() {
     _root.__boot.f62(); _root.__boot.f63(); _root.__boot.f64(); _root.__boot.f65(); _root.__boot.f66(); _root.__boot.f67(); _root.__boot.f68(); _root.__boot.f69(); _root.__boot.f70(); _root.__boot.f74();   // fire-and-forget：物品/敌人属性/称号+材料+地图/情报/关卡/环境×2/基建/装备配置/NPC技能
 };
 _root.__boot.s9_onCrafting = function(data) {                   // 原 f75 cb：建改装清单 + ItemObtainIndex
-    var carftingDict = {};
+    var craftingDict = {};
     for (var category in data) {
         var list = data[category];
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
-            carftingDict[item.name] = item;
+            craftingDict[item.name] = item;
             if (isNaN(item.value)) item.value = 1;
         }
     }
     _root.改装清单 = data;
-    _root.改装清单对象 = carftingDict;
+    _root.改装清单对象 = craftingDict;
     var obtainIndex = org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance();
     obtainIndex.buildIndex(_root.改装清单, _root.shops, _root.kshop_list);
 };

@@ -34,6 +34,23 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -TimeoutSeconds 120
 ```
 
+### 选择编译目标（`-Target`，免手动切活动文档）
+
+不传 `-Target` = 编译 **Flash 当前活动文档**（旧行为）。传 `-Target` 则由参数指定，脚本写 `scripts/compile_target.cfg`（一次性，`compile_action.jsfl` 据此 close+reopen 目标 FLA 从盘重读）：
+
+```powershell
+# 测试构建（带 trace）：跑 TestLoader → TransitionsTest + BootSequencerTest
+powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target test -TimeoutSeconds 180
+
+# 发布构建：编 asLoader（自动启用 -VerifySwf scripts/asLoader.swf 刷新门）
+powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 180
+
+# 任意 FLA/XFL（相对仓库根或绝对路径）
+powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target scripts/asLoader/asLoader.xfl
+```
+
+`test`|`testloader` → `scripts/TestLoader`；`publish`|`asloader` → `scripts/asLoader`（自动 `-VerifySwf`）。两个目标可同时开在 CS6，`-Target` 决定编哪个，无需手动切到前台。
+
 ### Bash
 
 ```bash

@@ -47,15 +47,22 @@ function writeBom(abs, text, hasBom) {
 //   贪婪 [\w.$]* 会吞掉 .* 前的点、又因末尾全可选不回溯 → 只剥到 ...Engine. 漏下游离 `*`（原版靠必填 `;` 回溯才对）。
 var IMPORT_RE = /^[ \t]*import\s+([A-Za-z_][\w$]*(?:\.[\w$]+)*(?:\.\*)?)[ \t]*;?[ \t]*\r?\n?/gm;
 function stripImports(text) {
-  var pkgs = [], m;
+  var pkgs = [], defPkg = [], m;
+  // 检测在 stripComments 后的代码上做（F6：块注释里列 0 的 `import …;` 不当活引用提升进联合头）。
+  var code = stripComments(text);
   IMPORT_RE.lastIndex = 0;
-  while ((m = IMPORT_RE.exec(text)) !== null) {
+  while ((m = IMPORT_RE.exec(code)) !== null) {
     var id = m[1];
-    var pkg = /\.\*$/.test(id) ? id.slice(0, -2) : id.slice(0, id.lastIndexOf("."));
-    if (pkg) pkgs.push(pkg);
+    if (/\.\*$/.test(id)) { pkgs.push(id.slice(0, -2)); continue; }   // 通配
+    var dot = id.lastIndexOf(".");
+    if (dot >= 0) pkgs.push(id.slice(0, dot));                        // 有包名的具体 import → 提升其包
+    else defPkg.push(id);   // F5：默认包(无点)类。旧版 slice(0,-1) 造 `import JSO.*;` 垃圾头 → 不提升，登记告警
   }
-  var out = text.replace(IMPORT_RE, "");
-  return { text: out, pkgs: pkgs };
+  // 仅剥「可提升」的 import（通配 / 有包名具体）；默认包 import 原处保留（无法提升为通配头，剥了会丢解析）。
+  var out = text.replace(IMPORT_RE, function (full, id) {
+    return (/\.\*$/.test(id) || id.lastIndexOf(".") >= 0) ? "" : full;
+  });
+  return { text: out, pkgs: pkgs, defPkg: defPkg };
 }
 
 function stripComments(t) {
@@ -76,16 +83,26 @@ function stripStrings(t) { return t.replace(/"(?:\\.|[^"\\])*"/g, '""').replace(
 var RE_THIS = /(^|[^A-Za-z0-9_$.一-鿿])this(?![A-Za-z0-9_$一-鿿])/;
 var RE_NAV = /(^|[^A-Za-z0-9_$.一-鿿])(stop|play|gotoAndStop|gotoAndPlay|nextFrame|prevFrame)\s*\(/;
 var RE_HANDLER = /(^|[^A-Za-z0-9_$.])(onEnterFrame|onUnload|onLoad)\s*=|this\.(onEnterFrame|onUnload|onLoad)\s*=/;
+// 把 brace 深度 >0 的字符抹成空格（保留换行/列位）→ 耦合正则只命中 depth==0 内容。
+// 与 audit-frame-timeline-coupling.js 同源：修复「同行 `};  this.stop();`」漏判（旧版按行首深度整行门控，
+//   闭括号后回 depth0 的语句被跳过 → 真顶层耦合混过自卫门）。逐字符记深度后只留 depth0 字符。
+function maskNested(t) {
+  var out = "", depth = 0;
+  for (var i = 0; i < t.length; i++) {
+    var c = t.charAt(i);
+    if (c === "\n") { out += "\n"; continue; }
+    if (c === "{") { out += " "; depth++; continue; }
+    if (c === "}") { if (depth > 0) depth--; out += " "; continue; }
+    out += (depth === 0 ? c : " ");
+  }
+  return out;
+}
 function scanTopLevelCoupling(file, text) {
-  var hits = [], depth = 0;
-  stripStrings(stripComments(text)).split(/\r?\n/).forEach(function (line, i) {
-    if (depth === 0) {
-      if (RE_THIS.test(line)) hits.push(file + ":" + (i + 1) + " [this] " + line.trim().slice(0, 70));
-      else if (RE_NAV.test(line)) hits.push(file + ":" + (i + 1) + " [nav] " + line.trim().slice(0, 70));
-      else if (RE_HANDLER.test(line)) hits.push(file + ":" + (i + 1) + " [handler] " + line.trim().slice(0, 70));
-    }
-    depth += (line.match(/\{/g) || []).length - (line.match(/\}/g) || []).length;
-    if (depth < 0) depth = 0;
+  var hits = [];
+  maskNested(stripStrings(stripComments(text))).split(/\r?\n/).forEach(function (line, i) {
+    if (RE_THIS.test(line)) hits.push(file + ":" + (i + 1) + " [this] " + line.trim().slice(0, 70));
+    else if (RE_NAV.test(line)) hits.push(file + ":" + (i + 1) + " [nav] " + line.trim().slice(0, 70));
+    else if (RE_HANDLER.test(line)) hits.push(file + ":" + (i + 1) + " [handler] " + line.trim().slice(0, 70));
   });
   return hits;
 }
@@ -148,12 +165,14 @@ function main() {
   if (/__boot\.f\d+\s*=/.test(mani.text)) { console.error("frame" + N + " 已 stage-wrap，跳过"); process.exit(0); }
 
   var allPkgs = {};   // wildcardPkg -> true
+  var allDefPkg = []; // 默认包(无点) import — 无法提升为通配头（F5），收集后告警
   var stripPlan = []; // {file, pkgs, removed}
   var coupling = scanTopLevelCoupling("(manifest frame" + N + ".as)", mani.text);  // 自卫门累积
 
   // 1) manifest 本体的 import（同步帧通常无；async 帧 CDATA 有，本工具不处理 async 帧故一般为空）
   var maniStripped = stripImports(mani.text);
   maniStripped.pkgs.forEach(function (p) { allPkgs[p] = true; });
+  maniStripped.defPkg.forEach(function (d) { allDefPkg.push("(manifest):" + d); });
   if (maniStripped.pkgs.length) stripPlan.push({ file: "(manifest frame" + N + ".as)", pkgs: maniStripped.pkgs.slice() });
 
   // 2) 剥 import：**传递闭包**（帧体直接 #include + 其递归 #include，如 装备函数列表.as → 60+ 武器文件，
@@ -170,12 +189,19 @@ function main() {
     coupling = coupling.concat(scanTopLevelCoupling(item.ref, f.text));
     var s = stripImports(f.text);
     s.pkgs.forEach(function (p) { allPkgs[p] = true; });
+    s.defPkg.forEach(function (d) { allDefPkg.push(item.ref + ":" + d); });
     if (s.pkgs.length) {
       stripPlan.push({ file: item.ref, pkgs: s.pkgs });
       subEdits.push({ abs: item.abs, hasBom: f.hasBom, newText: s.text, file: item.ref });
     }
     // 递归该文件的 #include（注释感知；基准恒为 INCLUDE_BASE）
     extractIncludes(f.text).forEach(function (r) { queue.push({ ref: r, abs: path.resolve(INCLUDE_BASE, r) }); });
+  }
+
+  // F5 告警：默认包 import 无法提升为通配头（这些类需 FQN 或本就 top-level 可达）；不阻断但提示人工确认。
+  if (allDefPkg.length) {
+    console.error("⚠ frame" + N + " 含默认包(无点) import，未提升进联合头（如被 wrap 进函数体可能解析失败，请人工核对）：");
+    allDefPkg.slice(0, 10).forEach(function (d) { console.error("    import " + d); });
   }
 
   // 自卫门：顶层时间轴耦合 → 拒绝 wrap（该帧应归 BootSequencer 状态机，而非 inline-wrap）。

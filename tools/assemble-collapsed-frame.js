@@ -33,8 +33,10 @@ function collectPkgs(text) {
   var m; IMPORT_RE.lastIndex = 0;
   while ((m = IMPORT_RE.exec(text)) !== null) {
     var id = m[1];
-    var pkg = /\.\*$/.test(id) ? id.slice(0, -2) : id.slice(0, id.lastIndexOf('.'));
-    if (pkg) _pkgs[pkg] = true;
+    if (/\.\*$/.test(id)) { _pkgs[id.slice(0, -2)] = true; continue; }   // 通配
+    var dot = id.lastIndexOf('.');
+    if (dot >= 0) _pkgs[id.slice(0, dot)] = true;                        // 有包名具体 import → 提升其包
+    else console.error('⚠ assemble: 默认包(无点) import 未提升进联合头: import ' + id);   // 防 slice(0,-1) 造 `import JSO.*;` 垃圾头
   }
 }
 function stripImports(t) { return t.replace(IMPORT_RE, ''); }
@@ -70,9 +72,15 @@ var stagedDefs = STAGED.map(function (N) {
   return extractStagedDefs(t);
 });
 // 调用某帧全部函数（chunk 帧=全 chunk 顺序调用；单函数帧=fN）
+// ⚠ fail-fast：若 frame{N}.as 未提取到任何 `_root.__boot.fN(_k)` 定义，**拒绝**回退调 base `fN`——
+//   chunk 帧无 base fN，调 base = AVM1 静默 no-op（正是本轮治理踩过的「入 lobby 但角色瘫痪」坑）。
+//   宁可生成期硬失败，也不产出潜在静默坏产物。
 function callsFor(N) {
-  return (frameNames[N] && frameNames[N].length ? frameNames[N] : ['f' + N])
-    .map(function (nm) { return '_root.__boot.' + nm + '();'; }).join(' ');
+  var names = frameNames[N];
+  if (!names || !names.length)
+    throw new Error('frame' + N + ' 未提取到 _root.__boot.fN 定义 → 拒绝回退调 base f' + N +
+      '（chunk 帧无 base，调用会静默不跑）。请确认 frame' + N + '.as 已 stage-wrap 且含 fN/fN_k 定义。');
+  return names.map(function (nm) { return '_root.__boot.' + nm + '();'; }).join(' ');
 }
 // 2) loader-fire fN 定义
 var loaderDefs = S7_LOADERS.concat(S8_LOADERS).map(function (N) {
@@ -119,17 +127,17 @@ var wiring = [
   '    ' + s8calls + '   // fire-and-forget：物品/敌人属性/称号+材料+地图/情报/关卡/环境×2/基建/装备配置/NPC技能',
   '};',
   '_root.__boot.s9_onCrafting = function(data) {                   // 原 f75 cb：建改装清单 + ItemObtainIndex',
-  '    var carftingDict = {};',
+  '    var craftingDict = {};',
   '    for (var category in data) {',
   '        var list = data[category];',
   '        for (var i = 0; i < list.length; i++) {',
   '            var item = list[i];',
-  '            carftingDict[item.name] = item;',
+  '            craftingDict[item.name] = item;',
   '            if (isNaN(item.value)) item.value = 1;',
   '        }',
   '    }',
   '    _root.改装清单 = data;',
-  '    _root.改装清单对象 = carftingDict;',
+  '    _root.改装清单对象 = craftingDict;',
   '    var obtainIndex = org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance();',
   '    obtainIndex.buildIndex(_root.改装清单, _root.shops, _root.kshop_list);',
   '};'
@@ -177,6 +185,15 @@ out = out.replace(/\r\n/g, '\n').replace(/\r/g, '').split('\n').map(function (li
   var lead = /^[ \t]*/.exec(line)[0];            // 再展开行首缩进 tab→4 空格（消 space-before-tab）
   return lead.replace(/\t/g, '    ') + line.slice(lead.length);
 }).join('\n').replace(/\n{3,}/g, '\n\n');        // 折叠 2+ 连续空行为单空行（去残余分隔噪声）
+
+// F10 守门：联合头之外**只允许唯一一条具体 import**（BootSequencer，L42 CS6 会话缓存 workaround）。
+//   防后续组装逻辑误把第二条具体 import 混进产物（白名单例外悄悄扩散 = 违反 C3 单帧通配头纪律）。
+var importLines = out.split('\n').filter(function (l) { return /^import\s+/.test(l); });
+var specificImports = importLines.filter(function (l) { return !/\.\*\s*;?\s*$/.test(l.replace(/\/\/.*$/, '').replace(/[ \t]+$/, '')); });
+if (specificImports.length !== 1 || specificImports[0].indexOf('BootSequencer') < 0) {
+  console.error('[ASSERT FAIL] 联合头外的具体 import 应恰为 1 条 BootSequencer，实得 ' + specificImports.length + ' 条:\n  ' + specificImports.join('\n  '));
+  process.exit(1);
+}
 
 fs.writeFileSync(OUT, Buffer.concat([BOM, Buffer.from(out, 'utf8')]));
 console.log('[DONE] 写出 ' + path.relative(REPO, OUT).replace(/\\/g, '/'));

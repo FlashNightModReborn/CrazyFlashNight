@@ -3,7 +3,7 @@
 **文档角色**：BootSequencer（C2 全量异步-B）施工的**权威跨时间轴启动契约**。
 **来源**：8-agent workflow（3 readers → 综合 → 3 对抗校验 → spec），全部 file:line 二次核对。
 **上游设计**：[asLoader重构-架构设计-2026-06-15.md](asLoader重构-架构设计-2026-06-15.md)。
-**状态**：契约已闭合；BootSequencer 类为 DRAFT，待 CS6 编译 + 真机验证。
+**状态**：契约已闭合；BootSequencer 已编译落地——happy-path 真机 boot + L1 单测（BootSequencerTest）+ trace 等价门通过；§5 七边界真机验收推进中（见 §5.3）。
 
 > ## ⚠ 2026-06-16 重大修正 + 进展（读 Runbook 前必看）
 > 1. **AVM1 函数体 64KB 硬限推翻「单函数 staging」**：`DefineFunction2.codeSize` 是 UI16（≤65535B 字节码）。大帧（单位函数 506KB/装备 456KB/UI 189KB 源）wrap 进单个 `function(){}` 即溢出 → 编译 0 错却静默产坏函数（真机实证 f36/f37/f41 staged 函数从不执行）。帧脚本(DoAction)是 UI32 无此限。
@@ -254,6 +254,17 @@ node tools/trace-diff.js diff tools/baselines/boot-golden.log logs/launcher.log 
 - ⏳ 剩 **(b) 真 socket 超时**：纯看屏（socket 断→`[BootstrapAS]` 通道也哑，无 AS2 日志）；独立开 SWF 已见「卡死协议帧」≈ 等价 fail-closed；逻辑 L1 `test_socketTimeout_halts` 已覆盖。低价值，可速过/跳。
 - 📝 **观察（单次、自恢复、不阻塞）**：12:31 一次 boot 在 handoff/S9 附近 `UIFreezeProbe ui_stale ~2562ms` 后 `ui_stale_exit`（~1s 自恢复）；仅一次，疑与晚期 boot 密集工作（S9 建 ItemObtainIndex / panel-swap）或「S7 单 tick 跑完全部 include」权衡相关；频繁复现再深究。
 - (e) 佣兵满编 / (f) 生命周期 happy-path 面已随成功 boot（跑到 HANDOFF_PLAY + 卸载一次）覆盖；故障注入态建议真机眼验。
+
+#### 收尾修复轮（2026-06-17 晚 · 四方审阅交叉核对后）
+
+4 份独立审阅（本仓 + kimicode/codex/zcode）交叉核对，落实 15 项有效修复（驳回 zcode-M2「刀光只加注释」=实为 initializeCanvas 真重绑、commit 重写=越界、改动B=有意取舍）：
+- **F1 S6 race 加固**：`__pendingFileLoads` 只计二级 `GetFileByPath`、不计一级 `XML.load`（佣兵/兵种/商城/商店 4 个 `兼容.as` 的 `list.xml`）→ 慢盘下 pending==0 会提前抽空 loader（同 `merc only 1` 类回归）。BootSequencer 加 `sawPending`：pending==0 仅在「曾观测到 pending>0」或 150 帧兜底时放行。BootSequencerTest 扩 `test_s6_waitGateThenDrain`(慢-list race) + `test_s6_ceilingRelease`(150 帧兜底)。
+- **守门工具**：swf-function-sizes `--max` NaN/等号式（裸 `--max`→exit2）+ 诚实记 UI16 wrap 本质不可测（真护栏=源端 chunk 预算）；耦合门 `maskNested` 修同行 `};stop()` 漏判（audit + stage-wrap 2 文件）；assemble `callsFor` fail-fast（不再回退调 base fN）+ 唯一具体 import 断言；默认包 import 垃圾头守卫（3 文件）；trace-diff 末次-boot 窗口（修累积 launcher.log 假分歧）+ selftest 顺序错位/累积用例。
+- **产物/收尾**：`carftingDict→craftingDict`（regen，产物仅此 1 处变更）；frame70.as EOF 空白；strip-stale 退役标记；compile_test BOM 门加 boot 类包（169 文件）；4 doc 基线→`e7205600d0`/状态校正 + manifest 角色说明。
+- ✅ **asLoader 重编 0 错 0 警**：870268→**870289**，codeSize 门最大 58064B 不变、single-ownership main=0/loader=572、check-bom 169、git diff --check 净、doc-gov ok、trace-diff selftest+golden 自洽。
+- ✅ **TestLoader 重编 BootSequencerTest = 43 passed, 0 failed**（含新增 `(e/race)` 首层慢-list 4 断言 + `(e/ceiling)` 150 帧兜底 4 断言；旧 36→43）。S6 `sawPending` 运行时坐实。
+- ✅ **编译 harness 加 `-Target` 开关**（`compile_test.ps1 -Target test|publish|<路径>` + `compile_action.jsfl` 读 `scripts/compile_target.cfg` 一次性 file:/// URI；publish 自动启用 `-VerifySwf`）：免手动切 Flash 活动文档即可在 test/发布端切换。见 [FlashCS6自动化编译.md §3](../scripts/FlashCS6自动化编译.md) / [testing-guide §编译 smoke](../agentsDoc/testing-guide.md)。
+- ✅ **真机验证通过（2026-06-17，用户确认「有效，这些功能都能正常工作」）**：重编 asLoader.swf happy-path boot 正常——S6 `sawPending` 加固后佣兵/兵种/商城/商店满载、正常进菜单；`-Target test|publish` 切换亦正常。
 
 ---
 

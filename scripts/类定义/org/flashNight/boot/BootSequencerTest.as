@@ -30,6 +30,7 @@ class org.flashNight.boot.BootSequencerTest {
         this.test_handoff_emitsEvent();
         this.test_run_idempotent();
         this.test_s6_waitGateThenDrain();
+        this.test_s6_ceilingRelease();
         this.printSummary();
         // 清理 _root 上对内置方法的影子覆盖（其余 mock 全局留着无害，TestLoader 非真游戏）
         delete _root.play;
@@ -176,10 +177,12 @@ class org.flashNight.boot.BootSequencerTest {
         var host = this.freshEnv();
         var inst:BootSequencer = new BootSequencer(host);
         inst.state = BootSequencer.S_CRAFTING;
-        // 把真单例的 loadCraftingList 换成同步成功桩（仅本进程，后续 suite 不用它）
+        // 把真单例的 loadCraftingList 换成同步成功桩；用后**还原**，避免污染后续 suite / 真游戏复用该单例（顺序无关）。
         var loader:Object = org.flashNight.gesh.json.LoadJson.CraftingListLoader.getInstance();
+        var origLoad = loader.loadCraftingList;
         loader.loadCraftingList = function(ok, fail) { ok({}); };
         inst.step();                             // stepCrafting → 同步 ok → s9_onCrafting + bslog + craftReady → S_HANDOFF
+        loader.loadCraftingList = origLoad;      // 还原真方法
         this.assert(this._calls.s9 == 1, "(S9) s9_onCrafting 调用一次");
         this.assert(this.msgHas("合成表数据加载完毕"), "(S9) 成功 cb 发 CRAFTING_OK（合成表数据加载完毕）");
         this.assert(inst.state == BootSequencer.S_HANDOFF, "(S9) craftReady → S_HANDOFF");
@@ -208,7 +211,9 @@ class org.flashNight.boot.BootSequencerTest {
         BootSequencer._instance = undefined;
     }
 
-    // ====== 边界 (e) 逻辑：S6 等待门（最少 30 帧）→ 逐 tick 抽干 → s6_post ======
+    // ====== 边界 (e) 逻辑：S6 等待门（含首层 list.xml 慢加载 race 防护）→ 逐 tick 抽干 → s6_post ======
+    // 覆盖 sawPending 修复：pending==0 二义（全加载完 vs 二级加载尚未起飞）→ 仅当曾观测到 pending>0 才放行，
+    //   否则即使过了 30 帧也继续等（防慢 list.xml 提前抽空 loader → 佣兵/兵种/商城/商店数据缺载）。
     private function test_s6_waitGateThenDrain():Void {
         var host = this.freshEnv();
         var inst:BootSequencer = new BootSequencer(host);
@@ -219,20 +224,53 @@ class org.flashNight.boot.BootSequencerTest {
         q.push(function() { drained.push(1); });
         q.push(function() { drained.push(2); });
         _root.loaders = q;
-        _root.__pendingFileLoads = 0;
+        _root.__pendingFileLoads = 0;            // 首层 list.xml 加载中，二级 GetFileByPath 尚未起飞
 
-        inst.step();                             // sysPhase0: s6_pre → sysPhase=1
+        inst.step();                             // sysPhase0: s6_pre → sysPhase=1, sysWait=0
         this.assert(inst.sysPhase == 1 && this._calls.s6pre == 1, "(e) S6 phase0 跑 s6_pre");
+
         var i:Number = 0;
-        while (i < 29) { inst.step(); i++; }     // phase1 等待门，sysWait 1..29
-        this.assert(inst.sysPhase == 1 && drained.length == 0, "(e) 等待门 <30 帧不抽 loader");
-        inst.step();                             // 第 30 次 → sysWait=30, pending==0 → sysPhase=2
-        this.assert(inst.sysPhase == 2, "(e) 30 帧 + pending==0 → 进抽干相位");
+        while (i < 40) { inst.step(); i++; }     // 40 帧 pending 持续 0（list.xml 慢） → 不应放行（从未观测到 pending>0）
+        this.assert(inst.sysPhase == 1 && drained.length == 0, "(e/race) 首层慢加载: pending 久=0 且未起飞过 → 过 30 帧仍不抽 loader");
+        this.assert(inst.sawPending != true, "(e/race) 未观测到 pending>0 → sawPending=false");
+
+        _root.__pendingFileLoads = 2;            // 二级文件加载起飞
+        inst.step();
+        this.assert(inst.sysPhase == 1 && inst.sawPending == true, "(e) 观测到 pending>0 → sawPending；在途不放行");
+        inst.step();
+        this.assert(inst.sysPhase == 1, "(e) pending 仍>0 → 继续等");
+
+        _root.__pendingFileLoads = 0;            // 二级加载全部落地
+        inst.step();                             // sawPending && sysWait>=30 && pending==0 → sysPhase=2
+        this.assert(inst.sysPhase == 2, "(e) 加载落地(pending=0) + 曾起飞 → 进抽干相位");
+
         inst.step();                             // 抽 loaders[0]
         inst.step();                             // 抽 loaders[1]
         this.assert(drained.length == 2 && drained[0] == 1 && drained[1] == 2, "(e) 逐 tick 保序抽干");
         inst.step();                             // current>=length → s6_post + S_SYNCLOGIC
         this.assert(this._calls.s6post == 1 && inst.state == BootSequencer.S_SYNCLOGIC, "(e) 队空 → s6_post + 推进");
+    }
+
+    // ====== 边界 (e) 兜底：无二级加载时 150 帧上限放行（防 sawPending 永 false 致永久挂起） ======
+    private function test_s6_ceilingRelease():Void {
+        var host = this.freshEnv();
+        var inst:BootSequencer = new BootSequencer(host);
+        inst.state = BootSequencer.S_SYNCSYS;
+        var q:Array = [];
+        q.current = 0;                           // 空 loader 队列：放行后立即 s6_post
+        _root.loaders = q;
+        _root.__pendingFileLoads = 0;            // 全程无二级加载 → sawPending 永 false
+
+        inst.step();                             // sysPhase0: s6_pre → sysPhase=1, sysWait=0
+        var i:Number = 0;
+        while (i < 148) { inst.step(); i++; }     // phase1 推进 sysWait 1..148（均 <150 且 sawPending=false → 不放行）
+        this.assert(inst.sysPhase == 1 && inst.sawPending != true, "(e/ceiling) 无二级加载 <150 帧不放行");
+        inst.step();                             // sysWait=149 <150 → 仍等
+        this.assert(inst.sysPhase == 1, "(e/ceiling) 149 帧仍等");
+        inst.step();                             // sysWait=150 → 兜底放行（防永久挂起）
+        this.assert(inst.sysPhase == 2, "(e/ceiling) 150 帧兜底放行 → 进抽干相位");
+        inst.step();                             // 空队列 current>=length → s6_post + S_SYNCLOGIC
+        this.assert(this._calls.s6post == 1 && inst.state == BootSequencer.S_SYNCLOGIC, "(e/ceiling) 队空 → s6_post + 推进");
     }
 
     // ====== 工具 ======

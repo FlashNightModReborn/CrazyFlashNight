@@ -34,7 +34,7 @@ chcp.com 65001 | Out-Null
 
 **入口**：`powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1` 或 `bash scripts/compile_test.sh`
 
-**两种构建目标，成功判据不同**（取决于 Flash CS6 当前打开的是哪个 loader；脚本据 `publish_done.marker` + `compiler_errors.txt` 决定 exit 0/1）：
+**两种构建目标，成功判据不同**（用 `-Target test|publish` 显式选目标，免手动切活动文档；省略 `-Target` 则取当前活动文档。脚本据 `publish_done.marker` + `compiler_errors.txt` 决定 exit 0/1）：
 
 - **TestLoader（测试构建，带 trace）**：成功 = `[OK] 编译完成` + 本次运行**新鲜生成**的 `scripts/flashlog.txt` + trace 无 `[TEST_FAIL]` 哨兵 + `compiler_errors.txt` `0 个错误`。**asLoader BootSequencer 逻辑回归** = `BootSequencerTest`（挂 `scripts/TestLoader.as`，mock 驱状态机：socket 超时/shim 缺失/握手失败/修复 gate/单帧幂等/S9·S10 事件；**仅逻辑层**，真 socket/佣兵满编/跨 SWF 生命周期/存档三分支须真机，分层见 [构建标准 §5.3](../docs/asLoader-BootSequencer-构建标准-2026-06-16.md)）。
 - **asLoader / publish 模式（发布二进制，剔 trace 等功能以免性能损耗）**：**本就不出 trace**——脚本会打 `[INFO] 无 trace 输出 (publish 模式不执行 trace)`，`flashlog.txt` 不刷新属正常，**不要据此判失败**。成功 = `[OK] 编译完成` + `scripts/compiler_errors.txt` 显示 `0 个错误` + `scripts/asLoader.swf` 已刷新（mtime/size 变化）。

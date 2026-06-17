@@ -68,19 +68,30 @@ var RE_THIS = /(^|[^A-Za-z0-9_$.一-鿿])this(?![A-Za-z0-9_$一-鿿])/;
 var RE_NAV = /(^|[^A-Za-z0-9_$.一-鿿])(stop|play|gotoAndStop|gotoAndPlay|nextFrame|prevFrame)\s*\(/;
 var RE_HANDLER2 = /(^|[^A-Za-z0-9_$.])(onEnterFrame|onUnload|onLoad)\s*=|this\.(onEnterFrame|onUnload|onLoad)\s*=/;
 
+// 把 brace 深度 >0 的字符抹成空格（保留换行/列位），令耦合正则只命中 depth==0 内容。
+// 修复「同行 `};  this.stop();`」漏判：旧版按**行首深度**整行门控，闭括号后回到 depth0 的语句被整行跳过
+//   → 真顶层耦合可混过授权 inline-wrap 的门。逐字符记深度后只保留 depth0 字符即根治。
+// 输入须已 sanitize（剥字符串/注释），否则花括号计数会被串内/注释内 { } 干扰。
+function maskNested(t) {
+  var out = "", depth = 0;
+  for (var i = 0; i < t.length; i++) {
+    var c = t.charAt(i);
+    if (c === "\n") { out += "\n"; continue; }
+    if (c === "{") { out += " "; depth++; continue; }
+    if (c === "}") { if (depth > 0) depth--; out += " "; continue; }
+    out += (depth === 0 ? c : " ");
+  }
+  return out;
+}
+
 function scanFrame(sources) {
   var hits = []; // {kind, file, line, text}
   sources.forEach(function (src) {
-    var depth = 0;
-    src.text.split(/\r?\n/).forEach(function (line, i) {
-      if (depth === 0) {
-        var trimmed = line.replace(/^\s+/, "");
-        if (RE_THIS.test(line)) hits.push({ kind: "this", file: src.file, line: i + 1, text: trimmed.slice(0, 80) });
-        if (RE_NAV.test(line)) hits.push({ kind: "nav", file: src.file, line: i + 1, text: trimmed.slice(0, 80) });
-        if (RE_HANDLER2.test(line)) hits.push({ kind: "handler", file: src.file, line: i + 1, text: trimmed.slice(0, 80) });
-      }
-      depth += (line.match(/\{/g) || []).length - (line.match(/\}/g) || []).length;
-      if (depth < 0) depth = 0;
+    maskNested(src.text).split(/\r?\n/).forEach(function (line, i) {
+      var trimmed = line.replace(/^\s+/, "");
+      if (RE_THIS.test(line)) hits.push({ kind: "this", file: src.file, line: i + 1, text: trimmed.slice(0, 80) });
+      if (RE_NAV.test(line)) hits.push({ kind: "nav", file: src.file, line: i + 1, text: trimmed.slice(0, 80) });
+      if (RE_HANDLER2.test(line)) hits.push({ kind: "handler", file: src.file, line: i + 1, text: trimmed.slice(0, 80) });
     });
   });
   return hits;

@@ -10,12 +10,18 @@
  *
  * 本工具解析 SWF 全部 DoAction/DoInitAction 动作流（含 DefineSprite 内嵌 + 函数体内嵌套函数），抽取每个
  *   DefineFunction/DefineFunction2 的 codeSize，报告最大者，并对 >= 阈值（默认 60000，留 ~5KB 余量）失败。
- *   collapse/class-chunk 施工：每次编译后跑本门，确认每个 staged 方法 < 64KB —— **无需真机 boot 即可拦截
- *   64KB 溢出**。
+ *   collapse/class-chunk 施工：每次编译后跑本门，确认每个 staged 方法 < 64KB。
+ *
+ * ⚠ **能力边界（必读，勿误以为本门能拦一切 64KB 溢出）**：codeSize 是 UI16，一个**已经**溢出（如体 70000B）
+ *   的坏函数其 codeSize 字段存的是低 16 位（70000 & 0xFFFF = 4464），从编译后 SWF 看与一个真 4464B 的小函数
+ *   **字节级无法区分**（CS6 不报错、流不一定 desync）。故本门只能拦「**逼近**阈值」（靠默认 60000 给 ~5.5KB
+ *   余量预警），**无法**拦「**已越过** 64KB 后回绕成小值」的函数。真正的护栏是**源端 chunk 预算保守**
+ *   （stage-wrap-frame.js --chunk-bytes；源→字节码比实测最坏 ~0.43，故 70KB 源预算 ≈ 30KB 码很安全）。
+ *   当前最大 chunk 已达 58064B（距阈 60000 仅 ~1.9KB），任何「向 boot 加代码」务必先看本门 + 守源预算。
  *
  * 用法：
- *   node tools/swf-function-sizes.js <swf> [--max 60000] [--top 15] [--json]
- *   exit 1 当存在 codeSize >= --max 的函数。
+ *   node tools/swf-function-sizes.js <swf> [--max 60000 | --max=60000] [--top 15] [--json]
+ *   exit 1 当存在 codeSize >= --max 的函数；exit 2 当 --max 非数字（避免 NaN 比较静默放过）。
  */
 
 var fs = require("fs");
@@ -106,8 +112,18 @@ function main() {
   var swfPath = argv.filter(function (a) { return a.indexOf("--") !== 0 && !/^\d+$/.test(a) || /\.swf$/i.test(a); })[0];
   swfPath = argv.find(function (a) { return /\.swf$/i.test(a); }) || swfPath;
   if (!swfPath) { console.error("用法: swf-function-sizes.js <swf> [--max 60000] [--top 15] [--json]"); process.exit(2); }
-  var maxIdx = argv.indexOf("--max"); var MAX = maxIdx >= 0 ? parseInt(argv[maxIdx + 1], 10) : 60000;
+  // --max 解析：兼容 `--max 60000` 与 `--max=60000`；非数字 → exit 2（旧版 parseInt(undefined)=NaN，
+  //   而 `codeSize >= NaN` 恒 false → 门被静默关成绿灯。一个 typo 不能让安全网失效）。
+  var MAX = 60000;
+  for (var ai = 0; ai < argv.length; ai++) {
+    // 裸 `--max`（末位无值）→ argv[ai+1]=undefined → parseInt(undefined)=NaN → 下方 isNaN 拦（exit 2）。
+    // 不加 `&& argv[ai+1]!=null` 守卫：那样裸 --max 会静默回落默认 60000，掩盖「想设阈值却漏填」的意图。
+    if (argv[ai] === "--max") MAX = parseInt(argv[ai + 1], 10);
+    else { var mEq = /^--max=(.*)$/.exec(argv[ai]); if (mEq) MAX = parseInt(mEq[1], 10); }
+  }
+  if (isNaN(MAX)) { console.error("[ERROR] --max 需要数字阈值（如 --max 60000 或 --max=60000）；收到非数字 → 拒绝（NaN 比较会静默放过 64KB 溢出）"); process.exit(2); }
   var topIdx = argv.indexOf("--top"); var TOP = topIdx >= 0 ? parseInt(argv[topIdx + 1], 10) : 15;
+  if (isNaN(TOP)) TOP = 15;
   var asJson = argv.indexOf("--json") >= 0;
 
   var swf = readSwf(swfPath);

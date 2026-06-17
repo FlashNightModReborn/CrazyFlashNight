@@ -40,6 +40,8 @@ class org.flashNight.boot.BootSequencer {
     var hsStart:Number;     // socket 等待起始 getTimer()
     var sysPhase:Number;    // S_SYNCSYS 子相位: 0=pre 1=等异步preload落地 2=逐tick抽干 _root.loaders
     var sysWait:Number;     // S_SYNCSYS 相位1 等待计帧（等 GetFileByPath/LoadVars 异步加载落地）
+    var sawPending:Boolean; // S_SYNCSYS 相位1: 是否曾观测到 __pendingFileLoads>0（二级文件加载已起飞）——
+                            //   防「首层 list.xml 慢加载、GetFileByPath 尚未起飞」时 pending==0 被误判为「已加载完」提前放行
 
     // 幂等入口（防单帧 loop 回绕重入）
     static function run(host:MovieClip):Void {
@@ -56,6 +58,7 @@ class org.flashNight.boot.BootSequencer {
         this.hsPhase = 0;
         this.sysPhase = 0;
         this.sysWait = 0;
+        this.sawPending = false;
     }
 
     function start():Void {
@@ -227,8 +230,13 @@ class org.flashNight.boot.BootSequencer {
         if (this.sysPhase == 1) {       // ★ 等异步 preloader 落地再抽 loader（原版靠 f18→f26 帧间隔，塌缩压没了→曾致佣兵库只载 1 条）
             this.sysWait++;
             var pending:Number = (_root.__pendingFileLoads == undefined) ? 0 : _root.__pendingFileLoads;
+            if (pending > 0) this.sawPending = true;             // 二级文件加载已起飞（GetFileByPath ++）
             if (this.sysWait < 30) return;                       // 最少 30 帧：让首发 XML.load 的 onLoad 触发 + GetFileByPath 起飞
-            if (pending > 0 && this.sysWait < 150) return;       // 再等所有 LoadVars 文件加载完(pending==0)；150 帧兜底防卡（加载失败 onData 不回）
+            // pending==0 二义：① 全加载完  ② 首层 list.xml 还没 onLoad、GetFileByPath 尚未起飞（__pendingFileLoads 只计二级 LoadVars，不计一级 XML.load）。
+            // 仅当**曾观测到 pending>0**（loads 确已开始、现已清零）才放行；否则等 GetFileByPath 起飞或 150 帧兜底——
+            //   修复「首层 list.xml 慢加载 → 帧30 时 pending 仍 0 → 提前抽空 loader → 佣兵/兵种/商城/商店数据缺载」的残余 race。
+            if (this.sawPending != true && this.sysWait < 150) return;   // 还没起飞过任何二级加载 → 继续等（慢 list.xml）
+            if (pending > 0 && this.sysWait < 150) return;               // 二级加载仍在途 → 继续等；150 帧兜底防卡（加载失败 onData 不回）
             this.sysPhase = 2;
             return;
         }

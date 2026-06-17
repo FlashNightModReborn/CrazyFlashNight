@@ -1,7 +1,7 @@
 # 项目技术架构总览
 
 **文档角色**：系统拓扑 canonical doc。  
-**最后核对代码基线**：commit `b852c0eba1`（2026-06-17）。
+**最后核对代码基线**：commit `e7205600d0`（2026-06-17）。
 
 本项目当前应被理解为：**Flash 核心游戏 + Guardian Launcher Host + WebView2 UI + native / build tooling** 的本地多栈系统。
 

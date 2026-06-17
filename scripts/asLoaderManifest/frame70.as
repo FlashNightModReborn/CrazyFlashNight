@@ -21,4 +21,3 @@ moddata_loader.loadModData(
     function():Void {
     }
 );
-

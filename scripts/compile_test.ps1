@@ -9,7 +9,13 @@ param(
     # asLoader publish 等「产出 SWF 而非 trace」场景：传 -VerifySwf scripts/asLoader.swf，
     # 成功路径会校验该 SWF 的 mtime/size 是否真刷新；marker 产出但 SWF 未重写 = 判失败(fail-closed)，
     # 对齐 testing-guide「0 错误 + scripts/asLoader.swf 已刷新」口径。默认空 = 不校验(普通 trace 测试不受影响)。
-    [string]$VerifySwf = ''
+    [string]$VerifySwf = '',
+    # 编译目标切换（免去手动切 Flash 活动文档）：
+    #   test / testloader → scripts/TestLoader（带 trace 的逻辑回归，跑 TransitionsTest + BootSequencerTest）
+    #   publish / asloader → scripts/asLoader（发布 asLoader.swf；自动启用 -VerifySwf scripts/asLoader.swf）
+    #   <FLA/XFL 路径>     → 指定文档（相对仓库根或绝对路径）
+    #   省略             → 用 Flash 当前活动文档（向后兼容旧行为）
+    [string]$Target = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -163,6 +169,35 @@ if ($taskMode.IsLegacy) {
     Write-Host '[WARN] CompileTriggerTask 仍在使用旧版 trigger_compile.ps1 包装器。当前仓库已兼容，但建议重新运行 setup 以切到直开 JSFL。'
 }
 
+# 编译目标切换：把 -Target 解析成具体 FLA/XFL，写 scripts/compile_target.cfg（file:/// URI）供 compile_action.jsfl 读取。
+#   不传 -Target → 删除该文件 → JSFL 回退「当前活动文档」（向后兼容）。consume 由本脚本管理（每次先删再按需写）。
+$TargetCfg = Join-Path $ScriptDir 'compile_target.cfg'
+Remove-Item -Path $TargetCfg -ErrorAction SilentlyContinue
+if ($Target) {
+    switch -Regex ($Target.ToLower()) {
+        '^(test|testloader)$'  { $targetPath = Join-Path $ProjectDir 'scripts\TestLoader\TestLoader.xfl' }
+        '^(publish|asloader)$' { $targetPath = Join-Path $ProjectDir 'scripts\asLoader\asLoader.xfl' }
+        default {
+            $targetPath = if ([System.IO.Path]::IsPathRooted($Target)) { $Target } else { Join-Path $ProjectDir $Target }
+        }
+    }
+    if (-not (Test-Path $targetPath)) {
+        Write-Host ('[ERROR] 编译目标不存在: {0}' -f $targetPath)
+        Write-Host '        -Target 取值: test | publish | <FLA/XFL 路径>（相对仓库根或绝对）'
+        exit 1
+    }
+    $targetUri = Convert-ToJsflUri $targetPath
+    [System.IO.File]::WriteAllText($TargetCfg, $targetUri, (New-Object System.Text.UTF8Encoding($false)))
+    Write-Host ('[INFO] 编译目标: {0} -> {1}' -f $Target, $targetPath)
+    # publish 目标自动启用 SWF 刷新门（testing-guide「asLoader publish 一律 -VerifySwf」铁律），除非用户已显式指定。
+    if (-not $VerifySwf -and ($Target.ToLower() -match '^(publish|asloader)$')) {
+        $VerifySwf = 'scripts/asLoader.swf'
+        Write-Host '[INFO] publish 目标 -> 自动启用 -VerifySwf scripts/asLoader.swf'
+    }
+} else {
+    Write-Host '[INFO] 编译目标: Flash 当前活动文档（未指定 -Target）'
+}
+
 # [asLoader 重构 P0] 预编译 BOM 门：被 #include 的 .as 丢 BOM 会被 CS6 静默跳过
 #   （DoAction 0 字节，compiler_errors 仍报 0 错误），现有冒烟链抓不到。先 fail-fast，
 #   省掉一次 77-113s 的无效编译。node 缺失则降级为告警，不阻断旧环境。
@@ -170,8 +205,16 @@ $BomChecker = Join-Path $ProjectDir 'tools\check-bom.js'
 if (Test-Path $BomChecker) {
     $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
     if ($nodeCmd) {
-        Write-Host '[INFO] 预编译 BOM 门: node tools/check-bom.js'
-        & node $BomChecker
+        # asLoader #include 闭包 + boot 类包：BootSequencer/BootSequencerTest 经 import（非 #include）编入，
+        #   不在 #include 图内 → 显式 --dir 覆盖（丢 BOM 会让 CS6 静默跳过类体或首行语法错）。
+        $BootClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\boot'
+        if (Test-Path $BootClassDir) {
+            Write-Host '[INFO] 预编译 BOM 门: node tools/check-bom.js --dir scripts/类定义/org/flashNight/boot'
+            & node $BomChecker --dir $BootClassDir
+        } else {
+            Write-Host '[INFO] 预编译 BOM 门: node tools/check-bom.js'
+            & node $BomChecker
+        }
         if ($LASTEXITCODE -ne 0) {
             Write-Host '[ERROR] BOM 门失败：存在缺 BOM 的 #include .as，编译器会静默跳过其内容。修复后重试。'
             exit 1

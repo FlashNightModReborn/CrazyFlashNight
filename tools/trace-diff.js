@@ -57,6 +57,15 @@ function extractEvents(text) {
   return out;
 }
 
+// 累积 launcher.log 通常含多次 boot → 只取**最后一次完整 boot**（从最后一个 S2_ENTER 起）再比。
+// 否则 `diff golden launcher.log`（构建标准 §5.1 文档命令）会把历史多 boot 全算进来 → 与单 boot golden
+//   假分歧（曾实测 104 事件假失败）。golden 为单 boot 时此窗口=恒等。无 S2_ENTER 则原样返回（不丢事件）。
+function lastBootWindow(events) {
+  var start = -1;
+  for (var i = 0; i < events.length; i++) if (events[i] === "S2_ENTER") start = i;
+  return start >= 0 ? events.slice(start) : events;
+}
+
 // LCS over event-id sequences → 对齐报告（缺失/多余/顺序）
 function lcs(a, b) {
   var n = a.length, m = b.length;
@@ -77,8 +86,8 @@ function lcs(a, b) {
 }
 
 function diff(goldenPath, newPath) {
-  var ga = extractEvents(fs.readFileSync(goldenPath, "utf8")).map(function (e) { return e.ev; });
-  var nb = extractEvents(fs.readFileSync(newPath, "utf8")).map(function (e) { return e.ev; });
+  var ga = lastBootWindow(extractEvents(fs.readFileSync(goldenPath, "utf8")).map(function (e) { return e.ev; }));
+  var nb = lastBootWindow(extractEvents(fs.readFileSync(newPath, "utf8")).map(function (e) { return e.ev; }));
   var ops = lcs(ga, nb);
   var changes = ops.filter(function (o) { return o.t !== "="; });
   console.log("golden 事件: " + ga.length + "  new 事件: " + nb.length + "  共同子序列: " + (ops.length - changes.length));
@@ -128,14 +137,27 @@ function selftest() {
   fs.writeFileSync(".__tg_n.tmp", newLog);
   var rc2 = diffQuiet(".__tg_g.tmp", ".__tg_n.tmp");
   check("等价用例 → rc=0", rc2 === 0);
-  try { fs.unlinkSync(".__tg_g.tmp"); fs.unlinkSync(".__tg_b.tmp"); fs.unlinkSync(".__tg_n.tmp"); } catch (e) {}
+
+  // 顺序错位：socket_ready 与 handshake_success 对调 → 必报红（LCS 对顺序敏感，zcode L3 覆盖缺口）
+  var newSwap =
+    "[BOOTTRACE] event=s2_enter\n[BOOTTRACE] event=handshake_success\n[BOOTTRACE] event=socket_ready\n" +
+    "[BOOTTRACE] event=preload\n[BOOTTRACE] event=ready\n[BOOTTRACE] event=boot_check\n" +
+    "[BOOTTRACE] event=taskdata\n[BOOTTRACE] event=tasktext\n[BOOTTRACE] event=crafting\n";
+  fs.writeFileSync(".__tg_s.tmp", newSwap);
+  check("顺序错位(socket/handshake 对调) → diff 报红(rc=1)", diffQuiet(".__tg_g.tmp", ".__tg_s.tmp") === 1);
+
+  // 累积多 boot 日志：坏 boot(缺 preload) + 完整 boot 拼接 → lastBootWindow 只比末次 → 与 golden 等价 rc=0
+  fs.writeFileSync(".__tg_c.tmp", newBad + newLog);
+  check("累积多 boot 日志 → 只比末次完整 boot → rc=0", diffQuiet(".__tg_g.tmp", ".__tg_c.tmp") === 0);
+
+  try { fs.unlinkSync(".__tg_g.tmp"); fs.unlinkSync(".__tg_b.tmp"); fs.unlinkSync(".__tg_n.tmp"); fs.unlinkSync(".__tg_s.tmp"); fs.unlinkSync(".__tg_c.tmp"); } catch (e) {}
 
   console.log(fail === 0 ? "\n[OK] trace-diff selftest 全过" : "\n[FAIL] " + fail + " 项");
   process.exit(fail === 0 ? 0 : 1);
 }
 function diffQuiet(g, n) {
-  var ga = extractEvents(fs.readFileSync(g, "utf8")).map(function (e) { return e.ev; });
-  var nb = extractEvents(fs.readFileSync(n, "utf8")).map(function (e) { return e.ev; });
+  var ga = lastBootWindow(extractEvents(fs.readFileSync(g, "utf8")).map(function (e) { return e.ev; }));
+  var nb = lastBootWindow(extractEvents(fs.readFileSync(n, "utf8")).map(function (e) { return e.ev; }));
   var ops = lcs(ga, nb);
   return (ops.filter(function (o) { return o.t !== "="; }).length === 0 && ga.length === nb.length) ? 0 : 1;
 }

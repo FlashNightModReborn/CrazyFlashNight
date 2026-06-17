@@ -1,3 +1,7 @@
+// [已退役 / RETIRED 一次性脚本 · 2026-06-16] 使命已完成（两目标文件已剥净，幂等下重跑只会 SKIP）。
+//   保留备查，**勿作常驻守门工具**，**勿扩 COVERED 白名单去剥别的 import**——通用 import 治理走
+//   lint-frame-imports.js / stage-wrap-frame.js。退役说明见 docs/asLoader-README.md §1 文件地图。
+//
 // 一次性修正脚本（2026-06-16）：frame36 折叠中间态里两个子文件带「无分号 import」，
 // stage-wrap/lint 旧正则只认带分号 import → 静默漏剥，import 泄进 staged 函数体（违反 C3 单一联合头不变量）。
 // 这两个包 org.flashNight.naki.RandomNumberEngine.* 已在 scripts/asLoaderManifest/frame36.as 联合头(L30) 覆盖，
@@ -28,8 +32,9 @@ TARGETS.forEach(function (rel) {
   var stripped = [], kept = [];
   IMPORT_RE.lastIndex = 0;
   var out = text.replace(IMPORT_RE, function (whole, id) {
-    var pkg = /\.\*$/.test(id) ? id.slice(0, -2) : id.slice(0, id.lastIndexOf("."));
-    if (COVERED[pkg]) { stripped.push(id); return ""; }
+    var dot = id.lastIndexOf(".");
+    var pkg = /\.\*$/.test(id) ? id.slice(0, -2) : (dot >= 0 ? id.slice(0, dot) : "");   // 默认包(无点)→ ""，不造垃圾包名
+    if (pkg && COVERED[pkg]) { stripped.push(id); return ""; }
     kept.push(id);
     return whole;
   });

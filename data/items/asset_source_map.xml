@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5537 unique assets -->
+  <!-- 5571 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -32,6 +32,7 @@
   <asset id="JK线条次元斩" swf="flashswf/arts/new/武装JK.swf" symbolName="特效与子弹/线条次元斩1" />
   <asset id="K点图标" swf="flashswf/UI/经济面板.swf" symbolName="UI重构/K点图标" />
   <asset id="M24手榴弹" swf="flashswf/arts/new/公共素材位1.swf" symbolName="7.飞龙素材/M24手榴弹/M24手榴弹" />
+  <asset id="MC_Button" swf="flashswf/UI/地铁线路.swf" symbolName="任务按钮/按钮" />
   <asset id="NPC头像框" swf="flashswf/UI/对话框界面.swf" />
   <asset id="PIGBOY" swf="flashswf/arts/new/pigboy.swf" />
   <asset id="PTXOA馆长_JohnWick系列" swf="flashswf/arts/new/PTXOA馆长_JohnWick系列.swf" symbolName="JohnWick" />
@@ -171,12 +172,14 @@
   <asset id="出生点-大机关门" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="出生点-大机关门/出生点-大机关门" />
   <asset id="出生点-嵌入大机关门" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="出生点-大机关门/出生点-嵌入大机关门" />
   <asset id="出生点-改造僵尸管道" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="出生点-改造僵尸管道/出生点-改造僵尸管道" />
+  <asset id="出生点-横向钻头" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="出生点-横向钻头/出生点-横向钻头" />
   <asset id="出生点-管道" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="出生点-管道/出生点-管道" />
   <asset id="出生点-聚光灯" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="出生点-聚光灯/出生点-聚光灯" />
   <asset id="出生点-超时空特效" swf="flashswf/arts/new/素材库-地图元件.swf" />
   <asset id="出生点-防御地带内部入口" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="出生点-防御地带/出生点-防御地带内部入口" />
   <asset id="出生点-防御地带内部大门" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="出生点-防御地带/出生点-防御地带内部大门" />
   <asset id="击中金属" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="特效-击中效果组/击中金属" />
+  <asset id="刀-3XF电棍" swf="flashswf/arts/new/天网大家庭.swf" />
   <asset id="刀-BULLOVA DAIDALOS" swf="flashswf/arts/new/公共素材位2.swf" symbolName="2.参考武器-冷兵/BULLOVA DAIDALOS/刀-BULLOVA DAIDALOS" />
   <asset id="刀-CF手斧" swf="flashswf/arts/new/3XD的素材.swf" symbolName="3冷兵器/一部分武器/武器本体/刀-CF手斧" />
   <asset id="刀-M.REAPER LAVAS" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/长柄/32.紫钢镰刀/刀-M.REAPER LAVAS" />
@@ -582,6 +585,12 @@
   <asset id="图标-061ABSR" swf="flashswf/arts/new/偷吃屑鱼坟头贡品.swf" />
   <asset id="图标-12号霰弹弹药" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="消耗道具相关/1.弹药相关/图标-12号霰弹弹药" />
   <asset id="图标-3D打印：炎" swf="flashswf/arts/new/瓦巴杰克.swf" symbolName="武器/3D打印：炎/图标-3D打印：炎" />
+  <asset id="图标-3XF士兵上装" swf="flashswf/arts/new/天网大家庭.swf" />
+  <asset id="图标-3XF士兵下装" swf="flashswf/arts/new/天网大家庭.swf" />
+  <asset id="图标-3XF士兵军靴" swf="flashswf/arts/new/天网大家庭.swf" />
+  <asset id="图标-3XF士兵头盔" swf="flashswf/arts/new/天网大家庭.swf" />
+  <asset id="图标-3XF士兵手套" swf="flashswf/arts/new/天网大家庭.swf" />
+  <asset id="图标-3XF电棍" swf="flashswf/arts/new/天网大家庭.swf" />
   <asset id="图标-53式步骑枪" swf="flashswf/arts/new/fs配置素材.swf" symbolName="长枪/53式步骑枪/图标-53式步骑枪" />
   <asset id="图标-53式步骑枪墨冰" swf="flashswf/arts/new/变体武器.swf" symbolName="1.枪械相关/长枪/53式步骑枪/0.墨冰/图标-53式步骑枪墨冰" />
   <asset id="图标-53式步骑枪狱火" swf="flashswf/arts/new/变体武器.swf" symbolName="1.枪械相关/长枪/53式步骑枪/1.狱火/图标-53式步骑枪狱火" />
@@ -2150,6 +2159,7 @@
   <asset id="地图-军阀基地" swf="flashswf/levels/地图-军阀基地.swf" />
   <asset id="地图-军阀帐篷" swf="flashswf/levels/地图-军阀帐篷.swf" />
   <asset id="地图-剑道社" swf="flashswf/levels/地图-剑道社.swf" />
+  <asset id="地图-同盟下水道" swf="flashswf/levels/地图-同盟下水道.swf" />
   <asset id="地图-同盟卸货站" swf="flashswf/levels/地图-同盟卸货站.swf" />
   <asset id="地图-同盟通路" swf="flashswf/levels/地图-同盟通路.swf" />
   <asset id="地图-堕落城商业街" swf="flashswf/levels/地图-堕落城商业街.swf" />
@@ -2176,6 +2186,7 @@
   <asset id="地图-第一防线防区" swf="flashswf/levels/地图-第一防线防区.swf" />
   <asset id="地图-联合大学" swf="flashswf/levels/地图-联合大学.swf" />
   <asset id="地图-走廊" swf="flashswf/levels/地图-走廊.swf" />
+  <asset id="地图-隧道据点" swf="flashswf/levels/地图-隧道据点.swf" />
   <asset id="地图-靶场" swf="flashswf/levels/地图-靶场.swf" />
   <asset id="地图-食堂" swf="flashswf/levels/地图-食堂.swf" />
   <asset id="地图-黑铁会修炼场" swf="flashswf/levels/地图-黑铁会修炼场.swf" />
@@ -2184,6 +2195,7 @@
   <asset id="地图箭头" swf="flashswf/arts/new/素材库-地图元件.swf" />
   <asset id="地图陷阱相关" swf="flashswf/arts/new/地图陷阱相关.swf" />
   <asset id="地母晚餐" swf="flashswf/arts/new/阿特拉斯素材.swf" symbolName="人修罗/人修罗/1.特效文件夹/03.赤橙色系/熔炎裂渊/地母晚餐" />
+  <asset id="地铁线路UI" swf="flashswf/UI/地铁线路.swf" />
   <asset id="地面喷发" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/10.力大砖飞/地面喷发/地面喷发" />
   <asset id="地面爆炸" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/10.力大砖飞/地面爆炸/地面爆炸" />
   <asset id="场景素材-高级轿车a" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="场景素材/废弃车辆/高级轿车a/场景素材-高级轿车a" />
@@ -2222,6 +2234,14 @@
   <asset id="天蓝增幅" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/00.增幅系列/天蓝增幅/天蓝增幅" />
   <asset id="奖励物品-奖励物品显示块" swf="flashswf/UI/奖励物品界面.swf" symbolName="sprite/奖励物品-奖励物品显示块" />
   <asset id="奖励物品界面" swf="flashswf/UI/奖励物品界面.swf" symbolName="sprite/奖励物品界面" />
+  <asset id="女变装-3XF士兵上臂" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/女变装-3XF士兵上臂" />
+  <asset id="女变装-3XF士兵右下臂" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/女变装-3XF士兵右下臂" />
+  <asset id="女变装-3XF士兵右大腿" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/女变装-3XF士兵右大腿" />
+  <asset id="女变装-3XF士兵小腿" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/女变装-3XF士兵小腿" />
+  <asset id="女变装-3XF士兵屁股" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/女变装-3XF士兵屁股" />
+  <asset id="女变装-3XF士兵左下臂" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/女变装-3XF士兵左下臂" />
+  <asset id="女变装-3XF士兵左大腿" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/女变装-3XF士兵左大腿" />
+  <asset id="女变装-3XF士兵身体" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/女变装-3XF士兵身体" />
   <asset id="女变装-61式胸甲上臂" swf="flashswf/arts/things.swf" symbolName="0.防具相关/92&amp;61套装/女变装-61式胸甲上臂" />
   <asset id="女变装-61式胸甲右下臂" swf="flashswf/arts/things.swf" symbolName="0.防具相关/92&amp;61套装/女变装-61式胸甲右下臂" />
   <asset id="女变装-61式胸甲左下臂" swf="flashswf/arts/things.swf" symbolName="0.防具相关/92&amp;61套装/女变装-61式胸甲左下臂" />
@@ -3239,6 +3259,7 @@
   <asset id="战技容器-登上明星" swf="flashswf/arts/things0.swf" symbolName="容器/战技容器/战技容器-登上明星" />
   <asset id="战技容器-瞬步斩" swf="flashswf/arts/things0.swf" symbolName="容器/战技容器/战技容器-瞬步斩" />
   <asset id="战技容器-破坏殆尽" swf="flashswf/arts/things0.swf" symbolName="容器/战技容器/战技容器-破坏殆尽" />
+  <asset id="战技容器-神杀枪" swf="flashswf/arts/things0.swf" symbolName="容器/战技容器/！战技容器-神杀枪" />
   <asset id="战技容器-突刺" swf="flashswf/arts/things0.swf" symbolName="容器/战技容器/战技容器-突刺" />
   <asset id="战技容器-蓝瞬步斩" swf="flashswf/arts/things0.swf" symbolName="容器/战技容器/战技容器-蓝瞬步斩" />
   <asset id="战技容器-辉光剑气" swf="flashswf/arts/things0.swf" symbolName="容器/战技容器/战技容器-辉光剑气" />
@@ -4076,6 +4097,18 @@
   <asset id="生存箱" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="箱子素材/生存箱/生存箱" />
   <asset id="电浆球" swf="flashswf/arts/new/瓦巴杰克.swf" symbolName="特效与子弹/电浆球" />
   <asset id="电球" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="子弹-持续组/电球" />
+  <asset id="男变装-3XF士兵上臂" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/男变装-3XF士兵上臂" />
+  <asset id="男变装-3XF士兵右下臂" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/男变装-3XF士兵右下臂" />
+  <asset id="男变装-3XF士兵右大腿" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/男变装-3XF士兵右大腿" />
+  <asset id="男变装-3XF士兵右手" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/男变装-3XF士兵右手" />
+  <asset id="男变装-3XF士兵头盔" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/男变装-3XF士兵头盔" />
+  <asset id="男变装-3XF士兵小腿" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/男变装-3XF士兵小腿" />
+  <asset id="男变装-3XF士兵屁股" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/男变装-3XF士兵屁股" />
+  <asset id="男变装-3XF士兵左下臂" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/男变装-3XF士兵左下臂" />
+  <asset id="男变装-3XF士兵左大腿" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/男变装-3XF士兵左大腿" />
+  <asset id="男变装-3XF士兵左手" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/男变装-3XF士兵左手" />
+  <asset id="男变装-3XF士兵脚" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/男变装-3XF士兵脚" />
+  <asset id="男变装-3XF士兵身体" swf="flashswf/arts/new/天网大家庭.swf" symbolName="待整理防具相关汇总/男变装-3XF士兵身体" />
   <asset id="男变装-61式头部装甲" swf="flashswf/arts/things.swf" symbolName="0.防具相关/92&amp;61套装/男变装-61式头部装甲" />
   <asset id="男变装-61式手甲右手" swf="flashswf/arts/things.swf" symbolName="0.防具相关/92&amp;61套装/男变装-61式手甲右手" />
   <asset id="男变装-61式手甲左手" swf="flashswf/arts/things.swf" symbolName="0.防具相关/92&amp;61套装/男变装-61式手甲左手" />
@@ -5300,6 +5333,7 @@
   <asset id="相位坍缩" swf="flashswf/arts/things7.swf" />
   <asset id="相位坍缩合并" swf="flashswf/arts/things7.swf" />
   <asset id="砖" swf="flashswf/arts/new/公共素材位0.swf" symbolName="其他武器/砖" />
+  <asset id="破土特效子弹" swf="flashswf/arts/new/贝斯.swf" symbolName="子弹/破土特效子弹" />
   <asset id="破坏之狼" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/03.赤橙色系/破坏之狼/破坏之狼" />
   <asset id="破片枪弹" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="破邪光弹" swf="flashswf/arts/new/阿特拉斯素材.swf" symbolName="人修罗/shape/Symbol 643" />
@@ -5429,6 +5463,7 @@
   <asset id="调试用失败定位" swf="flashswf/arts/new/fs配置素材.swf" />
   <asset id="调试用定位" swf="flashswf/arts/new/fs配置素材.swf" />
   <asset id="谜之胶囊" swf="flashswf/arts/things-new.swf" symbolName="谜之胶囊（和其图标）/谜之胶囊" />
+  <asset id="贝斯射击坠落子弹" swf="flashswf/arts/new/贝斯.swf" symbolName="子弹/贝斯射击坠落子弹" />
   <asset id="货架A" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="货架/货架A/货架A" />
   <asset id="购买物品界面" swf="flashswf/UI/物品与技能相关界面.swf" symbolName="新版商店界面" />
   <asset id="贯空天盖上衣披风" swf="flashswf/arts/new/瓦巴杰克.swf" symbolName="防具/贯空天盖/男变装成果/贯空天盖上衣披风" />
@@ -5457,7 +5492,6 @@
   <asset id="重机枪弹壳" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="弹壳/重机枪弹壳" />
   <asset id="量子爆弹" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/量子爆弹文件/量子爆弹" />
   <asset id="量子爆弹信标" swf="flashswf/arts/new/3XD的素材.swf" symbolName="7手雷/量子爆弹信标文件/量子爆弹信标" />
-  <asset id="量子爆弹爆炸" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/量子爆弹爆炸文件/量子爆弹爆炸" />
   <asset id="金光增幅" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/00.增幅系列/金光增幅/金光增幅" />
   <asset id="金光子弹" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/02.黄金色系/金光子弹/金光子弹" />
   <asset id="金光紫雷" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/02.黄金色系/金光紫雷/金光紫雷" />
@@ -5652,6 +5686,7 @@
     <source swf="flashswf/arts/new/变体武器.swf" />
     <source swf="flashswf/arts/new/拼命之王.swf" symbolName="1.属性标签标志元件/判定使用" />
     <source swf="flashswf/arts/new/新的动作.swf" symbolName="1.冷兵器/判定使用" />
+    <source swf="flashswf/arts/things0.swf" symbolName="特效与子弹/判定使用" />
     <source swf="flashswf/arts/things切割.swf" />
   </conflict>
   <conflict id="参考手雷">
@@ -5995,6 +6030,7 @@
   <conflict id="男变装-裸体身体">
     <source swf="flashswf/UI/对话框界面.swf" symbolName="sprite/主角/男变装-裸体身体" />
     <source swf="flashswf/arts/new/fs配置素材.swf" symbolName="sprite/Symbol 35" />
+    <source swf="flashswf/arts/new/天网大家庭.swf" symbolName="sprite/男变装-裸体身体" />
     <source swf="flashswf/arts/new/新的动作.swf" symbolName="sprite/男变装-裸体身体" />
     <source swf="flashswf/arts/things0.swf" symbolName="sprite/男变装-裸体身体" />
   </conflict>
