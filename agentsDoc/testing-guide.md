@@ -102,7 +102,6 @@ URL 参数:`?qa=1` 自动断言 / `?case=` 单条 / `?scenario=` 脚本场景 / 
 巡检脚本检查:必读文件存在、AGENTS.md 关键链接存在、回流模式未重新进入入口、关键文档基线标记存在、关键版本未回退。脚本是巡检器,不是 source of truth。
 
 ## 6. 收尾话术参考
-
 - 文档改动:`已更新文档并运行文档治理巡检`
 - Minigame:`已跑 Node QA / 静态校验;browser harness 未人工点开`
 - Map Panel:`已跑 launcher/build.ps1 / browser harness;未做完整游戏内联调`

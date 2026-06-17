@@ -23,7 +23,7 @@ var fs = require("fs");
 // 规范事件词表（boot 关键节点）。规则 regex → canonical event。
 // 同时覆盖既有 [BootstrapAS] 文案 与 未来 [BOOTTRACE] event=<ID> 文案。
 var RULES = [
-  { re: /event=s2_enter\b|frame4 entered/i, ev: "S2_ENTER" },
+  { re: /event=s2_enter\b|frame4 entered|handshake stage entered/i, ev: "S2_ENTER" },
   { re: /event=socket_ready\b|socket ready|firing handshake/i, ev: "SOCKET_READY" },
   { re: /event=handshake_success\b|hs=Success|handshake (FAILED|success)/i, ev: "HANDSHAKE_RESULT" },
   { re: /event=preload\b|firing preload/i, ev: "PRELOAD_FIRE" },
@@ -43,9 +43,16 @@ function extractEvents(text) {
   var lines = text.split(/\r?\n/);
   for (var i = 0; i < lines.length; i++) {
     var line = lines[i];
+    // launcher LogBatch 把同帧多条 [BootstrapAS] 消息用 | 拼进一行 → 一行可含多个事件。
+    // 逐规则取首个匹配「位置」，按位置排序后顺序产出（不再 break）：否则批处理会吞掉后续事件
+    // （如 hs=Success|firing preload 仅留 HANDSHAKE_RESULT 而丢 PRELOAD_FIRE）→ 与 golden 假分歧。
+    var hits = [];
     for (var r = 0; r < RULES.length; r++) {
-      if (RULES[r].re.test(line)) { out.push({ ev: RULES[r].ev, line: line.trim() }); break; }
+      var m = RULES[r].re.exec(line);   // RULES 无 /g 标志，exec 返回首个匹配 + index（无 lastIndex 残留）
+      if (m) hits.push({ pos: m.index, ev: RULES[r].ev });
     }
+    hits.sort(function (a, b) { return a.pos - b.pos; });
+    for (var h = 0; h < hits.length; h++) out.push({ ev: hits[h].ev, line: line.trim() });
   }
   return out;
 }

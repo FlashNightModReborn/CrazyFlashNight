@@ -130,6 +130,26 @@ S10_HANDOFF  [f91 ★跨SWF★] _root.play()(必先); onEnterFrame=null; removeM
 
 **真机必验**：(a) C2-β 注入 `_repairPending` 坏档→S2 gate 自旋→修复卡→`applyRepairResolved`(SaveManager.as:908/924) 放行；(b) 阻断 socket→10s `socket_connect_timeout`(:162)；(c) shim 缺失 fail-closed（MAIN 冻结非靠 f62）；(d) 存档三分支 `重新游戏确认`/`存档损坏`/`跳转地图("房间")`(:1448/1452/1480)；(e) **最终化2 在场**（S6 没漏 land-frame）；(f) 生命周期不抢（改动 B 后只卸载一次）；(g) 单帧 loop 回绕一轮，#include/loader 不重复执行（guard 生效）。
 
+### 5.1 trace-diff 门 + 各边界期望信号（2026-06-17 BootSequencer 化 + 失败路径日志落地）
+
+**comparator 已就位**：`node tools/trace-diff.js diff <golden> <new>`（事件序列 LCS diff，分歧 exit 1）；`extract <log>` 抽规范事件。**已批处理感知**：launcher LogBatch 用 `|` 把同帧多条 `[BootstrapAS]` 拼进一行，extract 现按位置多匹配（不再 break，否则 `hs=Success|firing preload` 只留前者→假分歧）。**BootSequencer 词表已对齐 trace-diff RULES**：`handshake stage entered`→S2_ENTER（rule 已加别名）、`socket ready, firing handshake`→SOCKET_READY、`handshake hs=Success`/`handshake FAILED`→HANDSHAKE_RESULT、`firing preload`→PRELOAD_FIRE、`sending ready ack`→READY_ACK、`bootstrap complete`/`jumping boot_check`→BOOT_CHECK_JUMP、`任务数据/文本加载完毕`→TASKDATA_OK/TASKTEXT_OK。
+
+**happy-path 期望规范序列**（extract 应见，容时间戳/批处理）：`S2_ENTER → SOCKET_READY → HANDSHAKE_RESULT → PRELOAD_FIRE →（坏档时 +RECOVERY_GATE_ENTER/EXIT）→ READY_ACK → BOOT_CHECK_JUMP → TASKDATA_OK → TASKTEXT_OK → … → HANDOFF_PLAY`。已实测前 7 段（含 HANDSHAKE_RESULT 待 hs=Success 入 SWF 后的首 boot 确认）。
+
+**七边界触发 + 期望 `[BootstrapAS]` 信号**（失败路径双通道日志=`BootSequencer.stepHandshake`/`halt`，2026-06-17 恢复）：
+
+| 边界 | 触发方式 | 期望 launcher.log 信号 | 通过判据 |
+|---|---|---|---|
+| (a) C2-β 坏档 | 注入 `_repairPending` 坏档（关游戏写无 SOL 的坏档 json，见 [[save-system-sol-json-shadow]]） | PRELOAD_FIRE 后存档恢复 gate 自旋、`applyRepairResolved` 放行 | gate 进出各一次、不死锁、放行进游戏 |
+| (b) socket 超时 | 不启 launcher 直开 SWF / 防火墙挡端口 | `socket timeout after ~10000ms` + `HALT: socket_connect_timeout` + 玩家见「启动器连接超时」 | 主 SWF 冻结不前进(fail-closed)、日志有因 |
+| (c) shim 缺失 | 改 shim 注入路径使 `_root._bootstrap` 不建 | `shim missing, stopped` + `HALT: shim_missing` + 玩家见「启动器通信 shim 缺失」 | MAIN 冻结在 f1(非靠 f62)、日志有因 |
+| (d) 存档三分支 | 新档/坏档/正常档各跑一次 | `重新游戏确认`/`存档损坏`/`跳转地图("房间")` 对应分支 | 各分支走对、无串档 |
+| (e) 最终化2 在场 | 正常 boot 观察 S6 | 佣兵满编（S6 逐 tick 抽干 loaders + 异步等待门） | `mercsList=204`、商城/兵种全载=land-frame 未漏 |
+| (f) 生命周期 | 正常 boot 观察卸载 | asLoader 仅 handoff 卸载一次 | 无残留 asLoader 实例、无重复 boot |
+| (g) 单帧 loop | 正常 boot（单帧 play 回绕） | `run()` 幂等 guard 生效，#include/loader 不重复 | 无双重初始化/双 tick |
+
+握手失败(b/c)现 `halt()` 在 fail-closed 后**释放 `_instance` + 回收 tickClip** → 同会话可重试（关 launcher 重开 / 补 shim 后重挂 asLoader 不卡在「无 tick 驱动」死状态）。
+
 ---
 
 ## 6. 残留不确定（需真机确认）

@@ -1,7 +1,7 @@
 # 项目技术架构总览
 
 **文档角色**：系统拓扑 canonical doc。  
-**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
+**最后核对代码基线**：commit `b852c0eba1`（2026-06-17）。
 
 本项目当前应被理解为：**Flash 核心游戏 + Guardian Launcher Host + WebView2 UI + native / build tooling** 的本地多栈系统。
 
@@ -37,6 +37,7 @@
 - 子资源与主 SWF 共享运行时上下文，不以现代沙箱或模块系统隔离
 - `_root`、MovieClip、帧驱动 FSM、XML 数据加载仍是核心工程现实
 - 这条链的验证与构建依赖 Flash / JSFL / IDE 协同，不属于可直接命令行编译的普通脚本项目
+- **启动子系统（asLoader）**：承载 `org.flashNight.*` 类字节码 + boot 序列的 symbol，2026-06 已从 82 帧塌成**单帧 + `BootSequencer` 状态机**（反直觉，架构导览 + 待测见 [../docs/asLoader-README.md](../docs/asLoader-README.md)）
 
 ### B. Flash CS6 编译与自动化 smoke 链
 

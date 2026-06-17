@@ -22,7 +22,10 @@ var IMPORT_RE = /^[ \t]*import\s+([A-Za-z_][\w$]*(?:\.[\w$]+)*(?:\.\*)?)[ \t]*;?
 function readBom(p) {
   var raw = fs.readFileSync(p);
   var hb = raw.length >= 3 && raw[0] === 0xEF && raw[1] === 0xBB && raw[2] === 0xBF;
-  return hb ? raw.slice(3).toString('utf8') : raw.toString('utf8');
+  var txt = hb ? raw.slice(3).toString('utf8') : raw.toString('utf8');
+  // 行尾规范：真 CRLF→LF；剩余「裸 CR」是源 staged manifest 每行尾的 `\r<空格>` 垃圾(非换行符)，
+  // 直接剥除而非转 \n —— 若转 \n 会把每行裂成「内容 + 空行」(= _collapsed_frame.as 大量空行噪声根源)。
+  return txt.replace(/\r\n/g, '\n').replace(/\r/g, '');
 }
 
 var _pkgs = {};
@@ -134,6 +137,7 @@ var wiring = [
 
 var out = [
   '// asLoader 单帧 boot 帧 CDATA（由 tools/assemble-collapsed-frame.js 生成；asLoader.xml 单关键帧 #include 之，勿手改本文件——改组装器重生成）。',
+  '// ▶ 架构导览 + 反直觉点 + 待测项：docs/asLoader-README.md（接手测试先读此文件）。',
   '// 联合头 ' + Object.keys(_pkgs).length + ' 包 | staged fN ' + STAGED.length + ' | loader-fire fN ' + (S7_LOADERS.length + S8_LOADERS.length) + ' | s0..s9 分组 + BootSequencer.run',
   '// 异步/控制帧(f4握手/f5,6 await/f7→s5_parseTask/f26 最终化2 队列/f75 craft/f91 handoff) 由 BootSequencer.as 编排。',
   'this._lockroot = false;',
@@ -164,6 +168,15 @@ var out = [
   'BootSequencer.run(this);',
   ''
 ].join('\n');
+
+// 规范化空白以过 git whitespace 门（git diff --check）：CRLF/CR→LF + 行首缩进 tab→4 空格
+//（消 space-before-tab：源自 wrapLoaderFire 对 tab 缩进的 loader 体前置 4 空格）+ 去行尾空白
+//（源帧逐字复制带入 90+ 行行尾空白）。纯空白变换，AS2 忽略空白 → 不影响字节码。
+out = out.replace(/\r\n/g, '\n').replace(/\r/g, '').split('\n').map(function (line) {
+  line = line.replace(/[ \t]+$/, '');            // 先去行尾空白（全空白行→空行，否则缩进会被当 lead 保留）
+  var lead = /^[ \t]*/.exec(line)[0];            // 再展开行首缩进 tab→4 空格（消 space-before-tab）
+  return lead.replace(/\t/g, '    ') + line.slice(lead.length);
+}).join('\n').replace(/\n{3,}/g, '\n\n');        // 折叠 2+ 连续空行为单空行（去残余分隔噪声）
 
 fs.writeFileSync(OUT, Buffer.concat([BOM, Buffer.from(out, 'utf8')]));
 console.log('[DONE] 写出 ' + path.relative(REPO, OUT).replace(/\\/g, '/'));

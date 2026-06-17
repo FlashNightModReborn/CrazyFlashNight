@@ -1,4 +1,4 @@
-﻿// ⚠⚠ DRAFT — 未经 Flash CS6 编译 / 真机验证。2026-06-16 自主生成的 P4 起点（未被任何处 #include/引用，不影响现有构建）。
+﻿// 2026-06-16 P4 起点 → 2026-06-17 已编译 + 塌缩 boot happy-path 真机通过（佣兵满编/刀光/存档 OK）。由 _collapsed_frame.as 显式 import + BootSequencer.run(this) 驱动。⚠ §5 七边界（shim 缺失/socket 超时/握手失败/存档三分支/最终化2/生命周期/单帧 loop）尚未逐一验。
 // 权威契约: docs/asLoader-BootSequencer-构建标准-2026-06-16.md
 // 未验证假设（编译期/真机必查）:
 //  1. L42 陷阱: 本类被引用时引用方需显式 import org.flashNight.boot.BootSequencer。
@@ -9,7 +9,7 @@
 //        每 tick 抽 1 个（复刻 f26 最终化2 的 onEnterFrame 时间切片，prevent 单帧抽干卡顿）。
 //  3. 主 FLA 改动 A: MAIN f33 (DOMDocument.xml:1271) _root.asLoader.play() → _root.__boot.mainReadyToContinue=true。
 //  4. 异步 loader 回调与 tick clip 均挂 _root，保证 asLoader 自删(S_HANDOFF)后仍存活。
-//  5. 握手逻辑移植自 asLoader.xml f4(socket 10s / handshake 60s / 存档恢复 gate)；失败=不前进(匹配原版 hang)。
+//  5. 握手逻辑移植自 asLoader.xml f4(socket 10s / handshake 60s / 存档恢复 gate)；失败=halt() fail-closed(主 SWF 不前进=匹配原版 hang)+恢复 f4 的 host.打印加载内容 玩家文案 + [BootstrapAS] socket 日志(便于边界 smoke 定位卡死点)。
 //  6. S6 串行序列必须含「最终化2」(原 f26 land-frame，易漏)。
 
 import org.flashNight.gesh.json.LoadJson.TaskDataLoader;
@@ -69,7 +69,7 @@ class org.flashNight.boot.BootSequencer {
     function step():Void {
         switch (this.state) {
             case S_INIT:      this.b.s0_init();        this.state = S_SYNCCODE;  break;
-            case S_SYNCCODE:  this.b.s1_syncCode();    this.state = S_HANDSHAKE; this.hsPhase = 1; this.hsStart = getTimer(); break;
+            case S_SYNCCODE:  this.b.s1_syncCode();    this.state = S_HANDSHAKE; this.hsPhase = 1; this.hsStart = getTimer(); this.bslog("handshake stage entered, _bootstrap=" + (_root._bootstrap != undefined) + " server=" + (_root.server != undefined)); break;
             case S_HANDSHAKE: this.stepHandshake();    break;
             case S_TASKDATA:  this.stepTaskData();     break;
             case S_TASKTEXT:  this.stepTaskText();     break;
@@ -83,15 +83,52 @@ class org.flashNight.boot.BootSequencer {
         }
     }
 
+    // === 诊断 + 终止辅助 ===
+    // 移植 f4 的 __bslog：socket 诊断日志（Flash SA 剔 trace），走 _root.server.sendServerMessage，
+    // 对齐 trace-diff golden 的 [BootstrapAS] 词汇（§5 trace 等价门）。
+    function bslog(msg:String):Void {
+        if (_root.server != undefined) _root.server.sendServerMessage("[BootstrapAS] " + msg);
+    }
+
+    // fail-closed 终止：记原因 + [BootstrapAS] 日志 + 停 tick + 释放单例重入保护。
+    // 释放 _instance 是关键：否则同一 AVM1 会话重挂/重试 asLoader 时 run() 因 _instance 残留直接 return，
+    // 新建的 _root.__boot 没有 tick 驱动 → boot 停在握手后的主时间轴信号附近（与 handoff 同源问题）。
+    function halt(reason:String):Void {
+        this.b.bootFailed = reason;
+        this.bslog("HALT: " + reason);
+        this.state = S_HALT;
+        // 对齐 handoff()：不仅停 tick 还回收 clip。否则同会话失败重试时 getNextHighestDepth() 升高、
+        // createEmptyMovieClip 不替换旧同名 clip → 每次重试泄漏一个 inert 空 clip 占深度槽。
+        // 从自身 onEnterFrame 内 removeMovieClip 安全（handoff 已用同一自卸载模式，BootSequencer 实例由闭包 self 持有，非 clip）。
+        if (this.tickClip != undefined) { this.tickClip.onEnterFrame = null; this.tickClip.removeMovieClip(); }
+        BootSequencer._instance = undefined;   // 显式限定静态：实例方法内不可裸写 _instance（恐解析为实例属性→重入保护未释放）
+    }
+
     // === S2 握手（移植 asLoader.xml f4，三相位） ===
+    // 失败路径恢复 f4 的 host.打印加载内容（玩家可见文案）+ [BootstrapAS] 日志（launcher.log 记失败原因），
+    // 否则边界 smoke 只见旧加载文本 + 日志缺失，难判卡死点。
     function stepHandshake():Void {
         var sm:Object = _root._bootstrap;
-        if (sm == undefined) { this.b.bootFailed = "shim_missing"; this.state = S_HALT; return; }
+        if (sm == undefined) {
+            this.host.打印加载内容("启动器通信 shim 缺失");
+            this.bslog("shim missing, stopped");
+            this.halt("shim_missing");
+            return;
+        }
 
         if (this.hsPhase == 1) { // 阶段1: 等 socket
-            if (getTimer() - this.hsStart > 10000) { _root._bootstrapFailed = "socket_connect_timeout"; this.state = S_HALT; return; }
+            var elapsed:Number = getTimer() - this.hsStart;
+            if (elapsed > 10000) {
+                _root._bootstrapFailed = "socket_connect_timeout";
+                this.bslog("socket timeout after " + elapsed + "ms, connected=" + (_root.server != undefined ? _root.server.isSocketConnected : "n/a"));
+                this.host.打印加载内容("启动器连接超时");   // bslog 先于 打印加载内容，对齐 frame4.as:32-33 顺序
+                this.halt("socket_connect_timeout");
+                return;
+            }
             if (_root.server != undefined && _root.server.isSocketConnected) {
                 _root._bootstrapHandshakeFired = true;
+                this.host.打印加载内容("握手启动器……");
+                this.bslog("socket ready, firing handshake");
                 sm.startHandshake();
                 this.hsPhase = 2;
             }
@@ -99,11 +136,27 @@ class org.flashNight.boot.BootSequencer {
         }
         if (this.hsPhase == 2) { // 阶段2: handshake → preload → 存档恢复 gate → ready → boot_check
             var hs:String = sm.handshakeStatus();
-            if (hs == "Failed") { this.state = S_HALT; return; }
+            if (hs == "Failed") {
+                this.bslog("handshake FAILED = " + sm.handshakeFailReason());
+                this.host.打印加载内容("启动器握手失败: " + sm.handshakeFailReason());
+                this.halt("handshake_failed");
+                return;
+            }
             if (hs != "Success") return;
-            if (!_root._bootstrapPreloadFired) { _root._bootstrapPreloadFired = true; _root.读取本地存盘(); }
+            if (!_root._bootstrapPreloadFired) {
+                _root._bootstrapPreloadFired = true;
+                this.bslog("handshake hs=Success");   // 握手成功沿记一次（frame4 经 tick 轮询日志 hs=Success；供 trace-diff HANDSHAKE_RESULT 等价）
+                this.host.打印加载内容("读取存档数据……");
+                this.bslog("firing preload");
+                _root.读取本地存盘();
+            }
             if (_root.存档恢复等待中 != undefined && _root.存档恢复等待中() == true) return; // C2-β 自旋
-            if (!_root._bootstrapReadySent) { _root._bootstrapReadySent = true; sm.sendReady(); }
+            if (!_root._bootstrapReadySent) {
+                _root._bootstrapReadySent = true;
+                this.bslog("sending ready ack");
+                sm.sendReady();
+            }
+            this.bslog("bootstrap complete, jumping boot_check");
             _root.gotoAndStop("boot_check"); // 驱动主 SWF 播放头
             this.b.mainReadyToContinue = false;
             this.hsPhase = 3;
@@ -193,5 +246,6 @@ class org.flashNight.boot.BootSequencer {
         this.host.removeMovieClip();
         this.tickClip.removeMovieClip();
         this.state = S_HALT;
+        BootSequencer._instance = undefined;  // 释放重入保护(显式限定静态)：同会话重挂 asLoader 时 run() 才会重建实例 + tick（否则新 _root.__boot 无驱动→卡死）
     }
 }

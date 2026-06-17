@@ -1,7 +1,7 @@
 # 编码规范与多栈边界
 
 **文档角色**：编码规范 canonical doc。  
-**最后核对代码基线**：commit `9f8f0c225`（2026-04-20）。
+**最后核对代码基线**：commit `b852c0eba1`（2026-06-17）。
 
 ## 1. 总原则
 
@@ -18,6 +18,7 @@
 - `.as` 文件必须 **UTF-8 with BOM**
 - AS2 语法与幻觉防护以 [as2-anti-hallucination.md](as2-anti-hallucination.md) 为准
 - 性能相关具体决策以 [as2-performance.md](as2-performance.md) 为准
+- asLoader / 启动序列架构（单帧塌缩 + BootSequencer + chunk + 82 包并集头）以 [../docs/asLoader-README.md](../docs/asLoader-README.md) 为准
 
 ## 3. C# Launcher 规范
 

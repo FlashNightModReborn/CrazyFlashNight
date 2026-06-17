@@ -88,6 +88,11 @@
 - **禁止**：在帧脚本中创建需要持久存在的闭包（`addProperty` / `setTimeout` / `EventBus` 回调）并捕获局部变量
 - **正确做法**：将需要持久闭包的逻辑放在 class 方法中（class 方法的 activation object 独立于 MovieClip 生命周期），帧脚本只做同步初始化调用
 - 示例：`ws.setupLegacyBridge()` 在 class 方法内用 `var self = this` 创建 `addProperty` 闭包，而非在帧脚本中用局部变量 `ws` 创建
+- **2026-06 塌缩后**：asLoader 已从 82 帧塌成**单帧**（架构导览见 [docs/asLoader-README.md](../docs/asLoader-README.md)）。单帧仍在 handoff 后被移除，故上述陷阱不变；`BootSequencer`（class + 挂 `_root` 的 `onEnterFrame` tick clip）即「持久闭包 / 异步逻辑住 class」的范本——握手 / loader 队列 / await 全在类里，单帧只做同步 `#include` 调用。
+
+### AVM1 静默失败陷阱（塌缩暴露：编译 0 错但运行时坏）
+- **「未定义类.方法()」静默返回 `undefined` 不抛错**：eager 自单例 `public static var instance:X = new X();` 在**类注册期**就构造；若构造里调用**另一尚未注册的类**（如 `Delegate.create1(...)`），AVM1 静默返回 undefined → 该字段变 undefined、其余构造照跑（极隐蔽，无报错，只在很久后表现为功能缺失）。**通用律：eager 自单例构造勿做跨类调用**；改在首次真正使用时（晚于 boot）惰性绑定。实例 = 刀光渐隐 bug（`VectorAfterimageRenderer._fadeCallback`），详 [BootSequencer 构建标准 §0](../docs/asLoader-BootSequencer-构建标准-2026-06-16.md)。
+- **AVM1 单函数体 ≤64KB**：`DefineFunction2.codeSize` 是 UI16。把大段帧脚本 wrap 进单个 `function(){}` 超限会**编译 0 错却静默产坏函数**（从不执行）；帧脚本 DoAction 是 UI32 无此限。检测门 = `tools/swf-function-sizes.js`（无需真机即拦溢出）。
 
 ### 原型链
 - AS2 类底层基于原型链继承

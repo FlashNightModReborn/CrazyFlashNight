@@ -1,7 +1,7 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
-**最后核对代码基线**：commit `d063d53c2`（2026-05-30）。
+**最后核对代码基线**：commit `b852c0eba1`（2026-06-17）。
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。
 
@@ -57,7 +57,7 @@
 AS2 侧修改必须遵守：
 
 - 新增 / 重建 `.as` 必须 UTF-8 with BOM；优先复制现有 `.as` 改名保留 BOM。
-- `scripts/asLoader/LIBRARY/asLoader.xml` 必须 include 新入口。
+- 新增 boot 期 `.as` 入口：asLoader.xml 已塌成单帧 `#include _collapsed_frame.as`（见 [docs/asLoader-README.md](../docs/asLoader-README.md)）→ 不再直接改时间轴；同步入口加进对应 staged 帧 manifest 后 `node tools/assemble-collapsed-frame.js` regen，异步入口归 BootSequencer；被引用的 class 自动嵌入无需手动 include。
 - response task 名必须唯一，并与 C# `TaskRegistry` 一致。
 - 修改 AS2 后必须说明 `scripts/asLoader.swf` 是否已重编。
 - 没有 fresh trace、Output Panel 副本或 IDE 复核时，不能说“Flash 编译通过”。
