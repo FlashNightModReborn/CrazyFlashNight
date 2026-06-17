@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GameStage>
+    <Rewards>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/环线东北站1.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Bedtime Story</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/环线东北站2.swf</Background>
+            <PlayerX>400</PlayerX>
+            <PlayerY>500</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/环线东北站3.swf</Background>
+            <PlayerX>400</PlayerX>
+            <PlayerY>500</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>
