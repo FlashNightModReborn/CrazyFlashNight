@@ -1,6 +1,6 @@
 # 测试约定与验证矩阵
 **文档角色**：验证矩阵 canonical doc。  
-**最后核对代码基线**：commit `d063d53c2`（2026-05-30）。
+**最后核对代码基线**：commit `6ed0404f9a`（2026-06-17）。
 
 按子栈选验证；不要用「编译一下」「跑一下 build」笼统覆盖跨栈任务。
 
@@ -36,7 +36,7 @@ chcp.com 65001 | Out-Null
 
 **两种构建目标，成功判据不同**（用 `-Target test|publish` 显式选目标，免手动切活动文档；省略 `-Target` 则取当前活动文档。脚本据 `publish_done.marker` + `compiler_errors.txt` 决定 exit 0/1）：
 
-- **TestLoader（测试构建，带 trace）**：成功 = `[OK] 编译完成` + 本次运行**新鲜生成**的 `scripts/flashlog.txt` + trace 无 `[TEST_FAIL]` 哨兵 + `compiler_errors.txt` `0 个错误`。**asLoader BootSequencer 逻辑回归** = `BootSequencerTest`（挂 `scripts/TestLoader.as`，mock 驱状态机：socket 超时/shim 缺失/握手失败/修复 gate/单帧幂等/S9·S10 事件；**仅逻辑层**，真 socket/佣兵满编/跨 SWF 生命周期/存档三分支须真机，分层见 [构建标准 §5.3](../docs/asLoader-BootSequencer-构建标准-2026-06-16.md)）。
+- **TestLoader（测试构建，带 trace）**：成功 = `[OK] 编译完成` + 本次运行**新鲜生成**的 `scripts/flashlog.txt`（脚本只写本次新增 trace）+ trace 无 `[TEST_FAIL]` / `[FAIL]` / `Tests Failed: N>0` + `compiler_errors.txt` `0 个错误`。当前 asLoader 相关逻辑回归 = `BootSequencerTest`（mock 驱状态机：socket 超时/shim 缺失/握手失败/修复 gate/单帧幂等/S9·S10 事件）+ `BootstrapHandshakeTest`（60s timeout 透传到 sender，防 launcher prewarm hold 时被 ServerManager 默认 callback timeout 抢先判失败）；**仅逻辑层**，真 socket/佣兵满编/跨 SWF 生命周期/存档三分支须真机，分层见 [构建标准 §5.3](../docs/asLoader-BootSequencer-构建标准-2026-06-16.md)。
 - **asLoader / publish 模式（发布二进制，剔 trace 等功能以免性能损耗）**：**本就不出 trace**——脚本会打 `[INFO] 无 trace 输出 (publish 模式不执行 trace)`，`flashlog.txt` 不刷新属正常，**不要据此判失败**。成功 = `[OK] 编译完成` + `scripts/compiler_errors.txt` 显示 `0 个错误` + `scripts/asLoader.swf` 已刷新（mtime/size 变化）。
   - **把「SWF 已刷新」变成机器门**：跑 publish 时传 `-VerifySwf scripts/asLoader.swf`（如 `powershell -File scripts/compile_test.ps1 -TimeoutSeconds 150 -VerifySwf scripts/asLoader.swf`）。脚本触发前记录 SWF 的 mtime/size 基线，成功路径校验其确被重写：未变 / 不存在 → `[ERROR] 目标 SWF 未刷新` + `exit 1`（fail-closed）。**不传该参数时脚本只看 `0 个错误`，「SWF 已刷新」需人工核对**——以前文档写了这条判据但脚本不强制，marker 产出而 SWF 未重写会假成功，故 asLoader publish 一律带 `-VerifySwf`。
 
@@ -47,7 +47,7 @@ chcp.com 65001 | Out-Null
 - 可以说：`已完成 Flash CS6 自动化 smoke 验证` / `已触发编译并拿到新鲜 trace`（TestLoader）/ `asLoader 发布编译 0 错误、SWF 已重生成`（publish 模式）
 - **不要**在缺少新鲜 trace、编译器错误面板或 IDE 复核时说「已编译通过」；但 **asLoader publish 无 trace 属正常设计**，以 `0 个错误` + SWF 刷新为准，别因缺 trace 误判失败
 
-**主 SWF / asLoader class 边界审计**：改 `scripts/类定义/org/flashNight/neur/Server/*` 或部署前追加 `node tools/audit-as2-class-embedding.js --policy child-only`；临时双 SWF 重打兜底用 `--policy dual-build --marker _repairPending --marker applyRepairResolved`。若主 SWF 仍嵌入 `__Packages.org.flashNight.neur.Server.SaveManager` / `ServerManager`，asLoader 新 class 不会覆盖。**全局单一归属门（asLoader 重构 P1）**：`--policy single-ownership` 断言「主 SWF 嵌入 `org.flashNight.*` 类 = 0 且无 class 同时嵌入两 SWF」——比 child-only 更强，守「主时间轴误直引用游戏 class 致其嵌进主 SWF → 首注册胜出 shadow 掉 asLoader 重编版本」。改主 FLA 帧脚本 / 新增主时间轴 class 引用、或部署前跑（当前基线 main=0 / loader=570 / intersection=0）。
+**主 SWF / asLoader class 边界审计**：改 `scripts/类定义/org/flashNight/neur/Server/*` 或部署前追加 `node tools/audit-as2-class-embedding.js --policy child-only`；临时双 SWF 重打兜底用 `--policy dual-build --marker _repairPending --marker applyRepairResolved`。若主 SWF 仍嵌入 `__Packages.org.flashNight.neur.Server.SaveManager` / `ServerManager`，asLoader 新 class 不会覆盖。**全局单一归属门（asLoader 重构 P1）**：`--policy single-ownership` 断言「主 SWF 嵌入 `org.flashNight.*` 类 = 0 且无 class 同时嵌入两 SWF」——比 child-only 更强，守「主时间轴误直引用游戏 class 致其嵌进主 SWF → 首注册胜出 shadow 掉 asLoader 重编版本」。改主 FLA 帧脚本 / 新增主时间轴 class 引用、或部署前跑（当前基线 main=0 / loader=572 / intersection=0）。
 详见 [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md)。
 ## 3. Launcher Host 验证
 | 用途 | 命令 |

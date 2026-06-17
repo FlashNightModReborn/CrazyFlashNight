@@ -241,6 +241,9 @@ class org.flashNight.boot.BootSequencer {
             return;
         }
         // phase 2：复刻 f26 —— 每 tick 抽 1 个 loader（保序、时间切片）；此时 preload 数据已就绪
+        if (_root.loaders != undefined && (_root.loaders.current == undefined || isNaN(_root.loaders.current))) {
+            _root.loaders.current = 0;  // 防 malformed queue：f9 契约若被误改漏设 current，不让 NaN 卡死 phase2
+        }
         if (_root.loaders == undefined || _root.loaders.current >= _root.loaders.length) {
             this.b.s6_post();           // = f32()：跑 loaderkillers + 删三队列
             this.state = S_SYNCLOGIC;

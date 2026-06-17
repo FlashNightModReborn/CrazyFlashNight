@@ -170,9 +170,10 @@ if ($taskMode.IsLegacy) {
 }
 
 # 编译目标切换：把 -Target 解析成具体 FLA/XFL，写 scripts/compile_target.cfg（file:/// URI）供 compile_action.jsfl 读取。
-#   不传 -Target → 删除该文件 → JSFL 回退「当前活动文档」（向后兼容）。consume 由本脚本管理（每次先删再按需写）。
+#   不传 -Target → 删除该文件 → JSFL 回退「当前活动文档」（向后兼容）。传 -Target → JSFL 读到后删除，避免旧目标残留。
 $TargetCfg = Join-Path $ScriptDir 'compile_target.cfg'
 Remove-Item -Path $TargetCfg -ErrorAction SilentlyContinue
+$targetUri = ''
 if ($Target) {
     switch -Regex ($Target.ToLower()) {
         '^(test|testloader)$'  { $targetPath = Join-Path $ProjectDir 'scripts\TestLoader\TestLoader.xfl' }
@@ -187,7 +188,6 @@ if ($Target) {
         exit 1
     }
     $targetUri = Convert-ToJsflUri $targetPath
-    [System.IO.File]::WriteAllText($TargetCfg, $targetUri, (New-Object System.Text.UTF8Encoding($false)))
     Write-Host ('[INFO] 编译目标: {0} -> {1}' -f $Target, $targetPath)
     # publish 目标自动启用 SWF 刷新门（testing-guide「asLoader publish 一律 -VerifySwf」铁律），除非用户已显式指定。
     if (-not $VerifySwf -and ($Target.ToLower() -match '^(publish|asloader)$')) {
@@ -205,16 +205,21 @@ $BomChecker = Join-Path $ProjectDir 'tools\check-bom.js'
 if (Test-Path $BomChecker) {
     $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
     if ($nodeCmd) {
-        # asLoader #include 闭包 + boot 类包：BootSequencer/BootSequencerTest 经 import（非 #include）编入，
-        #   不在 #include 图内 → 显式 --dir 覆盖（丢 BOM 会让 CS6 静默跳过类体或首行语法错）。
+        # asLoader #include 闭包 + import 类包/TestLoader 入口：
+        #   import 目标不在 #include 图内 → 显式覆盖，避免 CS6 静默跳过类体或首行语法错。
         $BootClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\boot'
-        if (Test-Path $BootClassDir) {
-            Write-Host '[INFO] 预编译 BOM 门: node tools/check-bom.js --dir scripts/类定义/org/flashNight/boot'
-            & node $BomChecker --dir $BootClassDir
-        } else {
-            Write-Host '[INFO] 预编译 BOM 门: node tools/check-bom.js'
-            & node $BomChecker
-        }
+        $ServerClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\neur\Server'
+        $StateMachineDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\neur\StateMachine'
+        $CommDir = Join-Path $ProjectDir 'scripts\通信'
+        $TestLoaderEntry = Join-Path $ProjectDir 'scripts\TestLoader.as'
+        $BomArgs = @()
+        if (Test-Path $BootClassDir) { $BomArgs += @('--dir', $BootClassDir) }
+        if (Test-Path $ServerClassDir) { $BomArgs += @('--dir', $ServerClassDir) }
+        if (Test-Path $StateMachineDir) { $BomArgs += @('--dir', $StateMachineDir) }
+        if (Test-Path $CommDir) { $BomArgs += @('--dir', $CommDir) }
+        if (Test-Path $TestLoaderEntry) { $BomArgs += @('--file', $TestLoaderEntry) }
+        Write-Host '[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --file scripts/TestLoader.as'
+        & node $BomChecker @BomArgs
         if ($LASTEXITCODE -ne 0) {
             Write-Host '[ERROR] BOM 门失败：存在缺 BOM 的 #include .as，编译器会静默跳过其内容。修复后重试。'
             exit 1
@@ -227,7 +232,9 @@ if (Test-Path $BomChecker) {
 Remove-Item -Path $Marker -ErrorAction SilentlyContinue
 Remove-Item -Path $ErrorMarker -ErrorAction SilentlyContinue
 
-$flashLogBefore = if (Test-Path $FlashLog) { (Get-Item $FlashLog).LastWriteTimeUtc } else { $null }
+$flashLogBeforeItem = if (Test-Path $FlashLog) { Get-Item $FlashLog } else { $null }
+$flashLogBefore = if ($flashLogBeforeItem) { $flashLogBeforeItem.LastWriteTimeUtc } else { $null }
+$flashLogBeforeSize = if ($flashLogBeforeItem) { $flashLogBeforeItem.Length } else { 0 }
 $compileOutputBefore = if (Test-Path $CompileOutput) { (Get-Item $CompileOutput).LastWriteTimeUtc } else { $null }
 
 # SWF 刷新门：触发前记录目标 SWF 的 mtime/size 基线（仅当 -VerifySwf 指定）
@@ -245,6 +252,9 @@ if ($VerifySwf) {
 }
 
 Write-Host ('[INFO] 触发编译... (超时 {0}s)' -f $TimeoutSeconds)
+if ($targetUri) {
+    [System.IO.File]::WriteAllText($TargetCfg, $targetUri, (New-Object System.Text.UTF8Encoding($false)))
+}
 Start-ScheduledTask -TaskName 'CompileTriggerTask'
 
 for ($i = 1; $i -le $TimeoutSeconds; $i++) {
@@ -258,11 +268,20 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
             if ($flashLogBefore -and $flashLogItem.LastWriteTimeUtc -le $flashLogBefore) {
                 Write-Host '[WARN] flashlog.txt 未刷新，本次 trace 可能还是旧日志'
             } else {
-                $flashTraceContent = Get-Content -Path $FlashLog -Raw -Encoding UTF8
+                $flashLogBytes = [System.IO.File]::ReadAllBytes($FlashLog)
+                $flashTraceOffset = 0
+                if ($flashLogBefore -and $flashLogBytes.Length -gt $flashLogBeforeSize) {
+                    $flashTraceOffset = $flashLogBeforeSize
+                }
+                $freshBytes = New-Object byte[] ($flashLogBytes.Length - $flashTraceOffset)
+                if ($freshBytes.Length -gt 0) {
+                    [System.Array]::Copy($flashLogBytes, $flashTraceOffset, $freshBytes, 0, $freshBytes.Length)
+                }
+                $flashTraceContent = [System.Text.UTF8Encoding]::new($false).GetString($freshBytes)
                 Write-Host '=== FLASH TRACE OUTPUT ==='
                 Write-Host $flashTraceContent
                 Write-Host '=== END ==='
-                Copy-Item $FlashLog $LocalFlashLog -Force
+                [System.IO.File]::WriteAllText($LocalFlashLog, $flashTraceContent, [System.Text.UTF8Encoding]::new($false))
             }
         } else {
             Write-Host '[INFO] 无 trace 输出 (publish 模式不执行 trace)'
@@ -290,8 +309,8 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
         }
 
         $hasTraceFailure = $false
-        if ($flashTraceContent -and $flashTraceContent -match '\[TEST_FAIL\]') {
-            Write-Host '[ERROR] Flash trace reported [TEST_FAIL]'
+        if ($flashTraceContent -and ($flashTraceContent -match '\[TEST_FAIL\]' -or $flashTraceContent -match '(^|[\r\n])\s*\[FAIL\]' -or $flashTraceContent -match 'Tests Failed:\s*[1-9]')) {
+            Write-Host '[ERROR] Flash trace reported test failure ([TEST_FAIL] / [FAIL] / Tests Failed > 0)'
             $hasTraceFailure = $true
         }
 
@@ -314,8 +333,10 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
         }
 
         if ($hasCompileError -or $hasTraceFailure -or $hasSwfStale) {
+            Remove-Item -Path $TargetCfg -ErrorAction SilentlyContinue
             exit 1
         }
+        Remove-Item -Path $TargetCfg -ErrorAction SilentlyContinue
         exit 0
     }
 
@@ -323,6 +344,7 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
         Write-Host '[ERROR] 编译失败:'
         Get-Content -Path $ErrorMarker -Encoding UTF8
         Remove-Item -Path $ErrorMarker -ErrorAction SilentlyContinue
+        Remove-Item -Path $TargetCfg -ErrorAction SilentlyContinue
         exit 1
     }
 
@@ -335,4 +357,5 @@ Write-Host '  - TestLoader 未在 Flash 中打开'
 Write-Host '  - CompileTriggerTask 计划任务未创建'
 Write-Host '  - 仍在弹 UAC 或旧任务卡住'
 Write-Host '  - 慢 CPU / 低压平板编译未结束 → 用 -TimeoutSeconds 调大重试'
+Remove-Item -Path $TargetCfg -ErrorAction SilentlyContinue
 exit 1

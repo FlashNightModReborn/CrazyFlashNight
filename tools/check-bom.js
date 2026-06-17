@@ -14,6 +14,7 @@
  * 用法：
  *   check-bom            从 asLoader.xml 起，沿 #include 图遍历全部 .as 验 BOM
  *   check-bom --dir <d>  额外扫描目录 d 下所有 .as
+ *   check-bom --file <f> 额外扫描单个 .as
  *   check-bom --xml <f>  指定起点 symbol xml（默认 scripts/asLoader/LIBRARY/asLoader.xml）
  * 任一 .as 缺 BOM → 列出并 exit 1。
  */
@@ -45,9 +46,11 @@ function main() {
   var argv = process.argv.slice(2);
   var xmlPath = DEFAULT_XML;
   var extraDirs = [];
+  var extraFiles = [];
   for (var i = 0; i < argv.length; i++) {
     if (argv[i] === "--xml" && argv[i + 1]) { xmlPath = path.resolve(argv[++i]); }
     else if (argv[i] === "--dir" && argv[i + 1]) { extraDirs.push(path.resolve(argv[++i])); }
+    else if (argv[i] === "--file" && argv[i + 1]) { extraFiles.push(path.resolve(argv[++i])); }
   }
 
   var visited = {};       // resolved abs path -> true
@@ -89,6 +92,13 @@ function main() {
     });
   }
   extraDirs.forEach(function (d) { if (fs.existsSync(d)) walkDir(d); });
+  extraFiles.forEach(function (f) {
+    if (!fs.existsSync(f)) { notFound.push({ ref: path.relative(REPO, f).replace(/\\/g, "/"), from: "(--file)" }); return; }
+    var abs = path.resolve(f);
+    if (visited[abs]) return;
+    visited[abs] = true;
+    if (!hasBom(abs)) missing.push({ file: path.relative(REPO, abs).replace(/\\/g, "/"), from: "(--file)" });
+  });
 
   var scanned = Object.keys(visited).length;
   if (notFound.length) {

@@ -100,7 +100,11 @@ var BASELINE_DOCS = [
     "agentsDoc/self-optimization.md",
     "agentsDoc/agent-harness.md",
     "agentsDoc/human-care.md",
-    "docs/tech-stack-rationalization.md"
+    "docs/tech-stack-rationalization.md",
+    "scripts/FlashCS6自动化编译.md",
+    "docs/asLoader-README.md",
+    "docs/asLoader重构-架构设计-2026-06-15.md",
+    "docs/asLoader-BootSequencer-构建标准-2026-06-16.md"
 ];
 
 for (var b = 0; b < BASELINE_DOCS.length; b++) {

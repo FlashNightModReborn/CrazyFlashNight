@@ -1,10 +1,11 @@
 # Flash CS6 自动化编译指南
 
 **文档角色**：Flash CS6 编译 smoke canonical doc。  
-**最后核对代码基线**：commit `981498f7a`（2026-06-08）。
+**最后核对代码基线**：commit `6ed0404f9a`（2026-06-17）。
 
 本文件只讲 **Flash CS6 编译与 smoke 验证链**：计划任务、JSFL、trace、编译器错误、截图与故障排查。  
 游戏启动与运行自动化请看 [automation/README.md](../automation/README.md)。
+`compile_test.ps1` 只保存本次新增 Flash trace 到 `scripts/flashlog.txt`，并将 `[TEST_FAIL]` / `[FAIL]` / `Tests Failed: N>0` 视为失败。
 
 ## 1. 当前定位
 
@@ -36,10 +37,10 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -TimeoutSecond
 
 ### 选择编译目标（`-Target`，免手动切活动文档）
 
-不传 `-Target` = 编译 **Flash 当前活动文档**（旧行为）。传 `-Target` 则由参数指定，脚本写 `scripts/compile_target.cfg`（一次性，`compile_action.jsfl` 据此 close+reopen 目标 FLA 从盘重读）：
+不传 `-Target` = 编译 **Flash 当前活动文档**（旧行为）。传 `-Target` 则由参数指定，脚本写 `scripts/compile_target.cfg`；`compile_action.jsfl` 读取后立即删除该文件，并据此 close+reopen 目标 FLA 从盘重读：
 
 ```powershell
-# 测试构建（带 trace）：跑 TestLoader → TransitionsTest + BootSequencerTest
+# 测试构建（带 trace）：跑 TestLoader → TransitionsTest + BootSequencerTest + BootstrapHandshakeTest
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target test -TimeoutSeconds 180
 
 # 发布构建：编 asLoader（自动启用 -VerifySwf scripts/asLoader.swf 刷新门）

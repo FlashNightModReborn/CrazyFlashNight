@@ -57,13 +57,21 @@ function extractEvents(text) {
   return out;
 }
 
-// 累积 launcher.log 通常含多次 boot → 只取**最后一次完整 boot**（从最后一个 S2_ENTER 起）再比。
-// 否则 `diff golden launcher.log`（构建标准 §5.1 文档命令）会把历史多 boot 全算进来 → 与单 boot golden
-//   假分歧（曾实测 104 事件假失败）。golden 为单 boot 时此窗口=恒等。无 S2_ENTER 则原样返回（不丢事件）。
+// 累积 launcher.log 通常含多次 boot / prewarm → 只取**最后一次完整 boot**再比。
+// 完整 boot 以 S2_ENTER 开始、且窗口内含 HANDOFF_PLAY；尾部只有 prewarm/失败握手时应跳过，
+// 否则 `diff golden launcher.log` 会因最后一个未完成 S2 窗口只有 2 个事件而假分歧。
+// 无完整 boot 时退回最后一个 S2_ENTER 窗口；无 S2_ENTER 则原样返回（不丢事件）。
 function lastBootWindow(events) {
-  var start = -1;
-  for (var i = 0; i < events.length; i++) if (events[i] === "S2_ENTER") start = i;
-  return start >= 0 ? events.slice(start) : events;
+  var starts = [];
+  for (var i = 0; i < events.length; i++) if (events[i] === "S2_ENTER") starts.push(i);
+  if (starts.length === 0) return events;
+  for (var s = starts.length - 1; s >= 0; s--) {
+    var start = starts[s];
+    var end = (s + 1 < starts.length) ? starts[s + 1] : events.length;
+    var win = events.slice(start, end);
+    if (win.indexOf("HANDOFF_PLAY") >= 0) return win;
+  }
+  return events.slice(starts[starts.length - 1]);
 }
 
 // LCS over event-id sequences → 对齐报告（缺失/多余/顺序）
@@ -113,20 +121,23 @@ function selftest() {
     "[BootstrapAS] firing preload\n" +
     "[BootstrapAS] sending ready ack\n" +
     "[BootstrapAS] bootstrap complete, jumping boot_check\n" +
-    "主程序：任务数据加载完毕\n主程序：任务文本加载完毕\n主程序：合成表数据加载成功！\n";
+    "主程序：任务数据加载完毕\n主程序：任务文本加载完毕\n主程序：合成表数据加载成功！\n" +
+    "[BootstrapAS] event=handoff\n";
   var ev = extractEvents(goldenLog).map(function (e) { return e.ev; });
-  check("既有 [BootstrapAS] 日志抽出 9 个事件", ev.length === 9);
+  check("既有 [BootstrapAS] 日志抽出 10 个事件", ev.length === 10);
   check("顺序: S2_ENTER 在首", ev[0] === "S2_ENTER");
   check("含 BOOT_CHECK_JUMP", ev.indexOf("BOOT_CHECK_JUMP") >= 0);
   check("含 CRAFTING_OK", ev.indexOf("CRAFTING_OK") >= 0);
+  check("含 HANDOFF_PLAY", ev.indexOf("HANDOFF_PLAY") >= 0);
 
   // BootSequencer 规范文案应映射到同序列
   var newLog =
     "[BOOTTRACE] event=s2_enter\n[BOOTTRACE] event=socket_ready\n[BOOTTRACE] event=handshake_success\n" +
     "[BOOTTRACE] event=preload\n[BOOTTRACE] event=ready\n[BOOTTRACE] event=boot_check\n" +
-    "[BOOTTRACE] event=taskdata\n[BOOTTRACE] event=tasktext\n[BOOTTRACE] event=crafting\n";
+    "[BOOTTRACE] event=taskdata\n[BOOTTRACE] event=tasktext\n[BOOTTRACE] event=crafting\n" +
+    "[BOOTTRACE] event=handoff\n";
   var ev2 = extractEvents(newLog).map(function (e) { return e.ev; });
-  check("BOOTTRACE 规范文案抽出同 9 事件序列", JSON.stringify(ev) === JSON.stringify(ev2));
+  check("BOOTTRACE 规范文案抽出同 10 事件序列", JSON.stringify(ev) === JSON.stringify(ev2));
 
   // 注入分歧：new 缺失 preload
   var newBad = newLog.replace("[BOOTTRACE] event=preload\n", "");
@@ -142,15 +153,21 @@ function selftest() {
   var newSwap =
     "[BOOTTRACE] event=s2_enter\n[BOOTTRACE] event=handshake_success\n[BOOTTRACE] event=socket_ready\n" +
     "[BOOTTRACE] event=preload\n[BOOTTRACE] event=ready\n[BOOTTRACE] event=boot_check\n" +
-    "[BOOTTRACE] event=taskdata\n[BOOTTRACE] event=tasktext\n[BOOTTRACE] event=crafting\n";
+    "[BOOTTRACE] event=taskdata\n[BOOTTRACE] event=tasktext\n[BOOTTRACE] event=crafting\n" +
+    "[BOOTTRACE] event=handoff\n";
   fs.writeFileSync(".__tg_s.tmp", newSwap);
   check("顺序错位(socket/handshake 对调) → diff 报红(rc=1)", diffQuiet(".__tg_g.tmp", ".__tg_s.tmp") === 1);
 
-  // 累积多 boot 日志：坏 boot(缺 preload) + 完整 boot 拼接 → lastBootWindow 只比末次 → 与 golden 等价 rc=0
+  // 累积多 boot 日志：坏 boot(缺 preload) + 完整 boot 拼接 → lastBootWindow 只比末次完整 boot → 与 golden 等价 rc=0
   fs.writeFileSync(".__tg_c.tmp", newBad + newLog);
   check("累积多 boot 日志 → 只比末次完整 boot → rc=0", diffQuiet(".__tg_g.tmp", ".__tg_c.tmp") === 0);
 
-  try { fs.unlinkSync(".__tg_g.tmp"); fs.unlinkSync(".__tg_b.tmp"); fs.unlinkSync(".__tg_n.tmp"); fs.unlinkSync(".__tg_s.tmp"); fs.unlinkSync(".__tg_c.tmp"); } catch (e) {}
+  // 完整 boot 后跟一个未完成 prewarm：仍应回退到最后一个含 HANDOFF_PLAY 的完整窗口。
+  var trailingPrewarm = "[BOOTTRACE] event=s2_enter\n[BOOTTRACE] event=socket_ready\n";
+  fs.writeFileSync(".__tg_p.tmp", newBad + newLog + trailingPrewarm);
+  check("尾部未完成 prewarm → 忽略，仍比末次完整 boot → rc=0", diffQuiet(".__tg_g.tmp", ".__tg_p.tmp") === 0);
+
+  try { fs.unlinkSync(".__tg_g.tmp"); fs.unlinkSync(".__tg_b.tmp"); fs.unlinkSync(".__tg_n.tmp"); fs.unlinkSync(".__tg_s.tmp"); fs.unlinkSync(".__tg_c.tmp"); fs.unlinkSync(".__tg_p.tmp"); } catch (e) {}
 
   console.log(fail === 0 ? "\n[OK] trace-diff selftest 全过" : "\n[FAIL] " + fail + " 项");
   process.exit(fail === 0 ? 0 : 1);

@@ -20,6 +20,8 @@ function main() {
 	var targetURI = "";
 	if (FLfile.exists(targetCfg)) {
 		var _t = FLfile.read(targetCfg);
+		// compile_target.cfg 是一次性指令：读到就消费删除，避免后续手工/JSFL 触发继承旧目标而误编。
+		FLfile.remove(targetCfg);
 		if (_t) targetURI = _t.replace(/^[\s﻿]+/, "").replace(/[\s]+$/, "");  // 剥 BOM/空白
 	}
 

@@ -339,7 +339,10 @@ class org.flashNight.neur.Server.ServerManager {
         if (currentFrame % 60 === 0) {
             for (var k:String in _pendingCallbacks) {
                 var e:Object = _pendingCallbacks[k];
-                if (currentFrame - e.frame > CALLBACK_TIMEOUT_FRAMES) {
+                var timeoutFrames:Number = (e.timeoutFrames != undefined && !isNaN(e.timeoutFrames) && e.timeoutFrames > 0)
+                    ? e.timeoutFrames
+                    : CALLBACK_TIMEOUT_FRAMES;
+                if (currentFrame - e.frame > timeoutFrames) {
                     delete _pendingCallbacks[k];
                     e.cb({success: false, error: "callback timeout"});
                 }
@@ -714,7 +717,7 @@ class org.flashNight.neur.Server.ServerManager {
     }
 
     public function sendTaskWithCallback(taskType:String, payload:Object, extra:Object,
-                                          callback:Function):Void {
+                                          callback:Function, callbackTimeoutFrames:Number):Void {
         var callId:Number = _callIdCounter++;
         var message:Object = new Object();
         message.task = taskType;
@@ -734,7 +737,10 @@ class org.flashNight.neur.Server.ServerManager {
             return;
         }
 
-        _pendingCallbacks[String(callId)] = {cb: callback, frame: currentFrame};
+        var timeoutFrames:Number = (callbackTimeoutFrames != undefined && !isNaN(callbackTimeoutFrames) && callbackTimeoutFrames > 0)
+            ? callbackTimeoutFrames
+            : CALLBACK_TIMEOUT_FRAMES;
+        _pendingCallbacks[String(callId)] = {cb: callback, frame: currentFrame, timeoutFrames: timeoutFrames};
         sendSocketMessage(messageString);
     }
 

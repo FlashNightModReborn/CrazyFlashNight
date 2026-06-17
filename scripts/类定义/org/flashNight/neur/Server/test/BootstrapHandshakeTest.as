@@ -21,6 +21,7 @@ class org.flashNight.neur.Server.test.BootstrapHandshakeTest {
         test_invalid_response_fails();
         test_timeout_fails_closed();
         test_custom_timeout_still_fails_closed();
+        test_sender_receives_custom_timeout();
 
         trace("========== BootstrapHandshakeTest END: " + passedCount + "/" + testCount + " passed, " + failedCount + " failed ==========");
     }
@@ -92,5 +93,17 @@ class org.flashNight.neur.Server.test.BootstrapHandshakeTest {
         BootstrapHandshake._triggerTimeoutForTest();
         assert(failReason == "timeout", "custom_timeout: reason=" + failReason);
         assert(BootstrapHandshake.getState() == "Failed", "custom_timeout: state=Failed");
+    }
+
+    // sender 需要拿到 timeoutMs，才能同步拉长 ServerManager callback 表的 per-call timeout。
+    private static function test_sender_receives_custom_timeout():Void {
+        var receivedTimeout:Number = -1;
+        BootstrapHandshake.setSender(function(attemptId:String, onResponse:Function, timeoutMs:Number):Void {
+            receivedTimeout = timeoutMs;
+        });
+        BootstrapHandshake.start("attempt_007", null, null, 60000);
+        assert(receivedTimeout == 60000, "sender_timeout: timeoutMs=" + receivedTimeout);
+        BootstrapHandshake._triggerTimeoutForTest();
+        BootstrapHandshake.setSender(null);
     }
 }

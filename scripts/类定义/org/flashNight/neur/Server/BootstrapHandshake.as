@@ -21,7 +21,7 @@ class org.flashNight.neur.Server.BootstrapHandshake {
     private static var _onSuccess:Function = null;
     private static var _onFailure:Function = null;
     private static var _timeoutId:Number = -1;
-    private static var _sender:Function = null;  // function(attemptId, onResponse):Void
+    private static var _sender:Function = null;  // function(attemptId, onResponse, timeoutMs):Void
 
     /**
      * 启动 bootstrap 握手.
@@ -43,7 +43,7 @@ class org.flashNight.neur.Server.BootstrapHandshake {
         // 避免 class-as-value 在 AS2 的运行期解析开销/碎片)
         _state = "WaitResp";
         if (_sender != null) {
-            try { _sender(attemptId, BootstrapHandshake.handleResponse); } catch (e2:Error) {}
+            try { _sender(attemptId, BootstrapHandshake.handleResponse, timeoutMs); } catch (e2:Error) {}
         }
     }
 

@@ -188,10 +188,13 @@ out = out.replace(/\r\n/g, '\n').replace(/\r/g, '').split('\n').map(function (li
 
 // F10 守门：联合头之外**只允许唯一一条具体 import**（BootSequencer，L42 CS6 会话缓存 workaround）。
 //   防后续组装逻辑误把第二条具体 import 混进产物（白名单例外悄悄扩散 = 违反 C3 单帧通配头纪律）。
-var importLines = out.split('\n').filter(function (l) { return /^import\s+/.test(l); });
+var importLines = out.split('\n').filter(function (l) { return /^[ \t]*import\s+/.test(l); });
 var specificImports = importLines.filter(function (l) { return !/\.\*\s*;?\s*$/.test(l.replace(/\/\/.*$/, '').replace(/[ \t]+$/, '')); });
-if (specificImports.length !== 1 || specificImports[0].indexOf('BootSequencer') < 0) {
-  console.error('[ASSERT FAIL] 联合头外的具体 import 应恰为 1 条 BootSequencer，实得 ' + specificImports.length + ' 条:\n  ' + specificImports.join('\n  '));
+var normalizedSpecificImports = specificImports.map(function (l) {
+  return l.replace(/\/\/.*$/, '').replace(/[ \t]+/g, ' ').replace(/\s*;?\s*$/, '').replace(/^\s+/, '');
+});
+if (normalizedSpecificImports.length !== 1 || normalizedSpecificImports[0] !== 'import org.flashNight.boot.BootSequencer') {
+  console.error('[ASSERT FAIL] 联合头外的具体 import 应恰为 1 条 import org.flashNight.boot.BootSequencer，实得 ' + specificImports.length + ' 条:\n  ' + specificImports.join('\n  '));
   process.exit(1);
 }
 

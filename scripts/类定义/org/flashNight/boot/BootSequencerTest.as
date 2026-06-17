@@ -31,6 +31,7 @@ class org.flashNight.boot.BootSequencerTest {
         this.test_run_idempotent();
         this.test_s6_waitGateThenDrain();
         this.test_s6_ceilingRelease();
+        this.test_s6_loaderQueueCurrentDefaults();
         this.printSummary();
         // 清理 _root 上对内置方法的影子覆盖（其余 mock 全局留着无害，TestLoader 非真游戏）
         delete _root.play;
@@ -268,9 +269,33 @@ class org.flashNight.boot.BootSequencerTest {
         inst.step();                             // sysWait=149 <150 → 仍等
         this.assert(inst.sysPhase == 1, "(e/ceiling) 149 帧仍等");
         inst.step();                             // sysWait=150 → 兜底放行（防永久挂起）
-        this.assert(inst.sysPhase == 2, "(e/ceiling) 150 帧兜底放行 → 进抽干相位");
+        this.assert(inst.sysPhase == 2 && inst.sysWait == 150, "(e/ceiling) sysWait=150 兜底放行 → 进抽干相位");
         inst.step();                             // 空队列 current>=length → s6_post + S_SYNCLOGIC
         this.assert(this._calls.s6post == 1 && inst.state == BootSequencer.S_SYNCLOGIC, "(e/ceiling) 队空 → s6_post + 推进");
+    }
+
+    // ====== 边界 (e) 防御：loader 队列缺 current 时归零，不让 phase2 NaN 比较卡死 ======
+    private function test_s6_loaderQueueCurrentDefaults():Void {
+        var host = this.freshEnv();
+        var inst:BootSequencer = new BootSequencer(host);
+        inst.state = BootSequencer.S_SYNCSYS;
+        var drained:Array = [];
+        var q:Array = [];
+        q.push(function() { drained.push(1); });
+        _root.loaders = q;                       // 故意不设 q.current
+        _root.__pendingFileLoads = 0;
+
+        inst.step();                             // sysPhase0: s6_pre → sysPhase=1, sysWait=0
+        inst.sawPending = true;                  // 已观测过二级加载起飞，现已落地
+        inst.sysWait = 29;
+        inst.step();                             // phase1: sysWait=30 → 放行到 phase2
+        this.assert(inst.sysPhase == 2 && inst.sysWait == 30, "(e/current) sysWait 精确计到 30 才放行");
+        this.assert(_root.loaders.current == undefined, "(e/current) phase2 前 malformed queue.current 仍缺失");
+
+        inst.step();                             // phase2: current 缺失 → 归零 → 抽 loaders[0]
+        this.assert(_root.loaders.current == 1 && drained.length == 1 && drained[0] == 1, "(e/current) current 缺失时归零并正常抽 1 个 loader");
+        inst.step();                             // 队空 → s6_post + S_SYNCLOGIC
+        this.assert(this._calls.s6post == 1 && inst.state == BootSequencer.S_SYNCLOGIC, "(e/current) 队空 → s6_post + 推进");
     }
 
     // ====== 工具 ======

@@ -19,11 +19,15 @@ _root._bootstrap.startHandshake = function():Void {
     _root._bootstrapSavePathReady = false;
     _root._bootstrapFailed = undefined;
 
-    org.flashNight.neur.Server.BootstrapHandshake.setSender(function(attemptId:String, onResponse:Function):Void {
+    org.flashNight.neur.Server.BootstrapHandshake.setSender(function(attemptId:String, onResponse:Function, timeoutMs:Number):Void {
         var sm:Object = _root.server;
         if (sm != undefined && sm.isSocketConnected) {
+            var timeoutFrames:Number = 0;
+            if (timeoutMs != undefined && !isNaN(timeoutMs) && timeoutMs > 0) {
+                timeoutFrames = Math.ceil(timeoutMs / 1000 * 30);
+            }
             sm.sendTaskWithCallback("bootstrap_handshake",
-                { attemptId: attemptId, hello: "from_flash" }, null, onResponse);
+                { attemptId: attemptId, hello: "from_flash" }, null, onResponse, timeoutFrames);
         }
     });
 

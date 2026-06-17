@@ -1,9 +1,10 @@
 # asLoader BootSequencer · 权威启动契约 · 构建标准 · 2026-06-16
 
 **文档角色**：BootSequencer（C2 全量异步-B）施工的**权威跨时间轴启动契约**。
+**最后核对代码基线**：commit `6ed0404f9a`（2026-06-17）。
 **来源**：8-agent workflow（3 readers → 综合 → 3 对抗校验 → spec），全部 file:line 二次核对。
 **上游设计**：[asLoader重构-架构设计-2026-06-15.md](asLoader重构-架构设计-2026-06-15.md)。
-**状态**：契约已闭合；BootSequencer 已编译落地——happy-path 真机 boot + L1 单测（BootSequencerTest）+ trace 等价门通过；§5 七边界真机验收推进中（见 §5.3）。
+**状态**：契约已闭合；BootSequencer 已编译落地——happy-path 真机 boot + L1 单测（BootSequencerTest / BootstrapHandshakeTest）+ trace 等价门通过；§5 七边界真机验收推进中（见 §5.3）。
 
 > ## ⚠ 2026-06-16 重大修正 + 进展（读 Runbook 前必看）
 > 1. **AVM1 函数体 64KB 硬限推翻「单函数 staging」**：`DefineFunction2.codeSize` 是 UI16（≤65535B 字节码）。大帧（单位函数 506KB/装备 456KB/UI 189KB 源）wrap 进单个 `function(){}` 即溢出 → 编译 0 错却静默产坏函数（真机实证 f36/f37/f41 staged 函数从不执行）。帧脚本(DoAction)是 UI32 无此限。
@@ -81,7 +82,7 @@
 - **配对①（f4→f5，跨时间轴两跳链）**：asLoader f4 `this.stop()`@138 ←解冻← MAIN f33 `_root.asLoader.play()`@1271。中间链：f4 onEnterFrame 成功不解冻自己，而是 `gotoAndStop("boot_check")`@207 把 MAIN f1→f5→(单机版开始)→f33。
 - **配对②（MAIN f33→f52+，asLoader 卸载回驱）**：MAIN f33 `stop()`@1270 ←解冻← asLoader f91 `_root.play()`@821。**顺序铁律：先 `_root.play()` 再 `removeMovieClip()`**。
 - **配对③（asLoader 内部异步 JSON 硬门）**：f5 stop@222←cb@231；f6 stop@245←cb@254；f75 stop@787←cb@810。
-- **fail-closed**：shim 缺失 = MAIN 永冻 f1（非靠 f62）；socket 10s（asLoader.xml:160）；handshake 60s（shim:59，覆盖 `BootstrapHandshake.DEFAULT_TIMEOUT_MS=5000`）；f4 内联注释「整体10s」**过时勿信**。
+- **fail-closed**：shim 缺失 = MAIN 永冻 f1（非靠 f62）；socket 10s（asLoader.xml:160）；handshake 60s（shim:59，覆盖 `BootstrapHandshake.DEFAULT_TIMEOUT_MS=5000`，并透传到 `ServerManager.sendTaskWithCallback` 的 per-call timeout，避免 prewarm hold 被默认 600 帧 callback timeout 抢先判失败）；f4 内联注释「整体10s」**过时勿信**。
 
 ---
 
@@ -197,7 +198,7 @@ S10_HANDOFF  [f91 ★跨SWF★] _root.play()(必先); onEnterFrame=null; removeM
 
 把七边界拆三层载体，**绝大多数故障逻辑可自动化，残留人类项收敛到 3 类**：
 
-- **L1 — TestLoader 单元测试**（`scripts/类定义/org/flashNight/boot/BootSequencerTest.as` → 挂进 `scripts/TestLoader.as` → `compile_test.ps1` 抓 trace）：在 debug player 里 **mock `host`/`_root._bootstrap`/`_root.server`/`_root.__boot` staged 函数/`存档恢复等待中` 等**，直接 `new BootSequencer(host)` + 手动驱 `step()` 断言状态机。**deterministic、每次改 BootSequencer.as 即回归**。覆盖：(b) socket 超时、(c) shim 缺失、握手失败、(a) 修复 gate 自旋→放行、(g) `run()` 幂等、S6 等待门/抽干顺序、**新 `CRAFTING_OK`/`HANDOFF_PLAY` 发一条**（= 把 Finding 1 变回归守卫）。
+- **L1 — TestLoader 单元测试**（`scripts/类定义/org/flashNight/boot/BootSequencerTest.as` + `scripts/类定义/org/flashNight/neur/Server/test/BootstrapHandshakeTest.as` → 挂进本地 `scripts/TestLoader.as` → `compile_test.ps1` 抓 trace）：在 debug player 里 **mock `host`/`_root._bootstrap`/`_root.server`/`_root.__boot` staged 函数/`存档恢复等待中` 等**，直接 `new BootSequencer(host)` + 手动驱 `step()` 断言状态机；BootstrapHandshakeTest 额外守 `timeoutMs` 传给 sender。**deterministic、每次改 BootSequencer.as / bootstrap handshake 即回归**。覆盖：(b) socket 超时、(c) shim 缺失、握手失败、(a) 修复 gate 自旋→放行、(g) `run()` 幂等、S6 等待门/抽干顺序、**新 `CRAFTING_OK`/`HANDOFF_PLAY` 发一条**（= 把 Finding 1 变回归守卫）、prewarm hold 不再被 ServerManager 默认 20s callback timeout 抢先打断。
 - **L2 — `launcher --bus-only` + `cfn-cli`**（headless 起 socket bus + 托管游戏，不建 BootstrapPanel）：抓 **happy-path golden**（`cfn-cli start-bus` → 游戏 boot → `cfn-cli ... log` 导 launcher.log → `trace-diff.js diff`）。socket-present 集成验。
 - **L3 — 真机正常模式**：不可 mock 的 Flash/集成行为。
 
@@ -258,12 +259,14 @@ node tools/trace-diff.js diff tools/baselines/boot-golden.log logs/launcher.log 
 #### 收尾修复轮（2026-06-17 晚 · 四方审阅交叉核对后）
 
 4 份独立审阅（本仓 + kimicode/codex/zcode）交叉核对，落实 15 项有效修复（驳回 zcode-M2「刀光只加注释」=实为 initializeCanvas 真重绑、commit 重写=越界、改动B=有意取舍）：
-- **F1 S6 race 加固**：`__pendingFileLoads` 只计二级 `GetFileByPath`、不计一级 `XML.load`（佣兵/兵种/商城/商店 4 个 `兼容.as` 的 `list.xml`）→ 慢盘下 pending==0 会提前抽空 loader（同 `merc only 1` 类回归）。BootSequencer 加 `sawPending`：pending==0 仅在「曾观测到 pending>0」或 150 帧兜底时放行。BootSequencerTest 扩 `test_s6_waitGateThenDrain`(慢-list race) + `test_s6_ceilingRelease`(150 帧兜底)。
+- **F1 S6 race 加固**：`__pendingFileLoads` 只计二级 `GetFileByPath`、不计一级 `XML.load`（佣兵/兵种/商城/商店 4 个 `兼容.as` 的 `list.xml`）→ 慢盘下 pending==0 会提前抽空 loader（同 `merc only 1` 类回归）。BootSequencer 加 `sawPending`：pending==0 仅在「曾观测到 pending>0」或 150 帧兜底时放行；phase2 对 malformed `_root.loaders.current` 归零防 NaN 卡死。BootSequencerTest 扩 `test_s6_waitGateThenDrain`(慢-list race) + `test_s6_ceilingRelease`(150 帧兜底) + `test_s6_loaderQueueCurrentDefaults`(队列 current 防御)。
 - **守门工具**：swf-function-sizes `--max` NaN/等号式（裸 `--max`→exit2）+ 诚实记 UI16 wrap 本质不可测（真护栏=源端 chunk 预算）；耦合门 `maskNested` 修同行 `};stop()` 漏判（audit + stage-wrap 2 文件）；assemble `callsFor` fail-fast（不再回退调 base fN）+ 唯一具体 import 断言；默认包 import 垃圾头守卫（3 文件）；trace-diff 末次-boot 窗口（修累积 launcher.log 假分歧）+ selftest 顺序错位/累积用例。
-- **产物/收尾**：`carftingDict→craftingDict`（regen，产物仅此 1 处变更）；frame70.as EOF 空白；strip-stale 退役标记；compile_test BOM 门加 boot 类包（169 文件）；4 doc 基线→`e7205600d0`/状态校正 + manifest 角色说明。
-- ✅ **asLoader 重编 0 错 0 警**：870268→**870289**，codeSize 门最大 58064B 不变、single-ownership main=0/loader=572、check-bom 169、git diff --check 净、doc-gov ok、trace-diff selftest+golden 自洽。
-- ✅ **TestLoader 重编 BootSequencerTest = 43 passed, 0 failed**（含新增 `(e/race)` 首层慢-list 4 断言 + `(e/ceiling)` 150 帧兜底 4 断言；旧 36→43）。S6 `sawPending` 运行时坐实。
-- ✅ **编译 harness 加 `-Target` 开关**（`compile_test.ps1 -Target test|publish|<路径>` + `compile_action.jsfl` 读 `scripts/compile_target.cfg` 一次性 file:/// URI；publish 自动启用 `-VerifySwf`）：免手动切 Flash 活动文档即可在 test/发布端切换。见 [FlashCS6自动化编译.md §3](../scripts/FlashCS6自动化编译.md) / [testing-guide §编译 smoke](../agentsDoc/testing-guide.md)。
+- **产物/收尾**：`carftingDict→craftingDict`（regen，产物仅此 1 处变更）；frame70.as EOF 空白；strip-stale 退役标记；compile_test BOM 门扩到 boot / Server / StateMachine / 通信 + 本地 `scripts/TestLoader.as`（187 文件）；核心 doc 基线→`6ed0404f9a`/状态校正 + manifest 角色说明。
+- **prewarm handshake timeout 对齐**：`BootstrapHandshake.start(...,60000)` 现把 `timeoutMs` 传给 sender，shim 将其换算为 per-call callback timeout frame 传给 `ServerManager.sendTaskWithCallback`；其它调用保留默认 600 帧。真 launcher prewarm-only smoke（20:30）实证：`PrewarmHandshakeHeld` 后无 `callback timeout`，45s 走统一 `prewarm_deadline` 降级。随后 870418 完整 `start_game → Ready → handoff` 真机烟测通过，`trace-diff diff tools/baselines/boot-golden.log logs/launcher.log` [OK]；但 `bootstrap_reveal_ready` 晚于 10s reveal watchdog 到达，launcher 先走 force reveal，作为后续 reveal 时序优化项保留。
+- ✅ **asLoader 重编 0 错 0 警**：870326→**870418**，codeSize 门最大 58064B 不变、single-ownership main=0/loader=572、check-bom 187、git diff --check 净、doc-gov ok、trace-diff selftest+golden 自洽。
+- ✅ **TestLoader 重编**：TransitionsTest 117 passed / 0 failed；BootSequencerTest **47 passed / 0 failed**（含新增 `(e/race)` 首层慢-list 4 断言 + `(e/ceiling)` 150 帧兜底 4 断言 + `(e/current)` malformed queue 4 断言；旧 36→47）；BootstrapHandshakeTest **12/12 passed**（含 sender timeoutMs=60000 断言）。S6 `sawPending`、`loaders.current` 防御与 handshake timeout 透传均有 L1 守卫。
+- **全库 linkage scanner**：`tools/linkage_scanner/scan_linkage.py` 完整跑完（约 436.8s），不是死锁；当前全库仍有历史 live cross-SWF conflicts=98、orphans=36。asLoader XFL 三件套保持 CLEAN，但全库 linkage 不能声明干净。
+- ✅ **编译 harness 加 `-Target` 开关**（`compile_test.ps1 -Target test|publish|<路径>` + `compile_action.jsfl` 读后删除 `scripts/compile_target.cfg` 一次性 file:/// URI；publish 自动启用 `-VerifySwf`）：免手动切 Flash 活动文档即可在 test/发布端切换。见 [FlashCS6自动化编译.md §3](../scripts/FlashCS6自动化编译.md) / [testing-guide §编译 smoke](../agentsDoc/testing-guide.md)。
 - ✅ **真机验证通过（2026-06-17，用户确认「有效，这些功能都能正常工作」）**：重编 asLoader.swf happy-path boot 正常——S6 `sawPending` 加固后佣兵/兵种/商城/商店满载、正常进菜单；`-Target test|publish` 切换亦正常。
 
 ---
@@ -294,7 +297,7 @@ node tools/trace-diff.js diff tools/baselines/boot-golden.log logs/launcher.log 
 折叠（把每帧 #include 包成 `_root.__boot.sN=function(){...}` 由状态机调度）有两处静态风险，原 Runbook 只有 TODO 没有工具。现各建一门，**两门均给出确定性绿灯结论**：
 
 - **门 ① 联合 import 头碰撞**：`node tools/lint-frame-imports.js --fold-specific [--strict]`。把 47 个具体 import 的「包」并入通配并集（= 子文件剥具体 import、靠单帧联合头解析的终态），重算跨包叶名碰撞。**结论：折叠新增 6 包（`gesh.pratt`/`gesh.text`/`gesh.xml.LoadXml`/`neur.InputCommand`/`neur.PerformanceOptimizer`/`arki.unit.Action.Melee`）→ 并集 76→82，新引入碰撞 = 0**。⇒ 折叠时子文件**仅需删掉自带具体 import，零 FQN 改写**。`--strict --fold-specific` exit 0。
-  - **⚠ 单一具体 import 白名单例外（外部审阅 Low，2026-06-17 显式化）**：塌缩产物 `_collapsed_frame.as` **故意保留恰好一条具体 import**——`import org.flashNight.boot.BootSequencer;`（L42 陷阱：CS6 会话缓存对会话内新建类，通配头/FQN 都可能解析失败，须显式具体 import）。它由 `assemble-collapsed-frame.js` **生成后注入**，不在任何被 lint 扫描的时间轴帧源内，故 `lint --fold-specific` 的 strict 分支**按设计只判「折叠新碰撞」、不判「具体 import」**（具体 import 是折叠终态会被联合头吸收的合法形态），看不到也不应 flag 这条。**结论：这是唯一允许的具体 import，治理上等价于白名单单例**；新增任何**其它**具体 import 到产物都属违规（评审 `_collapsed_frame.as` 头部时人工把关）。「strict」之名不覆盖此例外是已知且有意。
+  - **⚠ 单一具体 import 白名单例外（外部审阅 Low，2026-06-17 显式化）**：塌缩产物 `_collapsed_frame.as` **故意保留恰好一条具体 import**——`import org.flashNight.boot.BootSequencer;`（L42 陷阱：CS6 会话缓存对会话内新建类，通配头/FQN 都可能解析失败，须显式具体 import）。它由 `assemble-collapsed-frame.js` **生成后注入**，并在生成后 exact-match 守门；不在任何被 lint 扫描的时间轴帧源内，故 `lint --fold-specific` 的 strict 分支**按设计只判「折叠新碰撞」、不判「具体 import」**（具体 import 是折叠终态会被联合头吸收的合法形态），看不到也不应 flag 这条。**结论：这是唯一允许的具体 import，治理上等价于白名单单例**；新增任何**其它**具体 import 到产物都属违规（评审 `_collapsed_frame.as` 头部时人工把关）。「strict」之名不覆盖此例外是已知且有意。
   - **权威联合头（82 包，已验证 0 碰撞）= 折叠后单帧 CDATA 顶部固定块**：
 
 ```as2
