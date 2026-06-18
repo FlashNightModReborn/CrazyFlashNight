@@ -490,6 +490,29 @@ def load_asset_map(project_root: Path) -> dict[str, dict[str, Any]]:
             "conflict": len(matches) > 1,
             "matches": matches if len(matches) > 1 else None,
         }
+    for duplicate in root.findall("duplicate"):
+        asset_id = (duplicate.get("id") or "").strip()
+        if not asset_id:
+            continue
+        matches = [
+            {
+                "swf": source.get("swf") or "",
+                "symbolName": source.get("symbolName") or "",
+                "orphan": (source.get("orphan") or "").lower() == "true",
+            }
+            for source in duplicate.findall("source")
+        ]
+        live_matches = [match for match in matches if not match["orphan"]]
+        if len(live_matches) != 1:
+            continue
+        chosen = live_matches[0]
+        result[asset_id] = {
+            "swf": chosen["swf"],
+            "symbolName": chosen["symbolName"],
+            "conflict": False,
+            "resolvedDuplicate": True,
+            "matches": matches,
+        }
     for conflict in root.findall("conflict"):
         asset_id = (conflict.get("id") or "").strip()
         preferences = DRESSUP_CONFLICT_SOURCE_PREFERENCES.get(asset_id)

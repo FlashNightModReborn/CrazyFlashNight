@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-06-18T23:15:48+0800",
+  "generatedAt": "2026-06-18T23:39:26+0800",
   "genders": [
     "男",
     "女"
@@ -88159,8 +88159,25 @@
       ]
     },
     "枪-长枪-暴君收割机": {
-      "covered": false,
-      "asset": null,
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/fs配置素材.swf",
+        "symbolName": "长枪/火药燃气液压打桩机/暴君收割机/暴君收割机",
+        "conflict": false,
+        "resolvedDuplicate": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/fs配置素材.swf",
+            "symbolName": "长枪/火药燃气液压打桩机/暴君收割机",
+            "orphan": true
+          },
+          {
+            "swf": "flashswf/arts/new/fs配置素材.swf",
+            "symbolName": "长枪/火药燃气液压打桩机/暴君收割机/暴君收割机",
+            "orphan": false
+          }
+        ]
+      },
       "uses": [
         "长枪"
       ],
@@ -88169,6 +88186,34 @@
       ],
       "sourceFiles": [
         "武器_长枪_近战.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/14870cc6_1.png",
+        "width": 1192,
+        "height": 570,
+        "playback": "static-first-frame",
+        "sourceFrameCount": 31,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true,
+        "staticReason": "frame1_plain_stop",
+        "collapsedFrameCount": 30
+      },
+      "frames": [
+        {
+          "uri": "skins/14870cc6_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 1192,
+          "height": 570,
+          "originX": 485.7,
+          "originY": 264.2
+        }
       ]
     },
     "枪-长枪-极品巨兽": {

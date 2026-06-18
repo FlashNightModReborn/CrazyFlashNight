@@ -3,37 +3,37 @@
   "counts": {
     "items": 1285,
     "skinKeys": 2840,
-    "coveredSkinKeys": 2687,
-    "missingSkinKeys": 153,
+    "coveredSkinKeys": 2688,
+    "missingSkinKeys": 152,
     "holdersMale": 18,
     "holdersFemale": 18,
     "battleStates": 6,
     "battleAuditErrors": 0,
-    "exportedSkinKeys": 9,
-    "exportedFrames": 9,
+    "exportedSkinKeys": 10,
+    "exportedFrames": 10,
     "exportedBasicKeys": 22,
     "exportedBasicFrames": 22,
     "metadataErrors": 0,
     "timelineScriptErrors": 0,
     "spriteGraphErrors": 0,
-    "staticStopSkinKeys": 0,
-    "staticStopCollapsedFrames": 0,
+    "staticStopSkinKeys": 1,
+    "staticStopCollapsedFrames": 30,
     "purgedStaleFrames": 0,
     "nestedAnimationSkinKeys": 24,
     "nestedLayerUnsupportedDescendants": 0,
     "nestedLayerCompositedDescendants": 0,
     "exportedNestedLayerKeys": 0,
     "exportedNestedLayerFrames": 0,
-    "uniqueFrameImages": 32,
+    "uniqueFrameImages": 33,
     "duplicateFrameRefs": 0,
-    "timelineLogicalFrames": 32,
-    "timelineFrameEntries": 32,
+    "timelineLogicalFrames": 33,
+    "timelineFrameEntries": 33,
     "timelineCompressedFrameRefs": 0,
     "conditionalVariantSkinKeys": 1,
     "conditionalVariantFrames": 1,
     "conditionalVariantRemovedPlaceObjects": 1,
     "animatedSkinKeys": 16,
-    "staticCollapsedSkinKeys": 20,
+    "staticCollapsedSkinKeys": 21,
     "preservedSkinKeyExports": 2658,
     "preservedBasicHolderExports": 22
   },
@@ -42,12 +42,12 @@
       "上装装备": 84,
       "下装装备": 64,
       "刀": 1,
-      "长枪": 4
+      "长枪": 3
     },
     "byPrefix": {
       "刀-": 1,
       "女变装-": 63,
-      "枪-长枪-": 4,
+      "枪-长枪-": 3,
       "男变装-": 85
     }
   },
@@ -925,19 +925,6 @@
       ],
       "sourceFiles": [
         "武器_长枪_战斗步枪.xml"
-      ]
-    },
-    "枪-长枪-暴君收割机": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "长枪"
-      ],
-      "items": [
-        "暴君收割机"
-      ],
-      "sourceFiles": [
-        "武器_长枪_近战.xml"
       ]
     },
     "男变装-JK校服上臂": {
@@ -2203,10 +2190,10 @@
     }
   },
   "assetExport": {
-    "selectedSkinKeys": 9,
-    "resolvedSkinKeys": 9,
-    "exportedSkinKeys": 9,
-    "exportedFrames": 9,
+    "selectedSkinKeys": 10,
+    "resolvedSkinKeys": 10,
+    "exportedSkinKeys": 10,
+    "exportedFrames": 10,
     "resolvedBasicKeys": 22,
     "exportedBasicKeys": 22,
     "exportedBasicFrames": 22,
@@ -2220,10 +2207,18 @@
     "missingBasicFrame": [],
     "timelineScriptErrors": [],
     "spriteGraphErrors": [],
-    "staticStopSkinKeys": 0,
-    "staticStopCollapsedFrames": 0,
+    "staticStopSkinKeys": 1,
+    "staticStopCollapsedFrames": 30,
     "purgedStaleFrames": 0,
-    "staticStopSamples": [],
+    "staticStopSamples": [
+      {
+        "skinKey": "枪-长枪-暴君收割机",
+        "characterId": 569,
+        "sourceFrameCount": 31,
+        "playback": "static-first-frame",
+        "reason": "frame1_plain_stop"
+      }
+    ],
     "nestedAnimationSkinKeys": 0,
     "nestedAnimationSamples": [],
     "nestedLayerUnsupportedDescendants": 0,
@@ -2231,10 +2226,10 @@
     "exportedNestedLayerKeys": 0,
     "exportedNestedLayerFrames": 0,
     "missingNestedLayerFrame": [],
-    "uniqueFrameImages": 32,
+    "uniqueFrameImages": 33,
     "duplicateFrameRefs": 0,
-    "timelineLogicalFrames": 32,
-    "timelineFrameEntries": 32,
+    "timelineLogicalFrames": 33,
+    "timelineFrameEntries": 33,
     "timelineCompressedFrameRefs": 0,
     "timelineCompressionSamples": [],
     "conditionalVariantSkinKeys": 1,
@@ -2462,6 +2457,17 @@
         "长枪"
       ],
       "uri": "skins/7636bd80_1.png"
+    },
+    {
+      "skinKey": "枪-长枪-暴君收割机",
+      "sourceFrameCount": 31,
+      "playback": "static-first-frame",
+      "staticReason": "frame1_plain_stop",
+      "nestedAnimation": false,
+      "uses": [
+        "长枪"
+      ],
+      "uri": "skins/14870cc6_1.png"
     },
     {
       "skinKey": "枪-长枪-混凝土切割机",
