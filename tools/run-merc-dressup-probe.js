@@ -511,7 +511,7 @@ async function main() {
         },
         notes: [
             'AS2 MercLibrary maps merc[4] from raw.face and merc[5] from raw.hair before unit spawn.',
-            'MercPanelService currently serializes gender/height/equips but not face/hair; this probe fills appearance from mercenaries.json.',
+            'MercPanelService serializes face/hair for runtime panels; this probe cross-checks the same appearance mapping from mercenaries.json.',
             'Probe screenshots fit the body/face/hair/mask holders but still draw weapons, preventing weapon effects from shrinking the character.',
             'Light/heavy buckets are probe-only: armor slots <=3 is light, >=5 is heavy.'
         ],

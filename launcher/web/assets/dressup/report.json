@@ -3,79 +3,49 @@
   "counts": {
     "items": 1285,
     "skinKeys": 2840,
-    "coveredSkinKeys": 2652,
-    "missingSkinKeys": 188,
+    "coveredSkinKeys": 2679,
+    "missingSkinKeys": 161,
     "holdersMale": 18,
     "holdersFemale": 18,
-    "exportedSkinKeys": 2632,
-    "exportedFrames": 2897,
+    "exportedSkinKeys": 27,
+    "exportedFrames": 27,
     "exportedBasicKeys": 22,
     "exportedBasicFrames": 22,
     "metadataErrors": 0,
     "timelineScriptErrors": 0,
     "spriteGraphErrors": 0,
-    "staticStopSkinKeys": 17,
-    "staticStopCollapsedFrames": 328,
+    "staticStopSkinKeys": 1,
+    "staticStopCollapsedFrames": 1,
     "purgedStaleFrames": 0,
-    "nestedAnimationSkinKeys": 23,
+    "nestedAnimationSkinKeys": 24,
     "nestedLayerUnsupportedDescendants": 0,
     "nestedLayerCompositedDescendants": 3,
-    "exportedNestedLayerKeys": 26,
-    "exportedNestedLayerFrames": 622,
-    "uniqueFrameImages": 3128,
-    "duplicateFrameRefs": 355,
+    "exportedNestedLayerKeys": 1,
+    "exportedNestedLayerFrames": 78,
+    "uniqueFrameImages": 95,
+    "duplicateFrameRefs": 32,
+    "timelineLogicalFrames": 127,
+    "timelineFrameEntries": 122,
+    "timelineCompressedFrameRefs": 5,
     "animatedSkinKeys": 16,
-    "staticCollapsedSkinKeys": 19,
-    "timelineLogicalFrames": 3483,
-    "timelineFrameEntries": 3138,
-    "timelineCompressedFrameRefs": 345
+    "staticCollapsedSkinKeys": 20,
+    "preservedSkinKeyExports": 2632
   },
   "missingSummary": {
     "byUse": {
-      "上装装备": 94,
-      "下装装备": 71,
-      "刀": 7,
-      "头部装备": 2,
-      "手枪": 3,
-      "手部装备": 2,
-      "脚部装备": 2,
-      "长枪": 7
+      "上装装备": 88,
+      "下装装备": 64,
+      "刀": 4,
+      "长枪": 5
     },
     "byPrefix": {
-      "刀-": 7,
+      "刀-": 4,
       "女变装-": 63,
-      "枪-手枪-": 3,
-      "枪-长枪-": 7,
-      "男变装-": 108
+      "枪-长枪-": 5,
+      "男变装-": 89
     }
   },
   "missingSkinKeys": {
-    "刀-方钢锤": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "刀"
-      ],
-      "items": [
-        "方钢锤"
-      ],
-      "sourceFiles": [
-        "武器_刀_狂野.xml"
-      ]
-    },
-    "刀-激光剑": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "刀"
-      ],
-      "items": [
-        "激光剑"
-      ],
-      "sourceFiles": [
-        "武器_刀_刀剑.xml"
-      ]
-    },
     "刀-砖头": {
       "covered": false,
       "asset": null,
@@ -113,19 +83,6 @@
       ],
       "sourceFiles": [
         "武器_刀_短兵.xml"
-      ]
-    },
-    "刀-长墨白铁": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "刀"
-      ],
-      "items": [
-        "长墨白铁"
-      ],
-      "sourceFiles": [
-        "武器_刀_长柄.xml"
       ]
     },
     "刀-黑铁重剑": {
@@ -964,59 +921,6 @@
         "防具_0-19级.xml"
       ]
     },
-    "枪-手枪-COLT PYTHON": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "手枪"
-      ],
-      "items": [
-        "COLT PYTHON",
-        "Colt Anaconda"
-      ],
-      "sourceFiles": [
-        "武器_手枪_大威力手枪.xml"
-      ]
-    },
-    "枪-手枪-Glock 18": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "手枪"
-      ],
-      "items": [
-        "Glock 18"
-      ],
-      "sourceFiles": [
-        "武器_手枪_冲锋枪.xml"
-      ]
-    },
-    "枪-手枪-Mossberg500": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "手枪"
-      ],
-      "items": [
-        "Mossberg500"
-      ],
-      "sourceFiles": [
-        "武器_手枪_霰弹枪.xml"
-      ]
-    },
-    "枪-长枪-G36": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "长枪"
-      ],
-      "items": [
-        "G36"
-      ],
-      "sourceFiles": [
-        "武器_长枪_突击步枪.xml"
-      ]
-    },
     "枪-长枪-SAI GRY 幽灵": {
       "covered": false,
       "asset": null,
@@ -1080,19 +984,6 @@
       ],
       "sourceFiles": [
         "武器_长枪_近战.xml"
-      ]
-    },
-    "枪-长枪-能量狙击枪": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "长枪"
-      ],
-      "items": [
-        "能量狙击枪"
-      ],
-      "sourceFiles": [
-        "武器_长枪_狙击步枪.xml"
       ]
     },
     "男变装-BOSS4上臂": {
@@ -1758,19 +1649,6 @@
         "防具_0-19级.xml"
       ]
     },
-    "男变装-废城军装上装上臂": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "废城军装上装"
-      ],
-      "sourceFiles": [
-        "防具_0-19级.xml"
-      ]
-    },
     "男变装-废城军装上装右下臂": {
       "covered": false,
       "asset": null,
@@ -1792,110 +1670,6 @@
       ],
       "items": [
         "废城军装上装"
-      ],
-      "sourceFiles": [
-        "防具_0-19级.xml"
-      ]
-    },
-    "男变装-废城军装下装右大腿": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "废城军装下装"
-      ],
-      "sourceFiles": [
-        "防具_0-19级.xml"
-      ]
-    },
-    "男变装-废城军装下装小腿": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "废城军装下装"
-      ],
-      "sourceFiles": [
-        "防具_0-19级.xml"
-      ]
-    },
-    "男变装-废城军装下装左大腿": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "废城军装下装"
-      ],
-      "sourceFiles": [
-        "防具_0-19级.xml"
-      ]
-    },
-    "男变装-废城军装手套右手": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "手部装备"
-      ],
-      "items": [
-        "废城军装手套"
-      ],
-      "sourceFiles": [
-        "防具_0-19级.xml"
-      ]
-    },
-    "男变装-废城军装手套左手": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "手部装备"
-      ],
-      "items": [
-        "废城军装手套"
-      ],
-      "sourceFiles": [
-        "防具_0-19级.xml"
-      ]
-    },
-    "男变装-废城军装脚": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "脚部装备"
-      ],
-      "items": [
-        "废城军装鞋"
-      ],
-      "sourceFiles": [
-        "防具_0-19级.xml"
-      ]
-    },
-    "男变装-废城军装面具帽": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "头部装备"
-      ],
-      "items": [
-        "废城军装面具帽"
-      ],
-      "sourceFiles": [
-        "防具_0-19级.xml"
-      ]
-    },
-    "男变装-废城防弹军装上装身体": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "废城防弹军装上装"
       ],
       "sourceFiles": [
         "防具_0-19级.xml"
@@ -2161,136 +1935,6 @@
         "防具_0-19级.xml"
       ]
     },
-    "男变装-牙狼铠上臂": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "黄金骑士牙狼胸甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ]
-    },
-    "男变装-牙狼铠右下臂": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "黄金骑士牙狼胸甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ]
-    },
-    "男变装-牙狼铠右大腿": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "黄金骑士牙狼腿甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ]
-    },
-    "男变装-牙狼铠头盔": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "头部装备"
-      ],
-      "items": [
-        "黄金骑士牙狼头盔"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ]
-    },
-    "男变装-牙狼铠小腿": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "黄金骑士牙狼腿甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ]
-    },
-    "男变装-牙狼铠屁股": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "黄金骑士牙狼腿甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ]
-    },
-    "男变装-牙狼铠左下臂": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "黄金骑士牙狼胸甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ]
-    },
-    "男变装-牙狼铠左大腿": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "下装装备"
-      ],
-      "items": [
-        "黄金骑士牙狼腿甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ]
-    },
-    "男变装-牙狼铠战鞋": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "脚部装备"
-      ],
-      "items": [
-        "黄金骑士牙狼战鞋"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ]
-    },
-    "男变装-牙狼铠身体": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "上装装备"
-      ],
-      "items": [
-        "黄金骑士牙狼胸甲"
-      ],
-      "sourceFiles": [
-        "防具_40+级.xml"
-      ]
-    },
     "男变装-蓝发女黑白女仆蕾丝短裙右大腿": {
       "covered": false,
       "asset": null,
@@ -2501,10 +2145,10 @@
     }
   },
   "assetExport": {
-    "selectedSkinKeys": 2574,
-    "resolvedSkinKeys": 2574,
-    "exportedSkinKeys": 2574,
-    "exportedFrames": 2839,
+    "selectedSkinKeys": 27,
+    "resolvedSkinKeys": 27,
+    "exportedSkinKeys": 27,
+    "exportedFrames": 27,
     "resolvedBasicKeys": 22,
     "exportedBasicKeys": 22,
     "exportedBasicFrames": 22,
@@ -2518,629 +2162,65 @@
     "missingBasicFrame": [],
     "timelineScriptErrors": [],
     "spriteGraphErrors": [],
-    "staticStopSkinKeys": 17,
-    "staticStopCollapsedFrames": 328,
+    "staticStopSkinKeys": 1,
+    "staticStopCollapsedFrames": 1,
     "purgedStaleFrames": 0,
     "staticStopSamples": [
       {
-        "skinKey": "男变装-闪跑2Andy头部",
-        "characterId": 453,
-        "sourceFrameCount": 10,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "刀-雷铁斩斧",
-        "characterId": 568,
-        "sourceFrameCount": 30,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "枪-长枪-双面雷神",
-        "characterId": 135,
-        "sourceFrameCount": 32,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "枪-长枪-G11",
-        "characterId": 826,
-        "sourceFrameCount": 11,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "枪-长枪-G111",
-        "characterId": 821,
-        "sourceFrameCount": 16,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "枪-长枪-G1111",
-        "characterId": 805,
-        "sourceFrameCount": 44,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "枪-长枪-GM6_LYNX",
-        "characterId": 922,
-        "sourceFrameCount": 23,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "枪-长枪-Jackhammer",
-        "characterId": 831,
-        "sourceFrameCount": 15,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "枪-长枪-MACSIII",
-        "characterId": 660,
-        "sourceFrameCount": 20,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "枪-长枪-PF98A",
-        "characterId": 549,
+        "skinKey": "刀-方钢锤",
+        "characterId": 988,
         "sourceFrameCount": 2,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "枪-长枪-RPG28",
-        "characterId": 538,
-        "sourceFrameCount": 2,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "枪-长枪-RShG4",
-        "characterId": 535,
-        "sourceFrameCount": 2,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "枪-长枪-RShG4Я",
-        "characterId": 526,
-        "sourceFrameCount": 35,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "枪-长枪-XM214-CageFrame",
-        "characterId": 913,
-        "sourceFrameCount": 6,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "枪-长枪-僵尸割草机",
-        "characterId": 673,
-        "sourceFrameCount": 31,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      },
-      {
-        "skinKey": "枪-长枪-混凝土切割机",
-        "characterId": 667,
-        "sourceFrameCount": 31,
-        "playback": "static-parent-nested-animation",
-        "reason": "frame1_plain_stop_with_nested_animation"
-      },
-      {
-        "skinKey": "枪-长枪-等离子切割机",
-        "characterId": 643,
-        "sourceFrameCount": 35,
         "playback": "static-first-frame",
         "reason": "frame1_plain_stop"
       }
     ],
-    "nestedAnimationSkinKeys": 23,
+    "nestedAnimationSkinKeys": 1,
     "nestedAnimationSamples": [
       {
-        "skinKey": "刀-3XF电棍",
-        "characterId": 8,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 10,
-        "sampleDescendants": [
-          {
-            "characterId": 5,
-            "frameCount": 10,
-            "depth": 1,
-            "path": [
-              8,
-              5
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "刀-重力操纵之剑",
-        "characterId": 943,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 2,
-        "maxDescendantFrameCount": 60,
-        "sampleDescendants": [
-          {
-            "characterId": 924,
-            "frameCount": 60,
-            "depth": 1,
-            "path": [
-              943,
-              924
-            ]
-          },
-          {
-            "characterId": 941,
-            "frameCount": 60,
-            "depth": 1,
-            "path": [
-              943,
-              941
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "女变装-A兵团精致战术背心身体",
-        "characterId": 549,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 18,
-        "sampleDescendants": [
-          {
-            "characterId": 531,
-            "frameCount": 18,
-            "depth": 1,
-            "path": [
-              549,
-              531
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "枪-长枪-AK47火麒麟",
-        "characterId": 804,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 3,
-        "sampleDescendants": [
-          {
-            "characterId": 800,
-            "frameCount": 3,
-            "depth": 4,
-            "path": [
-              804,
-              803,
-              802,
-              801,
-              800
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "枪-长枪-M4A1雷神",
-        "characterId": 817,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 3,
-        "sampleDescendants": [
-          {
-            "characterId": 810,
-            "frameCount": 3,
-            "depth": 3,
-            "path": [
-              817,
-              816,
-              811,
-              810
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "男变装-A兵团精致战术背心身体",
-        "characterId": 534,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 18,
-        "sampleDescendants": [
-          {
-            "characterId": 531,
-            "frameCount": 18,
-            "depth": 1,
-            "path": [
-              534,
-              531
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "刀-应援棒",
-        "characterId": 1697,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 59,
-        "sampleDescendants": [
-          {
-            "characterId": 1693,
-            "frameCount": 59,
-            "depth": 1,
-            "path": [
-              1697,
-              1693
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "刀-审判日夜闪",
-        "characterId": 258,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 2,
-        "maxDescendantFrameCount": 60,
-        "sampleDescendants": [
-          {
-            "characterId": 257,
-            "frameCount": 30,
-            "depth": 1,
-            "path": [
-              258,
-              257
-            ]
-          },
-          {
-            "characterId": 248,
-            "frameCount": 60,
-            "depth": 2,
-            "path": [
-              258,
-              257,
-              248
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "刀-绝地武士佩剑",
-        "characterId": 218,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 2,
-        "sampleDescendants": [
-          {
-            "characterId": 213,
-            "frameCount": 2,
-            "depth": 1,
-            "path": [
-              218,
-              213
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "女变装-兽王战甲身体",
-        "characterId": 451,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 18,
-        "sampleDescendants": [
-          {
-            "characterId": 435,
-            "frameCount": 18,
-            "depth": 1,
-            "path": [
-              451,
-              435
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "男变装-兽王战甲盔",
-        "characterId": 427,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 32,
-        "sampleDescendants": [
-          {
-            "characterId": 426,
-            "frameCount": 32,
-            "depth": 1,
-            "path": [
-              427,
-              426
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "男变装-兽王战甲身体",
-        "characterId": 437,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 18,
-        "sampleDescendants": [
-          {
-            "characterId": 435,
-            "frameCount": 18,
-            "depth": 1,
-            "path": [
-              437,
-              435
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "刀-炎魔斩alter",
-        "characterId": 462,
+        "skinKey": "刀-激光剑",
+        "characterId": 426,
         "playback": "nested-animation",
         "sourceFrameCount": 1,
         "descendantCount": 4,
-        "maxDescendantFrameCount": 15,
+        "maxDescendantFrameCount": 78,
         "sampleDescendants": [
           {
-            "characterId": 461,
-            "frameCount": 15,
+            "characterId": 425,
+            "frameCount": 78,
             "depth": 1,
             "path": [
-              462,
-              461
+              426,
+              425
             ]
           },
           {
-            "characterId": 440,
-            "frameCount": 12,
+            "characterId": 392,
+            "frameCount": 56,
             "depth": 2,
             "path": [
-              462,
-              461,
-              440
+              426,
+              425,
+              392
             ]
           },
           {
-            "characterId": 453,
-            "frameCount": 11,
+            "characterId": 393,
+            "frameCount": 55,
             "depth": 2,
             "path": [
-              462,
-              461,
-              453
+              426,
+              425,
+              393
             ]
           },
           {
-            "characterId": 448,
-            "frameCount": 3,
+            "characterId": 396,
+            "frameCount": 52,
             "depth": 2,
             "path": [
-              462,
-              461,
-              448
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "枪-长枪-混凝土切割机",
-        "characterId": 667,
-        "playback": "static-parent-nested-animation",
-        "sourceFrameCount": 31,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 7,
-        "sampleDescendants": [
-          {
-            "characterId": 578,
-            "frameCount": 7,
-            "depth": 1,
-            "path": [
-              667,
-              578
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "刀-绯红女皇",
-        "characterId": 812,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 15,
-        "sampleDescendants": [
-          {
-            "characterId": 811,
-            "frameCount": 15,
-            "depth": 1,
-            "path": [
-              812,
-              811
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "女变装-兽王虎甲腿甲屁股",
-        "characterId": 2089,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 16,
-        "sampleDescendants": [
-          {
-            "characterId": 2066,
-            "frameCount": 16,
-            "depth": 1,
-            "path": [
-              2089,
-              2066
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "女变装-兽王虎甲身体",
-        "characterId": 2091,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 16,
-        "sampleDescendants": [
-          {
-            "characterId": 2055,
-            "frameCount": 16,
-            "depth": 1,
-            "path": [
-              2091,
-              2055
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "枪-长枪-怒海狂鲨",
-        "characterId": 2735,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 2,
-        "maxDescendantFrameCount": 4,
-        "sampleDescendants": [
-          {
-            "characterId": 2734,
-            "frameCount": 4,
-            "depth": 1,
-            "path": [
-              2735,
-              2734
-            ]
-          },
-          {
-            "characterId": 2727,
-            "frameCount": 4,
-            "depth": 2,
-            "path": [
-              2735,
-              2734,
-              2727
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "枪-长枪-生命收割者",
-        "characterId": 2514,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 6,
-        "sampleDescendants": [
-          {
-            "characterId": 2513,
-            "frameCount": 6,
-            "depth": 1,
-            "path": [
-              2514,
-              2513
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "男变装-兽王虎甲盔",
-        "characterId": 2045,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 25,
-        "sampleDescendants": [
-          {
-            "characterId": 2044,
-            "frameCount": 25,
-            "depth": 1,
-            "path": [
-              2045,
-              2044
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "男变装-兽王虎甲腿甲屁股",
-        "characterId": 2068,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 16,
-        "sampleDescendants": [
-          {
-            "characterId": 2066,
-            "frameCount": 16,
-            "depth": 1,
-            "path": [
-              2068,
-              2066
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "男变装-兽王虎甲身体",
-        "characterId": 2057,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 16,
-        "sampleDescendants": [
-          {
-            "characterId": 2055,
-            "frameCount": 16,
-            "depth": 1,
-            "path": [
-              2057,
-              2055
-            ]
-          }
-        ]
-      },
-      {
-        "skinKey": "男变装-末日铁拳右手",
-        "characterId": 733,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 1,
-        "maxDescendantFrameCount": 91,
-        "sampleDescendants": [
-          {
-            "characterId": 732,
-            "frameCount": 91,
-            "depth": 1,
-            "path": [
-              733,
-              732
+              426,
+              425,
+              396
             ]
           }
         ]
@@ -3148,240 +2228,25 @@
     ],
     "nestedLayerUnsupportedDescendants": 0,
     "nestedLayerCompositedDescendants": 3,
-    "exportedNestedLayerKeys": 26,
-    "exportedNestedLayerFrames": 622,
+    "exportedNestedLayerKeys": 1,
+    "exportedNestedLayerFrames": 78,
     "missingNestedLayerFrame": [],
-    "uniqueFrameImages": 3128,
-    "duplicateFrameRefs": 355,
-    "timelineLogicalFrames": 3483,
-    "timelineFrameEntries": 3138,
-    "timelineCompressedFrameRefs": 345,
+    "uniqueFrameImages": 95,
+    "duplicateFrameRefs": 32,
+    "timelineLogicalFrames": 127,
+    "timelineFrameEntries": 122,
+    "timelineCompressedFrameRefs": 5,
     "timelineCompressionSamples": [
       {
-        "owner": "skinKeys[刀-3XF电棍].layers[0]#5",
-        "logicalFrames": 10,
-        "timelineFrames": 2,
-        "savedFrameEntries": 8,
-        "uniqueUris": 2,
-        "longestHoldFrames": 5
-      },
-      {
-        "owner": "skinKeys[刀-异形女王毒刺]",
-        "logicalFrames": 80,
-        "timelineFrames": 31,
-        "savedFrameEntries": 49,
-        "uniqueUris": 30,
-        "longestHoldFrames": 50
-      },
-      {
-        "owner": "skinKeys[刀-异形毒刺]",
-        "logicalFrames": 80,
-        "timelineFrames": 20,
-        "savedFrameEntries": 60,
-        "uniqueUris": 19,
-        "longestHoldFrames": 61
-      },
-      {
-        "owner": "skinKeys[刀-绯红女皇].layers[0]#811",
-        "logicalFrames": 15,
-        "timelineFrames": 8,
-        "savedFrameEntries": 7,
-        "uniqueUris": 8,
-        "longestHoldFrames": 2
-      },
-      {
-        "owner": "skinKeys[女变装-A兵团精致战术背心身体].layers[0]#531",
-        "logicalFrames": 18,
-        "timelineFrames": 6,
-        "savedFrameEntries": 12,
-        "uniqueUris": 6,
-        "longestHoldFrames": 3
-      },
-      {
-        "owner": "skinKeys[女变装-兽王战甲身体].layers[0]#435",
-        "logicalFrames": 18,
-        "timelineFrames": 6,
-        "savedFrameEntries": 12,
-        "uniqueUris": 6,
-        "longestHoldFrames": 3
-      },
-      {
-        "owner": "skinKeys[女变装-兽王虎甲腿甲屁股].layers[0]#2066",
-        "logicalFrames": 16,
-        "timelineFrames": 8,
-        "savedFrameEntries": 8,
-        "uniqueUris": 8,
-        "longestHoldFrames": 2
-      },
-      {
-        "owner": "skinKeys[女变装-兽王虎甲身体].layers[0]#2055",
-        "logicalFrames": 16,
-        "timelineFrames": 8,
-        "savedFrameEntries": 8,
-        "uniqueUris": 8,
-        "longestHoldFrames": 2
-      },
-      {
-        "owner": "skinKeys[手雷-BBPLAYER炸弹]",
-        "logicalFrames": 4,
-        "timelineFrames": 1,
-        "savedFrameEntries": 3,
-        "uniqueUris": 1,
-        "longestHoldFrames": 4
-      },
-      {
-        "owner": "skinKeys[手雷-十字螺旋手里剑]",
-        "logicalFrames": 4,
-        "timelineFrames": 1,
-        "savedFrameEntries": 3,
-        "uniqueUris": 1,
-        "longestHoldFrames": 4
-      },
-      {
-        "owner": "skinKeys[手雷-寒铁镖]",
-        "logicalFrames": 4,
-        "timelineFrames": 1,
-        "savedFrameEntries": 3,
-        "uniqueUris": 1,
-        "longestHoldFrames": 4
-      },
-      {
-        "owner": "skinKeys[手雷-屎块]",
-        "logicalFrames": 4,
-        "timelineFrames": 1,
-        "savedFrameEntries": 3,
-        "uniqueUris": 1,
-        "longestHoldFrames": 4
-      },
-      {
-        "owner": "skinKeys[手雷-燃烧弹]",
-        "logicalFrames": 4,
-        "timelineFrames": 1,
-        "savedFrameEntries": 3,
-        "uniqueUris": 1,
-        "longestHoldFrames": 4
-      },
-      {
-        "owner": "skinKeys[手雷-翼炎钉针]",
-        "logicalFrames": 4,
-        "timelineFrames": 1,
-        "savedFrameEntries": 3,
-        "uniqueUris": 1,
-        "longestHoldFrames": 4
-      },
-      {
-        "owner": "skinKeys[手雷-鎏金雀翎]",
-        "logicalFrames": 4,
-        "timelineFrames": 1,
-        "savedFrameEntries": 3,
-        "uniqueUris": 1,
-        "longestHoldFrames": 4
-      },
-      {
-        "owner": "skinKeys[枪-长枪-生命收割者].layers[0]#2513",
-        "logicalFrames": 6,
-        "timelineFrames": 3,
-        "savedFrameEntries": 3,
-        "uniqueUris": 3,
-        "longestHoldFrames": 2
-      },
-      {
-        "owner": "skinKeys[男变装-A兵团精致战术背心身体].layers[0]#531",
-        "logicalFrames": 18,
-        "timelineFrames": 6,
-        "savedFrameEntries": 12,
-        "uniqueUris": 6,
-        "longestHoldFrames": 3
-      },
-      {
-        "owner": "skinKeys[男变装-兽王战甲盔].layers[0]#426",
-        "logicalFrames": 32,
-        "timelineFrames": 8,
-        "savedFrameEntries": 24,
-        "uniqueUris": 8,
-        "longestHoldFrames": 4
-      },
-      {
-        "owner": "skinKeys[男变装-兽王战甲身体].layers[0]#435",
-        "logicalFrames": 18,
-        "timelineFrames": 6,
-        "savedFrameEntries": 12,
-        "uniqueUris": 6,
-        "longestHoldFrames": 3
-      },
-      {
-        "owner": "skinKeys[男变装-兽王虎甲盔].layers[0]#2044",
-        "logicalFrames": 25,
-        "timelineFrames": 7,
-        "savedFrameEntries": 18,
-        "uniqueUris": 7,
-        "longestHoldFrames": 7
-      },
-      {
-        "owner": "skinKeys[男变装-兽王虎甲腿甲屁股].layers[0]#2066",
-        "logicalFrames": 16,
-        "timelineFrames": 8,
-        "savedFrameEntries": 8,
-        "uniqueUris": 8,
-        "longestHoldFrames": 2
-      },
-      {
-        "owner": "skinKeys[男变装-兽王虎甲身体].layers[0]#2055",
-        "logicalFrames": 16,
-        "timelineFrames": 8,
-        "savedFrameEntries": 8,
-        "uniqueUris": 8,
-        "longestHoldFrames": 2
-      },
-      {
-        "owner": "skinKeys[男变装-战术耳机加遮阳帽]",
-        "logicalFrames": 10,
-        "timelineFrames": 1,
-        "savedFrameEntries": 9,
-        "uniqueUris": 1,
-        "longestHoldFrames": 10
-      },
-      {
-        "owner": "skinKeys[男变装-末日铁拳右手].layers[0]#732",
-        "logicalFrames": 91,
-        "timelineFrames": 79,
-        "savedFrameEntries": 12,
-        "uniqueUris": 75,
-        "longestHoldFrames": 5
-      },
-      {
-        "owner": "skinKeys[男变装-特战队员头部装备]",
-        "logicalFrames": 10,
-        "timelineFrames": 1,
-        "savedFrameEntries": 9,
-        "uniqueUris": 1,
-        "longestHoldFrames": 10
-      },
-      {
-        "owner": "skinKeys[男变装-重甲头部]",
-        "logicalFrames": 10,
-        "timelineFrames": 1,
-        "savedFrameEntries": 9,
-        "uniqueUris": 1,
-        "longestHoldFrames": 10
-      },
-      {
-        "owner": "skinKeys[男变装-黑铁死士围巾]",
-        "logicalFrames": 24,
-        "timelineFrames": 6,
-        "savedFrameEntries": 18,
-        "uniqueUris": 6,
-        "longestHoldFrames": 4
-      },
-      {
-        "owner": "skinKeys[男变装-黑铁游侠围巾]",
-        "logicalFrames": 24,
-        "timelineFrames": 6,
-        "savedFrameEntries": 18,
-        "uniqueUris": 6,
-        "longestHoldFrames": 4
+        "owner": "b419a658#layer425",
+        "logicalFrames": 78,
+        "timelineFrames": 73,
+        "savedFrameEntries": 5,
+        "uniqueUris": 46,
+        "longestHoldFrames": 6
       }
-    ]
+    ],
+    "preservedSkinKeyExports": 2632
   },
   "animatedSkinKeys": [
     {
@@ -3707,6 +2572,17 @@
       "uri": "skins/cf1d4f9f_1.png"
     },
     {
+      "skinKey": "刀-方钢锤",
+      "sourceFrameCount": 2,
+      "playback": "static-first-frame",
+      "staticReason": "frame1_plain_stop",
+      "nestedAnimation": false,
+      "uses": [
+        "刀"
+      ],
+      "uri": "skins/1d2fcd29_1.png"
+    },
+    {
       "skinKey": "枪-长枪-PF98A",
       "sourceFrameCount": 2,
       "playback": "static-first-frame",
@@ -3756,6 +2632,22 @@
         "手部装备"
       ],
       "uri": "skins/2fc13a04_1.png"
+    },
+    {
+      "skinKey": "刀-激光剑",
+      "playback": "nested-animation",
+      "frameCount": 1,
+      "sourceFrameCount": 1,
+      "descendantCount": 4,
+      "maxDescendantFrameCount": 78,
+      "layerCount": 1,
+      "strategy": "direct-layered",
+      "unsupportedDescendantCount": 0,
+      "compositedDescendantCount": 3,
+      "uses": [
+        "刀"
+      ],
+      "uri": "skins/b419a658_1.png"
     },
     {
       "skinKey": "刀-审判日夜闪",

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -45,14 +46,109 @@ DEFAULT_GENDERS = ("男", "女")
 IGNORED_ITEM_XML = {"asset_source_map.xml", "list.xml", "bullets_cases.xml", "missileConfigs.xml"}
 DRESSUP_TIMELINE_IDENTITY_KEYS = ("uri", "width", "height", "originX", "originY")
 DRESSUP_FACE_SKINS = ("男变装-基本脸型", "女变装-基本脸型")
+PRESERVED_EXPORT_KEYS = ("export", "frames", "timelineFrames", "nestedAnimation")
 DRESSUP_CONFLICT_SOURCE_PREFERENCES = {
+    "刀-方钢锤": (
+        ("flashswf/arts/new/雾人装备调整.swf", "1.冷兵器/钝器/方钢锤/刀-方钢锤"),
+    ),
+    "刀-激光剑": (
+        ("flashswf/arts/new/乔恩.swf", "冷兵器/激光剑/刀-激光剑"),
+        ("flashswf/arts/new/我的素材7421.swf", "冷兵器/激光剑/刀-激光剑"),
+    ),
+    "刀-长墨白铁": (
+        ("flashswf/arts/new/雾人装备调整.swf", "1.冷兵器/长柄/01.长墨白铁/刀-长墨白铁"),
+    ),
     "男变装-基本脸型": (
         ("flashswf/UI/对话框界面.swf", "sprite/主角/男变装-基本脸型"),
         ("flashswf/arts/things0.swf", "sprite/男变装-基本脸型"),
     ),
+    "男变装-废城军装上装上臂": (
+        ("flashswf/arts/new/原体融合生物.swf", "男变装-废城军装上装上臂"),
+    ),
+    "男变装-废城军装下装右大腿": (
+        ("flashswf/arts/new/原体融合生物.swf", "男变装-废城军装下装右大腿"),
+    ),
+    "男变装-废城军装下装小腿": (
+        ("flashswf/arts/new/原体融合生物.swf", "男变装-废城军装下装小腿"),
+    ),
+    "男变装-废城军装下装左大腿": (
+        ("flashswf/arts/new/原体融合生物.swf", "男变装-废城军装下装左大腿"),
+    ),
+    "男变装-废城军装手套右手": (
+        ("flashswf/arts/new/原体融合生物.swf", "男变装-废城军装手套右手"),
+    ),
+    "男变装-废城军装手套左手": (
+        ("flashswf/arts/new/原体融合生物.swf", "男变装-废城军装手套左手"),
+    ),
+    "男变装-废城军装脚": (
+        ("flashswf/arts/new/原体融合生物.swf", "男变装-废城军装脚"),
+    ),
+    "男变装-废城军装面具帽": (
+        ("flashswf/arts/new/原体融合生物.swf", "男变装-废城军装面具帽"),
+    ),
+    "男变装-废城防弹军装上装身体": (
+        ("flashswf/arts/new/原体融合生物.swf", "男变装-废城防弹军装上装身体"),
+    ),
+    "男变装-牙狼铠上臂": (
+        ("flashswf/levels/地图-彩蛋地图.swf", "所有素材/牙狼素材/男变装-牙狼铠上臂"),
+        ("flashswf/arts/new/伊恩的素材.swf", "牙狼素材/男变装-牙狼铠上臂"),
+    ),
+    "男变装-牙狼铠右下臂": (
+        ("flashswf/levels/地图-彩蛋地图.swf", "所有素材/牙狼素材/牙狼右下臂"),
+        ("flashswf/arts/new/伊恩的素材.swf", "牙狼素材/牙狼右下臂"),
+    ),
+    "男变装-牙狼铠右大腿": (
+        ("flashswf/levels/地图-彩蛋地图.swf", "所有素材/牙狼素材/牙狼右大腿"),
+        ("flashswf/arts/new/伊恩的素材.swf", "牙狼素材/牙狼右大腿"),
+    ),
+    "男变装-牙狼铠头盔": (
+        ("flashswf/levels/地图-彩蛋地图.swf", "所有素材/牙狼素材/男变装-牙狼铠头盔"),
+        ("flashswf/arts/new/伊恩的素材.swf", "牙狼素材/男变装-牙狼铠头盔"),
+    ),
+    "男变装-牙狼铠小腿": (
+        ("flashswf/levels/地图-彩蛋地图.swf", "所有素材/牙狼素材/牙狼小腿"),
+        ("flashswf/arts/new/伊恩的素材.swf", "牙狼素材/牙狼小腿"),
+    ),
+    "男变装-牙狼铠屁股": (
+        ("flashswf/levels/地图-彩蛋地图.swf", "所有素材/牙狼素材/牙狼屁股"),
+        ("flashswf/arts/new/伊恩的素材.swf", "牙狼素材/牙狼屁股"),
+    ),
+    "男变装-牙狼铠左下臂": (
+        ("flashswf/levels/地图-彩蛋地图.swf", "所有素材/牙狼素材/牙狼左下臂"),
+        ("flashswf/arts/new/伊恩的素材.swf", "牙狼素材/牙狼左下臂"),
+    ),
+    "男变装-牙狼铠左大腿": (
+        ("flashswf/levels/地图-彩蛋地图.swf", "所有素材/牙狼素材/牙狼左大腿"),
+        ("flashswf/arts/new/伊恩的素材.swf", "牙狼素材/牙狼左大腿"),
+    ),
+    "男变装-牙狼铠战鞋": (
+        ("flashswf/levels/地图-彩蛋地图.swf", "所有素材/牙狼素材/男变装-牙狼铠鞋子"),
+        ("flashswf/arts/new/伊恩的素材.swf", "牙狼素材/男变装-牙狼铠鞋子"),
+    ),
+    "男变装-牙狼铠身体": (
+        ("flashswf/levels/地图-彩蛋地图.swf", "所有素材/牙狼素材/男变装-牙狼铠身体"),
+        ("flashswf/arts/new/伊恩的素材.swf", "牙狼素材/男变装-牙狼铠身体"),
+    ),
+    "枪-手枪-COLT PYTHON": (
+        ("flashswf/arts/things.swf", "1.枪械相关/手枪/枪-手枪-COLT PYTHON"),
+    ),
+    "枪-手枪-Glock 18": (
+        ("flashswf/arts/things.swf", "1.枪械相关/手枪/枪-手枪-Glock 18"),
+    ),
+    "枪-手枪-Mossberg500": (
+        ("flashswf/arts/things.swf", "1.枪械相关/手枪/枪-手枪-Mossberg500"),
+    ),
     "枪-手枪-m9": (
         ("flashswf/UI/对话框界面.swf", "sprite/主角/枪械&女体/Symbol 1121"),
         ("flashswf/arts/things.swf", "1.枪械相关/手枪/枪-手枪-m9"),
+    ),
+    "枪-长枪-G36": (
+        ("flashswf/UI/对话框界面.swf", "sprite/主角/枪械&女体/Symbol 1105"),
+        ("flashswf/arts/things.swf", "1.枪械相关/长枪/枪-长枪-G36"),
+    ),
+    "枪-长枪-能量狙击枪": (
+        ("flashswf/arts/new/乔恩.swf", "枪械/能量狙击枪/能量狙击枪"),
+        ("flashswf/arts/new/我的素材7421.swf", "枪械/能量狙击枪/能量狙击枪"),
     ),
 }
 
@@ -361,6 +457,12 @@ def load_asset_map(project_root: Path) -> dict[str, dict[str, Any]]:
             for match in matches:
                 if match["swf"] == expected_swf and match["symbolName"] == expected_symbol:
                     chosen = match
+                    break
+                if match["swf"] == expected_swf and not match["symbolName"] and expected_symbol:
+                    chosen = {
+                        "swf": expected_swf,
+                        "symbolName": expected_symbol,
+                    }
                     break
             if chosen:
                 break
@@ -1544,6 +1646,38 @@ def selected_skin_keys(manifest: dict[str, Any], names: set[str], limit: int) ->
     return keys
 
 
+def export_asset_identity(entry: dict[str, Any]) -> tuple[Any, ...]:
+    asset = entry.get("asset") or {}
+    return (
+        bool(entry.get("covered")),
+        asset.get("swf") or "",
+        asset.get("symbolName") or "",
+        bool(asset.get("conflict")),
+    )
+
+
+def preserve_incremental_skin_exports(
+    manifest: dict[str, Any],
+    existing_manifest: dict[str, Any],
+    target_keys: set[str],
+) -> int:
+    preserved = 0
+    existing_skin_keys = existing_manifest.get("skinKeys") or {}
+    for key, entry in (manifest.get("skinKeys") or {}).items():
+        if key in target_keys:
+            continue
+        existing_entry = existing_skin_keys.get(key)
+        if not existing_entry or not existing_entry.get("export"):
+            continue
+        if export_asset_identity(entry) != export_asset_identity(existing_entry):
+            continue
+        for field in PRESERVED_EXPORT_KEYS:
+            if field in existing_entry:
+                entry[field] = copy.deepcopy(existing_entry[field])
+        preserved += 1
+    return preserved
+
+
 def exported_frame_entries(
     frames: list[Path],
     asset_dir: Path,
@@ -2335,7 +2469,18 @@ def main() -> int:
     genders = genders_from_arg(args.genders)
     manifest, report = build_manifest(project_root, genders)
     tmp_dir = resolve_path(args.tmp_dir, project_root)
+    preserved_skin_exports = 0
     if args.export_assets:
+        if (args.name or args.limit > 0) and not args.no_write:
+            existing_manifest_path = output_dir / "manifest.json"
+            if existing_manifest_path.exists():
+                existing_manifest = json.loads(existing_manifest_path.read_text(encoding="utf-8-sig"))
+                target_keys = set(selected_skin_keys(manifest, set(args.name), args.limit))
+                preserved_skin_exports = preserve_incremental_skin_exports(
+                    manifest,
+                    existing_manifest,
+                    target_keys,
+                )
         export_skin_assets(
             manifest,
             report,
@@ -2352,6 +2497,9 @@ def main() -> int:
             args.static_stop_policy,
             args.ffdec_timeout_seconds,
         )
+        if preserved_skin_exports:
+            report.setdefault("assetExport", {})["preservedSkinKeyExports"] = preserved_skin_exports
+            report.setdefault("counts", {})["preservedSkinKeyExports"] = preserved_skin_exports
     if not args.no_write:
         write_json(output_dir / "manifest.json", manifest)
         write_json(output_dir / "report.json", report)
