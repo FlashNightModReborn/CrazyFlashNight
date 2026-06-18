@@ -318,6 +318,178 @@
     box-sizing: border-box;
 }
 
+#panel-container[data-panel="dressup"] #panel-content {
+    inset: 0;
+}
+
+#panel-container[data-panel="dressup"] #panel-backdrop {
+    background: #090d12;
+}
+
+.dressup-panel {
+    width: 100%;
+    height: 100%;
+    color: #edf2f7;
+    background: #090d12;
+    font: 13px "Microsoft YaHei", Arial, sans-serif;
+    overflow: hidden;
+}
+
+.dressup-shell {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 52px 1fr;
+}
+
+.dressup-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto 42px;
+    align-items: center;
+    gap: 14px;
+    padding: 0 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.09);
+    background: #111720;
+}
+
+.dressup-heading {
+    min-width: 0;
+}
+
+.dressup-title {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.dressup-subtitle {
+    margin-top: 3px;
+    color: rgba(237,242,247,0.58);
+    font-size: 11px;
+}
+
+.dressup-header-status {
+    min-width: 120px;
+    color: #88c0d0;
+    font-size: 11px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.dressup-close-btn {
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 4px;
+    background: rgba(255,255,255,0.04);
+    color: #edf2f7;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.dressup-main {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(420px, 1fr) 340px;
+}
+
+.dressup-stage {
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+    place-items: stretch;
+    background:
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        #0c1219;
+    background-size: 28px 28px;
+}
+
+.dressup-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.dressup-side {
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    border-left: 1px solid rgba(255,255,255,0.09);
+    background: #10161f;
+}
+
+.dressup-controls {
+    padding: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.dressup-field {
+    display: grid;
+    gap: 5px;
+    color: rgba(237,242,247,0.66);
+    font-size: 11px;
+}
+
+.dressup-field select {
+    min-width: 0;
+    height: 30px;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 4px;
+    background: #0a0f16;
+    color: #edf2f7;
+    font: 12px "Microsoft YaHei", Arial, sans-serif;
+}
+
+.dressup-equipment-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.dressup-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.dressup-actions button {
+    flex: 1 1 0;
+    height: 30px;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 4px;
+    background: #182232;
+    color: #edf2f7;
+    cursor: pointer;
+}
+
+.dressup-status {
+    min-height: 0;
+    margin: 0;
+    padding: 14px;
+    overflow: auto;
+    white-space: pre-wrap;
+    color: rgba(237,242,247,0.72);
+    background: #0b1118;
+    font: 11px Consolas, "Microsoft YaHei", monospace;
+    line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+    .dressup-main {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(420px, 1fr) auto;
+    }
+
+    .dressup-side {
+        border-left: none;
+        border-top: 1px solid rgba(255,255,255,0.09);
+        max-height: 42vh;
+    }
+}
+
 /* ── 共享 panel scale-shell primitive（沉浸全屏化 Wave 2，2026-06-11）──
    固定设计画布（--pss-w × --pss-h，默认 1024×576）+ 整体 transform:scale 等比缩放铺满父容器
    （#panel-content = 全 anchor 16:9）。JS 由 modules/panel-scale.js 的 PanelScale.attach(shellEl,
@@ -651,8 +823,17 @@
 .kshop-card-locked .kshop-card-price { color:var(--cp-dim); text-shadow:none; }
 
 /* Icon (left) */
+.cfn-layered-icon {
+    width: 1em;
+    height: 1em;
+}
+.cfn-layered-icon-part {
+    display: block;
+    pointer-events: none;
+}
 .kshop-icon { width:40px; height:40px; flex-shrink:0; display:block; object-fit:contain;
               filter:drop-shadow(0 0 3px rgba(0,240,255,0.15)); }
+.kshop-icon.cfn-layered-icon { width:40px; height:40px; }
 .kshop-icon-placeholder { background:rgba(0,240,255,0.05); width:40px; height:40px; flex-shrink:0; }
 
 /* Info (center) */
@@ -8990,6 +9171,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
     object-fit: contain;
     pointer-events: none;
 }
+.arena-skill-icon.cfn-layered-icon { display: block; }
 .arena-skill-glyph {
     font-size: 13px;
     font-weight: 700;
@@ -9034,6 +9216,12 @@ html.perf-low-effects .map-panel-close-btn:hover {
     max-height: 100%;
     object-fit: contain;
     pointer-events: none;
+}
+.arena-equip-cell .cfn-layered-icon {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
 }
 
 .arena-equip-empty {

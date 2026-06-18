@@ -55,9 +55,11 @@ var KShop = (function() {
         return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
     function iconHtml(iconName, cls) {
-        var url = (typeof Icons !== 'undefined') ? Icons.resolve(iconName) : null;
-        return url
-            ? '<img class="' + (cls||'kshop-icon') + '" src="' + url + '" onerror="this.style.display=\'none\'">'
+        var icon = (typeof Icons !== 'undefined' && Icons.html)
+            ? Icons.html(iconName, cls || 'kshop-icon', ' onerror="this.style.display=\'none\'"')
+            : '';
+        return icon
+            ? icon
             : '<div class="' + (cls||'kshop-icon') + ' kshop-icon-placeholder"></div>';
     }
     function toast(msg) { if (typeof Toast !== 'undefined') Toast.add(msg); }

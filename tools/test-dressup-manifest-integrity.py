@@ -14,6 +14,12 @@ A_CORPS_BODY_KEYS = (
     "男变装-A兵团精致战术背心身体",
     "女变装-A兵团精致战术背心身体",
 )
+REQUIRED_APPEARANCE_KEYS = (
+    "男变装-基本脸型",
+    "女变装-基本脸型",
+    "发型-男式-黑韩式头",
+    "枪-手枪-m9",
+)
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -145,6 +151,18 @@ def assert_a_corps_body(manifest: dict[str, Any], failures: list[str]) -> None:
             failures.append(f"{key} should keep at least one animated first-frame child layer")
 
 
+def assert_required_appearance_keys(manifest: dict[str, Any], failures: list[str]) -> None:
+    for key in REQUIRED_APPEARANCE_KEYS:
+        entry = manifest.get("skinKeys", {}).get(key)
+        if not entry:
+            failures.append(f"missing required appearance/resource skinKey: {key}")
+            continue
+        if not entry.get("covered"):
+            failures.append(f"{key} should be covered")
+        if not entry.get("export"):
+            failures.append(f"{key} should have export metadata")
+
+
 def main() -> None:
     manifest = read_json(MANIFEST_PATH)
     report = read_json(REPORT_PATH) if REPORT_PATH.exists() else {}
@@ -176,6 +194,7 @@ def main() -> None:
             assert_compression_contract(failures, owner_prefix, basic)
 
     assert_a_corps_body(manifest, failures)
+    assert_required_appearance_keys(manifest, failures)
 
     layer_count = 0
     compressed_layer_count = 0

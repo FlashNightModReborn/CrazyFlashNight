@@ -39,6 +39,17 @@ html, body {
             sample: params.get('sample') || '',
             manifestUrl: params.get('manifest') || ''
         };
+        var initJson = params.get('init') || '';
+        if (initJson) {
+            try {
+                var injected = JSON.parse(initJson);
+                Object.keys(injected || {}).forEach(function(key) {
+                    initData[key] = injected[key];
+                });
+            } catch (error) {
+                initData.injectError = String(error && error.message || error);
+            }
+        }
         var skinKey = params.get('skinKey') || '';
         if (skinKey) {
             var field = params.get('field') || '身体';

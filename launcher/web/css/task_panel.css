@@ -945,6 +945,11 @@
 .task-item[data-i="4"] { animation-delay: 0.20s; }
 .task-item[data-i="5"] { animation-delay: 0.25s; }
 .task-item img { width: 28px; height: 28px; object-fit: contain; display: block; pointer-events: none; }
+.task-item .cfn-layered-icon {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+}
 .task-item-count {
     position: absolute;
     right: 1px;

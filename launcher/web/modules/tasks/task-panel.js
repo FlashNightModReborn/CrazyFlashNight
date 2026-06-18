@@ -1791,15 +1791,10 @@
         return String(s).replace(/[<>]/g, '');
     }
 
-    function resolveIconUrl(itemName) {
-        if (!itemName) return null;
-        if (typeof Icons !== 'undefined' && Icons && Icons.resolve) return Icons.resolve(itemName);
-        return null;
-    }
-
     function itemIconHtml(itemName, count, i) {
-        var url = resolveIconUrl(itemName);
-        var imgHtml = url ? '<img src="' + escAttr(url) + '" alt="">' : '';
+        var imgHtml = (typeof Icons !== 'undefined' && Icons && Icons.html)
+            ? Icons.html(itemName, '', ' onerror="this.style.display=\'none\'"')
+            : '';
         var delayAttr = (i !== undefined) ? ' data-i="' + i + '"' : '';
         var nameAttr = itemName ? ' data-item-name="' + escAttr(itemName) + '"' : '';
         return '<div class="task-item"' + delayAttr + nameAttr + '>' + imgHtml +

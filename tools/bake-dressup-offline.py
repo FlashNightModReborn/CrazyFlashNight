@@ -44,6 +44,17 @@ WEAPON_DRESSUP_FIELDS = ("dressup1", "dressup2", "dressup3")
 DEFAULT_GENDERS = ("男", "女")
 IGNORED_ITEM_XML = {"asset_source_map.xml", "list.xml", "bullets_cases.xml", "missileConfigs.xml"}
 DRESSUP_TIMELINE_IDENTITY_KEYS = ("uri", "width", "height", "originX", "originY")
+DRESSUP_FACE_SKINS = ("男变装-基本脸型", "女变装-基本脸型")
+DRESSUP_CONFLICT_SOURCE_PREFERENCES = {
+    "男变装-基本脸型": (
+        ("flashswf/UI/对话框界面.swf", "sprite/主角/男变装-基本脸型"),
+        ("flashswf/arts/things0.swf", "sprite/男变装-基本脸型"),
+    ),
+    "枪-手枪-m9": (
+        ("flashswf/UI/对话框界面.swf", "sprite/主角/枪械&女体/Symbol 1121"),
+        ("flashswf/arts/things.swf", "1.枪械相关/手枪/枪-手枪-m9"),
+    ),
+}
 
 
 @dataclass(frozen=True)
@@ -251,6 +262,21 @@ def merge_gender_fields(target: dict[str, dict[str, str]], extra: dict[str, dict
         target.setdefault(gender, {}).update(fields)
 
 
+def add_appearance_skin_keys(project_root: Path, skin_keys: dict[str, dict[str, Any]]) -> None:
+    for key in DRESSUP_FACE_SKINS:
+        add_skin(skin_keys, key, "脸型", key, "appearance:face")
+
+    hairstyle_path = project_root / "data" / "items" / "hairstyle.xml"
+    if not hairstyle_path.exists():
+        return
+    root = xml_root(hairstyle_path)
+    for hair in root.findall("Hair"):
+        key = child_text(hair, "Identifier")
+        if not key or key == "光头":
+            continue
+        add_skin(skin_keys, key, "发型", key, hairstyle_path.name)
+
+
 def load_items(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
     items_dir = project_root / "data" / "items"
     items: dict[str, Any] = {}
@@ -291,6 +317,7 @@ def load_items(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[str, 
                 "fieldsByGender": fields_by_gender,
                 "sourceFile": path.name,
             }
+    add_appearance_skin_keys(project_root, skin_keys)
     return items, skin_keys
 
 
@@ -316,6 +343,34 @@ def load_asset_map(project_root: Path) -> dict[str, dict[str, Any]]:
             "conflict": len(matches) > 1,
             "matches": matches if len(matches) > 1 else None,
         }
+    for conflict in root.findall("conflict"):
+        asset_id = (conflict.get("id") or "").strip()
+        preferences = DRESSUP_CONFLICT_SOURCE_PREFERENCES.get(asset_id)
+        if not preferences:
+            continue
+        matches = [
+            {
+                "swf": source.get("swf") or "",
+                "symbolName": source.get("symbolName") or "",
+            }
+            for source in conflict.findall("source")
+        ]
+        chosen = None
+        for expected_swf, expected_symbol in preferences:
+            for match in matches:
+                if match["swf"] == expected_swf and match["symbolName"] == expected_symbol:
+                    chosen = match
+                    break
+            if chosen:
+                break
+        if chosen:
+            result[asset_id] = {
+                "swf": chosen["swf"],
+                "symbolName": chosen["symbolName"],
+                "conflict": False,
+                "resolvedConflict": True,
+                "matches": matches,
+            }
     return result
 
 

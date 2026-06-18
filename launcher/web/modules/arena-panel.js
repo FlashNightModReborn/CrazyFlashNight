@@ -978,9 +978,11 @@
                     var raw = eq.raw || eq.name;
                     var iconKey = eq.icon || eq.name;
                     var displayName = eq.displayname || eq.name;
-                    var iconUrl = (typeof Icons !== 'undefined') ? Icons.resolve(iconKey) : null;
-                    var iconHtml = iconUrl
-                        ? '<img src="' + escapeAttr(iconUrl) + '" alt="" onerror="this.style.display=\'none\'">'
+                    var iconHtml = (typeof Icons !== 'undefined' && Icons.html)
+                        ? Icons.html(iconKey, '', ' onerror="this.style.display=\'none\'"')
+                        : '';
+                    iconHtml = iconHtml
+                        ? iconHtml
                         : '<span class="arena-equip-fallback">' + escapeHtml(displayName.charAt(0)) + '</span>';
                     // 不设 title 属性：避免浏览器原生 tooltip 与 PanelTooltip 富文本重叠显示
                     html += '<div class="arena-equip-cell"' +
@@ -1025,7 +1027,7 @@
     }
 
     // ════════════════════════════════════════════════════════════════════════════
-    // 对手技能渲染（复用 merc 技能图标范式：Icons.resolve 烘焙图 → 占位字回退 → 等级 + tooltip）
+    // 对手技能渲染（复用 merc 技能图标范式：Icons.html 烘焙图 → 占位字回退 → 等级 + tooltip）
     // 优雅降级：opp.skills == null（AS2 未回传 / 未重编译）→ 整段省略；空数组 → "无技能"。
     // tooltip 数据走 data-* 属性（避免 HTML 入属性的转义陷阱），hover 时现拼富文本。
     // ════════════════════════════════════════════════════════════════════════════
@@ -1047,9 +1049,10 @@
     function buildSkillCellHtml(sk) {
         var name = String(sk.name || '');
         var level = sk.level || 1;
-        var iconUrl = (name && typeof Icons !== 'undefined') ? Icons.resolve(name) : null;
-        var cls = 'arena-skill-cell' + (iconUrl ? ' arena-skill-cell-baked' : '');
-        var imgHtml = iconUrl ? '<img class="arena-skill-icon" src="' + escapeAttr(iconUrl) + '" alt="">' : '';
+        var imgHtml = (name && typeof Icons !== 'undefined' && Icons.html)
+            ? Icons.html(name, 'arena-skill-icon')
+            : '';
+        var cls = 'arena-skill-cell' + (imgHtml ? ' arena-skill-cell-baked' : '');
         return '<div class="' + cls + '"' +
                 ' data-skill-name="' + escapeAttr(name) + '"' +
                 ' data-skill-level="' + level + '"' +

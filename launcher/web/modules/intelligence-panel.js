@@ -480,13 +480,17 @@ var IntelligencePanel = (function() {
 
     function renderIcon() {
         if (!_refs || !_refs.icon) return;
-        var url = resolveIconUrl(_bundleByName[_currentItemName] || _catalogByName[_currentItemName] || _currentItemName);
-        if (url) {
-            _refs.icon.src = url;
+        var iconKey = resolveIconKey(_bundleByName[_currentItemName] || _catalogByName[_currentItemName] || _currentItemName);
+        var iconUrl = iconKey && typeof Icons !== 'undefined' && Icons.resolve ? Icons.resolve(iconKey) : null;
+        if (iconUrl) {
+            _refs.icon.src = iconUrl;
+            if (typeof Icons !== 'undefined' && Icons.applyIconToImage) Icons.applyIconToImage(_refs.icon, iconKey);
             _refs.icon.style.display = '';
             _refs.iconPlaceholder.style.display = 'none';
         } else {
             _refs.icon.removeAttribute('src');
+            _refs.icon.removeAttribute('data-icon-name');
+            _refs.icon.removeAttribute('data-icon-animated');
             _refs.icon.style.display = 'none';
             _refs.iconPlaceholder.style.display = '';
         }
@@ -544,6 +548,11 @@ var IntelligencePanel = (function() {
     }
 
     function resolveIconUrl(name) {
+        var key = resolveIconKey(name);
+        return key && typeof Icons !== 'undefined' && Icons && Icons.resolve ? Icons.resolve(key) : null;
+    }
+
+    function resolveIconKey(name) {
         if (typeof Icons === 'undefined' || !Icons || !Icons.resolve) return null;
         var candidates = [];
         if (name && typeof name === 'object') {
@@ -561,7 +570,7 @@ var IntelligencePanel = (function() {
             if (!key || seen[key]) continue;
             seen[key] = true;
             var url = Icons.resolve(key);
-            if (url) return url;
+            if (url) return key;
         }
         return null;
     }
@@ -587,12 +596,16 @@ var IntelligencePanel = (function() {
 
         var iconWrap = document.createElement('span');
         iconWrap.className = 'intel-catalog-icon-wrap';
-        var iconUrl = resolveIconUrl(item);
-        if (iconUrl) {
+        var iconKey = resolveIconKey(item);
+        if (iconKey) {
             var img = document.createElement('img');
             img.className = 'intel-catalog-icon';
             img.alt = '';
-            img.src = iconUrl;
+            if (typeof Icons !== 'undefined' && Icons.applyIconToImage) {
+                Icons.applyIconToImage(img, iconKey);
+            } else {
+                img.src = resolveIconUrl(iconKey);
+            }
             img.onerror = function() { this.style.display = 'none'; };
             iconWrap.appendChild(img);
         } else {

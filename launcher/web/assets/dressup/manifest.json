@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-06-18T08:53:44+0800",
+  "generatedAt": "2026-06-18T20:19:33+0800",
   "genders": [
     "男",
     "女"
@@ -73832,8 +73832,27 @@
       ]
     },
     "枪-手枪-m9": {
-      "covered": false,
-      "asset": null,
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/UI/对话框界面.swf",
+        "symbolName": "sprite/主角/枪械&女体/Symbol 1121",
+        "conflict": false,
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/UI/对话框界面.swf",
+            "symbolName": "sprite/主角/枪械&女体/Symbol 1121"
+          },
+          {
+            "swf": "flashswf/arts/new/新的动作.swf",
+            "symbolName": "sprite/枪-手枪-m9"
+          },
+          {
+            "swf": "flashswf/arts/things.swf",
+            "symbolName": "1.枪械相关/手枪/枪-手枪-m9"
+          }
+        ]
+      },
       "uses": [
         "手枪"
       ],
@@ -73842,6 +73861,28 @@
       ],
       "sourceFiles": [
         "武器_手枪_手枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/91e055fe_1.png",
+        "width": 221,
+        "height": 106,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/91e055fe_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 221,
+          "height": 106,
+          "originX": 31.0,
+          "originY": 63.3
+        }
       ]
     },
     "枪-手枪-中国54式手枪": {
@@ -137433,6 +137474,2680 @@
           "height": 156,
           "originX": 50.4,
           "originY": 67.2
+        }
+      ]
+    },
+    "发型-女式-BOSS1头发": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-女式-BOSS1头发",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-BOSS1头发"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/4507f029_1.png",
+        "width": 204,
+        "height": 184,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/4507f029_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 204,
+          "height": 184,
+          "originX": 109.7,
+          "originY": 110.8
+        }
+      ]
+    },
+    "发型-女式-BOSS2头发": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-女式-BOSS2头发",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-BOSS2头发"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/74efeab4_1.png",
+        "width": 292,
+        "height": 305,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/74efeab4_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 292,
+          "height": 305,
+          "originX": 164.9,
+          "originY": 135.0
+        }
+      ]
+    },
+    "发型-女式-BOSS3头发": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-女式-BOSS3头发",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-BOSS3头发"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/d298e100_1.png",
+        "width": 181,
+        "height": 308,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/d298e100_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 181,
+          "height": 308,
+          "originX": 83.3,
+          "originY": 132.1
+        }
+      ]
+    },
+    "发型-女式-世莉架遮耳": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/伊恩的素材.swf",
+        "symbolName": "女人物模板/发型-女式-世莉架遮耳",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-世莉架遮耳"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-女式-世莉架露耳": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/无名氏的宝库.swf",
+        "symbolName": "公共素材/发型/发型-女式-世莉架露耳",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-世莉架露耳"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-女式-中性遮发眼头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位0.swf",
+        "symbolName": "发型/发型-女式-中性遮发眼头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-中性遮发眼头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/2c3a8832_1.png",
+        "width": 217,
+        "height": 222,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/2c3a8832_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 217,
+          "height": 222,
+          "originX": 114.8,
+          "originY": 136.4
+        }
+      ]
+    },
+    "发型-女式-丽丽丝发型": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位0.swf",
+        "symbolName": "发型/发型-女式-丽丽丝发型",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-丽丽丝发型"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/053ae949_1.png",
+        "width": 288,
+        "height": 331,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/053ae949_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 288,
+          "height": 331,
+          "originX": 153.1,
+          "originY": 145.7
+        }
+      ]
+    },
+    "发型-女式-伪装式jk棕发面具": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/伪装式jk棕发面具/发型-女式-伪装式jk棕发面具",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-伪装式jk棕发面具"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-女式-伪装式jk银发面具": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/伪装式jk银发面具/发型-女式-伪装式jk银发面具",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-伪装式jk银发面具"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-女式-伪装式战术jk面具": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/一部分服饰1/发型/Symbol 870",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-伪装式战术jk面具"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-女式-咖啡色中长马尾": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-女式-咖啡色中长马尾",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-咖啡色中长马尾"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/2d996e80_1.png",
+        "width": 218,
+        "height": 214,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/2d996e80_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 218,
+          "height": 214,
+          "originX": 133.6,
+          "originY": 104.0
+        }
+      ]
+    },
+    "发型-女式-咖啡色丸子头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-女式-咖啡色丸子头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-咖啡色丸子头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/c2628414_1.png",
+        "width": 229,
+        "height": 232,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/c2628414_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 229,
+          "height": 232,
+          "originX": 131.8,
+          "originY": 118.4
+        }
+      ]
+    },
+    "发型-女式-格格巫头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位0.swf",
+        "symbolName": "发型/发型-女式-格格巫头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-格格巫头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/1da714f0_1.png",
+        "width": 198,
+        "height": 172,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/1da714f0_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 198,
+          "height": 172,
+          "originX": 98.1,
+          "originY": 90.1
+        }
+      ]
+    },
+    "发型-女式-棕发大姐头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位0.swf",
+        "symbolName": "发型/发型-女式-棕发大姐头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-棕发大姐头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/48600cb0_1.png",
+        "width": 282,
+        "height": 321,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/48600cb0_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 282,
+          "height": 321,
+          "originX": 177.8,
+          "originY": 166.3
+        }
+      ]
+    },
+    "发型-女式-深蓝色挑染短发": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-女式-深蓝色挑染短发",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-深蓝色挑染短发"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/161567f0_1.png",
+        "width": 162,
+        "height": 186,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/161567f0_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 162,
+          "height": 186,
+          "originX": 83.5,
+          "originY": 101.4
+        }
+      ]
+    },
+    "发型-女式-深蓝色蕾丝发带马尾": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-女式-深蓝色蕾丝发带马尾",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-深蓝色蕾丝发带马尾"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/02c2dded_1.png",
+        "width": 251,
+        "height": 287,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/02c2dded_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 251,
+          "height": 287,
+          "originX": 167.7,
+          "originY": 126.9
+        }
+      ]
+    },
+    "发型-女式-猫妖发型": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/瓦巴杰克.swf",
+        "symbolName": "防具/发型/发型-女式-猫妖发型",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-猫妖发型"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/c6d19448_1.png",
+        "width": 369,
+        "height": 576,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/c6d19448_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 369,
+          "height": 576,
+          "originX": 254.2,
+          "originY": 146.2
+        }
+      ]
+    },
+    "发型-女式-玫红色马尾": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-女式-玫红色马尾",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-玫红色马尾"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/5af65a4f_1.png",
+        "width": 243,
+        "height": 246,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/5af65a4f_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 243,
+          "height": 246,
+          "originX": 154.9,
+          "originY": 151.2
+        }
+      ]
+    },
+    "发型-女式-白发双马尾头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位0.swf",
+        "symbolName": "发型/发型-女式-白发双马尾头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-白发双马尾头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/86563cb2_1.png",
+        "width": 435,
+        "height": 411,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/86563cb2_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 435,
+          "height": 411,
+          "originX": 256.3,
+          "originY": 128.4
+        }
+      ]
+    },
+    "发型-女式-缠流子": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/无名氏的宝库.swf",
+        "symbolName": "公共素材/发型/发型-女式-缠流子",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-缠流子"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-女式-遮眼白发": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位1.swf",
+        "symbolName": "4.参考发型/发型-女式-遮眼白发",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-遮眼白发"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-女式-金色中长头发": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-女式-金色中长头发",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-金色中长头发"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/0afdbb93_1.png",
+        "width": 194,
+        "height": 245,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/0afdbb93_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 194,
+          "height": 245,
+          "originX": 99.9,
+          "originY": 100.9
+        }
+      ]
+    },
+    "发型-女式-金色长发": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-女式-金色长发",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-金色长发"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/2a3f15fe_1.png",
+        "width": 174,
+        "height": 323,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/2a3f15fe_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 174,
+          "height": 323,
+          "originX": 99.0,
+          "originY": 126.1
+        }
+      ]
+    },
+    "发型-女式-银色清爽直发": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-女式-银色清爽直发",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-银色清爽直发"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/e2893b8f_1.png",
+        "width": 190,
+        "height": 201,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/e2893b8f_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 190,
+          "height": 201,
+          "originX": 110.8,
+          "originY": 104.3
+        }
+      ]
+    },
+    "发型-女式-骷髅帽子黄发头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位0.swf",
+        "symbolName": "发型/发型-女式-骷髅帽子黄发头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-女式-骷髅帽子黄发头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/ac7b0fcd_1.png",
+        "width": 209,
+        "height": 235,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/ac7b0fcd_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 209,
+          "height": 235,
+          "originX": 118.4,
+          "originY": 107.0
+        }
+      ]
+    },
+    "发型-男式-Andy发型": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-Andy发型",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-Andy发型"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/778e05fc_1.png",
+        "width": 186,
+        "height": 190,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/778e05fc_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 186,
+          "height": 190,
+          "originX": 96.6,
+          "originY": 128.7
+        }
+      ]
+    },
+    "发型-男式-bob自由爆炸头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-bob自由爆炸头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-bob自由爆炸头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/c9b008d4_1.png",
+        "width": 273,
+        "height": 230,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/c9b008d4_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 273,
+          "height": 230,
+          "originX": 141.6,
+          "originY": 176.3
+        }
+      ]
+    },
+    "发型-男式-boy发型": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-boy发型",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-boy发型"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/0c8e4478_1.png",
+        "width": 138,
+        "height": 151,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/0c8e4478_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 138,
+          "height": 151,
+          "originX": 66.6,
+          "originY": 103.4
+        }
+      ]
+    },
+    "发型-男式-亚麻短发": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位1.swf",
+        "symbolName": "4.参考发型/发型-男式-亚麻短发",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-亚麻短发"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/378e79c0_1.png",
+        "width": 157,
+        "height": 120,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/378e79c0_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 157,
+          "height": 120,
+          "originX": 76.2,
+          "originY": 103.1
+        }
+      ]
+    },
+    "发型-男式-军阀红色贝雷帽": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-军阀红色贝雷帽",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-军阀红色贝雷帽"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/dcb8bd89_1.png",
+        "width": 138,
+        "height": 92,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/dcb8bd89_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 138,
+          "height": 92,
+          "originX": 57.7,
+          "originY": 89.6
+        }
+      ]
+    },
+    "发型-男式-平头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-平头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-平头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/f772bedf_1.png",
+        "width": 145,
+        "height": 122,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/f772bedf_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 145,
+          "height": 122,
+          "originX": 68.8,
+          "originY": 100.0
+        }
+      ]
+    },
+    "发型-男式-日轻主角": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位1.swf",
+        "symbolName": "4.参考发型/发型-男式-日轻主角",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-日轻主角"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-男式-昔日主角": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位1.swf",
+        "symbolName": "4.参考发型/发型-男式-昔日主角",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-昔日主角"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/dd2c5b85_1.png",
+        "width": 188,
+        "height": 192,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/dd2c5b85_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 188,
+          "height": 192,
+          "originX": 94.3,
+          "originY": 111.0
+        }
+      ]
+    },
+    "发型-男式-桔色功夫辫子头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-桔色功夫辫子头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-桔色功夫辫子头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/fc1bb988_1.png",
+        "width": 180,
+        "height": 298,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/fc1bb988_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 180,
+          "height": 298,
+          "originX": 93.4,
+          "originY": 109.6
+        }
+      ]
+    },
+    "发型-男式-浮士德白": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/一部分服饰1/发型/1",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-浮士德白"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-男式-浮士德黑": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "4人物服饰外观/一部分服饰1/发型/2",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-浮士德黑"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-男式-淡金卷": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位1.swf",
+        "symbolName": "4.参考发型/发型-男式-淡金卷",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-淡金卷"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-男式-狂野紫红": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位1.swf",
+        "symbolName": "4.参考发型/发型-男式-狂野紫红",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-狂野紫红"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-男式-理发店老板发型": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位0.swf",
+        "symbolName": "发型/发型-男式-理发店老板发型",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-理发店老板发型"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-男式-白色主题头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-白色主题头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-白色主题头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/76bb959b_1.png",
+        "width": 162,
+        "height": 169,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/76bb959b_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 162,
+          "height": 169,
+          "originX": 76.1,
+          "originY": 123.0
+        }
+      ]
+    },
+    "发型-男式-白色阴阳头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位0.swf",
+        "symbolName": "发型/发型-男式-白色阴阳头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-白色阴阳头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/1468e86b_1.png",
+        "width": 179,
+        "height": 181,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/1468e86b_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 179,
+          "height": 181,
+          "originX": 77.3,
+          "originY": 126.0
+        }
+      ]
+    },
+    "发型-男式-盗贼风镜蒙面": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位0.swf",
+        "symbolName": "发型/发型-男式-盗贼风镜蒙面",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-盗贼风镜蒙面"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/f3be722a_1.png",
+        "width": 211,
+        "height": 194,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/f3be722a_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 211,
+          "height": 194,
+          "originX": 78.0,
+          "originY": 95.7
+        }
+      ]
+    },
+    "发型-男式-短碎卷发": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位1.swf",
+        "symbolName": "4.参考发型/发型-男式-短碎卷发",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-短碎卷发"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-男式-精武短发": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-精武短发",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-精武短发"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/13abe332_1.png",
+        "width": 152,
+        "height": 148,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/13abe332_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 152,
+          "height": 148,
+          "originX": 76.4,
+          "originY": 99.4
+        }
+      ]
+    },
+    "发型-男式-络腮胡": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-络腮胡",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-络腮胡"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/81ea253f_1.png",
+        "width": 113,
+        "height": 99,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/81ea253f_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 113,
+          "height": 99,
+          "originX": 52.6,
+          "originY": 7.4
+        }
+      ]
+    },
+    "发型-男式-绿色莫西干": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-绿色莫西干",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-绿色莫西干"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/aa33f89e_1.png",
+        "width": 193,
+        "height": 195,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/aa33f89e_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 193,
+          "height": 195,
+          "originX": 90.3,
+          "originY": 161.2
+        }
+      ]
+    },
+    "发型-男式-苍紫短辫": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位1.swf",
+        "symbolName": "4.参考发型/发型-男式-苍紫短辫",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-苍紫短辫"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-男式-茜红卷发": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位1.swf",
+        "symbolName": "4.参考发型/发型-男式-茜红卷发",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-茜红卷发"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-男式-蓝色头巾": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-蓝色头巾",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-蓝色头巾"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/ae4e2a4f_1.png",
+        "width": 200,
+        "height": 175,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/ae4e2a4f_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 200,
+          "height": 175,
+          "originX": 132.5,
+          "originY": 96.1
+        }
+      ]
+    },
+    "发型-男式-藏蓝偏分": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位1.swf",
+        "symbolName": "4.参考发型/发型-男式-藏蓝偏分",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-藏蓝偏分"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-男式-蛊王": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位1.swf",
+        "symbolName": "4.参考发型/发型-男式-蛊王",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-蛊王"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/a7475335_1.png",
+        "width": 189,
+        "height": 189,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/a7475335_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 189,
+          "height": 189,
+          "originX": 89.9,
+          "originY": 119.6
+        }
+      ]
+    },
+    "发型-男式-褐色纹身": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-褐色纹身",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-褐色纹身"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/ea38a6a0_1.png",
+        "width": 90,
+        "height": 147,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/ea38a6a0_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 90,
+          "height": 147,
+          "originX": 40.1,
+          "originY": 81.6
+        }
+      ]
+    },
+    "发型-男式-金色不良少年头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-金色不良少年头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-金色不良少年头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/bfe95bb4_1.png",
+        "width": 186,
+        "height": 179,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/bfe95bb4_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 186,
+          "height": 179,
+          "originX": 97.4,
+          "originY": 110.2
+        }
+      ]
+    },
+    "发型-男式-金色大奔头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-金色大奔头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-金色大奔头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-男式-阴阳两隔": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位1.swf",
+        "symbolName": "4.参考发型/发型-男式-阴阳两隔",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-阴阳两隔"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-男式-青绿渐变": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位1.swf",
+        "symbolName": "4.参考发型/发型-男式-青绿渐变",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-青绿渐变"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ]
+    },
+    "发型-男式-非主流": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-非主流",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-非主流"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/10f60303_1.png",
+        "width": 232,
+        "height": 229,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/10f60303_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 232,
+          "height": 229,
+          "originX": 130.9,
+          "originY": 146.0
+        }
+      ]
+    },
+    "发型-男式-黑中分头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑中分头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑中分头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/f264fe4f_1.png",
+        "width": 181,
+        "height": 176,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/f264fe4f_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 181,
+          "height": 176,
+          "originX": 89.1,
+          "originY": 102.9
+        }
+      ]
+    },
+    "发型-男式-黑圆平头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑圆平头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑圆平头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/0e2d7263_1.png",
+        "width": 131,
+        "height": 110,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/0e2d7263_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 131,
+          "height": 110,
+          "originX": 65.6,
+          "originY": 92.7
+        }
+      ]
+    },
+    "发型-男式-黑妹妹头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑妹妹头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑妹妹头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/c906085a_1.png",
+        "width": 162,
+        "height": 273,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/c906085a_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 162,
+          "height": 273,
+          "originX": 84.7,
+          "originY": 102.0
+        }
+      ]
+    },
+    "发型-男式-黑暴走头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑暴走头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑暴走头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/a5e8a26b_1.png",
+        "width": 182,
+        "height": 199,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/a5e8a26b_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 182,
+          "height": 199,
+          "originX": 118.6,
+          "originY": 140.0
+        }
+      ]
+    },
+    "发型-男式-黑朋克头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑朋克头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑朋克头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/0739aaaf_1.png",
+        "width": 129,
+        "height": 118,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/0739aaaf_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 129,
+          "height": 118,
+          "originX": 58.5,
+          "originY": 89.9
+        }
+      ]
+    },
+    "发型-男式-黑混混头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑混混头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑混混头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/2b6ec5d8_1.png",
+        "width": 128,
+        "height": 142,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/2b6ec5d8_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 128,
+          "height": 142,
+          "originX": 61.2,
+          "originY": 103.5
+        }
+      ]
+    },
+    "发型-男式-黑猫王头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑猫王头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑猫王头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/995c2641_1.png",
+        "width": 132,
+        "height": 117,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/995c2641_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 132,
+          "height": 117,
+          "originX": 59.6,
+          "originY": 91.1
+        }
+      ]
+    },
+    "发型-男式-黑碎平头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑碎平头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑碎平头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/837355cd_1.png",
+        "width": 151,
+        "height": 180,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/837355cd_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 151,
+          "height": 180,
+          "originX": 67.0,
+          "originY": 115.9
+        }
+      ]
+    },
+    "发型-男式-黑色不良少年头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑色不良少年头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑色不良少年头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/96e59d71_1.png",
+        "width": 165,
+        "height": 218,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/96e59d71_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 165,
+          "height": 218,
+          "originX": 75.7,
+          "originY": 102.9
+        }
+      ]
+    },
+    "发型-男式-黑色辫子头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑色辫子头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑色辫子头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/e9a5da8d_1.png",
+        "width": 228,
+        "height": 207,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/e9a5da8d_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 228,
+          "height": 207,
+          "originX": 160.4,
+          "originY": 151.4
+        }
+      ]
+    },
+    "发型-男式-黑蓬头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑蓬头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑蓬头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/d296f019_1.png",
+        "width": 177,
+        "height": 182,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/d296f019_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 177,
+          "height": 182,
+          "originX": 83.6,
+          "originY": 106.9
+        }
+      ]
+    },
+    "发型-男式-黑贴头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑贴头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑贴头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/34da7c7d_1.png",
+        "width": 162,
+        "height": 163,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/34da7c7d_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 162,
+          "height": 163,
+          "originX": 79.3,
+          "originY": 97.0
+        }
+      ]
+    },
+    "发型-男式-黑铁死士头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位0.swf",
+        "symbolName": "发型/发型-男式-黑铁死士头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑铁死士头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/78af83c3_1.png",
+        "width": 197,
+        "height": 166,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/78af83c3_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 197,
+          "height": 166,
+          "originX": 100.0,
+          "originY": 133.5
+        }
+      ]
+    },
+    "发型-男式-黑长发": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑长发",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑长发"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/e9520743_1.png",
+        "width": 208,
+        "height": 332,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/e9520743_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 208,
+          "height": 332,
+          "originX": 102.8,
+          "originY": 99.8
+        }
+      ]
+    },
+    "发型-男式-黑韩式头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑韩式头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑韩式头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/2d7e0788_1.png",
+        "width": 159,
+        "height": 160,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/2d7e0788_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 159,
+          "height": 160,
+          "originX": 74.0,
+          "originY": 107.0
+        }
+      ]
+    },
+    "发型-男式-黑韩式头2": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑韩式头2",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑韩式头2"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/f99bcb18_1.png",
+        "width": 149,
+        "height": 138,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/f99bcb18_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 149,
+          "height": 138,
+          "originX": 71.8,
+          "originY": 99.2
+        }
+      ]
+    },
+    "发型-男式-黑马尾头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑马尾头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑马尾头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/b1830010_1.png",
+        "width": 219,
+        "height": 292,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/b1830010_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 219,
+          "height": 292,
+          "originX": 134.9,
+          "originY": 146.0
+        }
+      ]
+    },
+    "发型-男式-黑骑士头": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "发型/发型-男式-黑骑士头",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "发型"
+      ],
+      "items": [
+        "发型-男式-黑骑士头"
+      ],
+      "sourceFiles": [
+        "hairstyle.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/b63f899e_1.png",
+        "width": 173,
+        "height": 187,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/b63f899e_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 173,
+          "height": 187,
+          "originX": 94.3,
+          "originY": 111.9
+        }
+      ]
+    },
+    "女变装-基本脸型": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things0.swf",
+        "symbolName": "sprite/女变装-基本脸型",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "脸型"
+      ],
+      "items": [
+        "女变装-基本脸型"
+      ],
+      "sourceFiles": [
+        "appearance:face"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/f84992cd_1.png",
+        "width": 126,
+        "height": 165,
+        "playback": "static-first-frame",
+        "sourceFrameCount": 10,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true,
+        "staticReason": "frame1_plain_stop",
+        "collapsedFrameCount": 9
+      },
+      "frames": [
+        {
+          "uri": "skins/f84992cd_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 126,
+          "height": 165,
+          "originX": 62.5,
+          "originY": 81.2
+        }
+      ]
+    },
+    "男变装-基本脸型": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/UI/对话框界面.swf",
+        "symbolName": "sprite/主角/男变装-基本脸型",
+        "conflict": false,
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/UI/对话框界面.swf",
+            "symbolName": "sprite/主角/男变装-基本脸型"
+          },
+          {
+            "swf": "flashswf/arts/new/新的动作.swf",
+            "symbolName": "sprite/男变装-基本脸型"
+          },
+          {
+            "swf": "flashswf/arts/things0.swf",
+            "symbolName": "sprite/男变装-基本脸型"
+          },
+          {
+            "swf": "flashswf/levels/地图-第一防线防区.swf",
+            "symbolName": "待整理防具相关汇总/Symbol 97"
+          },
+          {
+            "swf": "flashswf/portraits/artist.swf",
+            "symbolName": "待整理防具相关汇总/Symbol 97"
+          }
+        ]
+      },
+      "uses": [
+        "脸型"
+      ],
+      "items": [
+        "男变装-基本脸型"
+      ],
+      "sourceFiles": [
+        "appearance:face"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/db0204be_1.png",
+        "width": 126,
+        "height": 158,
+        "playback": "static-first-frame",
+        "sourceFrameCount": 10,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true,
+        "staticReason": "frame1_plain_stop",
+        "collapsedFrameCount": 9
+      },
+      "frames": [
+        {
+          "uri": "skins/db0204be_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 126,
+          "height": 158,
+          "originX": 62.1,
+          "originY": 78.5
         }
       ]
     }

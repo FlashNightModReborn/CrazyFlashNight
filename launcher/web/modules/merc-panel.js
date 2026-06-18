@@ -570,9 +570,11 @@
         var raw = eq.raw || eq.name;
         var iconKey = eq.icon || eq.name;
         var displayName = eq.displayname || eq.name;
-        var iconUrl = (typeof Icons !== 'undefined') ? Icons.resolve(iconKey) : null;
-        var iconHtml = iconUrl
-            ? '<img src="' + escAttr(iconUrl) + '" alt="" onerror="this.style.display=\'none\'">'
+        var iconHtml = (typeof Icons !== 'undefined' && Icons.html)
+            ? Icons.html(iconKey, '', ' onerror="this.style.display=\'none\'"')
+            : '';
+        iconHtml = iconHtml
+            ? iconHtml
             : '<span class="merc-equip-fallback">' + escHtml(displayName.charAt(0)) + '</span>';
         var cell = document.createElement('div');
         cell.className = 'merc-equip-cell';
@@ -594,12 +596,14 @@
     function buildSkillCell(sk) {
         var cell = document.createElement('div');
         cell.className = 'merc-skill-cell';
-        var iconUrl = (typeof Icons !== 'undefined') ? Icons.resolve(sk.name) : null;
+        var iconHtml = (typeof Icons !== 'undefined' && Icons.html)
+            ? Icons.html(sk.name, 'merc-skill-icon')
+            : '';
         cell.innerHTML =
             '<span class="merc-skill-glyph">' + escHtml(String(sk.type || '技').charAt(0)) + '</span>' +
-            (iconUrl ? '<img class="merc-skill-icon" src="' + escAttr(iconUrl) + '" alt="">' : '') +
+            iconHtml +
             '<span class="merc-skill-level">' + (sk.level || 1) + '</span>';
-        if (iconUrl) {
+        if (iconHtml) {
             cell.classList.add('merc-skill-cell-baked');
             var img = cell.querySelector('.merc-skill-icon');
             img.addEventListener('error', function() {

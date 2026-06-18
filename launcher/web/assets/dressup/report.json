@@ -2,13 +2,13 @@
   "schema": "cf7-dressup-report-v1",
   "counts": {
     "items": 1285,
-    "skinKeys": 2763,
-    "coveredSkinKeys": 2574,
-    "missingSkinKeys": 189,
+    "skinKeys": 2840,
+    "coveredSkinKeys": 2652,
+    "missingSkinKeys": 188,
     "holdersMale": 18,
     "holdersFemale": 18,
-    "exportedSkinKeys": 2574,
-    "exportedFrames": 2839,
+    "exportedSkinKeys": 2632,
+    "exportedFrames": 2897,
     "exportedBasicKeys": 22,
     "exportedBasicFrames": 22,
     "metadataErrors": 0,
@@ -25,7 +25,7 @@
     "uniqueFrameImages": 3128,
     "duplicateFrameRefs": 355,
     "animatedSkinKeys": 16,
-    "staticCollapsedSkinKeys": 17,
+    "staticCollapsedSkinKeys": 19,
     "timelineLogicalFrames": 3483,
     "timelineFrameEntries": 3138,
     "timelineCompressedFrameRefs": 345
@@ -36,7 +36,7 @@
       "下装装备": 71,
       "刀": 7,
       "头部装备": 2,
-      "手枪": 4,
+      "手枪": 3,
       "手部装备": 2,
       "脚部装备": 2,
       "长枪": 7
@@ -44,7 +44,7 @@
     "byPrefix": {
       "刀-": 7,
       "女变装-": 63,
-      "枪-手枪-": 4,
+      "枪-手枪-": 3,
       "枪-长枪-": 7,
       "男变装-": 108
     }
@@ -1002,19 +1002,6 @@
       ],
       "sourceFiles": [
         "武器_手枪_霰弹枪.xml"
-      ]
-    },
-    "枪-手枪-m9": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "手枪"
-      ],
-      "items": [
-        "m9"
-      ],
-      "sourceFiles": [
-        "武器_手枪_手枪.xml"
       ]
     },
     "枪-长枪-G36": {
@@ -3674,6 +3661,28 @@
         "长枪"
       ],
       "uri": "skins/9e332ea8_1.png"
+    },
+    {
+      "skinKey": "女变装-基本脸型",
+      "sourceFrameCount": 10,
+      "playback": "static-first-frame",
+      "staticReason": "frame1_plain_stop",
+      "nestedAnimation": false,
+      "uses": [
+        "脸型"
+      ],
+      "uri": "skins/f84992cd_1.png"
+    },
+    {
+      "skinKey": "男变装-基本脸型",
+      "sourceFrameCount": 10,
+      "playback": "static-first-frame",
+      "staticReason": "frame1_plain_stop",
+      "nestedAnimation": false,
+      "uses": [
+        "脸型"
+      ],
+      "uri": "skins/db0204be_1.png"
     },
     {
       "skinKey": "男变装-闪跑2Andy头部",
