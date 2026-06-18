@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-06-19T00:05:37+0800",
+  "generatedAt": "2026-06-19T00:14:37+0800",
   "genders": [
     "男",
     "女"
@@ -7292,14 +7292,14 @@
     "wa90变形款": {
       "use": "长枪",
       "icon": "wa90变形款",
-      "dressup": "枪-长枪-WA90变形款",
+      "dressup": "枪-长枪-wa90变形款",
       "helmet": false,
       "fieldsByGender": {
         "男": {
-          "长枪_装扮": "枪-长枪-WA90变形款"
+          "长枪_装扮": "枪-长枪-wa90变形款"
         },
         "女": {
-          "长枪_装扮": "枪-长枪-WA90变形款"
+          "长枪_装扮": "枪-长枪-wa90变形款"
         }
       },
       "sourceFile": "武器_长枪_特殊.xml"
@@ -86333,19 +86333,6 @@
         }
       ]
     },
-    "枪-长枪-WA90变形款": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "长枪"
-      ],
-      "items": [
-        "wa90变形款"
-      ],
-      "sourceFiles": [
-        "武器_长枪_特殊.xml"
-      ]
-    },
     "枪-长枪-XM1014": {
       "covered": true,
       "asset": {
@@ -86800,6 +86787,46 @@
           "height": 172,
           "originX": 246,
           "originY": 117.7
+        }
+      ]
+    },
+    "枪-长枪-wa90变形款": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/fs配置素材.swf",
+        "symbolName": "长枪/wa90/wa90变形款",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "wa90变形款"
+      ],
+      "sourceFiles": [
+        "武器_长枪_特殊.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/a294cb2c_1.png",
+        "width": 1735,
+        "height": 520,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/a294cb2c_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 1735,
+          "height": 520,
+          "originX": 349.0,
+          "originY": 330.7
         }
       ]
     },

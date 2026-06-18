@@ -3,8 +3,8 @@
   "counts": {
     "items": 1285,
     "skinKeys": 2840,
-    "coveredSkinKeys": 2689,
-    "missingSkinKeys": 151,
+    "coveredSkinKeys": 2690,
+    "missingSkinKeys": 150,
     "holdersMale": 18,
     "holdersFemale": 18,
     "battleStates": 6,
@@ -34,7 +34,7 @@
     "conditionalVariantRemovedPlaceObjects": 0,
     "animatedSkinKeys": 16,
     "staticCollapsedSkinKeys": 21,
-    "preservedSkinKeyExports": 2668,
+    "preservedSkinKeyExports": 2669,
     "preservedBasicHolderExports": 22
   },
   "missingSummary": {
@@ -42,19 +42,19 @@
       "上装装备": 84,
       "下装装备": 64,
       "刀": 1,
-      "长枪": 2
+      "长枪": 1
     },
     "byPrefix": {
       "刀-": 1,
       "女变装-": 63,
-      "枪-长枪-": 2,
+      "枪-长枪-": 1,
       "男变装-": 85
     }
   },
   "missingSourceAudit": {
     "byReason": {
       "exact_xml_without_as_linkage": 5,
-      "no_matching_source": 11,
+      "no_matching_source": 10,
       "opposite_gender_only": 135
     },
     "actionableSkinKeys": [],
@@ -144,10 +144,6 @@
           "reason": "no_matching_source"
         },
         {
-          "skinKey": "枪-长枪-WA90变形款",
-          "reason": "no_matching_source"
-        },
-        {
           "skinKey": "男变装-二阶军绿防弹衣上臂",
           "reason": "no_matching_source"
         },
@@ -157,6 +153,10 @@
         },
         {
           "skinKey": "男变装-二阶军绿防弹衣左下臂",
+          "reason": "no_matching_source"
+        },
+        {
+          "skinKey": "男变装-废城军装上装右下臂",
           "reason": "no_matching_source"
         }
       ],
@@ -754,9 +754,6 @@
         }
       },
       "枪-长枪-SAI GRY 幽灵": {
-        "reason": "no_matching_source"
-      },
-      "枪-长枪-WA90变形款": {
         "reason": "no_matching_source"
       },
       "男变装-JK校服上臂": {
@@ -2261,19 +2258,6 @@
         "武器_长枪_突击步枪.xml"
       ]
     },
-    "枪-长枪-WA90变形款": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "长枪"
-      ],
-      "items": [
-        "wa90变形款"
-      ],
-      "sourceFiles": [
-        "武器_长枪_特殊.xml"
-      ]
-    },
     "男变装-JK校服上臂": {
       "covered": false,
       "asset": null,
@@ -3575,7 +3559,7 @@
     "conditionalVariantFrames": 0,
     "conditionalVariantRemovedPlaceObjects": 0,
     "conditionalVariantSamples": [],
-    "preservedSkinKeyExports": 2668,
+    "preservedSkinKeyExports": 2669,
     "preservedBasicHolderExports": 22
   },
   "animatedSkinKeys": [
