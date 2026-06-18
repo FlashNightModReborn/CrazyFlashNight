@@ -51,16 +51,9 @@ BASIC_FALLBACK_FIELDS = {
     "脚",
 }
 
-# These linkages are absent from the checked-in source assets. Flash attachMovie
-# therefore falls back to each holder's basic child, which the Web renderer also
-# supports through rig holder basic exports.
-ALLOWED_BASIC_FALLBACK_SKINS = {
-    "男变装-二阶军绿防弹衣上臂",
-    "男变装-二阶军绿防弹衣左下臂",
-    "男变装-二阶军绿防弹衣右下臂",
-    "男变装-废城军装上装左下臂",
-    "男变装-废城军装上装右下臂",
-}
+# Compatibility aliases should resolve current checked-in mercenary equipment
+# without falling back to holder basic children.
+ALLOWED_BASIC_FALLBACK_SKINS: set[str] = set()
 
 
 def read_json(path: Path) -> Any:

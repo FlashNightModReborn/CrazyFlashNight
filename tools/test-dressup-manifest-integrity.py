@@ -45,6 +45,15 @@ def frame_key(frame: dict[str, Any]) -> tuple[Any, ...]:
     return tuple(frame.get(key) for key in DRESSUP_IDENTITY_KEYS)
 
 
+def export_asset_identity_for_test(entry: dict[str, Any]) -> tuple[Any, ...]:
+    asset = entry.get("asset") or {}
+    return (
+        asset.get("swf") or "",
+        asset.get("symbolName") or "",
+        bool(asset.get("conflict")),
+    )
+
+
 def is_compressible(frames: list[dict[str, Any]]) -> bool:
     return any(frame_key(left) == frame_key(right) for left, right in zip(frames, frames[1:]))
 
@@ -255,11 +264,13 @@ def assert_attack_mode_runtime_variant(manifest: dict[str, Any], failures: list[
         )
 
 
-def assert_missing_source_references(manifest: dict[str, Any], report: dict[str, Any], failures: list[str]) -> None:
-    audit_entries = ((report.get("missingSourceAudit") or {}).get("entries") or {})
-    if not audit_entries:
-        failures.append("report missingSourceAudit.entries should not be empty")
-        return
+def assert_audit_references(
+    manifest: dict[str, Any],
+    failures: list[str],
+    owner: str,
+    audit_entries: dict[str, Any],
+    require_merc_usage: bool,
+) -> None:
     items = manifest.get("items") or {}
     refs_with_merc_usage = 0
     for skin_key, audit_entry in audit_entries.items():
@@ -294,8 +305,45 @@ def assert_missing_source_references(manifest: dict[str, Any], report: dict[str,
                 refs_with_merc_usage += 1
             if not isinstance(ref.get("mercUsageSamples") or [], list):
                 failures.append(f"{skin_key}/{item_name} mercUsageSamples should be list")
-    if refs_with_merc_usage <= 0:
-        failures.append("missingSourceAudit references should include at least one merc usage sample")
+    if require_merc_usage and refs_with_merc_usage <= 0:
+        failures.append(f"{owner} references should include at least one merc usage sample")
+
+
+def assert_missing_source_references(manifest: dict[str, Any], report: dict[str, Any], failures: list[str]) -> None:
+    audit_entries = ((report.get("missingSourceAudit") or {}).get("entries") or {})
+    missing_count = int((report.get("counts") or {}).get("missingSkinKeys") or 0)
+    if missing_count > 0 and not audit_entries:
+        failures.append("report missingSourceAudit.entries should not be empty while missingSkinKeys > 0")
+        return
+    assert_audit_references(manifest, failures, "missingSourceAudit", audit_entries, bool(audit_entries))
+
+
+def assert_compat_alias_audit(manifest: dict[str, Any], report: dict[str, Any], failures: list[str]) -> None:
+    skin_keys = manifest.get("skinKeys") or {}
+    alias_skins = {key: skin for key, skin in skin_keys.items() if skin.get("compatAlias")}
+    audit_entries = ((report.get("compatAliasAudit") or {}).get("entries") or {})
+    if len(audit_entries) != len(alias_skins):
+        failures.append(f"compatAliasAudit entry count mismatch: {len(audit_entries)} != {len(alias_skins)}")
+    for skin_key, skin in alias_skins.items():
+        alias = skin.get("compatAlias") or {}
+        source_key = alias.get("sourceKey")
+        source_skin = skin_keys.get(source_key)
+        if not source_skin:
+            failures.append(f"{skin_key} compatAlias source missing: {source_key}")
+            continue
+        if not skin.get("covered") or not skin.get("asset"):
+            failures.append(f"{skin_key} compatAlias should be covered")
+        if not skin.get("export"):
+            failures.append(f"{skin_key} compatAlias should preserve export metadata from {source_key}")
+        if export_asset_identity_for_test(skin) != export_asset_identity_for_test(source_skin):
+            failures.append(f"{skin_key} compatAlias asset should match source {source_key}")
+        audit_entry = audit_entries.get(skin_key)
+        if not audit_entry:
+            failures.append(f"{skin_key} missing compatAliasAudit entry")
+            continue
+        if audit_entry.get("sourceKey") != source_key:
+            failures.append(f"{skin_key} compatAliasAudit sourceKey mismatch")
+    assert_audit_references(manifest, failures, "compatAliasAudit", audit_entries, bool(audit_entries))
 
 
 def main() -> None:
@@ -353,6 +401,7 @@ def main() -> None:
     assert_battle_rig(manifest, failures)
     assert_attack_mode_runtime_variant(manifest, failures)
     assert_missing_source_references(manifest, report, failures)
+    assert_compat_alias_audit(manifest, report, failures)
 
     layer_count = 0
     compressed_layer_count = 0

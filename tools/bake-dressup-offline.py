@@ -203,6 +203,70 @@ DRESSUP_CONFLICT_SOURCE_PREFERENCES = {
         ("flashswf/arts/new/我的素材7421.swf", "枪械/能量狙击枪/能量狙击枪"),
     ),
 }
+COMPAT_DRESSUP_ALIASES = {
+    # Temporary Web compatibility aliases. These are intentionally not written
+    # to asset_source_map.xml because they do not prove Flash attachMovie parity.
+    "刀-超声波战刃": {
+        "sourceKey": "刀-周波剑棍",
+        "reason": "manual_compat_nearest_wave_blade",
+    },
+    "枪-长枪-SAI GRY 幽灵": {
+        "sourceKey": "枪-长枪-CAR",
+        "reason": "manual_compat_nearest_assault_rifle",
+    },
+    "女变装-二阶军绿防弹衣上臂": {
+        "sourceKey": "女变装-二阶军绿防弹衣身体",
+        "reason": "manual_compat_same_item_body_fallback",
+    },
+    "女变装-二阶军绿防弹衣右下臂": {
+        "sourceKey": "女变装-二阶军绿防弹衣身体",
+        "reason": "manual_compat_same_item_body_fallback",
+    },
+    "女变装-二阶军绿防弹衣左下臂": {
+        "sourceKey": "女变装-二阶军绿防弹衣身体",
+        "reason": "manual_compat_same_item_body_fallback",
+    },
+    "男变装-二阶军绿防弹衣上臂": {
+        "sourceKey": "男变装-二阶军绿防弹衣身体",
+        "reason": "manual_compat_same_item_body_fallback",
+    },
+    "男变装-二阶军绿防弹衣右下臂": {
+        "sourceKey": "男变装-二阶军绿防弹衣身体",
+        "reason": "manual_compat_same_item_body_fallback",
+    },
+    "男变装-二阶军绿防弹衣左下臂": {
+        "sourceKey": "男变装-二阶军绿防弹衣身体",
+        "reason": "manual_compat_same_item_body_fallback",
+    },
+    "女变装-军阀兵头衣服上臂": {
+        "sourceKey": "男变装-军阀兵头衣服上臂",
+        "reason": "manual_compat_opposite_gender_same_limb",
+    },
+    "女变装-废城军装上装右下臂": {
+        "sourceKey": "女变装-废城防弹军装上装右下臂",
+        "reason": "manual_compat_nearest_same_family_limb",
+    },
+    "女变装-废城军装上装左下臂": {
+        "sourceKey": "女变装-废城防弹军装上装左下臂",
+        "reason": "manual_compat_nearest_same_family_limb",
+    },
+    "男变装-废城军装上装右下臂": {
+        "sourceKey": "男变装-废城防弹军装上装右下臂",
+        "reason": "manual_compat_nearest_same_family_limb",
+    },
+    "男变装-废城军装上装左下臂": {
+        "sourceKey": "男变装-废城防弹军装上装左下臂",
+        "reason": "manual_compat_nearest_same_family_limb",
+    },
+    "女变装-武装jk套装右下臂": {
+        "sourceKey": "女变装-武装jk套装左下臂",
+        "reason": "manual_compat_mirrored_limb",
+    },
+    "男变装-武装jk套装右下臂": {
+        "sourceKey": "女变装-武装jk套装左下臂",
+        "reason": "manual_compat_opposite_gender_mirrored_limb",
+    },
+}
 
 
 @dataclass(frozen=True)
@@ -1041,11 +1105,46 @@ def build_battle_rig(project_root: Path) -> dict[str, Any]:
     return result
 
 
+def compat_alias_for_key(key: str, assets: dict[str, dict[str, Any]]) -> dict[str, str] | None:
+    manual_alias = COMPAT_DRESSUP_ALIASES.get(key)
+    if manual_alias:
+        source_key = manual_alias.get("sourceKey") or ""
+        if source_key in assets:
+            return {
+                "sourceKey": source_key,
+                "mode": "manual",
+                "reason": manual_alias.get("reason") or "manual_compat_alias",
+            }
+        return None
+
+    opposite_key = opposite_gender_key(key)
+    if opposite_key and opposite_key in assets:
+        return {
+            "sourceKey": opposite_key,
+            "mode": "auto_opposite_gender",
+            "reason": "auto_compat_opposite_gender",
+        }
+    return None
+
+
+def compat_alias_asset(source_asset: dict[str, Any], alias: dict[str, str]) -> dict[str, Any]:
+    asset = copy.deepcopy(source_asset)
+    asset["compatAliasSourceKey"] = alias["sourceKey"]
+    asset["compatAliasMode"] = alias["mode"]
+    asset["compatAliasReason"] = alias["reason"]
+    return asset
+
+
 def finalize_skin_keys(skin_keys: dict[str, dict[str, Any]], assets: dict[str, dict[str, Any]]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for key in sorted(skin_keys):
         entry = skin_keys[key]
         asset = assets.get(key)
+        compat_alias = None
+        if asset is None:
+            compat_alias = compat_alias_for_key(key, assets)
+            if compat_alias is not None:
+                asset = compat_alias_asset(assets[compat_alias["sourceKey"]], compat_alias)
         result[key] = {
             "covered": asset is not None,
             "asset": asset,
@@ -1053,6 +1152,8 @@ def finalize_skin_keys(skin_keys: dict[str, dict[str, Any]], assets: dict[str, d
             "items": sorted(entry["items"]),
             "sourceFiles": sorted(entry["sourceFiles"]),
         }
+        if compat_alias is not None:
+            result[key]["compatAlias"] = compat_alias
     return result
 
 
@@ -1261,11 +1362,56 @@ def audit_missing_sources(
     }
 
 
+def audit_compat_aliases(
+    project_root: Path,
+    skin_keys: dict[str, Any],
+    items: dict[str, Any],
+) -> dict[str, Any]:
+    merc_item_usage = load_merc_item_usage(project_root)
+    by_reason: Counter[str] = Counter()
+    by_mode: Counter[str] = Counter()
+    entries: dict[str, dict[str, Any]] = {}
+    samples: dict[str, list[dict[str, Any]]] = defaultdict(list)
+
+    for key, entry in sorted(skin_keys.items()):
+        alias = entry.get("compatAlias")
+        if not alias:
+            continue
+        reason = alias.get("reason") or "compat_alias"
+        mode = alias.get("mode") or "manual"
+        by_reason[reason] += 1
+        by_mode[mode] += 1
+        asset = entry.get("asset") or {}
+        audit_entry = {
+            "sourceKey": alias.get("sourceKey") or "",
+            "mode": mode,
+            "reason": reason,
+            "asset": {
+                "swf": asset.get("swf") or "",
+                "symbolName": asset.get("symbolName") or "",
+            },
+        }
+        references = missing_skin_references(key, items, merc_item_usage)
+        if references:
+            audit_entry["references"] = references
+        entries[key] = audit_entry
+        if len(samples[reason]) < 8:
+            samples[reason].append({"skinKey": key, **audit_entry})
+
+    return {
+        "byMode": dict(sorted(by_mode.items())),
+        "byReason": dict(sorted(by_reason.items())),
+        "samples": dict(sorted(samples.items())),
+        "entries": entries,
+    }
+
+
 def build_manifest(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[str, Any], dict[str, Any]]:
     items, skin_keys_raw = load_items(project_root, genders)
     assets = load_asset_map(project_root)
     skin_keys = finalize_skin_keys(skin_keys_raw, assets)
     missing = {key: value for key, value in skin_keys.items() if not value["covered"]}
+    compat_aliases = {key: value for key, value in skin_keys.items() if value.get("compatAlias")}
     rig = build_dialogue_rig(project_root)
     battle_rig = build_battle_rig(project_root)
     manifest = {
@@ -1291,9 +1437,19 @@ def build_manifest(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[s
             "holdersFemale": len(rig.get("genders", {}).get("女", {}).get("holders", [])),
             "battleStates": len(battle_rig.get("states", [])),
             "battleAuditErrors": len(battle_rig.get("auditErrors", [])),
+            "compatAliasSkinKeys": len(compat_aliases),
+            "manualCompatAliasSkinKeys": sum(
+                1 for entry in compat_aliases.values() if (entry.get("compatAlias") or {}).get("mode") == "manual"
+            ),
+            "autoOppositeGenderCompatAliasSkinKeys": sum(
+                1
+                for entry in compat_aliases.values()
+                if (entry.get("compatAlias") or {}).get("mode") == "auto_opposite_gender"
+            ),
         },
         "missingSummary": summarize_missing_skin_keys(missing),
         "missingSourceAudit": audit_missing_sources(project_root, missing, assets, items),
+        "compatAliasAudit": audit_compat_aliases(project_root, skin_keys, items),
         "missingSkinKeys": missing,
         "battleRig": {
             "source": battle_rig.get("source"),
@@ -2355,6 +2511,17 @@ def preserve_incremental_skin_exports(
     for key, entry in (manifest.get("skinKeys") or {}).items():
         if key in target_keys:
             continue
+        compat_alias = entry.get("compatAlias") or {}
+        source_key = compat_alias.get("sourceKey") or ""
+        if source_key:
+            source_entry = existing_skin_keys.get(source_key)
+            if source_entry and source_entry.get("export") and export_asset_identity(entry) == export_asset_identity(source_entry):
+                for field in PRESERVED_EXPORT_KEYS:
+                    if field in source_entry:
+                        entry[field] = copy.deepcopy(source_entry[field])
+                compat_alias["exportSourceKey"] = source_key
+                preserved += 1
+                continue
         existing_entry = existing_skin_keys.get(key)
         if not existing_entry or not existing_entry.get("export"):
             continue
