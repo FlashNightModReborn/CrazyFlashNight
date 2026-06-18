@@ -237,10 +237,56 @@
     },
     "entries": {
       "刀-超声波战刃": {
-        "reason": "no_matching_source"
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "超声波战刃",
+            "use": "刀",
+            "sourceFile": "武器_刀_短兵.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "刀_装扮"
+              },
+              {
+                "gender": "男",
+                "field": "刀1_装扮"
+              },
+              {
+                "gender": "女",
+                "field": "刀_装扮"
+              },
+              {
+                "gender": "女",
+                "field": "刀1_装扮"
+              },
+              {
+                "gender": "<dressup>",
+                "field": "dressup"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ]
       },
       "女变装-BOSS4上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "将军衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-BOSS4上臂",
           "swf": "flashswf/arts/things.swf",
@@ -249,6 +295,21 @@
       },
       "女变装-BOSS4右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "将军衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-BOSS4右下臂",
           "swf": "flashswf/arts/things.swf",
@@ -257,6 +318,21 @@
       },
       "女变装-BOSS4左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "将军衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-BOSS4左下臂",
           "swf": "flashswf/arts/things.swf",
@@ -265,6 +341,21 @@
       },
       "女变装-BOSS4身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "将军衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-BOSS4身体",
           "swf": "flashswf/arts/things.swf",
@@ -273,6 +364,21 @@
       },
       "女变装-Boy上装上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Boy上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-Boy上装上臂",
           "swf": "flashswf/arts/new/pigboy.swf",
@@ -281,6 +387,21 @@
       },
       "女变装-Boy上装右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Boy上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-Boy上装右下臂",
           "swf": "flashswf/arts/new/pigboy.swf",
@@ -289,6 +410,21 @@
       },
       "女变装-Boy上装左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Boy上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-Boy上装左下臂",
           "swf": "flashswf/arts/new/pigboy.swf",
@@ -297,6 +433,21 @@
       },
       "女变装-Boy上装身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Boy上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-Boy上装身体",
           "swf": "flashswf/arts/new/pigboy.swf",
@@ -305,6 +456,21 @@
       },
       "女变装-Boy下装右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Boy下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-Boy下装右大腿",
           "swf": "flashswf/arts/new/pigboy.swf",
@@ -313,6 +479,21 @@
       },
       "女变装-Boy下装小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Boy下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-Boy下装小腿",
           "swf": "flashswf/arts/new/pigboy.swf",
@@ -321,6 +502,21 @@
       },
       "女变装-Boy下装屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Boy下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-Boy下装屁股",
           "swf": "flashswf/arts/new/pigboy.swf",
@@ -329,6 +525,21 @@
       },
       "女变装-Boy下装左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Boy下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-Boy下装左大腿",
           "swf": "flashswf/arts/new/pigboy.swf",
@@ -337,6 +548,34 @@
       },
       "女变装-Pig上装上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Pig上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          },
+          {
+            "item": "Pig上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-Pig上装上臂",
           "swf": "flashswf/arts/new/pigboy.swf",
@@ -345,6 +584,34 @@
       },
       "女变装-Pig上装右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Pig上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          },
+          {
+            "item": "Pig上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-Pig上装右下臂",
           "swf": "flashswf/arts/new/pigboy.swf",
@@ -353,6 +620,34 @@
       },
       "女变装-Pig上装左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Pig上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          },
+          {
+            "item": "Pig上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-Pig上装左下臂",
           "swf": "flashswf/arts/new/pigboy.swf",
@@ -361,6 +656,34 @@
       },
       "女变装-Pig上装身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Pig上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          },
+          {
+            "item": "Pig上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-Pig上装身体",
           "swf": "flashswf/arts/new/pigboy.swf",
@@ -369,6 +692,21 @@
       },
       "女变装-blue上装上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "blue上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-blue上装上臂",
           "swf": "flashswf/arts/things切割.swf",
@@ -377,6 +715,21 @@
       },
       "女变装-blue上装右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "blue上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-blue上装右下臂",
           "swf": "flashswf/arts/things切割.swf",
@@ -385,6 +738,21 @@
       },
       "女变装-blue上装左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "blue上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-blue上装左下臂",
           "swf": "flashswf/arts/things切割.swf",
@@ -393,6 +761,21 @@
       },
       "女变装-blue上装身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "blue上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-blue上装身体",
           "swf": "flashswf/arts/things切割.swf",
@@ -401,6 +784,21 @@
       },
       "女变装-blue下装右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "blue下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-blue下装右大腿",
           "swf": "flashswf/arts/things切割.swf",
@@ -409,6 +807,21 @@
       },
       "女变装-blue下装小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "blue下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-blue下装小腿",
           "swf": "flashswf/arts/things切割.swf",
@@ -417,6 +830,21 @@
       },
       "女变装-blue下装屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "blue下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-blue下装屁股",
           "swf": "flashswf/arts/things切割.swf",
@@ -425,6 +853,21 @@
       },
       "女变装-blue下装左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "blue下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-blue下装左大腿",
           "swf": "flashswf/arts/things切割.swf",
@@ -433,6 +876,50 @@
       },
       "女变装-二阶军绿防弹衣上臂": {
         "reason": "exact_xml_without_as_linkage",
+        "references": [
+          {
+            "item": "军绿防弹衣",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 4,
+            "mercUsageSamples": [
+              {
+                "id": 240,
+                "name": "赵明",
+                "level": 8,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 242,
+                "name": "Alex",
+                "level": 12,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 243,
+                "name": "血月",
+                "level": 13,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 5539,
+                "name": "战车",
+                "level": 26,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "exactXmlMatches": [
           {
             "path": "flashswf/arts/new/雾人装备调整/LIBRARY/3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣上臂.xml",
@@ -444,6 +931,50 @@
       },
       "女变装-二阶军绿防弹衣右下臂": {
         "reason": "exact_xml_without_as_linkage",
+        "references": [
+          {
+            "item": "军绿防弹衣",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 4,
+            "mercUsageSamples": [
+              {
+                "id": 240,
+                "name": "赵明",
+                "level": 8,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 242,
+                "name": "Alex",
+                "level": 12,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 243,
+                "name": "血月",
+                "level": 13,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 5539,
+                "name": "战车",
+                "level": 26,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "exactXmlMatches": [
           {
             "path": "flashswf/arts/new/雾人装备调整/LIBRARY/3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣右下臂.xml",
@@ -455,6 +986,50 @@
       },
       "女变装-二阶军绿防弹衣左下臂": {
         "reason": "exact_xml_without_as_linkage",
+        "references": [
+          {
+            "item": "军绿防弹衣",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 4,
+            "mercUsageSamples": [
+              {
+                "id": 240,
+                "name": "赵明",
+                "level": 8,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 242,
+                "name": "Alex",
+                "level": 12,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 243,
+                "name": "血月",
+                "level": 13,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 5539,
+                "name": "战车",
+                "level": 26,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "exactXmlMatches": [
           {
             "path": "flashswf/arts/new/雾人装备调整/LIBRARY/3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣左下臂.xml",
@@ -466,6 +1041,21 @@
       },
       "女变装-军阀兵头衣服上臂": {
         "reason": "exact_xml_without_as_linkage",
+        "references": [
+          {
+            "item": "军阀兵头衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "exactXmlMatches": [
           {
             "path": "flashswf/arts/new/雾人装备调整/LIBRARY/3.防具/10.军阀系列/女变装-军阀兵头衣服上臂.xml",
@@ -482,6 +1072,21 @@
       },
       "女变装-小F上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "小F上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-小F上臂",
           "swf": "flashswf/arts/new/公共素材位0.swf",
@@ -490,6 +1095,21 @@
       },
       "女变装-小F右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "小F上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-小F右下臂",
           "swf": "flashswf/arts/new/公共素材位0.swf",
@@ -498,6 +1118,21 @@
       },
       "女变装-小F右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "小F下装",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-小F右大腿",
           "swf": "flashswf/arts/new/公共素材位0.swf",
@@ -506,6 +1141,21 @@
       },
       "女变装-小F小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "小F下装",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-小F小腿",
           "swf": "flashswf/arts/new/公共素材位0.swf",
@@ -514,6 +1164,21 @@
       },
       "女变装-小F屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "小F下装",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-小F屁股",
           "swf": "flashswf/arts/new/公共素材位0.swf",
@@ -522,6 +1187,21 @@
       },
       "女变装-小F左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "小F上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-小F左下臂",
           "swf": "flashswf/arts/new/公共素材位0.swf",
@@ -530,6 +1210,21 @@
       },
       "女变装-小F左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "小F下装",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-小F左大腿",
           "swf": "flashswf/arts/new/公共素材位0.swf",
@@ -538,6 +1233,21 @@
       },
       "女变装-小F身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "小F上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-小F身体",
           "swf": "flashswf/arts/new/公共素材位0.swf",
@@ -545,13 +1255,74 @@
         }
       },
       "女变装-废城军装上装右下臂": {
-        "reason": "no_matching_source"
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "废城军装上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5640,
+                "name": "兵痞",
+                "level": 7,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
       },
       "女变装-废城军装上装左下臂": {
-        "reason": "no_matching_source"
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "废城军装上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5640,
+                "name": "兵痞",
+                "level": 7,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
       },
       "女变装-武装jk套装右下臂": {
         "reason": "exact_xml_without_as_linkage",
+        "references": [
+          {
+            "item": "武装jk套装校服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "exactXmlMatches": [
           {
             "path": "flashswf/arts/new/3XD的素材/LIBRARY/4人物服饰外观/武装jk套装/女变装-武装jk套装右下臂.xml",
@@ -563,6 +1334,29 @@
       },
       "女变装-浅灰背心上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "浅灰背心",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5599,
+                "name": "洋葱头",
+                "level": 12,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-浅灰背心上臂",
           "swf": "flashswf/arts/things.swf",
@@ -571,6 +1365,29 @@
       },
       "女变装-浅灰背心右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "浅灰背心",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5599,
+                "name": "洋葱头",
+                "level": 12,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-浅灰背心右下臂",
           "swf": "flashswf/arts/things.swf",
@@ -579,6 +1396,29 @@
       },
       "女变装-浅灰背心左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "浅灰背心",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5599,
+                "name": "洋葱头",
+                "level": 12,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-浅灰背心左下臂",
           "swf": "flashswf/arts/things.swf",
@@ -587,6 +1427,21 @@
       },
       "女变装-电脑佣兵上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "电脑佣兵上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-电脑佣兵上臂",
           "swf": "flashswf/arts/new/公共素材位9.swf",
@@ -595,6 +1450,21 @@
       },
       "女变装-电脑佣兵右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "电脑佣兵上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-电脑佣兵右下臂",
           "swf": "flashswf/arts/new/公共素材位9.swf",
@@ -603,6 +1473,21 @@
       },
       "女变装-电脑佣兵右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "电脑佣兵下装",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-电脑佣兵右大腿",
           "swf": "flashswf/arts/new/公共素材位9.swf",
@@ -611,6 +1496,21 @@
       },
       "女变装-电脑佣兵小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "电脑佣兵下装",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-电脑佣兵小腿",
           "swf": "flashswf/arts/new/公共素材位9.swf",
@@ -619,6 +1519,21 @@
       },
       "女变装-电脑佣兵屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "电脑佣兵下装",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-电脑佣兵屁股",
           "swf": "flashswf/arts/new/公共素材位9.swf",
@@ -627,6 +1542,21 @@
       },
       "女变装-电脑佣兵左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "电脑佣兵上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-电脑佣兵左下臂",
           "swf": "flashswf/arts/new/公共素材位9.swf",
@@ -635,6 +1565,21 @@
       },
       "女变装-电脑佣兵左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "电脑佣兵下装",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-电脑佣兵左大腿",
           "swf": "flashswf/arts/new/公共素材位9.swf",
@@ -643,6 +1588,21 @@
       },
       "女变装-电脑佣兵身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "电脑佣兵上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-电脑佣兵身体",
           "swf": "flashswf/arts/new/公共素材位9.swf",
@@ -651,6 +1611,21 @@
       },
       "女变装-米色高腰背心上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "米色高腰背心",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-米色高腰背心上臂",
           "swf": "flashswf/arts/things.swf",
@@ -659,6 +1634,21 @@
       },
       "女变装-米色高腰背心右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "米色高腰背心",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-米色高腰背心右下臂",
           "swf": "flashswf/arts/things.swf",
@@ -667,6 +1657,21 @@
       },
       "女变装-米色高腰背心左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "米色高腰背心",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-米色高腰背心左下臂",
           "swf": "flashswf/arts/things.swf",
@@ -675,6 +1680,21 @@
       },
       "女变装-闪跑2Andy上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "闪跑2Andy上衣",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-闪跑2Andy上臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -683,6 +1703,21 @@
       },
       "女变装-闪跑2Andy右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "闪跑2Andy上衣",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-闪跑2Andy右下臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -691,6 +1726,21 @@
       },
       "女变装-闪跑2Andy右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "闪跑2Andy裤子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-闪跑2Andy右大腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -699,6 +1749,21 @@
       },
       "女变装-闪跑2Andy小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "闪跑2Andy裤子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-闪跑2Andy小腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -707,6 +1772,21 @@
       },
       "女变装-闪跑2Andy屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "闪跑2Andy裤子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-闪跑2Andy屁股",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -715,6 +1795,21 @@
       },
       "女变装-闪跑2Andy左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "闪跑2Andy上衣",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-闪跑2Andy左下臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -723,6 +1818,21 @@
       },
       "女变装-闪跑2Andy左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "闪跑2Andy裤子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-闪跑2Andy左大腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -731,6 +1841,21 @@
       },
       "女变装-闪跑2Andy身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "闪跑2Andy上衣",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-闪跑2Andy身体",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -739,6 +1864,29 @@
       },
       "女变装-黑短袖右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "黑短袖",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5548,
+                "name": "沉淀哥",
+                "level": 15,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-黑短袖右下臂",
           "swf": "flashswf/arts/things.swf",
@@ -747,6 +1895,29 @@
       },
       "女变装-黑短袖左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "黑短袖",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5548,
+                "name": "沉淀哥",
+                "level": 15,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "男变装-黑短袖左下臂",
           "swf": "flashswf/arts/things.swf",
@@ -754,10 +1925,48 @@
         }
       },
       "枪-长枪-SAI GRY 幽灵": {
-        "reason": "no_matching_source"
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "SAI GRY 幽灵",
+            "use": "长枪",
+            "sourceFile": "武器_长枪_突击步枪.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "长枪_装扮"
+              },
+              {
+                "gender": "女",
+                "field": "长枪_装扮"
+              },
+              {
+                "gender": "<dressup>",
+                "field": "dressup"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ]
       },
       "男变装-JK校服上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "JK校服",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-JK校服上臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -766,6 +1975,21 @@
       },
       "男变装-JK校服右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "JK校服",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-JK校服右下臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -774,6 +1998,21 @@
       },
       "男变装-JK校服左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "JK校服",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-JK校服左下臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -782,6 +2021,21 @@
       },
       "男变装-JK校服身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "JK校服",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-JK校服身体",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -790,6 +2044,21 @@
       },
       "男变装-King上装上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "King上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-King上装上臂",
           "swf": "flashswf/arts/things.swf",
@@ -798,6 +2067,21 @@
       },
       "男变装-King上装右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "King上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-King上装右下臂",
           "swf": "flashswf/arts/things.swf",
@@ -806,6 +2090,21 @@
       },
       "男变装-King上装左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "King上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-King上装左下臂",
           "swf": "flashswf/arts/things.swf",
@@ -814,6 +2113,21 @@
       },
       "男变装-King上装身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "King上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-King上装身体",
           "swf": "flashswf/arts/things.swf",
@@ -822,6 +2136,21 @@
       },
       "男变装-King下装右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "King下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-King下装右大腿",
           "swf": "flashswf/arts/things.swf",
@@ -830,6 +2159,21 @@
       },
       "男变装-King下装小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "King下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-King下装小腿",
           "swf": "flashswf/arts/things.swf",
@@ -838,6 +2182,21 @@
       },
       "男变装-King下装屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "King下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-King下装屁股",
           "swf": "flashswf/arts/things.swf",
@@ -846,6 +2205,21 @@
       },
       "男变装-King下装左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "King下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-King下装左大腿",
           "swf": "flashswf/arts/things.swf",
@@ -854,6 +2228,21 @@
       },
       "男变装-ShopGirl上装上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "ShopGirl上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-ShopGirl上装上臂",
           "swf": "flashswf/arts/things.swf",
@@ -862,6 +2251,21 @@
       },
       "男变装-ShopGirl上装右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "ShopGirl上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-ShopGirl上装右下臂",
           "swf": "flashswf/arts/things.swf",
@@ -870,6 +2274,21 @@
       },
       "男变装-ShopGirl上装左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "ShopGirl上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-ShopGirl上装左下臂",
           "swf": "flashswf/arts/things.swf",
@@ -878,6 +2297,21 @@
       },
       "男变装-ShopGirl上装身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "ShopGirl上装-NPC",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-ShopGirl上装身体",
           "swf": "flashswf/arts/things.swf",
@@ -886,6 +2320,21 @@
       },
       "男变装-ShopGirl下装右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "ShopGirl下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-ShopGirl下装右大腿",
           "swf": "flashswf/arts/things.swf",
@@ -894,6 +2343,21 @@
       },
       "男变装-ShopGirl下装小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "ShopGirl下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-ShopGirl下装小腿",
           "swf": "flashswf/arts/things.swf",
@@ -902,6 +2366,21 @@
       },
       "男变装-ShopGirl下装屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "ShopGirl下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-ShopGirl下装屁股",
           "swf": "flashswf/arts/things.swf",
@@ -910,6 +2389,21 @@
       },
       "男变装-ShopGirl下装左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "ShopGirl下装-NPC",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-ShopGirl下装左大腿",
           "swf": "flashswf/arts/things.swf",
@@ -918,6 +2412,29 @@
       },
       "男变装-guitar衣服上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "guitar衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5593,
+                "name": "哥特骇客",
+                "level": 20,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-guitar衣服上臂",
           "swf": "flashswf/arts/things.swf",
@@ -926,6 +2443,29 @@
       },
       "男变装-guitar衣服右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "guitar衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5593,
+                "name": "哥特骇客",
+                "level": 20,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-guitar衣服右下臂",
           "swf": "flashswf/arts/things.swf",
@@ -934,6 +2474,29 @@
       },
       "男变装-guitar衣服左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "guitar衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5593,
+                "name": "哥特骇客",
+                "level": 20,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-guitar衣服左下臂",
           "swf": "flashswf/arts/things.swf",
@@ -942,6 +2505,29 @@
       },
       "男变装-guitar衣服身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "guitar衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5593,
+                "name": "哥特骇客",
+                "level": 20,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-guitar衣服身体",
           "swf": "flashswf/arts/things.swf",
@@ -950,6 +2536,21 @@
       },
       "男变装-guitar裙子右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "guitar裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-guitar裙子右大腿",
           "swf": "flashswf/arts/things.swf",
@@ -958,6 +2559,21 @@
       },
       "男变装-guitar裙子小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "guitar裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-guitar裙子小腿",
           "swf": "flashswf/arts/things.swf",
@@ -966,6 +2582,21 @@
       },
       "男变装-guitar裙子屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "guitar裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-guitar裙子屁股",
           "swf": "flashswf/arts/things.swf",
@@ -974,6 +2605,21 @@
       },
       "男变装-guitar裙子左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "guitar裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-guitar裙子左大腿",
           "swf": "flashswf/arts/things.swf",
@@ -982,6 +2628,36 @@
       },
       "男变装-keyboard衣服上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "keyboard衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 2,
+            "mercUsageSamples": [
+              {
+                "id": 5528,
+                "name": "彗星",
+                "level": 31,
+                "gender": "女",
+                "slot": "body"
+              },
+              {
+                "id": 5577,
+                "name": "海月",
+                "level": 25,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-keyboard衣服上臂",
           "swf": "flashswf/arts/things.swf",
@@ -990,6 +2666,36 @@
       },
       "男变装-keyboard衣服右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "keyboard衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 2,
+            "mercUsageSamples": [
+              {
+                "id": 5528,
+                "name": "彗星",
+                "level": 31,
+                "gender": "女",
+                "slot": "body"
+              },
+              {
+                "id": 5577,
+                "name": "海月",
+                "level": 25,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-keyboard衣服右下臂",
           "swf": "flashswf/arts/things.swf",
@@ -998,6 +2704,36 @@
       },
       "男变装-keyboard衣服左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "keyboard衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 2,
+            "mercUsageSamples": [
+              {
+                "id": 5528,
+                "name": "彗星",
+                "level": 31,
+                "gender": "女",
+                "slot": "body"
+              },
+              {
+                "id": 5577,
+                "name": "海月",
+                "level": 25,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-keyboard衣服左下臂",
           "swf": "flashswf/arts/things.swf",
@@ -1006,6 +2742,36 @@
       },
       "男变装-keyboard衣服身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "keyboard衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 2,
+            "mercUsageSamples": [
+              {
+                "id": 5528,
+                "name": "彗星",
+                "level": 31,
+                "gender": "女",
+                "slot": "body"
+              },
+              {
+                "id": 5577,
+                "name": "海月",
+                "level": 25,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-keyboard衣服身体",
           "swf": "flashswf/arts/things.swf",
@@ -1014,6 +2780,21 @@
       },
       "男变装-keyboard裙子右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "keyboard裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-keyboard裙子右大腿",
           "swf": "flashswf/arts/things.swf",
@@ -1022,6 +2803,21 @@
       },
       "男变装-keyboard裙子小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "keyboard裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-keyboard裙子小腿",
           "swf": "flashswf/arts/things.swf",
@@ -1030,6 +2826,21 @@
       },
       "男变装-keyboard裙子屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "keyboard裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-keyboard裙子屁股",
           "swf": "flashswf/arts/things.swf",
@@ -1038,6 +2849,21 @@
       },
       "男变装-keyboard裙子左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "keyboard裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-keyboard裙子左大腿",
           "swf": "flashswf/arts/things.swf",
@@ -1046,6 +2872,29 @@
       },
       "男变装-singer衣服上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "singer衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5576,
+                "name": "蝰蛇",
+                "level": 49,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-singer衣服上臂",
           "swf": "flashswf/arts/things.swf",
@@ -1054,6 +2903,29 @@
       },
       "男变装-singer衣服右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "singer衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5576,
+                "name": "蝰蛇",
+                "level": 49,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-singer衣服右下臂",
           "swf": "flashswf/arts/things.swf",
@@ -1062,6 +2934,29 @@
       },
       "男变装-singer衣服左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "singer衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5576,
+                "name": "蝰蛇",
+                "level": 49,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-singer衣服左下臂",
           "swf": "flashswf/arts/things.swf",
@@ -1070,6 +2965,29 @@
       },
       "男变装-singer衣服身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "singer衣服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5576,
+                "name": "蝰蛇",
+                "level": 49,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-singer衣服身体",
           "swf": "flashswf/arts/things.swf",
@@ -1078,6 +2996,21 @@
       },
       "男变装-singer裤子右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "singer裤子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-singer裤子右大腿",
           "swf": "flashswf/arts/things.swf",
@@ -1086,6 +3019,21 @@
       },
       "男变装-singer裤子小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "singer裤子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-singer裤子小腿",
           "swf": "flashswf/arts/things.swf",
@@ -1094,6 +3042,21 @@
       },
       "男变装-singer裤子屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "singer裤子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-singer裤子屁股",
           "swf": "flashswf/arts/things.swf",
@@ -1102,6 +3065,21 @@
       },
       "男变装-singer裤子左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "singer裤子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-singer裤子左大腿",
           "swf": "flashswf/arts/things.swf",
@@ -1109,22 +3087,223 @@
         }
       },
       "男变装-二阶军绿防弹衣上臂": {
-        "reason": "no_matching_source"
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "军绿防弹衣",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 4,
+            "mercUsageSamples": [
+              {
+                "id": 240,
+                "name": "赵明",
+                "level": 8,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 242,
+                "name": "Alex",
+                "level": 12,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 243,
+                "name": "血月",
+                "level": 13,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 5539,
+                "name": "战车",
+                "level": 26,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
       },
       "男变装-二阶军绿防弹衣右下臂": {
-        "reason": "no_matching_source"
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "军绿防弹衣",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 4,
+            "mercUsageSamples": [
+              {
+                "id": 240,
+                "name": "赵明",
+                "level": 8,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 242,
+                "name": "Alex",
+                "level": 12,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 243,
+                "name": "血月",
+                "level": 13,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 5539,
+                "name": "战车",
+                "level": 26,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
       },
       "男变装-二阶军绿防弹衣左下臂": {
-        "reason": "no_matching_source"
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "军绿防弹衣",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 4,
+            "mercUsageSamples": [
+              {
+                "id": 240,
+                "name": "赵明",
+                "level": 8,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 242,
+                "name": "Alex",
+                "level": 12,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 243,
+                "name": "血月",
+                "level": 13,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 5539,
+                "name": "战车",
+                "level": 26,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
       },
       "男变装-废城军装上装右下臂": {
-        "reason": "no_matching_source"
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "废城军装上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5640,
+                "name": "兵痞",
+                "level": 7,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
       },
       "男变装-废城军装上装左下臂": {
-        "reason": "no_matching_source"
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "废城军装上装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5640,
+                "name": "兵痞",
+                "level": 7,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
       },
       "男变装-战术JK上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "战术JK上衣",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5597,
+                "name": "布偶刺客",
+                "level": 23,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-战术JK上臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1133,6 +3312,29 @@
       },
       "男变装-战术JK右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "战术JK上衣",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5597,
+                "name": "布偶刺客",
+                "level": 23,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-战术JK右下臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1141,6 +3343,29 @@
       },
       "男变装-战术JK右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "战术JK裙",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5597,
+                "name": "布偶刺客",
+                "level": 23,
+                "gender": "女",
+                "slot": "leg"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-战术JK右大腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1149,6 +3374,29 @@
       },
       "男变装-战术JK小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "战术JK裙",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5597,
+                "name": "布偶刺客",
+                "level": 23,
+                "gender": "女",
+                "slot": "leg"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-战术JK小腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1157,6 +3405,29 @@
       },
       "男变装-战术JK屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "战术JK裙",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5597,
+                "name": "布偶刺客",
+                "level": 23,
+                "gender": "女",
+                "slot": "leg"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-战术JK屁股",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1165,6 +3436,29 @@
       },
       "男变装-战术JK左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "战术JK上衣",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5597,
+                "name": "布偶刺客",
+                "level": 23,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-战术JK左下臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1173,6 +3467,29 @@
       },
       "男变装-战术JK左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "战术JK裙",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5597,
+                "name": "布偶刺客",
+                "level": 23,
+                "gender": "女",
+                "slot": "leg"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-战术JK左大腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1181,6 +3498,29 @@
       },
       "男变装-战术JK身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "战术JK上衣",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5597,
+                "name": "布偶刺客",
+                "level": 23,
+                "gender": "女",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-战术JK身体",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1189,6 +3529,21 @@
       },
       "男变装-武装jk套装上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "武装jk套装校服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-武装jk套装上臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1196,10 +3551,40 @@
         }
       },
       "男变装-武装jk套装右下臂": {
-        "reason": "no_matching_source"
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "武装jk套装校服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ]
       },
       "男变装-武装jk套装右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "武装jk套装裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-武装jk套装右大腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1208,6 +3593,21 @@
       },
       "男变装-武装jk套装小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "武装jk套装裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-武装jk套装小腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1216,6 +3616,21 @@
       },
       "男变装-武装jk套装屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "武装jk套装裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-武装jk套装屁股",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1224,6 +3639,21 @@
       },
       "男变装-武装jk套装左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "武装jk套装校服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-武装jk套装左下臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1232,6 +3662,21 @@
       },
       "男变装-武装jk套装左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "武装jk套装裙子",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-武装jk套装左大腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1240,6 +3685,21 @@
       },
       "男变装-武装jk套装身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "武装jk套装校服",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-武装jk套装身体",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1248,6 +3708,21 @@
       },
       "男变装-灰色格子短裙右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "灰色格子短裙",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-灰色格子短裙右大腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1256,6 +3731,21 @@
       },
       "男变装-灰色格子短裙小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "灰色格子短裙",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-灰色格子短裙小腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1264,6 +3754,21 @@
       },
       "男变装-灰色格子短裙屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "灰色格子短裙",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-灰色格子短裙屁股",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1272,6 +3777,21 @@
       },
       "男变装-灰色格子短裙左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "灰色格子短裙",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-灰色格子短裙左大腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1280,6 +3800,21 @@
       },
       "男变装-蓝发女黑白女仆蕾丝短裙右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "蓝发女黑白女仆蕾丝短裙",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-蓝发女黑白女仆蕾丝短裙右大腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1288,6 +3823,21 @@
       },
       "男变装-蓝发女黑白女仆蕾丝短裙小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "蓝发女黑白女仆蕾丝短裙",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-蓝发女黑白女仆蕾丝短裙小腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1296,6 +3846,21 @@
       },
       "男变装-蓝发女黑白女仆蕾丝短裙屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "蓝发女黑白女仆蕾丝短裙",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-蓝发女黑白女仆蕾丝短裙屁股",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1304,6 +3869,21 @@
       },
       "男变装-蓝发女黑白女仆蕾丝短裙左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "蓝发女黑白女仆蕾丝短裙",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-蓝发女黑白女仆蕾丝短裙左大腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1312,6 +3892,21 @@
       },
       "男变装-蓝发女黑白女仆装上臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "蓝发女黑白女仆装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-蓝发女黑白女仆装上臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1320,6 +3915,21 @@
       },
       "男变装-蓝发女黑白女仆装右下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "蓝发女黑白女仆装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-蓝发女黑白女仆装右下臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1328,6 +3938,21 @@
       },
       "男变装-蓝发女黑白女仆装左下臂": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "蓝发女黑白女仆装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-蓝发女黑白女仆装左下臂",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1336,6 +3961,21 @@
       },
       "男变装-蓝发女黑白女仆装身体": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "蓝发女黑白女仆装",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-蓝发女黑白女仆装身体",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1344,6 +3984,29 @@
       },
       "男变装-黑丝灰色格子短裙右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "黑丝灰色格子短裙",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5505,
+                "name": "KEE-乐队主管",
+                "level": 23,
+                "gender": "女",
+                "slot": "leg"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-黑丝灰色格子短裙右大腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1352,6 +4015,29 @@
       },
       "男变装-黑丝灰色格子短裙小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "黑丝灰色格子短裙",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5505,
+                "name": "KEE-乐队主管",
+                "level": 23,
+                "gender": "女",
+                "slot": "leg"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-黑丝灰色格子短裙小腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1360,6 +4046,29 @@
       },
       "男变装-黑丝灰色格子短裙屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "黑丝灰色格子短裙",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5505,
+                "name": "KEE-乐队主管",
+                "level": 23,
+                "gender": "女",
+                "slot": "leg"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-黑丝灰色格子短裙屁股",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1368,6 +4077,29 @@
       },
       "男变装-黑丝灰色格子短裙左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "黑丝灰色格子短裙",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5505,
+                "name": "KEE-乐队主管",
+                "level": 23,
+                "gender": "女",
+                "slot": "leg"
+              }
+            ]
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-黑丝灰色格子短裙左大腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1376,6 +4108,21 @@
       },
       "男变装-黑丝版战术JK右大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "黑丝版JK战术裙",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-黑丝版战术JK右大腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1384,6 +4131,21 @@
       },
       "男变装-黑丝版战术JK小腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "黑丝版JK战术裙",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-黑丝版战术JK小腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1392,6 +4154,21 @@
       },
       "男变装-黑丝版战术JK屁股": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "黑丝版JK战术裙",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-黑丝版战术JK屁股",
           "swf": "flashswf/arts/new/3XD的素材.swf",
@@ -1400,6 +4177,21 @@
       },
       "男变装-黑丝版战术JK左大腿": {
         "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "黑丝版JK战术裙",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
         "oppositeGenderAsset": {
           "key": "女变装-黑丝版战术JK左大腿",
           "swf": "flashswf/arts/new/3XD的素材.swf",

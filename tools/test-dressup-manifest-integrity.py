@@ -255,6 +255,49 @@ def assert_attack_mode_runtime_variant(manifest: dict[str, Any], failures: list[
         )
 
 
+def assert_missing_source_references(manifest: dict[str, Any], report: dict[str, Any], failures: list[str]) -> None:
+    audit_entries = ((report.get("missingSourceAudit") or {}).get("entries") or {})
+    if not audit_entries:
+        failures.append("report missingSourceAudit.entries should not be empty")
+        return
+    items = manifest.get("items") or {}
+    refs_with_merc_usage = 0
+    for skin_key, audit_entry in audit_entries.items():
+        references = audit_entry.get("references") or []
+        if not references:
+            failures.append(f"{skin_key} missingSourceAudit entry should include references")
+            continue
+        for ref in references:
+            item_name = ref.get("item")
+            item = items.get(item_name)
+            if not item:
+                failures.append(f"{skin_key} reference item not found in manifest: {item_name}")
+                continue
+            if ref.get("sourceFile") != item.get("sourceFile"):
+                failures.append(f"{skin_key}/{item_name} reference sourceFile mismatch")
+            if ref.get("use") != item.get("use"):
+                failures.append(f"{skin_key}/{item_name} reference use mismatch")
+            for field_ref in ref.get("fields") or []:
+                gender = field_ref.get("gender")
+                field = field_ref.get("field")
+                if gender == "<dressup>":
+                    if item.get("dressup") != skin_key:
+                        failures.append(f"{skin_key}/{item_name} dressup reference mismatch")
+                    continue
+                fields = (item.get("fieldsByGender") or {}).get(gender) or {}
+                if fields.get(field) != skin_key:
+                    failures.append(f"{skin_key}/{item_name}/{gender}/{field} reference mismatch")
+            merc_usage_count = ref.get("mercUsageCount")
+            if not isinstance(merc_usage_count, int):
+                failures.append(f"{skin_key}/{item_name} mercUsageCount should be int")
+            if merc_usage_count:
+                refs_with_merc_usage += 1
+            if not isinstance(ref.get("mercUsageSamples") or [], list):
+                failures.append(f"{skin_key}/{item_name} mercUsageSamples should be list")
+    if refs_with_merc_usage <= 0:
+        failures.append("missingSourceAudit references should include at least one merc usage sample")
+
+
 def main() -> None:
     manifest = read_json(MANIFEST_PATH)
     report = read_json(REPORT_PATH) if REPORT_PATH.exists() else {}
@@ -309,6 +352,7 @@ def main() -> None:
     assert_required_item_helmet_flags(manifest, failures)
     assert_battle_rig(manifest, failures)
     assert_attack_mode_runtime_variant(manifest, failures)
+    assert_missing_source_references(manifest, report, failures)
 
     layer_count = 0
     compressed_layer_count = 0

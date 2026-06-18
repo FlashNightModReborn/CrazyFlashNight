@@ -1121,14 +1121,81 @@ def opposite_gender_key(key: str) -> str:
     return ""
 
 
+def strip_item_suffix(value: Any) -> str:
+    if value is None:
+        return ""
+    return str(value).split("#", 1)[0].strip()
+
+
+def load_merc_item_usage(project_root: Path) -> dict[str, list[dict[str, Any]]]:
+    path = project_root / "data" / "merc" / "mercenaries.json"
+    if not path.exists():
+        return {}
+    try:
+        mercenaries = json.loads(path.read_text(encoding="utf-8-sig"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+    usage: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for merc in mercenaries:
+        equipment = merc.get("equipment") or {}
+        for slot, raw_item in equipment.items():
+            item_name = strip_item_suffix(raw_item)
+            if not item_name:
+                continue
+            usage[item_name].append(
+                {
+                    "id": merc.get("id"),
+                    "name": merc.get("name"),
+                    "level": merc.get("level"),
+                    "gender": merc.get("gender"),
+                    "slot": slot,
+                }
+            )
+    return dict(usage)
+
+
+def missing_skin_references(
+    key: str,
+    items: dict[str, Any],
+    merc_item_usage: dict[str, list[dict[str, Any]]],
+) -> list[dict[str, Any]]:
+    references: list[dict[str, Any]] = []
+    for item_name, item in sorted(items.items()):
+        matching_fields: list[dict[str, str]] = []
+        for gender, fields in (item.get("fieldsByGender") or {}).items():
+            for field, skin_key in fields.items():
+                if skin_key == key:
+                    matching_fields.append({"gender": gender, "field": field})
+        if item.get("dressup") == key:
+            matching_fields.append({"gender": "<dressup>", "field": "dressup"})
+        if not matching_fields:
+            continue
+
+        merc_uses = merc_item_usage.get(item_name, [])
+        references.append(
+            {
+                "item": item_name,
+                "use": item.get("use") or "",
+                "sourceFile": item.get("sourceFile") or "",
+                "fields": matching_fields,
+                "mercUsageCount": len(merc_uses),
+                "mercUsageSamples": merc_uses[:5],
+            }
+        )
+    return references
+
+
 def audit_missing_sources(
     project_root: Path,
     missing: dict[str, Any],
     assets: dict[str, dict[str, Any]],
+    items: dict[str, Any],
 ) -> dict[str, Any]:
     missing_keys = set(missing)
     source_index = load_asset_source_index(project_root)
     exact_xml = scan_exact_missing_xml(project_root, missing_keys)
+    merc_item_usage = load_merc_item_usage(project_root)
     by_reason: Counter[str] = Counter()
     entries: dict[str, dict[str, Any]] = {}
     samples: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -1165,6 +1232,9 @@ def audit_missing_sources(
         entry: dict[str, Any] = {
             "reason": reason,
         }
+        references = missing_skin_references(key, items, merc_item_usage)
+        if references:
+            entry["references"] = references
         if source_entries:
             entry["assetSourceMapEntries"] = source_entries[:5]
         if xml_entries:
@@ -1180,7 +1250,7 @@ def audit_missing_sources(
             actionable.append(key)
         if len(samples[reason]) < 8:
             sample = {"skinKey": key}
-            sample.update(entry)
+            sample.update({item_key: item_value for item_key, item_value in entry.items() if item_key != "references"})
             samples[reason].append(sample)
 
     return {
@@ -1223,7 +1293,7 @@ def build_manifest(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[s
             "battleAuditErrors": len(battle_rig.get("auditErrors", [])),
         },
         "missingSummary": summarize_missing_skin_keys(missing),
-        "missingSourceAudit": audit_missing_sources(project_root, missing, assets),
+        "missingSourceAudit": audit_missing_sources(project_root, missing, assets, items),
         "missingSkinKeys": missing,
         "battleRig": {
             "source": battle_rig.get("source"),
