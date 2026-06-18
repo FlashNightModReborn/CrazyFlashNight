@@ -382,6 +382,12 @@
     border-radius: var(--merc-radius);
 }
 .merc-card-portrait img { width: 100%; height: 100%; object-fit: cover; }
+.merc-dressup-portrait img {
+    display: block;
+    object-position: center center;
+}
+.merc-dressup-ready::before,
+.merc-dressup-ready::after { display: none; }
 /* 头像缺省剪影（无素材时） */
 .merc-card-portrait-fallback::before {
     content: "";
@@ -748,6 +754,27 @@
     width: 52px; height: 52px;
     flex-shrink: 0;
     border-radius: var(--merc-radius);
+}
+.merc-dressup-section { padding-bottom: 12px; }
+.merc-detail-dressup-host {
+    height: 260px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    color: var(--merc-text-mute);
+    font-size: 12px;
+    background:
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        rgba(5, 8, 12, 0.82);
+    background-size: 24px 24px;
+    border: 1px solid rgba(239,148,66,0.14);
+    border-radius: var(--merc-radius);
+}
+.merc-detail-dressup-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 .merc-title-block { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .merc-detail-meta { display: flex; gap: 6px; flex-wrap: wrap; }

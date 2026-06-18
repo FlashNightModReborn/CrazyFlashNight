@@ -25,6 +25,11 @@ const SLOT_LABELS = {
 };
 const ARMOR_SLOTS = ['head', 'body', 'hand', 'leg', 'foot', 'neck'];
 const WEAPON_SLOTS = ['primary', 'secondary1', 'secondary2', 'melee', 'grenade'];
+const BODY_FIT_FIELDS = [
+    '身体', '上臂', '左下臂', '右下臂', '左手', '右手',
+    '屁股', '左大腿', '右大腿', '小腿', '脚',
+    '脸型', '发型', '面具'
+];
 const FACE_BY_ID = {
     0: '女变装-基本脸型',
     1: '男变装-基本脸型'
@@ -378,6 +383,8 @@ async function renderSample(page, port, args, sample) {
         gender: sample.merc.gender,
         equipment: sample.equipment,
         appearance: sample.appearance,
+        fitFields: BODY_FIT_FIELDS,
+        zoom: 0.96,
         debugPlaceholders: false
     };
     const query = new URLSearchParams();
@@ -505,6 +512,7 @@ async function main() {
         notes: [
             'AS2 MercLibrary maps merc[4] from raw.face and merc[5] from raw.hair before unit spawn.',
             'MercPanelService currently serializes gender/height/equips but not face/hair; this probe fills appearance from mercenaries.json.',
+            'Probe screenshots fit the body/face/hair/mask holders but still draw weapons, preventing weapon effects from shrinking the character.',
             'Light/heavy buckets are probe-only: armor slots <=3 is light, >=5 is heavy.'
         ],
         browser: {

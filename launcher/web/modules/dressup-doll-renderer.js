@@ -84,10 +84,16 @@ var DressupDollRenderer = (function() {
         });
         mergeFields(keyMap, options.appearance);
         mergeFields(keyMap, options.keyMap);
-        return {
+        var state = {
             gender: gender,
             keyMap: keyMap
         };
+        if (options.fitFields && options.fitFields.length) {
+            state.fitFields = options.fitFields.slice ? options.fitFields.slice(0) : options.fitFields;
+        }
+        if (typeof options.zoom === 'number') state.zoom = options.zoom;
+        if (typeof options.margin === 'number') state.margin = options.margin;
+        return state;
     }
 
     function matrixOf(holder) {
@@ -296,6 +302,18 @@ var DressupDollRenderer = (function() {
         return bounds;
     }
 
+    function holdersForFit(holders, fitFields) {
+        if (!fitFields || !fitFields.length) return holders;
+        var selected = {};
+        fitFields.forEach(function(field) {
+            if (field) selected[field] = true;
+        });
+        var result = holders.filter(function(holder) {
+            return holder && selected[holder.field];
+        });
+        return result.length ? result : holders;
+    }
+
     function resolveImageUri(uri, manifest) {
         if (!uri) return null;
         if (/^(https?:|data:|blob:|\/)/.test(uri)) return uri;
@@ -439,12 +457,18 @@ var DressupDollRenderer = (function() {
             var gender = lastState.gender || '男';
             var rigGender = manifest.rig && manifest.rig.genders ? manifest.rig.genders[gender] : null;
             var holders = rigGender ? rigGender.holders || [] : [];
-            var bounds = computeBounds(holders, manifest, lastState.keyMap, debugPlaceholders);
-            var margin = 24;
+            var bounds = computeBounds(
+                holdersForFit(holders, lastState.fitFields || options.fitFields),
+                manifest,
+                lastState.keyMap,
+                debugPlaceholders
+            );
+            var margin = numberOr(lastState.margin, numberOr(options.margin, 24));
             var w = Math.max(1, bounds.maxX - bounds.minX);
             var h = Math.max(1, bounds.maxY - bounds.minY);
             var scale = Math.min((size.width - margin * 2) / w, (size.height - margin * 2) / h);
-            scale = Math.max(0.1, Math.min(3, scale * (options.zoom || 0.92)));
+            var zoom = numberOr(lastState.zoom, numberOr(options.zoom, 0.92));
+            scale = Math.max(0.1, Math.min(3, scale * zoom));
             var offsetX = (size.width - (bounds.minX + bounds.maxX) * scale) / 2;
             var offsetY = (size.height - (bounds.minY + bounds.maxY) * scale) / 2;
 

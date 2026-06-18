@@ -314,6 +314,7 @@ def load_items(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[str, 
                 "use": use,
                 "icon": child_text(item, "icon"),
                 "dressup": dressup,
+                "helmet": child_text(item, "helmet").lower() == "true",
                 "fieldsByGender": fields_by_gender,
                 "sourceFile": path.name,
             }

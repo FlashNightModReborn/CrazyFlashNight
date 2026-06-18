@@ -28,7 +28,14 @@ var PanelTooltip = { hide:function(){}, showAtMouse:function(){}, followMouse:fu
 // 命中烘焙图标的真技能名映射（指向仓库内真实产物，<base> 已指到 web 根）；
 // 其余名字 resolve null → 占位回退路径
 var ICON_BAKED = { '小跳':'icons/0cabdeba_1.png', '闪现':'icons/03b529e4_1.png' };
-var Icons = { load:function(cb){ if(cb)cb(); }, resolve:function(name){ return ICON_BAKED[name] || null; } };
+var Icons = {
+  load:function(cb){ if(cb)cb(); },
+  resolve:function(name){ return ICON_BAKED[name] || null; },
+  html:function(name, cls, attrs){
+    var url=ICON_BAKED[name];
+    return url ? '<img class="'+(cls||'')+'" src="'+url+'" alt=""'+(attrs||'')+'>' : '';
+  }
+};
 var Notch = { reportRect:function(){} };
 var listeners = {};
 var Bridge = {
@@ -44,6 +51,18 @@ var PET_LIB = [
 function pet(id,name,slot){ return {petId:id,name:name,slotIndex:slot,level:10,deployed:false,stamina:100,maxStamina:200,xp:10,xpNeeded:100,schemeStatus:{},
   combat:{hp:{start:520,cur:3500,max:13000},attack:{start:12,cur:90,max:270},defense:{start:150,cur:550,max:900},speed:{start:8,cur:9,max:10},startLevel:1,maxLevel:100,difficulty:1}}; }
 function equips(){ var out=[]; for(var i=6;i<=16;i++) out.push({slot:i,name:'装备'+i,displayname:'装备'+i,level:1}); return out; }
+function midnightEquips(){ return [
+  {slot:6,name:'锐刻幻影夜视仪',displayname:'锐刻幻影夜视仪',level:8},
+  {slot:7,name:'蓝晶战斗服',displayname:'蓝晶战斗服',level:8},
+  {slot:8,name:'蓝晶手套',displayname:'蓝晶手套',level:8},
+  {slot:9,name:'方舟武士腿甲',displayname:'方舟武士腿甲',level:8},
+  {slot:10,name:'幻影装甲鞋',displayname:'幻影装甲鞋',level:8},
+  {slot:11,name:'战斗专家军牌',displayname:'战斗专家军牌',level:8},
+  {slot:12,name:'战术巴雷特',displayname:'战术巴雷特',level:8},
+  {slot:13,name:'极品UZI战术版',displayname:'极品UZI战术版',level:8},
+  {slot:14,name:'极品UZI战术版',displayname:'极品UZI战术版',level:8},
+  {slot:15,name:'光剑天秤',displayname:'光剑天秤',level:8}
+]; }
 function skills(n){
   var out=[]; var types=['格斗','刀技','躲避','增益','火器'];
   var baked=['小跳','闪现']; // 前两个用真名命中烘焙图标，其余假名覆盖占位回退
@@ -79,9 +98,9 @@ var MockHost = {
     if(msg.panel === 'mercs' && msg.cmd === 'snapshot'){
       emit('panel_resp',{type:'panel_resp',panel:'pets',cmd:msg.cmd,callId:msg.callId,success:true,snapshot:{pets:[]}});
       resp.snapshot={gold:999999,kpoint:999,reviveCoins:2,maxSlots:8,hiredMercs:[
-        {slotIndex:0,name:'佣兵甲',level:12,gender:'男',height:175,deployed:true,equips:equips(),skills:skills(13),personality:personality()},
-        {slotIndex:1,name:'佣兵乙',level:15,gender:'女',height:160,deployed:false,equips:equips()},
-        {slotIndex:2,name:'佣兵丙',level:30,gender:'男',height:182,deployed:false,dead:true,equips:equips(),skills:skills(6),personality:personality()}
+        {slotIndex:0,name:'佣兵甲',level:12,gender:'男',height:175,face:'男变装-基本脸型',hair:'发型-男式-黑韩式头',deployed:true,equips:midnightEquips(),skills:skills(13),personality:personality()},
+        {slotIndex:1,name:'佣兵乙',level:15,gender:'女',height:160,face:'女变装-基本脸型',hair:'发型-女式-红马尾',deployed:false,equips:equips()},
+        {slotIndex:2,name:'佣兵丙',level:30,gender:'男',height:182,face:'男变装-基本脸型',hair:'发型-男式-黑尖长发',deployed:false,dead:true,equips:equips(),skills:skills(6),personality:personality()}
       ]};
     }
     if(msg.panel === 'mercs' && msg.cmd === 'revive'){
@@ -106,6 +125,8 @@ var MockHost = {
 };
 </script>
 <script src="modules/panels.js"></script>
+<script src="modules/asset-timeline.js"></script>
+<script src="modules/dressup-doll-renderer.js"></script>
 <script src="modules/merc-data.js"></script>
 <script src="modules/pet-panel.js"></script>
 <script src="modules/merc-panel.js"></script>
@@ -118,6 +139,21 @@ var MockHost = {
   function click(tab){ document.querySelector('.team-tab[data-tab="'+tab+'"]').click(); }
   function active(){ var n=document.querySelector('.team-tab-active'); return n && n.dataset.tab; }
   function wait(ms){ return new Promise(function(resolve){setTimeout(resolve,ms);});}
+  async function waitFor(fn, timeout){
+    var started=Date.now();
+    while(Date.now()-started<timeout){
+      if(fn()) return true;
+      await wait(50);
+    }
+    return !!fn();
+  }
+  function canvasAlphaPixels(canvas){
+    if(!canvas || !canvas.width || !canvas.height) return 0;
+    var data=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
+    var count=0;
+    for(var i=3;i<data.length;i+=4){ if(data[i]>8) count++; }
+    return count;
+  }
   (async function(){
     Panels.open('team');
     await wait(80);
@@ -174,6 +210,11 @@ var MockHost = {
       Array.from(bakedImgs).every(function(im){ return im.naturalWidth>0; }) &&
       document.querySelectorAll('#merc-selbar .merc-skill-cell:not(.merc-skill-cell-baked) .merc-skill-glyph').length===11,
       bakedImgs.length+' baked / '+document.querySelectorAll('#merc-selbar .merc-skill-cell').length+' total');
+    var cardDressupReady=await waitFor(function(){
+      var img=document.querySelector('#merc-grid .merc-card:first-child .merc-dressup-ready img');
+      return img && /^data:image\/png/.test(img.getAttribute('src')||'');
+    },2500);
+    assert('team-ui16c','佣兵卡片纸娃娃快照（真实装备+脸发）',cardDressupReady);
     var cards=document.querySelectorAll('#merc-grid .merc-card');
     cards[1].click(); await wait(10);
     assert('team-ui17','切换选中 → 技能缺失兜底',
@@ -204,6 +245,10 @@ var MockHost = {
     assert('team-ui18','详情栏「培养」进入培养页',
       !document.querySelector('#merc-page-detail').hidden &&
       document.querySelector('#merc-detail-title').textContent==='佣兵甲');
+    var detailDressupReady=await waitFor(function(){
+      return canvasAlphaPixels(document.querySelector('#merc-detail-dressup-host canvas'))>500;
+    },2500);
+    assert('team-ui18b','培养页纸娃娃造型预览 canvas 非空',detailDressupReady);
     assert('team-ui19','培养页性格六维 + 主导标记',
       document.querySelectorAll('#merc-traits-grid .merc-trait').length===6 &&
       document.querySelectorAll('#merc-traits-grid .merc-trait-tag').length===1);

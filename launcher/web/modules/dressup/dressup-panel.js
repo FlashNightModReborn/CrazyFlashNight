@@ -267,7 +267,10 @@ var DressupPanel = (function() {
             gender: initData.gender || '男',
             equipment: initData.equipment || {},
             appearance: mergeObjects(DEFAULT_APPEARANCE, initData.appearance),
-            keyMap: initData.keyMap || {}
+            keyMap: initData.keyMap || {},
+            fitFields: initData.fitFields || null,
+            zoom: typeof initData.zoom === 'number' ? initData.zoom : undefined,
+            margin: typeof initData.margin === 'number' ? initData.margin : undefined
         });
     }
 
@@ -276,7 +279,10 @@ var DressupPanel = (function() {
             gender: _refs.gender.value || '男',
             equipment: equipmentFromControls(),
             appearance: DEFAULT_APPEARANCE,
-            keyMap: (_currentInitData && _currentInitData.keyMap) || {}
+            keyMap: (_currentInitData && _currentInitData.keyMap) || {},
+            fitFields: (_currentInitData && _currentInitData.fitFields) || null,
+            zoom: _currentInitData && typeof _currentInitData.zoom === 'number' ? _currentInitData.zoom : undefined,
+            margin: _currentInitData && typeof _currentInitData.margin === 'number' ? _currentInitData.margin : undefined
         });
     }
 

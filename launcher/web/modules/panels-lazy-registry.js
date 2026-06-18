@@ -117,7 +117,9 @@
     // ── team (战队：佣兵 / 伙伴 / 战宠 / 机械) ──
     // 子视图继续使用 pets / mercs 协议，但只有 team 是生产 Panel。
     Panels.registerLazy('team',
-        ['modules/merc-data.js',
+        ['modules/asset-timeline.js',
+         'modules/dressup-doll-renderer.js',
+         'modules/merc-data.js',
          'modules/pet-panel.js',
          'modules/merc-panel.js',
          'modules/team/team-panel.js'],

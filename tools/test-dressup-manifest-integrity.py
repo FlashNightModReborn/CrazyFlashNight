@@ -20,6 +20,11 @@ REQUIRED_APPEARANCE_KEYS = (
     "发型-男式-黑韩式头",
     "枪-手枪-m9",
 )
+REQUIRED_ITEM_HELMET_FLAGS = {
+    "圣诞帽": True,
+    "剑圣头部装甲": True,
+    "锐刻幻影夜视仪": False,
+}
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -163,6 +168,17 @@ def assert_required_appearance_keys(manifest: dict[str, Any], failures: list[str
             failures.append(f"{key} should have export metadata")
 
 
+def assert_required_item_helmet_flags(manifest: dict[str, Any], failures: list[str]) -> None:
+    items = manifest.get("items") or {}
+    for item_name, expected in REQUIRED_ITEM_HELMET_FLAGS.items():
+        item = items.get(item_name)
+        if not item:
+            failures.append(f"missing required item for helmet flag check: {item_name}")
+            continue
+        if item.get("helmet") is not expected:
+            failures.append(f"{item_name} helmet should be {expected}")
+
+
 def main() -> None:
     manifest = read_json(MANIFEST_PATH)
     report = read_json(REPORT_PATH) if REPORT_PATH.exists() else {}
@@ -195,6 +211,7 @@ def main() -> None:
 
     assert_a_corps_body(manifest, failures)
     assert_required_appearance_keys(manifest, failures)
+    assert_required_item_helmet_flags(manifest, failures)
 
     layer_count = 0
     compressed_layer_count = 0

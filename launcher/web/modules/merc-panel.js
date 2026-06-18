@@ -32,6 +32,31 @@
 
     var DESIGN_W = 1024;
     var DESIGN_H = 576;
+    var DRESSUP_MANIFEST_URL = 'assets/dressup/manifest.json';
+    var DRESSUP_SLOT_BY_INDEX = {
+        6: 'head',
+        7: 'body',
+        8: 'hand',
+        9: 'leg',
+        10: 'foot',
+        11: 'neck',
+        12: 'primary',
+        13: 'secondary1',
+        14: 'secondary2',
+        15: 'melee',
+        16: 'grenade'
+    };
+    var DRESSUP_BODY_FIT_FIELDS = [
+        '身体', '上臂', '左下臂', '右下臂', '左手', '右手',
+        '屁股', '左大腿', '右大腿', '小腿', '脚',
+        '脸型', '发型', '面具'
+    ];
+    var DRESSUP_HEAD_FIT_FIELDS = ['脸型', '发型', '面具'];
+    var _dressupManifest = null;
+    var _dressupManifestPromise = null;
+    var _dressupThumbCache = {};
+    var _dressupDetailRenderer = null;
+    var _dressupDetailCanvas = null;
 
     var _pageList, _pageHire, _pageDetail;
 
@@ -92,6 +117,7 @@
         _pageList.hidden   = (page !== 'list');
         _pageHire.hidden   = (page !== 'hire');
         _pageDetail.hidden = (page !== 'detail');
+        if (page !== 'detail') destroyDetailDressup();
 
         var active = page === 'list' ? _pageList : page === 'hire' ? _pageHire : _pageDetail;
         playPageEnter(active, back);
@@ -406,6 +432,223 @@
     }
 
     // ═══════════════════════════════════════════════════════════
+    // 纸娃娃预览：卡片/底栏使用一次性缓存图，培养页使用单个 live canvas。
+    // ═══════════════════════════════════════════════════════════
+    function ensureDressupManifest() {
+        if (_dressupManifest) return Promise.resolve(_dressupManifest);
+        if (typeof DressupDollRenderer === 'undefined' || !DressupDollRenderer) {
+            return Promise.reject(new Error('DressupDollRenderer is not loaded'));
+        }
+        if (!_dressupManifestPromise) {
+            _dressupManifestPromise = DressupDollRenderer.loadManifest(DRESSUP_MANIFEST_URL)
+                .then(function(manifest) {
+                    _dressupManifest = manifest;
+                    return manifest;
+                });
+        }
+        return _dressupManifestPromise;
+    }
+
+    function normalizeMercGender(merc) {
+        var g = merc && merc.gender ? String(merc.gender) : '男';
+        return (g === '女' || g === '主角-女') ? '女' : '男';
+    }
+
+    function stripEquipName(value) {
+        if (value === undefined || value === null) return '';
+        return String(value).split('#', 1)[0];
+    }
+
+    function dressupEquipmentFromMerc(merc) {
+        var equipment = {};
+        var equips = merc && merc.equips ? merc.equips : [];
+        for (var i = 0; i < equips.length; i++) {
+            var eq = equips[i];
+            var slot = DRESSUP_SLOT_BY_INDEX[Number(eq.slot)];
+            var name = stripEquipName(eq.name || eq.raw || eq.displayname);
+            if (slot && name) equipment[slot] = name;
+        }
+        return equipment;
+    }
+
+    function dressupAppearanceFromMerc(merc, equipment) {
+        var gender = normalizeMercGender(merc);
+        var appearance = {};
+        var face = merc && merc.face ? String(merc.face) : '';
+        var hair = merc && merc.hair ? String(merc.hair) : '';
+        var headItem = equipment && equipment.head ? equipment.head : '';
+        var item = headItem && _dressupManifest && _dressupManifest.items ? _dressupManifest.items[headItem] : null;
+        var helmetSuppressesHair = !!(item && item.helmet === true);
+        appearance['脸型'] = face || (gender === '女' ? '女变装-基本脸型' : '男变装-基本脸型');
+        if (hair && hair !== '光头' && !helmetSuppressesHair) appearance['发型'] = hair;
+        return appearance;
+    }
+
+    function buildMercDressupState(merc, fitFields, zoom, margin) {
+        if (!_dressupManifest) return null;
+        var equipment = dressupEquipmentFromMerc(merc);
+        return DressupDollRenderer.buildStateFromEquipment(_dressupManifest, {
+            gender: normalizeMercGender(merc),
+            equipment: equipment,
+            appearance: dressupAppearanceFromMerc(merc, equipment),
+            fitFields: fitFields,
+            zoom: zoom,
+            margin: margin
+        });
+    }
+
+    function dressupCacheKey(merc, variant) {
+        var parts = [variant, normalizeMercGender(merc), merc && merc.face || '', merc && merc.hair || ''];
+        var equips = merc && merc.equips ? merc.equips.slice(0) : [];
+        equips.sort(function(a, b) { return Number(a.slot) - Number(b.slot); });
+        for (var i = 0; i < equips.length; i++) {
+            parts.push(String(equips[i].slot) + ':' + stripEquipName(equips[i].name || equips[i].raw || ''));
+        }
+        return parts.join('|');
+    }
+
+    function canvasAlphaPixels(canvas) {
+        if (!canvas || !canvas.width || !canvas.height) return 0;
+        var data = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+        var count = 0;
+        for (var i = 3; i < data.length; i += 4) {
+            if (data[i] > 8) count++;
+        }
+        return count;
+    }
+
+    function renderDressupSnapshot(state, width, height, callback) {
+        var canvas = document.createElement('canvas');
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        var renderer = DressupDollRenderer.create(canvas, {
+            manifest: _dressupManifest,
+            width: width,
+            height: height,
+            fps: 24
+        });
+        var attempts = 0;
+        function tick() {
+            var meta = renderer.render(state);
+            var alpha = canvasAlphaPixels(canvas);
+            if (alpha > 120 || attempts >= 14) {
+                var url = '';
+                if (alpha > 120) {
+                    try { url = canvas.toDataURL('image/png'); } catch (ignore) {}
+                }
+                renderer.destroy();
+                callback(url, meta);
+                return;
+            }
+            attempts++;
+            setTimeout(tick, 80);
+        }
+        tick();
+    }
+
+    function clearDressupPortrait(portrait) {
+        if (!portrait) return;
+        portrait.classList.add('merc-card-portrait-fallback');
+        portrait.classList.remove('merc-dressup-ready');
+        var img = portrait.querySelector('img');
+        if (img) {
+            img.removeAttribute('src');
+            img.hidden = true;
+        }
+    }
+
+    function applyDressupPortrait(portrait, merc, variant) {
+        if (!portrait || !merc) {
+            clearDressupPortrait(portrait);
+            return;
+        }
+        var token = String(Date.now()) + Math.random();
+        portrait._dressupToken = token;
+        clearDressupPortrait(portrait);
+        ensureDressupManifest().then(function() {
+            if (portrait._dressupToken !== token) return;
+            var key = dressupCacheKey(merc, variant);
+            var cached = _dressupThumbCache[key];
+            var img = portrait.querySelector('img');
+            if (cached) {
+                if (img) {
+                    img.hidden = false;
+                    img.src = cached;
+                }
+                portrait.classList.remove('merc-card-portrait-fallback');
+                portrait.classList.add('merc-dressup-ready');
+                return;
+            }
+            var size = variant === 'selbar' ? 140 : 112;
+            var state = buildMercDressupState(merc, DRESSUP_HEAD_FIT_FIELDS, variant === 'selbar' ? 1.16 : 1.12, 10);
+            if (!state) return;
+            renderDressupSnapshot(state, size, size, function(url) {
+                if (portrait._dressupToken !== token || !url) return;
+                _dressupThumbCache[key] = url;
+                if (img) {
+                    img.hidden = false;
+                    img.src = url;
+                }
+                portrait.classList.remove('merc-card-portrait-fallback');
+                portrait.classList.add('merc-dressup-ready');
+            });
+        }).catch(function() {
+            clearDressupPortrait(portrait);
+        });
+    }
+
+    function updatePortraitHost(host, merc, variant) {
+        if (!host) return;
+        var portrait = host.querySelector('.merc-card-portrait');
+        if (!portrait) {
+            portrait = createPortrait(null, variant);
+            if (variant === 'selbar') portrait.classList.add('merc-selbar-portrait');
+            if (variant === 'detail') portrait.classList.add('merc-detail-portrait');
+            host.appendChild(portrait);
+        }
+        applyDressupPortrait(portrait, merc, variant);
+    }
+
+    function destroyDetailDressup() {
+        if (_dressupDetailRenderer) {
+            _dressupDetailRenderer.destroy();
+            _dressupDetailRenderer = null;
+        }
+        _dressupDetailCanvas = null;
+    }
+
+    function renderDetailDressup(merc) {
+        var host = _el.querySelector('#merc-detail-dressup-host');
+        if (!host) return;
+        destroyDetailDressup();
+        host.classList.add('merc-dressup-loading');
+        host.textContent = '加载造型...';
+        var token = String(Date.now()) + Math.random();
+        host._dressupToken = token;
+        ensureDressupManifest().then(function() {
+            if (host._dressupToken !== token || _currentPage !== 'detail') return;
+            host.textContent = '';
+            host.classList.remove('merc-dressup-loading');
+            var canvas = document.createElement('canvas');
+            canvas.className = 'merc-detail-dressup-canvas';
+            host.appendChild(canvas);
+            _dressupDetailCanvas = canvas;
+            _dressupDetailRenderer = DressupDollRenderer.create(canvas, {
+                manifest: _dressupManifest,
+                width: 360,
+                height: 260,
+                fps: 24
+            });
+            var state = buildMercDressupState(merc, DRESSUP_BODY_FIT_FIELDS, 0.96, 14);
+            if (state) _dressupDetailRenderer.render(state);
+        }).catch(function() {
+            if (host._dressupToken !== token) return;
+            host.classList.remove('merc-dressup-loading');
+            host.textContent = '造型素材暂不可用';
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════
     // 渲染：卡片（列表/雇佣共用骨架）
     // 2 列横版：与战宠卡同高（150px）、双倍宽度，装备 11 槽收进一行；
     // 技能不上卡（数量不可控），看底部详情栏 / 培养页。
@@ -426,7 +669,7 @@
 
         var top = document.createElement('div');
         top.className = 'merc-card-top';
-        top.appendChild(createPortrait());
+        top.appendChild(createPortrait(merc, 'card'));
 
         var headinfo = document.createElement('div');
         headinfo.className = 'merc-card-headinfo';
@@ -658,10 +901,12 @@
         if (!selbar) return;
         hideAllTooltips();
         if (!merc) {
+            updatePortraitHost(selbar.querySelector('.merc-selbar-portrait-host'), null, 'selbar');
             selbar.classList.add('merc-selbar-empty');
             return;
         }
         selbar.classList.remove('merc-selbar-empty');
+        updatePortraitHost(selbar.querySelector('.merc-selbar-portrait-host'), merc, 'selbar');
         selbar.querySelector('.merc-selbar-name').textContent = merc.name;
         selbar.querySelector('.merc-selbar-lv').textContent = 'Lv.' + merc.level;
         var chips = selbar.querySelector('.merc-selbar-chips');
@@ -808,6 +1053,8 @@
         }
 
         // ── header ──
+        updatePortraitHost(_el.querySelector('#merc-detail-portrait-host'), merc, 'detail');
+        renderDetailDressup(merc);
         _el.querySelector('#merc-detail-title').textContent = merc.name;
         var meta = _el.querySelector('#merc-detail-meta');
         meta.innerHTML =
@@ -1013,13 +1260,19 @@
         return String(text).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
     }
 
-    function createPortrait() {
+    function createPortrait(merc, variant) {
         var portrait = document.createElement('div');
-        portrait.className = 'merc-card-portrait merc-card-portrait-fallback';
-        portrait.innerHTML = '<img src="https://cfn-assets.local/portraits/profiles/%E6%97%A0%E5%A4%B4%E5%83%8F.png" alt="无头像">';
+        portrait.className = 'merc-card-portrait merc-card-portrait-fallback merc-dressup-portrait';
+        portrait.innerHTML = '<img alt="佣兵造型" hidden>';
         var img = portrait.querySelector('img');
-        img.addEventListener('load', function() { portrait.classList.remove('merc-card-portrait-fallback'); });
-        img.addEventListener('error', function() { img.hidden = true; });
+        img.addEventListener('load', function() {
+            if (img.getAttribute('src')) {
+                portrait.classList.remove('merc-card-portrait-fallback');
+                portrait.classList.add('merc-dressup-ready');
+            }
+        });
+        img.addEventListener('error', function() { clearDressupPortrait(portrait); });
+        if (merc) applyDressupPortrait(portrait, merc, variant || 'card');
         return portrait;
     }
 
@@ -1124,6 +1377,10 @@
                     '</div>' +
                 '</div>' +
                 '<div class="merc-page-body">' +
+                    '<div class="merc-section merc-dressup-section">' +
+                        '<h3 class="merc-section-title">造型预览</h3>' +
+                        '<div class="merc-detail-dressup-host" id="merc-detail-dressup-host"></div>' +
+                    '</div>' +
                     '<div class="merc-section">' +
                         '<h3 class="merc-section-title">性格特质</h3>' +
                         '<div class="merc-traits-grid" id="merc-traits-grid"></div>' +
@@ -1319,6 +1576,7 @@
         _ttCache = {};
         _ttHoverKey = null;
         _confirmSlot = -1;
+        destroyDetailDressup();
         unbindScaleWatcher();
         PanelTooltip.hide();
     }
