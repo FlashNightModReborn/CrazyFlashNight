@@ -3,38 +3,38 @@
   "counts": {
     "items": 1285,
     "skinKeys": 2840,
-    "coveredSkinKeys": 2688,
-    "missingSkinKeys": 152,
+    "coveredSkinKeys": 2689,
+    "missingSkinKeys": 151,
     "holdersMale": 18,
     "holdersFemale": 18,
     "battleStates": 6,
     "battleAuditErrors": 0,
-    "exportedSkinKeys": 10,
-    "exportedFrames": 10,
+    "exportedSkinKeys": 1,
+    "exportedFrames": 1,
     "exportedBasicKeys": 22,
     "exportedBasicFrames": 22,
     "metadataErrors": 0,
     "timelineScriptErrors": 0,
     "spriteGraphErrors": 0,
-    "staticStopSkinKeys": 1,
-    "staticStopCollapsedFrames": 30,
+    "staticStopSkinKeys": 0,
+    "staticStopCollapsedFrames": 0,
     "purgedStaleFrames": 0,
     "nestedAnimationSkinKeys": 24,
     "nestedLayerUnsupportedDescendants": 0,
     "nestedLayerCompositedDescendants": 0,
     "exportedNestedLayerKeys": 0,
     "exportedNestedLayerFrames": 0,
-    "uniqueFrameImages": 33,
+    "uniqueFrameImages": 23,
     "duplicateFrameRefs": 0,
-    "timelineLogicalFrames": 33,
-    "timelineFrameEntries": 33,
+    "timelineLogicalFrames": 23,
+    "timelineFrameEntries": 23,
     "timelineCompressedFrameRefs": 0,
-    "conditionalVariantSkinKeys": 1,
-    "conditionalVariantFrames": 1,
-    "conditionalVariantRemovedPlaceObjects": 1,
+    "conditionalVariantSkinKeys": 0,
+    "conditionalVariantFrames": 0,
+    "conditionalVariantRemovedPlaceObjects": 0,
     "animatedSkinKeys": 16,
     "staticCollapsedSkinKeys": 21,
-    "preservedSkinKeyExports": 2658,
+    "preservedSkinKeyExports": 2668,
     "preservedBasicHolderExports": 22
   },
   "missingSummary": {
@@ -42,19 +42,19 @@
       "上装装备": 84,
       "下装装备": 64,
       "刀": 1,
-      "长枪": 3
+      "长枪": 2
     },
     "byPrefix": {
       "刀-": 1,
       "女变装-": 63,
-      "枪-长枪-": 3,
+      "枪-长枪-": 2,
       "男变装-": 85
     }
   },
   "missingSourceAudit": {
     "byReason": {
       "exact_xml_without_as_linkage": 5,
-      "no_matching_source": 12,
+      "no_matching_source": 11,
       "opposite_gender_only": 135
     },
     "actionableSkinKeys": [],
@@ -148,15 +148,15 @@
           "reason": "no_matching_source"
         },
         {
-          "skinKey": "枪-长枪-scout",
-          "reason": "no_matching_source"
-        },
-        {
           "skinKey": "男变装-二阶军绿防弹衣上臂",
           "reason": "no_matching_source"
         },
         {
           "skinKey": "男变装-二阶军绿防弹衣右下臂",
+          "reason": "no_matching_source"
+        },
+        {
+          "skinKey": "男变装-二阶军绿防弹衣左下臂",
           "reason": "no_matching_source"
         }
       ],
@@ -757,9 +757,6 @@
         "reason": "no_matching_source"
       },
       "枪-长枪-WA90变形款": {
-        "reason": "no_matching_source"
-      },
-      "枪-长枪-scout": {
         "reason": "no_matching_source"
       },
       "男变装-JK校服上臂": {
@@ -2277,19 +2274,6 @@
         "武器_长枪_特殊.xml"
       ]
     },
-    "枪-长枪-scout": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "长枪"
-      ],
-      "items": [
-        "SteyrScout"
-      ],
-      "sourceFiles": [
-        "武器_长枪_战斗步枪.xml"
-      ]
-    },
     "男变装-JK校服上臂": {
       "covered": false,
       "asset": null,
@@ -3553,10 +3537,10 @@
     }
   },
   "assetExport": {
-    "selectedSkinKeys": 10,
-    "resolvedSkinKeys": 10,
-    "exportedSkinKeys": 10,
-    "exportedFrames": 10,
+    "selectedSkinKeys": 1,
+    "resolvedSkinKeys": 1,
+    "exportedSkinKeys": 1,
+    "exportedFrames": 1,
     "resolvedBasicKeys": 22,
     "exportedBasicKeys": 22,
     "exportedBasicFrames": 22,
@@ -3570,18 +3554,10 @@
     "missingBasicFrame": [],
     "timelineScriptErrors": [],
     "spriteGraphErrors": [],
-    "staticStopSkinKeys": 1,
-    "staticStopCollapsedFrames": 30,
+    "staticStopSkinKeys": 0,
+    "staticStopCollapsedFrames": 0,
     "purgedStaleFrames": 0,
-    "staticStopSamples": [
-      {
-        "skinKey": "枪-长枪-暴君收割机",
-        "characterId": 569,
-        "sourceFrameCount": 31,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
-      }
-    ],
+    "staticStopSamples": [],
     "nestedAnimationSkinKeys": 0,
     "nestedAnimationSamples": [],
     "nestedLayerUnsupportedDescendants": 0,
@@ -3589,34 +3565,17 @@
     "exportedNestedLayerKeys": 0,
     "exportedNestedLayerFrames": 0,
     "missingNestedLayerFrame": [],
-    "uniqueFrameImages": 33,
+    "uniqueFrameImages": 23,
     "duplicateFrameRefs": 0,
-    "timelineLogicalFrames": 33,
-    "timelineFrameEntries": 33,
+    "timelineLogicalFrames": 23,
+    "timelineFrameEntries": 23,
     "timelineCompressedFrameRefs": 0,
     "timelineCompressionSamples": [],
-    "conditionalVariantSkinKeys": 1,
-    "conditionalVariantFrames": 1,
-    "conditionalVariantRemovedPlaceObjects": 1,
-    "conditionalVariantSamples": [
-      {
-        "skinKey": "枪-手枪-极品UZI战术版",
-        "characterId": 96,
-        "visibleWhen": [
-          "双枪",
-          "手枪",
-          "手枪2"
-        ],
-        "removed": [
-          {
-            "characterId": 16,
-            "depth": 29,
-            "frame": 1
-          }
-        ]
-      }
-    ],
-    "preservedSkinKeyExports": 2658,
+    "conditionalVariantSkinKeys": 0,
+    "conditionalVariantFrames": 0,
+    "conditionalVariantRemovedPlaceObjects": 0,
+    "conditionalVariantSamples": [],
+    "preservedSkinKeyExports": 2668,
     "preservedBasicHolderExports": 22
   },
   "animatedSkinKeys": [

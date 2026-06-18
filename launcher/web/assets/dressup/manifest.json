@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-06-18T23:50:19+0800",
+  "generatedAt": "2026-06-19T00:05:37+0800",
   "genders": [
     "男",
     "女"
@@ -6752,14 +6752,14 @@
     "SteyrScout": {
       "use": "长枪",
       "icon": "SteyrScout",
-      "dressup": "枪-长枪-scout",
+      "dressup": "枪-长枪-Scout",
       "helmet": false,
       "fieldsByGender": {
         "男": {
-          "长枪_装扮": "枪-长枪-scout"
+          "长枪_装扮": "枪-长枪-Scout"
         },
         "女": {
-          "长枪_装扮": "枪-长枪-scout"
+          "长枪_装扮": "枪-长枪-Scout"
         }
       },
       "sourceFile": "武器_长枪_战斗步枪.xml"
@@ -85693,6 +85693,46 @@
         }
       ]
     },
+    "枪-长枪-Scout": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+        "symbolName": "",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "SteyrScout"
+      ],
+      "sourceFiles": [
+        "武器_长枪_战斗步枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/6cb77aa5_1.png",
+        "width": 763,
+        "height": 147,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/6cb77aa5_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 763,
+          "height": 147,
+          "originX": 230.6,
+          "originY": 109.1
+        }
+      ]
+    },
     "枪-长枪-Scout10": {
       "covered": true,
       "asset": {
@@ -86761,19 +86801,6 @@
           "originX": 246,
           "originY": 117.7
         }
-      ]
-    },
-    "枪-长枪-scout": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "长枪"
-      ],
-      "items": [
-        "SteyrScout"
-      ],
-      "sourceFiles": [
-        "武器_长枪_战斗步枪.xml"
       ]
     },
     "枪-长枪-‌Noveske N4 突击步枪": {
