@@ -193,6 +193,9 @@ DRESSUP_CONFLICT_SOURCE_PREFERENCES = {
         ("flashswf/UI/对话框界面.swf", "sprite/主角/枪械&女体/Symbol 1105"),
         ("flashswf/arts/things.swf", "1.枪械相关/长枪/枪-长枪-G36"),
     ),
+    "枪-长枪-XM556-Microgun": (
+        ("flashswf/arts/new/fs配置素材.swf", "长枪/XM556/XM556-Microgun"),
+    ),
     "枪-长枪-能量狙击枪": (
         ("flashswf/arts/new/乔恩.swf", "枪械/能量狙击枪/能量狙击枪"),
         ("flashswf/arts/new/我的素材7421.swf", "枪械/能量狙击枪/能量狙击枪"),

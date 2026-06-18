@@ -3,14 +3,14 @@
   "counts": {
     "items": 1285,
     "skinKeys": 2840,
-    "coveredSkinKeys": 2686,
-    "missingSkinKeys": 154,
+    "coveredSkinKeys": 2687,
+    "missingSkinKeys": 153,
     "holdersMale": 18,
     "holdersFemale": 18,
     "battleStates": 6,
     "battleAuditErrors": 0,
-    "exportedSkinKeys": 8,
-    "exportedFrames": 8,
+    "exportedSkinKeys": 9,
+    "exportedFrames": 9,
     "exportedBasicKeys": 22,
     "exportedBasicFrames": 22,
     "metadataErrors": 0,
@@ -24,10 +24,10 @@
     "nestedLayerCompositedDescendants": 0,
     "exportedNestedLayerKeys": 0,
     "exportedNestedLayerFrames": 0,
-    "uniqueFrameImages": 31,
+    "uniqueFrameImages": 32,
     "duplicateFrameRefs": 0,
-    "timelineLogicalFrames": 31,
-    "timelineFrameEntries": 31,
+    "timelineLogicalFrames": 32,
+    "timelineFrameEntries": 32,
     "timelineCompressedFrameRefs": 0,
     "conditionalVariantSkinKeys": 1,
     "conditionalVariantFrames": 1,
@@ -42,12 +42,12 @@
       "上装装备": 84,
       "下装装备": 64,
       "刀": 1,
-      "长枪": 5
+      "长枪": 4
     },
     "byPrefix": {
       "刀-": 1,
       "女变装-": 63,
-      "枪-长枪-": 5,
+      "枪-长枪-": 4,
       "男变装-": 85
     }
   },
@@ -912,19 +912,6 @@
       ],
       "sourceFiles": [
         "武器_长枪_特殊.xml"
-      ]
-    },
-    "枪-长枪-XM556-Microgun": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "长枪"
-      ],
-      "items": [
-        "XM556-Microgun"
-      ],
-      "sourceFiles": [
-        "武器_长枪_压制机枪.xml"
       ]
     },
     "枪-长枪-scout": {
@@ -2216,10 +2203,10 @@
     }
   },
   "assetExport": {
-    "selectedSkinKeys": 8,
-    "resolvedSkinKeys": 8,
-    "exportedSkinKeys": 8,
-    "exportedFrames": 8,
+    "selectedSkinKeys": 9,
+    "resolvedSkinKeys": 9,
+    "exportedSkinKeys": 9,
+    "exportedFrames": 9,
     "resolvedBasicKeys": 22,
     "exportedBasicKeys": 22,
     "exportedBasicFrames": 22,
@@ -2244,10 +2231,10 @@
     "exportedNestedLayerKeys": 0,
     "exportedNestedLayerFrames": 0,
     "missingNestedLayerFrame": [],
-    "uniqueFrameImages": 31,
+    "uniqueFrameImages": 32,
     "duplicateFrameRefs": 0,
-    "timelineLogicalFrames": 31,
-    "timelineFrameEntries": 31,
+    "timelineLogicalFrames": 32,
+    "timelineFrameEntries": 32,
     "timelineCompressedFrameRefs": 0,
     "timelineCompressionSamples": [],
     "conditionalVariantSkinKeys": 1,

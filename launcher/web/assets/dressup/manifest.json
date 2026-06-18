@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-06-18T22:55:22+0800",
+  "generatedAt": "2026-06-18T23:15:48+0800",
   "genders": [
     "男",
     "女"
@@ -86514,8 +86514,23 @@
       ]
     },
     "枪-长枪-XM556-Microgun": {
-      "covered": false,
-      "asset": null,
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/fs配置素材.swf",
+        "symbolName": "长枪/XM556/XM556-Microgun",
+        "conflict": false,
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/fs配置素材.swf",
+            "symbolName": "长枪/XM556/XM556-Microgun"
+          },
+          {
+            "swf": "flashswf/arts/new/灰烬晨星的设定书架.swf",
+            "symbolName": "xm556/XM556-Microgun"
+          }
+        ]
+      },
       "uses": [
         "长枪"
       ],
@@ -86524,6 +86539,28 @@
       ],
       "sourceFiles": [
         "武器_长枪_压制机枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/77406e54_1.png",
+        "width": 579,
+        "height": 212,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/77406e54_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 579,
+          "height": 212,
+          "originX": 91.1,
+          "originY": 92.7
+        }
       ]
     },
     "枪-长枪-XM7 NGSW R": {
