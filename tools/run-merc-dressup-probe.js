@@ -30,12 +30,17 @@ const BODY_FIT_FIELDS = [
     '屁股', '左大腿', '右大腿', '小腿', '脚',
     '脸型', '发型', '面具'
 ];
+const BATTLE_REFERENCE_FIT_FIELDS = [
+    '身体', '上臂', '左下臂', '右下臂', '左手', '右手',
+    '屁股', '左大腿', '右大腿', '小腿',
+    '脸型', '发型', '面具'
+];
 const FACE_BY_ID = {
     0: '女变装-基本脸型',
     1: '男变装-基本脸型'
 };
 const TARGETS = [
-    { label: 'reference-midnight-neon', mercName: '午夜霓虹' },
+    { label: 'reference-midnight-neon-battle', mercName: '午夜霓虹', rig: 'battle', stateLabel: '空手站立', fitFields: BATTLE_REFERENCE_FIT_FIELDS, zoom: 1.18 },
     { label: 'female-heavy-weapon', gender: '女', weight: 'heavy', weapon: true },
     { label: 'female-heavy-no-weapon', gender: '女', weight: 'heavy', weapon: false },
     { label: 'male-heavy-weapon', gender: '男', weight: 'heavy', weapon: true },
@@ -383,8 +388,10 @@ async function renderSample(page, port, args, sample) {
         gender: sample.merc.gender,
         equipment: sample.equipment,
         appearance: sample.appearance,
-        fitFields: BODY_FIT_FIELDS,
-        zoom: 0.96,
+        fitFields: Object.prototype.hasOwnProperty.call(sample.target, 'fitFields') ? sample.target.fitFields : BODY_FIT_FIELDS,
+        zoom: typeof sample.target.zoom === 'number' ? sample.target.zoom : 0.96,
+        rig: sample.target.rig || '',
+        stateLabel: sample.target.stateLabel || '',
         debugPlaceholders: false
     };
     const query = new URLSearchParams();
@@ -512,7 +519,8 @@ async function main() {
         notes: [
             'AS2 MercLibrary maps merc[4] from raw.face and merc[5] from raw.hair before unit spawn.',
             'MercPanelService serializes face/hair for runtime panels; this probe cross-checks the same appearance mapping from mercenaries.json.',
-            'Probe screenshots fit the body/face/hair/mask holders but still draw weapons, preventing weapon effects from shrinking the character.',
+            'The reference midnight-neon sample uses the battle rig 空手站立 state from flashswf/arts/things0/LIBRARY/主角-男.xml.',
+            'Non-reference probe screenshots fit the body/face/hair/mask holders but still draw weapons, preventing weapon effects from shrinking the character.',
             'Light/heavy buckets are probe-only: armor slots <=3 is light, >=5 is heavy.'
         ],
         browser: {

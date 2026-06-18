@@ -270,7 +270,9 @@ var DressupPanel = (function() {
             keyMap: initData.keyMap || {},
             fitFields: initData.fitFields || null,
             zoom: typeof initData.zoom === 'number' ? initData.zoom : undefined,
-            margin: typeof initData.margin === 'number' ? initData.margin : undefined
+            margin: typeof initData.margin === 'number' ? initData.margin : undefined,
+            rig: initData.rig || '',
+            stateLabel: initData.stateLabel || ''
         });
     }
 
@@ -282,7 +284,9 @@ var DressupPanel = (function() {
             keyMap: (_currentInitData && _currentInitData.keyMap) || {},
             fitFields: (_currentInitData && _currentInitData.fitFields) || null,
             zoom: _currentInitData && typeof _currentInitData.zoom === 'number' ? _currentInitData.zoom : undefined,
-            margin: _currentInitData && typeof _currentInitData.margin === 'number' ? _currentInitData.margin : undefined
+            margin: _currentInitData && typeof _currentInitData.margin === 'number' ? _currentInitData.margin : undefined,
+            rig: (_currentInitData && _currentInitData.rig) || '',
+            stateLabel: (_currentInitData && _currentInitData.stateLabel) || ''
         });
     }
 
@@ -298,6 +302,8 @@ var DressupPanel = (function() {
         if (!meta) return;
         var report = {
             gender: state.gender,
+            rig: meta.rig,
+            stateLabel: meta.stateLabel,
             holders: meta.holders,
             scale: Number(meta.scale.toFixed(3)),
             animated: meta.animated,

@@ -7,29 +7,10 @@
     "missingSkinKeys": 161,
     "holdersMale": 18,
     "holdersFemale": 18,
-    "exportedSkinKeys": 27,
-    "exportedFrames": 27,
-    "exportedBasicKeys": 22,
-    "exportedBasicFrames": 22,
-    "metadataErrors": 0,
-    "timelineScriptErrors": 0,
-    "spriteGraphErrors": 0,
-    "staticStopSkinKeys": 1,
-    "staticStopCollapsedFrames": 1,
-    "purgedStaleFrames": 0,
-    "nestedAnimationSkinKeys": 24,
-    "nestedLayerUnsupportedDescendants": 0,
-    "nestedLayerCompositedDescendants": 3,
-    "exportedNestedLayerKeys": 1,
-    "exportedNestedLayerFrames": 78,
-    "uniqueFrameImages": 95,
-    "duplicateFrameRefs": 32,
-    "timelineLogicalFrames": 127,
-    "timelineFrameEntries": 122,
-    "timelineCompressedFrameRefs": 5,
-    "animatedSkinKeys": 16,
-    "staticCollapsedSkinKeys": 20,
-    "preservedSkinKeyExports": 2632
+    "battleStates": 6,
+    "battleAuditErrors": 0,
+    "preservedSkinKeyExports": 2659,
+    "preservedBasicHolderExports": 22
   },
   "missingSummary": {
     "byUse": {
@@ -2144,862 +2125,164 @@
       ]
     }
   },
-  "assetExport": {
-    "selectedSkinKeys": 27,
-    "resolvedSkinKeys": 27,
-    "exportedSkinKeys": 27,
-    "exportedFrames": 27,
-    "resolvedBasicKeys": 22,
-    "exportedBasicKeys": 22,
-    "exportedBasicFrames": 22,
-    "missingSymbol": [],
-    "missingBasicSymbol": [],
-    "symbolErrors": [],
-    "exportErrors": [],
-    "metadataErrors": [],
-    "exportFallbacks": [],
-    "missingFrame": [],
-    "missingBasicFrame": [],
-    "timelineScriptErrors": [],
-    "spriteGraphErrors": [],
-    "staticStopSkinKeys": 1,
-    "staticStopCollapsedFrames": 1,
-    "purgedStaleFrames": 0,
-    "staticStopSamples": [
-      {
-        "skinKey": "刀-方钢锤",
-        "characterId": 988,
-        "sourceFrameCount": 2,
-        "playback": "static-first-frame",
-        "reason": "frame1_plain_stop"
+  "battleRig": {
+    "source": "flashswf/arts/things0/LIBRARY/主角-男.xml",
+    "auditErrors": [],
+    "states": {
+      "空手站立": {
+        "holdersMale": 23,
+        "fieldCounts": {
+          "上臂": 2,
+          "刀2_装扮": 1,
+          "刀3_装扮": 1,
+          "刀_装扮": 1,
+          "发型": 1,
+          "右大腿": 1,
+          "右手": 1,
+          "小腿": 2,
+          "屁股": 1,
+          "左下臂": 2,
+          "左大腿": 1,
+          "左手": 1,
+          "手枪2_装扮": 1,
+          "手枪_装扮": 1,
+          "脚": 2,
+          "脸型": 1,
+          "身体": 1,
+          "长枪_装扮": 1,
+          "面具": 1
+        },
+        "missingRequiredFields": []
+      },
+      "长枪站立": {
+        "holdersMale": 23,
+        "fieldCounts": {
+          "上臂": 2,
+          "刀2_装扮": 1,
+          "刀3_装扮": 1,
+          "刀_装扮": 1,
+          "发型": 1,
+          "右大腿": 1,
+          "右手": 1,
+          "小腿": 2,
+          "屁股": 1,
+          "左下臂": 2,
+          "左大腿": 1,
+          "左手": 1,
+          "手枪2_装扮": 1,
+          "手枪_装扮": 1,
+          "脚": 2,
+          "脸型": 1,
+          "身体": 1,
+          "长枪_装扮": 1,
+          "面具": 1
+        },
+        "missingRequiredFields": []
+      },
+      "手枪站立": {
+        "holdersMale": 23,
+        "fieldCounts": {
+          "上臂": 2,
+          "刀2_装扮": 1,
+          "刀3_装扮": 1,
+          "刀_装扮": 1,
+          "发型": 1,
+          "右大腿": 1,
+          "右手": 1,
+          "小腿": 2,
+          "屁股": 1,
+          "左下臂": 2,
+          "左大腿": 1,
+          "左手": 1,
+          "手枪2_装扮": 1,
+          "手枪_装扮": 1,
+          "脚": 2,
+          "脸型": 1,
+          "身体": 1,
+          "长枪_装扮": 1,
+          "面具": 1
+        },
+        "missingRequiredFields": []
+      },
+      "手枪2站立": {
+        "holdersMale": 23,
+        "fieldCounts": {
+          "上臂": 2,
+          "刀2_装扮": 1,
+          "刀3_装扮": 1,
+          "刀_装扮": 1,
+          "发型": 1,
+          "右大腿": 1,
+          "右手": 1,
+          "小腿": 2,
+          "屁股": 1,
+          "左下臂": 2,
+          "左大腿": 1,
+          "左手": 1,
+          "手枪2_装扮": 1,
+          "手枪_装扮": 1,
+          "脚": 2,
+          "脸型": 1,
+          "身体": 1,
+          "长枪_装扮": 1,
+          "面具": 1
+        },
+        "missingRequiredFields": []
+      },
+      "双枪站立": {
+        "holdersMale": 23,
+        "fieldCounts": {
+          "上臂": 2,
+          "刀2_装扮": 1,
+          "刀3_装扮": 1,
+          "刀_装扮": 1,
+          "发型": 1,
+          "右大腿": 1,
+          "右手": 1,
+          "小腿": 2,
+          "屁股": 1,
+          "左下臂": 2,
+          "左大腿": 1,
+          "左手": 1,
+          "手枪2_装扮": 1,
+          "手枪_装扮": 1,
+          "脚": 2,
+          "脸型": 1,
+          "身体": 1,
+          "长枪_装扮": 1,
+          "面具": 1
+        },
+        "missingRequiredFields": []
+      },
+      "兵器站立": {
+        "holdersMale": 23,
+        "fieldCounts": {
+          "上臂": 2,
+          "刀2_装扮": 1,
+          "刀3_装扮": 1,
+          "刀_装扮": 1,
+          "发型": 1,
+          "右大腿": 1,
+          "右手": 1,
+          "小腿": 2,
+          "屁股": 1,
+          "左下臂": 2,
+          "左大腿": 1,
+          "左手": 1,
+          "手枪2_装扮": 1,
+          "手枪_装扮": 1,
+          "脚": 2,
+          "脸型": 1,
+          "身体": 1,
+          "长枪_装扮": 1,
+          "面具": 1
+        },
+        "missingRequiredFields": []
       }
-    ],
-    "nestedAnimationSkinKeys": 1,
-    "nestedAnimationSamples": [
-      {
-        "skinKey": "刀-激光剑",
-        "characterId": 426,
-        "playback": "nested-animation",
-        "sourceFrameCount": 1,
-        "descendantCount": 4,
-        "maxDescendantFrameCount": 78,
-        "sampleDescendants": [
-          {
-            "characterId": 425,
-            "frameCount": 78,
-            "depth": 1,
-            "path": [
-              426,
-              425
-            ]
-          },
-          {
-            "characterId": 392,
-            "frameCount": 56,
-            "depth": 2,
-            "path": [
-              426,
-              425,
-              392
-            ]
-          },
-          {
-            "characterId": 393,
-            "frameCount": 55,
-            "depth": 2,
-            "path": [
-              426,
-              425,
-              393
-            ]
-          },
-          {
-            "characterId": 396,
-            "frameCount": 52,
-            "depth": 2,
-            "path": [
-              426,
-              425,
-              396
-            ]
-          }
-        ]
-      }
-    ],
-    "nestedLayerUnsupportedDescendants": 0,
-    "nestedLayerCompositedDescendants": 3,
-    "exportedNestedLayerKeys": 1,
-    "exportedNestedLayerFrames": 78,
-    "missingNestedLayerFrame": [],
-    "uniqueFrameImages": 95,
-    "duplicateFrameRefs": 32,
-    "timelineLogicalFrames": 127,
-    "timelineFrameEntries": 122,
-    "timelineCompressedFrameRefs": 5,
-    "timelineCompressionSamples": [
-      {
-        "owner": "b419a658#layer425",
-        "logicalFrames": 78,
-        "timelineFrames": 73,
-        "savedFrameEntries": 5,
-        "uniqueUris": 46,
-        "longestHoldFrames": 6
-      }
-    ],
-    "preservedSkinKeyExports": 2632
+    }
   },
-  "animatedSkinKeys": [
-    {
-      "skinKey": "刀-异形女王毒刺",
-      "frameCount": 80,
-      "playback": "loop",
-      "uses": [
-        "刀"
-      ],
-      "uri": "skins/c50514b6_1.png"
-    },
-    {
-      "skinKey": "刀-异形毒刺",
-      "frameCount": 80,
-      "playback": "loop",
-      "uses": [
-        "刀"
-      ],
-      "uri": "skins/dda4091d_1.png"
-    },
-    {
-      "skinKey": "男变装-黑铁死士围巾",
-      "frameCount": 24,
-      "playback": "loop",
-      "uses": [
-        "头部装备"
-      ],
-      "uri": "skins/c136501e_1.png"
-    },
-    {
-      "skinKey": "男变装-黑铁游侠围巾",
-      "frameCount": 24,
-      "playback": "loop",
-      "uses": [
-        "头部装备"
-      ],
-      "uri": "skins/0762e7d7_1.png"
-    },
-    {
-      "skinKey": "刀-远古诛神剑",
-      "frameCount": 11,
-      "playback": "loop",
-      "uses": [
-        "刀"
-      ],
-      "uri": "skins/9ca3347e_1.png"
-    },
-    {
-      "skinKey": "男变装-战术耳机加遮阳帽",
-      "frameCount": 10,
-      "playback": "loop",
-      "uses": [
-        "头部装备"
-      ],
-      "uri": "skins/f6b8fb32_1.png"
-    },
-    {
-      "skinKey": "男变装-特战队员头部装备",
-      "frameCount": 10,
-      "playback": "loop",
-      "uses": [
-        "头部装备"
-      ],
-      "uri": "skins/4aede664_1.png"
-    },
-    {
-      "skinKey": "男变装-重甲头部",
-      "frameCount": 10,
-      "playback": "loop",
-      "uses": [
-        "头部装备"
-      ],
-      "uri": "skins/d0f57afd_1.png"
-    },
-    {
-      "skinKey": "手雷-BBPLAYER炸弹",
-      "frameCount": 4,
-      "playback": "loop",
-      "uses": [
-        "手雷"
-      ],
-      "uri": "skins/62ff8876_1.png"
-    },
-    {
-      "skinKey": "手雷-十字螺旋手里剑",
-      "frameCount": 4,
-      "playback": "loop",
-      "uses": [
-        "手雷"
-      ],
-      "uri": "skins/9198cb72_1.png"
-    },
-    {
-      "skinKey": "手雷-寒铁镖",
-      "frameCount": 4,
-      "playback": "loop",
-      "uses": [
-        "手雷"
-      ],
-      "uri": "skins/ec80728e_1.png"
-    },
-    {
-      "skinKey": "手雷-屎块",
-      "frameCount": 4,
-      "playback": "loop",
-      "uses": [
-        "手雷"
-      ],
-      "uri": "skins/3acd7660_1.png"
-    },
-    {
-      "skinKey": "手雷-燃烧弹",
-      "frameCount": 4,
-      "playback": "loop",
-      "uses": [
-        "手雷"
-      ],
-      "uri": "skins/1072e957_1.png"
-    },
-    {
-      "skinKey": "手雷-翼炎钉针",
-      "frameCount": 4,
-      "playback": "loop",
-      "uses": [
-        "手雷"
-      ],
-      "uri": "skins/c5e417a5_1.png"
-    },
-    {
-      "skinKey": "手雷-鎏金雀翎",
-      "frameCount": 4,
-      "playback": "loop",
-      "uses": [
-        "手雷"
-      ],
-      "uri": "skins/e48eafa6_1.png"
-    },
-    {
-      "skinKey": "手雷-鞭炮",
-      "frameCount": 4,
-      "playback": "loop",
-      "uses": [
-        "手雷"
-      ],
-      "uri": "skins/2dc25ce6_1.png"
-    }
-  ],
-  "staticCollapsedSkinKeys": [
-    {
-      "skinKey": "枪-长枪-G1111",
-      "sourceFrameCount": 44,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/6c52b06a_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-RShG4Я",
-      "sourceFrameCount": 35,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/dfbdb843_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-等离子切割机",
-      "sourceFrameCount": 35,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/1382d63a_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-双面雷神",
-      "sourceFrameCount": 32,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/8420bd3c_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-僵尸割草机",
-      "sourceFrameCount": 31,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/7636bd80_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-混凝土切割机",
-      "sourceFrameCount": 31,
-      "playback": "static-parent-nested-animation",
-      "staticReason": "frame1_plain_stop_with_nested_animation",
-      "nestedAnimation": true,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/fbaee6f1_1.png"
-    },
-    {
-      "skinKey": "刀-雷铁斩斧",
-      "sourceFrameCount": 30,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "刀"
-      ],
-      "uri": "skins/33547fcd_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-GM6_LYNX",
-      "sourceFrameCount": 23,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/3a1c9c10_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-MACSIII",
-      "sourceFrameCount": 20,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/dc9ca434_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-G111",
-      "sourceFrameCount": 16,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/5b4ff743_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-Jackhammer",
-      "sourceFrameCount": 15,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/19b97f07_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-G11",
-      "sourceFrameCount": 11,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/9e332ea8_1.png"
-    },
-    {
-      "skinKey": "女变装-基本脸型",
-      "sourceFrameCount": 10,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "脸型"
-      ],
-      "uri": "skins/f84992cd_1.png"
-    },
-    {
-      "skinKey": "男变装-基本脸型",
-      "sourceFrameCount": 10,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "脸型"
-      ],
-      "uri": "skins/db0204be_1.png"
-    },
-    {
-      "skinKey": "男变装-闪跑2Andy头部",
-      "sourceFrameCount": 10,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "头部装备"
-      ],
-      "uri": "skins/36083590_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-XM214-CageFrame",
-      "sourceFrameCount": 6,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/cf1d4f9f_1.png"
-    },
-    {
-      "skinKey": "刀-方钢锤",
-      "sourceFrameCount": 2,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "刀"
-      ],
-      "uri": "skins/1d2fcd29_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-PF98A",
-      "sourceFrameCount": 2,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/c7aef810_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-RPG28",
-      "sourceFrameCount": 2,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/4545c77b_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-RShG4",
-      "sourceFrameCount": 2,
-      "playback": "static-first-frame",
-      "staticReason": "frame1_plain_stop",
-      "nestedAnimation": false,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/3f1fa8d0_1.png"
-    }
-  ],
-  "nestedAnimationSkinKeys": [
-    {
-      "skinKey": "男变装-末日铁拳右手",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 91,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "手部装备"
-      ],
-      "uri": "skins/2fc13a04_1.png"
-    },
-    {
-      "skinKey": "刀-激光剑",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 4,
-      "maxDescendantFrameCount": 78,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 3,
-      "uses": [
-        "刀"
-      ],
-      "uri": "skins/b419a658_1.png"
-    },
-    {
-      "skinKey": "刀-审判日夜闪",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 2,
-      "maxDescendantFrameCount": 60,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "刀"
-      ],
-      "uri": "skins/22392140_1.png"
-    },
-    {
-      "skinKey": "刀-重力操纵之剑",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 2,
-      "maxDescendantFrameCount": 60,
-      "layerCount": 2,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "刀"
-      ],
-      "uri": "skins/97e7cd39_1.png"
-    },
-    {
-      "skinKey": "刀-应援棒",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 59,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "刀"
-      ],
-      "uri": "skins/6ca4459c_1.png"
-    },
-    {
-      "skinKey": "男变装-兽王战甲盔",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 32,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "头部装备"
-      ],
-      "uri": "skins/a05a5cf1_1.png"
-    },
-    {
-      "skinKey": "男变装-兽王虎甲盔",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 25,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "头部装备"
-      ],
-      "uri": "skins/dc871f22_1.png"
-    },
-    {
-      "skinKey": "女变装-A兵团精致战术背心身体",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 18,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "上装装备"
-      ],
-      "uri": "skins/029b54e0_1.png"
-    },
-    {
-      "skinKey": "女变装-兽王战甲身体",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 18,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "上装装备"
-      ],
-      "uri": "skins/4020d65c_1.png"
-    },
-    {
-      "skinKey": "男变装-A兵团精致战术背心身体",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 18,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "上装装备"
-      ],
-      "uri": "skins/818ccb02_1.png"
-    },
-    {
-      "skinKey": "男变装-兽王战甲身体",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 18,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "上装装备"
-      ],
-      "uri": "skins/e5ce5c06_1.png"
-    },
-    {
-      "skinKey": "女变装-兽王虎甲腿甲屁股",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 16,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "下装装备"
-      ],
-      "uri": "skins/3208ad59_1.png"
-    },
-    {
-      "skinKey": "女变装-兽王虎甲身体",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 16,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "上装装备"
-      ],
-      "uri": "skins/ecd9efe6_1.png"
-    },
-    {
-      "skinKey": "男变装-兽王虎甲腿甲屁股",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 16,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "下装装备"
-      ],
-      "uri": "skins/8d58877b_1.png"
-    },
-    {
-      "skinKey": "男变装-兽王虎甲身体",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 16,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "上装装备"
-      ],
-      "uri": "skins/493765bc_1.png"
-    },
-    {
-      "skinKey": "刀-炎魔斩alter",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 4,
-      "maxDescendantFrameCount": 15,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 3,
-      "uses": [
-        "刀"
-      ],
-      "uri": "skins/dd803a4d_1.png"
-    },
-    {
-      "skinKey": "刀-绯红女皇",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 15,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "刀"
-      ],
-      "uri": "skins/71866106_1.png"
-    },
-    {
-      "skinKey": "刀-3XF电棍",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 10,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "刀"
-      ],
-      "uri": "skins/1fc852f9_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-混凝土切割机",
-      "playback": "static-parent-nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 31,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 7,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/fbaee6f1_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-生命收割者",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 6,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/eb1287c5_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-怒海狂鲨",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 2,
-      "maxDescendantFrameCount": 4,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/c455ed6e_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-AK47火麒麟",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 3,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/12d51f3c_1.png"
-    },
-    {
-      "skinKey": "枪-长枪-M4A1雷神",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 3,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "长枪"
-      ],
-      "uri": "skins/ef3382a2_1.png"
-    },
-    {
-      "skinKey": "刀-绝地武士佩剑",
-      "playback": "nested-animation",
-      "frameCount": 1,
-      "sourceFrameCount": 1,
-      "descendantCount": 1,
-      "maxDescendantFrameCount": 2,
-      "layerCount": 1,
-      "strategy": "direct-layered",
-      "unsupportedDescendantCount": 0,
-      "compositedDescendantCount": 0,
-      "uses": [
-        "刀"
-      ],
-      "uri": "skins/46391d29_1.png"
-    }
-  ]
+  "assetExport": {
+    "preservedSkinKeyExports": 2659,
+    "preservedBasicHolderExports": 22
+  }
 }

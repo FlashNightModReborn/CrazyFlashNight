@@ -25,6 +25,15 @@ REQUIRED_ITEM_HELMET_FLAGS = {
     "剑圣头部装甲": True,
     "锐刻幻影夜视仪": False,
 }
+BATTLE_STATES = ("空手站立", "长枪站立", "手枪站立", "手枪2站立", "双枪站立", "兵器站立")
+BATTLE_REQUIRED_FIELDS = {
+    "空手站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具"),
+    "长枪站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "长枪_装扮"),
+    "手枪站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪_装扮"),
+    "手枪2站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪2_装扮"),
+    "双枪站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪_装扮", "手枪2_装扮"),
+    "兵器站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "刀_装扮"),
+}
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -179,6 +188,46 @@ def assert_required_item_helmet_flags(manifest: dict[str, Any], failures: list[s
             failures.append(f"{item_name} helmet should be {expected}")
 
 
+def assert_battle_rig(manifest: dict[str, Any], failures: list[str]) -> None:
+    battle = ((manifest.get("rigs") or {}).get("battle") or {})
+    if not battle:
+        failures.append("manifest.rigs.battle missing")
+        return
+    if battle.get("auditErrors"):
+        failures.append(f"battle rig should have no auditErrors: {battle.get('auditErrors')[:3]}")
+    if tuple(battle.get("states") or []) != BATTLE_STATES:
+        failures.append(f"battle rig states mismatch: {battle.get('states')}")
+
+    for gender in ("男", "女"):
+        gender_data = (battle.get("genders") or {}).get(gender)
+        if not gender_data:
+            failures.append(f"battle rig missing gender {gender}")
+            continue
+        states = gender_data.get("states") or {}
+        for state_label in BATTLE_STATES:
+            state = states.get(state_label)
+            if not state:
+                failures.append(f"battle rig {gender}/{state_label} missing")
+                continue
+            holders = state.get("holders") or []
+            if not holders:
+                failures.append(f"battle rig {gender}/{state_label} has no holders")
+                continue
+            field_counts: dict[str, int] = {}
+            for holder in holders:
+                field = holder.get("field")
+                field_counts[field] = field_counts.get(field, 0) + 1
+                if holder.get("rig") != "battle":
+                    failures.append(f"battle holder {gender}/{state_label}/{field} missing rig marker")
+                matrix = holder.get("matrix") or {}
+                for key in ("a", "b", "c", "d", "tx", "ty"):
+                    if not isinstance(matrix.get(key), (int, float)):
+                        failures.append(f"battle holder {gender}/{state_label}/{field} missing numeric matrix.{key}")
+            for required in BATTLE_REQUIRED_FIELDS[state_label]:
+                if field_counts.get(required, 0) <= 0:
+                    failures.append(f"battle rig {gender}/{state_label} missing field {required}")
+
+
 def main() -> None:
     manifest = read_json(MANIFEST_PATH)
     report = read_json(REPORT_PATH) if REPORT_PATH.exists() else {}
@@ -209,9 +258,24 @@ def main() -> None:
                 assert_frame_list(manifest_dir, failures, owner, frames, is_timeline)
             assert_compression_contract(failures, owner_prefix, basic)
 
+    for rig_name, rig in (manifest.get("rigs") or {}).items():
+        if rig_name == "dialogue":
+            continue
+        for gender, gender_data in (rig.get("genders") or {}).items():
+            for state_label, state in (gender_data.get("states") or {}).items():
+                for holder in state.get("holders") or []:
+                    basic = holder.get("basic") or {}
+                    if not basic:
+                        continue
+                    owner_prefix = f"rigs[{rig_name}].genders[{gender}].states[{state_label}].holders[{holder.get('field')}].basic"
+                    for owner, frames, is_timeline in frame_lists_from_entry(basic, owner_prefix):
+                        assert_frame_list(manifest_dir, failures, owner, frames, is_timeline)
+                    assert_compression_contract(failures, owner_prefix, basic)
+
     assert_a_corps_body(manifest, failures)
     assert_required_appearance_keys(manifest, failures)
     assert_required_item_helmet_flags(manifest, failures)
+    assert_battle_rig(manifest, failures)
 
     layer_count = 0
     compressed_layer_count = 0

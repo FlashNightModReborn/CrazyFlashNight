@@ -28,6 +28,12 @@ BARE_AMPERSAND_RE = re.compile(r"&(?!#\d+;|#x[0-9A-Fa-f]+;|[A-Za-z][A-Za-z0-9_.:
 ATTACH_RE = re.compile(
     r'attachMovie\(\s*_parent\._parent\._parent\.([A-Za-z0-9_\u4e00-\u9fff]+)\s*,\s*"([^"]+)"'
 )
+DRESSUP_CONFIG_CALL_RE = re.compile(
+    r'配置装扮\(\s*this\s*,\s*((?:自机|_parent\._parent\._parent)\.([A-Za-z0-9_\u4e00-\u9fff]+)|([A-Za-z0-9_\u4e00-\u9fff]+))\s*,\s*"([^"]+)"\s*,\s*"([^"]+)"'
+)
+DRESSUP_CONFIG_VAR_RE = re.compile(
+    r'\bvar\s+([A-Za-z0-9_\u4e00-\u9fff]+)\s*=\s*_parent\._parent\._parent\.([A-Za-z0-9_\u4e00-\u9fff]+)\s*;'
+)
 SVG_MATRIX_RE = re.compile(
     r'<g\s+transform="matrix\(\s*[-0-9.]+\s*,\s*[-0-9.]+\s*,\s*[-0-9.]+\s*,\s*[-0-9.]+\s*,\s*([-0-9.]+)\s*,\s*([-0-9.]+)\s*\)"'
 )
@@ -41,6 +47,16 @@ BODY_FIELDS = ("身体", "上臂", "左下臂", "右下臂")
 LOWER_FIELDS = ("屁股", "左大腿", "右大腿", "小腿")
 HAND_FIELDS = ("左手", "右手")
 WEAPON_DRESSUP_FIELDS = ("dressup1", "dressup2", "dressup3")
+BATTLE_RIG_STATES = ("空手站立", "长枪站立", "手枪站立", "手枪2站立", "双枪站立", "兵器站立")
+BATTLE_RIG_DEFAULT_CHILD_LABELS = ("空闲", "站立")
+BATTLE_RIG_REQUIRED_FIELDS = {
+    "空手站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具"),
+    "长枪站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "长枪_装扮"),
+    "手枪站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪_装扮"),
+    "手枪2站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪2_装扮"),
+    "双枪站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪_装扮", "手枪2_装扮"),
+    "兵器站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "刀_装扮"),
+}
 
 DEFAULT_GENDERS = ("男", "女")
 IGNORED_ITEM_XML = {"asset_source_map.xml", "list.xml", "bullets_cases.xml", "missileConfigs.xml"}
@@ -502,37 +518,96 @@ def parse_script(instance: ET.Element) -> str:
     return script.text
 
 
+def script_without_comments(script: str) -> str:
+    return LINE_COMMENT_RE.sub("", BLOCK_COMMENT_RE.sub("", script or ""))
+
+
+def parse_dressup_config_calls(script: str) -> list[dict[str, str]]:
+    clean = script_without_comments(script)
+    var_fields = {match.group(1): match.group(2) for match in DRESSUP_CONFIG_VAR_RE.finditer(clean)}
+    calls: list[dict[str, str]] = []
+    seen: set[tuple[str, str, str]] = set()
+    for match in DRESSUP_CONFIG_CALL_RE.finditer(clean):
+        field = match.group(2) or var_fields.get(match.group(3) or "")
+        if not field:
+            continue
+        attach_name = match.group(4)
+        reference_name = match.group(5)
+        key = (field, attach_name, reference_name)
+        if key in seen:
+            continue
+        seen.add(key)
+        calls.append(
+            {
+                "field": field,
+                "attachName": attach_name,
+                "referenceName": reference_name,
+            }
+        )
+    return calls
+
+
+def parse_symbol_instance(instance: ET.Element) -> dict[str, Any]:
+    script = parse_script(instance)
+    return {
+        "libraryItemName": instance.get("libraryItemName") or "",
+        "name": instance.get("name") or "",
+        "matrix": parse_matrix(instance),
+        "script": script,
+        "attachCalls": ATTACH_RE.findall(script),
+        "dressupConfigCalls": parse_dressup_config_calls(script),
+    }
+
+
+def parse_symbol_frame(frame: ET.Element) -> dict[str, Any]:
+    instances = []
+    elements = first_child_named(frame, "elements")
+    if elements is not None:
+        for instance in iter_children_named(elements, "DOMSymbolInstance"):
+            instances.append(parse_symbol_instance(instance))
+    return {
+        "index": int(frame.get("index", "0")),
+        "duration": int(frame.get("duration", "1")),
+        "label": frame.get("name") or "",
+        "instances": instances,
+    }
+
+
 def parse_symbol_file(path: Path) -> dict[str, Any]:
     root = xml_root(path)
     name = root.get("name") or path.stem
     linkage_identifier = root.get("linkageIdentifier") or ""
     frames: list[dict[str, Any]] = []
     labels: dict[int, str] = {}
+    layers: list[dict[str, Any]] = []
+    for layer in descendants_named(root, "DOMLayer"):
+        layer_frames = []
+        frames_wrapper = first_child_named(layer, "frames")
+        if frames_wrapper is not None:
+            for frame in iter_children_named(frames_wrapper, "DOMFrame"):
+                parsed_frame = parse_symbol_frame(frame)
+                layer_frames.append(parsed_frame)
+                if parsed_frame["label"]:
+                    labels[parsed_frame["index"]] = parsed_frame["label"]
+        layers.append(
+            {
+                "name": layer.get("name") or "",
+                "frames": sorted(layer_frames, key=lambda item: item["index"]),
+            }
+        )
     for frame in descendants_named(root, "DOMFrame"):
-        index = int(frame.get("index", "0"))
-        label = frame.get("name")
+        parsed_frame = parse_symbol_frame(frame)
+        index = parsed_frame["index"]
+        label = parsed_frame["label"]
         if label:
             labels[index] = label
-        instances = []
-        elements = first_child_named(frame, "elements")
-        if elements is not None:
-            for instance in iter_children_named(elements, "DOMSymbolInstance"):
-                script = parse_script(instance)
-                instances.append(
-                    {
-                        "libraryItemName": instance.get("libraryItemName") or "",
-                        "name": instance.get("name") or "",
-                        "matrix": parse_matrix(instance),
-                        "script": script,
-                        "attachCalls": ATTACH_RE.findall(script),
-                    }
-                )
-        frames.append({"index": index, "label": label or "", "instances": instances})
+        frames.append(parsed_frame)
     return {
         "name": name,
         "path": str(path),
         "linkageIdentifier": linkage_identifier,
         "labels": labels,
+        "layers": layers,
         "frames": frames,
     }
 
@@ -695,6 +770,217 @@ def build_dialogue_rig(project_root: Path) -> dict[str, Any]:
     }
 
 
+BATTLE_BASIC_FALLBACK_FIELDS = set(BODY_FIELDS + LOWER_FIELDS + HAND_FIELDS + ("脚", "脸型"))
+
+
+def symbol_label_index(symbol: dict[str, Any], label: str) -> int | None:
+    for index, value in symbol.get("labels", {}).items():
+        if value == label:
+            return index
+    return None
+
+
+def default_battle_child_frame(symbol: dict[str, Any]) -> int:
+    for label in BATTLE_RIG_DEFAULT_CHILD_LABELS:
+        index = symbol_label_index(symbol, label)
+        if index is not None:
+            return index
+    return 0
+
+
+def active_layer_frame(layer: dict[str, Any], frame_index: int) -> dict[str, Any] | None:
+    active = None
+    for frame in layer.get("frames", []):
+        index = int(frame.get("index", 0))
+        duration = max(1, int(frame.get("duration", 1)))
+        if index <= frame_index < index + duration:
+            active = frame
+            break
+        if index <= frame_index:
+            active = frame
+    return active
+
+
+def active_symbol_frames(symbol: dict[str, Any], frame_index: int) -> list[tuple[int, dict[str, Any], dict[str, Any]]]:
+    layers = symbol.get("layers") or []
+    result: list[tuple[int, dict[str, Any], dict[str, Any]]] = []
+    # XFL serializes layers top-to-bottom. Canvas draws in list order, so collect
+    # bottom-to-top to preserve Flash visual stacking.
+    for draw_index, layer_index in enumerate(range(len(layers) - 1, -1, -1)):
+        layer = layers[layer_index]
+        frame = active_layer_frame(layer, frame_index)
+        if frame is not None:
+            result.append((draw_index, layer, frame))
+    return result
+
+
+def battle_holder_uses_basic(field: str, symbols: dict[str, dict[str, Any]], instance: dict[str, Any]) -> bool:
+    return field in BATTLE_BASIC_FALLBACK_FIELDS and basic_instance(symbols, instance["libraryItemName"]) is not None
+
+
+def record_battle_holder(
+    holders: list[dict[str, Any]],
+    symbols: dict[str, dict[str, Any]],
+    gender: str,
+    state_label: str,
+    symbol_name: str,
+    instance: dict[str, Any],
+    matrix: Matrix,
+    path: list[str],
+    draw_index: int,
+    layer_name: str,
+    frame_index: int,
+) -> None:
+    script = instance["script"]
+    for call in instance.get("dressupConfigCalls", []):
+        field = call["field"]
+        fallback_basic = battle_holder_uses_basic(field, symbols, instance)
+        holders.append(
+            {
+                "gender": gender,
+                "rig": "battle",
+                "stateLabel": state_label,
+                "field": field,
+                "attachName": call["attachName"],
+                "referenceName": call["referenceName"],
+                "hostSymbol": symbol_name,
+                "hostInstanceName": instance["name"],
+                "targetLibraryItemName": instance["libraryItemName"],
+                "matrix": matrix.to_json(),
+                "fallbackBasic": fallback_basic,
+                "hideBasicOnAttach": "基本款._visible = 0" in script or "基本款._visible=0" in script or "基本款._visible = false" in script,
+                "syncFrameToBasic": "gotoAndStop(this.基本款._currentframe)" in script,
+                "basic": basic_instance(symbols, instance["libraryItemName"]) if fallback_basic else None,
+                "drawIndex": draw_index,
+                "layerName": layer_name,
+                "sourceFrame": frame_index,
+                "path": path + [symbol_name, instance["libraryItemName"]],
+            }
+        )
+
+
+def traverse_battle_holders(
+    symbols: dict[str, dict[str, Any]],
+    gender: str,
+    state_label: str,
+    symbol_name: str,
+    frame_index: int,
+    parent_matrix: Matrix,
+    holders: list[dict[str, Any]],
+    path: list[str],
+    stack: set[tuple[str, int]],
+) -> None:
+    visit_key = (symbol_name, frame_index)
+    if visit_key in stack or len(path) > 48:
+        return
+    symbol = symbols.get(symbol_name)
+    if symbol is None:
+        return
+    stack.add(visit_key)
+    for draw_index, layer, frame in active_symbol_frames(symbol, frame_index):
+        for instance in frame.get("instances", []):
+            matrix = multiply(parent_matrix, instance["matrix"])
+            if instance.get("dressupConfigCalls"):
+                record_battle_holder(
+                    holders,
+                    symbols,
+                    gender,
+                    state_label,
+                    symbol_name,
+                    instance,
+                    matrix,
+                    path,
+                    draw_index,
+                    layer.get("name") or "",
+                    frame.get("index", frame_index),
+                )
+            child_name = instance["libraryItemName"]
+            child = symbols.get(child_name)
+            if child is not None:
+                traverse_battle_holders(
+                    symbols,
+                    gender,
+                    state_label,
+                    child_name,
+                    default_battle_child_frame(child),
+                    matrix,
+                    holders,
+                    path + [f"{symbol_name}@{frame_index}"],
+                    stack,
+                )
+    stack.remove(visit_key)
+
+
+def build_battle_rig(project_root: Path) -> dict[str, Any]:
+    library_dir = project_root / "flashswf" / "arts" / "things0" / "LIBRARY"
+    symbols = load_xfl_symbols(library_dir)
+    template = symbols.get("主角-男")
+    if template is None:
+        return {"error": "missing_battle_player_template"}
+
+    states: dict[str, Any] = {}
+    audit_errors: list[dict[str, Any]] = []
+    for state_label in BATTLE_RIG_STATES:
+        frame_index = symbol_label_index(template, state_label)
+        if frame_index is None:
+            audit_errors.append({"stateLabel": state_label, "error": "missing_state_label"})
+            continue
+        holders: list[dict[str, Any]] = []
+        traverse_battle_holders(
+            symbols,
+            "男",
+            state_label,
+            "主角-男",
+            frame_index,
+            IDENTITY,
+            holders,
+            [],
+            set(),
+        )
+        fields = Counter(holder["field"] for holder in holders)
+        required = BATTLE_RIG_REQUIRED_FIELDS.get(state_label, ())
+        missing_required = [field for field in required if fields.get(field, 0) <= 0]
+        if missing_required:
+            audit_errors.append(
+                {
+                    "stateLabel": state_label,
+                    "error": "missing_required_fields",
+                    "fields": missing_required,
+                }
+            )
+        states[state_label] = {
+            "frame": frame_index,
+            "templateSymbol": "主角-男",
+            "matrix": IDENTITY.to_json(),
+            "holders": holders,
+            "fieldCounts": dict(sorted(fields.items())),
+            "missingRequiredFields": missing_required,
+        }
+
+    genders = {
+        gender: {
+            "templateSymbol": "主角-男",
+            "states": copy.deepcopy(states),
+        }
+        for gender in DEFAULT_GENDERS
+    }
+    for gender, gender_data in genders.items():
+        for state_label, state in gender_data["states"].items():
+            for holder in state["holders"]:
+                holder["gender"] = gender
+
+    result = {
+        "source": "flashswf/arts/things0/LIBRARY/主角-男.xml",
+        "templateSymbol": "主角-男",
+        "defaultState": "空手站立",
+        "states": list(BATTLE_RIG_STATES),
+        "genders": genders,
+    }
+    if audit_errors:
+        result["auditErrors"] = audit_errors
+    return result
+
+
 def finalize_skin_keys(skin_keys: dict[str, dict[str, Any]], assets: dict[str, dict[str, Any]]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for key in sorted(skin_keys):
@@ -716,6 +1002,7 @@ def build_manifest(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[s
     skin_keys = finalize_skin_keys(skin_keys_raw, assets)
     missing = {key: value for key, value in skin_keys.items() if not value["covered"]}
     rig = build_dialogue_rig(project_root)
+    battle_rig = build_battle_rig(project_root)
     manifest = {
         "schema": "cf7-dressup-manifest-v1",
         "generatedAt": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
@@ -723,6 +1010,10 @@ def build_manifest(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[s
         "items": items,
         "skinKeys": skin_keys,
         "rig": rig,
+        "rigs": {
+            "dialogue": rig,
+            "battle": battle_rig,
+        },
     }
     report = {
         "schema": "cf7-dressup-report-v1",
@@ -733,9 +1024,41 @@ def build_manifest(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[s
             "missingSkinKeys": len(missing),
             "holdersMale": len(rig.get("genders", {}).get("男", {}).get("holders", [])),
             "holdersFemale": len(rig.get("genders", {}).get("女", {}).get("holders", [])),
+            "battleStates": len(battle_rig.get("states", [])),
+            "battleAuditErrors": len(battle_rig.get("auditErrors", [])),
         },
         "missingSummary": summarize_missing_skin_keys(missing),
         "missingSkinKeys": missing,
+        "battleRig": {
+            "source": battle_rig.get("source"),
+            "auditErrors": battle_rig.get("auditErrors", []),
+            "states": {
+                state_label: {
+                    "holdersMale": len(
+                        battle_rig.get("genders", {})
+                        .get("男", {})
+                        .get("states", {})
+                        .get(state_label, {})
+                        .get("holders", [])
+                    ),
+                    "fieldCounts": (
+                        battle_rig.get("genders", {})
+                        .get("男", {})
+                        .get("states", {})
+                        .get(state_label, {})
+                        .get("fieldCounts", {})
+                    ),
+                    "missingRequiredFields": (
+                        battle_rig.get("genders", {})
+                        .get("男", {})
+                        .get("states", {})
+                        .get(state_label, {})
+                        .get("missingRequiredFields", [])
+                    ),
+                }
+                for state_label in BATTLE_RIG_STATES
+            },
+        },
     }
     return manifest, report
 
@@ -1678,6 +2001,69 @@ def preserve_incremental_skin_exports(
     return preserved
 
 
+def iter_rig_holders(manifest: dict[str, Any]) -> list[dict[str, Any]]:
+    holders: list[dict[str, Any]] = []
+    seen: set[int] = set()
+
+    def add(holder: dict[str, Any]) -> None:
+        holder_id = id(holder)
+        if holder_id in seen:
+            return
+        seen.add(holder_id)
+        holders.append(holder)
+
+    for gender_data in (manifest.get("rig", {}).get("genders") or {}).values():
+        for holder in gender_data.get("holders") or []:
+            add(holder)
+    for rig in (manifest.get("rigs") or {}).values():
+        for gender_data in (rig.get("genders") or {}).values():
+            for holder in gender_data.get("holders") or []:
+                add(holder)
+            for state in (gender_data.get("states") or {}).values():
+                for holder in state.get("holders") or []:
+                    add(holder)
+    return holders
+
+
+def holder_basic_identity(holder: dict[str, Any]) -> tuple[Any, ...] | None:
+    basic = holder.get("basic") or {}
+    if not basic:
+        return None
+    return (
+        holder.get("field") or "",
+        holder.get("attachName") or "",
+        holder.get("referenceName") or "",
+        holder.get("hostSymbol") or "",
+        holder.get("targetLibraryItemName") or "",
+        basic.get("libraryItemName") or "",
+        basic.get("linkageId") or "",
+    )
+
+
+def preserve_basic_holder_exports(manifest: dict[str, Any], existing_manifest: dict[str, Any]) -> int:
+    existing_by_identity: dict[tuple[Any, ...], dict[str, Any]] = {}
+    for holder in iter_rig_holders(existing_manifest):
+        identity = holder_basic_identity(holder)
+        basic = holder.get("basic") or {}
+        if identity is not None and basic.get("export"):
+            existing_by_identity.setdefault(identity, basic)
+
+    preserved = 0
+    for holder in iter_rig_holders(manifest):
+        identity = holder_basic_identity(holder)
+        if identity is None:
+            continue
+        existing_basic = existing_by_identity.get(identity)
+        if not existing_basic:
+            continue
+        basic = holder.get("basic") or {}
+        for field in PRESERVED_EXPORT_KEYS:
+            if field in existing_basic:
+                basic[field] = copy.deepcopy(existing_basic[field])
+        preserved += 1
+    return preserved
+
+
 def exported_frame_entries(
     frames: list[Path],
     asset_dir: Path,
@@ -2470,17 +2856,20 @@ def main() -> int:
     manifest, report = build_manifest(project_root, genders)
     tmp_dir = resolve_path(args.tmp_dir, project_root)
     preserved_skin_exports = 0
+    preserved_basic_exports = 0
+    existing_manifest: dict[str, Any] | None = None
+    if not args.no_write:
+        existing_manifest_path = output_dir / "manifest.json"
+        if existing_manifest_path.exists():
+            existing_manifest = json.loads(existing_manifest_path.read_text(encoding="utf-8-sig"))
     if args.export_assets:
-        if (args.name or args.limit > 0) and not args.no_write:
-            existing_manifest_path = output_dir / "manifest.json"
-            if existing_manifest_path.exists():
-                existing_manifest = json.loads(existing_manifest_path.read_text(encoding="utf-8-sig"))
-                target_keys = set(selected_skin_keys(manifest, set(args.name), args.limit))
-                preserved_skin_exports = preserve_incremental_skin_exports(
-                    manifest,
-                    existing_manifest,
-                    target_keys,
-                )
+        if (args.name or args.limit > 0) and existing_manifest is not None:
+            target_keys = set(selected_skin_keys(manifest, set(args.name), args.limit))
+            preserved_skin_exports = preserve_incremental_skin_exports(
+                manifest,
+                existing_manifest,
+                target_keys,
+            )
         export_skin_assets(
             manifest,
             report,
@@ -2500,6 +2889,20 @@ def main() -> int:
         if preserved_skin_exports:
             report.setdefault("assetExport", {})["preservedSkinKeyExports"] = preserved_skin_exports
             report.setdefault("counts", {})["preservedSkinKeyExports"] = preserved_skin_exports
+    elif existing_manifest is not None:
+        preserved_skin_exports = preserve_incremental_skin_exports(
+            manifest,
+            existing_manifest,
+            set(),
+        )
+        if preserved_skin_exports:
+            report.setdefault("assetExport", {})["preservedSkinKeyExports"] = preserved_skin_exports
+            report.setdefault("counts", {})["preservedSkinKeyExports"] = preserved_skin_exports
+    if existing_manifest is not None:
+        preserved_basic_exports = preserve_basic_holder_exports(manifest, existing_manifest)
+        if preserved_basic_exports:
+            report.setdefault("assetExport", {})["preservedBasicHolderExports"] = preserved_basic_exports
+            report.setdefault("counts", {})["preservedBasicHolderExports"] = preserved_basic_exports
     if not args.no_write:
         write_json(output_dir / "manifest.json", manifest)
         write_json(output_dir / "report.json", report)
