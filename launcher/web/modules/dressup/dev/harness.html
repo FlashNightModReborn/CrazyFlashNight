@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Dressup Doll Harness</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html, body {
+    margin: 0;
+    min-height: 100%;
+    background: #171a1f;
+    color: #e9edf2;
+    font: 13px "Microsoft YaHei", Arial, sans-serif;
+}
+#toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: end;
+    padding: 12px;
+    background: #20252d;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.field {
+    display: grid;
+    gap: 4px;
+}
+label {
+    color: #aeb8c6;
+    font-size: 11px;
+}
+select, button {
+    height: 30px;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: #11151b;
+    color: #f4f7fb;
+    border-radius: 4px;
+}
+select {
+    min-width: 150px;
+    max-width: 220px;
+}
+button {
+    padding: 0 12px;
+    cursor: pointer;
+}
+#stage {
+    display: grid;
+    grid-template-columns: minmax(320px, 440px) minmax(260px, 1fr);
+    gap: 14px;
+    padding: 14px;
+}
+#doll-wrap {
+    height: calc(100vh - 88px);
+    min-height: 520px;
+    background: #10141a;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+#doll {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+#status {
+    white-space: pre-wrap;
+    background: #10141a;
+    border: 1px solid rgba(255,255,255,0.08);
+    min-height: 160px;
+    padding: 12px;
+    overflow: auto;
+}
+@media (max-width: 860px) {
+    #stage {
+        grid-template-columns: 1fr;
+    }
+    #doll-wrap {
+        height: 560px;
+    }
+}
+</style>
+</head>
+<body>
+<div id="toolbar">
+    <div class="field">
+        <label for="gender">性别</label>
+        <select id="gender">
+            <option value="男">男</option>
+            <option value="女">女</option>
+        </select>
+    </div>
+    <div class="field">
+        <label for="upper">上装</label>
+        <select id="upper"></select>
+    </div>
+    <div class="field">
+        <label for="lower">下装</label>
+        <select id="lower"></select>
+    </div>
+    <div class="field">
+        <label for="hands">手部</label>
+        <select id="hands"></select>
+    </div>
+    <div class="field">
+        <label for="feet">脚部</label>
+        <select id="feet"></select>
+    </div>
+    <div class="field">
+        <label for="head">头部</label>
+        <select id="head"></select>
+    </div>
+    <div class="field">
+        <label for="weapon">刀</label>
+        <select id="weapon"></select>
+    </div>
+    <button id="animated-sample" type="button">animated sample</button>
+    <button id="render" type="button">render</button>
+</div>
+<div id="stage">
+    <div id="doll-wrap"><canvas id="doll"></canvas></div>
+    <pre id="status">loading manifest...</pre>
+</div>
+
+<script src="../../asset-timeline.js"></script>
+<script src="../../dressup-doll-renderer.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    var params = new URLSearchParams(window.location.search);
+    var manifestUrl = params.get('manifest') || '../../../assets/dressup/manifest.json';
+    var manifest = null;
+    var renderer = null;
+    var byUse = null;
+    var statusEl = document.getElementById('status');
+    var canvas = document.getElementById('doll');
+
+    var controls = {
+        gender: document.getElementById('gender'),
+        upper: document.getElementById('upper'),
+        lower: document.getElementById('lower'),
+        hands: document.getElementById('hands'),
+        feet: document.getElementById('feet'),
+        head: document.getElementById('head'),
+        weapon: document.getElementById('weapon')
+    };
+
+    var controlUses = {
+        upper: '上装装备',
+        lower: '下装装备',
+        hands: '手部装备',
+        feet: '脚部装备',
+        head: '头部装备',
+        weapon: '刀'
+    };
+
+    function fillSelect(select, names) {
+        select.innerHTML = '';
+        var empty = document.createElement('option');
+        empty.value = '';
+        empty.textContent = '(none)';
+        select.appendChild(empty);
+        (names || []).forEach(function(name) {
+            var option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            select.appendChild(option);
+        });
+    }
+
+    function pickDefaults() {
+        Object.keys(controlUses).forEach(function(key) {
+            var select = controls[key];
+            if (select.options.length > 1) select.selectedIndex = 1;
+        });
+    }
+
+    function selectValue(select, value) {
+        if (!value) return false;
+        for (var i = 0; i < select.options.length; i++) {
+            if (select.options[i].value === value) {
+                select.selectedIndex = i;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function applyAnimatedSample() {
+        selectValue(controls.weapon, '异形女王毒刺') || selectValue(controls.weapon, '异形毒刺');
+    }
+
+    function applyNestedSample() {
+        pickDefaults();
+        selectValue(controls.weapon, '3XF电棍');
+    }
+
+    function applyNestedASample() {
+        Object.keys(controls).forEach(function(key) {
+            if (key !== 'gender') controls[key].selectedIndex = 0;
+        });
+        selectValue(controls.upper, 'A兵团精致战术背心');
+    }
+
+    function applyQuery() {
+        if (params.get('sample') === 'animated') applyAnimatedSample();
+        if (params.get('sample') === 'nested') applyNestedSample();
+        if (params.get('sample') === 'nested-a') applyNestedASample();
+        Object.keys(controls).forEach(function(key) {
+            selectValue(controls[key], params.get(key));
+        });
+    }
+
+    function selectedEquipment() {
+        var result = {};
+        Object.keys(controlUses).forEach(function(key) {
+            if (controls[key].value) result[key] = controls[key].value;
+        });
+        return result;
+    }
+
+    function render() {
+        if (!manifest || !renderer) return;
+        var state = DressupDollRenderer.buildStateFromEquipment(manifest, {
+            gender: controls.gender.value,
+            equipment: selectedEquipment(),
+            appearance: {
+                '脸型': '男变装-基本脸型'
+            }
+        });
+        var meta = renderer.render(state);
+        statusEl.textContent = JSON.stringify({
+            render: meta,
+            equipment: selectedEquipment(),
+            keyMap: state.keyMap
+        }, null, 2);
+    }
+
+    DressupDollRenderer.loadManifest(manifestUrl).then(function(data) {
+        manifest = data;
+        byUse = DressupDollRenderer.collectItemsByUse(manifest);
+        Object.keys(controlUses).forEach(function(key) {
+            fillSelect(controls[key], byUse[controlUses[key]]);
+        });
+        pickDefaults();
+        applyQuery();
+        renderer = DressupDollRenderer.create(canvas, { manifest: manifest, zoom: 0.9 });
+        render();
+    }).catch(function(error) {
+        statusEl.textContent = String(error && error.stack || error);
+    });
+
+    document.getElementById('render').addEventListener('click', render);
+    document.getElementById('animated-sample').addEventListener('click', function() {
+        applyAnimatedSample();
+        render();
+    });
+    Object.keys(controls).forEach(function(key) {
+        controls[key].addEventListener('change', render);
+    });
+    window.addEventListener('resize', render);
+})();
+</script>
+</body>
+</html>
