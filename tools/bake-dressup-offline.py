@@ -44,6 +44,8 @@ ATTACK_MODE_COMPARE_RE = re.compile(r'攻击模式\s*==\s*"([^"]+)"')
 BLOCK_COMMENT_RE = re.compile(r"/\*.*?\*/", re.S)
 LINE_COMMENT_RE = re.compile(r"//.*?(?=\r?\n|$)")
 STOP_CALL_RE = re.compile(r"\bstop\s*\(\s*\)\s*;?")
+LINKAGE_IDENTIFIER_RE = re.compile(r'linkageIdentifier="([^"]+)"')
+DOM_SYMBOL_NAME_RE = re.compile(r'<DOMSymbolItem\b[^>]*\bname="([^"]+)"')
 
 BODY_FIELDS = ("身体", "上臂", "左下臂", "右下臂")
 LOWER_FIELDS = ("屁股", "左大腿", "右大腿", "小腿")
@@ -1054,6 +1056,141 @@ def finalize_skin_keys(skin_keys: dict[str, dict[str, Any]], assets: dict[str, d
     return result
 
 
+def load_asset_source_index(project_root: Path) -> dict[str, list[dict[str, Any]]]:
+    path = project_root / "data" / "items" / "asset_source_map.xml"
+    root = xml_root(path)
+    index: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for tag in ("asset", "conflict", "duplicate"):
+        for node in root.findall(tag):
+            asset_id = (node.get("id") or "").strip()
+            if not asset_id:
+                continue
+            if tag == "asset":
+                index[asset_id].append(
+                    {
+                        "kind": "asset",
+                        "swf": node.get("swf") or "",
+                        "symbolName": node.get("symbolName") or "",
+                        "orphan": (node.get("orphan") or "").lower() == "true",
+                    }
+                )
+                continue
+            for source in node.findall("source"):
+                index[asset_id].append(
+                    {
+                        "kind": tag,
+                        "swf": source.get("swf") or "",
+                        "symbolName": source.get("symbolName") or "",
+                        "orphan": (source.get("orphan") or "").lower() == "true",
+                    }
+                )
+    return dict(index)
+
+
+def scan_exact_missing_xml(project_root: Path, missing_keys: set[str]) -> dict[str, list[dict[str, Any]]]:
+    matches: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    if not missing_keys:
+        return {}
+    flash_root = project_root / "flashswf"
+    for xml_file in flash_root.rglob("*.xml"):
+        asset_id = xml_file.stem
+        if asset_id not in missing_keys:
+            continue
+        try:
+            header = xml_file.read_text(encoding="utf-8", errors="ignore")[:3000]
+        except OSError:
+            continue
+        linkage_match = LINKAGE_IDENTIFIER_RE.search(header)
+        symbol_match = DOM_SYMBOL_NAME_RE.search(header)
+        matches[asset_id].append(
+            {
+                "path": str(xml_file.relative_to(project_root)).replace("\\", "/"),
+                "linkageExportForAS": 'linkageExportForAS="true"' in header,
+                "linkageIdentifier": linkage_match.group(1) if linkage_match else "",
+                "symbolName": symbol_match.group(1) if symbol_match else "",
+            }
+        )
+    return dict(matches)
+
+
+def opposite_gender_key(key: str) -> str:
+    if key.startswith("男变装-"):
+        return "女变装-" + key[len("男变装-") :]
+    if key.startswith("女变装-"):
+        return "男变装-" + key[len("女变装-") :]
+    return ""
+
+
+def audit_missing_sources(
+    project_root: Path,
+    missing: dict[str, Any],
+    assets: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    missing_keys = set(missing)
+    source_index = load_asset_source_index(project_root)
+    exact_xml = scan_exact_missing_xml(project_root, missing_keys)
+    by_reason: Counter[str] = Counter()
+    entries: dict[str, dict[str, Any]] = {}
+    samples: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    actionable_reasons = {
+        "unresolved_asset_source_map_entry",
+        "exact_exported_linkage_not_in_asset_map",
+    }
+    actionable: list[str] = []
+
+    for key in sorted(missing_keys):
+        source_entries = source_index.get(key, [])
+        xml_entries = exact_xml.get(key, [])
+        opposite_key = opposite_gender_key(key)
+        opposite_asset = assets.get(opposite_key) if opposite_key else None
+        has_exact_exported_linkage = any(
+            item.get("linkageExportForAS") and item.get("linkageIdentifier") == key for item in xml_entries
+        )
+        has_exported_mismatch = any(
+            item.get("linkageExportForAS") and item.get("linkageIdentifier") != key for item in xml_entries
+        )
+        if source_entries:
+            reason = "unresolved_asset_source_map_entry"
+        elif has_exact_exported_linkage:
+            reason = "exact_exported_linkage_not_in_asset_map"
+        elif has_exported_mismatch:
+            reason = "exact_xml_linkage_mismatch"
+        elif xml_entries:
+            reason = "exact_xml_without_as_linkage"
+        elif opposite_asset:
+            reason = "opposite_gender_only"
+        else:
+            reason = "no_matching_source"
+        by_reason[reason] += 1
+        entry: dict[str, Any] = {
+            "reason": reason,
+        }
+        if source_entries:
+            entry["assetSourceMapEntries"] = source_entries[:5]
+        if xml_entries:
+            entry["exactXmlMatches"] = xml_entries[:5]
+        if opposite_asset:
+            entry["oppositeGenderAsset"] = {
+                "key": opposite_key,
+                "swf": opposite_asset.get("swf") or "",
+                "symbolName": opposite_asset.get("symbolName") or "",
+            }
+        entries[key] = entry
+        if reason in actionable_reasons:
+            actionable.append(key)
+        if len(samples[reason]) < 8:
+            sample = {"skinKey": key}
+            sample.update(entry)
+            samples[reason].append(sample)
+
+    return {
+        "byReason": dict(sorted(by_reason.items())),
+        "actionableSkinKeys": actionable,
+        "samples": dict(sorted(samples.items())),
+        "entries": entries,
+    }
+
+
 def build_manifest(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[str, Any], dict[str, Any]]:
     items, skin_keys_raw = load_items(project_root, genders)
     assets = load_asset_map(project_root)
@@ -1086,6 +1223,7 @@ def build_manifest(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[s
             "battleAuditErrors": len(battle_rig.get("auditErrors", [])),
         },
         "missingSummary": summarize_missing_skin_keys(missing),
+        "missingSourceAudit": audit_missing_sources(project_root, missing, assets),
         "missingSkinKeys": missing,
         "battleRig": {
             "source": battle_rig.get("source"),
