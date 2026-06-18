@@ -95,6 +95,8 @@ var DressupDollRenderer = (function() {
         if (typeof options.margin === 'number') state.margin = options.margin;
         if (options.rig) state.rig = options.rig;
         if (options.stateLabel) state.stateLabel = options.stateLabel;
+        if (options.attackMode) state.attackMode = options.attackMode;
+        if (options['攻击模式']) state['攻击模式'] = options['攻击模式'];
         return state;
     }
 
@@ -189,14 +191,37 @@ var DressupDollRenderer = (function() {
         });
     }
 
-    function renderableForHolder(holder, manifest, keyMap) {
+    function attackModeForState(stateContext) {
+        var explicit = stateContext && (stateContext.attackMode || stateContext['攻击模式']);
+        if (explicit) return explicit;
+        var label = stateContext && stateContext.stateLabel || '';
+        if (label === '手枪站立') return '手枪';
+        if (label === '手枪2站立') return '手枪2';
+        if (label === '双枪站立') return '双枪';
+        if (label === '长枪站立') return '长枪';
+        if (label === '兵器站立') return '兵器';
+        return '';
+    }
+
+    function entryWithRuntimeVariant(entry, stateContext) {
+        if (!entry || !entry.export || !entry.runtimeVariants || !entry.conditionalVisibility) return entry;
+        var conditional = entry.conditionalVisibility;
+        if (conditional.property !== '攻击模式') return entry;
+        var visibleWhen = conditional.visibleWhen || [];
+        var attackMode = attackModeForState(stateContext);
+        if (visibleWhen.indexOf(attackMode) >= 0) return entry;
+        var variant = entry.runtimeVariants[conditional.hiddenVariant || 'neutral'];
+        return variant && variant.export ? variant : entry;
+    }
+
+    function renderableForHolder(holder, manifest, keyMap, stateContext) {
         var skinKey = keyMap ? keyMap[holder.field] : null;
         var skin = skinKey && manifest.skinKeys ? manifest.skinKeys[skinKey] : null;
         if (skin && skin.export) {
             return {
                 kind: 'skin',
                 key: skinKey,
-                entry: skin,
+                entry: entryWithRuntimeVariant(skin, stateContext),
                 innerMatrix: null,
                 covered: skin.covered
             };
@@ -262,10 +287,10 @@ var DressupDollRenderer = (function() {
         expandEntryBounds(bounds, layer, matrix);
     }
 
-    function computeBounds(holders, manifest, keyMap, debugPlaceholders) {
+    function computeBounds(holders, manifest, keyMap, debugPlaceholders, stateContext) {
         var bounds = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
         holders.forEach(function(holder) {
-            var renderable = renderableForHolder(holder, manifest, keyMap);
+            var renderable = renderableForHolder(holder, manifest, keyMap, stateContext);
             if (!renderable.entry && !debugPlaceholders) return;
             var m = matrixForRenderable(holder, renderable);
             if (renderable.entry) {
@@ -483,12 +508,19 @@ var DressupDollRenderer = (function() {
             var size = setupCanvas();
             var gender = lastState.gender || '男';
             var rigState = resolveRigState(manifest, gender, lastState, options);
+            var stateContext = {};
+            Object.keys(lastState || {}).forEach(function(key) {
+                stateContext[key] = lastState[key];
+            });
+            stateContext.rig = rigState.rig;
+            stateContext.stateLabel = rigState.stateLabel;
             var holders = rigState.holders;
             var bounds = computeBounds(
                 holdersForFit(holders, lastState.fitFields || options.fitFields),
                 manifest,
                 lastState.keyMap,
-                debugPlaceholders
+                debugPlaceholders,
+                stateContext
             );
             var margin = numberOr(lastState.margin, numberOr(options.margin, 24));
             var w = Math.max(1, bounds.maxX - bounds.minX);
@@ -524,7 +556,7 @@ var DressupDollRenderer = (function() {
                 ctx.restore();
             }
             holders.forEach(function(holder) {
-                var renderable = renderableForHolder(holder, manifest, lastState.keyMap);
+                var renderable = renderableForHolder(holder, manifest, lastState.keyMap, stateContext);
                 if (!renderable.entry) {
                     if (renderable.key) missing++;
                     if (!debugPlaceholders) return;

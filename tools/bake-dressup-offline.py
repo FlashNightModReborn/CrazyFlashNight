@@ -39,6 +39,8 @@ SVG_MATRIX_RE = re.compile(
 )
 SCRIPT_DEFINE_DIR_RE = re.compile(r"^DefineSprite_(\d+)(?:_|$)")
 SCRIPT_FRAME_DIR_RE = re.compile(r"^frame_(\d+)$")
+SCRIPT_PLACE_OBJECT_DIR_RE = re.compile(r"^PlaceObject\d*_(\d+)_(\d+)$")
+ATTACK_MODE_COMPARE_RE = re.compile(r'攻击模式\s*==\s*"([^"]+)"')
 BLOCK_COMMENT_RE = re.compile(r"/\*.*?\*/", re.S)
 LINE_COMMENT_RE = re.compile(r"//.*?(?=\r?\n|$)")
 STOP_CALL_RE = re.compile(r"\bstop\s*\(\s*\)\s*;?")
@@ -62,7 +64,14 @@ DEFAULT_GENDERS = ("男", "女")
 IGNORED_ITEM_XML = {"asset_source_map.xml", "list.xml", "bullets_cases.xml", "missileConfigs.xml"}
 DRESSUP_TIMELINE_IDENTITY_KEYS = ("uri", "width", "height", "originX", "originY")
 DRESSUP_FACE_SKINS = ("男变装-基本脸型", "女变装-基本脸型")
-PRESERVED_EXPORT_KEYS = ("export", "frames", "timelineFrames", "nestedAnimation")
+PRESERVED_EXPORT_KEYS = (
+    "export",
+    "frames",
+    "timelineFrames",
+    "nestedAnimation",
+    "runtimeVariants",
+    "conditionalVisibility",
+)
 DRESSUP_CONFLICT_SOURCE_PREFERENCES = {
     "刀-方钢锤": (
         ("flashswf/arts/new/雾人装备调整.swf", "1.冷兵器/钝器/方钢锤/刀-方钢锤"),
@@ -1232,6 +1241,22 @@ def raw_layer_base_svg_dir(tmp_dir: Path, swf_rel: str) -> Path:
     return tmp_dir / "layer-base-svg" / safe_key(swf_rel)
 
 
+def raw_conditional_base_xml_path(tmp_dir: Path, swf_rel: str) -> Path:
+    return tmp_dir / "conditional-base" / safe_key(swf_rel) / "swf.xml"
+
+
+def raw_conditional_base_swf_path(tmp_dir: Path, swf_rel: str) -> Path:
+    return tmp_dir / "conditional-base" / safe_key(swf_rel) / "base.swf"
+
+
+def raw_conditional_base_export_dir(tmp_dir: Path, swf_rel: str) -> Path:
+    return tmp_dir / "conditional-base-png" / safe_key(swf_rel)
+
+
+def raw_conditional_base_svg_dir(tmp_dir: Path, swf_rel: str) -> Path:
+    return tmp_dir / "conditional-base-svg" / safe_key(swf_rel)
+
+
 def raw_nested_layer_export_dir(tmp_dir: Path, swf_rel: str) -> Path:
     return tmp_dir / "nested-layer-png" / safe_key(swf_rel)
 
@@ -1570,11 +1595,17 @@ def collect_timeline_scripts(tmp_dir: Path, swf_rel: str) -> dict[int, dict[str,
         rel_parts = path.relative_to(base).parts
         char_id: int | None = None
         frame_number: int | None = None
+        placed_character_id: int | None = None
+        placed_depth: int | None = None
         for part in rel_parts:
             if char_id is None:
                 char_id = script_define_id(part)
             if frame_number is None:
                 frame_number = script_frame_number(part)
+            place_match = SCRIPT_PLACE_OBJECT_DIR_RE.match(part)
+            if place_match:
+                placed_character_id = int(place_match.group(1))
+                placed_depth = int(place_match.group(2))
         if char_id is None:
             continue
         try:
@@ -1583,7 +1614,12 @@ def collect_timeline_scripts(tmp_dir: Path, swf_rel: str) -> dict[int, dict[str,
             continue
         is_clip_action = any("CLIPACTIONRECORD" in part or "onClipEvent" in part for part in rel_parts)
         if is_clip_action:
-            controls[char_id]["clipActions"].append({"frame": frame_number, "path": path.name})
+            action: dict[str, Any] = {"frame": frame_number, "path": path.name, "script": script}
+            if placed_character_id is not None:
+                action["characterId"] = placed_character_id
+            if placed_depth is not None:
+                action["depth"] = placed_depth
+            controls[char_id]["clipActions"].append(action)
         else:
             controls[char_id]["frameScripts"][frame_number or 0].append(script)
     return controls
@@ -1843,6 +1879,79 @@ def remove_direct_layer_children(
     out_xml_path.parent.mkdir(parents=True, exist_ok=True)
     tree.write(out_xml_path, encoding="utf-8", xml_declaration=True)
     return removed
+
+
+def remove_frame1_place_objects(
+    xml_path: Path,
+    out_xml_path: Path,
+    removals: set[tuple[int, int, int]],
+) -> int:
+    tree = ET.parse(xml_path)
+    root = tree.getroot()
+    removed = 0
+    for item in root.iter("item"):
+        if item.get("type") != "DefineSpriteTag":
+            continue
+        sprite_id_text = item.get("spriteId")
+        if not sprite_id_text:
+            continue
+        parent_id = int(sprite_id_text)
+        sub_tags = first_child_named(item, "subTags")
+        if sub_tags is None:
+            continue
+        frame = 1
+        for child in list(sub_tags):
+            child_type = child.get("type") or ""
+            child_id = child.get("characterId")
+            depth = child.get("depth")
+            if (
+                frame == 1
+                and child_type.startswith("PlaceObject")
+                and child_id
+                and depth
+                and (parent_id, int(child_id), int(depth)) in removals
+            ):
+                sub_tags.remove(child)
+                removed += 1
+                continue
+            if child_type == "ShowFrameTag":
+                frame += 1
+    out_xml_path.parent.mkdir(parents=True, exist_ok=True)
+    tree.write(out_xml_path, encoding="utf-8", xml_declaration=True)
+    return removed
+
+
+def attack_mode_visible_clip_actions(control: dict[str, Any]) -> dict[str, Any] | None:
+    removals: list[dict[str, int]] = []
+    visible_modes: set[str] = set()
+    for action in control.get("clipActions") or []:
+        script = action.get("script") or ""
+        modes = set(ATTACK_MODE_COMPARE_RE.findall(script))
+        if not modes:
+            continue
+        compact = compact_action_script(script)
+        if "this._visible=1" not in compact or "else{this._visible=0;}" not in compact:
+            continue
+        character_id = action.get("characterId")
+        depth = action.get("depth")
+        if character_id is None or depth is None:
+            continue
+        visible_modes.update(modes)
+        removals.append(
+            {
+                "characterId": int(character_id),
+                "depth": int(depth),
+                "frame": int(action.get("frame") or 1),
+            }
+        )
+    if not removals:
+        return None
+    return {
+        "property": "攻击模式",
+        "visibleWhen": sorted(visible_modes),
+        "hiddenVariant": "neutral",
+        "neutralRemovals": removals,
+    }
 
 
 def playback_metadata(
@@ -2348,6 +2457,10 @@ def export_skin_assets(
         "timelineFrameEntries": 0,
         "timelineCompressedFrameRefs": 0,
         "timelineCompressionSamples": [],
+        "conditionalVariantSkinKeys": 0,
+        "conditionalVariantFrames": 0,
+        "conditionalVariantRemovedPlaceObjects": 0,
+        "conditionalVariantSamples": [],
     }
 
     keys = selected_skin_keys(manifest, names, limit)
@@ -2447,6 +2560,8 @@ def export_skin_assets(
         layer_removals: set[tuple[int, int]] = set()
         layer_child_ids: set[int] = set()
         layer_parent_ids: set[int] = set()
+        conditional_removals: set[tuple[int, int, int]] = set()
+        conditional_parent_ids: set[int] = set()
 
         for key, char_id in targets:
             frames = find_exported_frame_paths(tmp_dir, swf_rel, char_id)
@@ -2472,17 +2587,31 @@ def export_skin_assets(
                 layer_child_ids.add(int(layer["characterId"]))
             if layer_plans:
                 layer_parent_ids.add(char_id)
+            conditional_visibility = attack_mode_visible_clip_actions(timeline_controls.get(char_id) or {})
+            if conditional_visibility:
+                conditional_parent_ids.add(char_id)
+                for removal in conditional_visibility.get("neutralRemovals") or []:
+                    conditional_removals.add(
+                        (
+                            char_id,
+                            int(removal["characterId"]),
+                            int(removal["depth"]),
+                        )
+                    )
             target_context[key] = {
                 "characterId": char_id,
                 "frames": frames,
                 "playback": playback,
                 "layerPlans": layer_plans,
+                "conditionalVisibility": conditional_visibility,
             }
 
         base_frame_dir: Path | None = None
         base_svg_dir: Path | None = None
         layer_frame_dir: Path | None = None
         layer_svg_dir: Path | None = None
+        conditional_frame_dir: Path | None = None
+        conditional_svg_dir: Path | None = None
         if layer_removals and static_stop_policy != "off":
             xml_path = raw_xml_export_path(tmp_dir, swf_rel)
             if xml_path.exists():
@@ -2562,10 +2691,61 @@ def export_skin_assets(
                     export_report["metadataErrors"].append(layer_svg_error)
                     layer_svg_dir = None
 
+        if conditional_removals and static_stop_policy != "off":
+            xml_path = raw_xml_export_path(tmp_dir, swf_rel)
+            if xml_path.exists():
+                conditional_xml = raw_conditional_base_xml_path(tmp_dir, swf_rel)
+                conditional_swf = raw_conditional_base_swf_path(tmp_dir, swf_rel)
+                removed = remove_frame1_place_objects(xml_path, conditional_xml, conditional_removals)
+                export_report["conditionalVariantRemovedPlaceObjects"] += removed
+                if removed:
+                    conditional_error = xml2swf(
+                        ffdec,
+                        project_root,
+                        conditional_xml,
+                        conditional_swf,
+                        swf_rel,
+                        timeout_seconds,
+                    )
+                    if conditional_error:
+                        export_report["exportErrors"].append(conditional_error)
+                    else:
+                        conditional_frame_dir = raw_conditional_base_export_dir(tmp_dir, swf_rel)
+                        conditional_svg_dir = raw_conditional_base_svg_dir(tmp_dir, swf_rel)
+                        conditional_export_error, conditional_fallback = export_sprites_from_swf(
+                            ffdec,
+                            project_root,
+                            conditional_swf,
+                            conditional_frame_dir,
+                            f"{swf_rel}#conditional-base",
+                            sorted(conditional_parent_ids),
+                            zoom,
+                            timeout_seconds,
+                        )
+                        if conditional_fallback:
+                            export_report["exportFallbacks"].append(conditional_fallback)
+                        if conditional_export_error:
+                            export_report["exportErrors"].append(conditional_export_error)
+                            conditional_frame_dir = None
+                        conditional_svg_error, _conditional_svg_fallback = export_sprite_svgs_from_swf(
+                            ffdec,
+                            project_root,
+                            conditional_swf,
+                            conditional_svg_dir,
+                            f"{swf_rel}#conditional-base",
+                            sorted(conditional_parent_ids),
+                            zoom,
+                            timeout_seconds,
+                        )
+                        if conditional_svg_error:
+                            export_report["metadataErrors"].append(conditional_svg_error)
+                            conditional_svg_dir = None
+
         for key, context in target_context.items():
             char_id = int(context["characterId"])
             playback = context["playback"]
             layer_plans = context["layerPlans"]
+            conditional_visibility = context.get("conditionalVisibility")
             frames = context["frames"]
             origins = svg_frame_origins(find_exported_svg_paths(tmp_dir, swf_rel, char_id))
             if layer_plans and base_frame_dir:
@@ -2598,7 +2778,60 @@ def export_skin_assets(
                     fps,
                     export_report,
                 )
+            runtime_variants: dict[str, Any] = {}
+            if conditional_visibility and conditional_frame_dir:
+                variant_frames = find_exported_frame_paths_in_dir(conditional_frame_dir, char_id)
+                if variant_frames:
+                    variant_origins = (
+                        svg_frame_origins(find_exported_svg_paths_in_dir(conditional_svg_dir, char_id))
+                        if conditional_svg_dir
+                        else origins
+                    )
+                    variant_frames_to_write = (
+                        variant_frames[:1] if parent_timeline_collapses(playback) else variant_frames
+                    )
+                    variant_entries = exported_frame_entries(
+                        variant_frames_to_write,
+                        asset_dir,
+                        asset_dir_name,
+                        f"{file_prefix}_neutral",
+                        no_write,
+                        variant_origins,
+                        export_report,
+                    )
+                    variant_timeline_entries = compressed_timeline_entries(
+                        variant_entries,
+                        export_report,
+                        owner=f"{key}#neutral",
+                        identity_keys=DRESSUP_TIMELINE_IDENTITY_KEYS,
+                    )
+                    variant_playback = dict(playback)
+                    variant_playback["conditionalVariant"] = "neutral"
+                    runtime_variants["neutral"] = {
+                        "export": export_metadata(
+                            variant_entries,
+                            zoom,
+                            fps,
+                            variant_playback,
+                            variant_timeline_entries,
+                        ),
+                        "frames": variant_entries,
+                    }
+                    if len(variant_timeline_entries) < len(variant_entries):
+                        runtime_variants["neutral"]["timelineFrames"] = variant_timeline_entries
+                    export_report["conditionalVariantSkinKeys"] += 1
+                    export_report["conditionalVariantFrames"] += len(variant_entries)
+                    export_report["conditionalVariantSamples"].append(
+                        {
+                            "skinKey": key,
+                            "characterId": char_id,
+                            "visibleWhen": conditional_visibility.get("visibleWhen"),
+                            "removed": conditional_visibility.get("neutralRemovals"),
+                        }
+                    )
             referenced_file_names = {Path(entry["uri"]).name for entry in frame_entries}
+            for variant in runtime_variants.values():
+                referenced_file_names.update(Path(entry["uri"]).name for entry in variant.get("frames") or [])
             export_report["purgedStaleFrames"] += purge_unreferenced_frame_files(
                 asset_dir,
                 file_prefix,
@@ -2616,6 +2849,16 @@ def export_skin_assets(
             skin_entry = manifest["skinKeys"][key]
             skin_entry["export"] = export_metadata(frame_entries, zoom, fps, playback, timeline_entries)
             skin_entry["frames"] = frame_entries
+            if runtime_variants:
+                skin_entry["runtimeVariants"] = runtime_variants
+                skin_entry["conditionalVisibility"] = {
+                    field: value
+                    for field, value in (conditional_visibility or {}).items()
+                    if field != "neutralRemovals"
+                }
+            else:
+                skin_entry.pop("runtimeVariants", None)
+                skin_entry.pop("conditionalVisibility", None)
             if len(timeline_entries) < len(frame_entries):
                 skin_entry["timelineFrames"] = timeline_entries
             else:
@@ -2653,6 +2896,7 @@ def export_skin_assets(
         "nestedAnimationSamples",
         "missingNestedLayerFrame",
         "timelineCompressionSamples",
+        "conditionalVariantSamples",
     ):
         export_report[list_key] = export_report[list_key][:200]
     report["assetExport"] = export_report
@@ -2676,6 +2920,9 @@ def export_skin_assets(
     report["counts"]["timelineLogicalFrames"] = export_report["timelineLogicalFrames"]
     report["counts"]["timelineFrameEntries"] = export_report["timelineFrameEntries"]
     report["counts"]["timelineCompressedFrameRefs"] = export_report["timelineCompressedFrameRefs"]
+    report["counts"]["conditionalVariantSkinKeys"] = export_report["conditionalVariantSkinKeys"]
+    report["counts"]["conditionalVariantFrames"] = export_report["conditionalVariantFrames"]
+    report["counts"]["conditionalVariantRemovedPlaceObjects"] = export_report["conditionalVariantRemovedPlaceObjects"]
     attach_animation_summary(manifest, report)
 
 

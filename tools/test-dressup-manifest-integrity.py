@@ -20,6 +20,7 @@ REQUIRED_APPEARANCE_KEYS = (
     "发型-男式-黑韩式头",
     "枪-手枪-m9",
 )
+REQUIRED_ATTACK_MODE_VARIANT_KEY = "枪-手枪-极品UZI战术版"
 REQUIRED_ITEM_HELMET_FLAGS = {
     "圣诞帽": True,
     "剑圣头部装甲": True,
@@ -228,6 +229,32 @@ def assert_battle_rig(manifest: dict[str, Any], failures: list[str]) -> None:
                     failures.append(f"battle rig {gender}/{state_label} missing field {required}")
 
 
+def assert_attack_mode_runtime_variant(manifest: dict[str, Any], failures: list[str]) -> None:
+    entry = (manifest.get("skinKeys") or {}).get(REQUIRED_ATTACK_MODE_VARIANT_KEY)
+    if not entry:
+        failures.append(f"missing required attack-mode variant skinKey: {REQUIRED_ATTACK_MODE_VARIANT_KEY}")
+        return
+    visibility = entry.get("conditionalVisibility") or {}
+    if visibility.get("property") != "攻击模式":
+        failures.append(f"{REQUIRED_ATTACK_MODE_VARIANT_KEY} conditionalVisibility.property should be 攻击模式")
+    if visibility.get("hiddenVariant") != "neutral":
+        failures.append(f"{REQUIRED_ATTACK_MODE_VARIANT_KEY} hiddenVariant should be neutral")
+    expected_modes = {"手枪", "手枪2", "双枪"}
+    if set(visibility.get("visibleWhen") or []) != expected_modes:
+        failures.append(f"{REQUIRED_ATTACK_MODE_VARIANT_KEY} visibleWhen mismatch: {visibility.get('visibleWhen')}")
+    neutral = ((entry.get("runtimeVariants") or {}).get("neutral") or {})
+    if not neutral.get("export") or not neutral.get("frames"):
+        failures.append(f"{REQUIRED_ATTACK_MODE_VARIANT_KEY} missing runtimeVariants.neutral export/frames")
+        return
+    main_width = int((entry.get("export") or {}).get("width") or 0)
+    neutral_width = int((neutral.get("export") or {}).get("width") or 0)
+    if not main_width or not neutral_width or neutral_width >= main_width:
+        failures.append(
+            f"{REQUIRED_ATTACK_MODE_VARIANT_KEY} neutral variant should be narrower than active export: "
+            f"{neutral_width} >= {main_width}"
+        )
+
+
 def main() -> None:
     manifest = read_json(MANIFEST_PATH)
     report = read_json(REPORT_PATH) if REPORT_PATH.exists() else {}
@@ -243,6 +270,11 @@ def main() -> None:
         for owner, frames, is_timeline in frame_lists_from_entry(skin, f"skinKeys[{skin_key}]"):
             assert_frame_list(manifest_dir, failures, owner, frames, is_timeline)
         assert_compression_contract(failures, f"skinKeys[{skin_key}]", skin)
+        for variant_name, variant in (skin.get("runtimeVariants") or {}).items():
+            variant_owner = f"skinKeys[{skin_key}].runtimeVariants[{variant_name}]"
+            for owner, frames, is_timeline in frame_lists_from_entry(variant, variant_owner):
+                assert_frame_list(manifest_dir, failures, owner, frames, is_timeline)
+            assert_compression_contract(failures, variant_owner, variant)
         for owner, layer in walk_layers(nested_layers(skin), f"skinKeys[{skin_key}].nestedAnimation"):
             for frame_owner, frames, is_timeline in frame_lists_from_entry(layer, owner):
                 assert_frame_list(manifest_dir, failures, frame_owner, frames, is_timeline)
@@ -276,6 +308,7 @@ def main() -> None:
     assert_required_appearance_keys(manifest, failures)
     assert_required_item_helmet_flags(manifest, failures)
     assert_battle_rig(manifest, failures)
+    assert_attack_mode_runtime_variant(manifest, failures)
 
     layer_count = 0
     compressed_layer_count = 0

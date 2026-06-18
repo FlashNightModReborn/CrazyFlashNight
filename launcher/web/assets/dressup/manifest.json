@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-06-18T22:17:27+0800",
+  "generatedAt": "2026-06-18T22:35:25+0800",
   "genders": [
     "男",
     "女"
@@ -80086,7 +80086,7 @@
       "export": {
         "format": "png",
         "zoom": 2,
-        "fps": 24,
+        "fps": 24.0,
         "frameCount": 1,
         "uri": "skins/d7c0e185_1.png",
         "width": 1698,
@@ -80105,7 +80105,44 @@
           "originX": 92.6,
           "originY": 129.3
         }
-      ]
+      ],
+      "runtimeVariants": {
+        "neutral": {
+          "export": {
+            "format": "png",
+            "zoom": 2,
+            "fps": 24.0,
+            "frameCount": 1,
+            "uri": "skins/d7c0e185_neutral_1.png",
+            "width": 411,
+            "height": 202,
+            "playback": "static",
+            "sourceFrameCount": 1,
+            "hasClipActions": true,
+            "conditionalVariant": "neutral"
+          },
+          "frames": [
+            {
+              "uri": "skins/d7c0e185_neutral_1.png",
+              "frame": 1,
+              "sourceFrame": 1,
+              "width": 411,
+              "height": 202,
+              "originX": 92.6,
+              "originY": 129.3
+            }
+          ]
+        }
+      },
+      "conditionalVisibility": {
+        "property": "攻击模式",
+        "visibleWhen": [
+          "双枪",
+          "手枪",
+          "手枪2"
+        ],
+        "hiddenVariant": "neutral"
+      }
     },
     "枪-手枪-毛瑟手枪": {
       "covered": true,
