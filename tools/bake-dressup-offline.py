@@ -73,12 +73,22 @@ PRESERVED_EXPORT_KEYS = (
     "conditionalVisibility",
 )
 DRESSUP_CONFLICT_SOURCE_PREFERENCES = {
+    "刀-砖头": (
+        ("flashswf/arts/new/公共素材位0.swf", "其他武器/刀-砖头"),
+        ("flashswf/arts/原版素材库-子弹.swf", "其他武器/刀-砖头"),
+    ),
     "刀-方钢锤": (
         ("flashswf/arts/new/雾人装备调整.swf", "1.冷兵器/钝器/方钢锤/刀-方钢锤"),
     ),
     "刀-激光剑": (
         ("flashswf/arts/new/乔恩.swf", "冷兵器/激光剑/刀-激光剑"),
         ("flashswf/arts/new/我的素材7421.swf", "冷兵器/激光剑/刀-激光剑"),
+    ),
+    "刀-硬木长矛": (
+        ("flashswf/arts/new/雾人装备调整.swf", "1.冷兵器/长柄/07.硬木长矛/刀-硬木长矛"),
+    ),
+    "刀-黑铁重剑": (
+        ("flashswf/arts/things切割.swf", "冷兵/锐器-重/黑铁重剑/刀-黑铁重剑"),
     ),
     "刀-长墨白铁": (
         ("flashswf/arts/new/雾人装备调整.swf", "1.冷兵器/长柄/01.长墨白铁/刀-长墨白铁"),
@@ -113,6 +123,18 @@ DRESSUP_CONFLICT_SOURCE_PREFERENCES = {
     ),
     "男变装-废城防弹军装上装身体": (
         ("flashswf/arts/new/原体融合生物.swf", "男变装-废城防弹军装上装身体"),
+    ),
+    "男变装-BOSS4上臂": (
+        ("flashswf/arts/things.swf", "待整理防具相关汇总/男变装-BOSS4上臂"),
+    ),
+    "男变装-BOSS4右下臂": (
+        ("flashswf/arts/things.swf", "待整理防具相关汇总/男变装-BOSS4右下臂"),
+    ),
+    "男变装-BOSS4左下臂": (
+        ("flashswf/arts/things.swf", "待整理防具相关汇总/男变装-BOSS4左下臂"),
+    ),
+    "男变装-BOSS4身体": (
+        ("flashswf/arts/things.swf", "待整理防具相关汇总/男变装-BOSS4身体"),
     ),
     "男变装-牙狼铠上臂": (
         ("flashswf/levels/地图-彩蛋地图.swf", "所有素材/牙狼素材/男变装-牙狼铠上臂"),

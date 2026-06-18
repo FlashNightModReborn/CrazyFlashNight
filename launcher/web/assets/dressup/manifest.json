@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-06-18T22:35:25+0800",
+  "generatedAt": "2026-06-18T22:55:22+0800",
   "genders": [
     "男",
     "女"
@@ -31808,8 +31808,23 @@
       ]
     },
     "刀-砖头": {
-      "covered": false,
-      "asset": null,
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/公共素材位0.swf",
+        "symbolName": "其他武器/刀-砖头",
+        "conflict": false,
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/公共素材位0.swf",
+            "symbolName": "其他武器/刀-砖头"
+          },
+          {
+            "swf": "flashswf/arts/原版素材库-子弹.swf",
+            "symbolName": "其他武器/刀-砖头"
+          }
+        ]
+      },
       "uses": [
         "刀"
       ],
@@ -31818,6 +31833,28 @@
       ],
       "sourceFiles": [
         "武器_刀_短柄.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/589ec775_1.png",
+        "width": 116,
+        "height": 186,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/589ec775_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 116,
+          "height": 186,
+          "originX": 75.6,
+          "originY": 53.9
+        }
       ]
     },
     "刀-破旧军刀": {
@@ -31863,8 +31900,23 @@
       ]
     },
     "刀-硬木长矛": {
-      "covered": false,
-      "asset": null,
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/雾人装备调整.swf",
+        "symbolName": "1.冷兵器/长柄/07.硬木长矛/刀-硬木长矛",
+        "conflict": false,
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/新的动作.swf",
+            "symbolName": "1.冷兵器/1.冷兵器/长柄/7.硬木长矛/刀-硬木长矛"
+          },
+          {
+            "swf": "flashswf/arts/new/雾人装备调整.swf",
+            "symbolName": "1.冷兵器/长柄/07.硬木长矛/刀-硬木长矛"
+          }
+        ]
+      },
       "uses": [
         "刀"
       ],
@@ -31873,6 +31925,28 @@
       ],
       "sourceFiles": [
         "武器_刀_长枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/afb909d9_1.png",
+        "width": 57,
+        "height": 1518,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/afb909d9_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 57,
+          "height": 1518,
+          "originX": 31.6,
+          "originY": 360.0
+        }
       ]
     },
     "刀-秋月": {
@@ -36419,8 +36493,23 @@
       ]
     },
     "刀-黑铁重剑": {
-      "covered": false,
-      "asset": null,
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "冷兵/锐器-重/黑铁重剑/刀-黑铁重剑",
+        "conflict": false,
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/new/新的动作.swf",
+            "symbolName": "1.冷兵器/冷兵/锐器-重/黑铁重剑/刀-黑铁重剑"
+          },
+          {
+            "swf": "flashswf/arts/things切割.swf",
+            "symbolName": "冷兵/锐器-重/黑铁重剑/刀-黑铁重剑"
+          }
+        ]
+      },
       "uses": [
         "刀"
       ],
@@ -36429,6 +36518,29 @@
       ],
       "sourceFiles": [
         "武器_刀_重斩.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/74ab925d_1.png",
+        "width": 296,
+        "height": 1192,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "hasClipActions": true
+      },
+      "frames": [
+        {
+          "uri": "skins/74ab925d_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 296,
+          "height": 1192,
+          "originX": 151.7,
+          "originY": 155.9
+        }
       ]
     },
     "刀-黑铁重剑枪": {
@@ -93466,8 +93578,23 @@
       ]
     },
     "男变装-BOSS4上臂": {
-      "covered": false,
-      "asset": null,
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "待整理防具相关汇总/男变装-BOSS4上臂",
+        "conflict": false,
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/things.swf",
+            "symbolName": "待整理防具相关汇总/男变装-BOSS4上臂"
+          },
+          {
+            "swf": "flashswf/levels/地图-军阀帐篷.swf",
+            "symbolName": "待整理防具相关汇总/Symbol 246"
+          }
+        ]
+      },
       "uses": [
         "上装装备"
       ],
@@ -93476,11 +93603,48 @@
       ],
       "sourceFiles": [
         "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/5986015c_1.png",
+        "width": 104,
+        "height": 272,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/5986015c_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 104,
+          "height": 272,
+          "originX": 54.0,
+          "originY": 137.0
+        }
       ]
     },
     "男变装-BOSS4右下臂": {
-      "covered": false,
-      "asset": null,
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "待整理防具相关汇总/男变装-BOSS4右下臂",
+        "conflict": false,
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/things.swf",
+            "symbolName": "待整理防具相关汇总/男变装-BOSS4右下臂"
+          },
+          {
+            "swf": "flashswf/levels/地图-军阀帐篷.swf",
+            "symbolName": "待整理防具相关汇总/Symbol 256"
+          }
+        ]
+      },
       "uses": [
         "上装装备"
       ],
@@ -93489,11 +93653,48 @@
       ],
       "sourceFiles": [
         "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/db917a53_1.png",
+        "width": 80,
+        "height": 223,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/db917a53_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 80,
+          "height": 223,
+          "originX": 41.8,
+          "originY": 112.0
+        }
       ]
     },
     "男变装-BOSS4左下臂": {
-      "covered": false,
-      "asset": null,
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "待整理防具相关汇总/男变装-BOSS4左下臂",
+        "conflict": false,
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/things.swf",
+            "symbolName": "待整理防具相关汇总/男变装-BOSS4左下臂"
+          },
+          {
+            "swf": "flashswf/levels/地图-军阀帐篷.swf",
+            "symbolName": "待整理防具相关汇总/Symbol 248"
+          }
+        ]
+      },
       "uses": [
         "上装装备"
       ],
@@ -93502,11 +93703,48 @@
       ],
       "sourceFiles": [
         "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/b85f81f2_1.png",
+        "width": 79,
+        "height": 223,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/b85f81f2_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 79,
+          "height": 223,
+          "originX": 41.5,
+          "originY": 112.5
+        }
       ]
     },
     "男变装-BOSS4身体": {
-      "covered": false,
-      "asset": null,
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "待整理防具相关汇总/男变装-BOSS4身体",
+        "conflict": false,
+        "resolvedConflict": true,
+        "matches": [
+          {
+            "swf": "flashswf/arts/things.swf",
+            "symbolName": "待整理防具相关汇总/男变装-BOSS4身体"
+          },
+          {
+            "swf": "flashswf/levels/地图-军阀帐篷.swf",
+            "symbolName": "待整理防具相关汇总/Symbol 250"
+          }
+        ]
+      },
       "uses": [
         "上装装备"
       ],
@@ -93515,6 +93753,28 @@
       ],
       "sourceFiles": [
         "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/0a095df3_1.png",
+        "width": 253,
+        "height": 436,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/0a095df3_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 253,
+          "height": 436,
+          "originX": 134.8,
+          "originY": 217.1
+        }
       ]
     },
     "男变装-Boy上装上臂": {
