@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-06-18T22:11:39+0800",
+  "generatedAt": "2026-06-18T22:17:27+0800",
   "genders": [
     "男",
     "女"
@@ -147275,12 +147275,12 @@
                   "hostInstanceName": "枪",
                   "targetLibraryItemName": "sprite/Symbol 8",
                   "matrix": {
-                    "a": 0.047501,
-                    "b": -0.270644,
-                    "c": -0.270823,
-                    "d": -0.04747,
-                    "tx": -12.426615,
-                    "ty": -78.255576
+                    "a": -0.005361,
+                    "b": -0.274865,
+                    "c": -0.275046,
+                    "d": 0.005358,
+                    "tx": -10.027549,
+                    "ty": -80.078829
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -147291,7 +147291,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/长枪",
                     "sprite/Symbol 8"
                   ]
@@ -147307,12 +147307,12 @@
                   "hostInstanceName": "刀",
                   "targetLibraryItemName": "sprite/Symbol 12",
                   "matrix": {
-                    "a": 0.191937,
-                    "b": 0.197945,
-                    "c": -0.198076,
-                    "d": 0.19181,
-                    "tx": 22.805285,
-                    "ty": -108.8443
+                    "a": 0.226501,
+                    "b": 0.157532,
+                    "c": -0.157636,
+                    "d": 0.226351,
+                    "tx": 18.703714,
+                    "ty": -116.876303
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -147323,7 +147323,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/刀",
                     "sprite/Symbol 12"
                   ]
@@ -147339,12 +147339,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 16",
                   "matrix": {
-                    "a": 0.195611,
-                    "b": -0.128974,
-                    "c": 0.129059,
-                    "d": 0.195482,
-                    "tx": 23.492187,
-                    "ty": -91.760965
+                    "a": 0.234416,
+                    "b": 0.016609,
+                    "c": -0.01662,
+                    "d": 0.234261,
+                    "tx": 14.899532,
+                    "ty": -93.687859
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -147366,7 +147366,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/上臂",
                     "sprite/Symbol 16"
                   ]
@@ -147382,12 +147382,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 20",
                   "matrix": {
-                    "a": -0.213644,
-                    "b": -0.092346,
-                    "c": 0.092407,
-                    "d": -0.213503,
-                    "tx": 33.713519,
-                    "ty": -90.173791
+                    "a": 0.23017,
+                    "b": -0.045951,
+                    "c": 0.048729,
+                    "d": 0.215089,
+                    "tx": 17.034292,
+                    "ty": -71.44398
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -147409,7 +147409,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/左手臂",
                     "sprite/Symbol 20"
                   ]
@@ -147425,12 +147425,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 24",
                   "matrix": {
-                    "a": 0.047345,
-                    "b": -0.228058,
-                    "c": 0.228209,
-                    "d": 0.047314,
-                    "tx": 39.592026,
-                    "ty": -104.88817
+                    "a": 0.106761,
+                    "b": 0.202238,
+                    "c": -0.202372,
+                    "d": 0.10669,
+                    "tx": 20.788704,
+                    "ty": -58.706744
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -147452,7 +147452,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/左手",
                     "sprite/Symbol 24"
                   ]
@@ -147472,8 +147472,8 @@
                     "b": 0.276462,
                     "c": -0.276645,
                     "d": -0.014577,
-                    "tx": 10.327109,
-                    "ty": -69.134081
+                    "tx": 13.929205,
+                    "ty": -74.921317
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -147484,7 +147484,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/手枪2",
                     "sprite/Symbol 28"
                   ]
@@ -147500,12 +147500,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 32",
                   "matrix": {
-                    "a": 0.201974,
-                    "b": -0.121554,
-                    "c": 0.121635,
-                    "d": 0.201841,
-                    "tx": 14.663382,
-                    "ty": -50.88987
+                    "a": 0.23601,
+                    "b": 0.009346,
+                    "c": -0.009352,
+                    "d": 0.235854,
+                    "tx": 11.684267,
+                    "ty": -54.695707
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -147527,7 +147527,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/左大腿",
                     "sprite/Symbol 32"
                   ]
@@ -147543,12 +147543,12 @@
                   "hostInstanceName": "刀",
                   "targetLibraryItemName": "sprite/Symbol 12副手刀元件",
                   "matrix": {
-                    "a": 0.223984,
-                    "b": 0.153268,
-                    "c": -0.153369,
-                    "d": 0.223836,
-                    "tx": 19.789017,
-                    "ty": -113.149825
+                    "a": 0.253115,
+                    "b": 0.119421,
+                    "c": -0.100256,
+                    "d": 0.243953,
+                    "tx": 13.406706,
+                    "ty": -119.11999
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -147559,7 +147559,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/身体",
                     "sprite/Symbol 12副手刀元件"
                   ]
@@ -147575,12 +147575,12 @@
                   "hostInstanceName": "刀",
                   "targetLibraryItemName": "sprite/Symbol 12刀鞘元件",
                   "matrix": {
-                    "a": 0.198839,
-                    "b": 0.201103,
-                    "c": -0.201236,
-                    "d": 0.198708,
-                    "tx": 8.068125,
-                    "ty": -94.816417
+                    "a": 0.239152,
+                    "b": 0.17045,
+                    "c": -0.152653,
+                    "d": 0.225987,
+                    "tx": 6.017632,
+                    "ty": -99.260664
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -147591,7 +147591,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/身体",
                     "sprite/Symbol 12刀鞘元件"
                   ]
@@ -147607,12 +147607,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 36",
                   "matrix": {
-                    "a": 0.232335,
-                    "b": 0.042049,
-                    "c": -0.042077,
-                    "d": 0.232182,
-                    "tx": 6.176235,
-                    "ty": -92.784827
+                    "a": 0.236568,
+                    "b": 0.008028,
+                    "c": 0.010443,
+                    "d": 0.236111,
+                    "tx": 4.618813,
+                    "ty": -96.974138
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -147634,7 +147634,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/身体",
                     "sprite/Symbol 36"
                   ]
@@ -147650,12 +147650,12 @@
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
                   "matrix": {
-                    "a": 0.253556,
-                    "b": 0.085991,
-                    "c": -0.086048,
-                    "d": 0.253388,
-                    "tx": 16.176728,
-                    "ty": -118.545455
+                    "a": 0.275981,
+                    "b": 0.031009,
+                    "c": -0.031029,
+                    "d": 0.275798,
+                    "tx": 8.616719,
+                    "ty": -124.742157
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -147677,7 +147677,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/头",
                     "sprite/Symbol 45"
                   ]
@@ -147693,12 +147693,12 @@
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
                   "matrix": {
-                    "a": 0.253556,
-                    "b": 0.085991,
-                    "c": -0.086048,
-                    "d": 0.253388,
-                    "tx": 16.176728,
-                    "ty": -118.545455
+                    "a": 0.275981,
+                    "b": 0.031009,
+                    "c": -0.031029,
+                    "d": 0.275798,
+                    "tx": 8.616719,
+                    "ty": -124.742157
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -147709,7 +147709,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/头",
                     "sprite/Symbol 45"
                   ]
@@ -147725,12 +147725,12 @@
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
                   "matrix": {
-                    "a": 0.253556,
-                    "b": 0.085991,
-                    "c": -0.086048,
-                    "d": 0.253388,
-                    "tx": 16.176728,
-                    "ty": -118.545455
+                    "a": 0.275981,
+                    "b": 0.031009,
+                    "c": -0.031029,
+                    "d": 0.275798,
+                    "tx": 8.616719,
+                    "ty": -124.742157
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -147741,7 +147741,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/头",
                     "sprite/Symbol 45"
                   ]
@@ -147757,12 +147757,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 49",
                   "matrix": {
-                    "a": 0.236462,
-                    "b": 0.014412,
-                    "c": -0.014422,
-                    "d": 0.236306,
-                    "tx": 2.72144,
-                    "ty": -61.383287
+                    "a": 0.236893,
+                    "b": -0.00202,
+                    "c": 0.002021,
+                    "d": 0.236737,
+                    "tx": 6.72709,
+                    "ty": -67.180705
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -147784,7 +147784,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/屁股",
                     "sprite/Symbol 49"
                   ]
@@ -147804,8 +147804,8 @@
                     "b": 0.010005,
                     "c": -0.010012,
                     "d": 0.236323,
-                    "tx": 23.49725,
-                    "ty": -2.584084
+                    "tx": 11.831999,
+                    "ty": -2.431788
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -147827,7 +147827,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/脚",
                     "sprite/Symbol 53"
                   ]
@@ -147847,8 +147847,8 @@
                     "b": 0.014412,
                     "c": -0.014422,
                     "d": 0.236306,
-                    "tx": 21.701213,
-                    "ty": -22.195608
+                    "tx": 9.786586,
+                    "ty": -23.150917
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -147870,7 +147870,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/小腿",
                     "sprite/Symbol 57"
                   ]
@@ -147890,8 +147890,8 @@
                     "b": 0.062216,
                     "c": -0.062257,
                     "d": 0.227615,
-                    "tx": -6.575005,
-                    "ty": -44.142372
+                    "tx": -2.972908,
+                    "ty": -49.929608
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -147913,7 +147913,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/右大腿",
                     "sprite/Symbol 61"
                   ]
@@ -147933,8 +147933,8 @@
                     "b": 0.027578,
                     "c": -0.027596,
                     "d": 0.234349,
-                    "tx": -20.569355,
-                    "ty": 1.466743
+                    "tx": -11.217758,
+                    "ty": 1.106771
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -147956,7 +147956,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/脚",
                     "sprite/Symbol 53"
                   ]
@@ -147972,12 +147972,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 57",
                   "matrix": {
-                    "a": 0.215394,
-                    "b": 0.097111,
-                    "c": -0.097176,
-                    "d": 0.215252,
-                    "tx": -16.618139,
-                    "ty": -17.020468
+                    "a": 0.232344,
+                    "b": 0.044014,
+                    "c": -0.044043,
+                    "d": 0.23219,
+                    "tx": -10.04971,
+                    "ty": -20.856032
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -147999,7 +147999,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/小腿",
                     "sprite/Symbol 57"
                   ]
@@ -148019,8 +148019,8 @@
                     "b": 0.274869,
                     "c": -0.275051,
                     "d": -0.032572,
-                    "tx": -8.607584,
-                    "ty": -69.54385
+                    "tx": -5.005488,
+                    "ty": -75.331086
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -148031,7 +148031,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/手枪",
                     "sprite/Symbol 28"
                   ]
@@ -148047,12 +148047,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 16",
                   "matrix": {
-                    "a": 0.215288,
-                    "b": -0.092633,
-                    "c": 0.092694,
-                    "d": 0.215146,
-                    "tx": -0.052773,
-                    "ty": -92.823939
+                    "a": 0.230052,
+                    "b": 0.04774,
+                    "c": -0.047772,
+                    "d": 0.2299,
+                    "tx": -12.61266,
+                    "ty": -94.212415
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -148074,7 +148074,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/上臂",
                     "sprite/Symbol 16"
                   ]
@@ -148090,12 +148090,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 66",
                   "matrix": {
-                    "a": -0.220662,
-                    "b": -0.079366,
-                    "c": 0.079418,
-                    "d": -0.220516,
-                    "tx": 8.07284,
-                    "ty": -91.152158
+                    "a": 0.235232,
+                    "b": -0.007339,
+                    "c": 0.007344,
+                    "d": 0.235076,
+                    "tx": -15.898854,
+                    "ty": -70.660401
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -148117,7 +148117,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/左下臂",
                     "sprite/Symbol 66"
                   ]
@@ -148133,12 +148133,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 70",
                   "matrix": {
-                    "a": 0.027989,
-                    "b": -0.233361,
-                    "c": 0.233515,
-                    "d": 0.027971,
-                    "tx": 12.876148,
-                    "ty": -105.826184
+                    "a": 0.088897,
+                    "b": 0.21837,
+                    "c": -0.218514,
+                    "d": 0.088839,
+                    "tx": -14.330144,
+                    "ty": -55.54743
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -148160,7 +148160,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/右手",
                     "sprite/Symbol 70"
                   ]
@@ -152902,12 +152902,12 @@
                   "hostInstanceName": "枪",
                   "targetLibraryItemName": "sprite/Symbol 8",
                   "matrix": {
-                    "a": 0.047501,
-                    "b": -0.270644,
-                    "c": -0.270823,
-                    "d": -0.04747,
-                    "tx": -12.426615,
-                    "ty": -78.255576
+                    "a": -0.005361,
+                    "b": -0.274865,
+                    "c": -0.275046,
+                    "d": 0.005358,
+                    "tx": -10.027549,
+                    "ty": -80.078829
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -152918,7 +152918,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/长枪",
                     "sprite/Symbol 8"
                   ]
@@ -152934,12 +152934,12 @@
                   "hostInstanceName": "刀",
                   "targetLibraryItemName": "sprite/Symbol 12",
                   "matrix": {
-                    "a": 0.191937,
-                    "b": 0.197945,
-                    "c": -0.198076,
-                    "d": 0.19181,
-                    "tx": 22.805285,
-                    "ty": -108.8443
+                    "a": 0.226501,
+                    "b": 0.157532,
+                    "c": -0.157636,
+                    "d": 0.226351,
+                    "tx": 18.703714,
+                    "ty": -116.876303
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -152950,7 +152950,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/刀",
                     "sprite/Symbol 12"
                   ]
@@ -152966,12 +152966,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 16",
                   "matrix": {
-                    "a": 0.195611,
-                    "b": -0.128974,
-                    "c": 0.129059,
-                    "d": 0.195482,
-                    "tx": 23.492187,
-                    "ty": -91.760965
+                    "a": 0.234416,
+                    "b": 0.016609,
+                    "c": -0.01662,
+                    "d": 0.234261,
+                    "tx": 14.899532,
+                    "ty": -93.687859
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -152993,7 +152993,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/上臂",
                     "sprite/Symbol 16"
                   ]
@@ -153009,12 +153009,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 20",
                   "matrix": {
-                    "a": -0.213644,
-                    "b": -0.092346,
-                    "c": 0.092407,
-                    "d": -0.213503,
-                    "tx": 33.713519,
-                    "ty": -90.173791
+                    "a": 0.23017,
+                    "b": -0.045951,
+                    "c": 0.048729,
+                    "d": 0.215089,
+                    "tx": 17.034292,
+                    "ty": -71.44398
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -153036,7 +153036,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/左手臂",
                     "sprite/Symbol 20"
                   ]
@@ -153052,12 +153052,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 24",
                   "matrix": {
-                    "a": 0.047345,
-                    "b": -0.228058,
-                    "c": 0.228209,
-                    "d": 0.047314,
-                    "tx": 39.592026,
-                    "ty": -104.88817
+                    "a": 0.106761,
+                    "b": 0.202238,
+                    "c": -0.202372,
+                    "d": 0.10669,
+                    "tx": 20.788704,
+                    "ty": -58.706744
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -153079,7 +153079,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/左手",
                     "sprite/Symbol 24"
                   ]
@@ -153099,8 +153099,8 @@
                     "b": 0.276462,
                     "c": -0.276645,
                     "d": -0.014577,
-                    "tx": 10.327109,
-                    "ty": -69.134081
+                    "tx": 13.929205,
+                    "ty": -74.921317
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -153111,7 +153111,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/手枪2",
                     "sprite/Symbol 28"
                   ]
@@ -153127,12 +153127,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 32",
                   "matrix": {
-                    "a": 0.201974,
-                    "b": -0.121554,
-                    "c": 0.121635,
-                    "d": 0.201841,
-                    "tx": 14.663382,
-                    "ty": -50.88987
+                    "a": 0.23601,
+                    "b": 0.009346,
+                    "c": -0.009352,
+                    "d": 0.235854,
+                    "tx": 11.684267,
+                    "ty": -54.695707
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -153154,7 +153154,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/左大腿",
                     "sprite/Symbol 32"
                   ]
@@ -153170,12 +153170,12 @@
                   "hostInstanceName": "刀",
                   "targetLibraryItemName": "sprite/Symbol 12副手刀元件",
                   "matrix": {
-                    "a": 0.223984,
-                    "b": 0.153268,
-                    "c": -0.153369,
-                    "d": 0.223836,
-                    "tx": 19.789017,
-                    "ty": -113.149825
+                    "a": 0.253115,
+                    "b": 0.119421,
+                    "c": -0.100256,
+                    "d": 0.243953,
+                    "tx": 13.406706,
+                    "ty": -119.11999
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -153186,7 +153186,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/身体",
                     "sprite/Symbol 12副手刀元件"
                   ]
@@ -153202,12 +153202,12 @@
                   "hostInstanceName": "刀",
                   "targetLibraryItemName": "sprite/Symbol 12刀鞘元件",
                   "matrix": {
-                    "a": 0.198839,
-                    "b": 0.201103,
-                    "c": -0.201236,
-                    "d": 0.198708,
-                    "tx": 8.068125,
-                    "ty": -94.816417
+                    "a": 0.239152,
+                    "b": 0.17045,
+                    "c": -0.152653,
+                    "d": 0.225987,
+                    "tx": 6.017632,
+                    "ty": -99.260664
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -153218,7 +153218,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/身体",
                     "sprite/Symbol 12刀鞘元件"
                   ]
@@ -153234,12 +153234,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 36",
                   "matrix": {
-                    "a": 0.232335,
-                    "b": 0.042049,
-                    "c": -0.042077,
-                    "d": 0.232182,
-                    "tx": 6.176235,
-                    "ty": -92.784827
+                    "a": 0.236568,
+                    "b": 0.008028,
+                    "c": 0.010443,
+                    "d": 0.236111,
+                    "tx": 4.618813,
+                    "ty": -96.974138
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -153261,7 +153261,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/身体",
                     "sprite/Symbol 36"
                   ]
@@ -153277,12 +153277,12 @@
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
                   "matrix": {
-                    "a": 0.253556,
-                    "b": 0.085991,
-                    "c": -0.086048,
-                    "d": 0.253388,
-                    "tx": 16.176728,
-                    "ty": -118.545455
+                    "a": 0.275981,
+                    "b": 0.031009,
+                    "c": -0.031029,
+                    "d": 0.275798,
+                    "tx": 8.616719,
+                    "ty": -124.742157
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -153304,7 +153304,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/头",
                     "sprite/Symbol 45"
                   ]
@@ -153320,12 +153320,12 @@
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
                   "matrix": {
-                    "a": 0.253556,
-                    "b": 0.085991,
-                    "c": -0.086048,
-                    "d": 0.253388,
-                    "tx": 16.176728,
-                    "ty": -118.545455
+                    "a": 0.275981,
+                    "b": 0.031009,
+                    "c": -0.031029,
+                    "d": 0.275798,
+                    "tx": 8.616719,
+                    "ty": -124.742157
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -153336,7 +153336,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/头",
                     "sprite/Symbol 45"
                   ]
@@ -153352,12 +153352,12 @@
                   "hostInstanceName": "头",
                   "targetLibraryItemName": "sprite/Symbol 45",
                   "matrix": {
-                    "a": 0.253556,
-                    "b": 0.085991,
-                    "c": -0.086048,
-                    "d": 0.253388,
-                    "tx": 16.176728,
-                    "ty": -118.545455
+                    "a": 0.275981,
+                    "b": 0.031009,
+                    "c": -0.031029,
+                    "d": 0.275798,
+                    "tx": 8.616719,
+                    "ty": -124.742157
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -153368,7 +153368,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/头",
                     "sprite/Symbol 45"
                   ]
@@ -153384,12 +153384,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 49",
                   "matrix": {
-                    "a": 0.236462,
-                    "b": 0.014412,
-                    "c": -0.014422,
-                    "d": 0.236306,
-                    "tx": 2.72144,
-                    "ty": -61.383287
+                    "a": 0.236893,
+                    "b": -0.00202,
+                    "c": 0.002021,
+                    "d": 0.236737,
+                    "tx": 6.72709,
+                    "ty": -67.180705
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -153411,7 +153411,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/屁股",
                     "sprite/Symbol 49"
                   ]
@@ -153431,8 +153431,8 @@
                     "b": 0.010005,
                     "c": -0.010012,
                     "d": 0.236323,
-                    "tx": 23.49725,
-                    "ty": -2.584084
+                    "tx": 11.831999,
+                    "ty": -2.431788
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -153454,7 +153454,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/脚",
                     "sprite/Symbol 53"
                   ]
@@ -153474,8 +153474,8 @@
                     "b": 0.014412,
                     "c": -0.014422,
                     "d": 0.236306,
-                    "tx": 21.701213,
-                    "ty": -22.195608
+                    "tx": 9.786586,
+                    "ty": -23.150917
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -153497,7 +153497,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/小腿",
                     "sprite/Symbol 57"
                   ]
@@ -153517,8 +153517,8 @@
                     "b": 0.062216,
                     "c": -0.062257,
                     "d": 0.227615,
-                    "tx": -6.575005,
-                    "ty": -44.142372
+                    "tx": -2.972908,
+                    "ty": -49.929608
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -153540,7 +153540,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/右大腿",
                     "sprite/Symbol 61"
                   ]
@@ -153560,8 +153560,8 @@
                     "b": 0.027578,
                     "c": -0.027596,
                     "d": 0.234349,
-                    "tx": -20.569355,
-                    "ty": 1.466743
+                    "tx": -11.217758,
+                    "ty": 1.106771
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -153583,7 +153583,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/脚",
                     "sprite/Symbol 53"
                   ]
@@ -153599,12 +153599,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 57",
                   "matrix": {
-                    "a": 0.215394,
-                    "b": 0.097111,
-                    "c": -0.097176,
-                    "d": 0.215252,
-                    "tx": -16.618139,
-                    "ty": -17.020468
+                    "a": 0.232344,
+                    "b": 0.044014,
+                    "c": -0.044043,
+                    "d": 0.23219,
+                    "tx": -10.04971,
+                    "ty": -20.856032
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -153626,7 +153626,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/小腿",
                     "sprite/Symbol 57"
                   ]
@@ -153646,8 +153646,8 @@
                     "b": 0.274869,
                     "c": -0.275051,
                     "d": -0.032572,
-                    "tx": -8.607584,
-                    "ty": -69.54385
+                    "tx": -5.005488,
+                    "ty": -75.331086
                   },
                   "fallbackBasic": false,
                   "hideBasicOnAttach": true,
@@ -153658,7 +153658,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/手枪",
                     "sprite/Symbol 28"
                   ]
@@ -153674,12 +153674,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 16",
                   "matrix": {
-                    "a": 0.215288,
-                    "b": -0.092633,
-                    "c": 0.092694,
-                    "d": 0.215146,
-                    "tx": -0.052773,
-                    "ty": -92.823939
+                    "a": 0.230052,
+                    "b": 0.04774,
+                    "c": -0.047772,
+                    "d": 0.2299,
+                    "tx": -12.61266,
+                    "ty": -94.212415
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -153701,7 +153701,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/上臂",
                     "sprite/Symbol 16"
                   ]
@@ -153717,12 +153717,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 66",
                   "matrix": {
-                    "a": -0.220662,
-                    "b": -0.079366,
-                    "c": 0.079418,
-                    "d": -0.220516,
-                    "tx": 8.07284,
-                    "ty": -91.152158
+                    "a": 0.235232,
+                    "b": -0.007339,
+                    "c": 0.007344,
+                    "d": 0.235076,
+                    "tx": -15.898854,
+                    "ty": -70.660401
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -153744,7 +153744,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/左下臂",
                     "sprite/Symbol 66"
                   ]
@@ -153760,12 +153760,12 @@
                   "hostInstanceName": "",
                   "targetLibraryItemName": "sprite/Symbol 70",
                   "matrix": {
-                    "a": 0.027989,
-                    "b": -0.233361,
-                    "c": 0.233515,
-                    "d": 0.027971,
-                    "tx": 12.876148,
-                    "ty": -105.826184
+                    "a": 0.088897,
+                    "b": 0.21837,
+                    "c": -0.218514,
+                    "d": 0.088839,
+                    "tx": -14.330144,
+                    "ty": -55.54743
                   },
                   "fallbackBasic": true,
                   "hideBasicOnAttach": true,
@@ -153787,7 +153787,7 @@
                   "sourceFrame": 0,
                   "path": [
                     "主角-男@2",
-                    "sprite/空手待机@0",
+                    "sprite/空手待机@52",
                     "主角肢体素材/右手",
                     "sprite/Symbol 70"
                   ]

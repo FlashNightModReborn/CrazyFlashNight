@@ -780,8 +780,9 @@ def symbol_label_index(symbol: dict[str, Any], label: str) -> int | None:
     return None
 
 
-def default_battle_child_frame(symbol: dict[str, Any]) -> int:
-    for label in BATTLE_RIG_DEFAULT_CHILD_LABELS:
+def default_battle_child_frame(symbol: dict[str, Any], gender: str) -> int:
+    gender_labels = ("站立-男", "格斗架势-男") if gender == "男" else ("站立-女", "格斗架势-女")
+    for label in gender_labels + BATTLE_RIG_DEFAULT_CHILD_LABELS:
         index = symbol_label_index(symbol, label)
         if index is not None:
             return index
@@ -902,7 +903,7 @@ def traverse_battle_holders(
                     gender,
                     state_label,
                     child_name,
-                    default_battle_child_frame(child),
+                    default_battle_child_frame(child, gender),
                     matrix,
                     holders,
                     path + [f"{symbol_name}@{frame_index}"],
