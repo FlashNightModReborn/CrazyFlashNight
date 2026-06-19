@@ -1440,6 +1440,11 @@ class org.flashNight.neur.Server.SaveManager {
         // 同伴
         _root.同伴数据 = mydata[4][0];
         _root.同伴数 = Math.floor(Number(mydata[4][1]));
+        // 佣兵数据归一化（修复历史空洞档）：旧版解雇用 [] 占位且不压缩、旧版 handleHire 用
+        // 同伴数据.push 追加，会让 同伴数据 出现中段墓碑或越过 [0,佣兵个数限制) 读窗口的尾项，
+        // 表现为 issue #7 bug1「扣钱但不入可用列表」。此处把 同伴数据 / 佣兵是否出战信息 严格并行
+        // 压实、令 同伴数 = 有效数，并回收越界尾项（最多保留 佣兵个数限制 个）。对干净档幂等。
+        normalizeCompanionData();
 
         // 技能表
         _root.主角技能表 = mydata[5];
@@ -1494,6 +1499,37 @@ class org.flashNight.neur.Server.SaveManager {
         }
 
         return true;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // normalizeCompanionData — 读档佣兵数据归一化（issue #7 bug1 修复）
+    // 历史空洞档（旧版解雇用 [] 占位不压缩 / 旧版 handleHire 用 push 越界追加）会让
+    // 同伴数据 出现中段墓碑、或越过 [0,佣兵个数限制) 读窗口的尾项 → 快照与进场都读不到，
+    // 表现为「扣钱但不入可用列表」。此处把 同伴数据 / 佣兵是否出战信息 严格并行压实
+    // （有效项判据 = 等级列 [0] 非 undefined，与 MercCensus/removeMerc 一致），令
+    // 同伴数 = 有效数，最多保留 佣兵个数限制 个（回收越界尾项）。对干净档幂等。
+    // ═══════════════════════════════════════════════════════════
+    private function normalizeCompanionData():Void {
+        var data:Array = _root.同伴数据;
+        if (data == undefined) { _root.同伴数据 = []; _root.同伴数 = 0; return; }
+        var deploy:Array = _root.佣兵是否出战信息;
+        if (deploy == undefined) deploy = [];
+        var cap:Number = Number(_root.佣兵个数限制) || 0;
+
+        var compact:Array = [];
+        var compactDeploy:Array = [];
+        var n:Number = data.length;
+        for (var i:Number = 0; i < n; i++) {
+            var m:Array = data[i];
+            if (m != undefined && m[0] != undefined) {
+                if (cap > 0 && compact.length >= cap) break; // 不超过佣兵个数限制
+                compact.push(m);
+                compactDeploy.push(Number(deploy[i]) || 0);
+            }
+        }
+        _root.同伴数据 = compact;
+        _root.佣兵是否出战信息 = compactDeploy;
+        _root.同伴数 = compact.length;
     }
 
     // ==================== 商城即时写入 ====================

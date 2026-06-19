@@ -41,6 +41,12 @@
         ['modules/jukebox/jukebox-panel.js'],
         noop);
 
+    // ── cutscene-test（动画测试 · beta，issue #7 bug2）──
+    // Ruffle 运行时（cfn-assets.local/_ruffle/，约 29MB）由 panel 内部首次播放时懒加载，不在 deps 里。
+    Panels.registerLazy('cutscene-test',
+        ['modules/cutscene-test.js'],
+        noop);
+
     // ── dressup ──
     // Dialogue portrait paper-doll preview. Runtime data comes from baked PNG
     // frame sequences and manifest metadata, so no Flash sampling is needed.

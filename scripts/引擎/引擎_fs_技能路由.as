@@ -27,6 +27,13 @@ _root.技能路由 = {};
  */
 _root.技能路由.技能标签跳转_旧 = function(unit:MovieClip, skillName:String):Void {
     unit.技能名 = skillName;
+    // issue #7 bug3：位移技能（闪现/小跳/一瞬千击）开一个短时「位移锁向」窗口，期间 HitUpdater
+    // 不翻转受击面向，避免受击翻面让脱困位移反向冲进人堆。帧戳自动过期（无需 FLA 末帧清理），
+    // 窗口仅覆盖这三招的位移帧。窗口值偏宽更安全：偏短=漏修一部分；偏长=受击短暂不转面向（基本无感）。
+    // 30 帧为初值，按真机手感微调（dash 实际帧长在 FLA 时间轴，静态分析无法精确取得）。
+    if (skillName == "闪现" || skillName == "小跳" || skillName == "一瞬千击") {
+        unit.位移锁向截止帧 = _root.帧计时器.当前帧数 + 30;
+    }
     RoutingLifecycle.ensureTempY(unit);
 
     // 进入技能状态（主角-男会在状态改变中映射到"容器"帧）

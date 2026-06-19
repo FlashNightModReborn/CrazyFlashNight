@@ -215,6 +215,26 @@ class org.flashNight.arki.merc.MercPanelService {
         // Plan A audit: handleDeploy 写 佣兵是否出战信息（save-relevant），必须标脏
         _root.存档系统.dirtyMark = true;
 
+        // issue #7 bug4：即时上/撤人。原实现仅改标志，实体只在场景切换的 加载佣兵 里生成，
+        // 故切换后当前场景不刷新。仅当「本场景已托管佣兵」(gameworld.佣兵已进场) 时即时同步该佣兵；
+        // 非佣兵场景(hub 等)不触碰，避免把佣兵塞进不该有的场景。全程不动 佣兵信息界面，
+        // 故不扰乱 PanelHost 关闭恢复序列（与 handleHire 同口径，只碰 gameworld 实体）。
+        var gw:MovieClip = _root.gameworld;
+        if (gw != undefined && gw.佣兵已进场 == true) {
+            var clipName:String = "同伴" + mercIndex;
+            if (newState == 1) {
+                if (gw[clipName] == undefined) {
+                    var hero:MovieClip = gw[_root.控制目标];
+                    var px:Number = (hero != undefined) ? hero._x : Number(_root.场景进入横坐标);
+                    var py:Number = (hero != undefined) ? hero._y : Number(_root.场景进入纵坐标);
+                    _root.加载单个佣兵(mercIndex, px, py);
+                }
+            } else {
+                var clip:MovieClip = gw[clipName];
+                if (clip != undefined) clip.removeMovieClip();
+            }
+        }
+
         sendResponse({
             task: "merc_response",
             callId: callId,
@@ -290,10 +310,21 @@ class org.flashNight.arki.merc.MercPanelService {
             return;
         }
 
-        // 检查佣兵槽位上限
+        // 检查佣兵槽位上限 + 选定写入槽位。
+        // issue #7 bug1：原实现用 同伴数据.push 追加（落位 = 同伴数据.length），而快照
+        // (handleSnapshot) 与进场 (加载佣兵) 的读窗口固定为 [0,佣兵个数限制)。历史空洞档
+        // （旧版解雇用 [] 占位且不压缩 → 同伴数据.length 已达上限、中段是墓碑）下，push 会把
+        // 新佣兵写到读窗口之外 → 扣钱但不入可用列表。改为复用 [0,佣兵个数限制) 内首个空槽
+        // （对齐老版 Symbol 2035 雇佣语义），保证落点恒在读窗口内。
+        if (_root.同伴数据 == undefined) _root.同伴数据 = [];
         var maxSlots:Number = Number(_root.佣兵个数限制) || 0;
-        var currentCount:Number = Number(_root.同伴数) || 0;
-        if (maxSlots > 0 && currentCount >= maxSlots) {
+        var currentCount:Number = countCompanions();
+        var targetSlot:Number = -1;
+        for (var s:Number = 0; s < maxSlots; s++) {
+            var occ:Array = _root.同伴数据[s];
+            if (occ == undefined || occ[0] == undefined) { targetSlot = s; break; }
+        }
+        if (targetSlot == -1) {
             sendResponse({ task: "merc_response", callId: callId, success: false, error: "slots_full", currentCount: currentCount, maxSlots: maxSlots });
             return;
         }
@@ -342,14 +373,15 @@ class org.flashNight.arki.merc.MercPanelService {
         // 从可雇佣兵池移除
         pool.splice(poolIndex, 1);
 
-        // 追加到同伴数据
-        if (_root.同伴数据 == undefined) _root.同伴数据 = [];
-        _root.同伴数据.push(merc);
-        _root.同伴数 = (_root.同伴数 == undefined) ? 1 : _root.同伴数 + 1;
+        // 写入选定槽位（targetSlot 在 [0,佣兵个数限制) 内，保证落在快照/进场读窗口内）
+        _root.同伴数据[targetSlot] = merc;
 
-        // 初始化出战信息（默认不出战）
+        // 初始化出战信息（默认不出战），与 同伴数据 同下标并行
         if (_root.佣兵是否出战信息 == undefined) _root.佣兵是否出战信息 = [];
-        _root.佣兵是否出战信息[_root.同伴数据.length - 1] = 0;
+        _root.佣兵是否出战信息[targetSlot] = 0;
+
+        // 同伴数 以实际有效项重算，杜绝与 同伴数据 发散（issue #7 bug1 根因之一）
+        _root.同伴数 = countCompanions();
         // Plan A audit: handleRecruit 写 金钱/虚拟币/同伴数据/同伴数/佣兵是否出战信息，全部 save-relevant，必须标脏
         _root.存档系统.dirtyMark = true;
 
@@ -477,6 +509,23 @@ class org.flashNight.arki.merc.MercPanelService {
     public static function handlePanelClose(params:Object):Void {
         // WebView 面板关闭后，不刷新 Flash UI（避免 gotoAndStop + attachMovie
         // 帧脚本触发副作用阻塞 Flash 线程）。如有需要，玩家下次打开面板时 snapshot 会同步最新状态。
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // countCompanions — 统计 [0,佣兵个数限制) 内有效佣兵数（同伴数据[i][0] 非 undefined）
+    // 作为 _root.同伴数 的权威重算口径，杜绝 同伴数 与 同伴数据 发散（issue #7 bug1）。
+    // 与 MercCensus/removeMerc 的有效项判据一致：等级列 [0] 非 undefined。
+    // ═══════════════════════════════════════════════════════════
+    public static function countCompanions():Number {
+        var data:Array = _root.同伴数据;
+        if (data == undefined) return 0;
+        var cap:Number = Number(_root.佣兵个数限制) || 0;
+        var c:Number = 0;
+        for (var i:Number = 0; i < cap; i++) {
+            var m:Array = data[i];
+            if (m != undefined && m[0] != undefined) c++;
+        }
+        return c;
     }
 
     // ═══════════════════════════════════════════════════════════

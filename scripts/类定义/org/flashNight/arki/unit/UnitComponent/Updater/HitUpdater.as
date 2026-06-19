@@ -68,7 +68,10 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
         var hitDirection:String = ((hitTarget._x < shooter._x) ^ reverse) ? "左" : "右";
 
         // 为实现受击目标视觉上面向与受击方向相反的效果
-        if (!hitTarget.锁定方向)
+        // issue #7 bug3：位移技能窗口内不翻转受击面向（窗口见 技能路由.技能标签跳转_旧），
+        // 否则受击翻面会让 闪现/小跳/一瞬千击 的脱困位移（读 live parent.方向）反向冲进人堆。
+        // NaN > x 恒 false → 未设窗口/已过期的单位照常翻面。
+        if (!hitTarget.锁定方向 && !(Number(hitTarget.位移锁向截止帧) > Number(_root.帧计时器.当前帧数)))
             hitTarget.方向改变((hitDirection == "左") ? "右" : "左");
 
         var overlapCenter:Vector = collisionResult.overlapCenter;

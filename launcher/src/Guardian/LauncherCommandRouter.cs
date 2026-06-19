@@ -194,6 +194,10 @@ namespace CF7Launcher.Guardian
                 case "ARENA_TEST":
                     OpenPanel("arena", "{\"mode\":\"dev\",\"source\":\"runtime\",\"debug\":true}");
                     break;
+                case "CUTSCENE_TEST":
+                    // issue #7 bug2：动画测试面板（Ruffle 预览 flashswf/movies/ 过场）
+                    OpenPanel("cutscene-test", "{\"mode\":\"dev\",\"source\":\"runtime\",\"debug\":true}");
+                    break;
                 case "EXIT_CONFIRM": ForceExit(); break;
                 default:
                     LogManager.Log("[Router] unknown key=" + key);

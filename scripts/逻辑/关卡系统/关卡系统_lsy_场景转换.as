@@ -148,8 +148,46 @@ _root.加载主角和战宠 = function(地点X, 地点Y){
 	_root.加载宠物(地点X,地点Y);
 }
 
+// issue #7 bug4：从 加载佣兵 抽出的「单佣兵进场」，供 handleDeploy 即时上人复用。
+// 参数块与下方 加载佣兵 的 attach 保持一致；如改 merc spawn 参数需两处同步。
+_root.加载单个佣兵 = function(i, 地点X, 地点Y){
+	var 同伴信息 = _root.同伴数据[i];
+	if (!(_root.佣兵是否出战信息[i] == 1 && 同伴信息[1] != undefined && 同伴信息[1] != "undefined")) return null;
+	var 当前佣兵 = _root.加载游戏世界人物("主角-男","同伴" + i,_root.gameworld.getNextHighestDepth(),{
+		_x:地点X + random(10),
+		_y:地点Y + random(10),
+		用户ID:同伴信息[2],
+		是否为敌人:false,
+		身高:同伴信息[3],
+		名字:同伴信息[1],
+		等级:同伴信息[0],
+		脸型:同伴信息[4],
+		发型:同伴信息[5],
+		头部装备:同伴信息[6],
+		上装装备:同伴信息[7],
+		手部装备:同伴信息[8],
+		下装装备:同伴信息[9],
+		脚部装备:同伴信息[10],
+		颈部装备:同伴信息[11],
+		长枪:同伴信息[12],
+		手枪:同伴信息[13],
+		手枪2:同伴信息[14],
+		刀:同伴信息[15],
+		手雷:同伴信息[16],
+		性别:同伴信息[17],
+		是否为佣兵:true,
+		佣兵是否出战信息id:i
+	});
+	if(同伴信息[19]){
+		当前佣兵.佣兵参数 = 同伴信息[19];
+	}
+	return 当前佣兵;
+}
+
 _root.加载佣兵 = function(地点X, 地点Y){
 	if((!_root.限制系统.limitLevel || _root.难度等级 >= _root.限制系统.limitLevel) && _root.限制系统.DisableCompanion) return;
+	// 标记本场景托管佣兵（issue #7 bug4：handleDeploy 即时上/撤人据此判定）
+	_root.gameworld.佣兵已进场 = true;
 	_root.帧计时器.添加单次任务(function() {
 		for(var i = 0; i < _root.佣兵个数限制; i++){
 			var 同伴信息 = _root.同伴数据[i];
