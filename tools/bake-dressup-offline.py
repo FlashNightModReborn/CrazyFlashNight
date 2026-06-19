@@ -335,6 +335,19 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Use FFDec to export covered skin keys as PNG frame files and write export metadata.",
     )
+    parser.add_argument(
+        "--export-missing-assets",
+        action="store_true",
+        help=(
+            "When used with --export-assets, export covered skin keys that are missing reusable "
+            "export metadata in the existing manifest."
+        ),
+    )
+    parser.add_argument(
+        "--prune-orphan-assets",
+        action="store_true",
+        help="Delete PNG files under --asset-dir that are not referenced by the generated manifest.",
+    )
     parser.add_argument("--limit", type=int, default=0, help="Only process the first N skin keys when exporting assets.")
     parser.add_argument("--name", action="append", default=[], help="Only export the named skin key; repeatable.")
     parser.add_argument(
@@ -2565,7 +2578,14 @@ def frame_pixel_digest(path: Path) -> str:
     return "file:" + digest.hexdigest()
 
 
-def selected_skin_keys(manifest: dict[str, Any], names: set[str], limit: int) -> list[str]:
+def selected_skin_keys(
+    manifest: dict[str, Any],
+    names: set[str],
+    limit: int,
+    require_name_match: bool = False,
+) -> list[str]:
+    if require_name_match and not names:
+        return []
     keys: list[str] = []
     for key, entry in manifest["skinKeys"].items():
         if names and key not in names:
@@ -2580,6 +2600,17 @@ def selected_skin_keys(manifest: dict[str, Any], names: set[str], limit: int) ->
     return keys
 
 
+def skin_entry_has_export(entry: dict[str, Any] | None) -> bool:
+    return bool(entry and entry.get("export") and entry.get("frames"))
+
+
+def is_exportable_skin_entry(entry: dict[str, Any] | None) -> bool:
+    if not entry:
+        return False
+    asset = entry.get("asset") or {}
+    return bool(entry.get("covered") and asset and not asset.get("conflict"))
+
+
 def export_asset_identity(entry: dict[str, Any]) -> tuple[Any, ...]:
     asset = entry.get("asset") or {}
     return (
@@ -2588,6 +2619,28 @@ def export_asset_identity(entry: dict[str, Any]) -> tuple[Any, ...]:
         asset.get("symbolName") or "",
         bool(asset.get("conflict")),
     )
+
+
+def missing_export_skin_keys(manifest: dict[str, Any], existing_manifest: dict[str, Any] | None) -> list[str]:
+    existing_skin_keys = (existing_manifest or {}).get("skinKeys") or {}
+    result: list[str] = []
+    for key, entry in (manifest.get("skinKeys") or {}).items():
+        if not is_exportable_skin_entry(entry):
+            continue
+        existing_entry = existing_skin_keys.get(key)
+        if skin_entry_has_export(existing_entry) and export_asset_identity(entry) == export_asset_identity(existing_entry):
+            continue
+        compat_alias = entry.get("compatAlias") or {}
+        source_key = compat_alias.get("sourceKey") or ""
+        source_entry = existing_skin_keys.get(source_key)
+        if (
+            source_entry
+            and skin_entry_has_export(source_entry)
+            and export_asset_identity(entry) == export_asset_identity(source_entry)
+        ):
+            continue
+        result.append(key)
+    return result
 
 
 def preserve_incremental_skin_exports(
@@ -2919,6 +2972,7 @@ def export_skin_assets(
     zoom: int,
     names: set[str],
     limit: int,
+    require_name_match: bool,
     no_write: bool,
     fps: float,
     static_stop_policy: str,
@@ -2975,7 +3029,7 @@ def export_skin_assets(
         "conditionalVariantSamples": [],
     }
 
-    keys = selected_skin_keys(manifest, names, limit)
+    keys = selected_skin_keys(manifest, names, limit, require_name_match=require_name_match)
     export_report["selectedSkinKeys"] = len(keys)
     by_swf: dict[str, list[tuple[str, int]]] = defaultdict(list)
 
@@ -3608,6 +3662,67 @@ def attach_animation_summary(manifest: dict[str, Any], report: dict[str, Any]) -
     report["nestedAnimationSkinKeys"] = nested_animation[:200]
 
 
+def collect_entry_asset_uris(entry: dict[str, Any]) -> set[str]:
+    uris: set[str] = set()
+
+    def collect_frames(owner: dict[str, Any]) -> None:
+        for field in ("frames", "timelineFrames"):
+            for frame in owner.get(field) or []:
+                uri = frame.get("uri")
+                if isinstance(uri, str):
+                    uris.add(uri)
+        export = owner.get("export") or {}
+        for field in ("frames", "timelineFrames"):
+            for frame in export.get(field) or []:
+                uri = frame.get("uri")
+                if isinstance(uri, str):
+                    uris.add(uri)
+        nested = export.get("nestedAnimation") or owner.get("nestedAnimation") or {}
+        for layer in nested.get("layers") or []:
+            collect_frames(layer)
+
+    collect_frames(entry)
+    for variant in (entry.get("runtimeVariants") or {}).values():
+        if isinstance(variant, dict):
+            collect_frames(variant)
+    return uris
+
+
+def collect_manifest_asset_uris(manifest: dict[str, Any], asset_dir_name: str) -> set[str]:
+    prefix = f"{asset_dir_name.strip('/')}/"
+    uris: set[str] = set()
+    for skin in (manifest.get("skinKeys") or {}).values():
+        uris.update(collect_entry_asset_uris(skin))
+    for holder in iter_basic_holders(manifest):
+        basic = holder.get("basic") or {}
+        uris.update(collect_entry_asset_uris(basic))
+    return {
+        uri
+        for uri in uris
+        if uri.startswith(prefix) and not uri.startswith(("http:", "https:", "data:", "blob:", "/"))
+    }
+
+
+def prune_orphan_asset_files(
+    manifest: dict[str, Any],
+    output_dir: Path,
+    asset_dir_name: str,
+    no_write: bool,
+) -> tuple[int, list[str]]:
+    asset_dir = output_dir / asset_dir_name
+    if no_write or not asset_dir.exists():
+        return 0, []
+    referenced = collect_manifest_asset_uris(manifest, asset_dir_name)
+    purged: list[str] = []
+    for path in sorted(asset_dir.glob("*.png")):
+        rel = path.relative_to(output_dir).as_posix()
+        if rel in referenced:
+            continue
+        path.unlink()
+        purged.append(rel)
+    return len(purged), purged[:40]
+
+
 def main() -> int:
     args = parse_args()
     project_root = Path(__file__).resolve().parents[1]
@@ -3622,8 +3737,24 @@ def main() -> int:
     if existing_manifest_path.exists():
         existing_manifest = json.loads(existing_manifest_path.read_text(encoding="utf-8-sig"))
     if args.export_assets:
-        if (args.name or args.limit > 0) and existing_manifest is not None:
-            target_keys = set(selected_skin_keys(manifest, set(args.name), args.limit))
+        export_names = set(args.name)
+        missing_export_targets: list[str] = []
+        if args.export_missing_assets:
+            missing_export_targets = missing_export_skin_keys(manifest, existing_manifest)
+            export_names.update(missing_export_targets)
+            report.setdefault("assetExport", {})["missingExportSkinKeys"] = len(missing_export_targets)
+            report.setdefault("assetExport", {})["missingExportSamples"] = missing_export_targets[:40]
+            report.setdefault("counts", {})["missingExportSkinKeys"] = len(missing_export_targets)
+        require_name_match = bool(export_names or args.export_missing_assets)
+        if (export_names or args.limit > 0 or args.export_missing_assets) and existing_manifest is not None:
+            target_keys = set(
+                selected_skin_keys(
+                    manifest,
+                    export_names,
+                    args.limit,
+                    require_name_match=require_name_match,
+                )
+            )
             preserved_skin_exports = preserve_incremental_skin_exports(
                 manifest,
                 existing_manifest,
@@ -3638,8 +3769,9 @@ def main() -> int:
             tmp_dir,
             resolve_path(args.ffdec, project_root),
             args.zoom,
-            set(args.name),
+            export_names,
             args.limit,
+            require_name_match,
             args.no_write,
             args.fps,
             args.static_stop_policy,
@@ -3664,6 +3796,11 @@ def main() -> int:
             report.setdefault("counts", {})["preservedBasicHolderExports"] = preserved_basic_exports
     if not args.export_assets:
         attach_animation_summary(manifest, report)
+    if args.prune_orphan_assets:
+        purged, samples = prune_orphan_asset_files(manifest, output_dir, args.asset_dir, args.no_write)
+        report.setdefault("assetExport", {})["orphanAssetsPurged"] = purged
+        report.setdefault("assetExport", {})["orphanAssetSamples"] = samples
+        report.setdefault("counts", {})["orphanAssetsPurged"] = purged
     if not args.no_write:
         write_json(output_dir / "manifest.json", manifest)
         write_json(output_dir / "report.json", report)

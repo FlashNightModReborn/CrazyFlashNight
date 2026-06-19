@@ -12,11 +12,35 @@
     "compatAliasSkinKeys": 150,
     "manualCompatAliasSkinKeys": 15,
     "autoOppositeGenderCompatAliasSkinKeys": 135,
+    "missingExportSkinKeys": 20,
+    "exportedSkinKeys": 20,
+    "exportedFrames": 38,
+    "exportedBasicKeys": 22,
+    "exportedBasicFrames": 22,
+    "metadataErrors": 0,
+    "timelineScriptErrors": 0,
+    "spriteGraphErrors": 0,
+    "staticStopSkinKeys": 0,
+    "staticStopCollapsedFrames": 0,
+    "purgedStaleFrames": 0,
+    "nestedAnimationSkinKeys": 24,
+    "nestedLayerUnsupportedDescendants": 0,
+    "nestedLayerCompositedDescendants": 0,
+    "exportedNestedLayerKeys": 0,
+    "exportedNestedLayerFrames": 0,
+    "uniqueFrameImages": 42,
+    "duplicateFrameRefs": 18,
+    "timelineLogicalFrames": 60,
+    "timelineFrameEntries": 42,
+    "timelineCompressedFrameRefs": 18,
+    "conditionalVariantSkinKeys": 0,
+    "conditionalVariantFrames": 0,
+    "conditionalVariantRemovedPlaceObjects": 0,
+    "animatedSkinKeys": 17,
+    "staticCollapsedSkinKeys": 22,
     "preservedSkinKeyExports": 2820,
     "preservedBasicHolderExports": 28,
-    "animatedSkinKeys": 15,
-    "staticCollapsedSkinKeys": 22,
-    "nestedAnimationSkinKeys": 24
+    "orphanAssetsPurged": 0
   },
   "missingSummary": {
     "byUse": {},
@@ -5169,8 +5193,65 @@
     }
   },
   "assetExport": {
+    "selectedSkinKeys": 20,
+    "resolvedSkinKeys": 20,
+    "exportedSkinKeys": 20,
+    "exportedFrames": 38,
+    "resolvedBasicKeys": 22,
+    "exportedBasicKeys": 22,
+    "exportedBasicFrames": 22,
+    "missingSymbol": [],
+    "missingBasicSymbol": [],
+    "symbolErrors": [],
+    "exportErrors": [],
+    "metadataErrors": [],
+    "exportFallbacks": [],
+    "missingFrame": [],
+    "missingBasicFrame": [],
+    "timelineScriptErrors": [],
+    "spriteGraphErrors": [],
+    "staticStopSkinKeys": 0,
+    "staticStopCollapsedFrames": 0,
+    "purgedStaleFrames": 0,
+    "staticStopSamples": [],
+    "nestedAnimationSkinKeys": 0,
+    "nestedAnimationSamples": [],
+    "nestedLayerUnsupportedDescendants": 0,
+    "nestedLayerCompositedDescendants": 0,
+    "exportedNestedLayerKeys": 0,
+    "exportedNestedLayerFrames": 0,
+    "missingNestedLayerFrame": [],
+    "uniqueFrameImages": 42,
+    "duplicateFrameRefs": 18,
+    "timelineLogicalFrames": 60,
+    "timelineFrameEntries": 42,
+    "timelineCompressedFrameRefs": 18,
+    "timelineCompressionSamples": [
+      {
+        "owner": "发型-女式-世莉架遮耳",
+        "logicalFrames": 10,
+        "timelineFrames": 1,
+        "savedFrameEntries": 9,
+        "uniqueUris": 1,
+        "longestHoldFrames": 10
+      },
+      {
+        "owner": "发型-女式-缠流子",
+        "logicalFrames": 10,
+        "timelineFrames": 1,
+        "savedFrameEntries": 9,
+        "uniqueUris": 1,
+        "longestHoldFrames": 10
+      }
+    ],
+    "conditionalVariantSkinKeys": 0,
+    "conditionalVariantFrames": 0,
+    "conditionalVariantRemovedPlaceObjects": 0,
+    "conditionalVariantSamples": [],
     "preservedSkinKeyExports": 2820,
-    "preservedBasicHolderExports": 28
+    "preservedBasicHolderExports": 28,
+    "orphanAssetsPurged": 0,
+    "orphanAssetSamples": []
   },
   "animatedSkinKeys": [
     {
@@ -5208,6 +5289,24 @@
         "头部装备"
       ],
       "uri": "skins/0762e7d7_1.png"
+    },
+    {
+      "skinKey": "发型-女式-世莉架遮耳",
+      "frameCount": 10,
+      "playback": "loop",
+      "uses": [
+        "发型"
+      ],
+      "uri": "skins/bd345f4d_1.png"
+    },
+    {
+      "skinKey": "发型-女式-缠流子",
+      "frameCount": 10,
+      "playback": "loop",
+      "uses": [
+        "发型"
+      ],
+      "uri": "skins/3ec7cf9a_1.png"
     },
     {
       "skinKey": "男变装-战术耳机加遮阳帽",

@@ -92,6 +92,93 @@ def walk_layers(layers: list[dict[str, Any]], owner: str) -> Iterable[tuple[str,
         yield from walk_layers(nested_layers(layer), layer_owner)
 
 
+def is_local_uri(uri: str) -> bool:
+    return bool(uri) and not uri.startswith(("http:", "https:", "data:", "blob:", "/"))
+
+
+def entry_frame_uris(entry: dict[str, Any], owner: str) -> set[str]:
+    uris: set[str] = set()
+    for _frame_owner, frames, _is_timeline in frame_lists_from_entry(entry, owner):
+        for frame in frames:
+            uri = frame.get("uri")
+            if isinstance(uri, str) and is_local_uri(uri):
+                uris.add(uri)
+    for variant_name, variant in (entry.get("runtimeVariants") or {}).items():
+        if isinstance(variant, dict):
+            uris.update(entry_frame_uris(variant, f"{owner}.runtimeVariants[{variant_name}]"))
+    for layer_owner, layer in walk_layers(nested_layers(entry), f"{owner}.nestedAnimation"):
+        for _frame_owner, frames, _is_timeline in frame_lists_from_entry(layer, layer_owner):
+            for frame in frames:
+                uri = frame.get("uri")
+                if isinstance(uri, str) and is_local_uri(uri):
+                    uris.add(uri)
+    return uris
+
+
+def iter_basic_entries(manifest: dict[str, Any]) -> Iterable[dict[str, Any]]:
+    for gender_data in ((manifest.get("rig") or {}).get("genders") or {}).values():
+        for holder in gender_data.get("holders") or []:
+            basic = holder.get("basic") or {}
+            if basic:
+                yield basic
+    for rig in (manifest.get("rigs") or {}).values():
+        for gender_data in (rig.get("genders") or {}).values():
+            for state in (gender_data.get("states") or {}).values():
+                for holder in state.get("holders") or []:
+                    basic = holder.get("basic") or {}
+                    if basic:
+                        yield basic
+
+
+def referenced_skin_pngs(manifest: dict[str, Any]) -> set[str]:
+    uris: set[str] = set()
+    for skin_key, skin in (manifest.get("skinKeys") or {}).items():
+        uris.update(entry_frame_uris(skin, f"skinKeys[{skin_key}]"))
+    for basic in iter_basic_entries(manifest):
+        uris.update(entry_frame_uris(basic, "basic"))
+    return {uri for uri in uris if uri.startswith("skins/") and Path(uri).suffix.lower() == ".png"}
+
+
+def is_exportable_skin(skin: dict[str, Any]) -> bool:
+    asset = skin.get("asset") or {}
+    return bool(skin.get("covered") and asset and not asset.get("conflict"))
+
+
+def exportable_skins_missing_frames(manifest: dict[str, Any]) -> list[str]:
+    missing: list[str] = []
+    for skin_key, skin in (manifest.get("skinKeys") or {}).items():
+        if is_exportable_skin(skin) and (not skin.get("export") or not skin.get("frames")):
+            missing.append(skin_key)
+    return missing
+
+
+def orphan_skin_pngs(manifest_dir: Path, manifest: dict[str, Any]) -> list[str]:
+    skin_dir = manifest_dir / "skins"
+    if not skin_dir.exists():
+        return []
+    referenced = referenced_skin_pngs(manifest)
+    actual = {path.relative_to(manifest_dir).as_posix() for path in skin_dir.glob("*.png")}
+    return sorted(actual - referenced)
+
+
+def assert_export_completeness(manifest: dict[str, Any], failures: list[str]) -> list[str]:
+    missing = exportable_skins_missing_frames(manifest)
+    for skin_key in missing[:20]:
+        failures.append(f"{skin_key} covered asset missing export/frames")
+    if len(missing) > 20:
+        failures.append(f"{len(missing) - 20} additional covered assets missing export/frames")
+    return missing
+
+
+def assert_no_orphan_skin_pngs(manifest_dir: Path, manifest: dict[str, Any], failures: list[str]) -> list[str]:
+    orphaned = orphan_skin_pngs(manifest_dir, manifest)
+    for uri in orphaned[:20]:
+        failures.append(f"unreferenced skin png: {uri}")
+    if len(orphaned) > 20:
+        failures.append(f"{len(orphaned) - 20} additional unreferenced skin pngs")
+    return orphaned
+
+
 def assert_frame_list(
     manifest_dir: Path,
     failures: list[str],
@@ -402,6 +489,8 @@ def main() -> None:
     assert_attack_mode_runtime_variant(manifest, failures)
     assert_missing_source_references(manifest, report, failures)
     assert_compat_alias_audit(manifest, report, failures)
+    missing_exportable = assert_export_completeness(manifest, failures)
+    orphaned_skin_pngs = assert_no_orphan_skin_pngs(manifest_dir, manifest, failures)
 
     layer_count = 0
     compressed_layer_count = 0
@@ -415,6 +504,8 @@ def main() -> None:
         "skinKeys": len(manifest.get("skinKeys") or {}),
         "nestedLayers": layer_count,
         "compressedNestedLayers": compressed_layer_count,
+        "exportableMissingExport": len(missing_exportable),
+        "orphanSkinPngs": len(orphaned_skin_pngs),
         "reportTimelineCompressedFrameRefs": counts.get("timelineCompressedFrameRefs"),
         "failures": failures[:20],
     }
