@@ -115,6 +115,33 @@ def main() -> None:
     assert icon_static_stopped == 3
     assert dressup_static_playback["playback"] == "static-first-frame"
 
+    controlled_goto_controls = {
+        1: {
+            "frameScripts": {
+                1: [
+                    "stop();\n"
+                    "var targetFrame = _parent._parent._parent.牙狼剑帧;\n"
+                    "if(targetFrame != undefined)\n"
+                    "{\n"
+                    "   gotoAndStop(targetFrame);\n"
+                    "}\n"
+                ]
+            },
+            "clipActions": [],
+        }
+    }
+    controlled_goto_playback = dressup.playback_metadata(controlled_goto_controls, {}, 1, 11, "auto")
+    assert controlled_goto_playback["playback"] == "static-first-frame"
+    assert controlled_goto_playback["staticReason"] == "frame1_stop_with_host_controlled_goto"
+
+    fixed_goto_controls = {1: {"frameScripts": {1: ["stop(); gotoAndStop(5);"]}, "clipActions": []}}
+    fixed_goto_playback = dressup.playback_metadata(fixed_goto_controls, {}, 1, 11, "auto")
+    assert fixed_goto_playback["playback"] == "loop"
+
+    explicit_play_controls = {1: {"frameScripts": {1: ["stop(); play();"]}, "clipActions": []}}
+    explicit_play_playback = dressup.playback_metadata(explicit_play_controls, {}, 1, 11, "auto")
+    assert explicit_play_playback["playback"] == "loop"
+
     parent_loop_controls = make_controls(
         parent_stop=False,
         child_2_stop=False,

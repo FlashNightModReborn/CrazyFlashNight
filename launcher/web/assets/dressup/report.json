@@ -5,17 +5,17 @@
     "skinKeys": 2840,
     "coveredSkinKeys": 2840,
     "missingSkinKeys": 0,
-    "holdersMale": 18,
-    "holdersFemale": 18,
+    "holdersMale": 21,
+    "holdersFemale": 21,
     "battleStates": 6,
     "battleAuditErrors": 0,
     "compatAliasSkinKeys": 150,
     "manualCompatAliasSkinKeys": 15,
     "autoOppositeGenderCompatAliasSkinKeys": 135,
     "preservedSkinKeyExports": 2820,
-    "preservedBasicHolderExports": 22,
-    "animatedSkinKeys": 16,
-    "staticCollapsedSkinKeys": 21,
+    "preservedBasicHolderExports": 28,
+    "animatedSkinKeys": 15,
+    "staticCollapsedSkinKeys": 22,
     "nestedAnimationSkinKeys": 24
   },
   "missingSummary": {
@@ -5170,7 +5170,7 @@
   },
   "assetExport": {
     "preservedSkinKeyExports": 2820,
-    "preservedBasicHolderExports": 22
+    "preservedBasicHolderExports": 28
   },
   "animatedSkinKeys": [
     {
@@ -5208,15 +5208,6 @@
         "头部装备"
       ],
       "uri": "skins/0762e7d7_1.png"
-    },
-    {
-      "skinKey": "刀-远古诛神剑",
-      "frameCount": 11,
-      "playback": "loop",
-      "uses": [
-        "刀"
-      ],
-      "uri": "skins/9ca3347e_1.png"
     },
     {
       "skinKey": "男变装-战术耳机加遮阳帽",
@@ -5450,6 +5441,17 @@
         "长枪"
       ],
       "uri": "skins/19b97f07_1.png"
+    },
+    {
+      "skinKey": "刀-远古诛神剑",
+      "sourceFrameCount": 11,
+      "playback": "static-first-frame",
+      "staticReason": "frame1_stop_with_host_controlled_goto",
+      "nestedAnimation": false,
+      "uses": [
+        "刀"
+      ],
+      "uri": "skins/9ca3347e_1.png"
     },
     {
       "skinKey": "枪-长枪-G11",

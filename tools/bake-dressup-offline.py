@@ -44,6 +44,8 @@ ATTACK_MODE_COMPARE_RE = re.compile(r'攻击模式\s*==\s*"([^"]+)"')
 BLOCK_COMMENT_RE = re.compile(r"/\*.*?\*/", re.S)
 LINE_COMMENT_RE = re.compile(r"//.*?(?=\r?\n|$)")
 STOP_CALL_RE = re.compile(r"\bstop\s*\(\s*\)\s*;?")
+UNSAFE_TIMELINE_DRIVER_RE = re.compile(r"\b(?:gotoAndPlay|play|nextFrame|prevFrame)\s*\(")
+GOTO_AND_STOP_RE = re.compile(r"\bgotoAndStop\s*\((.*?)\)\s*;?", re.S)
 LINKAGE_IDENTIFIER_RE = re.compile(r'linkageIdentifier="([^"]+)"')
 DOM_SYMBOL_NAME_RE = re.compile(r'<DOMSymbolItem\b[^>]*\bname="([^"]+)"')
 
@@ -884,28 +886,31 @@ def traverse_holders(
     if visit_key in visited or len(path) > 32:
         return
     visited.add(visit_key)
-    symbol = symbols.get(symbol_name)
-    if symbol is None:
-        return
-    for draw_index, layer, frame in dialogue_symbol_draw_frames(symbol):
-        for instance in frame["instances"]:
-            matrix = multiply(parent_matrix, instance["matrix"])
-            if instance["attachCalls"]:
-                record_holder(
-                    holders,
-                    symbols,
-                    gender,
-                    symbol_name,
-                    instance,
-                    matrix,
-                    path,
-                    draw_index,
-                    layer.get("name") or "",
-                    frame.get("index", 0),
-                )
-            child_name = instance["libraryItemName"]
-            if child_name in symbols:
-                traverse_holders(symbols, gender, child_name, matrix, holders, path + [symbol_name], visited)
+    try:
+        symbol = symbols.get(symbol_name)
+        if symbol is None:
+            return
+        for draw_index, layer, frame in dialogue_symbol_draw_frames(symbol):
+            for instance in frame["instances"]:
+                matrix = multiply(parent_matrix, instance["matrix"])
+                if instance["attachCalls"]:
+                    record_holder(
+                        holders,
+                        symbols,
+                        gender,
+                        symbol_name,
+                        instance,
+                        matrix,
+                        path,
+                        draw_index,
+                        layer.get("name") or "",
+                        frame.get("index", 0),
+                    )
+                child_name = instance["libraryItemName"]
+                if child_name in symbols:
+                    traverse_holders(symbols, gender, child_name, matrix, holders, path + [symbol_name], visited)
+    finally:
+        visited.remove(visit_key)
 
 
 def build_dialogue_rig(project_root: Path) -> dict[str, Any]:
@@ -2055,6 +2060,30 @@ def is_plain_stop_script(script: str) -> bool:
     return compact in ("stop();", "stop()")
 
 
+def is_host_controlled_goto_and_stop(script: str) -> bool:
+    compact = compact_action_script(script)
+    if "gotoAndStop(targetFrame)" not in compact:
+        return False
+    return "targetFrame!=undefined" in compact or "targetFrame!==undefined" in compact
+
+
+def frame1_static_stop_reason(frame1_scripts: list[str]) -> str:
+    if any(is_plain_stop_script(script) for script in frame1_scripts):
+        return "frame1_plain_stop"
+    for script in frame1_scripts:
+        clean = script_without_comments(script)
+        if not STOP_CALL_RE.search(clean):
+            continue
+        if UNSAFE_TIMELINE_DRIVER_RE.search(clean):
+            continue
+        goto_and_stop_calls = GOTO_AND_STOP_RE.findall(clean)
+        if not goto_and_stop_calls:
+            return "frame1_scripted_stop"
+        if is_host_controlled_goto_and_stop(clean):
+            return "frame1_stop_with_host_controlled_goto"
+    return ""
+
+
 def collect_timeline_scripts(tmp_dir: Path, swf_rel: str) -> dict[int, dict[str, Any]]:
     base = raw_script_export_dir(tmp_dir, swf_rel) / "scripts"
     controls: dict[int, dict[str, Any]] = defaultdict(lambda: {"frameScripts": defaultdict(list), "clipActions": []})
@@ -2435,7 +2464,7 @@ def playback_metadata(
     frame_numbers = sorted(frame for frame in frame_scripts if frame)
     frame1_scripts = frame_scripts.get(1) or []
     has_frame1_stop = any(STOP_CALL_RE.search(script) for script in frame1_scripts)
-    has_plain_frame1_stop = any(is_plain_stop_script(script) for script in frame1_scripts)
+    static_frame1_stop_reason = frame1_static_stop_reason(frame1_scripts)
     metadata: dict[str, Any] = {
         "playback": "loop" if source_frame_count > 1 else "static",
         "sourceFrameCount": source_frame_count,
@@ -2454,20 +2483,23 @@ def playback_metadata(
             "maxDescendantFrameCount": max(item["frameCount"] for item in nested_animation),
             "strategy": "layered-or-sampled-required",
         }
-        if static_stop_policy == "auto" and source_frame_count > 1 and has_plain_frame1_stop:
+        if static_stop_policy == "auto" and source_frame_count > 1 and static_frame1_stop_reason:
             metadata["playback"] = "static-parent-nested-animation"
-            metadata["staticReason"] = "frame1_plain_stop_with_nested_animation"
+            if static_frame1_stop_reason == "frame1_plain_stop":
+                metadata["staticReason"] = "frame1_plain_stop_with_nested_animation"
+            else:
+                metadata["staticReason"] = f"{static_frame1_stop_reason}_with_nested_animation"
             metadata["collapsedFrameCount"] = source_frame_count - 1
         elif source_frame_count <= 1:
             metadata["playback"] = "nested-animation"
     if (
         static_stop_policy == "auto"
         and source_frame_count > 1
-        and has_plain_frame1_stop
+        and static_frame1_stop_reason
         and not nested_animation
     ):
         metadata["playback"] = "static-first-frame"
-        metadata["staticReason"] = "frame1_plain_stop"
+        metadata["staticReason"] = static_frame1_stop_reason
         metadata["collapsedFrameCount"] = source_frame_count - 1
     return metadata
 
