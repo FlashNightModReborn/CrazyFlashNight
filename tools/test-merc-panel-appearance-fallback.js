@@ -79,7 +79,10 @@ const context = {
                     context.__renderCalls = calls;
                     const sequence = context.__pendingSequence || [1, 0];
                     const index = Math.min(calls - 1, sequence.length - 1);
-                    return { pendingImages: sequence[index] };
+                    const failedSeq = context.__failedSequence || [];
+                    const fIndex = Math.min(calls - 1, failedSeq.length - 1);
+                    const failedImages = failedSeq.length ? (failedSeq[fIndex] || 0) : 0;
+                    return { pendingImages: sequence[index], failedImages: failedImages };
                 },
                 destroy: function() {
                     context.__rendererDestroyed = true;
@@ -167,4 +170,21 @@ assert.strictEqual(snapshotResult.meta.pendingImages, 1);
 assert.strictEqual(context.__rendererDestroyed, true);
 assert.strictEqual(context.__toDataUrlCalls, 0);
 
-process.stdout.write(JSON.stringify({ ok: true, cases: 6 }, null, 2) + '\n');
+// errored layer image (failedImages > 0) must never be cached, even when pending hits 0
+snapshotResult = null;
+context.__pendingSequence = [0];
+context.__failedSequence = [1];
+context.__renderCalls = 0;
+context.__rendererDestroyed = false;
+context.__toDataUrlCalls = 0;
+api.renderDressupSnapshot({ keyMap: {} }, 64, 64, function(url, meta) {
+    snapshotResult = { url, meta };
+});
+assert(snapshotResult, 'snapshot failed-layer callback should run');
+assert(context.__renderCalls >= 50, 'snapshot should keep waiting while a layer image is errored');
+assert.strictEqual(snapshotResult.url, '', 'snapshot must not cache a portrait when a layer image errored (404/decode-fail)');
+assert.strictEqual(snapshotResult.meta.failedImages, 1);
+assert.strictEqual(context.__toDataUrlCalls, 0);
+context.__failedSequence = [];
+
+process.stdout.write(JSON.stringify({ ok: true, cases: 7 }, null, 2) + '\n');

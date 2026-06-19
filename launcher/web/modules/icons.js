@@ -47,6 +47,29 @@ var Icons = (function() {
         return ICON_ROOT + uri;
     }
 
+    // webp-animated: 单张动图 .webp，由浏览器/Chromium 原生播放，
+    // 不进入 tickAnimatedIcons 的 RAF 逐帧换 src 循环。
+    function isWebpAnimated(iconEntry) {
+        return !!(iconEntry && iconEntry.format === 'webp-animated');
+    }
+
+    function webpAnimatedUri(iconEntry) {
+        if (!iconEntry) return null;
+        if (typeof iconEntry.uri === 'string' && iconEntry.uri) return iconEntry.uri;
+        var frames = iconEntry.frames;
+        if (frames && frames.length) {
+            var first = frames[0] || {};
+            var uri = first.uri || first.file || first.filename;
+            if (uri) return uri;
+        }
+        if (typeof iconEntry.f1 === 'string' && iconEntry.f1) return iconEntry.f1;
+        return null;
+    }
+
+    function webpAnimatedUrl(iconEntry) {
+        return iconUrl(webpAnimatedUri(iconEntry));
+    }
+
     function escapeAttr(value) {
         return String(value == null ? '' : value)
             .replace(/&/g, '&amp;')
@@ -56,6 +79,26 @@ var Icons = (function() {
     }
 
     function normalizeFrames(iconEntry) {
+        if (!iconEntry) return [];
+        if (iconEntry._normFrames) return iconEntry._normFrames;
+        if (isWebpAnimated(iconEntry)) {
+            // 单张动图：归一化为一帧，旧入口(frames/resolve/html)直接拿到 .webp，
+            // 浏览器自播；不参与 RAF 换帧。
+            var webpUrl = webpAnimatedUrl(iconEntry);
+            var webpOut = webpUrl
+                ? [{
+                    frame: 1,
+                    uri: webpAnimatedUri(iconEntry),
+                    url: webpUrl,
+                    durationMs: null,
+                    durationFrames: null,
+                    duplicateOfFrame: null,
+                    playback: iconEntry.playback || null
+                }]
+                : [];
+            iconEntry._normFrames = webpOut;
+            return webpOut;
+        }
         var out = [];
         var seen = {};
         var rawFrames = iconEntry && iconEntry.timelineFrames && iconEntry.timelineFrames.length
@@ -111,10 +154,13 @@ var Icons = (function() {
         out.sort(function(a, b) {
             return Number(a.frame || 0) - Number(b.frame || 0);
         });
+        iconEntry._normFrames = out;
         return out;
     }
 
     function normalizeLayerFrames(layer) {
+        if (!layer) return [];
+        if (layer._normFrames) return layer._normFrames;
         var out = [];
         var rawFrames = layer && layer.timelineFrames && layer.timelineFrames.length
             ? layer.timelineFrames
@@ -124,7 +170,10 @@ var Icons = (function() {
                 ? layer.export.timelineFrames
                 : layer.export.frames;
         }
-        if (!rawFrames || !rawFrames.length) return out;
+        if (!rawFrames || !rawFrames.length) {
+            layer._normFrames = out;
+            return out;
+        }
         for (var i = 0; i < rawFrames.length; i++) {
             var raw = rawFrames[i] || {};
             var uri = raw.uri || raw.file || raw.filename;
@@ -150,6 +199,7 @@ var Icons = (function() {
         out.sort(function(a, b) {
             return Number(a.frame || 0) - Number(b.frame || 0);
         });
+        layer._normFrames = out;
         return out;
     }
 
@@ -242,6 +292,8 @@ var Icons = (function() {
 
     function shouldAnimate(iconEntry) {
         if (!iconEntry) return false;
+        // webp-animated 由浏览器原生播放，对 RAF 驱动器而言不需要逐帧换 src。
+        if (isWebpAnimated(iconEntry)) return false;
         if (iconEntry.playback === 'static' || iconEntry.playback === 'static-first-frame') return false;
         if (isLayeredEntry(iconEntry)) return layeredHasAnimatedFrames(iconEntry);
         if (iconEntry.animated === true) return distinctFrameCount(normalizeFrames(iconEntry)) > 1;
@@ -328,6 +380,14 @@ var Icons = (function() {
         var name = node.getAttribute && node.getAttribute('data-icon-name');
         if (!name) return;
         var iconEntry = entry(name);
+        if (isWebpAnimated(iconEntry)) {
+            // 单张动图：只 set 一次 src，浏览器原生播放；不挂 data-icon-animated。
+            var webpUrl = webpAnimatedUrl(iconEntry);
+            if (!webpUrl) return;
+            if (node.getAttribute('src') !== webpUrl) node.setAttribute('src', webpUrl);
+            node.removeAttribute('data-icon-animated');
+            return;
+        }
         var frames = normalizeFrames(iconEntry);
         if (!frames.length) return;
         if (isLayeredEntry(iconEntry)) {
@@ -365,11 +425,20 @@ var Icons = (function() {
         if (!document.body) return;
         _observer = new MutationObserver(function(records) {
             for (var i = 0; i < records.length; i++) {
+                if (records[i].type === 'attributes') {
+                    enhance(records[i].target);
+                    continue;
+                }
                 var added = records[i].addedNodes || [];
                 for (var j = 0; j < added.length; j++) enhance(added[j]);
             }
         });
-        _observer.observe(document.body, { childList: true, subtree: true });
+        _observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['data-icon-name', 'data-icon-layered-name']
+        });
         enhance(document);
     }
 
@@ -440,11 +509,21 @@ var Icons = (function() {
         },
         html: function(name, className, attrs) {
             var iconEntry = entry(name);
-            if (isLayeredEntry(iconEntry)) return layeredHtml(name, iconEntry, className, attrs || '');
-            var frameList = normalizeFrames(iconEntry);
-            if (!frameList.length) return '';
             attrs = attrs || '';
             var cls = className ? ' class="' + escapeAttr(className) + '"' : '';
+            if (isWebpAnimated(iconEntry)) {
+                // 单张动图 .webp：直接 <img src>，Chromium 原生播放，不进 RAF 循环。
+                var webpUrl = webpAnimatedUrl(iconEntry);
+                if (!webpUrl) return '';
+                return '<img' + cls +
+                    ' src="' + escapeAttr(webpUrl) + '"' +
+                    ' data-icon-name="' + escapeAttr(name) + '"' +
+                    attrs +
+                    ' alt="">';
+            }
+            if (isLayeredEntry(iconEntry)) return layeredHtml(name, iconEntry, className, attrs);
+            var frameList = normalizeFrames(iconEntry);
+            if (!frameList.length) return '';
             return '<img' + cls +
                 ' src="' + escapeAttr(frameList[0].url) + '"' +
                 ' data-icon-name="' + escapeAttr(name) + '"' +

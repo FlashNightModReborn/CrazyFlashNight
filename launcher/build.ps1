@@ -590,7 +590,11 @@ $requiredWebPaths = @(
     "modules\minigames\gobang\gobang.css",
     "modules\minigames\gobang\gobang-panel.js",
     "modules\minigames\gobang\gobang-audio.js",
-    "modules\minigames\gobang\core\index.js"
+    "modules\minigames\gobang\core\index.js",
+    "modules\asset-timeline.js",
+    "modules\dressup-doll-renderer.js",
+    "modules\dressup\dressup-panel.js",
+    "assets\dressup\manifest.json"
 )
 $missingWebPaths = @()
 foreach ($relativePath in $requiredWebPaths) {

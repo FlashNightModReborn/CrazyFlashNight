@@ -455,6 +455,10 @@
                 .then(function(manifest) {
                     _dressupManifest = manifest;
                     return manifest;
+                })
+                .catch(function(err) {
+                    _dressupManifestPromise = null;
+                    throw err;
                 });
         }
         return _dressupManifestPromise;
@@ -580,7 +584,7 @@
         function tick() {
             var meta = renderer.render(state);
             var alpha = canvasAlphaPixels(canvas);
-            var ready = !!(meta && meta.pendingImages === 0);
+            var ready = !!(meta && meta.pendingImages === 0 && meta.failedImages === 0);
             if (ready && alpha > 120) {
                 var url = '';
                 try { url = canvas.toDataURL('image/png'); } catch (ignore) {}

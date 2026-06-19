@@ -28,6 +28,11 @@ def load_icon_tool():
 
 def main() -> None:
     tool = load_icon_tool()
+    # The source-frame ceiling is a PNG-output concept (a png-sequence blows up
+    # in bytes with many frames). Under animated-WebP output the ceiling is
+    # relaxed and --max-animated-icon-bytes gates instead. Pin the legacy
+    # png-mode gating first, then assert the webp relaxation separately.
+    tool.IMAGE_FORMAT = "png"
     layered = {
         "classification": "direct-layered-candidate",
         "maxNestedDescendantFrameCount": 24,
@@ -98,6 +103,25 @@ def main() -> None:
     assert info["counts"]["selected"] == 2
     assert info["counts"]["skipped_source_frame_budget"] == 1
     assert info["counts"]["skipped_nested-animation-unsupported"] == 1
+
+    # WebP output relaxes the source-frame ceiling: a long animation that the
+    # png path skips with "source_frame_budget" is admitted as a candidate and
+    # gated downstream by the assembled-webp byte budget instead.
+    tool.IMAGE_FORMAT = "webp"
+    assert tool.animation_candidate_filter_decision(
+        heavy,
+        strategy="all",
+        max_source_frames=60,
+    ) == (True, "selected")
+    names_webp, info_webp = tool.load_animation_candidate_report_targets(
+        report_path,
+        strategy="all",
+        max_source_frames=32,
+    )
+    assert names_webp == {"layered", "single", "heavy"}
+    assert info_webp["counts"]["selected"] == 3
+    assert info_webp["counts"].get("skipped_source_frame_budget", 0) == 0
+    tool.IMAGE_FORMAT = "png"
 
     print(
         json.dumps(

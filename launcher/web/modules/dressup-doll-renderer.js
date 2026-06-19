@@ -554,11 +554,15 @@ var DressupDollRenderer = (function() {
             var needsAnimation = false;
             var missing = 0;
             var pendingImages = 0;
+            var failedImages = 0;
             function imageDrawable(image) {
                 return !!(image && image.complete && image.naturalWidth > 0);
             }
             function imagePending(image) {
                 return !!(image && !image.complete);
+            }
+            function imageErrored(image) {
+                return !!(image && image.complete && !(image.naturalWidth > 0));
             }
             function drawLayer(layer, nowMs) {
                 if (!layer || !layer.export) return;
@@ -567,16 +571,18 @@ var DressupDollRenderer = (function() {
                 var frame = selected.frame;
                 var uri = resolveImageUri(frame && frame.uri, manifest);
                 var image = loadImage(imageCache, uri, function() { render(lastState); });
-                if (!imageDrawable(image)) {
-                    if (imagePending(image)) pendingImages++;
-                    return;
-                }
                 ctx.save();
                 applyMatrix(ctx, matrixFrom(layer.matrix));
                 nestedLayers(layer, 'under').forEach(function(childLayer) {
                     drawLayer(childLayer, nowMs);
                 });
-                drawFrameImage(ctx, layer, frame, image);
+                if (imageDrawable(image)) {
+                    drawFrameImage(ctx, layer, frame, image);
+                } else if (imagePending(image)) {
+                    pendingImages++;
+                } else if (imageErrored(image)) {
+                    failedImages++;
+                }
                 nestedLayers(layer, 'over').forEach(function(childLayer) {
                     drawLayer(childLayer, nowMs);
                 });
@@ -588,12 +594,25 @@ var DressupDollRenderer = (function() {
                     if (renderable.key) missing++;
                     if (!debugPlaceholders) return;
                 }
+                // TODO(syncFrameToBasic): manifest emits holder.syncFrameToBasic === true for
+                //   head holders. AS2 contract (bake-dressup-offline.py):
+                //     "gotoAndStop(this.基本款._currentframe)"
+                //   i.e. an attached head skin must NOT run its own clock — it should display the
+                //   frame whose index equals the sibling 基本款 (basic head) holder's current frame.
+                //   Not implemented here: these holders carry basic === null, so the index must come
+                //   from a DIFFERENT sibling holder, but this per-holder forEach renders each holder
+                //   in isolation with no shared current-frame map. Wiring it would require a pre-pass
+                //   to compute the basic head holder's frame index for nowMs, then selecting this
+                //   skin's frame by that index instead of selectSkinFrame's own clock. Deferred to
+                //   avoid destabilizing the working independent-holder render; sync holders currently
+                //   animate on their own clock (visually close for single-frame head skins).
                 var selected = selectSkinFrame(renderable.entry, nowMs, fallbackFps);
                 needsAnimation = needsAnimation || selected.animated;
                 var frame = selected.frame;
                 var uri = resolveImageUri(frame && frame.uri, manifest);
                 var image = loadImage(imageCache, uri, function() { render(lastState); });
                 if (renderable.entry && imagePending(image)) pendingImages++;
+                else if (renderable.entry && imageErrored(image)) failedImages++;
                 ctx.save();
                 applyMatrix(ctx, matrixForRenderable(holder, renderable));
                 if (renderable.entry) {
@@ -625,7 +644,8 @@ var DressupDollRenderer = (function() {
                 scale: scale,
                 animated: needsAnimation,
                 missing: missing,
-                pendingImages: pendingImages
+                pendingImages: pendingImages,
+                failedImages: failedImages
             };
         }
 

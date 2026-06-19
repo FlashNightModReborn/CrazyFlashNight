@@ -40,7 +40,9 @@ SVG_MATRIX_RE = re.compile(
 SCRIPT_DEFINE_DIR_RE = re.compile(r"^DefineSprite_(\d+)(?:_|$)")
 SCRIPT_FRAME_DIR_RE = re.compile(r"^frame_(\d+)$")
 SCRIPT_PLACE_OBJECT_DIR_RE = re.compile(r"^PlaceObject\d*_(\d+)_(\d+)$")
-ATTACK_MODE_COMPARE_RE = re.compile(r'攻击模式\s*==\s*"([^"]+)"')
+# DB-4: 同时识别 == / >= / <= 守卫，避免被 >=、<= 守卫的图层被当作恒可见而漏掉
+# conditionalVisibility。
+ATTACK_MODE_COMPARE_RE = re.compile(r'攻击模式\s*(?:==|>=|<=)\s*"([^"]+)"')
 BLOCK_COMMENT_RE = re.compile(r"/\*.*?\*/", re.S)
 LINE_COMMENT_RE = re.compile(r"//.*?(?=\r?\n|$)")
 STOP_CALL_RE = re.compile(r"\bstop\s*\(\s*\)\s*;?")
@@ -56,12 +58,39 @@ WEAPON_DRESSUP_FIELDS = ("dressup1", "dressup2", "dressup3")
 BATTLE_RIG_STATES = ("空手站立", "长枪站立", "手枪站立", "手枪2站立", "双枪站立", "兵器站立")
 BATTLE_RIG_DEFAULT_CHILD_LABELS = ("空闲", "站立")
 BATTLE_RIG_REQUIRED_FIELDS = {
-    "空手站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具"),
-    "长枪站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "长枪_装扮"),
-    "手枪站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪_装扮"),
-    "手枪2站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪2_装扮"),
-    "双枪站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪_装扮", "手枪2_装扮"),
-    "兵器站立": ("身体", "上臂", "左下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "刀_装扮"),
+    "空手站立": ("身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具"),
+    "长枪站立": ("身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "长枪_装扮"),
+    "手枪站立": ("身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪_装扮"),
+    "手枪2站立": ("身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪2_装扮"),
+    "双枪站立": ("身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "手枪_装扮", "手枪2_装扮"),
+    "兵器站立": ("身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "脸型", "发型", "面具", "刀_装扮"),
+}
+
+# P1#4: 主角肢体素材/左手臂 是右下臂占位器（其内部 配置装扮 clip-action 即右前臂
+# 占位），但调用在 FLA 里被误键到 左下臂_引用。若不在此处校正，每个战斗站立态都会
+# 出现两个 左下臂 占位器、零个 右下臂。键 = (宿主符号名 hostSymbol, 误键得到的
+# field) → 正确 field。
+BATTLE_HOLDER_FIELD_FIXUPS = {
+    ("主角肢体素材/左手臂", "左下臂"): "右下臂",
+}
+
+# P1#5/P1#6: 女性裸体兜底是 AS2 DressupReferenceManager.femaleFallbacks 的唯一真相
+# （keys 原为 X_引用，此处按战斗占位器 field 名重键，去掉 _引用 后缀）。战斗 rig 仅
+# 遍历 男 几何后 deepcopy 到 女 桶，故需在合成 女 桶时把 基本款（裸体*）连接与脸型从
+# 男变装-* 替换成 女变装-*，否则女角色会显示男性素材。
+BATTLE_FEMALE_FALLBACKS = {
+    "身体": "女变装-裸体身体",
+    "上臂": "女变装-裸体上臂",
+    "右下臂": "女变装-裸体右下臂",
+    "左下臂": "女变装-裸体左下臂",
+    "右手": "女变装-裸体右手",
+    "左手": "女变装-裸体左手",
+    "屁股": "女变装-裸体屁股",
+    "右大腿": "女变装-裸体右大腿",
+    "左大腿": "女变装-裸体左大腿",
+    "小腿": "女变装-裸体小腿",
+    "脚": "女变装-裸体脚",
+    "脸型": "女变装-基本脸型",
 }
 
 DEFAULT_GENDERS = ("男", "女")
@@ -977,8 +1006,10 @@ def symbol_label_index(symbol: dict[str, Any], label: str) -> int | None:
     return None
 
 
-def default_battle_child_frame(symbol: dict[str, Any], gender: str) -> int:
-    gender_labels = ("站立-男", "格斗架势-男") if gender == "男" else ("站立-女", "格斗架势-女")
+def default_battle_child_frame(symbol: dict[str, Any]) -> int:
+    # DB-5: build_battle_rig 只以 男 几何遍历（女 桶由 P1#5 替换合成），故此处恒为
+    # 男 标签，原 gender 形参已是死参，移除。
+    gender_labels = ("站立-男", "格斗架势-男")
     for label in gender_labels + BATTLE_RIG_DEFAULT_CHILD_LABELS:
         index = symbol_label_index(symbol, label)
         if index is not None:
@@ -1031,7 +1062,9 @@ def record_battle_holder(
 ) -> None:
     script = instance["script"]
     for call in instance.get("dressupConfigCalls", []):
-        field = call["field"]
+        field = BATTLE_HOLDER_FIELD_FIXUPS.get(
+            (symbol_name, call["field"]), call["field"]
+        )
         fallback_basic = battle_holder_uses_basic(field, symbols, instance)
         holders.append(
             {
@@ -1100,13 +1133,33 @@ def traverse_battle_holders(
                     gender,
                     state_label,
                     child_name,
-                    default_battle_child_frame(child, gender),
+                    default_battle_child_frame(child),
                     matrix,
                     holders,
                     path + [f"{symbol_name}@{frame_index}"],
                     stack,
                 )
     stack.remove(visit_key)
+
+
+def male_to_female_linkage(linkage: Any) -> Any:
+    # 镜像 AS2 femaleFallbacks：男变装-裸体* / 男变装-基本脸型 → 女变装-*。
+    # libraryItemName 可能带库路径前缀（如 sprite/男变装-裸体上臂），故按 男变装- token
+    # 子串替换，而非仅匹配开头。
+    if isinstance(linkage, str) and "男变装-" in linkage:
+        return linkage.replace("男变装-", "女变装-")
+    return linkage
+
+
+def apply_female_battle_fallbacks(holder: dict[str, Any]) -> None:
+    # P1#5: deepcopy 出来的 女 桶占位器仍指向 男 基本款（裸体*）与男脸型。按
+    # BATTLE_FEMALE_FALLBACKS（= AS2 femaleFallbacks 真相）把 基本款连接与脸型换成
+    # 女变装-*，使 女 角色不再显示男性素材。
+    basic = holder.get("basic")
+    if not isinstance(basic, dict):
+        return
+    basic["libraryItemName"] = male_to_female_linkage(basic.get("libraryItemName"))
+    basic["linkageId"] = male_to_female_linkage(basic.get("linkageId"))
 
 
 def build_battle_rig(project_root: Path) -> dict[str, Any]:
@@ -1166,6 +1219,8 @@ def build_battle_rig(project_root: Path) -> dict[str, Any]:
         for state_label, state in gender_data["states"].items():
             for holder in state["holders"]:
                 holder["gender"] = gender
+                if gender == "女":
+                    apply_female_battle_fallbacks(holder)
 
     result = {
         "source": "flashswf/arts/things0/LIBRARY/主角-男.xml",
@@ -1173,6 +1228,7 @@ def build_battle_rig(project_root: Path) -> dict[str, Any]:
         "defaultState": "空手站立",
         "states": list(BATTLE_RIG_STATES),
         "genders": genders,
+        "femaleFallbacks": dict(BATTLE_FEMALE_FALLBACKS),
     }
     if audit_errors:
         result["auditErrors"] = audit_errors
@@ -1485,7 +1541,11 @@ def build_manifest(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[s
     assets = load_asset_map(project_root)
     skin_keys = finalize_skin_keys(skin_keys_raw, assets)
     missing = {key: value for key, value in skin_keys.items() if not value["covered"]}
+    covered = {key: value for key, value in skin_keys.items() if value["covered"]}
     compat_aliases = {key: value for key, value in skin_keys.items() if value.get("compatAlias")}
+    # P1#6: 别名兜底的 covered 不等于真实导出覆盖。区分「靠别名才 covered」与
+    # 「自身有 asset 的 covered」，避免报告把覆盖率高估。
+    alias_covered = {key: value for key, value in covered.items() if value.get("compatAlias")}
     rig = build_dialogue_rig(project_root)
     battle_rig = build_battle_rig(project_root)
     manifest = {
@@ -1493,6 +1553,12 @@ def build_manifest(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[s
         "generatedAt": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
         "genders": list(genders),
         "appearance": load_appearance_map(project_root),
+        # P1#6: 女性裸体兜底元数据（field → 女变装-裸体连接），镜像 AS2
+        # DressupReferenceManager.femaleFallbacks，供 web 渲染器对齐 AS2、避免显示男性素材。
+        "femaleFallbacks": {
+            "source": "AS2:DressupReferenceManager.femaleFallbacks",
+            "byField": dict(BATTLE_FEMALE_FALLBACKS),
+        },
         "items": items,
         "skinKeys": skin_keys,
         "rig": rig,
@@ -1507,6 +1573,9 @@ def build_manifest(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[s
             "items": len(items),
             "skinKeys": len(skin_keys),
             "coveredSkinKeys": len(skin_keys) - len(missing),
+            # P1#6: 别名兜底诚实化——别名 covered 的 key 数，及剔除别名后的真实覆盖数。
+            "aliasCoveredSkinKeys": len(alias_covered),
+            "coveredExcludingAliasSkinKeys": (len(skin_keys) - len(missing)) - len(alias_covered),
             "missingSkinKeys": len(missing),
             "holdersMale": len(rig.get("genders", {}).get("男", {}).get("holders", [])),
             "holdersFemale": len(rig.get("genders", {}).get("女", {}).get("holders", [])),
@@ -3660,6 +3729,67 @@ def attach_animation_summary(manifest: dict[str, Any], report: dict[str, Any]) -
     report["animatedSkinKeys"] = animated[:200]
     report["staticCollapsedSkinKeys"] = static_collapsed[:200]
     report["nestedAnimationSkinKeys"] = nested_animation[:200]
+
+    # P2: 增量运行只把以下 6 个计数累加到本次导出的子集上（相对全量可差 ~78x），
+    # 与上方按全量 manifest 计算的 animatedSkinKeys 等不同 scope。此处用 manifest
+    # 里持久化的 frames/timelineFrames 在全量上重算，使 report.counts 同一 scope。
+    unique_frame_images = 0
+    duplicate_frame_refs = 0
+    timeline_logical_frames = 0
+    timeline_frame_entries = 0
+    timeline_compressed_refs = 0
+    exported_frames = 0
+
+    def _tally_frames(frames: Any, timeline: Any) -> tuple[int, int, int]:
+        frame_list = frames if isinstance(frames, list) else []
+        logical = len(frame_list)
+        dup = sum(1 for frame in frame_list if isinstance(frame, dict) and "duplicateOfFrame" in frame)
+        unique = logical - dup
+        timeline_list = timeline if isinstance(timeline, list) else frame_list
+        timeline_len = len(timeline_list)
+        return unique, dup, timeline_len
+
+    for entry in manifest["skinKeys"].values():
+        frames = entry.get("frames")
+        if not isinstance(frames, list):
+            continue
+        unique, dup, timeline_len = _tally_frames(frames, entry.get("timelineFrames"))
+        unique_frame_images += unique
+        duplicate_frame_refs += dup
+        timeline_logical_frames += len(frames)
+        timeline_frame_entries += timeline_len
+        timeline_compressed_refs += len(frames) - timeline_len
+        exported_frames += len(frames)
+
+    # 基本款（rig holder 裸体兜底）帧同样喂给 dedupe / timeline 计数，但不计入
+    # exportedFrames（那是 exportedBasicFrames 的范畴）。按 basic 身份去重，避免共享
+    # 同一连接的多个 holder 重复计数（与按连接导出一次的增量逻辑一致）。
+    seen_basic: set[tuple[Any, ...]] = set()
+    for holder in iter_rig_holders(manifest):
+        basic = holder.get("basic")
+        if not isinstance(basic, dict):
+            continue
+        frames = basic.get("frames")
+        if not isinstance(frames, list):
+            continue
+        identity = holder_basic_identity(holder)
+        if identity is not None:
+            if identity in seen_basic:
+                continue
+            seen_basic.add(identity)
+        unique, dup, timeline_len = _tally_frames(frames, basic.get("timelineFrames"))
+        unique_frame_images += unique
+        duplicate_frame_refs += dup
+        timeline_logical_frames += len(frames)
+        timeline_frame_entries += timeline_len
+        timeline_compressed_refs += len(frames) - timeline_len
+
+    report["counts"]["uniqueFrameImages"] = unique_frame_images
+    report["counts"]["duplicateFrameRefs"] = duplicate_frame_refs
+    report["counts"]["timelineLogicalFrames"] = timeline_logical_frames
+    report["counts"]["timelineFrameEntries"] = timeline_frame_entries
+    report["counts"]["timelineCompressedFrameRefs"] = timeline_compressed_refs
+    report["counts"]["exportedFrames"] = exported_frames
 
 
 def collect_entry_asset_uris(entry: dict[str, Any]) -> set[str]:

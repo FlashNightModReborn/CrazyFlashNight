@@ -24,8 +24,32 @@ except ImportError as exc:
     ) from exc
 
 
-ICON_SIZE = 256
+# Static icon canvas size. Item icons display at <=48px in the UI, so 128 is the principled
+# "2x of the 48px max display" retina size; 256 over-renders ~5x. Settable via --icon-size.
+# (The committed icon corpus was migrated 256->128 WebP; keeping this at 128 keeps re-bakes
+# consistent. Vector source is reproducible, so a larger view can re-bake at a bigger --icon-size.)
+ICON_SIZE = 128
+# Animated/nested-canvas frames are composed+normalized at this canvas size (set from
+# --animated-icon-size). Long animations (e.g. 强化石 ~120 frames) at 256 over-render and blow
+# the animated byte budget; at 128 they fit (强化石 256^2=2.4MB over budget vs 128^2~0.6MB).
+ANIMATED_ICON_SIZE = 128
 ICON_PREFIX = "图标-"
+
+# Output image format for newly-written icons. Set once from --image-format in main();
+# the static-write and animated-assembly helpers read it to pick the file extension and
+# the PIL save path. "webp" is the default migration target (lossless static frames +
+# single animated WebP for full-canvas animations); "png" keeps the legacy behavior.
+IMAGE_FORMAT = "webp"
+# Lossy quality for assembled animated WebP icons; set from --animated-webp-quality in main().
+ANIMATED_WEBP_QUALITY = 80
+# WebP encoder effort for assembled animated WebP icons; set from --animated-webp-method in main().
+ANIMATED_WEBP_METHOD = 6
+# QA-only contact sheets for animated icons (Windows-Explorer visual confirmation channel).
+# Animated .webp only previews frame-1 in Explorer, so we tile every unique frame here.
+ANIM_CONTACT_SHEET_DIRNAME = "icon-anim-contact-sheets"
+CONTACT_SHEET_BG = (24, 24, 28, 255)
+CONTACT_SHEET_TILE = 128
+CONTACT_SHEET_MAX_COLS = 12
 
 MICRO_DIFF_MAX_CHANGED_PIXELS = 18000
 MICRO_DIFF_MAX_SINGLE_CHANNEL_DELTA = 255
@@ -150,6 +174,55 @@ def parse_args() -> argparse.Namespace:
         help="FFDec CLI executable path.",
     )
     parser.add_argument("--zoom", type=int, default=10, help="FFDec sprite export zoom. Default: 10.")
+    parser.add_argument(
+        "--image-format",
+        choices=["webp", "png"],
+        default="webp",
+        help=(
+            "Output image format for newly-written icons. Default: webp. Static frames are written as "
+            "lossless WebP and full-canvas animated icons as a single animated WebP; png falls back to the "
+            "legacy PNG / png-sequence behavior. Existing on-disk PNGs are not transcoded by this tool."
+        ),
+    )
+    parser.add_argument(
+        "--animated-webp-quality",
+        type=int,
+        default=80,
+        help=(
+            "Lossy quality (0-100) for assembled animated WebP icons. Default: 80. Lower it to bring a "
+            "heavy long animation under --max-animated-icon-bytes before it downgrades to a static frame."
+        ),
+    )
+    parser.add_argument(
+        "--animated-webp-method",
+        type=int,
+        default=6,
+        help=(
+            "WebP encoder effort (0-6) for assembled animated WebP icons. Default: 6 (smallest for short "
+            "animations). For very long animations a lower method can encode much faster and, in some "
+            "Pillow builds, smaller; tune alongside --animated-webp-quality to fit the byte budget."
+        ),
+    )
+    parser.add_argument(
+        "--icon-size",
+        type=int,
+        default=128,
+        help=(
+            "Canvas size (px) for STATIC icon frames + the diff-gate. Default: 128 (= 2x the "
+            "<=48px UI display; 256 over-renders ~5x). Use 160/256 if a larger item-icon view "
+            "appears (vector source re-bakes at any size)."
+        ),
+    )
+    parser.add_argument(
+        "--animated-icon-size",
+        type=int,
+        default=128,
+        help=(
+            "Canvas size (px) for composing/normalizing ANIMATED and nested-canvas icon frames. "
+            "Default: 128. Animated frames render at a display-appropriate size so long animations "
+            "stay under --max-animated-icon-bytes (e.g. 强化石 256^2=2.4MB over budget vs 128^2~0.6MB)."
+        ),
+    )
     parser.add_argument(
         "--animation-fps",
         type=float,
@@ -1440,7 +1513,10 @@ def animation_candidate_filter_decision(
     if strategy == "single-child" and classification != "single-child-canvas-candidate":
         return False, "strategy_not_single_child"
     max_frames = int(payload.get("maxNestedDescendantFrameCount") or 0)
-    if max_source_frames > 0 and max_frames > max_source_frames:
+    # With animated-webp output, long animations compress to one small WebP and are gated by
+    # the assembled byte budget instead — so the source-frame ceiling is effectively off.
+    # In legacy png-sequence mode the per-frame ceiling still applies as before.
+    if IMAGE_FORMAT != "webp" and max_source_frames > 0 and max_frames > max_source_frames:
         return False, "source_frame_budget"
     return True, "selected"
 
@@ -1526,37 +1602,49 @@ def load_animation_candidate_report_targets(
     }
 
 
-def normalize_icon_image(img: Image.Image, profile_size: tuple[int, int] | None = None) -> Image.Image:
+def normalize_icon_image(
+    img: Image.Image,
+    profile_size: tuple[int, int] | None = None,
+    canvas_size: int | None = None,
+) -> Image.Image:
+    # canvas_size defaults to the static ICON_SIZE (256). Animated/nested frame paths pass
+    # ANIMATED_ICON_SIZE so long animations render at a display-appropriate, byte-budget-friendly
+    # resolution; the composed canvas is still LANCZOS-resampled, so quality scales cleanly.
+    size = canvas_size if canvas_size is not None else ICON_SIZE
     width, height = img.size
     if width <= 0 or height <= 0:
-        return Image.new("RGBA", (ICON_SIZE, ICON_SIZE), (0, 0, 0, 0))
+        return Image.new("RGBA", (size, size), (0, 0, 0, 0))
 
     basis_w, basis_h = profile_size if profile_size is not None else (width, height)
     if basis_w <= 0 or basis_h <= 0:
         basis_w, basis_h = width, height
-    scale = ICON_SIZE / float(max(basis_w, basis_h))
+    scale = size / float(max(basis_w, basis_h))
     target_w = max(1, int(round(width * scale)))
     target_h = max(1, int(round(height * scale)))
     resized = img.resize((target_w, target_h), Image.Resampling.LANCZOS)
 
-    canvas = Image.new("RGBA", (ICON_SIZE, ICON_SIZE), (0, 0, 0, 0))
-    offset_x = int(round((ICON_SIZE - target_w) / 2.0))
-    offset_y = int(round((ICON_SIZE - target_h) / 2.0))
+    canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    offset_x = int(round((size - target_w) / 2.0))
+    offset_y = int(round((size - target_h) / 2.0))
     src_left = max(0, -offset_x)
     src_top = max(0, -offset_y)
     dst_left = max(0, offset_x)
     dst_top = max(0, offset_y)
-    paste_w = min(target_w - src_left, ICON_SIZE - dst_left)
-    paste_h = min(target_h - src_top, ICON_SIZE - dst_top)
+    paste_w = min(target_w - src_left, size - dst_left)
+    paste_h = min(target_h - src_top, size - dst_top)
     if paste_w > 0 and paste_h > 0:
         crop = resized.crop((src_left, src_top, src_left + paste_w, src_top + paste_h))
         canvas.alpha_composite(crop, (dst_left, dst_top))
     return canvas
 
 
-def normalize_icon(source_png: Path, profile_size: tuple[int, int] | None = None) -> Image.Image:
+def normalize_icon(
+    source_png: Path,
+    profile_size: tuple[int, int] | None = None,
+    canvas_size: int | None = None,
+) -> Image.Image:
     with Image.open(source_png) as raw:
-        return normalize_icon_image(raw.convert("RGBA"), profile_size)
+        return normalize_icon_image(raw.convert("RGBA"), profile_size, canvas_size)
 
 
 def paste_clipped(canvas: Image.Image, image: Image.Image, left: int, top: int) -> None:
@@ -1695,6 +1783,7 @@ def nested_layer_frame_icon(
     matrix: Matrix,
     filters: list[dict[str, Any]] | None = None,
     offset: tuple[int, int] = (0, 0),
+    canvas_size: int | None = None,
 ) -> Image.Image:
     with Image.open(source_png) as raw:
         layer = apply_icon_filters(raw.convert("RGBA"), filters)
@@ -1706,7 +1795,9 @@ def nested_layer_frame_icon(
     # FFDec exports sprite PNGs cropped to transformed bounds; for an empty stripped base,
     # the child layer's transformed bbox defines the parent sprite bbox, so its local origin is (0, 0).
     paste_clipped(parent_canvas, layer, int(offset[0]), int(offset[1]))
-    return normalize_icon_image(parent_canvas, parent_profile_size)
+    # canvas_size=None keeps the static 256 output (diff-gate path); animated frame composition
+    # passes ANIMATED_ICON_SIZE for the smaller, byte-budget-friendly animated stream.
+    return normalize_icon_image(parent_canvas, parent_profile_size, canvas_size)
 
 
 def projection_score(stats: DiffStats) -> tuple[int, int, int, int]:
@@ -1883,6 +1974,172 @@ def crop_icon_canvas(image: Image.Image) -> tuple[Image.Image, dict[str, int]]:
     }
 
 
+def image_extension() -> str:
+    return "webp" if IMAGE_FORMAT == "webp" else "png"
+
+
+def save_static_icon(image: Image.Image, output_path: Path) -> None:
+    # Static frames are written losslessly so the WebP migration is byte-for-byte faithful
+    # to what the old PNG path produced (no quantization on single-frame icons).
+    if IMAGE_FORMAT == "webp":
+        image.convert("RGBA").save(output_path, "WEBP", lossless=True, quality=100, method=6)
+    else:
+        image.save(output_path, format="PNG", optimize=True)
+
+
+def unique_frames_in_timeline_order(frames: list[Image.Image]) -> tuple[list[Image.Image], list[int]]:
+    # Preserve frame de-dup: assemble only the unique frame images, in first-seen
+    # timeline order, and map every logical frame onto its unique-frame index.
+    unique_images: list[Image.Image] = []
+    digest_to_index: dict[str, int] = {}
+    frame_to_unique: list[int] = []
+    for frame in frames:
+        rgba = frame.convert("RGBA")
+        digest = f"{rgba.width}x{rgba.height}:{zlib.crc32(rgba.tobytes()) & 0xFFFFFFFF:08x}"
+        index = digest_to_index.get(digest)
+        if index is None:
+            index = len(unique_images)
+            digest_to_index[digest] = index
+            unique_images.append(rgba)
+        frame_to_unique.append(index)
+    return unique_images, frame_to_unique
+
+
+def per_frame_duration_ms(fps: float, durations: list[int] | None, default_repeat: int = 1) -> list[int]:
+    safe_fps = fps if fps and fps > 0 else 24.0
+    base_ms = max(1, int(round(1000.0 / safe_fps)))
+    if durations is None:
+        return [base_ms]
+    return [max(1, int(round(repeat))) * base_ms for repeat in durations]
+
+
+def write_animated_contact_sheet(
+    project_root: Path,
+    icon_name: str,
+    unique_images: list[Image.Image],
+    report: dict[str, Any],
+    dry_run: bool,
+) -> str | None:
+    # QA-only: tile every unique frame on a dark background so Windows Explorer (which only
+    # previews frame-1 of an animated .webp) can visually confirm the animation. Never under
+    # launcher/web, never committed.
+    if not unique_images:
+        return None
+    safe_name = re.sub(r"[^0-9A-Za-z._一-鿿-]+", "_", icon_name).strip("_") or "icon"
+    sheet_dir = project_root / "tmp" / ANIM_CONTACT_SHEET_DIRNAME
+    sheet_path = sheet_dir / f"{safe_name}.png"
+    count = len(unique_images)
+    cols = min(CONTACT_SHEET_MAX_COLS, count)
+    cols = max(1, cols)
+    rows = (count + cols - 1) // cols
+    tile = CONTACT_SHEET_TILE
+    sheet = Image.new("RGBA", (cols * tile, rows * tile), CONTACT_SHEET_BG)
+    for index, frame in enumerate(unique_images):
+        thumb = frame.convert("RGBA").copy()
+        thumb.thumbnail((tile, tile), Image.Resampling.LANCZOS)
+        col = index % cols
+        row = index // cols
+        offset_x = col * tile + (tile - thumb.width) // 2
+        offset_y = row * tile + (tile - thumb.height) // 2
+        sheet.alpha_composite(thumb, (offset_x, offset_y))
+    if not dry_run:
+        sheet_dir.mkdir(parents=True, exist_ok=True)
+        sheet.save(sheet_path, format="PNG", optimize=True)
+    report["counts"]["animated_contact_sheets"] += 1
+    return str(sheet_path)
+
+
+def assemble_animated_webp_entry(
+    *,
+    project_root: Path,
+    output_dir: Path,
+    hash_base: str,
+    icon_name: str,
+    normalized_frames: list[Image.Image],
+    fps: float,
+    durations: list[int] | None,
+    playback: str,
+    dry_run: bool,
+    report: dict[str, Any],
+    extra: dict[str, Any] | None = None,
+) -> dict[str, Any] | None:
+    # Assemble the unique full-canvas frames into ONE animated WebP. This replaces the
+    # png-sequence for the full-canvas animated case so a 120-frame animation compresses to
+    # a few hundred KB and fits --max-animated-icon-bytes instead of summing 119 PNGs.
+    if not normalized_frames:
+        return None
+    unique_images, frame_to_unique = unique_frames_in_timeline_order(normalized_frames)
+    if not unique_images:
+        return None
+
+    anim_filename = f"{hash_base}.webp"
+    output_path = output_dir / anim_filename
+    # Also write a standalone static first frame so a graceful byte-budget downgrade has a real
+    # single-frame image to fall back to (the animated webp is referenced only by the top-level
+    # "uri"; f1 stays a static frame matching the static-icon path).
+    static_first_filename = f"{hash_base}_1.{image_extension()}"
+    durations_ms = per_frame_duration_ms(fps, durations)
+    # Lossy quality (ANIMATED_WEBP_QUALITY, default 80) keeps the animated webp small while
+    # staying visually faithful; the timeline collapses duplicate frames so per-unique-frame
+    # duration sums repeated holds.
+    if durations is not None and len(durations) == len(unique_images):
+        unique_durations = durations_ms
+    else:
+        # Sum the per-logical-frame base duration onto each unique frame it maps to so a
+        # de-duplicated hold plays for the right length.
+        base_ms = per_frame_duration_ms(fps, None)[0]
+        unique_durations = [0] * len(unique_images)
+        for unique_index in frame_to_unique:
+            unique_durations[unique_index] += base_ms
+        unique_durations = [max(1, value) for value in unique_durations]
+
+    if not dry_run:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        first = unique_images[0]
+        if len(unique_images) == 1:
+            first.save(
+                output_path,
+                "WEBP",
+                save_all=True,
+                lossless=False,
+                quality=ANIMATED_WEBP_QUALITY,
+                method=ANIMATED_WEBP_METHOD,
+                duration=unique_durations[0],
+                loop=0,
+            )
+        else:
+            first.save(
+                output_path,
+                "WEBP",
+                save_all=True,
+                append_images=unique_images[1:],
+                lossless=False,
+                quality=ANIMATED_WEBP_QUALITY,
+                method=ANIMATED_WEBP_METHOD,
+                duration=unique_durations,
+                loop=0,
+            )
+        save_static_icon(unique_images[0], output_dir / static_first_filename)
+
+    sheet_path = write_animated_contact_sheet(project_root, icon_name, unique_images, report, dry_run)
+
+    entry: dict[str, Any] = {
+        "f1": static_first_filename,
+        "uri": anim_filename,
+        "playback": playback,
+        "animated": True,
+        "format": "webp-animated",
+        "fps": fps,
+        "frameCount": len(normalized_frames),
+        "uniqueFrameImages": len(unique_images),
+    }
+    if extra:
+        entry.update(extra)
+    if sheet_path is not None:
+        entry["_contactSheet"] = sheet_path
+    return entry
+
+
 def load_manifest(path: Path) -> OrderedDict[str, dict[str, Any]]:
     if not path.exists():
         return OrderedDict()
@@ -1917,7 +2174,7 @@ def write_icon_if_needed(
     action = "updated" if output_path.exists() else "created"
     if not dry_run:
         output_dir.mkdir(parents=True, exist_ok=True)
-        image.save(output_path, format="PNG", optimize=True)
+        save_static_icon(image, output_path)
     return action, stats
 
 
@@ -2051,12 +2308,19 @@ def write_animated_icon_frames(
     dry_run: bool,
     protect_existing_layout: bool,
     report: dict[str, Any],
+    f1_profile_size: tuple[int, int] | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     frame_entries: list[dict[str, Any]] = []
     dedupe = FrameDedupeIndex()
 
     for index, source_frame in enumerate(frames, start=1):
-        normalized = normalize_icon(source_frame, profile_size)
+        # frame index 1 (the f1 the runtime locks its matrix cache on) must scale
+        # against the globally-locked f1 basis, matching the static-icon path and
+        # the AS2 BitmapExporter f1 matrix cache; later frames stay per-icon.
+        frame_basis = (
+            f1_profile_size if index == 1 and f1_profile_size is not None else profile_size
+        )
+        normalized = normalize_icon(source_frame, frame_basis)
         digest = f"{normalized.width}x{normalized.height}:{zlib.crc32(normalized.tobytes()) & 0xFFFFFFFF:08x}"
         frame_ref = dedupe.resolve(digest, index, f"{hash_base}_{index}.png")
         filename = frame_ref.filename
@@ -2107,6 +2371,25 @@ def write_animated_icon_frames(
         frame_entries.append(entry)
 
     return frame_entries, compressed_timeline_entries(frame_entries)
+
+
+def normalize_parent_animation_frames(
+    frames: list[Path],
+    profile_size: tuple[int, int],
+    f1_profile_size: tuple[int, int] | None = None,
+) -> list[Image.Image]:
+    # Full-canvas parent self-animation frames, normalized exactly as the png-sequence path
+    # does (f1 against the globally-locked basis, later frames per-icon) so the animated-webp
+    # output stays aligned with the static sibling and the AS2 f1 matrix cache.
+    # Composed at ANIMATED_ICON_SIZE (smaller than the static ICON_SIZE) so long animations
+    # fit the byte budget; the profile-size basis is unchanged, only the output canvas shrinks.
+    normalized_frames: list[Image.Image] = []
+    for index, source_frame in enumerate(frames, start=1):
+        frame_basis = (
+            f1_profile_size if index == 1 and f1_profile_size is not None else profile_size
+        )
+        normalized_frames.append(normalize_icon(source_frame, frame_basis, ANIMATED_ICON_SIZE))
+    return normalized_frames
 
 
 def write_nested_icon_canvas_frames(
@@ -2223,6 +2506,12 @@ def manifest_entry_files(entry: dict[str, Any]) -> set[str]:
         value = entry.get(key)
         if isinstance(value, str) and value:
             files.add(value)
+    # webp-animated entries reference the assembled animated WebP via the top-level "uri";
+    # the byte budget and purge must account for that single file too.
+    if entry.get("format") == "webp-animated":
+        uri = entry.get("uri")
+        if isinstance(uri, str) and uri:
+            files.add(Path(uri).name)
     for key in ("frames", "timelineFrames"):
         values = entry.get(key)
         if isinstance(values, list):
@@ -2268,6 +2557,10 @@ def downgrade_to_static_first_frame(entry: dict[str, Any]) -> dict[str, Any]:
         "format",
         "uniqueFrameImages",
         "nestedAnimation",
+        # webp-animated entries reference the animated WebP via "uri"; on downgrade the
+        # static first-frame "f1" is kept and the animated-webp reference is dropped.
+        "uri",
+        "_contactSheet",
     ):
         downgraded.pop(stale_key, None)
     downgraded["playback"] = "static-first-frame"
@@ -2312,6 +2605,10 @@ def frame_sequence_has_temporal_motion(frames: list[dict[str, Any]]) -> bool:
 
 
 def manifest_entry_has_temporal_motion(entry: dict[str, Any]) -> bool:
+    # webp-animated entries hold their frames inside the single animated WebP (no per-frame
+    # list in the manifest); they animate iff there is more than one unique frame image.
+    if entry.get("format") == "webp-animated":
+        return int(entry.get("uniqueFrameImages") or 0) > 1
     frames = entry.get("timelineFrames") or entry.get("frames") or []
     if frame_sequence_has_temporal_motion(frames):
         return True
@@ -2442,6 +2739,7 @@ def export_nested_icon_canvas_entry(
     freeze_parent_frame1: bool,
     report: dict[str, Any],
     timeout_seconds: int | None = None,
+    f1_profile_size: tuple[int, int] | None = None,
 ) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
     child_id = int(plan["characterId"])
     source_parent_id = int(plan["sourceParentId"])
@@ -2541,6 +2839,75 @@ def export_nested_icon_canvas_entry(
             "totalChannelDelta": stats.total_channel_delta,
         }
 
+    # The written f1 (frame[0]) must scale against the globally-locked f1 basis so
+    # an animated/nested icon's f1 matches its static sibling and the AS2 runtime
+    # baseline; the diff-check above stays on the per-icon parent_profile_size.
+    f1_override = (
+        normalize_icon(parent_frame, f1_profile_size)
+        if f1_profile_size is not None
+        else parent_reference
+    )
+
+    nested_meta: dict[str, Any] = {
+        "strategy": "single-child-icon-canvas",
+        "base": "empty-stripped-parent",
+        "characterId": child_id,
+        "sourceParentId": source_parent_id,
+        "sourceFrameCount": int(plan.get("sourceFrameCount") or len(child_frames)),
+        "matrix": matrix.to_json(),
+        "filters": filters,
+        "offset": {"x": 0, "y": 0},
+        "path": plan.get("path") or [],
+        "frame1Diff": {
+            "exact": bool(stats.exact),
+            "micro": bool(stats.micro),
+            "changedPixels": stats.changed_pixels,
+            "changedAlphaPixels": stats.changed_alpha_pixels,
+            "maxChannelDelta": stats.max_channel_delta,
+            "totalChannelDelta": stats.total_channel_delta,
+        },
+    }
+
+    if IMAGE_FORMAT == "webp":
+        # Full-canvas single-stream animated case (e.g. 强化石, 120 child frames): compose
+        # every child frame onto the empty-stripped parent canvas and assemble ONE animated
+        # WebP. f1 uses the globally-locked basis; later frames stay per-icon, matching the
+        # png-sequence path. Frame de-dup happens inside the assembler.
+        # Every frame (including f1) is composed at ANIMATED_ICON_SIZE so the whole animated
+        # stream stays small; the 256-sized f1_override above is reserved for the diff-gate /
+        # png-sequence path and is NOT mixed into this smaller webp stream.
+        f1_animated = (
+            normalize_icon(parent_frame, f1_profile_size, ANIMATED_ICON_SIZE)
+            if f1_profile_size is not None
+            else normalize_icon(parent_frame, parent_profile_size, ANIMATED_ICON_SIZE)
+        )
+        normalized_frames: list[Image.Image] = []
+        for index, source_frame in enumerate(child_frames, start=1):
+            if index == 1:
+                normalized_frames.append(f1_animated)
+            else:
+                normalized_frames.append(
+                    nested_layer_frame_icon(
+                        source_frame, parent_profile_size, matrix, filters, canvas_size=ANIMATED_ICON_SIZE
+                    )
+                )
+        webp_entry = assemble_animated_webp_entry(
+            project_root=project_root,
+            output_dir=output_dir,
+            hash_base=hash_base,
+            icon_name=target.name,
+            normalized_frames=normalized_frames,
+            fps=fps,
+            durations=None,
+            playback="nested-animation",
+            dry_run=dry_run,
+            report=report,
+            extra={"nestedAnimation": nested_meta},
+        )
+        if webp_entry is None:
+            return None, {"reason": "no_frame_entries_written", "characterId": child_id}
+        return webp_entry, None
+
     frame_entries, timeline_entries, unique_count = write_nested_icon_canvas_frames(
         child_frames,
         output_dir,
@@ -2554,7 +2921,7 @@ def export_nested_icon_canvas_entry(
         dry_run,
         protect_existing_layout,
         report,
-        first_frame_override=parent_reference,
+        first_frame_override=f1_override,
     )
     if not frame_entries:
         return None, {"reason": "no_frame_entries_written", "characterId": child_id}
@@ -2568,25 +2935,7 @@ def export_nested_icon_canvas_entry(
         "format": "png-sequence",
         "frameCount": len(frame_entries),
         "uniqueFrameImages": unique_count,
-        "nestedAnimation": {
-            "strategy": "single-child-icon-canvas",
-            "base": "empty-stripped-parent",
-            "characterId": child_id,
-            "sourceParentId": source_parent_id,
-            "sourceFrameCount": int(plan.get("sourceFrameCount") or len(child_frames)),
-            "matrix": matrix.to_json(),
-            "filters": filters,
-            "offset": {"x": 0, "y": 0},
-            "path": plan.get("path") or [],
-            "frame1Diff": {
-                "exact": bool(stats.exact),
-                "micro": bool(stats.micro),
-                "changedPixels": stats.changed_pixels,
-                "changedAlphaPixels": stats.changed_alpha_pixels,
-                "maxChannelDelta": stats.max_channel_delta,
-                "totalChannelDelta": stats.total_channel_delta,
-            },
-        },
+        "nestedAnimation": nested_meta,
     }
     if len(frame_entries) > 1:
         entry["f2"] = frame_entries[1]["uri"]
@@ -2627,6 +2976,7 @@ def export_layered_icon_canvas_entry(
     protect_existing_layout: bool,
     report: dict[str, Any],
     timeout_seconds: int | None = None,
+    f1_profile_size: tuple[int, int] | None = None,
 ) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
     layers = list(plan.get("layers") or [])
     if not layers:
@@ -2740,10 +3090,18 @@ def export_layered_icon_canvas_entry(
 
     fallback_filename = f"{hash_base}_1.png"
     base_filename = f"{hash_base}_base.png"
+    # The static-fallback f1 must scale against the globally-locked f1 basis so it
+    # matches its static sibling and the AS2 runtime baseline; base_image, layer
+    # frames, and the diff-check parent_reference stay on parent_profile_size.
+    fallback_image = (
+        normalize_icon(parent_frame, f1_profile_size)
+        if f1_profile_size is not None
+        else parent_reference
+    )
     write_static_icon_image(
         output_dir,
         fallback_filename,
-        parent_reference,
+        fallback_image,
         target.name,
         "layeredFallback[1]",
         dry_run,
@@ -2872,6 +3230,20 @@ def validate_tmp_dir(tmp_dir: Path, project_root: Path) -> None:
 
 def main() -> int:
     args = parse_args()
+    global IMAGE_FORMAT, ANIMATED_WEBP_QUALITY, ANIMATED_WEBP_METHOD, ANIMATED_ICON_SIZE, ICON_SIZE
+    IMAGE_FORMAT = args.image_format
+    if not 0 <= args.animated_webp_quality <= 100:
+        raise SystemExit("--animated-webp-quality must be between 0 and 100.")
+    if not 0 <= args.animated_webp_method <= 6:
+        raise SystemExit("--animated-webp-method must be between 0 and 6.")
+    if args.animated_icon_size <= 0:
+        raise SystemExit("--animated-icon-size must be positive.")
+    if args.icon_size <= 0:
+        raise SystemExit("--icon-size must be positive.")
+    ANIMATED_WEBP_QUALITY = args.animated_webp_quality
+    ANIMATED_WEBP_METHOD = args.animated_webp_method
+    ANIMATED_ICON_SIZE = args.animated_icon_size
+    ICON_SIZE = args.icon_size
     project_root = Path(__file__).resolve().parents[1]
     output_dir = resolve_cli_path(args.output_dir, project_root)
     tmp_dir = resolve_cli_path(args.tmp_dir, project_root)
@@ -2933,6 +3305,7 @@ def main() -> int:
         "scope": args.scope,
         "dryRun": bool(args.dry_run),
         "zoom": args.zoom,
+        "imageFormat": args.image_format,
         "protectExistingLayout": not bool(args.force_overwrite_existing),
         "targetCount": len(targets),
         "derivedTargetCount": len(derived_targets),
@@ -3258,7 +3631,38 @@ def main() -> int:
             record_issue(report, "export_errors", error)
             report["counts"]["export_errors"] += 1
 
+    # Lock the global f1 scaling basis to the AS2 derivation order (the first
+    # derived icon _iconNames[0]), NOT the by_swf iteration order. The AS2 runtime
+    # BitmapExporter caches its f1 matrix from the first derived icon; if that icon
+    # is conflict-skipped/missing we fall through to the next derived icon so the
+    # basis still matches the runtime oracle. Iterating by_swf instead could lock
+    # onto whichever SWF happened to sort first, diverging from the runtime.
+    swf_by_target_name: dict[str, str] = {}
+    for swf_rel, entries in by_swf.items():
+        for target, _source in entries:
+            swf_by_target_name.setdefault(target.name, swf_rel)
+
     f1_profile_size: tuple[int, int] | None = None
+    for target in targets.values():
+        swf_rel = swf_by_target_name.get(target.name)
+        if swf_rel is None:
+            continue
+        char_id = char_ids_by_swf.get(swf_rel, {}).get(target.name)
+        if char_id is None:
+            continue
+        f1_basis_frame = find_exported_frame(tmp_dir, swf_rel, char_id, 1)
+        if f1_basis_frame is None:
+            continue
+        with Image.open(f1_basis_frame) as profile_image:
+            f1_profile_size = profile_image.size
+        report["f1Profile"] = {
+            "name": target.name,
+            "linkageId": target.linkage_id,
+            "swf": swf_rel,
+            "characterId": char_id,
+            "rawSize": list(f1_profile_size),
+        }
+        break
 
     for swf_rel, entries in by_swf.items():
         char_ids = char_ids_by_swf.get(swf_rel, {})
@@ -3282,15 +3686,6 @@ def main() -> int:
 
             with Image.open(f1) as profile_image:
                 target_profile_size = profile_image.size
-            if f1_profile_size is None:
-                f1_profile_size = target_profile_size
-                report["f1Profile"] = {
-                    "name": target.name,
-                    "linkageId": target.linkage_id,
-                    "swf": swf_rel,
-                    "characterId": char_id,
-                    "rawSize": list(f1_profile_size),
-                }
 
             exported_frames = find_exported_frame_paths(tmp_dir, swf_rel, char_id)
             audit = icon_animation_audit(exported_frames, target_profile_size)
@@ -3405,6 +3800,7 @@ def main() -> int:
                         protect_existing_layout=not args.force_overwrite_existing,
                         report=report,
                         timeout_seconds=args.ffdec_timeout_seconds,
+                        f1_profile_size=f1_profile_size,
                     )
                     if layered_canvas_entry is None:
                         record_issue(
@@ -3449,6 +3845,7 @@ def main() -> int:
                             freeze_parent_frame1=parent_frame1_stop,
                             report=report,
                             timeout_seconds=args.ffdec_timeout_seconds,
+                            f1_profile_size=f1_profile_size,
                         )
                 if layered_canvas_entry is None and nested_canvas_entry is None:
                     payload = {
@@ -3461,7 +3858,40 @@ def main() -> int:
                     record_issue(report, "nestedIconCanvasUnsupported", payload)
                     report["counts"]["nested_icon_canvas_unsupported"] += 1
 
-            if export_parent_animation:
+            if export_parent_animation and IMAGE_FORMAT == "webp":
+                normalized_parent_frames = normalize_parent_animation_frames(
+                    exported_frames,
+                    target_profile_size,
+                    f1_profile_size=f1_profile_size,
+                )
+                webp_entry = assemble_animated_webp_entry(
+                    project_root=project_root,
+                    output_dir=output_dir,
+                    hash_base=hash_base,
+                    icon_name=target.name,
+                    normalized_frames=normalized_parent_frames,
+                    fps=args.animation_fps,
+                    durations=None,
+                    playback="loop",
+                    dry_run=args.dry_run,
+                    report=report,
+                )
+                if webp_entry is not None:
+                    # Drop any stale png-sequence keys carried over from a prior bake.
+                    for stale_key in (
+                        "f2",
+                        "frames",
+                        "timelineFrames",
+                        "nestedAnimation",
+                    ):
+                        entry.pop(stale_key, None)
+                    entry.update(webp_entry)
+                    report["counts"]["animated_manifest_entries"] += 1
+                    report["counts"]["animated_webp_entries"] += 1
+                    report["counts"]["animated_unique_frame_images"] += int(
+                        webp_entry.get("uniqueFrameImages") or 0
+                    )
+            elif export_parent_animation:
                 frame_entries, timeline_entries = write_animated_icon_frames(
                     exported_frames,
                     output_dir,
@@ -3471,6 +3901,7 @@ def main() -> int:
                     args.dry_run,
                     protect_existing_layout=not args.force_overwrite_existing,
                     report=report,
+                    f1_profile_size=f1_profile_size,
                 )
                 if frame_entries:
                     entry["f1"] = frame_entries[0]["uri"]
@@ -3602,7 +4033,7 @@ def main() -> int:
                             report["counts"]["purged_frames"] += 1
                         continue
 
-                    filename = f"{hash_base}_{frame_number}.png"
+                    filename = f"{hash_base}_{frame_number}.{image_extension()}"
                     normalized = normalize_icon(
                         source_frame,
                         f1_profile_size if frame_number == 1 else None,
@@ -3662,6 +4093,23 @@ def main() -> int:
                 report=report,
             )
 
+            # _contactSheet is QA-only (tmp/) bookkeeping; surface it in the report but never
+            # leak the internal key into the committed manifest.
+            contact_sheet = entry.pop("_contactSheet", None)
+            if contact_sheet and len(report.get("animatedContactSheets", [])) < 200:
+                record_issue(
+                    report,
+                    "animatedContactSheets",
+                    {
+                        "name": target.name,
+                        "linkageId": target.linkage_id,
+                        "contactSheet": contact_sheet,
+                        "format": entry.get("format"),
+                        "frameCount": entry.get("frameCount"),
+                        "uniqueFrameImages": entry.get("uniqueFrameImages"),
+                    },
+                )
+
             if not args.dry_run:
                 manifest[target.name] = entry
             report["counts"]["processed"] += 1
@@ -3700,6 +4148,7 @@ def main() -> int:
         "animatedIconSizeSamples",
         "animatedIconBudgetSkipped",
         "animatedVisualStaticDowngraded",
+        "animatedContactSheets",
         "animationCandidateFilterSelected",
         "animationCandidateFilterSkipped",
         "nestedIconLayerCropSamples",
