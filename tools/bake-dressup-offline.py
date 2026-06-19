@@ -489,6 +489,27 @@ def add_appearance_skin_keys(project_root: Path, skin_keys: dict[str, dict[str, 
         add_skin(skin_keys, key, "发型", key, hairstyle_path.name)
 
 
+def load_appearance_map(project_root: Path) -> dict[str, Any]:
+    appearance = {
+        "faceById": {
+            "0": "女变装-基本脸型",
+            "1": "男变装-基本脸型",
+        },
+        "hairById": {},
+    }
+    hairstyle_path = project_root / "data" / "items" / "hairstyle.xml"
+    if not hairstyle_path.exists():
+        return appearance
+    root = xml_root(hairstyle_path)
+    for hair in root.findall("Hair"):
+        hair_id = hair.get("id")
+        key = child_text(hair, "Identifier")
+        if hair_id is None or not key:
+            continue
+        appearance["hairById"][str(hair_id)] = key
+    return appearance
+
+
 def load_items(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
     items_dir = project_root / "data" / "items"
     items: dict[str, Any] = {}
@@ -799,6 +820,9 @@ def record_holder(
     instance: dict[str, Any],
     matrix: Matrix,
     path: list[str],
+    draw_index: int = 0,
+    layer_name: str = "",
+    frame_index: int = 0,
 ) -> None:
     script = instance["script"]
     for field, attach_name in instance["attachCalls"]:
@@ -817,9 +841,34 @@ def record_holder(
                 "hideBasicOnAttach": "基本款._visible = 0" in script or "基本款._visible=0" in script,
                 "syncFrameToBasic": "gotoAndStop(this.基本款._currentframe)" in script,
                 "basic": basic,
+                "drawIndex": draw_index,
+                "layerName": layer_name,
+                "sourceFrame": frame_index,
                 "path": path + [symbol_name, instance["libraryItemName"]],
             }
         )
+
+
+def dialogue_symbol_draw_frames(symbol: dict[str, Any]) -> list[tuple[int, dict[str, Any], dict[str, Any]]]:
+    layers = symbol.get("layers") or []
+    result: list[tuple[int, dict[str, Any], dict[str, Any]]] = []
+    if layers:
+        # XFL serializes layers top-to-bottom. Canvas draws in list order, so collect
+        # bottom-to-top to preserve Flash visual stacking for dialogue holders too.
+        for draw_index, layer_index in enumerate(range(len(layers) - 1, -1, -1)):
+            layer = layers[layer_index]
+            for frame in layer.get("frames", []):
+                # The dialogue pose uses static holder symbols. Use key frame 0 plus
+                # unlabeled frames; labeled expression timelines are exported later.
+                if frame["index"] != 0 and frame["label"]:
+                    continue
+                result.append((draw_index, layer, frame))
+        return result
+    for draw_index, frame in enumerate(symbol.get("frames", [])):
+        if frame["index"] != 0 and frame["label"]:
+            continue
+        result.append((draw_index, {"name": ""}, frame))
+    return result
 
 
 def traverse_holders(
@@ -838,15 +887,22 @@ def traverse_holders(
     symbol = symbols.get(symbol_name)
     if symbol is None:
         return
-    for frame in symbol["frames"]:
-        # The dialogue pose uses static holder symbols. Use key frame 0 plus unlabeled frames;
-        # labeled expression timelines are exported as nested assets later.
-        if frame["index"] != 0 and frame["label"]:
-            continue
+    for draw_index, layer, frame in dialogue_symbol_draw_frames(symbol):
         for instance in frame["instances"]:
             matrix = multiply(parent_matrix, instance["matrix"])
             if instance["attachCalls"]:
-                record_holder(holders, symbols, gender, symbol_name, instance, matrix, path)
+                record_holder(
+                    holders,
+                    symbols,
+                    gender,
+                    symbol_name,
+                    instance,
+                    matrix,
+                    path,
+                    draw_index,
+                    layer.get("name") or "",
+                    frame.get("index", 0),
+                )
             child_name = instance["libraryItemName"]
             if child_name in symbols:
                 traverse_holders(symbols, gender, child_name, matrix, holders, path + [symbol_name], visited)
@@ -1418,6 +1474,7 @@ def build_manifest(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[s
         "schema": "cf7-dressup-manifest-v1",
         "generatedAt": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
         "genders": list(genders),
+        "appearance": load_appearance_map(project_root),
         "items": items,
         "skinKeys": skin_keys,
         "rig": rig,
@@ -3529,10 +3586,9 @@ def main() -> int:
     preserved_skin_exports = 0
     preserved_basic_exports = 0
     existing_manifest: dict[str, Any] | None = None
-    if not args.no_write:
-        existing_manifest_path = output_dir / "manifest.json"
-        if existing_manifest_path.exists():
-            existing_manifest = json.loads(existing_manifest_path.read_text(encoding="utf-8-sig"))
+    existing_manifest_path = output_dir / "manifest.json"
+    if existing_manifest_path.exists():
+        existing_manifest = json.loads(existing_manifest_path.read_text(encoding="utf-8-sig"))
     if args.export_assets:
         if (args.name or args.limit > 0) and existing_manifest is not None:
             target_keys = set(selected_skin_keys(manifest, set(args.name), args.limit))
@@ -3574,6 +3630,8 @@ def main() -> int:
         if preserved_basic_exports:
             report.setdefault("assetExport", {})["preservedBasicHolderExports"] = preserved_basic_exports
             report.setdefault("counts", {})["preservedBasicHolderExports"] = preserved_basic_exports
+    if not args.export_assets:
+        attach_animation_summary(manifest, report)
     if not args.no_write:
         write_json(output_dir / "manifest.json", manifest)
         write_json(output_dir / "report.json", report)

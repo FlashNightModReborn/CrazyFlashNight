@@ -91,6 +91,9 @@ var DressupDollRenderer = (function() {
         if (options.fitFields && options.fitFields.length) {
             state.fitFields = options.fitFields.slice ? options.fitFields.slice(0) : options.fitFields;
         }
+        if (options.drawFields && options.drawFields.length) {
+            state.drawFields = options.drawFields.slice ? options.drawFields.slice(0) : options.drawFields;
+        }
         if (typeof options.zoom === 'number') state.zoom = options.zoom;
         if (typeof options.margin === 'number') state.margin = options.margin;
         if (options.rig) state.rig = options.rig;
@@ -341,6 +344,18 @@ var DressupDollRenderer = (function() {
         return result.length ? result : holders;
     }
 
+    function holdersForDraw(holders, drawFields) {
+        if (!drawFields || !drawFields.length) return holders;
+        var selected = {};
+        drawFields.forEach(function(field) {
+            if (field) selected[field] = true;
+        });
+        var result = holders.filter(function(holder) {
+            return holder && selected[holder.field];
+        });
+        return result.length ? result : holders;
+    }
+
     function resolveRigState(manifest, gender, state, options) {
         state = state || {};
         options = options || {};
@@ -515,8 +530,9 @@ var DressupDollRenderer = (function() {
             stateContext.rig = rigState.rig;
             stateContext.stateLabel = rigState.stateLabel;
             var holders = rigState.holders;
+            var drawHolders = holdersForDraw(holders, lastState.drawFields || options.drawFields);
             var bounds = computeBounds(
-                holdersForFit(holders, lastState.fitFields || options.fitFields),
+                holdersForFit(drawHolders, lastState.fitFields || options.fitFields),
                 manifest,
                 lastState.keyMap,
                 debugPlaceholders,
@@ -555,7 +571,7 @@ var DressupDollRenderer = (function() {
                 });
                 ctx.restore();
             }
-            holders.forEach(function(holder) {
+            drawHolders.forEach(function(holder) {
                 var renderable = renderableForHolder(holder, manifest, lastState.keyMap, stateContext);
                 if (!renderable.entry) {
                     if (renderable.key) missing++;
@@ -591,7 +607,8 @@ var DressupDollRenderer = (function() {
                 gender: gender,
                 rig: rigState.rig,
                 stateLabel: rigState.stateLabel,
-                holders: holders.length,
+                holders: drawHolders.length,
+                totalHolders: holders.length,
                 bounds: bounds,
                 scale: scale,
                 animated: needsAnimation,

@@ -755,9 +755,16 @@
     flex-shrink: 0;
     border-radius: var(--merc-radius);
 }
-.merc-dressup-section { padding-bottom: 12px; }
+.merc-detail-overview {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.85fr);
+    gap: 14px;
+    align-items: stretch;
+}
+.merc-detail-overview .merc-section { min-width: 0; }
+.merc-dressup-section { min-height: 0; }
 .merc-detail-dressup-host {
-    height: 260px;
+    height: 380px;
     display: grid;
     place-items: center;
     overflow: hidden;
@@ -845,6 +852,7 @@
 
 /* ── 性格特质（六维条形）── */
 .merc-traits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; }
+.merc-detail-overview .merc-traits-grid { grid-template-columns: 1fr; gap: 9px; }
 .merc-trait {
     padding: 9px 14px;
     background: var(--merc-stone-soft);
@@ -862,6 +870,7 @@
     width: 36px;
     flex-shrink: 0;
 }
+.merc-detail-overview .merc-trait { min-height: 44px; }
 .merc-trait.merc-trait-top .merc-trait-name { color: var(--merc-accent); }
 .merc-trait-bar {
     position: relative;

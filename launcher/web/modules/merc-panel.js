@@ -52,6 +52,18 @@
         '脸型', '发型', '面具'
     ];
     var DRESSUP_HEAD_FIT_FIELDS = ['脸型', '发型', '面具'];
+    var DRESSUP_BODY_DRAW_FIELDS = DRESSUP_BODY_FIT_FIELDS.slice(0);
+    var DRESSUP_HEAD_DRAW_FIELDS = DRESSUP_HEAD_FIT_FIELDS.slice(0);
+    var DRESSUP_FACE_BY_ID_FALLBACK = {
+        '0': '女变装-基本脸型',
+        '1': '男变装-基本脸型'
+    };
+    var DRESSUP_HAIR_COMPAT_ALIASES = {
+        '发型-女式-红马尾': '发型-女式-玫红色马尾',
+        '发型-女式-白长发': '发型-女式-银色清爽直发',
+        '发型-男式-黑尖长发': '发型-男式-黑长发',
+        '发型-男式-黑短发': '发型-男式-精武短发'
+    };
     var _dressupManifest = null;
     var _dressupManifestPromise = null;
     var _dressupThumbCache = {};
@@ -471,20 +483,46 @@
         return equipment;
     }
 
+    function dressupSkinCovered(key) {
+        return !!(key && _dressupManifest && _dressupManifest.skinKeys && _dressupManifest.skinKeys[key] && _dressupManifest.skinKeys[key].covered);
+    }
+
+    function normalizeAppearanceKey(value, type, gender) {
+        var raw = value === undefined || value === null ? '' : String(value).trim();
+        var appearance = _dressupManifest && _dressupManifest.appearance ? _dressupManifest.appearance : {};
+        if (type === 'face') {
+            if (/^\d+$/.test(raw)) {
+                return (appearance.faceById && appearance.faceById[raw]) ||
+                    DRESSUP_FACE_BY_ID_FALLBACK[raw] ||
+                    (gender === '女' ? '女变装-基本脸型' : '男变装-基本脸型');
+            }
+            if (dressupSkinCovered(raw)) return raw;
+            return gender === '女' ? '女变装-基本脸型' : '男变装-基本脸型';
+        }
+        if (!raw || raw === '光头') return '';
+        if (/^\d+$/.test(raw)) {
+            raw = appearance.hairById && appearance.hairById[raw] ? appearance.hairById[raw] : raw;
+        }
+        if (dressupSkinCovered(raw)) return raw;
+        var alias = DRESSUP_HAIR_COMPAT_ALIASES[raw];
+        if (alias && dressupSkinCovered(alias)) return alias;
+        return '';
+    }
+
     function dressupAppearanceFromMerc(merc, equipment) {
         var gender = normalizeMercGender(merc);
         var appearance = {};
-        var face = merc && merc.face ? String(merc.face) : '';
-        var hair = merc && merc.hair ? String(merc.hair) : '';
+        var face = normalizeAppearanceKey(merc && merc.face, 'face', gender);
+        var hair = normalizeAppearanceKey(merc && merc.hair, 'hair', gender);
         var headItem = equipment && equipment.head ? equipment.head : '';
         var item = headItem && _dressupManifest && _dressupManifest.items ? _dressupManifest.items[headItem] : null;
         var helmetSuppressesHair = !!(item && item.helmet === true);
-        appearance['脸型'] = face || (gender === '女' ? '女变装-基本脸型' : '男变装-基本脸型');
+        appearance['脸型'] = face;
         if (hair && hair !== '光头' && !helmetSuppressesHair) appearance['发型'] = hair;
         return appearance;
     }
 
-    function buildMercDressupState(merc, fitFields, zoom, margin) {
+    function buildMercDressupState(merc, fitFields, zoom, margin, drawFields) {
         if (!_dressupManifest) return null;
         var equipment = dressupEquipmentFromMerc(merc);
         return DressupDollRenderer.buildStateFromEquipment(_dressupManifest, {
@@ -492,6 +530,7 @@
             equipment: equipment,
             appearance: dressupAppearanceFromMerc(merc, equipment),
             fitFields: fitFields,
+            drawFields: drawFields,
             zoom: zoom,
             margin: margin
         });
@@ -580,7 +619,13 @@
                 return;
             }
             var size = variant === 'selbar' ? 140 : 112;
-            var state = buildMercDressupState(merc, DRESSUP_HEAD_FIT_FIELDS, variant === 'selbar' ? 1.16 : 1.12, 10);
+            var state = buildMercDressupState(
+                merc,
+                DRESSUP_HEAD_FIT_FIELDS,
+                variant === 'selbar' ? 1.16 : 1.12,
+                10,
+                DRESSUP_HEAD_DRAW_FIELDS
+            );
             if (!state) return;
             renderDressupSnapshot(state, size, size, function(url) {
                 if (portrait._dressupToken !== token || !url) return;
@@ -636,10 +681,10 @@
             _dressupDetailRenderer = DressupDollRenderer.create(canvas, {
                 manifest: _dressupManifest,
                 width: 360,
-                height: 260,
+                height: 380,
                 fps: 24
             });
-            var state = buildMercDressupState(merc, DRESSUP_BODY_FIT_FIELDS, 0.96, 14);
+            var state = buildMercDressupState(merc, DRESSUP_BODY_FIT_FIELDS, 0.92, 16, DRESSUP_BODY_DRAW_FIELDS);
             if (state) _dressupDetailRenderer.render(state);
         }).catch(function() {
             if (host._dressupToken !== token) return;
@@ -1377,13 +1422,15 @@
                     '</div>' +
                 '</div>' +
                 '<div class="merc-page-body">' +
-                    '<div class="merc-section merc-dressup-section">' +
-                        '<h3 class="merc-section-title">造型预览</h3>' +
-                        '<div class="merc-detail-dressup-host" id="merc-detail-dressup-host"></div>' +
-                    '</div>' +
-                    '<div class="merc-section">' +
-                        '<h3 class="merc-section-title">性格特质</h3>' +
-                        '<div class="merc-traits-grid" id="merc-traits-grid"></div>' +
+                    '<div class="merc-detail-overview">' +
+                        '<div class="merc-section merc-dressup-section">' +
+                            '<h3 class="merc-section-title">造型预览</h3>' +
+                            '<div class="merc-detail-dressup-host" id="merc-detail-dressup-host"></div>' +
+                        '</div>' +
+                        '<div class="merc-section merc-traits-section">' +
+                            '<h3 class="merc-section-title">性格特质</h3>' +
+                            '<div class="merc-traits-grid" id="merc-traits-grid"></div>' +
+                        '</div>' +
                     '</div>' +
                     '<div class="merc-section">' +
                         '<h3 class="merc-section-title">战斗技能</h3>' +
