@@ -52,7 +52,6 @@
         '脸型', '发型', '面具'
     ];
     var DRESSUP_HEAD_FIT_FIELDS = ['脸型', '发型', '面具'];
-    var DRESSUP_BODY_DRAW_FIELDS = DRESSUP_BODY_FIT_FIELDS.slice(0);
     var DRESSUP_HEAD_DRAW_FIELDS = DRESSUP_HEAD_FIT_FIELDS.slice(0);
     var DRESSUP_FACE_BY_ID_FALLBACK = {
         '0': '女变装-基本脸型',
@@ -471,14 +470,26 @@
         return String(value).split('#', 1)[0];
     }
 
+    function setDressupEquipmentSlot(equipment, slot, value) {
+        var slotName = DRESSUP_SLOT_BY_INDEX[Number(slot)] || slot;
+        var name = stripEquipName(value);
+        if (slotName && name) equipment[slotName] = name;
+    }
+
     function dressupEquipmentFromMerc(merc) {
         var equipment = {};
         var equips = merc && merc.equips ? merc.equips : [];
         for (var i = 0; i < equips.length; i++) {
             var eq = equips[i];
-            var slot = DRESSUP_SLOT_BY_INDEX[Number(eq.slot)];
-            var name = stripEquipName(eq.name || eq.raw || eq.displayname);
-            if (slot && name) equipment[slot] = name;
+            setDressupEquipmentSlot(equipment, eq.slot, eq.name || eq.raw || eq.displayname);
+        }
+        var direct = merc && merc.equipment ? merc.equipment : null;
+        if (direct) {
+            Object.keys(direct).forEach(function(slot) {
+                if (!equipment[DRESSUP_SLOT_BY_INDEX[Number(slot)] || slot]) {
+                    setDressupEquipmentSlot(equipment, slot, direct[slot]);
+                }
+            });
         }
         return equipment;
     }
@@ -538,11 +549,10 @@
 
     function dressupCacheKey(merc, variant) {
         var parts = [variant, normalizeMercGender(merc), merc && merc.face || '', merc && merc.hair || ''];
-        var equips = merc && merc.equips ? merc.equips.slice(0) : [];
-        equips.sort(function(a, b) { return Number(a.slot) - Number(b.slot); });
-        for (var i = 0; i < equips.length; i++) {
-            parts.push(String(equips[i].slot) + ':' + stripEquipName(equips[i].name || equips[i].raw || ''));
-        }
+        var equipment = dressupEquipmentFromMerc(merc);
+        Object.keys(equipment).sort().forEach(function(slot) {
+            parts.push(slot + ':' + equipment[slot]);
+        });
         return parts.join('|');
     }
 
@@ -684,7 +694,7 @@
                 height: 380,
                 fps: 24
             });
-            var state = buildMercDressupState(merc, DRESSUP_BODY_FIT_FIELDS, 0.92, 16, DRESSUP_BODY_DRAW_FIELDS);
+            var state = buildMercDressupState(merc, DRESSUP_BODY_FIT_FIELDS, 0.92, 16, null);
             if (state) _dressupDetailRenderer.render(state);
         }).catch(function() {
             if (host._dressupToken !== token) return;

@@ -530,9 +530,10 @@ var DressupDollRenderer = (function() {
             stateContext.rig = rigState.rig;
             stateContext.stateLabel = rigState.stateLabel;
             var holders = rigState.holders;
+            var fitHolders = holdersForFit(holders, lastState.fitFields || options.fitFields);
             var drawHolders = holdersForDraw(holders, lastState.drawFields || options.drawFields);
             var bounds = computeBounds(
-                holdersForFit(drawHolders, lastState.fitFields || options.fitFields),
+                fitHolders,
                 manifest,
                 lastState.keyMap,
                 debugPlaceholders,
