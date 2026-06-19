@@ -553,6 +553,13 @@ var DressupDollRenderer = (function() {
             ctx.scale(scale, scale);
             var needsAnimation = false;
             var missing = 0;
+            var pendingImages = 0;
+            function imageDrawable(image) {
+                return !!(image && image.complete && image.naturalWidth > 0);
+            }
+            function imagePending(image) {
+                return !!(image && !image.complete);
+            }
             function drawLayer(layer, nowMs) {
                 if (!layer || !layer.export) return;
                 var selected = selectSkinFrame(layer, nowMs, fallbackFps);
@@ -560,7 +567,10 @@ var DressupDollRenderer = (function() {
                 var frame = selected.frame;
                 var uri = resolveImageUri(frame && frame.uri, manifest);
                 var image = loadImage(imageCache, uri, function() { render(lastState); });
-                if (!image || !image.complete || image.naturalWidth <= 0) return;
+                if (!imageDrawable(image)) {
+                    if (imagePending(image)) pendingImages++;
+                    return;
+                }
                 ctx.save();
                 applyMatrix(ctx, matrixFrom(layer.matrix));
                 nestedLayers(layer, 'under').forEach(function(childLayer) {
@@ -583,6 +593,7 @@ var DressupDollRenderer = (function() {
                 var frame = selected.frame;
                 var uri = resolveImageUri(frame && frame.uri, manifest);
                 var image = loadImage(imageCache, uri, function() { render(lastState); });
+                if (renderable.entry && imagePending(image)) pendingImages++;
                 ctx.save();
                 applyMatrix(ctx, matrixForRenderable(holder, renderable));
                 if (renderable.entry) {
@@ -613,7 +624,8 @@ var DressupDollRenderer = (function() {
                 bounds: bounds,
                 scale: scale,
                 animated: needsAnimation,
-                missing: missing
+                missing: missing,
+                pendingImages: pendingImages
             };
         }
 

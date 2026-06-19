@@ -103,15 +103,7 @@ class org.flashNight.arki.merc.MercHybridizer {
                     sample[1] = hybridName(n, allow, teamInfo);
                     break;
                 case 3: case 4: case 5: case 17:
-                    var pickedIndex:Number = pickHybridIndex(n, chance, allow);
-                    var pickedMerc:Array = _root.可雇佣兵[pickedIndex];
-                    sample[slot] = pickedMerc[slot];
-                    if (slot == 4 && pickedMerc[19] && pickedMerc[19].脸型ID != undefined) {
-                        sample[19].脸型ID = pickedMerc[19].脸型ID;
-                    }
-                    if (slot == 5 && pickedMerc[19] && pickedMerc[19].发型ID != undefined) {
-                        sample[19].发型ID = pickedMerc[19].发型ID;
-                    }
+                    sample[slot] = _root.可雇佣兵[pickHybridIndex(n, chance, allow)][slot];
                     break;
                 case 11:
                     break;

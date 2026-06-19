@@ -112,12 +112,8 @@ class org.flashNight.arki.merc.MercLibrary {
             merc[16] = raw.equipment.gerenade   == null ? "" : raw.equipment.gerenade;
             merc[17] = raw.gender;
             merc[18] = calculatePrice(raw.level);
-            // [19] 是元数据子对象。字段名是公共契约（_root.同伴数据[i][19].XXX 多处引用），保留中文。
-            // raw 外观 id 作为 Web 面板兜底保留：若发型/脸型库异步加载晚于佣兵池刷新，
-            // merc[4]/merc[5] 可能为空，但 Web 仍可按 manifest 的 appearance 映射恢复头像。
+            // [19] 是元数据子对象。字段名是公共契约（_root.同伴数据[i][19].XXX 多处引用），保留中文
             merc[19] = {是否杂交: false};
-            if (raw.face != null) merc[19].脸型ID = raw.face;
-            if (raw.hair != null) merc[19].发型ID = raw.hair;
             if (raw.pricemultiplier) {
                 merc[19].价格倍率 = raw.pricemultiplier;
             }
