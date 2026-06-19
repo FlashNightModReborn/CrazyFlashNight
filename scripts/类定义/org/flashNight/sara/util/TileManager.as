@@ -276,8 +276,10 @@ var infoText:TextField = _root.createTextField("infoText", _root.getNextHighestD
         // 让游戏世界跟随玩家移动，实现滚屏效果
         var stageCenterX:Number = Stage.width / 2;
         var stageCenterY:Number = Stage.height / 2;
-        gameWorld._x = stageCenterX - player._x;
-        gameWorld._y = stageCenterY - player._y;
+        var cameraX:Number = stageCenterX - player._x;
+        var cameraY:Number = stageCenterY - player._y;
+        gameWorld._x = (cameraX < 0) ? ((cameraX - 0.5) | 0) : ((cameraX + 0.5) | 0);
+        gameWorld._y = (cameraY < 0) ? ((cameraY - 0.5) | 0) : ((cameraY + 0.5) | 0);
 
         // 计算 FPS
         frameCount++;

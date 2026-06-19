@@ -1,7 +1,5 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.camera.ZoomController;
-import org.flashNight.arki.camera.ScrollBounds;
-import org.flashNight.arki.camera.ScrollLogic;
 import org.flashNight.arki.camera.ParallaxBackground;
 import org.flashNight.gesh.object.*;
 /**
@@ -43,7 +41,7 @@ class org.flashNight.arki.camera.HorizontalScroller {
     private function HorizontalScroller() {
         // 初始化默认配置
         this.easeFactor = 10;
-        this.offsetTolerance = 0;
+        this.offsetTolerance = 0.5;
     }
 
     //================================================================================
@@ -88,6 +86,23 @@ class org.flashNight.arki.camera.HorizontalScroller {
     
     /** 地平线高度缓存 */
     private var horizonHeight:Number;
+
+    /** 当前帧缩放倍率与缩放补偿 */
+    private var currentScale:Number;
+    private var zoomOffsetX:Number;
+    private var zoomOffsetY:Number;
+    private var hasZoomOffset:Boolean;
+
+    /** 滚屏边界缓存，避免每帧分配 bounds 对象 */
+    private var boundsEffBgW:Number;
+    private var boundsEffBgH:Number;
+    private var boundsMinX:Number;
+    private var boundsMaxX:Number;
+    private var boundsMinY:Number;
+    private var boundsMaxY:Number;
+    private var cachedBoundsScale:Number;
+    private var cachedBoundsStageWidth:Number;
+    private var cachedBoundsStageHeight:Number;
 
     //================================================================================
     // 动态组装的更新函数
@@ -216,23 +231,20 @@ class org.flashNight.arki.camera.HorizontalScroller {
      */
     private function updateWithParallax():Void {
         // 执行缩放处理
-        var zoomResult:Object = this.processZooming();
-        if (!zoomResult.shouldContinue) return;
-        
+        if (!this.processZooming()) return;
+
         // 处理缩放偏移
-        if (zoomResult.hasZoomOffset) {
-            this.handleZoomOffset(zoomResult);
+        if (this.hasZoomOffset) {
+            this.handleZoomOffset();
         }
-        
+
         // 检查是否需要滚动
-        if (!ScrollBounds.needsScroll(zoomResult.bounds.effBgW, zoomResult.bounds.effBgH, 
-                                      this.stageWidth, this.stageHeight)) {
+        if (!(this.stageWidth < this.boundsEffBgW || this.stageHeight < this.boundsEffBgH)) {
             return;
         }
-        
+
         // 执行滚动逻辑
-        var scrollResult:Object = this.processScrolling(zoomResult);
-        if (scrollResult.hasScrolled) {
+        if (this.processScrolling()) {
             // 更新视差背景
             ParallaxBackground.updateParallax(this.bgLayer, this.frameTimer.当前帧数, this.gameWorld._x);
         }
@@ -243,22 +255,20 @@ class org.flashNight.arki.camera.HorizontalScroller {
      */
     private function updateWithoutParallax():Void {
         // 执行缩放处理
-        var zoomResult:Object = this.processZooming();
-        if (!zoomResult.shouldContinue) return;
+        if (!this.processZooming()) return;
         
         // 处理缩放偏移
-        if (zoomResult.hasZoomOffset) {
-            this.handleZoomOffset(zoomResult);
+        if (this.hasZoomOffset) {
+            this.handleZoomOffset();
         }
         
         // 检查是否需要滚动
-        if (!ScrollBounds.needsScroll(zoomResult.bounds.effBgW, zoomResult.bounds.effBgH, 
-                                      this.stageWidth, this.stageHeight)) {
+        if (!(this.stageWidth < this.boundsEffBgW || this.stageHeight < this.boundsEffBgH)) {
             return;
         }
         
         // 执行滚动逻辑（无视差更新）
-        this.processScrolling(zoomResult);
+        this.processScrolling();
     }
 
     //================================================================================
@@ -267,13 +277,13 @@ class org.flashNight.arki.camera.HorizontalScroller {
     
     /**
      * 处理缩放逻辑
-     * @return 包含缩放结果和边界信息的对象
+     * @return 是否继续执行滚屏
      */
-    private function processZooming():Object {
+    private function processZooming():Boolean {
         var newScale:Number;
-        var offsetX:Number = 0;
-        var offsetY:Number = 0;
-        var hasZoomOffset:Boolean = false;
+        this.zoomOffsetX = 0;
+        this.zoomOffsetY = 0;
+        this.hasZoomOffset = false;
         
         if (this.enableCameraZoom) {
             // 从当前焦点读取"最小缩放阈值"，无则为 0（不限制）
@@ -287,73 +297,88 @@ class org.flashNight.arki.camera.HorizontalScroller {
                 __minClamp
             );
             newScale = zoomResult.newScale;
-            offsetX = zoomResult.offsetX;
-            offsetY = zoomResult.offsetY;
-            hasZoomOffset = (offsetX !== 0 || offsetY !== 0);
+            this.zoomOffsetX = zoomResult.offsetX;
+            this.zoomOffsetY = zoomResult.offsetY;
+            this.hasZoomOffset = (this.zoomOffsetX !== 0 || this.zoomOffsetY !== 0);
         } else {
             newScale = _root.basicZoomScale;
-            var offset:Object = ZoomController.applyFixedScale(
-                this.scrollObj, this.gameWorld, this.bgLayer, newScale
-            );
-            offsetX = offset.offsetX;
-            offsetY = offset.offsetY;
-            hasZoomOffset = (offsetX !== 0 || offsetY !== 0);
+            if (this.currentScale !== newScale) {
+                var offset:Object = ZoomController.applyFixedScale(
+                    this.scrollObj, this.gameWorld, this.bgLayer, newScale
+                );
+                this.zoomOffsetX = offset.offsetX;
+                this.zoomOffsetY = offset.offsetY;
+                this.hasZoomOffset = (this.zoomOffsetX !== 0 || this.zoomOffsetY !== 0);
+            }
         }
         
-        // 计算滚动边界
-        var bounds:Object = ScrollBounds.calculateBounds(
-            this.bgWidth, this.bgHeight, newScale, 
-            this.stageWidth, this.stageHeight
-        );
-        
-        return {
-            newScale: newScale,
-            offsetX: offsetX,
-            offsetY: offsetY,
-            hasZoomOffset: hasZoomOffset,
-            bounds: bounds,
-            shouldContinue: true
-        };
+        this.currentScale = newScale;
+        this.updateBoundsForScale(newScale);
+        return true;
     }
     
     /**
      * 处理缩放产生的偏移
-     * @param zoomResult 缩放结果对象
      */
-    private function handleZoomOffset(zoomResult:Object):Void {
-        // 计算临时坐标
-        var tentativeX:Number = this.gameWorld._x + zoomResult.offsetX;
-        var tentativeY:Number = this.gameWorld._y + zoomResult.offsetY;
+    private function handleZoomOffset():Void {
+        var gw:MovieClip = this.gameWorld;
         
-        // 应用边界约束
-        var clamped:Object = ScrollBounds.clampPosition(
-            tentativeX, tentativeY, zoomResult.bounds,
-            this.stageWidth, this.stageHeight
-        );
+        // 计算临时坐标
+        var clampedX:Number = gw._x + this.zoomOffsetX;
+        var clampedY:Number = gw._y + this.zoomOffsetY;
+
+        // 应用边界约束与像素取整
+        if (this.stageWidth < this.boundsEffBgW) {
+            if (clampedX < this.boundsMinX) {
+                clampedX = this.boundsMinX;
+            } else if (clampedX > this.boundsMaxX) {
+                clampedX = this.boundsMaxX;
+            }
+        } else {
+            clampedX = 0;
+        }
+        if (this.stageHeight < this.boundsEffBgH) {
+            if (clampedY < this.boundsMinY) {
+                clampedY = this.boundsMinY;
+            } else if (clampedY > this.boundsMaxY) {
+                clampedY = this.boundsMaxY;
+            }
+        } else {
+            clampedY = 0;
+        }
+        clampedX = (clampedX < 0) ? ((clampedX - 0.5) | 0) : ((clampedX + 0.5) | 0);
+        clampedY = (clampedY < 0) ? ((clampedY - 0.5) | 0) : ((clampedY + 0.5) | 0);
         
         // 更新世界坐标
-        this.gameWorld._x = clamped.clampedX;
-        this.gameWorld._y = clamped.clampedY;
+        if (clampedX !== gw._x) {
+            gw._x = clampedX;
+        }
+        if (clampedY !== gw._y) {
+            gw._y = clampedY;
+        }
         
         // 更新背景图层位置（考虑缩放后的地平线高度）
-        var scaledHorizonHeight:Number = this.horizonHeight * zoomResult.newScale;
-        this.bgLayer._y = clamped.clampedY + scaledHorizonHeight;
+        var scaledHorizonHeight:Number = this.horizonHeight * this.currentScale;
+        this.bgLayer._y = clampedY + scaledHorizonHeight;
         
         // 刷新视差背景（如果启用）
         if (this.enableParallax) {
-            ParallaxBackground.refreshOnZoom(this.bgLayer, this.gameWorld._x);
+            ParallaxBackground.refreshOnZoom(this.bgLayer, gw._x);
         }
     }
     
     /**
      * 处理滚动逻辑
-     * @param zoomResult 缩放结果对象
-     * @return 包含滚动结果的对象
+     * @return 是否发生滚动
      */
-    private function processScrolling(zoomResult:Object):Object {
+    private function processScrolling():Boolean {
         // 检查并更新焦点栈状态（自动过期检查和容错）
         this.updateCurrentFocus();
         
+        var gw:MovieClip = this.gameWorld;
+        var target:MovieClip = this.scrollObj;
+        var scale:Number = this.currentScale;
+
         // 获取有效的滚动参数（支持临时参数覆盖）
         var effectiveEase:Number = this.easeFactor;
         var effectiveTolerance:Number = this.offsetTolerance;
@@ -367,105 +392,113 @@ class org.flashNight.arki.camera.HorizontalScroller {
             biasY = this.currentFocus.biasY;
         }
         
-        // 计算动态滚动中心点（根据缩放比例调整）
-        var centerPoints:Object = this.calculateScrollCenters(zoomResult.newScale);
-        
-        // 获取角色在屏幕上的精确坐标
-        var screenCoords:Object = this.calculateScreenCoordinates(zoomResult.newScale);
-        
-        // 根据朝向决定目标中心点，并应用构图偏置
-        var isRightDirection:Boolean = (this.scrollObj._xscale > 0);
-        var targetX:Number = isRightDirection ? centerPoints.rightCenter : centerPoints.leftCenter;
-        var targetY:Number = centerPoints.verticalCenter;
-        
-        // 应用构图偏置
+        // 标量计算热路径，避免每帧创建 center/screen/scroll 对象
+        var halfScale:Number = scale * 0.5;
+        var scaledOffset:Number = 100 / ((halfScale > 1) ? halfScale : 1);
+        var stageCenterX:Number = this.stageWidth * 0.5;
+        var targetX:Number = (target._xscale > 0) ? (stageCenterX - scaledOffset) : (stageCenterX + scaledOffset);
+        var targetY:Number = this.stageHeight - 100;
         targetX += biasX;
         targetY += biasY;
         
-        // 计算滚动偏移量（使用有效的参数）
-        var scrollParams:Object = ScrollLogic.computeScrollOffsets(
-            screenCoords.screenX, screenCoords.screenY,
-            targetX, targetY,
-            effectiveTolerance, effectiveEase
-        );
+        var screenX:Number = (target._x * scale) + gw._x;
+        var screenY:Number = (target._y * scale) + gw._y;
+        var deltaX:Number = targetX - screenX;
+        var deltaY:Number = targetY - screenY;
+        var adx:Number = (deltaX < 0) ? -deltaX : deltaX;
+        var ady:Number = (deltaY < 0) ? -deltaY : deltaY;
+        var needMoveX:Boolean = (adx > effectiveTolerance);
+        var needMoveY:Boolean = (ady > effectiveTolerance);
         
         // 检查是否需要滚动
-        if (!scrollParams.needMoveX && !scrollParams.needMoveY) {
-            return { hasScrolled: false };
+        if (!needMoveX && !needMoveY) {
+            return false;
         }
         
         // 应用滚动偏移
-        return this.applyScrollOffset(scrollParams, zoomResult);
-    }
-    
-    /**
-     * 根据缩放倍率计算动态滚动中心点
-     * @param scale 当前缩放倍率
-     * @return 包含各中心点坐标的对象
-     */
-    private function calculateScrollCenters(scale:Number):Object {
-        // 根据缩放倍率动态调整偏移量，高缩放时减小偏移保持居中
-        var baseOffset:Number = 100;
-        var scaledOffset:Number = baseOffset / Math.max(1, scale * 0.5);
-        
-        return {
-            leftCenter: this.stageWidth * 0.5 + scaledOffset,
-            rightCenter: this.stageWidth * 0.5 - scaledOffset,
-            verticalCenter: this.stageHeight - 100
-        };
-    }
-    
-    /**
-     * 计算角色在屏幕上的精确坐标
-     * @param scale 当前缩放倍率
-     * @return 包含屏幕坐标的对象
-     */
-    private function calculateScreenCoordinates(scale:Number):Object {
-        var worldX:Number = this.scrollObj._x;
-        var worldY:Number = this.scrollObj._y;
-        
-        return {
-            screenX: (worldX * scale) + this.gameWorld._x,
-            screenY: (worldY * scale) + this.gameWorld._y
-        };
+        var dx:Number = needMoveX ? ((adx > 1) ? (deltaX / effectiveEase) : deltaX) : 0;
+        var dy:Number = needMoveY ? ((ady > 1) ? (deltaY / effectiveEase) : deltaY) : 0;
+        return this.applyScrollOffset(dx, dy);
     }
     
     /**
      * 应用滚动偏移量
-     * @param scrollParams 滚动参数对象
-     * @param zoomResult 缩放结果对象
-     * @return 包含滚动结果的对象
+     * @return 是否发生滚动
      */
-    private function applyScrollOffset(scrollParams:Object, zoomResult:Object):Object {
-        var oldX:Number = this.gameWorld._x;
-        var oldY:Number = this.gameWorld._y;
-        var newX:Number = oldX + scrollParams.dx;
-        var newY:Number = oldY + scrollParams.dy;
+    private function applyScrollOffset(dx:Number, dy:Number):Boolean {
+        var gw:MovieClip = this.gameWorld;
+        var oldX:Number = gw._x;
+        var oldY:Number = gw._y;
+        var clampedX:Number = oldX + dx;
+        var clampedY:Number = oldY + dy;
         
         // 应用边界约束
-        var clampedFinal:Object = ScrollBounds.clampPosition(
-            newX, newY, zoomResult.bounds, 
-            this.stageWidth, this.stageHeight
-        );
+        if (this.stageWidth < this.boundsEffBgW) {
+            if (clampedX < this.boundsMinX) {
+                clampedX = this.boundsMinX;
+            } else if (clampedX > this.boundsMaxX) {
+                clampedX = this.boundsMaxX;
+            }
+        } else {
+            clampedX = 0;
+        }
+        if (this.stageHeight < this.boundsEffBgH) {
+            if (clampedY < this.boundsMinY) {
+                clampedY = this.boundsMinY;
+            } else if (clampedY > this.boundsMaxY) {
+                clampedY = this.boundsMaxY;
+            }
+        } else {
+            clampedY = 0;
+        }
+
+        // 内联位运算取整，避免热路径 Math.round 与 helper 调用成本
+        clampedX = (clampedX < 0) ? ((clampedX - 0.5) | 0) : ((clampedX + 0.5) | 0);
+        clampedY = (clampedY < 0) ? ((clampedY - 0.5) | 0) : ((clampedY + 0.5) | 0);
         
         // 更新世界坐标
-        var hasScrolled:Boolean = false;
-        if (clampedFinal.clampedX !== oldX) {
-            this.gameWorld._x = clampedFinal.clampedX;
-            hasScrolled = true;
+        var movedX:Boolean = false;
+        var movedY:Boolean = false;
+        if (clampedX !== oldX) {
+            gw._x = clampedX;
+            movedX = true;
         }
-        if (clampedFinal.clampedY !== oldY) {
-            this.gameWorld._y = clampedFinal.clampedY;
-            hasScrolled = true;
-        }
-        
-        // 同步背景图层位置
-        if (hasScrolled) {
-            var scaledHorizonHeight:Number = this.horizonHeight * zoomResult.newScale;
-            this.bgLayer._y = this.gameWorld._y + scaledHorizonHeight;
+        if (clampedY !== oldY) {
+            gw._y = clampedY;
+            movedY = true;
         }
         
-        return { hasScrolled: hasScrolled };
+        // 只有 Y 或缩放变化才需要同步天空盒 Y；纯横向滚屏不重写
+        if (movedY) {
+            var scaledHorizonHeight:Number = this.horizonHeight * this.currentScale;
+            this.bgLayer._y = clampedY + scaledHorizonHeight;
+        }
+        
+        return movedX || movedY;
+    }
+
+    /**
+     * 根据缩放倍率刷新滚屏边界缓存
+     */
+    private function updateBoundsForScale(scale:Number):Void {
+        if (this.cachedBoundsScale === scale &&
+            this.cachedBoundsStageWidth === this.stageWidth &&
+            this.cachedBoundsStageHeight === this.stageHeight) {
+            return;
+        }
+
+        var effBgW:Number = this.bgWidth * scale;
+        var effBgH:Number = this.bgHeight * scale;
+
+        this.boundsEffBgW = effBgW;
+        this.boundsEffBgH = effBgH;
+        this.boundsMinX = this.stageWidth - effBgW;
+        this.boundsMaxX = 0;
+        this.boundsMinY = this.stageHeight - effBgH;
+        this.boundsMaxY = 0;
+        this.cachedBoundsScale = scale;
+        this.cachedBoundsStageWidth = this.stageWidth;
+        this.cachedBoundsStageHeight = this.stageHeight;
     }
 
     //================================================================================
@@ -507,6 +540,18 @@ class org.flashNight.arki.camera.HorizontalScroller {
         this.gameWorld._xscale = this.gameWorld._yscale = pct;
         this.bgLayer._xscale = this.bgLayer._yscale = pct;
         ZoomController.setCurrentScale(_root.basicZoomScale);
+        this.currentScale = _root.basicZoomScale;
+        this.zoomOffsetX = 0;
+        this.zoomOffsetY = 0;
+        this.hasZoomOffset = false;
+        this.cachedBoundsScale = -1;
+        this.updateBoundsForScale(this.currentScale);
+
+        // 统一像素化世界坐标，避免旧路径残留小数
+        var worldX:Number = this.gameWorld._x;
+        var worldY:Number = this.gameWorld._y;
+        this.gameWorld._x = (worldX < 0) ? ((worldX - 0.5) | 0) : ((worldX + 0.5) | 0);
+        this.gameWorld._y = (worldY < 0) ? ((worldY - 0.5) | 0) : ((worldY + 0.5) | 0);
 
         // 缩放后必须同步天空盒 Y 位置（地平线高度需按缩放比例调整）
         // 否则天空盒位置会残留 _root.加载后景 中设置的未缩放值
@@ -546,12 +591,11 @@ class org.flashNight.arki.camera.HorizontalScroller {
         
         // 3. 获取当前缩放值（不改变）
         var currentScale:Number = this.gameWorld._xscale / 100;
+        this.currentScale = currentScale;
         
         // 4. 重新计算滚动边界
-        var bounds:Object = ScrollBounds.calculateBounds(
-            this.bgWidth, this.bgHeight, currentScale, 
-            this.stageWidth, this.stageHeight
-        );
+        this.cachedBoundsScale = -1;
+        this.updateBoundsForScale(currentScale);
         
         // 5. 获取当前目标的世界坐标
         var targetWorldX:Number = this.scrollObj._x;
@@ -562,18 +606,36 @@ class org.flashNight.arki.camera.HorizontalScroller {
         var idealY:Number = (this.stageHeight - 100) - (targetWorldY * currentScale);
         
         // 7. 应用边界约束
-        var clamped:Object = ScrollBounds.clampPosition(
-            idealX, idealY, bounds,
-            this.stageWidth, this.stageHeight
-        );
+        var clampedX:Number = idealX;
+        var clampedY:Number = idealY;
+        if (this.stageWidth < this.boundsEffBgW) {
+            if (clampedX < this.boundsMinX) {
+                clampedX = this.boundsMinX;
+            } else if (clampedX > this.boundsMaxX) {
+                clampedX = this.boundsMaxX;
+            }
+        } else {
+            clampedX = 0;
+        }
+        if (this.stageHeight < this.boundsEffBgH) {
+            if (clampedY < this.boundsMinY) {
+                clampedY = this.boundsMinY;
+            } else if (clampedY > this.boundsMaxY) {
+                clampedY = this.boundsMaxY;
+            }
+        } else {
+            clampedY = 0;
+        }
+        clampedX = (clampedX < 0) ? ((clampedX - 0.5) | 0) : ((clampedX + 0.5) | 0);
+        clampedY = (clampedY < 0) ? ((clampedY - 0.5) | 0) : ((clampedY + 0.5) | 0);
         
         // 8. 绝对赋值（不使用 +=）
-        this.gameWorld._x = clamped.clampedX;
-        this.gameWorld._y = clamped.clampedY;
+        this.gameWorld._x = clampedX;
+        this.gameWorld._y = clampedY;
         
         // 9. 更新背景层位置（绝对赋值）
         var scaledHorizonHeight:Number = this.horizonHeight * currentScale;
-        this.bgLayer._y = clamped.clampedY + scaledHorizonHeight;
+        this.bgLayer._y = clampedY + scaledHorizonHeight;
         
         // 10. 如果启用了视差，刷新视差背景
         if (this.enableParallax) {
