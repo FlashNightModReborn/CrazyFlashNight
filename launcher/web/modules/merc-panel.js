@@ -581,13 +581,16 @@
             var meta = renderer.render(state);
             var alpha = canvasAlphaPixels(canvas);
             var ready = !!(meta && meta.pendingImages === 0);
-            if ((ready && alpha > 120) || attempts >= 20) {
+            if (ready && alpha > 120) {
                 var url = '';
-                if (alpha > 120) {
-                    try { url = canvas.toDataURL('image/png'); } catch (ignore) {}
-                }
+                try { url = canvas.toDataURL('image/png'); } catch (ignore) {}
                 renderer.destroy();
                 callback(url, meta);
+                return;
+            }
+            if (attempts >= 50) {
+                renderer.destroy();
+                callback('', meta);
                 return;
             }
             attempts++;

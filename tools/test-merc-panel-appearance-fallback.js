@@ -39,7 +39,10 @@ const context = {
                 style: {},
                 width: 64,
                 height: 64,
-                toDataURL: function() { return 'data:image/png;base64,test'; },
+                toDataURL: function() {
+                    context.__toDataUrlCalls = (context.__toDataUrlCalls || 0) + 1;
+                    return 'data:image/png;base64,test';
+                },
                 getContext: function() {
                     return {
                         getImageData: function() {
@@ -74,7 +77,9 @@ const context = {
                 render: function() {
                     calls++;
                     context.__renderCalls = calls;
-                    return calls === 1 ? { pendingImages: 1 } : { pendingImages: 0 };
+                    const sequence = context.__pendingSequence || [1, 0];
+                    const index = Math.min(calls - 1, sequence.length - 1);
+                    return { pendingImages: sequence[index] };
                 },
                 destroy: function() {
                     context.__rendererDestroyed = true;
@@ -133,6 +138,10 @@ assert.strictEqual(appearance['脸型'], '女变装-基本脸型');
 assert.strictEqual(appearance['发型'], '发型-女式-深蓝色蕾丝发带马尾');
 
 let snapshotResult = null;
+context.__pendingSequence = [1, 0];
+context.__renderCalls = 0;
+context.__rendererDestroyed = false;
+context.__toDataUrlCalls = 0;
 api.renderDressupSnapshot({ keyMap: {} }, 64, 64, function(url, meta) {
     snapshotResult = { url, meta };
 });
@@ -141,5 +150,21 @@ assert.strictEqual(context.__renderCalls, 2, 'snapshot must wait past the pendin
 assert.strictEqual(snapshotResult.url, 'data:image/png;base64,test');
 assert.strictEqual(snapshotResult.meta.pendingImages, 0);
 assert.strictEqual(context.__rendererDestroyed, true);
+assert.strictEqual(context.__toDataUrlCalls, 1);
 
-process.stdout.write(JSON.stringify({ ok: true, cases: 5 }, null, 2) + '\n');
+snapshotResult = null;
+context.__pendingSequence = [1];
+context.__renderCalls = 0;
+context.__rendererDestroyed = false;
+context.__toDataUrlCalls = 0;
+api.renderDressupSnapshot({ keyMap: {} }, 64, 64, function(url, meta) {
+    snapshotResult = { url, meta };
+});
+assert(snapshotResult, 'snapshot timeout callback should run');
+assert(context.__renderCalls >= 50, 'snapshot should keep waiting while image layers are pending');
+assert.strictEqual(snapshotResult.url, '', 'snapshot must not cache a partial portrait on timeout');
+assert.strictEqual(snapshotResult.meta.pendingImages, 1);
+assert.strictEqual(context.__rendererDestroyed, true);
+assert.strictEqual(context.__toDataUrlCalls, 0);
+
+process.stdout.write(JSON.stringify({ ok: true, cases: 6 }, null, 2) + '\n');
