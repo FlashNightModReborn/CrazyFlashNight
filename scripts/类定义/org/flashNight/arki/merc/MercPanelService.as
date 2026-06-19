@@ -527,7 +527,9 @@ class org.flashNight.arki.merc.MercPanelService {
             gender:      gender,
             height:      Number(merc[3]) || 0,
             face:        String(merc[4] || ""),
+            faceId:      (merc[19] && merc[19].脸型ID != undefined) ? String(merc[19].脸型ID) : "",
             hair:        String(merc[5] || ""),
+            hairId:      (merc[19] && merc[19].发型ID != undefined) ? String(merc[19].发型ID) : "",
             equips:      equips,
             personality: serializePersonality(personality),
             skills:      buildSkills(mercName, mercLevel, merc, personality)

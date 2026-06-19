@@ -461,8 +461,26 @@
     }
 
     function normalizeMercGender(merc) {
-        var g = merc && merc.gender ? String(merc.gender) : '男';
-        return (g === '女' || g === '主角-女') ? '女' : '男';
+        var g = (merc && merc.gender !== undefined && merc.gender !== null) ? String(merc.gender) : '男';
+        return (g === '女' || g === '主角-女' || g === '0') ? '女' : '男';
+    }
+
+    function firstNonEmptyMercValue(merc, keys) {
+        if (!merc) return '';
+        for (var i = 0; i < keys.length; i++) {
+            var value = merc[keys[i]];
+            if (value !== undefined && value !== null && String(value).trim() !== '') return value;
+        }
+        return '';
+    }
+
+    function mercAppearanceValue(merc, type) {
+        if (type === 'face') {
+            return firstNonEmptyMercValue(merc, ['face', '脸型']) ||
+                firstNonEmptyMercValue(merc, ['faceId', 'faceIndex', '脸型ID']);
+        }
+        return firstNonEmptyMercValue(merc, ['hair', '发型']) ||
+            firstNonEmptyMercValue(merc, ['hairId', 'hairIndex', '发型ID']);
     }
 
     function stripEquipName(value) {
@@ -523,8 +541,8 @@
     function dressupAppearanceFromMerc(merc, equipment) {
         var gender = normalizeMercGender(merc);
         var appearance = {};
-        var face = normalizeAppearanceKey(merc && merc.face, 'face', gender);
-        var hair = normalizeAppearanceKey(merc && merc.hair, 'hair', gender);
+        var face = normalizeAppearanceKey(mercAppearanceValue(merc, 'face'), 'face', gender);
+        var hair = normalizeAppearanceKey(mercAppearanceValue(merc, 'hair'), 'hair', gender);
         var headItem = equipment && equipment.head ? equipment.head : '';
         var item = headItem && _dressupManifest && _dressupManifest.items ? _dressupManifest.items[headItem] : null;
         var helmetSuppressesHair = !!(item && item.helmet === true);
@@ -548,7 +566,7 @@
     }
 
     function dressupCacheKey(merc, variant) {
-        var parts = [variant, normalizeMercGender(merc), merc && merc.face || '', merc && merc.hair || ''];
+        var parts = [variant, normalizeMercGender(merc), mercAppearanceValue(merc, 'face'), mercAppearanceValue(merc, 'hair')];
         var equipment = dressupEquipmentFromMerc(merc);
         Object.keys(equipment).sort().forEach(function(slot) {
             parts.push(slot + ':' + equipment[slot]);
