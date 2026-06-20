@@ -546,7 +546,12 @@ var DressupDollRenderer = (function() {
             var zoom = numberOr(lastState.zoom, numberOr(options.zoom, 0.92));
             scale = Math.max(0.1, Math.min(3, scale * zoom));
             var offsetX = (size.width - (bounds.minX + bounds.maxX) * scale) / 2;
-            var offsetY = (size.height - (bounds.minY + bounds.maxY) * scale) / 2;
+            // vAlign 'top'：把 fit 区域顶部锚到上边距（默认居中）。用于对话胸像取景——头部齐顶、
+            // 身体向下溢出由画布裁切，与 NPC 立绘的固定窗口取景对齐。opt-in，不影响其他面板。
+            var vAlign = lastState.vAlign || options.vAlign || 'center';
+            var offsetY = (vAlign === 'top')
+                ? (margin - bounds.minY * scale)
+                : (size.height - (bounds.minY + bounds.maxY) * scale) / 2;
 
             ctx.save();
             ctx.translate(offsetX, offsetY);

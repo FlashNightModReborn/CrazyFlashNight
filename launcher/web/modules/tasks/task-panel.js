@@ -51,6 +51,11 @@
     var _catalogWaiters = [];       // 加载中等待回调
     var _treeState = null;          // { chainsProgress, finished:{id:1}, active:{id:1} }
     var _logSelectedId = null;      // log tab 当前选中任务 id（String）
+    // 对话立绘模式：rich（沉浸立绘，默认）/ brief（简略密排，隐立绘）。持久化到 localStorage。
+    var _dialogueMode = (function() {
+        try { return localStorage.getItem('cf7.dialogueMode') === 'brief' ? 'brief' : 'rich'; }
+        catch (e) { return 'rich'; }
+    })();
     // 图表视图（BALDR SKY 风任务树）
     var _logView = 'list';          // list | chart（事件日志内的子视图）
     var _chartZoom = 1;             // 1 | 0.5 | 0.25
@@ -1280,6 +1285,8 @@
             html += '<div class="tlv-replay-actions">';
             if (showGet) html += '<button type="button" class="tlv-replay-btn" data-which="get" data-task-id="' + escAttr(id) + '">接取对话</button>';
             if (showFinish) html += '<button type="button" class="tlv-replay-btn" data-which="finish" data-task-id="' + escAttr(id) + '">完成对话</button>';
+            html += '<button type="button" class="tlv-dia-mode-btn" data-dialogue-mode-toggle="1">' +
+                (_dialogueMode === 'brief' ? '详细立绘' : '简略模式') + '</button>';
             html += '</div>';
             html += '<div class="tlv-dialogue"></div>';
         }
@@ -1289,6 +1296,20 @@
 
     function onLogDetailClick(e) {
         var t = e.target;
+        // 简略/详细立绘切换：只切 class + 持久化，不重新拉对话（立绘 DOM 已在，自适应槽尺寸）。
+        var mt = t;
+        while (mt && mt !== _logDetailEl && !(mt.classList && mt.classList.contains('tlv-dia-mode-btn'))) mt = mt.parentNode;
+        if (mt && mt.classList && mt.classList.contains('tlv-dia-mode-btn')) {
+            _dialogueMode = (_dialogueMode === 'brief') ? 'rich' : 'brief';
+            try { localStorage.setItem('cf7.dialogueMode', _dialogueMode); } catch (err) {}
+            mt.textContent = (_dialogueMode === 'brief') ? '详细立绘' : '简略模式';
+            var dia = _logDetailEl.querySelector('.tlv-dialogue');
+            if (dia) {
+                if (typeof DialogueView !== 'undefined' && DialogueView && DialogueView.setMode) DialogueView.setMode(dia, _dialogueMode);
+                else dia.setAttribute('data-dialogue-mode', _dialogueMode);
+            }
+            return;
+        }
         while (t && t !== _logDetailEl && !(t.classList && t.classList.contains('tlv-replay-btn'))) t = t.parentNode;
         if (!t || t === _logDetailEl || !t.classList || !t.classList.contains('tlv-replay-btn')) return;
         if (t.disabled || t.classList.contains('task-btn-pending')) return;
@@ -1314,7 +1335,7 @@
                 dia2.innerHTML = '<div class="tlv-dia-empty">' + ((data && data.error === 'no_dialogue') ? '该任务无此对话' : '无法加载对话') + '</div>';
                 return;
             }
-            dia2.innerHTML = renderDialogueLines(data.lines);
+            renderDialogueReplay(dia2, data.lines, data.heroPortrait);
         });
     }
     // 对话文本含 AS2 htmlText 标记（如 $PC_TITLE→HeroUtil.getHeroTitle() 回的 <FONT COLOR=...>动态称号</FONT>）。
@@ -1338,6 +1359,25 @@
             html += '</div>';
         }
         return html;
+    }
+    function renderDialogueReplay(container, lines, heroPortrait) {
+        if (typeof DialogueView !== 'undefined' && DialogueView && DialogueView.render) {
+            var result = DialogueView.render(container, lines, {
+                renderHtml: dialogueHtml,
+                heroPortrait: heroPortrait || null,
+                mode: _dialogueMode
+            });
+            if (result && result.catch) {
+                result.catch(function() {
+                    container.innerHTML = renderDialogueLines(lines);
+                    container.setAttribute('data-dialogue-mode', _dialogueMode);
+                });
+            }
+            return;
+        }
+        container.innerHTML = renderDialogueLines(lines);
+        container.classList.add('cf-dialogue');
+        container.setAttribute('data-dialogue-mode', _dialogueMode);
     }
     // catalog 用 String id 键；AS2 tasks 用数字 id。回传时尽量还原数字（与 AS2 一致）。
     function idForRequest(id) {
@@ -1744,6 +1784,14 @@
                 }
             }
         }, TOOLTIP_TIMEOUT_MS);
+    }
+
+    function resolveIconUrl(name) {
+        try {
+            return (typeof Icons !== 'undefined' && Icons && Icons.resolve) ? Icons.resolve(name) : '';
+        } catch (e) {
+            return '';
+        }
     }
 
     function buildBasicTip(name) {

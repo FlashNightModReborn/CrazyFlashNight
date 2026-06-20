@@ -134,7 +134,10 @@
     // ── tasks (任务：我的任务 / 事件日志 / 成就) ──
     // achievement-tab.js 须先于 task-panel.js 加载（task-panel createDOM 时装配 TaskAchievementTab）。
     Panels.registerLazy('tasks',
-        ['modules/tasks/achievement-tab.js',
+        ['modules/asset-timeline.js',
+         'modules/dressup-doll-renderer.js',
+         'modules/dialogue/dialogue-view.js',
+         'modules/tasks/achievement-tab.js',
          'modules/tasks/task-panel.js'],
         noop);
 })();

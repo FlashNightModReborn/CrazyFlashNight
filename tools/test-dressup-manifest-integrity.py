@@ -433,6 +433,46 @@ def assert_compat_alias_audit(manifest: dict[str, Any], report: dict[str, Any], 
     assert_audit_references(manifest, failures, "compatAliasAudit", audit_entries, bool(audit_entries))
 
 
+_TORSO_FIELD = "身体"
+# 躯干皮绝不可贴到四肢。左右对称肢体共用同一 PNG（如武装jk 的 mirrored_limb）合法，故只查
+# 躯干 vs 臂/手，不查肢体互等。根因见 bake-dressup-offline 删掉的 same_item_body_fallback。
+_LIMB_FIELDS = ("上臂", "左下臂", "右下臂", "左手", "右手")
+
+
+def _resolved_field_png(manifest: dict[str, Any], skin_key: str) -> str | None:
+    skin = (manifest.get("skinKeys") or {}).get(skin_key)
+    if not skin:
+        return None
+    frames = skin.get("frames") or []
+    if frames and frames[0].get("uri"):
+        return frames[0].get("uri")
+    return (skin.get("export") or {}).get("uri")
+
+
+def assert_torso_png_not_on_limbs(manifest: dict[str, Any], failures: list[str]) -> None:
+    items = manifest.get("items") or {}
+    hits = 0
+    for name, item in items.items():
+        for gender, fields in (item.get("fieldsByGender") or {}).items():
+            torso_key = (fields or {}).get(_TORSO_FIELD)
+            if not torso_key:
+                continue
+            torso_png = _resolved_field_png(manifest, torso_key)
+            if not torso_png:
+                continue
+            for limb in _LIMB_FIELDS:
+                limb_key = fields.get(limb)
+                if limb_key and _resolved_field_png(manifest, limb_key) == torso_png:
+                    hits += 1
+                    if hits <= 12:
+                        failures.append(
+                            f"item '{name}' [{gender}] 四肢字段 {limb} 复用了「身体」躯干 PNG ({torso_png})"
+                            f" — 躯干皮贴到四肢（多半是 same_item_body_fallback 误别名，应回退 basic 裸肢）"
+                        )
+    if hits > 12:
+        failures.append(f"{hits - 12} additional 身体-PNG-on-limb collapses")
+
+
 def main() -> None:
     manifest = read_json(MANIFEST_PATH)
     report = read_json(REPORT_PATH) if REPORT_PATH.exists() else {}
@@ -489,6 +529,7 @@ def main() -> None:
     assert_attack_mode_runtime_variant(manifest, failures)
     assert_missing_source_references(manifest, report, failures)
     assert_compat_alias_audit(manifest, report, failures)
+    assert_torso_png_not_on_limbs(manifest, failures)
     missing_exportable = assert_export_completeness(manifest, failures)
     orphaned_skin_pngs = assert_no_orphan_skin_pngs(manifest_dir, manifest, failures)
 

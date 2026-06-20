@@ -3,22 +3,21 @@
   "counts": {
     "items": 1285,
     "skinKeys": 2840,
-    "coveredSkinKeys": 2840,
-    "aliasCoveredSkinKeys": 150,
+    "coveredSkinKeys": 2834,
+    "aliasCoveredSkinKeys": 144,
     "coveredExcludingAliasSkinKeys": 2690,
-    "missingSkinKeys": 0,
+    "missingSkinKeys": 6,
     "holdersMale": 21,
     "holdersFemale": 21,
     "battleStates": 6,
     "battleAuditErrors": 0,
-    "compatAliasSkinKeys": 150,
-    "manualCompatAliasSkinKeys": 15,
+    "compatAliasSkinKeys": 144,
+    "manualCompatAliasSkinKeys": 9,
     "autoOppositeGenderCompatAliasSkinKeys": 135,
-    "missingExportSkinKeys": 0,
     "exportedSkinKeys": 0,
-    "exportedFrames": 3113,
-    "exportedBasicKeys": 22,
-    "exportedBasicFrames": 22,
+    "exportedFrames": 3107,
+    "exportedBasicKeys": 23,
+    "exportedBasicFrames": 32,
     "metadataErrors": 0,
     "timelineScriptErrors": 0,
     "spriteGraphErrors": 0,
@@ -30,34 +29,401 @@
     "nestedLayerCompositedDescendants": 0,
     "exportedNestedLayerKeys": 0,
     "exportedNestedLayerFrames": 0,
-    "uniqueFrameImages": 2922,
-    "duplicateFrameRefs": 213,
-    "timelineLogicalFrames": 3135,
-    "timelineFrameEntries": 2924,
-    "timelineCompressedFrameRefs": 211,
+    "uniqueFrameImages": 2944,
+    "duplicateFrameRefs": 217,
+    "timelineLogicalFrames": 3161,
+    "timelineFrameEntries": 2946,
+    "timelineCompressedFrameRefs": 215,
     "conditionalVariantSkinKeys": 0,
     "conditionalVariantFrames": 0,
     "conditionalVariantRemovedPlaceObjects": 0,
     "animatedSkinKeys": 17,
     "staticCollapsedSkinKeys": 22,
-    "preservedSkinKeyExports": 2840,
-    "preservedBasicHolderExports": 28,
-    "orphanAssetsPurged": 0
+    "preservedSkinKeyExports": 2834,
+    "preservedBasicHolderExports": 28
   },
   "missingSummary": {
-    "byUse": {},
-    "byPrefix": {}
+    "byUse": {
+      "上装装备": 6
+    },
+    "byPrefix": {
+      "女变装-": 3,
+      "男变装-": 3
+    }
   },
   "missingSourceAudit": {
-    "byReason": {},
+    "byReason": {
+      "exact_xml_without_as_linkage": 3,
+      "no_matching_source": 3
+    },
     "actionableSkinKeys": [],
-    "samples": {},
-    "entries": {}
+    "samples": {
+      "exact_xml_without_as_linkage": [
+        {
+          "skinKey": "女变装-二阶军绿防弹衣上臂",
+          "reason": "exact_xml_without_as_linkage",
+          "exactXmlMatches": [
+            {
+              "path": "flashswf/arts/new/雾人装备调整/LIBRARY/3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣上臂.xml",
+              "linkageExportForAS": false,
+              "linkageIdentifier": "",
+              "symbolName": "3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣上臂"
+            }
+          ]
+        },
+        {
+          "skinKey": "女变装-二阶军绿防弹衣右下臂",
+          "reason": "exact_xml_without_as_linkage",
+          "exactXmlMatches": [
+            {
+              "path": "flashswf/arts/new/雾人装备调整/LIBRARY/3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣右下臂.xml",
+              "linkageExportForAS": false,
+              "linkageIdentifier": "",
+              "symbolName": "3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣右下臂"
+            }
+          ]
+        },
+        {
+          "skinKey": "女变装-二阶军绿防弹衣左下臂",
+          "reason": "exact_xml_without_as_linkage",
+          "exactXmlMatches": [
+            {
+              "path": "flashswf/arts/new/雾人装备调整/LIBRARY/3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣左下臂.xml",
+              "linkageExportForAS": false,
+              "linkageIdentifier": "",
+              "symbolName": "3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣左下臂"
+            }
+          ]
+        }
+      ],
+      "no_matching_source": [
+        {
+          "skinKey": "男变装-二阶军绿防弹衣上臂",
+          "reason": "no_matching_source"
+        },
+        {
+          "skinKey": "男变装-二阶军绿防弹衣右下臂",
+          "reason": "no_matching_source"
+        },
+        {
+          "skinKey": "男变装-二阶军绿防弹衣左下臂",
+          "reason": "no_matching_source"
+        }
+      ]
+    },
+    "entries": {
+      "女变装-二阶军绿防弹衣上臂": {
+        "reason": "exact_xml_without_as_linkage",
+        "references": [
+          {
+            "item": "军绿防弹衣",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 4,
+            "mercUsageSamples": [
+              {
+                "id": 240,
+                "name": "赵明",
+                "level": 8,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 242,
+                "name": "Alex",
+                "level": 12,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 243,
+                "name": "血月",
+                "level": 13,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 5539,
+                "name": "战车",
+                "level": 26,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
+        "exactXmlMatches": [
+          {
+            "path": "flashswf/arts/new/雾人装备调整/LIBRARY/3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣上臂.xml",
+            "linkageExportForAS": false,
+            "linkageIdentifier": "",
+            "symbolName": "3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣上臂"
+          }
+        ]
+      },
+      "女变装-二阶军绿防弹衣右下臂": {
+        "reason": "exact_xml_without_as_linkage",
+        "references": [
+          {
+            "item": "军绿防弹衣",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 4,
+            "mercUsageSamples": [
+              {
+                "id": 240,
+                "name": "赵明",
+                "level": 8,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 242,
+                "name": "Alex",
+                "level": 12,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 243,
+                "name": "血月",
+                "level": 13,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 5539,
+                "name": "战车",
+                "level": 26,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
+        "exactXmlMatches": [
+          {
+            "path": "flashswf/arts/new/雾人装备调整/LIBRARY/3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣右下臂.xml",
+            "linkageExportForAS": false,
+            "linkageIdentifier": "",
+            "symbolName": "3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣右下臂"
+          }
+        ]
+      },
+      "女变装-二阶军绿防弹衣左下臂": {
+        "reason": "exact_xml_without_as_linkage",
+        "references": [
+          {
+            "item": "军绿防弹衣",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 4,
+            "mercUsageSamples": [
+              {
+                "id": 240,
+                "name": "赵明",
+                "level": 8,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 242,
+                "name": "Alex",
+                "level": 12,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 243,
+                "name": "血月",
+                "level": 13,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 5539,
+                "name": "战车",
+                "level": 26,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ],
+        "exactXmlMatches": [
+          {
+            "path": "flashswf/arts/new/雾人装备调整/LIBRARY/3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣左下臂.xml",
+            "linkageExportForAS": false,
+            "linkageIdentifier": "",
+            "symbolName": "3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣左下臂"
+          }
+        ]
+      },
+      "男变装-二阶军绿防弹衣上臂": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "军绿防弹衣",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 4,
+            "mercUsageSamples": [
+              {
+                "id": 240,
+                "name": "赵明",
+                "level": 8,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 242,
+                "name": "Alex",
+                "level": 12,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 243,
+                "name": "血月",
+                "level": 13,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 5539,
+                "name": "战车",
+                "level": 26,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
+      },
+      "男变装-二阶军绿防弹衣右下臂": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "军绿防弹衣",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 4,
+            "mercUsageSamples": [
+              {
+                "id": 240,
+                "name": "赵明",
+                "level": 8,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 242,
+                "name": "Alex",
+                "level": 12,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 243,
+                "name": "血月",
+                "level": 13,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 5539,
+                "name": "战车",
+                "level": 26,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
+      },
+      "男变装-二阶军绿防弹衣左下臂": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "军绿防弹衣",
+            "use": "上装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 4,
+            "mercUsageSamples": [
+              {
+                "id": 240,
+                "name": "赵明",
+                "level": 8,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 242,
+                "name": "Alex",
+                "level": 12,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 243,
+                "name": "血月",
+                "level": 13,
+                "gender": "男",
+                "slot": "body"
+              },
+              {
+                "id": 5539,
+                "name": "战车",
+                "level": 26,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
+      }
+    }
   },
   "compatAliasAudit": {
     "byMode": {
       "auto_opposite_gender": 135,
-      "manual": 15
+      "manual": 9
     },
     "byReason": {
       "auto_compat_opposite_gender": 135,
@@ -66,8 +432,7 @@
       "manual_compat_nearest_same_family_limb": 4,
       "manual_compat_nearest_wave_blade": 1,
       "manual_compat_opposite_gender_mirrored_limb": 1,
-      "manual_compat_opposite_gender_same_limb": 1,
-      "manual_compat_same_item_body_fallback": 6
+      "manual_compat_opposite_gender_same_limb": 1
     },
     "samples": {
       "auto_compat_opposite_gender": [
@@ -561,332 +926,6 @@
               ],
               "mercUsageCount": 0,
               "mercUsageSamples": []
-            }
-          ]
-        }
-      ],
-      "manual_compat_same_item_body_fallback": [
-        {
-          "skinKey": "女变装-二阶军绿防弹衣上臂",
-          "sourceKey": "女变装-二阶军绿防弹衣身体",
-          "mode": "manual",
-          "reason": "manual_compat_same_item_body_fallback",
-          "asset": {
-            "swf": "flashswf/arts/new/雾人装备调整.swf",
-            "symbolName": "3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣身体"
-          },
-          "references": [
-            {
-              "item": "军绿防弹衣",
-              "use": "上装装备",
-              "sourceFile": "防具_0-19级.xml",
-              "fields": [
-                {
-                  "gender": "女",
-                  "field": "上臂"
-                }
-              ],
-              "mercUsageCount": 4,
-              "mercUsageSamples": [
-                {
-                  "id": 240,
-                  "name": "赵明",
-                  "level": 8,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 242,
-                  "name": "Alex",
-                  "level": 12,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 243,
-                  "name": "血月",
-                  "level": 13,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 5539,
-                  "name": "战车",
-                  "level": 26,
-                  "gender": "男",
-                  "slot": "body"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "skinKey": "女变装-二阶军绿防弹衣右下臂",
-          "sourceKey": "女变装-二阶军绿防弹衣身体",
-          "mode": "manual",
-          "reason": "manual_compat_same_item_body_fallback",
-          "asset": {
-            "swf": "flashswf/arts/new/雾人装备调整.swf",
-            "symbolName": "3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣身体"
-          },
-          "references": [
-            {
-              "item": "军绿防弹衣",
-              "use": "上装装备",
-              "sourceFile": "防具_0-19级.xml",
-              "fields": [
-                {
-                  "gender": "女",
-                  "field": "右下臂"
-                }
-              ],
-              "mercUsageCount": 4,
-              "mercUsageSamples": [
-                {
-                  "id": 240,
-                  "name": "赵明",
-                  "level": 8,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 242,
-                  "name": "Alex",
-                  "level": 12,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 243,
-                  "name": "血月",
-                  "level": 13,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 5539,
-                  "name": "战车",
-                  "level": 26,
-                  "gender": "男",
-                  "slot": "body"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "skinKey": "女变装-二阶军绿防弹衣左下臂",
-          "sourceKey": "女变装-二阶军绿防弹衣身体",
-          "mode": "manual",
-          "reason": "manual_compat_same_item_body_fallback",
-          "asset": {
-            "swf": "flashswf/arts/new/雾人装备调整.swf",
-            "symbolName": "3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣身体"
-          },
-          "references": [
-            {
-              "item": "军绿防弹衣",
-              "use": "上装装备",
-              "sourceFile": "防具_0-19级.xml",
-              "fields": [
-                {
-                  "gender": "女",
-                  "field": "左下臂"
-                }
-              ],
-              "mercUsageCount": 4,
-              "mercUsageSamples": [
-                {
-                  "id": 240,
-                  "name": "赵明",
-                  "level": 8,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 242,
-                  "name": "Alex",
-                  "level": 12,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 243,
-                  "name": "血月",
-                  "level": 13,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 5539,
-                  "name": "战车",
-                  "level": 26,
-                  "gender": "男",
-                  "slot": "body"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "skinKey": "男变装-二阶军绿防弹衣上臂",
-          "sourceKey": "男变装-二阶军绿防弹衣身体",
-          "mode": "manual",
-          "reason": "manual_compat_same_item_body_fallback",
-          "asset": {
-            "swf": "flashswf/arts/new/雾人装备调整.swf",
-            "symbolName": "3.防具/07.军绿防弹/二阶/男变装-二阶军绿防弹衣身体"
-          },
-          "references": [
-            {
-              "item": "军绿防弹衣",
-              "use": "上装装备",
-              "sourceFile": "防具_0-19级.xml",
-              "fields": [
-                {
-                  "gender": "男",
-                  "field": "上臂"
-                }
-              ],
-              "mercUsageCount": 4,
-              "mercUsageSamples": [
-                {
-                  "id": 240,
-                  "name": "赵明",
-                  "level": 8,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 242,
-                  "name": "Alex",
-                  "level": 12,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 243,
-                  "name": "血月",
-                  "level": 13,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 5539,
-                  "name": "战车",
-                  "level": 26,
-                  "gender": "男",
-                  "slot": "body"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "skinKey": "男变装-二阶军绿防弹衣右下臂",
-          "sourceKey": "男变装-二阶军绿防弹衣身体",
-          "mode": "manual",
-          "reason": "manual_compat_same_item_body_fallback",
-          "asset": {
-            "swf": "flashswf/arts/new/雾人装备调整.swf",
-            "symbolName": "3.防具/07.军绿防弹/二阶/男变装-二阶军绿防弹衣身体"
-          },
-          "references": [
-            {
-              "item": "军绿防弹衣",
-              "use": "上装装备",
-              "sourceFile": "防具_0-19级.xml",
-              "fields": [
-                {
-                  "gender": "男",
-                  "field": "右下臂"
-                }
-              ],
-              "mercUsageCount": 4,
-              "mercUsageSamples": [
-                {
-                  "id": 240,
-                  "name": "赵明",
-                  "level": 8,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 242,
-                  "name": "Alex",
-                  "level": 12,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 243,
-                  "name": "血月",
-                  "level": 13,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 5539,
-                  "name": "战车",
-                  "level": 26,
-                  "gender": "男",
-                  "slot": "body"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "skinKey": "男变装-二阶军绿防弹衣左下臂",
-          "sourceKey": "男变装-二阶军绿防弹衣身体",
-          "mode": "manual",
-          "reason": "manual_compat_same_item_body_fallback",
-          "asset": {
-            "swf": "flashswf/arts/new/雾人装备调整.swf",
-            "symbolName": "3.防具/07.军绿防弹/二阶/男变装-二阶军绿防弹衣身体"
-          },
-          "references": [
-            {
-              "item": "军绿防弹衣",
-              "use": "上装装备",
-              "sourceFile": "防具_0-19级.xml",
-              "fields": [
-                {
-                  "gender": "男",
-                  "field": "左下臂"
-                }
-              ],
-              "mercUsageCount": 4,
-              "mercUsageSamples": [
-                {
-                  "id": 240,
-                  "name": "赵明",
-                  "level": 8,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 242,
-                  "name": "Alex",
-                  "level": 12,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 243,
-                  "name": "血月",
-                  "level": 13,
-                  "gender": "男",
-                  "slot": "body"
-                },
-                {
-                  "id": 5539,
-                  "name": "战车",
-                  "level": 26,
-                  "gender": "男",
-                  "slot": "body"
-                }
-              ]
             }
           ]
         }
@@ -1558,165 +1597,6 @@
             ],
             "mercUsageCount": 0,
             "mercUsageSamples": []
-          }
-        ]
-      },
-      "女变装-二阶军绿防弹衣上臂": {
-        "sourceKey": "女变装-二阶军绿防弹衣身体",
-        "mode": "manual",
-        "reason": "manual_compat_same_item_body_fallback",
-        "asset": {
-          "swf": "flashswf/arts/new/雾人装备调整.swf",
-          "symbolName": "3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣身体"
-        },
-        "references": [
-          {
-            "item": "军绿防弹衣",
-            "use": "上装装备",
-            "sourceFile": "防具_0-19级.xml",
-            "fields": [
-              {
-                "gender": "女",
-                "field": "上臂"
-              }
-            ],
-            "mercUsageCount": 4,
-            "mercUsageSamples": [
-              {
-                "id": 240,
-                "name": "赵明",
-                "level": 8,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 242,
-                "name": "Alex",
-                "level": 12,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 243,
-                "name": "血月",
-                "level": 13,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 5539,
-                "name": "战车",
-                "level": 26,
-                "gender": "男",
-                "slot": "body"
-              }
-            ]
-          }
-        ]
-      },
-      "女变装-二阶军绿防弹衣右下臂": {
-        "sourceKey": "女变装-二阶军绿防弹衣身体",
-        "mode": "manual",
-        "reason": "manual_compat_same_item_body_fallback",
-        "asset": {
-          "swf": "flashswf/arts/new/雾人装备调整.swf",
-          "symbolName": "3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣身体"
-        },
-        "references": [
-          {
-            "item": "军绿防弹衣",
-            "use": "上装装备",
-            "sourceFile": "防具_0-19级.xml",
-            "fields": [
-              {
-                "gender": "女",
-                "field": "右下臂"
-              }
-            ],
-            "mercUsageCount": 4,
-            "mercUsageSamples": [
-              {
-                "id": 240,
-                "name": "赵明",
-                "level": 8,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 242,
-                "name": "Alex",
-                "level": 12,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 243,
-                "name": "血月",
-                "level": 13,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 5539,
-                "name": "战车",
-                "level": 26,
-                "gender": "男",
-                "slot": "body"
-              }
-            ]
-          }
-        ]
-      },
-      "女变装-二阶军绿防弹衣左下臂": {
-        "sourceKey": "女变装-二阶军绿防弹衣身体",
-        "mode": "manual",
-        "reason": "manual_compat_same_item_body_fallback",
-        "asset": {
-          "swf": "flashswf/arts/new/雾人装备调整.swf",
-          "symbolName": "3.防具/07.军绿防弹/二阶/女变装-二阶军绿防弹衣身体"
-        },
-        "references": [
-          {
-            "item": "军绿防弹衣",
-            "use": "上装装备",
-            "sourceFile": "防具_0-19级.xml",
-            "fields": [
-              {
-                "gender": "女",
-                "field": "左下臂"
-              }
-            ],
-            "mercUsageCount": 4,
-            "mercUsageSamples": [
-              {
-                "id": 240,
-                "name": "赵明",
-                "level": 8,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 242,
-                "name": "Alex",
-                "level": 12,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 243,
-                "name": "血月",
-                "level": 13,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 5539,
-                "name": "战车",
-                "level": 26,
-                "gender": "男",
-                "slot": "body"
-              }
-            ]
           }
         ]
       },
@@ -3852,165 +3732,6 @@
           }
         ]
       },
-      "男变装-二阶军绿防弹衣上臂": {
-        "sourceKey": "男变装-二阶军绿防弹衣身体",
-        "mode": "manual",
-        "reason": "manual_compat_same_item_body_fallback",
-        "asset": {
-          "swf": "flashswf/arts/new/雾人装备调整.swf",
-          "symbolName": "3.防具/07.军绿防弹/二阶/男变装-二阶军绿防弹衣身体"
-        },
-        "references": [
-          {
-            "item": "军绿防弹衣",
-            "use": "上装装备",
-            "sourceFile": "防具_0-19级.xml",
-            "fields": [
-              {
-                "gender": "男",
-                "field": "上臂"
-              }
-            ],
-            "mercUsageCount": 4,
-            "mercUsageSamples": [
-              {
-                "id": 240,
-                "name": "赵明",
-                "level": 8,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 242,
-                "name": "Alex",
-                "level": 12,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 243,
-                "name": "血月",
-                "level": 13,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 5539,
-                "name": "战车",
-                "level": 26,
-                "gender": "男",
-                "slot": "body"
-              }
-            ]
-          }
-        ]
-      },
-      "男变装-二阶军绿防弹衣右下臂": {
-        "sourceKey": "男变装-二阶军绿防弹衣身体",
-        "mode": "manual",
-        "reason": "manual_compat_same_item_body_fallback",
-        "asset": {
-          "swf": "flashswf/arts/new/雾人装备调整.swf",
-          "symbolName": "3.防具/07.军绿防弹/二阶/男变装-二阶军绿防弹衣身体"
-        },
-        "references": [
-          {
-            "item": "军绿防弹衣",
-            "use": "上装装备",
-            "sourceFile": "防具_0-19级.xml",
-            "fields": [
-              {
-                "gender": "男",
-                "field": "右下臂"
-              }
-            ],
-            "mercUsageCount": 4,
-            "mercUsageSamples": [
-              {
-                "id": 240,
-                "name": "赵明",
-                "level": 8,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 242,
-                "name": "Alex",
-                "level": 12,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 243,
-                "name": "血月",
-                "level": 13,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 5539,
-                "name": "战车",
-                "level": 26,
-                "gender": "男",
-                "slot": "body"
-              }
-            ]
-          }
-        ]
-      },
-      "男变装-二阶军绿防弹衣左下臂": {
-        "sourceKey": "男变装-二阶军绿防弹衣身体",
-        "mode": "manual",
-        "reason": "manual_compat_same_item_body_fallback",
-        "asset": {
-          "swf": "flashswf/arts/new/雾人装备调整.swf",
-          "symbolName": "3.防具/07.军绿防弹/二阶/男变装-二阶军绿防弹衣身体"
-        },
-        "references": [
-          {
-            "item": "军绿防弹衣",
-            "use": "上装装备",
-            "sourceFile": "防具_0-19级.xml",
-            "fields": [
-              {
-                "gender": "男",
-                "field": "左下臂"
-              }
-            ],
-            "mercUsageCount": 4,
-            "mercUsageSamples": [
-              {
-                "id": 240,
-                "name": "赵明",
-                "level": 8,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 242,
-                "name": "Alex",
-                "level": 12,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 243,
-                "name": "血月",
-                "level": 13,
-                "gender": "男",
-                "slot": "body"
-              },
-              {
-                "id": 5539,
-                "name": "战车",
-                "level": 26,
-                "gender": "男",
-                "slot": "body"
-              }
-            ]
-          }
-        ]
-      },
       "男变装-废城军装上装右下臂": {
         "sourceKey": "男变装-废城防弹军装上装右下臂",
         "mode": "manual",
@@ -5037,7 +4758,86 @@
       }
     }
   },
-  "missingSkinKeys": {},
+  "missingSkinKeys": {
+    "女变装-二阶军绿防弹衣上臂": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "军绿防弹衣"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "女变装-二阶军绿防弹衣右下臂": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "军绿防弹衣"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "女变装-二阶军绿防弹衣左下臂": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "军绿防弹衣"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-二阶军绿防弹衣上臂": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "军绿防弹衣"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-二阶军绿防弹衣右下臂": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "军绿防弹衣"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "男变装-二阶军绿防弹衣左下臂": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "军绿防弹衣"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    }
+  },
   "battleRig": {
     "source": "flashswf/arts/things0/LIBRARY/主角-男.xml",
     "auditErrors": [],
@@ -5205,11 +5005,16 @@
     "resolvedSkinKeys": 0,
     "exportedSkinKeys": 0,
     "exportedFrames": 0,
-    "resolvedBasicKeys": 22,
-    "exportedBasicKeys": 22,
-    "exportedBasicFrames": 22,
+    "resolvedBasicKeys": 23,
+    "exportedBasicKeys": 23,
+    "exportedBasicFrames": 32,
     "missingSymbol": [],
-    "missingBasicSymbol": [],
+    "missingBasicSymbol": [
+      {
+        "linkageId": "女变装-基本脸型",
+        "swf": "flashswf/UI/对话框界面.swf"
+      }
+    ],
     "symbolErrors": [],
     "exportErrors": [],
     "metadataErrors": [],
@@ -5229,20 +5034,27 @@
     "exportedNestedLayerKeys": 0,
     "exportedNestedLayerFrames": 0,
     "missingNestedLayerFrame": [],
-    "uniqueFrameImages": 22,
-    "duplicateFrameRefs": 0,
-    "timelineLogicalFrames": 22,
-    "timelineFrameEntries": 22,
-    "timelineCompressedFrameRefs": 0,
-    "timelineCompressionSamples": [],
+    "uniqueFrameImages": 28,
+    "duplicateFrameRefs": 4,
+    "timelineLogicalFrames": 32,
+    "timelineFrameEntries": 28,
+    "timelineCompressedFrameRefs": 4,
+    "timelineCompressionSamples": [
+      {
+        "owner": "basic:男变装-基本脸型",
+        "logicalFrames": 10,
+        "timelineFrames": 6,
+        "savedFrameEntries": 4,
+        "uniqueUris": 6,
+        "longestHoldFrames": 5
+      }
+    ],
     "conditionalVariantSkinKeys": 0,
     "conditionalVariantFrames": 0,
     "conditionalVariantRemovedPlaceObjects": 0,
     "conditionalVariantSamples": [],
-    "preservedSkinKeyExports": 2840,
-    "preservedBasicHolderExports": 28,
-    "orphanAssetsPurged": 0,
-    "orphanAssetSamples": []
+    "preservedSkinKeyExports": 2834,
+    "preservedBasicHolderExports": 28
   },
   "animatedSkinKeys": [
     {
