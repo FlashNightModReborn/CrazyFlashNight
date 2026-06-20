@@ -493,14 +493,73 @@ class org.flashNight.arki.task.TaskPanelService {
             if (ln == undefined) continue;
             var speaker = hasResolver ? _root.getDialogueSpecialString(ln.name) : ln.name;
             var sub = hasResolver ? _root.getDialogueSpecialString(ln.title) : ln.title;
-            lines.push({
+            var rawChar:String = (ln.char != undefined ? String(ln.char) : "");
+            var charParts:Array = rawChar.split("#");
+            var rawCharBase:String = (charParts.length > 0 ? String(charParts[0]) : "");
+            var expression:String = (charParts.length > 1 && charParts[1] != undefined) ? String(charParts[1]) : "普通";
+            var charBase = hasResolver ? _root.getDialogueSpecialString(rawCharBase) : rawCharBase;
+            var portraitType:String = (rawCharBase == "$PC_CHAR" || charBase == "玩家" || charBase == "主角模板") ? "hero" : "npc";
+            var line:Object = {
                 speaker: (speaker != undefined ? String(speaker) : ""),
                 sub: (sub != undefined ? String(sub) : ""),
-                text: (ln.text != undefined ? String(ln.text) : "")
-            });
+                text: (ln.text != undefined ? String(ln.text) : ""),
+                char: rawChar,
+                charBase: (charBase != undefined ? String(charBase) : ""),
+                expression: expression,
+                portraitType: portraitType
+            };
+            if (ln.target != undefined) line.target = String(ln.target);
+            if (ln.imageurl != undefined) line.imageurl = String(ln.imageurl);
+            lines.push(line);
         }
 
-        sendResponse({ task: "task_response", callId: callId, success: true, which: which, lines: lines });
+        sendResponse({
+            task: "task_response",
+            callId: callId,
+            success: true,
+            which: which,
+            lines: lines,
+            heroPortrait: buildHeroPortraitState()
+        });
+    }
+
+    private static function buildHeroPortraitState():Object {
+        var hero:Object = undefined;
+        if (_root.gameworld != undefined && _root.控制目标 != undefined) {
+            hero = _root.gameworld[_root.控制目标];
+        }
+
+        var equipment:Object = {};
+        var slots:Array = ["头部装备", "上装装备", "下装装备", "手部装备", "脚部装备", "长枪", "手枪", "手枪2", "刀"];
+        for (var i:Number = 0; i < slots.length; i++) {
+            var slot:String = String(slots[i]);
+            var value = (hero != undefined) ? hero[slot] : undefined;
+            if (value != undefined && value != "") equipment[slot] = String(value);
+        }
+
+        var appearance:Object = {};
+        var face = (hero != undefined && hero.脸型 != undefined) ? hero.脸型 : _root.脸型;
+        var hair = (hero != undefined && hero.发型 != undefined) ? hero.发型 : _root.发型;
+        if (face != undefined && face != "") appearance["脸型"] = String(face);
+        if (hair != undefined && hair != "") appearance["发型"] = String(hair);
+
+        var keyMap:Object = {};
+        if (hero != undefined && hero.hasDressup === true) {
+            var holderFields:Array = ["面具", "身体", "上臂", "左下臂", "右下臂", "左手", "右手", "屁股", "左大腿", "右大腿", "小腿", "脚", "刀", "长枪", "手枪", "手枪2"];
+            for (var j:Number = 0; j < holderFields.length; j++) {
+                var field:String = String(holderFields[j]);
+                var skinKey = hero[field];
+                if (skinKey != undefined && skinKey != "") keyMap[field] = String(skinKey);
+            }
+        }
+
+        var gender = (hero != undefined && hero.性别 != undefined) ? hero.性别 : _root.性别;
+        return {
+            gender: (gender != undefined && gender != "" ? String(gender) : "男"),
+            equipment: equipment,
+            appearance: appearance,
+            keyMap: keyMap
+        };
     }
 
     // ═══════════════════════════════════════════════════════════

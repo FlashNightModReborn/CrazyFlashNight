@@ -80,6 +80,8 @@
     <script src="modules/panels.js"></script>
     <script src="modules/tooltip.js"></script>
     <script src="modules/asset-timeline.js"></script>
+    <script src="modules/dressup-doll-renderer.js"></script>
+    <script src="modules/dialogue/dialogue-view.js"></script>
     <script src="modules/icons.js"></script>
     <script src="modules/tasks/achievement-tab.js"></script>
     <script src="modules/tasks/task-panel.js"></script>
@@ -356,9 +358,13 @@
                         if (!has) { resp({ success: false, error: 'no_dialogue' }); break; }
                         var label = (m.which === 'finish') ? '完成' : '接取';
                         // 镜像真机：玩家行 name=fs + title 为 $PC_TITLE 解析出的 AS2 htmlText 动态称号 + 正文含 <B>
-                        resp({ success: true, which: m.which, lines: [
-                            { speaker: rt.npcName || 'NPC', sub: '前情报员', text: '【' + label + '·' + (rt.title || '') + '】模拟对话第一句。' },
-                            { speaker: 'fs', sub: "<FONT COLOR='#FFCC00'>血量很多</FONT>", text: '玩家回应，<B>强调</B>一下。' }
+                        resp({ success: true, which: m.which, heroPortrait: {
+                            gender: '男',
+                            appearance: { '脸型': '0', '发型': '0' },
+                            equipment: { '上装装备': 'Andy上装-NPC', '下装装备': 'Andy下装-NPC' }
+                        }, lines: [
+                            { speaker: rt.npcName || 'NPC', sub: '前情报员', text: '【' + label + '·' + (rt.title || '') + '】模拟对话第一句。', char: rt.npcName || 'NPC', charBase: rt.npcName || 'NPC', expression: '普通', portraitType: 'npc' },
+                            { speaker: 'fs', sub: "<FONT COLOR='#FFCC00'>血量很多</FONT>", text: '玩家回应，<B>强调</B>一下。', char: '$PC_CHAR#普通', charBase: '玩家', expression: '普通', portraitType: 'hero' }
                         ] });
                         break;
                     }

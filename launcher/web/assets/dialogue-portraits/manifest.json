@@ -1,0 +1,2584 @@
+{
+  "schema": "cf7-dialogue-portraits-v2",
+  "generatedAt": "2026-06-20T12:51:22+0800",
+  "zoom": 1,
+  "baseSize": {
+    "width": 1024,
+    "height": 576
+  },
+  "heroKeys": [
+    "$PC_CHAR",
+    "主角模板",
+    "玩家"
+  ],
+  "entries": {
+    "Andy Law": {
+      "key": "Andy Law",
+      "aliases": [
+        "andy law",
+        "ANDY LAW",
+        "AndyLaw",
+        "andylaw"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Andy Law.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_aecce8196efa/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 90,
+            "y": 72,
+            "width": 470,
+            "height": 351
+          }
+        },
+        "微笑": {
+          "uri": "external/p_aecce8196efa/e_cdd57ddef6ed.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 6,
+          "bounds": {
+            "x": 90,
+            "y": 72,
+            "width": 470,
+            "height": 351
+          }
+        },
+        "大笑": {
+          "uri": "external/p_aecce8196efa/e_6a50f99fc5e9.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 7,
+          "bounds": {
+            "x": 90,
+            "y": 72,
+            "width": 470,
+            "height": 351
+          }
+        },
+        "严肃": {
+          "uri": "external/p_aecce8196efa/e_fe976b0943ff.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 11,
+          "bounds": {
+            "x": 90,
+            "y": 72,
+            "width": 470,
+            "height": 351
+          }
+        },
+        "坏笑": {
+          "uri": "external/p_aecce8196efa/e_3e49b4427878.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 12,
+          "bounds": {
+            "x": 90,
+            "y": 72,
+            "width": 470,
+            "height": 351
+          }
+        },
+        "愤怒": {
+          "uri": "external/p_aecce8196efa/e_afa04bf58472.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 16,
+          "bounds": {
+            "x": 90,
+            "y": 72,
+            "width": 470,
+            "height": 351
+          }
+        },
+        "悲伤": {
+          "uri": "external/p_aecce8196efa/e_a0c45ee31309.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 21,
+          "bounds": {
+            "x": 90,
+            "y": 72,
+            "width": 470,
+            "height": 351
+          }
+        },
+        "无奈": {
+          "uri": "external/p_aecce8196efa/e_127ae2c5d51f.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 22,
+          "bounds": {
+            "x": 90,
+            "y": 72,
+            "width": 470,
+            "height": 351
+          }
+        },
+        "侦察": {
+          "uri": "external/p_aecce8196efa/e_5a0497dcea44.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 26,
+          "bounds": {
+            "x": 90,
+            "y": 72,
+            "width": 470,
+            "height": 351
+          }
+        },
+        "惊讶": {
+          "uri": "external/p_aecce8196efa/e_bd6bd4738cba.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 27,
+          "bounds": {
+            "x": 90,
+            "y": 72,
+            "width": 470,
+            "height": 351
+          }
+        },
+        "挑战": {
+          "uri": "external/p_aecce8196efa/e_9294c931e171.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 31,
+          "bounds": {
+            "x": 31,
+            "y": 48,
+            "width": 654,
+            "height": 374
+          }
+        },
+        "普通2": {
+          "uri": "external/p_aecce8196efa/e_b9bb26b45e5b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 37,
+          "bounds": {
+            "x": 183,
+            "y": 145,
+            "width": 210,
+            "height": 329
+          }
+        },
+        "侦查2": {
+          "uri": "external/p_aecce8196efa/e_07e323ea15cb.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 47,
+          "bounds": {
+            "x": 183,
+            "y": 145,
+            "width": 210,
+            "height": 329
+          }
+        },
+        "微笑2": {
+          "uri": "external/p_aecce8196efa/e_4364bcc6a061.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 52,
+          "bounds": {
+            "x": 183,
+            "y": 145,
+            "width": 210,
+            "height": 329
+          }
+        },
+        "惊讶2": {
+          "uri": "external/p_aecce8196efa/e_93867cba2077.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 54,
+          "bounds": {
+            "x": 183,
+            "y": 145,
+            "width": 210,
+            "height": 329
+          }
+        },
+        "坏笑2": {
+          "uri": "external/p_aecce8196efa/e_6ca5fb3f3f2e.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 59,
+          "bounds": {
+            "x": 183,
+            "y": 145,
+            "width": 210,
+            "height": 329
+          }
+        },
+        "大笑2": {
+          "uri": "external/p_aecce8196efa/e_d094926f5398.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 62,
+          "bounds": {
+            "x": 183,
+            "y": 145,
+            "width": 210,
+            "height": 329
+          }
+        },
+        "严肃2": {
+          "uri": "external/p_aecce8196efa/e_bd25d46a68ed.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 67,
+          "bounds": {
+            "x": 183,
+            "y": 145,
+            "width": 210,
+            "height": 329
+          }
+        },
+        "挑战2": {
+          "uri": "external/p_aecce8196efa/e_ab66e16e5bae.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 69,
+          "bounds": {
+            "x": 183,
+            "y": 145,
+            "width": 210,
+            "height": 329
+          }
+        }
+      }
+    },
+    "Shop Girl": {
+      "key": "Shop Girl",
+      "aliases": [
+        "shop girl",
+        "SHOP GIRL",
+        "ShopGirl",
+        "shopgirl"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Shop Girl.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_812b20620aa0/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 113,
+            "y": 79,
+            "width": 512,
+            "height": 342
+          }
+        },
+        "微笑": {
+          "uri": "external/p_812b20620aa0/e_cdd57ddef6ed.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 7,
+          "bounds": {
+            "x": 113,
+            "y": 79,
+            "width": 512,
+            "height": 342
+          }
+        },
+        "严肃": {
+          "uri": "external/p_812b20620aa0/e_fe976b0943ff.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 12,
+          "bounds": {
+            "x": 113,
+            "y": 79,
+            "width": 512,
+            "height": 342
+          }
+        },
+        "悲伤": {
+          "uri": "external/p_812b20620aa0/e_a0c45ee31309.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 17,
+          "bounds": {
+            "x": 113,
+            "y": 79,
+            "width": 512,
+            "height": 342
+          }
+        }
+      }
+    },
+    "The Girl": {
+      "key": "The Girl",
+      "aliases": [
+        "the girl",
+        "THE GIRL",
+        "TheGirl",
+        "thegirl"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/The Girl.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_bff1d62b2263/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 66,
+            "y": 40,
+            "width": 320,
+            "height": 369
+          }
+        },
+        "微笑": {
+          "uri": "external/p_bff1d62b2263/e_cdd57ddef6ed.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 7,
+          "bounds": {
+            "x": 66,
+            "y": 40,
+            "width": 320,
+            "height": 369
+          }
+        },
+        "严肃": {
+          "uri": "external/p_bff1d62b2263/e_fe976b0943ff.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 12,
+          "bounds": {
+            "x": 66,
+            "y": 40,
+            "width": 320,
+            "height": 369
+          }
+        },
+        "悲伤": {
+          "uri": "external/p_bff1d62b2263/e_a0c45ee31309.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 17,
+          "bounds": {
+            "x": 66,
+            "y": 40,
+            "width": 320,
+            "height": 369
+          }
+        },
+        "怜悯": {
+          "uri": "external/p_bff1d62b2263/e_160cc6cf30f2.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 22,
+          "bounds": {
+            "x": 66,
+            "y": 40,
+            "width": 320,
+            "height": 369
+          }
+        }
+      }
+    },
+    "Blue": {
+      "key": "Blue",
+      "aliases": [
+        "blue",
+        "BLUE"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Blue.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_7d44bc449c2a/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 114,
+            "y": 89,
+            "width": 296,
+            "height": 321
+          }
+        },
+        "微笑": {
+          "uri": "external/p_7d44bc449c2a/e_cdd57ddef6ed.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 6,
+          "bounds": {
+            "x": 114,
+            "y": 89,
+            "width": 296,
+            "height": 321
+          }
+        },
+        "愤怒": {
+          "uri": "external/p_7d44bc449c2a/e_afa04bf58472.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 11,
+          "bounds": {
+            "x": 114,
+            "y": 89,
+            "width": 296,
+            "height": 321
+          }
+        },
+        "悲伤": {
+          "uri": "external/p_7d44bc449c2a/e_a0c45ee31309.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 16,
+          "bounds": {
+            "x": 114,
+            "y": 89,
+            "width": 296,
+            "height": 321
+          }
+        }
+      }
+    },
+    "Blue（无线电）": {
+      "key": "Blue（无线电）",
+      "aliases": [
+        "blue（无线电）",
+        "BLUE（无线电）"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Blue（无线电）.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_c7f26da76ca9/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 119,
+            "y": 86,
+            "width": 304,
+            "height": 320
+          }
+        }
+      }
+    },
+    "Boy": {
+      "key": "Boy",
+      "aliases": [
+        "boy",
+        "BOY"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Boy.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_b9dc9d8cb52e/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 160,
+            "y": 71,
+            "width": 268,
+            "height": 337
+          }
+        },
+        "微笑": {
+          "uri": "external/p_b9dc9d8cb52e/e_cdd57ddef6ed.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 6,
+          "bounds": {
+            "x": 160,
+            "y": 71,
+            "width": 268,
+            "height": 337
+          }
+        },
+        "愤怒": {
+          "uri": "external/p_b9dc9d8cb52e/e_afa04bf58472.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 11,
+          "bounds": {
+            "x": 160,
+            "y": 71,
+            "width": 268,
+            "height": 337
+          }
+        },
+        "悲伤": {
+          "uri": "external/p_b9dc9d8cb52e/e_a0c45ee31309.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 16,
+          "bounds": {
+            "x": 160,
+            "y": 71,
+            "width": 268,
+            "height": 337
+          }
+        }
+      }
+    },
+    "boy（无线电）": {
+      "key": "boy（无线电）",
+      "aliases": [
+        "BOY（无线电）"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/boy（无线电）.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_e46e7fc687d0/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 142,
+            "y": 59,
+            "width": 281,
+            "height": 347
+          }
+        }
+      }
+    },
+    "King": {
+      "key": "King",
+      "aliases": [
+        "king",
+        "KING"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/King.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_364d37be779d/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 127,
+            "y": 85,
+            "width": 260,
+            "height": 321
+          }
+        },
+        "坏笑": {
+          "uri": "external/p_364d37be779d/e_3e49b4427878.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 6,
+          "bounds": {
+            "x": 127,
+            "y": 85,
+            "width": 260,
+            "height": 321
+          }
+        },
+        "微笑": {
+          "uri": "external/p_364d37be779d/e_cdd57ddef6ed.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 7,
+          "bounds": {
+            "x": 127,
+            "y": 85,
+            "width": 260,
+            "height": 321
+          }
+        },
+        "大笑": {
+          "uri": "external/p_364d37be779d/e_6a50f99fc5e9.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 8,
+          "bounds": {
+            "x": 127,
+            "y": 85,
+            "width": 260,
+            "height": 321
+          }
+        },
+        "愤怒": {
+          "uri": "external/p_364d37be779d/e_afa04bf58472.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 11,
+          "bounds": {
+            "x": 127,
+            "y": 85,
+            "width": 260,
+            "height": 321
+          }
+        },
+        "悲伤": {
+          "uri": "external/p_364d37be779d/e_a0c45ee31309.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 16,
+          "bounds": {
+            "x": 127,
+            "y": 85,
+            "width": 260,
+            "height": 321
+          }
+        },
+        "严肃": {
+          "uri": "external/p_364d37be779d/e_fe976b0943ff.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 17,
+          "bounds": {
+            "x": 127,
+            "y": 85,
+            "width": 260,
+            "height": 321
+          }
+        }
+      }
+    },
+    "Pig": {
+      "key": "Pig",
+      "aliases": [
+        "pig",
+        "PIG"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Pig.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_768107c0b455/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 85,
+            "y": 46,
+            "width": 383,
+            "height": 404
+          }
+        },
+        "微笑": {
+          "uri": "external/p_768107c0b455/e_cdd57ddef6ed.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 6,
+          "bounds": {
+            "x": 85,
+            "y": 46,
+            "width": 383,
+            "height": 404
+          }
+        },
+        "愤怒": {
+          "uri": "external/p_768107c0b455/e_afa04bf58472.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 11,
+          "bounds": {
+            "x": 85,
+            "y": 46,
+            "width": 383,
+            "height": 404
+          }
+        },
+        "悲伤": {
+          "uri": "external/p_768107c0b455/e_a0c45ee31309.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 16,
+          "bounds": {
+            "x": 85,
+            "y": 46,
+            "width": 383,
+            "height": 404
+          }
+        }
+      }
+    },
+    "∞天ㄙ★使的剪∞": {
+      "key": "∞天ㄙ★使的剪∞",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/∞天ㄙ★使的剪∞.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_63873b8fee5c/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 129,
+            "y": 112,
+            "width": 267,
+            "height": 352
+          }
+        }
+      }
+    },
+    "幸存老兵": {
+      "key": "幸存老兵",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/幸存老兵.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_d9f6a1fb7715/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 133,
+            "y": 73,
+            "width": 322,
+            "height": 335
+          }
+        }
+      }
+    },
+    "前治安官": {
+      "key": "前治安官",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/前治安官.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_dc4f9eb56dfb/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 84,
+            "y": 77,
+            "width": 352,
+            "height": 332
+          }
+        }
+      }
+    },
+    "学生妹": {
+      "key": "学生妹",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/学生妹.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_d4de374c952d/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 130,
+            "y": 74,
+            "width": 271,
+            "height": 334
+          }
+        }
+      }
+    },
+    "宝石线人": {
+      "key": "宝石线人",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_d6a92ad00be8/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 101,
+          "bounds": {
+            "x": 388,
+            "y": 293,
+            "width": 123,
+            "height": 186
+          }
+        }
+      }
+    },
+    "丽丽丝": {
+      "key": "丽丽丝",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_f3c00d063a27/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 85,
+          "bounds": {
+            "x": 375,
+            "y": 274,
+            "width": 195,
+            "height": 205
+          }
+        }
+      }
+    },
+    "格格巫": {
+      "key": "格格巫",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_b5e7b14bc845/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 78,
+          "bounds": {
+            "x": 380,
+            "y": 287,
+            "width": 177,
+            "height": 192
+          }
+        }
+      }
+    },
+    "Singer": {
+      "key": "Singer",
+      "aliases": [
+        "singer",
+        "SINGER"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Singer.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_99c9c6da0806/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 108,
+            "y": 73,
+            "width": 318,
+            "height": 334
+          }
+        }
+      }
+    },
+    "Guitar": {
+      "key": "Guitar",
+      "aliases": [
+        "guitar",
+        "GUITAR"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Guitar.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_94af6c408810/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 41,
+            "y": 68,
+            "width": 428,
+            "height": 340
+          }
+        }
+      }
+    },
+    "Keyboard": {
+      "key": "Keyboard",
+      "aliases": [
+        "keyboard",
+        "KEYBOARD"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Keyboard.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_6662c40bac78/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 68,
+            "y": 23,
+            "width": 402,
+            "height": 386
+          }
+        }
+      }
+    },
+    "general": {
+      "key": "general",
+      "aliases": [
+        "GENERAL"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/general.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_dfe2db74975e/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 30,
+            "y": 85,
+            "width": 451,
+            "height": 325
+          }
+        }
+      }
+    },
+    "堕落城盗贼": {
+      "key": "堕落城盗贼",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/堕落城盗贼.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_04fb6dd57845/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 208,
+            "y": 227,
+            "width": 113,
+            "height": 183
+          }
+        },
+        "黑铁死士": {
+          "uri": "external/p_04fb6dd57845/e_effb7e567370.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 5,
+          "bounds": {
+            "x": 134,
+            "y": 116,
+            "width": 267,
+            "height": 412
+          }
+        },
+        "黑铁游侠": {
+          "uri": "external/p_04fb6dd57845/e_b7394a56bfaf.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 12,
+          "bounds": {
+            "x": 150,
+            "y": 87,
+            "width": 256,
+            "height": 369
+          }
+        }
+      }
+    },
+    "忍者BOSS": {
+      "key": "忍者BOSS",
+      "aliases": [
+        "忍者boss"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/忍者BOSS.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_0c7c74cb6d9f/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 205,
+            "y": 134,
+            "width": 182,
+            "height": 284
+          }
+        }
+      }
+    },
+    "牛仔": {
+      "key": "牛仔",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/牛仔.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_beb1b1fdfccb/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 64,
+            "y": 66,
+            "width": 409,
+            "height": 345
+          }
+        }
+      }
+    },
+    "黑铁": {
+      "key": "黑铁",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/黑铁.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_9429eba2f66e/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 107,
+            "y": 8,
+            "width": 340,
+            "height": 399
+          }
+        }
+      }
+    },
+    "黑龙": {
+      "key": "黑龙",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/黑龙.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_6eef50f4b788/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 70,
+            "y": 28,
+            "width": 808,
+            "height": 394
+          }
+        }
+      }
+    },
+    "火凤": {
+      "key": "火凤",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/火凤.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_d0a623cb0d2d/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 59,
+            "y": 41,
+            "width": 425,
+            "height": 363
+          }
+        }
+      }
+    },
+    "翅虎": {
+      "key": "翅虎",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/翅虎.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_286a6a310431/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 14,
+            "y": 61,
+            "width": 526,
+            "height": 344
+          }
+        }
+      }
+    },
+    "武装JK": {
+      "key": "武装JK",
+      "aliases": [
+        "武装jk"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/武装JK.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_13b5c69f9386/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 140,
+            "y": 163,
+            "width": 346,
+            "height": 299
+          }
+        }
+      }
+    },
+    "Tomboy": {
+      "key": "Tomboy",
+      "aliases": [
+        "tomboy",
+        "TOMBOY"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Tomboy.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_06c3b32834cd/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 147,
+            "y": 147,
+            "width": 438,
+            "height": 346
+          }
+        }
+      }
+    },
+    "女仆（白）": {
+      "key": "女仆（白）",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/女仆（白）.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_557e5ff04f5e/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 157,
+            "y": 193,
+            "width": 299,
+            "height": 383
+          }
+        }
+      }
+    },
+    "女仆（黑）": {
+      "key": "女仆（黑）",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/女仆（黑）.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_bf4315bac7e7/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 156,
+            "y": 184,
+            "width": 409,
+            "height": 297
+          }
+        }
+      }
+    },
+    "文天": {
+      "key": "文天",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/文天.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_5c350bb23741/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 95,
+            "y": 144,
+            "width": 219,
+            "height": 432
+          }
+        }
+      }
+    },
+    "尾上世莉架": {
+      "key": "尾上世莉架",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/尾上世莉架.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_dc84b9196919/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 172,
+            "y": 96,
+            "width": 216,
+            "height": 480
+          }
+        }
+      }
+    },
+    "诺艾尔": {
+      "key": "诺艾尔",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/诺艾尔.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_367ecafc74e3/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 196,
+            "y": 108,
+            "width": 173,
+            "height": 326
+          }
+        }
+      }
+    },
+    "清水结衣": {
+      "key": "清水结衣",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/清水结衣.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_9e6296a6e4d6/e_7cda072d452b.png",
+          "width": 550,
+          "height": 400,
+          "frame": 1,
+          "bounds": {
+            "x": 187,
+            "y": 113,
+            "width": 183,
+            "height": 287
+          }
+        },
+        "微笑": {
+          "uri": "external/p_9e6296a6e4d6/e_cdd57ddef6ed.png",
+          "width": 550,
+          "height": 400,
+          "frame": 21,
+          "bounds": {
+            "x": 187,
+            "y": 113,
+            "width": 183,
+            "height": 287
+          }
+        },
+        "呲牙": {
+          "uri": "external/p_9e6296a6e4d6/e_479d95f1cdfc.png",
+          "width": 550,
+          "height": 400,
+          "frame": 31,
+          "bounds": {
+            "x": 187,
+            "y": 113,
+            "width": 183,
+            "height": 287
+          }
+        },
+        "难过": {
+          "uri": "external/p_9e6296a6e4d6/e_7d048ef4858f.png",
+          "width": 550,
+          "height": 400,
+          "frame": 42,
+          "bounds": {
+            "x": 189,
+            "y": 113,
+            "width": 171,
+            "height": 287
+          }
+        },
+        "思考": {
+          "uri": "external/p_9e6296a6e4d6/e_a6c1499244b7.png",
+          "width": 550,
+          "height": 400,
+          "frame": 51,
+          "bounds": {
+            "x": 187,
+            "y": 113,
+            "width": 235,
+            "height": 287
+          }
+        }
+      }
+    },
+    "杰克霜精": {
+      "key": "杰克霜精",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/杰克霜精.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_e22a89c8fda2/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 125,
+            "y": 150,
+            "width": 274,
+            "height": 354
+          }
+        }
+      }
+    },
+    "齐天大圣": {
+      "key": "齐天大圣",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/齐天大圣.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_955233ca8909/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 29,
+            "y": 13,
+            "width": 350,
+            "height": 563
+          }
+        }
+      }
+    },
+    "假肢仙人": {
+      "key": "假肢仙人",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/假肢仙人.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_1d7493ea7364/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 136,
+            "y": 141,
+            "width": 271,
+            "height": 435
+          }
+        }
+      }
+    },
+    "室友": {
+      "key": "室友",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/室友.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_706a50dca479/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1
+        }
+      }
+    },
+    "理科教授": {
+      "key": "理科教授",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/理科教授.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_5c47c3ee4bac/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 215,
+            "y": 221,
+            "width": 166,
+            "height": 355
+          }
+        }
+      }
+    },
+    "文科老师": {
+      "key": "文科老师",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/文科老师.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_61124eeee03c/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 198,
+            "y": 236,
+            "width": 141,
+            "height": 335
+          }
+        }
+      }
+    },
+    "冷兵器商人": {
+      "key": "冷兵器商人",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/冷兵器商人.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_622ed4a3c4b8/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 119,
+            "y": 159,
+            "width": 274,
+            "height": 379
+          }
+        }
+      }
+    },
+    "surveyor": {
+      "key": "surveyor",
+      "aliases": [
+        "SURVEYOR"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/surveyor.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_83499828853a/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 19,
+            "y": 199,
+            "width": 410,
+            "height": 377
+          }
+        }
+      }
+    },
+    "gazer": {
+      "key": "gazer",
+      "aliases": [
+        "GAZER"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/gazer.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_b448a0265648/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 181,
+            "y": 122,
+            "width": 243,
+            "height": 443
+          }
+        }
+      }
+    },
+    "Itinerant": {
+      "key": "Itinerant",
+      "aliases": [
+        "itinerant",
+        "ITINERANT"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Itinerant.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_2a5b90ffdbdc/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 132,
+            "y": 49,
+            "width": 292,
+            "height": 527
+          }
+        }
+      }
+    },
+    "歌留多": {
+      "key": "歌留多",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/歌留多.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_f24caa490488/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 175,
+            "y": 155,
+            "width": 152,
+            "height": 421
+          }
+        }
+      }
+    },
+    "director": {
+      "key": "director",
+      "aliases": [
+        "DIRECTOR"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/director.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_235acfdf1375/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 226,
+            "y": 221,
+            "width": 123,
+            "height": 355
+          }
+        }
+      }
+    },
+    "Bat": {
+      "key": "Bat",
+      "aliases": [
+        "bat",
+        "BAT"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Bat.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_acdf41b2a875/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 118,
+            "y": 227,
+            "width": 265,
+            "height": 349
+          }
+        }
+      }
+    },
+    "黑仔": {
+      "key": "黑仔",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/黑仔.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_411f1947dfa3/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 91,
+            "y": 241,
+            "width": 263,
+            "height": 335
+          }
+        }
+      }
+    },
+    "厨师": {
+      "key": "厨师",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/厨师.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_8e8ba4ec4c71/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 110,
+            "y": 227,
+            "width": 376,
+            "height": 256
+          }
+        }
+      }
+    },
+    "artist": {
+      "key": "artist",
+      "aliases": [
+        "ARTIST"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/artist.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_55051f2531bd/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 152,
+            "y": 157,
+            "width": 254,
+            "height": 419
+          }
+        }
+      }
+    },
+    "soldier": {
+      "key": "soldier",
+      "aliases": [
+        "SOLDIER"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/soldier.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_5a58d848204b/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 92,
+            "y": 135,
+            "width": 362,
+            "height": 339
+          }
+        }
+      }
+    },
+    "体育老师": {
+      "key": "体育老师",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/体育老师.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_39f28f52106d/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 132,
+            "y": 148,
+            "width": 243,
+            "height": 428
+          }
+        }
+      }
+    },
+    "剑道社长": {
+      "key": "剑道社长",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/剑道社长.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_68af1c7fcb3b/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 155,
+            "y": 123,
+            "width": 275,
+            "height": 453
+          }
+        }
+      }
+    },
+    "教导主任": {
+      "key": "教导主任",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/教导主任.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_c73c7d856353/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 141,
+            "y": 102,
+            "width": 240,
+            "height": 474
+          }
+        }
+      }
+    },
+    "Vanshuther": {
+      "key": "Vanshuther",
+      "aliases": [
+        "vanshuther",
+        "VANSHUTHER"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Vanshuther.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_e9eec82caf04/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 121,
+            "y": 148,
+            "width": 213,
+            "height": 417
+          }
+        }
+      }
+    },
+    "程铮": {
+      "key": "程铮",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/程铮.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_68543b216f39/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 113,
+            "y": 124,
+            "width": 273,
+            "height": 452
+          }
+        }
+      }
+    },
+    "武器订购系统": {
+      "key": "武器订购系统",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/武器订购系统.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_e54ad409106a/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 90,
+            "y": 210,
+            "width": 324,
+            "height": 366
+          }
+        }
+      }
+    },
+    "冯佑权": {
+      "key": "冯佑权",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/冯佑权.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_387852d1fbce/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 0,
+            "y": 95,
+            "width": 657,
+            "height": 481
+          }
+        }
+      }
+    },
+    "舞女": {
+      "key": "舞女",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/舞女.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_dafdd9e7a80e/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 110,
+            "y": 101,
+            "width": 263,
+            "height": 310
+          }
+        }
+      }
+    },
+    "Bard": {
+      "key": "Bard",
+      "aliases": [
+        "bard",
+        "BARD"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/Bard.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_fa4fe5be9ef6/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 140,
+            "y": 215,
+            "width": 221,
+            "height": 361
+          }
+        }
+      }
+    },
+    "黑铁会外交部长": {
+      "key": "黑铁会外交部长",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/黑铁会外交部长.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_077a375bc18a/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 135,
+            "y": 225,
+            "width": 170,
+            "height": 310
+          }
+        }
+      }
+    },
+    "迷之盔甲君": {
+      "key": "迷之盔甲君",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_53d675d81650/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 114,
+          "bounds": {
+            "x": 371,
+            "y": 307,
+            "width": 268,
+            "height": 172
+          }
+        }
+      }
+    },
+    "酒保": {
+      "key": "酒保",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_a10ec4d29b12/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 71,
+          "bounds": {
+            "x": 393,
+            "y": 288,
+            "width": 130,
+            "height": 191
+          }
+        }
+      }
+    },
+    "小F": {
+      "key": "小F",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_e022273fd223/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 66,
+          "bounds": {
+            "x": 376,
+            "y": 268,
+            "width": 147,
+            "height": 211
+          }
+        }
+      }
+    },
+    "researcher": {
+      "key": "researcher",
+      "aliases": [
+        "RESEARCHER"
+      ],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/researcher.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_7e22ea473607/e_7cda072d452b.png",
+          "width": 1024,
+          "height": 576,
+          "frame": 1,
+          "bounds": {
+            "x": 203,
+            "y": 118,
+            "width": 177,
+            "height": 458
+          }
+        }
+      }
+    },
+    "吸特乐": {
+      "key": "吸特乐",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/吸特乐.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_c16e2efef8e4/e_7cda072d452b.png",
+          "width": 550,
+          "height": 400,
+          "frame": 1,
+          "bounds": {
+            "x": 158,
+            "y": 122,
+            "width": 206,
+            "height": 278
+          }
+        }
+      }
+    },
+    "调酒师": {
+      "key": "调酒师",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/调酒师.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_4e936cc411b5/e_7cda072d452b.png",
+          "width": 550,
+          "height": 400,
+          "frame": 1,
+          "bounds": {
+            "x": 140,
+            "y": 128,
+            "width": 230,
+            "height": 272
+          }
+        }
+      }
+    },
+    "无头像": {
+      "key": "无头像",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_49a1377ac18d/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 47,
+          "bounds": {
+            "x": 461,
+            "y": 301,
+            "width": 109,
+            "height": 178
+          }
+        }
+      }
+    },
+    "爱国青年": {
+      "key": "爱国青年",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_f893dd0ed13b/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 109,
+          "bounds": {
+            "x": 411,
+            "y": 321,
+            "width": 203,
+            "height": 158
+          }
+        }
+      }
+    },
+    "被改造的方舟无人机": {
+      "key": "被改造的方舟无人机",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_fc0475a21b64/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 121,
+          "bounds": {
+            "x": 374,
+            "y": 353,
+            "width": 167,
+            "height": 119
+          }
+        }
+      }
+    },
+    "长生军战士": {
+      "key": "长生军战士",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_b3272e4811d6/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 127,
+          "bounds": {
+            "x": 388,
+            "y": 316,
+            "width": 167,
+            "height": 163
+          }
+        }
+      }
+    },
+    "A兵团士兵": {
+      "key": "A兵团士兵",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_9e821c1ce1f5/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 133,
+          "bounds": {
+            "x": 358,
+            "y": 315,
+            "width": 173,
+            "height": 164
+          }
+        }
+      }
+    },
+    "暮光闪闪": {
+      "key": "暮光闪闪",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_6ed41005666e/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 145,
+          "bounds": {
+            "x": 325,
+            "y": 327,
+            "width": 306,
+            "height": 152
+          }
+        }
+      }
+    },
+    "魔女": {
+      "key": "魔女",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_0bc68f900f76/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 150,
+          "bounds": {
+            "x": 276,
+            "y": 212,
+            "width": 425,
+            "height": 267
+          }
+        }
+      }
+    },
+    "LEE": {
+      "key": "LEE",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_42009b75438f/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 155,
+          "bounds": {
+            "x": 383,
+            "y": 261,
+            "width": 203,
+            "height": 218
+          }
+        }
+      }
+    },
+    "虚拟向导": {
+      "key": "虚拟向导",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_497f78f0bcf1/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 168,
+          "bounds": {
+            "x": 408,
+            "y": 285,
+            "width": 94,
+            "height": 194
+          }
+        }
+      }
+    },
+    "lochan": {
+      "key": "lochan",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_7abef730066f/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 176,
+          "bounds": {
+            "x": 383,
+            "y": 283,
+            "width": 237,
+            "height": 196
+          }
+        }
+      }
+    },
+    "PROPHET": {
+      "key": "PROPHET",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_f1f0b8fd6686/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 183,
+          "bounds": {
+            "x": 366,
+            "y": 227,
+            "width": 228,
+            "height": 252
+          }
+        }
+      }
+    },
+    "PROPHET2": {
+      "key": "PROPHET2",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_fc838707fed0/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 188,
+          "bounds": {
+            "x": 366,
+            "y": 227,
+            "width": 228,
+            "height": 252
+          }
+        }
+      }
+    },
+    "劳埃德": {
+      "key": "劳埃德",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_28058519e27c/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 193,
+          "bounds": {
+            "x": 358,
+            "y": 184,
+            "width": 341,
+            "height": 295
+          }
+        }
+      }
+    },
+    "枫": {
+      "key": "枫",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_188aed17edc3/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 200,
+          "bounds": {
+            "x": 323,
+            "y": 212,
+            "width": 356,
+            "height": 267
+          }
+        }
+      }
+    },
+    "王道": {
+      "key": "王道",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_e3a710ef7839/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 204,
+          "bounds": {
+            "x": 284,
+            "y": 136,
+            "width": 408,
+            "height": 343
+          }
+        }
+      }
+    },
+    "BLACK-L": {
+      "key": "BLACK-L",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_5b0134cce833/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 209,
+          "bounds": {
+            "x": 310,
+            "y": 253,
+            "width": 390,
+            "height": 226
+          }
+        }
+      }
+    },
+    "千夏沐晓": {
+      "key": "千夏沐晓",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_84c31bbf4dfd/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 217,
+          "bounds": {
+            "x": 365,
+            "y": 242,
+            "width": 220,
+            "height": 237
+          }
+        }
+      }
+    },
+    "已转移": {
+      "key": "已转移",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_d550de9ece00/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 225,
+          "bounds": {
+            "x": 405,
+            "y": 195,
+            "width": 181,
+            "height": 284
+          }
+        }
+      }
+    },
+    "PD421": {
+      "key": "PD421",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_dd35ee2ff80c/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 233,
+          "bounds": {
+            "x": 276,
+            "y": 120,
+            "width": 423,
+            "height": 359
+          }
+        }
+      }
+    },
+    "乔恩": {
+      "key": "乔恩",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_81f0112f1873/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 239,
+          "bounds": {
+            "x": 291,
+            "y": 135,
+            "width": 402,
+            "height": 344
+          }
+        }
+      }
+    },
+    "和平": {
+      "key": "和平",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_0c4c3b0e8ef9/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 244,
+          "bounds": {
+            "x": 369,
+            "y": 147,
+            "width": 269,
+            "height": 332
+          }
+        }
+      }
+    },
+    "云吞魔芋": {
+      "key": "云吞魔芋",
+      "aliases": [],
+      "source": "dialogue-ui-sprite",
+      "sourcePath": "flashswf/UI/对话框界面.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "internal/p_8a06a60f208c/e_7cda072d452b.png",
+          "width": 775,
+          "height": 1000,
+          "frame": 249,
+          "bounds": {
+            "x": 396,
+            "y": 145,
+            "width": 237,
+            "height": 334
+          }
+        }
+      }
+    }
+  },
+  "aliases": {
+    "andy law": "Andy Law",
+    "ANDY LAW": "Andy Law",
+    "AndyLaw": "Andy Law",
+    "andylaw": "Andy Law",
+    "shop girl": "Shop Girl",
+    "SHOP GIRL": "Shop Girl",
+    "ShopGirl": "Shop Girl",
+    "shopgirl": "Shop Girl",
+    "the girl": "The Girl",
+    "THE GIRL": "The Girl",
+    "TheGirl": "The Girl",
+    "thegirl": "The Girl",
+    "blue": "Blue",
+    "BLUE": "Blue",
+    "blue（无线电）": "Blue（无线电）",
+    "BLUE（无线电）": "Blue（无线电）",
+    "boy": "Boy",
+    "BOY": "Boy",
+    "BOY（无线电）": "boy（无线电）",
+    "king": "King",
+    "KING": "King",
+    "pig": "Pig",
+    "PIG": "Pig",
+    "singer": "Singer",
+    "SINGER": "Singer",
+    "guitar": "Guitar",
+    "GUITAR": "Guitar",
+    "keyboard": "Keyboard",
+    "KEYBOARD": "Keyboard",
+    "GENERAL": "general",
+    "忍者boss": "忍者BOSS",
+    "武装jk": "武装JK",
+    "tomboy": "Tomboy",
+    "TOMBOY": "Tomboy",
+    "SURVEYOR": "surveyor",
+    "GAZER": "gazer",
+    "itinerant": "Itinerant",
+    "ITINERANT": "Itinerant",
+    "DIRECTOR": "director",
+    "bat": "Bat",
+    "BAT": "Bat",
+    "ARTIST": "artist",
+    "SOLDIER": "soldier",
+    "vanshuther": "Vanshuther",
+    "VANSHUTHER": "Vanshuther",
+    "bard": "Bard",
+    "BARD": "Bard",
+    "小f": "小F",
+    "RESEARCHER": "researcher",
+    "a兵团士兵": "A兵团士兵",
+    "lee": "LEE",
+    "LOCHAN": "lochan",
+    "prophet": "PROPHET",
+    "prophet2": "PROPHET2",
+    "black-l": "BLACK-L",
+    "pd421": "PD421"
+  }
+}

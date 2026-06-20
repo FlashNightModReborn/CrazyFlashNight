@@ -1222,7 +1222,7 @@
 .task-cond-row.done .task-cond-fill { background: #ffffff; box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
 
 /* 内联对话文本（轻量态；富立绘对话框待对话框迁 web 后替换） */
-.tlv-dialogue { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+.tlv-dialogue { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
 .tlv-dialogue:empty { margin-top: 0; }
 .tlv-dia-empty { color: var(--task-text-dim); font-size: 13px; padding: 8px 2px; }
 .tlv-dia-line {
@@ -1233,6 +1233,124 @@
 .tlv-dia-speaker { font-family: var(--task-serif); font-size: 14px; color: var(--task-text); }
 .tlv-dia-sub { font-size: 11px; color: var(--task-text-dim); }
 .tlv-dia-text { font-size: 13px; line-height: 1.6; color: var(--task-text-dim); }
+
+.cf-dialogue-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.cf-dialogue-line {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+    min-height: 172px;
+    padding: 10px 16px 10px 12px;
+    border-left-color: rgba(255, 255, 255, 0.24);
+    background:
+        linear-gradient(to right, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.026)),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.12));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055), inset 0 -1px 0 rgba(0, 0, 0, 0.28);
+}
+.cf-dialogue-portrait-slot {
+    position: relative;
+    justify-self: center;
+    align-self: center;
+    width: 268px;
+    height: 153px;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 50% 34%, rgba(255, 255, 255, 0.075), transparent 58%),
+        rgba(0, 0, 0, 0.30);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.38);
+}
+.cf-dialogue-portrait-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.cf-dialogue-portrait-img {
+    display: block;
+}
+.cf-dialogue-portrait-img-stage {
+    position: absolute;
+    max-width: none;
+    max-height: none;
+    transform: translateZ(0);
+}
+.cf-dialogue-portrait-img-contain {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center bottom;
+}
+.cf-dialogue-portrait-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 6px;
+    box-sizing: border-box;
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 12px;
+    line-height: 1.2;
+    text-align: center;
+    word-break: break-word;
+}
+.cf-dialogue-body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2px 0 0;
+}
+.cf-dialogue-head {
+    flex-wrap: wrap;
+    margin-bottom: 5px;
+}
+.cf-dialogue-line .tlv-dia-speaker {
+    font-size: 18px;
+}
+.cf-dialogue-line .tlv-dia-sub {
+    font-size: 12px;
+}
+.cf-dialogue-line .tlv-dia-text {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--task-text);
+}
+
+/* 立绘模式切换按钮：靠右、复用回放按钮的描边观感 */
+.tlv-dia-mode-btn {
+    margin-left: auto;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--task-text-dim);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.tlv-dia-mode-btn:hover {
+    color: var(--task-text);
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/* 简略模式：均衡信息密度——隐藏立绘、压缩为单列密排，便于扫读多条对话 */
+.cf-dialogue[data-dialogue-mode="brief"] .cf-dialogue-line {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    min-height: 0;
+    padding: 7px 14px;
+}
+.cf-dialogue[data-dialogue-mode="brief"] .cf-dialogue-portrait-slot { display: none; }
+.cf-dialogue[data-dialogue-mode="brief"] .cf-dialogue-head { margin-bottom: 2px; }
+.cf-dialogue[data-dialogue-mode="brief"] .cf-dialogue-line .tlv-dia-speaker { font-size: 15px; }
+.cf-dialogue[data-dialogue-mode="brief"] .cf-dialogue-line .tlv-dia-text { font-size: 13px; line-height: 1.5; }
 
 /* tab=log 时切换主体可见性 */
 .task-panel-container[data-tab="log"] .task-panel-toolbar,
