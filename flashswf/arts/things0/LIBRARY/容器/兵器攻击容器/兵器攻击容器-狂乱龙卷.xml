@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-狂乱龙卷" itemID="6a36ef2e-000018a0" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-狂乱龙卷" lastModified="1781985338" lastUniqueIdentifier="306">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-狂乱龙卷" itemID="6a36ef2e-000018a0" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-狂乱龙卷" lastModified="1781988704" lastUniqueIdentifier="306">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-狂乱龙卷" currentFrame="27" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;guideline direction="v"&gt;-123&lt;/guideline&gt;&lt;guideline direction="v"&gt;102&lt;/guideline&gt;&lt;guideline direction="h"&gt;-26&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器攻击容器-狂乱龙卷" currentFrame="5" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;guideline direction="v"&gt;-123&lt;/guideline&gt;&lt;guideline direction="v"&gt;102&lt;/guideline&gt;&lt;guideline direction="h"&gt;-26&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -13,7 +13,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
@@ -1187,14 +1187,14 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_2" color="#9933CC" locked="true">
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="5" duration="25" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="MovieClip/sprite 1478" blendMode="overlay">
+                <DOMSymbolInstance libraryItemName="MovieClip/sprite 1478" selected="true" blendMode="overlay" centerPoint3DX="3" centerPoint3DY="87.05">
                   <matrix>
                     <Matrix a="-4.72154235839844" d="7.80584716796875" tx="144.9" ty="128.25"/>
                   </matrix>
@@ -1751,7 +1751,7 @@ _root.兵器攻击路由.动画完毕(this,_parent);]]></script>
                     <Matrix a="0.99737548828125" b="0.0425872802734375" c="-0.0425872802734375" d="0.99737548828125" tx="-2.15" ty="3.1"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.35" y="0.6"/>
+                    <Point x="-0.3" y="0.6"/>
                   </transformationPoint>
                   <filters>
                     <AdjustColorFilter/>

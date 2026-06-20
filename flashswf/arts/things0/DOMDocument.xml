@@ -7,7 +7,7 @@
           <DOMFolderItem name="1.冷兵器/长柄/19.蛇矛一型" itemID="695e4ffd-00000d2f"/>
           <DOMFolderItem name="Graphic" itemID="669baccc-0000152d"/>
           <DOMFolderItem name="image" itemID="65a6bb64-00001381"/>
-          <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
+          <DOMFolderItem name="MovieClip" itemID="68404178-00000b93" isExpanded="true"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="sound" itemID="65a6bb4b-0000137a"/>
           <DOMFolderItem name="sprite" itemID="66530518-00000d78"/>
@@ -365,7 +365,7 @@
           <Include href="MovieClip/sprite 1133.xml" loadImmediate="false" itemID="58132bed-0000046e" lastModified="1477651437"/>
           <Include href="MovieClip/sprite 1205.xml" loadImmediate="false" itemID="58132b8f-000004b5" lastModified="1769694309"/>
           <Include href="MovieClip/sprite 1236.xml" loadImmediate="false" itemID="58132bed-000004d5" lastModified="1776195469"/>
-          <Include href="MovieClip/sprite 1478.xml" itemID="58132c3d-000005c6" lastModified="1781719396"/>
+          <Include href="MovieClip/sprite 1478.xml" loadImmediate="false" itemID="58132c3d-000005c6" lastModified="1781988704"/>
           <Include href="MovieClip/sprite 1869.xml" loadImmediate="false" itemID="58132b92-0000074d" lastModified="1776194331"/>
           <Include href="MovieClip/sprite 2028.xml" loadImmediate="false" itemID="58132b92-000007ec" lastModified="1749127392"/>
           <Include href="MovieClip/元件 1.xml" loadImmediate="false" itemID="581339df-00001c10" lastModified="1477655007"/>
@@ -1301,7 +1301,7 @@
           <Include href="容器/兵器攻击容器/兵器攻击容器-见切后撤.xml" itemID="695a2f8a-000012d5" lastModified="1781235284"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-剑气释放.xml" itemID="6958f3c4-00003690" lastModified="1781984857"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-空坠强袭.xml" itemID="695b3df6-00002f39" lastModified="1777377832"/>
-          <Include href="容器/兵器攻击容器/兵器攻击容器-狂乱龙卷.xml" itemID="6a36ef2e-000018a0" lastModified="1781985338"/>
+          <Include href="容器/兵器攻击容器/兵器攻击容器-狂乱龙卷.xml" itemID="6a36ef2e-000018a0" lastModified="1781988704"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-猎影十字.xml" itemID="6959f10a-00000b18" lastModified="1777726362"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-千山破晓钟.xml" itemID="696533ff-00003120" lastModified="1777378540"/>
           <Include href="容器/兵器攻击容器/兵器攻击容器-全垒打.xml" itemID="696796fb-000028fd" lastModified="1781983916"/>
@@ -3047,6 +3047,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4481506" publishTime="1781988631"/>
           <PublishItem publishSize="4329723" publishTime="1781487782"/>
           <PublishItem publishSize="4330544" publishTime="1781242786"/>
           <PublishItem publishSize="4330537" publishTime="1781242469"/>
@@ -3066,6 +3067,5 @@
           <PublishItem publishSize="4364724" publishTime="1779379737"/>
           <PublishItem publishSize="4341117" publishTime="1778082399"/>
           <PublishItem publishSize="4341117" publishTime="1778082025"/>
-          <PublishItem publishSize="4355080" publishTime="1778081154"/>
      </publishHistory>
 </DOMDocument>
