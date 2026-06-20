@@ -594,7 +594,9 @@ $requiredWebPaths = @(
     "modules\asset-timeline.js",
     "modules\dressup-doll-renderer.js",
     "modules\dressup\dressup-panel.js",
-    "assets\dressup\manifest.json"
+    "assets\dressup\manifest.json",
+    "modules\dialogue\dialogue-view.js",
+    "assets\dialogue-portraits\manifest.json"
 )
 $missingWebPaths = @()
 foreach ($relativePath in $requiredWebPaths) {

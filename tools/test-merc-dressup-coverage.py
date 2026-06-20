@@ -52,8 +52,18 @@ BASIC_FALLBACK_FIELDS = {
 }
 
 # Compatibility aliases should resolve current checked-in mercenary equipment
-# without falling back to holder basic children.
-ALLOWED_BASIC_FALLBACK_SKINS: set[str] = set()
+# without falling back to holder basic children — EXCEPT items whose source art
+# genuinely has no limb symbol, where bare-arm basic fallback is the correct look.
+# 军绿防弹衣 是无袖防弹衣（源 SWF 仅身体符号）：上臂/下臂应回退 basic 裸臂。曾用
+# same_item_body_fallback 别名到身体皮 → battle 全身渲染手臂被画成躯干（Alex 实测），已撤别名。
+ALLOWED_BASIC_FALLBACK_SKINS: set[str] = {
+    "男变装-二阶军绿防弹衣上臂",
+    "男变装-二阶军绿防弹衣左下臂",
+    "男变装-二阶军绿防弹衣右下臂",
+    "女变装-二阶军绿防弹衣上臂",
+    "女变装-二阶军绿防弹衣左下臂",
+    "女变装-二阶军绿防弹衣右下臂",
+}
 
 
 def read_json(path: Path) -> Any:

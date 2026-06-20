@@ -51,8 +51,11 @@
         '屁股', '左大腿', '右大腿', '小腿', '脚',
         '脸型', '发型', '面具'
     ];
-    var DRESSUP_HEAD_FIT_FIELDS = ['脸型', '发型', '面具'];
-    var DRESSUP_HEAD_DRAW_FIELDS = DRESSUP_HEAD_FIT_FIELDS.slice(0);
+    // 战斗形态胸像（反哺自主角对话立绘）：头+躯干定缩放、vAlign top、画战斗 rig 全身（含背后收纳
+    // 武器），对齐 NPC 立绘。战斗 rig 武器 holder 字段同为 _装扮，正好被 equipment→fieldsByGender 命中，
+    // 无需改 AS2。原 head-only（仅脸型/发型/面具）已被胸像取代。
+    var DRESSUP_BUST_FIT_FIELDS = ['脸型', '发型', '面具', '身体', '上臂'];
+    var DRESSUP_BATTLE_STATE = '空手站立'; // 武器收纳背后的站姿，最接近 NPC 立绘
     var DRESSUP_FACE_BY_ID_FALLBACK = {
         '0': '女变装-基本脸型',
         '1': '男变装-基本脸型'
@@ -537,18 +540,22 @@
         return appearance;
     }
 
-    function buildMercDressupState(merc, fitFields, zoom, margin, drawFields) {
+    function buildMercDressupState(merc, fitFields, zoom, margin, drawFields, rig, stateLabel, vAlign) {
         if (!_dressupManifest) return null;
         var equipment = dressupEquipmentFromMerc(merc);
-        return DressupDollRenderer.buildStateFromEquipment(_dressupManifest, {
+        var st = DressupDollRenderer.buildStateFromEquipment(_dressupManifest, {
             gender: normalizeMercGender(merc),
             equipment: equipment,
             appearance: dressupAppearanceFromMerc(merc, equipment),
             fitFields: fitFields,
             drawFields: drawFields,
+            rig: rig,             // 'battle' → 走战斗 rig；undefined 走默认 dialogue rig
+            stateLabel: stateLabel,
             zoom: zoom,
             margin: margin
         });
+        if (st && vAlign) st.vAlign = vAlign; // 'top' = 胸像取景：头齐顶、下身溢出裁切
+        return st;
     }
 
     function dressupCacheKey(merc, variant) {
@@ -637,12 +644,17 @@
                 return;
             }
             var size = variant === 'selbar' ? 140 : 112;
+            // 固定比例胸像：战斗 rig 空手站立 + 头+躯干取景 + vAlign top，画全身（含背后武器）。
+            // drawFields=null → 不过滤，画战斗 rig 全部 holder（武器随之入画）。zoom 偏小留出肩后武器。
             var state = buildMercDressupState(
                 merc,
-                DRESSUP_HEAD_FIT_FIELDS,
-                variant === 'selbar' ? 1.16 : 1.12,
-                10,
-                DRESSUP_HEAD_DRAW_FIELDS
+                DRESSUP_BUST_FIT_FIELDS,
+                variant === 'selbar' ? 1.04 : 1.0,
+                6,
+                null,
+                'battle',
+                DRESSUP_BATTLE_STATE,
+                'top'
             );
             if (!state) return;
             renderDressupSnapshot(state, size, size, function(url) {
@@ -702,7 +714,8 @@
                 height: 380,
                 fps: 24
             });
-            var state = buildMercDressupState(merc, DRESSUP_BODY_FIT_FIELDS, 0.92, 16, null);
+            // 培养页全身预览：改走战斗 rig 空手站立（修正 dialogue man pose 的武器错位），全身居中。
+            var state = buildMercDressupState(merc, DRESSUP_BODY_FIT_FIELDS, 0.92, 16, null, 'battle', DRESSUP_BATTLE_STATE);
             if (state) _dressupDetailRenderer.render(state);
         }).catch(function() {
             if (host._dressupToken !== token) return;

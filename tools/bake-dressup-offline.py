@@ -245,30 +245,10 @@ COMPAT_DRESSUP_ALIASES = {
         "sourceKey": "枪-长枪-CAR",
         "reason": "manual_compat_nearest_assault_rifle",
     },
-    "女变装-二阶军绿防弹衣上臂": {
-        "sourceKey": "女变装-二阶军绿防弹衣身体",
-        "reason": "manual_compat_same_item_body_fallback",
-    },
-    "女变装-二阶军绿防弹衣右下臂": {
-        "sourceKey": "女变装-二阶军绿防弹衣身体",
-        "reason": "manual_compat_same_item_body_fallback",
-    },
-    "女变装-二阶军绿防弹衣左下臂": {
-        "sourceKey": "女变装-二阶军绿防弹衣身体",
-        "reason": "manual_compat_same_item_body_fallback",
-    },
-    "男变装-二阶军绿防弹衣上臂": {
-        "sourceKey": "男变装-二阶军绿防弹衣身体",
-        "reason": "manual_compat_same_item_body_fallback",
-    },
-    "男变装-二阶军绿防弹衣右下臂": {
-        "sourceKey": "男变装-二阶军绿防弹衣身体",
-        "reason": "manual_compat_same_item_body_fallback",
-    },
-    "男变装-二阶军绿防弹衣左下臂": {
-        "sourceKey": "男变装-二阶军绿防弹衣身体",
-        "reason": "manual_compat_same_item_body_fallback",
-    },
+    # 军绿防弹衣 是无袖防弹衣（源 SWF 仅有身体符号、无臂符号）。曾用 same_item_body_fallback
+    # 把缺失的 上臂/左下臂/右下臂 别名到「身体」皮 → battle 全身渲染时手臂被画成躯干（Alex 实测：
+    # 中间躯干 + 两侧各 2 块躯干、无手臂）。正解：不别名，臂 holder 回退 basic 裸臂（露角色本来的胳膊）。
+    # 躯干皮绝不可贴到四肢——由 test-dressup-manifest-integrity 的「身体 PNG ≠ 臂/手 PNG」守卫固定。
     "女变装-军阀兵头衣服上臂": {
         "sourceKey": "男变装-军阀兵头衣服上臂",
         "reason": "manual_compat_opposite_gender_same_limb",
@@ -3022,11 +3002,24 @@ def attach_direct_layer_exports(
 
 def iter_basic_holders(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     holders: list[dict[str, Any]] = []
+
+    def consider(holder: dict[str, Any]) -> None:
+        basic = holder.get("basic")
+        if holder.get("fallbackBasic") and basic and basic.get("linkageId"):
+            holders.append(holder)
+
+    # 对话框 rig
     for gender_data in (manifest.get("rig", {}).get("genders") or {}).values():
         for holder in gender_data.get("holders", []):
-            basic = holder.get("basic")
-            if holder.get("fallbackBasic") and basic and basic.get("linkageId"):
-                holders.append(holder)
+            consider(holder)
+    # 具名 rig（battle 等）：gender → state → holders。必须一并导出裸肢体 basic，
+    # 否则无袖装（如军绿防弹衣）在战斗 rig 下臂 holder 无 export → 回退兜底失效 → 手臂直接缺失。
+    # 同 linkageId 的 holder 共享同一次导出（by_linkage 分组），故只多导 ~22 个基础肢体，开销小。
+    for rig in (manifest.get("rigs") or {}).values():
+        for gender_data in (rig.get("genders") or {}).values():
+            for state in (gender_data.get("states") or {}).values():
+                for holder in state.get("holders", []):
+                    consider(holder)
     return holders
 
 

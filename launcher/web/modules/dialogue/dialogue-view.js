@@ -20,21 +20,21 @@
     // 把被原版盖住的背景基座露出来。>1 则向胸像内裁得更紧。群像宽度靠 PORTRAIT_SLOT_W 适配，不靠降此值。
     var PORTRAIT_ZOOM = 1.0;
     var DEFAULT_EXPRESSION = '普通';
-    var HERO_KEYS = {
-        '$PC_CHAR': true,
-        '玩家': true,
-        '主角模板': true
-    };
-    // 胸像 fit 区域：仅取「头+躯干+上臂」定缩放（不含前臂/手），使头部大小贴近 NPC 立绘——
-    // 区域越短头越大。前臂/手/腿仍在 drawFields 里照画，向下溢出由画布裁切。
-    var DIALOGUE_FIT_FIELDS = [
+    // 主角 key 的权威来源有二：① AS2 运行时下发的 line.portraitType==='hero'（主路径）；
+    // ② 烘焙脚本 tools/bake-dialogue-portraits.py 写入 manifest.heroKeys（本模块据此判定，见 heroKeySet）。
+    // 这里只保留兜底常量，供 manifest 缺 heroKeys 时使用——不再做第三处硬编码，避免与上面两处漂移。
+    // 同名清单亦见 AS2 TaskPanelService.buildHeroPortraitState 的 portraitType 判定。
+    var HERO_KEYS_FALLBACK = ['$PC_CHAR', '玩家', '主角模板'];
+    // 主角对话立绘用「战斗 rig」渲染，而非对话框 man pose——经实机核对：原版对话框的 man pose 主角
+    // 其实不显示武器（rig 里有 _装扮 武器 holder 但原版从不填充），而玩家模板做的 NPC 立绘统一是
+    // 战斗形态带武器（背后收纳）。为对齐 NPC 立绘标准、且不去碰几年没动、负债重的对话框 rig 数据，
+    // 主角直接走 battle rig。空手站立=武器收纳背后的站姿，最接近 NPC 立绘；战斗 rig 武器 holder 字段
+    // 同为 _装扮，正好被 equipment→fieldsByGender 产出的 keyMap 命中（无需 AS2 改动）。
+    var HERO_BATTLE_STATE = '空手站立';
+    // 胸像取景：仅以「头+躯干+上臂」定缩放（战斗 rig 同名 holder），头大、腿向下溢出由画布裁切。
+    // 不传 drawFields → 画战斗 rig 全身（含背后武器）。
+    var PORTRAIT_FIT_FIELDS = [
         '脸型', '发型', '面具', '身体', '上臂'
-    ];
-    var DIALOGUE_DRAW_FIELDS = [
-        '屁股', '左大腿', '右大腿', '小腿', '脚',
-        '身体', '上臂', '左下臂', '右下臂', '左手', '右手',
-        '刀', '长枪', '手枪', '手枪2',
-        '脸型', '发型', '面具'
     ];
 
     var _portraitManifestPromise = null;
@@ -60,6 +60,9 @@
                 manifest.__baseUrl = baseUrl(url);
                 manifest.__index = buildIndex(manifest);
                 return manifest;
+            }).catch(function(err) {
+                _portraitManifestPromise = null; // 失败不毒化会话：瞬时 fetch 失败后下次渲染可重试
+                throw err;
             });
         }
         return _portraitManifestPromise;
@@ -70,7 +73,11 @@
             if (!global.DressupDollRenderer || !global.DressupDollRenderer.loadManifest) {
                 _dressupManifestPromise = Promise.resolve(null);
             } else {
-                _dressupManifestPromise = global.DressupDollRenderer.loadManifest(DRESSUP_MANIFEST_URL);
+                _dressupManifestPromise = global.DressupDollRenderer.loadManifest(DRESSUP_MANIFEST_URL)
+                    .catch(function(err) {
+                        _dressupManifestPromise = null; // 同上：失败不永久退化为占位，下次主角立绘可重试
+                        throw err;
+                    });
             }
         }
         return _dressupManifestPromise;
@@ -127,8 +134,11 @@
         };
     }
 
-    function isHeroKey(key) {
-        return !!HERO_KEYS[key];
+    function heroKeySet(manifest) {
+        var src = (manifest && manifest.heroKeys && manifest.heroKeys.length) ? manifest.heroKeys : HERO_KEYS_FALLBACK;
+        var set = {};
+        for (var i = 0; i < src.length; i++) set[src[i]] = true;
+        return set;
     }
 
     function lookupEntry(manifest, key) {
@@ -281,9 +291,10 @@
             equipment: equipment,
             appearance: appearance,
             keyMap: heroPortrait.keyMap || null,
-            fitFields: DIALOGUE_FIT_FIELDS,   // 以「头→手」上半身定缩放 = 胸像高度
-            drawFields: DIALOGUE_DRAW_FIELDS, // 仍画全身，腿部向下溢出由画布裁切
-            rig: 'dialogue',
+            fitFields: PORTRAIT_FIT_FIELDS,   // 以「头+躯干」上半身定缩放 = 胸像高度
+            // 不传 drawFields：画战斗 rig 全身（含背后收纳武器），腿向下溢出由画布裁切
+            rig: 'battle',
+            stateLabel: HERO_BATTLE_STATE,    // 空手站立：武器收纳背后，对齐 NPC 立绘
             zoom: 1.05,
             margin: 6
         });
@@ -292,12 +303,24 @@
         return st;
     }
 
+    function isBriefSlot(slot) {
+        var container = slot && slot.closest ? slot.closest('.cf-dialogue') : null;
+        return !!(container && container.getAttribute('data-dialogue-mode') === 'brief');
+    }
+
     function renderHeroPortrait(slot, heroPortrait) {
+        // 记下主角快照，供 setMode 在 rich/brief 间切换时重建（简略态销毁了 Canvas）。
+        slot.__heroPortrait = heroPortrait || null;
+        // 简略模式立绘被 CSS 隐藏：不创建 Canvas，避免隐藏画布的 24fps rAF 空转（仅动图主角才会持续空转，
+        // 但静态主角也省掉一次无谓绘制）。切回 rich 时由 setMode 按 __heroPortrait 重建。createLine 已放占位。
+        if (isBriefSlot(slot)) return Promise.resolve();
         if (!global.DressupDollRenderer || !global.AssetTimeline) {
             showPlaceholder(slot, 'PC');
             return Promise.resolve();
         }
         return loadDressupManifest().then(function(manifest) {
+            // manifest 异步期间可能已切回 brief（快速来回切）：勿在隐藏槽建 Canvas，免得又起 rAF 空转。
+            if (isBriefSlot(slot)) return;
             if (!manifest) {
                 showPlaceholder(slot, 'PC');
                 return;
@@ -322,11 +345,26 @@
         });
     }
 
-    // 简略模式：在对话容器上打标，CSS 据此切换信息密度（隐藏立绘、压缩为单列密排）。
-    // 仅切 class、不重渲染，立绘 DOM 保留，槽尺寸变化时 applyStagePortraitFit 已读 clientWidth 自适应。
+    // 简略模式：在对话容器上打标，CSS 据此切换信息密度（隐藏立绘、压缩为单列密排）。NPC 立绘是
+    // 静态 <img>，仅切 class、保留 DOM（槽尺寸变化时 applyStagePortraitFit 已读 clientWidth 自适应）。
+    // 主角是 Canvas renderer，简略态会销毁以停掉隐藏画布的 rAF 空转，切回 rich 时按 __heroPortrait 重建。
     function setMode(container, mode) {
         if (!container) return;
-        container.setAttribute('data-dialogue-mode', mode === 'brief' ? 'brief' : 'rich');
+        var brief = mode === 'brief';
+        container.setAttribute('data-dialogue-mode', brief ? 'brief' : 'rich');
+        var slots = container.querySelectorAll('.cf-dialogue-portrait-slot');
+        for (var i = 0; i < slots.length; i++) {
+            var slot = slots[i];
+            if (!('__heroPortrait' in slot)) continue; // 仅主角槽参与（NPC 槽无此字段）
+            if (brief) {
+                if (slot.__dialogueRenderer) {
+                    if (slot.__dialogueRenderer.destroy) slot.__dialogueRenderer.destroy();
+                    slot.__dialogueRenderer = null;
+                }
+            } else if (!slot.__dialogueRenderer && slot.__heroPortrait) {
+                renderHeroPortrait(slot, slot.__heroPortrait);
+            }
+        }
     }
 
     function dispose(container) {
@@ -396,9 +434,10 @@
 
         return loadPortraitManifest(options.manifestUrl).then(function(manifest) {
             if (container.getAttribute('data-dialogue-render') !== token) return;
+            var heroKeys = heroKeySet(manifest);
             rows.forEach(function(item) {
                 var key = item.portrait.key;
-                if (isHeroKey(key) || item.line.portraitType === 'hero') {
+                if (heroKeys[key] || item.line.portraitType === 'hero') {
                     renderHeroPortrait(item.slot, options.heroPortrait || item.line.heroPortrait || null);
                     return;
                 }
