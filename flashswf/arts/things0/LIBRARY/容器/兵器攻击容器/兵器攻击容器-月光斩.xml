@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-月光斩" itemID="695a2a52-0000128d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-月光斩" lastModified="1777727582" lastUniqueIdentifier="11">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-月光斩" itemID="695a2a52-0000128d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-月光斩" lastModified="1781983897" lastUniqueIdentifier="11">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-月光斩" currentFrame="32">
+    <DOMTimeline name="兵器攻击容器-月光斩" currentFrame="11">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -148,14 +148,14 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="11" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -796,7 +796,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左手-2" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="左手-2" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -1338,11 +1338,11 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="副手刀" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="副手刀" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-76.3" centerPoint3DY="55.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-76.3" centerPoint3DY="55.25">
                   <matrix>
                     <Matrix a="-0.0974273681640625" b="-0.994522094726563" c="-0.993255615234375" d="0.097320556640625" tx="139.55" ty="37.05"/>
                   </matrix>
@@ -1357,7 +1357,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-22.3" centerPoint3DY="70.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-22.3" centerPoint3DY="70.7">
                   <matrix>
                     <Matrix a="-0.0974273681640625" b="-0.994522094726563" c="-0.993255615234375" d="0.097320556640625" tx="193.55" ty="52.5"/>
                   </matrix>
@@ -1450,7 +1450,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-162.85" centerPoint3DY="57.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-162.85" centerPoint3DY="57.25">
                   <matrix>
                     <Matrix a="-0.072967529296875" b="-0.994720458984375" c="-0.9967041015625" d="0.0731353759765625" tx="54.7" ty="43.95"/>
                   </matrix>
@@ -5987,7 +5987,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="副手刀 复制" color="#9933CC" autoNamed="false">
+        <DOMLayer name="副手刀 复制" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -6039,7 +6039,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-3" centerPoint3DY="23.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-3" centerPoint3DY="23.6">
                   <matrix>
                     <Matrix a="0.08203125" b="-0.995590209960938" c="0.996307373046875" d="0.082061767578125" tx="-219.85" ty="8.9"/>
                   </matrix>
@@ -6054,7 +6054,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="12" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="10.35" centerPoint3DY="69.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="10.35" centerPoint3DY="69.1">
                   <matrix>
                     <Matrix a="0.189361572265625" b="-0.9798583984375" c="0.981063842773438" d="0.1895751953125" tx="-203.45" ty="30.85"/>
                   </matrix>

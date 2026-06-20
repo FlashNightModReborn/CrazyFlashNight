@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-剑气释放" itemID="6958f3c4-00003690" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-剑气释放" lastModified="1777726464" lastUniqueIdentifier="4137">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-剑气释放" itemID="6958f3c4-00003690" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-剑气释放" lastModified="1781984857" lastUniqueIdentifier="4137">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-剑气释放" currentFrame="12">
+    <DOMTimeline name="兵器攻击容器-剑气释放" currentFrame="5">
       <layers>
-        <DOMLayer name="左手-2" color="#AFE9DD" autoNamed="false">
+        <DOMLayer name="左手-2" color="#AFE9DD" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" name="剑气释放" labelType="name" keyMode="9728">
               <elements/>
@@ -45,7 +45,7 @@ _parent.UpdateSmallState("剑气释放中");]]></script>
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-104.7" centerPoint3DY="279.25">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" selected="true" centerPoint3DX="-104.7" centerPoint3DY="279.25">
                   <matrix>
                     <Matrix tx="-104.7" ty="279.25"/>
                   </matrix>
@@ -61,7 +61,7 @@ _parent.UpdateSmallState("剑气释放中");]]></script>
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器攻击标志" name="兵器攻击标签" centerPoint3DX="-104.7" centerPoint3DY="306.25">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器攻击标志" name="兵器攻击标签" selected="true" centerPoint3DX="-104.7" centerPoint3DY="306.25">
                   <matrix>
                     <Matrix tx="-104.7" ty="306.25"/>
                   </matrix>
@@ -120,7 +120,7 @@ _parent.UpdateSmallState("剑气释放中");]]></script>
             </DOMFrame>
             <DOMFrame index="5" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="394.3" centerPoint3DY="-142.25">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="394.3" centerPoint3DY="-142.25">
                   <matrix>
                     <Matrix a="17.1313629150391" d="7.18408203125" tx="423.1" ty="-13.85"/>
                   </matrix>
@@ -650,7 +650,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="副手刀" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="副手刀" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>

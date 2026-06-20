@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招" itemID="69eff1b8-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影1连招" lastModified="1778317526" lastUniqueIdentifier="45">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招" itemID="69eff1b8-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影1连招" lastModified="1781988193" lastUniqueIdentifier="45">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-疾影1连招" currentFrame="16">
+    <DOMTimeline name="兵器攻击容器-疾影1连招" currentFrame="4">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -816,7 +816,7 @@ Z轴攻击范围 = 60;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -1215,7 +1215,7 @@ Z轴攻击范围 = 60;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>

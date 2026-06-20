@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-十六夜月华" itemID="695a2793-00001246" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-十六夜月华" lastModified="1777727811" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-十六夜月华" itemID="695a2793-00001246" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-十六夜月华" lastModified="1781988141" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-十六夜月华" currentFrame="20">
+    <DOMTimeline name="兵器攻击容器-十六夜月华" currentFrame="3">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -444,14 +444,14 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="3" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="29.6" centerPoint3DY="67.5">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="29.6" centerPoint3DY="67.5">
                   <matrix>
                     <Matrix a="41.5703277587891" d="23.5989227294922" tx="179.65" ty="-9.3"/>
                   </matrix>
@@ -1095,7 +1095,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -1114,7 +1114,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-69.25" centerPoint3DY="49.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-69.25" centerPoint3DY="49.25">
                   <matrix>
                     <Matrix a="-0.10302734375" b="-0.991119384765625" c="-0.994110107421875" d="0.10333251953125" tx="147.5" ty="29.9"/>
                   </matrix>
