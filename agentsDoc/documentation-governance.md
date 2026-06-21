@@ -115,5 +115,6 @@ node tools/validate-doc-governance.js
 - 关键文档包含基线标记或维护约束
 - 高变动文档的基线 commit 真实存在于 `git log` 中
 - 入口文档行数没有突破本文 §7 的预算
+- 世界观稳定节名引用存在对应定义，旧行号锚点不回流
 
 脚本是巡检器，不是 source of truth；规则本身仍以本文为准。

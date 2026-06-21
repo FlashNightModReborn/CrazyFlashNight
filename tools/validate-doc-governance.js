@@ -42,6 +42,24 @@ function expectNotContains(rel, pattern, message) {
     expect(!pattern.test(text), message + " [" + rel + "]");
 }
 
+function listFiles(relDir, predicate) {
+    var out = [];
+    var dir = abs(relDir);
+    if (!fs.existsSync(dir)) return out;
+    var names = fs.readdirSync(dir);
+    for (var i = 0; i < names.length; i++) {
+        var rel = path.join(relDir, names[i]).replace(/\\/g, "/");
+        var full = abs(rel);
+        var st = fs.statSync(full);
+        if (st.isDirectory()) {
+            out = out.concat(listFiles(rel, predicate));
+        } else if (!predicate || predicate(rel)) {
+            out.push(rel);
+        }
+    }
+    return out;
+}
+
 var REQUIRED_FILES = [
     "AGENTS.md",
     "CLAUDE.md",
@@ -231,6 +249,56 @@ expectNotContains("README.md", /内置Node\.js本地服务器/, "stale Node serv
 expectNotContains("README.md", /Node\.js：14\.0\+/, "stale Node version leaked into root README");
 expectNotContains("automation/README.md", /Node\.js 服务器/, "stale Node server language leaked into automation README");
 expectNotContains("agentsDoc/coding-standards.md", /\.NET Framework 4\.5\b/, "stale .NET version leaked into coding-standards");
+
+// ---- Worldbuilding stable-section guards ----
+
+var WORLDBUILDING_DOCS = listFiles("docs/worldbuilding", function (rel) {
+    return /\.md$/.test(rel);
+});
+if (exists("docs/reports/worldbuilding-version-history.md")) {
+    WORLDBUILDING_DOCS.push("docs/reports/worldbuilding-version-history.md");
+}
+
+var stableSectionDefinitions = {};
+for (var ws = 0; ws < WORLDBUILDING_DOCS.length; ws++) {
+    var worldRel = WORLDBUILDING_DOCS[ws];
+    if (worldRel.indexOf("docs/worldbuilding/") !== 0) continue;
+    var worldText = read(worldRel);
+    var worldLines = worldText.split(/\r?\n/);
+    for (var wl = 0; wl < worldLines.length; wl++) {
+        if (worldLines[wl].indexOf("稳定节名") === -1) continue;
+        var defs = worldLines[wl].match(/`([0-9]{2}·[^`]+)`/g) || [];
+        for (var wd = 0; wd < defs.length; wd++) {
+            stableSectionDefinitions[defs[wd].slice(1, -1)] = worldRel + ":" + (wl + 1);
+        }
+    }
+}
+
+var STALE_WORLDBUILDING_ANCHORS = [
+    /08-1\.5/,
+    /1\.5·Oracle查询目标/,
+    /08-4\.1\.1/,
+    /§\d+\./,
+    /:line\s+\d+/i,
+    /#L\d+\b/
+];
+
+for (var wr = 0; wr < WORLDBUILDING_DOCS.length; wr++) {
+    var wbRel = WORLDBUILDING_DOCS[wr];
+    var wbText = read(wbRel);
+    for (var sa = 0; sa < STALE_WORLDBUILDING_ANCHORS.length; sa++) {
+        expect(!STALE_WORLDBUILDING_ANCHORS[sa].test(wbText), "stale worldbuilding line/section anchor leaked [" + wbRel + "]");
+    }
+
+    var wbLines = wbText.split(/\r?\n/);
+    for (var wli = 0; wli < wbLines.length; wli++) {
+        var refs = wbLines[wli].match(/`([0-9]{2}·[^`]+)`/g) || [];
+        for (var rf = 0; rf < refs.length; rf++) {
+            var refName = refs[rf].slice(1, -1);
+            expect(!!stableSectionDefinitions[refName], "worldbuilding stable section reference missing definition: `" + refName + "` [" + wbRel + ":" + (wli + 1) + "]");
+        }
+    }
+}
 
 // ---- Output ----
 
