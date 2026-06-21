@@ -472,6 +472,8 @@ _root.敌人函数.应用影子色彩 = function(target:MovieClip) {
         target.掉落物 = [];
     } else if (target.超时空传送) {
         _root.设置色彩(target, 0.3, 0.55, 1.1, NaN, NaN, NaN, NaN, NaN);
+    } else if (target.狂暴) {
+        _root.设置色彩(target, 1.1, 0.55, 1.1, NaN, NaN, NaN, NaN, NaN);
     } else if (target.色彩单位) {
         _root.设置色彩(target, target.红色乘数, target.绿色乘数, target.蓝色乘数, target.红色偏移, target.绿色偏移, target.蓝色偏移, target.透明乘数, target.透明偏移);
         target.不掉钱 = true;
