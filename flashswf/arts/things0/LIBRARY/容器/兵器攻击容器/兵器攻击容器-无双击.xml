@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-无双击" itemID="6a36e065-0000161d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-无双击" lastModified="1781982063" lastUniqueIdentifier="329">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-无双击" itemID="6a36e065-0000161d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-无双击" lastModified="1782007173" lastUniqueIdentifier="329">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-无双击" currentFrame="6" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;guideline direction="v"&gt;-123&lt;/guideline&gt;&lt;guideline direction="v"&gt;102&lt;/guideline&gt;&lt;guideline direction="h"&gt;-26&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器攻击容器-无双击" currentFrame="20" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;guideline direction="v"&gt;-123&lt;/guideline&gt;&lt;guideline direction="v"&gt;102&lt;/guideline&gt;&lt;guideline direction="h"&gt;-26&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -31,7 +31,14 @@
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="6" duration="21" keyMode="9728">
+            <DOMFrame index="6" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.攻击呐喊();
+_root.播放音效("阎魔刀用力横斩.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="7" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.攻击呐喊();
 _root.播放音效("阎魔刀用力横斩.wav");]]></script>
@@ -99,7 +106,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -145,7 +152,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
                     <script><![CDATA[onClipEvent (enterFrame) {
 	var 自机 = _parent._parent;
 	if (自机._name == _root.控制目标)
-	{_parent.月光斩可派生();}
+	{_parent.无双击可派生();}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -153,7 +160,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -298,7 +305,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -307,7 +314,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-229.2" centerPoint3DY="32.1">
                   <matrix>
-                    <Matrix a="65.3114776611328" d="26.391845703125" tx="221.5" ty="-80.2"/>
+                    <Matrix a="65.3114624023438" d="26.391845703125" tx="221.5" ty="-80.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.55" y="12.5"/>
@@ -511,7 +518,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-7.65" centerPoint3DY="131.6">
                   <matrix>
-                    <Matrix a="55.7273712158203" d="25.2758178710938" tx="525.5" ty="-19.05"/>
+                    <Matrix a="55.7273559570313" d="25.2758178710938" tx="525.5" ty="-19.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>

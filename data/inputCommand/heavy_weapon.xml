@@ -96,6 +96,19 @@
             </Tags>
         </Command>
 
+        <!-- 无双击: 上 + A -->
+        <Command name="无双击" action="无双击" priority="7">
+            <Sequence>
+                <Event>UP</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>上挑</Tag>
+            </Tags>
+        </Command>
+
         <!-- 追地祀: 下 + C -->
         <Command name="追地祀" action="追地祀" priority="7">
             <Sequence>
@@ -124,6 +137,22 @@
                 <Skill name="上挑" minLevel="1"/>
             </Requirements>
         </Command>
+
+         <!-- 狂乱龙卷: 上 + C，要求上挑 Lv1 -->
+        <Command name="狂乱龙卷" action="狂乱龙卷" priority="7">
+            <Sequence>
+                <Event>UP</Event>
+                <Event>C_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>重武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>上挑</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
+        </Command>       
 
         <!-- 空坠强袭: 下 + A，要求下劈 Lv1 -->
         <Command name="空坠强袭" action="空坠强袭" priority="8">
@@ -221,6 +250,24 @@
             <To>月光斩</To>
             <To>见切</To>
         </Derive>
+        <Derive from="粉碎切割">
+            <To>飞沙走石</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+            <To>月光斩</To>
+            <To>见切</To>
+            <To>空坠强袭</To>
+            <To>十六夜月华</To>
+        </Derive>
+        <Derive from="狂乱龙卷">
+            <To>飞沙走石</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+            <To>月光斩</To>
+            <To>见切</To>
+            <To>空坠强袭</To>
+            <To>十六夜月华</To>
+        </Derive>
         <Derive from="空坠强袭">
             <To>飞沙走石</To>
             <To>贯穿突刺</To>
@@ -229,6 +276,24 @@
             <To>蓄力重劈</To>
             <To>粉碎切割</To>
             <To>月光斩</To>
+            <To>见切</To>
+        </Derive>
+        <Derive from="全垒打">
+            <To>飞沙走石</To>
+            <To>贯穿突刺</To>
+            <To>百万突刺</To>
+            <To>十六夜月华</To>
+            <To>蓄力重劈</To>
+            <To>粉碎切割</To>
+            <To>见切</To>
+        </Derive>
+        <Derive from="无双击">
+            <To>飞沙走石</To>
+            <To>贯穿突刺</To>
+            <To>百万突刺</To>
+            <To>十六夜月华</To>
+            <To>蓄力重劈</To>
+            <To>粉碎切割</To>
             <To>见切</To>
         </Derive>
         <Derive from="十六夜月华">

@@ -25,6 +25,22 @@
             </Requirements>
         </Command>
 
+        <!-- 双剑气: 下前 + A，要求刀剑攻击 Lv3 -->
+        <Command name="双剑气" action="双剑气" priority="10">
+            <Sequence>
+                <Event>DOWN_FORWARD</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>轻武器</Tag>
+                <Tag>远程</Tag>
+                <Tag>必杀</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="刀剑攻击" minLevel="3"/>
+            </Requirements>
+        </Command>
+
         <!-- 贯穿突刺: 双击前，要求刀剑攻击 Lv1 -->
         <Command name="贯穿突刺" action="贯穿突刺" priority="5">
             <Sequence>
@@ -72,6 +88,22 @@
             </Requirements>
         </Command>
 
+        <!-- 百裂刺: Shift前 + A，要求下劈 Lv1 -->
+        <Command name="百裂刺" action="百裂刺" priority="10">
+            <Sequence>
+                <Event>SHIFT_FORWARD</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>轻武器</Tag>
+                <Tag>移动</Tag>
+                <Tag>必杀</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="下劈" minLevel="1"/>
+            </Requirements>
+        </Command>
+
         <!-- 幻影剑舞: Shift前 + C，要求下劈 Lv4 -->
         <Command name="幻影剑舞" action="幻影剑舞" priority="10">
             <Sequence>
@@ -104,6 +136,22 @@
             </Requirements>
         </Command>
 
+        <!-- 外斩劈裂: 上 + A，要求上挑 Lv1 -->
+        <Command name="外斩劈裂" action="外斩劈裂" priority="7">
+            <Sequence>
+                <Event>UP</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>轻武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>上挑</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
+        </Command>
+
         <!-- 次元斩: 下 + C -->
         <Command name="次元斩" action="次元斩" priority="7">
             <Sequence>
@@ -119,6 +167,22 @@
 
         <!-- 粉碎切割: 上 + C，要求上挑 Lv1 -->
         <Command name="粉碎切割" action="粉碎切割" priority="7">
+            <Sequence>
+                <Event>UP</Event>
+                <Event>C_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>轻武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>上挑</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
+        </Command>
+
+        <!-- 双旋轮切: 上 + C，要求上挑 Lv1 -->
+        <Command name="双旋轮切" action="双旋轮切" priority="7">
             <Sequence>
                 <Event>UP</Event>
                 <Event>C_PRESS</Event>
@@ -165,6 +229,22 @@
             </Requirements>
         </Command>
 
+        <!-- 双龙连斩: 上后 + A -->
+        <Command name="双龙连斩" action="双龙连斩" priority="7">
+            <Sequence>
+                <Event>UP_BACK</Event>
+                <Event>A_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>轻武器</Tag>
+                <Tag>近战</Tag>
+                <Tag>反击</Tag>
+            </Tags>
+            <Requirements>
+                <Skill name="上挑" minLevel="1"/>
+            </Requirements>
+        </Command>
+
         <!-- 见切: 后 + C，要求上挑 Lv1 -->
         <Command name="见切" action="见切" priority="7">
             <Sequence>
@@ -183,6 +263,16 @@
 
     <Derivations>
         <Derive from="剑气释放">
+            <To>贯穿突刺</To>
+            <To>百万突刺</To>
+            <To>蓄力重劈</To>
+            <To>猎影十字</To>
+            <To>月光斩</To>
+            <To>见切</To>
+            <To>粉碎切割</To>
+            <To>十六夜月华</To>
+        </Derive>
+        <Derive from="双剑气">
             <To>贯穿突刺</To>
             <To>百万突刺</To>
             <To>蓄力重劈</To>
@@ -222,6 +312,16 @@
             <To>粉碎切割</To>
             <To>十六夜月华</To>
         </Derive>
+        <Derive from="外斩劈裂">
+            <To>双剑气</To>
+            <To>贯穿突刺</To>
+            <To>百裂刺</To>
+            <To>蓄力重劈</To>
+            <To>猎影十字</To>
+            <To>见切</To>
+            <To>双旋轮切</To>
+            <To>双龙连斩</To>
+        </Derive>
         <Derive from="百万突刺">
             <To>剑气释放</To>
             <To>贯穿突刺</To>
@@ -230,6 +330,16 @@
             <To>粉碎切割</To>
             <To>猎影十字</To>
             <To>月光斩</To>
+            <To>见切</To>
+        </Derive>
+        <Derive from="百裂刺">
+            <To>双剑气</To>
+            <To>贯穿突刺</To>
+            <To>双龙连斩</To>
+            <To>蓄力重劈</To>
+            <To>双旋轮切</To>
+            <To>猎影十字</To>
+            <To>外斩劈裂</To>
             <To>见切</To>
         </Derive>
         <Derive from="猎影十字">
@@ -250,6 +360,16 @@
             <To>粉碎切割</To>
             <To>猎影十字</To>
             <To>月光斩</To>
+            <To>见切</To>
+        </Derive>
+        <Derive from="双龙连斩">
+            <To>双剑气</To>
+            <To>贯穿突刺</To>
+            <To>百裂刺</To>
+            <To>蓄力重劈</To>
+            <To>双旋轮切</To>
+            <To>猎影十字</To>
+            <To>外斩劈裂</To>
             <To>见切</To>
         </Derive>
         <Derive from="见切">

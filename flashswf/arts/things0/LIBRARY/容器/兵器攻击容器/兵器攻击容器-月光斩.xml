@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-月光斩" itemID="695a2a52-0000128d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-月光斩" lastModified="1781983897" lastUniqueIdentifier="11">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-月光斩" itemID="695a2a52-0000128d" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-月光斩" lastModified="1782004585" lastUniqueIdentifier="11">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-月光斩" currentFrame="11">
+    <DOMTimeline name="兵器攻击容器-月光斩" currentFrame="22">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -183,7 +183,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="22" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -1465,7 +1465,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-71.1" centerPoint3DY="35.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-71.1" centerPoint3DY="35.25">
                   <matrix>
                     <Matrix a="-0.072967529296875" b="-0.994720458984375" c="-0.9967041015625" d="0.0731353759765625" tx="146.45" ty="21.95"/>
                   </matrix>
@@ -1480,7 +1480,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="17" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-71.1" centerPoint3DY="-7.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-71.1" centerPoint3DY="-7.7">
                   <matrix>
                     <Matrix a="-0.072967529296875" b="-0.994720458984375" c="-0.9967041015625" d="0.0731353759765625" tx="146.45" ty="-21"/>
                   </matrix>
@@ -1495,7 +1495,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="18" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-89.7" centerPoint3DY="-22.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-89.7" centerPoint3DY="-22.7">
                   <matrix>
                     <Matrix a="-0.072967529296875" b="-0.994720458984375" c="-0.9967041015625" d="0.0731353759765625" tx="127.85" ty="-36"/>
                   </matrix>
@@ -1546,7 +1546,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="28.45" centerPoint3DY="55.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="28.45" centerPoint3DY="55.4">
                   <matrix>
                     <Matrix a="0.0867919921875" b="-0.993179321289063" c="0.9959716796875" d="0.0870361328125" tx="-188.9" ty="38.7"/>
                   </matrix>
@@ -6024,7 +6024,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-3" centerPoint3DY="11.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-3" centerPoint3DY="11.6">
                   <matrix>
                     <Matrix a="0.08203125" b="-0.995590209960938" c="0.996307373046875" d="0.082061767578125" tx="-219.85" ty="-3.1"/>
                   </matrix>
@@ -6072,7 +6072,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="9.8" centerPoint3DY="-3.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="9.8" centerPoint3DY="-3.3">
                   <matrix>
                     <Matrix a="-0.0704193115234375" b="-0.994674682617188" c="0.997238159179688" d="-0.070587158203125" tx="-207.45" ty="14.75"/>
                   </matrix>
@@ -6087,7 +6087,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="21" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-46.2" centerPoint3DY="13.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-46.2" centerPoint3DY="13.9">
                   <matrix>
                     <Matrix a="-0.0704193115234375" b="-0.994674682617188" c="0.997238159179688" d="-0.070587158203125" tx="-263.45" ty="31.95"/>
                   </matrix>
@@ -6102,7 +6102,7 @@ _root.播放音效("阎魔刀用力竖斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="22" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" selected="true" centerPoint3DX="-32.5" centerPoint3DY="19.9">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-刀鞘" name="刀3" centerPoint3DX="-32.5" centerPoint3DY="19.9">
                   <matrix>
                     <Matrix a="-0.0704193115234375" b="-0.994674682617188" c="0.997238159179688" d="-0.070587158203125" tx="-249.75" ty="37.95"/>
                   </matrix>

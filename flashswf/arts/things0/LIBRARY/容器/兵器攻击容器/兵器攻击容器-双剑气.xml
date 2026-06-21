@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-双剑气" itemID="6a36ef14-0000189f" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双剑气" lastModified="1781985053" lastUniqueIdentifier="439">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-双剑气" itemID="6a36ef14-0000189f" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双剑气" lastModified="1782004499" lastUniqueIdentifier="439">
   <timeline>
     <DOMTimeline name="兵器攻击容器-双剑气" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;guideline direction="v"&gt;-123&lt;/guideline&gt;&lt;guideline direction="v"&gt;102&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -306,7 +306,7 @@ onClipEvent(load){
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
-	子弹属性.子弹种类 = "剑气波";
+	子弹属性.子弹种类 = "剑气波竖";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 / 5 + _parent._parent.刀属性.power * 1 + _parent._parent.内力 * 1;
 	if (_parent._parent.mp攻击加成)
 	{
