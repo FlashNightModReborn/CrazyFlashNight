@@ -17,6 +17,25 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
     private static var currentShellCount:Number = 0;
     private static var maxShellCount:Number = 25;
 
+    // ---- 标准模式（MPN 改编）物理常量 ----
+    // 参考 Madness: Project Nexus (Classic) 的 MadnessParticle(category=="casing")：
+    // 抛物线 → 弹性弹跳 → 滚动 → 落地烘焙；落地后转静态位图，零每帧开销而视觉长存。
+    private static var STD_GRAVITY:Number = 2.8;           // 每帧重力加速度（MPN 同值）
+    private static var STD_ELASTICITY:Number = 0.6;        // 垂直弹跳能量保留（MPN 0.7，略收敛）
+    private static var STD_BOUNCE_HFRICTION:Number = 0.72; // 每次弹跳水平衰减
+    private static var STD_ROT_DAMP:Number = 0.7;          // 每次弹跳旋转衰减
+    private static var STD_SETTLE_VY:Number = 5;           // 落地下行速度低于此则停跳
+    private static var STD_ROLL_FRICTION:Number = 0.82;    // 滚动阶段水平/旋转逐帧衰减
+    private static var STD_REST_VX:Number = 1.5;           // 水平速度低于此则静止烘焙
+    private static var STD_ROT_CLAMP:Number = 35;          // 旋转角速度限幅（MPN ±35）
+    private static var STD_VX_MIN:Number = 2.5;            // 抛壳水平初速下限
+    private static var STD_VX_MAX:Number = 6;              // 抛壳水平初速上限
+    private static var STD_VY_MIN:Number = -12;            // 抛壳垂直初速(向上)区间端
+    private static var STD_VY_MAX:Number = -22;            // 抛壳垂直初速(向上)区间端
+    private static var STD_ROT_INIT:Number = 30;           // 初始旋转角速度幅度
+    private static var STD_FUSE:Number = 120;              // 标准模式保险丝(帧)
+    private static var LEGACY_FUSE:Number = 60;            // 原版模式保险丝(帧)
+
     private static var initialized:Boolean = false;
     
     // 用于存放所有正在进行物理模拟的活动弹壳
@@ -207,6 +226,10 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
 
                 // 存储子弹类型
                 弹壳.弹壳种类 = 弹壳种类;
+                // 按 XML simulationMethod 选择物理模式：
+                //   原版 = 低成本快回收（纵向联弹系，避免极端吞吐撞活动上限）
+                //   其它(默认标准) = MPN 改编（抛物线+弹跳+滚动+烘焙）
+                弹壳.__simStandard = (弹壳信息.模拟方式 != "原版");
 
                 // 初始化物理状态并添加到活动列表
                 initializeShellPhysicsState(弹壳);
@@ -223,12 +246,25 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
      */
     private static function initializeShellPhysicsState(弹壳:MovieClip):Void {
         var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
-        弹壳.水平速度 = engine.randomFloatOffset(4);
-        弹壳.垂直速度 = engine.randomFloat(-8, -20);
-        弹壳.旋转速度 = engine.randomFloat(-10, 10);
-        弹壳.Z轴坐标 = 弹壳._y + 100;
+        弹壳.Z轴坐标 = 弹壳._y + 100;   // 地面线（落点），位于出膛点下方 100px
         弹壳.swapDepths(弹壳.Z轴坐标);
-        弹壳.存活帧 = 0;          // 记录已执行 tick 次数
+        弹壳.存活帧 = 0;              // 记录已执行 tick 次数
+
+        if (弹壳.__simStandard) {
+            // ---- 标准模式（MPN 改编）：背向抛壳，强上抛初速 + 随机翻滚 ----
+            var dir:Number = (弹壳._xscale < 0) ? -1 : 1; // 朝向符号，弹壳向身后侧弹出
+            弹壳.水平速度 = -dir * engine.randomFloat(STD_VX_MIN, STD_VX_MAX);
+            弹壳.垂直速度 = engine.randomFloat(STD_VY_MIN, STD_VY_MAX); // 向上(负值)
+            弹壳.旋转速度 = engine.randomFloat(-STD_ROT_INIT, STD_ROT_INIT);
+            弹壳.__rolling = false;     // 是否进入落地滚动阶段
+            弹壳.__fuse = STD_FUSE;
+        } else {
+            // ---- 原版模式：低成本，快速回收 ----
+            弹壳.水平速度 = engine.randomFloatOffset(4);
+            弹壳.垂直速度 = engine.randomFloat(-8, -20);
+            弹壳.旋转速度 = engine.randomFloat(-10, 10);
+            弹壳.__fuse = LEGACY_FUSE;
+        }
     }
 
     /**
@@ -256,55 +292,24 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
      * 全局弹壳更新函数 - 核心批处理逻辑
      */
     private static function updateAllShells():Void {
-        // 使用向后循环遍历活动弹壳，确保在遍历时安全移除元素
-        if (activeShells.length > 0) {
-            // _root.服务器.发布服务器消息("[ShellSystem] updateAllShells: 开始更新 " + activeShells.length + " 个活动弹壳, currentShellCount=" + currentShellCount);
-        }
-        
         // 缓存常用对象引用以减少属性访问开销
         var engine:LinearCongruentialEngine = LinearCongruentialEngine.instance;
         var cooldownWheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
-        
+
+        // 使用向后循环遍历活动弹壳，确保在遍历时安全移除元素
         for (var i:Number = activeShells.length - 1; i >= 0; --i) {
             var 弹壳:MovieClip = activeShells[i];
             var shouldRemove:Boolean = false;
 
-            // --------------- 60 帧保险丝 ----------------
-            // 每执行一次物理逻辑先 ++，
-            // 到 60 就直接强制回收，跳过其余计算
-            if (++弹壳.存活帧 >= 60) {
-                // _root.服务器.发布服务器消息("[ShellSystem] updateAllShells: 弹壳存活帧>=60, 强制回收 " + 弹壳);
+            // 保险丝：每帧先 ++，到达模式各自上限帧直接强制回收（兜底，正常路径在落地烘焙时即返回）
+            if (++弹壳.存活帧 >= 弹壳.__fuse) {
                 shouldRemove = true;
-            } else if (弹壳._y - 弹壳.Z轴坐标 < -5) {
-                // ------------------------------------------
-                弹壳.垂直速度 += 4;
-                弹壳._x += 弹壳.水平速度;
-                弹壳._y += 弹壳.垂直速度;
-                弹壳._rotation += 弹壳.旋转速度;
+            } else if (弹壳.__simStandard) {
+                shouldRemove = simulateStandardShell(弹壳);
             } else {
-                // 首次触地播放弹壳落地音效
-                if (!弹壳.__hitGround) {
-                    弹壳.__hitGround = true;
-                    AudioBridge.playSound("shell-hit-ground.mp3");
-                }
-                弹壳.垂直速度 = 弹壳.垂直速度 / -2 - engine.randomIntegerStrict(0, 5);
-                // 透视缩放效果：根据旋转角度调整水平缩放，模拟3D旋转的透视感
-                // 公式简化为：0.75 + 0.25 * sin(θ)，取值范围 [0.5, 1.0]
-                // 当弹壳正面朝向时缩放为1.0，侧面时缩放为0.5，产生压扁效果
-                弹壳._xscale *= ((Math.sin(弹壳._rotation * 0.0174533) + 1) * 0.5) * 0.5 + 0.5;
-                if (弹壳.垂直速度 < -10) {
-                    弹壳.水平速度 += engine.randomFloatOffset(4)
-                    弹壳.旋转速度 *= engine.randomFluctuation(50);
-                    弹壳._x += 弹壳.水平速度;
-                    弹壳._y = 弹壳.Z轴坐标 - 6;
-                    弹壳._rotation += 弹壳.旋转速度;
-                } else {
-                    // 弹壳彻底静止，调度回收
-                    _root.add2map3(弹壳, 2);
-                    shouldRemove = true;
-                }
+                shouldRemove = simulateLegacyShell(弹壳, engine);
             }
-            
+
             // 统一处理删除和回收逻辑
             if (shouldRemove) {
                 // 使用交换并弹出技巧进行O(1)删除操作
@@ -318,6 +323,95 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
                 cooldownWheel.addDelayedTask(33, recycleShell, 弹壳);
             }
         }
+    }
+
+    /**
+     * 标准模式物理（MPN 改编）：抛物线 → 弹性弹跳 → 滚动 → 落地烘焙。
+     * @return Boolean 是否应回收（已 add2map3 烘焙）
+     */
+    private static function simulateStandardShell(弹壳:MovieClip):Boolean {
+        if (弹壳.__rolling) {
+            // 落地后滚动：水平/旋转逐帧衰减，停下即烘焙
+            弹壳._x += 弹壳.水平速度;
+            弹壳.水平速度 *= STD_ROLL_FRICTION;
+            弹壳.旋转速度 *= STD_ROLL_FRICTION;
+            弹壳._rotation += 弹壳.旋转速度;
+            if (弹壳.水平速度 < STD_REST_VX && 弹壳.水平速度 > -STD_REST_VX) {
+                _root.add2map3(弹壳, 2);
+                return true;
+            }
+            return false;
+        }
+
+        // 空中：重力抛物线
+        弹壳.垂直速度 += STD_GRAVITY;
+        弹壳._x += 弹壳.水平速度;
+        弹壳._y += 弹壳.垂直速度;
+
+        // 旋转限速，避免视觉抖动过快
+        if (弹壳.旋转速度 > STD_ROT_CLAMP) 弹壳.旋转速度 = STD_ROT_CLAMP;
+        else if (弹壳.旋转速度 < -STD_ROT_CLAMP) 弹壳.旋转速度 = -STD_ROT_CLAMP;
+        弹壳._rotation += 弹壳.旋转速度;
+
+        if (弹壳._y >= 弹壳.Z轴坐标) {
+            弹壳._y = 弹壳.Z轴坐标;
+            // 首次触地播放弹壳落地音效
+            if (!弹壳.__hitGround) {
+                弹壳.__hitGround = true;
+                AudioBridge.playSound("shell-hit-ground.mp3");
+            }
+            if (弹壳.垂直速度 < STD_SETTLE_VY) {
+                // 落地能量耗尽：转入滚动；若水平也几近静止则直接烘焙
+                弹壳.垂直速度 = 0;
+                if (弹壳.水平速度 < STD_REST_VX && 弹壳.水平速度 > -STD_REST_VX) {
+                    _root.add2map3(弹壳, 2);
+                    return true;
+                }
+                弹壳.__rolling = true;
+            } else {
+                // 弹跳：垂直反向衰减，水平/旋转随之衰减
+                弹壳.垂直速度 *= -STD_ELASTICITY;
+                弹壳.水平速度 *= STD_BOUNCE_HFRICTION;
+                弹壳.旋转速度 *= STD_ROT_DAMP;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 原版模式物理：低成本快回收，适配纵向联弹极端吞吐。
+     * @return Boolean 是否应回收（已 add2map3 烘焙）
+     */
+    private static function simulateLegacyShell(弹壳:MovieClip, engine:LinearCongruentialEngine):Boolean {
+        if (弹壳._y - 弹壳.Z轴坐标 < -5) {
+            弹壳.垂直速度 += 4;
+            弹壳._x += 弹壳.水平速度;
+            弹壳._y += 弹壳.垂直速度;
+            弹壳._rotation += 弹壳.旋转速度;
+        } else {
+            // 首次触地播放弹壳落地音效
+            if (!弹壳.__hitGround) {
+                弹壳.__hitGround = true;
+                AudioBridge.playSound("shell-hit-ground.mp3");
+            }
+            弹壳.垂直速度 = 弹壳.垂直速度 / -2 - engine.randomIntegerStrict(0, 5);
+            // 透视缩放效果：根据旋转角度调整水平缩放，模拟3D旋转的透视感
+            // 公式简化为：0.75 + 0.25 * sin(θ)，取值范围 [0.5, 1.0]
+            // 当弹壳正面朝向时缩放为1.0，侧面时缩放为0.5，产生压扁效果
+            弹壳._xscale *= ((Math.sin(弹壳._rotation * 0.0174533) + 1) * 0.5) * 0.5 + 0.5;
+            if (弹壳.垂直速度 < -10) {
+                弹壳.水平速度 += engine.randomFloatOffset(4)
+                弹壳.旋转速度 *= engine.randomFluctuation(50);
+                弹壳._x += 弹壳.水平速度;
+                弹壳._y = 弹壳.Z轴坐标 - 6;
+                弹壳._rotation += 弹壳.旋转速度;
+            } else {
+                // 弹壳彻底静止，调度回收
+                _root.add2map3(弹壳, 2);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

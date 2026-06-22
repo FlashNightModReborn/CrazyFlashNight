@@ -153,17 +153,23 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
         // 1 - 2*(expr) 利用布尔到数值隐式转换：expr 为 true → 1，false → 0
         // signX = +1 表示正常朝向，-1 表示水平翻转
         // signY = +1 表示正常朝向，-1 表示垂直翻转
-        // a = cosθ * signX —— X 轴单位向量在变换后的 X 分量
-        // b = sinθ * signY —— X 轴单位向量在变换后的 Y 分量
-        // c = -sinθ * signY —— Y 轴单位向量在变换后的 X 分量（与 b 对称取负）
-        // d = cosθ * signX —— Y 轴单位向量在变换后的 Y 分量（与 a 对称）
-        var r_cos:Number = Math.cos(rotationRadians) * (1 - 2 * (target._xscale < 0));
-        var r_sin:Number = Math.sin(rotationRadians) * (1 - 2 * (target._yscale < 0));
+        // 翻转因子必须绑定到“矩阵列(基底轴)”，而非 cos/sin：
+        //   a,b 同属 X 基底列 → 共用 signX；c,d 同属 Y 基底列 → 共用 signY
+        // 标准 旋转+翻转 仿射：
+        //   a = cosθ·signX —— X 基底变换后的 X 分量
+        //   b = sinθ·signX —— X 基底变换后的 Y 分量（与 a 同列，共用 signX）
+        //   c = -sinθ·signY —— Y 基底变换后的 X 分量（与 d 同列，共用 signY）
+        //   d = cosθ·signY —— Y 基底变换后的 Y 分量（与 c 同列，共用 signY）
+        // 旧实现把 signY 错绑到 sin、signX 错绑到 cos：θ≈0 时垂直翻转(signY)被 d=signX 吞掉而失效。
+        var cosV:Number = Math.cos(rotationRadians);
+        var sinV:Number = Math.sin(rotationRadians);
+        var signX:Number = 1 - 2 * (target._xscale < 0); // X 基底列翻转因子
+        var signY:Number = 1 - 2 * (target._yscale < 0); // Y 基底列翻转因子
 
-        reusableTransformMatrix.a  = r_cos;
-        reusableTransformMatrix.b  = r_sin;
-        reusableTransformMatrix.c  = -r_sin;
-        reusableTransformMatrix.d  = r_cos;
+        reusableTransformMatrix.a  =  cosV * signX;
+        reusableTransformMatrix.b  =  sinV * signX;
+        reusableTransformMatrix.c  = -sinV * signY;
+        reusableTransformMatrix.d  =  cosV * signY;
         // 平移分量：目标原点在 deadbody 位图层坐标系中的位置
         reusableTransformMatrix.tx = layerPt.x;
         reusableTransformMatrix.ty = layerPt.y;
