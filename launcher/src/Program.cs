@@ -924,6 +924,7 @@ class Program
             try { stageSelectTask.Dispose(); } catch { }
             try { socketServer.Dispose(); } catch { }
             try { httpServer.Dispose(); } catch { }
+            try { if (panelHost != null) panelHost.Dispose(); } catch { }
             try { if (inputShield != null) inputShield.Dispose(); } catch { }
             try { if (webOverlay != null) webOverlay.Dispose(); } catch { }
             try { if (backdrop != null) backdrop.Dispose(); } catch { }
@@ -1127,6 +1128,7 @@ class Program
         try { intelligenceTask.Dispose(); } catch { }
         try { socketServer.Dispose(); } catch { }
         try { httpServer.Dispose(); } catch { }
+        try { if (panelHost != null) panelHost.Dispose(); } catch { }
         try { if (inputShield != null) inputShield.Dispose(); } catch { }
         try { if (webOverlay != null) webOverlay.Dispose(); } catch { }
         try { if (backdrop != null) backdrop.Dispose(); } catch { }

@@ -73,6 +73,7 @@ namespace CF7Launcher.Guardian
         private System.Windows.Forms.Timer _viewportLongSettleTimer;
         private string _viewportSettleReason = "viewport_refresh";
         private bool _runtimeViewportWasMaximized;
+        private int _runtimeViewportLastSizeCode = -1;
 
         private bool _hotkeysRegistered;
         private KeyboardHook _kbHook; // 前台感知低级钩子，替代 RegisterHotKey
@@ -542,6 +543,8 @@ namespace CF7Launcher.Guardian
             else if (m.Msg == WM_SIZE)
             {
                 int sizeCode = m.WParam.ToInt32();
+                int previousSizeCode = _runtimeViewportLastSizeCode;
+                bool windowStateReportedMaximized = this.WindowState == FormWindowState.Maximized;
                 _activationState.OnMinimizeChanged(sizeCode == SIZE_MINIMIZED);
 
                 // Manual window maximize/restore does not pass through ToggleFullscreen().
@@ -554,7 +557,12 @@ namespace CF7Launcher.Guardian
                 }
                 else if (sizeCode == SIZE_RESTORED)
                 {
-                    if (_runtimeViewportWasMaximized)
+                    // Do not rely only on our own flag: WM_SIZE ordering can report a restore
+                    // after state was already set externally, or while WindowState still reflects
+                    // the old maximized state before base.WndProc processes the message.
+                    if (_runtimeViewportWasMaximized
+                        || previousSizeCode == SIZE_MAXIMIZED
+                        || windowStateReportedMaximized)
                         ScheduleViewportRefresh("guardian_wm_size_restored");
                     _runtimeViewportWasMaximized = false;
                 }
@@ -562,6 +570,7 @@ namespace CF7Launcher.Guardian
                 {
                     _runtimeViewportWasMaximized = false;
                 }
+                _runtimeViewportLastSizeCode = sizeCode;
             }
 
             base.WndProc(ref m);

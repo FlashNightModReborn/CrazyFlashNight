@@ -27,7 +27,7 @@ namespace CF7Launcher.Guardian
     /// - SetPanelEscapeEnabled 由 PanelHost 接管（_escSource）
     /// - InputShield 进 telemetry 模式（filter 为前台=Guardian + anchor 内 + panelRect 外）
     /// </summary>
-    public class PanelHostController
+    public class PanelHostController : IDisposable
     {
         #region Win32
 
@@ -116,6 +116,9 @@ namespace CF7Launcher.Guardian
         // 节流：LocationChanged 拖窗时高频触发；用 BeginInvoke 合并到下一个消息泵循环
         private bool _ownerLayoutPending;
         private System.Windows.Forms.Timer _ownerLayoutSettleTimer;
+        private Rectangle _lastOwnerAnchorRect = Rectangle.Empty;
+        private Rectangle _lastOwnerPanelRect = Rectangle.Empty;
+        private bool _disposed;
 
         public PanelHostController(
             Form ownerForm,
@@ -153,6 +156,7 @@ namespace CF7Launcher.Guardian
 
         private void OnBackdropClickOutsidePanel()
         {
+            if (_disposed) return;
             // panels.js 的 panel_esc 等价于按 ESC：触发各 panel 的 onRequestClose
             // 不发 cmd:"request_close" —— panels.js 的 panel_cmd 仅 handle open/close/force_close
             try { _web.PostToWeb("{\"type\":\"panel_esc\"}"); }
@@ -177,12 +181,14 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void OpenPanel(string name, string initDataJson, string returnToName, string returnInitDataJson)
         {
+            if (_disposed) return;
             if (string.IsNullOrEmpty(name)) return;
             EnqueueAndPump(new PanelCommand(PanelCommandKind.Open, name, initDataJson, returnToName, returnInitDataJson));
         }
 
         public void ClosePanel()
         {
+            if (_disposed) return;
             EnqueueAndPump(new PanelCommand(PanelCommandKind.Close, null, null));
         }
 
@@ -193,6 +199,7 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void ClearReturnStack()
         {
+            if (_disposed) return;
             lock (_queueLock) { _returnStack.Clear(); }
         }
 
@@ -202,6 +209,7 @@ namespace CF7Launcher.Guardian
 
         private void EnqueueAndPump(PanelCommand cmd)
         {
+            if (_disposed) return;
             lock (_queueLock)
             {
                 _queue.Enqueue(cmd);
@@ -235,6 +243,7 @@ namespace CF7Launcher.Guardian
         {
             _ownerForm.HandleCreated -= DelayedKickOnHandleCreated;
             _delayedKickRegistered = false;
+            if (_disposed) return;
             try { _ownerForm.BeginInvoke(new Action(PumpQueue)); }
             catch (Exception ex)
             {
@@ -245,6 +254,15 @@ namespace CF7Launcher.Guardian
 
         private void PumpQueue()
         {
+            if (_disposed)
+            {
+                lock (_queueLock)
+                {
+                    _queue.Clear();
+                    _processing = false;
+                }
+                return;
+            }
             while (true)
             {
                 PanelCommand cmd;
@@ -421,6 +439,8 @@ namespace CF7Launcher.Guardian
             if (_escSource != null) _escSource.SetPanelEscapeEnabled(true);
             // Step 10: 跟随 owner 拖窗/大小变化，重定位 backdrop+web 到新 anchor
             SubscribeOwnerLayout();
+            _lastOwnerAnchorRect = anchor;
+            _lastOwnerPanelRect = panelRect;
 
             _activePanel = name;
             LogManager.Log("[PanelHost] opened: " + name + " rect=" + panelRect.Width + "x" + panelRect.Height);
@@ -471,12 +491,15 @@ namespace CF7Launcher.Guardian
             catch { }
             _ownerLayoutSubscribed = false;
             _ownerLayoutPending = false;
+            _lastOwnerAnchorRect = Rectangle.Empty;
+            _lastOwnerPanelRect = Rectangle.Empty;
             if (_ownerLayoutSettleTimer != null)
                 _ownerLayoutSettleTimer.Stop();
         }
 
         private void OnOwnerLayoutChanged(object sender, EventArgs e)
         {
+            if (_disposed) return;
             if (_activePanel == null) return;
             ScheduleOwnerLayoutSettle();
             // 节流：拖窗 LocationChanged 高频触发；BeginInvoke 合并到下一个消息泵循环只跑一次
@@ -495,12 +518,14 @@ namespace CF7Launcher.Guardian
 
         private void OnOwnerLayoutSettleOnly(object sender, EventArgs e)
         {
+            if (_disposed) return;
             if (_activePanel == null) return;
             ScheduleOwnerLayoutSettle();
         }
 
         private void ScheduleOwnerLayoutSettle()
         {
+            if (_disposed) return;
             if (_ownerLayoutSettleTimer == null)
             {
                 _ownerLayoutSettleTimer = new System.Windows.Forms.Timer();
@@ -509,6 +534,7 @@ namespace CF7Launcher.Guardian
                 {
                     if (_ownerLayoutSettleTimer != null)
                         _ownerLayoutSettleTimer.Stop();
+                    if (_disposed) return;
                     if (_activePanel == null) return;
                     ApplyOwnerLayoutChange();
                 };
@@ -521,24 +547,36 @@ namespace CF7Launcher.Guardian
         private void ApplyOwnerLayoutChange()
         {
             _ownerLayoutPending = false;
+            if (_disposed) return;
             if (_activePanel == null) return;
             try
             {
                 Rectangle newAnchor = _web.GetCurrentAnchorScreenRect();
                 if (newAnchor.Width <= 0 || newAnchor.Height <= 0) return;
                 Rectangle newPanelRect = PanelLayoutCatalog.GetRect(_activePanel, newAnchor);
+                bool geometryChanged = !_lastOwnerAnchorRect.Equals(newAnchor)
+                    || !_lastOwnerPanelRect.Equals(newPanelRect);
+                if (!geometryChanged) return;
+                bool panelSizeChanged = _lastOwnerPanelRect.IsEmpty
+                    || _lastOwnerPanelRect.Width != newPanelRect.Width
+                    || _lastOwnerPanelRect.Height != newPanelRect.Height;
 
                 _backdrop.RepositionTo(newAnchor);
                 _backdrop.SetPanelRect(newPanelRect);
                 _web.RepositionForPanel(newPanelRect);
+                _lastOwnerAnchorRect = newAnchor;
+                _lastOwnerPanelRect = newPanelRect;
 
                 // PostToWeb 让 CSS var(--panel-w/-h) 自适应（仅在尺寸真变化时；拖窗只动位置时跳过）
-                try
+                if (panelSizeChanged)
                 {
-                    _web.PostToWeb("{\"type\":\"panel_viewport_set\",\"w\":"
-                        + newPanelRect.Width + ",\"h\":" + newPanelRect.Height + "}");
+                    try
+                    {
+                        _web.PostToWeb("{\"type\":\"panel_viewport_set\",\"w\":"
+                            + newPanelRect.Width + ",\"h\":" + newPanelRect.Height + "}");
+                    }
+                    catch { }
                 }
-                catch { }
 
                 if (_shield != null)
                 {
@@ -597,6 +635,27 @@ namespace CF7Launcher.Guardian
             // B0 诊断: panel-close 后立即 dump, 对照 panel-open 看 layered_visible 是否真的回落
             if (DiagnosticsBootstrap.LayerAuditEnabled)
                 LayerAuditDump.DumpToLog("panel-close:" + (closingName ?? "<null>"));
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+            try { _ownerForm.HandleCreated -= DelayedKickOnHandleCreated; } catch { }
+            lock (_queueLock)
+            {
+                _queue.Clear();
+                _processing = false;
+                _returnStack.Clear();
+            }
+            try { UnsubscribeOwnerLayout(); } catch { }
+            if (_ownerLayoutSettleTimer != null)
+            {
+                try { _ownerLayoutSettleTimer.Stop(); } catch { }
+                try { _ownerLayoutSettleTimer.Dispose(); } catch { }
+                _ownerLayoutSettleTimer = null;
+            }
+            try { _backdrop.BackdropClickedOutsidePanel -= OnBackdropClickOutsidePanel; } catch { }
         }
 
         private void ReTopOverlay(Form f)
