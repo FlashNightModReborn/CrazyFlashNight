@@ -91,24 +91,13 @@ _root.子弹区域shoot传递 = function(Obj){
     // 计算射击角度
     var shootingAngle:Number = ShootingAngleCalculator.calculate(Obj, shooter);
 
-    // 1. 设置默认值（基础部分，不依赖flags）
-    BulletInitializer.setDefaults(Obj, shooter);
-
-    // 2. 初始化子弹属性（包含从XML加载的额外属性）
-    BulletInitializer.initializeBulletProperties(Obj);
-    
-    // 3. 设置子弹类型标志（必须在initializeBulletProperties之后调用）
-    // 因为部分标志位（如FLAG_GRENADE）需要从XML中获取，确保所有属性都已加载
-    BulletTypesetter.setTypeFlags(Obj);
-    
-    // 4. 设置依赖flags标志位的默认值（必须在setTypeFlags之后调用）
-    BulletInitializer.setFlagDependentDefaults(Obj);
-
-    // 5. 继承发射者属性
-    BulletInitializer.inheritShooterAttributes(Obj, shooter);
-
-    // 6. 计算击退速度
-    BulletInitializer.calculateKnockback(Obj);
+    // 1-6. 子弹数据初始化（6 步，setDefaults / initializeBulletProperties /
+    //      setTypeFlags / setFlagDependentDefaults / inheritShooterAttributes /
+    //      calculateKnockback）已抽取为 BulletFactory.prepareBulletData，与
+    //      "可结算子弹"（injectHit 旁路 / 未来 C# 注入）共享同一序列，杜绝复制漂移。
+    //      注意：纳米毒性（有 shooter.淬毒 -= 副作用）不在其中，仍由
+    //      createBulletInstance 按"每发实际子弹一次"执行，避免双扣。
+    BulletFactory.prepareBulletData(Obj, shooter);
 
     // 创建子弹
     var bulletInstance = BulletFactory.createBullet(Obj, shooter, shootingAngle);

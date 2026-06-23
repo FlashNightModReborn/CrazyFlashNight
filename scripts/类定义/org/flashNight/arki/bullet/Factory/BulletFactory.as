@@ -10,6 +10,8 @@ import org.flashNight.neur.Event.*;
 import org.flashNight.arki.bullet.BulletComponent.Movement.*;
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*;
 import org.flashNight.arki.bullet.BulletComponent.Init.*;
+import org.flashNight.arki.bullet.BulletComponent.Type.*;
+import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.bullet.Factory.*;
 import org.flashNight.arki.bullet.BulletComponent.Movement.Util.*;
 
@@ -307,4 +309,70 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
 
         return bulletInstance;
     };
+
+    /**
+     * 准备子弹数据：执行不依赖 MovieClip 的 6 步初始化（就地 mutate Obj）。
+     *
+     * 抽取自 _root.子弹区域shoot传递 的内联初始化序列，作为 spawn 路径与
+     * "可结算子弹"（injectHit 旁路 / 未来 C# 注入）的【共享】数据准备入口，
+     * 消除两处复制 init 逻辑导致的静默数值漂移。
+     *
+     * 注意：【不含】initializeNanoToxicfunction —— 该步有 shooter.淬毒 -= 的副作用，
+     *       必须按"每发实际子弹一次"计，故留在各 finalize 处
+     *       （createBulletInstance / createSettlementBullet）调用，避免双扣淬毒。
+     *
+     * @param Obj     子弹配置对象（就地 mutate）
+     * @param shooter 发射者对象
+     */
+    public static function prepareBulletData(Obj, shooter):Void {
+        BulletInitializer.setDefaults(Obj, shooter);
+        BulletInitializer.initializeBulletProperties(Obj);
+        BulletTypesetter.setTypeFlags(Obj);
+        BulletInitializer.setFlagDependentDefaults(Obj);
+        BulletInitializer.inheritShooterAttributes(Obj, shooter);
+        BulletInitializer.calculateKnockback(Obj);
+    }
+
+    /**
+     * 构建"可结算子弹"数据对象（无 MovieClip / 无碰撞器 / 无帧泵）。
+     *
+     * 用于 BulletQueueProcessor.injectHit 等旁路结算消费者：把一份子弹属性模板
+     * 初始化到 DamageCalculator.calculateDamage 可直接消费的程度
+     * （damageManager + 子弹威力 + flags + 霰弹值 + 毒 等），但【不】spawn 飞行实体。
+     *
+     * 忠实复刻 createBulletInstance 的"伤害相关尾部"（其余运动/碰撞器/生命周期/
+     * stateFlags 访问器均与伤害无关，injectHit 旁路这些，故略）：
+     *   - 霰弹值正整数化（联弹取 floor 正值、非联弹恒 1，与 createBulletInstance 一致）
+     *   - initializeNanoToxicfunction（须在 getDamageManager 之前——nanoToxic 影响 canHandle 命中位）
+     *   - additionalEffectDamage = 0（对齐 BulletLifecycle）
+     *   - damageManager = DamageManagerFactory.Basic.getDamageManager（单一真源、按 bitmask 缓存）
+     *
+     * @param Obj     子弹配置对象（就地 mutate 后即作为结算载体返回）
+     * @param shooter 发射者对象
+     * @return        可直接传入 injectHit 的子弹数据对象（即入参 Obj）
+     */
+    public static function createSettlementBullet(Obj, shooter) {
+        #include "../macros/FLAG_CHAIN.as"
+
+        // 6 步数据初始化（与 spawn 路径共享 prepareBulletData，杜绝复制漂移）
+        prepareBulletData(Obj, shooter);
+
+        // —— 忠实复刻 createBulletInstance 的"伤害相关尾部" ——
+        // 1) 霰弹值正整数化：联弹取 floor 正值，非联弹恒 1
+        if ((Obj.flags & FLAG_CHAIN) != 0) {
+            var scatterValue:Number = Obj.霰弹值;
+            Obj.霰弹值 = (scatterValue > 0) ? (scatterValue >> 0) : 1;
+        } else {
+            Obj.霰弹值 = 1;
+        }
+
+        // 2) 纳米毒性（须在 getDamageManager 之前；无独立实例，bullet 形参传 Obj 自身）
+        BulletInitializer.initializeNanoToxicfunction(Obj, Obj, shooter);
+
+        // 3) 对齐 BulletLifecycle：附加效果伤害计数器清零 + 伤害管理器（按 bitmask 缓存）
+        Obj.additionalEffectDamage = 0;
+        Obj.damageManager = DamageManagerFactory.Basic.getDamageManager(Obj);
+
+        return Obj;
+    }
 }

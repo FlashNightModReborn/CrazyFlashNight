@@ -111,6 +111,20 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     private static var _rayBullets:Array = [];
 
     /**
+     * 射线持久化总开关（deferral=B）。
+     * true（默认）：pierce/chain/combo 走每帧贪心持久路 processPersistentRay；
+     * false：全部回退旧批量路（单帧结算）—— 生产回退 + no-death 等价测试用来 A/B 同场景。
+     */
+    public static var _rayPersistent:Boolean = true;
+
+    /**
+     * no-death 等价测试探针（仅 RayPipelineEquivalenceTest 用；生产恒 null）。
+     * 非 null 时 settleHit 录 (hitTarget, dmgMult) 并短路返回 —— 纯比对 selection，
+     * 不跑 calculateDamage/事件/死亡（batch settleRayHit 与 greedy injectHit 均汇聚 settleHit）。
+     */
+    public static var _raySettleProbe:Function = null;
+
+    /**
      * 射线命中结果复用对象（零分配）
      * 用于 processRayBullets 中传递给事件系统的 CollisionResult，
      * 每次命中前更新 overlapCenter 和 overlapRatio 即可。
@@ -128,6 +142,18 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * 每发子弹入口处初始化一次，同步处理保证复用安全。
      */
     private static var _rayHitCtx:Object = {};
+
+    /**
+     * 主循环 settleHit 的 per-bullet 不变量容器（对齐 _rayHitCtx；子弹命中-伤害双管线拆分 §4.0 (a)）。
+     * 每发子弹入口填充一次（bullet/shooter/Damage/flags/meleeMask），同步消费保证复用安全。
+     */
+    private static var _hitCtx:Object = {};
+
+    /**
+     * injectHit 专用 per-call 不变量容器（独立于 _hitCtx，防止装备/技能层在主循环 settleHit
+     * 进行中调用 injectHit 时相互覆盖 ctx 字段）。同步消费保证复用安全。
+     */
+    private static var _injectCtx:Object = {};
 
     // ========================================================================
     // 子弹终止控制标志位（位运算优化）
@@ -275,7 +301,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             queue = activeQueues[key];
             queue.clear();
         }
-        // 清空射线子弹独立队列
+        // 清空射线子弹独立队列：deferral=B 持久射线可能跨帧存活，过场须 removeMovieClip
+        // 回收各自的 RayCollider（防泄漏），再清空。批量射线本就当帧销毁、此处通常为空。
+        for (var ri:Number = 0; ri < _rayBullets.length; ri++) {
+            _rayBullets[ri].removeMovieClip();
+        }
         _rayBullets.length = 0;
         // 重置射弹预警门控计数（场景切换时单位已销毁）
         BulletThreatScanProcessor.reset();
@@ -489,17 +519,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var shooter:MovieClip = ctx.shooter;
         var finalResult:CollisionResult = ctx.result;
 
-        // 同步命中对象引用
-        bullet.hitTarget = hitTarget;
-        bullet.命中对象 = hitTarget;
-
-        // 更新复用结果
+        // 更新复用命中几何（射线 caller 责任：成形 collisionResult 后透传给 settleHit）
         finalResult.overlapCenter.x = hitX;
         finalResult.overlapCenter.y = hitY;
         finalResult.overlapRatio = dmgMult;
         finalResult.tEntry = tEntry;
 
-        // 闪避判定
+        // 闪避判定（射线 caller 自算 dodgeState，settleHit 不内算闪避）
         var dodgeState:String = (bullet.伤害类型 == "真伤") ? "未躲闪" :
             ctx.Dodge.calculateDodgeState(
                 hitTarget,
@@ -507,18 +533,64 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 bullet
             );
 
+        // 统一伤害结算核心（子弹命中-伤害双管线拆分 阶段2，与主循环共用同一 settleHit）：
+        //   命中对象同步(幂等) → calculateDamage → hitCount+= → publish("hit")
+        //   → kill/death(带 _killed 守卫，D1：修复射线原缺守卫导致的潜在重复击杀 / killStats 按 _name 膨胀)
+        //   → triggerDisplay。FX 仍由本函数在下方逐命中点处理（D3）。
+        var damageResult:Object = settleHit(ctx, hitTarget, finalResult, dmgMult, dodgeState);
+
+        // 命中特效
+        if (bullet.shouldGeneratePostHitEffect) {
+            ctx.FX.Effect(bullet.击中后子弹的效果, hitX, hitY, shooter._xscale);
+        }
+
+        return damageResult;
+    }
+
+    /**
+     * 统一伤害结算（子弹命中-伤害双管线拆分 §4.0 (a) 决策态）。
+     *
+     * 职责仅：同步命中引用(幂等) → calculateDamage → hitCount+= → publish("hit")
+     *        → kill/death(带 _killed 守卫，D1) → triggerDisplay。
+     * **不**内算闪避、**不**调 击中时触发函数、**不**做 附加层重置——这三件由各 caller 在原位执行
+     * （main: 闪避→触发→本函数；ray: 触发→闪避→本函数），故两侧 byte-order 不变。
+     *
+     * @param ctx              per-bullet 不变量容器（读 bullet/shooter/Damage/flags/meleeMask）
+     * @param hitTarget        命中目标
+     * @param collisionResult  已成形的命中几何，hit 事件透传（订阅者只读 overlapCenter）
+     * @param dmgMult          独立伤害乘数：AABB=1 / polygon=overlapRatio / ray=衰减乘积
+     * @param dodgeState       caller 已算好的闪避态（不在此重算）
+     *   注：tEntry 不入参——caller 形成 collisionResult 时已写入，本函数不读。
+     */
+    private static function settleHit(
+            ctx:Object, hitTarget:MovieClip,
+            collisionResult:Object, dmgMult:Number, dodgeState:String):Object {
+
+        var bullet:Object = ctx.bullet;
+        var shooter:MovieClip = ctx.shooter;
+
+        // no-death 等价测试探针：生产恒 null 零开销；非 null 时录命中并短路（纯比对 selection）
+        if (_raySettleProbe != null) {
+            _raySettleProbe(hitTarget, dmgMult);
+            return null;
+        }
+
+        // 同步命中对象引用（幂等；caller 通常已设，供其 击中时触发函数 读取）
+        bullet.hitTarget = hitTarget;
+        bullet.命中对象 = hitTarget;
+
         // 伤害计算
         var damageResult:Object = ctx.Damage.calculateDamage(
             bullet, shooter, hitTarget, dmgMult, dodgeState
         );
-
         bullet.hitCount += damageResult.actualScatterUsed;
 
-        // 事件发布
+        // 事件发布（collisionResult 透传，订阅者只读 overlapCenter）
         var targetDispatcher:Object = hitTarget.dispatcher;
-        targetDispatcher.publish("hit", hitTarget, shooter, bullet, finalResult, damageResult);
+        targetDispatcher.publish("hit", hitTarget, shooter, bullet, collisionResult, damageResult);
 
-        if (hitTarget.hp <= 0) {
+        // 死亡事件（_killed 守卫普适，D1：防 UnitBullet 重复 kill/death + killStats 按 _name 膨胀）
+        if (hitTarget.hp <= 0 && !hitTarget._killed) {
             var isNormalKill:Boolean = (ctx.flags & ctx.meleeMask) == 0;
             targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
             shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
@@ -527,12 +599,70 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // 伤害数字显示
         damageResult.triggerDisplay(hitTarget._x, hitTarget._y, hitTarget._name);
 
-        // 命中特效
-        if (bullet.shouldGeneratePostHitEffect) {
-            ctx.FX.Effect(bullet.击中后子弹的效果, hitX, hitY, shooter._xscale);
+        return damageResult;
+    }
+
+    /**
+     * injectHit —— 旁路命中注入（公开 API，子弹命中-伤害双管线拆分 阶段3）。
+     *
+     * 不经几何检测，直接对指定目标结算"一次"命中（→ settleHit）。这是"命中/伤害分离"的
+     * 直接消费形态（约束2/3）：命中由外部生产者**指定**而非几何扫描产出，伤害管线原样消费。
+     *
+     * 消费者：
+     *  - 装备/技能层"锁定直伤"——替代 G1111 用 `区域定位area = autoTarget.area` + shootX/Y/Z
+     *    伪造命中区域、靠 spawn 子弹蹭中锁定目标的 hack；
+     *  - 锁定射击跨行首发——替代 `setRayFast` 重定向射线（z 远目标会令射线视觉露怯）；
+     *  - 未来 C# 回灌（同一接口的外部消费者）。
+     *
+     * 设计契约：
+     *  - **视觉无关**：不重定向射线、不 spawn 子弹、不动任何表现；命中点 (hitX,hitY) 仅供 hit 事件读。
+     *  - **仅首发直结算**："后续机制"（chain/fork/穿透）由 caller 自行下一帧调度（时序可变更，见设计 §6.4）。
+     *  - **不进影子记账窗口**：与射线侧同，bullet.霰弹值 须为正，MultiShotDamageHandle 走直接模式（§5.1 红线②）。
+     *  - 用独立 `_injectCtx`（不碰主循环 _hitCtx）；复用 `_rayHitResult` 作 collisionResult（同步消费安全）。
+     *
+     * @param bullet   命中数据载体（含 calculateDamage/settleHit 读取的字段：伤害类型/命中率/子弹威力/
+     *                 霰弹值/flags/hitCount 等；可为轻量 Object，不必是 MovieClip）。
+     * @param shooter  发射者（须含 dispatcher，用于 enemyKilled）。
+     * @param target   注入命中的目标（须含 hp/dispatcher/_x/_y/_name/_killed）。
+     * @param hitX,hitY 命中点（写入 hit 事件 collisionResult.overlapCenter）。
+     * @param dmgMult  伤害乘数（直伤通常 1；锁定可传衰减乘数）。
+     * @return DamageResult；目标非法（自身 / 已死 / 防止无限飞）时返回 null，不结算。
+     */
+    public static function injectHit(bullet:Object, shooter:MovieClip, target:MovieClip,
+                                     hitX:Number, hitY:Number, dmgMult:Number):Object {
+        // 合法性兜底（§5.6：外部注入须自排自身，此处再守一道——hp>0 / 防止无限飞 / 非自身）
+        if (target == bullet || !(target.hp > 0) || target.防止无限飞 == true) {
+            return null;
         }
 
-        return damageResult;
+        // 近战/爆炸位掩码（与主循环/射线一致，经宏 include 注入；供 settleHit 内 isNormalKill 判定）
+        #include "../macros/FLAG_MELEE.as"
+        #include "../macros/FLAG_EXPLOSIVE.as"
+
+        // per-call 不变量打包（独立 _injectCtx）
+        var ctx:Object = _injectCtx;
+        ctx.bullet = bullet;
+        ctx.shooter = shooter;
+        ctx.Damage = DamageCalculator;
+        ctx.flags = bullet.flags | 0;
+        ctx.meleeMask = FLAG_MELEE | FLAG_EXPLOSIVE;
+
+        // 成形 collisionResult（复用静态 _rayHitResult；订阅者只读 overlapCenter）
+        var cr:CollisionResult = _rayHitResult;
+        cr.overlapCenter.x = hitX;
+        cr.overlapCenter.y = hitY;
+        cr.overlapRatio = dmgMult;
+
+        // 闪避（injectHit 是入口，自算 dodgeState；经 Object 引用绕开 DodgeHandler 返回类型检查，与射线侧 ctx.Dodge 同）
+        var Dodge:Object = DodgeHandler;
+        var dodgeState:String = (bullet.伤害类型 == "真伤") ? "未躲闪" :
+            Dodge.calculateDodgeState(
+                target,
+                Dodge.calcDodgeResult(shooter, target, bullet.命中率),
+                bullet
+            );
+
+        return settleHit(ctx, target, cr, dmgMult, dodgeState);
     }
 
     // ========================================================================
@@ -578,6 +708,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var Damage:Object = DamageCalculator;
         var FX:Object = EffectSystem;
         var DEG_TO_RAD:Number = Math.PI / 180;
+
+        // deferral=B 持久射线存活集：本帧后仍存活的射线（pierce/chain 一期）重建回 _rayBullets
+        var survivors:Array = [];
 
         // 遍历所有待处理射线子弹
         for (var i:Number = 0; i < count; i++) {
@@ -653,6 +786,30 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             ctx.Dodge = Dodge;
             ctx.Damage = Damage;
             ctx.FX = FX;
+
+            // === deferral=B 持久射线（pierce / chain / combo 组合）===
+            // 把每帧扫描所需的窗口/几何/配置打包进 ctx，交给 processPersistentRay 贪心推进。
+            // single / 纯 fork 仍走下方旧批量路（single 一帧即结无需持久；纯 fork 暂未纳入）。
+            ctx.unitMap = unitMap;
+            ctx.unitLen = unitLen;
+            ctx.unitLeftKeys = unitLeftKeys;
+            ctx.unitRightMax = unitRightMax;
+            ctx.areaAABB = areaAABB;
+            ctx.rayOriginX = rayOriginX;
+            ctx.rayOriginY = rayOriginY;
+            ctx.bulletZOffset = bulletZOffset;
+            ctx.bulletZRange = bulletZRange;
+            ctx.config = config;
+            ctx.rayMode = rayMode;
+            ctx.pierceLimit = bulletPierceLimit;
+            if (_rayPersistent && config != null && (config.isCombo() || rayMode == "pierce" || rayMode == "chain")) {
+                if (processPersistentRay(ctx)) {
+                    survivors[survivors.length] = bullet;   // 跨帧存活，保留在 _rayBullets
+                } else {
+                    bullet.removeMovieClip();                // 结束（budget 耗尽 / 本帧无命中）→ 销毁
+                }
+                continue;   // 跳过批量 lockon 块 + 模式分派 + 末尾 removeMovieClip
+            }
 
             // ---- Lockon 目标解析 ----
             // 【契约】lockonTarget 由武器层通过 TargetCacheManager 选靶，
@@ -1723,8 +1880,371 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             bullet.removeMovieClip();
         }
 
-        // 清空射线队列
-        _rayBullets.length = 0;
+        // 重建射线队列：仅保留 deferral=B 持久存活的射线（pierce/chain 一期）；
+        // 其余批量射线（combo/single/fork）本帧均已 removeMovieClip。
+        // 注：处理期间 spawn 的新射线（index >= count）与原 length=0 行为一致——被丢弃。
+        _rayBullets = survivors;
+    }
+
+    /**
+     * deferral=B 持久射线：每帧贪心结算至多 N 个命中，跨帧存活携带 state。
+     * 一期仅服务【非 combo 的 pierce / chain】（single/fork/combo 仍走批量路）。
+     *
+     * 模型（设计稿 §6）：射线本身是 spawn 出来的、自带 damageManager → injectHit(bullet,...)
+     * 直接可用（射线天然适配旁路原语）。未结束的射线留在 _rayBullets，每帧推进 1 命中（N 默认 1）；
+     * budget 耗尽或本帧找不到下一命中即结束。首发触发"击中时触发函数"一次；lockon 首发直伤、
+     * 几何冻结于首帧（之后不再 re-aim）。
+     *
+     * 持久 state 挂在 bullet 上：_rayInited / _rayBudget / _rayVisited / _rayCursorX/Y/Z /
+     * _rayLastTEntry / _rayFirstHitDone / _rayDmgMult / _rayPrevVfxX/Y。
+     *
+     * @param ctx 已打包的每帧上下文（bullet/shooter/几何/窗口/config/rayMode/pierceLimit/FX 等）
+     * @return true=本帧后仍存活（caller 保留），false=已结束（caller removeMovieClip）
+     */
+    private static function processPersistentRay(ctx:Object):Boolean {
+        var bullet:Object = ctx.bullet;
+        var shooter:MovieClip = ctx.shooter;
+        var config:TeslaRayConfig = TeslaRayConfig(ctx.config);
+        var areaAABB:AABBCollider = ctx.areaAABB;
+        var rayMode:String = ctx.rayMode;
+        var falloff:Number = config.damageFalloff;
+        var lockonDmgMult:Number = (bullet.lockonDmgMult > 0) ? bullet.lockonDmgMult : 1;
+
+        // N = 每帧命中数（未配置默认 1）。ctx.config 为无类型链 → 读未声明字段不报错。
+        var N:Number = ctx.config.hitsPerFrame;
+        if (!(N > 0)) N = 1;
+
+        var hits:Number = 0;   // 本帧已结算命中数
+
+        // ── 首帧 setup：lockon 解析 + 冻结几何 + 首发直伤 ──
+        if (!bullet._rayInited) {
+            bullet._rayBudget = ctx.pierceLimit;
+            bullet._rayVisited = {};
+            bullet._rayDmgMult = 1;
+            bullet._rayFirstHitDone = false;
+            bullet._rayLastTEntry = -1;
+            bullet._rayCursorX = ctx.rayOriginX;
+            bullet._rayCursorY = ctx.rayOriginY;
+            bullet._rayCursorZ = bullet.Z轴坐标;
+            bullet._rayPrevVfxX = ctx.rayOriginX;
+            bullet._rayPrevVfxY = ctx.rayOriginY;
+            bullet.附加层伤害计算 = 0;
+            // combo per-node 迭代器状态
+            bullet._rayComboPhase = "node";
+            bullet._rayPnDmgMult = 1;
+            bullet._rayNodeTEntry = -1;
+            bullet._rayForkList = null;
+            bullet._rayForkIdx = 0;
+
+            var lockonTarget:MovieClip = bullet.lockonTarget;
+            if (lockonTarget != null && lockonTarget.aabbCollider != null) {
+                var ltA:AABBCollider = lockonTarget.aabbCollider;
+                var lhx:Number = (ltA.left + ltA.right) * 0.5;
+                var lhy:Number = (ltA.top + ltA.bottom) * 0.5;
+                var ldx:Number = lhx - ctx.rayOriginX;
+                var ldy:Number = lhy - ctx.rayOriginY;
+                var ldsq:Number = ldx * ldx + ldy * ldy;
+                if (ldsq > 0.001) {
+                    // 冻结射线几何朝向锁定目标（仅首帧；之后不再 re-aim，避免变成跟踪光束）
+                    areaAABB["setRayFast"](ctx.rayOriginX, ctx.rayOriginY, ldx, ldy, config.rayLength || 900);
+                    // 首发直伤 = 锁定目标（首命中触发函数在此触发一次）
+                    bullet.hitTarget = lockonTarget;
+                    bullet.命中对象 = lockonTarget;
+                    if (bullet.击中时触发函数) bullet.击中时触发函数();
+                    injectHit(bullet, shooter, lockonTarget, lhx, lhy, lockonDmgMult);
+                    spawnPersistentRaySeg(ctx, bullet, lhx, lhy, lockonDmgMult, false);
+                    bullet._rayFirstHitDone = true;
+                    bullet._rayVisited[lockonTarget._name] = true;
+                    bullet._rayBudget--;
+                    bullet._rayLastTEntry = Math.sqrt(ldsq);
+                    bullet._rayCursorX = lhx;
+                    bullet._rayCursorY = lhy;
+                    bullet._rayCursorZ = lockonTarget.Z轴坐标;
+                    bullet._rayDmgMult *= falloff;
+                    hits = 1;   // lockon 首发计入本帧命中（N=1 时本帧不再追加）
+                }
+            }
+            bullet._rayInited = true;
+        }
+
+        // ── 每帧贪心：至多 N 命中 ──
+        var isCombo:Boolean = config.isCombo();
+        while (hits < N && bullet._rayBudget > 0) {
+            var next:Object;
+            if (isCombo) {
+                // 组合（含 pierce，如铁枪 chain,fork,pierce）：增量复刻 batch per-node 遍历
+                // （节点→其 chain 走链→其 fork→下一节点），no-death 下命中序与衰减 ≡ batch。
+                next = findNextComboPerNode(ctx, bullet);
+            } else if (rayMode == "pierce") {
+                // 沿线推进：tEntry 严格大于已推进位置的最近碰撞
+                next = findAlongRay(ctx, bullet._rayVisited, bullet._rayLastTEntry);
+            } else {
+                // chain：首命中=沿线最近；之后=游标周 chainRadius 最近
+                if (!bullet._rayFirstHitDone) {
+                    next = findAlongRay(ctx, bullet._rayVisited, -1);
+                } else {
+                    next = findNearCursor(ctx, bullet);
+                }
+            }
+            if (next == null) break;   // 本帧找不到下一命中 → 结束
+
+            // 首命中：重置附加层 + 触发"击中时触发函数"一次（对齐批量路语义）
+            if (!bullet._rayFirstHitDone) {
+                bullet.附加层伤害计算 = 0;
+                bullet.hitTarget = next.target;
+                bullet.命中对象 = next.target;
+                if (bullet.击中时触发函数) bullet.击中时触发函数();
+            }
+
+            // combo：dmgMult 由迭代器按 phase 算好放在 next.dmgMult；pierce/chain：统一累乘 _rayDmgMult。
+            var dm:Number = (isCombo ? next.dmgMult : bullet._rayDmgMult) * lockonDmgMult;
+            injectHit(bullet, shooter, next.target, next.hitX, next.hitY, dm);
+            spawnPersistentRaySeg(ctx, bullet, next.hitX, next.hitY, dm, bullet._rayFirstHitDone);
+
+            bullet._rayFirstHitDone = true;
+            bullet._rayVisited[next.target._name] = true;
+            bullet._rayBudget--;
+            hits++;
+            if (!isCombo) {
+                // pierce/chain 的统一游标/tEntry/衰减推进；combo 的等价状态由迭代器内部管理
+                bullet._rayLastTEntry = next.tEntry;
+                bullet._rayCursorX = next.hitX;
+                bullet._rayCursorY = next.hitY;
+                bullet._rayCursorZ = next.target.Z轴坐标;
+                bullet._rayDmgMult *= falloff;
+            }
+        }
+
+        // ── 从未命中过 + 本帧也未命中 → 画全长 miss 光束让玩家看到（一次性，随后结束）──
+        if (hits == 0 && !bullet._rayFirstHitDone) {
+            var ang:Number = bullet._rotation * (Math.PI / 180);
+            var rl:Number = config.rayLength || 900;
+            var ex:Number = ctx.rayOriginX + Math.cos(ang) * rl;
+            var ey:Number = ctx.rayOriginY + Math.sin(ang) * rl;
+            ctx.FX.Effect(bullet.击中地图效果, ex, ey, shooter._xscale);
+            RayVfxManager.spawn(ctx.rayOriginX, ctx.rayOriginY, ex, ey, config,
+                {segmentKind: "main", hitIndex: 0, intensity: 1.0, isHit: false});
+        }
+
+        // 本帧有命中且仍有预算 → 跨帧存活；否则结束
+        return (bullet._rayBudget > 0 && hits > 0);
+    }
+
+    /**
+     * 沿射线找"下一个"命中：窗口内 tEntry 严格大于 minTEntry 的最近未命中碰撞。
+     * pierce 全程用它（minTEntry=上次推进位置）；chain 首命中用它（minTEntry=-1 取最近）。
+     * @return {target, hitX, hitY, tEntry} 或 null
+     */
+    private static function findAlongRay(ctx:Object, visited:Object, minTEntry:Number):Object {
+        var areaAABB:AABBCollider = ctx.areaAABB;
+        var unitMap:Array = ctx.unitMap;
+        var unitLen:Number = ctx.unitLen;
+        var unitLeftKeys:Array = ctx.unitLeftKeys;
+        var unitRightMax:Array = ctx.unitRightMax;
+        var bulletZOffset:Number = ctx.bulletZOffset;
+        var bulletZRange:Number = ctx.bulletZRange;
+        var rayRight:Number = areaAABB.right;
+        var lo:Number = bsearchScanStart(unitRightMax, unitLen, areaAABB.left);
+
+        var bestTE:Number = Infinity;
+        var best:Object = null;
+        for (var u:Number = lo; u < unitLen && unitLeftKeys[u] <= rayRight; u++) {
+            var t:MovieClip = unitMap[u];
+            if (visited[t._name] == true) continue;
+            var zoff:Number = bulletZOffset - t.Z轴坐标;
+            if (zoff >= bulletZRange || zoff <= -bulletZRange) continue;
+            if (t.hp > 0 && t.防止无限飞 != true) {
+                var cr:Object = areaAABB.checkCollision(t.aabbCollider, zoff);
+                if (cr.isColliding && cr.tEntry > minTEntry && cr.tEntry < bestTE) {
+                    bestTE = cr.tEntry;
+                    if (best == null) best = {};
+                    best.target = t;
+                    best.hitX = cr.overlapCenter.x;
+                    best.hitY = cr.overlapCenter.y;
+                    best.tEntry = cr.tEntry;
+                }
+            }
+        }
+        return best;
+    }
+
+    /**
+     * 从指定点 (cx,cy,cz) 起 chainRadius 内最近的未命中目标（AABB 中心距）。
+     * chain 弹跳 / combo chain 子阶段共用。
+     * @return {target, hitX, hitY, tEntry:-1} 或 null
+     */
+    private static function findNearestAt(ctx:Object, visited:Object, cx:Number, cy:Number, cz:Number):Object {
+        var config:TeslaRayConfig = TeslaRayConfig(ctx.config);
+        var radius:Number = config.chainRadius;
+        var radiusSq:Number = radius * radius;
+        var unitMap:Array = ctx.unitMap;
+        var unitLen:Number = ctx.unitLen;
+        var unitLeftKeys:Array = ctx.unitLeftKeys;
+        var unitRightMax:Array = ctx.unitRightMax;
+        var bulletZRange:Number = ctx.bulletZRange;
+
+        var lo:Number = bsearchScanStart(unitRightMax, unitLen, cx - radius);
+        var sr:Number = cx + radius;
+        var bestDSq:Number = radiusSq;
+        var best:Object = null;
+        for (var u:Number = lo; u < unitLen && unitLeftKeys[u] <= sr; u++) {
+            var t:MovieClip = unitMap[u];
+            if (visited[t._name] == true) continue;
+            var zoff:Number = cz - t.Z轴坐标;
+            if (zoff >= bulletZRange || zoff <= -bulletZRange) continue;
+            if (t.hp > 0 && t.防止无限飞 != true) {
+                var a:AABBCollider = t.aabbCollider;
+                var ccx:Number = (a.left + a.right) * 0.5;
+                var ccy:Number = (a.top + a.bottom) * 0.5;
+                var dx:Number = ccx - cx;
+                var dy:Number = ccy - cy;
+                var dsq:Number = dx * dx + dy * dy;
+                if (dsq < bestDSq) {
+                    bestDSq = dsq;
+                    if (best == null) best = {};
+                    best.target = t;
+                    best.hitX = ccx;
+                    best.hitY = ccy;
+                    best.tEntry = -1;
+                }
+            }
+        }
+        return best;
+    }
+
+    /** chain 弹跳：从游标 (_rayCursorX/Y/Z) 起最近未命中。 */
+    private static function findNearCursor(ctx:Object, bullet:Object):Object {
+        return findNearestAt(ctx, bullet._rayVisited, bullet._rayCursorX, bullet._rayCursorY, bullet._rayCursorZ);
+    }
+
+    /**
+     * 收集 (cx,cy,cz) 起 chainRadius 内、前 maxCount 近的未命中目标（按距离升序），
+     * 复刻 batch combo fork 的收集（插入排序、距离封顶）。
+     * @return [{target, hitX, hitY, distSq}, ...]
+     */
+    private static function collectForkList(ctx:Object, visited:Object, cx:Number, cy:Number, cz:Number, maxCount:Number):Array {
+        var config:TeslaRayConfig = TeslaRayConfig(ctx.config);
+        var radius:Number = config.chainRadius;
+        var radiusSq:Number = radius * radius;
+        var unitMap:Array = ctx.unitMap;
+        var unitLen:Number = ctx.unitLen;
+        var unitLeftKeys:Array = ctx.unitLeftKeys;
+        var unitRightMax:Array = ctx.unitRightMax;
+        var bulletZRange:Number = ctx.bulletZRange;
+
+        var lo:Number = bsearchScanStart(unitRightMax, unitLen, cx - radius);
+        var sr:Number = cx + radius;
+        var arr:Array = [];
+        var aLen:Number = 0;
+        for (var u:Number = lo; u < unitLen && unitLeftKeys[u] <= sr; u++) {
+            var t:MovieClip = unitMap[u];
+            if (visited[t._name] == true) continue;
+            var zoff:Number = cz - t.Z轴坐标;
+            if (zoff >= bulletZRange || zoff <= -bulletZRange) continue;
+            if (t.hp > 0 && t.防止无限飞 != true) {
+                var a:AABBCollider = t.aabbCollider;
+                var ccx:Number = (a.left + a.right) * 0.5;
+                var ccy:Number = (a.top + a.bottom) * 0.5;
+                var dx:Number = ccx - cx;
+                var dy:Number = ccy - cy;
+                var dsq:Number = dx * dx + dy * dy;
+                if (dsq < radiusSq) {
+                    if (aLen < maxCount || dsq < arr[aLen - 1].distSq) {
+                        var nh:Object = {target: t, hitX: ccx, hitY: ccy, distSq: dsq};
+                        var ins:Number = aLen;
+                        if (ins > 0) {
+                            var ss:Number = (aLen >= maxCount) ? aLen - 2 : aLen - 1;
+                            for (var pi:Number = ss; pi >= 0; pi--) {
+                                if (arr[pi].distSq > dsq) { arr[pi + 1] = arr[pi]; ins = pi; } else break;
+                            }
+                        }
+                        arr[ins] = nh;
+                        if (aLen < maxCount) aLen++;
+                    }
+                }
+            }
+        }
+        return arr;
+    }
+
+    /**
+     * combo（含 pierce 的组合，如铁枪 chain,fork,pierce）的【增量 per-node 迭代器】。
+     * 每次返回 batch per-node 管线序列的下一个命中：节点 → 其 chain 走链 → 其 fork → 下一节点；
+     * 死目标由各 find* 的 visited/hp 过滤自动跳过续走。dmgMult 按 phase 算好放 next.dmgMult
+     * （node=pnDmgMult；chain 起于 pnDmgMult×falloff 逐跳衰减；fork 全用 pnDmgMult×falloff）。
+     * 状态挂 bullet：_rayComboPhase / _rayPnDmgMult / _rayNodeTEntry / _rayChainCX·CY·CZ /
+     *               _rayChainDmgMult / _rayForkBaseX·Y·Z / _rayForkDmgMult / _rayForkList / _rayForkIdx。
+     * @return {target, hitX, hitY, dmgMult} 或 null（节点耗尽=combo 结束）
+     */
+    private static function findNextComboPerNode(ctx:Object, bullet:Object):Object {
+        var config:TeslaRayConfig = TeslaRayConfig(ctx.config);
+        var falloff:Number = config.damageFalloff;
+        var hasChain:Boolean = config.hasChain();
+        var hasFork:Boolean = config.hasFork();
+        var visited:Object = bullet._rayVisited;
+
+        while (true) {
+            var phase:String = bullet._rayComboPhase;
+
+            if (phase == "node") {
+                // 下一个 pierce 节点（沿束 tEntry 升序、跳已命中）
+                var node:Object = findAlongRay(ctx, visited, bullet._rayNodeTEntry);
+                if (node == null) return null;   // 无更多节点 → combo 结束
+                bullet._rayNodeTEntry = node.tEntry;
+                var p0:Number = bullet._rayPnDmgMult;
+                bullet._rayPnDmgMult = p0 * falloff;   // P1：node 之后衰减一档
+                // 该节点的 chain/fork 均以 P1 为基（对齐 batch：chain 起于 pnDmgMult、fork 用 pnDmgMult）
+                bullet._rayChainCX = node.hitX; bullet._rayChainCY = node.hitY; bullet._rayChainCZ = node.target.Z轴坐标;
+                bullet._rayChainDmgMult = bullet._rayPnDmgMult;
+                bullet._rayForkBaseX = node.hitX; bullet._rayForkBaseY = node.hitY; bullet._rayForkBaseZ = node.target.Z轴坐标;
+                bullet._rayForkDmgMult = bullet._rayPnDmgMult;
+                bullet._rayForkList = null; bullet._rayForkIdx = 0;
+                bullet._rayComboPhase = "chain";
+                node.dmgMult = p0;
+                return node;
+            } else if (phase == "chain") {
+                if (hasChain) {
+                    var c:Object = findNearestAt(ctx, visited, bullet._rayChainCX, bullet._rayChainCY, bullet._rayChainCZ);
+                    if (c != null) {
+                        c.dmgMult = bullet._rayChainDmgMult;
+                        bullet._rayChainDmgMult *= falloff;
+                        bullet._rayChainCX = c.hitX; bullet._rayChainCY = c.hitY; bullet._rayChainCZ = c.target.Z轴坐标;
+                        return c;
+                    }
+                }
+                bullet._rayComboPhase = "fork";   // chain 断/无 → fork（继续循环）
+            } else if (phase == "fork") {
+                if (hasFork) {
+                    if (bullet._rayForkList == null) {
+                        bullet._rayForkList = collectForkList(ctx, visited, bullet._rayForkBaseX, bullet._rayForkBaseY, bullet._rayForkBaseZ, bullet._rayBudget);
+                    }
+                    var fl:Array = bullet._rayForkList;
+                    while (bullet._rayForkIdx < fl.length) {
+                        var f:Object = fl[bullet._rayForkIdx];
+                        bullet._rayForkIdx++;
+                        if (visited[f.target._name] == true) continue;   // chain 可能已吃掉
+                        f.dmgMult = bullet._rayForkDmgMult;
+                        return f;
+                    }
+                }
+                bullet._rayComboPhase = "node";   // fork 完/无 → 下一节点（继续循环）
+            } else {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 持久射线 VFX：从上一段终点(_rayPrevVfxX/Y)画到本命中点，并推进 prev 游标。
+     * isBounce=false → "main" 段（首命中/直线骨干）；true → "chain" 段（弹跳/续段）。
+     */
+    private static function spawnPersistentRaySeg(ctx:Object, bullet:Object, hitX:Number, hitY:Number, intensity:Number, isBounce:Boolean):Void {
+        var config:TeslaRayConfig = TeslaRayConfig(ctx.config);
+        RayVfxManager.spawn(bullet._rayPrevVfxX, bullet._rayPrevVfxY, hitX, hitY, config,
+            {segmentKind: (isBounce ? "chain" : "main"), hitIndex: 0, intensity: intensity, isHit: true});
+        bullet._rayPrevVfxX = hitX;
+        bullet._rayPrevVfxY = hitY;
     }
 
     // ========================================================================
@@ -1944,14 +2464,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var crCenter:Vector;                // overlapCenter缓存（避免重复属性链访问）
 
         // ---- 命中后处理变量 ----
-        var isNormalKill:Boolean;           // 是否普通击杀
+        // 注：isNormalKill/damageResult/targetDispatcher/targetX/targetY 随 settleHit 抽取（阶段1）已下沉进 settleHit，此处移除其死声明。
         var shouldStun:Boolean;             // 是否应该硬直
         var isPierce:Boolean;               // 是否穿透
         var dodgeState:String;              // 闪避状态
-        var damageResult:DamageResult;      // 伤害计算结果
-        var targetDispatcher:EventDispatcher; // 目标事件分发器
-        var targetX:Number;                 // 目标X坐标
-        var targetY:Number;                 // 目标Y坐标
 
         // ---- 射弹预警变量（Phase 2+ 尾循环）----
         var hasTZ:Boolean;              // 全局门控：是否有单位订阅 bulletThreat
@@ -2234,7 +2750,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     bullet.shouldGeneratePostHitEffect = true;
 
                     // ---- 子弹类型预计算：直接使用位运算结果作为条件判断 ----
-                    isNormalKill = (flags & MELEE_EXPLOSIVE_MASK) == 0;  // 普通击杀
+                    // ---- 命中上下文：per-bullet 不变量打包，供统一 settleHit（§4.0 (a)；对齐 _rayHitCtx）----
+                    // （原 isNormalKill 预计算移入 settleHit 内部，从 ctx.flags & ctx.meleeMask 求得）
+                    _hitCtx.bullet = bullet;
+                    _hitCtx.shooter = shooter;
+                    _hitCtx.Damage = Damage;
+                    _hitCtx.flags = flags;
+                    _hitCtx.meleeMask = MELEE_EXPLOSIVE_MASK;
                     // 近战硬直：近战类型 && 非硬直免疫（STATE_NO_STUN 位为0）
                     shouldStun = (flags & FLAG_MELEE) != 0 && ((bullet.stateFlags | 0) & STATE_NO_STUN) == 0;
                     isPierce = (flags & FLAG_PIERCE) != 0;  // 穿透
@@ -2369,32 +2891,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             // --- 击中时触发函数（内联条件判断） ---
                             if (bullet.击中时触发函数) bullet.击中时触发函数();
 
-                            // --- 计算伤害（使用预声明变量） ---
-                            damageResult = Damage.calculateDamage(
-                                bullet, shooter, hitTarget, collisionResult.overlapRatio, dodgeState
-                            );
-
-                            // --- 命中计数：根据实际判定段数增加 ---
-                            bullet.hitCount += damageResult.actualScatterUsed;
-
-                            // --- 事件分发（使用预声明的dispatcher变量） ---
-                            targetDispatcher = hitTarget.dispatcher;
-                            targetDispatcher.publish("hit", hitTarget, shooter, bullet, collisionResult, damageResult);
-
-                            // --- 死亡判定（内联展开） ---
-                            // _killed 守卫：防止 UnitBullet 的 onHit 已抢先 publish kill（onKill 设 _killed=true）
-                            // 导致主循环再次 publish kill/death + enemyKilled 的重复事件；
-                            // 同时阻断 enemyKilled 对 UnitBullet 的 killStats 膨胀（每枚 _name 不同会撑爆 byType）
-                            if (hitTarget.hp <= 0 && !hitTarget._killed) {
-                                // 直接使用预计算的布尔值判断事件名
-                                targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
-                                shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
-                            }
-
-                            // --- 表现触发（缓存坐标值） ---
-                            targetX = hitTarget._x;
-                            targetY = hitTarget._y;
-                            damageResult.triggerDisplay(targetX, targetY, hitTarget._name);
+                            // --- 统一伤害结算（§4.0 (a)）---
+                            // 闪避(上方)→触发(上方)→本调用，顺序与原内联一致（byte-equivalent）。
+                            // dmgMult = collisionResult.overlapRatio（AABB 命中恒为 1，polygon 为真实重叠比，§1.4）。
+                            // settleHit 内含：命中对象同步(幂等) → calculateDamage → hitCount+= → publish("hit")
+                            //                → kill/death(_killed 守卫) → triggerDisplay。
+                            // 返回值(DamageResult)按设计不被循环控制读取，直接丢弃（避免与 DamageResult 类型局部赋值不匹配）。
+                            settleHit(_hitCtx, hitTarget, collisionResult, collisionResult.overlapRatio, dodgeState);
 
                             // --- 终止意图：近战硬直 或 非穿刺 命中即"消失" ---
                             if (!isPierce) {  // 非穿透
@@ -2614,7 +3117,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      *   影子窗口内，仅 MultiShotDamageHandle 和 __commitDeferScatter 可写入 bullet.霰弹值
      *   责任方：所有命中事件订阅者、击中时触发函数、DamageHandle 链
      *   违约后果：外部写入正数覆盖编码值 → commit 不触发 → 消耗静默丢失
-     *   审计确认（2026-03）：击中时触发函数仅发射新子弹；hit/enemyKilled 订阅者
+     *   审计确认（2026-03，2026-06-22 收窄）：击中时触发函数不写入 bullet.霰弹值（C2 所需仅此一点）；
+     *     其"仅发射新子弹"系旧表述过度泛化——实际尚有加buff/停弹/gotoAndPlay爆炸/让射手硬直等副作用，
+     *     均不碰霰弹值，与本契约无关（详见 docs/子弹命中-伤害双管线拆分-架构设计 §4.0）。hit/enemyKilled 订阅者
      *     不读写 bullet.霰弹值；kill/death 事件参数中无 bullet
      *   防御建议：新增订阅者需读散射信息时，从 damageResult.finalScatterValue 获取
      *

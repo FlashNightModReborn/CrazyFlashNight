@@ -166,7 +166,7 @@ BulletQueueProcessor.processQueue()
 - **守约方**：所有命中事件订阅者、击中时触发函数、其他 DamageHandle
 - **违约后果**：外部正数覆盖编码值 → commit 不触发 → 消耗静默丢失
 - **审计确认（2026-03）**：
-  - `击中时触发函数`：只发射新子弹 ✓
+  - `击中时触发函数`：不写入 `bullet.霰弹值` ✓（注：它另有发射子弹/加buff/停弹/让射手硬直等副作用，但均不碰霰弹值；"只发射新子弹"系旧表述过度泛化，见 docs/子弹命中-伤害双管线拆分-架构设计 §4.0）
   - `publish("hit")` 订阅者：不读写 bullet.霰弹值 ✓
   - `publish("enemyKilled")` 订阅者：只读 `bullet.子弹种类` ✓
   - `publish("kill"/"death")`：参数中无 bullet ✓

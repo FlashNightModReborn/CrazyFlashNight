@@ -76,13 +76,16 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
 
                 // _root.发布消息(param.chargedRiflePellets, target.铁枪之锋倍率, chargedProp.霰弹值);
 
+                // 狙击真伤：经 injectHit 旁路直结算到锁定目标，替代原"伪造 区域定位area
+                // + 改写 shootX/Y/Z + spawn 近战联弹蹭中"的 hack（z 轴远目标不再露怯）。
+                // chargedProp 经 createSettlementBullet 初始化为可结算子弹（含 damageManager 等），
+                // 不 spawn 飞行实体；dmgMult=1（保底首发全伤）。
+                // target = 自机 = 发射者；命中点取锁定目标自身坐标。
                 var autoTarget:MovieClip = ref.autoTarget;
-                chargedProp.区域定位area  = autoTarget.area;
-                chargedProp.shootX = autoTarget._x;
-                chargedProp.shootY = autoTarget._y;
-                chargedProp.shootZ = autoTarget.Z轴坐标;
-
-                _root.子弹区域shoot传递(chargedProp);
+                if (autoTarget && autoTarget.hp > 0) {
+                    var settlementBullet:Object = BulletFactory.createSettlementBullet(chargedProp, target);
+                    BulletQueueProcessor.injectHit(settlementBullet, target, autoTarget, autoTarget._x, autoTarget._y, 1);
+                }
 
                 // 狙击运镜：切换到被狙击单位身上
                 var focusFrames = param.focusFrames || 10;
