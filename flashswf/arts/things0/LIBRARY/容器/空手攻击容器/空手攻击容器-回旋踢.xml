@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-回旋踢" itemID="699df8c4-00000bc2" linkageExportForAS="true" linkageIdentifier="空手攻击容器-回旋踢" lastModified="1782239013" lastUniqueIdentifier="1129">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-回旋踢" itemID="699df8c4-00000bc2" linkageExportForAS="true" linkageIdentifier="空手攻击容器-回旋踢" lastModified="1782243038" lastUniqueIdentifier="1129">
   <timeline>
-    <DOMTimeline name="空手攻击容器-回旋踢" currentFrame="61">
+    <DOMTimeline name="空手攻击容器-回旋踢" currentFrame="46">
       <layers>
         <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
           <frames>
@@ -10,7 +10,7 @@
             <DOMFrame index="30" duration="16" name="前冲追击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="46" duration="16" name="浮空截击" labelType="name" keyMode="9728">
+            <DOMFrame index="46" duration="12" name="浮空截击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -223,7 +223,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="46" duration="16" keyMode="9728">
+            <DOMFrame index="46" duration="12" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("钝器挥舞1.wav");]]></script>
               </Actionscript>
@@ -494,9 +494,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
 else if(_parent.性别 == "女"){
 	_root.播放音效("女角色飞踢.mp3");
 }
-_root.播放音效("爆炸 火球 炸裂 04.mp3")
-	_parent.垂直速度 = -24;
-	 _root.技能函数.升龙拳浮空初始化(this, _parent);]]></script>
+_root.播放音效("爆炸 火球 炸裂 04.mp3")]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -506,7 +504,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="46" duration="15" keyMode="9728">
+            <DOMFrame index="46" duration="11" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[if (_parent.性别 == "男")
 {
@@ -516,11 +514,14 @@ else if(_parent.性别 == "女"){
 	_root.播放音效("女角色飞踢.mp3");
 }
 _root.播放音效("爆炸 火球 炸裂 04.mp3")
- _root.技能函数.升龙拳浮空初始化(this, _parent);]]></script>
+_parent.垂直速度 = -14;
+_parent.技能浮空 = true;
+_root.技能函数.升龙拳浮空初始化(this, _parent);
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="61" keyMode="9728">
+            <DOMFrame index="57" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.空手攻击路由.动画完毕(this,_parent);]]></script>
               </Actionscript>
@@ -528,7 +529,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#73BC75" locked="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#73BC75" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1140,7 +1141,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="54" duration="8" keyMode="9728">
+            <DOMFrame index="54" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1155,7 +1156,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")
             </DOMFrame>
             <DOMFrame index="21" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -1165,13 +1166,13 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
 	_parent.回旋踢可派生搓招();
-	if (_parent._parent._name == _root.控制目标 && !_parent._parent.浮空 && _parent._parent.被动技能.拳脚空中连招.等级 >= 2 && _parent._parent.被动技能.拳脚空中连招.启用)
+	if (_parent._parent._name == _root.控制目标 &&  _parent._parent.被动技能.拳脚空中连招.等级 >= 2 && _parent._parent.被动技能.拳脚空中连招.启用)
 	{
 		if (Key.isDown(_parent._parent.A键))
 		{
 			_parent.gotoAndPlay("前冲追击");
 		}
-		else if (Key.isDown(_parent._parent.B键))
+		else if (!_parent._parent.浮空 && Key.isDown(_parent._parent.B键))
 		{
 			_parent.gotoAndPlay("浮空截击");
 		}
@@ -1206,27 +1207,12 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")
             <DOMFrame index="46" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="57" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
-                  <matrix>
-                    <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-73.6" y="-71.35"/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (enterFrame) {
-	if (_parent._parent._name == _root.控制目标)
-	{_parent.回旋踢可派生搓招();}
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
+            <DOMFrame index="57" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#FF4F4F" locked="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -1271,7 +1257,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")
             <DOMFrame index="38" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="46" duration="11" keyMode="9728">
+            <DOMFrame index="46" duration="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="12.6" centerPoint3DY="401.2">
                   <matrix>
@@ -1282,17 +1268,11 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	_parent.攻击时可改变移动方向(5);
+	_parent.攻击时可改变移动方向(10);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="57" duration="4" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="61" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -1325,7 +1305,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")
             <DOMFrame index="38" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="46" duration="11" keyMode="9728">
+            <DOMFrame index="46" duration="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="137.15" centerPoint3DY="241.8">
                   <matrix>
@@ -1336,12 +1316,6 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="57" duration="4" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="61" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -8019,7 +7993,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="52" duration="10" keyMode="9728">
+            <DOMFrame index="52" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-80.65" centerPoint3DY="-31.5">
                   <matrix>
@@ -9281,7 +9255,7 @@ _root.播放音效("爆炸 火球 炸裂 04.mp3")
         </DOMLayer>
         <DOMLayer name="影子" color="#A37FA5" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="62" keyMode="9728">
+            <DOMFrame index="0" duration="58" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>

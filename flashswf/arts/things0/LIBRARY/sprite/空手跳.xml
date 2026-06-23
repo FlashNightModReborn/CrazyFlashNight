@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跳" itemID="6919df9d-00001065" lastModified="1778012879" lastUniqueIdentifier="358">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跳" itemID="6919df9d-00001065" lastModified="1782243257" lastUniqueIdentifier="358">
   <timeline>
-    <DOMTimeline name="空手跳" currentFrame="91" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-263&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="空手跳" currentFrame="66" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-263&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#B562FD" locked="true">
           <frames>
@@ -210,7 +210,7 @@ gotoAndPlay("跳跃状态");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#E89962" locked="true" autoNamed="false">
+        <DOMLayer name="攻击点" color="#E89962" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -347,7 +347,7 @@ else if(_parent.性别 == "女"){
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="63" duration="28" keyMode="9728">
+            <DOMFrame index="63" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[/*   if(Key.isDown(_parent.B键))
    {
@@ -362,17 +362,51 @@ if (_parent.垂直速度 > -10)
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="91" duration="2" keyMode="9728">
+            <DOMFrame index="65" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[
-if (Key.isDown(_parent.A键))
-{
-	gotoAndPlay("空中攻击");
-}
-else
-{
-	gotoAndPlay("跳跃状态");
-}]]></script>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="75" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="78" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="81" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("旋风腿.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -2470,7 +2504,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements>
@@ -7395,7 +7429,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="特效" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="特效" color="#9933CC" locked="true" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -29467,7 +29501,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#8B4BC7" current="true" isSelected="true">
+        <DOMLayer name="Layer 17" color="#8B4BC7">
           <frames>
             <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -29917,7 +29951,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="65" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="197.55" centerPoint3DY="-90.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="197.55" centerPoint3DY="-90.2">
                   <matrix>
                     <Matrix a="0.813186645507813" b="0.573562622070313" c="-0.573562622070313" d="0.813186645507813" tx="108.65" ty="-274.75"/>
                   </matrix>
@@ -29963,7 +29997,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="68" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="-178.85" centerPoint3DY="-103.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="-178.85" centerPoint3DY="-103.4">
                   <matrix>
                     <Matrix a="-0.8349609375" b="0.541366577148438" c="0.541366577148438" d="0.8349609375" tx="-82.6" ty="-284.35"/>
                   </matrix>
@@ -30234,7 +30268,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="90" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" selected="true" centerPoint3DX="195.4" centerPoint3DY="-83.75">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" centerPoint3DX="195.4" centerPoint3DY="-83.75">
                   <matrix>
                     <Matrix a="0.813186645507813" b="0.573562622070313" c="-0.573562622070313" d="0.813186645507813" tx="106.5" ty="-268.3"/>
                   </matrix>
@@ -30343,7 +30377,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="107" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="83.75" centerPoint3DY="7.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="83.75" centerPoint3DY="7.65">
                   <matrix>
                     <Matrix a="-0.052642822265625" b="0.9984130859375" c="-0.9984130859375" d="-0.052642822265625" tx="25" ty="-24.5"/>
                   </matrix>
