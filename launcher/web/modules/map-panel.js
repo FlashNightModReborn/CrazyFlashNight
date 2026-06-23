@@ -423,10 +423,12 @@ var MapPanel = (function() {
         _hoverHotspotId = '';
         ensurePageFilterState(_activePage);
         _stageEl.style.aspectRatio = _activePage.width + ' / ' + _activePage.height;
-        // 沉浸全屏化 2026-06-12：stage-shell 铺当前 page 底图(cover + CSS 暗罩)作背景延伸，让 stage 周围
-        // letterbox 区显扩展地图氛围而非黑（坐标/命中图不变，纯视觉）。assembled-visual 页无 backgroundUrl 时回退渐变底。
+        // assembled 新地图页的 backgroundUrl 是旧 Flash 地图对照底图，右侧带旧按钮/关闭区。
+        // 只允许非 assembled fallback 页把它铺到 shell；新地图页的 letterbox 区走 CSS 环境底，避免窗口缩放时露旧 UI。
         if (_stageShellEl) {
-            var _bgExtUrl = (_activePage && _activePage.backgroundUrl) ? resolveAssetUrl(_activePage.backgroundUrl) : '';
+            var _bgExtUrl = (_activePage && _activePage.backgroundUrl && !useAssembledVisuals(_activePage))
+                ? resolveAssetUrl(_activePage.backgroundUrl)
+                : '';
             _stageShellEl.style.backgroundImage = _bgExtUrl ? 'url("' + _bgExtUrl + '")' : '';
         }
         // 像素级 hittest 构建 (lazy):

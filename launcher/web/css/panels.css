@@ -2817,7 +2817,7 @@
    ═══════════════════════════════════════════════════════ */
 /* 沉浸全屏化 2026-06-12：map「背景填充铺满」方案——inset:0 去卡片黑边；.map-panel 去切角/border/外阴影
    铺满全 16:9（保留绿/琥珀渐变作 ambient 底）。**stage 1031×608 坐标/命中图一律不动（hit-test 零风险）**；
-   stage 周围 letterbox 区由 .map-stage-shell 的 per-page 底图延伸(cover + 暗罩, applyPage 设)填充，非黑。*/
+   assembled 新地图页的旧 Flash 对照底图不再延伸到 shell，避免窗口缩放时露出旧按钮/关闭区。*/
 #panel-container[data-panel="map"] #panel-content {
     inset:0;
 }
@@ -2980,10 +2980,14 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    /* 背景延伸：per-page 底图 cover（applyPage 设 backgroundImage），让 stage 周围 letterbox 显扩展地图氛围 */
+    /* assembled 页使用中性环境底；非 assembled fallback 可由 applyPage 设置 per-page backgroundImage。 */
     position:relative;
+    background:
+        radial-gradient(ellipse at 50% 42%, rgba(121, 175, 74, 0.10), transparent 62%),
+        linear-gradient(180deg, rgba(8, 12, 10, 0.32), rgba(3, 5, 6, 0.52));
     background-size:cover;
     background-position:center;
+    background-repeat:no-repeat;
 }
 /* 背景延伸暗罩：盖在 shell 底图之上、stage-frame 之下（DOM 序在前→被 stage 覆盖），让中央 stage 突出、扩展区氛围化 */
 .map-stage-shell::before {

@@ -115,6 +115,7 @@ namespace CF7Launcher.Guardian
         private bool _ownerLayoutSubscribed;
         // 节流：LocationChanged 拖窗时高频触发；用 BeginInvoke 合并到下一个消息泵循环
         private bool _ownerLayoutPending;
+        private System.Windows.Forms.Timer _ownerLayoutSettleTimer;
 
         public PanelHostController(
             Form ownerForm,
@@ -444,6 +445,8 @@ namespace CF7Launcher.Guardian
             try
             {
                 _ownerForm.LocationChanged += OnOwnerLayoutChanged;
+                _ownerForm.SizeChanged += OnOwnerLayoutSettleOnly;
+                _ownerForm.ClientSizeChanged += OnOwnerLayoutSettleOnly;
                 // FlashHostPanel.SizeChanged：viewport 变化的真实源头（全屏切换时 owner SizeChanged
                 // 早于 ResizeFlashToPanel，订阅 owner.SizeChanged 会拿到旧 viewport；订阅 panel
                 // 自身 SizeChanged 才能等到 layout settle 后的正确 size）
@@ -460,17 +463,22 @@ namespace CF7Launcher.Guardian
             try
             {
                 _ownerForm.LocationChanged -= OnOwnerLayoutChanged;
+                _ownerForm.SizeChanged -= OnOwnerLayoutSettleOnly;
+                _ownerForm.ClientSizeChanged -= OnOwnerLayoutSettleOnly;
                 Control fp = GetFlashPanelOrNull();
                 if (fp != null) fp.SizeChanged -= OnOwnerLayoutChanged;
             }
             catch { }
             _ownerLayoutSubscribed = false;
             _ownerLayoutPending = false;
+            if (_ownerLayoutSettleTimer != null)
+                _ownerLayoutSettleTimer.Stop();
         }
 
         private void OnOwnerLayoutChanged(object sender, EventArgs e)
         {
             if (_activePanel == null) return;
+            ScheduleOwnerLayoutSettle();
             // 节流：拖窗 LocationChanged 高频触发；BeginInvoke 合并到下一个消息泵循环只跑一次
             if (_ownerLayoutPending) return;
             _ownerLayoutPending = true;
@@ -483,6 +491,31 @@ namespace CF7Launcher.Guardian
                 _ownerLayoutPending = false;
                 LogManager.Log("[PanelHost] owner layout BeginInvoke failed: " + ex.Message);
             }
+        }
+
+        private void OnOwnerLayoutSettleOnly(object sender, EventArgs e)
+        {
+            if (_activePanel == null) return;
+            ScheduleOwnerLayoutSettle();
+        }
+
+        private void ScheduleOwnerLayoutSettle()
+        {
+            if (_ownerLayoutSettleTimer == null)
+            {
+                _ownerLayoutSettleTimer = new System.Windows.Forms.Timer();
+                _ownerLayoutSettleTimer.Interval = 120;
+                _ownerLayoutSettleTimer.Tick += delegate
+                {
+                    if (_ownerLayoutSettleTimer != null)
+                        _ownerLayoutSettleTimer.Stop();
+                    if (_activePanel == null) return;
+                    ApplyOwnerLayoutChange();
+                };
+            }
+
+            _ownerLayoutSettleTimer.Stop();
+            _ownerLayoutSettleTimer.Start();
         }
 
         private void ApplyOwnerLayoutChange()

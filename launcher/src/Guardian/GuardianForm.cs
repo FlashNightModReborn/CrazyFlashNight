@@ -35,7 +35,9 @@ namespace CF7Launcher.Guardian
         private const int WM_DPICHANGED = 0x02E0;
         private const int WM_SIZE = 0x0005;
         private const int WM_ACTIVATEAPP = 0x001C;
+        private const int SIZE_RESTORED = 0;
         private const int SIZE_MINIMIZED = 1;
+        private const int SIZE_MAXIMIZED = 2;
         private const uint SWP_NOZORDER = 0x0004;
         private const uint SWP_NOACTIVATE = 0x0010;
 
@@ -70,6 +72,7 @@ namespace CF7Launcher.Guardian
         private System.Windows.Forms.Timer _viewportSettleTimer;
         private System.Windows.Forms.Timer _viewportLongSettleTimer;
         private string _viewportSettleReason = "viewport_refresh";
+        private bool _runtimeViewportWasMaximized;
 
         private bool _hotkeysRegistered;
         private KeyboardHook _kbHook; // 前台感知低级钩子，替代 RegisterHotKey
@@ -538,7 +541,27 @@ namespace CF7Launcher.Guardian
             }
             else if (m.Msg == WM_SIZE)
             {
-                _activationState.OnMinimizeChanged(m.WParam.ToInt32() == SIZE_MINIMIZED);
+                int sizeCode = m.WParam.ToInt32();
+                _activationState.OnMinimizeChanged(sizeCode == SIZE_MINIMIZED);
+
+                // Manual window maximize/restore does not pass through ToggleFullscreen().
+                // Reuse the same settled viewport refresh so Flash, WebOverlay and WebView2
+                // are measured again after WinForms and DWM finish applying the new bounds.
+                if (sizeCode == SIZE_MAXIMIZED)
+                {
+                    _runtimeViewportWasMaximized = true;
+                    ScheduleViewportRefresh("guardian_wm_size_maximized");
+                }
+                else if (sizeCode == SIZE_RESTORED)
+                {
+                    if (_runtimeViewportWasMaximized)
+                        ScheduleViewportRefresh("guardian_wm_size_restored");
+                    _runtimeViewportWasMaximized = false;
+                }
+                else if (sizeCode != SIZE_MINIMIZED)
+                {
+                    _runtimeViewportWasMaximized = false;
+                }
             }
 
             base.WndProc(ref m);

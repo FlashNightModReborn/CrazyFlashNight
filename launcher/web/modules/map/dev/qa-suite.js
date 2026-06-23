@@ -895,8 +895,11 @@ var MapPanelHarnessQA = (function() {
                         return new Promise(function(resolve) { requestAnimationFrame(function() { requestAnimationFrame(resolve); }); }).then(function() {
                             var overflowY = body.scrollHeight - body.clientHeight;
                             var overflowX = body.scrollWidth - body.clientWidth;
+                            var shell = document.getElementById('map-stage-shell');
+                            var inlineBg = shell ? (shell.style.backgroundImage || '') : '';
                             api.assert(overflowY <= 1, 'body should not overflow vertically (got ' + overflowY + 'px)');
                             api.assert(overflowX <= 1, 'body should not overflow horizontally (got ' + overflowX + 'px)');
+                            api.assert(inlineBg.indexOf('page-') < 0, 'assembled map shell must not expose legacy page screenshot background');
                             var stageRect = stage.getBoundingClientRect();
                             var railRect = rail.getBoundingClientRect();
                             api.assert(railRect.left >= stageRect.right - 1, 'rail should sit to the right of stage (stage.right=' + stageRect.right.toFixed(1) + ', rail.left=' + railRect.left.toFixed(1) + ')');
