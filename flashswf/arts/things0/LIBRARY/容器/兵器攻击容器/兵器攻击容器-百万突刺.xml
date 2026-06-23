@@ -1378,7 +1378,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
             <DOMFrame index="6" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/血箭/白突刺" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/血箭/白突刺" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="3.16107177734375" b="-0.659637451171875" c="0.300704956054688" d="1.4410400390625" tx="397.3" ty="-155.9"/>
                   </matrix>
@@ -1386,7 +1386,7 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
                     <Point x="-0.6" y="8.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="特效与子弹/血箭/黑突刺" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="特效与子弹/血箭/黑突刺" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="3.33567810058594" b="0.705276489257813" c="-0.319198608398438" d="1.509765625" tx="436.95" ty="58.5"/>
                   </matrix>

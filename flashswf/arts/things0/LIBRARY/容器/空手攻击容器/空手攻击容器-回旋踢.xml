@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-回旋踢" itemID="699df8c4-00000bc2" linkageExportForAS="true" linkageIdentifier="空手攻击容器-回旋踢" lastModified="1782243038" lastUniqueIdentifier="1129">
   <timeline>
-    <DOMTimeline name="空手攻击容器-回旋踢" currentFrame="46">
+    <DOMTimeline name="空手攻击容器-回旋踢" currentFrame="57">
       <layers>
         <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
           <frames>
@@ -515,7 +515,6 @@ else if(_parent.性别 == "女"){
 }
 _root.播放音效("爆炸 火球 炸裂 04.mp3")
 _parent.垂直速度 = -14;
-_parent.技能浮空 = true;
 _root.技能函数.升龙拳浮空初始化(this, _parent);
 ]]></script>
               </Actionscript>
@@ -523,7 +522,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
             </DOMFrame>
             <DOMFrame index="57" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.空手攻击路由.动画完毕(this,_parent);]]></script>
+                <script><![CDATA[_root.战技路由.动画完毕(this,_parent,true);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
