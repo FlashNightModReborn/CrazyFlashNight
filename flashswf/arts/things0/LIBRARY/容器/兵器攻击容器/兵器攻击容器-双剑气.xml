@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-双剑气" itemID="6a36ef14-0000189f" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双剑气" lastModified="1782010266" lastUniqueIdentifier="439">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-双剑气" itemID="6a36ef14-0000189f" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-双剑气" lastModified="1782300143" lastUniqueIdentifier="439">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-双剑气" currentFrame="19" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;guideline direction="v"&gt;-123&lt;/guideline&gt;&lt;guideline direction="v"&gt;102&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="兵器攻击容器-双剑气" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;262&lt;/guideline&gt;&lt;guideline direction="h"&gt;249&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;guideline direction="v"&gt;-123&lt;/guideline&gt;&lt;guideline direction="v"&gt;102&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="左手-2" color="#AFE9DD" locked="true" autoNamed="false">
           <frames>
@@ -87,14 +87,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#4FFF4F" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="14" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -105,7 +105,7 @@
                     <script><![CDATA[onClipEvent (enterFrame) {
 	var 自机 = _parent._parent;
 	if (自机._name == _root.控制目标)
-	{_parent.双剑气搓招窗口();}
+	{_parent.剑气释放搓招窗口();}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -3729,7 +3729,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="阴影" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
