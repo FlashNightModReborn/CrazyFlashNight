@@ -87,21 +87,21 @@ npm run list-tags
 
 | 层级 | 规则 |
 |------|------|
-| data | XML / JSON 配置 + 情报文本；排除 RAG/agent 草稿、intelligenceMD 设计稿、unused/、levelEditor/、`**/*.md`、`**/*.xlsx`、`**/*.py`、`**/test_loader.as`、`**/*.lnk` |
+| data | XML / JSON 配置 + 情报文本；排除 RAG 草稿、intelligenceMD 设计稿、unused/、`task/*_old.json` 孤立备份、levelEditor/、`**/*.md`、`**/*.xlsx`、`**/*.py`、`**/test_loader.as`、`**/*.lnk` |
 | scripts | 仅 `asLoader.swf`（运行时加载器，源码不打包） |
-| flashswf | 编译后 .swf + 运行时资源（白名单 `**/*.{swf,png,flv,html}` + `portraits/**/*.xml`；显式排除 XFL 工程附属 `**/{LIBRARY,META-INF,bin}/**` + `**/*.xfl` + `DOMDocument.xml` / `MobileSettings.xml` / `PublishSettings.xml`，以及 `.fla`、`.xlsx`、`*-备份.swf`、`arts/things*` 源目录、`unused/`、`miniGames/`、`ComicTool/`） |
-| sounds | `export/` SFX + `bgm_list.xml` + 各专辑音频；XFL 残余 exclude 为防御性（音乐包 `music/` 独立外置不打包） |
+| flashswf | 编译后 .swf + 运行时资源（白名单 `**/*.{swf,png,flv,html}` + `portraits/**/*.xml` + `_ruffle/**` Ruffle 运行时；显式排除 XFL 工程附属 `**/{LIBRARY,META-INF,bin}/**` + `**/*.xfl` + `DOMDocument.xml` / `MobileSettings.xml` / `PublishSettings.xml`，以及 `.fla`、`.xlsx`、`*-备份.swf`、Ruffle 自带文档 `(_ruffle/README.md`, `LICENSE_*`, `package.json)`、`**/AI草稿/**` 设计稿、`arts/things*` 源目录、`unused/`、`miniGames/`、`ComicTool/`） |
+| sounds | `export/` SFX + `bgm_list.xml` + 各专辑 BGM 音频（`**/*.{mp3,wav,ogg,flac}`，含玩家自定义，由 MusicCatalog 运行时扫描）；XFL 残余 exclude 为防御性，另排除停用的 `export/**/*.waz` |
 | config | 全量复制（仅排除 `*.md` 开发文档） |
 | root-files | 根目录运行时文件：native bootstrap `CRAZYFLASHER7MercenaryEmpire.exe`、`hotkey_guard.exe`、Flash Player、SWF、`crossdomain.xml`、`config.xml` / `config.toml` |
 | launcher-runtime | FDD Core 运行时：`runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe`、managed/native DLL、`*.deps.json` / `*.runtimeconfig.json` |
 | runtime-installer | 缺运行时时由 bootstrap 拉起的 Windows Desktop Runtime installer：`tools/dotnet-runtime/windowsdesktop-runtime-10.0.8-win-x64.exe` |
-| launcher-web | WebView2 overlay 前端：bootstrap/overlay/config/css/assets/data/lib/modules/help/icons；排除 `dev/`、`mockups/`、`modules/**/dev/`、`modules/**/reference/`、各 minigame & cursor & fonts 的 README |
+| launcher-web | WebView2 overlay 前端：bootstrap/overlay/config/css/assets/data/lib/modules/help + `icons/**`（WebP 化后整目录收，含 .webp）；排除 `dev/`、`mockups/`、`modules/**/dev/`、`modules/**/reference/`、各 minigame & cursor & fonts 的 README、`assets/**/_copy_bg.py` 开发脚本、`assets/**/report.json` 烘焙审计报告 |
 | launcher-data | Launcher 运行时数据：`map_hud_data.json`（MapHud catalog）/ `save_repair_dict.json`（SaveAutoRepairService 字典）/ `save_schema.json`（存档编辑器 diff 基线） |
 | launcher-scripts | V8 运行时 bundle（`launcher/scripts/dist/hit-number-bundle.js`，含伤害数字渲染 + 搓招 DFA） |
 | rapfi | 五子棋引擎与权重文件：5 个 Windows CPU 变体 + `*.bin` / `*.bin.lz4` 权重 + `config.toml` + `AUTHORS`（`tools/rapfi/`） |
 | root-dirs | 字体（`闪7重置版字体/`）、教程（`0.说明文件与教程/`）、Flash fscommand 桥（`fscommand/**`，含 RAG dev 桥 + 后续 DLC 预留的外部启动通道） |
 
-> globalExclude（所有层共用）：`**/.DS_Store`、`**/Thumbs.db`、`**/*.bak`、`**/__pycache__/**`、`**/~$*`（Office/WPS 临时锁）、`**/*请勿上传git*`（设计稿命名约定）
+> globalExclude（所有层共用）：`**/.DS_Store`、`**/Thumbs.db`、`**/*.bak`、`**/__pycache__/**`、`**/~$*`（Office/WPS 临时锁）、`**/*请勿上传git*`（设计稿命名约定）、`**/*.log`、`**/*.obj`、`**/.vs/**`（构建中间产物 / IDE 缓存防御）、`**/test_npc_loader.as`（根级 AS2 测试加载器防御性排除）
 
 ## 架构
 

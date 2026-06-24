@@ -1,5 +1,6 @@
 # CF7-Packer 打包配置
-# 基线：2026-05-28 重新核对（覆盖情报 / 竞技场 / 佣兵 WebView / 存档修复 / 诊断 5 大块改动）
+# 基线：2026-06-24 全层重新核对并调整（WebP 图标管线 / 子弹管线重构 / 新搓招 / 新地图 /
+#   dressup 烘焙 / BGM 专辑直收 / Ruffle 运行时入包 / 开发脚本剔除 对齐）
 
 version: 1
 meta:
@@ -11,7 +12,9 @@ source:
   repoRoot: "../../"
 
 output:
-  dir: "./output/{version}"
+  # 每日包风格：按打包当日日期落目录（{date}=YYYY-MM-DD），同日重打会被 clean 覆盖
+  # 占位符还支持 {timestamp}（精确到秒，保留多份）/ {version}（配置格式版本号，恒为上方 version）/ {tag} / {mode}
+  dir: "./output/{date}"
   clean: true
   minify:
     enabled: true
@@ -23,17 +26,17 @@ layers:
     source: "data/"
     include: [ "**/*" ]
     exclude:
-      # RAG 与 agent 任务草稿（仅开发链用）
+      # RAG 草稿（仅开发链用）
       - "rag/**"
-      - "task/agent_tasks.json"
-      - "task/text/agent_text.json"
       # 开发文档与设计稿（含 intelligenceMD 的设计草稿、equipment_mods/README、武器表填写公式 等）
       # data/ 内的 .md/.xlsx 全部是 dev 文档，可整段排除（教程目录里的 xlsx 是另一层）
       - "intelligenceMD/**"
       - "**/*.md"
       - "**/*.xlsx"
-      # 已弃用配置（unused/ 里全是 -弃用 后缀文件，不在任何 list 引用链上）
+      # 已弃用配置（unused/ 里全是 -弃用 后缀文件，不在任何 list 引用链上；
+      #   task/*_old.json 同性质孤立备份，如 mercenary_tasks_old.json，不在 list.xml 引用链）
       - "unused/**"
+      - "task/*_old.json"
       # 关卡编辑器（独立 HTML/JS 应用，由 .lnk 启动，不属于运行时数据）
       - "levelEditor/**"
       - "**/*.lnk"
@@ -58,6 +61,8 @@ layers:
       - "**/*.flv"
       - "**/*.html"
       - "portraits/**/*.xml"
+      # Ruffle 运行时（WebView2 overlay 的 cutscene-test 面板懒加载）
+      - "_ruffle/**"
     exclude:
       # 非运行时目录
       - "unused/**"
@@ -85,12 +90,17 @@ layers:
       - "arts/原版素材库-子弹/**"
       - "arts/新版人物文字信息/**"
       - "arts/素材库-物品技能图标/**"
+      # AI 草稿目录（落在 XFL 工程 LIBRARY/ 之外的设计稿，**/*.png 会误收进发行包）
+      - "**/AI草稿/**"
       # 其他排除
       - "**/*.fla"
       - "**/*.xlsx"
       # 备份 SWF（things-备份.swf 等以 -备份 结尾的副本）
       - "**/*-备份.swf"
-      - "arts/原版素材库-子弹_横向拖尾联弹.swf"
+      # Ruffle 自带文档与 npm 元数据（运行时只需 .js/.wasm/.js.map）
+      - "_ruffle/README.md"
+      - "_ruffle/LICENSE_*"
+      - "_ruffle/package.json"
 
   - name: sounds
     description: "音效导出文件 + manifest + BGM 音乐（含玩家自定义）"
@@ -114,8 +124,8 @@ layers:
       - "**/PublishSettings.xml"
       - "**/MobileSettings.xml"
       - "**/*.swf"
-      # 音乐包独立外置（与 cf7-packer/README 口径对齐，避免 **/*.mp3 等通配误收）
-      - "music/**"
+      # 已停用的 SFX（.wav → .waz 改名停用，miniaudio 无法解码，纯死重量）
+      - "export/**/*.waz"
 
   - name: config
     description: "运行时配置"
@@ -202,8 +212,9 @@ layers:
       - "lib/**"
       - "modules/**"
       - "help/**"
-      - "icons/manifest.json"
-      - "icons/**/*.png"
+      # 图标已 WebP 化（2026-06 图标管线 WebP 化）：icons/ 是扁平目录，全部为运行时资产
+      # （2397 webp + 17 遗留 png + manifest.json，无 dev 垃圾），整目录收，避免再被单一扩展名漏掉
+      - "icons/**"
     exclude:
       # 已被 help-panel.js 替代，不再被 overlay.html 引用
       - "modules/help.js"
@@ -218,6 +229,10 @@ layers:
       - "modules/**/README.md"
       - "assets/cursor/native/README.md"
       - "assets/fonts/README.md"
+      # 背景图开发脚本（_copy_bg.py 仅本地批量复制用）
+      - "assets/**/_copy_bg.py"
+      # 烘焙/导出审计报告（开发产物，非运行时加载）
+      - "assets/**/report.json"
 
   - name: launcher-data
     description: "Launcher 运行时数据（MapHud catalog、存档修复字典、存档 schema）"
@@ -277,8 +292,21 @@ globalExclude:
   - "**/~$*"
   # 文件名带「请勿上传git」前后缀的设计稿（含 data/items/ 与 0.说明文件与教程/ 的填表 Excel）
   - "**/*请勿上传git*"
+  # 构建中间产物 / IDE 缓存（worktree 模式裸扫描不读 .gitignore，防御性兜底；零误伤集）
+  - "**/*.log"
+  - "**/*.obj"
+  - "**/.vs/**"
+  # 根级 AS2 测试加载器（防御性；root-files 白名单已不会收入）
+  - "**/test_npc_loader.as"
 
 # 当前已支持打包工具内手动编辑
 
-# music/ 不打包（音乐包独立外置），后续需要时加一个 layer 即可
+# 顶层 CRAZYFLASHER7MercenaryEmpire/（主程序 XFL 工程源：.xfl + LIBRARY/META-INF/bin）= Flash 编译源；
+#   其产物 CRAZYFLASHER7MercenaryEmpire.swf 已由 root-files 层收，源工程本身刻意不入包
+#   （各层均为白名单，故此目录与 .sln / global.json / automation/ 等构建期文件天然不会进包）
+# 顶层 xml/（list.xml + tasksUnicode/）= 原版闪客快打7历史残留，运行时无加载方，刻意不入包
+# 顶层 amf0-help/ 与 amf0-help.zip（sol_parser 上游 issue 调研 + Rust 源 + probe）= 纯开发研究产物，刻意不入包
+#   （发行用的 sol_parser.dll 由 launcher-runtime 层从 runtime/ 收编，是编译产物）
+# 顶层 music/ 目录为原版闪7历史 BGM 残留（当前点歌器已迁移至 sounds/ + MusicCatalog，
+#   且 XFL 内旧点歌器代码已被注释），刻意不入包；BGM 实际由 sounds/ 下各专辑目录直收
 # externalAssets（Unity 外壳）暂不支持，后续再加
