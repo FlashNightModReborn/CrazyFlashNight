@@ -1012,6 +1012,11 @@
                 <vfxStyle>bagua_rod</vfxStyle>
                 <vfxPreset>bagua_rod</vfxPreset>
                 <damageFalloff>1.0</damageFalloff>
+                <!-- 带宽射线：屏幕-Y 半宽 = Z轴攻击范围 * 系数 * 0.5（本武器 Z轴攻击范围=42 → 半宽 = 21*系数）。
+                     仅放宽屏幕-Y 命中以打矮碰撞箱敌（不碰深度门）。
+                     真机日志标定：枪口常在矮鼠碰撞箱上方，最坏需半宽≈56px（系数≈2.7）才够到地面鼠；
+                     故取系数 3（半宽 63，留余量）。手感按需调：偏小漏矮敌、偏大光束过高会扫到无关高空。 -->
+                <rayWidthFactor>3</rayWidthFactor>
             </rayConfig>
         </attribute>
     </bullet>

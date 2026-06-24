@@ -95,7 +95,20 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TeslaRayLifecycle
         var rayFactory:RayColliderFactory = RayColliderFactory(
             ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.RayFactory)
         );
-        target.aabbCollider = rayFactory.createCustomRay(origin, rayDir, rayLength);
+
+        // 带宽射线（opt-in）：rayWidthFactor>0 → 独立 new BandRayCollider（非池化，稀有，getFactory()=null
+        // 故 bindSafeRemove 不回收进细线共享池）；半宽 = Z轴攻击范围 * 系数 * 0.5（zRange 与 processRayBullets
+        // zoff 门同源，缺省 50）。否则走 RayColliderFactory 共享池的细线 RayCollider —— 严格路径零带宽开销、逐字节不变。
+        var widthFactor:Number = config ? config.rayWidthFactor : 0;
+        if (widthFactor > 0) {
+            var zRange:Number = target.Z轴攻击范围;
+            if (!(zRange > 0)) zRange = 50;
+            var bandCollider:BandRayCollider = new BandRayCollider(origin, rayDir, rayLength);
+            bandCollider.setHalfWidth(zRange * widthFactor * 0.5);
+            target.aabbCollider = bandCollider;
+        } else {
+            target.aabbCollider = rayFactory.createCustomRay(origin, rayDir, rayLength);
+        }
     }
 
     /**

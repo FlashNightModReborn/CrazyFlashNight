@@ -99,6 +99,13 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     /** 射线长度（像素），必须配置 */
     public var rayLength:Number;
 
+    /**
+     * 带宽射线宽度系数（相对 Z轴攻击范围 的全宽倍率；默认 0 = 细线）。
+     * TeslaRayLifecycle.bindCollider 据此算 RayCollider 半宽 = Z轴攻击范围 * rayWidthFactor * 0.5，
+     * 使细线在屏幕-Y 方向加宽以命中矮碰撞箱目标。0/缺省 → 历史细线行为逐字节不变。
+     */
+    public var rayWidthFactor:Number;
+
     // ========== 射线模式控制 ==========
 
     /**
@@ -330,6 +337,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
 
     // 基础物理参数默认值
     private static var DEFAULT_RAY_LENGTH:Number = 900;
+    private static var DEFAULT_RAY_WIDTH_FACTOR:Number = 0;  // 0 = 细线（opt-in 带宽）
     private static var DEFAULT_RAY_MODE:String = "single";
     private static var DEFAULT_VFX_STYLE:String = "tesla";
 
@@ -430,6 +438,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         FIELD_MAP = [
             // 基础物理
             {k:"rayLength",          p:P_NUM},
+            {k:"rayWidthFactor",     p:P_NUM},
             // 伤害衰减
             {k:"damageFalloff",      p:P_NUM},
             // 连锁/折射
@@ -513,6 +522,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     public function TeslaRayConfig() {
         // 基础物理参数
         rayLength = DEFAULT_RAY_LENGTH;
+        rayWidthFactor = DEFAULT_RAY_WIDTH_FACTOR;
         rayMode = DEFAULT_RAY_MODE;
         rayModeMask = 0; // single = 无能力位
 

@@ -750,6 +750,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             var rayOriginY:Number = bullet._y;
             var bulletZOffset:Number = bullet.Z轴坐标;
             var bulletZRange:Number = bullet.Z轴攻击范围 || 50;
+            // 注：带宽射线只放宽【屏幕-Y】命中（BandRayCollider.checkCollision 的 ±半宽，治矮碰撞箱），
+            // 【不】碰深度门——深度对齐由战斗 AI 保证（zoff≈0 恒过门；实测日志 rat zoff≤23<42）。
+            // 早期曾把半宽并入此门（误判矮敌=深度问题），日志证伪后回退：深度与屏幕-Y 是正交两道滤镜。
             var flags:Number = bullet.flags | 0;
 
             // ---- 射线模式判定 ----
@@ -2073,7 +2076,6 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var bulletZRange:Number = ctx.bulletZRange;
         var rayRight:Number = areaAABB.right;
         var lo:Number = bsearchScanStart(unitRightMax, unitLen, areaAABB.left);
-
         var bestTE:Number = Infinity;
         var best:Object = null;
         for (var u:Number = lo; u < unitLen && unitLeftKeys[u] <= rayRight; u++) {
