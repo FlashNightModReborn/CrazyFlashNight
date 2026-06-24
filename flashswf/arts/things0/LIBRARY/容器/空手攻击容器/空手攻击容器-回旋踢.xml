@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-回旋踢" itemID="699df8c4-00000bc2" linkageExportForAS="true" linkageIdentifier="空手攻击容器-回旋踢" lastModified="1782243038" lastUniqueIdentifier="1129">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-回旋踢" itemID="699df8c4-00000bc2" linkageExportForAS="true" linkageIdentifier="空手攻击容器-回旋踢" lastModified="1782299520" lastUniqueIdentifier="1129">
   <timeline>
-    <DOMTimeline name="空手攻击容器-回旋踢" currentFrame="57">
+    <DOMTimeline name="空手攻击容器-回旋踢" currentFrame="30">
       <layers>
         <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
           <frames>
@@ -231,7 +231,7 @@ function 攻击时可斜向改变移动方向2(速度, 上下)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作代码" color="#D8AA90" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="动作代码" color="#D8AA90" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -522,13 +522,13 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
             </DOMFrame>
             <DOMFrame index="57" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.战技路由.动画完毕(this,_parent,true);]]></script>
+                <script><![CDATA[_root.战技路由.动画完毕(this,_parent,false);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#73BC75" autoNamed="false">
+        <DOMLayer name="子弹层" color="#73BC75" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -987,7 +987,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
-	子弹属性.击倒率 = 0.1;
+	子弹属性.击倒率 = 0.01;
 	子弹属性.垂直击退速度 = 10;
 	子弹属性.不硬直 = true;
 	//非常用
@@ -1047,7 +1047,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
-	子弹属性.击倒率 = 0.1;
+	子弹属性.击倒率 = 0.01;
 	子弹属性.垂直击退速度 = 10;
 	子弹属性.不硬直 = true;
 	//非常用
@@ -1107,7 +1107,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
 	}
 	子弹属性.子弹速度 = 0;
 	子弹属性.Z轴攻击范围 = 60;
-	子弹属性.击倒率 = 0.1;
+	子弹属性.击倒率 = 0.01;
 	子弹属性.垂直击退速度 = 10;
 	子弹属性.不硬直 = true;
 	//非常用
@@ -1145,7 +1145,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#9933CC" autoNamed="false">
+        <DOMLayer name="变招层" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -1155,7 +1155,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
             </DOMFrame>
             <DOMFrame index="21" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -1171,7 +1171,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
 		{
 			_parent.gotoAndPlay("前冲追击");
 		}
-		else if (!_parent._parent.浮空 && Key.isDown(_parent._parent.B键))
+		else if (Key.isDown(_parent._parent.B键))
 		{
 			_parent.gotoAndPlay("浮空截击");
 		}
@@ -1187,7 +1187,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
             </DOMFrame>
             <DOMFrame index="41" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
                     <Matrix a="1.38690185546875" d="1.31340026855469" tx="115.35" ty="366.2"/>
                   </matrix>
@@ -1211,7 +1211,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="移动层" color="#FF4F4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -1318,7 +1318,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements/>
@@ -1333,7 +1333,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="59.1"/>
                   </transformationPoint>
                   <color>
-                    <Color alphaMultiplier="0.390625"/>
+                    <Color alphaMultiplier="0.19140625"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -1551,7 +1551,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
             </DOMFrame>
             <DOMFrame index="30" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/上勾拳特效删减" centerPoint3DX="136.4" centerPoint3DY="-42.85">
+                <DOMSymbolInstance libraryItemName="特效与子弹/上勾拳特效删减" selected="true" centerPoint3DX="136.4" centerPoint3DY="-42.85">
                   <matrix>
                     <Matrix a="1.75468444824219" b="-0.382064819335938" c="0.188888549804688" d="0.8675537109375" tx="-70.3" ty="29.4"/>
                   </matrix>
@@ -5914,7 +5914,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.15" y="0.1"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-445.45" centerPoint3DY="132.8">
@@ -5925,7 +5925,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="3.7" y="113.5"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-201.6" centerPoint3DY="-85.5">
@@ -5936,7 +5936,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="2.2" y="-2.65"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-73" centerPoint3DY="-88.4">
@@ -5947,7 +5947,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="27.6" centerPoint3DY="-77.3">
@@ -5958,7 +5958,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.05" y="1.65"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="148.85" centerPoint3DY="-40.6">
@@ -5969,7 +5969,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.65" y="1.15"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="107" centerPoint3DY="-83.6">
@@ -5980,7 +5980,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.85" y="0.8"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-42.35" centerPoint3DY="-113.4">
@@ -5991,7 +5991,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="7.15" y="25.25"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-24.85" centerPoint3DY="-70.6">
@@ -6002,7 +6002,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.3" y="0.2"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-172.15" centerPoint3DY="14.1">
@@ -6013,7 +6013,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.9" y="-1.15"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="26.7" centerPoint3DY="-74.1">
@@ -6024,7 +6024,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-2" y="2.85"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="193.95" centerPoint3DY="-89.9">
@@ -6035,7 +6035,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.2" y="0.45"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="121.35" centerPoint3DY="-95.15">
@@ -6046,7 +6046,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="1.9" y="1"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-63.5" centerPoint3DY="-13.5">
@@ -6057,7 +6057,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.1" y="-0.05"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-221.05" centerPoint3DY="99.6">
@@ -6068,7 +6068,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.1" y="-1.85"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-153.1" centerPoint3DY="204.7">
@@ -6079,7 +6079,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.8" y="-0.9"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-61.4" centerPoint3DY="206.75">
@@ -6090,7 +6090,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.35" y="0.7"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-209.15" centerPoint3DY="-148.65">
@@ -6101,7 +6101,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.8" y="-1.05"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-117.2" centerPoint3DY="-130.95">
@@ -6112,7 +6112,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.5" y="0.75"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="50" blurY="0"/>
+                    <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -6127,7 +6127,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.15" y="0.1"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-445.45" centerPoint3DY="132.8">
@@ -6138,7 +6138,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="3.7" y="113.5"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-201.6" centerPoint3DY="-85.5">
@@ -6149,7 +6149,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="2.2" y="-2.65"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-73" centerPoint3DY="-88.4">
@@ -6160,7 +6160,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="27.6" centerPoint3DY="-77.3">
@@ -6171,7 +6171,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.05" y="1.65"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="148.85" centerPoint3DY="-40.6">
@@ -6182,7 +6182,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.65" y="1.15"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="107" centerPoint3DY="-83.6">
@@ -6193,7 +6193,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.85" y="0.8"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-42.35" centerPoint3DY="-113.4">
@@ -6204,7 +6204,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="7.15" y="25.25"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-24.85" centerPoint3DY="-70.6">
@@ -6215,7 +6215,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.3" y="0.2"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-172.15" centerPoint3DY="14.1">
@@ -6226,7 +6226,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.9" y="-1.15"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="26.7" centerPoint3DY="-74.1">
@@ -6237,7 +6237,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-2" y="2.85"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="193.95" centerPoint3DY="-89.9">
@@ -6248,7 +6248,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.2" y="0.45"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="121.35" centerPoint3DY="-95.15">
@@ -6259,7 +6259,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="1.9" y="1"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-63.5" centerPoint3DY="-13.5">
@@ -6270,7 +6270,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.1" y="-0.05"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-221.05" centerPoint3DY="99.6">
@@ -6281,7 +6281,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.1" y="-1.85"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-153.1" centerPoint3DY="204.7">
@@ -6292,7 +6292,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.8" y="-0.9"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-61.4" centerPoint3DY="206.75">
@@ -6303,7 +6303,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.35" y="0.7"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-209.15" centerPoint3DY="-148.65">
@@ -6314,7 +6314,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.8" y="-1.05"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-117.2" centerPoint3DY="-130.95">
@@ -6325,7 +6325,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.5" y="0.75"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="100" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -6340,7 +6340,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.15" y="0.1"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-445.45" centerPoint3DY="132.8">
@@ -6351,7 +6351,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="3.7" y="113.5"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-201.6" centerPoint3DY="-85.5">
@@ -6362,7 +6362,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="2.2" y="-2.65"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-73" centerPoint3DY="-88.4">
@@ -6373,7 +6373,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="27.6" centerPoint3DY="-77.3">
@@ -6384,7 +6384,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.05" y="1.65"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="148.85" centerPoint3DY="-40.6">
@@ -6395,7 +6395,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.65" y="1.15"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="107" centerPoint3DY="-83.6">
@@ -6406,7 +6406,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.85" y="0.8"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-42.35" centerPoint3DY="-113.4">
@@ -6417,7 +6417,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="7.15" y="25.25"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-24.85" centerPoint3DY="-70.6">
@@ -6428,7 +6428,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.3" y="0.2"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-172.15" centerPoint3DY="14.1">
@@ -6439,7 +6439,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.9" y="-1.15"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="26.7" centerPoint3DY="-74.1">
@@ -6450,7 +6450,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-2" y="2.85"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="193.95" centerPoint3DY="-89.9">
@@ -6461,7 +6461,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.2" y="0.45"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="121.35" centerPoint3DY="-95.15">
@@ -6472,7 +6472,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="1.9" y="1"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-63.5" centerPoint3DY="-13.5">
@@ -6483,7 +6483,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.1" y="-0.05"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-221.05" centerPoint3DY="99.6">
@@ -6494,7 +6494,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.1" y="-1.85"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-153.1" centerPoint3DY="204.7">
@@ -6505,7 +6505,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.8" y="-0.9"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-61.4" centerPoint3DY="206.75">
@@ -6516,7 +6516,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.35" y="0.7"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-209.15" centerPoint3DY="-148.65">
@@ -6527,7 +6527,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.8" y="-1.05"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-117.2" centerPoint3DY="-130.95">
@@ -6538,7 +6538,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.5" y="0.75"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="60" blurY="0"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -7363,7 +7363,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.1" y="0.15"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" cacheAsBitmap="true" centerPoint3DX="-369.75" centerPoint3DY="151.35">
@@ -7374,7 +7374,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="3.75" y="113.5"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" cacheAsBitmap="true" centerPoint3DX="-82.35" centerPoint3DY="-62.55">
@@ -7385,7 +7385,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="2.1" y="-2.8"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" cacheAsBitmap="true" centerPoint3DX="0.35" centerPoint3DY="-74">
@@ -7396,7 +7396,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" cacheAsBitmap="true" centerPoint3DX="-0.35" centerPoint3DY="-104.95">
@@ -7407,7 +7407,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.1" y="1.55"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" cacheAsBitmap="true" centerPoint3DX="90" centerPoint3DY="-168.8">
@@ -7418,7 +7418,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.75" y="1.3"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" cacheAsBitmap="true" centerPoint3DX="33.45" centerPoint3DY="-159.2">
@@ -7429,7 +7429,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.85" y="0.85"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" cacheAsBitmap="true" centerPoint3DX="30.6" centerPoint3DY="-98.7">
@@ -7440,7 +7440,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="7.2" y="25.2"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" cacheAsBitmap="true" centerPoint3DX="48.9" centerPoint3DY="-55.85">
@@ -7451,7 +7451,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.25" y="0.2"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" cacheAsBitmap="true" centerPoint3DX="-97.4" centerPoint3DY="38.9">
@@ -7462,7 +7462,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.9" y="-1.15"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" cacheAsBitmap="true" centerPoint3DX="9.1" centerPoint3DY="-37.25">
@@ -7473,7 +7473,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-1.95" y="3"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" cacheAsBitmap="true" centerPoint3DX="160.15" centerPoint3DY="-163.95">
@@ -7484,7 +7484,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.2" y="0.6"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" cacheAsBitmap="true" centerPoint3DX="89.55" centerPoint3DY="-155.7">
@@ -7495,7 +7495,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="2" y="0.9"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" cacheAsBitmap="true" centerPoint3DX="10.05" centerPoint3DY="1.15">
@@ -7506,7 +7506,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.15" y="-0.05"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" cacheAsBitmap="true" centerPoint3DX="-84.35" centerPoint3DY="150.05">
@@ -7517,7 +7517,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point y="-1.85"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" cacheAsBitmap="true" centerPoint3DX="35.65" centerPoint3DY="112.15">
@@ -7528,7 +7528,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.75" y="-0.8"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" cacheAsBitmap="true" centerPoint3DX="36.55" centerPoint3DY="19.3">
@@ -7539,7 +7539,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.3" y="0.6"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" cacheAsBitmap="true" centerPoint3DX="-60.65" centerPoint3DY="-124.75">
@@ -7550,7 +7550,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.75" y="-1.1"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" cacheAsBitmap="true" centerPoint3DX="16.2" centerPoint3DY="-71.1">
@@ -7561,7 +7561,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.65" y="0.9"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="20"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -7576,7 +7576,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.15" y="0.1"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-130.25" centerPoint3DY="394.15">
@@ -7587,7 +7587,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="3.7" y="113.5"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-157.45" centerPoint3DY="68.2">
@@ -7598,7 +7598,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="2.2" y="-2.65"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-82.65" centerPoint3DY="-36.45">
@@ -7609,7 +7609,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-12.9" centerPoint3DY="-109.65">
@@ -7620,7 +7620,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.05" y="1.65"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="89.25" centerPoint3DY="-184.75">
@@ -7631,7 +7631,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.65" y="1.2"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="29.7" centerPoint3DY="-176.95">
@@ -7642,7 +7642,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.85" y="0.75"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-84.3" centerPoint3DY="-75.85">
@@ -7653,7 +7653,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="7.25" y="25.15"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-39.2" centerPoint3DY="-63.8">
@@ -7664,7 +7664,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.2" y="0.2"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-60.45" centerPoint3DY="104.5">
@@ -7675,7 +7675,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.9" y="-1.2"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-11.15" centerPoint3DY="-107.05">
@@ -7686,7 +7686,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-2" y="2.85"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="77" centerPoint3DY="-250.4">
@@ -7697,7 +7697,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.15" y="0.4"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="29" centerPoint3DY="-195.35">
@@ -7708,7 +7708,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="1.9" y="1"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-16.9" centerPoint3DY="1.15">
@@ -7719,7 +7719,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.1" y="-0.05"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-21.35" centerPoint3DY="194.95">
@@ -7730,7 +7730,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.15" y="-1.9"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="103.4" centerPoint3DY="204.3">
@@ -7741,7 +7741,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.85" y="-0.85"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="160" centerPoint3DY="132">
@@ -7752,7 +7752,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.4" y="0.75"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-212.7" centerPoint3DY="36.5">
@@ -7763,7 +7763,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.75" y="-1.1"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-143" centerPoint3DY="-26.6">
@@ -7774,7 +7774,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.45" y="0.7"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="50"/>
+                    <BlurFilter blurX="0" blurY="40"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -7789,7 +7789,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.15" y="0.1"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-126.4" centerPoint3DY="396.2">
@@ -7800,7 +7800,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="3.65" y="113.45"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-155.35" centerPoint3DY="70.55">
@@ -7811,7 +7811,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="2.25" y="-2.65"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-80.55" centerPoint3DY="-34.55">
@@ -7822,7 +7822,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-11.6" centerPoint3DY="-108.15">
@@ -7833,7 +7833,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.05" y="1.65"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="90.25" centerPoint3DY="-183.6">
@@ -7844,7 +7844,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.65" y="1.15"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="31.05" centerPoint3DY="-175.85">
@@ -7855,7 +7855,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.85" y="0.8"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-82.65" centerPoint3DY="-73.95">
@@ -7866,7 +7866,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="7.2" y="25.25"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-37.65" centerPoint3DY="-62.3">
@@ -7877,7 +7877,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.25" y="0.2"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-58.15" centerPoint3DY="106.2">
@@ -7888,7 +7888,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.9" y="-1.2"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-9.6" centerPoint3DY="-105.8">
@@ -7899,7 +7899,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-2" y="2.85"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="77.85" centerPoint3DY="-248.95">
@@ -7910,7 +7910,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.25" y="0.4"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="30.2" centerPoint3DY="-194">
@@ -7921,7 +7921,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="1.95" y="1"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-15.1" centerPoint3DY="2.8">
@@ -7932,7 +7932,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.05" y="-0.05"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-18.65" centerPoint3DY="196.5">
@@ -7943,7 +7943,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.1" y="-1.85"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="105.9" centerPoint3DY="205.2">
@@ -7954,7 +7954,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.8" y="-0.9"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="162.7" centerPoint3DY="132.9">
@@ -7965,7 +7965,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.4" y="0.75"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-210.45" centerPoint3DY="38.5">
@@ -7976,7 +7976,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.75" y="-1.05"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-141.05" centerPoint3DY="-24.7">
@@ -7987,7 +7987,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.5" y="0.75"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="100"/>
+                    <BlurFilter blurX="0"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -8002,7 +8002,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.2" y="0.05"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-121.05" centerPoint3DY="395.4">
@@ -8013,7 +8013,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="3.7" y="113.45"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-153.55" centerPoint3DY="69.8">
@@ -8024,7 +8024,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="2.15" y="-2.7"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-80" centerPoint3DY="-35.55">
@@ -8035,7 +8035,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-11.45" centerPoint3DY="-110.1">
@@ -8046,7 +8046,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.05" y="1.65"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="89.85" centerPoint3DY="-186.5">
@@ -8057,7 +8057,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.6" y="1.15"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="30.25" centerPoint3DY="-177.8">
@@ -8068,7 +8068,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.8" y="0.7"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-82.25" centerPoint3DY="-75.2">
@@ -8079,7 +8079,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="7.1" y="25.3"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-37.2" centerPoint3DY="-64.2">
@@ -8090,7 +8090,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.2" y="0.15"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="-55.85" centerPoint3DY="104.9">
@@ -8101,7 +8101,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.95" y="-1.25"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-9.4" centerPoint3DY="-107.35">
@@ -8112,7 +8112,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-1.95" y="2.95"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="76.25" centerPoint3DY="-251.6">
@@ -8123,7 +8123,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.25" y="0.5"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="29.55" centerPoint3DY="-196.4">
@@ -8134,7 +8134,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="1.9" y="0.95"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-14.05" centerPoint3DY="0.7">
@@ -8145,7 +8145,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.1" y="-0.05"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-15.6" centerPoint3DY="195">
@@ -8156,7 +8156,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.15" y="-1.85"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="109.35" centerPoint3DY="201.55">
@@ -8167,7 +8167,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.75" y="-0.9"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="165.1" centerPoint3DY="129.2">
@@ -8178,7 +8178,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.45" y="0.6"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-208.9" centerPoint3DY="38.45">
@@ -8189,7 +8189,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="-0.85" y="-1.05"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-140.55" centerPoint3DY="-25.15">
@@ -8200,7 +8200,7 @@ _root.技能函数.升龙拳浮空初始化(this, _parent);
                     <Point x="0.55" y="0.7"/>
                   </transformationPoint>
                   <filters>
-                    <BlurFilter blurX="0" blurY="60"/>
+                    <BlurFilter blurX="0" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>

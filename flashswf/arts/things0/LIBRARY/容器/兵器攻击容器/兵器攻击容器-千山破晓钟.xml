@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-千山破晓钟" itemID="696533ff-00003120" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-千山破晓钟" lastModified="1782010228">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-千山破晓钟" itemID="696533ff-00003120" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-千山破晓钟" lastModified="1782299092">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-千山破晓钟">
+    <DOMTimeline name="兵器攻击容器-千山破晓钟" currentFrame="33">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -10,7 +10,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <Actionscript>
@@ -228,7 +228,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -890,7 +890,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -977,7 +977,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -1033,7 +1033,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-3460 -10198[-25 -12326 4831 -11192!4831 -11192[9687 -10057 13121 -6325!13121 -6325[16554 -2593 16554 1551!16554 1551[16554 4587 14711 6542!14711 6542|-5947 310!-5947 310[-6893 -1751 -6893 -3926!-6893 -3926[-6893 -8070 -3460 -10198"/>
+!14711 6542|-5947 310!-5947 310[-6893 -1751 -6893 -3926!-6893 -3926[-6893 -8070 -3460 -10198!-3460 -10198[-25 -12326 4831 -11192!4831 -11192[9687 -10057 13121 -6325!13121 -6325[16554 -2593 16554 1551!16554 1551[16554 4587 14711 6542"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1054,7 +1054,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1836 -12820[2494 -15502 8614 -14073!8614 -14073[14735 -12642 19063 -7939!19063 -7939[23390 -3235 23390 1988!23390 1988[23390 5815 21067 8279!21067 8279|-4971 424!-4971 424[-6163 -2173 -6163 -4915!-6163 -4915[-6163 -10138 -1836 -12820"/>
+!21067 8279|-4971 424!-4971 424[-6163 -2173 -6163 -4915!-6163 -4915[-6163 -10138 -1836 -12820!-1836 -12820[2494 -15502 8614 -14073!8614 -14073[14735 -12642 19063 -7939!19063 -7939[23390 -3235 23390 1988!23390 1988[23390 5815 21067 8279"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1067,7 +1067,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF">
+        <DOMLayer name="图层 4" color="#FF4FFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="24" keyMode="9728">
               <elements/>
@@ -1102,7 +1102,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!14711 6542|-5947 310!-5947 310[-6893 -1751 -6893 -3926!-6893 -3926[-6893 -8070 -3460 -10198!-3460 -10198[-25 -12326 4831 -11192!4831 -11192[9687 -10057 13121 -6325!13121 -6325[16554 -2593 16554 1551!16554 1551[16554 4587 14711 6542"/>
+!-3460 -10198[-25 -12326 4831 -11192!4831 -11192[9687 -10057 13121 -6325!13121 -6325[16554 -2593 16554 1551!16554 1551[16554 4587 14711 6542!14711 6542|-5947 310!-5947 310[-6893 -1751 -6893 -3926!-6893 -3926[-6893 -8070 -3460 -10198"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -1123,14 +1123,14 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1836 -12820[2494 -15502 8614 -14073!8614 -14073[14735 -12642 19063 -7939!19063 -7939[23390 -3235 23390 1988!23390 1988[23390 5815 21067 8279!21067 8279|-4971 424!-4971 424[-6163 -2173 -6163 -4915!-6163 -4915[-6163 -10138 -1836 -12820"/>
+!21067 8279|-4971 424!-4971 424[-6163 -2173 -6163 -4915!-6163 -4915[-6163 -10138 -1836 -12820!-1836 -12820[2494 -15502 8614 -14073!8614 -14073[14735 -12642 19063 -7939!19063 -7939[23390 -3235 23390 1988!23390 1988[23390 5815 21067 8279"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -7074,7 +7074,7 @@ _root.播放音效("普通刀挥刀.wav");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="阴影" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements>

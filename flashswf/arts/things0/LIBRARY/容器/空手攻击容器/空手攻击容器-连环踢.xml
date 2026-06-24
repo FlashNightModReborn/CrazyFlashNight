@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-连环踢" itemID="699a5324-00000a8e" linkageExportForAS="true" linkageIdentifier="空手攻击容器-连环踢" lastModified="1779319394" lastUniqueIdentifier="843">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-连环踢" itemID="699a5324-00000a8e" linkageExportForAS="true" linkageIdentifier="空手攻击容器-连环踢" lastModified="1782299247" lastUniqueIdentifier="843">
   <timeline>
-    <DOMTimeline name="空手攻击容器-连环踢" currentFrame="42">
+    <DOMTimeline name="空手攻击容器-连环踢" currentFrame="22">
       <layers>
         <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
           <frames>
@@ -286,7 +286,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层2" color="#808080" autoNamed="false">
+        <DOMLayer name="子弹层2" color="#808080" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements/>
@@ -500,7 +500,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#73BC75" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹层" color="#73BC75" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1124,7 +1124,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#4FB28F" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#4FB28F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1134,7 +1134,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
             </DOMFrame>
             <DOMFrame index="22" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -1149,7 +1149,7 @@ function 变招判定(招式名, 招式是否结束, 是否屏蔽跳跃)
 		{
 			_parent.gotoAndPlay("连环踢2段");
 		}
-		_root.技能函数.连环踢可派生搓招();
+		_parent.连环踢可派生搓招();
 	}
 }
 	/*var 自机 = _parent._parent;
