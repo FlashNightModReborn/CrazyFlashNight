@@ -42,6 +42,7 @@
 - AS3 幻觉：~~`package org.flashNight.arki.bullet.Factory { class BulletFactory {} }`~~
 - AS2 导入：`import org.flashNight.arki.bullet.Factory.BulletFactory;`
 - AS2 支持通配符导入：`import org.flashNight.arki.bullet.Factory.*;`
+- **通配符 import 已覆盖某包时，禁止再对该包的类加显式 import**：`import pkg.*` 已解析包内所有类（含**会话期新建的同包类**——2026-06-24 实测经 wildcard 即解析，未触发 stale-index）；若再叠加 `import pkg.SomeClass`，编译报 **"叶名称已解析为导入的类"**（重复导入）。显式具体 import 仅用于**无 wildcard 覆盖**该包的 class 文件（同包类之间本就无需 import，靠同包可见性）。
 - **非 class 的 .as 文件（帧脚本等）必须使用通配符导入**：这些文件通过 `#include` 拼接为巨型上下文，明确导入具体 class 可能与其他一起 `#include` 的 .as 文件产生导入冲突，只能使用 `.*` 通配符形式
 
 ### 类型系统

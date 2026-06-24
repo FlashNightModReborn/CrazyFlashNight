@@ -585,13 +585,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         );
         bullet.hitCount += damageResult.actualScatterUsed;
 
+        // 死亡类型在 hit 事件前取快照；injectHit 未来若误重入也不污染本次 kill/death 判定。
+        var isNormalKill:Boolean = (ctx.flags & ctx.meleeMask) == 0;
+
         // 事件发布（collisionResult 透传，订阅者只读 overlapCenter）
         var targetDispatcher:Object = hitTarget.dispatcher;
         targetDispatcher.publish("hit", hitTarget, shooter, bullet, collisionResult, damageResult);
 
         // 死亡事件（_killed 守卫普适，D1：防 UnitBullet 重复 kill/death + killStats 按 _name 膨胀）
         if (hitTarget.hp <= 0 && !hitTarget._killed) {
-            var isNormalKill:Boolean = (ctx.flags & ctx.meleeMask) == 0;
             targetDispatcher.publish(isNormalKill ? "kill" : "death", hitTarget);
             shooter.dispatcher.publish("enemyKilled", hitTarget, bullet);
         }
@@ -619,6 +621,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      *  - **仅首发直结算**："后续机制"（chain/fork/穿透）由 caller 自行下一帧调度（时序可变更，见设计 §6.4）。
      *  - **不进影子记账窗口**：与射线侧同，bullet.霰弹值 须为正，MultiShotDamageHandle 走直接模式（§5.1 红线②）。
      *  - 用独立 `_injectCtx`（不碰主循环 _hitCtx）；复用 `_rayHitResult` 作 collisionResult（同步消费安全）。
+     *  - **不可从 hit 订阅者同步重入 injectHit**：事件链内复用 collisionResult；需要追加命中时延迟到下一帧/producer 阶段。
      *
      * @param bullet   命中数据载体（含 calculateDamage/settleHit 读取的字段：伤害类型/命中率/子弹威力/
      *                 霰弹值/flags/hitCount 等；可为轻量 Object，不必是 MovieClip）。
@@ -802,7 +805,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             ctx.config = config;
             ctx.rayMode = rayMode;
             ctx.pierceLimit = bulletPierceLimit;
-            if (_rayPersistent && config != null && (config.isCombo() || rayMode == "pierce" || rayMode == "chain")) {
+            var persistentCombo:Boolean = (config != null && config.isCombo() && config.hasPierce());
+            if (_rayPersistent && config != null && (persistentCombo || rayMode == "pierce" || rayMode == "chain")) {
                 if (processPersistentRay(ctx)) {
                     survivors[survivors.length] = bullet;   // 跨帧存活，保留在 _rayBullets
                 } else {
@@ -1880,15 +1884,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             bullet.removeMovieClip();
         }
 
-        // 重建射线队列：仅保留 deferral=B 持久存活的射线（pierce/chain 一期）；
-        // 其余批量射线（combo/single/fork）本帧均已 removeMovieClip。
+        // 重建射线队列：仅保留 deferral=B 持久存活的射线（pierce/chain/含 pierce 的 combo）；
+        // 其余批量射线（single/fork/no-pierce combo）本帧均已 removeMovieClip。
         // 注：处理期间 spawn 的新射线（index >= count）与原 length=0 行为一致——被丢弃。
         _rayBullets = survivors;
     }
 
     /**
      * deferral=B 持久射线：每帧贪心结算至多 N 个命中，跨帧存活携带 state。
-     * 一期仅服务【非 combo 的 pierce / chain】（single/fork/combo 仍走批量路）。
+     * 服务 pierce / chain / 含 pierce 的 combo；single/fork/no-pierce combo 仍走批量路。
      *
      * 模型（设计稿 §6）：射线本身是 spawn 出来的、自带 damageManager → injectHit(bullet,...)
      * 直接可用（射线天然适配旁路原语）。未结束的射线留在 _rayBullets，每帧推进 1 命中（N 默认 1）；
@@ -1896,7 +1900,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * 几何冻结于首帧（之后不再 re-aim）。
      *
      * 持久 state 挂在 bullet 上：_rayInited / _rayBudget / _rayVisited / _rayCursorX/Y/Z /
-     * _rayLastTEntry / _rayFirstHitDone / _rayDmgMult / _rayPrevVfxX/Y。
+     * _rayLastTEntry / _rayFirstHitDone / _rayDmgMult / _rayPrevVfxX/Y / _rayEndX/Y / _rayHitPoints /
+     * _rayCombo（combo 迭代游标 RayComboCursor 实例）。
      *
      * @param ctx 已打包的每帧上下文（bullet/shooter/几何/窗口/config/rayMode/pierceLimit/FX 等）
      * @return true=本帧后仍存活（caller 保留），false=已结束（caller removeMovieClip）
@@ -1908,6 +1913,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var areaAABB:AABBCollider = ctx.areaAABB;
         var rayMode:String = ctx.rayMode;
         var falloff:Number = config.damageFalloff;
+        var rayLength:Number = config.rayLength || 900;
         var lockonDmgMult:Number = (bullet.lockonDmgMult > 0) ? bullet.lockonDmgMult : 1;
 
         // N = 每帧命中数（未配置默认 1）。ctx.config 为无类型链 → 读未声明字段不报错。
@@ -1928,13 +1934,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             bullet._rayCursorZ = bullet.Z轴坐标;
             bullet._rayPrevVfxX = ctx.rayOriginX;
             bullet._rayPrevVfxY = ctx.rayOriginY;
+            var initAng:Number = bullet._rotation * (Math.PI / 180);
+            bullet._rayEndX = ctx.rayOriginX + Math.cos(initAng) * rayLength;
+            bullet._rayEndY = ctx.rayOriginY + Math.sin(initAng) * rayLength;
+            bullet._rayHitPoints = (rayMode == "pierce") ? [] : null;
             bullet.附加层伤害计算 = 0;
-            // combo per-node 迭代器状态
-            bullet._rayComboPhase = "node";
-            bullet._rayPnDmgMult = 1;
-            bullet._rayNodeTEntry = -1;
-            bullet._rayForkList = null;
-            bullet._rayForkIdx = 0;
+            // combo per-node 迭代游标（组件化为 RayComboCursor 类；首帧 new，跨帧 resume）
+            bullet._rayCombo = new RayComboCursor();
 
             var lockonTarget:MovieClip = bullet.lockonTarget;
             if (lockonTarget != null && lockonTarget.aabbCollider != null) {
@@ -1945,18 +1951,24 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 var ldy:Number = lhy - ctx.rayOriginY;
                 var ldsq:Number = ldx * ldx + ldy * ldy;
                 if (ldsq > 0.001) {
+                    var lockonDist:Number = Math.sqrt(ldsq);
                     // 冻结射线几何朝向锁定目标（仅首帧；之后不再 re-aim，避免变成跟踪光束）
-                    areaAABB["setRayFast"](ctx.rayOriginX, ctx.rayOriginY, ldx, ldy, config.rayLength || 900);
+                    areaAABB["setRayFast"](ctx.rayOriginX, ctx.rayOriginY, ldx, ldy, rayLength);
+                    bullet._rayEndX = ctx.rayOriginX + (ldx / lockonDist) * rayLength;
+                    bullet._rayEndY = ctx.rayOriginY + (ldy / lockonDist) * rayLength;
                     // 首发直伤 = 锁定目标（首命中触发函数在此触发一次）
                     bullet.hitTarget = lockonTarget;
                     bullet.命中对象 = lockonTarget;
                     if (bullet.击中时触发函数) bullet.击中时触发函数();
                     injectHit(bullet, shooter, lockonTarget, lhx, lhy, lockonDmgMult);
                     spawnPersistentRaySeg(ctx, bullet, lhx, lhy, lockonDmgMult, false);
+                    if (rayMode == "pierce") {
+                        bullet._rayHitPoints[bullet._rayHitPoints.length] = {x: lhx, y: lhy};
+                    }
                     bullet._rayFirstHitDone = true;
                     bullet._rayVisited[lockonTarget._name] = true;
                     bullet._rayBudget--;
-                    bullet._rayLastTEntry = Math.sqrt(ldsq);
+                    bullet._rayLastTEntry = lockonDist;
                     bullet._rayCursorX = lhx;
                     bullet._rayCursorY = lhy;
                     bullet._rayCursorZ = lockonTarget.Z轴坐标;
@@ -2000,6 +2012,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             var dm:Number = (isCombo ? next.dmgMult : bullet._rayDmgMult) * lockonDmgMult;
             injectHit(bullet, shooter, next.target, next.hitX, next.hitY, dm);
             spawnPersistentRaySeg(ctx, bullet, next.hitX, next.hitY, dm, bullet._rayFirstHitDone);
+            if (rayMode == "pierce") {
+                bullet._rayHitPoints[bullet._rayHitPoints.length] = {x: next.hitX, y: next.hitY};
+            }
 
             bullet._rayFirstHitDone = true;
             bullet._rayVisited[next.target._name] = true;
@@ -2017,13 +2032,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
         // ── 从未命中过 + 本帧也未命中 → 画全长 miss 光束让玩家看到（一次性，随后结束）──
         if (hits == 0 && !bullet._rayFirstHitDone) {
-            var ang:Number = bullet._rotation * (Math.PI / 180);
-            var rl:Number = config.rayLength || 900;
-            var ex:Number = ctx.rayOriginX + Math.cos(ang) * rl;
-            var ey:Number = ctx.rayOriginY + Math.sin(ang) * rl;
+            var ex:Number = bullet._rayEndX;
+            var ey:Number = bullet._rayEndY;
             ctx.FX.Effect(bullet.击中地图效果, ex, ey, shooter._xscale);
             RayVfxManager.spawn(ctx.rayOriginX, ctx.rayOriginY, ex, ey, config,
                 {segmentKind: "main", hitIndex: 0, intensity: 1.0, isHit: false});
+        } else if (hits == 0 && rayMode == "pierce" && bullet._rayBudget > 0) {
+            finishPersistentPierceTail(ctx, bullet);
         }
 
         // 本帧有命中且仍有预算 → 跨帧存活；否则结束
@@ -2031,11 +2046,24 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     }
 
     /**
+     * 纯 pierce 持久射线结束时补齐旧批量路径的尾段语义：
+     * 预算尚未耗尽但沿线无更多目标 → 打到冻结射线终点，并携带 hitPoints 给渲染层。
+     */
+    private static function finishPersistentPierceTail(ctx:Object, bullet:Object):Void {
+        var config:TeslaRayConfig = TeslaRayConfig(ctx.config);
+        var ex:Number = bullet._rayEndX;
+        var ey:Number = bullet._rayEndY;
+        ctx.FX.Effect(bullet.击中地图效果, ex, ey, ctx.shooter._xscale);
+        RayVfxManager.spawn(ctx.rayOriginX, ctx.rayOriginY, ex, ey, config,
+            {segmentKind: "pierce", hitIndex: 0, intensity: 1.0, isHit: true, hitPoints: bullet._rayHitPoints});
+    }
+
+    /**
      * 沿射线找"下一个"命中：窗口内 tEntry 严格大于 minTEntry 的最近未命中碰撞。
      * pierce 全程用它（minTEntry=上次推进位置）；chain 首命中用它（minTEntry=-1 取最近）。
      * @return {target, hitX, hitY, tEntry} 或 null
      */
-    private static function findAlongRay(ctx:Object, visited:Object, minTEntry:Number):Object {
+    public static function findAlongRay(ctx:Object, visited:Object, minTEntry:Number):Object {
         var areaAABB:AABBCollider = ctx.areaAABB;
         var unitMap:Array = ctx.unitMap;
         var unitLen:Number = ctx.unitLen;
@@ -2073,7 +2101,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * chain 弹跳 / combo chain 子阶段共用。
      * @return {target, hitX, hitY, tEntry:-1} 或 null
      */
-    private static function findNearestAt(ctx:Object, visited:Object, cx:Number, cy:Number, cz:Number):Object {
+    public static function findNearestAt(ctx:Object, visited:Object, cx:Number, cy:Number, cz:Number):Object {
         var config:TeslaRayConfig = TeslaRayConfig(ctx.config);
         var radius:Number = config.chainRadius;
         var radiusSq:Number = radius * radius;
@@ -2122,7 +2150,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * 复刻 batch combo fork 的收集（插入排序、距离封顶）。
      * @return [{target, hitX, hitY, distSq}, ...]
      */
-    private static function collectForkList(ctx:Object, visited:Object, cx:Number, cy:Number, cz:Number, maxCount:Number):Array {
+    public static function collectForkList(ctx:Object, visited:Object, cx:Number, cy:Number, cz:Number, maxCount:Number):Array {
         var config:TeslaRayConfig = TeslaRayConfig(ctx.config);
         var radius:Number = config.chainRadius;
         var radiusSq:Number = radius * radius;
@@ -2168,71 +2196,17 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     }
 
     /**
-     * combo（含 pierce 的组合，如铁枪 chain,fork,pierce）的【增量 per-node 迭代器】。
-     * 每次返回 batch per-node 管线序列的下一个命中：节点 → 其 chain 走链 → 其 fork → 下一节点；
-     * 死目标由各 find* 的 visited/hp 过滤自动跳过续走。dmgMult 按 phase 算好放 next.dmgMult
-     * （node=pnDmgMult；chain 起于 pnDmgMult×falloff 逐跳衰减；fork 全用 pnDmgMult×falloff）。
-     * 状态挂 bullet：_rayComboPhase / _rayPnDmgMult / _rayNodeTEntry / _rayChainCX·CY·CZ /
-     *               _rayChainDmgMult / _rayForkBaseX·Y·Z / _rayForkDmgMult / _rayForkList / _rayForkIdx。
+     * combo 增量 per-node 迭代：薄包装，桥接 processPersistentRay 与 RayComboCursor 组件
+     * （combo 状态机 + ~14 字段已抽到 RayComboCursor 类，见该类）。游标实例挂 bullet._rayCombo
+     * （processPersistentRay 首帧 new、跨帧 resume）。几何扫描原语 findAlongRay/findNearestAt/
+     * collectForkList 是本类 public static（射线扫描层 = 未来 findNextHit 策略复用面），由游标回调。
      * @return {target, hitX, hitY, dmgMult} 或 null（节点耗尽=combo 结束）
      */
     private static function findNextComboPerNode(ctx:Object, bullet:Object):Object {
         var config:TeslaRayConfig = TeslaRayConfig(ctx.config);
-        var falloff:Number = config.damageFalloff;
-        var hasChain:Boolean = config.hasChain();
-        var hasFork:Boolean = config.hasFork();
-        var visited:Object = bullet._rayVisited;
-
-        while (true) {
-            var phase:String = bullet._rayComboPhase;
-
-            if (phase == "node") {
-                // 下一个 pierce 节点（沿束 tEntry 升序、跳已命中）
-                var node:Object = findAlongRay(ctx, visited, bullet._rayNodeTEntry);
-                if (node == null) return null;   // 无更多节点 → combo 结束
-                bullet._rayNodeTEntry = node.tEntry;
-                var p0:Number = bullet._rayPnDmgMult;
-                bullet._rayPnDmgMult = p0 * falloff;   // P1：node 之后衰减一档
-                // 该节点的 chain/fork 均以 P1 为基（对齐 batch：chain 起于 pnDmgMult、fork 用 pnDmgMult）
-                bullet._rayChainCX = node.hitX; bullet._rayChainCY = node.hitY; bullet._rayChainCZ = node.target.Z轴坐标;
-                bullet._rayChainDmgMult = bullet._rayPnDmgMult;
-                bullet._rayForkBaseX = node.hitX; bullet._rayForkBaseY = node.hitY; bullet._rayForkBaseZ = node.target.Z轴坐标;
-                bullet._rayForkDmgMult = bullet._rayPnDmgMult;
-                bullet._rayForkList = null; bullet._rayForkIdx = 0;
-                bullet._rayComboPhase = "chain";
-                node.dmgMult = p0;
-                return node;
-            } else if (phase == "chain") {
-                if (hasChain) {
-                    var c:Object = findNearestAt(ctx, visited, bullet._rayChainCX, bullet._rayChainCY, bullet._rayChainCZ);
-                    if (c != null) {
-                        c.dmgMult = bullet._rayChainDmgMult;
-                        bullet._rayChainDmgMult *= falloff;
-                        bullet._rayChainCX = c.hitX; bullet._rayChainCY = c.hitY; bullet._rayChainCZ = c.target.Z轴坐标;
-                        return c;
-                    }
-                }
-                bullet._rayComboPhase = "fork";   // chain 断/无 → fork（继续循环）
-            } else if (phase == "fork") {
-                if (hasFork) {
-                    if (bullet._rayForkList == null) {
-                        bullet._rayForkList = collectForkList(ctx, visited, bullet._rayForkBaseX, bullet._rayForkBaseY, bullet._rayForkBaseZ, bullet._rayBudget);
-                    }
-                    var fl:Array = bullet._rayForkList;
-                    while (bullet._rayForkIdx < fl.length) {
-                        var f:Object = fl[bullet._rayForkIdx];
-                        bullet._rayForkIdx++;
-                        if (visited[f.target._name] == true) continue;   // chain 可能已吃掉
-                        f.dmgMult = bullet._rayForkDmgMult;
-                        return f;
-                    }
-                }
-                bullet._rayComboPhase = "node";   // fork 完/无 → 下一节点（继续循环）
-            } else {
-                return null;
-            }
-        }
-        return null;
+        return bullet._rayCombo.next(
+            ctx, bullet._rayVisited, config.damageFalloff,
+            config.hasChain(), config.hasFork(), bullet._rayBudget);
     }
 
     /**
@@ -2298,7 +2272,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 __q = activeQueues[__k];
                 __q.clear();
             }
-            _rayBullets.length = 0;
+            // deferral=B 持久射线跨帧携带 state；暂停只冻结，不清空。
+            // reset/场景切换才负责 removeMovieClip + 清空，防 RayCollider MC 泄漏。
             return;
         }
 
