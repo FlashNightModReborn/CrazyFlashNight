@@ -1,0 +1,208 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特殊敌人-地球" itemID="6a3d4050-000001b6" linkageExportForAS="true" linkageIdentifier="特殊敌人-地球" lastModified="1782402205" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="特殊敌人-地球">
+      <layers>
+        <DOMLayer name="label" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" name="正常" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" name="结束" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// ========== 基础属性（沿用原框架） ==========
+Z轴坐标 = this._y;
+hp = hp满血值 = 1;
+防御力 = 1;
+躲闪率 = 100;
+无敌 = true;
+状态 = "正常";
+击中效果 = "击中金属";
+unitAIType = "None";
+_root.敌人函数.初始化单位(this);
+gotoAndStop("正常");
+
+// ========== 流程控制变量 ==========
+var 阶段 = "清杂";                  // 清杂 / 拆解 / 完成
+var 拆解成功 = false;               // 拆解阶段是否已达成三雕像同时死亡
+var 倒计时最大帧数 = 600;           // 限时帧数（60fps下10秒）
+var 倒计时剩余 = 0;
+var 波次 = 0;                       // 记录失败重试次数（影响雕像复活时间）
+var 雕像列表 = [游戏世界.雕像0, 游戏世界.雕像1, 游戏世界.雕像2];
+
+// 用于检查清杂完成：持有玩家引用（需要根据角色名调整）
+var 玩家 = _root.gameworld[_root.控制目标];
+
+// ========== 内部方法：检测场上是否还有存活敌人 ==========
+function 有存活敌人() {
+    if (!玩家) return false;
+    // 通过帧计时器获取周围敌人缓存（此方法在你的调试函数中有出现）
+    var 敌人表 = _root.帧计时器.获取敌人缓存(玩家, 1); // 假设1表示全屏范围
+    for (var i = 0; i < 敌人表.length; i++) {
+        var 单位 = 敌人表[i];
+        // 排除雕像本身（避免重复进入拆解阶段）
+        if (单位 != 雕像列表[0] && 单位 != 雕像列表[1] && 单位 != 雕像列表[2] &&
+            单位.element == null && 单位.hp > 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// ========== 激活拆解阶段 ==========
+function 进入拆解阶段() {
+    if (阶段 != "清杂") return;
+    阶段 = "拆解";
+    拆解成功 = false;
+    倒计时剩余 = 倒计时最大帧数;
+
+    // 激活所有雕像
+    for (var i = 0; i < 雕像列表.length; i++) {
+        var 雕像 = 雕像列表[i];
+        雕像.激活();
+    }
+}
+
+// ========== 惩罚阶段（超时） ==========
+function 拆解超时() {
+    // 隐藏所有雕像
+    for (var i = 0; i < 雕像列表.length; i++) {
+        雕像列表[i].强制隐藏();
+    }
+    波次++;          // 增加失败次数，使下次复活更慢
+    阶段 = "清杂";
+    // 注意：清杂敌人将在下一波自动生成（依靠 WaveSpawner），
+    // 或者如果你的波次管理器没有自动生成，可在此手动调用
+    // 例如：_root.WaveSpawner.instance.nextWave();
+}
+
+// ========== 每帧检查 ==========
+this.onEnterFrame = function() {
+    if (阶段 == "清杂") {
+        if (!有存活敌人()) {
+            // 稍微延迟一帧，防止误判
+            if (!this.已准备进入拆解) {
+                this.已准备进入拆解 = true;
+            } else {
+                this.已准备进入拆解 = false;
+                进入拆解阶段();
+            }
+        } else {
+            this.已准备进入拆解 = false;
+        }
+    }
+    else if (阶段 == "拆解") {
+        // 检查三个雕像是否同时死亡
+        var 存活 = 0;
+        for (var i = 0; i < 雕像列表.length; i++) {
+            if (雕像列表[i].hp > 0) 存活++;
+        }
+        if (存活 == 0 && !拆解成功) {
+            拆解成功 = true;
+            this.无敌 = false;
+            this.躲闪率 = 0;
+        }
+
+        // 倒计时
+        倒计时剩余--;
+        if (倒计时剩余 <= 0 && !拆解成功) {
+            拆解超时();
+        }
+    }
+};
+
+// ========== 中枢自身被破坏 ==========
+function 状态改变(状态) {
+    if (hp <= 0 && !无敌) {
+        // 胜利处理
+        gotoAndStop("结束");
+        // 清除所有雕像
+        for (var i = 0; i < 雕像列表.length; i++) {
+            雕像列表[i].强制隐藏();
+        }
+        delete this.onEnterFrame;
+        // 调用关卡完成（根据你的全局函数）
+        _root.调试_完成当前地图();  // 或者 StageManager.instance.clearStage();
+    }
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="护罩" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地球护罩" selected="true" centerPoint3DX="0.6" centerPoint3DY="-111.4">
+                  <matrix>
+                    <Matrix a="0.232803344726563" d="0.232803344726563" tx="-154.75" ty="-238"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="666.65" y="543.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.55859375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="area" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area框/hitbox-area框载体" name="area" centerPoint3DX="0.6" centerPoint3DY="-105">
+                  <matrix>
+                    <Matrix a="12.2518615722656" d="9.55477905273438" tx="-152.55" ty="-224.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="12.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地球" name="man" selected="true" centerPoint3DX="0.75" centerPoint3DY="-117">
+                  <matrix>
+                    <Matrix a="0.232803344726563" d="0.232803344726563" tx="-146.75" ty="-190"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="634.25" y="314.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

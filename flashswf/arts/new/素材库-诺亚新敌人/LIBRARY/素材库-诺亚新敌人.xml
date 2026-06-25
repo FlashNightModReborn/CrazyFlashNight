@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-诺亚新敌人" itemID="65aa1bb3-000004bb" linkageExportForAS="true" linkageIdentifier="素材库-诺亚新敌人" lastModified="1755003775" lastUniqueIdentifier="15">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-诺亚新敌人" itemID="65aa1bb3-000004bb" linkageExportForAS="true" linkageIdentifier="素材库-诺亚新敌人" lastModified="1782401320" lastUniqueIdentifier="18">
   <timeline>
     <DOMTimeline name="素材库-诺亚新敌人" currentFrame="2">
       <layers>
@@ -39,7 +39,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="方舟指挥官/敌人-方舟爪豪" selected="true" centerPoint3DX="207.55" centerPoint3DY="393.25">
+                <DOMSymbolInstance libraryItemName="方舟指挥官/敌人-方舟爪豪" centerPoint3DX="207.55" centerPoint3DY="393.25">
                   <matrix>
                     <Matrix tx="151.65" ty="307.5"/>
                   </matrix>
@@ -104,15 +104,31 @@
                     <Matrix tx="758" ty="355.7"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.8" y="-70.55"/>
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="保护仪器/特殊友军-保护仪器" selected="true" centerPoint3DX="1444.25" centerPoint3DY="205.35">
+                <DOMSymbolInstance libraryItemName="保护仪器/特殊友军-保护仪器" centerPoint3DX="1444.25" centerPoint3DY="205.35">
                   <matrix>
                     <Matrix tx="1047.95" ty="298.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="396.3" y="-93.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特殊敌人-地球" selected="true" centerPoint3DX="935.45" centerPoint3DY="574.45">
+                  <matrix>
+                    <Matrix a="0.594985961914063" d="0.594985961914063" tx="725.8" ty="433.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1" y="1.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="特殊敌人-地球衍生物" centerPoint3DX="1138.95" centerPoint3DY="459">
+                  <matrix>
+                    <Matrix tx="1098.75" ty="382.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="-7.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

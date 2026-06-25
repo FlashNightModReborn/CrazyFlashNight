@@ -6,7 +6,66 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/决战之地1.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>700</x>
+                <y>500</y>
+            </Point>
+        </SpawnPoint>
         <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <MapNoCount>true</MapNoCount>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <spritename>特殊敌人-地球</spritename>
+                        <InstanceName>地球</InstanceName>
+                        <IsHostile>true</IsHostile>
+                        <Height>175</Height>
+                    </Enemy>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <x>560</x>
+                        <y>500</y>
+                        <spritename>特殊敌人-地球衍生物</spritename>
+                        <InstanceName>雕像0</InstanceName>
+                        <IsHostile>true</IsHostile>
+                        <Height>175</Height>
+                    </Enemy>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <x>980</x>
+                        <y>449</y>
+                        <spritename>特殊敌人-地球衍生物</spritename>
+                        <InstanceName>雕像1</InstanceName>
+                        <IsHostile>true</IsHostile>
+                        <Height>175</Height>
+                        <Parameters>方向:左</Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                        <x>840</x>
+                        <y>590</y>
+                        <spritename>特殊敌人-地球衍生物</spritename>
+                        <InstanceName>雕像2</InstanceName>
+                        <IsHostile>true</IsHostile>
+                        <Height>175</Height>
+                        <Parameters>方向:左</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
         </Wave>
     </SubStage>
 </GameStage>

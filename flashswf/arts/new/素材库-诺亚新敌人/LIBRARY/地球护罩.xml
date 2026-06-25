@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地球护罩" itemID="6a3d4394-00000bfa" lastModified="1782399892" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="地球护罩">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩" name="护罩0" centerPoint3DX="1320" centerPoint3DY="577.9">
+                  <matrix>
+                    <Matrix a="15.2089233398438" d="4.3765869140625" tx="646.4" ty="197"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="86.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩" name="护罩1" centerPoint3DX="1320" centerPoint3DY="509.9">
+                  <matrix>
+                    <Matrix a="15.2089233398438" d="4.3765869140625" tx="646.4" ty="131.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="86.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩" name="护罩2" centerPoint3DX="1320" centerPoint3DY="443.65">
+                  <matrix>
+                    <Matrix a="15.2089233398438" d="4.3765869140625" tx="646.4" ty="65.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="86.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/中枢特效/护罩" name="护罩3" centerPoint3DX="1320" centerPoint3DY="378.25">
+                  <matrix>
+                    <Matrix a="15.2089233398438" d="4.3765869140625" tx="646.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="43.8" y="86.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

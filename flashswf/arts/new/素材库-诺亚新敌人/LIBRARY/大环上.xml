@@ -1,0 +1,68 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="大环上" itemID="69bfc981-00000018" symbolType="graphic" lastModified="1774176641">
+  <timeline>
+    <DOMTimeline name="大环上">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.00138854980469" d="0.0868377685546875" tx="633.45" ty="68.1"/>
+                        </matrix>
+                        <GradientEntry color="#666666" ratio="0.627450980392157"/>
+                        <GradientEntry color="#CCCCCC" ratio="0.83921568627451"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.103271484375" d="0.03082275390625" tx="634.15" ty="47.1"/>
+                        </matrix>
+                        <GradientEntry color="#333333" ratio="0"/>
+                        <GradientEntry color="#666666" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.77392578125" d="0.046051025390625" tx="634.05" ty="106.7"/>
+                        </matrix>
+                        <GradientEntry color="#333333" ratio="0"/>
+                        <GradientEntry color="#666666" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!887 1447S3[843 1405 843 1362!843 1362[843 979 4310 708!4310 708[7778 437 12683 437!12683 437[17588 437 21055 708!21055 708[24523 979 24523 1362!24523 1362[24523 1405 24479 1447"/>
+                    <Edge fillStyle0="1" edges="!24479 1447S1|25344 1447"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!25344 1447S3[25355 1425 25361 1402"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!25361 1402S5|25361 1320!25361 1320[25230 782 21651 398!21651 398[17937 0 12683 0!12683 0[7429 0 3714 398!3714 398[0 797 0 1361!0 1361[0 1370 1 1380"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!1 1380S3[5 1414 22 1447"/>
+                    <Edge fillStyle0="1" edges="!22 1447S1|887 1447"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!25361 1402S6|25361 1447!25361 1447|25344 1447"/>
+                    <Edge strokeStyle="1" edges="!25361 1320S4[25366 1340 25366 1361!25366 1361[25366 1382 25361 1402"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!887 1447S5[1234 1118 4310 878!4310 878[7778 607 12683 607!12683 607[17588 607 21055 878!21055 878[24132 1118 24479 1447"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!22 1447S6|1 1447!1 1447|1 1380"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

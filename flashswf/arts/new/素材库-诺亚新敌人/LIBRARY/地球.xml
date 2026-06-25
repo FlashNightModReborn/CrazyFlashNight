@@ -1,0 +1,228 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地球" itemID="6a3d4045-000001ae" lastModified="1782399780">
+  <timeline>
+    <DOMTimeline name="地球" currentFrame="57">
+      <layers>
+        <DOMLayer name="1-1" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="99" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大环下" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="333"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="634" y="1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="99" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大环下" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="333"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="632" y="1.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="2-1" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="99" tweenType="motion" motionTweenRotate="counter-clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大环下" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.70428466796875" b="0.399688720703125" c="-0.33197021484375" d="0.847946166992188" tx="148.5" ty="61.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="634.85" y="1.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="99" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大环下" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.70428466796875" b="0.399688720703125" c="-0.33197021484375" d="0.847946166992188" tx="148.5" ty="61.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="634.85" y="1.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="3-1" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="99" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="2" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大环下" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.52618408203125" b="-0.507217407226563" c="-0.507217407226563" d="-0.52618408203125" tx="230.4" ty="653.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="633.9" y="1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="99" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="2" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大环下" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.52618408203125" b="-0.507217407226563" c="-0.507217407226563" d="-0.52618408203125" tx="230.4" ty="653.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="633.9" y="1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="球" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="球" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="323.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="284.1" y="284.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="28" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="球" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="323.1" ty="-16"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="284.1" y="284.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="57" duration="42" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="球" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="323.1" ty="27.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="284.1" y="284.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="99" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="球" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="323.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="284.1" y="284.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="3-2" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="99" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="2" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大环下" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.52618408203125" b="0.507217407226563" c="0.507217407226563" d="0.52618408203125" tx="896.6" ty="10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="633.9" y="1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="99" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="2" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大环下" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.52618408203125" b="0.507217407226563" c="0.507217407226563" d="0.52618408203125" tx="896.6" ty="10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="633.9" y="1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="2-2" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="99" tweenType="motion" motionTweenRotate="counter-clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大环上" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.70428466796875" b="0.399688720703125" c="-0.33197021484375" d="0.847946166992188" tx="172.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="634.45" y="72.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="99" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大环上" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.70428466796875" b="0.399688720703125" c="-0.33197021484375" d="0.847946166992188" tx="172.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="634.45" y="72.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="1-2" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="99" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大环上" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="260.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="635.15" y="70.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="99" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="大环上" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="260.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="630.15" y="74.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

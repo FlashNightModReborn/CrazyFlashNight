@@ -11,7 +11,7 @@
           <DOMFolderItem name="1.特效文件夹/07.青绿色系/墨绿轨迹/Graphic" itemID="67386f30-0000195f"/>
           <DOMFolderItem name="area框" itemID="65ae673b-00003707"/>
           <DOMFolderItem name="保护仪器" itemID="689b3b59-00000aaa" isExpanded="true"/>
-          <DOMFolderItem name="兵工厂特殊单位" itemID="66b8b270-0000090d"/>
+          <DOMFolderItem name="兵工厂特殊单位" itemID="66b8b270-0000090d" isExpanded="true"/>
           <DOMFolderItem name="兵工厂特殊单位/雕像特效" itemID="66baf4ee-00000f77"/>
           <DOMFolderItem name="兵工厂特殊单位/烟气喷射循环单位" itemID="5d2075ea-000010eb"/>
           <DOMFolderItem name="兵工厂特殊单位/中枢特效" itemID="66baf4f4-00000f7c"/>
@@ -254,7 +254,7 @@
           <Include href="保护仪器/dkghkg.xml" itemIcon="1" loadImmediate="false" itemID="4b5fabc5-00000109" lastModified="1702111957"/>
           <Include href="保护仪器/保护仪器爆炸.xml" loadImmediate="false" itemID="689b02cd-00000a57" lastModified="1755003037"/>
           <Include href="保护仪器/保护仪器素材.xml" loadImmediate="false" itemID="689b0198-0000028d" lastModified="1754988952"/>
-          <Include href="保护仪器/特殊友军-保护仪器.xml" itemID="689b38d5-000002b8" lastModified="1755008079"/>
+          <Include href="保护仪器/特殊友军-保护仪器.xml" itemID="689b38d5-000002b8" lastModified="1782397854"/>
           <Include href="保护仪器/仪器屏幕.xml" loadImmediate="false" itemID="685a2b2d-000001ee" lastModified="1750739757"/>
           <Include href="保护仪器/仪器屏幕2.xml" loadImmediate="false" itemID="685a2b59-000001f2" lastModified="1750739854"/>
           <Include href="保护仪器/仪器屏幕2本体.xml" loadImmediate="false" itemID="685a2b80-000001f6" lastModified="1750739840"/>
@@ -272,8 +272,8 @@
           <Include href="兵工厂特殊单位/雕像特效/遮罩2.xml" itemIcon="1" loadImmediate="false" itemID="66ba2bdd-00000b69" lastModified="1723477125"/>
           <Include href="兵工厂特殊单位/雕像正常.xml" loadImmediate="false" itemID="66ba3f01-00000c45" lastModified="1723483727"/>
           <Include href="兵工厂特殊单位/火焰特效.xml" loadImmediate="false" itemID="66bca76a-00001298" lastModified="1751003541"/>
-          <Include href="兵工厂特殊单位/特殊敌人-兵工厂中枢.xml" itemID="66b8b287-00000914" lastModified="1749524817"/>
-          <Include href="兵工厂特殊单位/特殊敌人-雕像.xml" itemID="66b8b58a-00000930" lastModified="1747837960"/>
+          <Include href="兵工厂特殊单位/特殊敌人-兵工厂中枢.xml" itemID="66b8b287-00000914" lastModified="1782401462"/>
+          <Include href="兵工厂特殊单位/特殊敌人-雕像.xml" itemID="66b8b58a-00000930" lastModified="1782400505"/>
           <Include href="兵工厂特殊单位/烟气喷射循环单位/特效-闪光特效 特殊2 副本.xml" itemIcon="1" loadImmediate="false" itemID="56ee3c6c-00000677" lastModified="1458990191"/>
           <Include href="兵工厂特殊单位/烟气喷射循环单位/特效-闪光特效 特殊3.xml" itemIcon="1" loadImmediate="false" itemID="56f66c99-0000035a" lastModified="1723639465"/>
           <Include href="兵工厂特殊单位/烟气喷射循环单位/烟气喷射循环 32一循环.xml" itemIcon="1" loadImmediate="false" itemID="5d206d96-00000d37" lastModified="1751003501"/>
@@ -294,6 +294,10 @@
           <Include href="兵工厂特殊单位/中枢特效/能量线3.xml" loadImmediate="false" itemID="66bb03cb-0000189f" lastModified="1723532600"/>
           <Include href="兵工厂特殊单位/中枢正常.xml" loadImmediate="false" itemID="66b8befc-00000970" lastModified="1723531284"/>
           <Include href="补间 3.xml" itemIcon="1" loadImmediate="false" itemID="685a2d64-00000213" lastModified="1750740324"/>
+          <Include href="大环上.xml" itemIcon="1" loadImmediate="false" itemID="69bfc981-00000018" lastModified="1774176641"/>
+          <Include href="大环下.xml" itemIcon="1" loadImmediate="false" itemID="69bfc976-00000014" lastModified="1774176630"/>
+          <Include href="地球.xml" loadImmediate="false" itemID="6a3d4045-000001ae" lastModified="1782399780"/>
+          <Include href="地球护罩.xml" loadImmediate="false" itemID="6a3d4394-00000bfa" lastModified="1782399892"/>
           <Include href="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/回旋风刃.xml" itemID="653dce6b-000011a9" lastModified="1731818940"/>
           <Include href="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 375.xml" loadImmediate="false" itemID="653dcca3-00001048" lastModified="1698427020"/>
           <Include href="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 376.xml" itemIcon="1" loadImmediate="false" itemID="653dcca3-00001049" lastModified="1698427020"/>
@@ -494,9 +498,9 @@
           <Include href="地狱三头/特效/未命名文件夹 1/sprite/Symbol 559.xml" loadImmediate="false" itemID="6577b699-00000ac3" lastModified="1702343951"/>
           <Include href="地狱三头/特效/未命名文件夹 1/sprite/Symbol 561.xml" loadImmediate="false" itemID="6577b699-00000ac4" lastModified="1702343951"/>
           <Include href="地狱三头/特效/未命名文件夹 1/sprite/Symbol 563.xml" loadImmediate="false" itemID="6577b699-00000ac5" lastModified="1702343951"/>
-          <Include href="地狱三头/特效/未命名文件夹 1/sprite/男变装-基本脸型.xml" itemID="668be716-0000065a" lastModified="1729259751"/>
-          <Include href="地狱三头/特效/未命名文件夹 1/sprite/男变装-裸体身体.xml" itemID="668be70d-00000656" lastModified="1722352082"/>
-          <Include href="地狱三头/特效/未命名文件夹 1/sprite/男变装-裸体左大腿.xml" itemID="668be702-00000651" lastModified="1720444674"/>
+          <Include href="地狱三头/特效/未命名文件夹 1/sprite/男变装-基本脸型.xml" loadImmediate="false" itemID="668be716-0000065a" lastModified="1729259751"/>
+          <Include href="地狱三头/特效/未命名文件夹 1/sprite/男变装-裸体身体.xml" loadImmediate="false" itemID="668be70d-00000656" lastModified="1722352082"/>
+          <Include href="地狱三头/特效/未命名文件夹 1/sprite/男变装-裸体左大腿.xml" loadImmediate="false" itemID="668be702-00000651" lastModified="1720444674"/>
           <Include href="地狱三头/特效/未命名文件夹 1/余烬小队/余烬剑痴/Symbol 33.xml" loadImmediate="false" itemID="6577b699-00000970" lastModified="1718940539"/>
           <Include href="地狱三头/特效/未命名文件夹 1/余烬小队/余烬剑痴/Symbol 46.xml" loadImmediate="false" itemID="673972be-000029b0" lastModified="1718940854"/>
           <Include href="地狱三头/蛙型仿生僵尸/动画合集/被击.xml" loadImmediate="false" itemID="673849ad-00002073" lastModified="1731763028"/>
@@ -977,6 +981,7 @@
           <Include href="诺亚克隆兽/动画合集/走路.xml" loadImmediate="false" itemID="669b3217-00000385" lastModified="1722254048"/>
           <Include href="诺亚克隆兽/阴影.xml" loadImmediate="false" itemID="65ab9909-000003b3" lastModified="1705744649"/>
           <Include href="其他/近战子弹.xml" loadImmediate="false" itemID="666aef4b-00002bb9" lastModified="1718284145"/>
+          <Include href="球.xml" itemIcon="1" loadImmediate="false" itemID="69c18863-00000028" lastModified="1774291167"/>
           <Include href="人物文字信息/Symbol 46.xml" itemIcon="1" loadImmediate="false" itemID="64cd34a5-0000025f" lastModified="1691169797"/>
           <Include href="人物文字信息/Symbol 48.xml" loadImmediate="false" itemID="64cd34a5-00000260" lastModified="1691169797"/>
           <Include href="人物文字信息/Symbol 49.xml" loadImmediate="false" itemID="64cd34a5-00000261" lastModified="1691169797"/>
@@ -1011,8 +1016,10 @@
           <Include href="闪6特工/人物服装/元件 2.xml" loadImmediate="false" itemID="669a95c0-00000bd1" lastModified="1721406912"/>
           <Include href="闪6特工/人物服装/元件 3.xml" loadImmediate="false" itemID="669a967a-00000bf0" lastModified="1721407098"/>
           <Include href="思考标签.xml" loadImmediate="false" itemID="68145f67-0000024d" lastModified="1746165689"/>
-          <Include href="素材库-诺亚新敌人.xml" itemID="65aa1bb3-000004bb" lastModified="1755003775"/>
+          <Include href="素材库-诺亚新敌人.xml" itemID="65aa1bb3-000004bb" lastModified="1782401320"/>
           <Include href="台座.xml" loadImmediate="false" itemID="685a2a6d-000001e3" lastModified="1750739728"/>
+          <Include href="特殊敌人-地球.xml" itemID="6a3d4050-000001b6" lastModified="1782402205"/>
+          <Include href="特殊敌人-地球衍生物.xml" itemID="6a3d45f2-00000c16" lastModified="1782402189"/>
           <Include href="通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="661d2b89-00000c4c" lastModified="1705929134"/>
           <Include href="通用ai元件/逻辑ai详情元件 副本.xml" loadImmediate="false" itemID="673849ad-0000208a" lastModified="1705929134"/>
           <Include href="通用ai元件/行走ai载体.xml" loadImmediate="false" itemID="661d2b89-00000c4d" lastModified="1705928955"/>
@@ -1383,6 +1390,13 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1663095" publishTime="1782401677"/>
+          <PublishItem publishSize="1663041" publishTime="1782401337"/>
+          <PublishItem publishSize="1663031" publishTime="1782401165"/>
+          <PublishItem publishSize="1663038" publishTime="1782401113"/>
+          <PublishItem publishSize="1663012" publishTime="1782400926"/>
+          <PublishItem publishSize="1663150" publishTime="1782400811"/>
+          <PublishItem publishSize="1663026" publishTime="1782400754"/>
           <PublishItem publishSize="1670206" publishTime="1755007409"/>
           <PublishItem publishSize="1670152" publishTime="1755005925"/>
           <PublishItem publishSize="1670161" publishTime="1755005816"/>
@@ -1396,12 +1410,5 @@
           <PublishItem publishSize="1564247" publishTime="1740496350"/>
           <PublishItem publishSize="1565421" publishTime="1739350670"/>
           <PublishItem publishSize="1570873" publishTime="1739350342"/>
-          <PublishItem publishSize="1685006" publishTime="1732462253"/>
-          <PublishItem publishSize="1684994" publishTime="1732461994"/>
-          <PublishItem publishSize="1684980" publishTime="1732461780"/>
-          <PublishItem publishSize="1677427" publishTime="1732461473"/>
-          <PublishItem publishSize="1677867" publishTime="1732461265"/>
-          <PublishItem publishSize="1677216" publishTime="1732460622"/>
-          <PublishItem publishSize="1682601" publishTime="1732384222"/>
      </publishHistory>
 </DOMDocument>
