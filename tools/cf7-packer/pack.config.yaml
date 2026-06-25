@@ -106,7 +106,8 @@ layers:
     description: "音效导出文件 + manifest + BGM 音乐（含玩家自定义）"
     source: "sounds/"
     include:
-      # SFX：FFDec 导出的独立音频文件（文件名即 linkageId，launcher 启动时扫描目录加载）
+      # SFX：FFDec 导出的独立音频文件（文件名即 linkageId，launcher 启动时扫描目录加载）。
+      # 仍有 data/items/*.xml 直接引用 legacy .waz 文件名，不能单独排除；如需迁移，必须同轮改 XML 与资产。
       - "export/**/*"
       # BGM 配置与音乐文件（MusicCatalog 自动发现所有子目录下的音频）
       - "bgm_list.xml"
@@ -124,8 +125,6 @@ layers:
       - "**/PublishSettings.xml"
       - "**/MobileSettings.xml"
       - "**/*.swf"
-      # 已停用的 SFX（.wav → .waz 改名停用，miniaudio 无法解码，纯死重量）
-      - "export/**/*.waz"
 
   - name: config
     description: "运行时配置"

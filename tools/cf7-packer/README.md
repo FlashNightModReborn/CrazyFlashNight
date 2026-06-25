@@ -89,8 +89,8 @@ npm run list-tags
 |------|------|
 | data | XML / JSON 配置 + 情报文本；排除 RAG 草稿、intelligenceMD 设计稿、unused/、`task/*_old.json` 孤立备份、levelEditor/、`**/*.md`、`**/*.xlsx`、`**/*.py`、`**/test_loader.as`、`**/*.lnk` |
 | scripts | 仅 `asLoader.swf`（运行时加载器，源码不打包） |
-| flashswf | 编译后 .swf + 运行时资源（白名单 `**/*.{swf,png,flv,html}` + `portraits/**/*.xml` + `_ruffle/**` Ruffle 运行时；显式排除 XFL 工程附属 `**/{LIBRARY,META-INF,bin}/**` + `**/*.xfl` + `DOMDocument.xml` / `MobileSettings.xml` / `PublishSettings.xml`，以及 `.fla`、`.xlsx`、`*-备份.swf`、Ruffle 自带文档 `(_ruffle/README.md`, `LICENSE_*`, `package.json)`、`**/AI草稿/**` 设计稿、`arts/things*` 源目录、`unused/`、`miniGames/`、`ComicTool/`） |
-| sounds | `export/` SFX + `bgm_list.xml` + 各专辑 BGM 音频（`**/*.{mp3,wav,ogg,flac}`，含玩家自定义，由 MusicCatalog 运行时扫描）；XFL 残余 exclude 为防御性，另排除停用的 `export/**/*.waz` |
+| flashswf | 编译后 .swf + 运行时资源（白名单 `**/*.{swf,png,flv,html}` + `portraits/**/*.xml` + `_ruffle/**` Ruffle 运行时；显式排除 XFL 工程附属 `**/{LIBRARY,META-INF,bin}/**` + `**/*.xfl` + `DOMDocument.xml` / `MobileSettings.xml` / `PublishSettings.xml`，以及 `.fla`、`.xlsx`、`*-备份.swf`、Ruffle 自带文档 `_ruffle/README.md` / `_ruffle/LICENSE_*` / `_ruffle/package.json`、`**/AI草稿/**` 设计稿、`arts/things*` 源目录、`unused/`、`miniGames/`、`ComicTool/`） |
+| sounds | `export/` SFX + `bgm_list.xml` + 各专辑 BGM 音频（`**/*.{mp3,wav,ogg,flac}`，含玩家自定义，由 MusicCatalog 运行时扫描）；`export/` 下文件名即运行时 SFX id，legacy `.waz` 只要仍被 `data/items/*.xml` 引用就必须保留；XFL 残余 exclude 为防御性 |
 | config | 全量复制（仅排除 `*.md` 开发文档） |
 | root-files | 根目录运行时文件：native bootstrap `CRAZYFLASHER7MercenaryEmpire.exe`、`hotkey_guard.exe`、Flash Player、SWF、`crossdomain.xml`、`config.xml` / `config.toml` |
 | launcher-runtime | FDD Core 运行时：`runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe`、managed/native DLL、`*.deps.json` / `*.runtimeconfig.json` |
@@ -117,7 +117,7 @@ packages/
 
 ```bash
 npm run typecheck    # 类型检查
-npm test             # 运行测试（51 个）
+npm test             # 运行 Vitest 回归
 npm run dev:web      # Vite 开发服务器
 npm run dev:electron # Electron 开发模式
 ```
