@@ -1737,3 +1737,82 @@
     /* 通配符 * 不命中伪元素：写请求 spinner 挂在 ::after 上，须显式停转（低功耗机保护） */
     .task-btn-pending::after { animation: none !important; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   副本任务 (dungeon) tab — 旧 FLA Symbol 1873(_root.委托任务界面) 的 web 等价。
+   严格 NPC 领取：左侧仅难度档（普通/挑战），右侧详情 + 委托对话（复用 DialogueView）。
+   ═══════════════════════════════════════════════════════════════ */
+/* view 显隐（同 log/ach 口径） */
+.task-panel-dungeonview { display: none; }
+.task-panel-container[data-tab="dungeon"] .task-panel-toolbar,
+.task-panel-container[data-tab="dungeon"] .task-panel-body { display: none; }
+.task-panel-container[data-tab="dungeon"] .task-panel-dungeonview {
+    display: flex; flex-direction: column; flex: 1; min-height: 0;
+    position: relative; padding: 10px 18px 14px;
+}
+.task-panel-container.task-busy .task-panel-dungeonview { pointer-events: none; }
+
+/* 空态 / 加载 */
+.dgn-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--task-text-dim); }
+.dgn-empty-icon { font-size: 44px; opacity: 0.5; }
+.dgn-empty-text { font-size: 15px; letter-spacing: 1px; }
+.dgn-loading { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--task-text-dim); }
+
+/* 主体 = 左难度档 + 右详情 */
+.dgn-shell { flex: 1; min-height: 0; display: flex; gap: 14px; }
+.dgn-left { flex: 0 0 230px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.dgn-right { flex: 1; min-width: 0; display: flex; gap: 14px; overflow-y: auto; padding-right: 4px; }
+
+/* 左：难度选择 */
+.dgn-left-title { font-size: 13px; color: var(--task-text-dim); letter-spacing: 2px; padding-left: 2px; }
+.dgn-mode-list { display: flex; flex-direction: column; gap: 8px; }
+.dgn-mode {
+    text-align: left; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.04); color: var(--task-text);
+    padding: 10px 12px; border-radius: 3px; display: flex; flex-direction: column; gap: 3px;
+    font-family: var(--task-serif); transition: all 0.15s var(--task-ease);
+}
+.dgn-mode:hover { background: rgba(255, 255, 255, 0.09); border-color: rgba(255, 255, 255, 0.3); }
+.dgn-mode.active { border-color: var(--task-accent); background: rgba(255, 255, 255, 0.13); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); }
+.dgn-mode-challenge.active { border-color: #e0884a; box-shadow: inset 0 0 0 1px rgba(224, 136, 74, 0.5); }
+.dgn-mode-name { font-size: 15px; letter-spacing: 1px; }
+.dgn-mode-challenge .dgn-mode-name { color: #f0a85f; }
+.dgn-mode-diff { font-size: 12px; color: var(--task-text-dim); }
+
+.dgn-cost-row { display: flex; gap: 8px; flex-wrap: wrap; padding-left: 2px; }
+.dgn-cost { font-size: 12px; color: var(--task-text-dim); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 2px; padding: 2px 7px; }
+.dgn-cost.bad { color: #d8533a; border-color: rgba(216, 83, 58, 0.5); }
+
+.dgn-actions { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
+.dgn-enter-btn {
+    cursor: pointer; font-family: var(--task-serif); font-size: 16px; letter-spacing: 2px;
+    color: #2a1c0c; background: var(--task-npc-grad); border: none; border-radius: 3px; padding: 11px 0;
+    box-shadow: var(--task-shadow); transition: filter 0.15s var(--task-ease);
+}
+.dgn-enter-btn:hover:not(:disabled) { filter: brightness(1.1); }
+.dgn-enter-btn:disabled { cursor: not-allowed; filter: grayscale(0.8) brightness(0.65); }
+.dgn-cancel-btn {
+    cursor: pointer; font-family: var(--task-serif); font-size: 13px; color: var(--task-text-dim);
+    background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 3px; padding: 7px 0;
+}
+.dgn-cancel-btn:hover { color: var(--task-text); background: rgba(255, 255, 255, 0.08); }
+.dgn-block-reason { font-size: 12px; color: #d8533a; text-align: center; }
+.dgn-active-note { font-size: 12px; color: #8fae8f; text-align: center; }
+
+/* 右：海报 + 详情 */
+.dgn-poster { flex: 0 0 150px; align-self: flex-start; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 3px; overflow: hidden; background: rgba(0, 0, 0, 0.3); }
+.dgn-poster img { display: block; width: 150px; height: auto; }
+.dgn-poster-none { width: 150px; height: 200px; display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.25); font-size: 22px; letter-spacing: 3px; font-weight: bold; }
+.dgn-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.dgn-name { font-size: 19px; color: var(--task-text); letter-spacing: 1px; }
+.dgn-meta { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--task-text-dim); }
+.dgn-npc { color: #f0a85f; }
+.dgn-desc { font-size: 13px; line-height: 1.6; color: var(--task-text); opacity: 0.9; padding: 4px 0; }
+.dgn-section-title { font-size: 13px; color: var(--task-text); letter-spacing: 2px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding: 6px 0 4px; margin-top: 4px; }
+.dgn-limits { display: flex; flex-direction: column; gap: 4px; padding: 2px 0; }
+.dgn-limit-chip { font-size: 13px; color: #f0c040; }
+.dgn-nolimit { font-size: 13px; color: var(--task-text-dim); }
+.dgn-rewards { display: flex; gap: 12px; flex-wrap: wrap; padding: 4px 0; }
+.dgn-reward { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--task-text); }
+.dgn-reward-x { color: var(--task-text-dim); }
+.dgn-dialogue { padding: 4px 0; min-height: 60px; }

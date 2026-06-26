@@ -197,6 +197,22 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void RequestOpenPanel_Tasks_RoutesToOpenTasksPanelWithInitData()
+        {
+            // 副本任务（委托任务）入口回归：NPC openWebDungeon 发 panel_request panel="tasks"，
+            // 必须开 tasks 面板并透传 initData {view,taskId}。曾因 RequestOpenPanel 无 tasks 分支
+            // 静默丢弃（"[Router] RequestOpenPanel unsupported panel=tasks"），NPC 点击无反应。
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.RequestOpenPanel("tasks", "npc_dungeon", null, null, null, null, null, "{\"view\":\"dungeon\",\"taskId\":20052}");
+            Assert.Single(c.Posts);
+            Assert.Contains("\"panel\":\"tasks\"", c.Posts[0]);
+            Assert.Contains("\"view\":\"dungeon\"", c.Posts[0]);
+            Assert.Contains("\"taskId\":20052", c.Posts[0]);
+            Assert.Contains("\"source\":\"npc_dungeon\"", c.Posts[0]);
+        }
+
+        [Fact]
         public void RequestOpenPanel_Unknown_NoPost()
         {
             Capture c = new Capture();

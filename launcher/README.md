@@ -545,8 +545,9 @@ launcher/
 │       │       ├── builder.html            地图可视化构建器入口（跳转到 builder 模式 preview）
 │       │       └── preview.html / .css / .js   地图 manifest 预览 / 校准页
 │       ├── tasks/                          【任务界面 Web 迁移 · 协议接入（2026-05-30）：生产模块 + C# Task + AS2 service 已接入；仍需 Flash fresh trace / 游戏内端到端复核后才能标记生产可用】
-│       │   ├── task-panel.js               任务界面生产 panel（snapshot/detail 只读协议）
-│       │   ├── task-catalog.json           任务 Web 面板分类 / 展示目录
+│       │   ├── task-panel.js               任务界面生产 panel（我的任务/事件日志/成就 + 副本任务 tab）
+│       │   ├── task-catalog.json           任务 Web 面板分类 / 展示目录（v2：chain="委托" 挂 dungeon{} 供副本 tab）
+│       │   ├── ../../assets/dungeon-posters/ 副本 WANTED 海报 PNG（ffdec 烘焙 flashswf/images/<n>.swf）+ manifest.json
 │       │   ├── achievement-catalog.json    成就 Web 面板目录
 │       │   ├── achievement-tab.js          任务面板内成就 tab 渲染器
 │       │   ├── assets/                     迁移自 Flash 的任务界面生产美术（task_main_bg / task_icon_bg / task_scroll / requirement_* / finish_npc）
@@ -1491,6 +1492,7 @@ AS2 UI → Web Panel 迁移的操作护栏统一见 [../agentsDoc/as2-web-panel-
 | 竞技场 (DEATH MATCH) | Panel 系统 `arena-panel.js` (8 张角斗场卡) | `arena`，ArenaTask 双层 callId |
 | 情报界面 | Panel 系统 `intelligence-panel.js` (H5 富文本) | `情报`/`INTELLIGENCE`，IntelligenceTask 按需正文 |
 | 任务界面 | Panel 系统 `tasks/task-panel.js` (当前任务列表/详情) | 刘海屏 `任务` 键 `TASK_UI`（含 `NEW_TASK_UI` 合并）→ `taskPanelOpen` + `tasks`，TaskTask 双层 callId |
+| 副本任务（委托任务，旧 FLA Symbol 1873） | tasks 面板第 4 tab `副本任务`（左难度档 + 右详情/委托对话，复用 DialogueView） | NPC「获得任务」→ AS2 `openWebDungeon`(panel_request initData{view,taskId})；cmd `dungeonDetail`/`dungeonBriefing`/`dungeonEnter` 复用 TaskTask + `task_response`；进图写门控在 AS2（金钱/等级/K点）。详见 docs/副本任务-Web面板迁移-架构设计-2026-06-26.md |
 
 **右上角工具条布局**：
 ```

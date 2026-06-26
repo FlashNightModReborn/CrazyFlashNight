@@ -431,7 +431,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
                 stageType: "",
                 detail: "",
                 materialDetail: "",
-                limitDetail: "",
+                limitations: [],
                 limitLevel: "",
                 task: taskInfo.task,
                 highestDifficulty: taskInfo.highestDifficulty
@@ -444,21 +444,20 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             stageType: String(stageInfo.Type || ""),
             detail: String(stageInfo.Description || ""),
             materialDetail: String(stageInfo.MaterialDetail || ""),
-            limitDetail: buildLimitDetail(stageInfo),
+            limitations: parseLimitations(stageInfo),
             limitLevel: String(stageInfo.LimitLevel || ""),
             task: taskInfo.task,
             highestDifficulty: taskInfo.highestDifficulty
         };
     }
 
-    private static function buildLimitDetail(stageInfo:Object):String {
-        if (stageInfo == undefined || stageInfo.Limitation == undefined || stageInfo.Limitation == "") return "";
-        if (typeof _root.配置数据为数组 != "function") return "";
-        if (_root.任务栏UI函数 == undefined || typeof _root.任务栏UI函数.打印限制词条明细 != "function") return "";
-
+    // 限制词条键名数组（原始 Limitation 键）。web 端用 LimitationDesc 自算 limitDetail，
+    // 取代旧 _root.任务栏UI函数.打印限制词条明细 —— 移除 stage-select 对 任务栏UI.as 的依赖（其退役 keystone）。
+    private static function parseLimitations(stageInfo:Object):Array {
+        if (stageInfo == undefined || stageInfo.Limitation == undefined || stageInfo.Limitation == "") return [];
+        if (typeof _root.配置数据为数组 != "function") return [];
         var entries:Array = _root.配置数据为数组(stageInfo.Limitation);
-        if (entries == undefined || entries == null || entries.length <= 0) return "";
-        return String(_root.任务栏UI函数.打印限制词条明细(entries, stageInfo.LimitLevel));
+        return (entries == undefined || entries == null) ? [] : entries;
     }
 
     private static function getTaskInfo(stageName:String):Object {

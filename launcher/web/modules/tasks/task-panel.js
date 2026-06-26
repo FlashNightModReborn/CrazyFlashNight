@@ -82,11 +82,28 @@
     var CATEGORY_LABEL = { all: '全部', '主线': '主线', '支线': '支线', '副本': '副本', '情报': '情报', '其他': '其他' };
     var CATEGORY_ORDER = { '主线': 0, '支线': 1, '副本': 2, '情报': 3, '其他': 4 };
 
+    // 限制词条键名 → 中文描述（迁自 AS2 _root.限制系统，关卡系统_lsy_限制系统.as:43-45）。
+    // 副本视图 web 端自算 limitDetail，不回 AS2 打印限制词条明细；新增词条须两处同步。
+    var LIMITATION_DESC = {
+        'DisableCompanion': '无法携带同伴',
+        'DisableKnockdownProtection': '被击飞和击倒状态下无法免疫攻击',
+        'DisableResurrection': '无法使用复活币'
+    };
+
     // DOM refs
     var _leftEl, _rightEl, _closeBtn, _chipsEl, _countEl, _sortEl, _viewBtn, _containerEl;
     var _treeEl, _logDetailEl;   // 事件日志/任务树（WS6）DOM refs
     var _logviewEl, _chartViewportEl, _chartCanvasEl, _chartCtrlsEl;   // 图表视图 DOM refs
     var _achViewEl;              // 成就 tab 容器（实现在 achievement-tab.js，lazy deps 先加载）
+    var _dungeonViewEl;          // 副本任务 tab 容器（NPC 触发，单副本上下文）
+
+    // ── 副本任务（委托任务）tab：旧 FLA Symbol 1873(_root.委托任务界面) 的 web 等价 ──
+    //   严格 NPC 领取：入口由 AS2 NPC 交互发 openWebDungeon(panel_request initData{view,taskId})；
+    //   左侧仅难度档（普通/挑战），不浏览其他副本；进图写操作走 dungeonEnter（AS2 服务端硬门控）。
+    var _dungeonTaskId = null;   // 当前 NPC 提供的副本 taskId（null=无上下文，显示领取提示）
+    var _dungeonMode = 'normal'; // normal | challenge（左侧难度档）
+    var _dungeonDetail = null;   // dungeonDetail 回包缓存
+    var _dungeonPosters = null;  // 海报 manifest basename 集合（null=未加载）
 
     // ═══════════════════════════════════════════════════════════
     // Panel 注册
@@ -118,6 +135,9 @@
                             '</button>' +
                             '<button class="task-tab" data-tab="ach" type="button">' +
                                 '<span class="task-tab-emblem ach"></span><span class="task-tab-label">成就</span>' +
+                            '</button>' +
+                            '<button class="task-tab" data-tab="dungeon" type="button">' +
+                                '<span class="task-tab-emblem dungeon"></span><span class="task-tab-label">副本任务</span>' +
                             '</button>' +
                         '</div>' +
                         '<button class="task-panel-close" title="关闭" type="button"><span class="task-close-x">✕</span></button>' +
@@ -170,6 +190,7 @@
                         '<div class="tlv-detail" id="tlv-detail"></div>' +
                     '</div>' +
                     '<div class="task-panel-achview" id="task-panel-achview"></div>' +
+                    '<div class="task-panel-dungeonview" id="task-panel-dungeonview"></div>' +
                     '<div class="task-confirm-overlay" id="task-confirm-overlay" hidden>' +
                         '<div class="task-confirm-dialog">' +
                             '<div class="task-confirm-title">放弃任务</div>' +
@@ -198,6 +219,7 @@
         _chartCanvasEl = _el.querySelector('#tlv-chart-canvas');
         _chartCtrlsEl = _el.querySelector('#tlv-chart-ctrls');
         _achViewEl = _el.querySelector('#task-panel-achview');
+        _dungeonViewEl = _el.querySelector('#task-panel-dungeonview');
 
         // 成就 tab 装配（achievement-tab.js 经 lazy deps 先加载；缺失时优雅降级为空 tab）。
         // claim 在途复用本面板 beginOp/endOp 的 _busy 锁——切 tab/关面板/二次点击三处口径统一。
@@ -270,6 +292,9 @@
         _treeEl.addEventListener('click', onTreeClick);
         _logDetailEl.addEventListener('click', onLogDetailClick);
 
+        // 副本任务 tab：难度档选择 / 开始副本 / 取消（事件委托）
+        if (_dungeonViewEl) _dungeonViewEl.addEventListener('click', onDungeonViewClick);
+
         // 图表视图：工具栏（列表/图表切换、章节/详细、缩放）+ 六边形节点点击（事件委托）
         _el.querySelector('.tlv-logbar').addEventListener('click', onLogbarClick);
         _chartCanvasEl.addEventListener('click', onChartClick);
@@ -287,6 +312,9 @@
         _filterMode = 'all';
         _sortMode = 'default';
         _tab = 'mine';
+        _dungeonTaskId = null;      // 副本上下文每次开面板清空（仅 NPC initData 注入）
+        _dungeonMode = 'normal';
+        _dungeonDetail = null;
         _pendingReq = {};
         _detailCache = Object.create(null);
         _tooltipCache = Object.create(null);
@@ -331,6 +359,12 @@
         bindScaleWatcher();
         document.addEventListener('click', closeSortMenu); // 仅面板打开期间生效；addEventListener 对同一引用幂等
         requestSnapshot();
+
+        // 副本任务入口：NPC 交互携 {view:'dungeon', taskId} → 直接切副本 tab 加载该副本
+        if (initData && initData.view === 'dungeon' && initData.taskId != null) {
+            _dungeonTaskId = initData.taskId;
+            switchTab('dungeon');
+        }
     }
 
     function requestClose() {
@@ -369,6 +403,7 @@
         setActiveTabButton(tab);
         if (tab === 'log') enterLogTab();
         if (tab === 'ach' && typeof TaskAchievementTab !== 'undefined') TaskAchievementTab.enter();
+        if (tab === 'dungeon') enterDungeonTab();
     }
     function setActiveTabButton(tab) {
         var tabs = _el.querySelectorAll('.task-tab');
@@ -1383,6 +1418,185 @@
     function idForRequest(id) {
         var n = Number(id);
         return (!isNaN(n) && String(n) === String(id)) ? n : id;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 副本任务（委托任务）tab —— 旧 FLA Symbol 1873 的 web 等价。
+    //   严格 NPC 领取：入口由 AS2 NPC 交互发 openWebDungeon → onOpen initData{view,taskId}。
+    //   左侧仅难度档（普通/挑战），不浏览其他副本；进图写操作走 dungeonEnter（AS2 服务端硬门控）。
+    // ═══════════════════════════════════════════════════════════
+    function loadDungeonPosters(cb) {
+        if (_dungeonPosters !== null) { cb(); return; }
+        fetch('assets/dungeon-posters/manifest.json').then(function(r) { return r.json(); }).then(function(j) {
+            _dungeonPosters = {};
+            var arr = (j && j.posters) || [];
+            for (var i = 0; i < arr.length; i++) _dungeonPosters[arr[i]] = 1;
+            cb();
+        })['catch'](function() { _dungeonPosters = {}; cb(); });
+    }
+    function dungeonPosterUrl(imageurl) {
+        if (!imageurl) return '';
+        var base = String(imageurl).split('/').pop().replace(/\.swf$/i, '');
+        if (_dungeonPosters && _dungeonPosters[base]) return 'assets/dungeon-posters/' + base + '.png';
+        return '';
+    }
+    function enterDungeonTab() {
+        if (_dungeonTaskId == null) {
+            _dungeonViewEl.innerHTML = '<div class="dgn-empty"><div class="dgn-empty-icon">⚑</div>' +
+                '<div class="dgn-empty-text">前往游戏世界中的 NPC 处领取副本任务</div></div>';
+            return;
+        }
+        _dungeonViewEl.innerHTML = '<div class="dgn-loading">加载副本…</div>';
+        var reqSession = _session;
+        var reqTask = _dungeonTaskId;
+        loadDungeonPosters(function() {
+            if (reqSession !== _session || _tab !== 'dungeon' || _dungeonTaskId !== reqTask) return;
+            sendPanelMsg('dungeonDetail', { taskId: idForRequest(reqTask) }, function(data) {
+                if (reqSession !== _session || _tab !== 'dungeon' || _dungeonTaskId !== reqTask) return;
+                if (!data || !data.success || !data.detail) {
+                    _dungeonViewEl.innerHTML = '<div class="dgn-empty"><div class="dgn-empty-text">无法加载副本信息' +
+                        ((data && data.error) ? '（' + escHtml(data.error) + '）' : '') + '</div></div>';
+                    return;
+                }
+                _dungeonDetail = data.detail;
+                _dungeonMode = 'normal';
+                renderDungeon();
+                loadDungeonDialogue();
+            });
+        });
+    }
+    // 委托简报对话（接取前可见，去防剧透 gate）；renderDungeon 重建 .dgn-dialogue 后调本函数填回。
+    function loadDungeonDialogue() {
+        var dia = _dungeonViewEl.querySelector('.dgn-dialogue');
+        if (!dia || _dungeonTaskId == null) return;
+        var reqSession = _session;
+        var reqTask = _dungeonTaskId;
+        sendPanelMsg('dungeonBriefing', { taskId: idForRequest(reqTask) }, function(d2) {
+            if (reqSession !== _session || _tab !== 'dungeon' || _dungeonTaskId !== reqTask) return;
+            var dd = _dungeonViewEl.querySelector('.dgn-dialogue');
+            if (!dd) return;
+            if (!d2 || !d2.success || !d2.lines || !d2.lines.length) {
+                dd.innerHTML = '<div class="tlv-dia-empty">' + ((d2 && d2.error === 'no_dialogue') ? '无委托对话' : '无法加载对话') + '</div>';
+                return;
+            }
+            renderDialogueReplay(dd, d2.lines, d2.heroPortrait);
+        });
+    }
+    function dungeonLimitChips(keys) {
+        if (!keys || !keys.length) return '<span class="dgn-nolimit">无特殊限制</span>';
+        var html = '';
+        for (var i = 0; i < keys.length; i++) {
+            html += '<span class="dgn-limit-chip">✓ ' + escHtml(LIMITATION_DESC[keys[i]] || keys[i]) + '</span>';
+        }
+        return html;
+    }
+    function dungeonRewardsHtml(rewards) {
+        var html = '';
+        for (var i = 0; i < rewards.length; i++) {
+            var parts = String(rewards[i]).split('#');
+            var name = parts[0];
+            var count = parts[1] != null ? parts[1] : '';
+            html += '<span class="dgn-reward">' + itemIconHtml(name) + '<span class="dgn-reward-name">' + escHtml(name) + '</span>' +
+                (count !== '' ? '<span class="dgn-reward-x">×' + escHtml(String(count)) + '</span>' : '') + '</span>';
+        }
+        return html;
+    }
+    function renderDungeon() {
+        var d = _dungeonDetail;
+        if (!d) return;
+        var mode = _dungeonMode;
+        var limits = (mode === 'challenge') ? d.challengeLimits : d.normalLimits;
+        var diff = (mode === 'challenge') ? d.challengeDifficulty : d.stageDifficulty;
+        var poster = dungeonPosterUrl(d.imageurl);
+        var kGate = (d.kDeposit <= 0) || d.affordVCoin;
+        var canEnter = d.affordMoney && d.levelOk && kGate && (mode !== 'challenge' || d.hasChallenge);
+
+        var blockReason = '';
+        if (!d.levelOk) blockReason = '等级不足（需 ' + d.restrictedLevel + ' 级）';
+        else if (!d.affordMoney) blockReason = '金钱不足（需 ' + d.deposit + '）';
+        else if (d.kDeposit > 0 && !d.affordVCoin) blockReason = 'K点不足（需 ' + d.kDeposit + '）';
+
+        var modeList = '<button class="dgn-mode' + (mode === 'normal' ? ' active' : '') + '" data-mode="normal" type="button">' +
+            '<span class="dgn-mode-name">普通副本</span><span class="dgn-mode-diff">' + escHtml(d.stageDifficulty || '标准') + '</span></button>';
+        if (d.hasChallenge) {
+            modeList += '<button class="dgn-mode dgn-mode-challenge' + (mode === 'challenge' ? ' active' : '') + '" data-mode="challenge" type="button">' +
+                '<span class="dgn-mode-name">进入挑战</span><span class="dgn-mode-diff">' + escHtml(d.challengeDifficulty || '') + '</span></button>';
+        }
+
+        var costBits = '<span class="dgn-cost' + (d.affordMoney ? '' : ' bad') + '">契约金 ' + d.deposit + '</span>';
+        if (d.kDeposit > 0) costBits += '<span class="dgn-cost' + (d.affordVCoin ? '' : ' bad') + '">K点 ' + d.kDeposit + '</span>';
+
+        _dungeonViewEl.innerHTML =
+            '<div class="dgn-shell">' +
+                '<div class="dgn-left">' +
+                    '<div class="dgn-left-title">难度选择</div>' +
+                    '<div class="dgn-mode-list">' + modeList + '</div>' +
+                    '<div class="dgn-cost-row">' + costBits + '</div>' +
+                    '<div class="dgn-actions">' +
+                        '<button class="dgn-enter-btn" id="dgn-enter" type="button"' + (canEnter ? '' : ' disabled') + (blockReason ? ' title="' + escAttr(blockReason) + '"' : '') + '>' +
+                            (mode === 'challenge' ? '进入挑战' : '开始副本') + '</button>' +
+                        '<button class="dgn-cancel-btn" id="dgn-cancel" type="button">取消</button>' +
+                    '</div>' +
+                    (blockReason ? '<div class="dgn-block-reason">' + escHtml(blockReason) + '</div>' : '') +
+                    (d.alreadyActive ? '<div class="dgn-active-note">该委托已在进行中</div>' : '') +
+                '</div>' +
+                '<div class="dgn-right">' +
+                    (poster ? '<div class="dgn-poster"><img src="' + escAttr(poster) + '" alt=""/></div>' : '<div class="dgn-poster dgn-poster-none">WANTED</div>') +
+                    '<div class="dgn-info">' +
+                        '<div class="dgn-name">' + escHtml(d.title || d.stageName || '副本任务') + '</div>' +
+                        '<div class="dgn-meta">' +
+                            (d.npcName ? '<span class="dgn-npc">委托人：' + escHtml(d.npcName) + '</span>' : '') +
+                            (d.recommendedLevel ? '<span class="dgn-lv">推荐等级 ' + escHtml(d.recommendedLevel) + '</span>' : '') +
+                            (diff ? '<span class="dgn-diff">难度 ' + escHtml(diff) + '</span>' : '') +
+                        '</div>' +
+                        (d.description ? '<div class="dgn-desc">' + dialogueHtml(d.description) + '</div>' : '') +
+                        '<div class="dgn-section-title">限制词条</div>' +
+                        '<div class="dgn-limits">' + dungeonLimitChips(limits) + '</div>' +
+                        ((d.rewards && d.rewards.length) ? '<div class="dgn-section-title">任务奖励</div><div class="dgn-rewards">' + dungeonRewardsHtml(d.rewards) + '</div>' : '') +
+                        '<div class="dgn-section-title">委托对话</div>' +
+                        '<div class="dgn-dialogue cf-dialogue" data-dialogue-mode="' + _dialogueMode + '"><div class="tlv-dia-empty">加载对话…</div></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+    }
+    function onDungeonViewClick(e) {
+        var t = e.target;
+        var modeBtn = t.closest ? t.closest('.dgn-mode') : null;
+        if (modeBtn && _dungeonViewEl.contains(modeBtn)) {
+            var m = modeBtn.getAttribute('data-mode');
+            if (m && m !== _dungeonMode) { _dungeonMode = m; renderDungeon(); loadDungeonDialogue(); }
+            return;
+        }
+        if (t.closest && t.closest('#dgn-cancel')) { requestClose(); return; }
+        if (t.closest && t.closest('#dgn-enter')) { doDungeonEnter(); return; }
+    }
+    function doDungeonEnter() {
+        if (_busy || _dungeonTaskId == null || !_dungeonDetail) return;
+        var mode = _dungeonMode;
+        var reqSession = _session;
+        var reqTask = _dungeonTaskId;
+        beginOp();
+        sendPanelMsg('dungeonEnter', { taskId: idForRequest(reqTask), mode: mode }, function(data) {
+            endOp();
+            if (reqSession !== _session) return;
+            if (data && data.success && data.entered) {
+                // 进图成功：AS2 已扣费+AddTask+触发场景淡出跳转，关面板交还 Flash
+                Panels.close();
+                Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close' });
+                return;
+            }
+            var err = (data && data.error) || 'unknown';
+            var msg = ({
+                insufficient_money: '金钱不足，无法支付契约金',
+                insufficient_level: '等级不足，无法领取该委托',
+                insufficient_kpoint: 'K点不足',
+                stage_not_found: '副本关卡数据缺失',
+                no_challenge: '该副本无挑战模式',
+                not_dungeon_task: '非副本任务',
+                disconnected: '连接已断开'
+            })[err] || ('进入失败（' + err + '）');
+            toast(msg);
+        });
     }
 
     // 渲染当前 log 子视图（列表 / 图表），由 enterLogTab 与切换共用

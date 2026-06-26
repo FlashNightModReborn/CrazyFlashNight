@@ -243,7 +243,7 @@
                 stageType: manifestButton && manifestButton.stageType || '无限过图',
                 detail: 'live detail: ' + name + '&amp;lt;BR&amp;gt;live second line',
                 materialDetail: 'live material: ' + name,
-                limitDetail: state.task ? '<FONT COLOR="#FFCC00">live limit: ' + name + '</FONT>' : '',
+                limitations: state.task ? ['DisableCompanion'] : [],   // 新形状：AS2 回原始键名，web 自算 limitDetail
                 limitLevel: '',
                 task: !!state.task,
                 highestDifficulty: state.highestDifficulty || '简单'

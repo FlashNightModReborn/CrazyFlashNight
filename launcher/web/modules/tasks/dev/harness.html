@@ -391,13 +391,35 @@
                         resp(self.achOverlay({ success: true, rewards: clone(arws) }));
                         break;
                     }
+                    // 副本任务（委托任务）：镜像 AS2 TaskPanelService.handleDungeon*（harness mock）
+                    case 'dungeonDetail':
+                        resp({ success: true, detail: {
+                            taskId: m.taskId, stageName: '通缉任务之模拟coser', stageDifficulty: '困难', stageFound: true,
+                            title: '通缉任务之模拟coser', description: '丛林深处发现一艘坠毁飞船，肃清盘踞其中、会使用武器的盔甲怪物。',
+                            npcName: '酒保', rewards: ['金币#80000', '经验值#10000', '复活币#5'],
+                            imageurl: 'flashswf/images/wanted_lixiaolong_index.swf',
+                            hasChallenge: true, challengeDifficulty: '地狱',
+                            normalLimits: [], challengeLimits: ['DisableCompanion'],
+                            limitLevel: '', deposit: 10000, kDeposit: 0, restrictedLevel: 8, recommendedLevel: '16-22',
+                            playerMoney: 999999, playerVCoin: 999, playerLevel: 30,
+                            affordMoney: true, affordVCoin: true, levelOk: true, alreadyActive: false
+                        } });
+                        break;
+                    case 'dungeonBriefing':
+                        resp({ success: true, heroPortrait: { gender: '男', appearance: { '脸型': '0', '发型': '0' }, equipment: {} }, lines: [
+                            { speaker: '酒保', sub: '前情报员', text: '听好了，丛林里那艘坠机不简单——里头的怪物会用枪。活着回来，赏金归你。', char: '酒保', charBase: '酒保', expression: '普通', portraitType: 'npc' }
+                        ] });
+                        break;
+                    case 'dungeonEnter':
+                        resp({ success: true, entered: true, mode: m.mode || 'normal' });
+                        break;
                     case 'close': break;
                     default: resp({ success: false, error: 'unknown cmd ' + m.cmd });
                 }
             },
-            open: function() {
+            open: function(initData) {
                 this.reset();
-                chrome.webview.__dispatch({ type: 'panel_cmd', cmd: 'open', panel: 'tasks', initData: {} });
+                chrome.webview.__dispatch({ type: 'panel_cmd', cmd: 'open', panel: 'tasks', initData: initData || {} });
             },
             close: function() { chrome.webview.__dispatch({ type: 'panel_cmd', cmd: 'close' }); }
         };
@@ -461,6 +483,11 @@
             if (tab === 'ach') {
                 var at = document.querySelector('.task-tab[data-tab="ach"]'); if (at) at.click();
                 await waitFor(function() { return document.querySelector('#ach-list .ach-row'); }, 4000).catch(function(){});
+            }
+            if (q('dungeon')) {
+                // 副本任务 tab 经 initData{view:'dungeon'} 自动切入；等详情 + 委托对话渲染
+                await waitFor(function() { return document.querySelector('.dgn-shell .dgn-enter-btn'); }, 4000).catch(function(){});
+                await waitFor(function() { return document.querySelector('.dgn-dialogue .cf-dialogue-list, .dgn-dialogue .tlv-dia-line'); }, 3000).catch(function(){});
             }
             var det = q('detail'); if (det != null) { var btn = document.querySelector('.task-icon[data-index="' + det + '"]'); if (btn) btn.click(); }
             if (q('hover')) {
@@ -1280,7 +1307,9 @@
             window.addEventListener('load', function() { setTimeout(runQa, 100); });
         } else {
             window.addEventListener('load', function() {
-                setTimeout(function() { host.open(); setTimeout(applyShotState, 150); }, 100);
+                var dgn = q('dungeon');
+                var initData = dgn ? { view: 'dungeon', taskId: (Number(dgn) || 106) } : undefined;
+                setTimeout(function() { host.open(initData); setTimeout(applyShotState, 150); }, 100);
             });
         }
     })();

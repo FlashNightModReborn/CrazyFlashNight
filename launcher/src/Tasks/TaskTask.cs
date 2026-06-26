@@ -131,6 +131,19 @@ namespace CF7Launcher.Tasks
                     // ⚠ 全称命名：裸名 "claim" 会在 WebOverlayForm panel 判别前被无条件路由 ShopTask
                     action = "achievementClaim";
                     break;
+                case "dungeonDetail":
+                    // 副本任务详情（只读）：转发 taskId 给 AS2 dungeonDetail；回限制词条键名数组/可负担性/等级门/是否已接
+                    action = "dungeonDetail";
+                    break;
+                case "dungeonBriefing":
+                    // 委托简报对话（只读，去防剧透 gate）：转发 taskId 给 AS2 dungeonBriefing；回 lines+heroPortrait（接取前可见）
+                    action = "dungeonBriefing";
+                    break;
+                case "dungeonEnter":
+                    // 进图（写操作）：转发 taskId/mode 给 AS2 dungeonEnter；AS2 服务端硬门控 金钱/等级/K点 →
+                    // 扣费+AddTask+委托界面进入关卡，回 entered:true（前端关面板让场景淡出跳转）
+                    action = "dungeonEnter";
+                    break;
                 default:
                     RespondError(webCallId, cmd, "unsupported_cmd");
                     return;

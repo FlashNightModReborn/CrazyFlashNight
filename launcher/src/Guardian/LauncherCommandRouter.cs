@@ -257,6 +257,11 @@ namespace CF7Launcher.Guardian
                 OpenArenaPanel(safeSource, initDataExtrasJson, returnToPanel, returnToInitDataJson);
                 return;
             }
+            if (string.Equals(panelName, "tasks", StringComparison.OrdinalIgnoreCase))
+            {
+                OpenTasksPanel(safeSource, initDataExtrasJson);
+                return;
+            }
             LogManager.Log("[Router] RequestOpenPanel unsupported panel=" + panelName);
         }
 
@@ -277,6 +282,34 @@ namespace CF7Launcher.Guardian
                 EscapeJsonString(safeFrameLabel) + "\",\"returnFrameLabel\":\"" + EscapeJsonString(safeReturnFrameLabel) +
                 "\",\"debug\":false,\"source\":\"" + EscapeJsonString(source) + "\"}";
             OpenPanel("stage-select", initData);
+        }
+
+        // 副本任务（委托任务）：NPC「获得任务」→ AS2 openWebDungeon 发 panel_request panel="tasks"，
+        // initData={view:"dungeon",taskId}。与刘海屏 TASK_UI 同走 OpenPanel("tasks", ...)，但携带
+        // 副本上下文；task-panel.js onOpen 据 initData.view==="dungeon" 切副本 tab 加载该副本。
+        // initDataExtrasJson = AS2 传来的 {view,taskId}（panel_request 的 initData 字段）。
+        private void OpenTasksPanel(string source, string initDataExtrasJson)
+        {
+            JObject jo = new JObject();
+            jo["source"] = source;
+            if (!string.IsNullOrEmpty(initDataExtrasJson))
+            {
+                try
+                {
+                    JObject extras = JObject.Parse(initDataExtrasJson);
+                    foreach (var prop in extras.Properties())
+                    {
+                        jo[prop.Name] = prop.Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[Router] OpenTasksPanel extras parse failed: " + ex.Message);
+                }
+            }
+            LogManager.Log("[Router] OpenTasksPanel view=" + (jo["view"] != null ? jo["view"].ToString() : "?")
+                + " taskId=" + (jo["taskId"] != null ? jo["taskId"].ToString() : "?"));
+            OpenPanel("tasks", jo.ToString(Newtonsoft.Json.Formatting.None));
         }
 
         // arena 没有 frameLabel 概念；source 用于诊断（"stage_select_arena_redirect" 表示

@@ -741,6 +741,33 @@ var StageSelectPanel = (function() {
         return null;
     }
 
+    // 限制词条 web 自算（迁自 AS2 _root.限制系统 关卡系统_lsy_限制系统.as:43-45 +
+    // _root.获取难度等级 通信_鸡蛋_任务系统.as:488），取代旧 _root.任务栏UI函数.打印限制词条明细。
+    // ⚠ 与 关卡系统_lsy_限制系统.as 的 addEntry 描述 + task-panel.js 的 LIMITATION_DESC 保持同步。
+    var LIMITATION_DESC = {
+        'DisableCompanion': '无法携带同伴',
+        'DisableKnockdownProtection': '被击飞和击倒状态下无法免疫攻击',
+        'DisableResurrection': '无法使用复活币'
+    };
+    function limitDiffName(level) {
+        var n = Number(level);
+        if (n === 1) return '简单';
+        if (n === 1.5) return '冒险';
+        if (n === 2) return '修罗';
+        if (n === 2.5) return '地狱';
+        return '';
+    }
+    // 复刻 打印限制词条明细：每条 "- [N难度]描述\n"（limitLevel 真值才加难度前缀）。
+    function renderLimitDetail(limitations, limitLevel) {
+        if (!limitations || !limitations.length) return '';
+        var prefix = limitLevel ? ('[' + limitDiffName(limitLevel) + '难度]') : '';
+        var s = '';
+        for (var i = 0; i < limitations.length; i += 1) {
+            s += '- ' + prefix + (LIMITATION_DESC[limitations[i]] || limitations[i]) + '\n';
+        }
+        return s;
+    }
+
     function getStageState(stageName) {
         var stages = _fixture && _fixture.stages || {};
         var base = stages[stageName] || {};
@@ -759,7 +786,10 @@ var StageSelectPanel = (function() {
             state.highestDifficulty = live.highestDifficulty || state.highestDifficulty;
             state.detail = typeof live.detail === 'string' ? live.detail : state.detail;
             state.materialDetail = typeof live.materialDetail === 'string' ? live.materialDetail : state.materialDetail;
-            state.limitDetail = typeof live.limitDetail === 'string' ? live.limitDetail : state.limitDetail;
+            // limitDetail 改 web 自算（live.limitations 原始键名 + LIMITATION_DESC）；
+            // 回退旧 live.limitDetail 字符串（兼容尚未重编的 AS2 快照）。
+            if (live.limitations) state.limitDetail = renderLimitDetail(live.limitations, live.limitLevel);
+            else if (typeof live.limitDetail === 'string') state.limitDetail = live.limitDetail;
             state.stageType = live.stageType || state.stageType;
         }
         if (_runtimeSnapshot && _runtimeSnapshot.unlockedStages && Object.prototype.hasOwnProperty.call(_runtimeSnapshot.unlockedStages, stageName)) {

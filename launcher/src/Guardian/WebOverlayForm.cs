@@ -3455,6 +3455,9 @@ namespace CF7Launcher.Guardian
                 case "replayDialogue":
                 case "achievementState":
                 case "achievementClaim":
+                case "dungeonDetail":
+                case "dungeonBriefing":
+                case "dungeonEnter":
                 case "navigate":
                 case "refresh":
                 case "open_stage_select":

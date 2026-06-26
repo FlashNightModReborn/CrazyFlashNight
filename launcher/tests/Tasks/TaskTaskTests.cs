@@ -514,5 +514,139 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Null(asyncResponse);
             Assert.Null(posted);
         }
+
+        // ── 副本任务（委托任务）面板 cmd（旧 FLA Symbol 1873 的 web 等价；复用 tasks 信封） ──
+
+        [Fact]
+        public void HandleWebRequest_DungeonDetail_SendsActionAndTaskId()
+        {
+            string sent = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("dungeonDetail", JObject.Parse("{\"callId\":\"web-dd\",\"taskId\":20000}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("cmd", (string)msg["task"]);
+            Assert.Equal("dungeonDetail", (string)msg["action"]);
+            Assert.Equal(20000, (int)msg["taskId"]);
+            Assert.Null(msg["panel"]);
+        }
+
+        [Fact]
+        public void HandleWebRequest_DungeonBriefing_SendsActionAndTaskId()
+        {
+            string sent = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("dungeonBriefing", JObject.Parse("{\"callId\":\"web-db\",\"taskId\":20000}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("dungeonBriefing", (string)msg["action"]);
+            Assert.Equal(20000, (int)msg["taskId"]);
+        }
+
+        [Fact]
+        public void HandleWebRequest_DungeonEnter_SendsActionTaskIdAndMode()
+        {
+            string sent = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("dungeonEnter", JObject.Parse("{\"callId\":\"web-de\",\"taskId\":20000,\"mode\":\"challenge\"}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("cmd", (string)msg["task"]);
+            Assert.Equal("dungeonEnter", (string)msg["action"]);
+            // 写操作透传 taskId（稳定主键）+ mode；权威金额/限制由 AS2 读 TaskUtil.tasks，不信 web
+            Assert.Equal(20000, (int)msg["taskId"]);
+            Assert.Equal("challenge", (string)msg["mode"]);
+            Assert.Null(msg["panel"]);
+        }
+
+        [Fact]
+        public void HandleWebRequest_DungeonEnter_WebSuppliedActionTask_CannotOverrideTrustedAction()
+        {
+            // 安全反向用例（经济写操作）：夹带 action/task 不得覆盖可信 action，防绕过门控触达任意 gameCommand。
+            string sent = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("dungeonEnter",
+                JObject.Parse("{\"callId\":\"web-evil3\",\"action\":\"taskDelete\",\"task\":\"evil\",\"taskId\":20000,\"mode\":\"normal\"}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("cmd", (string)msg["task"]);
+            Assert.Equal("dungeonEnter", (string)msg["action"]);
+            Assert.Equal(20000, (int)msg["taskId"]);
+        }
+
+        [Fact]
+        public void HandleFlashResponse_DungeonDetail_PreservesDetailObject()
+        {
+            string sent = null;
+            string posted = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            task.HandleWebRequest("dungeonDetail", JObject.Parse("{\"callId\":\"web-dd2\",\"taskId\":20000}"));
+            int flashCallId = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+            task.HandleFlashResponse(
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":" + flashCallId + ",\"success\":true,\"detail\":{\"taskId\":20000,\"deposit\":10000,\"hasChallenge\":true,\"challengeLimits\":[\"DisableCompanion\"],\"levelOk\":true,\"affordMoney\":true}}"),
+                delegate(string json) { });
+
+            var resp = JObject.Parse(posted);
+            Assert.Equal("panel_resp", (string)resp["type"]);
+            Assert.Equal("tasks", (string)resp["panel"]);
+            Assert.Equal("dungeonDetail", (string)resp["cmd"]);
+            Assert.True((bool)resp["success"]);
+            Assert.Equal(10000, (int)resp["detail"]["deposit"]);
+            Assert.True((bool)resp["detail"]["hasChallenge"]);
+            Assert.Equal("DisableCompanion", (string)((JArray)resp["detail"]["challengeLimits"])[0]);
+        }
+
+        [Fact]
+        public void HandleFlashResponse_DungeonEnter_PreservesEnteredFlag()
+        {
+            // 进图成功回 entered:true（前端据此关面板，让场景淡出跳转）；C# 改写信封后须原样保留。
+            string sent = null;
+            string posted = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            task.HandleWebRequest("dungeonEnter", JObject.Parse("{\"callId\":\"web-de2\",\"taskId\":20000,\"mode\":\"normal\"}"));
+            int flashCallId = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+            task.HandleFlashResponse(
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":" + flashCallId + ",\"success\":true,\"entered\":true,\"mode\":\"normal\"}"),
+                delegate(string json) { });
+
+            var resp = JObject.Parse(posted);
+            Assert.Equal("panel_resp", (string)resp["type"]);
+            Assert.Equal("dungeonEnter", (string)resp["cmd"]);
+            Assert.True((bool)resp["success"]);
+            Assert.True((bool)resp["entered"]);
+            Assert.Equal("normal", (string)resp["mode"]);
+        }
+
+        [Fact]
+        public void HandleFlashResponse_DungeonEnter_PreservesGateRejection()
+        {
+            // 服务端门控拒绝（金钱/等级/K点不足）：success:false + error，前端据此提示并保持面板。
+            string sent = null;
+            string posted = null;
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            task.HandleWebRequest("dungeonEnter", JObject.Parse("{\"callId\":\"web-de3\",\"taskId\":20000,\"mode\":\"normal\"}"));
+            int flashCallId = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+            task.HandleFlashResponse(
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":" + flashCallId + ",\"success\":false,\"error\":\"insufficient_kpoint\"}"),
+                delegate(string json) { });
+
+            var resp = JObject.Parse(posted);
+            Assert.Equal("dungeonEnter", (string)resp["cmd"]);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("insufficient_kpoint", (string)resp["error"]);
+        }
     }
 }

@@ -86,6 +86,24 @@ class org.flashNight.arki.task.TaskPanelService {
             org.flashNight.arki.task.TaskPanelService.handlePanelClose(params);
         };
 
+        // ── 副本任务（委托任务）面板：旧 FLA Symbol 1873(_root.委托任务界面) 的 web 等价 ──
+        //   dungeonDetail   — 单副本详情（限制词条键名数组/可负担性/等级门/是否已接，只读）
+        //   dungeonBriefing — 委托简报对话（接取前 get_conversation，去防剧透 gate，只读）
+        //   dungeonEnter    — 进图（写：服务端硬门控 金钱/等级/K点 → 扣费+AddTask+委托界面进入关卡）
+        //   openWebDungeon  — AS2 内部：NPC「获得任务」触发，发 panel_request 打开 web 副本视图（携 taskId）
+        _root.gameCommands["dungeonDetail"] = function(params) {
+            org.flashNight.arki.task.TaskPanelService.handleDungeonDetail(params);
+        };
+        _root.gameCommands["dungeonBriefing"] = function(params) {
+            org.flashNight.arki.task.TaskPanelService.handleDungeonBriefing(params);
+        };
+        _root.gameCommands["dungeonEnter"] = function(params) {
+            org.flashNight.arki.task.TaskPanelService.handleDungeonEnter(params);
+        };
+        _root.gameCommands["openWebDungeon"] = function(params) {
+            org.flashNight.arki.task.TaskPanelService.handleOpenWebDungeon(params);
+        };
+
         _inited = true;
     }
 
@@ -578,5 +596,235 @@ class org.flashNight.arki.task.TaskPanelService {
     // ═══════════════════════════════════════════════════════════
     private static function sendResponse(resp:Object):Void {
         _root.server.sendSocketMessage(_json.stringify(resp));
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 副本任务（委托任务）面板 —— 旧 FLA Symbol 1873(_root.委托任务界面) 的 web 等价。
+    //   入口严格 NPC 领取：NPC「获得任务」→ handleOpenWebDungeon 发 panel_request 带 taskId。
+    //   权威数据一律读 TaskUtil.tasks[taskId]（不信 web 传来的金额/限制/难度）。
+    // ═══════════════════════════════════════════════════════════
+
+    // 副本任务 = chain "委托"（AS2 TaskUtil.tasks 的 chain 是原始 "委托" 字符串）
+    private static function isDungeonTask(taskData:Object):Boolean {
+        if (taskData == undefined) return false;
+        var chain = taskData.chain;
+        if (typeof chain == "string") return String(chain).split("#")[0] == "委托";
+        if (chain instanceof Array) return String(chain[0]) == "委托";
+        return false;
+    }
+    private static function dungeonStageName(taskData:Object):String {
+        if (taskData == undefined || !(taskData.finish_requirements instanceof Array) || taskData.finish_requirements.length == 0) return "";
+        return String(taskData.finish_requirements[0]).split("#")[0];
+    }
+    private static function dungeonStageDifficulty(taskData:Object):String {
+        if (taskData == undefined || !(taskData.finish_requirements instanceof Array) || taskData.finish_requirements.length == 0) return "";
+        var parts:Array = String(taskData.finish_requirements[0]).split("#");
+        return parts.length > 1 ? String(parts[1]) : "";
+    }
+    private static function isTaskInTodo(taskId):Boolean {
+        var todo:Array = _root.tasks_to_do;
+        if (todo == undefined) return false;
+        var idStr:String = String(taskId);
+        for (var i:Number = 0; i < todo.length; i++) {
+            if (todo[i] != undefined && String(todo[i].id) == idStr) return true;
+        }
+        return false;
+    }
+    private static function limitationArray(raw):Array {
+        if (raw == undefined || raw == "" || typeof _root.配置数据为数组 != "function") return [];
+        var arr:Array = _root.配置数据为数组(raw);
+        return (arr == undefined || arr == null) ? [] : arr;
+    }
+
+    // ── dungeonDetail（只读）：单副本详情 + 运行态门控可视化 ──
+    public static function handleDungeonDetail(params:Object):Void {
+        var callId = params.callId;
+        var taskData:Object = TaskUtil.tasks[params.taskId];
+        if (!isDungeonTask(taskData)) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "not_dungeon_task" });
+            return;
+        }
+        var stageName:String = dungeonStageName(taskData);
+        var stageInfo:Object = (stageName != "") ? _root.StageInfoDict[stageName] : undefined;
+
+        var hasChallenge:Boolean = (taskData.challenge != undefined && taskData.challenge != null);
+        var challengeLimits:Array = (hasChallenge && (taskData.challenge.limitations instanceof Array)) ? taskData.challenge.limitations : [];
+
+        var deposit:Number = taskData.deposit > 0 ? Number(taskData.deposit) : 0;
+        var kDeposit:Number = taskData.Kdeposit > 0 ? Number(taskData.Kdeposit) : 0;
+        var restrictedLevel:Number = taskData.restricted_level > 0 ? Number(taskData.restricted_level) : 1;
+
+        sendResponse({
+            task: "task_response",
+            callId: callId,
+            success: true,
+            detail: {
+                taskId: taskData.id,
+                stageName: stageName,
+                stageDifficulty: dungeonStageDifficulty(taskData),
+                stageFound: (stageInfo != undefined),
+                // 展示字段（让 web 副本视图单次 dungeonDetail 自洽，不依赖静态 catalog）
+                title: String(TaskUtil.getTaskText(taskData.title)),
+                description: String(TaskUtil.getTaskText(taskData.description)),
+                npcName: String(taskData.get_npc != undefined ? taskData.get_npc : (taskData.finish_npc != undefined ? taskData.finish_npc : "")),
+                rewards: (taskData.rewards instanceof Array) ? taskData.rewards : [],
+                imageurl: (taskData.imageurl != undefined ? String(taskData.imageurl) : ""),
+                hasChallenge: hasChallenge,
+                challengeDifficulty: hasChallenge ? String(taskData.challenge.difficulty) : "",
+                normalLimits: (stageInfo != undefined) ? limitationArray(stageInfo.Limitation) : [],
+                challengeLimits: challengeLimits,
+                limitLevel: (stageInfo != undefined && stageInfo.LimitLevel != undefined) ? String(stageInfo.LimitLevel) : "",
+                deposit: deposit,
+                kDeposit: kDeposit,
+                restrictedLevel: restrictedLevel,
+                recommendedLevel: (taskData.recommended_level != undefined) ? String(taskData.recommended_level) : "",
+                // 运行态门控可视化（web 禁用按钮仅 UX；真门控在 handleDungeonEnter）
+                playerMoney: Number(_root.金钱),
+                playerVCoin: Number(_root.虚拟币),
+                playerLevel: Number(_root.等级),
+                affordMoney: Number(_root.金钱) >= deposit,
+                affordVCoin: (kDeposit <= 0) || (Number(_root.虚拟币) >= kDeposit),
+                levelOk: Number(_root.等级) >= restrictedLevel,
+                alreadyActive: isTaskInTodo(taskData.id)
+            }
+        });
+    }
+
+    // ── dungeonBriefing（只读）：委托简报对话 lines（接取前 get_conversation，无防剧透 gate）──
+    public static function handleDungeonBriefing(params:Object):Void {
+        var callId = params.callId;
+        var taskData:Object = TaskUtil.tasks[params.taskId];
+        if (!isDungeonTask(taskData)) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "not_dungeon_task" });
+            return;
+        }
+        var conv = TaskUtil.getTaskText(taskData.get_conversation);
+        if (conv == undefined || conv.length == 0) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "no_dialogue" });
+            return;
+        }
+        var hasResolver:Boolean = (typeof _root.getDialogueSpecialString == "function");
+        var lines:Array = [];
+        for (var i:Number = 0; i < conv.length; i++) {
+            var ln:Object = conv[i];
+            if (ln == undefined) continue;
+            var speaker = hasResolver ? _root.getDialogueSpecialString(ln.name) : ln.name;
+            var sub = hasResolver ? _root.getDialogueSpecialString(ln.title) : ln.title;
+            var rawChar:String = (ln.char != undefined ? String(ln.char) : "");
+            var charParts:Array = rawChar.split("#");
+            var rawCharBase:String = (charParts.length > 0 ? String(charParts[0]) : "");
+            var expression:String = (charParts.length > 1 && charParts[1] != undefined) ? String(charParts[1]) : "普通";
+            var charBase = hasResolver ? _root.getDialogueSpecialString(rawCharBase) : rawCharBase;
+            var portraitType:String = (rawCharBase == "$PC_CHAR" || charBase == "玩家" || charBase == "主角模板") ? "hero" : "npc";
+            var line:Object = {
+                speaker: (speaker != undefined ? String(speaker) : ""),
+                sub: (sub != undefined ? String(sub) : ""),
+                text: (ln.text != undefined ? String(ln.text) : ""),
+                char: rawChar,
+                charBase: (charBase != undefined ? String(charBase) : ""),
+                expression: expression,
+                portraitType: portraitType
+            };
+            if (ln.target != undefined) line.target = String(ln.target);
+            if (ln.imageurl != undefined) line.imageurl = String(ln.imageurl);
+            lines.push(line);
+        }
+        sendResponse({
+            task: "task_response",
+            callId: callId,
+            success: true,
+            lines: lines,
+            heroPortrait: buildHeroPortraitState()
+        });
+    }
+
+    // ── dungeonEnter（写）：服务端硬门控 + 扣费 + 进图（复刻 Symbol 1873 按钮+虚拟币支付）──
+    public static function handleDungeonEnter(params:Object):Void {
+        var callId = params.callId;
+        var taskData:Object = TaskUtil.tasks[params.taskId];
+        if (!isDungeonTask(taskData)) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "not_dungeon_task" });
+            return;
+        }
+        var mode:String = (params.mode == "challenge") ? "challenge" : "normal";
+        var hasChallenge:Boolean = (taskData.challenge != undefined && taskData.challenge != null);
+        if (mode == "challenge" && !hasChallenge) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "no_challenge" });
+            return;
+        }
+
+        // 关卡存在性（在任何状态写入前校验，避免扣费后进图失败）
+        var stageName:String = dungeonStageName(taskData);
+        if (stageName == "" || _root.StageInfoDict[stageName] == undefined) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "stage_not_found" });
+            return;
+        }
+
+        var deposit:Number = taskData.deposit > 0 ? Number(taskData.deposit) : 0;
+        var kDeposit:Number = taskData.Kdeposit > 0 ? Number(taskData.Kdeposit) : 0;
+        var restrictedLevel:Number = taskData.restricted_level > 0 ? Number(taskData.restricted_level) : 1;
+
+        // 服务端硬门控（复刻 Symbol 1873 按钮 :244-253 + 虚拟币支付 :83-148）
+        if (Number(_root.金钱) < deposit) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "insufficient_money" });
+            return;
+        }
+        if (Number(_root.等级) < restrictedLevel) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "insufficient_level" });
+            return;
+        }
+        if (kDeposit > 0 && Number(_root.虚拟币) < kDeposit) {
+            sendResponse({ task: "task_response", callId: callId, success: false, error: "insufficient_kpoint" });
+            return;
+        }
+
+        // 扣费（与 虚拟币支付 同序：扣金钱契约金；K点路径再扣虚拟币）
+        _root.金钱 -= deposit;
+        if (kDeposit > 0) _root.虚拟币 -= kDeposit;
+        if (typeof _root.获取虚拟币值 == "function") _root.获取虚拟币值();
+
+        // 接取任务
+        _root.AddTask(taskData.id);
+
+        // 进图：内联复刻 委托界面进入关卡（关卡系统_lsy_无限过图.as:33-55），显式读 StageInfo + 显式 _root 赋值。
+        // ⚠ 不挂普通对象 ctx 调用原函数：该函数读裸名 当前关卡名/起点帧/淡出跳转帧，AVM1 仅当 this 是
+        //   MovieClip（在 scope chain 上）才解析到实例属性；普通对象会误解析为 _root.* → 进图错帧。
+        //   逻辑值与旧 clip 一致，权威读 StageInfoDict + TaskUtil.tasks（不重写经济/限制语义）。
+        var enterDifficulty:String = (mode == "challenge") ? String(taskData.challenge.difficulty) : dungeonStageDifficulty(taskData);
+        var si:Object = _root.StageInfoDict[stageName];
+        _root.载入关卡数据(si.Type, si.url);
+        _root.当前通关的关卡 = "";
+        _root.当前关卡难度 = enterDifficulty ? enterDifficulty : _root.当前关卡难度;
+        _root.难度等级 = _root.计算难度等级(_root.当前关卡难度);
+        _root.当前关卡名 = si.Name;
+        _root.场景进入位置名 = "出生地";
+        _root.关卡类型 = si.Type;
+        if (si.StartFrame) _root.关卡地图帧值 = si.StartFrame;
+        var normalLimits:Array = limitationArray(si.Limitation);
+        if (normalLimits.length > 0) _root.限制系统.openEntries(normalLimits);
+        if (si.LimitLevel) _root.限制系统.addLimitLevel(si.LimitLevel);
+        if (mode == "challenge" && (taskData.challenge.limitations instanceof Array) && taskData.challenge.limitations.length > 0) {
+            _root.限制系统.openEntries(taskData.challenge.limitations);
+        }
+        if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
+            _root.soundEffectManager.stopBGMForTransition();
+        }
+
+        // 先回包再触发淡出跳转（场景切换后 socket 仍在；web 收 entered 关面板）
+        sendResponse({ task: "task_response", callId: callId, success: true, entered: true, mode: mode });
+        _root.淡出动画.淡出跳转帧(si.FadeTransitionFrame);
+    }
+
+    // ── openWebDungeon（AS2 内部）：NPC「获得任务」触发，发 panel_request 打开 web 副本视图 ──
+    public static function handleOpenWebDungeon(params:Object):Void {
+        var taskId = (params != undefined) ? params.taskId : undefined;
+        if (taskId == undefined) return;
+        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return;
+        sendResponse({
+            task: "panel_request",
+            panel: "tasks",
+            source: "npc_dungeon",
+            initData: { view: "dungeon", taskId: taskId }
+        });
     }
 }

@@ -89,14 +89,21 @@ _root.全部翻译(this);
 	if (_root.gameworld[当前NPC].NPC任务_任务_关卡路径)
 	{
 		var taskData = _root.getTaskData(_root.gameworld[当前NPC].NPC任务_任务_关卡路径);
-		_root.委托任务界面.taskData = taskData;
-		_root.委托任务界面.NPC任务_任务_契约金 = taskData.deposit;
-		_root.委托任务界面.NPC任务_任务_等级限制 = taskData.restricted_level;
-		_root.委托任务界面.NPC任务_任务_K点 = taskData.Kdeposit;
-		_root.SetDialogue(taskData.get_conversation);
-		_root.委托任务界面.配置关卡属性(_root.gameworld[当前NPC].NPC任务_任务_关卡路径);
-		_root.委托任务界面.显示任务明细(taskData);
-		_root.委托任务界面._visible = true;
+		if (_root.gameCommands.openWebDungeon != undefined)
+		{
+			_root.gameCommands.openWebDungeon({taskId: taskData.id});
+		}
+		else
+		{
+			_root.委托任务界面.taskData = taskData;
+			_root.委托任务界面.NPC任务_任务_契约金 = taskData.deposit;
+			_root.委托任务界面.NPC任务_任务_等级限制 = taskData.restricted_level;
+			_root.委托任务界面.NPC任务_任务_K点 = taskData.Kdeposit;
+			_root.SetDialogue(taskData.get_conversation);
+			_root.委托任务界面.配置关卡属性(_root.gameworld[当前NPC].NPC任务_任务_关卡路径);
+			_root.委托任务界面.显示任务明细(taskData);
+			_root.委托任务界面._visible = true;
+		}
 	}
 	else
 	{
