@@ -2,7 +2,7 @@
 # CF7:ME Guardian Process - Environment Setup Check (net10.0-windows)
 # 构建 / 运行前置依赖检查
 #   - .NET 10 SDK（user-scope %LOCALAPPDATA%\Microsoft\dotnet 或 system PATH）
-#     满足 global.json `version: 10.0.300` + `rollForward: latestFeature`
+#     满足 global.json `version: 10.0.300` + `rollForward: latestPatch`
 #   - WebView2 Runtime（Phase 1 全局硬依赖）
 #   - MSVC C 编译器（miniaudio.dll 软依赖：缺则跳过 native build；运行时硬依赖）
 #   - Rust 工具链（sol_parser.dll 硬依赖）
@@ -50,9 +50,12 @@ function Test-SdkVersionMeetsPin {
     if ($Installed.Major -ne $Pinned.Major) { return $false }
     if ($Installed.Minor -ne $Pinned.Minor) { return $false }
 
-    # global.json uses rollForward=latestFeature. For 10.0.300 this accepts
-    # 10.0.300+ feature bands, but not earlier previews such as 10.0.100.
-    return $Installed.Build -ge $Pinned.Build
+    # global.json uses rollForward=latestPatch. For 10.0.300 this accepts
+    # the same SDK feature band (10.0.3xx) at or above the pinned patch,
+    # but not a later feature band such as 10.0.400.
+    $installedBand = [math]::Floor($Installed.Build / 100)
+    $pinnedBand = [math]::Floor($Pinned.Build / 100)
+    return ($installedBand -eq $pinnedBand) -and ($Installed.Build -ge $Pinned.Build)
 }
 
 Write-Host "=== CF7:ME Setup Check (net10.0-windows) ===" -ForegroundColor Cyan
@@ -92,10 +95,10 @@ if ($dotnet) {
         }
     }
     if ($matchingSdk.Count -gt 0) {
-        Write-Ok ".NET SDK satisfies global.json $pinnedSdk latestFeature: $($matchingSdk -join '; ')"
+        Write-Ok ".NET SDK satisfies global.json $pinnedSdk latestPatch: $($matchingSdk -join '; ')"
     } else {
-        Write-Fail ".NET SDK 不满足 global.json pin $pinnedSdk + latestFeature" `
-            "Installed: $($sdks -join '; '). 装法同上 -Channel 10.0；需 10.0.$($pinnedSdk.Build) 或更高 feature band"
+        Write-Fail ".NET SDK 不满足 global.json pin $pinnedSdk + latestPatch" `
+            "Installed: $($sdks -join '; '). 装法同上 -Channel 10.0；需同 feature band 的 10.0.$($pinnedSdk.Build)+ patch（例如 10.0.3xx），不能漂到 10.0.4xx"
     }
 
     $rt = & $dotnet --list-runtimes 2>&1

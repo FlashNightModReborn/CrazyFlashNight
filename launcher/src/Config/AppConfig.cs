@@ -23,7 +23,7 @@ namespace CF7Launcher.Config
         public string GpuPreference { get; private set; }
         /// <summary>开发用：Ctrl+G 切换 WebView2 opaque + Flash 隐藏的合成成本探针。玩家版必须 false。</summary>
         public bool DevGpuProbeHotkey { get; private set; }
-        /// <summary>开关 Native HUD + PanelHostController 装配。Phase 1 默认 false（仅装配骨架，不接管 panel 路由）。</summary>
+        /// <summary>开关 Native HUD + PanelHostController 装配。缺 key 时代码 fallback false；随仓 config.toml 当前显式设 true。</summary>
         public bool UseNativeHud { get; private set; }
         /// <summary>
         /// Panel 态是否显式接管前台 + WebView 焦点（默认 true）。

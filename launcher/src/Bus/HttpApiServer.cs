@@ -18,9 +18,12 @@ namespace CF7Launcher.Bus
     ///   POST /logBatch        — 批量日志上报
     ///   POST /console         — 远程控制台命令（转发到 AS2）
     ///   GET  /status          — 连接状态 + task 清单（TaskRegistry 驱动）
-    ///   POST /task            — 统一 task 提交（仅 httpCallable task: toast, gomoku_eval）
+    ///   POST /task            — 统一 task 提交（仅 TaskRegistry 标记的 httpCallable task）
     ///   POST /shutdown        — 优雅关闭 launcher（CLI 调用）
     ///   GET  /crossdomain.xml — Flash 跨域策略
+    ///   POST /save-push       — 从 saves/{slot}.json 读取并推送给 AS2（调试/恢复辅助路径）
+    ///   GET  /logs            — tail 读 launcher.log
+    ///   POST /diagnostic      — 打包诊断 zip
     /// </summary>
     public class HttpApiServer : IDisposable
     {
@@ -389,7 +392,7 @@ namespace CF7Launcher.Bus
         }
 
         /// <summary>
-        /// POST /task — 统一 task 提交端点（仅 httpCallable task）。
+        /// POST /task — 统一 task 提交端点（仅 TaskRegistry 标记的 httpCallable task）。
         /// Body: {"task":"gomoku_eval","payload":{...},"timeout":10000}
         /// toast: fire-and-forget，立即返回 {"ok":true}
         /// gomoku_eval: 异步等待，阻塞直到回调或超时

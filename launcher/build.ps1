@@ -3,21 +3,28 @@
 # 构建守护进程并复制产物到项目根目录
 # ============================================================
 #
-# 工作流（Phase 4 重写）：
-#   1. TS 编译 launcher/scripts → dist/hit-number-bundle.js（V8 运行时 bundle）
+# 工作流（net10 FDD + native bootstrap）：
+#   1a. 战宠 roster 分类审计（tools/audit-pet-roster-types.ps1）
+#   1.  TS 编译 launcher/scripts → dist/hit-number-bundle.js（V8 运行时 bundle）
 #   1b. 派生 data/map/task_npc_registry.json (NPC↔hotspot 单源派生自 map-panel-data.js)
-#   2. native miniaudio.dll 构建（cl.exe via vcvars64）
-#   3. native sol_parser.dll 构建（cargo via rustup）
-#   4. dotnet publish -r win-x64 --self-contained true -p:PublishSingleFile=true
-#      → 单文件 self-contained exe 进 launcher/publish/
-#   5. Copy-Item 把 publish/ 下的 exe + native side-by-side DLL 拷到 projectRoot
-#   6. Verify launcher/web 运行时资产清单（80 项）
-#   6a. native cursor canvas 契约校验（tools/audit-native-cursor-assets.js）
-#   6b. launcher/data 运行时资产清单（3 项：map_hud_data / save_repair_dict / save_schema）
-#   6c. save_repair_dict.json 与源头一致校验（cf7-save-repair-dict-build verify）
+#   1c. 派生 data/map/map_catalog.json
+#   1d. 派生 launcher/data/map_hud_data.json
+#   1e. 派生 web/modules/tasks/task-catalog.json + task conditions 回归矩阵
+#   1f. 派生 web/modules/tasks/achievement-catalog.json
+#   2.  native miniaudio.dll 构建（cl.exe via vcvars64）
+#   3.  native sol_parser.dll 构建（cargo via rustup）
+#   4.  native bootstrap.exe 构建（cl.exe，用户面入口 wrapper）
+#   5.  dotnet publish -r win-x64 --self-contained false → FDD Core 进 launcher/publish/
+#   6.  Copy-IfDifferent 把 Core FDD 产物 + native side-cars 拷到 projectRoot/runtime/，
+#       bootstrap.exe 改名拷到 projectRoot/CRAZYFLASHER7MercenaryEmpire.exe，并校验 bundled runtime installer
+#   6f. 断言发布主程序集是 optimized Release build
+#   7.  Verify launcher/web 运行时资产清单
+#   7a. native cursor canvas 契约校验（tools/audit-native-cursor-assets.js）
+#   7b. launcher/data 运行时资产清单（3 项：map_hud_data / save_repair_dict / save_schema）
+#   7c. save_repair_dict.json 与源头一致校验（cf7-save-repair-dict-build verify）
 #
 # 历史：本脚本 Phase 4 前走 nuget restore + msbuild + 手动 $managedFiles 13 个 DLL 复制；
-# 切到 SDK-style net10 后，dotnet publish 一步出单文件，managed DLL 全打进 exe。
+# 2026-05-28 短期试过 self-contained single-file（146MB），后收敛为当前 FDD runtime/ 目录 + native bootstrap。
 
 $ErrorActionPreference = "Stop"
 
@@ -614,7 +621,7 @@ if ($missingWebPaths.Count -gt 0) {
 }
 Write-Host "  OK: launcher\\web runtime assets present ($($requiredWebPaths.Count) checks)" -ForegroundColor Green
 
-# Step 6a: Verify native cursor canvas/hotspot contract
+# Step 7a: Verify native cursor canvas/hotspot contract
 Write-Host "[Step 7a/7] Verify native cursor canvas contract..." -ForegroundColor Yellow
 $cursorAudit = Join-Path $projectRoot "tools\audit-native-cursor-assets.js"
 if (-not (Test-Path $cursorAudit)) {
@@ -627,7 +634,7 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# Step 6b: Verify launcher\data runtime assets (NativeHud widget catalog 等)
+# Step 7b: Verify launcher\data runtime assets (NativeHud widget catalog 等)
 Write-Host "[Step 7b/7] Verify launcher\data runtime assets..." -ForegroundColor Yellow
 $dataDir = Join-Path $launcherDir "data"
 $requiredDataPaths = @(
@@ -655,7 +662,7 @@ if ($missingDataPaths.Count -gt 0) {
 }
 Write-Host "  OK: launcher\\data runtime assets present ($($requiredDataPaths.Count) checks)" -ForegroundColor Green
 
-# Step 6c: Verify save_repair_dict.json 与源头一致 (cf7-save-repair-dict-build verify gate)
+# Step 7c: Verify save_repair_dict.json 与源头一致 (cf7-save-repair-dict-build verify gate)
 # 防止 data/items/*.xml 或 SaveManager.as 改动后 dict 未同步 regenerate；
 # 不一致 = dict 漂移，会让 SaveAutoRepairService 用旧字典误判新条目
 Write-Host "[Step 7c/7] Verify save_repair_dict.json 与源头一致..." -ForegroundColor Yellow
