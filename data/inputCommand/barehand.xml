@@ -2,8 +2,8 @@
 <!--
     空手搓招配置
     招式列表：
-    - 波动拳: ↓↘ + A (下前A)，要求拳脚攻击 Lv5
-    - 诛杀步: →→ (双击前)，要求拳脚攻击 Lv1
+    - 波动拳: ↓↘ + A (下前A)，要求内力爆发 Lv2
+    - 诛杀步: Shift + → (Shift + 前)，要求拳脚攻击 Lv1
     - 后撤步: Shift + ← (Shift + 后)，要求拳脚攻击 Lv1
     - 燃烧指节: → + B (前B)，要求升龙拳 Lv1
     - 能量喷泉: ↓ + B (下B)，要求裂地拳 Lv1 + 10% MP
@@ -12,7 +12,7 @@
 -->
 <CommandSet id="barehand" label="空手">
     <Commands>
-        <!-- 波动拳: 下前 + A，要求拳脚攻击 Lv5 -->
+        <!-- 波动拳: 下前 + A，要求内力爆发 Lv2 -->
         <Command name="波动拳" action="波动拳" priority="10">
             <Sequence>
                 <Event>DOWN_FORWARD</Event>
@@ -74,7 +74,7 @@
             </Requirements>
         </Command>
 
-        <!-- 能量喷泉: 下 + B，要求裂地拳 Lv1 + 2% MP -->
+        <!-- 能量喷泉: 下 + B，要求裂地拳 Lv1 + 10% MP -->
         <Command name="能量喷泉" action="能量喷泉1段" priority="7">
             <Sequence>
                 <Event>DOWN</Event>
@@ -87,7 +87,7 @@
             </Tags>
             <Requirements>
                 <Skill name="裂地拳" minLevel="1"/>
-                <MP ratio="0.02"/>
+                <MP ratio="0.1"/>
             </Requirements>
         </Command>
 
@@ -171,6 +171,14 @@
             <To>燃烧指节</To>
             <To>能量喷泉</To>
             <To>回旋踢</To>
+        </Derive>
+        <Derive from="回旋踢">
+            <To>波动拳</To>
+            <To>诛杀步</To>
+            <To>后撤步</To>
+            <To>燃烧指节</To>
+            <To>能量喷泉</To>
+            <To>连环踢</To>
         </Derive>
     </Derivations>
 

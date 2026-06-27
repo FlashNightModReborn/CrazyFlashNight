@@ -595,9 +595,9 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
         this.assert(unit.commandId == CommandDFA.NO_COMMAND, "No repeated trigger on same match");
 
         // 测试新输入能触发新命令
-        // 模拟诛杀步：双击前
+        // 模拟诛杀步：Shift + 前
         unit = {}; // 重置单位
-        this.dfa.updateWithHistory(unit, [InputEvent.DOUBLE_TAP_FORWARD], 15);
+        this.dfa.updateWithHistory(unit, [InputEvent.SHIFT_FORWARD], 15);
         this.assert(unit.commandId != CommandDFA.NO_COMMAND, "诛杀步 recognized");
         cmdName = this.dfa.getCommandName(unit.commandId);
         this.assert(cmdName == "诛杀步", "Recognized command is 诛杀步 (got: " + cmdName + ")");
@@ -819,12 +819,12 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
 
         // 创建测试序列：波动拳 + 诛杀步
         // 波动拳: DOWN_FORWARD, A_PRESS
-        // 诛杀步: DOUBLE_TAP_FORWARD
+        // 诛杀步: SHIFT_FORWARD
         var testSequence:Array = [
             InputEvent.DOWN_FORWARD,
             InputEvent.A_PRESS,
             InputEvent.NONE,
-            InputEvent.DOUBLE_TAP_FORWARD
+            InputEvent.SHIFT_FORWARD
         ];
 
         // 分析
@@ -880,7 +880,7 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
         var testSequence:Array = [
             InputEvent.DOWN_FORWARD, InputEvent.A_PRESS,  // 波动拳 (priority 10, tags: 空手,远程,必杀)
             InputEvent.NONE,
-            InputEvent.DOUBLE_TAP_FORWARD,                 // 诛杀步 (priority 5, tags: 空手,移动,基础)
+            InputEvent.SHIFT_FORWARD,                      // 诛杀步 (priority 5, tags: 空手,移动,基础)
             InputEvent.NONE,
             InputEvent.DOWN, InputEvent.B_PRESS            // 能量喷泉 (priority 7, tags: 空手,近战,消耗)
         ];

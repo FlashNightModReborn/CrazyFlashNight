@@ -247,7 +247,8 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerInitScratchTest {
         sources["技能函数"] = {
             攻击时移动:    "SKILL_移动",
             兵器攻击时移动:"SKILL_兵器移动",
-            获取移动方向:  "SKILL_方向"
+            获取移动方向:  "SKILL_方向",
+            回旋踢可派生搓招:"SKILL_回旋踢派生"
         };
         sources["空手攻击路由"] = {
             攻击时移动:    "UNARMED_移动",
@@ -274,6 +275,8 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerInitScratchTest {
         // UNARMED.获取移动方向 是关键易错点：来自 技能函数 而非 空手攻击路由
         assertEquals("UNARMED.获取移动方向 ← 技能函数（而非 空手攻击路由）",
             "SKILL_方向", sUnarmed["获取移动方向"]);
+        assertEquals("UNARMED.回旋踢可派生搓招 ← 技能函数.回旋踢可派生搓招",
+            "SKILL_回旋踢派生", sUnarmed["回旋踢可派生搓招"]);
 
         // WEAPON：攻击时移动 用 兵器攻击时移动 覆盖；攻击时后退移动 沿用 base
         assertEquals("WEAPON.攻击时移动 ← 技能函数.兵器攻击时移动（兵器覆盖）",

@@ -123,10 +123,12 @@ class org.flashNight.neur.InputCommand.CommandConfig {
      *
      * 招式列表：
      * - 波动拳: ↓↘ + A (下前A)
-     * - 诛杀步: →→ (双击前)
+     * - 诛杀步: Shift + → (Shift + 前)
      * - 后撤步: Shift + ← (Shift + 后)
      * - 燃烧指节: → + B (前B)
      * - 能量喷泉: ↓ + B (下B)
+     * - 连环踢: ↑ + A (上A)
+     * - 回旋踢: ↓ + A (下A)
      */
     public static function getBarehanded():Object {
         // 优先返回 XML 配置
@@ -139,7 +141,7 @@ class org.flashNight.neur.InputCommand.CommandConfig {
 
         return {
             commands: [
-                // 波动拳: 下前 + A，要求拳脚攻击 Lv5
+                // 波动拳: 下前 + A，要求内力爆发 Lv2
                 {
                     name: "波动拳",
                     sequence: [EV.DOWN_FORWARD, EV.A_PRESS],
@@ -147,10 +149,10 @@ class org.flashNight.neur.InputCommand.CommandConfig {
                     priority: 10,
                     tags: ["空手", "远程", "必杀"]
                 },
-                // 诛杀步: 双击前，要求拳脚攻击 Lv1
+                // 诛杀步: Shift + 前，要求拳脚攻击 Lv1
                 {
                     name: "诛杀步",
-                    sequence: [EV.DOUBLE_TAP_FORWARD],
+                    sequence: [EV.SHIFT_FORWARD],
                     action: "诛杀步",
                     priority: 5,
                     tags: ["空手", "移动", "基础"]
@@ -178,23 +180,41 @@ class org.flashNight.neur.InputCommand.CommandConfig {
                     action: "能量喷泉1段",
                     priority: 7,
                     tags: ["空手", "近战", "消耗"]
+                },
+                // 连环踢: 上 + A，要求拳脚攻击 Lv2
+                {
+                    name: "连环踢",
+                    sequence: [EV.UP, EV.A_PRESS],
+                    action: "连环踢",
+                    priority: 8,
+                    tags: ["空手", "近战"]
+                },
+                // 回旋踢: 下 + A，要求裂地拳 Lv1
+                {
+                    name: "回旋踢",
+                    sequence: [EV.DOWN, EV.A_PRESS],
+                    action: "回旋踢",
+                    priority: 8,
+                    tags: ["空手", "近战"]
                 }
             ],
 
             // 派生关系：招式A可以派生出哪些招式
             derivations: {
-                波动拳: ["诛杀步", "后撤步", "燃烧指节", "能量喷泉"],
-                诛杀步: ["波动拳", "后撤步", "燃烧指节", "能量喷泉"],
-                后撤步: ["波动拳", "诛杀步", "燃烧指节", "能量喷泉"],
-                燃烧指节: ["波动拳", "诛杀步", "后撤步", "能量喷泉"],
-                能量喷泉: ["波动拳", "诛杀步", "后撤步", "燃烧指节"]
+                波动拳: ["诛杀步", "后撤步", "燃烧指节", "能量喷泉", "连环踢", "回旋踢"],
+                诛杀步: ["波动拳", "后撤步", "燃烧指节", "能量喷泉", "连环踢", "回旋踢"],
+                后撤步: ["波动拳", "诛杀步", "燃烧指节", "能量喷泉", "连环踢", "回旋踢"],
+                燃烧指节: ["波动拳", "诛杀步", "后撤步", "能量喷泉", "连环踢", "回旋踢"],
+                能量喷泉: ["波动拳", "诛杀步", "后撤步", "燃烧指节", "连环踢", "回旋踢"],
+                连环踢: ["波动拳", "诛杀步", "后撤步", "燃烧指节", "能量喷泉", "回旋踢"],
+                回旋踢: ["波动拳", "诛杀步", "后撤步", "燃烧指节", "能量喷泉", "连环踢"]
             },
 
             // 分组（用于快速筛选）
             groups: {
-                空手全部: ["波动拳", "诛杀步", "后撤步", "燃烧指节", "能量喷泉"],
+                空手全部: ["波动拳", "诛杀步", "后撤步", "燃烧指节", "能量喷泉", "连环踢", "回旋踢"],
                 移动类: ["诛杀步", "后撤步"],
-                攻击类: ["波动拳", "燃烧指节", "能量喷泉"]
+                攻击类: ["波动拳", "燃烧指节", "能量喷泉", "连环踢", "回旋踢"]
             }
         };
     }
