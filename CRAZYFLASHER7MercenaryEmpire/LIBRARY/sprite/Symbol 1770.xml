@@ -89,20 +89,11 @@ _root.全部翻译(this);
 	if (_root.gameworld[当前NPC].NPC任务_任务_关卡路径)
 	{
 		var taskData = _root.getTaskData(_root.gameworld[当前NPC].NPC任务_任务_关卡路径);
+		// 副本任务已迁 web（task 面板第 4 tab）：NPC「获得任务」直发 openWebDungeon。
+		// 旧 Symbol 1873(_root.委托任务界面) fallback 已退役删除（web 上主线，验收有效）。
 		if (_root.gameCommands.openWebDungeon != undefined)
 		{
 			_root.gameCommands.openWebDungeon({taskId: taskData.id});
-		}
-		else
-		{
-			_root.委托任务界面.taskData = taskData;
-			_root.委托任务界面.NPC任务_任务_契约金 = taskData.deposit;
-			_root.委托任务界面.NPC任务_任务_等级限制 = taskData.restricted_level;
-			_root.委托任务界面.NPC任务_任务_K点 = taskData.Kdeposit;
-			_root.SetDialogue(taskData.get_conversation);
-			_root.委托任务界面.配置关卡属性(_root.gameworld[当前NPC].NPC任务_任务_关卡路径);
-			_root.委托任务界面.显示任务明细(taskData);
-			_root.委托任务界面._visible = true;
 		}
 	}
 	else
@@ -145,17 +136,11 @@ _root.全部翻译(this);
 	}
 	if (NPC对象.佣兵数据 != undefined && text5._visible != false)
 	{
+		// 世界内雇佣（佣兵+战宠）已迁 web 战队页 hire-confirm：NPC「雇佣」直发 openWebHire。
+		// 旧 Symbol 2035(_root.佣兵确认面板) fallback 已退役删除（web 上主线，验收有效）。
 		if (_root.gameCommands.openWebHire != undefined)
 		{
-			_root.gameCommands.openWebHire({npcId: 当前NPC});   // → web 战队页 hire-confirm（佣兵+战宠）
-		}
-		else   // 回退：openWebHire 未注册时仍用旧 Symbol 2035 面板
-		{
-			_root.佣兵确认面板.佣兵数据 = NPC对象.佣兵数据;
-			_root.佣兵确认面板.宠物数据 = NPC对象.宠物数据 ? NPC对象.宠物数据 : null;
-			_root.佣兵确认面板.当前NPC = 当前NPC;
-			_root.佣兵确认面板.刷新数据();
-			_root.佣兵确认面板._visible = true;
+			_root.gameCommands.openWebHire({npcId: 当前NPC});
 		}
 	}
 	this._visible = false;

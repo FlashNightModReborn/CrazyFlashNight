@@ -107,11 +107,37 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             return;
         }
 
+        // 副本任务条目升级到 web 副本视图（task 面板 dungeon tab），与 arena 重定向同构：
+        // 不再开旧 Flash Symbol 1873(_root.委托任务界面)，发 openWebDungeon 让 PanelHostController
+        // 接管 stage-select → tasks 切换（closePanel:false）。旧 Flash 委托面板已退役。
+        if (entryKind == "task") {
+            var dungeonTask:Object = (typeof _root.getTaskData == "function") ? _root.getTaskData(stageName) : undefined;
+            if (dungeonTask == undefined || dungeonTask == null || dungeonTask.id == undefined) {
+                sendResponse({ task: "stage_select_response", callId: callId, success: false, error: "task_data_unavailable" });
+                return;
+            }
+            if (_root.gameCommands == undefined || _root.gameCommands.openWebDungeon == undefined) {
+                sendResponse({ task: "stage_select_response", callId: callId, success: false, error: "task_ui_unavailable" });
+                return;
+            }
+            cleanupStageSelectState();
+            sendResponse({
+                task: "stage_select_response",
+                callId: callId,
+                success: true,
+                closePanel: false,
+                stageName: stageName,
+                difficulty: difficulty,
+                entryKind: entryKind,
+                redirected: "tasks-dungeon"
+            });
+            _root.gameCommands.openWebDungeon({ taskId: dungeonTask.id });
+            return;
+        }
+
         var actionResult:Object;
         if (entryKind == "map") {
             actionResult = performMapEnter(validation.context.stageInfo);
-        } else if (entryKind == "task") {
-            actionResult = performTaskOpen(stageName);
         } else {
             performEnter(validation.context, difficulty);
             actionResult = { success: true };
@@ -379,41 +405,8 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         return { success: true };
     }
 
-    private static function performTaskOpen(stageName:String):Object {
-        var panel:Object = _root.委托任务界面;
-        if (panel == undefined || panel == null) {
-            return { success: false, error: "task_ui_unavailable" };
-        }
-        if (typeof _root.getTaskData != "function") {
-            return { success: false, error: "task_data_unavailable" };
-        }
-        var taskData:Object = _root.getTaskData(stageName);
-        if (taskData == undefined || taskData == null) {
-            return { success: false, error: "task_data_unavailable" };
-        }
-        if (typeof panel.显示任务明细 != "function") {
-            return { success: false, error: "task_ui_unavailable" };
-        }
-        if (typeof panel.配置关卡属性 != "function") {
-            if (typeof _root.配置关卡属性 != "function") {
-                return { success: false, error: "stage_config_unavailable" };
-            }
-            panel.配置关卡属性 = _root.配置关卡属性;
-        }
-
-        panel.NPC任务_任务_起始帧 = null;
-        panel.taskData = taskData;
-        panel.NPC任务_任务_契约金 = taskData.deposit;
-        panel.NPC任务_任务_等级限制 = taskData.restricted_level;
-        panel.NPC任务_任务_K点 = taskData.Kdeposit;
-        if (typeof _root.SetDialogue == "function") {
-            _root.SetDialogue(taskData.get_conversation);
-        }
-        panel.配置关卡属性(stageName);
-        panel.显示任务明细(taskData);
-        panel._visible = true;
-        return { success: true };
-    }
+    // performTaskOpen 已移除：副本任务条目改走 handleEnter 内的 openWebDungeon 重定向（web 副本视图），
+    // 不再依赖旧 Flash Symbol 1873(_root.委托任务界面)。这是该面板对 委托任务界面 的最后一处引用。
 
     private static function canEnterStage(stageName:String):Boolean {
         if (stageName == "") return false;

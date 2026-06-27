@@ -46,11 +46,20 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target test -
 # 发布构建：编 asLoader（自动启用 -VerifySwf scripts/asLoader.swf 刷新门）
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 180
 
+# 主文件构建：编整套游戏主文件（Symbol/帧脚本 + scripts\类定义\ 主文件 classpath 类）
+# publish-only（doc.publish() 不 testMovie），不会拉起整套游戏；产出仓库根 CRAZYFLASHER7MercenaryEmpire.swf
+# 自动启用 -VerifySwf；成功判据 = Compiler Errors 0 个错误 + 主 SWF 已刷新
+powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target main -TimeoutSeconds 300
+
 # 任意 FLA/XFL（相对仓库根或绝对路径）
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target scripts/asLoader/asLoader.xfl
 ```
 
-`test`|`testloader` → `scripts/TestLoader`；`publish`|`asloader` → `scripts/asLoader`（自动 `-VerifySwf`）。两个目标可同时开在 CS6，`-Target` 决定编哪个，无需手动切到前台。
+`test`|`testloader` → `scripts/TestLoader`；`publish`|`asloader` → `scripts/asLoader`（自动 `-VerifySwf`）；`main`|`mainfile`|`empire` → `CRAZYFLASHER7MercenaryEmpire/CRAZYFLASHER7MercenaryEmpire.xfl`（**publish-only** + 自动 `-VerifySwf CRAZYFLASHER7MercenaryEmpire.swf`）。多个目标可同时开在 CS6，`-Target` 决定编哪个，无需手动切到前台。
+
+> ⚠️ **编译单元归属铁律（踩过坑）**：`scripts/类定义/` 下的 **类**（如 `*PanelService`）与 `scripts/逻辑系统分区/*_WebView.as`、`scripts/展现/UI交互/*.as` 这些 **boot `#include` 脚本** 都编进 **asLoader**——asLoader 编译 class + 把方法注入 `_root`（`_root.gameCommands.*` 等）全局提供给主文件和其他 SWF 使用。**改这些必须 `-Target publish`（asLoader），`-Target main` 不会生效！** `-Target main` 只编主文件 FLA 自身的元件 / 时间轴帧脚本（如 `Symbol 1770`、库元件增删）。判断方法：被改的东西在 `asLoaderManifest`(`grep 文件名 scripts/asLoaderManifest/`) 里 → 用 `publish`；是主 FLA 的 `DOMSymbolInstance`/库元件 → 用 `main`；两边都动了 → 两个都编。验证可 `ffdec -export script` 后 grep 改动标志串确认进了哪个 SWF。
+
+**main 与 test/publish 的差别**：`main` 走 `doc.publish()` 而非 `doc.testMovie()`——主文件 testMovie 会启动整套游戏（连不上 launcher socket 卡住 / 撞反盗版层 / 留僵尸窗口），publish 只编译产出 SWF + 填充 Compiler Errors。模式由 `compile_test.ps1` 写 `scripts/compile_mode.cfg`（`publish`/缺省 `test`），`compile_action.jsfl` 读取后选 `publish()` vs `testMovie()`，一次性指令读到即删。`main` 不产 trace（发布设置 `OmitTraceActions=1`），`flashlog.txt 未刷新` 属正常，看 `compiler_errors.txt`。预编译 BOM 门已扩展覆盖主文件 classpath 高频迁移类子树 `arki\task`/`arki\merc`/`arki\stageSelect`。
 
 ### Bash
 

@@ -443,6 +443,11 @@ namespace CF7Launcher.Guardian
             _lastOwnerPanelRect = panelRect;
 
             _activePanel = name;
+            // 任意真实打开 → 暂停游戏。覆盖 returnTo 自动重开（ExecuteCommand 从 _returnStack
+            // enqueue 的 Open 不经 LauncherCommandRouter.OpenPanel，否则重开面板背后游戏已恢复运行）。
+            // AS2 webPanelPause 幂等，首次打开与 router 路径重复发也安全。
+            try { _web.AssertWebPanelPause(); }
+            catch (Exception ex) { LogManager.Log("[PanelHost] AssertWebPanelPause failed: " + ex.Message); }
             LogManager.Log("[PanelHost] opened: " + name + " rect=" + panelRect.Width + "x" + panelRect.Height);
             PerfTrace.Duration("panel.open", perfStart,
                 name + " rect=" + panelRect.Width + "x" + panelRect.Height);

@@ -55,27 +55,7 @@ _root.全部翻译(this);
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 2016" symbolType="button">
-                  <matrix>
-                    <Matrix a="3.24359130859375" d="0.666000366210938" tx="41.8" ty="26.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(press){
-   _root.佣兵信息界面._visible = 1;
-   this._visible = 0;
-}
-on(rollOver){
-   _root.注释(150,_root.获得翻译("解雇佣兵"));
-}
-on(rollOut){
-   _root.注释结束();
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
+                
               </elements>
             </DOMFrame>
           </frames>

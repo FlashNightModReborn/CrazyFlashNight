@@ -41,7 +41,6 @@
       if(haveBing1)
       {
          _root.佣兵是否出战信息[_parent.佣兵是否出战信息id] = -1;
-         _root.佣兵信息界面.排列佣兵图标();
          _root.add2map2(_parent,2);
          _parent.removeMovieClip();
       }

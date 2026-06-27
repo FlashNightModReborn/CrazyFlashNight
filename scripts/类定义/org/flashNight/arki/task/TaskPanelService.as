@@ -814,6 +814,11 @@ class org.flashNight.arki.task.TaskPanelService {
             _root.soundEffectManager.stopBGMForTransition();
         }
 
+        // 进图前关闭可能残留的旧对话框（复刻 Symbol 1873:100-101/132-133）：新 NPC 流程已不经
+        // SetDialogue，但若有前置剧情对话框开着，fade-out 期间会露脸（场景转换 清除游戏世界组件 要等
+        // 全黑才 关闭()）；这里先隐藏，与旧版"进图前 _root.对话框界面._visible = false"对齐，零成本兜底。
+        if (_root.对话框界面 != undefined) _root.对话框界面._visible = false;
+
         // 先回包再触发淡出跳转（场景切换后 socket 仍在；web 收 entered 关面板）
         sendResponse({ task: "task_response", callId: callId, success: true, entered: true, mode: mode });
         _root.淡出动画.淡出跳转帧(si.FadeTransitionFrame);

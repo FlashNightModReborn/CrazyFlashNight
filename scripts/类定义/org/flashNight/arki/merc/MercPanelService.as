@@ -510,10 +510,8 @@ class org.flashNight.arki.merc.MercPanelService {
     // handlePanelOpen / handlePanelClose
     // ═══════════════════════════════════════════════════════════
     public static function handlePanelOpen(params:Object):Void {
-        // 隐藏 Flash 旧 UI，WebView 面板覆盖在上面
-        if (_root.佣兵信息界面 != undefined) {
-            _root.佣兵信息界面._visible = false;
-        }
+        // 旧 Flash 佣兵信息界面(Symbol 923 簇) 已退役删除，无需再隐藏。保留空 handler 以兼容
+        // 既有 mercPanelOpen gameCommand 注册（web 面板打开时调用，现为 no-op）。
     }
 
     public static function handlePanelClose(params:Object):Void {

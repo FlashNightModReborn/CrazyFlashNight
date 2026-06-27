@@ -3670,6 +3670,16 @@ namespace CF7Launcher.Guardian
             return _socketServer.TrySend("{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0");
         }
 
+        /// <summary>
+        /// 断言"打开 web 面板=暂停游戏"。由 PanelHostController.DoOpen 在每次真实打开时调用，
+        /// 覆盖 returnTo 自动重开这条不经 LauncherCommandRouter.OpenPanel 的开面板路——否则
+        /// 重开的面板背后游戏会以已恢复状态继续跑。AS2 webPanelPause 幂等（lease 已持则 no-op）。
+        /// </summary>
+        public void AssertWebPanelPause()
+        {
+            TrySendGameCommand("webPanelPause");
+        }
+
         public void OnSocketDisconnected()
         {
             if (this.InvokeRequired) { try { this.BeginInvoke(new Action(OnSocketDisconnected)); } catch {} return; }
@@ -3714,6 +3724,11 @@ namespace CF7Launcher.Guardian
                 if (TrySendGameCommand("shopPanelClose"))
                     _pauseNeedsRestore = false;
             }
+            // webpanel 暂停 lease 断线恢复：断线时 OnSocketDisconnected 走 force_close，不经
+            // HandlePanelMessage case "close" 的 webPanelUnpause（且断线下也投递不出去），AS2 的
+            // "webpanel" lease 会残留 → 游戏永久卡在暂停。断线时所有面板已 force-close，重连后必无
+            // web 面板在开，故无条件补发 webPanelUnpause 释放残留 lease（AS2 幂等，无 lease 则 no-op）。
+            TrySendGameCommand("webPanelUnpause");
         }
 
         #endregion

@@ -95,9 +95,8 @@ _root.gameCommands["togglePets"] = function() {
     _root.宠物信息界面._visible = !_root.宠物信息界面._visible;
 };
 
-_root.gameCommands["toggleMercs"] = function() {
-    _root.佣兵信息界面._visible = !_root.佣兵信息界面._visible;
-};
+// toggleMercs 已移除：旧 Flash 佣兵信息界面(Symbol 923 簇) 已退役不实例化，且无任何派发方
+// （佣兵管理迁 web 战队页）。死命令删除，避免误以为还能切旧面板。
 
 _root.gameCommands["toggleTablet"] = function() {
     if (!_root.平板电脑界面._visible) {

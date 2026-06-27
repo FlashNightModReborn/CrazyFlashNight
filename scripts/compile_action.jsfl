@@ -66,8 +66,24 @@ function main() {
 		return;
 	}
 
-	fl.trace("[compile] testMovie: " + doc.name);
-	doc.testMovie();
+	// 编译动作模式：默认 testMovie（asLoader/TestLoader 需运行产 trace / 刷新 SWF）。
+	//   compile_mode.cfg == "publish" → 用 doc.publish()：只编译产出 SWF + 填充 fl.compilerErrors，
+	//   不启动测试播放器。main（整套游戏）目标必须走这条，否则 testMovie 会拉起全量游戏窗口
+	//   （连不上 launcher socket 卡住 / 撞反盗版层 / 留僵尸窗口）。一次性指令，读到即删。
+	var modeCfg = projectURI + "/scripts/compile_mode.cfg";
+	var compileMode = "test";
+	if (FLfile.exists(modeCfg)) {
+		var _m = FLfile.read(modeCfg);
+		FLfile.remove(modeCfg);
+		if (_m) compileMode = _m.replace(/^[\s﻿]+/, "").replace(/[\s]+$/, "");
+	}
+	if (compileMode == "publish") {
+		fl.trace("[compile] publish (no testMovie): " + doc.name);
+		doc.publish();
+	} else {
+		fl.trace("[compile] testMovie: " + doc.name);
+		doc.testMovie();
+	}
 	fl.trace("[compile] done");
 	fl.outputPanel.save(outputLog);
 	// 捕获 Compiler Errors 面板内容

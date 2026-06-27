@@ -40,23 +40,7 @@ else
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/佣兵按钮" centerPoint3DX="349.95" centerPoint3DY="6.65">
-                  <matrix>
-                    <Matrix tx="315.9" ty="-5.65"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point y="11.8"/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(release){
-   _root.佣兵信息界面._visible = !_root.佣兵信息界面._visible;
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <DropShadowFilter alpha="0.8" blurX="0" blurY="0" distance="2"/>
-                  </filters>
-                </DOMSymbolInstance>
+                
                 <DOMSymbolInstance libraryItemName="sprite/战宠按钮" centerPoint3DX="272.2" centerPoint3DY="12.45">
                   <matrix>
                     <Matrix tx="237.15" ty="-5.65"/>

@@ -15,7 +15,10 @@ param(
     #   publish / asloader → scripts/asLoader（发布 asLoader.swf；自动启用 -VerifySwf scripts/asLoader.swf）
     #   <FLA/XFL 路径>     → 指定文档（相对仓库根或绝对路径）
     #   省略             → 用 Flash 当前活动文档（向后兼容旧行为）
-    [string]$Target = ''
+    [string]$Target = '',
+    # 对任意 -Target 强制 publish-only（doc.publish() 而非 testMovie）：编译产出 SWF + Compiler Errors，
+    # 不启动测试播放器。main 目标已隐含 publish；资源 FLA（如 things0）想避免弹播放器时显式加此开关。
+    [switch]$PublishOnly
 )
 
 $ErrorActionPreference = 'Stop'
@@ -172,27 +175,44 @@ if ($taskMode.IsLegacy) {
 # 编译目标切换：把 -Target 解析成具体 FLA/XFL，写 scripts/compile_target.cfg（file:/// URI）供 compile_action.jsfl 读取。
 #   不传 -Target → 删除该文件 → JSFL 回退「当前活动文档」（向后兼容）。传 -Target → JSFL 读到后删除，避免旧目标残留。
 $TargetCfg = Join-Path $ScriptDir 'compile_target.cfg'
+$ModeCfg = Join-Path $ScriptDir 'compile_mode.cfg'
 Remove-Item -Path $TargetCfg -ErrorAction SilentlyContinue
+Remove-Item -Path $ModeCfg -ErrorAction SilentlyContinue
 $targetUri = ''
+# 编译动作模式：默认 test（testMovie，跑 trace / 刷新 SWF）。main（整套游戏主文件）走 publish——
+#   doc.publish() 只编译产出 SWF + 填充 fl.compilerErrors，不 testMovie 拉起全量游戏窗口（连不上 launcher
+#   socket 卡住 / 撞反盗版层 / 留僵尸窗口）。compile_action.jsfl 据 compile_mode.cfg 选 publish vs testMovie。
+$compileMode = 'test'
 if ($Target) {
     switch -Regex ($Target.ToLower()) {
         '^(test|testloader)$'  { $targetPath = Join-Path $ProjectDir 'scripts\TestLoader\TestLoader.xfl' }
         '^(publish|asloader)$' { $targetPath = Join-Path $ProjectDir 'scripts\asLoader\asLoader.xfl' }
+        '^(main|mainfile|empire)$' {
+            $targetPath = Join-Path $ProjectDir 'CRAZYFLASHER7MercenaryEmpire\CRAZYFLASHER7MercenaryEmpire.xfl'
+            $compileMode = 'publish'   # 主文件：publish-only，避免 testMovie 启动整套游戏
+        }
         default {
             $targetPath = if ([System.IO.Path]::IsPathRooted($Target)) { $Target } else { Join-Path $ProjectDir $Target }
         }
     }
+    if ($PublishOnly) { $compileMode = 'publish' }   # 显式 publish-only（任意 target）
     if (-not (Test-Path $targetPath)) {
         Write-Host ('[ERROR] 编译目标不存在: {0}' -f $targetPath)
-        Write-Host '        -Target 取值: test | publish | <FLA/XFL 路径>（相对仓库根或绝对）'
+        Write-Host '        -Target 取值: test | publish | main | <FLA/XFL 路径>（相对仓库根或绝对）'
         exit 1
     }
     $targetUri = Convert-ToJsflUri $targetPath
-    Write-Host ('[INFO] 编译目标: {0} -> {1}' -f $Target, $targetPath)
+    Write-Host ('[INFO] 编译目标: {0} -> {1} (模式: {2})' -f $Target, $targetPath, $compileMode)
     # publish 目标自动启用 SWF 刷新门（testing-guide「asLoader publish 一律 -VerifySwf」铁律），除非用户已显式指定。
     if (-not $VerifySwf -and ($Target.ToLower() -match '^(publish|asloader)$')) {
         $VerifySwf = 'scripts/asLoader.swf'
         Write-Host '[INFO] publish 目标 -> 自动启用 -VerifySwf scripts/asLoader.swf'
+    }
+    # main 目标 doc.publish() 按发布设置输出到仓库根 CRAZYFLASHER7MercenaryEmpire.swf（已实测确认）。
+    # 自动启用 SWF 刷新门（fail-closed，对齐 asLoader publish 铁律）：marker 产出但 SWF 未重写 = 判失败。
+    if (-not $VerifySwf -and ($Target.ToLower() -match '^(main|mainfile|empire)$')) {
+        $VerifySwf = 'CRAZYFLASHER7MercenaryEmpire.swf'
+        Write-Host '[INFO] main 目标 -> 自动启用 -VerifySwf CRAZYFLASHER7MercenaryEmpire.swf'
     }
 } else {
     Write-Host '[INFO] 编译目标: Flash 当前活动文档（未指定 -Target）'
@@ -212,13 +232,21 @@ if (Test-Path $BomChecker) {
         $StateMachineDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\neur\StateMachine'
         $CommDir = Join-Path $ProjectDir 'scripts\通信'
         $TestLoaderEntry = Join-Path $ProjectDir 'scripts\TestLoader.as'
+        # 主文件 classpath = scripts\类定义\；web-panel 迁移类（task/merc/stageSelect）近期高频编辑，
+        #   BOM 丢失会被 CS6 静默跳过整类 → 入门 BOM 门覆盖这些 arki 子树，配合 main 目标 publish 验证。
+        $TaskClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\task'
+        $MercClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\merc'
+        $StageSelectClassDir = Join-Path $ProjectDir 'scripts\类定义\org\flashNight\arki\stageSelect'
         $BomArgs = @()
         if (Test-Path $BootClassDir) { $BomArgs += @('--dir', $BootClassDir) }
         if (Test-Path $ServerClassDir) { $BomArgs += @('--dir', $ServerClassDir) }
         if (Test-Path $StateMachineDir) { $BomArgs += @('--dir', $StateMachineDir) }
         if (Test-Path $CommDir) { $BomArgs += @('--dir', $CommDir) }
+        if (Test-Path $TaskClassDir) { $BomArgs += @('--dir', $TaskClassDir) }
+        if (Test-Path $MercClassDir) { $BomArgs += @('--dir', $MercClassDir) }
+        if (Test-Path $StageSelectClassDir) { $BomArgs += @('--dir', $StageSelectClassDir) }
         if (Test-Path $TestLoaderEntry) { $BomArgs += @('--file', $TestLoaderEntry) }
-        Write-Host '[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --file scripts/TestLoader.as'
+        Write-Host '[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\stageSelect --file scripts/TestLoader.as'
         & node $BomChecker @BomArgs
         if ($LASTEXITCODE -ne 0) {
             Write-Host '[ERROR] BOM 门失败：存在缺 BOM 的 #include .as，编译器会静默跳过其内容。修复后重试。'
@@ -254,6 +282,10 @@ if ($VerifySwf) {
 Write-Host ('[INFO] 触发编译... (超时 {0}s)' -f $TimeoutSeconds)
 if ($targetUri) {
     [System.IO.File]::WriteAllText($TargetCfg, $targetUri, (New-Object System.Text.UTF8Encoding($false)))
+}
+# publish 模式（main）→ 写 compile_mode.cfg，compile_action.jsfl 读到后用 doc.publish() 而非 testMovie。
+if ($compileMode -eq 'publish') {
+    [System.IO.File]::WriteAllText($ModeCfg, $compileMode, (New-Object System.Text.UTF8Encoding($false)))
 }
 Start-ScheduledTask -TaskName 'CompileTriggerTask'
 
