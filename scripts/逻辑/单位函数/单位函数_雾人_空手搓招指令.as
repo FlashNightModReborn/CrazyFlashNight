@@ -177,7 +177,7 @@ _root.技能函数.使用能量喷泉 = function():Number {
 _root.技能函数.使用连环踢 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能.拳脚攻击;
-	if(!技能 || 技能.等级 < 1) return 0;
+	if(!技能 || 技能.等级 > 1) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "连环踢") {
