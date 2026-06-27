@@ -26,6 +26,7 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("deploy", "mercDeploy")]
         [InlineData("dismiss", "mercDismiss")]
         [InlineData("hire", "mercHire")]
+        [InlineData("world_hire", "mercWorldHire")]
         [InlineData("revive", "mercRevive")]
         [InlineData("equip_tooltip", "mercEquipTooltip")]
         public void HandleWebRequest_KnownCommand_ForwardsTrustedAction(string cmd, string action)
@@ -70,6 +71,26 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("deploy", (string)resp["cmd"]);
             Assert.Equal("web-4", (string)resp["callId"]);
             Assert.Null(resp["task"]);
+        }
+
+        [Fact]
+        public void HandleFlashResponse_WorldHire_PreservesHiredFlag()
+        {
+            // 世界内雇佣成功回 hired:true（前端据此关面板）；C# 改写信封后须原样保留。
+            string sent = null;
+            string posted = null;
+            var task = new MercTask(() => true, payload => sent = payload);
+            task.SetPostToWeb(json => posted = json);
+            task.HandleWebRequest("world_hire", JObject.Parse("{\"callId\":\"web-wh\"}"));
+            int fid = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+            task.HandleFlashResponse(JObject.Parse("{\"task\":\"merc_response\",\"callId\":" + fid + ",\"success\":true,\"hired\":true,\"mercName\":\"X\"}"), _ => { });
+
+            var resp = JObject.Parse(posted);
+            Assert.Equal("mercs", (string)resp["panel"]);
+            Assert.Equal("world_hire", (string)resp["cmd"]);
+            Assert.True((bool)resp["success"]);
+            Assert.True((bool)resp["hired"]);
         }
     }
 }

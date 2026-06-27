@@ -73,6 +73,12 @@ class org.flashNight.arki.merc.PetPanelService {
             org.flashNight.arki.merc.PetPanelService.handlePanelClose(params);
         };
 
+        // 世界内招募（旧 Symbol 2035 宠物分支）web 等价。NPC 入口走 MercPanelService.openWebHire
+        // （判 kind=pet），确认写回到此。设计见 docs/佣兵世界内雇佣-Web迁移-架构设计-2026-06-27.md。
+        _root.gameCommands["petWorldAdopt"] = function(params) {
+            org.flashNight.arki.merc.PetPanelService.handleWorldAdopt(params);
+        };
+
         _inited = true;
     }
 
@@ -982,6 +988,70 @@ class org.flashNight.arki.merc.PetPanelService {
             callId: callId,
             success: true
         });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 世界内招募（战宠）—— 旧 Symbol 2035 宠物分支的 web 等价。
+    //   入口同佣兵：Symbol 1770 bt2（NPC 有 宠物数据）→ MercPanelService.openWebHire(kind="pet")。
+    //   权威读 openWebHire stash 的 _root._pendingHire.pet + .雇佣价格（NPC 可能已超时离场，web 不传）。
+    //   ⚠ 顺手修：原版 雇佣宠物 卡 金钱 门但漏扣费（佣兵那边 雇佣佣兵:183 是扣的），
+    //     用户拍板对齐佣兵语义 → 此处补扣 雇佣价格。
+    // ═══════════════════════════════════════════════════════════
+    public static function handleWorldAdopt(params:Object):Void {
+        var callId = params.callId;
+        // 权威读 stash 的数据快照（可雇 NPC 有寿命会自行 despawn、team 面板不暂停 → 招募期间可能离场；
+        // 复刻旧 Symbol 2035：数据 stash 下来 survive despawn。不信 web，安全姿态不变）
+        var stash:Object = _root._pendingHire;
+        if (stash == undefined || stash.pet == undefined || stash.pet == null) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "npc_gone" });
+            return;
+        }
+        var petData:Array = stash.pet;
+
+        // 定价（复刻 刷新宠物数据:76）：金币 = NPC.雇佣价格（世界内招募无 K点）
+        var goldPrice:Number = Number(stash.雇佣价格) || 0;
+
+        // 栏位（复刻 结算:139-150 pet 分支）：宠物信息 length==0 空格
+        var slot:Number = -1;
+        for (var s:Number = 0; s < _root.宠物信息.length; s++) {
+            var occ:Array = _root.宠物信息[s];
+            if (occ == undefined || occ.length == 0) { slot = s; break; }
+        }
+        if (slot < 0) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "slots_full" });
+            return;
+        }
+
+        // 金钱门（复刻 结算:132）+ ⚠ 顺手修扣费（原版 雇佣宠物 无此扣减）
+        if (Number(_root.金钱) < goldPrice) {
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "insufficient_gold", goldPrice: goldPrice, currentGold: Number(_root.金钱) });
+            return;
+        }
+        _root.金钱 -= goldPrice;   // ← 顺手修：原版 雇佣宠物 漏此行（gate-but-no-charge）
+
+        // 写入 + 出战上限处理（复刻 雇佣宠物:250-262）。petData = NPC.宠物数据 直接落槽（已是 宠物信息 格式）
+        _root.宠物信息[slot] = petData;
+        _root.最大宠物出战数 = Math.min(_root.等级 / 5, 5);
+        if (_root.isChallengeMode() == true) _root.最大宠物出战数 = _root.等级 / 35;
+        if (_root.isEasyMode() == true) _root.最大宠物出战数 = 5 + _root.等级 / 5;
+        if (_root.出战宠物id库.length >= _root.最大宠物出战数) _root.宠物信息[slot][4] = 0;
+        // 扣 金钱 + 写 宠物信息 全 save-relevant，必须标脏
+        _root.存档系统.dirtyMark = true;
+
+        // 成就记账（对齐 handleAdopt 埋点 #9）
+        if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+            org.flashNight.arki.achievement.AchievementMetrics.record("宠物领养次数", 1);
+            org.flashNight.arki.achievement.AchievementMetrics.record("宠物领养花费金币", goldPrice);
+        }
+
+        // 世界：删 NPC（还在才删，超时离场则跳过）+ 重载场景宠物（复刻 雇佣宠物:248-266；AS2 独占）
+        var npc:Object = (stash.npcId != undefined) ? _root.gameworld[stash.npcId] : undefined;
+        if (npc != undefined && npc._x != undefined) _root.gameworld[stash.npcId].removeMovieClip();
+        _root.删除场景宠物();
+        _root.加载宠物(_root.gameworld[_root.控制目标]._x, _root.gameworld[_root.控制目标]._y);
+        _root._pendingHire = undefined;
+
+        sendResponse({ task: "pet_response", callId: callId, success: true, hired: true, slotIndex: slot, gold: Number(_root.金钱) || 0 });
     }
 
     // ═══════════════════════════════════════════════════════════

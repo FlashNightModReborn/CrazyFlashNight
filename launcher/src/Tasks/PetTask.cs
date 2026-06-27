@@ -119,6 +119,11 @@ namespace CF7Launcher.Tasks
                 case "adopt":
                     action = "petAdopt";
                     break;
+                case "world_adopt":
+                    // 世界内招募（NPC 处确认）：转发 petWorldAdopt；AS2 用 _pendingHireNpc 读权威。
+                    // 回 hired:true（前端关面板）。见 设计 §3.3。
+                    action = "petWorldAdopt";
+                    break;
                 case "deploy":
                     action = "petDeploy";
                     break;

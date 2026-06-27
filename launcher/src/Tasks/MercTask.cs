@@ -92,6 +92,11 @@ namespace CF7Launcher.Tasks
                 case "hire":
                     action = "mercHire";
                     break;
+                case "world_hire":
+                    // 世界内雇佣（NPC 处确认）：转发 mercWorldHire；AS2 用 _pendingHireNpc 读权威，
+                    // web 不传金额/数据。回 hired:true（前端关面板）。见 设计 §3.3。
+                    action = "mercWorldHire";
+                    break;
                 case "revive":
                     action = "mercRevive";
                     break;

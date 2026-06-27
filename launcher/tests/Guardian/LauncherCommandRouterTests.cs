@@ -213,6 +213,21 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void RequestOpenPanel_Team_RoutesToOpenTeamPanelWithInitData()
+        {
+            // 世界内雇佣入口：NPC openWebHire 发 panel_request panel="team"，必须开 team 面板并
+            // 透传 initData {view:"hire",kind,npcId,initialTab}。无 team 分支会静默丢弃（unsupported panel）。
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            r.RequestOpenPanel("team", "npc_hire", null, null, null, null, null, "{\"view\":\"hire\",\"kind\":\"merc\",\"npcId\":\"敌人123\",\"initialTab\":\"mercenary\"}");
+            Assert.Single(c.Posts);
+            Assert.Contains("\"panel\":\"team\"", c.Posts[0]);
+            Assert.Contains("\"view\":\"hire\"", c.Posts[0]);
+            Assert.Contains("\"kind\":\"merc\"", c.Posts[0]);
+            Assert.Contains("\"source\":\"npc_hire\"", c.Posts[0]);
+        }
+
+        [Fact]
         public void RequestOpenPanel_Unknown_NoPost()
         {
             Capture c = new Capture();

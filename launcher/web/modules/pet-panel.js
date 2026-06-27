@@ -34,6 +34,7 @@
     var _reqSeq = 0;
     var _session = 0;
     var _busy = false;
+    var _hireCandidate = null;   // 世界内招募候选（NPC 处，置顶在 roster 顶部的战宠卡；null=普通战宠管理）
     var _sortMode = 'default';
     var _filterMode = 'all';
     var _firstSnapshot = true;
@@ -406,6 +407,7 @@
     // ═══════════════════════════════════════════════════════════
     function onOpen(el, initData) {
         _session++;
+        _hireCandidate = (initData && initData.hireCandidate) || null;   // 世界内招募候选（NPC 处，置顶卡）
         _pendingReq = {};
         _busy = false;
         _snapshot = null;
@@ -679,6 +681,8 @@
         if (animate === undefined) animate = true;
         hideTip();
         _gridEl.innerHTML = '';
+        // 世界内招募候选：战宠卡置顶在现役上方（待招募高亮 + 招募CTA + 实时门控）
+        if (_hireCandidate) _gridEl.appendChild(buildPetCandidateCard(_hireCandidate));
         var order = visibleOrder();
         var totalPets = _pets ? _pets.length : 0;
 
@@ -736,6 +740,39 @@
         for (var j = 0; j < cards.length; j++) { if (cards[j] === oldCard) { oldPos = j; break; } }
         if (oldPos === newPos) refreshCard(slotIndex);      // 位次未变 → 局部刷
         else renderPetGrid(false);                          // 位次变 → 整排重排
+    }
+
+    // 世界内招募候选卡（旧 Symbol 2035 宠物分支的 web 等价）：用 .pet-card 视觉，
+    // 但只展示 图标/名字/等级/契约金 + 招募CTA（未领养无体力/经验/出战）。门控按实时 snapshot 复算 →
+    // 删宠腾位/金币变动后重渲染即自动解禁。
+    function buildPetCandidateCard(cand) {
+        var card = document.createElement('div');
+        card.className = 'pet-card pet-card-candidate';
+        var totalPets = _pets ? _pets.length : 0;
+        var slotsFull = _snapshot && _snapshot.maxSlots > 0 && totalPets >= _snapshot.maxSlots;
+        var gold = _snapshot ? (_snapshot.gold || 0) : 0;
+        var block = '';
+        if (slotsFull) block = '栏位已满';
+        else if (gold < cand.goldPrice) block = '金币不足';
+        card.innerHTML =
+            '<span class="pet-card-frame"></span>' +
+            '<div class="pet-card-top">' +
+                '<img class="pet-card-icon" src="assets/pets/pet_' + cand.petId + '.png" onerror="this.onerror=null;this.src=\'assets/pets/pet_locked.png\'" alt="">' +
+                '<div class="pet-card-headinfo">' +
+                    '<div class="pet-card-nameline">' +
+                        '<span class="pet-card-name">' + escapeHtml(cand.name) + '</span>' +
+                        '<span class="pet-card-lv">Lv.' + cand.level + '</span>' +
+                    '</div>' +
+                    '<div class="pet-card-badges"><span class="pet-badge pet-badge-candidate">待招募</span></div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="pet-card-meters"><div class="pet-cand-price' + (gold < cand.goldPrice ? ' bad' : '') + '">契约金 ' + (cand.goldPrice || 0) + '</div></div>' +
+            '<div class="pet-card-actions">' +
+                '<button class="pet-mini-btn pet-mini-btn-deploy pet-cand-adopt" type="button"' + (block ? ' disabled' : '') + '>' + (block || '招募') + '</button>' +
+            '</div>';
+        var btn = card.querySelector('.pet-cand-adopt');
+        if (btn && !block) btn.addEventListener('click', function(e) { e.stopPropagation(); onWorldAdopt(this); });
+        return card;
     }
 
     function renderPetCard(pet, petIndex) {
@@ -1427,6 +1464,27 @@
             } else {
                 showToast('领养失败：' + (data.reason || data.error || '未知错误'), 'warn');
             }
+        });
+    }
+
+    // 世界内招募（NPC 处，旧 Symbol 2035 宠物分支的 web 等价）：world_adopt 走 pets 通道，
+    // AS2 用 _pendingHireNpc 读权威、扣费、写 宠物信息、加载宠物 + 删 NPC。回 hired:true → 关面板。
+    function onWorldAdopt(btn) {
+        if (_busy) return;
+        beginOp(btn);
+        sendPanelMsg('world_adopt', {}, function(data) {
+            endOp(btn);
+            if (data && data.success && data.hired) {
+                requestClose();   // 已加载宠物 + 删 NPC，关面板交还 Flash
+                return;
+            }
+            var err = (data && data.error) || 'unknown';
+            showToast(({
+                insufficient_gold: '金币不足',
+                slots_full: '战宠栏位已满，请先删除部分战宠',
+                npc_gone: 'NPC 已离开，招募取消',
+                disconnected: '连接已断开'
+            })[err] || ('招募失败：' + err), 'warn');
         });
     }
 

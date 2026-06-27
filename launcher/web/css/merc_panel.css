@@ -437,6 +437,17 @@
     background: linear-gradient(180deg, #a3362b, #7e251c);
     box-shadow: 0 0 0 1px rgba(226,80,62,0.45);
 }
+/* 世界内雇佣候选（置顶卡）：青绿「待雇佣」高亮，与现役橙色出战态区分，示意「待入列」 */
+.merc-card-candidate {
+    box-shadow: 0 0 0 1px #4fd6c0, 0 0 18px rgba(79,214,192,0.32),
+                inset 0 15px 26px -18px rgba(79,214,192,0.45);
+}
+.merc-badge-candidate {
+    color: #06302a;
+    background: linear-gradient(180deg, #6ef0d8, #2bc0a6);
+    box-shadow: 0 0 0 1px rgba(20,120,104,0.5), 0 0 8px rgba(79,214,192,0.4);
+    display: inline-flex; align-items: center;
+}
 
 /* 阵亡卡：头像去彩 + 信息压暗 + 红调角框（出战暖辉不可能并存） */
 .merc-card-dead .merc-card-portrait { filter: grayscale(1) brightness(0.75); }

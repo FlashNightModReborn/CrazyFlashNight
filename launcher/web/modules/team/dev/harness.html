@@ -120,6 +120,8 @@ var MockHost = {
         maxLevel:HIRE_POOL[HIRE_POOL.length-1].level,
         hireable:HIRE_POOL.slice((page-1)*perPage,page*perPage)};
     }
+    // 世界内雇佣确认：world_hire(panel=mercs)/world_adopt(panel=pets) → hired:true（镜像 AS2 handleWorldHire/Adopt）
+    if(msg.cmd === 'world_hire' || msg.cmd === 'world_adopt'){ this.lastWorldHire=msg; resp.hired=true; }
     setTimeout(function(){ emit('panel_resp',resp); },5);
   }
 };
@@ -316,6 +318,57 @@ var MockHost = {
     assert('team-ui27','兼容入口覆盖初始标签',active()==='partner',active());
     var host=document.querySelector('.team-host');
     assert('team-ui28','面板内容无布局溢出',host.scrollWidth<=host.clientWidth && host.scrollHeight<=host.clientHeight,host.scrollWidth+'x'+host.scrollHeight);
+    // ── 世界内雇佣：NPC 处 openWebHire → 候选置顶进 roster（真·战队卡，与现役同屏可比较）→ world_hire → 关面板 ──
+    Panels.close(); await wait(40);
+    Panels.open('team',{view:'hire',kind:'merc',initialTab:'mercenary',detail:{
+      kind:'merc',slotIndex:-1,name:'流浪佣兵',level:14,gender:'男',height:175,
+      face:'男变装-基本脸型',hair:'发型-男式-黑韩式头',equips:equips(),skills:skills(13),personality:personality(),
+      goldPrice:8000,kPrice:0,levelGap:false}});
+    await waitFor(function(){return document.querySelector('#merc-grid .merc-card-candidate');},2000);
+    var candCard=document.querySelector('#merc-grid .merc-card-candidate');
+    assert('team-ui29','世界内雇佣候选置顶进 roster（真·战队卡 + 待雇佣高亮 + 与现役同屏可比较）',
+      !!candCard && candCard===document.querySelector('#merc-grid .merc-card') &&
+      candCard.querySelector('.merc-card-name').textContent.indexOf('流浪佣兵')>=0 &&
+      !!candCard.querySelector('.merc-badge-candidate') &&
+      document.querySelectorAll('#merc-grid .merc-card').length===4);
+    var wbefore=MockHost.closeCount;
+    candCard.querySelector('.merc-mini-btn-hire').click();
+    await waitFor(function(){return MockHost.closeCount>wbefore;},2000);
+    assert('team-ui30','候选「雇佣」发 world_hire(panel=mercs) 且 hired→关面板',
+      MockHost.lastWorldHire && MockHost.lastWorldHire.cmd==='world_hire' && MockHost.lastWorldHire.panel==='mercs' &&
+      MockHost.closeCount>wbefore);
+    Panels.close(); await wait(30);
+    Panels.open('team',{view:'hire',kind:'merc',initialTab:'mercenary',detail:{
+      kind:'merc',slotIndex:-1,name:'高级佣兵',level:80,gender:'男',height:180,
+      face:'男变装-基本脸型',hair:'发型-男式-黑韩式头',equips:equips(),skills:skills(6),personality:personality(),
+      goldPrice:5000,kPrice:0,levelGap:true}});
+    await waitFor(function(){var c=document.querySelector('#merc-grid .merc-card-candidate .merc-card-name'); return c && c.textContent.indexOf('高级佣兵')>=0;},2000);
+    var gapBtn=document.querySelector('#merc-grid .merc-card-candidate .merc-mini-btn-hire');
+    assert('team-ui31','候选门控可视化：levelGap（低等级限高级）→ 雇佣钮禁用直写原因',
+      gapBtn && gapBtn.disabled===true && gapBtn.textContent.indexOf('等级过高')>=0);
+    Panels.close(); await wait(20);
+    // ── 世界内招募（战宠）：候选战宠卡置顶进 pet roster → world_adopt → 关面板 ──
+    Panels.open('team',{view:'hire',kind:'pet',initialTab:'partner',detail:{
+      kind:'pet',petId:1,name:'流浪战宠',level:8,goldPrice:3000}});
+    await waitFor(function(){var c=document.querySelector('.pet-card-candidate .pet-card-name'); return c && c.textContent.indexOf('流浪战宠')>=0;},2000);
+    var petCand=document.querySelector('.pet-card-candidate');
+    assert('team-ui32','世界内招募候选置顶进 pet roster（战宠卡 + 待招募高亮 + 招募CTA）',
+      !!petCand && !!petCand.querySelector('.pet-badge-candidate') &&
+      petCand.querySelector('.pet-card-name').textContent.indexOf('流浪战宠')>=0 &&
+      !!petCand.querySelector('.pet-cand-adopt:not([disabled])'));
+    var pbefore=MockHost.closeCount;
+    petCand.querySelector('.pet-cand-adopt').click();
+    await waitFor(function(){return MockHost.closeCount>pbefore;},2000);
+    assert('team-ui33','候选「招募」发 world_adopt(panel=pets) 且 hired→关面板',
+      MockHost.lastWorldHire && MockHost.lastWorldHire.cmd==='world_adopt' && MockHost.lastWorldHire.panel==='pets' && MockHost.closeCount>pbefore);
+    Panels.close(); await wait(30);
+    Panels.open('team',{view:'hire',kind:'pet',initialTab:'partner',detail:{
+      kind:'pet',petId:2,name:'贵价战宠',level:5,goldPrice:99999999}});
+    await waitFor(function(){var c=document.querySelector('.pet-card-candidate .pet-card-name'); return c && c.textContent.indexOf('贵价战宠')>=0;},2000);
+    var pgapBtn=document.querySelector('.pet-card-candidate .pet-cand-adopt');
+    assert('team-ui34','候选门控可视化：金币不足→招募钮禁用直写原因',
+      pgapBtn && pgapBtn.disabled===true && pgapBtn.textContent.indexOf('金币不足')>=0);
+    Panels.close(); await wait(20);
     var failed=results.filter(function(x){return !x.pass;}).length;
     window.__qaResult={qa:{total:results.length,passed:results.length-failed,failed:failed,results:results}};
     document.getElementById('qa').textContent=(results.length-failed)+'/'+results.length+' passed';

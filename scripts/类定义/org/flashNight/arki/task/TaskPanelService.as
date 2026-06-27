@@ -782,6 +782,10 @@ class org.flashNight.arki.task.TaskPanelService {
         _root.金钱 -= deposit;
         if (kDeposit > 0) _root.虚拟币 -= kDeposit;
         if (typeof _root.获取虚拟币值 == "function") _root.获取虚拟币值();
+        // ⚠ 扣费改写了 金钱/虚拟币（权威存档态），必须显式标脏。重进同一副本时 AddTask 命中
+        //   已在进行的任务会 return false 且只在实际 push 后才 dirtyMark（通信_鸡蛋_任务系统.as:419-421），
+        //   不在此处补标脏的话：重进扣费成功却不落盘 → 下次存档/读档费用回滚（外部审阅 P1b）。
+        _root.存档系统.dirtyMark = true;
 
         // 接取任务
         _root.AddTask(taskData.id);

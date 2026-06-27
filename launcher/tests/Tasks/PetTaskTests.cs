@@ -46,6 +46,20 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void HandleWebRequest_WorldAdopt_ForwardsPetWorldAdoptAction()
+        {
+            // 世界内招募（NPC 处确认）：cmd world_adopt → action petWorldAdopt，且夹带 action/task 不得覆盖。
+            string sent = null;
+            var task = new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("world_adopt", JObject.Parse("{\"callId\":\"web-wa\",\"action\":\"evil\",\"task\":\"evil\"}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("cmd", (string)msg["task"]);
+            Assert.Equal("petWorldAdopt", (string)msg["action"]);
+        }
+
+        [Fact]
         public void HandleWebRequest_WebSuppliedActionTask_CannotOverrideTrustedAction()
         {
             // 安全反向用例：Web 夹带 action/task 不得覆盖 C# 由 cmd 派生的可信 action/信封

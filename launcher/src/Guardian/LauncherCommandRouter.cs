@@ -262,6 +262,11 @@ namespace CF7Launcher.Guardian
                 OpenTasksPanel(safeSource, initDataExtrasJson);
                 return;
             }
+            if (string.Equals(panelName, "team", StringComparison.OrdinalIgnoreCase))
+            {
+                OpenTeamPanel(safeSource, initDataExtrasJson);
+                return;
+            }
             LogManager.Log("[Router] RequestOpenPanel unsupported panel=" + panelName);
         }
 
@@ -312,6 +317,34 @@ namespace CF7Launcher.Guardian
             OpenPanel("tasks", jo.ToString(Newtonsoft.Json.Formatting.None));
         }
 
+        // 世界内雇佣（佣兵+战宠）：NPC「雇佣」→ AS2 openWebHire 发 panel_request panel="team"，
+        // initData={view:"hire",kind,npcId,initialTab}。与刘海屏 TEAM 同走 OpenPanel("team", ...)，但携带
+        // 雇佣上下文；team-panel.js onOpen 据 initData.view==="hire" 进单目标确认态（kind 决定 merc/pet tab）。
+        private void OpenTeamPanel(string source, string initDataExtrasJson)
+        {
+            JObject jo = new JObject();
+            jo["source"] = source;
+            if (!string.IsNullOrEmpty(initDataExtrasJson))
+            {
+                try
+                {
+                    JObject extras = JObject.Parse(initDataExtrasJson);
+                    foreach (var prop in extras.Properties())
+                    {
+                        jo[prop.Name] = prop.Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[Router] OpenTeamPanel extras parse failed: " + ex.Message);
+                }
+            }
+            LogManager.Log("[Router] OpenTeamPanel view=" + (jo["view"] != null ? jo["view"].ToString() : "?")
+                + " kind=" + (jo["kind"] != null ? jo["kind"].ToString() : "?")
+                + " npcId=" + (jo["npcId"] != null ? jo["npcId"].ToString() : "?"));
+            OpenPanel("team", jo.ToString(Newtonsoft.Json.Formatting.None));
+        }
+
         // arena 没有 frameLabel 概念；source 用于诊断（"stage_select_arena_redirect" 表示
         // 玩家在 stage-select 点了 DEATH MATCH 角斗场的难度按钮被路由过来）。mode=runtime
         // 与 stage-select 对齐。returnToPanel 非空时，关闭 arena 后由 PanelHostController
@@ -358,6 +391,10 @@ namespace CF7Launcher.Guardian
         /// </summary>
         private void OpenPanel(string panelName, string initDataJson, string returnToPanel, string returnToInitDataJson)
         {
+            // 任意 web 面板打开 → 暂停游戏：玩家此时看不到 AS2 画面，游戏不该在背后继续跑
+            // （NPC 离场 / 敌人攻击 / 计时推进）。幂等 lease（AS2 webPanelPause 只持一个），
+            // 覆盖 panelHost + fallback 两条开面板路；关闭时 case "close" 的 webPanelUnpause 释放。
+            TrySendGameCommand("webPanelPause");
             if (_panelHost != null)
             {
                 _panelHost.OpenPanel(panelName, initDataJson, returnToPanel, returnToInitDataJson);

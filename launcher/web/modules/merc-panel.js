@@ -17,6 +17,7 @@
     var _hireMinLevel = 0;        // 等级快速定位：0=全部，>0 时首次请求带 minLevel 让 AS2 跳页
     var _hireMaxLevel = 0;        // 可见池最高等级（回包下发，用于禁用超出范围的定位钮）
     var _hireData = [];
+    var _hireCandidate = null;    // 世界内雇佣候选（NPC 处，置顶在 roster 顶部的真·战队卡；null=普通战队管理）
 
     var LEVEL_JUMPS = [20, 40, 60, 80];
     var _pendingReq = {};
@@ -418,6 +419,30 @@
         });
     }
 
+    // 世界内雇佣（NPC 处确认）：旧 Symbol 2035 的 web 等价。world_hire 走 mercs 通道，
+    // AS2 用 _pendingHireNpc 读权威、扣费、写入、spawn 于 NPC 位 + 删 NPC。回 hired:true → 关面板。
+    function onWorldHire(btn) {
+        if (_busy) return;
+        _busy = true;
+        setPending(btn, true);
+        sendPanelMsg('world_hire', {}, function(data) {
+            _busy = false;
+            setPending(btn, false);
+            if (data && data.success && data.hired) {
+                requestClose();   // 已 spawn + 删 NPC，关面板交还 Flash
+                return;
+            }
+            var err = (data && data.error) || 'unknown';
+            showToast(({
+                insufficient_gold: '金币不足',
+                slots_full: '佣兵已满，请先解雇腾位',
+                level_gap: '低等级时无法雇佣等级过高的佣兵',
+                npc_gone: 'NPC 已离开，雇佣取消',
+                disconnected: '连接已断开'
+            })[err] || ('雇佣失败: ' + err));
+        });
+    }
+
     function onRevive(slotIndex, btn) {
         if (_busy) return;
         _busy = true;
@@ -736,7 +761,8 @@
         var card = document.createElement('div');
         card.className = 'merc-card' +
             (mode === 'list' && merc.deployed ? ' merc-card-deployed' : '') +
-            (mode === 'list' && merc.dead ? ' merc-card-dead' : '');
+            (mode === 'list' && merc.dead ? ' merc-card-dead' : '') +
+            (mode === 'candidate' ? ' merc-card-candidate' : '');
         card.innerHTML = '<span class="merc-card-frame"></span>';
 
         // ── 左列：头像/名字行 + 装备行 ──
@@ -750,8 +776,9 @@
         var headinfo = document.createElement('div');
         headinfo.className = 'merc-card-headinfo';
         var subHtml;
-        if (mode === 'hire') {
+        if (mode === 'hire' || mode === 'candidate') {
             subHtml = '<div class="merc-card-price">' +
+                (mode === 'candidate' ? '<span class="merc-badge merc-badge-candidate">待雇佣</span>' : '') +
                 '<span class="merc-price-gold">' + (merc.goldPrice || 0).toLocaleString() + ' 金币</span>' +
                 (merc.kPrice > 0 ? '<span class="merc-price-kpoint">' + merc.kPrice + ' K点</span>' : '') +
             '</div>';
@@ -809,9 +836,11 @@
             hireBtn.className = 'merc-mini-btn merc-mini-btn-hire';
             hireBtn.textContent = '雇佣';
             // 禁用时按钮文字直接写原因（仅 title 提示传达不了不可点）
+            // slots/gold 按实时 _snapshot 复算 → 解雇腾位/金币变动后重渲染即自动解禁
             var blockReason = '';
             var slotsFull = _snapshot && _snapshot.maxSlots > 0 && _hiredMercs.length >= _snapshot.maxSlots;
             if (slotsFull) blockReason = '佣兵已满';
+            else if (mode === 'candidate' && merc.levelGap) blockReason = '等级过高';
             else if (_snapshot && _snapshot.gold < merc.goldPrice) blockReason = '金币不足';
             else if (_snapshot && merc.kPrice > 0 && _snapshot.kpoint < merc.kPrice) blockReason = 'K点不足';
             if (blockReason) {
@@ -823,7 +852,8 @@
             }
             hireBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                onHire(merc.poolIndex, this);
+                if (mode === 'candidate') onWorldHire(this);   // 世界内雇佣（NPC 处）
+                else onHire(merc.poolIndex, this);             // 池雇佣
             });
             actions.appendChild(hireBtn);
         }
@@ -833,7 +863,8 @@
         card.addEventListener('click', function() {
             if (_busy) return;
             if (mode === 'list') selectMerc(merc.slotIndex);
-            else selectHire(merc.poolIndex);
+            else if (mode === 'hire') selectHire(merc.poolIndex);
+            // candidate：信息已在卡上（等级/装备），无底部选中详情
         });
         return card;
     }
@@ -1043,8 +1074,15 @@
         grid.innerHTML = '';
         updateResources();
 
+        // 世界内雇佣候选：真·战队卡置顶在队员卡上方（待雇佣高亮 + 雇佣CTA + 实时门控）
+        if (_hireCandidate) {
+            var candCard = buildMercCard(_hireCandidate, 'candidate');
+            candCard.dataset.key = 'candidate';
+            grid.appendChild(candCard);
+        }
+
         if (_hiredMercs.length === 0) {
-            if (emptyEl) emptyEl.hidden = false;
+            if (emptyEl) emptyEl.hidden = !!_hireCandidate;   // 有候选则不显示「空队」提示
             _selectedSlot = -1;
             renderSelbar(_el.querySelector('#merc-selbar'), null, true);
             return;
@@ -1580,6 +1618,7 @@
     // ═══════════════════════════════════════════════════════════
     function onOpen(el, initData) {
         _session++;
+        _hireCandidate = (initData && initData.hireCandidate) || null;   // 世界内雇佣候选（NPC 处，置顶卡）
         _pendingReq = {};
         _busy = false;
         _snapshot = null;

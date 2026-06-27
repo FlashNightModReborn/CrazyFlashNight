@@ -145,11 +145,18 @@ _root.全部翻译(this);
 	}
 	if (NPC对象.佣兵数据 != undefined && text5._visible != false)
 	{
-		_root.佣兵确认面板.佣兵数据 = NPC对象.佣兵数据;
-		_root.佣兵确认面板.宠物数据 = NPC对象.宠物数据 ? NPC对象.宠物数据 : null;
-		_root.佣兵确认面板.当前NPC = 当前NPC;
-		_root.佣兵确认面板.刷新数据();
-		_root.佣兵确认面板._visible = true;
+		if (_root.gameCommands.openWebHire != undefined)
+		{
+			_root.gameCommands.openWebHire({npcId: 当前NPC});   // → web 战队页 hire-confirm（佣兵+战宠）
+		}
+		else   // 回退：openWebHire 未注册时仍用旧 Symbol 2035 面板
+		{
+			_root.佣兵确认面板.佣兵数据 = NPC对象.佣兵数据;
+			_root.佣兵确认面板.宠物数据 = NPC对象.宠物数据 ? NPC对象.宠物数据 : null;
+			_root.佣兵确认面板.当前NPC = 当前NPC;
+			_root.佣兵确认面板.刷新数据();
+			_root.佣兵确认面板._visible = true;
+		}
 	}
 	this._visible = false;
 }

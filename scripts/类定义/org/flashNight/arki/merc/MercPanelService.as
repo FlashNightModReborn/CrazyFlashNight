@@ -58,6 +58,16 @@ class org.flashNight.arki.merc.MercPanelService {
             org.flashNight.arki.merc.MercPanelService.handlePanelClose(params);
         };
 
+        // 世界内雇佣（佣兵+战宠）web 迁移：openWebHire = NPC 交互入口（判 kind 发 panel_request）；
+        // mercWorldHire = 佣兵确认写回（pet 走 PetPanelService.petWorldAdopt）。设计见
+        // docs/佣兵世界内雇佣-Web迁移-架构设计-2026-06-27.md。
+        _root.gameCommands["openWebHire"] = function(params) {
+            org.flashNight.arki.merc.MercPanelService.handleOpenWebHire(params);
+        };
+        _root.gameCommands["mercWorldHire"] = function(params) {
+            org.flashNight.arki.merc.MercPanelService.handleWorldHire(params);
+        };
+
         _inited = true;
     }
 
@@ -746,6 +756,189 @@ class org.flashNight.arki.merc.MercPanelService {
         }
 
         return 已学技能表;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 世界内雇佣（佣兵）—— 旧 Symbol 2035(_root.佣兵确认面板) 的 web 等价。
+    //   入口严格 NPC 交互：Symbol 1770 bt2（NPC 有 佣兵数据）→ openWebHire({npcId})。
+    //   权威读 openWebHire 时 stash 的 _root._pendingHire 数据快照（NPC 可能已超时离场，web 不传金额/数据）。
+    //   定价/出战与 roster handleHire 不同——见设计 §4，逐字复刻 Symbol 2035。
+    // ═══════════════════════════════════════════════════════════
+
+    // openWebHire（AS2 内部）：stash 权威 NPC + 据 宠物数据 判 kind + 发 panel_request 开 team 面板。
+    // pet 也走这里（kind="pet"，确认时由 PetPanelService.handleWorldAdopt 写）。
+    public static function handleOpenWebHire(params:Object):Void {
+        var npcId = (params != undefined) ? params.npcId : undefined;
+        if (npcId == undefined) return;
+        var npc:Object = _root.gameworld[npcId];
+        if (npc == undefined || npc.佣兵数据 == undefined) return;
+        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return;
+        // stash NPC 数据快照（不只 npcId）：可雇 NPC 有寿命，会自行 despawn（MecenaryBehavior 超时删除），
+        // 而 team 面板不暂停游戏 → 玩家在面板里比较/解雇期间 NPC 可能离场。复刻旧 Symbol 2035：把
+        // 佣兵/宠物数据 stash 下来（survive despawn）+ 进图时 NPC 没了就落玩家位（雇佣佣兵:199-208）。
+        // 仍 stash 数据本身（不信 web），安全姿态不变。
+        _root._pendingHire = {
+            npcId: npcId,
+            merc: npc.佣兵数据,
+            pet: (npc.宠物数据 != undefined ? npc.宠物数据 : null),
+            雇佣价格: npc.雇佣价格
+        };
+        var kind:String = (npc.宠物数据 != undefined && npc.宠物数据 != null) ? "pet" : "merc";
+        sendResponse({
+            task: "panel_request",
+            panel: "team",
+            source: "npc_hire",
+            initData: { view: "hire", kind: kind, npcId: npcId, initialTab: (kind == "pet" ? "partner" : "mercenary"), detail: buildHireDetail(npc, kind) }
+        });
+    }
+
+    // 世界内雇佣展示明细（只读，随 panel_request initData 下发供 web 渲染确认卡）。
+    // 门控/价格仅 UX；真门控+扣费在 handleWorldHire/handleWorldAdopt（web 不可信）。
+    private static function buildHireDetail(npc:Object, kind:String):Object {
+        var isEasy:Boolean = (_root.isEasyMode != undefined) ? _root.isEasyMode() : false;
+        var gold:Number = Number(_root.金钱) || 0;
+        if (kind == "pet") {
+            var petData:Array = npc.宠物数据;
+            var petId = (petData != undefined) ? petData[0] : undefined;
+            var petDef:Object = (petId != undefined && _root.宠物库 != undefined) ? _root.宠物库[petId] : undefined;
+            var pGold:Number = Number(npc.雇佣价格) || 0;
+            return {
+                kind: "pet",
+                petId: (petId != undefined ? Number(petId) : 0),   // web 用 assets/pets/pet_<petId>.png 渲染图标
+                name: (petDef != undefined ? String(petDef.Name) : String(petData[1])),
+                level: (petData != undefined ? Number(petData[1]) : 0),
+                identifier: (petDef != undefined ? String(petDef.Identifier) : ""),
+                goldPrice: pGold,
+                affordGold: gold >= pGold,
+                slotsFull: !hasEmptyPetSlot()
+            };
+        }
+        var merc:Array = npc.佣兵数据;
+        // 富卡数据（脸/发/装备/技能/性格）= 与 handleSnapshot 同源 buildMercSummary，供 web 用真·战队卡渲染。
+        var s:Object = buildMercSummary(merc, -1);   // slotIndex=-1：尚未入列（无 deployed/dead）
+        s.kind = "merc";
+        s.goldPrice = mercWorldGoldPrice(merc);
+        s.kPrice = 0;                                 // 世界内雇佣无 K点
+        // levelGap = 世界内雇佣特有「低等级限高级」门（结算:160），AS2 权威算；
+        // slots/gold 门由 web 按实时 snapshot 复算（解雇后自动解禁），故不在此下发。
+        s.levelGap = (Number(_root.等级) + 5 < Number(merc[0]) && Number(_root.等级) < 20 && !isEasy);
+        return s;
+    }
+
+    // 世界内雇佣金币价（复刻 刷新佣兵数据:41-68）：base[18] × 口才折扣。
+    // buildHireDetail(UX) 与 handleWorldHire(扣费) 共用，杜绝展示价/扣费价分叉。
+    private static function mercWorldGoldPrice(merc:Array):Number {
+        var g:Number = Number(merc[18]);
+        if (_root.主角被动技能.口才 && _root.主角被动技能.口才.启用) {
+            g = g * (1 - _root.主角被动技能.口才.等级 * 0.02);
+        }
+        return Math.floor(g);
+    }
+
+    private static function hasEmptyPetSlot():Boolean {
+        var info:Array = _root.宠物信息;
+        if (info == undefined) return false;
+        for (var i:Number = 0; i < info.length; i++) {
+            if (info[i] == undefined || info[i].length == 0) return true;
+        }
+        return false;
+    }
+
+    // mercWorldHire（写）：复刻 Symbol 2035 刷新佣兵数据:39-71（定价）+ 结算:129-169（门控）
+    //   + 雇佣佣兵:171-244（扣费/写槽/spawn/删NPC）。web 仅 confirm，金额/数据全 AS2 权威。
+    public static function handleWorldHire(params:Object):Void {
+        var callId = params.callId;
+        // 权威读 stash 的数据快照（NPC 可能已超时 despawn；数据在 stash 里 survive，不信 web）
+        var stash:Object = _root._pendingHire;
+        if (stash == undefined || stash.merc == undefined) {
+            sendResponse({ task: "merc_response", callId: callId, success: false, error: "npc_gone" });
+            return;
+        }
+        var merc:Array = stash.merc;
+
+        // 定价（复刻 刷新佣兵数据:41-68）：金币 = floor(merc[18] * 口才折扣)，世界内无 K点。
+        // 与 buildHireDetail 的 UX 展示价共用 mercWorldGoldPrice，杜绝分叉。
+        var goldPrice:Number = mercWorldGoldPrice(merc);
+
+        // 门控（复刻 结算:131-164 merc 分支：个数限制 → 低等级限高级 → 金钱）
+        var isEasy:Boolean = (_root.isEasyMode != undefined) ? _root.isEasyMode() : false;
+        if (countCompanions() >= (Number(_root.佣兵个数限制) || 0)) {
+            sendResponse({ task: "merc_response", callId: callId, success: false, error: "slots_full" });
+            return;
+        }
+        if (Number(_root.等级) + 5 < Number(merc[0]) && Number(_root.等级) < 20 && !isEasy) {
+            sendResponse({ task: "merc_response", callId: callId, success: false, error: "level_gap" });
+            return;
+        }
+        if (Number(_root.金钱) < goldPrice) {
+            sendResponse({ task: "merc_response", callId: callId, success: false, error: "insufficient_gold", goldPrice: goldPrice, currentGold: Number(_root.金钱) });
+            return;
+        }
+
+        // 选空槽 [0,佣兵个数限制)（复刻 雇佣佣兵:187-198 的空槽语义，用 countCompanions 同源的健壮判空）
+        if (_root.同伴数据 == undefined) _root.同伴数据 = [];
+        if (_root.佣兵是否出战信息 == undefined) _root.佣兵是否出战信息 = [];
+        var maxSlots:Number = Number(_root.佣兵个数限制) || 0;
+        var slot:Number = -1;
+        for (var s:Number = 0; s < maxSlots; s++) {
+            var occ:Array = _root.同伴数据[s];
+            if (occ == undefined || occ[0] == undefined) { slot = s; break; }
+        }
+        if (slot == -1) {
+            sendResponse({ task: "merc_response", callId: callId, success: false, error: "slots_full" });
+            return;
+        }
+
+        // 扣费 + 写入（复刻 雇佣佣兵:183-198）
+        _root.金钱 -= goldPrice;
+        _root.买佣兵(merc[2], Math.floor(goldPrice * 0.8));
+        _root.同伴数据[slot] = merc;
+        _root.佣兵是否出战信息[slot] = 1;   // ⚠ 世界内雇佣默认出战（=1），与 roster handleHire(=0) 不同
+        _root.同伴数 = countCompanions();
+        // 扣 金钱 + 写 同伴数据/佣兵是否出战信息/同伴数，全 save-relevant，必须标脏
+        _root.存档系统.dirtyMark = true;
+
+        // 颈部装备老项链 → 军牌映射（复刻 雇佣佣兵:209-216）
+        if (merc[11] == "角斗高手项链") merc[11] = "战斗专家军牌";
+        else if (merc[11] == "角斗王者项链") merc[11] = "战斗狂人军牌";
+
+        // 从可雇佣兵池移除（复刻 雇佣佣兵:217-232）
+        if (merc[19] && merc[19].是否杂交 == false) {
+            spliceFromPool(_root.可雇佣兵, merc);
+            if (merc[19].隐藏) spliceFromPool(_root.隐藏的可雇佣兵, merc);
+        }
+
+        // 成就记账（对齐 handleHire 埋点 #12）
+        if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+            org.flashNight.arki.achievement.AchievementMetrics.record("佣兵雇佣次数", 1);
+            org.flashNight.arki.achievement.AchievementMetrics.record("佣兵雇佣花费金币", goldPrice);
+        }
+
+        // 世界 spawn + 删 NPC（复刻 雇佣佣兵:199-237；AS2 独占，web 做不到）。
+        // ⚠ 字段名须与 Symbol 2035:234 attachMovie 逐一对齐，漏字段 = 单位渲染缺件。
+        // NPC 还在 → 落其位 + removeMovieClip；已超时离场 → 落玩家位、跳过 remove（复刻 雇佣佣兵:199-208 兜底）。
+        var npc:Object = (stash.npcId != undefined) ? _root.gameworld[stash.npcId] : undefined;
+        var npcAlive:Boolean = (npc != undefined && npc._x != undefined);
+        var posX:Number = npcAlive ? npc._x : _root.gameworld[_root.控制目标]._x;
+        var posY:Number = npcAlive ? npc._y : _root.gameworld[_root.控制目标]._y;
+        _root.gameworld.attachMovie("主角-男", "同伴" + slot, _root.gameworld.getNextHighestDepth(), {
+            _x: posX, _y: posY, 用户ID: merc[2], 是否为敌人: false, 身高: merc[3], 名字: merc[1], 等级: merc[0],
+            脸型: merc[4], 发型: merc[5], 头部装备: merc[6], 上装装备: merc[7], 手部装备: merc[8], 下装装备: merc[9],
+            脚部装备: merc[10], 颈部装备: merc[11], 长枪: merc[12], 手枪: merc[13], 手枪2: merc[14], 刀: merc[15],
+            手雷: merc[16], 性别: merc[17], 是否为佣兵: true
+        });
+        if (npcAlive) _root.gameworld[stash.npcId].removeMovieClip();
+        _root._pendingHire = undefined;
+
+        sendResponse({ task: "merc_response", callId: callId, success: true, hired: true, mercName: String(merc[1]), goldRemaining: Number(_root.金钱) });
+    }
+
+    // 可雇佣兵池移除：按 名字[1]+用户ID[2] 匹配（复刻 雇佣佣兵:218-220 / 225-227）
+    private static function spliceFromPool(pool:Array, merc:Array):Void {
+        if (pool == undefined) return;
+        for (var i:Number = 0; i < pool.length; i++) {
+            if (pool[i][1] == merc[1] && pool[i][2] == merc[2]) { pool.splice(i, 1); return; }
+        }
     }
 
     // ═══════════════════════════════════════════════════════════

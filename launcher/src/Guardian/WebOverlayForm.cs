@@ -3403,6 +3403,8 @@ namespace CF7Launcher.Guardian
                         {
                             TrySendGameCommand(closeAction);
                         }
+                        // 任意面板关闭 → 取消暂停（与 OpenPanel 的 webPanelPause 配对；AS2 幂等释放）
+                        TrySendGameCommand("webPanelUnpause");
                         // help 等纯 web 面板无需通知 Flash
                         _activePanel = null;
                         if (_onPanelStateChanged != null) _onPanelStateChanged(false);
@@ -3485,6 +3487,8 @@ namespace CF7Launcher.Guardian
                 case "hire":
                 case "dismiss":
                 case "revive":
+                case "world_hire":   // 世界内雇佣佣兵（panel=="mercs" → MercTask）
+                case "world_adopt":  // 世界内招募战宠（panel=="pets" → PetTask）
                     {
                         string panel = parsed.Value<string>("panel") ?? "";
                         if (panel == "stage-select")

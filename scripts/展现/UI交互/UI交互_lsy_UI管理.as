@@ -248,6 +248,21 @@ org.flashNight.arki.pause.PauseManager.subscribe(function(newVal, oldVal, tag):V
     System.IME.setEnabled(false);
 }, null);
 
+// web 面板打开 = 暂停游戏：玩家此时看不到 AS2 画面，游戏不该在背后继续跑（NPC 离场 / 敌人攻击 / 计时推进）。
+// C# 任意 OpenPanel → webPanelPause、case "close" → webPanelUnpause。幂等：只持一个 lease，多次 open
+// （含 returnTo）不叠加，close 释放。（kshop 另有 "shop" lease，叠加安全：两个 lease 都释放才真正解除暂停。）
+if (_root.gameCommands == undefined) _root.gameCommands = {};
+_root.gameCommands["webPanelPause"] = function() {
+    if (_root._webPanelPauseLease == undefined)
+        _root._webPanelPauseLease = org.flashNight.arki.pause.PauseManager.lease(true, "webpanel");
+};
+_root.gameCommands["webPanelUnpause"] = function() {
+    if (_root._webPanelPauseLease != undefined) {
+        org.flashNight.arki.pause.PauseManager.releaseLease(_root._webPanelPauseLease);
+        _root._webPanelPauseLease = undefined;
+    }
+};
+
 // 主线任务进度 → 控制按钮可见性
 _root.watch("主线任务进度", function(prop, oldVal, newVal) {
     org.flashNight.arki.render.FrameBroadcaster.pushUiState("q:" + newVal);
