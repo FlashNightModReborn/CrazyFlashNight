@@ -26,7 +26,9 @@ import {
   computeDungeonReward,
   computePotionRow,
   computeMonsterRow,
+  solveWeaponPower,
 } from "@cf7-balance-tool/core";
+import { XMLParser } from "fast-xml-parser";
 
 interface CliOptions {
   attribute?: string;
@@ -41,6 +43,7 @@ interface CliOptions {
   path?: string;
   project?: string;
   sort?: string;
+  target?: string;
   value?: string;
 }
 
@@ -123,6 +126,16 @@ function main(): void {
 
   if (group === "export") {
     runExport(args.slice(1));
+    return;
+  }
+
+  if (group === "solve") {
+    runSolve(args.slice(1));
+    return;
+  }
+
+  if (group === "balance-check") {
+    runBalanceCheck(args.slice(1));
     return;
   }
 
@@ -435,6 +448,12 @@ function parseOptions(args: string[]): CliOptions {
 
     if (current === "--value" && next) {
       options.value = next;
+      index += 1;
+      continue;
+    }
+
+    if (current === "--target" && next) {
+      options.target = next;
       index += 1;
       continue;
     }
@@ -842,6 +861,106 @@ function runCalc(args: string[]): void {
   });
 
   emitJson({ category, count: outputs.length, results: outputs }, options.output);
+}
+
+// ─── solve command（逆问题：固定其余、求解 power 命中目标 DPS） ───
+
+function runSolve(args: string[]): void {
+  const options = parseOptions(args);
+  const category = args[0];
+  if (category !== "weapons") {
+    throw new Error("Usage: solve weapons --input <fixed.json> [--target <dps>] [--output <file>]");
+  }
+  const inputPath = requireOption(options.input, "--input");
+  const absolutePath = path.resolve(process.cwd(), inputPath);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fixed = JSON.parse(fs.readFileSync(absolutePath, "utf8")) as any;
+  const target = options.target != null ? Number(options.target) : undefined;
+
+  const r = solveWeaponPower(fixed, target);
+  emitJson({
+    solvedPower: Math.round(r.solvedPower),
+    target: Math.round(r.target),
+    averageDPS: Math.round(r.averageDPS),
+    balanceDPS: Math.round(r.balanceDPS),
+    weightedDPS: Math.round(r.output.weightedDPS),
+    recommendedGoldPrice: r.output.recommendedGoldPrice,
+    recommendedKPointPrice: r.output.recommendedKPointPrice,
+    converged: r.converged,
+  }, options.output);
+}
+
+// ─── balance-check command（校验门：重算 + 系数↔客观数据交叉校验） ───
+
+function runBalanceCheck(args: string[]): void {
+  const options = parseOptions(args);
+  const projectConfigPath = resolveProjectConfigPath(options.project);
+  const files = discoverXmlFiles(projectConfigPath).filter((f) => /武器_.*\.xml$/.test(f.absolutePath));
+  const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_", parseTagValue: true });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const num = (v: any): number => (v === "" || v == null ? NaN : Number(v));
+
+  const errors: string[] = [];
+  const checked: string[] = [];
+
+  for (const file of files) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const doc = parser.parse(fs.readFileSync(file.absolutePath, "utf8")) as any;
+    let items = doc?.root?.item;
+    if (!items) continue;
+    if (!Array.isArray(items)) items = [items];
+    const base = path.basename(file.absolutePath);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    for (const it of items as any[]) {
+      const bal = it.balance;
+      if (!bal) continue; // 仅校验带 <balance> 的武器
+      const name = String(it.name);
+      const tag = `${base} / ${name}`;
+      checked.push(name);
+      const d = it.data ?? {};
+
+      const input = {
+        level: num(d.level), bulletPower: num(d.power), shootInterval: num(d.interval),
+        magSize: num(d.capacity), magPrice: num(bal.magPrice), weight: num(d.weight),
+        dualWieldFactor: num(bal.dualWield), pierceFactor: num(bal.pierce),
+        damageTypeFactor: num(bal.damageType), shotgunValue: num(bal.shotgun),
+        impact: num(d.impact), extraWeightLayers: num(bal.weightLayers),
+        categoryFactor: bal.category != null ? num(bal.category) : 1,
+      };
+
+      const missing = Object.entries(input).filter(([, v]) => isNaN(v)).map(([k]) => k);
+      if (missing.length) { errors.push(`${tag}: 平衡输入缺失/非数值 [${missing.join(",")}]`); continue; }
+
+      const out = computeWeaponRow(input);
+
+      // ② DPS 带
+      const ratio = out.averageDPS / out.balanceDPS;
+      if (ratio > 1.3 || ratio < 0.5) {
+        errors.push(`${tag}: averageDPS ${Math.round(out.averageDPS)} vs balanceDPS ${Math.round(out.balanceDPS)} (ratio ${ratio.toFixed(2)} 越界[0.5,1.3])`);
+      }
+
+      // ③a dualWield ↔ use
+      const expDw = (it.use === "手枪" || it.use === "手枪2") ? 2 : 1;
+      if (input.dualWieldFactor !== expDw) {
+        errors.push(`${tag}: dualWield=${input.dualWieldFactor} 与 use=${String(it.use)} 不符(期望 ${expDw})`);
+      }
+
+      // ③b price ↔ 公式价
+      const price = num(it.price);
+      if (!isNaN(price) && price > 0) {
+        const expPrice = input.level * 3900 * Math.pow(1.6, input.extraWeightLayers)
+          * input.categoryFactor * Math.pow(1.6, input.damageTypeFactor - 1) / input.dualWieldFactor;
+        const pr = price / expPrice;
+        if (pr > 1.25 || pr < 0.8) {
+          errors.push(`${tag}: price ${price} 与公式价 ${Math.round(expPrice)} 偏离(ratio ${pr.toFixed(2)}) — weightLayers/category/damageType 可能与档位不符`);
+        }
+      }
+    }
+  }
+
+  emitJson({ checkedCount: checked.length, checked, failures: errors, ok: errors.length === 0 }, options.output);
+  if (errors.length) process.exitCode = 1;
 }
 
 // ─── query command ───
@@ -1423,6 +1542,8 @@ function printHelp(): void {
       "  validate --input <baseline.json> [--output <file>]",
       "  import-excel --input <file.xlsx> [--output <baseline.json>]",
       "  export --input <baseline.json> --output <file.xlsx|file.csv>",
+      "  solve weapons --input <fixed.json> [--target <dps>] [--output <file>]",
+      "  balance-check [--project <file>] [--output <file>]",
       "",
       "Formula categories (calc): weapons, armor, melee, explosives, potions, monsters,",
       "  physicalDamage, magicDamage, weaponPrice, armorPrice, synthesis, dungeonRewards",

@@ -48,6 +48,8 @@
 - 构建链路、依赖门槛、环境前置条件变化
 - 新子栈引入，或旧子栈停止扩张 / 退役
 - source of truth 从一个文档转移到另一个文档
+- 装备生命周期脚本增删（`scripts/逻辑/装备函数/*.as`）→ 同步 `asLoaderManifest/frame37.as` 接线 + 该目录 `README.md` 索引 + `node tools/assemble-collapsed-frame.js` + CS6 重编；`tools/validate-equip-fn-coverage.js` 守一致性
+- 武器 / 技能数值平衡参数变更（武器 XML `<balance>` 节点或 `tools/cf7-balance-tool` 公式系数）→ 同步 `tools/cf7-balance-tool/docs/agent-balance-record-design.md` + 跑 `npm run balance-check`（重算 + 防 hack 交叉校验）；入口路由见 `AGENTS.md` Context Packs「XML / 数据与游戏设计」
 
 ## 5. 回流保护
 

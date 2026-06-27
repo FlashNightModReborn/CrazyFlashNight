@@ -300,6 +300,17 @@ for (var wr = 0; wr < WORLDBUILDING_DOCS.length; wr++) {
     }
 }
 
+// ---- Equipment-function coverage (delegated) ----
+// 装备函数三方一致性（目录 ≡ frame37 #include ≡ README 索引）。详见该脚本头注。
+
+var equipCov = cp.spawnSync("node", [abs("tools/validate-equip-fn-coverage.js")], {
+    cwd: ROOT,
+    stdio: ["ignore", "inherit", "inherit"]
+});
+if (equipCov.status !== 0) {
+    errors.push("装备函数覆盖校验失败：node tools/validate-equip-fn-coverage.js（见上方明细）");
+}
+
 // ---- Output ----
 
 if (warnings.length) {

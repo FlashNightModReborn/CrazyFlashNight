@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+物品ID已自动生成，无需手动维护-->
+<root>
+  <item weapontype="弓弩">
+    <name>追月弩</name>
+    <displayname>追月弩</displayname>
+    <icon>追月弩</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>70200</price>
+    <description>枪和弩稳定性及精确性的完美结合</description>
+    <data>
+      <level>18</level>
+      <weight>6</weight>
+      <dressup>枪-长枪-追月弩</dressup>
+      <capacity>3</capacity>
+      <split>1</split>
+      <diffusion>1</diffusion>
+      <interval>1000</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>20</velocity>
+      <bullet>普通弩箭</bullet>
+      <sound>speed07.wav</sound>
+      <muzzle />
+      <bullethit>火花</bullethit>
+      <clipname>箭矢</clipname>
+      <bulletsize>50</bulletsize>
+      <power>2941</power>
+      <impact>2</impact>
+      <silence>300</silence>
+      <reloadType>tube</reloadType>
+      <reloadPenalty>0</reloadPenalty>
+    </data>
+    <balance>
+      <dualWield>1</dualWield>
+      <pierce>1</pierce>
+      <damageType>1</damageType>
+      <shotgun>1</shotgun>
+      <magPrice>500</magPrice>
+      <weightLayers>0</weightLayers>
+      <category>1</category>
+      <formula>1</formula>
+      <rationale>弓弩谱系/栓动单发狙击弩，cap3=携3支待发箭的游戏化抽象(真实弩单发手动上弦)。use=长枪→dualWield=1；普通弩箭物理非穿→pierce=1,damageType=1；单发→shotgun=1。WL=0(商店货)，magPrice=500=箭矢真实价(消耗品_弹夹.xml)。lv18+cap3+interval1000(栓动节奏≈1/s,贴53式步骑枪手感)，工具求解 power≈2941 使 averageDPS≈balanceDPS(≈5199)。price=70200=18×3900×1.6^0。</rationale>
+    </balance>
+  </item>
+  <item weapontype="弓弩">
+    <name>玄鸦弩</name>
+    <displayname>玄鸦弩</displayname>
+    <icon>玄鸦弩</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>136500</price>
+    <description>占位待完善（栓动单发精准弩，原型 Ravin R29）</description>
+    <data>
+      <level>35</level>
+      <weight>7</weight>
+      <dressup>枪-长枪-玄鸦弩</dressup>
+      <capacity>3</capacity>
+      <split>1</split>
+      <diffusion>1</diffusion>
+      <interval>1000</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>20</velocity>
+      <bullet>普通弩箭</bullet>
+      <sound>speed07.wav</sound>
+      <muzzle />
+      <bullethit>火花</bullethit>
+      <clipname>箭矢</clipname>
+      <bulletsize>50</bulletsize>
+      <power>5843</power>
+      <impact>2</impact>
+      <silence>300</silence>
+      <reloadType>tube</reloadType>
+      <reloadPenalty>0</reloadPenalty>
+    </data>
+    <balance>
+      <dualWield>1</dualWield>
+      <pierce>1</pierce>
+      <damageType>1</damageType>
+      <shotgun>1</shotgun>
+      <magPrice>500</magPrice>
+      <weightLayers>0</weightLayers>
+      <category>1</category>
+      <formula>1</formula>
+      <rationale>弓弩谱系/栓动单发狙击弩，原型 Ravin R29(实测6.75lbs→weight7)。use=长枪→dualWield=1；普通弩箭物理非穿→pierce=1,damageType=1；单发→shotgun=1。WL=0(商店货)，magPrice=500=箭矢真实价。lv35+cap3+interval1000(栓动≈1/s)，工具求解 power≈5843 使 averageDPS≈balanceDPS(≈11242)。price=136500=35×3900×1.6^0。</rationale>
+    </balance>
+  </item>
+  <item weapontype="弓弩">
+    <name>追月连弩</name>
+    <displayname>追月连弩</displayname>
+    <icon>追月连弩</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>262080</price>
+    <description>枪和弩稳定性及精确性的完美结合</description>
+    <data>
+      <level>42</level>
+      <weight>14</weight>
+      <dressup>枪-长枪-追月连弩</dressup>
+      <capacity>7</capacity>
+      <split>1</split>
+      <diffusion>1</diffusion>
+      <interval>200</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>20</velocity>
+      <bullet>普通弩箭</bullet>
+      <sound>speed07.wav</sound>
+      <muzzle />
+      <bullethit>火花</bullethit>
+      <clipname>箭矢</clipname>
+      <bulletsize>50</bulletsize>
+      <power>2362</power>
+      <impact>2</impact>
+      <silence>300</silence>
+      <reloadType>tube</reloadType>
+      <reloadPenalty>0</reloadPenalty>
+    </data>
+    <balance>
+      <dualWield>1</dualWield>
+      <pierce>1</pierce>
+      <damageType>1</damageType>
+      <shotgun>1</shotgun>
+      <magPrice>500</magPrice>
+      <weightLayers>1</weightLayers>
+      <category>1</category>
+      <formula>1</formula>
+      <rationale>弓弩谱系/连弩速射(诸葛连弩血统,cap7 弹仓)。高级弩 weight 翻倍=14。use=长枪→dualWield=1；普通弩箭物理非穿→pierce=1,damageType=1；单发→shotgun=1。WL=1(K点商城)，magPrice=500=箭矢真实价。lv42+cap7+interval200(瞬时5/s,谱系最快)，工具求解 power≈2362 使 averageDPS≈balanceDPS(≈16990)。price=262080=42×3900×1.6^1。</rationale>
+    </balance>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>追月连弩初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>追月连弩周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>
+  <item weapontype="弓弩">
+    <name>追风邀月弩</name>
+    <displayname>追风邀月弩</displayname>
+    <icon>追风邀月弩</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>798720</price>
+    <description>占位待完善（旗舰重型弹仓弩，K点高价合成）</description>
+    <data>
+      <level>50</level>
+      <weight>14</weight>
+      <dressup>枪-长枪-追风邀月弩</dressup>
+      <capacity>13</capacity>
+      <split>1</split>
+      <diffusion>1</diffusion>
+      <interval>300</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>20</velocity>
+      <bullet>普通弩箭</bullet>
+      <sound>speed07.wav</sound>
+      <muzzle />
+      <bullethit>火花</bullethit>
+      <clipname>箭矢</clipname>
+      <bulletsize>50</bulletsize>
+      <power>3603</power>
+      <impact>2</impact>
+      <silence>300</silence>
+      <reloadType>tube</reloadType>
+      <reloadPenalty>0</reloadPenalty>
+    </data>
+    <balance>
+      <dualWield>1</dualWield>
+      <pierce>1</pierce>
+      <damageType>1</damageType>
+      <shotgun>1</shotgun>
+      <magPrice>500</magPrice>
+      <weightLayers>3</weightLayers>
+      <category>1</category>
+      <formula>1</formula>
+      <rationale>弓弩谱系/旗舰重型弹仓弩(高级弩 weight 翻倍=14,记额外机构+备弹代价)。use=长枪→dualWield=1；普通弩箭物理非穿→pierce=1,damageType=1；单发→shotgun=1。WL=3(K点高价合成)，magPrice=500=箭矢真实价。lv50+cap13+interval300(瞬时3.3/s,慢于连弩使单发更重),工具求解 power≈3603 使 averageDPS≈balanceDPS(≈23222);单发(8038)>追月连弩(5097)、面板DPS>追月连弩。price=798720=50×3900×1.6^3。</rationale>
+    </balance>
+  </item>
+</root>

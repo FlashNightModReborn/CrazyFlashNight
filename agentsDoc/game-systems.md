@@ -115,3 +115,9 @@
 - **帧脚本**：`scripts/逻辑/关卡系统/`
 - **数据**：`data/stages/`
 
+## 13. 装备生命周期系统
+- **帧脚本**：`scripts/逻辑/装备函数/`（每个 `.as` 注册 `_root.装备生命周期函数.XXX初始化/周期`，物品 XML `<lifecycle>` 节点按装备绑定，战斗中驱动动画/特效/子弹/buff）
+- **用途索引 + API 快查 + 新增 7 步流程**：`scripts/逻辑/装备函数/README.md`（就近 hub）
+- **编译真源**：`scripts/asLoaderManifest/frame37.as`（f37_N chunk，**非**旧 `装备函数列表.as`，后者已退役删除）；三方一致性门 `tools/validate-equip-fn-coverage.js`
+- ⚠ 与 `org.flashNight.arki.item.equipment`（class 化装备**数值计算**系统）是两套平行系统，勿混
+

@@ -25,6 +25,8 @@
     "validate": "tsx packages/cli/src/index.ts validate",
     "import-excel": "tsx packages/cli/src/index.ts import-excel",
     "export": "tsx packages/cli/src/index.ts export",
+    "solve": "tsx packages/cli/src/index.ts solve",
+    "balance-check": "tsx packages/cli/src/index.ts balance-check",
     "dev:web": "npm run dev:renderer --workspace @cf7-balance-tool/web",
     "dev:electron": "npm run dev:electron --workspace @cf7-balance-tool/web"
   },

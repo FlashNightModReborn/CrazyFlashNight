@@ -8,7 +8,7 @@
 
 > ## ⚠ 2026-06-16 重大修正 + 进展（读 Runbook 前必看）
 > 1. **AVM1 函数体 64KB 硬限推翻「单函数 staging」**：`DefineFunction2.codeSize` 是 UI16（≤65535B 字节码）。大帧（单位函数 506KB/装备 456KB/UI 189KB 源）wrap 进单个 `function(){}` 即溢出 → 编译 0 错却静默产坏函数（真机实证 f36/f37/f41 staged 函数从不执行）。帧脚本(DoAction)是 UI32 无此限。
-> 2. **修复 = chunk 分块**：`tools/stage-wrap-frame.js --chunk-bytes <源字节预算> [--flatten]` 把帧 includes 切多个 `_root.__boot.fN_k` 函数各 <64KB 字节码（保序/不拆单文件/`--flatten` 展平聚合 include 如装备函数列表→62 武器）；`tools/swf-function-sizes.js` = codeSize 门（解析 SWF 每个 DefineFunction2，>阈值 exit1，**无需真机即拦溢出**）。源→字节码比实测 0.34-0.43。
+> 2. **修复 = chunk 分块**：`tools/stage-wrap-frame.js --chunk-bytes <源字节预算> [--flatten]` 把帧 includes 切多个 `_root.__boot.fN_k` 函数各 <64KB 字节码（保序/不拆单文件/`--flatten` 展平聚合 include，如装备帧 62 武器现固化于 frame37.as）；`tools/swf-function-sizes.js` = codeSize 门（解析 SWF 每个 DefineFunction2，>阈值 exit1，**无需真机即拦溢出**）。源→字节码比实测 0.34-0.43。
 > 3. **function form 而非 class form**（工程裁决）：class 静态方法不捕获时间轴 scope（裸 `打印加载内容`/自定义函数静默不解析），function-on-`_root` 闭包捕获时间轴已 f2 真机证；**且 class wrap≠静态 typing**（内部仍 untyped `_root.X=function`）。typed class 化作独立长期 track，不耦合 collapse。
 > 4. **进度：全 12 sync 帧已 staged + 真机验证通过**（f2/3/9/10/18/32/38/39/40 单函数 + f36/f37/f41 chunk）；`_root.__boot` 收尾删除已加（frame91 + 本 doc §3 S10）。**剩 = 本 Runbook 的 async 帧（f4 握手/f5,6 await/f7 parse/f26 loader-seq/f48-74 fanout/f75 craft/f91 handoff）→ BootSequencer + P5 塌缩 + §4 三处主 FLA 改动 + §5 真机边界验**。下面 Runbook 的「单 staged 函数」表述统一按 chunk 化理解。
 > 5. **2026-06-16 评审修复轮**（两点，已验证）：
