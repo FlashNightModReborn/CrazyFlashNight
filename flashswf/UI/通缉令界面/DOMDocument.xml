@@ -73,7 +73,6 @@
           <Include href="shape/Symbol 2809.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d8b" lastModified="1704196122"/>
           <Include href="sprite/Symbol 298.xml" loadImmediate="false" itemID="6597607e-00000795" lastModified="1704196122"/>
           <Include href="sprite/Symbol 726.xml" loadImmediate="false" itemID="6597607e-000007e9" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 2204.xml" loadImmediate="false" itemID="6597607e-00000ac4" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2207.xml" loadImmediate="false" itemID="6597607e-00000ac6" lastModified="1715094838"/>
           <Include href="sprite/Symbol 2209.xml" loadImmediate="false" itemID="6597607e-00000ac7" lastModified="1715094776"/>
           <Include href="sprite/Symbol 2216.xml" loadImmediate="false" itemID="6597607e-00000aca" lastModified="1715102635"/>
@@ -82,7 +81,6 @@
           <Include href="sprite/Symbol 2808.xml" loadImmediate="false" itemID="6597607e-00000d8a" lastModified="1714920884"/>
           <Include href="sprite/Symbol 2810.xml" loadImmediate="false" itemID="6597607e-00000d8c" lastModified="1714923806"/>
           <Include href="sprite/Symbol 2811.xml" loadImmediate="false" itemID="6597607e-00000d8d" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 2824.xml" loadImmediate="false" itemID="6597607e-00000d94" lastModified="1704196122"/>
           <Include href="sprite/点酒界面酒保.xml" loadImmediate="false" itemID="6637abba-00001c92" lastModified="1740847323"/>
           <Include href="sprite/通用按钮.xml" loadImmediate="false" itemID="659bbbf8-000014dc" lastModified="1714648270"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
@@ -177,21 +175,11 @@ this._y = 20;
 function 组装副本任务(对象)
 {
 	var taskData = _root.getTaskData(对象.NPC任务_任务_关卡路径);
+	// 副本任务已迁 web（task 面板副本 tab）：通缉单直发 openWebDungeon。
+	// 旧 Symbol 1873(_root.委托任务界面) fallback 已退役删除（主 FLA 已删该元件）。
 	if (_root.gameCommands.openWebDungeon != undefined)
 	{
 		_root.gameCommands.openWebDungeon({taskId: taskData.id});
-	}
-	else
-	{
-		_root.委托任务界面.NPC任务_任务_起始帧 = null;
-		_root.委托任务界面.taskData = taskData;
-		_root.委托任务界面.NPC任务_任务_契约金 = taskData.deposit;
-		_root.委托任务界面.NPC任务_任务_等级限制 = taskData.restricted_level;
-		_root.委托任务界面.NPC任务_任务_K点 = taskData.Kdeposit;
-		_root.SetDialogue(taskData.get_conversation);
-		_root.委托任务界面.配置关卡属性(对象.NPC任务_任务_关卡路径);
-		_root.委托任务界面.显示任务明细(taskData);
-		_root.委托任务界面._visible = true;
 	}
 }
 
@@ -956,226 +944,6 @@ on (rollOut) {
 on (release) {
 	_parent.组装副本任务(this);
 }]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2824" centerPoint3DX="449.3" centerPoint3DY="134.7">
-                                             <matrix>
-                                                  <Matrix tx="379.7" ty="104.2"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[on (rollOver) {
-	_root.注释(100,_root.获得翻译("兽王套装全新副本百兽之王，通过可以获得碎片！"));
-}
-on (rollOut) {
-	_root.注释结束();
-}
-onClipEvent (load) {
-	this._visible = 0;
-	显示文字 = _root.获得翻译("兽王");
-	任务前对话 = [];
-	任务前对话[0] = ["Andy Law", "东区最强战士", "Andy Law", "在熔岩山洞出现了老虎的咆哮，周边的动物都在逃窜，赶紧去调查一下！", "普通"];
-	任务后对话 = [];
-	任务后对话[0] = ["Andy Law", "东区最强战士", "Andy Law", "看来诺亚技术也在不断升级。", "普通"];
-	NPC任务_任务 = ["百兽之王副本", "NPC任务", "Andy Law", "Andy Law", 0, "通关【百兽之王副本】，可获得兽王碎片用来合成兽王套装。", "简单", "新任务", [], [["经验值", 100000], ["金币", 100000], ["加强抗生素药剂", 80], ["加强mp药剂", 80], ["复活币", 20], ["压缩胶囊之硬化僵尸", 1], ["兽王碎片", 100], ["压缩胶囊之兽王", 1]], 任务前对话, 任务后对话, "百兽之王副本"];
-	NPC任务_任务_动画 = "";
-	NPC任务_任务_契约金 = 10000;
-	NPC任务_任务_等级限制 = 30;
-	NPC任务_任务_K点 = 0;
-	NPC任务_任务_起始帧 = "wuxianguotu_1";
-	商品编号 = "O20111009000000030";
-	关卡可获得奖励品 = [];
-	关卡可获得奖励品.push(["兽王碎片", 1, 100]);
-	关卡可获得奖励品.push(["战队药箱", 2, 10]);
-	关卡可获得奖励品.push(["抗生素", 8, 20]);
-	无限过图基本配置 = [];
-	无限过图基本配置.push({Background:"flashswf/TY_BG_2.swf"});
-	无限过图关卡0 = [];
-	var 出兵的兵种列表 = [];
-	var i = 70;
-	while (i < 121)
-	{
-		if (i != 73)
-		{
-			if (i < 86 || i >= 107)
-			{
-				出兵的兵种列表.push([_root["兵种" + i], 300, 2, 40]);
-			}
-		}
-		i++;
-	}
-	var myleng = 出兵的兵种列表.length;
-	var i = 0;
-	while (i < 9)
-	{
-		无限过图关卡0.push([51, 出兵的兵种列表[random(myleng)], 出兵的兵种列表[random(myleng)], 出兵的兵种列表[random(myleng)], 出兵的兵种列表[random(myleng)], 出兵的兵种列表[random(myleng)]]);
-		i++;
-	}
-	无限过图关卡0.push([51, [_root.兵种161, 300, 2, 60], [_root.兵种78, 300, 3, 50]]);
-	无限过图总关卡 = [];
-	无限过图总关卡.push(无限过图关卡0);
-}
-on (release) {
-	_root.委托任务界面.NPC任务_任务 = this.NPC任务_任务;
-	_root.委托任务界面.NPC任务_任务_动画 = this.NPC任务_任务_动画;
-	_root.委托任务界面.NPC任务_任务_契约金 = this.NPC任务_任务_契约金;
-	_root.委托任务界面.NPC任务_任务_等级限制 = this.NPC任务_任务_等级限制;
-	_root.委托任务界面.NPC任务_任务_K点 = this.NPC任务_任务_K点;
-	_root.委托任务界面.NPC任务_任务_起始帧 = this.NPC任务_任务_起始帧;
-	_root.委托任务界面.关卡可获得奖励品 = this.关卡可获得奖励品;
-	_root.委托任务界面.显示任务明细(this.NPC任务_任务);
-	_root.SetDialogue(_root.getTaskData(this.NPC任务_任务[0]).get_conversation);
-	_root.委托任务界面.无限过图总关卡 = this.无限过图总关卡;
-	_root.委托任务界面.无限过图基本配置 = this.无限过图基本配置;
-	_root.委托任务界面.商品编号 = this.商品编号;
-	_root.委托任务界面.副本动画 = this.副本动画;
-	_root.委托任务界面._visible = 1;
-}]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2204" centerPoint3DX="398.8" centerPoint3DY="256.5">
-                                             <matrix>
-                                                  <Matrix a="0.604248046875" d="0.6591796875" tx="336.3" ty="237.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[on(rollOver){
-   _root.注释(100,_root.获得翻译("BOSS大乱斗"));
-}
-on(rollOut){
-   _root.注释结束();
-}
-onClipEvent(load){
-	this._visible = 0;
-   显示文字 = _root.获得翻译("BOSS大乱斗");
-   任务前对话 = [];
-   任务前对话[0] = ["Andy Law","东区最强战士","Andy Law","新年了活动什么的来不及了毕竟闪8上线了，辉哥说来点刺激的，那就来BOSS大乱斗吧！","大笑"];
-   任务后对话 = [];
-   任务后对话[0] = ["Andy Law","东区最强战士","Andy Law","2018年2月10号到2月17号每天发放100个闪8武装行激活码，先到先得！","大笑"];
-   NPC任务_任务 = ["BOSS大乱斗","NPC任务","Andy Law","Andy Law",0,"通关【BOSS大乱斗】，找刺激！","简单","新任务",[],[["经验值",288888],["金币",28888],["加强抗生素药剂",288],["复活币",50],["穿刺步枪弹夹",288],["加强mp药剂",288],["压缩胶囊之硬化僵尸",30],["压缩胶囊之武士铁血",30],["普通hp粉尘",288],["普通mp粉尘",288],["材料盒子",20],["鼠年碎片",188]],任务前对话,任务后对话,"BOSS大乱斗"];
-   NPC任务_任务_动画 = "";
-   NPC任务_任务_契约金 = 8000;
-   NPC任务_任务_等级限制 = 11;
-   NPC任务_任务_K点 = 0;
-   NPC任务_任务_起始帧 = "wuxianguotu_1";
-   商品编号 = "O201502110000001";
-   关卡可获得奖励品 = [];
-   无限过图基本配置 = [];
-   var 出兵的兵种列表 = [[_root.兵种11,300,2,30],[_root.兵种12,300,2,30],[_root.兵种25,300,2,30],[_root.兵种50,300,2,30],[_root.兵种51,300,2,30],[_root.兵种52,300,2,30],[_root.兵种40,300,2,30],[_root.兵种41,300,2,30],[_root.兵种42,300,2,30],[_root.兵种58,300,2,30],[_root.兵种59,300,2,30],[_root.兵种60,300,2,30],[_root.兵种69,300,2,30],[_root.兵种78,300,2,30],[_root.兵种111,300,2,30],[_root.兵种121,300,2,30],[_root.兵种126,300,2,30],[_root.兵种134,300,2,30],[_root.兵种155,300,2,30],[_root.兵种157,300,2,30]];
-   var myleng = 出兵的兵种列表.length;
-   无限过图总关卡 = [];
-   var i = 0;
-   while(i < 30)
-   {
-      无限过图基本配置.push({Backgrounds:"flashswf/Survival_mode_BG.swf"});
-      this["无限过图关卡" + i] = [];
-      if(i < 20)
-      {
-         this["无限过图关卡" + i].push([51,出兵的兵种列表[i]]);
-      }
-      else
-      {
-         var rdx = random(3) + 2;
-         if(rdx == 3)
-         {
-            this["无限过图关卡" + i].push([51,出兵的兵种列表[random(myleng)],出兵的兵种列表[random(myleng)],出兵的兵种列表[random(myleng)]]);
-         }
-         else if(rdx == 4)
-         {
-            this["无限过图关卡" + i].push([51,出兵的兵种列表[random(myleng)],出兵的兵种列表[random(myleng)],出兵的兵种列表[random(myleng)],出兵的兵种列表[random(myleng)]]);
-         }
-         else
-         {
-            this["无限过图关卡" + i].push([51,出兵的兵种列表[random(myleng)],出兵的兵种列表[random(myleng)]]);
-         }
-      }
-      无限过图总关卡.push(this["无限过图关卡" + i]);
-      i++;
-   }
-}
-on(release){
-   _root.委托任务界面.NPC任务_任务 = this.NPC任务_任务;
-   _root.委托任务界面.NPC任务_任务_动画 = this.NPC任务_任务_动画;
-   _root.委托任务界面.NPC任务_任务_契约金 = this.NPC任务_任务_契约金;
-   _root.委托任务界面.NPC任务_任务_等级限制 = this.NPC任务_任务_等级限制;
-   _root.委托任务界面.NPC任务_任务_K点 = this.NPC任务_任务_K点;
-   _root.委托任务界面.NPC任务_任务_起始帧 = this.NPC任务_任务_起始帧;
-   _root.委托任务界面.关卡可获得奖励品 = this.关卡可获得奖励品;
-   _root.委托任务界面.显示任务明细(this.NPC任务_任务);
-   _root.SetDialogue(_root.getTaskData(this.NPC任务_任务[0]).get_conversation);
-   _root.委托任务界面.无限过图总关卡 = this.无限过图总关卡;
-   _root.委托任务界面.无限过图基本配置 = this.无限过图基本配置;
-   _root.委托任务界面.商品编号 = this.商品编号;
-   _root.委托任务界面.副本动画 = this.副本动画;
-   _root.委托任务界面._visible = 1;
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="337.65" centerPoint3DY="207.2">
-                                             <matrix>
-                                                  <Matrix tx="291.85" ty="196"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   显示文字 = _root.获得翻译("不知火舞");
-   if(_root.easterEgg)
-   {
-      this._visible = true;
-   }
-   else
-   {
-      this._visible = false;
-   }
-}
-on(rollOver){
-   _root.注释(200,显示文字);
-}
-on(rollOut){
-   _root.注释结束();
-}
-on(release){
-   任务前对话 = [];
-   任务后对话 = [];
-   NPC任务_任务 = ["比武训练之不知火舞","NPC任务","酒保","酒保",0,"挑战不知火舞。","简单","新任务",[],[["经验值",500000]],任务前对话,任务后对话,"比武训练之不知火舞"];
-   NPC任务_任务_动画 = "flashswf/wanted_SHIRANUI_index.swf";
-   NPC任务_任务_契约金 = 0;
-   NPC任务_任务_等级限制 = 30;
-   NPC任务_任务_K点 = 0;
-   NPC任务_任务_起始帧 = "wuxianguotu_1";
-   关卡可获得奖励品 = [];
-   关卡可获得奖励品.push(["抗生素",8,10]);
-   关卡可获得奖励品.push(["普通hp粉尘",2,10]);
-   无限过图基本配置 = [];
-   无限过图基本配置.push({Background:"flashswf/gk12_5_BG.swf"});
-   无限过图关卡0 = [];
-   当前关兵种 = {兵种名:"敌人-不知火舞",等级:50,名字:"不知火舞",是否为敌人:true,身高:155,长枪:"",手枪:"",手枪2:"",刀:"",手雷:""};
-   无限过图关卡0.push([50,[当前关兵种,500,1,50]]);
-   无限过图总关卡 = [];
-   无限过图总关卡.push(无限过图关卡0);
-   _root.委托任务界面.NPC任务_任务 = this.NPC任务_任务;
-   _root.委托任务界面.NPC任务_任务_动画 = this.NPC任务_任务_动画;
-   _root.委托任务界面.NPC任务_任务_契约金 = this.NPC任务_任务_契约金;
-   _root.委托任务界面.NPC任务_任务_等级限制 = this.NPC任务_任务_等级限制;
-   _root.委托任务界面.NPC任务_任务_K点 = this.NPC任务_任务_K点;
-   _root.委托任务界面.NPC任务_任务_起始帧 = this.NPC任务_任务_起始帧;
-   _root.委托任务界面.关卡可获得奖励品 = this.关卡可获得奖励品;
-   _root.委托任务界面.显示任务明细(this.NPC任务_任务);
-   _root.SetDialogue(_root.getTaskData(this.NPC任务_任务[0]).get_conversation);
-   _root.委托任务界面.无限过图总关卡 = this.无限过图总关卡;
-   _root.委托任务界面.无限过图基本配置 = this.无限过图基本配置;
-   _root.委托任务界面.商品编号 = this.商品编号;
-   _root.委托任务界面.副本动画 = this.副本动画;
-   _root.委托任务界面._visible = 1;
-}
-]]></script>
                                              </Actionscript>
                                         </DOMSymbolInstance>
                                    </elements>

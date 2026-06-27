@@ -58,8 +58,9 @@ scripts/compile_trigger
 scripts/compile_target.cfg
 scripts/compile_mode.cfg
 scripts/screenshot.png
-# main 目标 doc.publish() 按发布设置附带产出的 HTML 包装（运行时不用，弃）
+# doc.publish() 按发布设置附带产出的 HTML 包装（运行时不用，弃）
 CRAZYFLASHER7MercenaryEmpire.html
+flashswf/arts/things0.html
 
 # Claude Code local settings (machine-specific)
 .claude/settings.local.json

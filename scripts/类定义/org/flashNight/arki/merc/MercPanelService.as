@@ -771,9 +771,9 @@ class org.flashNight.arki.merc.MercPanelService {
         var npc:Object = _root.gameworld[npcId];
         if (npc == undefined || npc.佣兵数据 == undefined) return;
         if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return;
-        // stash NPC 数据快照（不只 npcId）：可雇 NPC 有寿命，会自行 despawn（MecenaryBehavior 超时删除），
-        // 而 team 面板不暂停游戏 → 玩家在面板里比较/解雇期间 NPC 可能离场。复刻旧 Symbol 2035：把
-        // 佣兵/宠物数据 stash 下来（survive despawn）+ 进图时 NPC 没了就落玩家位（雇佣佣兵:199-208）。
+        // stash NPC 数据快照（不只 npcId）：可雇 NPC 有寿命，会自行 despawn（MecenaryBehavior 超时删除）。
+        // team 面板现已随 webPanelPause 暂停游戏（despawn 计时同冻，离场窗口基本消除），但仍 stash 数据快照
+        // 防御性兜底——复刻旧 Symbol 2035：survive despawn + 进图时 NPC 没了就落玩家位（雇佣佣兵:199-208）。
         // 仍 stash 数据本身（不信 web），安全姿态不变。
         _root._pendingHire = {
             npcId: npcId,

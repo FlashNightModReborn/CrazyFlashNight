@@ -999,8 +999,8 @@ class org.flashNight.arki.merc.PetPanelService {
     // ═══════════════════════════════════════════════════════════
     public static function handleWorldAdopt(params:Object):Void {
         var callId = params.callId;
-        // 权威读 stash 的数据快照（可雇 NPC 有寿命会自行 despawn、team 面板不暂停 → 招募期间可能离场；
-        // 复刻旧 Symbol 2035：数据 stash 下来 survive despawn。不信 web，安全姿态不变）
+        // 权威读 stash 的数据快照（可雇 NPC 有寿命会自行 despawn；team 面板现已随 webPanelPause 暂停游戏，
+        // despawn 计时同冻、离场窗口基本消除，但仍 stash 防御性兜底，复刻旧 Symbol 2035 survive despawn。不信 web，安全姿态不变）
         var stash:Object = _root._pendingHire;
         if (stash == undefined || stash.pet == undefined || stash.pet == null) {
             sendResponse({ task: "pet_response", callId: callId, success: false, error: "npc_gone" });
