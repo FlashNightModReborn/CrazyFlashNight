@@ -58,7 +58,7 @@ _root.技能函数.搓招监控 = function(招式名:String, 触发码:Number):N
 _root.技能函数.使用波动拳 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能.内力爆发;
-	if(!技能 || 技能.等级 < 2) return 0;
+	if(!技能 || 技能.等级 < 2 || !技能.启用) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "波动拳") {
@@ -135,7 +135,7 @@ _root.技能函数.使用后撤步 = function():Number {
 _root.技能函数.使用燃烧指节 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能.升龙拳;
-	if(!技能 || 技能.等级 < 1) return 0;
+	if(!技能 || 技能.等级 < 1 || !技能.启用) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "燃烧指节") {
@@ -158,7 +158,7 @@ _root.技能函数.使用能量喷泉 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能.裂地拳;
 	var 所需MP = 自机.mp满血值 * 0.1;
-	if(!技能 || 技能.等级 < 1 || 自机.mp < 所需MP) return 0;
+	if(!技能 || 技能.等级 < 1 || !技能.启用 || 自机.mp < 所需MP) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "能量喷泉") {
@@ -177,7 +177,7 @@ _root.技能函数.使用能量喷泉 = function():Number {
 _root.技能函数.使用连环踢 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能.拳脚攻击;
-	if(!技能 || 技能.等级 > 1) return 0;
+	if(!技能 || 技能.等级 > 1 || !技能.启用) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "连环踢") {
@@ -197,7 +197,7 @@ _root.技能函数.使用连环踢 = function():Number {
 _root.技能函数.使用回旋踢 = function():Number {
 	var 自机 = _parent;
 	var 技能 = 自机.被动技能.裂地拳;
-	if(!技能 || 技能.等级 < 1) return 0;
+	if(!技能 || 技能.等级 < 1 || !技能.启用) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "回旋踢") {
