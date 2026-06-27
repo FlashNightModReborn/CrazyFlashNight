@@ -300,6 +300,112 @@ for (var wr = 0; wr < WORLDBUILDING_DOCS.length; wr++) {
     }
 }
 
+// ---- Worldbuilding governance gates (T4: 治理护栏自动化) ----
+// 把原手维护纪律转成校验门。来源：GPT Pro 治理交付包的 worldbuilding 子检查，
+// 移植进本仓真 validator（适配 docs/worldbuilding/ 路径，保留 equip-fn 与全仓校验）。
+// 设计依据见 docs/reports/worldbuilding-治理诊断-2026-06-27.md（T1/T2/T4）。
+
+// (G1) 文件名卫生：禁止 #Uxxxx 转义中文名泄漏（zip 往返曾出现）
+for (var fn = 0; fn < WORLDBUILDING_DOCS.length; fn++) {
+    var fnRel = WORLDBUILDING_DOCS[fn];
+    if (fnRel.indexOf("docs/worldbuilding/") !== 0) continue;
+    expect(!/#U[0-9A-Fa-f]{4}/.test(fnRel), "worldbuilding 文件名出现 #Uxxxx 转义泄漏，应直写 UTF-8 中文名 [" + fnRel + "]");
+}
+
+// (G2) 稳定节名重复定义检测（严格定义行 **稳定节名**：，避开 README 索引行）
+var strictDefSeen = {};
+for (var sd = 0; sd < WORLDBUILDING_DOCS.length; sd++) {
+    var sdRel = WORLDBUILDING_DOCS[sd];
+    if (sdRel.indexOf("docs/worldbuilding/") !== 0) continue;
+    var sdLines = read(sdRel).split(/\r?\n/);
+    for (var sl = 0; sl < sdLines.length; sl++) {
+        if (!/^\s*>?\s*\*\*稳定节名\*\*[:：]/.test(sdLines[sl])) continue;
+        var sdDefs = sdLines[sl].match(/`([0-9]{2}·[^`]+)`/g) || [];
+        for (var sdi = 0; sdi < sdDefs.length; sdi++) {
+            var sdName = sdDefs[sdi].slice(1, -1);
+            if (strictDefSeen[sdName]) {
+                expect(false, "worldbuilding 稳定节名重复定义 `" + sdName + "` [" + sdRel + ":" + (sl + 1) + " / 已见 " + strictDefSeen[sdName] + "]");
+            } else {
+                strictDefSeen[sdName] = sdRel + ":" + (sl + 1);
+            }
+        }
+    }
+}
+
+// (G3) 00 矩阵：双登记镜像区『拟揭露候选』删除后不得回潮（诊断 T1）
+var wbMatrix = "docs/worldbuilding/00-结论归属矩阵.md";
+if (exists(wbMatrix)) {
+    expect(!/(^|\r?\n)##\s+拟揭露候选/.test(read(wbMatrix)), "00 矩阵双登记镜像区『拟揭露候选』不得恢复（改用 当前主假说 + 支线映射 + 20 权威路由）[" + wbMatrix + "]");
+}
+
+// (G4) 20 权威表存在 + 必备稳定节名 + 事实域唯一（诊断 T2 单一权威）
+var wbAuthority = "docs/worldbuilding/20-权威表.md";
+expect(exists(wbAuthority), "缺少世界观权威表 docs/worldbuilding/20-权威表.md（诊断 T2 权威路由枢纽）");
+if (exists(wbAuthority)) {
+    var authText = read(wbAuthority);
+    var reqAnchors = ["20·权威表节", "20·08枢纽节", "20·事实域路由节", "20·边界路由节"];
+    for (var qa = 0; qa < reqAnchors.length; qa++) {
+        expect(authText.indexOf("`" + reqAnchors[qa] + "`") !== -1, "20 权威表缺少必备稳定节名 `" + reqAnchors[qa] + "`");
+    }
+    var domainSeen = {};
+    var authLines = authText.split(/\r?\n/);
+    for (var ad = 0; ad < authLines.length; ad++) {
+        var aln = authLines[ad];
+        if (aln.charAt(0) !== "|") continue;
+        if (/^\|\s*-+/.test(aln)) continue;
+        if (aln.indexOf("事实域 | canonical") !== -1) continue;
+        var aparts = aln.split("|");
+        var acols = aparts.slice(1, aparts.length - 1);
+        if (acols.length >= 3) {
+            var dom = acols[0].replace(/^\s+|\s+$/g, "");
+            if (!dom || dom === "边界") continue;
+            if (domainSeen[dom]) {
+                expect(false, "20 权威表事实域重复『" + dom + "』(行 " + (ad + 1) + " / 已见 " + domainSeen[dom] + ")，破坏单一权威");
+            } else {
+                domainSeen[dom] = ad + 1;
+            }
+        }
+    }
+}
+
+// (G5) 01-04 分层纪律：框架文档不得承载假说/支线真相整节（诊断 T4）
+for (var lp = 0; lp < WORLDBUILDING_DOCS.length; lp++) {
+    var lpRel = WORLDBUILDING_DOCS[lp];
+    if (lpRel.indexOf("docs/worldbuilding/") !== 0) continue;
+    var lpBase = lpRel.replace(/^.*\//, "");
+    if (!/^0[1-4]-/.test(lpBase)) continue;
+    var lpLines = read(lpRel).split(/\r?\n/);
+    for (var ll = 0; ll < lpLines.length; ll++) {
+        if (/^##+\s+.*(当前主假说|支线真相|提案级)/.test(lpLines[ll])) {
+            expect(false, "框架文档 01-04 不得出现假说/支线真相整节 [" + lpRel + ":" + (ll + 1) + "]");
+        }
+    }
+}
+
+// (G6) README 必须登记 20 权威表
+var wbReadme = "docs/worldbuilding/README.md";
+if (exists(wbReadme)) {
+    expect(read(wbReadme).indexOf("20-权威表.md") !== -1, "worldbuilding README 必须登记 20-权威表.md");
+}
+
+// (G7) worldbuilding 内同目录 markdown 链接必须可解析（跳过 http/mailto/../）
+for (var lk = 0; lk < WORLDBUILDING_DOCS.length; lk++) {
+    var lkRel = WORLDBUILDING_DOCS[lk];
+    if (lkRel.indexOf("docs/worldbuilding/") !== 0) continue;
+    var lkLines = read(lkRel).split(/\r?\n/);
+    for (var ll2 = 0; ll2 < lkLines.length; ll2++) {
+        var lkMatches = lkLines[ll2].match(/\]\(([^)#]+\.md)(?:#[^)]*)?\)/g) || [];
+        for (var lm = 0; lm < lkMatches.length; lm++) {
+            var tgt = lkMatches[lm].match(/\]\(([^)#]+\.md)/);
+            if (!tgt) continue;
+            var tpath = tgt[1];
+            if (/^(https?:|mailto:)/.test(tpath)) continue;
+            if (tpath.indexOf("../") === 0) continue;
+            expect(exists("docs/worldbuilding/" + tpath), "worldbuilding 本地链接目标不存在: " + tpath + " [" + lkRel + ":" + (ll2 + 1) + "]");
+        }
+    }
+}
+
 // ---- Equipment-function coverage (delegated) ----
 // 装备函数三方一致性（目录 ≡ frame37 #include ≡ README 索引）。详见该脚本头注。
 

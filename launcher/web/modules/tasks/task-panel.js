@@ -1496,7 +1496,7 @@
             var parts = String(rewards[i]).split('#');
             var name = parts[0];
             var count = parts[1] != null ? parts[1] : '';
-            html += '<span class="dgn-reward">' + itemIconHtml(name) + '<span class="dgn-reward-name">' + escHtml(name) + '</span>' +
+            html += '<span class="dgn-reward">' + itemIconHtml(name, '') + '<span class="dgn-reward-name">' + escHtml(name) + '</span>' +
                 (count !== '' ? '<span class="dgn-reward-x">×' + escHtml(String(count)) + '</span>' : '') + '</span>';
         }
         return html;
