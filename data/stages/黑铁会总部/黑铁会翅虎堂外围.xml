@@ -104,23 +104,194 @@
     <SubStage id="2">
         <BasicInformation>
             <Background>flashswf/backgrounds/gk13_2_BG.swf</Background>
+            <PlayerX>200</PlayerX>
+            <PlayerY>600</PlayerY>
         </BasicInformation>
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>这是什么，阵法？</Text>
+            </Dialogue>
+        </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
                 <EnemyGroup>
-                    <Enemy id="0">
+                    <Enemy>
                         <Type>兵种64</Type>
-                        <Interval>500</Interval>
+                        <Interval>50</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>32</Level>
+                        <x>750</x>
+                        <y>500</y>
+                        <Parameters>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.6</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                            <extra>
+                                <muti>
+                                    <防御力>1.5</防御力>
+                                    <空手攻击力>1.5</空手攻击力>
+                                </muti>
+                                <add>
+                                    <hp>1000</hp>
+                                    <hp满血值>1000</hp满血值>
+                                </add>
+                            </extra>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种64</Type>
+                        <Interval>50</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>32</Level>
+                        <x>950</x>
+                        <y>550</y>
+                        <Parameters>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.6</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                            <extra>
+                                <muti>
+                                    <防御力>1.5</防御力>
+                                    <空手攻击力>1.5</空手攻击力>
+                                </muti>
+                                <add>
+                                    <hp>1000</hp>
+                                    <hp满血值>1000</hp满血值>
+                                </add>
+                            </extra>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种64</Type>
+                        <Interval>50</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>32</Level>
+                        <x>950</x>
+                        <y>650</y>
+                        <Parameters>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.6</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                            <extra>
+                                <muti>
+                                    <防御力>1.5</防御力>
+                                    <空手攻击力>1.5</空手攻击力>
+                                </muti>
+                                <add>
+                                    <hp>1000</hp>
+                                    <hp满血值>1000</hp满血值>
+                                </add>
+                            </extra>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种64</Type>
+                        <Interval>50</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>32</Level>
+                        <x>750</x>
+                        <y>700</y>
+                        <Parameters>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.6</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                            <extra>
+                                <muti>
+                                    <防御力>1.5</防御力>
+                                    <空手攻击力>1.5</空手攻击力>
+                                </muti>
+                                <add>
+                                    <hp>1000</hp>
+                                    <hp满血值>1000</hp满血值>
+                                </add>
+                            </extra>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种64</Type>
+                        <Interval>50</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>32</Level>
+                        <x>550</x>
+                        <y>650</y>
+                        <Parameters>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.6</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                            <extra>
+                                <muti>
+                                    <防御力>1.5</防御力>
+                                    <空手攻击力>1.5</空手攻击力>
+                                </muti>
+                                <add>
+                                    <hp>1000</hp>
+                                    <hp满血值>1000</hp满血值>
+                                </add>
+                            </extra>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种64</Type>
+                        <Interval>50</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>32</Level>
+                        <x>550</x>
+                        <y>550</y>
+                        <Parameters>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.6</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                            <extra>
+                                <muti>
+                                    <防御力>1.5</防御力>
+                                    <空手攻击力>1.5</空手攻击力>
+                                </muti>
+                                <add>
+                                    <hp>1000</hp>
+                                    <hp满血值>1000</hp满血值>
+                                </add>
+                            </extra>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种64</Type>
+                        <Interval>1800</Interval>
                         <Quantity>6</Quantity>
                         <Level>32</Level>
+                        <Parameters>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.6</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                            <extra>
+                                <muti>
+                                    <防御力>1.5</防御力>
+                                    <空手攻击力>1.5</空手攻击力>
+                                </muti>
+                                <add>
+                                    <hp>1000</hp>
+                                    <hp满血值>1000</hp满血值>
+                                </add>
+                            </extra>
+                        </Parameters>
                     </Enemy>
-                    <Enemy id="1">
+                    <Enemy>
                         <Type>兵种64</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>6</Quantity>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
                         <Level>32</Level>
                         <Parameters>
                             <掉落物>
@@ -129,6 +300,19 @@
                                 <最小数量>1</最小数量>
                                 <最大数量>1</最大数量>
                             </掉落物>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.3</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                            <extra>
+                                <muti>
+                                    <防御力>2</防御力>
+                                    <空手攻击力>2</空手攻击力>
+                                </muti>
+                                <add>
+                                    <hp>1500</hp>
+                                    <hp满血值>1500</hp满血值>
+                                </add>
+                            </extra>
                         </Parameters>
                     </Enemy>
                 </EnemyGroup>
