@@ -40,6 +40,7 @@
     var _portraitManifestPromise = null;
     var _dressupManifestPromise = null;
     var _renderSeq = 0;
+    var STAGED_LINE_DELAY_MS = 320;
 
     function fetchJson(url) {
         return fetch(url, { cache: 'no-cache' }).then(function(resp) {
@@ -236,6 +237,14 @@
         while (node.firstChild) node.removeChild(node.firstChild);
     }
 
+    function clearTimers(container) {
+        if (!container || !container.__dialogueTimers) return;
+        for (var i = 0; i < container.__dialogueTimers.length; i++) {
+            clearTimeout(container.__dialogueTimers[i]);
+        }
+        container.__dialogueTimers = [];
+    }
+
     function showPlaceholder(slot, label) {
         clearNode(slot);
         var mark = document.createElement('div');
@@ -368,6 +377,7 @@
     }
 
     function dispose(container) {
+        clearTimers(container);
         var renderers = container.querySelectorAll('.cf-dialogue-portrait-slot');
         for (var i = 0; i < renderers.length; i++) {
             var renderer = renderers[i].__dialogueRenderer;
@@ -379,6 +389,7 @@
     function createLine(line, options) {
         var row = document.createElement('div');
         row.className = 'tlv-dia-line cf-dialogue-line';
+        if (options && options.staged) row.classList.add('cf-dialogue-line-staged');
         var portrait = splitPortrait(line);
         row.setAttribute('data-char', portrait.key);
         row.setAttribute('data-expression', portrait.expression);
@@ -413,6 +424,44 @@
         return { row: row, slot: slot, line: line || {}, portrait: portrait };
     }
 
+    function nonNegativeNumber(value, fallback) {
+        value = Number(value);
+        return isFinite(value) && value >= 0 ? value : fallback;
+    }
+
+    function prefersReducedMotion() {
+        return !!(global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    }
+
+    function scrollParentOf(node) {
+        var cur = node && node.parentElement;
+        while (cur && cur !== document.body && cur !== document.documentElement) {
+            var style = global.getComputedStyle ? global.getComputedStyle(cur) : null;
+            var overflowY = style ? style.overflowY : '';
+            if ((overflowY === 'auto' || overflowY === 'scroll') && cur.scrollHeight > cur.clientHeight + 1) return cur;
+            cur = cur.parentElement;
+        }
+        return null;
+    }
+
+    function scrollLineIntoView(row) {
+        var scroller = scrollParentOf(row);
+        if (!scroller || !row.getBoundingClientRect || !scroller.getBoundingClientRect) return;
+        var sr = scroller.getBoundingClientRect();
+        var rr = row.getBoundingClientRect();
+        var margin = 12;
+        var delta = 0;
+        if (rr.bottom > sr.bottom - margin) delta = rr.bottom - (sr.bottom - margin);
+        else if (rr.top < sr.top + margin) delta = rr.top - (sr.top + margin);
+        if (!delta) return;
+        var nextTop = scroller.scrollTop + delta;
+        if (scroller.scrollTo) {
+            scroller.scrollTo({ top: nextTop, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+        } else {
+            scroller.scrollTop = nextTop;
+        }
+    }
+
     function render(container, lines, options) {
         options = options || {};
         lines = lines || [];
@@ -424,31 +473,64 @@
         container.setAttribute('data-dialogue-render', token);
         var list = document.createElement('div');
         list.className = 'cf-dialogue-list';
+        if (options.staged) list.classList.add('cf-dialogue-list-staged');
         var rows = [];
-        for (var i = 0; i < lines.length; i++) {
-            var item = createLine(lines[i], options);
+
+        var loadedManifest = null;
+        var loadedHeroKeys = null;
+        var manifestFailed = false;
+
+        function renderPortraitFor(item) {
+            if (!item || !loadedManifest) return;
+            var key = item.portrait.key;
+            if (loadedHeroKeys[key] || item.line.portraitType === 'hero') {
+                renderHeroPortrait(item.slot, options.heroPortrait || item.line.heroPortrait || null);
+                return;
+            }
+            var entry = lookupEntry(loadedManifest, key);
+            if (!entry) {
+                showPlaceholder(item.slot, key);
+                return;
+            }
+            renderImagePortrait(item.slot, loadedManifest, entry, item.portrait.expression);
+        }
+
+        function appendLineAt(index) {
+            if (container.getAttribute('data-dialogue-render') !== token) return;
+            var item = createLine(lines[index], options);
             rows.push(item);
             list.appendChild(item.row);
+            if (loadedManifest) renderPortraitFor(item);
+            else if (manifestFailed) showPlaceholder(item.slot, item.portrait.key);
+            if (options.autoScroll) {
+                if (typeof requestAnimationFrame === 'function') requestAnimationFrame(function() { scrollLineIntoView(item.row); });
+                else scrollLineIntoView(item.row);
+            }
         }
+
         container.appendChild(list);
+
+        if (options.staged) {
+            container.__dialogueTimers = [];
+            var delay = nonNegativeNumber(options.stagedDelayMs, STAGED_LINE_DELAY_MS);
+            var initialDelay = nonNegativeNumber(options.stagedInitialDelayMs, 0);
+            for (var s = 0; s < lines.length; s++) {
+                (function(index) {
+                    var timer = setTimeout(function() { appendLineAt(index); }, initialDelay + index * delay);
+                    container.__dialogueTimers.push(timer);
+                })(s);
+            }
+        } else {
+            for (var i = 0; i < lines.length; i++) appendLineAt(i);
+        }
 
         return loadPortraitManifest(options.manifestUrl).then(function(manifest) {
             if (container.getAttribute('data-dialogue-render') !== token) return;
-            var heroKeys = heroKeySet(manifest);
-            rows.forEach(function(item) {
-                var key = item.portrait.key;
-                if (heroKeys[key] || item.line.portraitType === 'hero') {
-                    renderHeroPortrait(item.slot, options.heroPortrait || item.line.heroPortrait || null);
-                    return;
-                }
-                var entry = lookupEntry(manifest, key);
-                if (!entry) {
-                    showPlaceholder(item.slot, key);
-                    return;
-                }
-                renderImagePortrait(item.slot, manifest, entry, item.portrait.expression);
-            });
+            loadedManifest = manifest;
+            loadedHeroKeys = heroKeySet(manifest);
+            rows.forEach(renderPortraitFor);
         }).catch(function() {
+            manifestFailed = true;
             rows.forEach(function(item) { showPlaceholder(item.slot, item.portrait.key); });
         });
     }

@@ -56,6 +56,24 @@
         try { return localStorage.getItem('cf7.dialogueMode') === 'brief' ? 'brief' : 'rich'; }
         catch (e) { return 'rich'; }
     })();
+    function dialogueModeButtonText() {
+        return _dialogueMode === 'brief' ? '完整立绘' : '缩略模式';
+    }
+    function applyDialogueModeToOpenViews() {
+        var root = _containerEl || document;
+        var btns = root.querySelectorAll('.tlv-dia-mode-btn');
+        for (var b = 0; b < btns.length; b++) btns[b].textContent = dialogueModeButtonText();
+        var views = root.querySelectorAll('.cf-dialogue');
+        for (var i = 0; i < views.length; i++) {
+            if (typeof DialogueView !== 'undefined' && DialogueView && DialogueView.setMode) DialogueView.setMode(views[i], _dialogueMode);
+            else views[i].setAttribute('data-dialogue-mode', _dialogueMode);
+        }
+    }
+    function toggleDialogueMode() {
+        _dialogueMode = (_dialogueMode === 'brief') ? 'rich' : 'brief';
+        try { localStorage.setItem('cf7.dialogueMode', _dialogueMode); } catch (err) {}
+        applyDialogueModeToOpenViews();
+    }
     // 图表视图（BALDR SKY 风任务树）
     var _logView = 'list';          // list | chart（事件日志内的子视图）
     var _chartZoom = 1;             // 1 | 0.5 | 0.25
@@ -1321,7 +1339,7 @@
             if (showGet) html += '<button type="button" class="tlv-replay-btn" data-which="get" data-task-id="' + escAttr(id) + '">接取对话</button>';
             if (showFinish) html += '<button type="button" class="tlv-replay-btn" data-which="finish" data-task-id="' + escAttr(id) + '">完成对话</button>';
             html += '<button type="button" class="tlv-dia-mode-btn" data-dialogue-mode-toggle="1">' +
-                (_dialogueMode === 'brief' ? '详细立绘' : '简略模式') + '</button>';
+                dialogueModeButtonText() + '</button>';
             html += '</div>';
             html += '<div class="tlv-dialogue"></div>';
         }
@@ -1335,14 +1353,7 @@
         var mt = t;
         while (mt && mt !== _logDetailEl && !(mt.classList && mt.classList.contains('tlv-dia-mode-btn'))) mt = mt.parentNode;
         if (mt && mt.classList && mt.classList.contains('tlv-dia-mode-btn')) {
-            _dialogueMode = (_dialogueMode === 'brief') ? 'rich' : 'brief';
-            try { localStorage.setItem('cf7.dialogueMode', _dialogueMode); } catch (err) {}
-            mt.textContent = (_dialogueMode === 'brief') ? '详细立绘' : '简略模式';
-            var dia = _logDetailEl.querySelector('.tlv-dialogue');
-            if (dia) {
-                if (typeof DialogueView !== 'undefined' && DialogueView && DialogueView.setMode) DialogueView.setMode(dia, _dialogueMode);
-                else dia.setAttribute('data-dialogue-mode', _dialogueMode);
-            }
+            toggleDialogueMode();
             return;
         }
         while (t && t !== _logDetailEl && !(t.classList && t.classList.contains('tlv-replay-btn'))) t = t.parentNode;
@@ -1395,12 +1406,17 @@
         }
         return html;
     }
-    function renderDialogueReplay(container, lines, heroPortrait) {
+    function renderDialogueReplay(container, lines, heroPortrait, options) {
+        options = options || {};
         if (typeof DialogueView !== 'undefined' && DialogueView && DialogueView.render) {
             var result = DialogueView.render(container, lines, {
                 renderHtml: dialogueHtml,
                 heroPortrait: heroPortrait || null,
-                mode: _dialogueMode
+                mode: _dialogueMode,
+                staged: options.staged === true,
+                autoScroll: options.autoScroll === true,
+                stagedDelayMs: options.stagedDelayMs,
+                stagedInitialDelayMs: options.stagedInitialDelayMs
             });
             if (result && result.catch) {
                 result.catch(function() {
@@ -1479,7 +1495,7 @@
                 dd.innerHTML = '<div class="tlv-dia-empty">' + ((d2 && d2.error === 'no_dialogue') ? '无委托对话' : '无法加载对话') + '</div>';
                 return;
             }
-            renderDialogueReplay(dd, d2.lines, d2.heroPortrait);
+            renderDialogueReplay(dd, d2.lines, d2.heroPortrait, { staged: true, autoScroll: true });
         });
     }
     function dungeonLimitChips(keys) {
@@ -1525,10 +1541,14 @@
 
         var costBits = '<span class="dgn-cost' + (d.affordMoney ? '' : ' bad') + '">契约金 ' + d.deposit + '</span>';
         if (d.kDeposit > 0) costBits += '<span class="dgn-cost' + (d.affordVCoin ? '' : ' bad') + '">K点 ' + d.kDeposit + '</span>';
+        var posterBg = poster
+            ? '<div class="dgn-left-poster-bg"><img src="' + escAttr(poster) + '" alt=""/></div>'
+            : '<div class="dgn-left-poster-bg dgn-left-poster-none">WANTED</div>';
 
         _dungeonViewEl.innerHTML =
             '<div class="dgn-shell">' +
                 '<div class="dgn-left">' +
+                    posterBg +
                     '<div class="dgn-left-title">难度选择</div>' +
                     '<div class="dgn-mode-list">' + modeList + '</div>' +
                     '<div class="dgn-cost-row">' + costBits + '</div>' +
@@ -1541,19 +1561,21 @@
                     (d.alreadyActive ? '<div class="dgn-active-note">该委托已在进行中</div>' : '') +
                 '</div>' +
                 '<div class="dgn-right">' +
-                    (poster ? '<div class="dgn-poster"><img src="' + escAttr(poster) + '" alt=""/></div>' : '<div class="dgn-poster dgn-poster-none">WANTED</div>') +
                     '<div class="dgn-info">' +
-                        '<div class="dgn-name">' + escHtml(d.title || d.stageName || '副本任务') + '</div>' +
-                        '<div class="dgn-meta">' +
-                            (d.npcName ? '<span class="dgn-npc">委托人：' + escHtml(d.npcName) + '</span>' : '') +
-                            (d.recommendedLevel ? '<span class="dgn-lv">推荐等级 ' + escHtml(d.recommendedLevel) + '</span>' : '') +
-                            (diff ? '<span class="dgn-diff">难度 ' + escHtml(diff) + '</span>' : '') +
+                        '<div class="dgn-summary">' +
+                            '<div class="dgn-name">' + escHtml(d.title || d.stageName || '副本任务') + '</div>' +
+                            '<div class="dgn-meta">' +
+                                (d.npcName ? '<span class="dgn-npc">委托人：' + escHtml(d.npcName) + '</span>' : '') +
+                                (d.recommendedLevel ? '<span class="dgn-lv">推荐等级 ' + escHtml(d.recommendedLevel) + '</span>' : '') +
+                                (diff ? '<span class="dgn-diff">难度 ' + escHtml(diff) + '</span>' : '') +
+                            '</div>' +
+                            (d.description ? '<div class="dgn-desc">' + dialogueHtml(d.description) + '</div>' : '') +
                         '</div>' +
-                        (d.description ? '<div class="dgn-desc">' + dialogueHtml(d.description) + '</div>' : '') +
                         '<div class="dgn-section-title">限制词条</div>' +
                         '<div class="dgn-limits">' + dungeonLimitChips(limits) + '</div>' +
                         ((d.rewards && d.rewards.length) ? '<div class="dgn-section-title">任务奖励</div><div class="dgn-rewards">' + dungeonRewardsHtml(d.rewards) + '</div>' : '') +
-                        '<div class="dgn-section-title">委托对话</div>' +
+                        '<div class="dgn-section-title dgn-dialogue-title"><span>委托对话</span>' +
+                            '<button type="button" class="tlv-dia-mode-btn dgn-dia-mode-btn" data-dialogue-mode-toggle="1">' + dialogueModeButtonText() + '</button></div>' +
                         '<div class="dgn-dialogue cf-dialogue" data-dialogue-mode="' + _dialogueMode + '"><div class="tlv-dia-empty">加载对话…</div></div>' +
                     '</div>' +
                 '</div>' +
@@ -1561,6 +1583,8 @@
     }
     function onDungeonViewClick(e) {
         var t = e.target;
+        var toggleBtn = t.closest ? t.closest('[data-dialogue-mode-toggle]') : null;
+        if (toggleBtn && _dungeonViewEl.contains(toggleBtn)) { toggleDialogueMode(); return; }
         var modeBtn = t.closest ? t.closest('.dgn-mode') : null;
         if (modeBtn && _dungeonViewEl.contains(modeBtn)) {
             var m = modeBtn.getAttribute('data-mode');

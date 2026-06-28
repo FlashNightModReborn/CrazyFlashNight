@@ -4,7 +4,7 @@
 //
 // 用法：
 //   node tools/run-tasks-harness.js --qa
-//       跑 ?qa=1 自断言套件（task-ui1~task-ui12），打印结果，failed>0 时退出码 1。
+//       跑 ?qa=1 自断言套件（task-ui + ach-ui），打印结果，failed>0 时退出码 1。
 //   node tools/run-tasks-harness.js --shot=tmp/task.png [--query="view=list&filter=副本&detail=6"] [--viewport=1280x720]
 //       打开面板、应用 query 状态、对 #shell 截图到指定文件。
 //

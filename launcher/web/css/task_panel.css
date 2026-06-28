@@ -1239,6 +1239,13 @@
     flex-direction: column;
     gap: 8px;
 }
+@keyframes cf-dialogue-line-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.cf-dialogue-line-staged {
+    animation: cf-dialogue-line-in 0.18s var(--task-ease) both;
+}
 .cf-dialogue-line {
     display: grid;
     grid-template-columns: 280px minmax(0, 1fr);
@@ -1760,8 +1767,13 @@
 
 /* 主体 = 左难度档 + 右详情 */
 .dgn-shell { flex: 1; min-height: 0; display: flex; gap: 14px; }
-.dgn-left { flex: 0 0 230px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-.dgn-right { flex: 1; min-width: 0; display: flex; gap: 14px; overflow-y: auto; padding-right: 4px; }
+.dgn-left { flex: 0 0 230px; display: flex; flex-direction: column; gap: 10px; min-height: 0; position: relative; overflow: hidden; }
+.dgn-left > :not(.dgn-left-poster-bg) { position: relative; z-index: 1; }
+.dgn-right { flex: 1; min-width: 0; display: block; overflow-y: auto; padding-right: 4px; scrollbar-color: rgba(217, 217, 217, 0.18) rgba(217, 217, 217, 0.03); }
+.dgn-right::-webkit-scrollbar { width: 8px; }
+.dgn-right::-webkit-scrollbar-track { background: rgba(217, 217, 217, 0.03); }
+.dgn-right::-webkit-scrollbar-thumb { background: rgba(217, 217, 217, 0.18); border-radius: 4px; }
+.dgn-right::-webkit-scrollbar-thumb:hover { background: rgba(217, 217, 217, 0.35); }
 
 /* 左：难度选择 */
 .dgn-left-title { font-size: 13px; color: var(--task-text-dim); letter-spacing: 2px; padding-left: 2px; }
@@ -1799,20 +1811,78 @@
 .dgn-block-reason { font-size: 12px; color: #d8533a; text-align: center; }
 .dgn-active-note { font-size: 12px; color: #8fae8f; text-align: center; }
 
-/* 右：海报 + 详情 */
-.dgn-poster { flex: 0 0 150px; align-self: flex-start; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 3px; overflow: hidden; background: rgba(0, 0, 0, 0.3); }
-.dgn-poster img { display: block; width: 150px; height: auto; }
-.dgn-poster-none { width: 150px; height: 200px; display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.25); font-size: 22px; letter-spacing: 3px; font-weight: bold; }
-.dgn-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+/* 左：通缉令作为委托氛围背景，不参与信息布局 */
+.dgn-left-poster-bg {
+    position: absolute;
+    left: 26px;
+    right: 26px;
+    top: 96px;
+    bottom: 138px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.18;
+    filter: grayscale(0.2) contrast(1.04);
+    pointer-events: none;
+    z-index: 0;
+}
+.dgn-left-poster-bg::after {
+    content: '';
+    position: absolute;
+    inset: -18px;
+    background: radial-gradient(ellipse at center, transparent 42%, rgba(0, 0, 0, 0.72) 78%);
+}
+.dgn-left-poster-bg img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
+.dgn-left-poster-none { color: rgba(255, 255, 255, 0.28); font-size: 22px; letter-spacing: 3px; font-weight: bold; }
+
+/* 右：正文主阅读流 */
+.dgn-info { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.dgn-summary { min-width: 0; }
 .dgn-name { font-size: 19px; color: var(--task-text); letter-spacing: 1px; }
 .dgn-meta { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--task-text-dim); }
 .dgn-npc { color: #f0a85f; }
 .dgn-desc { font-size: 13px; line-height: 1.6; color: var(--task-text); opacity: 0.9; padding: 4px 0; }
 .dgn-section-title { font-size: 13px; color: var(--task-text); letter-spacing: 2px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding: 6px 0 4px; margin-top: 4px; }
-.dgn-limits { display: flex; flex-direction: column; gap: 4px; padding: 2px 0; }
-.dgn-limit-chip { font-size: 13px; color: #f0c040; }
-.dgn-nolimit { font-size: 13px; color: var(--task-text-dim); }
-.dgn-rewards { display: flex; gap: 12px; flex-wrap: wrap; padding: 4px 0; }
-.dgn-reward { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--task-text); }
+.dgn-dialogue-title { display: flex; align-items: center; gap: 10px; }
+.dgn-dialogue-title > span { min-width: 0; }
+.dgn-dia-mode-btn { flex: 0 0 auto; letter-spacing: 0; }
+.dgn-limits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 7px 9px;
+    background: rgba(0, 0, 0, 0.18);
+    border-left: 3px solid rgba(255, 255, 255, 0.22);
+}
+.dgn-limit-chip {
+    font-size: 13px;
+    color: var(--task-text);
+    padding: 4px 9px;
+    background: rgba(255, 255, 255, 0.055);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 2px;
+}
+.dgn-nolimit { font-size: 13px; color: var(--task-text-dim); padding: 3px 0; }
+.dgn-rewards {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 8px 9px;
+    background: rgba(0, 0, 0, 0.18);
+    border-left: 3px solid rgba(255, 255, 255, 0.22);
+}
+.dgn-reward {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 34px;
+    padding: 2px 8px 2px 2px;
+    font-size: 12px;
+    color: var(--task-text);
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 2px;
+}
+.dgn-reward .task-item { animation: none; }
 .dgn-reward-x { color: var(--task-text-dim); }
 .dgn-dialogue { padding: 4px 0; min-height: 60px; }

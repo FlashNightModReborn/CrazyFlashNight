@@ -407,7 +407,8 @@
                         break;
                     case 'dungeonBriefing':
                         resp({ success: true, heroPortrait: { gender: '男', appearance: { '脸型': '0', '发型': '0' }, equipment: {} }, lines: [
-                            { speaker: '酒保', sub: '前情报员', text: '听好了，丛林里那艘坠机不简单——里头的怪物会用枪。活着回来，赏金归你。', char: '酒保', charBase: '酒保', expression: '普通', portraitType: 'npc' }
+                            { speaker: '酒保', sub: '前情报员', text: '听好了，丛林里那艘坠机不简单——里头的怪物会用枪。活着回来，赏金归你。', char: '酒保', charBase: '酒保', expression: '普通', portraitType: 'npc' },
+                            { speaker: 'fs', sub: "<FONT COLOR='#FFCC00'>佣兵队长</FONT>", text: '知道了，先把入口坐标给我。', char: '$PC_CHAR#普通', charBase: '玩家', expression: '普通', portraitType: 'hero' }
                         ] });
                         break;
                     case 'dungeonEnter':
@@ -679,6 +680,17 @@
                 return waitFor(function() { return !Panels.isOpen(); }, 2000).then(function() {
                     host.open();
                     return waitFor(function() { return window.TaskPanel.getState().taskCount === 10; }, 4000);
+                });
+            }
+            function reopenDungeon(respDelay) {
+                host._satisfiedOverride = {};
+                host._inventoryFullFor = null;
+                host._respDelay = respDelay == null ? 50 : respDelay;
+                host._navOverride = {};
+                host.close();
+                return waitFor(function() { return !Panels.isOpen(); }, 2000).then(function() {
+                    host.open({ view: 'dungeon', taskId: 106 });
+                    return waitFor(function() { return document.querySelector('.dgn-shell .dgn-enter-btn'); }, 4000);
                 });
             }
             function clickIcon(idx) { var b = document.querySelector('.task-icon[data-index="' + idx + '"]'); if (b) b.click(); return b; }
@@ -1293,6 +1305,39 @@
                     DETAILS[101].conditions[0].cur = origCur;
                     host._satisfiedOverride = {};
                 }
+            });
+
+            await check('task-ui44', '副本对话：完整立绘默认，按钮可切到缩略模式并持久化', async function() {
+                try { localStorage.removeItem('cf7.dialogueMode'); } catch (e) {}
+                await reopenDungeon();
+                await waitFor(function() { return document.querySelector('.dgn-dialogue .tlv-dia-line'); }, 3000);
+                var dia = document.querySelector('.dgn-dialogue');
+                var btn = document.querySelector('.dgn-dia-mode-btn');
+                var richDefault = dia && dia.getAttribute('data-dialogue-mode') === 'rich' && btn && btn.textContent === '缩略模式';
+                btn.click();
+                await waitFor(function() { return document.querySelector('.dgn-dialogue').getAttribute('data-dialogue-mode') === 'brief'; }, 1000);
+                var slot = document.querySelector('.dgn-dialogue .cf-dialogue-portrait-slot');
+                var briefOk = document.querySelector('.dgn-dia-mode-btn').textContent === '完整立绘' &&
+                    localStorage.getItem('cf7.dialogueMode') === 'brief' &&
+                    slot && getComputedStyle(slot).display === 'none';
+                document.querySelector('.dgn-dia-mode-btn').click();
+                await waitFor(function() { return document.querySelector('.dgn-dialogue').getAttribute('data-dialogue-mode') === 'rich'; }, 1000);
+                return richDefault && briefOk && localStorage.getItem('cf7.dialogueMode') === 'rich';
+            });
+
+            await check('task-ui45', '副本对话：委托简报按行依次渲染，而非一次性全部插入', async function() {
+                await reopenDungeon(20);
+                await waitFor(function() { return document.querySelectorAll('.dgn-dialogue .tlv-dia-line').length === 1; }, 3000);
+                var firstCount = document.querySelectorAll('.dgn-dialogue .tlv-dia-line').length;
+                await new Promise(function(resolve) { setTimeout(resolve, 120); });
+                var stillOne = document.querySelectorAll('.dgn-dialogue .tlv-dia-line').length === 1;
+                await waitFor(function() { return document.querySelectorAll('.dgn-dialogue .tlv-dia-line').length === 2; }, 2000);
+                var finalCount = document.querySelectorAll('.dgn-dialogue .tlv-dia-line').length;
+                var scroller = document.querySelector('.dgn-right');
+                var canScroll = scroller && scroller.scrollHeight > scroller.clientHeight + 1;
+                if (canScroll) await waitFor(function() { return scroller.scrollTop > 0; }, 1200);
+                var autoFollowOk = !canScroll || scroller.scrollTop > 0;
+                return firstCount === 1 && stillOne && finalCount === 2 && autoFollowOk;
             });
 
             var passed = results.filter(function(r) { return r.pass; }).length;
