@@ -3,17 +3,11 @@
 **最后核对代码基线**：commit `6ed0404f9a`（2026-06-17）。
 按子栈选验证；不要用「编译一下」「跑一下 build」笼统覆盖跨栈任务。
 ## 0. 通用前缀
-
-PowerShell 命令前先跑（避免 GBK 乱码）：
-
-```powershell
-chcp.com 65001 | Out-Null
-```
-下方所有 PowerShell 命令默认已执行该前缀,不再每条重复。
+PowerShell 命令前先跑 `chcp.com 65001 | Out-Null`（避免 GBK 乱码）；下方所有 PowerShell 命令默认已执行该前缀,不再每条重复。
 ## 1. 任务 → 验证入口矩阵
 | 任务类型 | 必跑 | 视改动追加 |
 |----------|------|------------|
-| AS2 class / 帧脚本 / Flash 资源联动 | `scripts/compile_test.ps1` 或 `bash scripts/compile_test.sh` | Flash IDE 复核、截图、专项 TestLoader 套件、`tools/swf-audit/`（SWF 静态审计：背景实例覆盖度 / 尺寸 / 标签直方图，见该目录 README） |
+| AS2 / Flash CS6 | 按 §2 三层先选 `-Target publish\|test\|main` | TestLoader 专项套件、真机 smoke、Flash IDE 复核、`tools/swf-audit/`、`node tools/audit-as2-class-embedding.js --policy child-only` |
 | AS2 UI → Web Panel 迁移 | 按 [as2-web-panel-migration.md](as2-web-panel-migration.md) 补闭环表 + `launcher/build.ps1` + `launcher/tests/run_tests.ps1` | AS2 fresh trace / Web harness / 游戏内端到端手测按改动面追加 |
 | XML / 数据 / 游戏数值 | 受影响路径运行时 smoke | `compile_test`、游戏内人工验证 |
 | 导弹运动 / 追踪参数离线调优 | `python tools/missile-tuning-sim/run_sim.py compare --configs ...` | `scan --objective loiter|pressure|hit` / `audit`、`compile_test`、游戏内人工验证 |
@@ -34,11 +28,13 @@ chcp.com 65001 | Out-Null
 
 **入口**：`powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1` 或 `bash scripts/compile_test.sh`
 
-**两种构建目标，成功判据不同**（用 `-Target test|publish` 显式选目标，免手动切活动文档；省略 `-Target` 则取当前活动文档。脚本据 `publish_done.marker` + `compiler_errors.txt` 决定 exit 0/1）：
+**先选层级，再选 `-Target`；默认频率 / 优先级是 asLoader → TestLoader → main，不要把普通 `.as` 改动默认升级为主文件编译。**
+速查：`asLoader` 逻辑注入层（多数 `scripts/类定义/`、`scripts/逻辑/`、WebView bridge、`_root.gameCommands.*`）→ `-Target publish`；`TestLoader` 测试层 → `-Target test`；主文件运行壳 / 资产挂载层（主 FLA/XFL、库元件、linkage、主时间轴，少用，多见于 UI 迁移）→ `-Target main`。选择 `-Target main` 应能说明触及主 FLA / 资产 / linkage / 主时间轴；只改 asLoader 注入逻辑时跑 main 不会证明目标 SWF 中的逻辑已更新。显式 `-Target` 免手动切活动文档；省略 `-Target` 则取当前活动文档。脚本据 `publish_done.marker` + `compiler_errors.txt` 决定 exit 0/1。成功判据按目标不同：
 
 - **TestLoader（测试构建，带 trace）**：成功 = `[OK] 编译完成` + 本次运行**新鲜生成**的 `scripts/flashlog.txt`（脚本只写本次新增 trace）+ trace 无 `[TEST_FAIL]` / `[FAIL]` / `Tests Failed: N>0` + `compiler_errors.txt` `0 个错误`。当前 asLoader 相关逻辑回归 = `BootSequencerTest`（mock 驱状态机：socket 超时/shim 缺失/握手失败/修复 gate/单帧幂等/S9·S10 事件）+ `BootstrapHandshakeTest`（60s timeout 透传到 sender，防 launcher prewarm hold 时被 ServerManager 默认 callback timeout 抢先判失败）；**仅逻辑层**，真 socket/佣兵满编/跨 SWF 生命周期/存档三分支须真机，分层见 [构建标准 §5.3](../docs/asLoader-BootSequencer-构建标准-2026-06-16.md)。
 - **asLoader / publish 模式（发布二进制，剔 trace 等功能以免性能损耗）**：**本就不出 trace**——脚本会打 `[INFO] 无 trace 输出 (publish 模式不执行 trace)`，`flashlog.txt` 不刷新属正常，**不要据此判失败**。成功 = `[OK] 编译完成` + `scripts/compiler_errors.txt` 显示 `0 个错误` + `scripts/asLoader.swf` 已刷新（mtime/size 变化）。
   - **把「SWF 已刷新」变成机器门**：跑 publish 时传 `-VerifySwf scripts/asLoader.swf`（如 `powershell -File scripts/compile_test.ps1 -TimeoutSeconds 150 -VerifySwf scripts/asLoader.swf`）。脚本触发前记录 SWF 的 mtime/size 基线，成功路径校验其确被重写：未变 / 不存在 → `[ERROR] 目标 SWF 未刷新` + `exit 1`（fail-closed）。**不传该参数时脚本只看 `0 个错误`，「SWF 已刷新」需人工核对**——以前文档写了这条判据但脚本不强制，marker 产出而 SWF 未重写会假成功，故 asLoader publish 一律带 `-VerifySwf`。
+- **main / 主文件 publish-only**：只验证主文件运行壳、资产挂载、linkage 与主时间轴相关变更；不替代 asLoader 逻辑注入验证。成功 = `compiler_errors.txt` `0 个错误` + 根目录主 SWF 刷新；`main` 不产 trace 属正常。
 
 公共项：`publish_done.marker` **仅说明 JSFL 触发结束**，不能单独视为成功；必要时核对 `scripts/compile_output.txt`。慢机编译易超过默认窗口（实测 asLoader publish ~77s），`[TIMEOUT]` 后先核对 marker / SWF / `compiler_errors.txt` 是否其实已在超时后产出，再用 `-TimeoutSeconds` 调大重试。**新建 .as 类被引用时必须显式 import——含同包引用（2026-06-13 实测）**：CS6 常驻会话的同包隐式解析用陈旧包索引，会话期间新建的类不写 import 会报 `无法加载类或接口'X'` 且无语法错误细节（帧脚本与跨包显式 import 均正常）；修复 = 引用方加显式 import；删 ASO 缓存、重复编译、`fl.quit()` 均无效，BOM 正常 + 帧脚本能加载即可排除内容/编码方向。**改 symbol/FLA 时间轴结构（如 `asLoader.xml` 帧数/层数增删、塌缩）后必须在 CS6 关闭并重开该 FLA（关闭时选「不保存」，否则 CS6 内存里的旧时间轴会写回盘 clobber 你的磁盘改动），否则 publish 出的是 CS6 内存里的旧时间轴**（2026-06-16 实测：塌缩 asLoader 82 帧→1 帧后直接重编，SWF 仍是旧 82 帧、boot 卡死）。注意区分：externalization 后**改外置 `.as`（CDATA）**走 `#include`、publish 时从盘重读，**无需 reopen**；但**时间轴结构在 CS6 文档内存、publish 不重读**，结构改必须 reopen。判据：`grep -a -c` SWF 找类名/trace 串因 CWS 压缩无效，改读 `logs/launcher.log` 的 boot trace 看实际跑的是哪套帧。
 
@@ -46,6 +42,7 @@ chcp.com 65001 | Out-Null
 
 - 可以说：`已完成 Flash CS6 自动化 smoke 验证` / `已触发编译并拿到新鲜 trace`（TestLoader）/ `asLoader 发布编译 0 错误、SWF 已重生成`（publish 模式）
 - **不要**在缺少新鲜 trace、编译器错误面板或 IDE 复核时说「已编译通过」；但 **asLoader publish 无 trace 属正常设计**，以 `0 个错误` + SWF 刷新为准，别因缺 trace 误判失败
+- 如果为 AS2 逻辑改动选择了 `main`，必须说明它触及主 FLA / 资产 / linkage / 主时间轴；否则应改用 `asLoader` / `TestLoader` 验证。
 
 **主 SWF / asLoader class 边界审计**：改 `scripts/类定义/org/flashNight/neur/Server/*` 或部署前追加 `node tools/audit-as2-class-embedding.js --policy child-only`；临时双 SWF 重打兜底用 `--policy dual-build --marker _repairPending --marker applyRepairResolved`。若主 SWF 仍嵌入 `__Packages.org.flashNight.neur.Server.SaveManager` / `ServerManager`，asLoader 新 class 不会覆盖。**全局单一归属门（asLoader 重构 P1）**：`--policy single-ownership` 断言「主 SWF 嵌入 `org.flashNight.*` 类 = 0 且无 class 同时嵌入两 SWF」——比 child-only 更强，守「主时间轴误直引用游戏 class 致其嵌进主 SWF → 首注册胜出 shadow 掉 asLoader 重编版本」。改主 FLA 帧脚本 / 新增主时间轴 class 引用、或部署前跑（当前基线 main=0 / loader=572 / intersection=0）。
 详见 [scripts/FlashCS6自动化编译.md](../scripts/FlashCS6自动化编译.md)。

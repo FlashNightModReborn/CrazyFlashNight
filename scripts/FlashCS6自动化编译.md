@@ -22,6 +22,18 @@
 
 ## 3. 使用方式
 
+### 目标选择速查
+
+先判断改动属于哪一层，再选 `-Target`；默认频率 / 优先级是 **asLoader → TestLoader → main**，不要把“改了 `.as`”直接等价为 `main`。
+
+| 层级 | 职责 | 典型改动 | 推荐目标 |
+|------|------|----------|----------|
+| asLoader 逻辑注入层 | 运行时 AS2 class / boot include / `_root` 方法与 WebView bridge 注入 | 多数 `scripts/类定义/`、`scripts/逻辑/`、`scripts/逻辑系统分区/*_WebView.as`、`*PanelService.as` | `-Target publish` |
+| TestLoader 测试层 | 测试入口、mock、专项断言、trace 验证 | `scripts/TestLoader.as`、测试 class、测试 fixture | `-Target test` |
+| 主文件运行壳 / 资产挂载层 | 运行入口、主 FLA 时间轴、库元件、linkage、资产挂载 | `CRAZYFLASHER7MercenaryEmpire/LIBRARY/*`、主 XFL/FLA、主时间轴帧脚本、linkage 变更；少用，多集中于 UI 迁移业务 | `-Target main` |
+
+`main` 是最重的主文件 publish-only 验证，只应在触及主 FLA / 资产 / linkage / 主时间轴时使用；普通 asLoader 注入逻辑跑 `main` 不会证明 `scripts/asLoader.swf` 已更新。若同轮跨层改动，按实际层级分别跑对应目标。
+
 ### PowerShell
 
 ```powershell
@@ -46,7 +58,7 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target test -
 # 发布构建：编 asLoader（自动启用 -VerifySwf scripts/asLoader.swf 刷新门）
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 180
 
-# 主文件构建：编整套游戏主文件（Symbol/帧脚本 + scripts\类定义\ 主文件 classpath 类）
+# 主文件构建：只用于主 FLA / 资产 / linkage / 主时间轴相关改动
 # publish-only（doc.publish() 不 testMovie），不会拉起整套游戏；产出仓库根 CRAZYFLASHER7MercenaryEmpire.swf
 # 自动启用 -VerifySwf；成功判据 = Compiler Errors 0 个错误 + 主 SWF 已刷新
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target main -TimeoutSeconds 300
