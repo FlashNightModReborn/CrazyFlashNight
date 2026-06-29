@@ -460,6 +460,9 @@ var MapPanel = (function() {
         renderFilterButtons();
         updatePageTabs();
         updatePageSummary();
+        // First open can paint before ResizeObserver/rAF layout settles. Force one
+        // synchronous layout pass so the first canvas state uses the visible panel size.
+        syncStageLayout('apply_page_sync');
         scheduleLayoutSync();
         scheduleSettledLayoutSync();
     }
