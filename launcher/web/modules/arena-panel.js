@@ -75,6 +75,8 @@
     var _cardKind = {};       // cardIdx → 'merc' | 'monster'
     var _monsterSquad = {};   // cardIdx → { faction, opponents:[{name,level,type,spritename,isMonster:true}] }
     var _mixChance = 0.35;    // 单卡判为怪物小队的概率（setMixChance 可调，QA/截图注入用）
+    var _knownEnemies = {};   // spritename → true；来自 AS2 snapshot 的 killStats.byType
+    var _knownEnemyCount = 0;
 
     // ════════════════════════════════════════════════════════════════════════════
     // Panel 注册
@@ -143,10 +145,7 @@
         _detailRollBtn.addEventListener('click', onRollAgain);
         _detailConfirmBtn.addEventListener('click', onConfirmChallenge);
 
-        var modeTabs = _el.querySelectorAll('.arena-mode-tab');
-        for (var mt = 0; mt < modeTabs.length; mt++) {
-            modeTabs[mt].addEventListener('click', onModeClick);
-        }
+        bindModeTabs();
 
         buildCards();
 
@@ -233,12 +232,35 @@
         return (typeof window !== 'undefined') && !!window.ArenaMetaRosters && !!window.ArenaMetaRosters.factions;
     }
 
+    function modeAvailable(mode) {
+        var id = (typeof mode === 'string') ? mode : mode.id;
+        if (id === 'standard') return true;
+        if (!rostersAvailable() || _knownEnemyCount <= 0) return false;
+        return buildFallenCards().length > 0;
+    }
+
+    function bindModeTabs() {
+        if (!_el) return;
+        var modeTabs = _el.querySelectorAll('.arena-mode-tab');
+        for (var mt = 0; mt < modeTabs.length; mt++) {
+            modeTabs[mt].addEventListener('click', onModeClick);
+        }
+    }
+
+    function refreshModeTabs() {
+        if (!_el) return;
+        var modesEl = _el.querySelector('#arena-modes');
+        if (!modesEl) return;
+        modesEl.innerHTML = buildModeTabs();
+        bindModeTabs();
+    }
+
     // 模式 tab 条（对齐战队界面 tab）。requiresRosters 的模式仅在数据就绪时出现。
     function buildModeTabs() {
         var html = '';
         for (var i = 0; i < ARENA_MODES.length; i++) {
             var m = ARENA_MODES[i];
-            if (m.requiresRosters && !rostersAvailable()) continue;
+            if (!modeAvailable(m)) continue;
             var active = (m.id === _activeMode) ? ' arena-mode-tab-active' : '';
             html += '<button class="arena-mode-tab' + active + '" type="button"' +
                     ' data-mode="' + escapeAttr(m.id) + '" data-audio-cue="confirm">' +
@@ -254,6 +276,7 @@
         var btn = e.currentTarget;
         var mode = btn.getAttribute('data-mode');
         if (!mode || mode === _activeMode) return;
+        if (!modeAvailable(mode)) return;
         rebuildForMode(mode);
         if (_snapshot) batchRequestPreview();
     }
@@ -293,12 +316,14 @@
         for (var name in factions) {
             var units = factions[name].units || [];
             if (units.length < FALLEN_MIN_UNITS) continue;
+            var knownUnits = filterKnownUnits(units);
+            if (knownUnits.length === 0) continue;
             var meta = factionMeta(name);
             if (meta.enabled === false) continue;     // 手作禁用的势力不出卡
             var lo = 99999, hi = 0;
-            for (var u = 0; u < units.length; u++) {
-                if (units[u].minLevel < lo) lo = units[u].minLevel;
-                if (units[u].maxLevel > hi) hi = units[u].maxLevel;
+            for (var u = 0; u < knownUnits.length; u++) {
+                if (knownUnits[u].minLevel < lo) lo = knownUnits[u].minLevel;
+                if (knownUnits[u].maxLevel > hi) hi = knownUnits[u].maxLevel;
             }
             if (hi <= 0) continue;
             var levelMin = Math.max(lo, hi - FALLEN_BAND_WINDOW);
@@ -320,7 +345,7 @@
                 levelMax: levelMax,
                 benchLevel: benchLevel,
                 scale: meta.scale || null,        // small|large|coalition（爬升波数档）
-                unitCount: units.length,
+                unitCount: knownUnits.length,
                 deposit: deposit,
                 reward: reward,
                 expr: '#0@' + levelMin + '-' + levelMax + '%' + count
@@ -387,7 +412,7 @@
     function factionPool(faction) {
         var factions = rostersAvailable() ? window.ArenaMetaRosters.factions : null;
         if (!factions || !factions[faction]) return [];
-        var units = factions[faction].units || [];
+        var units = filterKnownUnits(factions[faction].units || []);
         var pool = [];
         for (var i = 0; i < units.length; i++) {
             var u = units[i];
@@ -416,10 +441,13 @@
         _previewError = {};
         _cardKind = {};
         _monsterSquad = {};
+        _knownEnemies = {};
+        _knownEnemyCount = 0;
         // initData.difficulty 来自 stage-select 重定向；dev 模式 ARENA_TEST 直开时为 ""
         _initDifficulty = (initData && initData.difficulty) ? String(initData.difficulty) : '';
         hideToast();
         updateMoneyDisplay(null);
+        refreshModeTabs();
         // 每次打开复位到标准模式：重建标准卡 DOM（摘要回 loading）+ 清缓存 + tab active 态 + 显示 grid。
         // 上次会话可能停在堕落模式；DOM 跨 open/close 复用，必须重建回标准（否则残留堕落卡）。
         rebuildForMode('standard');
@@ -454,6 +482,8 @@
         _previewError = {};
         _cardKind = {};
         _monsterSquad = {};
+        _knownEnemies = {};
+        _knownEnemyCount = 0;
         _initDifficulty = '';
         PanelTooltip.hide();
         hideToast();
@@ -658,6 +688,11 @@
         _pendingReq[reqId] = function(data) {
             if (data.success && data.snapshot) {
                 _snapshot = data.snapshot;
+                setKnownEnemies(_snapshot.knownEnemies);
+                if (!modeAvailable(_activeMode)) {
+                    rebuildForMode('standard');
+                }
+                refreshModeTabs();
                 updateMoneyDisplay(_snapshot.money);
                 updateCardStates();
                 // snapshot 成功才发 batch preview：① 提早发会让 preview 回包后 updateCardStates 拿不到 money
@@ -791,6 +826,7 @@
         var rosters = (typeof window !== 'undefined' && window.ArenaMetaRosters)
             ? window.ArenaMetaRosters.factions : null;
         if (!rosters) return null;                       // 无数据（如 QA harness 未载）→ 恒 merc
+        if (_knownEnemyCount <= 0) return null;           // 未击杀过对应 spritename → 不混入怪物，避免剧透
         if (Math.random() >= _mixChance) return null;    // 概率未命中 → merc
         return sampleMonsterSquad(rosters, card.levelMin, card.levelMax, card.opponentCount);
     }
@@ -823,9 +859,36 @@
         var pool = [];
         for (var i = 0; i < units.length; i++) {
             var u = units[i];
+            if (!isKnownEnemyUnit(u)) continue;
             if (u.minLevel <= levelMax && u.maxLevel >= levelMin) pool.push(u);
         }
         return pool;
+    }
+
+    function setKnownEnemies(list) {
+        _knownEnemies = {};
+        _knownEnemyCount = 0;
+        list = list || [];
+        for (var i = 0; i < list.length; i++) {
+            var key = String(list[i] || '');
+            if (!key || _knownEnemies[key]) continue;
+            _knownEnemies[key] = true;
+            _knownEnemyCount++;
+        }
+    }
+
+    function isKnownEnemyUnit(unit) {
+        if (!unit || !unit.spritename) return false;
+        return _knownEnemies[String(unit.spritename)] === true;
+    }
+
+    function filterKnownUnits(units) {
+        units = units || [];
+        var out = [];
+        for (var i = 0; i < units.length; i++) {
+            if (isKnownEnemyUnit(units[i])) out.push(units[i]);
+        }
+        return out;
     }
 
     // 从单位池按 weight 加权采样 count 个（可重复），每个单位等级钳进 [levelMin,levelMax]。
@@ -1282,11 +1345,14 @@
             snapshot: _snapshot,
             activeCardIdx: _activeCardIdx,
             previewOpponents: _previewOpponents,
+            activeMode: _activeMode,
+            knownEnemyCount: _knownEnemyCount,
             pendingCount: Object.keys(_pendingReq).length,
             previewCacheCount: Object.keys(_previewCache).length,
             previewPendingCount: Object.keys(_previewPending).length,
             previewErrorCount: Object.keys(_previewError).length,
-            cardKind: _cardKind
+            cardKind: _cardKind,
+            monsterSquad: _monsterSquad
         };
     }
 
@@ -1297,8 +1363,18 @@
             getCards: function() { return _activeCards.slice(); },
             // 测试/截图注入：设怪物混入概率（1=全怪物，0=全 merc）。需 window.ArenaMetaRosters 已载。
             setMixChance: function(p) { _mixChance = Number(p); },
+            // 测试注入：模拟 AS2 snapshot 的 killStats.byType spritename 列表。
+            setKnownEnemies: function(list) {
+                setKnownEnemies(list);
+                refreshModeTabs();
+            },
             // 测试/截图：切到堕落模式（需 rosters 已载）。返回切后卡片数。
-            switchMode: function(mode) { rebuildForMode(mode); if (_snapshot) batchRequestPreview(); return _activeCards.length; }
+            switchMode: function(mode) {
+                if (!modeAvailable(mode)) return 0;
+                rebuildForMode(mode);
+                if (_snapshot) batchRequestPreview();
+                return _activeCards.length;
+            }
         };
     }
 })();

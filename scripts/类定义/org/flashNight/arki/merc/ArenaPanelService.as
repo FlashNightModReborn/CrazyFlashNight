@@ -10,7 +10,7 @@
  *
  * 同步管道（与 stage-select / map 同构）：
  *   Web → C# ArenaTask → Flash gameCommands:
- *     arenaSnapshot      — 返回 money / reuseCount / reuseLimit / busy
+ *     arenaSnapshot      — 返回 money / reuseCount / reuseLimit / busy / knownEnemies
  *     arenaRollPreview   — 调 ArenaController.rollPreview，序列化 _root.出阵人员 给 web 显示
  *     arenaEquipTooltip  — (raw, level) → BaseItem.getData() 走真 calculateData，含 tier/mods
  *                          → TooltipComposer 富文本（descHTML / introHTML）
@@ -75,9 +75,30 @@ class org.flashNight.arki.merc.ArenaPanelService {
                 money:       Number(_root.金钱) || 0,
                 reuseCount:  Number(_root.当前佣兵重用数) || 0,
                 reuseLimit:  Number(_root.竞技场佣兵重用基数) || 0,
-                busy:        (_root.发布请求 == true) || (_root.决斗场进入中 == true)
+                busy:        (_root.发布请求 == true) || (_root.决斗场进入中 == true),
+                knownEnemies: buildKnownEnemies()
             }
         });
+    }
+
+    private static function buildKnownEnemies():Array {
+        var out:Array = [];
+        if (_root.killStats == undefined || _root.killStats.byType == undefined) return out;
+        var byType:Object = _root.killStats.byType;
+        for (var key:String in byType) {
+            var count:Number = Number(byType[key]);
+            if (!isNaN(count) && count > 0) out.push(key);
+        }
+        return out;
+    }
+
+    private static function isKnownArenaEnemy(type:String):Boolean {
+        if (_root.兵种库 == undefined || _root.兵种库[type] == undefined) return false;
+        var spriteName:String = String(_root.兵种库[type].兵种名 || "");
+        if (spriteName == "") return false;
+        if (_root.killStats == undefined || _root.killStats.byType == undefined) return false;
+        var count:Number = Number(_root.killStats.byType[spriteName]);
+        return (!isNaN(count) && count > 0);
     }
 
     /**
@@ -287,6 +308,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
             for (var pi:Number = 0; pi < poolParam.length; pi++) {
                 var pt:String = String(poolParam[pi].type);
                 if (_root.兵种库[pt] == undefined) continue; // 跳过 web 与 AS2 兵种库不一致的未知兵种
+                if (!isKnownArenaEnemy(pt)) continue; // 防旧缓存/伪造 payload 刷出玩家未击杀过的 spritename
                 var pmin:Number = Number(poolParam[pi].minLevel);
                 var pmax:Number = Number(poolParam[pi].maxLevel);
                 var pw:Number = Number(poolParam[pi].weight);
@@ -339,6 +361,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
             for (var ri:Number = 0; ri < rosterParam.length; ri++) {
                 var rt:String = String(rosterParam[ri].type);
                 if (_root.兵种库[rt] == undefined) continue; // 跳过 web 与 AS2 兵种库不一致的未知兵种
+                if (!isKnownArenaEnemy(rt)) continue; // 防旧缓存/伪造 payload 刷出玩家未击杀过的 spritename
                 var rlvl:Number = Number(rosterParam[ri].level);
                 squad.push({ 兵种: rt, 等级: (isNaN(rlvl) || rlvl < 1) ? 1 : rlvl });
             }

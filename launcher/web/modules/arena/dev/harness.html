@@ -132,6 +132,8 @@
     <div id="panel-tooltip" style="display:none;position:fixed;background:#1a1a1a;border:1px solid #444;padding:8px;font-size:11px;color:#ddd;z-index:9999;pointer-events:none;border-radius:3px;"></div>
 
     <!-- 面板业务逻辑 -->
+    <script src="../../arena-meta-rosters.js"></script>
+    <script src="../../arena-factions.js"></script>
     <script src="../../arena-panel.js"></script>
 
     <!-- Harness 初始化 -->
@@ -174,6 +176,7 @@
             // mock 端按 cardIndex 缓存 lineup（供 QA 验"web 收到的回包确实带了 cardIndex" + "lineup 一致性"）
             _previewCache: {},
             _fixture: 'normal',
+            _knownEnemies: [],
 
             setViewport: function(value) {
                 var shell = document.getElementById('viewport-shell');
@@ -192,12 +195,17 @@
                 this._fixture = name;
             },
 
+            setKnownEnemies: function(list) {
+                this._knownEnemies = (list || []).slice();
+            },
+
             getSnapshot: function() {
                 var f = FIXTURES[this._fixture] || FIXTURES.normal;
                 return {
                     money: f.money,
                     reuseCount: f.reuseCount,
-                    reuseLimit: f.reuseLimit
+                    reuseLimit: f.reuseLimit,
+                    knownEnemies: this._knownEnemies.slice()
                 };
             },
 
