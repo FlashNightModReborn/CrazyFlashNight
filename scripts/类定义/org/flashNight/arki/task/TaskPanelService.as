@@ -44,6 +44,7 @@
  *   不可达（或注册/目录未就绪）则按钮禁用、服务端回 not_navigable。handleDetail 回 finishNavigable。
  */
 import org.flashNight.arki.task.TaskUtil;
+import org.flashNight.arki.item.ItemUtil;
 import LiteJSON;
 
 class org.flashNight.arki.task.TaskPanelService {
@@ -157,6 +158,33 @@ class org.flashNight.arki.task.TaskPanelService {
         return -1;
     }
 
+    private static function itemIconName(itemName:String):String {
+        var itemData:Object = ItemUtil.getRawItemData(itemName);
+        if (itemData != undefined && itemData.icon != undefined && String(itemData.icon) != "") {
+            return String(itemData.icon);
+        }
+        return itemName;
+    }
+
+    private static function parseItemStack(raw, kind:String):Object {
+        var parts:Array = String(raw).split("#");
+        var itemName:String = String(parts[0]);
+        var count:Number = parts[1] != undefined ? Number(parts[1]) : 1;
+        if (isNaN(count)) count = 1;
+        var o:Object = { name: itemName, count: count, icon: itemIconName(itemName) };
+        if (kind != undefined && kind != "") o.kind = kind;
+        return o;
+    }
+
+    private static function parseItemStacks(src:Array, kind:String):Array {
+        var out:Array = [];
+        if (src == undefined || src.length == undefined) return out;
+        for (var i:Number = 0; i < src.length; i++) {
+            out.push(parseItemStack(src[i], kind));
+        }
+        return out;
+    }
+
     // ═══════════════════════════════════════════════════════════
     // handleSnapshot — 返回玩家当前所有任务概要
     // ═══════════════════════════════════════════════════════════
@@ -209,35 +237,17 @@ class org.flashNight.arki.task.TaskPanelService {
         // 解析物品需求 (finish_submit_items / finish_contain_items: ["itemName#quantity", ...])
         var itemReqs:Array = [];
         if (taskData.finish_submit_items != undefined && taskData.finish_submit_items.length > 0) {
-            for (var si:Number = 0; si < taskData.finish_submit_items.length; si++) {
-                var sParts:Array = String(taskData.finish_submit_items[si]).split("#");
-                var sName:String = sParts[0];
-                var sCount:Number = sParts[1] != undefined ? Number(sParts[1]) : 1;
-                itemReqs.push({ name: sName, count: sCount, kind: "submit" });
-            }
+            itemReqs = itemReqs.concat(parseItemStacks(taskData.finish_submit_items, "submit"));
         }
         if (taskData.finish_contain_items != undefined && taskData.finish_contain_items.length > 0) {
-            for (var ci:Number = 0; ci < taskData.finish_contain_items.length; ci++) {
-                var cParts:Array = String(taskData.finish_contain_items[ci]).split("#");
-                var cName:String = cParts[0];
-                var cCount:Number = cParts[1] != undefined ? Number(cParts[1]) : 1;
-                itemReqs.push({ name: cName, count: cCount, kind: "contain" });
-            }
+            itemReqs = itemReqs.concat(parseItemStacks(taskData.finish_contain_items, "contain"));
         }
 
         // 解析提交NPC
         var npcName:String = taskData.finish_npc != undefined ? String(taskData.finish_npc) : "";
 
         // 解析奖励 (rewards: ["itemName#quantity", ...])
-        var rewards:Array = [];
-        if (taskData.rewards != undefined && taskData.rewards.length > 0) {
-            for (var ri:Number = 0; ri < taskData.rewards.length; ri++) {
-                var rParts:Array = String(taskData.rewards[ri]).split("#");
-                var rName:String = rParts[0];
-                var rCount:Number = rParts[1] != undefined ? Number(rParts[1]) : 1;
-                rewards.push({ name: rName, count: rCount });
-            }
-        }
+        var rewards:Array = parseItemStacks(taskData.rewards, undefined);
 
         // 前往交付可达性：finish_npc → marker.hotspotId（MapTaskNpcRegistry）→ 可否直接跳转
         // （MapPanelService.canNavigateToHotspot：非战斗地图 + NAVIGATE_TARGETS 命中 + 所在组已解锁）。
@@ -303,6 +313,7 @@ class org.flashNight.arki.task.TaskPanelService {
             displayname: tt.displayname,
             descHTML: tt.descHTML,
             introHTML: tt.introHTML,
+            iconName: itemIconName(itemName),
             itemType: itemType
         });
     }
@@ -667,7 +678,7 @@ class org.flashNight.arki.task.TaskPanelService {
                 title: String(TaskUtil.getTaskText(taskData.title)),
                 description: String(TaskUtil.getTaskText(taskData.description)),
                 npcName: String(taskData.get_npc != undefined ? taskData.get_npc : (taskData.finish_npc != undefined ? taskData.finish_npc : "")),
-                rewards: (taskData.rewards instanceof Array) ? taskData.rewards : [],
+                rewards: parseItemStacks(taskData.rewards, undefined),
                 imageurl: (taskData.imageurl != undefined ? String(taskData.imageurl) : ""),
                 hasChallenge: hasChallenge,
                 challengeDifficulty: hasChallenge ? String(taskData.challenge.difficulty) : "",

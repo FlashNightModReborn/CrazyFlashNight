@@ -634,6 +634,12 @@
     mix-blend-mode: var(--tt-icon-blend, normal);
     filter: var(--tt-icon-glow);
 }
+.flash-tt-icon .cfn-layered-icon,
+.kshop-tt-icon .cfn-layered-icon {
+    width: var(--tt-icon-size);
+    height: var(--tt-icon-size);
+    flex: 0 0 var(--tt-icon-size);
+}
 
 /* Intro 文字段（在 intro-panel 内 icon 下方） */
 .flash-tt-intro,

@@ -11,6 +11,8 @@
 #   1d. 派生 launcher/data/map_hud_data.json
 #   1e. 派生 web/modules/tasks/task-catalog.json + task conditions 回归矩阵
 #   1f. 派生 web/modules/tasks/achievement-catalog.json
+#   1g. 审计 Web 可见物品 icon → launcher/web/icons/manifest.json 闭包
+#   1h. 审计 Web 图标渲染入口（tooltip 必须接入 Icons.html 动态/分层播放链）
 #   2.  native miniaudio.dll 构建（cl.exe via vcvars64）
 #   3.  native sol_parser.dll 构建（cargo via rustup）
 #   4.  native bootstrap.exe 构建（cl.exe，用户面入口 wrapper）
@@ -228,6 +230,38 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 Write-Host "  achievement-catalog.json OK." -ForegroundColor Green
+
+# Step 1g: Web 可见物品图标闭包审计。
+# 任务/成就/情报面板都只消费上游提交的真实 icon 名；这里拦截 data/items 或 catalog
+# 把 Web 可见条目指向 manifest 不存在 icon 的情况，避免前端再维护 name→icon 特判表。
+Write-Host "[Step 1g/7] Audit web-visible item icon closure..." -ForegroundColor Yellow
+$auditWebItemIconsScript = Join-Path $projectRoot "tools\audit-web-item-icon-closure.js"
+if (-not (Test-Path $auditWebItemIconsScript)) {
+    Write-Host "[FAIL] audit-web-item-icon-closure.js missing: $auditWebItemIconsScript" -ForegroundColor Red
+    exit 1
+}
+node $auditWebItemIconsScript
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] web-visible item icon closure audit failed." -ForegroundColor Red
+    exit 1
+}
+Write-Host "  web-visible item icon closure OK." -ForegroundColor Green
+
+# Step 1h: Web 图标渲染入口审计。
+# 物品/装备/奖励/tooltip 这类用户可见图标必须走 Icons.html / applyIconToImage 的动态链路；
+# Icons.resolve 只允许作为第一帧 fallback，且必须收敛在受控 helper/兼容入口里。
+Write-Host "[Step 1h/7] Audit web icon render entrypoints..." -ForegroundColor Yellow
+$auditWebIconEntrypointsScript = Join-Path $projectRoot "tools\audit-web-icon-render-entrypoints.js"
+if (-not (Test-Path $auditWebIconEntrypointsScript)) {
+    Write-Host "[FAIL] audit-web-icon-render-entrypoints.js missing: $auditWebIconEntrypointsScript" -ForegroundColor Red
+    exit 1
+}
+node $auditWebIconEntrypointsScript
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] web icon render entrypoint audit failed." -ForegroundColor Red
+    exit 1
+}
+Write-Host "  web icon render entrypoints OK." -ForegroundColor Green
 
 # Step 2: Build native miniaudio DLL
 Write-Host "[Step 2/7] Build native miniaudio DLL..." -ForegroundColor Yellow

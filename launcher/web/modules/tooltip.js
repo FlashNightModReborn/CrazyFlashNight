@@ -613,6 +613,7 @@ var PanelTooltip = (function() {
     //   {suffix}
     //
     // opts:
+    //   iconHtml       - 可选，已渲染的可信图标 HTML（如 Icons.html），用于动态图标
     //   iconUrl        - 已 resolved 的 URL；为空且 iconPlaceholder 未提供则不渲图标
     //   iconPlaceholder- iconUrl 缺失时的占位 HTML（如 '?' 字符 span）
     //   introHTML      - AS2 原始 HTML（自动 convertAS2Html）
@@ -630,7 +631,9 @@ var PanelTooltip = (function() {
     function buildItemRichHtml(opts) {
         opts = opts || {};
         var iconBlock = '';
-        if (opts.iconUrl) {
+        if (opts.iconHtml) {
+            iconBlock = '<div class="flash-tt-icon kshop-tt-icon">' + opts.iconHtml + '</div>';
+        } else if (opts.iconUrl) {
             iconBlock = '<div class="flash-tt-icon kshop-tt-icon"><img src="' + opts.iconUrl +
                 '" onerror="this.parentNode.style.display=\'none\'"></div>';
         } else if (opts.iconPlaceholder) {
@@ -680,6 +683,24 @@ var PanelTooltip = (function() {
         return html;
     }
 
+    function dynamicIconHtml(iconKey, className, attrs) {
+        if (!iconKey || typeof Icons === 'undefined' || !Icons || !Icons.html) return '';
+        try {
+            return Icons.html(iconKey, className || '', attrs || ' onerror="this.style.display=\'none\'"');
+        } catch (e) {
+            return '';
+        }
+    }
+
+    function staticIconUrl(iconKey) {
+        if (!iconKey || typeof Icons === 'undefined' || !Icons || !Icons.resolve) return null;
+        try {
+            return Icons.resolve(iconKey);
+        } catch (e) {
+            return null;
+        }
+    }
+
     // 根据 AS2 端 TooltipLayout.applyIntroLayout 的 case 判断布局类型。
     // - wide  分支匹配 TYPE_WEAPON='武器' / TYPE_ARMOR='防具' / TYPE_SKILL='技能' / POTION='药剂'
     // - narrow 分支是 default fallthrough，覆盖一切其他类型（消耗品/材料/收集品/情报/...）
@@ -717,6 +738,8 @@ var PanelTooltip = (function() {
         hide: hide,
         convertAS2Html: convertAS2Html,
         buildItemRichHtml: buildItemRichHtml,
+        dynamicIconHtml: dynamicIconHtml,
+        staticIconUrl: staticIconUrl,
         // 决策辅助（暴露给调用方在请求 AS2 注释前/后预判 split/merge / layout）
         htmlTextScore: htmlTextScore,
         shouldSplitWeb: shouldSplitWeb,

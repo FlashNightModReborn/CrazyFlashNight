@@ -145,8 +145,9 @@
         ];
         function stage(name, diff) { return { name: name, difficulty: diff }; }
         function items(kind, arr) { for (var i = 0; i < arr.length; i++) arr[i].kind = kind; return arr; }
-        function it(name, count) { return { name: name, count: count, kind: 'submit' }; }
-        function rw(name, count) { return { name: name, count: count }; }
+        function iconFor(name) { return name === '金币' ? '金钱' : name; }
+        function it(name, count) { return { name: name, count: count, kind: 'submit', icon: iconFor(name) }; }
+        function rw(name, count) { return { name: name, count: count, icon: iconFor(name) }; }
 
         // mock 物品注释
         function tooltipFor(name) {
@@ -582,11 +583,11 @@
                 await waitFor(function() { return document.querySelector('.task-title-line2') && document.querySelector('.task-title-line2').textContent === '初入战场'; }, 3000);
                 return !document.querySelector('.task-deliverable');
             });
-            await check('task-ui10', '物品 hover → 富 tooltip 显示注释', async function() {
+            await check('task-ui10', '物品 hover → 富 tooltip 显示注释 + 动态图标入口', async function() {
                 // 切到含奖励物品的任务(index0)
                 document.querySelector('.task-icon[data-index="0"]').click();
                 await waitFor(function() { return document.querySelector('.task-item[data-item-name]'); }, 3000);
-                var item = document.querySelector('.task-item[data-item-name="强化核心"]') || document.querySelector('.task-item[data-item-name]');
+                var item = document.querySelector('.task-item[data-item-name="金币"]') || document.querySelector('.task-item[data-item-name]');
                 var name = item.getAttribute('data-item-name');
                 var r = item.getBoundingClientRect();
                 item.dispatchEvent(new MouseEvent('mouseover', { bubbles: true, clientX: r.left + 6, clientY: r.top + 6 }));
@@ -600,7 +601,11 @@
                     var tip = document.getElementById('panel-tooltip');
                     return tip && tip.innerHTML.indexOf('类型') >= 0;
                 }, 3000);
-                return true;
+                await waitFor(function() {
+                    var tip = document.getElementById('panel-tooltip');
+                    return tip && !!tip.querySelector('.flash-tt-icon [data-icon-name="金钱"][data-icon-animated="1"]');
+                }, 3000);
+                return name === '金币';
             });
             await check('task-ui11', 'detail 缓存：再次点击已加载任务不重发 detail（无 conditions/导航复查需求的任务）', async function() {
                 // 点新任务(index5) → 触发一次 detail；再切走切回均应命中缓存，不再发请求。

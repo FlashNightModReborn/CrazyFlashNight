@@ -713,12 +713,13 @@ var IntelligencePanel = (function() {
 
     function buildBasicTooltip(item, failed) {
         var label = item.displayName || item.name || '';
-        var iconUrl = resolveIconUrl(item);
-        var iconHtml = iconUrl
-            ? '<div class="kshop-tt-icon"><img src="' + escAttr(iconUrl) + '" alt=""></div>'
+        var iconKey = resolveIconKey(item);
+        var iconHtml = iconKey ? PanelTooltip.dynamicIconHtml(iconKey) : '';
+        var iconBlock = iconHtml
+            ? '<div class="kshop-tt-icon">' + iconHtml + '</div>'
             : '<div class="kshop-tt-icon"><span class="intel-catalog-icon-placeholder">?</span></div>';
         return '<div class="kshop-tt-rich intel-tt-basic">' +
-            iconHtml +
+            iconBlock +
             '<div class="kshop-tt-desc">' +
                 '<div class="kshop-tt-header"><b>' + escHtml(label) + '</b></div>' +
                 '<div class="kshop-tt-divider"></div>' +
@@ -734,12 +735,13 @@ var IntelligencePanel = (function() {
     // 情报物品 (item.type='情报') 在 AS2 端 applyIntroLayout 走 default 分支
     // → web 端用 layoutType:'narrow' 触发 BASE_NUM*RATE=120 窄面板。
     function buildRichTooltip(item, resp) {
-        var iconUrl = resolveIconUrl(item);
+        var iconKey = resolveIconKey(item);
         var meta = '<div class="flash-tt-dim kshop-tt-dim">已发现 ' +
                    countUnlockedPagesForItem(item) + ' / ' +
                    getPageCountForItem(item) + ' 页</div>';
         return PanelTooltip.buildItemRichHtml({
-            iconUrl:         iconUrl,
+            iconHtml:        PanelTooltip.dynamicIconHtml(iconKey),
+            iconUrl:         PanelTooltip.staticIconUrl(iconKey),
             iconPlaceholder: '<span class="intel-catalog-icon-placeholder">?</span>',
             introHTML:       resp.introHTML,
             descHTML:        resp.descHTML,

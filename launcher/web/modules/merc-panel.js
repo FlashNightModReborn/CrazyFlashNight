@@ -1291,14 +1291,13 @@
         if (!raw) return;
         var key = raw + '|' + level;
         _ttHoverKey = key;
-        var iconUrl = (iconKey && typeof Icons !== 'undefined') ? Icons.resolve(iconKey) : null;
 
         var cached = _ttCache[key];
         var html = cached
-            ? buildRichTooltipHtml(cached, iconUrl)
-            : buildBasicTooltipHtml(displayName, level, iconUrl);
+            ? buildRichTooltipHtml(cached, iconKey)
+            : buildBasicTooltipHtml(displayName, level, iconKey);
         PanelTooltip.showAtMouse(html, e);
-        if (!cached) requestEquipTooltip(raw, level, key, iconUrl);
+        if (!cached) requestEquipTooltip(raw, level, key, iconKey);
     }
 
     function onEquipLeave() {
@@ -1315,9 +1314,10 @@
         if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide();
     }
 
-    function buildBasicTooltipHtml(displayName, level, iconUrl) {
-        var iconBlock = iconUrl
-            ? '<div class="kshop-tt-icon"><img src="' + iconUrl + '"></div>'
+    function buildBasicTooltipHtml(displayName, level, iconKey) {
+        var iconHtml = PanelTooltip.dynamicIconHtml(iconKey);
+        var iconBlock = iconHtml
+            ? '<div class="kshop-tt-icon">' + iconHtml + '</div>'
             : '';
         return '<div class="kshop-tt-rich merc-tt-basic">' +
                 iconBlock +
@@ -1329,16 +1329,17 @@
             '</div>';
     }
 
-    function buildRichTooltipHtml(data, iconUrl) {
+    function buildRichTooltipHtml(data, iconKey) {
         return PanelTooltip.buildItemRichHtml({
-            iconUrl:   iconUrl,
+            iconHtml:  PanelTooltip.dynamicIconHtml(iconKey),
+            iconUrl:   PanelTooltip.staticIconUrl(iconKey),
             introHTML: data.introHTML,
             descHTML:  data.descHTML,
             rootClass: 'merc-tt-rich'
         });
     }
 
-    function requestEquipTooltip(raw, level, key, iconUrl) {
+    function requestEquipTooltip(raw, level, key, iconKey) {
         var reqId = 'merc_tt_' + (++_reqSeq) + '_' + _session;
         _pendingReq[reqId] = function(resp) {
             if (!resp.success) return;
@@ -1349,7 +1350,7 @@
                 itemName: resp.itemName || raw
             };
             if (_ttHoverKey === key && PanelTooltip.isVisible() && Panels.isOpen()) {
-                PanelTooltip.updateContent(buildRichTooltipHtml(_ttCache[key], iconUrl));
+                PanelTooltip.updateContent(buildRichTooltipHtml(_ttCache[key], iconKey));
             }
         };
         Bridge.send({

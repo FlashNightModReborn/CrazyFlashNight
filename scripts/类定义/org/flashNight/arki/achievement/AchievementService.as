@@ -248,14 +248,23 @@ class org.flashNight.arki.achievement.AchievementService {
         return {unlocked: unlocked, claimed: claimed, progress: progress, hiddenReveals: hiddenReveals};
     }
 
+    private static function itemIconName(itemName:String):String {
+        var itemData:Object = ItemUtil.getRawItemData(itemName);
+        if (itemData != undefined && itemData.icon != undefined && String(itemData.icon) != "") {
+            return String(itemData.icon);
+        }
+        return itemName;
+    }
+
     private static function parseRewards(def:Object):Array {
         var out:Array = [];
         var rw:Array = def.rewards;
         if (rw == undefined) return out;
         for (var i:Number = 0; i < rw.length; i++) {
             var parts:Array = String(rw[i]).split("#");
+            var itemName:String = String(parts[0]);
             var cnt:Number = (parts[1] != undefined) ? Number(parts[1]) : 1;
-            out.push({name: parts[0], count: isNaN(cnt) ? 1 : cnt});
+            out.push({name: itemName, count: isNaN(cnt) ? 1 : cnt, icon: itemIconName(itemName)});
         }
         return out;
     }

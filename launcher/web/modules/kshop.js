@@ -406,7 +406,7 @@ var KShop = (function() {
         var lockBanner = locked
             ? '<div class="flash-tt-lock-banner kshop-tt-lock-banner">⚿ 锁定 — 需要 Lv.' + item.level + '</div>'
             : '';
-        var iconUrl = (typeof Icons !== 'undefined') ? Icons.resolve(item.icon) : null;
+        var iconKey = item.icon;
 
         // layoutType: 对齐 AS2 TooltipLayout.applyIntroLayout 分支。
         // K 商城 item.majorType 来自 AS2 端的 item.type 字段，可直接喂给 inferLayoutType。
@@ -414,7 +414,8 @@ var KShop = (function() {
         var layoutType = PanelTooltip.inferLayoutType(item.majorType);
 
         return PanelTooltip.buildItemRichHtml({
-            iconUrl:    iconUrl,
+            iconHtml:   PanelTooltip.dynamicIconHtml(iconKey),
+            iconUrl:    PanelTooltip.staticIconUrl(iconKey),
             introHTML:  data.introHTML,
             descHTML:   data.descHTML,
             rootClass:  'kshop-tt-rich-context',

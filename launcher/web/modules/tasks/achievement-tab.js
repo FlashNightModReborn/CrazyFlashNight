@@ -250,7 +250,7 @@
         // 奖励图标（data-item-name → 复用任务面板 hover 富 tooltip 委托）
         var rewardsHtml = '';
         for (var r = 0; r < rewards.length; r++) {
-            rewardsHtml += _ctx.itemIconHtml(rewards[r].name, rewards[r].count, r);
+            rewardsHtml += _ctx.itemIconHtml(rewards[r], undefined, r);
         }
 
         var actionHtml = st.claimed

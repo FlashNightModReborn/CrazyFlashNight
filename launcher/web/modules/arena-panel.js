@@ -1166,14 +1166,13 @@
         if (!raw) return;
         var key = raw + '|' + level;
         _ttHoverKey = key;
-        var iconUrl = (iconKey && typeof Icons !== 'undefined') ? Icons.resolve(iconKey) : null;
 
         var cached = _ttCache[key];
         var html = cached
-            ? buildRichTooltipHtml(cached, iconUrl)
-            : buildBasicTooltipHtml(displayName, level, iconUrl);
+            ? buildRichTooltipHtml(cached, iconKey)
+            : buildBasicTooltipHtml(displayName, level, iconKey);
         PanelTooltip.showAtMouse(html, e);
-        if (!cached) requestEquipTooltip(raw, level, key, iconUrl);
+        if (!cached) requestEquipTooltip(raw, level, key, iconKey);
     }
 
     function onEquipLeave() {
@@ -1187,9 +1186,10 @@
 
     // 基础态（loading）：仅 hover 即时显示，等 Flash 富文本回包后被 buildRichTooltipHtml 覆盖
     // 用 kshop-tt-* 类，与商城 / 情报 panel 视觉一致
-    function buildBasicTooltipHtml(displayName, level, iconUrl) {
-        var iconBlock = iconUrl
-            ? '<div class="kshop-tt-icon"><img src="' + iconUrl + '"></div>'
+    function buildBasicTooltipHtml(displayName, level, iconKey) {
+        var iconHtml = PanelTooltip.dynamicIconHtml(iconKey);
+        var iconBlock = iconHtml
+            ? '<div class="kshop-tt-icon">' + iconHtml + '</div>'
             : '';
         return '<div class="kshop-tt-rich arena-tt-basic">' +
                 iconBlock +
@@ -1204,16 +1204,17 @@
     // 富文本态：TooltipComposer 的 introHTML/descHTML 已含 displayname header，不再外加。
     // arena 显示的是玩家身上的装备（武器/护甲/技能/药剂），AS2 端全部走 applyIntroLayout 的
     // wide 分支（BASE_NUM=200），所以不传 layoutType（buildItemRichHtml 默认 wide）。
-    function buildRichTooltipHtml(data, iconUrl) {
+    function buildRichTooltipHtml(data, iconKey) {
         return PanelTooltip.buildItemRichHtml({
-            iconUrl:   iconUrl,
+            iconHtml:  PanelTooltip.dynamicIconHtml(iconKey),
+            iconUrl:   PanelTooltip.staticIconUrl(iconKey),
             introHTML: data.introHTML,
             descHTML:  data.descHTML,
             rootClass: 'arena-tt-rich'
         });
     }
 
-    function requestEquipTooltip(raw, level, key, iconUrl) {
+    function requestEquipTooltip(raw, level, key, iconKey) {
         var reqId = 'arena_tt_' + (++_reqSeq) + '_' + _session;
         _pendingReq[reqId] = function(resp) {
             if (!resp.success) return;
@@ -1225,7 +1226,7 @@
             };
             // 仍 hover 在同一 cell 才更新
             if (_ttHoverKey === key && PanelTooltip.isVisible() && Panels.isOpen()) {
-                PanelTooltip.updateContent(buildRichTooltipHtml(_ttCache[key], iconUrl));
+                PanelTooltip.updateContent(buildRichTooltipHtml(_ttCache[key], iconKey));
             }
         };
         Bridge.send({

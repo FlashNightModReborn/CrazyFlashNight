@@ -10,9 +10,9 @@
     // 数据契约（AS2 TaskPanelService 透传，只读）：
     //   snapshot → { success, tasks:[{taskId,title,type,npcName,satisfied}] }
     //   detail(index) → { success, taskData:{taskId,type,title,description,
-    //                     stageReq{name,difficulty}|null, itemReqs[{name,count,kind}],
-    //                     npcName, rewards[{name,count}]} }
-    //   tooltip(itemName) → { success, introHTML, descHTML, type, displayname }  (新增)
+    //                     stageReq{name,difficulty}|null, itemReqs[{name,count,kind,icon}],
+    //                     npcName, rewards[{name,count,icon}]} }
+    //   tooltip(itemName) → { success, introHTML, descHTML, itemType, displayname, iconName? }
     //   detail 额外回 finishRemote:Boolean（可否面板远程交付）、finishNavigable:Boolean（可否一键前往NPC）
     //   finishTask(taskId) → { success, tasks:[...], error? }   写操作·交付（taskId 主键解析）
     //   deleteTask(taskId) → { success, tasks:[...], error? }   写操作·放弃（主线拒绝）
@@ -41,6 +41,7 @@
     var _detailCache = Object.create(null);      // taskId → taskData
     var _tooltipCache = Object.create(null);     // itemName → {introHTML,descHTML,type} | {loading:true} | {failed:true,at}（null 原型，防 __proto__ 污染）
     var _hoverItemKey = null;
+    var _hoverItemIcon = null;
     var _pendingAbandonId = null;                // 放弃确认弹窗待删 taskId
 
     // ── 事件日志/任务树（WS6）──
@@ -337,6 +338,7 @@
         _detailCache = Object.create(null);
         _tooltipCache = Object.create(null);
         _hoverItemKey = null;
+        _hoverItemIcon = null;
         _busy = false;
         _iconsReady = false;
         _treeState = null;          // 进度叠加每次开面板重取（存档态可变）；_catalog 不重置（不可变）
@@ -1033,7 +1035,7 @@
             html += '<div class="task-requirement-title ' + titleClass + '"></div>';
             html += '<div class="task-requirement-items">';
             for (var ir = 0; ir < task.itemReqs.length; ir++) {
-                html += itemIconHtml(task.itemReqs[ir].name, task.itemReqs[ir].count, ir);
+                html += itemIconHtml(task.itemReqs[ir], undefined, ir);
             }
             html += '</div></div></div>';
             reqI++;
@@ -1076,7 +1078,7 @@
             html += '<div class="task-reward-box"><span>任务奖励</span></div>';
             html += '<div class="task-reward-items">';
             for (var r = 0; r < task.rewards.length; r++) {
-                html += itemIconHtml(task.rewards[r].name, task.rewards[r].count, r);
+                html += itemIconHtml(task.rewards[r], undefined, r);
             }
             html += '</div></div>';
         }
@@ -1310,7 +1312,7 @@
             var titleClass = (t.itemReqs[0].kind === 'contain') ? 'contain' : 'submit';
             html += '<div class="task-item-requirement" data-i="' + reqI + '"><div class="task-item-requirement-inner">' +
                 '<div class="scroll-track"></div><div class="task-requirement-title ' + titleClass + '"></div><div class="task-requirement-items">';
-            for (var ir = 0; ir < t.itemReqs.length; ir++) html += itemIconHtml(t.itemReqs[ir].name, t.itemReqs[ir].count, ir);
+            for (var ir = 0; ir < t.itemReqs.length; ir++) html += itemIconHtml(t.itemReqs[ir], undefined, ir);
             html += '</div></div></div>'; reqI++;
         }
         if (t.npcName) {
@@ -1323,7 +1325,7 @@
 
         if (t.rewards && t.rewards.length) {
             html += '<div class="task-reward-section"><div class="task-reward-box"><span>任务奖励</span></div><div class="task-reward-items">';
-            for (var r = 0; r < t.rewards.length; r++) html += itemIconHtml(t.rewards[r].name, t.rewards[r].count, r);
+            for (var r = 0; r < t.rewards.length; r++) html += itemIconHtml(t.rewards[r], undefined, r);
             html += '</div></div>';
         }
 
@@ -1509,10 +1511,19 @@
     function dungeonRewardsHtml(rewards) {
         var html = '';
         for (var i = 0; i < rewards.length; i++) {
-            var parts = String(rewards[i]).split('#');
-            var name = parts[0];
-            var count = parts[1] != null ? parts[1] : '';
-            html += '<span class="dgn-reward">' + itemIconHtml(name, '') + '<span class="dgn-reward-name">' + escHtml(name) + '</span>' +
+            var reward = rewards[i];
+            var name, count, icon;
+            if (reward && typeof reward === 'object') {
+                name = reward.name || '';
+                count = reward.count != null ? reward.count : '';
+                icon = reward.icon || reward.iconName || name;
+            } else {
+                var parts = String(reward).split('#');
+                name = parts[0];
+                count = parts[1] != null ? parts[1] : '';
+                icon = name;
+            }
+            html += '<span class="dgn-reward">' + itemIconHtml({ name: name, count: '', icon: icon }) + '<span class="dgn-reward-name">' + escHtml(name) + '</span>' +
                 (count !== '' ? '<span class="dgn-reward-x">×' + escHtml(String(count)) + '</span>' : '') + '</span>';
         }
         return html;
@@ -1956,22 +1967,24 @@
         if (!cell) return;
         var name = cell.getAttribute('data-item-name');
         if (!name) return;
+        var icon = cell.getAttribute('data-item-icon') || name;
         _hoverItemKey = name;
+        _hoverItemIcon = icon;
         if (typeof PanelTooltip === 'undefined' || !PanelTooltip) return;
 
         var cached = _tooltipCache[name];
         if (cached && cached.introHTML !== undefined) {
-            PanelTooltip.showAtMouse(buildRichTip(name, cached), e);
+            PanelTooltip.showAtMouse(buildRichTip(name, cached, icon), e);
             return;
         }
         // 先显示基础信息
-        PanelTooltip.showAtMouse(buildBasicTip(name), e);
+        PanelTooltip.showAtMouse(buildBasicTip(name, icon), e);
         if (cached && cached.loading) return;
         if (cached && cached.failed && (Date.now() - cached.at) < TOOLTIP_RETRY_MS) {
-            PanelTooltip.showAtMouse(buildUnavailableTip(name), e);
+            PanelTooltip.showAtMouse(buildUnavailableTip(name, icon), e);
             return;
         }
-        requestTooltip(name);
+        requestTooltip(name, icon);
     }
     function onTipMove(e) {
         if (!_hoverItemKey || typeof PanelTooltip === 'undefined') return;
@@ -1984,6 +1997,7 @@
         // 移到子元素内不算离开
         if (e.relatedTarget && cell.contains(e.relatedTarget)) return;
         _hoverItemKey = null;
+        _hoverItemIcon = null;
         hideTip();
     }
     function closestItem(node) {
@@ -1997,7 +2011,7 @@
         if (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.hide) PanelTooltip.hide();
     }
 
-    function requestTooltip(name) {
+    function requestTooltip(name, icon) {
         _tooltipCache[name] = { loading: true };
         var reqSession = _session;
         var callId = sendPanelMsg('tooltip', { itemName: name }, function(data) {
@@ -2005,11 +2019,11 @@
             clearTimeout(timer);
             if (data && data.success && (data.introHTML !== undefined || data.descHTML !== undefined)) {
                 // 注：物品类型用 itemType（不能用 type——会与 panel_resp 信封的 type 字段冲突）
-                _tooltipCache[name] = { introHTML: data.introHTML || '', descHTML: data.descHTML || '', type: data.itemType || '' };
-                if (_hoverItemKey === name && PanelTooltip.isVisible()) PanelTooltip.updateContent(buildRichTip(name, _tooltipCache[name]));
+                _tooltipCache[name] = { introHTML: data.introHTML || '', descHTML: data.descHTML || '', type: data.itemType || '', icon: data.iconName || data.icon || icon || name };
+                if (_hoverItemKey === name && PanelTooltip.isVisible()) PanelTooltip.updateContent(buildRichTip(name, _tooltipCache[name], _hoverItemIcon));
             } else {
                 _tooltipCache[name] = { failed: true, at: Date.now() };
-                if (_hoverItemKey === name && PanelTooltip.isVisible()) PanelTooltip.updateContent(buildUnavailableTip(name));
+                if (_hoverItemKey === name && PanelTooltip.isVisible()) PanelTooltip.updateContent(buildUnavailableTip(name, _hoverItemIcon));
             }
         });
         // 兜底超时（后端 tooltip cmd 未接线时 callId 不会回，避免永久 loading）
@@ -2018,23 +2032,28 @@
                 delete _pendingReq[callId];
                 _tooltipCache[name] = { failed: true, at: Date.now() };
                 if (reqSession === _session && _hoverItemKey === name && PanelTooltip.isVisible()) {
-                    PanelTooltip.updateContent(buildUnavailableTip(name));
+                    PanelTooltip.updateContent(buildUnavailableTip(name, _hoverItemIcon));
                 }
             }
         }, TOOLTIP_TIMEOUT_MS);
     }
 
     function resolveIconUrl(name) {
-        try {
-            return (typeof Icons !== 'undefined' && Icons && Icons.resolve) ? Icons.resolve(name) : '';
-        } catch (e) {
-            return '';
-        }
+        return (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.staticIconUrl)
+            ? PanelTooltip.staticIconUrl(name)
+            : '';
+    }
+    function renderTooltipIconHtml(name) {
+        return (typeof PanelTooltip !== 'undefined' && PanelTooltip && PanelTooltip.dynamicIconHtml)
+            ? PanelTooltip.dynamicIconHtml(name)
+            : '';
     }
 
-    function buildBasicTip(name) {
+    function buildBasicTip(name, icon) {
+        var iconKey = icon || name;
         return PanelTooltip.buildItemRichHtml({
-            iconUrl: resolveIconUrl(name),
+            iconHtml: renderTooltipIconHtml(iconKey),
+            iconUrl: resolveIconUrl(iconKey),
             iconPlaceholder: '<span style="opacity:.5">?</span>',
             introHTML: '<b>' + plainText(name) + '</b><br><font size=\'12\' color=\'#999999\'>载入注释…</font>',
             descHTML: '',
@@ -2042,9 +2061,11 @@
             rootClass: 'task-tt-rich'
         });
     }
-    function buildRichTip(name, resp) {
+    function buildRichTip(name, resp, icon) {
+        var iconKey = (resp && resp.icon) || icon || name;
         return PanelTooltip.buildItemRichHtml({
-            iconUrl: resolveIconUrl(name),
+            iconHtml: renderTooltipIconHtml(iconKey),
+            iconUrl: resolveIconUrl(iconKey),
             iconPlaceholder: '<span style="opacity:.5">?</span>',
             introHTML: resp.introHTML || ('<b>' + plainText(name) + '</b>'),
             descHTML: resp.descHTML || '',
@@ -2052,9 +2073,11 @@
             rootClass: 'task-tt-rich'
         });
     }
-    function buildUnavailableTip(name) {
+    function buildUnavailableTip(name, icon) {
+        var iconKey = icon || name;
         return PanelTooltip.buildItemRichHtml({
-            iconUrl: resolveIconUrl(name),
+            iconHtml: renderTooltipIconHtml(iconKey),
+            iconUrl: resolveIconUrl(iconKey),
             iconPlaceholder: '<span style="opacity:.5">?</span>',
             introHTML: '<b>' + plainText(name) + '</b><br><font size=\'12\' color=\'#bb7766\'>注释暂不可用</font>',
             descHTML: '',
@@ -2078,13 +2101,24 @@
     }
 
     function itemIconHtml(itemName, count, i) {
+        var name, iconKey, itemCount;
+        if (itemName && typeof itemName === 'object') {
+            name = itemName.name || '';
+            iconKey = itemName.icon || itemName.iconName || name;
+            itemCount = (count !== undefined) ? count : itemName.count;
+        } else {
+            name = itemName || '';
+            iconKey = name;
+            itemCount = count;
+        }
         var imgHtml = (typeof Icons !== 'undefined' && Icons && Icons.html)
-            ? Icons.html(itemName, '', ' onerror="this.style.display=\'none\'"')
+            ? Icons.html(iconKey, '', ' onerror="this.style.display=\'none\'"')
             : '';
         var delayAttr = (i !== undefined) ? ' data-i="' + i + '"' : '';
-        var nameAttr = itemName ? ' data-item-name="' + escAttr(itemName) + '"' : '';
-        return '<div class="task-item"' + delayAttr + nameAttr + '>' + imgHtml +
-            '<span class="task-item-count">' + escHtml(String(count)) + '</span></div>';
+        var nameAttr = name ? ' data-item-name="' + escAttr(name) + '"' : '';
+        var iconAttr = iconKey ? ' data-item-icon="' + escAttr(iconKey) + '"' : '';
+        return '<div class="task-item"' + delayAttr + nameAttr + iconAttr + '>' + imgHtml +
+            '<span class="task-item-count">' + escHtml(itemCount == null ? '' : String(itemCount)) + '</span></div>';
     }
 
     function toast(msg) {
