@@ -32,15 +32,15 @@
                   </strokes>
                   <edges>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!0 0|3312 0!3312 0|3999 991"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!3999 991|3999 3751!3999 3751|540 3751"/>
-                    <Edge fillStyle1="3" strokeStyle="1" edges="!540 3751|380 3443!380 3443|381 2788"/>
-                    <Edge fillStyle1="4" strokeStyle="1" edges="!381 2788|40 2788"/>
-                    <Edge fillStyle1="3" strokeStyle="1" edges="!40 2788|0 2711!0 2711|0 1"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!3999 991|540 991"/>
+                    <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!540 991|0 1"/>
                     <Edge strokeStyle="1" edges="!0 1|0 0"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!3999 991|3999 3751!3999 3751|540 3751"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!540 3751|540 991"/>
                     <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="!381 2788|383 1710!383 1710|40 1081!40 1081|40 2788"/>
-                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!0 1|540 991"/>
-                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!540 991|3999 991"/>
-                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!540 991|540 3751"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!40 2788|0 2711!0 2711|0 1"/>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="!381 2788|40 2788"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!540 3751|380 3443!380 3443|381 2788"/>
                   </edges>
                 </DOMShape>
               </elements>

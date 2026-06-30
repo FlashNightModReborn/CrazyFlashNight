@@ -190,7 +190,8 @@ var MapPanelData = (function() {
             ['shopgirl_avatar', 'Shop Girl', 'armory', 'shopgirl头像.png'],
             ['blue_avatar', 'Blue', 'basement1', 'blue头像.png'],
             ['xiaof_avatar', '小F', 'armory', '小F头像.png'],
-            ['chef_avatar', '厨师', 'cafeteria', '厨师头像.png']
+            ['chef_avatar', '厨师', 'cafeteria', '厨师头像.png'],
+            ['master_swordman_avatar', '剑术大师', 'gym', '剑术大师头像.png']
         ]),
         faction: buildStaticAvatarSlots([
             ['general_avatar', 'general', 'warlord_base', 'general头像.png'],

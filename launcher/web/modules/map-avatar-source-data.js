@@ -254,6 +254,27 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
+  "剑术大师头像": {
+    "symbolName": "剑术大师头像",
+    "assetUrl": "assets/map/avatars/剑术大师头像.png",
+    "hotspotId": "gym",
+    "relX": 89.85,
+    "relY": 21.85,
+    "size": {
+      "w": 44,
+      "h": 44
+    },
+    "crop": {
+      "scaleX": 1.0,
+      "scaleY": 1.0,
+      "tx": -0.5,
+      "ty": 0.5
+    },
+    "assetSize": {
+      "w": 44,
+      "h": 44
+    }
+  },
   "pig头像": {
     "symbolName": "pig头像",
     "assetUrl": "assets/map/avatars/pig头像.png",
