@@ -1,0 +1,876 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/武器大师/剑术大师（本体） 合并" itemID="6a4338ed-00000390" lastModified="1782793307" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="剑术大师（本体） 合并" currentFrame="124" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;540&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;guideline direction="v"&gt;6&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="手" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/手" symbolType="graphic" firstFrame="1" centerPoint3DX="-72.35" centerPoint3DY="7.55" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.844879150390625" b="-0.80841064453125" c="0.80841064453125" d="0.844879150390625" tx="-89.95" ty="-1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-1.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/手" selected="true" symbolType="graphic" firstFrame="1" centerPoint3DX="-72.35" centerPoint3DY="7.55" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.844879150390625" b="-0.80841064453125" c="0.80841064453125" d="0.844879150390625" tx="-89.95" ty="-1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-1.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/手" symbolType="graphic" firstFrame="1" centerPoint3DX="-72.35" centerPoint3DY="7.55" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.844879150390625" b="-0.80841064453125" c="0.80841064453125" d="0.844879150390625" tx="-89.95" ty="-1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-1.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="手臂" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/手臂" symbolType="graphic" firstFrame="1" centerPoint3DX="-150.8" centerPoint3DY="-45.3" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.196945190429688" b="1.15806579589844" c="-1.15806579589844" d="-0.196945190429688" tx="-195.35" ty="-75.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.75" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/手臂" selected="true" symbolType="graphic" firstFrame="1" centerPoint3DX="-150.8" centerPoint3DY="-53.1" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.196945190429688" b="1.15806579589844" c="-1.15806579589844" d="-0.196945190429688" tx="-195.35" ty="-82.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.75" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/手臂" symbolType="graphic" firstFrame="1" centerPoint3DX="-150.8" centerPoint3DY="-45.3" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.196945190429688" b="1.15806579589844" c="-1.15806579589844" d="-0.196945190429688" tx="-195.35" ty="-75.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.75" y="2.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右大臂" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/右大臂" symbolType="graphic" centerPoint3DX="-146.85" centerPoint3DY="-131.2" loop="loop">
+                  <matrix>
+                    <Matrix a="1.13719177246094" b="-0.302749633789063" c="0.302749633789063" d="1.13719177246094" tx="-110.15" ty="-179.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/右大臂" selected="true" symbolType="graphic" centerPoint3DX="-146.85" centerPoint3DY="-139" loop="loop">
+                  <matrix>
+                    <Matrix a="1.13719177246094" b="-0.302749633789063" c="0.302749633789063" d="1.13719177246094" tx="-110.15" ty="-187.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/右大臂" symbolType="graphic" centerPoint3DX="-146.85" centerPoint3DY="-131.2" loop="loop">
+                  <matrix>
+                    <Matrix a="1.13719177246094" b="-0.302749633789063" c="0.302749633789063" d="1.13719177246094" tx="-110.15" ty="-179.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="刀鞘" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/刀鞘" symbolType="graphic" centerPoint3DX="-213.6" centerPoint3DY="79.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.6231689453125" b="-0.725341796875" c="-0.725341796875" d="-0.6231689453125" tx="-67.85" ty="17.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.5" y="3.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/刀鞘" selected="true" symbolType="graphic" centerPoint3DX="-213.6" centerPoint3DY="71.75" loop="loop">
+                  <matrix>
+                    <Matrix a="0.6231689453125" b="-0.725341796875" c="-0.725341796875" d="-0.6231689453125" tx="-67.85" ty="9.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.5" y="3.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/刀鞘" symbolType="graphic" centerPoint3DX="-213.6" centerPoint3DY="79.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.6231689453125" b="-0.725341796875" c="-0.725341796875" d="-0.6231689453125" tx="-67.85" ty="17.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.5" y="3.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="武士刀" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/武士刀" symbolType="graphic" centerPoint3DX="-138.65" centerPoint3DY="45.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.300445556640625" b="0.935333251953125" c="-0.935333251953125" d="0.300445556640625" tx="26.95" ty="-10.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.55" y="-2.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/武士刀" selected="true" symbolType="graphic" centerPoint3DX="-138.65" centerPoint3DY="37.75" loop="loop">
+                  <matrix>
+                    <Matrix a="0.300445556640625" b="0.935333251953125" c="-0.935333251953125" d="0.300445556640625" tx="26.95" ty="-18"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.55" y="-2.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/武士刀" symbolType="graphic" centerPoint3DX="-138.65" centerPoint3DY="45.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.300445556640625" b="0.935333251953125" c="-0.935333251953125" d="0.300445556640625" tx="26.95" ty="-10.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.55" y="-2.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="头" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/头" symbolType="graphic" centerPoint3DX="13.95" centerPoint3DY="-312.95" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.17613220214844" b="0.0772705078125" c="-0.0772705078125" d="1.17613220214844" tx="0.45" ty="-257.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="-0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/头" selected="true" symbolType="graphic" centerPoint3DX="13.95" centerPoint3DY="-312.95" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.17613220214844" b="0.0772705078125" c="-0.0772705078125" d="1.17613220214844" tx="0.45" ty="-257.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="-0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/头" symbolType="graphic" centerPoint3DX="13.95" centerPoint3DY="-312.95" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.17613220214844" b="0.0772705078125" c="-0.0772705078125" d="1.17613220214844" tx="0.45" ty="-257.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="-0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="屁股" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/屁股" symbolType="graphic" centerPoint3DX="-4.1" centerPoint3DY="76.05" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" tx="4.45" ty="72.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3" y="-21.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/屁股" selected="true" symbolType="graphic" centerPoint3DX="-4.1" centerPoint3DY="76.05" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" tx="4.45" ty="72.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3" y="-21.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/屁股" symbolType="graphic" centerPoint3DX="-4.1" centerPoint3DY="76.05" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" tx="4.45" ty="72.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3" y="-21.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="身体" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/身体" symbolType="graphic" centerPoint3DX="-6.25" centerPoint3DY="-97.25" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.1051025390625" b="-0.0144500732421875" c="0.0144500732421875" d="1.1051025390625" tx="3.7" ty="40"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.8" y="-7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/身体" selected="true" symbolType="graphic" centerPoint3DX="-6.25" centerPoint3DY="-105.05" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.1051025390625" b="-0.0144500732421875" c="0.0144500732421875" d="1.1051025390625" tx="3.7" ty="32.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.8" y="-7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/身体" symbolType="graphic" centerPoint3DX="-6.25" centerPoint3DY="-97.25" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.1051025390625" b="-0.0144500732421875" c="0.0144500732421875" d="1.1051025390625" tx="3.7" ty="40"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.8" y="-7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右大腿" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/右大腿" symbolType="graphic" centerPoint3DX="-45.2" centerPoint3DY="169" loop="loop">
+                  <matrix>
+                    <Matrix a="1.30912780761719" b="-0.208770751953125" c="0.208770751953125" d="1.30912780761719" tx="-56.45" ty="107.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.1" y="2.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/右大腿" selected="true" symbolType="graphic" centerPoint3DX="-45.2" centerPoint3DY="169" loop="loop">
+                  <matrix>
+                    <Matrix a="1.30912780761719" b="-0.208770751953125" c="0.208770751953125" d="1.30912780761719" tx="-56.45" ty="107.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.1" y="2.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/右大腿" symbolType="graphic" centerPoint3DX="-45.2" centerPoint3DY="169" loop="loop">
+                  <matrix>
+                    <Matrix a="1.30912780761719" b="-0.208770751953125" c="0.208770751953125" d="1.30912780761719" tx="-56.45" ty="107.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.1" y="2.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右小腿" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/右小腿" symbolType="graphic" centerPoint3DX="-86.55" centerPoint3DY="347.15" loop="loop">
+                  <matrix>
+                    <Matrix a="1.30937194824219" b="-0.20269775390625" c="0.20269775390625" d="1.30937194824219" tx="-62.6" ty="252"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.5" y="-0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/右小腿" selected="true" symbolType="graphic" centerPoint3DX="-86.55" centerPoint3DY="347.15" loop="loop">
+                  <matrix>
+                    <Matrix a="1.30937194824219" b="-0.20269775390625" c="0.20269775390625" d="1.30937194824219" tx="-62.6" ty="252"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.5" y="-0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/右小腿" symbolType="graphic" centerPoint3DX="-86.55" centerPoint3DY="347.15" loop="loop">
+                  <matrix>
+                    <Matrix a="1.30937194824219" b="-0.20269775390625" c="0.20269775390625" d="1.30937194824219" tx="-62.6" ty="252"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.5" y="-0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="脚" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/脚" symbolType="graphic" centerPoint3DX="-92.55" centerPoint3DY="491.15" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.03070068359375" b="-0.0233306884765625" c="0.0233306884765625" d="1.03070068359375" tx="-115.65" ty="462"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/脚" selected="true" symbolType="graphic" centerPoint3DX="-92.55" centerPoint3DY="491.15" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.03070068359375" b="-0.0233306884765625" c="0.0233306884765625" d="1.03070068359375" tx="-115.65" ty="462"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/脚" symbolType="graphic" centerPoint3DX="-92.55" centerPoint3DY="491.15" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.03070068359375" b="-0.0233306884765625" c="0.0233306884765625" d="1.03070068359375" tx="-115.65" ty="462"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左大腿" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/左大腿" symbolType="graphic" centerPoint3DX="40.7" centerPoint3DY="173.1" loop="loop">
+                  <matrix>
+                    <Matrix a="1.30108642578125" b="0.253280639648438" c="-0.253280639648438" d="1.30108642578125" tx="40.15" ty="84.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.1" y="-1.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/左大腿" selected="true" symbolType="graphic" centerPoint3DX="40.7" centerPoint3DY="173.1" loop="loop">
+                  <matrix>
+                    <Matrix a="1.30108642578125" b="0.253280639648438" c="-0.253280639648438" d="1.30108642578125" tx="40.15" ty="84.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.1" y="-1.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/左大腿" symbolType="graphic" centerPoint3DX="40.7" centerPoint3DY="173.1" loop="loop">
+                  <matrix>
+                    <Matrix a="1.30108642578125" b="0.253280639648438" c="-0.253280639648438" d="1.30108642578125" tx="40.15" ty="84.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.1" y="-1.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左小腿" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/左小腿" symbolType="graphic" centerPoint3DX="59.4" centerPoint3DY="344.1" loop="loop">
+                  <matrix>
+                    <Matrix a="1.3236083984375" b="0.06927490234375" c="-0.06927490234375" d="1.3236083984375" tx="73.15" ty="258.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.55" y="-0.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/左小腿" selected="true" symbolType="graphic" centerPoint3DX="59.4" centerPoint3DY="344.1" loop="loop">
+                  <matrix>
+                    <Matrix a="1.3236083984375" b="0.06927490234375" c="-0.06927490234375" d="1.3236083984375" tx="73.15" ty="258.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.55" y="-0.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/左小腿" symbolType="graphic" centerPoint3DX="59.4" centerPoint3DY="344.1" loop="loop">
+                  <matrix>
+                    <Matrix a="1.3236083984375" b="0.06927490234375" c="-0.06927490234375" d="1.3236083984375" tx="73.15" ty="258.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.55" y="-0.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="脚" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/脚" symbolType="graphic" centerPoint3DX="87.25" centerPoint3DY="468.7" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.03070068359375" b="-0.0274200439453125" c="0.0274200439453125" d="1.03070068359375" tx="63.6" ty="439.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.3" y="-0.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/脚" selected="true" symbolType="graphic" centerPoint3DX="87.25" centerPoint3DY="468.7" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.03070068359375" b="-0.0274200439453125" c="0.0274200439453125" d="1.03070068359375" tx="63.6" ty="439.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.3" y="-0.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/脚" symbolType="graphic" centerPoint3DX="87.25" centerPoint3DY="468.7" loop="single frame">
+                  <matrix>
+                    <Matrix a="1.03070068359375" b="-0.0274200439453125" c="0.0274200439453125" d="1.03070068359375" tx="63.6" ty="439.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.3" y="-0.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="剑鞘" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/剑鞘" symbolType="graphic" centerPoint3DX="-2.85" centerPoint3DY="193.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.937759399414063" b="0.711349487304688" c="-0.711349487304688" d="0.937759399414063" tx="96.25" ty="64.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.05" y="-13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/剑鞘" selected="true" symbolType="graphic" centerPoint3DX="-2.85" centerPoint3DY="193.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.937759399414063" b="0.711349487304688" c="-0.711349487304688" d="0.937759399414063" tx="96.25" ty="64.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.05" y="-13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/剑鞘" symbolType="graphic" centerPoint3DX="-2.85" centerPoint3DY="193.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.937759399414063" b="0.711349487304688" c="-0.711349487304688" d="0.937759399414063" tx="96.25" ty="64.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.05" y="-13.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="中国剑2" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/中国剑2" symbolType="graphic" centerPoint3DX="33.45" centerPoint3DY="144.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9346923828125" b="0.713668823242188" c="-0.713668823242188" d="0.9346923828125" tx="143.25" ty="0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.55" y="-22.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/中国剑2" selected="true" symbolType="graphic" centerPoint3DX="33.45" centerPoint3DY="144.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9346923828125" b="0.713668823242188" c="-0.713668823242188" d="0.9346923828125" tx="143.25" ty="0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.55" y="-22.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/中国剑2" symbolType="graphic" centerPoint3DX="33.45" centerPoint3DY="144.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.9346923828125" b="0.713668823242188" c="-0.713668823242188" d="0.9346923828125" tx="143.25" ty="0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.55" y="-22.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="手" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/手" symbolType="graphic" centerPoint3DX="170.4" centerPoint3DY="-50.75" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.41839599609375" b="1.09074401855469" c="1.09074401855469" d="0.41839599609375" tx="153.35" ty="-57.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.85" y="-5.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/手" selected="true" symbolType="graphic" centerPoint3DX="170.4" centerPoint3DY="-58.55" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.41839599609375" b="1.09074401855469" c="1.09074401855469" d="0.41839599609375" tx="153.35" ty="-65.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.85" y="-5.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/手" symbolType="graphic" centerPoint3DX="170.4" centerPoint3DY="-50.75" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.41839599609375" b="1.09074401855469" c="1.09074401855469" d="0.41839599609375" tx="153.35" ty="-57.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.85" y="-5.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="手臂" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/手臂" symbolType="graphic" centerPoint3DX="80.25" centerPoint3DY="-53.65" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.4798583984375" b="-1.0728759765625" c="-1.0728759765625" d="-0.4798583984375" tx="29.05" ty="-55.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.3" y="3.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/手臂" selected="true" symbolType="graphic" centerPoint3DX="80.25" centerPoint3DY="-61.45" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.4798583984375" b="-1.0728759765625" c="-1.0728759765625" d="-0.4798583984375" tx="29.05" ty="-63.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.3" y="3.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/手臂" symbolType="graphic" centerPoint3DX="80.25" centerPoint3DY="-53.65" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.4798583984375" b="-1.0728759765625" c="-1.0728759765625" d="-0.4798583984375" tx="29.05" ty="-55.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.3" y="3.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左大臂" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/左大臂" symbolType="graphic" centerPoint3DX="57.7" centerPoint3DY="-129.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.405853271484375" b="1.10443115234375" c="-1.10443115234375" d="0.405853271484375" tx="89.85" ty="-183.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/左大臂" selected="true" symbolType="graphic" centerPoint3DX="57.7" centerPoint3DY="-137.35" loop="loop">
+                  <matrix>
+                    <Matrix a="0.405853271484375" b="1.10443115234375" c="-1.10443115234375" d="0.405853271484375" tx="89.85" ty="-191.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/左大臂" symbolType="graphic" centerPoint3DX="57.7" centerPoint3DY="-129.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.405853271484375" b="1.10443115234375" c="-1.10443115234375" d="0.405853271484375" tx="89.85" ty="-183.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="长剑剑鞘" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/长剑剑鞘" symbolType="graphic" centerPoint3DX="108.3" centerPoint3DY="132.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.759429931640625" b="1.2603759765625" c="1.2603759765625" d="0.759429931640625" tx="-68.45" ty="-197.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-8.35" y="-13.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/长剑剑鞘" selected="true" symbolType="graphic" centerPoint3DX="108.3" centerPoint3DY="125" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.759429931640625" b="1.2603759765625" c="1.2603759765625" d="0.759429931640625" tx="-68.45" ty="-205.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-8.35" y="-13.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/长剑剑鞘" symbolType="graphic" centerPoint3DX="108.3" centerPoint3DY="132.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.759429931640625" b="1.2603759765625" c="1.2603759765625" d="0.759429931640625" tx="-68.45" ty="-197.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-8.35" y="-13.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="长剑" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/长剑" symbolType="graphic" centerPoint3DX="-22.45" centerPoint3DY="-103.5" loop="loop">
+                  <matrix>
+                    <Matrix a="1.2908935546875" b="-0.696945190429688" c="0.696945190429688" d="1.2908935546875" tx="-91.4" ty="-231.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="-27.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/长剑" selected="true" symbolType="graphic" centerPoint3DX="-22.45" centerPoint3DY="-111.3" loop="loop">
+                  <matrix>
+                    <Matrix a="1.2908935546875" b="-0.696945190429688" c="0.696945190429688" d="1.2908935546875" tx="-91.4" ty="-239.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="-27.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/长剑" symbolType="graphic" centerPoint3DX="-22.45" centerPoint3DY="-103.5" loop="loop">
+                  <matrix>
+                    <Matrix a="1.2908935546875" b="-0.696945190429688" c="0.696945190429688" d="1.2908935546875" tx="-91.4" ty="-231.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="-27.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="69" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 476" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.48353576660156" d="0.909820556640625" tx="-17.6" ty="485.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="56" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 476" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.48353576660156" d="0.909820556640625" tx="-17.6" ty="485.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

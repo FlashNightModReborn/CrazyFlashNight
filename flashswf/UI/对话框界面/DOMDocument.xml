@@ -71,12 +71,15 @@
           <DOMFolderItem name="NPC/NPC-清水结衣/素材" itemID="6915c968-00001011" isExpanded="true"/>
           <DOMFolderItem name="NPC/NPC-王道" itemID="69121ead-00004c75"/>
           <DOMFolderItem name="NPC/NPC-王道/素材" itemID="69121ead-00004c76"/>
-          <DOMFolderItem name="NPC/NPC-云吞魔芋" itemID="69197c44-00002e91" isExpanded="true"/>
+          <DOMFolderItem name="NPC/NPC-武器大师" itemID="6a43421b-00000c50" isExpanded="true"/>
+          <DOMFolderItem name="NPC/NPC-武器大师/素材" itemID="684481da-00000354"/>
+          <DOMFolderItem name="NPC/NPC-云吞魔芋" itemID="69197c44-00002e91"/>
           <DOMFolderItem name="NPC/NPC-云吞魔芋/组件" itemID="69197c44-00002e92" isExpanded="true"/>
+          <DOMFolderItem name="NPC/shape" itemID="6a434210-00000c49"/>
           <DOMFolderItem name="Pins" itemID="5fb81d21-000012d3"/>
-          <DOMFolderItem name="shape" itemID="6597616a-00000eb3" isExpanded="true"/>
+          <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
           <DOMFolderItem name="sound" itemID="6652e52e-00000bd5"/>
-          <DOMFolderItem name="sprite" itemID="65976153-00000ea6" isExpanded="true"/>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
           <DOMFolderItem name="sprite/悬浮UI" itemID="6652e52e-00000bd7"/>
           <DOMFolderItem name="sprite/主角" itemID="659bba25-000014b4"/>
           <DOMFolderItem name="sprite/主角/shape" itemID="65a6bb2a-00001374"/>
@@ -84,7 +87,7 @@
           <DOMFolderItem name="sprite/主角/枪械&amp;女体" itemID="668d6e2a-00003375"/>
           <DOMFolderItem name="ts-npc" itemID="66ad200c-00000fee"/>
           <DOMFolderItem name="动画" itemID="65f7e940-00000bc1"/>
-          <DOMFolderItem name="对话框UI" itemID="66346c29-000015d9" isExpanded="true"/>
+          <DOMFolderItem name="对话框UI" itemID="66346c29-000015d9"/>
           <DOMFolderItem name="对话框UI/Lee" itemID="66bdc806-00000970"/>
           <DOMFolderItem name="对话框UI/杰克霜精" itemID="65f801a0-00000b66"/>
           <DOMFolderItem name="对话框UI/杰克霜精/零件" itemID="65f482a0-00001ef3" isExpanded="true"/>
@@ -457,12 +460,44 @@
           <Include href="NPC/NPC-王道/素材/下身.xml" loadImmediate="false" itemID="54806f8b-00000012" lastModified="1421972230"/>
           <Include href="NPC/NPC-王道/素材/英克雷残存动力甲身1-2.xml" itemIcon="1" loadImmediate="false" itemID="516a39b0-00000f61" lastModified="1421973228"/>
           <Include href="NPC/NPC-王道/素材/装饰.xml" loadImmediate="false" itemID="54816fd9-00000021" lastModified="1417768921"/>
+          <Include href="NPC/NPC-武器大师/刀鞘.xml" loadImmediate="false" itemID="6841db8b-00003b75" lastModified="1761504381"/>
+          <Include href="NPC/NPC-武器大师/剑鞘.xml" loadImmediate="false" itemID="6841e8df-00003b91" lastModified="1782790328"/>
+          <Include href="NPC/NPC-武器大师/剑术大师（本体） 合并.xml" loadImmediate="false" itemID="6a4338ed-00000390" lastModified="1782791552"/>
+          <Include href="NPC/NPC-武器大师/脚.xml" itemIcon="1" loadImmediate="false" itemID="684480a9-000002fd" lastModified="1771527035"/>
+          <Include href="NPC/NPC-武器大师/屁股.xml" itemIcon="1" loadImmediate="false" itemID="68447f6d-00000253" lastModified="1761504462"/>
+          <Include href="NPC/NPC-武器大师/身体.xml" itemIcon="1" loadImmediate="false" itemID="68447fb1-00000287" lastModified="1771528019"/>
+          <Include href="NPC/NPC-武器大师/手.xml" itemIcon="1" loadImmediate="false" itemID="68447d52-0000018c" lastModified="1761504390"/>
+          <Include href="NPC/NPC-武器大师/手臂.xml" itemIcon="1" loadImmediate="false" itemID="68447df5-000001d6" lastModified="1771526737"/>
+          <Include href="NPC/NPC-武器大师/素材/ass_背面.xml" loadImmediate="false" itemID="6842d8b1-00000162" lastModified="1771526303"/>
+          <Include href="NPC/NPC-武器大师/素材/ass_正面.xml" loadImmediate="false" itemID="68447f68-00000251" lastModified="1771526300"/>
+          <Include href="NPC/NPC-武器大师/素材/脚_背面.xml" loadImmediate="false" itemID="68442828-0000014c" lastModified="1771526291"/>
+          <Include href="NPC/NPC-武器大师/素材/脚_正面.xml" loadImmediate="false" itemID="68447f36-0000022f" lastModified="1771526995"/>
+          <Include href="NPC/NPC-武器大师/素材/脑瓜_背面.xml" loadImmediate="false" itemID="6842dbfa-000001ba" lastModified="1771528161"/>
+          <Include href="NPC/NPC-武器大师/素材/脑瓜_正面.xml" loadImmediate="false" itemID="68447f2d-0000022e" lastModified="1771527961"/>
+          <Include href="NPC/NPC-武器大师/素材/身体_背面.xml" loadImmediate="false" itemID="6842d8aa-00000161" lastModified="1771527738"/>
+          <Include href="NPC/NPC-武器大师/素材/身体_正面.xml" loadImmediate="false" itemID="68447fad-00000285" lastModified="1771527714"/>
+          <Include href="NPC/NPC-武器大师/素材/右手.xml" loadImmediate="false" itemID="683f4259-00000156" lastModified="1771526310"/>
+          <Include href="NPC/NPC-武器大师/素材/右小臂.xml" loadImmediate="false" itemID="683f4340-0000015f" lastModified="1771526715"/>
+          <Include href="NPC/NPC-武器大师/素材/左手.xml" loadImmediate="false" itemID="683f3bb9-0000013f" lastModified="1771526316"/>
+          <Include href="NPC/NPC-武器大师/素材/左小臂.xml" loadImmediate="false" itemID="683f3c61-00000147" lastModified="1771526679"/>
+          <Include href="NPC/NPC-武器大师/头.xml" itemIcon="1" loadImmediate="false" itemID="68447eb7-00000223" lastModified="1771528141"/>
+          <Include href="NPC/NPC-武器大师/武士刀.xml" loadImmediate="false" itemID="6841d51d-000025a7" lastModified="1761504507"/>
+          <Include href="NPC/NPC-武器大师/右大臂.xml" loadImmediate="false" itemID="683f45ca-00000168" lastModified="1761504405"/>
+          <Include href="NPC/NPC-武器大师/右大腿.xml" loadImmediate="false" itemID="68407fcc-00000179" lastModified="1761504476"/>
+          <Include href="NPC/NPC-武器大师/右小腿.xml" loadImmediate="false" itemID="68407d5f-00000168" lastModified="1761504481"/>
+          <Include href="NPC/NPC-武器大师/长剑.xml" loadImmediate="false" itemID="6844820b-0000035b" lastModified="1761504411"/>
+          <Include href="NPC/NPC-武器大师/长剑剑鞘.xml" loadImmediate="false" itemID="6842d5f0-0000014a" lastModified="1761504419"/>
+          <Include href="NPC/NPC-武器大师/中国剑2.xml" loadImmediate="false" itemID="6841d31d-00001bb7" lastModified="1761504449"/>
+          <Include href="NPC/NPC-武器大师/左大臂.xml" loadImmediate="false" itemID="68447e21-000001dc" lastModified="1761504437"/>
+          <Include href="NPC/NPC-武器大师/左大腿.xml" loadImmediate="false" itemID="68407fd6-0000017b" lastModified="1761504468"/>
+          <Include href="NPC/NPC-武器大师/左小腿.xml" loadImmediate="false" itemID="68407fde-0000017f" lastModified="1761504488"/>
           <Include href="NPC/NPC-云吞魔芋/组件/刀鞘.xml" loadImmediate="false" itemID="67da622b-0000284a" lastModified="1742365227"/>
           <Include href="NPC/NPC-云吞魔芋/组件/屁股.xml" loadImmediate="false" itemID="69188e89-00001a75" lastModified="1763217294"/>
           <Include href="NPC/NPC-云吞魔芋/组件/全黑右手.xml" loadImmediate="false" itemID="69197c35-00002e8e" lastModified="1763277877"/>
           <Include href="NPC/NPC-云吞魔芋/组件/全黑左手.xml" loadImmediate="false" itemID="69197c2e-00002e8d" lastModified="1763277870"/>
           <Include href="NPC/NPC-云吞魔芋/组件/头.xml" loadImmediate="false" itemID="691873e3-00001460" lastModified="1763210229"/>
           <Include href="NPC/NPC-云吞魔芋/组件/衣物-内部.xml" loadImmediate="false" itemID="69188eb9-00001a7a" lastModified="1763217081"/>
+          <Include href="NPC/shape/Symbol 476.xml" itemIcon="1" loadImmediate="false" itemID="6a434210-00000c4e" lastModified="1704196122"/>
           <Include href="NPC头像空容器.xml" loadImmediate="false" itemID="6871ec97-000008c6" lastModified="1752296601"/>
           <Include href="NPC头像框.xml" itemID="6871e857-00000618" lastModified="1760725336"/>
           <Include href="Pins/Pin1.xml" itemIcon="1" loadImmediate="false" itemID="609349e3-00001548" lastModified="1620265443"/>
@@ -932,7 +967,7 @@
           <Include href="对话框UI/虚拟向导.xml" loadImmediate="false" itemID="66cb7f04-000023d7" lastModified="1724612369"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1766558427"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1773697272"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1782793125"/>
           <Include href="发型/Symbol 799.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00000814" lastModified="1710653981"/>
           <Include href="混沌系列素材包/世莉架头像素材/立绘 表情.xml" loadImmediate="false" itemID="660141a5-0000073a" lastModified="1711358373"/>
           <Include href="混沌系列素材包/世莉架头像素材/立绘 发型.xml" loadImmediate="false" itemID="660141cf-0000073f" lastModified="1711360141"/>

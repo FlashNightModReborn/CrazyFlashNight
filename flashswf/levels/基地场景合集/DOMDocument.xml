@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" guidesLocked="true" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="0.防具相关" itemID="689c56d7-000071be"/>
           <DOMFolderItem name="0.防具相关/05.A兵套" itemID="689c56fe-000071c6" isExpanded="true"/>
@@ -11,7 +11,7 @@
           <DOMFolderItem name="3.防具/01.精致A兵/未命名文件夹 1" itemID="6569f52c-000002d8" isExpanded="true"/>
           <DOMFolderItem name="5.参考装备" itemID="68e76779-00000afd"/>
           <DOMFolderItem name="5.参考装备/3.牛仔套装" itemID="68e76779-00000afe" isExpanded="true"/>
-          <DOMFolderItem name="Accessories" itemID="689c53a5-00005c31" isExpanded="true"/>
+          <DOMFolderItem name="Accessories" itemID="689c53a5-00005c31"/>
           <DOMFolderItem name="Accessories/Others" itemID="689c53a5-00005c32" isExpanded="true"/>
           <DOMFolderItem name="Accessories/Others/Images" itemID="689c53a5-00005c33" isExpanded="true"/>
           <DOMFolderItem name="Ammunitions &amp;#038 Magazines" itemID="6688e48c-0000582b"/>
@@ -33,7 +33,7 @@
           <DOMFolderItem name="NPC/格格巫" itemID="668aa418-000052d6" isExpanded="true"/>
           <DOMFolderItem name="NPC/格格巫/未命名文件夹 1" itemID="668aa428-000052d9"/>
           <DOMFolderItem name="NPC/黑铁会外交部长-部件" itemID="665b5cec-00001fa7"/>
-          <DOMFolderItem name="NPC/冷武器商人" itemID="666550f9-00000a1c"/>
+          <DOMFolderItem name="NPC/冷武器商人" itemID="666550f9-00000a1c" isExpanded="true"/>
           <DOMFolderItem name="NPC/冷武器商人/冷兵" itemID="663cdc89-00003660"/>
           <DOMFolderItem name="NPC/冷武器商人/冷兵/冷兵构件" itemID="666555c7-00001364"/>
           <DOMFolderItem name="NPC/冷武器商人/肢体" itemID="66655683-00001380"/>
@@ -43,6 +43,8 @@
           <DOMFolderItem name="NPC/前治安官" itemID="668a9a94-00004f32"/>
           <DOMFolderItem name="NPC/前治安官/图形" itemID="668a9aa2-00004f37"/>
           <DOMFolderItem name="NPC/文天" itemID="668aacb4-000061eb"/>
+          <DOMFolderItem name="NPC/武器大师" itemID="6a433a70-0000074b"/>
+          <DOMFolderItem name="NPC/武器大师/素材" itemID="684481da-00000354"/>
           <DOMFolderItem name="NPC/杂项" itemID="66631720-00001160"/>
           <DOMFolderItem name="Pins" itemID="5fb81d21-000012d3"/>
           <DOMFolderItem name="Rifles" itemID="5fb81d21-000012da"/>
@@ -255,6 +257,37 @@
           <Include href="NPC/圣诞树.xml" loadImmediate="false" itemID="668aad1c-0000632a" lastModified="1720364316"/>
           <Include href="NPC/文天/Symbol 35500.xml" loadImmediate="false" itemID="6597607e-00000cf4" lastModified="1704196122"/>
           <Include href="NPC/文天/Symbol 35501.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cf6" lastModified="1704196122"/>
+          <Include href="NPC/武器大师/刀鞘.xml" loadImmediate="false" itemID="6841db8b-00003b75" lastModified="1761504381"/>
+          <Include href="NPC/武器大师/剑鞘.xml" loadImmediate="false" itemID="6841e8df-00003b91" lastModified="1782790328"/>
+          <Include href="NPC/武器大师/剑术大师（本体） 合并.xml" loadImmediate="false" itemID="6a4338ed-00000390" lastModified="1782793307"/>
+          <Include href="NPC/武器大师/脚.xml" itemIcon="1" loadImmediate="false" itemID="684480a9-000002fd" lastModified="1771527035"/>
+          <Include href="NPC/武器大师/屁股.xml" itemIcon="1" loadImmediate="false" itemID="68447f6d-00000253" lastModified="1761504462"/>
+          <Include href="NPC/武器大师/身体.xml" itemIcon="1" loadImmediate="false" itemID="68447fb1-00000287" lastModified="1771528019"/>
+          <Include href="NPC/武器大师/手.xml" itemIcon="1" loadImmediate="false" itemID="68447d52-0000018c" lastModified="1761504390"/>
+          <Include href="NPC/武器大师/手臂.xml" itemIcon="1" loadImmediate="false" itemID="68447df5-000001d6" lastModified="1771526737"/>
+          <Include href="NPC/武器大师/素材/ass_背面.xml" loadImmediate="false" itemID="6842d8b1-00000162" lastModified="1771526303"/>
+          <Include href="NPC/武器大师/素材/ass_正面.xml" loadImmediate="false" itemID="68447f68-00000251" lastModified="1771526300"/>
+          <Include href="NPC/武器大师/素材/脚_背面.xml" loadImmediate="false" itemID="68442828-0000014c" lastModified="1771526291"/>
+          <Include href="NPC/武器大师/素材/脚_正面.xml" loadImmediate="false" itemID="68447f36-0000022f" lastModified="1771526995"/>
+          <Include href="NPC/武器大师/素材/脑瓜_背面.xml" loadImmediate="false" itemID="6842dbfa-000001ba" lastModified="1771528161"/>
+          <Include href="NPC/武器大师/素材/脑瓜_正面.xml" loadImmediate="false" itemID="68447f2d-0000022e" lastModified="1771527961"/>
+          <Include href="NPC/武器大师/素材/身体_背面.xml" loadImmediate="false" itemID="6842d8aa-00000161" lastModified="1771527738"/>
+          <Include href="NPC/武器大师/素材/身体_正面.xml" loadImmediate="false" itemID="68447fad-00000285" lastModified="1771527714"/>
+          <Include href="NPC/武器大师/素材/右手.xml" loadImmediate="false" itemID="683f4259-00000156" lastModified="1771526310"/>
+          <Include href="NPC/武器大师/素材/右小臂.xml" loadImmediate="false" itemID="683f4340-0000015f" lastModified="1771526715"/>
+          <Include href="NPC/武器大师/素材/左手.xml" loadImmediate="false" itemID="683f3bb9-0000013f" lastModified="1771526316"/>
+          <Include href="NPC/武器大师/素材/左小臂.xml" loadImmediate="false" itemID="683f3c61-00000147" lastModified="1771526679"/>
+          <Include href="NPC/武器大师/头.xml" itemIcon="1" loadImmediate="false" itemID="68447eb7-00000223" lastModified="1771528141"/>
+          <Include href="NPC/武器大师/武士刀.xml" loadImmediate="false" itemID="6841d51d-000025a7" lastModified="1761504507"/>
+          <Include href="NPC/武器大师/右大臂.xml" loadImmediate="false" itemID="683f45ca-00000168" lastModified="1761504405"/>
+          <Include href="NPC/武器大师/右大腿.xml" loadImmediate="false" itemID="68407fcc-00000179" lastModified="1761504476"/>
+          <Include href="NPC/武器大师/右小腿.xml" loadImmediate="false" itemID="68407d5f-00000168" lastModified="1761504481"/>
+          <Include href="NPC/武器大师/长剑.xml" loadImmediate="false" itemID="6844820b-0000035b" lastModified="1761504411"/>
+          <Include href="NPC/武器大师/长剑剑鞘.xml" loadImmediate="false" itemID="6842d5f0-0000014a" lastModified="1761504419"/>
+          <Include href="NPC/武器大师/中国剑2.xml" loadImmediate="false" itemID="6841d31d-00001bb7" lastModified="1761504449"/>
+          <Include href="NPC/武器大师/左大臂.xml" loadImmediate="false" itemID="68447e21-000001dc" lastModified="1761504437"/>
+          <Include href="NPC/武器大师/左大腿.xml" loadImmediate="false" itemID="68407fd6-0000017b" lastModified="1761504468"/>
+          <Include href="NPC/武器大师/左小腿.xml" loadImmediate="false" itemID="68407fde-0000017f" lastModified="1761504488"/>
           <Include href="NPC/杂项/武器-大剑.xml" loadImmediate="false" itemID="66631721-0000116c" lastModified="1717769623"/>
           <Include href="NPC/杂项/武器-飞刀.xml" loadImmediate="false" itemID="66631721-0000116a" lastModified="1717263913"/>
           <Include href="NPC/杂项/武器-砍刀.xml" loadImmediate="false" itemID="66631721-00001172" lastModified="1717263568"/>
@@ -266,8 +299,8 @@
           <Include href="Pins/Pin1.xml" itemIcon="1" loadImmediate="false" itemID="609349e3-00001548" lastModified="1620265443"/>
           <Include href="Pins/Pin2.xml" itemIcon="1" loadImmediate="false" itemID="609349e3-00001547" lastModified="1620265443"/>
           <Include href="Pins/Pin2.5.xml" itemIcon="1" loadImmediate="false" itemID="5ffa5434-00000c8b" lastModified="1610241076"/>
-          <Include href="Pins/Pin04-1.xml" itemIcon="1" loadImmediate="false" itemID="5fb05923-00000c90" lastModified="1605392675"/>
           <Include href="Pins/Pin4.xml" itemIcon="1" loadImmediate="false" itemID="5fa492eb-00001c04" lastModified="1604621035"/>
+          <Include href="Pins/Pin04-1.xml" itemIcon="1" loadImmediate="false" itemID="5fb05923-00000c90" lastModified="1605392675"/>
           <Include href="real mini uzi.xml" loadImmediate="false" itemID="67f68158-00001256" lastModified="1744208216"/>
           <Include href="Rifles/Colt AR-15/Colt SOPMOD M4 Carbine rifle/Colt AR-15 Grip.xml" itemIcon="1" loadImmediate="false" itemID="5ea48a70-0000092b" lastModified="1587841648"/>
           <Include href="Rifles/Colt AR-15/Colt SOPMOD M4 Carbine rifle/Colt AR-15 Selector.xml" itemIcon="1" loadImmediate="false" itemID="5ec42698-00000bd3" lastModified="1589912810"/>
@@ -807,7 +840,7 @@
           <Include href="sprite/Symbol 2658.xml" loadImmediate="false" itemID="6597607e-00000c5f" lastModified="1717510811"/>
           <Include href="sprite/Symbol 2661.xml" loadImmediate="false" itemID="6597607e-00000c63" lastModified="1717512172"/>
           <Include href="sprite/Symbol 2662.xml" loadImmediate="false" itemID="6597607e-00000c65" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 2664.xml" loadImmediate="false" itemID="6597607e-00000c69" lastModified="1740633514"/>
+          <Include href="sprite/Symbol 2664.xml" loadImmediate="false" itemID="6597607e-00000c69" lastModified="1782791156"/>
           <Include href="sprite/Symbol 2685.xml" loadImmediate="false" itemID="6597607e-00000c92" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2690.xml" loadImmediate="false" itemID="6597607e-00000c9c" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2692.xml" loadImmediate="false" itemID="6597607e-00000ca0" lastModified="1704196122"/>
@@ -952,16 +985,16 @@
           <Include href="待机合集.xml" itemIcon="1" loadImmediate="false" itemID="6900edc4-00000205" lastModified="1761758588"/>
           <Include href="弹药系列/通用/5.56x45mm.xml" loadImmediate="false" itemID="5f03d27b-0000020c" lastModified="1672473451"/>
           <Include href="弹药系列/通用/5.56x45mmNATOx30 mag .xml" loadImmediate="false" itemID="5f0538aa-000007f9" lastModified="1639135121"/>
-          <Include href="地图/车库.xml" itemID="668aa123-00005253" lastModified="1779302907"/>
-          <Include href="地图/基地1层.xml" itemID="668a9fdf-00005040" lastModified="1761757880"/>
-          <Include href="地图/基地地下1层.xml" itemID="668aa054-00005128" lastModified="1759510515"/>
-          <Include href="地图/基地门口.xml" itemID="668aa11b-00005252" lastModified="1762997875"/>
-          <Include href="地图/健身房.xml" itemID="668aa068-0000512a" lastModified="1749711627"/>
+          <Include href="地图/车库.xml" itemID="668aa123-00005253" lastModified="1782791727"/>
+          <Include href="地图/基地1层.xml" itemID="668a9fdf-00005040" lastModified="1782790842"/>
+          <Include href="地图/基地地下1层.xml" itemID="668aa054-00005128" lastModified="1782793679"/>
+          <Include href="地图/基地门口.xml" itemID="668aa11b-00005252" lastModified="1782790561"/>
+          <Include href="地图/健身房.xml" itemID="668aa068-0000512a" lastModified="1782793689"/>
           <Include href="地图/溶洞.xml" itemID="668aa0c1-000051a2" lastModified="1749711656"/>
-          <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1763381489"/>
           <Include href="地图/停机坪.xml" itemID="668aa0dc-000051de" lastModified="1756650519"/>
-          <Include href="地图/武器库.xml" itemID="668aa006-0000507c" lastModified="1755086586"/>
-          <Include href="地图/医务室.xml" itemID="668aa0bc-000051a1" lastModified="1749711735"/>
+          <Include href="地图/武器库.xml" itemID="668aa006-0000507c" lastModified="1782793626"/>
+          <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1763381489"/>
+          <Include href="地图/医务室.xml" itemID="668aa0bc-000051a1" lastModified="1782791834"/>
           <Include href="地图/佣兵酒吧.xml" itemID="668aa09a-00005167" lastModified="1749711706"/>
           <Include href="吊带.xml" itemIcon="1" loadImmediate="false" itemID="68ffa64c-000001d0" lastModified="1761585017"/>
           <Include href="防撞车/元件 1.xml" loadImmediate="false" itemID="636b8402-000002db" lastModified="1667990569"/>
@@ -1369,6 +1402,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2995723" publishTime="1782793317"/>
+          <PublishItem publishSize="2995723" publishTime="1782791971"/>
           <PublishItem publishSize="3023342" publishTime="1774218058"/>
           <PublishItem publishSize="2930515" publishTime="1762997958"/>
           <PublishItem publishSize="2930512" publishTime="1762997590"/>
@@ -1387,7 +1422,5 @@
           <PublishItem publishSize="3221238" publishTime="1756644522"/>
           <PublishItem publishSize="3221238" publishTime="1756644442"/>
           <PublishItem publishSize="3221244" publishTime="1756644318"/>
-          <PublishItem publishSize="3220881" publishTime="1756643554"/>
-          <PublishItem publishSize="3213049" publishTime="1756641936"/>
      </publishHistory>
 </DOMDocument>

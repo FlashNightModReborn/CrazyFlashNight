@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/武器大师/手" itemID="68447d52-0000018c" symbolType="graphic" lastModified="1761504390" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="手">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/素材/左手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix d="-1" tx="1.15" ty="-5.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-2.35" y="-23"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师/素材/右手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99884033203125" b="0.0480194091796875" c="-0.0480194091796875" d="0.99884033203125" tx="3.85" ty="12.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.15" y="3.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
