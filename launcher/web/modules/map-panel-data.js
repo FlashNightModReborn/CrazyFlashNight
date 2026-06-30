@@ -191,7 +191,7 @@ var MapPanelData = (function() {
             ['blue_avatar', 'Blue', 'basement1', 'blue头像.png'],
             ['xiaof_avatar', '小F', 'armory', '小F头像.png'],
             ['chef_avatar', '厨师', 'cafeteria', '厨师头像.png'],
-            ['master_swordman_avatar', '剑术大师', 'gym', '剑术大师头像.png']
+            ['master_swordman_avatar', '武器大师', 'gym', '武器大师头像.png']
         ]),
         faction: buildStaticAvatarSlots([
             ['general_avatar', 'general', 'warlord_base', 'general头像.png'],
@@ -215,6 +215,7 @@ var MapPanelData = (function() {
         defense: buildStaticAvatarSlots([
             ['artist_avatar', 'artist', 'first_defense', 'artist头像.png'],
             ['soldier_avatar', 'soldier', 'first_defense', 'soldier头像.png'],
+            ['master_swordman_avatar', '武器大师', 'first_defense', '武器大师头像.png'],
             ['paigu_avatar', '排骨', 'alliance_dock', '排骨头像.png'],
             ['jige_avatar', '机哥', 'alliance_dock', '机哥头像.png'],
             ['abo_avatar', '阿波', 'alliance_dock', '阿波头像.png'],
