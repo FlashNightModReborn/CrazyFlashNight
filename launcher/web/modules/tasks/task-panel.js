@@ -115,6 +115,7 @@
     var _logviewEl, _chartViewportEl, _chartCanvasEl, _chartCtrlsEl;   // 图表视图 DOM refs
     var _achViewEl;              // 成就 tab 容器（实现在 achievement-tab.js，lazy deps 先加载）
     var _dungeonViewEl;          // 副本任务 tab 容器（NPC 触发，单副本上下文）
+    var _dungeonTabBtn;          // 副本任务 tab 按钮（无 NPC 上下文时隐藏）
 
     // ── 副本任务（委托任务）tab：旧 FLA Symbol 1873(_root.委托任务界面) 的 web 等价 ──
     //   严格 NPC 领取：入口由 AS2 NPC 交互发 openWebDungeon(panel_request initData{view,taskId})；
@@ -239,6 +240,7 @@
         _chartCtrlsEl = _el.querySelector('#tlv-chart-ctrls');
         _achViewEl = _el.querySelector('#task-panel-achview');
         _dungeonViewEl = _el.querySelector('#task-panel-dungeonview');
+        _dungeonTabBtn = _el.querySelector('.task-tab[data-tab="dungeon"]');
 
         // 成就 tab 装配（achievement-tab.js 经 lazy deps 先加载；缺失时优雅降级为空 tab）。
         // claim 在途复用本面板 beginOp/endOp 的 _busy 锁——切 tab/关面板/二次点击三处口径统一。
@@ -383,8 +385,10 @@
         // 副本任务入口：NPC 交互携 {view:'dungeon', taskId} → 直接切副本 tab 加载该副本
         if (initData && initData.view === 'dungeon' && initData.taskId != null) {
             _dungeonTaskId = initData.taskId;
-            switchTab('dungeon');
         }
+        // 无 NPC 上下文时隐藏「副本任务」tab，避免玩家从任务按钮进入后看到空提示
+        if (_dungeonTabBtn) _dungeonTabBtn.hidden = (_dungeonTaskId == null);
+        if (_dungeonTaskId != null) switchTab('dungeon');
     }
 
     function requestClose() {
@@ -415,6 +419,7 @@
     function switchTab(tab) {
         if (tab === _tab) return;
         if (_busy) return; // 写操作进行中不切 tab
+        if (tab === 'dungeon' && _dungeonTaskId == null) return; // 无上下文时禁止切入副本 tab
         _tab = tab;
         hideTip();
         closeSortMenu();
