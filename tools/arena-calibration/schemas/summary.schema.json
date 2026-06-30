@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "arena-calibration.summary.v1",
+  "type": "object",
+  "required": ["schema", "batchId", "manifestHash", "totals", "cases"],
+  "properties": {
+    "schema": { "const": "arena-calibration.summary.v1" },
+    "generatedAt": { "type": "string" },
+    "buildCommit": { "type": "string" },
+    "batchId": { "type": "string", "minLength": 1 },
+    "manifestHash": { "type": "string", "minLength": 1 },
+    "resultPath": { "type": ["string", "null"] },
+    "totals": {
+      "type": "object",
+      "required": ["cases", "rows", "errors", "timeouts"],
+      "properties": {
+        "cases": { "type": "integer", "minimum": 0 },
+        "rows": { "type": "integer", "minimum": 0 },
+        "errors": { "type": "integer", "minimum": 0 },
+        "timeouts": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["caseId", "caseHash", "samples", "classification", "recommendedAction"],
+        "properties": {
+          "caseId": { "type": "string" },
+          "caseHash": { "type": "string" },
+          "samples": { "type": "integer", "minimum": 1 },
+          "blueWinRate": { "type": "number" },
+          "timeoutRate": { "type": "number" },
+          "errorCount": { "type": "integer", "minimum": 0 },
+          "classification": { "type": "string" },
+          "recommendedAction": { "type": "string" }
+        }
+      }
+    }
+  }
+}

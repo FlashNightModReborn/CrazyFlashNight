@@ -761,6 +761,7 @@ class Program
         MapTask mapTask = new MapTask(socketServer);
         StageSelectTask stageSelectTask = new StageSelectTask(socketServer);
         ArenaTask arenaTask = new ArenaTask(socketServer);
+        ArenaCalibrationTask arenaCalibrationTask = new ArenaCalibrationTask(socketServer, projectRoot);
         PetTask petTask = new PetTask(socketServer, projectRoot);
         MercTask mercTask = new MercTask(socketServer);
         TaskTask taskTask = new TaskTask(socketServer);
@@ -825,7 +826,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, stageSelectTask, arenaTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
         }
 
         // 注入 router 到 webOverlay：开启 Web→C# 通用 task 桥（FontPack 安装条幅等使用）

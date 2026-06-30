@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "arena-calibration.result.v1",
+  "type": "object",
+  "required": ["schema", "batchId", "manifestHash", "caseId", "caseHash", "runId", "repeatIndex", "status"],
+  "properties": {
+    "schema": { "const": "arena-calibration.result.v1" },
+    "batchId": { "type": "string", "minLength": 1 },
+    "manifestHash": { "type": "string", "minLength": 1 },
+    "caseId": { "type": "string", "minLength": 1 },
+    "caseHash": { "type": "string", "minLength": 1 },
+    "runId": { "type": "string", "minLength": 1 },
+    "repeatIndex": { "type": "integer", "minimum": 1 },
+    "status": {
+      "enum": ["finished", "timeout", "aborted", "spawn_failed", "invalid_case", "stage_failed", "bridge_lost", "error"]
+    },
+    "winner": { "enum": ["blue", "red", "draw", "timeout", "none", null] },
+    "frames": { "type": ["number", "null"], "minimum": 0 },
+    "durationMs": { "type": ["number", "null"], "minimum": 0 },
+    "blue": { "$ref": "#/$defs/sideSummary" },
+    "red": { "$ref": "#/$defs/sideSummary" },
+    "errors": { "type": "array", "items": { "type": "object" } },
+    "startedAt": { "type": ["string", "null"] },
+    "completedAt": { "type": ["string", "null"] }
+  },
+  "$defs": {
+    "sideSummary": {
+      "type": "object",
+      "properties": {
+        "maxHp": { "type": "number", "minimum": 0 },
+        "remainHp": { "type": "number", "minimum": 0 },
+        "aliveCount": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}

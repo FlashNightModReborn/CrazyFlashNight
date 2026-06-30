@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "arena-calibration.next-batch.v1",
+  "type": "object",
+  "required": ["schema", "sourceBatchId", "sourceManifestHash", "sourceSummaryHash", "decisions"],
+  "properties": {
+    "schema": { "const": "arena-calibration.next-batch.v1" },
+    "generatedAt": { "type": "string" },
+    "planner": { "type": "object" },
+    "sourceBatchId": { "type": "string", "minLength": 1 },
+    "sourceManifestHash": { "type": "string", "minLength": 1 },
+    "sourceSummaryHash": { "type": "string", "minLength": 1 },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["caseId", "caseHash", "action", "suggestedRepeat", "reason"],
+        "properties": {
+          "caseId": { "type": "string" },
+          "caseHash": { "type": "string" },
+          "action": { "enum": ["append_repeat", "append_counter_case", "prune", "review"] },
+          "suggestedRepeat": { "type": "number", "minimum": 0 },
+          "reason": { "type": "string" }
+        }
+      }
+    }
+  }
+}
