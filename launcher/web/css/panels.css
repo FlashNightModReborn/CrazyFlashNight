@@ -2957,6 +2957,40 @@
     font-size:10px;
 }
 
+.map-coordinate-readout {
+    flex:0 0 380px;
+    width:380px;
+    min-width:300px;
+    max-width:100%;
+    padding:5px 9px;
+    border:1px solid rgba(200,255,76,0.18);
+    color:rgba(225,245,198,0.92);
+    background:rgba(6,10,7,0.68);
+    font-size:11px;
+    line-height:1.25;
+    letter-spacing:0;
+    text-align:right;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    pointer-events:none;
+    font-variant-numeric:tabular-nums;
+    box-shadow:inset 0 0 12px rgba(200,255,76,0.04);
+    clip-path:polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+}
+
+.map-coordinate-readout.is-empty {
+    color:rgba(138,151,121,0.72);
+}
+
+.map-panel.is-compact .map-coordinate-readout {
+    flex-basis:320px;
+    width:320px;
+    min-width:260px;
+    padding:4px 8px;
+    font-size:10px;
+}
+
 .map-panel-body {
     flex:1;
     min-height:0;
@@ -4129,6 +4163,7 @@ html.perf-low-effects .map-rail-scene-dot,
 html.perf-low-effects .map-page-tab-badge,
 html.perf-low-effects .map-filter-hotspot-badge,
 html.perf-low-effects .map-rail-scene-quest,
+html.perf-low-effects .map-coordinate-readout,
 html.perf-low-effects .map-panel-close-btn:hover {
     box-shadow:none !important;
 }

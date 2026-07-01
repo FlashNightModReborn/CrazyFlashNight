@@ -413,9 +413,29 @@ var MapPanelHarnessQA = (function() {
                         }, 1500, 'roomy layout ready').then(function(state) {
                             var closeBtn = document.querySelector('.map-panel-close-btn');
                             var schoolTab = getPageTab('school');
+                            var coordReadout = document.querySelector('.map-coordinate-readout');
+                            var pageSummary = document.querySelector('.map-page-summary');
+                            var hitcapture = document.querySelector('.map-hotspot-hitcapture');
+                            var page = MapPanelData.getPage('base');
+                            var coordHotspot = MapPanelData.findHotspot('base', 'base_lobby');
+                            var coordPoint;
                             var canvasState = assertCanvasReady(api, 'map-ui1');
                             assertHitTest(api, schoolTab, 'school tab');
                             assertHitTest(api, closeBtn, 'close button');
+                            api.assert(!!coordReadout, 'coordinate readout exists');
+                            api.assert(!!pageSummary, 'page summary exists');
+                            api.assert(!!(coordReadout.compareDocumentPosition(pageSummary) & Node.DOCUMENT_POSITION_FOLLOWING), 'coordinate readout should sit before page summary');
+                            api.assert(!!hitcapture, 'hitcapture exists for coordinate probe');
+                            coordPoint = pageToClient(hitcapture, page, 430, 210);
+                            firePointerEvent(hitcapture, 'pointermove', coordPoint.x, coordPoint.y);
+                            MapPanel._debugFlushCoordinateReadout();
+                            api.assert(MapPanel._debugGetState().coordinateReadout.active, 'coordinate readout should become active after pointermove');
+                            api.assertEqual(coordReadout.getAttribute('data-hotspot-id'), 'base_lobby', 'coordinate hotspot should resolve base_lobby');
+                            api.assert(Math.abs(parseFloat(coordReadout.getAttribute('data-page-x')) - 430) < 0.2, 'coordinate absolute x should match page point');
+                            api.assert(Math.abs(parseFloat(coordReadout.getAttribute('data-page-y')) - 210) < 0.2, 'coordinate absolute y should match page point');
+                            api.assert(!!(coordHotspot && coordHotspot.rect), 'coordinate reference hotspot should exist');
+                            api.assert(Math.abs(parseFloat(coordReadout.getAttribute('data-rel-x')) - (430 - coordHotspot.rect.x)) < 0.2, 'coordinate relative x should use runtime hotspot origin');
+                            api.assert(Math.abs(parseFloat(coordReadout.getAttribute('data-rel-y')) - (210 - coordHotspot.rect.y)) < 0.2, 'coordinate relative y should use runtime hotspot origin');
                             api.assertEqual(state.activePageId, 'base', 'default page');
                             api.assert(state.contentFitScale >= 1.02, 'roomy viewport should apply content fit scale');
                             api.assert(state.contentCoverageX >= 0.84, 'content should occupy most stage width');
@@ -425,6 +445,7 @@ var MapPanelHarnessQA = (function() {
                                 ', stageScale=' + state.stageScale.toFixed(3) +
                                 ', fit=' + state.contentFitScale.toFixed(3) +
                                 ', coverage=' + state.contentCoverageX.toFixed(2) + '/' + state.contentCoverageY.toFixed(2) +
+                                ', coord=' + coordReadout.textContent +
                                 ', canvasDraws=' + canvasState.canvasDrawCount;
                         });
                     });

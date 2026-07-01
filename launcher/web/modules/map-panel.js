@@ -8,7 +8,7 @@ var MapPanel = (function() {
     var STAGE_MAX_SCALE = 1.3;
 
     var _el, _bodyEl, _stageEl, _stageShellEl, _railEl, _canvasEl, _ringCanvasEl, _fgCanvasEl, _canvasRenderer, _contentFitEl, _sceneVisualLayerEl, _avatarLayerEl, _hotspotLayer, _hitcaptureEl, _hotspotLabelLayer, _loadingEl, _errorEl, _errorTextEl;
-    var _pageTabsEl, _pageSummaryEl;
+    var _pageTabsEl, _pageSummaryEl, _coordinateReadoutEl;
     var _activePage = null;
     var _reqSeq = 0;
     var _pendingReq = {};
@@ -69,6 +69,9 @@ var MapPanel = (function() {
     var _canvasSyncScheduled = false;   // 微任务合并: 同一同步批次多次 sync 只 setState 一次
     var _canvasRevision = 0;
     var _canvasRenderCache = {};
+    var _lastCoordinateReadout = null;
+    var _pendingCoordinatePointer = null;
+    var _coordinateRaf = 0;
 
     function playCue(name) {
         var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
@@ -93,6 +96,7 @@ var MapPanel = (function() {
         _el.innerHTML =
             '<div class="map-panel-header">' +
                 '<div class="map-page-tabs" id="map-page-tabs"></div>' +
+                '<div class="map-coordinate-readout" id="map-coordinate-readout" aria-label="地图坐标"></div>' +
                 '<div class="map-page-summary" id="map-page-summary"></div>' +
                 '<button class="map-panel-close-btn" type="button" title="关闭" data-audio-cue="cancel">X</button>' +
             '</div>' +
@@ -153,6 +157,7 @@ var MapPanel = (function() {
         _errorTextEl = _el.querySelector('#map-stage-error-text');
         _pageTabsEl = _el.querySelector('#map-page-tabs');
         _pageSummaryEl = _el.querySelector('#map-page-summary');
+        _coordinateReadoutEl = _el.querySelector('#map-coordinate-readout');
         _canvasRenderer = (typeof MapCanvasStageRenderer !== 'undefined')
             ? new MapCanvasStageRenderer(_canvasEl, { fgCanvas: _fgCanvasEl, ringCanvas: _ringCanvasEl, resolveAssetUrl: resolveAssetUrl })
             : null;
@@ -187,6 +192,9 @@ var MapPanel = (function() {
         _el.querySelector('.map-panel-close-btn').addEventListener('click', function() { requestClose(); });
         _el.querySelector('.map-error-retry').addEventListener('click', function() { requestSnapshot('refresh'); });
         _el.querySelector('.map-error-close').addEventListener('click', function() { requestClose(); });
+        _stageEl.addEventListener('pointermove', scheduleCoordinateReadoutFromPointer);
+        _stageEl.addEventListener('pointerleave', resetCoordinateReadout);
+        resetCoordinateReadout();
 
         _el.addEventListener('animationend', function(e) {
             if (e.target === _el && e.animationName === 'mapPanelBoot') {
@@ -251,6 +259,7 @@ var MapPanel = (function() {
         _debugTelemetryEnabled = !!(initData && initData.dev);
         _snapshotAnnounced = false;
         _canvasActive = true;
+        resetCoordinateReadout();
         resetCanvasRenderCache();
         resetContentFit();
         if (_el) _el.classList.remove('is-compact');
@@ -421,6 +430,7 @@ var MapPanel = (function() {
     function applyPage(pageId) {
         _activePage = MapPanelData.getPage(pageId);
         _hoverHotspotId = '';
+        resetCoordinateReadout();
         ensurePageFilterState(_activePage);
         _stageEl.style.aspectRatio = _activePage.width + ' / ' + _activePage.height;
         // assembled 新地图页的 backgroundUrl 是旧 Flash 地图对照底图，右侧带旧按钮/关闭区。
@@ -617,6 +627,205 @@ var MapPanel = (function() {
             : (prefix + '无场景');
     }
 
+    function createEmptyCoordinateReadout() {
+        return {
+            active: false,
+            pageX: null,
+            pageY: null,
+            hotspotId: '',
+            hotspotLabel: '',
+            relX: null,
+            relY: null
+        };
+    }
+
+    function coordinateValue(value) {
+        return (typeof value === 'number' && isFinite(value)) ? roundLayoutValue(value).toFixed(1) : '--';
+    }
+
+    function coordinatePair(x, y) {
+        return coordinateValue(x) + ',' + coordinateValue(y);
+    }
+
+    function cloneCoordinateReadout(state) {
+        state = state || createEmptyCoordinateReadout();
+        return {
+            active: !!state.active,
+            pageX: state.pageX,
+            pageY: state.pageY,
+            hotspotId: state.hotspotId || '',
+            hotspotLabel: state.hotspotLabel || '',
+            relX: state.relX,
+            relY: state.relY
+        };
+    }
+
+    function setCoordinateAttr(name, value) {
+        if (!_coordinateReadoutEl) return;
+        if (value === null || value === undefined || value === '') {
+            _coordinateReadoutEl.removeAttribute(name);
+        } else {
+            _coordinateReadoutEl.setAttribute(name, String(value));
+        }
+    }
+
+    function applyCoordinateReadout(state) {
+        if (!_coordinateReadoutEl) return;
+
+        _lastCoordinateReadout = state || createEmptyCoordinateReadout();
+        if (!_lastCoordinateReadout.active) {
+            _coordinateReadoutEl.textContent = '绝对 --,-- | 区块 -- | 相对 --,--';
+            _coordinateReadoutEl.title = _coordinateReadoutEl.textContent;
+            _coordinateReadoutEl.classList.add('is-empty');
+            setCoordinateAttr('data-page-x', '');
+            setCoordinateAttr('data-page-y', '');
+            setCoordinateAttr('data-hotspot-id', '');
+            setCoordinateAttr('data-rel-x', '');
+            setCoordinateAttr('data-rel-y', '');
+            return;
+        }
+
+        _coordinateReadoutEl.classList.remove('is-empty');
+        _coordinateReadoutEl.textContent =
+            '绝对 ' + coordinatePair(_lastCoordinateReadout.pageX, _lastCoordinateReadout.pageY) +
+            ' | 区块 ' + (_lastCoordinateReadout.hotspotId || '--') +
+            ' | 相对 ' + coordinatePair(_lastCoordinateReadout.relX, _lastCoordinateReadout.relY);
+        _coordinateReadoutEl.title = _coordinateReadoutEl.textContent;
+        setCoordinateAttr('data-page-x', coordinateValue(_lastCoordinateReadout.pageX));
+        setCoordinateAttr('data-page-y', coordinateValue(_lastCoordinateReadout.pageY));
+        setCoordinateAttr('data-hotspot-id', _lastCoordinateReadout.hotspotId || '');
+        setCoordinateAttr('data-rel-x', _lastCoordinateReadout.hotspotId ? coordinateValue(_lastCoordinateReadout.relX) : '');
+        setCoordinateAttr('data-rel-y', _lastCoordinateReadout.hotspotId ? coordinateValue(_lastCoordinateReadout.relY) : '');
+    }
+
+    function cancelCoordinateReadoutFrame() {
+        if (!_coordinateRaf) return;
+        if (typeof cancelAnimationFrame === 'function') {
+            cancelAnimationFrame(_coordinateRaf);
+        } else {
+            clearTimeout(_coordinateRaf);
+        }
+        _coordinateRaf = 0;
+    }
+
+    function clearPendingCoordinateReadout() {
+        _pendingCoordinatePointer = null;
+        cancelCoordinateReadoutFrame();
+    }
+
+    function resetCoordinateReadout() {
+        clearPendingCoordinateReadout();
+        applyCoordinateReadout(createEmptyCoordinateReadout());
+    }
+
+    function clientToMapPagePoint(clientX, clientY) {
+        var frame = _contentFitEl || _hitcaptureEl || _stageEl;
+        var rect;
+        if (!_activePage || !frame) return null;
+        rect = frame.getBoundingClientRect();
+        if (!rect.width || !rect.height) return null;
+        return {
+            x: roundLayoutValue((clientX - rect.left) / rect.width * _activePage.width),
+            y: roundLayoutValue((clientY - rect.top) / rect.height * _activePage.height)
+        };
+    }
+
+    function pointInsideRect(point, rect) {
+        return !!(point && rect
+            && point.x >= rect.x
+            && point.x <= rect.x + rect.w
+            && point.y >= rect.y
+            && point.y <= rect.y + rect.h);
+    }
+
+    function findCoordinateHittestHotspot(point) {
+        if (typeof MapHittestEngine === 'undefined' || !MapHittestEngine || !_activeHitmapKey || !point) return null;
+        if (typeof MapHittestEngine.query !== 'function') return null;
+
+        var result = MapHittestEngine.query(_activeHitmapKey, point.x, point.y);
+        var ids = result && result.hotspotIds ? result.hotspotIds : [];
+        var visibleLookup = buildVisibleLookup(_activePage);
+        var hotspot;
+        for (var i = 0; i < ids.length; i += 1) {
+            if (visibleLookup && !visibleLookup[ids[i]]) continue;
+            if (!_enabledLookup[ids[i]]) continue;
+            hotspot = findHotspotById(_activePage, ids[i]);
+            if (hotspot && hotspot.rect) return hotspot;
+        }
+        return null;
+    }
+
+    function findCoordinateRectHotspot(point) {
+        var hotspots = getVisibleHotspots(_activePage);
+        var best = null;
+        var bestArea = Infinity;
+        var hotspot;
+        var area;
+        for (var i = 0; i < hotspots.length; i += 1) {
+            hotspot = hotspots[i];
+            if (!hotspot || !hotspot.rect || !_enabledLookup[hotspot.id]) continue;
+            if (!pointInsideRect(point, hotspot.rect)) continue;
+            area = hotspot.rect.w * hotspot.rect.h;
+            if (area < bestArea) {
+                best = hotspot;
+                bestArea = area;
+            }
+        }
+        return best;
+    }
+
+    function resolveCoordinateHotspot(point) {
+        return findCoordinateHittestHotspot(point) || findCoordinateRectHotspot(point);
+    }
+
+    function updateCoordinateReadoutFromClient(clientX, clientY) {
+        var point = clientToMapPagePoint(clientX, clientY);
+        var hotspot;
+        var state;
+        if (!point) {
+            resetCoordinateReadout();
+            return;
+        }
+
+        hotspot = resolveCoordinateHotspot(point);
+        state = {
+            active: true,
+            pageX: point.x,
+            pageY: point.y,
+            hotspotId: hotspot ? hotspot.id : '',
+            hotspotLabel: hotspot ? hotspot.label || '' : '',
+            relX: hotspot ? roundLayoutValue(point.x - hotspot.rect.x) : null,
+            relY: hotspot ? roundLayoutValue(point.y - hotspot.rect.y) : null
+        };
+        applyCoordinateReadout(state);
+    }
+
+    function flushCoordinateReadoutFromPointer() {
+        var pending = _pendingCoordinatePointer;
+        _coordinateRaf = 0;
+        _pendingCoordinatePointer = null;
+        if (!pending) return;
+        updateCoordinateReadoutFromClient(pending.clientX, pending.clientY);
+    }
+
+    function flushPendingCoordinateReadoutForDebug() {
+        cancelCoordinateReadoutFrame();
+        flushCoordinateReadoutFromPointer();
+    }
+
+    function scheduleCoordinateReadoutFromPointer(event) {
+        _pendingCoordinatePointer = {
+            clientX: event.clientX,
+            clientY: event.clientY
+        };
+        if (_coordinateRaf) return;
+        if (typeof requestAnimationFrame === 'function') {
+            _coordinateRaf = requestAnimationFrame(flushCoordinateReadoutFromPointer);
+        } else {
+            _coordinateRaf = setTimeout(flushCoordinateReadoutFromPointer, 16);
+        }
+    }
+
     function renderSceneVisuals() {
         syncCanvasStage();
     }
@@ -798,6 +1007,7 @@ var MapPanel = (function() {
         _hoverHotspotId = '';
         _busyLookup = {};
         _stageSelectBusyHotspotId = '';
+        resetCoordinateReadout();
         resetCanvasRenderCache();
         // cancel cue 由调用方负责: DOM click 走 overlay click 代理, Esc/backdrop 走 onRequestClose
         // navigate 成功直闭(resp.closePanel)不播 cancel, transition cue 已足够表达
@@ -2642,7 +2852,8 @@ var MapPanel = (function() {
             markerIds: (_snapshotMarkers || []).map(function(item) { return item.id; }),
             tipIds: (_snapshotTips || []).map(function(item) { return item.id; }),
             taskRings: _activePage ? buildCanvasTaskRings(_activePage) : [],
-            taskBadge: _taskBadge
+            taskBadge: _taskBadge,
+            coordinateReadout: cloneCoordinateReadout(_lastCoordinateReadout)
         };
         if (_canvasRenderer && _canvasRenderer.getDebugState) {
             var canvasDebug = _canvasRenderer.getDebugState();
@@ -2678,6 +2889,7 @@ var MapPanel = (function() {
         _debugApplySnapshot: applySnapshot,
         _debugSetFilter: setActiveFilter,
         _debugRequestSnapshot: requestSnapshot,
-        _debugSyncLayout: syncStageLayout
+        _debugSyncLayout: syncStageLayout,
+        _debugFlushCoordinateReadout: flushPendingCoordinateReadoutForDebug
     };
 })();
