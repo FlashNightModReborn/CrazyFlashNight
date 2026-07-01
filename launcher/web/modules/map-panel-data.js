@@ -215,7 +215,7 @@ var MapPanelData = (function() {
         defense: buildStaticAvatarSlots([
             ['artist_avatar', 'artist', 'first_defense', 'artist头像.png'],
             ['soldier_avatar', 'soldier', 'first_defense', 'soldier头像.png'],
-            ['master_swordman_avatar', '武器大师', 'first_defense', '武器大师头像.png'],
+            ['master_swordman_avatar', '武器大师', 'first_defense', '武器大师头像第一防线.png'],
             ['paigu_avatar', '排骨', 'alliance_dock', '排骨头像.png'],
             ['jige_avatar', '机哥', 'alliance_dock', '机哥头像.png'],
             ['abo_avatar', '阿波', 'alliance_dock', '阿波头像.png'],

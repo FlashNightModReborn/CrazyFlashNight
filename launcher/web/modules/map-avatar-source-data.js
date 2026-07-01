@@ -275,9 +275,9 @@ var MapAvatarSourceData = (function() {
       "h": 44
     }
   },
-    "武器大师头像": {
+    "武器大师头像第一防线": {
     "symbolName": "武器大师头像",
-    "assetUrl": "assets/map/avatars/武器大师头像.png",
+    "assetUrl": "assets/map/avatars/武器大师头像第一防线.png",
     "hotspotId": "first_defense",
     "relX": 95,
     "relY": 10,
