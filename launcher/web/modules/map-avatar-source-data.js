@@ -258,8 +258,8 @@ var MapAvatarSourceData = (function() {
     "symbolName": "武器大师头像",
     "assetUrl": "assets/map/avatars/武器大师头像.png",
     "hotspotId": "gym",
-    "relX": 89.85,
-    "relY": 21.85,
+    "relX": 100,
+    "relY": 20,
     "size": {
       "w": 44,
       "h": 44

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2662" itemID="6597607e-00000c65" lastModified="1704196122">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2662" itemID="6597607e-00000c65" lastModified="1782922105">
   <timeline>
     <DOMTimeline name="Symbol 2662">
       <layers>
-        <DOMLayer name="Script Layer" color="#CA1DFF" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#CA1DFF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -29,7 +29,7 @@
             </DOMFrame>
             <DOMFrame index="1" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2661" centerPoint3DX="308.2" centerPoint3DY="269.5">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2661" selected="true" centerPoint3DX="308.2" centerPoint3DY="269.5">
                   <matrix>
                     <Matrix a="0.244277954101563" d="0.244277954101563" tx="-31.85" ty="-90"/>
                   </matrix>
@@ -41,11 +41,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#D8DA33">
+        <DOMLayer name="Layer 3" color="#D8DA33" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 476" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="shape/Symbol 476" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.447677612304688" d="0.16400146484375" tx="-1.2" ty="71.8"/>
                   </matrix>

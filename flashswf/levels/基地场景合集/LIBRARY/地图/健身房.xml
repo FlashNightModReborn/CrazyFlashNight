@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/健身房" itemID="668aa068-0000512a" linkageExportForAS="true" linkageIdentifier="基地场景-健身房" lastModified="1782793689" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/健身房" itemID="668aa068-0000512a" linkageExportForAS="true" linkageIdentifier="基地场景-健身房" lastModified="1782923162" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="健身房">
       <layers>
-        <DOMLayer name="as" color="#9933CC" locked="true" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -13,7 +13,34 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#B947D1" locked="true">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/武器大师" selected="true" centerPoint3DX="991.25" centerPoint3DY="156.25">
+                  <matrix>
+                    <Matrix tx="976.75" ty="246"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.5" y="-89.75"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	名字 = "武器大师";
+	商店 = "冷兵器出售";
+	身高 = 185;
+	性别 = "男";
+	方向 = "右";
+	//NPC任务_任务_关卡路径 = "";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#B947D1">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -37,7 +64,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#F81EA4" locked="true">
+        <DOMLayer name="Layer 6" color="#F81EA4">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -59,7 +86,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#A71FD4" locked="true">
+        <DOMLayer name="Layer 7" color="#A71FD4">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -81,7 +108,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#CC4E7D" locked="true">
+        <DOMLayer name="Layer 8" color="#CC4E7D">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -103,7 +130,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#03E6EB" locked="true">
+        <DOMLayer name="Layer 9" color="#03E6EB">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -125,7 +152,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#A0CCBF" locked="true">
+        <DOMLayer name="Layer 10" color="#A0CCBF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -150,7 +177,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#CA91F5" locked="true">
+        <DOMLayer name="Layer 11" color="#CA91F5">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -166,7 +193,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#D8AD27" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 12" color="#D8AD27" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -191,7 +218,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#D2E12B" locked="true">
+        <DOMLayer name="Layer 13" color="#D2E12B">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -207,7 +234,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 16" color="#BEEBF8" locked="true">
+        <DOMLayer name="Layer 16" color="#BEEBF8">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -223,8 +250,20 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="NPC" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="武器大师" color="#EF85C4" parentLayerIndex="11" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="deadbody" color="#DE35DF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/deadbody" name="deadbody">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#EF85C4">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -232,38 +271,6 @@ onClipEvent(load){
                   <matrix>
                     <Matrix tx="937.7" ty="245.1"/>
                   </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2664" selected="true" centerPoint3DX="1034.95" centerPoint3DY="345.4">
-                  <matrix>
-                    <Matrix tx="951.9" ty="239.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	名字 = "武器大师";
-	商店 = "冷兵器商店";
-	身高 = 185;
-	性别 = "男";
-	方向 = "右";
-	//NPC任务_任务_关卡路径 = "";
-	_root.初始化NPC(this);
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="deadbody" color="#DE35DF" locked="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/deadbody" name="deadbody">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

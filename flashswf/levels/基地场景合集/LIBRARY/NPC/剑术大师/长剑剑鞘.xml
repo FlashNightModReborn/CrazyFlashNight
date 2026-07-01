@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/剑术大师/长剑剑鞘" itemID="6842d5f0-0000014a" lastModified="1761504419">
+  <timeline>
+    <DOMTimeline name="长剑剑鞘">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#0C0000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#280000"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#890000"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#140000"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-540 -395[-436 -475 -352 -515!-352 -515[-268 -555 -207 -602!-207 -602[-147 -649 -45 -694"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!-45 -694|33 -642!33 -642|3736 5880!3736 5880|3767 5969"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!3767 5969[3779 6085 3728 6131"/>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="!3728 6131[3673 6176 3551 6153!3551 6153|-540 -395"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!-271 -487[-131 -551 -45 -694"/>
+                    <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!-540 -395[-393 -426 -271 -487"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!3728 6131|-271 -487"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!3767 5969|-45 -694"/>
+                    <Edge cubics="!3551 6153(;3551,6153 -540,-395 -540,-395q3551 6153 -540 -395);"/>
+                    <Edge cubics="!3728 6131(;3691,6162 3633,6169 3551,6153q3728 6131Q3673 6176q3551 6153);"/>
+                    <Edge cubics="!3767 5969(;3775,6045 3762,6100 3728,6131q3767 5969Q3779 6085q3728 6131);"/>
+                    <Edge cubics="!-540 -395(;-442,-416 -352,-445 -271,-487q-540 -395Q-393 -426q-271 -487);"/>
+                    <Edge cubics="!-271 -487(;-271,-487 3728,6131 3728,6131q-271 -487 3728 6131);"/>
+                    <Edge cubics="!3736 5880(;3736,5880 3767,5969 3767,5969q3736 5880 3767 5969);"/>
+                    <Edge cubics="!33 -642(;33,-642 3736,5880 3736,5880q33 -642 3736 5880);"/>
+                    <Edge cubics="!-45 -694(;-45,-694 33,-642 33,-642q-45 -694 33 -642);"/>
+                    <Edge cubics="!-271 -487(;-178,-530 -102,-599 -45,-694q-271 -487Q-131 -551q-45 -694);"/>
+                    <Edge cubics="!-207 -602(;-167,-633 -113,-664 -45,-694q-207 -602Q-147 -649q-45 -694);"/>
+                    <Edge cubics="!-540 -395(;-471,-448 -408,-488 -352,-515q-540 -395Q-436 -475q-352 -515);"/>
+                    <Edge cubics="!-352 -515(;-296,-542 -248,-571 -207,-602q-352 -515Q-268 -555q-207 -602);"/>
+                    <Edge cubics="!-45 -694(;-45,-694 3767,5969 3767,5969q-45 -694 3767 5969);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

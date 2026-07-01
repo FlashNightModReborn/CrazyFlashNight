@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2664" itemID="6597607e-00000c69" lastModified="1782797879" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2664" itemID="6597607e-00000c69" lastModified="1782922549" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="Symbol 2664" currentFrame="15">
+    <DOMTimeline name="Symbol 2664">
       <layers>
         <DOMLayer name="Labels Layer" color="#42C4B0" locked="true">
           <frames>
@@ -37,11 +37,11 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" visible="false">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" name="商店名" selected="true" centerPoint3DX="81.7" centerPoint3DY="-178.7">
+                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" name="商店名" centerPoint3DX="81.7" centerPoint3DY="-178.7">
                   <matrix>
                     <Matrix tx="17.7" ty="-188.45"/>
                   </matrix>
@@ -53,7 +53,7 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#D10BE7" visible="false">
+        <DOMLayer name="Layer 3" color="#D10BE7" locked="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
@@ -69,7 +69,7 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#69C0D7" visible="false">
+        <DOMLayer name="Layer 4" color="#69C0D7" locked="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
@@ -85,7 +85,7 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#BACEBC" visible="false">
+        <DOMLayer name="Layer 5" color="#BACEBC" locked="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
@@ -124,31 +124,19 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#9019E3" current="true" isSelected="true">
+        <DOMLayer name="Layer 6" color="#9019E3" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
+            <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/武器大师/剑术大师（本体） 合并" centerPoint3DX="-8.35" centerPoint3DY="-70.45">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2662" selected="true" centerPoint3DX="83.05" centerPoint3DY="21.95">
                   <matrix>
-                    <Matrix a="0.17999267578125" d="0.17999267578125" tx="0.45" ty="-79.85"/>
+                    <Matrix a="-1" ty="-67"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-48.9" y="51.95"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="15" duration="5" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="NPC/武器大师/剑术大师（本体） 合并" centerPoint3DX="-8.35" centerPoint3DY="-70.45">
-                  <matrix>
-                    <Matrix a="0.17999267578125" d="0.17999267578125" tx="0.45" ty="-79.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-48.9" y="51.95"/>
+                    <Point/>
                   </transformationPoint>
                   <filters>
-                    <GlowFilter color="#00CCCC" strength="10"/>
+                    <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>

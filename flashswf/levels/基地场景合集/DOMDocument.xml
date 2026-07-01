@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" guidesLocked="true" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="0.防具相关" itemID="689c56d7-000071be"/>
           <DOMFolderItem name="0.防具相关/05.A兵套" itemID="689c56fe-000071c6" isExpanded="true"/>
@@ -33,7 +33,9 @@
           <DOMFolderItem name="NPC/格格巫" itemID="668aa418-000052d6" isExpanded="true"/>
           <DOMFolderItem name="NPC/格格巫/未命名文件夹 1" itemID="668aa428-000052d9"/>
           <DOMFolderItem name="NPC/黑铁会外交部长-部件" itemID="665b5cec-00001fa7"/>
-          <DOMFolderItem name="NPC/冷武器商人" itemID="666550f9-00000a1c" isExpanded="true"/>
+          <DOMFolderItem name="NPC/剑术大师" itemID="6a453971-00000fb3" isExpanded="true"/>
+          <DOMFolderItem name="NPC/剑术大师/素材" itemID="684481da-00000354"/>
+          <DOMFolderItem name="NPC/冷武器商人" itemID="666550f9-00000a1c"/>
           <DOMFolderItem name="NPC/冷武器商人/冷兵" itemID="663cdc89-00003660"/>
           <DOMFolderItem name="NPC/冷武器商人/冷兵/冷兵构件" itemID="666555c7-00001364"/>
           <DOMFolderItem name="NPC/冷武器商人/肢体" itemID="66655683-00001380"/>
@@ -43,8 +45,6 @@
           <DOMFolderItem name="NPC/前治安官" itemID="668a9a94-00004f32"/>
           <DOMFolderItem name="NPC/前治安官/图形" itemID="668a9aa2-00004f37"/>
           <DOMFolderItem name="NPC/文天" itemID="668aacb4-000061eb"/>
-          <DOMFolderItem name="NPC/武器大师" itemID="6a433a70-0000074b"/>
-          <DOMFolderItem name="NPC/武器大师/素材" itemID="684481da-00000354"/>
           <DOMFolderItem name="NPC/杂项" itemID="66631720-00001160"/>
           <DOMFolderItem name="Pins" itemID="5fb81d21-000012d3"/>
           <DOMFolderItem name="Rifles" itemID="5fb81d21-000012da"/>
@@ -82,32 +82,32 @@
           <DOMFolderItem name="重复项目文件夹" itemID="689c5021-00004ab0"/>
      </folders>
      <media>
-          <DOMBitmapItem name="image/bitmap2252.jpg" itemID="6597607b-00000456" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2252.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2252.jpg" bitmapDataHRef="M 6 1736924415.dat" frameRight="15120" frameBottom="4280" isJPEG="true"/>
-          <DOMBitmapItem name="image/bitmap2255.jpg" itemID="6597607b-0000045b" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2255.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2255.jpg" bitmapDataHRef="M 5 1736924415.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
-          <DOMBitmapItem name="image/bitmap2259.jpg" itemID="6597607b-00000460" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2259.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2259.jpg" bitmapDataHRef="M 4 1736924415.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
-          <DOMBitmapItem name="image/bitmap2261.png" itemID="6597607b-00000465" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2261.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap2261.png" bitmapDataHRef="M 3 1736924415.dat" frameRight="1140" frameBottom="1480"/>
-          <DOMBitmapItem name="image/bitmap2314.png" itemID="6597607b-0000046a" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2314.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2314.png" bitmapDataHRef="M 11 1736924415.dat" frameRight="1260" frameBottom="540"/>
-          <DOMBitmapItem name="image/bitmap2316.png" itemID="6597607b-0000046f" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2316.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2316.png" bitmapDataHRef="M 13 1736924415.dat" frameRight="1040" frameBottom="1780"/>
-          <DOMBitmapItem name="image/bitmap2319.png" itemID="6597607b-00000474" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2319.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2319.png" bitmapDataHRef="M 12 1736924415.dat" frameRight="680" frameBottom="460"/>
-          <DOMBitmapItem name="image/bitmap2321.png" itemID="6597607b-00000479" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2321.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2321.png" bitmapDataHRef="M 2 1736924415.dat" frameRight="2760" frameBottom="500"/>
-          <DOMBitmapItem name="image/bitmap2324.png" itemID="6597607b-0000047e" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2324.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2324.png" bitmapDataHRef="M 7 1736924415.dat" frameRight="2880" frameBottom="3520"/>
-          <DOMBitmapItem name="image/bitmap2505.jpg" itemID="6597607b-0000048d" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2505.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2505.jpg" bitmapDataHRef="M 17 1736924415.dat" frameRight="5160" frameBottom="5000" isJPEG="true"/>
-          <DOMBitmapItem name="image/bitmap2537.png" itemID="6597607b-000004ab" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2537.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2537.png" bitmapDataHRef="M 16 1736924415.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="image/bitmap2982.jpg" itemID="6597607d-00000504" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2982.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap2982.jpg" bitmapDataHRef="M 23 1736924415.dat" frameRight="6480" frameBottom="6000" isJPEG="true"/>
-          <DOMBitmapItem name="image/bitmap2985.png" itemID="6597607d-00000509" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2985.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap2985.png" bitmapDataHRef="M 21 1736924415.dat" frameRight="2360" frameBottom="1000"/>
-          <DOMBitmapItem name="image/bitmap2986.png" itemID="6597607d-0000050e" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2986.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap2986.png" bitmapDataHRef="M 20 1736924415.dat" frameRight="3000" frameBottom="1120"/>
-          <DOMBitmapItem name="image/bitmap2993.png" itemID="6597607d-00000513" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap2993.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap2993.png" bitmapDataHRef="M 22 1736924415.dat" frameRight="3000" frameBottom="1040"/>
-          <DOMBitmapItem name="image/bitmap3077.png" itemID="6597607d-0000051d" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap3077.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap3077.png" bitmapDataHRef="M 24 1736924415.dat" frameRight="3400" frameBottom="1500"/>
-          <DOMBitmapItem name="image/bitmap3078.png" itemID="6597607d-00000522" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap3078.png" sourceLastImported="1704419453" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap3078.png" bitmapDataHRef="M 25 1736924415.dat" frameRight="3280" frameBottom="1140"/>
-          <DOMBitmapItem name="image/bitmap3451.png" itemID="6597607e-000006fd" sourceExternalFilepath="../基地场景合集/LIBRARY/image/bitmap3451.png" sourceLastImported="1704419454" originalCompressionType="lossless" quality="50" href="image/bitmap3451.png" bitmapDataHRef="M 18 1736924415.dat" frameRight="1040" frameBottom="2280"/>
-          <DOMBitmapItem name="Accessories/Others/Images/Rubber" itemID="5dc60745-00000e6b" sourceExternalFilepath="../../P.A.R.E/330718-15111513001348.jpg" sourceLastImported="1573259077" allowSmoothing="true" quality="50" href="Accessories/Others/Images/Rubber.jpg" bitmapDataHRef="M 60 1755075493.dat" frameRight="20000" frameBottom="14900" isJPEG="true"/>
-          <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="../基地场景合集/LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 14 1736924415.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
-          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../基地场景合集/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 15 1736924415.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
-          <DOMSoundItem name="sound/sound2342.wav" itemID="6597607b-0000047f" sourceExternalFilepath="../基地场景合集/LIBRARY/sound/sound2342.wav" sourceLastImported="1704196122" href="sound/sound2342.wav" soundDataHRef="M 8 1736924415.dat" format="11kHz 16bit Mono" sampleCount="11908" exportFormat="5" exportBits="7"/>
-          <DOMSoundItem name="sound/sound2343.mp3" itemID="6597607b-00000483" sourceExternalFilepath="../基地场景合集/LIBRARY/sound/sound2343.mp3" sourceLastImported="1704419451" href="sound/sound2343.mp3" soundDataHRef="M 9 1736924415.dat" format="44kHz 16bit Mono" sampleCount="52992" exportFormat="5" exportBits="7" dataLength="19226" exportNative="true" cachedSampleCount="6624"/>
-          <DOMSoundItem name="sound/sound2344.mp3" itemID="6597607b-00000487" sourceExternalFilepath="../基地场景合集/LIBRARY/sound/sound2344.mp3" sourceLastImported="1704419451" href="sound/sound2344.mp3" soundDataHRef="M 10 1736924415.dat" format="44kHz 16bit Mono" sampleCount="93312" exportFormat="5" exportBits="7" dataLength="33854" exportNative="true" cachedSampleCount="11664"/>
-          <DOMSoundItem name="sound/sound2390.wav" itemID="6597607b-00000488" sourceExternalFilepath="../基地场景合集/LIBRARY/sound/sound2390.wav" sourceLastImported="1704196122" href="sound/sound2390.wav" soundDataHRef="M 1 1736924415.dat" format="11kHz 16bit Mono" sampleCount="9576" exportFormat="5" exportBits="7"/>
-          <DOMSoundItem name="sound/sound2609.wav" itemID="6597607c-000004b1" sourceExternalFilepath="../基地场景合集/LIBRARY/sound/sound2609.wav" sourceLastImported="1704196122" href="sound/sound2609.wav" soundDataHRef="M 19 1736924415.dat" format="11kHz 16bit Mono" sampleCount="35267" exportFormat="5" exportBits="7"/>
+          <DOMBitmapItem name="image/bitmap2252.jpg" itemID="6597607b-00000456" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap2252.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2252.jpg" bitmapDataHRef="M 6 1736924415.dat" frameRight="15120" frameBottom="4280" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2255.jpg" itemID="6597607b-0000045b" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap2255.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2255.jpg" bitmapDataHRef="M 5 1736924415.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2259.jpg" itemID="6597607b-00000460" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap2259.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2259.jpg" bitmapDataHRef="M 4 1736924415.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2261.png" itemID="6597607b-00000465" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap2261.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap2261.png" bitmapDataHRef="M 3 1736924415.dat" frameRight="1140" frameBottom="1480"/>
+          <DOMBitmapItem name="image/bitmap2314.png" itemID="6597607b-0000046a" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap2314.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2314.png" bitmapDataHRef="M 11 1736924415.dat" frameRight="1260" frameBottom="540"/>
+          <DOMBitmapItem name="image/bitmap2316.png" itemID="6597607b-0000046f" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap2316.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2316.png" bitmapDataHRef="M 13 1736924415.dat" frameRight="1040" frameBottom="1780"/>
+          <DOMBitmapItem name="image/bitmap2319.png" itemID="6597607b-00000474" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap2319.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2319.png" bitmapDataHRef="M 12 1736924415.dat" frameRight="680" frameBottom="460"/>
+          <DOMBitmapItem name="image/bitmap2321.png" itemID="6597607b-00000479" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap2321.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2321.png" bitmapDataHRef="M 2 1736924415.dat" frameRight="2760" frameBottom="500"/>
+          <DOMBitmapItem name="image/bitmap2324.png" itemID="6597607b-0000047e" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap2324.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2324.png" bitmapDataHRef="M 7 1736924415.dat" frameRight="2880" frameBottom="3520"/>
+          <DOMBitmapItem name="image/bitmap2505.jpg" itemID="6597607b-0000048d" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap2505.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2505.jpg" bitmapDataHRef="M 17 1736924415.dat" frameRight="5160" frameBottom="5000" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2537.png" itemID="6597607b-000004ab" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap2537.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2537.png" bitmapDataHRef="M 16 1736924415.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="image/bitmap2982.jpg" itemID="6597607d-00000504" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap2982.jpg" sourceLastImported="1704419453" quality="50" href="image/bitmap2982.jpg" bitmapDataHRef="M 23 1736924415.dat" frameRight="6480" frameBottom="6000" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2985.png" itemID="6597607d-00000509" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap2985.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap2985.png" bitmapDataHRef="M 21 1736924415.dat" frameRight="2360" frameBottom="1000"/>
+          <DOMBitmapItem name="image/bitmap2986.png" itemID="6597607d-0000050e" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap2986.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap2986.png" bitmapDataHRef="M 20 1736924415.dat" frameRight="3000" frameBottom="1120"/>
+          <DOMBitmapItem name="image/bitmap2993.png" itemID="6597607d-00000513" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap2993.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap2993.png" bitmapDataHRef="M 22 1736924415.dat" frameRight="3000" frameBottom="1040"/>
+          <DOMBitmapItem name="image/bitmap3077.png" itemID="6597607d-0000051d" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap3077.png" sourceLastImported="1704419453" originalCompressionType="lossless" quality="50" href="image/bitmap3077.png" bitmapDataHRef="M 24 1736924415.dat" frameRight="3400" frameBottom="1500"/>
+          <DOMBitmapItem name="image/bitmap3078.png" itemID="6597607d-00000522" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap3078.png" sourceLastImported="1704419453" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap3078.png" bitmapDataHRef="M 25 1736924415.dat" frameRight="3280" frameBottom="1140"/>
+          <DOMBitmapItem name="image/bitmap3451.png" itemID="6597607e-000006fd" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/image/bitmap3451.png" sourceLastImported="1704419454" originalCompressionType="lossless" quality="50" href="image/bitmap3451.png" bitmapDataHRef="M 18 1736924415.dat" frameRight="1040" frameBottom="2280"/>
+          <DOMBitmapItem name="Accessories/Others/Images/Rubber" itemID="5dc60745-00000e6b" sourceExternalFilepath="../../resources/flashswf/P.A.R.E/330718-15111513001348.jpg" sourceLastImported="1573259077" allowSmoothing="true" quality="50" href="Accessories/Others/Images/Rubber.jpg" bitmapDataHRef="M 60 1755075493.dat" frameRight="20000" frameBottom="14900" isJPEG="true"/>
+          <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 14 1736924415.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
+          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 15 1736924415.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
+          <DOMSoundItem name="sound/sound2342.wav" itemID="6597607b-0000047f" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/sound/sound2342.wav" sourceLastImported="1704196122" href="sound/sound2342.wav" soundDataHRef="M 8 1736924415.dat" format="11kHz 16bit Mono" sampleCount="11908" exportFormat="5" exportBits="7"/>
+          <DOMSoundItem name="sound/sound2343.mp3" itemID="6597607b-00000483" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/sound/sound2343.mp3" sourceLastImported="1704419451" href="sound/sound2343.mp3" soundDataHRef="M 9 1736924415.dat" format="44kHz 16bit Mono" sampleCount="52992" exportFormat="5" exportBits="7" dataLength="19226" exportNative="true" cachedSampleCount="6624"/>
+          <DOMSoundItem name="sound/sound2344.mp3" itemID="6597607b-00000487" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/sound/sound2344.mp3" sourceLastImported="1704419451" href="sound/sound2344.mp3" soundDataHRef="M 10 1736924415.dat" format="44kHz 16bit Mono" sampleCount="93312" exportFormat="5" exportBits="7" dataLength="33854" exportNative="true" cachedSampleCount="11664"/>
+          <DOMSoundItem name="sound/sound2390.wav" itemID="6597607b-00000488" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/sound/sound2390.wav" sourceLastImported="1704196122" href="sound/sound2390.wav" soundDataHRef="M 1 1736924415.dat" format="11kHz 16bit Mono" sampleCount="9576" exportFormat="5" exportBits="7"/>
+          <DOMSoundItem name="sound/sound2609.wav" itemID="6597607c-000004b1" sourceExternalFilepath="../../resources/flashswf/levels/基地场景合集/LIBRARY/sound/sound2609.wav" sourceLastImported="1704196122" href="sound/sound2609.wav" soundDataHRef="M 19 1736924415.dat" format="11kHz 16bit Mono" sampleCount="35267" exportFormat="5" exportBits="7"/>
      </media>
      <symbols>
           <Include href="0.防具相关/05.A兵套/男变装-A兵团制式战术皮鞋.xml" loadImmediate="false" itemID="668ecc2d-000030bf" lastModified="1760340670"/>
@@ -217,6 +217,37 @@
           <Include href="NPC/黑铁会外交部长-部件/外交部长-左手.xml" loadImmediate="false" itemID="665adf22-00000e16" lastModified="1717231394"/>
           <Include href="NPC/黑铁会外交部长-部件/外交部长-左小臂.xml" loadImmediate="false" itemID="665ae04c-00000e24" lastModified="1717240916"/>
           <Include href="NPC/黑铁会外交部长-待机.xml" loadImmediate="false" itemID="665b5cc6-00001fa3" lastModified="1751333674"/>
+          <Include href="NPC/剑术大师/刀鞘.xml" loadImmediate="false" itemID="6841db8b-00003b75" lastModified="1761504381"/>
+          <Include href="NPC/剑术大师/剑鞘.xml" loadImmediate="false" itemID="6841e8df-00003b91" lastModified="1782790328"/>
+          <Include href="NPC/剑术大师/剑术大师（本体） 合并.xml" loadImmediate="false" itemID="6a4338ed-00000390" lastModified="1782922409"/>
+          <Include href="NPC/剑术大师/脚.xml" itemIcon="1" loadImmediate="false" itemID="684480a9-000002fd" lastModified="1771527035"/>
+          <Include href="NPC/剑术大师/屁股.xml" itemIcon="1" loadImmediate="false" itemID="68447f6d-00000253" lastModified="1761504462"/>
+          <Include href="NPC/剑术大师/身体.xml" itemIcon="1" loadImmediate="false" itemID="68447fb1-00000287" lastModified="1771528019"/>
+          <Include href="NPC/剑术大师/手.xml" itemIcon="1" loadImmediate="false" itemID="68447d52-0000018c" lastModified="1761504390"/>
+          <Include href="NPC/剑术大师/手臂.xml" itemIcon="1" loadImmediate="false" itemID="68447df5-000001d6" lastModified="1771526737"/>
+          <Include href="NPC/剑术大师/素材/ass_背面.xml" loadImmediate="false" itemID="6842d8b1-00000162" lastModified="1771526303"/>
+          <Include href="NPC/剑术大师/素材/ass_正面.xml" loadImmediate="false" itemID="68447f68-00000251" lastModified="1771526300"/>
+          <Include href="NPC/剑术大师/素材/脚_背面.xml" loadImmediate="false" itemID="68442828-0000014c" lastModified="1771526291"/>
+          <Include href="NPC/剑术大师/素材/脚_正面.xml" loadImmediate="false" itemID="68447f36-0000022f" lastModified="1771526995"/>
+          <Include href="NPC/剑术大师/素材/脑瓜_背面.xml" loadImmediate="false" itemID="6842dbfa-000001ba" lastModified="1771528161"/>
+          <Include href="NPC/剑术大师/素材/脑瓜_正面.xml" loadImmediate="false" itemID="68447f2d-0000022e" lastModified="1771527961"/>
+          <Include href="NPC/剑术大师/素材/身体_背面.xml" loadImmediate="false" itemID="6842d8aa-00000161" lastModified="1771527738"/>
+          <Include href="NPC/剑术大师/素材/身体_正面.xml" loadImmediate="false" itemID="68447fad-00000285" lastModified="1771527714"/>
+          <Include href="NPC/剑术大师/素材/右手.xml" loadImmediate="false" itemID="683f4259-00000156" lastModified="1771526310"/>
+          <Include href="NPC/剑术大师/素材/右小臂.xml" loadImmediate="false" itemID="683f4340-0000015f" lastModified="1771526715"/>
+          <Include href="NPC/剑术大师/素材/左手.xml" loadImmediate="false" itemID="683f3bb9-0000013f" lastModified="1771526316"/>
+          <Include href="NPC/剑术大师/素材/左小臂.xml" loadImmediate="false" itemID="683f3c61-00000147" lastModified="1771526679"/>
+          <Include href="NPC/剑术大师/头.xml" itemIcon="1" loadImmediate="false" itemID="68447eb7-00000223" lastModified="1771528141"/>
+          <Include href="NPC/剑术大师/武士刀.xml" loadImmediate="false" itemID="6841d51d-000025a7" lastModified="1761504507"/>
+          <Include href="NPC/剑术大师/右大臂.xml" loadImmediate="false" itemID="683f45ca-00000168" lastModified="1761504405"/>
+          <Include href="NPC/剑术大师/右大腿.xml" loadImmediate="false" itemID="68407fcc-00000179" lastModified="1761504476"/>
+          <Include href="NPC/剑术大师/右小腿.xml" loadImmediate="false" itemID="68407d5f-00000168" lastModified="1761504481"/>
+          <Include href="NPC/剑术大师/长剑.xml" loadImmediate="false" itemID="6844820b-0000035b" lastModified="1761504411"/>
+          <Include href="NPC/剑术大师/长剑剑鞘.xml" loadImmediate="false" itemID="6842d5f0-0000014a" lastModified="1761504419"/>
+          <Include href="NPC/剑术大师/中国剑2.xml" loadImmediate="false" itemID="6841d31d-00001bb7" lastModified="1761504449"/>
+          <Include href="NPC/剑术大师/左大臂.xml" loadImmediate="false" itemID="68447e21-000001dc" lastModified="1761504437"/>
+          <Include href="NPC/剑术大师/左大腿.xml" loadImmediate="false" itemID="68407fd6-0000017b" lastModified="1761504468"/>
+          <Include href="NPC/剑术大师/左小腿.xml" loadImmediate="false" itemID="68407fde-0000017f" lastModified="1761504488"/>
           <Include href="NPC/蓝发女-NPC.xml" loadImmediate="false" itemID="668a9beb-00004f7c" lastModified="1740678523"/>
           <Include href="NPC/冷武器商人/冷兵/刀-CF手斧.xml" loadImmediate="false" itemID="65bdbe01-00000077" lastModified="1717917073"/>
           <Include href="NPC/冷武器商人/冷兵/刀-玳瑁长柄剑.xml" loadImmediate="false" itemID="660e4567-000005f8" lastModified="1717917097"/>
@@ -225,7 +256,7 @@
           <Include href="NPC/冷武器商人/冷兵/刀-消防斧.xml" loadImmediate="false" itemID="65bdbbda-000002b5" lastModified="1717916848"/>
           <Include href="NPC/冷武器商人/冷兵/冷兵构件/元件 1.xml" loadImmediate="false" itemID="66098f67-000001ae" lastModified="1711977312"/>
           <Include href="NPC/冷武器商人/冷兵/冷兵构件/元件 3.xml" loadImmediate="false" itemID="660ab66f-0000012e" lastModified="1712096182"/>
-          <Include href="NPC/冷武器商人/冷兵器商人-交互.xml" loadImmediate="false" itemID="66655386-00000ae6" lastModified="1782797870"/>
+          <Include href="NPC/冷武器商人/冷兵器商人-交互.xml" loadImmediate="false" itemID="66655386-00000ae6" lastModified="1746457278"/>
           <Include href="NPC/冷武器商人/冷兵器商人-静态.xml" loadImmediate="false" itemID="66654ab3-000002d7" lastModified="1717917829"/>
           <Include href="NPC/冷武器商人/冷兵器商人-坐下.xml" loadImmediate="false" itemID="6665864b-00001af0" lastModified="1717930913"/>
           <Include href="NPC/冷武器商人/阴影.xml" loadImmediate="false" itemID="66655610-0000136b" lastModified="1717917200"/>
@@ -257,37 +288,7 @@
           <Include href="NPC/圣诞树.xml" loadImmediate="false" itemID="668aad1c-0000632a" lastModified="1720364316"/>
           <Include href="NPC/文天/Symbol 35500.xml" loadImmediate="false" itemID="6597607e-00000cf4" lastModified="1704196122"/>
           <Include href="NPC/文天/Symbol 35501.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cf6" lastModified="1704196122"/>
-          <Include href="NPC/武器大师/刀鞘.xml" loadImmediate="false" itemID="6841db8b-00003b75" lastModified="1761504381"/>
-          <Include href="NPC/武器大师/剑鞘.xml" loadImmediate="false" itemID="6841e8df-00003b91" lastModified="1782790328"/>
-          <Include href="NPC/武器大师/剑术大师（本体） 合并.xml" loadImmediate="false" itemID="6a4338ed-00000390" lastModified="1782793307"/>
-          <Include href="NPC/武器大师/脚.xml" itemIcon="1" loadImmediate="false" itemID="684480a9-000002fd" lastModified="1771527035"/>
-          <Include href="NPC/武器大师/屁股.xml" itemIcon="1" loadImmediate="false" itemID="68447f6d-00000253" lastModified="1761504462"/>
-          <Include href="NPC/武器大师/身体.xml" itemIcon="1" loadImmediate="false" itemID="68447fb1-00000287" lastModified="1771528019"/>
-          <Include href="NPC/武器大师/手.xml" itemIcon="1" loadImmediate="false" itemID="68447d52-0000018c" lastModified="1761504390"/>
-          <Include href="NPC/武器大师/手臂.xml" itemIcon="1" loadImmediate="false" itemID="68447df5-000001d6" lastModified="1771526737"/>
-          <Include href="NPC/武器大师/素材/ass_背面.xml" loadImmediate="false" itemID="6842d8b1-00000162" lastModified="1771526303"/>
-          <Include href="NPC/武器大师/素材/ass_正面.xml" loadImmediate="false" itemID="68447f68-00000251" lastModified="1771526300"/>
-          <Include href="NPC/武器大师/素材/脚_背面.xml" loadImmediate="false" itemID="68442828-0000014c" lastModified="1771526291"/>
-          <Include href="NPC/武器大师/素材/脚_正面.xml" loadImmediate="false" itemID="68447f36-0000022f" lastModified="1771526995"/>
-          <Include href="NPC/武器大师/素材/脑瓜_背面.xml" loadImmediate="false" itemID="6842dbfa-000001ba" lastModified="1771528161"/>
-          <Include href="NPC/武器大师/素材/脑瓜_正面.xml" loadImmediate="false" itemID="68447f2d-0000022e" lastModified="1771527961"/>
-          <Include href="NPC/武器大师/素材/身体_背面.xml" loadImmediate="false" itemID="6842d8aa-00000161" lastModified="1771527738"/>
-          <Include href="NPC/武器大师/素材/身体_正面.xml" loadImmediate="false" itemID="68447fad-00000285" lastModified="1771527714"/>
-          <Include href="NPC/武器大师/素材/右手.xml" loadImmediate="false" itemID="683f4259-00000156" lastModified="1771526310"/>
-          <Include href="NPC/武器大师/素材/右小臂.xml" loadImmediate="false" itemID="683f4340-0000015f" lastModified="1771526715"/>
-          <Include href="NPC/武器大师/素材/左手.xml" loadImmediate="false" itemID="683f3bb9-0000013f" lastModified="1771526316"/>
-          <Include href="NPC/武器大师/素材/左小臂.xml" loadImmediate="false" itemID="683f3c61-00000147" lastModified="1771526679"/>
-          <Include href="NPC/武器大师/头.xml" itemIcon="1" loadImmediate="false" itemID="68447eb7-00000223" lastModified="1771528141"/>
-          <Include href="NPC/武器大师/武士刀.xml" loadImmediate="false" itemID="6841d51d-000025a7" lastModified="1761504507"/>
-          <Include href="NPC/武器大师/右大臂.xml" loadImmediate="false" itemID="683f45ca-00000168" lastModified="1761504405"/>
-          <Include href="NPC/武器大师/右大腿.xml" loadImmediate="false" itemID="68407fcc-00000179" lastModified="1761504476"/>
-          <Include href="NPC/武器大师/右小腿.xml" loadImmediate="false" itemID="68407d5f-00000168" lastModified="1761504481"/>
-          <Include href="NPC/武器大师/长剑.xml" loadImmediate="false" itemID="6844820b-0000035b" lastModified="1761504411"/>
-          <Include href="NPC/武器大师/长剑剑鞘.xml" loadImmediate="false" itemID="6842d5f0-0000014a" lastModified="1761504419"/>
-          <Include href="NPC/武器大师/中国剑2.xml" loadImmediate="false" itemID="6841d31d-00001bb7" lastModified="1761504449"/>
-          <Include href="NPC/武器大师/左大臂.xml" loadImmediate="false" itemID="68447e21-000001dc" lastModified="1761504437"/>
-          <Include href="NPC/武器大师/左大腿.xml" loadImmediate="false" itemID="68407fd6-0000017b" lastModified="1761504468"/>
-          <Include href="NPC/武器大师/左小腿.xml" loadImmediate="false" itemID="68407fde-0000017f" lastModified="1761504488"/>
+          <Include href="NPC/武器大师.xml" loadImmediate="false" itemID="6a4539b5-00001025" lastModified="1782922567"/>
           <Include href="NPC/杂项/武器-大剑.xml" loadImmediate="false" itemID="66631721-0000116c" lastModified="1717769623"/>
           <Include href="NPC/杂项/武器-飞刀.xml" loadImmediate="false" itemID="66631721-0000116a" lastModified="1717263913"/>
           <Include href="NPC/杂项/武器-砍刀.xml" loadImmediate="false" itemID="66631721-00001172" lastModified="1717263568"/>
@@ -299,8 +300,8 @@
           <Include href="Pins/Pin1.xml" itemIcon="1" loadImmediate="false" itemID="609349e3-00001548" lastModified="1620265443"/>
           <Include href="Pins/Pin2.xml" itemIcon="1" loadImmediate="false" itemID="609349e3-00001547" lastModified="1620265443"/>
           <Include href="Pins/Pin2.5.xml" itemIcon="1" loadImmediate="false" itemID="5ffa5434-00000c8b" lastModified="1610241076"/>
-          <Include href="Pins/Pin4.xml" itemIcon="1" loadImmediate="false" itemID="5fa492eb-00001c04" lastModified="1604621035"/>
           <Include href="Pins/Pin04-1.xml" itemIcon="1" loadImmediate="false" itemID="5fb05923-00000c90" lastModified="1605392675"/>
+          <Include href="Pins/Pin4.xml" itemIcon="1" loadImmediate="false" itemID="5fa492eb-00001c04" lastModified="1604621035"/>
           <Include href="real mini uzi.xml" loadImmediate="false" itemID="67f68158-00001256" lastModified="1744208216"/>
           <Include href="Rifles/Colt AR-15/Colt SOPMOD M4 Carbine rifle/Colt AR-15 Grip.xml" itemIcon="1" loadImmediate="false" itemID="5ea48a70-0000092b" lastModified="1587841648"/>
           <Include href="Rifles/Colt AR-15/Colt SOPMOD M4 Carbine rifle/Colt AR-15 Selector.xml" itemIcon="1" loadImmediate="false" itemID="5ec42698-00000bd3" lastModified="1589912810"/>
@@ -839,8 +840,8 @@
           <Include href="sprite/Symbol 2649.xml" loadImmediate="false" itemID="6597607e-00000c54" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2658.xml" loadImmediate="false" itemID="6597607e-00000c5f" lastModified="1717510811"/>
           <Include href="sprite/Symbol 2661.xml" loadImmediate="false" itemID="6597607e-00000c63" lastModified="1717512172"/>
-          <Include href="sprite/Symbol 2662.xml" loadImmediate="false" itemID="6597607e-00000c65" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 2664.xml" loadImmediate="false" itemID="6597607e-00000c69" lastModified="1782797879"/>
+          <Include href="sprite/Symbol 2662.xml" loadImmediate="false" itemID="6597607e-00000c65" lastModified="1782922105"/>
+          <Include href="sprite/Symbol 2664.xml" loadImmediate="false" itemID="6597607e-00000c69" lastModified="1782922549"/>
           <Include href="sprite/Symbol 2685.xml" loadImmediate="false" itemID="6597607e-00000c92" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2690.xml" loadImmediate="false" itemID="6597607e-00000c9c" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2692.xml" loadImmediate="false" itemID="6597607e-00000ca0" lastModified="1704196122"/>
@@ -985,16 +986,16 @@
           <Include href="待机合集.xml" itemIcon="1" loadImmediate="false" itemID="6900edc4-00000205" lastModified="1761758588"/>
           <Include href="弹药系列/通用/5.56x45mm.xml" loadImmediate="false" itemID="5f03d27b-0000020c" lastModified="1672473451"/>
           <Include href="弹药系列/通用/5.56x45mmNATOx30 mag .xml" loadImmediate="false" itemID="5f0538aa-000007f9" lastModified="1639135121"/>
-          <Include href="地图/车库.xml" itemID="668aa123-00005253" lastModified="1782791727"/>
-          <Include href="地图/基地1层.xml" itemID="668a9fdf-00005040" lastModified="1782790842"/>
-          <Include href="地图/基地地下1层.xml" itemID="668aa054-00005128" lastModified="1782793679"/>
-          <Include href="地图/基地门口.xml" itemID="668aa11b-00005252" lastModified="1782790561"/>
-          <Include href="地图/健身房.xml" itemID="668aa068-0000512a" lastModified="1782793689"/>
+          <Include href="地图/车库.xml" itemID="668aa123-00005253" lastModified="1779302907"/>
+          <Include href="地图/基地1层.xml" itemID="668a9fdf-00005040" lastModified="1782922612"/>
+          <Include href="地图/基地地下1层.xml" itemID="668aa054-00005128" lastModified="1759510515"/>
+          <Include href="地图/基地门口.xml" itemID="668aa11b-00005252" lastModified="1762997875"/>
+          <Include href="地图/健身房.xml" itemID="668aa068-0000512a" lastModified="1782923162"/>
           <Include href="地图/溶洞.xml" itemID="668aa0c1-000051a2" lastModified="1749711656"/>
-          <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1763381489"/>
           <Include href="地图/停机坪.xml" itemID="668aa0dc-000051de" lastModified="1756650519"/>
-          <Include href="地图/武器库.xml" itemID="668aa006-0000507c" lastModified="1782793626"/>
-          <Include href="地图/医务室.xml" itemID="668aa0bc-000051a1" lastModified="1782791834"/>
+          <Include href="地图/武器库.xml" itemID="668aa006-0000507c" lastModified="1755086586"/>
+          <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1763381489"/>
+          <Include href="地图/医务室.xml" itemID="668aa0bc-000051a1" lastModified="1749711735"/>
           <Include href="地图/佣兵酒吧.xml" itemID="668aa09a-00005167" lastModified="1749711706"/>
           <Include href="吊带.xml" itemIcon="1" loadImmediate="false" itemID="68ffa64c-000001d0" lastModified="1761585017"/>
           <Include href="防撞车/元件 1.xml" loadImmediate="false" itemID="636b8402-000002db" lastModified="1667990569"/>
@@ -1402,8 +1403,6 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="2995723" publishTime="1782793317"/>
-          <PublishItem publishSize="2995723" publishTime="1782791971"/>
           <PublishItem publishSize="3023342" publishTime="1774218058"/>
           <PublishItem publishSize="2930515" publishTime="1762997958"/>
           <PublishItem publishSize="2930512" publishTime="1762997590"/>
@@ -1422,5 +1421,7 @@
           <PublishItem publishSize="3221238" publishTime="1756644522"/>
           <PublishItem publishSize="3221238" publishTime="1756644442"/>
           <PublishItem publishSize="3221244" publishTime="1756644318"/>
+          <PublishItem publishSize="3220881" publishTime="1756643554"/>
+          <PublishItem publishSize="3213049" publishTime="1756641936"/>
      </publishHistory>
 </DOMDocument>

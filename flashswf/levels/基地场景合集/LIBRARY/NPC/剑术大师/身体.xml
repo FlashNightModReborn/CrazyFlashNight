@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/剑术大师/身体" itemID="68447fb1-00000287" symbolType="graphic" lastModified="1771528019">
+  <timeline>
+    <DOMTimeline name="身体">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/剑术大师/素材/身体_正面" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-9.25" ty="6.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/剑术大师/素材/身体_背面" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.996994018554688" b="0.0774688720703125" c="-0.0774688720703125" d="0.996994018554688" tx="-0.85" ty="-0.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1782793626" lastUniqueIdentifier="16">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1755086586" lastUniqueIdentifier="16">
   <timeline>
     <DOMTimeline name="武器库">
       <layers>
@@ -135,11 +135,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#84BC96" current="true" isSelected="true">
+        <DOMLayer name="Layer 6" color="#84BC96">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2547" selected="true" centerPoint3DX="719" centerPoint3DY="410.2">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2547" centerPoint3DX="719" centerPoint3DY="410.2">
                   <matrix>
                     <Matrix tx="647.45" ty="276.6"/>
                   </matrix>
@@ -162,11 +162,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#7E77A1">
+        <DOMLayer name="Layer 7" color="#7E77A1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/ShopGirl-NPC" centerPoint3DX="500.75" centerPoint3DY="445.6">
+                <DOMSymbolInstance libraryItemName="NPC/ShopGirl-NPC" selected="true" centerPoint3DX="500.75" centerPoint3DY="445.6">
                   <matrix>
                     <Matrix tx="412.45" ty="321.55"/>
                   </matrix>
