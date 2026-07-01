@@ -65,6 +65,27 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void StartBatch_RejectsManifestBatchIdPathTraversalAndKeepsExistingFiles()
+        {
+            string root = CreateProjectRoot();
+            WriteManifest(root, "traversal-carrier", 1, null, null, @"..\..\escape");
+            string sentinelPath = Path.Combine(root, "escape-results.jsonl");
+            File.WriteAllText(sentinelPath, "sentinel", System.Text.Encoding.UTF8);
+            var task = new ArenaCalibrationTask(root, delegate { return true; },
+                delegate(string payload) { }, delegate(int frames) { return 50; });
+
+            JObject resp = JObject.Parse(task.HandleControl(new JObject
+            {
+                ["action"] = "startBatch",
+                ["manifestPath"] = "tmp/arena-calibration/batches/traversal-carrier/case_manifest.json"
+            }));
+
+            Assert.False((bool)resp["success"]);
+            Assert.Contains("batchId must match", (string)resp["message"]);
+            Assert.Equal("sentinel", File.ReadAllText(sentinelPath, System.Text.Encoding.UTF8));
+        }
+
+        [Fact]
         public void StartBatch_SendsNormalizedFlashCommandAndWritesFlashResult()
         {
             string root = CreateProjectRoot();
@@ -204,13 +225,18 @@ namespace CF7Launcher.Tests.Tasks
 
         private static string WriteManifest(string root, string batchId, int repeat, string manifestHash, string caseHash)
         {
+            return WriteManifest(root, batchId, repeat, manifestHash, caseHash, batchId);
+        }
+
+        private static string WriteManifest(string root, string batchId, int repeat, string manifestHash, string caseHash, string manifestBatchId)
+        {
             string dir = Path.Combine(root, "tmp", "arena-calibration", "batches", batchId);
             Directory.CreateDirectory(dir);
             string manifestPath = Path.Combine(dir, "case_manifest.json");
             var manifest = new JObject
             {
                 ["schema"] = "arena-calibration.case-manifest.v1",
-                ["batchId"] = batchId,
+                ["batchId"] = manifestBatchId,
                 ["createdAt"] = "2026-06-29T00:00:00.000Z",
                 ["buildCommit"] = "test",
                 ["planner"] = new JObject

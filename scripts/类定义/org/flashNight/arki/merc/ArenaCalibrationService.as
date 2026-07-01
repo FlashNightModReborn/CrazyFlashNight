@@ -20,6 +20,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     private static var _inited:Boolean = false;
     private static var _active:Object = undefined;
     private static var _runSeq:Number = 0;
+    private static var SNAPSHOT_WARMUP_FRAMES:Number = 5;
 
     public static function install():Void {
         if (_inited) return;
@@ -104,8 +105,6 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             return;
         }
 
-        primeTargets(blueUnits, redUnits);
-
         var timeoutFrames:Number = Number(params.timeoutFrames);
         if (isNaN(timeoutFrames) || timeoutFrames < 1) timeoutFrames = 5400;
 
@@ -119,6 +118,8 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             timeoutFrames: timeoutFrames,
             frames: 0,
             startedMs: getTimer(),
+            primed: false,
+            snapshotFrames: 0,
             blueUnits: blueUnits,
             redUnits: redUnits,
             errors: errors
@@ -130,6 +131,19 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     public static function tick():Void {
         if (_active == undefined) return;
         _active.frames++;
+
+        if (_active.primed != true) {
+            _active.snapshotFrames++;
+            var blueReady:Boolean = captureStartSnapshots(_active.blueUnits, _active.errors, false);
+            var redReady:Boolean = captureStartSnapshots(_active.redUnits, _active.errors, false);
+            if ((blueReady && redReady) || _active.snapshotFrames >= SNAPSHOT_WARMUP_FRAMES) {
+                captureStartSnapshots(_active.blueUnits, _active.errors, true);
+                captureStartSnapshots(_active.redUnits, _active.errors, true);
+                primeTargets(_active.blueUnits, _active.redUnits);
+                _active.primed = true;
+            }
+            return;
+        }
 
         var blueAlive:Number = countAlive(_active.blueUnits);
         var redAlive:Number = countAlive(_active.redUnits);
@@ -206,6 +220,9 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             init.是否为敌人 = isEnemy;
             init.产生源 = "斗兽标定源";
             init.掉落物 = [];
+            init.斗兽标定隔离 = true;
+            init.不掉钱 = true;
+            init.已加经验值 = true;
             init._x = x + random(100) - 50;
             init._y = y + random(100) - 50;
             init.名字 = "斗兽标定" + side + i;
@@ -224,22 +241,93 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                     _root.gameworld.斗兽标定源.僵尸型敌人总个数--;
                 }
             } else {
+                mc.斗兽标定隔离 = true;
+                mc.已加经验值 = true;
+                mc.不掉钱 = true;
+                mc.掉落物 = [];
                 mc._arenaCalibrationSide = side;
                 mc._arenaCalibrationRun = runKey;
                 mc.攻击目标 = "无";
-                out.push(mc);
+
+                var estimatedMaxHp:Number = estimateStartMaxHp(attr, unit.等级, isEnemy);
+                var startMaxHp:Number = readUnitMaxHp(mc);
+                out.push({
+                    mc: mc,
+                    startMaxHp: startMaxHp,
+                    estimatedStartMaxHp: estimatedMaxHp,
+                    startSnapshotReady: (startMaxHp > 0),
+                    unitType: unit.兵种,
+                    level: unit.等级,
+                    side: side
+                });
             }
         }
         return out;
     }
 
+    private static function captureStartSnapshots(units:Array, errors:Array, finalAttempt:Boolean):Boolean {
+        var ready:Boolean = true;
+        for (var i:Number = 0; i < units.length; i++) {
+            var record:Object = units[i];
+            if (record == undefined) continue;
+            if (record.startSnapshotReady == true) continue;
+
+            var unitMax:Number = readUnitMaxHp(record.mc);
+            if (unitMax > 0) {
+                record.startMaxHp = unitMax;
+                record.startSnapshotReady = true;
+                continue;
+            }
+
+            if (finalAttempt == true) {
+                unitMax = Number(record.estimatedStartMaxHp);
+                if (!isNaN(unitMax) && unitMax > 0) {
+                    record.startMaxHp = unitMax;
+                    record.startSnapshotReady = true;
+                    if (record.startSnapshotWarned != true) {
+                        errors.push({
+                            code: "hp_snapshot_estimated",
+                            side: record.side,
+                            unit: record.unitType,
+                            message: "used estimated max hp because runtime hp was not ready"
+                        });
+                        record.startSnapshotWarned = true;
+                    }
+                } else {
+                    record.startMaxHp = 0;
+                    record.startSnapshotReady = true;
+                    if (record.startSnapshotWarned != true) {
+                        errors.push({
+                            code: "hp_snapshot_missing",
+                            side: record.side,
+                            unit: record.unitType,
+                            message: "max hp snapshot is unavailable"
+                        });
+                        record.startSnapshotWarned = true;
+                    }
+                }
+            } else {
+                ready = false;
+            }
+        }
+        return ready;
+    }
+
     private static function primeTargets(blueUnits:Array, redUnits:Array):Void {
         var i:Number;
         for (i = 0; i < blueUnits.length; i++) {
-            if (redUnits.length > 0) blueUnits[i].攻击目标 = redUnits[i % redUnits.length]._name;
+            var blueMc:MovieClip = blueUnits[i].mc;
+            if (blueMc != undefined && redUnits.length > 0) {
+                var redTarget:MovieClip = redUnits[i % redUnits.length].mc;
+                if (redTarget != undefined) blueMc.攻击目标 = redTarget._name;
+            }
         }
         for (i = 0; i < redUnits.length; i++) {
-            if (blueUnits.length > 0) redUnits[i].攻击目标 = blueUnits[i % blueUnits.length]._name;
+            var redMc:MovieClip = redUnits[i].mc;
+            if (redMc != undefined && blueUnits.length > 0) {
+                var blueTarget:MovieClip = blueUnits[i % blueUnits.length].mc;
+                if (blueTarget != undefined) redMc.攻击目标 = blueTarget._name;
+            }
         }
     }
 
@@ -283,7 +371,9 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     private static function countAlive(units:Array):Number {
         var count:Number = 0;
         for (var i:Number = 0; i < units.length; i++) {
-            var mc:MovieClip = units[i];
+            var record:Object = units[i];
+            var mc:MovieClip = undefined;
+            if (record != undefined) mc = record.mc;
             if (mc != undefined && mc._parent != undefined && mc.hp > 0) count++;
         }
         return count;
@@ -294,22 +384,39 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         var remainHp:Number = 0;
         var aliveCount:Number = 0;
         for (var i:Number = 0; i < units.length; i++) {
-            var mc:MovieClip = units[i];
-            if (mc == undefined || mc._parent == undefined) continue;
-            var unitMax:Number = Number(mc.hp满血值);
-            var unitHp:Number = Number(mc.hp);
+            var record:Object = units[i];
+            if (record == undefined) continue;
+            var unitMax:Number = Number(record.startMaxHp);
+            var unitHp:Number = 0;
+            var mc:MovieClip = record.mc;
+            if (mc != undefined && mc._parent != undefined) {
+                if (isNaN(unitMax) || unitMax <= 0) {
+                    unitMax = readUnitMaxHp(mc);
+                    if (unitMax > 0) record.startMaxHp = unitMax;
+                }
+                unitHp = Number(mc.hp);
+                if (isNaN(unitHp) || unitHp < 0) unitHp = 0;
+                if (unitHp > 0) aliveCount++;
+            }
+            if (isNaN(unitMax) || unitMax <= 0) unitMax = Number(record.estimatedStartMaxHp);
             if (isNaN(unitMax) || unitMax < 0) unitMax = 0;
-            if (isNaN(unitHp) || unitHp < 0) unitHp = 0;
             maxHp += unitMax;
             remainHp += unitHp;
-            if (unitHp > 0) aliveCount++;
         }
-        return {maxHp: Math.round(maxHp), remainHp: Math.round(remainHp), aliveCount: aliveCount};
+        return {
+            maxHp: Math.round(maxHp),
+            remainHp: Math.round(remainHp),
+            aliveCount: aliveCount,
+            startMaxHp: Math.round(maxHp),
+            startCount: units.length
+        };
     }
 
     private static function cleanupUnits(units:Array):Void {
         for (var i:Number = 0; i < units.length; i++) {
-            var mc:MovieClip = units[i];
+            var record:Object = units[i];
+            var mc:MovieClip = undefined;
+            if (record != undefined) mc = record.mc;
             if (mc != undefined && mc._parent != undefined) {
                 mc.removeMovieClip();
             }
@@ -351,7 +458,35 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     }
 
     private static function emptySideSummary():Object {
-        return {maxHp: 0, remainHp: 0, aliveCount: 0};
+        return {maxHp: 0, remainHp: 0, aliveCount: 0, startMaxHp: 0, startCount: 0};
+    }
+
+    private static function readUnitMaxHp(mc:MovieClip):Number {
+        var unitMax:Number = 0;
+        if (mc != undefined && mc._parent != undefined) {
+            unitMax = Number(mc.hp满血值);
+            if (isNaN(unitMax) || unitMax <= 0) unitMax = Number(mc.hp);
+        }
+        if (isNaN(unitMax) || unitMax < 0) unitMax = 0;
+        return unitMax;
+    }
+
+    private static function estimateStartMaxHp(attr:Object, level:Number, isEnemy:Boolean):Number {
+        var unitMax:Number = 0;
+        if (attr != undefined && typeof _root.根据等级计算值 == "function") {
+            unitMax = Number(_root.根据等级计算值(attr.hp_min, attr.hp_max, level));
+            var equipHp:Number = Number(attr.hp满血值装备加层);
+            if (!isNaN(equipHp)) unitMax += equipHp;
+            if (isEnemy) {
+                var difficulty:Number = Number(_root.难度等级);
+                if (isNaN(difficulty) || difficulty <= 0) difficulty = 1;
+                unitMax *= difficulty;
+            } else {
+                unitMax *= 3;
+            }
+        }
+        if (isNaN(unitMax) || unitMax < 0) unitMax = 0;
+        return unitMax;
     }
 
     private static function cloneObject(src:Object):Object {

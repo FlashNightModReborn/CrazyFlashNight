@@ -4,6 +4,7 @@
 const childProcess = require("child_process");
 const fs = require("fs");
 const path = require("path");
+const { createPilotManifest, normalizeManifest } = require("./lib/arena-calibration-core");
 
 const scripts = [
   "build-candidates.js",
@@ -42,10 +43,24 @@ function checkSchemas() {
   });
 }
 
+function checkBatchIdContract() {
+  normalizeManifest(createPilotManifest({ batchId: "pilot-contract" }));
+  let rejected = false;
+  try {
+    normalizeManifest(createPilotManifest({ batchId: "..\\..\\escape" }));
+  } catch (_error) {
+    rejected = true;
+  }
+  if (!rejected) {
+    throw new Error("path-like batchId was not rejected");
+  }
+}
+
 try {
   checkSchemas();
+  checkBatchIdContract();
   scripts.forEach(run);
-  console.log(JSON.stringify({ ok: true, checked: scripts.length + schemas.length }, null, 2));
+  console.log(JSON.stringify({ ok: true, checked: scripts.length + schemas.length + 1 }, null, 2));
 } catch (error) {
   console.error(error.message);
   process.exit(1);

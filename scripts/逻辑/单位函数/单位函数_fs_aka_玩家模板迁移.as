@@ -1566,6 +1566,10 @@ _root.主角函数.死亡检测 = function() {
     if (this.hp > 0)
         return;
 
+    if (this.斗兽标定隔离 === true) {
+        return;
+    }
+
     // _root.服务器.发布服务器消息("角色 " + this._name + " 死亡");
 
     // 只在已经进入血腥死状态时才停止man动画

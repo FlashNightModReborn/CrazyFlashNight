@@ -21,6 +21,7 @@ const RESULT_STATUSES = new Set([
 ]);
 
 const WINNERS = new Set(["blue", "red", "draw", "timeout", "none", null]);
+const BATCH_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
 
 const ECONOMY_KEYS = new Set([
   "money",
@@ -142,6 +143,14 @@ function assertString(value, fieldName, errors) {
     return "";
   }
   return value.trim();
+}
+
+function assertBatchId(value, fieldName, errors) {
+  const batchId = assertString(value, fieldName, errors);
+  if (batchId && !BATCH_ID_PATTERN.test(batchId)) {
+    errors.push(`${fieldName} must match ^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$`);
+  }
+  return batchId;
 }
 
 function parsePositiveInteger(value, fieldName, errors) {
@@ -286,7 +295,7 @@ function normalizeManifest(input) {
   const timeoutFrames = parsePositiveInteger(input.timeoutFrames || 5400, "timeoutFrames", errors);
   const manifest = {
     schema: input.schema || CASE_MANIFEST_SCHEMA,
-    batchId: assertString(input.batchId, "batchId", errors),
+    batchId: assertBatchId(input.batchId, "batchId", errors),
     createdAt: input.createdAt || nowIso(),
     buildCommit: input.buildCommit || getShortCommit(),
     planner: input.planner || { name: "manual", version: 1 },
@@ -371,10 +380,22 @@ function normalizeSideSummary(input, fieldName, errors) {
   const maxHp = parseNonNegativeNumber(source.maxHp || 0, `${fieldName}.maxHp`, errors);
   const remainHp = parseNonNegativeNumber(source.remainHp || 0, `${fieldName}.remainHp`, errors);
   const aliveCount = parseNonNegativeNumber(source.aliveCount || 0, `${fieldName}.aliveCount`, errors);
+  const startMaxHp = parseNonNegativeNumber(
+    source.startMaxHp === undefined ? maxHp : source.startMaxHp,
+    `${fieldName}.startMaxHp`,
+    errors
+  );
+  const startCount = parseNonNegativeNumber(
+    source.startCount === undefined ? aliveCount : source.startCount,
+    `${fieldName}.startCount`,
+    errors
+  );
   return {
     maxHp,
     remainHp,
     aliveCount,
+    startMaxHp,
+    startCount,
   };
 }
 
@@ -415,7 +436,7 @@ function normalizeResultRow(input) {
   }
   const row = {
     schema: input.schema || RESULT_SCHEMA,
-    batchId: assertString(input.batchId, "batchId", errors),
+    batchId: assertBatchId(input.batchId, "batchId", errors),
     manifestHash: assertString(input.manifestHash, "manifestHash", errors),
     caseId: assertString(input.caseId, "caseId", errors),
     caseHash: assertString(input.caseHash, "caseHash", errors),
@@ -589,7 +610,7 @@ function validateSummary(summary) {
   if (summary.schema !== SUMMARY_SCHEMA) {
     errors.push(`schema must be ${SUMMARY_SCHEMA}`);
   }
-  assertString(summary.batchId, "batchId", errors);
+  assertBatchId(summary.batchId, "batchId", errors);
   assertString(summary.manifestHash, "manifestHash", errors);
   if (!Array.isArray(summary.cases)) {
     errors.push("cases must be an array");
@@ -705,11 +726,15 @@ function createFixtureRows() {
         maxHp: 1000,
         remainHp: winner === "blue" ? 320 : winner === "draw" ? 0 : 0,
         aliveCount: winner === "blue" ? 1 : 0,
+        startMaxHp: 1000,
+        startCount: 4,
       },
       red: {
         maxHp: 1000,
         remainHp: winner === "red" ? 280 : winner === "draw" ? 0 : 0,
         aliveCount: winner === "red" ? 1 : 0,
+        startMaxHp: 1000,
+        startCount: 4,
       },
       errors: [],
       startedAt: "2026-06-29T00:00:00.000Z",

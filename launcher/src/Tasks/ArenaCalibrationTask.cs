@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -49,6 +50,7 @@ namespace CF7Launcher.Tasks
         private readonly Func<int, int> _timeoutMsFromFrames;
         private readonly object _lock = new object();
         private readonly Dictionary<int, PendingRun> _pending = new Dictionary<int, PendingRun>();
+        private static readonly Regex BatchIdPattern = new Regex("^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$", RegexOptions.Compiled);
 
         private int _seq;
         private volatile bool _abortRequested;
@@ -143,14 +145,14 @@ namespace CF7Launcher.Tasks
                 if (_state == "running")
                     return BuildError("batch_already_running", "arena calibration batch is already running");
 
-                string batchDir = Path.Combine(_projectRoot, "tmp", "arena-calibration", "batches", manifest.BatchId);
+                string batchDir = ResolveBatchDir(manifest.BatchId);
                 Directory.CreateDirectory(batchDir);
                 _frozenManifestPath = Path.Combine(batchDir, "case_manifest.json");
                 File.WriteAllText(_frozenManifestPath, manifest.Frozen.ToString(Formatting.Indented) + Environment.NewLine, new UTF8Encoding(false));
 
-                string logDir = Path.Combine(_projectRoot, "logs", "arena-calibration");
+                string logDir = Path.GetFullPath(Path.Combine(_projectRoot, "logs", "arena-calibration"));
                 Directory.CreateDirectory(logDir);
-                _resultPath = Path.Combine(logDir, manifest.BatchId + "-results.jsonl");
+                _resultPath = ResolveResultPath(manifest.BatchId);
                 if (File.Exists(_resultPath))
                     File.Delete(_resultPath);
 
@@ -467,7 +469,7 @@ namespace CF7Launcher.Tasks
             if (schema != "arena-calibration.case-manifest.v1")
                 throw new InvalidOperationException("unsupported manifest schema: " + schema);
 
-            string batchId = RequiredString(input, "batchId");
+            string batchId = ValidateBatchId(RequiredString(input, "batchId"));
             int repeat = PositiveInt(input["repeat"], "repeat", 5);
             int timeoutFrames = PositiveInt(input["timeoutFrames"], "timeoutFrames", 5400);
             JArray cases = input.Value<JArray>("cases");
@@ -586,7 +588,7 @@ namespace CF7Launcher.Tasks
                     throw new InvalidOperationException(fieldName + "[" + i + "] must be an object");
 
                 string type = entry.Value<string>("type") ?? entry.Value<string>("兵种");
-                if (string.IsNullOrEmpty(type) || !System.Text.RegularExpressions.Regex.IsMatch(type, "^兵种[0-9]+$"))
+                if (string.IsNullOrEmpty(type) || !Regex.IsMatch(type, "^兵种[0-9]+$"))
                     throw new InvalidOperationException(fieldName + "[" + i + "].type must use 兵种N");
 
                 JToken levelToken = entry["level"] ?? entry["等级"];
@@ -618,6 +620,8 @@ namespace CF7Launcher.Tasks
             side["maxHp"] = NonNegativeNumber(input != null ? input["maxHp"] : null);
             side["remainHp"] = NonNegativeNumber(input != null ? input["remainHp"] : null);
             side["aliveCount"] = NonNegativeNumber(input != null ? input["aliveCount"] : null);
+            side["startMaxHp"] = NonNegativeNumber(input != null ? input["startMaxHp"] : side["maxHp"]);
+            side["startCount"] = NonNegativeNumber(input != null ? input["startCount"] : side["aliveCount"]);
             return side;
         }
 
@@ -677,6 +681,38 @@ namespace CF7Launcher.Tasks
             if (string.IsNullOrEmpty(value))
                 throw new InvalidOperationException(fieldName + " is required");
             return value;
+        }
+
+        private static string ValidateBatchId(string batchId)
+        {
+            if (!BatchIdPattern.IsMatch(batchId))
+                throw new InvalidOperationException("batchId must match ^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$");
+            return batchId;
+        }
+
+        private string ResolveBatchDir(string batchId)
+        {
+            string root = Path.GetFullPath(Path.Combine(_projectRoot, "tmp", "arena-calibration", "batches"));
+            string full = Path.GetFullPath(Path.Combine(root, batchId));
+            EnsurePathUnderDirectory(full, root, "batchDir");
+            return full;
+        }
+
+        private string ResolveResultPath(string batchId)
+        {
+            string root = Path.GetFullPath(Path.Combine(_projectRoot, "logs", "arena-calibration"));
+            string full = Path.GetFullPath(Path.Combine(root, batchId + "-results.jsonl"));
+            EnsurePathUnderDirectory(full, root, "resultPath");
+            return full;
+        }
+
+        private static void EnsurePathUnderDirectory(string fullPath, string directoryRoot, string fieldName)
+        {
+            string root = Path.GetFullPath(directoryRoot).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                + Path.DirectorySeparatorChar;
+            string full = Path.GetFullPath(fullPath);
+            if (!full.StartsWith(root, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException(fieldName + " must stay under " + directoryRoot);
         }
 
         private static void RejectEconomyKeys(JToken token, string path)

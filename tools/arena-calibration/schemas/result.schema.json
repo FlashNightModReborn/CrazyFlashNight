@@ -5,7 +5,7 @@
   "required": ["schema", "batchId", "manifestHash", "caseId", "caseHash", "runId", "repeatIndex", "status"],
   "properties": {
     "schema": { "const": "arena-calibration.result.v1" },
-    "batchId": { "type": "string", "minLength": 1 },
+    "batchId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$" },
     "manifestHash": { "type": "string", "minLength": 1 },
     "caseId": { "type": "string", "minLength": 1 },
     "caseHash": { "type": "string", "minLength": 1 },
@@ -29,7 +29,9 @@
       "properties": {
         "maxHp": { "type": "number", "minimum": 0 },
         "remainHp": { "type": "number", "minimum": 0 },
-        "aliveCount": { "type": "number", "minimum": 0 }
+        "aliveCount": { "type": "number", "minimum": 0 },
+        "startMaxHp": { "type": "number", "minimum": 0 },
+        "startCount": { "type": "number", "minimum": 0 }
       }
     }
   }

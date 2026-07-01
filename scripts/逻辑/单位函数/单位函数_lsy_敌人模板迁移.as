@@ -324,6 +324,9 @@ _root.敌人函数.击倒呐喊 = function() {
  */
 _root.敌人函数.死亡检测 = function(para) {
     if (this.hp <= 0 && !this.已加经验值) {
+        if (this.斗兽标定隔离 === true) {
+            return;
+        }
         this.man.stop();
         if (UnitUtil.isEnemy(this)) {
             if (this.是否为敌人 === true && para.noCount !== true) {
