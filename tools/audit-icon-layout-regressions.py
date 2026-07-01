@@ -16,7 +16,7 @@ def parse_args() -> argparse.Namespace:
     project_root = Path(__file__).resolve().parents[1]
     parser = argparse.ArgumentParser(
         description=(
-            "Compare launcher/web/icons PNGs against a git baseline and optionally restore "
+            "Compare launcher/web/icons image files against a git baseline and optionally restore "
             "tracked files. This is a safety tool for FFDec offline icon bake regressions."
         )
     )
@@ -38,12 +38,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--restore",
         action="store_true",
-        help="Restore every changed tracked PNG from --baseline-ref after writing the report.",
+        help="Restore every changed tracked image from --baseline-ref after writing the report.",
+    )
+    parser.add_argument(
+        "--restore-layout-regressions-only",
+        action="store_true",
+        help=(
+            "With --restore, restore only changed images whose alpha bbox/center metrics look like "
+            "a layout regression. Metrics are computed for all changed files in this mode."
+        ),
     )
     parser.add_argument(
         "--all-tracked",
         action="store_true",
-        help="Inspect all tracked PNGs instead of only currently modified tracked PNGs.",
+        help="Inspect all tracked images instead of only currently modified tracked images.",
+    )
+    parser.add_argument(
+        "--extensions",
+        default=".png,.webp",
+        help="Comma-separated image extensions to inspect. Default: .png,.webp.",
     )
     parser.add_argument(
         "--metrics-limit",
@@ -60,6 +73,24 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def parse_extensions(raw: str) -> tuple[str, ...]:
+    values: list[str] = []
+    for part in raw.split(","):
+        ext = part.strip().lower()
+        if not ext:
+            continue
+        if not ext.startswith("."):
+            ext = "." + ext
+        if ext not in values:
+            values.append(ext)
+    return tuple(values or [".png", ".webp"])
+
+
+def has_wanted_extension(path: str, extensions: tuple[str, ...]) -> bool:
+    lower = path.lower()
+    return any(lower.endswith(ext) for ext in extensions)
+
+
 def run_git(args: list[str], project_root: Path, *, check: bool = True) -> subprocess.CompletedProcess[bytes]:
     result = subprocess.run(
         ["git", *args],
@@ -72,21 +103,26 @@ def run_git(args: list[str], project_root: Path, *, check: bool = True) -> subpr
     return result
 
 
-def tracked_pngs(project_root: Path, icons_dir: Path, modified_only: bool) -> list[str]:
+def tracked_images(
+    project_root: Path,
+    icons_dir: Path,
+    modified_only: bool,
+    extensions: tuple[str, ...],
+) -> list[str]:
     rel_dir = icons_dir.relative_to(project_root).as_posix()
     args = ["ls-files"]
     if modified_only:
         args.append("-m")
-    args.append(f"{rel_dir}/*.png")
+    args.extend(f"{rel_dir}/*{ext}" for ext in extensions)
     result = run_git(args, project_root)
     return [
         line.decode("utf-8", errors="replace").strip()
         for line in result.stdout.splitlines()
-        if line.strip()
+        if line.strip() and has_wanted_extension(line.decode("utf-8", errors="replace").strip(), extensions)
     ]
 
 
-def baseline_tree(project_root: Path, ref: str, icons_dir: Path) -> dict[str, str]:
+def baseline_tree(project_root: Path, ref: str, icons_dir: Path, extensions: tuple[str, ...]) -> dict[str, str]:
     rel_dir = icons_dir.relative_to(project_root).as_posix()
     result = run_git(["ls-tree", "-r", "-z", ref, "--", rel_dir], project_root)
     blobs: dict[str, str] = {}
@@ -97,7 +133,7 @@ def baseline_tree(project_root: Path, ref: str, icons_dir: Path) -> dict[str, st
         parts = meta.decode("ascii", errors="replace").split()
         if len(parts) >= 3 and parts[1] == "blob":
             path = path_raw.decode("utf-8", errors="replace")
-            if path.endswith(".png"):
+            if has_wanted_extension(path, extensions):
                 blobs[path] = parts[2]
     return blobs
 
@@ -196,7 +232,38 @@ def changed_alpha_pixels(old_image: Image.Image, new_image: Image.Image) -> int:
     return changed
 
 
-def compare_png(old_bytes: bytes, new_path: Path) -> dict[str, Any]:
+def is_layout_regression(metrics: dict[str, Any]) -> bool:
+    old_bbox = metrics.get("oldBBox")
+    new_bbox = metrics.get("newBBox")
+    if old_bbox is None or new_bbox is None:
+        return old_bbox != new_bbox
+
+    center_shift = metrics.get("centerShift")
+    bbox_iou_value = float(metrics.get("bboxIoU") or 0.0)
+    old_alpha = float(metrics.get("oldAlphaSum") or 0.0)
+    new_alpha = float(metrics.get("newAlphaSum") or 0.0)
+    alpha_ratio = (new_alpha / old_alpha) if old_alpha > 0 else 1.0
+
+    old_w = max(1, old_bbox[2] - old_bbox[0])
+    old_h = max(1, old_bbox[3] - old_bbox[1])
+    new_w = max(1, new_bbox[2] - new_bbox[0])
+    new_h = max(1, new_bbox[3] - new_bbox[1])
+    width_ratio = new_w / old_w
+    height_ratio = new_h / old_h
+
+    return (
+        (center_shift is not None and center_shift > 4.0)
+        or bbox_iou_value < 0.85
+        or alpha_ratio < 0.70
+        or alpha_ratio > 1.30
+        or width_ratio < 0.80
+        or width_ratio > 1.25
+        or height_ratio < 0.80
+        or height_ratio > 1.25
+    )
+
+
+def compare_image(old_bytes: bytes, new_path: Path) -> dict[str, Any]:
     old_image = Image.open(io.BytesIO(old_bytes)).convert("RGBA")
     new_image = Image.open(new_path).convert("RGBA")
     old_bbox, old_center, old_alpha = alpha_bbox_and_center(old_image)
@@ -204,7 +271,7 @@ def compare_png(old_bytes: bytes, new_path: Path) -> dict[str, Any]:
     center_shift = None
     if old_center is not None and new_center is not None:
         center_shift = math.dist(old_center, new_center)
-    return {
+    metrics = {
         "oldSize": list(old_image.size),
         "newSize": list(new_image.size),
         "oldBBox": old_bbox,
@@ -217,6 +284,8 @@ def compare_png(old_bytes: bytes, new_path: Path) -> dict[str, Any]:
         "newAlphaSum": new_alpha,
         "changedAlphaPixels": changed_alpha_pixels(old_image, new_image),
     }
+    metrics["layoutRegression"] = is_layout_regression(metrics)
+    return metrics
 
 
 def main() -> int:
@@ -229,7 +298,15 @@ def main() -> int:
     if not report_path.is_absolute():
         report_path = project_root / report_path
 
-    rel_paths = tracked_pngs(project_root, icons_dir, modified_only=not args.all_tracked)
+    extensions = parse_extensions(args.extensions)
+    metrics_limit = 0 if args.restore_layout_regressions_only else int(args.metrics_limit)
+
+    rel_paths = tracked_images(
+        project_root,
+        icons_dir,
+        modified_only=not args.all_tracked,
+        extensions=extensions,
+    )
     if args.limit > 0:
         rel_paths = rel_paths[: args.limit]
 
@@ -238,11 +315,14 @@ def main() -> int:
         "baselineRef": args.baseline_ref,
         "iconsDir": str(icons_dir),
         "restore": bool(args.restore),
+        "restoreLayoutRegressionsOnly": bool(args.restore_layout_regressions_only),
         "allTracked": bool(args.all_tracked),
-        "metricsLimit": int(args.metrics_limit),
+        "extensions": list(extensions),
+        "metricsLimit": int(metrics_limit),
         "counts": {
             "tracked": len(rel_paths),
             "changed": 0,
+            "layoutRegressionCandidates": 0,
             "restored": 0,
             "missingCurrent": 0,
             "missingBaseline": 0,
@@ -253,7 +333,7 @@ def main() -> int:
     }
 
     metrics_written = 0
-    baseline_blobs = baseline_tree(project_root, args.baseline_ref, icons_dir)
+    baseline_blobs = baseline_tree(project_root, args.baseline_ref, icons_dir, extensions)
     object_ids = [
         baseline_blobs[rel_path]
         for rel_path in rel_paths
@@ -276,16 +356,21 @@ def main() -> int:
             continue
         report["counts"]["changed"] += 1
         metrics: dict[str, Any] = {}
-        if args.metrics_limit <= 0 or metrics_written < args.metrics_limit:
+        if metrics_limit <= 0 or metrics_written < metrics_limit:
             try:
-                metrics = compare_png(old_bytes, current_path)
+                metrics = compare_image(old_bytes, current_path)
                 metrics_written += 1
+                if metrics.get("layoutRegression"):
+                    report["counts"]["layoutRegressionCandidates"] += 1
             except Exception as exc:
                 report["counts"]["decodeErrors"] += 1
                 report["decodeErrors"].append({"path": rel_path, "error": str(exc)})
         entry = {"path": rel_path, **metrics}
         report["changed"].append(entry)
-        if args.restore:
+        should_restore = bool(args.restore)
+        if args.restore_layout_regressions_only:
+            should_restore = should_restore and bool(metrics.get("layoutRegression"))
+        if should_restore:
             current_path.write_bytes(old_bytes)
             report["counts"]["restored"] += 1
 

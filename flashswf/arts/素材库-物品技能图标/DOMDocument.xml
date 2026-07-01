@@ -13,7 +13,7 @@
           <DOMFolderItem name="技能相关/图标素材" itemID="669b8912-000011e2"/>
           <DOMFolderItem name="技能相关/图标素材/强震地(代码空缺)" itemID="67beafff-0000066f"/>
           <DOMFolderItem name="弃用图标" itemID="67bdcdc0-00000df9"/>
-          <DOMFolderItem name="情报物品相关" itemID="683f1b5b-000004b3"/>
+          <DOMFolderItem name="情报物品相关" itemID="683f1b5b-000004b3" isExpanded="true"/>
           <DOMFolderItem name="生活用品" itemID="47cf854d-00001bf0"/>
           <DOMFolderItem name="生活用品/020" itemID="47721310-00001a3b" isExpanded="true"/>
           <DOMFolderItem name="食材相关" itemID="67bff826-000003dc" isExpanded="true"/>
@@ -76,7 +76,7 @@
           <DOMBitmapItem name="技能相关/图标素材/QQ截图20240720173147 (1).png" itemID="669b84f0-00000521" sourceExternalFilepath="../../../SteamLibrary/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/素材库-物品技能图标/LIBRARY/技能相关/图标素材/QQ截图20240720173147 (1).png" sourceLastImported="1721468130" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/QQ截图20240720173147 (1).png" bitmapDataHRef="M 40 1740550143.dat" frameRight="3820" frameBottom="3820"/>
           <DOMBitmapItem name="消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" itemID="65a369e5-000004a4" sourceExternalFilepath="../../../SteamLibrary/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/素材库-物品技能图标/LIBRARY/消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" sourceLastImported="1705208239" quality="50" href="消耗道具相关/各种图素材等/QQ图片20240114125757.jpg" bitmapDataHRef="M 26 1740497968.dat" frameRight="10240" frameBottom="5760" isJPEG="true"/>
           <DOMBitmapItem name="生活用品/020/u=1702814204,2418538836&amp;gp=22" itemID="46ef6b23-00000012" sourceExternalFilepath="../../../SteamLibrary/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/素材库-物品技能图标/LIBRARY/生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" sourceLastImported="1190084491" quality="50" href="生活用品/020/u&amp;#0611702814204&amp;#0442418538836&amp;gp&amp;#06122.jpg" bitmapDataHRef="M 1 1748966260.dat" frameRight="2780" frameBottom="2780" isJPEG="true"/>
-          <DOMBitmapItem name="腿演迅驰环.png" itemID="69ea6b12-00000532" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/腿演迅驰环.png" sourceLastImported="1776969435" externalFileCRC32="339962063" externalFileSize="3445187" originalCompressionType="lossless" quality="50" href="腿演迅驰环.png" bitmapDataHRef="M 60 1776968806.dat" frameRight="40300" frameBottom="41600"/>
+          <DOMBitmapItem name="腿演迅驰环.png" itemID="69ea6b12-00000532" sourceExternalFilepath="../素材库-物品技能图标/LIBRARY/腿演迅驰环.png" sourceLastImported="1776969435" externalFileCRC32="339962063" externalFileSize="3445187" originalCompressionType="lossless" quality="50" href="腿演迅驰环.png" bitmapDataHRef="M 60 1776968806.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 100" itemID="65e0a7bb-00002180" sourceExternalFilepath="../../../SteamLibrary/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 100" sourceLastImported="1709221819" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 100" bitmapDataHRef="M 41 1740550143.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 103" itemID="663fa15d-00000e62" sourceExternalFilepath="../../../SteamLibrary/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 103" sourceLastImported="1715446109" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 103" bitmapDataHRef="M 42 1740550143.dat" frameRight="3940" frameBottom="3940"/>
           <DOMBitmapItem name="技能相关/图标素材/位图 104" itemID="663fa1fd-00000e72" sourceExternalFilepath="../../../SteamLibrary/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/素材库-物品技能图标/LIBRARY/技能相关/图标素材/位图 104" sourceLastImported="1715446269" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/位图 104" bitmapDataHRef="M 43 1740550143.dat" frameRight="2940" frameBottom="2940"/>
@@ -96,6 +96,7 @@
      </media>
      <symbols>
           <Include href="3.位图相关/腿.xml" itemIcon="1" loadImmediate="false" itemID="69dfcd41-00000e75" lastModified="1776274753"/>
+          <Include href="A兵团标志.xml" itemIcon="1" loadImmediate="false" itemID="6a44e484-00000c90" lastModified="1782900165"/>
           <Include href="i8i8flt7oc g&amp;#059u.xml" itemIcon="1" loadImmediate="false" itemID="474e47d8-0000073f" lastModified="1196312568"/>
           <Include href="Pins/Pin1.xml" itemIcon="1" loadImmediate="false" itemID="609349e3-00001548" lastModified="1620265443"/>
           <Include href="Pins/Pin2.xml" itemIcon="1" loadImmediate="false" itemID="609349e3-00001547" lastModified="1620265443"/>
@@ -467,9 +468,7 @@
           <Include href="弃用图标/图标-A兵团精致战术裤制作图纸.xml" loadImmediate="false" itemID="66adbc7d-00001841" lastModified="1750595316"/>
           <Include href="弃用图标/图标-A兵团精致战术皮鞋制作图纸.xml" loadImmediate="false" itemID="66adbc7b-00001840" lastModified="1750595314"/>
           <Include href="弃用图标/图标-A兵团精致战术手套制作图纸.xml" loadImmediate="false" itemID="66adbc77-0000183f" lastModified="1750595312"/>
-          <Include href="弃用图标/图标-加强版MP7制作图纸.xml" loadImmediate="false" itemID="66adbb5e-00001821" lastModified="1740498469"/>
           <Include href="弃用图标/图标-精致战术猪鼻式防毒面具制作图纸.xml" loadImmediate="false" itemID="66adbb3f-0000181f" lastModified="1740498468"/>
-          <Include href="弃用图标/图标-双管白火铳制作图纸.xml" loadImmediate="false" itemID="66adba09-000017fc" lastModified="1750595333"/>
           <Include href="强化石1级壳体.xml" loadImmediate="false" itemID="682ebd4f-00000a39" lastModified="1747893583"/>
           <Include href="强化石2级壳体.xml" loadImmediate="false" itemID="682ebd6a-00000a3e" lastModified="1747893610"/>
           <Include href="强化石本体.xml" itemIcon="1" loadImmediate="false" itemID="682eaf90-00000a06" lastModified="1747890064"/>
@@ -480,26 +479,67 @@
           <Include href="情报物品相关/档案.xml" itemIcon="1" loadImmediate="false" itemID="67b9aaba-000001e6" lastModified="1740221114"/>
           <Include href="情报物品相关/黑铁会文字.xml" loadImmediate="false" itemID="67b9ae7f-00000e87" lastModified="1740222435"/>
           <Include href="情报物品相关/军阀纹章.xml" loadImmediate="false" itemID="665335d8-00000131" lastModified="1716729304"/>
+          <Include href="情报物品相关/图标-《黑铁书》.xml" itemID="6a44dbb4-00000c5d" lastModified="1782898341"/>
+          <Include href="情报物品相关/图标-Andy档案.xml" itemID="6a44deb4-00000c73" lastModified="1782898993"/>
+          <Include href="情报物品相关/图标-A兵团制式套装改造图纸.xml" itemID="6a44e1c1-00000c88" lastModified="1782902397"/>
+          <Include href="情报物品相关/图标-Blue档案.xml" itemID="6a44ee0b-00000ca5" lastModified="1782902434"/>
+          <Include href="情报物品相关/图标-Blue的纸条.xml" itemID="6a44eef2-00000cbe" lastModified="1782902602"/>
+          <Include href="情报物品相关/图标-BPK档案.xml" itemID="6a44efa3-00000cd3" lastModified="1782903099"/>
+          <Include href="情报物品相关/图标-ECHO-034的加密日志.xml" itemID="6a44f1c2-00000cec" lastModified="1782903568"/>
+          <Include href="情报物品相关/图标-γ-ECHO病理摘要.xml" itemID="6a44f3c2-00000d01" lastModified="1782903872"/>
           <Include href="情报物品相关/图标-报纸1.xml" itemID="683f1b08-00000491" lastModified="1748966754"/>
           <Include href="情报物品相关/图标-报纸2.xml" itemID="683f1b8f-000004bd" lastModified="1750595434"/>
           <Include href="情报物品相关/图标-兵工厂备份硬盘.xml" itemID="66adbc68-0000183d" lastModified="1722662026"/>
+          <Include href="情报物品相关/图标-超市求生笔记.xml" itemID="6a44f4f0-00000d16" lastModified="1782904191"/>
           <Include href="情报物品相关/图标-翅虎令.xml" itemID="66adbc2c-00001836" lastModified="1751119727"/>
           <Include href="情报物品相关/图标-翅虎堂徽章.xml" itemID="66adbc27-00001835" lastModified="1751122853"/>
+          <Include href="情报物品相关/图标-初级家常菜配方.xml" itemID="6a44f7f4-00000d2b" lastModified="1782904904"/>
+          <Include href="情报物品相关/图标-从宝石线人视角一窥新经济野望.xml" itemID="6a44f868-00000d40" lastModified="1782905042"/>
           <Include href="情报物品相关/图标-地铁站通关证明.xml" itemID="66adbc20-00001834" lastModified="1722661920"/>
+          <Include href="情报物品相关/图标-第三集结点补给清单.xml" itemID="6a44f9d7-00000d57" lastModified="1782905422"/>
+          <Include href="情报物品相关/图标-对前治安官的采访.xml" itemID="6a44fa67-00000d6c" lastModified="1782906100"/>
+          <Include href="情报物品相关/图标-堕落城假肢市场动荡.xml" itemID="6a44fdbe-00000d85" lastModified="1782906366"/>
+          <Include href="情报物品相关/图标-堕落城净水材料供应告急.xml" itemID="6a44fe14-00000d9c" lastModified="1782906917"/>
           <Include href="情报物品相关/图标-废城资料.xml" itemID="67b9b138-00000e9b" lastModified="1740222833"/>
           <Include href="情报物品相关/图标-浮士德的情报书.xml" itemID="66adbbfc-00001830" lastModified="1722661884"/>
+          <Include href="情报物品相关/图标-符线溯源笔记.xml" itemID="6a45008e-00000db1" lastModified="1782907114"/>
+          <Include href="情报物品相关/图标-关于通缉令1.xml" itemID="6a45010c-00000dc6" lastModified="1782907639"/>
+          <Include href="情报物品相关/图标-关于通缉令2.xml" itemID="6a450320-00000ddb" lastModified="1782907790"/>
           <Include href="情报物品相关/图标-黑龙堂徽章.xml" itemID="66adbb9c-0000182e" lastModified="1751174943"/>
           <Include href="情报物品相关/图标-黑铁会档案图标.xml" itemID="67b9aedd-00000e8e" lastModified="1740242195"/>
           <Include href="情报物品相关/图标-黑铁会的秘密情报书.xml" itemID="66adbb99-0000182d" lastModified="1722661785"/>
           <Include href="情报物品相关/图标-黑铁会信物.xml" itemID="66adbb74-00001822" lastModified="1722661748"/>
+          <Include href="情报物品相关/图标-黑铁会中的另类保守.xml" itemID="6a4503a3-00000df0" lastModified="1782907875"/>
+          <Include href="情报物品相关/图标-环线流民日记.xml" itemID="6a45048b-00000e07" lastModified="1782908114"/>
           <Include href="情报物品相关/图标-火凤令.xml" itemID="66adbb7c-00001824" lastModified="1751172021"/>
           <Include href="情报物品相关/图标-火凤堂徽章.xml" itemID="66adbb77-00001823" lastModified="1751165197"/>
+          <Include href="情报物品相关/图标-机密档案：幻影套装（Phantom Suit）研发日志残卷.xml" itemID="6a450507-00000e1e" lastModified="1782909033"/>
+          <Include href="情报物品相关/图标-基础家常菜配方.xml" itemID="6a450571-00000e33" lastModified="1782908383"/>
+          <Include href="情报物品相关/图标-加强版MP7制作图纸.xml" itemID="6a4505fb-00000e49" lastModified="1782908542"/>
+          <Include href="情报物品相关/图标-镜之虎彻制作图纸.xml" itemID="6a45069a-00000e5f" lastModified="1782908622"/>
+          <Include href="情报物品相关/图标-酒保线报：黑铁会崛起于乡间.xml" itemID="6a4506ea-00000e78" lastModified="1782908699"/>
+          <Include href="情报物品相关/图标-酒泡氤氲.xml" itemID="6a45073a-00000e8d" lastModified="1782908897"/>
+          <Include href="情报物品相关/图标-旧世残篇：西南自治区概况.xml" itemID="6a45078d-00000ea2" lastModified="1782908866"/>
           <Include href="情报物品相关/图标-军阀档案图标.xml" itemID="67b9abcc-00000304" lastModified="1740221598"/>
           <Include href="情报物品相关/图标-军阀前线基地通关证明.xml" itemID="66adbb38-0000181d" lastModified="1722661688"/>
+          <Include href="情报物品相关/图标-丽丽丝的芯片数据.xml" itemID="6a4508fb-00000ec1" lastModified="1782909249"/>
+          <Include href="情报物品相关/图标-闹市区搜查手记.xml" itemID="6a450961-00000ed7" lastModified="1782910361"/>
           <Include href="情报物品相关/图标-牛仔的情报书.xml" itemID="66adbad4-00001813" lastModified="1722661588"/>
           <Include href="情报物品相关/图标-诺亚档案图标.xml" itemID="67b9ad3b-00000e83" lastModified="1740242185"/>
+          <Include href="情报物品相关/图标-贫民窟探查笔记.xml" itemID="6a450db1-00000eed" lastModified="1782910467"/>
+          <Include href="情报物品相关/图标-枪械情报手稿.xml" itemID="6a450ec3-00000f04" lastModified="1782910743"/>
+          <Include href="情报物品相关/图标-商业区感染日记.xml" itemID="6a450f33-00000f1b" lastModified="1782910829"/>
+          <Include href="情报物品相关/图标-双管白火铳制作图纸.xml" itemID="6a450f82-00000f32" lastModified="1782910926"/>
+          <Include href="情报物品相关/图标-水厂外勤档案.xml" itemID="6a450fe9-00000f48" lastModified="1782911006"/>
+          <Include href="情报物品相关/图标-特制委托书.xml" itemID="6a451048-00000f5d" lastModified="1782911113"/>
+          <Include href="情报物品相关/图标-下水道探索报告.xml" itemID="6a451098-00000f72" lastModified="1782911176"/>
+          <Include href="情报物品相关/图标-学校与摇滚敌对的缘由？.xml" itemID="6a4510e5-00000f87" lastModified="1782911254"/>
           <Include href="情报物品相关/图标-研究文件.xml" itemID="66adb8f2-000017e1" lastModified="1722661106"/>
+          <Include href="情报物品相关/图标-摇滚公园乐器研究报告.xml" itemID="6a45112a-00000f9c" lastModified="1782911344"/>
           <Include href="情报物品相关/图标-摇滚公园通关证明.xml" itemID="66adb8ec-000017df" lastModified="1722661100"/>
+          <Include href="情报物品相关/图标-硬化僵尸情报.xml" itemID="6a451195-00000fb1" lastModified="1782911467"/>
+          <Include href="情报物品相关/图标-知识灯塔风雨飘摇.xml" itemID="6a4511fc-00000fc6" lastModified="1782911546"/>
+          <Include href="情报物品相关/图标-资料.xml" itemID="6a451248-00000fdc" lastModified="1782911669"/>
           <Include href="情报物品相关/纸张.xml" loadImmediate="false" itemID="67b9b116-00000e94" lastModified="1740222742"/>
           <Include href="舌尝思.xml" itemIcon="1" loadImmediate="false" itemID="688dd7a2-00001bc9" lastModified="1754126242"/>
           <Include href="身本忧.xml" itemIcon="1" loadImmediate="false" itemID="688dd660-000018f7" lastModified="1754125920"/>
@@ -632,10 +672,10 @@
           <Include href="食材相关/猪肉.xml" itemIcon="1" loadImmediate="false" itemID="67bdc63d-000000de" lastModified="1740490301"/>
           <Include href="食材相关/竹笋.xml" loadImmediate="false" itemID="6814918b-0000039e" lastModified="1746178443"/>
           <Include href="食材相关/柱侯酱.xml" loadImmediate="false" itemID="6814612e-000005fb" lastModified="1746166062"/>
-          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1779781934"/>
+          <Include href="素材库-物品技能图标.xml" itemID="67bdcba2-000001f1" lastModified="1782911563"/>
           <Include href="图标-方舟碎片.xml" itemID="66adbe1b-0000187e" lastModified="1760513120"/>
           <Include href="图标阴影.xml" itemIcon="1" loadImmediate="false" itemID="666e7c83-00000d39" lastModified="1718516867"/>
-          <Include href="腿演迅驰环图片.xml" itemIcon="1" loadImmediate="false" itemID="69ea66fd-00000528" lastModified="1779786632"/>
+          <Include href="腿演迅驰环图片.xml" itemIcon="1" loadImmediate="false" itemID="69ea66fd-00000528" lastModified="1779798573"/>
           <Include href="未命名文件夹 1/Symbol 34.xml" itemIcon="1" loadImmediate="false" itemID="664c57d7-0000029e" lastModified="1740222009"/>
           <Include href="无AS链接/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005b7" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 5.xml" loadImmediate="false" itemID="668e7c1e-000005b8" lastModified="1720533000"/>
@@ -842,6 +882,7 @@
           <Include href="新K点图像.xml" itemIcon="1" loadImmediate="false" itemID="682da13e-00007c3f" lastModified="1747882550"/>
           <Include href="眼看喜.xml" itemIcon="1" loadImmediate="false" itemID="688dd837-00001bda" lastModified="1754126391"/>
           <Include href="意见欲.xml" itemIcon="1" loadImmediate="false" itemID="688dd638-000018f6" lastModified="1754125880"/>
+          <Include href="元件 1029.xml" itemIcon="1" loadImmediate="false" itemID="6a44dbd0-00000c5e" lastModified="1782897616"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -1206,6 +1247,11 @@
                     <SolidSwatchItem color="#916D50" hue="18" saturation="69" brightness="106"/>
                     <SolidSwatchItem color="#294D59" hue="131" saturation="88" brightness="62"/>
                     <SolidSwatchItem color="#2D4E6E" hue="140" saturation="102" brightness="73"/>
+                    <SolidSwatchItem color="#27466D" hue="143" saturation="113" brightness="70"/>
+                    <SolidSwatchItem color="#4C84C2" hue="141" saturation="118" brightness="128"/>
+                    <SolidSwatchItem color="#4D84C0" hue="141" saturation="115" brightness="127"/>
+                    <SolidSwatchItem color="#6E96C6" hue="142" saturation="104" brightness="145"/>
+                    <SolidSwatchItem color="#3C3A3B" hue="200" saturation="2" brightness="56"/>
                </swatches>
           </swatchList>
      </swatchLists>
@@ -1290,6 +1336,17 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4635780" publishTime="1782910639"/>
+          <PublishItem publishSize="4546774" publishTime="1782909038"/>
+          <PublishItem publishSize="4546775" publishTime="1782908902"/>
+          <PublishItem publishSize="4542065" publishTime="1782908878"/>
+          <PublishItem publishSize="4490532" publishTime="1782907910"/>
+          <PublishItem publishSize="4481667" publishTime="1782907652"/>
+          <PublishItem publishSize="4442707" publishTime="1782905071"/>
+          <PublishItem publishSize="4425432" publishTime="1782904912"/>
+          <PublishItem publishSize="4423424" publishTime="1782904211"/>
+          <PublishItem publishSize="4416421" publishTime="1782903584"/>
+          <PublishItem publishSize="4368318" publishTime="1782898298"/>
           <PublishItem publishSize="4526971" publishTime="1776998698"/>
           <PublishItem publishSize="4527015" publishTime="1776998479"/>
           <PublishItem publishSize="4526946" publishTime="1776998231"/>
@@ -1299,16 +1356,5 @@
           <PublishItem publishSize="4222895" publishTime="1772358957"/>
           <PublishItem publishSize="4182101" publishTime="1772333423"/>
           <PublishItem publishSize="4162521" publishTime="1772301391"/>
-          <PublishItem publishSize="4145243" publishTime="1772295492"/>
-          <PublishItem publishSize="4121051" publishTime="1772295464"/>
-          <PublishItem publishSize="4119214" publishTime="1772287191"/>
-          <PublishItem publishSize="4119245" publishTime="1772286784"/>
-          <PublishItem publishSize="4095926" publishTime="1772268392"/>
-          <PublishItem publishSize="4076992" publishTime="1772268368"/>
-          <PublishItem publishSize="4033897" publishTime="1772178180"/>
-          <PublishItem publishSize="3950920" publishTime="1772175199"/>
-          <PublishItem publishSize="3938687" publishTime="1772166922"/>
-          <PublishItem publishSize="3920123" publishTime="1772163438"/>
-          <PublishItem publishSize="3920129" publishTime="1772163337"/>
      </publishHistory>
 </DOMDocument>

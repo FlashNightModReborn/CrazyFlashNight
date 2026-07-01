@@ -249,6 +249,15 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--allow-layout-regression-risk",
+        action="store_true",
+        help=(
+            "Required when combining --force-overwrite-existing with an unfiltered full bake. "
+            "Full FFDec overwrites can shift/crop existing icons versus Flash/AS2 runtime rendering; "
+            "prefer leaving layout protection enabled for production refreshes."
+        ),
+    )
+    parser.add_argument(
         "--resolve-only",
         action="store_true",
         help="Only resolve XML targets against asset_source_map.xml and write the report; skip FFDec export.",
@@ -3253,6 +3262,18 @@ def main() -> int:
 
     if args.purge and (args.scope != "all" or args.limit > 0 or args.name):
         raise SystemExit("--purge is only allowed with a full --scope all bake and no --limit/--name filter.")
+    if (
+        args.force_overwrite_existing
+        and args.scope == "all"
+        and args.limit <= 0
+        and not args.name
+        and not args.allow_layout_regression_risk
+    ):
+        raise SystemExit(
+            "--force-overwrite-existing on a full --scope all bake can introduce FFDec layout regressions. "
+            "Run without --force-overwrite-existing to fill missing icons safely, or pass "
+            "--allow-layout-regression-risk for a deliberately destructive visual refresh after review."
+        )
     if args.resolve_only and args.animation_structure_audit_only:
         raise SystemExit("--resolve-only and --animation-structure-audit-only are mutually exclusive.")
     if args.resolve_only and args.animation_candidates_only:

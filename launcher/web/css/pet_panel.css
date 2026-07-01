@@ -204,7 +204,7 @@
     width: 27px; height: 24px;
     flex-shrink: 0;
     background: var(--pet-accent);
-    --pet-faction-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='63 -3 168 146'%3E%3Cpath fill='%23000' d='M227.75 140.05L65.95 139.70L134.25 23.10L177.95 98.45L157.95 98.45L134.90 55.95L96.60 123.95L218.75 124.25Z M147.85 0L148.00 0.10L215.30 118.20L108.45 117.30L117.85 101.75L188.30 102.40L138.40 16.10L147.80 0Z'/%3E%3C/svg%3E");
+    --pet-faction-svg: url("../assets/logos/a-legion-emblem.svg");
     -webkit-mask: var(--pet-faction-svg) center / contain no-repeat;
     mask: var(--pet-faction-svg) center / contain no-repeat;
     filter: drop-shadow(0 0 4px var(--pet-accent-glow));

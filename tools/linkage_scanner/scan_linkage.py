@@ -38,6 +38,7 @@ XML_ONLY = '--xml-only' in sys.argv
 # Directories excluded by default (archive/reference, never part of production builds).
 # Use --include-all to scan them as well.
 SKIP_DIRS = ('/unused/', '/renew/')
+SKIP_BASENAME_PREFIXES = ('恢复_',)
 
 
 def xml_attr_unescape(s):
@@ -55,6 +56,9 @@ def should_skip(swf_rel):
     """Skip archive/reference directories unless --include-all is set."""
     if INCLUDE_ALL:
         return False
+    basename = os.path.basename(swf_rel)
+    if any(basename.startswith(prefix) for prefix in SKIP_BASENAME_PREFIXES):
+        return True
     for d in SKIP_DIRS:
         if d in swf_rel:
             return True

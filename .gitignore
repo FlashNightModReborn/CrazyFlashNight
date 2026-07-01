@@ -28,6 +28,7 @@ launcher/data/save_repair_dict.json.tmp
 *.ipa
 *.apk
 恢复_*.fla
+恢复_*.swf
 ~$*.xlsx
 ~$*.docx
 ~*.tmp
@@ -151,6 +152,12 @@ tools/combat-movement-sim/results/
 # Native cursor image-generation review sheets (generated, not source)
 launcher/web/assets/cursor/native/review/
 *.tombstone
+
+# Intelligence icon img2 work rounds are exploratory and large. Keep only
+# consolidated final-review packages for source review / handoff.
+/outputs/intelligence-icons/*
+!/outputs/intelligence-icons/final-review-*/
+!/outputs/intelligence-icons/final-review-*/**
 
 # .fla zip 编辑 (strip_orphan_linkage.py) 的备份
 *.fla.bak
