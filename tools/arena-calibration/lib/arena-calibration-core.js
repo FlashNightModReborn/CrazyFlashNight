@@ -162,6 +162,10 @@ function parsePositiveInteger(value, fieldName, errors) {
   return number;
 }
 
+function defaultWhenMissing(value, defaultValue) {
+  return value === undefined || value === null ? defaultValue : value;
+}
+
 function parseNonNegativeNumber(value, fieldName, errors) {
   const number = Number(value);
   if (!Number.isFinite(number) || number < 0) {
@@ -254,9 +258,13 @@ function normalizeCase(input, defaults, index, errors) {
     caseId: assertString(input.caseId, `${fieldName}.caseId`, errors),
     blueRoster: normalizeRoster(input.blueRoster, `${fieldName}.blueRoster`, errors),
     redRoster: normalizeRoster(input.redRoster, `${fieldName}.redRoster`, errors),
-    repeat: parsePositiveInteger(input.repeat || defaults.repeat, `${fieldName}.repeat`, errors),
+    repeat: parsePositiveInteger(
+      defaultWhenMissing(input.repeat, defaults.repeat),
+      `${fieldName}.repeat`,
+      errors
+    ),
     timeoutFrames: parsePositiveInteger(
-      input.timeoutFrames || defaults.timeoutFrames,
+      defaultWhenMissing(input.timeoutFrames, defaults.timeoutFrames),
       `${fieldName}.timeoutFrames`,
       errors
     ),
@@ -291,8 +299,12 @@ function normalizeManifest(input) {
   }
   findEconomyKeys(input, "$", errors);
 
-  const repeat = parsePositiveInteger(input.repeat || 5, "repeat", errors);
-  const timeoutFrames = parsePositiveInteger(input.timeoutFrames || 5400, "timeoutFrames", errors);
+  const repeat = parsePositiveInteger(defaultWhenMissing(input.repeat, 5), "repeat", errors);
+  const timeoutFrames = parsePositiveInteger(
+    defaultWhenMissing(input.timeoutFrames, 5400),
+    "timeoutFrames",
+    errors
+  );
   const manifest = {
     schema: input.schema || CASE_MANIFEST_SCHEMA,
     batchId: assertBatchId(input.batchId, "batchId", errors),
@@ -338,6 +350,8 @@ function normalizeManifest(input) {
 
 function createPilotManifest(options) {
   const batchId = options.batchId || `pilot-${localDateString(new Date())}-a`;
+  const repeat = defaultWhenMissing(options.repeat, 5);
+  const timeoutFrames = defaultWhenMissing(options.timeoutFrames, 5400);
   const thiefRoster = [
     { type: "兵种44", level: 30 },
     { type: "兵种45", level: 30 },
@@ -355,8 +369,8 @@ function createPilotManifest(options) {
       reason: "复用 _root.测试角斗场怪物 默认盗贼组作为通路锚点",
     },
     arenaMode: "calibration",
-    repeat: options.repeat || 5,
-    timeoutFrames: options.timeoutFrames || 5400,
+    repeat,
+    timeoutFrames,
     blueBench: {
       benchId: "thief-lv30x4",
       roster: thiefRoster,
@@ -366,8 +380,8 @@ function createPilotManifest(options) {
         caseId: "pilot-thief-lv30x4-mirror",
         blueRoster: thiefRoster,
         redRoster: thiefRoster,
-        repeat: options.repeat || 5,
-        timeoutFrames: options.timeoutFrames || 5400,
+        repeat,
+        timeoutFrames,
         tags: ["pilot", "manual-anchor", "mirror"],
         plannerReason: "复用现有 _root.测试角斗场怪物 默认盗贼组作为通路锚点",
       },
@@ -441,7 +455,7 @@ function normalizeResultRow(input) {
     caseId: assertString(input.caseId, "caseId", errors),
     caseHash: assertString(input.caseHash, "caseHash", errors),
     runId: assertString(input.runId, "runId", errors),
-    repeatIndex: parsePositiveInteger(input.repeatIndex || 1, "repeatIndex", errors),
+    repeatIndex: parsePositiveInteger(defaultWhenMissing(input.repeatIndex, 1), "repeatIndex", errors),
     status,
     winner,
     frames:

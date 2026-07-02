@@ -8,6 +8,7 @@ const {
   analyzeRows,
   createPilotManifest,
   normalizeManifest,
+  normalizeResultRow,
 } = require("./lib/arena-calibration-core");
 
 const scripts = [
@@ -60,6 +61,68 @@ function checkBatchIdContract() {
   }
 }
 
+function expectRejected(label, callback) {
+  let rejected = false;
+  try {
+    callback();
+  } catch (_error) {
+    rejected = true;
+  }
+  if (!rejected) {
+    throw new Error(`${label} was not rejected`);
+  }
+}
+
+function checkPositiveIntegerContract() {
+  const manifest = createPilotManifest({
+    batchId: "pilot-positive-contract",
+    createdAt: "2026-07-02T00:00:00.000Z",
+    buildCommit: "fixture",
+    repeat: 1,
+    timeoutFrames: 1,
+  });
+  if (
+    manifest.repeat !== 1 ||
+    manifest.timeoutFrames !== 1 ||
+    manifest.cases[0].repeat !== 1 ||
+    manifest.cases[0].timeoutFrames !== 1
+  ) {
+    throw new Error("explicit positive integer overrides were not preserved");
+  }
+
+  expectRejected("manifest repeat=0", () =>
+    createPilotManifest({ batchId: "pilot-zero-repeat", repeat: 0 })
+  );
+  expectRejected("manifest timeoutFrames=0", () =>
+    createPilotManifest({ batchId: "pilot-zero-timeout", timeoutFrames: 0 })
+  );
+
+  const caseRepeatZero = JSON.parse(JSON.stringify(manifest));
+  caseRepeatZero.batchId = "pilot-case-zero-repeat";
+  caseRepeatZero.cases[0].caseId = "pilot-case-zero-repeat-case";
+  caseRepeatZero.cases[0].repeat = 0;
+  expectRejected("case repeat=0", () => normalizeManifest(caseRepeatZero));
+
+  const caseTimeoutZero = JSON.parse(JSON.stringify(manifest));
+  caseTimeoutZero.batchId = "pilot-case-zero-timeout";
+  caseTimeoutZero.cases[0].caseId = "pilot-case-zero-timeout-case";
+  caseTimeoutZero.cases[0].timeoutFrames = 0;
+  expectRejected("case timeoutFrames=0", () => normalizeManifest(caseTimeoutZero));
+
+  const resultRow = {
+    schema: "arena-calibration.result.v1",
+    batchId: manifest.batchId,
+    manifestHash: manifest.manifestHash,
+    caseId: manifest.cases[0].caseId,
+    caseHash: manifest.cases[0].caseHash,
+    runId: "pilot-positive-contract-r0",
+    repeatIndex: 0,
+    status: "finished",
+    winner: "blue",
+  };
+  expectRejected("result repeatIndex=0", () => normalizeResultRow(resultRow));
+}
+
 function checkTimeoutClassification() {
   const manifest = createPilotManifest({
     batchId: "pilot-timeout-classification",
@@ -103,9 +166,10 @@ function checkTimeoutClassification() {
 try {
   checkSchemas();
   checkBatchIdContract();
+  checkPositiveIntegerContract();
   checkTimeoutClassification();
   scripts.forEach(run);
-  console.log(JSON.stringify({ ok: true, checked: scripts.length + schemas.length + 2 }, null, 2));
+  console.log(JSON.stringify({ ok: true, checked: scripts.length + schemas.length + 3 }, null, 2));
 } catch (error) {
   console.error(error.message);
   process.exit(1);
