@@ -309,8 +309,20 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             return;
         }
 
+        observeDeadUnits(_active.blueUnits);
+        observeDeadUnits(_active.redUnits);
+
         var blueAlive:Number = countAlive(_active.blueUnits);
         var redAlive:Number = countAlive(_active.redUnits);
+        var deathEffectsPending:Boolean = hasPendingDeathEffects(_active.blueUnits) || hasPendingDeathEffects(_active.redUnits);
+
+        if (_active.frames >= _active.timeoutFrames) {
+            finish("timeout", "timeout", _active.errors);
+            return;
+        }
+        if (deathEffectsPending == true) {
+            return;
+        }
 
         if (blueAlive <= 0 && redAlive <= 0) {
             finish("finished", "draw", _active.errors);
@@ -322,10 +334,6 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         }
         if (redAlive <= 0) {
             finish("finished", "blue", _active.errors);
-            return;
-        }
-        if (_active.frames >= _active.timeoutFrames) {
-            finish("timeout", "timeout", _active.errors);
             return;
         }
     }
@@ -427,9 +435,8 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             init.是否为敌人 = isEnemy;
             init.产生源 = "斗兽标定源";
             init.掉落物 = [];
-            init.斗兽标定隔离 = true;
             init.不掉钱 = true;
-            init.已加经验值 = true;
+            init._arenaCalibrationUnit = true;
             init._x = x + random(100) - 50;
             init._y = y + random(100) - 50;
             init.名字 = "斗兽标定" + side + i;
@@ -448,13 +455,13 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                     _root.gameworld.斗兽标定源.僵尸型敌人总个数--;
                 }
             } else {
-                mc.斗兽标定隔离 = true;
-                mc.已加经验值 = true;
                 mc.不掉钱 = true;
                 mc.掉落物 = [];
+                mc._arenaCalibrationUnit = true;
                 mc._arenaCalibrationSide = side;
                 mc._arenaCalibrationRun = runKey;
                 mc.攻击目标 = "无";
+                installCalibrationDeathHooks(mc);
 
                 var estimatedMaxHp:Number = estimateStartMaxHp(attr, unit.等级, isEnemy);
                 var startMaxHp:Number = readUnitMaxHp(mc);
@@ -465,7 +472,11 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                     startSnapshotReady: (startMaxHp > 0),
                     unitType: unit.兵种,
                     level: unit.等级,
-                    side: side
+                    side: side,
+                    isEnemy: isEnemy,
+                    deathObserved: false,
+                    countReleased: false,
+                    deadFinalized: false
                 });
             }
         }
@@ -545,6 +556,86 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             org.flashNight.arki.merc.ArenaCalibrationService.tick();
         };
         _active.clock = clip;
+    }
+
+    private static function observeDeadUnits(units:Array):Void {
+        for (var i:Number = 0; i < units.length; i++) {
+            observeDeadUnit(units[i]);
+        }
+    }
+
+    private static function installCalibrationDeathHooks(mc:MovieClip):Void {
+        if (mc == undefined) return;
+
+        if (mc._arenaCalibrationOriginalDeathCheck == undefined) {
+            mc._arenaCalibrationOriginalDeathCheck = mc.死亡检测;
+            mc.死亡检测 = function(para):Void {
+                if (para == undefined) para = {};
+                para.noCount = true;
+                this.不掉钱 = true;
+                this.掉落物 = [];
+                this._arenaCalibrationDeathCheckCalled = true;
+                if (typeof this._arenaCalibrationOriginalDeathCheck == "function") {
+                    this._arenaCalibrationOriginalDeathCheck(para);
+                }
+            };
+        }
+
+        if (typeof mc.计算经验值 == "function") {
+            mc.计算经验值 = function():Void {
+                this.已加经验值 = true;
+            };
+        }
+    }
+
+    private static function observeDeadUnit(record:Object):Void {
+        if (record == undefined || record.deadFinalized == true) return;
+
+        var mc:MovieClip = record.mc;
+        if (mc == undefined || mc._parent == undefined) {
+            record.deadFinalized = true;
+            return;
+        }
+
+        var unitHp:Number = Number(mc.hp);
+        if (isNaN(unitHp) || unitHp > 0 || record.deathObserved == true) return;
+
+        record.deathObserved = true;
+        mc.不掉钱 = true;
+        mc.掉落物 = [];
+        releaseDeathCount(record);
+    }
+
+    private static function releaseDeathCount(record:Object):Void {
+        if (record == undefined || record.countReleased == true) return;
+        record.countReleased = true;
+
+        if (record.isEnemy == true && _root.gameworld.斗兽标定源 != undefined) {
+            if (_root.gameworld.斗兽标定源.僵尸型敌人场上实际人数 > 0) {
+                _root.gameworld.斗兽标定源.僵尸型敌人场上实际人数--;
+            }
+            if (_root.gameworld.斗兽标定源.僵尸型敌人总个数 > 0) {
+                _root.gameworld.斗兽标定源.僵尸型敌人总个数--;
+            }
+        }
+    }
+
+    private static function hasPendingDeathEffects(units:Array):Boolean {
+        for (var i:Number = 0; i < units.length; i++) {
+            var record:Object = units[i];
+            if (record == undefined || record.deadFinalized == true || record.deathObserved != true) continue;
+
+            var mc:MovieClip = record.mc;
+            if (mc != undefined && mc._parent != undefined) {
+                if (mc._arenaCalibrationDeathCheckCalled === true) {
+                    record.deadFinalized = true;
+                    continue;
+                }
+                return true;
+            }
+            record.deadFinalized = true;
+        }
+        return false;
     }
 
     private static function finish(status:String, winner:String, errors:Array):Void {
@@ -804,7 +895,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         for (var name:String in gw) {
             var child:MovieClip = gw[name];
             if (child == undefined || child._parent == undefined) continue;
-            if (child.斗兽标定隔离 === true) continue;
+            if (child._arenaCalibrationUnit === true) continue;
             if (child.是否为佣兵 === true || child.宠物属性 != undefined || child.宠物信息数组号 != undefined) {
                 child.removeMovieClip();
                 removed++;
@@ -831,7 +922,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         for (var name:String in gw) {
             var child:MovieClip = gw[name];
             if (child == undefined || child._parent == undefined) continue;
-            if (child.斗兽标定隔离 === true) continue;
+            if (child._arenaCalibrationUnit === true) continue;
             if (child.是否为佣兵 === true || child.宠物属性 != undefined || child.宠物信息数组号 != undefined) return true;
         }
         return false;
