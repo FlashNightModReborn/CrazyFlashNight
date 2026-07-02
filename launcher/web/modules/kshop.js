@@ -812,6 +812,8 @@ var KShop = (function() {
     function onClose() {
         // 任何关闭路径（doClose→Panels.close / C# close / 切面板 / force_close→close）都经此 detach，防 resize/RO 泄漏
         if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
+        // 统一解绑 K 点订阅，避免 C# 直接关闭路径下重复累积
+        UiData.off('k', _kHandler);
     }
 
     function doClose() {
@@ -823,7 +825,6 @@ var KShop = (function() {
         hideTooltip();
         Panels.close();
         Bridge.send({type:'panel', cmd:'close', panel:'kshop'});
-        UiData.off('k', _kHandler);
         _closing = false;
     }
 
@@ -849,7 +850,7 @@ var KShop = (function() {
                 '<div class="kshop-dlg-btns">' + btns + '</div>' +
             '</div>';
         dlg.style.display = '';
-        dlg.addEventListener('click', onDialogClick);
+        dlg.addEventListener('click', onDialogClick, { once: true });
     }
 
     function onDialogClick(e) {
@@ -880,7 +881,6 @@ var KShop = (function() {
         dismissDialog();
         dismissQtyInput();
         hideTooltip();
-        UiData.off('k', _kHandler);
         toast('连接断开，商城已关闭');
     }
 

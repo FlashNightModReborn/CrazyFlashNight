@@ -7,6 +7,7 @@ var LockboxPanel = (function() {
     var _loopId = 0;
     var _poolPromise = null;
     var _pointerReleaseBound = false;
+    var _pointerReleaseHandler = null;
     var _helpOpen = true;
     var _hudOpen = false;
     var _loadToken = 0;
@@ -266,9 +267,10 @@ var LockboxPanel = (function() {
         });
 
         if (!_pointerReleaseBound) {
-            window.addEventListener('pointerup', function() {
+            _pointerReleaseHandler = function() {
                 if (_state && _state.finisher && _state.finisher.holding) finishFinisherHold(false);
-            });
+            };
+            window.addEventListener('pointerup', _pointerReleaseHandler);
             _pointerReleaseBound = true;
         }
     }
@@ -293,6 +295,11 @@ var LockboxPanel = (function() {
         _panelOpen = false;
         _loadToken++;
         clearResultAudioSchedule();
+        if (_pointerReleaseBound && _pointerReleaseHandler) {
+            window.removeEventListener('pointerup', _pointerReleaseHandler);
+            _pointerReleaseBound = false;
+            _pointerReleaseHandler = null;
+        }
         bumpUiFxEpoch();
         stopLoop();
         _state = null;

@@ -87,10 +87,12 @@ var MapCanvasStageRenderer = (function() {
     function bindReduceMotion(self) {
         var mql = self.reduceMotionMql;
         if (!mql || !mql.addEventListener) return;
-        mql.addEventListener('change', function() {
+        if (self._reduceMotionHandler) return; // 避免重复绑定
+        self._reduceMotionHandler = function() {
             self.staticDirty = true;
             self.ensureLoop();
-        });
+        };
+        mql.addEventListener('change', self._reduceMotionHandler);
     }
 
     Renderer.prototype.isAvailable = function() {
@@ -104,7 +106,11 @@ var MapCanvasStageRenderer = (function() {
         var nextDynamicKey = state && state.page ? buildDynamicRenderKey(state) : '';
         state = state || null;
         // setState = 面板重新活跃的合法信号 — 解除 stop() 的封停。
+        var wasStopped = this.stopped;
         this.stopped = false;
+        if (wasStopped) {
+            bindReduceMotion(this);
+        }
         if (state && state.page) {
             if (!prev || !prev.page || prev.page.id !== state.page.id) {
                 // 切页: 清补间避免跨页焦点残留, 起 filter-overlay 淡入
@@ -155,6 +161,10 @@ var MapCanvasStageRenderer = (function() {
         this.stopped = true;
         this.lastFrameTime = 0;
         this._lastDrawTime = 0;
+        if (this.reduceMotionMql && this._reduceMotionHandler) {
+            this.reduceMotionMql.removeEventListener('change', this._reduceMotionHandler);
+            this._reduceMotionHandler = null;
+        }
     };
 
     Renderer.prototype.frame = function(timestamp) {

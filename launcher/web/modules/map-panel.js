@@ -72,6 +72,8 @@ var MapPanel = (function() {
     var _lastCoordinateReadout = null;
     var _pendingCoordinatePointer = null;
     var _coordinateRaf = 0;
+    var _panelAnimationEndHandler = null;
+    var _panelEventListenersBound = false;
 
     function playCue(name) {
         var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
@@ -192,24 +194,44 @@ var MapPanel = (function() {
         _el.querySelector('.map-panel-close-btn').addEventListener('click', function() { requestClose(); });
         _el.querySelector('.map-error-retry').addEventListener('click', function() { requestSnapshot('refresh'); });
         _el.querySelector('.map-error-close').addEventListener('click', function() { requestClose(); });
-        _stageEl.addEventListener('pointermove', scheduleCoordinateReadoutFromPointer);
-        _stageEl.addEventListener('pointerleave', resetCoordinateReadout);
         resetCoordinateReadout();
-
-        _el.addEventListener('animationend', function(e) {
-            if (e.target === _el && e.animationName === 'mapPanelBoot') {
-                _el.classList.remove('is-entering');
-                scheduleLayoutSync();
-                scheduleSettledLayoutSync();
-                return;
-            }
-            if (e.target === _stageEl && e.animationName === 'mapStageBoot') {
-                scheduleLayoutSync();
-                scheduleSettledLayoutSync();
-            }
-        });
+        bindPanelEventListeners();
 
         return _el;
+    }
+
+    function bindPanelEventListeners() {
+        if (!_el || !_stageEl || _panelEventListenersBound) return;
+        _stageEl.addEventListener('pointermove', scheduleCoordinateReadoutFromPointer);
+        _stageEl.addEventListener('pointerleave', resetCoordinateReadout);
+        if (!_panelAnimationEndHandler) {
+            _panelAnimationEndHandler = function(e) {
+                if (e.target === _el && e.animationName === 'mapPanelBoot') {
+                    _el.classList.remove('is-entering');
+                    scheduleLayoutSync();
+                    scheduleSettledLayoutSync();
+                    return;
+                }
+                if (e.target === _stageEl && e.animationName === 'mapStageBoot') {
+                    scheduleLayoutSync();
+                    scheduleSettledLayoutSync();
+                }
+            };
+        }
+        _el.addEventListener('animationend', _panelAnimationEndHandler);
+        _panelEventListenersBound = true;
+    }
+
+    function unbindPanelEventListeners() {
+        if (!_panelEventListenersBound) return;
+        if (_stageEl) {
+            _stageEl.removeEventListener('pointermove', scheduleCoordinateReadoutFromPointer);
+            _stageEl.removeEventListener('pointerleave', resetCoordinateReadout);
+        }
+        if (_el && _panelAnimationEndHandler) {
+            _el.removeEventListener('animationend', _panelAnimationEndHandler);
+        }
+        _panelEventListenersBound = false;
     }
 
     function buildPageTabs() {
@@ -260,6 +282,7 @@ var MapPanel = (function() {
         _snapshotAnnounced = false;
         _canvasActive = true;
         resetCoordinateReadout();
+        bindPanelEventListeners();
         resetCanvasRenderCache();
         resetContentFit();
         if (_el) _el.classList.remove('is-compact');
@@ -340,10 +363,11 @@ var MapPanel = (function() {
         if (_stageEl) _stageEl.classList.remove('is-resizing');
     }
 
-    // 正常 onClose 钩子: 拆布局监听 + 停 canvas 渲染循环。
+    // 正常 onClose 钩子: 拆布局监听 + 停 canvas 渲染循环 + 解绑面板事件监听。
     function handleClose() {
         teardownLayoutWatcher();
         stopCanvasStage();
+        unbindPanelEventListeners();
     }
 
     // 停 canvas 渲染。host 驱动关闭 (panel_cmd close / 切面板 / 选关交接) 也会经 onClose
@@ -675,7 +699,6 @@ var MapPanel = (function() {
         _lastCoordinateReadout = state || createEmptyCoordinateReadout();
         if (!_lastCoordinateReadout.active) {
             _coordinateReadoutEl.textContent = '绝对 --,-- | 区块 -- | 相对 --,--';
-            _coordinateReadoutEl.title = _coordinateReadoutEl.textContent;
             _coordinateReadoutEl.classList.add('is-empty');
             setCoordinateAttr('data-page-x', '');
             setCoordinateAttr('data-page-y', '');
@@ -690,7 +713,6 @@ var MapPanel = (function() {
             '绝对 ' + coordinatePair(_lastCoordinateReadout.pageX, _lastCoordinateReadout.pageY) +
             ' | 区块 ' + (_lastCoordinateReadout.hotspotId || '--') +
             ' | 相对 ' + coordinatePair(_lastCoordinateReadout.relX, _lastCoordinateReadout.relY);
-        _coordinateReadoutEl.title = _coordinateReadoutEl.textContent;
         setCoordinateAttr('data-page-x', coordinateValue(_lastCoordinateReadout.pageX));
         setCoordinateAttr('data-page-y', coordinateValue(_lastCoordinateReadout.pageY));
         setCoordinateAttr('data-hotspot-id', _lastCoordinateReadout.hotspotId || '');
@@ -755,6 +777,9 @@ var MapPanel = (function() {
         return null;
     }
 
+    // 坐标读条专用 fallback：当像素命中失败时按 hotspot rect 兜底。
+    // 注意：选择策略为"面积最小"，可能与实际点击的 z-order 不一致（MapHittestEngine
+    // 按 sceneVisuals 绘制顺序后画覆盖前画）。本函数仅用于开发定位读条，不进入导航路径。
     function findCoordinateRectHotspot(point) {
         var hotspots = getVisibleHotspots(_activePage);
         var best = null;
