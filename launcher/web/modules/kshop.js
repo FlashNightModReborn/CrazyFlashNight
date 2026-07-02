@@ -850,11 +850,14 @@ var KShop = (function() {
                 '<div class="kshop-dlg-btns">' + btns + '</div>' +
             '</div>';
         dlg.style.display = '';
-        dlg.addEventListener('click', onDialogClick, { once: true });
+        dlg.removeEventListener('click', onDialogClick);
+        dlg.addEventListener('click', onDialogClick);
     }
 
     function onDialogClick(e) {
-        var action = e.target.getAttribute('data-action');
+        var btn = e.target.closest ? e.target.closest('[data-action]') : null;
+        if (!btn) return;
+        var action = btn.getAttribute('data-action');
         if (!action) return;
         if (action === 'retry') {
             dismissDialog();

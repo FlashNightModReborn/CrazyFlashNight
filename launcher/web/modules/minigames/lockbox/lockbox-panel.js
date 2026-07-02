@@ -266,13 +266,23 @@ var LockboxPanel = (function() {
             finishFinisherHold(false);
         });
 
-        if (!_pointerReleaseBound) {
+    }
+
+    function bindPointerRelease() {
+        if (_pointerReleaseBound || typeof window === 'undefined') return;
+        if (!_pointerReleaseHandler) {
             _pointerReleaseHandler = function() {
                 if (_state && _state.finisher && _state.finisher.holding) finishFinisherHold(false);
             };
-            window.addEventListener('pointerup', _pointerReleaseHandler);
-            _pointerReleaseBound = true;
         }
+        window.addEventListener('pointerup', _pointerReleaseHandler);
+        _pointerReleaseBound = true;
+    }
+
+    function unbindPointerRelease() {
+        if (!_pointerReleaseBound || !_pointerReleaseHandler || typeof window === 'undefined') return;
+        window.removeEventListener('pointerup', _pointerReleaseHandler);
+        _pointerReleaseBound = false;
     }
 
     function onOpen(el, initData) {
@@ -286,6 +296,7 @@ var LockboxPanel = (function() {
         _refs.variant.value = String(data.variantIndex | 0);
         setProfileUi(data.profile, data.source);
         renderChromeToggles();
+        bindPointerRelease();
         if (typeof LockboxAudio !== 'undefined') LockboxAudio.resume();
         loadPuzzle(data);
         startLoop();
@@ -295,11 +306,7 @@ var LockboxPanel = (function() {
         _panelOpen = false;
         _loadToken++;
         clearResultAudioSchedule();
-        if (_pointerReleaseBound && _pointerReleaseHandler) {
-            window.removeEventListener('pointerup', _pointerReleaseHandler);
-            _pointerReleaseBound = false;
-            _pointerReleaseHandler = null;
-        }
+        unbindPointerRelease();
         bumpUiFxEpoch();
         stopLoop();
         _state = null;
