@@ -117,10 +117,11 @@ class org.flashNight.gesh.tooltip.builder.ModStatBuilder {
         TagSwitchStatsBuilder.buildDetailed(result, stats);
         UseSwitchStatsBuilder.buildBulletSwitchDetailed(result, stats);
 
-        if(modData.skill){
+        if(modData.skill && !modData.skillSwitch){
             // 反向依赖：buildSkillInfo 留在 TooltipTextBuilder 中
             result = result.concat(TooltipTextBuilder.buildSkillInfo(modData.skill));
         }
+        appendSkillSwitchInfo(result, modData);
 
         if(typeof modData.description === "string"){
             result.push(TooltipFormatter.normalizeDescription(modData.description), TooltipFormatter.br());
@@ -139,6 +140,93 @@ class org.flashNight.gesh.tooltip.builder.ModStatBuilder {
             names.push(name ? name : key);
         }
         return names;
+    }
+
+    private static function appendSkillSwitchInfo(result:Array, modData:Object):Void {
+        if(!modData || !modData.skillSwitch) return;
+
+        var useCases:Array = modData.skillSwitch.useCases;
+        if(!useCases) {
+            if(modData.skillSwitch.use instanceof Array) {
+                useCases = modData.skillSwitch.use;
+            } else if(modData.skillSwitch.use) {
+                useCases = [modData.skillSwitch.use];
+            }
+        }
+        if(!useCases || useCases.length <= 0) return;
+
+        var rows:Array = [];
+        var namedCount:Number = 0;
+        var hasDefault:Boolean = false;
+
+        for(var i:Number = 0; i < useCases.length; i++) {
+            var useCase:Object = useCases[i];
+            if(!useCase) continue;
+
+            var skill:Object = useCase.skill ? useCase.skill : useCase;
+            if(!skill || !skill.skillname) continue;
+
+            var isDefault:Boolean = (useCase._isDefault || !useCase.name);
+            var useLabel:String = isDefault ? TooltipConstants.TIP_DEFAULT_BRANCH : useCase.name;
+            if(isDefault) {
+                hasDefault = true;
+            } else {
+                namedCount++;
+            }
+            rows.push({label: useLabel, skill: skill, isDefault: isDefault});
+        }
+
+        if(modData.skill && !hasDefault) {
+            rows.push({label: TooltipConstants.TIP_DEFAULT_BRANCH, skill: modData.skill, isDefault: true});
+        }
+        if(rows.length <= 0) return;
+
+        if(rows.length == 1 && namedCount == 0) {
+            var singleInfo:Array = TooltipTextBuilder.buildSkillInfo(rows[0].skill);
+            for(var si:Number = 0; si < singleInfo.length; si++) {
+                result.push(singleInfo[si]);
+            }
+            return;
+        }
+
+        result.push("<font color='" + TooltipConstants.COL_HL + "'>", TooltipConstants.LBL_ACTIVE_SKILL, "</font>按装备类型切换<BR>");
+        for(var ri:Number = 0; ri < rows.length; ri++) {
+            appendSkillSwitchSkillLine(result, rows[ri].label, rows[ri].skill);
+        }
+    }
+
+    private static function appendSkillSwitchSkillLine(result:Array, label:String, skill:Object):Void {
+        result.push("  <font color='" + TooltipConstants.COL_USE_SWITCH + "'>[", label, "]</font> ", skill.skillname);
+
+        var summary:String = buildSkillSwitchSkillSummary(skill);
+        if(summary.length > 0) {
+            result.push("：", summary);
+        }
+        result.push("<BR>");
+    }
+
+    private static function buildSkillSwitchSkillSummary(skill:Object):String {
+        if(!skill) return "";
+        if(skill.information) return String(skill.information);
+
+        var parts:Array = [];
+        if(hasSkillValue(skill.cd)) {
+            parts.push(TooltipConstants.LBL_COOLDOWN + (Number(skill.cd) / 1000) + TooltipConstants.SUF_SECOND);
+        }
+        if(hasSkillValue(skill.hp) && Number(skill.hp) != 0) {
+            parts.push(TooltipConstants.LBL_COST + skill.hp + TooltipConstants.SUF_HP);
+        }
+        if(hasSkillValue(skill.mp) && Number(skill.mp) != 0) {
+            parts.push(TooltipConstants.LBL_COST + skill.mp + TooltipConstants.SUF_MP);
+        }
+
+        if(parts.length > 0) return parts.join("，") + "。";
+        if(skill.description) return TooltipFormatter.normalizeDescription(skill.description);
+        return "";
+    }
+
+    private static function hasSkillValue(value:Object):Boolean {
+        return value != undefined && value != null && String(value).length > 0;
     }
 
     private static var _pathNameMap:Object = null;

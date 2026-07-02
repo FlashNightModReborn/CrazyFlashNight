@@ -3,25 +3,6 @@
     <!-- 低级材料 - 刀专用配件 -->
 
     <mod>
-        <name>骨芯颅印</name>
-        <use>刀,手部装备,手枪,长枪</use>
-        <stats>
-            <flat>
-                <weight>0.5</weight>
-                <evasion>15</evasion>
-            </flat>
-        </stats>
-        <skill>
-            <skillname>滑步</skillname>
-            <description>经过骨誓铭牌改装的武器可以使用滑步。</description>
-            <cd>3000</cd>
-            <mp>5</mp>
-        </skill>
-        <description>嵌入战术芯片的骷髅头挂饰,提供闪避数据支持并赋予滑步技能。</description>
-        <tag>柄尾</tag>
-    </mod>
-
-    <mod>
         <name>辅助握持板</name>
         <use>刀</use>
         <stats>

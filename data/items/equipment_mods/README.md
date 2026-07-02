@@ -334,7 +334,7 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 
 #### tag - 插件位置标签
 **作用：** 同tag的插件不能同时装备（互斥机制）
-**示例：** 柄尾、枪机、表面涂层 等
+**示例：** 挂饰、柄尾、枪机、表面涂层 等
 
 #### use - 适用装备类型
 **示例：** 头部装备,上装装备,下装装备,刀,手枪,长枪
@@ -572,6 +572,39 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 #### skill - 赋予技能
 为装备添加主动或被动技能
 **包含：** skillname（技能名）、cd（冷却）、mp（消耗）等
+
+#### skillSwitch - 按装备类型切换技能
+**作用：** 让同一个插件装在不同类型装备上时赋予不同主动战技。
+
+**位置：** `skillSwitch` 是 `<mod>` 根层节点，与 `<skill>`、`<stats>` 同级；不要写在 `<stats>` 内。
+
+**基本结构：**
+```xml
+<mod>
+    <skillSwitch>
+        <use>
+            <skillname>黑刀斩术</skillname>   <!-- default：未命名分支，仅在其他分支未命中时使用 -->
+            <cd>6000</cd>
+            <mp>45</mp>
+        </use>
+        <use name="手部装备,手枪,长枪">
+            <skillname>震地</skillname>
+            <description>经过改装的装备可以使用震地。</description>
+            <cd>5000</cd>
+            <mp>30</mp>
+            <level>1</level>
+        </use>
+    </skillSwitch>
+</mod>
+```
+
+**语义说明：**
+- 分支的 `name` 与装备的 `use` 或 `weapontype` 匹配，规则与 `useSwitch` 一致
+- 命中 `skillSwitch` 时优先使用分支技能；无命名分支命中时使用省略 `name` 的 default 分支
+- 多个分支同时匹配时，按 XML 顺序使用第一个命中的分支
+- 根层 `<skill>` 仍可作为兼容回退；但插件存在条件战技时，建议把默认技能也写进 `<skillSwitch><use>`，避免 tooltip 看起来像能装载多个战技
+- `level` 可选；主动战技包装技能容器时默认按 1 级处理
+- `skillSwitch` 只决定技能，不会应用数值。条件属性仍应写在 `<stats><useSwitch>...</useSwitch></stats>` 中
 
 #### provideTags - 结构支持标签
 **作用：** 插件安装后提供的"结构能力"，用于满足其他插件的 requireTags

@@ -228,8 +228,8 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             }
 
             // 查找战技
-            if (!skill && modInfo.skill) {
-                skill = modInfo.skill;
+            if (!skill) {
+                skill = ModRegistry.resolveSkillForUse(modInfo, useLookup);
             }
         }
 

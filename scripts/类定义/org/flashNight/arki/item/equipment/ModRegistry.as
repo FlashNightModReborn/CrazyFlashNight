@@ -164,6 +164,9 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         // 13. 处理和优化bulletSwitch（基于子弹类型的条件加成）
         processBulletSwitch(mod);
 
+        // 14. 处理和优化skillSwitch（基于装备类型的条件战技）
+        processSkillSwitch(mod);
+
         // 添加到注册表
         _modList.push(name);
         _modDict[name] = mod;
@@ -406,6 +409,37 @@ class org.flashNight.arki.item.equipment.ModRegistry {
     }
 
     /**
+     * 处理和优化 skillSwitch（基于装备类型的条件战技）
+     * 与 stats.useSwitch 分离：skillSwitch 只解析战技对象，不参与数值累积。
+     * @private
+     */
+    private static function processSkillSwitch(mod:Object):Void {
+        if (mod._skillSwitchProcessed) return;
+        if (!mod.skillSwitch) return;
+
+        var skillSwitch:Object = mod.skillSwitch;
+        var useCases:Array = normalizeToArray(skillSwitch.use);
+
+        for (var i:Number = 0; i < useCases.length; i++) {
+            var useCase:Object = useCases[i];
+            if (!useCase) continue;
+
+            if (useCase.name) {
+                useCase.lookupDict = buildDictFromList(useCase.name);
+            } else {
+                useCase._isDefault = true;
+            }
+
+            if (_debugMode) {
+                trace("[ModRegistry] skillSwitch分支: 当装备类型匹配 '" + useCase.name + "' 时赋予战技 " + useCase.skillname);
+            }
+        }
+
+        skillSwitch.useCases = useCases;
+        mod._skillSwitchProcessed = true;
+    }
+
+    /**
      * 初始化配件可用性结果描述
      * @private
      */
@@ -574,6 +608,85 @@ class org.flashNight.arki.item.equipment.ModRegistry {
     public static function matchUseSwitch(modData:Object, itemUseLookup:Object):Object {
         var matched:Array = matchUseSwitchAll(modData, itemUseLookup);
         return (matched.length > 0) ? matched[0] : null;
+    }
+
+    /**
+     * 匹配 skillSwitch 分支。
+     * 命名分支按 XML 顺序第一个命中者生效；无命名分支仅在无命名分支命中时作为 default。
+     * @param modData 配件数据
+     * @param itemUseLookup 装备的use/weapontype查找表
+     * @return 分支中的战技对象，如果没有匹配返回 null
+     */
+    public static function matchSkillSwitch(modData:Object, itemUseLookup:Object):Object {
+        if (!modData || !modData.skillSwitch) {
+            return null;
+        }
+
+        var useCases:Array = modData.skillSwitch.useCases;
+        if (!useCases && modData.skillSwitch.use) {
+            useCases = normalizeToArray(modData.skillSwitch.use);
+            modData.skillSwitch.useCases = useCases;
+        }
+        if (!useCases || useCases.length == 0) {
+            return null;
+        }
+
+        var defaults:Array = [];
+
+        for (var i:Number = 0; i < useCases.length; i++) {
+            var useCase:Object = useCases[i];
+            if (!useCase) continue;
+
+            if (useCase._isDefault) {
+                defaults.push(useCase);
+                continue;
+            }
+
+            var lookupDict:Object = useCase.lookupDict;
+            if (!lookupDict) {
+                if (useCase.name) {
+                    lookupDict = buildDictFromList(useCase.name);
+                    useCase.lookupDict = lookupDict;
+                } else {
+                    defaults.push(useCase);
+                    useCase._isDefault = true;
+                    continue;
+                }
+            }
+
+            var hit:Boolean = false;
+            for (var key:String in itemUseLookup) {
+                if (lookupDict[key]) {
+                    hit = true;
+                    break;
+                }
+            }
+
+            if (hit) {
+                var matchedSkill:Object = extractSkillFromSwitchCase(useCase);
+                if (matchedSkill) return matchedSkill;
+            }
+        }
+
+        for (var d:Number = 0; d < defaults.length; d++) {
+            var defaultSkill:Object = extractSkillFromSwitchCase(defaults[d]);
+            if (defaultSkill) return defaultSkill;
+        }
+
+        return null;
+    }
+
+    /**
+     * 解析当前装备类型下配件应赋予的战技。
+     * skillSwitch 命中时优先于根层 skill；未命中则回退根层 skill。
+     */
+    public static function resolveSkillForUse(modData:Object, itemUseLookup:Object):Object {
+        if (!modData) return null;
+
+        var switchedSkill:Object = matchSkillSwitch(modData, itemUseLookup);
+        if (switchedSkill) return switchedSkill;
+
+        return modData.skill ? modData.skill : null;
     }
 
     /**
@@ -888,6 +1001,27 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         if (!val) return [];
         if (val instanceof Array) return val;
         return [val];
+    }
+
+    /**
+     * 从 skillSwitch 分支中取出战技对象。
+     * 支持两种写法：
+     *   <use name="手枪"><skillname>闪现</skillname>...</use>
+     *   <use name="手枪"><skill>...</skill></use>
+     * @private
+     */
+    private static function extractSkillFromSwitchCase(useCase:Object):Object {
+        if (!useCase) return null;
+        if (useCase.skill) return useCase.skill;
+        if (useCase.skillname) {
+            var skill:Object = {};
+            for (var key:String in useCase) {
+                if (key == "name" || key == "lookupDict" || key == "_isDefault") continue;
+                skill[key] = useCase[key];
+            }
+            return skill;
+        }
+        return null;
     }
 
     /**

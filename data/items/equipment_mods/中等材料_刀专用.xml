@@ -28,25 +28,6 @@
     </mod>
 
     <mod>
-        <name>骨誓铭牌</name>
-        <use>刀</use>
-        <stats>
-            <flat>
-                <weight>1.5</weight>
-                <defence>15</defence>
-            </flat>
-        </stats>
-        <skill>
-            <skillname>黑刀斩术</skillname>
-            <description>经过骨誓铭牌改装的武器可以使用黑刀斩术。</description>
-            <cd>6000</cd>
-            <mp>45</mp>
-        </skill>
-        <description>烧蚀硬化骨与铭牌重坠,增加防御并赋予黑刀斩术。</description>
-        <tag>柄尾</tag>
-    </mod>
-
-    <mod>
         <name>配重坠</name>
         <use>刀</use>
         <stats>

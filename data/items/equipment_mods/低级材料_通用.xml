@@ -3,6 +3,27 @@
     <!-- 低级材料 - 通用配件 -->
 
     <mod>
+        <name>骨芯颅印</name>
+        <use>刀,手部装备,手枪,长枪</use>
+        <stats>
+            <flat>
+                <weight>0.5</weight>
+                <evasion>15</evasion>
+            </flat>
+        </stats>
+        <skillSwitch>
+            <use>
+                <skillname>滑步</skillname>
+                <description>经过骨芯颅印改装的装备可以使用滑步。</description>
+                <cd>3000</cd>
+                <mp>5</mp>
+            </use>
+        </skillSwitch>
+        <description>嵌入战术芯片的骷髅头挂饰,提供闪避数据支持并赋予滑步技能。</description>
+        <tag>挂饰</tag>
+    </mod>
+
+    <mod>
         <name>增效剂</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
         <stats>

@@ -3,6 +3,34 @@
     <!-- 中等材料 - 通用配件 -->
 
     <mod>
+        <name>骨誓铭牌</name>
+        <use>刀,手部装备,手枪,长枪</use>
+        <stats>
+            <flat>
+                <weight>1.5</weight>
+                <defence>15</defence>
+            </flat>
+        </stats>
+        <skillSwitch>
+            <use>
+                <skillname>黑刀斩术</skillname>
+                <description>经过骨誓铭牌改装的武器可以使用黑刀斩术。</description>
+                <cd>6000</cd>
+                <mp>45</mp>
+            </use>
+            <use name="手部装备,手枪,长枪">
+                <skillname>震地</skillname>
+                <description>经过骨誓铭牌改装的装备可以使用震地。</description>
+                <cd>5000</cd>
+                <mp>30</mp>
+                <level>1</level>
+            </use>
+        </skillSwitch>
+        <description>烧蚀硬化骨与铭牌重坠,增加防御。用于刀时赋予黑刀斩术,用于手部装备或枪械时赋予震地。</description>
+        <tag>挂饰</tag>
+    </mod>
+
+    <mod>
         <name>可充锂电池</name>
         <use>头部装备,上装装备,下装装备,手部装备,脚部装备,刀,手枪,长枪</use>
         <provideTags>电力</provideTags>

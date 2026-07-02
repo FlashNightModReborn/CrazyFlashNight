@@ -129,6 +129,10 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 > 完整列表见 `org/flashNight/gesh/xml/LoadXml/`。另有 `BaseStageXMLLoader`（按路径加载单个关卡 XML）和 `StageXMLLoader`（非单例，支持 CaseSwitch 条件值解析）。
 
+### 装备插件条件战技
+
+`data/items/equipment_mods/*.xml` 的插件支持根层 `<skillSwitch>`（与 `<skill>`、`<stats>` 同级），用于按宿主装备 `use` / `weapontype` 切换主动战技。命中分支时优先使用分支技能，未命名 `<use>` 是 default 分支，仅在无命名分支命中时使用；多个分支同时匹配时按 XML 顺序取第一个。根层 `<skill>` 仍可作为兼容回退，但有条件战技映射时建议把默认技能也写进 `skillSwitch` 的 default 分支，避免 tooltip 表达成多个可同时装载的战技。`skillSwitch` 只决定技能，不应用属性，条件数值仍走 `<stats><useSwitch>...</useSwitch></stats>`。完整写法与示例见 `data/items/equipment_mods/README.md`。
+
 ### 联弹双层配置与补弹参数（2026-06-12 起）
 
 联弹子弹名格式为 `"{模板前缀}-{单元体}"`（如 `横向联弹-普通子弹`），其弹壳/属性配置在 `bullets_cases.xml` 按全名查表。组合配置由两层声明在加载期派生（`ChainBulletConfigResolver`，挂在 `InfoLoader` 聚合之后、回调分发之前）：

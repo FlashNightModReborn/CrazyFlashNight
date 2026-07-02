@@ -218,8 +218,20 @@ class org.flashNight.arki.item.equipment.TagManager {
             }
         }
 
-        // 检查战技冲突
-        if (itemData.skill && modData.skill) {
+        // 检查战技冲突。skillSwitch 命中时与根层 skill 一样视为战技插件。
+        var grantedUses:Object = null;
+        for (var guIndex:Number = 0; guIndex < mods.length; guIndex++) {
+            var guModData:Object = ModRegistry.getModData(mods[guIndex]);
+            if (guModData && guModData.grantsUseDict) {
+                if (!grantedUses) grantedUses = {};
+                for (var gu:String in guModData.grantsUseDict) {
+                    grantedUses[gu] = true;
+                }
+            }
+        }
+        var itemUseLookup:Object = ModRegistry.buildItemUseLookup(itemData.use || "", itemData.weapontype || "", grantedUses);
+        var resolvedModSkill:Object = ModRegistry.resolveSkillForUse(modData, itemUseLookup);
+        if (itemData.skill && resolvedModSkill) {
             return -4; // 已有战技
         }
 

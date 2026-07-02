@@ -45,6 +45,7 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
         // 预取原始子弹类型（未含配件效果），供 bulletSwitch 摘要使用
         var rawItemData:Object = baseItem ? ItemUtil.getItemData(baseItem.name) : null;
         var baseBulletType:String = (rawItemData && rawItemData.data && rawItemData.data.bullet) ? rawItemData.data.bullet : "";
+        var itemUseLookup:Object = buildItemUseLookup(item, value);
 
         // 迭代配件列表
         for (var i:Number = 0; i < value.mods.length; i++) {
@@ -331,6 +332,14 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                 }
             }
 
+            // 显示skillSwitch解析后的当前战技
+            if (modInfo && modInfo.skillSwitch) {
+                var resolvedSkill:Object = ModRegistry.resolveSkillForUse(modInfo, itemUseLookup);
+                if (resolvedSkill && resolvedSkill.skillname) {
+                    overrideEffectParts.push(" <font color='" + TooltipConstants.COL_USE_SWITCH + "'>" + TooltipConstants.LBL_ACTIVE_SKILL + resolvedSkill.skillname + "</font>");
+                }
+            }
+
             // 输出覆写/条件效果：有数值效果时另起一行（缩进4空格），无数值时接在同行末尾
             if (overrideEffectParts.length > 0) {
                 if (hasNumericEffects) {
@@ -340,5 +349,27 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
             }
             result.push("<BR>");
         }
+    }
+
+    private static function buildItemUseLookup(item:Object, value:Object):Object {
+        var grantedUses:Object = null;
+
+        if (value && value.mods) {
+            for (var i:Number = 0; i < value.mods.length; i++) {
+                var modInfo:Object = EquipmentUtil.modDict[value.mods[i]];
+                if (modInfo && modInfo.grantsUseDict) {
+                    if (!grantedUses) grantedUses = {};
+                    for (var gu:String in modInfo.grantsUseDict) {
+                        grantedUses[gu] = true;
+                    }
+                }
+            }
+        }
+
+        return ModRegistry.buildItemUseLookup(
+            item && item.use ? item.use : "",
+            item && item.weapontype ? item.weapontype : "",
+            grantedUses
+        );
     }
 }

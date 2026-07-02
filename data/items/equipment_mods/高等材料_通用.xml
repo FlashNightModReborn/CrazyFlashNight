@@ -3,6 +3,46 @@
     <!-- 高等材料 - 通用配件 -->
 
     <mod>
+        <name>骨约晨星</name>
+        <use>刀,手部装备,手枪,长枪</use>
+        <stats>
+            <useSwitch>
+                <use name="刀">
+                    <flat>
+                        <weight>2.5</weight>
+                        <evasion>15</evasion>
+                        <accuracy>15</accuracy>  <!-- 命中期望伤害: +3.31% -->
+                    </flat>
+                    <percentage>
+                        <power>15</power>
+                    </percentage>
+                </use>
+                <use name="手部装备">
+                    <flat>
+                        <weight>2.5</weight>
+                        <evasion>15</evasion>
+                        <accuracy>15</accuracy>
+                    </flat>
+                    <percentage>
+                        <punch>5</punch>
+                    </percentage>
+                </use>
+            </useSwitch>
+        </stats>
+        <skillSwitch>
+            <use name="手枪,长枪">
+                <skillname>闪现</skillname>
+                <description>经过骨约晨星改装的枪械可以使用闪现。</description>
+                <cd>3000</cd>
+                <mp>15</mp>
+                <level>1</level>
+            </use>
+        </skillSwitch>
+        <description>多股编缆与陀螺仪阵列。对刀剑与手套提升近战威力、命中与闪避;用于枪械时不提供属性,但赋予闪现。</description>
+        <tag>挂饰</tag>
+    </mod>
+
+    <mod>
         <name>动力液压杆</name>
         <use>上装装备,下装装备,手部装备,刀</use>
         <stats>

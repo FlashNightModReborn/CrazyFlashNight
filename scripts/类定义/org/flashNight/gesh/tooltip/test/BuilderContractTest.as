@@ -15,6 +15,7 @@ import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
 import org.flashNight.gesh.tooltip.builder.drug.DrugTooltipComposer;
 import org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder;
 import org.flashNight.gesh.tooltip.builder.ModStatBuilder;
+import org.flashNight.gesh.tooltip.builder.ModsBlockBuilder;
 
 /**
  * BuilderContractTest - Builder 结构性契约测试
@@ -75,6 +76,8 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         test_DrugTooltipComposer_null();
         test_ObtainMethodsBuilder_no_index();
         test_ModStatBuilder_unknown_item();
+        test_ModStatBuilder_skillSwitch();
+        test_ModsBlockBuilder_skillSwitch();
 
         trace("--- BuilderContractTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
     }
@@ -380,5 +383,66 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         // 未知物品名应返回空数组
         var result:Array = ModStatBuilder.build("完全不存在的配件名");
         assert(result.length == 0, "ModStatBuilder unknown item: empty result");
+    }
+
+    private static function test_ModStatBuilder_skillSwitch():Void {
+        var oldDict:Object = EquipmentUtil.modDict;
+        var dict:Object = {};
+        dict["条件战技插件"] = buildSkillSwitchFixture();
+        EquipmentUtil.modDict = dict;
+
+        var result:Array = ModStatBuilder.build("条件战技插件");
+        var joined:String = result.join("");
+
+        EquipmentUtil.modDict = oldDict;
+
+        assertContains(joined, "按装备类型切换", "ModStatBuilder skillSwitch has mapping header");
+        assertContains(joined, "其他情况", "ModStatBuilder skillSwitch has default label");
+        assertContains(joined, "黑刀斩术", "ModStatBuilder skillSwitch has default skill name");
+        assertContains(joined, "手枪", "ModStatBuilder skillSwitch has use label");
+        assertContains(joined, "闪现", "ModStatBuilder skillSwitch has skill name");
+        assertNotContains(joined, "对手枪", "ModStatBuilder skillSwitch avoids additive wording");
+    }
+
+    private static function test_ModsBlockBuilder_skillSwitch():Void {
+        var oldDict:Object = EquipmentUtil.modDict;
+        var dict:Object = {};
+        dict["条件战技插件"] = buildSkillSwitchFixture();
+        EquipmentUtil.modDict = dict;
+
+        var result:Array = [];
+        ModsBlockBuilder.build(result, null, {use: "手枪"}, {mods: ["条件战技插件"]});
+        var joined:String = result.join("");
+
+        EquipmentUtil.modDict = oldDict;
+
+        assertContains(joined, "条件战技插件", "ModsBlockBuilder skillSwitch has mod name");
+        assertContains(joined, "闪现", "ModsBlockBuilder skillSwitch has resolved skill");
+    }
+
+    private static function buildSkillSwitchFixture():Object {
+        return {
+            name: "条件战技插件",
+            use: "刀,手枪",
+            tagValue: "挂饰",
+            skillSwitch: {
+                use: [
+                    {
+                        skillname: "黑刀斩术",
+                        description: "默认分支战技说明。",
+                        cd: 6000,
+                        mp: 45
+                    },
+                    {
+                        name: "手枪",
+                        skillname: "闪现",
+                        description: "条件分支战技说明。",
+                        cd: 6000,
+                        mp: 15,
+                        level: 1
+                    }
+                ]
+            }
+        };
     }
 }
