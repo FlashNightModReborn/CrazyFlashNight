@@ -540,7 +540,9 @@ function analyzeRows(rows, options) {
       const redWins = caseRows.filter((row) => row.winner === "red").length;
       const draws = caseRows.filter((row) => row.winner === "draw").length;
       const timeouts = caseRows.filter((row) => row.status === "timeout").length;
-      const errorCount = caseRows.filter((row) => row.status !== "finished").length;
+      const errorCount = caseRows.filter(
+        (row) => row.status !== "finished" && row.status !== "timeout"
+      ).length;
       const blueRemainRatio = average(caseRows.map((row) => ratio(row.blue.remainHp, row.blue.maxHp)));
       const redRemainRatio = average(caseRows.map((row) => ratio(row.red.remainHp, row.red.maxHp)));
       const avgWinnerRemainHpRatio = average(

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Newtonsoft.Json.Linq;
@@ -209,6 +210,63 @@ namespace CF7Launcher.Tests.Tasks
             JObject row = JObject.Parse(File.ReadAllLines(resultPath)[0]);
             Assert.Equal("timeout", (string)row["status"]);
             Assert.Equal("timeout", (string)row["winner"]);
+        }
+
+        [Fact]
+        public void AbortBatch_DispatchesFlashCleanupCommandAndWritesAbortedResult()
+        {
+            string root = CreateProjectRoot();
+            WriteManifest(root, "pilot-abort", 1);
+            List<string> sent = new List<string>();
+            ManualResetEventSlim firstSent = new ManualResetEventSlim(false);
+            ManualResetEventSlim secondSent = new ManualResetEventSlim(false);
+            var task = new ArenaCalibrationTask(root, delegate { return true; },
+                delegate(string payload)
+                {
+                    lock (sent)
+                    {
+                        sent.Add(payload);
+                        if (sent.Count == 1) firstSent.Set();
+                        if (sent.Count == 2) secondSent.Set();
+                    }
+                },
+                delegate(int frames) { return 3000; });
+
+            JObject start = JObject.Parse(task.HandleControl(new JObject
+            {
+                ["action"] = "startBatch",
+                ["manifestPath"] = "tmp/arena-calibration/batches/pilot-abort/case_manifest.json"
+            }));
+
+            Assert.True((bool)start["success"]);
+            Assert.True(firstSent.Wait(3000), "Flash run command was not dispatched");
+
+            JObject abort = JObject.Parse(task.HandleControl(new JObject
+            {
+                ["action"] = "abort",
+                ["batchId"] = "pilot-abort"
+            }));
+
+            Assert.True((bool)abort["success"]);
+            Assert.Equal("abort_requested", (string)abort["note"]);
+            Assert.True(secondSent.Wait(3000), "Flash abort cleanup command was not dispatched");
+
+            JObject abortCommand;
+            lock (sent)
+            {
+                abortCommand = JObject.Parse(sent[1].TrimEnd('\0'));
+            }
+            Assert.Equal("cmd", (string)abortCommand["task"]);
+            Assert.Equal("arenaCalibrationAbort", (string)abortCommand["action"]);
+            Assert.Equal("pilot-abort", (string)abortCommand["batchId"]);
+
+            JObject status = WaitForState(task, "aborted");
+            Assert.Equal(1, (int)status["completedRuns"]);
+
+            string resultPath = Path.Combine(root, ((string)status["resultPath"]).Replace('/', Path.DirectorySeparatorChar));
+            JObject row = JObject.Parse(File.ReadAllLines(resultPath)[0]);
+            Assert.Equal("aborted", (string)row["status"]);
+            Assert.Equal("none", (string)row["winner"]);
         }
 
         private static string CreateProjectRoot()

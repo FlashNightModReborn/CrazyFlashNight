@@ -4,7 +4,11 @@
 const childProcess = require("child_process");
 const fs = require("fs");
 const path = require("path");
-const { createPilotManifest, normalizeManifest } = require("./lib/arena-calibration-core");
+const {
+  analyzeRows,
+  createPilotManifest,
+  normalizeManifest,
+} = require("./lib/arena-calibration-core");
 
 const scripts = [
   "build-candidates.js",
@@ -56,11 +60,52 @@ function checkBatchIdContract() {
   }
 }
 
+function checkTimeoutClassification() {
+  const manifest = createPilotManifest({
+    batchId: "pilot-timeout-classification",
+    createdAt: "2026-07-02T00:00:00.000Z",
+    buildCommit: "fixture",
+    repeat: 5,
+  });
+  const testCase = manifest.cases[0];
+  const rows = ["finished", "finished", "finished", "timeout", "timeout"].map((status, index) => ({
+    schema: "arena-calibration.result.v1",
+    batchId: manifest.batchId,
+    manifestHash: manifest.manifestHash,
+    caseId: testCase.caseId,
+    caseHash: testCase.caseHash,
+    runId: `${testCase.caseId}-r${index + 1}`,
+    repeatIndex: index + 1,
+    status,
+    winner: status === "timeout" ? "timeout" : "blue",
+    frames: status === "timeout" ? null : 1200,
+    durationMs: status === "timeout" ? null : 40000,
+    blue: { maxHp: 1000, remainHp: 200, aliveCount: 1, startMaxHp: 1000, startCount: 4 },
+    red: { maxHp: 1000, remainHp: 0, aliveCount: 0, startMaxHp: 1000, startCount: 4 },
+    errors: status === "timeout" ? [{ code: "timeout", message: "fixture" }] : [],
+    startedAt: "2026-07-02T00:00:00.000Z",
+    completedAt: "2026-07-02T00:01:00.000Z",
+  }));
+
+  const summary = analyzeRows(rows, {});
+  const analyzedCase = summary.cases[0];
+  if (analyzedCase.timeoutRate !== 0.4) {
+    throw new Error(`expected timeoutRate=0.4, got ${analyzedCase.timeoutRate}`);
+  }
+  if (analyzedCase.errorCount !== 0) {
+    throw new Error(`expected timeout rows not to count as errors, got ${analyzedCase.errorCount}`);
+  }
+  if (analyzedCase.classification !== "unstable_timeout") {
+    throw new Error(`expected unstable_timeout classification, got ${analyzedCase.classification}`);
+  }
+}
+
 try {
   checkSchemas();
   checkBatchIdContract();
+  checkTimeoutClassification();
   scripts.forEach(run);
-  console.log(JSON.stringify({ ok: true, checked: scripts.length + schemas.length + 1 }, null, 2));
+  console.log(JSON.stringify({ ok: true, checked: scripts.length + schemas.length + 2 }, null, 2));
 } catch (error) {
   console.error(error.message);
   process.exit(1);

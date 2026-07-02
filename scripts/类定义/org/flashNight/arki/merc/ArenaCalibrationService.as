@@ -5,22 +5,42 @@
  * C# 下发：
  *   {task:"cmd", action:"arenaCalibrationRun", callId, batchId, caseId, caseHash,
  *    runId, repeatIndex, timeoutFrames, blueRoster:[{兵种,等级}], redRoster:[{兵种,等级}]}
+ *   {task:"cmd", action:"arenaCalibrationAbort", callId, batchId, reason}
  *
  * AS2 回包：
  *   {task:"arena_calibration_response", callId, success, status, winner, frames,
  *    durationMs, blue, red, errors}
  *
- * 本服务不走普通角斗场押金/奖金/FinishStage 链；只在当前 gameworld 中生成本轮蓝/红单位，
- * 监控存活/超时，结束后清理生成单位并回包。
+ * 本服务不走普通角斗场押金/奖金/FinishStage 链；若当前不在专用斗兽标定竞技场，
+ * 先请求 StageManager 通过正常跳关进入 no-player host，再继续同一轮 run。
+ * 专用舞台不生成主角/同伴，只生成本轮蓝/红单位，监控存活/超时，结束后清理生成单位并回包。
  */
 import LiteJSON;
+import org.flashNight.arki.camera.HorizontalScroller;
+import org.flashNight.arki.scene.SceneManager;
+import org.flashNight.gesh.depth.DepthManager;
+import org.flashNight.arki.merc.ArenaController;
 
 class org.flashNight.arki.merc.ArenaCalibrationService {
     private static var _json:LiteJSON;
     private static var _inited:Boolean = false;
     private static var _active:Object = undefined;
+    private static var _pendingRun:Object = undefined;
+    private static var _transitionStarted:Boolean = false;
     private static var _runSeq:Number = 0;
     private static var SNAPSHOT_WARMUP_FRAMES:Number = 5;
+    private static var CALIBRATION_STAGE_LINKAGE:String = "wuxianguotu_1";
+    private static var CALIBRATION_STAGE_NAME:String = "斗兽标定竞技场";
+    private static var CALIBRATION_CENTER_X:Number = 895;
+    private static var CALIBRATION_CENTER_Y:Number = 430;
+    private static var CALIBRATION_BLUE_X:Number = 655;
+    private static var CALIBRATION_RED_X:Number = 1135;
+    private static var CALIBRATION_XMIN:Number = 230;
+    private static var CALIBRATION_XMAX:Number = 1560;
+    private static var CALIBRATION_YMIN:Number = 242;
+    private static var CALIBRATION_YMAX:Number = 620;
+    private static var CALIBRATION_BG_WIDTH:Number = 1688;
+    private static var CALIBRATION_BG_HEIGHT:Number = 640;
 
     public static function install():Void {
         if (_inited) return;
@@ -29,6 +49,9 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
 
         _root.gameCommands["arenaCalibrationRun"] = function(params) {
             org.flashNight.arki.merc.ArenaCalibrationService.handleRun(params);
+        };
+        _root.gameCommands["arenaCalibrationAbort"] = function(params) {
+            org.flashNight.arki.merc.ArenaCalibrationService.handleAbort(params);
         };
 
         _inited = true;
@@ -41,8 +64,23 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         if (_active != undefined) {
             finish("aborted", "none", [{code: "aborted", message: "superseded by a new calibration run"}]);
         }
+        if (_pendingRun != undefined) {
+            sendResponse({
+                task: "arena_calibration_response",
+                callId: _pendingRun.callId,
+                success: false,
+                status: "aborted",
+                winner: "none",
+                frames: 0,
+                durationMs: 0,
+                blue: emptySideSummary(),
+                red: emptySideSummary(),
+                errors: [{code: "aborted", message: "superseded by a new calibration run before stage ready"}]
+            });
+            _pendingRun = undefined;
+        }
 
-        if (!isRuntimeReady()) {
+        if (!isLoaderReady()) {
             sendResponse({
                 task: "arena_calibration_response",
                 callId: callId,
@@ -53,7 +91,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 durationMs: 0,
                 blue: emptySideSummary(),
                 red: emptySideSummary(),
-                errors: [{code: "stage_failed", message: "gameworld or unit loader is not ready"}]
+                errors: [{code: "stage_failed", message: "unit loader or calibration stage loader is not ready"}]
             });
             return;
         }
@@ -73,6 +111,41 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 blue: emptySideSummary(),
                 red: emptySideSummary(),
                 errors: errors
+            });
+            return;
+        }
+
+        if (!isCalibrationStageActive()) {
+            if (requestCalibrationStage(params, errors)) return;
+            clearCalibrationGlobals();
+            sendResponse({
+                task: "arena_calibration_response",
+                callId: callId,
+                success: false,
+                status: "stage_failed",
+                winner: "none",
+                frames: 0,
+                durationMs: 0,
+                blue: emptySideSummary(),
+                red: emptySideSummary(),
+                errors: errors.length > 0 ? errors : [{code: "stage_failed", message: "failed to enter calibration arena stage"}]
+            });
+            return;
+        }
+
+        if (!prepareCalibrationStage(errors) || !isRuntimeReady()) {
+            clearCalibrationGlobals();
+            sendResponse({
+                task: "arena_calibration_response",
+                callId: callId,
+                success: false,
+                status: "stage_failed",
+                winner: "none",
+                frames: 0,
+                durationMs: 0,
+                blue: emptySideSummary(),
+                red: emptySideSummary(),
+                errors: errors.length > 0 ? errors : [{code: "stage_failed", message: "calibration arena stage is not ready"}]
             });
             return;
         }
@@ -101,6 +174,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             cleanupUnits(blueUnits);
             cleanupUnits(redUnits);
             resetCalibrationSource();
+            clearCalibrationGlobals();
             sendResponse(row);
             return;
         }
@@ -128,9 +202,99 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         installClock();
     }
 
+    public static function onCalibrationStageReady():Void {
+        _transitionStarted = false;
+        if (_pendingRun == undefined) {
+            clearCalibrationGlobals();
+            return;
+        }
+        var params:Object = _pendingRun;
+        _pendingRun = undefined;
+        handleRun(params);
+    }
+
+    public static function handleAbort(params:Object):Void {
+        if (params == undefined) params = {};
+        var callId = params.callId;
+        var batchId:String = String(params.batchId || "");
+
+        if (_pendingRun != undefined) {
+            if (batchId != "" && String(_pendingRun.batchId || "") != "" && batchId != String(_pendingRun.batchId || "")) {
+                sendResponse({
+                    task: "arena_calibration_response",
+                    callId: callId,
+                    success: false,
+                    status: "error",
+                    winner: "none",
+                    frames: 0,
+                    durationMs: 0,
+                    blue: emptySideSummary(),
+                    red: emptySideSummary(),
+                    errors: [{code: "batch_mismatch", message: "abort batchId does not match pending calibration run"}]
+                });
+                return;
+            }
+
+            _pendingRun = undefined;
+            if (_transitionStarted != true) clearCalibrationGlobals();
+            sendResponse({
+                task: "arena_calibration_response",
+                callId: callId,
+                success: true,
+                status: "aborted",
+                winner: "none",
+                frames: 0,
+                durationMs: 0,
+                blue: emptySideSummary(),
+                red: emptySideSummary(),
+                errors: [{code: "aborted", message: String(params.reason || "abort requested before stage ready")}]
+            });
+            return;
+        }
+
+        if (_active == undefined) {
+            sendResponse({
+                task: "arena_calibration_response",
+                callId: callId,
+                success: true,
+                status: "aborted",
+                winner: "none",
+                frames: 0,
+                durationMs: 0,
+                blue: emptySideSummary(),
+                red: emptySideSummary(),
+                errors: [{code: "not_running", message: "no active calibration run"}]
+            });
+            return;
+        }
+
+        if (batchId != "" && String(_active.batchId || "") != "" && batchId != String(_active.batchId || "")) {
+            sendResponse({
+                task: "arena_calibration_response",
+                callId: callId,
+                success: false,
+                status: "error",
+                winner: "none",
+                frames: _active.frames,
+                durationMs: getTimer() - _active.startedMs,
+                blue: summarizeSide(_active.blueUnits),
+                red: summarizeSide(_active.redUnits),
+                errors: [{code: "batch_mismatch", message: "abort batchId does not match active calibration run"}]
+            });
+            return;
+        }
+
+        var errors:Array = _active.errors;
+        if (errors == undefined) errors = [];
+        errors.push({code: "aborted", message: String(params.reason || "abort requested")});
+        finish("aborted", "none", errors);
+    }
+
     public static function tick():Void {
         if (_active == undefined) return;
         _active.frames++;
+        var purged:Number = purgePlayerActors(_active.errors, _active.playerPurgeWarned != true);
+        if (purged > 0) _active.playerPurgeWarned = true;
 
         if (_active.primed != true) {
             _active.snapshotFrames++;
@@ -171,6 +335,49 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         if (typeof _root.gameworld.getNextHighestDepth != "function") return false;
         if (typeof _root.加载游戏世界人物 != "function") return false;
         if (_root.兵种库 == undefined) return false;
+        return true;
+    }
+
+    public static function handleStageDataReady():Void {
+        if (_pendingRun == undefined) return;
+        if (typeof _root.淡出动画.淡出跳转帧 != "function") {
+            handleStageDataFailed();
+            return;
+        }
+        applyCalibrationTransitionGlobals();
+        _transitionStarted = true;
+        _root.淡出动画.淡出跳转帧(CALIBRATION_STAGE_LINKAGE);
+    }
+
+    public static function handleStageDataFailed():Void {
+        if (_pendingRun == undefined) return;
+        var params:Object = _pendingRun;
+        _pendingRun = undefined;
+        _transitionStarted = false;
+        clearCalibrationGlobals();
+        sendResponse({
+            task: "arena_calibration_response",
+            callId: params.callId,
+            success: false,
+            status: "stage_failed",
+            winner: "none",
+            frames: 0,
+            durationMs: 0,
+            blue: emptySideSummary(),
+            red: emptySideSummary(),
+            errors: [{code: "stage_failed", message: "failed to load calibration arena stage data"}]
+        });
+    }
+
+    private static function isCalibrationStageActive():Boolean {
+        return _root.gameworld != undefined && _root.gameworld._arenaCalibrationStage === true;
+    }
+
+    private static function isLoaderReady():Boolean {
+        if (typeof _root.加载游戏世界人物 != "function") return false;
+        if (typeof _root.加载共享场景 != "function") return false;
+        if (_root.兵种库 == undefined) return false;
+        if (_root.gameworld层级定位器 == undefined) return false;
         return true;
     }
 
@@ -365,6 +572,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         cleanupUnits(blueUnits);
         cleanupUnits(redUnits);
         resetCalibrationSource();
+        clearCalibrationGlobals();
         sendResponse(resp);
     }
 
@@ -423,6 +631,218 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         }
     }
 
+    private static function requestCalibrationStage(params:Object, errors:Array):Boolean {
+        if (typeof _root.淡出动画.淡出跳转帧 != "function") {
+            errors.push({code: "stage_failed", message: "fade transition entry is unavailable"});
+            return false;
+        }
+
+        removeClock();
+        resetCalibrationSource();
+        _pendingRun = params;
+        _transitionStarted = false;
+
+        if (!ArenaController.prepareArenaStage(
+                0,
+                0,
+                "",
+                function(data:Object):Void {
+                    org.flashNight.arki.merc.ArenaCalibrationService.handleStageDataReady();
+                },
+                function():Void {
+                    org.flashNight.arki.merc.ArenaCalibrationService.handleStageDataFailed();
+                })) {
+            _pendingRun = undefined;
+            errors.push({code: "stage_failed", message: "DEATH MATCH arena StageInfo is unavailable"});
+            return false;
+        }
+
+        applyCalibrationTransitionGlobals();
+        return true;
+    }
+
+    private static function applyCalibrationTransitionGlobals():Void {
+        _root.斗兽标定模式 = true;
+        _root.当前通关的关卡 = "";
+        _root.当前关卡名 = CALIBRATION_STAGE_NAME;
+        _root.关卡类型 = "斗兽标定";
+        _root.无限过图模式 = false;
+        _root.场景进入位置名 = "出生地";
+        _root.角斗场对手类型 = "calibration";
+        _root.角斗场roster阵容 = [];
+        _root.押金 = 0;
+        _root.角斗场奖金 = 0;
+        _root.敌人同伴数 = 0;
+        _root.敌人总数 = 0;
+
+        if (_root.场景转换函数 != undefined && _root.帧计时器 != undefined) {
+            _root.场景转换函数.上次切换帧数 = _root.帧计时器.当前帧数;
+        }
+        if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
+            _root.soundEffectManager.stopBGMForTransition();
+        }
+    }
+
+    private static function prepareCalibrationStage(errors:Array):Boolean {
+        if (typeof _root.加载共享场景 != "function") {
+            errors.push({code: "stage_failed", message: "shared scene loader is unavailable"});
+            return false;
+        }
+        if (_root.gameworld层级定位器 == undefined) {
+            errors.push({code: "stage_failed", message: "gameworld depth anchor is unavailable"});
+            return false;
+        }
+
+        removeClock();
+        resetCalibrationSource();
+        _root.斗兽标定模式 = true;
+        _root.当前为战斗地图 = true;
+        _root.当前关卡名 = CALIBRATION_STAGE_NAME;
+        _root.关卡类型 = "斗兽标定";
+        _root.关卡路径 = CALIBRATION_STAGE_LINKAGE;
+        _root.无限过图模式 = false;
+        _root.角斗场对手类型 = "calibration";
+        _root.角斗场roster阵容 = [];
+        _root.敌人同伴数 = 0;
+        _root.敌人总数 = 0;
+
+        var gw:MovieClip = _root.gameworld;
+        if (gw == undefined || gw._arenaCalibrationStage !== true) {
+            errors.push({
+                code: "stage_failed",
+                message: "calibration run requires an already prepared calibration arena stage; direct gameworld replacement is disabled"
+            });
+            clearCalibrationGlobals();
+            return false;
+        }
+
+        configureCalibrationWorld(gw);
+        var purged:Number = purgePlayerActors(errors, true);
+        if (hasPlayerActors(gw)) {
+            errors.push({code: "stage_failed", message: "player or companion actor remains in calibration arena"});
+            clearCalibrationGlobals();
+            return false;
+        }
+        return true;
+    }
+
+    private static function configureCalibrationWorld(gw:MovieClip):Void {
+        _root.Xmin = CALIBRATION_XMIN;
+        _root.Xmax = CALIBRATION_XMAX;
+        _root.Ymin = CALIBRATION_YMIN;
+        _root.Ymax = CALIBRATION_YMAX;
+        _root.启用后景 = false;
+
+        gw._arenaCalibrationStage = true;
+        gw.场景名 = CALIBRATION_STAGE_LINKAGE;
+        gw.背景长 = CALIBRATION_BG_WIDTH;
+        gw.背景高 = CALIBRATION_BG_HEIGHT;
+        gw.Xmin = CALIBRATION_XMIN;
+        gw.Xmax = CALIBRATION_XMAX;
+        gw.Ymin = CALIBRATION_YMIN;
+        gw.Ymax = CALIBRATION_YMAX;
+        gw.允许通行 = false;
+        gw.关卡结束 = false;
+        gw.佣兵已进场 = false;
+
+        if (gw.deadbody == undefined) gw.createEmptyMovieClip("deadbody", -3);
+        if (gw.出生地 == undefined) gw.createEmptyMovieClip("出生地", gw.getNextHighestDepth());
+        gw.出生地._x = CALIBRATION_CENTER_X;
+        gw.出生地._y = CALIBRATION_CENTER_Y;
+
+        if (DepthManager.instance != undefined) {
+            DepthManager.instance.calibrate(CALIBRATION_YMIN, CALIBRATION_YMAX);
+        }
+        SceneManager.getInstance().addBodyLayers(CALIBRATION_BG_WIDTH, CALIBRATION_BG_HEIGHT);
+
+        var camera:MovieClip = gw.斗兽标定镜头;
+        if (camera == undefined) camera = gw.createEmptyMovieClip("斗兽标定镜头", gw.getNextHighestDepth());
+        camera._x = CALIBRATION_CENTER_X;
+        camera._y = CALIBRATION_CENTER_Y;
+        resetCalibrationSkybox();
+        HorizontalScroller.onSceneChanged();
+        HorizontalScroller.switchFollowTo(camera);
+
+        _global.ASSetPropFlags(gw, ["_arenaCalibrationStage", "斗兽标定镜头", "出生地", "deadbody", "佣兵已进场"], 1, false);
+    }
+
+    private static function resetCalibrationSkybox():Void {
+        if (_root.天空盒 == undefined) return;
+        if (_root.天空盒.bgLayerList != undefined) {
+            for (var i:Number = 0; i < _root.天空盒.bgLayerList.length; i++) {
+                if (_root.天空盒.bgLayerList[i] != undefined) _root.天空盒.bgLayerList[i].removeMovieClip();
+            }
+        }
+        _root.天空盒.bgLayerList = [];
+        _root.天空盒.bgParallaxList = [];
+        _root.天空盒.地平线高度 = 0;
+        _root.天空盒._x = 0;
+        if (_root.天空盒.默认天空 != undefined) _root.天空盒.默认天空._visible = false;
+    }
+
+    private static function purgePlayerActors(errors:Array, report:Boolean):Number {
+        var gw:MovieClip = _root.gameworld;
+        if (gw == undefined) return 0;
+
+        var removed:Number = 0;
+        var controlName:String = String(_root.控制目标 || "");
+        if (controlName != "" && gw[controlName] != undefined) {
+            gw[controlName].removeMovieClip();
+            removed++;
+        }
+
+        var limit:Number = Number(_root.佣兵个数限制);
+        if (isNaN(limit) || limit < 1) limit = 12;
+        for (var i:Number = 0; i < limit; i++) {
+            var companionName:String = "同伴" + i;
+            if (gw[companionName] != undefined) {
+                gw[companionName].removeMovieClip();
+                removed++;
+            }
+        }
+
+        for (var name:String in gw) {
+            var child:MovieClip = gw[name];
+            if (child == undefined || child._parent == undefined) continue;
+            if (child.斗兽标定隔离 === true) continue;
+            if (child.是否为佣兵 === true || child.宠物属性 != undefined || child.宠物信息数组号 != undefined) {
+                child.removeMovieClip();
+                removed++;
+            }
+        }
+
+        if (removed > 0 && report == true && errors != undefined) {
+            errors.push({code: "player_actor_purged", message: "removed player, companion or pet actor from calibration arena"});
+        }
+        return removed;
+    }
+
+    private static function hasPlayerActors(gw:MovieClip):Boolean {
+        if (gw == undefined) return false;
+        var controlName:String = String(_root.控制目标 || "");
+        if (controlName != "" && gw[controlName] != undefined) return true;
+
+        var limit:Number = Number(_root.佣兵个数限制);
+        if (isNaN(limit) || limit < 1) limit = 12;
+        for (var i:Number = 0; i < limit; i++) {
+            if (gw["同伴" + i] != undefined) return true;
+        }
+
+        for (var name:String in gw) {
+            var child:MovieClip = gw[name];
+            if (child == undefined || child._parent == undefined) continue;
+            if (child.斗兽标定隔离 === true) continue;
+            if (child.是否为佣兵 === true || child.宠物属性 != undefined || child.宠物信息数组号 != undefined) return true;
+        }
+        return false;
+    }
+
+    private static function clearCalibrationGlobals():Void {
+        _root.斗兽标定模式 = false;
+        if (_root.角斗场对手类型 == "calibration") _root.角斗场对手类型 = undefined;
+        if (_root.角斗场roster阵容 != undefined && _root.角斗场roster阵容.length == 0) _root.角斗场roster阵容 = undefined;
+    }
+
     private static function removeClock():Void {
         if (_active != undefined && _active.clock != undefined) {
             _active.clock.onEnterFrame = null;
@@ -435,13 +855,13 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     }
 
     private static function resolveOrigin():Object {
-        var centerX:Number = 760;
-        var centerY:Number = 430;
+        var centerX:Number = CALIBRATION_CENTER_X;
+        var centerY:Number = CALIBRATION_CENTER_Y;
         if (_root.gameworld.出生地 != undefined) {
             if (!isNaN(Number(_root.gameworld.出生地._x))) centerX = Number(_root.gameworld.出生地._x);
             if (!isNaN(Number(_root.gameworld.出生地._y))) centerY = Number(_root.gameworld.出生地._y);
         }
-        return {blueX: centerX - 240, redX: centerX + 240, y: centerY};
+        return {blueX: CALIBRATION_BLUE_X, redX: CALIBRATION_RED_X, y: centerY};
     }
 
     private static function ensureCalibrationSource():Void {

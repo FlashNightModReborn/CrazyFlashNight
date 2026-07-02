@@ -107,12 +107,12 @@ class org.flashNight.arki.merc.ArenaController {
     /**
      * 角斗场场景数据预载 + 押金/奖金/难度上下文（merc 与 roster 共用）。
      * 复现「角斗场选择挑战者」帧的 stage 预载（Web 直跳关必须手动做）。
-     * 返回 false = StageInfoDict 缺 "DEATH MATCH角斗场"（调用方应报错中止）。
+     * onLoaded/onLoadError 透传给 _root.载入关卡数据；返回 false = StageInfoDict 缺 "DEATH MATCH角斗场"（调用方应报错中止）。
      */
-    public static function prepareArenaStage(deposit:Number, reward:Number, difficulty:String):Boolean {
+    public static function prepareArenaStage(deposit:Number, reward:Number, difficulty:String, onLoaded:Function, onLoadError:Function):Boolean {
         var stageInfo:Object = _root.StageInfoDict ? _root.StageInfoDict["DEATH MATCH角斗场"] : undefined;
         if (stageInfo == undefined || stageInfo.url == undefined || String(stageInfo.url) == "") return false;
-        _root.载入关卡数据(String(stageInfo.Type || "无限过图"), String(stageInfo.url));
+        _root.载入关卡数据(String(stageInfo.Type || "无限过图"), String(stageInfo.url), onLoaded, onLoadError);
         _root.关卡类型 = String(stageInfo.Type || "无限过图");
         _root.关卡路径 = String(stageInfo.url);
         _root.押金 = deposit;

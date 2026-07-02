@@ -99,7 +99,7 @@ _root.解析单次对话 = function(对话列表:Array){
 	return 输出对话;
 }
 
-_root.载入关卡数据 = function(stageType, url){
+_root.载入关卡数据 = function(stageType, url, onLoaded, onLoadError){
 	var loader = new org.flashNight.gesh.xml.LoadXml.BaseStageXMLLoader(url);
 	loader.load(function(data:Object):Void {
 		_root.发布调试消息("load xml " + stageType + "  " + url);
@@ -121,9 +121,11 @@ _root.载入关卡数据 = function(stageType, url){
 			// _root.rogue敌人集合表 = _root.解析rogue敌人集合(data.Unions);
 			org.flashNight.arki.scene.StageManager.instance.initialize(data.SubStage);
 		}
+		if (typeof onLoaded == "function") onLoaded(data);
 	}, function():Void {
 		_root.发布调试消息("fail to load xml " + stageType + "  " + url);
-		onError();
+		if (typeof onLoadError == "function") onLoadError();
+		else if (typeof onError == "function") onError();
 	});
 };
 

@@ -175,21 +175,28 @@ namespace CF7Launcher.Tasks
         private JObject AbortBatch(JObject msg)
         {
             string batchId = msg.Value<string>("batchId");
+            string activeBatchId = null;
+            bool shouldNotifyFlash = false;
             lock (_lock)
             {
                 if (!string.IsNullOrEmpty(batchId) && !string.IsNullOrEmpty(_batchId) && batchId != _batchId)
                     return BuildError("batch_mismatch", "requested batchId does not match active batch");
 
+                if (_state == "idle" || _state == "completed" || _state == "failed" || _state == "aborted")
+                    return BuildStatus(true, "not_running");
+
                 _abortRequested = true;
+                activeBatchId = _batchId;
+                shouldNotifyFlash = true;
                 foreach (PendingRun pending in _pending.Values)
                 {
                     pending.Aborted = true;
                     pending.Done.Set();
                 }
-
-                if (_state == "idle" || _state == "completed" || _state == "failed")
-                    return BuildStatus(true, "not_running");
             }
+
+            if (shouldNotifyFlash)
+                DispatchAbortToFlash(activeBatchId, "batch abort requested");
 
             return BuildStatus(true, "abort_requested");
         }
@@ -307,6 +314,37 @@ namespace CF7Launcher.Tasks
             command["blueRoster"] = ToFlashRoster(testCase.BlueRoster);
             command["redRoster"] = ToFlashRoster(testCase.RedRoster);
             return command;
+        }
+
+        private void DispatchAbortToFlash(string batchId, string reason)
+        {
+            if (!_isClientReady())
+            {
+                LogManager.Log("[ArenaCalibrationTask] abort requested while Flash socket is disconnected; local batch state will still abort");
+                return;
+            }
+
+            int fid;
+            lock (_lock)
+            {
+                fid = ++_seq;
+            }
+
+            JObject command = new JObject();
+            command["task"] = "cmd";
+            command["action"] = "arenaCalibrationAbort";
+            command["callId"] = fid;
+            command["batchId"] = batchId ?? "";
+            command["reason"] = reason ?? "abort";
+
+            try
+            {
+                _send(command.ToString(Formatting.None) + "\0");
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[ArenaCalibrationTask] failed to dispatch Flash abort cleanup command: " + ex.Message);
+            }
         }
 
         private JObject BuildResultFromFlash(

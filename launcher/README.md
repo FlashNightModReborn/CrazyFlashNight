@@ -414,6 +414,7 @@ launcher/
 │   │   ├── StageSelectTask.cs             Web 选关 panel snapshot / enter / jump_frame / return_frame
 │   │   ├── IntelligenceTask.cs            情报详情 state / snapshot(itemName) / tooltip（按需读白名单 H5 正文）
 │   │   ├── ArenaTask.cs                   竞技场（DEATH MATCH 角斗场）面板双层 callId 桥接（arena_response）
+│   │   ├── ArenaCalibrationTask.cs        斗兽标定批次控制（arena_calibration / arena_calibration_response；startBatch/status/abort + JSONL writer）
 │   │   ├── PetTask.cs                     战宠面板双层 callId 桥接（pet_response；snapshot/adopt/deploy/advance/level_up/restore_stamina/delete/…）
 │   │   ├── MercTask.cs                    佣兵面板双层 callId 桥接（merc_response；snapshot/hire_list/hire/deploy/dismiss/equip_tooltip）
 │   │   ├── FontPackTask.cs                字体包按需下载（manifest + SHA256 校验 + 镜像 url，落 %LOCALAPPDATA%/CF7FlashNight/fonts，notch/toast 进度）
@@ -1287,6 +1288,8 @@ Guardian 通过 Win32 `SetParent` 将 Flash Player SA 窗口嵌入 `_flashPanel`
 | `/diagnostic` | POST | 与 bootstrap channel `diagnostic` 等价的 HTTP 入口，body `{"slot":"..."}` 触发诊断 zip 打包，响应 `{ok, zipPath, zipName, zipSize, warnings[]}` |
 | `/shutdown` | POST | 请求 Launcher 退出（OnKillFlash → Dispose 链） |
 | `/crossdomain.xml` | GET | Flash 跨域策略 |
+
+`/task` 中的 `arena_calibration` 是批次控制面：`startBatch` 只启动后台批次并快速返回，`status` 查询进度，`abort` 会下发 AS2 `arenaCalibrationAbort` 清理当前标定单位和 clock，并在 C# 侧把当前等待中的 run 记为 `aborted`。结果写入 `logs/arena-calibration/<batchId>-results.jsonl`；manifest 必须位于 `tmp/arena-calibration/`，`batchId` 只允许 `[A-Za-z0-9._-]` 的短标识。数值验收必须在专用竞技场标定地图中进行，不刷主角/同伴；普通 `gameworld` smoke 只证明通信和写文件链路可用。AS2 runner 若尚未处于 `_arenaCalibrationStage`，会先通过 `ArenaController.prepareArenaStage(0, 0, "", onLoaded, onLoadError)` 预载 `DEATH MATCH角斗场`，再走 `淡出跳转帧("wuxianguotu_1")` 进入 StageManager 的 calibration no-player 分支；StageInfo/跳转入口不可用时返回 `stage_failed`。禁止从玩家宿舍/基地等普通场景直接替换 `gameworld`。
 
 ### 端口分配
 从种子 `"1192433993"` 提取 4/5 位数子串作为候选端口，与 AS2 `ServerManager.as` 保持一致。运行时逐个测试可用性，第一个通过的作为 httpPort，第二个作为 socketPort（实测 httpPort=1192, socketPort=1924）。

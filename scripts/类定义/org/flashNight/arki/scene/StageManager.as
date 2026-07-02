@@ -6,6 +6,7 @@ import org.flashNight.arki.weather.WeatherSystem;
 import org.flashNight.arki.weather.EnvironmentConfig;
 import org.flashNight.neur.Event.EventBus;
 import org.flashNight.gesh.depth.DepthManager;
+import org.flashNight.arki.merc.ArenaCalibrationService;
 
 /**
 StageManager 管理关卡的基础行为。
@@ -229,6 +230,11 @@ class org.flashNight.arki.scene.StageManager {
 
         // 将上述影片剪辑实例设置为不可枚举
         _global.ASSetPropFlags(gameworld, unIterables, 1, false);
+
+        if (isCalibrationHostStage()) {
+            initCalibrationHostStage(basicInfo);
+            return;
+        }
         
 
         // 加载进图动画
@@ -407,6 +413,34 @@ class org.flashNight.arki.scene.StageManager {
         isCleared = false;
         isFinished = false;
         isFailed = false;
+    }
+
+    private function isCalibrationHostStage():Boolean {
+        return _root.斗兽标定模式 === true && _root.角斗场对手类型 == "calibration";
+    }
+
+    private function initCalibrationHostStage(basicInfo:Object):Void {
+        _root.当前通关的关卡 = "";
+        _root.当前关卡名 = "斗兽标定竞技场";
+        _root.关卡类型 = "斗兽标定";
+        _root.敌人同伴数 = 0;
+        _root.敌人总数 = 0;
+
+        gameworld._arenaCalibrationStage = true;
+        gameworld.允许通行 = false;
+        gameworld.关卡结束 = false;
+        gameworld.佣兵已进场 = false;
+        gameworld.出生地.是否从门加载主角 = false;
+        _global.ASSetPropFlags(gameworld, ["_arenaCalibrationStage", "佣兵已进场"], 1, false);
+
+        _root.加载场景背景(basicInfo.Background);
+        _root.加载后景(environment);
+
+        if (_root.场景转换函数 != undefined && _root.帧计时器 != undefined) {
+            _root.场景转换函数.上次切换帧数 = _root.帧计时器.当前帧数;
+        }
+        gameworld.dispatcher.publish("Start");
+        ArenaCalibrationService.onCalibrationStageReady();
     }
 
 
