@@ -1611,26 +1611,68 @@ def load_animation_candidate_report_targets(
     }
 
 
+def alpha_bbox(image: Image.Image) -> tuple[int, int, int, int] | None:
+    return image.convert("RGBA").getchannel("A").getbbox()
+
+
+def bbox_size(bbox: tuple[int, int, int, int] | None) -> tuple[int, int] | None:
+    if bbox is None:
+        return None
+    left, top, right, bottom = bbox
+    width = max(0, int(right - left))
+    height = max(0, int(bottom - top))
+    if width <= 0 or height <= 0:
+        return None
+    return width, height
+
+
+def image_content_profile(image: Image.Image) -> tuple[tuple[int, int] | None, tuple[int, int, int, int] | None]:
+    bbox = alpha_bbox(image)
+    return bbox_size(bbox), bbox
+
+
 def normalize_icon_image(
     img: Image.Image,
     profile_size: tuple[int, int] | None = None,
     canvas_size: int | None = None,
+    preserve_canvas: bool = False,
 ) -> Image.Image:
-    # canvas_size defaults to the static ICON_SIZE (256). Animated/nested frame paths pass
+    # canvas_size defaults to the static ICON_SIZE. Animated/nested frame paths pass
     # ANIMATED_ICON_SIZE so long animations render at a display-appropriate, byte-budget-friendly
     # resolution; the composed canvas is still LANCZOS-resampled, so quality scales cleanly.
+    #
+    # FFDec sprite PNGs often include a large symbol-stage canvas. AS2 BitmapExporter builds
+    # its matrix from MovieClip.getBounds(mc), so the offline static path must use the alpha
+    # content bounds rather than the exported PNG dimensions. Nested/layered canvas paths pass
+    # preserve_canvas=True because their offsets are meaningful inside the parent canvas.
     size = canvas_size if canvas_size is not None else ICON_SIZE
-    width, height = img.size
-    if width <= 0 or height <= 0:
+    source = img.convert("RGBA")
+    raw_width, raw_height = source.size
+    if raw_width <= 0 or raw_height <= 0:
         return Image.new("RGBA", (size, size), (0, 0, 0, 0))
+
+    if preserve_canvas:
+        working = source
+        width, height = raw_width, raw_height
+    else:
+        bbox = alpha_bbox(source)
+        if bbox is None:
+            return Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        working = source.crop(bbox)
+        width, height = working.size
 
     basis_w, basis_h = profile_size if profile_size is not None else (width, height)
     if basis_w <= 0 or basis_h <= 0:
         basis_w, basis_h = width, height
+    if not preserve_canvas:
+        # A supplied profile is only a sizing hint. Never let it crop a wider/taller
+        # FFDec export; new weapon symbols can legitimately exceed the template.
+        basis_w = max(basis_w, width)
+        basis_h = max(basis_h, height)
     scale = size / float(max(basis_w, basis_h))
     target_w = max(1, int(round(width * scale)))
     target_h = max(1, int(round(height * scale)))
-    resized = img.resize((target_w, target_h), Image.Resampling.LANCZOS)
+    resized = working.resize((target_w, target_h), Image.Resampling.LANCZOS)
 
     canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     offset_x = int(round((size - target_w) / 2.0))
@@ -1651,9 +1693,10 @@ def normalize_icon(
     source_png: Path,
     profile_size: tuple[int, int] | None = None,
     canvas_size: int | None = None,
+    preserve_canvas: bool = False,
 ) -> Image.Image:
     with Image.open(source_png) as raw:
-        return normalize_icon_image(raw.convert("RGBA"), profile_size, canvas_size)
+        return normalize_icon_image(raw.convert("RGBA"), profile_size, canvas_size, preserve_canvas)
 
 
 def paste_clipped(canvas: Image.Image, image: Image.Image, left: int, top: int) -> None:
@@ -1806,7 +1849,12 @@ def nested_layer_frame_icon(
     paste_clipped(parent_canvas, layer, int(offset[0]), int(offset[1]))
     # canvas_size=None keeps the static 256 output (diff-gate path); animated frame composition
     # passes ANIMATED_ICON_SIZE for the smaller, byte-budget-friendly animated stream.
-    return normalize_icon_image(parent_canvas, parent_profile_size, canvas_size)
+    return normalize_icon_image(
+        parent_canvas,
+        parent_profile_size,
+        canvas_size,
+        preserve_canvas=True,
+    )
 
 
 def projection_score(stats: DiffStats) -> tuple[int, int, int, int]:
@@ -2164,7 +2212,16 @@ def load_manifest(path: Path) -> OrderedDict[str, dict[str, Any]]:
 
 def save_manifest(path: Path, manifest: OrderedDict[str, dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8-sig")
+    path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def order_static_first_frame_entry(entry: dict[str, Any]) -> None:
+    ordered_values: list[tuple[str, Any]] = []
+    for key in ("playback", "animated", "frameCount", "f1"):
+        if key in entry:
+            ordered_values.append((key, entry.pop(key)))
+    for key, value in ordered_values:
+        entry[key] = value
 
 
 def write_icon_if_needed(
@@ -2323,9 +2380,8 @@ def write_animated_icon_frames(
     dedupe = FrameDedupeIndex()
 
     for index, source_frame in enumerate(frames, start=1):
-        # frame index 1 (the f1 the runtime locks its matrix cache on) must scale
-        # against the globally-locked f1 basis, matching the static-icon path and
-        # the AS2 BitmapExporter f1 matrix cache; later frames stay per-icon.
+        # When supplied, frame index 1 uses the same per-target content basis as
+        # the static fallback; later frames stay per-frame.
         frame_basis = (
             f1_profile_size if index == 1 and f1_profile_size is not None else profile_size
         )
@@ -2388,8 +2444,8 @@ def normalize_parent_animation_frames(
     f1_profile_size: tuple[int, int] | None = None,
 ) -> list[Image.Image]:
     # Full-canvas parent self-animation frames, normalized exactly as the png-sequence path
-    # does (f1 against the globally-locked basis, later frames per-icon) so the animated-webp
-    # output stays aligned with the static sibling and the AS2 f1 matrix cache.
+    # does: f1 can use the caller's per-target content basis, later frames stay per-frame,
+    # so the animated-webp output stays aligned with the static sibling.
     # Composed at ANIMATED_ICON_SIZE (smaller than the static ICON_SIZE) so long animations
     # fit the byte budget; the profile-size basis is unchanged, only the output canvas shrinks.
     normalized_frames: list[Image.Image] = []
@@ -2835,7 +2891,7 @@ def export_nested_icon_canvas_entry(
     if not child_frames:
         return None, {"reason": "child_missing_frames", "characterId": child_id}
 
-    parent_reference = normalize_icon(parent_frame, parent_profile_size)
+    parent_reference = normalize_icon(parent_frame, parent_profile_size, preserve_canvas=True)
     generated_first = nested_layer_frame_icon(child_frames[0], parent_profile_size, matrix, filters)
     close, stats = full_image_diff_images(parent_reference, generated_first)
     if not icon_canvas_projection_close(stats, close):
@@ -2848,9 +2904,9 @@ def export_nested_icon_canvas_entry(
             "totalChannelDelta": stats.total_channel_delta,
         }
 
-    # The written f1 (frame[0]) must scale against the globally-locked f1 basis so
-    # an animated/nested icon's f1 matches its static sibling and the AS2 runtime
-    # baseline; the diff-check above stays on the per-icon parent_profile_size.
+    # The written f1 (frame[0]) must scale against the same per-target content
+    # basis as the static sibling; the diff-check above stays on the raw parent
+    # canvas because layer offsets are meaningful there.
     f1_override = (
         normalize_icon(parent_frame, f1_profile_size)
         if f1_profile_size is not None
@@ -2880,8 +2936,8 @@ def export_nested_icon_canvas_entry(
     if IMAGE_FORMAT == "webp":
         # Full-canvas single-stream animated case (e.g. 强化石, 120 child frames): compose
         # every child frame onto the empty-stripped parent canvas and assemble ONE animated
-        # WebP. f1 uses the globally-locked basis; later frames stay per-icon, matching the
-        # png-sequence path. Frame de-dup happens inside the assembler.
+        # WebP. f1 uses the same per-target basis as the png-sequence path. Frame de-dup
+        # happens inside the assembler.
         # Every frame (including f1) is composed at ANIMATED_ICON_SIZE so the whole animated
         # stream stays small; the 256-sized f1_override above is reserved for the diff-gate /
         # png-sequence path and is NOT mixed into this smaller webp stream.
@@ -3056,8 +3112,8 @@ def export_layered_icon_canvas_entry(
     if child_error is not None:
         return None, {"reason": "child_export_failed", "detail": child_error}
 
-    base_image = normalize_icon(stripped_parent_frames[0], parent_profile_size)
-    parent_reference = normalize_icon(parent_frame, parent_profile_size)
+    base_image = normalize_icon(stripped_parent_frames[0], parent_profile_size, preserve_canvas=True)
+    parent_reference = normalize_icon(parent_frame, parent_profile_size, preserve_canvas=True)
     first_layer_images: list[Image.Image] = []
     layer_frame_paths: dict[int, list[Path]] = {}
     layer_offsets: dict[int, tuple[int, int]] = {}
@@ -3099,9 +3155,9 @@ def export_layered_icon_canvas_entry(
 
     fallback_filename = f"{hash_base}_1.png"
     base_filename = f"{hash_base}_base.png"
-    # The static-fallback f1 must scale against the globally-locked f1 basis so it
-    # matches its static sibling and the AS2 runtime baseline; base_image, layer
-    # frames, and the diff-check parent_reference stay on parent_profile_size.
+    # The static-fallback f1 must scale against the same per-target content basis
+    # as its static sibling; base_image, layer frames, and the diff-check
+    # parent_reference stay on the raw parent canvas.
     fallback_image = (
         normalize_icon(parent_frame, f1_profile_size)
         if f1_profile_size is not None
@@ -3652,18 +3708,15 @@ def main() -> int:
             record_issue(report, "export_errors", error)
             report["counts"]["export_errors"] += 1
 
-    # Lock the global f1 scaling basis to the AS2 derivation order (the first
-    # derived icon _iconNames[0]), NOT the by_swf iteration order. The AS2 runtime
-    # BitmapExporter caches its f1 matrix from the first derived icon; if that icon
-    # is conflict-skipped/missing we fall through to the next derived icon so the
-    # basis still matches the runtime oracle. Iterating by_swf instead could lock
-    # onto whichever SWF happened to sort first, diverging from the runtime.
+    # Record the first derived f1 content profile for audit. Actual offline writes
+    # use each target's own alpha content profile so full bakes and filtered --name
+    # bakes produce the same pixels for a given icon.
     swf_by_target_name: dict[str, str] = {}
     for swf_rel, entries in by_swf.items():
         for target, _source in entries:
             swf_by_target_name.setdefault(target.name, swf_rel)
 
-    f1_profile_size: tuple[int, int] | None = None
+    reported_f1_profile_size: tuple[int, int] | None = None
     for target in targets.values():
         swf_rel = swf_by_target_name.get(target.name)
         if swf_rel is None:
@@ -3675,13 +3728,17 @@ def main() -> int:
         if f1_basis_frame is None:
             continue
         with Image.open(f1_basis_frame) as profile_image:
-            f1_profile_size = profile_image.size
+            raw_size = profile_image.size
+            content_size, content_bbox = image_content_profile(profile_image)
+            reported_f1_profile_size = content_size or raw_size
         report["f1Profile"] = {
             "name": target.name,
             "linkageId": target.linkage_id,
             "swf": swf_rel,
             "characterId": char_id,
-            "rawSize": list(f1_profile_size),
+            "rawSize": list(raw_size),
+            "contentBBox": list(content_bbox) if content_bbox is not None else None,
+            "contentProfileSize": list(reported_f1_profile_size),
         }
         break
 
@@ -3707,9 +3764,12 @@ def main() -> int:
 
             with Image.open(f1) as profile_image:
                 target_profile_size = profile_image.size
+                target_content_profile_size, _ = image_content_profile(profile_image)
+            if target_content_profile_size is None:
+                target_content_profile_size = target_profile_size
 
             exported_frames = find_exported_frame_paths(tmp_dir, swf_rel, char_id)
-            audit = icon_animation_audit(exported_frames, target_profile_size)
+            audit = icon_animation_audit(exported_frames, target_content_profile_size)
             nested_audit = (
                 nested_animation_audit(sprite_graph, timeline_controls, char_id)
                 if sprite_graph
@@ -3821,7 +3881,7 @@ def main() -> int:
                         protect_existing_layout=not args.force_overwrite_existing,
                         report=report,
                         timeout_seconds=args.ffdec_timeout_seconds,
-                        f1_profile_size=f1_profile_size,
+                        f1_profile_size=target_content_profile_size,
                     )
                     if layered_canvas_entry is None:
                         record_issue(
@@ -3866,7 +3926,7 @@ def main() -> int:
                             freeze_parent_frame1=parent_frame1_stop,
                             report=report,
                             timeout_seconds=args.ffdec_timeout_seconds,
-                            f1_profile_size=f1_profile_size,
+                            f1_profile_size=target_content_profile_size,
                         )
                 if layered_canvas_entry is None and nested_canvas_entry is None:
                     payload = {
@@ -3882,8 +3942,8 @@ def main() -> int:
             if export_parent_animation and IMAGE_FORMAT == "webp":
                 normalized_parent_frames = normalize_parent_animation_frames(
                     exported_frames,
-                    target_profile_size,
-                    f1_profile_size=f1_profile_size,
+                    target_content_profile_size,
+                    f1_profile_size=target_content_profile_size,
                 )
                 webp_entry = assemble_animated_webp_entry(
                     project_root=project_root,
@@ -3918,11 +3978,11 @@ def main() -> int:
                     output_dir,
                     hash_base,
                     target.name,
-                    target_profile_size,
+                    target_content_profile_size,
                     args.dry_run,
                     protect_existing_layout=not args.force_overwrite_existing,
                     report=report,
-                    f1_profile_size=f1_profile_size,
+                    f1_profile_size=target_content_profile_size,
                 )
                 if frame_entries:
                     entry["f1"] = frame_entries[0]["uri"]
@@ -4057,7 +4117,7 @@ def main() -> int:
                     filename = f"{hash_base}_{frame_number}.{image_extension()}"
                     normalized = normalize_icon(
                         source_frame,
-                        f1_profile_size if frame_number == 1 else None,
+                        target_content_profile_size if frame_number == 1 else None,
                     )
                     action, stats = write_icon_if_needed(
                         output_dir,
@@ -4095,6 +4155,8 @@ def main() -> int:
                                 "changedAlphaPixels": stats.changed_alpha_pixels,
                             },
                         )
+                if parent_frame1_stop:
+                    order_static_first_frame_entry(entry)
 
             entry = downgrade_visually_static_animation(
                 output_dir=output_dir,
