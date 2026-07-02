@@ -29,7 +29,7 @@ class org.flashNight.arki.map.MapPanelCatalog {
     public static var UNLOCK_META:Object = {};
     public static var NAVIGATE_TARGETS:Object = {};
     public static var HOTSPOT_PAGES:Object = {};
-    // avatar_visibility 派生表：{ npcName: [rule, rule, ...] }
+    // avatar_visibility 派生表：{ avatarId: [rule, rule, ...] }
     // rule = { chain?:String, min?:Number, requireInfra?:Array<String>, avatarId:String }
     // 同一 npc 多条 rule = AND；空表 = 无门控 = 默认可见。
     public static var AVATAR_VISIBILITY_RULES:Object = {};
@@ -47,7 +47,7 @@ class org.flashNight.arki.map.MapPanelCatalog {
     // 与 SaveManager.REPAIR_DICT_TASK_CHAINS 必须一致；任何 schema 扩展须同时同步两边。
     private static var VALID_CHAIN_NAMES:Array = [
         "主线", "引导", "支线", "挑战", "废城",
-        "彩蛋", "异形", "大学", "后勤", "预览"
+        "彩蛋", "异形", "大学", "后勤", "预览", "铁枪会"
     ];
     private static var VALID_INFRA_NAMES:Array = ["自行车", "摩托车", "越野车"];
 
@@ -226,8 +226,9 @@ class org.flashNight.arki.map.MapPanelCatalog {
             if (infraArr != null) ruleObj.requireInfra = infraArr;
 
             var npcKey:String = String(r.npc);
-            if (rules[npcKey] == undefined) rules[npcKey] = [];
-            rules[npcKey].push(ruleObj);
+            var avatarKey:String = String(r.avatarId);
+            if (rules[avatarKey] == undefined) rules[avatarKey] = [];
+            rules[avatarKey].push(ruleObj);
             // avatarId → npc 反查：同 avatarId 重复声明 = 数据错误
             if (idToNpc[String(r.avatarId)] != undefined && idToNpc[String(r.avatarId)] != npcKey) {
                 trace("[MapPanelCatalog] avatar_visibility avatarId '" + r.avatarId + "' 指向不同 npc: " + idToNpc[String(r.avatarId)] + " vs " + npcKey);
@@ -249,6 +250,20 @@ class org.flashNight.arki.map.MapPanelCatalog {
         var rulesForNpc:Array = AVATAR_VISIBILITY_RULES[npcName];
         if (rulesForNpc == undefined || rulesForNpc.length == 0) return true;
 
+        return areVisibilityRulesSatisfied(rulesForNpc);
+    }
+
+    public static function isAvatarVisibleById(avatarId:String, npcName:String):Boolean {
+        if (avatarId != undefined && avatarId != "") {
+            var rulesForAvatar:Array = AVATAR_VISIBILITY_RULES[avatarId];
+            if (rulesForAvatar != undefined && rulesForAvatar.length > 0) {
+                return areVisibilityRulesSatisfied(rulesForAvatar);
+            }
+        }
+        return isAvatarVisible(npcName);
+    }
+
+    private static function areVisibilityRulesSatisfied(rulesForNpc:Array):Boolean {
         var progress:Object = _root.task_chains_progress;
         var infra:Object = (_root.基建系统 != undefined) ? _root.基建系统.infrastructure : undefined;
 

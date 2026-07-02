@@ -8,9 +8,9 @@
 <map_panel>
     <!--
         avatar_visibility: 静态 NPC 头像的进度/基建门控。
-        每条 rule = 一个 NPC 头像的可见门，多条同 npc 规则之间 AND。
+        每条 rule = 一个 avatarId 头像的可见门，多条同 avatarId 规则之间 AND。
         rule 内部：chain/min（可省，配对出现）+ requireInfra（可省，"A|B"=OR）→ 三类之间 AND。
-        chain ∈ SaveManager.REPAIR_DICT_TASK_CHAINS = {主线/引导/支线/挑战/废城/彩蛋/异形/大学/后勤/预览}
+        chain ∈ SaveManager.REPAIR_DICT_TASK_CHAINS = {主线/引导/支线/挑战/废城/彩蛋/异形/大学/后勤/预览/铁枪会}
         requireInfra ∈ {自行车/摩托车/越野车}（白名单）
         avatarId 必须命中 launcher staticAvatars/dynamicAvatars id 集（验证 by tools/audit-map-avatar-visibility.js）
         npc 用于 AS2 端字典 key（兼容 task_npcs.name 命名）

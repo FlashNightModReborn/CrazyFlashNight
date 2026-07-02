@@ -169,20 +169,22 @@ _root.检查任务数据完整性 = function() {
 }
 
 _root.NPCTaskCheck = function(npcname) {
+    var npcHotspot:String = org.flashNight.arki.map.MapHotspotResolver.resolveCurrent();
     for (var index in _root.tasks_to_do) {
-        var finish_npc = TaskUtil.getTaskData(_root.tasks_to_do[index].id).finish_npc;
-        if (finish_npc == npcname && _root.taskCompleteCheck(index)) {
+        var activeTaskData:Object = TaskUtil.getTaskData(_root.tasks_to_do[index].id);
+        if (TaskUtil.taskNpcMatches(activeTaskData, "finish", npcname, npcHotspot) && _root.taskCompleteCheck(index)) {
             return {result: "完成任务", id: index};
         }
     }
-    for (var i = 0; i < TaskUtil.tasks_of_npc[npcname].length; i++) {
-        if (_root.taskAvailable(TaskUtil.tasks_of_npc[npcname][i])) {
+    var npcTaskIds:Array = TaskUtil.getTasksForNpc(npcname, npcHotspot);
+    for (var i = 0; i < npcTaskIds.length; i++) {
+        if (_root.taskAvailable(npcTaskIds[i])) {
             for (var j = 0; j < _root.tasks_to_do.length; j++) {
-                if (_root.tasks_to_do[j].id == TaskUtil.tasks_of_npc[npcname][i]) {
+                if (_root.tasks_to_do[j].id == npcTaskIds[i]) {
                     return {result: "路过"};
                 }
             }
-            return {result: "接受任务", id: TaskUtil.tasks_of_npc[npcname][i]};
+            return {result: "接受任务", id: npcTaskIds[i]};
         }
     }
     return {result: "路过"};
@@ -324,9 +326,9 @@ _root.FinishTask = function(index) {
     }
     if (isTaskInChain) {
         var nextTaskID = chainDict[chainArray[i + 1]];
-        var nextTaskNPC = TaskUtil.getTaskData(nextTaskID).get_npc;
-        // 检查上个任务的交付NPC与下个任务的接取NPC是否相同
-        if (nextTaskNPC == taskData.finish_npc && _root.taskAvailable(nextTaskID)) {
+        var nextTaskData:Object = TaskUtil.getTaskData(nextTaskID);
+        // 检查上个任务的交付NPC与下个任务的接取NPC是否为同一地点的同一NPC
+        if (TaskUtil.canAutoAcceptNextAtFinishNpc(taskData, nextTaskData) && _root.taskAvailable(nextTaskID)) {
             _root.GetTask(nextTaskID);
         }
     }

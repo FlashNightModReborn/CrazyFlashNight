@@ -1494,6 +1494,7 @@ var MapPanel = (function() {
 
     function getMarkerNpcKey(marker) {
         if (!marker) return '';
+        if (marker.placementId) return normalizeNpcMarkerKey(marker.placementId);
         if (marker.npcName) return normalizeNpcMarkerKey(marker.npcName);
         if (marker.id) return normalizeNpcMarkerKey(marker.id);
         if (marker.label) return normalizeNpcMarkerKey(marker.label);
@@ -1504,6 +1505,8 @@ var MapPanel = (function() {
         var keys = [];
         if (!slot) return keys;
 
+        if (slot.placementId) keys.push(normalizeNpcMarkerKey(slot.placementId));
+        if (slot.label && slot.hotspotId) keys.push(normalizeNpcMarkerKey(slot.label + '@' + slot.hotspotId));
         if (slot.label) keys.push(normalizeNpcMarkerKey(slot.label));
         if (slot.id) keys.push(normalizeNpcMarkerKey(slot.id));
         if (slot.assetUrl) keys.push(normalizeNpcMarkerKey(slot.assetUrl));

@@ -11,7 +11,7 @@
  *     （tools/derive-task-npc-registry.js 在 build.ps1 Step 1b 派生为 JSON，由 launcher 缓存后查询返回）
  *   - 对外提供按 _root.tasks_to_do 筛选的 marker 投影（buildTaskNpcMarkers）
  *
- * marker 结构：{ pageId:String, hotspotId:String }
+ * marker 结构：{ npcName:String, pageId:String, hotspotId:String, placementId:String }
  *
  * 约束：
  *   - applyFromQuery 必须在 MapPanelCatalog.applyFromCatalogJson 成功之后调用（读 Catalog.HOTSPOT_PAGES 派生 page）
@@ -30,6 +30,7 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
     private static var _aliases:Object;
     private static var _markers:Object;
     private static var _markersLower:Object;
+    private static var _markersByPlacement:Object;
 
     public static var isLoaded:Boolean = false;
 
@@ -40,17 +41,26 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
      * 同一小写键只在未被占用时写入。
      */
     public static function register(npcName:String, pageId:String,
-                                     hotspotId:String):Void {
+                                     hotspotId:String, placementId:String):Void {
+        if (placementId == undefined || placementId == "") {
+            placementId = npcName + "@" + hotspotId;
+        }
         var markerDef:Object = {
+            npcName: npcName,
             pageId: pageId,
-            hotspotId: hotspotId
+            hotspotId: hotspotId,
+            placementId: placementId
         };
-        _markers[npcName] = markerDef;
+
+        if (_markers[npcName] == undefined) _markers[npcName] = [];
+        _markers[npcName].push(markerDef);
+        _markersByPlacement[getNameHotspotKey(npcName, hotspotId)] = markerDef;
 
         var normalizedKey:String = String(npcName).toLowerCase();
         if (_markersLower[normalizedKey] == undefined) {
-            _markersLower[normalizedKey] = markerDef;
+            _markersLower[normalizedKey] = [];
         }
+        _markersLower[normalizedKey].push(markerDef);
     }
 
     /** 查 alias 表；未命中返回原名 */
@@ -62,21 +72,41 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
         return npcName;
     }
 
-    /** 三级查询：原样 → alias → 小写 fallback */
-    public static function findMarker(npcName:String):Object {
+    /** 三级查询：原样 → alias → 小写 fallback；hotspotId 为空时返回首个 placement（旧协议兼容） */
+    public static function findMarker(npcName:String, hotspotId:String):Object {
         if (npcName == undefined || npcName == "") return undefined;
 
         var resolvedName:String = resolveAliasKey(String(npcName));
-        if (_markers[resolvedName] != undefined) {
-            return _markers[resolvedName];
+        var hotspot:String = (hotspotId == undefined) ? "" : String(hotspotId);
+        if (hotspot != "") {
+            var exact:Object = _markersByPlacement[getNameHotspotKey(resolvedName, hotspot)];
+            if (exact != undefined) return exact;
         }
+
+        var list:Array = _markers[resolvedName];
+        var hit:Object = findInMarkerList(list, hotspot);
+        if (hit != undefined) return hit;
 
         var normalizedKey:String = String(resolvedName).toLowerCase();
-        if (_markersLower[normalizedKey] != undefined) {
-            return _markersLower[normalizedKey];
-        }
+        hit = findInMarkerList(_markersLower[normalizedKey], hotspot);
+        if (hit != undefined) return hit;
 
         return undefined;
+    }
+
+    private static function findInMarkerList(list:Array, hotspotId:String):Object {
+        if (list == undefined || list.length == undefined || list.length == 0) return undefined;
+        if (hotspotId != undefined && hotspotId != "") {
+            for (var i:Number = 0; i < list.length; i++) {
+                if (String(list[i].hotspotId) == hotspotId) return list[i];
+            }
+            return undefined;
+        }
+        return list[0];
+    }
+
+    private static function getNameHotspotKey(npcName:String, hotspotId:String):String {
+        return String(npcName) + "\n" + String(hotspotId);
     }
 
     /**
@@ -97,15 +127,20 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
             if (taskData.finish_npc == undefined) continue;
 
             var finishNpc:String = resolveAliasKey(String(taskData.finish_npc));
-            if (finishNpc == "" || seen[finishNpc]) continue;
+            var finishHotspot:String = taskData.finish_npc_hotspot != undefined ? String(taskData.finish_npc_hotspot) : "";
+            if (finishNpc == "") continue;
 
-            var markerDef:Object = findMarker(finishNpc);
+            var markerDef:Object = findMarker(finishNpc, finishHotspot);
             if (markerDef == undefined) continue;
+            var seenKey:String = String(markerDef.placementId);
+            if (seen[seenKey]) continue;
 
-            seen[finishNpc] = true;
+            seen[seenKey] = true;
             markers.push({
-                id: "task_npc_" + finishNpc,
+                id: "task_npc_" + seenKey,
                 kind: "taskNpc",
+                npcName: finishNpc,
+                placementId: seenKey,
                 pageId: markerDef.pageId,
                 hotspotId: markerDef.hotspotId
             });
@@ -132,9 +167,10 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
             if (taskData == undefined || taskData.finish_npc == undefined) continue;
 
             var finishNpc:String = resolveAliasKey(String(taskData.finish_npc));
+            var finishHotspot:String = taskData.finish_npc_hotspot != undefined ? String(taskData.finish_npc_hotspot) : "";
             if (finishNpc == "") continue;
 
-            var markerDef:Object = findMarker(finishNpc);
+            var markerDef:Object = findMarker(finishNpc, finishHotspot);
             if (markerDef == undefined) continue;
 
             var hid:String = String(markerDef.hotspotId);
@@ -160,6 +196,7 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
         _aliases = {};
         _markers = {};
         _markersLower = {};
+        _markersByPlacement = {};
         isLoaded = false;
 
         if (result == null) {
@@ -171,10 +208,12 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
         var aliasList:Array = (result.aliases == undefined) ? [] : result.aliases;
         var i:Number;
 
-        // 1) npc 结构 + 名字冲突（含大小写折叠）。
+        // 1) npc 结构 + placement 冲突（含大小写折叠）。
         //    派生脚本已校验过；这里保留 fail-fast 防御，避免脏数据流入 _markers。
         var npcNameSet:Object = {};
+        var npcNameHotspotSet:Object = {};
         var npcNameLowerSet:Object = {};
+        var npcPlacementSet:Object = {};
         for (i = 0; i < npcList.length; i++) {
             var n:Object = npcList[i];
             if (n.name == undefined || n.name == "") {
@@ -187,16 +226,25 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
             }
             var nameStr:String = String(n.name);
             var nameLower:String = nameStr.toLowerCase();
-            if (npcNameSet[nameStr] != undefined) {
-                logFail("npc name 重复: " + nameStr);
+            var hotspotStr:String = String(n.hotspot);
+            var nameHotspotKey:String = getNameHotspotKey(nameStr, hotspotStr);
+            if (npcNameHotspotSet[nameHotspotKey] != undefined) {
+                logFail("npc placement 重复: " + nameStr + " @ " + hotspotStr);
                 return false;
             }
-            if (npcNameLowerSet[nameLower] != undefined) {
+            if (npcNameLowerSet[nameLower] != undefined && npcNameLowerSet[nameLower] != nameStr) {
                 logFail("npc name 仅大小写不同冲突: " + nameStr + " vs " + npcNameLowerSet[nameLower]);
                 return false;
             }
+            var placementStr:String = (n.placement != undefined && n.placement != "") ? String(n.placement) : (nameStr + "@" + hotspotStr);
+            if (npcPlacementSet[placementStr] != undefined) {
+                logFail("npc placement id 重复: " + placementStr);
+                return false;
+            }
             npcNameSet[nameStr] = true;
+            npcNameHotspotSet[nameHotspotKey] = true;
             npcNameLowerSet[nameLower] = nameStr;
+            npcPlacementSet[placementStr] = true;
         }
 
         // 2) hotspot 必须在 Catalog 里已登记
@@ -244,7 +292,8 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
             register(
                 String(n3.name),
                 String(MapPanelCatalog.HOTSPOT_PAGES[hid]),
-                hid
+                hid,
+                (n3.placement != undefined && n3.placement != "") ? String(n3.placement) : (String(n3.name) + "@" + hid)
             );
         }
         for (i = 0; i < aliasList.length; i++) {
@@ -269,6 +318,7 @@ class org.flashNight.arki.map.MapTaskNpcRegistry {
         _aliases = {};
         _markers = {};
         _markersLower = {};
+        _markersByPlacement = {};
         return true;
     }
 }

@@ -245,6 +245,7 @@ class org.flashNight.arki.task.TaskPanelService {
 
         // 解析提交NPC
         var npcName:String = taskData.finish_npc != undefined ? String(taskData.finish_npc) : "";
+        var npcHotspot:String = taskData.finish_npc_hotspot != undefined ? String(taskData.finish_npc_hotspot) : "";
 
         // 解析奖励 (rewards: ["itemName#quantity", ...])
         var rewards:Array = parseItemStacks(taskData.rewards, undefined);
@@ -254,7 +255,7 @@ class org.flashNight.arki.task.TaskPanelService {
         // 面板据此对「非远程但可前往」的任务把按钮变为可点的「前往交付」。注册/目录未就绪时回 false（优雅降级）。
         var finishNavigable:Boolean = false;
         if (npcName != "") {
-            var navMarker:Object = org.flashNight.arki.map.MapTaskNpcRegistry.findMarker(npcName);
+            var navMarker:Object = org.flashNight.arki.map.MapTaskNpcRegistry.findMarker(npcName, npcHotspot);
             if (navMarker != undefined) {
                 finishNavigable = org.flashNight.arki.map.MapPanelService.canNavigateToHotspot(String(navMarker.hotspotId));
             }
@@ -404,12 +405,13 @@ class org.flashNight.arki.task.TaskPanelService {
 
         var taskData:Object = TaskUtil.tasks[_root.tasks_to_do[index].id];
         var npc:String = (taskData != undefined && taskData.finish_npc != undefined) ? String(taskData.finish_npc) : "";
+        var npcHotspot:String = (taskData != undefined && taskData.finish_npc_hotspot != undefined) ? String(taskData.finish_npc_hotspot) : "";
         if (npc == "") {
             sendResponse({ task: "task_response", callId: callId, success: false, error: "npc_not_on_map" });
             return;
         }
 
-        var marker:Object = org.flashNight.arki.map.MapTaskNpcRegistry.findMarker(npc);
+        var marker:Object = org.flashNight.arki.map.MapTaskNpcRegistry.findMarker(npc, npcHotspot);
         if (marker == undefined) {
             sendResponse({ task: "task_response", callId: callId, success: false, error: "npc_not_on_map" });
             return;

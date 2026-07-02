@@ -33,6 +33,7 @@ const projectRoot = path.resolve(__dirname, '..');
 const metricsFile = path.join(projectRoot, 'scripts', '类定义', 'org', 'flashNight', 'arki', 'achievement', 'AchievementMetrics.as');
 const defaultTaskDir = path.join(projectRoot, 'data', 'task');
 const defaultOutput = path.join(projectRoot, 'launcher', 'web', 'modules', 'tasks', 'task-catalog.json');
+const taskNpcRegistryFile = path.join(projectRoot, 'data', 'map', 'task_npc_registry.json');
 let taskDir = defaultTaskDir;            // --task-dir 可覆盖（测试夹具用，见 tools/test-derive-task-conditions.js）
 let textDir = path.join(defaultTaskDir, 'text');
 let itemMetaByName = null;
@@ -143,8 +144,65 @@ function parseNameCount(entry, kind) {
     if (kind) o.kind = kind;
     return itemMetaByName ? attachIcon(o, itemMetaByName) : o;
 }
+
+function loadTaskNpcPlacementIndex() {
+    if (path.resolve(taskDir) !== path.resolve(defaultTaskDir)) return null;
+    const registry = readJson(taskNpcRegistryFile);
+    const byName = {};
+    const byNameHotspot = {};
+    const lowerName = {};
+    const aliases = {};
+    const list = Array.isArray(registry.task_npcs) ? registry.task_npcs : [];
+    for (let i = 0; i < list.length; i += 1) {
+        const n = list[i] || {};
+        if (typeof n.name !== 'string' || typeof n.hotspot !== 'string') continue;
+        if (!byName[n.name]) byName[n.name] = [];
+        byName[n.name].push(n.hotspot);
+        byNameHotspot[n.name + '\n' + n.hotspot] = true;
+        if (lowerName[n.name.toLowerCase()] === undefined) lowerName[n.name.toLowerCase()] = n.name;
+    }
+    const aliasList = Array.isArray(registry.aliases) ? registry.aliases : [];
+    for (let i = 0; i < aliasList.length; i += 1) {
+        const a = aliasList[i] || {};
+        if (typeof a.name === 'string' && typeof a.canonical === 'string') aliases[a.name] = a.canonical;
+    }
+    return { byName, byNameHotspot, lowerName, aliases };
+}
+
+function resolveRegistryNpcName(index, rawName) {
+    const name = String(rawName || '');
+    if (index.byName[name]) return name;
+    if (index.aliases[name] !== undefined) return index.aliases[name];
+    const lower = name.toLowerCase();
+    if (index.lowerName[lower] !== undefined) return index.lowerName[lower];
+    return name;
+}
+
+function validateTaskNpcEndpoint(t, role, ctx, placementIndex) {
+    if (!placementIndex) return;
+    const nameField = role === 'get' ? 'get_npc' : 'finish_npc';
+    const hotspotField = role === 'get' ? 'get_npc_hotspot' : 'finish_npc_hotspot';
+    if (typeof t[nameField] !== 'string' || t[nameField] === '') return;
+
+    const resolvedName = resolveRegistryNpcName(placementIndex, t[nameField]);
+    const placements = placementIndex.byName[resolvedName] || [];
+    const hotspot = typeof t[hotspotField] === 'string' ? t[hotspotField] : '';
+
+    if (hotspot !== '') {
+        if (!placementIndex.byNameHotspot[resolvedName + '\n' + hotspot]) {
+            fail(ctx + ': ' + hotspotField + '="' + hotspot + '" does not match registry placement for ' + nameField + '="' + t[nameField] + '"');
+        }
+        return;
+    }
+
+    if (placements.length > 1) {
+        fail(ctx + ': ' + nameField + '="' + t[nameField] + '" has multiple map placements (' + placements.join(', ') + '); add ' + hotspotField);
+    }
+}
+
 function buildCatalog(rawTasks, taskTexts) {
     const tasks = {};
+    const npcPlacementIndex = loadTaskNpcPlacementIndex();
     // conditions 校验（任务-成就判定层共享，可选字段；设计 docs/任务成就-判定层共享-设计-2026-06-11.md §3）。
     // economyCount 白名单惰性解析：仅当数据真用到 economyCount 才读 AchievementMetrics.as。
     let economyCounters = null;
@@ -174,6 +232,8 @@ function buildCatalog(rawTasks, taskTexts) {
         }
 
         const ctx = 'task ' + idKey;
+        validateTaskNpcEndpoint(t, 'get', ctx, npcPlacementIndex);
+        validateTaskNpcEndpoint(t, 'finish', ctx, npcPlacementIndex);
 
         // conditions（可选）：逐条过共享校验器（类型枚举/target/label/params/sinceAccept 单调限定）
         if (t.conditions !== undefined) {

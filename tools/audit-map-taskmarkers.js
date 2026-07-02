@@ -48,11 +48,19 @@ function loadRegistry() {
         const obj = JSON.parse(fs.readFileSync(registryFile, 'utf8'));
         const npcSet = new Set();
         const npcLowerSet = new Map();  // lower → canonical original
+        const npcHotspots = {};
+        const npcHotspotSet = new Set();
         const aliasMap = {};
         (obj.task_npcs || []).forEach(function(n) {
             if (n && n.name) {
                 const name = String(n.name);
+                const hotspot = n.hotspot ? String(n.hotspot) : '';
                 npcSet.add(name);
+                if (!npcHotspots[name]) npcHotspots[name] = [];
+                if (hotspot) {
+                    npcHotspots[name].push(hotspot);
+                    npcHotspotSet.add(name + '\n' + hotspot);
+                }
                 const lower = name.toLowerCase();
                 if (!npcLowerSet.has(lower)) npcLowerSet.set(lower, name); // "先来先占" 对齐 AS2 register()
             }
@@ -60,23 +68,38 @@ function loadRegistry() {
         (obj.aliases || []).forEach(function(a) {
             if (a && a.name && a.canonical) aliasMap[String(a.name)] = String(a.canonical);
         });
-        return { ok: true, npcSet: npcSet, npcLowerSet: npcLowerSet, aliasMap: aliasMap, raw: obj };
+        return { ok: true, npcSet: npcSet, npcLowerSet: npcLowerSet, npcHotspots: npcHotspots, npcHotspotSet: npcHotspotSet, aliasMap: aliasMap, raw: obj };
     } catch (e) {
         return { ok: false, error: 'registry JSON parse failed: ' + e.message };
     }
 }
 
 // 对齐 MapTaskNpcRegistry.findMarker 三级查询：原样 → alias → 小写 fallback
-function lookupNpc(reg, name) {
-    if (reg.npcSet.has(name)) return { hit: true, via: 'exact', resolved: name };
+function lookupNpc(reg, name, hotspot) {
+    if (reg.npcSet.has(name)) return resolvePlacement(reg, { hit: true, via: 'exact', resolved: name }, hotspot);
     if (reg.aliasMap[name] !== undefined) {
         const canon = reg.aliasMap[name];
-        if (reg.npcSet.has(canon)) return { hit: true, via: 'alias', resolved: canon };
+        if (reg.npcSet.has(canon)) return resolvePlacement(reg, { hit: true, via: 'alias', resolved: canon }, hotspot);
         return { hit: false, via: 'alias-broken', resolved: canon };
     }
     const lower = String(name).toLowerCase();
-    if (reg.npcLowerSet.has(lower)) return { hit: true, via: 'lowerFallback', resolved: reg.npcLowerSet.get(lower) };
+    if (reg.npcLowerSet.has(lower)) return resolvePlacement(reg, { hit: true, via: 'lowerFallback', resolved: reg.npcLowerSet.get(lower) }, hotspot);
     return { hit: false, via: 'miss', resolved: null };
+}
+
+function resolvePlacement(reg, res, hotspot) {
+    const placements = reg.npcHotspots[res.resolved] || [];
+    if (hotspot) {
+        if (!reg.npcHotspotSet.has(res.resolved + '\n' + hotspot)) {
+            return { hit: false, via: 'placement-miss', resolved: res.resolved, hotspot: hotspot, placements: placements };
+        }
+        res.hotspot = hotspot;
+        res.ambiguous = false;
+        return res;
+    }
+    res.placements = placements;
+    res.ambiguous = placements.length > 1;
+    return res;
 }
 
 function collectFinishNpcs() {
@@ -94,7 +117,7 @@ function collectFinishNpcs() {
         const list = (obj && Array.isArray(obj.tasks)) ? obj.tasks : [];
         list.forEach(function(t) {
             if (t && typeof t.finish_npc === 'string' && t.finish_npc !== '') {
-                refs.push({ file: file, taskId: t.id, finishNpc: t.finish_npc });
+                refs.push({ file: file, taskId: t.id, finishNpc: t.finish_npc, finishHotspot: t.finish_npc_hotspot || '' });
             }
         });
     });
@@ -122,8 +145,16 @@ function main() {
             errors.push({ tier: 'parse', file: r.file, reason: 'JSON parse failed: ' + r.error });
             return;
         }
-        const res = lookupNpc(reg, r.finishNpc);
+        const res = lookupNpc(reg, r.finishNpc, r.finishHotspot);
         if (res.hit) {
+            if (res.ambiguous) {
+                errors.push({
+                    tier: 'placement',
+                    file: r.file, taskId: r.taskId,
+                    reason: 'finish_npc="' + r.finishNpc + '" 有多个地图 placement (' + res.placements.join(', ') + ')，必须补 finish_npc_hotspot'
+                });
+                return;
+            }
             if (res.via === 'alias') {
                 aliasHits.push({ file: r.file, taskId: r.taskId, finishNpc: r.finishNpc, canonical: res.resolved });
             } else if (res.via === 'lowerFallback') {
@@ -137,6 +168,14 @@ function main() {
                 tier: 1,
                 file: r.file, taskId: r.taskId,
                 reason: 'finish_npc="' + r.finishNpc + '" 通过 alias 映射到 "' + res.resolved + '"，但 canonical 不在 registry.task_npcs（registry 自己破损）'
+            });
+            return;
+        }
+        if (res.via === 'placement-miss') {
+            errors.push({
+                tier: 'placement',
+                file: r.file, taskId: r.taskId,
+                reason: 'finish_npc="' + r.finishNpc + '" 的 finish_npc_hotspot="' + r.finishHotspot + '" 未命中 registry placement（可选: ' + res.placements.join(', ') + '）'
             });
             return;
         }

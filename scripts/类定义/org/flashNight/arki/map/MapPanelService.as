@@ -350,7 +350,7 @@ class org.flashNight.arki.map.MapPanelService {
             markers: buildMarkers(currentHotspotId),
             tips: buildTips(currentHotspotId),
             // ── v3 新增字段 ──
-            // taskChains: 10 条 task_chain 全量进度（SaveManager.REPAIR_DICT_TASK_CHAINS 一致）
+            // taskChains: task_chain 全量进度（SaveManager.REPAIR_DICT_TASK_CHAINS 一致）
             // infrastructure: 3 项基建状态
             // avatarVisibility: { launcher slot id → boolean }，由 MapPanelCatalog.isAvatarVisible 派生
             taskChains: buildTaskChainsSnapshot(),
@@ -361,7 +361,7 @@ class org.flashNight.arki.map.MapPanelService {
 
     private static var TASK_CHAIN_NAMES:Array = [
         "主线", "引导", "支线", "挑战", "废城",
-        "彩蛋", "异形", "大学", "后勤", "预览"
+        "彩蛋", "异形", "大学", "后勤", "预览", "铁枪会"
     ];
     private static var INFRA_KEYS:Array = ["自行车", "摩托车", "越野车"];
 
@@ -398,7 +398,7 @@ class org.flashNight.arki.map.MapPanelService {
         var idMap:Object = MapPanelCatalog.AVATAR_ID_TO_NPC;
         for (var avatarId:String in idMap) {
             var npcName:String = String(idMap[avatarId]);
-            result[avatarId] = MapPanelCatalog.isAvatarVisible(npcName);
+            result[avatarId] = MapPanelCatalog.isAvatarVisibleById(avatarId, npcName);
         }
         return result;
     }

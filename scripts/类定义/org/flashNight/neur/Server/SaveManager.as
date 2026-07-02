@@ -192,7 +192,7 @@ class org.flashNight.neur.Server.SaveManager {
 
     public static var REPAIR_DICT_TASK_CHAINS:Array = [
         "主线", "引导", "支线", "挑战", "废城",
-        "彩蛋", "异形", "大学", "后勤", "预览"
+        "彩蛋", "异形", "大学", "后勤", "预览", "铁枪会"
     ];
 
     public static var REPAIR_DICT_STAGES:Array = [

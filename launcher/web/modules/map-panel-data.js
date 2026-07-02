@@ -191,7 +191,7 @@ var MapPanelData = (function() {
             ['blue_avatar', 'Blue', 'basement1', 'blue头像.png'],
             ['xiaof_avatar', '小F', 'armory', '小F头像.png'],
             ['chef_avatar', '厨师', 'cafeteria', '厨师头像.png'],
-            ['master_swordman_avatar', '武器大师', 'gym', '武器大师头像.png']
+            ['master_swordman_gym_avatar', '武器大师', 'gym', '武器大师头像.png']
         ]),
         faction: buildStaticAvatarSlots([
             ['general_avatar', 'general', 'warlord_base', 'general头像.png'],
@@ -210,12 +210,12 @@ var MapPanelData = (function() {
             ['cyborg_sage_avatar', '假肢仙人', 'fallen_street', '假肢仙人头像.png'],
             ['hitler_avatar', '吸特乐', 'fallen_street', '吸特乐头像.png'],
             ['researcher_avatar', 'researcher', 'fallen_street', 'researcher头像.png'],
-            ['cowboy_avatar', '调酒师', 'fallen_bar', '调酒师头像.png']
+            ['bartender_fallen_avatar', '调酒师', 'fallen_bar', '调酒师头像.png']
         ]),
         defense: buildStaticAvatarSlots([
             ['artist_avatar', 'artist', 'first_defense', 'artist头像.png'],
             ['soldier_avatar', 'soldier', 'first_defense', 'soldier头像.png'],
-            ['master_swordman_avatar', '武器大师', 'first_defense', '武器大师头像第一防线.png'],
+            ['master_swordman_first_defense_avatar', '武器大师', 'first_defense', '武器大师头像第一防线.png'],
             ['paigu_avatar', '排骨', 'alliance_dock', '排骨头像.png'],
             ['jige_avatar', '机哥', 'alliance_dock', '机哥头像.png'],
             ['abo_avatar', '阿波', 'alliance_dock', '阿波头像.png'],

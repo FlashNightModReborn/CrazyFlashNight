@@ -67,6 +67,10 @@ function fail(msg) {
     process.exit(1);
 }
 
+function makePlacementId(label, hotspotId) {
+    return String(label) + '@' + String(hotspotId);
+}
+
 function collectTaskNpcs(MapPanelData) {
     const order = MapPanelData.getPageOrder();
     const allHotspotIds = {};
@@ -75,9 +79,14 @@ function collectTaskNpcs(MapPanelData) {
 
     const npcs = [];
     const nameSet = new Set();
+    const nameHotspotSet = new Set();
+    const placementSet = new Set();
     const nameLowerSet = new Map(); // lower → original
 
-    function addOne(label, hotspotId, originPage, originKind) {
+    function addOne(slot, originPage, originKind) {
+        const label = slot && slot.label;
+        const hotspotId = slot && slot.hotspotId;
+        const avatarId = slot && slot.id ? String(slot.id) : '';
         if (!label || typeof label !== 'string') {
             fail('empty label in ' + originPage + '.' + originKind);
         }
@@ -87,16 +96,25 @@ function collectTaskNpcs(MapPanelData) {
         if (!allHotspotIds[hotspotId]) {
             fail('hotspotId "' + hotspotId + '" (label="' + label + '") not in MapPanelData hotspot set');
         }
-        if (nameSet.has(label)) {
-            fail('duplicate NPC label "' + label + '" (originPage=' + originPage + ')');
+        const nameHotspotKey = label + '\n' + hotspotId;
+        if (nameHotspotSet.has(nameHotspotKey)) {
+            fail('duplicate NPC placement label="' + label + '" hotspotId="' + hotspotId + '" (originPage=' + originPage + ')');
+        }
+        const placementId = slot.placementId ? String(slot.placementId) : makePlacementId(label, hotspotId);
+        if (placementSet.has(placementId)) {
+            fail('duplicate NPC placement id "' + placementId + '" (label="' + label + '", hotspotId="' + hotspotId + '")');
         }
         const lower = label.toLowerCase();
         if (nameLowerSet.has(lower) && nameLowerSet.get(lower) !== label) {
             fail('NPC label "' + label + '" collides with "' + nameLowerSet.get(lower) + '" on lowercase fold');
         }
         nameSet.add(label);
+        nameHotspotSet.add(nameHotspotKey);
+        placementSet.add(placementId);
         nameLowerSet.set(lower, label);
-        npcs.push({ name: label, hotspot: hotspotId });
+        const entry = { name: label, hotspot: hotspotId, placement: placementId };
+        if (avatarId) entry.avatarId = avatarId;
+        npcs.push(entry);
     }
 
     for (let i = 0; i < order.length; i += 1) {
@@ -106,11 +124,11 @@ function collectTaskNpcs(MapPanelData) {
 
         const statics = page.staticAvatars || [];
         for (let j = 0; j < statics.length; j += 1) {
-            addOne(statics[j].label, statics[j].hotspotId, pageId, 'staticAvatars');
+            addOne(statics[j], pageId, 'staticAvatars');
         }
         const dynamics = page.dynamicAvatars || [];
         for (let j = 0; j < dynamics.length; j += 1) {
-            addOne(dynamics[j].label, dynamics[j].hotspotId, pageId, 'dynamicAvatars');
+            addOne(dynamics[j], pageId, 'dynamicAvatars');
         }
     }
 

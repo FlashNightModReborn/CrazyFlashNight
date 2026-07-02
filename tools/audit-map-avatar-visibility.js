@@ -8,7 +8,7 @@
 //   档 0a (ERROR): <rule> 必须有 avatarId 属性
 //   档 0b (ERROR): <rule> 必须有 npc 属性
 //   档 0c (ERROR): chain/min 必须配对（要么都有要么都没）
-//   档 0d (ERROR): chain 必须 ∈ VALID_CHAIN_NAMES（10 个 task_chain canonical）
+//   档 0d (ERROR): chain 必须 ∈ VALID_CHAIN_NAMES（task_chain canonical）
 //   档 0e (ERROR): min 必须为非负数值
 //   档 0f (ERROR): requireInfra="A|B" 切分后每项必须 ∈ VALID_INFRA_NAMES
 //   档 0g (ERROR): 同一 avatarId 不可指向不同 npc
@@ -26,10 +26,11 @@ const vm = require('vm');
 const projectRoot = path.resolve(__dirname, '..');
 const mapDataFile = path.join(projectRoot, 'launcher', 'web', 'modules', 'map-panel-data.js');
 const xmlFile = path.join(projectRoot, 'data', 'map', 'map_panel.xml');
+const registryFile = path.join(projectRoot, 'data', 'map', 'task_npc_registry.json');
 
 const VALID_CHAIN_NAMES = [
     '主线', '引导', '支线', '挑战', '废城',
-    '彩蛋', '异形', '大学', '后勤', '预览'
+    '彩蛋', '异形', '大学', '后勤', '预览', '铁枪会'
 ];
 const VALID_INFRA_NAMES = ['自行车', '摩托车', '越野车'];
 
@@ -91,18 +92,17 @@ function parseXmlRules() {
     return rules;
 }
 
-function parseXmlNpcNames() {
-    const raw = fs.readFileSync(xmlFile, 'utf8');
-    const npcRe = /<npc\s+([^/>]+)\/>/g;
-    const attrRe = /(\w+)\s*=\s*"([^"]*)"/g;
+function parseRegistryNpcNames() {
     const names = new Set();
-    let m;
-    while ((m = npcRe.exec(raw)) !== null) {
-        attrRe.lastIndex = 0;
-        let a;
-        while ((a = attrRe.exec(m[1])) !== null) {
-            if (a[1] === 'name') names.add(a[2]);
+    if (!fs.existsSync(registryFile)) return names;
+    try {
+        const obj = JSON.parse(fs.readFileSync(registryFile, 'utf8'));
+        const list = Array.isArray(obj.task_npcs) ? obj.task_npcs : [];
+        for (let i = 0; i < list.length; i += 1) {
+            if (list[i] && list[i].name) names.add(String(list[i].name));
         }
+    } catch (e) {
+        // registry 破损由 derive/audit-map-taskmarkers 负责硬失败；这里仅跳过 lint 集合。
     }
     return names;
 }
@@ -126,7 +126,7 @@ function main() {
     const args = parseArgs(process.argv.slice(2));
     const MapPanelData = loadMapPanelData();
     const rules = parseXmlRules();
-    const xmlNpcNames = parseXmlNpcNames();
+    const registryNpcNames = parseRegistryNpcNames();
     const launcherAvatarIds = collectAvatarIds(MapPanelData);
 
     const errors = [];
@@ -157,7 +157,7 @@ function main() {
         }
         // 档 0d: chain 白名单
         if (hasChain && VALID_CHAIN_NAMES.indexOf(r.chain) < 0) {
-            errors.push({ tier: '0d', rule: r.avatarId, reason: 'chain="' + r.chain + '" 不在 VALID_CHAIN_NAMES (10个 canonical) 内' });
+            errors.push({ tier: '0d', rule: r.avatarId, reason: 'chain="' + r.chain + '" 不在 VALID_CHAIN_NAMES canonical 内' });
             continue;
         }
         // 档 0e: min 非负数值
@@ -194,7 +194,7 @@ function main() {
         }
 
         // 档 2 (lint): npc 不在 task_npcs 内仅作 warning（允许对非任务静态 NPC 加 rule）
-        if (!xmlNpcNames.has(r.npc)) {
+        if (!registryNpcNames.has(r.npc)) {
             warnings.push({ tier: 2, rule: r.avatarId, reason: 'npc="' + r.npc + '" 不在 task_npcs/npc 集内（非任务静态 NPC 也允许加 rule，仅提示）' });
         }
 
