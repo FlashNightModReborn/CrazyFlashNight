@@ -596,10 +596,20 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
     public static function updateWeqaponSkills(__target:MovieClip):Void{
         var target:MovieClip = __target;
 
-        target.主动战技 = {空手: null, 兵器: null, 长枪: null};
-        target.装载主动战技(target.手部装备数据.skill, "空手");
-        target.装载主动战技(target.刀数据.skill, "兵器");
-        target.装载主动战技(target.长枪数据.skill, "长枪");
+        target.主动战技 = _root.主角函数.创建主动战技槽位表();
+        loadWeaponSkill(target, "手部装备");
+        loadWeaponSkill(target, "刀");
+        loadWeaponSkill(target, "长枪");
+        loadWeaponSkill(target, "手枪");
+        loadWeaponSkill(target, "手枪2");
+    }
+
+    private static function loadWeaponSkill(target:MovieClip, equipType:String):Void{
+        var data:Object = target[equipType + "数据"];
+        var skillType:String = _root.主角函数.获取装备主动战技种类(equipType, data ? data.use : null);
+        if (skillType) {
+            target.装载主动战技(data.skill, skillType);
+        }
     }
 
     public static function updateLifeCycles(__target:MovieClip):Void{

@@ -7,23 +7,24 @@
     var 是否为主角 = this._name === _root.控制目标
     var 装备名称 = this[装备类型].name;
     var 装备种类 = this[装备类型 + "数据"].use;
-    var 战技种类 = null;
+    var 战技种类 = _root.主角函数.获取装备主动战技种类(装备类型, 装备种类);
     var 威力基数;
 
     switch(装备种类){
         case "刀": 
-            战技种类 = "兵器"; 
             威力基数 = this.刀属性.power;
             break;
 
         case "长枪": 
-            战技种类 = "长枪"; 
             威力基数 = this.长枪属性.power
             break;
 
-        case "手部装备": 
-            战技种类 = "空手"; 
+        case "手枪":
+            var 当前枪械属性 = this[装备类型 + "属性"];
+            威力基数 = 当前枪械属性 && 当前枪械属性.power != undefined ? 当前枪械属性.power : this.空手攻击力;
+            break;
 
+        case "手部装备":
         default:
             威力基数 = this.空手攻击力;
             break;

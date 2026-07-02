@@ -1736,6 +1736,24 @@ _root.主角函数.释放技能 = function(技能名, 消耗mp, 技能按键值)
     return false;
 }
 
+_root.主角函数.创建主动战技槽位表 = function() {
+    return {空手: null, 兵器: null, 长枪: null, 手枪: null, 手枪2: null};
+}
+
+_root.主角函数.获取装备主动战技种类 = function(装备类型, 装备种类) {
+    switch (装备种类) {
+        case "刀":
+            return "兵器";
+        case "长枪":
+            return "长枪";
+        case "手部装备":
+            return "空手";
+        case "手枪":
+            return 装备类型 == "手枪2" ? "手枪2" : "手枪";
+    }
+    return null;
+}
+
 _root.主角函数.释放主动战技 = function() {
     var 当前战技 = this.主动战技[攻击模式];
     if (!当前战技 || !当前战技.战技函数)
@@ -1763,24 +1781,28 @@ _root.主角函数.释放主动战技 = function() {
 }
 
 _root.主角函数.装载主动战技 = function(战技信息, 攻击模式) {
-    if (!战技信息.skillname) {
+    if (!攻击模式)
+        return;
+    if (!战技信息 || !战技信息.skillname) {
         this.主动战技[攻击模式] = null;
         return;
     }
     var 当前战技 = {};
     当前战技.名字 = 战技信息.skillname;
     当前战技.冷却时间 = 战技信息.cd > 100 ? Number(战技信息.cd) : 100; //冷却时间的下限为0.1秒
-    if (战技信息.hp.indexOf("%") === 战技信息.hp.length - 1 && 战技信息.hp.split("%")[0] > 0) {
-        var 消耗百分比 = Number(战技信息.hp.split("%")[0]);
+    var hp消耗信息 = 战技信息.hp == undefined ? "0" : String(战技信息.hp);
+    var mp消耗信息 = 战技信息.mp == undefined ? "0" : String(战技信息.mp);
+    if (hp消耗信息.indexOf("%") === hp消耗信息.length - 1 && hp消耗信息.split("%")[0] > 0) {
+        var 消耗百分比 = Number(hp消耗信息.split("%")[0]);
         当前战技.消耗hp = Math.floor(消耗百分比 * this.hp满血值 * 0.01);
     } else {
-        当前战技.消耗hp = 战技信息.hp > 0 ? Number(战技信息.hp) : 0;
+        当前战技.消耗hp = hp消耗信息 > 0 ? Number(hp消耗信息) : 0;
     }
-    if (战技信息.mp.indexOf("%") === 战技信息.mp.length - 1 && 战技信息.mp.split("%")[0] > 0) {
-        var 消耗百分比 = Number(战技信息.mp.split("%")[0]);
+    if (mp消耗信息.indexOf("%") === mp消耗信息.length - 1 && mp消耗信息.split("%")[0] > 0) {
+        var 消耗百分比 = Number(mp消耗信息.split("%")[0]);
         当前战技.消耗mp = Math.floor(消耗百分比 * this.mp满血值 * 0.01);
     } else {
-        当前战技.消耗mp = 战技信息.mp > 0 ? Number(战技信息.mp) : 0;
+        当前战技.消耗mp = mp消耗信息 > 0 ? Number(mp消耗信息) : 0;
     }
     // 当前战技.伤害参数 = 战技信息.damage > 0 ? Number(战技信息.damage) : 0;
     var 战技函数表 = _root.主动战技函数[攻击模式];
@@ -2042,6 +2064,8 @@ _root.初始化玩家模板 = function() {
     this.释放技能 = _root.主角函数.释放技能;
     this.释放主动战技 = _root.主角函数.释放主动战技;
     this.装载主动战技 = _root.主角函数.装载主动战技;
+    this.创建主动战技槽位表 = _root.主角函数.创建主动战技槽位表;
+    this.获取装备主动战技种类 = _root.主角函数.获取装备主动战技种类;
     this.装载生命周期函数 = _root.主角函数.装载生命周期函数;
     this.完成生命周期函数装载 = _root.主角函数.完成生命周期函数装载;
     this.读取被动效果 = _root.主角函数.读取被动效果;
@@ -2084,7 +2108,7 @@ _root.初始化玩家模板 = function() {
 
     不掉钱 = 不掉钱 ? true : false;
     不掉装备 = 不掉装备 ? true : false;
-    主动战技 = {空手: null, 兵器: null, 长枪: null};
+    主动战技 = _root.主角函数.创建主动战技槽位表();
 
     操控编号 = _root.获取操控编号(this._name);
     if (操控编号 != -1) {
