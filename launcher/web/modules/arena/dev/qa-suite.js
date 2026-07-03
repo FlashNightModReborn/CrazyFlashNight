@@ -945,14 +945,14 @@ var ArenaHarnessQA = (function() {
                 var backBtn = resultView.querySelector('[data-custom-result-action="back"]');
                 api.assert(!!backBtn, '结算页应提供返回基地按钮');
                 api.assert(/返回基地/.test(resultView.textContent), '结算页退出文案应指向返回基地');
-                document.querySelector('.arena-close-btn').click();
+                chrome.webview.__dispatch({ type: 'panel_esc' });
                 return api.waitFor(function() {
                     for (var i = 0; i < host.sentMessages.length; i++) {
                         var msg = host.sentMessages[i];
                         if (msg && msg.cmd === 'close' && msg.dismissReturnStack && msg.returnBase) return true;
                     }
                     return false;
-                }, 2000, 'custom result close returns base');
+                }, 2000, 'custom result ESC/backdrop close returns base');
             })
             .then(function() {
                 var startCloses = host.sentMessages.filter(function(m) {

@@ -117,7 +117,7 @@
     Panels.register('arena', {
         create: createDOM,
         onOpen: onOpen,
-        onRequestClose: requestClose,
+        onRequestClose: onArenaRequestClose,
         onClose: onClose
     });
 
@@ -177,7 +177,7 @@
         _detailRollBtn = _el.querySelector('.arena-detail-roll');
         _detailConfirmBtn = _el.querySelector('.arena-detail-confirm');
 
-        _el.querySelector('.arena-close-btn').addEventListener('click', onArenaCloseClick);
+        _el.querySelector('.arena-close-btn').addEventListener('click', onArenaRequestClose);
         _el.querySelector('.arena-detail-back').addEventListener('click', backToGrid);
         _customResultViewEl.addEventListener('click', onCustomResultClick);
         _customEditorViewEl.addEventListener('click', onCustomWorkbenchClick);
@@ -673,7 +673,7 @@
         Bridge.send(msg);
     }
 
-    function onArenaCloseClick() {
+    function onArenaRequestClose() {
         if (_customResultViewEl && !_customResultViewEl.hidden) {
             requestCustomResultReturnBase();
             return;
