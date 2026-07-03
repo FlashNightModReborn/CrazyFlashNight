@@ -64,6 +64,31 @@ function checkManifestAdapter() {
   assert.ok(normalized.cases[0].caseHash.startsWith("sha256:"));
 }
 
+function checkPvePayload() {
+  const parsed = parse("CF7ARENA:v1;mode=pve;seed=3307;enemy=u164@60x1,u11@10x2;player=current");
+  assert.strictEqual(parsed.mode, "pve");
+  assert.strictEqual(parsed.seed, 3307);
+  assert.strictEqual(parsed.player, "current");
+  assert.strictEqual(parsed.enemyRoster.length, 2);
+  assert.strictEqual(parsed.enemyRoster[1].type, "兵种11");
+  assert.strictEqual(parsed.enemyRoster[1].count, 2);
+  assert.strictEqual(parsed.calibrationCase, undefined);
+  assert.strictEqual(parsed.venueFeeEstimate, 0);
+  assert.strictEqual(
+    parsed.canonical,
+    "CF7ARENA:v1;mode=pve;seed=3307;enemy=u164@60x1,u11@10x2;player=current"
+  );
+  assert.deepStrictEqual(parsed.enterPayload.roster, [
+    { type: "兵种164", level: 60 },
+    { type: "兵种11", level: 10 },
+    { type: "兵种11", level: 10 },
+  ]);
+  assert.strictEqual(parsed.enterPayload.cmd, "enter");
+  assert.strictEqual(parsed.enterPayload.mode, "custom_pve");
+  assert.strictEqual(parsed.enterPayload.deposit, 0);
+  assert.strictEqual(parsed.enterPayload.reward, 0);
+}
+
 function checkRejections() {
   expectRejected("unknown unit", () =>
     parse("CF7ARENA:v1;mode=mvm;seed=1;blue=u99999@1x1;red=u11@30x1")
@@ -71,8 +96,14 @@ function checkRejections() {
   expectRejected("economy field", () =>
     parse("CF7ARENA:v1;mode=mvm;seed=1;blue=u164@60x1;red=u11@30x1;reward=999")
   );
-  expectRejected("pve in P1", () =>
-    parse("CF7ARENA:v1;mode=pve;seed=1;enemy=u11@30x1;player=current")
+  expectRejected("pve wrong player", () =>
+    parse("CF7ARENA:v1;mode=pve;seed=1;enemy=u11@30x1;player=saved")
+  );
+  expectRejected("pve blue field", () =>
+    parse("CF7ARENA:v1;mode=pve;seed=1;blue=u44@30x1;enemy=u11@30x1;player=current")
+  );
+  expectRejected("mvm enemy field", () =>
+    parse("CF7ARENA:v1;mode=mvm;seed=1;blue=u164@60x1;red=u11@30x1;enemy=u44@30x1")
   );
   expectRejected("duplicate field", () =>
     parse("CF7ARENA:v1;mode=mvm;mode=mvm;seed=1;blue=u164@60x1;red=u11@30x1")
@@ -86,6 +117,7 @@ function main() {
   checkCanonicalRoundTrip();
   checkChineseTypeAlias();
   checkManifestAdapter();
+  checkPvePayload();
   checkRejections();
   console.log(JSON.stringify({ ok: true, test: path.basename(__filename) }, null, 2));
 }

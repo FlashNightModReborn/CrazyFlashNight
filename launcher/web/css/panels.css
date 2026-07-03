@@ -8764,6 +8764,9 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .arena-custom-side-config-red {
     border-left: 3px solid #ff766b;
 }
+.arena-custom-side-config-player {
+    grid-template-rows: auto minmax(0, 1fr);
+}
 .arena-custom-side-config-head {
     display: flex;
     align-items: center;
@@ -8777,6 +8780,10 @@ html.perf-low-effects .map-panel-close-btn:hover {
     font-size: 13px;
     line-height: 1.55;
     overflow-y: auto;
+}
+.arena-custom-player-config-roster {
+    display: flex;
+    align-items: center;
 }
 .arena-custom-side-config-load {
     display: grid;
@@ -8798,6 +8805,29 @@ html.perf-low-effects .map-panel-close-btn:hover {
     display: grid;
     gap: 7px;
     align-content: start;
+}
+.arena-custom-mode-switch {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+.arena-custom-mode-switch .arena-custom-btn {
+    width: 100%;
+    min-width: 0;
+}
+.arena-custom-mode-active {
+    color: #1a1208;
+    border-color: rgba(255, 186, 96, 0.92);
+    background: linear-gradient(180deg, #ffbc61 0%, #ee8f31 100%);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.24);
+}
+.arena-custom-mode-active:hover {
+    color: #1a1208;
+    border-color: rgba(255, 202, 128, 0.95);
+    background: linear-gradient(180deg, #ffc977 0%, #f29a3e 100%);
+}
+.arena-custom-side-configs-pve {
+    grid-template-columns: minmax(0, 1fr);
 }
 .arena-custom-section-title {
     color: var(--arena-accent-2);

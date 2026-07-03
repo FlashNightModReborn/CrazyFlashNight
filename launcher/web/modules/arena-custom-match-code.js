@@ -37,6 +37,8 @@
         seed: true,
         blue: true,
         red: true,
+        enemy: true,
+        player: true,
         timeout: true,
         rules: true,
         arena: true,
@@ -218,16 +220,30 @@
         }
 
         var mode = fields.mode || '';
-        if (mode !== 'mvm') {
-            pushError(errors, 'mode', 'P1 supports only mode=mvm');
+        if (mode !== 'mvm' && mode !== 'pve') {
+            pushError(errors, 'mode', 'must be mvm or pve');
         }
         var seed = fields.seed == null ? 0 : parseNonNegativeInteger(fields.seed, 'seed', errors);
         var timeoutFrames = fields.timeout == null
             ? DEFAULT_TIMEOUT_FRAMES
             : parsePositiveInteger(fields.timeout, 'timeout', errors);
         var catalog = normalizeCatalog(options.unitCatalog || options.units || null);
-        var blueRoster = parseRoster(fields.blue, 'blue', catalog, errors);
-        var redRoster = parseRoster(fields.red, 'red', catalog, errors);
+        var blueRoster = [];
+        var redRoster = [];
+        var enemyRoster = [];
+        var player = fields.player || '';
+
+        if (mode === 'pve') {
+            if (fields.blue != null) pushError(errors, 'blue', 'blue is only valid in mode=mvm');
+            if (fields.red != null) pushError(errors, 'red', 'red is only valid in mode=mvm');
+            if (player !== 'current') pushError(errors, 'player', 'must be current');
+            enemyRoster = parseRoster(fields.enemy, 'enemy', catalog, errors);
+        } else {
+            if (fields.enemy != null) pushError(errors, 'enemy', 'enemy is only valid in mode=pve');
+            if (fields.player != null) pushError(errors, 'player', 'player is only valid in mode=pve');
+            blueRoster = parseRoster(fields.blue, 'blue', catalog, errors);
+            redRoster = parseRoster(fields.red, 'red', catalog, errors);
+        }
 
         if (errors.length > 0) {
             fail('invalid arena custom match code', errors);
@@ -244,11 +260,14 @@
             rules: fields.rules || 'no_drop,no_exp,original_death_flow',
             difficulty: fields.difficulty || '',
             blueRoster: blueRoster,
-            redRoster: redRoster
+            redRoster: redRoster,
+            enemyRoster: enemyRoster,
+            player: mode === 'pve' ? 'current' : ''
         };
         parsed.canonical = serializeMatchCode(parsed);
         parsed.venueFeeEstimate = estimateVenueFee(parsed);
-        parsed.calibrationCase = buildCalibrationCase(parsed, options);
+        if (mode === 'pve') parsed.enterPayload = buildEnterPayload(parsed, options);
+        else parsed.calibrationCase = buildCalibrationCase(parsed, options);
         return parsed;
     }
 
@@ -266,10 +285,15 @@
         var fields = [
             MAGIC + ':' + VERSION,
             'mode=' + mode,
-            'seed=' + seed,
-            'blue=' + serializeRoster(value.blueRoster),
-            'red=' + serializeRoster(value.redRoster)
+            'seed=' + seed
         ];
+        if (mode === 'pve') {
+            fields.push('enemy=' + serializeRoster(value.enemyRoster));
+            fields.push('player=' + (value.player || 'current'));
+        } else {
+            fields.push('blue=' + serializeRoster(value.blueRoster));
+            fields.push('red=' + serializeRoster(value.redRoster));
+        }
         if (value.timeoutFrames && value.timeoutFrames !== DEFAULT_TIMEOUT_FRAMES) {
             fields.push('timeout=' + value.timeoutFrames);
         }
@@ -288,6 +312,7 @@
 
     function buildCalibrationCase(parsed, options) {
         options = options || {};
+        if (!parsed || parsed.mode !== 'mvm') return null;
         var seed = parsed.seed == null ? 0 : parsed.seed;
         return {
             caseId: options.caseId || ('custom-mvm-' + seed),
@@ -302,6 +327,9 @@
 
     function buildCalibrationManifest(parsed, options) {
         options = options || {};
+        if (!parsed || parsed.mode !== 'mvm') {
+            fail('invalid arena calibration manifest source', [{ field: 'mode', message: 'mode must be mvm' }]);
+        }
         return {
             schema: 'arena-calibration.case-manifest.v1',
             batchId: options.batchId || ('custom-' + (parsed.seed == null ? 0 : parsed.seed)),
@@ -314,7 +342,24 @@
         };
     }
 
+    function buildEnterPayload(parsed, options) {
+        options = options || {};
+        if (!parsed || parsed.mode !== 'pve') return null;
+        return {
+            cmd: 'enter',
+            mode: 'custom_pve',
+            expr: options.expr || 'custom-pve',
+            deposit: 0,
+            reward: 0,
+            difficulty: parsed.difficulty || '',
+            player: 'current',
+            matchCode: parsed.canonical || serializeMatchCode(parsed),
+            roster: expandRoster(parsed.enemyRoster || [])
+        };
+    }
+
     function estimateVenueFee(parsed) {
+        if (parsed && parsed.mode === 'pve') return 0;
         var total = 0;
         function addSide(roster) {
             for (var i = 0; i < roster.length; i++) {
@@ -333,6 +378,7 @@
         ParseError: ParseError,
         buildCalibrationCase: buildCalibrationCase,
         buildCalibrationManifest: buildCalibrationManifest,
+        buildEnterPayload: buildEnterPayload,
         estimateVenueFee: estimateVenueFee,
         normalizeUnitId: normalizeUnitId,
         parseMatchCode: parseMatchCode,

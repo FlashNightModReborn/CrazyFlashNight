@@ -16,9 +16,11 @@ namespace CF7Launcher.Tasks
     ///   Flash → C# {task:"arena_response", callId:fid, success, ...}
     ///   C# → Web   {type:"panel_resp", panel:"arena", cmd, callId, success, ...}
     ///
-    /// 注意：close 不走本桥。Web 关闭面板时 WebOverlayForm.HandlePanelMessage 直接
+    /// 注意：普通 close 不走本桥。Web 关闭面板时 WebOverlayForm.HandlePanelMessage 直接
     /// 切 _activePanel = null + ClosePanel()，无需通知 AS2（角斗场进场链尚未触发，
     /// 没有需要清理的状态）。ResolvePanelCloseGameCommand("arena") 也因此返回 null。
+    /// 定制赛 custom_result 结算页例外：close 消息携带 returnBase=true 时，Host 会直接
+    /// 下发 arenaReturnBase 让 AS2 离开竞技场场景。
     /// </summary>
     public sealed class ArenaTask : IDisposable
     {
@@ -183,23 +185,23 @@ namespace CF7Launcher.Tasks
             }
 
             JObject result;
+            Action startWorker = null;
             if (cmd == "custom_start")
-                result = _calibrationTask.StartSingle(control);
+            {
+                string matchCode = parsed.Value<string>("matchCode") ?? "";
+                result = _calibrationTask.StartSingleDeferred(control, delegate(JObject started)
+                {
+                    string batchId = started != null ? started.Value<string>("batchId") : null;
+                    RegisterCustomBatch(batchId, matchCode);
+                }, out startWorker);
+            }
             else
+            {
                 result = JObject.Parse(_calibrationTask.HandleControl(control));
+            }
 
             if (cmd == "custom_start" && result.Value<bool?>("success") != false)
             {
-                string batchId = result.Value<string>("batchId");
-                if (!string.IsNullOrEmpty(batchId))
-                {
-                    string matchCode = parsed.Value<string>("matchCode") ?? "";
-                    lock (_lock)
-                    {
-                        _customBatchIds.Add(batchId);
-                        _customMatchCodes[batchId] = matchCode;
-                    }
-                }
                 result["closePanel"] = true;
             }
 
@@ -207,7 +209,27 @@ namespace CF7Launcher.Tasks
             result["panel"] = "arena";
             result["cmd"] = cmd;
             result["callId"] = webCallId;
-            PostToWeb(result.ToString(Formatting.None));
+            try
+            {
+                PostToWeb(result.ToString(Formatting.None));
+            }
+            finally
+            {
+                if (startWorker != null)
+                    startWorker();
+            }
+        }
+
+        private void RegisterCustomBatch(string batchId, string matchCode)
+        {
+            if (string.IsNullOrEmpty(batchId))
+                return;
+
+            lock (_lock)
+            {
+                _customBatchIds.Add(batchId);
+                _customMatchCodes[batchId] = matchCode ?? "";
+            }
         }
 
         private void OnCalibrationBatchCompleted(JObject status)

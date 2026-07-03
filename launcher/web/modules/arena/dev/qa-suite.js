@@ -1,7 +1,7 @@
 /**
  * Arena Panel QA Suite
  *
- * 测试覆盖（11 旧 + 6 新）：
+ * 测试覆盖（11 旧 + 7 新）：
  *   - panel-open: Panel 能正确打开并渲染 8 张卡片
  *   - snapshot-render: snapshot 到达后金钱显示正确，卡片状态正确
  *   - enter-success: 通过 detail 路径入场（点 🔍 → 等 cache 命中 → 点确认挑战）
@@ -20,6 +20,7 @@
  *   - grid-single-fail-retry: 单卡 preview 失败 → 摘要显示"加载失败 ↻" → 点击 ↻ 触发重发
  *   - custom-match-p1: 定制赛 tab、赛程代码解析、calibration case 摘要
  *   - custom-match-p2: 定制赛开始委托、关闭 webpanel、结算回开结果态且不走正式 enter
+ *   - custom-match-pve: 定制赛玩家 vs 怪物走标准 enter，不走后台 custom_start
  */
 var ArenaHarnessQA = (function() {
     'use strict';
@@ -42,7 +43,8 @@ var ArenaHarnessQA = (function() {
         { id: 'grid-money-disable',   title: '金钱不足 enter 灰 / detail 亮' },
         { id: 'grid-single-fail-retry', title: '单卡失败显示 ↻ + 重试' },
         { id: 'custom-match-p1',      title: '定制赛 P1 赛程代码入口' },
-        { id: 'custom-match-p2',      title: '定制赛 P2 后台 single-case 委托' }
+        { id: 'custom-match-p2',      title: '定制赛 P2 后台 single-case 委托' },
+        { id: 'custom-match-pve',     title: '定制赛 PVE 玩家 vs 怪物' }
     ];
 
     function runSuite(api, host, onlyCase) {
@@ -84,6 +86,7 @@ var ArenaHarnessQA = (function() {
             case 'grid-single-fail-retry':  return caseGridSingleFailRetry(api, host);
             case 'custom-match-p1':         return caseCustomMatchP1(api, host);
             case 'custom-match-p2':         return caseCustomMatchP2(api, host);
+            case 'custom-match-pve':        return caseCustomMatchPve(api, host);
             default:                        return Promise.resolve({ pass: false, detail: 'unknown case' });
         }
     }
@@ -940,23 +943,126 @@ var ArenaHarnessQA = (function() {
                 api.assert(!!resultView && !resultView.hidden, '回开后应显示独立结算页');
                 api.assert(/蓝方胜|红方胜|平局|超时|委托/.test(resultView.textContent), '结算页应显示胜负结果');
                 var backBtn = resultView.querySelector('[data-custom-result-action="back"]');
-                api.assert(!!backBtn, '结算页应提供确认返回按钮');
-                backBtn.click();
+                api.assert(!!backBtn, '结算页应提供返回基地按钮');
+                api.assert(/返回基地/.test(resultView.textContent), '结算页退出文案应指向返回基地');
+                document.querySelector('.arena-close-btn').click();
                 return api.waitFor(function() {
-                    var state = window.ArenaPanel.getState();
-                    var view = document.getElementById('arena-custom-result-view');
-                    return state.activeMode === 'custom' &&
-                        !state.customResult &&
-                        view && view.hidden &&
-                        document.querySelector('.arena-card-custom') != null;
-                }, 2000, 'custom result back to setup');
+                    for (var i = 0; i < host.sentMessages.length; i++) {
+                        var msg = host.sentMessages[i];
+                        if (msg && msg.cmd === 'close' && msg.dismissReturnStack && msg.returnBase) return true;
+                    }
+                    return false;
+                }, 2000, 'custom result close returns base');
             })
             .then(function() {
+                var startCloses = host.sentMessages.filter(function(m) {
+                    return m && m.cmd === 'close' && m.dismissReturnStack && !m.returnBase;
+                });
+                api.assert(startCloses.length >= 1, 'custom_start 后的关闭不应请求返回基地');
                 var statusMessages = host.sentMessages.filter(function(m) { return m && m.cmd === 'custom_status'; });
                 api.assertEqual(statusMessages.length, 0, 'closePanel 主路径不应继续轮询 custom_status');
                 var enterMessages = host.sentMessages.filter(function(m) { return m && m.cmd === 'enter'; });
                 api.assertEqual(enterMessages.length, 0, 'P2 定制赛不应发送正式 enter');
                 api.assert(host._customResultOpens >= 1, 'Host 应回开 custom_result');
+            })
+            .then(function() { return { pass: true }; })
+            .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
+    }
+
+    // ── case: custom-match-pve ──
+    // 玩家 vs 怪物复用标准竞技场 enter，不走后台 ArenaCalibrationTask/custom_start。
+    function caseCustomMatchPve(api, host) {
+        return Promise.resolve()
+            .then(function() {
+                host.setFixture('rich');
+                host.sentMessages = [];
+                if (host.resetCustomState) host.resetCustomState();
+                host.open();
+                return api.waitFor(function() {
+                    return Panels.getActive && Panels.getActive() === 'arena';
+                }, 2000, 'panel active');
+            })
+            .then(function() {
+                var tab = document.querySelector('.arena-mode-tab[data-mode="custom"]');
+                api.assert(!!tab, '应显示 定制赛 tab');
+                tab.click();
+                return api.waitFor(function() {
+                    return document.querySelector('.arena-card-custom') != null;
+                }, 2000, 'custom card rendered');
+            })
+            .then(function() {
+                document.querySelector('.arena-custom-edit').click();
+                return api.waitFor(function() {
+                    return !document.getElementById('arena-custom-editor-view').hidden;
+                }, 2000, 'custom editor opened');
+            })
+            .then(function() {
+                document.querySelector('[data-custom-mode="pve"]').click();
+                return api.waitFor(function() {
+                    var state = window.ArenaPanel.getState();
+                    return state.customEditor &&
+                        state.customEditor.mode === 'pve' &&
+                        state.customMatch &&
+                        state.customMatch.parsed &&
+                        state.customMatch.parsed.mode === 'pve';
+                }, 2000, 'pve mode parsed');
+            })
+            .then(function() {
+                var state = window.ArenaPanel.getState();
+                api.assertEqual(state.customSelectedSide, 'red', 'PVE 编辑目标应固定为怪物侧');
+                var playerCard = document.getElementById('arena-custom-config-blue');
+                api.assert(playerCard && !playerCard.hidden, 'PVE 配置页应显示玩家当前存档卡');
+                api.assert(/当前存档/.test(playerCard.textContent || ''), 'PVE 玩家卡应标记当前存档');
+                api.assert((playerCard.textContent || '').indexOf('兵种') < 0, 'PVE 玩家卡不应显示怪物组合');
+                api.assertEqual(playerCard.querySelectorAll('[data-custom-side-action], [data-custom-saved-select]').length, 0, 'PVE 玩家卡不应提供阵容读写控件');
+                api.assert(document.querySelector('[data-custom-action="swap-sides"]').hidden, 'PVE 不应显示交换红蓝');
+                document.querySelector('[data-custom-editor-action="done"]').click();
+                return api.waitFor(function() {
+                    return document.getElementById('arena-grid-view') &&
+                        !document.getElementById('arena-grid-view').hidden &&
+                        document.querySelector('.arena-card-custom') != null;
+                }, 2000, 'back to custom card');
+            })
+            .then(function() {
+                document.querySelector('.arena-custom-generate').click();
+                return api.waitFor(function() {
+                    var confirm = document.getElementById('arena-custom-confirm');
+                    return confirm && !confirm.hidden && /确认挑战|开始挑战/.test(confirm.textContent || '');
+                }, 2000, 'pve confirm rendered');
+            })
+            .then(function() {
+                var earlyStart = host.sentMessages.filter(function(m) { return m && m.cmd === 'custom_start'; });
+                api.assertEqual(earlyStart.length, 0, 'PVE 确认前不应发送 custom_start');
+                document.querySelector('[data-custom-confirm-action="start"]').click();
+                return api.waitFor(function() {
+                    for (var i = 0; i < host.sentMessages.length; i++) {
+                        if (host.sentMessages[i] && host.sentMessages[i].cmd === 'enter') return true;
+                    }
+                    return false;
+                }, 2000, 'pve enter sent');
+            })
+            .then(function() {
+                var enterMsg = null;
+                for (var i = host.sentMessages.length - 1; i >= 0; i--) {
+                    if (host.sentMessages[i] && host.sentMessages[i].cmd === 'enter') {
+                        enterMsg = host.sentMessages[i];
+                        break;
+                    }
+                }
+                api.assert(!!enterMsg, '应找到 PVE enter 消息');
+                api.assertEqual(enterMsg.mode, 'custom_pve', 'PVE enter 应标记 custom_pve');
+                api.assertEqual(enterMsg.deposit, 0, 'PVE enter 押金应为 0');
+                api.assertEqual(enterMsg.reward, 0, 'PVE enter 奖金应为 0');
+                api.assert(enterMsg.matchCode && enterMsg.matchCode.indexOf('CF7ARENA:v1;mode=pve') === 0, 'PVE enter 应携带 canonical 赛程代码');
+                api.assert(enterMsg.roster && enterMsg.roster.length > 0, 'PVE enter 应携带展开后的怪物 roster');
+                var customStarts = host.sentMessages.filter(function(m) { return m && m.cmd === 'custom_start'; });
+                api.assertEqual(customStarts.length, 0, 'PVE 不应发送后台 custom_start');
+                return api.waitFor(function() {
+                    for (var j = 0; j < host.sentMessages.length; j++) {
+                        if (host.sentMessages[j] && host.sentMessages[j].cmd === 'close' && host.sentMessages[j].dismissReturnStack) return true;
+                    }
+                    return false;
+                }, 2000, 'pve panel close sent');
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });

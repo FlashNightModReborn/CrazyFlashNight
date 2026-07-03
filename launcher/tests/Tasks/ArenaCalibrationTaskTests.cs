@@ -306,6 +306,69 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void ArenaTask_CustomStart_FastBridgeLossStillOpensResultAfterStartResponse()
+        {
+            string root = CreateProjectRoot();
+            int readyCalls = 0;
+            bool sent = false;
+            ManualResetEventSlim webEvent = new ManualResetEventSlim(false);
+            ManualResetEventSlim openEvent = new ManualResetEventSlim(false);
+            List<string> events = new List<string>();
+            string webJson = null;
+            JObject openedInitData = null;
+
+            var calibration = new ArenaCalibrationTask(root,
+                delegate { return Interlocked.Increment(ref readyCalls) == 1; },
+                delegate(string payload) { sent = true; },
+                delegate(int frames) { return 20; });
+            var arena = new ArenaTask(delegate { return true; }, delegate(string payload) { });
+            arena.SetCalibrationTask(calibration);
+            arena.SetCustomResultOpenHandler(delegate(JObject initData)
+            {
+                lock (events) { events.Add("open"); }
+                openedInitData = initData;
+                openEvent.Set();
+            });
+            arena.SetPostToWeb(delegate(string json)
+            {
+                lock (events) { events.Add("response"); }
+                webJson = json;
+                webEvent.Set();
+            });
+
+            arena.HandleWebRequest("custom_start", new JObject
+            {
+                ["callId"] = "web-custom-fast-loss",
+                ["matchCode"] = "CF7ARENA:v1;mode=mvm;seed=1;blue=u44@30x1;red=u11@30x1",
+                ["calibrationCase"] = new JObject
+                {
+                    ["caseId"] = "custom-fast-loss",
+                    ["blueRoster"] = new JArray(new JObject { ["type"] = "兵种44", ["level"] = 30 }),
+                    ["redRoster"] = new JArray(new JObject { ["type"] = "兵种11", ["level"] = 30 }),
+                    ["repeat"] = 1,
+                    ["timeoutFrames"] = 60
+                }
+            });
+
+            Assert.True(webEvent.Wait(3000), "custom_start panel response was not posted");
+            Assert.True(openEvent.Wait(3000), "custom result panel was not opened for fast bridge loss");
+            Assert.False(sent);
+
+            JObject response = JObject.Parse(webJson);
+            Assert.True((bool)response["success"]);
+            Assert.True((bool)response["closePanel"]);
+            Assert.Equal("completed", (string)openedInitData["state"]);
+            Assert.Equal("bridge_lost", (string)openedInitData["lastResult"]["status"]);
+            Assert.Equal("none", (string)openedInitData["lastResult"]["winner"]);
+            Assert.Equal("CF7ARENA:v1;mode=mvm;seed=1;blue=u44@30x1;red=u11@30x1",
+                (string)openedInitData["matchCode"]);
+
+            string[] orderedEvents;
+            lock (events) { orderedEvents = events.ToArray(); }
+            Assert.Equal(new[] { "response", "open" }, orderedEvents);
+        }
+
+        [Fact]
         public void StartBatch_AcceptsNodeGeneratedManifestHashes()
         {
             string root = CreateProjectRoot();

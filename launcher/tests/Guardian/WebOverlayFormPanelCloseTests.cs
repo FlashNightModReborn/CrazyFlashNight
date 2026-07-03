@@ -1,4 +1,5 @@
 using CF7Launcher.Guardian;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace CF7Launcher.Tests.Guardian
@@ -23,6 +24,25 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Null(WebOverlayForm.ResolvePanelCloseGameCommand("pets"));
             Assert.Null(WebOverlayForm.ResolvePanelCloseGameCommand("team"));
             Assert.Null(WebOverlayForm.ResolvePanelCloseGameCommand("arena"));
+        }
+
+        [Fact]
+        public void ShouldReturnBaseOnPanelClose_OnlyArenaReturnBaseFlagTriggers()
+        {
+            Assert.True(WebOverlayForm.ShouldReturnBaseOnPanelClose(
+                "arena",
+                JObject.Parse("{\"returnBase\":true}")));
+
+            Assert.False(WebOverlayForm.ShouldReturnBaseOnPanelClose(
+                "arena",
+                JObject.Parse("{}")));
+            Assert.False(WebOverlayForm.ShouldReturnBaseOnPanelClose(
+                "arena",
+                JObject.Parse("{\"returnBase\":false}")));
+            Assert.False(WebOverlayForm.ShouldReturnBaseOnPanelClose(
+                "stage-select",
+                JObject.Parse("{\"returnBase\":true}")));
+            Assert.False(WebOverlayForm.ShouldReturnBaseOnPanelClose("arena", null));
         }
     }
 }

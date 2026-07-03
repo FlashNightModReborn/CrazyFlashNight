@@ -15,12 +15,13 @@
  *     arenaEquipTooltip  — (raw, level) → BaseItem.getData() 走真 calculateData，含 tier/mods
  *                          → TooltipComposer 富文本（descHTML / introHTML）
  *     arenaEnter         — 消费已 preview 好的 _root.出阵人员，commit 进场
+ *     arenaReturnBase    — 定制赛结算页关闭后，从竞技场场景返回基地
  *
  * 关键不变量：
  *   - rollPreview 写 _root.出阵人员，但不碰 reuse 计数 / pool 刷新。无 cooldown，可以无限重抽
  *   - arenaEnter 只 commit，不重新抽签（保证 WYSIWYG：用户看到的就是会打到的）
  *
- * 注意：close 不走本桥。Web 关闭面板时 WebOverlayForm 直接走 PanelHost.ClosePanel()。
+ * 注意：普通 close 不走本桥。定制赛结算页 close 会由 Host 显式下发 arenaReturnBase。
  */
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.merc.*;
@@ -48,8 +49,28 @@ class org.flashNight.arki.merc.ArenaPanelService {
         _root.gameCommands["arenaEnter"] = function(params) {
             org.flashNight.arki.merc.ArenaPanelService.handleEnter(params);
         };
+        _root.gameCommands["arenaReturnBase"] = function(params) {
+            org.flashNight.arki.merc.ArenaPanelService.handleReturnBase(params);
+        };
 
         _inited = true;
+    }
+
+    public static function handleReturnBase(params:Object):Void {
+        _root.角斗场入场中 = false;
+        _root.角斗场对手类型 = "merc";
+        _root.角斗场roster阵容 = undefined;
+        _root.角斗场对手禁收益 = false;
+        _root.角斗场爬升 = undefined;
+        _root._arenaLineupCache = [];
+
+        if (typeof _root.返回基地 == "function") {
+            _root.返回基地();
+            return;
+        }
+        if (_root.淡出动画 != undefined && _root.淡出动画.淡出跳转帧 != undefined) {
+            _root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
+        }
     }
 
     public static function handleSnapshot(params:Object):Void {
@@ -62,6 +83,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
         // 这里复位防上一场 roster 残留泄漏进 enterArenaCommon / 角斗场加载 的分叉判断。
         _root.角斗场对手类型 = "merc";
         _root.角斗场roster阵容 = undefined;
+        _root.角斗场对手禁收益 = false;
         _root.角斗场爬升 = undefined; // 爬升模式状态复位，防上一场残留泄漏进 角斗场加载 分叉
         // batch preview lineup cache 镜像 web 端 _previewCache：snapshot 是 panel open 必经握手，
         // 这里清空让本 session 8 路 preview 重抽签。跨 session 复用旧 lineup 不安全
@@ -255,6 +277,11 @@ class org.flashNight.arki.merc.ArenaPanelService {
         var expr:String = String(params.expr || "");
         var deposit:Number = Number(params.deposit);
         var reward:Number = Number(params.reward);
+        var enterMode:String = String(params.mode || "");
+        if (enterMode == "custom_pve") {
+            deposit = 0;
+            reward = 0;
+        }
         // difficulty 来自 stage-select 重定向链；dev 模式 ARENA_TEST 直开时为 ""。
         // 非空时在 commitArena 之前设 _root.当前关卡难度 + _root.难度等级，
         // 让 _root.关卡结束 调 _root.FinishStage(name, _root.当前关卡难度) 时能匹配
@@ -298,7 +325,9 @@ class org.flashNight.arki.merc.ArenaPanelService {
 
         // ── 爬升模式（Phase 3）分叉：web 下发 mode="escalation" + faction + pool（该势力单位池）──
         // 战斗循环 / 压力板决策 / 奖池经济全在 关卡回调函数 自管；这里仅校验 pool + 预载场景 + commit。
-        if (String(params.mode) == "escalation") {
+        _root.角斗场对手禁收益 = false;
+
+        if (enterMode == "escalation") {
             var poolParam:Array = (params.pool != undefined) ? params.pool : null;
             if (poolParam == null || poolParam.length == 0) {
                 sendResponse({ task: "arena_response", callId: callId, success: false, error: "escalation_pool_empty" });
@@ -358,12 +387,13 @@ class org.flashNight.arki.merc.ArenaPanelService {
         var rosterParam:Array = (params.roster != undefined) ? params.roster : null;
         if (rosterParam != null && rosterParam.length > 0) {
             var squad:Array = [];
+            var customPve:Boolean = (enterMode == "custom_pve");
             for (var ri:Number = 0; ri < rosterParam.length; ri++) {
                 var rt:String = String(rosterParam[ri].type);
                 if (_root.兵种库[rt] == undefined) continue; // 跳过 web 与 AS2 兵种库不一致的未知兵种
-                if (!isKnownArenaEnemy(rt)) continue; // 防旧缓存/伪造 payload 刷出玩家未击杀过的 spritename
+                if (!customPve && !isKnownArenaEnemy(rt)) continue; // 标准 roster 仍防旧缓存/伪造 payload；PVE 测试场允许全量 units.json
                 var rlvl:Number = Number(rosterParam[ri].level);
-                squad.push({ 兵种: rt, 等级: (isNaN(rlvl) || rlvl < 1) ? 1 : rlvl });
+                squad.push({ 兵种: rt, 等级: (isNaN(rlvl) || rlvl < 1) ? 1 : rlvl, 禁收益: customPve });
             }
             if (squad.length == 0) {
                 sendResponse({ task: "arena_response", callId: callId, success: false, error: "roster_empty" });
@@ -373,10 +403,11 @@ class org.flashNight.arki.merc.ArenaPanelService {
                 sendResponse({ task: "arena_response", callId: callId, success: false, error: "stage_info_missing" });
                 return;
             }
+            _root.角斗场对手禁收益 = customPve;
             _root.角斗场入场中 = true;
             sendResponse({
                 task: "arena_response", callId: callId, success: true,
-                closePanel: true, deposit: deposit, reward: reward, expr: expr, mode: "roster"
+                closePanel: true, deposit: deposit, reward: reward, expr: expr, mode: customPve ? "custom_pve" : "roster"
             });
             if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
                 _root.soundEffectManager.stopBGMForTransition();
@@ -385,6 +416,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
                 ArenaController.commitRoster(squad);
             } catch (eR:Error) {
                 _root.角斗场入场中 = false;
+                _root.角斗场对手禁收益 = false;
                 if (typeof _root.最上层发布文字提示 == "function") _root.最上层发布文字提示("角斗场入场失败：" + eR.message);
             }
             return;

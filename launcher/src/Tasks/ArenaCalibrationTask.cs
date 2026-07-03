@@ -148,28 +148,48 @@ namespace CF7Launcher.Tasks
 
             string manifestPath = ResolveManifestPath(msg.Value<string>("manifestPath"));
             BatchManifest manifest = LoadAndNormalizeManifest(manifestPath);
-            return StartNormalizedBatch(manifest, manifestPath);
+            Action startWorker;
+            JObject result = StartNormalizedBatch(manifest, manifestPath, null, out startWorker);
+            if (startWorker != null)
+                startWorker();
+            return result;
         }
 
         public JObject StartSingle(JObject msg)
         {
+            Action startWorker;
+            JObject result = StartSingleDeferred(msg, null, out startWorker);
+            if (startWorker != null)
+                startWorker();
+            return result;
+        }
+
+        public JObject StartSingleDeferred(JObject msg, Action<JObject> beforeWorkerStart, out Action startWorker)
+        {
             try
             {
+                startWorker = null;
                 if (!_isClientReady())
                     return BuildError("disconnected", "Flash socket client is not ready");
 
                 BatchManifest manifest = BuildInlineSingleManifest(msg);
-                return StartNormalizedBatch(manifest, null);
+                return StartNormalizedBatch(manifest, null, beforeWorkerStart, out startWorker);
             }
             catch (Exception ex)
             {
+                startWorker = null;
                 LogManager.Log("[ArenaCalibrationTask] startSingle exception: " + ex);
                 return BuildError("exception", ex.Message);
             }
         }
 
-        private JObject StartNormalizedBatch(BatchManifest manifest, string manifestPath)
+        private JObject StartNormalizedBatch(
+            BatchManifest manifest,
+            string manifestPath,
+            Action<JObject> beforeWorkerStart,
+            out Action startWorker)
         {
+            startWorker = null;
             lock (_lock)
             {
                 if (_state == "running")
@@ -197,8 +217,21 @@ namespace CF7Launcher.Tasks
                 _completedRuns = 0;
             }
 
-            ThreadPool.QueueUserWorkItem(delegate { RunBatch(manifest); });
-            return BuildStatus(true, "started");
+            JObject started = BuildStatus(true, "started");
+            if (beforeWorkerStart != null)
+            {
+                try
+                {
+                    beforeWorkerStart(started);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[ArenaCalibrationTask] beforeWorkerStart exception: " + ex);
+                }
+            }
+
+            startWorker = delegate { ThreadPool.QueueUserWorkItem(delegate { RunBatch(manifest); }); };
+            return started;
         }
 
         private JObject AbortBatch(JObject msg)

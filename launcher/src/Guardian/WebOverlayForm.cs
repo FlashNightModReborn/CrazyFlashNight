@@ -105,10 +105,18 @@ namespace CF7Launcher.Guardian
             if (panel == "map") return "mapPanelClose";
             if (panel == "stage-select") return "stageSelectPanelClose";
             if (panel == "tasks") return "taskPanelClose";
-            // team / arena / pets / mercs 故意留 null：没有需要 AS2 清理的状态，
+            // team / arena / pets / mercs 故意留 null：普通关闭没有需要 AS2 清理的状态，
             // team 内宠物视图关闭不能调用 petPanelClose，否则会重建旧 Flash 战宠图标。
             // 关闭 panel 时直接走 _activePanel = null + PanelHost.ClosePanel() 即可。
+            // arena 的定制赛结算页例外：由 close 消息携带 returnBase=true，
+            // 走 ShouldReturnBaseOnPanelClose() 的专用回基地命令，不污染普通 close 语义。
             return null;
+        }
+
+        internal static bool ShouldReturnBaseOnPanelClose(string panel, JObject parsed)
+        {
+            if (panel != "arena" || parsed == null) return false;
+            return parsed.Value<bool?>("returnBase") ?? false;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -3398,6 +3406,7 @@ namespace CF7Launcher.Guardian
                         // 已跳关到战场），必须清整个 return stack 防止 PanelHostController 自动 reopen
                         // 上层 panel 遮挡 Flash 视野。默认 false = 用户主动取消，pop 一层。
                         bool dismissReturnStack = parsed.Value<bool?>("dismissReturnStack") ?? false;
+                        bool returnBase = ShouldReturnBaseOnPanelClose(panel, parsed);
                         string closeAction = ResolvePanelCloseGameCommand(panel);
                         if (closeAction == "shopPanelClose")
                         {
@@ -3407,6 +3416,10 @@ namespace CF7Launcher.Guardian
                         else if (closeAction != null)
                         {
                             TrySendGameCommand(closeAction);
+                        }
+                        if (returnBase)
+                        {
+                            TrySendGameCommand("arenaReturnBase");
                         }
                         // 任意面板关闭 → 取消暂停（与 OpenPanel 的 webPanelPause 配对；AS2 幂等释放）
                         TrySendGameCommand("webPanelUnpause");

@@ -17,6 +17,8 @@
 
     var CUSTOM_MATCH_FALLBACK_CODE =
         'CF7ARENA:v1;mode=mvm;seed=90210;blue=u44@30x2,u48@30x1;red=u164@60x1,u11@30x1';
+    var CUSTOM_PVE_FALLBACK_CODE =
+        'CF7ARENA:v1;mode=pve;seed=3307;enemy=u44@30x1;player=current';
     var CUSTOM_BROWSER_LIMIT = 80;
     var CUSTOM_SAVED_ROSTERS_KEY = 'cf7.arena.custom.savedRosters.v1';
     var CUSTOM_SAVED_ROSTER_LIMIT = 24;
@@ -175,7 +177,7 @@
         _detailRollBtn = _el.querySelector('.arena-detail-roll');
         _detailConfirmBtn = _el.querySelector('.arena-detail-confirm');
 
-        _el.querySelector('.arena-close-btn').addEventListener('click', requestClose);
+        _el.querySelector('.arena-close-btn').addEventListener('click', onArenaCloseClick);
         _el.querySelector('.arena-detail-back').addEventListener('click', backToGrid);
         _customResultViewEl.addEventListener('click', onCustomResultClick);
         _customEditorViewEl.addEventListener('click', onCustomWorkbenchClick);
@@ -287,6 +289,10 @@
             '<div class="arena-custom-editor-page arena-custom-config-page" data-custom-editor-page="config">' +
                 '<div class="arena-custom-config-panel">' +
                     '<div class="arena-custom-config-code">' +
+                        '<div class="arena-custom-mode-switch" aria-label="定制赛模式">' +
+                            '<button class="arena-custom-btn" type="button" data-custom-mode="mvm" data-audio-cue="confirm">怪物 vs 怪物</button>' +
+                            '<button class="arena-custom-btn" type="button" data-custom-mode="pve" data-audio-cue="confirm">玩家 vs 怪物</button>' +
+                        '</div>' +
                         '<label class="arena-custom-code-label" for="arena-custom-code-input">赛程代码</label>' +
                         '<textarea id="arena-custom-code-input" class="arena-custom-code-input" rows="2" spellcheck="false"></textarea>' +
                     '</div>' +
@@ -297,7 +303,7 @@
                             '<button class="arena-custom-btn" type="button" data-custom-action="preset" data-audio-cue="confirm">载入整局</button>' +
                             '<button class="arena-custom-btn" type="button" data-custom-action="random" data-audio-cue="confirm">随机整局</button>' +
                         '</div>' +
-                        '<div class="arena-custom-actions arena-custom-editor-code-actions">' +
+                        '<div class="arena-custom-actions arena-custom-editor-code-actions" id="arena-custom-swap-actions">' +
                             '<button class="arena-custom-btn" type="button" data-custom-action="import" data-audio-cue="confirm">导入代码</button>' +
                             '<button class="arena-custom-btn" type="button" data-custom-action="copy" data-audio-cue="confirm">复制代码</button>' +
                             '<button class="arena-custom-btn" type="button" data-custom-action="swap-sides" data-audio-cue="confirm">交换红蓝</button>' +
@@ -650,18 +656,33 @@
         requestSnapshot();
     }
 
-    // requestClose 两种调用语义：
+    // requestClose 三种调用语义：
     //   - 无参 / 默认：用户主动取消（点 ✕、ESC、backdrop），PanelHostController 会 pop
     //     return stack reopen 上层 panel（典型场景：玩家从 stage-select 跳进 arena，
     //     按 ✕ 想回 stage-select）。
     //   - {dismissReturnStack:true}：业务流程已 commit，AS2 端已跳关到 wuxianguotu_1。
     //     必须清整个返回链，否则 PanelHostController 会 reopen stage-select 遮挡战场视野。
+    //   - {returnBase:true}：定制赛结算页退出。此时 Flash 已在竞技场场景，
+    //     关闭 Web panel 不能只回 AS2 视野，必须显式请求 AS2 返回基地。
     function requestClose(options) {
         if (_busy) return;
         Panels.close();
         var msg = { type: 'panel', panel: 'arena', cmd: 'close' };
         if (options && options.dismissReturnStack) msg.dismissReturnStack = true;
+        if (options && options.returnBase) msg.returnBase = true;
         Bridge.send(msg);
+    }
+
+    function onArenaCloseClick() {
+        if (_customResultViewEl && !_customResultViewEl.hidden) {
+            requestCustomResultReturnBase();
+            return;
+        }
+        requestClose();
+    }
+
+    function requestCustomResultReturnBase() {
+        requestClose({ dismissReturnStack: true, returnBase: true });
     }
 
     function onClose() {
@@ -735,6 +756,8 @@
     }
 
     function showCustomEditorForSide(side) {
+        var editor = ensureCustomEditorState();
+        if (editor.mode === 'pve') side = 'red';
         if (side === 'blue' || side === 'red') {
             _customSelectedSide = side;
             _customEditorPage = 'side';
@@ -942,14 +965,17 @@
 
     function syncCustomEditorFromParsed(parsed) {
         if (!parsed) return;
+        var parsedMode = parsed.mode === 'pve' ? 'pve' : 'mvm';
         _customEditor = {
+            mode: parsedMode,
             seed: parsed.seed || 0,
             timeoutFrames: parsed.timeoutFrames || ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
-            blue: cloneCustomRoster(parsed.blueRoster),
-            red: cloneCustomRoster(parsed.redRoster),
+            blue: parsedMode === 'pve' ? [] : cloneCustomRoster(parsed.blueRoster),
+            red: parsedMode === 'pve' ? cloneCustomRoster(parsed.enemyRoster) : cloneCustomRoster(parsed.redRoster),
             query: _customEditor && _customEditor.query ? _customEditor.query : '',
             filter: _customEditor && _customEditor.filter ? _customEditor.filter : 'all'
         };
+        if (parsedMode === 'pve') _customSelectedSide = 'red';
         _customConfirmOpen = false;
     }
 
@@ -958,6 +984,7 @@
         if (!_customEditor && _customMatch && _customMatch.parsed) syncCustomEditorFromParsed(_customMatch.parsed);
         if (!_customEditor) {
             _customEditor = {
+                mode: 'mvm',
                 seed: 0,
                 timeoutFrames: ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
                 blue: [],
@@ -987,13 +1014,24 @@
     function syncCustomCodeFromEditor() {
         ensureCustomModule();
         var editor = ensureCustomEditorState();
-        _customMatch.code = ArenaCustomMatchCode.serializeMatchCode({
-            mode: 'mvm',
-            seed: editor.seed || 0,
-            timeoutFrames: editor.timeoutFrames || ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
-            blueRoster: editor.blue,
-            redRoster: editor.red
-        });
+        if (editor.mode === 'pve') {
+            _customSelectedSide = 'red';
+            _customMatch.code = ArenaCustomMatchCode.serializeMatchCode({
+                mode: 'pve',
+                seed: editor.seed || 0,
+                timeoutFrames: editor.timeoutFrames || ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
+                enemyRoster: editor.red,
+                player: 'current'
+            });
+        } else {
+            _customMatch.code = ArenaCustomMatchCode.serializeMatchCode({
+                mode: 'mvm',
+                seed: editor.seed || 0,
+                timeoutFrames: editor.timeoutFrames || ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
+                blueRoster: editor.blue,
+                redRoster: editor.red
+            });
+        }
         parseCustomMatchCode({ syncEditor: false });
         _customConfirmOpen = false;
         refreshCustomMatchCard();
@@ -1012,6 +1050,7 @@
         var feeEl = _el ? _el.querySelector('#arena-custom-fee') : null;
         var btn = _el ? _el.querySelector('.arena-custom-generate') : null;
         var abortBtn = _el ? _el.querySelector('.arena-custom-abort') : null;
+        var subtitleEl = _el ? _el.querySelector('.arena-custom-subtitle') : null;
         renderCustomEditor();
         renderCustomUnitBrowser();
         renderCustomConfirm();
@@ -1028,48 +1067,97 @@
         }
 
         var parsed = _customMatch.parsed;
-        var blueCount = customRosterTotal(parsed.blueRoster);
-        var redCount = customRosterTotal(parsed.redRoster);
-        summaryEl.innerHTML =
-            '<div class="arena-custom-side arena-custom-side-blue">' +
-                '<div class="arena-custom-side-head">' +
-                    '<span class="arena-custom-side-title">蓝方</span>' +
-                    '<span class="arena-custom-side-count">' + blueCount + ' 单位</span>' +
+        if (parsed.mode === 'pve') {
+            var enemyCount = customRosterTotal(parsed.enemyRoster);
+            if (subtitleEl) subtitleEl.textContent = '玩家 vs 怪物 · 标准竞技场 · 无掉落无经验';
+            summaryEl.innerHTML =
+                '<div class="arena-custom-side arena-custom-side-blue arena-custom-side-player">' +
+                    '<div class="arena-custom-side-head">' +
+                        '<span class="arena-custom-side-title">玩家</span>' +
+                        '<span class="arena-custom-side-count">当前存档</span>' +
+                    '</div>' +
+                    '<span class="arena-custom-side-roster">使用当前角色、装备、技能和操作</span>' +
                 '</div>' +
-                '<span class="arena-custom-side-roster">' + escapeHtml(summarizeCustomRoster(parsed.blueRoster)) + '</span>' +
-                '<button class="arena-custom-side-edit" type="button" data-custom-action="edit" data-custom-edit-side="blue" data-audio-cue="confirm">调整蓝方</button>' +
-            '</div>' +
-            '<div class="arena-custom-vs-mark">VS</div>' +
-            '<div class="arena-custom-side arena-custom-side-red">' +
-                '<div class="arena-custom-side-head">' +
-                    '<span class="arena-custom-side-title">红方</span>' +
-                    '<span class="arena-custom-side-count">' + redCount + ' 单位</span>' +
+                '<div class="arena-custom-vs-mark">VS</div>' +
+                '<div class="arena-custom-side arena-custom-side-red">' +
+                    '<div class="arena-custom-side-head">' +
+                        '<span class="arena-custom-side-title">怪物</span>' +
+                        '<span class="arena-custom-side-count">' + enemyCount + ' 单位</span>' +
+                    '</div>' +
+                    '<span class="arena-custom-side-roster">' + escapeHtml(summarizeCustomRoster(parsed.enemyRoster)) + '</span>' +
+                    '<button class="arena-custom-side-edit" type="button" data-custom-action="edit" data-custom-edit-side="red" data-audio-cue="confirm">调整怪物</button>' +
+                '</div>';
+            caseEl.textContent =
+                'seed=' + parsed.seed +
+                ' · player=current' +
+                ' · 无掉落 / 无经验 / 标准竞技场';
+        } else {
+            var blueCount = customRosterTotal(parsed.blueRoster);
+            var redCount = customRosterTotal(parsed.redRoster);
+            if (subtitleEl) subtitleEl.textContent = '怪物 vs 怪物 · 后台单局 · 无掉落无经验';
+            summaryEl.innerHTML =
+                '<div class="arena-custom-side arena-custom-side-blue">' +
+                    '<div class="arena-custom-side-head">' +
+                        '<span class="arena-custom-side-title">蓝方</span>' +
+                        '<span class="arena-custom-side-count">' + blueCount + ' 单位</span>' +
+                    '</div>' +
+                    '<span class="arena-custom-side-roster">' + escapeHtml(summarizeCustomRoster(parsed.blueRoster)) + '</span>' +
+                    '<button class="arena-custom-side-edit" type="button" data-custom-action="edit" data-custom-edit-side="blue" data-audio-cue="confirm">调整蓝方</button>' +
                 '</div>' +
-                '<span class="arena-custom-side-roster">' + escapeHtml(summarizeCustomRoster(parsed.redRoster)) + '</span>' +
-                '<button class="arena-custom-side-edit" type="button" data-custom-action="edit" data-custom-edit-side="red" data-audio-cue="confirm">调整红方</button>' +
-            '</div>';
-        caseEl.textContent =
-            'seed=' + parsed.seed +
-            ' · 上限 ' + parsed.calibrationCase.timeoutFrames + ' 帧' +
-            ' · 无掉落 / 无经验 / 原死亡流程';
-        statusEl.textContent = customRunText();
+                '<div class="arena-custom-vs-mark">VS</div>' +
+                '<div class="arena-custom-side arena-custom-side-red">' +
+                    '<div class="arena-custom-side-head">' +
+                        '<span class="arena-custom-side-title">红方</span>' +
+                        '<span class="arena-custom-side-count">' + redCount + ' 单位</span>' +
+                    '</div>' +
+                    '<span class="arena-custom-side-roster">' + escapeHtml(summarizeCustomRoster(parsed.redRoster)) + '</span>' +
+                    '<button class="arena-custom-side-edit" type="button" data-custom-action="edit" data-custom-edit-side="red" data-audio-cue="confirm">调整红方</button>' +
+                '</div>';
+            caseEl.textContent =
+                'seed=' + parsed.seed +
+                ' · 上限 ' + parsed.calibrationCase.timeoutFrames + ' 帧' +
+                ' · 无掉落 / 无经验 / 原死亡流程';
+        }
+        statusEl.textContent = parsed.mode === 'pve' ? '状态：可挑战' : customRunText();
         feeEl.textContent = formatMoney(parsed.venueFeeEstimate);
         btn.textContent = _customConfirmOpen ? '确认页已打开' : '检查并确认';
-        btn.disabled = _busy || customRunActive();
-        abortBtn.disabled = _busy || !customRunActive();
+        btn.disabled = _busy || (parsed.mode !== 'pve' && customRunActive());
+        abortBtn.disabled = _busy || parsed.mode === 'pve' || !customRunActive();
     }
 
     function renderCustomEditor() {
         if (!_el) return;
         var editor = ensureCustomEditorState();
+        if (editor.mode === 'pve') _customSelectedSide = 'red';
         var configPage = _el.querySelector('[data-custom-editor-page="config"]');
         var sidePage = _el.querySelector('[data-custom-editor-page="side"]');
         if (configPage) configPage.hidden = _customEditorPage !== 'config';
         if (sidePage) sidePage.hidden = _customEditorPage !== 'side';
 
+        var modeBtns = _el.querySelectorAll('[data-custom-mode]');
+        for (var mb = 0; mb < modeBtns.length; mb++) {
+            var mode = modeBtns[mb].getAttribute('data-custom-mode');
+            modeBtns[mb].classList.toggle('arena-custom-mode-active', mode === editor.mode);
+        }
+
+        var sideConfigs = _el.querySelector('.arena-custom-side-configs');
+        if (sideConfigs) sideConfigs.classList.toggle('arena-custom-side-configs-pve', editor.mode === 'pve');
+        var swapActions = _el.querySelector('#arena-custom-swap-actions');
+        if (swapActions) swapActions.classList.toggle('arena-custom-pve-actions', editor.mode === 'pve');
+        var swapBtn = _el.querySelector('[data-custom-action="swap-sides"]');
+        if (swapBtn) swapBtn.hidden = editor.mode === 'pve';
+        var presetLabel = _el.querySelector('label[for="arena-custom-preset-select"]');
+        if (presetLabel) presetLabel.textContent = editor.mode === 'pve' ? '待标定怪物组合' : '整局待标定组合';
+
         var blueConfigEl = _el.querySelector('#arena-custom-config-blue');
         var redConfigEl = _el.querySelector('#arena-custom-config-red');
-        if (blueConfigEl) blueConfigEl.innerHTML = buildCustomSideConfigCardHtml('blue', editor.blue);
+        if (blueConfigEl) {
+            blueConfigEl.hidden = false;
+            blueConfigEl.classList.toggle('arena-custom-side-config-player', editor.mode === 'pve');
+            blueConfigEl.innerHTML = editor.mode === 'pve'
+                ? buildCustomPlayerConfigCardHtml()
+                : buildCustomSideConfigCardHtml('blue', editor.blue);
+        }
         if (redConfigEl) redConfigEl.innerHTML = buildCustomSideConfigCardHtml('red', editor.red);
 
         var activeRoster = getCustomSideRoster(_customSelectedSide);
@@ -1104,7 +1192,15 @@
         }
         var sideBtns = _el.querySelectorAll('[data-custom-side]');
         for (var s = 0; s < sideBtns.length; s++) {
-            sideBtns[s].classList.toggle('arena-custom-side-target-active', sideBtns[s].getAttribute('data-custom-side') === _customSelectedSide);
+            var side = sideBtns[s].getAttribute('data-custom-side');
+            if (editor.mode === 'pve' && side === 'blue') {
+                sideBtns[s].hidden = true;
+                continue;
+            }
+            sideBtns[s].hidden = false;
+            if (editor.mode === 'pve' && side === 'red') sideBtns[s].textContent = '加到怪物';
+            else sideBtns[s].textContent = side === 'red' ? '加到红方' : '加到蓝方';
+            sideBtns[s].classList.toggle('arena-custom-side-target-active', side === _customSelectedSide);
         }
     }
 
@@ -1132,11 +1228,27 @@
             '</div>';
     }
 
+    function buildCustomPlayerConfigCardHtml() {
+        return '<div class="arena-custom-side-config-head">' +
+                '<div>' +
+                    '<div class="arena-custom-side-title">玩家</div>' +
+                    '<div class="arena-custom-side-count">当前存档</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="arena-custom-side-config-roster arena-custom-player-config-roster">' +
+                '使用当前角色、装备、技能和操作' +
+            '</div>';
+    }
+
     function customSideLabel(side) {
+        var editor = _customEditor || null;
+        if (editor && editor.mode === 'pve') return side === 'red' ? '怪物' : '玩家';
         return side === 'red' ? '红方' : '蓝方';
     }
 
     function resolveCustomSide(side) {
+        var editor = _customEditor || null;
+        if (editor && editor.mode === 'pve') return 'red';
         if (side === 'active') return _customSelectedSide;
         return side === 'red' ? 'red' : 'blue';
     }
@@ -1168,7 +1280,7 @@
 
     function buildCustomRosterEditorHtml(side, roster) {
         if (!roster || !roster.length) {
-            return '<div class="arena-custom-roster-empty">从右侧单位目录添加到' + (side === 'blue' ? '蓝方' : '红方') + '</div>';
+            return '<div class="arena-custom-roster-empty">从右侧单位目录添加到' + customSideLabel(side) + '</div>';
         }
         var html = '';
         for (var i = 0; i < roster.length; i++) {
@@ -1279,6 +1391,27 @@
         var parsed = _customMatch.parsed;
         confirmEl.hidden = false;
         if (cardEl) cardEl.classList.add('arena-card-custom-confirming');
+        if (parsed.mode === 'pve') {
+            confirmEl.innerHTML =
+                '<div class="arena-custom-confirm-head">' +
+                    '<div>' +
+                        '<div class="arena-custom-confirm-title">确认挑战</div>' +
+                        '<div class="arena-custom-confirm-subtitle">启动后关闭 Web 面板，使用当前玩家进入标准竞技场</div>' +
+                    '</div>' +
+                    '<div class="arena-custom-confirm-fee">' + formatMoney(0) + '</div>' +
+                '</div>' +
+                '<div class="arena-custom-confirm-grid">' +
+                    '<span>玩家</span><b>当前存档 / 当前装备 / 当前操作</b>' +
+                    '<span>怪物</span><b>' + escapeHtml(summarizeCustomRoster(parsed.enemyRoster)) + '</b>' +
+                    '<span>规则</span><b>无押金 / 无奖金 / 无掉落 / 无经验</b>' +
+                    '<span>复现</span><b>仅复现怪物配置，不复现玩家状态</b>' +
+                '</div>' +
+                '<div class="arena-custom-confirm-actions">' +
+                    '<button class="arena-custom-btn" type="button" data-custom-confirm-action="cancel" data-audio-cue="cancel">返回编辑</button>' +
+                    '<button class="arena-card-btn-enter" type="button" data-custom-confirm-action="start" data-audio-cue="confirm">开始挑战</button>' +
+                '</div>';
+            return;
+        }
         confirmEl.innerHTML =
             '<div class="arena-custom-confirm-head">' +
                 '<div>' +
@@ -1310,6 +1443,7 @@
     }
 
     function summarizeCustomRoster(roster) {
+        roster = roster || [];
         var parts = [];
         for (var i = 0; i < roster.length; i++) {
             parts.push(roster[i].type + ' Lv.' + roster[i].level + ' ×' + roster[i].count);
@@ -1396,7 +1530,7 @@
                         '<h2 class="arena-custom-result-title ' + outcome.className + '">' + escapeHtml(outcome.label) + '</h2>' +
                         '<div class="arena-custom-result-meta">' + escapeHtml(meta || '无战斗摘要') + '</div>' +
                     '</div>' +
-                    '<button class="arena-custom-result-close" type="button" data-custom-result-action="back" data-audio-cue="confirm">确认返回</button>' +
+                    '<button class="arena-custom-result-close" type="button" data-custom-result-action="back" data-audio-cue="confirm">确认返回基地</button>' +
                 '</div>' +
                 '<div class="arena-custom-result-sides">' +
                     buildCustomResultSideHtml('blue', '蓝方', result ? result.blue : null) +
@@ -1413,7 +1547,7 @@
                 (error ? '<div class="arena-custom-result-error">' + escapeHtml(error) + '</div>' : '') +
                 '<div class="arena-custom-result-actions">' +
                     '<button class="arena-custom-btn" type="button" data-custom-result-action="copy" data-audio-cue="confirm">复制代码</button>' +
-                    '<button class="arena-card-btn-enter" type="button" data-custom-result-action="back" data-audio-cue="confirm">返回定制赛</button>' +
+                    '<button class="arena-card-btn-enter" type="button" data-custom-result-action="back" data-audio-cue="confirm">返回基地</button>' +
                 '</div>' +
             '</div>';
     }
@@ -1496,10 +1630,7 @@
 
     function onCustomResultBack() {
         if (_busy) return;
-        _customResult = null;
-        rebuildForMode('custom');
-        if (_snapshot) batchRequestPreview();
-        showToast('已返回定制赛');
+        requestCustomResultReturnBase();
     }
 
     function applyCustomRunStatus(data) {
@@ -1630,6 +1761,28 @@
         return true;
     }
 
+    function setCustomEditorMode(mode) {
+        mode = mode === 'pve' ? 'pve' : 'mvm';
+        var editor = ensureCustomEditorState();
+        if (editor.mode === mode) return;
+        editor.mode = mode;
+        if (mode === 'pve') {
+            _customSelectedSide = 'red';
+            if (!editor.red.length) {
+                var fallback = parseCustomCodeForEditor(CUSTOM_PVE_FALLBACK_CODE);
+                if (fallback && fallback.enemyRoster) editor.red = cloneCustomRoster(fallback.enemyRoster);
+            }
+        } else if (!editor.blue.length) {
+            var parsed = parseCustomCodeForEditor(CUSTOM_MATCH_FALLBACK_CODE);
+            if (parsed) {
+                editor.blue = cloneCustomRoster(parsed.blueRoster);
+                if (!editor.red.length) editor.red = cloneCustomRoster(parsed.redRoster);
+            }
+        }
+        syncCustomCodeFromEditor();
+        showToast(mode === 'pve' ? '已切换为玩家 vs 怪物' : '已切换为怪物 vs 怪物');
+    }
+
     function applyRandomCustomPreset() {
         var presets = getCustomPresets();
         if (!presets.length) {
@@ -1643,13 +1796,44 @@
         _customSampleIndex = nextIndex;
         var select = _el ? _el.querySelector('#arena-custom-preset-select') : null;
         if (select && presets[_customSampleIndex]) select.value = presets[_customSampleIndex].id;
-        applyCustomMatchCode(presets[_customSampleIndex].code, '已随机抽取待标定组合');
+        applyCustomPresetCodeForCurrentMode(presets[_customSampleIndex].code, '已随机抽取待标定组合');
     }
 
     function applySelectedCustomPreset() {
         var select = _el ? _el.querySelector('#arena-custom-preset-select') : null;
         var preset = findCustomPresetById(select ? select.value : '');
-        applyCustomMatchCode((preset && preset.code) || getDefaultCustomMatchCode(), '已载入待标定组合');
+        applyCustomPresetCodeForCurrentMode((preset && preset.code) || getDefaultCustomMatchCode(), '已载入待标定组合');
+    }
+
+    function applyCustomPresetCodeForCurrentMode(code, toast) {
+        var editor = ensureCustomEditorState();
+        if (editor.mode !== 'pve') {
+            applyCustomMatchCode(code, toast);
+            return;
+        }
+        var parsed = parseCustomCodeForEditor(code);
+        if (!parsed) {
+            showToast('预设解析失败');
+            return;
+        }
+        var roster = parsed.mode === 'pve'
+            ? parsed.enemyRoster
+            : ((parsed.redRoster && parsed.redRoster.length) ? parsed.redRoster : parsed.blueRoster);
+        editor.red = cloneCustomRoster(roster || []);
+        syncCustomCodeFromEditor();
+        if (toast) showToast(toast);
+    }
+
+    function parseCustomCodeForEditor(code) {
+        ensureCustomModule();
+        try {
+            return ArenaCustomMatchCode.parseMatchCode(code, {
+                unitCatalog: collectCustomUnitCatalog(),
+                caseId: 'arena-custom-p3'
+            });
+        } catch (err) {
+            return null;
+        }
     }
 
     function applyRandomCustomSidePreset(side) {
@@ -1662,22 +1846,16 @@
             showToast('随机组合解析失败');
             return;
         }
-        var roster = (parsed.redRoster && parsed.redRoster.length) ? parsed.redRoster : parsed.blueRoster;
+        var roster = parsed.mode === 'pve'
+            ? parsed.enemyRoster
+            : ((parsed.redRoster && parsed.redRoster.length) ? parsed.redRoster : parsed.blueRoster);
         setCustomSideRoster(side, roster || []);
         showToast(customSideLabel(side) + '已随机抽取待标定组合');
     }
 
     function parseCustomPresetForRoster(preset) {
-        ensureCustomModule();
         if (!preset || !preset.code) return null;
-        try {
-            return ArenaCustomMatchCode.parseMatchCode(preset.code, {
-                unitCatalog: collectCustomUnitCatalog(),
-                caseId: 'arena-custom-p3'
-            });
-        } catch (err) {
-            return null;
-        }
+        return parseCustomCodeForEditor(preset.code);
     }
 
     function saveCustomSideConfig(side) {
@@ -1731,6 +1909,10 @@
     function handleCustomSideAction(action, side) {
         if (!action) return false;
         if (_busy || customRunActive()) return true;
+        if ((_customEditor && _customEditor.mode === 'pve') && side === 'blue') {
+            showToast('玩家使用当前存档，无需配置');
+            return true;
+        }
         side = resolveCustomSide(side);
         if (action === 'edit') {
             showCustomSideEditorPage(side);
@@ -1785,6 +1967,11 @@
     function onCustomSideSelect(e) {
         var side = e.currentTarget.getAttribute('data-custom-side');
         if (side === 'blue' || side === 'red') {
+            if ((_customEditor && _customEditor.mode === 'pve') && side === 'blue') {
+                _customSelectedSide = 'red';
+                renderCustomEditor();
+                return;
+            }
             _customSelectedSide = side;
             renderCustomEditor();
         }
@@ -1811,6 +1998,11 @@
                     copyCustomMatchCode();
                     return;
                 }
+                var customMode = node.getAttribute('data-custom-mode');
+                if (customMode === 'mvm' || customMode === 'pve') {
+                    setCustomEditorMode(customMode);
+                    return;
+                }
                 var customAction = node.getAttribute('data-custom-action');
                 if (handleCustomAction(customAction, node)) {
                     return;
@@ -1821,6 +2013,11 @@
                 }
                 var side = node.getAttribute('data-custom-side');
                 if (side === 'blue' || side === 'red') {
+                    if ((_customEditor && _customEditor.mode === 'pve') && side === 'blue') {
+                        _customSelectedSide = 'red';
+                        renderCustomEditor();
+                        return;
+                    }
                     _customSelectedSide = side;
                     renderCustomEditor();
                     return;
@@ -1963,6 +2160,10 @@
             showToast('赛程代码无效');
             return;
         }
+        if (_customMatch.parsed.mode === 'pve') {
+            startCustomPveMatch(_customMatch.parsed);
+            return;
+        }
         _busy = true;
         refreshCustomMatchCard();
         sendCustomRequest('custom_start', {
@@ -1983,6 +2184,40 @@
             }
             scheduleCustomStatusPoll();
         });
+    }
+
+    function startCustomPveMatch(parsed) {
+        var payload = parsed && parsed.enterPayload;
+        if (!payload || !payload.roster || !payload.roster.length) {
+            showToast('怪物配置为空');
+            return;
+        }
+        _busy = true;
+        refreshCustomMatchCard();
+
+        var reqId = 'arena_custom_pve_' + (++_reqSeq) + '_' + _session;
+        _pendingReq[reqId] = function(data) {
+            _busy = false;
+            refreshCustomMatchCard();
+            if (!data.success) {
+                showToast(data.error || '挑战发起失败');
+                return;
+            }
+            showToast('玩家对怪物挑战已开始');
+            if (data.closePanel) requestClose({ dismissReturnStack: true });
+        };
+
+        var msg = {};
+        for (var key in payload) {
+            if (Object.prototype.hasOwnProperty.call(payload, key)) msg[key] = payload[key];
+        }
+        msg.type = 'panel';
+        msg.panel = 'arena';
+        msg.cmd = 'enter';
+        msg.callId = reqId;
+        msg.difficulty = _initDifficulty || msg.difficulty || '';
+        msg.matchCode = parsed.canonical;
+        Bridge.send(msg);
     }
 
     function onCustomAbort() {
