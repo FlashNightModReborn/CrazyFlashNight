@@ -1,6 +1,8 @@
 # CF7-Packer 打包配置
-# 基线：2026-06-24 全层重新核对并调整（WebP 图标管线 / 子弹管线重构 / 新搓招 / 新地图 /
-#   dressup 烘焙 / BGM 专辑直收 / Ruffle 运行时入包 / 开发脚本剔除 对齐）
+# 基线：2026-07-03 按 e011c1c630..HEAD 提交重扫（竞技场自定义赛 / 玩家对怪物 /
+#   斗兽测试场运行桥 / 铁矛任务与多 NPC 地图头像 / 启动诊断 / 图标与副本海报资产）。
+#   运行时产物由 data / flashswf / root-files / runtime / launcher-web 等层承接；
+#   arena-calibration、derive-*、harness、bake/audit 工具仍归开发链，不进入每日包。
 
 version: 1
 meta:
@@ -141,8 +143,7 @@ layers:
       # === 用户面入口：native C++ bootstrap（~160KB） ===
       # 双击此 exe 触发：检测 .NET 10 桌面运行时 → 缺失则 ShellExecute bundled installer
       # (tools/dotnet-runtime/) → ShellExecute runtime/Core.exe 转发命令行参数 + 注入 --project-root
-      # 不依赖 .NET runtime，能在裸 Windows 跑
-      # 即便机器上没装 runtime，也会在 logs/bootstrap.log 留追踪
+      # 不依赖 .NET runtime，能在裸 Windows 跑；启动失败会生成 logs/bootstrap.log / diagnostic zip
       - "CRAZYFLASHER7MercenaryEmpire.exe"
       # 快捷键拦截辅助进程（独立 csc 编译，非主 csproj 输出）
       - "hotkey_guard.exe"
@@ -206,9 +207,12 @@ layers:
       - "overlay.html"
       - "config/**"
       - "css/**"
+      # 运行时资产：字体 / 地图头像 / stage-select 预览 / dialogue & dressup 产物 / dungeon posters
+      # 审计报告和开发脚本在 exclude 中剔除，避免 assets/** 把烘焙中间产物带进每日包。
       - "assets/**"
       - "data/**"
       - "lib/**"
+      # 面板运行时代码与生成 catalog：arena custom match/PvE、tasks/achievements、team/merc/map 等
       - "modules/**"
       - "help/**"
       # 图标已 WebP 化（2026-06 图标管线 WebP 化）：icons/ 是扁平目录，全部为运行时资产
@@ -308,4 +312,6 @@ globalExclude:
 #   （发行用的 sol_parser.dll 由 launcher-runtime 层从 runtime/ 收编，是编译产物）
 # 顶层 music/ 目录为原版闪7历史 BGM 残留（当前点歌器已迁移至 sounds/ + MusicCatalog，
 #   且 XFL 内旧点歌器代码已被注释），刻意不入包；BGM 实际由 sounds/ 下各专辑目录直收
+# 顶层 tools/ 只通过专门层收 runtime-installer 与 rapfi；arena-calibration / derive-* / bake-* / audit-*
+#   是无人值守标定、资源烘焙和回归检查入口，不随每日包分发；运行时需要的生成物已落到 data/ 或 launcher/web/。
 # externalAssets（Unity 外壳）暂不支持，后续再加
