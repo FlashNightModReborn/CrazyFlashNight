@@ -74,6 +74,7 @@ static bool GetExeDir(wchar_t* out, size_t cch)
 // 即便文件写失败也吞，不影响主流程；这是诊断辅助不是关键路径
 static FILE* g_logFp = NULL;
 static wchar_t g_logPath[MAX_PATH] = { 0 };
+static DWORD g_lastCoreLaunchError = 0;
 
 static void LogOpen(const wchar_t* exeDir)
 {
@@ -154,6 +155,45 @@ static void LogClose()
     if (g_logFp != NULL) {
         fclose(g_logFp);
         g_logFp = NULL;
+    }
+}
+
+static void OpenLogsFolder()
+{
+    if (g_logPath[0] == L'\0') return;
+
+    wchar_t logsDir[MAX_PATH];
+    if (FAILED(StringCchCopyW(logsDir, MAX_PATH, g_logPath))) return;
+    for (size_t i = wcslen(logsDir); i > 0; --i) {
+        if (logsDir[i - 1] == L'\\' || logsDir[i - 1] == L'/') {
+            logsDir[i - 1] = L'\0';
+            break;
+        }
+    }
+    if (logsDir[0] == L'\0') return;
+    ShellExecuteW(NULL, L"open", L"explorer.exe", logsDir, NULL, SW_SHOWNORMAL);
+}
+
+static void ShowNativeDiagnosticDialog(const wchar_t* code, const wchar_t* msg, const wchar_t* advice)
+{
+    wchar_t text[4096];
+    const wchar_t* safeCode = (code && code[0]) ? code : L"CF7-BOOT-UNKNOWN";
+    const wchar_t* safeMsg = (msg && msg[0]) ? msg : L"引导器启动失败。";
+    const wchar_t* safeAdvice = (advice && advice[0]) ? advice : L"请重试一次；如果问题持续存在，请把日志发给开发组。";
+    const wchar_t* safeLogPath = (g_logPath[0]) ? g_logPath : L"(日志尚未创建)";
+
+    StringCchPrintfW(text, 4096,
+        L"游戏启动失败。\n\n"
+        L"错误码：%s\n\n"
+        L"%s\n\n"
+        L"建议操作：\n%s\n\n"
+        L"日志位置：\n%s\n\n"
+        L"点击「是」打开日志文件夹，点击「否」关闭。",
+        safeCode, safeMsg, safeAdvice, safeLogPath);
+
+    int choice = MessageBoxW(NULL, text, TITLE, MB_YESNO | MB_ICONERROR);
+    if (choice == IDYES) {
+        OpenLogsFolder();
     }
 }
 
@@ -397,12 +437,12 @@ static bool IsRuntimeInstalled(wchar_t* foundVersionOut, size_t foundVersionCch,
     return false;
 }
 
-// ---- 弹错误框 + 返回（含日志） ----
-static int FatalExit(const wchar_t* msg)
+// ---- 弹自诊断错误框 + 返回（含日志） ----
+static int FatalExit(const wchar_t* code, const wchar_t* msg, const wchar_t* advice)
 {
-    Logf("ERROR", L"FatalExit: %s", msg);
+    Logf("ERROR", L"FatalExit code=%s message=%s", code ? code : L"(null)", msg ? msg : L"(null)");
     LogClose();
-    MessageBoxW(NULL, msg, TITLE, MB_OK | MB_ICONERROR);
+    ShowNativeDiagnosticDialog(code, msg, advice);
     return 1;
 }
 
@@ -448,6 +488,7 @@ static int RunInstaller(const wchar_t* installerPath)
 // 传递: --project-root "<exeDir 绝对路径>" + 原始命令行参数
 static bool LaunchCore(const wchar_t* exeDir, const wchar_t* corePath, LPWSTR origCmdLine)
 {
+    g_lastCoreLaunchError = 0;
     // 构造 args: --project-root "<exeDir>" <origCmdLine>
     // NTFS 路径分量禁止 `"`（连同 < > : / \ | ? * 都是保留字符），
     // 所以 GetModuleFileNameW 拿到的 exeDir 永远不含 "，下方裸 quote 拼接安全。
@@ -503,6 +544,7 @@ static bool LaunchCore(const wchar_t* exeDir, const wchar_t* corePath, LPWSTR or
         return true;
     }
     DWORD err = GetLastError();
+    g_lastCoreLaunchError = err;
     Logf("ERROR", L"Core launch failed (GetLastError=%lu)", err);
     return false;
 }
@@ -535,7 +577,9 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
         wchar_t installerGlob[MAX_PATH];
         if (FAILED(StringCchCopyW(installerGlob, MAX_PATH, exeDir)) ||
             FAILED(StringCchCatW(installerGlob, MAX_PATH, RUNTIME_INSTALLER_GLOB))) {
-            return FatalExit(L"内部错误：路径拼接溢出。");
+            return FatalExit(L"CF7-BOOT-PATH",
+                L"内部错误：路径拼接溢出。",
+                L"请把 logs\\bootstrap.log 发给开发组。");
         }
 
         wchar_t installerPath[MAX_PATH] = { 0 };
@@ -557,7 +601,8 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
                 L"未检测到 .NET 10 桌面运行时，且 bundled installer 缺失：\n%s\n\n"
                 L"请重新下载完整安装包，或手动从 Microsoft 网站安装 .NET 10 桌面运行时。",
                 installerGlob);
-            return FatalExit(err);
+            return FatalExit(L"CF7-BOOT-RUNTIME-INSTALLER-MISSING", err,
+                L"请重新下载完整安装包，或手动从 Microsoft 网站安装 .NET 10 Desktop Runtime。");
         }
         Logf("INFO", L"installer resolved: %s", installerPath);
 
@@ -577,14 +622,17 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
         // 4. 运行 installer（同步 + 等退出）
         int installResult = RunInstaller(installerPath);
         if (installResult == -2) {
-            return FatalExit(L"管理员授权被取消，运行时未安装。");
+            return FatalExit(L"CF7-BOOT-RUNTIME-UAC-CANCELLED",
+                L"管理员授权被取消，运行时未安装。",
+                L"请重新启动游戏并允许管理员授权安装 .NET 10 Desktop Runtime。");
         }
         if (installResult < 0) {
             wchar_t err[256];
             StringCchPrintfW(err, 256,
                 L"无法启动运行时安装包（系统错误码 %d）。",
                 -installResult);
-            return FatalExit(err);
+            return FatalExit(L"CF7-BOOT-RUNTIME-INSTALLER-LAUNCH", err,
+                L"请手动运行 tools\\dotnet-runtime\\ 目录下的 .NET Runtime 安装包。");
         }
         // installer 退出码: 0 = 成功; 1602 = 用户取消; 1603 = 通用失败; 3010 = 需要重启
         if (installResult != 0 && installResult != 3010) {
@@ -593,15 +641,17 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
                 L"运行时安装失败（installer 退出码 %d）。\n\n"
                 L"请尝试手动运行：\n%s",
                 installResult, installerPath);
-            return FatalExit(err);
+            return FatalExit(L"CF7-BOOT-RUNTIME-INSTALLER-FAILED", err,
+                L"请手动运行提示中的安装包；如果安装器要求重启，请重启 Windows 后再启动游戏。");
         }
 
         // 5. 二次确认 runtime 已就位
         if (!IsRuntimeInstalled(foundVer, 64, foundRoot, MAX_PATH, &needSetEnv)) {
-            return FatalExit(
+            return FatalExit(L"CF7-BOOT-RUNTIME-NOT-DETECTED",
                 L"运行时安装似乎完成但未被检测到。\n\n"
                 L"如果安装包提示需要重启，请重启 Windows 后再次双击启动。\n"
-                L"否则请尝试重新运行 tools\\dotnet-runtime\\ 目录下的 installer。");
+                L"否则请尝试重新运行 tools\\dotnet-runtime\\ 目录下的 installer。",
+                L"请先重启 Windows；若仍失败，请手动安装 .NET 10 Desktop Runtime。");
         }
         Logf("INFO", L"runtime installed OK (version=%s)", foundVer);
     } else {
@@ -619,17 +669,20 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
 
     // 运行时和游戏关键文件预检：只做诊断与 fail-fast，不尝试修复。
     if (!PreflightCriticalFiles(exeDir)) {
-        return FatalExit(
+        return FatalExit(L"CF7-BOOT-FILE-INTEGRITY",
             L"启动器关键文件缺失或损坏。\n\n"
             L"请在 Steam 中验证游戏文件完整性，或重新下载完整安装包。\n"
-            L"详细缺失项见 logs\\bootstrap.log 的 [preflight] 行。");
+            L"详细缺失项见 logs\\bootstrap.log 的 [preflight] 行。",
+            L"请通过 Steam 验证游戏文件完整性；如果不是 Steam 版本，请重新解压完整安装包。");
     }
 
     // 6. 启动 Core
     wchar_t corePath[MAX_PATH];
     if (FAILED(StringCchCopyW(corePath, MAX_PATH, exeDir)) ||
         FAILED(StringCchCatW(corePath, MAX_PATH, CORE_EXE_REL))) {
-        return FatalExit(L"内部错误：路径拼接溢出。");
+        return FatalExit(L"CF7-BOOT-PATH",
+            L"内部错误：路径拼接溢出。",
+            L"请把 logs\\bootstrap.log 发给开发组。");
     }
 
     DWORD coreAttr = GetFileAttributesW(corePath);
@@ -639,16 +692,18 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
             L"主程序缺失：\n%s\n\n"
             L"请确认整包完整 / 跑过 launcher\\build.ps1。",
             corePath);
-        return FatalExit(err);
+        return FatalExit(L"CF7-BOOT-CORE-MISSING", err,
+            L"请通过 Steam 验证游戏文件完整性，或重新下载完整安装包。");
     }
 
     if (!LaunchCore(exeDir, corePath, cmdLine)) {
-        DWORD err = GetLastError();
+        DWORD err = g_lastCoreLaunchError != 0 ? g_lastCoreLaunchError : GetLastError();
         wchar_t buf[256];
         StringCchPrintfW(buf, 256,
             L"无法启动主程序（系统错误码 %lu）。",
             err);
-        return FatalExit(buf);
+        return FatalExit(L"CF7-BOOT-CORE-LAUNCH", buf,
+            L"请重试一次；如果仍失败，请检查杀毒软件是否拦截 runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe。");
     }
 
     Log("INFO", L"==== bootstrap exit OK ====");

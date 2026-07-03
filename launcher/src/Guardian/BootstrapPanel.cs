@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using CF7Launcher.Diagnostic;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 
@@ -108,11 +109,9 @@ namespace CF7Launcher.Guardian
             }
             catch (Exception ex)
             {
-                // Fail-closed：日志落盘 + 可操作 MessageBox + 触发 BootstrapInitFailed
+                // Fail-closed：日志落盘 + 自诊断弹窗 + 触发 BootstrapInitFailed
                 string logPath = LogManager.LogFilePath ?? "(未启用文件日志)";
                 string userData = userDataDir ?? "(未构造)";
-                StartupDiagnostics.Exit("bootstrap_webview2_init_failed",
-                    ex.GetType().Name + ": " + ex.Message + " userDataDir=" + userData);
                 PerfTrace.Duration("bootstrap.webview2.init_total", initStart, "fail:" + ex.GetType().Name);
                 try
                 {
@@ -122,18 +121,23 @@ namespace CF7Launcher.Guardian
                 }
                 catch { }
 
-                string dialogText =
-                    "WebView2 初始化失败，启动器无法继续运行。\r\n\r\n"
-                    + "请先关闭启动器后重试。\r\n"
-                    + "如果问题持续存在，请检查 WebView2 Runtime、用户目录权限，或查看日志。\r\n\r\n"
-                    + "用户目录: " + userData + "\r\n"
-                    + "日志位置: " + logPath + "\r\n\r\n"
-                    + "详情: " + ex.Message;
-
                 try
                 {
-                    MessageBox.Show(this.FindForm(), dialogText,
-                        "CF7:ME Bootstrap", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    IWin32Window owner = this.FindForm();
+                    if (owner == null) owner = this;
+                    StartupFailureReporter.ReportTerminalFailure(
+                        owner,
+                        ResolveProjectRootFromWebDir(),
+                        "bootstrap_webview2_init_failed",
+                        "CF7-LAUNCH-BOOTSTRAP-WEBVIEW2",
+                        "启动页面初始化失败",
+                        ex.GetType().Name + ": " + ex.Message
+                            + "\r\nuserDataDir=" + userData
+                            + "\r\nlauncherLog=" + logPath,
+                        "请先关闭启动器后重试。如果问题持续存在，请修复 WebView2 Runtime，并确认 launcher\\webview2_userdata 目录可写。",
+                        null,
+                        null,
+                        null);
                 }
                 catch { }
 
@@ -147,6 +151,18 @@ namespace CF7Launcher.Guardian
                     }
                 }
             }
+        }
+
+        private string ResolveProjectRootFromWebDir()
+        {
+            try
+            {
+                DirectoryInfo web = new DirectoryInfo(_webDir);
+                if (web.Parent != null && web.Parent.Parent != null)
+                    return web.Parent.Parent.FullName;
+            }
+            catch { }
+            return null;
         }
 
         private static void ProbeUserDataDirWritable(string userDataDir)

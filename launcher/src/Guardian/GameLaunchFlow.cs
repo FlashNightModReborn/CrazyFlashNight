@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using CF7Launcher.Bus;
+using CF7Launcher.Diagnostic;
 using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Guardian
@@ -1029,10 +1030,29 @@ namespace CF7Launcher.Guardian
                 toKill = _currentFlashProcess;
                 SetState(State.Error, msg);
             }
-            StartupDiagnostics.Failure("launchflow_error:" + msg,
-                "state=" + previousState
+            string failureReason = "launchflow_error:" + msg;
+            string failureDetail = "state=" + previousState
                 + " attemptId=" + (attemptId ?? "(null)")
-                + " pendingSlot=" + (pendingSlot ?? "(null)"));
+                + " pendingSlot=" + (pendingSlot ?? "(null)");
+            string failureCode = StartupFailureReporter.CodeForLaunchFlowReason(msg);
+            StartupDiagnostics.Failure(failureReason,
+                StartupFailureReporter.DetailWithCode(failureCode, failureDetail));
+
+            StartupFailureReport report = StartupFailureReporter.CreateReport(
+                _saveCtx != null ? _saveCtx.ProjectRoot : null,
+                failureReason,
+                failureCode,
+                "游戏启动失败",
+                failureDetail,
+                StartupFailureReporter.RecommendationForLaunchFlowReason(msg),
+                pendingSlot,
+                _saveCtx != null ? _saveCtx.SwfPath : null,
+                _saveCtx != null ? _saveCtx.Locator : null,
+                true);
+            RunOnUi(delegate
+            {
+                StartupFailureReporter.ShowReportDialog(_form, report);
+            });
             if (toKill != null)
             {
                 Process snap = toKill;

@@ -4,7 +4,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using CF7Launcher.Bus;
@@ -22,17 +21,6 @@ class Program
     // 不写成 volatile 时 JIT 理论上能 hoist 出 null. 实际 UI 线程单点写 + 单点读, 但加 volatile 零成本上保险.
     static volatile GuardianForm _guardianForm;
     static int _fatalUiExceptionExiting;
-
-    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-    static extern int MessageBoxW(IntPtr hWnd, string text, string caption, uint type);
-
-    const uint MB_OK = 0x00000000;
-    const uint MB_ICONERROR = 0x00000010;
-
-    static void ShowError(string message)
-    {
-        MessageBoxW(IntPtr.Zero, message, "CF7:ME Guardian", MB_OK | MB_ICONERROR);
-    }
 
     // 退出早期把 overlay form 立即 SW_HIDE, 防 KillFlash WaitForExit / Dispose 期间任何窗口背景闪现.
     // 直接走 Form.Hide() 等价 ShowWindow(SW_HIDE), 不会触发 FormClosing.
@@ -127,12 +115,20 @@ class Program
         catch (Exception ex)
         {
             StartupDiagnostics.Exception("core.main_unhandled_exception", ex);
-            StartupDiagnostics.Exit("core.main_unhandled_exception", ex.GetType().FullName + ": " + ex.Message);
             try { LogManager.Log("[Guardian] Main fatal exception:\n" + ex); } catch { }
             try
             {
-                ShowError("启动器发生未处理异常，已写入 logs\\bootstrap.log 和 logs\\launcher.log。\n\n"
-                    + ex.GetType().Name + ": " + ex.Message);
+                StartupFailureReporter.ReportTerminalFailure(
+                    null,
+                    earlyProjectRoot,
+                    "core.main_unhandled_exception",
+                    "CF7-LAUNCH-CORE-UNHANDLED",
+                    "启动器发生未处理异常",
+                    ex.GetType().FullName + ": " + ex.Message,
+                    "请重启游戏；如果问题持续存在，请把诊断包发给开发组。",
+                    null,
+                    null,
+                    null);
             }
             catch { }
             return 1;
@@ -286,15 +282,18 @@ class Program
                 wv2Error == null ? "ok" : wv2Error);
             if (wv2Error != null)
             {
-                StartupDiagnostics.Exit("webview2_missing", wv2Error);
                 LogManager.Log("[Guardian] FATAL: webview2_missing — exiting with code 1; detail=" + wv2Error);
-                MessageBox.Show(
-                    "WebView2 Runtime 不可用, 无法启动启动器.\n\n"
-                    + "请安装 WebView2 Evergreen Bootstrapper:\n"
-                    + "https://developer.microsoft.com/microsoft-edge/webview2/\n\n"
-                    + "详情: " + wv2Error,
-                    "CF7:ME - WebView2 缺失",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                StartupFailureReporter.ReportTerminalFailure(
+                    null,
+                    projectRoot,
+                    "webview2_missing",
+                    "CF7-LAUNCH-WEBVIEW2-MISSING",
+                    "WebView2 Runtime 不可用",
+                    wv2Error,
+                    "请安装或修复 Microsoft Edge WebView2 Runtime，然后重新启动游戏。官方下载页: https://developer.microsoft.com/microsoft-edge/webview2/",
+                    null,
+                    null,
+                    null);
                 PerfTrace.Mark("guardian.exit", "webview2_missing");
                 PerfTrace.Shutdown();
                 return 1;
@@ -367,16 +366,35 @@ class Program
         {
             LogManager.Log("[Guardian] Steam ownership check FAILED — refusing to write trust file");
             string reason = SteamOwnershipCheck.FailReason;
-            StartupDiagnostics.Exit("steam_ownership_failed", "reason=" + (reason ?? "(null)"));
             LogManager.Log("[Guardian] FATAL: steam_ownership_failed — exiting with code 1; reason=" + (reason ?? "(null)"));
+            string steamCode = "CF7-LAUNCH-STEAM-OWNERSHIP";
+            string steamRecommendation = "请从 Steam 库启动游戏，并确认当前 Steam 账号拥有本游戏。";
             if (reason == "steam_not_running")
-                ShowError("Steam is not running.\nPlease start Steam first, then launch the game from your Steam library.");
+            {
+                steamCode = "CF7-LAUNCH-STEAM-NOT-RUNNING";
+                steamRecommendation = "请先启动 Steam，然后从 Steam 库重新启动游戏。";
+            }
             else if (reason == "not_owned")
-                ShowError("Game ownership not found.\nPlease make sure you own the game on this Steam account.");
+            {
+                steamCode = "CF7-LAUNCH-STEAM-NOT-OWNED";
+                steamRecommendation = "当前 Steam 账号未检测到游戏所有权。请切换到拥有本游戏的账号后重试。";
+            }
             else if (reason == "dll_missing" || reason == "dll_load_failed")
-                ShowError("Steam runtime files are missing or corrupted.\nPlease verify game files through Steam.");
-            else
-                ShowError("Steam ownership verification failed.\nPlease launch the game from Steam.");
+            {
+                steamCode = "CF7-LAUNCH-STEAM-RUNTIME";
+                steamRecommendation = "Steam 运行时文件缺失或损坏。请通过 Steam 验证游戏文件完整性。";
+            }
+            StartupFailureReporter.ReportTerminalFailure(
+                form,
+                projectRoot,
+                "steam_ownership_failed",
+                steamCode,
+                "Steam 所有权校验失败",
+                "reason=" + (reason ?? "(null)"),
+                steamRecommendation,
+                null,
+                config.SwfPath,
+                null);
             PerfTrace.Mark("guardian.exit", "steam_ownership_failed");
             PerfTrace.Shutdown();
             return 1;
@@ -404,16 +422,34 @@ class Program
         {
             if (!File.Exists(config.FlashPlayerPath))
             {
-                StartupDiagnostics.Exit("flash_player_missing", config.FlashPlayerPath);
                 LogManager.Log("[Guardian] FATAL: flash_player_missing — exiting with code 1; path=" + config.FlashPlayerPath);
-                ShowError("Flash Player not found:\n" + config.FlashPlayerPath);
+                StartupFailureReporter.ReportTerminalFailure(
+                    form,
+                    projectRoot,
+                    "flash_player_missing",
+                    "CF7-LAUNCH-FILE-MISSING-FLASH",
+                    "Flash Player 文件缺失",
+                    config.FlashPlayerPath,
+                    "请通过 Steam 验证游戏文件完整性，或重新下载完整安装包。",
+                    null,
+                    config.SwfPath,
+                    null);
                 return 1;
             }
             if (!File.Exists(config.SwfPath))
             {
-                StartupDiagnostics.Exit("swf_missing", config.SwfPath);
                 LogManager.Log("[Guardian] FATAL: swf_missing — exiting with code 1; path=" + config.SwfPath);
-                ShowError("SWF file not found:\n" + config.SwfPath);
+                StartupFailureReporter.ReportTerminalFailure(
+                    form,
+                    projectRoot,
+                    "swf_missing",
+                    "CF7-LAUNCH-FILE-MISSING-SWF",
+                    "游戏 SWF 文件缺失",
+                    config.SwfPath,
+                    "请通过 Steam 验证游戏文件完整性，或重新下载完整安装包。",
+                    null,
+                    config.SwfPath,
+                    null);
                 return 1;
             }
 
@@ -473,9 +509,18 @@ class Program
         }
         if (socketPort < 0 || !socketStarted)
         {
-            StartupDiagnostics.Exit("socket_start_failed", "port=" + socketPort);
             LogManager.Log("[Guardian] FATAL: socket_start_failed — exiting with code 1; port=" + socketPort);
-            ShowError("XMLSocket server failed to start.\nNo available port found.");
+            StartupFailureReporter.ReportTerminalFailure(
+                form,
+                projectRoot,
+                "socket_start_failed",
+                "CF7-LAUNCH-SOCKET-START",
+                "本地通信端口启动失败",
+                "socketPort=" + socketPort,
+                "请关闭重复启动的游戏/启动器后重试；如果仍失败，请重启 Windows 或把诊断包发给开发组。",
+                null,
+                config.SwfPath,
+                null);
             socketServer.Dispose();
             return 1;
         }
@@ -492,9 +537,18 @@ class Program
         }
         if (httpPort < 0 || !httpStarted)
         {
-            StartupDiagnostics.Exit("http_start_failed", "port=" + httpPort);
             LogManager.Log("[Guardian] FATAL: http_start_failed — exiting with code 1; port=" + httpPort);
-            ShowError("HTTP server failed to start on port " + httpPort + ".\nAnother instance may be running.");
+            StartupFailureReporter.ReportTerminalFailure(
+                form,
+                projectRoot,
+                "http_start_failed",
+                "CF7-LAUNCH-HTTP-START",
+                "本地 HTTP 服务启动失败",
+                "httpPort=" + httpPort,
+                "请关闭重复启动的游戏/启动器后重试；如果仍失败，请重启 Windows 或把诊断包发给开发组。",
+                null,
+                config.SwfPath,
+                null);
             socketServer.Dispose();
             httpServer.Dispose();
             return 1;

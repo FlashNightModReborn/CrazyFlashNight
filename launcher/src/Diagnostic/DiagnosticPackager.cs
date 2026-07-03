@@ -127,6 +127,7 @@ namespace CF7Launcher.Diagnostic
             string bootstrapOld = Path.Combine(projectRoot, "logs", "bootstrap.log.old");
             string perfLatest = Path.Combine(projectRoot, "logs", "perf-latest.jsonl");
             string startupExit = Path.Combine(projectRoot, "logs", "startup-exit.jsonl");
+            string startupFailure = Path.Combine(projectRoot, "logs", "startup-failure-latest.txt");
             if (File.Exists(current))
                 AddFileShared(zip, current, "logs/launcher.log");
             else
@@ -143,6 +144,8 @@ namespace CF7Launcher.Diagnostic
                 AddFileShared(zip, perfLatest, "logs/perf-latest.jsonl");
             if (File.Exists(startupExit))
                 AddFileShared(zip, startupExit, "logs/startup-exit.jsonl");
+            if (File.Exists(startupFailure))
+                AddFileShared(zip, startupFailure, "logs/startup-failure-latest.txt");
         }
 
         private static void PackConfig(ZipArchive zip, string projectRoot, List<string> warnings)
@@ -197,6 +200,7 @@ namespace CF7Launcher.Diagnostic
             sb.Append("             bootstrap.log / bootstrap.log.old（native 引导器 + Core 早期启动诊断）\r\n");
             sb.Append("             perf-latest.jsonl（启动性能时间线，若存在）\r\n");
             sb.Append("             startup-exit.jsonl（最近启动退出/失败原因码，若存在）\r\n");
+            sb.Append("             startup-failure-latest.txt（玩家弹窗中的错误摘要，若存在）\r\n");
             sb.Append("config/      config.toml + launcher_user_prefs.json（用户偏好）\r\n");
             sb.Append("meta.json    系统信息：OS / git HEAD / 时间戳 / 机器名等\r\n");
             sb.Append("\r\n");

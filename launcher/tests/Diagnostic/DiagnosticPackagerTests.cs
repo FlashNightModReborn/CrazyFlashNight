@@ -34,6 +34,7 @@ namespace CF7Launcher.Tests.Diagnostic
             WriteLog("bootstrap.log.old", "bootstrap old");
             WriteLog("perf-latest.jsonl", "{\"kind\":\"session\"}");
             WriteLog("startup-exit.jsonl", "{\"reason\":\"webview2_missing\"}");
+            WriteLog("startup-failure-latest.txt", "CF7-LAUNCH-WEBVIEW2-MISSING");
 
             DiagnosticResult result = DiagnosticPackager.Pack(_root, null, null, null);
 
@@ -49,6 +50,7 @@ namespace CF7Launcher.Tests.Diagnostic
                 Assert.Contains("logs/bootstrap.log.old", names);
                 Assert.Contains("logs/perf-latest.jsonl", names);
                 Assert.Contains("logs/startup-exit.jsonl", names);
+                Assert.Contains("logs/startup-failure-latest.txt", names);
             }
         }
 
