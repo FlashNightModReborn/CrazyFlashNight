@@ -1,6 +1,5 @@
 # 测试约定与验证矩阵
-**文档角色**：验证矩阵 canonical doc。  
-**最后核对代码基线**：commit `6ed0404f9a`（2026-06-17）。
+**文档角色**：验证矩阵 canonical doc。**最后核对代码基线**：commit `6ed0404f9a`（2026-06-17）。
 按子栈选验证；不要用「编译一下」「跑一下 build」笼统覆盖跨栈任务。
 ## 0. 通用前缀
 PowerShell 命令前先跑 `chcp.com 65001 | Out-Null`（避免 GBK 乱码）；下方所有 PowerShell 命令默认已执行该前缀,不再每条重复。
@@ -13,6 +12,7 @@ PowerShell 命令前先跑 `chcp.com 65001 | Out-Null`（避免 GBK 乱码）；
 | 导弹运动 / 追踪参数离线调优 | `python tools/missile-tuning-sim/run_sim.py compare --configs ...` | `scan --objective loiter|pressure|hit` / `audit`、`compile_test`、游戏内人工验证 |
 | Launcher C# / Host / Bus | `launcher/build.ps1` | `launcher/tests/run_tests.ps1`、`tools/cfn-cli`、`--bus-only` |
 | 竞技场斗兽标定 | `node tools/arena-calibration/run-checks.js` + `launcher/tests/run_tests.ps1`；改 AS2 runner 时追加 `scripts/compile_test.ps1 -Target publish` / `-Target test` | 真机必须验证从普通场景自动跳关进入 StageManager 专用竞技场标定分支：不刷主角/同伴，覆盖跑完、timeout、abort、JSONL 写入；普通 `gameworld` smoke 只证明通信链路，不作为数值样本。AS2 runner 禁止直接替换带主角的普通 `gameworld`；StageInfo/跳转入口不可用时应返回 `stage_failed` |
+| Launcher Web / Arena Panel | `node tools/derive-arena-unit-catalog.js --check` + `node tools/derive-arena-custom-presets.js --check` + `node tools/run-arena-harness.js --browser edge --case custom-match-p1`（覆盖入口卡瘦身、三层编辑页、全量单位浏览、敌对/非敌对过滤、非敌对标签、占位图标、待标定预设池、单侧随机、本地保存/读取、红蓝交换、手动 roster 编辑） + `node tools/run-arena-harness.js --browser edge --case custom-match-p2`（覆盖确认页、`custom_start`、关闭 Web panel、`custom_result` 回开、独立结算页与确认返回） + `node --check launcher/web/modules/arena-panel.js launcher/web/modules/arena-custom-match-code.js launcher/web/modules/arena-custom-presets.js launcher/web/modules/arena-unit-catalog.js launcher/web/modules/arena/dev/qa-suite.js tools/derive-arena-custom-presets.js` | 触及标准竞技场卡片行为时追加 `node tools/run-arena-harness.js --browser edge --case panel-open`、`--case grid-batch-preview`、`--case grid-direct-enter`；改 C# `ArenaTask` / `ArenaCalibrationTask` 时追加 `launcher/tests/run_tests.ps1`；改 AS2 `arenaSnapshot/arenaEnter` 或标定观战镜头时追加 Flash smoke |
 | Launcher WebView2 / GPU 诊断 | `powershell -ExecutionPolicy Bypass -File tools/set-launcher-gpu-preference.ps1 -List` + `powershell -ExecutionPolicy Bypass -File tools/sample-launcher-gpu.ps1 -DurationSeconds 6` + `node tools/audit-web-overlay-complexity.js` | `-Apply` / `-Revert` 后完整重启 launcher / game，再复核 WebView2 GPU engine；机器不稳定时优先用静态复杂度审计 |
 | Launcher Web / Minigame | `node launcher/tools/run-minigame-qa.js --game lockbox\|pinalign\|gobang\|all` | browser harness、`node launcher/tools/validate-minigame-final-state.js` |
 | Launcher Web / Map Panel | `powershell -ExecutionPolicy Bypass -File launcher/build.ps1` + `node tools/audit-map-taskmarkers.js`（契约守门，必须 0 error / 0 warn） | browser harness `map-ui1`~`map-ui32` 全绿（`launcher/web/modules/map/dev/harness.html` → 面板"Run suite"，或 `node tools/run-map-harness-headless.js --browser edge`）、`node tools/audit-map-layout.js`；重算 filter-fit preset 时跑 `node tools/tune-map-filter-fit.js --write` |

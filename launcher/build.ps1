@@ -263,6 +263,34 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "  web icon render entrypoints OK." -ForegroundColor Green
 
+# Step 1i: 派生竞技场定制赛单位浏览目录。
+Write-Host "[Step 1i/7] Derive launcher/web/modules/arena-unit-catalog.js..." -ForegroundColor Yellow
+$deriveArenaUnitCatalogScript = Join-Path $projectRoot "tools\derive-arena-unit-catalog.js"
+if (-not (Test-Path $deriveArenaUnitCatalogScript)) {
+    Write-Host "[FAIL] derive-arena-unit-catalog.js missing: $deriveArenaUnitCatalogScript" -ForegroundColor Red
+    exit 1
+}
+node $deriveArenaUnitCatalogScript
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] derive-arena-unit-catalog.js failed." -ForegroundColor Red
+    exit 1
+}
+Write-Host "  arena-unit-catalog.js OK." -ForegroundColor Green
+
+# Step 1j: 派生竞技场定制赛待标定组合预设。
+Write-Host "[Step 1j/7] Derive launcher/web/modules/arena-custom-presets.js..." -ForegroundColor Yellow
+$deriveArenaCustomPresetsScript = Join-Path $projectRoot "tools\derive-arena-custom-presets.js"
+if (-not (Test-Path $deriveArenaCustomPresetsScript)) {
+    Write-Host "[FAIL] derive-arena-custom-presets.js missing: $deriveArenaCustomPresetsScript" -ForegroundColor Red
+    exit 1
+}
+node $deriveArenaCustomPresetsScript
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] derive-arena-custom-presets.js failed." -ForegroundColor Red
+    exit 1
+}
+Write-Host "  arena-custom-presets.js OK." -ForegroundColor Green
+
 # Step 2: Build native miniaudio DLL
 Write-Host "[Step 2/7] Build native miniaudio DLL..." -ForegroundColor Yellow
 $nativeBat = Join-Path $launcherDir "native\build.bat"
@@ -601,6 +629,10 @@ $requiredWebPaths = @(
     "modules\team\team-panel.js",
     "modules\arena-meta-rosters.js",
     "modules\arena-factions.js",
+    "modules\arena-unit-catalog.js",
+    "modules\arena-custom-presets.js",
+    "modules\arena-custom-match-code.js",
+    "modules\arena-panel.js",
     "modules\tasks\task-panel.js",
     "modules\tasks\task-catalog.json",
     "modules\tasks\achievement-catalog.json",

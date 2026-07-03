@@ -30,10 +30,14 @@ namespace CF7Launcher.Tasks
 
         private readonly Func<bool> _isClientReady;
         private readonly Action<string> _send;
+        private ArenaCalibrationTask _calibrationTask;
+        private Action<JObject> _openCustomResultPanel;
         private Action<string> _postToWeb;
         private Action<Action> _invokeOnUI;
         private readonly Dictionary<int, PendingRequest> _pending;
         private readonly Dictionary<int, Timer> _timers;
+        private readonly HashSet<string> _customBatchIds;
+        private readonly Dictionary<string, string> _customMatchCodes;
         private int _seq;
         private readonly object _lock = new object();
         private volatile bool _disposed;
@@ -51,10 +55,19 @@ namespace CF7Launcher.Tasks
             _send = send ?? delegate { };
             _pending = new Dictionary<int, PendingRequest>();
             _timers = new Dictionary<int, Timer>();
+            _customBatchIds = new HashSet<string>(StringComparer.Ordinal);
+            _customMatchCodes = new Dictionary<string, string>(StringComparer.Ordinal);
         }
 
         public void SetPostToWeb(Action<string> post) { _postToWeb = post; }
         public void SetInvoker(Action<Action> invoker) { _invokeOnUI = invoker; }
+        public void SetCustomResultOpenHandler(Action<JObject> handler) { _openCustomResultPanel = handler; }
+        public void SetCalibrationTask(ArenaCalibrationTask task)
+        {
+            _calibrationTask = task;
+            if (_calibrationTask != null)
+                _calibrationTask.SetBatchCompletedHandler(OnCalibrationBatchCompleted);
+        }
 
         public void Dispose()
         {
@@ -69,6 +82,12 @@ namespace CF7Launcher.Tasks
             if (string.IsNullOrEmpty(webCallId))
             {
                 LogManager.Log("[ArenaTask] webCallId is empty");
+                return;
+            }
+
+            if (cmd == "custom_start" || cmd == "custom_status" || cmd == "custom_abort")
+            {
+                HandleCustomMatchRequest(cmd, webCallId, parsed);
                 return;
             }
 
@@ -132,6 +151,122 @@ namespace CF7Launcher.Tasks
             string flashJson = flashMsg.ToString(Formatting.None);
             LogManager.Log("[ArenaTask] -> Flash: " + flashJson);
             _send(flashJson + "\0");
+        }
+
+        private void HandleCustomMatchRequest(string cmd, string webCallId, JObject parsed)
+        {
+            if (_calibrationTask == null)
+            {
+                RespondError(webCallId, cmd, "calibration_task_unavailable");
+                return;
+            }
+
+            JObject control = new JObject();
+            if (cmd == "custom_start")
+            {
+                control["action"] = "startSingle";
+                CopyIfPresent(parsed, control, "batchId");
+                CopyIfPresent(parsed, control, "matchCode");
+                CopyIfPresent(parsed, control, "repeat");
+                CopyIfPresent(parsed, control, "timeoutFrames");
+                if (parsed["calibrationCase"] != null)
+                    control["calibrationCase"] = parsed["calibrationCase"].DeepClone();
+            }
+            else if (cmd == "custom_status")
+            {
+                control["action"] = "status";
+            }
+            else
+            {
+                control["action"] = "abort";
+                CopyIfPresent(parsed, control, "batchId");
+            }
+
+            JObject result;
+            if (cmd == "custom_start")
+                result = _calibrationTask.StartSingle(control);
+            else
+                result = JObject.Parse(_calibrationTask.HandleControl(control));
+
+            if (cmd == "custom_start" && result.Value<bool?>("success") != false)
+            {
+                string batchId = result.Value<string>("batchId");
+                if (!string.IsNullOrEmpty(batchId))
+                {
+                    string matchCode = parsed.Value<string>("matchCode") ?? "";
+                    lock (_lock)
+                    {
+                        _customBatchIds.Add(batchId);
+                        _customMatchCodes[batchId] = matchCode;
+                    }
+                }
+                result["closePanel"] = true;
+            }
+
+            result["type"] = "panel_resp";
+            result["panel"] = "arena";
+            result["cmd"] = cmd;
+            result["callId"] = webCallId;
+            PostToWeb(result.ToString(Formatting.None));
+        }
+
+        private void OnCalibrationBatchCompleted(JObject status)
+        {
+            string batchId = status != null ? status.Value<string>("batchId") : null;
+            bool shouldOpen = false;
+            string matchCode = null;
+            if (!string.IsNullOrEmpty(batchId))
+            {
+                lock (_lock)
+                {
+                    shouldOpen = _customBatchIds.Remove(batchId);
+                    if (_customMatchCodes.TryGetValue(batchId, out matchCode))
+                        _customMatchCodes.Remove(batchId);
+                }
+            }
+            if (!shouldOpen)
+                return;
+
+            JObject initData = BuildCustomResultInitData(status, matchCode);
+            Action<JObject> opener = _openCustomResultPanel;
+            if (opener == null)
+                return;
+
+            Action open = delegate { opener(initData); };
+            if (_invokeOnUI != null)
+                _invokeOnUI(open);
+            else
+                open();
+        }
+
+        private static JObject BuildCustomResultInitData(JObject status, string matchCode)
+        {
+            JObject initData = new JObject();
+            initData["mode"] = "custom_result";
+            initData["source"] = "arena_custom_match_result";
+            initData["debug"] = false;
+            if (!string.IsNullOrEmpty(matchCode))
+                initData["matchCode"] = matchCode;
+            if (status == null)
+                return initData;
+
+            CopyIfPresent(status, initData, "state");
+            CopyIfPresent(status, initData, "batchId");
+            CopyIfPresent(status, initData, "resultPath");
+            CopyIfPresent(status, initData, "manifestPath");
+            CopyIfPresent(status, initData, "frozenManifestPath");
+            CopyIfPresent(status, initData, "totalRuns");
+            CopyIfPresent(status, initData, "completedRuns");
+            CopyIfPresent(status, initData, "lastError");
+            if (status["lastResult"] != null && status["lastResult"].Type != JTokenType.Null)
+                initData["lastResult"] = status["lastResult"].DeepClone();
+            return initData;
+        }
+
+        private static void CopyIfPresent(JObject source, JObject target, string fieldName)
+        {
+            if (source[fieldName] != null)
+                target[fieldName] = source[fieldName].DeepClone();
         }
 
         public void HandleFlashResponse(JObject msg, Action<string> respond)

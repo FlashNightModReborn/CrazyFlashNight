@@ -41,6 +41,9 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     private static var CALIBRATION_YMAX:Number = 620;
     private static var CALIBRATION_BG_WIDTH:Number = 1688;
     private static var CALIBRATION_BG_HEIGHT:Number = 640;
+    private static var SPECTATOR_CAMERA_INTERVAL:Number = 4;
+    private static var SPECTATOR_CAMERA_EASE:Number = 7;
+    private static var SPECTATOR_CAMERA_PAIR_RANGE:Number = 760;
 
     public static function install():Void {
         if (_inited) return;
@@ -196,7 +199,9 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             snapshotFrames: 0,
             blueUnits: blueUnits,
             redUnits: redUnits,
-            errors: errors
+            errors: errors,
+            lastHotspotX: CALIBRATION_CENTER_X,
+            lastHotspotY: CALIBRATION_CENTER_Y
         };
 
         installClock();
@@ -305,12 +310,14 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 captureStartSnapshots(_active.redUnits, _active.errors, true);
                 primeTargets(_active.blueUnits, _active.redUnits);
                 _active.primed = true;
+                updateSpectatorCamera(true);
             }
             return;
         }
 
         observeDeadUnits(_active.blueUnits);
         observeDeadUnits(_active.redUnits);
+        updateSpectatorCamera(false);
 
         var blueAlive:Number = countAlive(_active.blueUnits);
         var redAlive:Number = countAlive(_active.redUnits);
@@ -475,6 +482,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                     side: side,
                     isEnemy: isEnemy,
                     deathObserved: false,
+                    deathFrame: -1,
                     countReleased: false,
                     deadFinalized: false
                 });
@@ -549,6 +557,112 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         }
     }
 
+    private static function updateSpectatorCamera(force:Boolean):Void {
+        if (_active == undefined) return;
+
+        if (force != true && (_active.frames % SPECTATOR_CAMERA_INTERVAL) != 0) return;
+
+        var gw:MovieClip = _root.gameworld;
+        if (gw == undefined) return;
+        var camera:MovieClip = gw.斗兽标定镜头;
+        if (camera == undefined || camera._x == undefined) return;
+
+        var hotspot:Object = resolveSpectatorHotspot(_active.blueUnits, _active.redUnits);
+        if (hotspot == undefined) {
+            hotspot = {x: CALIBRATION_CENTER_X, y: CALIBRATION_CENTER_Y};
+        }
+
+        var targetX:Number = clampNumber(Number(hotspot.x), CALIBRATION_XMIN, CALIBRATION_XMAX);
+        var targetY:Number = clampNumber(Number(hotspot.y), CALIBRATION_YMIN, CALIBRATION_YMAX);
+        if (force == true) {
+            camera._x = targetX;
+            camera._y = targetY;
+        } else {
+            camera._x = clampNumber(camera._x + (targetX - camera._x) / SPECTATOR_CAMERA_EASE, CALIBRATION_XMIN, CALIBRATION_XMAX);
+            camera._y = clampNumber(camera._y + (targetY - camera._y) / SPECTATOR_CAMERA_EASE, CALIBRATION_YMIN, CALIBRATION_YMAX);
+        }
+        _active.lastHotspotX = targetX;
+        _active.lastHotspotY = targetY;
+    }
+
+    private static function resolveSpectatorHotspot(blueUnits:Array, redUnits:Array):Object {
+        var pair:Object = findEngagementPairHotspot(blueUnits, redUnits);
+        if (pair != undefined) return pair;
+        return calculateActiveCentroid(blueUnits, redUnits);
+    }
+
+    private static function findEngagementPairHotspot(blueUnits:Array, redUnits:Array):Object {
+        var best:Object = undefined;
+        var bestScore:Number = 999999999;
+        var rangeSq:Number = SPECTATOR_CAMERA_PAIR_RANGE * SPECTATOR_CAMERA_PAIR_RANGE;
+
+        for (var i:Number = 0; i < blueUnits.length; i++) {
+            var blue:Object = blueUnits[i];
+            if (isSpectatorRecordActive(blue) != true) continue;
+            var blueMc:MovieClip = blue.mc;
+
+            for (var j:Number = 0; j < redUnits.length; j++) {
+                var red:Object = redUnits[j];
+                if (isSpectatorRecordActive(red) != true) continue;
+                var redMc:MovieClip = red.mc;
+                var dx:Number = blueMc._x - redMc._x;
+                var dy:Number = blueMc._y - redMc._y;
+                var distSq:Number = dx * dx + dy * dy;
+                var targeted:Boolean = isTargetingUnit(blueMc, redMc) || isTargetingUnit(redMc, blueMc);
+                if (targeted != true && distSq > rangeSq) continue;
+
+                var score:Number = targeted == true ? (distSq - rangeSq) : distSq;
+                if (score < bestScore) {
+                    bestScore = score;
+                    best = {x: (blueMc._x + redMc._x) * 0.5, y: (blueMc._y + redMc._y) * 0.5};
+                }
+            }
+        }
+        return best;
+    }
+
+    private static function calculateActiveCentroid(blueUnits:Array, redUnits:Array):Object {
+        var acc:Object = {x: 0, y: 0, count: 0};
+        accumulateCameraCentroid(blueUnits, acc);
+        accumulateCameraCentroid(redUnits, acc);
+        if (acc.count <= 0) return undefined;
+        return {x: acc.x / acc.count, y: acc.y / acc.count};
+    }
+
+    private static function accumulateCameraCentroid(units:Array, acc:Object):Void {
+        for (var i:Number = 0; i < units.length; i++) {
+            var record:Object = units[i];
+            if (isSpectatorRecordActive(record) != true) continue;
+            var mc:MovieClip = record.mc;
+            acc.x += mc._x;
+            acc.y += mc._y;
+            acc.count++;
+        }
+    }
+
+    private static function isSpectatorRecordActive(record:Object):Boolean {
+        if (record == undefined) return false;
+        var mc:MovieClip = record.mc;
+        if (mc == undefined || mc._parent == undefined) return false;
+
+        var hp:Number = Number(mc.hp);
+        if (!isNaN(hp) && hp > 0) return true;
+        return record.deathObserved == true && record.deadFinalized != true;
+    }
+
+    private static function isTargetingUnit(source:MovieClip, target:MovieClip):Boolean {
+        if (source == undefined || target == undefined) return false;
+        var targetName:String = String(source.攻击目标 || "");
+        return targetName != "" && targetName != "无" && targetName == target._name;
+    }
+
+    private static function clampNumber(value:Number, min:Number, max:Number):Number {
+        if (isNaN(value)) return min;
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
+    }
+
     private static function installClock():Void {
         removeClock();
         var clip:MovieClip = _root.gameworld.createEmptyMovieClip("斗兽标定时钟", _root.gameworld.getNextHighestDepth());
@@ -601,6 +715,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         if (isNaN(unitHp) || unitHp > 0 || record.deathObserved == true) return;
 
         record.deathObserved = true;
+        if (_active != undefined) record.deathFrame = _active.frames;
         mc.不掉钱 = true;
         mc.掉落物 = [];
         releaseDeathCount(record);

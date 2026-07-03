@@ -162,6 +162,150 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void StartSingle_WrapsInlineCaseAndDispatchesFlashCommand()
+        {
+            string root = CreateProjectRoot();
+            string sent = null;
+            ManualResetEventSlim sentEvent = new ManualResetEventSlim(false);
+            var task = new ArenaCalibrationTask(root, delegate { return true; },
+                delegate(string payload)
+                {
+                    sent = payload;
+                    sentEvent.Set();
+                },
+                delegate(int frames) { return 3000; });
+
+            JObject start = task.StartSingle(new JObject
+            {
+                ["batchId"] = "custom-inline",
+                ["matchCode"] = "CF7ARENA:v1;mode=mvm;seed=1;blue=u44@30x1;red=u11@30x1",
+                ["calibrationCase"] = new JObject
+                {
+                    ["caseId"] = "custom-case",
+                    ["blueRoster"] = new JArray(new JObject { ["type"] = "兵种44", ["level"] = 30 }),
+                    ["redRoster"] = new JArray(new JObject { ["type"] = "兵种11", ["level"] = 30 }),
+                    ["repeat"] = 1,
+                    ["timeoutFrames"] = 60,
+                    ["tags"] = new JArray("arena-custom-p2"),
+                    ["plannerReason"] = "unit test"
+                }
+            });
+
+            Assert.True((bool)start["success"]);
+            Assert.Equal("running", (string)start["state"]);
+            Assert.Equal("custom-inline", (string)start["batchId"]);
+            Assert.True(sentEvent.Wait(3000), "Flash command was not dispatched");
+
+            JObject command = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("arenaCalibrationRun", (string)command["action"]);
+            Assert.Equal("custom-inline", (string)command["batchId"]);
+            Assert.Equal("custom-case", (string)command["caseId"]);
+            Assert.Equal("兵种44", (string)command["blueRoster"][0]["兵种"]);
+
+            string frozenPath = Path.Combine(root, ((string)start["frozenManifestPath"]).Replace('/', Path.DirectorySeparatorChar));
+            Assert.True(File.Exists(frozenPath));
+            JObject frozen = JObject.Parse(File.ReadAllText(frozenPath));
+            Assert.Equal("arena-calibration.case-manifest.v1", (string)frozen["schema"]);
+            Assert.Equal("arena-custom-match", (string)frozen["planner"]["name"]);
+
+            task.HandleFlashResponse(new JObject
+            {
+                ["task"] = "arena_calibration_response",
+                ["callId"] = (int)command["callId"],
+                ["success"] = true,
+                ["status"] = "finished",
+                ["winner"] = "red",
+                ["frames"] = 90,
+                ["red"] = new JObject { ["maxHp"] = 100, ["remainHp"] = 20, ["aliveCount"] = 1 },
+                ["blue"] = new JObject { ["maxHp"] = 100, ["remainHp"] = 0, ["aliveCount"] = 0 }
+            }, delegate(string json) { });
+
+            JObject status = WaitForState(task, "completed");
+            Assert.NotNull(status["lastResult"]);
+            Assert.Equal("red", (string)status["lastResult"]["winner"]);
+            Assert.Contains("logs/arena-custom/", (string)status["resultPath"]);
+            string resultPath = Path.Combine(root, ((string)status["resultPath"]).Replace('/', Path.DirectorySeparatorChar));
+            JObject row = JObject.Parse(File.ReadAllLines(resultPath)[0]);
+            Assert.Equal("finished", (string)row["status"]);
+            Assert.Equal("red", (string)row["winner"]);
+        }
+
+        [Fact]
+        public void ArenaTask_CustomStart_DelegatesToCalibrationAndPostsPanelResponse()
+        {
+            string root = CreateProjectRoot();
+            ManualResetEventSlim sentEvent = new ManualResetEventSlim(false);
+            ManualResetEventSlim webEvent = new ManualResetEventSlim(false);
+            ManualResetEventSlim openEvent = new ManualResetEventSlim(false);
+            string sent = null;
+            string webJson = null;
+            JObject openedInitData = null;
+            var calibration = new ArenaCalibrationTask(root, delegate { return true; },
+                delegate(string payload)
+                {
+                    sent = payload;
+                    sentEvent.Set();
+                },
+                delegate(int frames) { return 3000; });
+            var arena = new ArenaTask(delegate { return true; }, delegate(string payload) { });
+            arena.SetCalibrationTask(calibration);
+            arena.SetCustomResultOpenHandler(delegate(JObject initData)
+            {
+                openedInitData = initData;
+                openEvent.Set();
+            });
+            arena.SetPostToWeb(delegate(string json)
+            {
+                webJson = json;
+                webEvent.Set();
+            });
+
+            arena.HandleWebRequest("custom_start", new JObject
+            {
+                ["callId"] = "web-custom-1",
+                ["calibrationCase"] = new JObject
+                {
+                    ["caseId"] = "custom-case",
+                    ["blueRoster"] = new JArray(new JObject { ["type"] = "兵种44", ["level"] = 30 }),
+                    ["redRoster"] = new JArray(new JObject { ["type"] = "兵种11", ["level"] = 30 }),
+                    ["repeat"] = 1,
+                    ["timeoutFrames"] = 60
+                }
+            });
+
+            Assert.True(webEvent.Wait(3000), "panel response was not posted");
+            Assert.True(sentEvent.Wait(3000), "calibration run was not dispatched");
+            JObject response = JObject.Parse(webJson);
+            Assert.True((bool)response["success"]);
+            Assert.Equal("panel_resp", (string)response["type"]);
+            Assert.Equal("arena", (string)response["panel"]);
+            Assert.Equal("custom_start", (string)response["cmd"]);
+            Assert.Equal("web-custom-1", (string)response["callId"]);
+            Assert.Equal("running", (string)response["state"]);
+            Assert.True((bool)response["closePanel"]);
+
+            JObject command = JObject.Parse(sent.TrimEnd('\0'));
+            calibration.HandleFlashResponse(new JObject
+            {
+                ["task"] = "arena_calibration_response",
+                ["callId"] = (int)command["callId"],
+                ["success"] = true,
+                ["status"] = "finished",
+                ["winner"] = "blue",
+                ["frames"] = 77,
+                ["blue"] = new JObject { ["maxHp"] = 100, ["remainHp"] = 10, ["aliveCount"] = 1 },
+                ["red"] = new JObject { ["maxHp"] = 100, ["remainHp"] = 0, ["aliveCount"] = 0 }
+            }, delegate(string json) { });
+
+            Assert.True(openEvent.Wait(3000), "custom result panel was not opened");
+            Assert.Equal("custom_result", (string)openedInitData["mode"]);
+            Assert.Equal("arena_custom_match_result", (string)openedInitData["source"]);
+            Assert.Equal("completed", (string)openedInitData["state"]);
+            Assert.Equal("blue", (string)openedInitData["lastResult"]["winner"]);
+            Assert.Equal(77, (int)openedInitData["lastResult"]["frames"]);
+        }
+
+        [Fact]
         public void StartBatch_AcceptsNodeGeneratedManifestHashes()
         {
             string root = CreateProjectRoot();

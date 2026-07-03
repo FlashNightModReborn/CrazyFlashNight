@@ -728,11 +728,12 @@ class org.flashNight.arki.camera.HorizontalScroller {
     private function switchFollowToInternal(target:MovieClip):Void {
         if (!target || target._x == undefined) {
             // 目标无效，切换到默认主角
-            target = this.defaultFollowTarget;
+            target = _root.gameworld[_root.控制目标];
         }
         
         // 更新当前滚动对象
         this.scrollObj = target;
+        this.defaultFollowTarget = target;
         
         // 清空焦点栈，因为是永久切换
         if (this.focusStack) {

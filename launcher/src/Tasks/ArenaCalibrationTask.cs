@@ -51,6 +51,7 @@ namespace CF7Launcher.Tasks
         private readonly object _lock = new object();
         private readonly Dictionary<int, PendingRun> _pending = new Dictionary<int, PendingRun>();
         private static readonly Regex BatchIdPattern = new Regex("^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$", RegexOptions.Compiled);
+        private Action<JObject> _batchCompleted;
 
         private int _seq;
         private volatile bool _abortRequested;
@@ -63,6 +64,7 @@ namespace CF7Launcher.Tasks
         private string _currentCaseId;
         private string _currentRunId;
         private string _lastError;
+        private JObject _lastResultRow;
         private int _totalRuns;
         private int _completedRuns;
 
@@ -89,6 +91,11 @@ namespace CF7Launcher.Tasks
             _timeoutMsFromFrames = timeoutMsFromFrames ?? DefaultTimeoutMsFromFrames;
         }
 
+        public void SetBatchCompletedHandler(Action<JObject> handler)
+        {
+            _batchCompleted = handler;
+        }
+
         public string HandleControl(JObject msg)
         {
             string action = msg.Value<string>("action") ?? "status";
@@ -98,6 +105,8 @@ namespace CF7Launcher.Tasks
                 {
                     case "startBatch":
                         return StartBatch(msg).ToString(Formatting.None);
+                    case "startSingle":
+                        return StartSingle(msg).ToString(Formatting.None);
                     case "status":
                         return BuildStatus(true, null).ToString(Formatting.None);
                     case "abort":
@@ -139,7 +148,28 @@ namespace CF7Launcher.Tasks
 
             string manifestPath = ResolveManifestPath(msg.Value<string>("manifestPath"));
             BatchManifest manifest = LoadAndNormalizeManifest(manifestPath);
+            return StartNormalizedBatch(manifest, manifestPath);
+        }
 
+        public JObject StartSingle(JObject msg)
+        {
+            try
+            {
+                if (!_isClientReady())
+                    return BuildError("disconnected", "Flash socket client is not ready");
+
+                BatchManifest manifest = BuildInlineSingleManifest(msg);
+                return StartNormalizedBatch(manifest, null);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[ArenaCalibrationTask] startSingle exception: " + ex);
+                return BuildError("exception", ex.Message);
+            }
+        }
+
+        private JObject StartNormalizedBatch(BatchManifest manifest, string manifestPath)
+        {
             lock (_lock)
             {
                 if (_state == "running")
@@ -150,9 +180,7 @@ namespace CF7Launcher.Tasks
                 _frozenManifestPath = Path.Combine(batchDir, "case_manifest.json");
                 File.WriteAllText(_frozenManifestPath, manifest.Frozen.ToString(Formatting.Indented) + Environment.NewLine, new UTF8Encoding(false));
 
-                string logDir = Path.GetFullPath(Path.Combine(_projectRoot, "logs", "arena-calibration"));
-                Directory.CreateDirectory(logDir);
-                _resultPath = ResolveResultPath(manifest.BatchId);
+                _resultPath = ResolveResultPath(manifest.BatchId, IsCustomMatchManifest(manifest));
                 if (File.Exists(_resultPath))
                     File.Delete(_resultPath);
 
@@ -160,10 +188,11 @@ namespace CF7Launcher.Tasks
                 _state = "running";
                 _batchId = manifest.BatchId;
                 _manifestHash = manifest.ManifestHash;
-                _manifestPath = manifestPath;
+                _manifestPath = manifestPath ?? _frozenManifestPath;
                 _currentCaseId = null;
                 _currentRunId = null;
                 _lastError = null;
+                _lastResultRow = null;
                 _totalRuns = manifest.TotalRuns;
                 _completedRuns = 0;
             }
@@ -237,6 +266,26 @@ namespace CF7Launcher.Tasks
                     _currentCaseId = null;
                     _currentRunId = null;
                 }
+            }
+            finally
+            {
+                NotifyBatchCompleted();
+            }
+        }
+
+        private void NotifyBatchCompleted()
+        {
+            Action<JObject> handler = _batchCompleted;
+            if (handler == null)
+                return;
+
+            try
+            {
+                handler(BuildStatus(true, "terminal"));
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[ArenaCalibrationTask] batch completion handler exception: " + ex);
             }
         }
 
@@ -424,7 +473,11 @@ namespace CF7Launcher.Tasks
         private void AppendResultRow(JObject row)
         {
             string resultPath;
-            lock (_lock) { resultPath = _resultPath; }
+            lock (_lock)
+            {
+                resultPath = _resultPath;
+                _lastResultRow = (JObject)row.DeepClone();
+            }
             File.AppendAllText(resultPath, row.ToString(Formatting.None) + Environment.NewLine, new UTF8Encoding(false));
         }
 
@@ -466,6 +519,7 @@ namespace CF7Launcher.Tasks
                 status["currentCaseId"] = _currentCaseId;
                 status["currentRunId"] = _currentRunId;
                 status["lastError"] = _lastError;
+                status["lastResult"] = _lastResultRow != null ? _lastResultRow.DeepClone() : JValue.CreateNull();
                 return status;
             }
         }
@@ -501,6 +555,57 @@ namespace CF7Launcher.Tasks
         private BatchManifest LoadAndNormalizeManifest(string manifestPath)
         {
             JObject input = JObject.Parse(File.ReadAllText(manifestPath, Encoding.UTF8));
+            return NormalizeManifest(input);
+        }
+
+        private BatchManifest BuildInlineSingleManifest(JObject msg)
+        {
+            JObject sourceCase = msg["case"] as JObject
+                ?? msg["calibrationCase"] as JObject
+                ?? msg.SelectToken("payload.calibrationCase") as JObject;
+            if (sourceCase == null)
+                throw new InvalidOperationException("missing calibrationCase");
+
+            JObject normalizedCase = (JObject)sourceCase.DeepClone();
+            if (string.IsNullOrEmpty(normalizedCase.Value<string>("caseId")))
+                normalizedCase["caseId"] = "arena-custom-case";
+            if (normalizedCase["repeat"] == null)
+                normalizedCase["repeat"] = PositiveInt(msg["repeat"], "repeat", 1);
+
+            int timeoutFrames = PositiveInt(
+                normalizedCase["timeoutFrames"] ?? msg["timeoutFrames"],
+                "timeoutFrames",
+                3600);
+            normalizedCase["timeoutFrames"] = timeoutFrames;
+
+            string batchId = msg.Value<string>("batchId");
+            if (string.IsNullOrEmpty(batchId))
+            {
+                batchId = "custom-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss") + "-"
+                    + Guid.NewGuid().ToString("N").Substring(0, 8);
+            }
+
+            JObject manifest = new JObject();
+            manifest["schema"] = "arena-calibration.case-manifest.v1";
+            manifest["batchId"] = batchId;
+            manifest["createdAt"] = msg.Value<string>("createdAt") ?? DateTime.UtcNow.ToString("o");
+            manifest["buildCommit"] = msg.Value<string>("buildCommit") ?? "arena-custom-p2";
+            manifest["planner"] = new JObject
+            {
+                ["name"] = "arena-custom-match",
+                ["version"] = 2,
+                ["matchCode"] = msg.Value<string>("matchCode") ?? ""
+            };
+            manifest["arenaMode"] = "calibration";
+            manifest["repeat"] = PositiveInt(msg["repeat"], "repeat", 1);
+            manifest["timeoutFrames"] = timeoutFrames;
+            manifest["blueBench"] = JValue.CreateNull();
+            manifest["cases"] = new JArray(normalizedCase);
+            return NormalizeManifest(manifest);
+        }
+
+        private BatchManifest NormalizeManifest(JObject input)
+        {
             RejectEconomyKeys(input, "$");
 
             string schema = input.Value<string>("schema");
@@ -736,9 +841,21 @@ namespace CF7Launcher.Tasks
             return full;
         }
 
-        private string ResolveResultPath(string batchId)
+        private static bool IsCustomMatchManifest(BatchManifest manifest)
         {
-            string root = Path.GetFullPath(Path.Combine(_projectRoot, "logs", "arena-calibration"));
+            if (manifest == null || manifest.Frozen == null)
+                return false;
+            JObject planner = manifest.Frozen["planner"] as JObject;
+            return string.Equals(planner != null ? planner.Value<string>("name") : null,
+                "arena-custom-match",
+                StringComparison.Ordinal);
+        }
+
+        private string ResolveResultPath(string batchId, bool customMatch)
+        {
+            string logName = customMatch ? "arena-custom" : "arena-calibration";
+            string root = Path.GetFullPath(Path.Combine(_projectRoot, "logs", logName));
+            Directory.CreateDirectory(root);
             string full = Path.GetFullPath(Path.Combine(root, batchId + "-results.jsonl"));
             EnsurePathUnderDirectory(full, root, "resultPath");
             return full;

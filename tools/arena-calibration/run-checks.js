@@ -12,6 +12,7 @@ const {
 } = require("./lib/arena-calibration-core");
 
 const scripts = [
+  "test-custom-match-code.js",
   "build-candidates.js",
   "analyze-results.js",
   "plan-next-batch.js",

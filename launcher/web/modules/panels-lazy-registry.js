@@ -117,6 +117,9 @@
     Panels.registerLazy('arena',
         ['modules/arena-meta-rosters.js',
          'modules/arena-factions.js',
+         'modules/arena-unit-catalog.js',
+         'modules/arena-custom-presets.js',
+         'modules/arena-custom-match-code.js',
          'modules/arena-panel.js'],
         noop);
 

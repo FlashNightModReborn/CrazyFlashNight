@@ -15,11 +15,30 @@
         { id: 'arena-8', index: 8, name: 'DEATH MATCH角斗场', opponentCount: 4, levelMin: 40, levelMax: 60, deposit: 100000, reward: 200000, expr: '#0@40-60%4' }
     ];
 
+    var CUSTOM_MATCH_FALLBACK_CODE =
+        'CF7ARENA:v1;mode=mvm;seed=90210;blue=u44@30x2,u48@30x1;red=u164@60x1,u11@30x1';
+    var CUSTOM_BROWSER_LIMIT = 80;
+    var CUSTOM_SAVED_ROSTERS_KEY = 'cf7.arena.custom.savedRosters.v1';
+    var CUSTOM_SAVED_ROSTER_LIMIT = 24;
+    var CUSTOM_MATCH_CARD = {
+        id: 'custom-match-p1',
+        index: 0,
+        name: '定制死亡竞赛',
+        isCustom: true,
+        opponentCount: 0,
+        levelMin: 1,
+        levelMax: 60,
+        deposit: 0,
+        reward: 0,
+        expr: ''
+    };
+
     // 竞技场模式（顶部 tab 条，视觉对齐战队界面 .team-tab）。
     // 当前仅「标准模式」；后续不同玩法在此追加 { id, label }，并在 onModeClick 扩展点接入
     // 各模式自己的卡片集 / preview 逻辑。结构先就位，避免把模式硬编进单一卡片列表。
     var ARENA_MODES = [
         { id: 'standard', label: '标准模式' },
+        { id: 'custom', label: '定制赛' },
         // 堕落模式（Phase 2）：势力主题固定挑战。每张卡 = 一个势力，对手全部从该势力 roster
         // 采样非人形怪（复用 Phase1 的 roster 入场通路，AS2 零改动——合成 expr 只为过校验）。
         // 需 arena-meta-rosters.js 已载（rostersAvailable）才显示该 tab；
@@ -43,6 +62,8 @@
     var _scaleHandle = null;   // 沉浸全屏化：PanelScale 句柄
     var _gridViewEl;
     var _detailViewEl;
+    var _customResultViewEl;
+    var _customEditorViewEl;
     var _moneyEl;
     var _detailTitleEl;
     var _detailMetaEl;
@@ -77,6 +98,16 @@
     var _mixChance = 0.35;    // 单卡判为怪物小队的概率（setMixChance 可调，QA/截图注入用）
     var _knownEnemies = {};   // spritename → true；来自 AS2 snapshot 的 killStats.byType
     var _knownEnemyCount = 0;
+    var _customMatch = null;  // 定制赛：赛程代码解析状态
+    var _customRun = null;    // 定制赛 P2：后台 single-case 运行状态
+    var _customResult = null; // 定制赛结算回开 initData 摘要
+    var _customEditor = null; // 定制赛 P3a：可视化 roster 编辑状态
+    var _customSelectedSide = 'blue';
+    var _customEditorPage = 'config';
+    var _customSavedRosters = null;
+    var _customConfirmOpen = false;
+    var _customPollTimer = 0;
+    var _customSampleIndex = 0;
 
     // ════════════════════════════════════════════════════════════════════════════
     // Panel 注册
@@ -115,6 +146,8 @@
                 '</div>' +
                 '<div class="arena-grid" id="arena-grid"></div>' +
             '</div>' +
+            '<div class="arena-custom-result-view" id="arena-custom-result-view" hidden></div>' +
+            '<div class="arena-custom-editor-view" id="arena-custom-editor-view" hidden>' + buildCustomEditorViewHtml() + '</div>' +
             '<div class="arena-detail-view" id="arena-detail-view" hidden>' +
                 '<div class="arena-detail-header">' +
                     '<button class="arena-detail-back" type="button" data-audio-cue="cancel">‹ 返回</button>' +
@@ -133,6 +166,8 @@
 
         _gridViewEl = _el.querySelector('#arena-grid-view');
         _detailViewEl = _el.querySelector('#arena-detail-view');
+        _customResultViewEl = _el.querySelector('#arena-custom-result-view');
+        _customEditorViewEl = _el.querySelector('#arena-custom-editor-view');
         _moneyEl = _el.querySelector('#arena-money-value');
         _detailTitleEl = _el.querySelector('#arena-detail-title');
         _detailMetaEl = _el.querySelector('#arena-detail-meta');
@@ -142,6 +177,10 @@
 
         _el.querySelector('.arena-close-btn').addEventListener('click', requestClose);
         _el.querySelector('.arena-detail-back').addEventListener('click', backToGrid);
+        _customResultViewEl.addEventListener('click', onCustomResultClick);
+        _customEditorViewEl.addEventListener('click', onCustomWorkbenchClick);
+        _customEditorViewEl.addEventListener('change', onCustomWorkbenchChange);
+        _customEditorViewEl.addEventListener('input', onCustomEditorInput);
         _detailRollBtn.addEventListener('click', onRollAgain);
         _detailConfirmBtn.addEventListener('click', onConfirmChallenge);
 
@@ -165,10 +204,17 @@
         _cardEls = [];
         // 卡片多于单屏（>8，如堕落模式 18 张）→ 切顶部对齐的滚动布局；否则维持 8 卡铺满（标准模式不变）
         gridEl.classList.toggle('arena-grid-scroll', _activeCards.length > 8);
+        gridEl.classList.toggle('arena-grid-custom', _activeMode === 'custom');
 
         for (var i = 0; i < _activeCards.length; i++) {
             var card = _activeCards[i];
             var diff = difficultyOf(card);
+            if (card.isCustom) {
+                var customCardEl = buildCustomMatchCard(i, card, diff);
+                gridEl.appendChild(customCardEl);
+                _cardEls.push(customCardEl);
+                continue;
+            }
             var isFallen = !!card.isFallen;
             var cardEl = document.createElement('div');
             // d{1..6} 类驱动 --d-color 难度热度（CSS .arena-card-d* → 顶部色条 + 难度标签色）。
@@ -226,6 +272,133 @@
         }
     }
 
+    function buildCustomEditorViewHtml() {
+        return '<div class="arena-custom-editor-header">' +
+                '<button class="arena-custom-btn" type="button" data-custom-editor-action="back" data-audio-cue="cancel">返回配置</button>' +
+                '<div class="arena-custom-editor-title-block">' +
+                    '<div class="arena-custom-editor-kicker">定制赛阵容</div>' +
+                    '<div class="arena-custom-editor-title">配置赛程与阵容</div>' +
+                    '<div class="arena-custom-editor-meta">配置总览管理赛程与双方阵容，单方编辑页提供完整单位目录空间</div>' +
+                '</div>' +
+                '<div class="arena-custom-editor-actions">' +
+                    '<button class="arena-card-btn-enter" type="button" data-custom-editor-action="done" data-audio-cue="confirm">完成</button>' +
+                '</div>' +
+            '</div>' +
+            '<div class="arena-custom-editor-page arena-custom-config-page" data-custom-editor-page="config">' +
+                '<div class="arena-custom-config-panel">' +
+                    '<div class="arena-custom-config-code">' +
+                        '<label class="arena-custom-code-label" for="arena-custom-code-input">赛程代码</label>' +
+                        '<textarea id="arena-custom-code-input" class="arena-custom-code-input" rows="2" spellcheck="false"></textarea>' +
+                    '</div>' +
+                    '<div class="arena-custom-config-tools">' +
+                        '<label class="arena-custom-code-label" for="arena-custom-preset-select">整局待标定组合</label>' +
+                        '<select id="arena-custom-preset-select" class="arena-custom-preset-select" aria-label="待标定组合">' + buildCustomPresetOptions() + '</select>' +
+                        '<div class="arena-custom-actions arena-custom-editor-code-actions">' +
+                            '<button class="arena-custom-btn" type="button" data-custom-action="preset" data-audio-cue="confirm">载入整局</button>' +
+                            '<button class="arena-custom-btn" type="button" data-custom-action="random" data-audio-cue="confirm">随机整局</button>' +
+                        '</div>' +
+                        '<div class="arena-custom-actions arena-custom-editor-code-actions">' +
+                            '<button class="arena-custom-btn" type="button" data-custom-action="import" data-audio-cue="confirm">导入代码</button>' +
+                            '<button class="arena-custom-btn" type="button" data-custom-action="copy" data-audio-cue="confirm">复制代码</button>' +
+                            '<button class="arena-custom-btn" type="button" data-custom-action="swap-sides" data-audio-cue="confirm">交换红蓝</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="arena-custom-side-configs">' +
+                    '<div class="arena-custom-side-config-card arena-custom-side-config-blue" id="arena-custom-config-blue"></div>' +
+                    '<div class="arena-custom-side-config-card arena-custom-side-config-red" id="arena-custom-config-red"></div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="arena-custom-editor-page arena-custom-side-page" data-custom-editor-page="side" hidden>' +
+                '<div class="arena-custom-side-editor-head">' +
+                    '<div class="arena-custom-side-editor-title-block">' +
+                        '<div class="arena-custom-editor-kicker" id="arena-custom-side-editor-kicker">蓝方阵容</div>' +
+                        '<div class="arena-custom-editor-title" id="arena-custom-side-editor-title">编辑蓝方</div>' +
+                        '<div class="arena-custom-editor-meta" id="arena-custom-side-editor-meta">--</div>' +
+                    '</div>' +
+                    '<div class="arena-custom-side-editor-actions">' +
+                        '<select class="arena-custom-preset-select" data-custom-saved-select="active" aria-label="已保存配置"></select>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-side-action="load" data-side="active" data-audio-cue="confirm">读取</button>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-side-action="save" data-side="active" data-audio-cue="confirm">保存</button>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-side-action="random" data-side="active" data-audio-cue="confirm">随机组合</button>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-side-action="clear" data-side="active" data-audio-cue="cancel">清空</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="arena-custom-side-workbench">' +
+                    '<div class="arena-custom-roster-panel arena-custom-roster-active" id="arena-custom-active-roster-panel" data-side="blue">' +
+                        '<div class="arena-custom-roster-head">' +
+                            '<button class="arena-custom-roster-tab" type="button" data-custom-editor-action="to-config" data-audio-cue="cancel">返回总览</button>' +
+                            '<span class="arena-custom-roster-head-count" id="arena-custom-active-roster-count">--</span>' +
+                        '</div>' +
+                        '<div class="arena-custom-roster-list" id="arena-custom-active-roster"></div>' +
+                    '</div>' +
+                    '<div class="arena-custom-browser">' +
+                    '<div class="arena-custom-browser-toolbar">' +
+                        '<div class="arena-custom-side-switch" aria-label="添加目标">' +
+                            '<button type="button" data-custom-side="blue" data-audio-cue="confirm">加到蓝方</button>' +
+                            '<button type="button" data-custom-side="red" data-audio-cue="confirm">加到红方</button>' +
+                        '</div>' +
+                        '<input id="arena-custom-unit-search" class="arena-custom-unit-search" type="search" placeholder="搜索 ID / 名称 / 素材" spellcheck="false">' +
+                        '<span class="arena-custom-unit-count" id="arena-custom-unit-count">--</span>' +
+                    '</div>' +
+                    '<div class="arena-custom-unit-filters">' +
+                        '<button type="button" data-custom-unit-filter="all" data-audio-cue="confirm">全部</button>' +
+                        '<button type="button" data-custom-unit-filter="hostile" data-audio-cue="confirm">敌对</button>' +
+                        '<button type="button" data-custom-unit-filter="nonhostile" data-audio-cue="confirm">非敌对</button>' +
+                    '</div>' +
+                    '<div class="arena-custom-unit-list" id="arena-custom-unit-list"></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+    }
+
+    function buildCustomMatchCard(index, card, diff) {
+        var cardEl = document.createElement('div');
+        cardEl.className = 'arena-card arena-card-custom arena-card-d' + diff.tier;
+        cardEl.dataset.index = index;
+        cardEl.innerHTML =
+            '<div class="arena-card-frame"></div>' +
+            '<div class="arena-card-header">' +
+                '<span class="arena-card-rank">定制赛</span>' +
+                '<span class="arena-card-icon">⚔</span>' +
+                '<span class="arena-card-diff">P2</span>' +
+            '</div>' +
+            '<div class="arena-card-body arena-custom-body">' +
+                '<div class="arena-custom-title-row">' +
+                    '<div>' +
+                        '<div class="arena-custom-title">定制死亡竞赛</div>' +
+                        '<div class="arena-custom-subtitle">怪物 vs 怪物 · 后台单局 · 无掉落无经验</div>' +
+                    '</div>' +
+                    '<span class="arena-opp-monster-tag">无掉落 / 无经验</span>' +
+                '</div>' +
+                '<div class="arena-custom-layout">' +
+                    '<div class="arena-custom-playbook">' +
+                        '<div class="arena-custom-section-title">当前对阵</div>' +
+                        '<div class="arena-custom-summary" id="arena-custom-summary"></div>' +
+                        '<div class="arena-custom-rulebar">' +
+                            '<span id="arena-custom-case">--</span>' +
+                            '<span id="arena-custom-status">状态：未委托</span>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="arena-custom-confirm" id="arena-custom-confirm" hidden></div>' +
+            '</div>' +
+            '<div class="arena-card-actions arena-custom-footer">' +
+                '<div class="arena-custom-fee">' +
+                    '<span class="arena-prize-label">估算场地费</span>' +
+                    '<span class="arena-prize-value" id="arena-custom-fee">--</span>' +
+                '</div>' +
+                '<button class="arena-custom-btn arena-custom-abort" type="button" data-audio-cue="cancel">中止</button>' +
+                '<button class="arena-custom-btn arena-custom-edit" type="button" data-custom-action="edit" data-audio-cue="confirm">编辑配置</button>' +
+                '<button class="arena-card-btn-enter arena-custom-generate" type="button" data-audio-cue="confirm">检查并确认</button>' +
+            '</div>';
+
+        cardEl.addEventListener('click', onCustomWorkbenchClick);
+        cardEl.querySelector('.arena-custom-generate').addEventListener('click', onCustomGenerate);
+        cardEl.querySelector('.arena-custom-abort').addEventListener('click', onCustomAbort);
+        return cardEl;
+    }
+
     // 元战队 roster 数据是否就绪（arena-meta-rosters.js 已载）。
     // 决定堕落模式 tab 是否显示 + 怪物采样是否可行。QA harness 未载 → 恒 false。
     function rostersAvailable() {
@@ -235,6 +408,7 @@
     function modeAvailable(mode) {
         var id = (typeof mode === 'string') ? mode : mode.id;
         if (id === 'standard') return true;
+        if (id === 'custom') return true;
         if (!rostersAvailable() || _knownEnemyCount <= 0) return false;
         return buildFallenCards().length > 0;
     }
@@ -283,9 +457,11 @@
 
     // 按模式重建卡片集与 DOM，并复位 per-card 派生状态。不发请求（caller 决定何时 batch）。
     function rebuildForMode(mode) {
+        if (mode !== 'custom') clearCustomPoll();
         _activeMode = mode;
         _activeCards = (mode === 'fallen') ? buildFallenCards()
                      : (mode === 'escalation') ? buildEscalationCards()
+                     : (mode === 'custom') ? [CUSTOM_MATCH_CARD]
                      : ARENA_CARDS;
         // 切模式让所有卡 index 重新映射 → 旧 preview/kind/squad 缓存全部作废，避免跨模式串卡
         _previewCache = {};
@@ -301,6 +477,7 @@
             tabs[i].classList.toggle('arena-mode-tab-active', tabs[i].getAttribute('data-mode') === mode);
         }
         buildCards();       // 重建 grid DOM（_activeCards 驱动）+ 重挂卡片按钮监听 + 摘要回 loading 态
+        if (mode === 'custom') refreshCustomMatchCard();
         showGridView();
         updateCardStates();
     }
@@ -443,14 +620,33 @@
         _monsterSquad = {};
         _knownEnemies = {};
         _knownEnemyCount = 0;
+        _customResult = normalizeCustomResultInitData(initData);
+        _customMatch = null;
+        _customEditor = null;
+        _customSelectedSide = 'blue';
+        _customEditorPage = 'config';
+        _customConfirmOpen = false;
+        if (_customResult && _customResult.matchCode) {
+            _customMatch = {
+                code: String(_customResult.matchCode),
+                parsed: null,
+                error: '',
+                details: []
+            };
+            parseCustomMatchCode();
+        }
+        _customRun = _customResult ? buildCustomRunFromResult(_customResult) : null;
+        clearCustomPoll();
+        _customSampleIndex = 0;
         // initData.difficulty 来自 stage-select 重定向；dev 模式 ARENA_TEST 直开时为 ""
         _initDifficulty = (initData && initData.difficulty) ? String(initData.difficulty) : '';
         hideToast();
         updateMoneyDisplay(null);
         refreshModeTabs();
-        // 每次打开复位到标准模式：重建标准卡 DOM（摘要回 loading）+ 清缓存 + tab active 态 + 显示 grid。
-        // 上次会话可能停在堕落模式；DOM 跨 open/close 复用，必须重建回标准（否则残留堕落卡）。
-        rebuildForMode('standard');
+        // 普通打开复位到标准模式；定制赛结算回开则直达独立结算页。
+        // 上次会话可能停在堕落模式；DOM 跨 open/close 复用，必须重建目标模式（否则残留旧卡）。
+        rebuildForMode(_customResult ? 'custom' : 'standard');
+        if (_customResult) showCustomResultView();
         requestSnapshot();
     }
 
@@ -484,6 +680,15 @@
         _monsterSquad = {};
         _knownEnemies = {};
         _knownEnemyCount = 0;
+        _customMatch = null;
+        _customRun = null;
+        _customResult = null;
+        _customEditor = null;
+        _customSelectedSide = 'blue';
+        _customEditorPage = 'config';
+        _customConfirmOpen = false;
+        clearCustomPoll();
+        _customSampleIndex = 0;
         _initDifficulty = '';
         PanelTooltip.hide();
         hideToast();
@@ -495,12 +700,48 @@
     function showGridView() {
         _gridViewEl.hidden = false;
         _detailViewEl.hidden = true;
+        _customResultViewEl.hidden = true;
+        _customEditorViewEl.hidden = true;
         PanelTooltip.hide();
     }
 
     function showDetailView() {
         _gridViewEl.hidden = true;
         _detailViewEl.hidden = false;
+        _customResultViewEl.hidden = true;
+        _customEditorViewEl.hidden = true;
+    }
+
+    function showCustomResultView() {
+        renderCustomResultView();
+        _gridViewEl.hidden = true;
+        _detailViewEl.hidden = true;
+        _customResultViewEl.hidden = false;
+        _customEditorViewEl.hidden = true;
+        PanelTooltip.hide();
+    }
+
+    function showCustomEditorView() {
+        ensureCustomMatchState();
+        parseCustomMatchCode();
+        refreshCustomMatchCard();
+        renderCustomEditor();
+        renderCustomUnitBrowser();
+        _gridViewEl.hidden = true;
+        _detailViewEl.hidden = true;
+        _customResultViewEl.hidden = true;
+        _customEditorViewEl.hidden = false;
+        PanelTooltip.hide();
+    }
+
+    function showCustomEditorForSide(side) {
+        if (side === 'blue' || side === 'red') {
+            _customSelectedSide = side;
+            _customEditorPage = 'side';
+        } else {
+            _customEditorPage = 'config';
+        }
+        showCustomEditorView();
     }
 
     function backToGrid() {
@@ -508,6 +749,1254 @@
         _activeCardIdx = -1;
         _previewOpponents = null;
         showGridView();
+    }
+
+    // ════════════════════════════════════════════════════════════════════════════
+    // 定制赛 P2：赛程代码导入 / 后台 single-case 运行 / 状态摘要
+    // ════════════════════════════════════════════════════════════════════════════
+    function ensureCustomMatchState() {
+        if (_customMatch) return _customMatch;
+        _customMatch = {
+            code: getDefaultCustomMatchCode(),
+            parsed: null,
+            error: '',
+            details: []
+        };
+        parseCustomMatchCode();
+        return _customMatch;
+    }
+
+    function getCustomPresets() {
+        if (typeof window !== 'undefined' && window.ArenaCustomPresets) {
+            if (window.ArenaCustomPresets.length) return window.ArenaCustomPresets;
+            if (window.ArenaCustomPresets.presets && window.ArenaCustomPresets.presets.length) {
+                return window.ArenaCustomPresets.presets;
+            }
+        }
+        return [
+            { id: 'fallback-default', label: '默认样例', description: '', code: CUSTOM_MATCH_FALLBACK_CODE }
+        ];
+    }
+
+    function getDefaultCustomMatchCode() {
+        var presets = getCustomPresets();
+        return (presets[0] && presets[0].code) || CUSTOM_MATCH_FALLBACK_CODE;
+    }
+
+    function buildCustomPresetOptions() {
+        var presets = getCustomPresets();
+        var html = '';
+        for (var i = 0; i < presets.length; i++) {
+            html += '<option value="' + escapeAttr(presets[i].id) + '">' + escapeHtml(presets[i].label) + '</option>';
+        }
+        return html;
+    }
+
+    function getCustomSavedRosters() {
+        if (_customSavedRosters) return _customSavedRosters;
+        _customSavedRosters = [];
+        if (typeof window === 'undefined' || !window.localStorage) return _customSavedRosters;
+        try {
+            var raw = window.localStorage.getItem(CUSTOM_SAVED_ROSTERS_KEY);
+            if (!raw) return _customSavedRosters;
+            var parsed = JSON.parse(raw);
+            var list = parsed && parsed.rosters ? parsed.rosters : (parsed && parsed.length ? parsed : []);
+            for (var i = 0; i < list.length; i++) {
+                if (!list[i] || !list[i].roster || !list[i].roster.length) continue;
+                _customSavedRosters.push({
+                    id: String(list[i].id || ('saved-' + i)),
+                    label: String(list[i].label || ('已保存配置 ' + (i + 1))),
+                    createdAt: String(list[i].createdAt || ''),
+                    roster: cloneCustomRoster(list[i].roster)
+                });
+            }
+        } catch (err) {
+            _customSavedRosters = [];
+        }
+        return _customSavedRosters;
+    }
+
+    function saveCustomSavedRosters(list) {
+        _customSavedRosters = list || [];
+        if (typeof window === 'undefined' || !window.localStorage) {
+            showToast('保存失败：浏览器本地存储不可用');
+            return false;
+        }
+        try {
+            window.localStorage.setItem(CUSTOM_SAVED_ROSTERS_KEY, JSON.stringify({
+                schema: 'arena-custom-saved-rosters.v1',
+                rosters: _customSavedRosters
+            }));
+            return true;
+        } catch (err) {
+            showToast('保存失败：浏览器本地存储不可用');
+            return false;
+        }
+    }
+
+    function buildCustomSavedRosterOptions() {
+        var saved = getCustomSavedRosters();
+        if (!saved.length) return '<option value="">暂无已保存配置</option>';
+        var html = '';
+        for (var i = 0; i < saved.length; i++) {
+            html += '<option value="' + escapeAttr(saved[i].id) + '">' + escapeHtml(saved[i].label) + '</option>';
+        }
+        return html;
+    }
+
+    function findCustomSavedRosterById(id) {
+        var saved = getCustomSavedRosters();
+        for (var i = 0; i < saved.length; i++) {
+            if (saved[i].id === id) return saved[i];
+        }
+        return saved[0] || null;
+    }
+
+    function collectCustomUnitCatalog() {
+        var catalog = {};
+        var unitCatalog = (typeof window !== 'undefined' && window.ArenaUnitCatalog)
+            ? window.ArenaUnitCatalog.units : null;
+        if (unitCatalog && unitCatalog.length) {
+            for (var u = 0; u < unitCatalog.length; u++) {
+                var unitId = Number(unitCatalog[u].id);
+                if (!isNaN(unitId)) catalog[unitId] = unitCatalog[u];
+            }
+        }
+
+        var rosters = (typeof window !== 'undefined' && window.ArenaMetaRosters)
+            ? window.ArenaMetaRosters.factions : null;
+        if (rosters) {
+            for (var faction in rosters) {
+                var units = (rosters[faction] && rosters[faction].units) || [];
+                for (var i = 0; i < units.length; i++) {
+                    var id = units[i].type ? Number(String(units[i].type).replace(/^兵种/, '')) : NaN;
+                    if (!isNaN(id) && !catalog[id]) catalog[id] = units[i];
+                }
+            }
+        }
+        // P1 样例单位兜底：生产 lazy deps 会加载 ArenaMetaRosters；保留兜底只为独立调试页。
+        catalog[11] = catalog[11] || { id: 11, name: '巨型僵尸', spritename: '敌人-boss大僵尸' };
+        catalog[44] = catalog[44] || { id: 44, name: '左轮', spritename: '敌人-盗贼枪手' };
+        catalog[45] = catalog[45] || { id: 45, name: '跳蚤', spritename: '敌人-盗贼侏儒' };
+        catalog[48] = catalog[48] || { id: 48, name: '铁拳', spritename: '敌人-盗贼大叔' };
+        catalog[164] = catalog[164] || { id: 164, name: '终结者T800', spritename: '敌人-终结者T800' };
+        return catalog;
+    }
+
+    function getCustomUnitList() {
+        var units = (typeof window !== 'undefined' && window.ArenaUnitCatalog && window.ArenaUnitCatalog.units)
+            ? window.ArenaUnitCatalog.units : [];
+        if (units.length) return units;
+        var catalog = collectCustomUnitCatalog();
+        var out = [];
+        for (var id in catalog) {
+            if (!Object.prototype.hasOwnProperty.call(catalog, id)) continue;
+            var unit = catalog[id];
+            out.push({
+                id: Number(id),
+                type: '兵种' + id,
+                name: unit.name || ('兵种' + id),
+                spritename: unit.spritename || '',
+                level: unit.level || unit.minLevel || 1,
+                height: unit.height || 0,
+                slots: unit.slots || []
+            });
+        }
+        out.sort(function(a, b) { return a.id - b.id; });
+        return out;
+    }
+
+    function getCustomUnitById(id) {
+        id = Number(id);
+        var catalog = collectCustomUnitCatalog();
+        return catalog[id] || { id: id, type: '兵种' + id, name: '兵种' + id, spritename: '', level: 1, slots: [] };
+    }
+
+    function parseCustomMatchCode(options) {
+        ensureCustomModule();
+        if (!_customMatch) {
+            _customMatch = { code: getDefaultCustomMatchCode(), parsed: null, error: '', details: [] };
+        }
+        options = options || {};
+        try {
+            _customMatch.parsed = ArenaCustomMatchCode.parseMatchCode(_customMatch.code, {
+                unitCatalog: collectCustomUnitCatalog(),
+                caseId: 'arena-custom-p3'
+            });
+            _customMatch.code = _customMatch.parsed.canonical;
+            _customMatch.error = '';
+            _customMatch.details = [];
+            if (options.syncEditor !== false) syncCustomEditorFromParsed(_customMatch.parsed);
+        } catch (err) {
+            _customMatch.parsed = null;
+            _customMatch.error = err && err.message ? err.message : String(err);
+            _customMatch.details = err && err.details ? err.details : [];
+        }
+    }
+
+    function ensureCustomModule() {
+        if (typeof ArenaCustomMatchCode === 'undefined' || !ArenaCustomMatchCode.parseMatchCode) {
+            throw new Error('ArenaCustomMatchCode 未加载');
+        }
+    }
+
+    function syncCustomEditorFromParsed(parsed) {
+        if (!parsed) return;
+        _customEditor = {
+            seed: parsed.seed || 0,
+            timeoutFrames: parsed.timeoutFrames || ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
+            blue: cloneCustomRoster(parsed.blueRoster),
+            red: cloneCustomRoster(parsed.redRoster),
+            query: _customEditor && _customEditor.query ? _customEditor.query : '',
+            filter: _customEditor && _customEditor.filter ? _customEditor.filter : 'all'
+        };
+        _customConfirmOpen = false;
+    }
+
+    function ensureCustomEditorState() {
+        ensureCustomMatchState();
+        if (!_customEditor && _customMatch && _customMatch.parsed) syncCustomEditorFromParsed(_customMatch.parsed);
+        if (!_customEditor) {
+            _customEditor = {
+                seed: 0,
+                timeoutFrames: ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
+                blue: [],
+                red: [],
+                query: '',
+                filter: 'all'
+            };
+        }
+        return _customEditor;
+    }
+
+    function cloneCustomRoster(roster) {
+        var out = [];
+        roster = roster || [];
+        for (var i = 0; i < roster.length; i++) {
+            var id = roster[i].id != null ? roster[i].id : ArenaCustomMatchCode.normalizeUnitId(roster[i].type);
+            out.push({
+                id: Number(id),
+                type: '兵种' + Number(id),
+                level: Number(roster[i].level) || 1,
+                count: Number(roster[i].count) || 1
+            });
+        }
+        return out;
+    }
+
+    function syncCustomCodeFromEditor() {
+        ensureCustomModule();
+        var editor = ensureCustomEditorState();
+        _customMatch.code = ArenaCustomMatchCode.serializeMatchCode({
+            mode: 'mvm',
+            seed: editor.seed || 0,
+            timeoutFrames: editor.timeoutFrames || ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
+            blueRoster: editor.blue,
+            redRoster: editor.red
+        });
+        parseCustomMatchCode({ syncEditor: false });
+        _customConfirmOpen = false;
+        refreshCustomMatchCard();
+    }
+
+    function refreshCustomMatchCard() {
+        if (_activeMode !== 'custom') return;
+        ensureCustomMatchState();
+        ensureCustomEditorState();
+        var input = _el ? _el.querySelector('#arena-custom-code-input') : null;
+        if (input && document.activeElement !== input) input.value = _customMatch.code;
+
+        var summaryEl = _el ? _el.querySelector('#arena-custom-summary') : null;
+        var caseEl = _el ? _el.querySelector('#arena-custom-case') : null;
+        var statusEl = _el ? _el.querySelector('#arena-custom-status') : null;
+        var feeEl = _el ? _el.querySelector('#arena-custom-fee') : null;
+        var btn = _el ? _el.querySelector('.arena-custom-generate') : null;
+        var abortBtn = _el ? _el.querySelector('.arena-custom-abort') : null;
+        renderCustomEditor();
+        renderCustomUnitBrowser();
+        renderCustomConfirm();
+        if (!summaryEl || !caseEl || !statusEl || !feeEl || !btn || !abortBtn) return;
+
+        if (!_customMatch.parsed) {
+            summaryEl.innerHTML = buildCustomErrorHtml(_customMatch);
+            caseEl.textContent = '等待有效赛程代码';
+            statusEl.textContent = customRunText();
+            feeEl.textContent = '--';
+            btn.disabled = true;
+            abortBtn.disabled = true;
+            return;
+        }
+
+        var parsed = _customMatch.parsed;
+        var blueCount = customRosterTotal(parsed.blueRoster);
+        var redCount = customRosterTotal(parsed.redRoster);
+        summaryEl.innerHTML =
+            '<div class="arena-custom-side arena-custom-side-blue">' +
+                '<div class="arena-custom-side-head">' +
+                    '<span class="arena-custom-side-title">蓝方</span>' +
+                    '<span class="arena-custom-side-count">' + blueCount + ' 单位</span>' +
+                '</div>' +
+                '<span class="arena-custom-side-roster">' + escapeHtml(summarizeCustomRoster(parsed.blueRoster)) + '</span>' +
+                '<button class="arena-custom-side-edit" type="button" data-custom-action="edit" data-custom-edit-side="blue" data-audio-cue="confirm">调整蓝方</button>' +
+            '</div>' +
+            '<div class="arena-custom-vs-mark">VS</div>' +
+            '<div class="arena-custom-side arena-custom-side-red">' +
+                '<div class="arena-custom-side-head">' +
+                    '<span class="arena-custom-side-title">红方</span>' +
+                    '<span class="arena-custom-side-count">' + redCount + ' 单位</span>' +
+                '</div>' +
+                '<span class="arena-custom-side-roster">' + escapeHtml(summarizeCustomRoster(parsed.redRoster)) + '</span>' +
+                '<button class="arena-custom-side-edit" type="button" data-custom-action="edit" data-custom-edit-side="red" data-audio-cue="confirm">调整红方</button>' +
+            '</div>';
+        caseEl.textContent =
+            'seed=' + parsed.seed +
+            ' · 上限 ' + parsed.calibrationCase.timeoutFrames + ' 帧' +
+            ' · 无掉落 / 无经验 / 原死亡流程';
+        statusEl.textContent = customRunText();
+        feeEl.textContent = formatMoney(parsed.venueFeeEstimate);
+        btn.textContent = _customConfirmOpen ? '确认页已打开' : '检查并确认';
+        btn.disabled = _busy || customRunActive();
+        abortBtn.disabled = _busy || !customRunActive();
+    }
+
+    function renderCustomEditor() {
+        if (!_el) return;
+        var editor = ensureCustomEditorState();
+        var configPage = _el.querySelector('[data-custom-editor-page="config"]');
+        var sidePage = _el.querySelector('[data-custom-editor-page="side"]');
+        if (configPage) configPage.hidden = _customEditorPage !== 'config';
+        if (sidePage) sidePage.hidden = _customEditorPage !== 'side';
+
+        var blueConfigEl = _el.querySelector('#arena-custom-config-blue');
+        var redConfigEl = _el.querySelector('#arena-custom-config-red');
+        if (blueConfigEl) blueConfigEl.innerHTML = buildCustomSideConfigCardHtml('blue', editor.blue);
+        if (redConfigEl) redConfigEl.innerHTML = buildCustomSideConfigCardHtml('red', editor.red);
+
+        var activeRoster = getCustomSideRoster(_customSelectedSide);
+        var activeRosterEl = _el.querySelector('#arena-custom-active-roster');
+        if (activeRosterEl) activeRosterEl.innerHTML = buildCustomRosterEditorHtml(_customSelectedSide, activeRoster);
+
+        var activePanel = _el.querySelector('#arena-custom-active-roster-panel');
+        if (activePanel) {
+            activePanel.setAttribute('data-side', _customSelectedSide);
+            activePanel.classList.toggle('arena-custom-roster-blue', _customSelectedSide === 'blue');
+            activePanel.classList.toggle('arena-custom-roster-red', _customSelectedSide === 'red');
+        }
+        var titleEl = _el.querySelector('#arena-custom-side-editor-title');
+        var kickerEl = _el.querySelector('#arena-custom-side-editor-kicker');
+        var metaEl = _el.querySelector('#arena-custom-side-editor-meta');
+        var countEl = _el.querySelector('#arena-custom-active-roster-count');
+        var sideLabel = customSideLabel(_customSelectedSide);
+        if (kickerEl) kickerEl.textContent = sideLabel + '阵容';
+        if (titleEl) titleEl.textContent = '编辑' + sideLabel;
+        if (metaEl) metaEl.textContent = customRosterTotal(activeRoster) + ' 单位 · ' + (activeRoster.length ? summarizeCustomRoster(activeRoster) : '空阵容');
+        if (countEl) countEl.textContent = customRosterTotal(activeRoster) + ' 单位';
+
+        var savedOptions = buildCustomSavedRosterOptions();
+        var savedSelects = _el.querySelectorAll('[data-custom-saved-select]');
+        for (var ss = 0; ss < savedSelects.length; ss++) {
+            savedSelects[ss].innerHTML = savedOptions;
+        }
+
+        var panels = _el.querySelectorAll('.arena-custom-roster-panel');
+        for (var i = 0; i < panels.length; i++) {
+            panels[i].classList.toggle('arena-custom-roster-active', panels[i].getAttribute('data-side') === _customSelectedSide);
+        }
+        var sideBtns = _el.querySelectorAll('[data-custom-side]');
+        for (var s = 0; s < sideBtns.length; s++) {
+            sideBtns[s].classList.toggle('arena-custom-side-target-active', sideBtns[s].getAttribute('data-custom-side') === _customSelectedSide);
+        }
+    }
+
+    function buildCustomSideConfigCardHtml(side, roster) {
+        var sideLabel = customSideLabel(side);
+        var total = customRosterTotal(roster);
+        var empty = !roster || !roster.length;
+        var rosterText = empty ? '尚未配置单位' : summarizeCustomRoster(roster);
+        return '<div class="arena-custom-side-config-head">' +
+                '<div>' +
+                    '<div class="arena-custom-side-title">' + sideLabel + '</div>' +
+                    '<div class="arena-custom-side-count">' + total + ' 单位</div>' +
+                '</div>' +
+                '<button class="arena-custom-btn" type="button" data-custom-side-action="edit" data-side="' + side + '" data-audio-cue="confirm">编辑阵容</button>' +
+            '</div>' +
+            '<div class="arena-custom-side-config-roster">' + escapeHtml(rosterText) + '</div>' +
+            '<div class="arena-custom-side-config-load">' +
+                '<select class="arena-custom-preset-select" data-custom-saved-select="' + side + '" aria-label="' + sideLabel + '已保存配置">' + buildCustomSavedRosterOptions() + '</select>' +
+                '<button class="arena-custom-btn" type="button" data-custom-side-action="load" data-side="' + side + '" data-audio-cue="confirm">读取</button>' +
+            '</div>' +
+            '<div class="arena-custom-side-config-actions">' +
+                '<button class="arena-custom-btn" type="button" data-custom-side-action="random" data-side="' + side + '" data-audio-cue="confirm">随机组合</button>' +
+                '<button class="arena-custom-btn" type="button" data-custom-side-action="save" data-side="' + side + '" data-audio-cue="confirm">保存配置</button>' +
+                '<button class="arena-custom-btn" type="button" data-custom-side-action="clear" data-side="' + side + '" data-audio-cue="cancel">清空</button>' +
+            '</div>';
+    }
+
+    function customSideLabel(side) {
+        return side === 'red' ? '红方' : '蓝方';
+    }
+
+    function resolveCustomSide(side) {
+        if (side === 'active') return _customSelectedSide;
+        return side === 'red' ? 'red' : 'blue';
+    }
+
+    function getCustomSideRoster(side) {
+        var editor = ensureCustomEditorState();
+        return resolveCustomSide(side) === 'red' ? editor.red : editor.blue;
+    }
+
+    function setCustomSideRoster(side, roster) {
+        var editor = ensureCustomEditorState();
+        if (resolveCustomSide(side) === 'red') editor.red = cloneCustomRoster(roster || []);
+        else editor.blue = cloneCustomRoster(roster || []);
+        syncCustomCodeFromEditor();
+    }
+
+    function showCustomEditorConfigPage() {
+        _customEditorPage = 'config';
+        renderCustomEditor();
+        renderCustomUnitBrowser();
+    }
+
+    function showCustomSideEditorPage(side) {
+        _customSelectedSide = resolveCustomSide(side);
+        _customEditorPage = 'side';
+        renderCustomEditor();
+        renderCustomUnitBrowser();
+    }
+
+    function buildCustomRosterEditorHtml(side, roster) {
+        if (!roster || !roster.length) {
+            return '<div class="arena-custom-roster-empty">从右侧单位目录添加到' + (side === 'blue' ? '蓝方' : '红方') + '</div>';
+        }
+        var html = '';
+        for (var i = 0; i < roster.length; i++) {
+            var entry = roster[i];
+            var unit = getCustomUnitById(entry.id);
+            html += '<div class="arena-custom-roster-row">' +
+                '<div class="arena-custom-unit-mark">u' + entry.id + '</div>' +
+                '<div class="arena-custom-roster-info">' +
+                    '<b>' + escapeHtml(unit.name || ('兵种' + entry.id)) + '</b>' +
+                    '<span>兵种' + entry.id + ' · ' + escapeHtml(unit.spritename || '--') + '</span>' +
+                '</div>' +
+                '<label>Lv.<input class="arena-custom-mini-input" type="number" min="1" max="999" value="' + entry.level + '" data-custom-roster-input="level" data-side="' + side + '" data-index="' + i + '"></label>' +
+                '<div class="arena-custom-count-stepper">' +
+                    '<button type="button" data-custom-adjust-count="-1" data-side="' + side + '" data-index="' + i + '" data-audio-cue="cancel">−</button>' +
+                    '<input class="arena-custom-mini-input" type="number" min="1" max="20" value="' + entry.count + '" data-custom-roster-input="count" data-side="' + side + '" data-index="' + i + '">' +
+                    '<button type="button" data-custom-adjust-count="1" data-side="' + side + '" data-index="' + i + '" data-audio-cue="confirm">+</button>' +
+                '</div>' +
+                '<button class="arena-custom-icon-btn" type="button" title="移除" data-custom-remove data-side="' + side + '" data-index="' + i + '" data-audio-cue="cancel">×</button>' +
+            '</div>';
+        }
+        return html;
+    }
+
+    function renderCustomUnitBrowser() {
+        var listEl = _el ? _el.querySelector('#arena-custom-unit-list') : null;
+        var countEl = _el ? _el.querySelector('#arena-custom-unit-count') : null;
+        var searchEl = _el ? _el.querySelector('#arena-custom-unit-search') : null;
+        if (!listEl || !countEl || !searchEl) return;
+        var editor = ensureCustomEditorState();
+        if (document.activeElement !== searchEl) searchEl.value = editor.query || '';
+
+        var query = normalizeSearchText(editor.query || '');
+        var filter = editor.filter || 'all';
+        var units = getCustomUnitList();
+        var matches = [];
+        for (var i = 0; i < units.length; i++) {
+            if (filter === 'hostile' && units[i].isHostile === false) continue;
+            if (filter === 'nonhostile' && units[i].isHostile !== false) continue;
+            if (query && normalizeSearchText(customUnitSearchText(units[i])).indexOf(query) < 0) continue;
+            matches.push(units[i]);
+            if (matches.length >= CUSTOM_BROWSER_LIMIT) break;
+        }
+
+        countEl.textContent = (query ? matches.length + '/' : '') + units.length + ' 单位';
+        var filterBtns = _el.querySelectorAll('[data-custom-unit-filter]');
+        for (var f = 0; f < filterBtns.length; f++) {
+            filterBtns[f].classList.toggle('arena-custom-unit-filter-active', filterBtns[f].getAttribute('data-custom-unit-filter') === filter);
+        }
+        if (!matches.length) {
+            listEl.innerHTML = '<div class="arena-custom-unit-empty">没有匹配单位</div>';
+            return;
+        }
+        var html = '';
+        for (var m = 0; m < matches.length; m++) {
+            html += buildCustomUnitRowHtml(matches[m]);
+        }
+        listEl.innerHTML = html;
+    }
+
+    function buildCustomUnitRowHtml(unit) {
+        var slots = summarizeCustomSlots(unit);
+        var hostileLabel = unit.isHostile === false ? ' · 非敌对' : '';
+        var rowClass = 'arena-custom-unit-row' + (unit.isHostile === false ? ' arena-custom-unit-row-nonhostile' : '');
+        return '<button class="' + rowClass + '" type="button" data-custom-add-unit="' + unit.id + '" data-audio-cue="confirm">' +
+            '<span class="arena-custom-unit-mark">u' + unit.id + '</span>' +
+            '<span class="arena-custom-unit-main">' +
+                '<b>' + escapeHtml(unit.name || ('兵种' + unit.id)) + '</b>' +
+                '<em>' + escapeHtml(unit.spritename || '--') + '</em>' +
+            '</span>' +
+            '<span class="arena-custom-unit-meta">Lv.' + (unit.level || 1) + hostileLabel + (slots ? ' · ' + escapeHtml(slots) : '') + '</span>' +
+        '</button>';
+    }
+
+    function summarizeCustomSlots(unit) {
+        var slots = unit && unit.slots ? unit.slots : [];
+        if (!slots.length) return '';
+        var parts = [];
+        for (var i = 0; i < slots.length && i < 2; i++) {
+            parts.push(slots[i].value);
+        }
+        return parts.join(' / ');
+    }
+
+    function customUnitSearchText(unit) {
+        return [
+            unit.id,
+            unit.type,
+            unit.name,
+            unit.spritename,
+            summarizeCustomSlots(unit)
+        ].join(' ');
+    }
+
+    function normalizeSearchText(text) {
+        return String(text || '').toLowerCase().replace(/\s+/g, '');
+    }
+
+    function renderCustomConfirm() {
+        var confirmEl = _el ? _el.querySelector('#arena-custom-confirm') : null;
+        if (!confirmEl) return;
+        var cardEl = _el ? _el.querySelector('.arena-card-custom') : null;
+        if (!_customConfirmOpen || !_customMatch || !_customMatch.parsed) {
+            confirmEl.hidden = true;
+            confirmEl.innerHTML = '';
+            if (cardEl) cardEl.classList.remove('arena-card-custom-confirming');
+            return;
+        }
+        var parsed = _customMatch.parsed;
+        confirmEl.hidden = false;
+        if (cardEl) cardEl.classList.add('arena-card-custom-confirming');
+        confirmEl.innerHTML =
+            '<div class="arena-custom-confirm-head">' +
+                '<div>' +
+                    '<div class="arena-custom-confirm-title">确认委托</div>' +
+                    '<div class="arena-custom-confirm-subtitle">启动后将关闭 Web 面板，战斗结束再回开结算页</div>' +
+                '</div>' +
+                '<div class="arena-custom-confirm-fee">' + formatMoney(parsed.venueFeeEstimate) + '</div>' +
+            '</div>' +
+            '<div class="arena-custom-confirm-grid">' +
+                '<span>蓝方</span><b>' + escapeHtml(summarizeCustomRoster(parsed.blueRoster)) + '</b>' +
+                '<span>红方</span><b>' + escapeHtml(summarizeCustomRoster(parsed.redRoster)) + '</b>' +
+                '<span>战斗上限</span><b>' + parsed.calibrationCase.timeoutFrames + ' 帧</b>' +
+                '<span>规则</span><b>无掉落 / 无经验 / 原死亡流程</b>' +
+            '</div>' +
+            '<div class="arena-custom-confirm-actions">' +
+                '<button class="arena-custom-btn" type="button" data-custom-confirm-action="cancel" data-audio-cue="cancel">返回编辑</button>' +
+                '<button class="arena-card-btn-enter" type="button" data-custom-confirm-action="start" data-audio-cue="confirm">确认委托</button>' +
+            '</div>';
+    }
+
+    function buildCustomErrorHtml(state) {
+        var text = state.error || '解析失败';
+        if (state.details && state.details.length) {
+            text += ': ' + state.details.map(function(d) {
+                return (d.field ? d.field + ' ' : '') + d.message;
+            }).join('; ');
+        }
+        return '<div class="arena-opponents-error">' + escapeHtml(text) + '</div>';
+    }
+
+    function summarizeCustomRoster(roster) {
+        var parts = [];
+        for (var i = 0; i < roster.length; i++) {
+            parts.push(roster[i].type + ' Lv.' + roster[i].level + ' ×' + roster[i].count);
+        }
+        return parts.join(' / ');
+    }
+
+    function truncateCustomText(text, maxLen) {
+        text = String(text || '');
+        maxLen = Number(maxLen) || 24;
+        if (text.length <= maxLen) return text;
+        return text.slice(0, Math.max(1, maxLen - 1)) + '…';
+    }
+
+    function customRosterTotal(roster) {
+        var total = 0;
+        roster = roster || [];
+        for (var i = 0; i < roster.length; i++) total += Number(roster[i].count) || 0;
+        return total;
+    }
+
+    function customRunActive() {
+        return !!(_customRun && (
+            _customRun.state === 'running' ||
+            _customRun.state === 'queued' ||
+            _customRun.state === 'abort_requested'
+        ));
+    }
+
+    function customRunTerminal() {
+        return !!(_customRun && (
+            _customRun.state === 'completed' ||
+            _customRun.state === 'failed' ||
+            _customRun.state === 'aborted'
+        ));
+    }
+
+    function customRunText() {
+        if (!_customRun) return '状态：未委托';
+        var text = '状态：' + (_customRun.state || 'unknown');
+        if (_customRun.completedRuns != null && _customRun.totalRuns != null) {
+            text += ' · ' + _customRun.completedRuns + '/' + _customRun.totalRuns;
+        }
+        if (_customRun.lastResult && customRunTerminal()) text += ' · ' + customResultSummaryText(_customRun.lastResult);
+        if (_customRun.batchId) text += ' · ' + _customRun.batchId;
+        if (_customRun.resultPath && customRunTerminal()) text += ' · ' + _customRun.resultPath;
+        if (_customRun.lastError) text += ' · ' + _customRun.lastError;
+        if (_customRun.error && !_customRun.success) text += ' · ' + _customRun.error;
+        return text;
+    }
+
+    function customResultSummaryText(result) {
+        if (!result) return '结果：未知';
+        var winner = String(result.winner || 'none');
+        var label = winner === 'blue' ? '蓝方胜'
+            : winner === 'red' ? '红方胜'
+            : winner === 'timeout' ? '超时'
+            : winner === 'draw' ? '平局'
+            : '无胜者';
+        var status = result.status ? String(result.status) : '';
+        var frames = result.frames != null ? String(result.frames) + '帧' : '';
+        var parts = [label];
+        if (status) parts.push(status);
+        if (frames) parts.push(frames);
+        return '结果：' + parts.join(' / ');
+    }
+
+    function renderCustomResultView() {
+        if (!_customResultViewEl) return;
+        ensureCustomMatchState();
+        var run = _customRun || {};
+        var result = run.lastResult || (_customResult && _customResult.lastResult) || null;
+        var outcome = customResultOutcome(result, run.state || (_customResult && _customResult.state));
+        var meta = customResultMeta(result, run);
+        var matchCode = (_customMatch && _customMatch.code) || (_customResult && _customResult.matchCode) || '';
+        var path = run.resultPath || (_customResult && _customResult.resultPath) || '';
+        var error = run.lastError || (_customResult && _customResult.lastError) || run.error || '';
+
+        _customResultViewEl.innerHTML =
+            '<div class="arena-custom-result-panel">' +
+                '<div class="arena-custom-result-header">' +
+                    '<div>' +
+                        '<div class="arena-custom-result-kicker">定制死亡竞赛 · 结算</div>' +
+                        '<h2 class="arena-custom-result-title ' + outcome.className + '">' + escapeHtml(outcome.label) + '</h2>' +
+                        '<div class="arena-custom-result-meta">' + escapeHtml(meta || '无战斗摘要') + '</div>' +
+                    '</div>' +
+                    '<button class="arena-custom-result-close" type="button" data-custom-result-action="back" data-audio-cue="confirm">确认返回</button>' +
+                '</div>' +
+                '<div class="arena-custom-result-sides">' +
+                    buildCustomResultSideHtml('blue', '蓝方', result ? result.blue : null) +
+                    buildCustomResultSideHtml('red', '红方', result ? result.red : null) +
+                '</div>' +
+                '<div class="arena-custom-result-codeblock">' +
+                    '<div class="arena-custom-result-label">赛程代码</div>' +
+                    '<div class="arena-custom-result-code">' + escapeHtml(matchCode || '--') + '</div>' +
+                '</div>' +
+                '<div class="arena-custom-result-detail">' +
+                    '<span>结果文件</span>' +
+                    '<b>' + escapeHtml(path || '--') + '</b>' +
+                '</div>' +
+                (error ? '<div class="arena-custom-result-error">' + escapeHtml(error) + '</div>' : '') +
+                '<div class="arena-custom-result-actions">' +
+                    '<button class="arena-custom-btn" type="button" data-custom-result-action="copy" data-audio-cue="confirm">复制代码</button>' +
+                    '<button class="arena-card-btn-enter" type="button" data-custom-result-action="back" data-audio-cue="confirm">返回定制赛</button>' +
+                '</div>' +
+            '</div>';
+    }
+
+    function customResultOutcome(result, state) {
+        state = state ? String(state) : '';
+        if (state === 'failed') return { label: '委托失败', className: 'arena-custom-result-title-failed' };
+        if (state === 'aborted' || state === 'abort_requested') return { label: '委托中止', className: 'arena-custom-result-title-neutral' };
+        if (!result) return { label: '结果未知', className: 'arena-custom-result-title-neutral' };
+
+        var winner = String(result.winner || 'none');
+        if (winner === 'blue') return { label: '蓝方胜', className: 'arena-custom-result-title-blue' };
+        if (winner === 'red') return { label: '红方胜', className: 'arena-custom-result-title-red' };
+        if (winner === 'draw') return { label: '平局', className: 'arena-custom-result-title-neutral' };
+        if (winner === 'timeout') return { label: '超时', className: 'arena-custom-result-title-neutral' };
+        return { label: '无胜者', className: 'arena-custom-result-title-neutral' };
+    }
+
+    function customResultMeta(result, run) {
+        var parts = [];
+        if (result && result.status) parts.push(String(result.status));
+        if (result && result.frames != null) parts.push(String(result.frames) + ' 帧');
+        if (result && result.durationMs != null) parts.push(formatDurationMs(result.durationMs));
+        if (run && run.batchId) parts.push(run.batchId);
+        return parts.join(' · ');
+    }
+
+    function buildCustomResultSideHtml(side, title, summary) {
+        var roster = '--';
+        if (_customMatch && _customMatch.parsed) {
+            roster = summarizeCustomRoster(side === 'blue'
+                ? _customMatch.parsed.blueRoster
+                : _customMatch.parsed.redRoster);
+        }
+        var maxHp = summary && summary.maxHp != null ? Number(summary.maxHp) : 0;
+        var remainHp = summary && summary.remainHp != null ? Number(summary.remainHp) : 0;
+        var aliveCount = summary && summary.aliveCount != null ? Number(summary.aliveCount) : 0;
+        var startCount = summary && summary.startCount != null ? Number(summary.startCount) : 0;
+        if (isNaN(maxHp) || maxHp < 0) maxHp = 0;
+        if (isNaN(remainHp) || remainHp < 0) remainHp = 0;
+        if (isNaN(aliveCount) || aliveCount < 0) aliveCount = 0;
+        if (isNaN(startCount) || startCount < 0) startCount = 0;
+        var pct = maxHp > 0 ? Math.max(0, Math.min(100, Math.round(remainHp * 100 / maxHp))) : 0;
+
+        return '<div class="arena-custom-result-side arena-custom-result-side-' + side + '">' +
+            '<div class="arena-custom-result-side-title">' + escapeHtml(title) + '</div>' +
+            '<div class="arena-custom-result-side-roster">' + escapeHtml(roster) + '</div>' +
+            '<div class="arena-custom-result-side-stats">' +
+                '<span>存活 ' + aliveCount + '/' + startCount + '</span>' +
+                '<span>HP ' + Math.round(remainHp) + '/' + Math.round(maxHp) + '</span>' +
+            '</div>' +
+            '<div class="arena-custom-result-hpbar"><i style="width:' + pct + '%"></i></div>' +
+        '</div>';
+    }
+
+    function formatDurationMs(value) {
+        var ms = Number(value);
+        if (isNaN(ms) || ms < 0) return '--';
+        if (ms < 1000) return Math.round(ms) + ' ms';
+        return (Math.round(ms / 100) / 10).toFixed(1) + ' s';
+    }
+
+    function onCustomResultClick(e) {
+        var node = e.target;
+        while (node && node !== _customResultViewEl) {
+            if (node.getAttribute) {
+                var action = node.getAttribute('data-custom-result-action');
+                if (action === 'back') {
+                    onCustomResultBack();
+                    return;
+                }
+                if (action === 'copy') {
+                    copyCustomMatchCode();
+                    return;
+                }
+            }
+            node = node.parentNode;
+        }
+    }
+
+    function onCustomResultBack() {
+        if (_busy) return;
+        _customResult = null;
+        rebuildForMode('custom');
+        if (_snapshot) batchRequestPreview();
+        showToast('已返回定制赛');
+    }
+
+    function applyCustomRunStatus(data) {
+        _customRun = {
+            success: data.success !== false,
+            state: data.state || 'unknown',
+            note: data.note || '',
+            batchId: data.batchId || (_customRun && _customRun.batchId) || '',
+            manifestHash: data.manifestHash || '',
+            manifestPath: data.manifestPath || '',
+            frozenManifestPath: data.frozenManifestPath || '',
+            resultPath: data.resultPath || '',
+            totalRuns: data.totalRuns,
+            completedRuns: data.completedRuns,
+            currentCaseId: data.currentCaseId || '',
+            currentRunId: data.currentRunId || '',
+            lastError: data.lastError || data.message || '',
+            error: data.error || '',
+            lastResult: data.lastResult || (_customRun && _customRun.lastResult) || null,
+            reopened: data.reopened || (_customRun && _customRun.reopened) || false
+        };
+        refreshCustomMatchCard();
+    }
+
+    function normalizeCustomResultInitData(initData) {
+        if (!initData || initData.mode !== 'custom_result') return null;
+        return {
+            mode: 'custom_result',
+            source: initData.source || 'arena_custom_match_result',
+            matchCode: initData.matchCode || '',
+            state: initData.state || 'completed',
+            batchId: initData.batchId || '',
+            resultPath: initData.resultPath || '',
+            manifestPath: initData.manifestPath || '',
+            frozenManifestPath: initData.frozenManifestPath || '',
+            totalRuns: initData.totalRuns,
+            completedRuns: initData.completedRuns,
+            lastError: initData.lastError || '',
+            lastResult: initData.lastResult || null
+        };
+    }
+
+    function buildCustomRunFromResult(result) {
+        return {
+            success: result.state !== 'failed',
+            state: result.state || 'completed',
+            note: 'settled',
+            batchId: result.batchId || '',
+            manifestHash: '',
+            manifestPath: result.manifestPath || '',
+            frozenManifestPath: result.frozenManifestPath || '',
+            resultPath: result.resultPath || '',
+            totalRuns: result.totalRuns,
+            completedRuns: result.completedRuns,
+            currentCaseId: '',
+            currentRunId: '',
+            lastError: result.lastError || '',
+            error: '',
+            lastResult: result.lastResult || null,
+            reopened: true
+        };
+    }
+
+    function clearCustomPoll() {
+        if (_customPollTimer) {
+            clearTimeout(_customPollTimer);
+            _customPollTimer = 0;
+        }
+    }
+
+    function scheduleCustomStatusPoll() {
+        clearCustomPoll();
+        if (_activeMode !== 'custom' || !customRunActive()) return;
+        _customPollTimer = setTimeout(function() {
+            _customPollTimer = 0;
+            requestCustomStatus();
+        }, 1000);
+    }
+
+    function requestCustomStatus() {
+        if (_activeMode !== 'custom' || !_customRun) return;
+        sendCustomRequest('custom_status', { batchId: _customRun.batchId || '' }, function(data) {
+            applyCustomRunStatus(data);
+            if (customRunActive()) scheduleCustomStatusPoll();
+        });
+    }
+
+    function sendCustomRequest(cmd, payload, cb) {
+        var reqId = 'arena_custom_' + (++_reqSeq) + '_' + _session;
+        _pendingReq[reqId] = function(data) {
+            if (typeof cb === 'function') cb(data || {});
+        };
+        payload = payload || {};
+        payload.type = 'panel';
+        payload.panel = 'arena';
+        payload.cmd = cmd;
+        payload.callId = reqId;
+        Bridge.send(payload);
+    }
+
+    function onCustomCodeInput(e) {
+        ensureCustomMatchState();
+        var input = e.target || e.currentTarget;
+        _customMatch.code = input.value;
+        parseCustomMatchCode();
+        refreshCustomMatchCard();
+    }
+
+    function handleCustomAction(action, node) {
+        if (!action) return false;
+        if (_busy || customRunActive()) return true;
+        ensureCustomMatchState();
+        if (action === 'random') {
+            applyRandomCustomPreset();
+        } else if (action === 'preset') {
+            applySelectedCustomPreset();
+        } else if (action === 'copy') {
+            copyCustomMatchCode();
+        } else if (action === 'swap-sides') {
+            swapCustomSides();
+        } else if (action === 'edit') {
+            showCustomEditorForSide(node ? node.getAttribute('data-custom-edit-side') : '');
+        } else {
+            parseCustomMatchCode();
+            refreshCustomMatchCard();
+            showToast(_customMatch.parsed ? '赛程代码已导入' : '赛程代码无效');
+        }
+        return true;
+    }
+
+    function applyRandomCustomPreset() {
+        var presets = getCustomPresets();
+        if (!presets.length) {
+            applyCustomMatchCode(getDefaultCustomMatchCode(), '已载入默认组合');
+            return;
+        }
+        var nextIndex = Math.floor(Math.random() * presets.length);
+        if (presets.length > 1 && nextIndex === _customSampleIndex) {
+            nextIndex = (nextIndex + 1) % presets.length;
+        }
+        _customSampleIndex = nextIndex;
+        var select = _el ? _el.querySelector('#arena-custom-preset-select') : null;
+        if (select && presets[_customSampleIndex]) select.value = presets[_customSampleIndex].id;
+        applyCustomMatchCode(presets[_customSampleIndex].code, '已随机抽取待标定组合');
+    }
+
+    function applySelectedCustomPreset() {
+        var select = _el ? _el.querySelector('#arena-custom-preset-select') : null;
+        var preset = findCustomPresetById(select ? select.value : '');
+        applyCustomMatchCode((preset && preset.code) || getDefaultCustomMatchCode(), '已载入待标定组合');
+    }
+
+    function applyRandomCustomSidePreset(side) {
+        side = resolveCustomSide(side);
+        var presets = getCustomPresets();
+        if (!presets.length) return;
+        var preset = presets[Math.floor(Math.random() * presets.length)];
+        var parsed = parseCustomPresetForRoster(preset);
+        if (!parsed) {
+            showToast('随机组合解析失败');
+            return;
+        }
+        var roster = (parsed.redRoster && parsed.redRoster.length) ? parsed.redRoster : parsed.blueRoster;
+        setCustomSideRoster(side, roster || []);
+        showToast(customSideLabel(side) + '已随机抽取待标定组合');
+    }
+
+    function parseCustomPresetForRoster(preset) {
+        ensureCustomModule();
+        if (!preset || !preset.code) return null;
+        try {
+            return ArenaCustomMatchCode.parseMatchCode(preset.code, {
+                unitCatalog: collectCustomUnitCatalog(),
+                caseId: 'arena-custom-p3'
+            });
+        } catch (err) {
+            return null;
+        }
+    }
+
+    function saveCustomSideConfig(side) {
+        side = resolveCustomSide(side);
+        var roster = cloneCustomRoster(getCustomSideRoster(side));
+        if (!roster.length) {
+            showToast(customSideLabel(side) + '为空，未保存');
+            return;
+        }
+        var summary = summarizeCustomRoster(roster);
+        var label = customSideLabel(side) + ' · ' + customRosterTotal(roster) + '体 · ' + truncateCustomText(summary, 26);
+        var saved = getCustomSavedRosters().slice();
+        saved.unshift({
+            id: 'saved-' + Date.now() + '-' + Math.floor(Math.random() * 10000),
+            label: label,
+            createdAt: new Date().toISOString(),
+            roster: roster
+        });
+        if (saved.length > CUSTOM_SAVED_ROSTER_LIMIT) saved.length = CUSTOM_SAVED_ROSTER_LIMIT;
+        if (!saveCustomSavedRosters(saved)) return;
+        renderCustomEditor();
+        showToast(customSideLabel(side) + '配置已保存');
+    }
+
+    function loadCustomSideConfig(side) {
+        side = resolveCustomSide(side);
+        var selectorKey = side;
+        var activeSelect = _el ? _el.querySelector('[data-custom-saved-select="active"]') : null;
+        if (_customEditorPage === 'side' && activeSelect) selectorKey = 'active';
+        var select = _el ? _el.querySelector('[data-custom-saved-select="' + selectorKey + '"]') : null;
+        var saved = findCustomSavedRosterById(select ? select.value : '');
+        if (!saved) {
+            showToast('暂无可读取配置');
+            return;
+        }
+        setCustomSideRoster(side, saved.roster);
+        showToast(customSideLabel(side) + '已读取配置');
+    }
+
+    function swapCustomSides() {
+        var editor = ensureCustomEditorState();
+        var nextBlue = cloneCustomRoster(editor.red);
+        var nextRed = cloneCustomRoster(editor.blue);
+        editor.blue = nextBlue;
+        editor.red = nextRed;
+        _customSelectedSide = _customSelectedSide === 'red' ? 'blue' : 'red';
+        syncCustomCodeFromEditor();
+        showToast('红蓝配置已交换');
+    }
+
+    function handleCustomSideAction(action, side) {
+        if (!action) return false;
+        if (_busy || customRunActive()) return true;
+        side = resolveCustomSide(side);
+        if (action === 'edit') {
+            showCustomSideEditorPage(side);
+        } else if (action === 'random') {
+            applyRandomCustomSidePreset(side);
+        } else if (action === 'save') {
+            saveCustomSideConfig(side);
+        } else if (action === 'load') {
+            loadCustomSideConfig(side);
+        } else if (action === 'clear') {
+            clearCustomRosterSide(side);
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    function findCustomPresetById(id) {
+        var presets = getCustomPresets();
+        for (var i = 0; i < presets.length; i++) {
+            if (presets[i].id === id) return presets[i];
+        }
+        return presets[0] || null;
+    }
+
+    function applyCustomMatchCode(code, toast) {
+        ensureCustomMatchState();
+        _customMatch.code = code || getDefaultCustomMatchCode();
+        parseCustomMatchCode();
+        refreshCustomMatchCard();
+        if (toast) showToast(toast);
+    }
+
+    function onCustomUnitSearchInput(e) {
+        var editor = ensureCustomEditorState();
+        var input = e.target || e.currentTarget;
+        editor.query = input.value || '';
+        renderCustomUnitBrowser();
+    }
+
+    function onCustomEditorInput(e) {
+        var input = e.target;
+        if (!input) return;
+        if (input.id === 'arena-custom-code-input') {
+            onCustomCodeInput(e);
+            return;
+        }
+        if (input.id !== 'arena-custom-unit-search') return;
+        onCustomUnitSearchInput(e);
+    }
+
+    function onCustomSideSelect(e) {
+        var side = e.currentTarget.getAttribute('data-custom-side');
+        if (side === 'blue' || side === 'red') {
+            _customSelectedSide = side;
+            renderCustomEditor();
+        }
+    }
+
+    function onCustomWorkbenchClick(e) {
+        var node = e.target;
+        while (node && node !== e.currentTarget) {
+            if (node.getAttribute) {
+                var editorAction = node.getAttribute('data-custom-editor-action');
+                if (editorAction === 'back' || editorAction === 'done') {
+                    if (editorAction === 'back' && _customEditorPage === 'side') {
+                        showCustomEditorConfigPage();
+                        return;
+                    }
+                    showGridView();
+                    return;
+                }
+                if (editorAction === 'to-config') {
+                    showCustomEditorConfigPage();
+                    return;
+                }
+                if (editorAction === 'copy') {
+                    copyCustomMatchCode();
+                    return;
+                }
+                var customAction = node.getAttribute('data-custom-action');
+                if (handleCustomAction(customAction, node)) {
+                    return;
+                }
+                var sideAction = node.getAttribute('data-custom-side-action');
+                if (handleCustomSideAction(sideAction, node.getAttribute('data-side'))) {
+                    return;
+                }
+                var side = node.getAttribute('data-custom-side');
+                if (side === 'blue' || side === 'red') {
+                    _customSelectedSide = side;
+                    renderCustomEditor();
+                    return;
+                }
+                var filter = node.getAttribute('data-custom-unit-filter');
+                if (filter === 'all' || filter === 'hostile' || filter === 'nonhostile') {
+                    ensureCustomEditorState().filter = filter;
+                    renderCustomUnitBrowser();
+                    return;
+                }
+                var clearSide = node.getAttribute('data-custom-clear-side');
+                if (clearSide === 'blue' || clearSide === 'red') {
+                    clearCustomRosterSide(clearSide);
+                    return;
+                }
+                var adjustCount = node.getAttribute('data-custom-adjust-count');
+                if (adjustCount) {
+                    adjustCustomRosterCount(node.getAttribute('data-side'), Number(node.getAttribute('data-index')), Number(adjustCount));
+                    return;
+                }
+                var addId = node.getAttribute('data-custom-add-unit');
+                if (addId) {
+                    addCustomUnitToSide(Number(addId), _customSelectedSide);
+                    return;
+                }
+                if (node.hasAttribute('data-custom-remove')) {
+                    removeCustomRosterEntry(node.getAttribute('data-side'), Number(node.getAttribute('data-index')));
+                    return;
+                }
+                var confirmAction = node.getAttribute('data-custom-confirm-action');
+                if (confirmAction === 'cancel') {
+                    _customConfirmOpen = false;
+                    refreshCustomMatchCard();
+                    return;
+                }
+                if (confirmAction === 'start') {
+                    startCustomMatch();
+                    return;
+                }
+            }
+            node = node.parentNode;
+        }
+    }
+
+    function onCustomWorkbenchChange(e) {
+        var input = e.target;
+        if (!input || !input.getAttribute) return;
+        var field = input.getAttribute('data-custom-roster-input');
+        if (field !== 'level' && field !== 'count') return;
+        updateCustomRosterEntry(input.getAttribute('data-side'), Number(input.getAttribute('data-index')), field, Number(input.value));
+    }
+
+    function addCustomUnitToSide(unitId, side) {
+        var editor = ensureCustomEditorState();
+        var roster = side === 'red' ? editor.red : editor.blue;
+        var unit = getCustomUnitById(unitId);
+        var level = Number(unit.level) > 0 ? Number(unit.level) : 1;
+        for (var i = 0; i < roster.length; i++) {
+            if (roster[i].id === unitId && roster[i].level === level) {
+                roster[i].count++;
+                syncCustomCodeFromEditor();
+                return;
+            }
+        }
+        roster.push({ id: unitId, type: '兵种' + unitId, level: level, count: 1 });
+        syncCustomCodeFromEditor();
+    }
+
+    function removeCustomRosterEntry(side, index) {
+        var editor = ensureCustomEditorState();
+        var roster = side === 'red' ? editor.red : editor.blue;
+        if (index >= 0 && index < roster.length) {
+            roster.splice(index, 1);
+            syncCustomCodeFromEditor();
+        }
+    }
+
+    function clearCustomRosterSide(side) {
+        var editor = ensureCustomEditorState();
+        if (side === 'red') editor.red = [];
+        else editor.blue = [];
+        syncCustomCodeFromEditor();
+    }
+
+    function adjustCustomRosterCount(side, index, delta) {
+        var editor = ensureCustomEditorState();
+        var roster = side === 'red' ? editor.red : editor.blue;
+        if (index < 0 || index >= roster.length) return;
+        var next = (Number(roster[index].count) || 1) + delta;
+        if (next < 1) next = 1;
+        if (next > 20) next = 20;
+        roster[index].count = next;
+        syncCustomCodeFromEditor();
+    }
+
+    function updateCustomRosterEntry(side, index, field, value) {
+        var editor = ensureCustomEditorState();
+        var roster = side === 'red' ? editor.red : editor.blue;
+        if (index < 0 || index >= roster.length) return;
+        if (isNaN(value) || value < 1) value = 1;
+        value = Math.floor(value);
+        if (field === 'count' && value > 20) value = 20;
+        roster[index][field] = value;
+        syncCustomCodeFromEditor();
+    }
+
+    function copyCustomMatchCode() {
+        ensureCustomMatchState();
+        if (_customMatch.parsed) _customMatch.code = _customMatch.parsed.canonical;
+        var text = _customMatch.code || '';
+        var done = function() { showToast('赛程代码已复制'); };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, function() { showToast('复制失败，请手动复制'); });
+        } else {
+            showToast('当前环境不支持自动复制');
+        }
+        var input = _el ? _el.querySelector('#arena-custom-code-input') : null;
+        if (input) input.value = text;
+    }
+
+    function onCustomGenerate() {
+        if (_busy || customRunActive()) return;
+        ensureCustomMatchState();
+        parseCustomMatchCode();
+        refreshCustomMatchCard();
+        if (!_customMatch.parsed) {
+            showToast('赛程代码无效');
+            return;
+        }
+        _customConfirmOpen = true;
+        refreshCustomMatchCard();
+    }
+
+    function startCustomMatch() {
+        if (_busy || customRunActive()) return;
+        ensureCustomMatchState();
+        parseCustomMatchCode();
+        refreshCustomMatchCard();
+        if (!_customMatch.parsed) {
+            showToast('赛程代码无效');
+            return;
+        }
+        _busy = true;
+        refreshCustomMatchCard();
+        sendCustomRequest('custom_start', {
+            matchCode: _customMatch.parsed.canonical,
+            calibrationCase: _customMatch.parsed.calibrationCase,
+            venueFeeEstimate: _customMatch.parsed.venueFeeEstimate
+        }, function(data) {
+            _busy = false;
+            applyCustomRunStatus(data);
+            if (data.success === false) {
+                showToast(data.message || data.error || '委托启动失败');
+                return;
+            }
+            showToast('定制赛委托已开始');
+            if (data.closePanel) {
+                requestClose({ dismissReturnStack: true });
+                return;
+            }
+            scheduleCustomStatusPoll();
+        });
+    }
+
+    function onCustomAbort() {
+        if (_busy || !customRunActive()) return;
+        _busy = true;
+        refreshCustomMatchCard();
+        sendCustomRequest('custom_abort', {
+            batchId: _customRun.batchId || ''
+        }, function(data) {
+            _busy = false;
+            applyCustomRunStatus(data);
+            showToast(data.success === false ? (data.message || data.error || '中止失败') : '已请求中止');
+            if (customRunActive()) scheduleCustomStatusPoll();
+        });
     }
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -714,6 +2203,10 @@
     // Batch Preview（panel open 时并发抽 8 卡）
     // ════════════════════════════════════════════════════════════════════════════
     function batchRequestPreview() {
+        if (_activeMode === 'custom') {
+            refreshCustomMatchCard();
+            return;
+        }
         for (var i = 0; i < _activeCards.length; i++) {
             requestPreviewForCard(i);
         }
@@ -1257,6 +2750,10 @@
     function updateCardStates() {
         var money = (_snapshot && _snapshot.money != null) ? _snapshot.money : null;
         for (var i = 0; i < _activeCards.length; i++) {
+            if (_activeCards[i].isCustom) {
+                refreshCustomMatchCard();
+                continue;
+            }
             var deposit = _activeCards[i].deposit;
             var moneyOk = (money == null) || (money >= deposit); // snapshot 未到先全亮
             var hasPreview = !!_previewCache[i];
@@ -1353,7 +2850,15 @@
             previewPendingCount: Object.keys(_previewPending).length,
             previewErrorCount: Object.keys(_previewError).length,
             cardKind: _cardKind,
-            monsterSquad: _monsterSquad
+            monsterSquad: _monsterSquad,
+            customMatch: _customMatch,
+            customEditor: _customEditor,
+            customSelectedSide: _customSelectedSide,
+            customEditorPage: _customEditorPage,
+            customSavedRosters: getCustomSavedRosters().slice(),
+            customConfirmOpen: _customConfirmOpen,
+            customRun: _customRun,
+            customResult: _customResult
         };
     }
 

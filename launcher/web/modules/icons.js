@@ -10,7 +10,10 @@ var Icons = (function() {
     'use strict';
 
     var _map = null, _loading = false, _queue = [];
-    var ICON_ROOT = 'icons/';
+    var ICON_ROOT = (typeof window !== 'undefined' && window.CF7_ICON_ROOT)
+        ? String(window.CF7_ICON_ROOT)
+        : 'icons/';
+    if (ICON_ROOT && ICON_ROOT.charAt(ICON_ROOT.length - 1) !== '/') ICON_ROOT += '/';
     var DEFAULT_FPS = 24;
     var LAYER_FRAME_IDENTITY_KEYS = [
         'uri',
@@ -484,7 +487,7 @@ var Icons = (function() {
             if (typeof cb === 'function') _queue.push(cb);
             if (_loading) return;
             _loading = true;
-            fetch('icons/manifest.json')
+            fetch(ICON_ROOT + 'manifest.json')
                 .then(function(r) { return r.json(); })
                 .then(function(d) { _map = d || {}; _loading = false; startObserver(); flushQueue(); })
                 .catch(function() { _map = {}; _loading = false; flushQueue(); });

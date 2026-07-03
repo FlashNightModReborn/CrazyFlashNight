@@ -1,7 +1,7 @@
 /**
  * Arena Panel QA Suite
  *
- * 测试覆盖（11 旧 + 5 新）：
+ * 测试覆盖（11 旧 + 6 新）：
  *   - panel-open: Panel 能正确打开并渲染 8 张卡片
  *   - snapshot-render: snapshot 到达后金钱显示正确，卡片状态正确
  *   - enter-success: 通过 detail 路径入场（点 🔍 → 等 cache 命中 → 点确认挑战）
@@ -18,6 +18,8 @@
  *   - grid-cache-consistency: detail 内"换一批"后回 grid，摘要文本与新对手数据一致
  *   - grid-money-disable: 金钱不足时 enter 按钮 disabled、detail 按钮仍 enabled
  *   - grid-single-fail-retry: 单卡 preview 失败 → 摘要显示"加载失败 ↻" → 点击 ↻ 触发重发
+ *   - custom-match-p1: 定制赛 tab、赛程代码解析、calibration case 摘要
+ *   - custom-match-p2: 定制赛开始委托、关闭 webpanel、结算回开结果态且不走正式 enter
  */
 var ArenaHarnessQA = (function() {
     'use strict';
@@ -38,7 +40,9 @@ var ArenaHarnessQA = (function() {
         { id: 'grid-direct-enter',    title: 'Grid 直入战场（不进 detail）' },
         { id: 'grid-cache-consistency', title: '换一批后 grid 摘要同步更新' },
         { id: 'grid-money-disable',   title: '金钱不足 enter 灰 / detail 亮' },
-        { id: 'grid-single-fail-retry', title: '单卡失败显示 ↻ + 重试' }
+        { id: 'grid-single-fail-retry', title: '单卡失败显示 ↻ + 重试' },
+        { id: 'custom-match-p1',      title: '定制赛 P1 赛程代码入口' },
+        { id: 'custom-match-p2',      title: '定制赛 P2 后台 single-case 委托' }
     ];
 
     function runSuite(api, host, onlyCase) {
@@ -78,6 +82,8 @@ var ArenaHarnessQA = (function() {
             case 'grid-cache-consistency':  return caseGridCacheConsistency(api, host);
             case 'grid-money-disable':      return caseGridMoneyDisable(api, host);
             case 'grid-single-fail-retry':  return caseGridSingleFailRetry(api, host);
+            case 'custom-match-p1':         return caseCustomMatchP1(api, host);
+            case 'custom-match-p2':         return caseCustomMatchP2(api, host);
             default:                        return Promise.resolve({ pass: false, detail: 'unknown case' });
         }
     }
@@ -90,6 +96,12 @@ var ArenaHarnessQA = (function() {
             var loading = document.querySelectorAll('.arena-card-opponents-loading');
             return loading.length === 0;
         }, 3000, 'batch preview 全部完成（grid 摘要无 loading）');
+    }
+
+    function rosterSig(roster) {
+        return (roster || []).map(function(r) {
+            return String(r.id || r.type) + '@' + r.level + 'x' + r.count;
+        }).join(',');
     }
 
     // ── case: panel-open ──
@@ -681,6 +693,270 @@ var ArenaHarnessQA = (function() {
             .then(function() {
                 var enterBtn = document.querySelector('.arena-card-btn-enter[data-index="2"]');
                 api.assertEqual(enterBtn.disabled, false, '重试成功后卡 2 enter 按钮应 enabled');
+            })
+            .then(function() { return { pass: true }; })
+            .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
+    }
+
+    // ── case: custom-match-p1 ──
+    // 定制赛 P1 仅验证赛程代码 + calibration case 摘要。
+    function caseCustomMatchP1(api, host) {
+        var savedRedId = '';
+        var savedRedSig = '';
+        var randomBlueSig = '';
+        var redBeforeSwapSig = '';
+        var blueBeforeSwapSig = '';
+        return Promise.resolve()
+            .then(function() {
+                host.setFixture('rich');
+                host.sentMessages = [];
+                if (host.resetCustomState) host.resetCustomState();
+                host.open();
+                return api.waitFor(function() {
+                    return Panels.getActive && Panels.getActive() === 'arena';
+                }, 2000, 'panel active');
+            })
+            .then(function() {
+                var tab = document.querySelector('.arena-mode-tab[data-mode="custom"]');
+                api.assert(!!tab, '应显示 定制赛 tab');
+                tab.click();
+                return api.waitFor(function() {
+                    return document.querySelector('.arena-card-custom') != null;
+                }, 2000, 'custom card rendered');
+            })
+            .then(function() {
+                var cards = document.querySelectorAll('.arena-card');
+                api.assertEqual(cards.length, 1, '定制赛 P1 应只渲染 1 张入口卡');
+                var state = window.ArenaPanel.getState();
+                api.assertEqual(state.activeMode, 'custom', 'activeMode 应为 custom');
+                api.assert(window.ArenaCustomPresetsMeta && window.ArenaCustomPresetsMeta.presetCount > 1000, '预设池应来自关卡拆解元战队，而不是少量手写样例');
+                api.assert(window.ArenaCustomPresets && window.ArenaCustomPresets[0] && window.ArenaCustomPresets[0].source === 'meta-team', '第一条预设应保留 meta-team 溯源');
+                api.assert(state.customMatch && state.customMatch.parsed, '赛程代码应解析成功');
+                api.assertEqual(state.customMatch.parsed.calibrationCase.blueRoster.length, 4, '蓝方应为 thief-lv30x4 对照阵容');
+                api.assert(state.customMatch.parsed.calibrationCase.redRoster.length > 0, '红方应为关卡拆解元战队');
+                api.assert(document.getElementById('arena-custom-fee').textContent !== '--', '估算场地费应渲染');
+                api.assertEqual(document.getElementById('arena-custom-editor-view').hidden, true, '入口卡内不应直接展开阵容编辑器');
+                api.assert(!document.querySelector('.arena-card-custom #arena-custom-code-input'), '入口卡不应承载赛程代码输入');
+                api.assert(!document.querySelector('.arena-card-custom #arena-custom-preset-select'), '入口卡不应承载预设下拉框');
+                api.assert(window.ArenaUnitCatalog && window.ArenaUnitCatalog.unitCount > window.ArenaUnitCatalog.hostileCount, '单位目录应全量暴露 units.json，而不是只暴露 is_hostile');
+                document.querySelector('.arena-custom-side-red .arena-custom-side-edit').click();
+                return api.waitFor(function() {
+                    var editor = document.getElementById('arena-custom-editor-view');
+                    return editor && !editor.hidden && document.querySelectorAll('.arena-custom-unit-row').length > 0;
+                }, 2000, 'custom editor rendered');
+            })
+            .then(function() {
+                var state = window.ArenaPanel.getState();
+                api.assertEqual(state.customSelectedSide, 'red', '调整红方应把编辑目标切到红方');
+                api.assertEqual(state.customEditorPage, 'side', '调整红方应进入第三级单方阵容编辑页');
+                api.assert(document.querySelector('[data-custom-editor-page="config"]').hidden, '进入单方编辑页后配置总览应隐藏');
+                api.assert(!document.querySelector('[data-custom-editor-page="side"]').hidden, '单方编辑页应显示');
+                api.assert(!!document.querySelector('[data-custom-side="red"].arena-custom-side-target-active'), '红方添加目标按钮应进入 active 状态');
+                api.assert(!!document.querySelector('#arena-custom-editor-view #arena-custom-code-input'), '赛程代码输入应迁入二级编辑页');
+                api.assert(document.querySelector('#arena-custom-editor-view #arena-custom-preset-select').options.length > 1000, '二级编辑页应暴露关卡拆解预设池');
+                api.assert(document.querySelectorAll('.arena-custom-unit-row').length > 0, '单位浏览器应渲染 units.json 全量单位');
+                api.assert(document.querySelector('.arena-custom-unit-mark'), '单位图标占位符应渲染');
+                savedRedSig = rosterSig(state.customEditor.red);
+                document.querySelector('[data-custom-side-action="save"][data-side="active"]').click();
+                return api.waitFor(function() {
+                    var st = window.ArenaPanel.getState();
+                    return st.customSavedRosters && st.customSavedRosters.length === 1;
+                }, 2000, 'red side saved');
+            })
+            .then(function() {
+                var state = window.ArenaPanel.getState();
+                savedRedId = state.customSavedRosters[0].id;
+                var oldBlueSig = rosterSig(state.customEditor.blue);
+                document.querySelector('[data-custom-side="blue"]').click();
+                return api.waitFor(function() {
+                    return window.ArenaPanel.getState().customSelectedSide === 'blue';
+                }, 2000, 'switch to blue side').then(function() {
+                    document.querySelector('[data-custom-side-action="random"][data-side="active"]').click();
+                    return api.waitFor(function() {
+                        var st = window.ArenaPanel.getState();
+                        randomBlueSig = rosterSig(st.customEditor.blue);
+                        return randomBlueSig && randomBlueSig !== oldBlueSig;
+                    }, 2000, 'blue side random roster applied');
+                });
+            })
+            .then(function() {
+                document.querySelector('[data-custom-side-action="save"][data-side="active"]').click();
+                return api.waitFor(function() {
+                    var st = window.ArenaPanel.getState();
+                    return st.customSavedRosters && st.customSavedRosters.length >= 2;
+                }, 2000, 'blue side saved');
+            })
+            .then(function() {
+                document.querySelector('[data-custom-editor-action="to-config"]').click();
+                return api.waitFor(function() {
+                    var st = window.ArenaPanel.getState();
+                    return st.customEditorPage === 'config' && !document.querySelector('[data-custom-editor-page="config"]').hidden;
+                }, 2000, 'back to custom config overview');
+            })
+            .then(function() {
+                var state = window.ArenaPanel.getState();
+                blueBeforeSwapSig = rosterSig(state.customEditor.blue);
+                redBeforeSwapSig = rosterSig(state.customEditor.red);
+                document.querySelector('[data-custom-action="swap-sides"]').click();
+                return api.waitFor(function() {
+                    var st = window.ArenaPanel.getState();
+                    return rosterSig(st.customEditor.blue) === redBeforeSwapSig &&
+                        rosterSig(st.customEditor.red) === blueBeforeSwapSig;
+                }, 2000, 'blue/red roster swapped');
+            })
+            .then(function() {
+                var redSelect = document.querySelector('[data-custom-saved-select="red"]');
+                api.assert(!!redSelect, '红方配置卡应有读取配置下拉框');
+                redSelect.value = savedRedId;
+                document.querySelector('[data-custom-side-action="load"][data-side="red"]').click();
+                return api.waitFor(function() {
+                    var st = window.ArenaPanel.getState();
+                    return rosterSig(st.customEditor.red) === savedRedSig;
+                }, 2000, 'red side saved roster loaded');
+            })
+            .then(function() {
+                document.querySelector('[data-custom-side-action="edit"][data-side="red"]').click();
+                return api.waitFor(function() {
+                    var st = window.ArenaPanel.getState();
+                    return st.customEditorPage === 'side' &&
+                        st.customSelectedSide === 'red' &&
+                        document.querySelectorAll('.arena-custom-unit-row').length > 0;
+                }, 2000, 'return to red side editor after config actions');
+            })
+            .then(function() {
+                document.querySelector('[data-custom-unit-filter="nonhostile"]').click();
+                return api.waitFor(function() {
+                    return document.querySelector('.arena-custom-unit-row-nonhostile') != null;
+                }, 2000, 'non-hostile filter rendered');
+            })
+            .then(function() {
+                api.assert(document.querySelector('.arena-custom-unit-filter-active').getAttribute('data-custom-unit-filter') === 'nonhostile', '非敌对过滤按钮应进入 active 状态');
+                document.querySelector('[data-custom-unit-filter="all"]').click();
+                return api.waitFor(function() {
+                    var active = document.querySelector('.arena-custom-unit-filter-active');
+                    return active && active.getAttribute('data-custom-unit-filter') === 'all';
+                }, 2000, 'all filter restored');
+            })
+            .then(function() {
+                document.querySelector('[data-custom-side="red"]').click();
+                var search = document.getElementById('arena-custom-unit-search');
+                search.value = '主角-男';
+                search.dispatchEvent(new Event('input', { bubbles: true }));
+                return api.waitFor(function() {
+                    var rows = document.querySelectorAll('.arena-custom-unit-row');
+                    for (var i = 0; i < rows.length; i++) {
+                        if (/非敌对/.test(rows[i].textContent || '')) return true;
+                    }
+                    return false;
+                }, 2000, 'filtered non-hostile unit rows');
+            })
+            .then(function() {
+                document.querySelector('.arena-custom-unit-row-nonhostile').click();
+                return api.waitFor(function() {
+                    var state = window.ArenaPanel.getState();
+                    return state.customEditor &&
+                        state.customEditor.red &&
+                        state.customEditor.red.length >= 3 &&
+                        state.customMatch.parsed.calibrationCase.redRoster.length >= 3;
+                }, 2000, 'manual roster add reflected in match code');
+            })
+            .then(function() {
+                var enterMessages = host.sentMessages.filter(function(m) { return m && m.cmd === 'enter'; });
+                api.assertEqual(enterMessages.length, 0, 'P1 摘要不应发送正式 enter');
+            })
+            .then(function() { return { pass: true }; })
+            .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
+    }
+
+    // ── case: custom-match-p2 ──
+    // 定制赛 P2 点击开始委托后走 custom_start，关闭 webpanel；结算后由 Host 回开结果态，不走正式 arena enter。
+    function caseCustomMatchP2(api, host) {
+        return Promise.resolve()
+            .then(function() {
+                host.setFixture('rich');
+                host.sentMessages = [];
+                if (host.resetCustomState) host.resetCustomState();
+                host.open();
+                return api.waitFor(function() {
+                    return Panels.getActive && Panels.getActive() === 'arena';
+                }, 2000, 'panel active');
+            })
+            .then(function() {
+                var tab = document.querySelector('.arena-mode-tab[data-mode="custom"]');
+                api.assert(!!tab, '应显示 定制赛 tab');
+                tab.click();
+                return api.waitFor(function() {
+                    return document.querySelector('.arena-card-custom') != null;
+                }, 2000, 'custom card rendered');
+            })
+            .then(function() {
+                document.querySelector('.arena-custom-generate').click();
+                return api.waitFor(function() {
+                    var confirm = document.getElementById('arena-custom-confirm');
+                    return confirm && !confirm.hidden;
+                }, 2000, 'custom confirm rendered');
+            })
+            .then(function() {
+                var earlyStart = host.sentMessages.filter(function(m) { return m && m.cmd === 'custom_start'; });
+                api.assertEqual(earlyStart.length, 0, '确认前不应发送 custom_start');
+                document.querySelector('[data-custom-confirm-action="start"]').click();
+                return api.waitFor(function() {
+                    for (var i = 0; i < host.sentMessages.length; i++) {
+                        if (host.sentMessages[i] && host.sentMessages[i].cmd === 'custom_start') return true;
+                    }
+                    return false;
+                }, 2000, 'custom_start sent');
+            })
+            .then(function() {
+                var msg = null;
+                for (var i = host.sentMessages.length - 1; i >= 0; i--) {
+                    if (host.sentMessages[i] && host.sentMessages[i].cmd === 'custom_start') {
+                        msg = host.sentMessages[i];
+                        break;
+                    }
+                }
+                api.assert(!!msg, '应找到 custom_start 消息');
+                api.assert(msg.matchCode && msg.matchCode.indexOf('CF7ARENA:v1;mode=mvm') === 0, '应携带 canonical 赛程代码');
+                api.assert(msg.calibrationCase && msg.calibrationCase.blueRoster.length === 4, '应携带 thief-lv30x4 对照阵容');
+                return api.waitFor(function() {
+                    for (var i = 0; i < host.sentMessages.length; i++) {
+                        if (host.sentMessages[i] && host.sentMessages[i].cmd === 'close' && host.sentMessages[i].dismissReturnStack) return true;
+                    }
+                    return false;
+                }, 2000, 'custom panel close sent');
+            })
+            .then(function() {
+                return api.waitFor(function() {
+                    var state = window.ArenaPanel.getState();
+                    return state.activeMode === 'custom' &&
+                        state.customResult &&
+                        state.customRun &&
+                        state.customRun.state === 'completed' &&
+                        state.customRun.reopened === true;
+                }, 3000, 'custom result reopened');
+            })
+            .then(function() {
+                var resultView = document.getElementById('arena-custom-result-view');
+                api.assert(!!resultView && !resultView.hidden, '回开后应显示独立结算页');
+                api.assert(/蓝方胜|红方胜|平局|超时|委托/.test(resultView.textContent), '结算页应显示胜负结果');
+                var backBtn = resultView.querySelector('[data-custom-result-action="back"]');
+                api.assert(!!backBtn, '结算页应提供确认返回按钮');
+                backBtn.click();
+                return api.waitFor(function() {
+                    var state = window.ArenaPanel.getState();
+                    var view = document.getElementById('arena-custom-result-view');
+                    return state.activeMode === 'custom' &&
+                        !state.customResult &&
+                        view && view.hidden &&
+                        document.querySelector('.arena-card-custom') != null;
+                }, 2000, 'custom result back to setup');
+            })
+            .then(function() {
+                var statusMessages = host.sentMessages.filter(function(m) { return m && m.cmd === 'custom_status'; });
+                api.assertEqual(statusMessages.length, 0, 'closePanel 主路径不应继续轮询 custom_status');
+                var enterMessages = host.sentMessages.filter(function(m) { return m && m.cmd === 'enter'; });
+                api.assertEqual(enterMessages.length, 0, 'P2 定制赛不应发送正式 enter');
+                api.assert(host._customResultOpens >= 1, 'Host 应回开 custom_result');
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });

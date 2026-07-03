@@ -2800,6 +2800,11 @@ namespace CF7Launcher.Guardian
             _arenaTask = task;
             task.SetPostToWeb(PostToWeb);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+            task.SetCustomResultOpenHandler(delegate(JObject initData)
+            {
+                RequestOpenPanel("arena", "arena_custom_match_result", null, null, null,
+                    null, null, initData != null ? initData.ToString(Newtonsoft.Json.Formatting.None) : null);
+            });
         }
 
         public void SetPetTask(PetTask task)
@@ -3471,6 +3476,9 @@ namespace CF7Launcher.Guardian
                 case "bundle":
                 case "preview":
                 case "equip_tooltip":
+                case "custom_start":
+                case "custom_status":
+                case "custom_abort":
                 case "adopt_list":
                 case "pet_lib":
                 case "adopt":
