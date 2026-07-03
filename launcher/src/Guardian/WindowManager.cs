@@ -33,6 +33,9 @@ namespace CF7Launcher.Guardian
         [DllImport("kernel32.dll")]
         private static extern uint GetCurrentThreadId();
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern void SetLastError(uint dwErrCode);
+
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
@@ -60,23 +63,23 @@ namespace CF7Launcher.Guardian
             public RECT rcCaret;
         }
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
         [DllImport("user32.dll")]
         private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetParent(IntPtr hWnd);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
             int X, int Y, int cx, int cy, uint uFlags);
@@ -88,7 +91,7 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         private static extern IntPtr GetMenu(IntPtr hWnd);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         private static extern bool SetMenu(IntPtr hWnd, IntPtr hMenu);
 
         [DllImport("user32.dll")]
@@ -166,6 +169,46 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        private static void LogWin32Failure(string action, IntPtr hwnd)
+        {
+            int err = Marshal.GetLastWin32Error();
+            LogWin32Failure(action, hwnd, err);
+        }
+
+        private static void LogWin32Failure(string action, IntPtr hwnd, int err)
+        {
+            LogManager.Log("[WindowManager] " + action + " failed hwnd=0x" + hwnd.ToString("X")
+                + " err=" + err.ToString(CultureInfo.InvariantCulture));
+            StartupDiagnostics.Warn("window_manager.win32_failed",
+                action + " hwnd=0x" + hwnd.ToString("X") + " err=" + err.ToString(CultureInfo.InvariantCulture));
+        }
+
+        private static void SetParentLogged(IntPtr hwnd, IntPtr parent, string action)
+        {
+            SetLastError(0);
+            IntPtr previous = SetParent(hwnd, parent);
+            int err = Marshal.GetLastWin32Error();
+            if (previous == IntPtr.Zero && err != 0)
+                LogWin32Failure(action, hwnd, err);
+        }
+
+        private static void SetWindowLongLogged(IntPtr hwnd, int index, int value, string action)
+        {
+            SetLastError(0);
+            int previous = SetWindowLong(hwnd, index, value);
+            int err = Marshal.GetLastWin32Error();
+            if (previous == 0 && err != 0)
+                LogWin32Failure(action, hwnd, err);
+        }
+
+        private static void LogHResultFailure(string action, IntPtr hwnd, int hr)
+        {
+            LogManager.Log("[WindowManager] " + action + " failed hwnd=0x" + hwnd.ToString("X")
+                + " hr=0x" + hr.ToString("X8", CultureInfo.InvariantCulture));
+            StartupDiagnostics.Warn("window_manager.hresult_failed",
+                action + " hwnd=0x" + hwnd.ToString("X") + " hr=0x" + hr.ToString("X8", CultureInfo.InvariantCulture));
+        }
+
         /// <summary>
         /// Phase 1c：外部（如 GameLaunchFlow 检测异常）主动通知嵌入失败。
         /// </summary>
@@ -235,7 +278,11 @@ namespace CF7Launcher.Guardian
             // 0) DWM cloak — 合成器层先把 hwnd 摘出去，争取在下一次 vsync 之前生效，
             //    与 SW_HIDE 配合压低"被合成 1 帧"的概率. 失败/不支持安静吞掉.
             int cloakOn = 1;
-            try { DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, ref cloakOn, sizeof(int)); } catch { }
+            try
+            {
+                DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, ref cloakOn, sizeof(int));
+            }
+            catch { }
 
             // 1) 立即 SW_HIDE 减少首帧 top-level 可见窗口时间
             ShowWindow(hwnd, SW_HIDE);
@@ -244,30 +291,33 @@ namespace CF7Launcher.Guardian
             int style = GetWindowLong(hwnd, GWL_STYLE);
             style = style & ~WS_CAPTION & ~WS_THICKFRAME & ~WS_BORDER;
             style = style | WS_CHILD;
-            SetWindowLong(hwnd, GWL_STYLE, style);
+            SetWindowLongLogged(hwnd, GWL_STYLE, style, "SetWindowLong(hidden WS_CHILD)");
 
             // 3) 移除 Flash SA 菜单（釜底抽薪阻断加速器）
             IntPtr hMenu = GetMenu(hwnd);
             if (hMenu != IntPtr.Zero)
             {
-                SetMenu(hwnd, IntPtr.Zero);
+                if (!SetMenu(hwnd, IntPtr.Zero))
+                    LogWin32Failure("SetMenu(hidden remove)", hwnd);
                 DestroyMenu(hMenu);
                 LogManager.Log("[WindowManager] Flash menu removed (accelerators disabled)");
             }
 
             // 4) SWP_FRAMECHANGED 强制非客户区重算
-            SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
-                SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+            if (!SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
+                SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED))
+                LogWin32Failure("SetWindowPos(hidden framechanged)", hwnd);
 
             // 5) SetParent 到隐藏宿主
-            SetParent(hwnd, hiddenHost.Handle);
+            SetParentLogged(hwnd, hiddenHost.Handle, "SetParent(hidden host)");
 
             // 6) MoveWindow(..., repaint=false) — hidden 状态不请求重绘
             int w = hiddenHost.Width;
             int h = hiddenHost.Height;
             if (w < 1) w = 1;
             if (h < 1) h = 1;
-            MoveWindow(hwnd, 0, 0, w, h, false);
+            if (!MoveWindow(hwnd, 0, 0, w, h, false))
+                LogWin32Failure("MoveWindow(hidden host)", hwnd);
 
             LogManager.Log("[WindowManager] Flash reparented to hidden host hwnd=0x" + hwnd.ToString("X"));
         }
@@ -477,25 +527,31 @@ namespace CF7Launcher.Guardian
                 int style = GetWindowLong(hwnd, GWL_STYLE);
                 style = style & ~WS_CAPTION & ~WS_THICKFRAME & ~WS_BORDER;
                 style = style | WS_CHILD;
-                SetWindowLong(hwnd, GWL_STYLE, style);
+                SetWindowLongLogged(hwnd, GWL_STYLE, style, "SetWindowLong(embed WS_CHILD)");
 
                 IntPtr hMenu = GetMenu(hwnd);
                 if (hMenu != IntPtr.Zero)
                 {
-                    SetMenu(hwnd, IntPtr.Zero);
+                    if (!SetMenu(hwnd, IntPtr.Zero))
+                        LogWin32Failure("SetMenu(embed remove)", hwnd);
                     DestroyMenu(hMenu);
                     LogManager.Log("[WindowManager] Flash menu removed (accelerators disabled)");
                 }
 
-                SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
-                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
-                SetParent(hwnd, _hostPanel.Handle);
+                if (!SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED))
+                    LogWin32Failure("SetWindowPos(embed framechanged)", hwnd);
+                SetParentLogged(hwnd, _hostPanel.Handle, "SetParent(embed host)");
             }
 
             // 两路径公用：先 uncloak（早 path 在 ReparentToHidden 时打过 DWMWA_CLOAK；child 化后理论无效，
             // 但有些路径下 cloak 状态会被 DWM 留存，uncloak 是兜底），再 SW_SHOW.
             int cloakOff = 0;
-            try { DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, ref cloakOff, sizeof(int)); } catch { }
+            try
+            {
+                DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, ref cloakOff, sizeof(int));
+            }
+            catch { }
             ShowWindow(hwnd, SW_SHOW);
             ResizeFlashToPanel();
 
@@ -560,7 +616,8 @@ namespace CF7Launcher.Guardian
             if (_flashHwnd == IntPtr.Zero || _hostPanel == null)
                 return;
 
-            MoveWindow(_flashHwnd, 0, 0, _hostPanel.Width, _hostPanel.Height, true);
+            if (!MoveWindow(_flashHwnd, 0, 0, _hostPanel.Width, _hostPanel.Height, true))
+                LogWin32Failure("MoveWindow(resize)", _flashHwnd);
         }
 
         /// <summary>停止嵌入看门狗定时器。退出时在 DetachFlash 前调用。</summary>
@@ -593,13 +650,14 @@ namespace CF7Launcher.Guardian
                     ShowWindow(_flashHwnd, SW_HIDE);
                     int style = GetWindowLong(_flashHwnd, GWL_STYLE);
                     style = style & ~WS_CHILD;
-                    SetWindowLong(_flashHwnd, GWL_STYLE, style);
-                    SetWindowPos(_flashHwnd, IntPtr.Zero, 0, 0, 0, 0,
-                        SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
-                    SetParent(_flashHwnd, IntPtr.Zero);
+                    SetWindowLongLogged(_flashHwnd, GWL_STYLE, style, "SetWindowLong(detach remove WS_CHILD)");
+                    if (!SetWindowPos(_flashHwnd, IntPtr.Zero, 0, 0, 0, 0,
+                        SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED))
+                        LogWin32Failure("SetWindowPos(detach framechanged)", _flashHwnd);
+                    SetParentLogged(_flashHwnd, IntPtr.Zero, "SetParent(detach desktop)");
                 }
             }
-            catch { }
+            catch (Exception ex) { LogManager.Log("[WindowManager] DetachFlash error: " + ex.Message); }
             _flashHwnd = IntPtr.Zero;
         }
 

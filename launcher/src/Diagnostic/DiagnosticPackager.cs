@@ -123,12 +123,26 @@ namespace CF7Launcher.Diagnostic
         {
             string current = Path.Combine(projectRoot, "logs", "launcher.log");
             string backup = Path.Combine(projectRoot, "logs", "launcher.log.1");
+            string bootstrap = Path.Combine(projectRoot, "logs", "bootstrap.log");
+            string bootstrapOld = Path.Combine(projectRoot, "logs", "bootstrap.log.old");
+            string perfLatest = Path.Combine(projectRoot, "logs", "perf-latest.jsonl");
+            string startupExit = Path.Combine(projectRoot, "logs", "startup-exit.jsonl");
             if (File.Exists(current))
                 AddFileShared(zip, current, "logs/launcher.log");
             else
                 warnings.Add("launcher.log missing");
             if (File.Exists(backup))
                 AddFileShared(zip, backup, "logs/launcher.log.1");
+            if (File.Exists(bootstrap))
+                AddFileShared(zip, bootstrap, "logs/bootstrap.log");
+            else
+                warnings.Add("bootstrap.log missing");
+            if (File.Exists(bootstrapOld))
+                AddFileShared(zip, bootstrapOld, "logs/bootstrap.log.old");
+            if (File.Exists(perfLatest))
+                AddFileShared(zip, perfLatest, "logs/perf-latest.jsonl");
+            if (File.Exists(startupExit))
+                AddFileShared(zip, startupExit, "logs/startup-exit.jsonl");
         }
 
         private static void PackConfig(ZipArchive zip, string projectRoot, List<string> warnings)
@@ -180,6 +194,9 @@ namespace CF7Launcher.Diagnostic
                 sb.Append("save/        当前编辑的存档（JSON + 原始 SOL 二进制）\r\n");
             }
             sb.Append("logs/        launcher.log + launcher.log.1（最近两份运行日志）\r\n");
+            sb.Append("             bootstrap.log / bootstrap.log.old（native 引导器 + Core 早期启动诊断）\r\n");
+            sb.Append("             perf-latest.jsonl（启动性能时间线，若存在）\r\n");
+            sb.Append("             startup-exit.jsonl（最近启动退出/失败原因码，若存在）\r\n");
             sb.Append("config/      config.toml + launcher_user_prefs.json（用户偏好）\r\n");
             sb.Append("meta.json    系统信息：OS / git HEAD / 时间戳 / 机器名等\r\n");
             sb.Append("\r\n");

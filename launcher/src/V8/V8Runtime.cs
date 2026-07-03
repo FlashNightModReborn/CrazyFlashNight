@@ -24,6 +24,7 @@ namespace CF7Launcher.V8
             if (!File.Exists(bundlePath))
             {
                 Guardian.LogManager.Log("[V8Runtime] FATAL: Bundle not found: " + bundlePath);
+                Guardian.StartupDiagnostics.Warn("v8.bundle_missing", bundlePath);
                 _loaded = false;
                 return;
             }

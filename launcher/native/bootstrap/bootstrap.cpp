@@ -25,6 +25,8 @@
 #include <shlobj.h>
 #include <strsafe.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <share.h>
 #include <time.h>
 
 #pragma comment(lib, "shell32.lib")
@@ -50,6 +52,7 @@ static const wchar_t* CORE_EXE_REL = L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.C
 static const wchar_t* LOG_DIR_REL = L"\\logs";
 static const wchar_t* LOG_FILE_REL = L"\\logs\\bootstrap.log";
 static const wchar_t* LOG_FILE_OLD_REL = L"\\logs\\bootstrap.log.old";
+static const DWORD CORE_EARLY_EXIT_GRACE_MS = 5000;
 // 滚动阈值：10MB。bootstrap 每次启动 ~10 行 ~1KB，理论可记 10 万次启动；
 // 不希望诊断文件无限增长，> 10MB 时滚一次（保留 .old 一份做事后复盘）
 static const long LOG_ROTATE_BYTES = 10L * 1024L * 1024L;
@@ -103,7 +106,8 @@ static void LogOpen(const wchar_t* exeDir)
     }
 
     // append 模式打开，二进制（自己控制换行）；UTF-8 编码
-    if (_wfopen_s(&g_logFp, g_logPath, L"ab") != 0) {
+    g_logFp = _wfsopen(g_logPath, L"ab", _SH_DENYNO);
+    if (g_logFp == NULL) {
         g_logFp = NULL;
         return;
     }
@@ -151,6 +155,117 @@ static void LogClose()
         fclose(g_logFp);
         g_logFp = NULL;
     }
+}
+
+static bool BuildRootPath(const wchar_t* exeDir, const wchar_t* rel, wchar_t* out, size_t cch)
+{
+    if (FAILED(StringCchCopyW(out, cch, exeDir))) return false;
+    if (FAILED(StringCchCatW(out, cch, rel))) return false;
+    return true;
+}
+
+static void FormatFileTimeLocal(const FILETIME* ft, wchar_t* out, size_t cch)
+{
+    if (out == NULL || cch == 0) return;
+    out[0] = L'\0';
+    if (ft == NULL) return;
+
+    FILETIME localFt;
+    SYSTEMTIME st;
+    if (!FileTimeToLocalFileTime(ft, &localFt)) return;
+    if (!FileTimeToSystemTime(&localFt, &st)) return;
+    StringCchPrintfW(out, cch, L"%04d-%02d-%02d %02d:%02d:%02d",
+        st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+}
+
+static bool LogPathProbe(const wchar_t* label, const wchar_t* path, bool required)
+{
+    WIN32_FILE_ATTRIBUTE_DATA fad;
+    if (!GetFileAttributesExW(path, GetFileExInfoStandard, &fad)) {
+        DWORD err = GetLastError();
+        Logf(required ? "ERROR" : "WARN",
+            L"[preflight] %s missing path=%s GetLastError=%lu", label, path, err);
+        return false;
+    }
+
+    if (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+        Logf("INFO", L"[preflight] %s directory ok path=%s", label, path);
+        return true;
+    }
+
+    ULONGLONG size = (((ULONGLONG)fad.nFileSizeHigh) << 32) | fad.nFileSizeLow;
+    wchar_t mtime[64];
+    FormatFileTimeLocal(&fad.ftLastWriteTime, mtime, 64);
+    Logf("INFO", L"[preflight] %s file ok size=%llu mtime=%s path=%s",
+        label, size, mtime, path);
+    return true;
+}
+
+static bool LogRelativePathProbe(const wchar_t* exeDir, const wchar_t* label, const wchar_t* rel, bool required)
+{
+    wchar_t path[MAX_PATH];
+    if (!BuildRootPath(exeDir, rel, path, MAX_PATH)) {
+        Logf(required ? "ERROR" : "WARN", L"[preflight] %s path overflow rel=%s", label, rel);
+        return false;
+    }
+    return LogPathProbe(label, path, required);
+}
+
+static void LogRuntimeInventory(const wchar_t* exeDir)
+{
+    wchar_t pattern[MAX_PATH];
+    if (!BuildRootPath(exeDir, L"\\runtime\\*", pattern, MAX_PATH)) {
+        Log("ERROR", L"[preflight] runtime inventory path overflow");
+        return;
+    }
+
+    WIN32_FIND_DATAW fd;
+    HANDLE h = FindFirstFileW(pattern, &fd);
+    if (h == INVALID_HANDLE_VALUE) {
+        Logf("ERROR", L"[preflight] runtime directory unreadable pattern=%s GetLastError=%lu",
+            pattern, GetLastError());
+        return;
+    }
+
+    int count = 0;
+    do {
+        if (fd.cFileName[0] == L'.') continue;
+        count++;
+        if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+            Logf("INFO", L"[preflight] runtime entry dir name=%s", fd.cFileName);
+        } else {
+            ULONGLONG size = (((ULONGLONG)fd.nFileSizeHigh) << 32) | fd.nFileSizeLow;
+            Logf("INFO", L"[preflight] runtime entry file name=%s size=%llu",
+                fd.cFileName, size);
+        }
+    } while (FindNextFileW(h, &fd));
+    FindClose(h);
+    Logf("INFO", L"[preflight] runtime inventory complete count=%d", count);
+}
+
+static bool PreflightCriticalFiles(const wchar_t* exeDir)
+{
+    bool ok = true;
+
+    ok = LogRelativePathProbe(exeDir, L"Core apphost", L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe", true) && ok;
+    ok = LogRelativePathProbe(exeDir, L"Core assembly", L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.dll", true) && ok;
+    ok = LogRelativePathProbe(exeDir, L"Core deps", L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.deps.json", true) && ok;
+    ok = LogRelativePathProbe(exeDir, L"Core runtimeconfig", L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json", true) && ok;
+    ok = LogRelativePathProbe(exeDir, L"WebView2 loader", L"\\runtime\\WebView2Loader.dll", true) && ok;
+    ok = LogRelativePathProbe(exeDir, L"WebView2 managed", L"\\runtime\\Microsoft.Web.WebView2.Core.dll", true) && ok;
+    ok = LogRelativePathProbe(exeDir, L"ClearScript V8 native", L"\\runtime\\ClearScriptV8.win-x64.dll", true) && ok;
+    ok = LogRelativePathProbe(exeDir, L"miniaudio sidecar", L"\\runtime\\miniaudio.dll", true) && ok;
+    ok = LogRelativePathProbe(exeDir, L"sol_parser sidecar", L"\\runtime\\sol_parser.dll", true) && ok;
+    ok = LogRelativePathProbe(exeDir, L"Flash Player", L"\\Adobe Flash Player 20.exe", true) && ok;
+    ok = LogRelativePathProbe(exeDir, L"Game SWF", L"\\CRAZYFLASHER7MercenaryEmpire.swf", true) && ok;
+    ok = LogRelativePathProbe(exeDir, L"bootstrap HTML", L"\\launcher\\web\\bootstrap.html", true) && ok;
+    ok = LogRelativePathProbe(exeDir, L"crossdomain policy", L"\\crossdomain.xml", true) && ok;
+
+    LogRelativePathProbe(exeDir, L"config.toml", L"\\config.toml", false);
+    LogRelativePathProbe(exeDir, L"hotkey guard", L"\\hotkey_guard.exe", false);
+    LogRuntimeInventory(exeDir);
+    Logf(ok ? "INFO" : "ERROR", L"[preflight] critical file check %s", ok ? L"OK" : L"FAILED");
+    return ok;
 }
 
 // ---- 扫一个 dotnet 安装根（e.g. C:\Program Files\dotnet 或 %LOCALAPPDATA%\Microsoft\dotnet） ----
@@ -354,7 +469,7 @@ static bool LaunchCore(const wchar_t* exeDir, const wchar_t* corePath, LPWSTR or
 
     SHELLEXECUTEINFOW sei = { 0 };
     sei.cbSize = sizeof(sei);
-    sei.fMask = SEE_MASK_NOASYNC;
+    sei.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_NOASYNC;
     sei.lpFile = corePath;
     sei.lpParameters = args;
     sei.lpDirectory = exeDir;
@@ -362,6 +477,29 @@ static bool LaunchCore(const wchar_t* exeDir, const wchar_t* corePath, LPWSTR or
 
     if (ShellExecuteExW(&sei)) {
         Log("INFO", L"Core launch issued OK");
+        if (sei.hProcess != NULL) {
+            DWORD wait = WaitForSingleObject(sei.hProcess, CORE_EARLY_EXIT_GRACE_MS);
+            if (wait == WAIT_OBJECT_0) {
+                DWORD exitCode = 0;
+                if (GetExitCodeProcess(sei.hProcess, &exitCode)) {
+                    Logf(exitCode == 0 ? "WARN" : "ERROR",
+                        L"Core process exited within %lu ms (exitCode=%lu)",
+                        CORE_EARLY_EXIT_GRACE_MS, exitCode);
+                } else {
+                    Logf("ERROR", L"Core process exited within %lu ms but exit code read failed (GetLastError=%lu)",
+                        CORE_EARLY_EXIT_GRACE_MS, GetLastError());
+                }
+            } else if (wait == WAIT_TIMEOUT) {
+                Logf("INFO", L"Core still running after %lu ms; bootstrap handoff considered alive",
+                    CORE_EARLY_EXIT_GRACE_MS);
+            } else {
+                Logf("WARN", L"Core early-exit wait failed (wait=%lu GetLastError=%lu)",
+                    wait, GetLastError());
+            }
+            CloseHandle(sei.hProcess);
+        } else {
+            Log("WARN", L"Core launch returned no process handle; cannot observe early exit");
+        }
         return true;
     }
     DWORD err = GetLastError();
@@ -383,6 +521,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
     Log("INFO", L"==== bootstrap start ====");
     Logf("INFO", L"exeDir = %s", exeDir);
     Logf("INFO", L"cmdLine = %s", (cmdLine && cmdLine[0]) ? cmdLine : L"(empty)");
+    Logf("INFO", L"bootstrap pid=%lu", GetCurrentProcessId());
 
     // 1. 检测 runtime（检查 ProgramFiles、LOCALAPPDATA、USERPROFILE\.dotnet、DOTNET_ROOT env）
     wchar_t foundVer[64] = { 0 };
@@ -476,6 +615,14 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
         SetEnvironmentVariableW(L"DOTNET_ROOT_X64", foundRoot);
         SetEnvironmentVariableW(L"DOTNET_ROOT", foundRoot);
         Logf("INFO", L"set DOTNET_ROOT_X64 / DOTNET_ROOT = %s (for Core inheritance)", foundRoot);
+    }
+
+    // 运行时和游戏关键文件预检：只做诊断与 fail-fast，不尝试修复。
+    if (!PreflightCriticalFiles(exeDir)) {
+        return FatalExit(
+            L"启动器关键文件缺失或损坏。\n\n"
+            L"请在 Steam 中验证游戏文件完整性，或重新下载完整安装包。\n"
+            L"详细缺失项见 logs\\bootstrap.log 的 [preflight] 行。");
     }
 
     // 6. 启动 Core

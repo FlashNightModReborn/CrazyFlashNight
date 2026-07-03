@@ -40,8 +40,10 @@ projectRoot/
 │   └── windowsdesktop-runtime-10.0.8-win-x64.exe   58MB MS 官方 installer，bootstrap 用
 ├── hotkey_guard.exe / Adobe Flash Player 20.exe / CRAZYFLASHER7MercenaryEmpire.swf / ...
 └── logs/
-    ├── bootstrap.log    ← bootstrap 每次启动 append（即便 runtime 缺失也有 trace）
-    └── launcher.log     ← Core 启动后写入
+    ├── bootstrap.log      ← bootstrap 每次启动 append；Core 早期阶段也续写启动诊断
+    ├── startup-exit.jsonl ← 最近启动退出/失败原因码（机器可读，最多保留 20 条）
+    ├── perf-latest.jsonl  ← Core 启动性能时间线（若 Core 已进入托管入口）
+    └── launcher.log       ← Core 进入托管入口后尽早写入（WebView2 预检前）
 ```
 
 ```
@@ -64,7 +66,7 @@ Guardian Launcher 主逻辑 (WinForms / V8 / WebView2 / Vortice / ...)
 
 **为什么 Core 在 `runtime/` 子目录而不是根**：用户在 projectRoot 浏览看不到 Core.exe，无从误点击触发 .NET apphost 的英文"You must install .NET to run this application"默认对话框。bootstrap 用 Chinese MessageBox + 自动 install installer 提供更友好的 UX。
 
-**Bootstrap 设计原则**：纯 Win32 + CRT（静态链接 `/MT`），零 STL，输出 ~259KB；UTF-8 源码 (`/source-charset:utf-8 /execution-charset:utf-8`) 让中文 MessageBox 文本正确编码；**职责**：runtime 检测 + 触发 installer + 显式传 `--project-root <abs>` + 转发命令行参数到 Core + 写 `logs/bootstrap.log`。
+**Bootstrap 设计原则**：纯 Win32 + CRT（静态链接 `/MT`），零 STL，输出 ~259KB；UTF-8 源码 (`/source-charset:utf-8 /execution-charset:utf-8`) 让中文 MessageBox 文本正确编码；**职责**：runtime 检测 + 触发 installer + 关键文件 preflight + 显式传 `--project-root <abs>` + 转发命令行参数到 Core + 写 `logs/bootstrap.log`。Core 进入托管入口后通过 `StartupDiagnostics` 继续把早期阶段线写进同一文件，直到 `launcher.log` 通道就绪。
 
 **为什么不用 self-contained single-file**：实测 146MB single-file blob 太大不利 git；改 FDD 分散到 ~21 文件 ~37MB，配合 bootstrap + bundled installer 处理 runtime 缺失场景。详见 [`docs/launcher-net10-migration-status.md`](../docs/launcher-net10-migration-status.md) "post-migration 二次审阅" 段。
 
@@ -75,7 +77,7 @@ Guardian Launcher 主逻辑 (WinForms / V8 / WebView2 / Vortice / ...)
 - Core projectRoot 解析：优先 `--project-root <abs>` CLI arg（bootstrap 注入）；次选 walk-up 哨兵文件 `crossdomain.xml`（覆盖 dev 直跑场景）；fallback `Environment.ProcessPath` 父目录
 - 长跑进程：Core.exe（bootstrap 启动 Core 后立即退出）— `cfn-cli.sh` / `taskkill` / GPU pref 都针对 `runtime\Core.exe`
 - Bundled runtime installer：`tools/dotnet-runtime/windowsdesktop-runtime-10.0.8-win-x64.exe`（~58MB，季度更新一次）
-- Bootstrap 自有日志：`logs/bootstrap.log`（追踪 runtime 检测 / installer 调用 / Core 启动）；即便 runtime 缺失场景，bootstrap 跑完仍留 trace，**不再「未配环境无 log」**
+- Bootstrap 自有日志：`logs/bootstrap.log`（追踪 runtime 检测 / installer 调用 / runtime 目录与关键文件 preflight / Core 启动后 5s 秒退观察；Core 托管入口还会续写 WebView2、config、文件探针、Steam、Flash trust、端口、任务注册、LaunchFlow 状态线）；`logs/startup-exit.jsonl` 额外保留最近 20 条退出/失败原因码，供客服脚本直接读取；即便 runtime 缺失场景，bootstrap 跑完仍留 trace，**不再「未配环境无 log」**
 
 > **2026-05-28 net10.0-windows 迁移记**：从 .NET Framework 4.6.2 / MSBuild / packages.config / SharpDX 切到当前栈，5 atomic commit + 2 轮后续 hardening。决策、phase 序列、人力验收待办见 [`docs/launcher-net10-migration-status.md`](../docs/launcher-net10-migration-status.md) + [`docs/launcher-net10-migration-test-matrix.md`](../docs/launcher-net10-migration-test-matrix.md)。
 
@@ -320,6 +322,7 @@ launcher/
 │   │   ├── WindowManager.cs               Win32 SetParent 嵌入 + 500ms 脱离看门狗
 │   │   ├── ProcessManager.cs              Flash SA 进程生命周期 + 僵尸兜底
 │   │   ├── LogManager.cs                  线程安全日志 → TextBox + 文件通道（logs/launcher.log）+ 测试 sink hook
+│   │   ├── StartupDiagnostics.cs          Core 早期启动诊断 → 续写 logs/bootstrap.log（WebView2/config/文件/Steam/端口/LaunchFlow 阶段）
 │   │   ├── OverlayBase.cs                 GDI+ Layered Window 覆盖层基类
 │   │   ├── ToastOverlay.cs                GDI+ toast 消息（独立 ULW；仅 useNativeHud=false fallback；useNativeHud=true 由 Hud/ToastWidget 在 NativeHudOverlay 内承载）
 │   │   ├── NotchOverlay.cs                GDI+ 刘海栏（独立 ULW，仅 useNativeHud=false fallback；useNativeHud=true 由 Hud/NotchWidget 在 NativeHudOverlay 内承载）
@@ -692,9 +695,9 @@ net10 FDD 模式 + bootstrap + runtime/ 子目录隐藏：
 |------|------|------|
 | `windowsdesktop-runtime-10.0.8-win-x64.exe` | 58MB | **Bundled .NET 10 桌面运行时 installer**；bootstrap 在 runtime 缺失时 `ShellExecute "runas" /install /passive /norestart`。MS 官方包，季度更新一次 |
 
-> **入口分工**：用户**只**双击 `CRAZYFLASHER7MercenaryEmpire.exe`（bootstrap）。Bootstrap 启动 Core 后立即退出，长跑进程是 `runtime\Core.exe`。所有 launcher 运行期行为 — V8 / WebView2 / Flash 嵌入 / 焦点诊断 / 存档决议 — 都在 Core 进程里。`cfn-cli.sh` / `taskkill` / GPU pref 都针对 `runtime\Core.exe`，不针对 bootstrap。
+> **入口分工**：用户**只**双击 `CRAZYFLASHER7MercenaryEmpire.exe`（bootstrap）。Bootstrap 发起 Core 后会观察 5 秒：若 Core 秒退，`bootstrap.log` 记录退出码；若仍运行，bootstrap 退出，长跑进程是 `runtime\Core.exe`。所有 launcher 运行期行为 — V8 / WebView2 / Flash 嵌入 / 焦点诊断 / 存档决议 — 都在 Core 进程里。`cfn-cli.sh` / `taskkill` / GPU pref 都针对 `runtime\Core.exe`，不针对 bootstrap。
 
-> **诊断 trace**：runtime 缺失场景仍写 `logs/bootstrap.log`（bootstrap 启动时 append），不再「没装环境就没 log」。Core 起来之后另写 `logs/launcher.log`（既有诊断设施）。
+> **诊断 trace**：runtime 缺失场景仍写 `logs/bootstrap.log`（bootstrap 启动时 append），不再「没装环境就没 log」。Core 进入托管入口后通过 `StartupDiagnostics` 续写同一文件：`core.environment`、关键 sidecar / 游戏文件探针、WebView2 预检与 BootstrapPanel 初始化分段、Steam / Flash trust、端口、任务注册、`launch.state` 都能在 `bootstrap.log` 中看到。`StartupDiagnostics.Exit/Failure` 会同步写 `logs/startup-exit.jsonl`（含 `terminal` 标记）；`LogManager` 文件通道会在 WebView2 预检前开启并写 `logs/launcher.log`；性能时间线写 `logs/perf-latest.jsonl`。
 
 ### 单独编译 HotkeyGuard
 
@@ -1065,7 +1068,7 @@ bootstrap.html
 └── 底栏                     Steam 品牌 + 频道字样
 ```
 
-`BootstrapPanel` 本身不会在 `GuardianForm` 构造期同步拿到可用 WebView2；实际初始化发生在控件 `Load` 事件里，完成后才进入下面这套前端握手。
+`BootstrapPanel` 本身不会在 `GuardianForm` 构造期同步拿到可用 WebView2；实际初始化发生在控件 `Load` 事件里。初始化阶段会分别记录 user-data 目录可写性、`CoreWebView2Environment.CreateAsync`、`EnsureCoreWebView2Async`、`Navigate` / `NavigationCompleted`，完成后才进入下面这套前端握手。
 
 **脚本加载顺序**（bootstrap.html body 尾）：`config/version.js` → `modules/audio.js`（暴露 `window.BootstrapAudio`）→ `bootstrap-main.js` 主控 IIFE → `modules/factions.js` + 4 个模态模块。
 
@@ -1228,6 +1231,9 @@ diagnostic-{slot}-{ts}.zip
 ├── save/{slot}.json           当前编辑器聚焦的 shadow JSON
 ├── save/{slot}.sol            通过 SolFileLocator 解析的 SOL 二进制原件（迁移期权威源对比需要）
 ├── logs/launcher.log          + launcher.log.1（FileShare.ReadWrite 打开，避开锁）
+├── logs/bootstrap.log         + bootstrap.log.old（native 引导器 + Core 早期启动诊断）
+├── logs/perf-latest.jsonl     Core 启动性能时间线（若存在）
+├── logs/startup-exit.jsonl    最近启动退出/失败原因码（若存在）
 ├── config/config.toml
 ├── config/launcher_user_prefs.json
 ├── meta.json                  OS / git HEAD（读 .git/HEAD 解析 ref） / CLR / 机器名 / 时间戳

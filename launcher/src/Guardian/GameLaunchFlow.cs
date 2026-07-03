@@ -999,6 +999,9 @@ namespace CF7Launcher.Guardian
         {
             CF7Launcher.Tasks.AudioTask.CancelBootstrapBgmGate();
             Process toKill = null;
+            State previousState = State.Idle;
+            string attemptId = null;
+            string pendingSlot = null;
             lock (_stateLock)
             {
                 // Phase D Step D7: prewarm 路径走 silent degrade 不入 Error 态.
@@ -1015,6 +1018,9 @@ namespace CF7Launcher.Guardian
                 }
                 CancelWaitTimerLocked();
                 CancelZombieTimerLocked();
+                previousState = _state;
+                attemptId = _currentAttemptId;
+                pendingSlot = _pendingSlot;
                 // Finding C fix: 进 Error 时同步 kill Flash, 关掉 "launcher 已报 Error 但 Flash 还在
                 // 按自己的 60s timeout 等响应" 的 zombie 窗口. 原 Flash 侧 5s timeout 时这个窗口 3s 内
                 // 自行收口, 抬到 60s 后不 kill 会留 Flash 持续运行到用户点 Retry 才关.
@@ -1023,6 +1029,10 @@ namespace CF7Launcher.Guardian
                 toKill = _currentFlashProcess;
                 SetState(State.Error, msg);
             }
+            StartupDiagnostics.Failure("launchflow_error:" + msg,
+                "state=" + previousState
+                + " attemptId=" + (attemptId ?? "(null)")
+                + " pendingSlot=" + (pendingSlot ?? "(null)"));
             if (toKill != null)
             {
                 Process snap = toKill;

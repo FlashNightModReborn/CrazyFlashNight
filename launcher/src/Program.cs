@@ -45,6 +45,7 @@ class Program
 
     static void HandleUiThreadException(Exception ex)
     {
+        StartupDiagnostics.Exception("ui_thread_exception", ex);
         if (GuardianLifecycle.IsShuttingDown)
         {
             try { LogManager.Log("[Guardian] UI thread exception suppressed during shutdown:\n" + ex); } catch { }
@@ -85,11 +86,21 @@ class Program
         PerfTrace.SetProcessStart(processStart);
         DpiAwarenessBootstrap.Initialize();
 
+        string earlyProjectRoot = TryGetProjectRootFromArgs(args)
+                                  ?? TryWalkUpForProjectRoot(Environment.ProcessPath)
+                                  ?? Path.GetDirectoryName(Environment.ProcessPath);
+        StartupDiagnostics.Init(earlyProjectRoot);
+        StartupDiagnostics.Mark("core.main_enter", "projectRoot=" + earlyProjectRoot);
+
         // 单例检查
         bool createdNew;
         Mutex mutex = new Mutex(true, "Global\\CF7ME_Guardian", out createdNew);
         if (!createdNew)
+        {
+            StartupDiagnostics.Exit("singleton_already_running");
+            mutex.Dispose();
             return 0;
+        }
 
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
@@ -105,6 +116,7 @@ class Program
         // 非 UI 线程未处理异常：仅补日志（进程即将终止，CLR 自行处理）
         AppDomain.CurrentDomain.UnhandledException += delegate(object s, UnhandledExceptionEventArgs ue)
         {
+            try { StartupDiagnostics.Mark("appdomain_unhandled_exception", Convert.ToString(ue.ExceptionObject)); } catch { }
             try { LogManager.Log("[Guardian] Unhandled exception:\n" + ue.ExceptionObject); } catch { }
         };
 
@@ -112,8 +124,22 @@ class Program
         {
             return Run(args);
         }
+        catch (Exception ex)
+        {
+            StartupDiagnostics.Exception("core.main_unhandled_exception", ex);
+            StartupDiagnostics.Exit("core.main_unhandled_exception", ex.GetType().FullName + ": " + ex.Message);
+            try { LogManager.Log("[Guardian] Main fatal exception:\n" + ex); } catch { }
+            try
+            {
+                ShowError("启动器发生未处理异常，已写入 logs\\bootstrap.log 和 logs\\launcher.log。\n\n"
+                    + ex.GetType().Name + ": " + ex.Message);
+            }
+            catch { }
+            return 1;
+        }
         finally
         {
+            StartupDiagnostics.Mark("core.main_exit");
             mutex.ReleaseMutex();
             mutex.Dispose();
         }
@@ -221,12 +247,19 @@ class Program
                              ?? TryWalkUpForProjectRoot(Environment.ProcessPath)
                              ?? Path.GetDirectoryName(Environment.ProcessPath);
         string exePath = Environment.ProcessPath;
+        StartupDiagnostics.Init(projectRoot);
 
         // 剥离已消费的 --project-root <path>，避免下游 flag 检测撞上路径字符串
         args = StripProjectRootArgs(args);
 
         bool busOnly = Array.IndexOf(args, "--bus-only") >= 0;
         bool forceWebViewFail = Array.IndexOf(args, "--force-webview-fail") >= 0;
+        StartupDiagnostics.LogCoreEnvironment(exePath, args, busOnly, forceWebViewFail);
+        StartupDiagnostics.ProbeCoreSidecars();
+        StartupDiagnostics.Mark("core.run_start", "busOnly=" + busOnly);
+        LogManager.InitFileLog(projectRoot);
+        StartupDiagnostics.Mark("launcher_log.early_ready", "path=" + LogManager.LogFilePath);
+        LogManager.Log("[Guardian] Early file log ready before WebView2 precheck");
         PerfTrace.Init(projectRoot);
         PerfTrace.Mark("guardian.run_start");
 
@@ -242,13 +275,19 @@ class Program
             }
             else
             {
-                try { CoreWebView2Environment.GetAvailableBrowserVersionString(); }
+                try
+                {
+                    string wv2Version = CoreWebView2Environment.GetAvailableBrowserVersionString();
+                    StartupDiagnostics.Mark("webview2.precheck_ok", "version=" + wv2Version);
+                }
                 catch (Exception ex) { wv2Error = ex.Message; }
             }
             PerfTrace.Duration("webview2.runtime_precheck", wv2CheckStart,
                 wv2Error == null ? "ok" : wv2Error);
             if (wv2Error != null)
             {
+                StartupDiagnostics.Exit("webview2_missing", wv2Error);
+                LogManager.Log("[Guardian] FATAL: webview2_missing — exiting with code 1; detail=" + wv2Error);
                 MessageBox.Show(
                     "WebView2 Runtime 不可用, 无法启动启动器.\n\n"
                     + "请安装 WebView2 Evergreen Bootstrapper:\n"
@@ -265,11 +304,18 @@ class Program
         // Phase A: single-Form 模型。GuardianForm 承载 BootstrapPanel（正常模式）。
         // bus-only 模式 bootstrapWebDir=null，不创建 BootstrapPanel，FlashHostPanel 直接可见。
         long configStart = Stopwatch.GetTimestamp();
+        StartupDiagnostics.Mark("config.load_start");
         AppConfig config = new AppConfig(projectRoot);
         PerfTrace.Duration("config.load", configStart);
+        StartupDiagnostics.Mark("config.load_ok",
+            "useNativeHud=" + config.UseNativeHud
+            + " webView2DisableGpu=" + config.WebView2DisableGpu
+            + " gpuPreference=" + config.GpuPreference);
+        StartupDiagnostics.ProbeProjectFiles(projectRoot, config.FlashPlayerPath, config.SwfPath, !busOnly);
 
         string bootstrapWebDir = busOnly ? null : Path.Combine(projectRoot, "launcher", "web");
         long formStart = Stopwatch.GetTimestamp();
+        StartupDiagnostics.Mark("guardian.form_construct_start", "bootstrapWebDir=" + (bootstrapWebDir ?? "(null)"));
         GuardianForm form = new GuardianForm(
             bootstrapWebDir,
             config.WebView2DisableGpu,
@@ -277,9 +323,11 @@ class Program
         _guardianForm = form;
         PerfTrace.Duration("guardian.form_construct", formStart);
         PerfTrace.Mark("guardian.form_constructed");
+        StartupDiagnostics.Mark("guardian.form_construct_ok");
 
-        // 启用文件日志（GuardianForm 构造函数中已初始化 UI 日志，这里补充文件通道）
+        // 文件日志已在 WebView2 预检前启用；这里幂等确认，GuardianForm 构造函数中已初始化 UI 通道。
         LogManager.InitFileLog(projectRoot);
+        StartupDiagnostics.Mark("launcher_log.ready", "path=" + LogManager.LogFilePath);
         if (!string.IsNullOrEmpty(PerfTrace.TracePath))
             LogManager.Log("[PerfTrace] writing " + PerfTrace.TracePath);
 
@@ -314,10 +362,13 @@ class Program
             LogManager.Log("[Guardian] --bus-only mode: skipping Flash Player startup");
 
         // Steam 正版所有权校验（不通过则不写信任文件，Flash 无法联网）
+        StartupDiagnostics.Mark("steam.check_start");
         if (!SteamOwnershipCheck.Check(projectRoot))
         {
             LogManager.Log("[Guardian] Steam ownership check FAILED — refusing to write trust file");
             string reason = SteamOwnershipCheck.FailReason;
+            StartupDiagnostics.Exit("steam_ownership_failed", "reason=" + (reason ?? "(null)"));
+            LogManager.Log("[Guardian] FATAL: steam_ownership_failed — exiting with code 1; reason=" + (reason ?? "(null)"));
             if (reason == "steam_not_running")
                 ShowError("Steam is not running.\nPlease start Steam first, then launch the game from your Steam library.");
             else if (reason == "not_owned")
@@ -330,12 +381,21 @@ class Program
             PerfTrace.Shutdown();
             return 1;
         }
+        StartupDiagnostics.Mark("steam.check_ok");
 
         // Flash Player 本地信任配置（确保 SWF 可访问网络）
         // 使用 try/finally 确保所有退出路径都调用 RevokeTrust
+        StartupDiagnostics.Mark("flash_trust.start");
         bool trustAcquired = FlashTrustManager.EnsureTrust(projectRoot);
         if (!trustAcquired)
+        {
             LogManager.Log("[Guardian] WARNING: Flash trust not configured — SWF may fail to connect");
+            StartupDiagnostics.Warn("flash_trust.failed", "SWF may fail to connect");
+        }
+        else
+        {
+            StartupDiagnostics.Mark("flash_trust.ok");
+        }
 
         try
         {
@@ -344,11 +404,15 @@ class Program
         {
             if (!File.Exists(config.FlashPlayerPath))
             {
+                StartupDiagnostics.Exit("flash_player_missing", config.FlashPlayerPath);
+                LogManager.Log("[Guardian] FATAL: flash_player_missing — exiting with code 1; path=" + config.FlashPlayerPath);
                 ShowError("Flash Player not found:\n" + config.FlashPlayerPath);
                 return 1;
             }
             if (!File.Exists(config.SwfPath))
             {
+                StartupDiagnostics.Exit("swf_missing", config.SwfPath);
+                LogManager.Log("[Guardian] FATAL: swf_missing — exiting with code 1; path=" + config.SwfPath);
                 ShowError("SWF file not found:\n" + config.SwfPath);
                 return 1;
             }
@@ -360,7 +424,17 @@ class Program
         // === 音频引擎（在所有网络服务之前初始化）===
         using (PerfTrace.Scope("audio.init"))
         {
-            CF7Launcher.Audio.AudioEngine.Init(projectRoot);
+            StartupDiagnostics.Mark("audio.init_start");
+            bool audioOk = CF7Launcher.Audio.AudioEngine.Init(projectRoot);
+            if (audioOk)
+            {
+                StartupDiagnostics.Mark("audio.init_ok");
+            }
+            else
+            {
+                StartupDiagnostics.Warn("audio.init_failed", "continuing without audio");
+                LogManager.Log("[Guardian] WARNING: Audio engine init failed, continuing without audio");
+            }
         }
         // P0 perf：SFX preload 异步化。主线程不再为 ~1.2s 文件 I/O 阻塞；
         // preload 在后台 ThreadPool 跑（与 PerfTrace.Scope 不兼容，自带 audio.sfx_preload_done mark），
@@ -399,10 +473,13 @@ class Program
         }
         if (socketPort < 0 || !socketStarted)
         {
+            StartupDiagnostics.Exit("socket_start_failed", "port=" + socketPort);
+            LogManager.Log("[Guardian] FATAL: socket_start_failed — exiting with code 1; port=" + socketPort);
             ShowError("XMLSocket server failed to start.\nNo available port found.");
             socketServer.Dispose();
             return 1;
         }
+        StartupDiagnostics.Mark("socket.start_ok", "port=" + socketPort);
 
         HttpApiServer httpServer = new HttpApiServer(socketPort, projectRoot, socketServer);
         bool httpStarted = false;
@@ -415,11 +492,14 @@ class Program
         }
         if (httpPort < 0 || !httpStarted)
         {
+            StartupDiagnostics.Exit("http_start_failed", "port=" + httpPort);
+            LogManager.Log("[Guardian] FATAL: http_start_failed — exiting with code 1; port=" + httpPort);
             ShowError("HTTP server failed to start on port " + httpPort + ".\nAnother instance may be running.");
             socketServer.Dispose();
             httpServer.Dispose();
             return 1;
         }
+        StartupDiagnostics.Mark("http.start_ok", "port=" + httpPort);
 
         router.OnConsoleResult += delegate(string json)
         {
@@ -490,6 +570,7 @@ class Program
             wv2ver = CoreWebView2Environment.GetAvailableBrowserVersionString();
         }
         LogManager.Log("[WebView2] Runtime found: " + wv2ver);
+        StartupDiagnostics.Mark("webview2.runtime_check_ok", "version=" + wv2ver);
         string webDir = Path.Combine(projectRoot, "launcher", "web");
         // Flash hwnd 动态查询（SA 进程重启后 hwnd 变）。提前到 WebOverlay 构造前，
         // 因为后续 PanelHostController 也复用同一份。WebOverlay 自身的焦点回推走 flashFocusRestorer。
@@ -500,6 +581,7 @@ class Program
         WebOverlayForm webOverlay;
         using (PerfTrace.Scope("web_overlay.construct"))
         {
+            StartupDiagnostics.Mark("web_overlay.construct_start");
             // Flash 焦点恢复 primitive：所有 panel close / navigate 路径都走 WindowManager.RestoreFlashInputFocus，
             // 带 AttachThreadInput 兜底 + 前后 fg/pid 日志 + 校验，统一替代散落的裸 SetForegroundWindow。
             Func<string, bool> flashFocusRestorer = delegate(string reason)
@@ -517,6 +599,7 @@ class Program
                 config.WebOverlayHotReload,
                 flashFocusRestorer);
         }
+        StartupDiagnostics.Mark("web_overlay.construct_ok");
         CF7Launcher.Guardian.Hud.INativeCursor cursorOverlay = null;
         if (config.NativeCursorOverlayEnabled)
         {
@@ -828,6 +911,7 @@ class Program
         {
             TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
         }
+        StartupDiagnostics.Mark("task.registry_register_all_ok");
 
         // 注入 router 到 webOverlay：开启 Web→C# 通用 task 桥（FontPack 安装条幅等使用）
         webOverlay.SetTaskRouter(router);
@@ -895,19 +979,23 @@ class Program
         {
             File.WriteAllText(portsFile, portsJson);
             LogManager.Log("[Guardian] Wrote " + portsFile);
+            StartupDiagnostics.Mark("ports.write_ok", portsJson);
         }
         catch (Exception ex)
         {
             LogManager.Log("[Guardian] Failed to write ports file: " + ex.Message);
+            StartupDiagnostics.Warn("ports.write_failed", ex.Message);
         }
 
         LogManager.Log("[Guardian] Bus ready: HTTP=" + httpPort + " Socket=" + socketPort);
+        StartupDiagnostics.Mark("bus.ready", "http=" + httpPort + " socket=" + socketPort);
 
         if (busOnly)
         {
             // === bus-only 模式：仅运行通信总线，不启动 Flash Player ===
             // Flash Player 由外部（如 Flash CS6 testMovie）自行启动并连接
             LogManager.Log("[Guardian] Bus-only mode active. Waiting for external Flash connection...");
+            StartupDiagnostics.Mark("bus_only.ready");
             form.Text = "CF7:ME Bus (test mode)";
 
             // 消息循环（保持进程存活）
@@ -915,6 +1003,7 @@ class Program
 
             // 清理：每步 try-catch 保护，防止单点异常跳过后续步骤
             LogManager.Log("[Guardian] Bus-only shutting down...");
+            StartupDiagnostics.Mark("bus_only.shutdown_start");
             try { DiagnosticsBootstrap.Shutdown(); } catch { }
             try { frameTask.Stop(); } catch { }
             try { socketServer.SetFrameHandler(null); } catch { }
@@ -936,6 +1025,7 @@ class Program
             try { if (toastOverlay != null) toastOverlay.Dispose(); } catch { }
             try { File.Delete(portsFile); } catch { }
             LogManager.Shutdown();
+            StartupDiagnostics.Mark("bus_only.shutdown_complete");
 
             return 0;
         }
@@ -956,15 +1046,18 @@ class Program
                 gsi.CreateNoWindow = true;
                 guardProc = Process.Start(gsi);
                 LogManager.Log("[Guardian] HotkeyGuard started, PID=" + guardProc.Id);
+                StartupDiagnostics.Mark("hotkey_guard.started", "pid=" + guardProc.Id);
             }
             catch (Exception ex)
             {
                 LogManager.Log("[Guardian] HotkeyGuard failed: " + ex.Message);
+                StartupDiagnostics.Warn("hotkey_guard.failed", ex.Message);
             }
         }
         else
         {
             LogManager.Log("[Guardian] hotkey_guard.exe not found, shortcuts not blocked");
+            StartupDiagnostics.Warn("hotkey_guard.missing", guardExe);
         }
 
         // 守护进程核心（windowManager 已在 WebOverlay 构造前 early-declared，flashFocusRestorer 依赖它）
@@ -1074,6 +1167,8 @@ class Program
         // silentAtEmit 在 SetState 锁内快照, 不受 BeginInvoke 排队延迟影响.
         launchFlow.OnStateChanged += delegate(string state, string smsg, bool silentAtEmit)
         {
+            StartupDiagnostics.Mark("launch.state", state + " silent=" + silentAtEmit
+                + (string.IsNullOrEmpty(smsg) ? "" : " msg=" + smsg));
             if (silentAtEmit) return;   // prewarm 活跃 + _pendingSlot==null 的 teardown 窗口 → 过滤
             Newtonsoft.Json.Linq.JObject obj = new Newtonsoft.Json.Linq.JObject();
             obj["type"] = "bootstrap";
@@ -1105,15 +1200,18 @@ class Program
         CF7Launcher.Guardian.GuardianContext ctx = new CF7Launcher.Guardian.GuardianContext(form);
 
         LogManager.Log("[Guardian] Bootstrap ready. Waiting for user to select slot...");
+        StartupDiagnostics.Mark("bootstrap.ready");
         PerfTrace.Mark("guardian.bootstrap_ready");
         PerfTrace.FlushCounters("bootstrap_ready");
 
         // 消息循环: ctx (GuardianForm MainForm, BootstrapPanel 作为其子控件，Ready 时 panel swap)
         Application.Run(ctx);
+        StartupDiagnostics.Mark("application.run_returned");
 
         // 清理：每步 try-catch 保护，防止单点异常跳过后续步骤
         GuardianLifecycle.MarkShuttingDown();
         LogManager.Log("[Guardian] Shutting down...");
+        StartupDiagnostics.Mark("guardian.shutdown_start");
         PerfTrace.Mark("guardian.shutdown_start");
         PerfTrace.FlushCounters("shutdown_start");
         try { DiagnosticsBootstrap.Shutdown(); } catch { }
@@ -1140,6 +1238,7 @@ class Program
         try { toastOverlay.Dispose(); } catch { }
         try { File.Delete(portsFile); } catch { }
         LogManager.Shutdown();
+        StartupDiagnostics.Mark("guardian.shutdown_complete");
 
         return 0;
 
@@ -1154,6 +1253,7 @@ class Program
             // UserGpuPreferences 注册表条目一律在退出时清理，避免玩家卸载后残留。
             try { GpuPreferenceManager.Revert(projectRoot); } catch { }
             try { PerfTrace.Shutdown(); } catch { }
+            StartupDiagnostics.Mark("core.run_finally_complete");
         }
     }
 }

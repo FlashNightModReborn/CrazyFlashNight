@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
@@ -67,32 +68,52 @@ namespace CF7Launcher.Guardian
         private async void InitWebView2Async()
         {
             string userDataDir = null;
+            long initStart = Stopwatch.GetTimestamp();
             try
             {
+                StartupDiagnostics.Mark("bootstrap.webview2.init_start", "webDir=" + _webDir);
                 userDataDir = Path.Combine(
                     Path.GetDirectoryName(_webDir), "webview2_userdata");
+                ProbeUserDataDirWritable(userDataDir);
 
+                long envStart = Stopwatch.GetTimestamp();
+                StartupDiagnostics.Mark("bootstrap.webview2.create_environment_start", "userDataDir=" + userDataDir);
                 CoreWebView2Environment env =
                     await CoreWebView2Environment.CreateAsync(null, userDataDir, CreateWebView2EnvironmentOptions());
+                PerfTrace.Duration("bootstrap.webview2.create_environment", envStart);
+                StartupDiagnostics.Mark("bootstrap.webview2.create_environment_ok");
+
+                long ensureStart = Stopwatch.GetTimestamp();
+                StartupDiagnostics.Mark("bootstrap.webview2.ensure_core_start");
                 await _webView.EnsureCoreWebView2Async(env);
+                PerfTrace.Duration("bootstrap.webview2.ensure_core", ensureStart);
+                StartupDiagnostics.Mark("bootstrap.webview2.ensure_core_ok");
 
                 _webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
                     "bootstrap.local", _webDir,
                     CoreWebView2HostResourceAccessKind.Allow);
 
                 _webView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
+                _webView.CoreWebView2.NavigationCompleted += OnNavigationCompleted;
                 _webView.CoreWebView2.Settings.AreDevToolsEnabled = true;
                 _webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
 
+                StartupDiagnostics.Mark("bootstrap.webview2.navigate_start", "https://bootstrap.local/bootstrap.html");
+                PerfTrace.Mark("bootstrap.webview2.navigate_start");
                 _webView.CoreWebView2.Navigate("https://bootstrap.local/bootstrap.html");
 
                 LogManager.Log("[Bootstrap] WebView2 engine ready");
+                PerfTrace.Duration("bootstrap.webview2.init_total", initStart);
+                StartupDiagnostics.Mark("bootstrap.webview2.init_ok");
             }
             catch (Exception ex)
             {
                 // Fail-closed：日志落盘 + 可操作 MessageBox + 触发 BootstrapInitFailed
                 string logPath = LogManager.LogFilePath ?? "(未启用文件日志)";
                 string userData = userDataDir ?? "(未构造)";
+                StartupDiagnostics.Exit("bootstrap_webview2_init_failed",
+                    ex.GetType().Name + ": " + ex.Message + " userDataDir=" + userData);
+                PerfTrace.Duration("bootstrap.webview2.init_total", initStart, "fail:" + ex.GetType().Name);
                 try
                 {
                     // LogManager 文件写入 AutoFlush=true，Log 同步写入磁盘
@@ -126,6 +147,42 @@ namespace CF7Launcher.Guardian
                     }
                 }
             }
+        }
+
+        private static void ProbeUserDataDirWritable(string userDataDir)
+        {
+            long start = Stopwatch.GetTimestamp();
+            try
+            {
+                Directory.CreateDirectory(userDataDir);
+                string testPath = Path.Combine(userDataDir,
+                    ".cf7-write-test-" + Process.GetCurrentProcess().Id + ".tmp");
+                File.WriteAllText(testPath, "ok");
+                File.Delete(testPath);
+                StartupDiagnostics.Mark("bootstrap.webview2.user_data_writable", "path=" + userDataDir);
+                PerfTrace.Duration("bootstrap.webview2.user_data_writable", start, "ok");
+            }
+            catch (Exception ex)
+            {
+                StartupDiagnostics.Warn("bootstrap.webview2.user_data_not_writable",
+                    ex.GetType().Name + ": " + ex.Message + " path=" + userDataDir);
+                PerfTrace.Duration("bootstrap.webview2.user_data_writable", start, "fail:" + ex.GetType().Name);
+            }
+        }
+
+        private void OnNavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            string detail = "success=" + e.IsSuccess + " status=" + e.WebErrorStatus;
+            if (e.IsSuccess)
+            {
+                StartupDiagnostics.Mark("bootstrap.webview2.navigation_completed", detail);
+            }
+            else
+            {
+                StartupDiagnostics.Warn("bootstrap.webview2.navigation_failed", detail);
+            }
+            PerfTrace.Mark("bootstrap.webview2.navigation_completed", detail);
+            LogManager.Log("[Bootstrap] WebView2 navigation completed " + detail);
         }
 
         private CoreWebView2EnvironmentOptions CreateWebView2EnvironmentOptions()
@@ -226,6 +283,8 @@ namespace CF7Launcher.Guardian
             }
             catch (Exception ex)
             {
+                if (IsWebViewDisposeRace(ex))
+                    return;
                 LogManager.Log("[Bootstrap] WebView2 suspend failed: " + ex.Message);
             }
         }
@@ -244,8 +303,23 @@ namespace CF7Launcher.Guardian
             }
             catch (Exception ex)
             {
+                if (IsWebViewDisposeRace(ex))
+                    return;
                 LogManager.Log("[Bootstrap] WebView2 resume failed: " + ex.Message);
             }
+        }
+
+        private bool IsWebViewDisposeRace(Exception ex)
+        {
+            if (_disposed || _webView == null)
+                return true;
+            try { if (_webView.IsDisposed) return true; } catch { return true; }
+            if (ex is ObjectDisposedException)
+                return true;
+            InvalidOperationException invalid = ex as InvalidOperationException;
+            return invalid != null
+                && invalid.Message != null
+                && invalid.Message.IndexOf("disposed", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private CoreWebView2 TryGetCoreWebView2()

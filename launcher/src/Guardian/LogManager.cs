@@ -59,7 +59,14 @@ namespace CF7Launcher.Guardian
                 if (!Directory.Exists(logDir))
                     Directory.CreateDirectory(logDir);
 
-                _logFilePath = Path.Combine(logDir, "launcher.log");
+                string logFilePath = Path.Combine(logDir, "launcher.log");
+                if (_fileWriter != null)
+                {
+                    if (_logFilePath == null)
+                        _logFilePath = logFilePath;
+                    return;
+                }
+                _logFilePath = logFilePath;
 
                 // 启动时轮转：旧日志 → .1（保留 1 份备份）
                 if (File.Exists(_logFilePath))
