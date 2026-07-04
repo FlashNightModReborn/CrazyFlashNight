@@ -1126,6 +1126,24 @@ WebView2 通过 `chrome.webview.postMessage({cmd, ...})` 发消息。所有 27 �
 
 未识别 cmd → `PostError(unknown_cmd, cmd)`。
 
+### Agent control（无人值守外层控制）
+
+`agent_control` 是 HTTP `/task` 专用的本地自动化控制面，不是 Bootstrap WebView2 `cmd`。它用于无人值守斗兽标定的外层编排：从外部 agent/脚本查询启动状态、选择专用存档进入游戏、等待 Flash/socket/arena_calibration ready、必要时取消启动或关闭 launcher。它保持快速返回，不承载整批标定等待；长轮询、JSONL 观察、分析、rerun manifest 生成和有限次数自动恢复逻辑放在 `tools/arena-calibration/run-unattended.js`。
+
+控制请求示例：
+
+```jsonl
+{ "task": "agent_control", "action": "status" }
+{ "task": "agent_control", "action": "start", "slot": "cf7_agent_arena_calibration", "fresh": false, "requireFlashReveal": true }
+{ "task": "agent_control", "action": "revealOk" }
+{ "task": "agent_control", "action": "cancel" }
+{ "task": "agent_control", "action": "shutdown" }
+```
+
+`status` 返回 `launchState`、`revealPerformed`、`socketConnected`、`readyForArenaCalibration`、`readyBlockedBy`、`save`、`saveRuntime` 和内嵌的 `arenaCalibration` 状态。`readyForArenaCalibration` 只有在 `launchState=Ready`、Flash reveal 已完成、socket 已连接、`arena_calibration status` 可读、Launcher 存档决议为 `decision=snapshot/kind=Snapshot`，且 AS2 运行态已通过 `agent_runtime_status` 回报同一 `attemptId/savePath` 的已加载存档时才为 true；坏档会停在 `save_decision_unsafe` / `runtime_save_not_loaded`，不得进入标定批次。`start` 默认 `requireFlashReveal:true`，与 Bootstrap 无片头启动路径一致，会等 Flash 封面帧 `bootstrap_reveal_ready` 后再执行 panel swap；`deferReveal` 默认 false，避免无人值守路径卡在 JS 片头 gate。slot 只允许普通槽位名，拒绝路径分隔符和保留路径字符；`start` 默认不写 `lastPlayedSlot`，只有显式传 `rememberSlot:true` 才更新用户默认槽位。
+
+AS2 在 `SaveManager.loadAll()` 成功后通过内部 JSON task `agent_runtime_status` 上报 `{loaded, savePath, attemptId, source, role, level}`；该 task 仅 AS2→C#，不对 HTTP 暴露。无人值守 runner 会在 Flash reveal 后通过 `/console` 调用 `_root.agentEnterResolvedSave()`，复用原“确认存档进入游戏”路径触发 `loadAll()`；这一步不放在 `agent_control` 里长等，`agent_control` 只提供生命周期和状态安全门。
+
 ### Idle 守卫：`RequireIdleOrTearDown` 语义
 
 `save` / `reset` / `import_start` / `import_commit` 共享这个守卫，语义**不是**一律 `not_idle`：

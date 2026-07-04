@@ -151,6 +151,38 @@ namespace CF7Launcher.Guardian
             get { lock (_stateLock) { return _state.ToString(); } }
         }
 
+        public bool RevealPerformed
+        {
+            get { lock (_stateLock) { return _revealPerformed; } }
+        }
+
+        public JObject BuildAgentSaveStatus()
+        {
+            lock (_stateLock)
+            {
+                JObject status = new JObject();
+                status["attemptId"] = _currentAttemptId != null ? (JToken)_currentAttemptId : JValue.CreateNull();
+                status["slot"] = _pendingSlot != null ? (JToken)_pendingSlot : JValue.CreateNull();
+
+                if (_resolvedSave != null)
+                {
+                    status["decision"] = _resolvedSave.WireDecision != null ? (JToken)_resolvedSave.WireDecision : JValue.CreateNull();
+                    status["kind"] = _resolvedSave.Kind.ToString();
+                    status["source"] = _resolvedSave.Source != null ? (JToken)_resolvedSave.Source : JValue.CreateNull();
+                    status["corruptDetail"] = _resolvedSave.CorruptDetail != null ? (JToken)_resolvedSave.CorruptDetail : JValue.CreateNull();
+                }
+                else
+                {
+                    status["decision"] = JValue.CreateNull();
+                    status["kind"] = JValue.CreateNull();
+                    status["source"] = JValue.CreateNull();
+                    status["corruptDetail"] = JValue.CreateNull();
+                }
+
+                return status;
+            }
+        }
+
         /// <summary>
         /// Phase D Step D11: silent prewarm 谓词. 用于 BMH.RequireIdleOrTearDown 判断
         /// 是否可 "同步 tear down prewarm 再继续 cmd" (而不是 reject 为 not_idle).

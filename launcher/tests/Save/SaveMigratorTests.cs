@@ -486,6 +486,22 @@ namespace CF7Launcher.Tests.Save
             Assert.False(SaveMigrator.ValidateResolvedSnapshot(md));
         }
 
+        [Fact]
+        public void Validate_MissingRoleName_False()
+        {
+            JObject md = BuildValidMydata();
+            ((JArray)md["0"])[0] = JValue.CreateNull();
+            Assert.False(SaveMigrator.ValidateResolvedSnapshot(md));
+        }
+
+        [Fact]
+        public void Validate_MissingLevel_False()
+        {
+            JObject md = BuildValidMydata();
+            ((JArray)md["0"])[3] = JValue.CreateNull();
+            Assert.False(SaveMigrator.ValidateResolvedSnapshot(md));
+        }
+
         [Theory]
         [InlineData("0")]
         [InlineData("1")]

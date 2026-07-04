@@ -4,12 +4,13 @@
  *
  * C# 下发：
  *   {task:"cmd", action:"arenaCalibrationRun", callId, batchId, caseId, caseHash,
- *    runId, repeatIndex, timeoutFrames, blueRoster:[{兵种,等级,Parameters}], redRoster:[{兵种,等级,Parameters}]}
+ *    runId, repeatIndex, timeoutFrames, spawnDistance?,
+ *    blueRoster:[{兵种,等级,Parameters}], redRoster:[{兵种,等级,Parameters}]}
  *   {task:"cmd", action:"arenaCalibrationAbort", callId, batchId, reason}
  *
  * AS2 回包：
  *   {task:"arena_calibration_response", callId, success, status, winner, frames,
- *    durationMs, blue, red, errors}
+ *    durationMs, spawnDistance, blueX, redX, blue, red, errors}
  *
  * 本服务不走普通角斗场押金/奖金/FinishStage 链；若当前不在专用斗兽标定竞技场，
  * 先请求 StageManager 通过正常跳关进入 no-player host，再继续同一轮 run。
@@ -34,14 +35,17 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     private static var CALIBRATION_STAGE_NAME:String = "斗兽标定竞技场";
     private static var CALIBRATION_CENTER_X:Number = 895;
     private static var CALIBRATION_CENTER_Y:Number = 430;
-    private static var CALIBRATION_BLUE_X:Number = 655;
-    private static var CALIBRATION_RED_X:Number = 1135;
+    private static var CALIBRATION_DEFAULT_SPAWN_DISTANCE:Number = 650;
+    private static var CALIBRATION_BLUE_X:Number = 570;
+    private static var CALIBRATION_RED_X:Number = 1220;
     private static var CALIBRATION_XMIN:Number = 230;
     private static var CALIBRATION_XMAX:Number = 1560;
     private static var CALIBRATION_YMIN:Number = 242;
     private static var CALIBRATION_YMAX:Number = 620;
     private static var CALIBRATION_BG_WIDTH:Number = 1688;
     private static var CALIBRATION_BG_HEIGHT:Number = 640;
+    private static var CALIBRATION_MIN_SPAWN_DISTANCE:Number = 360;
+    private static var CALIBRATION_SPAWN_EDGE_RESERVE:Number = 290;
     private static var SPECTATOR_CAMERA_INTERVAL:Number = 4;
     private static var SPECTATOR_CAMERA_EASE:Number = 7;
     private static var SPECTATOR_CAMERA_PAIR_RANGE:Number = 760;
@@ -156,7 +160,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
 
         _runSeq++;
         var runKey:String = sanitizeName(String(params.runId || ("run" + _runSeq)));
-        var origin:Object = resolveOrigin();
+        var origin:Object = resolveOrigin(params);
         ensureCalibrationSource();
 
         var blueUnits:Array = spawnSide(blueRoster, "blue", false, origin.blueX, origin.y, runKey, errors);
@@ -171,6 +175,9 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 winner: "none",
                 frames: 0,
                 durationMs: 0,
+                spawnDistance: origin.spawnDistance,
+                blueX: origin.blueX,
+                redX: origin.redX,
                 blue: summarizeSide(blueUnits),
                 red: summarizeSide(redUnits),
                 errors: errors
@@ -201,6 +208,9 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             blueUnits: blueUnits,
             redUnits: redUnits,
             errors: errors,
+            spawnDistance: origin.spawnDistance,
+            blueX: origin.blueX,
+            redX: origin.redX,
             lastHotspotX: CALIBRATION_CENTER_X,
             lastHotspotY: CALIBRATION_CENTER_Y
         };
@@ -393,7 +403,6 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         if (typeof _root.加载游戏世界人物 != "function") return false;
         if (typeof _root.加载共享场景 != "function") return false;
         if (_root.兵种库 == undefined) return false;
-        if (_root.gameworld层级定位器 == undefined) return false;
         return true;
     }
 
@@ -778,6 +787,9 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             winner: winner,
             frames: _active.frames,
             durationMs: getTimer() - _active.startedMs,
+            spawnDistance: _active.spawnDistance,
+            blueX: _active.blueX,
+            redX: _active.redX,
             blue: blue,
             red: red,
             errors: errors
@@ -881,6 +893,8 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
 
     private static function applyCalibrationTransitionGlobals():Void {
         _root.斗兽标定模式 = true;
+        _root.斗兽标定禁存档 = true;
+        _root._agentCalibrationNoSave = true;
         _root.当前通关的关卡 = "";
         _root.当前关卡名 = CALIBRATION_STAGE_NAME;
         _root.关卡类型 = "斗兽标定";
@@ -914,6 +928,8 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         removeClock();
         resetCalibrationSource();
         _root.斗兽标定模式 = true;
+        _root.斗兽标定禁存档 = true;
+        _root._agentCalibrationNoSave = true;
         _root.当前为战斗地图 = true;
         _root.当前关卡名 = CALIBRATION_STAGE_NAME;
         _root.关卡类型 = "斗兽标定";
@@ -1057,6 +1073,8 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
 
     private static function clearCalibrationGlobals():Void {
         _root.斗兽标定模式 = false;
+        _root.斗兽标定禁存档 = false;
+        _root._agentCalibrationNoSave = false;
         if (_root.角斗场对手类型 == "calibration") _root.角斗场对手类型 = undefined;
         if (_root.角斗场roster阵容 != undefined && _root.角斗场roster阵容.length == 0) _root.角斗场roster阵容 = undefined;
     }
@@ -1072,14 +1090,32 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         }
     }
 
-    private static function resolveOrigin():Object {
+    private static function resolveOrigin(params:Object):Object {
         var centerX:Number = CALIBRATION_CENTER_X;
         var centerY:Number = CALIBRATION_CENTER_Y;
         if (_root.gameworld.出生地 != undefined) {
             if (!isNaN(Number(_root.gameworld.出生地._x))) centerX = Number(_root.gameworld.出生地._x);
             if (!isNaN(Number(_root.gameworld.出生地._y))) centerY = Number(_root.gameworld.出生地._y);
         }
-        return {blueX: CALIBRATION_BLUE_X, redX: CALIBRATION_RED_X, y: centerY};
+
+        var defaultDistance:Number = CALIBRATION_DEFAULT_SPAWN_DISTANCE;
+        var requestedDistance:Number = Number(params != undefined ? params.spawnDistance : undefined);
+        if (isNaN(requestedDistance) || requestedDistance <= 0) {
+            requestedDistance = defaultDistance;
+        }
+
+        var minX:Number = CALIBRATION_XMIN + CALIBRATION_SPAWN_EDGE_RESERVE;
+        var maxX:Number = CALIBRATION_XMAX - CALIBRATION_SPAWN_EDGE_RESERVE;
+        var maxDistance:Number = (maxX - minX);
+        if (maxDistance < CALIBRATION_MIN_SPAWN_DISTANCE) maxDistance = defaultDistance;
+
+        var distance:Number = clampNumber(Math.round(requestedDistance), CALIBRATION_MIN_SPAWN_DISTANCE, maxDistance);
+        var half:Number = distance * 0.5;
+        centerX = clampNumber(centerX, minX + half, maxX - half);
+
+        var blueX:Number = centerX - half;
+        var redX:Number = centerX + half;
+        return {blueX: blueX, redX: redX, y: centerY, spawnDistance: Math.round(redX - blueX)};
     }
 
     private static function ensureCalibrationSource():Void {

@@ -260,7 +260,7 @@ namespace CF7Launcher.Tasks
             {
                 data = dataToken.Value<string>();
                 try { dataObj = JObject.Parse(data); }
-                catch { /* 非 JSON 字符串，跳过校验 */ }
+                catch { return BuildError("shadow_invalid_json"); }
             }
             else if (dataToken.Type == JTokenType.Object)
             {
@@ -274,6 +274,8 @@ namespace CF7Launcher.Tasks
 
             if (string.IsNullOrEmpty(data))
                 return BuildError("missing data");
+            if (dataObj == null)
+                return BuildError("shadow_invalid_json");
 
             string safeName = SanitizeSlotName(slot);
             string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
@@ -297,6 +299,14 @@ namespace CF7Launcher.Tasks
 
                 LogManager.Log("[ArchiveTask] userEdit shadow: " + safeName);
             }
+
+            SaveMigrator.NormalizeResolvedSnapshot(dataObj);
+            if (!SaveMigrator.ValidateResolvedSnapshot(dataObj))
+            {
+                LogManager.Log("[ArchiveTask] rejected invalid shadow: " + safeName);
+                return BuildError("shadow_snapshot_invalid");
+            }
+            data = dataObj.ToString(Formatting.None);
 
             // 一致性校验
             JArray warnings = null;
@@ -555,6 +565,11 @@ namespace CF7Launcher.Tasks
                 {
                     string text = File.ReadAllText(jsonPath, Encoding.UTF8);
                     JObject data = JObject.Parse(text);
+                    SaveMigrator.NormalizeResolvedSnapshot(data);
+                    if (!SaveMigrator.ValidateResolvedSnapshot(data))
+                    {
+                        corrupt = true;
+                    }
                     mainProgress = DeriveMainProgress(data);
                 }
                 catch (Exception ex)

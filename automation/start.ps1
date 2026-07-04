@@ -8,7 +8,8 @@
 #   - Core apphost 默认只搜 %ProgramFiles%\dotnet，所以要复刻 bootstrap 的 user-scope 探测
 # ============================================================
 
-$scriptDirectory = Split-Path -Parent -Path $MyInvocation.MyCommand.Path
+$scriptDirectory = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent -Path $MyInvocation.MyCommand.Path }
+$scriptDirectory = (Resolve-Path -LiteralPath $scriptDirectory).Path
 $projectRoot = Split-Path -Parent $scriptDirectory
 
 $coreExe = Join-Path $projectRoot "runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe"
@@ -28,10 +29,50 @@ if (-not (Set-DotnetRootForCore)) {
 
 Write-Host "Starting CF7:ME Guardian Core..."
 try {
+    Write-Host "Project Root: $projectRoot"
+    Write-Host "Core EXE    : $coreExe"
+    $portsFile = Join-Path $projectRoot "launcher_ports.json"
+    if (Test-Path -LiteralPath $portsFile) {
+        try {
+            $ports = Get-Content -LiteralPath $portsFile -Raw | ConvertFrom-Json
+            $pidAlive = $false
+            if ($ports.pid) {
+                $pidAlive = [bool](Get-Process -Id ([int]$ports.pid) -ErrorAction SilentlyContinue)
+            }
+            if (-not $pidAlive) {
+                Remove-Item -LiteralPath $portsFile -Force
+            }
+        } catch {
+            Remove-Item -LiteralPath $portsFile -Force -ErrorAction SilentlyContinue
+        }
+    }
+
     # 显式传 --project-root（Core 在 runtime\ 子目录，AppContext.BaseDirectory ≠ projectRoot）
-    Start-Process -FilePath $coreExe `
-        -ArgumentList @('--project-root', $projectRoot) `
-        -WorkingDirectory $projectRoot -NoNewWindow
+    Push-Location $projectRoot
+    try {
+        $guardian = [System.Diagnostics.Process]::Start($coreExe, "--project-root `"$projectRoot`"")
+    } finally {
+        Pop-Location
+    }
+    if ($guardian -eq $null) {
+        throw "System.Diagnostics.Process.Start returned null"
+    }
+    Write-Host "Guardian PID: $($guardian.Id)"
+    $deadline = (Get-Date).AddSeconds(30)
+    while ((Get-Date) -lt $deadline) {
+        if ($guardian.HasExited) {
+            throw "guardian exited before HTTP bus became ready (exitCode=$($guardian.ExitCode))"
+        }
+        if (Test-Path -LiteralPath $portsFile) {
+            Write-Host "Guardian bus ready: $(Get-Content -LiteralPath $portsFile -Raw)"
+            break
+        }
+        Start-Sleep -Milliseconds 500
+        try { $guardian.Refresh() } catch { }
+    }
+    if (-not (Test-Path -LiteralPath $portsFile)) {
+        throw "guardian did not write launcher_ports.json within 30s"
+    }
     Write-Host "Guardian started successfully."
     Write-Host "(Flash Player + V8 Bus are managed by the guardian process)"
 } catch {

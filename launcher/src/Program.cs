@@ -900,6 +900,21 @@ class Program
         ArenaTask arenaTask = new ArenaTask(socketServer);
         ArenaCalibrationTask arenaCalibrationTask = new ArenaCalibrationTask(socketServer, projectRoot);
         arenaTask.SetCalibrationTask(arenaCalibrationTask);
+        AgentControlTask agentControlTask = new AgentControlTask(
+            delegate { return socketServer.HasClient; },
+            delegate
+            {
+                return Newtonsoft.Json.Linq.JObject.Parse(arenaCalibrationTask.HandleControl(
+                    new Newtonsoft.Json.Linq.JObject { ["action"] = "status" }));
+            },
+            delegate(string slot)
+            {
+                if (userPrefs != null && userPrefs.LastPlayedSlot != slot)
+                {
+                    userPrefs.LastPlayedSlot = slot;
+                    userPrefs.Save();
+                }
+            });
         PetTask petTask = new PetTask(socketServer, projectRoot);
         MercTask mercTask = new MercTask(socketServer);
         TaskTask taskTask = new TaskTask(socketServer);
@@ -964,7 +979,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, shopTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -991,6 +1006,7 @@ class Program
 
         // 注入 shutdown 回调
         httpServer.SetShutdownAction(delegate { form.ForceExit(); });
+        agentControlTask.SetShutdownAction(delegate { form.ForceExit(); });
 
         // 退出前回调：在 Form dispose 之前断开快车道，防退出竞态
         form.OnShutdownEarly = delegate
@@ -1216,6 +1232,7 @@ class Program
 
         // Phase A Step A2: wire launchFlow 到 GuardianForm（OnFormClosing 状态分流 + 热键 state-aware guard）
         form.InitializeLaunchFlow(launchFlow);
+        agentControlTask.SetLaunchFlow(launchFlow);
 
         // Phase D Step D11: silent prewarm 状态不广播给 bootstrap UI,
         // 避免 archive-editor 进只读 / bootstrap.html 闪 running badge / BMH RequireIdle 挡 save.

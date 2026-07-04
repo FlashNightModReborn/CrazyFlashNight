@@ -153,6 +153,17 @@ namespace CF7Launcher.Save
             // mydata[0..7] character arrays
             JArray a0 = mydata["0"] as JArray;
             if (a0 == null || a0.Count < 14) return false;
+            if (IsAbsent(a0[0]) || string.IsNullOrEmpty(a0[0].Value<string>())) return false;
+            if (IsAbsent(a0[3])) return false;
+            try
+            {
+                double level = a0[3].Value<double>();
+                if (double.IsNaN(level)) return false;
+            }
+            catch
+            {
+                return false;
+            }
             JArray a1 = mydata["1"] as JArray;
             if (a1 == null || a1.Count < 28) return false;
             if (IsAbsent(mydata["3"])) return false;

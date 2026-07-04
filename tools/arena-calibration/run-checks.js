@@ -16,6 +16,7 @@ const scripts = [
   "build-candidates.js",
   "analyze-results.js",
   "plan-next-batch.js",
+  "run-unattended.js",
 ];
 
 const schemas = [
@@ -86,9 +87,10 @@ function checkPositiveIntegerContract() {
     manifest.repeat !== 1 ||
     manifest.timeoutFrames !== 1 ||
     manifest.cases[0].repeat !== 1 ||
-    manifest.cases[0].timeoutFrames !== 1
+    manifest.cases[0].timeoutFrames !== 1 ||
+    manifest.cases[0].spawnDistance !== 650
   ) {
-    throw new Error("explicit positive integer overrides were not preserved");
+    throw new Error("explicit positive integer overrides or default spawnDistance were not preserved");
   }
 
   expectRejected("manifest repeat=0", () =>
@@ -109,6 +111,12 @@ function checkPositiveIntegerContract() {
   caseTimeoutZero.cases[0].caseId = "pilot-case-zero-timeout-case";
   caseTimeoutZero.cases[0].timeoutFrames = 0;
   expectRejected("case timeoutFrames=0", () => normalizeManifest(caseTimeoutZero));
+
+  const caseSpawnDistanceZero = JSON.parse(JSON.stringify(manifest));
+  caseSpawnDistanceZero.batchId = "pilot-case-zero-spawn-distance";
+  caseSpawnDistanceZero.cases[0].caseId = "pilot-case-zero-spawn-distance-case";
+  caseSpawnDistanceZero.cases[0].spawnDistance = 0;
+  expectRejected("case spawnDistance=0", () => normalizeManifest(caseSpawnDistanceZero));
 
   const resultRow = {
     schema: "arena-calibration.result.v1",
@@ -164,13 +172,74 @@ function checkTimeoutClassification() {
   }
 }
 
+function createSpawnDistanceManifest(batchId, spawnDistance) {
+  const thiefRoster = [
+    { type: "兵种44", level: 30 },
+    { type: "兵种45", level: 30 },
+    { type: "兵种48", level: 30 },
+    { type: "兵种49", level: 30 },
+  ];
+  return normalizeManifest({
+    schema: "arena-calibration.case-manifest.v1",
+    batchId,
+    createdAt: "2026-07-04T00:00:00.000Z",
+    buildCommit: "fixture",
+    planner: { name: "spawn-distance-contract", version: 1 },
+    arenaMode: "calibration",
+    repeat: 1,
+    timeoutFrames: 600,
+    blueBench: null,
+    cases: [
+      {
+        caseId: "spawn-distance-contract",
+        blueRoster: thiefRoster,
+        redRoster: thiefRoster,
+        repeat: 1,
+        timeoutFrames: 600,
+        spawnDistance,
+      },
+    ],
+  });
+}
+
+function checkSpawnDistanceContract() {
+  const dist600 = createSpawnDistanceManifest("pilot-spawn-distance-600", 600);
+  const dist620 = createSpawnDistanceManifest("pilot-spawn-distance-620", 620);
+  if (dist600.cases[0].spawnDistance !== 600 || dist620.cases[0].spawnDistance !== 620) {
+    throw new Error("spawnDistance was not preserved during manifest normalization");
+  }
+  if (dist600.cases[0].caseHash === dist620.cases[0].caseHash) {
+    throw new Error("spawnDistance did not affect caseHash");
+  }
+
+  const row = normalizeResultRow({
+    schema: "arena-calibration.result.v1",
+    batchId: dist620.batchId,
+    manifestHash: dist620.manifestHash,
+    caseId: dist620.cases[0].caseId,
+    caseHash: dist620.cases[0].caseHash,
+    runId: "spawn-distance-contract-r001",
+    repeatIndex: 1,
+    status: "finished",
+    winner: "blue",
+    requestedSpawnDistance: 620,
+    spawnDistance: 620,
+    blueX: 585,
+    redX: 1205,
+  });
+  if (row.requestedSpawnDistance !== 620 || row.spawnDistance !== 620) {
+    throw new Error("spawnDistance result metadata was not preserved");
+  }
+}
+
 try {
   checkSchemas();
   checkBatchIdContract();
   checkPositiveIntegerContract();
   checkTimeoutClassification();
+  checkSpawnDistanceContract();
   scripts.forEach(run);
-  console.log(JSON.stringify({ ok: true, checked: scripts.length + schemas.length + 3 }, null, 2));
+  console.log(JSON.stringify({ ok: true, checked: scripts.length + schemas.length + 4 }, null, 2));
 } catch (error) {
   console.error(error.message);
   process.exit(1);

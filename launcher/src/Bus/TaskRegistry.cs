@@ -65,6 +65,7 @@ namespace CF7Launcher.Bus
             StageSelectTask stageSelectTask,
             ArenaTask arenaTask,
             ArenaCalibrationTask arenaCalibrationTask,
+            AgentControlTask agentControlTask,
             PetTask petTask,
             MercTask mercTask,
             TaskTask taskTask,
@@ -107,6 +108,12 @@ namespace CF7Launcher.Bus
             {
                 router.RegisterSync("arena_calibration", arenaCalibrationTask.HandleControl);
                 router.RegisterAsync("arena_calibration_response", arenaCalibrationTask.HandleFlashResponse);
+            }
+
+            if (agentControlTask != null)
+            {
+                router.RegisterSync("agent_control", agentControlTask.Handle);
+                router.RegisterSync("agent_runtime_status", agentControlTask.HandleRuntimeStatus);
             }
 
             // 战宠面板回包路由
@@ -255,6 +262,8 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "arena_response",       "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "arena_calibration",    "json_sync", "AS2<->C#",true,  first);
             first = AppendTask(sb, "arena_calibration_response","json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "agent_control",        "json_sync", "HTTP->C#", true, first);
+            first = AppendTask(sb, "agent_runtime_status", "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "pet_response",         "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "merc_response",        "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "task_response",        "json_async","AS2<->C#",false, first);

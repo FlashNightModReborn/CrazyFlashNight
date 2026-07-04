@@ -8,6 +8,7 @@ const CASE_MANIFEST_SCHEMA = "arena-calibration.case-manifest.v1";
 const RESULT_SCHEMA = "arena-calibration.result.v1";
 const SUMMARY_SCHEMA = "arena-calibration.summary.v1";
 const NEXT_BATCH_SCHEMA = "arena-calibration.next-batch.v1";
+const DEFAULT_SPAWN_DISTANCE = 650;
 
 const RESULT_STATUSES = new Set([
   "finished",
@@ -229,13 +230,15 @@ function normalizeTags(tags, fieldName, errors) {
 }
 
 function buildCaseHashInput(testCase) {
-  return {
+  const hashInput = {
     caseId: testCase.caseId,
     blueRoster: testCase.blueRoster,
     redRoster: testCase.redRoster,
     repeat: testCase.repeat,
     timeoutFrames: testCase.timeoutFrames,
   };
+  hashInput.spawnDistance = testCase.spawnDistance;
+  return hashInput;
 }
 
 function normalizeCase(input, defaults, index, errors) {
@@ -273,6 +276,11 @@ function normalizeCase(input, defaults, index, errors) {
       input.plannerReason === undefined
         ? ""
         : assertString(input.plannerReason, `${fieldName}.plannerReason`, errors),
+    spawnDistance: parsePositiveInteger(
+      defaultWhenMissing(input.spawnDistance, defaults.spawnDistance),
+      `${fieldName}.spawnDistance`,
+      errors
+    ),
   };
   testCase.caseHash = sha256OfValue(buildCaseHashInput(testCase));
   return testCase;
@@ -327,7 +335,7 @@ function normalizeManifest(input) {
   if (!Array.isArray(input.cases) || input.cases.length === 0) {
     errors.push("cases must be a non-empty array");
   } else {
-    const defaults = { repeat, timeoutFrames };
+    const defaults = { repeat, timeoutFrames, spawnDistance: DEFAULT_SPAWN_DISTANCE };
     manifest.cases = input.cases.map((testCase, index) =>
       normalizeCase(testCase, defaults, index, errors)
     );
@@ -352,6 +360,7 @@ function createPilotManifest(options) {
   const batchId = options.batchId || `pilot-${localDateString(new Date())}-a`;
   const repeat = defaultWhenMissing(options.repeat, 5);
   const timeoutFrames = defaultWhenMissing(options.timeoutFrames, 5400);
+  const spawnDistance = defaultWhenMissing(options.spawnDistance, DEFAULT_SPAWN_DISTANCE);
   const thiefRoster = [
     { type: "兵种44", level: 30 },
     { type: "兵种45", level: 30 },
@@ -382,6 +391,7 @@ function createPilotManifest(options) {
         redRoster: thiefRoster,
         repeat,
         timeoutFrames,
+        spawnDistance,
         tags: ["pilot", "manual-anchor", "mirror"],
         plannerReason: "复用现有 _root.测试角斗场怪物 默认盗贼组作为通路锚点",
       },
@@ -466,6 +476,22 @@ function normalizeResultRow(input) {
       input.durationMs === undefined || input.durationMs === null
         ? null
         : parseNonNegativeNumber(input.durationMs, "durationMs", errors),
+    requestedSpawnDistance:
+      input.requestedSpawnDistance === undefined || input.requestedSpawnDistance === null
+        ? null
+        : parseNonNegativeNumber(input.requestedSpawnDistance, "requestedSpawnDistance", errors),
+    spawnDistance:
+      input.spawnDistance === undefined || input.spawnDistance === null
+        ? null
+        : parseNonNegativeNumber(input.spawnDistance, "spawnDistance", errors),
+    blueX:
+      input.blueX === undefined || input.blueX === null
+        ? null
+        : parseNonNegativeNumber(input.blueX, "blueX", errors),
+    redX:
+      input.redX === undefined || input.redX === null
+        ? null
+        : parseNonNegativeNumber(input.redX, "redX", errors),
     blue: normalizeSideSummary(input.blue, "blue", errors),
     red: normalizeSideSummary(input.red, "red", errors),
     errors: normalizeErrors(input.errors, "errors", errors),

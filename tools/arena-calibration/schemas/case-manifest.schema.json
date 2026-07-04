@@ -33,6 +33,7 @@
             "minItems": 1,
             "items": { "$ref": "#/$defs/rosterEntry" }
           },
+          "spawnDistance": { "type": "integer", "minimum": 1 },
           "repeat": { "type": "integer", "minimum": 1 },
           "timeoutFrames": { "type": "integer", "minimum": 1 },
           "tags": { "type": "array", "items": { "type": "string" } },

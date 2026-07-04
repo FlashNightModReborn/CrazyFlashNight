@@ -120,6 +120,7 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Null(command["blueRoster"][0]["type"]);
             Assert.NotNull(command["manifestHash"]);
             Assert.NotNull(command["caseHash"]);
+            Assert.Equal(650, (int)command["spawnDistance"]);
 
             task.HandleFlashResponse(new JObject
             {
@@ -159,6 +160,64 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("finished", (string)row["status"]);
             Assert.Equal("blue", (string)row["winner"]);
             Assert.Equal(123, (int)row["frames"]);
+            Assert.Equal(650, (int)row["requestedSpawnDistance"]);
+        }
+
+        [Fact]
+        public void StartBatch_SpawnDistanceIsDispatchedAndRecorded()
+        {
+            string root = CreateProjectRoot();
+            WriteManifest(root, "pilot-distance", 1, null, null, "pilot-distance", 620);
+            string sent = null;
+            ManualResetEventSlim sentEvent = new ManualResetEventSlim(false);
+            var task = new ArenaCalibrationTask(root, delegate { return true; },
+                delegate(string payload)
+                {
+                    sent = payload;
+                    sentEvent.Set();
+                },
+                delegate(int frames) { return 3000; });
+
+            JObject start = JObject.Parse(task.HandleControl(new JObject
+            {
+                ["action"] = "startBatch",
+                ["manifestPath"] = "tmp/arena-calibration/batches/pilot-distance/case_manifest.json"
+            }));
+
+            Assert.True((bool)start["success"]);
+            Assert.True(sentEvent.Wait(3000), "Flash command was not dispatched");
+
+            string frozenPath = Path.Combine(root, ((string)start["frozenManifestPath"]).Replace('/', Path.DirectorySeparatorChar));
+            JObject frozen = JObject.Parse(File.ReadAllText(frozenPath));
+            Assert.Equal(620, (int)frozen["cases"][0]["spawnDistance"]);
+
+            JObject command = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal(620, (int)command["spawnDistance"]);
+
+            task.HandleFlashResponse(new JObject
+            {
+                ["task"] = "arena_calibration_response",
+                ["callId"] = (int)command["callId"],
+                ["success"] = true,
+                ["status"] = "finished",
+                ["winner"] = "blue",
+                ["frames"] = 123,
+                ["durationMs"] = 456,
+                ["spawnDistance"] = 620,
+                ["blueX"] = 585,
+                ["redX"] = 1205,
+                ["blue"] = new JObject { ["maxHp"] = 1000, ["remainHp"] = 250, ["aliveCount"] = 1 },
+                ["red"] = new JObject { ["maxHp"] = 1000, ["remainHp"] = 0, ["aliveCount"] = 0 },
+                ["errors"] = new JArray()
+            }, delegate(string json) { });
+
+            JObject status = WaitForState(task, "completed");
+            string resultPath = Path.Combine(root, ((string)status["resultPath"]).Replace('/', Path.DirectorySeparatorChar));
+            JObject row = JObject.Parse(File.ReadAllLines(resultPath)[0]);
+            Assert.Equal(620, (int)row["requestedSpawnDistance"]);
+            Assert.Equal(620, (int)row["spawnDistance"]);
+            Assert.Equal(585, (int)row["blueX"]);
+            Assert.Equal(1205, (int)row["redX"]);
         }
 
         [Fact]
@@ -380,8 +439,8 @@ namespace CF7Launcher.Tests.Tasks
         {
             string root = CreateProjectRoot();
             WriteManifest(root, "pilot-hashed", 1,
-                "sha256:dbf14286bebf800931a45161c5ab42534806b201b7b2b99ec8818bf9519534d1",
-                "sha256:dd462e8e1737d6ba6b265993242504b0f284a1bd1b153ed61bc0f1d430a68683");
+                "sha256:a71eea3469696f8ace732e3b2dd2a0c454eff9004a077b2cc4dfe9eccd7e79a1",
+                "sha256:a2f95a4437800a198348ffa203a5121d4dfd3a59998a0c55fcbbc5bb9bbedd2c");
             ManualResetEventSlim sentEvent = new ManualResetEventSlim(false);
             var task = new ArenaCalibrationTask(root, delegate { return true; },
                 delegate(string payload) { sentEvent.Set(); },
@@ -394,7 +453,7 @@ namespace CF7Launcher.Tests.Tasks
             }));
 
             Assert.True((bool)start["success"]);
-            Assert.Equal("sha256:dbf14286bebf800931a45161c5ab42534806b201b7b2b99ec8818bf9519534d1",
+            Assert.Equal("sha256:a71eea3469696f8ace732e3b2dd2a0c454eff9004a077b2cc4dfe9eccd7e79a1",
                 (string)start["manifestHash"]);
             Assert.True(sentEvent.Wait(3000), "Flash command was not dispatched");
             WaitForState(task, "completed");
@@ -502,9 +561,27 @@ namespace CF7Launcher.Tests.Tasks
 
         private static string WriteManifest(string root, string batchId, int repeat, string manifestHash, string caseHash, string manifestBatchId)
         {
+            return WriteManifest(root, batchId, repeat, manifestHash, caseHash, manifestBatchId, null);
+        }
+
+        private static string WriteManifest(string root, string batchId, int repeat, string manifestHash, string caseHash, string manifestBatchId, int? spawnDistance)
+        {
             string dir = Path.Combine(root, "tmp", "arena-calibration", "batches", batchId);
             Directory.CreateDirectory(dir);
             string manifestPath = Path.Combine(dir, "case_manifest.json");
+            var testCase = new JObject
+            {
+                ["caseId"] = "pilot-thief-lv30x4-mirror",
+                ["blueRoster"] = ThiefRoster(),
+                ["redRoster"] = ThiefRoster(),
+                ["repeat"] = repeat,
+                ["timeoutFrames"] = 30,
+                ["tags"] = new JArray("pilot", "test"),
+                ["plannerReason"] = "unit test"
+            };
+            if (spawnDistance.HasValue)
+                testCase["spawnDistance"] = spawnDistance.Value;
+
             var manifest = new JObject
             {
                 ["schema"] = "arena-calibration.case-manifest.v1",
@@ -522,16 +599,7 @@ namespace CF7Launcher.Tests.Tasks
                 ["blueBench"] = JValue.CreateNull(),
                 ["cases"] = new JArray
                 {
-                    new JObject
-                    {
-                        ["caseId"] = "pilot-thief-lv30x4-mirror",
-                        ["blueRoster"] = ThiefRoster(),
-                        ["redRoster"] = ThiefRoster(),
-                        ["repeat"] = repeat,
-                        ["timeoutFrames"] = 30,
-                        ["tags"] = new JArray("pilot", "test"),
-                        ["plannerReason"] = "unit test"
-                    }
+                    testCase
                 }
             };
             if (!string.IsNullOrEmpty(caseHash))

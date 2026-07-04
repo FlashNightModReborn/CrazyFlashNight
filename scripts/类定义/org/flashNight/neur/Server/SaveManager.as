@@ -235,6 +235,7 @@ class org.flashNight.neur.Server.SaveManager {
     private var _protocol2Consumed:Boolean = false;
     private var _deferredResolutionAttempted:Boolean = false;
     private var _deferredDecisionSource:String = undefined;
+    private var _runtimeSaveLoaded:Boolean = false;
 
     // ── C2-β: 修复挂起态 ──
     // saveDecision="repairable" 时, preload() 不立即把 snapshot 喂给 _root.mydata,
@@ -290,6 +291,9 @@ class org.flashNight.neur.Server.SaveManager {
         _protocol2Consumed = false;
         _deferredResolutionAttempted = false;
         _deferredDecisionSource = undefined;
+        _runtimeSaveLoaded = false;
+        _root._saveRuntimeLoaded = false;
+        _root._saveRuntimeLoadedAttemptId = undefined;
         _prefetchedData = undefined;
         _prefetchedSlot = undefined;
         _prefetchGen++;
@@ -402,6 +406,7 @@ class org.flashNight.neur.Server.SaveManager {
 
         var sm:ServerManager = ServerManager.getInstance();
         sm.sendServerMessage("[SaveManager.saveAll] 角色=" + _root.角色名 + " 等级=" + _root.等级 + " 金钱=" + _root.金钱 + " savePath=" + _root.savePath);
+        if (!canWriteCurrentRootState(sm)) return false;
 
         FrameBroadcaster.pushUiState("sv:1");
 
@@ -458,6 +463,46 @@ class org.flashNight.neur.Server.SaveManager {
         return ok;
     }
 
+    private function canWriteCurrentRootState(sm:ServerManager):Boolean {
+        if (_root.斗兽标定禁存档 === true || _root._agentCalibrationNoSave === true) {
+            sm.sendServerMessage("[SaveManager.saveAll] blocked: calibration no-save mode");
+            return false;
+        }
+        if (_root.角色名 == undefined || _root.角色名 == null || String(_root.角色名).length == 0) {
+            sm.sendServerMessage("[SaveManager.saveAll] blocked: invalid role name");
+            return false;
+        }
+        if (_root.等级 == undefined || isNaN(Number(_root.等级))) {
+            sm.sendServerMessage("[SaveManager.saveAll] blocked: invalid level");
+            return false;
+        }
+        return true;
+    }
+
+    private function markRuntimeSaveLoaded(source:String):Void {
+        _runtimeSaveLoaded = true;
+        _root._saveRuntimeLoaded = true;
+        _root._saveRuntimeLoadedAttemptId = _root._bootstrapAttemptId;
+        publishRuntimeSaveStatus(true, source, undefined);
+    }
+
+    private function publishRuntimeSaveStatus(loaded:Boolean, source:String, reason:String):Void {
+        var sm:ServerManager = ServerManager.getInstance();
+        var payload:Object = {
+            loaded: loaded,
+            savePath: _root.savePath,
+            attemptId: _root._bootstrapAttemptId,
+            source: source,
+            role: (_root.角色名 != undefined && _root.角色名 != null) ? String(_root.角色名) : "",
+            level: _root.等级,
+            reason: reason
+        };
+        if (sm.isSocketConnected) {
+            sm.sendTaskToNode("agent_runtime_status", payload, null);
+        }
+        sm.sendServerMessage("[SaveManager.runtime] loaded=" + loaded + " source=" + source + " role=" + payload.role + " level=" + payload.level);
+    }
+
     /**
      * Phase 1b hook (10a-1 stub / 10b implementation)：
      * preload 收到 launcher load 响应 error 以 "tombstoned:" 开头时调用本方法，
@@ -480,6 +525,9 @@ class org.flashNight.neur.Server.SaveManager {
 
     public function preload():Void {
         var sm:ServerManager = ServerManager.getInstance();
+        _runtimeSaveLoaded = false;
+        _root._saveRuntimeLoaded = false;
+        _root._saveRuntimeLoadedAttemptId = undefined;
 
         // ── 幂等保护: asLoader frame 4 和主FLA frame 63 各调一次 ──
         if (_protocol2Consumed) {
@@ -630,7 +678,7 @@ class org.flashNight.neur.Server.SaveManager {
             _bootstrapSnapshotSource = undefined;
             sm.sendServerMessage("[SaveManager.loadAll] using launcher snapshot source=" + pSrc);
 
-            var pOk:Boolean = loadFromMydata(pSnap);
+            var pOk:Boolean = loadFromMydata(pSnap, "launcher_snapshot:" + pSrc);
             if (pOk) {
                 _deferredResolutionAttempted = false;
                 _deferredDecisionSource = undefined;
@@ -716,6 +764,7 @@ class org.flashNight.neur.Server.SaveManager {
                     _deferredResolutionAttempted = false;
                     _deferredDecisionSource = undefined;
                     _prefetchGen++;
+                    markRuntimeSaveLoaded("json_shadow");
                     return true;
                 }
             } else {
@@ -798,6 +847,7 @@ class org.flashNight.neur.Server.SaveManager {
         _deferredResolutionAttempted = false;
         _deferredDecisionSource = undefined;
         _prefetchGen++;
+        markRuntimeSaveLoaded("sol");
         runC4LateScanIfApplicable();  // C4: 兜底扫一次, 残留 fffd 时通知玩家 + launcher
         return true;
     }
@@ -1248,6 +1298,8 @@ class org.flashNight.neur.Server.SaveManager {
 
         // 数组槽位（unpackGameState 消费的最大索引+1）
         if (!(mydata[0] instanceof Array) || mydata[0].length < 14) return false;
+        if (mydata[0][0] == undefined || mydata[0][0] == null || String(mydata[0][0]).length == 0) return false;
+        if (mydata[0][3] == undefined || isNaN(Number(mydata[0][3]))) return false;
         if (!(mydata[1] instanceof Array) || mydata[1].length < 28) return false;
         if (mydata[3] == undefined) return false;
         if (!(mydata[4] instanceof Array) || mydata[4].length < 2) return false;
@@ -1299,7 +1351,7 @@ class org.flashNight.neur.Server.SaveManager {
      * 包含 tasks/pets/shop 处理 + 副作用链（带防御性 typeof 检查）。
      * loadAll 的 JSON 分支不调用此方法，而是用 _applyCore + SO 覆盖 + 副作用。
      */
-    public function loadFromMydata(mydata:Object):Boolean {
+    public function loadFromMydata(mydata:Object, source:String):Boolean {
         var sm:ServerManager = ServerManager.getInstance();
 
         if (!_applyCore(mydata)) {
@@ -1340,6 +1392,7 @@ class org.flashNight.neur.Server.SaveManager {
         if (typeof _root.是否达成任务检测 == "function") _root.是否达成任务检测();
 
         sm.sendServerMessage("[SaveManager.loadFromMydata] OK: " + _root.角色名 + " lv" + _root.等级);
+        markRuntimeSaveLoaded(source != undefined ? source : "mydata");
         return true;
     }
 

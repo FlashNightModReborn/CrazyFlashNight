@@ -1,0 +1,334 @@
+using System;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
+using CF7Launcher.Guardian;
+
+namespace CF7Launcher.Tasks
+{
+    /// <summary>
+    /// Local automation control plane for unattended arena calibration.
+    /// Keep this task thin: it exposes launcher lifecycle decisions, while
+    /// long waits, batch polling, analysis, and recovery live in tooling.
+    /// </summary>
+    public sealed class AgentControlTask
+    {
+        internal delegate void StartGameHandler(string slot, bool fresh, bool deferJsReveal, bool requireFlashReveal);
+
+        private static readonly Regex UnsafeSlotChars = new Regex(@"[\\/:\*\?""<>\|\r\n]", RegexOptions.Compiled);
+
+        private readonly Func<bool> _isSocketReady;
+        private readonly Func<JObject> _getArenaStatus;
+        private readonly Action<string> _rememberSlot;
+        private readonly object _gate = new object();
+
+        private Func<string> _getLaunchState;
+        private StartGameHandler _startGame;
+        private Action _revealOk;
+        private Action _cancelLaunch;
+        private Action _shutdown;
+        private Func<bool> _isRevealPerformed;
+        private Func<JObject> _getLaunchSaveStatus;
+        private JObject _runtimeSaveStatus;
+
+        public AgentControlTask(
+            Func<bool> isSocketReady,
+            Func<JObject> getArenaStatus,
+            Action<string> rememberSlot)
+        {
+            _isSocketReady = isSocketReady ?? delegate { return false; };
+            _getArenaStatus = getArenaStatus ?? delegate { return null; };
+            _rememberSlot = rememberSlot;
+            _getLaunchState = delegate { return "Unavailable"; };
+            _isRevealPerformed = delegate { return false; };
+            _getLaunchSaveStatus = delegate { return null; };
+        }
+
+        internal AgentControlTask(
+            Func<string> getLaunchState,
+            Func<bool> isSocketReady,
+            Func<bool> isRevealPerformed,
+            StartGameHandler startGame,
+            Action revealOk,
+            Action cancelLaunch,
+            Func<JObject> getArenaStatus,
+            Action shutdown,
+            Action<string> rememberSlot,
+            Func<JObject> getLaunchSaveStatus = null)
+            : this(isSocketReady, getArenaStatus, rememberSlot)
+        {
+            _getLaunchState = getLaunchState ?? delegate { return "Unavailable"; };
+            _isRevealPerformed = isRevealPerformed ?? delegate { return false; };
+            _startGame = startGame;
+            _revealOk = revealOk;
+            _cancelLaunch = cancelLaunch;
+            _shutdown = shutdown;
+            _getLaunchSaveStatus = getLaunchSaveStatus ?? delegate { return null; };
+        }
+
+        public void SetLaunchFlow(GameLaunchFlow launchFlow)
+        {
+            lock (_gate)
+            {
+                if (launchFlow == null)
+                {
+                    _getLaunchState = delegate { return "Unavailable"; };
+                    _isRevealPerformed = delegate { return false; };
+                    _getLaunchSaveStatus = delegate { return null; };
+                    _startGame = null;
+                    _revealOk = null;
+                    _cancelLaunch = null;
+                    return;
+                }
+
+                _getLaunchState = delegate { return launchFlow.CurrentState; };
+                _isRevealPerformed = delegate { return launchFlow.RevealPerformed; };
+                _getLaunchSaveStatus = delegate { return launchFlow.BuildAgentSaveStatus(); };
+                _startGame = delegate(string slot, bool fresh, bool deferJsReveal, bool requireFlashReveal)
+                {
+                    if (fresh) launchFlow.StartFreshGame(slot, deferJsReveal, requireFlashReveal);
+                    else launchFlow.StartGame(slot, deferJsReveal, requireFlashReveal);
+                };
+                _revealOk = delegate { launchFlow.OnJsRevealOk(); };
+                _cancelLaunch = delegate
+                {
+                    if (launchFlow.CurrentState != "Idle")
+                        launchFlow.Reset(null, "agent_cancel");
+                };
+            }
+        }
+
+        public void SetShutdownAction(Action shutdown)
+        {
+            lock (_gate) { _shutdown = shutdown; }
+        }
+
+        public string Handle(JObject msg)
+        {
+            string action = msg.Value<string>("action") ?? "status";
+            try
+            {
+                switch (action)
+                {
+                    case "status":
+                        return BuildStatus(true, null).ToString(Newtonsoft.Json.Formatting.None);
+                    case "start":
+                        return Start(msg).ToString(Newtonsoft.Json.Formatting.None);
+                    case "revealOk":
+                        return RevealOk().ToString(Newtonsoft.Json.Formatting.None);
+                    case "cancel":
+                        return Cancel().ToString(Newtonsoft.Json.Formatting.None);
+                    case "shutdown":
+                        return Shutdown().ToString(Newtonsoft.Json.Formatting.None);
+                    default:
+                        return BuildError("unsupported_action", "unsupported action: " + action).ToString(Newtonsoft.Json.Formatting.None);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[AgentControlTask] control exception: " + ex);
+                return BuildError("exception", ex.Message).ToString(Newtonsoft.Json.Formatting.None);
+            }
+        }
+
+        public string HandleRuntimeStatus(JObject msg)
+        {
+            JObject payload = msg.Value<JObject>("payload") ?? msg;
+            JObject copy = payload != null ? (JObject)payload.DeepClone() : new JObject();
+            lock (_gate)
+            {
+                _runtimeSaveStatus = copy;
+            }
+
+            JObject result = new JObject();
+            result["success"] = true;
+            result["ok"] = true;
+            result["task"] = "agent_runtime_status";
+            return result.ToString(Newtonsoft.Json.Formatting.None);
+        }
+
+        private JObject Start(JObject msg)
+        {
+            string slot = msg.Value<string>("slot");
+            if (!IsSafeSlot(slot))
+                return BuildError("invalid_slot", "slot is required and must not contain path separators or reserved path characters");
+
+            StartGameHandler startGame;
+            lock (_gate) { startGame = _startGame; }
+            if (startGame == null)
+                return BuildError("launch_flow_unavailable", "GameLaunchFlow is not initialized");
+
+            bool fresh = msg.Value<bool?>("fresh") ?? false;
+            bool deferJsReveal = msg.Value<bool?>("deferReveal") ?? false;
+            bool requireFlashReveal = msg.Value<bool?>("requireFlashReveal") ?? true;
+            bool rememberSlot = msg.Value<bool?>("rememberSlot") ?? false;
+
+            if (rememberSlot && _rememberSlot != null)
+                _rememberSlot(slot);
+
+            startGame(slot, fresh, deferJsReveal, requireFlashReveal);
+            return BuildStatus(true, fresh ? "fresh_start_requested" : "start_requested");
+        }
+
+        private JObject RevealOk()
+        {
+            Action revealOk;
+            lock (_gate) { revealOk = _revealOk; }
+            if (revealOk == null)
+                return BuildError("launch_flow_unavailable", "GameLaunchFlow is not initialized");
+            revealOk();
+            return BuildStatus(true, "reveal_ok_sent");
+        }
+
+        private JObject Cancel()
+        {
+            Action cancel;
+            lock (_gate) { cancel = _cancelLaunch; }
+            if (cancel == null)
+                return BuildError("launch_flow_unavailable", "GameLaunchFlow is not initialized");
+            cancel();
+            return BuildStatus(true, "cancel_requested");
+        }
+
+        private JObject Shutdown()
+        {
+            Action shutdown;
+            lock (_gate) { shutdown = _shutdown; }
+            if (shutdown == null)
+                return BuildError("shutdown_unavailable", "shutdown action is not initialized");
+            shutdown();
+            return BuildStatus(true, "shutdown_requested");
+        }
+
+        private JObject BuildStatus(bool success, string note)
+        {
+            string launchState;
+            Func<string> getLaunchState;
+            lock (_gate) { getLaunchState = _getLaunchState; }
+            try { launchState = getLaunchState != null ? getLaunchState() : "Unavailable"; }
+            catch (Exception ex) { launchState = "Error:" + ex.Message; }
+
+            bool socketReady = false;
+            try { socketReady = _isSocketReady(); } catch { }
+
+            JObject arena = null;
+            try { arena = _getArenaStatus(); } catch (Exception ex) { arena = BuildError("arena_status_exception", ex.Message); }
+            bool revealPerformed = false;
+            Func<bool> isRevealPerformed;
+            lock (_gate) { isRevealPerformed = _isRevealPerformed; }
+            try { revealPerformed = isRevealPerformed != null && isRevealPerformed(); } catch { }
+            bool arenaStatusReadable = arena != null
+                && ((arena.Value<bool?>("success") ?? arena.Value<bool?>("ok")) ?? false);
+
+            JObject save = null;
+            Func<JObject> getLaunchSaveStatus;
+            JObject runtimeSave;
+            lock (_gate)
+            {
+                getLaunchSaveStatus = _getLaunchSaveStatus;
+                runtimeSave = _runtimeSaveStatus != null ? (JObject)_runtimeSaveStatus.DeepClone() : null;
+            }
+            try { save = getLaunchSaveStatus != null ? getLaunchSaveStatus() : null; }
+            catch (Exception ex) { save = BuildError("save_status_exception", ex.Message); }
+
+            bool saveDecisionSafe = IsSaveDecisionSafe(save);
+            bool runtimeSaveLoaded = IsRuntimeSaveLoaded(save, runtimeSave);
+            JArray readyBlockedBy = BuildReadyBlockers(
+                socketReady,
+                revealPerformed,
+                launchState,
+                arenaStatusReadable,
+                saveDecisionSafe,
+                runtimeSaveLoaded);
+
+            JObject status = new JObject();
+            status["success"] = success;
+            status["ok"] = success;
+            status["task"] = "agent_control";
+            status["note"] = note;
+            status["launchState"] = launchState;
+            status["revealPerformed"] = revealPerformed;
+            status["socketConnected"] = socketReady;
+            status["readyForArenaCalibration"] = readyBlockedBy.Count == 0;
+            status["readyBlockedBy"] = readyBlockedBy;
+            status["save"] = save != null ? (JToken)save : JValue.CreateNull();
+            status["saveRuntime"] = runtimeSave != null ? (JToken)runtimeSave : JValue.CreateNull();
+            status["arenaCalibration"] = arena != null ? (JToken)arena : JValue.CreateNull();
+            return status;
+        }
+
+        private static JObject BuildError(string code, string message)
+        {
+            JObject error = new JObject();
+            error["success"] = false;
+            error["ok"] = false;
+            error["task"] = "agent_control";
+            error["error"] = code;
+            error["message"] = message;
+            return error;
+        }
+
+        private static bool IsSafeSlot(string slot)
+        {
+            if (string.IsNullOrEmpty(slot))
+                return false;
+            if (slot == "." || slot == ".." || slot.IndexOf("..", StringComparison.Ordinal) >= 0)
+                return false;
+            return !UnsafeSlotChars.IsMatch(slot);
+        }
+
+        private static bool IsSaveDecisionSafe(JObject save)
+        {
+            if (save == null) return false;
+            string decision = save.Value<string>("decision");
+            string kind = save.Value<string>("kind");
+            return string.Equals(decision, "snapshot", StringComparison.Ordinal)
+                && string.Equals(kind, "Snapshot", StringComparison.Ordinal);
+        }
+
+        private static bool IsRuntimeSaveLoaded(JObject save, JObject runtime)
+        {
+            if (save == null || runtime == null) return false;
+            if ((runtime.Value<bool?>("loaded") ?? false) != true) return false;
+
+            string expectedAttempt = save.Value<string>("attemptId");
+            string actualAttempt = runtime.Value<string>("attemptId");
+            if (string.IsNullOrEmpty(expectedAttempt)
+                || !string.Equals(expectedAttempt, actualAttempt, StringComparison.Ordinal))
+                return false;
+
+            string expectedSlot = save.Value<string>("slot");
+            string actualSlot = runtime.Value<string>("savePath");
+            if (string.IsNullOrEmpty(expectedSlot)
+                || !string.Equals(expectedSlot, actualSlot, StringComparison.Ordinal))
+                return false;
+
+            string role = runtime.Value<string>("role");
+            if (string.IsNullOrEmpty(role)) return false;
+
+            JToken levelToken = runtime["level"];
+            if (levelToken == null || levelToken.Type == JTokenType.Null) return false;
+            double level;
+            try { level = levelToken.Value<double>(); }
+            catch { return false; }
+            return !double.IsNaN(level);
+        }
+
+        private static JArray BuildReadyBlockers(
+            bool socketReady,
+            bool revealPerformed,
+            string launchState,
+            bool arenaStatusReadable,
+            bool saveDecisionSafe,
+            bool runtimeSaveLoaded)
+        {
+            JArray blockers = new JArray();
+            if (!socketReady) blockers.Add("socket_not_connected");
+            if (!revealPerformed) blockers.Add("flash_not_revealed");
+            if (!string.Equals(launchState, "Ready", StringComparison.Ordinal)) blockers.Add("launcher_not_ready");
+            if (!arenaStatusReadable) blockers.Add("arena_status_unreadable");
+            if (!saveDecisionSafe) blockers.Add("save_decision_unsafe");
+            if (!runtimeSaveLoaded) blockers.Add("runtime_save_not_loaded");
+            return blockers;
+        }
+    }
+}

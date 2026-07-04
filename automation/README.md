@@ -53,6 +53,35 @@ cd "<项目根目录>\\automation"
 - 启动 Guardian Launcher
 - 走当前默认运行链路
 - 使用内嵌总线与现有宿主架构
+- 清理已失效的 `launcher_ports.json`，并等待新的端口文件写入后再返回；若 Core 进程提前退出或 30 秒内未写端口，脚本返回失败
+
+### 无人值守斗兽标定
+
+斗兽标定的无人值守外层入口在仓库根目录运行：
+
+```powershell
+chcp.com 65001 | Out-Null
+node tools/arena-calibration/run-unattended.js `
+  --slot cf7_agent_arena_calibration `
+  --seed-slot crazyflasher7_saves2 `
+  --manifest tmp/arena-calibration/batches/<batchId>/case_manifest.json
+```
+
+`--slot` 缺省为 `cf7_agent_arena_calibration`，也可以显式传入；runner 会在启动前把该专用槽位从 `--seed-slot` 或最新有效 shadow 存档播种，并备份/移除目标槽位残留 SOL，避免复用运行中的旧 SOL。默认拒绝 `crazyflasher7_saves*` 正式槽位与 `--fresh`，除非显式传 `--allow-live-slot` / `--allow-fresh`，这两个开关只用于人工取证，不用于无人值守批跑。
+
+该脚本会在需要时调用 `automation/start.ps1` 启动 Launcher，通过 HTTP `/task` 的 `agent_control` 选择专用存档；Flash reveal 后通过 AS2 agent 入口执行原“确认进入游戏”动作，等待 `readyForArenaCalibration`。该 ready 必须同时满足 Launcher 存档决议为安全 snapshot、AS2 已完成 `SaveManager.loadAll()` 并回报 `agent_runtime_status`、socket/reveal/arena status 均就绪；随后才调用 `arena_calibration startBatch/status` 跑批次并生成 summary / run-report。遇到游戏崩溃、socket/HTTP 断开、batch timeout、缺行或异常行时，会生成 rerun manifest，并按 `--max-recovery-attempts`（默认 1）自动关闭 Launcher、重启进档、补跑剩余 case；每轮 attempt、最终失败清单和建议都会写入 `run-report.*`。它不会自动修改战斗代码；如要生成最小 pilot，可显式加 `--generate-pilot --batch-id <id>`。
+
+默认启动前会先跑轻量门禁 `--build-gate arena-tools`（即 `node tools/arena-calibration/run-checks.js`）。如本轮确实需要重编译或验证指定栈，可显式传：
+
+```powershell
+node tools/arena-calibration/run-unattended.js `
+  --slot cf7_agent_arena_calibration `
+  --seed-slot crazyflasher7_saves2 `
+  --manifest tmp/arena-calibration/batches/<batchId>/case_manifest.json `
+  --build-gate launcher
+```
+
+可选 gate：`none`、`arena-tools`、`launcher-build`、`launcher-tests`、`launcher`、`as2-publish`、`as2-test`。除 `arena-tools` 外，runner 会先尝试关闭已有 Launcher，再执行 gate；失败会写入 run-report 并停止，不继续进游戏。自动恢复只消费 runner 自己生成的 rerun manifest，不会在失败后自行修改业务代码或反复编译。
 
 ### 兼容旧入口
 

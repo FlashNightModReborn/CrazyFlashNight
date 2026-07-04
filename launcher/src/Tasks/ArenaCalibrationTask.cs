@@ -14,6 +14,8 @@ namespace CF7Launcher.Tasks
 {
     public sealed class ArenaCalibrationTask
     {
+        private const int DefaultSpawnDistance = 650;
+
         private sealed class CalibrationCase
         {
             public string CaseId;
@@ -22,6 +24,7 @@ namespace CF7Launcher.Tasks
             public JArray RedRoster;
             public int Repeat;
             public int TimeoutFrames;
+            public int SpawnDistance;
         }
 
         private sealed class BatchManifest
@@ -393,6 +396,7 @@ namespace CF7Launcher.Tasks
             command["runId"] = runId;
             command["repeatIndex"] = repeatIndex;
             command["timeoutFrames"] = testCase.TimeoutFrames;
+            command["spawnDistance"] = testCase.SpawnDistance;
             command["blueRoster"] = ToFlashRoster(testCase.BlueRoster);
             command["redRoster"] = ToFlashRoster(testCase.RedRoster);
             return command;
@@ -449,6 +453,9 @@ namespace CF7Launcher.Tasks
             JObject row = BuildResultEnvelope(manifest, testCase, repeatIndex, runId, startedAtUtc, status, winner);
             CopyOptionalNumber(result, row, "frames");
             CopyOptionalNumber(result, row, "durationMs");
+            CopyOptionalNumber(result, row, "spawnDistance");
+            CopyOptionalNumber(result, row, "blueX");
+            CopyOptionalNumber(result, row, "redX");
             row["blue"] = NormalizeSideSummary(result.Value<JObject>("blue"));
             row["red"] = NormalizeSideSummary(result.Value<JObject>("red"));
             row["errors"] = NormalizeErrors(result["errors"]);
@@ -500,6 +507,7 @@ namespace CF7Launcher.Tasks
             row["winner"] = winner;
             row["startedAt"] = startedAtUtc.ToString("o");
             row["completedAt"] = DateTime.UtcNow.ToString("o");
+            row["requestedSpawnDistance"] = testCase.SpawnDistance;
             return row;
         }
 
@@ -604,6 +612,8 @@ namespace CF7Launcher.Tasks
                 normalizedCase["caseId"] = "arena-custom-case";
             if (normalizedCase["repeat"] == null)
                 normalizedCase["repeat"] = PositiveInt(msg["repeat"], "repeat", 1);
+            if (normalizedCase["spawnDistance"] == null && msg["spawnDistance"] != null)
+                normalizedCase["spawnDistance"] = PositiveInt(msg["spawnDistance"], "spawnDistance", 0);
 
             int timeoutFrames = PositiveInt(
                 normalizedCase["timeoutFrames"] ?? msg["timeoutFrames"],
@@ -682,6 +692,7 @@ namespace CF7Launcher.Tasks
 
                 int caseRepeat = PositiveInt(sourceCase["repeat"], "cases[" + i + "].repeat", repeat);
                 int caseTimeout = PositiveInt(sourceCase["timeoutFrames"], "cases[" + i + "].timeoutFrames", timeoutFrames);
+                int caseSpawnDistance = PositiveInt(sourceCase["spawnDistance"], "cases[" + i + "].spawnDistance", DefaultSpawnDistance);
                 JArray blueRoster = NormalizeRoster(sourceCase["blueRoster"] as JArray, "cases[" + i + "].blueRoster");
                 JArray redRoster = NormalizeRoster(sourceCase["redRoster"] as JArray, "cases[" + i + "].redRoster");
 
@@ -691,6 +702,7 @@ namespace CF7Launcher.Tasks
                 frozenCase["redRoster"] = redRoster.DeepClone();
                 frozenCase["repeat"] = caseRepeat;
                 frozenCase["timeoutFrames"] = caseTimeout;
+                frozenCase["spawnDistance"] = caseSpawnDistance;
                 frozenCase["tags"] = sourceCase["tags"] != null ? sourceCase["tags"].DeepClone() : new JArray();
                 frozenCase["plannerReason"] = sourceCase.Value<string>("plannerReason") ?? "";
 
@@ -700,6 +712,7 @@ namespace CF7Launcher.Tasks
                 hashInput["redRoster"] = redRoster.DeepClone();
                 hashInput["repeat"] = caseRepeat;
                 hashInput["timeoutFrames"] = caseTimeout;
+                hashInput["spawnDistance"] = caseSpawnDistance;
                 string caseHash = Sha256OfToken(hashInput);
                 frozenCase["caseHash"] = caseHash;
 
@@ -715,7 +728,8 @@ namespace CF7Launcher.Tasks
                     BlueRoster = blueRoster,
                     RedRoster = redRoster,
                     Repeat = caseRepeat,
-                    TimeoutFrames = caseTimeout
+                    TimeoutFrames = caseTimeout,
+                    SpawnDistance = caseSpawnDistance
                 });
             }
 

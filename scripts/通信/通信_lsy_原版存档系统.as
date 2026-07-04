@@ -33,6 +33,21 @@ _root.存档恢复等待中 = function() { return SaveManager.getInstance().isRe
 _root.新建角色 = function() { return SaveManager.getInstance().newCharacter(); };
 _root.删除存盘 = function() { SaveManager.getInstance().deleteSlot(); };
 
+// Agent 专用：启动器已完成 Protocol 2 存档决议后，自动执行原 UI 的“确认进入游戏”动作。
+// 仍由 SaveManager.loadAll() 做结构校验与 agent_runtime_status 上报；失败时不跳转。
+_root.agentEnterResolvedSave = function() {
+    if (_root._saveRuntimeLoaded == true) {
+        _root.debugLastResult = "agentEnterResolvedSave already loaded role=" + _root.角色名 + " level=" + _root.等级;
+        return true;
+    }
+    var ok:Boolean = SaveManager.getInstance().loadAll();
+    _root.debugLastResult = "agentEnterResolvedSave ok=" + ok + " role=" + _root.角色名 + " level=" + _root.等级;
+    if (ok == true) {
+        _root.gotoAndPlay("读取数据成功");
+    }
+    return ok;
+};
+
 // 折入 saveAll/loadAll，保留空壳防外部调用报错
 _root.本地存盘战宠 = function() {};
 _root.读取本地存盘战宠 = function() {};
