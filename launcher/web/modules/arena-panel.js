@@ -111,6 +111,8 @@
     var _customConfirmOpen = false;
     var _customPollTimer = 0;
     var _customSampleIndex = 0;
+    var _customUndo = null;
+    var _customResultReturnBaseRequired = false;
 
     // ════════════════════════════════════════════════════════════════════════════
     // Panel 注册
@@ -285,9 +287,10 @@
                     '<div class="arena-custom-editor-title">配置赛程与阵容</div>' +
                     '<div class="arena-custom-editor-meta">配置总览管理赛程与双方阵容，单方编辑页提供完整单位目录空间</div>' +
                 '</div>' +
-                '<div class="arena-custom-editor-actions">' +
-                    '<button class="arena-card-btn-enter" type="button" data-custom-editor-action="done" data-audio-cue="confirm">完成</button>' +
-                '</div>' +
+                    '<div class="arena-custom-editor-actions">' +
+                        '<button class="arena-custom-btn" type="button" id="arena-custom-undo" data-custom-editor-action="undo" data-audio-cue="cancel" disabled>撤销</button>' +
+                        '<button class="arena-card-btn-enter" type="button" data-custom-editor-action="done" data-audio-cue="confirm">完成</button>' +
+                    '</div>' +
             '</div>' +
             '<div class="arena-custom-editor-page arena-custom-config-page" data-custom-editor-page="config">' +
                 '<div class="arena-custom-config-panel">' +
@@ -296,8 +299,9 @@
                             '<button class="arena-custom-btn" type="button" data-custom-mode="mvm" data-audio-cue="confirm">怪物 vs 怪物</button>' +
                             '<button class="arena-custom-btn" type="button" data-custom-mode="pve" data-audio-cue="confirm">玩家 vs 怪物</button>' +
                         '</div>' +
-                        '<label class="arena-custom-code-label" for="arena-custom-code-input">赛程代码</label>' +
+                        '<label class="arena-custom-code-label" for="arena-custom-code-input">赛程代码（实时解析）</label>' +
                         '<textarea id="arena-custom-code-input" class="arena-custom-code-input" rows="2" spellcheck="false"></textarea>' +
+                        '<div class="arena-custom-code-status" id="arena-custom-code-status"></div>' +
                     '</div>' +
                     '<div class="arena-custom-config-tools">' +
                         '<label class="arena-custom-code-label" for="arena-custom-preset-select">整局待标定组合</label>' +
@@ -307,7 +311,7 @@
                             '<button class="arena-custom-btn" type="button" data-custom-action="random" data-audio-cue="confirm">随机整局</button>' +
                         '</div>' +
                         '<div class="arena-custom-actions arena-custom-editor-code-actions" id="arena-custom-swap-actions">' +
-                            '<button class="arena-custom-btn" type="button" data-custom-action="import" data-audio-cue="confirm">导入代码</button>' +
+                            '<button class="arena-custom-btn" type="button" data-custom-action="import" data-audio-cue="confirm">校验代码</button>' +
                             '<button class="arena-custom-btn" type="button" data-custom-action="copy" data-audio-cue="confirm">复制代码</button>' +
                             '<button class="arena-custom-btn" type="button" data-custom-action="swap-sides" data-audio-cue="confirm">交换红蓝</button>' +
                         '</div>' +
@@ -648,11 +652,13 @@
         _knownEnemies = {};
         _knownEnemyCount = 0;
         _customResult = normalizeCustomResultInitData(initData);
+        _customResultReturnBaseRequired = !!_customResult;
         _customMatch = null;
         _customEditor = null;
         _customSelectedSide = 'blue';
         _customEditorPage = 'config';
         _customConfirmOpen = false;
+        _customUndo = null;
         if (_customResult && _customResult.matchCode) {
             _customMatch = {
                 code: String(_customResult.matchCode),
@@ -699,6 +705,10 @@
             requestCustomResultReturnBase();
             return;
         }
+        if (_customResultReturnBaseRequired) {
+            requestCustomResultReturnBase();
+            return;
+        }
         requestClose();
     }
 
@@ -729,6 +739,8 @@
         _customSelectedSide = 'blue';
         _customEditorPage = 'config';
         _customConfirmOpen = false;
+        _customUndo = null;
+        _customResultReturnBaseRequired = false;
         clearCustomPoll();
         _customSampleIndex = 0;
         _initDifficulty = '';
@@ -1053,6 +1065,67 @@
         return _customEditor;
     }
 
+    function cloneCustomPlainObject(value) {
+        if (!value || typeof value !== 'object') return {};
+        var out = {};
+        for (var key in value) {
+            if (Object.prototype.hasOwnProperty.call(value, key)) out[key] = value[key];
+        }
+        return out;
+    }
+
+    function cloneCustomEditorSnapshot(editor) {
+        editor = editor || ensureCustomEditorState();
+        return {
+            mode: editor.mode === 'pve' ? 'pve' : 'mvm',
+            seed: editor.seed || 0,
+            timeoutFrames: editor.timeoutFrames || ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
+            blue: cloneCustomRoster(editor.blue || []),
+            red: cloneCustomRoster(editor.red || []),
+            query: editor.query || '',
+            filter: editor.filter || 'all',
+            expandedFactions: cloneCustomPlainObject(editor.expandedFactions),
+            unitVisibleRows: editor.unitVisibleRows || CUSTOM_BROWSER_BATCH_SIZE,
+            unitScrollableRows: editor.unitScrollableRows || 0
+        };
+    }
+
+    function captureCustomUndo(label) {
+        if (!_customEditor) ensureCustomEditorState();
+        _customUndo = {
+            label: label || '上一步',
+            editor: cloneCustomEditorSnapshot(_customEditor),
+            selectedSide: _customSelectedSide,
+            editorPage: _customEditorPage
+        };
+    }
+
+    function restoreCustomUndo() {
+        if (!_customUndo) {
+            showToast('暂无可撤销操作');
+            return;
+        }
+        var undo = _customUndo;
+        _customUndo = null;
+        _customEditor = cloneCustomEditorSnapshot(undo.editor);
+        _customSelectedSide = undo.selectedSide === 'red' ? 'red' : 'blue';
+        if (_customEditor.mode === 'pve') _customSelectedSide = 'red';
+        _customEditorPage = undo.editorPage === 'params' ? 'side' : (undo.editorPage || 'config');
+        _customParamEditor = null;
+        syncCustomCodeFromEditor();
+        renderCustomEditor();
+        renderCustomUnitBrowser();
+        showToast('已撤销：' + undo.label);
+    }
+
+    function renderCustomUndoState() {
+        var btn = _el ? _el.querySelector('#arena-custom-undo') : null;
+        if (!btn) return;
+        btn.disabled = !_customUndo || _busy || customRunActive();
+        btn.textContent = _customUndo ? ('撤销：' + truncateCustomText(_customUndo.label, 10)) : '撤销';
+        btn.title = _customUndo ? ('撤销 ' + _customUndo.label) : '暂无可撤销操作';
+    }
+
     function cloneCustomRoster(roster) {
         var out = [];
         roster = roster || [];
@@ -1303,12 +1376,13 @@
         renderCustomEditor();
         renderCustomUnitBrowser();
         renderCustomConfirm();
+        renderCustomCodeStatus();
         if (!summaryEl || !caseEl || !statusEl || !feeEl || !btn || !abortBtn) return;
 
         if (!_customMatch.parsed) {
             summaryEl.innerHTML = buildCustomErrorHtml(_customMatch);
             caseEl.textContent = '等待有效赛程代码';
-            statusEl.textContent = customRunText();
+            statusEl.innerHTML = buildCustomRunStatusHtml(false);
             feeEl.textContent = '--';
             btn.disabled = true;
             abortBtn.disabled = true;
@@ -1367,7 +1441,7 @@
                 ' · 上限 ' + parsed.calibrationCase.timeoutFrames + ' 帧' +
                 ' · 无掉落 / 无经验 / 原死亡流程';
         }
-        statusEl.textContent = parsed.mode === 'pve' ? '状态：可挑战' : customRunText();
+        statusEl.innerHTML = buildCustomRunStatusHtml(parsed.mode === 'pve');
         feeEl.textContent = formatMoney(parsed.venueFeeEstimate);
         btn.textContent = _customConfirmOpen ? '确认页已打开' : '检查并确认';
         btn.disabled = _busy || (parsed.mode !== 'pve' && customRunActive());
@@ -1390,6 +1464,7 @@
             var mode = modeBtns[mb].getAttribute('data-custom-mode');
             modeBtns[mb].classList.toggle('arena-custom-mode-active', mode === editor.mode);
         }
+        renderCustomUndoState();
 
         var sideConfigs = _el.querySelector('.arena-custom-side-configs');
         if (sideConfigs) sideConfigs.classList.toggle('arena-custom-side-configs-pve', editor.mode === 'pve');
@@ -1597,8 +1672,17 @@
 
         var mode = state.mode === 'xml' ? 'xml' : 'json';
         var draft = mode === 'xml' ? state.draftXml : state.draftJson;
+        var dirty = customParamEditorDirty();
         var errorHtml = state.error ? '<div class="arena-custom-param-error">' + escapeHtml(state.error) + '</div>' : '';
+        var dirtyHtml = dirty
+            ? '<div class="arena-custom-param-dirty">草稿未应用；点“应用”写入赛程，点“放弃返回”丢弃本页草稿。</div>'
+            : '';
         var invalidClass = state.error ? ' arena-custom-param-editor-input-invalid' : '';
+        var backBtn = _el.querySelector('[data-custom-param-action="back"]');
+        if (backBtn) {
+            backBtn.textContent = dirty ? '放弃返回' : '返回阵容';
+            backBtn.classList.toggle('arena-custom-btn-warn', dirty);
+        }
         bodyEl.innerHTML =
             '<div class="arena-custom-param-workbench">' +
                 '<div class="arena-custom-param-main">' +
@@ -1610,6 +1694,7 @@
                         '<button class="arena-custom-btn" type="button" data-custom-param-action="clear" data-audio-cue="cancel">清空参数</button>' +
                     '</div>' +
                     '<textarea class="arena-custom-param-editor-input' + invalidClass + '" spellcheck="false" data-custom-param-editor-input>' + escapeHtml(draft) + '</textarea>' +
+                    dirtyHtml +
                     errorHtml +
                 '</div>' +
                 '<div class="arena-custom-param-inspector">' +
@@ -1623,11 +1708,59 @@
             '</div>';
     }
 
+    function customParamEditorDirty() {
+        if (!_customParamEditor) return false;
+        var entry = getCustomRosterEntry(_customParamEditor.side, _customParamEditor.index);
+        if (!entry) return false;
+        var mode = _customParamEditor.mode === 'xml' ? 'xml' : 'json';
+        try {
+            if (mode === 'xml') {
+                return String(_customParamEditor.draftXml || '') !== formatCustomParametersXml(entry.parameters);
+            }
+            return String(_customParamEditor.draftJson || '') !== formatCustomParameters(entry.parameters);
+        } catch (err) {
+            return true;
+        }
+    }
+
+    function leaveCustomParamEditorDiscardingDraft() {
+        var side = _customParamEditor ? _customParamEditor.side : _customSelectedSide;
+        if (customParamEditorDirty()) showToast('已放弃未应用参数草稿');
+        showCustomSideEditorPage(side);
+    }
+
     function updateCustomParamDraft(text) {
         if (!_customParamEditor) return;
         if (_customParamEditor.mode === 'xml') _customParamEditor.draftXml = String(text || '');
         else _customParamEditor.draftJson = String(text || '');
         _customParamEditor.error = '';
+        updateCustomParamInlineState();
+    }
+
+    function updateCustomParamInlineState() {
+        if (!_el || _customEditorPage !== 'params') return;
+        var input = _el.querySelector('[data-custom-param-editor-input]');
+        if (!input) return;
+        input.classList.remove('arena-custom-param-editor-input-invalid');
+        var error = _el.querySelector('.arena-custom-param-error');
+        if (error && error.parentNode) error.parentNode.removeChild(error);
+
+        var dirty = customParamEditorDirty();
+        var marker = _el.querySelector('.arena-custom-param-dirty');
+        if (dirty && !marker) {
+            marker = document.createElement('div');
+            marker.className = 'arena-custom-param-dirty';
+            marker.textContent = '草稿未应用；点“应用”写入赛程，点“放弃返回”丢弃本页草稿。';
+            if (input.parentNode) input.parentNode.insertBefore(marker, input.nextSibling);
+        } else if (!dirty && marker && marker.parentNode) {
+            marker.parentNode.removeChild(marker);
+        }
+
+        var backBtn = _el.querySelector('[data-custom-param-action="back"]');
+        if (backBtn) {
+            backBtn.textContent = dirty ? '放弃返回' : '返回阵容';
+            backBtn.classList.toggle('arena-custom-btn-warn', dirty);
+        }
     }
 
     function setCustomParamEditorMode(mode) {
@@ -2030,6 +2163,62 @@
         return text;
     }
 
+    function buildCustomRunStatusHtml(isPve) {
+        if (isPve) {
+            return buildCustomStatusChip('状态', '可挑战', 'ok') +
+                buildCustomStatusChip('路径', '标准竞技场', '');
+        }
+        if (!_customRun) return buildCustomStatusChip('状态', '未委托', '');
+        var state = _customRun.state || 'unknown';
+        var html = buildCustomStatusChip('状态', customRunStateLabel(state), customRunTerminal() ? 'done' : 'active');
+        if (_customRun.completedRuns != null && _customRun.totalRuns != null) {
+            html += buildCustomStatusChip('进度', _customRun.completedRuns + '/' + _customRun.totalRuns, '');
+        }
+        if (_customRun.lastResult && customRunTerminal()) {
+            html += buildCustomStatusChip('结果', customResultSummaryText(_customRun.lastResult).replace(/^结果：/, ''), 'done');
+        }
+        if (_customRun.batchId) html += buildCustomStatusChip('批次', _customRun.batchId, 'mono');
+        if (_customRun.resultPath && customRunTerminal()) html += buildCustomStatusChip('日志', _customRun.resultPath, 'mono');
+        if (_customRun.lastError) html += buildCustomStatusChip('错误', _customRun.lastError, 'error');
+        if (_customRun.error && !_customRun.success) html += buildCustomStatusChip('错误', _customRun.error, 'error');
+        return html;
+    }
+
+    function customRunStateLabel(state) {
+        if (state === 'queued') return '排队中';
+        if (state === 'running') return '运行中';
+        if (state === 'abort_requested') return '中止中';
+        if (state === 'completed') return '已完成';
+        if (state === 'failed') return '失败';
+        if (state === 'aborted') return '已中止';
+        if (state === 'idle') return '空闲';
+        return state || '未知';
+    }
+
+    function buildCustomStatusChip(label, value, kind) {
+        var cls = 'arena-custom-status-chip' + (kind ? ' arena-custom-status-chip-' + kind : '');
+        return '<span class="' + cls + '"><em>' + escapeHtml(label) + '</em><b>' + escapeHtml(value == null ? '--' : value) + '</b></span>';
+    }
+
+    function renderCustomCodeStatus() {
+        var el = _el ? _el.querySelector('#arena-custom-code-status') : null;
+        if (!el || !_customMatch) return;
+        if (_customMatch.parsed) {
+            var parsed = _customMatch.parsed;
+            var left = parsed.mode === 'pve'
+                ? customRosterTotal(parsed.enemyRoster)
+                : customRosterTotal(parsed.blueRoster);
+            var right = parsed.mode === 'pve'
+                ? 1
+                : customRosterTotal(parsed.redRoster);
+            el.className = 'arena-custom-code-status arena-custom-code-status-ok';
+            el.textContent = '实时解析 OK · mode=' + parsed.mode + ' · seed=' + parsed.seed + ' · ' + left + ' vs ' + right;
+        } else {
+            el.className = 'arena-custom-code-status arena-custom-code-status-error';
+            el.textContent = '实时解析失败 · ' + (_customMatch.error || '赛程代码无效');
+        }
+    }
+
     function customResultSummaryText(result) {
         if (!result) return '结果：未知';
         var winner = String(result.winner || 'none');
@@ -2065,7 +2254,7 @@
                         '<h2 class="arena-custom-result-title ' + outcome.className + '">' + escapeHtml(outcome.label) + '</h2>' +
                         '<div class="arena-custom-result-meta">' + escapeHtml(meta || '无战斗摘要') + '</div>' +
                     '</div>' +
-                    '<button class="arena-custom-result-close" type="button" data-custom-result-action="back" data-audio-cue="confirm">确认返回基地</button>' +
+                    '<button class="arena-custom-result-close" type="button" data-custom-result-action="back" data-audio-cue="confirm">返回基地</button>' +
                 '</div>' +
                 '<div class="arena-custom-result-sides">' +
                     buildCustomResultSideHtml('blue', '蓝方', result ? result.blue : null) +
@@ -2082,7 +2271,8 @@
                 (error ? '<div class="arena-custom-result-error">' + escapeHtml(error) + '</div>' : '') +
                 '<div class="arena-custom-result-actions">' +
                     '<button class="arena-custom-btn" type="button" data-custom-result-action="copy" data-audio-cue="confirm">复制代码</button>' +
-                    '<button class="arena-card-btn-enter" type="button" data-custom-result-action="back" data-audio-cue="confirm">返回基地</button>' +
+                    '<button class="arena-custom-btn" type="button" data-custom-result-action="back" data-audio-cue="confirm">返回基地</button>' +
+                    '<button class="arena-card-btn-enter arena-custom-result-reopen" type="button" data-custom-result-action="reopen" data-audio-cue="confirm">再赛一场</button>' +
                 '</div>' +
             '</div>';
     }
@@ -2158,6 +2348,10 @@
                     copyCustomMatchCode();
                     return;
                 }
+                if (action === 'reopen') {
+                    reopenCustomResultPanel();
+                    return;
+                }
             }
             node = node.parentNode;
         }
@@ -2166,6 +2360,21 @@
     function onCustomResultBack() {
         if (_busy) return;
         requestCustomResultReturnBase();
+    }
+
+    function reopenCustomResultPanel() {
+        if (_busy) return;
+        ensureCustomMatchState();
+        if (_customMatch && _customMatch.parsed) _customMatch.code = _customMatch.parsed.canonical;
+        _customRun = null;
+        _customResult = null;
+        _customConfirmOpen = false;
+        _customEditorPage = 'config';
+        _customParamEditor = null;
+        _customUndo = null;
+        clearCustomPoll();
+        rebuildForMode('custom');
+        showToast('已回到定制赛面板，可再次确认开赛');
     }
 
     function applyCustomRunStatus(data) {
@@ -2300,6 +2509,7 @@
         mode = mode === 'pve' ? 'pve' : 'mvm';
         var editor = ensureCustomEditorState();
         if (editor.mode === mode) return;
+        captureCustomUndo('切换模式');
         editor.mode = mode;
         if (mode === 'pve') {
             _customSelectedSide = 'red';
@@ -2320,6 +2530,7 @@
 
     function applyRandomCustomPreset() {
         var presets = getCustomPresets();
+        captureCustomUndo('随机整局');
         if (!presets.length) {
             applyCustomMatchCode(getDefaultCustomMatchCode(), '已载入默认组合');
             return;
@@ -2337,6 +2548,7 @@
     function applySelectedCustomPreset() {
         var select = _el ? _el.querySelector('#arena-custom-preset-select') : null;
         var preset = findCustomPresetById(select ? select.value : '');
+        captureCustomUndo('载入整局');
         applyCustomPresetCodeForCurrentMode((preset && preset.code) || getDefaultCustomMatchCode(), '已载入待标定组合');
     }
 
@@ -2384,6 +2596,7 @@
         var roster = parsed.mode === 'pve'
             ? parsed.enemyRoster
             : ((parsed.redRoster && parsed.redRoster.length) ? parsed.redRoster : parsed.blueRoster);
+        captureCustomUndo(customSideLabel(side) + '随机组合');
         setCustomSideRoster(side, roster || []);
         showToast(customSideLabel(side) + '已随机抽取待标定组合');
     }
@@ -2426,12 +2639,14 @@
             showToast('暂无可读取配置');
             return;
         }
+        captureCustomUndo(customSideLabel(side) + '读取配置');
         setCustomSideRoster(side, saved.roster);
         showToast(customSideLabel(side) + '已读取配置');
     }
 
     function swapCustomSides() {
         var editor = ensureCustomEditorState();
+        captureCustomUndo('交换红蓝');
         var nextBlue = cloneCustomRoster(editor.red);
         var nextRed = cloneCustomRoster(editor.blue);
         editor.blue = nextBlue;
@@ -2550,7 +2765,7 @@
                 var editorAction = node.getAttribute('data-custom-editor-action');
                 if (editorAction === 'back' || editorAction === 'done') {
                     if (editorAction === 'back' && _customEditorPage === 'params') {
-                        showCustomSideEditorPage(_customParamEditor ? _customParamEditor.side : _customSelectedSide);
+                        leaveCustomParamEditorDiscardingDraft();
                         return;
                     }
                     if (editorAction === 'back' && _customEditorPage === 'side') {
@@ -2558,6 +2773,10 @@
                         return;
                     }
                     showGridView();
+                    return;
+                }
+                if (editorAction === 'undo') {
+                    restoreCustomUndo();
                     return;
                 }
                 if (editorAction === 'to-config') {
@@ -2599,7 +2818,7 @@
                 }
                 var paramAction = node.getAttribute('data-custom-param-action');
                 if (paramAction === 'back') {
-                    showCustomSideEditorPage(_customParamEditor ? _customParamEditor.side : _customSelectedSide);
+                    leaveCustomParamEditorDiscardingDraft();
                     return;
                 }
                 if (paramAction === 'apply') {
@@ -2684,11 +2903,13 @@
             : (Number(unit.level) > 0 ? Number(unit.level) : 1);
         for (var i = 0; i < roster.length; i++) {
             if (roster[i].id === unitId && roster[i].level === level && customParametersEqual(roster[i].parameters, parameters)) {
+                captureCustomUndo(customSideLabel(side) + '添加单位');
                 roster[i].count++;
                 syncCustomCodeFromEditor();
                 return;
             }
         }
+        captureCustomUndo(customSideLabel(side) + '添加单位');
         var entry = { id: unitId, type: '兵种' + unitId, level: level, count: 1 };
         if (parameters) {
             entry.parameters = parameters;
@@ -2703,6 +2924,7 @@
         var editor = ensureCustomEditorState();
         var roster = side === 'red' ? editor.red : editor.blue;
         if (index >= 0 && index < roster.length) {
+            captureCustomUndo(customSideLabel(side) + '移除单位');
             roster.splice(index, 1);
             syncCustomCodeFromEditor();
         }
@@ -2710,6 +2932,9 @@
 
     function clearCustomRosterSide(side) {
         var editor = ensureCustomEditorState();
+        var roster = side === 'red' ? editor.red : editor.blue;
+        if (!roster || !roster.length) return;
+        captureCustomUndo(customSideLabel(side) + '清空阵容');
         if (side === 'red') editor.red = [];
         else editor.blue = [];
         syncCustomCodeFromEditor();
@@ -2722,6 +2947,8 @@
         var next = (Number(roster[index].count) || 1) + delta;
         if (next < 1) next = 1;
         if (next > 20) next = 20;
+        if (next === roster[index].count) return;
+        captureCustomUndo(customSideLabel(side) + '调整数量');
         roster[index].count = next;
         syncCustomCodeFromEditor();
     }
@@ -2733,14 +2960,19 @@
         if (isNaN(value) || value < 1) value = 1;
         value = Math.floor(value);
         if (field === 'count' && value > 20) value = 20;
+        if (roster[index][field] === value) return;
+        captureCustomUndo(customSideLabel(side) + (field === 'level' ? '调整等级' : '调整数量'));
         roster[index][field] = value;
         syncCustomCodeFromEditor({ refresh: false });
+        renderCustomUndoState();
     }
 
     function setCustomRosterParametersValue(side, index, value) {
         var editor = ensureCustomEditorState();
         var roster = resolveCustomSide(side) === 'red' ? editor.red : editor.blue;
         if (index < 0 || index >= roster.length) return false;
+        if (customParametersEqual(roster[index].parameters, value)) return true;
+        captureCustomUndo(customSideLabel(side) + '应用参数');
         if (customHasParameters(value)) {
             roster[index].parameters = cloneCustomParameters(value);
             delete roster[index].presetId;

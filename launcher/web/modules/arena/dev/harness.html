@@ -8,47 +8,184 @@
     <link rel="stylesheet" href="../../minigames/shared/dev/harness-base.css">
     <style>
         /* harness 专属样式 */
+        :root {
+            --arena-harness-line: #474b55;
+            --arena-harness-line-bright: #6b7079;
+            --arena-harness-accent: #ef9442;
+            --arena-harness-accent-2: #ffb65a;
+            --arena-harness-text: #d6d9de;
+            --arena-harness-dim: #8b8f98;
+            --arena-harness-muted: #686c75;
+            --arena-harness-control:
+                linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018)),
+                rgba(10,12,17,0.84);
+            --arena-harness-control-hover:
+                linear-gradient(180deg, rgba(239,148,66,0.14), rgba(239,148,66,0.055)),
+                rgba(12,13,17,0.90);
+        }
         body {
             margin: 0;
             padding: 0;
-            background: #1a1a1a;
-            font-family: "Consolas", "Courier New", "Microsoft YaHei", monospace;
-            color: #ccc;
+            background:
+                radial-gradient(110% 90% at 50% -12%, rgba(239,148,66,0.10), transparent 58%),
+                linear-gradient(180deg, #191b21 0%, #0c0d11 100%);
+            font-family: system-ui, "Microsoft YaHei", sans-serif;
+            color: var(--arena-harness-text);
         }
         #harness-toolbar {
-            padding: 8px 12px;
-            background: #252525;
-            border-bottom: 1px solid #444;
+            min-height: 48px;
+            padding: 8px 14px;
+            background: linear-gradient(180deg, rgba(239,148,66,0.08), rgba(12,13,17,0.92));
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.28);
             display: flex;
             gap: 10px;
             align-items: center;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
         }
-        #harness-toolbar label { font-size: 12px; color: #aaa; }
+        #harness-toolbar::after {
+            content: '';
+            position: absolute;
+            left: 14px;
+            right: 14px;
+            bottom: -1px;
+            height: 1px;
+            background: linear-gradient(90deg, var(--arena-harness-accent), transparent 70%);
+            opacity: 0.55;
+            pointer-events: none;
+        }
+        #harness-toolbar label {
+            font-size: 11px;
+            line-height: 30px;
+            color: var(--arena-harness-muted);
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
         #harness-toolbar select,
         #harness-toolbar button {
-            background: #333;
-            color: #ccc;
-            border: 1px solid #555;
-            padding: 4px 8px;
-            font-family: inherit;
+            height: 30px;
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 4px;
+            color: var(--arena-harness-dim);
+            font: 700 12px/1 system-ui, "Microsoft YaHei", sans-serif;
+            letter-spacing: 0.6px;
+            outline: none;
+            cursor: pointer;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.14);
+            transition: border-color 0.14s, background 0.14s, color 0.14s, box-shadow 0.14s, transform 0.08s;
+        }
+        #harness-toolbar select {
+            min-width: 132px;
+            padding: 0 30px 0 10px;
+            -webkit-appearance: none;
+            appearance: none;
+            background:
+                linear-gradient(45deg, transparent 50%, var(--arena-harness-accent-2) 50%) calc(100% - 15px) 12px / 5px 5px no-repeat,
+                linear-gradient(135deg, var(--arena-harness-accent-2) 50%, transparent 50%) calc(100% - 10px) 12px / 5px 5px no-repeat,
+                linear-gradient(90deg, transparent calc(100% - 31px), rgba(239,148,66,0.12) calc(100% - 31px)),
+                var(--arena-harness-control);
+        }
+        #harness-toolbar select::-ms-expand {
+            display: none;
+        }
+        #harness-toolbar button {
+            min-width: 92px;
+            padding: 0 12px;
+            background: var(--arena-harness-control);
+        }
+        #harness-toolbar select:hover,
+        #harness-toolbar select:focus,
+        #harness-toolbar button:hover,
+        #harness-toolbar button:focus-visible {
+            color: var(--arena-harness-accent-2);
+            border-color: rgba(239,148,66,0.60);
+            background: var(--arena-harness-control-hover);
+            box-shadow: 0 0 0 1px rgba(239,148,66,0.16), inset 0 0 0 1px rgba(0,0,0,0.18);
+        }
+        #harness-toolbar button:active {
+            transform: translateY(1px);
+        }
+        #harness-status {
+            min-height: 24px;
+            padding: 4px 14px;
+            background: rgba(8,9,12,0.92);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            font-size: 12px;
+            color: var(--arena-harness-muted);
+            font-family: "Consolas", "Microsoft YaHei", monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #qa-panel,
+        #debug-log {
+            background: rgba(10,12,17,0.90);
+            border: 1px solid rgba(239,148,66,0.30);
+            border-radius: 4px;
+            color: var(--arena-harness-text);
+            box-shadow: 0 14px 34px rgba(0,0,0,0.36), inset 0 0 0 1px rgba(255,255,255,0.035);
+            font-family: "Consolas", "Microsoft YaHei", monospace;
+        }
+        #qa-panel {
+            width: min(440px, calc(100vw - 28px));
+        }
+        .qa-title {
+            color: var(--arena-harness-accent-2);
+            letter-spacing: 1px;
+        }
+        #qa-run {
+            height: 26px;
+            padding: 0 10px;
+            background: var(--arena-harness-control);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 4px;
+            color: var(--arena-harness-dim);
+            font: 700 12px/1 system-ui, "Microsoft YaHei", sans-serif;
             cursor: pointer;
         }
-        #harness-toolbar button:hover { background: #444; }
-        #harness-status {
-            padding: 4px 12px;
-            background: #1a1a1a;
-            border-bottom: 1px solid #333;
-            font-size: 12px;
-            color: #888;
-            min-height: 18px;
+        #qa-run:hover,
+        #qa-run:focus-visible {
+            outline: none;
+            color: var(--arena-harness-accent-2);
+            border-color: rgba(239,148,66,0.60);
+            background: var(--arena-harness-control-hover);
+        }
+        #qa-summary,
+        #qa-list .detail {
+            color: var(--arena-harness-muted);
+        }
+        #qa-list .pass {
+            color: #a9e6b2;
+        }
+        #qa-list .fail {
+            color: #ffaaa0;
+        }
+        #debug-log {
+            left: 14px;
+            bottom: 14px;
+            max-width: 300px;
+            max-height: 150px;
+            padding: 10px 12px;
+            opacity: 0.78;
+            transition: opacity 0.14s, border-color 0.14s;
+        }
+        #debug-log:hover {
+            opacity: 1;
+            border-color: rgba(239,148,66,0.52);
         }
         #viewport-shell {
-            margin: 20px auto;
-            border: 2px solid #444;
+            margin: 14px auto 0;
+            border: 1px solid rgba(107,112,121,0.68);
             background: #000;
             position: relative;
             overflow: hidden;
+            box-shadow:
+                0 18px 48px rgba(0,0,0,0.42),
+                0 0 0 1px rgba(255,255,255,0.035),
+                inset 0 0 0 1px rgba(255,255,255,0.035);
             /* 默认 1024x576（Flash 设计分辨率） */
             width: 1024px;
             height: 576px;

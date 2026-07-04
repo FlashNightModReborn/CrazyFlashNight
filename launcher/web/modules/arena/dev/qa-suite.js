@@ -739,6 +739,7 @@ var ArenaHarnessQA = (function() {
                 api.assertEqual(state.customMatch.parsed.calibrationCase.blueRoster.length, 4, '蓝方应为 thief-lv30x4 对照阵容');
                 api.assert(state.customMatch.parsed.calibrationCase.redRoster.length > 0, '红方应为关卡拆解元战队');
                 api.assert(document.getElementById('arena-custom-fee').textContent !== '--', '估算场地费应渲染');
+                api.assert(/实时解析 OK/.test(document.getElementById('arena-custom-code-status').textContent || ''), '赛程代码状态应显示实时解析 OK');
                 api.assertEqual(document.getElementById('arena-custom-editor-view').hidden, true, '入口卡内不应直接展开阵容编辑器');
                 api.assert(!document.querySelector('.arena-card-custom #arena-custom-code-input'), '入口卡不应承载赛程代码输入');
                 api.assert(!document.querySelector('.arena-card-custom #arena-custom-preset-select'), '入口卡不应承载预设下拉框');
@@ -759,6 +760,17 @@ var ArenaHarnessQA = (function() {
                 api.assert(!!document.querySelector('[data-custom-side="red"].arena-custom-side-target-active'), '红方添加目标按钮应进入 active 状态');
                 api.assert(!!document.querySelector('#arena-custom-editor-view #arena-custom-code-input'), '赛程代码输入应迁入二级编辑页');
                 api.assert(document.querySelector('#arena-custom-editor-view #arena-custom-preset-select').options.length > 1000, '二级编辑页应暴露关卡拆解预设池');
+                var presetStyle = getComputedStyle(document.querySelector('#arena-custom-editor-view #arena-custom-preset-select'));
+                var searchStyle = getComputedStyle(document.getElementById('arena-custom-unit-search'));
+                api.assert(/none/.test(String(presetStyle.appearance || presetStyle.webkitAppearance || '')), '测试场预设下拉框应关闭浏览器原生 appearance');
+                api.assert(presetStyle.backgroundImage && presetStyle.backgroundImage !== 'none', '测试场预设下拉框应使用竞技场自绘箭头背景');
+                api.assert(/none/.test(String(searchStyle.appearance || searchStyle.webkitAppearance || '')), '测试场搜索框应关闭浏览器原生 appearance');
+                var rosterList = document.getElementById('arena-custom-active-roster');
+                api.assert(rosterList && rosterList.scrollWidth <= rosterList.clientWidth + 1, '阵容列表不应产生横向滚动条');
+                var firstRosterRow = document.querySelector('.arena-custom-roster-row');
+                api.assert(firstRosterRow && firstRosterRow.querySelector('.arena-custom-param-pill') && firstRosterRow.querySelector('.arena-custom-icon-btn'), '默认参数与移除按钮应同时保留在阵容行内');
+                var unitScrollbar = getComputedStyle(document.getElementById('arena-custom-unit-list'), '::-webkit-scrollbar-thumb');
+                api.assert(unitScrollbar && unitScrollbar.backgroundImage && unitScrollbar.backgroundImage !== 'none', '单位目录滚动条应使用竞技场自绘样式');
                 var groups = document.querySelectorAll('.arena-custom-unit-group');
                 api.assert(groups.length > 1, '单位浏览器应按势力分组渲染');
                 api.assertEqual(document.querySelectorAll('.arena-custom-unit-row').length, 0, '单位浏览器默认应折叠势力分组');
@@ -813,6 +825,10 @@ var ArenaHarnessQA = (function() {
                     }
                 }
                 api.assert(!!button, '参数预设加入后应显示参数编辑入口');
+                var miniInput = document.querySelector('.arena-custom-mini-input[type="number"]');
+                api.assert(!!miniInput, '阵容行应提供竞技场样式数字输入');
+                var miniStyle = getComputedStyle(miniInput);
+                api.assert(/none|textfield/.test(String(miniStyle.appearance || miniStyle.webkitAppearance || '')), '测试场数字输入应隐藏浏览器原生步进器外观');
                 button.click();
                 return api.waitFor(function() {
                     var state = window.ArenaPanel.getState();
@@ -832,6 +848,8 @@ var ArenaHarnessQA = (function() {
                 var editor = document.querySelector('[data-custom-param-editor-input]');
                 editor.value = '<Parameters>\n  <手枪>P90战术版</手枪>\n  <手枪2>P90战术版</手枪2>\n</Parameters>';
                 editor.dispatchEvent(new Event('input', { bubbles: true }));
+                api.assert(document.querySelector('.arena-custom-param-dirty'), '参数编辑页应提示草稿未应用');
+                api.assert(/放弃返回/.test(document.querySelector('[data-custom-param-action="back"]').textContent || ''), '参数草稿脏时返回按钮应变为放弃返回');
                 document.querySelector('[data-custom-param-action="save-back"]').click();
                 return api.waitFor(function() {
                     var state = window.ArenaPanel.getState();
@@ -901,6 +919,22 @@ var ArenaHarnessQA = (function() {
                     return rosterSig(st.customEditor.blue) === redBeforeSwapSig &&
                         rosterSig(st.customEditor.red) === blueBeforeSwapSig;
                 }, 2000, 'blue/red roster swapped');
+            })
+            .then(function() {
+                document.getElementById('arena-custom-undo').click();
+                return api.waitFor(function() {
+                    var st = window.ArenaPanel.getState();
+                    return rosterSig(st.customEditor.blue) === blueBeforeSwapSig &&
+                        rosterSig(st.customEditor.red) === redBeforeSwapSig;
+                }, 2000, 'undo restores roster after swap');
+            })
+            .then(function() {
+                document.querySelector('[data-custom-action="swap-sides"]').click();
+                return api.waitFor(function() {
+                    var st = window.ArenaPanel.getState();
+                    return rosterSig(st.customEditor.blue) === redBeforeSwapSig &&
+                        rosterSig(st.customEditor.red) === blueBeforeSwapSig;
+                }, 2000, 'blue/red roster swapped again after undo');
             })
             .then(function() {
                 var redSelect = document.querySelector('[data-custom-saved-select="red"]');
@@ -1049,7 +1083,52 @@ var ArenaHarnessQA = (function() {
                 api.assert(/蓝方胜|红方胜|平局|超时|委托/.test(resultView.textContent), '结算页应显示胜负结果');
                 var backBtn = resultView.querySelector('[data-custom-result-action="back"]');
                 api.assert(!!backBtn, '结算页应提供返回基地按钮');
+                api.assert(!!resultView.querySelector('[data-custom-result-action="reopen"]'), '结算页应提供再赛一场入口');
                 api.assert(/返回基地/.test(resultView.textContent), '结算页退出文案应指向返回基地');
+                var returnBaseBefore = host.sentMessages.filter(function(m) {
+                    return m && m.cmd === 'close' && m.dismissReturnStack && m.returnBase;
+                }).length;
+                var startBeforeReplay = host.sentMessages.filter(function(m) { return m && m.cmd === 'custom_start'; }).length;
+                resultView.querySelector('[data-custom-result-action="reopen"]').click();
+                return api.waitFor(function() {
+                    var state = window.ArenaPanel.getState();
+                    var view = document.getElementById('arena-custom-result-view');
+                    return state.activeMode === 'custom' &&
+                        !state.customResult &&
+                        !state.customRun &&
+                        view && view.hidden &&
+                        document.querySelector('.arena-card-custom');
+                }, 2000, 'custom result reopen to panel').then(function() {
+                    var returnBaseAfter = host.sentMessages.filter(function(m) {
+                        return m && m.cmd === 'close' && m.dismissReturnStack && m.returnBase;
+                    }).length;
+                    api.assertEqual(returnBaseAfter, returnBaseBefore, '再赛一场不应发送返回基地 close');
+                    document.querySelector('.arena-custom-generate').click();
+                    return api.waitFor(function() {
+                        var confirm = document.getElementById('arena-custom-confirm');
+                        return confirm && !confirm.hidden;
+                    }, 2000, 'custom confirm rendered again');
+                }).then(function() {
+                    document.querySelector('[data-custom-confirm-action="start"]').click();
+                    return api.waitFor(function() {
+                        var starts = host.sentMessages.filter(function(m) { return m && m.cmd === 'custom_start'; });
+                        return starts.length > startBeforeReplay;
+                    }, 2000, 'second custom_start sent');
+                }).then(function() {
+                    return api.waitFor(function() {
+                        var state = window.ArenaPanel.getState();
+                        return state.activeMode === 'custom' &&
+                            state.customResult &&
+                            state.customRun &&
+                            state.customRun.state === 'completed' &&
+                            host._customResultOpens >= 2;
+                    }, 3000, 'custom result reopened second time');
+                }).then(function() {
+                    var view = document.getElementById('arena-custom-result-view');
+                    api.assert(!!view && !view.hidden, '第二次结算页应显示');
+                });
+            })
+            .then(function() {
                 chrome.webview.__dispatch({ type: 'panel_esc' });
                 return api.waitFor(function() {
                     for (var i = 0; i < host.sentMessages.length; i++) {
@@ -1063,12 +1142,12 @@ var ArenaHarnessQA = (function() {
                 var startCloses = host.sentMessages.filter(function(m) {
                     return m && m.cmd === 'close' && m.dismissReturnStack && !m.returnBase;
                 });
-                api.assert(startCloses.length >= 1, 'custom_start 后的关闭不应请求返回基地');
+                api.assert(startCloses.length >= 2, '两次 custom_start 后的关闭都不应请求返回基地');
                 var statusMessages = host.sentMessages.filter(function(m) { return m && m.cmd === 'custom_status'; });
                 api.assertEqual(statusMessages.length, 0, 'closePanel 主路径不应继续轮询 custom_status');
                 var enterMessages = host.sentMessages.filter(function(m) { return m && m.cmd === 'enter'; });
                 api.assertEqual(enterMessages.length, 0, 'P2 定制赛不应发送正式 enter');
-                api.assert(host._customResultOpens >= 1, 'Host 应回开 custom_result');
+                api.assert(host._customResultOpens >= 2, 'Host 应可连续回开 custom_result');
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });

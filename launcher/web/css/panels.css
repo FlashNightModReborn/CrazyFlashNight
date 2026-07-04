@@ -8431,6 +8431,10 @@ html.perf-low-effects .map-panel-close-btn:hover {
     --arena-marble:     url('../modules/tasks/assets/task_icon_bg.png') center / cover no-repeat;
     --arena-stone:      linear-gradient(160deg, rgba(42,45,53,0.72), rgba(27,29,35,0.84)), var(--arena-marble), linear-gradient(#30333a, #25272d);
     --arena-stone-soft: linear-gradient(160deg, rgba(36,39,46,0.78), rgba(23,25,30,0.88)), var(--arena-marble), linear-gradient(#2b2e35, #222429);
+    --arena-control-bg: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018)), rgba(10,12,17,0.78);
+    --arena-control-bg-hover: linear-gradient(180deg, rgba(239,148,66,0.14), rgba(239,148,66,0.055)), rgba(12,13,17,0.84);
+    --arena-control-border: rgba(255,255,255,0.14);
+    --arena-control-border-hover: rgba(239,148,66,0.52);
 
     position: relative;
     display: flex;
@@ -8846,18 +8850,50 @@ html.perf-low-effects .map-panel-close-btn:hover {
     min-height: 92px;
     resize: none;
     padding: 9px 10px;
-    background: rgba(12,13,17,0.68);
-    border: 1px solid rgba(255,255,255,0.12);
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)), rgba(12,13,17,0.72);
+    border: 1px solid var(--arena-control-border);
     border-radius: var(--arena-radius-sm);
     color: var(--arena-text);
+    caret-color: var(--arena-accent-2);
     font-family: "Consolas", "Microsoft YaHei", monospace;
     font-size: 12px;
     line-height: 1.45;
     outline: none;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.16);
+    transition: border-color 0.14s, box-shadow 0.14s, background 0.14s;
+}
+.arena-custom-code-input:hover {
+    border-color: rgba(239,148,66,0.36);
 }
 .arena-custom-code-input:focus {
     border-color: rgba(239,148,66,0.72);
     box-shadow: 0 0 0 1px rgba(239,148,66,0.16);
+}
+.arena-custom-code-status {
+    min-height: 20px;
+    padding: 4px 7px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--arena-radius-sm);
+    background: rgba(0,0,0,0.16);
+    color: var(--arena-text-mute);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 10px;
+    line-height: 1.25;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.arena-custom-code-status-ok {
+    color: #a9e6b2;
+    border-color: rgba(96,210,118,0.24);
+    background: rgba(30,92,42,0.16);
+}
+.arena-custom-code-status-error {
+    color: #ffaaa0;
+    border-color: rgba(255,80,80,0.28);
+    background: rgba(120,20,20,0.18);
 }
 .arena-custom-actions {
     display: flex;
@@ -8875,21 +8911,43 @@ html.perf-low-effects .map-panel-close-btn:hover {
     flex: 1 1 auto;
     min-width: 0;
     height: 30px;
-    padding: 0 9px;
-    background: rgba(12,13,17,0.68);
-    border: 1px solid rgba(255,255,255,0.12);
+    padding: 0 30px 0 10px;
+    -webkit-appearance: none;
+    appearance: none;
+    background:
+        linear-gradient(45deg, transparent 50%, var(--arena-accent-2) 50%) calc(100% - 15px) 12px / 5px 5px no-repeat,
+        linear-gradient(135deg, var(--arena-accent-2) 50%, transparent 50%) calc(100% - 10px) 12px / 5px 5px no-repeat,
+        linear-gradient(90deg, transparent calc(100% - 31px), rgba(239,148,66,0.12) calc(100% - 31px)),
+        var(--arena-control-bg);
+    border: 1px solid var(--arena-control-border);
     border-radius: var(--arena-radius-sm);
     color: var(--arena-text-dim);
     font-family: inherit;
     font-size: 12px;
     outline: none;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.16);
+    cursor: pointer;
+    transition: border-color 0.14s, box-shadow 0.14s, color 0.14s, background-color 0.14s;
+}
+.arena-custom-preset-select:hover {
+    color: var(--arena-text);
+    border-color: var(--arena-control-border-hover);
+}
+.arena-custom-preset-select:focus,
+.arena-custom-preset-select:focus-visible {
+    color: var(--arena-text);
+    border-color: rgba(239,148,66,0.74);
+    box-shadow: 0 0 0 1px rgba(239,148,66,0.18), inset 0 0 0 1px rgba(0,0,0,0.20);
+}
+.arena-custom-preset-select::-ms-expand {
+    display: none;
 }
 .arena-custom-btn {
     height: 30px;
     min-width: 86px;
     padding: 0 12px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.12);
+    background: var(--arena-control-bg);
+    border: 1px solid var(--arena-control-border);
     border-radius: var(--arena-radius-sm);
     color: var(--arena-text-dim);
     font-family: inherit;
@@ -8897,11 +8955,22 @@ html.perf-low-effects .map-panel-close-btn:hover {
     font-weight: 700;
     letter-spacing: 1px;
     cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.14);
+    transition: border-color 0.14s, background 0.14s, color 0.14s, box-shadow 0.14s, transform 0.08s;
 }
 .arena-custom-btn:hover {
     color: var(--arena-accent);
     border-color: var(--arena-accent);
-    background: var(--arena-accent-dim);
+    background: var(--arena-control-bg-hover);
+}
+.arena-custom-btn:focus-visible {
+    outline: none;
+    color: var(--arena-accent-2);
+    border-color: rgba(239,148,66,0.78);
+    box-shadow: 0 0 0 1px rgba(239,148,66,0.20), inset 0 0 0 1px rgba(0,0,0,0.20);
+}
+.arena-custom-btn:active:not(:disabled) {
+    transform: translateY(1px);
 }
 .arena-custom-btn:disabled {
     opacity: 0.45;
@@ -8914,6 +8983,11 @@ html.perf-low-effects .map-panel-close-btn:hover {
     color: var(--arena-text-mute);
     border-color: rgba(255,255,255,0.10);
     background: rgba(255,255,255,0.025);
+}
+.arena-custom-btn-warn {
+    color: #ffd36d;
+    border-color: rgba(255,211,109,0.45);
+    background: rgba(255,211,109,0.08);
 }
 .arena-custom-edit {
     flex: 0 0 112px;
@@ -9076,15 +9150,22 @@ html.perf-low-effects .map-panel-close-btn:hover {
     min-height: 0;
     resize: none;
     padding: 10px 12px;
-    background: rgba(0,0,0,0.18);
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(180deg, rgba(255,255,255,0.024), rgba(255,255,255,0)), rgba(0,0,0,0.22);
     border: 0;
     color: var(--arena-text);
+    caret-color: var(--arena-accent-2);
     font-family: "Consolas", "Microsoft YaHei", monospace;
     font-size: 12px;
     line-height: 1.55;
     outline: none;
     white-space: pre;
     overflow: auto;
+    transition: box-shadow 0.14s, background 0.14s;
+}
+.arena-custom-param-editor-input:hover {
+    box-shadow: inset 0 0 0 1px rgba(239,148,66,0.22);
 }
 .arena-custom-param-editor-input:focus {
     box-shadow: inset 0 0 0 1px rgba(239,148,66,0.45);
@@ -9097,6 +9178,13 @@ html.perf-low-effects .map-panel-close-btn:hover {
     border-top: 1px solid rgba(255,80,80,0.28);
     background: rgba(120,20,20,0.22);
     color: #ffaaa0;
+    font-size: 11px;
+}
+.arena-custom-param-dirty {
+    padding: 6px 10px;
+    border-top: 1px solid rgba(255,211,109,0.26);
+    background: rgba(110,78,20,0.20);
+    color: #ffd36d;
     font-size: 11px;
 }
 .arena-custom-param-inspector {
@@ -9188,23 +9276,42 @@ html.perf-low-effects .map-panel-close-btn:hover {
     font-weight: 900;
     letter-spacing: 2px;
     cursor: pointer;
+    transition: color 0.14s, background 0.14s, box-shadow 0.14s;
+}
+.arena-custom-roster-tab:hover,
+.arena-custom-roster-tab:focus-visible {
+    outline: none;
+    background: rgba(239,148,66,0.08);
+    box-shadow: inset 0 -1px 0 rgba(239,148,66,0.48);
+    color: var(--arena-accent-2);
 }
 .arena-custom-clear-side {
     flex: 0 0 auto;
     height: 24px;
     margin-right: 6px;
     padding: 0 8px;
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid var(--arena-control-border);
     border-radius: 3px;
-    background: rgba(0,0,0,0.18);
+    background: var(--arena-control-bg);
     color: var(--arena-text-mute);
     font-family: inherit;
     font-size: 11px;
     cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
+    transition: border-color 0.14s, background 0.14s, color 0.14s, transform 0.08s;
 }
 .arena-custom-clear-side:hover {
     color: #ffd36d;
     border-color: rgba(255,211,109,0.45);
+    background: rgba(255,211,109,0.08);
+}
+.arena-custom-clear-side:focus-visible {
+    outline: none;
+    color: #ffd36d;
+    border-color: rgba(255,211,109,0.60);
+}
+.arena-custom-clear-side:active {
+    transform: translateY(1px);
 }
 .arena-custom-roster-blue .arena-custom-roster-tab { color: #8cb7ff; }
 .arena-custom-roster-red .arena-custom-roster-tab { color: #ff9288; }
@@ -9216,6 +9323,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .arena-custom-roster-list {
     min-height: 0;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 6px;
 }
 .arena-custom-roster-empty,
@@ -9229,12 +9337,15 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 .arena-custom-roster-row {
     display: grid;
-    grid-template-columns: 42px minmax(120px, 1fr) 58px 82px minmax(118px, 0.72fr) 26px;
+    grid-template-columns: 42px minmax(0, 1fr) 56px 84px minmax(76px, 0.52fr) 24px;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     min-height: 42px;
     padding: 5px 6px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.arena-custom-roster-row > * {
+    min-width: 0;
 }
 .arena-custom-roster-info {
     min-width: 0;
@@ -9269,31 +9380,64 @@ html.perf-low-effects .map-panel-close-btn:hover {
     width: 38px;
     height: 24px;
     padding: 0 4px;
-    background: rgba(0,0,0,0.25);
-    border: 1px solid rgba(255,255,255,0.12);
+    -webkit-appearance: none;
+    appearance: textfield;
+    background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.005)), rgba(0,0,0,0.28);
+    border: 1px solid var(--arena-control-border);
     border-radius: 3px;
     color: var(--arena-text);
+    caret-color: var(--arena-accent-2);
     font-family: "Consolas", "Microsoft YaHei", monospace;
     font-size: 11px;
+    text-align: center;
+    outline: none;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
+    transition: border-color 0.14s, box-shadow 0.14s, background 0.14s;
+}
+.arena-custom-mini-input::-webkit-inner-spin-button,
+.arena-custom-mini-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.arena-custom-mini-input:hover {
+    border-color: rgba(239,148,66,0.42);
+}
+.arena-custom-mini-input:focus {
+    border-color: rgba(239,148,66,0.72);
+    box-shadow: 0 0 0 1px rgba(239,148,66,0.16), inset 0 0 0 1px rgba(0,0,0,0.18);
 }
 .arena-custom-count-stepper {
     display: grid;
     grid-template-columns: 22px 34px 22px;
     align-items: center;
     gap: 3px;
+    min-width: 0;
 }
 .arena-custom-count-stepper button {
     height: 24px;
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid var(--arena-control-border);
     border-radius: 3px;
-    background: rgba(255,255,255,0.03);
+    background: var(--arena-control-bg);
     color: var(--arena-text-dim);
     cursor: pointer;
     font-family: inherit;
+    font-weight: 900;
+    line-height: 1;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
+    transition: border-color 0.14s, background 0.14s, color 0.14s, transform 0.08s;
 }
 .arena-custom-count-stepper button:hover {
     color: var(--arena-accent);
     border-color: rgba(239,148,66,0.48);
+    background: var(--arena-control-bg-hover);
+}
+.arena-custom-count-stepper button:focus-visible {
+    outline: none;
+    color: var(--arena-accent-2);
+    border-color: rgba(239,148,66,0.72);
+}
+.arena-custom-count-stepper button:active {
+    transform: translateY(1px);
 }
 .arena-custom-count-stepper .arena-custom-mini-input {
     width: 34px;
@@ -9307,12 +9451,21 @@ html.perf-low-effects .map-panel-close-btn:hover {
     align-items: center;
     gap: 6px;
     padding: 0 7px;
-    background: rgba(255,255,255,0.035);
-    border: 1px solid rgba(255,255,255,0.12);
+    background: var(--arena-control-bg);
+    border: 1px solid var(--arena-control-border);
     border-radius: 3px;
     color: var(--arena-text-mute);
     font-family: inherit;
     cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
+    transition: border-color 0.14s, background 0.14s, color 0.14s, transform 0.08s;
+}
+.arena-custom-roster-row .arena-custom-param-pill {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0 6px;
+}
+.arena-custom-roster-row .arena-custom-param-pill b {
+    display: none;
 }
 .arena-custom-param-pill span {
     min-width: 0;
@@ -9333,20 +9486,42 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 .arena-custom-param-pill:hover {
     border-color: rgba(239,148,66,0.58);
+    background: var(--arena-control-bg-hover);
     color: var(--arena-text);
+}
+.arena-custom-param-pill:focus-visible {
+    outline: none;
+    border-color: rgba(239,148,66,0.76);
+    box-shadow: 0 0 0 1px rgba(239,148,66,0.18), inset 0 0 0 1px rgba(0,0,0,0.16);
+}
+.arena-custom-param-pill:active {
+    transform: translateY(1px);
 }
 .arena-custom-icon-btn {
     width: 24px;
     height: 24px;
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid var(--arena-control-border);
     border-radius: 3px;
-    background: rgba(255,255,255,0.03);
+    background: var(--arena-control-bg);
     color: var(--arena-text-mute);
     cursor: pointer;
+    font-family: inherit;
+    font-weight: 900;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
+    transition: border-color 0.14s, background 0.14s, color 0.14s, transform 0.08s;
 }
 .arena-custom-icon-btn:hover {
     color: #ffd36d;
     border-color: rgba(255,211,109,0.45);
+    background: rgba(255,211,109,0.08);
+}
+.arena-custom-icon-btn:focus-visible {
+    outline: none;
+    color: #ffd36d;
+    border-color: rgba(255,211,109,0.60);
+}
+.arena-custom-icon-btn:active {
+    transform: translateY(1px);
 }
 .arena-custom-browser {
     display: grid;
@@ -9369,13 +9544,28 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .arena-custom-unit-filters button {
     height: 24px;
     padding: 0 8px;
-    background: rgba(255,255,255,0.035);
-    border: 1px solid rgba(255,255,255,0.12);
+    background: var(--arena-control-bg);
+    border: 1px solid var(--arena-control-border);
     border-radius: 3px;
     color: var(--arena-text-mute);
     font-family: inherit;
     font-size: 11px;
     cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
+    transition: border-color 0.14s, background 0.14s, color 0.14s, transform 0.08s;
+}
+.arena-custom-side-switch button:hover,
+.arena-custom-unit-filters button:hover,
+.arena-custom-side-switch button:focus-visible,
+.arena-custom-unit-filters button:focus-visible {
+    outline: none;
+    color: var(--arena-accent-2);
+    border-color: rgba(239,148,66,0.56);
+    background: var(--arena-control-bg-hover);
+}
+.arena-custom-side-switch button:active,
+.arena-custom-unit-filters button:active {
+    transform: translateY(1px);
 }
 .arena-custom-unit-filters {
     display: flex;
@@ -9394,13 +9584,44 @@ html.perf-low-effects .map-panel-close-btn:hover {
     min-width: 0;
     height: 24px;
     padding: 0 8px;
-    background: rgba(0,0,0,0.25);
-    border: 1px solid rgba(255,255,255,0.12);
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.005)), rgba(0,0,0,0.28);
+    border: 1px solid var(--arena-control-border);
     border-radius: 3px;
     color: var(--arena-text);
+    caret-color: var(--arena-accent-2);
     font-family: inherit;
     font-size: 12px;
     outline: none;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
+    transition: border-color 0.14s, box-shadow 0.14s, background 0.14s;
+}
+.arena-custom-unit-search::placeholder {
+    color: rgba(139,143,152,0.76);
+}
+.arena-custom-unit-search::-webkit-search-decoration,
+.arena-custom-unit-search::-webkit-search-results-button,
+.arena-custom-unit-search::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+}
+.arena-custom-unit-search::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background:
+        linear-gradient(45deg, transparent calc(50% - 1px), rgba(255,182,90,0.9) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)),
+        linear-gradient(-45deg, transparent calc(50% - 1px), rgba(255,182,90,0.9) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)),
+        rgba(239,148,66,0.16);
+    cursor: pointer;
+}
+.arena-custom-unit-search:hover {
+    border-color: rgba(239,148,66,0.42);
+}
+.arena-custom-unit-search:focus {
+    border-color: rgba(239,148,66,0.72);
+    box-shadow: 0 0 0 1px rgba(239,148,66,0.16), inset 0 0 0 1px rgba(0,0,0,0.18);
 }
 .arena-custom-unit-count {
     flex: 0 0 108px;
@@ -9429,12 +9650,18 @@ html.perf-low-effects .map-panel-close-btn:hover {
     font-family: inherit;
     text-align: left;
     cursor: pointer;
+    transition: border-color 0.14s, background 0.14s, color 0.14s, transform 0.08s;
 }
 .arena-custom-unit-group:hover,
+.arena-custom-unit-group:focus-visible,
 .arena-custom-unit-group-expanded {
+    outline: none;
     border-color: rgba(239,148,66,0.36);
     background: rgba(239,148,66,0.09);
     color: var(--arena-text);
+}
+.arena-custom-unit-group:active {
+    transform: translateY(1px);
 }
 .arena-custom-unit-group-search {
     border-color: rgba(140,183,255,0.24);
@@ -9471,9 +9698,18 @@ html.perf-low-effects .map-panel-close-btn:hover {
     color: inherit;
     text-align: left;
     cursor: pointer;
+    transition: border-color 0.14s, background 0.14s, color 0.14s, transform 0.08s;
 }
 .arena-custom-unit-row:hover {
     background: rgba(239,148,66,0.08);
+}
+.arena-custom-unit-row:focus-visible {
+    outline: none;
+    border-color: rgba(239,148,66,0.56);
+    background: rgba(239,148,66,0.10);
+}
+.arena-custom-unit-row:active {
+    transform: translateY(1px);
 }
 .arena-custom-unit-row-preset {
     background: rgba(140,183,255,0.035);
@@ -9662,7 +9898,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 #arena-custom-status {
     min-height: 24px;
-    padding: 6px 9px;
+    padding: 4px 5px;
     color: var(--arena-text-dim);
     background: rgba(239,148,66,0.11);
     border: 1px solid rgba(239,148,66,0.22);
@@ -9670,8 +9906,46 @@ html.perf-low-effects .map-panel-close-btn:hover {
     font-family: "Consolas", "Microsoft YaHei", monospace;
     font-size: 11px;
     overflow: hidden;
-    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 4px;
     white-space: nowrap;
+}
+.arena-custom-status-chip {
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 5px;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 3px;
+    background: rgba(0,0,0,0.18);
+}
+.arena-custom-status-chip em {
+    flex: 0 0 auto;
+    color: var(--arena-text-mute);
+    font-style: normal;
+    font-size: 10px;
+}
+.arena-custom-status-chip b {
+    min-width: 0;
+    color: var(--arena-text-dim);
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.arena-custom-status-chip-ok b,
+.arena-custom-status-chip-done b {
+    color: #a9e6b2;
+}
+.arena-custom-status-chip-active b {
+    color: #ffd36d;
+}
+.arena-custom-status-chip-error b {
+    color: #ffaaa0;
+}
+.arena-custom-status-chip-mono b {
+    font-family: "Consolas", "Microsoft YaHei", monospace;
 }
 .arena-custom-footer {
     align-items: stretch;
@@ -10597,15 +10871,78 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 
 /* ── 滚动条（对齐 merc/task 面板：战术橙细条，取代浏览器默认灰条）──
-   两处滚动区：grid 视图卡片网格 + detail 视图对手列表（加技能行后更易触发滚动）。 */
+   覆盖标准竞技场、详情页与定制赛编辑器的所有可滚动工作区。 */
+.arena-grid,
+.arena-opponents,
+.arena-custom-roster-list,
+.arena-custom-unit-list,
+.arena-custom-param-editor-input,
+.arena-custom-param-inspector,
+.arena-custom-result-panel,
+.arena-custom-result-side-roster,
+.arena-custom-result-codeblock {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(239,148,66,0.36) rgba(255,255,255,0.035);
+}
 .arena-grid::-webkit-scrollbar,
-.arena-opponents::-webkit-scrollbar { width: 10px; }
+.arena-opponents::-webkit-scrollbar,
+.arena-custom-roster-list::-webkit-scrollbar,
+.arena-custom-unit-list::-webkit-scrollbar,
+.arena-custom-param-editor-input::-webkit-scrollbar,
+.arena-custom-param-inspector::-webkit-scrollbar,
+.arena-custom-result-panel::-webkit-scrollbar,
+.arena-custom-result-side-roster::-webkit-scrollbar,
+.arena-custom-result-codeblock::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
 .arena-grid::-webkit-scrollbar-track,
-.arena-opponents::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+.arena-opponents::-webkit-scrollbar-track,
+.arena-custom-roster-list::-webkit-scrollbar-track,
+.arena-custom-unit-list::-webkit-scrollbar-track,
+.arena-custom-param-editor-input::-webkit-scrollbar-track,
+.arena-custom-param-inspector::-webkit-scrollbar-track,
+.arena-custom-result-panel::-webkit-scrollbar-track,
+.arena-custom-result-side-roster::-webkit-scrollbar-track,
+.arena-custom-result-codeblock::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.025);
+    border-radius: 6px;
+}
 .arena-grid::-webkit-scrollbar-thumb,
-.arena-opponents::-webkit-scrollbar-thumb { background: rgba(239,148,66,0.25); }
+.arena-opponents::-webkit-scrollbar-thumb,
+.arena-custom-roster-list::-webkit-scrollbar-thumb,
+.arena-custom-unit-list::-webkit-scrollbar-thumb,
+.arena-custom-param-editor-input::-webkit-scrollbar-thumb,
+.arena-custom-param-inspector::-webkit-scrollbar-thumb,
+.arena-custom-result-panel::-webkit-scrollbar-thumb,
+.arena-custom-result-side-roster::-webkit-scrollbar-thumb,
+.arena-custom-result-codeblock::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(255,182,90,0.46), rgba(239,148,66,0.28));
+    border: 2px solid rgba(7,8,12,0.76);
+    border-radius: 8px;
+}
 .arena-grid::-webkit-scrollbar-thumb:hover,
-.arena-opponents::-webkit-scrollbar-thumb:hover { background: rgba(239,148,66,0.5); }
+.arena-opponents::-webkit-scrollbar-thumb:hover,
+.arena-custom-roster-list::-webkit-scrollbar-thumb:hover,
+.arena-custom-unit-list::-webkit-scrollbar-thumb:hover,
+.arena-custom-param-editor-input::-webkit-scrollbar-thumb:hover,
+.arena-custom-param-inspector::-webkit-scrollbar-thumb:hover,
+.arena-custom-result-panel::-webkit-scrollbar-thumb:hover,
+.arena-custom-result-side-roster::-webkit-scrollbar-thumb:hover,
+.arena-custom-result-codeblock::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(255,182,90,0.68), rgba(239,148,66,0.46));
+}
+.arena-grid::-webkit-scrollbar-corner,
+.arena-opponents::-webkit-scrollbar-corner,
+.arena-custom-roster-list::-webkit-scrollbar-corner,
+.arena-custom-unit-list::-webkit-scrollbar-corner,
+.arena-custom-param-editor-input::-webkit-scrollbar-corner,
+.arena-custom-param-inspector::-webkit-scrollbar-corner,
+.arena-custom-result-panel::-webkit-scrollbar-corner,
+.arena-custom-result-side-roster::-webkit-scrollbar-corner,
+.arena-custom-result-codeblock::-webkit-scrollbar-corner {
+    background: rgba(7,8,12,0.80);
+}
 
 /* ── Tooltip 复用 flash-tt-* 布局原语（PanelTooltip.buildItemRichHtml）；
    arena-tt-rich/intel-tt-rich 是 "本面板上下文" 语义类，按设计系统约定
