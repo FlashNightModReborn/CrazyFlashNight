@@ -1023,6 +1023,18 @@
         if (typeof ArenaCustomMatchCode === 'undefined' || !ArenaCustomMatchCode.parseMatchCode) {
             throw new Error('ArenaCustomMatchCode 未加载');
         }
+        if (typeof ArenaCustomParameters === 'undefined' || !ArenaCustomParameters.parseDraft) {
+            throw new Error('ArenaCustomParameters 未加载');
+        }
+        if (typeof ArenaCustomUndo === 'undefined' || !ArenaCustomUndo.capture) {
+            throw new Error('ArenaCustomUndo 未加载');
+        }
+        if (typeof ArenaCustomPolling === 'undefined' || !ArenaCustomPolling.schedule) {
+            throw new Error('ArenaCustomPolling 未加载');
+        }
+        if (typeof ArenaCustomParamEditor === 'undefined' || !ArenaCustomParamEditor.createState) {
+            throw new Error('ArenaCustomParamEditor 未加载');
+        }
     }
 
     function syncCustomEditorFromParsed(parsed) {
@@ -1065,39 +1077,20 @@
         return _customEditor;
     }
 
-    function cloneCustomPlainObject(value) {
-        if (!value || typeof value !== 'object') return {};
-        var out = {};
-        for (var key in value) {
-            if (Object.prototype.hasOwnProperty.call(value, key)) out[key] = value[key];
-        }
-        return out;
-    }
-
-    function cloneCustomEditorSnapshot(editor) {
-        editor = editor || ensureCustomEditorState();
+    function customUndoOptions() {
         return {
-            mode: editor.mode === 'pve' ? 'pve' : 'mvm',
-            seed: editor.seed || 0,
-            timeoutFrames: editor.timeoutFrames || ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
-            blue: cloneCustomRoster(editor.blue || []),
-            red: cloneCustomRoster(editor.red || []),
-            query: editor.query || '',
-            filter: editor.filter || 'all',
-            expandedFactions: cloneCustomPlainObject(editor.expandedFactions),
-            unitVisibleRows: editor.unitVisibleRows || CUSTOM_BROWSER_BATCH_SIZE,
-            unitScrollableRows: editor.unitScrollableRows || 0
+            defaultTimeoutFrames: ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
+            browserBatchSize: CUSTOM_BROWSER_BATCH_SIZE
         };
     }
 
     function captureCustomUndo(label) {
         if (!_customEditor) ensureCustomEditorState();
-        _customUndo = {
+        _customUndo = ArenaCustomUndo.capture(_customEditor, {
             label: label || '上一步',
-            editor: cloneCustomEditorSnapshot(_customEditor),
             selectedSide: _customSelectedSide,
             editorPage: _customEditorPage
-        };
+        }, customUndoOptions());
     }
 
     function restoreCustomUndo() {
@@ -1105,25 +1098,24 @@
             showToast('暂无可撤销操作');
             return;
         }
-        var undo = _customUndo;
+        var restored = ArenaCustomUndo.restore(_customUndo, customUndoOptions());
         _customUndo = null;
-        _customEditor = cloneCustomEditorSnapshot(undo.editor);
-        _customSelectedSide = undo.selectedSide === 'red' ? 'red' : 'blue';
-        if (_customEditor.mode === 'pve') _customSelectedSide = 'red';
-        _customEditorPage = undo.editorPage === 'params' ? 'side' : (undo.editorPage || 'config');
+        _customEditor = restored.editor;
+        _customSelectedSide = restored.selectedSide;
+        _customEditorPage = restored.editorPage;
         _customParamEditor = null;
         syncCustomCodeFromEditor();
         renderCustomEditor();
         renderCustomUnitBrowser();
-        showToast('已撤销：' + undo.label);
+        showToast('已撤销：' + restored.label);
     }
 
     function renderCustomUndoState() {
         var btn = _el ? _el.querySelector('#arena-custom-undo') : null;
-        if (!btn) return;
-        btn.disabled = !_customUndo || _busy || customRunActive();
-        btn.textContent = _customUndo ? ('撤销：' + truncateCustomText(_customUndo.label, 10)) : '撤销';
-        btn.title = _customUndo ? ('撤销 ' + _customUndo.label) : '暂无可撤销操作';
+        ArenaCustomUndo.renderButton(btn, _customUndo, {
+            disabled: _busy || customRunActive(),
+            truncateText: truncateCustomText
+        });
     }
 
     function cloneCustomRoster(roster) {
@@ -1147,189 +1139,19 @@
     }
 
     function cloneCustomParameters(value) {
-        if (!customHasParameters(value)) return null;
-        if (ArenaCustomMatchCode.cloneParameters) return ArenaCustomMatchCode.cloneParameters(value);
-        return JSON.parse(JSON.stringify(value));
+        return ArenaCustomParameters.clone(value);
     }
 
     function customHasParameters(value) {
-        if (ArenaCustomMatchCode.hasParameters) return ArenaCustomMatchCode.hasParameters(value);
-        return !!(value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length);
+        return ArenaCustomParameters.has(value);
     }
 
     function customParameterText(value) {
-        if (!customHasParameters(value)) return '';
-        if (ArenaCustomMatchCode.stableStringify) return ArenaCustomMatchCode.stableStringify(value);
-        return JSON.stringify(value);
+        return ArenaCustomParameters.text(value);
     }
 
     function customParametersEqual(a, b) {
-        return customParameterText(a) === customParameterText(b);
-    }
-
-    function formatCustomParameters(value) {
-        if (!customHasParameters(value)) return '';
-        return JSON.stringify(cloneCustomParameters(value), null, 2);
-    }
-
-    function parseCustomParametersText(text) {
-        text = String(text || '').trim();
-        if (!text) return { ok: true, value: null };
-        try {
-            var value = JSON.parse(text);
-            if (!customHasParameters(value)) {
-                return { ok: false, error: '参数必须是非空 JSON 对象' };
-            }
-            return { ok: true, value: value };
-        } catch (err) {
-            return { ok: false, error: 'JSON 参数格式错误' };
-        }
-    }
-
-    function parseCustomParametersXmlText(text) {
-        text = String(text || '').trim();
-        if (!text) return { ok: true, value: null };
-        try {
-            var body = unwrapCustomXmlRoot(text, 'Parameters');
-            var value = parseCustomParameterBody(body);
-            if (!customHasParameters(value)) {
-                return { ok: false, error: 'XML 参数必须包含至少一个字段' };
-            }
-            return { ok: true, value: value };
-        } catch (err) {
-            return { ok: false, error: err && err.message ? err.message : 'XML 参数格式错误' };
-        }
-    }
-
-    function parseCustomParametersDraft(mode, text) {
-        return mode === 'xml' ? parseCustomParametersXmlText(text) : parseCustomParametersText(text);
-    }
-
-    function unwrapCustomXmlRoot(text, rootName) {
-        var re = new RegExp('^<' + rootName + '(?:\\s[^>]*)?>\\s*([\\s\\S]*?)\\s*</' + rootName + '>\\s*$', 'i');
-        var match = String(text || '').match(re);
-        return match ? match[1].trim() : text;
-    }
-
-    function parseCustomParameterBody(xml) {
-        var text = String(xml == null ? '' : xml).trim();
-        if (!text) return {};
-
-        if (text.indexOf('<') < 0) {
-            return parseCustomStringParameters(text) || { value: parseCustomScalar(text) };
-        }
-
-        var out = {};
-        var childRe = /<([^\s/>]+)(?:\s[^>]*)?>\s*([\s\S]*?)\s*<\/\1>/g;
-        var match;
-        var count = 0;
-        while ((match = childRe.exec(text))) {
-            count++;
-            var key = match[1];
-            var body = match[2].trim();
-            var value = body.indexOf('<') >= 0
-                ? parseCustomParameterBody(body)
-                : parseCustomScalar(decodeCustomXmlText(body));
-            addCustomObjectValue(out, key, value);
-        }
-
-        if (count > 0) return out;
-        if (text.indexOf('<') >= 0 || text.indexOf('>') >= 0) throw new Error('XML 参数标签未闭合或格式错误');
-        return parseCustomStringParameters(text) || { value: parseCustomScalar(decodeCustomXmlText(text)) };
-    }
-
-    function parseCustomStringParameters(text) {
-        var out = {};
-        var parts = String(text || '').split(',');
-        var parsed = 0;
-        for (var i = 0; i < parts.length; i++) {
-            var part = parts[i].trim();
-            if (!part) continue;
-            var idx = part.indexOf(':');
-            if (idx <= 0) continue;
-            var key = part.slice(0, idx).trim();
-            var value = part.slice(idx + 1).trim();
-            if (!key) continue;
-            out[key] = parseCustomScalar(value);
-            parsed++;
-        }
-        return parsed > 0 ? out : null;
-    }
-
-    function parseCustomScalar(value) {
-        var text = String(value == null ? '' : value).trim();
-        if (text === 'true') return true;
-        if (text === 'false') return false;
-        if (/^-?(?:\d+|\d+\.\d+)$/.test(text)) return Number(text);
-        return text;
-    }
-
-    function addCustomObjectValue(obj, key, value) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            if (!Array.isArray(obj[key])) obj[key] = [obj[key]];
-            obj[key].push(value);
-        } else {
-            obj[key] = value;
-        }
-    }
-
-    function decodeCustomXmlText(text) {
-        return String(text || '')
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>')
-            .replace(/&quot;/g, '"')
-            .replace(/&apos;/g, "'")
-            .replace(/&amp;/g, '&');
-    }
-
-    function encodeCustomXmlText(text) {
-        return String(text == null ? '' : text)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&apos;');
-    }
-
-    function formatCustomParametersXml(parameters) {
-        if (!customHasParameters(parameters)) return '<Parameters>\n</Parameters>';
-        var lines = ['<Parameters>'];
-        appendCustomXmlObject(lines, cloneCustomParameters(parameters), 1);
-        lines.push('</Parameters>');
-        return lines.join('\n');
-    }
-
-    function appendCustomXmlObject(lines, obj, depth) {
-        var keys = Object.keys(obj || {}).sort();
-        for (var i = 0; i < keys.length; i++) {
-            appendCustomXmlValue(lines, keys[i], obj[keys[i]], depth);
-        }
-    }
-
-    function appendCustomXmlValue(lines, key, value, depth) {
-        if (!isCustomXmlTagName(key)) throw new Error('字段名无法作为 XML 标签: ' + key);
-        if (Array.isArray(value)) {
-            for (var i = 0; i < value.length; i++) appendCustomXmlValue(lines, key, value[i], depth);
-            return;
-        }
-        var indent = repeatCustomString('  ', depth);
-        if (value && typeof value === 'object') {
-            lines.push(indent + '<' + key + '>');
-            appendCustomXmlObject(lines, value, depth + 1);
-            lines.push(indent + '</' + key + '>');
-        } else {
-            lines.push(indent + '<' + key + '>' + encodeCustomXmlText(value) + '</' + key + '>');
-        }
-    }
-
-    function isCustomXmlTagName(key) {
-        return /^[^\s<>&/="'?]+$/.test(String(key || ''));
-    }
-
-    function repeatCustomString(text, count) {
-        var out = '';
-        for (var i = 0; i < count; i++) out += text;
-        return out;
+        return ArenaCustomParameters.equal(a, b);
     }
 
     function syncCustomCodeFromEditor(options) {
@@ -1618,22 +1440,7 @@
     }
 
     function buildCustomParamEditorState(side, index, mode, entry) {
-        var parameters = entry && customHasParameters(entry.parameters) ? entry.parameters : null;
-        var draftJson = formatCustomParameters(parameters);
-        var draftXml = '';
-        try {
-            draftXml = formatCustomParametersXml(parameters);
-        } catch (err) {
-            draftXml = '<Parameters>\n</Parameters>';
-        }
-        return {
-            side: side,
-            index: Number(index) || 0,
-            mode: mode === 'xml' ? 'xml' : 'json',
-            draftJson: draftJson,
-            draftXml: draftXml,
-            error: ''
-        };
+        return ArenaCustomParamEditor.createState(side, index, mode, entry);
     }
 
     function getCustomRosterEntry(side, index) {
@@ -1652,75 +1459,24 @@
 
         var state = _customParamEditor;
         var entry = state ? getCustomRosterEntry(state.side, state.index) : null;
-        if (!state || !entry) {
-            bodyEl.innerHTML = '<div class="arena-custom-roster-empty">参数目标已不存在</div>';
-            return;
-        }
-
-        var unit = getCustomUnitById(entry.id);
-        var titleEl = _el.querySelector('#arena-custom-param-editor-title');
-        var kickerEl = _el.querySelector('#arena-custom-param-editor-kicker');
-        var metaEl = _el.querySelector('#arena-custom-param-editor-meta');
-        var sideLabel = customSideLabel(state.side);
-        var summary = summarizeCustomParameters(entry.parameters) || '默认参数';
-        if (kickerEl) kickerEl.textContent = sideLabel + '单位参数';
-        if (titleEl) titleEl.textContent = '编辑 u' + entry.id + ' · ' + (unit.name || ('兵种' + entry.id));
-        if (metaEl) {
-            metaEl.textContent = 'Lv.' + entry.level + ' ×' + entry.count + ' · ' +
-                (unit.spritename || '--') + ' · ' + summary;
-        }
-
-        var mode = state.mode === 'xml' ? 'xml' : 'json';
-        var draft = mode === 'xml' ? state.draftXml : state.draftJson;
-        var dirty = customParamEditorDirty();
-        var errorHtml = state.error ? '<div class="arena-custom-param-error">' + escapeHtml(state.error) + '</div>' : '';
-        var dirtyHtml = dirty
-            ? '<div class="arena-custom-param-dirty">草稿未应用；点“应用”写入赛程，点“放弃返回”丢弃本页草稿。</div>'
-            : '';
-        var invalidClass = state.error ? ' arena-custom-param-editor-input-invalid' : '';
-        var backBtn = _el.querySelector('[data-custom-param-action="back"]');
-        if (backBtn) {
-            backBtn.textContent = dirty ? '放弃返回' : '返回阵容';
-            backBtn.classList.toggle('arena-custom-btn-warn', dirty);
-        }
-        bodyEl.innerHTML =
-            '<div class="arena-custom-param-workbench">' +
-                '<div class="arena-custom-param-main">' +
-                    '<div class="arena-custom-param-toolbar">' +
-                        '<div class="arena-custom-mode-switch" aria-label="参数编辑模式">' +
-                            '<button class="arena-custom-btn' + (mode === 'json' ? ' arena-custom-mode-active' : '') + '" type="button" data-custom-param-mode="json" data-audio-cue="confirm">JSON</button>' +
-                            '<button class="arena-custom-btn' + (mode === 'xml' ? ' arena-custom-mode-active' : '') + '" type="button" data-custom-param-mode="xml" data-audio-cue="confirm">XML</button>' +
-                        '</div>' +
-                        '<button class="arena-custom-btn" type="button" data-custom-param-action="clear" data-audio-cue="cancel">清空参数</button>' +
-                    '</div>' +
-                    '<textarea class="arena-custom-param-editor-input' + invalidClass + '" spellcheck="false" data-custom-param-editor-input>' + escapeHtml(draft) + '</textarea>' +
-                    dirtyHtml +
-                    errorHtml +
-                '</div>' +
-                '<div class="arena-custom-param-inspector">' +
-                    '<div class="arena-custom-param-inspector-title">当前摘要</div>' +
-                    '<div class="arena-custom-param-inspector-text">' + escapeHtml(summary) + '</div>' +
-                    '<div class="arena-custom-param-inspector-title">预设来源</div>' +
-                    '<div class="arena-custom-param-inspector-text">' + escapeHtml(entry.presetLabel || entry.presetId || '手动参数') + '</div>' +
-                    '<div class="arena-custom-param-inspector-title">最终覆盖</div>' +
-                    '<div class="arena-custom-param-inspector-text">是否为敌人 / 产生源 / 掉落物=[] / 无金钱经验</div>' +
-                '</div>' +
-            '</div>';
+        ArenaCustomParamEditor.render({
+            rootEl: _el,
+            bodyEl: bodyEl,
+            state: state,
+            entry: entry,
+            unit: entry ? getCustomUnitById(entry.id) : null,
+            sideLabel: state ? customSideLabel(state.side) : '',
+            summary: entry ? (summarizeCustomParameters(entry.parameters) || '默认参数') : '',
+            titleEl: _el.querySelector('#arena-custom-param-editor-title'),
+            kickerEl: _el.querySelector('#arena-custom-param-editor-kicker'),
+            metaEl: _el.querySelector('#arena-custom-param-editor-meta'),
+            escapeHtml: escapeHtml
+        });
     }
 
     function customParamEditorDirty() {
-        if (!_customParamEditor) return false;
-        var entry = getCustomRosterEntry(_customParamEditor.side, _customParamEditor.index);
-        if (!entry) return false;
-        var mode = _customParamEditor.mode === 'xml' ? 'xml' : 'json';
-        try {
-            if (mode === 'xml') {
-                return String(_customParamEditor.draftXml || '') !== formatCustomParametersXml(entry.parameters);
-            }
-            return String(_customParamEditor.draftJson || '') !== formatCustomParameters(entry.parameters);
-        } catch (err) {
-            return true;
-        }
+        var entry = _customParamEditor ? getCustomRosterEntry(_customParamEditor.side, _customParamEditor.index) : null;
+        return ArenaCustomParamEditor.dirty(_customParamEditor, entry);
     }
 
     function leaveCustomParamEditorDiscardingDraft() {
@@ -1731,69 +1487,29 @@
 
     function updateCustomParamDraft(text) {
         if (!_customParamEditor) return;
-        if (_customParamEditor.mode === 'xml') _customParamEditor.draftXml = String(text || '');
-        else _customParamEditor.draftJson = String(text || '');
-        _customParamEditor.error = '';
+        ArenaCustomParamEditor.updateDraft(_customParamEditor, text);
         updateCustomParamInlineState();
     }
 
     function updateCustomParamInlineState() {
         if (!_el || _customEditorPage !== 'params') return;
-        var input = _el.querySelector('[data-custom-param-editor-input]');
-        if (!input) return;
-        input.classList.remove('arena-custom-param-editor-input-invalid');
-        var error = _el.querySelector('.arena-custom-param-error');
-        if (error && error.parentNode) error.parentNode.removeChild(error);
-
-        var dirty = customParamEditorDirty();
-        var marker = _el.querySelector('.arena-custom-param-dirty');
-        if (dirty && !marker) {
-            marker = document.createElement('div');
-            marker.className = 'arena-custom-param-dirty';
-            marker.textContent = '草稿未应用；点“应用”写入赛程，点“放弃返回”丢弃本页草稿。';
-            if (input.parentNode) input.parentNode.insertBefore(marker, input.nextSibling);
-        } else if (!dirty && marker && marker.parentNode) {
-            marker.parentNode.removeChild(marker);
-        }
-
-        var backBtn = _el.querySelector('[data-custom-param-action="back"]');
-        if (backBtn) {
-            backBtn.textContent = dirty ? '放弃返回' : '返回阵容';
-            backBtn.classList.toggle('arena-custom-btn-warn', dirty);
-        }
+        var entry = _customParamEditor ? getCustomRosterEntry(_customParamEditor.side, _customParamEditor.index) : null;
+        ArenaCustomParamEditor.updateInline(_el, _customParamEditor, entry);
     }
 
     function setCustomParamEditorMode(mode) {
         if (!_customParamEditor) return;
-        mode = mode === 'xml' ? 'xml' : 'json';
-        if (_customParamEditor.mode === mode) return;
-
-        var currentMode = _customParamEditor.mode === 'xml' ? 'xml' : 'json';
-        var currentDraft = currentMode === 'xml' ? _customParamEditor.draftXml : _customParamEditor.draftJson;
-        var parsed = parseCustomParametersDraft(currentMode, currentDraft);
-        if (!parsed.ok) {
-            _customParamEditor.error = parsed.error;
+        if (!ArenaCustomParamEditor.setMode(_customParamEditor, mode)) {
             renderCustomEditor();
             return;
         }
-        try {
-            if (mode === 'xml') _customParamEditor.draftXml = formatCustomParametersXml(parsed.value);
-            else _customParamEditor.draftJson = formatCustomParameters(parsed.value);
-        } catch (err) {
-            _customParamEditor.error = err && err.message ? err.message : '参数无法转换';
-            renderCustomEditor();
-            return;
-        }
-        _customParamEditor.mode = mode;
-        _customParamEditor.error = '';
         renderCustomEditor();
     }
 
     function applyCustomParamDraft(returnToSide) {
         if (!_customParamEditor) return false;
         var mode = _customParamEditor.mode === 'xml' ? 'xml' : 'json';
-        var draft = mode === 'xml' ? _customParamEditor.draftXml : _customParamEditor.draftJson;
-        var parsed = parseCustomParametersDraft(mode, draft);
+        var parsed = ArenaCustomParamEditor.parseCurrent(_customParamEditor);
         if (!parsed.ok) {
             _customParamEditor.error = parsed.error;
             renderCustomEditor();
@@ -1814,9 +1530,7 @@
 
     function clearCustomParamDraft() {
         if (!_customParamEditor) return;
-        if (_customParamEditor.mode === 'xml') _customParamEditor.draftXml = '<Parameters>\n</Parameters>';
-        else _customParamEditor.draftJson = '';
-        _customParamEditor.error = '';
+        ArenaCustomParamEditor.clearDraft(_customParamEditor);
         renderCustomEditor();
     }
 
@@ -2238,101 +1952,20 @@
     function renderCustomResultView() {
         if (!_customResultViewEl) return;
         ensureCustomMatchState();
-        var run = _customRun || {};
-        var result = run.lastResult || (_customResult && _customResult.lastResult) || null;
-        var outcome = customResultOutcome(result, run.state || (_customResult && _customResult.state));
-        var meta = customResultMeta(result, run);
-        var matchCode = (_customMatch && _customMatch.code) || (_customResult && _customResult.matchCode) || '';
-        var path = run.resultPath || (_customResult && _customResult.resultPath) || '';
-        var error = run.lastError || (_customResult && _customResult.lastError) || run.error || '';
-
-        _customResultViewEl.innerHTML =
-            '<div class="arena-custom-result-panel">' +
-                '<div class="arena-custom-result-header">' +
-                    '<div>' +
-                        '<div class="arena-custom-result-kicker">定制死亡竞赛 · 结算</div>' +
-                        '<h2 class="arena-custom-result-title ' + outcome.className + '">' + escapeHtml(outcome.label) + '</h2>' +
-                        '<div class="arena-custom-result-meta">' + escapeHtml(meta || '无战斗摘要') + '</div>' +
-                    '</div>' +
-                    '<button class="arena-custom-result-close" type="button" data-custom-result-action="back" data-audio-cue="confirm">返回基地</button>' +
-                '</div>' +
-                '<div class="arena-custom-result-sides">' +
-                    buildCustomResultSideHtml('blue', '蓝方', result ? result.blue : null) +
-                    buildCustomResultSideHtml('red', '红方', result ? result.red : null) +
-                '</div>' +
-                '<div class="arena-custom-result-codeblock">' +
-                    '<div class="arena-custom-result-label">赛程代码</div>' +
-                    '<div class="arena-custom-result-code">' + escapeHtml(matchCode || '--') + '</div>' +
-                '</div>' +
-                '<div class="arena-custom-result-detail">' +
-                    '<span>结果文件</span>' +
-                    '<b>' + escapeHtml(path || '--') + '</b>' +
-                '</div>' +
-                (error ? '<div class="arena-custom-result-error">' + escapeHtml(error) + '</div>' : '') +
-                '<div class="arena-custom-result-actions">' +
-                    '<button class="arena-custom-btn" type="button" data-custom-result-action="copy" data-audio-cue="confirm">复制代码</button>' +
-                    '<button class="arena-custom-btn" type="button" data-custom-result-action="back" data-audio-cue="confirm">返回基地</button>' +
-                    '<button class="arena-card-btn-enter arena-custom-result-reopen" type="button" data-custom-result-action="reopen" data-audio-cue="confirm">再赛一场</button>' +
-                '</div>' +
-            '</div>';
-    }
-
-    function customResultOutcome(result, state) {
-        state = state ? String(state) : '';
-        if (state === 'failed') return { label: '委托失败', className: 'arena-custom-result-title-failed' };
-        if (state === 'aborted' || state === 'abort_requested') return { label: '委托中止', className: 'arena-custom-result-title-neutral' };
-        if (!result) return { label: '结果未知', className: 'arena-custom-result-title-neutral' };
-
-        var winner = String(result.winner || 'none');
-        if (winner === 'blue') return { label: '蓝方胜', className: 'arena-custom-result-title-blue' };
-        if (winner === 'red') return { label: '红方胜', className: 'arena-custom-result-title-red' };
-        if (winner === 'draw') return { label: '平局', className: 'arena-custom-result-title-neutral' };
-        if (winner === 'timeout') return { label: '超时', className: 'arena-custom-result-title-neutral' };
-        return { label: '无胜者', className: 'arena-custom-result-title-neutral' };
-    }
-
-    function customResultMeta(result, run) {
-        var parts = [];
-        if (result && result.status) parts.push(String(result.status));
-        if (result && result.frames != null) parts.push(String(result.frames) + ' 帧');
-        if (result && result.durationMs != null) parts.push(formatDurationMs(result.durationMs));
-        if (run && run.batchId) parts.push(run.batchId);
-        return parts.join(' · ');
-    }
-
-    function buildCustomResultSideHtml(side, title, summary) {
-        var roster = '--';
-        if (_customMatch && _customMatch.parsed) {
-            roster = summarizeCustomRoster(side === 'blue'
-                ? _customMatch.parsed.blueRoster
-                : _customMatch.parsed.redRoster);
+        if (typeof ArenaCustomResultView === 'undefined' || !ArenaCustomResultView.render) {
+            _customResultViewEl.innerHTML =
+                '<div class="arena-custom-result-panel">' +
+                    '<div class="arena-custom-result-error">结算视图模块未加载</div>' +
+                '</div>';
+            return;
         }
-        var maxHp = summary && summary.maxHp != null ? Number(summary.maxHp) : 0;
-        var remainHp = summary && summary.remainHp != null ? Number(summary.remainHp) : 0;
-        var aliveCount = summary && summary.aliveCount != null ? Number(summary.aliveCount) : 0;
-        var startCount = summary && summary.startCount != null ? Number(summary.startCount) : 0;
-        if (isNaN(maxHp) || maxHp < 0) maxHp = 0;
-        if (isNaN(remainHp) || remainHp < 0) remainHp = 0;
-        if (isNaN(aliveCount) || aliveCount < 0) aliveCount = 0;
-        if (isNaN(startCount) || startCount < 0) startCount = 0;
-        var pct = maxHp > 0 ? Math.max(0, Math.min(100, Math.round(remainHp * 100 / maxHp))) : 0;
-
-        return '<div class="arena-custom-result-side arena-custom-result-side-' + side + '">' +
-            '<div class="arena-custom-result-side-title">' + escapeHtml(title) + '</div>' +
-            '<div class="arena-custom-result-side-roster">' + escapeHtml(roster) + '</div>' +
-            '<div class="arena-custom-result-side-stats">' +
-                '<span>存活 ' + aliveCount + '/' + startCount + '</span>' +
-                '<span>HP ' + Math.round(remainHp) + '/' + Math.round(maxHp) + '</span>' +
-            '</div>' +
-            '<div class="arena-custom-result-hpbar"><i style="width:' + pct + '%"></i></div>' +
-        '</div>';
-    }
-
-    function formatDurationMs(value) {
-        var ms = Number(value);
-        if (isNaN(ms) || ms < 0) return '--';
-        if (ms < 1000) return Math.round(ms) + ' ms';
-        return (Math.round(ms / 100) / 10).toFixed(1) + ' s';
+        ArenaCustomResultView.render(_customResultViewEl, {
+            run: _customRun || {},
+            customResult: _customResult,
+            customMatch: _customMatch,
+            escapeHtml: escapeHtml,
+            summarizeCustomRoster: summarizeCustomRoster
+        });
     }
 
     function onCustomResultClick(e) {
@@ -2441,19 +2074,18 @@
     }
 
     function clearCustomPoll() {
-        if (_customPollTimer) {
-            clearTimeout(_customPollTimer);
-            _customPollTimer = 0;
-        }
+        _customPollTimer = ArenaCustomPolling.clear(_customPollTimer);
     }
 
     function scheduleCustomStatusPoll() {
-        clearCustomPoll();
-        if (_activeMode !== 'custom' || !customRunActive()) return;
-        _customPollTimer = setTimeout(function() {
+        _customPollTimer = ArenaCustomPolling.schedule(_customPollTimer, {
+            active: _activeMode === 'custom' && customRunActive(),
+            delayMs: 1000,
+            callback: function() {
             _customPollTimer = 0;
             requestCustomStatus();
-        }, 1000);
+            }
+        });
     }
 
     function requestCustomStatus() {

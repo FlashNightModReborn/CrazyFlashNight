@@ -121,6 +121,11 @@
          'modules/arena-unit-param-presets.js',
          'modules/arena-custom-presets.js',
          'modules/arena-custom-match-code.js',
+         'modules/arena-custom-parameters.js',
+         'modules/arena-custom-undo.js',
+         'modules/arena-custom-polling.js',
+         'modules/arena-custom-param-editor.js',
+         'modules/arena-custom-result-view.js',
          'modules/arena-panel.js'],
         noop);
 
