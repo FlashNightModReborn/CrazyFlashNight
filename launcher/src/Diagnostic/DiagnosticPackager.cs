@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using CF7Launcher.Guardian;
 using CF7Launcher.Save;
@@ -128,6 +129,7 @@ namespace CF7Launcher.Diagnostic
             string perfLatest = Path.Combine(projectRoot, "logs", "perf-latest.jsonl");
             string startupExit = Path.Combine(projectRoot, "logs", "startup-exit.jsonl");
             string startupFailure = Path.Combine(projectRoot, "logs", "startup-failure-latest.txt");
+            string dumpDir = Path.Combine(projectRoot, "logs", "dumps");
             if (File.Exists(current))
                 AddFileShared(zip, current, "logs/launcher.log");
             else
@@ -146,6 +148,13 @@ namespace CF7Launcher.Diagnostic
                 AddFileShared(zip, startupExit, "logs/startup-exit.jsonl");
             if (File.Exists(startupFailure))
                 AddFileShared(zip, startupFailure, "logs/startup-failure-latest.txt");
+            if (Directory.Exists(dumpDir))
+            {
+                foreach (string dumpLog in Directory.GetFiles(dumpDir, "*.log").OrderByDescending(File.GetLastWriteTimeUtc).Take(5))
+                {
+                    AddFileShared(zip, dumpLog, "logs/dumps/" + Path.GetFileName(dumpLog));
+                }
+            }
         }
 
         private static void PackConfig(ZipArchive zip, string projectRoot, List<string> warnings)
@@ -163,6 +172,10 @@ namespace CF7Launcher.Diagnostic
             string legacyPrefs = Path.Combine(projectRoot, "launcher_user_prefs.json");
             if (File.Exists(legacyPrefs))
                 AddFile(zip, legacyPrefs, "config/launcher_user_prefs.legacy.json");
+
+            string runtimeManifest = Path.Combine(projectRoot, "runtime", "cf7-runtime-manifest.tsv");
+            if (File.Exists(runtimeManifest))
+                AddFile(zip, runtimeManifest, "runtime/cf7-runtime-manifest.tsv");
         }
 
         private static void PackMeta(ZipArchive zip, string projectRoot, string slot)
@@ -201,7 +214,9 @@ namespace CF7Launcher.Diagnostic
             sb.Append("             perf-latest.jsonl（启动性能时间线，若存在）\r\n");
             sb.Append("             startup-exit.jsonl（最近启动退出/失败原因码，若存在）\r\n");
             sb.Append("             startup-failure-latest.txt（玩家弹窗中的错误摘要，若存在）\r\n");
+            sb.Append("             dumps/*.log（.NET dump 生成诊断日志；.dmp 本体请按需单独发送）\r\n");
             sb.Append("config/      config.toml + launcher_user_prefs.json（用户偏好）\r\n");
+            sb.Append("runtime/     cf7-runtime-manifest.tsv（构建文件清单与 SHA256，若存在）\r\n");
             sb.Append("meta.json    系统信息：OS / git HEAD / 时间戳 / 机器名等\r\n");
             sb.Append("\r\n");
             sb.Append("使用\r\n");

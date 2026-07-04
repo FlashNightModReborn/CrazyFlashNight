@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Forms;
 using CF7Launcher.Bus;
@@ -70,15 +71,20 @@ class Program
     [STAThread]
     static int Main(string[] args)
     {
-        long processStart = Stopwatch.GetTimestamp();
-        PerfTrace.SetProcessStart(processStart);
-        DpiAwarenessBootstrap.Initialize();
-
         string earlyProjectRoot = TryGetProjectRootFromArgs(args)
                                   ?? TryWalkUpForProjectRoot(Environment.ProcessPath)
                                   ?? Path.GetDirectoryName(Environment.ProcessPath);
         StartupDiagnostics.Init(earlyProjectRoot);
         StartupDiagnostics.Mark("core.main_enter", "projectRoot=" + earlyProjectRoot);
+        return MainAfterStartupDiagnostics(args, earlyProjectRoot);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    static int MainAfterStartupDiagnostics(string[] args, string earlyProjectRoot)
+    {
+        long processStart = Stopwatch.GetTimestamp();
+        PerfTrace.SetProcessStart(processStart);
+        DpiAwarenessBootstrap.Initialize();
 
         // 单例检查
         bool createdNew;

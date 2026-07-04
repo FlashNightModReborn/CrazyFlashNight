@@ -17,6 +17,7 @@ namespace CF7Launcher.Tests.Diagnostic
             _root = Path.Combine(Path.GetTempPath(), "cf7-diagnostic-packager-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(_root);
             Directory.CreateDirectory(Path.Combine(_root, "logs"));
+            Directory.CreateDirectory(Path.Combine(_root, "runtime"));
         }
 
         public void Dispose()
@@ -35,6 +36,10 @@ namespace CF7Launcher.Tests.Diagnostic
             WriteLog("perf-latest.jsonl", "{\"kind\":\"session\"}");
             WriteLog("startup-exit.jsonl", "{\"reason\":\"webview2_missing\"}");
             WriteLog("startup-failure-latest.txt", "CF7-LAUNCH-WEBVIEW2-MISSING");
+            string dumpDir = Path.Combine(_root, "logs", "dumps");
+            Directory.CreateDirectory(dumpDir);
+            File.WriteAllText(Path.Combine(dumpDir, "createdump-123.log"), "createdump", new UTF8Encoding(false));
+            File.WriteAllText(Path.Combine(_root, "runtime", "cf7-runtime-manifest.tsv"), "cf7-runtime-manifest-v1", new UTF8Encoding(false));
 
             DiagnosticResult result = DiagnosticPackager.Pack(_root, null, null, null);
 
@@ -51,6 +56,8 @@ namespace CF7Launcher.Tests.Diagnostic
                 Assert.Contains("logs/perf-latest.jsonl", names);
                 Assert.Contains("logs/startup-exit.jsonl", names);
                 Assert.Contains("logs/startup-failure-latest.txt", names);
+                Assert.Contains("logs/dumps/createdump-123.log", names);
+                Assert.Contains("runtime/cf7-runtime-manifest.tsv", names);
             }
         }
 

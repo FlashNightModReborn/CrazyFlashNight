@@ -18,7 +18,8 @@
 #   4.  native bootstrap.exe 构建（cl.exe，用户面入口 wrapper）
 #   5.  dotnet publish -r win-x64 --self-contained false → FDD Core 进 launcher/publish/
 #   6.  Copy-IfDifferent 把 Core FDD 产物 + native side-cars 拷到 projectRoot/runtime/，
-#       bootstrap.exe 改名拷到 projectRoot/CRAZYFLASHER7MercenaryEmpire.exe，并校验 bundled runtime installer
+#       bootstrap.exe 改名拷到 projectRoot/CRAZYFLASHER7MercenaryEmpire.exe，生成 runtime manifest，
+#       并校验 bundled runtime installer
 #   6f. 断言发布主程序集是 optimized Release build
 #   7.  Verify launcher/web 运行时资产清单
 #   7a. native cursor canvas 契约校验（tools/audit-native-cursor-assets.js）
@@ -472,6 +473,8 @@ foreach ($entry in $nativeDlls) {
     }
 }
 
+[void]$expectedNames.Add("cf7-runtime-manifest.tsv")
+
 # 6d.5: 清理 runtime\ 内不在本轮 expectedNames 的旧产物（替代旧版前置 Remove-Item *）。
 # 防降级依赖时旧版本 DLL 残留；只删未预期项，已对齐的不动 → 不重置 mtime 不触发 watcher。
 $staleRemoved = 0
@@ -485,6 +488,50 @@ Get-ChildItem $runtimeDir -File -ErrorAction SilentlyContinue | Where-Object {
 if ($staleRemoved -gt 0) {
     Write-Host "  Cleaned $staleRemoved stale file(s) from runtime\"
 }
+
+# 6e: 生成 runtime manifest。bootstrap 会在启动 Core 前校验大小 + SHA256，
+# 用来拦截覆盖安装造成的文件混搭、旧 DLL 残留、被杀软改写等高成本排查场景。
+Write-Host "  Writing runtime manifest..." -ForegroundColor Yellow
+$manifestPath = Join-Path $runtimeDir "cf7-runtime-manifest.tsv"
+$manifestLines = New-Object 'System.Collections.Generic.List[string]'
+[void]$manifestLines.Add("cf7-runtime-manifest-v1")
+[void]$manifestLines.Add("buildUtc`t$([DateTime]::UtcNow.ToString("o"))")
+[void]$manifestLines.Add("dotnetSdk`t$dotnetSdk")
+$gitHead = "unknown"
+try {
+    $gitOutput = & git -C $projectRoot rev-parse HEAD 2>$null
+    if ($LASTEXITCODE -eq 0 -and $gitOutput) {
+        $gitHead = (($gitOutput | Select-Object -First 1).ToString()).Trim()
+    }
+} catch {
+    $gitHead = "unknown"
+}
+[void]$manifestLines.Add("gitHead`t$gitHead")
+[void]$manifestLines.Add("publishMode`tframework-dependent")
+
+function Add-RuntimeManifestEntry {
+    param(
+        [Parameter(Mandatory=$true)][string]$RelativePath,
+        [Parameter(Mandatory=$true)][string]$FullPath
+    )
+    if (-not (Test-Path -LiteralPath $FullPath)) {
+        Write-Host "[FAIL] Manifest target missing: $RelativePath -> $FullPath" -ForegroundColor Red
+        exit 1
+    }
+    $item = Get-Item -LiteralPath $FullPath
+    $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $FullPath).Hash.ToUpperInvariant()
+    [void]$manifestLines.Add("file`t$RelativePath`t$($item.Length)`t$hash")
+}
+
+Add-RuntimeManifestEntry -RelativePath "CRAZYFLASHER7MercenaryEmpire.exe" -FullPath $userFacingExe
+Get-ChildItem $runtimeDir -File | Where-Object {
+    $_.Name -ne "cf7-runtime-manifest.tsv"
+} | Sort-Object Name | ForEach-Object {
+    Add-RuntimeManifestEntry -RelativePath ("runtime/" + $_.Name) -FullPath $_.FullName
+}
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+[System.IO.File]::WriteAllLines($manifestPath, [string[]]$manifestLines.ToArray(), $utf8NoBom)
+Write-Host "  Runtime manifest: runtime\cf7-runtime-manifest.tsv ($($manifestLines.Count) line(s))" -ForegroundColor Green
 
 # 6e: 硬断言关键运行时文件落地
 # 用户面 (projectRoot):
@@ -500,6 +547,7 @@ $mustExistRoot = @(
 $mustExistRuntime = @(
     "CRAZYFLASHER7MercenaryEmpire.Core.exe"   # FDD apphost
     "CRAZYFLASHER7MercenaryEmpire.Core.dll"   # main managed assembly
+    "cf7-runtime-manifest.tsv"                # build-time file inventory + hashes; bootstrap preflight verifies it
     "sol_parser.dll"                          # Rust cdylib (Protocol 2 存档决议)
     "miniaudio.dll"                           # native audio engine (AudioEngine DllImport)
 )

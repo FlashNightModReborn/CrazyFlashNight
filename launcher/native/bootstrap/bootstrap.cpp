@@ -21,6 +21,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <wincrypt.h>
 #include <shellapi.h>
 #include <shlobj.h>
 #include <strsafe.h>
@@ -28,10 +29,13 @@
 #include <stdlib.h>
 #include <share.h>
 #include <time.h>
+#include <string.h>
+#include <limits.h>
 
 #pragma comment(lib, "shell32.lib")
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "kernel32.lib")
+#pragma comment(lib, "advapi32.lib")
 
 static const wchar_t* TITLE = L"CF7:FlashNight";
 // installer 用 glob 扫 windowsdesktop-runtime-10.*-win-x64.exe（10.0.8 / 10.0.9 / 10.1.x ...），
@@ -49,10 +53,15 @@ static const wchar_t* TITLE = L"CF7:FlashNight";
 static const wchar_t* RUNTIME_INSTALLER_DIR_REL = L"\\tools\\dotnet-runtime";
 static const wchar_t* RUNTIME_INSTALLER_GLOB = L"\\tools\\dotnet-runtime\\windowsdesktop-runtime-10.*-win-x64.exe";
 static const wchar_t* CORE_EXE_REL = L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe";
+static const wchar_t* RUNTIME_MANIFEST_REL = L"\\runtime\\cf7-runtime-manifest.tsv";
 static const wchar_t* LOG_DIR_REL = L"\\logs";
 static const wchar_t* LOG_FILE_REL = L"\\logs\\bootstrap.log";
 static const wchar_t* LOG_FILE_OLD_REL = L"\\logs\\bootstrap.log.old";
+static const wchar_t* DUMP_DIR_REL = L"\\logs\\dumps";
+static const wchar_t* STARTUP_FAILURE_REL = L"\\logs\\startup-failure-latest.txt";
+static const wchar_t* STARTUP_EXIT_REL = L"\\logs\\startup-exit.jsonl";
 static const DWORD CORE_EARLY_EXIT_GRACE_MS = 5000;
+static const int DUMP_RETENTION_LIMIT = 5;
 // 滚动阈值：10MB。bootstrap 每次启动 ~10 行 ~1KB，理论可记 10 万次启动；
 // 不希望诊断文件无限增长，> 10MB 时滚一次（保留 .old 一份做事后复盘）
 static const long LOG_ROTATE_BYTES = 10L * 1024L * 1024L;
@@ -204,6 +213,262 @@ static bool BuildRootPath(const wchar_t* exeDir, const wchar_t* rel, wchar_t* ou
     return true;
 }
 
+static void FormatFileTimeLocal(const FILETIME* ft, wchar_t* out, size_t cch);
+
+static bool BuildProjectPath(const wchar_t* exeDir, const wchar_t* relativePath, wchar_t* out, size_t cch)
+{
+    if (FAILED(StringCchCopyW(out, cch, exeDir))) return false;
+    if (FAILED(StringCchCatW(out, cch, L"\\"))) return false;
+    if (FAILED(StringCchCatW(out, cch, relativePath))) return false;
+    for (size_t i = 0; out[i] != L'\0'; i++) {
+        if (out[i] == L'/') out[i] = L'\\';
+    }
+    return true;
+}
+
+static bool WriteUtf8File(const wchar_t* path, const wchar_t* text, bool append)
+{
+    if (path == NULL || text == NULL) return false;
+    FILE* fp = _wfsopen(path, append ? L"ab" : L"wb", _SH_DENYNO);
+    if (fp == NULL) return false;
+
+    int u8Len = WideCharToMultiByte(CP_UTF8, 0, text, -1, NULL, 0, NULL, NULL);
+    if (u8Len <= 0) {
+        fclose(fp);
+        return false;
+    }
+    char* u8Buf = (char*)malloc((size_t)u8Len);
+    if (u8Buf == NULL) {
+        fclose(fp);
+        return false;
+    }
+    WideCharToMultiByte(CP_UTF8, 0, text, -1, u8Buf, u8Len, NULL, NULL);
+    size_t written = fwrite(u8Buf, 1, (size_t)(u8Len - 1), fp);
+    free(u8Buf);
+    fclose(fp);
+    return written == (size_t)(u8Len - 1);
+}
+
+static void EscapeJsonWide(const wchar_t* value, wchar_t* out, size_t cch)
+{
+    if (out == NULL || cch == 0) return;
+    out[0] = L'\0';
+    if (value == NULL) return;
+
+    size_t n = 0;
+    for (size_t i = 0; value[i] != L'\0' && n + 2 < cch; i++) {
+        wchar_t ch = value[i];
+        if (ch == L'\\' || ch == L'"') {
+            if (n + 2 >= cch) break;
+            out[n++] = L'\\';
+            out[n++] = ch;
+        } else if (ch == L'\r') {
+            if (n + 2 >= cch) break;
+            out[n++] = L'\\';
+            out[n++] = L'r';
+        } else if (ch == L'\n') {
+            if (n + 2 >= cch) break;
+            out[n++] = L'\\';
+            out[n++] = L'n';
+        } else {
+            out[n++] = ch;
+        }
+    }
+    out[n] = L'\0';
+}
+
+struct DumpFileEntry
+{
+    wchar_t path[MAX_PATH];
+    FILETIME writeTime;
+};
+
+static int CompareFileTimeAsc(const FILETIME& a, const FILETIME& b)
+{
+    ULARGE_INTEGER aa;
+    ULARGE_INTEGER bb;
+    aa.LowPart = a.dwLowDateTime;
+    aa.HighPart = a.dwHighDateTime;
+    bb.LowPart = b.dwLowDateTime;
+    bb.HighPart = b.dwHighDateTime;
+    if (aa.QuadPart < bb.QuadPart) return -1;
+    if (aa.QuadPart > bb.QuadPart) return 1;
+    return 0;
+}
+
+static void PruneOldDumpFiles(const wchar_t* dumpDir)
+{
+    if (dumpDir == NULL || dumpDir[0] == L'\0') return;
+
+    wchar_t pattern[MAX_PATH];
+    if (FAILED(StringCchCopyW(pattern, MAX_PATH, dumpDir))) return;
+    if (FAILED(StringCchCatW(pattern, MAX_PATH, L"\\*.dmp"))) return;
+
+    DumpFileEntry entries[64];
+    int count = 0;
+    WIN32_FIND_DATAW fd;
+    HANDLE h = FindFirstFileW(pattern, &fd);
+    if (h == INVALID_HANDLE_VALUE) return;
+    do {
+        if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) continue;
+        if (count >= 64) break;
+        if (FAILED(StringCchCopyW(entries[count].path, MAX_PATH, dumpDir))) continue;
+        if (FAILED(StringCchCatW(entries[count].path, MAX_PATH, L"\\"))) continue;
+        if (FAILED(StringCchCatW(entries[count].path, MAX_PATH, fd.cFileName))) continue;
+        entries[count].writeTime = fd.ftLastWriteTime;
+        count++;
+    } while (FindNextFileW(h, &fd));
+    FindClose(h);
+
+    for (int i = 0; i < count; i++) {
+        for (int j = i + 1; j < count; j++) {
+            if (CompareFileTimeAsc(entries[j].writeTime, entries[i].writeTime) < 0) {
+                DumpFileEntry tmp = entries[i];
+                entries[i] = entries[j];
+                entries[j] = tmp;
+            }
+        }
+    }
+
+    int removeCount = count - DUMP_RETENTION_LIMIT;
+    for (int i = 0; i < removeCount; i++) {
+        if (DeleteFileW(entries[i].path)) {
+            Logf("INFO", L"[dump] removed old dump: %s", entries[i].path);
+        }
+    }
+}
+
+static void AppendRecentDumpList(const wchar_t* dumpDir, wchar_t* out, size_t cch)
+{
+    if (out == NULL || cch == 0) return;
+    out[0] = L'\0';
+    if (dumpDir == NULL || dumpDir[0] == L'\0') return;
+
+    wchar_t pattern[MAX_PATH];
+    if (FAILED(StringCchCopyW(pattern, MAX_PATH, dumpDir))) return;
+    if (FAILED(StringCchCatW(pattern, MAX_PATH, L"\\*.dmp"))) return;
+
+    WIN32_FIND_DATAW fd;
+    HANDLE h = FindFirstFileW(pattern, &fd);
+    if (h == INVALID_HANDLE_VALUE) {
+        StringCchCatW(out, cch, L"(未发现 .dmp 文件)\r\n");
+        return;
+    }
+
+    int count = 0;
+    do {
+        if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) continue;
+        ULONGLONG size = (((ULONGLONG)fd.nFileSizeHigh) << 32) | fd.nFileSizeLow;
+        wchar_t mtime[64];
+        FormatFileTimeLocal(&fd.ftLastWriteTime, mtime, 64);
+        wchar_t line[512];
+        StringCchPrintfW(line, 512, L"- %s  size=%llu  mtime=%s\r\n", fd.cFileName, size, mtime);
+        StringCchCatW(out, cch, line);
+        count++;
+        if (count >= 10) break;
+    } while (FindNextFileW(h, &fd));
+    FindClose(h);
+
+    if (count == 0) {
+        StringCchCatW(out, cch, L"(未发现 .dmp 文件)\r\n");
+    }
+}
+
+static void ConfigureCoreCrashDumps(const wchar_t* exeDir)
+{
+    wchar_t dumpDir[MAX_PATH];
+    if (!BuildRootPath(exeDir, DUMP_DIR_REL, dumpDir, MAX_PATH)) {
+        Log("WARN", L"[dump] dump directory path overflow");
+        return;
+    }
+    CreateDirectoryW(dumpDir, NULL);
+
+    wchar_t dumpPattern[MAX_PATH];
+    wchar_t dumpLogPattern[MAX_PATH];
+    if (!BuildRootPath(exeDir, L"\\logs\\dumps\\Core-%p-%t.dmp", dumpPattern, MAX_PATH)) {
+        Log("WARN", L"[dump] dump name path overflow");
+        return;
+    }
+    if (!BuildRootPath(exeDir, L"\\logs\\dumps\\createdump.log", dumpLogPattern, MAX_PATH)) {
+        Log("WARN", L"[dump] dump log path overflow");
+        return;
+    }
+
+    SetEnvironmentVariableW(L"DOTNET_DbgEnableMiniDump", L"1");
+    SetEnvironmentVariableW(L"DOTNET_DbgMiniDumpType", L"2");
+    SetEnvironmentVariableW(L"DOTNET_DbgMiniDumpName", dumpPattern);
+    SetEnvironmentVariableW(L"COMPlus_DbgEnableMiniDump", L"1");
+    SetEnvironmentVariableW(L"COMPlus_DbgMiniDumpType", L"2");
+    SetEnvironmentVariableW(L"COMPlus_DbgMiniDumpName", dumpPattern);
+    SetEnvironmentVariableW(L"DOTNET_CreateDumpDiagnostics", L"1");
+    SetEnvironmentVariableW(L"DOTNET_CreateDumpLogToFile", dumpLogPattern);
+
+    PruneOldDumpFiles(dumpDir);
+    Logf("INFO", L"[dump] Core crash dump capture enabled: %s", dumpPattern);
+}
+
+static void WriteBootstrapStartupFailure(const wchar_t* exeDir, bool exitCodeKnown, DWORD exitCode, const wchar_t* corePath)
+{
+    wchar_t summaryPath[MAX_PATH];
+    wchar_t startupExitPath[MAX_PATH];
+    wchar_t dumpDir[MAX_PATH];
+    if (!BuildRootPath(exeDir, STARTUP_FAILURE_REL, summaryPath, MAX_PATH)) return;
+    if (!BuildRootPath(exeDir, STARTUP_EXIT_REL, startupExitPath, MAX_PATH)) return;
+    if (!BuildRootPath(exeDir, DUMP_DIR_REL, dumpDir, MAX_PATH)) return;
+
+    wchar_t dumpList[4096];
+    AppendRecentDumpList(dumpDir, dumpList, 4096);
+
+    wchar_t exitCodeText[64];
+    if (exitCodeKnown) {
+        StringCchPrintfW(exitCodeText, 64, L"%lu (0x%08lX)", exitCode, exitCode);
+    } else {
+        StringCchCopyW(exitCodeText, 64, L"unknown");
+    }
+
+    wchar_t summary[8192];
+    StringCchPrintfW(summary, 8192,
+        L"CF7:ME 启动诊断摘要\r\n"
+        L"错误码: CF7-BOOT-CORE-EARLY-EXIT\r\n"
+        L"原因: core_early_exit\r\n"
+        L"标题: 启动器核心进程秒退\r\n"
+        L"详情: Core 在 bootstrap 发起启动后的 %lu ms 内退出，exitCode=%s。\r\n"
+        L"Core 路径: %s\r\n"
+        L"项目目录: %s\r\n"
+        L"日志目录: %s\\logs\r\n"
+        L"Dump 目录: %s\r\n"
+        L"\r\n"
+        L"最近 dump 文件:\r\n%s"
+        L"\r\n"
+        L"建议: 请把 bootstrap.log、startup-failure-latest.txt，以及 logs\\dumps 下最新 .dmp 文件发给开发组。\r\n",
+        CORE_EARLY_EXIT_GRACE_MS, exitCodeText, corePath, exeDir, exeDir, dumpDir, dumpList);
+    WriteUtf8File(summaryPath, summary, false);
+
+    wchar_t escapedRoot[MAX_PATH * 2];
+    wchar_t escapedDetail[512];
+    EscapeJsonWide(exeDir, escapedRoot, MAX_PATH * 2);
+    if (exitCodeKnown) {
+        StringCchPrintfW(escapedDetail, 512,
+            L"code=CF7-BOOT-CORE-EARLY-EXIT exitCode=%lu hex=0x%08lX", exitCode, exitCode);
+    } else {
+        StringCchCopyW(escapedDetail, 512,
+            L"code=CF7-BOOT-CORE-EARLY-EXIT exitCode=unknown");
+    }
+
+    SYSTEMTIME st;
+    GetLocalTime(&st);
+    wchar_t line[2048];
+    StringCchPrintfW(line, 2048,
+        L"{\"ts\":\"%04d-%02d-%02dT%02d:%02d:%02d.%03d\","
+        L"\"pid\":%lu,\"kind\":\"exit\",\"reason\":\"core_early_exit\","
+        L"\"terminal\":true,\"detail\":\"%s\",\"projectRoot\":\"%s\"}\r\n",
+        st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds,
+        GetCurrentProcessId(), escapedDetail, escapedRoot);
+    WriteUtf8File(startupExitPath, line, true);
+
+    Logf("ERROR", L"[startup-failure] wrote %s", summaryPath);
+}
+
 static void FormatFileTimeLocal(const FILETIME* ft, wchar_t* out, size_t cch)
 {
     if (out == NULL || cch == 0) return;
@@ -216,6 +481,180 @@ static void FormatFileTimeLocal(const FILETIME* ft, wchar_t* out, size_t cch)
     if (!FileTimeToSystemTime(&localFt, &st)) return;
     StringCchPrintfW(out, cch, L"%04d-%02d-%02d %02d:%02d:%02d",
         st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+}
+
+static void TrimLineEnd(char* text)
+{
+    if (text == NULL) return;
+    size_t len = strlen(text);
+    while (len > 0 && (text[len - 1] == '\r' || text[len - 1] == '\n')) {
+        text[len - 1] = '\0';
+        len--;
+    }
+}
+
+static bool Utf8ToWidePath(const char* src, wchar_t* out, size_t cch)
+{
+    if (src == NULL || out == NULL || cch == 0 || cch > INT_MAX) return false;
+    int needed = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, src, -1, NULL, 0);
+    if (needed <= 0 || needed > (int)cch) return false;
+    return MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, src, -1, out, (int)cch) > 0;
+}
+
+static bool ComputeFileSha256Hex(const wchar_t* path, char* outHex, size_t cch)
+{
+    if (path == NULL || outHex == NULL || cch < 65) return false;
+    outHex[0] = '\0';
+
+    HANDLE file = CreateFileW(path, GENERIC_READ,
+        FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+        NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (file == INVALID_HANDLE_VALUE) {
+        Logf("ERROR", L"[manifest] cannot open for hash path=%s GetLastError=%lu", path, GetLastError());
+        return false;
+    }
+
+    HCRYPTPROV provider = 0;
+    HCRYPTHASH hash = 0;
+    bool ok = false;
+    if (!CryptAcquireContextW(&provider, NULL, NULL, PROV_RSA_AES, CRYPT_VERIFYCONTEXT)) {
+        Logf("ERROR", L"[manifest] CryptAcquireContext failed GetLastError=%lu", GetLastError());
+        CloseHandle(file);
+        return false;
+    }
+    if (!CryptCreateHash(provider, CALG_SHA_256, 0, 0, &hash)) {
+        Logf("ERROR", L"[manifest] CryptCreateHash(SHA256) failed GetLastError=%lu", GetLastError());
+        CryptReleaseContext(provider, 0);
+        CloseHandle(file);
+        return false;
+    }
+
+    BYTE buffer[64 * 1024];
+    DWORD read = 0;
+    for (;;) {
+        if (!ReadFile(file, buffer, sizeof(buffer), &read, NULL)) {
+            Logf("ERROR", L"[manifest] hash read failed path=%s GetLastError=%lu", path, GetLastError());
+            break;
+        }
+        if (read == 0) {
+            BYTE digest[32];
+            DWORD digestLen = sizeof(digest);
+            if (CryptGetHashParam(hash, HP_HASHVAL, digest, &digestLen, 0) && digestLen == sizeof(digest)) {
+                for (DWORD i = 0; i < digestLen; i++) {
+                    sprintf_s(outHex + (i * 2), cch - (i * 2), "%02X", digest[i]);
+                }
+                outHex[64] = '\0';
+                ok = true;
+            } else {
+                Logf("ERROR", L"[manifest] CryptGetHashParam failed path=%s GetLastError=%lu", path, GetLastError());
+            }
+            break;
+        }
+        if (!CryptHashData(hash, buffer, read, 0)) {
+            Logf("ERROR", L"[manifest] CryptHashData failed path=%s GetLastError=%lu", path, GetLastError());
+            break;
+        }
+    }
+
+    CryptDestroyHash(hash);
+    CryptReleaseContext(provider, 0);
+    CloseHandle(file);
+    return ok;
+}
+
+static bool VerifyRuntimeManifest(const wchar_t* exeDir)
+{
+    wchar_t manifestPath[MAX_PATH];
+    if (!BuildRootPath(exeDir, RUNTIME_MANIFEST_REL, manifestPath, MAX_PATH)) {
+        Log("ERROR", L"[manifest] manifest path overflow");
+        return false;
+    }
+
+    FILE* fp = _wfsopen(manifestPath, L"rb", _SH_DENYNO);
+    if (fp == NULL) {
+        Logf("ERROR", L"[manifest] missing runtime manifest path=%s", manifestPath);
+        return false;
+    }
+
+    bool ok = true;
+    int fileCount = 0;
+    char line[4096];
+    while (fgets(line, sizeof(line), fp) != NULL) {
+        TrimLineEnd(line);
+        if (strncmp(line, "file\t", 5) != 0) continue;
+
+        char* rel = line + 5;
+        char* sizeText = strchr(rel, '\t');
+        if (sizeText == NULL) {
+            ok = false;
+            Log("ERROR", L"[manifest] malformed file row (missing size)");
+            continue;
+        }
+        *sizeText++ = '\0';
+        char* hashText = strchr(sizeText, '\t');
+        if (hashText == NULL) {
+            ok = false;
+            Log("ERROR", L"[manifest] malformed file row (missing hash)");
+            continue;
+        }
+        *hashText++ = '\0';
+
+        wchar_t relPathW[MAX_PATH];
+        if (!Utf8ToWidePath(rel, relPathW, MAX_PATH)) {
+            ok = false;
+            Log("ERROR", L"[manifest] malformed UTF-8 relative path");
+            continue;
+        }
+
+        wchar_t fullPath[MAX_PATH];
+        if (!BuildProjectPath(exeDir, relPathW, fullPath, MAX_PATH)) {
+            ok = false;
+            Logf("ERROR", L"[manifest] path overflow rel=%s", relPathW);
+            continue;
+        }
+
+        WIN32_FILE_ATTRIBUTE_DATA fad;
+        if (!GetFileAttributesExW(fullPath, GetFileExInfoStandard, &fad) ||
+            (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
+            ok = false;
+            Logf("ERROR", L"[manifest] listed file missing rel=%s path=%s GetLastError=%lu",
+                relPathW, fullPath, GetLastError());
+            continue;
+        }
+
+        ULONGLONG expectedSize = _strtoui64(sizeText, NULL, 10);
+        ULONGLONG actualSize = (((ULONGLONG)fad.nFileSizeHigh) << 32) | fad.nFileSizeLow;
+        if (expectedSize != actualSize) {
+            ok = false;
+            Logf("ERROR", L"[manifest] size mismatch rel=%s expected=%llu actual=%llu",
+                relPathW, expectedSize, actualSize);
+            continue;
+        }
+
+        char actualHash[65];
+        if (!ComputeFileSha256Hex(fullPath, actualHash, sizeof(actualHash))) {
+            ok = false;
+            continue;
+        }
+        if (_stricmp(hashText, actualHash) != 0) {
+            ok = false;
+            Logf("ERROR", L"[manifest] SHA256 mismatch rel=%s expected=%S actual=%S",
+                relPathW, hashText, actualHash);
+            continue;
+        }
+
+        fileCount++;
+    }
+    fclose(fp);
+
+    if (fileCount == 0) {
+        ok = false;
+        Logf("ERROR", L"[manifest] no file rows found path=%s", manifestPath);
+    }
+
+    Logf(ok ? "INFO" : "ERROR", L"[manifest] verification %s files=%d path=%s",
+        ok ? L"OK" : L"FAILED", fileCount, manifestPath);
+    return ok;
 }
 
 static bool LogPathProbe(const wchar_t* label, const wchar_t* path, bool required)
@@ -291,6 +730,7 @@ static bool PreflightCriticalFiles(const wchar_t* exeDir)
     ok = LogRelativePathProbe(exeDir, L"Core assembly", L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.dll", true) && ok;
     ok = LogRelativePathProbe(exeDir, L"Core deps", L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.deps.json", true) && ok;
     ok = LogRelativePathProbe(exeDir, L"Core runtimeconfig", L"\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json", true) && ok;
+    ok = LogRelativePathProbe(exeDir, L"Runtime manifest", RUNTIME_MANIFEST_REL, true) && ok;
     ok = LogRelativePathProbe(exeDir, L"WebView2 loader", L"\\runtime\\WebView2Loader.dll", true) && ok;
     ok = LogRelativePathProbe(exeDir, L"WebView2 managed", L"\\runtime\\Microsoft.Web.WebView2.Core.dll", true) && ok;
     ok = LogRelativePathProbe(exeDir, L"ClearScript V8 native", L"\\runtime\\ClearScriptV8.win-x64.dll", true) && ok;
@@ -304,6 +744,7 @@ static bool PreflightCriticalFiles(const wchar_t* exeDir)
     LogRelativePathProbe(exeDir, L"config.toml", L"\\config.toml", false);
     LogRelativePathProbe(exeDir, L"hotkey guard", L"\\hotkey_guard.exe", false);
     LogRuntimeInventory(exeDir);
+    ok = VerifyRuntimeManifest(exeDir) && ok;
     Logf(ok ? "INFO" : "ERROR", L"[preflight] critical file check %s", ok ? L"OK" : L"FAILED");
     return ok;
 }
@@ -486,8 +927,19 @@ static int RunInstaller(const wchar_t* installerPath)
 
 // ---- 启动 Core apphost ----
 // 传递: --project-root "<exeDir 绝对路径>" + 原始命令行参数
-static bool LaunchCore(const wchar_t* exeDir, const wchar_t* corePath, LPWSTR origCmdLine)
+struct CoreLaunchResult
 {
+    bool launchIssued;
+    bool earlyExitObserved;
+    bool exitCodeKnown;
+    DWORD exitCode;
+    DWORD systemError;
+    DWORD waitStatus;
+};
+
+static CoreLaunchResult LaunchCore(const wchar_t* exeDir, const wchar_t* corePath, LPWSTR origCmdLine)
+{
+    CoreLaunchResult result = { false, false, false, 0, 0, WAIT_FAILED };
     g_lastCoreLaunchError = 0;
     // 构造 args: --project-root "<exeDir>" <origCmdLine>
     // NTFS 路径分量禁止 `"`（连同 < > : / \ | ? * 都是保留字符），
@@ -495,7 +947,9 @@ static bool LaunchCore(const wchar_t* exeDir, const wchar_t* corePath, LPWSTR or
     // 若极端情况下真出现（例如 GetModuleFileNameW 被劫持），写日志后拒绝启动避免误解析。
     if (wcschr(exeDir, L'"') != NULL) {
         Logf("ERROR", L"exeDir contains '\"' which NTFS prohibits — refusing to launch: %s", exeDir);
-        return false;
+        result.systemError = ERROR_INVALID_NAME;
+        g_lastCoreLaunchError = result.systemError;
+        return result;
     }
     wchar_t args[4096];
     if (origCmdLine && origCmdLine[0] != L'\0') {
@@ -517,36 +971,44 @@ static bool LaunchCore(const wchar_t* exeDir, const wchar_t* corePath, LPWSTR or
     sei.nShow = SW_SHOWNORMAL;
 
     if (ShellExecuteExW(&sei)) {
+        result.launchIssued = true;
         Log("INFO", L"Core launch issued OK");
         if (sei.hProcess != NULL) {
             DWORD wait = WaitForSingleObject(sei.hProcess, CORE_EARLY_EXIT_GRACE_MS);
+            result.waitStatus = wait;
             if (wait == WAIT_OBJECT_0) {
+                result.earlyExitObserved = true;
                 DWORD exitCode = 0;
                 if (GetExitCodeProcess(sei.hProcess, &exitCode)) {
+                    result.exitCodeKnown = true;
+                    result.exitCode = exitCode;
                     Logf(exitCode == 0 ? "WARN" : "ERROR",
                         L"Core process exited within %lu ms (exitCode=%lu)",
                         CORE_EARLY_EXIT_GRACE_MS, exitCode);
                 } else {
+                    result.systemError = GetLastError();
                     Logf("ERROR", L"Core process exited within %lu ms but exit code read failed (GetLastError=%lu)",
-                        CORE_EARLY_EXIT_GRACE_MS, GetLastError());
+                        CORE_EARLY_EXIT_GRACE_MS, result.systemError);
                 }
             } else if (wait == WAIT_TIMEOUT) {
                 Logf("INFO", L"Core still running after %lu ms; bootstrap handoff considered alive",
                     CORE_EARLY_EXIT_GRACE_MS);
             } else {
+                result.systemError = GetLastError();
                 Logf("WARN", L"Core early-exit wait failed (wait=%lu GetLastError=%lu)",
-                    wait, GetLastError());
+                    wait, result.systemError);
             }
             CloseHandle(sei.hProcess);
         } else {
             Log("WARN", L"Core launch returned no process handle; cannot observe early exit");
         }
-        return true;
+        return result;
     }
     DWORD err = GetLastError();
     g_lastCoreLaunchError = err;
+    result.systemError = err;
     Logf("ERROR", L"Core launch failed (GetLastError=%lu)", err);
-    return false;
+    return result;
 }
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
@@ -667,6 +1129,8 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
         Logf("INFO", L"set DOTNET_ROOT_X64 / DOTNET_ROOT = %s (for Core inheritance)", foundRoot);
     }
 
+    ConfigureCoreCrashDumps(exeDir);
+
     // 运行时和游戏关键文件预检：只做诊断与 fail-fast，不尝试修复。
     if (!PreflightCriticalFiles(exeDir)) {
         return FatalExit(L"CF7-BOOT-FILE-INTEGRITY",
@@ -696,14 +1160,33 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
             L"请通过 Steam 验证游戏文件完整性，或重新下载完整安装包。");
     }
 
-    if (!LaunchCore(exeDir, corePath, cmdLine)) {
-        DWORD err = g_lastCoreLaunchError != 0 ? g_lastCoreLaunchError : GetLastError();
+    CoreLaunchResult launch = LaunchCore(exeDir, corePath, cmdLine);
+    if (!launch.launchIssued) {
+        DWORD err = launch.systemError != 0 ? launch.systemError : (g_lastCoreLaunchError != 0 ? g_lastCoreLaunchError : GetLastError());
         wchar_t buf[256];
         StringCchPrintfW(buf, 256,
             L"无法启动主程序（系统错误码 %lu）。",
             err);
         return FatalExit(L"CF7-BOOT-CORE-LAUNCH", buf,
             L"请重试一次；如果仍失败，请检查杀毒软件是否拦截 runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe。");
+    }
+    if (launch.earlyExitObserved && (!launch.exitCodeKnown || launch.exitCode != 0)) {
+        WriteBootstrapStartupFailure(exeDir, launch.exitCodeKnown, launch.exitCode, corePath);
+
+        wchar_t buf[1024];
+        if (launch.exitCodeKnown) {
+            StringCchPrintfW(buf, 1024,
+                L"主程序已启动，但在 %lu ms 内异常退出（退出码 %lu / 0x%08lX）。\n\n"
+                L"bootstrap 已写入 startup-failure-latest.txt，并已启用 .NET dump 到 logs\\dumps。",
+                CORE_EARLY_EXIT_GRACE_MS, launch.exitCode, launch.exitCode);
+        } else {
+            StringCchPrintfW(buf, 1024,
+                L"主程序已启动，但在 %lu ms 内异常退出；bootstrap 未能读取退出码（系统错误码 %lu）。\n\n"
+                L"bootstrap 已写入 startup-failure-latest.txt，并已启用 .NET dump 到 logs\\dumps。",
+                CORE_EARLY_EXIT_GRACE_MS, launch.systemError);
+        }
+        return FatalExit(L"CF7-BOOT-CORE-EARLY-EXIT", buf,
+            L"请把 logs\\bootstrap.log、logs\\startup-failure-latest.txt，以及 logs\\dumps 下最新 .dmp 文件发给开发组。");
     }
 
     Log("INFO", L"==== bootstrap exit OK ====");
