@@ -19,7 +19,7 @@
         'CF7ARENA:v1;mode=mvm;seed=90210;blue=u44@30x2,u48@30x1;red=u164@60x1,u11@30x1';
     var CUSTOM_PVE_FALLBACK_CODE =
         'CF7ARENA:v1;mode=pve;seed=3307;enemy=u44@30x1;player=current';
-    var CUSTOM_BROWSER_LIMIT = 80;
+    var CUSTOM_BROWSER_BATCH_SIZE = 80;
     var CUSTOM_SAVED_ROSTERS_KEY = 'cf7.arena.custom.savedRosters.v1';
     var CUSTOM_SAVED_ROSTER_LIMIT = 24;
     var CUSTOM_MATCH_CARD = {
@@ -183,6 +183,8 @@
         _customEditorViewEl.addEventListener('click', onCustomWorkbenchClick);
         _customEditorViewEl.addEventListener('change', onCustomWorkbenchChange);
         _customEditorViewEl.addEventListener('input', onCustomEditorInput);
+        var customUnitListEl = _el.querySelector('#arena-custom-unit-list');
+        if (customUnitListEl) customUnitListEl.addEventListener('scroll', onCustomUnitBrowserScroll);
         _detailRollBtn.addEventListener('click', onRollAgain);
         _detailConfirmBtn.addEventListener('click', onConfirmChallenge);
 
@@ -922,7 +924,9 @@
                 spritename: unit.spritename || '',
                 level: unit.level || unit.minLevel || 1,
                 height: unit.height || 0,
-                slots: unit.slots || []
+                slots: unit.slots || [],
+                isHostile: unit.isHostile,
+                faction: unit.faction || ''
             });
         }
         out.sort(function(a, b) { return a.id - b.id; });
@@ -966,14 +970,18 @@
     function syncCustomEditorFromParsed(parsed) {
         if (!parsed) return;
         var parsedMode = parsed.mode === 'pve' ? 'pve' : 'mvm';
+        var previousEditor = _customEditor || {};
         _customEditor = {
             mode: parsedMode,
             seed: parsed.seed || 0,
             timeoutFrames: parsed.timeoutFrames || ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
             blue: parsedMode === 'pve' ? [] : cloneCustomRoster(parsed.blueRoster),
             red: parsedMode === 'pve' ? cloneCustomRoster(parsed.enemyRoster) : cloneCustomRoster(parsed.redRoster),
-            query: _customEditor && _customEditor.query ? _customEditor.query : '',
-            filter: _customEditor && _customEditor.filter ? _customEditor.filter : 'all'
+            query: previousEditor.query || '',
+            filter: previousEditor.filter || 'all',
+            expandedFactions: previousEditor.expandedFactions || {},
+            unitVisibleRows: previousEditor.unitVisibleRows || CUSTOM_BROWSER_BATCH_SIZE,
+            unitScrollableRows: previousEditor.unitScrollableRows || 0
         };
         if (parsedMode === 'pve') _customSelectedSide = 'red';
         _customConfirmOpen = false;
@@ -990,7 +998,10 @@
                 blue: [],
                 red: [],
                 query: '',
-                filter: 'all'
+                filter: 'all',
+                expandedFactions: {},
+                unitVisibleRows: CUSTOM_BROWSER_BATCH_SIZE,
+                unitScrollableRows: 0
             };
         }
         return _customEditor;
@@ -1304,53 +1315,135 @@
         return html;
     }
 
-    function renderCustomUnitBrowser() {
+    function renderCustomUnitBrowser(options) {
+        options = options || {};
         var listEl = _el ? _el.querySelector('#arena-custom-unit-list') : null;
         var countEl = _el ? _el.querySelector('#arena-custom-unit-count') : null;
         var searchEl = _el ? _el.querySelector('#arena-custom-unit-search') : null;
         if (!listEl || !countEl || !searchEl) return;
+        var previousScrollTop = options.preserveScroll ? listEl.scrollTop : 0;
         var editor = ensureCustomEditorState();
+        editor.expandedFactions = editor.expandedFactions || {};
+        editor.unitVisibleRows = editor.unitVisibleRows || CUSTOM_BROWSER_BATCH_SIZE;
         if (document.activeElement !== searchEl) searchEl.value = editor.query || '';
 
         var query = normalizeSearchText(editor.query || '');
         var filter = editor.filter || 'all';
         var units = getCustomUnitList();
-        var matches = [];
+        var factionLookup = buildCustomFactionLookup();
+        var groups = [];
+        var groupMap = {};
+        var matchCount = 0;
         for (var i = 0; i < units.length; i++) {
             if (filter === 'hostile' && units[i].isHostile === false) continue;
             if (filter === 'nonhostile' && units[i].isHostile !== false) continue;
-            if (query && normalizeSearchText(customUnitSearchText(units[i])).indexOf(query) < 0) continue;
-            matches.push(units[i]);
-            if (matches.length >= CUSTOM_BROWSER_LIMIT) break;
+            var faction = customUnitFaction(units[i], factionLookup);
+            if (query && normalizeSearchText(customUnitSearchText(units[i], faction)).indexOf(query) < 0) continue;
+            var key = faction || '未归类';
+            if (!groupMap[key]) {
+                groupMap[key] = { key: key, label: customFactionLabel(key), units: [] };
+                groups.push(groupMap[key]);
+            }
+            groupMap[key].units.push({ unit: units[i], faction: key });
+            matchCount++;
         }
+        groups.sort(sortCustomUnitGroups);
 
-        countEl.textContent = (query ? matches.length + '/' : '') + units.length + ' 单位';
+        countEl.textContent = matchCount + '/' + units.length + ' 单位';
         var filterBtns = _el.querySelectorAll('[data-custom-unit-filter]');
         for (var f = 0; f < filterBtns.length; f++) {
             filterBtns[f].classList.toggle('arena-custom-unit-filter-active', filterBtns[f].getAttribute('data-custom-unit-filter') === filter);
         }
-        if (!matches.length) {
+        if (!matchCount) {
             listEl.innerHTML = '<div class="arena-custom-unit-empty">没有匹配单位</div>';
+            editor.unitScrollableRows = 0;
             return;
         }
         var html = '';
-        for (var m = 0; m < matches.length; m++) {
-            html += buildCustomUnitRowHtml(matches[m]);
+        var renderedRows = 0;
+        var expandedRows = 0;
+        var hiddenRows = 0;
+        var forceExpanded = !!query;
+        for (var g = 0; g < groups.length; g++) {
+            var group = groups[g];
+            var expanded = forceExpanded || editor.expandedFactions[group.key] === true;
+            html += buildCustomUnitGroupHtml(group, expanded, forceExpanded);
+            if (!expanded) continue;
+            expandedRows += group.units.length;
+            for (var m = 0; m < group.units.length; m++) {
+                if (renderedRows >= editor.unitVisibleRows) {
+                    hiddenRows += group.units.length - m;
+                    break;
+                }
+                html += buildCustomUnitRowHtml(group.units[m].unit, group.units[m].faction);
+                renderedRows++;
+            }
+        }
+        if (hiddenRows > 0) {
+            html += '<div class="arena-custom-unit-more">继续滚动加载剩余 ' + hiddenRows + ' 个单位</div>';
         }
         listEl.innerHTML = html;
+        editor.unitScrollableRows = expandedRows;
+        if (options.preserveScroll) listEl.scrollTop = previousScrollTop;
+        else listEl.scrollTop = 0;
     }
 
-    function buildCustomUnitRowHtml(unit) {
+    function buildCustomFactionLookup() {
+        var lookup = {};
+        var rosters = (typeof window !== 'undefined' && window.ArenaMetaRosters)
+            ? window.ArenaMetaRosters.factions : null;
+        if (!rosters) return lookup;
+        for (var faction in rosters) {
+            if (!Object.prototype.hasOwnProperty.call(rosters, faction)) continue;
+            var units = (rosters[faction] && rosters[faction].units) || [];
+            for (var i = 0; i < units.length; i++) {
+                if (units[i].type) lookup[units[i].type] = faction;
+            }
+        }
+        return lookup;
+    }
+
+    function customUnitFaction(unit, lookup) {
+        if (unit && unit.faction) return unit.faction;
+        var type = unit && unit.type ? unit.type : ('兵种' + (unit ? unit.id : ''));
+        return (lookup && lookup[type]) || '未归类';
+    }
+
+    function customFactionLabel(faction) {
+        if (!faction || faction === 'unknown' || faction === '未归类') return '未归类';
+        return faction;
+    }
+
+    function sortCustomUnitGroups(a, b) {
+        if (a.key === '未归类' && b.key !== '未归类') return 1;
+        if (b.key === '未归类' && a.key !== '未归类') return -1;
+        if (a.label === b.label) return 0;
+        return a.label > b.label ? 1 : -1;
+    }
+
+    function buildCustomUnitGroupHtml(group, expanded, queryActive) {
+        var cls = 'arena-custom-unit-group' +
+            (expanded ? ' arena-custom-unit-group-expanded' : '') +
+            (queryActive ? ' arena-custom-unit-group-search' : '');
+        return '<button class="' + cls + '" type="button" data-custom-toggle-faction="' + escapeAttr(group.key) + '" data-custom-faction-count="' + group.units.length + '" data-audio-cue="confirm">' +
+            '<span class="arena-custom-unit-group-arrow">' + (expanded ? '▾' : '▸') + '</span>' +
+            '<span class="arena-custom-unit-group-name">' + escapeHtml(group.label) + '</span>' +
+            '<span class="arena-custom-unit-group-count">' + group.units.length + '</span>' +
+        '</button>';
+    }
+
+    function buildCustomUnitRowHtml(unit, faction) {
         var slots = summarizeCustomSlots(unit);
         var hostileLabel = unit.isHostile === false ? ' · 非敌对' : '';
+        var factionLabel = faction && faction !== '未归类' ? ' · ' + faction : '';
         var rowClass = 'arena-custom-unit-row' + (unit.isHostile === false ? ' arena-custom-unit-row-nonhostile' : '');
-        return '<button class="' + rowClass + '" type="button" data-custom-add-unit="' + unit.id + '" data-audio-cue="confirm">' +
+        return '<button class="' + rowClass + '" type="button" data-custom-add-unit="' + unit.id + '" data-custom-faction="' + escapeAttr(faction || '') + '" data-audio-cue="confirm">' +
             '<span class="arena-custom-unit-mark">u' + unit.id + '</span>' +
             '<span class="arena-custom-unit-main">' +
                 '<b>' + escapeHtml(unit.name || ('兵种' + unit.id)) + '</b>' +
                 '<em>' + escapeHtml(unit.spritename || '--') + '</em>' +
             '</span>' +
-            '<span class="arena-custom-unit-meta">Lv.' + (unit.level || 1) + hostileLabel + (slots ? ' · ' + escapeHtml(slots) : '') + '</span>' +
+            '<span class="arena-custom-unit-meta">Lv.' + (unit.level || 1) + factionLabel + hostileLabel + (slots ? ' · ' + escapeHtml(slots) : '') + '</span>' +
         '</button>';
     }
 
@@ -1364,12 +1457,13 @@
         return parts.join(' / ');
     }
 
-    function customUnitSearchText(unit) {
+    function customUnitSearchText(unit, faction) {
         return [
             unit.id,
             unit.type,
             unit.name,
             unit.spritename,
+            faction || unit.faction || '',
             summarizeCustomSlots(unit)
         ].join(' ');
     }
@@ -1950,6 +2044,33 @@
         var editor = ensureCustomEditorState();
         var input = e.target || e.currentTarget;
         editor.query = input.value || '';
+        resetCustomUnitBrowserWindow(editor);
+        renderCustomUnitBrowser();
+    }
+
+    function resetCustomUnitBrowserWindow(editor) {
+        editor = editor || ensureCustomEditorState();
+        editor.unitVisibleRows = CUSTOM_BROWSER_BATCH_SIZE;
+    }
+
+    function onCustomUnitBrowserScroll(e) {
+        var listEl = e.currentTarget || e.target;
+        if (!listEl) return;
+        if (listEl.scrollTop + listEl.clientHeight < listEl.scrollHeight - 48) return;
+        var editor = ensureCustomEditorState();
+        var visibleRows = editor.unitVisibleRows || CUSTOM_BROWSER_BATCH_SIZE;
+        var totalRows = editor.unitScrollableRows || 0;
+        if (visibleRows >= totalRows) return;
+        editor.unitVisibleRows = Math.min(totalRows, visibleRows + CUSTOM_BROWSER_BATCH_SIZE);
+        renderCustomUnitBrowser({ preserveScroll: true });
+    }
+
+    function toggleCustomUnitFaction(factionKey) {
+        var editor = ensureCustomEditorState();
+        editor.expandedFactions = editor.expandedFactions || {};
+        if (editor.expandedFactions[factionKey]) delete editor.expandedFactions[factionKey];
+        else editor.expandedFactions[factionKey] = true;
+        resetCustomUnitBrowserWindow(editor);
         renderCustomUnitBrowser();
     }
 
@@ -2024,8 +2145,15 @@
                 }
                 var filter = node.getAttribute('data-custom-unit-filter');
                 if (filter === 'all' || filter === 'hostile' || filter === 'nonhostile') {
-                    ensureCustomEditorState().filter = filter;
+                    var editor = ensureCustomEditorState();
+                    editor.filter = filter;
+                    resetCustomUnitBrowserWindow(editor);
                     renderCustomUnitBrowser();
+                    return;
+                }
+                var factionKey = node.getAttribute('data-custom-toggle-faction');
+                if (factionKey) {
+                    toggleCustomUnitFaction(factionKey);
                     return;
                 }
                 var clearSide = node.getAttribute('data-custom-clear-side');

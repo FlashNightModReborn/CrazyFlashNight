@@ -745,7 +745,7 @@ var ArenaHarnessQA = (function() {
                 document.querySelector('.arena-custom-side-red .arena-custom-side-edit').click();
                 return api.waitFor(function() {
                     var editor = document.getElementById('arena-custom-editor-view');
-                    return editor && !editor.hidden && document.querySelectorAll('.arena-custom-unit-row').length > 0;
+                    return editor && !editor.hidden && document.querySelectorAll('.arena-custom-unit-group').length > 0;
                 }, 2000, 'custom editor rendered');
             })
             .then(function() {
@@ -757,7 +757,25 @@ var ArenaHarnessQA = (function() {
                 api.assert(!!document.querySelector('[data-custom-side="red"].arena-custom-side-target-active'), '红方添加目标按钮应进入 active 状态');
                 api.assert(!!document.querySelector('#arena-custom-editor-view #arena-custom-code-input'), '赛程代码输入应迁入二级编辑页');
                 api.assert(document.querySelector('#arena-custom-editor-view #arena-custom-preset-select').options.length > 1000, '二级编辑页应暴露关卡拆解预设池');
-                api.assert(document.querySelectorAll('.arena-custom-unit-row').length > 0, '单位浏览器应渲染 units.json 全量单位');
+                var groups = document.querySelectorAll('.arena-custom-unit-group');
+                api.assert(groups.length > 1, '单位浏览器应按势力分组渲染');
+                api.assertEqual(document.querySelectorAll('.arena-custom-unit-row').length, 0, '单位浏览器默认应折叠势力分组');
+                var largeGroup = null;
+                for (var g = 0; g < groups.length; g++) {
+                    if (Number(groups[g].getAttribute('data-custom-faction-count')) > 80) {
+                        largeGroup = groups[g];
+                        break;
+                    }
+                }
+                api.assert(!!largeGroup, '单位浏览器应保留大势力分组用于滚动加载');
+                largeGroup.click();
+                var firstBatchRows = document.querySelectorAll('.arena-custom-unit-row').length;
+                api.assert(firstBatchRows > 0, '展开势力后应渲染首批单位行');
+                api.assert(firstBatchRows < Number(largeGroup.getAttribute('data-custom-faction-count')), '首批单位行不应一次性渲染完整大分组');
+                var unitList = document.getElementById('arena-custom-unit-list');
+                unitList.scrollTop = unitList.scrollHeight;
+                unitList.dispatchEvent(new Event('scroll'));
+                api.assert(document.querySelectorAll('.arena-custom-unit-row').length > firstBatchRows, '滚动到底应继续追加单位行');
                 api.assert(document.querySelector('.arena-custom-unit-mark'), '单位图标占位符应渲染');
                 savedRedSig = rosterSig(state.customEditor.red);
                 document.querySelector('[data-custom-side-action="save"][data-side="active"]').click();
@@ -823,14 +841,15 @@ var ArenaHarnessQA = (function() {
                     var st = window.ArenaPanel.getState();
                     return st.customEditorPage === 'side' &&
                         st.customSelectedSide === 'red' &&
-                        document.querySelectorAll('.arena-custom-unit-row').length > 0;
+                        document.querySelectorAll('.arena-custom-unit-group').length > 0;
                 }, 2000, 'return to red side editor after config actions');
             })
             .then(function() {
                 document.querySelector('[data-custom-unit-filter="nonhostile"]').click();
                 return api.waitFor(function() {
-                    return document.querySelector('.arena-custom-unit-row-nonhostile') != null;
-                }, 2000, 'non-hostile filter rendered');
+                    var active = document.querySelector('.arena-custom-unit-filter-active');
+                    return active && active.getAttribute('data-custom-unit-filter') === 'nonhostile';
+                }, 2000, 'non-hostile filter active');
             })
             .then(function() {
                 api.assert(document.querySelector('.arena-custom-unit-filter-active').getAttribute('data-custom-unit-filter') === 'nonhostile', '非敌对过滤按钮应进入 active 状态');
@@ -839,6 +858,15 @@ var ArenaHarnessQA = (function() {
                     var active = document.querySelector('.arena-custom-unit-filter-active');
                     return active && active.getAttribute('data-custom-unit-filter') === 'all';
                 }, 2000, 'all filter restored');
+            })
+            .then(function() {
+                var search = document.getElementById('arena-custom-unit-search');
+                search.value = '旧型号机器人';
+                search.dispatchEvent(new Event('input', { bubbles: true }));
+                return api.waitFor(function() {
+                    var row = document.querySelector('[data-custom-add-unit="390"]');
+                    return row && /旧型号机器人/.test(row.textContent || '');
+                }, 2000, 'search reaches unit beyond initial browser batch');
             })
             .then(function() {
                 document.querySelector('[data-custom-side="red"]').click();

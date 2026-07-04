@@ -9252,7 +9252,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
     outline: none;
 }
 .arena-custom-unit-count {
-    flex: 0 0 74px;
+    flex: 0 0 108px;
     color: var(--arena-text-mute);
     font-size: 10px;
     text-align: right;
@@ -9261,6 +9261,50 @@ html.perf-low-effects .map-panel-close-btn:hover {
     min-height: 0;
     overflow-y: auto;
     padding: 6px;
+}
+.arena-custom-unit-group {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr) 44px;
+    align-items: center;
+    gap: 6px;
+    min-height: 32px;
+    margin: 0 0 4px;
+    padding: 5px 8px;
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 3px;
+    color: var(--arena-text-dim);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+.arena-custom-unit-group:hover,
+.arena-custom-unit-group-expanded {
+    border-color: rgba(239,148,66,0.36);
+    background: rgba(239,148,66,0.09);
+    color: var(--arena-text);
+}
+.arena-custom-unit-group-search {
+    border-color: rgba(140,183,255,0.24);
+}
+.arena-custom-unit-group-arrow {
+    color: var(--arena-accent-2);
+    font-size: 12px;
+    text-align: center;
+}
+.arena-custom-unit-group-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 900;
+}
+.arena-custom-unit-group-count {
+    color: var(--arena-text-mute);
+    font-size: 10px;
+    text-align: right;
 }
 .arena-custom-unit-row {
     width: 100%;
@@ -9307,6 +9351,12 @@ html.perf-low-effects .map-panel-close-btn:hover {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+.arena-custom-unit-more {
+    padding: 10px 6px 4px;
+    color: var(--arena-text-mute);
+    font-size: 11px;
+    text-align: center;
 }
 .arena-custom-confirm {
     padding: 9px 10px;
