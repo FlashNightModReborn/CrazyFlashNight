@@ -28,6 +28,10 @@ function checkCanonicalRoundTrip() {
   const parsed = parse("CF7ARENA:v1;mode=mvm;seed=90210;blue=u44@30x2,u48@30x1;red=u164@60x1,u11@30x1");
   assert.strictEqual(parsed.mode, "mvm");
   assert.strictEqual(parsed.seed, 90210);
+  assert.strictEqual(parsed.spawnDistance, 650);
+  assert.strictEqual(parsed.blueFormation, "line");
+  assert.strictEqual(parsed.redFormation, "line");
+  assert.strictEqual(parsed.formationSpacing, 54);
   assert.strictEqual(parsed.blueRoster.length, 2);
   assert.strictEqual(parsed.blueRoster[0].type, "兵种44");
   assert.strictEqual(parsed.blueRoster[0].count, 2);
@@ -39,7 +43,28 @@ function checkCanonicalRoundTrip() {
 
   assert.strictEqual(parsed.calibrationCase.blueRoster.length, 3);
   assert.strictEqual(parsed.calibrationCase.redRoster.length, 2);
+  assert.strictEqual(parsed.calibrationCase.spawnDistance, 650);
+  assert.strictEqual(parsed.calibrationCase.blueFormation, "line");
+  assert.strictEqual(parsed.calibrationCase.redFormation, "line");
+  assert.strictEqual(parsed.calibrationCase.formationSpacing, 54);
   assert.deepStrictEqual(parsed.calibrationCase.blueRoster[0], { type: "兵种44", level: 30 });
+}
+
+function checkBattleParametersRoundTrip() {
+  const parsed = parse("CF7ARENA:v1;mode=mvm;seed=8;blue=u164@60x1;red=u11@30x1;timeout=7200;spawnDistance=820;blueFormation=wedge;redFormation=shield;formationSpacing=64");
+  assert.strictEqual(parsed.timeoutFrames, 7200);
+  assert.strictEqual(parsed.spawnDistance, 820);
+  assert.strictEqual(parsed.blueFormation, "wedge");
+  assert.strictEqual(parsed.redFormation, "shield");
+  assert.strictEqual(parsed.formationSpacing, 64);
+  assert.strictEqual(
+    parsed.canonical,
+    "CF7ARENA:v1;mode=mvm;seed=8;blue=u164@60x1;red=u11@30x1;timeout=7200;spawnDistance=820;blueFormation=wedge;redFormation=shield;formationSpacing=64"
+  );
+  assert.strictEqual(parsed.calibrationCase.spawnDistance, 820);
+  assert.strictEqual(parsed.calibrationCase.blueFormation, "wedge");
+  assert.strictEqual(parsed.calibrationCase.redFormation, "shield");
+  assert.strictEqual(parsed.calibrationCase.formationSpacing, 64);
 }
 
 function checkChineseTypeAlias() {
@@ -74,6 +99,8 @@ function checkPvePayload() {
   assert.strictEqual(parsed.enemyRoster[1].count, 2);
   assert.strictEqual(parsed.calibrationCase, undefined);
   assert.strictEqual(parsed.venueFeeEstimate, 0);
+  assert.strictEqual(parsed.enterPayload.spawnDistance, 650);
+  assert.strictEqual(parsed.enterPayload.redFormation, "line");
   assert.strictEqual(
     parsed.canonical,
     "CF7ARENA:v1;mode=pve;seed=3307;enemy=u164@60x1,u11@10x2;player=current"
@@ -111,10 +138,20 @@ function checkRejections() {
   expectRejected("zero count", () =>
     parse("CF7ARENA:v1;mode=mvm;seed=1;blue=u164@60x0;red=u11@30x1")
   );
+  expectRejected("spawn distance out of range", () =>
+    parse("CF7ARENA:v1;mode=mvm;seed=1;blue=u164@60x1;red=u11@30x1;spawnDistance=99999")
+  );
+  expectRejected("unknown formation", () =>
+    parse("CF7ARENA:v1;mode=mvm;seed=1;blue=u164@60x1;red=u11@30x1;blueFormation=chaos")
+  );
+  expectRejected("formation spacing out of range", () =>
+    parse("CF7ARENA:v1;mode=mvm;seed=1;blue=u164@60x1;red=u11@30x1;formationSpacing=8")
+  );
 }
 
 function main() {
   checkCanonicalRoundTrip();
+  checkBattleParametersRoundTrip();
   checkChineseTypeAlias();
   checkManifestAdapter();
   checkPvePayload();

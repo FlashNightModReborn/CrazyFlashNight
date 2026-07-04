@@ -171,6 +171,10 @@ namespace CF7Launcher.Tasks
                 CopyIfPresent(parsed, control, "matchCode");
                 CopyIfPresent(parsed, control, "repeat");
                 CopyIfPresent(parsed, control, "timeoutFrames");
+                CopyIfPresent(parsed, control, "spawnDistance");
+                CopyIfPresent(parsed, control, "blueFormation");
+                CopyIfPresent(parsed, control, "redFormation");
+                CopyIfPresent(parsed, control, "formationSpacing");
                 if (parsed["calibrationCase"] != null)
                     control["calibrationCase"] = parsed["calibrationCase"].DeepClone();
             }

@@ -7,6 +7,7 @@ const path = require("path");
 const ROOT = path.resolve(__dirname, "..");
 const SOURCE_PATH = path.join(ROOT, "data", "units", "units.json");
 const OUTPUT_PATH = path.join(ROOT, "launcher", "web", "modules", "arena-unit-catalog.js");
+const ARTS_PATH = path.join(ROOT, "flashswf", "arts");
 
 const FACTION_RULES = [
   { re: /盗贼/, faction: "堕落城" },
@@ -55,19 +56,107 @@ function summarizeSlots(data) {
   return slots;
 }
 
-function normalizeUnit(unit) {
+function collectXmlFiles(dir, out) {
+  if (!fs.existsSync(dir)) return out;
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  entries.forEach((entry) => {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      collectXmlFiles(fullPath, out);
+    } else if (entry.isFile() && entry.name.toLowerCase().endsWith(".xml")) {
+      out.push(fullPath);
+    }
+  });
+  return out;
+}
+
+function extractSpawnedSpritename(xml) {
+  const direct = xml.match(/加载游戏世界人物\s*\(\s*["']([^"']+)["']/);
+  if (direct) return direct[1];
+
+  const assigned = xml.match(/(?:var\s+)?兵种\s*=\s*["']([^"']+)["']/);
+  if (assigned) return assigned[1];
+
+  const target = xml.match(/目标兵种\s*=\s*\{[^}]*兵种\s*:\s*["']([^"']+)["']/);
+  if (target) return target[1];
+
+  return "";
+}
+
+function derivePhaseSpawns(rawUnits) {
+  const unitTypesBySprite = new Map();
+  rawUnits.forEach((unit) => {
+    const spritename = unit && unit.spritename ? String(unit.spritename) : "";
+    if (!spritename) return;
+    const unitType = "兵种" + Number(unit.id);
+    if (!unitTypesBySprite.has(spritename)) unitTypesBySprite.set(spritename, []);
+    unitTypesBySprite.get(spritename).push(unitType);
+  });
+
+  const xmlFiles = collectXmlFiles(ARTS_PATH, []);
+  const phaseSymbols = new Map();
+  const parentRefs = new Map();
+
+  xmlFiles.forEach((filePath) => {
+    const dir = path.dirname(filePath);
+    const itemName = path.basename(filePath, ".xml");
+    const xml = fs.readFileSync(filePath, "utf8");
+    const refs = Array.from(xml.matchAll(/libraryItemName="([^"]+)"/g)).map((match) => match[1]);
+    if (refs.length > 0) parentRefs.set(filePath, refs);
+
+    if (!/加载游戏世界人物/.test(xml)) return;
+    if (!/死亡检测\s*\(\s*\{\s*noCount\s*:\s*true/.test(xml)) return;
+    const spritename = extractSpawnedSpritename(xml);
+    if (!spritename) return;
+
+    phaseSymbols.set(dir + "\0" + itemName, {
+      trigger: "death",
+      symbol: itemName,
+      spritename,
+      unitTypes: unitTypesBySprite.get(spritename) || [],
+    });
+  });
+
+  const phaseSpawnsBySprite = new Map();
+  parentRefs.forEach((refs, filePath) => {
+    const dir = path.dirname(filePath);
+    const spritename = path.basename(filePath, ".xml");
+    const found = [];
+    const seen = new Set();
+    refs.forEach((ref) => {
+      const spawn = phaseSymbols.get(dir + "\0" + ref);
+      if (!spawn) return;
+      const key = spawn.symbol + "\0" + spawn.spritename;
+      if (seen.has(key)) return;
+      seen.add(key);
+      found.push(spawn);
+    });
+    if (found.length > 0) phaseSpawnsBySprite.set(spritename, found);
+  });
+
+  return phaseSpawnsBySprite;
+}
+
+function normalizeUnit(unit, phaseSpawnsBySprite) {
   const id = Number(unit.id);
-  return {
+  const spritename = unit.spritename ? String(unit.spritename) : "";
+  const normalized = {
     id,
     type: "兵种" + id,
     name: unit.name ? String(unit.name) : ("兵种" + id),
-    spritename: unit.spritename ? String(unit.spritename) : "",
+    spritename,
     level: Number(unit.level) > 0 ? Number(unit.level) : 1,
     isHostile: unit.is_hostile === true,
     faction: factionFor(unit.spritename),
     height: Number(unit.height) > 0 ? Number(unit.height) : 0,
     slots: summarizeSlots(unit.data),
   };
+  const phaseSpawns = phaseSpawnsBySprite.get(spritename);
+  if (phaseSpawns && phaseSpawns.length > 0) {
+    normalized.multiPhase = true;
+    normalized.phaseSpawns = phaseSpawns;
+  }
+  return normalized;
 }
 
 function buildModule() {
@@ -75,18 +164,22 @@ function buildModule() {
   if (!Array.isArray(raw)) {
     throw new Error("data/units/units.json must be an array");
   }
+  const phaseSpawnsBySprite = derivePhaseSpawns(raw);
   const units = raw
-    .map(normalizeUnit)
+    .map((unit) => normalizeUnit(unit, phaseSpawnsBySprite))
     .sort((a, b) => a.id - b.id);
   const hostileCount = units.filter((unit) => unit.isHostile).length;
+  const multiPhaseCount = units.filter((unit) => unit.multiPhase === true).length;
 
   const payload = {
     schema: "arena-unit-catalog.v1",
     source: "data/units/units.json",
+    phaseSource: "flashswf/arts/**/LIBRARY/*.xml",
     generatedBy: "tools/derive-arena-unit-catalog.js",
     rawCount: raw.length,
     unitCount: units.length,
     hostileCount,
+    multiPhaseCount,
     units,
   };
 

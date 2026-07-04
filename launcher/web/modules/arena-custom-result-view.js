@@ -51,6 +51,35 @@
         return summarizeCustomRoster(side === 'blue' ? parsed.blueRoster : parsed.redRoster);
     }
 
+    function formationLabel(id) {
+        var labels = {
+            column: '纵队',
+            line: '横列',
+            wedge: '楔形',
+            shield: '前盾后排',
+            grid: '网格散点'
+        };
+        return labels[id] || id || '--';
+    }
+
+    function battleParamText(result, parsed) {
+        var distance = result && result.spawnDistance != null
+            ? result.spawnDistance
+            : (parsed && parsed.spawnDistance != null ? parsed.spawnDistance : null);
+        var timeout = parsed && parsed.timeoutFrames != null ? Math.round(parsed.timeoutFrames / 30) : null;
+        var blueFormation = result && result.blueFormation ? result.blueFormation : (parsed && parsed.blueFormation);
+        var redFormation = result && result.redFormation ? result.redFormation : (parsed && parsed.redFormation);
+        var spacing = result && result.formationSpacing != null
+            ? result.formationSpacing
+            : (parsed && parsed.formationSpacing != null ? parsed.formationSpacing : null);
+        var parts = [];
+        if (distance != null) parts.push('距离 ' + distance);
+        if (timeout != null) parts.push('时长 ' + timeout + '秒');
+        if (blueFormation || redFormation) parts.push('蓝 ' + formationLabel(blueFormation) + ' / 红 ' + formationLabel(redFormation));
+        if (spacing != null) parts.push('间距 ' + spacing);
+        return parts.length ? parts.join(' · ') : '--';
+    }
+
     function buildSideHtml(side, title, summary, parsed, escapeHtml, summarizeCustomRoster) {
         var roster = summarizeSideRoster(side, parsed, summarizeCustomRoster);
         var maxHp = summary && summary.maxHp != null ? Number(summary.maxHp) : 0;
@@ -109,6 +138,10 @@
                 '<div class="arena-custom-result-codeblock">' +
                     '<div class="arena-custom-result-label">赛程代码</div>' +
                     '<div class="arena-custom-result-code">' + escapeHtml(matchCode || '--') + '</div>' +
+                '</div>' +
+                '<div class="arena-custom-result-detail">' +
+                    '<span>战场参数</span>' +
+                    '<b>' + escapeHtml(battleParamText(result, parsed)) + '</b>' +
                 '</div>' +
                 '<div class="arena-custom-result-detail">' +
                     '<span>结果文件</span>' +

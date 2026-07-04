@@ -22,6 +22,25 @@
     var CUSTOM_BROWSER_BATCH_SIZE = 80;
     var CUSTOM_SAVED_ROSTERS_KEY = 'cf7.arena.custom.savedRosters.v1';
     var CUSTOM_SAVED_ROSTER_LIMIT = 24;
+    var CUSTOM_TIMEOUT_FPS = 30;
+    var CUSTOM_SPAWN_DISTANCE_PRESETS = [
+        { label: '近', value: 520 },
+        { label: '标准', value: 650 },
+        { label: '远', value: 820 }
+    ];
+    var CUSTOM_TIMEOUT_PRESETS = [
+        { label: '60秒', value: 1800 },
+        { label: '120秒', value: 3600 },
+        { label: '180秒', value: 5400 },
+        { label: '300秒', value: 9000 }
+    ];
+    var CUSTOM_FORMATION_OPTIONS = [
+        { id: 'line', label: '横列' },
+        { id: 'column', label: '纵队' },
+        { id: 'wedge', label: '楔形' },
+        { id: 'shield', label: '前盾后排' },
+        { id: 'grid', label: '网格散点' }
+    ];
     var CUSTOM_MATCH_CARD = {
         id: 'custom-match-p1',
         index: 0,
@@ -113,6 +132,7 @@
     var _customSampleIndex = 0;
     var _customUndo = null;
     var _customResultReturnBaseRequired = false;
+    var _customSelectOpen = null;
 
     // ════════════════════════════════════════════════════════════════════════════
     // Panel 注册
@@ -186,6 +206,7 @@
         _customEditorViewEl.addEventListener('click', onCustomWorkbenchClick);
         _customEditorViewEl.addEventListener('change', onCustomWorkbenchChange);
         _customEditorViewEl.addEventListener('input', onCustomEditorInput);
+        _customEditorViewEl.addEventListener('keydown', onCustomSelectKeydown);
         var customUnitListEl = _el.querySelector('#arena-custom-unit-list');
         if (customUnitListEl) customUnitListEl.addEventListener('scroll', onCustomUnitBrowserScroll);
         _detailRollBtn.addEventListener('click', onRollAgain);
@@ -317,9 +338,68 @@
                         '</div>' +
                     '</div>' +
                 '</div>' +
+                '<div class="arena-custom-battle-summary" id="arena-custom-battle-summary">' +
+                    '<div class="arena-custom-battle-summary-head">' +
+                        '<div class="arena-custom-section-title">战场参数</div>' +
+                        '<button class="arena-custom-btn" type="button" id="arena-custom-battle-edit" data-custom-editor-action="to-battle" data-audio-cue="confirm">编辑战场</button>' +
+                    '</div>' +
+                    '<div class="arena-custom-battle-summary-grid">' +
+                        '<span><em>开局距离</em><b id="arena-custom-battle-summary-distance">--</b></span>' +
+                        '<span><em>战斗时长</em><b id="arena-custom-battle-summary-timeout">--</b></span>' +
+                        '<span><em>阵型</em><b id="arena-custom-battle-summary-formation">--</b></span>' +
+                        '<span><em>间距</em><b id="arena-custom-battle-summary-spacing">--</b></span>' +
+                    '</div>' +
+                '</div>' +
                 '<div class="arena-custom-side-configs">' +
                     '<div class="arena-custom-side-config-card arena-custom-side-config-blue" id="arena-custom-config-blue"></div>' +
                     '<div class="arena-custom-side-config-card arena-custom-side-config-red" id="arena-custom-config-red"></div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="arena-custom-editor-page arena-custom-battle-page" data-custom-editor-page="battle" hidden>' +
+                '<div class="arena-custom-battle-editor-head">' +
+                    '<div class="arena-custom-side-editor-title-block">' +
+                        '<div class="arena-custom-editor-kicker">战场参数</div>' +
+                        '<div class="arena-custom-editor-title">调整开局与阵型</div>' +
+                        '<div class="arena-custom-editor-meta" id="arena-custom-battle-editor-meta">--</div>' +
+                    '</div>' +
+                    '<div class="arena-custom-battle-editor-actions">' +
+                        '<button class="arena-custom-btn" type="button" data-custom-editor-action="to-config" data-audio-cue="cancel">返回总览</button>' +
+                        '<button class="arena-card-btn-enter" type="button" data-custom-editor-action="done" data-audio-cue="confirm">完成</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="arena-custom-battle-params arena-custom-battle-params-editor" id="arena-custom-battle-params">' +
+                    '<div class="arena-custom-battle-param-grid">' +
+                        '<div class="arena-custom-battle-param-card" data-custom-battle-card="spawnDistance">' +
+                            '<div class="arena-custom-battle-param-head"><span>开局距离</span><b id="arena-custom-spawn-distance-value">--</b></div>' +
+                            '<div class="arena-custom-preset-row" id="arena-custom-spawn-distance-presets"></div>' +
+                            '<input class="arena-custom-range" type="range" id="arena-custom-spawn-distance" data-custom-battle-field="spawnDistance">' +
+                        '</div>' +
+                        '<div class="arena-custom-battle-param-card" data-custom-battle-card="timeoutFrames">' +
+                            '<div class="arena-custom-battle-param-head"><span>战斗时长</span><b id="arena-custom-timeout-value">--</b></div>' +
+                            '<div class="arena-custom-preset-row" id="arena-custom-timeout-presets"></div>' +
+                            '<input class="arena-custom-range" type="range" id="arena-custom-timeout" data-custom-battle-field="timeoutSeconds">' +
+                        '</div>' +
+                        '<div class="arena-custom-battle-param-card arena-custom-battle-param-card-wide">' +
+                            '<div class="arena-custom-battle-param-head"><span>阵型</span><b id="arena-custom-formation-summary">--</b></div>' +
+                            '<div class="arena-custom-formation-editors">' +
+                                '<div class="arena-custom-formation-side" data-custom-formation-panel="blue">' +
+                                    '<div class="arena-custom-formation-side-title" id="arena-custom-blue-formation-title">蓝方</div>' +
+                                    '<div class="arena-custom-formation-options" id="arena-custom-blue-formation-options"></div>' +
+                                    '<div class="arena-custom-formation-legend" id="arena-custom-blue-formation-legend"></div>' +
+                                '</div>' +
+                                '<div class="arena-custom-formation-side" data-custom-formation-panel="red">' +
+                                    '<div class="arena-custom-formation-side-title" id="arena-custom-red-formation-title">红方</div>' +
+                                    '<div class="arena-custom-formation-options" id="arena-custom-red-formation-options"></div>' +
+                                    '<div class="arena-custom-formation-legend" id="arena-custom-red-formation-legend"></div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="arena-custom-spacing-row">' +
+                                '<span>间距</span>' +
+                                '<input class="arena-custom-range" type="range" id="arena-custom-formation-spacing" data-custom-battle-field="formationSpacing">' +
+                                '<b id="arena-custom-formation-spacing-value">--</b>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
                 '</div>' +
             '</div>' +
             '<div class="arena-custom-editor-page arena-custom-side-page" data-custom-editor-page="side" hidden>' +
@@ -659,6 +739,7 @@
         _customEditorPage = 'config';
         _customConfirmOpen = false;
         _customUndo = null;
+        _customSelectOpen = null;
         if (_customResult && _customResult.matchCode) {
             _customMatch = {
                 code: String(_customResult.matchCode),
@@ -741,6 +822,7 @@
         _customConfirmOpen = false;
         _customUndo = null;
         _customResultReturnBaseRequired = false;
+        _customSelectOpen = null;
         clearCustomPoll();
         _customSampleIndex = 0;
         _initDifficulty = '';
@@ -752,6 +834,7 @@
     // 视图切换
     // ════════════════════════════════════════════════════════════════════════════
     function showGridView() {
+        closeCustomSelectMenus();
         _gridViewEl.hidden = false;
         _detailViewEl.hidden = true;
         _customResultViewEl.hidden = true;
@@ -767,6 +850,7 @@
     }
 
     function showCustomResultView() {
+        closeCustomSelectMenus();
         renderCustomResultView();
         _gridViewEl.hidden = true;
         _detailViewEl.hidden = true;
@@ -1045,6 +1129,10 @@
             mode: parsedMode,
             seed: parsed.seed || 0,
             timeoutFrames: parsed.timeoutFrames || ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
+            spawnDistance: parsed.spawnDistance || ArenaCustomMatchCode.DEFAULT_SPAWN_DISTANCE,
+            blueFormation: parsed.blueFormation || ArenaCustomMatchCode.DEFAULT_FORMATION,
+            redFormation: parsed.redFormation || ArenaCustomMatchCode.DEFAULT_FORMATION,
+            formationSpacing: parsed.formationSpacing || ArenaCustomMatchCode.DEFAULT_FORMATION_SPACING,
             blue: parsedMode === 'pve' ? [] : cloneCustomRoster(parsed.blueRoster),
             red: parsedMode === 'pve' ? cloneCustomRoster(parsed.enemyRoster) : cloneCustomRoster(parsed.redRoster),
             query: previousEditor.query || '',
@@ -1065,6 +1153,10 @@
                 mode: 'mvm',
                 seed: 0,
                 timeoutFrames: ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
+                spawnDistance: ArenaCustomMatchCode.DEFAULT_SPAWN_DISTANCE,
+                blueFormation: ArenaCustomMatchCode.DEFAULT_FORMATION,
+                redFormation: ArenaCustomMatchCode.DEFAULT_FORMATION,
+                formationSpacing: ArenaCustomMatchCode.DEFAULT_FORMATION_SPACING,
                 blue: [],
                 red: [],
                 query: '',
@@ -1074,14 +1166,73 @@
                 unitScrollableRows: 0
             };
         }
+        sanitizeCustomBattleParams(_customEditor);
         return _customEditor;
     }
 
     function customUndoOptions() {
         return {
             defaultTimeoutFrames: ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
+            defaultSpawnDistance: ArenaCustomMatchCode.DEFAULT_SPAWN_DISTANCE,
+            defaultFormation: ArenaCustomMatchCode.DEFAULT_FORMATION,
+            defaultFormationSpacing: ArenaCustomMatchCode.DEFAULT_FORMATION_SPACING,
             browserBatchSize: CUSTOM_BROWSER_BATCH_SIZE
         };
+    }
+
+    function sanitizeCustomBattleParams(editor) {
+        if (!editor) return;
+        editor.timeoutFrames = clampInt(
+            Number(editor.timeoutFrames) || ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
+            30 * CUSTOM_TIMEOUT_FPS,
+            600 * CUSTOM_TIMEOUT_FPS
+        );
+        editor.spawnDistance = clampInt(
+            Number(editor.spawnDistance) || ArenaCustomMatchCode.DEFAULT_SPAWN_DISTANCE,
+            ArenaCustomMatchCode.MIN_SPAWN_DISTANCE,
+            ArenaCustomMatchCode.MAX_SPAWN_DISTANCE
+        );
+        editor.formationSpacing = clampInt(
+            Number(editor.formationSpacing) || ArenaCustomMatchCode.DEFAULT_FORMATION_SPACING,
+            ArenaCustomMatchCode.MIN_FORMATION_SPACING,
+            ArenaCustomMatchCode.MAX_FORMATION_SPACING
+        );
+        editor.blueFormation = normalizeCustomFormation(editor.blueFormation);
+        editor.redFormation = normalizeCustomFormation(editor.redFormation);
+    }
+
+    function normalizeCustomFormation(value) {
+        var id = String(value || ArenaCustomMatchCode.DEFAULT_FORMATION || 'line').toLowerCase();
+        var formations = ArenaCustomMatchCode.FORMATIONS || {};
+        return formations[id] ? id : (ArenaCustomMatchCode.DEFAULT_FORMATION || 'line');
+    }
+
+    function customFormationLabel(id) {
+        if (ArenaCustomMatchCode && ArenaCustomMatchCode.formationLabel) {
+            return ArenaCustomMatchCode.formationLabel(id);
+        }
+        for (var i = 0; i < CUSTOM_FORMATION_OPTIONS.length; i++) {
+            if (CUSTOM_FORMATION_OPTIONS[i].id === id) return CUSTOM_FORMATION_OPTIONS[i].label;
+        }
+        return id || '--';
+    }
+
+    function customTimeoutSeconds(editor) {
+        editor = editor || ensureCustomEditorState();
+        return clampInt(Math.round((Number(editor.timeoutFrames) || ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES) / CUSTOM_TIMEOUT_FPS), 30, 600);
+    }
+
+    function formatCustomBattleParams(parsed) {
+        if (!parsed) return '--';
+        return '距离 ' + parsed.spawnDistance +
+            ' · 时长 ' + Math.round(parsed.timeoutFrames / CUSTOM_TIMEOUT_FPS) + '秒' +
+            ' · ' + formatCustomFormationPair(parsed);
+    }
+
+    function formatCustomFormationPair(source) {
+        var isPve = source && source.mode === 'pve';
+        return (isPve ? '玩家 ' : '蓝 ') + customFormationLabel(source ? source.blueFormation : null) +
+            ' / ' + (isPve ? '怪物 ' : '红 ') + customFormationLabel(source ? source.redFormation : null);
     }
 
     function captureCustomUndo(label) {
@@ -1116,6 +1267,310 @@
             disabled: _busy || customRunActive(),
             truncateText: truncateCustomText
         });
+    }
+
+    function renderCustomBattleParams() {
+        if (!_el) return;
+        var editor = ensureCustomEditorState();
+        sanitizeCustomBattleParams(editor);
+
+        var summaryDistance = _el.querySelector('#arena-custom-battle-summary-distance');
+        var summaryTimeout = _el.querySelector('#arena-custom-battle-summary-timeout');
+        var summaryFormation = _el.querySelector('#arena-custom-battle-summary-formation');
+        var summarySpacing = _el.querySelector('#arena-custom-battle-summary-spacing');
+        var editorMeta = _el.querySelector('#arena-custom-battle-editor-meta');
+        if (summaryDistance) summaryDistance.textContent = editor.spawnDistance + ' px';
+        if (summaryTimeout) summaryTimeout.textContent = customTimeoutSeconds(editor) + ' 秒';
+        if (summaryFormation) summaryFormation.textContent = formatCustomFormationPair(editor);
+        if (summarySpacing) summarySpacing.textContent = editor.formationSpacing + ' px';
+        if (editorMeta) editorMeta.textContent = formatCustomBattleParams(editor);
+
+        var distance = _el.querySelector('#arena-custom-spawn-distance');
+        var distanceValue = _el.querySelector('#arena-custom-spawn-distance-value');
+        if (distance) {
+            distance.min = ArenaCustomMatchCode.MIN_SPAWN_DISTANCE;
+            distance.max = ArenaCustomMatchCode.MAX_SPAWN_DISTANCE;
+            distance.step = 10;
+            distance.value = editor.spawnDistance;
+        }
+        if (distanceValue) distanceValue.textContent = editor.spawnDistance + ' px';
+        renderCustomPresetButtons('#arena-custom-spawn-distance-presets', 'spawnDistance', CUSTOM_SPAWN_DISTANCE_PRESETS, editor.spawnDistance);
+
+        var timeoutSeconds = customTimeoutSeconds(editor);
+        var timeout = _el.querySelector('#arena-custom-timeout');
+        var timeoutValue = _el.querySelector('#arena-custom-timeout-value');
+        if (timeout) {
+            timeout.min = 30;
+            timeout.max = 600;
+            timeout.step = 10;
+            timeout.value = timeoutSeconds;
+        }
+        if (timeoutValue) timeoutValue.textContent = timeoutSeconds + ' 秒';
+        renderCustomPresetButtons('#arena-custom-timeout-presets', 'timeoutFrames', CUSTOM_TIMEOUT_PRESETS, editor.timeoutFrames);
+
+        renderCustomFormationButtons('blue', editor.blueFormation);
+        renderCustomFormationButtons('red', editor.redFormation);
+        renderCustomFormationLegend('blue', editor.blueFormation);
+        renderCustomFormationLegend('red', editor.redFormation);
+
+        var blueTitle = _el.querySelector('#arena-custom-blue-formation-title');
+        var redTitle = _el.querySelector('#arena-custom-red-formation-title');
+        if (blueTitle) blueTitle.textContent = editor.mode === 'pve' ? '玩家' : '蓝方';
+        if (redTitle) redTitle.textContent = editor.mode === 'pve' ? '怪物' : '红方';
+        var summary = _el.querySelector('#arena-custom-formation-summary');
+        if (summary) summary.textContent = customFormationLabel(editor.blueFormation) + ' / ' + customFormationLabel(editor.redFormation);
+
+        var spacing = _el.querySelector('#arena-custom-formation-spacing');
+        var spacingValue = _el.querySelector('#arena-custom-formation-spacing-value');
+        if (spacing) {
+            spacing.min = ArenaCustomMatchCode.MIN_FORMATION_SPACING;
+            spacing.max = ArenaCustomMatchCode.MAX_FORMATION_SPACING;
+            spacing.step = 2;
+            spacing.value = editor.formationSpacing;
+        }
+        if (spacingValue) spacingValue.textContent = editor.formationSpacing + ' px';
+    }
+
+    function renderCustomPresetButtons(selector, field, presets, currentValue) {
+        var el = _el ? _el.querySelector(selector) : null;
+        if (!el) return;
+        var html = '';
+        for (var i = 0; i < presets.length; i++) {
+            var active = Number(presets[i].value) === Number(currentValue);
+            html += '<button class="arena-custom-preset-chip' + (active ? ' arena-custom-preset-chip-active' : '') + '" type="button" data-custom-battle-preset="' + field + '" data-custom-battle-value="' + presets[i].value + '" data-audio-cue="confirm">' + escapeHtml(presets[i].label) + '</button>';
+        }
+        el.innerHTML = html;
+    }
+
+    function renderCustomFormationButtons(side, current) {
+        var el = _el ? _el.querySelector('#arena-custom-' + side + '-formation-options') : null;
+        if (!el) return;
+        var html = '';
+        for (var i = 0; i < CUSTOM_FORMATION_OPTIONS.length; i++) {
+            var option = CUSTOM_FORMATION_OPTIONS[i];
+            html += '<button class="arena-custom-formation-option' + (option.id === current ? ' arena-custom-formation-option-active' : '') + '" type="button" data-custom-formation-side="' + side + '" data-custom-formation-value="' + option.id + '" data-audio-cue="confirm">' + escapeHtml(option.label) + '</button>';
+        }
+        el.innerHTML = html;
+    }
+
+    function renderCustomFormationLegend(side, formation) {
+        var el = _el ? _el.querySelector('#arena-custom-' + side + '-formation-legend') : null;
+        if (!el) return;
+        var positions = buildCustomFormationPreview(formation, 9, side);
+        var html = '';
+        for (var i = 0; i < positions.length; i++) {
+            html += '<i style="left:' + positions[i].x + '%;top:' + positions[i].y + '%">' + (i + 1) + '</i>';
+        }
+        el.innerHTML = html;
+    }
+
+    function buildCustomFormationPreview(formation, count, side) {
+        var out = [];
+        var i, row, col, lane, laneCount, depth;
+        formation = normalizeCustomFormation(formation);
+        for (i = 0; i < count; i++) {
+            if (formation === 'column') {
+                out.push({ x: 26, y: previewFormationY(i, count) });
+            } else if (formation === 'wedge') {
+                row = Math.floor((Math.sqrt(8 * i + 1) - 1) / 2);
+                col = i - (row * (row + 1) / 2);
+                laneCount = Math.min(row + 1, Math.max(1, count - (row * (row + 1) / 2)));
+                out.push({ x: 26 + row * 14, y: previewFormationY(col, laneCount) });
+            } else if (formation === 'shield') {
+                laneCount = Math.min(5, count);
+                if (i < laneCount) {
+                    out.push({ x: 26, y: previewFormationY(i, laneCount) });
+                } else {
+                    row = Math.floor((i - laneCount) / 2) + 1;
+                    col = (i - laneCount) % 2;
+                    out.push({ x: 26 + row * 20, y: previewFormationY(col, Math.min(2, count - laneCount - (row - 1) * 2)) });
+                }
+            } else if (formation === 'grid') {
+                laneCount = Math.min(3, Math.ceil(Math.sqrt(count)));
+                depth = Math.floor(i / laneCount);
+                lane = i % laneCount;
+                out.push({ x: 26 + depth * 16, y: previewFormationY(lane, Math.min(laneCount, count - depth * laneCount)) });
+            } else {
+                out.push({ x: 26 + i * 6, y: 50 });
+            }
+        }
+        if (side === 'blue') {
+            for (i = 0; i < out.length; i++) {
+                out[i].x = 100 - out[i].x;
+            }
+        }
+        return out;
+    }
+
+    function previewFormationY(lane, laneCount) {
+        if (laneCount <= 1) return 50;
+        return 14 + (72 * lane / (laneCount - 1));
+    }
+
+    function enhanceCustomSelects() {
+        if (!_customEditorViewEl) return;
+        var selects = _customEditorViewEl.querySelectorAll('select.arena-custom-preset-select');
+        for (var i = 0; i < selects.length; i++) {
+            var select = selects[i];
+            var shell = findCustomSelectShell(select);
+            if (!shell) {
+                shell = document.createElement('div');
+                shell.className = 'arena-custom-select-shell';
+                select.parentNode.insertBefore(shell, select);
+                shell.appendChild(select);
+            }
+            select.classList.add('arena-custom-native-select');
+            select.setAttribute('tabindex', '-1');
+
+            var trigger = shell.querySelector('.arena-custom-select-trigger');
+            if (!trigger) {
+                trigger = document.createElement('button');
+                trigger.type = 'button';
+                trigger.className = 'arena-custom-select-trigger';
+                trigger.setAttribute('data-custom-select-trigger', '1');
+                trigger.setAttribute('aria-haspopup', 'listbox');
+                shell.insertBefore(trigger, select);
+            }
+
+            var menu = shell.querySelector('.arena-custom-select-menu');
+            if (!menu) {
+                menu = document.createElement('div');
+                menu.className = 'arena-custom-select-menu';
+                menu.setAttribute('data-custom-select-menu', '1');
+                menu.setAttribute('role', 'listbox');
+                menu.hidden = true;
+                shell.appendChild(menu);
+            }
+            syncCustomSelect(select);
+        }
+    }
+
+    function findCustomSelectShell(node) {
+        while (node && node !== _customEditorViewEl) {
+            if (node.classList && node.classList.contains('arena-custom-select-shell')) return node;
+            node = node.parentNode;
+        }
+        return null;
+    }
+
+    function syncCustomSelect(select) {
+        var shell = findCustomSelectShell(select);
+        if (!shell) return;
+        var trigger = shell.querySelector('.arena-custom-select-trigger');
+        var menu = shell.querySelector('.arena-custom-select-menu');
+        var option = select.options[select.selectedIndex] || select.options[0];
+        var label = option ? option.text : '';
+        if (trigger) {
+            trigger.textContent = label;
+            trigger.title = label;
+            trigger.disabled = !!select.disabled;
+            trigger.setAttribute('aria-expanded', shell.classList.contains('arena-custom-select-open') ? 'true' : 'false');
+        }
+        if (menu && !menu.hidden) renderCustomSelectMenu(select, menu);
+    }
+
+    function renderCustomSelectMenu(select, menu) {
+        var value = select.value;
+        var html = '';
+        for (var i = 0; i < select.options.length; i++) {
+            var option = select.options[i];
+            var active = option.value === value;
+            html += '<button class="arena-custom-select-option' + (active ? ' arena-custom-select-option-active' : '') + '" type="button" role="option" aria-selected="' + (active ? 'true' : 'false') + '" data-custom-select-value="' + escapeAttr(option.value) + '">' + escapeHtml(option.text) + '</button>';
+        }
+        menu.innerHTML = html;
+    }
+
+    function closeCustomSelectMenus(exceptShell) {
+        if (!_customEditorViewEl) return;
+        var shells = _customEditorViewEl.querySelectorAll('.arena-custom-select-shell');
+        for (var i = 0; i < shells.length; i++) {
+            if (exceptShell && shells[i] === exceptShell) continue;
+            shells[i].classList.remove('arena-custom-select-open');
+            var menu = shells[i].querySelector('.arena-custom-select-menu');
+            var trigger = shells[i].querySelector('.arena-custom-select-trigger');
+            if (menu) menu.hidden = true;
+            if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        }
+        _customSelectOpen = exceptShell || null;
+    }
+
+    function openCustomSelect(select) {
+        var shell = findCustomSelectShell(select);
+        if (!shell) return;
+        var menu = shell.querySelector('.arena-custom-select-menu');
+        var trigger = shell.querySelector('.arena-custom-select-trigger');
+        closeCustomSelectMenus(shell);
+        renderCustomSelectMenu(select, menu);
+        shell.classList.add('arena-custom-select-open');
+        if (menu) menu.hidden = false;
+        if (trigger) trigger.setAttribute('aria-expanded', 'true');
+        _customSelectOpen = shell;
+        var active = menu ? menu.querySelector('.arena-custom-select-option-active') : null;
+        if (active && active.scrollIntoView) active.scrollIntoView({ block: 'nearest' });
+    }
+
+    function handleCustomSelectClick(e) {
+        var node = e.target;
+        var shellAtTarget = findCustomSelectShell(node);
+        while (node && node !== _customEditorViewEl) {
+            if (node.getAttribute) {
+                if (node.getAttribute('data-custom-select-trigger')) {
+                    var triggerShell = findCustomSelectShell(node);
+                    var triggerSelect = triggerShell ? triggerShell.querySelector('select.arena-custom-preset-select') : null;
+                    if (triggerSelect) {
+                        if (triggerShell.classList.contains('arena-custom-select-open')) closeCustomSelectMenus();
+                        else openCustomSelect(triggerSelect);
+                        e.preventDefault();
+                        return true;
+                    }
+                }
+                if (node.getAttribute('data-custom-select-value') != null) {
+                    var optionShell = findCustomSelectShell(node);
+                    var optionSelect = optionShell ? optionShell.querySelector('select.arena-custom-preset-select') : null;
+                    if (optionSelect) {
+                        optionSelect.value = node.getAttribute('data-custom-select-value');
+                        syncCustomSelect(optionSelect);
+                        closeCustomSelectMenus();
+                        optionSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                        e.preventDefault();
+                        return true;
+                    }
+                }
+            }
+            node = node.parentNode;
+        }
+        if (!shellAtTarget) closeCustomSelectMenus();
+        return false;
+    }
+
+    function onCustomSelectKeydown(e) {
+        var shell = findCustomSelectShell(e.target);
+        if (!shell) return;
+        var select = shell.querySelector('select.arena-custom-preset-select');
+        if (!select) return;
+        var key = e.key || e.keyCode;
+        if (key === 'Escape' || key === 27) {
+            closeCustomSelectMenus();
+            e.preventDefault();
+            return;
+        }
+        if (key === 'Enter' || key === ' ' || key === 'ArrowDown' || key === 13 || key === 32 || key === 40) {
+            if (!shell.classList.contains('arena-custom-select-open')) {
+                openCustomSelect(select);
+                e.preventDefault();
+                return;
+            }
+        }
+        if (shell.classList.contains('arena-custom-select-open') && (key === 'ArrowDown' || key === 'ArrowUp' || key === 40 || key === 38)) {
+            var delta = (key === 'ArrowUp' || key === 38) ? -1 : 1;
+            var next = Math.max(0, Math.min(select.options.length - 1, select.selectedIndex + delta));
+            if (next !== select.selectedIndex) {
+                select.selectedIndex = next;
+                syncCustomSelect(select);
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            e.preventDefault();
+        }
     }
 
     function cloneCustomRoster(roster) {
@@ -1158,12 +1613,17 @@
         options = options || {};
         ensureCustomModule();
         var editor = ensureCustomEditorState();
+        sanitizeCustomBattleParams(editor);
         if (editor.mode === 'pve') {
             _customSelectedSide = 'red';
             _customMatch.code = ArenaCustomMatchCode.serializeMatchCode({
                 mode: 'pve',
                 seed: editor.seed || 0,
                 timeoutFrames: editor.timeoutFrames || ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
+                spawnDistance: editor.spawnDistance || ArenaCustomMatchCode.DEFAULT_SPAWN_DISTANCE,
+                blueFormation: editor.blueFormation || ArenaCustomMatchCode.DEFAULT_FORMATION,
+                redFormation: editor.redFormation || ArenaCustomMatchCode.DEFAULT_FORMATION,
+                formationSpacing: editor.formationSpacing || ArenaCustomMatchCode.DEFAULT_FORMATION_SPACING,
                 enemyRoster: editor.red,
                 player: 'current'
             });
@@ -1172,6 +1632,10 @@
                 mode: 'mvm',
                 seed: editor.seed || 0,
                 timeoutFrames: editor.timeoutFrames || ArenaCustomMatchCode.DEFAULT_TIMEOUT_FRAMES,
+                spawnDistance: editor.spawnDistance || ArenaCustomMatchCode.DEFAULT_SPAWN_DISTANCE,
+                blueFormation: editor.blueFormation || ArenaCustomMatchCode.DEFAULT_FORMATION,
+                redFormation: editor.redFormation || ArenaCustomMatchCode.DEFAULT_FORMATION,
+                formationSpacing: editor.formationSpacing || ArenaCustomMatchCode.DEFAULT_FORMATION_SPACING,
                 blueRoster: editor.blue,
                 redRoster: editor.red
             });
@@ -1235,6 +1699,7 @@
             caseEl.textContent =
                 'seed=' + parsed.seed +
                 ' · player=current' +
+                ' · ' + formatCustomBattleParams(parsed) +
                 ' · 无掉落 / 无经验 / 标准竞技场';
         } else {
             var blueCount = customRosterTotal(parsed.blueRoster);
@@ -1261,6 +1726,7 @@
             caseEl.textContent =
                 'seed=' + parsed.seed +
                 ' · 上限 ' + parsed.calibrationCase.timeoutFrames + ' 帧' +
+                ' · ' + formatCustomBattleParams(parsed) +
                 ' · 无掉落 / 无经验 / 原死亡流程';
         }
         statusEl.innerHTML = buildCustomRunStatusHtml(parsed.mode === 'pve');
@@ -1275,9 +1741,11 @@
         var editor = ensureCustomEditorState();
         if (editor.mode === 'pve') _customSelectedSide = 'red';
         var configPage = _el.querySelector('[data-custom-editor-page="config"]');
+        var battlePage = _el.querySelector('[data-custom-editor-page="battle"]');
         var sidePage = _el.querySelector('[data-custom-editor-page="side"]');
         var paramPage = _el.querySelector('[data-custom-editor-page="params"]');
         if (configPage) configPage.hidden = _customEditorPage !== 'config';
+        if (battlePage) battlePage.hidden = _customEditorPage !== 'battle';
         if (sidePage) sidePage.hidden = _customEditorPage !== 'side';
         if (paramPage) paramPage.hidden = _customEditorPage !== 'params';
 
@@ -1333,6 +1801,7 @@
         for (var ss = 0; ss < savedSelects.length; ss++) {
             savedSelects[ss].innerHTML = savedOptions;
         }
+        renderCustomBattleParams();
 
         var panels = _el.querySelectorAll('.arena-custom-roster-panel');
         for (var i = 0; i < panels.length; i++) {
@@ -1351,6 +1820,7 @@
             sideBtns[s].classList.toggle('arena-custom-side-target-active', side === _customSelectedSide);
         }
         renderCustomParamEditor();
+        enhanceCustomSelects();
     }
 
     function buildCustomSideConfigCardHtml(side, roster) {
@@ -1427,6 +1897,12 @@
         _customParamEditor = null;
         renderCustomEditor();
         renderCustomUnitBrowser();
+    }
+
+    function showCustomBattleEditorPage() {
+        _customEditorPage = 'battle';
+        _customParamEditor = null;
+        renderCustomEditor();
     }
 
     function showCustomParamEditorPage(side, index) {
@@ -1770,6 +2246,7 @@
                 '<div class="arena-custom-confirm-grid">' +
                     '<span>玩家</span><b>当前存档 / 当前装备 / 当前操作</b>' +
                     '<span>怪物</span><b>' + escapeHtml(summarizeCustomRoster(parsed.enemyRoster)) + '</b>' +
+                    '<span>战场参数</span><b>' + escapeHtml(formatCustomBattleParams(parsed)) + '</b>' +
                     '<span>规则</span><b>无押金 / 无奖金 / 无掉落 / 无经验</b>' +
                     '<span>复现</span><b>仅复现怪物配置，不复现玩家状态</b>' +
                 '</div>' +
@@ -1791,6 +2268,7 @@
                 '<span>蓝方</span><b>' + escapeHtml(summarizeCustomRoster(parsed.blueRoster)) + '</b>' +
                 '<span>红方</span><b>' + escapeHtml(summarizeCustomRoster(parsed.redRoster)) + '</b>' +
                 '<span>战斗上限</span><b>' + parsed.calibrationCase.timeoutFrames + ' 帧</b>' +
+                '<span>战场参数</span><b>' + escapeHtml(formatCustomBattleParams(parsed)) + '</b>' +
                 '<span>规则</span><b>无掉落 / 无经验 / 原死亡流程</b>' +
             '</div>' +
             '<div class="arena-custom-confirm-actions">' +
@@ -1926,7 +2404,7 @@
                 ? 1
                 : customRosterTotal(parsed.redRoster);
             el.className = 'arena-custom-code-status arena-custom-code-status-ok';
-            el.textContent = '实时解析 OK · mode=' + parsed.mode + ' · seed=' + parsed.seed + ' · ' + left + ' vs ' + right;
+            el.textContent = '实时解析 OK · mode=' + parsed.mode + ' · seed=' + parsed.seed + ' · ' + left + ' vs ' + right + ' · ' + formatCustomBattleParams(parsed);
         } else {
             el.className = 'arena-custom-code-status arena-custom-code-status-error';
             el.textContent = '实时解析失败 · ' + (_customMatch.error || '赛程代码无效');
@@ -2175,7 +2653,10 @@
         }
         _customSampleIndex = nextIndex;
         var select = _el ? _el.querySelector('#arena-custom-preset-select') : null;
-        if (select && presets[_customSampleIndex]) select.value = presets[_customSampleIndex].id;
+        if (select && presets[_customSampleIndex]) {
+            select.value = presets[_customSampleIndex].id;
+            syncCustomSelect(select);
+        }
         applyCustomPresetCodeForCurrentMode(presets[_customSampleIndex].code, '已随机抽取待标定组合');
     }
 
@@ -2375,6 +2856,10 @@
             updateCustomParamDraft(input.value);
             return;
         }
+        if (input.hasAttribute && input.hasAttribute('data-custom-battle-field')) {
+            applyCustomBattleInput(input, false);
+            return;
+        }
         if (input.id !== 'arena-custom-unit-search') return;
         onCustomUnitSearchInput(e);
     }
@@ -2393,6 +2878,7 @@
     }
 
     function onCustomWorkbenchClick(e) {
+        if (handleCustomSelectClick(e)) return;
         var node = e.target;
         while (node && node !== e.currentTarget) {
             if (node.getAttribute) {
@@ -2402,7 +2888,7 @@
                         leaveCustomParamEditorDiscardingDraft();
                         return;
                     }
-                    if (editorAction === 'back' && _customEditorPage === 'side') {
+                    if (editorAction === 'back' && (_customEditorPage === 'side' || _customEditorPage === 'battle')) {
                         showCustomEditorConfigPage();
                         return;
                     }
@@ -2417,6 +2903,10 @@
                     showCustomEditorConfigPage();
                     return;
                 }
+                if (editorAction === 'to-battle') {
+                    showCustomBattleEditorPage();
+                    return;
+                }
                 if (editorAction === 'copy') {
                     copyCustomMatchCode();
                     return;
@@ -2428,6 +2918,16 @@
                 }
                 var customAction = node.getAttribute('data-custom-action');
                 if (handleCustomAction(customAction, node)) {
+                    return;
+                }
+                var battlePreset = node.getAttribute('data-custom-battle-preset');
+                if (battlePreset) {
+                    setCustomBattleValue(battlePreset, Number(node.getAttribute('data-custom-battle-value')), true);
+                    return;
+                }
+                var formationSide = node.getAttribute('data-custom-formation-side');
+                if (formationSide === 'blue' || formationSide === 'red') {
+                    setCustomFormationValue(formationSide, node.getAttribute('data-custom-formation-value'));
                     return;
                 }
                 var sideAction = node.getAttribute('data-custom-side-action');
@@ -2521,9 +3021,49 @@
     function onCustomWorkbenchChange(e) {
         var input = e.target;
         if (!input || !input.getAttribute) return;
+        if (input.hasAttribute('data-custom-battle-field')) {
+            applyCustomBattleInput(input, true);
+            return;
+        }
         var field = input.getAttribute('data-custom-roster-input');
         if (field !== 'level' && field !== 'count') return;
         updateCustomRosterEntry(input.getAttribute('data-side'), Number(input.getAttribute('data-index')), field, Number(input.value));
+    }
+
+    function applyCustomBattleInput(input, captureUndo) {
+        var field = input.getAttribute('data-custom-battle-field');
+        var value = Number(input.value);
+        if (field === 'timeoutSeconds') value = value * CUSTOM_TIMEOUT_FPS;
+        setCustomBattleValue(field === 'timeoutSeconds' ? 'timeoutFrames' : field, value, captureUndo);
+    }
+
+    function setCustomBattleValue(field, value, captureUndo) {
+        var editor = ensureCustomEditorState();
+        sanitizeCustomBattleParams(editor);
+        var next = Number(value);
+        if (field === 'timeoutFrames') next = clampInt(next, 30 * CUSTOM_TIMEOUT_FPS, 600 * CUSTOM_TIMEOUT_FPS);
+        else if (field === 'spawnDistance') next = clampInt(next, ArenaCustomMatchCode.MIN_SPAWN_DISTANCE, ArenaCustomMatchCode.MAX_SPAWN_DISTANCE);
+        else if (field === 'formationSpacing') next = clampInt(next, ArenaCustomMatchCode.MIN_FORMATION_SPACING, ArenaCustomMatchCode.MAX_FORMATION_SPACING);
+        else return;
+        if (editor[field] === next) {
+            renderCustomBattleParams();
+            return;
+        }
+        if (captureUndo) captureCustomUndo('调整战场参数');
+        editor[field] = next;
+        syncCustomCodeFromEditor();
+        renderCustomBattleParams();
+    }
+
+    function setCustomFormationValue(side, value) {
+        var editor = ensureCustomEditorState();
+        var field = side === 'red' ? 'redFormation' : 'blueFormation';
+        var next = normalizeCustomFormation(value);
+        if (editor[field] === next) return;
+        captureCustomUndo('调整阵型');
+        editor[field] = next;
+        syncCustomCodeFromEditor();
+        renderCustomBattleParams();
     }
 
     function addCustomUnitToSide(unitId, side, presetId) {

@@ -10,8 +10,22 @@
     var MAGIC = 'CF7ARENA';
     var VERSION = 'v1';
     var DEFAULT_TIMEOUT_FRAMES = 3600;
+    var DEFAULT_SPAWN_DISTANCE = 650;
+    var MIN_SPAWN_DISTANCE = 360;
+    var MAX_SPAWN_DISTANCE = 1040;
+    var DEFAULT_FORMATION = 'line';
+    var DEFAULT_FORMATION_SPACING = 54;
+    var MIN_FORMATION_SPACING = 36;
+    var MAX_FORMATION_SPACING = 96;
     var DEFAULT_REPEAT = 1;
     var MAX_SIDE_COUNT = 20;
+    var FORMATIONS = {
+        column: { id: 'column', label: '纵队' },
+        line: { id: 'line', label: '横列' },
+        wedge: { id: 'wedge', label: '楔形' },
+        shield: { id: 'shield', label: '前盾后排' },
+        grid: { id: 'grid', label: '网格散点' }
+    };
     var ECONOMY_KEYS = {
         money: true,
         cash: true,
@@ -40,6 +54,10 @@
         enemy: true,
         player: true,
         timeout: true,
+        spawndistance: true,
+        blueformation: true,
+        redformation: true,
+        formationspacing: true,
         rules: true,
         arena: true,
         difficulty: true
@@ -85,6 +103,29 @@
             return 0;
         }
         return n;
+    }
+
+    function parseBoundedInteger(value, field, min, max, errors) {
+        var n = parsePositiveInteger(value, field, errors);
+        if (n < min || n > max) {
+            pushError(errors, field, 'must be between ' + min + ' and ' + max);
+            return min;
+        }
+        return n;
+    }
+
+    function parseFormation(value, field, errors) {
+        var id = String(value == null ? '' : value).trim().toLowerCase();
+        if (!id) return DEFAULT_FORMATION;
+        if (!FORMATIONS[id]) {
+            pushError(errors, field, 'must be one of column,line,wedge,shield,grid');
+            return DEFAULT_FORMATION;
+        }
+        return id;
+    }
+
+    function formationLabel(id) {
+        return (FORMATIONS[id] && FORMATIONS[id].label) || id || DEFAULT_FORMATION;
     }
 
     function clonePlain(value) {
@@ -324,6 +365,18 @@
         var timeoutFrames = fields.timeout == null
             ? DEFAULT_TIMEOUT_FRAMES
             : parsePositiveInteger(fields.timeout, 'timeout', errors);
+        var spawnDistance = fields.spawndistance == null
+            ? DEFAULT_SPAWN_DISTANCE
+            : parseBoundedInteger(fields.spawndistance, 'spawnDistance', MIN_SPAWN_DISTANCE, MAX_SPAWN_DISTANCE, errors);
+        var blueFormation = fields.blueformation == null
+            ? DEFAULT_FORMATION
+            : parseFormation(fields.blueformation, 'blueFormation', errors);
+        var redFormation = fields.redformation == null
+            ? DEFAULT_FORMATION
+            : parseFormation(fields.redformation, 'redFormation', errors);
+        var formationSpacing = fields.formationspacing == null
+            ? DEFAULT_FORMATION_SPACING
+            : parseBoundedInteger(fields.formationspacing, 'formationSpacing', MIN_FORMATION_SPACING, MAX_FORMATION_SPACING, errors);
         var catalog = normalizeCatalog(options.unitCatalog || options.units || null);
         var blueRoster = [];
         var redRoster = [];
@@ -353,6 +406,10 @@
             mode: mode,
             seed: seed,
             timeoutFrames: timeoutFrames,
+            spawnDistance: spawnDistance,
+            blueFormation: blueFormation,
+            redFormation: redFormation,
+            formationSpacing: formationSpacing,
             arena: fields.arena || '',
             rules: fields.rules || 'no_drop,no_exp,original_death_flow',
             difficulty: fields.difficulty || '',
@@ -396,6 +453,18 @@
         if (value.timeoutFrames && value.timeoutFrames !== DEFAULT_TIMEOUT_FRAMES) {
             fields.push('timeout=' + value.timeoutFrames);
         }
+        if (value.spawnDistance && value.spawnDistance !== DEFAULT_SPAWN_DISTANCE) {
+            fields.push('spawnDistance=' + value.spawnDistance);
+        }
+        if (value.blueFormation && value.blueFormation !== DEFAULT_FORMATION) {
+            fields.push('blueFormation=' + value.blueFormation);
+        }
+        if (value.redFormation && value.redFormation !== DEFAULT_FORMATION) {
+            fields.push('redFormation=' + value.redFormation);
+        }
+        if (value.formationSpacing && value.formationSpacing !== DEFAULT_FORMATION_SPACING) {
+            fields.push('formationSpacing=' + value.formationSpacing);
+        }
         return fields.join(';');
     }
 
@@ -421,6 +490,10 @@
             redRoster: expandRoster(parsed.redRoster || []),
             repeat: options.repeat || DEFAULT_REPEAT,
             timeoutFrames: parsed.timeoutFrames || DEFAULT_TIMEOUT_FRAMES,
+            spawnDistance: parsed.spawnDistance || DEFAULT_SPAWN_DISTANCE,
+            blueFormation: parsed.blueFormation || DEFAULT_FORMATION,
+            redFormation: parsed.redFormation || DEFAULT_FORMATION,
+            formationSpacing: parsed.formationSpacing || DEFAULT_FORMATION_SPACING,
             tags: ['arena-custom-p1', 'mvm'],
             plannerReason: 'generated from arena custom match code P1'
         };
@@ -439,6 +512,7 @@
             buildCommit: options.buildCommit || 'web',
             repeat: options.repeat || DEFAULT_REPEAT,
             timeoutFrames: parsed.timeoutFrames || DEFAULT_TIMEOUT_FRAMES,
+            spawnDistance: parsed.spawnDistance || DEFAULT_SPAWN_DISTANCE,
             cases: [buildCalibrationCase(parsed, options)]
         };
     }
@@ -455,6 +529,10 @@
             difficulty: parsed.difficulty || '',
             player: 'current',
             matchCode: parsed.canonical || serializeMatchCode(parsed),
+            spawnDistance: parsed.spawnDistance || DEFAULT_SPAWN_DISTANCE,
+            blueFormation: parsed.blueFormation || DEFAULT_FORMATION,
+            redFormation: parsed.redFormation || DEFAULT_FORMATION,
+            formationSpacing: parsed.formationSpacing || DEFAULT_FORMATION_SPACING,
             roster: expandRoster(parsed.enemyRoster || [])
         };
     }
@@ -476,6 +554,14 @@
         MAGIC: MAGIC,
         VERSION: VERSION,
         DEFAULT_TIMEOUT_FRAMES: DEFAULT_TIMEOUT_FRAMES,
+        DEFAULT_SPAWN_DISTANCE: DEFAULT_SPAWN_DISTANCE,
+        MIN_SPAWN_DISTANCE: MIN_SPAWN_DISTANCE,
+        MAX_SPAWN_DISTANCE: MAX_SPAWN_DISTANCE,
+        DEFAULT_FORMATION: DEFAULT_FORMATION,
+        DEFAULT_FORMATION_SPACING: DEFAULT_FORMATION_SPACING,
+        MIN_FORMATION_SPACING: MIN_FORMATION_SPACING,
+        MAX_FORMATION_SPACING: MAX_FORMATION_SPACING,
+        FORMATIONS: FORMATIONS,
         ParseError: ParseError,
         buildCalibrationCase: buildCalibrationCase,
         buildCalibrationManifest: buildCalibrationManifest,
@@ -485,6 +571,7 @@
         decodeParameters: decodeParameters,
         encodeParameters: encodeParameters,
         hasParameters: hasParameters,
+        formationLabel: formationLabel,
         normalizeUnitId: normalizeUnitId,
         parseMatchCode: parseMatchCode,
         serializeMatchCode: serializeMatchCode,

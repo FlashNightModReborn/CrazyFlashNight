@@ -9,6 +9,9 @@ const RESULT_SCHEMA = "arena-calibration.result.v1";
 const SUMMARY_SCHEMA = "arena-calibration.summary.v1";
 const NEXT_BATCH_SCHEMA = "arena-calibration.next-batch.v1";
 const DEFAULT_SPAWN_DISTANCE = 650;
+const DEFAULT_FORMATION = "line";
+const DEFAULT_FORMATION_SPACING = 54;
+const FORMATIONS = new Set(["column", "line", "wedge", "shield", "grid"]);
 
 const RESULT_STATUSES = new Set([
   "finished",
@@ -18,6 +21,7 @@ const RESULT_STATUSES = new Set([
   "invalid_case",
   "stage_failed",
   "bridge_lost",
+  "contamination",
   "error",
 ]);
 
@@ -176,6 +180,17 @@ function parseNonNegativeNumber(value, fieldName, errors) {
   return number;
 }
 
+function normalizeFormation(value, fieldName, errors) {
+  const formation = value === undefined || value === null || value === ""
+    ? DEFAULT_FORMATION
+    : String(value);
+  if (!FORMATIONS.has(formation)) {
+    errors.push(`${fieldName} must be one of ${Array.from(FORMATIONS).join(", ")}`);
+    return DEFAULT_FORMATION;
+  }
+  return formation;
+}
+
 function findEconomyKeys(value, prefix, errors) {
   if (Array.isArray(value)) {
     value.forEach((entry, index) => findEconomyKeys(entry, `${prefix}[${index}]`, errors));
@@ -238,6 +253,9 @@ function buildCaseHashInput(testCase) {
     timeoutFrames: testCase.timeoutFrames,
   };
   hashInput.spawnDistance = testCase.spawnDistance;
+  hashInput.blueFormation = testCase.blueFormation;
+  hashInput.redFormation = testCase.redFormation;
+  hashInput.formationSpacing = testCase.formationSpacing;
   return hashInput;
 }
 
@@ -279,6 +297,21 @@ function normalizeCase(input, defaults, index, errors) {
     spawnDistance: parsePositiveInteger(
       defaultWhenMissing(input.spawnDistance, defaults.spawnDistance),
       `${fieldName}.spawnDistance`,
+      errors
+    ),
+    blueFormation: normalizeFormation(
+      defaultWhenMissing(input.blueFormation, defaults.blueFormation),
+      `${fieldName}.blueFormation`,
+      errors
+    ),
+    redFormation: normalizeFormation(
+      defaultWhenMissing(input.redFormation, defaults.redFormation),
+      `${fieldName}.redFormation`,
+      errors
+    ),
+    formationSpacing: parsePositiveInteger(
+      defaultWhenMissing(input.formationSpacing, defaults.formationSpacing),
+      `${fieldName}.formationSpacing`,
       errors
     ),
   };
@@ -335,7 +368,14 @@ function normalizeManifest(input) {
   if (!Array.isArray(input.cases) || input.cases.length === 0) {
     errors.push("cases must be a non-empty array");
   } else {
-    const defaults = { repeat, timeoutFrames, spawnDistance: DEFAULT_SPAWN_DISTANCE };
+    const defaults = {
+      repeat,
+      timeoutFrames,
+      spawnDistance: DEFAULT_SPAWN_DISTANCE,
+      blueFormation: DEFAULT_FORMATION,
+      redFormation: DEFAULT_FORMATION,
+      formationSpacing: DEFAULT_FORMATION_SPACING,
+    };
     manifest.cases = input.cases.map((testCase, index) =>
       normalizeCase(testCase, defaults, index, errors)
     );
@@ -361,6 +401,9 @@ function createPilotManifest(options) {
   const repeat = defaultWhenMissing(options.repeat, 5);
   const timeoutFrames = defaultWhenMissing(options.timeoutFrames, 5400);
   const spawnDistance = defaultWhenMissing(options.spawnDistance, DEFAULT_SPAWN_DISTANCE);
+  const blueFormation = defaultWhenMissing(options.blueFormation, DEFAULT_FORMATION);
+  const redFormation = defaultWhenMissing(options.redFormation, DEFAULT_FORMATION);
+  const formationSpacing = defaultWhenMissing(options.formationSpacing, DEFAULT_FORMATION_SPACING);
   const thiefRoster = [
     { type: "兵种44", level: 30 },
     { type: "兵种45", level: 30 },
@@ -392,11 +435,102 @@ function createPilotManifest(options) {
         repeat,
         timeoutFrames,
         spawnDistance,
+        blueFormation,
+        redFormation,
+        formationSpacing,
         tags: ["pilot", "manual-anchor", "mirror"],
         plannerReason: "复用现有 _root.测试角斗场怪物 默认盗贼组作为通路锚点",
       },
     ],
   });
+}
+
+function normalizeSpawnedUnits(input, fieldName, errors) {
+  if (input === undefined || input === null) {
+    return [];
+  }
+  if (!Array.isArray(input)) {
+    errors.push(`${fieldName} must be an array`);
+    return [];
+  }
+  return input.map((entry, index) => {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      errors.push(`${fieldName}[${index}] must be an object`);
+      return { side: "", unit: "", parentUnit: "" };
+    }
+    return {
+      side: entry.side === "red" ? "red" : "blue",
+      unit: entry.unit == null ? "" : String(entry.unit),
+      parentUnit: entry.parentUnit == null ? "" : String(entry.parentUnit),
+      frame: entry.frame === undefined || entry.frame === null
+        ? null
+        : parseNonNegativeNumber(entry.frame, `${fieldName}[${index}].frame`, errors),
+    };
+  });
+}
+
+function normalizeSpawnPositions(input, fieldName, errors) {
+  if (input === undefined || input === null) {
+    return [];
+  }
+  if (!Array.isArray(input)) {
+    errors.push(`${fieldName} must be an array`);
+    return [];
+  }
+  return input.map((entry, index) => {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      errors.push(`${fieldName}[${index}] must be an object`);
+      return { side: "", index: 0, unit: "", level: 0, name: "", x: 0, y: 0 };
+    }
+    const side = entry.side === "blue" || entry.side === "red" ? entry.side : "";
+    if (!side) {
+      errors.push(`${fieldName}[${index}].side must be blue or red`);
+    }
+    return {
+      side,
+      index:
+        entry.index === undefined || entry.index === null
+          ? index
+          : parseNonNegativeNumber(entry.index, `${fieldName}[${index}].index`, errors),
+      unit: entry.unit == null ? "" : String(entry.unit),
+      level:
+        entry.level === undefined || entry.level === null
+          ? 0
+          : parseNonNegativeNumber(entry.level, `${fieldName}[${index}].level`, errors),
+      name: entry.name == null ? "" : String(entry.name),
+      x: parseNonNegativeNumber(entry.x, `${fieldName}[${index}].x`, errors),
+      y: parseNonNegativeNumber(entry.y, `${fieldName}[${index}].y`, errors),
+    };
+  });
+}
+
+function normalizeFormationAudit(input, errors) {
+  if (input !== undefined && input !== null && (!input || typeof input !== "object" || Array.isArray(input))) {
+    errors.push("formationAudit must be an object");
+  }
+  const source = input && typeof input === "object" && !Array.isArray(input) ? input : {};
+  return {
+    blue: normalizeFormationAuditSide(source.blue, "formationAudit.blue", errors),
+    red: normalizeFormationAuditSide(source.red, "formationAudit.red", errors),
+  };
+}
+
+function normalizeFormationAuditSide(input, fieldName, errors) {
+  if (input !== undefined && input !== null && (!input || typeof input !== "object" || Array.isArray(input))) {
+    errors.push(`${fieldName} must be an object`);
+  }
+  const source = input && typeof input === "object" && !Array.isArray(input) ? input : {};
+  return {
+    count: parseNonNegativeNumber(source.count || 0, `${fieldName}.count`, errors),
+    minX: parseNonNegativeNumber(source.minX || 0, `${fieldName}.minX`, errors),
+    maxX: parseNonNegativeNumber(source.maxX || 0, `${fieldName}.maxX`, errors),
+    minY: parseNonNegativeNumber(source.minY || 0, `${fieldName}.minY`, errors),
+    maxY: parseNonNegativeNumber(source.maxY || 0, `${fieldName}.maxY`, errors),
+    xRange: parseNonNegativeNumber(source.xRange || 0, `${fieldName}.xRange`, errors),
+    yRange: parseNonNegativeNumber(source.yRange || 0, `${fieldName}.yRange`, errors),
+    distinctX: parseNonNegativeNumber(source.distinctX || 0, `${fieldName}.distinctX`, errors),
+    distinctY: parseNonNegativeNumber(source.distinctY || 0, `${fieldName}.distinctY`, errors),
+  };
 }
 
 function normalizeSideSummary(input, fieldName, errors) {
@@ -484,6 +618,18 @@ function normalizeResultRow(input) {
       input.spawnDistance === undefined || input.spawnDistance === null
         ? null
         : parseNonNegativeNumber(input.spawnDistance, "spawnDistance", errors),
+    blueFormation: normalizeFormation(input.blueFormation, "blueFormation", errors),
+    redFormation: normalizeFormation(input.redFormation, "redFormation", errors),
+    formationSpacing: parsePositiveInteger(
+      defaultWhenMissing(input.formationSpacing, DEFAULT_FORMATION_SPACING),
+      "formationSpacing",
+      errors
+    ),
+    phaseSpawnCount:
+      input.phaseSpawnCount === undefined || input.phaseSpawnCount === null
+        ? 0
+        : parseNonNegativeNumber(input.phaseSpawnCount, "phaseSpawnCount", errors),
+    spawnedUnits: normalizeSpawnedUnits(input.spawnedUnits, "spawnedUnits", errors),
     blueX:
       input.blueX === undefined || input.blueX === null
         ? null
@@ -492,6 +638,9 @@ function normalizeResultRow(input) {
       input.redX === undefined || input.redX === null
         ? null
         : parseNonNegativeNumber(input.redX, "redX", errors),
+    blueSpawnPositions: normalizeSpawnPositions(input.blueSpawnPositions, "blueSpawnPositions", errors),
+    redSpawnPositions: normalizeSpawnPositions(input.redSpawnPositions, "redSpawnPositions", errors),
+    formationAudit: normalizeFormationAudit(input.formationAudit, errors),
     blue: normalizeSideSummary(input.blue, "blue", errors),
     red: normalizeSideSummary(input.red, "red", errors),
     errors: normalizeErrors(input.errors, "errors", errors),
@@ -812,6 +961,9 @@ module.exports = {
   RESULT_SCHEMA,
   SUMMARY_SCHEMA,
   NEXT_BATCH_SCHEMA,
+  DEFAULT_SPAWN_DISTANCE,
+  DEFAULT_FORMATION,
+  DEFAULT_FORMATION_SPACING,
   analyzeRows,
   createFixtureRows,
   createPilotManifest,

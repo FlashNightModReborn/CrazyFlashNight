@@ -121,6 +121,9 @@ namespace CF7Launcher.Tests.Tasks
             Assert.NotNull(command["manifestHash"]);
             Assert.NotNull(command["caseHash"]);
             Assert.Equal(650, (int)command["spawnDistance"]);
+            Assert.Equal("line", (string)command["blueFormation"]);
+            Assert.Equal("line", (string)command["redFormation"]);
+            Assert.Equal(54, (int)command["formationSpacing"]);
 
             task.HandleFlashResponse(new JObject
             {
@@ -190,9 +193,15 @@ namespace CF7Launcher.Tests.Tasks
             string frozenPath = Path.Combine(root, ((string)start["frozenManifestPath"]).Replace('/', Path.DirectorySeparatorChar));
             JObject frozen = JObject.Parse(File.ReadAllText(frozenPath));
             Assert.Equal(620, (int)frozen["cases"][0]["spawnDistance"]);
+            Assert.Equal("line", (string)frozen["cases"][0]["blueFormation"]);
+            Assert.Equal("line", (string)frozen["cases"][0]["redFormation"]);
+            Assert.Equal(54, (int)frozen["cases"][0]["formationSpacing"]);
 
             JObject command = JObject.Parse(sent.TrimEnd('\0'));
             Assert.Equal(620, (int)command["spawnDistance"]);
+            Assert.Equal("line", (string)command["blueFormation"]);
+            Assert.Equal("line", (string)command["redFormation"]);
+            Assert.Equal(54, (int)command["formationSpacing"]);
 
             task.HandleFlashResponse(new JObject
             {
@@ -206,6 +215,15 @@ namespace CF7Launcher.Tests.Tasks
                 ["spawnDistance"] = 620,
                 ["blueX"] = 585,
                 ["redX"] = 1205,
+                ["blueSpawnPositions"] = new JArray(
+                    new JObject { ["side"] = "blue", ["index"] = 0, ["unit"] = "兵种44", ["level"] = 30, ["name"] = "斗兽标定_blue_test_0", ["x"] = 585, ["y"] = 400 }),
+                ["redSpawnPositions"] = new JArray(
+                    new JObject { ["side"] = "red", ["index"] = 0, ["unit"] = "兵种11", ["level"] = 30, ["name"] = "斗兽标定_red_test_0", ["x"] = 1205, ["y"] = 400 }),
+                ["formationAudit"] = new JObject
+                {
+                    ["blue"] = new JObject { ["count"] = 1, ["xRange"] = 0, ["yRange"] = 0, ["distinctX"] = 1, ["distinctY"] = 1 },
+                    ["red"] = new JObject { ["count"] = 1, ["xRange"] = 0, ["yRange"] = 0, ["distinctX"] = 1, ["distinctY"] = 1 }
+                },
                 ["blue"] = new JObject { ["maxHp"] = 1000, ["remainHp"] = 250, ["aliveCount"] = 1 },
                 ["red"] = new JObject { ["maxHp"] = 1000, ["remainHp"] = 0, ["aliveCount"] = 0 },
                 ["errors"] = new JArray()
@@ -216,8 +234,17 @@ namespace CF7Launcher.Tests.Tasks
             JObject row = JObject.Parse(File.ReadAllLines(resultPath)[0]);
             Assert.Equal(620, (int)row["requestedSpawnDistance"]);
             Assert.Equal(620, (int)row["spawnDistance"]);
+            Assert.Equal("line", (string)row["blueFormation"]);
+            Assert.Equal("line", (string)row["redFormation"]);
+            Assert.Equal(54, (int)row["formationSpacing"]);
             Assert.Equal(585, (int)row["blueX"]);
             Assert.Equal(1205, (int)row["redX"]);
+            Assert.Single((JArray)row["blueSpawnPositions"]);
+            Assert.Single((JArray)row["redSpawnPositions"]);
+            Assert.Equal(585, (int)row["blueSpawnPositions"][0]["x"]);
+            Assert.Equal(1205, (int)row["redSpawnPositions"][0]["x"]);
+            Assert.Equal(1, (int)row["formationAudit"]["blue"]["distinctX"]);
+            Assert.Equal(1, (int)row["formationAudit"]["red"]["distinctY"]);
         }
 
         [Fact]
@@ -250,6 +277,10 @@ namespace CF7Launcher.Tests.Tasks
                     ["redRoster"] = new JArray(new JObject { ["type"] = "兵种11", ["level"] = 30 }),
                     ["repeat"] = 1,
                     ["timeoutFrames"] = 60,
+                    ["spawnDistance"] = 820,
+                    ["blueFormation"] = "wedge",
+                    ["redFormation"] = "shield",
+                    ["formationSpacing"] = 64,
                     ["tags"] = new JArray("arena-custom-p2"),
                     ["plannerReason"] = "unit test"
                 }
@@ -264,6 +295,10 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("arenaCalibrationRun", (string)command["action"]);
             Assert.Equal("custom-inline", (string)command["batchId"]);
             Assert.Equal("custom-case", (string)command["caseId"]);
+            Assert.Equal(820, (int)command["spawnDistance"]);
+            Assert.Equal("wedge", (string)command["blueFormation"]);
+            Assert.Equal("shield", (string)command["redFormation"]);
+            Assert.Equal(64, (int)command["formationSpacing"]);
             Assert.Equal("兵种44", (string)command["blueRoster"][0]["兵种"]);
             Assert.Equal("P90战术版", (string)command["blueRoster"][0]["Parameters"]["手枪"]);
 
@@ -272,6 +307,10 @@ namespace CF7Launcher.Tests.Tasks
             JObject frozen = JObject.Parse(File.ReadAllText(frozenPath));
             Assert.Equal("arena-calibration.case-manifest.v1", (string)frozen["schema"]);
             Assert.Equal("arena-custom-match", (string)frozen["planner"]["name"]);
+            Assert.Equal(820, (int)frozen["cases"][0]["spawnDistance"]);
+            Assert.Equal("wedge", (string)frozen["cases"][0]["blueFormation"]);
+            Assert.Equal("shield", (string)frozen["cases"][0]["redFormation"]);
+            Assert.Equal(64, (int)frozen["cases"][0]["formationSpacing"]);
             Assert.Equal("P90战术版", (string)frozen["cases"][0]["blueRoster"][0]["parameters"]["手枪"]);
 
             task.HandleFlashResponse(new JObject
@@ -335,7 +374,11 @@ namespace CF7Launcher.Tests.Tasks
                     ["blueRoster"] = new JArray(new JObject { ["type"] = "兵种44", ["level"] = 30 }),
                     ["redRoster"] = new JArray(new JObject { ["type"] = "兵种11", ["level"] = 30 }),
                     ["repeat"] = 1,
-                    ["timeoutFrames"] = 60
+                    ["timeoutFrames"] = 60,
+                    ["spawnDistance"] = 760,
+                    ["blueFormation"] = "grid",
+                    ["redFormation"] = "column",
+                    ["formationSpacing"] = 58
                 }
             });
 
@@ -351,6 +394,10 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True((bool)response["closePanel"]);
 
             JObject command = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal(760, (int)command["spawnDistance"]);
+            Assert.Equal("grid", (string)command["blueFormation"]);
+            Assert.Equal("column", (string)command["redFormation"]);
+            Assert.Equal(58, (int)command["formationSpacing"]);
             calibration.HandleFlashResponse(new JObject
             {
                 ["task"] = "arena_calibration_response",
@@ -412,7 +459,11 @@ namespace CF7Launcher.Tests.Tasks
                     ["blueRoster"] = new JArray(new JObject { ["type"] = "兵种44", ["level"] = 30 }),
                     ["redRoster"] = new JArray(new JObject { ["type"] = "兵种11", ["level"] = 30 }),
                     ["repeat"] = 1,
-                    ["timeoutFrames"] = 60
+                    ["timeoutFrames"] = 60,
+                    ["spawnDistance"] = 760,
+                    ["blueFormation"] = "grid",
+                    ["redFormation"] = "column",
+                    ["formationSpacing"] = 58
                 }
             });
 
@@ -439,8 +490,8 @@ namespace CF7Launcher.Tests.Tasks
         {
             string root = CreateProjectRoot();
             WriteManifest(root, "pilot-hashed", 1,
-                "sha256:a71eea3469696f8ace732e3b2dd2a0c454eff9004a077b2cc4dfe9eccd7e79a1",
-                "sha256:a2f95a4437800a198348ffa203a5121d4dfd3a59998a0c55fcbbc5bb9bbedd2c");
+                "sha256:bd3dd8741578878071671d3c65688451f5e22ae40330646abd312b0fa8213ce0",
+                "sha256:bddcf9a1bde3e3142721364c5205bffae41eb965bd746c3ec015d65f91cb644c");
             ManualResetEventSlim sentEvent = new ManualResetEventSlim(false);
             var task = new ArenaCalibrationTask(root, delegate { return true; },
                 delegate(string payload) { sentEvent.Set(); },
@@ -453,7 +504,7 @@ namespace CF7Launcher.Tests.Tasks
             }));
 
             Assert.True((bool)start["success"]);
-            Assert.Equal("sha256:a71eea3469696f8ace732e3b2dd2a0c454eff9004a077b2cc4dfe9eccd7e79a1",
+            Assert.Equal("sha256:bd3dd8741578878071671d3c65688451f5e22ae40330646abd312b0fa8213ce0",
                 (string)start["manifestHash"]);
             Assert.True(sentEvent.Wait(3000), "Flash command was not dispatched");
             WaitForState(task, "completed");

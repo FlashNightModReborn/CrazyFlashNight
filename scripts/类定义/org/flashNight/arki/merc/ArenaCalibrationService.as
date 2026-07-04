@@ -5,12 +5,15 @@
  * C# 下发：
  *   {task:"cmd", action:"arenaCalibrationRun", callId, batchId, caseId, caseHash,
  *    runId, repeatIndex, timeoutFrames, spawnDistance?,
+ *    blueFormation?, redFormation?, formationSpacing?,
  *    blueRoster:[{兵种,等级,Parameters}], redRoster:[{兵种,等级,Parameters}]}
  *   {task:"cmd", action:"arenaCalibrationAbort", callId, batchId, reason}
  *
  * AS2 回包：
  *   {task:"arena_calibration_response", callId, success, status, winner, frames,
- *    durationMs, spawnDistance, blueX, redX, blue, red, errors}
+ *    durationMs, spawnDistance, blueFormation, redFormation, formationSpacing,
+ *    phaseSpawnCount, spawnedUnits, blueX, redX, blueSpawnPositions, redSpawnPositions,
+ *    formationAudit, blue, red, errors}
  *
  * 本服务不走普通角斗场押金/奖金/FinishStage 链；若当前不在专用斗兽标定竞技场，
  * 先请求 StageManager 通过正常跳关进入 no-player host，再继续同一轮 run。
@@ -29,6 +32,8 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     private static var _active:Object = undefined;
     private static var _pendingRun:Object = undefined;
     private static var _transitionStarted:Boolean = false;
+    private static var _originalLoadGameWorldUnit:Function = undefined;
+    private static var _loaderHookInstalled:Boolean = false;
     private static var _runSeq:Number = 0;
     private static var SNAPSHOT_WARMUP_FRAMES:Number = 5;
     private static var CALIBRATION_STAGE_LINKAGE:String = "wuxianguotu_1";
@@ -46,6 +51,10 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     private static var CALIBRATION_BG_HEIGHT:Number = 640;
     private static var CALIBRATION_MIN_SPAWN_DISTANCE:Number = 360;
     private static var CALIBRATION_SPAWN_EDGE_RESERVE:Number = 290;
+    private static var CALIBRATION_DEFAULT_FORMATION:String = "line";
+    private static var CALIBRATION_DEFAULT_FORMATION_SPACING:Number = 54;
+    private static var CALIBRATION_MIN_FORMATION_SPACING:Number = 36;
+    private static var CALIBRATION_MAX_FORMATION_SPACING:Number = 96;
     private static var SPECTATOR_CAMERA_INTERVAL:Number = 4;
     private static var SPECTATOR_CAMERA_EASE:Number = 7;
     private static var SPECTATOR_CAMERA_PAIR_RANGE:Number = 760;
@@ -161,10 +170,14 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         _runSeq++;
         var runKey:String = sanitizeName(String(params.runId || ("run" + _runSeq)));
         var origin:Object = resolveOrigin(params);
+        var blueFormation:String = normalizeFormation(params.blueFormation);
+        var redFormation:String = normalizeFormation(params.redFormation);
+        var formationSpacing:Number = resolveFormationSpacing(params);
         ensureCalibrationSource();
+        guardArenaContamination(errors, true, true);
 
-        var blueUnits:Array = spawnSide(blueRoster, "blue", false, origin.blueX, origin.y, runKey, errors);
-        var redUnits:Array = spawnSide(redRoster, "red", true, origin.redX, origin.y, runKey, errors);
+        var blueUnits:Array = spawnSide(blueRoster, "blue", false, origin.blueX, origin.y, runKey, blueFormation, formationSpacing, errors);
+        var redUnits:Array = spawnSide(redRoster, "red", true, origin.redX, origin.y, runKey, redFormation, formationSpacing, errors);
 
         if (blueUnits.length == 0 || redUnits.length == 0) {
             var row:Object = {
@@ -176,8 +189,16 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 frames: 0,
                 durationMs: 0,
                 spawnDistance: origin.spawnDistance,
+                blueFormation: blueFormation,
+                redFormation: redFormation,
+                formationSpacing: formationSpacing,
+                phaseSpawnCount: 0,
+                spawnedUnits: [],
                 blueX: origin.blueX,
                 redX: origin.redX,
+                blueSpawnPositions: captureSpawnPositions(blueUnits),
+                redSpawnPositions: captureSpawnPositions(redUnits),
+                formationAudit: buildFormationAudit(blueUnits, redUnits),
                 blue: summarizeSide(blueUnits),
                 red: summarizeSide(redUnits),
                 errors: errors
@@ -211,10 +232,20 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             spawnDistance: origin.spawnDistance,
             blueX: origin.blueX,
             redX: origin.redX,
+            blueFormation: blueFormation,
+            redFormation: redFormation,
+            formationSpacing: formationSpacing,
+            phaseSpawnCount: 0,
+            spawnedUnits: [],
             lastHotspotX: CALIBRATION_CENTER_X,
             lastHotspotY: CALIBRATION_CENTER_Y
         };
 
+        if (guardArenaContamination(errors, true, false) != true) {
+            finish("contamination", "none", errors);
+            return;
+        }
+        installPhaseSpawnHook();
         installClock();
     }
 
@@ -311,6 +342,10 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         _active.frames++;
         var purged:Number = purgePlayerActors(_active.errors, _active.playerPurgeWarned != true);
         if (purged > 0) _active.playerPurgeWarned = true;
+        if (guardArenaContamination(_active.errors, true, false) != true) {
+            finish("contamination", "none", _active.errors);
+            return;
+        }
 
         if (_active.primed != true) {
             _active.snapshotFrames++;
@@ -440,7 +475,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         return out;
     }
 
-    private static function spawnSide(roster:Array, side:String, isEnemy:Boolean, x:Number, y:Number, runKey:String, errors:Array):Array {
+    private static function spawnSide(roster:Array, side:String, isEnemy:Boolean, x:Number, y:Number, runKey:String, formation:String, spacing:Number, errors:Array):Array {
         var out:Array = [];
         for (var i:Number = 0; i < roster.length; i++) {
             var unit:Object = roster[i];
@@ -462,8 +497,9 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 this.已加经验值 = true;
             };
             init._arenaCalibrationUnit = true;
-            init._x = x + random(100) - 50;
-            init._y = y + random(100) - 50;
+            var position:Object = resolveFormationPosition(formation, side, i, roster.length, x, y, spacing);
+            init._x = position.x;
+            init._y = position.y;
             init.名字 = "斗兽标定" + side + i;
 
             if (isEnemy) {
@@ -502,6 +538,10 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                     level: unit.等级,
                     side: side,
                     isEnemy: isEnemy,
+                    spawnIndex: i,
+                    spawnName: name,
+                    spawnX: position.x,
+                    spawnY: position.y,
                     deathObserved: false,
                     deathFrame: -1,
                     countReleased: false,
@@ -510,6 +550,118 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             }
         }
         return out;
+    }
+
+    private static function normalizeFormation(value):String {
+        var formation:String = String(value || CALIBRATION_DEFAULT_FORMATION);
+        if (formation == "column" || formation == "line" || formation == "wedge" || formation == "shield" || formation == "grid") {
+            return formation;
+        }
+        return CALIBRATION_DEFAULT_FORMATION;
+    }
+
+    private static function resolveFormationSpacing(params:Object):Number {
+        var spacing:Number = Number(params != undefined ? params.formationSpacing : undefined);
+        if (isNaN(spacing) || spacing <= 0) spacing = CALIBRATION_DEFAULT_FORMATION_SPACING;
+        return Math.round(clampNumber(spacing, CALIBRATION_MIN_FORMATION_SPACING, CALIBRATION_MAX_FORMATION_SPACING));
+    }
+
+    private static function resolveFormationPosition(formation:String, side:String, index:Number, total:Number, anchorX:Number, anchorY:Number, spacing:Number):Object {
+        formation = normalizeFormation(formation);
+        if (total < 1) total = 1;
+        if (spacing <= 0 || isNaN(spacing)) spacing = CALIBRATION_DEFAULT_FORMATION_SPACING;
+
+        var direction:Number = side == "blue" ? -1 : 1;
+        var maxVertical:Number = Math.max(1, Math.floor((CALIBRATION_YMAX - CALIBRATION_YMIN) / spacing) + 1);
+        if (maxVertical > total) maxVertical = total;
+        var x:Number = anchorX;
+        var y:Number = anchorY;
+
+        if (formation == "column") {
+            x = anchorX;
+            y = resolveFormationY(anchorY, index, total, spacing);
+        } else if (formation == "wedge") {
+            var wedge:Object = resolveWedgeSlot(index, total, maxVertical);
+            var wedgeStep:Number = resolveFormationDepthStep(side, anchorX, spacing, wedge.depthSlots);
+            x = anchorX + direction * wedge.row * wedgeStep;
+            y = resolveFormationY(anchorY, wedge.lane, wedge.laneCount, spacing);
+        } else if (formation == "shield") {
+            var frontCount:Number = Math.min(5, total);
+            if (index < frontCount) {
+                x = anchorX;
+                y = resolveFormationY(anchorY, index, frontCount, spacing);
+            } else {
+                var shieldAnchorX:Number = anchorX + direction * resolveFormationDepthStep(side, anchorX, spacing, Math.ceil((total - frontCount) / maxVertical) + 1);
+                var shieldPos:Object = resolveGridPosition(side, index - frontCount, total - frontCount, shieldAnchorX, anchorY, spacing, maxVertical);
+                x = shieldPos.x;
+                y = shieldPos.y;
+            }
+        } else if (formation == "grid") {
+            var gridPos:Object = resolveGridPosition(side, index, total, anchorX, anchorY, spacing, maxVertical);
+            x = gridPos.x;
+            y = gridPos.y;
+        } else {
+            var lineStep:Number = resolveFormationDepthStep(side, anchorX, spacing, total);
+            x = anchorX + direction * index * lineStep;
+            y = anchorY;
+        }
+
+        return {
+            x: clampNumber(Math.round(x), CALIBRATION_XMIN, CALIBRATION_XMAX),
+            y: clampNumber(Math.round(y), CALIBRATION_YMIN, CALIBRATION_YMAX)
+        };
+    }
+
+    private static function resolveGridPosition(side:String, index:Number, total:Number, anchorX:Number, anchorY:Number, spacing:Number, maxVertical:Number):Object {
+        var verticalCount:Number = Math.ceil(Math.sqrt(total));
+        if (verticalCount < 1) verticalCount = 1;
+        if (verticalCount > maxVertical) verticalCount = maxVertical;
+
+        var depth:Number = Math.floor(index / verticalCount);
+        var lane:Number = index % verticalCount;
+        var laneCount:Number = Math.min(verticalCount, total - depth * verticalCount);
+        var depthSlots:Number = Math.ceil(total / verticalCount);
+        var direction:Number = side == "blue" ? -1 : 1;
+        var depthStep:Number = resolveFormationDepthStep(side, anchorX, spacing, depthSlots);
+        return {
+            x: anchorX + direction * depth * depthStep,
+            y: resolveFormationY(anchorY, lane, laneCount, spacing)
+        };
+    }
+
+    private static function resolveWedgeSlot(index:Number, total:Number, maxVertical:Number):Object {
+        var consumed:Number = 0;
+        var row:Number = 0;
+        var rowSize:Number = 1;
+        while (consumed + rowSize <= index && consumed + rowSize < total) {
+            consumed += rowSize;
+            row++;
+            rowSize = Math.min(row + 1, maxVertical);
+        }
+        var laneCount:Number = Math.min(rowSize, total - consumed);
+        return {
+            row: row,
+            lane: index - consumed,
+            laneCount: laneCount,
+            depthSlots: row + 1
+        };
+    }
+
+    private static function resolveFormationY(anchorY:Number, lane:Number, laneCount:Number, spacing:Number):Number {
+        if (laneCount <= 1) return clampNumber(anchorY, CALIBRATION_YMIN, CALIBRATION_YMAX);
+        var step:Number = spacing;
+        var maxStep:Number = (CALIBRATION_YMAX - CALIBRATION_YMIN) / (laneCount - 1);
+        if (step > maxStep) step = maxStep;
+        return clampNumber(anchorY + (lane - (laneCount - 1) * 0.5) * step, CALIBRATION_YMIN, CALIBRATION_YMAX);
+    }
+
+    private static function resolveFormationDepthStep(side:String, anchorX:Number, spacing:Number, depthSlots:Number):Number {
+        if (depthSlots <= 1) return 0;
+        var available:Number = side == "blue" ? (anchorX - CALIBRATION_XMIN) : (CALIBRATION_XMAX - anchorX);
+        if (available < 0) available = 0;
+        var maxStep:Number = available / (depthSlots - 1);
+        if (maxStep <= 0) return 0;
+        return Math.min(spacing, maxStep);
     }
 
     private static function captureStartSnapshots(units:Array, errors:Array, finalAttempt:Boolean):Boolean {
@@ -693,6 +845,149 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         _active.clock = clip;
     }
 
+    private static function installPhaseSpawnHook():Void {
+        if (_loaderHookInstalled == true) return;
+        if (typeof _root.加载游戏世界人物 != "function") return;
+        _originalLoadGameWorldUnit = _root.加载游戏世界人物;
+        _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, initObject:Object):MovieClip {
+            return org.flashNight.arki.merc.ArenaCalibrationService.loadGameWorldUnitThroughHook(id, name, depth, initObject);
+        };
+        _loaderHookInstalled = true;
+    }
+
+    private static function restorePhaseSpawnHook():Void {
+        if (_loaderHookInstalled == true && _originalLoadGameWorldUnit != undefined) {
+            _root.加载游戏世界人物 = _originalLoadGameWorldUnit;
+        }
+        _originalLoadGameWorldUnit = undefined;
+        _loaderHookInstalled = false;
+    }
+
+    public static function loadGameWorldUnitThroughHook(id:String, name:String, depth:Number, initObject:Object):MovieClip {
+        var original:Function = _originalLoadGameWorldUnit;
+        if (typeof original != "function") return undefined;
+
+        var mc:MovieClip = original(id, name, depth, initObject);
+        handleSpawnedUnit(id, name, initObject, mc);
+        return mc;
+    }
+
+    public static function handleSpawnedUnit(id:String, name:String, initObject:Object, mc:MovieClip):Void {
+        if (_active == undefined || mc == undefined || mc._parent == undefined) return;
+        if (mc._arenaCalibrationUnit === true) return;
+
+        var parentRecord:Object = findPhaseSpawnParentRecord(String(name || mc._name), initObject);
+        if (parentRecord == undefined) {
+            mc._arenaCalibrationUnknown = true;
+            if (_active.errors != undefined) {
+                _active.errors.push({
+                    code: "contamination_spawn",
+                    unit: String(id),
+                    name: String(mc._name || name),
+                    message: "unknown unit spawned during arena calibration"
+                });
+            }
+            return;
+        }
+
+        registerPhaseSpawnedUnit(parentRecord, String(id), String(name || mc._name), initObject, mc);
+    }
+
+    private static function findPhaseSpawnParentRecord(name:String, initObject:Object):Object {
+        var best:Object = findPhaseSpawnParentRecordInSide(_active.blueUnits, name, initObject);
+        if (best != undefined) return best;
+        return findPhaseSpawnParentRecordInSide(_active.redUnits, name, initObject);
+    }
+
+    private static function findPhaseSpawnParentRecordInSide(units:Array, name:String, initObject:Object):Object {
+        var best:Object = undefined;
+        var bestDist:Number = 999999999;
+        var spawnX:Number = Number(initObject != undefined ? initObject._x : undefined);
+        var spawnY:Number = Number(initObject != undefined ? initObject._y : undefined);
+
+        for (var i:Number = 0; i < units.length; i++) {
+            var record:Object = units[i];
+            if (record == undefined) continue;
+            var mc:MovieClip = record.mc;
+            if (mc == undefined || mc._parent == undefined) continue;
+            var parentName:String = String(mc._name || "");
+            if (parentName != "" && name.indexOf(parentName) == 0) return record;
+
+            if (record.deathObserved == true && !isNaN(spawnX) && !isNaN(spawnY)) {
+                var dx:Number = Number(mc._x) - spawnX;
+                var dy:Number = Number(mc._y) - spawnY;
+                var dist:Number = dx * dx + dy * dy;
+                if (dist < bestDist && dist < 40000) {
+                    best = record;
+                    bestDist = dist;
+                }
+            }
+        }
+        return best;
+    }
+
+    private static function registerPhaseSpawnedUnit(parentRecord:Object, unitType:String, name:String, initObject:Object, mc:MovieClip):Void {
+        if (parentRecord == undefined || mc == undefined) return;
+        markCalibrationUnit(mc, parentRecord.side, _active.runId);
+        installCalibrationDeathHooks(mc);
+
+        var level:Number = Number(initObject != undefined ? initObject.等级 : undefined);
+        if (isNaN(level) || level < 1) level = Number(parentRecord.level);
+        if (isNaN(level) || level < 1) level = 1;
+
+        var attr:Object = _root.兵种库[unitType];
+        var estimatedMaxHp:Number = estimateStartMaxHp(attr, level, parentRecord.isEnemy == true);
+        var startMaxHp:Number = readUnitMaxHp(mc);
+        if (isNaN(startMaxHp) || startMaxHp <= 0) startMaxHp = estimatedMaxHp;
+
+        var record:Object = {
+            mc: mc,
+            startMaxHp: startMaxHp,
+            estimatedStartMaxHp: estimatedMaxHp,
+            startSnapshotReady: true,
+            unitType: unitType,
+            level: level,
+            side: parentRecord.side,
+            isEnemy: parentRecord.isEnemy,
+            parentUnitType: parentRecord.unitType,
+            phaseSpawned: true,
+            deathObserved: false,
+            deathFrame: -1,
+            countReleased: true,
+            deadFinalized: false
+        };
+
+        if (parentRecord.side == "blue") {
+            _active.blueUnits.push(record);
+        } else {
+            _active.redUnits.push(record);
+        }
+        _active.phaseSpawnCount = Number(_active.phaseSpawnCount || 0) + 1;
+        if (_active.spawnedUnits == undefined) _active.spawnedUnits = [];
+        _active.spawnedUnits.push({
+            side: parentRecord.side,
+            unit: unitType,
+            from: parentRecord.unitType,
+            name: String(mc._name || name),
+            frame: Number(_active.frames || 0)
+        });
+        primeTargets(_active.blueUnits, _active.redUnits);
+    }
+
+    private static function markCalibrationUnit(mc:MovieClip, side:String, runKey:String):Void {
+        if (mc == undefined) return;
+        mc.不掉钱 = true;
+        mc.掉落物 = [];
+        mc.计算经验值 = function():Void{
+            this.已加经验值 = true;
+        };
+        mc._arenaCalibrationUnit = true;
+        mc._arenaCalibrationSide = side;
+        mc._arenaCalibrationRun = runKey;
+        mc.产生源 = "斗兽标定源";
+        if (mc.攻击目标 == undefined) mc.攻击目标 = "无";
+    }
+
     private static function observeDeadUnits(units:Array):Void {
         for (var i:Number = 0; i < units.length; i++) {
             observeDeadUnit(units[i]);
@@ -788,8 +1083,16 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             frames: _active.frames,
             durationMs: getTimer() - _active.startedMs,
             spawnDistance: _active.spawnDistance,
+            blueFormation: _active.blueFormation,
+            redFormation: _active.redFormation,
+            formationSpacing: _active.formationSpacing,
+            phaseSpawnCount: Number(_active.phaseSpawnCount || 0),
+            spawnedUnits: _active.spawnedUnits != undefined ? _active.spawnedUnits : [],
             blueX: _active.blueX,
             redX: _active.redX,
+            blueSpawnPositions: captureSpawnPositions(_active.blueUnits),
+            redSpawnPositions: captureSpawnPositions(_active.redUnits),
+            formationAudit: buildFormationAudit(_active.blueUnits, _active.redUnits),
             blue: blue,
             red: red,
             errors: errors
@@ -798,6 +1101,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         var blueUnits:Array = _active.blueUnits;
         var redUnits:Array = _active.redUnits;
         removeClock();
+        restorePhaseSpawnHook();
         _active = undefined;
         cleanupUnits(blueUnits);
         cleanupUnits(redUnits);
@@ -848,6 +1152,79 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             startMaxHp: Math.round(maxHp),
             startCount: units.length
         };
+    }
+
+    private static function captureSpawnPositions(units:Array):Array {
+        var out:Array = [];
+        for (var i:Number = 0; i < units.length; i++) {
+            var record:Object = units[i];
+            if (record == undefined) continue;
+            out.push({
+                side: String(record.side || ""),
+                index: Number(record.spawnIndex),
+                unit: String(record.unitType || ""),
+                level: Number(record.level),
+                name: String(record.spawnName || ""),
+                x: Math.round(Number(record.spawnX)),
+                y: Math.round(Number(record.spawnY))
+            });
+        }
+        return out;
+    }
+
+    private static function buildFormationAudit(blueUnits:Array, redUnits:Array):Object {
+        return {
+            blue: auditSpawnPositions(blueUnits),
+            red: auditSpawnPositions(redUnits)
+        };
+    }
+
+    private static function auditSpawnPositions(units:Array):Object {
+        var count:Number = 0;
+        var minX:Number = 999999999;
+        var maxX:Number = -999999999;
+        var minY:Number = 999999999;
+        var maxY:Number = -999999999;
+        var xs:Array = [];
+        var ys:Array = [];
+        for (var i:Number = 0; i < units.length; i++) {
+            var record:Object = units[i];
+            if (record == undefined) continue;
+            var x:Number = Math.round(Number(record.spawnX));
+            var y:Number = Math.round(Number(record.spawnY));
+            if (isNaN(x) || isNaN(y)) continue;
+            count++;
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+            pushUniqueNumber(xs, x);
+            pushUniqueNumber(ys, y);
+        }
+        if (count == 0) {
+            minX = 0;
+            maxX = 0;
+            minY = 0;
+            maxY = 0;
+        }
+        return {
+            count: count,
+            minX: minX,
+            maxX: maxX,
+            minY: minY,
+            maxY: maxY,
+            xRange: maxX - minX,
+            yRange: maxY - minY,
+            distinctX: xs.length,
+            distinctY: ys.length
+        };
+    }
+
+    private static function pushUniqueNumber(values:Array, value:Number):Void {
+        for (var i:Number = 0; i < values.length; i++) {
+            if (values[i] == value) return;
+        }
+        values.push(value);
     }
 
     private static function cleanupUnits(units:Array):Void {
@@ -952,6 +1329,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
 
         configureCalibrationWorld(gw);
         var purged:Number = purgePlayerActors(errors, true);
+        guardArenaContamination(errors, true, true);
         if (hasPlayerActors(gw)) {
             errors.push({code: "stage_failed", message: "player or companion actor remains in calibration arena"});
             clearCalibrationGlobals();
@@ -1049,6 +1427,58 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             errors.push({code: "player_actor_purged", message: "removed player, companion or pet actor from calibration arena"});
         }
         return removed;
+    }
+
+    private static function guardArenaContamination(errors:Array, report:Boolean, allowPurge:Boolean):Boolean {
+        var gw:MovieClip = _root.gameworld;
+        if (gw == undefined) return true;
+
+        var removed:Number = 0;
+        for (var name:String in gw) {
+            var child:MovieClip = gw[name];
+            if (child == undefined || child._parent == undefined) continue;
+            if (isCalibrationUtilityActor(name, child)) continue;
+            if (child._arenaCalibrationUnit === true) continue;
+            if (isCombatActor(child) != true) continue;
+
+            if (allowPurge == true) {
+                child.removeMovieClip();
+                removed++;
+            } else {
+                if (errors != undefined) {
+                    errors.push({
+                        code: "arena_contamination",
+                        name: String(child._name || name),
+                        message: "unknown combat actor remains in arena calibration stage"
+                    });
+                }
+                return false;
+            }
+        }
+
+        if (removed > 0 && report == true && errors != undefined) {
+            errors.push({
+                code: "arena_contamination_purged",
+                count: removed,
+                message: "removed stale combat actors before arena calibration run"
+            });
+        }
+        return true;
+    }
+
+    private static function isCalibrationUtilityActor(name:String, child:MovieClip):Boolean {
+        if (name == "斗兽标定时钟" || name == "斗兽标定镜头" || name == "出生地" || name == "deadbody") return true;
+        if (child == _root.gameworld.斗兽标定镜头 || child == _root.gameworld.出生地 || child == _root.gameworld.deadbody) return true;
+        return false;
+    }
+
+    private static function isCombatActor(child:MovieClip):Boolean {
+        if (child == undefined || child._parent == undefined) return false;
+        if (child._arenaCalibrationUnknown === true) return true;
+        if (child.兵种 != undefined || child.兵种名 != undefined) return true;
+        if (child.是否为敌人 != undefined && (child.hp != undefined || child.攻击目标 != undefined || child.死亡检测 != undefined)) return true;
+        if (child.hp != undefined && child.死亡检测 != undefined) return true;
+        return false;
     }
 
     private static function hasPlayerActors(gw:MovieClip):Boolean {

@@ -771,6 +771,19 @@ var ArenaHarnessQA = (function() {
                 var searchStyle = getComputedStyle(document.getElementById('arena-custom-unit-search'));
                 api.assert(/none/.test(String(presetStyle.appearance || presetStyle.webkitAppearance || '')), '测试场预设下拉框应关闭浏览器原生 appearance');
                 api.assert(presetStyle.backgroundImage && presetStyle.backgroundImage !== 'none', '测试场预设下拉框应使用竞技场自绘箭头背景');
+                var customSelectTrigger = document.querySelector('#arena-custom-preset-select').parentNode.querySelector('.arena-custom-select-trigger');
+                api.assert(!!customSelectTrigger, '测试场预设下拉框应渲染自绘触发器');
+                var triggerStyle = getComputedStyle(customSelectTrigger);
+                api.assert(triggerStyle.backgroundImage && triggerStyle.backgroundImage !== 'none', '测试场自绘下拉触发器应使用竞技场箭头背景');
+                customSelectTrigger.click();
+                var customSelectMenu = document.querySelector('.arena-custom-select-menu:not([hidden])');
+                api.assert(!!customSelectMenu, '测试场预设下拉框应打开自绘选项层');
+                api.assert(customSelectMenu.querySelectorAll('.arena-custom-select-option').length > 1000, '测试场自绘选项层应承载完整预设池');
+                var customSelectMenuStyle = getComputedStyle(customSelectMenu);
+                api.assert(customSelectMenuStyle.backgroundImage && customSelectMenuStyle.backgroundImage !== 'none', '测试场自绘选项层应使用竞技场背景');
+                var customSelectScrollbar = getComputedStyle(customSelectMenu, '::-webkit-scrollbar-thumb');
+                api.assert(customSelectScrollbar && customSelectScrollbar.backgroundImage && customSelectScrollbar.backgroundImage !== 'none', '测试场自绘选项层滚动条应使用竞技场样式');
+                customSelectTrigger.click();
                 api.assert(/none/.test(String(searchStyle.appearance || searchStyle.webkitAppearance || '')), '测试场搜索框应关闭浏览器原生 appearance');
                 var rosterList = document.getElementById('arena-custom-active-roster');
                 api.assert(rosterList && rosterList.scrollWidth <= rosterList.clientWidth + 1, '阵容列表不应产生横向滚动条');
@@ -957,6 +970,86 @@ var ArenaHarnessQA = (function() {
                 }, 2000, 'back to custom config overview');
             })
             .then(function() {
+                var battleSummary = document.getElementById('arena-custom-battle-summary');
+                var configPage = document.querySelector('[data-custom-editor-page="config"]');
+                api.assert(!!battleSummary, '配置页应显示战场参数摘要');
+                api.assert(!configPage.querySelector('#arena-custom-spawn-distance'), '配置总览不应直接渲染战场滑条');
+                api.assert(/650/.test(document.getElementById('arena-custom-battle-summary-distance').textContent || ''), '战场摘要应显示默认开局距离');
+                document.getElementById('arena-custom-battle-edit').click();
+                return api.waitFor(function() {
+                    var st = window.ArenaPanel.getState();
+                    var battlePage = document.querySelector('[data-custom-editor-page="battle"]');
+                    return st.customEditorPage === 'battle' && battlePage && !battlePage.hidden;
+                }, 2000, 'open custom battle params page');
+            })
+            .then(function() {
+                var battlePanel = document.getElementById('arena-custom-battle-params');
+                api.assert(!!battlePanel, '战场参数子页应显示完整参数区域');
+                api.assert(!!document.getElementById('arena-custom-spawn-distance'), '战场参数应提供开局距离滑条');
+                api.assert(!!document.getElementById('arena-custom-timeout'), '战场参数应提供战斗时长滑条');
+                api.assert(!!document.querySelector('[data-custom-formation-side="blue"][data-custom-formation-value="wedge"]'), '蓝方应提供楔形阵型预设');
+                api.assert(!!document.querySelector('[data-custom-formation-side="red"][data-custom-formation-value="shield"]'), '红方应提供前盾后排阵型预设');
+                api.assert(!!document.querySelector('#arena-custom-blue-formation-legend i'), '蓝方阵型应显示填充顺序图例');
+                var blueFirstX = parseFloat(document.querySelector('#arena-custom-blue-formation-legend i').style.left);
+                var redFirstX = parseFloat(document.querySelector('#arena-custom-red-formation-legend i').style.left);
+                api.assert(blueFirstX > redFirstX, '蓝方阵型图例应相对红方左右镜像');
+                var blueLineNodes = document.querySelectorAll('#arena-custom-blue-formation-legend i');
+                api.assert(Math.abs(parseFloat(blueLineNodes[0].style.left) - parseFloat(blueLineNodes[1].style.left)) > 1,
+                    '横列图例应沿 X 横向铺开');
+                api.assert(Math.abs(parseFloat(blueLineNodes[0].style.top) - parseFloat(blueLineNodes[1].style.top)) < 1,
+                    '横列图例应保持同一 Y');
+                document.querySelector('[data-custom-formation-side="red"][data-custom-formation-value="column"]').click();
+                var redColumnNodes = document.querySelectorAll('#arena-custom-red-formation-legend i');
+                api.assert(Math.abs(parseFloat(redColumnNodes[0].style.left) - parseFloat(redColumnNodes[1].style.left)) < 1,
+                    '纵队图例应保持同一 X');
+                api.assert(Math.abs(parseFloat(redColumnNodes[0].style.top) - parseFloat(redColumnNodes[1].style.top)) > 1,
+                    '纵队图例应沿 Y 纵向铺开');
+
+                var distance = document.getElementById('arena-custom-spawn-distance');
+                distance.value = '820';
+                distance.dispatchEvent(new Event('input', { bubbles: true }));
+
+                var timeout = document.getElementById('arena-custom-timeout');
+                timeout.value = '180';
+                timeout.dispatchEvent(new Event('input', { bubbles: true }));
+
+                document.querySelector('[data-custom-formation-side="blue"][data-custom-formation-value="wedge"]').click();
+                document.querySelector('[data-custom-formation-side="red"][data-custom-formation-value="shield"]').click();
+
+                return api.waitFor(function() {
+                    var parsed = window.ArenaPanel.getState().customMatch.parsed;
+                    return parsed &&
+                        parsed.spawnDistance === 820 &&
+                        parsed.timeoutFrames === 5400 &&
+                        parsed.blueFormation === 'wedge' &&
+                        parsed.redFormation === 'shield';
+                }, 2000, 'custom battle params applied');
+            })
+            .then(function() {
+                var parsed = window.ArenaPanel.getState().customMatch.parsed;
+                api.assert(parsed.canonical.indexOf('timeout=5400') >= 0, '非默认战斗时长应写入 canonical 赛程码');
+                api.assert(parsed.canonical.indexOf('spawnDistance=820') >= 0, '非默认开局距离应写入 canonical 赛程码');
+                api.assert(parsed.canonical.indexOf('blueFormation=wedge') >= 0, '非默认蓝方阵型应写入 canonical 赛程码');
+                api.assert(parsed.canonical.indexOf('redFormation=shield') >= 0, '非默认红方阵型应写入 canonical 赛程码');
+                api.assert(/距离 820/.test(document.getElementById('arena-custom-code-status').textContent || ''), '状态栏应展示开局距离');
+                document.querySelector('[data-custom-editor-page="battle"] [data-custom-editor-action="to-config"]').click();
+                return api.waitFor(function() {
+                    var st = window.ArenaPanel.getState();
+                    return st.customEditorPage === 'config' &&
+                        /820/.test(document.getElementById('arena-custom-battle-summary-distance').textContent || '') &&
+                        /楔形/.test(document.getElementById('arena-custom-battle-summary-formation').textContent || '');
+                }, 2000, 'battle params summary updated after returning to config');
+            })
+            .then(function() {
+                var editorRect = document.getElementById('arena-custom-editor-view').getBoundingClientRect();
+                var buttons = document.querySelectorAll('.arena-custom-side-config-actions .arena-custom-btn, .arena-custom-side-config-load .arena-custom-btn');
+                api.assert(buttons.length >= 8, '配置总览应保留双方底部操作按钮');
+                for (var bi = 0; bi < buttons.length; bi++) {
+                    var rect = buttons[bi].getBoundingClientRect();
+                    api.assert(rect.height >= 24 && rect.bottom <= editorRect.bottom + 1, '配置总览底部按钮应在编辑视图内可见');
+                }
+            })
+            .then(function() {
                 var state = window.ArenaPanel.getState();
                 blueBeforeSwapSig = rosterSig(state.customEditor.blue);
                 redBeforeSwapSig = rosterSig(state.customEditor.red);
@@ -1109,6 +1202,11 @@ var ArenaHarnessQA = (function() {
                 lastReplayMatchCode = msg.matchCode || '';
                 api.assert(msg.matchCode && msg.matchCode.indexOf('CF7ARENA:v1;mode=mvm') === 0, '应携带 canonical 赛程代码');
                 api.assert(msg.calibrationCase && msg.calibrationCase.blueRoster.length === 4, '应携带 thief-lv30x4 对照阵容');
+                api.assertEqual(msg.calibrationCase.spawnDistance, 650, '后台定制赛默认开局距离应进入 calibrationCase');
+                api.assertEqual(msg.calibrationCase.timeoutFrames, 3600, '后台定制赛默认战斗时长应进入 calibrationCase');
+                api.assertEqual(msg.calibrationCase.blueFormation, 'line', '后台定制赛默认蓝方阵型应进入 calibrationCase');
+                api.assertEqual(msg.calibrationCase.redFormation, 'line', '后台定制赛默认红方阵型应进入 calibrationCase');
+                api.assertEqual(msg.calibrationCase.formationSpacing, 54, '后台定制赛默认阵型间距应进入 calibrationCase');
                 return api.waitFor(function() {
                     for (var i = 0; i < host.sentMessages.length; i++) {
                         if (host.sentMessages[i] && host.sentMessages[i].cmd === 'close' && host.sentMessages[i].dismissReturnStack) return true;

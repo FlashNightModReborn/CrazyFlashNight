@@ -15,6 +15,16 @@ namespace CF7Launcher.Tasks
     public sealed class ArenaCalibrationTask
     {
         private const int DefaultSpawnDistance = 650;
+        private const string DefaultFormation = "line";
+        private const int DefaultFormationSpacing = 54;
+        private static readonly HashSet<string> AllowedFormations = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "column",
+            "line",
+            "wedge",
+            "shield",
+            "grid"
+        };
 
         private sealed class CalibrationCase
         {
@@ -25,6 +35,9 @@ namespace CF7Launcher.Tasks
             public int Repeat;
             public int TimeoutFrames;
             public int SpawnDistance;
+            public string BlueFormation;
+            public string RedFormation;
+            public int FormationSpacing;
         }
 
         private sealed class BatchManifest
@@ -397,6 +410,9 @@ namespace CF7Launcher.Tasks
             command["repeatIndex"] = repeatIndex;
             command["timeoutFrames"] = testCase.TimeoutFrames;
             command["spawnDistance"] = testCase.SpawnDistance;
+            command["blueFormation"] = testCase.BlueFormation;
+            command["redFormation"] = testCase.RedFormation;
+            command["formationSpacing"] = testCase.FormationSpacing;
             command["blueRoster"] = ToFlashRoster(testCase.BlueRoster);
             command["redRoster"] = ToFlashRoster(testCase.RedRoster);
             return command;
@@ -454,8 +470,20 @@ namespace CF7Launcher.Tasks
             CopyOptionalNumber(result, row, "frames");
             CopyOptionalNumber(result, row, "durationMs");
             CopyOptionalNumber(result, row, "spawnDistance");
+            CopyOptionalString(result, row, "blueFormation", testCase.BlueFormation);
+            CopyOptionalString(result, row, "redFormation", testCase.RedFormation);
+            if (result["formationSpacing"] != null && result["formationSpacing"].Type != JTokenType.Null)
+                CopyOptionalNumber(result, row, "formationSpacing");
+            if (result["phaseSpawnCount"] != null && result["phaseSpawnCount"].Type != JTokenType.Null)
+                CopyOptionalNumber(result, row, "phaseSpawnCount");
+            row["spawnedUnits"] = result["spawnedUnits"] != null && result["spawnedUnits"].Type == JTokenType.Array
+                ? result["spawnedUnits"].DeepClone()
+                : new JArray();
             CopyOptionalNumber(result, row, "blueX");
             CopyOptionalNumber(result, row, "redX");
+            row["blueSpawnPositions"] = CloneArrayOrEmpty(result["blueSpawnPositions"]);
+            row["redSpawnPositions"] = CloneArrayOrEmpty(result["redSpawnPositions"]);
+            row["formationAudit"] = CloneObjectOrEmpty(result["formationAudit"]);
             row["blue"] = NormalizeSideSummary(result.Value<JObject>("blue"));
             row["red"] = NormalizeSideSummary(result.Value<JObject>("red"));
             row["errors"] = NormalizeErrors(result["errors"]);
@@ -508,6 +536,14 @@ namespace CF7Launcher.Tasks
             row["startedAt"] = startedAtUtc.ToString("o");
             row["completedAt"] = DateTime.UtcNow.ToString("o");
             row["requestedSpawnDistance"] = testCase.SpawnDistance;
+            row["blueFormation"] = testCase.BlueFormation;
+            row["redFormation"] = testCase.RedFormation;
+            row["formationSpacing"] = testCase.FormationSpacing;
+            row["phaseSpawnCount"] = 0;
+            row["spawnedUnits"] = new JArray();
+            row["blueSpawnPositions"] = new JArray();
+            row["redSpawnPositions"] = new JArray();
+            row["formationAudit"] = new JObject();
             return row;
         }
 
@@ -614,6 +650,12 @@ namespace CF7Launcher.Tasks
                 normalizedCase["repeat"] = PositiveInt(msg["repeat"], "repeat", 1);
             if (normalizedCase["spawnDistance"] == null && msg["spawnDistance"] != null)
                 normalizedCase["spawnDistance"] = PositiveInt(msg["spawnDistance"], "spawnDistance", 0);
+            if (normalizedCase["blueFormation"] == null && msg["blueFormation"] != null)
+                normalizedCase["blueFormation"] = NormalizeFormation(msg.Value<string>("blueFormation"), "blueFormation");
+            if (normalizedCase["redFormation"] == null && msg["redFormation"] != null)
+                normalizedCase["redFormation"] = NormalizeFormation(msg.Value<string>("redFormation"), "redFormation");
+            if (normalizedCase["formationSpacing"] == null && msg["formationSpacing"] != null)
+                normalizedCase["formationSpacing"] = PositiveInt(msg["formationSpacing"], "formationSpacing", 0);
 
             int timeoutFrames = PositiveInt(
                 normalizedCase["timeoutFrames"] ?? msg["timeoutFrames"],
@@ -693,6 +735,9 @@ namespace CF7Launcher.Tasks
                 int caseRepeat = PositiveInt(sourceCase["repeat"], "cases[" + i + "].repeat", repeat);
                 int caseTimeout = PositiveInt(sourceCase["timeoutFrames"], "cases[" + i + "].timeoutFrames", timeoutFrames);
                 int caseSpawnDistance = PositiveInt(sourceCase["spawnDistance"], "cases[" + i + "].spawnDistance", DefaultSpawnDistance);
+                string caseBlueFormation = NormalizeFormation(sourceCase.Value<string>("blueFormation"), "cases[" + i + "].blueFormation");
+                string caseRedFormation = NormalizeFormation(sourceCase.Value<string>("redFormation"), "cases[" + i + "].redFormation");
+                int caseFormationSpacing = PositiveInt(sourceCase["formationSpacing"], "cases[" + i + "].formationSpacing", DefaultFormationSpacing);
                 JArray blueRoster = NormalizeRoster(sourceCase["blueRoster"] as JArray, "cases[" + i + "].blueRoster");
                 JArray redRoster = NormalizeRoster(sourceCase["redRoster"] as JArray, "cases[" + i + "].redRoster");
 
@@ -703,6 +748,9 @@ namespace CF7Launcher.Tasks
                 frozenCase["repeat"] = caseRepeat;
                 frozenCase["timeoutFrames"] = caseTimeout;
                 frozenCase["spawnDistance"] = caseSpawnDistance;
+                frozenCase["blueFormation"] = caseBlueFormation;
+                frozenCase["redFormation"] = caseRedFormation;
+                frozenCase["formationSpacing"] = caseFormationSpacing;
                 frozenCase["tags"] = sourceCase["tags"] != null ? sourceCase["tags"].DeepClone() : new JArray();
                 frozenCase["plannerReason"] = sourceCase.Value<string>("plannerReason") ?? "";
 
@@ -713,6 +761,9 @@ namespace CF7Launcher.Tasks
                 hashInput["repeat"] = caseRepeat;
                 hashInput["timeoutFrames"] = caseTimeout;
                 hashInput["spawnDistance"] = caseSpawnDistance;
+                hashInput["blueFormation"] = caseBlueFormation;
+                hashInput["redFormation"] = caseRedFormation;
+                hashInput["formationSpacing"] = caseFormationSpacing;
                 string caseHash = Sha256OfToken(hashInput);
                 frozenCase["caseHash"] = caseHash;
 
@@ -729,7 +780,10 @@ namespace CF7Launcher.Tasks
                     RedRoster = redRoster,
                     Repeat = caseRepeat,
                     TimeoutFrames = caseTimeout,
-                    SpawnDistance = caseSpawnDistance
+                    SpawnDistance = caseSpawnDistance,
+                    BlueFormation = caseBlueFormation,
+                    RedFormation = caseRedFormation,
+                    FormationSpacing = caseFormationSpacing
                 });
             }
 
@@ -827,12 +881,32 @@ namespace CF7Launcher.Tasks
             return new JArray();
         }
 
+        private static JArray CloneArrayOrEmpty(JToken token)
+        {
+            if (token is JArray)
+                return (JArray)token.DeepClone();
+            return new JArray();
+        }
+
+        private static JObject CloneObjectOrEmpty(JToken token)
+        {
+            if (token is JObject)
+                return (JObject)token.DeepClone();
+            return new JObject();
+        }
+
         private static void CopyOptionalNumber(JObject source, JObject target, string fieldName)
         {
             if (source[fieldName] == null || source[fieldName].Type == JTokenType.Null)
                 target[fieldName] = null;
             else
                 target[fieldName] = NonNegativeNumber(source[fieldName]);
+        }
+
+        private static void CopyOptionalString(JObject source, JObject target, string fieldName, string defaultValue)
+        {
+            string value = source.Value<string>(fieldName);
+            target[fieldName] = string.IsNullOrEmpty(value) ? (defaultValue ?? "") : value;
         }
 
         private static int DefaultTimeoutMsFromFrames(int frames)
@@ -858,6 +932,14 @@ namespace CF7Launcher.Tasks
             if (!int.TryParse(token.ToString(), out value) || value <= 0)
                 throw new InvalidOperationException(fieldName + " must be a positive integer");
             return value;
+        }
+
+        private static string NormalizeFormation(string value, string fieldName)
+        {
+            string formation = string.IsNullOrEmpty(value) ? DefaultFormation : value;
+            if (!AllowedFormations.Contains(formation))
+                throw new InvalidOperationException(fieldName + " must be one of column,line,wedge,shield,grid");
+            return formation;
         }
 
         private static double NonNegativeNumber(JToken token)
