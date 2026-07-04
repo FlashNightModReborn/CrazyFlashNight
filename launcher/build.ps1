@@ -277,8 +277,22 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "  arena-unit-catalog.js OK." -ForegroundColor Green
 
-# Step 1j: 派生竞技场定制赛待标定组合预设。
-Write-Host "[Step 1j/7] Derive launcher/web/modules/arena-custom-presets.js..." -ForegroundColor Yellow
+# Step 1j: 派生竞技场定制赛关卡参数预设。
+Write-Host "[Step 1j/7] Derive launcher/web/modules/arena-unit-param-presets.js..." -ForegroundColor Yellow
+$deriveArenaUnitParamPresetsScript = Join-Path $projectRoot "tools\derive-arena-unit-param-presets.js"
+if (-not (Test-Path $deriveArenaUnitParamPresetsScript)) {
+    Write-Host "[FAIL] derive-arena-unit-param-presets.js missing: $deriveArenaUnitParamPresetsScript" -ForegroundColor Red
+    exit 1
+}
+node $deriveArenaUnitParamPresetsScript
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[FAIL] derive-arena-unit-param-presets.js failed." -ForegroundColor Red
+    exit 1
+}
+Write-Host "  arena-unit-param-presets.js OK." -ForegroundColor Green
+
+# Step 1k: 派生竞技场定制赛待标定组合预设。
+Write-Host "[Step 1k/7] Derive launcher/web/modules/arena-custom-presets.js..." -ForegroundColor Yellow
 $deriveArenaCustomPresetsScript = Join-Path $projectRoot "tools\derive-arena-custom-presets.js"
 if (-not (Test-Path $deriveArenaCustomPresetsScript)) {
     Write-Host "[FAIL] derive-arena-custom-presets.js missing: $deriveArenaCustomPresetsScript" -ForegroundColor Red
@@ -630,6 +644,7 @@ $requiredWebPaths = @(
     "modules\arena-meta-rosters.js",
     "modules\arena-factions.js",
     "modules\arena-unit-catalog.js",
+    "modules\arena-unit-param-presets.js",
     "modules\arena-custom-presets.js",
     "modules\arena-custom-match-code.js",
     "modules\arena-panel.js",

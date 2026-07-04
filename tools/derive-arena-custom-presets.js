@@ -8,6 +8,7 @@ const path = require("path");
 const ROOT = path.resolve(__dirname, "..");
 const SOURCE_PATH = path.join(ROOT, "data", "arena", "meta_teams.json");
 const OUTPUT_PATH = path.join(ROOT, "launcher", "web", "modules", "arena-custom-presets.js");
+const ArenaCustomMatchCode = require(path.join(ROOT, "launcher", "web", "modules", "arena-custom-match-code.js"));
 
 const MAX_SIDE_COUNT = 20;
 const BENCH_ROSTER = [
@@ -34,12 +35,6 @@ function normalizeUnitId(value) {
   return null;
 }
 
-function rosterToCode(roster) {
-  return roster
-    .map((entry) => `u${entry.id}@${entry.level}x${entry.count}`)
-    .join(",");
-}
-
 function memberToRoster(member) {
   const id = member.id != null ? Number(member.id) : normalizeUnitId(member.type);
   const level = Number(member.level);
@@ -47,18 +42,33 @@ function memberToRoster(member) {
   if (!Number.isFinite(id) || id <= 0) return null;
   if (!Number.isFinite(level) || level <= 0) return null;
   if (!Number.isFinite(count) || count <= 0) return null;
-  return {
+  const entry = {
     id: Math.floor(id),
     level: Math.floor(level),
     count: Math.floor(count),
     name: member.name || `兵种${id}`,
   };
+  if (member.parameters && typeof member.parameters === "object" && !Array.isArray(member.parameters) && Object.keys(member.parameters).length) {
+    entry.parameters = member.parameters;
+  }
+  return entry;
+}
+
+function summarizeParameters(parameters) {
+  if (!parameters || typeof parameters !== "object" || Array.isArray(parameters)) return "";
+  return Object.keys(parameters).sort().slice(0, 2).map((key) => {
+    const value = parameters[key];
+    return value == null || typeof value === "object" ? key : `${key}=${value}`;
+  }).join("/");
 }
 
 function summarizeRoster(roster) {
   return roster
     .slice(0, 3)
-    .map((entry) => `${entry.name || `兵种${entry.id}`}x${entry.count}`)
+    .map((entry) => {
+      const params = summarizeParameters(entry.parameters);
+      return `${entry.name || `兵种${entry.id}`}${params ? `{${params}}` : ""}x${entry.count}`;
+    })
     .join(" / ") + (roster.length > 3 ? " / ..." : "");
 }
 
@@ -87,13 +97,12 @@ function buildPresets(catalog) {
     }
 
     const seed = stableSeed(team.id);
-    const code = [
-      "CF7ARENA:v1",
-      "mode=mvm",
-      `seed=${seed}`,
-      `blue=${rosterToCode(BENCH_ROSTER)}`,
-      `red=${rosterToCode(roster)}`,
-    ].join(";");
+    const code = ArenaCustomMatchCode.serializeMatchCode({
+      mode: "mvm",
+      seed,
+      blueRoster: BENCH_ROSTER,
+      redRoster: roster,
+    });
 
     const faction = team.faction || "unknown";
     const label = sanitizeLabel(

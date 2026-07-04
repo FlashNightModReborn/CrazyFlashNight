@@ -4,7 +4,7 @@
  *
  * C# 下发：
  *   {task:"cmd", action:"arenaCalibrationRun", callId, batchId, caseId, caseHash,
- *    runId, repeatIndex, timeoutFrames, blueRoster:[{兵种,等级}], redRoster:[{兵种,等级}]}
+ *    runId, repeatIndex, timeoutFrames, blueRoster:[{兵种,等级,Parameters}], redRoster:[{兵种,等级,Parameters}]}
  *   {task:"cmd", action:"arenaCalibrationAbort", callId, batchId, reason}
  *
  * AS2 回包：
@@ -19,6 +19,7 @@ import LiteJSON;
 import org.flashNight.arki.camera.HorizontalScroller;
 import org.flashNight.arki.scene.SceneManager;
 import org.flashNight.gesh.depth.DepthManager;
+import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.merc.ArenaController;
 
 class org.flashNight.arki.merc.ArenaCalibrationService {
@@ -417,7 +418,11 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 continue;
             }
 
-            out.push({兵种: type, 等级: Math.floor(level)});
+            var normalized:Object = {兵种: type, 等级: Math.floor(level)};
+            var rawParams:Object = raw.Parameters != undefined ? raw.Parameters
+                : (raw.parameters != undefined ? raw.parameters : raw.参数);
+            if (rawParams != undefined) normalized.Parameters = ObjectUtil.clone(rawParams);
+            out.push(normalized);
         }
 
         if (out.length == 0) {
@@ -439,10 +444,14 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             var init:Object = cloneObject(attr);
             init.兵种名 = null;
             init.等级 = unit.等级;
+            if (unit.Parameters != undefined) ObjectUtil.cloneParameters(init, unit.Parameters);
             init.是否为敌人 = isEnemy;
             init.产生源 = "斗兽标定源";
             init.掉落物 = [];
             init.不掉钱 = true;
+            init.计算经验值 = function():Void{
+                this.已加经验值 = true;
+            };
             init._arenaCalibrationUnit = true;
             init._x = x + random(100) - 50;
             init._y = y + random(100) - 50;
@@ -464,13 +473,16 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             } else {
                 mc.不掉钱 = true;
                 mc.掉落物 = [];
+                mc.计算经验值 = function():Void{
+                    this.已加经验值 = true;
+                };
                 mc._arenaCalibrationUnit = true;
                 mc._arenaCalibrationSide = side;
                 mc._arenaCalibrationRun = runKey;
                 mc.攻击目标 = "无";
                 installCalibrationDeathHooks(mc);
 
-                var estimatedMaxHp:Number = estimateStartMaxHp(attr, unit.等级, isEnemy);
+                var estimatedMaxHp:Number = estimateStartMaxHp(init, unit.等级, isEnemy);
                 var startMaxHp:Number = readUnitMaxHp(mc);
                 out.push({
                     mc: mc,

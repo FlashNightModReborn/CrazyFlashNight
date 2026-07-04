@@ -103,7 +103,8 @@ var ArenaHarnessQA = (function() {
 
     function rosterSig(roster) {
         return (roster || []).map(function(r) {
-            return String(r.id || r.type) + '@' + r.level + 'x' + r.count;
+            var params = r.parameters || r.Parameters || r['参数'];
+            return String(r.id || r.type) + '@' + r.level + 'x' + r.count + (params ? '~' + JSON.stringify(params) : '');
         }).join(',');
     }
 
@@ -742,6 +743,7 @@ var ArenaHarnessQA = (function() {
                 api.assert(!document.querySelector('.arena-card-custom #arena-custom-code-input'), '入口卡不应承载赛程代码输入');
                 api.assert(!document.querySelector('.arena-card-custom #arena-custom-preset-select'), '入口卡不应承载预设下拉框');
                 api.assert(window.ArenaUnitCatalog && window.ArenaUnitCatalog.unitCount > window.ArenaUnitCatalog.hostileCount, '单位目录应全量暴露 units.json，而不是只暴露 is_hostile');
+                api.assert(window.ArenaUnitParameterPresetsMeta && window.ArenaUnitParameterPresetsMeta.presetCount > 200, '关卡参数预设表应从 Enemy.Parameters 派生');
                 document.querySelector('.arena-custom-side-red .arena-custom-side-edit').click();
                 return api.waitFor(function() {
                     var editor = document.getElementById('arena-custom-editor-view');
@@ -777,6 +779,81 @@ var ArenaHarnessQA = (function() {
                 unitList.dispatchEvent(new Event('scroll'));
                 api.assert(document.querySelectorAll('.arena-custom-unit-row').length > firstBatchRows, '滚动到底应继续追加单位行');
                 api.assert(document.querySelector('.arena-custom-unit-mark'), '单位图标占位符应渲染');
+            })
+            .then(function() {
+                var search = document.getElementById('arena-custom-unit-search');
+                search.value = 'P90战术版';
+                search.dispatchEvent(new Event('input', { bubbles: true }));
+                return api.waitFor(function() {
+                    var row = document.querySelector('[data-custom-preset-id]');
+                    return row && /P90战术版/.test(row.textContent || '');
+                }, 2000, 'search reaches P90 parameter preset');
+            })
+            .then(function() {
+                var row = document.querySelector('[data-custom-preset-id]');
+                api.assert(!!row, 'P90 参数预设行应可点击');
+                row.click();
+                return api.waitFor(function() {
+                    var state = window.ArenaPanel.getState();
+                    var red = state.customEditor && state.customEditor.red || [];
+                    for (var i = 0; i < red.length; i++) {
+                        if (red[i].parameters && red[i].parameters['手枪'] === 'P90战术版') return true;
+                    }
+                    return false;
+                }, 2000, 'P90 preset added to red roster');
+            })
+            .then(function() {
+                var buttons = document.querySelectorAll('[data-custom-edit-params]');
+                var button = null;
+                for (var i = 0; i < buttons.length; i++) {
+                    var row = buttons[i].parentNode;
+                    if (row && /P90战术版/.test(row.textContent || '')) {
+                        button = buttons[i];
+                        break;
+                    }
+                }
+                api.assert(!!button, '参数预设加入后应显示参数编辑入口');
+                button.click();
+                return api.waitFor(function() {
+                    var state = window.ArenaPanel.getState();
+                    return state.customEditorPage === 'params' && !!document.querySelector('[data-custom-param-editor-input]');
+                }, 2000, 'parameter editor page opened');
+            })
+            .then(function() {
+                var editor = document.querySelector('[data-custom-param-editor-input]');
+                api.assert(/P90战术版/.test(editor.value || ''), '参数编辑页应显示当前 JSON 参数');
+                document.querySelector('[data-custom-param-mode="xml"]').click();
+                return api.waitFor(function() {
+                    var input = document.querySelector('[data-custom-param-editor-input]');
+                    return input && /<手枪>P90战术版<\/手枪>/.test(input.value || '');
+                }, 2000, 'parameter editor switches to XML');
+            })
+            .then(function() {
+                var editor = document.querySelector('[data-custom-param-editor-input]');
+                editor.value = '<Parameters>\n  <手枪>P90战术版</手枪>\n  <手枪2>P90战术版</手枪2>\n</Parameters>';
+                editor.dispatchEvent(new Event('input', { bubbles: true }));
+                document.querySelector('[data-custom-param-action="save-back"]').click();
+                return api.waitFor(function() {
+                    var state = window.ArenaPanel.getState();
+                    var red = state.customEditor && state.customEditor.red || [];
+                    var expanded = state.customMatch && state.customMatch.parsed && state.customMatch.parsed.calibrationCase
+                        ? state.customMatch.parsed.calibrationCase.redRoster : [];
+                    var editorOk = false;
+                    var expandedOk = false;
+                    for (var i = 0; i < red.length; i++) {
+                        if (red[i].parameters && red[i].parameters['手枪2'] === 'P90战术版') editorOk = true;
+                    }
+                    for (var j = 0; j < expanded.length; j++) {
+                        if (expanded[j].parameters && expanded[j].parameters['手枪2'] === 'P90战术版') expandedOk = true;
+                    }
+                    return state.customEditorPage === 'side' && editorOk && expandedOk && state.customMatch.code.indexOf('~') > 0;
+                }, 2000, 'editable parameters reflected in match code and calibration case');
+            })
+            .then(function() {
+                var search = document.getElementById('arena-custom-unit-search');
+                search.value = '';
+                search.dispatchEvent(new Event('input', { bubbles: true }));
+                var state = window.ArenaPanel.getState();
                 savedRedSig = rosterSig(state.customEditor.red);
                 document.querySelector('[data-custom-side-action="save"][data-side="active"]').click();
                 return api.waitFor(function() {

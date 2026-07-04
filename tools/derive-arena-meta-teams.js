@@ -113,6 +113,69 @@ function tag1(xml, tag) {
     const m = xml.match(new RegExp('<' + tag + '>\\s*([\\s\\S]*?)\\s*</' + tag + '>'));
     return m ? m[1].trim() : null;
 }
+function parseScalar(value) {
+    const text = String(value == null ? '' : value).trim();
+    if (text === 'true') return true;
+    if (text === 'false') return false;
+    if (/^-?(?:\d+|\d+\.\d+)$/.test(text)) return Number(text);
+    return text;
+}
+function addObjectValue(obj, key, value) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        if (!Array.isArray(obj[key])) obj[key] = [obj[key]];
+        obj[key].push(value);
+    } else {
+        obj[key] = value;
+    }
+}
+function parseStringParameters(text) {
+    const out = {};
+    const parts = String(text || '').split(',');
+    let parsed = 0;
+    for (let i = 0; i < parts.length; i++) {
+        const part = parts[i].trim();
+        if (!part) continue;
+        const idx = part.indexOf(':');
+        if (idx <= 0) continue;
+        const key = part.slice(0, idx).trim();
+        const value = part.slice(idx + 1).trim();
+        if (!key) continue;
+        out[key] = parseScalar(value);
+        parsed++;
+    }
+    return parsed > 0 ? out : null;
+}
+function parseParameterBody(xml) {
+    const text = String(xml == null ? '' : xml).trim();
+    if (!text) return {};
+    if (text.indexOf('<') < 0) return parseStringParameters(text) || { value: parseScalar(text) };
+
+    const out = {};
+    const childRe = /<([^\s/>]+)(?:\s[^>]*)?>\s*([\s\S]*?)\s*<\/\1>/g;
+    let match, count = 0;
+    while ((match = childRe.exec(text))) {
+        count++;
+        const key = match[1];
+        const body = match[2].trim();
+        addObjectValue(out, key, body.indexOf('<') >= 0 ? parseParameterBody(body) : parseScalar(body));
+    }
+    return count > 0 ? out : (parseStringParameters(text) || { value: parseScalar(text) });
+}
+function stableNormalize(value) {
+    if (Array.isArray(value)) return value.map(stableNormalize);
+    if (value && typeof value === 'object') {
+        const out = {};
+        Object.keys(value).sort().forEach(key => { out[key] = stableNormalize(value[key]); });
+        return out;
+    }
+    return value;
+}
+function stableStringify(value) {
+    return JSON.stringify(stableNormalize(value));
+}
+function hasParameters(value) {
+    return !!(value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length);
+}
 function splitSubStages(xml) {
     const re = /<SubStage\b[^>]*?(?:id=['"]?(\d+)['"]?)?[^>]*>/g;
     const marks = [];
@@ -163,7 +226,15 @@ function extractEnemies(body) {
         }
         const lvl = Number(tag1(inner, 'Level'));
         const qty = Number(tag1(inner, 'Quantity'));
-        list.push({ types: types, random: types.length > 1, level: isNaN(lvl) ? null : lvl, quantity: isNaN(qty) ? 1 : qty });
+        const parametersBody = tag1(inner, 'Parameters');
+        const parameters = parametersBody ? stableNormalize(parseParameterBody(parametersBody)) : null;
+        list.push({
+            types: types,
+            random: types.length > 1,
+            level: isNaN(lvl) ? null : lvl,
+            quantity: isNaN(qty) ? 1 : qty,
+            parameters: hasParameters(parameters) ? parameters : undefined
+        });
     }
     return list;
 }
@@ -196,13 +267,15 @@ function buildTeam(rel, stageName, groupId, body) {
         const fam = String(rep.spritename || '').replace(/^敌人-/, '');
         familyTally[fam] = (familyTally[fam] || 0) + en.quantity;
         const lvl = en.level != null ? en.level : (Number(rep.level) || 1);
-        const key = repType + '@' + lvl + (en.random ? '#r' : '');
+        const parameterSignature = en.parameters ? stableStringify(en.parameters) : '';
+        const key = repType + '@' + lvl + (en.random ? '#r' : '') + (parameterSignature ? '#p' + parameterSignature : '');
         if (!merged[key]) merged[key] = {
             type: repType, id: rep.id, name: cleanName(rep), spritename: rep.spritename,
             level: lvl, count: 0, random: !!en.random,
             isHostile: rep.is_hostile === true,
             humanoid: isHumanoidTemplate(rep.spritename),
-            randomTypes: en.random ? en.types.slice() : undefined
+            randomTypes: en.random ? en.types.slice() : undefined,
+            parameters: en.parameters
         };
         merged[key].count += en.quantity;
     }
@@ -272,8 +345,11 @@ for (const t of teams) {
     rosters[t.faction].teamCount++;
     for (const m of t.members) {
         if (m.humanoid) continue; // 人形模板单位不入采样池（性能 + 非人形主题）
-        const u = rosters[t.faction].units[m.type] ||
-            (rosters[t.faction].units[m.type] = { type: m.type, name: m.name, spritename: m.spritename, isHostile: m.isHostile, minLevel: Infinity, maxLevel: -Infinity, weight: 0 });
+        const parameterSignature = hasParameters(m.parameters) ? stableStringify(m.parameters) : '';
+        const unitKey = m.type + (parameterSignature ? '#p' + parameterSignature : '');
+        const u = rosters[t.faction].units[unitKey] ||
+            (rosters[t.faction].units[unitKey] = { type: m.type, name: m.name, spritename: m.spritename, isHostile: m.isHostile, minLevel: Infinity, maxLevel: -Infinity, weight: 0 });
+        if (parameterSignature) u.Parameters = m.parameters;
         if (m.level < u.minLevel) u.minLevel = m.level;
         if (m.level > u.maxLevel) u.maxLevel = m.level;
         u.weight += m.count;

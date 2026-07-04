@@ -87,6 +87,93 @@
         return n;
     }
 
+    function clonePlain(value) {
+        if (value == null || typeof value !== 'object') return value;
+        if (Array.isArray(value)) {
+            var arr = [];
+            for (var i = 0; i < value.length; i++) arr.push(clonePlain(value[i]));
+            return arr;
+        }
+        var out = {};
+        for (var key in value) {
+            if (!Object.prototype.hasOwnProperty.call(value, key)) continue;
+            if (value[key] === undefined || typeof value[key] === 'function') continue;
+            out[key] = clonePlain(value[key]);
+        }
+        return out;
+    }
+
+    function stableNormalize(value) {
+        if (value == null || typeof value !== 'object') return value;
+        if (Array.isArray(value)) {
+            var arr = [];
+            for (var i = 0; i < value.length; i++) arr.push(stableNormalize(value[i]));
+            return arr;
+        }
+        var keys = Object.keys(value).sort();
+        var out = {};
+        for (var k = 0; k < keys.length; k++) {
+            var key = keys[k];
+            if (value[key] === undefined || typeof value[key] === 'function') continue;
+            out[key] = stableNormalize(value[key]);
+        }
+        return out;
+    }
+
+    function stableStringify(value) {
+        return JSON.stringify(stableNormalize(value));
+    }
+
+    function hasParameters(value) {
+        if (value == null) return false;
+        if (typeof value !== 'object' || Array.isArray(value)) return false;
+        return Object.keys(value).length > 0;
+    }
+
+    function utf8ToBase64(text) {
+        if (typeof Buffer !== 'undefined') {
+            return Buffer.from(text, 'utf8').toString('base64');
+        }
+        if (typeof TextEncoder !== 'undefined') {
+            var bytes = new TextEncoder().encode(text);
+            var binary = '';
+            for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+            return btoa(binary);
+        }
+        return btoa(unescape(encodeURIComponent(text)));
+    }
+
+    function base64ToUtf8(text) {
+        if (typeof Buffer !== 'undefined') {
+            return Buffer.from(text, 'base64').toString('utf8');
+        }
+        var binary = atob(text);
+        if (typeof TextDecoder !== 'undefined') {
+            var bytes = new Uint8Array(binary.length);
+            for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            return new TextDecoder('utf-8').decode(bytes);
+        }
+        return decodeURIComponent(escape(binary));
+    }
+
+    function encodeParameters(parameters) {
+        if (!hasParameters(parameters)) return '';
+        return utf8ToBase64(stableStringify(parameters))
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/g, '');
+    }
+
+    function decodeParameters(encoded) {
+        var text = String(encoded || '').replace(/-/g, '+').replace(/_/g, '/');
+        while (text.length % 4) text += '=';
+        var value = JSON.parse(base64ToUtf8(text));
+        if (!hasParameters(value)) {
+            throw new Error('parameters must be a non-empty object');
+        }
+        return clonePlain(value);
+    }
+
     function normalizeCatalog(catalog) {
         if (!catalog) return null;
         var out = {};
@@ -132,21 +219,29 @@
 
     function parseRosterToken(token, field, index, catalog, errors) {
         var text = String(token || '').trim();
-        var m = text.match(/^(u[0-9]+|兵种[0-9]+)@([0-9]+)(?:x([0-9]+))?$/i);
+        var m = text.match(/^(u[0-9]+|兵种[0-9]+)@([0-9]+)(?:x([0-9]+))?(?:~([A-Za-z0-9_-]+))?$/i);
         if (!m) {
-            pushError(errors, field + '[' + index + ']', 'must use u<ID>@<level>x<count>');
+            pushError(errors, field + '[' + index + ']', 'must use u<ID>@<level>x<count> or u<ID>@<level>x<count>~<params>');
             return null;
         }
         var id = normalizeUnitId(m[1]);
         var level = parsePositiveInteger(m[2], field + '[' + index + '].level', errors);
         var count = m[3] == null ? 1 : parsePositiveInteger(m[3], field + '[' + index + '].count', errors);
+        var parameters = null;
+        if (m[4]) {
+            try {
+                parameters = decodeParameters(m[4]);
+            } catch (err) {
+                pushError(errors, field + '[' + index + '].parameters', 'invalid parameters payload');
+            }
+        }
         if (catalog && !catalog[id]) {
             pushError(errors, field + '[' + index + '].unit', 'unknown unit u' + id);
         }
         if (count > MAX_SIDE_COUNT) {
             pushError(errors, field + '[' + index + '].count', 'count exceeds ' + MAX_SIDE_COUNT);
         }
-        return {
+        var entry = {
             id: id,
             token: 'u' + id,
             type: '兵种' + id,
@@ -154,6 +249,8 @@
             count: count,
             label: unitLabel(id, catalog)
         };
+        if (parameters) entry.parameters = parameters;
+        return entry;
     }
 
     function parseRoster(value, field, catalog, errors) {
@@ -274,7 +371,9 @@
     function serializeRoster(roster) {
         return (roster || []).map(function(entry) {
             var id = entry.id != null ? entry.id : normalizeUnitId(entry.type || entry.token);
-            return 'u' + id + '@' + entry.level + 'x' + entry.count;
+            var token = 'u' + id + '@' + entry.level + 'x' + entry.count;
+            var encodedParameters = encodeParameters(entry.parameters || entry.Parameters || entry['参数']);
+            return encodedParameters ? (token + '~' + encodedParameters) : token;
         }).join(',');
     }
 
@@ -304,7 +403,9 @@
         var out = [];
         for (var i = 0; i < roster.length; i++) {
             for (var c = 0; c < roster[i].count; c++) {
-                out.push({ type: roster[i].type, level: roster[i].level });
+                var unit = { type: roster[i].type, level: roster[i].level };
+                if (hasParameters(roster[i].parameters)) unit.parameters = clonePlain(roster[i].parameters);
+                out.push(unit);
             }
         }
         return out;
@@ -380,8 +481,13 @@
         buildCalibrationManifest: buildCalibrationManifest,
         buildEnterPayload: buildEnterPayload,
         estimateVenueFee: estimateVenueFee,
+        cloneParameters: clonePlain,
+        decodeParameters: decodeParameters,
+        encodeParameters: encodeParameters,
+        hasParameters: hasParameters,
         normalizeUnitId: normalizeUnitId,
         parseMatchCode: parseMatchCode,
-        serializeMatchCode: serializeMatchCode
+        serializeMatchCode: serializeMatchCode,
+        stableStringify: stableStringify
     };
 });

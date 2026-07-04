@@ -311,6 +311,31 @@ _root.加载敌方人物 = function(地点X, 地点Y){
 // 读 _root.角斗场roster阵容 = [{兵种:"兵种N", 等级:L}, ...]，经 _root.兵种库 解析兵种名+属性，
 // 逐个 加载游戏世界人物（是否为敌人:true）。死亡递减 僵尸型敌人总个数 → 达 -敌人同伴数 触发
 // 角斗场获胜，与人形机制完全一致（见 WaveSpawner finishRequirement / 角斗场计算敌人数）。
+_root.角斗场读取单位参数 = function(单位:Object){
+	if(单位 == undefined) return undefined;
+	if(单位.Parameters != undefined) return 单位.Parameters;
+	if(单位.parameters != undefined) return 单位.parameters;
+	if(单位.参数 != undefined) return 单位.参数;
+	return undefined;
+}
+
+_root.角斗场应用单位参数 = function(初始化:Object, 单位:Object):Void{
+	var 参数 = _root.角斗场读取单位参数(单位);
+	if(参数 != undefined && 参数 != null){
+		org.flashNight.gesh.object.ObjectUtil.cloneParameters(初始化, 参数);
+	}
+}
+
+_root.角斗场应用怪物安全覆盖 = function(目标:Object, 是否敌人:Boolean, 产生源:String):Void{
+	目标.是否为敌人 = 是否敌人;
+	目标.产生源 = 产生源;
+	目标.掉落物 = [];
+	目标.不掉钱 = true;
+	目标.计算经验值 = function():Void{
+		this.已加经验值 = true;
+	};
+}
+
 _root.加载角斗场怪物 = function(地点X, 地点Y){
 	var 阵容 = _root.角斗场roster阵容;
 	if(阵容 == undefined) return;
@@ -322,28 +347,15 @@ _root.加载角斗场怪物 = function(地点X, 地点Y){
 		var 初始化 = _root.duplicateOf(属性);
 		初始化.兵种名 = null;        // 同 WaveSpawner.spawn：兵种名走第一参数 id，initObject 内置 null
 		初始化.等级 = 单位.等级;
-		初始化.是否为敌人 = true;
-		初始化.产生源 = "地图";
-		初始化.掉落物 = [];          // 清空副本掉落（[] 为真值→敌人模板 !this.掉落物 守卫不再回填 兵种库 掉落表）→ 防角斗场刷装备
-		if(单位.禁收益 === true || _root.角斗场对手禁收益 === true){
-			初始化.不掉钱 = true;
-			初始化.计算经验值 = function():Void{
-				this.已加经验值 = true;
-			};
-		}
+		_root.角斗场应用单位参数(初始化, 单位);
+		_root.角斗场应用怪物安全覆盖(初始化, true, "地图"); // 参数可改行为，安全字段最后覆盖
 		初始化._x = 地点X + random(160) - 80;
 		初始化._y = 地点Y + random(120) - 60;
 		// 仅累计 attachMovie 成功（返回有效 MC）的怪：某兵种缺库 linkage 时实际数<阵容长度，
 		// 判胜基准若仍按阵容长度，计数永到不了 -N → 清场后卡死（与 角斗场爬升刷一个 同口径）
 		var mc:MovieClip = _root.加载游戏世界人物(属性.兵种名, "敌人同伴" + i, _root.gameworld.getNextHighestDepth(), 初始化);
 		if(mc != undefined){
-			if(单位.禁收益 === true || _root.角斗场对手禁收益 === true){
-				mc.不掉钱 = true;
-				mc.掉落物 = [];
-				mc.计算经验值 = function():Void{
-					this.已加经验值 = true;
-				};
-			}
+			_root.角斗场应用怪物安全覆盖(mc, true, "地图");
 			生成数++;
 		}
 	}

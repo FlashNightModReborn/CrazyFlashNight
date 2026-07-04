@@ -26,6 +26,7 @@
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.merc.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.*;
+import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.gesh.tooltip.*;
 
 class org.flashNight.arki.merc.ArenaPanelService {
@@ -341,12 +342,16 @@ class org.flashNight.arki.merc.ArenaPanelService {
                 var pmin:Number = Number(poolParam[pi].minLevel);
                 var pmax:Number = Number(poolParam[pi].maxLevel);
                 var pw:Number = Number(poolParam[pi].weight);
-                pool.push({
+                var poolUnit:Object = {
                     type:     pt,
                     minLevel: (isNaN(pmin) || pmin < 1) ? 1 : pmin,
                     maxLevel: (isNaN(pmax) || pmax < 1) ? 1 : pmax,
                     weight:   (isNaN(pw) || pw <= 0) ? 1 : pw
-                });
+                };
+                var pParams:Object = poolParam[pi].Parameters != undefined ? poolParam[pi].Parameters
+                    : (poolParam[pi].parameters != undefined ? poolParam[pi].parameters : poolParam[pi].参数);
+                if (pParams != undefined) poolUnit.Parameters = ObjectUtil.clone(pParams);
+                pool.push(poolUnit);
             }
             if (pool.length == 0) {
                 sendResponse({ task: "arena_response", callId: callId, success: false, error: "escalation_pool_unknown" });
@@ -393,7 +398,11 @@ class org.flashNight.arki.merc.ArenaPanelService {
                 if (_root.兵种库[rt] == undefined) continue; // 跳过 web 与 AS2 兵种库不一致的未知兵种
                 if (!customPve && !isKnownArenaEnemy(rt)) continue; // 标准 roster 仍防旧缓存/伪造 payload；PVE 测试场允许全量 units.json
                 var rlvl:Number = Number(rosterParam[ri].level);
-                squad.push({ 兵种: rt, 等级: (isNaN(rlvl) || rlvl < 1) ? 1 : rlvl, 禁收益: customPve });
+                var squadUnit:Object = { 兵种: rt, 等级: (isNaN(rlvl) || rlvl < 1) ? 1 : rlvl, 禁收益: customPve };
+                var rParams:Object = rosterParam[ri].Parameters != undefined ? rosterParam[ri].Parameters
+                    : (rosterParam[ri].parameters != undefined ? rosterParam[ri].parameters : rosterParam[ri].参数);
+                if (rParams != undefined) squadUnit.Parameters = ObjectUtil.clone(rParams);
+                squad.push(squadUnit);
             }
             if (squad.length == 0) {
                 sendResponse({ task: "arena_response", callId: callId, success: false, error: "roster_empty" });

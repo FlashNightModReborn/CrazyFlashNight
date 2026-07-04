@@ -143,19 +143,33 @@ _root.角斗场爬升采样 = function(pool){
 }
 
 // 刷一个怪（复刻 加载角斗场怪物 单体逻辑，独立波号命名避免跨波重名覆盖）
-_root.角斗场爬升刷一个 = function(兵种, 等级, 地点X, 地点Y, idx){
+_root.角斗场爬升刷一个 = function(兵种, 等级, 地点X, 地点Y, idx, 参数){
 	var 属性 = _root.兵种库[兵种];
 	if(属性 == undefined) return false;
 	var 初始化 = _root.duplicateOf(属性);
 	初始化.兵种名 = null;
 	初始化.等级 = 等级;
-	初始化.是否为敌人 = true;
-	初始化.产生源 = "地图";
-	初始化.掉落物 = [];          // 清空副本掉落，防爬升无限波刷装备绕过奖池押注风险（同 加载角斗场怪物）
+	if(参数 != undefined && 参数 != null){
+		org.flashNight.gesh.object.ObjectUtil.cloneParameters(初始化, 参数);
+	}
+	if(typeof _root.角斗场应用怪物安全覆盖 == "function"){
+		_root.角斗场应用怪物安全覆盖(初始化, true, "地图");
+	}else{
+		初始化.是否为敌人 = true;
+		初始化.产生源 = "地图";
+		初始化.掉落物 = [];
+		初始化.不掉钱 = true;
+		初始化.计算经验值 = function():Void{
+			this.已加经验值 = true;
+		};
+	}
 	初始化._x = 地点X + random(220) - 110;
 	初始化._y = 地点Y + random(150) - 75;
 	// 仅在 attachMovie 成功（返回有效 MC）时计入存活数：否则计数永不归零→卡死在战斗相
 	var mc = _root.加载游戏世界人物(属性.兵种名, "爬升敌人" + _root.角斗场爬升.round + "_" + idx, _root.gameworld.getNextHighestDepth(), 初始化);
+	if(mc != undefined && typeof _root.角斗场应用怪物安全覆盖 == "function"){
+		_root.角斗场应用怪物安全覆盖(mc, true, "地图");
+	}
 	return (mc != undefined);
 }
 
@@ -179,7 +193,8 @@ _root.角斗场爬升刷波 = function(){
 		var lvl = lvlBase + random(5);
 		if(lvl > cfg.等级上限) lvl = cfg.等级上限;
 		if(lvl < 1) lvl = 1;
-		if(_root.角斗场爬升刷一个(unit.type, lvl, st.enemyX, st.enemyY, idx)){ spawned++; idx++; }
+		var 参数 = (typeof _root.角斗场读取单位参数 == "function") ? _root.角斗场读取单位参数(unit) : unit.Parameters;
+		if(_root.角斗场爬升刷一个(unit.type, lvl, st.enemyX, st.enemyY, idx, 参数)){ spawned++; idx++; }
 	}
 	var isElite = (cfg.精英周期 > 0 && (R % cfg.精英周期) == 0);
 	if(isElite){
@@ -187,7 +202,8 @@ _root.角斗场爬升刷波 = function(){
 		if(eu != undefined){
 			var elvl = lvlBase + cfg.精英等级加成;
 			if(elvl > cfg.等级上限) elvl = cfg.等级上限;
-			if(_root.角斗场爬升刷一个(eu.type, elvl, st.enemyX, st.enemyY, idx)){ spawned++; idx++; }
+			var 精英参数 = (typeof _root.角斗场读取单位参数 == "function") ? _root.角斗场读取单位参数(eu) : eu.Parameters;
+			if(_root.角斗场爬升刷一个(eu.type, elvl, st.enemyX, st.enemyY, idx, 精英参数)){ spawned++; idx++; }
 		}
 	}
 	_root.gameworld.地图.僵尸型敌人总个数 += spawned;

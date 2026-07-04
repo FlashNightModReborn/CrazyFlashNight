@@ -182,7 +182,12 @@ namespace CF7Launcher.Tests.Tasks
                 ["calibrationCase"] = new JObject
                 {
                     ["caseId"] = "custom-case",
-                    ["blueRoster"] = new JArray(new JObject { ["type"] = "兵种44", ["level"] = 30 }),
+                    ["blueRoster"] = new JArray(new JObject
+                    {
+                        ["type"] = "兵种44",
+                        ["level"] = 30,
+                        ["parameters"] = new JObject { ["手枪"] = "P90战术版" }
+                    }),
                     ["redRoster"] = new JArray(new JObject { ["type"] = "兵种11", ["level"] = 30 }),
                     ["repeat"] = 1,
                     ["timeoutFrames"] = 60,
@@ -201,12 +206,14 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("custom-inline", (string)command["batchId"]);
             Assert.Equal("custom-case", (string)command["caseId"]);
             Assert.Equal("兵种44", (string)command["blueRoster"][0]["兵种"]);
+            Assert.Equal("P90战术版", (string)command["blueRoster"][0]["Parameters"]["手枪"]);
 
             string frozenPath = Path.Combine(root, ((string)start["frozenManifestPath"]).Replace('/', Path.DirectorySeparatorChar));
             Assert.True(File.Exists(frozenPath));
             JObject frozen = JObject.Parse(File.ReadAllText(frozenPath));
             Assert.Equal("arena-calibration.case-manifest.v1", (string)frozen["schema"]);
             Assert.Equal("arena-custom-match", (string)frozen["planner"]["name"]);
+            Assert.Equal("P90战术版", (string)frozen["cases"][0]["blueRoster"][0]["parameters"]["手枪"]);
 
             task.HandleFlashResponse(new JObject
             {

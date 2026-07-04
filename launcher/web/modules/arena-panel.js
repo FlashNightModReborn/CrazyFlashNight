@@ -106,6 +106,7 @@
     var _customEditor = null; // 定制赛 P3a：可视化 roster 编辑状态
     var _customSelectedSide = 'blue';
     var _customEditorPage = 'config';
+    var _customParamEditor = null;
     var _customSavedRosters = null;
     var _customConfirmOpen = false;
     var _customPollTimer = 0;
@@ -357,6 +358,21 @@
                     '<div class="arena-custom-unit-list" id="arena-custom-unit-list"></div>' +
                     '</div>' +
                 '</div>' +
+            '</div>' +
+            '<div class="arena-custom-editor-page arena-custom-param-page" data-custom-editor-page="params" hidden>' +
+                '<div class="arena-custom-param-editor-head">' +
+                    '<div class="arena-custom-side-editor-title-block">' +
+                        '<div class="arena-custom-editor-kicker" id="arena-custom-param-editor-kicker">单位参数</div>' +
+                        '<div class="arena-custom-editor-title" id="arena-custom-param-editor-title">编辑参数</div>' +
+                        '<div class="arena-custom-editor-meta" id="arena-custom-param-editor-meta">--</div>' +
+                    '</div>' +
+                    '<div class="arena-custom-param-editor-actions">' +
+                        '<button class="arena-custom-btn" type="button" data-custom-param-action="back" data-audio-cue="cancel">返回阵容</button>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-param-action="apply" data-audio-cue="confirm">应用</button>' +
+                        '<button class="arena-card-btn-enter" type="button" data-custom-param-action="save-back" data-audio-cue="confirm">保存返回</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="arena-custom-param-editor-body" id="arena-custom-param-editor-body"></div>' +
             '</div>';
     }
 
@@ -601,7 +617,10 @@
         var pool = [];
         for (var i = 0; i < units.length; i++) {
             var u = units[i];
-            pool.push({ type: u.type, minLevel: u.minLevel, maxLevel: u.maxLevel, weight: u.weight });
+            var entry = { type: u.type, minLevel: u.minLevel, maxLevel: u.maxLevel, weight: u.weight };
+            var parameters = u.Parameters || u.parameters || u['参数'];
+            if (customHasParameters(parameters)) entry.Parameters = cloneCustomParameters(parameters);
+            pool.push(entry);
         }
         return pool;
     }
@@ -939,6 +958,33 @@
         return catalog[id] || { id: id, type: '兵种' + id, name: '兵种' + id, spritename: '', level: 1, slots: [] };
     }
 
+    function getCustomUnitParameterPresets(unitId) {
+        var store = (typeof window !== 'undefined' && window.ArenaUnitParameterPresets)
+            ? window.ArenaUnitParameterPresets : null;
+        if (!store || !store.byUnit) return [];
+        return store.byUnit[String(Number(unitId))] || [];
+    }
+
+    function findCustomUnitParameterPreset(presetId) {
+        var store = (typeof window !== 'undefined' && window.ArenaUnitParameterPresets)
+            ? window.ArenaUnitParameterPresets : null;
+        if (!store || !store.byId || !presetId) return null;
+        return store.byId[presetId] || null;
+    }
+
+    function buildCustomUnitChoices() {
+        var units = getCustomUnitList();
+        var out = [];
+        for (var i = 0; i < units.length; i++) {
+            out.push({ kind: 'base', unit: units[i], preset: null });
+            var presets = getCustomUnitParameterPresets(units[i].id);
+            for (var p = 0; p < presets.length; p++) {
+                out.push({ kind: 'preset', unit: units[i], preset: presets[p] });
+            }
+        }
+        return out;
+    }
+
     function parseCustomMatchCode(options) {
         ensureCustomModule();
         if (!_customMatch) {
@@ -1012,17 +1058,209 @@
         roster = roster || [];
         for (var i = 0; i < roster.length; i++) {
             var id = roster[i].id != null ? roster[i].id : ArenaCustomMatchCode.normalizeUnitId(roster[i].type);
-            out.push({
+            var entry = {
                 id: Number(id),
                 type: '兵种' + Number(id),
                 level: Number(roster[i].level) || 1,
                 count: Number(roster[i].count) || 1
-            });
+            };
+            var parameters = roster[i].parameters || roster[i].Parameters || roster[i]['参数'];
+            if (customHasParameters(parameters)) entry.parameters = cloneCustomParameters(parameters);
+            if (roster[i].presetId) entry.presetId = roster[i].presetId;
+            if (roster[i].presetLabel) entry.presetLabel = roster[i].presetLabel;
+            out.push(entry);
         }
         return out;
     }
 
-    function syncCustomCodeFromEditor() {
+    function cloneCustomParameters(value) {
+        if (!customHasParameters(value)) return null;
+        if (ArenaCustomMatchCode.cloneParameters) return ArenaCustomMatchCode.cloneParameters(value);
+        return JSON.parse(JSON.stringify(value));
+    }
+
+    function customHasParameters(value) {
+        if (ArenaCustomMatchCode.hasParameters) return ArenaCustomMatchCode.hasParameters(value);
+        return !!(value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length);
+    }
+
+    function customParameterText(value) {
+        if (!customHasParameters(value)) return '';
+        if (ArenaCustomMatchCode.stableStringify) return ArenaCustomMatchCode.stableStringify(value);
+        return JSON.stringify(value);
+    }
+
+    function customParametersEqual(a, b) {
+        return customParameterText(a) === customParameterText(b);
+    }
+
+    function formatCustomParameters(value) {
+        if (!customHasParameters(value)) return '';
+        return JSON.stringify(cloneCustomParameters(value), null, 2);
+    }
+
+    function parseCustomParametersText(text) {
+        text = String(text || '').trim();
+        if (!text) return { ok: true, value: null };
+        try {
+            var value = JSON.parse(text);
+            if (!customHasParameters(value)) {
+                return { ok: false, error: '参数必须是非空 JSON 对象' };
+            }
+            return { ok: true, value: value };
+        } catch (err) {
+            return { ok: false, error: 'JSON 参数格式错误' };
+        }
+    }
+
+    function parseCustomParametersXmlText(text) {
+        text = String(text || '').trim();
+        if (!text) return { ok: true, value: null };
+        try {
+            var body = unwrapCustomXmlRoot(text, 'Parameters');
+            var value = parseCustomParameterBody(body);
+            if (!customHasParameters(value)) {
+                return { ok: false, error: 'XML 参数必须包含至少一个字段' };
+            }
+            return { ok: true, value: value };
+        } catch (err) {
+            return { ok: false, error: err && err.message ? err.message : 'XML 参数格式错误' };
+        }
+    }
+
+    function parseCustomParametersDraft(mode, text) {
+        return mode === 'xml' ? parseCustomParametersXmlText(text) : parseCustomParametersText(text);
+    }
+
+    function unwrapCustomXmlRoot(text, rootName) {
+        var re = new RegExp('^<' + rootName + '(?:\\s[^>]*)?>\\s*([\\s\\S]*?)\\s*</' + rootName + '>\\s*$', 'i');
+        var match = String(text || '').match(re);
+        return match ? match[1].trim() : text;
+    }
+
+    function parseCustomParameterBody(xml) {
+        var text = String(xml == null ? '' : xml).trim();
+        if (!text) return {};
+
+        if (text.indexOf('<') < 0) {
+            return parseCustomStringParameters(text) || { value: parseCustomScalar(text) };
+        }
+
+        var out = {};
+        var childRe = /<([^\s/>]+)(?:\s[^>]*)?>\s*([\s\S]*?)\s*<\/\1>/g;
+        var match;
+        var count = 0;
+        while ((match = childRe.exec(text))) {
+            count++;
+            var key = match[1];
+            var body = match[2].trim();
+            var value = body.indexOf('<') >= 0
+                ? parseCustomParameterBody(body)
+                : parseCustomScalar(decodeCustomXmlText(body));
+            addCustomObjectValue(out, key, value);
+        }
+
+        if (count > 0) return out;
+        if (text.indexOf('<') >= 0 || text.indexOf('>') >= 0) throw new Error('XML 参数标签未闭合或格式错误');
+        return parseCustomStringParameters(text) || { value: parseCustomScalar(decodeCustomXmlText(text)) };
+    }
+
+    function parseCustomStringParameters(text) {
+        var out = {};
+        var parts = String(text || '').split(',');
+        var parsed = 0;
+        for (var i = 0; i < parts.length; i++) {
+            var part = parts[i].trim();
+            if (!part) continue;
+            var idx = part.indexOf(':');
+            if (idx <= 0) continue;
+            var key = part.slice(0, idx).trim();
+            var value = part.slice(idx + 1).trim();
+            if (!key) continue;
+            out[key] = parseCustomScalar(value);
+            parsed++;
+        }
+        return parsed > 0 ? out : null;
+    }
+
+    function parseCustomScalar(value) {
+        var text = String(value == null ? '' : value).trim();
+        if (text === 'true') return true;
+        if (text === 'false') return false;
+        if (/^-?(?:\d+|\d+\.\d+)$/.test(text)) return Number(text);
+        return text;
+    }
+
+    function addCustomObjectValue(obj, key, value) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            if (!Array.isArray(obj[key])) obj[key] = [obj[key]];
+            obj[key].push(value);
+        } else {
+            obj[key] = value;
+        }
+    }
+
+    function decodeCustomXmlText(text) {
+        return String(text || '')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&apos;/g, "'")
+            .replace(/&amp;/g, '&');
+    }
+
+    function encodeCustomXmlText(text) {
+        return String(text == null ? '' : text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&apos;');
+    }
+
+    function formatCustomParametersXml(parameters) {
+        if (!customHasParameters(parameters)) return '<Parameters>\n</Parameters>';
+        var lines = ['<Parameters>'];
+        appendCustomXmlObject(lines, cloneCustomParameters(parameters), 1);
+        lines.push('</Parameters>');
+        return lines.join('\n');
+    }
+
+    function appendCustomXmlObject(lines, obj, depth) {
+        var keys = Object.keys(obj || {}).sort();
+        for (var i = 0; i < keys.length; i++) {
+            appendCustomXmlValue(lines, keys[i], obj[keys[i]], depth);
+        }
+    }
+
+    function appendCustomXmlValue(lines, key, value, depth) {
+        if (!isCustomXmlTagName(key)) throw new Error('字段名无法作为 XML 标签: ' + key);
+        if (Array.isArray(value)) {
+            for (var i = 0; i < value.length; i++) appendCustomXmlValue(lines, key, value[i], depth);
+            return;
+        }
+        var indent = repeatCustomString('  ', depth);
+        if (value && typeof value === 'object') {
+            lines.push(indent + '<' + key + '>');
+            appendCustomXmlObject(lines, value, depth + 1);
+            lines.push(indent + '</' + key + '>');
+        } else {
+            lines.push(indent + '<' + key + '>' + encodeCustomXmlText(value) + '</' + key + '>');
+        }
+    }
+
+    function isCustomXmlTagName(key) {
+        return /^[^\s<>&/="'?]+$/.test(String(key || ''));
+    }
+
+    function repeatCustomString(text, count) {
+        var out = '';
+        for (var i = 0; i < count; i++) out += text;
+        return out;
+    }
+
+    function syncCustomCodeFromEditor(options) {
+        options = options || {};
         ensureCustomModule();
         var editor = ensureCustomEditorState();
         if (editor.mode === 'pve') {
@@ -1045,7 +1283,7 @@
         }
         parseCustomMatchCode({ syncEditor: false });
         _customConfirmOpen = false;
-        refreshCustomMatchCard();
+        if (options.refresh !== false) refreshCustomMatchCard();
     }
 
     function refreshCustomMatchCard() {
@@ -1142,8 +1380,10 @@
         if (editor.mode === 'pve') _customSelectedSide = 'red';
         var configPage = _el.querySelector('[data-custom-editor-page="config"]');
         var sidePage = _el.querySelector('[data-custom-editor-page="side"]');
+        var paramPage = _el.querySelector('[data-custom-editor-page="params"]');
         if (configPage) configPage.hidden = _customEditorPage !== 'config';
         if (sidePage) sidePage.hidden = _customEditorPage !== 'side';
+        if (paramPage) paramPage.hidden = _customEditorPage !== 'params';
 
         var modeBtns = _el.querySelectorAll('[data-custom-mode]');
         for (var mb = 0; mb < modeBtns.length; mb++) {
@@ -1213,6 +1453,7 @@
             else sideBtns[s].textContent = side === 'red' ? '加到红方' : '加到蓝方';
             sideBtns[s].classList.toggle('arena-custom-side-target-active', side === _customSelectedSide);
         }
+        renderCustomParamEditor();
     }
 
     function buildCustomSideConfigCardHtml(side, roster) {
@@ -1278,6 +1519,7 @@
 
     function showCustomEditorConfigPage() {
         _customEditorPage = 'config';
+        _customParamEditor = null;
         renderCustomEditor();
         renderCustomUnitBrowser();
     }
@@ -1285,8 +1527,164 @@
     function showCustomSideEditorPage(side) {
         _customSelectedSide = resolveCustomSide(side);
         _customEditorPage = 'side';
+        _customParamEditor = null;
         renderCustomEditor();
         renderCustomUnitBrowser();
+    }
+
+    function showCustomParamEditorPage(side, index) {
+        side = resolveCustomSide(side);
+        var entry = getCustomRosterEntry(side, index);
+        if (!entry) return;
+        _customSelectedSide = side;
+        _customParamEditor = buildCustomParamEditorState(side, index, 'json', entry);
+        _customEditorPage = 'params';
+        renderCustomEditor();
+    }
+
+    function buildCustomParamEditorState(side, index, mode, entry) {
+        var parameters = entry && customHasParameters(entry.parameters) ? entry.parameters : null;
+        var draftJson = formatCustomParameters(parameters);
+        var draftXml = '';
+        try {
+            draftXml = formatCustomParametersXml(parameters);
+        } catch (err) {
+            draftXml = '<Parameters>\n</Parameters>';
+        }
+        return {
+            side: side,
+            index: Number(index) || 0,
+            mode: mode === 'xml' ? 'xml' : 'json',
+            draftJson: draftJson,
+            draftXml: draftXml,
+            error: ''
+        };
+    }
+
+    function getCustomRosterEntry(side, index) {
+        var editor = ensureCustomEditorState();
+        var roster = resolveCustomSide(side) === 'red' ? editor.red : editor.blue;
+        index = Number(index);
+        if (index < 0 || index >= roster.length) return null;
+        return roster[index];
+    }
+
+    function renderCustomParamEditor() {
+        if (!_el) return;
+        var bodyEl = _el.querySelector('#arena-custom-param-editor-body');
+        if (!bodyEl) return;
+        if (_customEditorPage !== 'params') return;
+
+        var state = _customParamEditor;
+        var entry = state ? getCustomRosterEntry(state.side, state.index) : null;
+        if (!state || !entry) {
+            bodyEl.innerHTML = '<div class="arena-custom-roster-empty">参数目标已不存在</div>';
+            return;
+        }
+
+        var unit = getCustomUnitById(entry.id);
+        var titleEl = _el.querySelector('#arena-custom-param-editor-title');
+        var kickerEl = _el.querySelector('#arena-custom-param-editor-kicker');
+        var metaEl = _el.querySelector('#arena-custom-param-editor-meta');
+        var sideLabel = customSideLabel(state.side);
+        var summary = summarizeCustomParameters(entry.parameters) || '默认参数';
+        if (kickerEl) kickerEl.textContent = sideLabel + '单位参数';
+        if (titleEl) titleEl.textContent = '编辑 u' + entry.id + ' · ' + (unit.name || ('兵种' + entry.id));
+        if (metaEl) {
+            metaEl.textContent = 'Lv.' + entry.level + ' ×' + entry.count + ' · ' +
+                (unit.spritename || '--') + ' · ' + summary;
+        }
+
+        var mode = state.mode === 'xml' ? 'xml' : 'json';
+        var draft = mode === 'xml' ? state.draftXml : state.draftJson;
+        var errorHtml = state.error ? '<div class="arena-custom-param-error">' + escapeHtml(state.error) + '</div>' : '';
+        var invalidClass = state.error ? ' arena-custom-param-editor-input-invalid' : '';
+        bodyEl.innerHTML =
+            '<div class="arena-custom-param-workbench">' +
+                '<div class="arena-custom-param-main">' +
+                    '<div class="arena-custom-param-toolbar">' +
+                        '<div class="arena-custom-mode-switch" aria-label="参数编辑模式">' +
+                            '<button class="arena-custom-btn' + (mode === 'json' ? ' arena-custom-mode-active' : '') + '" type="button" data-custom-param-mode="json" data-audio-cue="confirm">JSON</button>' +
+                            '<button class="arena-custom-btn' + (mode === 'xml' ? ' arena-custom-mode-active' : '') + '" type="button" data-custom-param-mode="xml" data-audio-cue="confirm">XML</button>' +
+                        '</div>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-param-action="clear" data-audio-cue="cancel">清空参数</button>' +
+                    '</div>' +
+                    '<textarea class="arena-custom-param-editor-input' + invalidClass + '" spellcheck="false" data-custom-param-editor-input>' + escapeHtml(draft) + '</textarea>' +
+                    errorHtml +
+                '</div>' +
+                '<div class="arena-custom-param-inspector">' +
+                    '<div class="arena-custom-param-inspector-title">当前摘要</div>' +
+                    '<div class="arena-custom-param-inspector-text">' + escapeHtml(summary) + '</div>' +
+                    '<div class="arena-custom-param-inspector-title">预设来源</div>' +
+                    '<div class="arena-custom-param-inspector-text">' + escapeHtml(entry.presetLabel || entry.presetId || '手动参数') + '</div>' +
+                    '<div class="arena-custom-param-inspector-title">最终覆盖</div>' +
+                    '<div class="arena-custom-param-inspector-text">是否为敌人 / 产生源 / 掉落物=[] / 无金钱经验</div>' +
+                '</div>' +
+            '</div>';
+    }
+
+    function updateCustomParamDraft(text) {
+        if (!_customParamEditor) return;
+        if (_customParamEditor.mode === 'xml') _customParamEditor.draftXml = String(text || '');
+        else _customParamEditor.draftJson = String(text || '');
+        _customParamEditor.error = '';
+    }
+
+    function setCustomParamEditorMode(mode) {
+        if (!_customParamEditor) return;
+        mode = mode === 'xml' ? 'xml' : 'json';
+        if (_customParamEditor.mode === mode) return;
+
+        var currentMode = _customParamEditor.mode === 'xml' ? 'xml' : 'json';
+        var currentDraft = currentMode === 'xml' ? _customParamEditor.draftXml : _customParamEditor.draftJson;
+        var parsed = parseCustomParametersDraft(currentMode, currentDraft);
+        if (!parsed.ok) {
+            _customParamEditor.error = parsed.error;
+            renderCustomEditor();
+            return;
+        }
+        try {
+            if (mode === 'xml') _customParamEditor.draftXml = formatCustomParametersXml(parsed.value);
+            else _customParamEditor.draftJson = formatCustomParameters(parsed.value);
+        } catch (err) {
+            _customParamEditor.error = err && err.message ? err.message : '参数无法转换';
+            renderCustomEditor();
+            return;
+        }
+        _customParamEditor.mode = mode;
+        _customParamEditor.error = '';
+        renderCustomEditor();
+    }
+
+    function applyCustomParamDraft(returnToSide) {
+        if (!_customParamEditor) return false;
+        var mode = _customParamEditor.mode === 'xml' ? 'xml' : 'json';
+        var draft = mode === 'xml' ? _customParamEditor.draftXml : _customParamEditor.draftJson;
+        var parsed = parseCustomParametersDraft(mode, draft);
+        if (!parsed.ok) {
+            _customParamEditor.error = parsed.error;
+            renderCustomEditor();
+            return false;
+        }
+        var side = _customParamEditor.side;
+        var index = _customParamEditor.index;
+        if (!setCustomRosterParametersValue(side, index, parsed.value)) return false;
+        var entry = getCustomRosterEntry(side, index);
+        if (entry) {
+            _customParamEditor = buildCustomParamEditorState(side, index, mode, entry);
+        }
+        showToast(customSideLabel(side) + '单位参数已应用');
+        if (returnToSide) showCustomSideEditorPage(side);
+        else renderCustomEditor();
+        return true;
+    }
+
+    function clearCustomParamDraft() {
+        if (!_customParamEditor) return;
+        if (_customParamEditor.mode === 'xml') _customParamEditor.draftXml = '<Parameters>\n</Parameters>';
+        else _customParamEditor.draftJson = '';
+        _customParamEditor.error = '';
+        renderCustomEditor();
     }
 
     function buildCustomRosterEditorHtml(side, roster) {
@@ -1297,11 +1695,14 @@
         for (var i = 0; i < roster.length; i++) {
             var entry = roster[i];
             var unit = getCustomUnitById(entry.id);
+            var paramSummary = entry.presetLabel || summarizeCustomParameters(entry.parameters);
+            var paramLabel = paramSummary ? truncateCustomText(paramSummary, 22) : '默认参数';
+            var paramClass = customHasParameters(entry.parameters) ? ' arena-custom-param-pill-active' : '';
             html += '<div class="arena-custom-roster-row">' +
                 '<div class="arena-custom-unit-mark">u' + entry.id + '</div>' +
                 '<div class="arena-custom-roster-info">' +
                     '<b>' + escapeHtml(unit.name || ('兵种' + entry.id)) + '</b>' +
-                    '<span>兵种' + entry.id + ' · ' + escapeHtml(unit.spritename || '--') + '</span>' +
+                    '<span>兵种' + entry.id + ' · ' + escapeHtml(unit.spritename || '--') + (paramSummary ? ' · ' + escapeHtml(paramSummary) : '') + '</span>' +
                 '</div>' +
                 '<label>Lv.<input class="arena-custom-mini-input" type="number" min="1" max="999" value="' + entry.level + '" data-custom-roster-input="level" data-side="' + side + '" data-index="' + i + '"></label>' +
                 '<div class="arena-custom-count-stepper">' +
@@ -1309,6 +1710,10 @@
                     '<input class="arena-custom-mini-input" type="number" min="1" max="20" value="' + entry.count + '" data-custom-roster-input="count" data-side="' + side + '" data-index="' + i + '">' +
                     '<button type="button" data-custom-adjust-count="1" data-side="' + side + '" data-index="' + i + '" data-audio-cue="confirm">+</button>' +
                 '</div>' +
+                '<button class="arena-custom-param-pill' + paramClass + '" type="button" data-custom-edit-params data-side="' + side + '" data-index="' + i + '" title="' + escapeAttr(paramSummary || '编辑单位参数') + '" data-audio-cue="confirm">' +
+                    '<span>' + escapeHtml(paramLabel) + '</span>' +
+                    '<b>参数</b>' +
+                '</button>' +
                 '<button class="arena-custom-icon-btn" type="button" title="移除" data-custom-remove data-side="' + side + '" data-index="' + i + '" data-audio-cue="cancel">×</button>' +
             '</div>';
         }
@@ -1329,27 +1734,29 @@
 
         var query = normalizeSearchText(editor.query || '');
         var filter = editor.filter || 'all';
-        var units = getCustomUnitList();
+        var choices = buildCustomUnitChoices();
         var factionLookup = buildCustomFactionLookup();
         var groups = [];
         var groupMap = {};
         var matchCount = 0;
-        for (var i = 0; i < units.length; i++) {
-            if (filter === 'hostile' && units[i].isHostile === false) continue;
-            if (filter === 'nonhostile' && units[i].isHostile !== false) continue;
-            var faction = customUnitFaction(units[i], factionLookup);
-            if (query && normalizeSearchText(customUnitSearchText(units[i], faction)).indexOf(query) < 0) continue;
+        for (var i = 0; i < choices.length; i++) {
+            var choice = choices[i];
+            var unit = choice.unit;
+            if (filter === 'hostile' && unit.isHostile === false) continue;
+            if (filter === 'nonhostile' && unit.isHostile !== false) continue;
+            var faction = customUnitFaction(unit, factionLookup);
+            if (query && normalizeSearchText(customUnitChoiceSearchText(choice, faction)).indexOf(query) < 0) continue;
             var key = faction || '未归类';
             if (!groupMap[key]) {
                 groupMap[key] = { key: key, label: customFactionLabel(key), units: [] };
                 groups.push(groupMap[key]);
             }
-            groupMap[key].units.push({ unit: units[i], faction: key });
+            groupMap[key].units.push({ choice: choice, faction: key });
             matchCount++;
         }
         groups.sort(sortCustomUnitGroups);
 
-        countEl.textContent = matchCount + '/' + units.length + ' 单位';
+        countEl.textContent = matchCount + '/' + choices.length + ' 条目';
         var filterBtns = _el.querySelectorAll('[data-custom-unit-filter]');
         for (var f = 0; f < filterBtns.length; f++) {
             filterBtns[f].classList.toggle('arena-custom-unit-filter-active', filterBtns[f].getAttribute('data-custom-unit-filter') === filter);
@@ -1375,7 +1782,7 @@
                     hiddenRows += group.units.length - m;
                     break;
                 }
-                html += buildCustomUnitRowHtml(group.units[m].unit, group.units[m].faction);
+                html += buildCustomUnitRowHtml(group.units[m].choice, group.units[m].faction);
                 renderedRows++;
             }
         }
@@ -1432,18 +1839,24 @@
         '</button>';
     }
 
-    function buildCustomUnitRowHtml(unit, faction) {
+    function buildCustomUnitRowHtml(choice, faction) {
+        var unit = choice.unit;
+        var preset = choice.preset;
         var slots = summarizeCustomSlots(unit);
         var hostileLabel = unit.isHostile === false ? ' · 非敌对' : '';
         var factionLabel = faction && faction !== '未归类' ? ' · ' + faction : '';
-        var rowClass = 'arena-custom-unit-row' + (unit.isHostile === false ? ' arena-custom-unit-row-nonhostile' : '');
-        return '<button class="' + rowClass + '" type="button" data-custom-add-unit="' + unit.id + '" data-custom-faction="' + escapeAttr(faction || '') + '" data-audio-cue="confirm">' +
+        var presetLabel = preset ? (' · 预设 · ' + (preset.summary || summarizeCustomParameters(preset.parameters))) : '';
+        var presetAttr = preset ? ' data-custom-preset-id="' + escapeAttr(preset.id) + '"' : '';
+        var rowClass = 'arena-custom-unit-row' +
+            (preset ? ' arena-custom-unit-row-preset' : '') +
+            (unit.isHostile === false ? ' arena-custom-unit-row-nonhostile' : '');
+        return '<button class="' + rowClass + '" type="button" data-custom-add-unit="' + unit.id + '"' + presetAttr + ' data-custom-faction="' + escapeAttr(faction || '') + '" data-audio-cue="confirm">' +
             '<span class="arena-custom-unit-mark">u' + unit.id + '</span>' +
             '<span class="arena-custom-unit-main">' +
                 '<b>' + escapeHtml(unit.name || ('兵种' + unit.id)) + '</b>' +
                 '<em>' + escapeHtml(unit.spritename || '--') + '</em>' +
             '</span>' +
-            '<span class="arena-custom-unit-meta">Lv.' + (unit.level || 1) + factionLabel + hostileLabel + (slots ? ' · ' + escapeHtml(slots) : '') + '</span>' +
+            '<span class="arena-custom-unit-meta">Lv.' + (preset && preset.defaultLevel ? preset.defaultLevel : (unit.level || 1)) + factionLabel + hostileLabel + presetLabel + (slots ? ' · ' + escapeHtml(slots) : '') + '</span>' +
         '</button>';
     }
 
@@ -1465,6 +1878,19 @@
             unit.spritename,
             faction || unit.faction || '',
             summarizeCustomSlots(unit)
+        ].join(' ');
+    }
+
+    function customUnitChoiceSearchText(choice, faction) {
+        var preset = choice && choice.preset;
+        return [
+            customUnitSearchText(choice.unit, faction),
+            preset ? preset.id : '',
+            preset ? preset.label : '',
+            preset ? preset.summary : '',
+            preset && preset.parameterKeys ? preset.parameterKeys.join(' ') : '',
+            preset && preset.sourceStages ? preset.sourceStages.join(' ') : '',
+            preset ? customParameterText(preset.parameters) : ''
         ].join(' ');
     }
 
@@ -1540,8 +1966,23 @@
         roster = roster || [];
         var parts = [];
         for (var i = 0; i < roster.length; i++) {
-            parts.push(roster[i].type + ' Lv.' + roster[i].level + ' ×' + roster[i].count);
+            var params = summarizeCustomParameters(roster[i].parameters);
+            parts.push(roster[i].type + (params ? '{' + params + '}' : '') + ' Lv.' + roster[i].level + ' ×' + roster[i].count);
         }
+        return parts.join(' / ');
+    }
+
+    function summarizeCustomParameters(parameters) {
+        if (!customHasParameters(parameters)) return '';
+        var parts = [];
+        var keys = Object.keys(parameters).sort();
+        for (var i = 0; i < keys.length && parts.length < 3; i++) {
+            var key = keys[i];
+            var value = parameters[key];
+            if (value == null || typeof value === 'object') parts.push(key);
+            else parts.push(key + '=' + String(value));
+        }
+        if (keys.length > parts.length) parts.push('+' + (keys.length - parts.length));
         return parts.join(' / ');
     }
 
@@ -2081,6 +2522,10 @@
             onCustomCodeInput(e);
             return;
         }
+        if (input.hasAttribute && input.hasAttribute('data-custom-param-editor-input')) {
+            updateCustomParamDraft(input.value);
+            return;
+        }
         if (input.id !== 'arena-custom-unit-search') return;
         onCustomUnitSearchInput(e);
     }
@@ -2104,6 +2549,10 @@
             if (node.getAttribute) {
                 var editorAction = node.getAttribute('data-custom-editor-action');
                 if (editorAction === 'back' || editorAction === 'done') {
+                    if (editorAction === 'back' && _customEditorPage === 'params') {
+                        showCustomSideEditorPage(_customParamEditor ? _customParamEditor.side : _customSelectedSide);
+                        return;
+                    }
                     if (editorAction === 'back' && _customEditorPage === 'side') {
                         showCustomEditorConfigPage();
                         return;
@@ -2143,6 +2592,28 @@
                     renderCustomEditor();
                     return;
                 }
+                var paramMode = node.getAttribute('data-custom-param-mode');
+                if (paramMode === 'json' || paramMode === 'xml') {
+                    setCustomParamEditorMode(paramMode);
+                    return;
+                }
+                var paramAction = node.getAttribute('data-custom-param-action');
+                if (paramAction === 'back') {
+                    showCustomSideEditorPage(_customParamEditor ? _customParamEditor.side : _customSelectedSide);
+                    return;
+                }
+                if (paramAction === 'apply') {
+                    applyCustomParamDraft(false);
+                    return;
+                }
+                if (paramAction === 'save-back') {
+                    applyCustomParamDraft(true);
+                    return;
+                }
+                if (paramAction === 'clear') {
+                    clearCustomParamDraft();
+                    return;
+                }
                 var filter = node.getAttribute('data-custom-unit-filter');
                 if (filter === 'all' || filter === 'hostile' || filter === 'nonhostile') {
                     var editor = ensureCustomEditorState();
@@ -2168,7 +2639,11 @@
                 }
                 var addId = node.getAttribute('data-custom-add-unit');
                 if (addId) {
-                    addCustomUnitToSide(Number(addId), _customSelectedSide);
+                    addCustomUnitToSide(Number(addId), _customSelectedSide, node.getAttribute('data-custom-preset-id'));
+                    return;
+                }
+                if (node.hasAttribute('data-custom-edit-params')) {
+                    showCustomParamEditorPage(node.getAttribute('data-side'), Number(node.getAttribute('data-index')));
                     return;
                 }
                 if (node.hasAttribute('data-custom-remove')) {
@@ -2198,19 +2673,29 @@
         updateCustomRosterEntry(input.getAttribute('data-side'), Number(input.getAttribute('data-index')), field, Number(input.value));
     }
 
-    function addCustomUnitToSide(unitId, side) {
+    function addCustomUnitToSide(unitId, side, presetId) {
         var editor = ensureCustomEditorState();
         var roster = side === 'red' ? editor.red : editor.blue;
         var unit = getCustomUnitById(unitId);
-        var level = Number(unit.level) > 0 ? Number(unit.level) : 1;
+        var preset = findCustomUnitParameterPreset(presetId);
+        var parameters = preset && customHasParameters(preset.parameters) ? cloneCustomParameters(preset.parameters) : null;
+        var level = preset && Number(preset.defaultLevel) > 0
+            ? Number(preset.defaultLevel)
+            : (Number(unit.level) > 0 ? Number(unit.level) : 1);
         for (var i = 0; i < roster.length; i++) {
-            if (roster[i].id === unitId && roster[i].level === level) {
+            if (roster[i].id === unitId && roster[i].level === level && customParametersEqual(roster[i].parameters, parameters)) {
                 roster[i].count++;
                 syncCustomCodeFromEditor();
                 return;
             }
         }
-        roster.push({ id: unitId, type: '兵种' + unitId, level: level, count: 1 });
+        var entry = { id: unitId, type: '兵种' + unitId, level: level, count: 1 };
+        if (parameters) {
+            entry.parameters = parameters;
+            entry.presetId = preset.id;
+            entry.presetLabel = preset.summary || summarizeCustomParameters(parameters);
+        }
+        roster.push(entry);
         syncCustomCodeFromEditor();
     }
 
@@ -2249,7 +2734,24 @@
         value = Math.floor(value);
         if (field === 'count' && value > 20) value = 20;
         roster[index][field] = value;
+        syncCustomCodeFromEditor({ refresh: false });
+    }
+
+    function setCustomRosterParametersValue(side, index, value) {
+        var editor = ensureCustomEditorState();
+        var roster = resolveCustomSide(side) === 'red' ? editor.red : editor.blue;
+        if (index < 0 || index >= roster.length) return false;
+        if (customHasParameters(value)) {
+            roster[index].parameters = cloneCustomParameters(value);
+            delete roster[index].presetId;
+            roster[index].presetLabel = summarizeCustomParameters(roster[index].parameters);
+        } else {
+            delete roster[index].parameters;
+            delete roster[index].presetId;
+            delete roster[index].presetLabel;
+        }
         syncCustomCodeFromEditor();
+        return true;
     }
 
     function copyCustomMatchCode() {
@@ -2507,7 +3009,9 @@
         else if (_cardKind[cardIdx] === 'monster' && opponents[0] && opponents[0].isMonster) {
             var roster = [];
             for (var ri = 0; ri < opponents.length; ri++) {
-                roster.push({ type: opponents[ri].type, level: opponents[ri].level });
+                var rosterEntry = { type: opponents[ri].type, level: opponents[ri].level };
+                if (customHasParameters(opponents[ri].parameters)) rosterEntry.parameters = cloneCustomParameters(opponents[ri].parameters);
+                roster.push(rosterEntry);
             }
             msg.roster = roster;
         }
@@ -2761,7 +3265,10 @@
             var lo = Math.max(pick.minLevel, levelMin), hi = Math.min(pick.maxLevel, levelMax);
             if (hi < lo) hi = lo;
             var lvl = lo + Math.floor(Math.random() * (hi - lo + 1));
-            opponents.push({ name: pick.name, level: lvl, type: pick.type, spritename: pick.spritename, isMonster: true });
+            var opponent = { name: pick.name, level: lvl, type: pick.type, spritename: pick.spritename, isMonster: true };
+            var parameters = pick.Parameters || pick.parameters || pick['参数'];
+            if (customHasParameters(parameters)) opponent.parameters = cloneCustomParameters(parameters);
+            opponents.push(opponent);
         }
         return opponents;
     }
@@ -3218,6 +3725,7 @@
             customEditor: _customEditor,
             customSelectedSide: _customSelectedSide,
             customEditorPage: _customEditorPage,
+            customParamEditor: _customParamEditor,
             customSavedRosters: getCustomSavedRosters().slice(),
             customConfirmOpen: _customConfirmOpen,
             customRun: _customRun,

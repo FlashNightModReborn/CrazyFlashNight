@@ -8980,6 +8980,12 @@ html.perf-low-effects .map-panel-close-btn:hover {
     grid-template-rows: auto minmax(0, 1fr);
     gap: 10px;
 }
+.arena-custom-param-page {
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 10px;
+}
 .arena-custom-side-editor-head {
     min-height: 0;
     display: grid;
@@ -8993,6 +8999,16 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .arena-custom-side-editor-title-block {
     min-width: 0;
 }
+.arena-custom-param-editor-head {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+    gap: 12px;
+    padding: 10px 12px;
+    background: rgba(10,12,17,0.78);
+    border: 1px solid rgba(255,255,255,0.13);
+    border-radius: var(--arena-radius-sm);
+}
 .arena-custom-side-editor-actions {
     min-width: 0;
     display: grid;
@@ -9000,9 +9016,108 @@ html.perf-low-effects .map-panel-close-btn:hover {
     gap: 7px;
     align-items: end;
 }
+.arena-custom-param-editor-actions {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(72px, 1fr));
+    gap: 7px;
+    align-items: end;
+}
 .arena-custom-side-editor-actions .arena-custom-btn {
     min-width: 0;
     padding: 0 8px;
+}
+.arena-custom-param-editor-actions .arena-custom-btn,
+.arena-custom-param-editor-actions .arena-card-btn-enter {
+    min-width: 0;
+    height: 34px;
+    padding: 0 8px;
+}
+.arena-custom-param-editor-body {
+    min-height: 0;
+}
+.arena-custom-param-workbench {
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(210px, 0.34fr);
+    gap: 10px;
+}
+.arena-custom-param-main,
+.arena-custom-param-inspector {
+    min-width: 0;
+    min-height: 0;
+    background: rgba(9,11,16,0.82);
+    border: 1px solid rgba(255,255,255,0.13);
+    border-radius: var(--arena-radius-sm);
+}
+.arena-custom-param-main {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: hidden;
+}
+.arena-custom-param-toolbar {
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.09);
+    background: rgba(255,255,255,0.045);
+}
+.arena-custom-param-toolbar .arena-custom-btn {
+    height: 26px;
+    min-width: 62px;
+}
+.arena-custom-param-editor-input {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    resize: none;
+    padding: 10px 12px;
+    background: rgba(0,0,0,0.18);
+    border: 0;
+    color: var(--arena-text);
+    font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 12px;
+    line-height: 1.55;
+    outline: none;
+    white-space: pre;
+    overflow: auto;
+}
+.arena-custom-param-editor-input:focus {
+    box-shadow: inset 0 0 0 1px rgba(239,148,66,0.45);
+}
+.arena-custom-param-editor-input-invalid {
+    box-shadow: inset 0 0 0 1px rgba(255,80,80,0.72);
+}
+.arena-custom-param-error {
+    padding: 6px 10px;
+    border-top: 1px solid rgba(255,80,80,0.28);
+    background: rgba(120,20,20,0.22);
+    color: #ffaaa0;
+    font-size: 11px;
+}
+.arena-custom-param-inspector {
+    padding: 10px;
+    overflow-y: auto;
+}
+.arena-custom-param-inspector-title {
+    margin-top: 10px;
+    color: var(--arena-accent-2);
+    font-size: 11px;
+    font-weight: 900;
+}
+.arena-custom-param-inspector-title:first-child {
+    margin-top: 0;
+}
+.arena-custom-param-inspector-text {
+    margin-top: 5px;
+    color: var(--arena-text-mute);
+    font-size: 11px;
+    line-height: 1.45;
+    word-break: break-word;
 }
 .arena-custom-side-workbench {
     min-height: 0;
@@ -9114,7 +9229,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 .arena-custom-roster-row {
     display: grid;
-    grid-template-columns: 42px minmax(0, 1fr) 58px 82px 26px;
+    grid-template-columns: 42px minmax(120px, 1fr) 58px 82px minmax(118px, 0.72fr) 26px;
     align-items: center;
     gap: 6px;
     min-height: 42px;
@@ -9183,6 +9298,42 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .arena-custom-count-stepper .arena-custom-mini-input {
     width: 34px;
     text-align: center;
+}
+.arena-custom-param-pill {
+    min-width: 0;
+    height: 30px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px;
+    padding: 0 7px;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 3px;
+    color: var(--arena-text-mute);
+    font-family: inherit;
+    cursor: pointer;
+}
+.arena-custom-param-pill span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 10px;
+    text-align: left;
+}
+.arena-custom-param-pill b {
+    color: var(--arena-text-dim);
+    font-size: 10px;
+}
+.arena-custom-param-pill-active {
+    background: rgba(239,148,66,0.12);
+    border-color: rgba(239,148,66,0.42);
+    color: var(--arena-accent-2);
+}
+.arena-custom-param-pill:hover {
+    border-color: rgba(239,148,66,0.58);
+    color: var(--arena-text);
 }
 .arena-custom-icon-btn {
     width: 24px;
@@ -9323,6 +9474,13 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 .arena-custom-unit-row:hover {
     background: rgba(239,148,66,0.08);
+}
+.arena-custom-unit-row-preset {
+    background: rgba(140,183,255,0.035);
+}
+.arena-custom-unit-row-preset .arena-custom-unit-mark {
+    border-color: rgba(255,211,109,0.34);
+    color: #ffd36d;
 }
 .arena-custom-unit-row-nonhostile .arena-custom-unit-mark {
     border-color: rgba(140,183,255,0.34);

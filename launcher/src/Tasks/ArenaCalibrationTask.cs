@@ -772,6 +772,9 @@ namespace CF7Launcher.Tasks
                 JObject normalizedEntry = new JObject();
                 normalizedEntry["type"] = type;
                 normalizedEntry["level"] = level;
+                JToken parameters = entry["parameters"] ?? entry["Parameters"] ?? entry["参数"];
+                if (parameters != null && parameters.Type != JTokenType.Null)
+                    normalizedEntry["parameters"] = parameters.DeepClone();
                 normalized.Add(normalizedEntry);
             }
             return normalized;
@@ -785,6 +788,8 @@ namespace CF7Launcher.Tasks
                 JObject normalized = new JObject();
                 normalized["兵种"] = entry.Value<string>("type");
                 normalized["等级"] = entry.Value<int>("level");
+                if (entry["parameters"] != null && entry["parameters"].Type != JTokenType.Null)
+                    normalized["Parameters"] = entry["parameters"].DeepClone();
                 result.Add(normalized);
             }
             return result;
