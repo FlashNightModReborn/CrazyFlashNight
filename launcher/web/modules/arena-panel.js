@@ -2368,6 +2368,8 @@
         if (_customMatch && _customMatch.parsed) _customMatch.code = _customMatch.parsed.canonical;
         _customRun = null;
         _customResult = null;
+        // 再赛一场已回到编辑态，后续 ESC/× 是普通取消，不再请求 AS2 返回基地。
+        _customResultReturnBaseRequired = false;
         _customConfirmOpen = false;
         _customEditorPage = 'config';
         _customParamEditor = null;
@@ -2963,8 +2965,8 @@
         if (roster[index][field] === value) return;
         captureCustomUndo(customSideLabel(side) + (field === 'level' ? '调整等级' : '调整数量'));
         roster[index][field] = value;
-        syncCustomCodeFromEditor({ refresh: false });
-        renderCustomUndoState();
+        // 数字输入 change 后也要刷新隐藏入口卡，否则点“完成”回 grid 会看到旧摘要。
+        syncCustomCodeFromEditor();
     }
 
     function setCustomRosterParametersValue(side, index, value) {

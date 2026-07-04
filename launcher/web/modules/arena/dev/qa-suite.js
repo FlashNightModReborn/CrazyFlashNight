@@ -108,6 +108,13 @@ var ArenaHarnessQA = (function() {
         }).join(',');
     }
 
+    function rosterTotal(roster) {
+        var total = 0;
+        roster = roster || [];
+        for (var i = 0; i < roster.length; i++) total += Number(roster[i].count) || 0;
+        return total;
+    }
+
     // ── case: panel-open ──
     function casePanelOpen(api, host) {
         return Promise.resolve()
@@ -815,6 +822,14 @@ var ArenaHarnessQA = (function() {
                 }, 2000, 'P90 preset added to red roster');
             })
             .then(function() {
+                function findP90ParamButton() {
+                    var buttons = document.querySelectorAll('[data-custom-edit-params]');
+                    for (var i = 0; i < buttons.length; i++) {
+                        var row = buttons[i].parentNode;
+                        if (row && /P90战术版/.test(row.textContent || '')) return buttons[i];
+                    }
+                    return null;
+                }
                 var buttons = document.querySelectorAll('[data-custom-edit-params]');
                 var button = null;
                 for (var i = 0; i < buttons.length; i++) {
@@ -829,11 +844,43 @@ var ArenaHarnessQA = (function() {
                 api.assert(!!miniInput, '阵容行应提供竞技场样式数字输入');
                 var miniStyle = getComputedStyle(miniInput);
                 api.assert(/none|textfield/.test(String(miniStyle.appearance || miniStyle.webkitAppearance || '')), '测试场数字输入应隐藏浏览器原生步进器外观');
-                button.click();
+                var p90Row = button.parentNode;
+                var countInput = p90Row ? p90Row.querySelector('[data-custom-roster-input="count"]') : null;
+                api.assert(!!countInput, 'P90 阵容行应有数量输入');
+                var beforeTotal = rosterTotal((window.ArenaPanel.getState().customEditor || {}).red);
+                var nextCount = Math.min(20, (Number(countInput.value) || 1) + 1);
+                countInput.value = String(nextCount);
+                countInput.dispatchEvent(new Event('change', { bubbles: true }));
                 return api.waitFor(function() {
-                    var state = window.ArenaPanel.getState();
-                    return state.customEditorPage === 'params' && !!document.querySelector('[data-custom-param-editor-input]');
-                }, 2000, 'parameter editor page opened');
+                    var red = (window.ArenaPanel.getState().customEditor || {}).red || [];
+                    return rosterTotal(red) === beforeTotal + 1;
+                }, 2000, 'roster count input updates editor state').then(function() {
+                    document.querySelector('[data-custom-editor-action="done"]').click();
+                    return api.waitFor(function() {
+                        return document.getElementById('arena-grid-view') &&
+                            !document.getElementById('arena-grid-view').hidden &&
+                            document.querySelector('.arena-card-custom');
+                    }, 2000, 'back to custom entry card after roster input change');
+                }).then(function() {
+                    var countText = document.querySelector('.arena-card-custom .arena-custom-side-red .arena-custom-side-count');
+                    api.assert(countText && countText.textContent.indexOf(String(beforeTotal + 1) + ' 单位') >= 0,
+                        '数量输入 change 后入口卡红方单位数应立即刷新');
+                    document.querySelector('.arena-card-custom .arena-custom-side-red .arena-custom-side-edit').click();
+                    return api.waitFor(function() {
+                        var state = window.ArenaPanel.getState();
+                        return state.customEditorPage === 'side' &&
+                            state.customSelectedSide === 'red' &&
+                            document.querySelectorAll('.arena-custom-unit-group').length > 0;
+                    }, 2000, 'return to red side editor after entry summary refresh check');
+                }).then(function() {
+                    button = findP90ParamButton();
+                    api.assert(!!button, '返回红方编辑页后仍应找到 P90 参数入口');
+                    button.click();
+                    return api.waitFor(function() {
+                        var state = window.ArenaPanel.getState();
+                        return state.customEditorPage === 'params' && !!document.querySelector('[data-custom-param-editor-input]');
+                    }, 2000, 'parameter editor page opened');
+                });
             })
             .then(function() {
                 var editor = document.querySelector('[data-custom-param-editor-input]');
@@ -1013,6 +1060,7 @@ var ArenaHarnessQA = (function() {
     // ── case: custom-match-p2 ──
     // 定制赛 P2 点击开始委托后走 custom_start，关闭 webpanel；结算后由 Host 回开结果态，不走正式 arena enter。
     function caseCustomMatchP2(api, host) {
+        var lastReplayMatchCode = '';
         return Promise.resolve()
             .then(function() {
                 host.setFixture('rich');
@@ -1058,6 +1106,7 @@ var ArenaHarnessQA = (function() {
                     }
                 }
                 api.assert(!!msg, '应找到 custom_start 消息');
+                lastReplayMatchCode = msg.matchCode || '';
                 api.assert(msg.matchCode && msg.matchCode.indexOf('CF7ARENA:v1;mode=mvm') === 0, '应携带 canonical 赛程代码');
                 api.assert(msg.calibrationCase && msg.calibrationCase.blueRoster.length === 4, '应携带 thief-lv30x4 对照阵容');
                 return api.waitFor(function() {
@@ -1126,6 +1175,50 @@ var ArenaHarnessQA = (function() {
                 }).then(function() {
                     var view = document.getElementById('arena-custom-result-view');
                     api.assert(!!view && !view.hidden, '第二次结算页应显示');
+                    view.querySelector('[data-custom-result-action="reopen"]').click();
+                    return api.waitFor(function() {
+                        var state = window.ArenaPanel.getState();
+                        var resultView = document.getElementById('arena-custom-result-view');
+                        return state.activeMode === 'custom' &&
+                            !state.customResult &&
+                            !state.customRun &&
+                            resultView && resultView.hidden &&
+                            document.querySelector('.arena-card-custom');
+                    }, 2000, 'custom result second reopen to panel');
+                }).then(function() {
+                    var closeBefore = host.sentMessages.filter(function(m) { return m && m.cmd === 'close'; }).length;
+                    chrome.webview.__dispatch({ type: 'panel_esc' });
+                    return api.waitFor(function() {
+                        var closes = host.sentMessages.filter(function(m) { return m && m.cmd === 'close'; });
+                        return closes.length > closeBefore;
+                    }, 2000, 'reopened custom panel ESC sends close').then(function() {
+                        var closes = host.sentMessages.filter(function(m) { return m && m.cmd === 'close'; });
+                        var lastClose = closes[closes.length - 1] || {};
+                        api.assert(!lastClose.returnBase, '再赛一场回到编辑面板后 ESC 不应发送 returnBase');
+                        api.assert(!lastClose.dismissReturnStack, '再赛一场回到编辑面板后 ESC 应为普通关闭');
+                        host.open({
+                            mode: 'custom_result',
+                            source: 'arena_custom_match_result_harness_reopen_close_check',
+                            debug: true,
+                            matchCode: lastReplayMatchCode,
+                            state: 'completed',
+                            batchId: 'custom-harness-reopen-close-check',
+                            resultPath: 'logs/arena-custom/custom-harness-reopen-close-check-results.jsonl',
+                            lastResult: {
+                                schema: 'arena-calibration.result.v1',
+                                batchId: 'custom-harness-reopen-close-check',
+                                caseId: 'arena-custom-p3',
+                                runId: 'arena-custom-p3-r001',
+                                status: 'finished',
+                                winner: 'blue',
+                                frames: 96
+                            }
+                        });
+                        return api.waitFor(function() {
+                            var resultView = document.getElementById('arena-custom-result-view');
+                            return resultView && !resultView.hidden;
+                        }, 2000, 'synthetic custom result reopened for return-base close check');
+                    });
                 });
             })
             .then(function() {
