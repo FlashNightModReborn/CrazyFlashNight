@@ -6,6 +6,7 @@
         <name>下挂霰弹枪</name>
         <use>长枪</use>
         <weapontype>突击步枪</weapontype>
+        <excludeWeapontype>发射器,机枪,压制机枪,近战,压制近战</excludeWeapontype>
         <requireTags>下导轨挂点</requireTags>
         <stats>
             <flat>
@@ -28,7 +29,7 @@
             <diffusion>13</diffusion>
             <velocity>25</velocity>
             <range>50</range>
-            <impact>8</impact>
+            <impact>4</impact>
             <damageType>物理</damageType>
             <consumeMode>onLoadGroup</consumeMode>
             <consumeTiming>onReloadCommit</consumeTiming>

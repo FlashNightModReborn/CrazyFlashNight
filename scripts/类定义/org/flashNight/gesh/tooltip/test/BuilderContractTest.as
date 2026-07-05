@@ -1,5 +1,6 @@
 ﻿import org.flashNight.gesh.tooltip.test.TestDataBootstrap;
 import org.flashNight.gesh.tooltip.test.MockItemFactory;
+import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer;
@@ -76,6 +77,7 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         test_DrugTooltipComposer_null();
         test_ObtainMethodsBuilder_no_index();
         test_ModStatBuilder_unknown_item();
+        test_ModStatBuilder_curve();
         test_ModStatBuilder_skillSwitch();
         test_ModsBlockBuilder_skillSwitch();
 
@@ -383,6 +385,33 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         // 未知物品名应返回空数组
         var result:Array = ModStatBuilder.build("完全不存在的配件名");
         assert(result.length == 0, "ModStatBuilder unknown item: empty result");
+    }
+
+    private static function test_ModStatBuilder_curve():Void {
+        var oldDict:Object = EquipmentUtil.modDict;
+        var dict:Object = {};
+        dict["曲线插件"] = {
+            name: "曲线插件",
+            use: "长枪",
+            tagValue: "下导轨",
+            stats: {
+                curve: {
+                    diffusion: 1.414
+                }
+            }
+        };
+        EquipmentUtil.modDict = dict;
+
+        var result:Array = ModStatBuilder.build("曲线插件");
+        var joined:String = result.join("");
+
+        EquipmentUtil.modDict = oldDict;
+
+        assertContains(joined, TooltipConstants.TAG_CURVE, "ModStatBuilder curve has curve tag");
+        assertContains(joined, TooltipConstants.LBL_CURVE_COMPRESSION_LEVEL, "ModStatBuilder curve has compression level label");
+        assertContains(joined, "20", "ModStatBuilder curve maps coefficient 1.414 to level 20");
+        assertNotContains(joined, "√当前值", "ModStatBuilder curve hides sqrt formula");
+        assertContains(joined, TooltipConstants.PROPERTY_DICT["diffusion"], "ModStatBuilder curve has diffusion label");
     }
 
     private static function test_ModStatBuilder_skillSwitch():Void {

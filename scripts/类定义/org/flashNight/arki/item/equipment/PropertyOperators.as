@@ -91,6 +91,80 @@ class org.flashNight.arki.item.equipment.PropertyOperators {
     }
 
     /**
+     * 对属性应用曲线压缩。
+     *
+     * 当前支持 sqrtScale（默认）：
+     *   result = round(coefficient * sqrt(current))
+     *
+     * 设计用于散射度一类“数值越大越差”的属性压缩：
+     * - 默认最小值 min=1，避免正数散射被压到 0
+     * - 只压缩不放大，current 为 0/1 或曲线结果更差时保留原值
+     * - 数值写法：<curve><diffusion>1.414</diffusion></curve>
+     * - 对象写法：<curve><diffusion><type>sqrtScale</type><coefficient>1.414</coefficient><min>1</min></diffusion></curve>
+     *
+     * @param prop 要被修改的属性对象。
+     * @param curveProp 曲线配置对象。
+     */
+    public static function applyCurve(prop:Object, curveProp:Object):Void {
+        if (!curveProp) return;
+
+        for (var key:String in curveProp) {
+            var currentVal:Number = Number(prop[key]);
+            if (isNaN(currentVal)) continue;
+
+            var curveConfig = curveProp[key];
+            var curveType:String = "sqrtScale";
+            var coefficient:Number = 1;
+            var minValue:Number = 1;
+            var maxValue:Number = Number.NaN;
+
+            if (typeof curveConfig == "object" && curveConfig != null) {
+                if (curveConfig.type != undefined) {
+                    curveType = String(curveConfig.type);
+                }
+                if (curveConfig.coefficient != undefined) {
+                    coefficient = Number(curveConfig.coefficient);
+                } else if (curveConfig.scale != undefined) {
+                    coefficient = Number(curveConfig.scale);
+                }
+                if (curveConfig.min != undefined) {
+                    minValue = Number(curveConfig.min);
+                }
+                if (curveConfig.max != undefined) {
+                    maxValue = Number(curveConfig.max);
+                }
+            } else {
+                coefficient = Number(curveConfig);
+            }
+
+            if (isNaN(coefficient) || coefficient <= 0) coefficient = 1;
+            if (isNaN(minValue)) minValue = 1;
+
+            var curvedVal:Number;
+            if (curveType == "sqrtScale" || curveType == "sqrt") {
+                if (currentVal < 0) continue;
+                curvedVal = coefficient * Math.sqrt(currentVal);
+            } else {
+                continue;
+            }
+
+            if (isNaN(curvedVal)) continue;
+            if (curvedVal < minValue) curvedVal = minValue;
+            if (!isNaN(maxValue) && curvedVal > maxValue) curvedVal = maxValue;
+
+            var roundedVal:Number = roundByProperty(key, curvedVal);
+
+            // 压缩型曲线不应把低散射/零散射武器变差。
+            if (roundedVal > currentVal) {
+                roundedVal = currentVal;
+            }
+
+            prop[key] = roundedVal;
+            if (prop[key] == 0) prop[key] = 0;
+        }
+    }
+
+    /**
      * 输入2个存放装备属性的Object对象，将后者的每个属性覆盖前者。
      *
      * @param prop 要被修改的属性对象。
@@ -266,6 +340,20 @@ class org.flashNight.arki.item.equipment.PropertyOperators {
                 }
             }
         }
+    }
+
+    /**
+     * 按属性精度远离 0 取整。
+     * 与 multiply 的取整语义保持一致：整数属性四舍五入，decimalPropDict 中属性保留一位小数。
+     */
+    private static function roundByProperty(key:String, val:Number):Number {
+        var dec:Boolean = decimalPropDict[key];
+        var scale:Number = dec ? 10 : 1;
+        var t:Number = val * scale;
+        t += (t >= 0) ? 0.5 : -0.5;
+        var n:Number = (t | 0);
+        var result:Number = dec ? (n * 0.1) : n;
+        return (result == 0) ? 0 : result;
     }
 
 }

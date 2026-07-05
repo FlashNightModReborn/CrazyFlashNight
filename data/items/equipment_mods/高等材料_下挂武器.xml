@@ -6,6 +6,7 @@
         <name>下挂微型导弹发射器</name>
         <use>长枪</use>
         <weapontype>突击步枪</weapontype>
+        <excludeWeapontype>发射器,机枪,压制机枪,近战,压制近战</excludeWeapontype>
         <requireTags>下导轨挂点</requireTags>
         <stats>
             <flat>
@@ -45,6 +46,7 @@
         <name>下挂转轮霰弹枪</name>
         <use>长枪</use>
         <weapontype>突击步枪</weapontype>
+        <excludeWeapontype>发射器,机枪,压制机枪,近战,压制近战</excludeWeapontype>
         <requireTags>下导轨挂点</requireTags>
         <stats>
             <flat>
@@ -84,6 +86,7 @@
         <name>下挂金属风暴榴弹发射器</name>
         <use>长枪</use>
         <weapontype>突击步枪</weapontype>
+        <excludeWeapontype>发射器,机枪,压制机枪,近战,压制近战</excludeWeapontype>
         <requireTags>下导轨挂点</requireTags>
         <stats>
             <flat>

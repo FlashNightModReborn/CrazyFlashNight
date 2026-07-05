@@ -70,7 +70,7 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
      * 构建统一的属性块（可被顶层 stats 和 useCase 共用）
      *
      * @param result:Array 输出缓冲区（就地修改）
-     * @param statsObj:Object 包含 percentage/multiplier/flat/override/merge/cap 的对象
+     * @param statsObj:Object 包含 percentage/multiplier/curve/flat/override/merge/cap 的对象
      * @param indent:String 缩进字符串（如 "  " 或 ""）
      * @return Void（直接修改 result）
      */
@@ -121,6 +121,15 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 var displayText:String = "×" + factorValue;
 
                 result.push(indent, "<FONT COLOR='" + TooltipConstants.COL_MULTIPLIER + "'>", label, " ", displayText, "</FONT> <FONT COLOR='" + TooltipConstants.COL_MULTIPLIER_HINT + "'>" + TooltipConstants.TAG_MULTIPLIER_ZONE + "</FONT><BR>");
+            }
+        }
+
+        // 显示 curve 曲线压缩
+        if (statsObj.curve) {
+            var sortedList = TooltipTextBuilder.getSortedAttrList(statsObj.curve);
+            for (var i = 0; i < sortedList.length; i++) {
+                var key = sortedList[i];
+                appendCurveLine(result, indent, key, statsObj.curve[key]);
             }
         }
 
@@ -283,6 +292,52 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             result.push(indent);
             TooltipTextBuilder.quickBuildDamageType(result, statsObj.override);
         }
+    }
+
+    private static function appendCurveLine(result:Array, indent:String, key:String, curveConfig):Void {
+        var label:String = TooltipConstants.PROPERTY_DICT[key];
+        if (!label) label = key;
+
+        var curveType:String = "sqrtScale";
+        var coefficient:Number = 1;
+        var minValue:Number = 1;
+
+        if (typeof curveConfig == "object" && curveConfig != null) {
+            if (curveConfig.type != undefined) {
+                curveType = String(curveConfig.type);
+            }
+            if (curveConfig.coefficient != undefined) {
+                coefficient = Number(curveConfig.coefficient);
+            } else if (curveConfig.scale != undefined) {
+                coefficient = Number(curveConfig.scale);
+            }
+            if (curveConfig.min != undefined) {
+                minValue = Number(curveConfig.min);
+            }
+        } else {
+            coefficient = Number(curveConfig);
+        }
+
+        if (isNaN(coefficient) || coefficient <= 0) coefficient = 1;
+        if (isNaN(minValue)) minValue = 1;
+
+        result.push(indent, "<FONT COLOR='", TooltipConstants.COL_CURVE, "'>", TooltipConstants.TAG_CURVE, " ", label, "：");
+
+        if (curveType == "sqrtScale" || curveType == "sqrt") {
+            result.push(TooltipConstants.LBL_CURVE_COMPRESSION_LEVEL, " ", calculateCurveCompressionLevel(coefficient));
+        } else {
+            result.push(curveType);
+        }
+
+        result.push("</FONT><BR>");
+    }
+
+    private static function calculateCurveCompressionLevel(coefficient:Number):Number {
+        var neutralCoefficient:Number = 2;
+        var referenceCoefficient:Number = 1.414;
+        var referenceLevel:Number = 20;
+        var level:Number = Math.round((neutralCoefficient - coefficient) / (neutralCoefficient - referenceCoefficient) * referenceLevel);
+        return level < 0 ? 0 : level;
     }
 
     /**

@@ -30,7 +30,7 @@ equipment_mods/
 
 ---
 
-### 【六种核心运算符】
+### 【七种核心运算符】
 
 #### 1. flat - 固定值加成
 
@@ -259,7 +259,62 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 
 ---
 
-#### 6. cap - 上限/下限值
+#### 6. curve - 曲线压缩
+
+**运算方式：** 对当前属性值应用非线性压缩，当前默认曲线为平方根压缩：
+
+```
+新值 = round(系数 × sqrt(当前值))
+```
+
+**示例：**
+```xml
+<stats>
+    <curve>
+        <diffusion>1.414</diffusion>  <!-- Tooltip 显示为“压缩等级 20” -->
+    </curve>
+</stats>
+```
+
+**Tooltip 展示：** 玩家侧不直接显示根号公式，而显示为可读强度标尺：
+
+```
+[曲线] 子弹散射度：压缩等级 20
+```
+
+压缩等级只表示“曲线压缩强度”，不是固定百分比。当前换算规则：
+
+```
+压缩等级 = round((2 - 系数) / (2 - 1.414) × 20)
+```
+
+因此 `1.414` 显示为压缩等级 20；系数越小，压缩等级越高，实际压缩力度越强。
+
+**效果速查（diffusion）：**
+```
+1→1, 2→2, 3→2, 4→3, 5→3, 6→3, 7→4, 8→4
+```
+
+**特点：**
+- 默认最小值为 1，但只压缩不放大，0/1 这类低散射不会被反向变差
+- 适合“高数值更需要压缩、低数值少动”的属性，例如高扩散武器的压枪插件
+- 当前数值写法等价于 `sqrtScale` 曲线；如需显式配置，可使用对象写法：
+
+```xml
+<curve>
+    <diffusion>
+        <type>sqrtScale</type>
+        <coefficient>1.414</coefficient>
+        <min>1</min>
+    </diffusion>
+</curve>
+```
+
+**用途：** 为顶级压枪、稳定化等配件提供非线性收益，避免低扩散武器过度受益。
+
+---
+
+#### 7. cap - 上限/下限值
 
 **运算方式：**
 - 正数：增益上限（相对基础值，最多增加这么多）
@@ -284,25 +339,28 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 
 ### 【运算顺序与优先级】
 
-计算严格按照以下顺序执行（代码位置：`EquipmentUtil.as` calculateData方法）：
+计算严格按照以下顺序执行（代码位置：`EquipmentCalculator.as` applyOperatorsInOrder方法）：
 
 ```
 1. percentage（百分比）   ← 优先级最高，先计算（加法合并乘区）
     ↓
 2. multiplier（独立乘区） ← 在percentage之后应用（乘法增幅）
     ↓
-3. flat（固定值）
+3. curve（曲线压缩）      ← 在乘区后压缩当前值
     ↓
-4. override（覆盖）
+4. flat（固定值）
     ↓
-5. merge（深度合并）
+5. override（覆盖）
     ↓
-6. cap（上限限制）        ← 优先级最低，最后执行
+6. merge（深度合并）
+    ↓
+7. cap（上限限制）        ← 优先级最低，最后执行
 ```
 
 **为什么这样排序？**
 - percentage先行：基于基础值和强化等级计算百分比增幅（加法合并，抑制膨胀）
 - multiplier次之：在percentage基础上应用独立乘区（乘法增幅，精细控制）
+- curve在乘区后：对已经形成的当前值做非线性压缩，适合高数值更强收益的属性
 - flat再次：在所有百分比计算后加固定值
 - override覆盖：可以完全改变前面的计算结果，用于改变本质属性
 - merge合并：深度合并嵌套对象，在override之后避免被覆盖影响
@@ -681,7 +739,7 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 **语义说明：**
 - 顶层stats：对所有装备统一生效的基础效果
 - useSwitch内的分支：当装备类型匹配时，追加执行（而非替换）
-- 分支内可使用所有运算符（percentage、multiplier、flat、override、merge、cap）
+- 分支内可使用所有运算符（percentage、multiplier、curve、flat、override、merge、cap）
 
 **匹配规则：**
 - 分支的name与装备的use或weapontype字段进行匹配
@@ -752,7 +810,7 @@ useSwitch 分支内还可以包含 `<provideTags>` 元素，实现基于装备�
 **语义说明：**
 - 顶层stats：对所有装备统一生效的基础效果
 - tagSwitch内的分支：当装备的 presentTags 包含指定标签时，追加执行
-- 分支内可使用所有运算符（percentage、multiplier、flat、override、merge、cap）
+- 分支内可使用所有运算符（percentage、multiplier、curve、flat、override、merge、cap）
 
 **匹配规则：**
 - 分支的name与装备的 presentTags（固有结构 + 配件提供的结构）进行匹配
@@ -852,7 +910,7 @@ presentTags = 装备固有 inherentTags
 **语义说明：**
 - 顶层stats：对所有装备统一生效的基础效果
 - bulletSwitch内的分支：当装备的子弹类型匹配时，追加执行（而非替换）
-- 分支内可使用所有运算符（percentage、multiplier、flat、override、merge、cap）
+- 分支内可使用所有运算符（percentage、multiplier、curve、flat、override、merge、cap）
 
 **支持的类型标识符：** 与 excludeBulletTypes 相同
 | 标识符 | 说明 | 检测方法 |

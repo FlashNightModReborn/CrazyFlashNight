@@ -108,6 +108,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         // 基础功能测试
         results.push(testPropertyOperators_Add());
         results.push(testPropertyOperators_Multiply());
+        results.push(testPropertyOperators_ApplyCurve());
         results.push(testPropertyOperators_Override());
         results.push(testPropertyOperators_Merge());
         results.push(testPropertyOperators_ApplyCap());
@@ -152,6 +153,52 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
 
         var passed:Boolean = (prop.damage == 150 && prop.weight == 3);
         return passed ? "✓ multiply 测试通过" : "✗ multiply 测试失败";
+    }
+
+    private static function testPropertyOperators_ApplyCurve():String {
+        var prop:Object = {
+            d0: 0,
+            d1: 1,
+            d2: 2,
+            d3: 3,
+            d4: 4,
+            d5: 5,
+            d6: 6,
+            d7: 7,
+            d8: 8
+        };
+        var curve:Object = {
+            d0: 1.414,
+            d1: 1.414,
+            d2: 1.414,
+            d3: 1.414,
+            d4: 1.414,
+            d5: 1.414,
+            d6: 1.414,
+            d7: 1.414,
+            d8: 1.414
+        };
+
+        PropertyOperators.applyCurve(prop, curve);
+
+        var passed:Boolean = (
+            prop.d0 == 0 &&
+            prop.d1 == 1 &&
+            prop.d2 == 2 &&
+            prop.d3 == 2 &&
+            prop.d4 == 3 &&
+            prop.d5 == 3 &&
+            prop.d6 == 3 &&
+            prop.d7 == 4 &&
+            prop.d8 == 4
+        );
+
+        if (!passed) {
+            return "✗ applyCurve 测试失败（0..8=" + prop.d0 + "," + prop.d1 + "," + prop.d2 + "," +
+                   prop.d3 + "," + prop.d4 + "," + prop.d5 + "," + prop.d6 + "," + prop.d7 + "," + prop.d8 + "）";
+        }
+
+        return "✓ applyCurve 测试通过";
     }
 
     private static function testPropertyOperators_Override():String {
@@ -1351,6 +1398,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
 
         result += testEquipmentCalculator_LevelBounds();
         result += testEquipmentCalculator_ModifierOrder();
+        result += testEquipmentCalculator_CurveOperator();
         result += testEquipmentCalculator_PureVsNormal();
         result += testEquipmentCalculator_UseSwitchMatching();
 
@@ -1452,6 +1500,51 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         }
 
         return "✓ 修正项顺序测试通过\n";
+    }
+
+    /**
+     * curve 运算符顺序测试
+     * 验证顺序：percentage → multiplierZone → curve → flat。
+     */
+    private static function testEquipmentCalculator_CurveOperator():String {
+        EquipmentConfigManager.loadConfig({
+            levelStatList: [1, 1.0],
+            decimalPropDict: {}
+        });
+
+        ModRegistry.loadModData([
+            {
+                name: "曲线测试配件",
+                use: "长枪",
+                stats: {
+                    percentage: { diffusion: 100 },  // 7 → 14
+                    curve: { diffusion: 1.414 },     // 14 → round(1.414*sqrt(14)) = 5
+                    flat: { diffusion: 1 }           // 5 → 6
+                }
+            }
+        ]);
+
+        var itemData:Object = {
+            name: "测试长枪",
+            use: "长枪",
+            weapontype: "突击步枪",
+            data: { diffusion: 7 }
+        };
+
+        var value:Object = { level: 1, mods: ["曲线测试配件"] };
+        var cfg:Object = EquipmentConfigManager.getFullConfig();
+        var modRegistry:Object = {
+            曲线测试配件: ModRegistry.getModData("曲线测试配件")
+        };
+
+        var result:Object = EquipmentCalculator.calculatePure(itemData, value, cfg, modRegistry);
+        var passed:Boolean = (result.data.diffusion == 6);
+
+        if (!passed) {
+            return "✗ curve顺序测试失败（diffusion=" + result.data.diffusion + "，期望6）\n";
+        }
+
+        return "✓ curve顺序测试通过\n";
     }
 
     /**

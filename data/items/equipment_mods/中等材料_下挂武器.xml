@@ -6,6 +6,7 @@
         <name>下挂冲锋枪</name>
         <use>长枪</use>
         <weapontype>突击步枪</weapontype>
+        <excludeWeapontype>发射器,机枪,压制机枪,近战,压制近战</excludeWeapontype>
         <requireTags>下导轨挂点</requireTags>
         <stats>
             <flat>
@@ -45,6 +46,7 @@
         <name>M203榴弹发射器</name>
         <use>长枪</use>
         <weapontype>突击步枪</weapontype>
+        <excludeWeapontype>发射器,机枪,压制机枪,近战,压制近战</excludeWeapontype>
         <requireTags>下导轨挂点</requireTags>
         <stats>
             <flat>
@@ -66,7 +68,7 @@
             <split>1</split>
             <diffusion>10</diffusion>
             <velocity>20</velocity>
-            <impact>10</impact>
+            <impact>1</impact>
             <range>50</range>
             <damageType>物理</damageType>
             <consumeMode>onLoadGroup</consumeMode>

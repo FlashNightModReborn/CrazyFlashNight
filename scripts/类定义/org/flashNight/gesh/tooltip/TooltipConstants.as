@@ -25,6 +25,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var COL_SILENCE:String = "#9999FF";      // 消音效果（淡紫色）
   public static var COL_MULTIPLIER:String = "#FF6600";   // 独立乘区（橙色）
   public static var COL_MULTIPLIER_HINT:String = "#FF9944"; // 独立乘区提示（浅橙）
+  public static var COL_CURVE:String = "#66DDAA";        // 曲线压缩（青绿）
   public static var COL_USE_SWITCH:String = "#FFCC66";   // useSwitch条件效果（淡金）
   public static var COL_TAG_SWITCH:String = "#88CCFF";   // tagSwitch结构加成（淡蓝）
   public static var COL_COND_PROVIDE:String = "#99FF99"; // 条件性provideTags（淡绿）
@@ -87,6 +88,8 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var TAG_OVERRIDE:String = "[覆盖]";
   public static var TAG_MERGE:String = "[合并]";
   public static var TAG_MULTIPLIER_ZONE:String = "[独立乘区]";
+  public static var TAG_CURVE:String = "[曲线]";
+  public static var LBL_CURVE_COMPRESSION_LEVEL:String = "压缩等级";
 
   // ══════════════════════════════════════════════════════════════
   // 属性标签常量 (Property Labels)

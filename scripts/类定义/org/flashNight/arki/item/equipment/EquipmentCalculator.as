@@ -164,6 +164,7 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         var merger:Object = {};
         var capper:Object = {};
         var multiplierZone:Object = {};
+        var curver:Object = {};
         var skill:Object = null;
         var subweapon:Object = null;
 
@@ -199,7 +200,7 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             if (!modInfo) continue;
 
             // 1. 先应用基础stats（词条主体 - 无条件生效）
-            applyStatsToAccumulators(modInfo.stats, adder, multiplier, overrider, merger, capper, multiplierZone);
+            applyStatsToAccumulators(modInfo.stats, adder, multiplier, overrider, merger, capper, multiplierZone, curver);
 
             // 2. 应用所有匹配的useSwitch分支（基于装备类型的条件词条）
             var matchedUseCases:Array = ModRegistry.matchUseSwitchAll(modInfo, useLookup);
@@ -207,7 +208,7 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
                 for (var mc:Number = 0; mc < matchedUseCases.length; mc++) {
                     applyStatsToAccumulators(
                         matchedUseCases[mc],
-                        adder, multiplier, overrider, merger, capper, multiplierZone
+                        adder, multiplier, overrider, merger, capper, multiplierZone, curver
                     );
                 }
             }
@@ -218,7 +219,7 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
                 for (var tc:Number = 0; tc < matchedTagCases.length; tc++) {
                     applyStatsToAccumulators(
                         matchedTagCases[tc],
-                        adder, multiplier, overrider, merger, capper, multiplierZone
+                        adder, multiplier, overrider, merger, capper, multiplierZone, curver
                     );
                 }
             }
@@ -229,7 +230,7 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
                 for (var bc:Number = 0; bc < matchedBulletCases.length; bc++) {
                     applyStatsToAccumulators(
                         matchedBulletCases[bc],
-                        adder, multiplier, overrider, merger, capper, multiplierZone
+                        adder, multiplier, overrider, merger, capper, multiplierZone, curver
                     );
                 }
             }
@@ -252,6 +253,7 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             merger: merger,
             capper: capper,
             multiplierZone: multiplierZone,
+            curver: curver,
             skill: skill,
             subweapon: subweapon
         };
@@ -269,12 +271,13 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
      */
     private static function applyStatsToAccumulators(stats:Object, adder:Object, multiplier:Object,
                                                       overrider:Object, merger:Object, capper:Object,
-                                                      multiplierZone:Object):Void {
+                                                      multiplierZone:Object, curver:Object):Void {
         if (!stats) return;
 
         // 应用各种修改器
         if (stats.flat) PropertyOperators.add(adder, stats.flat, 0);
         if (stats.percentage) PropertyOperators.add(multiplier, stats.percentage, 1);
+        if (stats.curve) PropertyOperators.override(curver, stats.curve);
         if (stats.override) PropertyOperators.override(overrider, stats.override);
         if (stats.merge) PropertyOperators.merge(merger, stats.merge);
         if (stats.cap) PropertyOperators.add(capper, stats.cap, 0);
@@ -353,14 +356,15 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         if (modifiers.multiplierZone) {
             PropertyOperators.multiply(data, modifiers.multiplierZone);  // 2. 独立乘区
         }
-        PropertyOperators.add(data, modifiers.adder, 0);                 // 3. 固定值加成
+        PropertyOperators.applyCurve(data, modifiers.curver);            // 3. 曲线压缩
+        PropertyOperators.add(data, modifiers.adder, 0);                 // 4. 固定值加成
         // 使用 cloneFast：overrider 是配件定义的简单对象，无循环引用
-        PropertyOperators.override(data, ObjectUtil.cloneFast(modifiers.overrider)); // 4. 覆盖值
-        PropertyOperators.merge(data, modifiers.merger);                 // 5. 深度合并
+        PropertyOperators.override(data, ObjectUtil.cloneFast(modifiers.overrider)); // 5. 覆盖值
+        PropertyOperators.merge(data, modifiers.merger);                 // 6. 深度合并
 
         // 【优化】仅当baseData存在时应用cap
         if (baseData) {
-            PropertyOperators.applyCap(data, capper, baseData);          // 6. 上限限制
+            PropertyOperators.applyCap(data, capper, baseData);          // 7. 上限限制
         }
     }
 

@@ -214,11 +214,11 @@
                         <accuracy>10</accuracy>  <!-- 命中期望伤害: +2.29% -->
                     </flat>
                 </use>
-                <!-- default：常规武器降低散射 -->
+                <!-- default：常规武器按 sqrt 曲线压缩扩散度，Tooltip 显示为压缩等级20 -->
                 <use>
-                    <percentage>
-                        <diffusion>-20</diffusion>
-                    </percentage>
+                    <curve>
+                        <diffusion>1.414</diffusion>
+                    </curve>
                 </use>
             </useSwitch>
             <!-- NOAH适配：高保真人机接口在NOAH结构支持下精度提升 -->
@@ -235,7 +235,7 @@
         </stats>
         <description>人机工学握把,提升威力并改善射击稳定性。
         需要导轨系统支持。
-        对常规武器降低扩散度,对近距离枪械获得命中加成。
+        对常规武器按压缩等级20改善扩散度,对近距离枪械获得命中加成。
         在NOAH结构支持下额外提升威力与精准度。</description>
         <tag>下导轨</tag>
     </mod>
