@@ -62,6 +62,7 @@ static const wchar_t* STARTUP_FAILURE_REL = L"\\logs\\startup-failure-latest.txt
 static const wchar_t* STARTUP_EXIT_REL = L"\\logs\\startup-exit.jsonl";
 static const DWORD CORE_EARLY_EXIT_GRACE_MS = 5000;
 static const int DUMP_RETENTION_LIMIT = 5;
+static const int STARTUP_EXIT_RETENTION_LIMIT = 20;
 // 滚动阈值：10MB。bootstrap 每次启动 ~10 行 ~1KB，理论可记 10 万次启动；
 // 不希望诊断文件无限增长，> 10MB 时滚一次（保留 .old 一份做事后复盘）
 static const long LOG_ROTATE_BYTES = 10L * 1024L * 1024L;
@@ -214,6 +215,7 @@ static bool BuildRootPath(const wchar_t* exeDir, const wchar_t* rel, wchar_t* ou
 }
 
 static void FormatFileTimeLocal(const FILETIME* ft, wchar_t* out, size_t cch);
+static void TrimLineEnd(char* text);
 
 static bool BuildProjectPath(const wchar_t* exeDir, const wchar_t* relativePath, wchar_t* out, size_t cch)
 {
@@ -226,27 +228,29 @@ static bool BuildProjectPath(const wchar_t* exeDir, const wchar_t* relativePath,
     return true;
 }
 
+static bool WriteUtf8ToFile(FILE* fp, const wchar_t* text)
+{
+    if (fp == NULL || text == NULL) return false;
+
+    int u8Len = WideCharToMultiByte(CP_UTF8, 0, text, -1, NULL, 0, NULL, NULL);
+    if (u8Len <= 0) return false;
+    char* u8Buf = (char*)malloc((size_t)u8Len);
+    if (u8Buf == NULL) return false;
+    WideCharToMultiByte(CP_UTF8, 0, text, -1, u8Buf, u8Len, NULL, NULL);
+    size_t written = fwrite(u8Buf, 1, (size_t)(u8Len - 1), fp);
+    free(u8Buf);
+    return written == (size_t)(u8Len - 1);
+}
+
 static bool WriteUtf8File(const wchar_t* path, const wchar_t* text, bool append)
 {
     if (path == NULL || text == NULL) return false;
     FILE* fp = _wfsopen(path, append ? L"ab" : L"wb", _SH_DENYNO);
     if (fp == NULL) return false;
 
-    int u8Len = WideCharToMultiByte(CP_UTF8, 0, text, -1, NULL, 0, NULL, NULL);
-    if (u8Len <= 0) {
-        fclose(fp);
-        return false;
-    }
-    char* u8Buf = (char*)malloc((size_t)u8Len);
-    if (u8Buf == NULL) {
-        fclose(fp);
-        return false;
-    }
-    WideCharToMultiByte(CP_UTF8, 0, text, -1, u8Buf, u8Len, NULL, NULL);
-    size_t written = fwrite(u8Buf, 1, (size_t)(u8Len - 1), fp);
-    free(u8Buf);
+    bool ok = WriteUtf8ToFile(fp, text);
     fclose(fp);
-    return written == (size_t)(u8Len - 1);
+    return ok;
 }
 
 static void EscapeJsonWide(const wchar_t* value, wchar_t* out, size_t cch)
@@ -256,23 +260,41 @@ static void EscapeJsonWide(const wchar_t* value, wchar_t* out, size_t cch)
     if (value == NULL) return;
 
     size_t n = 0;
-    for (size_t i = 0; value[i] != L'\0' && n + 2 < cch; i++) {
+    for (size_t i = 0; value[i] != L'\0'; i++) {
         wchar_t ch = value[i];
+        wchar_t controlEscape[8];
+        const wchar_t* replacement = NULL;
         if (ch == L'\\' || ch == L'"') {
-            if (n + 2 >= cch) break;
-            out[n++] = L'\\';
-            out[n++] = ch;
+            controlEscape[0] = L'\\';
+            controlEscape[1] = ch;
+            controlEscape[2] = L'\0';
+            replacement = controlEscape;
+        } else if (ch == L'\b') {
+            replacement = L"\\b";
+        } else if (ch == L'\f') {
+            replacement = L"\\f";
         } else if (ch == L'\r') {
-            if (n + 2 >= cch) break;
-            out[n++] = L'\\';
-            out[n++] = L'r';
+            replacement = L"\\r";
         } else if (ch == L'\n') {
-            if (n + 2 >= cch) break;
-            out[n++] = L'\\';
-            out[n++] = L'n';
-        } else {
-            out[n++] = ch;
+            replacement = L"\\n";
+        } else if (ch == L'\t') {
+            replacement = L"\\t";
+        } else if (ch < 0x20) {
+            StringCchPrintfW(controlEscape, 8, L"\\u%04X", (unsigned int)ch);
+            replacement = controlEscape;
         }
+
+        if (replacement != NULL) {
+            size_t replLen = wcslen(replacement);
+            if (n + replLen >= cch) break;
+            for (size_t j = 0; j < replLen; j++) {
+                out[n++] = replacement[j];
+            }
+            continue;
+        }
+
+        if (n + 1 >= cch) break;
+        out[n++] = ch;
     }
     out[n] = L'\0';
 }
@@ -374,6 +396,73 @@ static void AppendRecentDumpList(const wchar_t* dumpDir, wchar_t* out, size_t cc
     }
 }
 
+static bool WriteStartupExitLineRetained(const wchar_t* path, const wchar_t* line)
+{
+    if (path == NULL || path[0] == L'\0' || line == NULL) return false;
+
+    int keepLimit = STARTUP_EXIT_RETENTION_LIMIT - 1;
+    char (*kept)[4096] = NULL;
+    int total = 0;
+    if (keepLimit > 0) {
+        kept = (char (*)[4096])calloc((size_t)keepLimit, sizeof(*kept));
+    }
+
+    if (kept != NULL) {
+        FILE* readFp = _wfsopen(path, L"rb", _SH_DENYNO);
+        if (readFp != NULL) {
+            char buf[4096];
+            while (fgets(buf, sizeof(buf), readFp) != NULL) {
+                TrimLineEnd(buf);
+                if (buf[0] == '\0') continue;
+                StringCchCopyA(kept[total % keepLimit], 4096, buf);
+                total++;
+            }
+            fclose(readFp);
+        }
+    }
+
+    FILE* fp = _wfsopen(path, L"wb", _SH_DENYNO);
+    if (fp == NULL) {
+        if (kept != NULL) free(kept);
+        return WriteUtf8File(path, line, true);
+    }
+
+    if (kept != NULL) {
+        int keep = total < keepLimit ? total : keepLimit;
+        int first = total - keep;
+        for (int i = 0; i < keep; i++) {
+            int index = (first + i) % keepLimit;
+            fputs(kept[index], fp);
+            fputs("\r\n", fp);
+        }
+        free(kept);
+    }
+
+    bool ok = WriteUtf8ToFile(fp, line);
+    fclose(fp);
+    return ok;
+}
+
+static bool HasFreshManagedStartupFailure(const wchar_t* exeDir, const FILETIME* launchTime)
+{
+    if (launchTime == NULL) return false;
+
+    wchar_t summaryPath[MAX_PATH];
+    if (!BuildRootPath(exeDir, STARTUP_FAILURE_REL, summaryPath, MAX_PATH)) return false;
+
+    WIN32_FILE_ATTRIBUTE_DATA fad;
+    if (!GetFileAttributesExW(summaryPath, GetFileExInfoStandard, &fad) ||
+        (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
+        return false;
+    }
+
+    if (CompareFileTimeAsc(fad.ftLastWriteTime, *launchTime) >= 0) {
+        Logf("INFO", L"[startup-failure] managed failure summary is fresh; preserving Core report: %s", summaryPath);
+        return true;
+    }
+    return false;
+}
+
 static void ConfigureCoreCrashDumps(const wchar_t* exeDir)
 {
     wchar_t dumpDir[MAX_PATH];
@@ -464,7 +553,7 @@ static void WriteBootstrapStartupFailure(const wchar_t* exeDir, bool exitCodeKno
         L"\"terminal\":true,\"detail\":\"%s\",\"projectRoot\":\"%s\"}\r\n",
         st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds,
         GetCurrentProcessId(), escapedDetail, escapedRoot);
-    WriteUtf8File(startupExitPath, line, true);
+    WriteStartupExitLineRetained(startupExitPath, line);
 
     Logf("ERROR", L"[startup-failure] wrote %s", summaryPath);
 }
@@ -935,11 +1024,13 @@ struct CoreLaunchResult
     DWORD exitCode;
     DWORD systemError;
     DWORD waitStatus;
+    bool launchTimeKnown;
+    FILETIME launchTime;
 };
 
 static CoreLaunchResult LaunchCore(const wchar_t* exeDir, const wchar_t* corePath, LPWSTR origCmdLine)
 {
-    CoreLaunchResult result = { false, false, false, 0, 0, WAIT_FAILED };
+    CoreLaunchResult result = { false, false, false, 0, 0, WAIT_FAILED, false, { 0, 0 } };
     g_lastCoreLaunchError = 0;
     // 构造 args: --project-root "<exeDir>" <origCmdLine>
     // NTFS 路径分量禁止 `"`（连同 < > : / \ | ? * 都是保留字符），
@@ -970,6 +1061,8 @@ static CoreLaunchResult LaunchCore(const wchar_t* exeDir, const wchar_t* corePat
     sei.lpDirectory = exeDir;
     sei.nShow = SW_SHOWNORMAL;
 
+    GetSystemTimeAsFileTime(&result.launchTime);
+    result.launchTimeKnown = true;
     if (ShellExecuteExW(&sei)) {
         result.launchIssued = true;
         Log("INFO", L"Core launch issued OK");
@@ -1171,6 +1264,12 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdLine, int)
             L"请重试一次；如果仍失败，请检查杀毒软件是否拦截 runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe。");
     }
     if (launch.earlyExitObserved && (!launch.exitCodeKnown || launch.exitCode != 0)) {
+        if (launch.launchTimeKnown && HasFreshManagedStartupFailure(exeDir, &launch.launchTime)) {
+            Log("INFO", L"Core early exit already produced a managed startup failure report; no bootstrap override dialog");
+            Log("INFO", L"==== bootstrap exit after managed startup failure ====");
+            LogClose();
+            return 1;
+        }
         WriteBootstrapStartupFailure(exeDir, launch.exitCodeKnown, launch.exitCode, corePath);
 
         wchar_t buf[1024];

@@ -79,6 +79,7 @@ class Program
         return MainAfterStartupDiagnostics(args, earlyProjectRoot);
     }
 
+    // 防止 JIT 内联导致 DpiAwarenessBootstrap.Initialize() 的异常栈折叠进 Main，影响 startup diagnostics 定位。
     [MethodImpl(MethodImplOptions.NoInlining)]
     static int MainAfterStartupDiagnostics(string[] args, string earlyProjectRoot)
     {

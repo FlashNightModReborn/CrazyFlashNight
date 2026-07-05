@@ -495,18 +495,8 @@ Write-Host "  Writing runtime manifest..." -ForegroundColor Yellow
 $manifestPath = Join-Path $runtimeDir "cf7-runtime-manifest.tsv"
 $manifestLines = New-Object 'System.Collections.Generic.List[string]'
 [void]$manifestLines.Add("cf7-runtime-manifest-v1")
-[void]$manifestLines.Add("buildUtc`t$([DateTime]::UtcNow.ToString("o"))")
-[void]$manifestLines.Add("dotnetSdk`t$dotnetSdk")
-$gitHead = "unknown"
-try {
-    $gitOutput = & git -C $projectRoot rev-parse HEAD 2>$null
-    if ($LASTEXITCODE -eq 0 -and $gitOutput) {
-        $gitHead = (($gitOutput | Select-Object -First 1).ToString()).Trim()
-    }
-} catch {
-    $gitHead = "unknown"
-}
-[void]$manifestLines.Add("gitHead`t$gitHead")
+# 保持 manifest 可入库复现：构建时间、git HEAD、SDK 实际解析结果只留在 build log / 诊断 meta 中，
+# 不写入这个文件，避免每次本地 build 都把 tracked runtime 清单改脏。
 [void]$manifestLines.Add("publishMode`tframework-dependent")
 
 function Add-RuntimeManifestEntry {
@@ -533,7 +523,7 @@ $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 [System.IO.File]::WriteAllLines($manifestPath, [string[]]$manifestLines.ToArray(), $utf8NoBom)
 Write-Host "  Runtime manifest: runtime\cf7-runtime-manifest.tsv ($($manifestLines.Count) line(s))" -ForegroundColor Green
 
-# 6e: 硬断言关键运行时文件落地
+# 6f: 硬断言关键运行时文件落地
 # 用户面 (projectRoot):
 #   - CRAZYFLASHER7MercenaryEmpire.exe = bootstrap (检测 + 安装 .NET 10 runtime + 启动 Core)
 # FDD 主体 (projectRoot\runtime\):
