@@ -3,7 +3,7 @@
     竞技场（角斗场）挑战卡片配置
 
     ⚠ WARNING: 本文件目前未被代码加载（无运行时读取路径）。运行时真值在
-       launcher/web/modules/arena-panel.js 的 ARENA_CARDS 常量。
+       launcher/web/modules/arena-panel.js 的标准档位生成逻辑。
        本 XML 仅作为人类可读参考 + 字段意义文档。若修改卡片数据需同时改两处。
 
     Runtime 入口：玩家在 stage-select panel 选 "DEATH MATCH角斗场" 难度 → 由
@@ -14,26 +14,32 @@
        下次开工方向（等表达力施工触发时一次性迁移）：
          1. C# 启动期解析本 XML 为 ArenaConfig 内存对象，作为唯一权威源
          2. ArenaTask 的 snapshot 回包附带 cards 数组下发给 web，
-            arena-panel.js 删 ARENA_CARDS 硬编码，从 snapshot 拿
+            arena-panel.js 删标准档位硬编码，从 snapshot 拿
          3. enter 消息只传 cardIndex；C# 按 cardIndex 反查 config，
             组装完整 enter payload（expr/deposit/reward/stageUrl/...）下推 AS2
          4. AS2 端保持薄：仅消费当前一场的参数，不持有卡片表，
             新增字段在 AS2 侧不增加常驻内存
        原因：表达力扩展走 launcher → AS2 的运行时消息下发，AS2 端不应预读 XML。
 
-    表达式格式: #0@<等级下限>-<等级上限>%<对手数量>
+    标准模式当前在 Web 打开 / 全部重抽时按 countMin-countMax 随机确定本局人数，
+    所有标准 / 隐藏警报卡的佣兵等效人数最终均封顶 4，避免 Flash 战斗压力过高。
+    公开标准卡按会话固定配比随机落位：7 张佣兵卡、2 张怪物组卡、1 张 mixed 卡。
+    mixed 卡优先使用真实 meta-team，数据不足时兜底为佣兵模板单位 + 已知怪物组。
+    难度代号为竞技场专属称号风格映射，不直接读取 data/hero/hero_titles.xml，
+    避免玩家履历称号与挑战风险标签耦合。
+    再生成表达式: #0@<等级下限>-<等级上限>%<本局对手数量>
       - #0      : 保留字段（固定为0，兼容旧格式）
       - @       : 等级区间分隔符
       - <min>-<max> : 敌人等级范围
       - %       : 数量分隔符
       - <count> : 对手数量
     
-    押金公式: Math.floor(reward / 2)
+    押金公式: Math.max(500, roundTo(reward / 2, 500))
 
-    奖金公式（历史硬编码，多数符合公式，少数为手工加码）:
-      - 卡片 1-3, 5-6: opponentCount × levelMin × 1000
-      - 卡片 7-8:      opponentCount × levelMin × 1250
-      - 卡片 4:        Card 3 的精确 2 倍（同等级范围加码版，押金/奖金双倍）
+    奖金公式（运行时 arena-panel.js）:
+      - levelMin < 40:  opponentCount × levelMin × 1000
+      - levelMin >= 40: opponentCount × levelMin × 1250
+      - 隐藏警报卡：以上结果再乘 economyMultiplier
 
     注意: FadeTransitionFrame "角斗场-2" 仅作历史记录；实际进场调用 ArenaController
     内部 enterArenaCommon 跳转 "wuxianguotu_1"（无限过图通用入口）。
@@ -50,46 +56,56 @@
         <Rewards></Rewards>
     </Base>
 
-    <!-- 8 张挑战卡片 -->
+    <!-- 10 张公开标准档位；opponentCount 在运行时由 countMin-countMax 随机确定，人数上限 4 -->
     <Cards>
         <Card id="arena-1" index="1" name="DEATH MATCH角斗场"
-              opponentCount="1" levelMin="1" levelMax="5"
-              deposit="500" reward="1000"
-              expr="#0@1-5%1" />
+              countMin="1" countMax="1" levelMin="1" levelMax="5"
+              exprTemplate="#0@1-5%{count}" />
 
         <Card id="arena-2" index="2" name="DEATH MATCH角斗场"
-              opponentCount="2" levelMin="5" levelMax="10"
-              deposit="5000" reward="10000"
-              expr="#0@5-10%2" />
+              countMin="1" countMax="2" levelMin="5" levelMax="10"
+              exprTemplate="#0@5-10%{count}" />
 
         <Card id="arena-3" index="3" name="DEATH MATCH角斗场"
-              opponentCount="2" levelMin="10" levelMax="15"
-              deposit="10000" reward="20000"
-              expr="#0@10-15%2" />
+              countMin="2" countMax="3" levelMin="10" levelMax="15"
+              exprTemplate="#0@10-15%{count}" />
 
         <Card id="arena-4" index="4" name="DEATH MATCH角斗场"
-              opponentCount="2" levelMin="10" levelMax="15"
-              deposit="20000" reward="40000"
-              expr="#0@10-15%2" />
+              countMin="2" countMax="4" levelMin="15" levelMax="20"
+              exprTemplate="#0@15-20%{count}" />
 
         <Card id="arena-5" index="5" name="DEATH MATCH角斗场"
-              opponentCount="4" levelMin="15" levelMax="20"
-              deposit="30000" reward="60000"
-              expr="#0@15-20%4" />
+              countMin="3" countMax="4" levelMin="20" levelMax="30"
+              exprTemplate="#0@20-30%{count}" />
 
         <Card id="arena-6" index="6" name="DEATH MATCH角斗场"
-              opponentCount="4" levelMin="15" levelMax="20"
-              deposit="30000" reward="60000"
-              expr="#0@15-20%4" />
+              countMin="3" countMax="4" levelMin="30" levelMax="35"
+              exprTemplate="#0@30-35%{count}" />
 
         <Card id="arena-7" index="7" name="DEATH MATCH角斗场"
-              opponentCount="1" levelMin="20" levelMax="40"
-              deposit="12500" reward="25000"
-              expr="#0@20-40%1" />
+              countMin="4" countMax="4" levelMin="35" levelMax="40"
+              exprTemplate="#0@35-40%{count}" />
 
         <Card id="arena-8" index="8" name="DEATH MATCH角斗场"
-              opponentCount="4" levelMin="40" levelMax="60"
-              deposit="100000" reward="200000"
-              expr="#0@40-60%4" />
+              countMin="4" countMax="4" levelMin="40" levelMax="50"
+              exprTemplate="#0@40-50%{count}" />
+
+        <Card id="arena-9" index="9" name="DEATH MATCH角斗场"
+              countMin="4" countMax="4" levelMin="50" levelMax="60"
+              exprTemplate="#0@50-60%{count}" />
+
+        <Card id="arena-10" index="10" name="DEATH MATCH角斗场"
+              countMin="4" countMax="4" levelMin="60" levelMax="100"
+              exprTemplate="#0@60-100%{count}" />
     </Cards>
+
+    <!-- 按玩家当前等级档位派生，卡面只显示经济，不显示等级 / 人数 / 对手配置；超出最高档时封顶到 60-100。
+         死线警报 I 配置范围 1-3 人，但 requiresMixedRoster 会把实际 1 人结果抬到 2 人以满足混编；
+         死线警报 II 固定 4 人，用于封顶同档时仍拉开难度。
+         requiresMixedRoster=true 表示从玩家已击杀过的 roster 中本地抽混编，优先使用关卡拆解 meta-team
+         真实组合；实际刷怪数可高于佣兵等效人数，但 Web 端限制在 8 体以内，且至少 1 个佣兵模板 + 1 个怪物组单位。 -->
+    <HiddenChallenges>
+        <HiddenChallenge id="arena-hidden-1" label="死线警报 I" offset="1" countMin="1" countMax="3" requiresMixedRoster="true" economyMultiplier="1.5" />
+        <HiddenChallenge id="arena-hidden-2" label="死线警报 II" offset="2" countMin="4" countMax="4" requiresMixedRoster="true" economyMultiplier="2.0" />
+    </HiddenChallenges>
 </ArenaConfig>

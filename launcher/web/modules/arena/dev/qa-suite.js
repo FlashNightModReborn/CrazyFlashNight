@@ -1,19 +1,21 @@
 /**
  * Arena Panel QA Suite
  *
- * 测试覆盖（11 旧 + 7 新）：
- *   - panel-open: Panel 能正确打开并渲染 8 张卡片
+ * 测试覆盖（22 项）：
+ *   - panel-open: Panel 能正确打开并渲染社群档位卡片 + 死线警报隐藏卡
  *   - snapshot-render: snapshot 到达后金钱显示正确，卡片状态正确
  *   - enter-success: 通过 detail 路径入场（点 🔍 → 等 cache 命中 → 点确认挑战）
  *   - enter-fail-money: 金钱不足时 enter 按钮 disabled，detail 按钮仍可点
  *   - close-btn: 关闭按钮发送 close 命令
  *   - esc-close: ESC 触发关闭
  *   - force-close: force_close 正确处理
- *   - card-count: 确认 8 张卡片都存在且数据正确
+ *   - card-count: 确认 10 张公开标准卡 + 2 张死线警报隐藏卡都存在且数据正确
+ *   - hidden-mixed-enter: 死线警报隐藏卡本地混编 cache 后入场携带 roster，不走 merc preview
+ *   - standard-mixed-card: 公开标准卡固定 mixed 分支可抽出佣兵模板 + 怪物组
  *   - roll-again: "换一批"按钮重发 preview 并刷新对手渲染
  *   - preview-switch-race: 用 onRollAgain 在 detail 飞行中 → back → 进另一卡，验旧回包不污染新卡
  *   - equip-tooltip: hover 装备发送 equip_tooltip，回包后 cache，第二次 hover 不再发请求
- *   - grid-batch-preview: panel open 后 8 路并发 preview，每张卡 grid 摘要都拿到对手
+ *   - grid-batch-preview: panel open 后佣兵公开卡并发 AS2 preview、roster 卡本地 cache，每张卡 grid 摘要都脱离 loading
  *   - grid-direct-enter: 不进 detail 直接点 grid 上"⚔ 开始挑战"，验 enter 协议带 cardIndex 且未跳 detail
  *   - grid-cache-consistency: detail 内"换一批"后回 grid，摘要文本与新对手数据一致
  *   - grid-money-disable: 金钱不足时 enter 按钮 disabled、detail 按钮仍 enabled
@@ -26,7 +28,7 @@ var ArenaHarnessQA = (function() {
     'use strict';
 
     var CASES = [
-        { id: 'panel-open',           title: 'Panel 打开并渲染 8 张卡片' },
+        { id: 'panel-open',           title: 'Panel 打开并渲染标准卡片' },
         { id: 'snapshot-render',      title: 'Snapshot 更新 UI 状态' },
         { id: 'enter-success',        title: 'Enter 成功链路（detail 路径）' },
         { id: 'enter-fail-money',     title: '金钱不足时禁用挑战' },
@@ -34,10 +36,13 @@ var ArenaHarnessQA = (function() {
         { id: 'esc-close',            title: 'ESC 关闭' },
         { id: 'force-close',          title: 'Force Close' },
         { id: 'card-count',           title: '卡片数据完整性' },
+        { id: 'hidden-mixed-enter',   title: '死线警报隐藏卡混编 roster 入场' },
+        { id: 'standard-mixed-card',  title: '公开标准卡固定 mixed' },
         { id: 'roll-again',           title: '换一批重发 preview' },
+        { id: 'reroll-all',           title: '全部重抽重发公开卡 preview' },
         { id: 'preview-switch-race',  title: '迟到 preview 回包被丢弃' },
         { id: 'equip-tooltip',        title: '装备 hover 发起 tooltip 请求 + cache' },
-        { id: 'grid-batch-preview',   title: 'Panel 打开后 8 路并发 preview' },
+        { id: 'grid-batch-preview',   title: 'Panel 打开后公开卡 preview + 隐藏混编 cache' },
         { id: 'grid-direct-enter',    title: 'Grid 直入战场（不进 detail）' },
         { id: 'grid-cache-consistency', title: '换一批后 grid 摘要同步更新' },
         { id: 'grid-money-disable',   title: '金钱不足 enter 灰 / detail 亮' },
@@ -76,7 +81,10 @@ var ArenaHarnessQA = (function() {
             case 'esc-close':               return caseEscClose(api, host);
             case 'force-close':             return caseForceClose(api, host);
             case 'card-count':              return caseCardCount(api, host);
+            case 'hidden-mixed-enter':      return caseHiddenMixedEnter(api, host);
+            case 'standard-mixed-card':     return caseStandardMixedCard(api, host);
             case 'roll-again':              return caseRollAgain(api, host);
+            case 'reroll-all':              return caseRerollAll(api, host);
             case 'preview-switch-race':     return casePreviewSwitchRace(api, host);
             case 'equip-tooltip':           return caseEquipTooltip(api, host);
             case 'grid-batch-preview':      return caseGridBatchPreview(api, host);
@@ -91,7 +99,7 @@ var ArenaHarnessQA = (function() {
         }
     }
 
-    // ── 公共辅助：等 batch preview 全部完成（snapshot 回包后立即并发 8 路 → 全部成功回包） ──
+    // ── 公共辅助：等 batch preview 全部完成（snapshot 回包后立即并发当前卡片集 → 全部成功回包） ──
     // 等待条件：所有 grid 摘要 span 都已脱离 loading 态（即 _previewCache 各 cardIdx 都填了）。
     // 测试新流程下进 detail 的标准准备步骤：先等 batch 完成，确保 cache 命中跳过 detail 内的 preview 请求。
     function waitBatchPreviewReady(api) {
@@ -115,6 +123,129 @@ var ArenaHarnessQA = (function() {
         return total;
     }
 
+    function standardPreviewMessageCount(cards) {
+        var count = 0;
+        cards = cards || [];
+        for (var i = 0; i < cards.length; i++) {
+            if (!cards[i].isHiddenChallenge && !cards[i].isCustom && cards[i].standardRole !== 'monster' && cards[i].standardRole !== 'mixed') count++;
+        }
+        return count;
+    }
+
+    function standardRoleCounts(cards) {
+        var counts = { merc: 0, monster: 0, mixed: 0 };
+        cards = cards || [];
+        for (var i = 0; i < 10 && i < cards.length; i++) {
+            var role = cards[i].standardRole || 'merc';
+            counts[role] = (counts[role] || 0) + 1;
+        }
+        return counts;
+    }
+
+    function findPublicCardIndexByRole(cards, role, nth) {
+        cards = cards || [];
+        nth = nth || 1;
+        var seen = 0;
+        for (var i = 0; i < 10 && i < cards.length; i++) {
+            if ((cards[i].standardRole || 'merc') === role) {
+                seen++;
+                if (seen === nth) return i;
+            }
+        }
+        return -1;
+    }
+
+    function assertMixedRoster(api, opponents, label) {
+        var humanoid = false;
+        var nonhuman = false;
+        opponents = opponents || [];
+        for (var i = 0; i < opponents.length; i++) {
+            if (opponents[i].rosterKind === 'humanoid') humanoid = true;
+            if (opponents[i].rosterKind === 'nonhuman') nonhuman = true;
+        }
+        api.assert(humanoid && nonhuman, label + ' 应同时包含佣兵模板与怪物组 roster 单位');
+    }
+
+    function assertMercenaryMixedSquad(api, squad, label) {
+        api.assert(squad && squad.source === 'mercenary', label + ' 应优先使用 mercenaries.json 普通佣兵做人形侧');
+        assertMixedRoster(api, squad.opponents, label);
+        var counts = countMixedRosterKinds(squad.opponents);
+        api.assert(counts.merc > 0, label + ' 的人形侧应携带 mercId');
+    }
+
+    function countMixedRosterKinds(opponents) {
+        var counts = { humanoid: 0, nonhuman: 0, merc: 0 };
+        opponents = opponents || [];
+        for (var i = 0; i < opponents.length; i++) {
+            if (opponents[i].rosterKind === 'humanoid') {
+                counts.humanoid++;
+                if (opponents[i].mercId != null) counts.merc++;
+            }
+            if (opponents[i].rosterKind === 'nonhuman') counts.nonhuman++;
+        }
+        return counts;
+    }
+
+    function assertHiddenMixedRatio(api, squad, card, label, options) {
+        options = options || {};
+        var total = Math.max(2, Math.min(4, Math.round(Number(card.opponentCount) || 2)));
+        var expectedHumanoid = Math.max(1, Math.ceil(total / 2));
+        var expectedNonhuman = Math.max(1, total - expectedHumanoid);
+        var counts = countMixedRosterKinds(squad && squad.opponents);
+        api.assertEqual(counts.merc, expectedHumanoid,
+            label + ' 应让普通佣兵承担主力配比');
+        api.assert(counts.nonhuman >= expectedNonhuman,
+            label + ' 的非人形怪数量不应小于怪物槽位');
+        api.assert(counts.merc + counts.nonhuman <= expectedHumanoid + expectedNonhuman * 8,
+            label + ' 的真实刷怪数应受每组上限保护');
+        if (squad && squad.monsterSource === 'meta-team') {
+            var groupCounts = countMonsterGroups(squad.opponents);
+            api.assert(groupCounts.groups >= expectedNonhuman,
+                label + ' 的怪物槽位应对应多个怪物组');
+        }
+        if (options.requireExpandedMonsterGroup) {
+            api.assert(squad && squad.monsterSource === 'meta-team',
+                label + ' 的怪物侧应优先来自关卡拆解小队');
+            api.assert(counts.nonhuman > expectedNonhuman,
+                label + ' 的怪物槽位应展开为多单位怪物组');
+        }
+    }
+
+    function assertMetaTeamSquad(api, squad, label) {
+        api.assert(squad && squad.source === 'meta-team', label + ' 应优先使用关卡拆解 meta-team');
+        api.assert(squad.opponents && squad.opponents.length >= (squad.equivalentCount || 1),
+            label + ' 的真实组合人数不应小于佣兵等效人数');
+    }
+
+    function countMonsterGroups(opponents) {
+        var seen = {};
+        var groups = 0;
+        var nonhuman = 0;
+        opponents = opponents || [];
+        for (var i = 0; i < opponents.length; i++) {
+            if (opponents[i].rosterKind !== 'nonhuman') continue;
+            nonhuman++;
+            var gid = opponents[i].sourceGroupId || '';
+            if (gid && !seen[gid]) {
+                seen[gid] = true;
+                groups++;
+            }
+        }
+        return { groups: groups, nonhuman: nonhuman };
+    }
+
+    function assertStandardMonsterGroupSquad(api, squad, card, label) {
+        assertMetaTeamSquad(api, squad, label);
+        var expectedGroups = Math.max(1, Math.min(4, Math.round(Number(card.opponentCount) || 1)));
+        var counts = countMonsterGroups(squad.opponents);
+        api.assertEqual(squad.equivalentCount, expectedGroups,
+            label + ' 的等效人数应等于卡片对手数');
+        api.assert(counts.groups >= expectedGroups,
+            label + ' 应按对手数展开为多个怪物组');
+        api.assert(counts.nonhuman > expectedGroups,
+            label + ' 应让怪物组展开为怪海实体');
+    }
+
     // ── case: panel-open ──
     function casePanelOpen(api, host) {
         return Promise.resolve()
@@ -129,7 +260,7 @@ var ArenaHarnessQA = (function() {
                 var grid = document.querySelector('.arena-grid');
                 api.assert(!!grid, 'arena-grid 不存在');
                 var cards = grid.querySelectorAll('.arena-card');
-                api.assertEqual(cards.length, 8, '卡片数量应为 8');
+                api.assert(cards.length >= 10, '卡片数量应至少包含 10 个公开档位');
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
@@ -162,9 +293,10 @@ var ArenaHarnessQA = (function() {
     }
 
     // ── case: enter-success ──
-    // 新流程：panel 开 → snapshot → batch preview 8 路 → 等 grid 摘要全到 →
+    // 新流程：panel 开 → snapshot → batch preview 全卡 → 等 grid 摘要全到 →
     //         点 🔍 进 detail（cache 命中，无新 preview） → 点确认挑战 → enter 协议带 cardIndex
     function caseEnterSuccess(api, host) {
+        var cardIdx = 0;
         return Promise.resolve()
             .then(function() {
                 host.setFixture('rich');
@@ -180,8 +312,11 @@ var ArenaHarnessQA = (function() {
             })
             .then(function() {
                 // 进 detail 前记录 preview 消息计数 — 验证 cache 命中确实跳过新请求
+                var cards = window.ArenaPanel.getCards();
+                cardIdx = findPublicCardIndexByRole(cards, 'merc', 1);
+                api.assert(cardIdx >= 0, '应能找到佣兵公开卡');
                 var beforeCount = host.previewMessages.length;
-                document.querySelector('.arena-card-btn-detail[data-index="0"]').click();
+                document.querySelector('.arena-card-btn-detail[data-index="' + cardIdx + '"]').click();
                 return api.waitFor(function() {
                     var confirmBtn = document.querySelector('.arena-detail-confirm');
                     return confirmBtn && !confirmBtn.disabled;
@@ -200,7 +335,7 @@ var ArenaHarnessQA = (function() {
             .then(function() {
                 var msg = host.enterMessages[host.enterMessages.length - 1];
                 api.assert(msg.cmd === 'enter', '提交消息应为 enter');
-                api.assertEqual(msg.cardIndex, 0, 'detail 入场应带 cardIndex=0');
+                api.assertEqual(msg.cardIndex, cardIdx, 'detail 入场应带所选 cardIndex');
                 api.assert(typeof msg.expr === 'string' && msg.expr.length > 0, 'enter 应携带 expr');
             })
             .then(function() { return { pass: true }; })
@@ -298,8 +433,9 @@ var ArenaHarnessQA = (function() {
     }
 
     // ── case: roll-again ──
-    // 等 batch（8 条） → 进 detail（cache 命中无新 preview）→ 换一批（第 9 条 preview） → 验对手仍渲
+    // 等 batch → 进 detail（cache 命中无新 preview）→ 换一批（额外 1 条 preview） → 验对手仍渲
     function caseRollAgain(api, host) {
+        var cardIdx = 0;
         return Promise.resolve()
             .then(function() {
                 host.setFixture('rich');
@@ -313,8 +449,12 @@ var ArenaHarnessQA = (function() {
                 return waitBatchPreviewReady(api);
             })
             .then(function() {
-                api.assertEqual(host.previewMessages.length, 8, 'batch 应发出 8 条 preview');
-                document.querySelector('.arena-card-btn-detail[data-index="0"]').click();
+                var cards = window.ArenaPanel.getCards();
+                var previewCount = standardPreviewMessageCount(cards);
+                api.assertEqual(host.previewMessages.length, previewCount, 'batch 应按佣兵公开卡数发出 AS2 preview');
+                cardIdx = findPublicCardIndexByRole(cards, 'merc', 1);
+                api.assert(cardIdx >= 0, '应能找到佣兵公开卡');
+                document.querySelector('.arena-card-btn-detail[data-index="' + cardIdx + '"]').click();
                 return api.waitFor(function() {
                     var btn = document.querySelector('.arena-detail-roll');
                     return btn && !btn.disabled;
@@ -325,10 +465,11 @@ var ArenaHarnessQA = (function() {
                 document.querySelector('.arena-detail-roll').click();
                 return api.waitFor(function() {
                     return host.previewMessages.length > before;
-                }, 2000, 'rollAgain 触发第 9 条 preview');
+                }, 2000, 'rollAgain 触发额外 preview');
             })
             .then(function() {
-                api.assert(host.previewMessages.length >= 9, '换一批后总 preview 数应 >= 9（batch 8 + rollAgain 1）');
+                var cards = window.ArenaPanel.getCards();
+                api.assert(host.previewMessages.length >= standardPreviewMessageCount(cards) + 1, '换一批后总 preview 数应 >= 佣兵公开卡数 + 1');
                 return api.waitFor(function() {
                     var btn = document.querySelector('.arena-detail-confirm');
                     return btn && !btn.disabled;
@@ -344,10 +485,12 @@ var ArenaHarnessQA = (function() {
 
     // ── case: preview-switch-race ──
     // 验闭包守护：detail 内 onRollAgain 飞行中切到另一卡 detail，旧 rollAgain 回包不污染新卡 detail。
-    // 流程：等 batch → 进卡 0 detail（count=1）→ 点 rollAgain（发 preview 但回包未到）
-    //       → 立刻 back → 立刻进卡 1 detail（count=2，cache 命中）→ 等 200ms 让卡 0 rollAgain 回包到
-    //       → 验卡 1 detail 仍 2 行（_activeCardIdx === 1 ≠ 0 守住，旧回包仅写 cache 不渲 detail）
+    // 流程：等 batch → 进卡 0 detail → 点 rollAgain（发 preview 但回包未到）
+    //       → 立刻 back → 立刻进卡 1 detail（cache 命中）→ 等 200ms 让卡 0 rollAgain 回包到
+    //       → 验卡 1 detail 仍是卡 1 的人数（_activeCardIdx === 1 ≠ 0 守住，旧回包仅写 cache 不渲 detail）
     function casePreviewSwitchRace(api, host) {
+        var card0Idx = 0, card1Idx = 1;
+        var card0Count = 1, card1Count = 1;
         return Promise.resolve()
             .then(function() {
                 host.setFixture('rich');
@@ -361,24 +504,30 @@ var ArenaHarnessQA = (function() {
                 return waitBatchPreviewReady(api);
             })
             .then(function() {
-                // 进卡 0 detail：cache 命中，立即渲 1 行
-                document.querySelector('.arena-card-btn-detail[data-index="0"]').click();
+                var cards = window.ArenaPanel.getCards();
+                card0Idx = findPublicCardIndexByRole(cards, 'merc', 1);
+                card1Idx = findPublicCardIndexByRole(cards, 'merc', 2);
+                api.assert(card0Idx >= 0 && card1Idx >= 0, '应能找到两张佣兵公开卡');
+                card0Count = cards[card0Idx].opponentCount;
+                card1Count = cards[card1Idx].opponentCount;
+                // 进第一张佣兵卡 detail：cache 命中，立即渲对应人数
+                document.querySelector('.arena-card-btn-detail[data-index="' + card0Idx + '"]').click();
                 return api.waitFor(function() {
                     var rows = document.querySelectorAll('.arena-opp-row');
                     var rollBtn = document.querySelector('.arena-detail-roll');
-                    return rows.length === 1 && rollBtn && !rollBtn.disabled;
-                }, 2000, 'card-0 detail 就绪 (count=1)');
+                    return rows.length === card0Count && rollBtn && !rollBtn.disabled;
+                }, 2000, 'card-0 detail 就绪');
             })
             .then(function() {
                 // 点 rollAgain → 发新 preview，但回包未到（80ms mock 延迟）
                 document.querySelector('.arena-detail-roll').click();
-                // 立刻 back → 立刻进卡 1 detail（cache 命中，应渲 2 行）
+                // 立刻 back → 立刻进第二张佣兵卡 detail（cache 命中，应渲对应人数）
                 document.querySelector('.arena-detail-back').click();
-                document.querySelector('.arena-card-btn-detail[data-index="1"]').click();
+                document.querySelector('.arena-card-btn-detail[data-index="' + card1Idx + '"]').click();
                 return api.waitFor(function() {
                     var rows = document.querySelectorAll('.arena-opp-row');
-                    return rows.length === 2;
-                }, 2000, 'card-1 detail 渲完 (count=2)');
+                    return rows.length === card1Count;
+                }, 2000, 'card-1 detail 渲完');
             })
             .then(function() {
                 // 等卡 0 的 rollAgain 回包到达（mock 80ms + buffer）
@@ -386,7 +535,7 @@ var ArenaHarnessQA = (function() {
             })
             .then(function() {
                 var rows = document.querySelectorAll('.arena-opp-row');
-                api.assertEqual(rows.length, 2, '卡 0 rollAgain 迟到回包不应污染卡 1 detail (_activeCardIdx 守护)');
+                api.assertEqual(rows.length, card1Count, '第一张佣兵卡 rollAgain 迟到回包不应污染第二张佣兵卡 detail (_activeCardIdx 守护)');
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
@@ -418,7 +567,10 @@ var ArenaHarnessQA = (function() {
                 return waitBatchPreviewReady(api);
             })
             .then(function() {
-                document.querySelector('.arena-card-btn-detail[data-index="0"]').click();
+                var cards = window.ArenaPanel.getCards();
+                var cardIdx = findPublicCardIndexByRole(cards, 'merc', 1);
+                api.assert(cardIdx >= 0, '应能找到佣兵公开卡');
+                document.querySelector('.arena-card-btn-detail[data-index="' + cardIdx + '"]').click();
                 return api.waitFor(function() {
                     var cells = document.querySelectorAll('.arena-equip-cell[data-eq-raw]');
                     return cells.length > 0;
@@ -460,13 +612,212 @@ var ArenaHarnessQA = (function() {
                 }, 2000, 'panel active');
             })
             .then(function() {
+                return waitBatchPreviewReady(api);
+            })
+            .then(function() {
                 var cards = window.ArenaPanel ? window.ArenaPanel.getCards() : null;
                 api.assert(!!cards, 'ArenaPanel.getCards 应返回数据');
-                api.assertEqual(cards.length, 8, '应有 8 张卡片');
+                api.assertEqual(cards.length, 12, 'harness 标准模式应有 10 张公开卡 + 2 张隐藏警报卡');
+                var hidden = cards.filter(function(c) { return !!c.isHiddenChallenge; });
+                api.assertEqual(hidden.length, 2, '应有 2 张隐藏警报卡');
+                var roleCounts = standardRoleCounts(cards);
+                api.assertEqual(roleCounts.merc, 7, '公开标准卡应固定 7 张佣兵卡');
+                api.assertEqual(roleCounts.monster, 2, '公开标准卡应固定 2 张怪物组卡');
+                api.assertEqual(roleCounts.mixed, 1, '公开标准卡应固定 1 张 mixed 卡');
+                for (var i = 0; i < 10; i++) {
+                    api.assert(!cards[i].isHiddenChallenge, '前 10 张应为公开标准档位');
+                    api.assert(cards[i].countMin <= cards[i].opponentCount && cards[i].opponentCount <= cards[i].countMax,
+                        '公开卡 ' + i + ' 的人数应在随机范围内');
+                    api.assert(cards[i].opponentCount <= 4, '公开卡 ' + i + ' 的人数不应超过 4');
+                }
+                for (var h = 0; h < hidden.length; h++) {
+                    api.assert(hidden[h].economyMultiplier > 1, '隐藏卡应有经济倍率补偿');
+                    api.assert(hidden[h].opponentCount <= 4, '隐藏卡佣兵等效人数不应超过 4');
+                }
+                api.assert(hidden[0].opponentCount >= 2 && hidden[0].opponentCount <= 3,
+                    '死线警报 I 为满足混编实际应限定在 2-3 人');
+                api.assertEqual(hidden[0].hiddenLabel, '死线警报 I', '隐藏卡 I 标签应为死线警报');
+                api.assertEqual(hidden[1].opponentCount, 4, '死线警报 II 应固定 4 人');
+                api.assertEqual(hidden[1].hiddenLabel, '死线警报 II', '隐藏卡 II 标签应为死线警报');
+                var state = window.ArenaPanel.getState();
+                api.assertEqual(state.cardKind[10], 'mixed', '死线警报 I 应走本地混编 roster');
+                api.assertEqual(state.cardKind[11], 'mixed', '死线警报 II 应走本地混编 roster');
+                assertMercenaryMixedSquad(api, state.monsterSquad[10], '死线警报 I');
+                assertMercenaryMixedSquad(api, state.monsterSquad[11], '死线警报 II');
+                assertHiddenMixedRatio(api, state.monsterSquad[10], cards[10], '死线警报 I');
+                assertHiddenMixedRatio(api, state.monsterSquad[11], cards[11], '死线警报 II');
                 var totalDeposit = cards.reduce(function(s, c) { return s + c.deposit; }, 0);
                 var totalReward = cards.reduce(function(s, c) { return s + c.reward; }, 0);
                 api.assert(totalDeposit > 0, '押金总和应大于 0');
                 api.assert(totalReward > 0, '奖金总和应大于 0');
+            })
+            .then(function() { return { pass: true }; })
+            .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
+    }
+
+    // ── case: hidden-mixed-enter ──
+    function caseHiddenMixedEnter(api, host) {
+        var hiddenIdx = 11;
+        return Promise.resolve()
+            .then(function() {
+                host.setFixture('rich');
+                host.enterMessages = [];
+                host.resetPreviewState();
+                host.open();
+                return api.waitFor(function() {
+                    return Panels.getActive && Panels.getActive() === 'arena';
+                }, 2000, 'panel active');
+            })
+            .then(function() {
+                return waitBatchPreviewReady(api);
+            })
+            .then(function() {
+                var cards = window.ArenaPanel.getCards();
+                var card = cards[hiddenIdx];
+                api.assert(card && card.isHiddenChallenge, 'card 11 应为隐藏警报卡');
+                var state = window.ArenaPanel.getState();
+                api.assertEqual(state.cardKind[hiddenIdx], 'mixed', '隐藏卡应为 mixed roster');
+                assertMercenaryMixedSquad(api, state.monsterSquad[hiddenIdx], '隐藏警报卡');
+                assertHiddenMixedRatio(api, state.monsterSquad[hiddenIdx], card, '隐藏警报卡', { requireExpandedMonsterGroup: true });
+                var detailBtn = document.querySelector('.arena-card-btn-detail[data-index="' + hiddenIdx + '"]');
+                api.assert(detailBtn && detailBtn.disabled, '隐藏卡 detail 按钮应禁用');
+                var enterBtn = document.querySelector('.arena-card-btn-enter[data-index="' + hiddenIdx + '"]');
+                api.assert(enterBtn && !enterBtn.disabled, '隐藏卡混编 cache 成功后 enter 应可用');
+                enterBtn.click();
+                return api.waitFor(function() {
+                    return host.enterMessages.length > 0;
+                }, 2000, 'hidden enter message sent');
+            })
+            .then(function() {
+                var cards = window.ArenaPanel.getCards();
+                var msg = host.enterMessages[host.enterMessages.length - 1];
+                api.assertEqual(msg.cmd, 'enter', '消息应为 enter');
+                api.assertEqual(msg.cardIndex, hiddenIdx, '隐藏卡入场应带 cardIndex');
+                api.assert(msg.roster && msg.roster.length >= cards[hiddenIdx].opponentCount,
+                    '隐藏卡入场应携带不小于佣兵等效人数的真实组合 roster');
+                var hasMercRoster = false;
+                for (var i = 0; i < msg.roster.length; i++) {
+                    if (msg.roster[i].kind === 'merc' && msg.roster[i].mercId != null) hasMercRoster = true;
+                    else api.assert(/^兵种/.test(String(msg.roster[i].type || '')), '非佣兵 roster 条目应携带兵种 type');
+                }
+                api.assert(hasMercRoster, '隐藏卡入场 roster 应携带 mercId 佣兵条目');
+            })
+            .then(function() { return { pass: true }; })
+            .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
+    }
+
+    // ── case: standard-mixed-card ──
+    function caseStandardMixedCard(api, host) {
+        return Promise.resolve()
+            .then(function() {
+                host.setFixture('rich');
+                host.setKnownEnemies([
+                    '敌人-终结者T800',
+                    '敌人-玩具机器人',
+                    '敌人-诺艾尔',
+                    '敌人-普通改造僵尸',
+                    '敌人-重型改造僵尸',
+                    '敌人-普通爆炸僵尸',
+                    '敌人-兽化改造僵尸',
+                    '敌人-方舟卫士',
+                    '敌人-方舟无人机',
+                    '敌人-渗透者',
+                    '主角-男',
+                    '主角-尾上世莉架'
+                ]);
+                host.resetPreviewState();
+                host.open();
+                return api.waitFor(function() {
+                    return Panels.getActive && Panels.getActive() === 'arena';
+                }, 2000, 'panel active');
+            })
+            .then(function() {
+                return waitBatchPreviewReady(api);
+            })
+            .then(function() {
+                var state = window.ArenaPanel.getState();
+                var cards = window.ArenaPanel.getCards();
+                var roleCounts = standardRoleCounts(cards);
+                api.assertEqual(roleCounts.mixed, 1, '公开标准卡应有且仅有 1 张 mixed 角色卡');
+                api.assertEqual(roleCounts.monster, 2, '公开标准卡应有且仅有 2 张怪物组角色卡');
+                var mixedIdx = -1;
+                var monsterChecked = 0;
+                for (var i = 0; i < 10; i++) {
+                    if (state.cardKind[i] === 'mixed') { mixedIdx = i; break; }
+                }
+                for (var m = 0; m < 10; m++) {
+                    if (cards[m].standardRole !== 'monster') continue;
+                    api.assertEqual(state.cardKind[m], 'monster', '公开标准怪物组卡应走本地 monster roster');
+                    assertStandardMonsterGroupSquad(api, state.monsterSquad[m], cards[m], '公开标准怪物组卡 ' + m);
+                    monsterChecked++;
+                }
+                api.assertEqual(monsterChecked, 2, '应检查 2 张公开标准怪物组卡');
+                api.assert(mixedIdx >= 0, '公开标准卡应至少抽出一张 mixed');
+                api.assertEqual(cards[mixedIdx].standardRole, 'mixed', '运行态 mixed 应来自卡片固定 mixed 角色');
+                var squad = state.monsterSquad[mixedIdx];
+                assertMercenaryMixedSquad(api, squad, '公开标准 mixed 卡');
+                var mixedTotal = Math.max(2, Math.min(4, Math.round(Number(cards[mixedIdx].opponentCount) || 2)));
+                var expectedMixedGroups = Math.max(1, mixedTotal - 1);
+                var mixedGroupCounts = countMonsterGroups(squad.opponents);
+                api.assert(mixedGroupCounts.groups >= expectedMixedGroups,
+                    '公开 mixed 卡的怪物槽位应展开为多个怪物组');
+                api.assert(mixedGroupCounts.nonhuman > expectedMixedGroups,
+                    '公开 mixed 卡的怪物组应展开为怪海实体');
+                var hasPlayerTemplate = false;
+                for (var j = 0; j < squad.opponents.length; j++) {
+                    if (squad.opponents[j].rosterKind === 'humanoid' &&
+                        squad.opponents[j].mercId != null &&
+                        /主角/.test(String(squad.opponents[j].spritename || ''))) {
+                        hasPlayerTemplate = true;
+                    }
+                }
+                api.assert(hasPlayerTemplate, '公开 mixed 卡的人形侧应为 mercenaries.json 佣兵单位');
+                var detailBtn = document.querySelector('.arena-card-btn-detail[data-index="' + mixedIdx + '"]');
+                api.assert(detailBtn && !detailBtn.disabled, '公开 mixed 卡 detail 按钮应可用');
+                detailBtn.click();
+                return api.waitFor(function() {
+                    var detail = document.getElementById('arena-detail-view');
+                    var meta = document.getElementById('arena-detail-meta');
+                    var brief = document.querySelector('.arena-opp-roster-brief');
+                    return detail && !detail.hidden &&
+                        meta && /实体/.test(meta.textContent || '') &&
+                        brief && /实战实体/.test(brief.textContent || '');
+                }, 2000, 'mixed detail should show equivalent/entity roster semantics');
+            })
+            .then(function() { return { pass: true }; })
+            .catch(function(e) {
+                return { pass: false, detail: String(e.message || e) };
+            });
+    }
+
+    // ── case: reroll-all ──
+    function caseRerollAll(api, host) {
+        return Promise.resolve()
+            .then(function() {
+                host.setFixture('rich');
+                host.resetPreviewState();
+                for (var fp = 0; fp < 10; fp++) host.failNextPreviewForCard(fp, 'stock_insufficient');
+                host.open();
+                return api.waitFor(function() {
+                    return Panels.getActive && Panels.getActive() === 'arena';
+                }, 2000, 'panel active');
+            })
+            .then(function() {
+                return waitBatchPreviewReady(api);
+            })
+            .then(function() {
+                var cards = window.ArenaPanel.getCards();
+                var expectedPreviewCount = standardPreviewMessageCount(cards);
+                var before = host.previewMessages.length;
+                var btn = document.getElementById('arena-reroll-all');
+                api.assert(!!btn && !btn.disabled && !btn.hidden, '全部重抽按钮应可用');
+                btn.click();
+                return api.waitFor(function() {
+                    return host.previewMessages.length >= before + expectedPreviewCount;
+                }, 3000, '全部重抽应重发公开卡 AS2 preview');
+            })
+            .then(function() {
+                return waitBatchPreviewReady(api);
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
@@ -477,8 +828,8 @@ var ArenaHarnessQA = (function() {
     // ════════════════════════════════════════════════════════════════════════════
 
     // ── case: grid-batch-preview ──
-    // panel open + snapshot 回包后，立即并发 8 路 preview；每路带 cardIndex 0..7 各一次；
-    // 8 张卡 grid 摘要全部脱离 loading 态（即 _previewCache 全填）。
+    // panel open + snapshot 回包后，公开卡立即并发 AS2 preview；隐藏混编卡本地抽 roster cache。
+    // 全部 card grid 摘要脱离 loading 态（成功 cache 或失败态均不再 loading）。
     function caseGridBatchPreview(api, host) {
         return Promise.resolve()
             .then(function() {
@@ -493,19 +844,28 @@ var ArenaHarnessQA = (function() {
                 return waitBatchPreviewReady(api);
             })
             .then(function() {
-                api.assertEqual(host.previewMessages.length, 8, '应发出 8 条 preview');
-                // 验 cardIndex 0..7 各一次 — 用 set 断言去重数量
+                var cards = window.ArenaPanel.getCards();
+                var previewCount = standardPreviewMessageCount(cards);
+                api.assertEqual(host.previewMessages.length, previewCount, '应按佣兵公开卡数发出 AS2 preview');
+                // 验 cardIndex 全覆盖 — 用 set 断言去重数量
                 var seen = {};
                 for (var i = 0; i < host.previewMessages.length; i++) {
                     var idx = host.previewMessages[i].cardIndex;
-                    api.assert(typeof idx === 'number' && idx >= 0 && idx < 8, 'preview 应带合法 cardIndex（实际: ' + idx + '）');
+                    api.assert(typeof idx === 'number' && idx >= 0 && idx < cards.length, 'preview 应带合法 cardIndex（实际: ' + idx + '）');
+                    api.assert((cards[idx].standardRole || 'merc') === 'merc', '只有佣兵公开卡应发 AS2 preview');
                     seen[idx] = true;
                 }
-                api.assertEqual(Object.keys(seen).length, 8, '8 路 cardIndex 应覆盖 0..7 各一次');
+                api.assertEqual(Object.keys(seen).length, previewCount, 'cardIndex 应覆盖全部佣兵公开卡各一次');
+                for (var p = 0; p < 10; p++) {
+                    if ((cards[p].standardRole || 'merc') === 'merc') {
+                        api.assert(seen[p] === true, '佣兵公开卡 ' + p + ' 应发出 AS2 preview');
+                    }
+                }
             })
             .then(function() {
                 // 验所有 grid 摘要都不为 loading 文本
-                for (var i = 0; i < 8; i++) {
+                var cards = window.ArenaPanel.getCards();
+                for (var i = 0; i < cards.length; i++) {
                     var sumEl = document.getElementById('arena-opp-summary-' + i);
                     api.assert(!!sumEl, '卡片 ' + i + ' 摘要 span 应存在');
                     api.assert(!sumEl.classList.contains('arena-card-opponents-loading'), '卡片 ' + i + ' 摘要应脱离 loading 态');
@@ -562,6 +922,7 @@ var ArenaHarnessQA = (function() {
     // ── case: grid-cache-consistency ──
     // detail 内"换一批" → 回 grid → 摘要文本应已更新为新对手数据（同步覆盖）
     function caseGridCacheConsistency(api, host) {
+        var cardIdx = 0;
         var oldSummaryText;
         return Promise.resolve()
             .then(function() {
@@ -576,11 +937,14 @@ var ArenaHarnessQA = (function() {
                 return waitBatchPreviewReady(api);
             })
             .then(function() {
-                // 记录卡 0 的初始摘要文本
-                oldSummaryText = document.getElementById('arena-opp-summary-0').textContent;
-                api.assert(oldSummaryText && oldSummaryText.length > 0, '卡 0 应有初始摘要文本');
+                var cards = window.ArenaPanel.getCards();
+                cardIdx = findPublicCardIndexByRole(cards, 'merc', 1);
+                api.assert(cardIdx >= 0, '应能找到佣兵公开卡');
+                // 记录佣兵卡的初始摘要文本
+                oldSummaryText = document.getElementById('arena-opp-summary-' + cardIdx).textContent;
+                api.assert(oldSummaryText && oldSummaryText.length > 0, '佣兵卡应有初始摘要文本');
                 // 进 detail → 换一批
-                document.querySelector('.arena-card-btn-detail[data-index="0"]').click();
+                document.querySelector('.arena-card-btn-detail[data-index="' + cardIdx + '"]').click();
                 return api.waitFor(function() {
                     var btn = document.querySelector('.arena-detail-roll');
                     return btn && !btn.disabled;
@@ -606,14 +970,14 @@ var ArenaHarnessQA = (function() {
                 }, 2000, 'back to grid');
             })
             .then(function() {
-                var newSummary = document.getElementById('arena-opp-summary-0').textContent;
+                var newSummary = document.getElementById('arena-opp-summary-' + cardIdx).textContent;
                 // 摘要应仍有内容（不是 loading）
                 api.assert(newSummary && newSummary.indexOf('抽取中') === -1, '摘要应是新数据，不应是 loading');
                 // 注意：mock 生成的对手 name 包含 cardIndex 但每次内容相同，所以 "新摘要 != 旧摘要" 不可靠。
                 // 改验：摘要文本与 cache 中对手 name+lvl 一致（间接验同步）。
                 var cache = host.getPreviewCache();
-                var opps = cache[0];
-                api.assert(opps && opps.length > 0, 'host._previewCache[0] 应有对手数据');
+                var opps = cache[cardIdx];
+                api.assert(opps && opps.length > 0, 'host._previewCache[cardIdx] 应有对手数据');
                 // 摘要应至少含第一个对手 name
                 api.assert(newSummary.indexOf(opps[0].name) >= 0, '摘要 "' + newSummary + '" 应含对手 name "' + opps[0].name + '"');
             })
@@ -643,11 +1007,12 @@ var ArenaHarnessQA = (function() {
                 api.assertEqual(card0Enter.disabled, false, '卡 0（押金 500）enter 按钮应 enabled');
                 api.assertEqual(card0Detail.disabled, false, '卡 0 detail 按钮应 enabled');
 
-                // 卡 7 押金 100000 → 玩家 1000 不够 → enter disabled，detail 仍可点
-                var card7Enter = document.querySelector('.arena-card-btn-enter[data-index="7"]');
-                var card7Detail = document.querySelector('.arena-card-btn-detail[data-index="7"]');
-                api.assertEqual(card7Enter.disabled, true, '卡 7（押金 100000）enter 按钮应 disabled');
-                api.assertEqual(card7Detail.disabled, false, '卡 7 detail 按钮应 enabled（仅 busy 时禁）');
+                // 公开最高档押金显著高于 1000 → enter disabled，detail 仍可点
+                var highIdx = 9;
+                var highEnter = document.querySelector('.arena-card-btn-enter[data-index="' + highIdx + '"]');
+                var highDetail = document.querySelector('.arena-card-btn-detail[data-index="' + highIdx + '"]');
+                api.assertEqual(highEnter.disabled, true, '公开最高档 enter 按钮应 disabled');
+                api.assertEqual(highDetail.disabled, false, '公开最高档 detail 按钮应 enabled（仅 busy 时禁）');
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
@@ -657,38 +1022,48 @@ var ArenaHarnessQA = (function() {
     // 单卡 preview 失败 → 摘要显示"加载失败 ↻" + .arena-card-opponents-error 类 + 该卡 enter 按钮仍 disabled
     // → 点击摘要触发重发 → 摘要回 loading 然后成功
     function caseGridSingleFailRetry(api, host) {
+        var failIdx = 0;
+        var okIdx = 0;
         return Promise.resolve()
             .then(function() {
                 host.setFixture('rich');
                 host.resetPreviewState();
-                host.failNextPreviewForCard(2, 'stock_insufficient'); // 卡 2 第一次必失败
                 host.open();
                 return api.waitFor(function() {
                     return Panels.getActive && Panels.getActive() === 'arena';
                 }, 2000, 'panel active');
             })
             .then(function() {
-                // 等卡 2 摘要进入 error 态（其他 7 卡正常完成）
+                // 等至少一张佣兵卡摘要进入 error 态
                 return api.waitFor(function() {
-                    var sum = document.getElementById('arena-opp-summary-2');
-                    return sum && sum.classList.contains('arena-card-opponents-error');
-                }, 3000, '卡 2 摘要进入 error 态');
+                    var cards = window.ArenaPanel.getCards();
+                    for (var i = 0; i < 10; i++) {
+                        if ((cards[i].standardRole || 'merc') !== 'merc') continue;
+                        var sum = document.getElementById('arena-opp-summary-' + i);
+                        if (sum && sum.classList.contains('arena-card-opponents-error')) {
+                            failIdx = i;
+                            okIdx = findPublicCardIndexByRole(cards, 'monster', 1);
+                            return true;
+                        }
+                    }
+                    return false;
+                }, 3000, '失败卡摘要进入 error 态');
             })
             .then(function() {
-                var sum = document.getElementById('arena-opp-summary-2');
-                api.assert(sum.textContent.indexOf('↻') >= 0, '卡 2 摘要应含 ↻ 重试图标');
-                api.assert(sum.textContent.indexOf('stock_insufficient') >= 0, '卡 2 摘要应含 error 文本');
-                // 卡 2 enter 按钮应 disabled（hasPreview false）
-                var enterBtn = document.querySelector('.arena-card-btn-enter[data-index="2"]');
+                var sum = document.getElementById('arena-opp-summary-' + failIdx);
+                api.assert(sum.textContent.indexOf('↻') >= 0, '失败卡摘要应含 ↻ 重试图标');
+                api.assert(sum.textContent.indexOf('stock_insufficient') >= 0, '失败卡摘要应含 error 文本');
+                // 失败卡 enter 按钮应 disabled（hasPreview false）
+                var enterBtn = document.querySelector('.arena-card-btn-enter[data-index="' + failIdx + '"]');
                 api.assertEqual(enterBtn.disabled, true, '失败卡的 enter 按钮应 disabled');
-                // 其他卡（如卡 0）enter 应正常 enabled
-                var card0Enter = document.querySelector('.arena-card-btn-enter[data-index="0"]');
+                // 其他本地 roster 卡 enter 应正常 enabled
+                var card0Enter = document.querySelector('.arena-card-btn-enter[data-index="' + okIdx + '"]');
                 api.assertEqual(card0Enter.disabled, false, '其他成功卡的 enter 按钮不受影响');
             })
             .then(function() {
                 // 点击 ↻ 重试（failNextPreviewForCard 已在第一次回包后清掉，这次会成功）
                 var beforeCount = host.previewMessages.length;
-                document.getElementById('arena-opp-summary-2').click();
+                document.getElementById('arena-opp-summary-' + failIdx).click();
                 return api.waitFor(function() {
                     return host.previewMessages.length > beforeCount;
                 }, 2000, '点击 ↻ 触发重发 preview');
@@ -696,14 +1071,14 @@ var ArenaHarnessQA = (function() {
             .then(function() {
                 // 等摘要回成功态
                 return api.waitFor(function() {
-                    var sum = document.getElementById('arena-opp-summary-2');
+                    var sum = document.getElementById('arena-opp-summary-' + failIdx);
                     return sum && !sum.classList.contains('arena-card-opponents-error')
                                 && !sum.classList.contains('arena-card-opponents-loading');
-                }, 2000, '卡 2 摘要恢复成功态');
+                }, 2000, '失败卡摘要恢复成功态');
             })
             .then(function() {
-                var enterBtn = document.querySelector('.arena-card-btn-enter[data-index="2"]');
-                api.assertEqual(enterBtn.disabled, false, '重试成功后卡 2 enter 按钮应 enabled');
+                var enterBtn = document.querySelector('.arena-card-btn-enter[data-index="' + failIdx + '"]');
+                api.assertEqual(enterBtn.disabled, false, '重试成功后失败卡 enter 按钮应 enabled');
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });

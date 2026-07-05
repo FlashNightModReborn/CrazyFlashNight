@@ -10,7 +10,7 @@
  *
  * 同步管道（与 stage-select / map 同构）：
  *   Web → C# ArenaTask → Flash gameCommands:
- *     arenaSnapshot      — 返回 money / reuseCount / reuseLimit / busy / knownEnemies
+ *     arenaSnapshot      — 返回 money / playerLevel / reuseCount / reuseLimit / busy / knownEnemies
  *     arenaRollPreview   — 调 ArenaController.rollPreview，序列化 _root.出阵人员 给 web 显示
  *     arenaEquipTooltip  — (raw, level) → BaseItem.getData() 走真 calculateData，含 tier/mods
  *                          → TooltipComposer 富文本（descHTML / introHTML）
@@ -80,7 +80,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
         // 这里把自管入场锁 reset 掉，覆盖 ArenaController.close 在 web 路径下不会被
         // 调用的事实（close 仅挂在旧 Flash 角斗场选择界面的"取消挑战"按钮上）。
         _root.角斗场入场中 = false;
-        // 对手类型默认人形；roster（元战队/非人形）由后续 enter 显式置位，
+        // 对手类型默认人形佣兵；roster（元战队/混编）由后续 enter 显式置位，
         // 这里复位防上一场 roster 残留泄漏进 enterArenaCommon / 角斗场加载 的分叉判断。
         _root.角斗场对手类型 = "merc";
         _root.角斗场roster阵容 = undefined;
@@ -96,6 +96,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
             success: true,
             snapshot: {
                 money:       Number(_root.金钱) || 0,
+                playerLevel: Number(_root.等级) || 1,
                 reuseCount:  Number(_root.当前佣兵重用数) || 0,
                 reuseLimit:  Number(_root.竞技场佣兵重用基数) || 0,
                 busy:        (_root.发布请求 == true) || (_root.决斗场进入中 == true),
@@ -119,9 +120,24 @@ class org.flashNight.arki.merc.ArenaPanelService {
         if (_root.兵种库 == undefined || _root.兵种库[type] == undefined) return false;
         var spriteName:String = String(_root.兵种库[type].兵种名 || "");
         if (spriteName == "") return false;
+        if (isHumanoidTemplateSprite(spriteName)) return true; // 竞技场混编允许主角模板佣兵型单位
         if (_root.killStats == undefined || _root.killStats.byType == undefined) return false;
         var count:Number = Number(_root.killStats.byType[spriteName]);
         return (!isNaN(count) && count > 0);
+    }
+
+    private static function isHumanoidTemplateSprite(spriteName:String):Boolean {
+        return String(spriteName || "").indexOf("主角") >= 0;
+    }
+
+    private static function buildArenaMercById(mercId:String):Array {
+        if (_root.mercs_list == undefined || _root.merc_indices_by_id == undefined) return null;
+        var idx = _root.merc_indices_by_id[mercId];
+        if (idx == undefined) idx = _root.merc_indices_by_id[Number(mercId)];
+        if (idx == undefined || _root.mercs_list[idx] == undefined) return null;
+        var raw:Object = _root.mercs_list[idx];
+        if (raw.hidden == true) return null; // 竞技场混编默认不抽隐藏/彩蛋佣兵
+        return MercLibrary.buildMercData(raw);
     }
 
     /**
@@ -387,13 +403,20 @@ class org.flashNight.arki.merc.ArenaPanelService {
             return;
         }
 
-        // ── 元战队（非人形怪）分叉：web M2 本地采样后下发 roster=[{type:"兵种N", level:L}, ...] ──
+        // ── 元战队 / 混编分叉：web M2 本地采样后下发 roster=[{type:"兵种N", level:L} | {kind:"merc", mercId}, ...] ──
         // 有 roster → 走 commitRoster（不碰佣兵 cache / reuse / pool）；否则落入下方人形 merc 路径。
         var rosterParam:Array = (params.roster != undefined) ? params.roster : null;
         if (rosterParam != null && rosterParam.length > 0) {
             var squad:Array = [];
             var customPve:Boolean = (enterMode == "custom_pve");
             for (var ri:Number = 0; ri < rosterParam.length; ri++) {
+                var rKind:String = String(rosterParam[ri].kind || "");
+                if (rKind == "merc" || rosterParam[ri].mercId != undefined) {
+                    var merc:Array = buildArenaMercById(String(rosterParam[ri].mercId));
+                    if (merc == null) continue;
+                    squad.push({ 类型: "merc", 佣兵: merc, 禁收益: customPve });
+                    continue;
+                }
                 var rt:String = String(rosterParam[ri].type);
                 if (_root.兵种库[rt] == undefined) continue; // 跳过 web 与 AS2 兵种库不一致的未知兵种
                 if (!customPve && !isKnownArenaEnemy(rt)) continue; // 标准 roster 仍防旧缓存/伪造 payload；PVE 测试场允许全量 units.json

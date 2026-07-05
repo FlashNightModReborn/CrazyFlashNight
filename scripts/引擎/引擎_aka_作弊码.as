@@ -79,6 +79,51 @@ _root.cheatFunction.getallintelligence = function(){
 	_root.最上层发布文字提示("获得所有情报(满额)");
 }
 
+_root.cheatFunction.unlockkills = function(){
+	if(_root.兵种库 == undefined){
+		_root.最上层发布文字提示("兵种库未加载，无法解锁击杀记录");
+		return;
+	}
+	if(_root.killStats == undefined){
+		_root.killStats = {total:0, byType:{}};
+	}
+	if(_root.killStats.byType == undefined){
+		_root.killStats.byType = {};
+	}
+
+	var map:Object = _root.killStats.byType;
+	var seen:Object = {};
+	var scanned:Number = 0;
+	var added:Number = 0;
+
+	for(var unitType in _root.兵种库){
+		var attr:Object = _root.兵种库[unitType];
+		if(attr == undefined || attr.是否为敌人 != true) continue;
+		var spriteName:String = (attr.兵种名 == undefined) ? "" : String(attr.兵种名);
+		if(spriteName == "" || seen[spriteName] == true) continue;
+
+		seen[spriteName] = true;
+		scanned++;
+
+		var oldCount:Number = Number(map[spriteName]);
+		if(isNaN(oldCount) || oldCount <= 0){
+			map[spriteName] = 1;
+			added++;
+		}
+	}
+
+	var total:Number = Number(_root.killStats.total);
+	if(isNaN(total) || total < 0) total = 0;
+	_root.killStats.total = total + added;
+	if(_root.存档系统 != undefined){
+		_root.存档系统.dirtyMark = true;
+	}
+
+	_root.最上层发布文字提示("已解锁敌方击杀记录：" + scanned + "种，新增" + added + "种。重新打开竞技场面板生效。");
+}
+_root.cheatFunction.unlockallenemies = _root.cheatFunction.unlockkills;
+_root.cheatFunction.arenakills = _root.cheatFunction.unlockkills;
+
 // ============================================================
 // A. 查询类命令
 // ============================================================
@@ -417,6 +462,9 @@ add1                召唤一个僵尸
 fire                无限火力（技能CD降为1秒）
 getallmods          获得所有配件
 getallintelligence  获得所有情报
+unlockkills         解锁所有敌方兵种击杀记录
+unlockallenemies    unlockkills 的别名
+arenakills          unlockkills 的别名
 
 === 前缀命令 ===
 #level:15           设置等级为15

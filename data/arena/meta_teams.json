@@ -1,10 +1,11 @@
 {
   "generatedBy": "tools/derive-arena-meta-teams.js",
   "granularity": "subwave",
-  "note": "竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队); rosters{}=按势力聚合的兵种池(按等级带采样K体用)。请勿手改——改采集规则后重跑。",
+  "note": "竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队); rosters{}=按势力聚合的兵种池(按等级带采样K体用); mercenaries[]=混编人形侧优先池(来自 data/merc/mercenaries.json，排除 hidden)。请勿手改——改采集规则后重跑。",
   "stageFilesScanned": 211,
   "stagesWithTeams": 196,
   "teamCount": 2087,
+  "mercenaryCount": 199,
   "factionBreakdown": {
     "日本军": 126,
     "unknown": 105,
@@ -9328,6 +9329,1600 @@
       "unitCount": 13
     }
   },
+  "mercenaries": [
+    {
+      "id": 230,
+      "name": "艾米",
+      "level": 1,
+      "gender": "女",
+      "height": 165,
+      "weight": 1
+    },
+    {
+      "id": 5510,
+      "name": "管家",
+      "level": 1,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 232,
+      "name": "克里斯",
+      "level": 2,
+      "gender": "女",
+      "height": 160,
+      "weight": 1
+    },
+    {
+      "id": 231,
+      "name": "李想",
+      "level": 3,
+      "gender": "女",
+      "height": 173,
+      "weight": 1
+    },
+    {
+      "id": 233,
+      "name": "奥斯",
+      "level": 3,
+      "gender": "男",
+      "height": 172,
+      "weight": 1
+    },
+    {
+      "id": 234,
+      "name": "科斯",
+      "level": 4,
+      "gender": "男",
+      "height": 172,
+      "weight": 1
+    },
+    {
+      "id": 235,
+      "name": "杰克",
+      "level": 5,
+      "gender": "男",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 260,
+      "name": "地下拳王",
+      "level": 5,
+      "gender": "男",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 236,
+      "name": "比特",
+      "level": 6,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 5514,
+      "name": "左疼君",
+      "level": 6,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 5516,
+      "name": "尚誉",
+      "level": 6,
+      "gender": "男",
+      "height": 174,
+      "weight": 1
+    },
+    {
+      "id": 237,
+      "name": "高枝雪",
+      "level": 7,
+      "gender": "女",
+      "height": 160,
+      "weight": 1
+    },
+    {
+      "id": 5513,
+      "name": "阿龙",
+      "level": 7,
+      "gender": "男",
+      "height": 172,
+      "weight": 1
+    },
+    {
+      "id": 5640,
+      "name": "兵痞",
+      "level": 7,
+      "gender": "男",
+      "height": 165,
+      "weight": 1
+    },
+    {
+      "id": 240,
+      "name": "赵明",
+      "level": 8,
+      "gender": "男",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 5515,
+      "name": "智芝辛",
+      "level": 8,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 239,
+      "name": "鹏",
+      "level": 9,
+      "gender": "男",
+      "height": 172,
+      "weight": 1
+    },
+    {
+      "id": 5583,
+      "name": "鬼面",
+      "level": 9,
+      "gender": "女",
+      "height": 160,
+      "weight": 1
+    },
+    {
+      "id": 238,
+      "name": "血手",
+      "level": 10,
+      "gender": "男",
+      "height": 181,
+      "weight": 1
+    },
+    {
+      "id": 5517,
+      "name": "喜欢医闹？",
+      "level": 10,
+      "gender": "女",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 23239,
+      "name": "雄鹰",
+      "level": 10,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 241,
+      "name": "雷霆",
+      "level": 11,
+      "gender": "男",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 259,
+      "name": "萝丝",
+      "level": 11,
+      "gender": "女",
+      "height": 160,
+      "weight": 1
+    },
+    {
+      "id": 23250,
+      "name": "血梅",
+      "level": 11,
+      "gender": "女",
+      "height": 167,
+      "weight": 1
+    },
+    {
+      "id": 242,
+      "name": "Alex",
+      "level": 12,
+      "gender": "男",
+      "height": 185,
+      "weight": 1
+    },
+    {
+      "id": 5503,
+      "name": "白夜",
+      "level": 12,
+      "gender": "女",
+      "height": 150,
+      "weight": 1
+    },
+    {
+      "id": 5511,
+      "name": "刘沛松",
+      "level": 12,
+      "gender": "男",
+      "height": 180,
+      "weight": 1
+    },
+    {
+      "id": 5512,
+      "name": "荘臣",
+      "level": 12,
+      "gender": "男",
+      "height": 185,
+      "weight": 1
+    },
+    {
+      "id": 5558,
+      "name": "红衫",
+      "level": 12,
+      "gender": "男",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 5578,
+      "name": "黑桃A",
+      "level": 12,
+      "gender": "女",
+      "height": 157,
+      "weight": 1
+    },
+    {
+      "id": 5599,
+      "name": "洋葱头",
+      "level": 12,
+      "gender": "男",
+      "height": 158,
+      "weight": 1
+    },
+    {
+      "id": 243,
+      "name": "血月",
+      "level": 13,
+      "gender": "男",
+      "height": 177,
+      "weight": 1
+    },
+    {
+      "id": 244,
+      "name": "武卫",
+      "level": 13,
+      "gender": "女",
+      "height": 168,
+      "weight": 1
+    },
+    {
+      "id": 5533,
+      "name": "斑纹",
+      "level": 13,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 5545,
+      "name": "利剑",
+      "level": 13,
+      "gender": "男",
+      "height": 180,
+      "weight": 1
+    },
+    {
+      "id": 5580,
+      "name": "刺猬",
+      "level": 13,
+      "gender": "男",
+      "height": 169,
+      "weight": 1
+    },
+    {
+      "id": 245,
+      "name": "Rachel",
+      "level": 14,
+      "gender": "男",
+      "height": 171,
+      "weight": 1
+    },
+    {
+      "id": 5524,
+      "name": "首相の最强保镖",
+      "level": 14,
+      "gender": "女",
+      "height": 165,
+      "weight": 1
+    },
+    {
+      "id": 5547,
+      "name": "朱古力",
+      "level": 14,
+      "gender": "女",
+      "height": 156,
+      "weight": 1
+    },
+    {
+      "id": 5579,
+      "name": "狂飙",
+      "level": 14,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 5584,
+      "name": "“红手套”",
+      "level": 14,
+      "gender": "男",
+      "height": 177,
+      "weight": 1
+    },
+    {
+      "id": 247,
+      "name": "烈焰",
+      "level": 15,
+      "gender": "男",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 5521,
+      "name": "陈真",
+      "level": 15,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 5522,
+      "name": "春笠",
+      "level": 15,
+      "gender": "女",
+      "height": 165,
+      "weight": 1
+    },
+    {
+      "id": 5523,
+      "name": "学生姐",
+      "level": 15,
+      "gender": "女",
+      "height": 180,
+      "weight": 1
+    },
+    {
+      "id": 5546,
+      "name": "卫队长",
+      "level": 15,
+      "gender": "男",
+      "height": 182,
+      "weight": 1
+    },
+    {
+      "id": 5548,
+      "name": "沉淀哥",
+      "level": 15,
+      "gender": "男",
+      "height": 187,
+      "weight": 1
+    },
+    {
+      "id": 5643,
+      "name": "地上拳王",
+      "level": 15,
+      "gender": "男",
+      "height": 180,
+      "weight": 1
+    },
+    {
+      "id": 23248,
+      "name": "锋刃",
+      "level": 15,
+      "gender": "男",
+      "height": 180,
+      "weight": 1
+    },
+    {
+      "id": 246,
+      "name": "熊大",
+      "level": 16,
+      "gender": "男",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 5581,
+      "name": "讥笑怪咖",
+      "level": 16,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 5641,
+      "name": "扫地工",
+      "level": 16,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 2581,
+      "name": "武林宗师",
+      "level": 17,
+      "gender": "男",
+      "height": 160,
+      "weight": 1
+    },
+    {
+      "id": 5550,
+      "name": "探戈狼",
+      "level": 17,
+      "gender": "女",
+      "height": 178,
+      "weight": 1
+    },
+    {
+      "id": 5626,
+      "name": "侵蚀",
+      "level": 17,
+      "gender": "男",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 248,
+      "name": "荒狼",
+      "level": 18,
+      "gender": "男",
+      "height": 181,
+      "weight": 1
+    },
+    {
+      "id": 249,
+      "name": "死神",
+      "level": 18,
+      "gender": "男",
+      "height": 179,
+      "weight": 1
+    },
+    {
+      "id": 5508,
+      "name": "Coco-电子琴",
+      "level": 18,
+      "gender": "女",
+      "height": 156,
+      "weight": 1
+    },
+    {
+      "id": 5551,
+      "name": "刹",
+      "level": 18,
+      "gender": "女",
+      "height": 150,
+      "weight": 1
+    },
+    {
+      "id": 5642,
+      "name": "跟踪狂滚出去",
+      "level": 18,
+      "gender": "女",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 250,
+      "name": "Lily",
+      "level": 19,
+      "gender": "女",
+      "height": 165,
+      "weight": 1
+    },
+    {
+      "id": 5506,
+      "name": "Smart-吉他手",
+      "level": 19,
+      "gender": "男",
+      "height": 178,
+      "weight": 1
+    },
+    {
+      "id": 258,
+      "name": "王女",
+      "level": 20,
+      "gender": "女",
+      "height": 150,
+      "weight": 1
+    },
+    {
+      "id": 5507,
+      "name": "Sundae-吉他手",
+      "level": 20,
+      "gender": "女",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 5509,
+      "name": "BErminAtoR-贝斯手",
+      "level": 20,
+      "gender": "男",
+      "height": 150,
+      "weight": 1
+    },
+    {
+      "id": 5534,
+      "name": "小樱",
+      "level": 20,
+      "gender": "女",
+      "height": 156,
+      "weight": 1
+    },
+    {
+      "id": 5549,
+      "name": "腕豪",
+      "level": 20,
+      "gender": "男",
+      "height": 182,
+      "weight": 1
+    },
+    {
+      "id": 5567,
+      "name": "文杰他弟",
+      "level": 20,
+      "gender": "男",
+      "height": 178,
+      "weight": 1
+    },
+    {
+      "id": 5582,
+      "name": "卤蛋头 零充",
+      "level": 20,
+      "gender": "男",
+      "height": 180,
+      "weight": 1
+    },
+    {
+      "id": 5593,
+      "name": "哥特骇客",
+      "level": 20,
+      "gender": "女",
+      "height": 153,
+      "weight": 1
+    },
+    {
+      "id": 5630,
+      "name": "大卫",
+      "level": 20,
+      "gender": "男",
+      "height": 176,
+      "weight": 1
+    },
+    {
+      "id": 5631,
+      "name": "瑞秋",
+      "level": 20,
+      "gender": "女",
+      "height": 165,
+      "weight": 1
+    },
+    {
+      "id": 5525,
+      "name": "猎狐者",
+      "level": 21,
+      "gender": "女",
+      "height": 165,
+      "weight": 1
+    },
+    {
+      "id": 5535,
+      "name": "安德森",
+      "level": 21,
+      "gender": "男",
+      "height": 182,
+      "weight": 1
+    },
+    {
+      "id": 5566,
+      "name": "老藏",
+      "level": 21,
+      "gender": "男",
+      "height": 173,
+      "weight": 1
+    },
+    {
+      "id": 23251,
+      "name": "壮汉",
+      "level": 21,
+      "gender": "男",
+      "height": 195,
+      "weight": 1
+    },
+    {
+      "id": 251,
+      "name": "陈骋",
+      "level": 22,
+      "gender": "男",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 5565,
+      "name": "大表哥",
+      "level": 22,
+      "gender": "男",
+      "height": 182,
+      "weight": 1
+    },
+    {
+      "id": 5505,
+      "name": "KEE-乐队主管",
+      "level": 23,
+      "gender": "女",
+      "height": 165,
+      "weight": 1
+    },
+    {
+      "id": 5597,
+      "name": "布偶刺客",
+      "level": 23,
+      "gender": "女",
+      "height": 151,
+      "weight": 1
+    },
+    {
+      "id": 5553,
+      "name": "飓风",
+      "level": 24,
+      "gender": "女",
+      "height": 189,
+      "weight": 1
+    },
+    {
+      "id": 257,
+      "name": "暴君之子",
+      "level": 25,
+      "gender": "男",
+      "height": 150,
+      "weight": 1
+    },
+    {
+      "id": 5554,
+      "name": "佚龙",
+      "level": 25,
+      "gender": "女",
+      "height": 183,
+      "weight": 1
+    },
+    {
+      "id": 5562,
+      "name": "诸葛叁",
+      "level": 25,
+      "gender": "男",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 5577,
+      "name": "海月",
+      "level": 25,
+      "gender": "女",
+      "height": 162,
+      "weight": 1
+    },
+    {
+      "id": 5585,
+      "name": "手好小哦",
+      "level": 25,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 5539,
+      "name": "战车",
+      "level": 26,
+      "gender": "男",
+      "height": 180,
+      "weight": 1
+    },
+    {
+      "id": 5645,
+      "name": "半感染者",
+      "level": 26,
+      "gender": "女",
+      "height": 199,
+      "weight": 1
+    },
+    {
+      "id": 5552,
+      "name": "万宝路",
+      "level": 27,
+      "gender": "男",
+      "height": 179,
+      "weight": 1
+    },
+    {
+      "id": 5627,
+      "name": "前清道夫",
+      "level": 27,
+      "gender": "女",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 5538,
+      "name": "鹰眼",
+      "level": 28,
+      "gender": "男",
+      "height": 179,
+      "weight": 1
+    },
+    {
+      "id": 5592,
+      "name": "人狼",
+      "level": 29,
+      "gender": "男",
+      "height": 185,
+      "weight": 1
+    },
+    {
+      "id": 252,
+      "name": "孤狼",
+      "level": 30,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 5520,
+      "name": "C国队长",
+      "level": 30,
+      "gender": "男",
+      "height": 178,
+      "weight": 1
+    },
+    {
+      "id": 5555,
+      "name": "赤丸",
+      "level": 30,
+      "gender": "女",
+      "height": 190,
+      "weight": 1
+    },
+    {
+      "id": 5557,
+      "name": "压制者",
+      "level": 30,
+      "gender": "女",
+      "height": 200,
+      "weight": 1
+    },
+    {
+      "id": 5528,
+      "name": "彗星",
+      "level": 31,
+      "gender": "女",
+      "height": 165,
+      "weight": 1
+    },
+    {
+      "id": 5572,
+      "name": "正骨侠",
+      "level": 31,
+      "gender": "男",
+      "height": 182,
+      "weight": 1
+    },
+    {
+      "id": 5601,
+      "name": "寒风",
+      "level": 31,
+      "gender": "男",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 261,
+      "name": "冷冰霜",
+      "level": 32,
+      "gender": "男",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 5563,
+      "name": "门神",
+      "level": 33,
+      "gender": "男",
+      "height": 187,
+      "weight": 1
+    },
+    {
+      "id": 5606,
+      "name": "北极",
+      "level": 33,
+      "gender": "女",
+      "height": 178,
+      "weight": 1
+    },
+    {
+      "id": 5632,
+      "name": "沛多多",
+      "level": 33,
+      "gender": "男",
+      "height": 169,
+      "weight": 1
+    },
+    {
+      "id": 5633,
+      "name": "约翰Top灬红人馆",
+      "level": 33,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 5575,
+      "name": "红矮星",
+      "level": 34,
+      "gender": "男",
+      "height": 190,
+      "weight": 1
+    },
+    {
+      "id": 253,
+      "name": "铁甲",
+      "level": 35,
+      "gender": "男",
+      "height": 172,
+      "weight": 1
+    },
+    {
+      "id": 5531,
+      "name": "黑蜂",
+      "level": 35,
+      "gender": "女",
+      "height": 160,
+      "weight": 1
+    },
+    {
+      "id": 5541,
+      "name": "Locke-Lee",
+      "level": 35,
+      "gender": "男",
+      "height": 160,
+      "weight": 1
+    },
+    {
+      "id": 5588,
+      "name": "天火",
+      "level": 35,
+      "gender": "男",
+      "height": 182,
+      "weight": 1
+    },
+    {
+      "id": 5589,
+      "name": "苏打",
+      "level": 35,
+      "gender": "男",
+      "height": 179,
+      "weight": 1
+    },
+    {
+      "id": 5598,
+      "name": "兵长",
+      "level": 35,
+      "gender": "男",
+      "height": 160,
+      "weight": 1
+    },
+    {
+      "id": 5623,
+      "name": "老朋友",
+      "level": 35,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 262,
+      "name": "寒冬",
+      "level": 36,
+      "gender": "女",
+      "height": 178,
+      "weight": 1
+    },
+    {
+      "id": 263,
+      "name": "合金战士",
+      "level": 36,
+      "gender": "男",
+      "height": 182,
+      "weight": 1
+    },
+    {
+      "id": 5556,
+      "name": "嘚吧呦",
+      "level": 36,
+      "gender": "男",
+      "height": 160,
+      "weight": 1
+    },
+    {
+      "id": 5559,
+      "name": "雷云",
+      "level": 36,
+      "gender": "女",
+      "height": 177,
+      "weight": 1
+    },
+    {
+      "id": 5561,
+      "name": "白幽灵",
+      "level": 36,
+      "gender": "女",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 5571,
+      "name": "大枪",
+      "level": 36,
+      "gender": "男",
+      "height": 177,
+      "weight": 1
+    },
+    {
+      "id": 5604,
+      "name": "火",
+      "level": 36,
+      "gender": "女",
+      "height": 162,
+      "weight": 1
+    },
+    {
+      "id": 5560,
+      "name": "执行者",
+      "level": 37,
+      "gender": "女",
+      "height": 165,
+      "weight": 1
+    },
+    {
+      "id": 5628,
+      "name": "前A级清道夫",
+      "level": 37,
+      "gender": "男",
+      "height": 190,
+      "weight": 1
+    },
+    {
+      "id": 5657,
+      "name": "徐平",
+      "level": 37,
+      "gender": "男",
+      "height": 190,
+      "weight": 1
+    },
+    {
+      "id": 5610,
+      "name": "灬",
+      "level": 38,
+      "gender": "男",
+      "height": 182,
+      "weight": 1
+    },
+    {
+      "id": 5655,
+      "name": "蜘蛛女侠",
+      "level": 38,
+      "gender": "女",
+      "height": 173,
+      "weight": 1
+    },
+    {
+      "id": 264,
+      "name": "炎",
+      "level": 39,
+      "gender": "女",
+      "height": 162,
+      "weight": 1
+    },
+    {
+      "id": 5653,
+      "name": "街头英雄",
+      "level": 39,
+      "gender": "男",
+      "height": 178,
+      "weight": 1
+    },
+    {
+      "id": 254,
+      "name": "影刃",
+      "level": 40,
+      "gender": "男",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 5532,
+      "name": "我要打一百个",
+      "level": 40,
+      "gender": "男",
+      "height": 180,
+      "weight": 1
+    },
+    {
+      "id": 5542,
+      "name": "虎威太岁",
+      "level": 40,
+      "gender": "男",
+      "height": 200,
+      "weight": 1
+    },
+    {
+      "id": 5564,
+      "name": "红桃K",
+      "level": 40,
+      "gender": "男",
+      "height": 189,
+      "weight": 1
+    },
+    {
+      "id": 5625,
+      "name": "亚瑟摩根",
+      "level": 40,
+      "gender": "男",
+      "height": 180,
+      "weight": 1
+    },
+    {
+      "id": 5502,
+      "name": "枪匠",
+      "level": 41,
+      "gender": "男",
+      "height": 168,
+      "weight": 1
+    },
+    {
+      "id": 5504,
+      "name": "剑痴",
+      "level": 41,
+      "gender": "男",
+      "height": 180,
+      "weight": 1
+    },
+    {
+      "id": 5602,
+      "name": "冬狮娘",
+      "level": 41,
+      "gender": "女",
+      "height": 178,
+      "weight": 1
+    },
+    {
+      "id": 5603,
+      "name": "炏",
+      "level": 41,
+      "gender": "男",
+      "height": 182,
+      "weight": 1
+    },
+    {
+      "id": 265,
+      "name": "异形",
+      "level": 42,
+      "gender": "男",
+      "height": 200,
+      "weight": 1
+    },
+    {
+      "id": 5659,
+      "name": "罗尚",
+      "level": 42,
+      "gender": "男",
+      "height": 183,
+      "weight": 1
+    },
+    {
+      "id": 5621,
+      "name": "热电阻",
+      "level": 43,
+      "gender": "男",
+      "height": 166,
+      "weight": 1
+    },
+    {
+      "id": 5660,
+      "name": "遗弃之糖",
+      "level": 43,
+      "gender": "女",
+      "height": 177,
+      "weight": 1
+    },
+    {
+      "id": 5607,
+      "name": "㷋",
+      "level": 44,
+      "gender": "男",
+      "height": 182,
+      "weight": 1
+    },
+    {
+      "id": 5658,
+      "name": "地煞",
+      "level": 44,
+      "gender": "男",
+      "height": 188,
+      "weight": 1
+    },
+    {
+      "id": 266,
+      "name": "舟歌",
+      "level": 45,
+      "gender": "女",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 5500,
+      "name": "M055",
+      "level": 45,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 5501,
+      "name": "绯红佳人",
+      "level": 45,
+      "gender": "女",
+      "height": 182,
+      "weight": 1
+    },
+    {
+      "id": 5540,
+      "name": "威克钛手",
+      "level": 45,
+      "gender": "男",
+      "height": 180,
+      "weight": 1
+    },
+    {
+      "id": 5544,
+      "name": "九尾狐",
+      "level": 45,
+      "gender": "女",
+      "height": 160,
+      "weight": 1
+    },
+    {
+      "id": 5605,
+      "name": " Sub-Zero",
+      "level": 45,
+      "gender": "男",
+      "height": 170,
+      "weight": 1
+    },
+    {
+      "id": 5609,
+      "name": "焱",
+      "level": 45,
+      "gender": "女",
+      "height": 162,
+      "weight": 1
+    },
+    {
+      "id": 5608,
+      "name": "燚",
+      "level": 46,
+      "gender": "女",
+      "height": 162,
+      "weight": 1
+    },
+    {
+      "id": 5543,
+      "name": "天启",
+      "level": 47,
+      "gender": "男",
+      "height": 182,
+      "weight": 1
+    },
+    {
+      "id": 5656,
+      "name": "马老板",
+      "level": 47,
+      "gender": "男",
+      "height": 182,
+      "weight": 1
+    },
+    {
+      "id": 5574,
+      "name": "疫医",
+      "level": 48,
+      "gender": "男",
+      "height": 178,
+      "weight": 1
+    },
+    {
+      "id": 5576,
+      "name": "蝰蛇",
+      "level": 49,
+      "gender": "女",
+      "height": 168,
+      "weight": 1
+    },
+    {
+      "id": 255,
+      "name": "霸天虎",
+      "level": 50,
+      "gender": "男",
+      "height": 188,
+      "weight": 1
+    },
+    {
+      "id": 267,
+      "name": "忍者王",
+      "level": 50,
+      "gender": "男",
+      "height": 191,
+      "weight": 1
+    },
+    {
+      "id": 5526,
+      "name": "魅影",
+      "level": 50,
+      "gender": "女",
+      "height": 168,
+      "weight": 1
+    },
+    {
+      "id": 5570,
+      "name": "午夜霓虹",
+      "level": 50,
+      "gender": "男",
+      "height": 180,
+      "weight": 1
+    },
+    {
+      "id": 5591,
+      "name": "清水結衣酱",
+      "level": 50,
+      "gender": "女",
+      "height": 150,
+      "weight": 1
+    },
+    {
+      "id": 5613,
+      "name": "千夏沐晓酱",
+      "level": 50,
+      "gender": "女",
+      "height": 150,
+      "weight": 1
+    },
+    {
+      "id": 5618,
+      "name": "利爪",
+      "level": 50,
+      "gender": "男",
+      "height": 162,
+      "weight": 1
+    },
+    {
+      "id": 5596,
+      "name": "拆迁大队长",
+      "level": 51,
+      "gender": "女",
+      "height": 185,
+      "weight": 1
+    },
+    {
+      "id": 5620,
+      "name": "莱特宁",
+      "level": 52,
+      "gender": "女",
+      "height": 187,
+      "weight": 1
+    },
+    {
+      "id": 5652,
+      "name": "虎妙",
+      "level": 52,
+      "gender": "女",
+      "height": 155,
+      "weight": 1
+    },
+    {
+      "id": 5590,
+      "name": "大冤种 牢格雷姆",
+      "level": 53,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 5568,
+      "name": "日冕",
+      "level": 55,
+      "gender": "男",
+      "height": 185,
+      "weight": 1
+    },
+    {
+      "id": 5629,
+      "name": "白绝",
+      "level": 56,
+      "gender": "女",
+      "height": 180,
+      "weight": 1
+    },
+    {
+      "id": 5587,
+      "name": "逆苍天",
+      "level": 57,
+      "gender": "男",
+      "height": 180,
+      "weight": 1
+    },
+    {
+      "id": 5622,
+      "name": "毒壳",
+      "level": 58,
+      "gender": "男",
+      "height": 176,
+      "weight": 1
+    },
+    {
+      "id": 5530,
+      "name": "XV秩律-判罚者",
+      "level": 60,
+      "gender": "男",
+      "height": 190,
+      "weight": 1
+    },
+    {
+      "id": 5573,
+      "name": "范马星人",
+      "level": 60,
+      "gender": "男",
+      "height": 198,
+      "weight": 1
+    },
+    {
+      "id": 5616,
+      "name": "板齿犀",
+      "level": 60,
+      "gender": "男",
+      "height": 195,
+      "weight": 1
+    },
+    {
+      "id": 5617,
+      "name": "爪王",
+      "level": 60,
+      "gender": "女",
+      "height": 187,
+      "weight": 1
+    },
+    {
+      "id": 5529,
+      "name": "XV秩律-断罪者",
+      "level": 62,
+      "gender": "女",
+      "height": 180,
+      "weight": 1
+    },
+    {
+      "id": 5528,
+      "name": "XV秩律-执裁者",
+      "level": 64,
+      "gender": "女",
+      "height": 185,
+      "weight": 1
+    },
+    {
+      "id": 5518,
+      "name": "临界点",
+      "level": 65,
+      "gender": "男",
+      "height": 182,
+      "weight": 1
+    },
+    {
+      "id": 5536,
+      "name": "亚德南丘",
+      "level": 65,
+      "gender": "女",
+      "height": 160,
+      "weight": 1
+    },
+    {
+      "id": 5569,
+      "name": "羽蛇神",
+      "level": 65,
+      "gender": "女",
+      "height": 174,
+      "weight": 1
+    },
+    {
+      "id": 5600,
+      "name": "真-逆天剑客",
+      "level": 66,
+      "gender": "男",
+      "height": 181,
+      "weight": 1
+    },
+    {
+      "id": 5519,
+      "name": "卡塔利纳的杰克巴尔",
+      "level": 68,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 256,
+      "name": "卫天",
+      "level": 70,
+      "gender": "男",
+      "height": 191,
+      "weight": 1
+    },
+    {
+      "id": 5537,
+      "name": "普罗米修斯",
+      "level": 70,
+      "gender": "男",
+      "height": 188,
+      "weight": 1
+    },
+    {
+      "id": 5586,
+      "name": "李昂",
+      "level": 70,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 5619,
+      "name": "巨狼",
+      "level": 70,
+      "gender": "男",
+      "height": 197,
+      "weight": 1
+    },
+    {
+      "id": 5635,
+      "name": "自由骑士",
+      "level": 70,
+      "gender": "女",
+      "height": 185,
+      "weight": 1
+    },
+    {
+      "id": 5637,
+      "name": "北哥",
+      "level": 70,
+      "gender": "男",
+      "height": 188,
+      "weight": 1
+    },
+    {
+      "id": 5647,
+      "name": "艾萨克",
+      "level": 70,
+      "gender": "男",
+      "height": 176,
+      "weight": 1
+    },
+    {
+      "id": 5651,
+      "name": "祈手",
+      "level": 70,
+      "gender": "男",
+      "height": 171,
+      "weight": 1
+    },
+    {
+      "id": 56,
+      "name": "【幻之羽翼】流年",
+      "level": 100,
+      "gender": "男",
+      "height": 175,
+      "weight": 1
+    },
+    {
+      "id": 5594,
+      "name": "金色风暴",
+      "level": 100,
+      "gender": "女",
+      "height": 185,
+      "weight": 1
+    },
+    {
+      "id": 5595,
+      "name": "牙狼",
+      "level": 100,
+      "gender": "男",
+      "height": 185,
+      "weight": 1
+    },
+    {
+      "id": 5612,
+      "name": "土豪猪",
+      "level": 100,
+      "gender": "男",
+      "height": 155,
+      "weight": 1
+    },
+    {
+      "id": 5614,
+      "name": "千重岳",
+      "level": 100,
+      "gender": "男",
+      "height": 200,
+      "weight": 1
+    },
+    {
+      "id": 5615,
+      "name": "狼王",
+      "level": 100,
+      "gender": "女",
+      "height": 173,
+      "weight": 1
+    },
+    {
+      "id": 5636,
+      "name": "剑仙",
+      "level": 100,
+      "gender": "男",
+      "height": 169,
+      "weight": 1
+    },
+    {
+      "id": 5638,
+      "name": "黑犀侠",
+      "level": 100,
+      "gender": "男",
+      "height": 188,
+      "weight": 1
+    },
+    {
+      "id": 5646,
+      "name": "泰坦",
+      "level": 100,
+      "gender": "男",
+      "height": 218,
+      "weight": 1
+    },
+    {
+      "id": 5648,
+      "name": "枪神",
+      "level": 100,
+      "gender": "男",
+      "height": 169,
+      "weight": 1
+    },
+    {
+      "id": 5649,
+      "name": "六耳",
+      "level": 100,
+      "gender": "男",
+      "height": 160,
+      "weight": 1
+    },
+    {
+      "id": 5650,
+      "name": "波多尔多",
+      "level": 100,
+      "gender": "男",
+      "height": 189,
+      "weight": 1
+    }
+  ],
   "teams": [
     {
       "id": "亡灵沙漠/一级防线.xml#0.0",
@@ -14702,6 +16297,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -14713,6 +16309,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -14724,6 +16321,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -14920,6 +16518,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -14931,6 +16530,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -14942,6 +16542,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -15127,6 +16728,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -15138,6 +16740,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -15149,6 +16752,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -15367,6 +16971,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -15378,6 +16983,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -15389,6 +16995,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -15607,6 +17214,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -15618,6 +17226,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -15629,6 +17238,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -15847,6 +17457,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -15858,6 +17469,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -15869,6 +17481,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -16964,6 +18577,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "不掉装备": true,
@@ -20003,6 +21617,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -20014,6 +21629,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -20041,6 +21657,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -20052,6 +21669,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -20063,6 +21681,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -20090,6 +21709,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -20101,6 +21721,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -20112,6 +21733,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -21887,6 +23509,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "不掉装备": true
@@ -21901,6 +23524,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -22155,6 +23779,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -22166,6 +23791,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -22281,6 +23907,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -22292,6 +23919,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -22498,6 +24126,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -22509,6 +24138,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -22624,6 +24254,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -22635,6 +24266,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -22901,6 +24533,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -22997,6 +24630,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -23093,6 +24727,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -24445,6 +26080,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -24483,6 +26119,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -24494,6 +26131,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -24516,6 +26154,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -24695,6 +26334,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -24777,6 +26417,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "不掉装备": true
@@ -24791,6 +26432,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -24862,6 +26504,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "不掉装备": true
@@ -24936,6 +26579,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "不掉装备": true
@@ -24988,6 +26632,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -25086,6 +26731,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "不掉装备": true
@@ -25469,6 +27115,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "掉落物": {
@@ -25515,6 +27162,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -25542,6 +27190,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "掉落物": {
@@ -25561,6 +27210,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "掉落物": [
@@ -25594,6 +27244,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "女",
           "humanoid": true,
           "parameters": {
             "掉落物": {
@@ -31922,6 +33573,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -35156,6 +36808,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -35363,6 +37016,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -35570,6 +37224,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -35777,6 +37432,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -35984,6 +37640,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -36191,6 +37848,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -36952,6 +38610,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -36963,6 +38622,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -37170,6 +38830,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -37181,6 +38842,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -37388,6 +39050,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -37399,6 +39062,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -39264,6 +40928,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -39275,6 +40940,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -48887,6 +50553,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "掉落物": [
@@ -50590,6 +52257,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -50601,6 +52269,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -50684,6 +52353,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -50695,6 +52365,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -50706,6 +52377,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -51294,6 +52966,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -51305,6 +52978,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -51316,6 +52990,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -51327,6 +53002,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -51706,6 +53382,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -51917,6 +53594,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -51928,6 +53606,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -51939,6 +53618,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -54714,6 +56394,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -54725,6 +56406,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -54870,6 +56552,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -55093,6 +56776,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -56075,6 +57759,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -56836,6 +58521,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -60493,6 +62179,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -60640,6 +62327,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -60733,6 +62421,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -60870,6 +62559,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -60974,6 +62664,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -64096,6 +65787,7 @@
           "count": 1,
           "random": true,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true,
           "randomTypes": [
             "兵种415",
@@ -64188,6 +65880,7 @@
           "count": 1,
           "random": true,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true,
           "randomTypes": [
             "兵种415",
@@ -64269,6 +65962,7 @@
           "count": 1,
           "random": true,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true,
           "randomTypes": [
             "兵种415",
@@ -89679,6 +91373,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -118139,6 +119834,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -118150,6 +119846,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -118231,6 +119928,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -118242,6 +119940,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -118323,6 +120022,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -118334,6 +120034,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -118470,6 +120171,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -118481,6 +120183,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -118628,6 +120331,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -118639,6 +120343,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -118764,6 +120469,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -118775,6 +120481,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -118922,6 +120629,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -118933,6 +120641,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -118944,6 +120653,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -122884,6 +124594,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -122895,6 +124606,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -122988,6 +124700,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -123059,6 +124772,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         }
       ],
@@ -124369,6 +126083,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "掉落物": {
@@ -124388,6 +126103,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "掉落物": {
@@ -124461,6 +126177,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "掉落物": {
@@ -124480,6 +126197,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "掉落物": {
@@ -124553,6 +126271,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "掉落物": {
@@ -124572,6 +126291,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "掉落物": {
@@ -124607,6 +126327,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "掉落物": {
@@ -124626,6 +126347,7 @@
           "count": 1,
           "random": false,
           "isHostile": true,
+          "gender": "男",
           "humanoid": true,
           "parameters": {
             "掉落物": {
@@ -124904,6 +126626,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -124915,6 +126638,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -125014,6 +126738,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -125025,6 +126750,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],
@@ -125052,6 +126778,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "女",
           "humanoid": true
         },
         {
@@ -125063,6 +126790,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         },
         {
@@ -125212,6 +126940,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "gender": "男",
           "humanoid": true
         }
       ],

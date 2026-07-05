@@ -2,17 +2,38 @@
     'use strict';
 
     // ════════════════════════════════════════════════════════════════════════════
-    // 配置数据（从 data/arena/arena_config.xml 提取）
+    // 标准模式档位。每次 panel open / 全部重抽会按 countMin-countMax
+    // 结算本 session 的固定人数、经济与 expr；preview / enter 全程复用这份卡片。
     // ════════════════════════════════════════════════════════════════════════════
-    var ARENA_CARDS = [
-        { id: 'arena-1', index: 1, name: 'DEATH MATCH角斗场', opponentCount: 1, levelMin: 1,  levelMax: 5,  deposit: 500,    reward: 1000,   expr: '#0@1-5%1' },
-        { id: 'arena-2', index: 2, name: 'DEATH MATCH角斗场', opponentCount: 2, levelMin: 5,  levelMax: 10, deposit: 5000,   reward: 10000,  expr: '#0@5-10%2' },
-        { id: 'arena-3', index: 3, name: 'DEATH MATCH角斗场', opponentCount: 2, levelMin: 10, levelMax: 15, deposit: 10000,  reward: 20000,  expr: '#0@10-15%2' },
-        { id: 'arena-4', index: 4, name: 'DEATH MATCH角斗场', opponentCount: 2, levelMin: 10, levelMax: 15, deposit: 20000,  reward: 40000,  expr: '#0@10-15%2' },
-        { id: 'arena-5', index: 5, name: 'DEATH MATCH角斗场', opponentCount: 4, levelMin: 15, levelMax: 20, deposit: 30000,  reward: 60000,  expr: '#0@15-20%4' },
-        { id: 'arena-6', index: 6, name: 'DEATH MATCH角斗场', opponentCount: 4, levelMin: 15, levelMax: 20, deposit: 30000,  reward: 60000,  expr: '#0@15-20%4' },
-        { id: 'arena-7', index: 7, name: 'DEATH MATCH角斗场', opponentCount: 1, levelMin: 20, levelMax: 40, deposit: 12500,  reward: 25000,  expr: '#0@20-40%1' },
-        { id: 'arena-8', index: 8, name: 'DEATH MATCH角斗场', opponentCount: 4, levelMin: 40, levelMax: 60, deposit: 100000, reward: 200000, expr: '#0@40-60%4' }
+    var STANDARD_OPPONENT_CAP = 4; // Flash 战斗承压上限：标准 / 隐藏警报卡的佣兵等效人数均不超过 4
+    var STANDARD_ROLE_COUNTS = { merc: 7, monster: 2, mixed: 1 }; // 公开 10 卡固定配比，位置每 session 随机
+    var STANDARD_TIERS = [
+        { levelMin: 1,  levelMax: 5,   countMin: 1, countMax: 1 },
+        { levelMin: 5,  levelMax: 10,  countMin: 1, countMax: 2 },
+        { levelMin: 10, levelMax: 15,  countMin: 2, countMax: 3 },
+        { levelMin: 15, levelMax: 20,  countMin: 2, countMax: 4 },
+        { levelMin: 20, levelMax: 30,  countMin: 3, countMax: 4 },
+        { levelMin: 30, levelMax: 35,  countMin: 3, countMax: 4 },
+        { levelMin: 35, levelMax: 40,  countMin: 4, countMax: 4 },
+        { levelMin: 40, levelMax: 50,  countMin: 4, countMax: 4 },
+        { levelMin: 50, levelMax: 60,  countMin: 4, countMax: 4 },
+        { levelMin: 60, levelMax: 100, countMin: 4, countMax: 4 }
+    ];
+    var STANDARD_HIDDEN_CHALLENGES = [
+        { offset: 1, multiplier: 1.5, label: '死线警报 I', countMin: 1, countMax: 3, requiresMixedRoster: true },
+        { offset: 2, multiplier: 2.0, label: '死线警报 II', countMin: 4, countMax: 4, requiresMixedRoster: true }
+    ];
+    var ARENA_DIFFICULTY_LABELS = [
+        { maxLevel: 5,   tier: 1, label: '菜鸟' },
+        { maxLevel: 10,  tier: 2, label: '拾荒者' },
+        { maxLevel: 15,  tier: 3, label: '见习队员' },
+        { maxLevel: 20,  tier: 4, label: '骨干老兵' },
+        { maxLevel: 30,  tier: 5, label: '精英队长' },
+        { maxLevel: 35,  tier: 5, label: '战线王牌' },
+        { maxLevel: 40,  tier: 6, label: '兵团利刃' },
+        { maxLevel: 50,  tier: 6, label: '佣兵传奇' },
+        { maxLevel: 60,  tier: 6, label: '禁区噩梦' },
+        { maxLevel: 100, tier: 6, label: '审判日行刑官' }
     ];
 
     var CUSTOM_MATCH_FALLBACK_CODE =
@@ -61,7 +82,7 @@
         { id: 'standard', label: '标准模式' },
         { id: 'custom', label: '定制赛' },
         // 堕落模式（Phase 2）：势力主题固定挑战。每张卡 = 一个势力，对手全部从该势力 roster
-        // 采样非人形怪（复用 Phase1 的 roster 入场通路，AS2 零改动——合成 expr 只为过校验）。
+        // 采样怪物 roster（复用 Phase1 的 roster 入场通路，AS2 零改动——合成 expr 只为过校验）。
         // 需 arena-meta-rosters.js 已载（rostersAvailable）才显示该 tab；
         // QA harness 未载 → buildModeTabs 跳过本项 → 仅标准模式，行为/卡数不变。
         { id: 'fallen', label: '堕落模式', requiresRosters: true },
@@ -73,12 +94,13 @@
     // 堕落模式卡片派生参数（业务可调）。
     var FALLEN_MIN_UNITS = 4;     // 势力 roster 单位数门槛（剔单例 boss/误分类势力，如 联合大学/斯巴达）
     var FALLEN_BAND_WINDOW = 15;  // 精英窗口：取势力顶端 N 级为挑战带，避免 1-60 这种跨度让挑战失焦
+    var HIDDEN_MIXED_TEAM_MAX_UNITS = 8; // 隐藏混编真实组合刷怪上限；4 人仍是佣兵等效档位。
 
     // ════════════════════════════════════════════════════════════════════════════
     // 状态
     // ════════════════════════════════════════════════════════════════════════════
     var _activeMode = 'standard';
-    var _activeCards = ARENA_CARDS; // 当前模式的卡片集（标准=ARENA_CARDS；堕落=buildFallenCards()）；rebuildForMode 切换
+    var _activeCards = []; // 当前模式的卡片集（标准=会话生成；堕落/爬升=派生；定制=入口卡）
     var _el, _shellEl;
     var _scaleHandle = null;   // 沉浸全屏化：PanelScale 句柄
     var _gridViewEl;
@@ -103,20 +125,20 @@
     var _ttHoverKey = null;       // 当前 hover 的 cache key
     var _toastTimer = null;
     var _initDifficulty = '';     // initData.difficulty（来自 stage-select 重定向）→ enter 时回传 AS2
-    // batch preview 缓存：panel open 时并发抽 8 卡，结果按 cardIdx 落 cache。
+    // batch preview 缓存：panel open 时并发抽当前卡片集，结果按 cardIdx 落 cache。
     // grid 摘要 + detail 视图共用同一份 cache。WYSIWYG: 用户在 grid 上看到的对手 = enter 时实际打到的人。
     // AS2 端有镜像缓存 _root._arenaLineupCache（同 cardIdx 索引），handleEnter 按 cardIndex 取出 commit。
     var _previewCache = {};       // cardIdx → opponents[]（成功时填入）
     var _previewPending = {};     // cardIdx → reqId（dedup：pending 中不重发）
     var _previewError = {};       // cardIdx → error string（失败 → 摘要显示"加载失败 ↻"）
-    // ── 元战队（非人形怪）混入（M2 / 堕落模式雏形）──
-    // 每卡每次抽取先决定种类（merc / monster）。monster 走 web 本地 roster 采样（无 AS2 preview 往返），
-    // enter 时把采样小队作为 roster 下发 AS2（commitRoster 生成非人形怪）。
+    // ── 元战队 / 混编 roster 混入（M2 / 堕落模式雏形）──
+    // 每卡每次抽取先决定种类（merc / monster / mixed）。roster 类走 web 本地采样（无 AS2 preview 往返），
+    // enter 时把采样小队作为 roster 下发 AS2（commitRoster 生成兵种阵容）。
     // 数据源 window.ArenaMetaRosters（arena-meta-rosters.js，由 derive-arena-meta-teams.js 派生）；
+    // factions 用于按势力拆兵种单体兜底采样，teams 用于怪物组 / 混编优先复用真实关卡组合。
     // 未载入（如 QA harness）时 sampleMonsterSquad 恒返回 null → 全卡 merc，旧行为不变。
-    var _cardKind = {};       // cardIdx → 'merc' | 'monster'
+    var _cardKind = {};       // cardIdx → 'merc' | 'monster' | 'mixed'
     var _monsterSquad = {};   // cardIdx → { faction, opponents:[{name,level,type,spritename,isMonster:true}] }
-    var _mixChance = 0.35;    // 单卡判为怪物小队的概率（setMixChance 可调，QA/截图注入用）
     var _knownEnemies = {};   // spritename → true；来自 AS2 snapshot 的 killStats.byType
     var _knownEnemyCount = 0;
     var _customMatch = null;  // 定制赛：赛程代码解析状态
@@ -168,6 +190,7 @@
                 // 模式条：首个 = 标准模式；tab 语言对齐战队界面，后续可扩展不同竞技场模式
                 '<div class="arena-toolbar arena-modebar">' +
                     '<div class="arena-modes" id="arena-modes">' + buildModeTabs() + '</div>' +
+                    '<button class="arena-reroll-all" type="button" id="arena-reroll-all" title="重新抽取全部标准卡人数与对手" data-audio-cue="confirm">↻ 全部重抽</button>' +
                 '</div>' +
                 '<div class="arena-grid" id="arena-grid"></div>' +
             '</div>' +
@@ -201,6 +224,7 @@
         _detailConfirmBtn = _el.querySelector('.arena-detail-confirm');
 
         _el.querySelector('.arena-close-btn').addEventListener('click', onArenaRequestClose);
+        _el.querySelector('#arena-reroll-all').addEventListener('click', onRerollAll);
         _el.querySelector('.arena-detail-back').addEventListener('click', backToGrid);
         _customResultViewEl.addEventListener('click', onCustomResultClick);
         _customEditorViewEl.addEventListener('click', onCustomWorkbenchClick);
@@ -230,7 +254,7 @@
         var gridEl = _el.querySelector('#arena-grid');
         gridEl.innerHTML = '';
         _cardEls = [];
-        // 卡片多于单屏（>8，如堕落模式 18 张）→ 切顶部对齐的滚动布局；否则维持 8 卡铺满（标准模式不变）
+        // 卡片多于单屏（>8）→ 切顶部对齐的滚动布局；否则铺满单屏。
         gridEl.classList.toggle('arena-grid-scroll', _activeCards.length > 8);
         gridEl.classList.toggle('arena-grid-custom', _activeMode === 'custom');
 
@@ -244,32 +268,43 @@
                 continue;
             }
             var isFallen = !!card.isFallen;
+            var isHidden = !!card.isHiddenChallenge;
             var cardEl = document.createElement('div');
             // d{1..6} 类驱动 --d-color 难度热度（CSS .arena-card-d* → 顶部色条 + 难度标签色）。
-            // 堕落卡恒非人形 → 建卡即上 arena-card-monster（紫罗兰），不等采样回调。
-            cardEl.className = 'arena-card arena-card-d' + diff.tier + (isFallen ? ' arena-card-monster' : '');
+            // 堕落卡恒 roster 怪物队 → 建卡即上 arena-card-monster（紫罗兰），不等采样回调。
+            cardEl.className = 'arena-card arena-card-d' + diff.tier +
+                (isFallen ? ' arena-card-monster' : '') +
+                (isHidden ? ' arena-card-hidden' : '');
             cardEl.dataset.index = i;
             // 标准卡 rank = 段位号；堕落卡 rank = 势力名（卡片身份）+ 阵容 cap 改「麾下阵容」
             var rankHtml = isFallen
                 ? '<span class="arena-card-rank arena-card-rank-faction">' + escapeHtml(card.faction) + '</span>'
-                : '<span class="arena-card-rank">段位 ' + card.index + '</span>';
-            var oppCapText = isFallen ? '麾下阵容' : '对手阵容';
+                : '<span class="arena-card-rank">' + escapeHtml(isHidden ? card.hiddenLabel : ('段位 ' + card.index)) + '</span>';
+            var oppCapText = isHidden ? '配置保密' : (isFallen ? '麾下阵容' : '对手阵容');
+            var diffText = isHidden ? card.hiddenLabel : diff.label;
+            var opponentText = isHidden ? '？？' : ('×' + card.opponentCount);
+            var levelText = isHidden ? '？？' : (card.levelMin + '–' + card.levelMax);
+            var detailDisabledAttr = isHidden ? ' disabled aria-disabled="true"' : '';
+            var detailTitle = isHidden ? '隐藏警报不显示配置' : '查看对手详情';
+            var extraMeta = isHidden
+                ? '<span class="arena-prize-mult">收益 ×' + card.economyMultiplier + '</span>'
+                : '';
             cardEl.innerHTML =
                 '<div class="arena-card-frame"></div>' +
                 '<div class="arena-card-header">' +
                     rankHtml +
                     '<span class="arena-card-icon">⚔</span>' +
-                    '<span class="arena-card-diff">' + diff.label + '</span>' +
+                    '<span class="arena-card-diff">' + diffText + '</span>' +
                 '</div>' +
                 '<div class="arena-card-body">' +
                     '<div class="arena-card-stats">' +
                         '<div class="arena-stat">' +
                             '<span class="arena-stat-label">对手</span>' +
-                            '<span class="arena-stat-value">×' + card.opponentCount + '</span>' +
+                            '<span class="arena-stat-value">' + opponentText + '</span>' +
                         '</div>' +
                         '<div class="arena-stat">' +
                             '<span class="arena-stat-label">等级</span>' +
-                            '<span class="arena-stat-value">' + card.levelMin + '–' + card.levelMax + '</span>' +
+                            '<span class="arena-stat-value">' + levelText + '</span>' +
                         '</div>' +
                     '</div>' +
                     // 奖金主视觉（金色大字）/ 押金次视觉，回应"押注挑战"的风险-回报心智模型
@@ -277,10 +312,11 @@
                         '<div class="arena-prize-main">' +
                             '<span class="arena-prize-label">奖金</span>' +
                             '<span class="arena-prize-value">' + formatMoney(card.reward) + '</span>' +
+                            extraMeta +
                         '</div>' +
                         '<div class="arena-prize-deposit">押金 ' + formatMoney(card.deposit) + '</div>' +
                     '</div>' +
-                    // 对手摘要 row：snapshot 回包后 batchRequestPreview 触发 8 卡并发抽签，
+                    // 对手摘要 row：snapshot 回包后 batchRequestPreview 触发全卡并发抽签，
                     // 单卡回包后 renderCardSummary(cardIdx) 写入下方 span。
                     '<div class="arena-card-opponents-row">' +
                         '<span class="arena-card-opponents-cap">' + oppCapText + '</span>' +
@@ -290,7 +326,7 @@
                 // 主+次按钮：主 ⚔ 开始挑战（grid 直入战场，无需进 detail）；次 🔍 查看对手（进 detail 看装备 / 换一批）
                 '<div class="arena-card-actions">' +
                     '<button class="arena-card-btn-enter" type="button" data-index="' + i + '" data-audio-cue="confirm">⚔ 开始挑战</button>' +
-                    '<button class="arena-card-btn-detail" type="button" data-index="' + i + '" data-audio-cue="confirm" title="查看对手详情">🔍</button>' +
+                    '<button class="arena-card-btn-detail" type="button" data-index="' + i + '" data-audio-cue="confirm" title="' + detailTitle + '"' + detailDisabledAttr + '>🔍</button>' +
                 '</div>';
 
             cardEl.querySelector('.arena-card-btn-enter').addEventListener('click', onDirectEnter);
@@ -537,6 +573,162 @@
         bindModeTabs();
     }
 
+    function resetCardRuntimeState() {
+        _previewCache = {};
+        _previewPending = {};
+        _previewError = {};
+        _cardKind = {};
+        _monsterSquad = {};
+        _activeCardIdx = -1;
+        _previewOpponents = null;
+    }
+
+    function buildStandardSessionCards() {
+        var cards = [];
+        for (var i = 0; i < STANDARD_TIERS.length; i++) {
+            cards.push(buildStandardCard(STANDARD_TIERS[i], i + 1, null));
+        }
+        assignStandardPublicRoles(cards);
+
+        var playerTier = findPlayerTierIndex(getSnapshotPlayerLevel());
+        var lastTierIndex = STANDARD_TIERS.length - 1;
+        for (var h = 0; h < STANDARD_HIDDEN_CHALLENGES.length; h++) {
+            var meta = STANDARD_HIDDEN_CHALLENGES[h];
+            var targetIndex = Math.min(playerTier + meta.offset, lastTierIndex);
+            cards.push(buildStandardCard(STANDARD_TIERS[targetIndex], cards.length + 1, meta));
+        }
+        return cards;
+    }
+
+    function assignStandardPublicRoles(cards) {
+        var publicIdx = [];
+        for (var i = 0; i < STANDARD_TIERS.length && i < cards.length; i++) {
+            cards[i].standardRole = 'merc';
+            publicIdx.push(i);
+        }
+        if (!publicIdx.length) return;
+
+        var mixedCandidates = [];
+        for (var m = 0; m < publicIdx.length; m++) {
+            var card = cards[publicIdx[m]];
+            if (hasMixedTeamForBand(card.levelMin, card.levelMax)) mixedCandidates.push(publicIdx[m]);
+        }
+        if (!mixedCandidates.length) mixedCandidates = publicIdx.slice(1);
+        if (!mixedCandidates.length) mixedCandidates = publicIdx.slice();
+
+        var used = {};
+        var mixedIdx = pickRandomIndex(mixedCandidates, used);
+        if (mixedIdx >= 0) {
+            cards[mixedIdx].standardRole = 'mixed';
+            used[mixedIdx] = true;
+        }
+
+        var monsterCandidates = [];
+        for (var r = 0; r < publicIdx.length; r++) {
+            var monsterCard = cards[publicIdx[r]];
+            if (hasMonsterTeamForBand(monsterCard.levelMin, monsterCard.levelMax)) monsterCandidates.push(publicIdx[r]);
+        }
+        if (!monsterCandidates.length) monsterCandidates = publicIdx.slice();
+
+        for (var n = 0; n < STANDARD_ROLE_COUNTS.monster; n++) {
+            var monsterIdx = pickRandomIndex(monsterCandidates, used);
+            if (monsterIdx < 0) break;
+            cards[monsterIdx].standardRole = 'monster';
+            used[monsterIdx] = true;
+        }
+    }
+
+    function pickRandomIndex(candidates, used) {
+        var pool = [];
+        for (var i = 0; i < candidates.length; i++) {
+            if (!used[candidates[i]]) pool.push(candidates[i]);
+        }
+        if (!pool.length) return -1;
+        return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    function hasMixedTeamForBand(levelMin, levelMax) {
+        var teams = (typeof window !== 'undefined' && window.ArenaMetaRosters && window.ArenaMetaRosters.teams)
+            ? window.ArenaMetaRosters.teams : null;
+        if (!teams || !teams.length) return false;
+        for (var i = 0; i < teams.length; i++) {
+            var team = teams[i];
+            if (!team || team.levelMax < levelMin || team.levelMin > levelMax) continue;
+            if (teamHasHumanoidAndNonHuman(team)) return true;
+        }
+        return false;
+    }
+
+    function hasMonsterTeamForBand(levelMin, levelMax) {
+        var teams = (typeof window !== 'undefined' && window.ArenaMetaRosters && window.ArenaMetaRosters.teams)
+            ? window.ArenaMetaRosters.teams : null;
+        if (!teams || !teams.length) return false;
+        for (var i = 0; i < teams.length; i++) {
+            var team = teams[i];
+            if (!team || team.unitCount < 2 || team.unitCount > HIDDEN_MIXED_TEAM_MAX_UNITS) continue;
+            if (team.levelMax < levelMin || team.levelMin > levelMax) continue;
+            if (teamHasOnlyNonHuman(team)) return true;
+        }
+        return false;
+    }
+
+    function buildStandardCard(tier, index, hiddenMeta) {
+        var rawCountMin = hiddenMeta && hiddenMeta.countMin != null ? hiddenMeta.countMin : tier.countMin;
+        var rawCountMax = hiddenMeta && hiddenMeta.countMax != null ? hiddenMeta.countMax : tier.countMax;
+        var countMin = Math.min(rawCountMin, STANDARD_OPPONENT_CAP);
+        var countMax = Math.min(rawCountMax, STANDARD_OPPONENT_CAP);
+        var count = randomInt(countMin, countMax);
+        if (hiddenMeta && hiddenMeta.requiresMixedRoster && count < 2 && countMax >= 2) count = 2;
+        var multiplier = hiddenMeta ? hiddenMeta.multiplier : 1;
+        var reward = roundTo(standardReward(tier, count) * multiplier, 1000);
+        var deposit = Math.max(500, roundTo(reward / 2, 500));
+        return {
+            id: hiddenMeta ? ('arena-hidden-' + hiddenMeta.offset) : ('arena-' + index),
+            index: index,
+            name: 'DEATH MATCH角斗场',
+            opponentCount: count,
+            countMin: countMin,
+            countMax: countMax,
+            levelMin: tier.levelMin,
+            levelMax: tier.levelMax,
+            deposit: deposit,
+            reward: reward,
+            economyMultiplier: multiplier,
+            hiddenLabel: hiddenMeta ? hiddenMeta.label : '',
+            isHiddenChallenge: !!hiddenMeta,
+            requiresMixedRoster: !!(hiddenMeta && hiddenMeta.requiresMixedRoster),
+            expr: '#0@' + tier.levelMin + '-' + tier.levelMax + '%' + count
+        };
+    }
+
+    function standardReward(tier, count) {
+        var levelBase = Math.max(1, Number(tier.levelMin) || 1);
+        var perLevel = levelBase >= 40 ? 1250 : 1000;
+        return roundTo(count * levelBase * perLevel, 1000);
+    }
+
+    function randomInt(lo, hi) {
+        lo = Math.round(lo);
+        hi = Math.round(hi);
+        if (hi < lo) hi = lo;
+        return lo + Math.floor(Math.random() * (hi - lo + 1));
+    }
+
+    function getSnapshotPlayerLevel() {
+        var level = _snapshot ? Number(_snapshot.playerLevel) : NaN;
+        return (!isNaN(level) && level > 0) ? level : 1;
+    }
+
+    function findPlayerTierIndex(level) {
+        level = Math.max(1, Math.floor(Number(level) || 1));
+        for (var i = 0; i < STANDARD_TIERS.length; i++) {
+            var tier = STANDARD_TIERS[i];
+            var isLast = i === STANDARD_TIERS.length - 1;
+            if (level >= tier.levelMin && (level < tier.levelMax || isLast)) return i;
+        }
+        return STANDARD_TIERS.length - 1;
+    }
+
     // 模式 tab 条（对齐战队界面 tab）。requiresRosters 的模式仅在数据就绪时出现。
     function buildModeTabs() {
         var html = '';
@@ -570,24 +762,28 @@
         _activeCards = (mode === 'fallen') ? buildFallenCards()
                      : (mode === 'escalation') ? buildEscalationCards()
                      : (mode === 'custom') ? [CUSTOM_MATCH_CARD]
-                     : ARENA_CARDS;
+                     : buildStandardSessionCards();
         // 切模式让所有卡 index 重新映射 → 旧 preview/kind/squad 缓存全部作废，避免跨模式串卡
-        _previewCache = {};
-        _previewPending = {};
-        _previewError = {};
-        _cardKind = {};
-        _monsterSquad = {};
-        _activeCardIdx = -1;
-        _previewOpponents = null;
+        resetCardRuntimeState();
         // tab active 态
         var tabs = _el ? _el.querySelectorAll('.arena-mode-tab') : [];
         for (var i = 0; i < tabs.length; i++) {
             tabs[i].classList.toggle('arena-mode-tab-active', tabs[i].getAttribute('data-mode') === mode);
         }
+        updateRerollAllButton();
         buildCards();       // 重建 grid DOM（_activeCards 驱动）+ 重挂卡片按钮监听 + 摘要回 loading 态
         if (mode === 'custom') refreshCustomMatchCard();
         showGridView();
         updateCardStates();
+    }
+
+    function updateRerollAllButton() {
+        if (!_el) return;
+        var btn = _el.querySelector('#arena-reroll-all');
+        if (!btn) return;
+        var hidden = _activeMode === 'custom';
+        btn.hidden = hidden;
+        btn.disabled = hidden || _busy;
     }
 
     // 堕落模式卡片派生：每个合格势力 → 一张「精英挑战」卡。
@@ -724,11 +920,7 @@
         _ttCache = {};
         _ttHoverKey = null;
         // batch preview 缓存清空：每次 panel reopen = 新 session，旧 lineup 与当前 _root.可雇佣兵 pool 可能不一致
-        _previewCache = {};
-        _previewPending = {};
-        _previewError = {};
-        _cardKind = {};
-        _monsterSquad = {};
+        resetCardRuntimeState();
         _knownEnemies = {};
         _knownEnemyCount = 0;
         _customResult = normalizeCustomResultInitData(initData);
@@ -3282,6 +3474,10 @@
         var idx = parseInt(btn.dataset.index, 10);
         var card = _activeCards[idx];
         if (!card) return;
+        if (card.isHiddenChallenge) {
+            showToast('隐藏警报不公开配置');
+            return;
+        }
 
         _activeCardIdx = idx;
 
@@ -3290,11 +3486,7 @@
             : card.isFallen
                 ? (card.faction + ' · ' + difficultyOf(card).label + ' 挑战')
                 : ('DEATH MATCH · 段位 ' + card.index + ' · ' + difficultyOf(card).label);
-        _detailMetaEl.innerHTML =
-            '<span class="arena-meta-chip">对手 ×' + card.opponentCount + '</span>' +
-            '<span class="arena-meta-chip">等级 ' + card.levelMin + '—' + card.levelMax + '</span>' +
-            '<span class="arena-meta-chip arena-meta-deposit">押金 ' + formatMoney(card.deposit) + '</span>' +
-            '<span class="arena-meta-chip arena-meta-reward">奖金 ' + formatMoney(card.reward) + '</span>';
+        renderDetailMeta(card, _previewCache[idx] || null);
         showDetailView();
 
         // cache 命中（batch preview 已抽过且成功）→ 直接渲，不发请求。WYSIWYG: detail 看到的 = grid 摘要里那批人
@@ -3326,6 +3518,20 @@
         delete _cardKind[_activeCardIdx];
         delete _monsterSquad[_activeCardIdx];
         requestPreviewForCard(_activeCardIdx);
+    }
+
+    function onRerollAll() {
+        if (_busy || _activeMode === 'custom') return;
+        if (_activeMode === 'standard') {
+            rebuildForMode('standard');
+        } else {
+            resetCardRuntimeState();
+            buildCards();
+            showGridView();
+            updateCardStates();
+        }
+        if (_snapshot) batchRequestPreview();
+        showToast(_activeMode === 'standard' ? '已重新抽取全部挑战' : '已重新抽取全部对手');
     }
 
     // grid 直入入口（"⚔ 开始挑战" 按钮）。从 _previewCache[cardIdx] 取 lineup 走入场链。
@@ -3410,16 +3616,22 @@
             msg.maxWaves = card.maxWaves;        // 波数上限（小5/大10/联军15）
             msg.pool = factionPool(card.faction);
         }
-        // 怪物卡（堕落/标准混入）：把本地采样的非人形小队作为 roster 下发 → AS2 走 commitRoster 生成非人形怪。
-        // WYSIWYG：下发的就是 grid/detail 预览里那批怪（type+level 一一对应）。
-        else if (_cardKind[cardIdx] === 'monster' && opponents[0] && opponents[0].isMonster) {
+        // roster 卡（堕落/标准混入/隐藏混编）：把本地采样的小队作为 roster 下发 → AS2 走 commitRoster 生成混合阵容。
+        // WYSIWYG：下发的就是 grid/detail 预览里那批怪（兵种 type 或 mercId + level 一一对应）。
+        else if ((_cardKind[cardIdx] === 'monster' || _cardKind[cardIdx] === 'mixed')) {
             var roster = [];
             for (var ri = 0; ri < opponents.length; ri++) {
-                var rosterEntry = { type: opponents[ri].type, level: opponents[ri].level };
+                var rosterEntry = null;
+                if (opponents[ri].mercId != null) {
+                    rosterEntry = { kind: 'merc', mercId: opponents[ri].mercId, level: opponents[ri].level };
+                } else if (opponents[ri].type) {
+                    rosterEntry = { type: opponents[ri].type, level: opponents[ri].level };
+                }
+                if (!rosterEntry) continue;
                 if (customHasParameters(opponents[ri].parameters)) rosterEntry.parameters = cloneCustomParameters(opponents[ri].parameters);
                 roster.push(rosterEntry);
             }
-            msg.roster = roster;
+            if (roster.length) msg.roster = roster;
         }
         Bridge.send(msg);
     }
@@ -3451,7 +3663,9 @@
             if (data.success && data.snapshot) {
                 _snapshot = data.snapshot;
                 setKnownEnemies(_snapshot.knownEnemies);
-                if (!modeAvailable(_activeMode)) {
+                if (_activeMode === 'standard') {
+                    rebuildForMode('standard');
+                } else if (!modeAvailable(_activeMode)) {
                     rebuildForMode('standard');
                 }
                 refreshModeTabs();
@@ -3473,7 +3687,7 @@
     }
 
     // ════════════════════════════════════════════════════════════════════════════
-    // Batch Preview（panel open 时并发抽 8 卡）
+    // Batch Preview（panel open 时并发抽当前卡片集）
     // ════════════════════════════════════════════════════════════════════════════
     function batchRequestPreview() {
         if (_activeMode === 'custom') {
@@ -3489,7 +3703,7 @@
     // Preview（按 cardIdx 抽签 + 缓存）
     //
     // 两条触发路径：
-    //   1. snapshot 成功 → batchRequestPreview() → 8 卡并发首抽
+    //   1. snapshot 成功 → batchRequestPreview() → 当前卡片集并发首抽
     //   2. detail "↻ 换一批" → onRollAgain → 强制重抽（清 cache/pending）
     //   3. cache miss（detail 进入时 batch 仍 pending 或失败重试）→ onCardClick / onSummaryRetry
     //
@@ -3507,7 +3721,7 @@
         // 决定本卡种类（首抽 / 换一批后未决定时）。
         //   - 堕落卡：恒怪物，且锁定从本卡势力采样（非随机势力）；采样失败 → 报错，绝不退回 merc 路径
         //     （否则合成 expr 会被 AS2 当真去抽人形佣兵，串成人形对手）。
-        //   - 标准卡：按 _mixChance 概率尝试混入随机势力怪物，未命中 → merc（AS2 往返抽佣兵）。
+        //   - 标准卡：按 session 固定角色计划执行（7 merc / 2 monster / 1 mixed，位置随机）。
         if (_cardKind[cardIdx] === undefined) {
             if (card.isFallen) {
                 var fsq = sampleFactionSquad(card.faction, card.levelMin, card.levelMax, card.opponentCount);
@@ -3523,13 +3737,22 @@
                     }
                     return;
                 }
+            } else if (card.isHiddenChallenge) {
+                var mixed = sampleHiddenMixedSquad(card);
+                if (mixed) { _cardKind[cardIdx] = 'mixed'; _monsterSquad[cardIdx] = mixed; }
+                else {
+                    _previewError[cardIdx] = '混编情报不足';
+                    renderCardSummary(cardIdx);
+                    updateCardStates();
+                    return;
+                }
             } else {
-                var decided = decideMonsterSquad(card);
-                if (decided) { _cardKind[cardIdx] = 'monster'; _monsterSquad[cardIdx] = decided; }
+                var decided = decideStandardRosterSquad(card);
+                if (decided) { _cardKind[cardIdx] = decided.kind || 'monster'; _monsterSquad[cardIdx] = decided; }
                 else { _cardKind[cardIdx] = 'merc'; }
             }
         }
-        if (_cardKind[cardIdx] === 'monster') {
+        if (_cardKind[cardIdx] === 'monster' || _cardKind[cardIdx] === 'mixed') {
             applyMonsterPreview(cardIdx); // web 本地采样渲染，无 AS2 preview 往返
             return;
         }
@@ -3585,16 +3808,462 @@
     }
 
     // ════════════════════════════════════════════════════════════════════════════
-    // 元战队（非人形怪）采样 — M2：web 本地从 window.ArenaMetaRosters 抽，无 AS2 往返
+    // 元战队 / 混编采样 — M2：web 本地从 window.ArenaMetaRosters 抽，无 AS2 往返
     // ════════════════════════════════════════════════════════════════════════════
-    // 按概率 + 数据可用性决定本卡是否为怪物小队；返回 {faction, opponents} 或 null（=走 merc）。
-    function decideMonsterSquad(card) {
+    // 按标准卡角色计划决定本卡是否为 mixed / 怪物小队；返回 {kind,faction,opponents} 或 null（=走 merc）。
+    function decideStandardRosterSquad(card) {
         var rosters = (typeof window !== 'undefined' && window.ArenaMetaRosters)
             ? window.ArenaMetaRosters.factions : null;
         if (!rosters) return null;                       // 无数据（如 QA harness 未载）→ 恒 merc
         if (_knownEnemyCount <= 0) return null;           // 未击杀过对应 spritename → 不混入怪物，避免剧透
-        if (Math.random() >= _mixChance) return null;    // 概率未命中 → merc
-        return sampleMonsterSquad(rosters, card.levelMin, card.levelMax, card.opponentCount);
+
+        if (card.standardRole === 'mixed') {
+            var mixed = sampleMixedSquad(card);
+            if (mixed) return mixed;
+            return null;
+        }
+        if (card.standardRole === 'monster') {
+            var monster = sampleMonsterTeamSquad(card);
+            if (!monster) monster = sampleMonsterSquad(rosters, card.levelMin, card.levelMax, card.opponentCount);
+            if (monster) monster.kind = 'monster';
+            return monster;
+        }
+        return null;
+    }
+
+    // 隐藏警报卡：优先走已知的真实关卡组合；没有可用组合时才回退到已知兵种池临时混编。
+    function sampleHiddenMixedSquad(card) {
+        return sampleMixedSquad(card);
+    }
+
+    function sampleMixedSquad(card) {
+        var mercSquad = sampleMercenaryMixedSquad(card);
+        if (mercSquad) return mercSquad;
+        var teamSquad = sampleMixedMetaTeamSquad(card); // 无可用佣兵时才允许剧情/关卡人形模板兜底
+        if (teamSquad) return teamSquad;
+        return sampleSyntheticMixedSquad(card);
+    }
+
+    function sampleMercenaryMixedSquad(card) {
+        var rosters = rostersAvailable() ? window.ArenaMetaRosters.factions : null;
+        if (!rosters || _knownEnemyCount <= 0) return null;
+        var mercPool = mercenaryPoolForBand(card.levelMin, card.levelMax);
+        var pools = splitRosterPools(rosters, card.levelMin, card.levelMax);
+        if (!mercPool.length || !pools.nonHuman.length) return null;
+
+        var counts = mixedRosterCounts(card);
+        var opponents = weightedMercenarySample(mercPool, counts.humanoid);
+        var monsters = sampleNonHumanTeamOpponents(card, counts.monster, HIDDEN_MIXED_TEAM_MAX_UNITS);
+        var monsterSource = 'meta-team';
+        if (!monsters || !monsters.length) {
+            monsters = weightedSample(pools.nonHuman, card.levelMin, card.levelMax, counts.monster);
+            monsterSource = 'unit-pool';
+        }
+        for (var i = 0; i < monsters.length; i++) {
+            opponents.push(monsters[i]);
+        }
+        shuffleInPlace(opponents);
+        return { kind: 'mixed', faction: '混编', source: 'mercenary', monsterSource: monsterSource, equivalentCount: card.opponentCount, opponents: opponents };
+    }
+
+    function sampleMixedMetaTeamSquad(card) {
+        var teams = (typeof window !== 'undefined' && window.ArenaMetaRosters && window.ArenaMetaRosters.teams)
+            ? window.ArenaMetaRosters.teams : null;
+        if (!teams || !teams.length || _knownEnemyCount <= 0) return null;
+
+        var candidates = [];
+        for (var i = 0; i < teams.length; i++) {
+            var team = teams[i];
+            if (!team || team.unitCount < 2 || team.unitCount > HIDDEN_MIXED_TEAM_MAX_UNITS) continue;
+            if (team.levelMax < card.levelMin || team.levelMin > card.levelMax) continue;
+            if (!isKnownTeam(team)) continue;
+            if (!teamHasHumanoidAndNonHuman(team)) continue;
+            candidates.push({ team: team, weight: hiddenTeamWeight(team, card) });
+        }
+        if (!candidates.length) return null;
+
+        var chosen = weightedTeamPick(candidates);
+        var opponents = expandTeamOpponents(chosen);
+        if (opponents.length < 2) return null;
+        return {
+            kind: 'mixed',
+            faction: '混编',
+            source: 'meta-team',
+            teamId: chosen.id || '',
+            sourceName: chosen.sourceName || chosen.sourceStage || '',
+            equivalentCount: card.opponentCount,
+            opponents: opponents
+        };
+    }
+
+    function sampleSyntheticMixedSquad(card) {
+        var rosters = rostersAvailable() ? window.ArenaMetaRosters.factions : null;
+        if (!rosters || _knownEnemyCount <= 0) return null;
+        var humanoidPool = humanoidTemplatePoolForBand(card.levelMin, card.levelMax);
+        var pools = splitRosterPools(rosters, card.levelMin, card.levelMax);
+        if (!humanoidPool.length || !pools.nonHuman.length) return null;
+
+        var counts = mixedRosterCounts(card);
+        var opponents = weightedSample(humanoidPool, card.levelMin, card.levelMax, counts.humanoid);
+        var monsters = sampleNonHumanTeamOpponents(card, counts.monster, HIDDEN_MIXED_TEAM_MAX_UNITS);
+        var monsterSource = 'meta-team';
+        if (!monsters || !monsters.length) {
+            monsters = weightedSample(pools.nonHuman, card.levelMin, card.levelMax, counts.monster);
+            monsterSource = 'unit-pool';
+        }
+        for (var i = 0; i < monsters.length; i++) {
+            opponents.push(monsters[i]);
+        }
+        shuffleInPlace(opponents);
+        return { kind: 'mixed', faction: '混编', source: 'synthetic', monsterSource: monsterSource, equivalentCount: card.opponentCount, opponents: opponents };
+    }
+
+    function sampleMonsterTeamSquad(card) {
+        var groupTarget = Math.max(1, Math.min(STANDARD_OPPONENT_CAP,
+            Math.round(Number(card.opponentCount) || 1)));
+        var teams = pickKnownNonHumanTeams(card.levelMin, card.levelMax, groupTarget, HIDDEN_MIXED_TEAM_MAX_UNITS);
+        if (!teams || !teams.length) return null;
+
+        var opponents = [];
+        var teamIds = [];
+        var factionMap = {};
+        for (var i = 0; i < teams.length; i++) {
+            var team = teams[i];
+            var groupOpponents = expandTeamOpponents(team, HIDDEN_MIXED_TEAM_MAX_UNITS, i + 1);
+            if (!groupOpponents || groupOpponents.length < 2) continue;
+            teamIds.push(team.id || '');
+            if (team.faction) factionMap[team.faction] = true;
+            for (var j = 0; j < groupOpponents.length; j++) {
+                opponents.push(groupOpponents[j]);
+            }
+        }
+        if (!opponents.length) return null;
+        return {
+            kind: 'monster',
+            faction: summarizeMonsterFactions(factionMap),
+            source: 'meta-team',
+            teamId: teamIds.join('|'),
+            sourceName: teams.length > 1 ? '多组怪物队' : (teams[0].sourceName || teams[0].sourceStage || ''),
+            equivalentCount: teams.length,
+            opponents: opponents
+        };
+    }
+
+    function sampleNonHumanTeamOpponents(card, equivalentCount, maxUnits) {
+        var groupTarget = Math.max(1, Math.min(STANDARD_OPPONENT_CAP,
+            Math.round(Number(equivalentCount) || 1)));
+        var teams = pickKnownNonHumanTeams(card.levelMin, card.levelMax, groupTarget, maxUnits);
+        if (!teams || !teams.length) return null;
+
+        var opponents = [];
+        var groups = 0;
+        for (var i = 0; i < teams.length; i++) {
+            var groupOpponents = expandTeamOpponents(teams[i], maxUnits, i + 1);
+            if (!groupOpponents || groupOpponents.length < 2) continue;
+            groups++;
+            for (var j = 0; j < groupOpponents.length; j++) {
+                opponents.push(groupOpponents[j]);
+            }
+        }
+        return groups >= groupTarget ? opponents : null;
+    }
+
+    function pickKnownNonHumanTeam(levelMin, levelMax, equivalentCount, maxUnits) {
+        var teams = pickKnownNonHumanTeams(levelMin, levelMax, 1, maxUnits, equivalentCount);
+        return teams && teams.length ? teams[0] : null;
+    }
+
+    function pickKnownNonHumanTeams(levelMin, levelMax, groupCount, maxUnits, equivalentCount) {
+        var candidates = collectKnownNonHumanTeamCandidates(levelMin, levelMax, equivalentCount || 1, maxUnits);
+        if (!candidates.length) return null;
+        groupCount = Math.max(1, Math.min(STANDARD_OPPONENT_CAP, Math.round(Number(groupCount) || 1)));
+        var picked = [];
+        var used = {};
+        for (var i = 0; i < groupCount; i++) {
+            var team = weightedTeamPick(candidates, used);
+            if (!team) break;
+            picked.push(team);
+            used[teamPickKey(team)] = true;
+        }
+        return picked;
+    }
+
+    function collectKnownNonHumanTeamCandidates(levelMin, levelMax, equivalentCount, maxUnits) {
+        var teams = (typeof window !== 'undefined' && window.ArenaMetaRosters && window.ArenaMetaRosters.teams)
+            ? window.ArenaMetaRosters.teams : null;
+        if (!teams || !teams.length || _knownEnemyCount <= 0) return [];
+        maxUnits = Math.max(2, Math.min(HIDDEN_MIXED_TEAM_MAX_UNITS, Math.round(Number(maxUnits) || HIDDEN_MIXED_TEAM_MAX_UNITS)));
+
+        var candidates = [];
+        for (var i = 0; i < teams.length; i++) {
+            var team = teams[i];
+            if (!team || team.unitCount < 2 || team.unitCount > maxUnits) continue;
+            if (team.levelMax < levelMin || team.levelMin > levelMax) continue;
+            if (!teamHasOnlyNonHuman(team)) continue;
+            if (!isKnownTeam(team)) continue;
+            candidates.push({
+                team: team,
+                weight: monsterTeamWeight(team, levelMin, levelMax, equivalentCount)
+            });
+        }
+        return candidates;
+    }
+
+    function summarizeMonsterFactions(factionMap) {
+        var count = 0;
+        var last = '';
+        for (var key in factionMap) {
+            if (!factionMap.hasOwnProperty(key)) continue;
+            count++;
+            last = key;
+        }
+        if (count === 1) return last || '怪物组';
+        if (count > 1) return '混合怪物组';
+        return '怪物组';
+    }
+
+    function teamPickKey(team) {
+        if (!team) return '';
+        return String(team.id || ((team.sourceStage || '') + '#' + (team.sourceName || '') + '#' + (team.levelMin || '') + '-' + (team.levelMax || '')));
+    }
+
+    function mixedRosterCounts(card) {
+        var total = Math.max(2, Math.min(STANDARD_OPPONENT_CAP, Math.round(Number(card.opponentCount) || 2)));
+        if (card && (card.isHiddenChallenge || card.requiresMixedRoster)) {
+            var hiddenHumanoid = Math.max(1, Math.ceil(total / 2));
+            return { humanoid: hiddenHumanoid, monster: Math.max(1, total - hiddenHumanoid) };
+        }
+        return { humanoid: 1, monster: Math.max(1, total - 1) };
+    }
+
+    function mercenaryPoolForBand(levelMin, levelMax) {
+        var mercs = (typeof window !== 'undefined' && window.ArenaMetaRosters && window.ArenaMetaRosters.mercenaries)
+            ? window.ArenaMetaRosters.mercenaries : null;
+        if (!mercs || !mercs.length) return [];
+        var pool = [];
+        for (var i = 0; i < mercs.length; i++) {
+            var merc = mercs[i];
+            var lvl = Number(merc.level) || 1;
+            if (lvl < levelMin || lvl > levelMax) continue;
+            pool.push(merc);
+        }
+        return pool;
+    }
+
+    function weightedMercenarySample(pool, count) {
+        var totalW = 0;
+        for (var k = 0; k < pool.length; k++) totalW += (pool[k].weight || 1);
+        var opponents = [];
+        var used = {};
+        for (var n = 0; n < count && n < pool.length; n++) {
+            var pick = null;
+            for (var guard = 0; guard < 20 && !pick; guard++) {
+                var r = Math.random() * totalW, acc = 0;
+                for (var j = 0; j < pool.length; j++) {
+                    acc += (pool[j].weight || 1);
+                    if (r <= acc) { pick = pool[j]; break; }
+                }
+                if (pick && used[pick.id]) pick = null;
+            }
+            if (!pick) {
+                for (var f = 0; f < pool.length; f++) {
+                    if (!used[pool[f].id]) { pick = pool[f]; break; }
+                }
+            }
+            if (!pick) break;
+            used[pick.id] = true;
+            opponents.push({
+                name: pick.name,
+                level: Number(pick.level) || 1,
+                mercId: pick.id,
+                spritename: '主角-男',
+                gender: pick.gender || '',
+                isMonster: true,
+                humanoid: true,
+                rosterKind: 'humanoid',
+                source: 'mercenary'
+            });
+        }
+        return opponents;
+    }
+
+    function humanoidTemplatePoolForBand(levelMin, levelMax) {
+        var teams = (typeof window !== 'undefined' && window.ArenaMetaRosters && window.ArenaMetaRosters.teams)
+            ? window.ArenaMetaRosters.teams : null;
+        if (!teams || !teams.length) return [];
+        var pool = [];
+        for (var i = 0; i < teams.length; i++) {
+            var team = teams[i];
+            if (!team || team.levelMax < levelMin || team.levelMin > levelMax) continue;
+            var members = team.members || [];
+            for (var m = 0; m < members.length; m++) {
+                var member = members[m];
+                if (!isHumanoidTemplateUnit(member)) continue;
+                var unit = {
+                    type: member.type,
+                    name: member.name,
+                    spritename: member.spritename,
+                    gender: member.gender || '',
+                    minLevel: Number(member.level) || levelMin,
+                    maxLevel: Number(member.level) || levelMax,
+                    weight: Math.max(1, Number(member.count) || 1),
+                    humanoid: true
+                };
+                var parameters = member.Parameters || member.parameters || member['参数'];
+                if (customHasParameters(parameters)) unit.parameters = cloneCustomParameters(parameters);
+                pool.push(unit);
+            }
+        }
+        return pool;
+    }
+
+    function isKnownTeam(team) {
+        var members = (team && team.members) || [];
+        if (!members.length) return false;
+        for (var i = 0; i < members.length; i++) {
+            if (!isKnownEnemyUnit(members[i])) return false;
+        }
+        return true;
+    }
+
+    function teamHasHumanoidAndNonHuman(team) {
+        var members = (team && team.members) || [];
+        var humanoid = false, nonHuman = false;
+        for (var i = 0; i < members.length; i++) {
+            var kind = rosterKindForUnit(members[i]);
+            if (kind === 'humanoid') humanoid = true;
+            else if (kind === 'nonhuman') nonHuman = true;
+        }
+        return humanoid && nonHuman;
+    }
+
+    function teamHasOnlyNonHuman(team) {
+        var members = (team && team.members) || [];
+        if (!members.length) return false;
+        for (var i = 0; i < members.length; i++) {
+            if (rosterKindForUnit(members[i]) !== 'nonhuman') return false;
+        }
+        return true;
+    }
+
+    function hiddenTeamWeight(team, card) {
+        var targetPower = Math.max(1, card.opponentCount) * ((card.levelMin + card.levelMax) / 2);
+        var power = Number(team.powerRating);
+        if (isNaN(power) || power <= 0) power = estimateTeamPower(team);
+        var closeness = targetPower / (targetPower + Math.abs(power - targetPower));
+        var groupBonus = team.unitCount > card.opponentCount ? 1.2 : 1;
+        return Math.max(0.05, closeness) * groupBonus;
+    }
+
+    function monsterTeamWeight(team, levelMin, levelMax, equivalentCount) {
+        var levelBase = (levelMin + levelMax) / 2;
+        var targetPower = Math.max(1, Number(equivalentCount) || 1) * levelBase;
+        var power = Number(team.powerRating);
+        if (isNaN(power) || power <= 0) power = estimateTeamPower(team);
+        var closeness = targetPower / (targetPower + Math.abs(power - targetPower));
+        var sizeBonus = team.unitCount > Math.max(1, equivalentCount) ? 1.15 : 1;
+        var factionBonus = team.faction && team.faction !== 'unknown' ? 1.05 : 1;
+        return Math.max(0.05, closeness) * sizeBonus * factionBonus;
+    }
+
+    function estimateTeamPower(team) {
+        var members = (team && team.members) || [];
+        var sum = 0;
+        for (var i = 0; i < members.length; i++) {
+            sum += (Number(members[i].level) || 1) * Math.max(1, Number(members[i].count) || 1);
+        }
+        return sum || 1;
+    }
+
+    function weightedTeamPick(candidates, used) {
+        var pool = [];
+        for (var p = 0; p < candidates.length; p++) {
+            var key = teamPickKey(candidates[p].team);
+            if (!used || !used[key]) pool.push(candidates[p]);
+        }
+        if (!pool.length) pool = candidates;
+
+        var total = 0;
+        for (var i = 0; i < pool.length; i++) total += pool[i].weight || 1;
+        var r = Math.random() * total, acc = 0;
+        for (var j = 0; j < pool.length; j++) {
+            acc += pool[j].weight || 1;
+            if (r <= acc) return pool[j].team;
+        }
+        return pool[0].team;
+    }
+
+    function expandTeamOpponents(team, maxUnits, groupInstance) {
+        var limit = Math.max(1, Math.min(HIDDEN_MIXED_TEAM_MAX_UNITS,
+            Math.round(Number(maxUnits) || HIDDEN_MIXED_TEAM_MAX_UNITS)));
+        var out = [];
+        var members = (team && team.members) || [];
+        var baseGroupId = String((team && team.id) || ((team && team.sourceStage) ? (team.sourceStage + '#' + team.sourceName) : '') || 'monster-team');
+        var groupId = groupInstance != null ? (baseGroupId + '@' + groupInstance) : baseGroupId;
+        var groupName = String((team && (team.sourceName || team.sourceStage || team.faction)) || '关卡怪物组');
+        var groupTotal = Math.min(limit, Math.max(1, Number(team && team.unitCount) || limit));
+        for (var i = 0; i < members.length; i++) {
+            var member = members[i];
+            var count = Math.max(1, Math.round(Number(member.count) || 1));
+            for (var n = 0; n < count && out.length < limit; n++) {
+                var opponent = {
+                    name: member.name,
+                    level: Number(member.level) || 1,
+                    type: member.type,
+                    spritename: member.spritename,
+                    gender: member.gender || '',
+                    isMonster: true,
+                    rosterKind: rosterKindForUnit(member),
+                    sourceGroupId: groupId,
+                    sourceGroupName: groupName,
+                    sourceGroupMemberIndex: out.length + 1,
+                    sourceGroupMemberTotal: groupTotal
+                };
+                var parameters = member.Parameters || member.parameters || member['参数'];
+                if (customHasParameters(parameters)) opponent.parameters = cloneCustomParameters(parameters);
+                out.push(opponent);
+            }
+        }
+        shuffleInPlace(out);
+        return out;
+    }
+
+    function splitRosterPools(rosters, levelMin, levelMax) {
+        var all = [], humanoid = [], nonHuman = [];
+        for (var f in rosters) {
+            var pool = poolForBand(rosters[f].units, levelMin, levelMax);
+            for (var i = 0; i < pool.length; i++) {
+                var unit = pool[i];
+                all.push(unit);
+                if (rosterKindForUnit(unit) === 'humanoid') humanoid.push(unit);
+                else if (rosterKindForUnit(unit) === 'nonhuman') nonHuman.push(unit);
+            }
+        }
+        return { all: all, humanoid: humanoid, nonHuman: nonHuman };
+    }
+
+    function rosterKindForUnit(unit) {
+        if (isHumanoidTemplateUnit(unit)) return 'humanoid';
+        return 'nonhuman';
+    }
+
+    function isHumanoidRosterUnit(unit) {
+        return rosterKindForUnit(unit) === 'humanoid';
+    }
+
+    function isHumanoidTemplateUnit(unit) {
+        if (!unit) return false;
+        if (unit.humanoid === true) return true;
+        return /主角/.test(String(unit.spritename || ''));
+    }
+
+    function shuffleInPlace(list) {
+        for (var i = list.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var t = list[i];
+            list[i] = list[j];
+            list[j] = t;
+        }
     }
 
     // 从与 [levelMin,levelMax] 重叠的某个势力 roster，按 weight 加权采样 count 个单位（可重复）。
@@ -3645,7 +4314,18 @@
 
     function isKnownEnemyUnit(unit) {
         if (!unit || !unit.spritename) return false;
+        if (isHumanoidTemplateUnit(unit)) return true; // 佣兵模板由竞技场混编放行；普通怪物仍要求已击杀
         return _knownEnemies[String(unit.spritename)] === true;
+    }
+
+    function rosterDisplaySpritename(unit) {
+        var sprite = String(unit && unit.spritename || '');
+        if (isHumanoidTemplateUnit(unit) && (sprite === '主角-男' || sprite === '主角-女')) {
+            var gender = String(unit && unit.gender || '').trim();
+            if (gender === '女') return '主角-女';
+            if (gender === '男') return '主角-男';
+        }
+        return sprite.replace(/^敌人-/, '');
     }
 
     function filterKnownUnits(units) {
@@ -3671,7 +4351,15 @@
             var lo = Math.max(pick.minLevel, levelMin), hi = Math.min(pick.maxLevel, levelMax);
             if (hi < lo) hi = lo;
             var lvl = lo + Math.floor(Math.random() * (hi - lo + 1));
-            var opponent = { name: pick.name, level: lvl, type: pick.type, spritename: pick.spritename, isMonster: true };
+            var opponent = {
+                name: pick.name,
+                level: lvl,
+                type: pick.type,
+                spritename: pick.spritename,
+                gender: pick.gender || '',
+                isMonster: true,
+                rosterKind: isHumanoidRosterUnit(pick) ? 'humanoid' : 'nonhuman'
+            };
             var parameters = pick.Parameters || pick.parameters || pick['参数'];
             if (customHasParameters(parameters)) opponent.parameters = cloneCustomParameters(parameters);
             opponents.push(opponent);
@@ -3704,6 +4392,7 @@
         var isFallen = !!(card && card.isFallen);
         // 堕落卡建卡即恒紫罗兰；标准卡按本次采样结果开关
         cardEl.classList.toggle('arena-card-monster', !!faction || isFallen);
+        if (card && card.isHiddenChallenge) return; // 隐藏卡不公开混编来源，保留「配置保密」
         if (isFallen) return; // 堕落卡的势力名（rank）+「麾下阵容」cap 已在 buildCards 定好，采样回调不覆盖
         var capEl = cardEl.querySelector('.arena-card-opponents-cap');
         if (capEl) capEl.textContent = faction ? ('⚠ ' + faction) : '对手阵容';
@@ -3733,6 +4422,22 @@
 
         sumEl.className = 'arena-card-opponents';
         sumEl.onclick = null;
+        var card = _activeCards[cardIdx];
+        if (card && card.isHiddenChallenge) {
+            sumEl.textContent = '配置保密 · 已抽取';
+            return;
+        }
+        if (isRosterOpponents(opps)) {
+            var stats = rosterStats(opps, card);
+            var rosterParts = [];
+            if (stats.groups > 0) rosterParts.push('怪物组×' + stats.groups);
+            rosterParts.push('实体×' + stats.actual);
+            if (opps[0] && opps[0].name) {
+                rosterParts.push(opps[0].name + ' Lv' + opps[0].level + (stats.actual > 1 ? ' +' + (stats.actual - 1) : ''));
+            }
+            sumEl.textContent = rosterParts.join(' · ');
+            return;
+        }
         var MAX = 2;
         var parts = [];
         for (var i = 0; i < Math.min(MAX, opps.length); i++) {
@@ -3755,28 +4460,98 @@
         requestPreviewForCard(idx);
     }
 
-    // 非人形怪小队（M2）：无装备/技能，渲简版行（头像 + 名/级 + 非人形标 + 家族注）。
-    function renderMonsterOpponents(opponents) {
+    function isRosterOpponents(opponents) {
+        return !!(opponents && opponents.length && opponents[0] && opponents[0].isMonster);
+    }
+
+    function rosterStats(opponents, card) {
+        var stats = {
+            equivalent: 0,
+            actual: opponents ? opponents.length : 0,
+            humanoid: 0,
+            nonhuman: 0,
+            groups: 0
+        };
+        var seenGroups = {};
+        opponents = opponents || [];
+        for (var i = 0; i < opponents.length; i++) {
+            if (opponents[i].rosterKind === 'humanoid') {
+                stats.humanoid++;
+                stats.equivalent++;
+                continue;
+            } else if (opponents[i].rosterKind === 'nonhuman') {
+                stats.nonhuman++;
+            }
+            var gid = opponents[i].sourceGroupId;
+            if (gid && !seenGroups[gid]) {
+                seenGroups[gid] = true;
+                stats.groups++;
+                stats.equivalent++;
+            } else if (!gid) {
+                stats.equivalent++;
+            }
+        }
+        return stats;
+    }
+
+    function renderDetailMeta(card, opponents) {
+        if (!_detailMetaEl || !card) return;
         var html = '';
+        if (isRosterOpponents(opponents)) {
+            var stats = rosterStats(opponents, card);
+            html += '<span class="arena-meta-chip arena-meta-equivalent">等效 ×' + stats.equivalent + '</span>';
+            html += '<span class="arena-meta-chip arena-meta-actual">实体 ×' + stats.actual + '</span>';
+            if (stats.groups > 0) {
+                html += '<span class="arena-meta-chip arena-meta-group">怪物组 ×' + stats.groups + '</span>';
+            }
+        } else {
+            html += '<span class="arena-meta-chip">对手 ×' + card.opponentCount + '</span>';
+        }
+        html += '<span class="arena-meta-chip">等级 ' + card.levelMin + '—' + card.levelMax + '</span>' +
+            '<span class="arena-meta-chip arena-meta-deposit">押金 ' + formatMoney(card.deposit) + '</span>' +
+            '<span class="arena-meta-chip arena-meta-reward">奖金 ' + formatMoney(card.reward) + '</span>';
+        _detailMetaEl.innerHTML = html;
+    }
+
+    // roster 小队（M2）：无装备/技能，渲简版行（头像 + 名/级 + roster 标 + 家族注）。
+    function renderMonsterOpponents(opponents) {
+        var card = (_activeCardIdx >= 0) ? _activeCards[_activeCardIdx] : null;
+        renderDetailMeta(card, opponents);
+        var stats = rosterStats(opponents, card);
+        var html = '<div class="arena-opp-roster-brief">';
+        html += '<span>等效 ×' + stats.equivalent + '</span>';
+        html += '<span>实战实体 ×' + stats.actual + '</span>';
+        if (stats.groups > 0) html += '<span>怪物组 ×' + stats.groups + '</span>';
+        if (stats.humanoid > 0) html += '<span>佣兵 ×' + stats.humanoid + '</span>';
+        html += '</div>';
         for (var i = 0; i < opponents.length; i++) {
             var opp = opponents[i];
+            var tagText = opp.rosterKind === 'humanoid'
+                ? '佣兵'
+                : (opp.sourceGroupId
+                    ? ('怪物组 ' + (opp.sourceGroupMemberIndex || 1) + '/' + (opp.sourceGroupMemberTotal || stats.nonhuman || 1))
+                    : '怪物');
+            var noteText = rosterDisplaySpritename(opp);
+            if (opp.sourceGroupName && opp.rosterKind !== 'humanoid') noteText += ' · ' + opp.sourceGroupName;
             html += '<div class="arena-opp-row arena-opp-row-monster">';
             html += '<div class="arena-opp-portrait arena-opp-portrait-fallback arena-opp-portrait-monster"></div>';
             html += '<div class="arena-opp-main">';
             html += '<div class="arena-opp-topline">';
             html += '<span class="arena-opp-name">' + escapeHtml(opp.name) + '</span>';
             html += '<span class="arena-opp-level">LV. ' + opp.level + '</span>';
-            html += '<span class="arena-opp-monster-tag">非人形</span>';
+            html += '<span class="arena-opp-monster-tag">' + escapeHtml(tagText) + '</span>';
             html += '</div>';
-            html += '<div class="arena-opp-monster-note">' + escapeHtml(String(opp.spritename || '').replace(/^敌人-/, '')) + '</div>';
+            html += '<div class="arena-opp-monster-note">' + escapeHtml(noteText) + '</div>';
             html += '</div></div>';
         }
         _detailOpponentsEl.innerHTML = html;
     }
 
     function renderOpponents(opponents) {
-        // 非人形怪小队：走简版渲染（无装备/技能 hover）
-        if (opponents && opponents.length && opponents[0] && opponents[0].isMonster) {
+        var card = (_activeCardIdx >= 0) ? _activeCards[_activeCardIdx] : null;
+        renderDetailMeta(card, opponents);
+        // roster 小队：走简版渲染（无装备/技能 hover）
+        if (isRosterOpponents(opponents)) {
             renderMonsterOpponents(opponents);
             return;
         }
@@ -4024,6 +4799,7 @@
     //   - detail 按钮：仅 busy 时 disable（钱不够也允许查看对手装备）
     //   - 整卡灰类：仅按 money 判断（视觉降权，不直接干预按钮）
     function updateCardStates() {
+        updateRerollAllButton();
         var money = (_snapshot && _snapshot.money != null) ? _snapshot.money : null;
         for (var i = 0; i < _activeCards.length; i++) {
             if (_activeCards[i].isCustom) {
@@ -4034,7 +4810,7 @@
             var moneyOk = (money == null) || (money >= deposit); // snapshot 未到先全亮
             var hasPreview = !!_previewCache[i];
             setCardEnterEnabled(i, !_busy && moneyOk && hasPreview);
-            setCardDetailEnabled(i, !_busy);
+            setCardDetailEnabled(i, !_busy && !_activeCards[i].isHiddenChallenge);
             setCardVisualDisabled(i, money != null && money < deposit);
         }
     }
@@ -4086,17 +4862,16 @@
         return n.toLocaleString('zh-CN');
     }
 
-    // 难度档位：按对手最高等级映射「热度」tier（1 安全 → 6 致命）+ 中文段位名。
-    // tier 驱动卡片 .arena-card-d{tier} 类（CSS 决定 --d-color 顶部色条/标签色）。
-    // 8 张卡的 levelMax: 5/10/15/15/20/20/40/60 → 新兵/老兵/精锐×2/王牌×2/传奇/神话。
+    // 难度档位：按对手最高等级映射「热度」tier（1 安全 → 6 致命）+ 竞技场专属称号风格标签。
+    // 标签借用主角称号的语感，但不直接读取 hero_titles.xml，避免玩家履历称号和挑战风险耦合。
     function difficultyOf(card) {
         var lm = card.levelMax;
-        if (lm <= 5)  return { tier: 1, label: '新兵' };
-        if (lm <= 10) return { tier: 2, label: '老兵' };
-        if (lm <= 15) return { tier: 3, label: '精锐' };
-        if (lm <= 20) return { tier: 4, label: '王牌' };
-        if (lm <= 40) return { tier: 5, label: '传奇' };
-        return { tier: 6, label: '神话' };
+        for (var i = 0; i < ARENA_DIFFICULTY_LABELS.length; i++) {
+            if (lm <= ARENA_DIFFICULTY_LABELS[i].maxLevel) {
+                return { tier: ARENA_DIFFICULTY_LABELS[i].tier, label: ARENA_DIFFICULTY_LABELS[i].label };
+            }
+        }
+        return { tier: 6, label: ARENA_DIFFICULTY_LABELS[ARENA_DIFFICULTY_LABELS.length - 1].label };
     }
 
     function escapeHtml(text) {
@@ -4144,8 +4919,6 @@
         window.ArenaPanel = {
             getState: _debugGetState,
             getCards: function() { return _activeCards.slice(); },
-            // 测试/截图注入：设怪物混入概率（1=全怪物，0=全 merc）。需 window.ArenaMetaRosters 已载。
-            setMixChance: function(p) { _mixChance = Number(p); },
             // 测试注入：模拟 AS2 snapshot 的 killStats.byType spritename 列表。
             setKnownEnemies: function(list) {
                 setKnownEnemies(list);

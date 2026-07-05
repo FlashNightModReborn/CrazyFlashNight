@@ -68,9 +68,9 @@ class org.flashNight.arki.merc.ArenaController {
     }
 
     /**
-     * 提交元战队（非人形怪）阵容进场。squad = [{兵种:"兵种N", 等级:L}, ...]。
+     * 提交元战队 / 混编 roster 阵容进场。squad = [{兵种:"兵种N", 等级:L} | {类型:"merc", 佣兵:[...]}, ...]。
      * 调用前须先 prepareArenaStage（载入关卡数据 + 押金/奖金）。不碰佣兵 reuse/pool 计数。
-     * 怪物经帧脚本 _root.加载角斗场怪物 读 _root.角斗场roster阵容 逐个生成。
+     * 对手经帧脚本 _root.加载角斗场怪物 读 _root.角斗场roster阵容 逐个生成。
      */
     public static function commitRoster(squad:Array):Void {
         if (squad == undefined || squad.length == 0) return;

@@ -306,12 +306,18 @@
 
         // ── Fixture 数据 ──
         var FIXTURES = {
-            rich:   { money: 10000000, reuseCount: 0, reuseLimit: 2 },
-            normal: { money: 5717348,  reuseCount: 1, reuseLimit: 2 },
-            poor:   { money: 1000,     reuseCount: 2, reuseLimit: 4 },
-            broke:  { money: 0,        reuseCount: 0, reuseLimit: 2 }
+            rich:   { money: 10000000, playerLevel: 32, reuseCount: 0, reuseLimit: 2 },
+            normal: { money: 5717348,  playerLevel: 28, reuseCount: 1, reuseLimit: 2 },
+            poor:   { money: 1000,     playerLevel: 12, reuseCount: 2, reuseLimit: 4 },
+            broke:  { money: 0,        playerLevel: 8,  reuseCount: 0, reuseLimit: 2 }
         };
-
+        var DEFAULT_KNOWN_ENEMIES = [
+            '敌人-终结者T800',
+            '敌人-玩具机器人',
+            '敌人-诺艾尔',
+            '主角-男',
+            '主角-尾上世莉架'
+        ];
         // ── Host 对象 ──
         var host = window.ArenaHarnessHost = {
             sentMessages: [],
@@ -326,7 +332,7 @@
             _customStatusPolls: 0,
             _customResultOpens: 0,
             _fixture: 'normal',
-            _knownEnemies: [],
+            _knownEnemies: DEFAULT_KNOWN_ENEMIES.slice(),
 
             setViewport: function(value) {
                 var shell = document.getElementById('viewport-shell');
@@ -353,6 +359,7 @@
                 var f = FIXTURES[this._fixture] || FIXTURES.normal;
                 return {
                     money: f.money,
+                    playerLevel: f.playerLevel,
                     reuseCount: f.reuseCount,
                     reuseLimit: f.reuseLimit,
                     knownEnemies: this._knownEnemies.slice()

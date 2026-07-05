@@ -92,37 +92,7 @@ class org.flashNight.arki.merc.MercLibrary {
             if (seen[raw.id] && seen[raw.id] == raw.name) {
                 continue;
             }
-            var merc:Array = new Array(20);
-            merc[0]  = raw.level;
-            merc[1]  = raw.name;
-            merc[2]  = raw.id;
-            merc[3]  = raw.height;
-            merc[4]  = raw.face == null ? "" : _root.脸型库[raw.face];
-            merc[5]  = raw.hair == null ? "" : _root.发型库[raw.hair];
-            merc[6]  = raw.equipment.head       == null ? "" : raw.equipment.head;
-            merc[7]  = raw.equipment.body       == null ? "" : raw.equipment.body;
-            merc[8]  = raw.equipment.hand       == null ? "" : raw.equipment.hand;
-            merc[9]  = raw.equipment.leg        == null ? "" : raw.equipment.leg;
-            merc[10] = raw.equipment.foot       == null ? "" : raw.equipment.foot;
-            merc[11] = raw.equipment.neck       == null ? "" : raw.equipment.neck;
-            merc[12] = raw.equipment.primary    == null ? "" : raw.equipment.primary;
-            merc[13] = raw.equipment.secondary1 == null ? "" : raw.equipment.secondary1;
-            merc[14] = raw.equipment.secondary2 == null ? "" : raw.equipment.secondary2;
-            merc[15] = raw.equipment.melee      == null ? "" : raw.equipment.melee;
-            merc[16] = raw.equipment.gerenade   == null ? "" : raw.equipment.gerenade;
-            merc[17] = raw.gender;
-            merc[18] = calculatePrice(raw.level);
-            // [19] 是元数据子对象。字段名是公共契约（_root.同伴数据[i][19].XXX 多处引用），保留中文
-            merc[19] = {是否杂交: false};
-            if (raw.pricemultiplier) {
-                merc[19].价格倍率 = raw.pricemultiplier;
-            }
-            if (raw.enhancement) {
-                merc[19].装备强化度 = raw.enhancement;
-            }
-            if (raw.passive) {
-                merc[19].被动技能 = raw.passive;
-            }
+            var merc:Array = buildMercData(raw);
             if (raw.hidden) {
                 merc[19].隐藏 = raw.hidden;
                 _root.隐藏的可雇佣兵.push(merc);
@@ -134,6 +104,43 @@ class org.flashNight.arki.merc.MercLibrary {
         _root.可雇佣兵 = _root.可雇佣兵.concat(_root.隐藏的可雇佣兵);
         // 池索引变了，权重缓存必须重算，否则 pickRandomMercIndex 会读到 stale weights。
         MercSpawner.invalidateIndexCache();
+    }
+
+    public static function buildMercData(raw:Object):Array {
+        var merc:Array = new Array(20);
+        var equipment:Object = raw.equipment;
+        if (equipment == undefined) equipment = {};
+        merc[0]  = raw.level;
+        merc[1]  = raw.name;
+        merc[2]  = raw.id;
+        merc[3]  = raw.height;
+        merc[4]  = raw.face == null ? "" : _root.脸型库[raw.face];
+        merc[5]  = raw.hair == null ? "" : _root.发型库[raw.hair];
+        merc[6]  = equipment.head       == null ? "" : equipment.head;
+        merc[7]  = equipment.body       == null ? "" : equipment.body;
+        merc[8]  = equipment.hand       == null ? "" : equipment.hand;
+        merc[9]  = equipment.leg        == null ? "" : equipment.leg;
+        merc[10] = equipment.foot       == null ? "" : equipment.foot;
+        merc[11] = equipment.neck       == null ? "" : equipment.neck;
+        merc[12] = equipment.primary    == null ? "" : equipment.primary;
+        merc[13] = equipment.secondary1 == null ? "" : equipment.secondary1;
+        merc[14] = equipment.secondary2 == null ? "" : equipment.secondary2;
+        merc[15] = equipment.melee      == null ? "" : equipment.melee;
+        merc[16] = equipment.gerenade   == null ? "" : equipment.gerenade;
+        merc[17] = raw.gender;
+        merc[18] = calculatePrice(raw.level);
+        // [19] 是元数据子对象。字段名是公共契约（_root.同伴数据[i][19].XXX 多处引用），保留中文
+        merc[19] = {是否杂交: false};
+        if (raw.pricemultiplier) {
+            merc[19].价格倍率 = raw.pricemultiplier;
+        }
+        if (raw.enhancement) {
+            merc[19].装备强化度 = raw.enhancement;
+        }
+        if (raw.passive) {
+            merc[19].被动技能 = raw.passive;
+        }
+        return merc;
     }
 
     /**

@@ -8587,6 +8587,32 @@ html.perf-low-effects .map-panel-close-btn:hover {
     align-self: stretch;
     gap: 2px;
 }
+.arena-reroll-all {
+    align-self: center;
+    margin-left: auto;
+    height: 30px;
+    padding: 0 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--arena-text-dim);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    border-radius: var(--arena-radius-sm);
+    cursor: pointer;
+    transition: color 0.14s, border-color 0.14s, background 0.14s;
+}
+.arena-reroll-all:hover:not(:disabled) {
+    color: var(--arena-accent);
+    border-color: var(--arena-accent);
+    background: var(--arena-accent-dim);
+}
+.arena-reroll-all:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+.arena-reroll-all[hidden] { display: none; }
 .arena-mode-tab {
     min-width: 92px;
     padding: 0 18px;
@@ -10683,6 +10709,13 @@ html.perf-low-effects .map-panel-close-btn:hover {
     text-shadow: 0 0 10px rgba(255,201,74,0.25);
     font-variant-numeric: tabular-nums;
 }
+.arena-prize-mult {
+    margin-top: 2px;
+    color: #ffd36d;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
 .arena-prize-deposit {
     font-size: 11px;
     color: var(--arena-text-mute);
@@ -10921,6 +10954,17 @@ html.perf-low-effects .map-panel-close-btn:hover {
     color: var(--arena-gold);
     background: rgba(255,201,74,0.10);
     border-color: rgba(255,201,74,0.32);
+}
+.arena-meta-chip.arena-meta-equivalent {
+    color: #f0d7a0;
+    background: rgba(239,148,66,0.10);
+    border-color: rgba(239,148,66,0.26);
+}
+.arena-meta-chip.arena-meta-actual,
+.arena-meta-chip.arena-meta-group {
+    color: #d9c4ef;
+    background: rgba(217,140,255,0.10);
+    border-color: rgba(217,140,255,0.26);
 }
 
 .arena-detail-roll {
@@ -11196,6 +11240,27 @@ html.perf-low-effects .map-panel-close-btn:hover {
 .arena-card-monster:hover .arena-card-frame { --bk-c: rgba(228,170,255,0.85); }
 .arena-card-monster .arena-card-opponents { color: #c9a9dd; }
 
+.arena-card-hidden {
+    border-color: rgba(255,201,74,0.18);
+    background:
+        linear-gradient(135deg, rgba(255,201,74,0.08), transparent 42%),
+        var(--arena-stone);
+}
+.arena-card-hidden .arena-card-rank {
+    color: #ffd36d;
+    text-shadow: 0 0 8px rgba(255,201,74,0.28);
+}
+.arena-card-hidden .arena-card-frame { --bk-c: rgba(255,201,74,0.42); }
+.arena-card-hidden:hover .arena-card-frame { --bk-c: rgba(255,211,109,0.82); }
+.arena-card-hidden .arena-card-opponents-cap,
+.arena-card-hidden .arena-card-opponents {
+    color: #d9c188;
+}
+.arena-card-hidden .arena-card-btn-detail:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+}
+
 /* 堕落模式（Phase 2）势力挑战卡：rank 槽 = 势力名（卡片身份），紫罗兰强调 + 略大字号 */
 .arena-card-rank-faction {
     color: #e0b6ff;
@@ -11204,6 +11269,25 @@ html.perf-low-effects .map-panel-close-btn:hover {
 }
 
 /* 怪物对手行（detail，简版：无装备/技能） */
+.arena-opp-roster-brief {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 7px 10px;
+    background: rgba(14, 12, 18, 0.72);
+    border: 1px solid rgba(217,140,255,0.22);
+    border-radius: var(--arena-radius);
+    color: #d9c4ef;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+.arena-opp-roster-brief span {
+    padding: 1px 7px;
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--arena-radius-sm);
+}
 .arena-opp-portrait-monster.arena-opp-portrait-fallback::before { background: #5a4a6e; }
 .arena-opp-portrait-monster.arena-opp-portrait-fallback::after { background: #4e4060; }
 .arena-opp-monster-tag {
@@ -11213,6 +11297,7 @@ html.perf-low-effects .map-panel-close-btn:hover {
     border: 1px solid rgba(217,140,255,0.35);
     padding: 0 6px; line-height: 16px;
     border-radius: var(--arena-radius-sm);
+    white-space: nowrap;
 }
 .arena-opp-monster-note {
     font-size: 11px;

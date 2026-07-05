@@ -32,6 +32,7 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const STAGES_DIR = path.join(ROOT, 'data', 'stages');
 const UNITS_PATH = path.join(ROOT, 'data', 'units', 'units.json');
+const MERCS_PATH = path.join(ROOT, 'data', 'merc', 'mercenaries.json');
 const OUT_PATH = path.join(ROOT, 'data', 'arena', 'meta_teams.json');
 const WEB_MODULE_PATH = path.join(ROOT, 'launcher', 'web', 'modules', 'arena-meta-rosters.js');
 const CHECK_ONLY = process.argv.indexOf('--check') !== -1;
@@ -70,8 +71,8 @@ const FACTION_RULES = [
     { re: /铁血/, faction: '铁血' }
 ];
 
-// 玩家模板 sprite（主角-男/女）= 可能走「使用人形怪AI」的昂贵人形单位，
-// 也违背「打非人形怪」主题 → 标记并从 roster 采样池剔除（仍保留在 teams[] 供溯源）。
+// 玩家模板 sprite（主角-男/女）= 与主角/佣兵同模板的高性能人形单位。
+// 标记为 humanoid，并从普通 roster 采样池剔除（仍保留在 teams[] 供混编溯源）。
 function isHumanoidTemplate(spritename) {
     return /主角/.test(String(spritename || ''));
 }
@@ -92,10 +93,23 @@ function factionFor(spritename) {
     return null;
 }
 
-// ── unit 注册表：兵种N → {id,name,spritename,level,is_hostile} ──
+// ── unit 注册表：兵种N → {id,name,spritename,level,is_hostile,data.gender} ──
 const units = JSON.parse(fs.readFileSync(UNITS_PATH, 'utf8'));
 const byType = {};
 for (let i = 0; i < units.length; i++) byType['兵种' + units[i].id] = units[i];
+
+const mercenaries = JSON.parse(fs.readFileSync(MERCS_PATH, 'utf8'));
+const arenaMercenaries = mercenaries
+    .filter(m => m && !m.hidden && Number(m.level) > 0 && m.id != null && m.name != null)
+    .map(m => ({
+        id: Number(m.id),
+        name: String(m.name),
+        level: Number(m.level),
+        gender: m.gender != null ? String(m.gender) : '',
+        height: Number(m.height) || 0,
+        weight: 1
+    }))
+    .sort((a, b) => a.level - b.level || a.id - b.id);
 
 // ── 递归收集关卡文件 ──
 function walk(dir, out) {
@@ -269,11 +283,13 @@ function buildTeam(rel, stageName, groupId, body) {
         const lvl = en.level != null ? en.level : (Number(rep.level) || 1);
         const parameterSignature = en.parameters ? stableStringify(en.parameters) : '';
         const key = repType + '@' + lvl + (en.random ? '#r' : '') + (parameterSignature ? '#p' + parameterSignature : '');
+        const humanoid = isHumanoidTemplate(rep.spritename);
         if (!merged[key]) merged[key] = {
             type: repType, id: rep.id, name: cleanName(rep), spritename: rep.spritename,
             level: lvl, count: 0, random: !!en.random,
             isHostile: rep.is_hostile === true,
-            humanoid: isHumanoidTemplate(rep.spritename),
+            gender: humanoid && rep.data && rep.data.gender != null ? String(rep.data.gender) : undefined,
+            humanoid: humanoid,
             randomTypes: en.random ? en.types.slice() : undefined,
             parameters: en.parameters
         };
@@ -344,7 +360,7 @@ for (const t of teams) {
     if (!rosters[t.faction]) rosters[t.faction] = { teamCount: 0, units: {} };
     rosters[t.faction].teamCount++;
     for (const m of t.members) {
-        if (m.humanoid) continue; // 人形模板单位不入采样池（性能 + 非人形主题）
+        if (m.humanoid) continue; // 佣兵模板单位不入普通怪物采样池（性能成本高，只走 mixed）
         const parameterSignature = hasParameters(m.parameters) ? stableStringify(m.parameters) : '';
         const unitKey = m.type + (parameterSignature ? '#p' + parameterSignature : '');
         const u = rosters[t.faction].units[unitKey] ||
@@ -363,15 +379,52 @@ for (const f in rosters) {
     rosters[f].units = arr;
 }
 
+function slimWebMember(m) {
+    const out = {
+        type: m.type,
+        name: m.name,
+        spritename: m.spritename,
+        level: m.level,
+        count: m.count,
+        isHostile: m.isHostile,
+        humanoid: m.humanoid === true
+    };
+    if (m.gender) out.gender = m.gender;
+    if (hasParameters(m.parameters)) out.parameters = m.parameters;
+    return out;
+}
+
+function slimWebTeam(t) {
+    return {
+        id: t.id,
+        sourceStage: t.sourceStage,
+        sourceName: t.sourceName,
+        faction: t.faction,
+        levelMin: t.levelMin,
+        levelMax: t.levelMax,
+        avgLevel: t.avgLevel,
+        unitCount: t.unitCount,
+        distinctTypes: t.distinctTypes,
+        powerRating: t.powerRating,
+        members: t.members.map(slimWebMember)
+    };
+}
+
+const webTeams = teams
+    .filter(t => t.unitCount >= 2 && t.unitCount <= 8)
+    .map(slimWebTeam);
+
 const catalog = {
     generatedBy: 'tools/derive-arena-meta-teams.js',
     granularity: GRANULARITY,
-    note: '竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队); rosters{}=按势力聚合的兵种池(按等级带采样K体用)。请勿手改——改采集规则后重跑。',
+    note: '竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队); rosters{}=按势力聚合的兵种池(按等级带采样K体用); mercenaries[]=混编人形侧优先池(来自 data/merc/mercenaries.json，排除 hidden)。请勿手改——改采集规则后重跑。',
     stageFilesScanned: files.length,
     stagesWithTeams: stageWithTeams,
     teamCount: teams.length,
+    mercenaryCount: arenaMercenaries.length,
     factionBreakdown: factionTally,
     rosters: rosters,
+    mercenaries: arenaMercenaries,
     teams: teams
 };
 
@@ -392,6 +445,7 @@ console.log('  ' + JSON.stringify(dist(teams.map(t => t.unitCount), [
 console.log('\n-- 平均等级分布 --');
 console.log('  ' + JSON.stringify(dist(teams.map(t => t.avgLevel), [
     { label: '1-10', min: 1, max: 10 }, { label: '11-20', min: 11, max: 20 }, { label: '21-40', min: 21, max: 40 }, { label: '41-60', min: 41, max: 60 }, { label: '60+', min: 61, max: 9999 }])));
+console.log('\n-- 混编佣兵池(data/merc/mercenaries.json，排除 hidden): ' + arenaMercenaries.length + ' 人 --');
 const unresolvedKeys = Object.keys(unresolved);
 console.log('\n-- 未解析兵种(units.json 查无): ' + unresolvedKeys.length + ' 种 --');
 if (unresolvedKeys.length) console.log('  ' + unresolvedKeys.slice(0, 30).join(', ') + (unresolvedKeys.length > 30 ? ' …' : ''));
@@ -408,13 +462,13 @@ teams.filter(t => t.faction === '堕落城').slice(0, 5).forEach(t => {
 
 if (!CHECK_ONLY) {
     fs.writeFileSync(OUT_PATH, JSON.stringify(catalog, null, 2), 'utf8');
-    // web 消费用的瘦身 roster 模块（arena-panel.js M2 采样直读；不含 teams[] 溯源数据）
+    // web 消费用的瘦身 roster 模块（arena-panel.js M2 采样直读；teams[] 仅保留小队必要字段）
     var webModule =
         '// AUTO-GENERATED by tools/derive-arena-meta-teams.js — 请勿手改，改采集规则后重跑。\n' +
-        '// 竞技场堕落/元战队 roster：按势力聚合的关卡敌人池（含 is_hostile=false，已剔人形模板），arena-panel.js M2 采样消费。\n' +
+        '// 竞技场堕落/元战队 roster：按势力聚合的关卡敌人池 + 真实小队组合，arena-panel.js M2 采样消费。\n' +
         '(function () {\n' +
         '    if (typeof window === "undefined") return;\n' +
-        '    window.ArenaMetaRosters = ' + JSON.stringify({ granularity: GRANULARITY, factions: rosters }) + ';\n' +
+        '    window.ArenaMetaRosters = ' + JSON.stringify({ granularity: GRANULARITY, factions: rosters, mercenaries: arenaMercenaries, teams: webTeams }) + ';\n' +
         '})();\n';
     fs.writeFileSync(WEB_MODULE_PATH, webModule, 'utf8');
     console.log('\n[写出] ' + path.relative(ROOT, OUT_PATH) + '  +  ' + path.relative(ROOT, WEB_MODULE_PATH));
