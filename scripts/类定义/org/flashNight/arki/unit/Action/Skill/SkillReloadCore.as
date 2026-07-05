@@ -48,7 +48,7 @@ class org.flashNight.arki.unit.Action.Skill.SkillReloadCore {
      * // 为长枪换弹
      * SkillReloadCore.reloadWeapon(_parent.长枪, _parent.长枪属性, _parent);
      */
-    public static function reloadWeapon(weapon:Object, weaponAttr:Object, unit:MovieClip):Void {
+    public static function reloadWeapon(weapon:Object, weaponAttr:Object, unit:Object):Void {
         // 检查是否有已发射弹药
         if (weapon.value.shot > 0) {
             // 获取弹夹道具名称
@@ -81,7 +81,7 @@ class org.flashNight.arki.unit.Action.Skill.SkillReloadCore {
      * 执行流程：
      * 1. 检查单位是否为当前控制目标
      * 2. 如果不是，直接重置三种武器的已发射数（AI/NPC逻辑）
-     * 3. 如果是，调用 reloadWeapon 为每种武器单独换弹（玩家逻辑）
+     * 3. 如果是，调用 reloadWeapon 为每种武器单独换弹，并补做长枪副武器换弹检查（玩家逻辑）
      *
      * @param unit 单位对象（需要包含 长枪、手枪、手枪2 及其属性对象）
      * @return void
@@ -93,13 +93,13 @@ class org.flashNight.arki.unit.Action.Skill.SkillReloadCore {
      * // 其他需要批量换弹的场景
      * SkillReloadCore.reloadAllWeapons(unit);
      */
-    public static function reloadAllWeapons(unit:MovieClip):Void {
+    public static function reloadAllWeapons(unit:Object):Void {
         // 检查是否为玩家控制目标
         if (_root.控制目标 != unit._name) {
             // 非玩家控制，直接重置（不消耗道具）
             unit.长枪.value.shot = 0;
             unit.当前弹夹副武器已发射数 = 0;
-            LongGunSubWeaponCore.reloadLinked(unit);
+            LongGunSubWeaponCore.reloadLinkedFree(unit);
             unit.手枪.value.shot = 0;
             unit.手枪2.value.shot = 0;
             return;
@@ -109,5 +109,6 @@ class org.flashNight.arki.unit.Action.Skill.SkillReloadCore {
         reloadWeapon(unit.长枪, unit.长枪属性, unit);
         reloadWeapon(unit.手枪, unit.手枪属性, unit);
         reloadWeapon(unit.手枪2, unit.手枪2属性, unit);
+        LongGunSubWeaponCore.reloadLinked(unit);
     }
 }

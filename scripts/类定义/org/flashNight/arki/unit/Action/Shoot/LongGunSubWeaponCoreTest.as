@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.item.equipment.SubweaponDataUtil;
 import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
 import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
+import org.flashNight.arki.unit.Action.Skill.SkillReloadCore;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.TooltipTextBuilder;
@@ -30,6 +31,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testReloadKeyMarksCombinedReloadWhenBothNeedAmmo();
         testReloadKeyStartsSubweaponWhenMainFull();
         testCombinedReloadBurdenAddsSubweaponBurden();
+        testNonHeroRollReloadRefillsSubweaponWithoutInventory();
+        testHeroRollReloadRefillsSubweaponWhenMainFull();
         testTooltipRendersSubweapon();
 
         trace("--- LongGunSubWeaponCoreTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
@@ -222,6 +225,58 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         unit.man.subweaponLinkedReload = true;
         ReloadManager.initReloadBurden(unit.man, 42, 50, 43, 74, [51, 56, 64]);
         assert(unit.man.reloadBurden == 175, "combined reload burden adds subweapon burden");
+    }
+
+    private static function testNonHeroRollReloadRefillsSubweaponWithoutInventory():Void {
+        installMockInventory("火焰喷射器燃料罐", 0);
+        var unit:Object = makeUnit();
+        unit._name = "allyUnit";
+        unit.长枪 = {value: {shot: 3, reloadCount: 0}};
+        unit.手枪 = {value: {shot: 2}};
+        unit.手枪2 = {value: {shot: 1}};
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        unit.长枪副武器状态.loaded = 0;
+        unit.长枪副武器状态.groupPaid = false;
+        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+        var previousControlTarget:String = _root.控制目标;
+        _root.控制目标 = "heroUnit";
+
+        SkillReloadCore.reloadAllWeapons(unit);
+
+        assert(unit.长枪.value.shot == 0, "non-hero roll reload refills long gun without reserve");
+        assert(unit.手枪.value.shot == 0, "non-hero roll reload refills pistol");
+        assert(unit.手枪2.value.shot == 0, "non-hero roll reload refills second pistol");
+        assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "non-hero roll reload refills subweapon without reserve");
+        assert(unit.长枪副武器状态.groupPaid == true, "non-hero roll reload marks free subweapon group paid");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "non-hero roll reload does not consume player reserve");
+        _root.控制目标 = previousControlTarget;
+        restoreMockInventory();
+    }
+
+    private static function testHeroRollReloadRefillsSubweaponWhenMainFull():Void {
+        installMockInventory("火焰喷射器燃料罐", 1);
+        var unit:Object = makeUnit();
+        unit._name = "heroUnit";
+        unit.长枪 = {value: {shot: 0}};
+        unit.长枪属性 = {clipname: "主武器弹匣"};
+        unit.手枪 = {value: {shot: 0}};
+        unit.手枪属性 = {clipname: "手枪弹匣"};
+        unit.手枪2 = {value: {shot: 0}};
+        unit.手枪2属性 = {clipname: "手枪弹匣"};
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        unit.长枪副武器状态.loaded = 0;
+        unit.长枪副武器状态.groupPaid = false;
+        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+        installMockHero(unit);
+
+        SkillReloadCore.reloadAllWeapons(unit);
+
+        assert(unit.长枪.value.shot == 0, "hero roll reload keeps full long gun");
+        assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "hero roll reload refills subweapon when main is full");
+        assert(unit.长枪副武器状态.groupPaid == true, "hero roll reload marks linked subweapon group paid");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "hero roll reload consumes one subweapon reserve");
+        restoreMockHero();
+        restoreMockInventory();
     }
 
     private static function testTooltipRendersSubweapon():Void {

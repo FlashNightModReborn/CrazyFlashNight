@@ -151,6 +151,10 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         return reloadInternal(unit, false);
     }
 
+    public static function reloadLinkedFree(unit:Object):Boolean {
+        return reloadInternalFree(unit);
+    }
+
     public static function updateAmmoDisplay(unit:Object):Void {
         if (!isHero(unit)) return;
         var ui:Object = _root.玩家信息界面.玩家必要信息界面;
@@ -283,6 +287,23 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             state.groupPaid = true;
         }
 
+        state.loaded = state.capacity;
+        unit.当前弹夹副武器已发射数 = 0;
+        writeRuntimeBridgeFields(unit, config);
+        updateAmmoDisplay(unit);
+        return true;
+    }
+
+    private static function reloadInternalFree(unit:Object):Boolean {
+        if (!hasSubweapon(unit)) return false;
+        var config:Object = unit.长枪副武器配置;
+        var state:Object = unit.长枪副武器状态;
+        if (state.loaded >= state.capacity) {
+            updateAmmoDisplay(unit);
+            return false;
+        }
+
+        state.groupPaid = true;
         state.loaded = state.capacity;
         unit.当前弹夹副武器已发射数 = 0;
         writeRuntimeBridgeFields(unit, config);
