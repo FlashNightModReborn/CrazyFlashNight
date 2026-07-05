@@ -133,6 +133,14 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 `data/items/equipment_mods/*.xml` 的插件支持根层 `<skillSwitch>`（与 `<skill>`、`<stats>` 同级），用于按宿主装备 `use` / `weapontype` 切换主动战技。命中分支时优先使用分支技能，未命名 `<use>` 是 default 分支，仅在无命名分支命中时使用；多个分支同时匹配时按 XML 顺序取第一个。根层 `<skill>` 仍可作为兼容回退，但有条件战技映射时建议把默认技能也写进 `skillSwitch` 的 default 分支，避免 tooltip 表达成多个可同时装载的战技。`skillSwitch` 只决定技能，不应用属性，条件数值仍走 `<stats><useSwitch>...</useSwitch></stats>`。完整写法与示例见 `data/items/equipment_mods/README.md`。
 
+### 长枪副武器 `<subweapon>`
+
+长枪下挂 / 内置副武器使用根层 `<subweapon>`，与普通 `<skill>` 共享长枪特殊槽，不能并存。`EquipmentCalculator` 会把配件根层 `subweapon` 写入宿主 `itemData.subweapon`；`DressupInitializer` 装载长枪时读取 `subweapon` 并交给 `LongGunSubWeaponCore`，不会装入普通主动战技。
+
+最小字段：`name`、`cd`、`power`、`capacity`、`reserveName`、`bullet`、`consumeMode`、`consumeTiming`。常用字段：`sound`、`split`、`diffusion`、`velocity`、`range`、`impact`、`damageType`、`magicType`、`powerMultiplier`、`initialLoaded`、`manualReloadAnimation`、`manualReloadBurden`、`clipCostPerLoad`、`fireCost`、`mp`、`hp`。
+
+当前迁移语义：`consumeMode=onLoadGroup + consumeTiming=linkedFirstFire` 表示 1 份 `reserveName` 支持一组 `capacity` 发；首仓由 `initialLoaded` 表达预装；R 联动补装后首次 K 发射扣组弹药；F 快装在动画提交帧扣组弹药。逐发消耗武器使用 `consumeMode=onFire + consumeTiming=onFire + fireCost`。
+
 ### 联弹双层配置与补弹参数（2026-06-12 起）
 
 联弹子弹名格式为 `"{模板前缀}-{单元体}"`（如 `横向联弹-普通子弹`），其弹壳/属性配置在 `bullets_cases.xml` 按全名查表。组合配置由两层声明在加载期派生（`ChainBulletConfigResolver`，挂在 `InfoLoader` 聚合之后、回调分发之前）：

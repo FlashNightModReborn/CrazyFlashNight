@@ -4,6 +4,8 @@ import org.flashNight.arki.component.StatHandler.DodgeHandler;
 import org.flashNight.arki.unit.HeroUtil;
 import org.flashNight.arki.unit.UnitUtil;
 import org.flashNight.arki.unit.UnitComponent.Initializer.SpeedDeriveInitializer;
+import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
+import org.flashNight.arki.item.equipment.SubweaponDataUtil;
 
 /**
  * DressupInitializer - 装备初始化器
@@ -597,6 +599,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         var target:MovieClip = __target;
 
         target.主动战技 = _root.主角函数.创建主动战技槽位表();
+        LongGunSubWeaponCore.clearUnit(target);
         loadWeaponSkill(target, "手部装备");
         loadWeaponSkill(target, "刀");
         loadWeaponSkill(target, "长枪");
@@ -608,6 +611,16 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         var data:Object = target[equipType + "数据"];
         var skillType:String = _root.主角函数.获取装备主动战技种类(equipType, data ? data.use : null);
         if (skillType) {
+            if (equipType == "长枪" && SubweaponDataUtil.hasSubweapon(data)) {
+                if (LongGunSubWeaponCore.configureUnit(target, data)) {
+                    if (target.装载副武器控制槽) {
+                        target.装载副武器控制槽(target.长枪副武器配置, skillType);
+                    } else {
+                        target.主动战技[skillType] = LongGunSubWeaponCore.buildControlSlot(target.长枪副武器配置);
+                    }
+                }
+                return;
+            }
             target.装载主动战技(data.skill, skillType);
         }
     }

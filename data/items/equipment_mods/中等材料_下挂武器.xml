@@ -12,14 +12,16 @@
                 <weight>1</weight>
             </flat>
         </stats>
-        <skill>
-            <skillname>发射榴弹</skillname>
+        <subweapon>
+            <name>下挂冲锋枪</name>
+            <controlName>下挂冲锋枪</controlName>
             <description>持枪瞄准时使用下挂的冲锋枪点射,每次点射6发，可点射5次,换弹后重新装填,需消耗冲锋枪通用弹药。</description>
             <cd>500</cd>
             <mp>0</mp>
             <power>80</power>
-            <bulletsize>5</bulletsize>
-            <clipname>冲锋枪通用弹药</clipname>
+            <powerMultiplier>1</powerMultiplier>
+            <capacity>5</capacity>
+            <reserveName>冲锋枪通用弹药</reserveName>
             <bullet>纵向手枪联弹-加强普通子弹</bullet>
             <sound>xm556_5_shot.wav</sound>
             <split>6</split>
@@ -27,7 +29,14 @@
             <velocity>35</velocity>
             <range>30</range>
             <impact>20</impact>
-        </skill>
+            <damageType>物理</damageType>
+            <consumeMode>onLoadGroup</consumeMode>
+            <consumeTiming>linkedFirstFire</consumeTiming>
+            <clipCostPerLoad>1</clipCostPerLoad>
+            <initialLoaded>5</initialLoaded>
+            <manualReloadAnimation>longGun</manualReloadAnimation>
+            <manualReloadBurden>25</manualReloadBurden>
+        </subweapon>
         <description>下挂冲锋枪模块,提供中近距离火力支援。
         需要导轨系统支持。</description>
         <tag>下导轨</tag>
@@ -42,21 +51,31 @@
                 <weight>2</weight>
             </flat>
         </stats>
-        <skill>
-            <skillname>发射榴弹</skillname>
+        <subweapon>
+            <name>M203榴弹发射器</name>
+            <controlName>M203榴弹发射器</controlName>
             <description>持枪瞄准时使用下挂的M203榴弹发射器射击一发榴弹,换弹后可再次发射,需消耗榴弹弹药。</description>
             <cd>1000</cd>
             <mp>0</mp>
             <power>3000</power>
-            <bulletsize>1</bulletsize>
-            <clipname>榴弹弹药</clipname>
+            <powerMultiplier>1</powerMultiplier>
+            <capacity>1</capacity>
+            <reserveName>榴弹弹药</reserveName>
             <bullet>榴弹</bullet>
             <sound>shoot.wav</sound>
             <split>1</split>
             <diffusion>10</diffusion>
             <velocity>20</velocity>
             <impact>10</impact>
-        </skill>
+            <range>50</range>
+            <damageType>物理</damageType>
+            <consumeMode>onLoadGroup</consumeMode>
+            <consumeTiming>linkedFirstFire</consumeTiming>
+            <clipCostPerLoad>1</clipCostPerLoad>
+            <initialLoaded>1</initialLoaded>
+            <manualReloadAnimation>longGun</manualReloadAnimation>
+            <manualReloadBurden>25</manualReloadBurden>
+        </subweapon>
         <description>下挂榴弹发射模块,提供爆炸性火力支援。
         需要导轨系统支持。</description>
         <tag>下导轨</tag>

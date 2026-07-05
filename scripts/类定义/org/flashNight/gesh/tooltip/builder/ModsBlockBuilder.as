@@ -340,6 +340,11 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                 }
             }
 
+            if (modInfo && modInfo.subweapon) {
+                var subweaponName:String = modInfo.subweapon.name ? modInfo.subweapon.name : modName;
+                overrideEffectParts.push(" <font color='" + TooltipConstants.COL_USE_SWITCH + "'>" + TooltipConstants.LBL_SUBWEAPON + subweaponName + "</font>");
+            }
+
             // 输出覆写/条件效果：有数值效果时另起一行（缩进4空格），无数值时接在同行末尾
             if (overrideEffectParts.length > 0) {
                 if (hasNumericEffects) {

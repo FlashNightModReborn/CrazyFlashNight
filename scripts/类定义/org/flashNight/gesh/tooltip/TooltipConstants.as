@@ -72,6 +72,8 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var LBL_SKILL_BONUS:String = "【技能加成】";
   public static var LBL_ACTIVE_SKILL:String = "【主动战技】";
   public static var LBL_SKILL_INFO:String = "【战技信息】";
+  public static var LBL_SUBWEAPON:String = "【副武器】";
+  public static var LBL_SUBWEAPON_INFO:String = "【副武器信息】";
   public static var LBL_AFFIX_INFO:String = "【词条信息】";
   public static var LBL_MOD_INFO:String = "【配件信息】";
   public static var LBL_USE_SWITCH_EFFECT:String = "【按装备类型追加效果】";

@@ -13,14 +13,16 @@
                 <level>5</level>
             </flat>
         </stats>
-        <skill>
-            <skillname>发射榴弹</skillname>
+        <subweapon>
+            <name>下挂铁血肩炮</name>
+            <controlName>下挂铁血肩炮</controlName>
             <description>持枪瞄准时使用下挂的铁血肩炮射击一发追踪电浆,换弹后重新装填,消耗能量电池。</description>
             <cd>1000</cd>
             <mp>0</mp>
             <power>5000</power>
-            <bulletsize>1</bulletsize>
-            <clipname>能量电池</clipname>
+            <powerMultiplier>1</powerMultiplier>
+            <capacity>1</capacity>
+            <reserveName>能量电池</reserveName>
             <bullet>追踪铁血飞弹</bullet>
             <sound>m4a1_unsil-2.wav</sound>
             <split>3</split>
@@ -28,7 +30,14 @@
             <velocity>25</velocity>
             <range>50</range>
             <impact>1</impact>
-        </skill>
+            <damageType>物理</damageType>
+            <consumeMode>onLoadGroup</consumeMode>
+            <consumeTiming>linkedFirstFire</consumeTiming>
+            <clipCostPerLoad>1</clipCostPerLoad>
+            <initialLoaded>1</initialLoaded>
+            <manualReloadAnimation>longGun</manualReloadAnimation>
+            <manualReloadBurden>25</manualReloadBurden>
+        </subweapon>
         <description>等离子投射装置,发射追踪电浆弹。
         需要导轨系统和电力支持,提高装备等级需求。</description>
         <tag>下导轨</tag>

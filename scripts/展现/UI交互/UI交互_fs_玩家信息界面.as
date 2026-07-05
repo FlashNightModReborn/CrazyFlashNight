@@ -149,6 +149,19 @@ _root.UI系统.初始化玩家信息界面 = function()
     this.刷新攻击模式 = function(攻击模式) 
     {
         玩家必要信息界面.刷新(攻击模式);
+        var 控制对象 = TargetCacheManager.findHero();
+        if (攻击模式 == "长枪" && org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.hasSubweapon(控制对象)) {
+            玩家必要信息界面.gotoAndStop("长枪副武器");
+            if (控制对象.主动战技["长枪"]) {
+                玩家必要信息界面.战技栏._visible = true;
+                玩家必要信息界面.战技进度条._visible = true;
+                玩家必要信息界面.战技控制器._visible = true;
+                if (玩家必要信息界面.战技栏.战技栏图标刷新) {
+                    玩家必要信息界面.战技栏.战技栏图标刷新();
+                }
+            }
+            org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.updateAmmoDisplay(控制对象);
+        }
     };
 
     this.刷新韧性显示 = function() 

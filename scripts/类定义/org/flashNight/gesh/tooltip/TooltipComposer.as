@@ -93,14 +93,22 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
 
       // 获取最终的 skill（考虑插件可能替换战技）
       var skillToDisplay:Object = item.skill;
+      var subweaponToDisplay:Object = item.subweapon;
       if(baseItem && baseItem.getData != undefined) {
         var calculatedData:Object = baseItem.getData();
         if(calculatedData && calculatedData.skill !== undefined) {
           skillToDisplay = calculatedData.skill;
         }
+        if(calculatedData && calculatedData.subweapon !== undefined) {
+          subweaponToDisplay = calculatedData.subweapon;
+        }
       }
 
-      append(buffer, TooltipTextBuilder.buildSkillInfo(skillToDisplay));
+      if(subweaponToDisplay) {
+        append(buffer, TooltipTextBuilder.buildSubweaponInfo(subweaponToDisplay));
+      } else {
+        append(buffer, TooltipTextBuilder.buildSkillInfo(skillToDisplay));
+      }
 
       // 配件列表放在主框体（描述区），而非简介面板：
       // 主框体宽度自适应，可容纳长行；简介面板宽度有限（~200px），配件行在其中反复换行严重影响可读性。

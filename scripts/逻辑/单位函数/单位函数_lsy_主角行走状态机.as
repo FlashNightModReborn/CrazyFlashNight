@@ -18,16 +18,21 @@
 			_parent.状态改变(_parent.攻击模式 + "行走");
 		}
 		_parent.man.开始换弹();
-	}else if (_parent.动作A){
+	}else if (_parent.动作A || _parent.动作B){
 		if(!_parent.移动射击 && _parent.状态 != _parent.攻击模式 + "站立"){
 			_parent.状态改变(_parent.攻击模式 + "站立");
 			行走冷却帧 = 2;
 		}else if(_parent.移动射击 && _parent.状态 === _parent.攻击模式 + "跑"){
 			_parent.状态改变(_parent.攻击模式 + "行走");
 		}
-		_parent.格斗架势 = true;
-		// _root.发布消息("主角函数.持枪行走状态机", "开始射击");
-		_parent.man.开始射击();
+		if (_parent.动作A) {
+			_parent.格斗架势 = true;
+			// _root.发布消息("主角函数.持枪行走状态机", "开始射击");
+			_parent.man.开始射击();
+		}
+		if (_parent.动作B) {
+			org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.fire(_parent);
+		}
 	}
 	
 }

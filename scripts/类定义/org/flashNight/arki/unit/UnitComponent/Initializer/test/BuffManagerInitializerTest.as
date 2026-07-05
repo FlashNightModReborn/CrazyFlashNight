@@ -1,4 +1,4 @@
-import org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer;
+﻿import org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer;
 import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
 

@@ -1756,7 +1756,14 @@ _root.主角函数.获取装备主动战技种类 = function(装备类型, 装�
 
 _root.主角函数.释放主动战技 = function() {
     var 当前战技 = this.主动战技[攻击模式];
-    if (!当前战技 || !当前战技.战技函数)
+    if (!当前战技)
+        return false;
+
+    if (当前战技.isSubweaponControl) {
+        return org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.startManualReloadAnimation(this);
+    }
+
+    if (!当前战技.战技函数)
         return false;
 
     var 战技函数 = 当前战技.战技函数;
@@ -1816,6 +1823,18 @@ _root.主角函数.装载主动战技 = function(战技信息, 攻击模式) {
     this.主动战技[攻击模式] = 当前战技;
     if (当前战技.战技函数.初始化)
         当前战技.战技函数.初始化(this);
+}
+
+_root.主角函数.装载副武器控制槽 = function(副武器信息, 攻击模式) {
+    if (!攻击模式 || !副武器信息) {
+        return;
+    }
+    var 当前战技 = org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.buildControlSlot(副武器信息);
+    if (!当前战技) {
+        this.主动战技[攻击模式] = null;
+        return;
+    }
+    this.主动战技[攻击模式] = 当前战技;
 }
 _root.主角函数.读取基础被动效果 = function() {
     //独行者
@@ -2066,6 +2085,7 @@ _root.初始化玩家模板 = function() {
     this.释放技能 = _root.主角函数.释放技能;
     this.释放主动战技 = _root.主角函数.释放主动战技;
     this.装载主动战技 = _root.主角函数.装载主动战技;
+    this.装载副武器控制槽 = _root.主角函数.装载副武器控制槽;
     this.创建主动战技槽位表 = _root.主角函数.创建主动战技槽位表;
     this.获取装备主动战技种类 = _root.主角函数.获取装备主动战技种类;
     this.装载生命周期函数 = _root.主角函数.装载生命周期函数;

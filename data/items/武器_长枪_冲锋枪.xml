@@ -380,21 +380,31 @@
     大口径的冲锋枪很少见，给冲锋枪挂上榴弹发射器更少见，而这两者出现在同一把武器上的情况有多稀有自然就不言自明。
     当两种破坏性的特征出现在一把武器上时，你就明白事情是真的大条了。
     “再击坠1机我也是ACE了。”</description>
-    <skill>
-      <skillname>发射榴弹</skillname>
+    <subweapon>
+      <name>MMP80</name>
+      <controlName>MMP80</controlName>
       <description>持枪瞄准时可以发射榴弹，可射击一发，换弹后可再次发射，需消耗榴弹弹药。</description>
       <cd>1000</cd>
       <mp>0</mp>
       <power>3500</power>
-      <bulletsize>1</bulletsize>
-      <clipname>榴弹弹药</clipname>
+      <powerMultiplier>1</powerMultiplier>
+      <capacity>1</capacity>
+      <reserveName>榴弹弹药</reserveName>
       <bullet>榴弹</bullet>
       <sound>shoot.wav</sound>
       <split>1</split>
       <diffusion>10</diffusion>
       <velocity>20</velocity>
       <impact>10</impact>
-    </skill>
+      <range>50</range>
+      <damageType>物理</damageType>
+      <consumeMode>onLoadGroup</consumeMode>
+      <consumeTiming>linkedFirstFire</consumeTiming>
+      <clipCostPerLoad>1</clipCostPerLoad>
+      <initialLoaded>1</initialLoaded>
+      <manualReloadAnimation>longGun</manualReloadAnimation>
+      <manualReloadBurden>25</manualReloadBurden>
+    </subweapon>
     <data>
       <level>30</level>
       <weight>12</weight>

@@ -554,14 +554,31 @@
     虽然加装了瞄准镜与下挂式榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。</description>
     <inherentTags>电力,NOAH</inherentTags>
     <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
-    <skill>
-      <skillname>发射榴弹</skillname>
+    <subweapon>
+      <name>M4A1改</name>
+      <controlName>M4A1改</controlName>
       <description>持枪瞄准时可以发射一枚榴弹，消耗1发榴弹弹药，换弹后可再次发射。</description>
       <cd>1000</cd>
       <mp>0</mp>
       <power>3000</power>
-      <bulletsize>1</bulletsize>
-    </skill>
+      <powerMultiplier>1</powerMultiplier>
+      <capacity>1</capacity>
+      <reserveName>榴弹弹药</reserveName>
+      <bullet>榴弹</bullet>
+      <sound>re_GL_under.wav</sound>
+      <split>1</split>
+      <diffusion>0</diffusion>
+      <velocity>25</velocity>
+      <range>50</range>
+      <impact>0.01</impact>
+      <damageType>物理</damageType>
+      <consumeMode>onLoadGroup</consumeMode>
+      <consumeTiming>linkedFirstFire</consumeTiming>
+      <clipCostPerLoad>1</clipCostPerLoad>
+      <initialLoaded>1</initialLoaded>
+      <manualReloadAnimation>longGun</manualReloadAnimation>
+      <manualReloadBurden>25</manualReloadBurden>
+    </subweapon>
     <data>
       <level>22</level>
       <weight>4</weight>
@@ -1267,14 +1284,31 @@
     虽然加装了榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。</description>
     <inherentTags>电力,NOAH</inherentTags>
     <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
-    <skill>
-      <skillname>发射榴弹</skillname>
+    <subweapon>
+      <name>AK74战术版</name>
+      <controlName>AK74战术版</controlName>
       <description>持枪瞄准时可以发射榴弹，每弹夹消耗1发榴弹弹药，可射击三发，换弹后可再次发射。</description>
       <cd>1000</cd>
       <mp>0</mp>
       <power>1800</power>
-      <bulletsize>3</bulletsize>
-    </skill>
+      <powerMultiplier>1</powerMultiplier>
+      <capacity>3</capacity>
+      <reserveName>榴弹弹药</reserveName>
+      <bullet>榴弹</bullet>
+      <sound>re_GL_under.wav</sound>
+      <split>1</split>
+      <diffusion>0</diffusion>
+      <velocity>25</velocity>
+      <range>50</range>
+      <impact>0.01</impact>
+      <damageType>物理</damageType>
+      <consumeMode>onLoadGroup</consumeMode>
+      <consumeTiming>linkedFirstFire</consumeTiming>
+      <clipCostPerLoad>1</clipCostPerLoad>
+      <initialLoaded>3</initialLoaded>
+      <manualReloadAnimation>longGun</manualReloadAnimation>
+      <manualReloadBurden>25</manualReloadBurden>
+    </subweapon>
     <data>
       <level>35</level>
       <weight>7</weight>
@@ -1310,14 +1344,31 @@
     <inherentTags>电力,NOAH</inherentTags>
     <!-- 装备禁止挂载的插件挂点标签：与 mod.tagValue 同一域 -->
     <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
-    <skill>
-      <skillname>发射榴弹</skillname>
+    <subweapon>
+      <name>M4A1战术版</name>
+      <controlName>M4A1战术版</controlName>
       <description>持枪瞄准时可以发射榴弹，每弹夹消耗1发榴弹弹药，可射击三发，换弹后可再次发射。</description>
       <cd>1000</cd>
       <mp>0</mp>
       <power>1800</power>
-      <bulletsize>3</bulletsize>
-    </skill>
+      <powerMultiplier>1</powerMultiplier>
+      <capacity>3</capacity>
+      <reserveName>榴弹弹药</reserveName>
+      <bullet>榴弹</bullet>
+      <sound>re_GL_under.wav</sound>
+      <split>1</split>
+      <diffusion>0</diffusion>
+      <velocity>25</velocity>
+      <range>50</range>
+      <impact>0.01</impact>
+      <damageType>物理</damageType>
+      <consumeMode>onLoadGroup</consumeMode>
+      <consumeTiming>linkedFirstFire</consumeTiming>
+      <clipCostPerLoad>1</clipCostPerLoad>
+      <initialLoaded>3</initialLoaded>
+      <manualReloadAnimation>longGun</manualReloadAnimation>
+      <manualReloadBurden>25</manualReloadBurden>
+    </subweapon>
     <data>
       <level>35</level>
       <weight>6</weight>
@@ -1442,14 +1493,31 @@
     <inherentTags>电力,NOAH</inherentTags>
     <!-- 装备禁止挂载的插件挂点标签：与 mod.tagValue 同一域 -->
     <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
-    <skill>
-      <skillname>发射榴弹</skillname>
+    <subweapon>
+      <name>DD MK18战术版</name>
+      <controlName>DD MK18战术版</controlName>
       <description>持枪瞄准时可以发射榴弹，每弹夹消耗1发榴弹弹药，可射击三发，换弹后可再次发射。</description>
       <cd>1000</cd>
       <mp>0</mp>
       <power>2000</power>
-      <bulletsize>3</bulletsize>
-    </skill>
+      <powerMultiplier>1</powerMultiplier>
+      <capacity>3</capacity>
+      <reserveName>榴弹弹药</reserveName>
+      <bullet>榴弹</bullet>
+      <sound>re_GL_under.wav</sound>
+      <split>1</split>
+      <diffusion>0</diffusion>
+      <velocity>25</velocity>
+      <range>50</range>
+      <impact>0.01</impact>
+      <damageType>物理</damageType>
+      <consumeMode>onLoadGroup</consumeMode>
+      <consumeTiming>linkedFirstFire</consumeTiming>
+      <clipCostPerLoad>1</clipCostPerLoad>
+      <initialLoaded>3</initialLoaded>
+      <manualReloadAnimation>longGun</manualReloadAnimation>
+      <manualReloadBurden>25</manualReloadBurden>
+    </subweapon>
     <data>
       <level>38</level>
       <weight>6</weight>
@@ -1726,21 +1794,31 @@
     由于交付订单时恰好审判日发生，因此并没有像其他的咸鱼重工制品一样被赋予代号和名字。
     考虑到其和实弹武器几乎无异的反常外观，市面上将其称为非规格步枪。</description>
     <inherentTags>下导轨挂点,侧导轨挂点,电力</inherentTags>
-    <skill>
-      <skillname>发射榴弹</skillname>
+    <subweapon>
+      <name>非规格步枪</name>
+      <controlName>非规格步枪</controlName>
       <description>持枪瞄准时可以发射微型导弹，每弹夹消耗1发导弹弹药，可射击一发，换弹后可再次发射。</description>
       <cd>1000</cd>
       <mp>0</mp>
       <power>12000</power>
-      <bulletsize>1</bulletsize>
-      <clipname>导弹弹药</clipname>
+      <powerMultiplier>1</powerMultiplier>
+      <capacity>1</capacity>
+      <reserveName>导弹弹药</reserveName>
       <bullet>微型导弹</bullet>
       <sound>shoot.wav</sound>
       <split>1</split>
       <diffusion>10</diffusion>
       <velocity>30</velocity>
       <impact>0</impact>
-    </skill>
+      <range>50</range>
+      <damageType>物理</damageType>
+      <consumeMode>onLoadGroup</consumeMode>
+      <consumeTiming>linkedFirstFire</consumeTiming>
+      <clipCostPerLoad>1</clipCostPerLoad>
+      <initialLoaded>1</initialLoaded>
+      <manualReloadAnimation>longGun</manualReloadAnimation>
+      <manualReloadBurden>25</manualReloadBurden>
+    </subweapon>
     <data>
       <level>45</level>
       <weight>20</weight>
@@ -1777,14 +1855,16 @@
     装备可折叠的机械瞄具，可配置使用光学和夜视瞄准设备。</description>
     <inherentTags>电力,NOAH</inherentTags>
     <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
-    <skill>
-      <skillname>发射榴弹</skillname>
+    <subweapon>
+      <name>HK416战术版</name>
+      <controlName>HK416战术版</controlName>
       <description>持枪瞄准时可以发射霰弹，可射击六发，换弹后可再次发射，需消耗00号鹿弹。</description>
       <cd>1000</cd>
       <mp>0</mp>
       <power>1000</power>
-      <bulletsize>6</bulletsize>
-      <clipname>00号鹿弹</clipname>
+      <powerMultiplier>1</powerMultiplier>
+      <capacity>6</capacity>
+      <reserveName>00号鹿弹</reserveName>
       <bullet>横向联弹-加强普通子弹</bullet>
       <bulletrename>加强普通子弹</bulletrename>
       <sound>re_shotgun_m870.wav</sound>
@@ -1793,7 +1873,14 @@
       <velocity>20</velocity>
       <range>30</range>
       <impact>10</impact>
-    </skill>
+      <damageType>物理</damageType>
+      <consumeMode>onLoadGroup</consumeMode>
+      <consumeTiming>linkedFirstFire</consumeTiming>
+      <clipCostPerLoad>1</clipCostPerLoad>
+      <initialLoaded>6</initialLoaded>
+      <manualReloadAnimation>longGun</manualReloadAnimation>
+      <manualReloadBurden>25</manualReloadBurden>
+    </subweapon>
     <data>
       <level>50</level>
       <weight>4</weight>

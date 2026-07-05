@@ -3,6 +3,7 @@ import org.flashNight.arki.item.equipment.PropertyOperators;
 import org.flashNight.arki.item.equipment.ModRegistry;
 import org.flashNight.arki.item.equipment.TierSystem;
 import org.flashNight.arki.item.equipment.TagManager;
+import org.flashNight.arki.item.equipment.SubweaponDataUtil;
 import org.flashNight.arki.item.equipment.EquipmentConfigManager;
 import org.flashNight.arki.item.ItemUtil;
 
@@ -57,7 +58,8 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             data = itemData.data;
         }
 
-        // 若没有强化和插件则直接返回
+        // 若装备自带副武器，先规范化根层数据，供 tooltip / 初始化读取。
+        SubweaponDataUtil.normalizeItemSubweapon(itemData);
         if (value.level < 2 && (!value.mods || value.mods.length <= 0)) {
             return itemData;
         }
@@ -72,14 +74,18 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         // Step 4: 按顺序应用所有运算符
         applyOperatorsInOrder(data, baseMultiplier, modifiers);
 
-        // Step 5: 替换战技
-        // 使用 cloneFast：skill 是配件定义的简单对象，无循环引用
-        if (modifiers.skill) {
+        // Step 5: 替换特殊槽。长枪副武器与普通战技互斥，由 TagManager 在安装时把关。
+        if (modifiers.subweapon) {
+            itemData.subweapon = SubweaponDataUtil.normalizeSubweapon(modifiers.subweapon);
+        } else if (modifiers.skill) {
+            // 使用 cloneFast：skill 是配件定义的简单对象，无循环引用
             itemData.skill = ObjectUtil.cloneFast(modifiers.skill);
         }
 
         // Step 6: 应用根层属性覆盖（actiontype等定义在item根层而非item.data中的属性）
         applyRootLevelOverrides(itemData, modifiers.overrider);
+
+        SubweaponDataUtil.normalizeItemSubweapon(itemData);
 
         return itemData;
     }
@@ -159,6 +165,7 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         var capper:Object = {};
         var multiplierZone:Object = {};
         var skill:Object = null;
+        var subweapon:Object = null;
 
         var itemUse:String = itemData.use || "";
         var itemWeaponType:String = itemData.weapontype || "";
@@ -231,6 +238,11 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             if (!skill) {
                 skill = ModRegistry.resolveSkillForUse(modInfo, useLookup);
             }
+
+            // 查找长枪副武器。副武器是与普通战技平级互斥的特殊槽，不走 skill 转换。
+            if (!subweapon && modInfo.subweapon) {
+                subweapon = SubweaponDataUtil.normalizeSubweapon(modInfo.subweapon);
+            }
         }
 
         return {
@@ -240,7 +252,8 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             merger: merger,
             capper: capper,
             multiplierZone: multiplierZone,
-            skill: skill
+            skill: skill,
+            subweapon: subweapon
         };
     }
 

@@ -1,6 +1,7 @@
 ﻿// 文件路径：org/flashNight/arki/unit/Action/Skill/SkillReloadCore.as
  
 import org.flashNight.arki.item.*;
+import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
 
 /**
  * @class SkillReloadCore
@@ -58,6 +59,9 @@ class org.flashNight.arki.unit.Action.Skill.SkillReloadCore {
                 // 提交成功，重置已发射数
                 weapon.value.shot = 0;
                 unit.当前弹夹副武器已发射数 = 0;
+                if (weapon == unit.长枪) {
+                    LongGunSubWeaponCore.reloadLinked(unit);
+                }
             }
         }
     }
@@ -95,6 +99,7 @@ class org.flashNight.arki.unit.Action.Skill.SkillReloadCore {
             // 非玩家控制，直接重置（不消耗道具）
             unit.长枪.value.shot = 0;
             unit.当前弹夹副武器已发射数 = 0;
+            LongGunSubWeaponCore.reloadLinked(unit);
             unit.手枪.value.shot = 0;
             unit.手枪2.value.shot = 0;
             return;

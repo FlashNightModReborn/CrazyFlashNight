@@ -218,7 +218,7 @@ class org.flashNight.arki.item.equipment.TagManager {
             }
         }
 
-        // 检查战技冲突。skillSwitch 命中时与根层 skill 一样视为战技插件。
+        // 检查特殊槽冲突。普通战技与长枪副武器共享同一个特殊槽。
         var grantedUses:Object = null;
         for (var guIndex:Number = 0; guIndex < mods.length; guIndex++) {
             var guModData:Object = ModRegistry.getModData(mods[guIndex]);
@@ -231,8 +231,18 @@ class org.flashNight.arki.item.equipment.TagManager {
         }
         var itemUseLookup:Object = ModRegistry.buildItemUseLookup(itemData.use || "", itemData.weapontype || "", grantedUses);
         var resolvedModSkill:Object = ModRegistry.resolveSkillForUse(modData, itemUseLookup);
-        if (itemData.skill && resolvedModSkill) {
-            return -4; // 已有战技
+        var resolvedModSubweapon:Object = modData.subweapon;
+        if (resolvedModSkill || resolvedModSubweapon) {
+            if (itemData.skill || itemData.subweapon) {
+                return -4; // 已有战技
+            }
+            for (var specialIndex:Number = 0; specialIndex < mods.length; specialIndex++) {
+                var installedSpecialMod:Object = ModRegistry.getModData(mods[specialIndex]);
+                if (!installedSpecialMod) continue;
+                if (installedSpecialMod.subweapon || ModRegistry.resolveSkillForUse(installedSpecialMod, itemUseLookup)) {
+                    return -4;
+                }
+            }
         }
 
         // 检查子弹类型排斥

@@ -62,22 +62,32 @@
     <type>武器</type>
     <use>长枪</use>
     <price>380000</price>
-    <skill>
-      <skillname>发射榴弹</skillname>
+    <subweapon>
+      <name>暴君收割机</name>
+      <controlName>暴君收割机</controlName>
       <description>消耗一罐燃料向引擎缸体强行增压，瞬时爆燃产生的扭矩激增，将预装锯片从传动轴前端依次弹射而出，至多可发射5枚备用锯片，换弹时会重新装填。</description>
       <cd>3000</cd>
-      <instantconsume>true</instantconsume>
       <mp>100</mp>
       <bullet>暴君收割机锯片</bullet>
       <sound>锯片发射.wav</sound>
-      <clipname>火焰喷射器燃料罐</clipname>
+      <reserveName>火焰喷射器燃料罐</reserveName>
       <power>2000</power>
+      <powerMultiplier>1</powerMultiplier>
       <velocity>30</velocity>
       <split>1</split>
-      <bulletsize>5</bulletsize>
-      <damagetype>破击</damagetype>
-      <magictype>生化</magictype>
-    </skill>
+      <capacity>5</capacity>
+      <damageType>破击</damageType>
+      <magicType>生化</magicType>
+      <diffusion>0</diffusion>
+      <range>50</range>
+      <impact>0.01</impact>
+      <consumeMode>onFire</consumeMode>
+      <consumeTiming>onFire</consumeTiming>
+      <fireCost>1</fireCost>
+      <initialLoaded>5</initialLoaded>
+      <manualReloadAnimation>longGun</manualReloadAnimation>
+      <manualReloadBurden>25</manualReloadBurden>
+    </subweapon>
     <description>盗匪头目基于缴获的僵尸割草机进行的疯狂改装，抛弃了公社的安全限制，追求纯粹的破坏力。
     拆除原装动力系统，强行焊接双缸摩托引擎至传动轴上，通过暴力超频输出令金属疲劳失效的切削扭矩。
     刀盘经过土法热处理和锯齿加大，双层链传动让切削力与惯性远超原型，过载与失衡也随之成为常态。

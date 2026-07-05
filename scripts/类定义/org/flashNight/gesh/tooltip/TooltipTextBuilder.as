@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.item.*;
 import org.flashNight.arki.item.equipment.ModRegistry;
+import org.flashNight.arki.item.equipment.SubweaponDataUtil;
 import org.flashNight.gesh.string.StringUtils;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
@@ -208,6 +209,36 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
         result.push(" (", String(basePercent), TooltipConstants.SUF_PERCENT, sign, String(enhancePercent), TooltipConstants.SUF_PERCENT, ")<BR>");
       }
     }
+    return result;
+  }
+
+  public static function buildSubweaponInfo(subweapon:Object):Array {
+    var result = [];
+    var sub:Object = SubweaponDataUtil.normalizeSubweapon(subweapon);
+    if (!sub) return result;
+
+    if (sub.description) {
+      result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_SUBWEAPON + "</font>", TooltipFormatter.normalizeDescription(sub.description), "<BR>");
+    } else {
+      result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_SUBWEAPON + "</font>", sub.name, "<BR>");
+    }
+
+    result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_SUBWEAPON_INFO + "</font>");
+    result.push("装填", sub.capacity, "发，弹药", sub.reserveName);
+    result.push("，冷却", sub.cd / 1000, TooltipConstants.SUF_SECOND);
+    result.push("，威力", sub.power, "，子弹", sub.bullet);
+    if (sub.damageType) result.push("，伤害类型", sub.damageType);
+    if (sub.magicType) result.push("，属性", sub.magicType);
+    if (sub.hp && sub.hp != 0) result.push("，", TooltipConstants.LBL_COST, sub.hp, TooltipConstants.SUF_HP);
+    if (sub.mp && sub.mp != 0) result.push("，", TooltipConstants.LBL_COST, sub.mp, TooltipConstants.SUF_MP);
+    if (sub.consumeMode == "onFire") {
+      result.push("，逐发消耗", sub.fireCost, "份");
+    } else {
+      result.push("，每组消耗", sub.clipCostPerLoad, "份");
+      if (sub.consumeTiming == "linkedFirstFire") result.push("，主武器换弹联动补装");
+      if (sub.consumeTiming == "onReloadCommit") result.push("，装填时扣除备弹");
+    }
+    result.push("。<BR>");
     return result;
   }
 

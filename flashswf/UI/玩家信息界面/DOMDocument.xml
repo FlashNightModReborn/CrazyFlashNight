@@ -13,9 +13,9 @@
           <DOMFolderItem name="性能-帧率显示器" itemID="662dc04e-00000d12"/>
      </folders>
      <fonts>
-          <DOMFontItem name="嵌入字体/Bebas Neue" itemID="664e31ab-000085a7" font="BebasNeue-Regular" size="0" id="1" sourceLastImported="1716649140" embedRanges="1|2|3|4"/>
-          <DOMFontItem name="嵌入字体/Aero" itemID="664e3cd0-00000bd4" font="Aero" size="0" id="2" sourceLastImported="1716649147" embedRanges="1|2|3|4"/>
           <DOMFontItem name="嵌入字体/LCD Std" itemID="664e350a-000085f3" font="LcdStd" size="0" id="4" sourceLastImported="1716649178" embedRanges="1|2|3|4"/>
+          <DOMFontItem name="嵌入字体/Aero" itemID="664e3cd0-00000bd4" font="Aero" size="0" id="2" sourceLastImported="1716649147" embedRanges="1|2|3|4"/>
+          <DOMFontItem name="嵌入字体/Bebas Neue" itemID="664e31ab-000085a7" font="BebasNeue-Regular" size="0" id="1" sourceLastImported="1716649140" embedRanges="1|2|3|4"/>
      </fonts>
      <media>
           <DOMBitmapItem name="image/bitmap1804.png" itemID="6597607b-00000400" sourceExternalFilepath="../玩家信息界面/LIBRARY/image/bitmap1804.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1804.png" bitmapDataHRef="M 2 1716646761.dat" frameRight="140" frameBottom="180"/>
@@ -79,7 +79,7 @@
           <Include href="sprite/快捷药剂界面.xml" loadImmediate="false" itemID="665210bd-00002498" lastModified="1775385029"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
           <Include href="sprite/图标壳.xml" loadImmediate="false" itemID="659d384c-0000310a" lastModified="1704802380"/>
-          <Include href="sprite/玩家必要信息界面.xml" loadImmediate="false" itemID="665210ca-00002499" lastModified="1775140477"/>
+          <Include href="sprite/玩家必要信息界面.xml" loadImmediate="false" itemID="665210ca-00002499" lastModified="1783228114"/>
           <Include href="sprite/物品栏/物品满级框.xml" loadImmediate="false" itemID="659d3902-0000310e" lastModified="1704802562"/>
           <Include href="sprite/物品栏/物品图标位置示意.xml" loadImmediate="false" itemID="6772201e-00000286" lastModified="1735534441"/>
           <Include href="sprite/物品栏/物品已装备图标.xml" loadImmediate="false" itemID="659d38ed-0000310d" lastModified="1704802541"/>
@@ -240,7 +240,7 @@
                          <GradientEntry color="#FF9900" ratio="1"/>
                          <GradientEntry color="#FF7E00" ratio="1"/>
                     </RadialGradientSwatchItem>
-                    <RadialGradientSwatchItem spreadMethod="reflect" focalPointRatio="-0.274509803921569">
+                    <RadialGradientSwatchItem spreadMethod="reflect" focalPointRatio="-0.270588235294118">
                          <GradientEntry color="#FF001C" ratio="0"/>
                          <GradientEntry color="#FF9900" ratio="1"/>
                          <GradientEntry color="#FF7E00" ratio="1"/>

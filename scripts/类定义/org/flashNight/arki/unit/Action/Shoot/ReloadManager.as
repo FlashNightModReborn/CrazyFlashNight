@@ -2,6 +2,7 @@
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 import org.flashNight.arki.unit.Action.Shoot.ShootCore;
+import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
 /**
  * ReloadManager.as
  *
@@ -243,6 +244,12 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param rootRef 根引用 (原_root引用)
      */
     public static function reloadMagazine(target:MovieClip, parentRef:Object, rootRef:Object):Void {
+        if (target.subweaponManualReload) {
+            LongGunSubWeaponCore.reloadManual(parentRef);
+            ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
+            return;
+        }
+
         // 逐发换弹路径中，弹匣消耗和shot重置已在门禁中处理，此处直接返回
         if (target.perRoundReload) {
             return;
@@ -261,6 +268,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 && ReloadManager._applyTacticalRecovery(weaponValue, capacity, gs.等级 || 1)) {
                 // 免费换弹完成（shot已重置，reloadCount已扣减）
                 parentRef.当前弹夹副武器已发射数 = 0;
+                LongGunSubWeaponCore.reloadLinked(parentRef);
                 ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
                 return;
             }
@@ -279,6 +287,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
             // 重置副武器发射数据
             parentRef.当前弹夹副武器已发射数 = 0;
+            LongGunSubWeaponCore.reloadLinked(parentRef);
 
             // 刷新UI显示
             ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
@@ -296,6 +305,11 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         // 清理双枪换弹序列标记，避免影响下一次换弹
         delete target.dualReloadStartHand;
         delete target._dualReloadFirstInitStartFrame;
+        delete target.subweaponManualReload;
+        delete target.reloadBurden;
+        delete target.reloadFrameControlRequest;
+        delete target.reloadFrameControlActive;
+        delete target.reloadFrameProgress;
         target.换弹标签 = false;
         target.gotoAndStop("空闲");
     }
@@ -363,6 +377,10 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             // 更新UI显示
             ui[w.uiBullet] = cost * remaining;
             ui[w.uiMag] = w.magCount;
+        }
+
+        if (mode === "长枪") {
+            LongGunSubWeaponCore.updateAmmoDisplay(parentRef);
         }
     }
     
@@ -670,6 +688,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         var weaponValue:Object = parent[attackMode].value;
         var capacity:Number = parent[attackMode + "弹匣容量"];
         var shot:Number = weaponValue.shot;
+        var useSubweaponManualReload:Boolean = target.subweaponManualReload === true;
 
         // 检查快速换弹被动技能（枪械师）
         var isHero:Boolean = (parent === TargetCacheManager.findHero());
@@ -685,7 +704,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
         // 检测tube换弹类型，决定换弹路径
         var weaponAttr:Object = parent[attackMode + "属性"];
-        var isTubeReload:Boolean = (weaponAttr.reloadType == "tube");
+        var isTubeReload:Boolean = !useSubweaponManualReload && (weaponAttr.reloadType == "tube");
 
         // 路径分流：完全打空→整弹匣换弹，部分打空→逐发换弹
         // shot == capacity 表示完全打空（已发射数等于弹匣容量）
@@ -721,64 +740,68 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         // 初始化负担值 = 时间缩放比例（100正常，200慢放2倍，<100加速）
         var burden:Number = 100;
 
-        // 根据武器类型获取换弹惩罚值（从武器数据的reloadPenalty字段读取）
-        var reloadPenalty:Number = 0;
-        if (attackMode == "长枪" && parent.长枪属性) {
-            var penaltyValue:Number = Number(parent.长枪属性.reloadPenalty);
-            if (!isNaN(penaltyValue)) {
-                reloadPenalty = penaltyValue;
+        if (useSubweaponManualReload) {
+            burden = LongGunSubWeaponCore.getManualReloadBurden(parent);
+        } else {
+            // 根据武器类型获取换弹惩罚值（从武器数据的reloadPenalty字段读取）
+            var reloadPenalty:Number = 0;
+            if (attackMode == "长枪" && parent.长枪属性) {
+                var penaltyValue:Number = Number(parent.长枪属性.reloadPenalty);
+                if (!isNaN(penaltyValue)) {
+                    reloadPenalty = penaltyValue;
+                }
             }
-        }
-        // 将惩罚值加入基础负担
-        burden += reloadPenalty;
+            // 将惩罚值加入基础负担
+            burden += reloadPenalty;
 
-        // 快速换弹：按节省帧数比例缩减总负担（包含惩罚值，按比例衰减而非完全抵消）
-        // 节省帧数根据枪械师等级动态计算：1级=8帧，10级=11帧，线性插值
-        if (hasQuickReload && endFrame != undefined) {
-            var totalFrames:Number = endFrame - startFrame;
-            var gunslingerSkill:Object = parent.被动技能.枪械师;
-            var gunslingerLevel:Number = gunslingerSkill.等级 || 1;
-            var savedFrames:Number = 8 + (gunslingerLevel - 1) * 3 / 9;  // 1级=8, 10级=11
-            if (totalFrames > savedFrames) {
-                burden = Math.round(burden * (totalFrames - savedFrames) / totalFrames);
-            }
-        }
-
-        // 逐发换弹负担值缩放
-        // 设计目标：弹容2时40%，弹容8时100%，弹容50时175%，大容量收敛到200%
-        // 小容量武器（≤10发）：逐发换弹，灵活快速
-        // 中容量武器（11-100发）：每次换2-5发，平衡手感和效率
-        // 大容量武器（>100发）：每次换N发，控制循环次数在20-30次，ratio收敛到2.0
-        if (usePerRoundReload && endFrame != undefined && gateFrame != undefined && loopBackFrame != undefined) {
-            var loopFrames:Number = gateFrame - loopBackFrame;  // 单次循环帧数 t
-            var fullFrames:Number = endFrame - startFrame;      // 整弹匣换弹帧数 T
-
-            // 计算时间比例系数 ratio（收敛设计）
-            var ratio:Number;
-            if (capacity <= 2) {
-                ratio = 0.4;
-            } else if (capacity <= 8) {
-                ratio = 0.4 + (capacity - 2) * 0.1;  // 2-8发：线性增长
-            } else if (capacity <= 50) {
-                ratio = 1.0 + (capacity - 8) * 0.75 / 42;  // 8-50发：平滑过渡到1.75
-            } else {
-                ratio = 2.0 - 12.5 / capacity;  // 50发以上：渐近收敛到2.0
+            // 快速换弹：按节省帧数比例缩减总负担（包含惩罚值，按比例衰减而非完全抵消）
+            // 节省帧数根据枪械师等级动态计算：1级=8帧，10级=11帧，线性插值
+            if (hasQuickReload && endFrame != undefined) {
+                var totalFrames:Number = endFrame - startFrame;
+                var gunslingerSkill:Object = parent.被动技能.枪械师;
+                var gunslingerLevel:Number = gunslingerSkill.等级 || 1;
+                var savedFrames:Number = 8 + (gunslingerLevel - 1) * 3 / 9;  // 1级=8, 10级=11
+                if (totalFrames > savedFrames) {
+                    burden = Math.round(burden * (totalFrames - savedFrames) / totalFrames);
+                }
             }
 
-            // 计算每次换弹发数和总循环次数
-            var roundsPerCycle:Number = ReloadManager.calculateRoundsPerCycle(capacity);
-            var totalCycles:Number = Math.ceil(capacity / roundsPerCycle);
+            // 逐发换弹负担值缩放
+            // 设计目标：弹容2时40%，弹容8时100%，弹容50时175%，大容量收敛到200%
+            // 小容量武器（≤10发）：逐发换弹，灵活快速
+            // 中容量武器（11-100发）：每次换2-5发，平衡手感和效率
+            // 大容量武器（>100发）：每次换N发，控制循环次数在20-30次，ratio收敛到2.0
+            if (usePerRoundReload && endFrame != undefined && gateFrame != undefined && loopBackFrame != undefined) {
+                var loopFrames:Number = gateFrame - loopBackFrame;  // 单次循环帧数 t
+                var fullFrames:Number = endFrame - startFrame;      // 整弹匣换弹帧数 T
 
-            // 计算逐发换弹负担值（基于实际循环次数）
-            // 目标：(loopFrames × totalCycles) / (100/新负担) = fullFrames × ratio
-            // 即：逐发真实时间 = 整弹匣真实时间 × ratio
-            // 新负担 = 100 × fullFrames × ratio / (loopFrames × totalCycles)
-            var perRoundBurden:Number = Math.round(100 * fullFrames * ratio / (loopFrames * totalCycles));
+                // 计算时间比例系数 ratio（收敛设计）
+                var ratio:Number;
+                if (capacity <= 2) {
+                    ratio = 0.4;
+                } else if (capacity <= 8) {
+                    ratio = 0.4 + (capacity - 2) * 0.1;  // 2-8发：线性增长
+                } else if (capacity <= 50) {
+                    ratio = 1.0 + (capacity - 8) * 0.75 / 42;  // 8-50发：平滑过渡到1.75
+                } else {
+                    ratio = 2.0 - 12.5 / capacity;  // 50发以上：渐近收敛到2.0
+                }
 
-            // 应用基础负担的惩罚/加速比例
-            perRoundBurden = Math.round(perRoundBurden * burden / 100);
+                // 计算每次换弹发数和总循环次数
+                var roundsPerCycle:Number = ReloadManager.calculateRoundsPerCycle(capacity);
+                var totalCycles:Number = Math.ceil(capacity / roundsPerCycle);
 
-            burden = perRoundBurden;
+                // 计算逐发换弹负担值（基于实际循环次数）
+                // 目标：(loopFrames × totalCycles) / (100/新负担) = fullFrames × ratio
+                // 即：逐发真实时间 = 整弹匣真实时间 × ratio
+                // 新负担 = 100 × fullFrames × ratio / (loopFrames × totalCycles)
+                var perRoundBurden:Number = Math.round(100 * fullFrames * ratio / (loopFrames * totalCycles));
+
+                // 应用基础负担的惩罚/加速比例
+                perRoundBurden = Math.round(perRoundBurden * burden / 100);
+
+                burden = perRoundBurden;
+            }
         }
 
         target.reloadBurden = burden;

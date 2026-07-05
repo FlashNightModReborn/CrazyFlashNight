@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="玩家信息界面" itemID="6651f9a1-00001952" linkageExportForAS="true" linkageIdentifier="玩家信息界面" lastModified="1775385054" lastUniqueIdentifier="25">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="玩家信息界面" itemID="6651f9a1-00001952" linkageExportForAS="true" linkageIdentifier="玩家信息界面" lastModified="1775385054" lastUniqueIdentifier="26">
   <timeline>
     <DOMTimeline name="玩家信息界面">
       <layers>
@@ -119,11 +119,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="快捷药剂界面" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="快捷药剂界面" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/快捷药剂界面" name="快捷药剂界面" selected="true" centerPoint3DX="488.1" centerPoint3DY="77.15">
+                <DOMSymbolInstance libraryItemName="sprite/快捷药剂界面" name="快捷药剂界面" centerPoint3DX="488.1" centerPoint3DY="77.15">
                   <matrix>
                     <Matrix tx="301.4" ty="29.8"/>
                   </matrix>
@@ -138,11 +138,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="玩家必要信息界面" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="玩家必要信息界面" color="#FF4F4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/玩家必要信息界面" name="玩家必要信息界面" centerPoint3DX="612.4" centerPoint3DY="36.9">
+                <DOMSymbolInstance libraryItemName="sprite/玩家必要信息界面" name="玩家必要信息界面" selected="true" centerPoint3DX="612.4" centerPoint3DY="36.9">
                   <matrix>
                     <Matrix tx="506.95" ty="10.45"/>
                   </matrix>

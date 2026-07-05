@@ -117,6 +117,10 @@ class org.flashNight.gesh.tooltip.builder.ModStatBuilder {
         TagSwitchStatsBuilder.buildDetailed(result, stats);
         UseSwitchStatsBuilder.buildBulletSwitchDetailed(result, stats);
 
+        if(modData.subweapon){
+            result = result.concat(TooltipTextBuilder.buildSubweaponInfo(modData.subweapon));
+        }
+
         if(modData.skill && !modData.skillSwitch){
             // 反向依赖：buildSkillInfo 留在 TooltipTextBuilder 中
             result = result.concat(TooltipTextBuilder.buildSkillInfo(modData.skill));
@@ -196,7 +200,8 @@ class org.flashNight.gesh.tooltip.builder.ModStatBuilder {
     }
 
     private static function appendSkillSwitchSkillLine(result:Array, label:String, skill:Object):Void {
-        result.push("  <font color='" + TooltipConstants.COL_USE_SWITCH + "'>[", label, "]</font> ", skill.skillname);
+        var skillLabel:String = skill.skillname;
+        result.push("  <font color='" + TooltipConstants.COL_USE_SWITCH + "'>[", label, "]</font> ", skillLabel);
 
         var summary:String = buildSkillSwitchSkillSummary(skill);
         if(summary.length > 0) {

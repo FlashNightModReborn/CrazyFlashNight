@@ -573,6 +573,44 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 为装备添加主动或被动技能
 **包含：** skillname（技能名）、cd（冷却）、mp（消耗）等
 
+#### subweapon - 赋予长枪副武器
+为长枪添加下挂 / 内置副武器。`subweapon` 与普通 `skill` 共享特殊槽，不能与普通长枪战技并存。
+
+**基本结构：**
+```xml
+<mod>
+    <subweapon>
+        <name>M203榴弹发射器</name>
+        <description>下挂榴弹发射模块。</description>
+        <cd>1000</cd>
+        <mp>0</mp>
+        <power>3000</power>
+        <powerMultiplier>1</powerMultiplier>
+        <capacity>1</capacity>
+        <reserveName>榴弹弹药</reserveName>
+        <bullet>榴弹</bullet>
+        <sound>shoot.wav</sound>
+        <split>1</split>
+        <diffusion>10</diffusion>
+        <velocity>20</velocity>
+        <range>50</range>
+        <impact>10</impact>
+        <damageType>物理</damageType>
+        <consumeMode>onLoadGroup</consumeMode>
+        <consumeTiming>linkedFirstFire</consumeTiming>
+        <clipCostPerLoad>1</clipCostPerLoad>
+        <initialLoaded>1</initialLoaded>
+        <manualReloadAnimation>longGun</manualReloadAnimation>
+        <manualReloadBurden>25</manualReloadBurden>
+    </subweapon>
+</mod>
+```
+
+**消耗语义：**
+- `consumeMode=onLoadGroup`：1 份 `reserveName` 支持一组 `capacity` 发。
+- `consumeTiming=linkedFirstFire`：R 联动补装后，首次 K 发射扣组弹药；F 快装在动画提交帧立即扣组弹药。
+- `consumeMode=onFire`：每次 K 发射按 `fireCost` 逐发扣弹药。
+
 #### skillSwitch - 按装备类型切换技能
 **作用：** 让同一个插件装在不同类型装备上时赋予不同主动战技。
 
