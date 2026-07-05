@@ -139,7 +139,7 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 最小字段：`name`、`cd`、`power`、`capacity`、`reserveName`、`bullet`、`consumeMode`、`consumeTiming`。常用字段：`sound`、`split`、`diffusion`、`velocity`、`range`、`impact`、`damageType`、`magicType`、`powerMultiplier`、`initialLoaded`、`manualReloadAnimation`、`manualReloadBurden`、`clipCostPerLoad`、`fireCost`、`mp`、`hp`。
 
-当前迁移语义：`consumeMode=onLoadGroup + consumeTiming=linkedFirstFire` 表示 1 份 `reserveName` 支持一组 `capacity` 发；首仓由 `initialLoaded` 表达预装；R 联动补装后首次 K 发射扣组弹药；F 快装在动画提交帧扣组弹药。逐发消耗武器使用 `consumeMode=onFire + consumeTiming=onFire + fireCost`。
+当前迁移语义：`consumeMode=onLoadGroup + consumeTiming=onReloadCommit` 表示 1 份 `reserveName` 支持一组 `capacity` 发；首仓由 `initialLoaded` 表达预装；R 联动补装与 F 快装都在换弹提交帧扣组弹药。逐发消耗武器使用 `consumeMode=onFire + consumeTiming=onFire + fireCost`。
 
 ### 联弹双层配置与补弹参数（2026-06-12 起）
 

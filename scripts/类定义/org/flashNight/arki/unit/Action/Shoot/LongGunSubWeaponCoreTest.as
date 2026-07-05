@@ -26,6 +26,10 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testManualReload();
         testManualReloadAnimationCommit();
         testLinkedReload();
+        testLinkedReloadRequiresReserve();
+        testReloadKeyMarksCombinedReloadWhenBothNeedAmmo();
+        testReloadKeyStartsSubweaponWhenMainFull();
+        testCombinedReloadBurdenAddsSubweaponBurden();
         testTooltipRendersSubweapon();
 
         trace("--- LongGunSubWeaponCoreTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
@@ -118,6 +122,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
     }
 
     private static function testLinkedReload():Void {
+        installMockInventory("火焰喷射器燃料罐", 1);
         var unit:Object = makeUnit();
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
         unit.长枪副武器状态.loaded = 0;
@@ -125,9 +130,98 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
 
         var ok:Boolean = LongGunSubWeaponCore.reloadLinked(unit);
-        assert(ok, "linked reload succeeds without reserve commit");
+        assert(ok, "linked reload succeeds with reserve commit");
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "linked reload refills loaded state");
-        assert(unit.长枪副武器状态.groupPaid == false, "linked reload keeps first-fire payment marker");
+        assert(unit.长枪副武器状态.groupPaid == true, "linked reload marks group paid on commit");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "linked reload consumes reserve on commit");
+        restoreMockInventory();
+    }
+
+    private static function testLinkedReloadRequiresReserve():Void {
+        installMockInventory("火焰喷射器燃料罐", 0);
+        var unit:Object = makeUnit();
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        unit.长枪副武器状态.loaded = 0;
+        unit.长枪副武器状态.groupPaid = true;
+        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+
+        var ok:Boolean = LongGunSubWeaponCore.reloadLinked(unit);
+        assert(!ok, "linked reload fails when reserve is unavailable");
+        assert(unit.长枪副武器状态.loaded == 0, "linked reload does not refill without reserve");
+        assert(unit.长枪副武器状态.groupPaid == true, "failed linked reload keeps previous payment state");
+        restoreMockInventory();
+    }
+
+    private static function testReloadKeyMarksCombinedReloadWhenBothNeedAmmo():Void {
+        installMockInventory("火焰喷射器燃料罐", 2, "主武器弹匣", 1);
+        var unit:Object = makeUnit();
+        unit.长枪 = {value: {shot: 3, reloadCount: 0}};
+        unit.长枪弹匣容量 = 30;
+        unit.长枪属性 = {reloadType: "normal", reloadPenalty: 50};
+        unit.man = makeReloadClip(unit);
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        unit.长枪副武器状态.loaded = 0;
+        unit.长枪副武器状态.groupPaid = true;
+        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+        installMockHero(unit);
+
+        ReloadManager.startReload(unit.man, unit, _root);
+        assert(unit.man.subweaponLinkedReload === true, "R marks combined reload when main and subweapon both need ammo");
+        assert(unit.man.subweaponManualReload != true, "combined R reload keeps main reload path");
+        assert(unit.man.playFrame == "换弹匣", "combined R reload enters main reload animation");
+
+        ReloadManager.reloadMagazine(unit.man, unit, _root);
+        assert(unit.长枪.value.shot == 0, "combined R reload refills main weapon");
+        assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "combined R reload refills subweapon");
+        assert(ItemUtil.getTotal("主武器弹匣") == 0, "combined R reload consumes main reserve");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "combined R reload consumes subweapon reserve");
+
+        restoreMockHero();
+        restoreMockInventory();
+    }
+
+    private static function testReloadKeyStartsSubweaponWhenMainFull():Void {
+        installMockInventory("火焰喷射器燃料罐", 2);
+        var unit:Object = makeUnit();
+        unit.长枪 = {value: {shot: 0, reloadCount: 0}};
+        unit.长枪弹匣容量 = 30;
+        unit.长枪属性 = {reloadType: "normal", reloadPenalty: 100};
+        unit.man = makeReloadClip(unit);
+
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        unit.长枪副武器状态.loaded = 0;
+        unit.长枪副武器状态.groupPaid = true;
+        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+        installMockHero(unit);
+
+        ReloadManager.startReload(unit.man, unit, _root);
+        assert(unit.man.subweaponManualReload === true, "R starts subweapon reload when main weapon is full");
+        assert(unit.man.playFrame == "换弹匣", "R subweapon reload enters reload animation");
+
+        ReloadManager.reloadMagazine(unit.man, unit, _root);
+        assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "R subweapon reload refills loaded state");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "R subweapon reload consumes reserve on commit");
+
+        restoreMockHero();
+        restoreMockInventory();
+    }
+
+    private static function testCombinedReloadBurdenAddsSubweaponBurden():Void {
+        var unit:Object = makeUnit();
+        unit.长枪 = {value: {shot: 3, reloadCount: 0}};
+        unit.长枪弹匣容量 = 30;
+        unit.长枪属性 = {reloadType: "normal", reloadPenalty: 50};
+        unit.man = makeReloadClip(unit);
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+
+        ReloadManager.initReloadBurden(unit.man, 42, 50, 43, 74, [51, 56, 64]);
+        assert(unit.man.reloadBurden == 150, "main-only reload burden uses long gun burden");
+
+        ReloadManager.finishReload(unit.man);
+        unit.man = makeReloadClip(unit);
+        unit.man.subweaponLinkedReload = true;
+        ReloadManager.initReloadBurden(unit.man, 42, 50, 43, 74, [51, 56, 64]);
+        assert(unit.man.reloadBurden == 175, "combined reload burden adds subweapon burden");
     }
 
     private static function testTooltipRendersSubweapon():Void {
@@ -148,10 +242,11 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
             description: "测试副武器说明。",
             cd: 3000,
             consumeMode: onFire ? "onFire" : "onLoadGroup",
-            consumeTiming: onFire ? "onFire" : "linkedFirstFire",
+            consumeTiming: onFire ? "onFire" : "onReloadCommit",
             mp: 100,
             power: 1000,
             capacity: 5,
+            initialLoaded: 5,
             reserveName: "火焰喷射器燃料罐",
             bullet: "测试榴弹",
             sound: "test.wav",
@@ -194,8 +289,10 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
     private static var oldEquipmentDict:Object;
     private static var oldMaterialDict:Object;
     private static var oldInformationDict:Object;
+    private static var oldGameworld:Object;
+    private static var oldControlTarget:String;
 
-    private static function installMockInventory(itemName:String, count:Number):Void {
+    private static function installMockInventory(itemName:String, count:Number, itemName2:String, count2:Number):Void {
         oldInventory = _root.物品栏;
         oldCollection = _root.收集品栏;
         oldEquipmentDict = ItemUtil.equipmentDict;
@@ -208,6 +305,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         var backpack:Object = {items: []};
         backpack.items[0] = {name: itemName, value: count};
+        if (itemName2 != undefined && itemName2 != null && itemName2 != "") {
+            backpack.items[1] = {name: itemName2, value: count2};
+        }
         backpack.getIndexes = function():Array {
             var result:Array = [];
             for (var i:String in this.items) {
@@ -246,6 +346,19 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         ItemUtil.equipmentDict = oldEquipmentDict;
         ItemUtil.materialDict = oldMaterialDict;
         ItemUtil.informationMaxValueDict = oldInformationDict;
+    }
+
+    private static function installMockHero(unit:Object):Void {
+        oldGameworld = _root.gameworld;
+        oldControlTarget = _root.控制目标;
+        _root.gameworld = {};
+        _root.控制目标 = unit._name;
+        _root.gameworld[unit._name] = unit;
+    }
+
+    private static function restoreMockHero():Void {
+        _root.gameworld = oldGameworld;
+        _root.控制目标 = oldControlTarget;
     }
 
     private static function assert(cond:Boolean, msg:String):Void {

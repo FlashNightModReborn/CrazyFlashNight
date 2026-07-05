@@ -195,17 +195,31 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
     public static function startReload(target:MovieClip, parentRef:Object, rootRef:Object):Void {
         var attackMode:String = parentRef.攻击模式;
 
-        // 如果已在换弹或弹匣已满，则直接返回
-        if (target.换弹标签 || parentRef[attackMode].value.shot == 0) {
+        // 如果已在换弹，则直接返回
+        if (target.换弹标签) {
             return;
         }
+        delete target.subweaponLinkedReload;
 
         // 检查是否为玩家控制的角色
         var isHero:Boolean = (parentRef === TargetCacheManager.findHero());
+
+        // 长枪副武器把 R 视为换弹请求的一部分：主武器满弹时，允许副武器作为候补目标。
+        if (parentRef[attackMode].value.shot == 0) {
+            if (isHero && attackMode == "长枪") {
+                LongGunSubWeaponCore.startManualReloadAnimation(parentRef);
+            }
+            return;
+        }
+
         if (isHero) {
             // 获取武器属性，检查是否为逐发换弹类型
             var weaponAttr:Object = parentRef[attackMode + "属性"];
             var reloadType:String = weaponAttr.reloadType;
+            var canLinkSubweaponReload:Boolean = attackMode == "长枪"
+                                                && (reloadType != "tube"
+                                                    || parentRef[attackMode].value.shot >= parentRef[attackMode + "弹匣容量"])
+                                                && LongGunSubWeaponCore.canReloadLinked(parentRef);
 
             // 逐发换弹（tube类型）：有残余换弹值时可以继续换弹，无需弹匣
             if (reloadType == "tube" && parentRef[attackMode].value.reloadCount > 0) {
@@ -216,6 +230,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
             // 检查是否有可用弹匣
             if (ItemUtil.singleContain(target.使用弹匣名称, 1) != null) {
+                if (canLinkSubweaponReload) target.subweaponLinkedReload = true;
                 target.换弹标签 = true;
                 target.gotoAndPlay("换弹匣");
                 return;
@@ -227,8 +242,15 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 && parentRef.被动技能.枪械师
                 && parentRef.被动技能.枪械师.启用
                 && ReloadManager.canTacticalFreeReload(parentRef, attackMode, parentRef.被动技能.枪械师.等级 || 1)) {
+                if (canLinkSubweaponReload) target.subweaponLinkedReload = true;
                 target.换弹标签 = true;
                 target.gotoAndPlay("换弹匣");
+                return;
+            }
+
+            // 主武器当前不能换弹时，长枪副武器作为 R 键候补换弹目标。
+            if (attackMode == "长枪") {
+                LongGunSubWeaponCore.startManualReloadAnimation(parentRef);
             }
         } else {
             // AI角色直接进入换弹状态
@@ -306,6 +328,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         delete target.dualReloadStartHand;
         delete target._dualReloadFirstInitStartFrame;
         delete target.subweaponManualReload;
+        delete target.subweaponLinkedReload;
         delete target.reloadBurden;
         delete target.reloadFrameControlRequest;
         delete target.reloadFrameControlActive;
@@ -689,6 +712,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         var capacity:Number = parent[attackMode + "弹匣容量"];
         var shot:Number = weaponValue.shot;
         var useSubweaponManualReload:Boolean = target.subweaponManualReload === true;
+        var useSubweaponLinkedReload:Boolean = target.subweaponLinkedReload === true;
 
         // 检查快速换弹被动技能（枪械师）
         var isHero:Boolean = (parent === TargetCacheManager.findHero());
@@ -801,6 +825,10 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 perRoundBurden = Math.round(perRoundBurden * burden / 100);
 
                 burden = perRoundBurden;
+            }
+
+            if (useSubweaponLinkedReload) {
+                burden += LongGunSubWeaponCore.getManualReloadBurden(parent);
             }
         }
 

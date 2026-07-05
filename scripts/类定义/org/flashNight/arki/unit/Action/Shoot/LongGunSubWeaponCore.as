@@ -110,7 +110,22 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             return false;
         }
 
-        if (!hasManualReserve(config)) {
+        if (!hasReloadReserve(config)) {
+            updateAmmoDisplay(unit);
+            return false;
+        }
+        return true;
+    }
+
+    public static function canReloadLinked(unit:Object):Boolean {
+        if (!hasSubweapon(unit)) return false;
+        var config:Object = unit.长枪副武器配置;
+        var state:Object = unit.长枪副武器状态;
+        if (state.loaded >= state.capacity) {
+            updateAmmoDisplay(unit);
+            return false;
+        }
+        if (!hasReloadReserve(config)) {
             updateAmmoDisplay(unit);
             return false;
         }
@@ -200,7 +215,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         config.range = positiveNumber(sub.range, 50);
         config.impact = nonNegativeNumber(sub.impact, 0.01);
         config.consumeMode = sub.consumeMode ? sub.consumeMode : "onLoadGroup";
-        config.consumeTiming = sub.consumeTiming ? sub.consumeTiming : "linkedFirstFire";
+        config.consumeTiming = sub.consumeTiming ? sub.consumeTiming : "onReloadCommit";
         config.clipCostPerLoad = nonNegativeNumber(sub.clipCostPerLoad, 1);
         config.fireCost = nonNegativeNumber(sub.fireCost, 1);
         if (sub.initialLoaded != undefined) {
@@ -232,7 +247,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         return true;
     }
 
-    private static function hasManualReserve(config:Object):Boolean {
+    private static function hasReloadReserve(config:Object):Boolean {
         if (config.consumeMode == "onLoadGroup") {
             return config.clipCostPerLoad <= 0 || ItemUtil.singleContain(config.reserveName, config.clipCostPerLoad) != null;
         }
@@ -247,6 +262,11 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         var config:Object = unit.长枪副武器配置;
         var state:Object = unit.长枪副武器状态;
         if (state.loaded >= state.capacity) {
+            updateAmmoDisplay(unit);
+            return false;
+        }
+
+        if (!hasReloadReserve(config)) {
             updateAmmoDisplay(unit);
             return false;
         }

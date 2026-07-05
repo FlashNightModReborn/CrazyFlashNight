@@ -1,4 +1,4 @@
-# 装备配件模组配置目录
+﻿# 装备配件模组配置目录
 
 本目录采用 list + 子文件结构，便于维护和协作开发。
 
@@ -597,7 +597,7 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
         <impact>10</impact>
         <damageType>物理</damageType>
         <consumeMode>onLoadGroup</consumeMode>
-        <consumeTiming>linkedFirstFire</consumeTiming>
+        <consumeTiming>onReloadCommit</consumeTiming>
         <clipCostPerLoad>1</clipCostPerLoad>
         <initialLoaded>1</initialLoaded>
         <manualReloadAnimation>longGun</manualReloadAnimation>
@@ -608,7 +608,8 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 
 **消耗语义：**
 - `consumeMode=onLoadGroup`：1 份 `reserveName` 支持一组 `capacity` 发。
-- `consumeTiming=linkedFirstFire`：R 联动补装后，首次 K 发射扣组弹药；F 快装在动画提交帧立即扣组弹药。
+- `consumeTiming=onReloadCommit`：R 联动补装与 F 快装都在换弹提交帧扣组弹药。
+- `consumeTiming=linkedFirstFire`：可选延迟扣弹语义，R 联动补装后首次 K 发射扣组弹药。
 - `consumeMode=onFire`：每次 K 发射按 `fireCost` 逐发扣弹药。
 
 #### skillSwitch - 按装备类型切换技能

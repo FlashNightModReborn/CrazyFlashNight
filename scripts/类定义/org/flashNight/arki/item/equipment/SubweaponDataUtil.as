@@ -75,7 +75,7 @@ class org.flashNight.arki.item.equipment.SubweaponDataUtil {
             sub.consumeMode = sub.instantconsume ? "onFire" : "onLoadGroup";
         }
         if (!sub.consumeTiming || sub.consumeTiming == "") {
-            sub.consumeTiming = sub.consumeMode == "onLoadGroup" ? "linkedFirstFire" : "onFire";
+            sub.consumeTiming = sub.consumeMode == "onLoadGroup" ? "onReloadCommit" : "onFire";
         }
 
         sub.clipCostPerLoad = nonNegativeNumber(sub.clipCostPerLoad, 1);

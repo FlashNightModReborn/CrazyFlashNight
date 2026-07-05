@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <root>
     <!-- 低级材料 - 下挂武器系统 -->
 
@@ -31,7 +31,7 @@
             <impact>8</impact>
             <damageType>物理</damageType>
             <consumeMode>onLoadGroup</consumeMode>
-            <consumeTiming>linkedFirstFire</consumeTiming>
+            <consumeTiming>onReloadCommit</consumeTiming>
             <clipCostPerLoad>1</clipCostPerLoad>
             <initialLoaded>3</initialLoaded>
             <manualReloadAnimation>longGun</manualReloadAnimation>

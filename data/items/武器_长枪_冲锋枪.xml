@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--
 物品ID已自动生成，无需手动维护-->
 <root>
@@ -399,7 +399,7 @@
       <range>50</range>
       <damageType>物理</damageType>
       <consumeMode>onLoadGroup</consumeMode>
-      <consumeTiming>linkedFirstFire</consumeTiming>
+      <consumeTiming>onReloadCommit</consumeTiming>
       <clipCostPerLoad>1</clipCostPerLoad>
       <initialLoaded>1</initialLoaded>
       <manualReloadAnimation>longGun</manualReloadAnimation>
