@@ -1484,6 +1484,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         if (_active == undefined || child == undefined || child._parent == undefined) return false;
         var parentRecord:Object = findPhaseSpawnParentRecord(String(child._name || name), child);
         if (parentRecord == undefined) return false;
+        if (isAuxiliaryDerivedActor(child) != true) return false;
 
         markCalibrationAuxiliaryActor(child, parentRecord.side, String(_active.runId || ""));
         installCalibrationDeathHooks(child);
@@ -1511,6 +1512,21 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             auxiliary: true
         });
         return true;
+    }
+
+    private static function isAuxiliaryDerivedActor(child:MovieClip):Boolean {
+        if (child == undefined) return false;
+        if (child.兵种 != undefined || child.兵种名 != undefined) return false;
+        if (child.是否为佣兵 === true || child.宠物属性 != undefined || child.宠物信息数组号 != undefined) return false;
+
+        var unitBulletFlag:Number = 1 << 9; // 与 scripts/macros/FLAG_UNIT_BULLET.as 保持一致。
+        var flags:Number = Number(child.flags);
+        if (!isNaN(flags) && (flags & unitBulletFlag) != 0) return true;
+
+        if (child.unitBulletConfig != undefined) return true;
+        if (child.hitPointMax != undefined && child.hitPoint != undefined && child.element == child) return true;
+        if (child.hitPoint != undefined && child.element == child && child.NPC === true && child.unitAIType == "None") return true;
+        return false;
     }
 
     private static function isCalibrationUtilityActor(name:String, child:MovieClip):Boolean {
