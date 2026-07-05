@@ -58,6 +58,7 @@ class org.flashNight.arki.merc.ArenaController {
     public static function commitArena():Void {
         if (_root.出阵人员 == undefined || _root.出阵人员.length == 0) return;
         _root.角斗场对手类型 = "merc"; // 守 enterArenaCommon 分叉，防上一场 roster 残留
+        _root.角斗场roster状态 = undefined;
         _root.角斗场对手禁收益 = false;
         if (_root.当前佣兵重用数 <= _root.竞技场佣兵重用基数) {
             _root.当前佣兵重用数++;
@@ -75,6 +76,7 @@ class org.flashNight.arki.merc.ArenaController {
     public static function commitRoster(squad:Array):Void {
         if (squad == undefined || squad.length == 0) return;
         _root.角斗场对手类型 = "roster";
+        _root.角斗场roster状态 = undefined;
         _root.角斗场roster阵容 = squad;
         enterArenaCommon();
     }
@@ -88,6 +90,7 @@ class org.flashNight.arki.merc.ArenaController {
     public static function commitEscalation(faction:String, pool:Array, baseCount:Number, baseLevelMin:Number, baseLevelMax:Number, deposit:Number, reward:Number, maxWaves:Number):Void {
         if (pool == undefined || pool.length == 0) return;
         _root.角斗场对手类型 = "escalation";
+        _root.角斗场roster状态 = undefined;
         _root.角斗场对手禁收益 = false;
         _root.角斗场爬升 = {
             active:       true,

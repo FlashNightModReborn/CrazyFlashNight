@@ -337,62 +337,164 @@ _root.角斗场应用怪物安全覆盖 = function(目标:Object, 是否敌人:B
 	};
 }
 
+_root.角斗场roster活体上限 = 12;
+_root.角斗场roster补刷阈值 = 6;
+_root.角斗场roster判胜冻结值 = -99999;
+
+_root.角斗场生成roster单位 = function(单位:Object, 地点X:Number, 地点Y:Number, 序号:Number):Boolean{
+	if(单位 == undefined) return false;
+	if(单位.类型 == "merc" && 单位.佣兵 != undefined){
+		var 敌人信息 = 单位.佣兵;
+		var 敌人 = _root.加载游戏世界人物("主角-男", "敌人同伴" + 序号, _root.gameworld.getNextHighestDepth(), {
+			_x:地点X + random(160) - 80,
+			_y:地点Y + random(120) - 60,
+			是否为敌人:true,
+			身高:敌人信息[3],
+			名字:敌人信息[1],
+			等级:敌人信息[0],
+			脸型:敌人信息[4],
+			发型:敌人信息[5],
+			头部装备:敌人信息[6],
+			上装装备:敌人信息[7],
+			手部装备:敌人信息[8],
+			下装装备:敌人信息[9],
+			脚部装备:敌人信息[10],
+			颈部装备:敌人信息[11],
+			长枪:敌人信息[12],
+			手枪:敌人信息[13],
+			手枪2:敌人信息[14],
+			刀:敌人信息[15],
+			手雷:敌人信息[16],
+			性别:敌人信息[17],
+			产生源:"地图"
+		});
+		if(敌人 != undefined){
+			_root.角斗场应用怪物安全覆盖(敌人, true, "地图");
+			return true;
+		}
+		return false;
+	}
+	var 属性 = _root.兵种库[单位.兵种];
+	if(属性 == undefined) return false;
+	var 初始化 = _root.duplicateOf(属性);
+	初始化.兵种名 = null;        // 同 WaveSpawner.spawn：兵种名走第一参数 id，initObject 内置 null
+	初始化.等级 = 单位.等级;
+	_root.角斗场应用单位参数(初始化, 单位);
+	_root.角斗场应用怪物安全覆盖(初始化, true, "地图"); // 参数可改行为，安全字段最后覆盖
+	初始化._x = 地点X + random(160) - 80;
+	初始化._y = 地点Y + random(120) - 60;
+	var mc:MovieClip = _root.加载游戏世界人物(属性.兵种名, "敌人同伴" + 序号, _root.gameworld.getNextHighestDepth(), 初始化);
+	if(mc != undefined){
+		_root.角斗场应用怪物安全覆盖(mc, true, "地图");
+		return true;
+	}
+	return false;
+}
+
+_root.角斗场roster当前活体数 = function():Number{
+	var st = _root.角斗场roster状态;
+	if(st == undefined) return 0;
+	var 计数:Number = Number(_root.gameworld.地图.僵尸型敌人总个数);
+	var 死亡数:Number = 0;
+	if(!isNaN(计数) && 计数 < 0) 死亡数 = -计数;
+	var 活体:Number = Number(st.已生成数) - 死亡数;
+	if(isNaN(活体) || 活体 < 0) 活体 = 0;
+	return 活体;
+}
+
+_root.角斗场roster刷新判胜门槛 = function():Void{
+	var st = _root.角斗场roster状态;
+	if(st != undefined && st.待刷索引 < st.阵容.length){
+		org.flashNight.arki.scene.WaveSpawner.instance.finishRequirement = _root.角斗场roster判胜冻结值;
+		return;
+	}
+	org.flashNight.arki.scene.WaveSpawner.instance.finishRequirement = -_root.敌人同伴数;
+}
+
+_root.角斗场roster停止补刷时钟 = function():Void{
+	var st = _root.角斗场roster状态;
+	if(st == undefined || st.clock == undefined) return;
+	st.clock.onEnterFrame = null;
+	st.clock.removeMovieClip();
+	st.clock = undefined;
+}
+
+_root.角斗场roster补刷 = function(强制:Boolean):Void{
+	var st = _root.角斗场roster状态;
+	if(st == undefined) return;
+	var 活体:Number = 强制 ? 0 : _root.角斗场roster当前活体数();
+	if(!强制 && 活体 > st.补刷阈值){
+		_root.角斗场roster刷新判胜门槛();
+		return;
+	}
+	var 预算:Number = st.活体上限 - 活体;
+	if(预算 < 1 && !强制){
+		_root.角斗场roster刷新判胜门槛();
+		return;
+	}
+	var 本次生成:Number = 0;
+	while(预算 > 0 && st.待刷索引 < st.阵容.length){
+		var 单位 = st.阵容[st.待刷索引];
+		st.待刷索引++;
+		var 序号:Number = st.生成序号;
+		st.生成序号++;
+		if(_root.角斗场生成roster单位(单位, st.地点X, st.地点Y, 序号)){
+			st.已生成数++;
+			_root.敌人同伴数 = st.已生成数;
+			预算--;
+			本次生成++;
+		}
+	}
+	if(st.待刷索引 >= st.阵容.length){
+		_root.角斗场roster停止补刷时钟();
+	}
+	_root.角斗场roster刷新判胜门槛();
+}
+
+_root.角斗场roster启动补刷时钟 = function():Void{
+	var st = _root.角斗场roster状态;
+	if(st == undefined || st.clock != undefined) return;
+	var clip:MovieClip = _root.gameworld.createEmptyMovieClip("角斗场roster补刷时钟", _root.gameworld.getNextHighestDepth());
+	clip.onEnterFrame = function():Void{
+		var state = _root.角斗场roster状态;
+		if(state == undefined){
+			this.onEnterFrame = null;
+			this.removeMovieClip();
+			return;
+		}
+		state.pollFrame++;
+		if(state.pollFrame < 10) return;
+		state.pollFrame = 0;
+		_root.角斗场roster补刷(false);
+	};
+	st.clock = clip;
+}
+
 _root.加载角斗场怪物 = function(地点X, 地点Y){
 	var 阵容 = _root.角斗场roster阵容;
 	if(阵容 == undefined) return;
-	var 生成数 = 0;
-	for(var i = 0; i < 阵容.length; i++){
-		var 单位 = 阵容[i];
-		if(单位.类型 == "merc" && 单位.佣兵 != undefined){
-			var 敌人信息 = 单位.佣兵;
-			var 敌人 = _root.加载游戏世界人物("主角-男", "敌人同伴" + i, _root.gameworld.getNextHighestDepth(), {
-				_x:地点X + random(160) - 80,
-				_y:地点Y + random(120) - 60,
-				是否为敌人:true,
-				身高:敌人信息[3],
-				名字:敌人信息[1],
-				等级:敌人信息[0],
-				脸型:敌人信息[4],
-				发型:敌人信息[5],
-				头部装备:敌人信息[6],
-				上装装备:敌人信息[7],
-				手部装备:敌人信息[8],
-				下装装备:敌人信息[9],
-				脚部装备:敌人信息[10],
-				颈部装备:敌人信息[11],
-				长枪:敌人信息[12],
-				手枪:敌人信息[13],
-				手枪2:敌人信息[14],
-				刀:敌人信息[15],
-				手雷:敌人信息[16],
-				性别:敌人信息[17],
-				产生源:"地图"
-			});
-			if(敌人 != undefined){
-				_root.角斗场应用怪物安全覆盖(敌人, true, "地图");
-				生成数++;
-			}
-			continue;
-		}
-		var 属性 = _root.兵种库[单位.兵种];
-		if(属性 == undefined) continue;
-		var 初始化 = _root.duplicateOf(属性);
-		初始化.兵种名 = null;        // 同 WaveSpawner.spawn：兵种名走第一参数 id，initObject 内置 null
-		初始化.等级 = 单位.等级;
-		_root.角斗场应用单位参数(初始化, 单位);
-		_root.角斗场应用怪物安全覆盖(初始化, true, "地图"); // 参数可改行为，安全字段最后覆盖
-		初始化._x = 地点X + random(160) - 80;
-		初始化._y = 地点Y + random(120) - 60;
-		// 仅累计 attachMovie 成功（返回有效 MC）的怪：某兵种缺库 linkage 时实际数<阵容长度，
-		// 判胜基准若仍按阵容长度，计数永到不了 -N → 清场后卡死（与 角斗场爬升刷一个 同口径）
-		var mc:MovieClip = _root.加载游戏世界人物(属性.兵种名, "敌人同伴" + i, _root.gameworld.getNextHighestDepth(), 初始化);
-		if(mc != undefined){
-			_root.角斗场应用怪物安全覆盖(mc, true, "地图");
-			生成数++;
-		}
+	var 活体上限:Number = Number(_root.角斗场roster活体上限);
+	if(isNaN(活体上限) || 活体上限 < 1) 活体上限 = 12;
+	var 补刷阈值:Number = Number(_root.角斗场roster补刷阈值);
+	if(isNaN(补刷阈值) || 补刷阈值 < 0 || 补刷阈值 >= 活体上限) 补刷阈值 = Math.floor(活体上限 / 2);
+	_root.角斗场roster状态 = {
+		阵容: 阵容,
+		待刷索引: 0,
+		生成序号: 0,
+		已生成数: 0,
+		地点X: 地点X,
+		地点Y: 地点Y,
+		活体上限: 活体上限,
+		补刷阈值: 补刷阈值,
+		pollFrame: 0,
+		clock: undefined
+	};
+	_root.敌人同伴数 = 0;
+	_root.角斗场roster补刷(true);
+	if(_root.角斗场roster状态 != undefined && _root.角斗场roster状态.待刷索引 < 阵容.length){
+		_root.角斗场roster启动补刷时钟();
 	}
-	// 用实际成功生成数修正判胜基准（角斗场计算敌人数 在 WaveStarted 才设 finishRequirement，晚于此处）
-	_root.敌人同伴数 = 生成数;
+	_root.角斗场roster刷新判胜门槛();
 }
 
 // 单位的统一加载函数

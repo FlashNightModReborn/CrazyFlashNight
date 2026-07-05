@@ -237,6 +237,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             formationSpacing: formationSpacing,
             phaseSpawnCount: 0,
             spawnedUnits: [],
+            auxUnits: [],
             lastHotspotX: CALIBRATION_CENTER_X,
             lastHotspotY: CALIBRATION_CENTER_Y
         };
@@ -988,6 +989,15 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         if (mc.攻击目标 == undefined) mc.攻击目标 = "无";
     }
 
+    private static function markCalibrationAuxiliaryActor(mc:MovieClip, side:String, runKey:String):Void {
+        if (mc == undefined) return;
+        mc.不掉钱 = true;
+        mc.掉落物 = [];
+        mc._arenaCalibrationUnit = true;
+        mc._arenaCalibrationSide = side;
+        mc._arenaCalibrationRun = runKey;
+    }
+
     private static function observeDeadUnits(units:Array):Void {
         for (var i:Number = 0; i < units.length; i++) {
             observeDeadUnit(units[i]);
@@ -1100,11 +1110,13 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
 
         var blueUnits:Array = _active.blueUnits;
         var redUnits:Array = _active.redUnits;
+        var auxUnits:Array = _active.auxUnits;
         removeClock();
         restorePhaseSpawnHook();
         _active = undefined;
         cleanupUnits(blueUnits);
         cleanupUnits(redUnits);
+        cleanupUnits(auxUnits);
         resetCalibrationSource();
         clearCalibrationGlobals();
         sendResponse(resp);
@@ -1228,6 +1240,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     }
 
     private static function cleanupUnits(units:Array):Void {
+        if (units == undefined) return;
         for (var i:Number = 0; i < units.length; i++) {
             var record:Object = units[i];
             var mc:MovieClip = undefined;
@@ -1440,6 +1453,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             if (isCalibrationUtilityActor(name, child)) continue;
             if (child._arenaCalibrationUnit === true) continue;
             if (isCombatActor(child) != true) continue;
+            if (adoptDerivedCalibrationActor(name, child) == true) continue;
 
             if (allowPurge == true) {
                 child.removeMovieClip();
@@ -1463,6 +1477,39 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 message: "removed stale combat actors before arena calibration run"
             });
         }
+        return true;
+    }
+
+    private static function adoptDerivedCalibrationActor(name:String, child:MovieClip):Boolean {
+        if (_active == undefined || child == undefined || child._parent == undefined) return false;
+        var parentRecord:Object = findPhaseSpawnParentRecord(String(child._name || name), child);
+        if (parentRecord == undefined) return false;
+
+        markCalibrationAuxiliaryActor(child, parentRecord.side, String(_active.runId || ""));
+        installCalibrationDeathHooks(child);
+        child._arenaCalibrationUnknown = false;
+        child._arenaCalibrationDerived = true;
+        child._arenaCalibrationParent = String(parentRecord.spawnName || "");
+
+        if (_active.auxUnits == undefined) _active.auxUnits = [];
+        _active.auxUnits.push({
+            mc: child,
+            side: parentRecord.side,
+            isEnemy: parentRecord.isEnemy,
+            parentUnitType: parentRecord.unitType,
+            phaseSpawned: true,
+            auxiliary: true
+        });
+
+        if (_active.spawnedUnits == undefined) _active.spawnedUnits = [];
+        _active.spawnedUnits.push({
+            side: parentRecord.side,
+            unit: String(child.兵种 || child.兵种名 || child._name || name),
+            from: parentRecord.unitType,
+            name: String(child._name || name),
+            frame: Number(_active.frames || 0),
+            auxiliary: true
+        });
         return true;
     }
 

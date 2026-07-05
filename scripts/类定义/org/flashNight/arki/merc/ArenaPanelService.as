@@ -61,6 +61,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
         _root.角斗场入场中 = false;
         _root.角斗场对手类型 = "merc";
         _root.角斗场roster阵容 = undefined;
+        _root.角斗场roster状态 = undefined;
         _root.角斗场对手禁收益 = false;
         _root.角斗场爬升 = undefined;
         _root._arenaLineupCache = [];
@@ -84,6 +85,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
         // 这里复位防上一场 roster 残留泄漏进 enterArenaCommon / 角斗场加载 的分叉判断。
         _root.角斗场对手类型 = "merc";
         _root.角斗场roster阵容 = undefined;
+        _root.角斗场roster状态 = undefined;
         _root.角斗场对手禁收益 = false;
         _root.角斗场爬升 = undefined; // 爬升模式状态复位，防上一场残留泄漏进 角斗场加载 分叉
         // batch preview lineup cache 镜像 web 端 _previewCache：snapshot 是 panel open 必经握手，

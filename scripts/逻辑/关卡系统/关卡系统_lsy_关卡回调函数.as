@@ -59,6 +59,10 @@ _root.关卡回调函数.角斗场计算敌人数 = function(){
 		WaveSpawner.instance.finishRequirement = -99999;
 		return;
 	}
+	if(_root.角斗场对手类型 == "roster" && typeof _root.角斗场roster刷新判胜门槛 == "function"){
+		_root.角斗场roster刷新判胜门槛();
+		return;
+	}
 	WaveSpawner.instance.finishRequirement = -_root.敌人同伴数;
 }
 _root.关卡回调函数.角斗场获胜 = function(){

@@ -196,7 +196,7 @@ var ArenaHarnessQA = (function() {
             label + ' 应让普通佣兵承担主力配比');
         api.assert(counts.nonhuman >= expectedNonhuman,
             label + ' 的非人形怪数量不应小于怪物槽位');
-        api.assert(counts.merc + counts.nonhuman <= expectedHumanoid + expectedNonhuman * 8,
+        api.assert(counts.merc + counts.nonhuman <= expectedHumanoid + expectedNonhuman * 12,
             label + ' 的真实刷怪数应受每组上限保护');
         if (squad && squad.monsterSource === 'meta-team') {
             var groupCounts = countMonsterGroups(squad.opponents);
