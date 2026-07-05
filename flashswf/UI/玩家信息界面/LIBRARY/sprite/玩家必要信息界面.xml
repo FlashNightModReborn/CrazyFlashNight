@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/玩家必要信息界面" itemID="665210ca-00002499" lastModified="1783228114" lastUniqueIdentifier="15">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/玩家必要信息界面" itemID="665210ca-00002499" lastModified="1783249320" lastUniqueIdentifier="15">
   <timeline>
     <DOMTimeline name="玩家必要信息界面" currentFrame="38" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-16&lt;/guideline&gt;&lt;guideline direction="v"&gt;45&lt;/guideline&gt;&lt;guideline direction="v"&gt;14&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -159,36 +159,7 @@ gotoAndStop("空手");]]></script>
               <elements/>
             </DOMFrame>
             <DOMFrame index="37" duration="6" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <SolidColor alpha="0.988235294117647"/>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="1" edges="
-!1184 -90[1186 -92 1186 -95!1186 -95|1145 -98!1145 -98|1145 14!1145 14|1110 1!1110 1|1110 121!1110 121|1116 121!1116 121[1125 121 1131 119!1131 119[1137 117 1140 115!1140 115[1143 113 1143 111!1143 111|1143 96!1143 96|1177 96!1177 96
-|1177 110!1177 110|1182 110!1182 110[1188 110 1195 108!1195 108[1201 107 1205 104!1205 104[1209 102 1210 101!1210 101|1210 25!1210 25[1213 24 1214 23!1214 23[1216 22 1217 21!1217 21|1189 0!1189 0|1177 11!1177 11|1177 -35!1177 -35|1215
- -35!1215 -35[1217 -35 1219 -36!1219 -36[1220 -37 1221 -39!1221 -39[1217 -44 1211 -50!1211 -50[1205 -56 1201 -60!1201 -60|1197 -65!1197 -65|1183 -42!1183 -42|1177 -42!1177 -42|1177 -88!1177 -88[1182 -89 1184 -90!1195 -8|1223 -11!1223
- -11[1226 11 1231 30!1231 30[1236 51 1245 68!1245 68[1234 85 1221 99!1221 99[1207 113 1190 125!1190 125|1192 127!1192 127[1211 120 1227 110!1227 110[1244 101 1257 89!1257 89[1261 95 1266 101!1266 101[1271 107 1277 113!1277 113[1283 118
- 1291 123!1291 123[1300 127 1309 128!1309 128[1318 129 1325 123!1325 123[1329 119 1328 111!1328 111[1326 104 1319 91!1319 91|1326 48!1326 48|1324 47!1324 47[1321 53 1318 59!1318 59[1315 65 1311 70!1311 70[1308 75 1306 78!1306 78[1304
- 81 1302 81!1302 81[1301 81 1298 79!1298 79[1294 75 1290 71!1290 71[1286 67 1283 62!1283 62[1293 49 1301 37!1301 37[1309 24 1315 11!1315 11[1320 11 1322 10!1322 10[1324 9 1325 7!1325 7|1281 -11!1281 -11[1278 -1 1275 9!1275 9[1271 19 1266
- 30!1266 30[1263 19 1261 8!1261 8[1259 -3 1257 -15!1257 -15|1315 -21!1315 -21[1318 -21 1320 -22!1320 -22[1321 -24 1321 -26!1321 -26[1315 -30 1307 -35!1307 -35[1299 -40 1294 -43!1294 -43[1300 -45 1303 -51!1303 -51[1306 -57 1304 -64!1304
- -64[1301 -71 1291 -78!1291 -78[1281 -84 1262 -86!1262 -86|1260 -85!1260 -85[1265 -77 1269 -67!1269 -67[1273 -57 1275 -47!1275 -47[1278 -45 1281 -43!1281 -43[1283 -42 1286 -42!1286 -42|1274 -24!1274 -24|1257 -22!1257 -22[1255 -37 1255
- -53!1255 -53[1255 -69 1255 -86!1255 -86[1260 -87 1262 -89!1262 -89[1264 -91 1264 -93!1264 -93|1220 -97!1220 -97[1220 -82 1220 -68!1220 -68[1220 -53 1221 -39!1221 -39[1221 -33 1222 -28!1222 -28[1222 -23 1223 -18!1223 -18|1192 -15!1192
- -15|1195 -8!1404 -90[1406 -92 1406 -95!1406 -95|1365 -98!1365 -98|1365 -41!1365 -41|1338 -41!1338 -41|1340 -34!1340 -34|1365 -34!1365 -34|1365 8!1365 8[1355 10 1348 12!1348 12[1340 14 1336 15!1336 15|1350 53!1350 53[1352 53 1354 51!1354
- 51[1356 49 1356 46!1356 46|1365 41!1365 41|1365 91!1365 91[1365 93 1364 94!1364 94[1363 95 1361 95!1361 95[1359 95 1355 94!1355 94[1351 94 1347 94!1347 94[1343 94 1340 94!1340 94[1338 93 1337 93!1337 93|1337 96!1337 96[1345 98 1349 101
-!1349 101[1353 103 1355 107!1355 107[1357 111 1358 116!1358 116[1359 122 1359 130!1359 130[1376 128 1384 124!1384 124[1392 120 1395 112!1395 112[1398 104 1397 93!1397 93|1397 17!1397 17[1407 10 1414 4!1414 4[1422 -3 1427 -7!1427 -7|1427
- -9!1427 -9[1419 -7 1412 -5!1412 -5[1405 -3 1397 -1!1397 -1|1397 -34!1397 -34|1426 -34!1426 -34[1429 -34 1431 -35!1431 -35[1432 -36 1433 -38!1433 -38[1431 -40 1429 -42!1429 -42[1427 -44 1425 -47!1425 -47|1469 -47!1469 -47|1469 -4!1469
- -4|1426 -4!1426 -4|1428 3!1428 3|1443 3!1443 3[1448 25 1455 42!1455 42[1461 59 1471 73!1471 73[1457 90 1438 103!1438 103[1420 117 1397 127!1397 127|1399 129!1399 129[1426 123 1447 114!1447 114[1469 105 1486 92!1486 92[1497 104 1510 113
-!1510 113[1524 122 1540 129!1540 129[1544 117 1552 109!1552 109[1560 101 1571 99!1571 99|1572 96!1572 96[1555 92 1539 86!1539 86[1523 81 1508 72!1508 72[1521 59 1531 43!1531 43[1540 28 1547 10!1547 10[1551 10 1554 9!1554 9[1556 8 1557
- 6!1557 6|1526 -23!1526 -23|1506 -4!1506 -4|1503 -4!1503 -4|1503 -47!1503 -47|1560 -47!1560 -47[1563 -47 1565 -48!1565 -48[1567 -49 1567 -50!1567 -50[1561 -56 1554 -62!1554 -62[1547 -68 1542 -72!1542 -72[1537 -76 1536 -76!1536 -76|1519
- -53!1519 -53|1503 -53!1503 -53|1503 -85!1503 -85[1508 -86 1510 -88!1510 -88[1512 -90 1512 -92!1512 -92|1469 -96!1469 -96|1469 -53!1469 -53|1421 -53!1421 -53|1422 -49!1422 -49[1417 -54 1413 -58!1413 -58|1409 -62!1409 -62|1397 -43!1397
- -43|1397 -88!1397 -88[1402 -88 1404 -90!1484 56[1472 45 1462 32!1462 32[1453 19 1447 3!1447 3|1508 3!1508 3[1504 17 1498 30!1498 30[1492 43 1484 56!1177 21|1177 90!1177 90|1143 90!1143 90|1143 21!1143 21|1177 21"/>
-                  </edges>
-                </DOMShape>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -233,43 +204,11 @@ gotoAndStop("空手");]]></script>
               <elements/>
             </DOMFrame>
             <DOMFrame index="37" duration="6" keyMode="9728">
-              <elements>
-                <DOMShape isDrawingObject="true">
-                  <fills>
-                    <FillStyle index="1">
-                      <SolidColor color="#E5E5E5" alpha="0.988235294117647"/>
-                    </FillStyle>
-                  </fills>
-                  <strokes>
-                    <StrokeStyle index="1">
-                      <SolidStroke scaleMode="normal" weight="0.1">
-                        <fill>
-                          <SolidColor color="#FFFFFF"/>
-                        </fill>
-                      </SolidStroke>
-                    </StrokeStyle>
-                  </strokes>
-                  <edges>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="
-!997 140|997 -116!997 -116/1668 -116!1668 -116/1668 140"/>
-                    <Edge strokeStyle="1" edges="
-!1668 140/1668 818!1668 818/997 818!997 818|997 140"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="
-!1668 140/997 140"/>
-                    <Edge cubics="!997 -116(;997,-116 1668,-116 1668,-116q997 -116 1668 -116);"/>
-                    <Edge cubics="!1668 140(;1668,140 1668,818 1668,818p1668 140 1668 818);"/>
-                    <Edge cubics="!997 818(;997,818 997,140 997,140q997 818 997 140);"/>
-                    <Edge cubics="!997 140(;997,140 1668,140 1668,140p997 140 1668 140);"/>
-                    <Edge cubics="!1668 818(;1668,818 997,818 997,818p1668 818 997 818);"/>
-                    <Edge cubics="!1668 -116(;1668,-116 1668,140 1668,140p1668 -116 1668 140);"/>
-                    <Edge cubics="!997 140(;997,140 997,-116 997,-116q997 140 997 -116);"/>
-                  </edges>
-                </DOMShape>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="战技图标" color="#9933CC" autoNamed="false">
+        <DOMLayer name="战技图标" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="32" keyMode="9728">
               <elements>
@@ -324,9 +263,9 @@ gotoAndStop("空手");]]></script>
             </DOMFrame>
             <DOMFrame index="37" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/战技图标" name="战技栏" centerPoint3DX="79.35" centerPoint3DY="39.05">
+                <DOMSymbolInstance libraryItemName="sprite/战技图标" name="战技栏" centerPoint3DX="81.7" centerPoint3DY="30.7" isVisible="false">
                   <matrix>
-                    <Matrix tx="66.6" ty="25.2"/>
+                    <Matrix tx="68.95" ty="16.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -540,7 +479,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="战斗模式文字 矢量化" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="战斗模式文字 矢量化" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -647,7 +586,7 @@ onClipEvent (enterFrame) {
             <DOMFrame index="27" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="32" duration="5" keyMode="9728">
+            <DOMFrame index="32" duration="11" keyMode="9728">
               <elements>
                 <DOMDynamicText name="text1" fontRenderingMode="device" width="80.95" height="15.55" isSelectable="false">
                   <matrix>
@@ -665,36 +604,6 @@ onClipEvent (enterFrame) {
                 <DOMDynamicText name="text2" fontRenderingMode="device" width="81.25" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="-10.1" ty="21.55"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>999 / 999</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMDynamicText>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="37" duration="6" keyMode="9728">
-              <elements>
-                <DOMDynamicText name="text1" fontRenderingMode="device" width="58.15" height="33.1" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="-12.1" ty="-3"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>999 / 999</characters>
-                      <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMDynamicText>
-                <DOMDynamicText name="text2" fontRenderingMode="device" width="59.2" height="15.55" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="-12.1" ty="21.55"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -818,7 +727,7 @@ onClipEvent (enterFrame) {
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="5" keyMode="9728">
+            <DOMFrame index="32" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 1814" symbolType="graphic" loop="loop">
                   <matrix>
@@ -831,26 +740,6 @@ onClipEvent (enterFrame) {
                 <DOMSymbolInstance libraryItemName="shape/Symbol 1814" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="-24.1" ty="18.7"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="37" duration="6" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1814" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-25.6" ty="-5.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1814" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="-25.6" ty="18.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -950,7 +839,7 @@ onClipEvent (enterFrame) {
                 </DOMStaticText>
               </elements>
             </DOMFrame>
-            <DOMFrame index="32" duration="5" keyMode="9728">
+            <DOMFrame index="32" duration="11" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
                   <matrix>
@@ -966,32 +855,6 @@ onClipEvent (enterFrame) {
                 <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="2.9744873046875" d="0.732147216796875" tx="30.9" ty="29.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-14" y="-14"/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0.37890625"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="37" duration="6" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="2.12973022460938" d="0.732147216796875" tx="15.1" ty="4.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-14" y="-14"/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0.37890625"/>
-                  </color>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shape/Symbol 1788" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix a="2.12973022460938" d="0.732147216796875" tx="15.1" ty="29.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-14" y="-14"/>
