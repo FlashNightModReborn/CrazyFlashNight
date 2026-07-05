@@ -4421,7 +4421,7 @@
     <icon>废城加强军装脚</icon>
     <type>防具</type>
     <use>脚部装备</use>
-    <price>33000</price>
+    <price>54000</price>
     <description>加强后的统合制式军装，防御力更高。</description>
     <data>
       <level>13</level>
@@ -4432,6 +4432,12 @@
       <damage>30</damage>
       <defence>120</defence>
     </data>
+    <balance>
+      <armorType>standard</armorType>
+      <extraWeightLayers>1</extraWeightLayers>
+      <formula>1</formula>
+      <rationale>WL=1：公社防具合成装备，配方见 data/crafting/公社防具.json（废城军装鞋+新手皮鞋+军用帆布+可塑式钢板）。属性按13级+1层防具预算填写；price=54000≈13×2600×1.6^1。</rationale>
+    </balance>
   </item>
   <item>
     <name>废城加强军装手套</name>
@@ -4439,7 +4445,7 @@
     <icon>废城加强军装手套</icon>
     <type>防具</type>
     <use>手部装备</use>
-    <price>33000</price>
+    <price>54000</price>
     <actiontype>拳击</actiontype>
     <description>加强后的统合制式军装，防御力更高。</description>
     <data>
@@ -4451,6 +4457,12 @@
       <damage>45</damage>
       <defence>100</defence>
     </data>
+    <balance>
+      <armorType>standard</armorType>
+      <extraWeightLayers>1</extraWeightLayers>
+      <formula>1</formula>
+      <rationale>WL=1：公社防具合成装备，配方见 data/crafting/公社防具.json（废城军装手套+黑色皮手套+军用帆布+可塑式钢板）。属性按13级+1层防具预算填写；price=54000≈13×2600×1.6^1。</rationale>
+    </balance>
   </item>
   <item>
     <name>废城加强军装下装</name>
@@ -4458,7 +4470,7 @@
     <icon>废城加强军装下装</icon>
     <type>防具</type>
     <use>下装装备</use>
-    <price>33000</price>
+    <price>54000</price>
     <description>加强后的统合制式军装，防御力更高。</description>
     <data>
       <level>13</level>
@@ -4469,6 +4481,12 @@
       <damage>30</damage>
       <defence>100</defence>
     </data>
+    <balance>
+      <armorType>standard</armorType>
+      <extraWeightLayers>1</extraWeightLayers>
+      <formula>1</formula>
+      <rationale>WL=1：公社防具合成装备，配方见 data/crafting/公社防具.json（废城军装下装+新手裤子+军用帆布）。属性按13级+1层防具预算填写；price=54000≈13×2600×1.6^1。</rationale>
+    </balance>
   </item>
   <item>
     <name>废城防弹军装上装</name>
@@ -4476,7 +4494,7 @@
     <icon>废城防弹军装上装</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <price>33000</price>
+    <price>54000</price>
     <description>加强后的统合制式军装，防御力更高。</description>
     <data>
       <level>13</level>
@@ -4487,6 +4505,12 @@
       <damage>30</damage>
       <defence>140</defence>
     </data>
+    <balance>
+      <armorType>standard</armorType>
+      <extraWeightLayers>1</extraWeightLayers>
+      <formula>1</formula>
+      <rationale>WL=1：公社防具合成装备，配方见 data/crafting/公社防具.json（废城军装上装+军绿防弹衣+新手衣服+军用帆布）。属性按13级+1层防具预算填写；price=54000≈13×2600×1.6^1。</rationale>
+    </balance>
   </item>
   <item>
     <name>废城军装面具帽</name>
@@ -4494,7 +4518,7 @@
     <icon>废城军装面具帽</icon>
     <type>防具</type>
     <use>头部装备</use>
-    <price>33000</price>
+    <price>54000</price>
     <description>加强后的统合制式军装，防御力更高。</description>
     <data>
       <level>13</level>
@@ -4508,6 +4532,12 @@
         <毒>25</毒>
       </magicdefence>
     </data>
+    <balance>
+      <armorType>standard</armorType>
+      <extraWeightLayers>1</extraWeightLayers>
+      <formula>1</formula>
+      <rationale>WL=1：公社防具合成装备，配方见 data/crafting/公社防具.json（废城军装帽+新手面具+军用帆布+可塑式钢板）。属性按13级+1层防具预算填写；price=54000≈13×2600×1.6^1。</rationale>
+    </balance>
   </item>
   <item>
     <name>C级防化服鞋</name>

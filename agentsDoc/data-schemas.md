@@ -129,6 +129,23 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 > 完整列表见 `org/flashNight/gesh/xml/LoadXml/`。另有 `BaseStageXMLLoader`（按路径加载单个关卡 XML）和 `StageXMLLoader`（非单例，支持 CaseSwitch 条件值解析）。
 
+### 装备平衡记录 `<balance>`
+
+`<balance>` 是给平衡工具/审计看的留档字段，运行时 AS2 不依赖它。原则是**只记录 XML `<data>` 里没有的平衡输入**，不要复制 `level/weight/defence/hp/mp/damage/power/interval` 等现有数值，避免双源漂移。
+
+**枪械 / 武器**：schema 以 `tools/cf7-balance-tool/docs/agent-balance-record-design.md` 为准，使用 `dualWield/pierce/damageType/shotgun/magPrice/weightLayers/category/formula/rationale`。
+
+**防具**：不要沿用枪械字段。防具平衡表的核心额外输入是 `extraWeightLayers`；`armorType` 仅在不能从装备位/用途稳定推断时填写，合法值为 `standard | glove | necklace`。
+
+```xml
+<balance>
+  <armorType>standard</armorType>        <!-- 可选：常规/攻击手套/项链映射 -->
+  <extraWeightLayers>1</extraWeightLayers>
+  <formula>1</formula>
+  <rationale>WL=1：合成装备，配方见 data/crafting/...</rationale>
+</balance>
+```
+
 ### 装备插件条件战技
 
 `data/items/equipment_mods/*.xml` 的插件支持根层 `<skillSwitch>`（与 `<skill>`、`<stats>` 同级），用于按宿主装备 `use` / `weapontype` 切换主动战技。命中分支时优先使用分支技能，未命名 `<use>` 是 default 分支，仅在无命名分支命中时使用；多个分支同时匹配时按 XML 顺序取第一个。根层 `<skill>` 仍可作为兼容回退，但有条件战技映射时建议把默认技能也写进 `skillSwitch` 的 default 分支，避免 tooltip 表达成多个可同时装载的战技。`skillSwitch` 只决定技能，不应用属性，条件数值仍走 `<stats><useSwitch>...</useSwitch></stats>`。完整写法与示例见 `data/items/equipment_mods/README.md`。
