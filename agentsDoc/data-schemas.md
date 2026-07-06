@@ -129,6 +129,12 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 > 完整列表见 `org/flashNight/gesh/xml/LoadXml/`。另有 `BaseStageXMLLoader`（按路径加载单个关卡 XML）和 `StageXMLLoader`（非单例，支持 CaseSwitch 条件值解析）。
 
+### 射线子弹 `<rayConfig>`
+
+`data/items/bullets_cases.xml` 的 `<attribute><rayConfig>` 会由 `TeslaRayConfig.fromXML()` 解析，并自动把子弹标记为射线类型。`rayMode` 现支持 `single | chain | pierce | fork | flame`；`flame` 是连续喷火模式：每帧重扫沿线目标，以第 `pierceLimit` 个有效目标作为阻挡长度，`flameGrowSpeed/flameRetractSpeed` 控制当前长度追随目标长度，`flameTickInterval` 控制伤害脉冲帧间隔，`flameLifetime` 控制单发喷火束存活帧数。喷火常用的段数/预算字段：`flamePulseCount`（单发伤害脉冲段数）、`flameHotPulseStart/flameHotPulseCount`（热属性段窗口）、`flameHotDamageType/flameHotMagicType`（热段临时覆盖伤害属性）、`flameTotalHitBudget`（单发总伤害结算预算，0 为不限）、`flameMaxHitsPerTarget`（同一目标单发内最多吃几段，0 为不限）。
+
+喷火视觉风格使用 `vfxStyle=flame_stream` / `vfxPreset=flame_stream`，常用字段包括 `rayLength`、`rayWidthFactor`、`damageFalloff`、`thickness`、`waveAmp`、`waveLen`、`waveSpeed`、`tongueCount`、`tipBloomScale`、`smokeColor`、`visualDuration`、`fadeOutDuration`。`rayWidthFactor>0` 时运行时走带宽射线碰撞，半宽由 `Z轴攻击范围 * rayWidthFactor * 0.5` 计算；视觉宽度仍由 `thickness/waveAmp` 等字段独立控制。
+
 ### 装备平衡记录 `<balance>`
 
 `<balance>` 是给平衡工具/审计看的留档字段，运行时 AS2 不依赖它。原则是**只记录 XML `<data>` 里没有的平衡输入**，不要复制 `level/weight/defence/hp/mp/damage/power/interval` 等现有数值，避免双源漂移。

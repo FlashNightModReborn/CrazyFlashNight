@@ -41,7 +41,8 @@
 {
 	gotoAndStop(攻击模式);
 	var 控制对象 = _root.gameworld[_root.控制目标];
-	if (控制对象.主动战技[攻击模式])
+	var 当前战技 = 控制对象.主动战技[攻击模式];
+	if (当前战技 && 当前战技.isSubweaponControl !== true)
 	{
 		this.战技栏._visible = true;
 		this.战技进度条._visible = true;

@@ -809,7 +809,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             ctx.rayMode = rayMode;
             ctx.pierceLimit = bulletPierceLimit;
             var persistentCombo:Boolean = (config != null && config.isCombo() && config.hasPierce());
-            if (_rayPersistent && config != null && (persistentCombo || rayMode == "pierce" || rayMode == "chain")) {
+            var isFlameMode:Boolean = (config != null && (rayMode == "flame" || config.hasFlame()));
+            if (_rayPersistent && config != null && !isFlameMode && (persistentCombo || rayMode == "pierce" || rayMode == "chain")) {
                 if (processPersistentRay(ctx)) {
                     survivors[survivors.length] = bullet;   // 跨帧存活，保留在 _rayBullets
                 } else {
@@ -859,6 +860,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
             // lockon 距离衰减乘数（武器层设置，默认 1 = 无衰减）
             var lockonDmgMult:Number = (isLockon && bullet.lockonDmgMult) ? bullet.lockonDmgMult : 1;
+
+            ctx.resolvedRayAngle = resolvedRayAngle;
+            if (_rayPersistent && isFlameMode) {
+                if (processContinuousFlame(ctx)) {
+                    survivors[survivors.length] = bullet;   // 喷火短寿命存活，下一帧继续扫描/缩放
+                } else {
+                    bullet.removeMovieClip();
+                }
+                continue;
+            }
 
             // ================================================================
             // 组合模式：多个能力位同时置位时走此分支（isCombo）
@@ -1891,6 +1902,226 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // 其余批量射线（single/fork/no-pierce combo）本帧均已 removeMovieClip。
         // 注：处理期间 spawn 的新射线（index >= count）与原 length=0 行为一致——被丢弃。
         _rayBullets = survivors;
+    }
+
+    /**
+     * 喷火持续射线：每帧重扫沿线目标，计算阻挡目标长度，并按 tickInterval 重复灼烧。
+     *
+     * 与 processPersistentRay 的关键差异：
+     * - 不使用 _rayVisited；同一目标可以按间隔重复受击。
+     * - 每帧重算第 pierceLimit 个命中目标作为 targetLength，目标离开后火束继续增长。
+     * - 视觉 currentLength 可按 grow/retract 追随 targetLength；伤害长度始终 clamp 到 targetLength。
+     */
+    private static function processContinuousFlame(ctx:Object):Boolean {
+        var bullet:Object = ctx.bullet;
+        var shooter:MovieClip = ctx.shooter;
+        var config:TeslaRayConfig = TeslaRayConfig(ctx.config);
+        var rayLength:Number = config.rayLength || 900;
+        var pierceLimit:Number = ctx.pierceLimit;
+        if (!(pierceLimit > 0)) pierceLimit = 1;
+
+        var growSpeed:Number = config.flameGrowSpeed;
+        if (!(growSpeed > 0)) growSpeed = rayLength;
+        var retractSpeed:Number = config.flameRetractSpeed;
+        if (!(retractSpeed > 0)) retractSpeed = rayLength;
+        var tickInterval:Number = config.flameTickInterval;
+        if (!(tickInterval > 0)) tickInterval = 1;
+        var lifetime:Number = config.flameLifetime;
+        if (!(lifetime > 0)) lifetime = 1;
+
+        if (!bullet._flameInited) {
+            var startLength:Number = config.flameStartLength;
+            if (!(startLength >= 0)) startLength = 0;
+            if (startLength > rayLength) startLength = rayLength;
+            bullet._flameAge = 0;
+            bullet._flameCurrentLength = startLength;
+            bullet._flameHitFrameByTarget = {};
+            bullet._flameHitCountByTarget = {};
+            bullet._flameTotalHitsDone = 0;
+            bullet._flameFirstHitDone = false;
+            bullet._flameBaseDamageType = bullet.伤害类型;
+            bullet._flameBaseMagicType = bullet.魔法伤害属性;
+            bullet._flameShotSeed = Math.random() * 6.283185307179586;
+            bullet._flameVfxKey = String(bullet.发射者名) + ":" + String(bullet.子弹种类);
+            bullet._flameInited = true;
+        }
+
+        var age:Number = bullet._flameAge;
+        if (age >= lifetime) return false;
+
+        var hits:Array = collectFlameHits(ctx, pierceLimit);
+        var hLen:Number = hits.length;
+        var targetLength:Number = rayLength;
+        var blocked:Boolean = false;
+        if (hLen >= pierceLimit) {
+            targetLength = hits[pierceLimit - 1].tEntry;
+            blocked = true;
+        }
+
+        var currentLength:Number = bullet._flameCurrentLength;
+        if (!(currentLength >= 0)) currentLength = 0;
+        if (targetLength > currentLength) {
+            currentLength = Math.min(targetLength, currentLength + growSpeed);
+        } else if (targetLength < currentLength) {
+            currentLength = Math.max(targetLength, currentLength - retractSpeed);
+        }
+        if (currentLength > rayLength) currentLength = rayLength;
+        bullet._flameCurrentLength = currentLength;
+
+        // 收缩滞后只影响残影视觉；伤害不允许越过当前阻挡长度。
+        var damageLength:Number = Math.min(currentLength, targetLength);
+        var hitPoints:Array = [];
+        var damageHitPoints:Array = [];
+        var falloff:Number = config.damageFalloff;
+        var dmgMult:Number = 1.0;
+        var pulseCount:Number = config.flamePulseCount;
+        var pulseIndex:Number = 0;
+        var useGlobalPulse:Boolean = (pulseCount > 0);
+        var isDamagePulse:Boolean = true;
+        var hotStart:Number = config.flameHotPulseStart;
+        if (!(hotStart >= 0)) hotStart = 1;
+        var hotCount:Number = config.flameHotPulseCount;
+        if (!(hotCount > 0)) hotCount = 0;
+        var isHotPulse:Boolean = false;
+        var totalHitBudget:Number = config.flameTotalHitBudget;
+        if (!(totalHitBudget > 0)) totalHitBudget = 0;
+        var maxHitsPerTarget:Number = config.flameMaxHitsPerTarget;
+        if (!(maxHitsPerTarget > 0)) maxHitsPerTarget = 0;
+
+        if (useGlobalPulse) {
+            pulseIndex = Math.floor(age / tickInterval);
+            isDamagePulse = (age % tickInterval == 0) && (pulseIndex < pulseCount);
+            if (pulseIndex >= pulseCount) pulseIndex = pulseCount - 1;
+            if (pulseIndex < 0) pulseIndex = 0;
+            isHotPulse = (pulseIndex >= hotStart && pulseIndex < hotStart + hotCount);
+        }
+
+        var baseDamageType:Object = bullet._flameBaseDamageType;
+        var baseMagicType:Object = bullet._flameBaseMagicType;
+        if (useGlobalPulse && isDamagePulse) {
+            if (isHotPulse) {
+                bullet.伤害类型 = config.flameHotDamageType ? config.flameHotDamageType : "魔法";
+                bullet.魔法伤害属性 = config.flameHotMagicType ? config.flameHotMagicType : "热";
+            } else {
+                bullet.伤害类型 = baseDamageType;
+                bullet.魔法伤害属性 = baseMagicType;
+            }
+        }
+
+        for (var i:Number = 0; i < hLen; i++) {
+            var h:Object = hits[i];
+            if (h.tEntry > damageLength + 0.001) break;
+
+            hitPoints[hitPoints.length] = {x: h.hitX, y: h.hitY};
+
+            var lastTick = bullet._flameHitFrameByTarget[h.target._name];
+            var targetHitCount:Number = Number(bullet._flameHitCountByTarget[h.target._name]);
+            if (!(targetHitCount > 0)) targetHitCount = 0;
+            var hasTotalBudget:Boolean = (totalHitBudget <= 0 || bullet._flameTotalHitsDone < totalHitBudget);
+            var hasTargetBudget:Boolean = (maxHitsPerTarget <= 0 || targetHitCount < maxHitsPerTarget);
+            if (isDamagePulse && hasTotalBudget && hasTargetBudget &&
+                (lastTick == undefined || age - Number(lastTick) >= tickInterval)) {
+                if (!bullet._flameFirstHitDone) {
+                    bullet.附加层伤害计算 = 0;
+                    bullet.hitTarget = h.target;
+                    bullet.命中对象 = h.target;
+                    if (bullet.击中时触发函数) bullet.击中时触发函数();
+                    bullet._flameFirstHitDone = true;
+                }
+                var damageResult:Object = injectHit(bullet, shooter, h.target, h.hitX, h.hitY, dmgMult);
+                if (damageResult != null) {
+                    damageHitPoints[damageHitPoints.length] = {x: h.hitX, y: h.hitY};
+                    bullet._flameHitFrameByTarget[h.target._name] = age;
+                    bullet._flameHitCountByTarget[h.target._name] = targetHitCount + 1;
+                    bullet._flameTotalHitsDone++;
+                }
+            }
+
+            dmgMult *= falloff;
+        }
+
+        if (useGlobalPulse && isDamagePulse) {
+            bullet.伤害类型 = baseDamageType;
+            bullet.魔法伤害属性 = baseMagicType;
+        }
+
+        var angle:Number = (ctx.resolvedRayAngle != undefined) ? Number(ctx.resolvedRayAngle) : bullet._rotation * (Math.PI / 180);
+        if ((angle - angle) != 0) angle = bullet._rotation * (Math.PI / 180);
+        var endX:Number = ctx.rayOriginX + Math.cos(angle) * currentLength;
+        var endY:Number = ctx.rayOriginY + Math.sin(angle) * currentLength;
+        RayVfxManager.spawn(ctx.rayOriginX, ctx.rayOriginY, endX, endY, config,
+            {
+                segmentKind: "flame",
+                hitIndex: 0,
+                intensity: 1.0,
+                isHit: hitPoints.length > 0,
+                hitPoints: hitPoints,
+                damageHitPoints: damageHitPoints,
+                isBlocked: blocked,
+                targetLength: targetLength,
+                damageLength: damageLength,
+                pulseIndex: pulseIndex,
+                pulseCount: pulseCount,
+                isHotPulse: isHotPulse,
+                isDamagePulse: isDamagePulse,
+                shotSeed: bullet._flameShotSeed,
+                flameVfxKey: bullet._flameVfxKey
+            });
+
+        bullet._flameAge = age + 1;
+        return bullet._flameAge < lifetime;
+    }
+
+    /**
+     * 收集沿火束方向最近的 maxCount 个目标，按 tEntry 升序返回。
+     */
+    private static function collectFlameHits(ctx:Object, maxCount:Number):Array {
+        var areaAABB:AABBCollider = ctx.areaAABB;
+        var unitMap:Array = ctx.unitMap;
+        var unitLen:Number = ctx.unitLen;
+        var unitLeftKeys:Array = ctx.unitLeftKeys;
+        var unitRightMax:Array = ctx.unitRightMax;
+        var bulletZOffset:Number = ctx.bulletZOffset;
+        var bulletZRange:Number = ctx.bulletZRange;
+        var rayRight:Number = areaAABB.right;
+        var lo:Number = bsearchScanStart(unitRightMax, unitLen, areaAABB.left);
+        var hits:Array = [];
+        var hLen:Number = 0;
+
+        for (var u:Number = lo; u < unitLen && unitLeftKeys[u] <= rayRight; u++) {
+            var t:MovieClip = unitMap[u];
+            var zoff:Number = bulletZOffset - t.Z轴坐标;
+            if (zoff >= bulletZRange || zoff <= -bulletZRange) continue;
+            if (t.hp > 0 && t.防止无限飞 != true) {
+                var cr:Object = areaAABB.checkCollision(t.aabbCollider, zoff);
+                if (cr.isColliding) {
+                    var newTEntry:Number = cr.tEntry;
+                    if (hLen < maxCount || newTEntry < hits[hLen - 1].tEntry) {
+                        var nh:Object = {
+                            target: t,
+                            hitX: cr.overlapCenter.x,
+                            hitY: cr.overlapCenter.y,
+                            tEntry: newTEntry
+                        };
+                        var ins:Number = (hLen >= maxCount) ? hLen - 1 : hLen;
+                        var scanStart:Number = (hLen >= maxCount) ? hLen - 2 : hLen - 1;
+                        for (var pi:Number = scanStart; pi >= 0; pi--) {
+                            if (hits[pi].tEntry > newTEntry) {
+                                hits[pi + 1] = hits[pi];
+                                ins = pi;
+                            } else {
+                                break;
+                            }
+                        }
+                        hits[ins] = nh;
+                        if (hLen < maxCount) hLen++;
+                    }
+                }
+            }
+        }
+
+        hits.length = hLen;
+        return hits;
     }
 
     /**

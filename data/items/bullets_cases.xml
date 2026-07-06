@@ -813,6 +813,51 @@
         </attribute>
     </bullet>
 
+    <!-- ========== 喷火束 (Flame Stream) ========== -->
+    <!-- 连续喷火射线: pierceLimit 控制沿线目标/阻挡上限; 12 帧内打满 5 段伤害以近似原版火焰 DPS -->
+    <bullet>
+        <name>喷火束</name>
+        <attribute>
+            <hitMark>灼烧弹坑</hitMark>
+            <pierceLimit>3</pierceLimit>
+            <rayConfig>
+                <rayLength>620</rayLength>
+                <rayMode>flame</rayMode>
+                <vfxStyle>flame_stream</vfxStyle>
+                <vfxPreset>flame_stream</vfxPreset>
+                <rayWidthFactor>2.4</rayWidthFactor>
+                <damageFalloff>1.0</damageFalloff>
+                <primaryColor>0xFF5A00</primaryColor>
+                <secondaryColor>0xFFD24A</secondaryColor>
+                <smokeColor>0x34302A</smokeColor>
+                <thickness>14</thickness>
+                <waveAmp>18</waveAmp>
+                <waveLen>120</waveLen>
+                <waveSpeed>0.55</waveSpeed>
+                <pulseAmp>0.12</pulseAmp>
+                <pulseRate>0.35</pulseRate>
+                <hitRippleSize>12</hitRippleSize>
+                <hitRippleAlpha>45</hitRippleAlpha>
+                <tongueCount>4</tongueCount>
+                <tipBloomScale>1.0</tipBloomScale>
+                <flameStartLength>80</flameStartLength>
+                <flameGrowSpeed>110</flameGrowSpeed>
+                <flameRetractSpeed>180</flameRetractSpeed>
+                <flameTickInterval>2</flameTickInterval>
+                <flamePulseCount>5</flamePulseCount>
+                <flameHotPulseStart>1</flameHotPulseStart>
+                <flameHotPulseCount>2</flameHotPulseCount>
+                <flameHotDamageType>魔法</flameHotDamageType>
+                <flameHotMagicType>热</flameHotMagicType>
+                <flameTotalHitBudget>5</flameTotalHitBudget>
+                <flameMaxHitsPerTarget>2</flameMaxHitsPerTarget>
+                <flameLifetime>12</flameLifetime>
+                <visualDuration>1</visualDuration>
+                <fadeOutDuration>2</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
+
     <!-- ========== 涡旋射线 (Vortex v2) ========== -->
     <!-- 基础版: single模式, 磁约束环未锁定——螺旋松散、色泽偏淡 -->
     <bullet>

@@ -171,6 +171,46 @@ class org.flashNight.arki.render.VfxPresets {
     };
 
     /**
+     * 喷火束预设
+     *
+     * 视觉特征：连续多火舌喷流 + 暗烟羽 + 黄白内核 + 阻挡端点堆火。
+     * 逻辑字段由 flame 模式读取：每帧重扫阻挡长度，短寿命内打满原版火焰近似段数。
+     */
+    public static var flame_stream:Object = {
+        // 公共字段
+        primaryColor: 0xFF6A00,      // 橙色火舌主体
+        secondaryColor: 0xFFE650,    // 黄焰内核
+        smokeColor: 0x3A251B,        // 暗烟羽
+        thickness: 14,
+        visualDuration: 1,           // 高频重刷，短保留避免拖影堆积
+        fadeOutDuration: 2,
+        // FlameStream 视觉参数
+        waveAmp: 28,
+        waveLen: 120,
+        waveSpeed: 0.55,
+        pulseAmp: 0.12,
+        pulseRate: 0.35,
+        hitRippleSize: 12,
+        hitRippleAlpha: 45,
+        tongueCount: 5,
+        tipBloomScale: 1.0,
+        // Flame 持续逻辑参数
+        flameStartLength: 80,
+        flameGrowSpeed: 110,
+        flameRetractSpeed: 150,
+        flameTickInterval: 2,
+        flamePulseCount: 5,
+        flameHotPulseStart: 1,
+        flameHotPulseCount: 2,
+        flameHotDamageType: "魔法",
+        flameHotMagicType: "热",
+        flameTotalHitBudget: 5,
+        flameMaxHitsPerTarget: 2,
+        flameLifetime: 12,
+        flickerEnabled: false
+    };
+
+    /**
      * 涡旋射线预设 (v2 渲染升级)
      *
      * 视觉特征：宽展双螺旋 + 波纹白芯交汇爆白 + 多层泛光 + 炮口辉光
@@ -302,6 +342,7 @@ class org.flashNight.arki.render.VfxPresets {
                 resonance: resonance,
                 ra3_wave: ra3_wave,
                 thermal: thermal,
+                flame_stream: flame_stream,
                 vortex: vortex,
                 plasma: plasma,
                 convergence: convergence,
@@ -327,7 +368,7 @@ class org.flashNight.arki.render.VfxPresets {
      * @return 预设名数组
      */
     public static function getPresetNames():Array {
-        return ["ra2_tesla", "ra2_prism", "radiance", "ra3_spectrum", "resonance", "ra3_wave", "thermal", "vortex", "plasma", "convergence", "bagua_rod"];
+        return ["ra2_tesla", "ra2_prism", "radiance", "ra3_spectrum", "resonance", "ra3_wave", "thermal", "flame_stream", "vortex", "plasma", "convergence", "bagua_rod"];
     }
 
     /**

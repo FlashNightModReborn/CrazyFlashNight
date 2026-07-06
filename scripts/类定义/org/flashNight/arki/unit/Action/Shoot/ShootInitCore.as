@@ -2,6 +2,7 @@
 import org.flashNight.arki.unit.Action.Shoot.WeaponStateManager;
 import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
 import org.flashNight.arki.unit.Action.Shoot.ShootCore;
+import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 import org.flashNight.arki.unit.UnitComponent.Aggro.SilenceStrategyFactory;
@@ -74,6 +75,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         // ShootCore 相关函数
         target.开始射击 = function() {
             ShootCore.startShooting(parentRef, target, ShootCore.primaryParams);
+        };
+
+        target.开始副武器射击 = function() {
+            LongGunSubWeaponCore.fireFromMan(parentRef, target);
         };
         
         // 持续射击函数（targetRef 为双枪调用方传入的主角函数引用，此处不使用；

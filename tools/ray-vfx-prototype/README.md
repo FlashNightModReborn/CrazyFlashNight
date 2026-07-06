@@ -54,6 +54,28 @@ python 八门金锁_变体扫描.py        # 5 个对照变体一次性生成
 | 注册 → [`RayStyleRegistry.as`](../../scripts/类定义/org/flashNight/arki/render/RayStyleRegistry.as) |
 | 用法 → [`bullets_cases.xml`](../../data/items/bullets_cases.xml) 的 `镇暴射线` 弹种 |
 
+### 喷火束 (Flame Stream)
+
+- [`喷火束_视觉原型.py`](喷火束_视觉原型.py) — 用极简 `AS2Canvas` 包装模拟 `lineStyle/moveTo/lineTo/curveTo/beginFill/endFill/drawCircle`, 验证连续火舌与长度增长/缩回
+- [`喷火束_变体扫描.py`](喷火束_变体扫描.py) — 批量对比增长速度、缩回速度、火舌宽度与摆动幅度
+
+#### 运行
+
+```bash
+python 喷火束_视觉原型.py
+python 喷火束_变体扫描.py
+```
+
+#### 实施位置 (AS2 端)
+
+| Python 原型 → AS2 |
+|---|
+| `draw_frame()` / `AS2Canvas` → [`FlameStreamRenderer.render()`](../../scripts/类定义/org/flashNight/arki/render/renderer/FlameStreamRenderer.as) |
+| `MAX_LENGTH/GROW_SPEED/RETRACT_SPEED` → [`TeslaRayConfig.as`](../../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Config/TeslaRayConfig.as) 的 `rayLength/flameGrowSpeed/flameRetractSpeed` |
+| 视觉参数块 → [`VfxPresets.flame_stream`](../../scripts/类定义/org/flashNight/arki/render/VfxPresets.as) |
+| 注册 → [`RayStyleRegistry.as`](../../scripts/类定义/org/flashNight/arki/render/RayStyleRegistry.as) |
+| 用法 → [`bullets_cases.xml`](../../data/items/bullets_cases.xml) 的 `喷火束` 弹种与 [`高等材料_下挂武器.xml`](../../data/items/equipment_mods/高等材料_下挂武器.xml) 的 `下挂喷火器` |
+
 ## 复用模式
 
 新增射线 renderer 时, 复制 `八门金锁_视觉原型.py` 改名 + 改顶部参数块即可起步。`变体扫描.py` 通过动态 import 复用同一份 `draw_frame()`, 只覆盖参数。

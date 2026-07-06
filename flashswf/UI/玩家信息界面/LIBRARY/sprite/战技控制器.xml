@@ -24,12 +24,15 @@ stop();
             </DOMFrame>
             <DOMFrame index="9" duration="11" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[var 释放战技结果 = _root.gameworld[_root.控制目标].释放主动战技();
+                <script><![CDATA[var 释放战技结果 = _root.武器技能输入控制器 ? _root.武器技能输入控制器.release(this) : null;
 
-if (释放战技结果)
+if (释放战技结果 && 释放战技结果.released)
 {
 	_root.玩家信息界面.刷新mp显示();
-	_parent[控制参数2].冷却开始(_parent[控制参数].冷却时间);
+	if (释放战技结果.startSharedCooldown)
+	{
+		_parent[控制参数2].冷却开始(释放战技结果.cooldownTime);
+	}
 }]]></script>
               </Actionscript>
               <elements/>
@@ -77,7 +80,7 @@ if (释放战技结果)
 	{
 		if (_root.当前玩家总数 === 1)
 		{
-			if (_parent._parent[_parent.控制参数].已装备名 != "" && _parent._parent[_parent.控制参数2].冷却)
+			if (_root.武器技能输入控制器.canTrigger(_parent))
 			{
 				if (Key.isDown(_root.武器技能键))
 				{

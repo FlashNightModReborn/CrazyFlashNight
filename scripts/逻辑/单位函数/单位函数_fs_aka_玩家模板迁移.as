@@ -425,7 +425,7 @@ _root.主角函数.行走_玩家 = function() {
     var currentDirection = self.方向;
     var isMainHandShooting = self.主手射击中;
     var isOffHandShooting = self.副手射击中;
-    var isReloading = self.man.换弹标签;
+    var isReloading = self.man.换弹标签 || org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.isManualReloadMovementLocked(self);
     var isActionA = self.动作A;
     var isActionB = self.动作B;
 
@@ -456,10 +456,11 @@ _root.主角函数.行走_玩家 = function() {
             upMove = downMove = false;
         }
     }
+    isMoving = rightMove || leftMove || upMove || downMove;
 
     // 处理移动逻辑
     if (isMoving) {
-        var isWalking = self.状态 != self.攻击模式 + "跑" && !强制奔跑;
+        var isWalking = (isReloading || self.状态 != self.攻击模式 + "跑") && !强制奔跑;
 
         // 行走状态处理
         if (isWalking) {
@@ -533,7 +534,7 @@ _root.主角函数.行走 = function() {
     var currentDirection = self.方向;
     var isMainHandShooting = self.主手射击中;
     var isOffHandShooting = self.副手射击中;
-    var isReloading = self.man.换弹标签;
+    var isReloading = self.man.换弹标签 || org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.isManualReloadMovementLocked(self);
     var isActionA = self.动作A;
     var isActionB = self.动作B;
 
@@ -559,10 +560,11 @@ _root.主角函数.行走 = function() {
             upMove = downMove = false;
         }
     }
+    isMoving = rightMove || leftMove || upMove || downMove;
 
     // 处理移动逻辑
     if (isMoving) {
-        var isWalking = 状态 != 攻击模式 + "跑" && !强制奔跑;
+        var isWalking = (isReloading || 状态 != 攻击模式 + "跑") && !强制奔跑;
 
         // 行走状态处理
         if (isWalking) {
@@ -1739,6 +1741,8 @@ _root.主角函数.释放技能 = function(技能名, 消耗mp, 技能按键值)
 _root.主角函数.创建主动战技槽位表 = function() {
     return {空手: null, 兵器: null, 长枪: null, 手枪: null, 手枪2: null};
 }
+
+WeaponSkillInputService.installRootBridge(_root);
 
 _root.主角函数.获取装备主动战技种类 = function(装备类型, 装备种类) {
     switch (装备种类) {

@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.equipment.SubweaponDataUtil;
+import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 
 /**
  * LongGunSubWeaponCore
@@ -7,6 +8,24 @@ import org.flashNight.arki.item.equipment.SubweaponDataUtil;
  * 长枪副武器运行时核心。负责副武器状态装载、K 发射、F 快装、R 联动补装与 UI 弹药同步。
  */
 class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
+
+    private static var DEBUG_SERVER_LOG:Boolean = true;
+    private static var DEBUG_SERVER_LOG_LIMIT:Number = 120;
+    private static var debugServerLogCount:Number = 0;
+    private static var DEFERRED_RETRY_MS:Number = 34;
+    private static var MAX_DEFERRED_RETRIES:Number = 4;
+
+    public static function debugLogStateMachine(unit:Object, man:Object, source:String):Void {
+        debugServer(unit, "[SubWpnSM] " + source +
+            " state=" + unit.状态 +
+            " moveShoot=" + unit.移动射击 +
+            " actionA=" + unit.动作A +
+            " actionB=" + unit.动作B +
+            " man=" + clipInfo(man) +
+            " hasMain=" + boolText(man && man.开始射击) +
+            " hasSub=" + boolText(man && man.开始副武器射击) +
+            " muzzle=" + muzzleInfo(getMuzzlePosition(man)));
+    }
 
     public static function configureUnit(unit:Object, itemData:Object):Boolean {
         var sub:Object = SubweaponDataUtil.getSubweaponData(itemData);
@@ -39,6 +58,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         unit.长枪副武器状态 = null;
         unit.subWeapon = null;
         unit.当前弹夹副武器已发射数 = 0;
+        delete unit.__subweaponManualReloadLock;
         if (unit.man) {
             delete unit.man.subweaponManualReload;
         }
@@ -68,39 +88,93 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     }
 
     public static function fire(unit:Object):Boolean {
-        if (!hasSubweapon(unit)) return false;
-        if (unit.攻击模式 != "长枪") return false;
-        if (unit.浮空 || unit.倒地) return false;
-        if (!(unit.状态 === "长枪行走" || unit.状态 === "长枪站立") || unit.换弹中 || unit.man.换弹标签) return false;
+        return fireInternal(unit, unit ? unit.man : null, true, "legacy");
+    }
+
+    public static function fireFromMan(unit:Object, man:Object):Boolean {
+        return fireInternal(unit, man, false, "fromMan");
+    }
+
+    private static function fireInternal(unit:Object, man:Object, allowPoseChange:Boolean, route:String):Boolean {
+        debugServer(unit, "[SubWpnCore] enter route=" + route +
+            " state=" + unit.状态 +
+            " atk=" + unit.攻击模式 +
+            " man=" + clipInfo(man) +
+            " unitMan=" + clipInfo(unit ? unit.man : null) +
+            " sameMan=" + boolText(unit && man === unit.man) +
+            " muzzle=" + muzzleInfo(getMuzzlePosition(man)));
+
+        if (!hasSubweapon(unit)) {
+            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=noSubweapon");
+            return false;
+        }
+        if (unit.攻击模式 != "长枪") {
+            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=attackMode " + unit.攻击模式);
+            return false;
+        }
+        if (unit.浮空 || unit.倒地) {
+            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=airOrDown air=" + unit.浮空 + " down=" + unit.倒地);
+            return false;
+        }
+        if (!isLongGunActionState(unit)) {
+            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=badState " + unit.状态);
+            return false;
+        }
+        if (unit.换弹中) {
+            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=unitReloading");
+            return false;
+        }
+        if (!man) {
+            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=noMan");
+            return false;
+        }
+        if (man.换弹标签) {
+            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=manReloading man=" + clipInfo(man));
+            return false;
+        }
 
         var config:Object = unit.长枪副武器配置;
         var state:Object = unit.长枪副武器状态;
         if (state.loaded <= 0) {
             updateAmmoDisplay(unit);
+            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=noLoaded");
             return false;
         }
 
         var now:Number = getTimer();
-        if (state.nextFireTime > now) return false;
-        if (!payFireCosts(unit, config, state)) return false;
+        if (state.nextFireTime > now) {
+            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=cd remain=" + (state.nextFireTime - now));
+            return false;
+        }
+        if (!payFireCosts(unit, config, state)) {
+            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=cost");
+            return false;
+        }
 
         if (unit.浮空) unit.temp_y = unit._y;
         else unit.temp_y = 0;
 
-        shoot(unit, config);
-        state.loaded--;
-        if (state.loaded < 0) state.loaded = 0;
-        unit.当前弹夹副武器已发射数 = state.capacity - state.loaded;
         state.nextFireTime = now + config.cd;
-        writeRuntimeBridgeFields(unit, config);
-        updateAmmoDisplay(unit);
-        if (isHero(unit)) _root.玩家信息界面.刷新mp显示();
+        var targetState:String = getNormalizedLongGunActionState(unit);
+        debugServer(unit, "[SubWpnCore] accepted route=" + route +
+            " targetState=" + targetState +
+            " allowPoseChange=" + allowPoseChange +
+            " loaded=" + state.loaded +
+            " cd=" + config.cd);
+        if (allowPoseChange && targetState != unit.状态) {
+            unit.行走冷却帧 = 2;
+            submitFireAfterPoseChange(unit, targetState);
+        } else {
+            finishFireOnMan(unit, man);
+        }
         return true;
     }
 
     public static function canReloadManual(unit:Object):Boolean {
         if (!hasSubweapon(unit)) return false;
         if (unit.攻击模式 != "长枪") return false;
+        if (!isLongGunActionState(unit)) return false;
+        if (isManualReloadMovementLocked(unit)) return false;
         if (!unit.man || unit.man.换弹标签 || unit.man.subweaponManualReload) return false;
 
         var config:Object = unit.长枪副武器配置;
@@ -135,12 +209,30 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     public static function startManualReloadAnimation(unit:Object):Boolean {
         if (!canReloadManual(unit)) return false;
 
-        var man:MovieClip = unit.man;
+        unit.__subweaponManualReloadLock = true;
+        debugServer(unit, "[SubWpnCore] manualReload start state=" + unit.状态 +
+            " man=" + clipInfo(unit ? unit.man : null));
         org.flashNight.arki.unit.Action.Shoot.ShootCore.cleanup(unit);
-        man.subweaponManualReload = true;
-        man.换弹标签 = true;
-        man.gotoAndPlay("换弹匣");
+        var targetState:String = getNormalizedLongGunActionState(unit);
+        if (targetState != unit.状态) {
+            unit.行走冷却帧 = 2;
+            submitManualReloadAfterPoseChange(unit, targetState);
+        } else {
+            startManualReloadOnCurrentMan(unit);
+        }
         return true;
+    }
+
+    public static function isManualReloadMovementLocked(unit:Object):Boolean {
+        if (!unit) return false;
+        if (unit.__subweaponManualReloadLock === true) return true;
+        return unit.man != null && unit.man.subweaponManualReload === true;
+    }
+
+    public static function clearManualReloadMovementLock(unit:Object):Void {
+        if (!unit) return;
+        delete unit.__subweaponManualReloadLock;
+        clearDeferredManualReload(unit);
     }
 
     public static function reloadManual(unit:Object):Boolean {
@@ -311,8 +403,15 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         return true;
     }
 
-    private static function shoot(unit:Object, config:Object):Void {
-        var myPoint:Object = getMuzzlePoint(unit);
+    private static function shoot(unit:Object, config:Object, man:Object):Void {
+        var muzzle:Object = getMuzzlePosition(man);
+        var myPoint:Object = getMuzzlePoint(unit, man, muzzle);
+        var angleOffset:Number = getAngleOffset(unit);
+        debugServer(unit, "[SubWpnCore] shoot bullet=" + config.bullet +
+            " point=(" + myPoint.x + "," + myPoint.y + ")" +
+            " z=" + unit.Z轴坐标 +
+            " angleOffset=" + angleOffset +
+            " muzzle=" + muzzleInfo(muzzle));
         var bulletProps:Object = new Object();
         bulletProps.声音 = config.sound;
         bulletProps.霰弹值 = config.split;
@@ -326,19 +425,209 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         bulletProps.击倒率 = config.impact;
         bulletProps.击中后子弹的效果 = "";
         bulletProps.发射者 = unit._name;
+        bulletProps.角度偏移 = angleOffset;
         bulletProps.shootX = myPoint.x;
         bulletProps.shootY = myPoint.y;
         bulletProps.shootZ = unit.Z轴坐标;
         bulletProps.伤害类型 = config.damageType;
         bulletProps.魔法伤害属性 = config.magicType;
+        if (muzzle) bulletProps.区域定位area = muzzle;
         _root.子弹区域shoot传递(bulletProps);
     }
 
-    private static function getMuzzlePoint(unit:Object):Object {
-        var muzzle:Object = unit.man.枪.枪.装扮.枪口位置;
-        var holder:Object = unit.man.枪.枪.装扮;
+    private static function isLongGunActionState(unit:Object):Boolean {
+        if (!unit) return false;
+        var prefix:String = unit.攻击模式;
+        return unit.状态 === prefix + "站立" || unit.状态 === prefix + "行走" || unit.状态 === prefix + "跑";
+    }
+
+    private static function getNormalizedLongGunActionState(unit:Object):String {
+        if (unit.移动射击 && unit.状态 === unit.攻击模式 + "跑") {
+            return unit.攻击模式 + "行走";
+        }
+        if (!unit.移动射击 && unit.状态 !== unit.攻击模式 + "站立") {
+            return unit.攻击模式 + "站立";
+        }
+        return unit.状态;
+    }
+
+    private static function submitFireAfterPoseChange(unit:Object, targetState:String):Void {
+        var job:Object = unit.__stateTransitionJob;
+        if (job == undefined) {
+            job = {};
+            unit.__stateTransitionJob = job;
+        }
+        job.gotoLabel = undefined;
+        job.callback = LongGunSubWeaponCore.finishFireOnCurrentMan;
+        job.arg_containerName = undefined;
+        job.arg_targetLabel = undefined;
+
+        changeUnitState(unit, targetState);
+
+        // 非 StateTransition 夹具或异常兜底：生产路径应由状态切换作业在新 man 上消费。
+        if (job.callback != undefined) {
+            job.callback = undefined;
+            job.gotoLabel = undefined;
+            finishFireOnMan(unit, unit.man);
+        }
+    }
+
+    private static function submitManualReloadAfterPoseChange(unit:Object, targetState:String):Void {
+        var job:Object = unit.__stateTransitionJob;
+        if (job == undefined) {
+            job = {};
+            unit.__stateTransitionJob = job;
+        }
+        job.gotoLabel = undefined;
+        job.callback = LongGunSubWeaponCore.startManualReloadOnCurrentMan;
+        job.arg_containerName = undefined;
+        job.arg_targetLabel = undefined;
+
+        changeUnitState(unit, targetState);
+
+        // 非 StateTransition 夹具或异常兜底：生产路径应由状态切换作业在新 man 上消费。
+        if (job.callback != undefined) {
+            job.callback = undefined;
+            job.gotoLabel = undefined;
+            startManualReloadOnCurrentMan(unit);
+        }
+    }
+
+    private static function finishFireOnCurrentMan(unit:Object):Void {
+        var man:Object = unit ? unit.man : null;
+        if (!isShootManReady(man)) {
+            deferFinishFireOnCurrentMan(unit);
+            return;
+        }
+        clearDeferredFire(unit);
+        finishFireOnMan(unit, man);
+    }
+
+    private static function finishFireOnMan(unit:Object, man:Object):Void {
+        if (!hasSubweapon(unit)) return;
+        var config:Object = unit.长枪副武器配置;
+        var state:Object = unit.长枪副武器状态;
+        if (state.loaded <= 0) {
+            updateAmmoDisplay(unit);
+            return;
+        }
+
+        playShootAnimation(unit, man);
+        shoot(unit, config, man);
+        state.loaded--;
+        if (state.loaded < 0) state.loaded = 0;
+        unit.当前弹夹副武器已发射数 = state.capacity - state.loaded;
+        writeRuntimeBridgeFields(unit, config);
+        updateAmmoDisplay(unit);
+        if (isHero(unit)) _root.玩家信息界面.刷新mp显示();
+    }
+
+    private static function startManualReloadOnCurrentMan(unit:Object):Void {
+        var man:MovieClip = unit.man;
+        if (!isManualReloadManReady(man)) {
+            deferStartManualReloadOnCurrentMan(unit);
+            return;
+        }
+        clearDeferredManualReload(unit);
+        man.subweaponManualReload = true;
+        man.换弹标签 = true;
+        debugServer(unit, "[SubWpnCore] manualReload play man=" + clipInfo(man));
+        man.gotoAndPlay("换弹匣");
+    }
+
+    private static function changeUnitState(unit:Object, state:String):Void {
+        if (unit.状态改变) {
+            unit.状态改变(state);
+        } else {
+            unit.状态 = state;
+        }
+    }
+
+    private static function playShootAnimation(unit:Object, man:Object):Void {
+        if (!man || !man.gotoAndPlay) return;
+        var frameName:String = getShootFrameName(unit);
+        debugServer(unit, "[SubWpnCore] playShoot man=" + clipInfo(man) + " frame=" + frameName);
+        man.gotoAndPlay(frameName);
+    }
+
+    private static function getShootFrameName(unit:Object):String {
+        if (_root.控制目标 === unit._name && !unit.上下移动射击) {
+            if (unit.下行) return "下射击";
+            if (unit.上行) return "上射击";
+        }
+        return "射击";
+    }
+
+    private static function getAngleOffset(unit:Object):Number {
+        if (_root.控制目标 === unit._name && !unit.上下移动射击) {
+            if (unit.下行) return 30;
+            if (unit.上行) return -30;
+        }
+        return 0;
+    }
+
+    private static function getMuzzlePosition(man:Object):Object {
+        return man.枪.枪.装扮.枪口位置;
+    }
+
+    private static function isShootManReady(man:Object):Boolean {
+        return man != null && getMuzzlePosition(man) != null;
+    }
+
+    private static function isManualReloadManReady(man:Object):Boolean {
+        return man != null && man.gotoAndPlay != null && man.开始换弹 != null && man.换弹匣 != null && man.结束换弹 != null;
+    }
+
+    private static function deferFinishFireOnCurrentMan(unit:Object):Void {
+        if (!hasSubweapon(unit)) return;
+        var tries:Number = unit.__subweaponDeferredFireRetries || 0;
+        if (tries >= MAX_DEFERRED_RETRIES) {
+            debugServer(unit, "[SubWpnCore] deferFire abort tries=" + tries +
+                " man=" + clipInfo(unit ? unit.man : null) +
+                " muzzle=" + muzzleInfo(getMuzzlePosition(unit ? unit.man : null)));
+            clearDeferredFire(unit);
+            return;
+        }
+        unit.__subweaponDeferredFireRetries = tries + 1;
+        debugServer(unit, "[SubWpnCore] deferFire retry=" + unit.__subweaponDeferredFireRetries +
+            " man=" + clipInfo(unit ? unit.man : null) +
+            " hasSub=" + boolText(unit && unit.man && unit.man.开始副武器射击) +
+            " muzzle=" + muzzleInfo(getMuzzlePosition(unit ? unit.man : null)));
+        EnhancedCooldownWheel.I().addTask(LongGunSubWeaponCore.finishFireOnCurrentMan, DEFERRED_RETRY_MS, 1, unit);
+    }
+
+    private static function clearDeferredFire(unit:Object):Void {
+        if (!unit) return;
+        delete unit.__subweaponDeferredFireRetries;
+    }
+
+    private static function deferStartManualReloadOnCurrentMan(unit:Object):Void {
+        if (!hasSubweapon(unit)) return;
+        var tries:Number = unit.__subweaponDeferredReloadRetries || 0;
+        if (tries >= MAX_DEFERRED_RETRIES) {
+            debugServer(unit, "[SubWpnCore] deferReload abort tries=" + tries +
+                " man=" + clipInfo(unit ? unit.man : null));
+            clearManualReloadMovementLock(unit);
+            clearDeferredManualReload(unit);
+            return;
+        }
+        unit.__subweaponDeferredReloadRetries = tries + 1;
+        debugServer(unit, "[SubWpnCore] deferReload retry=" + unit.__subweaponDeferredReloadRetries +
+            " man=" + clipInfo(unit ? unit.man : null) +
+            " hasReloadFns=" + boolText(isManualReloadManReady(unit ? unit.man : null)));
+        EnhancedCooldownWheel.I().addTask(LongGunSubWeaponCore.startManualReloadOnCurrentMan, DEFERRED_RETRY_MS, 1, unit);
+    }
+
+    private static function clearDeferredManualReload(unit:Object):Void {
+        if (!unit) return;
+        delete unit.__subweaponDeferredReloadRetries;
+    }
+
+    private static function getMuzzlePoint(unit:Object, man:Object, muzzle:Object):Object {
+        var holder:Object = muzzle ? muzzle._parent : null;
+        if (!holder && man) holder = man.枪.枪.装扮;
         if (muzzle && holder) {
-            var point:Object = {x: muzzle._x, y: muzzle._y + 20};
+            var point:Object = {x: muzzle._x, y: muzzle._y};
             holder.localToGlobal(point);
             _root.gameworld.globalToLocal(point);
             return point;
@@ -347,13 +636,42 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         muzzle = unit.长枪_引用.枪口位置;
         holder = unit.长枪_引用;
         if (muzzle && holder) {
+            debugServer(unit, "[SubWpnCore] muzzleFallback unitLongGun muzzle=" + muzzleInfo(muzzle));
             var fallbackPoint:Object = {x: muzzle._x, y: muzzle._y + 20};
             holder.localToGlobal(fallbackPoint);
             _root.gameworld.globalToLocal(fallbackPoint);
             return fallbackPoint;
         }
 
+        debugServer(unit, "[SubWpnCore] muzzleFallback unitPosition reason=noMuzzle unit=(" + unit._x + "," + unit._y + ")");
         return {x: unit._x, y: unit._y};
+    }
+
+    private static function debugServer(unit:Object, message:String):Void {
+        if (!DEBUG_SERVER_LOG) return;
+        if (_root.副武器调试日志 === false) return;
+        if (!isHero(unit)) return;
+        if (debugServerLogCount >= DEBUG_SERVER_LOG_LIMIT) return;
+        debugServerLogCount++;
+        if (_root.服务器 && _root.服务器.发布服务器消息) {
+            _root.服务器.发布服务器消息(message);
+        } else {
+            trace(message);
+        }
+    }
+
+    private static function clipInfo(clip:Object):String {
+        if (!clip) return "null";
+        return String(clip._name) + "#" + clip._currentframe;
+    }
+
+    private static function muzzleInfo(muzzle:Object):String {
+        if (!muzzle) return "null";
+        return String(muzzle._name) + "(" + muzzle._x + "," + muzzle._y + ")";
+    }
+
+    private static function boolText(value:Object):String {
+        return value ? "1" : "0";
     }
 
     private static function writeRuntimeBridgeFields(unit:Object, config:Object):Void {

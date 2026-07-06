@@ -122,4 +122,44 @@
         需要导轨系统支持。</description>
         <tag>下导轨</tag>
     </mod>
+    <mod>
+        <name>下挂喷火器</name>
+        <use>长枪</use>
+        <weapontype>突击步枪</weapontype>
+        <excludeWeapontype>发射器,机枪,压制机枪,近战,压制近战</excludeWeapontype>
+        <requireTags>下导轨挂点</requireTags>
+        <stats>
+            <flat>
+                <weight>2</weight>
+            </flat>
+        </stats>
+        <subweapon>
+            <name>下挂喷火器</name>
+            <controlName>下挂喷火器</controlName>
+            <description>持枪瞄准时喷射短束燃焰,火束会在阻挡穿刺上限的目标处缩回,消耗火焰喷射器燃料罐。</description>
+            <cd>220</cd>
+            <mp>0</mp>
+            <power>65</power>
+            <powerMultiplier>1</powerMultiplier>
+            <capacity>30</capacity>
+            <reserveName>火焰喷射器燃料罐</reserveName>
+            <bullet>喷火束</bullet>
+            <sound>火焰枪.wav</sound>
+            <split>1</split>
+            <diffusion>4</diffusion>
+            <velocity>1</velocity>
+            <range>60</range>
+            <impact>100</impact>
+            <damageType>物理</damageType>
+            <consumeMode>onLoadGroup</consumeMode>
+            <consumeTiming>onReloadCommit</consumeTiming>
+            <clipCostPerLoad>1</clipCostPerLoad>
+            <initialLoaded>30</initialLoaded>
+            <manualReloadAnimation>longGun</manualReloadAnimation>
+            <manualReloadBurden>25</manualReloadBurden>
+        </subweapon>
+        <description>紧凑型下挂喷火模块,用连续火束压制近中距离敌群。
+        需要导轨系统支持。</description>
+        <tag>下导轨</tag>
+    </mod>
 </root>

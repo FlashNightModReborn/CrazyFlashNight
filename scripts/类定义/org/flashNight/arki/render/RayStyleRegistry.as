@@ -10,6 +10,7 @@ import org.flashNight.arki.render.renderer.VortexRenderer;
 import org.flashNight.arki.render.renderer.PlasmaRenderer;
 import org.flashNight.arki.render.renderer.ConvergenceRenderer;
 import org.flashNight.arki.render.renderer.BaguaRodRenderer;
+import org.flashNight.arki.render.renderer.FlameStreamRenderer;
 
 /**
  * RayStyleRegistry - 射线视觉风格注册表（单一事实来源）
@@ -76,6 +77,7 @@ class org.flashNight.arki.render.RayStyleRegistry {
         reg(C.VFX_PLASMA,    PlasmaRenderer.render,         "plasma",          2.0);
         reg(C.VFX_CONVERGENCE, ConvergenceRenderer.render,  "convergence",     1.8);
         reg(C.VFX_BAGUA_ROD, BaguaRodRenderer.render,       "bagua_rod",       2.5);
+        reg(C.VFX_FLAME_STREAM, FlameStreamRenderer.render, "flame_stream",    2.2);
     }
 
     /** 注册一条风格记录（内部 helper，重复注册静默忽略） */

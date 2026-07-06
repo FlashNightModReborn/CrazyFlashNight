@@ -24,6 +24,7 @@ import org.flashNight.arki.render.RayStyleRegistry;
  * • "chain"  - 连锁弹跳，命中后从命中点搜索附近下一目标继续连锁
  * • "pierce" - 穿透射线，一条射线命中路径上所有目标
  * • "fork"   - 光棱折射，命中后从命中点搜索附近目标定向折射
+ * • "flame"  - 连续喷火，每帧重新扫描阻挡长度并按 tickInterval 重复灼烧
  *
  * 视觉风格说明 (vfxStyle - 渲染风格，与 rayMode 完全正交)：
  * • "tesla"    - 磁暴风格：高频抖动电弧 + 随机分叉 + 闪烁
@@ -31,6 +32,7 @@ import org.flashNight.arki.render.RayStyleRegistry;
  * • "radiance" - 辉光风格：三层泛光渲染 + 呼吸脉冲 + 色散偏移
  * • "spectrum" - 光谱风格：彩虹渐变 + 颜色滚动 + 流动感
  * • "wave"     - 波能风格：正弦波路径 + 脉冲膨胀 + 命中点增亮
+ * • "flame_stream" - 喷火束风格：多火舌连续喷流 + 阻挡端点堆火
  *
  * 预设系统：
  * • vfxPreset 指定预设名（如 "ra2_tesla"），自动加载默认参数
@@ -59,6 +61,8 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     public static var MODE_PIERCE:String = "pierce";
     /** 光棱折射模式：命中后从命中点搜索附近目标定向折射 */
     public static var MODE_FORK:String = "fork";
+    /** 喷火模式：持续扫描、长度增长/缩回、按 tick 重复灼烧 */
+    public static var MODE_FLAME:String = "flame";
 
     // ========== 射线模式 Bitmask（支持组合模式） ==========
 
@@ -68,6 +72,8 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     public static var MASK_CHAIN:Number  = 2;
     /** 分裂能力位 */
     public static var MASK_FORK:Number   = 4;
+    /** 喷火能力位 */
+    public static var MASK_FLAME:Number  = 8;
 
     // ========== 视觉风格常量 ==========
 
@@ -93,6 +99,8 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     public static var VFX_CONVERGENCE:String = "convergence";
     /** 八卦束流风格：8 切片堆叠 + 反向自旋 + 律动传递 (镇暴霰弹专用) */
     public static var VFX_BAGUA_ROD:String = "bagua_rod";
+    /** 喷火束风格：连续火舌喷流 + 阻挡端点堆火 */
+    public static var VFX_FLAME_STREAM:String = "flame_stream";
 
     // ========== 射线物理参数 ==========
 
@@ -325,6 +333,53 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     /** 切片间连杆顶点步长（1=8 根全部, 2=4 根, 4=2 根） */
     public var linkerStride:Number;
 
+    // ========== FlameStream 专用参数（喷火束） ==========
+
+    /** 喷火束初始可见长度（像素） */
+    public var flameStartLength:Number;
+
+    /** 目标长度变长时每帧增长速度（像素/帧） */
+    public var flameGrowSpeed:Number;
+
+    /** 目标长度变短时每帧缩回速度（像素/帧） */
+    public var flameRetractSpeed:Number;
+
+    /** 同一目标重复灼烧间隔（帧） */
+    public var flameTickInterval:Number;
+
+    /** 单发喷火束持续帧数；武器可通过高射速重叠形成持续喷流 */
+    public var flameLifetime:Number;
+
+    /** 单发喷火束伤害脉冲段数；0 表示沿用按目标间隔 tick 的旧行为 */
+    public var flamePulseCount:Number;
+
+    /** 热属性脉冲起始段，0 表示第一段 */
+    public var flameHotPulseStart:Number;
+
+    /** 热属性脉冲段数 */
+    public var flameHotPulseCount:Number;
+
+    /** 热属性脉冲覆盖的伤害类型 */
+    public var flameHotDamageType:String;
+
+    /** 热属性脉冲覆盖的魔法伤害属性 */
+    public var flameHotMagicType:String;
+
+    /** 单发喷火束总伤害结算预算；0 表示不限制 */
+    public var flameTotalHitBudget:Number;
+
+    /** 单发喷火束对同一目标的伤害结算上限；0 表示不限制 */
+    public var flameMaxHitsPerTarget:Number;
+
+    /** 火舌条数 */
+    public var tongueCount:Number;
+
+    /** 端点堆火倍率 */
+    public var tipBloomScale:Number;
+
+    /** 暗烟羽颜色 */
+    public var smokeColor:Number;
+
     // ========== 时间参数 ==========
 
     /** 视觉持续帧数（电弧保持显示的时间） */
@@ -402,6 +457,23 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     private static var DEFAULT_N_DIAGONALS:Number = 2;
     private static var DEFAULT_LINKER_STRIDE:Number = 1;
 
+    // FlameStream 专用默认值
+    private static var DEFAULT_FLAME_START_LENGTH:Number = 80;
+    private static var DEFAULT_FLAME_GROW_SPEED:Number = 110;
+    private static var DEFAULT_FLAME_RETRACT_SPEED:Number = 150;
+    private static var DEFAULT_FLAME_TICK_INTERVAL:Number = 2;
+    private static var DEFAULT_FLAME_LIFETIME:Number = 12;
+    private static var DEFAULT_FLAME_PULSE_COUNT:Number = 5;
+    private static var DEFAULT_FLAME_HOT_PULSE_START:Number = 1;
+    private static var DEFAULT_FLAME_HOT_PULSE_COUNT:Number = 2;
+    private static var DEFAULT_FLAME_HOT_DAMAGE_TYPE:String = "魔法";
+    private static var DEFAULT_FLAME_HOT_MAGIC_TYPE:String = "热";
+    private static var DEFAULT_FLAME_TOTAL_HIT_BUDGET:Number = 5;
+    private static var DEFAULT_FLAME_MAX_HITS_PER_TARGET:Number = 2;
+    private static var DEFAULT_TONGUE_COUNT:Number = 4;
+    private static var DEFAULT_TIP_BLOOM_SCALE:Number = 1.0;
+    private static var DEFAULT_SMOKE_COLOR:Number = 0x34302A;
+
     // 多目标伤害衰减默认值
     private static var DEFAULT_DAMAGE_FALLOFF:Number = 1.0;
 
@@ -416,11 +488,12 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         single: 0,
         chain:  2,
         pierce: 1,
-        fork:   4
+        fork:   4,
+        flame:  8
     };
 
     /** 规范化输出顺序（用于 parseRayMode 生成确定性字符串） */
-    private static var MODE_ORDER:Array = ["chain", "fork", "pierce"];
+    private static var MODE_ORDER:Array = ["flame", "chain", "fork", "pierce"];
 
     // ========== FIELD_MAP 字段映射（applyPreset/fromXML Stage 3 共用） ==========
 
@@ -429,6 +502,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     private static var P_COLOR:Number = 1;  // parseColor()
     private static var P_BOOL:Number  = 2;  // String(v).toLowerCase() == "true"
     private static var P_PAL:Number   = 3;  // parsePalette()
+    private static var P_STR:Number   = 4;  // String(v)
 
     /** 字段映射表：{k:字段名, p:解析器类型}。新增字段只需在此添加一行。 */
     private static var FIELD_MAP:Array = null;
@@ -498,7 +572,23 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             {k:"glowAlpha",          p:P_NUM},
             {k:"glowWidthMult",      p:P_NUM},
             {k:"nDiagonals",         p:P_NUM},
-            {k:"linkerStride",       p:P_NUM}
+            {k:"linkerStride",       p:P_NUM},
+            // FlameStream
+            {k:"flameStartLength",   p:P_NUM},
+            {k:"flameGrowSpeed",     p:P_NUM},
+            {k:"flameRetractSpeed",  p:P_NUM},
+            {k:"flameTickInterval",  p:P_NUM},
+            {k:"flameLifetime",      p:P_NUM},
+            {k:"flamePulseCount",    p:P_NUM},
+            {k:"flameHotPulseStart", p:P_NUM},
+            {k:"flameHotPulseCount", p:P_NUM},
+            {k:"flameHotDamageType", p:P_STR},
+            {k:"flameHotMagicType",  p:P_STR},
+            {k:"flameTotalHitBudget", p:P_NUM},
+            {k:"flameMaxHitsPerTarget", p:P_NUM},
+            {k:"tongueCount",        p:P_NUM},
+            {k:"tipBloomScale",      p:P_NUM},
+            {k:"smokeColor",         p:P_COLOR}
         ];
     }
 
@@ -510,6 +600,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             case 1:  return parseColor(value);                              // P_COLOR
             case 2:  return (String(value).toLowerCase() == "true");        // P_BOOL
             case 3:  return parsePalette(value);                            // P_PAL
+            case 4:  return String(value);                                   // P_STR
             default: return Number(value);                                  // P_NUM
         }
     }
@@ -592,6 +683,23 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         glowWidthMult = DEFAULT_GLOW_WIDTH_MULT;
         nDiagonals = DEFAULT_N_DIAGONALS;
         linkerStride = DEFAULT_LINKER_STRIDE;
+
+        // FlameStream 专用
+        flameStartLength = DEFAULT_FLAME_START_LENGTH;
+        flameGrowSpeed = DEFAULT_FLAME_GROW_SPEED;
+        flameRetractSpeed = DEFAULT_FLAME_RETRACT_SPEED;
+        flameTickInterval = DEFAULT_FLAME_TICK_INTERVAL;
+        flameLifetime = DEFAULT_FLAME_LIFETIME;
+        flamePulseCount = DEFAULT_FLAME_PULSE_COUNT;
+        flameHotPulseStart = DEFAULT_FLAME_HOT_PULSE_START;
+        flameHotPulseCount = DEFAULT_FLAME_HOT_PULSE_COUNT;
+        flameHotDamageType = DEFAULT_FLAME_HOT_DAMAGE_TYPE;
+        flameHotMagicType = DEFAULT_FLAME_HOT_MAGIC_TYPE;
+        flameTotalHitBudget = DEFAULT_FLAME_TOTAL_HIT_BUDGET;
+        flameMaxHitsPerTarget = DEFAULT_FLAME_MAX_HITS_PER_TARGET;
+        tongueCount = DEFAULT_TONGUE_COUNT;
+        tipBloomScale = DEFAULT_TIP_BLOOM_SCALE;
+        smokeColor = DEFAULT_SMOKE_COLOR;
 
         // 伤害衰减（damageFalloff=1.0 → 无衰减）
         damageFalloff = DEFAULT_DAMAGE_FALLOFF;
@@ -927,6 +1035,11 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         return (rayModeMask & MASK_FORK) != 0;
     }
 
+    /** 是否为喷火持续扫描模式 */
+    public function hasFlame():Boolean {
+        return (rayModeMask & MASK_FLAME) != 0;
+    }
+
     /**
      * 是否为组合模式（超过 1 个能力位置位）
      * 用于 BulletQueueProcessor 快速路径分发
@@ -988,6 +1101,14 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
                 break;
             case "convergence":
                 s += " railSpread=" + railSpread + " convergenceRatio=" + convergenceRatio + " railCount=" + railCount + " nodeCount=" + nodeCount;
+                break;
+            case "flame_stream":
+                s += " flameStartLength=" + flameStartLength + " flameGrowSpeed=" + flameGrowSpeed +
+                     " flameRetractSpeed=" + flameRetractSpeed + " flameTickInterval=" + flameTickInterval +
+                     " flameLifetime=" + flameLifetime + " flamePulseCount=" + flamePulseCount +
+                     " flameHotPulseStart=" + flameHotPulseStart + " flameHotPulseCount=" + flameHotPulseCount +
+                     " flameTotalHitBudget=" + flameTotalHitBudget + " flameMaxHitsPerTarget=" + flameMaxHitsPerTarget +
+                     " tongueCount=" + tongueCount;
                 break;
         }
 
@@ -1062,5 +1183,12 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
      */
     public function isConvergence():Boolean {
         return vfxStyle == "convergence";
+    }
+
+    /**
+     * 判断是否为 FlameStream 风格
+     */
+    public function isFlameStream():Boolean {
+        return vfxStyle == "flame_stream";
     }
 }

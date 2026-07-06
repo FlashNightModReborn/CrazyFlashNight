@@ -5,14 +5,14 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：commit `d063d53c2`（2026-05-30）。
+**最后核对代码基线**：commit `22fb317ba5`（2026-07-06）。
 
 ---
 
 ## 硬约束（最高优先级）
 
 - **编译限制**：AS2 的实际编译仍只能由 Flash CS6 GUI 完成；在已运行 `scripts/setup_compile_env.bat`、已打开 TestLoader 的前提下，可通过 `scripts/compile_test.ps1` / `scripts/compile_test.sh` 做**有限自动化 smoke 验证**并读取 trace / Output Panel 副本。**当前链路仍在迭代期**，不要把 `publish_done.marker` 单独当作成功依据；没有新鲜 trace、输出日志或 IDE 复核时，不要笼统声称“已编译通过”
-- **Flash 三层目标**：不要把“改了 `.as`”直接等价为编主文件。默认频率 / 优先级是 `asLoader`（业务逻辑注入，最高频）→ `TestLoader`（闭环调试 / 测试）→ `main`（少用，只在主 FLA / 资产 / linkage / 主时间轴有必要刷新时，多见于 UI 迁移）。选择 `-Target main` 必须能说明触及主文件层；普通 AS2 逻辑优先验证 `asLoader` / `TestLoader`
+- **Flash 目标归属**：不要把“改了 `.as`”或“改了 Flash 资产 XML”直接等价为编主文件。默认频率 / 优先级是 `asLoader`（业务逻辑注入，最高频）→ `TestLoader`（闭环调试 / 测试）→ `main`（只代表 `CRAZYFLASHER7MercenaryEmpire` 主 XFL）。独立 UI / 关卡 / 素材库 XFL（如 `flashswf/UI/*/*.xfl`）必须直接 `-Target <xfl> -PublishOnly -VerifySwf <对应.swf>`；选择 `-Target main` 必须能说明触及主文件层
 - **`.as` 编码**：必须 **UTF-8 with BOM**；新增 / 重建用“复制现有 `.as` → 改名”保留 BOM（见 [as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md) §0）
 - **SWF**：禁止手动编辑；`scripts/asLoader.swf` 达到可用节点时可提交，其他 SWF 完成功能后封档上传
 - **XFL / FLA 治理**：FLA 施工后跑 [scripts/tools/xfl/](scripts/tools/xfl/) 三件套（audit / rename_a_class / fix_includes）+ 重扫 [tools/linkage_scanner/scan_linkage.py](tools/linkage_scanner/scan_linkage.py)；linkageId 撞车类冲突一律人工 CS6 修，工具不动；FLA 出现「轴歪 + 编辑闪退 + 无法另存 XFL」三件套查 [FLA-rigPropagationMatrix-溢出导致元件不可编辑.md](scripts/优化随笔/FLA-rigPropagationMatrix-溢出导致元件不可编辑.md)；整体能力分层与触发条件见 [docs/xfl-agent-工具栈-长期路线-2026-05-24.md](docs/xfl-agent-工具栈-长期路线-2026-05-24.md)，Layer 1+ 未到触发条件不要扩张
@@ -26,7 +26,7 @@
 
 ---
 
-## Context Packs（按任务最小加载，最后核对 commit `d063d53c2`）
+## Context Packs（按任务最小加载，最后核对 commit `22fb317ba5`）
 
 先判定**主责子栈**，再只读对应文档；跨栈任务先跟主责子栈走，再按依赖补读。
 

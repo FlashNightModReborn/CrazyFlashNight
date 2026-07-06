@@ -324,6 +324,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param target 目标MovieClip (原this引用)
      */
     public static function finishReload(target:MovieClip):Void {
+        var wasSubweaponManualReload:Boolean = (target.subweaponManualReload === true);
         // 清理双枪换弹序列标记，避免影响下一次换弹
         delete target.dualReloadStartHand;
         delete target._dualReloadFirstInitStartFrame;
@@ -334,6 +335,9 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         delete target.reloadFrameControlActive;
         delete target.reloadFrameProgress;
         target.换弹标签 = false;
+        if (wasSubweaponManualReload) {
+            LongGunSubWeaponCore.clearManualReloadMovementLock(target._parent);
+        }
         target.gotoAndStop("空闲");
     }
     

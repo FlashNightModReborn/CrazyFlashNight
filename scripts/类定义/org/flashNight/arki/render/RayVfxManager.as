@@ -52,6 +52,9 @@ class org.flashNight.arki.render.RayVfxManager {
     /** 延迟队列（chainDelay 分帧播放） */
     private static var _delayedSegments:Array = [];
 
+    /** 喷火视觉通道索引：同一喷口的连续火焰复用一个 arc */
+    private static var _flameArcByKey:Object = {};
+
     /** 电弧绘制容器 */
     private static var _container:MovieClip = null;
 
@@ -76,6 +79,10 @@ class org.flashNight.arki.render.RayVfxManager {
     /** LOD 阈值 */
     private static var LOD_THRESHOLD_MEDIUM:Number = 8;   // cost >= 8 → LOD 1
     private static var LOD_THRESHOLD_LOW:Number = 25;     // cost >= 25 → LOD 2
+
+    /** 喷火视觉复用几何门槛 */
+    private static var FLAME_REUSE_MAX_ORIGIN_DIST_SQ:Number = 1024; // 32px
+    private static var FLAME_REUSE_MIN_DIR_DOT:Number = 0.965925826; // cos(15°)
 
     // ════════════════════════════════════════════════════════════════════════
     // 对象池
@@ -147,6 +154,7 @@ class org.flashNight.arki.render.RayVfxManager {
         _container = mc.createEmptyMovieClip("rayVfxContainer", mc.getNextHighestDepth());
         _activeArcs = [];
         _delayedSegments = [];
+        _flameArcByKey = {};
         _initialized = true;
     }
 
@@ -163,6 +171,7 @@ class org.flashNight.arki.render.RayVfxManager {
         _container = parent.createEmptyMovieClip("rayVfxContainer", parent.getNextHighestDepth());
         _activeArcs = [];
         _delayedSegments = [];
+        _flameArcByKey = {};
         _initialized = true;
     }
 
@@ -221,6 +230,10 @@ class org.flashNight.arki.render.RayVfxManager {
                 styleCost: getStyleCost(delayedStyle),
                 delayRemaining: delay
             });
+            return;
+        }
+
+        if (tryUpdatePersistentFlameArc(startX, startY, endX, endY, config, meta)) {
             return;
         }
 
@@ -291,6 +304,7 @@ class org.flashNight.arki.render.RayVfxManager {
         }
         _activeArcs = [];
         _delayedSegments = [];
+        _flameArcByKey = {};
 
         // 清理容器
         if (_container != null) {
@@ -348,16 +362,16 @@ class org.flashNight.arki.render.RayVfxManager {
         if (!isFiniteNumber(offsetX)) offsetX = 0;
         if (!isFiniteNumber(offsetY)) offsetY = 0;
 
+        // 获取 vfxStyle
+        var vfxStyle:String = (config != null && config.vfxStyle != null) ? config.vfxStyle : "tesla";
+
         var arcId:Number = _arcIdCounter++;
         var arcMc:MovieClip = _container.createEmptyMovieClip("arc_" + arcId, _container.getNextHighestDepth());
 
-        // 开启加色混合模式
+        // 普通射线整体加色；喷火束内部自行拆 body/glow 层，父级保持 normal 以保留暗部纹理。
         if (arcMc.blendMode !== undefined) {
-            arcMc.blendMode = "add";
+            arcMc.blendMode = (vfxStyle == "flame_stream") ? "normal" : "add";
         }
-
-        // 获取 vfxStyle
-        var vfxStyle:String = (config != null && config.vfxStyle != null) ? config.vfxStyle : "tesla";
 
         // 构建电弧数据对象
         var arc:Object = {
@@ -371,17 +385,12 @@ class org.flashNight.arki.render.RayVfxManager {
             meta: meta,
             vfxStyle: vfxStyle,
             styleCost: getStyleCost(vfxStyle),
-            age: 0
+            age: 0,
+            phaseAge: 0
         };
 
-        // 对 pierce 命中点应用相同坐标偏移（与 start/end 保持一致）
-        if (meta != null && meta.hitPoints != null && (offsetX != 0 || offsetY != 0)) {
-            var hps:Array = meta.hitPoints;
-            for (var h:Number = hps.length - 1; h >= 0; --h) {
-                hps[h].x += offsetX;
-                hps[h].y += offsetY;
-            }
-        }
+        // 对命中点应用相同坐标偏移（与 start/end 保持一致）
+        offsetMetaPoints(meta, offsetX, offsetY);
 
         // 从 config 读取时间参数
         arc.visualDuration = cfgNum(config, "visualDuration", 5);
@@ -398,6 +407,118 @@ class org.flashNight.arki.render.RayVfxManager {
         // 首帧立即渲染
         renderArc(arc);
         _activeArcs.push(arc);
+
+        if (meta != null && meta.flameVfxKey != undefined && vfxStyle == "flame_stream") {
+            var key:String = String(meta.flameVfxKey);
+            arc.flameVfxKey = key;
+            if (meta.shotSeed != undefined) arc.flameShotSeed = meta.shotSeed;
+            _flameArcByKey[key] = arc;
+        }
+    }
+
+    /**
+     * 尝试把同一喷口的新喷火帧合并到既有视觉 arc。
+     * 伤害结算不走这里；这里只刷新显示对象的几何、meta 和淡出计时。
+     */
+    private static function tryUpdatePersistentFlameArc(startX:Number, startY:Number,
+                                                        endX:Number, endY:Number,
+                                                        config:TeslaRayConfig, meta:Object):Boolean {
+        if (meta == null || meta.segmentKind != "flame" || meta.flameVfxKey == undefined) return false;
+
+        var vfxStyle:String = (config != null && config.vfxStyle != null) ? config.vfxStyle : "tesla";
+        if (vfxStyle != "flame_stream") return false;
+
+        var key:String = String(meta.flameVfxKey);
+        var arc:Object = _flameArcByKey[key];
+        if (arc == null || arc.mc == null) {
+            _flameArcByKey[key] = null;
+            return false;
+        }
+        if (arc.vfxStyle != vfxStyle) return false;
+
+        var offset:Object = SceneCoordinateManager.effectOffset;
+        var offsetX:Number = (offset != null && offset.x != undefined) ? Number(offset.x) : 0;
+        var offsetY:Number = (offset != null && offset.y != undefined) ? Number(offset.y) : 0;
+        if (!isFiniteNumber(offsetX)) offsetX = 0;
+        if (!isFiniteNumber(offsetY)) offsetY = 0;
+
+        var sx:Number = startX + offsetX;
+        var sy:Number = startY + offsetY;
+        var ex:Number = endX + offsetX;
+        var ey:Number = endY + offsetY;
+
+        var ndx:Number = ex - sx;
+        var ndy:Number = ey - sy;
+        var newLenSq:Number = ndx * ndx + ndy * ndy;
+        if (!(newLenSq > 1)) return false;
+
+        var osx:Number = sx - arc.startX;
+        var osy:Number = sy - arc.startY;
+        if (osx * osx + osy * osy > FLAME_REUSE_MAX_ORIGIN_DIST_SQ) return false;
+
+        var odx:Number = arc.endX - arc.startX;
+        var ody:Number = arc.endY - arc.startY;
+        var oldLenSq:Number = odx * odx + ody * ody;
+        if (!(oldLenSq > 1)) return false;
+
+        var newLen:Number = Math.sqrt(newLenSq);
+        var oldLen:Number = Math.sqrt(oldLenSq);
+        var dot:Number = (odx * ndx + ody * ndy) / (oldLen * newLen);
+        if (dot < FLAME_REUSE_MIN_DIR_DOT) return false;
+
+        // 新发射的短起始长度不应在无新阻挡时截短上一束已经展开的视觉。
+        var newTarget:Number = (meta.targetLength != undefined) ? Number(meta.targetLength) : 0;
+        var oldTarget:Number = (arc.meta != null && arc.meta.targetLength != undefined) ? Number(arc.meta.targetLength) : 0;
+        if (newLen < oldLen && (!(newTarget > 0) || !(oldTarget > 0) || newTarget >= oldTarget - 1)) {
+            ex = sx + ndx / newLen * oldLen;
+            ey = sy + ndy / newLen * oldLen;
+            meta.visualLengthKept = true;
+        }
+
+        offsetMetaPoints(meta, offsetX, offsetY);
+
+        if (arc.flameShotSeed == undefined && meta.shotSeed != undefined) {
+            arc.flameShotSeed = meta.shotSeed;
+        }
+        if (arc.flameShotSeed != undefined) {
+            meta.shotSeed = arc.flameShotSeed;
+        }
+
+        arc.startX = sx;
+        arc.startY = sy;
+        arc.endX = ex;
+        arc.endY = ey;
+        arc.config = config;
+        arc.meta = meta;
+        arc.styleCost = getStyleCost(vfxStyle);
+        arc.age = 0;
+        arc.visualDuration = cfgNum(config, "visualDuration", 5);
+        arc.fadeDuration = cfgNum(config, "fadeOutDuration", 3);
+        arc.totalDuration = arc.visualDuration + arc.fadeDuration;
+
+        arc.flickerEnabled = (config != null && config.flickerEnabled === true);
+        if (arc.flickerEnabled) {
+            arc.flickerMin = cfgNum(config, "flickerMin", 70);
+            arc.flickerRange = cfgNum(config, "flickerMax", 100) - arc.flickerMin;
+        }
+
+        arc.mc._alpha = 100;
+        renderArc(arc);
+        return true;
+    }
+
+    private static function offsetMetaPoints(meta:Object, offsetX:Number, offsetY:Number):Void {
+        if (meta == null || (offsetX == 0 && offsetY == 0)) return;
+        offsetPointArray(meta.hitPoints, offsetX, offsetY);
+        offsetPointArray(meta.damageHitPoints, offsetX, offsetY);
+    }
+
+    private static function offsetPointArray(points:Array, offsetX:Number, offsetY:Number):Void {
+        if (points == null) return;
+        for (var i:Number = points.length - 1; i >= 0; --i) {
+            points[i].x += offsetX;
+            points[i].y += offsetY;
+        }
     }
 
     /**
@@ -428,6 +549,7 @@ class org.flashNight.arki.render.RayVfxManager {
         for (var i:Number = _activeArcs.length - 1; i >= 0; --i) {
             var arc:Object = _activeArcs[i];
             arc.age++;
+            if (arc.phaseAge != undefined) arc.phaseAge++;
 
             if (arc.age <= arc.visualDuration) {
                 // 活跃期重绘策略：
@@ -448,6 +570,9 @@ class org.flashNight.arki.render.RayVfxManager {
                 arc.mc._alpha = 100 * (1 - fadeProgress);
             } else {
                 // 过期销毁：swap-delete O(1)
+                if (arc.flameVfxKey != undefined && _flameArcByKey[arc.flameVfxKey] === arc) {
+                    _flameArcByKey[arc.flameVfxKey] = null;
+                }
                 arc.mc.removeMovieClip();
                 var last:Number = _activeArcs.length - 1;
                 if (i < last) {

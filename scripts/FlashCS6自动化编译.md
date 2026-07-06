@@ -1,7 +1,7 @@
 # Flash CS6 自动化编译指南
 
 **文档角色**：Flash CS6 编译 smoke canonical doc。  
-**最后核对代码基线**：commit `6ed0404f9a`（2026-06-17）。
+**最后核对代码基线**：commit `22fb317ba5`（2026-07-06）。
 
 本文件只讲 **Flash CS6 编译与 smoke 验证链**：计划任务、JSFL、trace、编译器错误、截图与故障排查。  
 游戏启动与运行自动化请看 [automation/README.md](../automation/README.md)。
@@ -30,9 +30,10 @@
 |------|------|----------|----------|
 | asLoader 逻辑注入层 | 运行时 AS2 class / boot include / `_root` 方法与 WebView bridge 注入 | 多数 `scripts/类定义/`、`scripts/逻辑/`、`scripts/逻辑系统分区/*_WebView.as`、`*PanelService.as` | `-Target publish` |
 | TestLoader 测试层 | 测试入口、mock、专项断言、trace 验证 | `scripts/TestLoader.as`、测试 class、测试 fixture | `-Target test` |
-| 主文件运行壳 / 资产挂载层 | 运行入口、主 FLA 时间轴、库元件、linkage、资产挂载 | `CRAZYFLASHER7MercenaryEmpire/LIBRARY/*`、主 XFL/FLA、主时间轴帧脚本、linkage 变更；少用，多集中于 UI 迁移业务 | `-Target main` |
+| 主文件运行壳 | 运行入口、主 FLA 时间轴、主文件库元件、主文件 linkage | `CRAZYFLASHER7MercenaryEmpire/LIBRARY/*`、主 XFL/FLA、主时间轴帧脚本、主文件 linkage 变更 | `-Target main` |
+| 独立资源 XFL / 子 SWF | UI、关卡、素材库等由主文件加载或引用的独立 SWF | `flashswf/UI/*/LIBRARY/*.xml`、`flashswf/levels/*/LIBRARY/*.xml`、`flashswf/arts/*/LIBRARY/*.xml` | `-Target <xfl> -PublishOnly -VerifySwf <对应.swf>` |
 
-`main` 是最重的主文件 publish-only 验证，只应在触及主 FLA / 资产 / linkage / 主时间轴时使用；普通 asLoader 注入逻辑跑 `main` 不会证明 `scripts/asLoader.swf` 已更新。若同轮跨层改动，按实际层级分别跑对应目标。
+`main` 是主运行壳 publish-only 验证，只证明 `CRAZYFLASHER7MercenaryEmpire.xfl` 及其直接库资源已发布；它不是所有 `flashswf/` 资产的兜底目标。普通 asLoader 注入逻辑跑 `main` 不会证明 `scripts/asLoader.swf` 已更新；独立 UI / 关卡 / 素材库 XFL 跑 `main` 也不会证明对应子 SWF 已更新。若同轮跨层改动，按实际层级分别跑对应目标。
 
 ### PowerShell
 
@@ -65,11 +66,16 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target main -
 
 # 任意 FLA/XFL（相对仓库根或绝对路径）
 powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target scripts/asLoader/asLoader.xfl
+
+# 独立资源 XFL / 子 SWF：先看同目录 PublishSettings.xml 的输出名，再给 -VerifySwf
+powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target 'flashswf/UI/玩家信息界面/玩家信息界面.xfl' -PublishOnly -VerifySwf 'flashswf/UI/玩家信息界面.swf'
 ```
 
 `test`|`testloader` → `scripts/TestLoader`；`publish`|`asloader` → `scripts/asLoader`（自动 `-VerifySwf`）；`main`|`mainfile`|`empire` → `CRAZYFLASHER7MercenaryEmpire/CRAZYFLASHER7MercenaryEmpire.xfl`（**publish-only** + 自动 `-VerifySwf CRAZYFLASHER7MercenaryEmpire.swf`）。多个目标可同时开在 CS6，`-Target` 决定编哪个，无需手动切到前台。
 
-> ⚠️ **编译单元归属铁律（踩过坑）**：`scripts/类定义/` 下的 **类**（如 `*PanelService`）与 `scripts/逻辑系统分区/*_WebView.as`、`scripts/展现/UI交互/*.as` 这些 **boot `#include` 脚本** 都编进 **asLoader**——asLoader 编译 class + 把方法注入 `_root`（`_root.gameCommands.*` 等）全局提供给主文件和其他 SWF 使用。**改这些必须 `-Target publish`（asLoader），`-Target main` 不会生效！** `-Target main` 只编主文件 FLA 自身的元件 / 时间轴帧脚本（如 `Symbol 1770`、库元件增删）。判断方法：被改的东西在 `asLoaderManifest`(`grep 文件名 scripts/asLoaderManifest/`) 里 → 用 `publish`；是主 FLA 的 `DOMSymbolInstance`/库元件 → 用 `main`；两边都动了 → 两个都编。验证可 `ffdec -export script` 后 grep 改动标志串确认进了哪个 SWF。
+> ⚠️ **编译单元归属铁律（踩过坑）**：`scripts/类定义/` 下的 **类**（如 `*PanelService`）与 `scripts/逻辑系统分区/*_WebView.as`、`scripts/展现/UI交互/*.as` 这些 **boot `#include` 脚本** 都编进 **asLoader**——asLoader 编译 class + 把方法注入 `_root`（`_root.gameCommands.*` 等）全局提供给主文件和其他 SWF 使用。**改这些必须 `-Target publish`（asLoader），`-Target main` 不会生效！** `-Target main` 只编主文件 FLA 自身的元件 / 时间轴帧脚本（如 `Symbol 1770`、主文件库元件增删）。判断方法：被改的东西在 `asLoaderManifest`(`grep 文件名 scripts/asLoaderManifest/`) 里 → 用 `publish`；路径属于 `CRAZYFLASHER7MercenaryEmpire/` → 用 `main`；路径属于 `flashswf/UI/*`、`flashswf/levels/*`、`flashswf/arts/*` 这类独立 XFL → 找同目录 `.xfl` 和 `PublishSettings.xml` 输出 SWF，用显式 `-Target <xfl> -PublishOnly -VerifySwf <swf>`；两边都动了 → 分别编。验证可 `ffdec -export script` 后 grep 改动标志串确认进了哪个 SWF。
+
+独立资源 XFL 的输出位置通常不在该 XFL 子目录的 `bin/` 下；`bin/` 多为 XFL cache。以 `flashswf/UI/玩家信息界面` 为例，源入口是 `flashswf/UI/玩家信息界面/玩家信息界面.xfl`，发布产物由 `PublishSettings.xml` 指向 `flashswf/UI/玩家信息界面.swf`。改 `LIBRARY/*.xml` 后，主文件 `-Target main` 刷新不代表这个 SWF 已刷新。
 
 **main 与 test/publish 的差别**：`main` 走 `doc.publish()` 而非 `doc.testMovie()`——主文件 testMovie 会启动整套游戏（连不上 launcher socket 卡住 / 撞反盗版层 / 留僵尸窗口），publish 只编译产出 SWF + 填充 Compiler Errors。模式由 `compile_test.ps1` 写 `scripts/compile_mode.cfg`（`publish`/缺省 `test`），`compile_action.jsfl` 读取后选 `publish()` vs `testMovie()`，一次性指令读到即删。`main` 不产 trace（发布设置 `OmitTraceActions=1`），`flashlog.txt 未刷新` 属正常，看 `compiler_errors.txt`。预编译 BOM 门已扩展覆盖主文件 classpath 高频迁移类子树 `arki\task`/`arki\merc`/`arki\stageSelect`。
 
