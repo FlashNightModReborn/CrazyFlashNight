@@ -81,7 +81,7 @@ class org.flashNight.arki.render.RayVfxManager {
     private static var LOD_THRESHOLD_LOW:Number = 25;     // cost >= 25 → LOD 2
 
     /** 喷火视觉复用几何门槛 */
-    private static var FLAME_REUSE_MAX_ORIGIN_DIST_SQ:Number = 1024; // 32px
+    private static var FLAME_REUSE_DEFAULT_ORIGIN_DIST:Number = 32; // px
     private static var FLAME_REUSE_MIN_DIR_DOT:Number = 0.965925826; // cos(15°)
 
     // ════════════════════════════════════════════════════════════════════════
@@ -412,6 +412,10 @@ class org.flashNight.arki.render.RayVfxManager {
             var key:String = String(meta.flameVfxKey);
             arc.flameVfxKey = key;
             if (meta.shotSeed != undefined) arc.flameShotSeed = meta.shotSeed;
+            if (meta.flameVfxSerial != undefined) {
+                var flameSerial:Number = Number(meta.flameVfxSerial);
+                if (isFiniteNumber(flameSerial) && flameSerial > 0) arc.flameVfxSerial = flameSerial;
+            }
             _flameArcByKey[key] = arc;
         }
     }
@@ -452,9 +456,21 @@ class org.flashNight.arki.render.RayVfxManager {
         var newLenSq:Number = ndx * ndx + ndy * ndy;
         if (!(newLenSq > 1)) return false;
 
-        var osx:Number = sx - arc.startX;
-        var osy:Number = sy - arc.startY;
-        if (osx * osx + osy * osy > FLAME_REUSE_MAX_ORIGIN_DIST_SQ) return false;
+        var newSerial:Number = 0;
+        if (meta.flameVfxSerial != undefined) {
+            newSerial = Number(meta.flameVfxSerial);
+            if (!isFiniteNumber(newSerial) || !(newSerial > 0)) newSerial = 0;
+        }
+
+        var oldSerial:Number = 0;
+        if (arc.flameVfxSerial != undefined) {
+            oldSerial = Number(arc.flameVfxSerial);
+            if (!isFiniteNumber(oldSerial) || !(oldSerial > 0)) oldSerial = 0;
+        }
+
+        if (oldSerial > 0 && newSerial > 0 && newSerial < oldSerial) {
+            return true;
+        }
 
         var odx:Number = arc.endX - arc.startX;
         var ody:Number = arc.endY - arc.startY;
@@ -465,6 +481,15 @@ class org.flashNight.arki.render.RayVfxManager {
         var oldLen:Number = Math.sqrt(oldLenSq);
         var dot:Number = (odx * ndx + ody * ndy) / (oldLen * newLen);
         if (dot < FLAME_REUSE_MIN_DIR_DOT) return false;
+
+        var takeoverByNewShot:Boolean = (oldSerial > 0 && newSerial > oldSerial);
+        if (!takeoverByNewShot) {
+            var osx:Number = sx - arc.startX;
+            var osy:Number = sy - arc.startY;
+            var maxOriginDist:Number = cfgNum(config, "flameReuseMaxOriginDist", FLAME_REUSE_DEFAULT_ORIGIN_DIST);
+            if (!(maxOriginDist > 0)) maxOriginDist = FLAME_REUSE_DEFAULT_ORIGIN_DIST;
+            if (osx * osx + osy * osy > maxOriginDist * maxOriginDist) return false;
+        }
 
         // 新发射的短起始长度不应在无新阻挡时截短上一束已经展开的视觉。
         var newTarget:Number = (meta.targetLength != undefined) ? Number(meta.targetLength) : 0;
@@ -482,6 +507,9 @@ class org.flashNight.arki.render.RayVfxManager {
         }
         if (arc.flameShotSeed != undefined) {
             meta.shotSeed = arc.flameShotSeed;
+        }
+        if (newSerial > 0) {
+            arc.flameVfxSerial = newSerial;
         }
 
         arc.startX = sx;

@@ -424,6 +424,68 @@ class org.flashNight.arki.render.RayVfxManagerTest {
         RayVfxManager.reset();
     }
 
+    private static function test_persistentFlameSerialTakeover():Void {
+        trace("--- persistent flame serial takeover ---");
+        RayVfxManager.initWithContainer(_root);
+
+        var cfg:TeslaRayConfig = new TeslaRayConfig();
+        cfg.chainDelay = 0;
+        cfg.visualDuration = 4;
+        cfg.fadeOutDuration = 1;
+        cfg.vfxStyle = "flame_stream";
+        cfg.flameReuseMaxOriginDist = 10;
+
+        RayVfxManager.spawn(0, 0, 100, 0, cfg, {
+            segmentKind: "flame",
+            hitIndex: 0,
+            intensity: 1.0,
+            isHit: false,
+            targetLength: 100,
+            shotSeed: 1,
+            flameVfxKey: "tester:flame",
+            flameVfxSerial: 1
+        });
+        assertEq(1, RayVfxManager.getActiveCount(), "首条喷火束创建 1 个视觉通道");
+
+        RayVfxManager.spawn(200, 0, 300, 0, cfg, {
+            segmentKind: "flame",
+            hitIndex: 0,
+            intensity: 1.0,
+            isHit: false,
+            targetLength: 100,
+            shotSeed: 2,
+            flameVfxKey: "tester:flame",
+            flameVfxSerial: 2
+        });
+        assertEq(1, RayVfxManager.getActiveCount(), "新序号同向喷火束跨距离接管旧视觉通道");
+
+        RayVfxManager.spawn(0, 0, 100, 0, cfg, {
+            segmentKind: "flame",
+            hitIndex: 0,
+            intensity: 1.0,
+            isHit: false,
+            targetLength: 100,
+            shotSeed: 1,
+            flameVfxKey: "tester:flame",
+            flameVfxSerial: 1
+        });
+        assertEq(1, RayVfxManager.getActiveCount(), "旧序号喷火束不重新创建视觉通道");
+
+        RayVfxManager.spawn(200, 0, 100, 0, cfg, {
+            segmentKind: "flame",
+            hitIndex: 0,
+            intensity: 1.0,
+            isHit: false,
+            targetLength: 100,
+            shotSeed: 3,
+            flameVfxKey: "tester:flame",
+            flameVfxSerial: 3
+        });
+        assertEq(2, RayVfxManager.getActiveCount(), "新序号反向喷火束另开视觉通道");
+
+        RayVfxManager.reset();
+    }
+
     private static function test_spawnRejectsInvalidCoordinates():Void {
         trace("--- spawn rejects invalid coordinates ---");
         RayVfxManager.initWithContainer(_root);
@@ -751,6 +813,7 @@ class org.flashNight.arki.render.RayVfxManagerTest {
         // 5. 生命周期
         test_lifecycle();
         test_multipleArcs();
+        test_persistentFlameSerialTakeover();
         test_spawnRejectsInvalidCoordinates();
         test_fadeAlpha();
 
@@ -776,6 +839,20 @@ class org.flashNight.arki.render.RayVfxManagerTest {
         bench_poolOperations();
 
         trace("===== RayVfxManagerTest 结束: run=" + testsRun
+            + ", pass=" + testsPassed + ", fail=" + testsFailed + " =====");
+        if (testsFailed > 0) {
+            trace("!!! " + testsFailed + " 个测试失败 !!!");
+        }
+    }
+
+    public static function runFlameReuseTests():Void {
+        testsRun = 0;
+        testsPassed = 0;
+        testsFailed = 0;
+
+        trace("===== RayVfxManagerTest 喷火复用开始 =====");
+        test_persistentFlameSerialTakeover();
+        trace("===== RayVfxManagerTest 喷火复用结束: run=" + testsRun
             + ", pass=" + testsPassed + ", fail=" + testsFailed + " =====");
         if (testsFailed > 0) {
             trace("!!! " + testsFailed + " 个测试失败 !!!");

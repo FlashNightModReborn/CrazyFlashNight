@@ -117,6 +117,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      */
     private static var _raySurvivors:Array = [];
 
+    /** 喷火视觉提交序号：同一喷口的新束可接管旧束视觉，旧束仅保留命中结算。 */
+    private static var _flameVfxSerialCounter:Number = 0;
+
     /**
      * 射线持久化总开关（deferral=B）。
      * true（默认）：pierce/chain/combo 走每帧贪心持久路 processPersistentRay；
@@ -315,6 +318,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         }
         _rayBullets.length = 0;
         _raySurvivors.length = 0;
+        _flameVfxSerialCounter = 0;
         // 重置射弹预警门控计数（场景切换时单位已销毁）
         BulletThreatScanProcessor.reset();
         return true;
@@ -1987,6 +1991,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             bullet._flameBaseMagicType = bullet.魔法伤害属性;
             bullet._flameShotSeed = Math.random() * 6.283185307179586;
             bullet._flameVfxKey = String(bullet.发射者名) + ":" + String(bullet.子弹种类);
+            bullet._flameVfxSerial = ++_flameVfxSerialCounter;
             bullet._flameInited = true;
         }
 
@@ -2119,7 +2124,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 isHotPulse: isHotPulse,
                 isDamagePulse: isDamagePulse,
                 shotSeed: bullet._flameShotSeed,
-                flameVfxKey: bullet._flameVfxKey
+                flameVfxKey: bullet._flameVfxKey,
+                flameVfxSerial: bullet._flameVfxSerial
             });
 
         bullet._flameAge = age + 1;

@@ -132,6 +132,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfigTest {
     private static function test_flameVelocityScalingFieldsParsing():Void {
         var defaults:TeslaRayConfig = new TeslaRayConfig();
         assertEqualsBoolean(false, defaults.flameUseWeaponVelocity, "喷火束默认不按武器速度缩放");
+        assertEqualsNumber(32, defaults.flameReuseMaxOriginDist, "喷火束默认视觉复用起点半径 32px");
 
         var node:Object = {
             vfxStyle: "flame_stream",
@@ -141,7 +142,8 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfigTest {
             flameUseWeaponVelocity: "true",
             flameVelocityBase: "35",
             flameVelocityMinScale: "0.65",
-            flameVelocityMaxScale: "1.35"
+            flameVelocityMaxScale: "1.35",
+            flameReuseMaxOriginDist: "80"
         };
         var config:TeslaRayConfig = TeslaRayConfig.fromXML(node);
 
@@ -152,6 +154,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfigTest {
         assertEqualsNumber(35, config.flameVelocityBase, "flameVelocityBase 解析正确");
         assertEqualsNumber(0.65, config.flameVelocityMinScale, "flameVelocityMinScale 解析正确");
         assertEqualsNumber(1.35, config.flameVelocityMaxScale, "flameVelocityMaxScale 解析正确");
+        assertEqualsNumber(80, config.flameReuseMaxOriginDist, "flameReuseMaxOriginDist 解析正确");
     }
 
     public static function runAllTests():Void {

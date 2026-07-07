@@ -383,6 +383,9 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     /** 喷火束速度缩放上限 */
     public var flameVelocityMaxScale:Number;
 
+    /** 同喷口连续火束视觉复用允许的起点偏移半径（像素） */
+    public var flameReuseMaxOriginDist:Number;
+
     /** 火舌条数 */
     public var tongueCount:Number;
 
@@ -486,6 +489,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     private static var DEFAULT_FLAME_VELOCITY_BASE:Number = 35;
     private static var DEFAULT_FLAME_VELOCITY_MIN_SCALE:Number = 0.65;
     private static var DEFAULT_FLAME_VELOCITY_MAX_SCALE:Number = 1.35;
+    private static var DEFAULT_FLAME_REUSE_MAX_ORIGIN_DIST:Number = 32;
     private static var DEFAULT_TONGUE_COUNT:Number = 4;
     private static var DEFAULT_TIP_BLOOM_SCALE:Number = 1.0;
     private static var DEFAULT_SMOKE_COLOR:Number = 0x34302A;
@@ -606,6 +610,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             {k:"flameVelocityBase", p:P_NUM},
             {k:"flameVelocityMinScale", p:P_NUM},
             {k:"flameVelocityMaxScale", p:P_NUM},
+            {k:"flameReuseMaxOriginDist", p:P_NUM},
             {k:"tongueCount",        p:P_NUM},
             {k:"tipBloomScale",      p:P_NUM},
             {k:"smokeColor",         p:P_COLOR}
@@ -721,6 +726,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         flameVelocityBase = DEFAULT_FLAME_VELOCITY_BASE;
         flameVelocityMinScale = DEFAULT_FLAME_VELOCITY_MIN_SCALE;
         flameVelocityMaxScale = DEFAULT_FLAME_VELOCITY_MAX_SCALE;
+        flameReuseMaxOriginDist = DEFAULT_FLAME_REUSE_MAX_ORIGIN_DIST;
         tongueCount = DEFAULT_TONGUE_COUNT;
         tipBloomScale = DEFAULT_TIP_BLOOM_SCALE;
         smokeColor = DEFAULT_SMOKE_COLOR;
