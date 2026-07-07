@@ -1,11 +1,12 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/图标-下挂镇暴装置" itemID="6a4ce590-00009002" linkageExportForAS="true" linkageIdentifier="图标-下挂镇暴装置" lastModified="1783428549">
   <timeline>
-    <DOMTimeline name="图标-下挂镇暴装置">
+    <DOMTimeline name="图标-下挂镇暴装置" currentFrame="1">
       <layers>
         <DOMLayer name="图层 3" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
+                <script><![CDATA[stop();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
