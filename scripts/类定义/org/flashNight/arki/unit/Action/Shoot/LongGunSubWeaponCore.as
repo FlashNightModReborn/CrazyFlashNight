@@ -9,23 +9,8 @@ import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
  */
 class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
-    private static var DEBUG_SERVER_LOG:Boolean = true;
-    private static var DEBUG_SERVER_LOG_LIMIT:Number = 120;
-    private static var debugServerLogCount:Number = 0;
     private static var DEFERRED_RETRY_MS:Number = 34;
     private static var MAX_DEFERRED_RETRIES:Number = 4;
-
-    public static function debugLogStateMachine(unit:Object, man:Object, source:String):Void {
-        debugServer(unit, "[SubWpnSM] " + source +
-            " state=" + unit.状态 +
-            " moveShoot=" + unit.移动射击 +
-            " actionA=" + unit.动作A +
-            " actionB=" + unit.动作B +
-            " man=" + clipInfo(man) +
-            " hasMain=" + boolText(man && man.开始射击) +
-            " hasSub=" + boolText(man && man.开始副武器射击) +
-            " muzzle=" + muzzleInfo(getMuzzlePosition(man)));
-    }
 
     public static function configureUnit(unit:Object, itemData:Object):Boolean {
         var sub:Object = SubweaponDataUtil.getSubweaponData(itemData);
@@ -54,6 +39,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
     public static function clearUnit(unit:Object):Void {
         if (!unit) return;
+        cancelPendingFire(unit);
+        clearDeferredManualReload(unit);
         unit.长枪副武器配置 = null;
         unit.长枪副武器状态 = null;
         unit.subWeapon = null;
@@ -88,48 +75,33 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     }
 
     public static function fire(unit:Object):Boolean {
-        return fireInternal(unit, unit ? unit.man : null, true, "legacy");
+        return fireInternal(unit, unit ? unit.man : null, true);
     }
 
     public static function fireFromMan(unit:Object, man:Object):Boolean {
-        return fireInternal(unit, man, false, "fromMan");
+        return fireInternal(unit, man, false);
     }
 
-    private static function fireInternal(unit:Object, man:Object, allowPoseChange:Boolean, route:String):Boolean {
-        debugServer(unit, "[SubWpnCore] enter route=" + route +
-            " state=" + unit.状态 +
-            " atk=" + unit.攻击模式 +
-            " man=" + clipInfo(man) +
-            " unitMan=" + clipInfo(unit ? unit.man : null) +
-            " sameMan=" + boolText(unit && man === unit.man) +
-            " muzzle=" + muzzleInfo(getMuzzlePosition(man)));
-
+    private static function fireInternal(unit:Object, man:Object, allowPoseChange:Boolean):Boolean {
         if (!hasSubweapon(unit)) {
-            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=noSubweapon");
             return false;
         }
         if (unit.攻击模式 != "长枪") {
-            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=attackMode " + unit.攻击模式);
             return false;
         }
         if (unit.浮空 || unit.倒地) {
-            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=airOrDown air=" + unit.浮空 + " down=" + unit.倒地);
             return false;
         }
         if (!isLongGunActionState(unit)) {
-            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=badState " + unit.状态);
             return false;
         }
         if (unit.换弹中) {
-            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=unitReloading");
             return false;
         }
         if (!man) {
-            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=noMan");
             return false;
         }
         if (man.换弹标签) {
-            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=manReloading man=" + clipInfo(man));
             return false;
         }
 
@@ -137,30 +109,27 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         var state:Object = unit.长枪副武器状态;
         if (state.loaded <= 0) {
             updateAmmoDisplay(unit);
-            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=noLoaded");
+            return false;
+        }
+        if (unit.__subweaponPendingFireCdUntil != undefined) {
             return false;
         }
 
         var now:Number = getTimer();
         if (state.nextFireTime > now) {
-            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=cd remain=" + (state.nextFireTime - now));
             return false;
         }
-        if (!payFireCosts(unit, config, state)) {
-            debugServer(unit, "[SubWpnCore] reject route=" + route + " reason=cost");
+        if (!canPayFireCosts(unit, config, state)) {
             return false;
         }
 
         if (unit.浮空) unit.temp_y = unit._y;
         else unit.temp_y = 0;
 
-        state.nextFireTime = now + config.cd;
+        var cooldownUntil:Number = now + config.cd;
+        state.nextFireTime = cooldownUntil;
+        unit.__subweaponPendingFireCdUntil = cooldownUntil;
         var targetState:String = getNormalizedLongGunActionState(unit);
-        debugServer(unit, "[SubWpnCore] accepted route=" + route +
-            " targetState=" + targetState +
-            " allowPoseChange=" + allowPoseChange +
-            " loaded=" + state.loaded +
-            " cd=" + config.cd);
         if (allowPoseChange && targetState != unit.状态) {
             unit.行走冷却帧 = 2;
             submitFireAfterPoseChange(unit, targetState);
@@ -210,8 +179,6 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         if (!canReloadManual(unit)) return false;
 
         unit.__subweaponManualReloadLock = true;
-        debugServer(unit, "[SubWpnCore] manualReload start state=" + unit.状态 +
-            " man=" + clipInfo(unit ? unit.man : null));
         org.flashNight.arki.unit.Action.Shoot.ShootCore.cleanup(unit);
         var targetState:String = getNormalizedLongGunActionState(unit);
         if (targetState != unit.状态) {
@@ -226,7 +193,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     public static function isManualReloadMovementLocked(unit:Object):Boolean {
         if (!unit) return false;
         if (unit.__subweaponManualReloadLock === true) return true;
-        return unit.man != null && unit.man.subweaponManualReload === true;
+        return unit.man.subweaponManualReload === true;
     }
 
     public static function clearManualReloadMovementLock(unit:Object):Void {
@@ -327,9 +294,20 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         return config;
     }
 
-    private static function payFireCosts(unit:Object, config:Object, state:Object):Boolean {
+    private static function canPayFireCosts(unit:Object, config:Object, state:Object):Boolean {
         if (config.hp > 0 && unit.hp <= config.hp) return false;
         if (config.mp > 0 && unit.mp < config.mp) return false;
+
+        if (config.consumeMode == "onFire") {
+            return config.fireCost <= 0 || ItemUtil.singleContain(config.reserveName, config.fireCost) != null;
+        } else if (config.consumeTiming == "linkedFirstFire" && !state.groupPaid) {
+            return config.clipCostPerLoad <= 0 || ItemUtil.singleContain(config.reserveName, config.clipCostPerLoad) != null;
+        }
+        return true;
+    }
+
+    private static function payFireCosts(unit:Object, config:Object, state:Object):Boolean {
+        if (!canPayFireCosts(unit, config, state)) return false;
 
         if (config.consumeMode == "onFire") {
             if (config.fireCost > 0 && !ItemUtil.singleSubmit(config.reserveName, config.fireCost)) return false;
@@ -407,30 +385,26 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         var muzzle:Object = getMuzzlePosition(man);
         var myPoint:Object = getMuzzlePoint(unit, man, muzzle);
         var angleOffset:Number = getAngleOffset(unit);
-        debugServer(unit, "[SubWpnCore] shoot bullet=" + config.bullet +
-            " point=(" + myPoint.x + "," + myPoint.y + ")" +
-            " z=" + unit.Z轴坐标 +
-            " angleOffset=" + angleOffset +
-            " muzzle=" + muzzleInfo(muzzle));
-        var bulletProps:Object = new Object();
-        bulletProps.声音 = config.sound;
-        bulletProps.霰弹值 = config.split;
-        bulletProps.子弹散射度 = config.diffusion;
-        bulletProps.发射效果 = "";
-        bulletProps.子弹种类 = config.bullet;
-        bulletProps.子弹威力 = calculatePower(unit, config);
-        bulletProps.子弹速度 = config.velocity;
-        bulletProps.击中地图效果 = "";
-        bulletProps.Z轴攻击范围 = config.range;
-        bulletProps.击倒率 = config.impact;
-        bulletProps.击中后子弹的效果 = "";
-        bulletProps.发射者 = unit._name;
-        bulletProps.角度偏移 = angleOffset;
-        bulletProps.shootX = myPoint.x;
-        bulletProps.shootY = myPoint.y;
-        bulletProps.shootZ = unit.Z轴坐标;
-        bulletProps.伤害类型 = config.damageType;
-        bulletProps.魔法伤害属性 = config.magicType;
+        var bulletProps:Object = {
+            声音: config.sound,
+            霰弹值: config.split,
+            子弹散射度: config.diffusion,
+            发射效果: "",
+            子弹种类: config.bullet,
+            子弹威力: calculatePower(unit, config),
+            子弹速度: config.velocity,
+            击中地图效果: "",
+            Z轴攻击范围: config.range,
+            击倒率: config.impact,
+            击中后子弹的效果: "",
+            发射者: unit._name,
+            角度偏移: angleOffset,
+            shootX: myPoint.x,
+            shootY: myPoint.y,
+            shootZ: unit.Z轴坐标,
+            伤害类型: config.damageType,
+            魔法伤害属性: config.magicType
+        };
         if (muzzle) bulletProps.区域定位area = muzzle;
         _root.子弹区域shoot传递(bulletProps);
     }
@@ -468,7 +442,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         if (job.callback != undefined) {
             job.callback = undefined;
             job.gotoLabel = undefined;
-            finishFireOnMan(unit, unit.man);
+            finishFireOnCurrentMan(unit);
         }
     }
 
@@ -504,14 +478,24 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     }
 
     private static function finishFireOnMan(unit:Object, man:Object):Void {
-        if (!hasSubweapon(unit)) return;
+        if (!hasSubweapon(unit)) {
+            cancelPendingFire(unit);
+            return;
+        }
         var config:Object = unit.长枪副武器配置;
         var state:Object = unit.长枪副武器状态;
         if (state.loaded <= 0) {
             updateAmmoDisplay(unit);
+            cancelPendingFire(unit);
+            return;
+        }
+        if (!payFireCosts(unit, config, state)) {
+            updateAmmoDisplay(unit);
+            cancelPendingFire(unit);
             return;
         }
 
+        clearPendingFire(unit);
         playShootAnimation(unit, man);
         shoot(unit, config, man);
         state.loaded--;
@@ -531,7 +515,6 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         clearDeferredManualReload(unit);
         man.subweaponManualReload = true;
         man.换弹标签 = true;
-        debugServer(unit, "[SubWpnCore] manualReload play man=" + clipInfo(man));
         man.gotoAndPlay("换弹匣");
     }
 
@@ -546,7 +529,6 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     private static function playShootAnimation(unit:Object, man:Object):Void {
         if (!man || !man.gotoAndPlay) return;
         var frameName:String = getShootFrameName(unit);
-        debugServer(unit, "[SubWpnCore] playShoot man=" + clipInfo(man) + " frame=" + frameName);
         man.gotoAndPlay(frameName);
     }
 
@@ -571,28 +553,21 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     }
 
     private static function isShootManReady(man:Object):Boolean {
-        return man != null && getMuzzlePosition(man) != null;
+        return getMuzzlePosition(man) != null;
     }
 
     private static function isManualReloadManReady(man:Object):Boolean {
-        return man != null && man.gotoAndPlay != null && man.开始换弹 != null && man.换弹匣 != null && man.结束换弹 != null;
+        return man.gotoAndPlay != null && man.开始换弹 != null && man.换弹匣 != null && man.结束换弹 != null;
     }
 
     private static function deferFinishFireOnCurrentMan(unit:Object):Void {
         if (!hasSubweapon(unit)) return;
         var tries:Number = unit.__subweaponDeferredFireRetries || 0;
         if (tries >= MAX_DEFERRED_RETRIES) {
-            debugServer(unit, "[SubWpnCore] deferFire abort tries=" + tries +
-                " man=" + clipInfo(unit ? unit.man : null) +
-                " muzzle=" + muzzleInfo(getMuzzlePosition(unit ? unit.man : null)));
-            clearDeferredFire(unit);
+            cancelPendingFire(unit);
             return;
         }
         unit.__subweaponDeferredFireRetries = tries + 1;
-        debugServer(unit, "[SubWpnCore] deferFire retry=" + unit.__subweaponDeferredFireRetries +
-            " man=" + clipInfo(unit ? unit.man : null) +
-            " hasSub=" + boolText(unit && unit.man && unit.man.开始副武器射击) +
-            " muzzle=" + muzzleInfo(getMuzzlePosition(unit ? unit.man : null)));
         EnhancedCooldownWheel.I().addTask(LongGunSubWeaponCore.finishFireOnCurrentMan, DEFERRED_RETRY_MS, 1, unit);
     }
 
@@ -601,20 +576,32 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         delete unit.__subweaponDeferredFireRetries;
     }
 
+    private static function clearPendingFire(unit:Object):Void {
+        if (!unit) return;
+        delete unit.__subweaponPendingFireCdUntil;
+        clearDeferredFire(unit);
+    }
+
+    private static function cancelPendingFire(unit:Object):Void {
+        if (!unit) return;
+        var state:Object = unit.长枪副武器状态;
+        var hasPending:Boolean = unit.__subweaponPendingFireCdUntil != undefined;
+        var pendingUntil:Number = Number(unit.__subweaponPendingFireCdUntil);
+        if (hasPending && state && state.nextFireTime == pendingUntil) {
+            state.nextFireTime = 0;
+        }
+        clearPendingFire(unit);
+    }
+
     private static function deferStartManualReloadOnCurrentMan(unit:Object):Void {
         if (!hasSubweapon(unit)) return;
         var tries:Number = unit.__subweaponDeferredReloadRetries || 0;
         if (tries >= MAX_DEFERRED_RETRIES) {
-            debugServer(unit, "[SubWpnCore] deferReload abort tries=" + tries +
-                " man=" + clipInfo(unit ? unit.man : null));
             clearManualReloadMovementLock(unit);
             clearDeferredManualReload(unit);
             return;
         }
         unit.__subweaponDeferredReloadRetries = tries + 1;
-        debugServer(unit, "[SubWpnCore] deferReload retry=" + unit.__subweaponDeferredReloadRetries +
-            " man=" + clipInfo(unit ? unit.man : null) +
-            " hasReloadFns=" + boolText(isManualReloadManReady(unit ? unit.man : null)));
         EnhancedCooldownWheel.I().addTask(LongGunSubWeaponCore.startManualReloadOnCurrentMan, DEFERRED_RETRY_MS, 1, unit);
     }
 
@@ -636,42 +623,13 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         muzzle = unit.长枪_引用.枪口位置;
         holder = unit.长枪_引用;
         if (muzzle && holder) {
-            debugServer(unit, "[SubWpnCore] muzzleFallback unitLongGun muzzle=" + muzzleInfo(muzzle));
             var fallbackPoint:Object = {x: muzzle._x, y: muzzle._y + 20};
             holder.localToGlobal(fallbackPoint);
             _root.gameworld.globalToLocal(fallbackPoint);
             return fallbackPoint;
         }
 
-        debugServer(unit, "[SubWpnCore] muzzleFallback unitPosition reason=noMuzzle unit=(" + unit._x + "," + unit._y + ")");
         return {x: unit._x, y: unit._y};
-    }
-
-    private static function debugServer(unit:Object, message:String):Void {
-        if (!DEBUG_SERVER_LOG) return;
-        if (_root.副武器调试日志 === false) return;
-        if (!isHero(unit)) return;
-        if (debugServerLogCount >= DEBUG_SERVER_LOG_LIMIT) return;
-        debugServerLogCount++;
-        if (_root.服务器 && _root.服务器.发布服务器消息) {
-            _root.服务器.发布服务器消息(message);
-        } else {
-            trace(message);
-        }
-    }
-
-    private static function clipInfo(clip:Object):String {
-        if (!clip) return "null";
-        return String(clip._name) + "#" + clip._currentframe;
-    }
-
-    private static function muzzleInfo(muzzle:Object):String {
-        if (!muzzle) return "null";
-        return String(muzzle._name) + "(" + muzzle._x + "," + muzzle._y + ")";
-    }
-
-    private static function boolText(value:Object):String {
-        return value ? "1" : "0";
     }
 
     private static function writeRuntimeBridgeFields(unit:Object, config:Object):Void {

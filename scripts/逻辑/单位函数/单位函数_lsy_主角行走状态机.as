@@ -29,7 +29,6 @@
 			目标状态 = _parent.攻击模式 + "行走";
 		}
 		if (_parent.动作B && !_parent.动作A && 需要切换状态) {
-			org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.debugLogStateMachine(_parent, _parent.man, "持枪动作B-状态切换前");
 			org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.fire(_parent);
 			return;
 		}
@@ -43,7 +42,6 @@
 			_parent.man.开始射击();
 		}
 		if (_parent.动作B) {
-			org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.debugLogStateMachine(_parent, _parent.man, "持枪动作B");
 			if (_parent.man.开始副武器射击) {
 				_parent.man.开始副武器射击();
 			}

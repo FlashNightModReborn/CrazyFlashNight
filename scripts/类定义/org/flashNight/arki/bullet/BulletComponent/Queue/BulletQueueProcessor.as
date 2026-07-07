@@ -111,6 +111,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     private static var _rayBullets:Array = [];
 
     /**
+     * 射线存活集双缓冲。
+     * processRayBullets 帧末同步处理，处理期间追加到 _rayBullets 的新射线按旧语义丢弃；
+     * 交换缓冲后清空旧数组即可避免每帧分配 survivors。
+     */
+    private static var _raySurvivors:Array = [];
+
+    /**
      * 射线持久化总开关（deferral=B）。
      * true（默认）：pierce/chain/combo 走每帧贪心持久路 processPersistentRay；
      * false：全部回退旧批量路（单帧结算）—— 生产回退 + no-death 等价测试用来 A/B 同场景。
@@ -307,6 +314,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             _rayBullets[ri].removeMovieClip();
         }
         _rayBullets.length = 0;
+        _raySurvivors.length = 0;
         // 重置射弹预警门控计数（场景切换时单位已销毁）
         BulletThreatScanProcessor.reset();
         return true;
@@ -695,7 +703,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * 调用时机：processQueue() 中，主循环之前
      */
     private static function processRayBullets():Void {
-        var count:Number = _rayBullets.length;
+        var rayList:Array = _rayBullets;
+        var count:Number = rayList.length;
         if (count == 0) return;
         // _root.服务器.立即发送("[RAY-0] processRayBullets 入口 count=" + count);
 
@@ -713,11 +722,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var DEG_TO_RAD:Number = Math.PI / 180;
 
         // deferral=B 持久射线存活集：本帧后仍存活的射线（pierce/chain 一期）重建回 _rayBullets
-        var survivors:Array = [];
+        var survivors:Array = _raySurvivors;
+        survivors.length = 0;
 
         // 遍历所有待处理射线子弹
         for (var i:Number = 0; i < count; i++) {
-            var bullet:Object = _rayBullets[i];
+            var bullet:Object = rayList[i];
             var shooter:MovieClip = gameWorld[bullet.发射者名];
             if (shooter == null) {
                 bullet.removeMovieClip();
@@ -863,7 +873,21 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
             ctx.resolvedRayAngle = resolvedRayAngle;
             if (_rayPersistent && isFlameMode) {
-                if (processContinuousFlame(ctx)) {
+                // 射线子弹是透明 Object；_rotation 只是 BulletFactory 写入的 MovieClip 兼容字段。
+                // 火焰 VFX 使用队列本轮解析出的方向，避免未来重定向逻辑与视觉终点分叉。
+                if (isLockon) {
+                    ctx.resolvedRayDirX = lockonDirX / lockonTEntry;
+                    ctx.resolvedRayDirY = lockonDirY / lockonTEntry;
+                } else {
+                    ctx.resolvedRayDirX = Math.cos(resolvedRayAngle);
+                    ctx.resolvedRayDirY = Math.sin(resolvedRayAngle);
+                }
+
+                var flameAlive:Boolean = processContinuousFlame(ctx);
+                ctx.resolvedRayDirX = undefined;
+                ctx.resolvedRayDirY = undefined;
+
+                if (flameAlive) {
                     survivors[survivors.length] = bullet;   // 喷火短寿命存活，下一帧继续扫描/缩放
                 } else {
                     bullet.removeMovieClip();
@@ -1902,6 +1926,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // 其余批量射线（single/fork/no-pierce combo）本帧均已 removeMovieClip。
         // 注：处理期间 spawn 的新射线（index >= count）与原 length=0 行为一致——被丢弃。
         _rayBullets = survivors;
+        _raySurvivors = rayList;
+        rayList.length = 0;
     }
 
     /**
@@ -1937,6 +1963,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             bullet._flameCurrentLength = startLength;
             bullet._flameHitFrameByTarget = {};
             bullet._flameHitCountByTarget = {};
+            bullet._flameHits = [];
             bullet._flameTotalHitsDone = 0;
             bullet._flameFirstHitDone = false;
             bullet._flameBaseDamageType = bullet.伤害类型;
@@ -1949,8 +1976,18 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var age:Number = bullet._flameAge;
         if (age >= lifetime) return false;
 
+        var flameDirX:Number = Number(ctx.resolvedRayDirX);
+        var flameDirY:Number = Number(ctx.resolvedRayDirY);
+        if ((flameDirX - flameDirX) != 0 || (flameDirY - flameDirY) != 0 ||
+            !(flameDirX * flameDirX + flameDirY * flameDirY > 0.000001)) {
+            var angle:Number = (ctx.resolvedRayAngle != undefined) ? Number(ctx.resolvedRayAngle) : bullet._rotation * (Math.PI / 180);
+            if ((angle - angle) != 0) return false;
+            flameDirX = Math.cos(angle);
+            flameDirY = Math.sin(angle);
+        }
+
         var hits:Array = collectFlameHits(ctx, pierceLimit);
-        var hLen:Number = hits.length;
+        var hLen:Number = ctx.flameHitCount;
         var targetLength:Number = rayLength;
         var blocked:Boolean = false;
         if (hLen >= pierceLimit) {
@@ -1970,8 +2007,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
         // 收缩滞后只影响残影视觉；伤害不允许越过当前阻挡长度。
         var damageLength:Number = Math.min(currentLength, targetLength);
-        var hitPoints:Array = [];
-        var damageHitPoints:Array = [];
+        var hitPoints:Array = null;
+        var damageHitPoints:Array = null;
         var falloff:Number = config.damageFalloff;
         var dmgMult:Number = 1.0;
         var pulseCount:Number = config.flamePulseCount;
@@ -2012,6 +2049,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             var h:Object = hits[i];
             if (h.tEntry > damageLength + 0.001) break;
 
+            if (hitPoints == null) hitPoints = [];
             hitPoints[hitPoints.length] = {x: h.hitX, y: h.hitY};
 
             var lastTick = bullet._flameHitFrameByTarget[h.target._name];
@@ -2030,6 +2068,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 }
                 var damageResult:Object = injectHit(bullet, shooter, h.target, h.hitX, h.hitY, dmgMult);
                 if (damageResult != null) {
+                    if (damageHitPoints == null) damageHitPoints = [];
                     damageHitPoints[damageHitPoints.length] = {x: h.hitX, y: h.hitY};
                     bullet._flameHitFrameByTarget[h.target._name] = age;
                     bullet._flameHitCountByTarget[h.target._name] = targetHitCount + 1;
@@ -2045,16 +2084,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             bullet.魔法伤害属性 = baseMagicType;
         }
 
-        var angle:Number = (ctx.resolvedRayAngle != undefined) ? Number(ctx.resolvedRayAngle) : bullet._rotation * (Math.PI / 180);
-        if ((angle - angle) != 0) angle = bullet._rotation * (Math.PI / 180);
-        var endX:Number = ctx.rayOriginX + Math.cos(angle) * currentLength;
-        var endY:Number = ctx.rayOriginY + Math.sin(angle) * currentLength;
+        var endX:Number = ctx.rayOriginX + flameDirX * currentLength;
+        var endY:Number = ctx.rayOriginY + flameDirY * currentLength;
         RayVfxManager.spawn(ctx.rayOriginX, ctx.rayOriginY, endX, endY, config,
             {
                 segmentKind: "flame",
                 hitIndex: 0,
                 intensity: 1.0,
-                isHit: hitPoints.length > 0,
+                isHit: hitPoints != null,
                 hitPoints: hitPoints,
                 damageHitPoints: damageHitPoints,
                 isBlocked: blocked,
@@ -2085,7 +2122,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var bulletZRange:Number = ctx.bulletZRange;
         var rayRight:Number = areaAABB.right;
         var lo:Number = bsearchScanStart(unitRightMax, unitLen, areaAABB.left);
-        var hits:Array = [];
+        var bullet:Object = ctx.bullet;
+        var hits:Array = bullet._flameHits;
+        if (hits == null) {
+            hits = [];
+            bullet._flameHits = hits;
+        }
         var hLen:Number = 0;
 
         for (var u:Number = lo; u < unitLen && unitLeftKeys[u] <= rayRight; u++) {
@@ -2097,14 +2139,22 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 if (cr.isColliding) {
                     var newTEntry:Number = cr.tEntry;
                     if (hLen < maxCount || newTEntry < hits[hLen - 1].tEntry) {
-                        var nh:Object = {
-                            target: t,
-                            hitX: cr.overlapCenter.x,
-                            hitY: cr.overlapCenter.y,
-                            tEntry: newTEntry
-                        };
+                        var nh:Object;
                         var ins:Number = (hLen >= maxCount) ? hLen - 1 : hLen;
                         var scanStart:Number = (hLen >= maxCount) ? hLen - 2 : hLen - 1;
+                        if (hLen >= maxCount) {
+                            nh = hits[hLen - 1];
+                        } else {
+                            nh = hits[hLen];
+                            if (nh == null) {
+                                nh = {};
+                                hits[hLen] = nh;
+                            }
+                        }
+                        nh.target = t;
+                        nh.hitX = cr.overlapCenter.x;
+                        nh.hitY = cr.overlapCenter.y;
+                        nh.tEntry = newTEntry;
                         for (var pi:Number = scanStart; pi >= 0; pi--) {
                             if (hits[pi].tEntry > newTEntry) {
                                 hits[pi + 1] = hits[pi];
@@ -2120,7 +2170,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             }
         }
 
-        hits.length = hLen;
+        ctx.flameHitCount = hLen;
         return hits;
     }
 

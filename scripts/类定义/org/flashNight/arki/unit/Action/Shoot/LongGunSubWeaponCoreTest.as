@@ -6,6 +6,7 @@ import org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.TooltipTextBuilder;
+import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 
 /**
  * LongGunSubWeaponCoreTest
@@ -29,6 +30,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testWeaponSkillInputKeepsSharedCooldownForNormalSkill();
         testFireFromRunPlaysDirectionalAnimation();
         testFireFromManUsesPassedCurrentMan();
+        testDeferredFireAbortDoesNotCommitCostOrCooldown();
         testManualReload();
         testManualReloadFromRunNormalizesPose();
         testManualReloadMovementLockClearsOnFinish();
@@ -209,6 +211,67 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         _root.子弹区域shoot传递 = oldShoot;
         _root.控制目标 = oldControlTarget;
         _root.gameworld = previousGameworld;
+    }
+
+    private static function testDeferredFireAbortDoesNotCommitCostOrCooldown():Void {
+        installMockInventory("火焰喷射器燃料罐", 1);
+        EnhancedCooldownWheel.I().reset();
+
+        var oldShoot:Function = _root.子弹区域shoot传递;
+        var previousGameworld:Object = _root.gameworld;
+        var shot:Object = null;
+        _root.gameworld = {};
+        _root.gameworld.globalToLocal = function(point:Object):Void {};
+        _root.子弹区域shoot传递 = function(props:Object):Void {
+            shot = props;
+        };
+
+        var unit:Object = makeUnit();
+        unit.状态 = "长枪跑";
+        unit.移动射击 = false;
+        unit.man = makeActionClip(unit, 0, 0, 0, 0);
+        var badMan:Object = makeActionClip(unit, undefined, 0, 0, 0);
+        unit.状态改变 = function(state:String):Void {
+            this.状态 = state;
+            this.man = badMan;
+            var job:Object = this.__stateTransitionJob;
+            if (job != undefined && job.callback != undefined) {
+                var cb:Function = job.callback;
+                job.callback = undefined;
+                job.gotoLabel = undefined;
+                cb(this);
+            }
+        };
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(true)});
+
+        var ok:Boolean = LongGunSubWeaponCore.fire(unit);
+        for (var i:Number = 0; i < 12; i++) {
+            EnhancedCooldownWheel.I().tick();
+        }
+
+        assert(ok, "deferred subweapon fire is accepted before pose callback resolves");
+        assert(shot == null, "deferred subweapon fire aborts without shooting when refreshed man has no muzzle");
+        assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "deferred abort does not consume loaded round");
+        assert(unit.mp == 500, "deferred abort does not consume mp");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "deferred abort does not consume onFire reserve");
+        assert(unit.长枪副武器状态.nextFireTime == 0, "deferred abort clears tentative cooldown");
+        assert(unit.__subweaponPendingFireCdUntil == undefined, "deferred abort clears pending fire lock");
+
+        shot = null;
+        unit.man = makeActionClip(unit, 100, 50, 3, 4);
+        unit.状态改变 = function(state:String):Void {
+            this.状态 = state;
+        };
+        var retryOk:Boolean = LongGunSubWeaponCore.fire(unit);
+        assert(retryOk, "subweapon can fire again after deferred abort");
+        assert(shot != null && shot.shootX == 103, "retry after deferred abort emits bullet from valid muzzle");
+        assert(unit.mp == 400, "successful retry commits mp cost");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "successful retry commits onFire reserve");
+
+        _root.子弹区域shoot传递 = oldShoot;
+        _root.gameworld = previousGameworld;
+        EnhancedCooldownWheel.I().reset();
+        restoreMockInventory();
     }
 
     private static function testManualReload():Void {
