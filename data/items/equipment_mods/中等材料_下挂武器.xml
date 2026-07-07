@@ -82,4 +82,44 @@
         需要导轨系统支持。</description>
         <tag>下导轨</tag>
     </mod>
+    <mod>
+        <name>下挂镇暴装置</name>
+        <use>长枪</use>
+        <weapontype>突击步枪</weapontype>
+        <excludeWeapontype>发射器,机枪,压制机枪,近战,压制近战</excludeWeapontype>
+        <requireTags>下导轨挂点</requireTags>
+        <stats>
+            <flat>
+                <weight>2</weight>
+            </flat>
+        </stats>
+        <subweapon>
+            <name>下挂镇暴装置</name>
+            <controlName>下挂镇暴装置</controlName>
+            <description>持枪瞄准时使用下挂镇暴装置发射八门金锁镇暴束流,可装填8发,换弹后重新装填,消耗12号霰弹弹药。</description>
+            <cd>888</cd>
+            <mp>0</mp>
+            <power>88</power>
+            <powerMultiplier>1</powerMultiplier>
+            <capacity>8</capacity>
+            <reserveName>12号霰弹弹药</reserveName>
+            <bullet>镇暴射线</bullet>
+            <sound>m3-1.wav</sound>
+            <split>1</split>
+            <diffusion>3</diffusion>
+            <velocity>25</velocity>
+            <range>42</range>
+            <impact>0</impact>
+            <damageType>物理</damageType>
+            <consumeMode>onLoadGroup</consumeMode>
+            <consumeTiming>onReloadCommit</consumeTiming>
+            <clipCostPerLoad>1</clipCostPerLoad>
+            <initialLoaded>8</initialLoaded>
+            <manualReloadAnimation>longGun</manualReloadAnimation>
+            <manualReloadBurden>25</manualReloadBurden>
+        </subweapon>
+        <description>下挂镇暴束流模块,牺牲对单火力,在近中距离提供对群拦阻。
+        需要导轨系统支持。</description>
+        <tag>下导轨</tag>
+    </mod>
 </root>
