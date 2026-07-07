@@ -20,8 +20,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         }
 
         var config:Object = buildRuntimeConfig(sub, itemData);
+        var firedCount:Number = readStoredFiredCount(unit, config);
         var state:Object = {
-            loaded: config.initialLoaded,
+            loaded: config.capacity - firedCount,
             capacity: config.capacity,
             reserveName: config.reserveName,
             groupPaid: config.consumeMode != "onLoadGroup" || config.initialLoaded > 0,
@@ -31,7 +32,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         unit.长枪副武器配置 = config;
         unit.长枪副武器状态 = state;
         unit.subWeapon = state;
-        unit.当前弹夹副武器已发射数 = state.capacity - state.loaded;
+        syncFiredCount(unit);
         writeRuntimeBridgeFields(unit, config);
         updateAmmoDisplay(unit);
         return true;
@@ -358,7 +359,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         }
 
         state.loaded = state.capacity;
-        unit.当前弹夹副武器已发射数 = 0;
+        syncFiredCount(unit);
         writeRuntimeBridgeFields(unit, config);
         updateAmmoDisplay(unit);
         return true;
@@ -375,7 +376,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
         state.groupPaid = true;
         state.loaded = state.capacity;
-        unit.当前弹夹副武器已发射数 = 0;
+        syncFiredCount(unit);
         writeRuntimeBridgeFields(unit, config);
         updateAmmoDisplay(unit);
         return true;
@@ -500,10 +501,39 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         shoot(unit, config, man);
         state.loaded--;
         if (state.loaded < 0) state.loaded = 0;
-        unit.当前弹夹副武器已发射数 = state.capacity - state.loaded;
+        syncFiredCount(unit);
         writeRuntimeBridgeFields(unit, config);
         updateAmmoDisplay(unit);
         if (isHero(unit)) _root.玩家信息界面.刷新mp显示();
+    }
+
+    private static function readStoredFiredCount(unit:Object, config:Object):Number {
+        var fallback:Number = config.capacity - config.initialLoaded;
+        if (fallback < 0) fallback = 0;
+        if (fallback > config.capacity) fallback = config.capacity;
+
+        if (!unit || !unit.长枪 || !unit.长枪.value || unit.长枪.value.subweaponShot == undefined) {
+            return fallback;
+        }
+
+        var fired:Number = Number(unit.长枪.value.subweaponShot);
+        if (isNaN(fired) || fired < 0) fired = 0;
+        if (fired > config.capacity) fired = config.capacity;
+        return fired;
+    }
+
+    private static function syncFiredCount(unit:Object):Void {
+        if (!unit || !unit.长枪副武器状态) return;
+
+        var state:Object = unit.长枪副武器状态;
+        var fired:Number = state.capacity - state.loaded;
+        if (isNaN(fired) || fired < 0) fired = 0;
+        if (fired > state.capacity) fired = state.capacity;
+
+        unit.当前弹夹副武器已发射数 = fired;
+        if (unit.长枪 && unit.长枪.value) {
+            unit.长枪.value.subweaponShot = fired;
+        }
     }
 
     private static function startManualReloadOnCurrentMan(unit:Object):Void {

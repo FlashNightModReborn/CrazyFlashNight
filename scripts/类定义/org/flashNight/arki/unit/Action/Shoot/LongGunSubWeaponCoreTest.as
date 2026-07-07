@@ -25,6 +25,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         testSubweaponNormalization();
         testConfigureUnitAndImpactChainMultiplier();
+        testConfigureUnitRestoresStoredFiredCount();
         testControlSlotMarker();
         testWeaponSkillInputBypassesSharedCooldownForSubweapon();
         testWeaponSkillInputKeepsSharedCooldownForNormalSkill();
@@ -71,6 +72,18 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪副武器状态.groupPaid == true, "configureUnit treats initial magazine as preloaded");
         assert(unit.副武器子弹威力 == 1250, "impact chain level 10 applies 25 percent subweapon bonus");
         assert(unit.副武器伤害类型 == "破击", "configureUnit writes damage type field");
+    }
+
+    private static function testConfigureUnitRestoresStoredFiredCount():Void {
+        var unit:Object = makeUnit();
+        unit.长枪.value.subweaponShot = 3;
+
+        var ok:Boolean = LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+
+        assert(ok, "configureUnit accepts subweapon with stored fired count");
+        assert(unit.长枪副武器状态.loaded == 2, "configureUnit restores loaded rounds from weapon value");
+        assert(unit.当前弹夹副武器已发射数 == 3, "configureUnit restores runtime fired count from weapon value");
+        assert(unit.长枪.value.subweaponShot == 3, "configureUnit keeps stored subweapon fired count on equipment value");
     }
 
     private static function testControlSlotMarker():Void {
@@ -177,6 +190,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(shot != null && shot.shootX == 207, "subweapon fire reads refreshed muzzle X");
         assert(shot != null && shot.shootY == 109, "subweapon fire reads refreshed muzzle Y");
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity - 1, "subweapon fire consumes one loaded round");
+        assert(unit.长枪.value.subweaponShot == 1, "subweapon fire stores fired count on long gun value");
 
         _root.子弹区域shoot传递 = oldShoot;
         _root.控制目标 = oldControlTarget;
@@ -380,6 +394,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪副武器状态.groupPaid == true, "manual reload marks group paid on commit");
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "manual reload consumes one reserve clip on commit");
         assert(unit.当前弹夹副武器已发射数 == 0, "manual reload resets fired count");
+        assert(unit.长枪.value.subweaponShot == 0, "manual reload resets stored fired count");
         restoreMockInventory();
     }
 
@@ -465,6 +480,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪.value.shot == 3, "subweapon animation commit does not reset main weapon shot");
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "subweapon animation commit refills loaded state");
         assert(unit.长枪副武器状态.groupPaid == true, "subweapon animation commit marks group paid");
+        assert(unit.长枪.value.subweaponShot == 0, "subweapon animation commit resets stored fired count");
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "subweapon animation commit consumes one reserve clip");
 
         ReloadManager.finishReload(unit.man);
@@ -486,6 +502,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(ok, "linked reload succeeds with reserve commit");
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "linked reload refills loaded state");
         assert(unit.长枪副武器状态.groupPaid == true, "linked reload marks group paid on commit");
+        assert(unit.长枪.value.subweaponShot == 0, "linked reload resets stored fired count");
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "linked reload consumes reserve on commit");
         restoreMockInventory();
     }
@@ -676,6 +693,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
             攻击模式: "长枪",
             状态: "长枪站立",
             man: {},
+            长枪: {value: {shot: 0, reloadCount: 0}},
             被动技能: {冲击连携: {启用: true, 等级: 10}}
         };
         unit.状态改变 = function(state:String):Void {
