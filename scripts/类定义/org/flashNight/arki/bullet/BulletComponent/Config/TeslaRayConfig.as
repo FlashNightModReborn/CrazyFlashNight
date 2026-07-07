@@ -371,6 +371,18 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     /** 单发喷火束对同一目标的伤害结算上限；0 表示不限制 */
     public var flameMaxHitsPerTarget:Number;
 
+    /** 是否按武器子弹速度缩放喷火束长度追随速度 */
+    public var flameUseWeaponVelocity:Boolean;
+
+    /** 喷火束速度缩放的武器速度基准 */
+    public var flameVelocityBase:Number;
+
+    /** 喷火束速度缩放下限 */
+    public var flameVelocityMinScale:Number;
+
+    /** 喷火束速度缩放上限 */
+    public var flameVelocityMaxScale:Number;
+
     /** 火舌条数 */
     public var tongueCount:Number;
 
@@ -470,6 +482,10 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
     private static var DEFAULT_FLAME_HOT_MAGIC_TYPE:String = "热";
     private static var DEFAULT_FLAME_TOTAL_HIT_BUDGET:Number = 5;
     private static var DEFAULT_FLAME_MAX_HITS_PER_TARGET:Number = 2;
+    private static var DEFAULT_FLAME_USE_WEAPON_VELOCITY:Boolean = false;
+    private static var DEFAULT_FLAME_VELOCITY_BASE:Number = 35;
+    private static var DEFAULT_FLAME_VELOCITY_MIN_SCALE:Number = 0.65;
+    private static var DEFAULT_FLAME_VELOCITY_MAX_SCALE:Number = 1.35;
     private static var DEFAULT_TONGUE_COUNT:Number = 4;
     private static var DEFAULT_TIP_BLOOM_SCALE:Number = 1.0;
     private static var DEFAULT_SMOKE_COLOR:Number = 0x34302A;
@@ -586,6 +602,10 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
             {k:"flameHotMagicType",  p:P_STR},
             {k:"flameTotalHitBudget", p:P_NUM},
             {k:"flameMaxHitsPerTarget", p:P_NUM},
+            {k:"flameUseWeaponVelocity", p:P_BOOL},
+            {k:"flameVelocityBase", p:P_NUM},
+            {k:"flameVelocityMinScale", p:P_NUM},
+            {k:"flameVelocityMaxScale", p:P_NUM},
             {k:"tongueCount",        p:P_NUM},
             {k:"tipBloomScale",      p:P_NUM},
             {k:"smokeColor",         p:P_COLOR}
@@ -697,6 +717,10 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
         flameHotMagicType = DEFAULT_FLAME_HOT_MAGIC_TYPE;
         flameTotalHitBudget = DEFAULT_FLAME_TOTAL_HIT_BUDGET;
         flameMaxHitsPerTarget = DEFAULT_FLAME_MAX_HITS_PER_TARGET;
+        flameUseWeaponVelocity = DEFAULT_FLAME_USE_WEAPON_VELOCITY;
+        flameVelocityBase = DEFAULT_FLAME_VELOCITY_BASE;
+        flameVelocityMinScale = DEFAULT_FLAME_VELOCITY_MIN_SCALE;
+        flameVelocityMaxScale = DEFAULT_FLAME_VELOCITY_MAX_SCALE;
         tongueCount = DEFAULT_TONGUE_COUNT;
         tipBloomScale = DEFAULT_TIP_BLOOM_SCALE;
         smokeColor = DEFAULT_SMOKE_COLOR;
@@ -1108,6 +1132,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig {
                      " flameLifetime=" + flameLifetime + " flamePulseCount=" + flamePulseCount +
                      " flameHotPulseStart=" + flameHotPulseStart + " flameHotPulseCount=" + flameHotPulseCount +
                      " flameTotalHitBudget=" + flameTotalHitBudget + " flameMaxHitsPerTarget=" + flameMaxHitsPerTarget +
+                     " flameUseWeaponVelocity=" + flameUseWeaponVelocity + " flameVelocityBase=" + flameVelocityBase +
                      " tongueCount=" + tongueCount;
                 break;
         }

@@ -1,4 +1,4 @@
-import org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig;
+﻿import org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig;
 
 /**
  * TeslaRayConfig 配置解析回归测试
@@ -129,6 +129,31 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfigTest {
         assertEqualsBoolean(true, config.flickerEnabled, "布尔字符串支持忽略大小写与首尾空白");
     }
 
+    private static function test_flameVelocityScalingFieldsParsing():Void {
+        var defaults:TeslaRayConfig = new TeslaRayConfig();
+        assertEqualsBoolean(false, defaults.flameUseWeaponVelocity, "喷火束默认不按武器速度缩放");
+
+        var node:Object = {
+            vfxStyle: "flame_stream",
+            rayMode: "flame",
+            flameGrowSpeed: "50",
+            flameRetractSpeed: "90",
+            flameUseWeaponVelocity: "true",
+            flameVelocityBase: "35",
+            flameVelocityMinScale: "0.65",
+            flameVelocityMaxScale: "1.35"
+        };
+        var config:TeslaRayConfig = TeslaRayConfig.fromXML(node);
+
+        assertEqualsString("flame", config.rayMode, "喷火 rayMode 解析正确");
+        assertEqualsBoolean(true, config.flameUseWeaponVelocity, "flameUseWeaponVelocity 解析正确");
+        assertEqualsNumber(50, config.flameGrowSpeed, "flameGrowSpeed 解析正确");
+        assertEqualsNumber(90, config.flameRetractSpeed, "flameRetractSpeed 解析正确");
+        assertEqualsNumber(35, config.flameVelocityBase, "flameVelocityBase 解析正确");
+        assertEqualsNumber(0.65, config.flameVelocityMinScale, "flameVelocityMinScale 解析正确");
+        assertEqualsNumber(1.35, config.flameVelocityMaxScale, "flameVelocityMaxScale 解析正确");
+    }
+
     public static function runAllTests():Void {
         testsRun = 0;
         testsPassed = 0;
@@ -140,6 +165,7 @@ class org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfigTest {
         test_paletteOverride();
         test_invalidStyleAndModeFallback();
         test_tokenNormalization();
+        test_flameVelocityScalingFieldsParsing();
         trace("===== TeslaRayConfigTest 结束: run=" + testsRun + ", pass=" + testsPassed + ", fail=" + testsFailed + " =====");
     }
 

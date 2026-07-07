@@ -131,7 +131,7 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 ### 射线子弹 `<rayConfig>`
 
-`data/items/bullets_cases.xml` 的 `<attribute><rayConfig>` 会由 `TeslaRayConfig.fromXML()` 解析，并自动把子弹标记为射线类型。`rayMode` 现支持 `single | chain | pierce | fork | flame`；`flame` 是连续喷火模式：每帧重扫沿线目标，以第 `pierceLimit` 个有效目标作为阻挡长度，`flameGrowSpeed/flameRetractSpeed` 控制当前长度追随目标长度，`flameTickInterval` 控制伤害脉冲帧间隔，`flameLifetime` 控制单发喷火束存活帧数。喷火常用的段数/预算字段：`flamePulseCount`（单发伤害脉冲段数）、`flameHotPulseStart/flameHotPulseCount`（热属性段窗口）、`flameHotDamageType/flameHotMagicType`（热段临时覆盖伤害属性）、`flameTotalHitBudget`（单发总伤害结算预算，0 为不限）、`flameMaxHitsPerTarget`（同一目标单发内最多吃几段，0 为不限）。
+`data/items/bullets_cases.xml` 的 `<attribute><rayConfig>` 会由 `TeslaRayConfig.fromXML()` 解析，并自动把子弹标记为射线类型。`rayMode` 现支持 `single | chain | pierce | fork | flame`；`flame` 是连续喷火模式：每帧重扫沿线目标，以第 `pierceLimit` 个有效目标作为阻挡长度，`flameGrowSpeed/flameRetractSpeed` 控制当前长度追随目标长度，`flameTickInterval` 控制伤害脉冲帧间隔，`flameLifetime` 控制单发喷火束存活帧数。喷火常用的段数/预算字段：`flamePulseCount`（单发伤害脉冲段数）、`flameHotPulseStart/flameHotPulseCount`（热属性段窗口）、`flameHotDamageType/flameHotMagicType`（热段临时覆盖伤害属性）、`flameTotalHitBudget`（单发总伤害结算预算，0 为不限）、`flameMaxHitsPerTarget`（同一目标单发内最多吃几段，0 为不限）。`flameUseWeaponVelocity=true` 时，喷火束会按发射武器 `<velocity>` 缩放 `flameGrowSpeed/flameRetractSpeed`；`flameVelocityBase` 是基准速度，`flameVelocityMinScale/flameVelocityMaxScale` 是钳制范围，用于避免低速配置让火束完全爬不出去或高速配置退化为瞬时射线。
 
 喷火视觉风格使用 `vfxStyle=flame_stream` / `vfxPreset=flame_stream`，常用字段包括 `rayLength`、`rayWidthFactor`、`damageFalloff`、`thickness`、`waveAmp`、`waveLen`、`waveSpeed`、`tongueCount`、`tipBloomScale`、`smokeColor`、`visualDuration`、`fadeOutDuration`。`rayWidthFactor>0` 时运行时走带宽射线碰撞，半宽由 `Z轴攻击范围 * rayWidthFactor * 0.5` 计算；视觉宽度仍由 `thickness/waveAmp` 等字段独立控制。
 

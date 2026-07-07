@@ -841,8 +841,12 @@
                 <tongueCount>4</tongueCount>
                 <tipBloomScale>1.0</tipBloomScale>
                 <flameStartLength>80</flameStartLength>
-                <flameGrowSpeed>110</flameGrowSpeed>
-                <flameRetractSpeed>180</flameRetractSpeed>
+                <flameGrowSpeed>50</flameGrowSpeed>
+                <flameRetractSpeed>90</flameRetractSpeed>
+                <flameUseWeaponVelocity>true</flameUseWeaponVelocity>
+                <flameVelocityBase>35</flameVelocityBase>
+                <flameVelocityMinScale>0.65</flameVelocityMinScale>
+                <flameVelocityMaxScale>1.35</flameVelocityMaxScale>
                 <flameTickInterval>2</flameTickInterval>
                 <flamePulseCount>5</flamePulseCount>
                 <flameHotPulseStart>1</flameHotPulseStart>

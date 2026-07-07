@@ -1950,6 +1950,23 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         if (!(growSpeed > 0)) growSpeed = rayLength;
         var retractSpeed:Number = config.flameRetractSpeed;
         if (!(retractSpeed > 0)) retractSpeed = rayLength;
+        if (config.flameUseWeaponVelocity) {
+            var velocityBase:Number = config.flameVelocityBase;
+            if (!(velocityBase > 0)) velocityBase = 35;
+            var weaponVelocity:Number = Number(bullet.子弹速度);
+            if (weaponVelocity < 0) weaponVelocity = -weaponVelocity;
+            if (!(weaponVelocity > 0)) weaponVelocity = velocityBase;
+            var velocityScale:Number = weaponVelocity / velocityBase;
+            var minScale:Number = config.flameVelocityMinScale;
+            if (!(minScale > 0)) minScale = 0.65;
+            var maxScale:Number = config.flameVelocityMaxScale;
+            if (!(maxScale > 0)) maxScale = 1.35;
+            if (maxScale < minScale) maxScale = minScale;
+            if (velocityScale < minScale) velocityScale = minScale;
+            else if (velocityScale > maxScale) velocityScale = maxScale;
+            growSpeed *= velocityScale;
+            retractSpeed *= velocityScale;
+        }
         var tickInterval:Number = config.flameTickInterval;
         if (!(tickInterval > 0)) tickInterval = 1;
         var lifetime:Number = config.flameLifetime;
