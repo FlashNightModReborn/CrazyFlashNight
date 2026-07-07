@@ -193,7 +193,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     public static function isManualReloadMovementLocked(unit:Object):Boolean {
         if (!unit) return false;
         if (unit.__subweaponManualReloadLock === true) return true;
-        return unit.man.subweaponManualReload === true;
+        return unit.man != null && unit.man.subweaponManualReload === true;
     }
 
     public static function clearManualReloadMovementLock(unit:Object):Void {
@@ -478,7 +478,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     }
 
     private static function finishFireOnMan(unit:Object, man:Object):Void {
-        if (!hasSubweapon(unit)) {
+        if (!canCommitFire(unit, man)) {
             cancelPendingFire(unit);
             return;
         }
@@ -508,6 +508,10 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
     private static function startManualReloadOnCurrentMan(unit:Object):Void {
         var man:MovieClip = unit.man;
+        if (!canCommitManualReload(unit, man)) {
+            clearManualReloadMovementLock(unit);
+            return;
+        }
         if (!isManualReloadManReady(man)) {
             deferStartManualReloadOnCurrentMan(unit);
             return;
@@ -548,16 +552,35 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         return 0;
     }
 
+    private static function canCommitFire(unit:Object, man:Object):Boolean {
+        if (!hasSubweapon(unit)) return false;
+        if (unit.攻击模式 != "长枪") return false;
+        if (unit.浮空 || unit.倒地) return false;
+        if (!isLongGunActionState(unit)) return false;
+        if (unit.换弹中) return false;
+        if (!man || man.换弹标签) return false;
+        return true;
+    }
+
+    private static function canCommitManualReload(unit:Object, man:Object):Boolean {
+        if (!hasSubweapon(unit)) return false;
+        if (unit.攻击模式 != "长枪") return false;
+        if (!isLongGunActionState(unit)) return false;
+        if (unit.换弹中) return false;
+        if (!man || man.换弹标签) return false;
+        return true;
+    }
+
     private static function getMuzzlePosition(man:Object):Object {
         return man.枪.枪.装扮.枪口位置;
     }
 
     private static function isShootManReady(man:Object):Boolean {
-        return getMuzzlePosition(man) != null;
+        return man != null && getMuzzlePosition(man) != null;
     }
 
     private static function isManualReloadManReady(man:Object):Boolean {
-        return man.gotoAndPlay != null && man.开始换弹 != null && man.换弹匣 != null && man.结束换弹 != null;
+        return man != null && man.gotoAndPlay != null && man.开始换弹 != null && man.换弹匣 != null && man.结束换弹 != null;
     }
 
     private static function deferFinishFireOnCurrentMan(unit:Object):Void {

@@ -31,6 +31,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testFireFromRunPlaysDirectionalAnimation();
         testFireFromManUsesPassedCurrentMan();
         testDeferredFireAbortDoesNotCommitCostOrCooldown();
+        testDeferredFireInvalidatedStateDoesNotCommit();
+        testDeferredManualReloadAfterClearUnitDoesNotMutateMan();
         testManualReload();
         testManualReloadFromRunNormalizesPose();
         testManualReloadMovementLockClearsOnFinish();
@@ -270,6 +272,96 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         _root.子弹区域shoot传递 = oldShoot;
         _root.gameworld = previousGameworld;
+        EnhancedCooldownWheel.I().reset();
+        restoreMockInventory();
+    }
+
+    private static function testDeferredFireInvalidatedStateDoesNotCommit():Void {
+        installMockInventory("火焰喷射器燃料罐", 1);
+        EnhancedCooldownWheel.I().reset();
+
+        var oldShoot:Function = _root.子弹区域shoot传递;
+        var previousGameworld:Object = _root.gameworld;
+        var shot:Object = null;
+        _root.gameworld = {};
+        _root.gameworld.globalToLocal = function(point:Object):Void {};
+        _root.子弹区域shoot传递 = function(props:Object):Void {
+            shot = props;
+        };
+
+        var unit:Object = makeUnit();
+        unit.状态 = "长枪跑";
+        unit.移动射击 = false;
+        unit.man = makeActionClip(unit, 0, 0, 0, 0);
+        var newMan:Object = makeActionClip(unit, 120, 80, 6, 8);
+        unit.状态改变 = function(state:String):Void {
+            this.状态 = state;
+            this.man = newMan;
+            this.攻击模式 = "兵器";
+            var job:Object = this.__stateTransitionJob;
+            if (job != undefined && job.callback != undefined) {
+                var cb:Function = job.callback;
+                job.callback = undefined;
+                job.gotoLabel = undefined;
+                cb(this);
+            }
+        };
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(true)});
+
+        var ok:Boolean = LongGunSubWeaponCore.fire(unit);
+
+        assert(ok, "deferred subweapon fire request is accepted before attack mode invalidation");
+        assert(shot == null, "deferred subweapon fire aborts when attack mode changes before commit");
+        assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "invalidated deferred fire keeps loaded round");
+        assert(unit.mp == 500, "invalidated deferred fire does not consume mp");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "invalidated deferred fire does not consume onFire reserve");
+        assert(unit.长枪副武器状态.nextFireTime == 0, "invalidated deferred fire clears tentative cooldown");
+        assert(unit.__subweaponPendingFireCdUntil == undefined, "invalidated deferred fire clears pending lock");
+
+        _root.子弹区域shoot传递 = oldShoot;
+        _root.gameworld = previousGameworld;
+        EnhancedCooldownWheel.I().reset();
+        restoreMockInventory();
+    }
+
+    private static function testDeferredManualReloadAfterClearUnitDoesNotMutateMan():Void {
+        installMockInventory("火焰喷射器燃料罐", 1);
+        EnhancedCooldownWheel.I().reset();
+
+        var unit:Object = makeUnit();
+        unit.状态 = "长枪跑";
+        unit.移动射击 = false;
+        unit.man = {};
+        var notReadyMan:Object = {};
+        unit.状态改变 = function(state:String):Void {
+            this.状态 = state;
+            this.man = notReadyMan;
+            var job:Object = this.__stateTransitionJob;
+            if (job != undefined && job.callback != undefined) {
+                var cb:Function = job.callback;
+                job.callback = undefined;
+                job.gotoLabel = undefined;
+                cb(this);
+            }
+        };
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        unit.长枪副武器状态.loaded = 0;
+        unit.长枪副武器状态.groupPaid = true;
+        unit.当前弹夹副武器已发射数 = unit.长枪副武器状态.capacity;
+
+        var ok:Boolean = LongGunSubWeaponCore.startManualReloadAnimation(unit);
+        var readyMan:Object = makeReloadClip(unit);
+        LongGunSubWeaponCore.clearUnit(unit);
+        unit.man = readyMan;
+        for (var i:Number = 0; i < 8; i++) {
+            EnhancedCooldownWheel.I().tick();
+        }
+
+        assert(ok, "deferred subweapon manual reload starts before clearUnit");
+        assert(!LongGunSubWeaponCore.hasSubweapon(unit), "clearUnit removes subweapon before deferred reload task runs");
+        assert(readyMan.playFrame == undefined, "deferred manual reload task does not play after subweapon is cleared");
+        assert(readyMan.换弹标签 !== true, "deferred manual reload task does not mark man reloading after subweapon is cleared");
+
         EnhancedCooldownWheel.I().reset();
         restoreMockInventory();
     }
