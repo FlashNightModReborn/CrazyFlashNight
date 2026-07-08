@@ -344,6 +344,14 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
     public static function continuousShootAs(core:Object, context:Object, effectiveInterval:Number):Boolean {
         var root:Object = _root;
         var man:Object = (context.man != null) ? context.man : core.man;
+        if (context.refreshManEachTick == true && context.__continuousShootStarted === true && core.man != null) {
+            man = core.man;
+            context.man = man;
+        }
+        context.__continuousShootStarted = true;
+        if (context.shootingManFieldName != null) {
+            core[context.shootingManFieldName] = man;
+        }
         var params:Object = context.params;
         var config:Object = ShootCore.getParamsConfig(params);
         var shootStateName:String = config.shootingStateName;

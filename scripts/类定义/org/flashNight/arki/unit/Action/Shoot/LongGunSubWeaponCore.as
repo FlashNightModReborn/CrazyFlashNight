@@ -41,11 +41,13 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         return true;
     }
 
-    public static function clearUnit(unit:Object):Void {
+    public static function clearUnit(unit:Object, persistStoredMirror:Boolean):Void {
         if (!unit) return;
         cancelPendingFire(unit);
         clearDeferredManualReload(unit);
-        syncSnapshots(unit);
+        if (persistStoredMirror !== false) {
+            syncSnapshots(unit);
+        }
         org.flashNight.arki.unit.Action.Shoot.ShootCore.cleanupLane(
             unit,
             org.flashNight.arki.unit.Action.Shoot.ShootCore.subweaponParams
@@ -146,6 +148,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             useGlobalRecoilTask: false,
             recoilPolicy: "aggregate",
             blockOnReload: true,
+            refreshManEachTick: true,
+            shootingManFieldName: "__subweaponShootingMan",
             shotOwner: unit.长枪副武器,
             magazineCapacity: unit.长枪副武器状态.capacity,
             bulletPropsProvider: LongGunSubWeaponCore.getBulletPropsForShoot,

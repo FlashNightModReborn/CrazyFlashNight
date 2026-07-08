@@ -38,6 +38,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testSetFiredCountKeepsSnapshotsConsistent();
         testLoadedSnapshotIsNotAuthority();
         testClearUnitPreservesStoredFiredMirror();
+        testClearUnitSkipsStoredMirrorDuringEquipRefresh();
         testSceneRefillPersistentShotConfiguresFullMagazine();
         testControlSlotMarker();
         testWeaponSkillInputBypassesSharedCooldownForSubweapon();
@@ -46,6 +47,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testSubweaponCommitRejectsWalkWithoutMoveShoot();
         testFireFromRunWithMoveShootPlaysDirectionalAnimation();
         testFireFromManUsesPassedCurrentMan();
+        testSubweaponContinuousShootRefreshesManEachTick();
         testSubweaponEventIsolationAndInterval();
         testEquipmentFireIntentMainLongGunGate();
         testSubweaponEmptyDoesNotTriggerMainReload();
@@ -218,6 +220,25 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
         assertSubweaponSnapshots(unit, 3, "configureUnit restores subweapon ammo after clearUnit");
+    }
+
+    private static function testClearUnitSkipsStoredMirrorDuringEquipRefresh():Void {
+        var unit:Object = makeUnit();
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        LongGunSubWeaponCore.setFiredCount(unit, 3);
+        unit.长枪副武器.value.reloadCount = 4;
+        LongGunSubWeaponCore.syncSnapshots(unit);
+
+        unit.长枪 = {value: {shot: 0, reloadCount: 0, subweaponShot: 0, subweaponReloadCount: 0}};
+        LongGunSubWeaponCore.clearUnit(unit, false);
+
+        assert(!LongGunSubWeaponCore.hasSubweapon(unit), "clearUnit without persist removes runtime subweapon state");
+        assert(unit.长枪.value.subweaponShot == 0, "clearUnit without persist does not copy old fired mirror to refreshed long gun");
+        assert(unit.长枪.value.subweaponReloadCount == 0, "clearUnit without persist does not copy old recovery pool to refreshed long gun");
+
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        assertSubweaponSnapshots(unit, 0, "configureUnit after equip refresh uses refreshed long-gun mirror");
+        assert(unit.长枪副武器状态.reloadCount == 0, "configureUnit after equip refresh does not inherit old recovery pool");
     }
 
     private static function testSceneRefillPersistentShotConfiguresFullMagazine():Void {
@@ -434,6 +455,52 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         _root.子弹区域shoot传递 = oldShoot;
         _root.控制目标 = oldControlTarget;
         _root.gameworld = previousGameworld;
+    }
+
+    private static function testSubweaponContinuousShootRefreshesManEachTick():Void {
+        var oldShoot:Function = _root.子弹区域shoot传递;
+        var oldControlTarget:String = _root.控制目标;
+        var previousGameworld:Object = _root.gameworld;
+        EnhancedCooldownWheel.I().reset();
+
+        var shots:Array = [];
+        _root.控制目标 = "testUnit";
+        _root.gameworld = {};
+        _root.gameworld.globalToLocal = function(point:Object):Void {};
+        _root.子弹区域shoot传递 = function(props:Object):Void {
+            shots.push({shootX: props.shootX, shootY: props.shootY});
+        };
+
+        var unit:Object = makeUnit();
+        unit.状态 = "长枪站立";
+        unit.下行 = true;
+        unit.man = makeActionClip(unit, 10, 20, 1, 2);
+        var firstMan:Object = unit.man;
+        var sub:Object = makeSubweapon(false);
+        sub.cd = 34;
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: sub});
+
+        var ok:Boolean = LongGunSubWeaponCore.fire(unit);
+        var secondMan:Object = makeActionClip(unit, 100, 200, 3, 4);
+        unit.man = secondMan;
+        for (var i:Number = 0; i < 4; i++) {
+            EnhancedCooldownWheel.I().tick();
+        }
+
+        assert(ok, "subweapon continuous shoot starts from current man");
+        assert(shots.length >= 2, "subweapon continuous shoot emits a second scheduled shot");
+        assert(firstMan.playFrame == "下射击", "initial subweapon shot plays initial man");
+        assert(secondMan.playFrame == "下射击", "scheduled subweapon shot plays refreshed man");
+        assert(shots[0].shootX == 11, "initial subweapon shot uses initial muzzle X");
+        assert(shots[0].shootY == 22, "initial subweapon shot uses initial muzzle Y");
+        assert(shots[1].shootX == 103, "scheduled subweapon shot uses refreshed muzzle X");
+        assert(shots[1].shootY == 204, "scheduled subweapon shot uses refreshed muzzle Y");
+        assert(unit.长枪.value.subweaponShot >= 2, "scheduled subweapon shot commits ammo on refreshed man");
+
+        _root.子弹区域shoot传递 = oldShoot;
+        _root.控制目标 = oldControlTarget;
+        _root.gameworld = previousGameworld;
+        EnhancedCooldownWheel.I().reset();
     }
 
     private static function testSubweaponEventIsolationAndInterval():Void {

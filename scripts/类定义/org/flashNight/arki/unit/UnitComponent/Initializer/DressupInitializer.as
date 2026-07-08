@@ -601,7 +601,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         var target:MovieClip = __target;
 
         target.主动战技 = _root.主角函数.创建主动战技槽位表();
-        LongGunSubWeaponCore.clearUnit(target);
+        LongGunSubWeaponCore.clearUnit(target, false);
         loadWeaponSkill(target, "手部装备");
         loadWeaponSkill(target, "刀");
         loadWeaponSkill(target, "长枪");
