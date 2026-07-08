@@ -31,6 +31,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         testImpactZeroPreservesForcedKnockdown();
         testImpactChainAddsEquipmentGunpowerAfterShotgunMultiplier();
         testEquipmentGunpowerRequiresImpactChain();
+        testConfigureUnitRestoresStoredReloadCount();
         testDirtyRefreshUpdatesRuntimeBridgeFields();
         testPrepareManBulletPropsRefreshesRuntimeStatsBySignature();
         testConfigureUnitRestoresStoredFiredCount();
@@ -128,6 +129,17 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         assert(ok, "configureUnit accepts subweapon without impact chain");
         assert(unit.副武器子弹威力 == 1000, "equipment gunpower does not affect subweapon without impact chain");
+    }
+
+    private static function testConfigureUnitRestoresStoredReloadCount():Void {
+        var unit:Object = makeUnit();
+        unit.长枪.value.subweaponReloadCount = 4;
+        var ok:Boolean = LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+
+        assert(ok, "configureUnit accepts subweapon with stored reload count");
+        assert(unit.长枪副武器.value.reloadCount == 4, "configureUnit restores subweapon tactical reload pool to virtual weapon");
+        assert(unit.长枪副武器状态.reloadCount == 4, "configureUnit restores subweapon tactical reload pool to state");
+        assert(unit.长枪.value.subweaponReloadCount == 4, "configureUnit keeps subweapon tactical reload pool on long gun value");
     }
 
     private static function testDirtyRefreshUpdatesRuntimeBridgeFields():Void {
@@ -800,8 +812,13 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(ok, "subweapon tactical recovery allows paid manual reload");
         assert(unit.长枪副武器.value.reloadCount == 3, "subweapon tactical recovery stores recovered partial magazine");
         assert(unit.长枪副武器状态.reloadCount == 3, "subweapon tactical recovery mirrors recovered count to state");
+        assert(unit.长枪.value.subweaponReloadCount == 3, "subweapon tactical recovery mirrors recovered count to long gun value");
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "paid tactical recovery still consumes reserve when pool is short");
         assertSubweaponSnapshots(unit, 0, "subweapon paid tactical recovery reload keeps snapshots consistent");
+
+        LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
+        assert(unit.长枪副武器.value.reloadCount == 3, "subweapon tactical reload pool survives configureUnit");
+        assert(unit.长枪副武器状态.reloadCount == 3, "subweapon tactical reload pool state survives configureUnit");
 
         restoreMockHero();
         restoreMockInventory();
@@ -823,6 +840,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(ok, "subweapon tactical recovery completes free reload without reserve");
         assert(unit.长枪副武器.value.reloadCount == 0, "subweapon tactical free reload spends recovered pool");
         assert(unit.长枪副武器状态.reloadCount == 0, "subweapon tactical free reload syncs spent pool to state");
+        assert(unit.长枪.value.subweaponReloadCount == 0, "subweapon tactical free reload syncs spent pool to long gun value");
         assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "subweapon tactical free reload does not consume missing reserve");
         assertSubweaponSnapshots(unit, 0, "subweapon tactical free reload keeps snapshots consistent");
 

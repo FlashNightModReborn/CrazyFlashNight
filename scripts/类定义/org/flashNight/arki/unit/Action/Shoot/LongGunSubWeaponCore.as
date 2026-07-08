@@ -21,11 +21,12 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
 
         var config:Object = buildRuntimeConfig(sub, itemData);
         var firedCount:Number = readStoredFiredCount(unit, config);
+        var reloadCount:Number = readStoredReloadCount(unit);
         var state:Object = {
             loaded: getLoadedCountFromFired(config.capacity, firedCount),
             capacity: config.capacity,
             reserveName: config.reserveName,
-            reloadCount: 0,
+            reloadCount: reloadCount,
             groupPaid: config.consumeMode != "onLoadGroup" || config.initialLoaded > 0,
             nextFireTime: 0
         };
@@ -461,12 +462,15 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         var capacity:Number = getStateCapacity(state);
         var fired:Number = getFiredCount(unit);
         var loaded:Number = getLoadedCountFromFired(capacity, fired);
+        var reloadCount:Number = getReloadCount(unit);
 
         state.loaded = loaded;
+        state.reloadCount = reloadCount;
         unit.subWeapon = state;
         unit.当前弹夹副武器已发射数 = fired;
         if (unit.长枪副武器 && unit.长枪副武器.value) {
             unit.长枪副武器.value.shot = fired;
+            unit.长枪副武器.value.reloadCount = reloadCount;
         }
         unit.长枪副武器弹匣容量 = capacity;
         if (unit.长枪副武器属性 && unit.长枪副武器配置) {
@@ -474,6 +478,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         }
         if (unit.长枪 && unit.长枪.value) {
             unit.长枪.value.subweaponShot = fired;
+            unit.长枪.value.subweaponReloadCount = reloadCount;
         }
     }
 
@@ -614,6 +619,12 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         if (isNaN(loaded) || loaded < 0) loaded = 0;
         if (loaded > capacity) loaded = capacity;
         return loaded;
+    }
+
+    private static function sanitizeReloadCount(value:Object):Number {
+        var count:Number = Number(value);
+        if (isNaN(count) || count < 0) count = 0;
+        return Math.floor(count);
     }
 
     private static function buildRuntimeConfig(sub:Object, itemData:Object):Object {
@@ -931,6 +942,25 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         if (isNaN(fired) || fired < 0) fired = 0;
         if (fired > config.capacity) fired = config.capacity;
         return fired;
+    }
+
+    private static function readStoredReloadCount(unit:Object):Number {
+        if (!unit) return 0;
+        if (unit.长枪副武器 && unit.长枪副武器.value && unit.长枪副武器.value.reloadCount != undefined) {
+            return sanitizeReloadCount(unit.长枪副武器.value.reloadCount);
+        }
+        if (unit.长枪 && unit.长枪.value && unit.长枪.value.subweaponReloadCount != undefined) {
+            return sanitizeReloadCount(unit.长枪.value.subweaponReloadCount);
+        }
+        return 0;
+    }
+
+    private static function getReloadCount(unit:Object):Number {
+        if (!unit || !unit.长枪副武器状态) return 0;
+        if (unit.长枪副武器 && unit.长枪副武器.value && unit.长枪副武器.value.reloadCount != undefined) {
+            return sanitizeReloadCount(unit.长枪副武器.value.reloadCount);
+        }
+        return sanitizeReloadCount(unit.长枪副武器状态.reloadCount);
     }
 
     private static function startManualReloadOnCurrentMan(unit:Object):Void {
